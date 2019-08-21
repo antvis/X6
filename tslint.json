@@ -1,0 +1,15 @@
+{
+  "extends": "tslint-config-airbnb",
+  "linterOptions": {
+    "exclude": [
+      "node_modules/**"
+    ]
+  },
+  "rules": {
+    "import-name": false,
+    "semicolon": [
+      true,
+      "never"
+    ]
+  }
+}
