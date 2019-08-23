@@ -1,6 +1,7 @@
 import { Point, Rectangle } from '../struct'
 import { getValue } from './object'
 import { Direction } from '../types'
+import { CellState } from '../core'
 
 export function toRadians(deg: number) {
   return Math.PI * deg / 180
@@ -257,6 +258,13 @@ export function getDirectedBounds(
   )
 }
 
+export function contains(bounds: Rectangle, x: number, y: number) {
+  return (
+    bounds.x <= x && bounds.x + bounds.width >= x &&
+    bounds.y <= y && bounds.y + bounds.height >= y
+  )
+}
+
 /**
 * Returns the intersection of two lines as an `Point`.
 */
@@ -281,6 +289,78 @@ export function intersection(
 
   // No intersection
   return null
+}
+
+/**
+ * Returns the square distance between a segment and a point. To get the
+ * distance between a point and a line (with infinite length) use
+ * `util.ptLineDist`.
+ *
+ * @param x1 X-coordinate of point 1 of the line.
+ * @param y1 Y-coordinate of point 1 of the line.
+ * @param x2 X-coordinate of point 2 of the line.
+ * @param y2 Y-coordinate of point 2 of the line.
+ * @param px X-coordinate of the point.
+ * @param py Y-coordinate of the point.
+ */
+export function ptSegmentDist(
+  x1: number, y1: number,
+  x2: number, y2: number,
+  px: number, py: number,
+) {
+
+  x2 -= x1 // tslint:disable-line
+  y2 -= y1 // tslint:disable-line
+  px -= x1 // tslint:disable-line
+  py -= y1 // tslint:disable-line
+
+  let dotprod = px * x2 + py * y2
+  let projlenSq
+
+  if (dotprod <= 0.0) {
+    projlenSq = 0.0
+  } else {
+    px = x2 - px // tslint:disable-line
+    py = y2 - py // tslint:disable-line
+    dotprod = px * x2 + py * y2
+
+    if (dotprod <= 0.0) {
+      projlenSq = 0.0
+    } else {
+      projlenSq = dotprod * dotprod / (x2 * x2 + y2 * y2)
+    }
+  }
+
+  let lenSq = px * px + py * py - projlenSq
+
+  if (lenSq < 0) {
+    lenSq = 0
+  }
+
+  return lenSq
+}
+
+/**
+ * Returns the distance between a line defined by two points and a point.
+ * To get the distance between a point and a segment (with a specific
+ * length) use `util.ptSeqDistSq`.
+ *
+ * @param x1 X-coordinate of point 1 of the line.
+ * @param y1 Y-coordinate of point 1 of the line.
+ * @param x2 X-coordinate of point 2 of the line.
+ * @param y2 Y-coordinate of point 2 of the line.
+ * @param px X-coordinate of the point.
+ * @param py Y-coordinate of the point.
+ */
+export function ptLineDist(
+  x1: number, y1: number,
+  x2: number, y2: number,
+  px: number, py: number,
+) {
+  return Math.abs(
+    (y2 - y1) * px - (x2 - x1) * py + x2 * y1 - y2 * x1) /
+    Math.sqrt((y2 - y1) * (y2 - y1) + (x2 - x1) * (x2 - x1),
+    )
 }
 
 /**
@@ -320,4 +400,31 @@ export function relativeCcw(
   }
 
   return (ccw < 0.0) ? -1 : ((ccw > 0.0) ? 1 : 0)
+}
+
+export function findNearestSegment(state: CellState, x: number, y: number) {
+  const len = state.absolutePoints.length
+  let index = -1
+  if (len > 0) {
+    let last = state.absolutePoints[0]!
+    let min = null
+
+    for (let i = 1; i < len; i += 1) {
+      const point = state.absolutePoints[i]!
+      const dist = ptSegmentDist(
+        last.x, last.y,
+        point.x, point.y,
+        x, y,
+      )
+
+      if (min == null || dist < min) {
+        min = dist
+        index = i - 1
+      }
+
+      last = point
+    }
+  }
+
+  return index
 }

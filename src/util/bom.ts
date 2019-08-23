@@ -19,3 +19,15 @@ export function isRelativeUrl(url: string = window.location.href) {
     url.substring(0, 7) !== 'file://'
   )
 }
+
+export function replaceTrailingNewlines(str: string, pattern: string) {
+  let postfix = ''
+  let left = str
+
+  while (left.length > 0 && left.charAt(left.length - 1) === '\n') {
+    left = left.substring(0, left.length - 1)
+    postfix += pattern
+  }
+
+  return left + postfix
+}

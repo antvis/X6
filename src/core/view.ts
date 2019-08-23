@@ -6,35 +6,32 @@ import {
   DomEvent,
   CustomMouseEvent,
 } from '../common'
-import { Point, Rectangle } from '../struct'
-import { Cell, Graph, Geometry } from '.'
-import { UndoableEdit, CurrentRootChange } from '../change'
+import { RectShape, ImageShape } from '../shape'
 import { Align, StyleNames } from '../types'
-import { CellState } from './cell-state'
-import { RectShape } from '../shape'
-import { ConnectionConstraint } from '../struct/connection-constraint'
+import { Cell, Graph, Geometry, CellState } from '.'
+import { UndoableEdit, CurrentRootChange } from '../change'
+import { Point, Rectangle, ConnectionConstraint, Image } from '../struct'
+import { StyleRegistry } from '../stylesheet'
 
 export class View extends Events {
   graph: Graph
   scale: number
   translate: Point
 
-  canvas: HTMLElement | SVGGElement | null
-  backgroundPane: HTMLElement | SVGGElement | null
-  drawPane: HTMLElement | SVGGElement | null
-  overlayPane: HTMLElement | SVGGElement | null
-  decoratorPane: HTMLElement | SVGGElement | null
-
+  private canvas: HTMLElement | SVGGElement | null
+  private backgroundPane: HTMLElement | SVGGElement | null
+  private drawPane: HTMLElement | SVGGElement | null
+  private overlayPane: HTMLElement | SVGGElement | null
+  private decoratorPane: HTMLElement | SVGGElement | null
   private states: WeakMap<Cell, CellState>
   private readonly invalidatings: WeakSet<Cell>
+  private backgroundImage: ImageShape | null
+  private backgroundPageShape: RectShape | null
 
   /**
-   * 画布平移和缩放之后的包围盒
+   * Shared temporary DIV is used for text measuring
    */
-  graphBounds: Rectangle
-
-  private backgroundImage: ImageShape
-  private backgroundPageShape: RectShape
+  textDiv: HTMLElement
 
   constructor(graph: Graph) {
     super()
@@ -52,10 +49,9 @@ export class View extends Events {
   }
 
   /**
-   * Specifies if shapes should be created, updated and destroyed using the
-   * methods of <mxCellRenderer> in <graph>. Default is true.
+   * Specifies if shapes should be created, updated and destroyed
    */
-  rendering: boolean = true
+  private rendering: boolean = true
 
   isRendering() {
     return this.rendering
@@ -67,11 +63,14 @@ export class View extends Events {
 
   /**
    * Specifies if string values in cell styles should be evaluated using
-   * <util.eval>. This will only be used if the string values can't be mapped
-   * to objects using <mxStyleRegistry>. Default is false. NOTE: Enabling this
-   * switch carries a possible security risk.
+   * `eval`. This will only be used if the string values can't be mapped
+   * to objects using `StyleRegistry`.
+   *
+   * Default is `false`.
+   *
+   * NOTE: Enabling this carries a possible security risk.
    */
-  allowEval: boolean = false
+  private allowEval: boolean = false
 
   isAllowEval() {
     return this.allowEval
@@ -83,48 +82,27 @@ export class View extends Events {
 
   /**
    * Specifies if a gesture should be captured when it goes outside of the
-   * graph container. Default is true.
+   * graph container.
+   *
+   * Default is `true`.
    */
   captureDocumentGesture: boolean = true
 
   /**
-   * Specifies if the <canvas> should be hidden while rendering in IE8 standards
-   * mode and quirks mode. This will significantly improve rendering performance.
-   * Default is true.
+   * A `Cell` that acts as the root of the displayed cell hierarchy.
    */
-  optimizeVmlReflows: boolean = true
-
-  /**
-   * <mxCell> that acts as the root of the displayed cell hierarchy.
-   */
-  currentRoot: Cell
+  currentRoot: Cell | null
 
   /**
    * Specifies if the style should be updated in each validation step. If this
-   * is false then the style is only updated if the state is created or if the
-   * style of the cell was changed. Default is false.
+   * is `false` then the style is only updated if the state is created or if the
+   * style of the cell was changed.
+   *
+   * Default is `false`.
    */
   updateStyle: boolean = false
 
-  /**
-   * During validation, this contains the last DOM node that was processed.
-   */
-  lastNode = null
-
-  /**
-   * During validation, this contains the last HTML DOM node that was processed.
-   */
-  lastHtmlNode = null
-
-  /**
-   * During validation, this contains the last edge's DOM node that was processed.
-   */
-  lastForegroundNode = null
-
-  /**
-   * During validation, this contains the last edge HTML DOM node that was processed.
-   */
-  lastForegroundHtmlNode = null
+  private graphBounds: Rectangle
 
   getGraphBounds() {
     return this.graphBounds
@@ -134,8 +112,14 @@ export class View extends Events {
     this.graphBounds = bounds
   }
 
-  getBounds(cells: Cell[]) {
+  /**
+   * Returns the union of all `CellStates` for the given array of `Cell`s.
+   *
+   * @param cells Array of `Cell` whose bounds should be returned.
+   */
+  getBounds(cells: Cell[]): Rectangle | null {
     let result: Rectangle | null = null
+
     if (cells != null && cells.length > 0) {
       const model = this.graph.getModel()
       cells.forEach((cell) => {
@@ -153,229 +137,6 @@ export class View extends Events {
     }
 
     return result
-  }
-
-  setCurrentRoot(root: Cell) {
-    if (this.currentRoot !== root) {
-      const change = new CurrentRootChange(this, root)
-      change.execute()
-      const edit = new UndoableEdit(
-        this.graph.getModel(),
-        { significant: true },
-      )
-      edit.add(change)
-      this.trigger('undo', edit)
-      this.graph.sizeDidChange()
-    }
-
-    return root
-  }
-
-  scaleAndTranslate(scale: number, tx: number, ty: number) {
-    const previousScale = this.scale
-    const previousTranslate = new Point(this.translate.x, this.translate.y)
-
-    if (
-      this.scale !== scale ||
-      this.translate.x !== tx ||
-      this.translate.y !== ty
-    ) {
-      this.scale = scale
-      this.translate.x = tx
-      this.translate.y = ty
-
-      this.viewStateChanged()
-    }
-
-    this.trigger('scaleAndTranslate', {
-      previousScale,
-      previousTranslate,
-      scale,
-      translate: this.translate,
-    })
-  }
-
-  getScale() {
-    return this.scale
-  }
-
-  setScale(scale: number) {
-    const previousScale = this.scale
-    if (this.scale !== scale) {
-      this.scale = scale
-      this.viewStateChanged()
-    }
-
-    this.trigger('scale', { scale, previousScale })
-  }
-
-  getTranslate() {
-    return this.translate
-  }
-
-  setTranslate(tx: number, ty: number) {
-    const previousTranslate = new Point(this.translate.x, this.translate.y)
-    if (this.translate.x !== tx || this.translate.y !== ty) {
-      this.translate.x = tx
-      this.translate.y = ty
-
-      this.viewStateChanged()
-    }
-
-    this.trigger('translate', { previousTranslate, translate: this.translate })
-  }
-
-  private viewStateChanged() {
-    this.revalidate()
-    this.graph.sizeDidChange()
-  }
-
-  refresh() {
-    if (this.currentRoot != null) {
-      this.clear()
-    }
-
-    this.revalidate()
-  }
-
-  revalidate() {
-    this.invalidate()
-    this.validate()
-  }
-
-  /**
-   * Invalidates the state of the given cell, all
-   * its descendants and connected edges.
-   */
-  invalidate(
-    cell: Cell = this.model.getRoot(),
-    recurse: boolean = true,
-    includeEdges: boolean = true,
-  ) {
-    const state = this.getState(cell)
-    if (state != null) {
-      state.invalid = true
-    }
-
-    // 避免死循环
-    if (!this.invalidatings.has(cell)) {
-      this.invalidatings.add(cell)
-
-      if (recurse) {
-        cell.eachChild(child => this.invalidate(child, recurse, includeEdges))
-      }
-
-      if (includeEdges) {
-        cell.eachEdge(edge => this.invalidate(edge, recurse, includeEdges))
-      }
-
-      this.invalidatings.delete(cell)
-    }
-  }
-
-  validate(cell?: Cell) {
-    this.resetValidationState()
-
-    const c = cell || (this.currentRoot != null
-      ? this.currentRoot
-      : this.graph.model.getRoot()
-    )
-    const boundingBox = this.getBoundingBox(
-      this.validateCellState(
-        this.validateCell(c),
-      ),
-    )
-
-    this.setGraphBounds(boundingBox || this.getEmptyBounds())
-    this.validateBackground()
-    this.resetValidationState()
-  }
-
-  /**
-   * Recursively creates the cell state for the given cell if visible is true
-   * and the given cell is visible. If the cell is not visible but the state
-   * exists then it is removed.
-   */
-  private validateCell(cell: Cell, visible: boolean = true) {
-    if (cell != null) {
-      // tslint:disable-next-line
-      visible = visible && this.graph.isCellVisible(cell)
-      const state = this.getState(cell, visible)
-      if (state != null && !visible) {
-        // remove unvisible cell's state
-        this.removeState(cell)
-      } else {
-        cell.eachChild(child => this.validateCell(
-          child,
-          visible && (!this.isCellCollapsed(cell) || cell === this.currentRoot),
-        ))
-      }
-    }
-
-    return cell
-  }
-
-  /**
-   * Validates and repaints
-   */
-  private validateCellState(cell: Cell | null, recurse: boolean = true) {
-    let state = null
-    if (cell != null) {
-      state = this.getState(cell)
-      if (state != null) {
-        if (state.invalid) {
-          state.invalid = false
-
-          // set `state.invalidStyle = true` when process `StyleChange`
-          if (state.style == null || state.invalidStyle) {
-            state.style = this.graph.getCellStyle(state.cell)
-            state.invalidStyle = false
-          }
-
-          // parent
-          if (cell !== this.currentRoot) {
-            this.validateCellState(this.model.getParent(cell)!, false)
-          }
-
-          // terminal
-          const source = this.getVisibleTerminal(cell, true)
-          const target = this.getVisibleTerminal(cell, false)
-          const sourceState = this.validateCellState(source, false)
-          const targetState = this.validateCellState(target, false)
-          state.setVisibleTerminalState(sourceState, true)
-          state.setVisibleTerminalState(targetState, false)
-
-          this.updateCellState(state)
-
-          // repaint
-          if (cell !== this.currentRoot && !state.invalid) {
-            this.graph.renderer.redraw(state, false, this.isRendering())
-
-            // Handles changes to invertex paintbounds
-            // after update of rendering shape
-            state.updateCachedBounds()
-          }
-        }
-
-        if (recurse && !state.invalid) {
-          // Updates order in DOM if recursively traversing
-          if (state.shape != null) {
-            this.stateValidated(state)
-          }
-
-          cell.eachChild(child => this.validateCellState(child, true))
-        }
-      }
-    }
-
-    return state
-  }
-
-  private getEmptyBounds() {
-    return new Rectangle(
-      this.translate.x * this.scale,
-      this.translate.y * this.scale,
-    )
   }
 
   /**
@@ -414,9 +175,240 @@ export class View extends Events {
     return result
   }
 
-  private createBackgroundPageShape(bounds: Rectangle) {
-    return new RectShape(bounds, 'white', 'black')
+  private getEmptyBounds() {
+    return new Rectangle(
+      this.translate.x * this.scale,
+      this.translate.y * this.scale,
+    )
   }
+
+  // #region ::::::::::: Translate & Scale :::::::::::
+
+  setCurrentRoot(root: Cell | null) {
+    if (this.currentRoot !== root) {
+      const change = new CurrentRootChange(this, root)
+      change.execute()
+      const edit = new UndoableEdit(
+        this.graph.getModel(),
+        { significant: true },
+      )
+      edit.add(change)
+      this.trigger('undo', edit)
+      this.graph.sizeDidChange()
+    }
+
+    return root
+  }
+
+  scaleAndTranslate(scale: number, tx: number, ty: number) {
+    const previousScale = this.scale
+    const previousTranslate = new Point(this.translate.x, this.translate.y)
+
+    if (
+      this.scale !== scale ||
+      this.translate.x !== tx ||
+      this.translate.y !== ty
+    ) {
+      this.scale = scale
+      this.translate.x = tx
+      this.translate.y = ty
+
+      this.scaledOrTranslated()
+    }
+
+    this.trigger('scaleAndTranslate', {
+      previousScale,
+      previousTranslate,
+      scale,
+      translate: this.translate,
+    })
+  }
+
+  getScale() {
+    return this.scale
+  }
+
+  setScale(scale: number) {
+    const previousScale = this.scale
+    if (this.scale !== scale) {
+      this.scale = scale
+      this.scaledOrTranslated()
+    }
+
+    this.trigger('scale', { scale, previousScale })
+  }
+
+  getTranslate() {
+    return this.translate
+  }
+
+  setTranslate(tx: number, ty: number) {
+    const previousTranslate = new Point(this.translate.x, this.translate.y)
+    if (this.translate.x !== tx || this.translate.y !== ty) {
+      this.translate.x = tx
+      this.translate.y = ty
+
+      this.scaledOrTranslated()
+    }
+
+    this.trigger('translate', { previousTranslate, translate: this.translate })
+  }
+
+  private scaledOrTranslated() {
+    this.revalidate()
+    this.graph.sizeDidChange()
+  }
+
+  // #endregion
+
+  // #region ::::::::::::::: Refresh :::::::::::::::::
+
+  refresh() {
+    if (this.currentRoot != null) {
+      this.clear()
+    }
+
+    this.revalidate()
+  }
+
+  revalidate() {
+    this.invalidate()
+    this.validate()
+  }
+
+  /**
+   * Invalidates the state of the given cell, all
+   * its descendants and connected edges.
+   */
+  invalidate(
+    cell: Cell = this.model.getRoot(),
+    recurse: boolean = true,
+    includeEdges: boolean = true,
+  ) {
+    const state = this.getState(cell)
+    if (state != null) {
+      state.invalid = true
+    }
+
+    // avoid endless circulation
+    if (!this.invalidatings.has(cell)) {
+      this.invalidatings.add(cell)
+
+      if (recurse) {
+        cell.eachChild(child => this.invalidate(child, recurse, includeEdges))
+      }
+
+      if (includeEdges) {
+        cell.eachEdge(edge => this.invalidate(edge, recurse, includeEdges))
+      }
+
+      this.invalidatings.delete(cell)
+    }
+  }
+
+  validate(cell?: Cell) {
+    this.resetValidationState()
+
+    const c = cell || (this.currentRoot != null
+      ? this.currentRoot
+      : this.graph.model.getRoot()
+    )
+
+    const boundingBox = this.getBoundingBox(
+      this.validateCellState(
+        this.validateCell(c),
+      ),
+    )
+
+    this.setGraphBounds(boundingBox || this.getEmptyBounds())
+    this.validateBackground()
+
+    this.resetValidationState()
+  }
+
+  /**
+   * Recursively creates the cell state for the given cell if visible is true
+   * and the given cell is visible. If the cell is not visible but the state
+   * exists then it is removed.
+   */
+  private validateCell(cell: Cell, visible: boolean = true) {
+    if (cell != null) {
+      visible = visible && this.graph.isCellVisible(cell) // tslint:disable-line
+      const state = this.getState(cell, visible)
+      if (state != null && !visible) {
+        this.removeState(cell) // remove unvisible cell's state
+      } else {
+        cell.eachChild((child) => {
+          const childVisible = visible && (
+            !this.graph.isCellCollapsed(cell) ||
+            cell === this.currentRoot
+          )
+          this.validateCell(child, childVisible)
+        })
+      }
+    }
+
+    return cell
+  }
+
+  /**
+   * Validates and repaints
+   */
+  private validateCellState(cell: Cell | null, recurse: boolean = true) {
+    let state = null
+    if (cell != null) {
+      state = this.getState(cell)
+      if (state != null) {
+        if (state.invalid) {
+          state.invalid = false
+
+          // set `state.invalidStyle = true` only when process `StyleChange`
+          if (state.style == null || state.invalidStyle) {
+            state.style = this.graph.getCellStyle(state.cell)
+            state.invalidStyle = false
+          }
+
+          // parent
+          if (cell !== this.currentRoot) {
+            this.validateCellState(this.model.getParent(cell)!, false)
+          }
+
+          // terminal
+          const source = this.getVisibleTerminal(cell, true)
+          const target = this.getVisibleTerminal(cell, false)
+          const sourceState = this.validateCellState(source, true)
+          const targetState = this.validateCellState(target, false)
+          state.setVisibleTerminalState(sourceState, true)
+          state.setVisibleTerminalState(targetState, false)
+
+          this.updateCellState(state)
+
+          // repaint
+          if (cell !== this.currentRoot && !state.invalid) {
+            this.graph.renderer.redraw(state, false, this.isRendering())
+
+            state.updateCachedBounds()
+          }
+        }
+
+        if (recurse && !state.invalid) {
+
+          if (state.shape != null) {
+            // Updates order in DOM if recursively traversing
+            this.stateValidated(state)
+          }
+
+          cell.eachChild(child => this.validateCellState(child, true))
+        }
+      }
+    }
+
+    return state
+  }
+
+  // #endregion
+
+  // #region :::::::::: Validate Background ::::::::::
 
   private validateBackground() {
     this.validateBackgroundImage()
@@ -425,7 +417,6 @@ export class View extends Events {
 
   private validateBackgroundImage() {
     const bg = this.graph.getBackgroundImage()
-
     if (bg != null) {
       if (
         this.backgroundImage == null ||
@@ -438,7 +429,7 @@ export class View extends Events {
         const bounds = new Rectangle(0, 0, 1, 1)
         this.backgroundImage = new ImageShape(bounds, bg.src)
         this.backgroundImage.dialect = this.graph.dialect
-        this.backgroundImage.init(this.backgroundPane)
+        this.backgroundImage.init(this.backgroundPane!)
         this.backgroundImage.redraw()
       }
 
@@ -449,33 +440,42 @@ export class View extends Events {
     }
   }
 
-  validateBackgroundPage() {
+  private redrawBackgroundImage(backgroundImage: ImageShape, bg: Image) {
+    backgroundImage.scale = this.scale
+    backgroundImage.bounds.x = this.scale * this.translate.x
+    backgroundImage.bounds.y = this.scale * this.translate.y
+    backgroundImage.bounds.width = this.scale * bg.width
+    backgroundImage.bounds.height = this.scale * bg.height
+
+    backgroundImage.redraw()
+  }
+
+  private validateBackgroundPage() {
     if (this.graph.pageVisible) {
       const bounds = this.getBackgroundPageBounds()
-
       if (this.backgroundPageShape == null) {
-        this.backgroundPageShape = this.createBackgroundPageShape(bounds)
+        this.backgroundPageShape = new RectShape(bounds, 'white', 'black')
         this.backgroundPageShape.scale = this.scale
         this.backgroundPageShape.isShadow = true
         this.backgroundPageShape.dialect = this.graph.dialect
-        this.backgroundPageShape.init(this.backgroundPane)
+        this.backgroundPageShape.init(this.backgroundPane!)
         this.backgroundPageShape.redraw()
 
         // Adds listener for double click handling on background
         if (this.graph.nativeDblClickEnabled) {
           DomEvent.addListener(
-            this.backgroundPageShape.node,
+            this.backgroundPageShape.elem!,
             'dblclick',
-            util.bind(this, function (evt) {
-              this.graph.dblClick(evt)
-            }),
+            (e: MouseEvent) => {
+              this.graph.dblClick(e)
+            },
           )
         }
 
         // Adds basic listeners for graph event dispatching outside of the
         // container and finishing the handling of a single gesture
         DomEvent.addGestureListeners(
-          this.backgroundPageShape.node,
+          this.backgroundPageShape.elem!,
           (e: MouseEvent) => {
             this.graph.fireMouseEvent('mouseDown', new CustomMouseEvent(e))
           },
@@ -507,7 +507,7 @@ export class View extends Events {
     }
   }
 
-  getBackgroundPageBounds() {
+  private getBackgroundPageBounds() {
     const pageFormat = this.graph.pageFormat
     const pageScale = this.scale * this.graph.pageScale
     const bounds = new Rectangle(
@@ -520,18 +520,52 @@ export class View extends Events {
     return bounds
   }
 
-  /**
-   * Updates the bounds and redraws the background image.
-   */
-  redrawBackgroundImage(backgroundImage, bg) {
-    backgroundImage.scale = this.scale
-    backgroundImage.bounds.x = this.scale * this.translate.x
-    backgroundImage.bounds.y = this.scale * this.translate.y
-    backgroundImage.bounds.width = this.scale * bg.width
-    backgroundImage.bounds.height = this.scale * bg.height
+  // #endregion
 
-    backgroundImage.redraw()
+  // #region :::::::::::: Update DOM Order :::::::::::
+
+  private lastNode: HTMLElement | null = null
+  private lastHtmlNode: HTMLElement | null = null
+  private lastForegroundNode: HTMLElement | null = null
+  private lastForegroundHtmlNode: HTMLElement | null = null
+
+  private resetValidationState() {
+    this.lastNode = null
+    this.lastHtmlNode = null
+    this.lastForegroundNode = null
+    this.lastForegroundHtmlNode = null
   }
+
+  private stateValidated(state: CellState) {
+    this.updateDomOrder(state)
+  }
+
+  private updateDomOrder(state: CellState) {
+    const foreground = (
+      (this.model.isEdge(state.cell) && this.graph.keepEdgesInForeground) ||
+      (this.model.isNode(state.cell) && this.graph.keepEdgesInBackground)
+    )
+    const htmlNode = foreground
+      ? this.lastForegroundHtmlNode || this.lastHtmlNode
+      : this.lastHtmlNode
+    const node = foreground
+      ? this.lastForegroundNode || this.lastNode
+      : this.lastNode
+
+    const result = this.graph.renderer.insertStateAfter(state, node, htmlNode)
+
+    if (foreground) {
+      this.lastForegroundHtmlNode = result[1]
+      this.lastForegroundNode = result[0]
+    } else {
+      this.lastHtmlNode = result[1]
+      this.lastNode = result[0]
+    }
+  }
+
+  // #endregion
+
+  // #region ::::::::::: Update Cell State :::::::::::
 
   private updateCellState(state: CellState) {
     state.edgeLength = 0
@@ -559,45 +593,46 @@ export class View extends Events {
 
       const scale = this.scale
       const trans = this.translate
-      const geom = this.graph.getCellGeometry(state.cell)
+      const geo = this.graph.getCellGeometry(state.cell)
 
-      if (geom != null) {
+      if (geo != null) {
         if (!this.model.isEdge(state.cell)) {
-          offset = geom.offset || new Point()
+          offset = geo.offset || new Point()
 
-          if (geom.relative && parentState != null) {
+          if (geo.relative && parentState != null) {
             if (this.model.isEdge(parentState.cell)) {
-              const origin = this.getPoint(parentState, geom)
+              const origin = this.getPoint(parentState, geo)
               if (origin != null) {
                 state.origin.x += (origin.x / scale) - parentState.origin.x - trans.x
                 state.origin.y += (origin.y / scale) - parentState.origin.y - trans.y
               }
             } else {
-              state.origin.x += geom.bounds.x * parentState.bounds.width / scale + offset.x
-              state.origin.y += geom.bounds.y * parentState.bounds.height / scale + offset.y
+              state.origin.x += geo.bounds.x * parentState.bounds.width / scale + offset.x
+              state.origin.y += geo.bounds.y * parentState.bounds.height / scale + offset.y
             }
           } else {
+            state.origin.x += geo.bounds.x
+            state.origin.y += geo.bounds.y
+
             state.absoluteOffset.x = scale * offset.x
             state.absoluteOffset.y = scale * offset.y
-            state.origin.x += geom.bounds.x
-            state.origin.y += geom.bounds.y
           }
         }
 
-        state.unscaledWidth = geom.bounds.width
-        state.unscaledHeight = geom.bounds.height
+        state.unscaledWidth = geo.bounds.width
+        state.unscaledHeight = geo.bounds.height
 
         state.bounds.x = scale * (trans.x + state.origin.x)
         state.bounds.y = scale * (trans.y + state.origin.y)
-        state.bounds.width = scale * geom.bounds.width
-        state.bounds.height = scale * geom.bounds.height
+        state.bounds.width = scale * geo.bounds.width
+        state.bounds.height = scale * geo.bounds.height
 
         if (this.model.isNode(state.cell)) {
-          this.updateNodeState(state, geom)
+          this.updateNodeState(state, geo)
         }
 
         if (this.model.isEdge(state.cell)) {
-          this.updateEdgeState(state, geom)
+          this.updateEdgeState(state, geo)
         }
       }
     }
@@ -605,57 +640,58 @@ export class View extends Events {
     state.updateCachedBounds()
   }
 
-  private isCellCollapsed(cell: Cell) {
-    return this.graph.isCellCollapsed(cell)
-  }
-
-  private updateNodeState(nodeState: CellState, geo: Geometry) {
-    const parent = this.model.getParent(nodeState.cell)!
+  private updateNodeState(state: CellState, geo: Geometry) {
+    const parent = this.model.getParent(state.cell)!
     const parentState = this.getState(parent)
 
     if (geo.relative && parentState != null && !this.model.isEdge(parent)) {
-      const rad = util.toRadians(parentState.style[constants.STYLE_ROTATION] || 0)
+      const rot = util.getNumber(parentState.style, StyleNames.rotation, 0)
+      const rad = util.toRadians(rot)
       if (rad !== 0) {
         const cos = Math.cos(rad)
         const sin = Math.sin(rad)
-        const ct = nodeState.bounds.getCenter()
-        const cc = parentState.bounds.getCenter()
-        const pt = util.rotatePoint(ct, cos, sin, cc)
-        nodeState.bounds.x = pt.x - nodeState.bounds.width / 2
-        nodeState.bounds.y = pt.y - nodeState.bounds.height / 2
+        const nodeCenter = state.bounds.getCenter()
+        const parentCenter = parentState.bounds.getCenter()
+        const pt = util.rotatePoint(nodeCenter, cos, sin, parentCenter)
+        state.bounds.x = pt.x - state.bounds.width / 2
+        state.bounds.y = pt.y - state.bounds.height / 2
       }
     }
 
-    this.updateNodeLabelOffset(nodeState)
+    this.updateNodeLabelOffset(state)
   }
 
   /**
-   * Updates the absoluteOffset of the given node cell state.
+   * Updates the `absoluteOffset` of the given node cell state.
    * This takes into account the label position styles.
    */
-  private updateNodeLabelOffset(nodeState: CellState) {
-    const hAlign = util.getValue(
-      nodeState.style,
+  private updateNodeLabelOffset(state: CellState) {
+    const h = util.getValue(
+      state.style,
       StyleNames.labelPosition,
       Align.center,
     )
 
-    if (hAlign === Align.left) {
-      let lw = util.getValue(nodeState.style, StyleNames.labelWidth, null)
+    if (h === Align.left) {
+      let lw = util.getValue(state.style, StyleNames.labelWidth, null)
       if (lw != null) {
         lw *= this.scale
       } else {
-        lw = nodeState.bounds.width
+        lw = state.bounds.width
       }
 
-      nodeState.absoluteOffset.x -= lw
-    } else if (hAlign === Align.right) {
-      nodeState.absoluteOffset.x += nodeState.bounds.width
-    } else if (hAlign === Align.center) {
-      const lw = util.getValue(nodeState.style, constants.STYLE_LABEL_WIDTH, null)
+      state.absoluteOffset.x -= lw as number
+
+    } else if (h === Align.right) {
+
+      state.absoluteOffset.x += state.bounds.width
+
+    } else if (h === Align.center) {
+
+      const lw = util.getValue(state.style, StyleNames.labelWidth, null)
       if (lw != null) {
-        // Aligns text block with given width inside the vertex width
-        const align = util.getValue(nodeState.style, constants.STYLE_ALIGN, constants.ALIGN_CENTER)
+        // Aligns text block with given width inside the node width
+        const align = util.getValue(state.style, StyleNames.align, Align.center)
         let dx = 0
 
         if (align === Align.center) {
@@ -665,21 +701,21 @@ export class View extends Events {
         }
 
         if (dx !== 0) {
-          nodeState.absoluteOffset.x -= (lw * this.scale - nodeState.bounds.width) * dx
+          state.absoluteOffset.x -= (lw * this.scale - state.bounds.width) * dx
         }
       }
     }
 
-    const vAlign = util.getValue(
-      nodeState.style,
-      constants.STYLE_VERTICAL_LABEL_POSITION,
-      constants.ALIGN_MIDDLE,
+    const v = util.getValue(
+      state.style,
+      StyleNames.verticalLabelPosition,
+      Align.middle,
     )
 
-    if (vAlign === Align.top) {
-      nodeState.absoluteOffset.y -= nodeState.bounds.height
-    } else if (vAlign === Align.bottom) {
-      nodeState.absoluteOffset.y += nodeState.bounds.height
+    if (v === Align.top) {
+      state.absoluteOffset.y -= state.bounds.height
+    } else if (v === Align.bottom) {
+      state.absoluteOffset.y += state.bounds.height
     }
   }
 
@@ -696,65 +732,30 @@ export class View extends Events {
       (targetState == null && this.model.getTerminal(state.cell, false) != null) ||
       (targetState == null && geo.getTerminalPoint(false) == null)
     ) {
+
       this.clear(state.cell, true)
+
     } else {
+
       this.updateFixedTerminalPoints(state, sourceState, targetState)
       this.updatePoints(state, geo.points, sourceState, targetState)
       this.updateFloatingTerminalPoints(state, sourceState, targetState)
 
       const points = state.absolutePoints
-      if (
-        state.cell !== this.currentRoot &&
-        (
-          points == null ||
-          points.length < 2 ||
-          points[0] == null ||
-          points[points.length - 1] == null
-        )
-      ) {
-        // This will remove edges with invalid points from the list of states in the view.
-        // Happens if the one of the terminals and the corresponding terminal point is null.
+      if (state.cell !== this.currentRoot && (
+        points == null ||
+        points.length < 2 ||
+        points[0] == null ||
+        points[points.length - 1] == null
+      )) {
+        // This will remove edges with invalid points from the list of
+        // states in the view. Happens if the one of the terminals and
+        // the corresponding terminal point is null.
         this.clear(state.cell, true)
       } else {
         this.updateEdgeBounds(state)
         this.updateEdgeLabelOffset(state)
       }
-    }
-  }
-
-  /**
-   * Resets the current validation state.
-   */
-  private resetValidationState() {
-    this.lastNode = null
-    this.lastHtmlNode = null
-    this.lastForegroundNode = null
-    this.lastForegroundHtmlNode = null
-  }
-
-  /**
-   * Update the order of the DOM nodes of the shape.
-   */
-  private stateValidated(state: CellState) {
-    const fg = (
-      (this.model.isEdge(state.cell) && this.graph.keepEdgesInForeground) ||
-      (this.model.isNode(state.cell) && this.graph.keepEdgesInBackground)
-    )
-    const htmlNode = fg
-      ? this.lastForegroundHtmlNode || this.lastHtmlNode
-      : this.lastHtmlNode
-    const node = fg
-      ? this.lastForegroundNode || this.lastNode
-      : this.lastNode
-
-    const result = this.graph.renderer.insertStateAfter(state, node, htmlNode)
-
-    if (fg) {
-      this.lastForegroundHtmlNode = result[1]
-      this.lastForegroundNode = result[0]
-    } else {
-      this.lastHtmlNode = result[1]
-      this.lastNode = result[0]
     }
   }
 
@@ -767,30 +768,21 @@ export class View extends Events {
     sourceState: CellState,
     targetState: CellState,
   ) {
-    this.updateFixedTerminalPoint(
-      edgeState, sourceState, true,
-      this.graph.getConnectionConstraint(edgeState, sourceState, true),
-    )
+    const sourceConstraint = this.graph.getConnectionConstraint(edgeState, sourceState, true)
+    this.updateFixedTerminalPoint(edgeState, sourceState, true, sourceConstraint)
 
-    this.updateFixedTerminalPoint(
-      edgeState, targetState, false,
-      this.graph.getConnectionConstraint(edgeState, targetState, false),
-    )
+    const targetConstraint = this.graph.getConnectionConstraint(edgeState, targetState, false)
+    this.updateFixedTerminalPoint(edgeState, targetState, false, targetConstraint)
   }
 
-  /**
-   * Sets the fixed source or target terminal point on the given edge.
-   */
   private updateFixedTerminalPoint(
     edgeState: CellState,
     terminalState: CellState,
     isSource: boolean,
     constraint: ConnectionConstraint,
   ) {
-    edgeState.setAbsoluteTerminalPoint(
-      this.getFixedTerminalPoint(edgeState, terminalState, isSource, constraint),
-      isSource,
-    )
+    const point = this.getFixedTerminalPoint(edgeState, terminalState, isSource, constraint)
+    edgeState.setAbsoluteTerminalPoint(point, isSource)
   }
 
   /**
@@ -802,37 +794,121 @@ export class View extends Events {
     isSource: boolean,
     constraint: ConnectionConstraint,
   ) {
-    let pt = null
+    let point: Point | null = null
 
     if (constraint != null) {
-      pt = this.graph.getConnectionPoint(
+      point = this.graph.getConnectionPoint(
         terminalState,
         constraint,
         this.graph.isOrthogonal(edgeState),
       )
     }
 
-    if (pt == null && terminalState == null) {
-      const s = this.scale
-      const tr = this.translate
-      const origin = edgeState.origin
-      const geom = this.graph.getCellGeometry(edgeState.cell)!
-      pt = geom.getTerminalPoint(isSource)
-      if (pt != null) {
-        pt = new Point(
-          s * (tr.x + pt.x + origin.x),
-          s * (tr.y + pt.y + origin.y),
+    // get manual specified point when no terminal connected with edge.
+    if (point == null && terminalState == null) {
+      const geom = edgeState.cell.getGeometry()!
+      point = geom.getTerminalPoint(isSource)
+      if (point != null) {
+        const scale = this.scale
+        const trans = this.translate
+        const origin = edgeState.origin
+
+        point = new Point(
+          scale * (trans.x + point.x + origin.x),
+          scale * (trans.y + point.y + origin.y),
         )
       }
     }
 
-    return pt
+    return point
   }
 
   /**
-   * Updates the bounds of the given cell state to reflect the bounds of the stencil
-   * if it has a fixed aspect and returns the previous bounds as an <mxRectangle> if
-   * the bounds have been modified or null otherwise.
+   * Updates the absolute points in the given state using the specified array
+   * of <mxPoints> as the relative points.
+   *
+   * Parameters:
+   *
+   * edge - <mxCellState> whose absolute points should be updated.
+   * points - Array of <mxPoints> that constitute the relative points.
+   * source - <mxCellState> that represents the source terminal.
+   * target - <mxCellState> that represents the target terminal.
+   */
+  updatePoints(
+    edge: CellState,
+    points: Point[],
+    sourceState: CellState,
+    targetState: CellState,
+  ) {
+    if (edge != null) {
+      const pts = []
+      pts.push(edge.absolutePoints[0])
+
+      const edgeFn = this.getEdgeFunction(edge, points, sourceState, targetState)
+      if (edgeFn != null) {
+        const src = this.getTerminalPortState(edge, sourceState, true)
+        const trg = this.getTerminalPortState(edge, targetState, false)
+
+        // Uses the stencil bounds for routing and restores after routing
+        const srcBounds = this.updateBoundsFromStencil(src)
+        const trgBounds = this.updateBoundsFromStencil(trg)
+
+        edgeFn(edge, src, trg, points, pts)
+
+        // Restores previous bounds
+        if (srcBounds != null) {
+          src.bounds.setRectangle(
+            srcBounds.x, srcBounds.y, srcBounds.width, srcBounds.height,
+          )
+        }
+
+        if (trgBounds != null) {
+          trg.bounds.setRectangle(
+            trgBounds.x, trgBounds.y, trgBounds.width, trgBounds.height,
+          )
+        }
+      } else if (points != null) {
+        points.forEach((p) => {
+          if (p != null) {
+            pts.push(this.transformControlPoint(edge, p.clone()))
+          }
+        })
+      }
+
+      const tmp = edge.absolutePoints
+      pts.push(tmp[tmp.length - 1])
+
+      edge.absolutePoints = pts
+    }
+  }
+
+  private getTerminalPortState(
+    edgeState: CellState,
+    terminalState: CellState,
+    isSource: boolean,
+  ) {
+    // get port id from edge, then try to get port-cell
+    const key = isSource ? StyleNames.sourcePort : StyleNames.targetPort
+    const portId = util.getValue(edgeState.style, key)
+    if (portId != null) {
+      const port = this.model.getCell(portId)
+      if (port != null) {
+        const portState = this.getState(port)
+        if (portState != null) {
+          // only uses ports where a cell state exists
+          return portState
+        }
+      }
+    }
+
+    return terminalState
+  }
+
+  /**
+   * Updates the bounds of the given cell state to reflect the bounds
+   * of the stencil if it has a fixed aspect and returns the previous
+   * bounds as an `Rectangle` if the bounds have been modified or null
+   * otherwise.
    */
   updateBoundsFromStencil(state: CellState) {
     let previous = null
@@ -863,119 +939,6 @@ export class View extends Events {
     return previous
   }
 
-  /**
-   * Updates the absolute points in the given state using the specified array
-   * of <mxPoints> as the relative points.
-   *
-   * Parameters:
-   *
-   * edge - <mxCellState> whose absolute points should be updated.
-   * points - Array of <mxPoints> that constitute the relative points.
-   * source - <mxCellState> that represents the source terminal.
-   * target - <mxCellState> that represents the target terminal.
-   */
-  updatePoints(edge, points, source, target) {
-    if (edge != null) {
-      const pts = []
-      pts.push(edge.absolutePoints[0])
-      const edgeStyle = this.getEdgeStyle(edge, points, source, target)
-
-      if (edgeStyle != null) {
-        const src = this.getTerminalPortState(edge, source, true)
-        const trg = this.getTerminalPortState(edge, target, false)
-
-        // Uses the stencil bounds for routing and restores after routing
-        const srcBounds = this.updateBoundsFromStencil(src)
-        const trgBounds = this.updateBoundsFromStencil(trg)
-
-        edgeStyle(edge, src, trg, points, pts)
-
-        // Restores previous bounds
-        if (srcBounds != null) {
-          src.setRect(srcBounds.x, srcBounds.y, srcBounds.width, srcBounds.height)
-        }
-
-        if (trgBounds != null) {
-          trg.setRect(trgBounds.x, trgBounds.y, trgBounds.width, trgBounds.height)
-        }
-      } else if (points != null) {
-        for (let i = 0; i < points.length; i++) {
-          if (points[i] != null) {
-            const pt = util.clone(points[i])
-            pts.push(this.transformControlPoint(edge, pt))
-          }
-        }
-      }
-
-      const tmp = edge.absolutePoints
-      pts.push(tmp[tmp.length - 1])
-
-      edge.absolutePoints = pts
-    }
-  }
-
-  /**
-   * Transforms the given control point to an absolute point.
-   */
-  transformControlPoint(state: CellState, pt: Point) {
-    if (state != null && pt != null) {
-      const orig = state.origin
-
-      return new Point(
-        this.scale * (pt.x + this.translate.x + orig.x),
-        this.scale * (pt.y + this.translate.y + orig.y),
-      )
-    }
-
-    return null
-  }
-
-  /**
-   * Returns true if the given edge should be routed with <mxGraph.defaultLoopStyle>
-   * or the <constants.STYLE_LOOP> defined for the given edge. This implementation
-   * returns true if the given edge is a loop and does not have connections constraints
-   * associated.
-   */
-  isLoopStyleEnabled(edge, points, source, target) {
-    const sc = this.graph.getConnectionConstraint(edge, source, true)
-    const tc = this.graph.getConnectionConstraint(edge, target, false)
-
-    if ((points == null || points.length < 2) &&
-      (!util.getValue(edge.style, constants.STYLE_ORTHOGONAL_LOOP, false) ||
-        ((sc == null || sc.point == null) && (tc == null || tc.point == null)))) {
-      return source != null && source == target
-    }
-
-    return false
-  }
-
-  /**
-   * Returns the edge style function to be used to render the given edge state.
-   */
-  getEdgeStyle(edge, points, source, target) {
-    let edgeStyle = this.isLoopStyleEnabled(edge, points, source, target) ?
-      util.getValue(edge.style, constants.STYLE_LOOP, this.graph.defaultLoopStyle) :
-      (!util.getValue(edge.style, constants.STYLE_NOEDGESTYLE, false) ?
-        edge.style[constants.STYLE_EDGE] : null)
-
-    // Converts string values to objects
-    if (typeof (edgeStyle) == 'string') {
-      let tmp = mxStyleRegistry.getValue(edgeStyle)
-
-      if (tmp == null && this.isAllowEval()) {
-        tmp = util.eval(edgeStyle)
-      }
-
-      edgeStyle = tmp
-    }
-
-    if (typeof (edgeStyle) === 'function') {
-      return edgeStyle
-    }
-
-    return null
-  }
-
   private updateFloatingTerminalPoints(
     edgeState: CellState,
     sourceState: CellState,
@@ -1000,13 +963,13 @@ export class View extends Events {
 
   private updateFloatingTerminalPoint(
     edgeState: CellState,
-    targetState: CellState,
+    relateState: CellState,
     opposeState: CellState,
     isSource: boolean,
   ) {
     const point = this.getFloatingTerminalPoint(
       edgeState,
-      targetState,
+      relateState,
       opposeState,
       isSource,
     )
@@ -1018,38 +981,40 @@ export class View extends Events {
    * Returns the floating terminal point for the given edge.
    *
    * @param edgeState whose terminal point should be returned.
-   * @param targetState the terminal on "this" side of the edge.
+   * @param relateState the terminal on "this" side of the edge.
    * @param opposeState the terminal on the other side of the edge.
    * @param isSource Boolean indicating if target is the source terminal state.
    */
   private getFloatingTerminalPoint(
     edgeState: CellState,
-    targetState: CellState,
+    relateState: CellState,
     opposeState: CellState,
     isSource: boolean,
   ) {
     // tslint:disable-next-line:no-parameter-reassignment
-    targetState = this.getTerminalPortState(edgeState, targetState, isSource)
+    relateState = this.getTerminalPortState(edgeState, relateState, isSource)
 
     let nextPoint = this.getNextPoint(edgeState, opposeState, isSource)
-    const orth = this.graph.isOrthogonal(edgeState)
-    const rotation = util.getNumber(targetState.style, StyleNames.rotation, 0)
-    const rad = util.toRadians(rotation)
-    const center = targetState.bounds.getCenter()
-
+    const center = relateState.bounds.getCenter()
+    const rot = util.getNumber(relateState.style, StyleNames.rotation, 0)
+    const rad = util.toRadians(rot)
     if (rad !== 0) {
+      // rotate with related cell
       const cos = Math.cos(-rad)
       const sin = Math.sin(-rad)
       nextPoint = util.rotatePoint(nextPoint!, cos, sin, center)
     }
 
-    let border = parseFloat(edgeState.style[constants.STYLE_PERIMETER_SPACING] || 0)
+    let border = parseFloat(edgeState.style[StyleNames.perimeterSpacing] || 0)
     border += parseFloat(edgeState.style[isSource ?
-      constants.STYLE_SOURCE_PERIMETER_SPACING :
-      constants.STYLE_TARGET_PERIMETER_SPACING] || 0)
+      StyleNames.sourcePerimeterSpacing :
+      StyleNames.targetPerimeterSpacing] || 0)
 
+    border = isNaN(border) || !isFinite(border) ? 0 : border
+
+    const orth = this.graph.isOrthogonal(edgeState)
     let p = this.getPerimeterPoint(
-      targetState,
+      relateState,
       nextPoint!,
       rad === 0 && orth,
       border,
@@ -1058,34 +1023,10 @@ export class View extends Events {
     if (rad !== 0) {
       const cos = Math.cos(rad)
       const sin = Math.sin(rad)
-      p = util.rotatePoint(p, cos, sin, center)
+      p = util.rotatePoint(p!, cos, sin, center)
     }
 
     return p
-  }
-
-  private getTerminalPortState(
-    edgeState: CellState,
-    targetState: CellState,
-    isSource: boolean,
-  ) {
-    const key = isSource
-      ? constants.STYLE_SOURCE_PORT
-      : constants.STYLE_TARGET_PORT
-    // port id
-    const portId = util.getValue(edgeState.style, key)
-    if (portId != null) {
-      const port = this.model.getCell(portId)
-      if (port != null) {
-        const portState = this.getState(port)
-        if (portState != null) {
-          // only uses ports where a cell state exists
-          return portState
-        }
-      }
-    }
-
-    return targetState
   }
 
   /**
@@ -1120,71 +1061,92 @@ export class View extends Events {
    * the shape and the given point.
    *
    * @param terminalState the source or target terminal.
-   * @param next `Point` that lies outside of the given terminal.
+   * @param nextPoint `Point` that lies outside of the given terminal.
    * @param orthogonal Specifies if the orthogonal projection onto the
    *                   perimeter should be returned. If this is false then
    *                   the intersection of the perimeter and the line between
    *                   the next and the center point is returned.
    * @param border Optional border between the perimeter and the shape.
    */
-  private getPerimeterPoint(
+  getPerimeterPoint(
     terminalState: CellState,
-    next: Point,
+    nextPoint: Point,
     orthogonal: boolean,
-    border: number,
+    border: number = 0,
   ) {
-    let point = null
+    let result: Point | null = null
     if (terminalState != null) {
       const perimeterFn = this.getPerimeterFunction(terminalState)
-      if (perimeterFn != null && next != null) {
+      if (perimeterFn != null && nextPoint != null) {
+
         const bounds = this.getPerimeterBounds(terminalState, border)
         if (bounds.width > 0 || bounds.height > 0) {
-          point = new Point(next.x, next.y)
+
+          result = nextPoint.clone()
+
           let flipH = false
           let flipV = false
 
           if (this.graph.model.isNode(terminalState.cell)) {
-            flipH = util.getNumber(terminalState.style, constants.STYLE_FLIPH, 0) === 1
-            flipV = util.getNumber(terminalState.style, constants.STYLE_FLIPV, 0) === 1
+            flipH = util.isFlipH(terminalState.style)
+            flipV = util.isFlipV(terminalState.style)
 
-            // Legacy support for stencilFlipH/V
+            // support for stencilFlipH/V
             if (
               terminalState.shape != null &&
               terminalState.shape.stencil != null
             ) {
-              flipH = (util.getNumber(terminalState.style, 'stencilFlipH', 0) === 1) || flipH
-              flipV = (util.getNumber(terminalState.style, 'stencilFlipV', 0) === 1) || flipV
+              flipH = util.getBooleanFromStyle(terminalState.style, 'stencilFlipH') || flipH
+              flipV = util.getBooleanFromStyle(terminalState.style, 'stencilFlipV') || flipV
             }
 
             if (flipH) {
-              point.x = 2 * bounds.getCenterX() - point.x
+              result.x = 2 * bounds.getCenterX() - result.x
             }
 
             if (flipV) {
-              point.y = 2 * bounds.getCenterY() - point.y
+              result.y = 2 * bounds.getCenterY() - result.y
             }
           }
 
-          point = perimeterFn(bounds, terminalState, point, orthogonal)
+          result = perimeterFn(bounds, terminalState, result, orthogonal)
 
-          if (point != null) {
+          if (result != null) {
             if (flipH) {
-              point.x = 2 * bounds.getCenterX() - point.x
+              result.x = 2 * bounds.getCenterX() - result.x
             }
 
             if (flipV) {
-              point.y = 2 * bounds.getCenterY() - point.y
+              result.y = 2 * bounds.getCenterY() - result.y
             }
           }
         }
       }
 
-      if (point == null) {
-        point = this.getPoint(terminalState)
+      if (result == null) {
+        result = this.getPoint(terminalState)
       }
     }
 
-    return point
+    return result
+  }
+
+  getPerimeterFunction(state: CellState) {
+    let perimeter = state.style[StyleNames.perimeter]
+    if (typeof perimeter === 'string') {
+      let tmp = StyleRegistry.getValue(perimeter)
+      if (tmp == null && this.isAllowEval()) {
+        tmp = util.evalString(perimeter)
+      }
+
+      perimeter = tmp
+    }
+
+    if (typeof perimeter === 'function') {
+      return perimeter
+    }
+
+    return null
   }
 
   getPerimeterBounds(terminalState: CellState, border: number = 0) {
@@ -1196,19 +1158,77 @@ export class View extends Events {
     return terminalState.getPerimeterBounds(border * this.scale)
   }
 
-  private getPerimeterFunction(state: CellState) {
-    let perimeter = state.style[constants.STYLE_PERIMETER]
-    if (typeof perimeter === 'string') {
-      let tmp = mxStyleRegistry.getValue(perimeter)
-      if (tmp == null && this.isAllowEval()) {
-        tmp = util.evalString(perimeter)
-      }
+  /**
+   * Transforms the given control point to an absolute point.
+   */
+  transformControlPoint(state: CellState, pt: Point) {
+    if (state != null && pt != null) {
+      const orig = state.origin
 
-      perimeter = tmp
+      return new Point(
+        this.scale * (pt.x + this.translate.x + orig.x),
+        this.scale * (pt.y + this.translate.y + orig.y),
+      )
     }
 
-    if (typeof perimeter === 'function') {
-      return perimeter
+    return null
+  }
+
+  /**
+   * Returns true if the given edge should be routed with <mxGraph.defaultLoopStyle>
+   * or the <constants.STYLE_LOOP> defined for the given edge. This implementation
+   * returns true if the given edge is a loop and does not have connections constraints
+   * associated.
+   */
+  isLoopStyleEnabled(
+    edgeState: CellState,
+    points?: Point[] | null,
+    sourceState?: CellState,
+    targetState?: CellState,
+  ) {
+    const sc = this.graph.getConnectionConstraint(edgeState, sourceState, true)
+    const tc = this.graph.getConnectionConstraint(edgeState, targetState, false)
+
+    if (
+      (points == null || points.length < 2) &&
+      (
+        !util.getBooleanFromStyle(edgeState.style, StyleNames.orthogonalLoop) ||
+        ((sc == null || sc.point == null) && (tc == null || tc.point == null))
+      )
+    ) {
+      return sourceState != null && sourceState === targetState
+    }
+
+    return false
+  }
+
+  /**
+   * Returns the edge style function to be used to render the given edge state.
+   */
+  getEdgeFunction(
+    edgeState: CellState,
+    points?: Point[] | null,
+    sourceState?: CellState,
+    targetState?: CellState,
+  ) {
+    let edgeStyle = this.isLoopStyleEnabled(edgeState, points, sourceState, targetState)
+      ? util.getValue(edgeState.style, StyleNames.loopStyle, this.graph.defaultLoopStyle)
+      : util.getBooleanFromStyle(edgeState.style, StyleNames.noEdgeStyle)
+        ? null
+        : edgeState.style[StyleNames.edgeStyle]
+
+    // Converts string values to objects
+    if (typeof edgeStyle === 'string') {
+      let tmp = StyleRegistry.getValue(edgeStyle)
+      if (tmp == null && this.isAllowEval()) {
+        tmp = util.evalString(edgeStyle)
+      }
+
+      edgeStyle = tmp
+    }
+
+    if (typeof edgeStyle === 'function') {
+      return edgeStyle
     }
 
     return null
@@ -1228,6 +1248,10 @@ export class View extends Events {
       : 0
 
     return state.bounds.getCenterY() + f * state.bounds.height
+  }
+
+  private isCellCollapsed(cell: Cell) {
+    return this.graph.isCellCollapsed(cell)
   }
 
   /**
@@ -1267,99 +1291,30 @@ export class View extends Events {
   }
 
   /**
-   * Updates the given state using the bounding box of t
-   * he absolute points.
-   * Also updates <mxCellState.terminalDistance>, <mxCellState.length> and
-   * <mxCellState.segments>.
-   *
-   * Parameters:
-   *
-   * state - <mxCellState> whose bounds should be updated.
-   */
-  updateEdgeBounds(state) {
-    const points = state.absolutePoints
-    const p0 = points[0]
-    const pe = points[points.length - 1]
-
-    if (p0.x != pe.x || p0.y != pe.y) {
-      const dx = pe.x - p0.x
-      const dy = pe.y - p0.y
-      state.terminalDistance = Math.sqrt(dx * dx + dy * dy)
-    }
-    else {
-      state.terminalDistance = 0
-    }
-
-    let length = 0
-    const segments = []
-    let pt = p0
-
-    if (pt != null) {
-      let minX = pt.x
-      let minY = pt.y
-      let maxX = minX
-      let maxY = minY
-
-      for (let i = 1; i < points.length; i++) {
-        const tmp = points[i]
-
-        if (tmp != null) {
-          const dx = pt.x - tmp.x
-          const dy = pt.y - tmp.y
-
-          const segment = Math.sqrt(dx * dx + dy * dy)
-          segments.push(segment)
-          length += segment
-
-          pt = tmp
-
-          minX = Math.min(pt.x, minX)
-          minY = Math.min(pt.y, minY)
-          maxX = Math.max(pt.x, maxX)
-          maxY = Math.max(pt.y, maxY)
-        }
-      }
-
-      state.length = length
-      state.segments = segments
-
-      const markerSize = 1 // TODO: include marker size
-
-      state.x = minX
-      state.y = minY
-      state.width = Math.max(markerSize, maxX - minX)
-      state.height = Math.max(markerSize, maxY - minY)
-    }
-  }
-
-  /**
    * Returns the absolute point on the edge for the given relative
-   * <mxGeometry> as an <mxPoint>. The edge is represented by the given
-   * <mxCellState>.
+   * `Geometry` as an `Point`.
    *
-   * Parameters:
-   *
-   * state - <mxCellState> that represents the state of the parent edge.
-   * geometry - <mxGeometry> that represents the relative location.
+   * @param state The state of the parent edge.
+   * @param geometry `Geometry` that represents the relative location.
    */
   private getPoint(state: CellState, geometry?: Geometry) {
     let x = state.bounds.getCenterX()
     let y = state.bounds.getCenterY()
 
-    if (
-      state.segments != null &&
-      (geometry == null || geometry.relative)
-    ) {
+    if (state.segments != null && (geometry == null || geometry.relative)) {
+
+      const cc = state.absolutePoints.length
       const gx = geometry != null ? geometry.bounds.x / 2 : 0
-      const pointCount = state.absolutePoints.length
       const dist = Math.round((gx + 0.5) * state.edgeLength)
+
       let segment = state.segments[0]
       let length = 0
-      let index = 1
+      let index = 0
 
-      while (dist >= Math.round(length + segment) && index < pointCount - 1) {
+      while (dist >= Math.round(length + segment) && index < cc - 1) {
+        index += 1
         length += segment
-        segment = state.segments[index++]
+        segment = state.segments[index]
       }
 
       const factor = (segment === 0) ? 0 : (dist - length) / segment
@@ -1391,7 +1346,6 @@ export class View extends Events {
       }
     } else if (geometry != null) {
       const offset = geometry.offset
-
       if (offset != null) {
         x += offset.x
         y += offset.y
@@ -1401,133 +1355,83 @@ export class View extends Events {
     return new Point(x, y)
   }
 
-  /**
-   * Gets the relative point that describes the given, absolute label
-   * position for the given edge state.
-   *
-   * Parameters:
-   *
-   * state - <mxCellState> that represents the state of the parent edge.
-   * x - Specifies the x-coordinate of the absolute label location.
-   * y - Specifies the y-coordinate of the absolute label location.
-   */
-  getRelativePoint(edgeState: CellState, x: number, y: number) {
-    const model = this.graph.getModel()
-    const geometry = model.getGeometry(edgeState.cell)
+  updateEdgeBounds(state: CellState) {
+    const points = state.absolutePoints
+    const p0 = points[0]!
+    const pe = points[points.length - 1]!
 
-    if (geometry != null) {
-      const pointCount = edgeState.absolutePoints.length
-
-      if (geometry.relative && pointCount > 1) {
-        const totalLength = edgeState.edgeLength
-        const segments = edgeState.segments
-
-        // Works which line segment the point of the label is closest to
-        let p0 = edgeState.absolutePoints[0]
-        let pe = edgeState.absolutePoints[1]
-        let minDist = util.ptSegDistSq(p0.x, p0.y, pe.x, pe.y, x, y)
-
-        let index = 0
-        let tmp = 0
-        let length = 0
-
-        for (let i = 2; i < pointCount; i++) {
-          tmp += segments[i - 2]
-          pe = edgeState.absolutePoints[i]
-          const dist = util.ptSegDistSq(p0.x, p0.y, pe.x, pe.y, x, y)
-
-          if (dist <= minDist) {
-            minDist = dist
-            index = i - 1
-            length = tmp
-          }
-
-          p0 = pe
-        }
-
-        const seg = segments[index]
-        p0 = edgeState.absolutePoints[index]
-        pe = edgeState.absolutePoints[index + 1]
-
-        const x2 = p0.x
-        const y2 = p0.y
-
-        const x1 = pe.x
-        const y1 = pe.y
-
-        let px = x
-        let py = y
-
-        const xSegment = x2 - x1
-        const ySegment = y2 - y1
-
-        px -= x1
-        py -= y1
-        let projlenSq = 0
-
-        px = xSegment - px
-        py = ySegment - py
-        const dotprod = px * xSegment + py * ySegment
-
-        if (dotprod <= 0.0) {
-          projlenSq = 0
-        } else {
-          projlenSq = dotprod * dotprod
-            / (xSegment * xSegment + ySegment * ySegment)
-        }
-
-        let projlen = Math.sqrt(projlenSq)
-
-        if (projlen > seg) {
-          projlen = seg
-        }
-
-        let yDistance = Math.sqrt(util.ptSegDistSq(p0.x, p0.y, pe
-          .x,                                      pe.y, x, y))
-        const direction = util.relativeCcw(p0.x, p0.y, pe.x, pe.y, x, y)
-
-        if (direction == -1) {
-          yDistance = -yDistance
-        }
-
-        // Constructs the relative point for the label
-        return new mxPoint(((totalLength / 2 - length - projlen) / totalLength) * -2,
-                           yDistance / this.scale)
-      }
+    if (p0.x !== pe.x || p0.y !== pe.y) {
+      const dx = pe.x - p0.x
+      const dy = pe.y - p0.y
+      state.terminalDistance = Math.sqrt(dx * dx + dy * dy)
+    } else {
+      state.terminalDistance = 0
     }
 
-    return new mxPoint()
+    const segments = []
+    let length = 0
+    let pt = p0
+
+    if (pt != null) {
+      let minX = pt.x
+      let minY = pt.y
+      let maxX = minX
+      let maxY = minY
+
+      for (let i = 1, ii = points.length; i < ii; i += 1) {
+        const p = points[i]
+        if (p != null) {
+          const dx = pt.x - p.x
+          const dy = pt.y - p.y
+
+          const segment = Math.sqrt(dx * dx + dy * dy)
+          segments.push(segment)
+          length += segment
+
+          pt = p
+
+          minX = Math.min(pt.x, minX)
+          minY = Math.min(pt.y, minY)
+          maxX = Math.max(pt.x, maxX)
+          maxY = Math.max(pt.y, maxY)
+        }
+      }
+
+      state.segments = segments
+      state.edgeLength = length
+
+      const markerSize = 1 // TODO: include marker size
+
+      state.bounds.x = minX
+      state.bounds.y = minY
+      state.bounds.width = Math.max(markerSize, maxX - minX)
+      state.bounds.height = Math.max(markerSize, maxY - minY)
+    }
   }
 
   /**
-   * Updates <mxCellState.absoluteOffset> for the given state. The absolute
+   * Updates `absoluteOffset` for the given edge state. The absolute
    * offset is normally used for the position of the edge label. Is is
    * calculated from the geometry as an absolute offset from the center
    * between the two endpoints if the geometry is absolute, or as the
    * relative distance between the center along the line and the absolute
    * orthogonal distance if the geometry is relative.
-   *
-   * Parameters:
-   *
-   * state - <mxCellState> whose absolute offset should be updated.
    */
   updateEdgeLabelOffset(state: CellState) {
+
+    state.absoluteOffset.x = state.bounds.getCenterX()
+    state.absoluteOffset.y = state.bounds.getCenterY()
+
     const points = state.absolutePoints
-
-    state.absoluteOffset.x = state.getCenterX()
-    state.absoluteOffset.y = state.getCenterY()
-
     if (points != null && points.length > 0 && state.segments != null) {
-      const geometry = this.graph.getCellGeometry(state.cell)
 
+      const geometry = state.cell.getGeometry()!
       if (geometry.relative) {
         const offset = this.getPoint(state, geometry)
-
         if (offset != null) {
           state.absoluteOffset = offset
         }
-      }
-      else {
+      } else {
         const p0 = points[0]
         const pe = points[points.length - 1]
 
@@ -1554,23 +1458,122 @@ export class View extends Events {
     }
   }
 
-  // #region :::::::::::: state ::::::::::::
+  /**
+   * Gets the relative point that describes the given, absolute label
+   * position for the given edge state.
+   *
+   * @param edgeState The state of the edge.
+   * @param x Specifies the x-coordinate of the absolute label location.
+   * @param y Specifies the y-coordinate of the absolute label location.
+   */
+  getRelativePoint(edgeState: CellState, x: number, y: number) {
+    const geometry = edgeState.cell.getGeometry()
+    if (geometry != null) {
+      const pointCount = edgeState.absolutePoints.length
+
+      if (geometry.relative && pointCount > 1) {
+        const totalLength = edgeState.edgeLength
+        const segments = edgeState.segments
+
+        // Works which line segment the point of the label is closest to
+        let p0 = edgeState.absolutePoints[0]!
+        let pe = edgeState.absolutePoints[1]!
+        let minDist = util.ptSegmentDist(p0.x, p0.y, pe.x, pe.y, x, y)
+
+        let tmp = 0
+        let index = 0
+        let length = 0
+
+        for (let i = 2; i < pointCount; i += 1) {
+          tmp += segments[i - 2]
+          pe = edgeState.absolutePoints[i]!
+          const dist = util.ptSegmentDist(p0.x, p0.y, pe.x, pe.y, x, y)
+
+          if (dist <= minDist) {
+            minDist = dist
+            index = i - 1
+            length = tmp
+          }
+
+          p0 = pe
+        }
+
+        const seg = segments[index]
+        p0 = edgeState.absolutePoints[index]!
+        pe = edgeState.absolutePoints[index + 1]!
+
+        const x2 = p0.x
+        const y2 = p0.y
+
+        const x1 = pe.x
+        const y1 = pe.y
+
+        let px = x
+        let py = y
+
+        const xSegment = x2 - x1
+        const ySegment = y2 - y1
+
+        px -= x1
+        py -= y1
+        let projlenSq = 0
+
+        px = xSegment - px
+        py = ySegment - py
+        const dotprod = px * xSegment + py * ySegment
+
+        if (dotprod <= 0.0) {
+          projlenSq = 0
+        } else {
+          projlenSq = dotprod * dotprod / (xSegment * xSegment + ySegment * ySegment)
+        }
+
+        let projlen = Math.sqrt(projlenSq)
+
+        if (projlen > seg) {
+          projlen = seg
+        }
+
+        let yDistance = Math.sqrt(
+          util.ptSegmentDist(p0.x, p0.y, pe.x, pe.y, x, y),
+        )
+        const direction = util.relativeCcw(p0.x, p0.y, pe.x, pe.y, x, y)
+        if (direction === -1) {
+          yDistance = -yDistance
+        }
+
+        // Constructs the relative point for the label
+        return new Point(
+          ((totalLength / 2 - length - projlen) / totalLength) * -2,
+          yDistance / this.scale,
+        )
+      }
+    }
+
+    return new Point()
+  }
+
+  // #endregion
+
+  // #region ::::::::::::::: Cell State ::::::::::::::
 
   /**
    * Removes the state of the given cell and all descendants
    * if the given cell is not the current root.
    */
   clear(
-    cell: Cell = this.model.getRoot(),
+    cell: Cell | null = this.model.getRoot(),
     force: boolean = false,
     recurse: boolean = true,
   ) {
-    this.removeState(cell)
+    if (cell) {
+      this.removeState(cell)
 
-    if (recurse && (force || cell !== this.currentRoot)) {
-      cell.eachChild(child => this.clear(child, force, true))
-    } else {
-      this.invalidate(cell)
+      if (recurse && (force || cell !== this.currentRoot)) {
+        cell.eachChild(child => this.clear(child, force, true))
+      } else {
+        this.invalidate(cell)
+      }
     }
   }
 
@@ -1589,7 +1592,7 @@ export class View extends Events {
     return state
   }
 
-  getState(cell: Cell, create: boolean = false) {
+  getState(cell: Cell | null, create: boolean = false) {
     let state = null
     if (cell != null) {
       state = this.states.get(cell) || null
@@ -1636,7 +1639,7 @@ export class View extends Events {
 
   // #endregion
 
-  // #region :::::::::::: init ::::::::::::
+  // #region ::::::::::::::::: Init ::::::::::::::::::
 
   /**
    * Returns true if the event origin is one of the
@@ -1709,17 +1712,17 @@ export class View extends Events {
       // Support for touch device gestures (eg. pinch to zoom)
       // Double-tap handling is implemented in mxGraph.fireMouseEvent
       if (detector.SUPPORT_TOUCH) {
-        DomEvent.addListener(container, 'gesturestart', (e) => {
+        DomEvent.addListener(container, 'gesturestart', (e: MouseEvent) => {
           graph.fireGestureEvent(e)
           DomEvent.consume(e)
         })
 
-        DomEvent.addListener(container, 'gesturechange', (e) => {
+        DomEvent.addListener(container, 'gesturechange', (e: MouseEvent) => {
           graph.fireGestureEvent(e)
           DomEvent.consume(e)
         })
 
-        DomEvent.addListener(container, 'gestureend', (e) => {
+        DomEvent.addListener(container, 'gestureend', (e: MouseEvent) => {
           graph.fireGestureEvent(e)
           DomEvent.consume(e)
         })
@@ -1897,7 +1900,7 @@ export class View extends Events {
     return div
   }
 
-  private updateHtmlCanvasSize(width: number, height: number) {
+  updateHtmlCanvasSize(width: number, height: number) {
     if (this.graph.container != null) {
       const ow = this.graph.container.offsetWidth
       const oh = this.graph.container.offsetHeight
@@ -1964,8 +1967,10 @@ export class View extends Events {
   }
 
   /**
-   * Returns the DOM node that contains the `backgroundPane`,
-   * `drawPane`, `overlayPane` and `decoratorPane`.
+   * Returns the DOM node that contains the `backgroundPane`, `drawPane`,
+   * `overlayPane` and `decoratorPane`.
+   *
+   * In SVG dialect, it'is a SVGGElement.
    */
   getCanvas() {
     return this.canvas

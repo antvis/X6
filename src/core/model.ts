@@ -76,7 +76,42 @@ export class Model extends Events {
     return ancestor != null ? ancestor.getDescendants() : []
   }
 
-  filterDescendants() { }
+  filterDescendants(
+    filter: (cell: Cell) => boolean,
+    parent: Cell = this.getRoot(),
+  ) {
+    const result: Cell[] = []
+
+    // Checks if the filter returns true for the cell
+    // and adds it to the result array
+    if (filter == null || filter(parent)) {
+      result.push(parent)
+    }
+
+    parent.eachChild((child) => {
+      result.push(...this.filterDescendants(filter, child))
+    })
+
+    return result
+  }
+
+  getChildCells(
+    parent: Cell,
+    includeNodes: boolean = false,
+    includeEdges: boolean = false,
+  ) {
+    const result: Cell[] = []
+    parent.eachChild((child) => {
+      if (
+        (!includeEdges && !includeNodes) ||
+        (includeEdges && this.isEdge(child)) ||
+        (includeNodes && this.isNode(child))
+      ) {
+        result.push(child)
+      }
+    })
+    return result
+  }
 
   // #region cell id
 
@@ -197,7 +232,7 @@ export class Model extends Events {
     return this.getChildren(parent, false, true)
   }
 
-  getChildCount(cell: Cell) {
+  getChildCount(cell: Cell | null) {
     return cell != null ? cell.getChildCount() : 0
   }
 
@@ -213,6 +248,14 @@ export class Model extends Events {
     if (cell != null) {
       cell.eachChild(iterator, thisArg)
     }
+  }
+
+  filterCells(
+    cells: Cell[],
+    filter: (cell: Cell, index: number, arr: Cell[]) => boolean,
+    thisArg?: any,
+  ): Cell[] {
+    return util.filter(cells, filter, thisArg)
   }
 
   getNearestCommonAncestor(cell1: Cell, cell2: Cell) {
@@ -278,25 +321,25 @@ export class Model extends Events {
       }
 
       if (cell.getId() != null) {
-        let collision = this.getCell(cell.getId())
+        let collision = this.getCell(cell.getId()!)
         if (collision !== cell) {
           // 创建新 ID 直到没有检查到重复元素为止
           while (collision != null) {
             cell.setId(this.createCellId(cell))
-            collision = this.getCell(cell.getId())
+            collision = this.getCell(cell.getId()!)
           }
 
           if (this.cells == null) {
             this.cells = {}
           }
 
-          this.cells[cell.getId()] = cell
+          this.cells[cell.getId()!] = cell
         }
       }
 
       // 确保被删除元素的 ID 不会被重复使用
       if (util.isNumeric(cell.getId())) {
-        this.nextCellId = Math.max(this.nextCellId, +(cell.getId()))
+        this.nextCellId = Math.max(this.nextCellId, +(cell.getId()!))
       }
 
       // 递归处理所有子元素
@@ -409,7 +452,7 @@ export class Model extends Events {
     if (cell != null && this.cells != null) {
       cell.eachChild(child => this.cellRemoved(child))
       if (cell.getId() != null) {
-        delete this.cells[cell.getId()]
+        delete this.cells[cell.getId()!]
       }
     }
   }
@@ -441,7 +484,7 @@ export class Model extends Events {
     return edge != null ? edge.getTerminal(isSource) : null
   }
 
-  setTerminal(edge: Cell, terminal: Cell, isSource: boolean = false) {
+  setTerminal(edge: Cell, terminal: Cell | null, isSource: boolean = false) {
     const changed = terminal !== this.getTerminal(edge, isSource)
     this.execute(new TerminalChange(this, edge, terminal, isSource))
 

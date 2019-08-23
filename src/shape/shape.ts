@@ -1,6 +1,6 @@
 import * as util from '../util'
 import { Stencil } from './stencil'
-import { CellState } from '../core'
+import { CellState, Renderer } from '../core'
 import { SvgCanvas2D } from '../canvas'
 import { Rectangle, Point } from '../struct'
 import { Stylesheet } from '../stylesheet'
@@ -103,6 +103,15 @@ export class Shape {
 
   oldGradients: SvgCanvas2D.Gradients | null
 
+  //
+  image: string | null
+  indicatorShape: Renderer.ShapeClass | null
+  indicatorImage: string | null
+  indicatorColor: string | null
+  indicatorStrokeColor: string | null
+  indicatorGradientColor: string | null
+  indicatorDirection: Direction
+
   // style
   cursor?: string
   opacity: number
@@ -144,7 +153,7 @@ export class Shape {
     this.flipV = false
   }
 
-  protected resetStyle() {
+  resetStyle() {
     this.initStyle()
 
     this.spacing = 0
@@ -245,7 +254,7 @@ export class Shape {
     const points = this.points
     if (points != null && points.length > 0 && points[0] != null) {
       this.bounds = new Rectangle(points[0].x, points[0].y, 1, 1)
-      for (let i = 1; i < this.points.length; i += 1) {
+      for (let i = 1, ii = points.length; i < ii; i += 1) {
         if (points[i] != null) {
           this.bounds.add(new Rectangle(points[i].x, points[i].y, 1, 1))
         }
@@ -546,7 +555,7 @@ export class Shape {
 
   // #endregion
 
-  paint(c: SvgCanvas2D) {
+  paint(c: SvgCanvas2D, update?: boolean) {
     let strokeDrawn = false
 
     // draw outline
@@ -1010,7 +1019,7 @@ export class Shape {
 
   // #region boundingBox
 
-  protected updateBoundingBox() {
+  updateBoundingBox() {
     if (this.useSvgBoundingBox && Shape.isSvgElem(this.elem)) {
       try {
         const b = (this.elem as SVGGraphicsElement).getBBox()
@@ -1084,11 +1093,11 @@ export class Shape {
 
   // #endregion
 
-  protected getRotation() {
+  getRotation() {
     return (this.rotation != null) ? this.rotation : 0
   }
 
-  protected getTextRotation() {
+  getTextRotation() {
     let rot = this.getRotation()
     if (!util.getBooleanFromStyle(this.style, StyleNames.horizontal, true)) {
       rot += -90 // TODO: Text.prototype.verticalTextRotation
@@ -1097,7 +1106,7 @@ export class Shape {
     return rot
   }
 
-  protected getShapeRotation() {
+  getShapeRotation() {
     const direction = this.direction
     let rotation = this.getRotation()
 

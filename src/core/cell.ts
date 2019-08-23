@@ -1,6 +1,7 @@
 import * as util from '../util'
 import { IDisposable } from '../common'
 import { Geometry } from './geometry'
+import { CellOverlay } from './cell-overlay'
 
 export class Cell implements IDisposable {
   public id?: string
@@ -20,6 +21,8 @@ export class Cell implements IDisposable {
 
   public sourceNode: Cell | null
   public targetNode: Cell | null
+
+  public overlays: CellOverlay[] | null
 
   constructor(value?: any, geometry?: Geometry, style?: string) {
     this.value = value

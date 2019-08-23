@@ -404,7 +404,7 @@ export class Stencil extends Shape {
             str,
             (node.getAttribute('align') || Align.left) as Align,
             (node.getAttribute('valign') || Align.top) as Align,
-            '',
+            false,
             '',
             '',
             false,

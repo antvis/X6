@@ -173,3 +173,34 @@ export function removeDuplicates<T extends Object>(arr: T[]) {
 
   return result
 }
+
+export function equalEntries(a: any, b: any) {
+  if (
+    (a == null && b != null) ||
+    (a != null && b == null) ||
+    (a != null && b != null && (a as any).length !== (b as any).length)
+  ) {
+    return false
+  }
+
+  let count = 0
+  if (a != null && b != null) {
+    for (const key in b) {
+      if (key) { }
+      count += 1
+    }
+
+    for (const key in a) {
+      count -= 1
+
+      const av = (a as any)[key]
+      const bv = (b as any)[key]
+
+      if ((!isNaN(av) || !isNaN(bv)) && av !== av) {
+        return false
+      }
+    }
+  }
+
+  return count === 0
+}

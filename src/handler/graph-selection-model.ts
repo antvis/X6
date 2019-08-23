@@ -1,5 +1,5 @@
 import { Events } from '../common'
-import { Cell, Graph } from '.'
+import { Cell, Graph } from '../core'
 import { SelectionChange, UndoableEdit } from '../change'
 
 export class GraphSelectionModel extends Events {
@@ -46,7 +46,7 @@ export class GraphSelectionModel extends Events {
   setCells(cells: Cell[]) {
     if (cells != null) {
       const arr = this.single ? [this.getFirstSelectableCell(cells)] : cells
-      const added = arr.filter(cell => this.graph.isCellSelectable(cell))
+      const added = arr.filter(cell => this.graph.isCellSelectable(cell!))
       this.changeSelection(added as Cell[], this.cells)
     }
   }

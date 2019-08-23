@@ -4,12 +4,12 @@ import { Point } from '../struct'
 import { View } from '../core/view'
 
 export class CurrentRootChange implements IChange {
-  private view: View
-  private root: Cell
-  private previous: Cell
+  public view: View
+  public root: Cell | null
+  public previous: Cell | null
   private isUp: boolean
 
-  constructor(view: View, root: Cell) {
+  constructor(view: View, root: Cell | null) {
     this.view = view
     this.root = root
     this.previous = root

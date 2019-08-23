@@ -5,7 +5,7 @@ export namespace DomEvent {
   const LIST_KEY = 'LISTENER_LIST'
 
   function addToList(
-    elem: HTMLElement | Document | Window,
+    elem: HTMLElement | SVGElement | Document | Window,
     name: string,
     handler: Handler,
   ) {
@@ -17,7 +17,7 @@ export namespace DomEvent {
 
   export const addListener = window.addEventListener
     ? (
-      elem: HTMLElement | Document | Window,
+      elem: HTMLElement | SVGElement | Document | Window,
       name: string,
       handler: Handler,
     ) => {
@@ -25,7 +25,7 @@ export namespace DomEvent {
       addToList(elem, name, handler)
     }
     : (
-      elem: HTMLElement | Document | Window,
+      elem: HTMLElement | SVGElement | Document | Window,
       name: string,
       handler: Handler,
     ) => {
@@ -34,7 +34,7 @@ export namespace DomEvent {
     }
 
   function removeFromList(
-    elem: HTMLElement | Document | Window,
+    elem: HTMLElement | SVGElement | Document | Window,
     name: string,
     handler: Handler,
   ) {
@@ -56,7 +56,7 @@ export namespace DomEvent {
 
   export const removeListener = window.removeEventListener
     ? (
-      elem: HTMLElement | Document | Window,
+      elem: HTMLElement | SVGElement | Document | Window,
       name: string,
       handler: Handler,
     ) => {
@@ -64,7 +64,7 @@ export namespace DomEvent {
       removeFromList(elem, name, handler)
     }
     : (
-      elem: HTMLElement | Document | Window,
+      elem: HTMLElement | SVGElement | Document | Window,
       name: string,
       handler: Handler,
     ) => {
@@ -72,7 +72,7 @@ export namespace DomEvent {
       removeFromList(elem, name, handler)
     }
 
-  export function removeAllListeners(elem: HTMLElement) {
+  export function removeAllListeners(elem: HTMLElement | SVGElement) {
     const list = (elem as any)[LIST_KEY]
     if (list != null) {
       while (list.length > 0) {
@@ -83,10 +83,10 @@ export namespace DomEvent {
   }
 
   export function addGestureListeners(
-    elem: HTMLElement | Document | Window,
-    startListener: Handler | null,
-    moveListener: Handler | null,
-    endListener: Handler | null,
+    elem: HTMLElement | SVGElement | Document | Window,
+    startListener?: Handler | null,
+    moveListener?: Handler | null,
+    endListener?: Handler | null,
   ) {
     if (startListener != null) {
       addListener(
@@ -128,7 +128,7 @@ export namespace DomEvent {
   }
 
   export function removeGestureListeners(
-    elem: HTMLElement | Document | Window,
+    elem: HTMLElement | SVGElement | Document | Window,
     startListener: Handler | null,
     moveListener: Handler | null,
     endListener: Handler | null,
@@ -175,7 +175,7 @@ export namespace DomEvent {
   /**
    * Removes the known listeners from the given DOM node and its descendants.
    */
-  export function release(elem: HTMLElement) {
+  export function release(elem: HTMLElement | SVGElement) {
     try {
       if (elem != null) {
         removeAllListeners(elem)

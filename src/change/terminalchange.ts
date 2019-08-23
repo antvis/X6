@@ -4,12 +4,12 @@ import { Model } from '../core/model'
 
 export class TerminalChange implements IChange {
   public readonly model: Model
-  private cell: Cell
-  private terminal: Cell | null
-  private previous: Cell | null
-  private isSource: boolean
+  public cell: Cell
+  public terminal: Cell | null
+  public previous: Cell | null
+  public isSource: boolean
 
-  constructor(model: Model, cell: Cell, terminal: Cell, isSource: boolean) {
+  constructor(model: Model, cell: Cell, terminal: Cell | null, isSource: boolean) {
     this.model = model
     this.cell = cell
     this.terminal = terminal

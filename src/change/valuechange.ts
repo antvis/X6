@@ -3,12 +3,12 @@ import { Cell } from '../core/cell'
 import { Model } from '../core/model'
 
 export class ValueChange implements IChange {
-  private previous: any
+  public previous: any
 
   constructor(
-    private readonly model: Model,
-    private cell: Cell,
-    private value: any,
+    public readonly model: Model,
+    public cell: Cell,
+    public value: any,
   ) {
     this.previous = value
   }

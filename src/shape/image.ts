@@ -3,19 +3,20 @@ import { RectShape } from './rect'
 import { Rectangle } from '../struct'
 import { SvgCanvas2D } from '../canvas'
 import { StyleNames } from '../types'
-import { CellState } from '../core'
+import { CellState, CellOverlay } from '../core'
 
 export class ImageShape extends RectShape {
 
-  preserveImageAspect: boolean = true
   image: string
+  preserveImageAspect: boolean = true
+  overlay?: CellOverlay
 
   constructor(
     bounds: Rectangle,
     image: string,
-    fill: string,
-    stroke: string,
-    strokewidth: number = 1,
+    fill?: string,
+    stroke?: string,
+    strokewidth?: number,
   ) {
     super(bounds, fill, stroke, strokewidth)
     this.image = image

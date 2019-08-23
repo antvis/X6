@@ -5,9 +5,9 @@ import { Geometry } from '../core/geometry'
 
 export class GeometryChange implements IChange {
   public readonly model: Model
-  private cell: Cell
-  private geometry: Geometry
-  private previous: Geometry
+  public cell: Cell
+  public geometry: Geometry
+  public previous: Geometry
 
   constructor(model: Model, cell: Cell, geometry: Geometry) {
     this.model = model

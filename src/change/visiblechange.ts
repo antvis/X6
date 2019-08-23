@@ -3,12 +3,12 @@ import { Cell } from '../core/cell'
 import { Model } from '../core/model'
 
 export class VisibleChange implements IChange {
-  private previous: boolean
+  public previous: boolean
 
   constructor(
-    private readonly model: Model,
-    private cell: Cell,
-    private visible: boolean,
+    public readonly model: Model,
+    public cell: Cell,
+    public visible: boolean,
   ) {
     this.previous = visible
   }

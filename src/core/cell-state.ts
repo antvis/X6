@@ -1,9 +1,13 @@
 import { Cell } from '.'
 import { View } from './view'
-import { Shape } from '../shape'
+import { Shape, ImageShape, Text } from '../shape'
+import { CellOverlay } from './cell-overlay'
 import { Point, Rectangle } from '../struct'
 
 export class CellState {
+  /**
+   * scale and translated bounds
+   */
   bounds: Rectangle
 
   /**
@@ -35,17 +39,17 @@ export class CellState {
   /**
    * The unscaled width of the state.
    */
-  unscaledWidth: number
+  unscaledWidth: number | null
 
   /**
    * The unscaled height of the state.
    */
-  unscaledHeight: number
+  unscaledHeight: number | null
 
   /**
    * An array of `Point` that represent the absolute points of an edge.
    */
-  absolutePoints: Point[] | null
+  absolutePoints: (Point | null)[]
 
   /**
    * The visible source terminal state.
@@ -58,7 +62,7 @@ export class CellState {
   visibleTargetState: CellState | null
 
   /**
-   * The distance between the end points for an edge.
+   * The distance between the first and last point for an edge.
    */
   terminalDistance: number = 0
 
@@ -92,14 +96,15 @@ export class CellState {
    * A `Text` instance that represents the label of the cell.
    * This may be null if the cell has no label.
    */
-  text: Shape | null
+  text: Text | null
 
   /**
    * A `Shape` instance that represents the cell control graphically.
    */
-  control: Shape | null
+  control: ImageShape | null
 
-  overlays: Shape[] | null
+  overlaySet: CellOverlay[] | null
+  overlayMap: WeakMap<CellOverlay, ImageShape> | null
 
   constructor(
     public view: View,
@@ -147,7 +152,7 @@ export class CellState {
     return bounds
   }
 
-  setAbsoluteTerminalPoint(point: Point, isSource?: boolean) {
+  setAbsoluteTerminalPoint(point: Point | null, isSource?: boolean) {
     if (this.absolutePoints == null) {
       this.absolutePoints = []
     }
@@ -264,7 +269,7 @@ export class CellState {
     cloned.bounds = this.bounds.clone()
 
     if (this.absolutePoints != null) {
-      cloned.absolutePoints = this.absolutePoints.map(p => p.clone())
+      cloned.absolutePoints = this.absolutePoints.map(p => p ? p.clone() : p)
     }
 
     if (this.origin != null) {

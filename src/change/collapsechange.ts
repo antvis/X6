@@ -4,9 +4,9 @@ import { Model } from '../core/model'
 
 export class CollapseChange implements IChange {
   public readonly model: Model
-  private cell: Cell
-  private collapsed: boolean
-  private previous: boolean
+  public cell: Cell
+  public collapsed: boolean
+  public previous: boolean
 
   constructor(model: Model, cell: Cell, collapsed: boolean) {
     this.model = model

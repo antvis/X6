@@ -15,7 +15,7 @@ export namespace Marker {
     isSource: boolean,
     sw: number,
     filled: boolean,
-  ) => void
+  ) => (() => void)
 
   export const markers: { [name: string]: DrawFn } = {}
 
@@ -169,8 +169,7 @@ Marker.addMarker('oval', (
 
     if (filled) {
       c.fillAndStroke()
-    }
-    else {
+    } else {
       c.stroke()
     }
   }

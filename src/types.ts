@@ -146,17 +146,22 @@ export enum StyleNames {
 
   /**
    * Defines if the perimeter should be used to find the exact entry point
-   * along the perimeter of the source. Possible values are `false` and
-   * `true`. Default is `true`.
+   * along the perimeter of the source. Possible values are `false`(0) and
+   * `true`(1).
+   *
+   * Default is `true`(1).
    */
   exitPerimeter = 'exitPerimeter',
 
   /**
    * Defines if the perimeter should be used to find the exact entry point
-   * along the perimeter of the target. Possible values are `false` and
-   * `true`. Default is `true`.
+   * along the perimeter of the target. Possible values are `false`(0) and
+   * `true`(1).
+   *
+   * Default is `true`(1).
    */
   entryPerimeter = 'entryPerimeter',
+
   whiteSpace = 'whiteSpace', // nowrap, wrap
   rotation = 'rotation',
   fillColor = 'fillColor',

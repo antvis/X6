@@ -8,15 +8,15 @@ import { Shape } from './shape'
 export class RectShape extends Shape {
   constructor(
     bounds: Rectangle,
-    fill: string,
-    stroke: string,
-    strokewidth: number = 1,
+    fill?: string,
+    stroke?: string,
+    strokewidth?: number,
   ) {
     super()
     this.bounds = bounds
-    this.fill = fill
-    this.stroke = stroke
-    this.strokewidth = strokewidth
+    this.fill = fill != null ? fill : null
+    this.stroke = stroke != null ? stroke : null
+    this.strokewidth = strokewidth != null ? strokewidth : 1
   }
 
   protected paintBackground(

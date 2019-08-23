@@ -1,7 +1,10 @@
-import { Model, Cell } from '../core'
+import { Model, Cell, CellState } from '../core'
 import { CellPath } from '../core/cell-path'
 import { Point } from '../struct'
+import { Align, DirectionMask, StyleNames, Direction } from '../types'
 import { getOffset, getScrollOrigin } from './dom'
+import { getValue, getNumber } from './object'
+import { getBooleanFromStyle } from './stylesheet'
 
 /**
 	 * Function: setCellStyles
@@ -20,7 +23,7 @@ export function setCellStyles(
   model: Model,
   cells: Cell[],
   key: string,
-  value: string,
+  value: string | null,
 ) {
   if (cells != null && cells.length > 0) {
     model.beginUpdate()
@@ -44,7 +47,11 @@ export function setCellStyles(
  *
  * This is for cell styles, not for CSS styles.
  */
-function setStyle(style: string | null, key: string, value: string) {
+export function setStyle(
+  style: string | null,
+  key: string,
+  value: string | null,
+) {
   const isValue = (
     value != null &&
     (typeof (value.length) === 'undefined' || value.length > 0)
@@ -96,8 +103,8 @@ function setStyle(style: string | null, key: string, value: string) {
  * var cells = graph.getSelectionCells();
  * mxUtils.setCellStyleFlags(graph.model,
  * 			cells,
- * 			mxConstants.STYLE_FONTSTYLE,
- * 			mxConstants.FONT_BOLD);
+ * 			constants.STYLE_FONTSTYLE,
+ * 			constants.FONT_BOLD);
  * (end)
  *
  * Toggles the bold font style.
@@ -229,4 +236,179 @@ export function convertPoint(container: HTMLElement, x: number, y: number) {
   offset.y -= origin.y
 
   return new Point(x - offset.x, y - offset.y)
+}
+
+/**
+ *
+ * Returns an `Point` that represents the horizontal and vertical alignment
+ * for numeric computations.
+ *
+ * X is -0.5 for center, -1 for right and 0 for left alignment.
+ * Y is -0.5 for middle, -1 for bottom and 0 for top alignment.
+ *
+ * Default values for missing arguments is top, left.
+ */
+export function getAlignmentAsPoint(align: Align, valign: Align) {
+  let dx = 0
+  let dy = 0
+
+  if (align === Align.center) {
+    dx = -0.5
+  } else if (align === Align.right) {
+    dx = -1
+  }
+
+  if (valign === Align.middle) {
+    dy = -0.5
+  } else if (valign === Align.bottom) {
+    dy = -1
+  }
+
+  return new Point(dx, dy)
+}
+
+/**
+* Returns an integer mask of the port constraints of the given map
+* @param dict the style map to determine the port constraints for
+* @param defaultValue Default value to return if the key is undefined.
+* @return the mask of port constraint directions
+*
+* Parameters:
+*
+* terminal - <mxCelState> that represents the terminal.
+* edge - <mxCellState> that represents the edge.
+* source - Boolean that specifies if the terminal is the source terminal.
+* defaultValue - Default value to be returned.
+*/
+export function getPortConstraints(
+  terminal: CellState,
+  edge: CellState,
+  isSource: boolean,
+  defaultValue: DirectionMask,
+) {
+  const value = getValue(
+    terminal.style,
+    StyleNames.portConstraint,
+    getValue(
+      edge.style,
+      isSource
+        ? StyleNames.sourcePortConstraint
+        : StyleNames.targetPortConstraint,
+      null,
+    ),
+  )
+
+  if (value == null) {
+    return defaultValue
+  } {
+    let returnValue = DirectionMask.none
+    const directions = value.toString()
+    const constraintRotationEnabled = getBooleanFromStyle(
+      terminal.style,
+      StyleNames.portConstraintRotation,
+    )
+
+    let rotation = 0
+    if (constraintRotationEnabled) {
+      rotation = getNumber(terminal.style, StyleNames.rotation, 0)
+    }
+
+    let quad = 0
+    if (rotation > 45) {
+      quad = 1
+
+      if (rotation >= 135) {
+        quad = 2
+      }
+    } else if (rotation < -45) {
+      quad = 3
+
+      if (rotation <= -135) {
+        quad = 2
+      }
+    }
+
+    if (directions.indexOf(Direction.north) >= 0) {
+      switch (quad) {
+        case 0:
+          returnValue |= DirectionMask.north
+          break
+        case 1:
+          returnValue |= DirectionMask.east
+          break
+        case 2:
+          returnValue |= DirectionMask.south
+          break
+        case 3:
+          returnValue |= DirectionMask.west
+          break
+      }
+    }
+
+    if (directions.indexOf(Direction.west) >= 0) {
+      switch (quad) {
+        case 0:
+          returnValue |= DirectionMask.west
+          break
+        case 1:
+          returnValue |= DirectionMask.north
+          break
+        case 2:
+          returnValue |= DirectionMask.east
+          break
+        case 3:
+          returnValue |= DirectionMask.south
+          break
+      }
+    }
+    if (directions.indexOf(Direction.south) >= 0) {
+      switch (quad) {
+        case 0:
+          returnValue |= DirectionMask.south
+          break
+        case 1:
+          returnValue |= DirectionMask.west
+          break
+        case 2:
+          returnValue |= DirectionMask.north
+          break
+        case 3:
+          returnValue |= DirectionMask.east
+          break
+      }
+    }
+    if (directions.indexOf(Direction.east) >= 0) {
+      switch (quad) {
+        case 0:
+          returnValue |= DirectionMask.east
+          break
+        case 1:
+          returnValue |= DirectionMask.south
+          break
+        case 2:
+          returnValue |= DirectionMask.west
+          break
+        case 3:
+          returnValue |= DirectionMask.north
+          break
+      }
+    }
+
+    return returnValue
+  }
+}
+
+/**
+ * Reverse the port constraint bitmask. For example, north | east
+ * becomes south | west
+ */
+export function reversePortConstraints(constraint: DirectionMask) {
+  let result = 0
+
+  result = (constraint & DirectionMask.west) << 3
+  result |= (constraint & DirectionMask.north) << 1
+  result |= (constraint & DirectionMask.south) >> 1
+  result |= (constraint & DirectionMask.east) >> 3
+
+  return result
 }

@@ -4,9 +4,9 @@ import { Model } from '../core/model'
 
 export class StyleChange implements IChange {
   public readonly model: Model
-  private cell: Cell
-  private style: string | null
-  private previous: string | null
+  public cell: Cell
+  public style: string | null
+  public previous: string | null
 
   constructor(model: Model, cell: Cell, style: string | null) {
     this.model = model

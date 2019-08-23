@@ -1,11 +1,11 @@
 import { IChange } from './change'
 import { Cell } from '../core/cell'
-import { GraphSelectionModel } from '../core/graph-selection-model'
+import { GraphSelectionModel } from '../handler/graph-selection-model'
 
 export class SelectionChange implements IChange {
   public readonly selection: GraphSelectionModel
-  private added: Cell[] | null
-  private removed: Cell[] | null
+  public added: Cell[] | null
+  public removed: Cell[] | null
 
   constructor(
     selection: GraphSelectionModel,

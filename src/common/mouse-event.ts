@@ -6,9 +6,9 @@ import { CellState } from '../core/cell-state'
 import { DomEvent } from './dom-event'
 
 export class CustomMouseEvent {
-  private e: MouseEvent
-  private state: CellState | null
-  private consumed: boolean = false
+  e: MouseEvent
+  state: CellState | null
+  consumed: boolean = false
 
   /**
    * The x-coordinate of the event in the graph.
@@ -19,7 +19,7 @@ export class CustomMouseEvent {
    */
   graphY: number
 
-  constructor(e: MouseEvent, state?: CellState) {
+  constructor(e: MouseEvent, state?: CellState | null) {
     this.e = e
     this.state = state || null
   }

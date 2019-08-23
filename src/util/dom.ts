@@ -1,5 +1,5 @@
-import { Point } from '../struct'
-import { detector } from '../common'
+import { Point, Rectangle } from '../struct'
+import { detector, constants } from '../common'
 import { getBaseUrl } from './bom'
 import { ucFirst } from './string'
 
@@ -356,3 +356,51 @@ export const setPrefixedStyle = function () {
     }
   }
 }()
+
+export function hasScrollbars(container: HTMLElement) {
+  const style = getCurrentStyle(container)
+  return style != null && (
+    style.overflow === 'scroll' ||
+    style.overflow === 'auto'
+  )
+}
+
+export function getSizeForString(
+  text: string,
+  fontSize: number = constants.DEFAULT_FONTSIZE,
+  fontFamily: string = constants.DEFAULT_FONTFAMILY,
+  textWidth?: number,
+) {
+  const div = document.createElement('div')
+
+  div.style.fontFamily = fontFamily
+  div.style.fontSize = `${Math.round(fontSize)}px`
+  div.style.lineHeight = `${Math.round(fontSize * constants.LINE_HEIGHT)}`
+
+  // Disables block layout and outside wrapping and hides the div
+  div.style.position = 'absolute'
+  div.style.visibility = 'hidden'
+  div.style.display = (detector.IS_QUIRKS) ? 'inline' : 'inline-block'
+  div.style.zoom = '1'
+
+  if (textWidth != null) {
+    div.style.width = `${textWidth}px`
+    div.style.whiteSpace = 'normal'
+  } else {
+    div.style.whiteSpace = 'nowrap'
+  }
+
+  // Adds the text and inserts into DOM for updating of size
+  div.innerHTML = text
+  document.body.appendChild(div)
+
+  // Gets the size and removes from DOM
+  const size = new Rectangle(0, 0, div.offsetWidth, div.offsetHeight)
+  document.body.removeChild(div)
+
+  return size
+}
+
+export function toPx(px: number) {
+  return `${px}px`
+}
