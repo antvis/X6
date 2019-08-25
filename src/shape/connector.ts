@@ -91,6 +91,7 @@ export class Connector extends Polyline {
       const filled = util.getBooleanFromStyle(
         this.style,
         isSource ? StyleNames.startFill : StyleNames.endFill,
+        true,
       )
 
       result = Marker.createMarker(

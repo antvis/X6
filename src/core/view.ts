@@ -385,14 +385,17 @@ export class View extends Events {
 
           // repaint
           if (cell !== this.currentRoot && !state.invalid) {
+            console.log(state)
+            console.log(cell)
+            console.log(cell.geometry)
             this.graph.renderer.redraw(state, false, this.isRendering())
 
             state.updateCachedBounds()
           }
         }
 
+        // recursion
         if (recurse && !state.invalid) {
-
           if (state.shape != null) {
             // Updates order in DOM if recursively traversing
             this.stateValidated(state)

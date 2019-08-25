@@ -71,7 +71,7 @@ export function getValue(obj: any, key: string, defaultValue?: any) {
   return value
 }
 
-export function getNumber(obj: any, key: string, defaultValue: number = 0) {
+export function getNumber(obj: any, key: string, defaultValue: number) {
   let value = (obj != null) ? obj[key] : null
   if (value == null) {
     return defaultValue
@@ -79,7 +79,7 @@ export function getNumber(obj: any, key: string, defaultValue: number = 0) {
 
   value = +value
   if (isNaN(value) || !isFinite(value)) {
-    value = defaultValue
+    return defaultValue
   }
 
   return value as number

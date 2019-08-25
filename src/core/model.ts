@@ -826,11 +826,11 @@ export class Model extends Events {
 
     if (!this.endingUpdate) {
       this.endingUpdate = this.updateLevel === 0
-      this.trigger(Model.eventNames.endUpdate, this.currentEdit)
+      const edit = this.currentEdit
+      this.trigger(Model.eventNames.endUpdate, edit)
 
       try {
         if (this.endingUpdate && !this.currentEdit.isEmpty()) {
-          const edit = this.currentEdit
           this.trigger(Model.eventNames.beforeUndo, edit)
           this.currentEdit = this.createUndoableEdit()
           edit.notify()
@@ -855,7 +855,7 @@ export class Model extends Events {
     return new UndoableEdit(this, {
       significant,
       onChange: (edit: UndoableEdit) => {
-        this.trigger(Model.eventNames.change, { edit })
+        this.trigger(Model.eventNames.change, edit.changes)
       },
     })
   }

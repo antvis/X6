@@ -1,6 +1,6 @@
 import { constants } from '../common'
 import { Stylesheet } from '../stylesheet'
-import { getNumber } from './object'
+import { getValue, getNumber } from './object'
 import { StyleNames } from '../types'
 
 export function getBooleanFromStyle(
@@ -12,8 +12,13 @@ export function getBooleanFromStyle(
     return defaultValue
   }
 
-  const val = getNumber(style, name)
+  let val = getValue(style, name)
   if (val == null) {
+    return defaultValue
+  }
+
+  val = +val
+  if (isNaN(val) || !isFinite(val)) {
     return defaultValue
   }
 

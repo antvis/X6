@@ -4,7 +4,7 @@ import { Geometry } from './geometry'
 import { CellOverlay } from './cell-overlay'
 
 export class Cell implements IDisposable {
-  public id?: string
+  public id?: string | null
   public value?: any
   public style: string | null
   public visible: boolean
@@ -299,7 +299,7 @@ export class Cell implements IDisposable {
     return this.id
   }
 
-  setId(id?: string) {
+  setId(id?: string | null) {
     this.id = id
   }
 

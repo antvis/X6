@@ -2582,7 +2582,7 @@ export class Graph extends Events {
    */
   insertNode(
     parent: Cell,
-    id?: string,
+    id?: string | null,
     value?: any,
     x?: number,
     y?: number,
@@ -2597,7 +2597,7 @@ export class Graph extends Events {
 
   createNode(
     parent: Cell,
-    id?: string,
+    id?: string | null,
     value?: any,
     x?: number,
     y?: number,
@@ -2633,7 +2633,7 @@ export class Graph extends Events {
    */
   insertEdge(
     parent: Cell,
-    id?: string,
+    id?: string | null,
     value?: any,
     sourceNode?: Cell,
     targetNode?: Cell,
@@ -2651,7 +2651,7 @@ export class Graph extends Events {
    */
   createEdge(
     parent: Cell,
-    id?: string,
+    id?: string | null,
     value?: any,
     style?: string,
   ) {
@@ -7761,13 +7761,7 @@ export class Graph extends Events {
 
   // #region ======== Cell retrieval
 
-  /**
-   * Returns <defaultParent> or <mxGraphView.currentRoot> or the first child
-   * child of <mxGraphModel.root> if both are null. The value returned by
-   * this function should be used as the parent for new cells (aka default
-   * layer).
-   */
-  getDefaultParent() {
+  getDefaultParent(): Cell {
     let parent = this.getCurrentRoot()
 
     if (parent == null) {
@@ -7779,7 +7773,7 @@ export class Graph extends Events {
       }
     }
 
-    return parent
+    return parent!
   }
 
   /**
@@ -8351,7 +8345,7 @@ export class Graph extends Events {
           const state = this.view.getState(cell)
 
           if (state != null && this.isCellVisible(cell)) {
-            const deg = util.getNumber(state.style, constants.STYLE_ROTATION) || 0
+            const deg = util.getNumber(state.style, constants.STYLE_ROTATION, 0)
             let box = state.bounds
             if (deg !== 0) {
               box = util.getBoundingBox(box, deg)

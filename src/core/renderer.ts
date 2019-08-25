@@ -1111,7 +1111,9 @@ export class Renderer {
         this.installListeners(state)
 
         // Forces a refresh of the handler if one exists
-        state.view.graph.selectionCellsHandler.updateHandler(state)
+        if (state.view.graph.selectionCellsHandler) {
+          state.view.graph.selectionCellsHandler.updateHandler(state)
+        }
       }
     } else if (
       !force &&

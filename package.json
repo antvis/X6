@@ -20,6 +20,7 @@
   "scripts": {
     "clean": "rimraf ./lib",
     "test": "jest",
+    "dev": "webpack-dev-server --open --config webpack.config.js",
     "build:images": "node ./scripts/make-images.js",
     "build:version": "node ./scripts/make-version.js",
     "build": "tsc",
@@ -49,16 +50,33 @@
   "license": "MIT",
   "devDependencies": {
     "@types/jest": "^24.0.17",
+    "@types/react": "^16.8.18",
+    "@types/react-dom": "^16.8.4",
+    "@types/react-router-dom": "^4.3.5",
     "base64-img": "^1.0.4",
     "coveralls": "^3.0.6",
+    "css-loader": "^3.2.0",
+    "html-webpack-plugin": "^3.2.0",
     "husky": "^3.0.3",
     "image-size": "^0.7.4",
     "jest": "^24.8.0",
+    "less": "^3.10.3",
+    "less-loader": "^5.0.0",
     "lint-staged": "^9.2.1",
+    "normalize.css": "^8.0.1",
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0",
+    "react-router-dom": "^5.0.1",
     "rimraf": "^2.6.3",
+    "source-map-loader": "^0.2.4",
+    "style-loader": "^1.0.0",
     "ts-jest": "^24.0.2",
+    "ts-loader": "^6.0.4",
     "tslint": "^5.18.0",
     "tslint-config-airbnb": "^5.11.1",
-    "typescript": "^3.5.3"
+    "typescript": "^3.5.3",
+    "webpack": "^4.39.2",
+    "webpack-cli": "^3.3.7",
+    "webpack-dev-server": "^3.8.0"
   }
 }
