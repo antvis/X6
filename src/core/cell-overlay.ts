@@ -1,12 +1,13 @@
-import { Point, Rectangle, Image, Align } from '../struct'
+import { Point, Rectangle, Image } from '../struct'
 import { CellState } from './cell-state'
 import { Events } from '../common'
+import { Align, VAlign } from '../types'
 
 export class CellOverlay extends Events {
   image: Image
   tooltip: string
   align: Align
-  verticalAlign: Align
+  verticalAlign: VAlign
   offset: Point
   cursor: string
 
@@ -22,7 +23,7 @@ export class CellOverlay extends Events {
     image: Image,
     tooltip: string,
     align?: Align,
-    verticalAlign?: Align,
+    verticalAlign?: VAlign,
     offset?: Point,
     cursor?: string,
   ) {
@@ -60,17 +61,17 @@ export class CellOverlay extends Events {
     } else {
       pt = new Point()
 
-      if (this.align === Align.left) {
+      if (this.align === 'left') {
         pt.x = state.bounds.x
-      } else if (this.align === Align.center) {
+      } else if (this.align === 'center') {
         pt.x = state.bounds.x + state.bounds.width / 2
       } else {
         pt.x = state.bounds.x + state.bounds.width
       }
 
-      if (this.verticalAlign === Align.top) {
+      if (this.verticalAlign === 'top') {
         pt.y = state.bounds.y
-      } else if (this.verticalAlign === Align.middle) {
+      } else if (this.verticalAlign === 'middle') {
         pt.y = state.bounds.y + state.bounds.height / 2
       } else {
         pt.y = state.bounds.y + state.bounds.height

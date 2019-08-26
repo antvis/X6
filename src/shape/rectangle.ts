@@ -1,10 +1,9 @@
-import * as util from '../util'
 import { constants } from '../common'
-import { Rectangle, StyleName } from '../struct'
+import { Rectangle } from '../struct'
 import { SvgCanvas2D } from '../canvas'
 import { Shape } from './shape'
 
-export class RectShape extends Shape {
+export class RectangleShape extends Shape {
   constructor(
     bounds: Rectangle,
     fill?: string,
@@ -18,27 +17,25 @@ export class RectShape extends Shape {
     this.strokeWidth = strokewidth != null ? strokewidth : 1
   }
 
-  protected paintBackground(
+  protected isRoundable() {
+    return true
+  }
+
+  paintBackground(
     c: SvgCanvas2D,
     x: number,
     y: number,
     w: number,
     h: number,
   ) {
-    let events = true
-    if (this.style != null) {
-      events = util.getBooleanFromStyle(this.style, StyleName.pointerEvents, true)
-    }
+    const events = this.style.pointerEvents !== false
 
     if (
       events ||
       (this.fill != null && this.fill !== constants.NONE) ||
       (this.stroke != null && this.stroke !== constants.NONE)
     ) {
-      if (
-        !events &&
-        (this.fill == null || this.fill === constants.NONE)
-      ) {
+      if (!events && (this.fill == null || this.fill === constants.NONE)) {
         c.pointerEvents = false
       }
 
@@ -53,11 +50,7 @@ export class RectShape extends Shape {
     }
   }
 
-  protected isRoundable() {
-    return true
-  }
-
-  protected paintForeground(
+  paintForeground(
     c: SvgCanvas2D,
     x: number,
     y: number,
@@ -70,14 +63,10 @@ export class RectShape extends Shape {
       this.fill != null &&
       this.fill !== constants.NONE
     ) {
-      this.paintGlassEffect(
-        c, x, y, w, h,
-        this.getArcSize(
-          w + (this.strokeWidth as number),
-          h + (this.strokeWidth as number),
-        ),
-      )
+      this.paintGlassEffect(c, x, y, w, h, this.getArcSize(
+        w + (this.strokeWidth as number),
+        h + (this.strokeWidth as number),
+      ))
     }
   }
-
 }

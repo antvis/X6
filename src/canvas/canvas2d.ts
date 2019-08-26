@@ -1,6 +1,7 @@
 import * as util from '../util'
 import { constants, UrlConverter } from '../common'
-import { Point, Direction, LineCap, LineJoin, FontStyle } from '../struct'
+import { Point, FontStyle } from '../struct'
+import { Direction, LineCap, LineJoin } from '../types'
 
 export class Canvas2D {
   state: Canvas2D.State
@@ -54,14 +55,14 @@ export class Canvas2D {
       gradientFillAlpha: 1,
       gradientColor: null,
       gradientAlpha: 1,
-      gradientDirection: Direction.north,
+      gradientDirection: 'north',
 
       dashed: false,
       dashPattern: '3 3',
       fixDash: false,
 
-      lineCap: LineCap.butt,
-      lineJoin: LineJoin.miter,
+      lineCap: 'butt',
+      lineJoin: 'miter',
       miterLimit: 10,
 
       fontColor: '#000000',

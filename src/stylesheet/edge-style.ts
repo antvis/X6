@@ -1,14 +1,7 @@
 import * as util from '../util'
 import { constants } from '../common'
 import { CellState } from '../core'
-import {
-  Point,
-  Rectangle,
-  StyleName,
-  Direction,
-  DirectionMask,
-  EdgeType,
-} from '../struct'
+import { Point, Rectangle, DirectionMask, EdgeType } from '../struct'
 
 export namespace EdgeStyle {
 
@@ -40,11 +33,8 @@ export namespace EdgeStyle {
   ) {
     const view = edgeState.view
     const graph = view.graph
-    const segment = util.getValue(
-      edgeState.style,
-      constants.STYLE_SEGMENT,
-      constants.ENTITY_SEGMENT,
-    ) * view.scale
+    const segment = (edgeState.style.segment || constants.ENTITY_SEGMENT)
+      * view.scale
 
     const pts = edgeState.absolutePoints
     const p0 = pts[0]
@@ -190,10 +180,10 @@ export namespace EdgeStyle {
       let dx = 0
       let dy = 0
 
-      const seg = util.getNumber(edgeState.style, StyleName.segment, graph.gridSize) * view.scale
-      const dir = util.getValue(edgeState.style, StyleName.direction, Direction.west)
+      const seg = (edgeState.style.segment || graph.gridSize) * view.scale
+      const dir = edgeState.style.direction || 'west'
 
-      if (dir === Direction.north || dir === Direction.south) {
+      if (dir === 'north' || dir === 'south') {
         x = view.getRoutingCenterX(sourceState)
         dx = seg
       } else {
@@ -210,11 +200,11 @@ export namespace EdgeStyle {
           x = pt.x
           dy = Math.max(Math.abs(y - pt.y), dy)
         } else {
-          if (dir === Direction.north) {
+          if (dir === 'north') {
             y = sourceState.bounds.y - 2 * dx
-          } else if (dir === Direction.south) {
+          } else if (dir === 'south') {
             y = sourceState.bounds.y + sourceState.bounds.height + 2 * dx
-          } else if (dir === Direction.east) {
+          } else if (dir === 'east') {
             x = sourceState.bounds.x - 2 * dy
           } else {
             x = sourceState.bounds.x + sourceState.bounds.width + 2 * dy
@@ -290,7 +280,7 @@ export namespace EdgeStyle {
 
     if (!horizontal && (
       vertical ||
-      edgeState.style[StyleName.elbow] === EdgeType.vertical)
+      edgeState.style.elbow === EdgeType.vertical)
     ) {
       topToBottom(edgeState, sourceState, targetState, points, result)
     } else {
@@ -876,31 +866,23 @@ export namespace EdgeStyle {
     points: Point[],
     isSource?: boolean,
   ) {
-    let value = util.getValue(
-      edgeState.style, isSource
-        ? StyleName.sourceJettySize
-        : StyleName.targetJettySize,
-      util.getValue(
-        edgeState.style,
-        StyleName.jettySize,
-        orthBuffer,
-      ),
-    )
+    let value = (isSource
+      ? edgeState.style.sourceJettySize
+      : edgeState.style.targetJettySize
+    ) || edgeState.style.jettySize || orthBuffer
 
-    if (value === 'auto') {
+    if ((value as any) === 'auto') {
       // Computes the automatic jetty size
-      const type = util.getValue(
-        edgeState.style,
-        isSource ? StyleName.startArrow : StyleName.endArrow,
-        constants.NONE,
-      )
+      const type = (isSource
+        ? edgeState.style.startArrow
+        : edgeState.style.endArrow
+      ) || constants.NONE
 
       if (type !== constants.NONE) {
-        const size = util.getNumber(
-          edgeState.style,
-          (isSource) ? StyleName.startSize : StyleName.endSize,
-          constants.DEFAULT_MARKERSIZE,
-        )
+        const size = (isSource
+          ? edgeState.style.startSize
+          : edgeState.style.endSize
+        ) || constants.DEFAULT_MARKERSIZE
 
         value = Math.max(2, Math.ceil((size + orthBuffer) / orthBuffer)) * orthBuffer
 
@@ -952,10 +934,10 @@ export namespace EdgeStyle {
     let targetHeight = targetState != null ? targetState.bounds.height : 0
 
     let scaledSourceBuffer = edgeState.view.scale *
-      getJettySize(edgeState, sourceState, targetState, points, true)
+      (getJettySize(edgeState, sourceState, targetState, points, true) as number)
 
     let scaledTargetBuffer = edgeState.view.scale *
-      getJettySize(edgeState, sourceState, targetState, points, false)
+      (getJettySize(edgeState, sourceState, targetState, points, false) as number)
 
     // Workaround for loop routing within buffer zone
     if (sourceState != null && targetState === sourceState) {
@@ -993,7 +975,7 @@ export namespace EdgeStyle {
       portConstraint[0] = util.getPortConstraints(
         sourceState, edgeState, true, DirectionMask.all,
       )
-      rotation = util.getNumber(sourceState.style, StyleName.rotation, 0)
+      rotation = sourceState.style.rotation || 0
       if (rotation !== 0) {
         const newRect = util.getBoundingBox(
           new Rectangle(sourceX, sourceY, sourceWidth, sourceHeight),
@@ -1010,7 +992,7 @@ export namespace EdgeStyle {
       portConstraint[1] = util.getPortConstraints(
         targetState, edgeState, false, DirectionMask.all,
       )
-      rotation = util.getNumber(targetState.style, StyleName.rotation, 0)
+      rotation = targetState.style.rotation || 0
       if (rotation !== 0) {
         const newRect = util.getBoundingBox(
           new Rectangle(targetX, targetY, targetWidth, targetHeight),

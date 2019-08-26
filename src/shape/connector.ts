@@ -1,9 +1,8 @@
-import * as util from '../util'
 import { constants } from '../common'
 import { SvgCanvas2D } from '../canvas'
 import { Polyline } from './polyline'
 import { Marker } from './marker'
-import { Rectangle, Point, StyleName } from '../struct'
+import { Rectangle, Point } from '../struct'
 
 export class Connector extends Polyline {
   constructor(
@@ -15,7 +14,7 @@ export class Connector extends Polyline {
   }
 
   updateBoundingBox() {
-    this.useSvgBoundingBox = util.getBooleanFromStyle(this.style, StyleName.curved)
+    this.useSvgBoundingBox = !!this.style.curved
     super.updateBoundingBox()
   }
 
@@ -49,10 +48,7 @@ export class Connector extends Polyline {
   createMarker(c: SvgCanvas2D, pts: Point[], isSource: boolean) {
     let result = null
     const len = pts.length
-    const type = util.getValue(
-      this.style,
-      isSource ? StyleName.startArrow : StyleName.endArrow,
-    )
+    const type = isSource ? this.style.startArrow : this.style.endArrow
 
     let p0 = (isSource) ? pts[1] : pts[len - 2]
     const pe = isSource ? pts[0] : pts[len - 1]
@@ -79,19 +75,16 @@ export class Connector extends Polyline {
       const unitX = dx / dist
       const unitY = dy / dist
 
-      const size = util.getNumber(
-        this.style,
-        isSource ? StyleName.startSize : StyleName.endSize,
-        constants.DEFAULT_MARKERSIZE,
-      )
+      const size = (isSource
+        ? this.style.startSize
+        : this.style.endSize
+      ) || constants.DEFAULT_MARKERSIZE
 
       // Allow for stroke width in the end point used and the
       // orthogonal vectors describing the direction of the marker
-      const filled = util.getBooleanFromStyle(
-        this.style,
-        isSource ? StyleName.startFill : StyleName.endFill,
-        true,
-      )
+      const filled = isSource
+        ? this.style.startFilled !== false
+        : this.style.endFilled !== false
 
       result = Marker.createMarker(
         c,
@@ -116,14 +109,14 @@ export class Connector extends Polyline {
     // Adds marker sizes
     let size = 0
 
-    if (util.getValue(this.style, StyleName.startArrow, constants.NONE) !== constants.NONE) {
-      size = util.getNumber(this.style, StyleName.startSize, constants.DEFAULT_MARKERSIZE) + 1
+    if (this.style.startArrow || constants.NONE !== constants.NONE) {
+      size = (this.style.startSize || constants.DEFAULT_MARKERSIZE) + 1
     }
 
-    if (util.getValue(this.style, StyleName.endArrow, constants.NONE) !== constants.NONE) {
+    if ((this.style.endArrow || constants.NONE) !== constants.NONE) {
       size = Math.max(
         size,
-        util.getNumber(this.style, StyleName.endSize, constants.DEFAULT_MARKERSIZE),
+        (this.style.endSize || constants.DEFAULT_MARKERSIZE),
       ) + 1
     }
 

@@ -3,6 +3,7 @@ import { View } from './view'
 import { Shape, ImageShape, Text } from '../shape'
 import { CellOverlay } from './cell-overlay'
 import { Point, Rectangle } from '../struct'
+import { CellStyle } from '../types'
 
 export class CellState {
   /**
@@ -112,7 +113,7 @@ export class CellState {
     /**
      * Key-Value pairs that represent the style of the cell.
      */
-    public style: { [key: string]: any } = {},
+    public style: CellStyle = {},
   ) {
     this.origin = new Point()
     this.bounds = new Rectangle()

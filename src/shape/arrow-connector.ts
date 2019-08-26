@@ -3,7 +3,7 @@ import { constants } from '../common'
 import { Shape } from './shape'
 import { CellState } from '../core'
 import { SvgCanvas2D } from '../canvas'
-import { Rectangle, Point, StyleName, LineJoin } from '../struct'
+import { Rectangle, Point } from '../struct'
 
 export class ArrowConnector extends Shape {
 
@@ -42,14 +42,8 @@ export class ArrowConnector extends Shape {
     super.apply(state)
 
     if (this.style != null) {
-
-      this.startSize = util.getNumber(
-        this.style, StyleName.startSize, constants.ARROW_SIZE / 5,
-      ) * 3
-
-      this.endSize = util.getNumber(
-        this.style, StyleName.endSize, constants.ARROW_SIZE / 5,
-      ) * 3
+      this.startSize = (this.style.startSize || constants.ARROW_SIZE / 5) * 3
+      this.endSize = (this.style.endSize || constants.ARROW_SIZE / 5) * 3
     }
   }
 
@@ -74,7 +68,7 @@ export class ArrowConnector extends Shape {
     if (this.outline) {
       strokeWidth = Math.max(
         1,
-        util.getNumber(this.style, StyleName.strokeWidth, this.strokeWidth as number),
+        (this.style.strokeWidth || this.strokeWidth as number),
       )
     }
 
@@ -125,7 +119,7 @@ export class ArrowConnector extends Shape {
     const fns = []
 
     if (isRounded) {
-      c.setLineJoin(LineJoin.round)
+      c.setLineJoin('round')
     } else if (pts.length > 2) {
       // Only mitre if there are waypoints
       c.setMiterLimit(1.42)
@@ -307,7 +301,7 @@ export class ArrowConnector extends Shape {
     c.setMiterLimit(4)
 
     if (isRounded) {
-      c.setLineJoin(LineJoin.round)
+      c.setLineJoin('round')
     }
 
     if (pts.length > 2) {
@@ -391,10 +385,10 @@ export class ArrowConnector extends Shape {
   }
 
   isMarkerStart() {
-    return (util.getValue(this.style, StyleName.startArrow, constants.NONE) !== constants.NONE)
+    return (this.style.startArrow || constants.NONE) !== constants.NONE
   }
 
   isMarkerEnd() {
-    return (util.getValue(this.style, StyleName.endArrow, constants.NONE) !== constants.NONE)
+    return (this.style.endArrow || constants.NONE) !== constants.NONE
   }
 }

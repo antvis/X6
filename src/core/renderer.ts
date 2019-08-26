@@ -1,15 +1,16 @@
 import * as util from '../util'
-import { constants, DomEvent, CustomMouseEvent, detector } from '../common'
 import { CellState } from './cell-state'
 import { CellOverlay } from './cell-overlay'
-import { Shape, Stencil, Connector, RectShape, Text, ImageShape } from '../shape'
-import { StyleName, Align, Rectangle, Point } from '../struct'
+import { TextDirection } from '../types'
+import { Rectangle, Point } from '../struct'
+import { constants, DomEvent, CustomMouseEvent, detector } from '../common'
+import { Shape, Stencil, Connector, RectangleShape, Text, ImageShape } from '../shape'
 
 export class Renderer {
-  antiAlias: boolean = true
   defaultEdgeShape = Connector
-  defaultVertexShape = RectShape
+  defaultNodeShape = RectangleShape
   defaultTextShape = Text
+  antiAlias: boolean = true
   minSvgStrokeWidth: number = 1
 
   /**
@@ -31,11 +32,11 @@ export class Renderer {
   forceControlClickHandler: boolean = false
 
   private getShapeConstructor(state: CellState) {
-    let ctor = Renderer.getShape(state.style[StyleName.shape])
+    let ctor = Shape.getShape(state.style.shape)
     if (ctor == null) {
       ctor = state.cell.isEdge()
         ? this.defaultEdgeShape
-        : this.defaultVertexShape
+        : this.defaultNodeShape
     }
 
     return ctor
@@ -43,16 +44,14 @@ export class Renderer {
 
   private createShape(state: CellState): Shape | null {
     let shape = null
-    if (state.style != null) {
-      // Checks if there is a stencil for the name and creates
-      // a shape instance for the stencil if one exists
-      const stencil = Stencil.getStencil(state.style[StyleName.shape])
-      if (stencil != null) {
-        shape = new Shape(stencil)
-      } else {
-        const ctor = this.getShapeConstructor(state)
-        shape = new (ctor as any)()
-      }
+    // Checks if there is a stencil for the name and creates
+    // a shape instance for the stencil if one exists
+    const stencil = Stencil.getStencil(state.style.shape)
+    if (stencil != null) {
+      shape = new Shape(stencil)
+    } else {
+      const ctor = this.getShapeConstructor(state)
+      shape = new (ctor as any)()
     }
 
     return shape
@@ -60,7 +59,7 @@ export class Renderer {
 
   private createIndicatorShape(state: CellState) {
     if (state != null && state.shape != null) {
-      state.shape.indicatorShape = Renderer.getShape(
+      state.shape.indicatorShape = Shape.getShape(
         state.view.graph.getIndicatorShape(state),
       )
     }
@@ -81,8 +80,8 @@ export class Renderer {
       state.shape.image = graph.getImage(state)
       state.shape.indicatorImage = graph.getIndicatorImage(state)
       state.shape.indicatorColor = graph.getIndicatorColor(state)
-      state.shape.indicatorDirection = state.style[constants.STYLE_INDICATOR_DIRECTION]
-      state.shape.indicatorStrokeColor = state.style[constants.STYLE_INDICATOR_STROKECOLOR]
+      state.shape.indicatorDirection = graph.getIndicatorDirection(state)
+      state.shape.indicatorStrokeColor = graph.getIndicatorStrokeColor(state)
       state.shape.indicatorGradientColor = graph.getIndicatorGradientColor(state)
 
       this.postConfigureShape(state)
@@ -97,11 +96,11 @@ export class Renderer {
    */
   private postConfigureShape(state: CellState) {
     if (state != null && state.shape != null) {
-      this.resolveColor(state, 'fill', StyleName.fillColor)
-      this.resolveColor(state, 'stroke', StyleName.strokeColor)
-      this.resolveColor(state, 'gradient', StyleName.gradientColor)
-      this.resolveColor(state, 'indicatorColor', StyleName.fillColor)
-      this.resolveColor(state, 'indicatorGradientColor', StyleName.gradientColor)
+      this.resolveColor(state, 'fill', 'fill')
+      this.resolveColor(state, 'stroke', 'stroke')
+      this.resolveColor(state, 'gradient', 'gradientColor')
+      this.resolveColor(state, 'indicatorColor', 'fill')
+      this.resolveColor(state, 'indicatorGradientColor', 'gradientColor')
     }
   }
 
@@ -117,7 +116,7 @@ export class Renderer {
     if (value === 'inherit') {
       referenced = graph.model.getParent(state.cell)
     } else if (value === 'swimlane') {
-      (state.shape as any)[field] = key === StyleName.strokeColor
+      (state.shape as any)[field] = key === 'stroke'
         ? '#000000'
         : '#ffffff'
 
@@ -142,7 +141,7 @@ export class Renderer {
         if (rstate.shape != null && field !== 'indicatorColor') {
           (state.shape as any)[field] = (rstate.shape as any)[field]
         } else {
-          (state.shape as any)[field] = rstate.style[key]
+          (state.shape as any)[field] = (rstate.style as any)[key]
         }
       }
     }
@@ -156,13 +155,13 @@ export class Renderer {
     if (state.style != null) {
       const values = ['inherit', 'swimlane', 'indicated']
       const styles = [
-        StyleName.fillColor,
-        StyleName.strokeColor,
-        StyleName.gradientColor,
+        'fill',
+        'stroke',
+        'gradientColor',
       ]
 
       for (let i = 0, ii = styles.length; i < ii; i += 1) {
-        if (values.includes(state.style[styles[i]])) {
+        if (values.includes((state.style as any)[styles[i]])) {
           return true
         }
       }
@@ -179,8 +178,8 @@ export class Renderer {
     const graph = state.view.graph
 
     if (
-      state.style[StyleName.fontSize] > 0 ||
-      state.style[StyleName.fontSize] == null
+      state.style.fontSize == null ||
+      state.style.fontSize > 0
     ) {
       // Avoids using DOM node for empty labels
       const isForceHtml = (
@@ -192,33 +191,31 @@ export class Renderer {
         value,
         new Rectangle(),
         {
-          align: (state.style[StyleName.align] || Align.center) as Align,
+          align: graph.getAlign(state),
           valign: graph.getVerticalAlign(state),
-          color: state.style[StyleName.fontColor],
-          family: state.style[StyleName.fontFamily],
-          size: state.style[StyleName.fontSize],
-          fontStyle: state.style[StyleName.fontStyle],
-          spacing: state.style[StyleName.spacing],
-          spacingTop: state.style[StyleName.spacingTop],
-          spacingRight: state.style[StyleName.spacingRight],
-          spacingBottom: state.style[StyleName.spacingBottom],
-          spacingLeft: state.style[StyleName.spacingLeft],
-          horizontal: state.style[StyleName.horizontal],
-          background: state.style[StyleName.labelBackgroundColor],
-          border: state.style[StyleName.labelBorderColor],
+          color: state.style.fontColor,
+          family: state.style.fontFamily,
+          size: state.style.fontSize,
+          fontStyle: state.style.fontStyle,
+          spacing: state.style.spacing,
+          spacingTop: state.style.spacingTop,
+          spacingRight: state.style.spacingRight,
+          spacingBottom: state.style.spacingBottom,
+          spacingLeft: state.style.spacingLeft,
+          horizontal: state.style.horizontal,
+          background: state.style.labelBackgroundColor,
+          border: state.style.labelBorderColor,
           wrap: graph.isWrapping(state.cell) && graph.isHtmlLabel(state.cell),
           clipped: graph.isLabelClipped(state.cell),
-          overflow: state.style[StyleName.overflow],
-          labelPadding: state.style[StyleName.labelPadding],
-          textDirection: util.getValue(
-            state.style,
-            StyleName.textDirection,
-            constants.DEFAULT_TEXT_DIRECTION,
-          ),
+          overflow: state.style.overflow,
+          labelPadding: state.style.labelPadding,
+          textDirection: (
+            state.style.textDirection || constants.DEFAULT_TEXT_DIRECTION
+          ) as TextDirection,
         },
       )
 
-      state.text.opacity = util.getNumber(state.style, StyleName.textOpacity, 100)
+      state.text.opacity = state.style.textOpacity || 100
       state.text.dialect = isForceHtml
         ? constants.DIALECT_STRICTHTML
         : state.view.graph.dialect
@@ -586,7 +583,7 @@ export class Renderer {
     )
 
     const dialect = isForceHtml ? constants.DIALECT_STRICTHTML : state.view.graph.dialect
-    const overflow = state.style[StyleName.overflow] || 'visible'
+    const overflow = state.style.overflow || 'visible'
 
     if (
       state.text != null && (
@@ -630,7 +627,7 @@ export class Renderer {
         state.text.apply(state)
 
         // Special case where value is obtained via hook in graph
-        state.text.valign = graph.getVerticalAlign(state)
+        state.text.verticalAlign = graph.getVerticalAlign(state)
       }
 
       const bounds = this.getLabelBounds(state)
@@ -672,18 +669,18 @@ export class Renderer {
   }
 
   isTextShapeInvalid(state: CellState, shape: Text) {
-    const check = (prop: string, stylename: string, defaultValue?: any) => {
+    const check = (prop: string, styleName: string, defaultValue?: any) => {
       let result = false
 
       const raw = (shape as any)[prop]
-      const set = (state.style[stylename] || defaultValue)
+      const set = ((state.style as any)[styleName] || defaultValue)
 
       // Workaround for spacing added to directional spacing
       if (
-        stylename === 'spacingTop' ||
-        stylename === 'spacingRight' ||
-        stylename === 'spacingBottom' ||
-        stylename === 'spacingLeft'
+        styleName === 'spacingTop' ||
+        styleName === 'spacingRight' ||
+        styleName === 'spacingBottom' ||
+        styleName === 'spacingLeft'
       ) {
         result = parseFloat(raw) - shape.spacing !== set
       } else {
@@ -693,22 +690,22 @@ export class Renderer {
       return result
     }
 
-    return check('fontStyle', StyleName.fontStyle, constants.DEFAULT_FONTSTYLE) ||
-      check('family', StyleName.fontFamily, constants.DEFAULT_FONTFAMILY) ||
-      check('size', StyleName.fontSize, constants.DEFAULT_FONTSIZE) ||
-      check('color', StyleName.fontColor, 'black') ||
-      check('align', StyleName.align, '') ||
-      check('valign', StyleName.verticalAlign, '') ||
-      check('spacing', StyleName.spacing, 2) ||
-      check('spacingTop', StyleName.spacingTop, 0) ||
-      check('spacingRight', StyleName.spacingRight, 0) ||
-      check('spacingBottom', StyleName.spacingBottom, 0) ||
-      check('spacingLeft', StyleName.spacingLeft, 0) ||
-      check('horizontal', StyleName.horizontal, true) ||
-      check('background', StyleName.labelBackgroundColor) ||
-      check('border', StyleName.labelBorderColor) ||
-      check('opacity', StyleName.textOpacity, 100) ||
-      check('textDirection', StyleName.textDirection, constants.DEFAULT_TEXT_DIRECTION)
+    return check('fontStyle', 'fontStyle', constants.DEFAULT_FONTSTYLE) ||
+      check('family', 'fontFamily', constants.DEFAULT_FONTFAMILY) ||
+      check('size', 'fontSize', constants.DEFAULT_FONTSIZE) ||
+      check('color', 'fontColor', 'black') ||
+      check('align', 'align', '') ||
+      check('valign', 'verticalAlign', '') ||
+      check('spacing', 'spacing', 2) ||
+      check('spacingTop', 'spacingTop', 0) ||
+      check('spacingRight', 'spacingRight', 0) ||
+      check('spacingBottom', 'spacingBottom', 0) ||
+      check('spacingLeft', 'spacingLeft', 0) ||
+      check('horizontal', 'horizontal', true) ||
+      check('background', 'labelBackgroundColor') ||
+      check('border', 'labelBorderColor') ||
+      check('opacity', 'textOpacity', 100) ||
+      check('textDirection', 'textDirection', constants.DEFAULT_TEXT_DIRECTION)
   }
 
   redrawLabelShape(shape: Shape) {
@@ -751,9 +748,9 @@ export class Renderer {
       bounds.width = Math.max(1, state.bounds.width)
       bounds.height = Math.max(1, state.bounds.height)
 
-      const sc = util.getValue(state.style, StyleName.strokeColor, constants.NONE)
+      const sc = state.style.stroke || constants.NONE
       if (sc !== constants.NONE && sc !== '') {
-        const s = util.getNumber(state.style, StyleName.strokeWidth, 1) * scale
+        const s = (state.style.strokeWidth || 1) * scale
         const dx = 1 + Math.floor((s - 1) / 2)
         const dh = Math.floor(s + 1)
 
@@ -776,19 +773,17 @@ export class Renderer {
 
     // Shape can modify its label bounds
     if (state.shape != null) {
-
-      const h = util.getValue(state.style, StyleName.labelPosition, Align.center)
-      const v = util.getValue(state.style, StyleName.verticalLabelPosition, Align.middle)
-
-      if (h === constants.ALIGN_CENTER && v === constants.ALIGN_MIDDLE) {
+      const h = state.style.labelPosition || 'center'
+      const v = state.style.labelVerticalPosition || 'middle'
+      if (h === 'center' && v === 'middle') {
         bounds = state.shape.getLabelBounds(bounds)
       }
     }
 
     // Label width style overrides actual label width
-    const lw = util.getValue(state.style, StyleName.labelWidth, null)
+    const lw = state.style.labelWidth
     if (lw != null) {
-      bounds.width = parseFloat(lw) * scale
+      bounds.width = lw * scale
     }
 
     if (!isEdge) {
@@ -804,22 +799,22 @@ export class Renderer {
 
     if (
       !this.legacySpacing || (
-        state.style[StyleName.overflow] !== 'fill' &&
-        state.style[StyleName.overflow] !== 'width')
+        state.style.overflow !== 'fill' &&
+        state.style.overflow !== 'width')
     ) {
       const s = state.view.scale
       const spacing = state.text!.getSpacing()
       bounds.x += spacing.x * s
       bounds.y += spacing.y * s
 
-      const h = util.getValue(state.style, StyleName.labelPosition, Align.center)
-      const v = util.getValue(state.style, StyleName.verticalLabelPosition, Align.middle)
-      const lw = util.getValue(state.style, StyleName.labelWidth, null)
+      const h = state.style.labelPosition || 'center'
+      const v = state.style.labelVerticalPosition || 'middle'
+      const lw = state.style.labelWidth
 
       bounds.width = Math.max(
         0,
         bounds.width - (
-          (h === Align.center && lw == null)
+          (h === 'center' && lw == null)
             ? (state.text!.spacingLeft * s + state.text!.spacingRight * s)
             : 0
         ),
@@ -827,7 +822,7 @@ export class Renderer {
 
       bounds.height = Math.max(
         0,
-        bounds.height - (v === Align.middle
+        bounds.height - (v === 'middle'
           ? (state.text!.spacingTop * s + state.text!.spacingBottom * s)
           : 0
         ),
@@ -858,7 +853,7 @@ export class Renderer {
   redrawCellOverlays(state: CellState, forced?: boolean) {
     this.createCellOverlays(state)
     if (state.overlayMap != null) {
-      const rot = util.mod(util.getNumber(state.style, StyleName.rotation, 0), 90)
+      const rot = util.mod(state.style.rotation || 0, 90)
       const rad = util.toRadians(rot)
       const cos = Math.cos(rad)
       const sin = Math.sin(rad)
@@ -907,7 +902,7 @@ export class Renderer {
       const bounds = this.getControlBounds(state, image.width, image.height)
       const s = state.view.scale
       const r = (this.legacyControlPosition)
-        ? util.getNumber(state.style, StyleName.rotation, 0)
+        ? (state.style.rotation || 0)
         : state.shape!.getTextRotation()
 
       if (
@@ -940,7 +935,7 @@ export class Renderer {
           let rot = state.shape.getShapeRotation()
 
           if (this.legacyControlPosition) {
-            rot = util.getValue(state.style, constants.STYLE_ROTATION, 0)
+            rot = state.style.rotation || 0
           } else {
             if (state.shape.isPaintBoundsInverted()) {
               const t = (state.bounds.width - state.bounds.height) / 2
@@ -1086,7 +1081,7 @@ export class Renderer {
       state.shape != null &&
       state.style != null &&
       state.shape.style != null &&
-      state.shape.style[constants.STYLE_SHAPE] !== state.style[constants.STYLE_SHAPE]
+      state.shape.style.shape !== state.style.shape
     ) {
       state.shape.destroy()
       state.shape = null
@@ -1217,19 +1212,5 @@ export class Renderer {
       state.shape.destroy()
       state.shape = null
     }
-  }
-}
-
-export namespace Renderer {
-  export type ShapeClass = new (...args: any[]) => Shape
-
-  const shapes: { [name: string]: ShapeClass } = {}
-
-  export function registerShape(name: string, ctor: ShapeClass) {
-    shapes[name] = ctor
-  }
-
-  export function getShape(name: string) {
-    return name != null && shapes[name] || null
   }
 }

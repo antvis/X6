@@ -1,6 +1,5 @@
-import * as util from '../util'
 import { Shape } from './shape'
-import { Rectangle, StyleName } from '../struct'
+import { Rectangle } from '../struct'
 import { SvgCanvas2D } from '../canvas'
 
 export class Cylinder extends Shape {
@@ -34,8 +33,7 @@ export class Cylinder extends Shape {
 
     if (
       !this.outline ||
-      this.style == null ||
-      !util.getValue(this.style, StyleName.backgroundOutline, false)
+      !this.style.backgroundOutline
     ) {
       c.setShadow(false)
       c.begin()

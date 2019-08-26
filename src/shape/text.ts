@@ -3,22 +3,16 @@ import { constants, detector } from '../common'
 import { Shape } from './shape'
 import { SvgCanvas2D } from '../canvas'
 import { CellState } from '../core'
-import {
-  Rectangle,
-  Point,
-  Align,
-  StyleName,
-  TextDirection,
-  FontStyle,
-} from '../struct'
+import { Rectangle, Point, FontStyle } from '../struct'
+import { Align, VAlign, TextDirection } from '../types'
 
 export class Text extends Shape {
   value: string
-  color: string
+  fontColor: string
   align: Align
-  valign: Align
-  family: string
-  size: number
+  verticalAlign: VAlign
+  fontFamily: string
+  fontSize: number
   fontStyle: number
   spacing: number
   spacingTop: number
@@ -27,7 +21,7 @@ export class Text extends Shape {
   spacingLeft: number
   horizontal: boolean
   background?: string
-  border?: string
+  borderColor?: string
   wrap: boolean
   clipped: boolean
   overflow: string
@@ -68,11 +62,11 @@ export class Text extends Shape {
     super()
     this.value = value
     this.bounds = bounds
-    this.color = (color != null) ? color : 'black'
-    this.align = (align != null) ? align : Align.center
-    this.valign = (valign != null) ? valign : Align.middle
-    this.family = (family != null) ? family : constants.DEFAULT_FONTFAMILY
-    this.size = (size != null) ? size : constants.DEFAULT_FONTSIZE
+    this.fontColor = (color != null) ? color : 'black'
+    this.align = (align != null) ? align : 'center'
+    this.verticalAlign = (valign != null) ? valign : 'middle'
+    this.fontFamily = (family != null) ? family : constants.DEFAULT_FONTFAMILY
+    this.fontSize = (size != null) ? size : constants.DEFAULT_FONTSIZE
     this.fontStyle = (fontStyle != null) ? fontStyle : constants.DEFAULT_FONTSTYLE
     this.spacing = parseInt(spacing as any || 2, 10)
     this.spacingTop = this.spacing + parseInt(spacingTop as any || 0, 10)
@@ -81,7 +75,7 @@ export class Text extends Shape {
     this.spacingLeft = this.spacing + parseInt(spacingLeft as any || 0, 10)
     this.horizontal = (horizontal != null) ? horizontal : true
     this.background = background
-    this.border = border
+    this.borderColor = border
     this.wrap = (wrap != null) ? wrap : false
     this.clipped = (clipped != null) ? clipped : false
     this.overflow = (overflow != null) ? overflow : 'visible'
@@ -216,7 +210,7 @@ export class Text extends Shape {
         x, y, w, h,
         this.elem as SVGElement,
         this.align,
-        this.valign,
+        this.verticalAlign,
         this.wrap,
         this.overflow,
         this.clipped,
@@ -241,22 +235,19 @@ export class Text extends Shape {
       ) ? val.replace(/\n/g, '<br/>') : val
 
       let dir = this.textDirection
-      if (dir === constants.TEXT_DIRECTION_AUTO && !realHtml) {
+      if (dir === 'auto' && !realHtml) {
         dir = this.getAutoDirection()
       }
 
-      if (
-        dir !== constants.TEXT_DIRECTION_LTR &&
-        dir !== constants.TEXT_DIRECTION_RTL
-      ) {
-        dir = TextDirection.default
+      if (dir !== 'ltr' && dir !== 'rtl') {
+        dir = ''
       }
 
       c.text(
         x, y, w, h,
         val,
         this.align,
-        this.valign,
+        this.verticalAlign,
         this.wrap,
         fmt,
         this.overflow,
@@ -317,11 +308,11 @@ export class Text extends Shape {
   resetStyle() {
     super.resetStyle()
 
-    this.color = 'black'
-    this.align = Align.center
-    this.valign = Align.middle
-    this.family = constants.DEFAULT_FONTFAMILY
-    this.size = constants.DEFAULT_FONTSIZE
+    this.fontColor = 'black'
+    this.align = 'center'
+    this.verticalAlign = 'middle'
+    this.fontFamily = constants.DEFAULT_FONTFAMILY
+    this.fontSize = constants.DEFAULT_FONTSIZE
     this.fontStyle = constants.DEFAULT_FONTSTYLE
     this.spacing = 2
     this.spacingTop = 2
@@ -330,7 +321,7 @@ export class Text extends Shape {
     this.spacingLeft = 2
     this.horizontal = true
     delete this.background
-    delete this.border
+    delete this.borderColor
     this.textDirection = constants.DEFAULT_TEXT_DIRECTION as TextDirection
     delete this.margin
   }
@@ -340,38 +331,27 @@ export class Text extends Shape {
     super.apply(state)
 
     if (this.style != null) {
-      this.fontStyle = util.getNumber(this.style, StyleName.fontStyle, this.fontStyle)
-      this.family = util.getValue(this.style, StyleName.fontFamily, this.family)
-      this.size = util.getValue(this.style, StyleName.fontSize, this.size)
-      this.color = util.getValue(this.style, StyleName.fontColor, this.color)
-      this.align = util.getValue(this.style, StyleName.align, this.align)
-      this.valign = util.getValue(this.style, StyleName.verticalAlign, this.valign)
-      this.spacing = util.getNumber(this.style, StyleName.spacing, this.spacing)
+      this.fontStyle = this.style.fontStyle || this.fontStyle
+      this.fontFamily = this.style.fontFamily || this.fontFamily
+      this.fontSize = this.style.fontSize || this.fontSize
+      this.fontColor = this.style.fontColor || this.fontColor
+      this.align = this.style.align || this.align
+      this.verticalAlign = this.style.verticalAlign || this.verticalAlign
+      this.spacing = this.style.spacing || this.spacing
 
-      this.spacingTop = util.getNumber(
-        this.style, StyleName.spacingTop, this.spacingTop - spacing,
-      ) + this.spacing
+      this.spacingTop = (this.style.spacingTop || this.spacingTop - spacing) + this.spacing
+      this.spacingRight = (this.style.spacingRight || this.spacingRight - spacing) + this.spacing
+      this.spacingBottom = (this.style.spacingBottom || this.spacingBottom - spacing) + this.spacing
+      this.spacingLeft = (this.style.spacingLeft || this.spacingLeft - spacing) + this.spacing
 
-      this.spacingRight = util.getNumber(
-        this.style, StyleName.spacingRight, this.spacingRight - spacing,
-      ) + this.spacing
-
-      this.spacingBottom = util.getNumber(
-        this.style, StyleName.spacingBottom, this.spacingBottom - spacing,
-      ) + this.spacing
-
-      this.spacingLeft = util.getNumber(
-        this.style, StyleName.spacingLeft, this.spacingLeft - spacing,
-      ) + this.spacing
-
-      this.horizontal = util.getValue(this.style, StyleName.horizontal, this.horizontal)
-      this.background = util.getValue(this.style, StyleName.labelBackgroundColor, this.background)
-      this.border = util.getValue(this.style, StyleName.labelBorderColor, this.border)
-      this.textDirection = util.getValue(
-        this.style, StyleName.textDirection, constants.DEFAULT_TEXT_DIRECTION,
+      this.horizontal = this.style.horizontal || this.horizontal
+      this.background = this.style.labelBackgroundColor || this.background
+      this.borderColor = this.style.labelBorderColor || this.borderColor
+      this.textDirection = (
+        this.style.textDirection || constants.DEFAULT_TEXT_DIRECTION
       ) as TextDirection
 
-      this.opacity = util.getNumber(this.style, StyleName.textOpacity, 100)
+      this.opacity = this.style.textOpacity || 100
 
       this.updateMargin()
     }
@@ -390,8 +370,8 @@ export class Text extends Shape {
 
     // Returns the direction defined by the character
     return (tmp != null && tmp.length > 0 && tmp[0] > 'z')
-      ? constants.TEXT_DIRECTION_RTL as TextDirection
-      : constants.TEXT_DIRECTION_LTR as TextDirection
+      ? 'rtl' as TextDirection
+      : 'ltr' as TextDirection
   }
 
   updateBoundingBox() {
@@ -400,11 +380,8 @@ export class Text extends Shape {
     let elem = this.elem
     const rot = this.getTextRotation()
 
-    const h = (this.style != null)
-      ? util.getValue(this.style, StyleName.labelPosition, constants.ALIGN_CENTER) : null
-
-    const v = (this.style != null)
-      ? util.getValue(this.style, StyleName.verticalLabelPosition, constants.ALIGN_MIDDLE) : null
+    const h = this.style.labelPosition || 'center'
+    const v = this.style.labelVerticalPosition || 'middle'
 
     if (
       !this.ignoreStringSize &&
@@ -413,8 +390,8 @@ export class Text extends Shape {
       (
         !this.clipped ||
         !this.ignoreClippedStringSize ||
-        h !== constants.ALIGN_CENTER ||
-        v !== constants.ALIGN_MIDDLE
+        h !== 'center' ||
+        v !== 'middle'
       )
     ) {
       let ow = null
@@ -544,11 +521,11 @@ export class Text extends Shape {
   ) {
     super.configureCanvas(c, x, y, w, h)
 
-    c.setFontColor(this.color)
+    c.setFontColor(this.fontColor)
     c.setFontBackgroundColor(this.background!)
-    c.setFontBorderColor(this.border!)
-    c.setFontFamily(this.family)
-    c.setFontSize(this.size)
+    c.setFontBorderColor(this.borderColor!)
+    c.setFontFamily(this.fontFamily)
+    c.setFontSize(this.fontSize)
     c.setFontStyle(this.fontStyle)
   }
 
@@ -656,8 +633,8 @@ export class Text extends Shape {
         ? this.background
         : null
 
-      const bd = (this.border != null && this.border !== constants.NONE)
-        ? this.border
+      const bd = (this.borderColor != null && this.borderColor !== constants.NONE)
+        ? this.borderColor
         : null
 
       if (this.overflow === 'fill' || this.overflow === 'width') {
@@ -684,7 +661,7 @@ export class Text extends Shape {
         // and to measure wrapped font sizes in all browsers
         // FIXME: Background size in quirks mode for wrapped text
         const lh = constants.ABSOLUTE_LINE_HEIGHT
-          ? `${this.size * constants.LINE_HEIGHT}px`
+          ? `${this.fontSize * constants.LINE_HEIGHT}px`
           : constants.LINE_HEIGHT
 
         val = `<div
@@ -699,17 +676,11 @@ export class Text extends Shape {
       const divs = this.elem!.getElementsByTagName('div')
       if (divs.length > 0) {
         let dir = this.textDirection
-        if (
-          dir === constants.TEXT_DIRECTION_AUTO &&
-          this.dialect !== constants.DIALECT_STRICTHTML
-        ) {
+        if (dir === 'auto' && this.dialect !== constants.DIALECT_STRICTHTML) {
           dir = this.getAutoDirection()
         }
 
-        if (
-          dir === constants.TEXT_DIRECTION_LTR ||
-          dir === constants.TEXT_DIRECTION_RTL
-        ) {
+        if (dir === 'ltr' || dir === 'rtl') {
           divs[divs.length - 1].setAttribute('dir', dir)
         } else {
           divs[divs.length - 1].removeAttribute('dir')
@@ -722,13 +693,13 @@ export class Text extends Shape {
     const style = elem.style
 
     style.lineHeight = constants.ABSOLUTE_LINE_HEIGHT
-      ? `${this.size * constants.LINE_HEIGHT}px`
+      ? `${this.fontSize * constants.LINE_HEIGHT}px`
       : `${constants.LINE_HEIGHT}`
 
-    style.fontSize = `${this.size}px`
-    style.fontFamily = this.family
+    style.fontSize = `${this.fontSize}px`
+    style.fontFamily = this.fontFamily
     style.verticalAlign = 'top'
-    style.color = this.color
+    style.color = this.fontColor
 
     if (FontStyle.isBold(this.fontStyle)) {
       style.fontWeight = 'bold'
@@ -748,9 +719,9 @@ export class Text extends Shape {
       style.textDecoration = ''
     }
 
-    if (this.align === Align.center) {
+    if (this.align === 'center') {
       style.textAlign = 'center'
-    } else if (this.align === Align.right) {
+    } else if (this.align === 'right') {
       style.textAlign = 'right'
     } else {
       style.textAlign = 'left'
@@ -830,24 +801,24 @@ export class Text extends Shape {
   }
 
   updateMargin() {
-    this.margin = util.getAlignmentAsPoint(this.align, this.valign)
+    this.margin = util.getAlignmentAsPoint(this.align, this.verticalAlign)
   }
 
   getSpacing() {
     let dx = 0
     let dy = 0
 
-    if (this.align === Align.center) {
+    if (this.align === 'center') {
       dx = (this.spacingLeft - this.spacingRight) / 2
-    } else if (this.align === Align.right) {
+    } else if (this.align === 'right') {
       dx = -this.spacingRight - this.baseSpacingRight
     } else {
       dx = this.spacingLeft + this.baseSpacingLeft
     }
 
-    if (this.valign === Align.middle) {
+    if (this.verticalAlign === 'middle') {
       dy = (this.spacingTop - this.spacingBottom) / 2
-    } else if (this.valign === Align.bottom) {
+    } else if (this.verticalAlign === 'bottom') {
       dy = -this.spacingBottom - this.baseSpacingBottom
     } else {
       dy = this.spacingTop + this.baseSpacingTop
@@ -860,7 +831,7 @@ export class Text extends Shape {
 export namespace Text {
   export interface Options {
     align?: Align,
-    valign?: Align,
+    valign?: VAlign,
     color?: string,
     family?: string,
     size?: number,

@@ -1,11 +1,11 @@
 import { intersection } from '../util'
 import { Cell } from '../core/cell'
-import { Rectangle, Point, StyleName, Direction } from '../struct'
+import { Rectangle, Point } from '../struct'
 
 export namespace Perimeter {
   export function rectangle(
     bounds: Rectangle,
-    vertex: Cell,
+    node: Cell,
     next: Point = new Point(),
     orthogonal: boolean = false,
   ) {
@@ -62,7 +62,7 @@ export namespace Perimeter {
 
   export function ellipse(
     bounds: Rectangle,
-    vertex: Cell,
+    node: Cell,
     next: Point = new Point(),
     orthogonal: boolean = false,
   ) {
@@ -150,7 +150,7 @@ export namespace Perimeter {
 
   export function rhombus(
     bounds: Rectangle,
-    vertex: Cell,
+    node: Cell,
     next: Point = new Point(),
     orthogonal: boolean = false,
   ) {
@@ -214,17 +214,14 @@ export namespace Perimeter {
 
   export function triangle(
     bounds: Rectangle,
-    vertex: Cell,
+    node: Cell,
     next: Point = new Point(),
     orthogonal: boolean = false,
   ) {
-    const direction = (vertex != null)
-      ? (vertex.style as any)[StyleName.direction]
+    const direction = (node != null)
+      ? node.style.direction
       : null
-    const vertical = (
-      direction === Direction.north ||
-      direction === Direction.south
-    )
+    const vertical = direction === 'north' || direction === 'south'
 
     const x = bounds.x
     const y = bounds.y
@@ -238,14 +235,14 @@ export namespace Perimeter {
     let corner = new Point(x + w, cy)
     let end = new Point(x, y + h)
 
-    if (direction === Direction.north) {
+    if (direction === 'north') {
       start = end
       corner = new Point(cx, y)
       end = new Point(x + w, y + h)
-    } else if (direction === Direction.south) {
+    } else if (direction === 'south') {
       corner = new Point(cx, y + h)
       end = new Point(x + w, y)
-    } else if (direction === Direction.west) {
+    } else if (direction === 'west') {
       start = new Point(x + w, y)
       corner = new Point(x, cy)
       end = new Point(x + w, y + h)
@@ -260,8 +257,8 @@ export namespace Perimeter {
     let base = false
 
     if (
-      direction === Direction.north ||
-      direction === Direction.west
+      direction === 'north' ||
+      direction === 'west'
     ) {
       base = alpha > -t && alpha < t
     } else {
@@ -279,17 +276,17 @@ export namespace Perimeter {
           result = new Point(start.x, next.y)
         }
       } else {
-        if (direction === Direction.north) {
+        if (direction === 'north') {
           result = new Point(
             x + w / 2 + h * Math.tan(alpha) / 2,
             y + h,
           )
-        } else if (direction === Direction.south) {
+        } else if (direction === 'south') {
           result = new Point(
             x + w / 2 - h * Math.tan(alpha) / 2,
             y,
           )
-        } else if (direction === Direction.west) {
+        } else if (direction === 'west') {
           result = new Point(
             x + w,
             y + h / 2 + w * Math.tan(alpha) / 2,
@@ -307,14 +304,14 @@ export namespace Perimeter {
 
         if (next.y >= y && next.y <= y + h) {
           pt.x = vertical
-            ? cx : (direction === Direction.west)
+            ? cx : (direction === 'west')
               ? x + w
               : x
           pt.y = next.y
         } else if (next.x >= x && next.x <= x + w) {
           pt.x = next.x
           pt.y = !vertical
-            ? cy : (direction === Direction.north)
+            ? cy : (direction === 'north')
               ? y + h
               : y
         }
@@ -348,7 +345,7 @@ export namespace Perimeter {
 
   export function hexagon(
     bounds: Rectangle,
-    vertex: Cell,
+    node: Cell,
     next: Point = new Point(),
     orthogonal: boolean = false,
   ) {
@@ -369,14 +366,8 @@ export namespace Perimeter {
 
     let result = new Point(cx, cy)
 
-    const direction = vertex != null
-      ? (vertex.style as any)[StyleName.direction] as Direction
-      : Direction.east
-
-    const vertical = (
-      direction === Direction.north ||
-      direction === Direction.south
-    )
+    const direction = node && node.style.direction || 'east'
+    const vertical = direction === 'north' || direction === 'south'
 
     let a = new Point()
     let b = new Point()

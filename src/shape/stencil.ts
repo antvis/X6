@@ -2,17 +2,8 @@ import * as util from '../util'
 import { Shape } from './shape'
 import { constants } from '../common'
 import { SvgCanvas2D } from '../canvas'
-import {
-  Point,
-  Rectangle,
-  ConnectionConstraint,
-  StyleName,
-  NodeType,
-  Direction,
-  Align,
-  LineCap,
-  LineJoin,
-} from '../struct'
+import { Direction, Align, VAlign, LineCap, LineJoin } from '../types'
+import { Point, Rectangle, ConnectionConstraint, NodeType } from '../struct'
 
 export class Stencil extends Shape {
   desc: HTMLElement
@@ -105,20 +96,17 @@ export class Stencil extends Shape {
     // (start, segment, end blocks), pluggable markers, how to implement
     // swimlanes (title area) with this API, add icon, horizontal/vertical
     // label, indicator for all shapes, rotation
-    const direction = util.getValue(shape.style, StyleName.direction, null)
+    const direction = shape.style.direction
     const aspect = this.computeAspect(shape, x, y, w, h, direction)
     const minScale = Math.min(aspect.width, aspect.height)
     const sw = this.strokeWidth === 'inherit'
-      ? util.getNumber(shape.style, StyleName.strokeWidth, 1)
+      ? (shape.style.strokeWidth || 1)
       : Number(this.strokeWidth) * minScale
 
     canvas.setStrokeWidth(sw)
 
     // Draws a transparent rectangle for catching events
-    if (
-      shape.style != null &&
-      util.getBooleanFromStyle(shape.style, StyleName.pointerEvents)
-    ) {
+    if (shape.style.pointerEvents) {
       canvas.setStrokeColor('none')
       canvas.rect(x, y, w, h)
       canvas.stroke()
@@ -132,8 +120,7 @@ export class Stencil extends Shape {
       canvas, shape, x, y, w, h, this.fgNode, aspect, true,
       (
         !shape.outline ||
-        shape.style == null ||
-        !util.getBooleanFromStyle(shape.style, StyleName.backgroundOutline)
+        !shape.style.backgroundOutline
       ),
     )
   }
@@ -177,8 +164,8 @@ export class Stencil extends Shape {
     let sy = h / this.h0
 
     const inverse = (
-      direction === Direction.north ||
-      direction === Direction.south
+      direction === 'north' ||
+      direction === 'south'
     )
 
     if (inverse) {
@@ -389,8 +376,8 @@ export class Stencil extends Shape {
             const dr = shape.rotation
 
             // Depends on flipping
-            const flipH = util.isFlipH(shape.style)
-            const flipV = util.isFlipV(shape.style)
+            const flipH = shape.style.flipH === true
+            const flipV = shape.style.flipV === true
 
             if (flipH && flipV) {
               rotation -= dr
@@ -408,8 +395,8 @@ export class Stencil extends Shape {
             y0 + Number(node.getAttribute('y')) * sy,
             0, 0,
             str,
-            (node.getAttribute('align') || Align.left) as Align,
-            (node.getAttribute('valign') || Align.top) as Align,
+            (node.getAttribute('align') || 'left') as Align,
+            (node.getAttribute('valign') || 'top') as VAlign,
             false,
             '',
             '',
@@ -511,7 +498,7 @@ export namespace Stencil {
     stencils[name] = stencil
   }
 
-  export function getStencil(name: string) {
-    return stencils[name]
+  export function getStencil(name?: string) {
+    return name != null ? stencils[name] : null
   }
 }

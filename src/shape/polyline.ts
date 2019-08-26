@@ -1,6 +1,6 @@
-import * as util from '../util'
 import { Shape } from './shape'
-import { Point, StyleName } from '../struct'
+import { Point } from '../struct'
+import { constants } from '../common'
 import { SvgCanvas2D } from '../canvas'
 
 export class Polyline extends Shape {
@@ -31,10 +31,7 @@ export class Polyline extends Shape {
     const prev = c.pointerEventsValue
     c.pointerEventsValue = 'stroke'
 
-    if (
-      this.style == null ||
-      util.getBooleanFromStyle(this.style, StyleName.curved)
-    ) {
+    if (this.style.curved) {
       this.paintLine(c, pts, this.rounded)
     } else {
       this.paintCurvedLine(c, pts)
@@ -44,7 +41,7 @@ export class Polyline extends Shape {
   }
 
   paintLine(c: SvgCanvas2D, pts: Point[], rounded: boolean) {
-    const arcSize = util.getArcSize(this.style) / 2
+    const arcSize = (this.style.arcSize || constants.LINE_ARCSIZE) / 2
     c.begin()
     this.paintPoints(c, pts, rounded, arcSize, false)
     c.stroke()

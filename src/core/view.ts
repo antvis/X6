@@ -6,18 +6,11 @@ import {
   DomEvent,
   CustomMouseEvent,
 } from '../common'
-import {
-  Point,
-  Rectangle,
-  ConnectionConstraint,
-  Image,
-  Align,
-  StyleName,
-} from '../struct'
 import { StyleRegistry } from '../stylesheet'
-import { RectShape, ImageShape } from '../shape'
+import { RectangleShape, ImageShape } from '../shape'
 import { Cell, Graph, Geometry, CellState } from '.'
 import { UndoableEdit, CurrentRootChange } from '../change'
+import { Point, Rectangle, ConnectionConstraint, Image } from '../struct'
 
 export class View extends Events {
   graph: Graph
@@ -32,7 +25,7 @@ export class View extends Events {
   private states: WeakMap<Cell, CellState>
   private readonly invalidatings: WeakSet<Cell>
   private backgroundImage: ImageShape | null
-  private backgroundPageShape: RectShape | null
+  private backgroundPageShape: RectangleShape | null
 
   /**
    * Shared temporary DIV is used for text measuring
@@ -463,7 +456,7 @@ export class View extends Events {
     if (this.graph.pageVisible) {
       const bounds = this.getBackgroundPageBounds()
       if (this.backgroundPageShape == null) {
-        this.backgroundPageShape = new RectShape(bounds, 'white', 'black')
+        this.backgroundPageShape = new RectangleShape(bounds, 'white', 'black')
         this.backgroundPageShape.scale = this.scale
         this.backgroundPageShape.shadow = true
         this.backgroundPageShape.dialect = this.graph.dialect
@@ -654,7 +647,7 @@ export class View extends Events {
     const parentState = this.getState(parent)
 
     if (geo.relative && parentState != null && !this.model.isEdge(parent)) {
-      const rot = util.getNumber(parentState.style, StyleName.rotation, 0)
+      const rot = parentState.style.rotation || 0
       const rad = util.toRadians(rot)
       if (rad !== 0) {
         const cos = Math.cos(rad)
@@ -675,14 +668,9 @@ export class View extends Events {
    * This takes into account the label position styles.
    */
   private updateNodeLabelOffset(state: CellState) {
-    const h = util.getValue(
-      state.style,
-      StyleName.labelPosition,
-      Align.center,
-    )
-
-    if (h === Align.left) {
-      let lw = util.getValue(state.style, StyleName.labelWidth, null)
+    const h = state.style.labelPosition || 'center'
+    if (h === 'left') {
+      let lw = state.style.labelWidth
       if (lw != null) {
         lw *= this.scale
       } else {
@@ -691,21 +679,21 @@ export class View extends Events {
 
       state.absoluteOffset.x -= lw as number
 
-    } else if (h === Align.right) {
+    } else if (h === 'right') {
 
       state.absoluteOffset.x += state.bounds.width
 
-    } else if (h === Align.center) {
+    } else if (h === 'center') {
 
-      const lw = util.getValue(state.style, StyleName.labelWidth, null)
+      const lw = state.style.labelWidth
       if (lw != null) {
         // Aligns text block with given width inside the node width
-        const align = util.getValue(state.style, StyleName.align, Align.center)
+        const align = state.style.align || 'center'
         let dx = 0
 
-        if (align === Align.center) {
+        if (align === 'center') {
           dx = 0.5
-        } else if (align === Align.right) {
+        } else if (align === 'right') {
           dx = 1
         }
 
@@ -715,15 +703,10 @@ export class View extends Events {
       }
     }
 
-    const v = util.getValue(
-      state.style,
-      StyleName.verticalLabelPosition,
-      Align.middle,
-    )
-
-    if (v === Align.top) {
+    const v = state.style.labelVerticalPosition || 'middle'
+    if (v === 'top') {
       state.absoluteOffset.y -= state.bounds.height
-    } else if (v === Align.bottom) {
+    } else if (v === 'bottom') {
       state.absoluteOffset.y += state.bounds.height
     }
   }
@@ -862,7 +845,7 @@ export class View extends Events {
         const srcBounds = this.updateBoundsFromStencil(src)
         const trgBounds = this.updateBoundsFromStencil(trg)
 
-        edgeFn(edge, src, trg, points, pts)
+        edgeFn(edge, src, trg, points, pts as Point[])
 
         // Restores previous bounds
         if (srcBounds != null) {
@@ -897,8 +880,9 @@ export class View extends Events {
     isSource: boolean,
   ) {
     // get port id from edge, then try to get port-cell
-    const key = isSource ? StyleName.sourcePort : StyleName.targetPort
-    const portId = util.getValue(edgeState.style, key)
+    const portId = isSource
+      ? edgeState.style.sourcePort
+      : edgeState.style.targetPort
     if (portId != null) {
       const port = this.model.getCell(portId)
       if (port != null) {
@@ -1005,7 +989,7 @@ export class View extends Events {
 
     let nextPoint = this.getNextPoint(edgeState, opposeState, isSource)
     const center = relateState.bounds.getCenter()
-    const rot = util.getNumber(relateState.style, StyleName.rotation, 0)
+    const rot = relateState.style.rotation || 0
     const rad = util.toRadians(rot)
     if (rad !== 0) {
       // rotate with related cell
@@ -1014,10 +998,12 @@ export class View extends Events {
       nextPoint = util.rotatePoint(nextPoint!, cos, sin, center)
     }
 
-    let border = parseFloat(edgeState.style[StyleName.perimeterSpacing] || 0)
-    border += parseFloat(edgeState.style[isSource ?
-      StyleName.sourcePerimeterSpacing :
-      StyleName.targetPerimeterSpacing] || 0)
+    let border = edgeState.style.perimeterSpacing || 0
+    border += (
+      isSource
+        ? edgeState.style.sourcePerimeterSpacing
+        : edgeState.style.targetPerimeterSpacing
+    ) || 0
 
     border = isNaN(border) || !isFinite(border) ? 0 : border
 
@@ -1097,8 +1083,8 @@ export class View extends Events {
           let flipV = false
 
           if (this.graph.model.isNode(terminalState.cell)) {
-            flipH = util.isFlipH(terminalState.style)
-            flipV = util.isFlipV(terminalState.style)
+            flipH = terminalState.style.flipH === true
+            flipV = terminalState.style.flipV === true
 
             if (flipH) {
               result.x = 2 * bounds.getCenterX() - result.x
@@ -1132,7 +1118,7 @@ export class View extends Events {
   }
 
   getPerimeterFunction(state: CellState) {
-    let perimeter = state.style[StyleName.perimeter]
+    let perimeter = state.style.perimeter
     if (typeof perimeter === 'string') {
       let tmp = StyleRegistry.getValue(perimeter)
       if (tmp == null && this.isAllowEval()) {
@@ -1152,7 +1138,7 @@ export class View extends Events {
   getPerimeterBounds(terminalState: CellState, border: number = 0) {
     if (terminalState != null) {
       // tslint:disable-next-line
-      border += parseFloat(terminalState.style[StyleName.perimeterSpacing] || 0)
+      border += (terminalState.style.perimeterSpacing || 0)
     }
 
     return terminalState.getPerimeterBounds(border * this.scale)
@@ -1192,7 +1178,7 @@ export class View extends Events {
     if (
       (points == null || points.length < 2) &&
       (
-        !util.getBooleanFromStyle(edgeState.style, StyleName.orthogonalLoop) ||
+        !edgeState.style.orthogonalLoop ||
         ((sc == null || sc.point == null) && (tc == null || tc.point == null))
       )
     ) {
@@ -1212,10 +1198,10 @@ export class View extends Events {
     targetState?: CellState,
   ) {
     let edgeStyle = this.isLoopStyleEnabled(edgeState, points, sourceState, targetState)
-      ? util.getValue(edgeState.style, StyleName.loopStyle, this.graph.defaultLoopStyle)
-      : util.getBooleanFromStyle(edgeState.style, StyleName.noEdgeStyle)
+      ? (edgeState.style.loopStyle || this.graph.defaultLoopStyle)
+      : edgeState.style.noEdgeStyle
         ? null
-        : edgeState.style[StyleName.edgeStyle]
+        : edgeState.style.edgeStyle
 
     // Converts string values to objects
     if (typeof edgeStyle === 'string') {
@@ -1235,18 +1221,12 @@ export class View extends Events {
   }
 
   getRoutingCenterX(state: CellState) {
-    const f = state.style != null
-      ? util.getNumber(state.style, StyleName.routingCenterX, 0)
-      : 0
-
+    const f = state.style.routingCenterX || 0
     return state.bounds.getCenterX() + f * state.bounds.width
   }
 
   getRoutingCenterY(state: CellState) {
-    const f = state.style != null
-      ? util.getNumber(state.style, StyleName.routingCenterY, 0)
-      : 0
-
+    const f = state.style.routingCenterY || 0
     return state.bounds.getCenterY() + f * state.bounds.height
   }
 

@@ -1,11 +1,11 @@
 import * as util from '../util'
 import * as images from '../assets/images'
 import { Stencil } from './stencil'
-import { CellState, Renderer } from '../core'
+import { CellState } from '../core'
 import { SvgCanvas2D } from '../canvas'
-import { Stylesheet } from '../stylesheet'
 import { detector, constants, DomEvent } from '../common'
-import { Rectangle, Point, Direction, StyleName } from '../struct'
+import { Rectangle, Point } from '../struct'
+import { CellStyle, Direction } from '../types'
 
 export class Shape {
   state: CellState
@@ -33,7 +33,7 @@ export class Shape {
   /**
    * Optional reference to the style of the corresponding `CellState`.
    */
-  style: Stylesheet.Styles
+  style: CellStyle
 
   /**
    * The scale in which the shape is being painted.
@@ -105,12 +105,12 @@ export class Shape {
 
   //
   image: string | null
-  indicatorShape: Renderer.ShapeClass | null
+  indicatorShape: Shape.ShapeClass | null
   indicatorImage: string | null
   indicatorColor: string | null
   indicatorStrokeColor: string | null
   indicatorGradientColor: string | null
-  indicatorDirection: Direction
+  indicatorDirection: Direction | null
 
   // style
   cursor?: string
@@ -186,13 +186,13 @@ export class Shape {
   }
 
   protected create(container: HTMLElement | SVGElement) {
-    return Shape.isSvgElem(container)
+    return Private.isSvgElem(container)
       ? this.createSvg()  // g
       : this.createHtml() // div
   }
 
   protected createSvg(): SVGGElement {
-    return Shape.createSvgElement('g') as SVGGElement
+    return Private.createSvgElement('g') as SVGGElement
   }
 
   protected createHtml(): HTMLDivElement {
@@ -219,7 +219,7 @@ export class Shape {
         elem.style.visibility = 'visible'
         this.empty()
 
-        if (Shape.isSvgElem(elem)) {
+        if (Private.isSvgElem(elem)) {
           this.redrawSvgShape()
         } else {
           this.redrawHtmlShape()
@@ -236,7 +236,7 @@ export class Shape {
   protected empty() {
     if (this.elem != null) {
 
-      if (Shape.isSvgElem(this.elem)) {
+      if (Private.isSvgElem(this.elem)) {
         while (this.elem.lastChild != null) {
           this.elem.removeChild(this.elem.lastChild)
         }
@@ -291,7 +291,7 @@ export class Shape {
   protected createCanvas() {
     let canvas: SvgCanvas2D | null = null
 
-    if (Shape.isSvgElem(this.elem)) {
+    if (Private.isSvgElem(this.elem)) {
       canvas = this.createSvgCanvas()
     }
 
@@ -675,7 +675,7 @@ export class Shape {
     w: number,
     h: number,
   ) {
-    const rect = Shape.createSvgElement('rect') as SVGElement
+    const rect = Private.createSvgElement('rect') as SVGElement
     util.setAttributes(rect, {
       x, y, w, h,
       fill: 'none',
@@ -706,7 +706,7 @@ export class Shape {
     }
   }
 
-  protected paintBackground(
+  paintBackground(
     c: SvgCanvas2D,
     x: number,
     y: number,
@@ -714,7 +714,7 @@ export class Shape {
     h: number,
   ) { }
 
-  protected paintForeground(
+  paintForeground(
     c: SvgCanvas2D,
     x: number,
     y: number,
@@ -731,7 +731,7 @@ export class Shape {
         w / 2,
         Math.min(
           h / 2,
-          util.getArcSize(this.style) / 2,
+          (this.style.arcSize || constants.LINE_ARCSIZE) / 2,
         ),
       )
     } else {
@@ -759,7 +759,7 @@ export class Shape {
       '#ffffff',
       '#ffffff',
       x, y, w, h * 0.6,
-      Direction.south,
+      'south',
       0.9,
       0.1,
     )
@@ -885,7 +885,7 @@ export class Shape {
   // #endregion
 
   getLabelBounds(rect: Rectangle) {
-    const direction = (this.style.direction || Direction.east) as Direction
+    const direction = (this.style.direction || 'east') as Direction
 
     let bounds = rect
 
@@ -966,8 +966,8 @@ export class Shape {
     this.flipV = this.style.flipV || this.flipV
 
     if (
-      this.direction === Direction.north ||
-      this.direction === Direction.south
+      this.direction === 'north' ||
+      this.direction === 'south'
     ) {
       const tmp = this.flipH
       this.flipH = this.flipV
@@ -1010,7 +1010,7 @@ export class Shape {
   // #region boundingBox
 
   updateBoundingBox() {
-    if (this.useSvgBoundingBox && Shape.isSvgElem(this.elem)) {
+    if (this.useSvgBoundingBox && Private.isSvgElem(this.elem)) {
       try {
         const b = (this.elem as SVGGraphicsElement).getBBox()
         if (b.width > 0 && b.height > 0) {
@@ -1045,8 +1045,8 @@ export class Shape {
 
     if ((
       this.stencil != null && (
-        this.direction === Direction.north ||
-        this.direction === Direction.south
+        this.direction === 'north' ||
+        this.direction === 'south'
       )
     ) ||
       this.isPaintBoundsInverted()
@@ -1075,8 +1075,8 @@ export class Shape {
   isPaintBoundsInverted() {
     return (
       this.stencil == null && (
-        this.direction === Direction.north ||
-        this.direction === Direction.south
+        this.direction === 'north' ||
+        this.direction === 'south'
       )
     )
   }
@@ -1089,7 +1089,7 @@ export class Shape {
 
   getTextRotation() {
     let rot = this.getRotation()
-    if (!util.getBooleanFromStyle(this.style, StyleName.horizontal, true)) {
+    if (this.style.horizontal === false) {
       rot += -90
     }
 
@@ -1102,11 +1102,11 @@ export class Shape {
 
     // clockwise
     if (direction != null) {
-      if (direction === Direction.north) {
+      if (direction === 'north') {
         rotation += 270
-      } else if (direction === Direction.west) {
+      } else if (direction === 'west') {
         rotation += 180
-      } else if (direction === Direction.south) {
+      } else if (direction === 'south') {
         rotation += 90
       }
     }
@@ -1130,7 +1130,7 @@ export class Shape {
   }
 }
 
-export namespace Shape {
+namespace Private {
   export function createSvgElement(tagName: string = 'g') {
     return document.createElementNS(constants.NS_SVG, tagName)
   }
@@ -1140,5 +1140,23 @@ export namespace Shape {
       elem != null &&
       (elem as SVGElement).ownerSVGElement != null
     )
+  }
+}
+
+export namespace Shape {
+  export type ShapeClass = new (...args: any[]) => Shape
+
+  const shapes: { [name: string]: ShapeClass } = {}
+
+  export function registerShape(name: string, ctor: ShapeClass) {
+    if (shapes[name] != null) {
+      throw new Error(`Shape with name '${name}' already registered.`)
+    }
+
+    shapes[name] = ctor
+  }
+
+  export function getShape(name?: string | null) {
+    return name != null && shapes[name] || null
   }
 }

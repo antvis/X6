@@ -1,4 +1,4 @@
-import { EdgeStyle } from './edgestyle'
+import { EdgeStyle } from './edge-style'
 import { Perimeter } from './perimeter'
 import { EdgeType, Perimeters } from '../struct'
 

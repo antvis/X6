@@ -1,5 +1,5 @@
-import * as util from '../util'
 import { Actor } from './actor'
+import { constants } from '../common'
 import { Rectangle, Point } from '../struct'
 import { SvgCanvas2D } from '../canvas'
 
@@ -20,7 +20,7 @@ export class Hexagon extends Actor {
     w: number,
     h: number,
   ) {
-    const arcSize = util.getArcSize(this.style) / 2
+    const arcSize = (this.style.arcSize || constants.LINE_ARCSIZE) / 2
 
     this.paintPoints(
       c,

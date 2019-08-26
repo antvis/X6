@@ -1,6 +1,5 @@
-import * as util from '../util'
 import { Shape } from './shape'
-import { Rectangle, StyleName } from '../struct'
+import { Rectangle } from '../struct'
 import { SvgCanvas2D } from '../canvas'
 
 export class DoubleEllipse extends Shape {
@@ -36,11 +35,8 @@ export class DoubleEllipse extends Shape {
     h: number,
   ) {
     if (!this.outline) {
-      const margin = util.getNumber(
-        this.style,
-        StyleName.margin,
-        Math.min(3 + (this.strokeWidth as number), Math.min(w / 5, h / 5)),
-      )
+      const margin = this.style.margin ||
+        Math.min(3 + (this.strokeWidth as number), Math.min(w / 5, h / 5))
 
       const xx = x + margin
       const yy = y + margin
@@ -60,9 +56,7 @@ export class DoubleEllipse extends Shape {
       3 + (this.strokeWidth as number),
       Math.min(rect.width / 5 / this.scale, rect.height / 5 / this.scale),
     )
-    const margin = (
-      util.getNumber(this.style, StyleName.margin, defaultMargin)
-    ) * this.scale
+    const margin = (this.style.margin || defaultMargin) * this.scale
 
     return new Rectangle(
       rect.x + margin,

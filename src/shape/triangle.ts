@@ -1,6 +1,6 @@
-import * as util from '../util'
 import { Actor } from './actor'
 import { Rectangle, Point } from '../struct'
+import { constants } from '../common'
 import { SvgCanvas2D } from '../canvas'
 
 export class Triangle extends Actor {
@@ -24,7 +24,7 @@ export class Triangle extends Actor {
     w: number,
     h: number,
   ) {
-    const arcSize = util.getArcSize(this.style) / 2
+    const arcSize = (this.style.arcSize || constants.LINE_ARCSIZE) / 2
     this.paintPoints(
       c,
       [

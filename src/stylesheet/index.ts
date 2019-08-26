@@ -1,3 +1,3 @@
 export * from './registry'
 export * from './stylesheet'
-export * from './edgestyle'
+export * from './edge-style'

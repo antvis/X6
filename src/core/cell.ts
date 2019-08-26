@@ -2,11 +2,12 @@ import * as util from '../util'
 import { IDisposable } from '../common'
 import { Geometry } from './geometry'
 import { CellOverlay } from './cell-overlay'
+import { CellStyle } from '../types'
 
 export class Cell implements IDisposable {
   public id?: string | null
   public data?: any
-  public style: string | null
+  public style: CellStyle
   public visible: boolean
   public geometry: Geometry | null
 
@@ -24,9 +25,13 @@ export class Cell implements IDisposable {
   private isnode?: boolean
   private isedge?: boolean
 
-  constructor(value?: any, geometry?: Geometry, style?: string) {
-    this.data = value
-    this.style = style || null
+  constructor(
+    data?: any,
+    geometry?: Geometry,
+    style: CellStyle = {},
+  ) {
+    this.data = data
+    this.style = style
     this.geometry = geometry || null
     this.visible = true
   }
@@ -318,7 +323,7 @@ export class Cell implements IDisposable {
     return this.style || null
   }
 
-  setStyle(style: string | null) {
+  setStyle(style: CellStyle) {
     this.style = style
   }
 

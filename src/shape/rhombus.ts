@@ -1,5 +1,5 @@
-import * as util from '../util'
 import { Shape } from './shape'
+import { constants } from '../common'
 import { Rectangle, Point } from '../struct'
 import { SvgCanvas2D } from '../canvas'
 
@@ -28,7 +28,7 @@ export class Rhombus extends Shape {
     w: number,
     h: number,
   ) {
-    const arcSize = util.getArcSize(this.style) / 2
+    const arcSize = (this.style.arcSize || constants.LINE_ARCSIZE) / 2
 
     const hw = w / 2
     const hh = h / 2

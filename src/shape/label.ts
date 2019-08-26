@@ -1,11 +1,11 @@
-import * as util from '../util'
 import { constants } from '../common'
 import { Shape } from './Shape'
-import { RectShape } from './rect'
+import { RectangleShape } from './rectangle'
 import { SvgCanvas2D } from '../canvas'
-import { Rectangle, StyleName, Align, Direction } from '../struct'
+import { Rectangle } from '../struct'
+import { Direction } from '../types'
 
-export class Label extends RectShape {
+export class Label extends RectangleShape {
   image: string | null
   /**
    * Default width and height for the image.
@@ -129,27 +129,27 @@ export class Label extends RectShape {
     w: number,
     h: number,
   ) {
-    const align = util.getValue(this.style, StyleName.imageAlign, Align.left)
-    const valign = util.getValue(this.style, StyleName.imageVerticalAlign, Align.middle)
-    const width = util.getNumber(this.style, StyleName.imageWidth, constants.DEFAULT_IMAGESIZE)
-    const height = util.getNumber(this.style, StyleName.imageHeight, constants.DEFAULT_IMAGESIZE)
-    const spacing = util.getNumber(this.style, StyleName.spacing, this.spacing) + 5
+    const align = this.style.imageAlign || 'left'
+    const valign = this.style.imageVerticalAlign || 'middle'
+    const width = this.style.imageWidth || constants.DEFAULT_IMAGESIZE
+    const height = this.style.imageHeight || constants.DEFAULT_IMAGESIZE
+    const spacing = (this.style.spacing || this.spacing) + 5
 
     let x1 = x
     let y1 = y
 
-    if (align === Align.center) {
+    if (align === 'center') {
       x1 += (w - width) / 2
-    } else if (align === Align.right) {
+    } else if (align === 'right') {
       x1 += w - width - spacing
     } else {
       // default is left
       x1 += spacing
     }
 
-    if (valign === Align.top) {
+    if (valign === 'top') {
       y1 += spacing
-    } else if (valign === Align.bottom) {
+    } else if (valign === 'bottom') {
       y1 += h - height - spacing
     } else {
       // default is middle
@@ -190,27 +190,27 @@ export class Label extends RectShape {
     w: number,
     h: number,
   ) {
-    const align = util.getValue(this.style, StyleName.imageAlign, Align.left)
-    const valign = util.getValue(this.style, StyleName.imageVerticalAlign, Align.middle)
-    const width = util.getNumber(this.style, StyleName.indicatorWidth, this.indicatorSize)
-    const height = util.getNumber(this.style, StyleName.indicatorHeight, this.indicatorSize)
+    const align = this.style.imageAlign || 'left'
+    const valign = this.style.imageVerticalAlign || 'middle'
+    const width = this.style.indicatorWidth || this.indicatorSize
+    const height = this.style.indicatorHeight || this.indicatorSize
     const spacing = this.spacing + 5
 
     let x1 = x
     let y1 = y
 
-    if (align === constants.ALIGN_RIGHT) {
+    if (align === 'right') {
       x1 += w - width - spacing
-    } else if (align === constants.ALIGN_CENTER) {
+    } else if (align === 'center') {
       x1 += (w - width) / 2
     } else {
       // default is left
       x1 += spacing
     }
 
-    if (valign === constants.ALIGN_BOTTOM) {
+    if (valign === 'bottom') {
       y1 += h - height - spacing
-    } else if (valign === constants.ALIGN_TOP) {
+    } else if (valign === 'top') {
       y1 += spacing
     } else {
       // default is middle

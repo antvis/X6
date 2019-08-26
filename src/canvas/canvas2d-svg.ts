@@ -3,7 +3,8 @@
 import * as util from '../util'
 import { detector, constants } from '../common'
 import { Canvas2D } from './canvas2d'
-import { Rectangle, FontStyle, Direction, Align } from '../struct'
+import { Rectangle, FontStyle } from '../struct'
+import { Align, VAlign, Direction } from '../types'
 
 export class SvgCanvas2D extends Canvas2D {
   /**
@@ -811,7 +812,7 @@ export class SvgCanvas2D extends Canvas2D {
     h: number,
     node: SVGElement,
     align: Align,
-    valign: Align,
+    valign: VAlign,
     wrap: boolean,
     overflow: string,
     clip: boolean = false,
@@ -1000,7 +1001,7 @@ export class SvgCanvas2D extends Canvas2D {
     h: number,
     str: string,
     align: Align,
-    valign: Align,
+    valign: VAlign,
     wrap: boolean,
     format: '' | 'html',
     overflow: string,
@@ -1030,7 +1031,7 @@ export class SvgCanvas2D extends Canvas2D {
     h: number,
     str: string,
     align: Align,
-    valign: Align,
+    valign: VAlign,
     wrap: boolean,
     overflow: string,
     clip?: boolean,
@@ -1360,7 +1361,7 @@ export class SvgCanvas2D extends Canvas2D {
     h: number,
     str: string,
     align: Align,
-    valign: Align,
+    valign: VAlign,
     wrap: boolean,
     overflow: string,
     clip?: boolean,
@@ -1388,16 +1389,16 @@ export class SvgCanvas2D extends Canvas2D {
       let cx = x
       let cy = y
 
-      if (align === constants.ALIGN_CENTER) {
+      if (align === 'center') {
         cx -= w / 2
-      } else if (align === constants.ALIGN_RIGHT) {
+      } else if (align === 'right') {
         cx -= w
       }
 
       if (overflow !== 'fill') {
-        if (valign === constants.ALIGN_MIDDLE) {
+        if (valign === 'middle') {
           cy -= h / 2
-        } else if (valign === constants.ALIGN_BOTTOM) {
+        } else if (valign === 'bottom') {
           cy -= h
         }
       }
@@ -1422,9 +1423,9 @@ export class SvgCanvas2D extends Canvas2D {
     }
 
     // Default is left
-    const anchor = (align === constants.ALIGN_RIGHT)
+    const anchor = (align === 'right')
       ? 'end'
-      : (align === constants.ALIGN_CENTER)
+      : (align === 'center')
         ? 'middle'
         : 'start'
 
@@ -1450,7 +1451,7 @@ export class SvgCanvas2D extends Canvas2D {
 
     let cy = y + size - 1
 
-    if (valign === constants.ALIGN_MIDDLE) {
+    if (valign === 'middle') {
       if (overflow === 'fill') {
         cy -= h / 2
       } else {
@@ -1459,7 +1460,7 @@ export class SvgCanvas2D extends Canvas2D {
           : textHeight) / 2
         cy -= dy + 1
       }
-    } else if (valign === constants.ALIGN_BOTTOM) {
+    } else if (valign === 'bottom') {
       if (overflow === 'fill') {
         cy -= h
       } else {
@@ -1548,7 +1549,7 @@ export class SvgCanvas2D extends Canvas2D {
     w: number,
     h: number,
     align: Align,
-    valign: Align,
+    valign: VAlign,
     overflow?: string,
   ) {
     const s = this.state
@@ -1557,15 +1558,15 @@ export class SvgCanvas2D extends Canvas2D {
       let bbox = null
 
       if (overflow === 'fill' || overflow === 'width') {
-        if (align === constants.ALIGN_CENTER) {
+        if (align === 'center') {
           x -= w / 2
-        } else if (align === constants.ALIGN_RIGHT) {
+        } else if (align === 'right') {
           x -= w
         }
 
-        if (valign === constants.ALIGN_MIDDLE) {
+        if (valign === 'middle') {
           y -= h / 2
-        } else if (valign === constants.ALIGN_BOTTOM) {
+        } else if (valign === 'bottom') {
           y -= h
         }
 
@@ -1611,15 +1612,15 @@ export class SvgCanvas2D extends Canvas2D {
         const h = div.offsetHeight
         div.parentNode!.removeChild(div)
 
-        if (align === constants.ALIGN_CENTER) {
+        if (align === 'center') {
           x -= w / 2
-        } else if (align === constants.ALIGN_RIGHT) {
+        } else if (align === 'right') {
           x -= w
         }
 
-        if (valign === constants.ALIGN_MIDDLE) {
+        if (valign === 'middle') {
           y -= h / 2
-        } else if (valign === constants.ALIGN_BOTTOM) {
+        } else if (valign === 'bottom') {
           y -= h
         }
 
@@ -1745,7 +1746,7 @@ export class SvgCanvas2D extends Canvas2D {
   private createTextDiv(
     str: string,
     align: Align,
-    valign: Align,
+    valign: VAlign,
     style: string,
     overflow: string,
     whiteSpace: string | null,

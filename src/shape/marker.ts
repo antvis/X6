@@ -1,7 +1,6 @@
-import { constants } from '../common'
 import { SvgCanvas2D } from '../canvas'
 import { Shape } from './shape'
-import { Point } from '../struct'
+import { Point, ShapeName } from '../struct'
 
 export namespace Marker {
   type DrawFn = (
@@ -69,8 +68,8 @@ function createArrow(widthFactor: number = 2) {
     pt.y -= endOffsetY
 
     const f = (
-      type !== constants.ARROW_CLASSIC &&
-      type !== constants.ARROW_CLASSIC_THIN
+      type !== ShapeName.arrowClassic &&
+      type !== ShapeName.arrowClassicThin
     ) ? 1 : 3 / 4
 
     pe.x += -unitX * f - endOffsetX
@@ -82,8 +81,8 @@ function createArrow(widthFactor: number = 2) {
       c.lineTo(pt.x - unitX - unitY / widthFactor, pt.y - unitY + unitX / widthFactor)
 
       if (
-        type === constants.ARROW_CLASSIC ||
-        type === constants.ARROW_CLASSIC_THIN
+        type === ShapeName.arrowClassic ||
+        type === ShapeName.arrowClassicThin
       ) {
         c.lineTo(pt.x - unitX * 3 / 4, pt.y - unitY * 3 / 4)
       }
@@ -192,7 +191,7 @@ function diamond(
   // only half the strokewidth is processed ). Or 0.9862 for thin diamond.
   // Note these values and the tk variable below are dependent, update
   // both together (saves trig hard coding it).
-  const swFactor = (type === constants.ARROW_DIAMOND) ? 0.7071 : 0.9862
+  const swFactor = (type === ShapeName.arrowDiamond) ? 0.7071 : 0.9862
   const endOffsetX = unitX * sw * swFactor
   const endOffsetY = unitY * sw * swFactor
 
@@ -207,7 +206,7 @@ function diamond(
   pe.y += -unitY - endOffsetY
 
   // thickness factor for diamond
-  const tk = ((type === constants.ARROW_DIAMOND) ? 2 : 3.4)
+  const tk = ((type === ShapeName.arrowDiamond) ? 2 : 3.4)
 
   return function () {
     c.begin()

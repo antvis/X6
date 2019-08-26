@@ -1,6 +1,7 @@
 import { getValue } from './object'
 import { CellState } from '../core'
-import { Point, Rectangle, Direction } from '../struct'
+import { Point, Rectangle } from '../struct'
+import { Direction } from '../types'
 
 export function toRadians(deg: number) {
   return Math.PI * deg / 180
@@ -201,7 +202,7 @@ export function getDirectedBounds(
   flipH?: boolean,
   flipV?: boolean,
 ) {
-  const d = getValue(style, 'direction', Direction.east) as Direction
+  const d = getValue(style, 'direction', 'east') as Direction
   // tslint:disable-next-line:no-parameter-reassignment
   flipH = (flipH != null) ? flipH : getValue(style, 'flipH', false) as boolean
   // tslint:disable-next-line:no-parameter-reassignment
@@ -213,8 +214,8 @@ export function getDirectedBounds(
   m.height = Math.round(Math.max(0, Math.min(rect.height, m.height)))
 
   if (
-    (flipV && (d === Direction.south || d === Direction.north)) ||
-    (flipH && (d === Direction.east || d === Direction.west))
+    (flipV && (d === 'south' || d === 'north')) ||
+    (flipH && (d === 'east' || d === 'west'))
   ) {
     const tmp = m.x
     m.x = m.width
@@ -222,8 +223,8 @@ export function getDirectedBounds(
   }
 
   if (
-    (flipH && (d === Direction.south || d === Direction.north)) ||
-    (flipV && (d === Direction.east || d === Direction.west))
+    (flipH && (d === 'south' || d === 'north')) ||
+    (flipV && (d === 'east' || d === 'west'))
   ) {
     const tmp = m.y
     m.y = m.height
@@ -231,17 +232,17 @@ export function getDirectedBounds(
   }
 
   const m2 = Rectangle.clone(m)
-  if (d === Direction.south) {
+  if (d === 'south') {
     m2.y = m.x
     m2.x = m.height
     m2.width = m.y
     m2.height = m.width
-  } else if (d === Direction.west) {
+  } else if (d === 'west') {
     m2.y = m.height
     m2.x = m.width
     m2.width = m.x
     m2.height = m.y
-  } else if (d === Direction.north) {
+  } else if (d === 'north') {
     m2.y = m.width
     m2.x = m.y
     m2.width = m.height

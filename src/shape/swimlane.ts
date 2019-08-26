@@ -1,8 +1,7 @@
-import * as util from '../util'
 import { constants } from '../common'
 import { Shape } from './shape'
 import { SvgCanvas2D } from '../canvas'
-import { Rectangle, StyleName, Direction } from '../struct'
+import { Rectangle } from '../struct'
 
 export class Swimlane extends Shape {
   /**
@@ -32,32 +31,32 @@ export class Swimlane extends Shape {
   getTitleSize() {
     return Math.max(
       0,
-      util.getValue(this.style, StyleName.startSize, constants.DEFAULT_STARTSIZE),
+      this.style.startSize || constants.DEFAULT_STARTSIZE,
     )
   }
 
   getLabelBounds(rect: Rectangle) {
     const start = this.getTitleSize()
     const horizontal = this.isHorizontal()
-    const flipH = util.isFlipH(this.style)
-    const flipV = util.isFlipV(this.style)
+    const flipH = this.style.flipH === true
+    const flipV = this.style.flipV === true
     const bounds = new Rectangle(rect.x, rect.y, rect.width, rect.height)
 
     // East is default
     const shapeVertical = (
-      this.direction === Direction.north ||
-      this.direction === Direction.south
+      this.direction === 'north' ||
+      this.direction === 'south'
     )
     const realHorizontal = horizontal === !shapeVertical
 
     const realFlipH = !realHorizontal && flipH !== (
-      this.direction === Direction.south ||
-      this.direction === Direction.west
+      this.direction === 'south' ||
+      this.direction === 'west'
     )
 
     const realFlipV = realHorizontal && flipV !== (
-      this.direction === Direction.south ||
-      this.direction === Direction.west
+      this.direction === 'south' ||
+      this.direction === 'west'
     )
 
     // Shape is horizontal
@@ -104,17 +103,12 @@ export class Swimlane extends Shape {
   }
 
   getArcSize(w: number, h: number, start: number) {
-    const f = util.getNumber(
-      this.style,
-      StyleName.arcSize,
-      constants.RECTANGLE_ROUNDING_FACTOR * 100,
-    ) / 100
-
+    const f = (this.style.arcSize || constants.RECTANGLE_ROUNDING_FACTOR * 100) / 100
     return start * f * 3
   }
 
   isHorizontal() {
-    return util.getBooleanFromStyle(this.style, StyleName.horizontal, true)
+    return this.style.horizontal !== false
   }
 
   paintNodeShape(
@@ -125,8 +119,8 @@ export class Swimlane extends Shape {
     h: number,
   ) {
     let start = this.getTitleSize()
-    const fill = util.getValue(this.style, StyleName.swimlaneFillColor, constants.NONE)
-    const swimlaneLine = util.getBooleanFromStyle(this.style, StyleName.swimlaneLine, true)
+    const fill = this.style.swimlaneFillColor || constants.NONE
+    const swimlaneLine = this.style.swimlaneLine !== false
 
     let r = 0
 
@@ -146,7 +140,7 @@ export class Swimlane extends Shape {
       this.paintRoundedSwimlane(c, x, y, w, h, start, r, fill, swimlaneLine)
     }
 
-    const sep = util.getValue(this.style, StyleName.separatorColor, constants.NONE)
+    const sep = this.style.separatorColor || constants.NONE
     this.paintSeparator(c, x, y, w, h, start, sep)
 
     if (this.image != null) {
