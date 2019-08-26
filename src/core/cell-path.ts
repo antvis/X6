@@ -1,6 +1,7 @@
 import { Cell } from './cell'
 
 export namespace CellPath {
+
   export const PATH_SEPARATOR = '.'
 
   export function create(cell: Cell) {

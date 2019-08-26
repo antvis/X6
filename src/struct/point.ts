@@ -1,3 +1,5 @@
+import * as util from '../util'
+
 export class Point {
   x: number
   y: number
@@ -13,6 +15,27 @@ export class Point {
       p.x === this.x &&
       p.y === this.y
     )
+  }
+
+  translate(dx: number, dy: number) {
+    this.x += dx
+    this.y += dy
+  }
+
+  rotate(angle: number, center: Point = new Point()) {
+    const rad = util.toRadians(angle)
+    const cos = Math.cos(rad)
+    const sin = Math.sin(rad)
+
+    const p = util.rotatePoint(this, cos, sin, center)
+
+    this.x = p.x
+    this.y = p.y
+  }
+
+  scalePoint(sx: number, sy: number = sx) {
+    this.x *= sx
+    this.y *= sy
   }
 
   clone() {

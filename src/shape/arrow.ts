@@ -19,7 +19,7 @@ export class Arrow extends Shape {
     this.points = points
     this.fill = fill
     this.stroke = stroke
-    this.strokewidth = (strokewidth != null) ? strokewidth : 1
+    this.strokeWidth = (strokewidth != null) ? strokewidth : 1
     this.arrowWidth = (arrowWidth != null) ? arrowWidth : constants.ARROW_WIDTH
     this.spacing = (spacing != null) ? spacing : constants.ARROW_SPACING
     this.endSize = (endSize != null) ? endSize : constants.ARROW_SIZE
@@ -28,7 +28,7 @@ export class Arrow extends Shape {
   augmentBoundingBox(bbox: Rectangle) {
     super.augmentBoundingBox(bbox)
     const w = Math.max(this.arrowWidth, this.endSize as number)
-    bbox.grow((w / 2 + (this.strokewidth as number)) * this.scale)
+    bbox.grow((w / 2 + (this.strokeWidth as number)) * this.scale)
   }
 
   paintEdgeShape(c: SvgCanvas2D, points: Point[]) {

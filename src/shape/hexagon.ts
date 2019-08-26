@@ -22,7 +22,7 @@ export class Hexagon extends Actor {
   ) {
     const arcSize = util.getArcSize(this.style) / 2
 
-    this.addPoints(
+    this.paintPoints(
       c,
       [
         new Point(0.25 * w, 0),
@@ -32,7 +32,7 @@ export class Hexagon extends Actor {
         new Point(0.25 * w, h),
         new Point(0, 0.5 * h),
       ],
-      this.isRounded,
+      this.rounded,
       arcSize,
       true,
     )

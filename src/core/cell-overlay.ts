@@ -1,7 +1,6 @@
-import { Point, Rectangle, Image } from '../struct'
+import { Point, Rectangle, Image, Align } from '../struct'
 import { CellState } from './cell-state'
 import { Events } from '../common'
-import { Align } from '../types'
 
 export class CellOverlay extends Events {
   image: Image

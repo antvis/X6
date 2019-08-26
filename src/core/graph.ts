@@ -1,4 +1,5 @@
 import * as util from '../util'
+import * as images from '../assets/images'
 import { Cell } from './cell'
 import { View } from './view'
 import { Model } from './model'
@@ -19,15 +20,21 @@ import {
   RootChange,
   ChildChange,
   StyleChange,
-  ValueChange,
+  DataChange,
   TerminalChange,
   GeometryChange,
 } from '../change'
-import { Align, StyleNames, Direction } from '../types'
-import { Rectangle, Point, ConnectionConstraint, Image } from '../struct'
+import {
+  Align,
+  StyleName,
+  Direction,
+  Rectangle,
+  Point,
+  ConnectionConstraint,
+  Image,
+} from '../struct'
 import { GraphSelectionModel } from '../handler/graph-selection-model'
 import { Polyline, Label } from '../shape'
-import * as images from '../assets/images'
 
 export class Graph extends Events {
   container: HTMLElement
@@ -758,6 +765,10 @@ export class Graph extends Events {
   //   return new mxPopupMenuHandler(this)
   // }
 
+  batchUpdate(update: () => void) {
+    this.model.batchUpdate(update)
+  }
+
   getModel() {
     return this.model
   }
@@ -890,7 +901,7 @@ export class Graph extends Events {
       ) {
         this.view.invalidate(change.cell)
       }
-    } else if (change instanceof ValueChange) {
+    } else if (change instanceof DataChange) {
       // Handles special case where only the shape, but no
       // descendants need to be recreated.
 
@@ -1087,7 +1098,7 @@ export class Graph extends Events {
 
   labelChanged(cell: Cell, value: string, e?: MouseEvent) {
     this.model.batchUpdate(() => {
-      const old = cell.value
+      const old = cell.data
       this.cellLabelChanged(cell, value, this.isAutoSizeCell(cell))
       this.trigger(Graph.eventNames.labelChanged, { cell, value, old, e })
     })
@@ -1096,7 +1107,7 @@ export class Graph extends Events {
 
   cellLabelChanged(cell: Cell, value: string, autoSize: boolean) {
     this.model.batchUpdate(() => {
-      this.model.setValue(cell, value)
+      this.model.setData(cell, value)
       if (autoSize) {
         this.cellSizeUpdated(cell, false)
       }
@@ -1683,7 +1694,7 @@ export class Graph extends Events {
             const pageBreak = new Polyline(pts, this.pageBreakColor)
             pageBreak.dialect = this.dialect
             pageBreak.pointerEvents = false
-            pageBreak.isDashed = this.pageBreakDashed
+            pageBreak.dashed = this.pageBreakDashed
             pageBreak.init(this.view.getBackgroundPane()!)
             pageBreak.redraw()
 
@@ -2580,36 +2591,24 @@ export class Graph extends Events {
    * relative - Optional boolean that specifies if the geometry is relative.
    * Default is false.
    */
-  insertNode(
-    parent: Cell,
-    id?: string | null,
-    value?: any,
-    x?: number,
-    y?: number,
-    width?: number,
-    height?: number,
-    style?: string,
-    relative?: boolean,
-  ) {
-    const node = this.createNode(parent, id, value, x, y, width, height, style, relative)
-    return this.addCell(node, parent)
+  insertNode(options: Graph.InsertNodeOptions = {}) {
+    const node = this.createNode(options)
+    return this.addCell(node, options.parent, options.index)
   }
 
-  createNode(
-    parent: Cell,
-    id?: string | null,
-    value?: any,
-    x?: number,
-    y?: number,
-    width?: number,
-    height?: number,
-    style?: string,
-    relative?: boolean,
-  ) {
-    const geometry = new Geometry(x, y, width, height)
-    geometry.relative = (relative != null) ? relative : false
-    const node = new Cell(value, geometry, style)
-    node.setId(id)
+  addNode(node: Cell, parent?: Cell, index?: number) {
+    return this.addNodes([node], parent, index)[0]
+  }
+
+  addNodes(nodes: Cell[], parent?: Cell, index?: number) {
+    return this.addCells(nodes, parent, index)
+  }
+
+  createNode(options: Graph.CreateNodeOptions = {}) {
+    const geo = new Geometry(options.x, options.y, options.width, options.height)
+    geo.relative = options.relative != null ? options.relative : false
+    const node = new Cell(options.data, geo, options.style)
+    node.setId(options.id)
     node.actAsNode(true)
     node.setConnectable(true)
 
@@ -2631,16 +2630,15 @@ export class Graph extends Events {
    * target - <Cell> that defines the target of the edge.
    * style - Optional string that defines the cell style.
    */
-  insertEdge(
-    parent: Cell,
-    id?: string | null,
-    value?: any,
-    sourceNode?: Cell,
-    targetNode?: Cell,
-    style?: string,
-  ) {
-    const edge = this.createEdge(parent, id, value, style)
-    return this.addEdge(edge, parent, sourceNode, targetNode)
+  insertEdge(options: Graph.InsertEdgeOptions = {}) {
+    const edge = this.createEdge(options)
+    return this.addEdge(
+      edge,
+      options.parent,
+      options.sourceNode,
+      options.targetNode,
+      options.index,
+    )
   }
 
   /**
@@ -2649,17 +2647,12 @@ export class Graph extends Events {
    * are set when the edge is added to the model.
    *
    */
-  createEdge(
-    parent: Cell,
-    id?: string | null,
-    value?: any,
-    style?: string,
-  ) {
+  createEdge(options: Graph.CreateEdgeOptions = {}) {
     const geo = new Geometry()
     geo.relative = true
 
-    const edge = new Cell(value, geo, style)
-    edge.setId(id)
+    const edge = new Cell(options.data, geo, options.style)
+    edge.setId(options.id)
     edge.actAsEdge(true)
 
     return edge
@@ -2679,7 +2672,7 @@ export class Graph extends Events {
    */
   addEdge(
     edge: Cell,
-    parent: Cell,
+    parent?: Cell,
     sourceNode?: Cell,
     targetNode?: Cell,
     index?: number,
@@ -3351,10 +3344,10 @@ export class Graph extends Events {
               cellStyle = ''
             }
 
-            if (util.getBooleanFromStyle(style, StyleNames.horizontal, true)) {
+            if (util.getBooleanFromStyle(style, StyleName.horizontal, true)) {
               cellStyle = util.setStyle(
                 cellStyle,
-                StyleNames.startSize,
+                StyleName.startSize,
                 `${size.height + 8}`,
               )
 
@@ -3368,7 +3361,7 @@ export class Graph extends Events {
 
               cellStyle = util.setStyle(
                 cellStyle,
-                StyleNames.startSize,
+                StyleName.startSize,
                 `${size.width + 8}`,
               )
 
@@ -4361,12 +4354,6 @@ export class Graph extends Events {
         let flipH = terminalState.style[constants.STYLE_FLIPH]
         let flipV = terminalState.style[constants.STYLE_FLIPV]
 
-        // Legacy support for stencilFlipH/V
-        if (terminalState.shape != null && terminalState.shape.stencil != null) {
-          flipH = util.getBooleanFromStyle(terminalState.style, 'stencilFlipH') || flipH
-          flipV = util.getBooleanFromStyle(terminalState.style, 'stencilFlipV') || flipV
-        }
-
         if (
           direction === constants.DIRECTION_NORTH ||
           direction === constants.DIRECTION_SOUTH
@@ -4442,9 +4429,9 @@ export class Graph extends Events {
     let point: Point | null = null
 
     // connection point specified in style
-    const x = edgeState.style[isSource ? StyleNames.exitX : StyleNames.entryX]
+    const x = edgeState.style[isSource ? StyleName.exitX : StyleName.entryX]
     if (x != null) {
-      const y = edgeState.style[isSource ? StyleNames.exitY : StyleNames.entryY]
+      const y = edgeState.style[isSource ? StyleName.exitY : StyleName.entryY]
       if (y != null) {
         point = new Point(parseFloat(x), parseFloat(y))
       }
@@ -4457,13 +4444,13 @@ export class Graph extends Events {
     if (point != null) {
       perimeter = util.getBooleanFromStyle(
         edgeState.style,
-        isSource ? StyleNames.exitPerimeter : StyleNames.entryPerimeter,
+        isSource ? StyleName.exitPerimeter : StyleName.entryPerimeter,
         true,
       )
 
       // Add entry/exit offset
-      dx = parseFloat(edgeState.style[isSource ? StyleNames.exitDx : StyleNames.entryDx])
-      dy = parseFloat(edgeState.style[isSource ? StyleNames.exitDy : StyleNames.entryDy])
+      dx = parseFloat(edgeState.style[isSource ? StyleName.exitDx : StyleName.entryDx])
+      dy = parseFloat(edgeState.style[isSource ? StyleName.exitDy : StyleName.entryDy])
 
       dx = isFinite(dx) ? dx : 0
       dy = isFinite(dy) ? dy : 0
@@ -4586,7 +4573,7 @@ export class Graph extends Events {
     let result: Point | null = null
 
     if (terminalState != null && constraint.point != null) {
-      const direction = terminalState.style[StyleNames.direction]
+      const direction = terminalState.style[StyleName.direction]
       const bounds = this.view.getPerimeterBounds(terminalState)
       const cx = bounds.getCenter()
 
@@ -4594,7 +4581,7 @@ export class Graph extends Events {
 
       if (
         direction != null &&
-        util.getBooleanFromStyle(terminalState.style, StyleNames.anchorPointDirection, true)
+        util.getBooleanFromStyle(terminalState.style, StyleName.anchorPointDirection, true)
       ) {
         if (direction === Direction.north) {
           r1 += 270
@@ -4621,7 +4608,7 @@ export class Graph extends Events {
       )
 
       // Rotation for direction before projection on perimeter
-      let r2 = terminalState.style[StyleNames.rotation] || 0
+      let r2 = terminalState.style[StyleName.rotation] || 0
 
       if (constraint.perimeter) {
         if (r1 !== 0) {
@@ -4646,17 +4633,8 @@ export class Graph extends Events {
 
         if (this.getModel().isNode(terminalState.cell)) {
 
-          let flipH = util.isFlipH(terminalState.style)
-          let flipV = util.isFlipV(terminalState.style)
-
-          // support for stencilFlipH/V
-          if (
-            terminalState.shape != null &&
-            terminalState.shape.stencil != null
-          ) {
-            flipH = util.getBooleanFromStyle(terminalState.style, 'stencilFlipH') || flipH
-            flipV = util.getBooleanFromStyle(terminalState.style, 'stencilFlipV') || flipV
-          }
+          const flipH = util.isFlipH(terminalState.style)
+          const flipV = util.isFlipV(terminalState.style)
 
           if (flipH) {
             result.x = 2 * bounds.getCenterX() - result.x
@@ -5830,7 +5808,7 @@ export class Graph extends Events {
    * resulting edge has only horizontal or vertical segments.
    */
   isOrthogonal(edgeState: CellState) {
-    const orthogonal = edgeState.style[StyleNames.orthogonal]
+    const orthogonal = edgeState.style[StyleName.orthogonal]
     if (orthogonal != null) {
       return orthogonal === '1'
     }
@@ -6144,7 +6122,7 @@ export class Graph extends Events {
   getCellValidationError(cell: Cell) {
     const outCount = this.model.getDirectedEdgeCount(cell, true)
     const inCount = this.model.getDirectedEdgeCount(cell, false)
-    const value = this.model.getValue(cell)
+    const value = this.model.getData(cell)
     let error = ''
 
     if (this.multiplicities != null) {
@@ -6229,7 +6207,7 @@ export class Graph extends Events {
    * Returns the textual representation for the given cell.
    */
   convertValueToString(cell: Cell) {
-    const value = this.model.getValue(cell)
+    const value = this.model.getData(cell)
     if (value != null) {
       if (util.isHTMLNode(value)) {
         return value.nodeName
@@ -6253,7 +6231,7 @@ export class Graph extends Events {
       const state = this.view.getState(cell)
       const style = (state != null) ? state.style : this.getCellStyle(cell)
 
-      if (!util.getBooleanFromStyle(style, StyleNames.noLabel)) {
+      if (!util.getBooleanFromStyle(style, StyleName.noLabel)) {
         result = this.convertValueToString(cell)
       }
     }
@@ -6323,7 +6301,7 @@ export class Graph extends Events {
     const state = this.view.getState(cell)
     const style = (state != null) ? state.style : this.getCellStyle(cell)
 
-    return style != null ? style[StyleNames.whiteSpace] === 'wrap' : false
+    return style != null ? style[StyleName.whiteSpace] === 'wrap' : false
   }
 
   /**
@@ -6340,7 +6318,7 @@ export class Graph extends Events {
     const state = this.view.getState(cell)
     const style = (state != null) ? state.style : this.getCellStyle(cell)
 
-    return (style != null) ? style[StyleNames.overflow] === 'hidden' : false
+    return (style != null) ? style[StyleName.overflow] === 'hidden' : false
   }
 
   /**
@@ -6486,7 +6464,7 @@ export class Graph extends Events {
     const style = (state != null) ? state.style : this.getCellStyle(swimlane)
 
     if (style != null) {
-      const size = util.getNumber(style, StyleNames.startSize, constants.DEFAULT_STARTSIZE)
+      const size = util.getNumber(style, StyleName.startSize, constants.DEFAULT_STARTSIZE)
 
       if (util.getValue(style, constants.STYLE_HORIZONTAL, true)) {
         result.height = size
@@ -6503,7 +6481,7 @@ export class Graph extends Events {
    */
   getImage(state: CellState): string | null {
     return (state != null && state.style != null)
-      ? state.style[StyleNames.image]
+      ? state.style[StyleName.image]
       : null
   }
 
@@ -6512,7 +6490,7 @@ export class Graph extends Events {
    */
   getVerticalAlign(state: CellState) {
     return (state != null && state.style != null)
-      ? (state.style[StyleNames.verticalAlign] || Align.middle)
+      ? (state.style[StyleName.verticalAlign] || Align.middle)
       : null
   }
 
@@ -6521,7 +6499,7 @@ export class Graph extends Events {
    */
   getIndicatorColor(state: CellState) {
     return (state != null && state.style != null)
-      ? state.style[StyleNames.indicatorColor]
+      ? state.style[StyleName.indicatorColor]
       : null
   }
 
@@ -6530,7 +6508,7 @@ export class Graph extends Events {
    */
   getIndicatorGradientColor(state: CellState) {
     return (state != null && state.style != null)
-      ? state.style[StyleNames.indicatorGradientColor]
+      ? state.style[StyleName.indicatorGradientColor]
       : null
   }
 
@@ -6539,7 +6517,7 @@ export class Graph extends Events {
    */
   getIndicatorShape(state: CellState) {
     return (state != null && state.style != null)
-      ? state.style[StyleNames.indicatorShape]
+      ? state.style[StyleName.indicatorShape]
       : null
   }
 
@@ -6548,7 +6526,7 @@ export class Graph extends Events {
    */
   getIndicatorImage(state: CellState) {
     return (state != null && state.style != null)
-      ? state.style[StyleNames.indicatorImage]
+      ? state.style[StyleName.indicatorImage]
       : null
   }
 
@@ -6819,7 +6797,7 @@ export class Graph extends Events {
     const state = this.view.getState(cell)
     const style = (state != null) ? state.style : this.getCellStyle(cell)
 
-    return this.isCellsDeletable() && style[StyleNames.deletable] !== '0'
+    return this.isCellsDeletable() && style[StyleName.deletable] !== '0'
   }
 
   /**
@@ -7636,7 +7614,7 @@ export class Graph extends Events {
 
     return (
       this.model.getChildCount(cell) > 0 &&
-      util.getBooleanFromStyle(style, StyleNames.foldable)
+      util.getBooleanFromStyle(style, StyleName.foldable)
     )
   }
 
@@ -7941,7 +7919,7 @@ export class Graph extends Events {
         if (alpha !== 0) {
           const cos = Math.cos(-alpha)
           const sin = Math.sin(-alpha)
-          const cx = state.bounds.clone()
+          const cx = state.bounds.getCorner()
           const pt = util.rotatePoint(new Point(x, y), cos, sin, cx)
           x = pt.x // tslint:disable-line
           y = pt.y // tslint:disable-line
@@ -9608,9 +9586,33 @@ export namespace Graph {
     stylesheet?: Stylesheet,
   }
 
-  // TODO: CreateVertexOptions
-  export interface CreateVertexOptions {
+  export interface CreateNodeOptions {
+    id?: string
+    data?: any
+    x?: number
+    y?: number
+    width?: number
+    height?: number
+    style?: string
+    relative?: boolean
+  }
 
+  export interface InsertNodeOptions extends CreateNodeOptions {
+    parent?: Cell
+    index?: number
+  }
+
+  export interface CreateEdgeOptions {
+    id?: string
+    data?: any
+    style?: string
+  }
+
+  export interface InsertEdgeOptions extends CreateEdgeOptions {
+    parent?: Cell
+    index?: number
+    sourceNode?: Cell,
+    targetNode?: Cell,
   }
 
   export const eventNames = {

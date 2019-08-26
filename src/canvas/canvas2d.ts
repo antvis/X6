@@ -1,7 +1,6 @@
 import * as util from '../util'
-import { Point } from '../struct'
 import { constants, UrlConverter } from '../common'
-import { Direction, LineCap, LineJoin, FontStyle } from '../types'
+import { Point, Direction, LineCap, LineJoin, FontStyle } from '../struct'
 
 export class Canvas2D {
   state: Canvas2D.State
@@ -109,7 +108,7 @@ export class Canvas2D {
     this.state.fillAlpha = fillAlpha
   }
 
-  setFillColor(fillColor?: string) {
+  setFillColor(fillColor?: string | null) {
     this.state.fillColor = Canvas2D.getColor(fillColor)
     this.state.gradientColor = null
   }
@@ -252,14 +251,14 @@ export class Canvas2D {
     throw new Error('Method not implemented.')
   }
 
-  addOp(op: string, ...args: number[]) {
+  addOp(op: string, ...pts: number[]) {
     if (this.path != null) {
       this.path.push(op)
       const s = this.state
 
-      for (let i = 0, ii = args.length; i < ii; i += 2) {
-        this.lastX = args[i]
-        this.lastY = args[i + 1]
+      for (let i = 0, ii = pts.length; i < ii; i += 2) {
+        this.lastX = pts[i]
+        this.lastY = pts[i + 1]
 
         const x = `${this.format((this.lastX + s.tx) * s.scale)}`
         const y = `${this.format((this.lastY + s.ty) * s.scale)}`

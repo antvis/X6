@@ -1,10 +1,9 @@
 import * as util from '../util'
 import { constants } from '../common'
 import { Shape } from './shape'
-import { Rectangle, Point } from '../struct'
-import { SvgCanvas2D } from '../canvas'
-import { StyleNames, LineJoin } from '../types'
 import { CellState } from '../core'
+import { SvgCanvas2D } from '../canvas'
+import { Rectangle, Point, StyleName, LineJoin } from '../struct'
 
 export class ArrowConnector extends Shape {
 
@@ -27,7 +26,7 @@ export class ArrowConnector extends Shape {
     this.points = points
     this.fill = fill
     this.stroke = stroke
-    this.strokewidth = strokewidth
+    this.strokeWidth = strokewidth
     this.arrowWidth = arrowWidth
     this.arrowSpacing = spacing
     this.startSize = startSize
@@ -45,11 +44,11 @@ export class ArrowConnector extends Shape {
     if (this.style != null) {
 
       this.startSize = util.getNumber(
-        this.style, StyleNames.startSize, constants.ARROW_SIZE / 5,
+        this.style, StyleName.startSize, constants.ARROW_SIZE / 5,
       ) * 3
 
       this.endSize = util.getNumber(
-        this.style, StyleNames.endSize, constants.ARROW_SIZE / 5,
+        this.style, StyleName.endSize, constants.ARROW_SIZE / 5,
       ) * 3
     }
   }
@@ -67,15 +66,15 @@ export class ArrowConnector extends Shape {
       w = Math.max(w, this.getEndArrowWidth())
     }
 
-    bbox.grow((w / 2 + (this.strokewidth as number)) * this.scale)
+    bbox.grow((w / 2 + (this.strokeWidth as number)) * this.scale)
   }
 
   paintEdgeShape(c: SvgCanvas2D, pts: Point[]) {
-    let strokeWidth = this.strokewidth as number
+    let strokeWidth = this.strokeWidth as number
     if (this.outline) {
       strokeWidth = Math.max(
         1,
-        util.getNumber(this.style, StyleNames.strokeWidth, this.strokewidth as number),
+        util.getNumber(this.style, StyleName.strokeWidth, this.strokeWidth as number),
       )
     }
 
@@ -207,7 +206,7 @@ export class ArrowConnector extends Shape {
           // bend, 0.35 covers all but the most extreme cases
           const strokeWidthFactor = Math.max(
             tmp,
-            Math.min((this.strokewidth as number) / 200 + 0.04, 0.35),
+            Math.min((this.strokeWidth as number) / 200 + 0.04, 0.35),
           )
 
           const angleFactor = (pos !== 0 && isRounded)
@@ -372,7 +371,7 @@ export class ArrowConnector extends Shape {
   }
 
   isArrowRounded() {
-    return this.isRounded
+    return this.rounded
   }
 
   getStartArrowWidth() {
@@ -392,10 +391,10 @@ export class ArrowConnector extends Shape {
   }
 
   isMarkerStart() {
-    return (util.getValue(this.style, StyleNames.startArrow, constants.NONE) !== constants.NONE)
+    return (util.getValue(this.style, StyleName.startArrow, constants.NONE) !== constants.NONE)
   }
 
   isMarkerEnd() {
-    return (util.getValue(this.style, StyleNames.endArrow, constants.NONE) !== constants.NONE)
+    return (util.getValue(this.style, StyleName.endArrow, constants.NONE) !== constants.NONE)
   }
 }

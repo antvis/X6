@@ -6,12 +6,18 @@ import {
   DomEvent,
   CustomMouseEvent,
 } from '../common'
+import {
+  Point,
+  Rectangle,
+  ConnectionConstraint,
+  Image,
+  Align,
+  StyleName,
+} from '../struct'
+import { StyleRegistry } from '../stylesheet'
 import { RectShape, ImageShape } from '../shape'
-import { Align, StyleNames } from '../types'
 import { Cell, Graph, Geometry, CellState } from '.'
 import { UndoableEdit, CurrentRootChange } from '../change'
-import { Point, Rectangle, ConnectionConstraint, Image } from '../struct'
-import { StyleRegistry } from '../stylesheet'
 
 export class View extends Events {
   graph: Graph
@@ -459,7 +465,7 @@ export class View extends Events {
       if (this.backgroundPageShape == null) {
         this.backgroundPageShape = new RectShape(bounds, 'white', 'black')
         this.backgroundPageShape.scale = this.scale
-        this.backgroundPageShape.isShadow = true
+        this.backgroundPageShape.shadow = true
         this.backgroundPageShape.dialect = this.graph.dialect
         this.backgroundPageShape.init(this.backgroundPane!)
         this.backgroundPageShape.redraw()
@@ -648,7 +654,7 @@ export class View extends Events {
     const parentState = this.getState(parent)
 
     if (geo.relative && parentState != null && !this.model.isEdge(parent)) {
-      const rot = util.getNumber(parentState.style, StyleNames.rotation, 0)
+      const rot = util.getNumber(parentState.style, StyleName.rotation, 0)
       const rad = util.toRadians(rot)
       if (rad !== 0) {
         const cos = Math.cos(rad)
@@ -671,12 +677,12 @@ export class View extends Events {
   private updateNodeLabelOffset(state: CellState) {
     const h = util.getValue(
       state.style,
-      StyleNames.labelPosition,
+      StyleName.labelPosition,
       Align.center,
     )
 
     if (h === Align.left) {
-      let lw = util.getValue(state.style, StyleNames.labelWidth, null)
+      let lw = util.getValue(state.style, StyleName.labelWidth, null)
       if (lw != null) {
         lw *= this.scale
       } else {
@@ -691,10 +697,10 @@ export class View extends Events {
 
     } else if (h === Align.center) {
 
-      const lw = util.getValue(state.style, StyleNames.labelWidth, null)
+      const lw = util.getValue(state.style, StyleName.labelWidth, null)
       if (lw != null) {
         // Aligns text block with given width inside the node width
-        const align = util.getValue(state.style, StyleNames.align, Align.center)
+        const align = util.getValue(state.style, StyleName.align, Align.center)
         let dx = 0
 
         if (align === Align.center) {
@@ -711,7 +717,7 @@ export class View extends Events {
 
     const v = util.getValue(
       state.style,
-      StyleNames.verticalLabelPosition,
+      StyleName.verticalLabelPosition,
       Align.middle,
     )
 
@@ -891,7 +897,7 @@ export class View extends Events {
     isSource: boolean,
   ) {
     // get port id from edge, then try to get port-cell
-    const key = isSource ? StyleNames.sourcePort : StyleNames.targetPort
+    const key = isSource ? StyleName.sourcePort : StyleName.targetPort
     const portId = util.getValue(edgeState.style, key)
     if (portId != null) {
       const port = this.model.getCell(portId)
@@ -999,7 +1005,7 @@ export class View extends Events {
 
     let nextPoint = this.getNextPoint(edgeState, opposeState, isSource)
     const center = relateState.bounds.getCenter()
-    const rot = util.getNumber(relateState.style, StyleNames.rotation, 0)
+    const rot = util.getNumber(relateState.style, StyleName.rotation, 0)
     const rad = util.toRadians(rot)
     if (rad !== 0) {
       // rotate with related cell
@@ -1008,10 +1014,10 @@ export class View extends Events {
       nextPoint = util.rotatePoint(nextPoint!, cos, sin, center)
     }
 
-    let border = parseFloat(edgeState.style[StyleNames.perimeterSpacing] || 0)
+    let border = parseFloat(edgeState.style[StyleName.perimeterSpacing] || 0)
     border += parseFloat(edgeState.style[isSource ?
-      StyleNames.sourcePerimeterSpacing :
-      StyleNames.targetPerimeterSpacing] || 0)
+      StyleName.sourcePerimeterSpacing :
+      StyleName.targetPerimeterSpacing] || 0)
 
     border = isNaN(border) || !isFinite(border) ? 0 : border
 
@@ -1094,15 +1100,6 @@ export class View extends Events {
             flipH = util.isFlipH(terminalState.style)
             flipV = util.isFlipV(terminalState.style)
 
-            // support for stencilFlipH/V
-            if (
-              terminalState.shape != null &&
-              terminalState.shape.stencil != null
-            ) {
-              flipH = util.getBooleanFromStyle(terminalState.style, 'stencilFlipH') || flipH
-              flipV = util.getBooleanFromStyle(terminalState.style, 'stencilFlipV') || flipV
-            }
-
             if (flipH) {
               result.x = 2 * bounds.getCenterX() - result.x
             }
@@ -1135,7 +1132,7 @@ export class View extends Events {
   }
 
   getPerimeterFunction(state: CellState) {
-    let perimeter = state.style[StyleNames.perimeter]
+    let perimeter = state.style[StyleName.perimeter]
     if (typeof perimeter === 'string') {
       let tmp = StyleRegistry.getValue(perimeter)
       if (tmp == null && this.isAllowEval()) {
@@ -1155,7 +1152,7 @@ export class View extends Events {
   getPerimeterBounds(terminalState: CellState, border: number = 0) {
     if (terminalState != null) {
       // tslint:disable-next-line
-      border += parseFloat(terminalState.style[StyleNames.perimeterSpacing] || 0)
+      border += parseFloat(terminalState.style[StyleName.perimeterSpacing] || 0)
     }
 
     return terminalState.getPerimeterBounds(border * this.scale)
@@ -1195,7 +1192,7 @@ export class View extends Events {
     if (
       (points == null || points.length < 2) &&
       (
-        !util.getBooleanFromStyle(edgeState.style, StyleNames.orthogonalLoop) ||
+        !util.getBooleanFromStyle(edgeState.style, StyleName.orthogonalLoop) ||
         ((sc == null || sc.point == null) && (tc == null || tc.point == null))
       )
     ) {
@@ -1215,10 +1212,10 @@ export class View extends Events {
     targetState?: CellState,
   ) {
     let edgeStyle = this.isLoopStyleEnabled(edgeState, points, sourceState, targetState)
-      ? util.getValue(edgeState.style, StyleNames.loopStyle, this.graph.defaultLoopStyle)
-      : util.getBooleanFromStyle(edgeState.style, StyleNames.noEdgeStyle)
+      ? util.getValue(edgeState.style, StyleName.loopStyle, this.graph.defaultLoopStyle)
+      : util.getBooleanFromStyle(edgeState.style, StyleName.noEdgeStyle)
         ? null
-        : edgeState.style[StyleNames.edgeStyle]
+        : edgeState.style[StyleName.edgeStyle]
 
     // Converts string values to objects
     if (typeof edgeStyle === 'string') {
@@ -1239,7 +1236,7 @@ export class View extends Events {
 
   getRoutingCenterX(state: CellState) {
     const f = state.style != null
-      ? util.getNumber(state.style, StyleNames.routingCenterX, 0)
+      ? util.getNumber(state.style, StyleName.routingCenterX, 0)
       : 0
 
     return state.bounds.getCenterX() + f * state.bounds.width
@@ -1247,7 +1244,7 @@ export class View extends Events {
 
   getRoutingCenterY(state: CellState) {
     const f = state.style != null
-      ? util.getNumber(state.style, StyleNames.routingCenterY, 0)
+      ? util.getNumber(state.style, StyleName.routingCenterY, 0)
       : 0
 
     return state.bounds.getCenterY() + f * state.bounds.height

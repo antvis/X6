@@ -1,14 +1,24 @@
 import * as util from '../util'
+import * as images from '../assets/images'
 import { Stencil } from './stencil'
 import { CellState, Renderer } from '../core'
 import { SvgCanvas2D } from '../canvas'
-import { Rectangle, Point } from '../struct'
 import { Stylesheet } from '../stylesheet'
-import { Direction, StyleNames } from '../types'
 import { detector, constants, DomEvent } from '../common'
+import { Rectangle, Point, Direction, StyleName } from '../struct'
 
 export class Shape {
   state: CellState
+
+  /**
+   * Specifies if the shape is visible.
+   */
+  visible: boolean = true
+
+  /**
+   * Rendering hint for configuring the canvas.
+   */
+  antiAlias: boolean = true
 
   /**
    * The dialect in which the shape is to be painted.
@@ -18,12 +28,12 @@ export class Shape {
   /**
    * The `Stencil` instance that defines the shape.
    */
-  stencil?: Stencil
+  stencil: Stencil | null
 
   /**
    * Optional reference to the style of the corresponding `CellState`.
    */
-  style?: Stylesheet.Styles
+  style: Stylesheet.Styles
 
   /**
    * The scale in which the shape is being painted.
@@ -57,16 +67,6 @@ export class Shape {
    * should not be painted for outlines.
    */
   outline: boolean = false
-
-  /**
-   * Specifies if the shape is visible.
-   */
-  visible: boolean = true
-
-  /**
-   * Rendering hint for configuring the canvas.
-   */
-  antiAlias: boolean = true
 
   /**
    * Specifies if pointer events should be handled.
@@ -119,35 +119,34 @@ export class Shape {
   fill: string | null
   fillOpacity: number
   stroke: string | null
-  strokewidth: number | string
+  strokeWidth: number | string
   strokeOpacity: number
   flipH: boolean
   flipV: boolean
-  gradient: string | null
+  gradientColor: string | null
   gradientDirection?: Direction
-  startSize?: number
-  endSize?: number
   startArrow?: string
   endArrow?: string
+  startSize?: number
+  endSize?: number
   direction?: Direction | null
-  spacing?: number = 0
+  spacing: number = 0
 
   glass: boolean = false
-  isDashed: boolean = false
-  isShadow: boolean = false
-  isRounded: boolean = false
+  dashed: boolean = false
+  shadow: boolean = false
+  rounded: boolean = false
 
   constructor(stencil?: Stencil) {
-    this.stencil = stencil
+    this.stencil = stencil != null ? stencil : null
     this.initStyle()
   }
 
   protected initStyle() {
     this.rotation = 0
-
     this.opacity = 100
     this.fillOpacity = 100
-    this.strokewidth = 1
+    this.strokeWidth = 1
     this.strokeOpacity = 100
     this.flipH = false
     this.flipV = false
@@ -159,7 +158,7 @@ export class Shape {
     this.spacing = 0
 
     delete this.fill
-    delete this.gradient
+    delete this.gradientColor
     delete this.gradientDirection
     delete this.stroke
     delete this.startSize
@@ -168,10 +167,10 @@ export class Shape {
     delete this.endArrow
     delete this.direction
 
-    delete this.glass
-    delete this.isShadow
-    delete this.isDashed
-    delete this.isRounded
+    this.glass = false
+    this.shadow = false
+    this.dashed = false
+    this.rounded = false
   }
 
   /**
@@ -192,51 +191,52 @@ export class Shape {
       : this.createHtml() // div
   }
 
-  protected createSvg() {
-    return Shape.createSvgElement('g') as SVGElement
+  protected createSvg(): SVGGElement {
+    return Shape.createSvgElement('g') as SVGGElement
   }
 
-  protected createHtml() {
-    const node = document.createElement('div') as HTMLElement
-    node.style.position = 'absolute'
-    return node
+  protected createHtml(): HTMLDivElement {
+    const elem = document.createElement('div') as HTMLDivElement
+    elem.style.position = 'absolute'
+    return elem
   }
 
   protected getSvgScreenOffset(): number {
-    const sw = (this.stencil && (this.stencil as any).strokewidth !== 'inherit')
-      ? Number((this.stencil as any).strokewidth)
-      : this.strokewidth as number
-
-    return (util.mod(Math.max(1, Math.round(sw * this.scale)), 2) === 1)
-      ? 0.5
-      : 0
+    let sw = (this.stencil && this.stencil.strokeWidth !== 'inherit')
+      ? Number(this.stencil.strokeWidth)
+      : this.strokeWidth as number
+    sw = Math.max(1, Math.round(sw * this.scale))
+    return (util.mod(sw, 2) === 1) ? 0.5 : 0
   }
 
   redraw() {
-    this.updateBoundsFromPoints()
+    if (this.elem) {
+      const elem = this.elem
 
-    const elem = this.elem!
+      this.updateBoundsFromPoints()
 
-    if (this.visible && this.isValidBounds()) {
-      elem.style.visibility = 'visible'
-      this.empty()
+      if (this.visible && this.isValidBounds()) {
+        elem.style.visibility = 'visible'
+        this.empty()
 
-      if (Shape.isSvgElem(elem)) {
-        this.redrawSvgShape()
+        if (Shape.isSvgElem(elem)) {
+          this.redrawSvgShape()
+        } else {
+          this.redrawHtmlShape()
+        }
+
+        this.updateBoundingBox()
       } else {
-        this.redrawHtmlShape()
+        elem.style.visibility = 'hidden'
+        this.boundingBox = null
       }
-
-      this.updateBoundingBox()
-    } else {
-      elem.style.visibility = 'hidden'
-      this.boundingBox = null
     }
   }
 
   protected empty() {
     if (this.elem != null) {
-      if ((this.elem as SVGElement).ownerSVGElement != null) {
+
+      if (Shape.isSvgElem(this.elem)) {
         while (this.elem.lastChild != null) {
           this.elem.removeChild(this.elem.lastChild)
         }
@@ -277,64 +277,6 @@ export class Shape {
     )
   }
 
-  getLabelBounds(rect: Rectangle) {
-    const direction = util.getValue(
-      this.style, StyleNames.direction, Direction.east,
-    ) as Direction
-
-    let bounds = rect
-
-    if (
-      direction !== 'south' &&
-      direction !== 'north' &&
-      this.state != null &&
-      this.state.text != null &&
-      this.state.text.isPaintBoundsInverted()
-    ) {
-      bounds = bounds.clone()
-      const tmp = bounds.width
-      bounds.width = bounds.height
-      bounds.height = tmp
-    }
-
-    // Normalizes argument for getLabelMargins hook
-    const margin = this.getLabelMargins(bounds)
-    if (margin != null) {
-      let flipH = util.isFlipH(this.style)
-      let flipV = util.isFlipV(this.style)
-
-      // Handles special case for vertical labels
-      if (
-        this.state != null &&
-        this.state.text != null &&
-        this.state.text.isPaintBoundsInverted()
-      ) {
-        const tmp1 = margin.x
-        margin.x = margin.height
-        margin.height = margin.width
-        margin.width = margin.y
-        margin.y = tmp1
-
-        const tmp2 = flipH
-        flipH = flipV
-        flipV = tmp2
-      }
-
-      return util.getDirectedBounds(rect, margin, this.style, flipH, flipV)
-    }
-
-    return rect
-  }
-
-  /**
-   * Returns the scaled top, left, bottom and right margin to be used for
-   * computing the label bounds as an `Rectangle`, where the bottom and right
-   * margin are defined in the width and height of the rectangle, respectively.
-   */
-  getLabelMargins(rect: Rectangle): Rectangle | null {
-    return null
-  }
-
   protected redrawSvgShape() {
     const canvas = this.createCanvas()
     if (canvas != null) {
@@ -349,16 +291,16 @@ export class Shape {
   protected createCanvas() {
     let canvas: SvgCanvas2D | null = null
 
-    if ((this.elem as SVGElement).ownerSVGElement != null) {
+    if (Shape.isSvgElem(this.elem)) {
       canvas = this.createSvgCanvas()
     }
 
     // draw outline
     if (canvas != null && this.outline) {
-      canvas.setStrokeWidth(this.strokewidth as number)
+      canvas.setStrokeWidth(+this.strokeWidth)
       canvas.setStrokeColor(this.stroke)
-      if (this.isDashed != null) {
-        canvas.setDashed(this.isDashed)
+      if (this.dashed != null) {
+        canvas.setDashed(this.dashed)
       }
 
       canvas.setStrokeWidth = () => { }
@@ -442,10 +384,10 @@ export class Shape {
   protected updateHtmlBounds(elem: HTMLElement) {
     let sw = util.getDocumentMode() >= 9
       ? 0
-      : Math.ceil(Number(this.strokewidth) * this.scale)
+      : Math.ceil(Number(this.strokeWidth) * this.scale)
 
-    elem.style.borderWidth = `${Math.max(1, sw)}px`
     elem.style.overflow = 'hidden'
+    elem.style.borderWidth = `${Math.max(1, sw)}px`
     elem.style.left = `${Math.round(this.bounds.x - sw / 2)}px`
     elem.style.top = `${Math.round(this.bounds.y - sw / 2)}px`
 
@@ -464,7 +406,7 @@ export class Shape {
       f += `alpha(opacity=${this.opacity})`
     }
 
-    if (this.isShadow) {
+    if (this.shadow) {
       f += (
         'progid:DXImageTransform.Microsoft.dropShadow (' +
         `OffX='${Math.round(constants.SHADOW_OFFSET_X * this.scale)}',` +
@@ -476,11 +418,11 @@ export class Shape {
     if (
       this.fill != null &&
       this.fill !== constants.NONE &&
-      this.gradient &&
-      this.gradient !== constants.NONE
+      this.gradientColor &&
+      this.gradientColor !== constants.NONE
     ) {
       let start = this.fill
-      let end = this.gradient
+      let end = this.gradientColor
       let type = '0'
 
       const lookup = { east: 0, south: 1, west: 2, north: 3 }
@@ -519,15 +461,15 @@ export class Shape {
     if (color != null && color !== constants.NONE) {
       node.style.borderColor = color
 
-      if (this.isDashed) {
+      if (this.dashed) {
         node.style.borderStyle = 'dashed'
-      } else if (this.strokewidth > 0) {
+      } else if (this.strokeWidth > 0) {
         node.style.borderStyle = 'solid'
       }
 
       const borderWidth = Math.max(
         1,
-        Math.ceil(Number(this.strokewidth) * this.scale),
+        Math.ceil(Number(this.strokeWidth) * this.scale),
       )
       node.style.borderWidth = `${borderWidth}px`
     } else {
@@ -550,10 +492,12 @@ export class Shape {
    * Sets a transparent background CSS style to catch all events.
    */
   protected setTransparentBackgroundImage(elem: HTMLElement) {
-    elem.style.backgroundImage = `url('${constants.TRANSPARENT_IMG}')`
+    elem.style.backgroundImage = `url('${images.transparent.src}')`
   }
 
   // #endregion
+
+  // #region svg
 
   paint(c: SvgCanvas2D, update?: boolean) {
     let strokeDrawn = false
@@ -614,7 +558,7 @@ export class Shape {
     } else {
 
       // Stencils have separate strokewidth
-      c.setStrokeWidth(this.strokewidth as number)
+      c.setStrokeWidth(this.strokeWidth as number)
 
       if (this.points != null) {
         const pts: Point[] = []
@@ -672,20 +616,19 @@ export class Shape {
     c.setFillAlpha(this.fillOpacity / 100)
     c.setStrokeAlpha(this.strokeOpacity / 100)
 
-    if (this.isShadow != null) {
-      c.setShadow(this.isShadow)
+    if (this.shadow != null) {
+      c.setShadow(this.shadow)
     }
 
     // Dash
-    if (this.isDashed != null) {
+    if (this.dashed != null) {
       c.setDashed(
-        this.isDashed, this.style != null
-          ? util.getBooleanFromStyle(this.style, StyleNames.fixDash)
-          : false,
+        this.dashed,
+        this.style.fixDash ? true : false,
       )
     }
 
-    const dash = this.style != null ? this.style[StyleNames.dashPattern] : null
+    const dash = this.style && this.style.dashPattern
     if (dash != null) {
       c.setDashPattern(dash)
     }
@@ -693,13 +636,13 @@ export class Shape {
     if (
       this.fill != null &&
       this.fill !== constants.NONE &&
-      this.gradient &&
-      this.gradient !== constants.NONE
+      this.gradientColor &&
+      this.gradientColor !== constants.NONE
     ) {
       const b = this.getGradientBounds(c, x, y, w, h)
       c.setGradient(
         this.fill,
-        this.gradient,
+        this.gradientColor,
         b.x,
         b.y,
         b.width,
@@ -707,7 +650,7 @@ export class Shape {
         this.gradientDirection!,
       )
     } else {
-      c.setFillColor(this.fill!)
+      c.setFillColor(this.fill)
     }
 
     c.setStrokeColor(this.stroke)
@@ -727,7 +670,10 @@ export class Shape {
    * Create a transparent rectangle that catches all events.
    */
   protected createTransparentSvgRectangle(
-    x: number, y: number, w: number, h: number,
+    x: number,
+    y: number,
+    w: number,
+    h: number,
   ) {
     const rect = Shape.createSvgElement('rect') as SVGElement
     util.setAttributes(rect, {
@@ -749,10 +695,11 @@ export class Shape {
     h: number,
   ) {
     this.paintBackground(c, x, y, w, h)
+
     if (
       !this.outline ||
       this.style == null ||
-      !util.getBooleanFromStyle(this.style, StyleNames.backgroundOutline)
+      !this.style.backgroundOutline
     ) {
       c.setShadow(false)
       this.paintForeground(c, x, y, w, h)
@@ -776,12 +723,9 @@ export class Shape {
   ) { }
 
   protected getArcSize(w: number, h: number, f?: number) {
-    const absoluteArcSize = util.getBooleanFromStyle(
-      this.style, StyleNames.absoluteArcSize,
-    )
-
     let r = 0
 
+    const absoluteArcSize = this.style.absoluteArcSize
     if (absoluteArcSize) {
       r = Math.min(
         w / 2,
@@ -791,10 +735,8 @@ export class Shape {
         ),
       )
     } else {
-      const f = util.getNumber(
-        this.style,
-        StyleNames.arcSize,
-        constants.RECTANGLE_ROUNDING_FACTOR * 100,
+      const f = (
+        this.style.arcSize || constants.RECTANGLE_ROUNDING_FACTOR * 100
       ) / 100
       r = Math.min(w * f, h * f)
     }
@@ -810,7 +752,7 @@ export class Shape {
     h: number,
     arc: number,
   ) {
-    const sw = Math.ceil(Number(this.strokewidth) / 2)
+    const sw = Math.ceil((this.strokeWidth as number) / 2)
     const size = 0.4
 
     c.setGradient(
@@ -825,7 +767,7 @@ export class Shape {
     c.begin()
     arc += 2 * sw // tslint:disable-line
 
-    if (this.isRounded) {
+    if (this.rounded) {
       c.moveTo(x - sw + arc, y - sw)
       c.quadTo(x - sw, y - sw, x - sw, y - sw + arc)
       c.lineTo(x - sw, y + h * size)
@@ -846,27 +788,27 @@ export class Shape {
   /**
    * Paints the given points with rounded corners.
    */
-  addPoints(
+  paintPoints(
     c: SvgCanvas2D,
-    pts: Point[],
+    points: Point[],
     rounded: boolean,
     arcSize: number,
     close: boolean,
     exclude?: number[],
     initialMove: boolean = true,
   ) {
-    if (pts != null && pts.length > 0) {
-      const pe = pts[pts.length - 1]
+    if (points != null && points.length > 0) {
+      const pe = points[points.length - 1]
 
       // Adds virtual waypoint in the center between start and end point
       if (close && rounded) {
-        pts = pts.slice() // tslint:disable-line
-        const p0 = pts[0]
+        points = points.slice() // tslint:disable-line
+        const p0 = points[0]
         const wp = new Point(pe.x + (p0.x - pe.x) / 2, pe.y + (p0.y - pe.y) / 2)
-        pts.splice(0, 0, wp)
+        points.splice(0, 0, wp)
       }
 
-      let pt = pts[0]
+      let pt = points[0]
       let i = 1
 
       // Draws the line segments
@@ -876,8 +818,8 @@ export class Shape {
         c.lineTo(pt.x, pt.y)
       }
 
-      while (i < ((close) ? pts.length : pts.length - 1)) {
-        let tmp = pts[util.mod(i, pts.length)]
+      while (i < ((close) ? points.length : points.length - 1)) {
+        let tmp = points[util.mod(i, points.length)]
         let dx = pt.x - tmp.x
         let dy = pt.y - tmp.y
 
@@ -900,15 +842,15 @@ export class Shape {
           // Draws a curve from the last point to the current
           // point with a spacing of size off the current point
           // into direction of the next point
-          let next = pts[util.mod(i + 1, pts.length)]
+          let next = points[util.mod(i + 1, points.length)]
 
           // Uses next non-overlapping point
           while (
-            i < pts.length - 2 &&
+            i < points.length - 2 &&
             Math.round(next.x - tmp.x) === 0 &&
             Math.round(next.y - tmp.y) === 0
           ) {
-            next = pts[util.mod(i + 2, pts.length)]
+            next = points[util.mod(i + 2, points.length)]
             i += 1
           }
 
@@ -940,6 +882,64 @@ export class Shape {
     }
   }
 
+  // #endregion
+
+  getLabelBounds(rect: Rectangle) {
+    const direction = (this.style.direction || Direction.east) as Direction
+
+    let bounds = rect
+
+    if (
+      direction !== 'south' &&
+      direction !== 'north' &&
+      this.state != null &&
+      this.state.text != null &&
+      this.state.text.isPaintBoundsInverted()
+    ) {
+      bounds = bounds.clone()
+      const tmp = bounds.width
+      bounds.width = bounds.height
+      bounds.height = tmp
+    }
+
+    // Normalizes argument for getLabelMargins hook
+    const margin = this.getLabelMargins(bounds)
+    if (margin != null) {
+      let flipH = !!this.style.flipH
+      let flipV = !!this.style.flipV
+
+      // Handles special case for vertical labels
+      if (
+        this.state != null &&
+        this.state.text != null &&
+        this.state.text.isPaintBoundsInverted()
+      ) {
+        const tmp1 = margin.x
+        margin.x = margin.height
+        margin.height = margin.width
+        margin.width = margin.y
+        margin.y = tmp1
+
+        const tmp2 = flipH
+        flipH = flipV
+        flipV = tmp2
+      }
+
+      return util.getDirectedBounds(rect, margin, this.style, flipH, flipV)
+    }
+
+    return rect
+  }
+
+  /**
+   * Returns the scaled top, left, bottom and right margin to be used for
+   * computing the label bounds as an `Rectangle`, where the bottom and right
+   * margin are defined in the width and height of the rectangle, respectively.
+   */
+  getLabelMargins(rect: Rectangle): Rectangle | null {
+    return null
+  }
+
   /**
    * Applies the style of the given `CellState` to the shape.
    */
@@ -947,58 +947,48 @@ export class Shape {
     this.state = state
     this.style = state.style // keeps a reference to style
 
-    if (this.style != null) {
-      this.fill = util.getValue(this.style, StyleNames.fillColor, this.fill)
-      this.gradient = util.getValue(this.style, StyleNames.gradientColor, this.gradient)
-      this.gradientDirection = util.getValue(
-        this.style, StyleNames.gradientDirection, this.gradientDirection,
-      )
-      this.opacity = util.getValue(this.style, StyleNames.opacity, this.opacity)
-      this.fillOpacity = util.getValue(this.style, StyleNames.fillOpacity, this.fillOpacity)
-      this.strokeOpacity = util.getValue(this.style, StyleNames.strokeOpacity, this.strokeOpacity)
-      this.stroke = util.getValue(this.style, StyleNames.strokeColor, this.stroke)
-      this.strokewidth = util.getNumber(this.style, StyleNames.strokeWidth, +this.strokewidth)
-      this.spacing = util.getValue(this.style, StyleNames.spacing, this.spacing)
-      this.startSize = util.getNumber(this.style, StyleNames.startSize, +(this.startSize || 0))
-      this.endSize = util.getNumber(this.style, StyleNames.endSize, +(this.endSize || 0))
-      this.startArrow = util.getValue(this.style, StyleNames.startArrow, this.startArrow)
-      this.endArrow = util.getValue(this.style, StyleNames.endArrow, this.endArrow)
-      this.rotation = util.getValue(this.style, StyleNames.rotation, this.rotation)
-      this.direction = util.getValue(this.style, StyleNames.direction, this.direction)
-      this.flipH = util.isFlipH(this.style)
-      this.flipV = util.isFlipV(this.style)
+    this.fill = this.style.fill || this.fill
+    this.gradientColor = this.style.gradientColor || this.gradientColor
+    this.gradientDirection = this.style.gradientDirection || this.gradientDirection
+    this.opacity = this.style.opacity || this.opacity
+    this.fillOpacity = this.style.fillOpacity || this.fillOpacity
+    this.strokeOpacity = this.style.strokeOpacity || this.strokeOpacity
+    this.stroke = this.style.stroke || this.stroke
+    this.strokeWidth = this.style.strokeWidth || this.strokeWidth
+    this.spacing = this.style.spacing || this.spacing
+    this.startSize = this.style.startSize || this.startSize
+    this.endSize = this.style.endSize || this.endSize
+    this.startArrow = this.style.startArrow || this.startArrow
+    this.endArrow = this.style.endArrow || this.endArrow
+    this.rotation = this.style.rotation || this.rotation
+    this.direction = this.style.direction || this.direction
+    this.flipH = this.style.flipH || this.flipH
+    this.flipV = this.style.flipV || this.flipV
 
-      // Legacy support for stencilFlipH/V
-      if (this.stencil != null) {
-        this.flipH = util.getBooleanFromStyle(this.style, 'stencilFlipH') || this.flipH
-        this.flipV = util.getBooleanFromStyle(this.style, 'stencilFlipV') || this.flipV
-      }
+    if (
+      this.direction === Direction.north ||
+      this.direction === Direction.south
+    ) {
+      const tmp = this.flipH
+      this.flipH = this.flipV
+      this.flipV = tmp
+    }
 
-      if (
-        this.direction === Direction.north ||
-        this.direction === Direction.south
-      ) {
-        const tmp = this.flipH
-        this.flipH = this.flipV
-        this.flipV = tmp
-      }
+    this.glass = this.style.glass || this.glass
+    this.shadow = this.style.shadow || this.shadow
+    this.dashed = this.style.dashed || this.dashed
+    this.rounded = this.style.rounded || this.rounded
 
-      this.glass = util.getBooleanFromStyle(this.style, StyleNames.glass, this.glass)
-      this.isShadow = util.getBooleanFromStyle(this.style, StyleNames.shadow, this.isShadow)
-      this.isDashed = util.getBooleanFromStyle(this.style, StyleNames.dashed, this.isDashed)
-      this.isRounded = util.getBooleanFromStyle(this.style, StyleNames.rounded, this.isRounded)
+    if (this.fill === constants.NONE) {
+      this.fill = null
+    }
 
-      if (this.fill === constants.NONE) {
-        this.fill = null
-      }
+    if (this.gradientColor === constants.NONE) {
+      this.gradientColor = null
+    }
 
-      if (this.gradient === constants.NONE) {
-        this.gradient = null
-      }
-
-      if (this.stroke === constants.NONE) {
-        this.stroke = null
-      }
+    if (this.stroke === constants.NONE) {
+      this.stroke = null
     }
   }
 
@@ -1025,7 +1015,7 @@ export class Shape {
         const b = (this.elem as SVGGraphicsElement).getBBox()
         if (b.width > 0 && b.height > 0) {
           this.boundingBox = new Rectangle(b.x, b.y, b.width, b.height)
-          this.boundingBox.grow(+this.strokewidth * this.scale / 2)
+          this.boundingBox.grow(+this.strokeWidth * this.scale / 2)
           return
         }
       } catch (e) { }
@@ -1071,12 +1061,12 @@ export class Shape {
    * Augments the bounding box with the strokewidth and shadow offsets.
    */
   protected augmentBoundingBox(bbox: Rectangle) {
-    if (this.isShadow) {
+    if (this.shadow) {
       bbox.width += Math.ceil(constants.SHADOW_OFFSET_X * this.scale)
       bbox.height += Math.ceil(constants.SHADOW_OFFSET_Y * this.scale)
     }
 
-    bbox.grow(+this.strokewidth * this.scale / 2)
+    bbox.grow(+this.strokeWidth * this.scale / 2)
   }
 
   /**
@@ -1099,8 +1089,8 @@ export class Shape {
 
   getTextRotation() {
     let rot = this.getRotation()
-    if (!util.getBooleanFromStyle(this.style, StyleNames.horizontal, true)) {
-      rot += -90 // TODO: Text.prototype.verticalTextRotation
+    if (!util.getBooleanFromStyle(this.style, StyleName.horizontal, true)) {
+      rot += -90
     }
 
     return rot

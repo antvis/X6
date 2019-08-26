@@ -1,8 +1,7 @@
 import * as util from '../util'
 import { Shape } from './shape'
-import { Rectangle } from '../struct'
+import { Rectangle, StyleName } from '../struct'
 import { SvgCanvas2D } from '../canvas'
-import { StyleNames } from '../types'
 
 export class DoubleEllipse extends Shape {
   constructor(
@@ -15,7 +14,7 @@ export class DoubleEllipse extends Shape {
     this.bounds = bounds
     this.fill = fill
     this.stroke = stroke
-    this.strokewidth = strokewidth
+    this.strokeWidth = strokewidth
   }
 
   paintBackground(
@@ -39,8 +38,8 @@ export class DoubleEllipse extends Shape {
     if (!this.outline) {
       const margin = util.getNumber(
         this.style,
-        StyleNames.margin,
-        Math.min(3 + (this.strokewidth as number), Math.min(w / 5, h / 5)),
+        StyleName.margin,
+        Math.min(3 + (this.strokeWidth as number), Math.min(w / 5, h / 5)),
       )
 
       const xx = x + margin
@@ -58,11 +57,11 @@ export class DoubleEllipse extends Shape {
 
   getLabelBounds(rect: Rectangle) {
     const defaultMargin = Math.min(
-      3 + (this.strokewidth as number),
+      3 + (this.strokeWidth as number),
       Math.min(rect.width / 5 / this.scale, rect.height / 5 / this.scale),
     )
     const margin = (
-      util.getNumber(this.style, StyleNames.margin, defaultMargin)
+      util.getNumber(this.style, StyleName.margin, defaultMargin)
     ) * this.scale
 
     return new Rectangle(

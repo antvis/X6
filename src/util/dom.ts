@@ -20,6 +20,17 @@ export function setAttributes(
   }
 }
 
+export function prepend(
+  parent: HTMLElement | SVGElement,
+  child: HTMLElement | SVGElement,
+) {
+  if (parent.firstChild != null) {
+    parent.insertBefore(child, parent.firstChild)
+  } else {
+    parent.appendChild(child)
+  }
+}
+
 export function createXmlDocument() {
   let doc = null
   if (document.implementation && document.implementation.createDocument) {

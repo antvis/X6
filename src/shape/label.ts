@@ -2,9 +2,8 @@ import * as util from '../util'
 import { constants } from '../common'
 import { Shape } from './Shape'
 import { RectShape } from './rect'
-import { Rectangle } from '../struct'
 import { SvgCanvas2D } from '../canvas'
-import { StyleNames, Align, Direction } from '../types'
+import { Rectangle, StyleName, Align, Direction } from '../struct'
 
 export class Label extends RectShape {
   image: string | null
@@ -70,7 +69,7 @@ export class Label extends RectShape {
     if (this.indicator != null) {
       this.indicator.fill = this.indicatorColor
       this.indicator.stroke = this.indicatorStrokeColor
-      this.indicator.gradient = this.indicatorGradientColor
+      this.indicator.gradientColor = this.indicatorGradientColor
       this.indicator.direction = this.indicatorDirection
     }
 
@@ -130,11 +129,11 @@ export class Label extends RectShape {
     w: number,
     h: number,
   ) {
-    const align = util.getValue(this.style, StyleNames.imageAlign, Align.left)
-    const valign = util.getValue(this.style, StyleNames.imageVerticalAlign, Align.middle)
-    const width = util.getNumber(this.style, StyleNames.imageWidth, constants.DEFAULT_IMAGESIZE)
-    const height = util.getNumber(this.style, StyleNames.imageHeight, constants.DEFAULT_IMAGESIZE)
-    const spacing = util.getNumber(this.style, StyleNames.spacing, this.spacing) + 5
+    const align = util.getValue(this.style, StyleName.imageAlign, Align.left)
+    const valign = util.getValue(this.style, StyleName.imageVerticalAlign, Align.middle)
+    const width = util.getNumber(this.style, StyleName.imageWidth, constants.DEFAULT_IMAGESIZE)
+    const height = util.getNumber(this.style, StyleName.imageHeight, constants.DEFAULT_IMAGESIZE)
+    const spacing = util.getNumber(this.style, StyleName.spacing, this.spacing) + 5
 
     let x1 = x
     let y1 = y
@@ -191,10 +190,10 @@ export class Label extends RectShape {
     w: number,
     h: number,
   ) {
-    const align = util.getValue(this.style, StyleNames.imageAlign, Align.left)
-    const valign = util.getValue(this.style, StyleNames.imageVerticalAlign, Align.middle)
-    const width = util.getNumber(this.style, StyleNames.indicatorWidth, this.indicatorSize)
-    const height = util.getNumber(this.style, StyleNames.indicatorHeight, this.indicatorSize)
+    const align = util.getValue(this.style, StyleName.imageAlign, Align.left)
+    const valign = util.getValue(this.style, StyleName.imageVerticalAlign, Align.middle)
+    const width = util.getNumber(this.style, StyleName.indicatorWidth, this.indicatorSize)
+    const height = util.getNumber(this.style, StyleName.indicatorHeight, this.indicatorSize)
     const spacing = this.spacing + 5
 
     let x1 = x

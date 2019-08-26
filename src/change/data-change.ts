@@ -2,21 +2,21 @@ import { IChange } from './change'
 import { Cell } from '../core/cell'
 import { Model } from '../core/model'
 
-export class ValueChange implements IChange {
+export class DataChange implements IChange {
   public previous: any
 
   constructor(
     public readonly model: Model,
     public cell: Cell,
-    public value: any,
+    public data: any,
   ) {
-    this.previous = value
+    this.previous = data
   }
 
   execute() {
     if (this.cell != null) {
-      this.value = this.previous
-      this.previous = this.model.doValueChange(this.cell, this.previous)
+      this.data = this.previous
+      this.previous = this.model.doDataChange(this.cell, this.previous)
     }
   }
 }

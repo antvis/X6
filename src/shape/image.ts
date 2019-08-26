@@ -1,8 +1,7 @@
 import * as util from '../util'
 import { RectShape } from './rect'
-import { Rectangle } from '../struct'
 import { SvgCanvas2D } from '../canvas'
-import { StyleNames } from '../types'
+import { Rectangle, StyleName } from '../struct'
 import { CellState, CellOverlay } from '../core'
 
 export class ImageShape extends RectShape {
@@ -34,12 +33,12 @@ export class ImageShape extends RectShape {
 
     this.fill = null
     this.stroke = null
-    this.gradient = null
+    this.gradientColor = null
 
     if (this.style != null) {
       this.flipH = this.flipH || util.getBooleanFromStyle(this.style, 'imageFlipH')
       this.flipV = this.flipV || util.getBooleanFromStyle(this.style, 'imageFlipV')
-      this.preserveImageAspect = util.getBooleanFromStyle(this.style, StyleNames.imageAspect, true)
+      this.preserveImageAspect = util.getBooleanFromStyle(this.style, StyleName.imageAspect, true)
     }
   }
 
@@ -80,8 +79,8 @@ export class ImageShape extends RectShape {
     h: number,
   ) {
     if (this.image != null) {
-      const fill = util.getValue(this.style, StyleNames.imageBackground, null)
-      let stroke = util.getValue(this.style, StyleNames.imageBorder, null)
+      const fill = util.getValue(this.style, StyleName.imageBackground, null)
+      let stroke = util.getValue(this.style, StyleName.imageBorder, null)
 
       if (fill != null) {
         // Stroke rendering required for shadow
@@ -93,7 +92,7 @@ export class ImageShape extends RectShape {
 
       c.image(x, y, w, h, this.image, this.preserveImageAspect, false, false)
 
-      stroke = util.getValue(this.style, StyleNames.imageBorder, null)
+      stroke = util.getValue(this.style, StyleName.imageBorder, null)
 
       if (stroke != null) {
         c.setShadow(false)
@@ -120,8 +119,8 @@ export class ImageShape extends RectShape {
     elem.innerHTML = ''
 
     if (this.image != null) {
-      const fill = util.getValue(this.style, StyleNames.imageBackground, null)
-      const stroke = util.getValue(this.style, StyleNames.imageBorder, null)
+      const fill = util.getValue(this.style, StyleName.imageBackground, null)
+      const stroke = util.getValue(this.style, StyleName.imageBorder, null)
 
       elem.style.backgroundColor = fill
       elem.style.borderColor = stroke

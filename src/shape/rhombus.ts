@@ -14,7 +14,7 @@ export class Rhombus extends Shape {
     this.bounds = bounds
     this.fill = fill
     this.stroke = stroke
-    this.strokewidth = strokewidth
+    this.strokeWidth = strokewidth
   }
 
   isRoundable() {
@@ -34,7 +34,7 @@ export class Rhombus extends Shape {
     const hh = h / 2
 
     c.begin()
-    this.addPoints(
+    this.paintPoints(
       c,
       [
         new Point(x + hw, y),
@@ -42,7 +42,7 @@ export class Rhombus extends Shape {
         new Point(x + hw, y + h),
         new Point(x, y + hh),
       ],
-      this.isRounded,
+      this.rounded,
       arcSize,
       true,
     )

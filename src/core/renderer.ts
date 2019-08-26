@@ -3,8 +3,7 @@ import { constants, DomEvent, CustomMouseEvent, detector } from '../common'
 import { CellState } from './cell-state'
 import { CellOverlay } from './cell-overlay'
 import { Shape, Stencil, Connector, RectShape, Text, ImageShape } from '../shape'
-import { StyleNames, Align } from '../types'
-import { Rectangle, Point } from '../struct'
+import { StyleName, Align, Rectangle, Point } from '../struct'
 
 export class Renderer {
   antiAlias: boolean = true
@@ -32,7 +31,7 @@ export class Renderer {
   forceControlClickHandler: boolean = false
 
   private getShapeConstructor(state: CellState) {
-    let ctor = Renderer.getShape(state.style[StyleNames.shape])
+    let ctor = Renderer.getShape(state.style[StyleName.shape])
     if (ctor == null) {
       ctor = state.cell.isEdge()
         ? this.defaultEdgeShape
@@ -47,7 +46,7 @@ export class Renderer {
     if (state.style != null) {
       // Checks if there is a stencil for the name and creates
       // a shape instance for the stencil if one exists
-      const stencil = Stencil.getStencil(state.style[StyleNames.shape])
+      const stencil = Stencil.getStencil(state.style[StyleName.shape])
       if (stencil != null) {
         shape = new Shape(stencil)
       } else {
@@ -98,11 +97,11 @@ export class Renderer {
    */
   private postConfigureShape(state: CellState) {
     if (state != null && state.shape != null) {
-      this.resolveColor(state, 'fill', StyleNames.fillColor)
-      this.resolveColor(state, 'stroke', StyleNames.strokeColor)
-      this.resolveColor(state, 'gradient', StyleNames.gradientColor)
-      this.resolveColor(state, 'indicatorColor', StyleNames.fillColor)
-      this.resolveColor(state, 'indicatorGradientColor', StyleNames.gradientColor)
+      this.resolveColor(state, 'fill', StyleName.fillColor)
+      this.resolveColor(state, 'stroke', StyleName.strokeColor)
+      this.resolveColor(state, 'gradient', StyleName.gradientColor)
+      this.resolveColor(state, 'indicatorColor', StyleName.fillColor)
+      this.resolveColor(state, 'indicatorGradientColor', StyleName.gradientColor)
     }
   }
 
@@ -118,7 +117,7 @@ export class Renderer {
     if (value === 'inherit') {
       referenced = graph.model.getParent(state.cell)
     } else if (value === 'swimlane') {
-      (state.shape as any)[field] = key === StyleNames.strokeColor
+      (state.shape as any)[field] = key === StyleName.strokeColor
         ? '#000000'
         : '#ffffff'
 
@@ -157,9 +156,9 @@ export class Renderer {
     if (state.style != null) {
       const values = ['inherit', 'swimlane', 'indicated']
       const styles = [
-        StyleNames.fillColor,
-        StyleNames.strokeColor,
-        StyleNames.gradientColor,
+        StyleName.fillColor,
+        StyleName.strokeColor,
+        StyleName.gradientColor,
       ]
 
       for (let i = 0, ii = styles.length; i < ii; i += 1) {
@@ -180,8 +179,8 @@ export class Renderer {
     const graph = state.view.graph
 
     if (
-      state.style[StyleNames.fontSize] > 0 ||
-      state.style[StyleNames.fontSize] == null
+      state.style[StyleName.fontSize] > 0 ||
+      state.style[StyleName.fontSize] == null
     ) {
       // Avoids using DOM node for empty labels
       const isForceHtml = (
@@ -193,33 +192,33 @@ export class Renderer {
         value,
         new Rectangle(),
         {
-          align: (state.style[StyleNames.align] || Align.center) as Align,
+          align: (state.style[StyleName.align] || Align.center) as Align,
           valign: graph.getVerticalAlign(state),
-          color: state.style[StyleNames.fontColor],
-          family: state.style[StyleNames.fontFamily],
-          size: state.style[StyleNames.fontSize],
-          fontStyle: state.style[StyleNames.fontStyle],
-          spacing: state.style[StyleNames.spacing],
-          spacingTop: state.style[StyleNames.spacingTop],
-          spacingRight: state.style[StyleNames.spacingRight],
-          spacingBottom: state.style[StyleNames.spacingBottom],
-          spacingLeft: state.style[StyleNames.spacingLeft],
-          horizontal: state.style[StyleNames.horizontal],
-          background: state.style[StyleNames.labelBackgroundColor],
-          border: state.style[StyleNames.labelBorderColor],
+          color: state.style[StyleName.fontColor],
+          family: state.style[StyleName.fontFamily],
+          size: state.style[StyleName.fontSize],
+          fontStyle: state.style[StyleName.fontStyle],
+          spacing: state.style[StyleName.spacing],
+          spacingTop: state.style[StyleName.spacingTop],
+          spacingRight: state.style[StyleName.spacingRight],
+          spacingBottom: state.style[StyleName.spacingBottom],
+          spacingLeft: state.style[StyleName.spacingLeft],
+          horizontal: state.style[StyleName.horizontal],
+          background: state.style[StyleName.labelBackgroundColor],
+          border: state.style[StyleName.labelBorderColor],
           wrap: graph.isWrapping(state.cell) && graph.isHtmlLabel(state.cell),
           clipped: graph.isLabelClipped(state.cell),
-          overflow: state.style[StyleNames.overflow],
-          labelPadding: state.style[StyleNames.labelPadding],
+          overflow: state.style[StyleName.overflow],
+          labelPadding: state.style[StyleName.labelPadding],
           textDirection: util.getValue(
             state.style,
-            StyleNames.textDirection,
+            StyleName.textDirection,
             constants.DEFAULT_TEXT_DIRECTION,
           ),
         },
       )
 
-      state.text.opacity = util.getNumber(state.style, StyleNames.textOpacity, 100)
+      state.text.opacity = util.getNumber(state.style, StyleName.textOpacity, 100)
       state.text.dialect = isForceHtml
         ? constants.DIALECT_STRICTHTML
         : state.view.graph.dialect
@@ -587,7 +586,7 @@ export class Renderer {
     )
 
     const dialect = isForceHtml ? constants.DIALECT_STRICTHTML : state.view.graph.dialect
-    const overflow = state.style[StyleNames.overflow] || 'visible'
+    const overflow = state.style[StyleName.overflow] || 'visible'
 
     if (
       state.text != null && (
@@ -694,22 +693,22 @@ export class Renderer {
       return result
     }
 
-    return check('fontStyle', StyleNames.fontStyle, constants.DEFAULT_FONTSTYLE) ||
-      check('family', StyleNames.fontFamily, constants.DEFAULT_FONTFAMILY) ||
-      check('size', StyleNames.fontSize, constants.DEFAULT_FONTSIZE) ||
-      check('color', StyleNames.fontColor, 'black') ||
-      check('align', StyleNames.align, '') ||
-      check('valign', StyleNames.verticalAlign, '') ||
-      check('spacing', StyleNames.spacing, 2) ||
-      check('spacingTop', StyleNames.spacingTop, 0) ||
-      check('spacingRight', StyleNames.spacingRight, 0) ||
-      check('spacingBottom', StyleNames.spacingBottom, 0) ||
-      check('spacingLeft', StyleNames.spacingLeft, 0) ||
-      check('horizontal', StyleNames.horizontal, true) ||
-      check('background', StyleNames.labelBackgroundColor) ||
-      check('border', StyleNames.labelBorderColor) ||
-      check('opacity', StyleNames.textOpacity, 100) ||
-      check('textDirection', StyleNames.textDirection, constants.DEFAULT_TEXT_DIRECTION)
+    return check('fontStyle', StyleName.fontStyle, constants.DEFAULT_FONTSTYLE) ||
+      check('family', StyleName.fontFamily, constants.DEFAULT_FONTFAMILY) ||
+      check('size', StyleName.fontSize, constants.DEFAULT_FONTSIZE) ||
+      check('color', StyleName.fontColor, 'black') ||
+      check('align', StyleName.align, '') ||
+      check('valign', StyleName.verticalAlign, '') ||
+      check('spacing', StyleName.spacing, 2) ||
+      check('spacingTop', StyleName.spacingTop, 0) ||
+      check('spacingRight', StyleName.spacingRight, 0) ||
+      check('spacingBottom', StyleName.spacingBottom, 0) ||
+      check('spacingLeft', StyleName.spacingLeft, 0) ||
+      check('horizontal', StyleName.horizontal, true) ||
+      check('background', StyleName.labelBackgroundColor) ||
+      check('border', StyleName.labelBorderColor) ||
+      check('opacity', StyleName.textOpacity, 100) ||
+      check('textDirection', StyleName.textDirection, constants.DEFAULT_TEXT_DIRECTION)
   }
 
   redrawLabelShape(shape: Shape) {
@@ -752,9 +751,9 @@ export class Renderer {
       bounds.width = Math.max(1, state.bounds.width)
       bounds.height = Math.max(1, state.bounds.height)
 
-      const sc = util.getValue(state.style, StyleNames.strokeColor, constants.NONE)
+      const sc = util.getValue(state.style, StyleName.strokeColor, constants.NONE)
       if (sc !== constants.NONE && sc !== '') {
-        const s = util.getNumber(state.style, StyleNames.strokeWidth, 1) * scale
+        const s = util.getNumber(state.style, StyleName.strokeWidth, 1) * scale
         const dx = 1 + Math.floor((s - 1) / 2)
         const dh = Math.floor(s + 1)
 
@@ -778,8 +777,8 @@ export class Renderer {
     // Shape can modify its label bounds
     if (state.shape != null) {
 
-      const h = util.getValue(state.style, StyleNames.labelPosition, Align.center)
-      const v = util.getValue(state.style, StyleNames.verticalLabelPosition, Align.middle)
+      const h = util.getValue(state.style, StyleName.labelPosition, Align.center)
+      const v = util.getValue(state.style, StyleName.verticalLabelPosition, Align.middle)
 
       if (h === constants.ALIGN_CENTER && v === constants.ALIGN_MIDDLE) {
         bounds = state.shape.getLabelBounds(bounds)
@@ -787,7 +786,7 @@ export class Renderer {
     }
 
     // Label width style overrides actual label width
-    const lw = util.getValue(state.style, StyleNames.labelWidth, null)
+    const lw = util.getValue(state.style, StyleName.labelWidth, null)
     if (lw != null) {
       bounds.width = parseFloat(lw) * scale
     }
@@ -805,17 +804,17 @@ export class Renderer {
 
     if (
       !this.legacySpacing || (
-        state.style[StyleNames.overflow] !== 'fill' &&
-        state.style[StyleNames.overflow] !== 'width')
+        state.style[StyleName.overflow] !== 'fill' &&
+        state.style[StyleName.overflow] !== 'width')
     ) {
       const s = state.view.scale
       const spacing = state.text!.getSpacing()
       bounds.x += spacing.x * s
       bounds.y += spacing.y * s
 
-      const h = util.getValue(state.style, StyleNames.labelPosition, Align.center)
-      const v = util.getValue(state.style, StyleNames.verticalLabelPosition, Align.middle)
-      const lw = util.getValue(state.style, StyleNames.labelWidth, null)
+      const h = util.getValue(state.style, StyleName.labelPosition, Align.center)
+      const v = util.getValue(state.style, StyleName.verticalLabelPosition, Align.middle)
+      const lw = util.getValue(state.style, StyleName.labelWidth, null)
 
       bounds.width = Math.max(
         0,
@@ -859,7 +858,7 @@ export class Renderer {
   redrawCellOverlays(state: CellState, forced?: boolean) {
     this.createCellOverlays(state)
     if (state.overlayMap != null) {
-      const rot = util.mod(util.getNumber(state.style, StyleNames.rotation, 0), 90)
+      const rot = util.mod(util.getNumber(state.style, StyleName.rotation, 0), 90)
       const rad = util.toRadians(rot)
       const cos = Math.cos(rad)
       const sin = Math.sin(rad)
@@ -908,7 +907,7 @@ export class Renderer {
       const bounds = this.getControlBounds(state, image.width, image.height)
       const s = state.view.scale
       const r = (this.legacyControlPosition)
-        ? util.getNumber(state.style, StyleNames.rotation, 0)
+        ? util.getNumber(state.style, StyleName.rotation, 0)
         : state.shape!.getTextRotation()
 
       if (

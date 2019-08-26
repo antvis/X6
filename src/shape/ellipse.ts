@@ -13,7 +13,7 @@ export class Ellipse extends Shape {
     this.bounds = bounds
     this.fill = fill
     this.stroke = stroke
-    this.strokewidth = strokewidth
+    this.strokeWidth = strokewidth
   }
 
   paintNodeShape(

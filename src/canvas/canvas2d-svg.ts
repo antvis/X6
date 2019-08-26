@@ -3,8 +3,7 @@
 import * as util from '../util'
 import { detector, constants } from '../common'
 import { Canvas2D } from './canvas2d'
-import { Rectangle } from '../struct'
-import { FontStyle, Direction, Align } from '../types'
+import { Rectangle, FontStyle, Direction, Align } from '../struct'
 
 export class SvgCanvas2D extends Canvas2D {
   /**
@@ -12,12 +11,12 @@ export class SvgCanvas2D extends Canvas2D {
 	 */
   root: SVGElement
 
+  originalRoot?: SVGElement
+
   /**
    * The current DOM node.
    */
   elem?: SVGElement
-
-  originalRoot?: SVGElement
 
   /**
 	 * Reference to the defs section of the SVG document.
@@ -113,7 +112,7 @@ export class SvgCanvas2D extends Canvas2D {
     // root not in current document
     if (root.ownerDocument !== document) {
       let node = root
-      while (node != null && util.getNodeName(node) !== 'svg') {
+      while (node != null && node.nodeName.toLowerCase() !== 'svg') {
         node = node.parentNode as SVGElement
       }
       svg = node
@@ -129,17 +128,12 @@ export class SvgCanvas2D extends Canvas2D {
       // create defs
       if (this.defs == null) {
         this.defs = this.createElement('defs') as SVGDefsElement
-        // prepend
-        if (svg.firstChild != null) {
-          svg.insertBefore(this.defs, svg.firstChild)
-        } else {
-          svg.appendChild(this.defs)
-        }
+        util.prepend(svg, this.defs)
       }
 
       // add stylesheet
       if (this.styleEnabled) {
-        this.defs.appendChild(this.createStyle())
+        this.defs.appendChild(this.createStylesheet())
       }
     }
   }
@@ -153,7 +147,7 @@ export class SvgCanvas2D extends Canvas2D {
     return parseFloat(parseFloat(value).toFixed(2))
   }
 
-  private createStyle() {
+  private createStylesheet() {
     const style = this.createElement('style')
     style.setAttribute('type', 'text/css')
     util.fillElementWithText(
@@ -191,16 +185,6 @@ export class SvgCanvas2D extends Canvas2D {
     y: number,
     w: number,
     h: number,
-    /*
-    str: string,
-    align: Canvas2D.Align,
-    valign: Canvas2D.Align,
-    wrap,
-    format,
-    overflow,
-    clip,
-    rotation,
-    */
   ) {
     if (this.foAltText != null) {
       const s = this.state
@@ -383,7 +367,7 @@ export class SvgCanvas2D extends Canvas2D {
     this.addNode(true, true)
   }
 
-  private addNode(filled?: boolean, stroked?: boolean) {
+  private addNode(filled: boolean, stroked: boolean) {
     if (this.elem == null) {
       return
     }
@@ -400,6 +384,7 @@ export class SvgCanvas2D extends Canvas2D {
       }
     }
 
+    // fill
     if (filled && s.fillColor != null) {
       this.updateFill()
     } else if (!this.styleEnabled) {
@@ -414,6 +399,7 @@ export class SvgCanvas2D extends Canvas2D {
       filled = false
     }
 
+    // stroke
     if (stroked && s.strokeColor != null) {
       this.updateStroke()
     } else if (!this.styleEnabled) {
@@ -463,7 +449,7 @@ export class SvgCanvas2D extends Canvas2D {
     this.elem = null as any
   }
 
-  protected updateFill() {
+  private updateFill() {
     const s = this.state
     const elem = this.elem!
 
@@ -606,14 +592,19 @@ export class SvgCanvas2D extends Canvas2D {
 
   // #endregion
 
+  /**
+   * Sets the rotation of the canvas.
+   *
+   * Note that rotation cannot be concatenated.
+   */
   rotate(
-    theta: number,
+    deg: number,
     flipH: boolean,
     flipV: boolean,
     cx: number,
     cy: number,
   ) {
-    if (theta !== 0 || flipH || flipV) {
+    if (deg !== 0 || flipH || flipV) {
       const s = this.state
 
       cx += s.tx
@@ -624,7 +615,7 @@ export class SvgCanvas2D extends Canvas2D {
       s.transform = s.transform || ''
 
       if (flipH && flipV) {
-        theta += 180
+        deg += 180
       } else if (flipH !== flipV) {
         const tx = flipH ? cx : 0
         const sx = flipH ? -1 : 1
@@ -639,14 +630,14 @@ export class SvgCanvas2D extends Canvas2D {
       }
 
       if (flipH ? !flipV : flipV) {
-        theta *= -1
+        deg *= -1
       }
 
-      if (theta !== 0) {
-        s.transform += `rotate(${this.format(theta)},${this.format(cx)},${this.format(cy)})`
+      if (deg !== 0) {
+        s.transform += `rotate(${this.format(deg)},${this.format(cx)},${this.format(cy)})`
       }
 
-      s.rotation = s.rotation + theta
+      s.rotation = s.rotation + deg
       s.rotationCx = cx
       s.rotationCy = cy
     }
@@ -695,7 +686,7 @@ export class SvgCanvas2D extends Canvas2D {
     })
   }
 
-  link(href?: string) {
+  link(href?: string | null) {
     if (href == null) {
       this.root = this.originalRoot!
     } else {
@@ -774,10 +765,8 @@ export class SvgCanvas2D extends Canvas2D {
       }
 
       // adds image tansformation to existing transform
-      transform += (
-        `scale(${sx},${sy})` +
-        `translate(${tx * s.scale},${ty * s.scale})`
-      )
+      transform += `scale(${sx},${sy})`
+      transform += `translate(${tx * s.scale},${ty * s.scale})`
     }
 
     if (transform.length > 0) {
@@ -883,19 +872,20 @@ export class SvgCanvas2D extends Canvas2D {
       // Padding avoids clipping on border and wrapping for
       // differing font metrics on platforms
       const padX = 0
-      // const padY = 2
+      const padY = 2
 
       let sizeDiv: HTMLDivElement = div
       if (
         sizeDiv.firstChild != null &&
-        util.getNodeName(sizeDiv.firstChild! as HTMLElement) === 'div'
+        util.getNodeName(sizeDiv.firstChild as HTMLElement) === 'div'
       ) {
-        sizeDiv = sizeDiv.firstChild! as HTMLDivElement
+        sizeDiv = sizeDiv.firstChild as HTMLDivElement
       }
 
-      const tmp = ((group as any).mxCachedOffsetWidth != null)
-        ? (group as any).mxCachedOffsetWidth
+      const tmp = ((group as any).__CachedOffsetWidth__ != null)
+        ? (group as any).__CachedOffsetWidth__
         : sizeDiv.offsetWidth
+
       ow = tmp + padX
 
       // Recomputes the height of the element for wrapped width
@@ -907,21 +897,22 @@ export class SvgCanvas2D extends Canvas2D {
         div.style.width = `${Math.round(ow + 1)}px`
       }
 
-      ow = ((group as any).mxCachedFinalOffsetWidth != null)
-        ? (group as any).mxCachedFinalOffsetWidth
+      ow = ((group as any).__CachedFinalOffsetWidth__ != null)
+        ? (group as any).__CachedFinalOffsetWidth__
         : sizeDiv.offsetWidth
-      oh = ((group as any).mxCachedFinalOffsetHeight != null)
-        ? (group as any).mxCachedFinalOffsetHeight
+
+      oh = ((group as any).__CachedFinalOffsetHeight__ != null)
+        ? (group as any).__CachedFinalOffsetHeight__
         : sizeDiv.offsetHeight
 
       if (this.cacheOffsetSize) {
-        (group as any).mxCachedOffsetWidth = tmp;
-        (group as any).mxCachedFinalOffsetWidth = ow;
-        (group as any).mxCachedFinalOffsetHeight = oh
+        (group as any).__CachedOffsetWidth__ = tmp;
+        (group as any).__CachedFinalOffsetWidth__ = ow;
+        (group as any).__CachedFinalOffsetHeight__ = oh
       }
 
       ow += padX
-      oh -= 2
+      oh -= padY
 
       if (clip) {
         oh = Math.min(oh, h)
@@ -984,6 +975,7 @@ export class SvgCanvas2D extends Canvas2D {
         'transform',
         `translate(${Math.round(x)},${Math.round(y)}) ${tr}`,
       )
+
       fo.setAttribute('width', `${Math.round(Math.max(1, w))}`)
       fo.setAttribute('height', `${Math.round(Math.max(1, h))}`)
     }
@@ -1052,30 +1044,25 @@ export class SvgCanvas2D extends Canvas2D {
     let style = 'vertical-align: top;'
 
     if (clip) {
-      style += (
-        ' overflow: hidden;' +
-        ` max-width: ${Math.round(w)}px;` +
-        ` max-height: ${Math.round(h)}px;`
-      )
+      style += ' overflow: hidden;'
+      style += ` max-width: ${Math.round(w)}px;`
+      style += ` max-height: ${Math.round(h)}px;`
     } else if (overflow === 'fill') {
-      style += (
-        ` width: ${Math.round(w + 1)}px;` +
-        ` height: ${Math.round(h + 1)}px;` +
-        ' overflow: hidden;'
-      )
+      style += ' overflow: hidden;'
+      style += ` width: ${Math.round(w + 1)}px;`
+      style += ` height: ${Math.round(h + 1)}px;`
     } else if (overflow === 'width') {
       style += ` width: ${Math.round(w + 1)}px;`
       if (h > 0) {
-        style += ` max-height: ${Math.round(h)}px; overflow: hidden;`
+        style += ' overflow: hidden;'
+        style += ` max-height: ${Math.round(h)}px;`
       }
     }
 
     if (wrap && w > 0) {
-      style += (
-        ` width: ${Math.round(w + 1)}px;` +
-        ' white-space: normal;' +
-        ` word-wrap: ${constants.WORD_WRAP};`
-      )
+      style += ' white-space: nowrap;'
+      style += ` width: ${Math.round(w + 1)}px;`
+      style += ` word-wrap: ${constants.WORD_WRAP};`
     } else {
       style += ' white-space: nowrap;'
     }
@@ -1235,7 +1222,7 @@ export class SvgCanvas2D extends Canvas2D {
       }
 
       if (this.cacheOffsetSize) {
-        (group as any).mxCachedOffsetWidth = tmp
+        (group as any).__CachedOffsetWidth__ = tmp
       }
 
       // Disables wrapping if text is not wrapped for given width
@@ -1270,8 +1257,8 @@ export class SvgCanvas2D extends Canvas2D {
       oh = sizeDiv.offsetHeight
 
       if (this.cacheOffsetSize) {
-        (group as any).mxCachedFinalOffsetWidth = ow;
-        (group as any).mxCachedFinalOffsetHeight = oh
+        (group as any).__CachedFinalOffsetWidth__ = ow;
+        (group as any).__CachedFinalOffsetHeight__ = oh
       }
 
       oh -= padY
@@ -1514,7 +1501,7 @@ export class SvgCanvas2D extends Canvas2D {
     w = Math.round(w)
     h = Math.round(h)
 
-    const id = `mx-clip-${x}-${y}-${w}-${h}`
+    const id = `clip-${x}-${y}-${w}-${h}`
     let counter = 0
     let tmp = `${id}-${counter}`
 
@@ -1540,15 +1527,15 @@ export class SvgCanvas2D extends Canvas2D {
       node.setAttribute('font-family', s.fontFamily)
     }
 
-    if ((s.fontStyle & constants.FONT_BOLD) === constants.FONT_BOLD) {
+    if (FontStyle.isBold(s.fontStyle)) {
       node.setAttribute('font-weight', 'bold')
     }
 
-    if ((s.fontStyle & constants.FONT_ITALIC) === constants.FONT_ITALIC) {
+    if (FontStyle.isItalic(s.fontStyle)) {
       node.setAttribute('font-style', 'italic')
     }
 
-    if ((s.fontStyle & constants.FONT_UNDERLINE) === constants.FONT_UNDERLINE) {
+    if (FontStyle.isBold(s.fontStyle)) {
       node.setAttribute('text-decoration', 'underline')
     }
   }
@@ -1608,11 +1595,11 @@ export class SvgCanvas2D extends Canvas2D {
         div.style.display = (detector.IS_QUIRKS) ? 'inline' : 'inline-block'
         div.style.zoom = '1'
 
-        if ((s.fontStyle & constants.FONT_BOLD) === constants.FONT_BOLD) {
+        if (FontStyle.isBold(s.fontStyle)) {
           div.style.fontWeight = 'bold'
         }
 
-        if ((s.fontStyle & constants.FONT_ITALIC) === constants.FONT_ITALIC) {
+        if (FontStyle.isItalic(s.fontStyle)) {
           div.style.fontStyle = 'italic'
         }
 
@@ -1870,9 +1857,9 @@ export class SvgCanvas2D extends Canvas2D {
    * Invalidates the cached offset size for the given node.
    */
   invalidateCachedOffsetSize(node: SVGElement) {
-    delete (node.firstChild as any).mxCachedOffsetWidth
-    delete (node.firstChild as any).mxCachedFinalOffsetWidth
-    delete (node.firstChild as any).mxCachedFinalOffsetHeight
+    delete (node.firstChild as any).__CachedOffsetWidth__
+    delete (node.firstChild as any).__CachedFinalOffsetWidth__
+    delete (node.firstChild as any).__CachedFinalOffsetHeight__
   }
 
   // #endregion

@@ -1,7 +1,6 @@
 import * as util from '../util'
 import { Shape } from './shape'
-import { Rectangle } from '../struct'
-import { StyleNames } from '../types'
+import { Rectangle, StyleName } from '../struct'
 import { SvgCanvas2D } from '../canvas'
 
 export class Cylinder extends Shape {
@@ -18,7 +17,7 @@ export class Cylinder extends Shape {
     this.bounds = bounds
     this.fill = fill
     this.stroke = stroke
-    this.strokewidth = strokewidth
+    this.strokeWidth = strokewidth
   }
 
   paintNodeShape(
@@ -36,7 +35,7 @@ export class Cylinder extends Shape {
     if (
       !this.outline ||
       this.style == null ||
-      !util.getValue(this.style, StyleNames.backgroundOutline, false)
+      !util.getValue(this.style, StyleName.backgroundOutline, false)
     ) {
       c.setShadow(false)
       c.begin()

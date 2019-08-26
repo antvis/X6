@@ -1,12 +1,11 @@
-import { Stylesheet } from './stylesheet'
 import { EdgeStyle } from './edgestyle'
 import { Perimeter } from './perimeter'
-import { constants } from '../common'
+import { EdgeType, Perimeters } from '../struct'
 
 export namespace StyleRegistry {
-  export const values: { [name: string]: Stylesheet.Styles } = {}
+  export const values: { [name: string]: any } = {}
 
-  export function register(name: string, obj: Stylesheet.Styles) {
+  export function register(name: string, obj: any) {
     values[name] = obj
   }
 
@@ -14,7 +13,7 @@ export namespace StyleRegistry {
     return values[name]
   }
 
-  export function getName(value: Stylesheet.Styles) {
+  export function getName(value: any) {
     for (const key in values) {
       if (values[key] === value) {
         return key
@@ -25,16 +24,16 @@ export namespace StyleRegistry {
   }
 }
 
-StyleRegistry.register(constants.EDGESTYLE_ELBOW, EdgeStyle.elbowConnector)
-StyleRegistry.register(constants.EDGESTYLE_ENTITY_RELATION, EdgeStyle.entityRelation)
-StyleRegistry.register(constants.EDGESTYLE_LOOP, EdgeStyle.loop)
-StyleRegistry.register(constants.EDGESTYLE_SIDETOSIDE, EdgeStyle.sideToSide)
-StyleRegistry.register(constants.EDGESTYLE_TOPTOBOTTOM, EdgeStyle.topToBottom)
-StyleRegistry.register(constants.EDGESTYLE_ORTHOGONAL, EdgeStyle.orthConnector)
-StyleRegistry.register(constants.EDGESTYLE_SEGMENT, EdgeStyle.segmentConnector)
+StyleRegistry.register(EdgeType.elbow, EdgeStyle.elbowConnector)
+StyleRegistry.register(EdgeType.entityRelation, EdgeStyle.entityRelation)
+StyleRegistry.register(EdgeType.loop, EdgeStyle.loop)
+StyleRegistry.register(EdgeType.sideToSide, EdgeStyle.sideToSide)
+StyleRegistry.register(EdgeType.topToBottom, EdgeStyle.topToBottom)
+StyleRegistry.register(EdgeType.orthogonal, EdgeStyle.orthConnector)
+StyleRegistry.register(EdgeType.segment, EdgeStyle.segmentConnector)
 
-StyleRegistry.register(constants.PERIMETER_ELLIPSE, Perimeter.ellipse)
-StyleRegistry.register(constants.PERIMETER_RECTANGLE, Perimeter.rectangle)
-StyleRegistry.register(constants.PERIMETER_RHOMBUS, Perimeter.rhombus)
-StyleRegistry.register(constants.PERIMETER_TRIANGLE, Perimeter.triangle)
-StyleRegistry.register(constants.PERIMETER_HEXAGON, Perimeter.hexagon)
+StyleRegistry.register(Perimeters.ellipse, Perimeter.ellipse)
+StyleRegistry.register(Perimeters.rectangle, Perimeter.rectangle)
+StyleRegistry.register(Perimeters.rhombus, Perimeter.rhombus)
+StyleRegistry.register(Perimeters.triangle, Perimeter.triangle)
+StyleRegistry.register(Perimeters.hexagon, Perimeter.hexagon)

@@ -1943,20 +1943,4 @@ export const constants = {
    * Bitwise mask for all directions.
    */
   DIRECTION_MASK_ALL: 15,
-
-  ELBOW_VERTICAL: 'vertical',
-  ELBOW_HORIZONTAL: 'horizontal',
-  EDGESTYLE_ELBOW: 'elbowEdgeStyle',
-  EDGESTYLE_ENTITY_RELATION: 'entityRelationEdgeStyle',
-  EDGESTYLE_LOOP: 'loopEdgeStyle',
-  EDGESTYLE_SIDETOSIDE: 'sideToSideEdgeStyle',
-  EDGESTYLE_TOPTOBOTTOM: 'topToBottomEdgeStyle',
-  EDGESTYLE_ORTHOGONAL: 'orthogonalEdgeStyle',
-  EDGESTYLE_SEGMENT: 'segmentEdgeStyle',
-
-  PERIMETER_ELLIPSE: 'ellipsePerimeter',
-  PERIMETER_RECTANGLE: 'rectanglePerimeter',
-  PERIMETER_RHOMBUS: 'rhombusPerimeter',
-  PERIMETER_HEXAGON: 'hexagonPerimeter',
-  PERIMETER_TRIANGLE: 'trianglePerimeter',
 }

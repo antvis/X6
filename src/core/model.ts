@@ -7,7 +7,7 @@ import { Geometry } from './geometry'
 import {
   IChange,
   RootChange,
-  ValueChange,
+  DataChange,
   ChildChange,
   StyleChange,
   TerminalChange,
@@ -693,17 +693,17 @@ export class Model extends Events {
     return rest
   }
 
-  getValue(cell: Cell) {
-    return cell != null ? cell.getValue() : null
+  getData(cell: Cell) {
+    return cell != null ? cell.getData() : null
   }
 
-  setValue(cell: Cell, value: any) {
-    this.execute(new ValueChange(this, cell, value))
+  setData(cell: Cell, value: any) {
+    this.execute(new DataChange(this, cell, value))
   }
 
-  doValueChange(cell: Cell, newValue: any) {
-    const previous = cell.getValue()
-    cell.setValue(newValue)
+  doDataChange(cell: Cell, newValue: any) {
+    const previous = cell.getData()
+    cell.setData(newValue)
     return previous
   }
 

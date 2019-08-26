@@ -214,7 +214,7 @@ namespace Private {
     point: Point | Point.PointLike,
     cos: number,
     sin: number,
-    center?: Point) {
+    center: Point) {
     if (point != null) {
       const p = util.rotatePoint(point, cos, sin, center)
       point.x = Math.round(p.x)

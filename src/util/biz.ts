@@ -1,10 +1,9 @@
 import { Model, Cell, CellState } from '../core'
 import { CellPath } from '../core/cell-path'
-import { Point } from '../struct'
-import { Align, DirectionMask, StyleNames, Direction } from '../types'
 import { getOffset, getScrollOrigin } from './dom'
 import { getValue, getNumber } from './object'
 import { getBooleanFromStyle } from './stylesheet'
+import { Point, Align, DirectionMask, StyleName, Direction } from '../struct'
 
 /**
 	 * Function: setCellStyles
@@ -288,12 +287,12 @@ export function getPortConstraints(
 ) {
   const value = getValue(
     terminal.style,
-    StyleNames.portConstraint,
+    StyleName.portConstraint,
     getValue(
       edge.style,
       isSource
-        ? StyleNames.sourcePortConstraint
-        : StyleNames.targetPortConstraint,
+        ? StyleName.sourcePortConstraint
+        : StyleName.targetPortConstraint,
       null,
     ),
   )
@@ -305,12 +304,12 @@ export function getPortConstraints(
     const directions = value.toString()
     const constraintRotationEnabled = getBooleanFromStyle(
       terminal.style,
-      StyleNames.portConstraintRotation,
+      StyleName.portConstraintRotation,
     )
 
     let rotation = 0
     if (constraintRotationEnabled) {
-      rotation = getNumber(terminal.style, StyleNames.rotation, 0)
+      rotation = getNumber(terminal.style, StyleName.rotation, 0)
     }
 
     let quad = 0

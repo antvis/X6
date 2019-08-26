@@ -1,12 +1,18 @@
 import * as util from '../util'
 import { Shape } from './shape'
-import { Point, Rectangle } from '../struct'
-import { ConnectionConstraint } from '../struct/connection-constraint'
 import { constants } from '../common'
 import { SvgCanvas2D } from '../canvas'
 import {
-  StyleNames, NodeType, Direction, Align, LineCap, LineJoin,
-} from '../types'
+  Point,
+  Rectangle,
+  ConnectionConstraint,
+  StyleName,
+  NodeType,
+  Direction,
+  Align,
+  LineCap,
+  LineJoin,
+} from '../struct'
 
 export class Stencil extends Shape {
   desc: HTMLElement
@@ -16,7 +22,7 @@ export class Stencil extends Shape {
   h0: number
   bgNode: HTMLElement
   fgNode: HTMLElement
-  strokewidth: string
+  strokeWidth: string
 
   constructor(desc: HTMLElement) {
     super()
@@ -43,7 +49,7 @@ export class Stencil extends Shape {
     // user-defined stroke-width). Note that the strokewidth is scaled
     // by the minimum scaling that is used to draw the shape (sx, sy).
     const sw = this.desc.getAttribute('strokewidth')
-    this.strokewidth = (sw != null) ? sw : '1'
+    this.strokeWidth = (sw != null) ? sw : '1'
   }
 
   parseConstraints() {
@@ -99,19 +105,19 @@ export class Stencil extends Shape {
     // (start, segment, end blocks), pluggable markers, how to implement
     // swimlanes (title area) with this API, add icon, horizontal/vertical
     // label, indicator for all shapes, rotation
-    const direction = util.getValue(shape.style, StyleNames.direction, null)
+    const direction = util.getValue(shape.style, StyleName.direction, null)
     const aspect = this.computeAspect(shape, x, y, w, h, direction)
     const minScale = Math.min(aspect.width, aspect.height)
-    const sw = this.strokewidth === 'inherit'
-      ? util.getNumber(shape.style, StyleNames.strokeWidth, 1)
-      : Number(this.strokewidth) * minScale
+    const sw = this.strokeWidth === 'inherit'
+      ? util.getNumber(shape.style, StyleName.strokeWidth, 1)
+      : Number(this.strokeWidth) * minScale
 
     canvas.setStrokeWidth(sw)
 
     // Draws a transparent rectangle for catching events
     if (
       shape.style != null &&
-      util.getBooleanFromStyle(shape.style, StyleNames.pointerEvents)
+      util.getBooleanFromStyle(shape.style, StyleName.pointerEvents)
     ) {
       canvas.setStrokeColor('none')
       canvas.rect(x, y, w, h)
@@ -127,7 +133,7 @@ export class Stencil extends Shape {
       (
         !shape.outline ||
         shape.style == null ||
-        !util.getBooleanFromStyle(shape.style, StyleNames.backgroundOutline)
+        !util.getBooleanFromStyle(shape.style, StyleName.backgroundOutline)
       ),
     )
   }
@@ -270,7 +276,7 @@ export class Stencil extends Shape {
                 close = true
               }
 
-              this.addPoints(canvas, segs[i], true, arcSize, close)
+              this.paintPoints(canvas, segs[i], true, arcSize, close)
             }
           } else {
             parseRegularly = true

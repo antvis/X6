@@ -1,10 +1,9 @@
 import * as util from '../util'
 import { constants } from '../common'
-import { Polyline } from './polyline'
-import { Rectangle, Point } from '../struct'
 import { SvgCanvas2D } from '../canvas'
-import { StyleNames } from '../types'
+import { Polyline } from './polyline'
 import { Marker } from './marker'
+import { Rectangle, Point, StyleName } from '../struct'
 
 export class Connector extends Polyline {
   constructor(
@@ -16,7 +15,7 @@ export class Connector extends Polyline {
   }
 
   updateBoundingBox() {
-    this.useSvgBoundingBox = util.getBooleanFromStyle(this.style, StyleNames.curved)
+    this.useSvgBoundingBox = util.getBooleanFromStyle(this.style, StyleName.curved)
     super.updateBoundingBox()
   }
 
@@ -52,7 +51,7 @@ export class Connector extends Polyline {
     const len = pts.length
     const type = util.getValue(
       this.style,
-      isSource ? StyleNames.startArrow : StyleNames.endArrow,
+      isSource ? StyleName.startArrow : StyleName.endArrow,
     )
 
     let p0 = (isSource) ? pts[1] : pts[len - 2]
@@ -82,7 +81,7 @@ export class Connector extends Polyline {
 
       const size = util.getNumber(
         this.style,
-        isSource ? StyleNames.startSize : StyleNames.endSize,
+        isSource ? StyleName.startSize : StyleName.endSize,
         constants.DEFAULT_MARKERSIZE,
       )
 
@@ -90,7 +89,7 @@ export class Connector extends Polyline {
       // orthogonal vectors describing the direction of the marker
       const filled = util.getBooleanFromStyle(
         this.style,
-        isSource ? StyleNames.startFill : StyleNames.endFill,
+        isSource ? StyleName.startFill : StyleName.endFill,
         true,
       )
 
@@ -103,7 +102,7 @@ export class Connector extends Polyline {
         unitY,
         size,
         isSource,
-        this.strokewidth as number,
+        this.strokeWidth as number,
         filled,
       )
     }
@@ -117,14 +116,14 @@ export class Connector extends Polyline {
     // Adds marker sizes
     let size = 0
 
-    if (util.getValue(this.style, StyleNames.startArrow, constants.NONE) !== constants.NONE) {
-      size = util.getNumber(this.style, StyleNames.startSize, constants.DEFAULT_MARKERSIZE) + 1
+    if (util.getValue(this.style, StyleName.startArrow, constants.NONE) !== constants.NONE) {
+      size = util.getNumber(this.style, StyleName.startSize, constants.DEFAULT_MARKERSIZE) + 1
     }
 
-    if (util.getValue(this.style, StyleNames.endArrow, constants.NONE) !== constants.NONE) {
+    if (util.getValue(this.style, StyleName.endArrow, constants.NONE) !== constants.NONE) {
       size = Math.max(
         size,
-        util.getNumber(this.style, StyleNames.endSize, constants.DEFAULT_MARKERSIZE),
+        util.getNumber(this.style, StyleName.endSize, constants.DEFAULT_MARKERSIZE),
       ) + 1
     }
 

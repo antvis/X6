@@ -1,7 +1,6 @@
-import { Cell } from '../core/cell'
-import { Rectangle, Point } from '../struct'
-import { StyleNames, Direction } from '../types'
 import { intersection } from '../util'
+import { Cell } from '../core/cell'
+import { Rectangle, Point, StyleName, Direction } from '../struct'
 
 export namespace Perimeter {
   export function rectangle(
@@ -220,7 +219,7 @@ export namespace Perimeter {
     orthogonal: boolean = false,
   ) {
     const direction = (vertex != null)
-      ? (vertex.style as any)[StyleNames.direction]
+      ? (vertex.style as any)[StyleName.direction]
       : null
     const vertical = (
       direction === Direction.north ||
@@ -371,7 +370,7 @@ export namespace Perimeter {
     let result = new Point(cx, cy)
 
     const direction = vertex != null
-      ? (vertex.style as any)[StyleNames.direction] as Direction
+      ? (vertex.style as any)[StyleName.direction] as Direction
       : Direction.east
 
     const vertical = (

@@ -6,7 +6,7 @@ export class Line extends Shape {
   constructor(
     public bounds: Rectangle,
     public stroke: string,
-    public strokewidth: number = 1,
+    public strokeWidth: number = 1,
   ) {
     super()
   }

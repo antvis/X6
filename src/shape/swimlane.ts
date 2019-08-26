@@ -1,9 +1,8 @@
 import * as util from '../util'
 import { constants } from '../common'
 import { Shape } from './shape'
-import { Rectangle } from '../struct'
 import { SvgCanvas2D } from '../canvas'
-import { StyleNames, Direction } from '../types'
+import { Rectangle, StyleName, Direction } from '../struct'
 
 export class Swimlane extends Shape {
   /**
@@ -23,7 +22,7 @@ export class Swimlane extends Shape {
     this.bounds = bounds
     this.fill = fill
     this.stroke = stroke
-    this.strokewidth = strokewidth
+    this.strokeWidth = strokewidth
   }
 
   isRoundable() {
@@ -33,7 +32,7 @@ export class Swimlane extends Shape {
   getTitleSize() {
     return Math.max(
       0,
-      util.getValue(this.style, StyleNames.startSize, constants.DEFAULT_STARTSIZE),
+      util.getValue(this.style, StyleName.startSize, constants.DEFAULT_STARTSIZE),
     )
   }
 
@@ -107,7 +106,7 @@ export class Swimlane extends Shape {
   getArcSize(w: number, h: number, start: number) {
     const f = util.getNumber(
       this.style,
-      StyleNames.arcSize,
+      StyleName.arcSize,
       constants.RECTANGLE_ROUNDING_FACTOR * 100,
     ) / 100
 
@@ -115,7 +114,7 @@ export class Swimlane extends Shape {
   }
 
   isHorizontal() {
-    return util.getBooleanFromStyle(this.style, StyleNames.horizontal, true)
+    return util.getBooleanFromStyle(this.style, StyleName.horizontal, true)
   }
 
   paintNodeShape(
@@ -126,8 +125,8 @@ export class Swimlane extends Shape {
     h: number,
   ) {
     let start = this.getTitleSize()
-    const fill = util.getValue(this.style, StyleNames.swimlaneFillColor, constants.NONE)
-    const swimlaneLine = util.getBooleanFromStyle(this.style, StyleNames.swimlaneLine, true)
+    const fill = util.getValue(this.style, StyleName.swimlaneFillColor, constants.NONE)
+    const swimlaneLine = util.getBooleanFromStyle(this.style, StyleName.swimlaneLine, true)
 
     let r = 0
 
@@ -139,7 +138,7 @@ export class Swimlane extends Shape {
 
     c.translate(x, y)
 
-    if (!this.isRounded) {
+    if (!this.rounded) {
       this.paintSwimlane(c, x, y, w, h, start, fill, swimlaneLine)
     } else {
       r = this.getArcSize(w, h, start)
@@ -147,7 +146,7 @@ export class Swimlane extends Shape {
       this.paintRoundedSwimlane(c, x, y, w, h, start, r, fill, swimlaneLine)
     }
 
-    const sep = util.getValue(this.style, StyleNames.separatorColor, constants.NONE)
+    const sep = util.getValue(this.style, StyleName.separatorColor, constants.NONE)
     this.paintSeparator(c, x, y, w, h, start, sep)
 
     if (this.image != null) {

@@ -11,18 +11,6 @@ export class CellState {
   bounds: Rectangle
 
   /**
-   * The origin for all child cells.
-   */
-  origin: Point
-
-  /**
-   * For edges, this is the absolute coordinates of the label position.
-   * For nodes, this is the offset of the label relative to the top, left
-   * corner of the node.
-   */
-  absoluteOffset: Point
-
-  /**
    * The unscaled, untranslated bounds.
    */
   cellBounds: Rectangle
@@ -35,6 +23,18 @@ export class CellState {
   paintBounds: Rectangle
 
   boundingBox: Rectangle
+
+  /**
+   * The origin for all child cells.
+   */
+  origin: Point
+
+  /**
+   * For edges, this is the absolute coordinates of the label position.
+   * For nodes, this is the offset of the label relative to the top, left
+   * corner of the node.
+   */
+  absoluteOffset: Point
 
   /**
    * The unscaled width of the state.
@@ -261,6 +261,15 @@ export class CellState {
       state.bounds.width,
       state.bounds.height,
     )
+  }
+
+  eachOverlay(iterator: (shape: ImageShape | null | undefined) => void) {
+    if (this.overlaySet) {
+      this.overlaySet.forEach((overlay) => {
+        const shape = this.overlayMap && this.overlayMap.get(overlay)
+        iterator(shape)
+      })
+    }
   }
 
   clone() {

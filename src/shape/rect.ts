@@ -1,7 +1,6 @@
 import * as util from '../util'
 import { constants } from '../common'
-import { Rectangle } from '../struct'
-import { StyleNames } from '../types'
+import { Rectangle, StyleName } from '../struct'
 import { SvgCanvas2D } from '../canvas'
 import { Shape } from './shape'
 
@@ -16,7 +15,7 @@ export class RectShape extends Shape {
     this.bounds = bounds
     this.fill = fill != null ? fill : null
     this.stroke = stroke != null ? stroke : null
-    this.strokewidth = strokewidth != null ? strokewidth : 1
+    this.strokeWidth = strokewidth != null ? strokewidth : 1
   }
 
   protected paintBackground(
@@ -28,7 +27,7 @@ export class RectShape extends Shape {
   ) {
     let events = true
     if (this.style != null) {
-      events = util.getBooleanFromStyle(this.style, StyleNames.pointerEvents, true)
+      events = util.getBooleanFromStyle(this.style, StyleName.pointerEvents, true)
     }
 
     if (
@@ -43,7 +42,7 @@ export class RectShape extends Shape {
         c.pointerEvents = false
       }
 
-      if (this.isRounded) {
+      if (this.rounded) {
         const r = this.getArcSize(w, h)
         c.roundRect(x, y, w, h, r, r)
       } else {
@@ -74,8 +73,8 @@ export class RectShape extends Shape {
       this.paintGlassEffect(
         c, x, y, w, h,
         this.getArcSize(
-          w + (this.strokewidth as number),
-          h + (this.strokewidth as number),
+          w + (this.strokeWidth as number),
+          h + (this.strokeWidth as number),
         ),
       )
     }

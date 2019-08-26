@@ -7,12 +7,11 @@ export class HelloWorld extends React.Component {
   componentDidMount() {
     DomEvent.disableContextMenu(this.container)
     const graph = new Graph(this.container)
-    const parent = graph.getDefaultParent()!
 
-    graph.getModel().batchUpdate(() => {
-      const v1 = graph.insertNode(parent, null, 'Hello,', 20, 20, 80, 30)
-      const v2 = graph.insertNode(parent, null, 'World!', 200, 150, 80, 30)
-      graph.insertEdge(parent, null, '', v1, v2)
+    graph.batchUpdate(() => {
+      const node1 = graph.insertNode({ data: 'Hello,', x: 20, y: 20, width: 80, height: 30 })
+      const node2 = graph.insertNode({ data: 'World!', x: 200, y: 150, width: 80, height: 30 })
+      graph.insertEdge({ sourceNode: node1, targetNode: node2 })
     })
 
     console.log(graph)

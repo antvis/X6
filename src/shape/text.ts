@@ -1,10 +1,16 @@
 import * as util from '../util'
 import { constants, detector } from '../common'
 import { Shape } from './shape'
-import { Rectangle, Point } from '../struct'
-import { Align, StyleNames, TextDirection, FontStyle } from '../types'
 import { SvgCanvas2D } from '../canvas'
 import { CellState } from '../core'
+import {
+  Rectangle,
+  Point,
+  Align,
+  StyleName,
+  TextDirection,
+  FontStyle,
+} from '../struct'
 
 export class Text extends Shape {
   value: string
@@ -334,38 +340,38 @@ export class Text extends Shape {
     super.apply(state)
 
     if (this.style != null) {
-      this.fontStyle = util.getNumber(this.style, StyleNames.fontStyle, this.fontStyle)
-      this.family = util.getValue(this.style, StyleNames.fontFamily, this.family)
-      this.size = util.getValue(this.style, StyleNames.fontSize, this.size)
-      this.color = util.getValue(this.style, StyleNames.fontColor, this.color)
-      this.align = util.getValue(this.style, StyleNames.align, this.align)
-      this.valign = util.getValue(this.style, StyleNames.verticalAlign, this.valign)
-      this.spacing = util.getNumber(this.style, StyleNames.spacing, this.spacing)
+      this.fontStyle = util.getNumber(this.style, StyleName.fontStyle, this.fontStyle)
+      this.family = util.getValue(this.style, StyleName.fontFamily, this.family)
+      this.size = util.getValue(this.style, StyleName.fontSize, this.size)
+      this.color = util.getValue(this.style, StyleName.fontColor, this.color)
+      this.align = util.getValue(this.style, StyleName.align, this.align)
+      this.valign = util.getValue(this.style, StyleName.verticalAlign, this.valign)
+      this.spacing = util.getNumber(this.style, StyleName.spacing, this.spacing)
 
       this.spacingTop = util.getNumber(
-        this.style, StyleNames.spacingTop, this.spacingTop - spacing,
+        this.style, StyleName.spacingTop, this.spacingTop - spacing,
       ) + this.spacing
 
       this.spacingRight = util.getNumber(
-        this.style, StyleNames.spacingRight, this.spacingRight - spacing,
+        this.style, StyleName.spacingRight, this.spacingRight - spacing,
       ) + this.spacing
 
       this.spacingBottom = util.getNumber(
-        this.style, StyleNames.spacingBottom, this.spacingBottom - spacing,
+        this.style, StyleName.spacingBottom, this.spacingBottom - spacing,
       ) + this.spacing
 
       this.spacingLeft = util.getNumber(
-        this.style, StyleNames.spacingLeft, this.spacingLeft - spacing,
+        this.style, StyleName.spacingLeft, this.spacingLeft - spacing,
       ) + this.spacing
 
-      this.horizontal = util.getValue(this.style, StyleNames.horizontal, this.horizontal)
-      this.background = util.getValue(this.style, StyleNames.labelBackgroundColor, this.background)
-      this.border = util.getValue(this.style, StyleNames.labelBorderColor, this.border)
+      this.horizontal = util.getValue(this.style, StyleName.horizontal, this.horizontal)
+      this.background = util.getValue(this.style, StyleName.labelBackgroundColor, this.background)
+      this.border = util.getValue(this.style, StyleName.labelBorderColor, this.border)
       this.textDirection = util.getValue(
-        this.style, StyleNames.textDirection, constants.DEFAULT_TEXT_DIRECTION,
+        this.style, StyleName.textDirection, constants.DEFAULT_TEXT_DIRECTION,
       ) as TextDirection
 
-      this.opacity = util.getNumber(this.style, StyleNames.textOpacity, 100)
+      this.opacity = util.getNumber(this.style, StyleName.textOpacity, 100)
 
       this.updateMargin()
     }
@@ -395,10 +401,10 @@ export class Text extends Shape {
     const rot = this.getTextRotation()
 
     const h = (this.style != null)
-      ? util.getValue(this.style, StyleNames.labelPosition, constants.ALIGN_CENTER) : null
+      ? util.getValue(this.style, StyleName.labelPosition, constants.ALIGN_CENTER) : null
 
     const v = (this.style != null)
-      ? util.getValue(this.style, StyleNames.verticalLabelPosition, constants.ALIGN_MIDDLE) : null
+      ? util.getValue(this.style, StyleName.verticalLabelPosition, constants.ALIGN_MIDDLE) : null
 
     if (
       !this.ignoreStringSize &&

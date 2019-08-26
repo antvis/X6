@@ -1,8 +1,14 @@
 import * as util from '../util'
 import { constants } from '../common'
-import { Point, Rectangle } from '../struct'
 import { CellState } from '../core'
-import { StyleNames, Direction, DirectionMask } from '../types'
+import {
+  Point,
+  Rectangle,
+  StyleName,
+  Direction,
+  DirectionMask,
+  EdgeType,
+} from '../struct'
 
 export namespace EdgeStyle {
 
@@ -184,8 +190,8 @@ export namespace EdgeStyle {
       let dx = 0
       let dy = 0
 
-      const seg = util.getNumber(edgeState.style, StyleNames.segment, graph.gridSize) * view.scale
-      const dir = util.getValue(edgeState.style, StyleNames.direction, Direction.west)
+      const seg = util.getNumber(edgeState.style, StyleName.segment, graph.gridSize) * view.scale
+      const dir = util.getValue(edgeState.style, StyleName.direction, Direction.west)
 
       if (dir === Direction.north || dir === Direction.south) {
         x = view.getRoutingCenterX(sourceState)
@@ -284,7 +290,7 @@ export namespace EdgeStyle {
 
     if (!horizontal && (
       vertical ||
-      edgeState.style[StyleNames.elbow] === constants.ELBOW_VERTICAL)
+      edgeState.style[StyleName.elbow] === EdgeType.vertical)
     ) {
       topToBottom(edgeState, sourceState, targetState, points, result)
     } else {
@@ -872,11 +878,11 @@ export namespace EdgeStyle {
   ) {
     let value = util.getValue(
       edgeState.style, isSource
-        ? StyleNames.sourceJettySize
-        : StyleNames.targetJettySize,
+        ? StyleName.sourceJettySize
+        : StyleName.targetJettySize,
       util.getValue(
         edgeState.style,
-        StyleNames.jettySize,
+        StyleName.jettySize,
         orthBuffer,
       ),
     )
@@ -885,14 +891,14 @@ export namespace EdgeStyle {
       // Computes the automatic jetty size
       const type = util.getValue(
         edgeState.style,
-        isSource ? StyleNames.startArrow : StyleNames.endArrow,
+        isSource ? StyleName.startArrow : StyleName.endArrow,
         constants.NONE,
       )
 
       if (type !== constants.NONE) {
         const size = util.getNumber(
           edgeState.style,
-          (isSource) ? StyleNames.startSize : StyleNames.endSize,
+          (isSource) ? StyleName.startSize : StyleName.endSize,
           constants.DEFAULT_MARKERSIZE,
         )
 
@@ -987,7 +993,7 @@ export namespace EdgeStyle {
       portConstraint[0] = util.getPortConstraints(
         sourceState, edgeState, true, DirectionMask.all,
       )
-      rotation = util.getNumber(sourceState.style, StyleNames.rotation, 0)
+      rotation = util.getNumber(sourceState.style, StyleName.rotation, 0)
       if (rotation !== 0) {
         const newRect = util.getBoundingBox(
           new Rectangle(sourceX, sourceY, sourceWidth, sourceHeight),
@@ -1004,7 +1010,7 @@ export namespace EdgeStyle {
       portConstraint[1] = util.getPortConstraints(
         targetState, edgeState, false, DirectionMask.all,
       )
-      rotation = util.getNumber(targetState.style, StyleNames.rotation, 0)
+      rotation = util.getNumber(targetState.style, StyleName.rotation, 0)
       if (rotation !== 0) {
         const newRect = util.getBoundingBox(
           new Rectangle(targetX, targetY, targetWidth, targetHeight),

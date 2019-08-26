@@ -5,13 +5,10 @@ import { CellOverlay } from './cell-overlay'
 
 export class Cell implements IDisposable {
   public id?: string | null
-  public value?: any
+  public data?: any
   public style: string | null
   public visible: boolean
   public geometry: Geometry | null
-
-  private _isNode?: boolean // tslint:disable-line:variable-name
-  private _isEdge?: boolean // tslint:disable-line:variable-name
 
   public parent: Cell | null
   public children: Cell[] | null
@@ -24,8 +21,11 @@ export class Cell implements IDisposable {
 
   public overlays: CellOverlay[] | null
 
+  private isnode?: boolean
+  private isedge?: boolean
+
   constructor(value?: any, geometry?: Geometry, style?: string) {
-    this.value = value
+    this.data = value
     this.style = style || null
     this.geometry = geometry || null
     this.visible = true
@@ -34,11 +34,11 @@ export class Cell implements IDisposable {
   // #region edge
 
   isEdge() {
-    return this._isEdge === true
+    return this.isedge === true
   }
 
   actAsEdge(isEdge: boolean) {
-    this._isEdge = isEdge
+    this.isedge = isEdge
   }
 
   getTerminal(isSource?: boolean) {
@@ -67,11 +67,11 @@ export class Cell implements IDisposable {
   // #region node
 
   isNode() {
-    return this._isNode != null
+    return this.isnode != null
   }
 
   actAsNode(isNode: boolean) {
-    this._isNode = isNode
+    this.isnode = isNode
   }
 
   isConnectable() {
@@ -303,12 +303,12 @@ export class Cell implements IDisposable {
     this.id = id
   }
 
-  getValue() {
-    return this.value
+  getData() {
+    return this.data
   }
 
-  setValue(value: any) {
-    this.value = value
+  setData(value: any) {
+    this.data = value
   }
 
   /**
@@ -352,46 +352,14 @@ export class Cell implements IDisposable {
     return this.isVisible() ? this.hide() : this.show()
   }
 
-  // #endregion
-
-  // hasAttribute(name: string) {
-  //   const userObject = this.getValue()
-  //   return (
-  //     userObject != null &&
-  //     userObject.nodeType == mxConstants.NODETYPE_ELEMENT && userObject.hasAttribute)
-  //     ? userObject.hasAttribute(name)
-  //     : userObject.getAttribute(name) != null
-  // }
-
-  // getAttribute(name: string, defaultValue) {
-  //   const userObject = this.getValue()
-  //   const val = (
-  //     userObject != null &&
-  //     userObject.nodeType == mxConstants.NODETYPE_ELEMENT)
-  //     ? userObject.getAttribute(name)
-  //     : null
-
-  //   return val || defaultValue
-  // }
-
-  // setAttribute(name: string, value) {
-  //   const userObject = this.getValue()
-  //   if (
-  //     userObject != null &&
-  //     userObject.nodeType == mxConstants.NODETYPE_ELEMENT
-  //   ) {
-  //     userObject.setAttribute(name, value)
-  //   }
-  // }
-
   clone() {
     const clone = util.clone<Cell>(this, Cell.ignoredKeysWhenClone)!
-    clone.setValue(this.cloneValue())
+    clone.setData(this.cloneValue())
     return clone
   }
 
   protected cloneValue() {
-    let value = this.getValue()
+    let value = this.getData()
     if (value != null) {
       if (util.isFunction(value.clone)) {
         value = value.clone()

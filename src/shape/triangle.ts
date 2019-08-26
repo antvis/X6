@@ -25,14 +25,14 @@ export class Triangle extends Actor {
     h: number,
   ) {
     const arcSize = util.getArcSize(this.style) / 2
-    this.addPoints(
+    this.paintPoints(
       c,
       [
         new Point(0, 0),
         new Point(w, 0.5 * h),
         new Point(0, h),
       ],
-      this.isRounded,
+      this.rounded,
       arcSize,
       true,
     )

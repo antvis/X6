@@ -1,7 +1,6 @@
-import { Point, Rectangle } from '../struct'
 import { getValue } from './object'
-import { Direction } from '../types'
 import { CellState } from '../core'
+import { Point, Rectangle, Direction } from '../struct'
 
 export function toRadians(deg: number) {
   return Math.PI * deg / 180
@@ -46,15 +45,14 @@ export function rotatePoint(
   point: Point | Point.PointLike,
   cos: number,
   sin: number,
-  center?: Point,
+  center: Point = new Point(),
 ) {
-  const c = center == null ? new Point() : center
-  const dx = point.x - c.x
-  const dy = point.y - c.y
+  const dx = point.x - center.x
+  const dy = point.y - center.y
   const x1 = dx * cos - dy * sin
   const y1 = dy * cos + dx * sin
 
-  return new Point(x1 + c.x, y1 + c.y)
+  return new Point(x1 + center.x, y1 + center.y)
 }
 
 /**
@@ -200,8 +198,8 @@ export function getDirectedBounds(
   rect: Rectangle,
   m: Rectangle,
   style: any,
-  flipH: boolean,
-  flipV: boolean,
+  flipH?: boolean,
+  flipV?: boolean,
 ) {
   const d = getValue(style, 'direction', Direction.east) as Direction
   // tslint:disable-next-line:no-parameter-reassignment
