@@ -82,7 +82,7 @@ export namespace DomEvent {
     }
   }
 
-  export function addGestureListeners(
+  export function addMouseListeners(
     elem: HTMLElement | SVGElement | Document | Window,
     startListener?: Handler | null,
     moveListener?: Handler | null,
@@ -127,7 +127,7 @@ export namespace DomEvent {
     }
   }
 
-  export function removeGestureListeners(
+  export function removeMouseListeners(
     elem: HTMLElement | SVGElement | Document | Window,
     startListener: Handler | null,
     moveListener: Handler | null,
@@ -241,14 +241,12 @@ export namespace DomEvent {
    * Returns the event's target or srcElement depending on the browser.
    */
   export function getSource(e: Event) {
-    return (e.srcElement != null)
-      ? e.srcElement as HTMLElement
-      : e.target as HTMLElement
+    return (e.srcElement || e.target) as Element
   }
 
   /**
-	 * Returns true if the event was generated using
-   * a touch device (not a pen or mouse).
+	 * Returns true if the event was generated using a touch device
+   * (not a pen or mouse).
 	 */
   export function isTouchEvent(e: any) {
     return (
@@ -261,8 +259,8 @@ export namespace DomEvent {
   }
 
   /**
-	 * Returns true if the event was generated using
-   * a pen (not a touch device or mouse).
+	 * Returns true if the event was generated using a pen
+   * (not a touch device or mouse).
 	 */
   export function isPenEvent(e: any) {
     return (
@@ -274,10 +272,13 @@ export namespace DomEvent {
     )
   }
 
+  export function isTouchOrPenEvent(e: any) {
+    return isTouchEvent(e) || isPenEvent(e)
+  }
+
   /**
-	 *
-	 * Returns true if the event was generated using
-   * a touch device (not a pen or mouse).
+	 * Returns true if the event was generated using a touch device
+   * (not a pen or mouse).
 	 */
   export function isMultiTouchEvent(e: any) {
     return (
@@ -289,9 +290,8 @@ export namespace DomEvent {
   }
 
   /**
-	 *
-	 * Returns true if the event was generated using
-   * a mouse (not a pen or touch device).
+	 * Returns true if the event was generated using a mouse
+   * (not a pen or touch device).
 	 */
   export function isMouseEvent(e: any) {
     return (
@@ -353,19 +353,19 @@ export namespace DomEvent {
     )
   }
 
-  export function isShiftDown(e: MouseEvent) {
+  export function isShiftDown(e: MouseEvent | KeyboardEvent) {
     return (e != null) ? e.shiftKey : false
   }
 
-  export function isAltDown(e: MouseEvent) {
+  export function isAltDown(e: MouseEvent | KeyboardEvent) {
     return (e != null) ? e.altKey : false
   }
 
-  export function isControlDown(e: MouseEvent) {
+  export function isControlDown(e: MouseEvent | KeyboardEvent) {
     return (e != null) ? e.ctrlKey : false
   }
 
-  export function isMetaDown(e: MouseEvent) {
+  export function isMetaDown(e: MouseEvent | KeyboardEvent) {
     return (e != null) ? e.metaKey : false
   }
 

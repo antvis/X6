@@ -7,7 +7,7 @@ import { Point, Rectangle, ConnectionConstraint, NodeType } from '../struct'
 
 export class Stencil extends Shape {
   desc: HTMLElement
-  constraints: any[]
+  constraints: ConnectionConstraint[]
   aspect: string
   w0: number
   h0: number

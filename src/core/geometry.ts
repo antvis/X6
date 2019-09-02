@@ -82,6 +82,13 @@ export class Geometry {
     return point
   }
 
+  addPoint(x: number, y: number) {
+    if (this.points == null) {
+      this.points = []
+    }
+    this.points.push(new Point(x, y))
+  }
+
   translate(dx: number, dy: number) {
     if (!this.relative) {
       Private.translatePoint(this.bounds, dx, dy)
@@ -96,7 +103,7 @@ export class Geometry {
   }
 
   rotate(angle: number, cx: Point) {
-    const rad = util.toRadians(angle)
+    const rad = util.toRad(angle)
     const cos = Math.cos(rad)
     const sin = Math.sin(rad)
 

@@ -1,6 +1,7 @@
 export * from './detector'
 export * from './constants'
 export * from './disposable'
+export * from './dictionary'
 export * from './events'
 export * from './dom-event'
 export * from './mouse-event'

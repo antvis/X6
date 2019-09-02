@@ -7,13 +7,14 @@ import { Geometry } from './geometry'
 import { CellState } from './cell-state'
 import { CellOverlay } from './cell-overlay'
 import { Renderer } from './renderer'
-import { Stylesheet, EdgeStyle } from '../stylesheet'
+import { StyleSheet, EdgeStyle } from '../stylesheet'
 import {
   constants,
   detector,
   Events,
   DomEvent,
   CustomMouseEvent,
+  IDisposable,
 } from '../common'
 import {
   IChange,
@@ -32,43 +33,42 @@ import {
   ShapeName,
   PageFormat,
 } from '../struct'
-import { GraphSelectionModel } from '../handler/graph-selection-model'
+import { SelectionManager } from './selection-manager'
 import { RectangleShape, Polyline, Label } from '../shape'
-import { Align, VAlign, CellStyle } from '../types'
+import { Align, VAlign, CellStyle, Dialect } from '../types'
+import {
+  IMouseHandler,
+  NodeHandler,
+  TooltipHandler,
+  PopupMenuHandler,
+  PanningHandler,
+  SelectionHandler,
+  GraphHandler,
+} from '../handler'
 
-export class Graph extends Events {
+export class Graph extends Events implements IDisposable {
   container: HTMLElement
   model: Model
   view: View
-  stylesheet: Stylesheet
-  selectionModel: GraphSelectionModel
+  styleSheet: StyleSheet
+  selectionManager: SelectionManager
   renderer: Renderer
 
-  tooltipHandler: any
-  popupMenuHandler: any
-  selectionCellsHandler: any
+  tooltipHandler: TooltipHandler
+  popupMenuHandler: PopupMenuHandler
+  selectionHandler: SelectionHandler
   connectionHandler: any
-  panningHandler: any
+  panningHandler: PanningHandler
   panningManager: any
-  graphHandler: any
+  graphHandler: GraphHandler
 
-  private verticalPageBreaks: Polyline[]
-  private horizontalPageBreaks: Polyline[]
+  protected verticalPageBreaks: Polyline[]
+  protected horizontalPageBreaks: Polyline[]
 
-  /**
-   * Holds the mouse event listeners. See <fireMouseEvent>.
-   */
-  mouseListeners: any[] | null
-
-  /**
-   * Holds the state of the mouse button.
-   */
   isMouseDown: boolean = false
-  private isMouseTrigger: boolean = false
-
-  lastMouseX: number
-
-  lastMouseY: number
+  protected isMouseTrigger: boolean = false
+  protected lastMouseX: number
+  protected lastMouseY: number
 
   /**
    * Holds the <CellEditor> that is used as the in-place editing.
@@ -84,12 +84,14 @@ export class Graph extends Events {
   /**
    * Dialect to be used for drawing the graph.
    */
-  dialect: 'svg' | 'strictHtml' | 'preferHtml'
+  dialect: Dialect
 
   /**
    * Specifies the grid size.
+   *
+   * Default is `10`.
    */
-  gridSize = 10
+  gridSize: number = 10
 
   /**
    * Specifies if the grid is enabled. This is used in <snap>.
@@ -103,63 +105,59 @@ export class Graph extends Events {
   portsEnabled = true
 
   /**
-   * Specifies if native double click events should be detected. Default is true.
+   * Specifies if native double click events should be detected.
+   *
+   * Default is `true`.
    */
-  nativeDblClickEnabled = true
+  nativeDblClickEnabled: boolean = true
 
   /**
    * Specifies if double taps on touch-based devices should be handled as a
-   * double click. Default is true.
+   * double click.
+   *
+   * Default is `true`.
    */
   doubleTapEnabled = true
 
   /**
-   * Specifies the timeout for double taps and non-native double clicks. Default
-   * is 500 ms.
+   * Specifies the timeout for double taps and non-native double clicks.
+   *
+   * Default is `500` ms.
    */
-  doubleTapTimeout = 500
+  doubleTapTimeout: number = 500
 
   /**
    * Specifies the tolerance for double taps and double clicks in quirks mode.
-   * Default is 25 pixels.
+   *
+   * Default is `25` pixels.
    */
-  doubleTapTolerance = 25
+  doubleTapTolerance: number = 25
 
   /**
-   * Specifies if tap and hold should be used for starting connections on touch-based
-   * devices. Default is true.
+   * Specifies if tap and hold should be used for starting connections on
+   * touch-based devices.
+   *
+   * Default is `true`.
    */
-  tapAndHoldEnabled = true
+  tapAndHoldEnabled: boolean = true
 
   /**
-   * Specifies the time for a tap and hold. Default is 500 ms.
+   * Specifies the time for a tap and hold.
+   *
+   * Default is `500` ms.
    */
-  tapAndHoldDelay = 500
+  tapAndHoldDelay: number = 500
 
-  /**
-   * True if the timer for tap and hold events is running.
-   */
-  tapAndHoldInProgress = false
-
-  /**
-   * True as long as the timer is running and the touch events
-   * stay within the given <tapAndHoldTolerance>.
-   */
-  tapAndHoldValid = false
-
-  /**
-   * Holds the x-coordinate of the intial touch event for tap and hold.
-   */
-  initialTouchX = 0
-
-  /**
-   * Holds the y-coordinate of the intial touch event for tap and hold.
-   */
-  initialTouchY = 0
+  protected tapAndHoldInProgress: boolean = false
+  protected tapAndHoldValid: boolean = false
+  protected tapAndHoldTimer: number = 0
+  protected initialTouchX: number = 0
+  protected initialTouchY: number = 0
 
   /**
    * Tolerance for a move to be handled as a single click.
-   * Default is 4 pixels.
+   *
+   * Default is `4` pixels.
    */
   tolerance = 4
 
@@ -173,7 +171,6 @@ export class Graph extends Events {
 
   /**
    * Specifies the default parent to be used to insert new cells.
-   * This is used in <getDefaultParent>. Default is null.
    */
   defaultParent: Cell | null
 
@@ -183,18 +180,6 @@ export class Graph extends Events {
    */
   alternateEdgeStyle: CellStyle
 
-  /**
-   * Specifies the <mxImage> to be returned by <getBackgroundImage>. Default
-   * is null.
-   *
-   * Example:
-   *
-   * (code)
-   * var img = new mxImage('http://www.example.com/maps/examplemap.jpg', 1024, 768);
-   * graph.setBackgroundImage(img);
-   * graph.view.validate();
-   * (end)
-   */
   backgroundImage: Image
 
   /**
@@ -328,9 +313,9 @@ export class Graph extends Events {
   edgeLabelsMovable = true
 
   /**
-   * Specifies the return value for vertices in <isLabelMovable>. Default is false.
+   * Specifies the return value for nodes in <isLabelMovable>. Default is false.
    */
-  vertexLabelsMovable = false
+  nodeLabelsMovable = false
 
   /**
    * Specifies the return value for <isDropEnabled>. Default is false.
@@ -366,41 +351,43 @@ export class Graph extends Events {
 
   /**
    * Specifies if the graph should automatically update the cell size after an
-   * edit. This is used in <isAutoSizeCell>. Default is false.
+   * edit. Default is `false`.
    */
-  autoSizeCells = false
+  autoSizeCells: boolean = false
 
   /**
-   * Specifies if autoSize style should be applied when cells are added. Default is false.
+   * Specifies if autoSize style should be applied when cells are added.
+   *
+   * Default is `false`.
    */
-  autoSizeCellsOnAdd = false
+  autoSizeCellsOnAdd: boolean = false
 
   /**
    * Specifies if the graph should automatically scroll if the mouse goes near
    * the container edge while dragging. This is only taken into account if the
-   * container has scrollbars. Default is true.
+   * container has scrollbars. Default is `true`.
    *
-   * If you need this to work without scrollbars then set <ignoreScrollbars> to
-   * true. Please consult the <ignoreScrollbars> for details. In general, with
-   * no scrollbars, the use of <allowAutoPanning> is recommended.
+   * If you need this to work without scrollbars then set `ignoreScrollbars` to
+   * true. Please consult the `ignoreScrollbars` for details. In general, with
+   * no scrollbars, the use of `allowAutoPanning` is recommended.
    */
-  autoScroll = true
+  autoScroll: boolean = true
 
   /**
    * Specifies if the graph should automatically scroll regardless of the
    * scrollbars. This will scroll the container using positive values for
-   * scroll positions (ie usually only rightwards and downwards). To avoid
-   * possible conflicts with panning, set <translateToScrollPosition> to true.
+   * scroll positions. To avoid possible conflicts with panning, set
+   * `translateToScrollPosition` to true.
    */
-  ignoreScrollbars = false
+  ignoreScrollbars: boolean = false
 
   /**
    * Specifies if the graph should automatically convert the current scroll
    * position to a translate in the graph view when a mouseUp event is received.
-   * This can be used to avoid conflicts when using <autoScroll> and
-   * <ignoreScrollbars> with no scrollbars in the container.
+   * This can be used to avoid conflicts when using `autoScroll` and
+   * `ignoreScrollbars` with no scrollbars in the container.
    */
-  translateToScrollPosition = false
+  translateToScrollPosition: boolean = false
 
   /**
    * Specifies if autoscrolling should be carried out via mxPanningManager even
@@ -478,7 +465,7 @@ export class Graph extends Events {
   keepEdgesInBackground = false
 
   /**
-   * Specifies if negative coordinates for vertices are allowed. Default is true.
+   * Specifies if negative coordinates for nodes are allowed. Default is true.
    */
   allowNegativeCoordinates = true
 
@@ -582,7 +569,7 @@ export class Graph extends Events {
 
   /**
    * Specifies if multiple edges in the same direction between the same pair of
-   * vertices are allowed. Default is true.
+   * nodes are allowed. Default is true.
    */
   multigraph = true
 
@@ -596,9 +583,10 @@ export class Graph extends Events {
 
   /**
    * Specifies if edges with disconnected terminals are allowed in the graph.
-   * Default is true.
+   *
+   * Default is `true`.
    */
-  allowDanglingEdges = true
+  allowDanglingEdges: boolean = true
 
   /**
    * Specifies if edges that are cloned should be validated and only inserted
@@ -646,51 +634,51 @@ export class Graph extends Events {
   imageBundles: any[]
 
   /**
-   * Specifies the minimum scale to be applied in <fit>. Default is 0.1. Set this
-   * to null to allow any value.
+   * Specifies the minimum scale to be applied in `fit`.
+   *
+   * Default is `0.1`. Set to `null` to allow any value.
    */
-  minFitScale = 0.1
+  minFitScale: number = 0.1
 
   /**
-   * Specifies the maximum scale to be applied in <fit>. Default is 8. Set this
-   * to null to allow any value.
+   * Specifies the maximum scale to be applied in `fit`.
+   *
+   * Default is `8`. Set to `null` to allow any value.
    */
-  maxFitScale = 8
+  maxFitScale: number = 8
 
   /**
-   * Current horizontal panning value. Default is 0.
+   * Current horizontal panning value.
    */
-  panDx = 0
+  panDx: number = 0
 
   /**
-   * Current vertical panning value. Default is 0.
+   * Current vertical panning value.
    */
-  panDy = 0
+  panDy: number = 0
 
   collapsedImage: Image = images.collapsed
   expandedImage: Image = images.expanded
   warningImage: Image = images.warning
 
+  hooks: Graph.Hooks
+
   constructor(container: HTMLElement, options: Graph.Options = {}) {
     super()
 
-    this.dialect = 'svg'
-    if (options.renderHint === 'faster') {
-      this.dialect = 'strictHtml'
-    } else if (options.renderHint === 'fastest') {
-      this.dialect = 'preferHtml'
-    }
-
-    this.model = options.model || new Model()
-    this.view = new View(this)
-    this.renderer = new Renderer()
-    this.stylesheet = options.stylesheet || new Stylesheet()
-    this.selectionModel = new GraphSelectionModel(this)
-    this.mouseListeners = null
+    this.container = container
+    this.dialect = options.dialect === 'html' ? 'html' : 'svg'
+    this.hooks = options.hooks || {}
+    this.model = options.model || this.createModel()
+    this.styleSheet = options.styleSheet || this.createStyleSheet()
+    this.view = this.createView()
+    this.renderer = this.createRenderer()
+    this.selectionManager = this.createSelectionManager()
+    this.mouseListeners = []
     this.multiplicities = []
     this.imageBundles = []
 
-    this.model.on(Model.eventNames.change, this.graphModelChanged, this)
+    this.model.on(Model.events.change, this.onModelChanged, this)
     this.createHandlers()
 
     if (container != null) {
@@ -699,24 +687,103 @@ export class Graph extends Events {
     this.view.revalidate()
   }
 
-  private init(container: HTMLElement) {
-    this.container = container
+  protected createModel() {
+    return (this.hooks.createModel != null &&
+      this.hooks.createModel(this) ||
+      new Model()
+    )
+  }
+
+  protected createView() {
+    return (this.hooks.createView != null &&
+      this.hooks.createView(this) ||
+      new View(this)
+    )
+  }
+
+  protected createStyleSheet() {
+    return (this.hooks.createStyleSheet != null &&
+      this.hooks.createStyleSheet(this) ||
+      new StyleSheet()
+    )
+  }
+
+  protected createRenderer() {
+    return (this.hooks.createRenderer != null &&
+      this.hooks.createRenderer(this) ||
+      new Renderer()
+    )
+  }
+
+  protected createSelectionManager() {
+    return (this.hooks.createSelectionManager != null &&
+      this.hooks.createSelectionManager(this) ||
+      new SelectionManager(this)
+    )
+  }
+
+  protected createHandlers() {
+    this.tooltipHandler = this.createTooltipHandler()
+    this.tooltipHandler.disable()
+    this.selectionHandler = this.createSelectionHandler()
+    // this.connectionHandler = this.createConnectionHandler()
+    // this.connectionHandler.setEnabled(false)
+    this.graphHandler = this.createGraphHandler()
+    this.panningHandler = this.createPanningHandler()
+    this.panningHandler.disablePanning()
+    this.popupMenuHandler = this.createPopupMenuHandler()
+  }
+
+  protected createTooltipHandler() {
+    return (this.hooks.createTooltipHandler != null &&
+      this.hooks.createTooltipHandler(this) ||
+      new TooltipHandler(this)
+    )
+  }
+
+  hideTooltip() {
+    if (this.tooltipHandler) {
+      this.tooltipHandler.hide()
+    }
+  }
+
+  protected createSelectionHandler() {
+    return (this.hooks.createSelectionHandler != null &&
+      this.hooks.createSelectionHandler(this) ||
+      new SelectionHandler(this)
+    )
+  }
+
+  protected createGraphHandler() {
+    return (this.hooks.createGraphHandler != null &&
+      this.hooks.createGraphHandler(this) ||
+      new GraphHandler(this)
+    )
+  }
+
+  protected createPanningHandler() {
+    return (this.hooks.createPanningHandler != null &&
+      this.hooks.createPanningHandler(this) ||
+      new PanningHandler(this)
+    )
+  }
+
+  protected createPopupMenuHandler() {
+    return (this.hooks.createPopupMenuHandler != null &&
+      this.hooks.createPopupMenuHandler(this) ||
+      new PopupMenuHandler(this)
+    )
+  }
+
+  protected init(container: HTMLElement) {
     // TODO:
     // this.cellEditor = new CellEditor(this)
     this.view.init()
     this.sizeDidChange()
 
-    // Hides tooltips and resets tooltip timer if mouse leaves container
-    DomEvent.addListener(container, 'mouseleave', () => {
-      if (this.tooltipHandler != null) {
-        this.tooltipHandler.hide()
-      }
-    })
-
     if (detector.IS_IE) {
-      // automatic deallocation of memory
       DomEvent.addListener(window, 'unload', () => {
-        this.destroy()
+        this.dispose()
       })
 
       // disable shift-click for text
@@ -728,42 +795,6 @@ export class Graph extends Events {
       })
     }
   }
-
-  private createHandlers() {
-    // this.tooltipHandler = this.createTooltipHandler()
-    // this.tooltipHandler.setEnabled(false)
-    // this.selectionCellsHandler = this.createSelectionCellsHandler()
-    // this.connectionHandler = this.createConnectionHandler()
-    // this.connectionHandler.setEnabled(false)
-    // this.graphHandler = this.createGraphHandler()
-    // this.panningHandler = this.createPanningHandler()
-    // this.panningHandler.panningEnabled = false
-    // this.popupMenuHandler = this.createPopupMenuHandler()
-  }
-
-  // private createTooltipHandler() {
-  //   return new mxTooltipHandler(this)
-  // }
-
-  // private createSelectionCellsHandler() {
-  //   return new mxSelectionCellsHandler(this)
-  // }
-
-  // private createConnectionHandler() {
-  //   return new mxConnectionHandler(this)
-  // }
-
-  // private createGraphHandler() {
-  //   return new mxGraphHandler(this)
-  // }
-
-  // private createPanningHandler() {
-  //   return new mxPanningHandler(this)
-  // }
-
-  // private createPopupMenuHandler() {
-  //   return new mxPopupMenuHandler(this)
-  // }
 
   batchUpdate(update: () => void) {
     this.model.batchUpdate(update)
@@ -778,19 +809,11 @@ export class Graph extends Events {
   }
 
   getStylesheet() {
-    return this.stylesheet
+    return this.styleSheet
   }
 
-  setStylesheet(stylesheet: Stylesheet) {
-    this.stylesheet = stylesheet
-  }
-
-  getSelectionModel() {
-    return this.selectionModel
-  }
-
-  setSelectionModel(selectionModel: GraphSelectionModel) {
-    this.selectionModel = selectionModel
+  setStylesheet(stylesheet: StyleSheet) {
+    this.styleSheet = stylesheet
   }
 
   /**
@@ -833,23 +856,20 @@ export class Graph extends Events {
     return cells
   }
 
-  /**
-   * Called when the graph model changes.
-   */
-  private graphModelChanged(changes: IChange[]) {
+  protected onModelChanged(changes: IChange[]) {
     changes.forEach(change => this.processChange(change))
     this.updateSelection()
     this.view.validate()
     this.sizeDidChange()
   }
 
-  private processChange(change: IChange) {
+  protected processChange(change: IChange) {
     if (change instanceof RootChange) {
-      // removes all cells and clears the selection if the root changes.
 
+      // removes all cells and clears the selection if the root changes.
       this.clearSelection()
       this.setDefaultParent(null)
-      this.removeStateForCell(change.previous)
+      this.removeCellState(change.previous)
 
       if (this.resetViewOnRootChange) {
         this.view.scale = 1
@@ -868,7 +888,7 @@ export class Graph extends Events {
         this.isCellCollapsed(newParent)
       ) {
         this.view.invalidate(change.child, true, true)
-        this.removeStateForCell(change.child)
+        this.removeCellState(change.child)
         // currentRoot being removed
         if (this.getCurrentRoot() === change.child) {
           this.home()
@@ -885,12 +905,14 @@ export class Graph extends Events {
           this.view.invalidate(change.previous, false, false)
         }
       }
+
     } else if (
       change instanceof TerminalChange ||
       change instanceof GeometryChange
     ) {
+
       // Handles two special cases where the shape does not need to
-      // be recreated from scratch, it only needs to be invalidated.
+      // be recreated, it only needs to be invalidated.
 
       // Checks if the geometry has changed to avoid unnessecary revalidation
       if (
@@ -902,31 +924,35 @@ export class Graph extends Events {
         this.view.invalidate(change.cell)
       }
     } else if (change instanceof DataChange) {
+
       // Handles special case where only the shape, but no
       // descendants need to be recreated.
-
       this.view.invalidate(change.cell, false, false)
-    } else if (change instanceof StyleChange) {
-      // Requires a new Shape in JavaScript.
 
+    } else if (change instanceof StyleChange) {
+
+      // Requires a new Shape in JavaScript.
       this.view.invalidate(change.cell, true, true)
       const state = this.view.getState(change.cell)
       if (state != null) {
         state.invalidStyle = true
       }
+
     } else if (change.cell != null && change.cell instanceof Cell) {
+
       // Removes the state from the cache by default.
-      this.removeStateForCell(change.cell)
+      this.removeCellState(change.cell)
     }
   }
 
   /**
    * Removes all cached information for the given cell and its descendants.
+   *
    * This is called when a cell was removed from the model.
    */
-  private removeStateForCell(cell: Cell | null) {
+  protected removeCellState(cell: Cell | null) {
     if (cell) {
-      cell.eachChild(child => this.removeStateForCell(child))
+      cell.eachChild(child => this.removeCellState(child))
       this.view.invalidate(cell, false, true)
       this.view.removeState(cell)
     }
@@ -950,7 +976,7 @@ export class Graph extends Events {
       this.renderer.redraw(state)
     }
 
-    this.trigger(Graph.eventNames.addOverlay, { cell, overlay })
+    this.trigger(Graph.events.addOverlay, { cell, overlay })
 
     return overlay
   }
@@ -983,7 +1009,7 @@ export class Graph extends Events {
           this.renderer.redraw(state)
         }
 
-        this.trigger(Graph.eventNames.removeOverlay, { cell, overlay })
+        this.trigger(Graph.events.removeOverlay, { cell, overlay })
       } else {
         // tslint:disable-next-line
         overlay = null
@@ -1003,7 +1029,7 @@ export class Graph extends Events {
         this.renderer.redraw(state)
       }
 
-      this.trigger(Graph.eventNames.removeOverlays, { cell, overlays })
+      this.trigger(Graph.events.removeOverlays, { cell, overlays })
     }
 
     return overlays
@@ -1068,17 +1094,17 @@ export class Graph extends Events {
   startEditingAtCell(cell?: Cell | null, e?: MouseEvent) {
     if (e == null || !DomEvent.isMultiTouchEvent(e)) {
       if (cell == null) {
-        cell = this.getSelectionCell() // tslint:disable-line
+        cell = this.getSelectedCell() // tslint:disable-line
         if (cell != null && !this.isCellEditable(cell)) {
           cell = null // tslint:disable-line
         }
       }
 
       if (cell != null) {
-        this.trigger(Graph.eventNames.startEditing, { cell, e })
+        this.trigger(Graph.events.startEditing, { cell, e })
         // TODO:
         // this.cellEditor.startEditing(cell, e)
-        this.trigger(Graph.eventNames.editingStarted, { cell, e })
+        this.trigger(Graph.events.editingStarted, { cell, e })
       }
     }
   }
@@ -1093,14 +1119,14 @@ export class Graph extends Events {
   stopEditing(cancel: boolean = false) {
     // TOOD:
     // this.cellEditor.stopEditing(cancel)
-    this.trigger(Graph.eventNames.editingStopped, { cancel })
+    this.trigger(Graph.events.editingStopped, { cancel })
   }
 
   labelChanged(cell: Cell, value: string, e?: MouseEvent) {
     this.model.batchUpdate(() => {
       const old = cell.data
       this.cellLabelChanged(cell, value, this.isAutoSizeCell(cell))
-      this.trigger(Graph.eventNames.labelChanged, { cell, value, old, e })
+      this.trigger(Graph.events.labelChanged, { cell, value, old, e })
     })
     return cell
   }
@@ -1122,7 +1148,7 @@ export class Graph extends Events {
    * Processes an escape keystroke.
    */
   escape(e: KeyboardEvent) {
-    this.trigger(Graph.eventNames.escape, { e })
+    this.trigger(Graph.events.escape, { e })
   }
 
   /**
@@ -1136,11 +1162,12 @@ export class Graph extends Events {
   click(e: CustomMouseEvent) {
     const evt = e.getEvent()
     let cell = e.getCell()
+    const consumed = e.isConsumed()
 
-    this.trigger('click', { e })
+    this.trigger('click', { e: evt })
 
     // Handles the event if it has not been consumed
-    if (this.isEnabled() && !DomEvent.isConsumed(evt)) {
+    if (this.isEnabled() && !DomEvent.isConsumed(evt) && !consumed) {
       if (cell != null) {
         if (this.isTransparentClickEvent(evt)) {
           let active = false
@@ -1189,38 +1216,6 @@ export class Graph extends Events {
    * event. The event is fired initially. If the graph is enabled and the
    * event has not been consumed, then <edit> is called with the given
    * cell. The event is ignored if no cell was specified.
-   *
-   * Example for overriding this method.
-   *
-   * (code)
-   * graph.dblClick (evt, cell)
-   * {
-   *   var mxe = new DomEventObject(DomEvent.DOUBLE_CLICK, 'event', evt, 'cell', cell);
-   *   this.fireEvent(mxe);
-   *
-   *   if (this.isEnabled() && !DomEvent.isConsumed(evt) && !mxe.isConsumed())
-   *   {
-   * 	   util.alert('Hello, World!');
-   *     mxe.consume();
-   *   }
-   * }
-   * (end)
-   *
-   * Example listener for this event.
-   *
-   * (code)
-   * graph.addListener(DomEvent.DOUBLE_CLICK, function(sender, evt)
-   * {
-   *   var cell = evt.getProperty('cell');
-   *   // do something with the cell and consume the
-   *   // event to prevent in-place editing from start
-   * });
-   * (end)
-   *
-   * Parameters:
-   *
-   * evt - Mouseevent that represents the doubleclick.
-   * cell - Optional <Cell> under the mousepointer.
    */
   dblClick(e: MouseEvent, cell?: Cell | null) {
     this.trigger('doubleClick', { e })
@@ -1251,8 +1246,7 @@ export class Graph extends Events {
 
     if (DomEvent.isConsumed(evt)) {
       // Resets the state of the panning handler
-      // TODO:
-      // this.panningHandler.panningTrigger = false
+      this.panningHandler.panningTrigger = false
     }
 
     // Handles the event if it has not been consumed
@@ -1320,8 +1314,8 @@ export class Graph extends Events {
               root.style.width = util.toPx(width)
             } else {
               const width = Math.max(c.clientWidth, c.scrollWidth) + border - dx
-              const canvas = this.view.getCanvas()!
-              canvas.style.width = util.toPx(width)
+              const stage = this.view.getStage()!
+              stage.style.width = util.toPx(width)
             }
 
             c.scrollLeft += border - dx
@@ -1350,7 +1344,7 @@ export class Graph extends Events {
               root.style.height = util.toPx(height)
             } else {
               const height = Math.max(c.clientHeight, c.scrollHeight) + border - dy
-              const canvas = this.view.getCanvas()!
+              const canvas = this.view.getStage()!
               canvas.style.height = util.toPx(height)
             }
 
@@ -1597,9 +1591,9 @@ export class Graph extends Events {
       } else {
         if (detector.IS_QUIRKS) {
           // Quirks mode does not support minWidth/-Height
-          this.view.updateHtmlCanvasSize(Math.max(1, width), Math.max(1, height))
+          this.view.updateHtmlStageSize(Math.max(1, width), Math.max(1, height))
         } else {
-          const canvas = this.view.getCanvas()!
+          const canvas = this.view.getStage()!
           canvas.style.minWidth = `${Math.max(1, width)}px`
           canvas.style.minHeight = `${Math.max(1, height)}px`
         }
@@ -1608,7 +1602,7 @@ export class Graph extends Events {
       this.updatePageBreaks(this.pageBreaksVisible, width, height)
     }
 
-    this.trigger(Graph.eventNames.size, bounds)
+    this.trigger(Graph.events.size, bounds)
   }
 
   /**
@@ -1703,7 +1697,7 @@ export class Graph extends Events {
         }
 
         for (let i = count; i < breaks.length; i += 1) {
-          breaks[i].destroy()
+          breaks[i].dispose()
         }
 
         breaks.splice(count, breaks.length - count)
@@ -1727,16 +1721,19 @@ export class Graph extends Events {
    * Note: You should try and get the cell state for the given cell and
    * use the cached style in the state before using this method.
    */
-  getCellStyle(cell: Cell) {
-    const defaultStyle = this.model.isEdge(cell)
-      ? this.stylesheet.getDefaultEdgeStyle()
-      : this.stylesheet.getDefaultNodeStyle()
+  getCellStyle(cell: Cell | null) {
+    if (cell) {
+      const defaultStyle = this.model.isEdge(cell)
+        ? this.styleSheet.getDefaultEdgeStyle()
+        : this.styleSheet.getDefaultNodeStyle()
 
-    const style = this.model.getStyle(cell) || {}
-    return this.postProcessCellStyle({
-      ...defaultStyle,
-      ...style,
-    })
+      const style = this.model.getStyle(cell) || {}
+      return this.postProcessCellStyle({
+        ...defaultStyle,
+        ...style,
+      })
+    }
+    return {}
   }
 
   /**
@@ -1744,7 +1741,7 @@ export class Graph extends Events {
    * turns short data URIs as defined in `ImageBundle` to data URIs as
    * defined in RFC 2397 of the IETF.
    */
-  private postProcessCellStyle(style: CellStyle) {
+  protected postProcessCellStyle(style: CellStyle) {
     if (style != null) {
       const key = style.image
       // TODO: xx
@@ -1782,7 +1779,7 @@ export class Graph extends Events {
    * Sets the style of the specified cells. If no cells are given, then the
    * selection cells are changed.
    */
-  setCellStyle(style: CellStyle, cells: Cell[] = this.getSelectionCells()) {
+  setCellStyle(style: CellStyle, cells: Cell[] = this.getSelectedCells()) {
     if (cells != null) {
       this.model.batchUpdate(() => {
         cells.forEach(cell => this.model.setStyle(cell, style))
@@ -1806,7 +1803,7 @@ export class Graph extends Events {
   toggleCellStyle(
     key: string,
     defaultValue: boolean = false,
-    cell: Cell = this.getSelectionCell()) {
+    cell: Cell = this.getSelectedCell()) {
     return this.toggleCellStyles(key, defaultValue, [cell])
   }
 
@@ -1818,7 +1815,7 @@ export class Graph extends Events {
   toggleCellStyles(
     key: string,
     defaultValue: boolean = false,
-    cells: Cell[] = this.getSelectionCells(),
+    cells: Cell[] = this.getSelectedCells(),
   ) {
     let value = null
     if (cells != null && cells.length > 0) {
@@ -1844,7 +1841,7 @@ export class Graph extends Events {
   setCellStyles(
     key: string,
     value: string | number | boolean | null,
-    cells: Cell[] = this.getSelectionCells(),
+    cells: Cell[] = this.getSelectedCells(),
   ) {
     if (cells != null && cells.length > 0) {
       this.model.batchUpdate(() => {
@@ -1871,7 +1868,7 @@ export class Graph extends Events {
   toggleCellStyleFlags(
     key: string,
     flag: number,
-    cells: Cell[] = this.getSelectionCells(),
+    cells: Cell[] = this.getSelectedCells(),
   ) {
     this.setCellStyleFlags(key, flag, null, cells)
   }
@@ -1892,7 +1889,7 @@ export class Graph extends Events {
     key: string,
     flag: number,
     value: boolean | null,
-    cells: Cell[] = this.getSelectionCells(),
+    cells: Cell[] = this.getSelectedCells(),
   ) {
     if (cells != null && cells.length > 0) {
       if (value == null) {
@@ -1919,7 +1916,7 @@ export class Graph extends Events {
    */
   alignCells(
     align: Align | VAlign,
-    cells: Cell[] = this.getSelectionCells(),
+    cells: Cell[] = this.getSelectedCells(),
     param?: number,
   ) {
     if (cells != null && cells.length > 1) {
@@ -2002,7 +1999,7 @@ export class Graph extends Events {
             }
           }
 
-          this.trigger(Graph.eventNames.alignCells, { align, cells })
+          this.trigger(Graph.events.alignCells, { align, cells })
         } finally {
           this.model.endUpdate()
         }
@@ -2029,7 +2026,7 @@ export class Graph extends Events {
 
         // Removes all existing control points
         this.resetEdge(edge)
-        this.trigger(Graph.eventNames.flipEdge, { edge })
+        this.trigger(Graph.events.flipEdge, { edge })
       } finally {
         this.model.endUpdate()
       }
@@ -2081,11 +2078,11 @@ export class Graph extends Events {
    */
   orderCells(
     back: boolean,
-    cells: Cell[] = util.sortCells(this.getSelectionCells(), true),
+    cells: Cell[] = util.sortCells(this.getSelectedCells(), true),
   ) {
     this.model.batchUpdate(() => {
       this.cellsOrdered(cells, !!back)
-      this.trigger(Graph.eventNames.orderCells, { cells, back: !!back })
+      this.trigger(Graph.events.orderCells, { cells, back: !!back })
     })
     return cells
   }
@@ -2108,7 +2105,7 @@ export class Graph extends Events {
             )
           }
         }
-        this.trigger(Graph.eventNames.cellsOrdered, { cells, back: !!back })
+        this.trigger(Graph.events.cellsOrdered, { cells, back: !!back })
       })
     }
   }
@@ -2136,7 +2133,7 @@ export class Graph extends Events {
   groupCells(
     group: Cell,
     border: number = 0,
-    cells: Cell[] = util.sortCells(this.getSelectionCells(), true),
+    cells: Cell[] = util.sortCells(this.getSelectedCells(), true),
   ) {
 
     // tslint:disable-next-line
@@ -2175,7 +2172,7 @@ export class Graph extends Events {
         // Resizes the group
         this.cellsResized([group], [bounds], false)
 
-        this.trigger(Graph.eventNames.groupCells, { group, cells, border })
+        this.trigger(Graph.events.groupCells, { group, cells, border })
       })
     }
 
@@ -2186,7 +2183,7 @@ export class Graph extends Events {
    * Returns the cells with the same parent as the first cell
    * in the given array.
    */
-  private getCellsForGroup(cells: Cell[]) {
+  protected getCellsForGroup(cells: Cell[]) {
     const result = []
 
     if (cells != null && cells.length > 0) {
@@ -2207,7 +2204,7 @@ export class Graph extends Events {
   /**
    * Returns the bounds to be used for the given group and children.
    */
-  private getBoundsForGroup(group: Cell, children: Cell[], border: number) {
+  protected getBoundsForGroup(group: Cell, children: Cell[], border: number) {
     const result = this.getBoundingBoxFromGeometry(children, true)
     if (result != null) {
       if (this.isSwimlane(group)) {
@@ -2237,7 +2234,7 @@ export class Graph extends Events {
    *
    * 设计一种钩子机制
    */
-  private createGroupCell(cells: Cell[]) {
+  protected createGroupCell(cells: Cell[]) {
     const group = new Cell()
     group.actAsNode(true)
     group.setConnectable(false)
@@ -2254,7 +2251,7 @@ export class Graph extends Events {
    * cells - Array of cells to be ungrouped. If null is specified then the
    * selection cells are used.
    */
-  ungroupCells(cells: Cell[] = this.getSelectionCells()) {
+  ungroupCells(cells: Cell[] = this.getSelectedCells()) {
     let result: Cell[] = []
 
     // tslint:disable-next-line
@@ -2275,7 +2272,7 @@ export class Graph extends Events {
         })
 
         this.removeCellsAfterUngroup(cells)
-        this.trigger(Graph.eventNames.ungroupCells, { cells })
+        this.trigger(Graph.events.ungroupCells, { cells })
       })
     }
 
@@ -2293,13 +2290,13 @@ export class Graph extends Events {
    * Removes the specified cells from their parents and adds them to the
    * default parent. Returns the cells that were removed from their parents.
    */
-  removeCellsFromParent(cells: Cell[] = this.getSelectionCells()) {
+  removeCellsFromParent(cells: Cell[] = this.getSelectedCells()) {
     this.model.batchUpdate(() => {
       const parent = this.getDefaultParent()!
       const index = this.model.getChildCount(parent)
 
       this.cellsAdded(cells, parent, index, null, null, true)
-      this.trigger(Graph.eventNames.removeCellsFromParent, { cells })
+      this.trigger(Graph.events.removeCellsFromParent, { cells })
     })
 
     return cells
@@ -2324,7 +2321,7 @@ export class Graph extends Events {
    * leftBorder - Optional top border to be added in the group. Default is 0.
    */
   updateGroupBounds(
-    cells: Cell[] = this.getSelectionCells(),
+    cells: Cell[] = this.getSelectedCells(),
     border: number = 0,
     moveGroup: boolean = false,
     topBorder: number = 0,
@@ -2416,14 +2413,12 @@ export class Graph extends Events {
   /**
    * Returns the clone for the given cell.
    *
-   * Parameters:
-   *
-   * cell - <Cell> to be cloned.
-   * allowInvalidEdges - Optional boolean that specifies if invalid edges
-   * should be cloned. Default is true.
-   * mapping - Optional mapping for existing clones.
-   * keepPosition - Optional boolean indicating if the position of the cells should
-   * be updated to reflect the lost parent cell. Default is false.
+   * @param cell `Cell` to be cloned.
+   * @param allowInvalidEdges Optional boolean that specifies if invalid edges
+   * should be cloned.  Default is `true`.
+   * @param mapping Optional mapping for existing clones.
+   * @param keepPosition Optional boolean indicating if the position of the
+   * cells should be updated to reflect the lost parent cell.
    */
   cloneCell(
     cell: Cell,
@@ -2431,23 +2426,20 @@ export class Graph extends Events {
     mapping: WeakMap<Cell, Cell> = new WeakMap<Cell, Cell>(),
     keepPosition: boolean = false,
   ) {
-    return this.cloneCells([cell], allowInvalidEdges, mapping, keepPosition)![0]
+    return this.cloneCells([cell], allowInvalidEdges, mapping, keepPosition)[0]
   }
 
   /**
-   * Returns the clones for the given cells. The clones are created recursively
-   * using <mxGraphModel.cloneCells>. If the terminal of an edge is not in the
-   * given array, then the respective end is assigned a terminal point and the
-   * terminal is removed.
+   * Returns the clones for the given cells. If the terminal of an edge is not
+   * in the given array, then the respective end is assigned a terminal point
+   * and the terminal is removed.
    *
-   * Parameters:
-   *
-   * cells - Array of <Cells> to be cloned.
-   * allowInvalidEdges - Optional boolean that specifies if invalid edges
-   * should be cloned. Default is true.
-   * mapping - Optional mapping for existing clones.
-   * keepPosition - Optional boolean indicating if the position of the cells should
-   * be updated to reflect the lost parent cell. Default is false.
+   * @param cells - Array of `Cell`s to be cloned.
+   * @param allowInvalidEdges - Optional boolean that specifies if invalid
+   * edges should be cloned. Default is `true`.
+   * @param mapping - Optional mapping for existing clones.
+   * @param keepPosition - Optional boolean indicating if the position of the
+   * cells should be updated to reflect the lost parent cell. Default is `false`.
    */
   cloneCells(
     cells: Cell[],
@@ -2455,10 +2447,8 @@ export class Graph extends Events {
     mapping: WeakMap<Cell, Cell> = new WeakMap<Cell, Cell>(),
     keepPosition: boolean = false,
   ) {
-    let clones: Cell[] | null = null
-
+    let clones: Cell[] = []
     if (cells != null) {
-
       // Creates a dictionary for fast lookups
       const dict = new WeakMap<Cell, boolean>()
       const tmp = []
@@ -2492,19 +2482,19 @@ export class Graph extends Events {
               const pstate = this.view.getState(this.model.getParent(cells[i])!)
 
               if (state != null && pstate != null) {
-                const dx = (keepPosition) ? 0 : pstate.origin.x
-                const dy = (keepPosition) ? 0 : pstate.origin.y
+                const dx = keepPosition ? 0 : pstate.origin.x
+                const dy = keepPosition ? 0 : pstate.origin.y
 
-                if (this.model.isEdge(clones[i]!)) {
+                if (this.model.isEdge(clones[i])) {
                   const pts = state.absolutePoints
                   if (pts != null) {
                     // Checks if the source is cloned or sets the terminal point
-                    let src = this.model.getTerminal(cells[i], true)
-                    while (src != null && !dict.get(src)) {
-                      src = this.model.getParent(src)
+                    let source = this.model.getTerminal(cells[i], true)
+                    while (source != null && !dict.get(source)) {
+                      source = this.model.getParent(source)
                     }
 
-                    if (src == null && pts[0] != null) {
+                    if (source == null && pts[0] != null) {
                       geom.setTerminalPoint(
                         new Point(
                           pts[0]!.x / scale - trans.x,
@@ -2515,15 +2505,14 @@ export class Graph extends Events {
                     }
 
                     // Checks if the target is cloned or sets the terminal point
-                    let trg = this.model.getTerminal(cells[i], false)
-
-                    while (trg != null && !dict.get(trg)) {
-                      trg = this.model.getParent(trg)
+                    let target = this.model.getTerminal(cells[i], false)
+                    while (target != null && !dict.get(target)) {
+                      target = this.model.getParent(target)
                     }
 
                     const n = pts.length - 1
 
-                    if (trg == null && pts[n] != null) {
+                    if (target == null && pts[n] != null) {
                       geom.setTerminalPoint(
                         new Point(
                           pts[n]!.x / scale - trans.x,
@@ -2534,13 +2523,10 @@ export class Graph extends Events {
                     }
 
                     // Translates the control points
-                    const points = geom.points
-                    if (points != null) {
-                      for (let j = 0, jj = points.length; j < jj; j += 1) {
-                        points[j].x += dx
-                        points[j].y += dy
-                      }
-                    }
+                    geom.points && geom.points.forEach((p) => {
+                      p.x += dx
+                      p.y += dy
+                    })
                   }
                 } else {
                   geom.translate(dx, dy)
@@ -2549,67 +2535,26 @@ export class Graph extends Events {
             }
           }
         }
-      } else {
-        clones = []
       }
     }
 
     return clones
   }
 
-  /**
-   * Adds a new node into the given parent `Cell` using value as the user
-   * object and the given coordinates as the `Geometry` of the new node.
-   * The id and style are used for the respective properties of the new
-   * `Cell`, which is returned.
-   *
-   * When adding new nodes from a mouse event, one should take into
-   * account the offset of the graph container and the scale and translation
-   * of the view in order to find the correct unscaled, untranslated
-   * coordinates using <mxGraph.getPointForEvent> as follows:
-   *
-   * (code)
-   * var pt = graph.getPointForEvent(evt);
-   * var parent = graph.getDefaultParent();
-   * graph.insertVertex(parent, null,
-   * 			'Hello, World!', x, y, 220, 30);
-   * (end)
-   *
-   * For adding image cells, the style parameter can be assigned as
-   *
-   * (code)
-   * stylename;image=imageUrl
-   * (end)
-   *
-   * See <mxGraph> for more information on using images.
-   *
-   * Parameters:
-   *
-   * parent - <Cell> that specifies the parent of the new vertex.
-   * id - Optional string that defines the Id of the new vertex.
-   * value - Object to be used as the user object.
-   * x - Integer that defines the x coordinate of the vertex.
-   * y - Integer that defines the y coordinate of the vertex.
-   * width - Integer that defines the width of the vertex.
-   * height - Integer that defines the height of the vertex.
-   * style - Optional string that defines the cell style.
-   * relative - Optional boolean that specifies if the geometry is relative.
-   * Default is false.
-   */
-  insertNode(options: Graph.InsertNodeOptions = {}) {
+  insertNode(options: Graph.InsertNodeOptions = {}): Cell {
     const node = this.createNode(options)
     return this.addCell(node, options.parent, options.index)
   }
 
-  addNode(node: Cell, parent?: Cell, index?: number) {
+  addNode(node: Cell, parent?: Cell, index?: number): Cell {
     return this.addNodes([node], parent, index)[0]
   }
 
-  addNodes(nodes: Cell[], parent?: Cell, index?: number) {
+  addNodes(nodes: Cell[], parent?: Cell, index?: number): Cell[] {
     return this.addCells(nodes, parent, index)
   }
 
-  createNode(options: Graph.CreateNodeOptions = {}) {
+  createNode(options: Graph.CreateNodeOptions = {}): Cell {
     const geo = new Geometry(options.x, options.y, options.width, options.height)
     geo.relative = options.relative != null ? options.relative : false
     const node = new Cell(options.data, geo, options.style)
@@ -2620,22 +2565,7 @@ export class Graph extends Events {
     return node
   }
 
-  /**
-   * Adds a new edge into the given parent <Cell> using value as the user
-   * object and the given source and target as the terminals of the new edge.
-   * The id and style are used for the respective properties of the new
-   * <Cell>, which is returned.
-   *
-   * Parameters:
-   *
-   * parent - <Cell> that specifies the parent of the new edge.
-   * id - Optional string that defines the Id of the new edge.
-   * value - JavaScript object to be used as the user object.
-   * source - <Cell> that defines the source of the edge.
-   * target - <Cell> that defines the target of the edge.
-   * style - Optional string that defines the cell style.
-   */
-  insertEdge(options: Graph.InsertEdgeOptions = {}) {
+  insertEdge(options: Graph.InsertEdgeOptions = {}): Cell {
     const edge = this.createEdge(options)
     return this.addEdge(
       edge,
@@ -2646,13 +2576,7 @@ export class Graph extends Events {
     )
   }
 
-  /**
-   * Hook method that creates the new edge for <insertEdge>. This
-   * implementation does not set the source and target of the edge, these
-   * are set when the edge is added to the model.
-   *
-   */
-  createEdge(options: Graph.CreateEdgeOptions = {}) {
+  createEdge(options: Graph.CreateEdgeOptions = {}): Cell {
     const geo = new Geometry()
     geo.relative = true
 
@@ -2663,18 +2587,6 @@ export class Graph extends Events {
     return edge
   }
 
-  /**
-   * Adds the edge to the parent and connects it to the given source and
-   * target terminals. This is a shortcut method. Returns the edge that was
-   * added.
-   *
-   * edge - <Cell> to be inserted into the given parent.
-   * parent - <Cell> that represents the new parent. If no parent is
-   * given then the default parent is used.
-   * source - Optional <Cell> that represents the source terminal.
-   * target - Optional <Cell> that represents the target terminal.
-   * index - Optional index to insert the cells at. Default is to append.
-   */
   addEdge(
     edge: Cell,
     parent?: Cell,
@@ -2687,17 +2599,14 @@ export class Graph extends Events {
 
   /**
    * Adds the cell to the parent and connects it to the given source and
-   * target terminals. This is a shortcut method. Returns the cell that was
-   * added.
+   * target terminals.
    *
-   * Parameters:
-   *
-   * cell - <Cell> to be inserted into the given parent.
-   * parent - <Cell> that represents the new parent. If no parent is
+   * @param cell - `Cell` to be inserted into the given parent.
+   * @param parent - `Cell` that represents the new parent. If no parent is
    * given then the default parent is used.
-   * index - Optional index to insert the cells at. Default is to append.
-   * source - Optional <Cell> that represents the source terminal.
-   * target - Optional <Cell> that represents the target terminal.
+   * @param index - Optional index to insert the cells at. Default is to append.
+   * @param source - Optional `Cell` that represents the source terminal.
+   * @param target - Optional `Cell` that represents the target terminal.
    */
   addCell(
     cell: Cell,
@@ -2711,18 +2620,14 @@ export class Graph extends Events {
 
   /**
    * Adds the cells to the parent at the given index, connecting each cell to
-   * the optional source and target terminal. The change is carried out using
-   * <cellsAdded>. This method fires <DomEvent.ADD_CELLS> while the
-   * transaction is in progress. Returns the cells that were added.
+   * the optional source and target terminal.
    *
-   * Parameters:
-   *
-   * cells - Array of <Cells> to be inserted.
-   * parent - <Cell> that represents the new parent. If no parent is
+   * @param cells - Array of `Cell`s to be inserted.
+   * @param parent - `Cell` that represents the new parent. If no parent is
    * given then the default parent is used.
-   * index - Optional index to insert the cells at. Default is to append.
-   * source - Optional source <Cell> for all inserted cells.
-   * target - Optional target <Cell> for all inserted cells.
+   * @param index - Optional index to insert the cells at. Default is to append.
+   * @param source - Optional source `Cell` for all inserted cells.
+   * @param target - Optional target `Cell` for all inserted cells.
    */
   addCells(
     cells: Cell[],
@@ -2733,7 +2638,7 @@ export class Graph extends Events {
   ) {
     this.model.batchUpdate(() => {
       this.trigger(
-        Graph.eventNames.addCells,
+        Graph.events.addCells,
         { cells, parent, index, sourceNode, targetNode },
       )
 
@@ -2745,7 +2650,7 @@ export class Graph extends Events {
     return cells
   }
 
-  private cellsAdded(
+  protected cellsAdded(
     cells: Cell[],
     parent: Cell,
     index: number,
@@ -2757,85 +2662,85 @@ export class Graph extends Events {
   ) {
     if (cells != null && parent != null && index != null) {
       this.model.batchUpdate(() => {
-        const parentState = absolute ? this.view.getState(parent) : null
-        const o1 = (parentState != null) ? parentState.origin : null
+        const pState = absolute ? this.view.getState(parent) : null
+        const o1 = (pState != null) ? pState.origin : null
         const zero = new Point(0, 0)
 
         for (let i = 0, ii = cells.length; i < ii; i += 1) {
           if (cells[i] == null) {
-            // tslint:disable-next-line
-            index -= 1
-          } else {
-            const previous = this.model.getParent(cells[i])
+            index -= 1 // tslint:disable-line
+            continue
+          }
 
-            // Keeps the cell at its absolute location
-            if (o1 != null && cells[i] !== parent && parent !== previous) {
-              const oldState = this.view.getState(previous!)
-              const o2 = (oldState != null) ? oldState.origin : zero
-              let geo = this.model.getGeometry(cells[i])
+          const oldParent = this.model.getParent(cells[i])
 
-              if (geo != null) {
-                const dx = o2.x - o1.x
-                const dy = o2.y - o1.y
+          // Keeps the cell at its absolute location
+          if (o1 != null && cells[i] !== parent && parent !== oldParent) {
+            const oldState = this.view.getState(oldParent)
+            const o2 = (oldState != null) ? oldState.origin : zero
+            let geo = this.model.getGeometry(cells[i])
 
-                // TODO: Cells should always be inserted first before any other edit
-                // to avoid forward references in sessions.
-                geo = geo.clone()
-                geo.translate(dx, dy)
+            if (geo != null) {
+              const dx = o2.x - o1.x
+              const dy = o2.y - o1.y
 
-                if (!geo.relative && this.model.isNode(cells[i]) &&
-                  !this.isAllowNegativeCoordinates()) {
-                  geo.bounds.x = Math.max(0, geo.bounds.x)
-                  geo.bounds.y = Math.max(0, geo.bounds.y)
-                }
+              geo = geo.clone()
+              geo.translate(dx, dy)
 
-                this.model.setGeometry(cells[i], geo)
+              if (
+                !geo.relative &&
+                !this.isAllowNegativeCoordinates() &&
+                this.model.isNode(cells[i])
+              ) {
+                geo.bounds.x = Math.max(0, geo.bounds.x)
+                geo.bounds.y = Math.max(0, geo.bounds.y)
               }
-            }
 
-            // Decrements all following indices
-            // if cell is already in parent
-            if (
-              parent === previous &&
-              index + i > this.model.getChildCount(parent)
-            ) {
-              index -= 1 // tslint:disable-line
+              this.model.setGeometry(cells[i], geo)
             }
+          }
 
-            this.model.add(parent, cells[i], index + i)
+          // Decrements all following indices if cell is already in parent
+          if (
+            parent === oldParent &&
+            index + i > this.model.getChildCount(parent)
+          ) {
+            index -= 1 // tslint:disable-line
+          }
 
-            if (this.autoSizeCellsOnAdd) {
-              this.autoSizeCell(cells[i], true)
-            }
+          this.model.add(parent, cells[i], index + i)
 
-            // Extends the parent or constrains the child
-            if (
-              (extend == null || extend) &&
-              this.isExtendParentsOnAdd(cells[i]!) &&
-              this.isExtendParent(cells[i])
-            ) {
-              this.extendParent(cells[i])
-            }
+          if (this.autoSizeCellsOnAdd) {
+            this.autoSizeCell(cells[i], true)
+          }
 
-            // Additionally constrains the child after extending the parent
-            if (constrain == null || constrain) {
-              this.constrainChild(cells[i])
-            }
+          // Extends the parent or constrains the child
+          if (
+            (extend == null || extend) &&
+            this.isExtendParentsOnAdd() &&
+            this.isExtendParent(cells[i])
+          ) {
+            this.extendParent(cells[i])
+          }
 
-            // Sets the source terminal
-            if (sourceNode != null) {
-              this.cellConnected(cells[i], sourceNode, true)
-            }
+          // Additionally constrains the child after extending the parent
+          if (constrain == null || constrain) {
+            this.constrainChild(cells[i])
+          }
 
-            // Sets the target terminal
-            if (targetNode != null) {
-              this.cellConnected(cells[i], targetNode, false)
-            }
+          // Sets the source terminal
+          if (sourceNode != null) {
+            this.cellConnected(cells[i], sourceNode, true)
+          }
+
+          // Sets the target terminal
+          if (targetNode != null) {
+            this.cellConnected(cells[i], targetNode, false)
           }
         }
 
         this.trigger(
-          Graph.eventNames.cellsAdded,
+          Graph.events.cellsAdded,
           { cells, parent, index, sourceNode, targetNode, absolute },
         )
       })
@@ -2843,13 +2748,12 @@ export class Graph extends Events {
   }
 
   /**
-   * Resizes the specified cell to just fit around the its label and/or children
+   * Resizes the specified cell to just fit around the its label
+   * and/or children.
    *
-   * Parameters:
-   *
-   * cell - <Cells> to be resized.
-   * recurse - Optional boolean which specifies if all descendants should be
-   * autosized. Default is true.
+   * @param cell `Cells` to be resized.
+   * @param  recurse Optional boolean which specifies if all descendants
+   * should be autosized. Default is `true`.
    */
   autoSizeCell(cell: Cell, recurse: boolean = true) {
     if (recurse) {
@@ -2863,169 +2767,139 @@ export class Graph extends Events {
 
   /**
    * Removes the given cells from the graph including all connected edges if
-   * includeEdges is true. The change is carried out using <cellsRemoved>.
-   * This method fires <DomEvent.REMOVE_CELLS> while the transaction is in
-   * progress. The removed cells are returned as an array.
-   *
-   * Parameters:
-   *
-   * cells - Array of <Cells> to remove. If null is specified then the
-   * selection cells which are deletable are used.
-   * includeEdges - Optional boolean which specifies if all connected edges
-   * should be removed as well. Default is true.
+   * includeEdges is true.
    */
   removeCells(
-    cells: Cell[] = this.getDeletableCells(this.getSelectionCells()),
+    cells: Cell[] = this.getDeletableCells(this.getSelectedCells()),
     includeEdges: boolean = true,
   ) {
-    // Adds all edges to the cells
+    let removingCells: Cell[]
+
     if (includeEdges) {
-      // FIXME: Remove duplicate cells in result or do not add if
-      // in cells or descendant of cells
-      cells = this.getDeletableCells(this.addAllEdges(cells)) // tslint:disable-line
+      removingCells = this.getDeletableCells(this.addAllEdges(cells))
     } else {
-      cells = cells.slice() // tslint:disable-line
+      removingCells = cells.slice()
 
       // Removes edges that are currently not
       // visible as those cannot be updated
       const edges = this.getDeletableCells(this.getAllEdges(cells))
       const dict = new WeakMap<Cell, boolean>()
 
-      for (let i = 0, ii = cells.length; i < ii; i += 1) {
-        dict.set(cells[i], true)
-      }
-
-      for (let i = 0, ii = edges.length; i < ii; i += 1) {
-        if (
-          this.view.getState(edges[i]) == null &&
-          !dict.get(edges[i])) {
-          dict.set(edges[i], true)
-          cells.push(edges[i])
+      cells.forEach(cell => (dict.set(cell, true)))
+      edges.forEach((edge) => {
+        if (this.view.getState(edge) == null && !dict.get(edge)) {
+          dict.set(edge, true)
+          removingCells.push(edge)
         }
-      }
+      })
     }
 
     this.model.batchUpdate(() => {
-      this.cellsRemoved(cells)
-      this.trigger(Graph.eventNames.removeCells, { cells, includeEdges })
+      this.cellsRemoved(removingCells)
+      this.trigger(Graph.events.removeCells, {
+        includeEdges,
+        cells: removingCells,
+      })
     })
 
-    return cells
+    return removingCells
   }
 
-  private cellsRemoved(cells: Cell[]) {
+  protected cellsRemoved(cells: Cell[]) {
     if (cells != null && cells.length > 0) {
-      const scale = this.view.scale
-      const trans = this.view.translate
-
       this.model.batchUpdate(() => {
-        // Creates hashtable for faster lookup
         const dict = new WeakMap<Cell, boolean>()
-
-        for (let i = 0, ii = cells.length; i < ii; i += 1) {
-          dict.set(cells[i], true)
-        }
-
-        for (let i = 0, ii = cells.length; i < ii; i += 1) {
-          // Disconnects edges which are not being removed
-          const edges = this.getAllEdges([cells[i]])
-
-          const disconnectTerminal = (edge: Cell, isSource: boolean) => {
-            let geo = this.model.getGeometry(edge)
-
-            if (geo != null) {
-              // Checks if terminal is being removed
-              const terminal = this.model.getTerminal(edge, isSource)
-              let connected = false
-              let tmp = terminal
-
-              while (tmp != null) {
-                if (cells[i] === tmp) {
-                  connected = true
-                  break
-                }
-
-                tmp = this.model.getParent(tmp)
-              }
-
-              if (connected) {
-                geo = geo.clone()
-                const state = this.view.getState(edge)
-
-                if (state != null && state.absolutePoints != null) {
-                  const pts = state.absolutePoints
-                  const n = isSource ? 0 : pts.length - 1
-
-                  geo.setTerminalPoint(
-                    new Point(
-                      pts[n]!.x / scale - trans.x - state.origin.x,
-                      pts[n]!.y / scale - trans.y - state.origin.y,
-                    ),
-                    isSource,
-                  )
-                } else {
-                  // Fallback to center of terminal if routing
-                  // points are not available to add new point
-                  // KNOWN: Should recurse to find parent offset
-                  // of edge for nested groups but invisible edges
-                  // should be removed in removeCells step
-                  const tstate = this.view.getState(terminal)
-
-                  if (tstate != null) {
-                    geo.setTerminalPoint(
-                      new Point(
-                        tstate.bounds.getCenterX() / scale - trans.x,
-                        tstate.bounds.getCenterY() / scale - trans.y,
-                      ),
-                      isSource,
-                    )
-                  }
-                }
-
-                this.model.setGeometry(edge, geo)
-                this.model.setTerminal(edge, null, isSource)
-              }
+        cells.forEach(cell => (dict.set(cell, true)))
+        cells.forEach((cell) => {
+          const edges = this.getAllEdges([cell])
+          edges.forEach((edge) => {
+            if (!dict.get(edge)) {
+              dict.set(edge, true)
+              this.disconnectTerminal(cell, edge, true)
+              this.disconnectTerminal(cell, edge, false)
             }
-          }
+          })
 
-          for (let j = 0, jj = edges.length; j < jj; j += 1) {
-            if (!dict.get(edges[j])) {
-              dict.set(edges[j], true)
-              disconnectTerminal(edges[j], true)
-              disconnectTerminal(edges[j], false)
-            }
-          }
+          this.model.remove(cell)
+        })
 
-          this.model.remove(cells[i])
-        }
-
-        this.trigger(Graph.eventNames.cellsRemoved, { cells })
+        this.trigger(Graph.events.cellsRemoved, { cells })
       })
+    }
+  }
+
+  protected disconnectTerminal(cell: Cell, edge: Cell, isSource: boolean) {
+    const scale = this.view.scale
+    const trans = this.view.translate
+
+    let geo = this.model.getGeometry(edge)
+    if (geo != null) {
+      // Checks if terminal is being removed
+      const terminal = this.model.getTerminal(edge, isSource)
+      let connected = false
+      let tmp = terminal
+
+      while (tmp != null) {
+        if (cell === tmp) {
+          connected = true
+          break
+        }
+
+        tmp = this.model.getParent(tmp)
+      }
+
+      if (connected) {
+        geo = geo.clone()
+        const state = this.view.getState(edge)
+
+        if (state != null && state.absolutePoints != null) {
+          const pts = state.absolutePoints
+          const n = isSource ? 0 : pts.length - 1
+
+          geo.setTerminalPoint(
+            new Point(
+              pts[n].x / scale - trans.x - state.origin.x,
+              pts[n].y / scale - trans.y - state.origin.y,
+            ),
+            isSource,
+          )
+        } else { // fallback
+          const state = this.view.getState(terminal)
+          if (state != null) {
+            geo.setTerminalPoint(
+              new Point(
+                state.bounds.getCenterX() / scale - trans.x,
+                state.bounds.getCenterY() / scale - trans.y,
+              ),
+              isSource,
+            )
+          }
+        }
+
+        this.model.setGeometry(edge, geo)
+        this.model.setTerminal(edge, null, isSource)
+      }
     }
   }
 
   /**
    * Splits the given edge by adding the newEdge between the previous source
    * and the given cell and reconnecting the source of the given edge to the
-   * given cell. This method fires <DomEvent.SPLIT_EDGE> while the transaction
-   * is in progress. Returns the new edge that was inserted.
+   * given cell.
    *
-   * Parameters:
-   *
-   * edge - <Cell> that represents the edge to be splitted.
-   * cells - <Cells> that represents the cells to insert into the edge.
-   * newEdge - <Cell> that represents the edge to be inserted.
-   * dx - Optional integer that specifies the vector to move the cells.
-   * dy - Optional integer that specifies the vector to move the cells.
+   * @param edge The edge to be splitted.
+   * @param cells The cells to insert into the edge.
+   * @param newEdge The edge to be inserted.
+   * @param dx The vector to move the cells.
+   * @param dy The vector to move the cells.
    */
   splitEdge(
     edge: Cell,
     cells: Cell[],
-    newEdge: Cell,
+    newEdge: Cell | null,
     dx: number = 0,
     dy: number = 0,
   ) {
-
     const parent = this.model.getParent(edge)
     const source = this.model.getTerminal(edge, true)
 
@@ -3058,7 +2932,7 @@ export class Graph extends Events {
       this.cellsAdded([newEdge], parent!, this.model.getChildCount(parent), source, cells[0], false)
       this.cellConnected(edge, cells[0], true)
 
-      this.trigger(Graph.eventNames.splitEdge, { edge, cells, newEdge, dx, dy })
+      this.trigger(Graph.events.splitEdge, { edge, cells, newEdge, dx, dy })
     })
 
     return newEdge
@@ -3068,23 +2942,9 @@ export class Graph extends Events {
 
   // #region ======== Cell visibility
 
-  /**
-   * Sets the visible state of the specified cells and all connected edges
-   * if includeEdges is true. The change is carried out using <cellsToggled>.
-   * This method fires <DomEvent.TOGGLE_CELLS> while the transaction is in
-   * progress. Returns the cells whose visible state was changed.
-   *
-   * Parameters:
-   *
-   * show - Boolean that specifies the visible state to be assigned.
-   * cells - Array of <Cells> whose visible state should be changed. If
-   * null is specified then the selection cells are used.
-   * includeEdges - Optional boolean indicating if the visible state of all
-   * connected edges should be changed as well. Default is true.
-   */
   toggleCells(
     show: boolean,
-    cells: Cell[] = this.getSelectionCells(),
+    cells: Cell[] = this.getSelectedCells(),
     includeEdges: boolean = true,
   ) {
     if (includeEdges) {
@@ -3092,17 +2952,14 @@ export class Graph extends Events {
     }
 
     this.model.batchUpdate(() => {
-      this.cellsToggled(cells, show)
-      this.trigger(Graph.eventNames.toggleCells, { show, cells, includeEdges })
+      this.setCellsVisibleImpl(cells, show)
+      this.trigger(Graph.events.toggleCells, { show, cells, includeEdges })
     })
 
     return cells
   }
 
-  /**
-   * Sets the visible state of the specified cells.
-   */
-  private cellsToggled(cells: Cell[], show: boolean) {
+  protected setCellsVisibleImpl(cells: Cell[], show: boolean) {
     if (cells != null && cells.length > 0) {
       this.model.batchUpdate(() => {
         cells.forEach(cell => this.model.setVisible(cell, show))
@@ -3114,53 +2971,21 @@ export class Graph extends Events {
 
   // #region ======== Folding
 
-  /**
-   * Sets the collapsed state of the specified cells and all descendants
-   * if recurse is true. The change is carried out using <cellsFolded>.
-   * This method fires <DomEvent.FOLD_CELLS> while the transaction is in
-   * progress. Returns the cells whose collapsed state was changed.
-   *
-   * Parameters:
-   *
-   * collapsed - Boolean indicating the collapsed state to be assigned.
-   * recurse - Optional boolean indicating if the collapsed state of all
-   * descendants should be set. Default is false.
-   * cells - Array of <Cells> whose collapsed state should be set. If
-   * null is specified then the foldable selection cells are used.
-   * checkFoldable - Optional boolean indicating of isCellFoldable should be
-   * checked. Default is false.
-   * evt - Optional native event that triggered the invocation.
-   */
   foldCells(
     collapse: boolean,
     recurse: boolean = false,
-    cells: Cell[] = this.getFoldableCells(this.getSelectionCells(), collapse),
+    cells: Cell[] = this.getFoldableCells(this.getSelectedCells(), collapse),
     checkFoldable: boolean = false,
-    evt?: Event,
   ) {
     this.stopEditing(false)
     this.model.batchUpdate(() => {
       this.cellsFolded(cells, collapse, recurse, checkFoldable)
-      this.trigger(Graph.eventNames.foldCells, { collapse, recurse, cells })
+      this.trigger(Graph.events.foldCells, { collapse, recurse, cells })
     })
     return cells
   }
 
-  /**
-   * Sets the collapsed state of the specified cells. This method fires
-   * <DomEvent.CELLS_FOLDED> while the transaction is in progress. Returns the
-   * cells whose collapsed state was changed.
-   *
-   * Parameters:
-   *
-   * cells - Array of <Cells> whose collapsed state should be set.
-   * collapsed - Boolean indicating the collapsed state to be assigned.
-   * recurse - Boolean indicating if the collapsed state of all descendants
-   * should be set.
-   * checkFoldable - Optional boolean indicating of isCellFoldable should be
-   * checked. Default is false.
-   */
-  private cellsFolded(
+  protected cellsFolded(
     cells: Cell[],
     collapse: boolean,
     recurse: boolean,
@@ -3188,21 +3013,12 @@ export class Graph extends Events {
             this.constrainChild(cell)
           }
         })
-        this.trigger(Graph.eventNames.cellsFolded, { cells, collapse, recurse })
+        this.trigger(Graph.events.cellsFolded, { cells, collapse, recurse })
       })
     }
   }
 
-  /**
-   * Swaps the alternate and the actual bounds in the geometry of the given
-   * cell invoking <updateAlternateBounds> before carrying out the swap.
-   *
-   * Parameters:
-   *
-   * cell - <Cell> for which the bounds should be swapped.
-   * willCollapse - Boolean indicating if the cell is going to be collapsed.
-   */
-  swapBounds(cell: Cell, willCollapse: boolean) {
+  protected swapBounds(cell: Cell, willCollapse: boolean) {
     if (cell != null) {
       let geo = this.model.getGeometry(cell)
       if (geo != null) {
@@ -3221,14 +3037,12 @@ export class Graph extends Events {
    * <collapseToPreferredSize> is true, then the preferred size is used for
    * the alternate bounds. The top, left corner is always kept at the same
    * location.
-   *
-   * Parameters:
-   *
-   * cell - <Cell> for which the geometry is being udpated.
-   * g - <mxGeometry> for which the alternate bounds should be updated.
-   * willCollapse - Boolean indicating if the cell is going to be collapsed.
    */
-  updateAlternateBounds(cell: Cell, geo: Geometry, willCollapse: boolean) {
+  protected updateAlternateBounds(
+    cell: Cell,
+    geo: Geometry,
+    willCollapse: boolean,
+  ) {
     if (cell != null && geo != null) {
       const state = this.view.getState(cell)
       const style = (state != null) ? state.style : this.getCellStyle(cell)
@@ -3238,7 +3052,6 @@ export class Graph extends Events {
 
         if (this.collapseToPreferredSize) {
           const tmp = this.getPreferredSizeForCell(cell)
-
           if (tmp != null) {
             bounds = tmp
             const startSize = style.startSize || 0
@@ -3255,7 +3068,7 @@ export class Graph extends Events {
         geo.alternateBounds.x = geo.bounds.x
         geo.alternateBounds.y = geo.bounds.y
 
-        const alpha = util.toRadians(style.rotation || 0)
+        const alpha = util.toRad(style.rotation || 0)
 
         if (alpha !== 0) {
           const dx = geo.alternateBounds.getCenterX() - geo.bounds.getCenterX()
@@ -3278,23 +3091,19 @@ export class Graph extends Events {
    * Returns an array with the given cells and all edges that are connected
    * to a cell or one of its descendants.
    */
-  private addAllEdges(cells: Cell[]) {
-    const allCells = [
+  protected addAllEdges(cells: Cell[]) {
+    const merged = [
       ...cells,
       ...this.getAllEdges(cells),
     ]
-    return util.removeDuplicates<Cell>(allCells)
+    return util.removeDuplicates<Cell>(merged)
   }
 
-  /**
-   * Returns all edges connected to the given cells or its descendants.
-   */
   getAllEdges(cells: Cell[]) {
     const edges: Cell[] = []
     if (cells != null) {
       cells.forEach((cell) => {
         cell.eachEdge(edge => edges.push(edge))
-        // 递归
         const children = this.model.getChildren(cell)
         edges.push(...this.getAllEdges(children))
       })
@@ -3307,33 +3116,19 @@ export class Graph extends Events {
 
   // #region ======== Cell sizing
 
-  /**
-   * Updates the size of the given cell in the model using <cellSizeUpdated>.
-   * This method fires <DomEvent.UPDATE_CELL_SIZE> while the transaction is in
-   * progress. Returns the cell whose size was updated.
-   *
-   * Parameters:
-   *
-   * cell - <Cell> whose size should be updated.
-   */
   updateCellSize(cell: Cell, ignoreChildren: boolean = false) {
     this.model.batchUpdate(() => {
       this.cellSizeUpdated(cell, ignoreChildren)
-      this.trigger(Graph.eventNames.updateCellSize, { cell, ignoreChildren })
+      this.trigger(Graph.events.updateCellSize, { cell, ignoreChildren })
     })
     return cell
   }
 
-  /**
-   * Updates the size of the given cell in the model using
-   * `getPreferredSizeForCell` to get the new size.
-   */
-  private cellSizeUpdated(cell: Cell, ignoreChildren: boolean) {
+  protected cellSizeUpdated(cell: Cell, ignoreChildren: boolean) {
     if (cell != null) {
       this.model.batchUpdate(() => {
         const size = this.getPreferredSizeForCell(cell)
-        let geo = this.model.getGeometry(cell)!
-
+        let geo = this.model.getGeometry(cell)
         if (size != null && geo != null) {
           const collapsed = this.isCellCollapsed(cell)
           geo = geo.clone()
@@ -3389,105 +3184,77 @@ export class Graph extends Events {
     }
   }
 
-  /**
-   * Returns the preferred width and height of the given <Cell> as an
-   * <Rect>. To implement a minimum width, add a new style eg.
-   * minWidth in the vertex and override this method as follows.
-   *
-   * (code)
-   * var graphGetPreferredSizeForCell = graph.getPreferredSizeForCell;
-   * graph.getPreferredSizeForCell (cell)
-   * {
-   *   var result = graphGetPreferredSizeForCell.apply(this, arguments);
-   *   var style = this.getCellStyle(cell);
-   *
-   *   if (style['minWidth'] > 0)
-   *   {
-   *     result.width = Math.max(style['minWidth'], result.width);
-   *   }
-   *
-   *   return result;
-   * };
-   * (end)
-   *
-   * Parameters:
-   *
-   * cell - <Cell> for which the preferred size should be returned.
-   */
-  private getPreferredSizeForCell(cell: Cell) {
+  protected getPreferredSizeForCell(cell: Cell) {
     let result = null
 
-    if (cell != null) {
+    if (cell != null && !this.model.isEdge(cell)) {
       const state = this.view.getState(cell) || this.view.createState(cell)
       const style = state.style
 
-      if (!this.model.isEdge(cell)) {
-        const fontSize = style.fontSize || constants.DEFAULT_FONTSIZE
-        let dx = 0
-        let dy = 0
+      const fontSize = style.fontSize || constants.DEFAULT_FONTSIZE
+      let dx = 0
+      let dy = 0
 
-        // Adds dimension of image if shape is a label
-        if (this.getImage(state) != null || style.image != null) {
-          if (style.shape === ShapeName.label) {
-            if (style.verticalAlign === 'middle') {
-              dx += style.imageWidth || Label.prototype.imageSize
-            }
+      // Adds dimension of image if shape is a label
+      if (this.getImage(state) != null || style.image != null) {
+        if (style.shape === ShapeName.label) {
+          if (style.verticalAlign === 'middle') {
+            dx += style.imageWidth || Label.prototype.imageSize
+          }
 
-            if (style.align !== 'center') {
-              dy += style.imageHeight || Label.prototype.imageSize
-            }
+          if (style.align !== 'center') {
+            dy += style.imageHeight || Label.prototype.imageSize
           }
         }
+      }
 
-        // Adds spacings
-        dx += 2 * (style.spacing || 0)
-        dx += style.spacingLeft || 0
-        dx += style.spacingRight || 0
+      // Adds spacings
+      dx += 2 * (style.spacing || 0)
+      dx += style.spacingLeft || 0
+      dx += style.spacingRight || 0
 
-        dy += 2 * (style.spacing || 0)
-        dy += style.spacingTop || 0
-        dy += style.spacingBottom || 0
+      dy += 2 * (style.spacing || 0)
+      dy += style.spacingTop || 0
+      dy += style.spacingBottom || 0
 
-        // Add spacing for collapse/expand icon
-        // LATER: Check alignment and use constants
-        // for image spacing
-        const image = this.getFoldingImage(state)
+      // Add spacing for collapse/expand icon
+      // LATER: Check alignment and use constants
+      // for image spacing
+      const image = this.getFoldingImage(state)
 
-        if (image != null) {
-          dx += image.width + 8
+      if (image != null) {
+        dx += image.width + 8
+      }
+
+      // Adds space for label
+      let value = this.renderer.getLabelValue(state)
+      if (value != null && value.length > 0) {
+        if (!this.isHtmlLabel(state.cell)) {
+          value = util.escape(value)
         }
 
-        // Adds space for label
-        let value = this.renderer.getLabelValue(state)
+        value = value.replace(/\n/g, '<br>')
 
-        if (value != null && value.length > 0) {
-          if (!this.isHtmlLabel(state.cell)) {
-            value = util.escape(value)
-          }
+        const size = util.getSizeForString(value, fontSize, style.fontFamily)
+        let width = size.width + dx
+        let height = size.height + dy
 
-          value = value.replace(/\n/g, '<br>')
+        if (style.horizontal === false) {
+          const tmp = height
 
-          const size = util.getSizeForString(value, fontSize, style.fontFamily)
-          let width = size.width + dx
-          let height = size.height + dy
-
-          if (style.horizontal === false) {
-            const tmp = height
-
-            height = width
-            width = tmp
-          }
-
-          if (this.gridEnabled) {
-            width = this.snap(width + this.gridSize / 2)
-            height = this.snap(height + this.gridSize / 2)
-          }
-
-          result = new Rectangle(0, 0, width, height)
-        } else {
-          const gs2 = 4 * this.gridSize
-          result = new Rectangle(0, 0, gs2, gs2)
+          height = width
+          width = tmp
         }
+
+        if (this.gridEnabled) {
+          width = this.snap(width + this.gridSize / 2)
+          height = this.snap(height + this.gridSize / 2)
+        }
+
+        result = new Rectangle(0, 0, width, height)
+      } else {
+        const gs2 = 4 * this.gridSize
+        result = new Rectangle(0, 0, gs2, gs2)
       }
     }
 
@@ -3526,7 +3293,7 @@ export class Graph extends Events {
   ) {
     this.model.batchUpdate(() => {
       this.cellsResized(cells, bounds, recurse)
-      this.trigger(Graph.eventNames.resizeCells, { cells, bounds })
+      this.trigger(Graph.events.resizeCells, { cells, bounds })
     })
     return cells
   }
@@ -3594,7 +3361,7 @@ export class Graph extends Events {
           this.resetEdges(cells)
         }
 
-        this.trigger(Graph.eventNames.cellsResized, { cells, bounds })
+        this.trigger(Graph.events.cellsResized, { cells, bounds })
       })
     }
   }
@@ -3781,20 +3548,6 @@ export class Graph extends Events {
 
   // #region ======== Cell moving
 
-  /**
-   * Clones and inserts the given cells into the graph using the move
-   * method and returns the inserted cells. This shortcut is used if
-   * cells are inserted via datatransfer.
-   *
-   * Parameters:
-   *
-   * cells - Array of <Cells> to be imported.
-   * dx - Integer that specifies the x-coordinate of the vector. Default is 0.
-   * dy - Integer that specifies the y-coordinate of the vector. Default is 0.
-   * target - <Cell> that represents the new parent of the cells.
-   * evt - Mouseevent that triggered the invocation.
-   * mapping - Optional mapping for existing clones.
-   */
   importCells(
     cells: Cell[],
     dx: number,
@@ -3808,51 +3561,34 @@ export class Graph extends Events {
 
   /**
    * Moves or clones the specified cells and moves the cells or clones by the
-   * given amount, adding them to the optional target cell. The evt is the
-   * mouse event as the mouse was released. The change is carried out using
-   * <cellsMoved>. This method fires <DomEvent.MOVE_CELLS> while the
-   * transaction is in progress. Returns the cells that were moved.
+   * given amount, adding them to the optional target cell.
    *
-   * Use the following code to move all cells in the graph.
-   *
-   * (code)
-   * graph.moveCells(graph.getChildCells(null, true, true), 10, 10);
-   * (end)
-   *
-   * Parameters:
-   *
-   * cells - Array of <Cells> to be moved, cloned or added to the target.
-   * dx - Integer that specifies the x-coordinate of the vector. Default is 0.
-   * dy - Integer that specifies the y-coordinate of the vector. Default is 0.
-   * clone - Boolean indicating if the cells should be cloned. Default is false.
-   * target - <Cell> that represents the new parent of the cells.
-   * evt - Mouseevent that triggered the invocation.
-   * mapping - Optional mapping for existing clones.
+   * @param cells Array of `Cell`s to be moved, cloned or added to the target.
+   * @param dx Specifies the x-coordinate of the vector. Default is `0`.
+   * @param dy Specifies the y-coordinate of the vector. Default is `0`.
+   * @param clone Indicating if the cells should be cloned. Default is `false`.
+   * @param target The new parent of the cells.
+   * @param e Mouseevent that triggered the invocation.
+   * @param cache Optional mapping for existing clones.
    */
   moveCells(
     cells: Cell[],
     dx: number = 0,
     dy: number = 0,
     clone: boolean = false,
-    target?: Cell,
-    evt?: MouseEvent,
-    mapping?: WeakMap<Cell, Cell>,
+    target?: Cell | null,
+    e?: MouseEvent,
+    cache?: WeakMap<Cell, Cell>,
   ) {
-
     if (cells != null && (dx !== 0 || dy !== 0 || clone || target != null)) {
       // Removes descendants with ancestors in cells to avoid multiple moving
-      // tslint:disable-next-line
-      cells = this.model.getTopmostCells(cells)
+      cells = this.model.getTopmostCells(cells) // tslint:disable-line
 
-      this.model.beginUpdate()
-      try {
+      this.model.batchUpdate(() => {
         // Faster cell lookups to remove relative edge labels with selected
         // terminals to avoid explicit and implicit move at same time
         const dict = new WeakMap<Cell, boolean>()
-
-        for (let i = 0; i < cells.length; i += 1) {
-          dict.set(cells[i], true)
-        }
+        cells.forEach(cell => (dict.set(cell, true)))
 
         const isSelected = (cell: Cell | null) => {
           let node = cell
@@ -3891,7 +3627,7 @@ export class Graph extends Events {
 
         if (clone) {
           // tslint:disable-next-line
-          cells = this.cloneCells(cells, this.isCloneInvalidEdges(), mapping)!
+          cells = this.cloneCells(cells, this.isCloneInvalidEdges(), cache)!
 
           if (target == null) {
             // tslint:disable-next-line
@@ -3899,10 +3635,6 @@ export class Graph extends Events {
           }
         }
 
-        // FIXME: Cells should always be inserted first before any other edit
-        // to avoid forward references in sessions.
-        // Need to disable allowNegativeCoordinates if target not null to
-        // allow for temporary negative numbers until cellsAdded is called.
         const previous = this.isAllowNegativeCoordinates()
 
         if (target != null) {
@@ -3926,17 +3658,13 @@ export class Graph extends Events {
         // Dispatches a move event
         // this.fireEvent(new DomEventObject(DomEvent.MOVE_CELLS, 'cells', cells,
         //   'dx', dx, 'dy', dy, 'clone', clone, 'target', target, 'event', evt))
-      } finally {
-        this.model.endUpdate()
-      }
+      })
     }
 
     return cells
   }
 
   /**
-   * Function: cellsMoved
-   *
    * Moves the specified cells by the given vector, disconnecting the cells
    * using disconnectGraph is disconnect is true. This method fires
    * <DomEvent.CELLS_MOVED> while the transaction is in progress.
@@ -3979,8 +3707,6 @@ export class Graph extends Events {
   }
 
   /**
-   * Function: translateCell
-   *
    * Translates the geometry of the given cell and stores the new,
    * translated geometry in the model as an atomic change.
    */
@@ -4007,7 +3733,7 @@ export class Graph extends Events {
         }
 
         if (angle !== 0) {
-          const rad = util.toRadians(-angle)
+          const rad = util.toRad(-angle)
           const cos = Math.cos(rad)
           const sin = Math.sin(rad)
           const pt = util.rotatePoint(new Point(dx, dy), cos, sin, new Point(0, 0))
@@ -4028,8 +3754,6 @@ export class Graph extends Events {
   }
 
   /**
-   * Function: getCellContainmentArea
-   *
    * Returns the <Rect> inside which a cell is to be kept.
    *
    * Parameters:
@@ -4087,8 +3811,6 @@ export class Graph extends Events {
   }
 
   /**
-   * Function: getMaximumGraphBounds
-   *
    * Returns the bounds inside which the diagram should be kept as an
    * <Rect>.
    */
@@ -4097,8 +3819,6 @@ export class Graph extends Events {
   }
 
   /**
-   * Function: constrainChild
-   *
    * Keeps the given cell inside the bounds returned by
    * <getCellContainmentArea> for its parent, according to the rules defined by
    * <getOverlap> and <isConstrainChild>. This modifies the cell's geometry
@@ -4278,8 +3998,6 @@ export class Graph extends Events {
   }
 
   /**
-   * Function: resetEdge
-   *
    * Resets the control points of the given edge.
    *
    * Parameters:
@@ -4317,7 +4035,7 @@ export class Graph extends Events {
         bounds.height = tmp
       }
 
-      const alpha = util.toRadians(terminalState.shape.getShapeRotation())
+      const alpha = util.toRad(terminalState.shape.getShapeRotation())
 
       if (alpha !== 0) {
         const cos = Math.cos(-alpha)
@@ -4385,7 +4103,10 @@ export class Graph extends Events {
    * terminal - <CellState> that represents the terminal.
    * source - Boolean that specifies if the terminal is the source or target.
    */
-  getAllConnectionConstraints(terminalState: CellState, isSource: boolean) {
+  getAllConnectionConstraints(
+    terminalState: CellState,
+    isSource: boolean,
+  ) {
     if (
       terminalState != null &&
       terminalState.shape != null &&
@@ -4414,7 +4135,7 @@ export class Graph extends Events {
     if (x != null) {
       const y = isSource ? edgeState.style.exitY : edgeState.style.entryY
       if (y != null) {
-        point = new Point(parseFloat(x), parseFloat(y))
+        point = new Point(x, y)
       }
     }
 
@@ -4453,7 +4174,7 @@ export class Graph extends Events {
    */
   setConnectionConstraint(
     edge: Cell,
-    terminal: Cell,
+    terminal: Cell | null,
     isSource: boolean,
     constraint?: ConnectionConstraint | null,
   ) {
@@ -4536,7 +4257,7 @@ export class Graph extends Events {
    *
    * Parameters:
    *
-   * vertex - <CellState> that represents the vertex.
+   * node - <CellState> that represents the vertex.
    * constraint - <mxConnectionConstraint> that represents the connection point
    * constraint as returned by <getConnectionConstraint>.
    */
@@ -4622,7 +4343,7 @@ export class Graph extends Events {
 
       // Generic rotation after projection on perimeter
       if (r2 !== 0 && result != null) {
-        const rad = util.toRadians(r2)
+        const rad = util.toRad(r2)
         const cos = Math.cos(rad)
         const sin = Math.sin(rad)
         result = util.rotatePoint(result, cos, sin, cx)
@@ -4652,9 +4373,9 @@ export class Graph extends Events {
    */
   connectCell(
     edge: Cell,
-    terminal: Cell,
+    terminal: Cell | null,
     isSource: boolean,
-    constraint: ConnectionConstraint,
+    constraint?: ConnectionConstraint,
   ) {
     this.model.beginUpdate()
     try {
@@ -4684,7 +4405,7 @@ export class Graph extends Events {
    */
   cellConnected(
     edge: Cell,
-    terminal: Cell,
+    terminal: Cell | null,
     isSource: boolean,
     constraint?: ConnectionConstraint,
   ) {
@@ -4701,7 +4422,7 @@ export class Graph extends Events {
         if (this.isPortsEnabled()) {
           let id = null
 
-          if (this.isPort(terminal)) {
+          if (terminal != null && this.isPort(terminal)) {
             id = terminal.getId()
             // tslint:disable-next-line
             terminal = this.getTerminalForPort(terminal, isSource)!
@@ -4821,13 +4542,6 @@ export class Graph extends Events {
   // #region ======== Drilldown
 
   /**
-   * Returns the current root of the displayed cell hierarchy.
-   */
-  getCurrentRoot() {
-    return this.view.currentRoot
-  }
-
-  /**
    * Returns the translation to be used if the given cell is the root cell as
    * an <Point>. This implementation returns null.
    *
@@ -4929,7 +4643,7 @@ export class Graph extends Events {
    * cell - Optional <Cell> to be used as the new root. Default is the
    * selection cell.
    */
-  enterGroup(cell: Cell = this.getSelectionCell()) {
+  enterGroup(cell: Cell = this.getSelectedCell()) {
     if (cell != null && this.isValidRoot(cell)) {
       this.view.setCurrentRoot(cell)
       this.clearSelection()
@@ -4965,7 +4679,7 @@ export class Graph extends Events {
 
       // Selects the previous root in the graph
       if (state != null) {
-        this.setSelectionCell(current)
+        this.setSelectedCell(current)
       }
     }
   }
@@ -4980,7 +4694,7 @@ export class Graph extends Events {
       this.view.setCurrentRoot(null)
       const state = this.view.getState(current)
       if (state != null) {
-        this.setSelectionCell(current)
+        this.setSelectedCell(current)
       }
     }
   }
@@ -5058,7 +4772,7 @@ export class Graph extends Events {
   }
 
   /**
-   * Returns the bounding box for the geometries of the vertices in the
+   * Returns the bounding box for the geometries of the nodes in the
    * given array of cells. This can be used to find the graph bounds during
    * a layout operation (ie. before the last endUpdate) as follows:
    *
@@ -5205,18 +4919,12 @@ export class Graph extends Events {
   }
 
   /**
-   * Snaps the given numeric value to the grid if <gridEnabled> is true.
-   *
-   * Parameters:
-   *
-   * value - Numeric value to be snapped to the grid.
+   * Snaps the given numeric value to the grid.
    */
   snap(value: number) {
     if (this.gridEnabled) {
-      // tslint:disable-next-line
-      value = Math.round(value / this.gridSize) * this.gridSize
+      return Math.round(value / this.gridSize) * this.gridSize
     }
-
     return value
   }
 
@@ -5231,15 +4939,15 @@ export class Graph extends Events {
    * dy - Amount to shift the graph along the y-axis.
    */
 
-  private shiftPreview1: HTMLElement | null
-  private shiftPreview2: HTMLElement | null
+  protected shiftPreview1: HTMLElement | null
+  protected shiftPreview2: HTMLElement | null
 
   panGraph(dx: number, dy: number) {
     if (this.useScrollbarsForPanning && util.hasScrollbars(this.container)) {
       this.container.scrollLeft = -dx
       this.container.scrollTop = -dy
     } else {
-      const canvas = this.view.getCanvas()!
+      const canvas = this.view.getStage()!
 
       if (this.dialect === constants.DIALECT_SVG) {
         // Puts everything inside the container in a DIV so that it
@@ -5335,7 +5043,7 @@ export class Graph extends Events {
       this.panDx = dx
       this.panDy = dy
 
-      // this.fireEvent(new DomEventObject(DomEvent.PAN))
+      this.trigger(DomEvent.PAN)
     }
   }
 
@@ -5441,7 +5149,7 @@ export class Graph extends Events {
    */
   zoom(factor: number, center: boolean = this.centerZoom) {
     const scale = Math.round(this.view.scale * factor * 100) / 100
-    const state = this.view.getState(this.getSelectionCell())
+    const state = this.view.getState(this.getSelectedCell())
     // tslint:disable-next-line
     factor = scale / this.view.scale
 
@@ -5716,11 +5424,8 @@ export class Graph extends Events {
 
         if (isChanged) {
           this.view.refresh()
-
           // Repaints selection marker (ticket 18)
-          if (this.selectionCellsHandler != null) {
-            this.selectionCellsHandler.refresh()
-          }
+          this.selectionHandler.refresh()
         }
       }
     }
@@ -5772,7 +5477,7 @@ export class Graph extends Events {
    *
    * cell - <Cell> whose connectable state should be returned.
    */
-  isCellConnectable(cell: Cell) {
+  isCellConnectable(cell: Cell | null) {
     return this.model.isConnectable(cell)
   }
 
@@ -5833,7 +5538,7 @@ export class Graph extends Events {
    * returns true if the meta key (Cmd) is pressed on Macs or if control is
    * pressed on any other platform.
    */
-  isToggleEvent(e: MouseEvent) {
+  protected isToggleEvent(e: MouseEvent) {
     return detector.IS_MAC ? DomEvent.isMetaDown(e) : DomEvent.isControlDown(e)
   }
 
@@ -5882,7 +5587,7 @@ export class Graph extends Events {
    * source - <Cell> that represents the source terminal.
    * target - <Cell> that represents the target terminal.
    */
-  isEdgeValid(edge: Cell, source: Cell, target: Cell) {
+  isEdgeValid(edge: Cell | null, source: Cell | null, target: Cell | null) {
     return this.getEdgeValidationError(edge, source, target) == null
   }
 
@@ -5925,13 +5630,24 @@ export class Graph extends Events {
    * source - <Cell> that represents the source terminal.
    * target - <Cell> that represents the target terminal.
    */
-  getEdgeValidationError(edge: Cell, source: Cell, target: Cell) {
-    if (edge != null && !this.isAllowDanglingEdges() && (source == null || target == null)) {
+  getEdgeValidationError(
+    edge: Cell | null,
+    source: Cell | null,
+    target: Cell | null,
+  ) {
+    if (
+      edge != null &&
+      !this.isAllowDanglingEdges() &&
+      (source == null || target == null)
+    ) {
       return ''
     }
 
-    if (edge != null && this.model.getTerminal(edge, true) == null &&
-      this.model.getTerminal(edge, false) == null) {
+    if (
+      edge != null &&
+      this.model.getTerminal(edge, true) == null &&
+      this.model.getTerminal(edge, false) == null
+    ) {
       return null
     }
 
@@ -6002,7 +5718,7 @@ export class Graph extends Events {
    * source - <Cell> that represents the source terminal.
    * target - <Cell> that represents the target terminal.
    */
-  validateEdge(edge: Cell, source: Cell, target: Cell) {
+  validateEdge(edge: Cell | null, source: Cell | null, target: Cell | null) {
     return null
   }
 
@@ -6263,8 +5979,8 @@ export class Graph extends Events {
    * (end)
    *
    * Makes sure no edge label is wider than 150 pixels, otherwise the content
-   * is wrapped. Note: No width must be specified for wrapped vertex labels as
-   * the vertex defines the width in its geometry.
+   * is wrapped. Note: No width must be specified for wrapped node labels as
+   * the node defines the width in its geometry.
    *
    * Parameters:
    *
@@ -6279,7 +5995,7 @@ export class Graph extends Events {
 
   /**
    * Returns true if the overflow portion of labels should be hidden. If this
-   * returns true then vertex labels will be clipped to the size of the vertices.
+   * returns true then node labels will be clipped to the size of the vertices.
    * This implementation returns true if <constants.STYLE_OVERFLOW> in the
    * style of the given cell is 'hidden'.
    *
@@ -6311,14 +6027,21 @@ export class Graph extends Events {
    * x - X-coordinate of the mouse.
    * y - Y-coordinate of the mouse.
    */
-  getTooltip(state: CellState, node: HTMLElement, x: number, y: number) {
+  getTooltip(
+    state: CellState | null,
+    trigger: HTMLElement,
+    x: number,
+    y: number,
+  ) {
     let tip: string | null = null
 
     if (state != null) {
       // Checks if the mouse is over the folding icon
       if (
         state.control != null && (
-          node === state.control.elem || node.parentNode === state.control.elem)
+          trigger === state.control.elem ||
+          trigger.parentNode === state.control.elem
+        )
       ) {
         tip = 'this.collapseExpandResource'
         // tip = util.escape(mxResources.get(tip) || tip).replace(/\\n/g, '<br>')
@@ -6328,7 +6051,7 @@ export class Graph extends Events {
         state.overlaySet.forEach((overlay) => {
           const shape = state.overlayMap!.get(overlay)!
           if (tip == null &&
-            (node === shape.elem || node.parentNode === shape.elem)
+            (trigger === shape.elem || trigger.parentNode === shape.elem)
           ) {
             tip = shape.overlay!.toString()
           }
@@ -6336,10 +6059,10 @@ export class Graph extends Events {
       }
 
       if (tip == null) {
-        const handler = this.selectionCellsHandler.getHandler(state.cell)
-
-        if (handler != null && typeof (handler.getTooltipForNode) === 'function') {
-          tip = handler.getTooltipForNode(node)
+        const handler = this.selectionHandler.getHandler(state.cell)
+        const getTooltipForNode = handler && (handler as any).getTooltipForNode
+        if (getTooltipForNode && typeof (getTooltipForNode) === 'function') {
+          tip = getTooltipForNode(trigger)
         }
       }
 
@@ -6405,8 +6128,8 @@ export class Graph extends Events {
    *
    * me - <mxMouseEvent> whose cursor should be returned.
    */
-  getCursorForMouseEvent(e: CustomMouseEvent) {
-    return this.getCursorForCell(e.getCell()!)
+  getCursorForMouseEvent(e: CustomMouseEvent): string | null {
+    return this.getCursorForCell(e.getCell())
   }
 
   /**
@@ -6417,7 +6140,7 @@ export class Graph extends Events {
    *
    * cell - <Cell> whose cursor should be returned.
    */
-  getCursorForCell(cell: Cell) {
+  getCursorForCell(cell: Cell | null) {
     return null
   }
 
@@ -6586,13 +6309,13 @@ export class Graph extends Events {
   /**
    * Returns true if the given cell may not be moved, sized, bended,
    * disconnected, edited or selected. This implementation returns true for
-   * all vertices with a relative geometry if <locked> is false.
+   * all nodes with a relative geometry if <locked> is false.
    *
    * Parameters:
    *
    * cell - <Cell> whose locked state should be returned.
    */
-  isCellLocked(cell: Cell) {
+  isCellLocked(cell: Cell | null) {
     const geometry = this.model.getGeometry(cell)
     return (
       this.isCellsLocked() || (geometry != null &&
@@ -6603,7 +6326,7 @@ export class Graph extends Events {
   /**
    * Returns true if the given cell may not be moved, sized, bended,
    * disconnected, edited or selected. This implementation returns true for
-   * all vertices with a relative geometry if <locked> is false.
+   * all nodes with a relative geometry if <locked> is false.
    *
    * Parameters:
    *
@@ -6707,114 +6430,36 @@ export class Graph extends Events {
     return this.importEnabled
   }
 
-  /**
-   * Returns true if the given cell is selectable. This implementation
-   * returns <cellsSelectable>.
-   *
-   * To add a new style for making cells (un)selectable, use the following code.
-   *
-   * (code)
-   * isCellSelectable (cell)
-   * {
-   *   var state = this.view.getState(cell);
-   *   var style = (state != null) ? state.style : this.getCellStyle(cell);
-   *
-   *   return this.isCellsSelectable() && !this.isCellLocked(cell) && style['selectable'] != 0;
-   * };
-   * (end)
-   *
-   * You can then use the new style as shown in this example.
-   *
-   * (code)
-   * graph.insertVertex(parent, null, 'Hello,', 20, 20, 80, 30, 'selectable=0');
-   * (end)
-   *
-   * Parameters:
-   *
-   * cell - <Cell> whose selectable state should be returned.
-   */
   isCellSelectable(cell: Cell) {
     return this.isCellsSelectable()
   }
 
-  /**
-   * Returns <cellsSelectable>.
-   */
   isCellsSelectable() {
     return this.cellsSelectable
   }
 
-  /**
-   * Sets <cellsSelectable>.
-   */
   setCellsSelectable(value: boolean) {
     this.cellsSelectable = value
   }
 
-  /**
-   * Returns the cells which may be exported in the given array of cells.
-   */
   getDeletableCells(cells: Cell[]) {
     return this.model.filterCells(cells, cell => this.isCellDeletable(cell))
   }
 
-  /**
-   * Returns true if the given cell is moveable. This returns
-   * <cellsDeletable> for all given cells if a cells style does not specify
-   * <constants.STYLE_DELETABLE> to be 0.
-   *
-   * Parameters:
-   *
-   * cell - <Cell> whose deletable state should be returned.
-   */
   isCellDeletable(cell: Cell) {
     const state = this.view.getState(cell)
     const style = (state != null) ? state.style : this.getCellStyle(cell)
-
-    return this.isCellsDeletable() && !!style.deletable
+    return this.isCellsDeletable() && style.deletable === true
   }
 
-  /**
-   * Returns <cellsDeletable>.
-   */
   isCellsDeletable() {
     return this.cellsDeletable
   }
 
-  /**
-   * Sets <cellsDeletable>.
-   *
-   * Parameters:
-   *
-   * value - Boolean indicating if the graph should allow deletion of cells.
-   */
   setCellsDeletable(value: boolean) {
     this.cellsDeletable = value
   }
 
-  /**
-   * Returns true if the given edges's label is moveable. This returns
-   * <movable> for all given cells if <isLocked> does not return true
-   * for the given cell.
-   *
-   * Parameters:
-   *
-   * cell - <Cell> whose label should be moved.
-   */
-  isLabelMovable(cell: Cell) {
-    return !this.isCellLocked(cell) &&
-      ((this.model.isEdge(cell) && this.edgeLabelsMovable) ||
-        (this.model.isNode(cell) && this.vertexLabelsMovable))
-  }
-
-  /**
-   * Returns true if the given cell is rotatable. This returns true for the given
-   * cell if its style does not specify <constants.STYLE_ROTATABLE> to be 0.
-   *
-   * Parameters:
-   *
-   * cell - <Cell> whose rotatable state should be returned.
-   */
   isCellRotatable(cell: Cell) {
     const state = this.view.getState(cell)
     const style = (state != null) ? state.style : this.getCellStyle(cell)
@@ -6822,164 +6467,99 @@ export class Graph extends Events {
     return style.rotatable !== false
   }
 
-  /**
-   * Returns the cells which are movable in the given array of cells.
-   */
   getMovableCells(cells: Cell[]) {
     return this.model.filterCells(cells, cell => this.isCellMovable(cell))
   }
 
-  /**
-   * Returns true if the given cell is moveable. This returns <cellsMovable>
-   * for all given cells if <isCellLocked> does not return true for the given
-   * cell and its style does not specify <constants.STYLE_MOVABLE> to be 0.
-   *
-   * Parameters:
-   *
-   * cell - <Cell> whose movable state should be returned.
-   */
-  isCellMovable(cell: Cell) {
+  isLabelMovable(cell: Cell) {
+    return (
+      !this.isCellLocked(cell) &&
+      (
+        (this.model.isEdge(cell) && this.edgeLabelsMovable) ||
+        (this.model.isNode(cell) && this.nodeLabelsMovable)
+      )
+    )
+  }
+
+  isCellMovable(cell: Cell | null) {
     const state = this.view.getState(cell)
     const style = (state != null) ? state.style : this.getCellStyle(cell)
 
-    return this.isCellsMovable() &&
+    return (
+      this.isCellsMovable() &&
       !this.isCellLocked(cell) &&
       style.movable !== false
+    )
   }
 
-  /**
-   * Returns <cellsMovable>.
-   */
   isCellsMovable() {
     return this.cellsMovable
   }
 
-  /**
-   * Specifies if the graph should allow moving of cells. This implementation
-   * updates <cellsMsovable>.
-   *
-   * Parameters:
-   *
-   * value - Boolean indicating if the graph should allow moving of cells.
-   */
   setCellsMovable(value: boolean) {
     this.cellsMovable = value
   }
 
-  /**
-   * Returns <gridEnabled> as a boolean.
-   */
   isGridEnabled() {
     return this.gridEnabled
   }
 
-  /**
-   * Specifies if the grid should be enabled.
-   *
-   * Parameters:
-   *
-   * value - Boolean indicating if the grid should be enabled.
-   */
   setGridEnabled(value: boolean) {
     this.gridEnabled = value
   }
 
-  /**
-   * Returns <portsEnabled> as a boolean.
-   */
   isPortsEnabled() {
     return this.portsEnabled
   }
 
-  /**
-   * Specifies if the ports should be enabled.
-   *
-   * Parameters:
-   *
-   * value - Boolean indicating if the ports should be enabled.
-   */
   setPortsEnabled(value: boolean) {
     this.portsEnabled = value
   }
 
-  /**
-   * Returns <gridSize>.
-   */
   getGridSize() {
     return this.gridSize
   }
 
-  /**
-   * Sets <gridSize>.
-   */
   setGridSize(value: number) {
     this.gridSize = value
   }
 
-  /**
-   * Returns <tolerance>.
-   */
   getTolerance() {
     return this.tolerance
   }
 
-  /**
-   * Sets <tolerance>.
-   */
   setTolerance(value: number) {
     this.tolerance = value
   }
 
-  /**
-   * Returns <vertexLabelsMovable>.
-   */
   isNodeLabelsMovable() {
-    return this.vertexLabelsMovable
+    return this.nodeLabelsMovable
   }
 
-  /**
-   * Sets <vertexLabelsMovable>.
-   */
-  setVertexLabelsMovable(value: boolean) {
-    this.vertexLabelsMovable = value
+  setNodeLabelsMovable(value: boolean) {
+    this.nodeLabelsMovable = value
   }
 
-  /**
-   * Returns <edgeLabelsMovable>.
-   */
   isEdgeLabelsMovable() {
     return this.edgeLabelsMovable
   }
 
-  /**
-   * Sets <edgeLabelsMovable>.
-   */
   setEdgeLabelsMovable(value: boolean) {
     this.edgeLabelsMovable = value
   }
 
-  /**
-   * Returns <swimlaneNesting> as a boolean.
-   */
   isSwimlaneNesting() {
     return this.swimlaneNesting
   }
 
   /**
    * Specifies if swimlanes can be nested by drag and drop. This is only
-   * taken into account if dropEnabled is true.
-   *
-   * Parameters:
-   *
-   * value - Boolean indicating if swimlanes can be nested.
+   * taken into account if `dropEnabled` is true.
    */
   setSwimlaneNesting(value: boolean) {
     this.swimlaneNesting = value
   }
 
-  /**
-   * Returns <swimlaneSelectionEnabled> as a boolean.
-   */
   isSwimlaneSelectionEnabled() {
     return this.swimlaneSelectionEnabled
   }
@@ -6987,76 +6567,47 @@ export class Graph extends Events {
   /**
    * Specifies if swimlanes should be selected if the mouse is released
    * over their content area.
-   *
-   * Parameters:
-   *
-   * value - Boolean indicating if swimlanes content areas
-   * should be selected when the mouse is released over them.
    */
   setSwimlaneSelectionEnabled(value: boolean) {
     this.swimlaneSelectionEnabled = value
   }
 
-  /**
-   * Returns <multigraph> as a boolean.
-   */
   isMultigraph() {
     return this.multigraph
   }
 
   /**
    * Specifies if the graph should allow multiple connections between the
-   * same pair of vertices.
-   *
-   * Parameters:
-   *
-   * value - Boolean indicating if the graph allows multiple connections
-   * between the same pair of vertices.
+   * same pair of nodes.
    */
   setMultigraph(value: boolean) {
     this.multigraph = value
   }
 
-  /**
-   * Returns <allowLoops> as a boolean.
-   */
   isAllowLoops() {
     return this.allowLoops
+  }
+
+  setAllowLoops(value: boolean) {
+    this.allowLoops = value
   }
 
   /**
    * Specifies if dangling edges are allowed, that is, if edges are allowed
    * that do not have a source and/or target terminal defined.
-   *
-   * Parameters:
-   *
-   * value - Boolean indicating if dangling edges are allowed.
    */
   setAllowDanglingEdges(value: boolean) {
     this.allowDanglingEdges = value
   }
 
-  /**
-   * Returns <allowDanglingEdges> as a boolean.
-   */
   isAllowDanglingEdges() {
     return this.allowDanglingEdges
   }
 
-  /**
-   * Specifies if edges should be connectable.
-   *
-   * Parameters:
-   *
-   * value - Boolean indicating if edges should be connectable.
-   */
   setConnectableEdges(value: boolean) {
     this.connectableEdges = value
   }
 
-  /**
-   * Returns <connectableEdges> as a boolean.
-   */
   isConnectableEdges() {
     return this.connectableEdges
   }
@@ -7064,57 +6615,23 @@ export class Graph extends Events {
   /**
    * Specifies if edges should be inserted when cloned but not valid wrt.
    * <getEdgeValidationError>. If false such edges will be silently ignored.
-   *
-   * Parameters:
-   *
-   * value - Boolean indicating if cloned invalid edges should be
-   * inserted into the graph or ignored.
    */
   setCloneInvalidEdges(value: boolean) {
     this.cloneInvalidEdges = value
   }
 
-  /**
-   * Returns <cloneInvalidEdges> as a boolean.
-   */
   isCloneInvalidEdges() {
     return this.cloneInvalidEdges
   }
 
-  /**
-   * Specifies if loops are allowed.
-   *
-   * Parameters:
-   *
-   * value - Boolean indicating if loops are allowed.
-   */
-  setAllowLoops(value: boolean) {
-    this.allowLoops = value
-  }
-
-  /**
-   * Returns <disconnectOnMove> as a boolean.
-   */
   isDisconnectOnMove() {
     return this.disconnectOnMove
   }
 
-  /**
-   * Specifies if edges should be disconnected when moved. (Note: Cloned
-   * edges are always disconnected.)
-   *
-   * Parameters:
-   *
-   * value - Boolean indicating if edges should be disconnected
-   * when moved.
-   */
   setDisconnectOnMove(value: boolean) {
     this.disconnectOnMove = value
   }
 
-  /**
-   * Returns <dropEnabled> as a boolean.
-   */
   isDropEnabled() {
     return this.dropEnabled
   }
@@ -7122,19 +6639,11 @@ export class Graph extends Events {
   /**
    * Specifies if the graph should allow dropping of cells onto or into other
    * cells.
-   *
-   * Parameters:
-   *
-   * dropEnabled - Boolean indicating if the graph should allow dropping
-   * of cells into other cells.
    */
   setDropEnabled(value: boolean) {
     this.dropEnabled = value
   }
 
-  /**
-   * Returns <splitEnabled> as a boolean.
-   */
   isSplitEnabled() {
     return this.splitEnabled
   }
@@ -7222,9 +6731,11 @@ export class Graph extends Events {
     const state = this.view.getState(cell)
     const style = (state != null) ? state.style : this.getCellStyle(cell)
 
-    return this.isCellsBendable() &&
+    return (
+      this.isCellsBendable() &&
       !this.isCellLocked(cell) &&
       style.bendable !== false
+    )
   }
 
   /**
@@ -7324,7 +6835,7 @@ export class Graph extends Events {
    *
    * cell - <Cell> that represents a possible source or null.
    */
-  isValidSource(cell: Cell) {
+  isValidSource(cell: Cell | null) {
     return (
       (cell == null && this.allowDanglingEdges) ||
       (
@@ -7343,14 +6854,14 @@ export class Graph extends Events {
    *
    * cell - <Cell> that represents a possible target or null.
    */
-  isValidTarget(cell: Cell) {
+  isValidTarget(cell: Cell | null) {
     return this.isValidSource(cell)
   }
 
   /**
    * Returns true if the given target cell is a valid target for source.
    * This is a boolean implementation for not allowing connections between
-   * certain pairs of vertices and is called by <getEdgeValidationError>.
+   * certain pairs of nodes and is called by <getEdgeValidationError>.
    * This implementation returns true if <isValidSource> returns true for
    * the source and <isValidTarget> returns true for the target.
    *
@@ -7359,7 +6870,7 @@ export class Graph extends Events {
    * source - <Cell> that represents the source cell.
    * target - <Cell> that represents the target cell.
    */
-  isValidConnection(source: Cell, target: Cell) {
+  isValidConnection(source: Cell | null, target: Cell | null) {
     return this.isValidSource(source) && this.isValidTarget(target)
   }
 
@@ -7391,16 +6902,15 @@ export class Graph extends Events {
    * enabled - Boolean indicating if tooltips should be enabled.
    */
   setTooltips(enabled: boolean) {
-    this.tooltipHandler.setEnabled(enabled)
+    if (enabled) {
+      this.tooltipHandler.enable()
+    } else {
+      this.tooltipHandler.disable()
+    }
   }
 
   /**
-   * Specifies if panning should be enabled. This implementation updates
-   * <mxPanningHandler.panningEnabled> in <panningHandler>.
-   *
-   * Parameters:
-   *
-   * enabled - Boolean indicating if panning should be enabled.
+   * Specifies if panning should be enabled.
    */
   setPanning(enabled: boolean) {
     this.panningHandler.panningEnabled = enabled
@@ -7427,18 +6937,11 @@ export class Graph extends Events {
 
   /**
    * Returns true if the size of the given cell should automatically be
-   * updated after a change of the label. This implementation returns
-   * <autoSizeCells> or checks if the cell style does specify
-   * <constants.STYLE_AUTOSIZE> to be 1.
-   *
-   * Parameters:
-   *
-   * cell - <Cell> that should be resized.
+   * updated after a change of the label.
    */
   isAutoSizeCell(cell: Cell) {
     const state = this.view.getState(cell)
     const style = (state != null) ? state.style : this.getCellStyle(cell)
-
     return this.isAutoSizeCells() || style.autosize === true
   }
 
@@ -7482,7 +6985,7 @@ export class Graph extends Events {
     this.extendParents = value
   }
 
-  isExtendParentsOnAdd(cell: Cell) {
+  isExtendParentsOnAdd() {
     return this.extendParentsOnAdd
   }
 
@@ -7660,7 +7163,8 @@ export class Graph extends Events {
    * cell - <Cell> that is under the mousepointer.
    * clone - Optional boolean to indicate of cells will be cloned.
    */
-  getDropTarget(cells: Cell[], evt: MouseEvent, cell: Cell, clone: boolean) {
+  getDropTarget(cells: Cell[], evt: MouseEvent, cell: Cell | null, clone?: boolean) {
+
     if (!this.isSwimlaneNesting()) {
       for (let i = 0; i < cells.length; i += 1) {
         if (this.isSwimlane(cells[i])) {
@@ -7669,10 +7173,14 @@ export class Graph extends Events {
       }
     }
 
-    const pt = util.convertPoint(this.container, DomEvent.getClientX(evt), DomEvent.getClientY(evt))
-    pt.x -= this.panDx
-    pt.y -= this.panDy
-    const swimlane = this.getSwimlaneAt(pt.x, pt.y)
+    const p = util.clientToGraph(
+      this.container,
+      DomEvent.getClientX(evt),
+      DomEvent.getClientY(evt),
+    )
+    p.x -= this.panDx
+    p.y -= this.panDy
+    const swimlane = this.getSwimlaneAt(p.x, p.y)
 
     if (cell == null) {
       // tslint:disable-next-line
@@ -7716,12 +7224,14 @@ export class Graph extends Events {
 
   // #region ======== Cell retrieval
 
+  getCurrentRoot() {
+    return this.view.currentRoot
+  }
+
   getDefaultParent(): Cell {
     let parent = this.getCurrentRoot()
-
     if (parent == null) {
       parent = this.defaultParent
-
       if (parent == null) {
         const root = this.model.getRoot()
         parent = this.model.getChildAt(root, 0)
@@ -7731,10 +7241,6 @@ export class Graph extends Events {
     return parent!
   }
 
-  /**
-   * Sets the <defaultParent> to the given cell. Set this to null to return
-   * the first child of the root in getDefaultParent.
-   */
   setDefaultParent(cell: Cell | null) {
     this.defaultParent = cell
   }
@@ -7742,52 +7248,38 @@ export class Graph extends Events {
   /**
    * Returns the nearest ancestor of the given cell which is a swimlane, or
    * the given cell, if it is itself a swimlane.
-   *
-   * Parameters:
-   *
-   * cell - <Cell> for which the ancestor swimlane should be returned.
    */
   getSwimlane(cell: Cell) {
-    while (cell != null && !this.isSwimlane(cell)) {
-      // tslint:disable-next-line
-      cell = this.model.getParent(cell)!
+    let result = cell
+    while (result != null && !this.isSwimlane(result)) {
+      result = this.model.getParent(result)!
     }
 
-    return cell
+    return result
   }
 
   /**
    * Returns the bottom-most swimlane that intersects the given point (x, y)
    * in the cell hierarchy that starts at the given parent.
-   *
-   * Parameters:
-   *
-   * x - X-coordinate of the location to be checked.
-   * y - Y-coordinate of the location to be checked.
-   * parent - <Cell> that should be used as the root of the recursion.
-   * Default is <defaultParent>.
    */
   getSwimlaneAt(
     x: number,
     y: number,
-    parent: Cell = this.getDefaultParent()!,
+    parent: Cell = this.getDefaultParent(),
   ): Cell | null {
-    if (parent != null) {
-      const childCount = this.model.getChildCount(parent)
-      for (let i = 0; i < childCount; i += 1) {
-        const child = this.model.getChildAt(parent, i)!
-        const result = this.getSwimlaneAt(x, y, child)!
+    const childCount = this.model.getChildCount(parent)
+    for (let i = 0; i < childCount; i += 1) {
+      const child = this.model.getChildAt(parent, i)!
+      const result = this.getSwimlaneAt(x, y, child)
 
-        if (result != null) {
-          return result
-        }
+      if (result != null) {
+        return result
+      }
 
-        if (this.isSwimlane(child)) {
-          const state = this.view.getState(child)
-
-          if (this.intersects(state!, x, y)) {
-            return child
-          }
+      if (this.isSwimlane(child)) {
+        const state = this.view.getState(child)
+        if (this.intersects(state, x, y)) {
+          return child
         }
       }
     }
@@ -7797,63 +7289,53 @@ export class Graph extends Events {
 
   /**
    * Returns the bottom-most cell that intersects the given point (x, y) in
-   * the cell hierarchy starting at the given parent. This will also return
-   * swimlanes if the given location intersects the content area of the
-   * swimlane. If this is not desired, then the <hitsSwimlaneContent> may be
-   * used if the returned cell is a swimlane to determine if the location
-   * is inside the content area or on the actual title of the swimlane.
+   * the cell hierarchy starting at the given parent.
    *
-   * Parameters:
-   *
-   * x - X-coordinate of the location to be checked.
-   * y - Y-coordinate of the location to be checked.
-   * parent - <Cell> that should be used as the root of the recursion.
-   * Default is current root of the view or the root of the model.
-   * vertices - Optional boolean indicating if vertices should be returned.
-   * Default is true.
-   * edges - Optional boolean indicating if edges should be returned. Default
-   * is true.
-   * ignoreFn - Optional function that returns true if cell should be ignored.
-   * The function is passed the cell state and the x and y parameter.
+   * @param x X-coordinate of the location to be checked.
+   * @param y Y-coordinate of the location to be checked.
+   * @param parent The root of the recursion. Default is current root of the
+   * view or the root of the model.
+   * @param includeNodes Optional boolean indicating if nodes should be
+   * returned. Default is `true`.
+   * @param includeEdges Optional boolean indicating if edges should be
+   * returned. Default is `true`.
+   * @param ignoreFn Optional function that returns true if cell should be
+   * ignored.
    */
   getCellAt(
     x: number,
     y: number,
     parent?: Cell | null,
-    vertices: boolean = true,
-    edges: boolean = true,
+    includeNodes: boolean = true,
+    includeEdges: boolean = true,
     ignoreFn?: (state: CellState, x?: number, y?: number) => boolean,
   ): Cell | null {
     if (parent == null) {
       // tslint:disable-next-line
-      parent = this.getCurrentRoot()
-
-      if (parent == null) {
-        // tslint:disable-next-line
-        parent = this.getModel().getRoot()
-      }
+      parent = this.getCurrentRoot() || this.model.getRoot()
     }
 
     if (parent != null) {
       const childCount = this.model.getChildCount(parent)
-
       for (let i = childCount - 1; i >= 0; i -= 1) {
         const cell = this.model.getChildAt(parent, i)!
-        const result = this.getCellAt(x, y, cell, vertices, edges, ignoreFn)!
-
+        const result = this.getCellAt(x, y, cell, includeNodes, includeEdges, ignoreFn)!
         if (result != null) {
           return result
         }
+
         if (
           this.isCellVisible(cell) && (
-            edges && this.model.isEdge(cell) ||
-            vertices && this.model.isNode(cell)
+            includeEdges && this.model.isEdge(cell) ||
+            includeNodes && this.model.isNode(cell)
           )
         ) {
           const state = this.view.getState(cell)
-
-          if (state != null && (ignoreFn == null || !ignoreFn(state, x, y)) &&
-            this.intersects(state, x, y)) {
+          if (
+            state != null &&
+            (ignoreFn == null || !ignoreFn(state, x, y)) &&
+            this.intersects(state, x, y)
+          ) {
             return cell
           }
         }
@@ -7864,27 +7346,17 @@ export class Graph extends Events {
   }
 
   /**
-   * Returns the bottom-most cell that intersects the given point (x, y) in
-   * the cell hierarchy that starts at the given parent.
-   *
-   * Parameters:
-   *
-   * state - <CellState> that represents the cell state.
-   * x - X-coordinate of the location to be checked.
-   * y - Y-coordinate of the location to be checked.
+   * Returns the bottom-most cell that intersects the given point (x, y)
    */
-  intersects(state: CellState, x: number, y: number) {
+  intersects(state: CellState | null, x: number, y: number) {
     if (state != null) {
-      const pts = state.absolutePoints
-
-      if (pts != null) {
+      const points = state.absolutePoints
+      if (points != null) {
         const t2 = this.tolerance * this.tolerance
-        let pt = pts[0]!
-
-        for (let i = 1; i < pts.length; i += 1) {
-          const next = pts[i]!
+        let pt = points[0]!
+        for (let i = 1; i < points.length; i += 1) {
+          const next = points[i]!
           const dist = util.ptSegmentDist(pt.x, pt.y, next.x, next.y, x, y)
-
           if (dist <= t2) {
             return true
           }
@@ -7892,17 +7364,18 @@ export class Graph extends Events {
           pt = next
         }
       } else {
-        const alpha = util.toRadians(state.style.rotation || 0)
+        const alpha = util.toRad(state.style.rotation || 0)
         if (alpha !== 0) {
           const cos = Math.cos(-alpha)
           const sin = Math.sin(-alpha)
-          const cx = state.bounds.getCorner()
+          const cx = state.bounds.getOrigin()
           const pt = util.rotatePoint(new Point(x, y), cos, sin, cx)
-          x = pt.x // tslint:disable-line
-          y = pt.y // tslint:disable-line
+          if (state.bounds.containsPoint(pt)) {
+            return true
+          }
         }
 
-        if (util.contains(state.bounds, x, y)) {
+        if (state.bounds.containsPoint(new Point(x, y))) {
           return true
         }
       }
@@ -7913,13 +7386,7 @@ export class Graph extends Events {
 
   /**
    * Returns true if the given coordinate pair is inside the content
-   * are of the given swimlane.
-   *
-   * Parameters:
-   *
-   * swimlane - <Cell> that specifies the swimlane.
-   * x - X-coordinate of the mouse event.
-   * y - Y-coordinate of the mouse event.
+   * of the given swimlane.
    */
   hitsSwimlaneContent(swimlane: Cell, x: number, y: number) {
     const state = this.getView().getState(swimlane)
@@ -7927,13 +7394,14 @@ export class Graph extends Events {
 
     if (state != null) {
       const scale = this.getView().getScale()
-      x -= state.bounds.x // tslint:disable-line
-      y -= state.bounds.y // tslint:disable-line
+      const dx = x - state.bounds.x // tslint:disable-line
+      const dy = y - state.bounds.y // tslint:disable-line
 
-      if (size.width > 0 && x > 0 && x > size.width * scale) {
+      if (size.width > 0 && dx > 0 && dx > size.width * scale) {
         return true
       }
-      if (size.height > 0 && y > 0 && y > size.height * scale) {
+
+      if (size.height > 0 && dy > 0 && dy > size.height * scale) {
         return true
       }
     }
@@ -7942,55 +7410,29 @@ export class Graph extends Events {
   }
 
   /**
-   * Returns the visible child vertices of the given parent.
-   *
-   * Parameters:
-   *
-   * parent - <Cell> whose children should be returned.
+   * Returns the visible child nodes of the given parent.
    */
-  getChildVertices(parent: Cell) {
+  getChildNodes(parent: Cell) {
     return this.getChildCells(parent, true, false)
   }
 
   /**
    * Returns the visible child edges of the given parent.
-   *
-   * Parameters:
-   *
-   * parent - <Cell> whose child vertices should be returned.
    */
   getChildEdges(parent: Cell) {
     return this.getChildCells(parent, false, true)
   }
 
   /**
-   * Returns the visible child vertices or edges in the given parent. If
-   * vertices and edges is false, then all children are returned.
-   *
-   * Parameters:
-   *
-   * parent - <Cell> whose children should be returned.
-   * vertices - Optional boolean that specifies if child vertices should
-   * be returned. Default is false.
-   * edges - Optional boolean that specifies if child edges should
-   * be returned. Default is false.
+   * Returns the visible child nodes or edges in the given parent.
    */
   getChildCells(
-    parent: Cell = this.getDefaultParent()!,
+    parent: Cell = this.getDefaultParent(),
     includeNodes: boolean = false,
     includeEdges: boolean = false,
   ) {
     const cells = this.model.getChildCells(parent, includeNodes, includeEdges)
-    const result = []
-
-    // Filters out the non-visible child cells
-    for (let i = 0; i < cells.length; i += 1) {
-      if (this.isCellVisible(cells[i])) {
-        result.push(cells[i])
-      }
-    }
-
-    return result
+    return cells.filter(cell => this.isCellVisible(cell))
   }
 
   /**
@@ -8002,94 +7444,72 @@ export class Graph extends Events {
    * parent - Optional parent of the opposite end for a connection to be
    * returned.
    */
-  getConnections(cell: Cell, parent?: Cell | null) {
-    return this.getEdges(cell, parent, true, true, false)
+  getConnections(node: Cell, parent?: Cell | null) {
+    return this.getEdges(node, parent, true, true, false)
   }
 
   /**
    * Returns the visible incoming edges for the given cell. If the optional
    * parent argument is specified, then only child edges of the given parent
    * are returned.
-   *
-   * Parameters:
-   *
-   * cell - <Cell> whose incoming edges should be returned.
-   * parent - Optional parent of the opposite end for an edge to be
-   * returned.
    */
-  getIncomingEdges(cell: Cell, parent?: Cell | null) {
-    return this.getEdges(cell, parent, true, false, false)
+  getIncomingEdges(node: Cell, parent?: Cell | null) {
+    return this.getEdges(node, parent, true, false, false)
   }
 
   /**
    * Returns the visible outgoing edges for the given cell. If the optional
    * parent argument is specified, then only child edges of the given parent
    * are returned.
-   *
-   * Parameters:
-   *
-   * cell - <Cell> whose outgoing edges should be returned.
-   * parent - Optional parent of the opposite end for an edge to be
-   * returned.
    */
-  getOutgoingEdges(cell: Cell, parent?: Cell | null) {
-    return this.getEdges(cell, parent, false, true, false)
+  getOutgoingEdges(node: Cell, parent?: Cell | null) {
+    return this.getEdges(node, parent, false, true, false)
   }
 
   /**
    * Returns the incoming and/or outgoing edges for the given cell.
+   *
    * If the optional parent argument is specified, then only edges are returned
-   * where the opposite is in the given parent cell. If at least one of incoming
-   * or outgoing is true, then loops are ignored, if both are false, then all
-   * edges connected to the given cell are returned including loops.
+   * where the opposite terminal is in the given parent cell. If at least one
+   * of incoming or outgoing is true, then loops are ignored, if both are false,
+   * then all edges connected to the given cell are returned including loops.
    *
    * Parameters:
    *
-   * cell - <Cell> whose edges should be returned.
-   * parent - Optional parent of the opposite end for an edge to be
+   * @param node `Cell` whose edges should be returned.
+   * @param parent Optional parent of the opposite end for an edge to be
    * returned.
-   * incoming - Optional boolean that specifies if incoming edges should
-   * be included in the result. Default is true.
-   * outgoing - Optional boolean that specifies if outgoing edges should
-   * be included in the result. Default is true.
-   * includeLoops - Optional boolean that specifies if loops should be
-   * included in the result. Default is true.
-   * recurse - Optional boolean the specifies if the parent specified only
-   * need be an ancestral parent, true, or the direct parent, false.
-   * Default is false
+   * @param incoming Specifies if incoming edges should be included in the
+   * result. Default is `true`.
+   * @param outgoing Specifies if outgoing edges should be included in the
+   * result. Default is `true`.
+   * @param includeLoops - Specifies if loops should be included in the
+   * result. Default is `true`.
+   * @param recurse - Optional boolean the specifies if the parent specified
+   * only need be an ancestral parent, true, or the direct parent, false.
    */
   getEdges(
-    cell: Cell,
+    node: Cell,
     parent?: Cell | null,
     incoming: boolean = true,
     outgoing: boolean = true,
     includeLoops: boolean = true,
     recurse: boolean = false,
   ) {
-    let edges: Cell[] = []
+    const result: Cell[] = []
+    const edges: Cell[] = []
+    const isCollapsed = this.isCellCollapsed(node)
 
-    const isCollapsed = this.isCellCollapsed(cell)
-    const childCount = this.model.getChildCount(cell)
-
-    for (let i = 0; i < childCount; i += 1) {
-      const child = this.model.getChildAt(cell, i)!
+    node.eachChild((child) => {
       if (isCollapsed || !this.isCellVisible(child)) {
-        edges = edges.concat(this.model.getEdges(child, incoming, outgoing))
+        edges.push(...this.model.getEdges(child, incoming, outgoing))
       }
-    }
+    })
 
-    edges = edges.concat(this.model.getEdges(cell, incoming, outgoing))
-    const result = []
+    edges.push(...this.model.getEdges(node, incoming, outgoing))
 
-    for (let i = 0; i < edges.length; i += 1) {
-      const state = this.view.getState(edges[i])
-
-      const source = (state != null)
-        ? state.getVisibleTerminal(true)
-        : this.view.getVisibleTerminal(edges[i], true)
-      const target = (state != null)
-        ? state.getVisibleTerminal(false)
-        : this.view.getVisibleTerminal(edges[i], false)
+    edges.forEach((edge) => {
+      const [source, target] = this.getVisibleTerminals(edge)
 
       if (
         (includeLoops && source === target) ||
@@ -8098,37 +7518,41 @@ export class Graph extends Events {
           (
             (
               incoming &&
-              target === cell &&
+              target === node &&
               (parent == null || this.isValidAncestor(source!, parent, recurse))) ||
             (
               outgoing &&
-              source === cell &&
+              source === node &&
               (parent == null || this.isValidAncestor(target!, parent, recurse))
             )
           )
         )
       ) {
-        result.push(edges[i])
+        result.push(edge)
       }
-    }
+    })
 
     return result
   }
 
-  /**
-   * Returns whether or not the specified parent is a valid
-   * ancestor of the specified cell, either direct or indirectly
-   * based on whether ancestor recursion is enabled.
-   *
-   * Parameters:
-   *
-   * cell - <Cell> the possible child cell
-   * parent - <Cell> the possible parent cell
-   * recurse - boolean whether or not to recurse the child ancestors
-   */
-  isValidAncestor(cell: Cell, parent: Cell, recurse?: boolean) {
-    return (recurse ? this.model.isAncestor(parent, cell) : this.model
-      .getParent(cell) === parent)
+  protected getVisibleTerminals(edge: Cell) {
+    const state = this.view.getState(edge)
+
+    const source = state != null
+      ? state.getVisibleTerminal(true)
+      : this.view.getVisibleTerminal(edge, true)
+
+    const target = state != null
+      ? state.getVisibleTerminal(false)
+      : this.view.getVisibleTerminal(edge, false)
+
+    return [source, target]
+  }
+
+  protected isValidAncestor(cell: Cell, parent: Cell, recurse?: boolean) {
+    return recurse
+      ? this.model.isAncestor(parent, cell)
+      : this.model.getParent(cell) === parent
   }
 
   /**
@@ -8137,14 +7561,13 @@ export class Graph extends Events {
    *
    * Parameters:
    *
-   * edges - Array of <Cells> that contains the edges whose opposite
+   * @param edges Array of `Cell`s that contains the edges whose opposite
    * terminals should be returned.
-   * terminal - Terminal that specifies the end whose opposite should be
-   * returned.
-   * source - Optional boolean that specifies if source terminals should be
-   * included in the result. Default is true.
-   * targets - Optional boolean that specifies if targer terminals should be
-   * included in the result. Default is true.
+   * @param terminal - Specifies the end whose opposite should be returned.
+   * @param includeSources - Optional boolean that specifies if source
+   * terminals should be included in the result. Default is `true`.
+   * @param includeTargets - Optional boolean that specifies if target
+   * terminals should be included in the result. Default is `true`.
    */
   getOpposites(
     edges: Cell[],
@@ -8152,51 +7575,34 @@ export class Graph extends Events {
     includeSources: boolean = true,
     includeTargets: boolean = true,
   ) {
-    const terminals = []
-
-    // Fast lookup to avoid duplicates in terminals array
-    const dict = new WeakMap<Cell, boolean>()
-
-    if (edges != null) {
-      for (let i = 0; i < edges.length; i += 1) {
-        const state = this.view.getState(edges[i])
-
-        const source = (state != null)
-          ? state.getVisibleTerminal(true)
-          : this.view.getVisibleTerminal(edges[i], true)
-
-        const target = (state != null)
-          ? state.getVisibleTerminal(false)
-          : this.view.getVisibleTerminal(edges[i], false)
-
-        // Checks if the terminal is the source of the edge and if the
-        // target should be stored in the result
-        if (
-          source === terminal &&
-          target != null &&
-          target !== terminal &&
-          includeTargets
-        ) {
-          if (!dict.get(target)) {
-            dict.set(target, true)
-            terminals.push(target)
-          }
-        } else if (
-          target === terminal &&
-          source != null &&
-          source !== terminal &&
-          includeSources
-        ) {
-          // Checks if the terminal is the taget of the edge and if the
-          // source should be stored in the result
-
-          if (!dict.get(source)) {
-            dict.set(source, true)
-            terminals.push(source)
-          }
-        }
+    const terminals: Cell[] = []
+    const map = new WeakMap<Cell, boolean>()
+    const add = (opposite: Cell) => {
+      if (!map.get(opposite)) {
+        map.set(opposite, true)
+        terminals.push(opposite)
       }
     }
+
+    edges && edges.forEach((edge) => {
+      const [source, target] = this.getVisibleTerminals(edge)
+
+      if (
+        source === terminal &&
+        target != null &&
+        target !== terminal &&
+        includeTargets
+      ) {
+        add(target)
+      } else if (
+        target === terminal &&
+        source != null &&
+        source !== terminal &&
+        includeSources
+      ) {
+        add(source)
+      }
+    })
 
     return terminals
   }
@@ -8208,28 +7614,17 @@ export class Graph extends Events {
    */
   getEdgesBetween(source: Cell, target: Cell, directed: boolean = false) {
     const edges = this.getEdges(source)
-    const result = []
+    const result: Cell[] = []
 
-    // Checks if the edge is connected to the correct
-    // cell and returns the first match
-    for (let i = 0; i < edges.length; i += 1) {
-      const state = this.view.getState(edges[i])
-
-      const src = (state != null)
-        ? state.getVisibleTerminal(true)
-        : this.view.getVisibleTerminal(edges[i], true)
-
-      const trg = (state != null)
-        ? state.getVisibleTerminal(false)
-        : this.view.getVisibleTerminal(edges[i], false)
-
+    edges && edges.forEach((edge) => {
+      const [s, t] = this.getVisibleTerminals(edge)
       if (
-        (src === source && trg === target) ||
-        (!directed && src === target && trg === source)
+        (s === source && t === target) ||
+        (!directed && s === target && t === source)
       ) {
-        result.push(edges[i])
+        result.push(edge)
       }
-    }
+    })
 
     return result
   }
@@ -8245,7 +7640,11 @@ export class Graph extends Events {
    * offset by half of the <gridSize>. Default is true.
    */
   getPointForEvent(e: MouseEvent, addOffset: boolean = true) {
-    const p = util.convertPoint(this.container, DomEvent.getClientX(e), DomEvent.getClientY(e))
+    const p = util.clientToGraph(
+      this.container,
+      DomEvent.getClientX(e),
+      DomEvent.getClientY(e),
+    )
 
     const s = this.view.scale
     const tr = this.view.translate
@@ -8258,64 +7657,49 @@ export class Graph extends Events {
   }
 
   /**
-   * Returns the child vertices and edges of the given parent that are contained
-   * in the given rectangle. The result is added to the optional result array,
-   * which is returned. If no result array is specified then a new array is
-   * created and returned.
+   * Returns the child nodes and edges of the given parent that are contained
+   * in the given rectangle.
    *
-   * Parameters:
-   *
-   * x - X-coordinate of the rectangle.
-   * y - Y-coordinate of the rectangle.
-   * width - Width of the rectangle.
-   * height - Height of the rectangle.
-   * parent - <Cell> that should be used as the root of the recursion.
+   * @param x X-coordinate of the rectangle.
+   * @param y Y-coordinate of the rectangle.
+   * @param width Width of the rectangle.
+   * @param height Height of the rectangle.
+   * @param parent `Cell` that should be used as the root of the recursion.
    * Default is current root of the view or the root of the model.
-   * result - Optional array to store the result in.
+   * @param result Optional array to store the result in.
    */
-  getCells(
+  getCellsInRegion(
     x: number,
     y: number,
     width: number,
     height: number,
-    parent?: Cell,
+    parent: Cell = this.getCurrentRoot() || this.model.getRoot(),
     result: Cell[] = [],
   ) {
     if (width > 0 || height > 0) {
-      const model = this.getModel()
-      const right = x + width
-      const bottom = y + height
+      const rect = new Rectangle(x, y, width, height)
 
-      if (parent == null) {
-        parent = this.getCurrentRoot()! // tslint:disable-line
-        if (parent == null) {
-          parent = model.getRoot()! // tslint:disable-line
-        }
-      }
+      parent && parent.eachChild((cell) => {
+        const state = this.view.getState(cell)
+        if (state != null && this.isCellVisible(cell)) {
+          const rot = state.style.rotation || 0
+          const bounds = rot === 0
+            ? state.bounds
+            : util.getBoundingBox(state.bounds, rot)
 
-      if (parent != null) {
-        const childCount = model.getChildCount(parent)
-        for (let i = 0; i < childCount; i += 1) {
-          const cell = model.getChildAt(parent, i)!
-          const state = this.view.getState(cell)
-
-          if (state != null && this.isCellVisible(cell)) {
-            const deg = state.style.rotation || 0
-            let box = state.bounds
-            if (deg !== 0) {
-              box = util.getBoundingBox(box, deg)
-            }
-
-            if ((model.isEdge(cell) || model.isNode(cell)) &&
-              box.x >= x && box.y + box.height <= bottom &&
-              box.y >= y && box.x + box.width <= right) {
-              result.push(cell)
-            } else {
-              this.getCells(x, y, width, height, cell, result)
-            }
+          if (
+            (
+              this.model.isEdge(cell) ||
+              this.model.isNode(cell)
+            ) &&
+            rect.containsRect(bounds)
+          ) {
+            result.push(cell)
+          } else {
+            this.getCellsInRegion(x, y, width, height, cell, result)
           }
         }
-      }
+      })
     }
 
     return result
@@ -8326,46 +7710,35 @@ export class Graph extends Events {
    * halfpane from the given point (x0, y0) rightwards or downwards
    * depending on rightHalfpane and bottomHalfpane.
    *
-   * Parameters:
-   *
-   * x0 - X-coordinate of the origin.
-   * y0 - Y-coordinate of the origin.
-   * parent - Optional <Cell> whose children should be checked. Default is
-   * <defaultParent>.
-   * rightHalfpane - Boolean indicating if the cells in the right halfpane
-   * from the origin should be returned.
-   * bottomHalfpane - Boolean indicating if the cells in the bottom halfpane
-   * from the origin should be returned.
+   * @param x0 X-coordinate of the origin.
+   * @param y0 Y-coordinate of the origin.
+   * @param parent Optional `Cell` whose children should be checked.
+   * @param rightHalfpane - Boolean indicating if the cells in the right
+   * halfpane from the origin should be returned.
+   * @param bottomHalfpane - Boolean indicating if the cells in the bottom
+   * halfpane from the origin should be returned.
    */
   getCellsBeyond(
     x0: number,
     y0: number,
-    parent: Cell,
-    rightHalfpane: boolean,
-    bottomHalfpane: boolean,
+    parent: Cell = this.getDefaultParent(),
+    rightHalfpane: boolean = false,
+    bottomHalfpane: boolean = false,
   ) {
-    const result = []
+    const result: Cell[] = []
 
     if (rightHalfpane || bottomHalfpane) {
-      if (parent == null) {
-        parent = this.getDefaultParent()! // tslint:disable-line
-      }
-
-      if (parent != null) {
-        const childCount = this.model.getChildCount(parent)
-
-        for (let i = 0; i < childCount; i += 1) {
-          const child = this.model.getChildAt(parent, i)!
-          const state = this.view.getState(child)
-
-          if (this.isCellVisible(child) && state != null) {
-            if ((!rightHalfpane || state.bounds.x >= x0) &&
-              (!bottomHalfpane || state.bounds.y >= y0)) {
-              result.push(child)
-            }
+      parent && parent.eachChild((child) => {
+        const state = this.view.getState(child)
+        if (this.isCellVisible(child) && state != null) {
+          if (
+            (!rightHalfpane || state.bounds.x >= x0) &&
+            (!bottomHalfpane || state.bounds.y >= y0)
+          ) {
+            result.push(child)
           }
         }
-      }
+      })
     }
 
     return result
@@ -8376,60 +7749,57 @@ export class Graph extends Events {
    * edges. If the result is empty then the with the greatest difference
    * between incoming and outgoing edges is returned.
    *
-   * Parameters:
-   *
-   * parent - <Cell> whose children should be checked.
-   * isolate - Optional boolean that specifies if edges should be ignored if
-   * the opposite end is not a child of the given parent cell. Default is
-   * false.
-   * invert - Optional boolean that specifies if outgoing or incoming edges
-   * should be counted for a tree root. If false then outgoing edges will be
-   * counted. Default is false.
+   * @param parent `Cell` whose children should be checked.
+   * @param isolate Optional boolean that specifies if edges should be ignored
+   * if the opposite end is not a child of the given parent cell.
+   * Default is `false`.
+   * @param invert - Optional boolean that specifies if outgoing or incoming
+   * edges should be counted for a tree root. If `false` then outgoing edges
+   * will be counted. Default is `false`.
    */
-  findTreeRoots(parent: Cell, isolate: boolean = false, invert: boolean = false) {
-    const roots = []
+  findTreeRoots(
+    parent: Cell | null,
+    isolate: boolean = false,
+    invert: boolean = false,
+  ) {
+    const roots: Cell[] = []
 
-    if (parent != null) {
-      const model = this.getModel()
-      const childCount = model.getChildCount(parent)
-      let best = null
-      let maxDiff = 0
+    let best = null
+    let maxDiff = 0
 
-      for (let i = 0; i < childCount; i += 1) {
-        const cell = model.getChildAt(parent, i)!
+    parent && parent.eachChild((cell) => {
+      if (this.model.isNode(cell) && this.isCellVisible(cell)) {
+        const conns = this.getConnections(cell, isolate ? parent : null)
+        let fanOut = 0
+        let fanIn = 0
 
-        if (this.model.isNode(cell) && this.isCellVisible(cell)) {
-          const conns = this.getConnections(cell, isolate ? parent : null)
-          let fanOut = 0
-          let fanIn = 0
-
-          for (let j = 0; j < conns.length; j += 1) {
-            const src = this.view.getVisibleTerminal(conns[j], true)
-
-            if (src === cell) {
-              fanOut += 1
-            } else {
-              fanIn += 1
-            }
+        conns.forEach((conn) => {
+          const src = this.view.getVisibleTerminal(conn, true)
+          if (src === cell) {
+            fanOut += 1
+          } else {
+            fanIn += 1
           }
+        })
 
-          if ((invert && fanOut === 0 && fanIn > 0) ||
-            (!invert && fanIn === 0 && fanOut > 0)) {
-            roots.push(cell)
-          }
+        if (
+          (invert && fanOut === 0 && fanIn > 0) ||
+          (!invert && fanIn === 0 && fanOut > 0)
+        ) {
+          roots.push(cell)
+        }
 
-          const diff = (invert) ? fanIn - fanOut : fanOut - fanIn
+        const diff = (invert) ? fanIn - fanOut : fanOut - fanIn
 
-          if (diff > maxDiff) {
-            maxDiff = diff
-            best = cell
-          }
+        if (diff > maxDiff) {
+          maxDiff = diff
+          best = cell
         }
       }
+    })
 
-      if (roots.length === 0 && best != null) {
-        roots.push(best)
-      }
+    if (roots.length === 0 && best != null) {
+      roots.push(best)
     }
 
     return roots
@@ -8437,10 +7807,10 @@ export class Graph extends Events {
 
   /**
    * Traverses the (directed) graph invoking the given function for each
-   * visited vertex and edge. The function is invoked with the current vertex
+   * visited node and edge. The function is invoked with the current node
    * and the incoming edge as a parameter. This implementation makes sure
-   * each vertex is only visited once. The function may return false if the
-   * traversal should stop at the given vertex.
+   * each node is only visited once. The function may return false if the
+   * traversal should stop at the given node.
    *
    * Example:
    *
@@ -8455,44 +7825,39 @@ export class Graph extends Events {
    *
    * Parameters:
    *
-   * vertex - <Cell> that represents the vertex where the traversal starts.
-   * directed - Optional boolean indicating if edges should only be traversed
-   * from source to target. Default is true.
-   * func - Visitor function that takes the current vertex and the incoming
-   * edge as arguments. The traversal stops if the function returns false.
-   * edge - Optional <Cell> that represents the incoming edge. This is
-   * null for the first step of the traversal.
-   * visited - Optional <mxDictionary> from cells to true for the visited cells.
-   * inverse - Optional boolean to traverse in inverse direction. Default is false.
-   * This is ignored if directed is false.
+   * @param node The node where the traversal starts.
+   * @param directed Optional boolean indicating if edges should only be
+   * traversed from source to target. Default is `true`.
+   * @param func - Visitor function that takes the current node and the
+   * incoming edge as arguments. The traversal stops if the function
+   * returns `false`.
+   * @param edge - Optional `Cell` that represents the incoming edge. This is
+   * `null` for the first step of the traversal.
+   * @param visited - Optional `WeakMap<Cell, boolean>` for the visited cells.
+   * @param inverse - Optional boolean to traverse in inverse direction.
+   * Default is `false`. This is ignored if directed is `false`.
    */
   traverse(
     node: Cell,
     directed: boolean = true,
-    func: (node: Cell, edge: Cell) => boolean,
-    edge: Cell,
+    func: (node: Cell, edge: Cell | null) => boolean,
+    edge?: Cell,
     visited: WeakMap<Cell, boolean> = new WeakMap<Cell, boolean>(),
     inverse: boolean = false,
   ) {
     if (func != null && node != null) {
       if (!visited.get(node)) {
         visited.set(node, true)
-        const result = func(node, edge)
 
+        const result = func(node, edge || null)
         if (result == null || result) {
-          const edgeCount = this.model.getEdgeCount(node)
-
-          if (edgeCount > 0) {
-            for (let i = 0; i < edgeCount; i += 1) {
-              const e = this.model.getEdgeAt(node, i)!
-              const isSource = this.model.getTerminal(e, true) === node
-
-              if (!directed || (!inverse === isSource)) {
-                const next = this.model.getTerminal(e, !isSource)!
-                this.traverse(next, directed, func, e, visited, inverse)
-              }
+          node.eachEdge((edge) => {
+            const isSource = this.model.getTerminal(edge, true) === node
+            if (!directed || (!inverse === isSource)) {
+              const next = this.model.getTerminal(edge, !isSource)!
+              this.traverse(next, directed, func, edge, visited, inverse)
             }
-          }
+          })
         }
       }
     }
@@ -8502,11 +7867,19 @@ export class Graph extends Events {
 
   // #region ======== Selection
 
+  getSelection() {
+    return this.selectionManager
+  }
+
+  setSelection(cellSelection: SelectionManager) {
+    this.selectionManager = cellSelection
+  }
+
   /**
-   * Removes selection cells that are not in the model from the selection.
+   * Removes selected cells that are not in the model from the selection.
    */
   updateSelection() {
-    const cells = this.getSelectionCells()
+    const cells = this.getSelectedCells()
     const removed: Cell[] = []
 
     cells.forEach((cell) => {
@@ -8525,185 +7898,124 @@ export class Graph extends Events {
       }
     })
 
-    this.removeSelectionCells(removed)
+    if (removed.length) {
+      this.unSelectCells(removed)
+    }
   }
 
-  /**
-   * Returns true if the given cell is selected.
-   *
-   * Parameters:
-   *
-   * cell - <Cell> for which the selection state should be returned.
-   */
-  isCellSelected(cell: Cell) {
-    return this.selectionModel.isSelected(cell)
+  isCellSelected(cell: Cell | null) {
+    return this.selectionManager.isSelected(cell)
   }
 
-  /**
-   * Returns true if the selection is empty.
-   */
   isSelectionEmpty() {
-    return this.selectionModel.isEmpty()
+    return this.selectionManager.isEmpty()
   }
 
-  /**
-   * Clears the selection using <mxGraphSelectionModel.clear>.
-   */
   clearSelection() {
-    return this.selectionModel.clear()
+    return this.selectionManager.clear()
+  }
+
+  getSelecedCellCount() {
+    return this.selectionManager.cells.length
+  }
+
+  getSelectedCell() {
+    return this.selectionManager.cells[0]
+  }
+
+  getSelectedCells() {
+    return this.selectionManager.cells.slice()
   }
 
   /**
-   * Returns the number of selected cells.
+   * Replace selection cells with the given cell
    */
-  getSelectionCount() {
-    return this.selectionModel.cells.length
+  setSelectedCell(cell: Cell | null) {
+    this.selectionManager.setCell(cell)
   }
 
   /**
-   * Returns the first cell from the array of selected <Cells>.
+   * Replace selection cells with the given cells
    */
-  getSelectionCell() {
-    return this.selectionModel.cells[0]
-  }
-
-  /**
-   * Returns the array of selected <Cells>.
-   */
-  getSelectionCells() {
-    return this.selectionModel.cells.slice()
-  }
-
-  /**
-   * Sets the selection cell.
-   *
-   * Parameters:
-   *
-   * cell - <Cell> to be selected.
-   */
-  setSelectionCell(cell: Cell) {
-    this.selectionModel.setCell(cell)
-  }
-
-  /**
-   * Sets the selection cell.
-   *
-   * Parameters:
-   *
-   * cells - Array of <Cells> to be selected.
-   */
-  setSelectionCells(cells: Cell[]) {
-    this.selectionModel.setCells(cells)
+  setSelectedCells(cells: Cell[]) {
+    this.selectionManager.setCells(cells)
   }
 
   /**
    * Adds the given cell to the selection.
-   *
-   * Parameters:
-   *
-   * cell - <Cell> to be add to the selection.
    */
-  addSelectionCell(cell: Cell) {
-    this.selectionModel.addCell(cell)
+  selectCell(cell: Cell | null) {
+    this.selectionManager.addCell(cell)
   }
 
   /**
    * Adds the given cells to the selection.
-   *
-   * Parameters:
-   *
-   * cells - Array of <Cells> to be added to the selection.
    */
-  addSelectionCells(cells: Cell[]) {
-    this.selectionModel.addCells(cells)
+  selectCells(cells: Cell[]) {
+    this.selectionManager.addCells(cells)
   }
 
   /**
    * Removes the given cell from the selection.
-   *
-   * Parameters:
-   *
-   * cell - <Cell> to be removed from the selection.
    */
-  removeSelectionCell(cell: Cell) {
-    this.selectionModel.removeCell(cell)
+  unSelectCell(cell: Cell | null) {
+    this.selectionManager.removeCell(cell)
   }
 
   /**
    * Removes the given cells from the selection.
-   *
-   * Parameters:
-   *
-   * cells - Array of <Cells> to be removed from the selection.
    */
-  removeSelectionCells(cells: Cell[]) {
-    this.selectionModel.removeCells(cells)
+  unSelectCells(cells: Cell[]) {
+    this.selectionManager.removeCells(cells)
   }
 
   /**
    * Selects and returns the cells inside the given rectangle for the
    * specified event.
    *
-   * Parameters:
-   *
-   * rect - <Rect> that represents the region to be selected.
-   * evt - Mouseevent that triggered the selection.
+   * @param rect The region to be selected.
+   * @param e Mouseevent that triggered the selection.
    */
-  selectRegion(rect: Rectangle, e: MouseEvent) {
-    const cells = this.getCells(rect.x, rect.y, rect.width, rect.height)
+  selectCellsInRegion(rect: Rectangle, e: MouseEvent) {
+    const cells = this.getCellsInRegion(rect.x, rect.y, rect.width, rect.height)
     this.selectCellsForEvent(cells, e)
 
     return cells
   }
 
-  /**
-   * Selects the next cell.
-   */
   selectNextCell() {
-    this.selectCell(true)
+    this.selectCellImpl(true)
   }
 
-  /**
-   * Selects the previous cell.
-   */
   selectPreviousCell() {
-    this.selectCell()
+    this.selectCellImpl()
   }
 
-  /**
-   * Selects the parent cell.
-   */
   selectParentCell() {
-    this.selectCell(false, true)
+    this.selectCellImpl(false, true)
   }
 
-  /**
-   * Selects the first child cell.
-   */
   selectChildCell() {
-    this.selectCell(false, false, true)
+    this.selectCellImpl(false, false, true)
   }
 
   /**
-   * Selects the next, parent, first child or previous cell, if all arguments
-   * are false.
+   * Selects the next, parent, first child or previous cell.
    *
-   * Parameters:
-   *
-   * isNext - Boolean indicating if the next cell should be selected.
-   * isParent - Boolean indicating if the parent cell should be selected.
-   * isChild - Boolean indicating if the first child cell should be selected.
+   * @param isNext Boolean indicating if the next cell should be selected.
+   * @param isParent Boolean indicating if the parent cell should be selected.
+   * @param isChild Boolean indicating if the first child cell should be selected.
    */
-  selectCell(
-    isNext?: boolean,
-    isParent?: boolean,
-    isChild?: boolean,
+  protected selectCellImpl(
+    isNext: boolean = false,
+    isParent: boolean = false,
+    isChild: boolean = false,
   ) {
-    const sel = this.selectionModel
-    const cell = (sel.cells.length > 0) ? sel.cells[0] : null
+    const selection = this.selectionManager
+    const cell = (selection.cells.length > 0) ? selection.cells[0] : null
 
-    if (sel.cells.length > 1) {
-      sel.clear()
+    if (selection.cells.length > 1) {
+      selection.clear()
     }
 
     const parent = (cell != null) ?
@@ -8713,53 +8025,50 @@ export class Graph extends Events {
     const childCount = this.model.getChildCount(parent)
 
     if (cell == null && childCount > 0) {
-      const child = this.model.getChildAt(parent!, 0)!
-      this.setSelectionCell(child)
-    } else if ((cell == null || isParent) &&
+      const child = this.model.getChildAt(parent, 0)!
+      this.setSelectedCell(child)
+    } else if (
+      (cell == null || isParent) &&
       this.view.getState(parent) != null &&
-      this.model.getGeometry(parent!) != null) {
+      this.model.getGeometry(parent) != null
+    ) {
       if (this.getCurrentRoot() !== parent) {
-        this.setSelectionCell(parent!)
+        this.setSelectedCell(parent)
       }
     } else if (cell != null && isChild) {
       const tmp = this.model.getChildCount(cell)
       if (tmp > 0) {
         const child = this.model.getChildAt(cell, 0)!
-        this.setSelectionCell(child)
+        this.setSelectedCell(child)
       }
     } else if (childCount > 0) {
       let i = parent.getChildIndex(cell!)
-
       if (isNext) {
         i += 1
         const child = this.model.getChildAt(parent, i % childCount)!
-        this.setSelectionCell(child)
+        this.setSelectedCell(child)
       } else {
         i -= 1
         const index = (i < 0) ? childCount - 1 : i
         const child = this.model.getChildAt(parent, index)!
-        this.setSelectionCell(child)
+        this.setSelectedCell(child)
       }
     }
   }
 
   /**
-   * Selects all children of the given parent cell or the children of the
-   * default parent if no parent is specified. To select leaf vertices and/or
-   * edges use <selectCells>.
+   * Selects all children of the given parent or the children of the
+   * default parent if no parent is specified.
    *
-   * Parameters:
-   *
-   * parent - Optional <Cell> whose children should be selected.
-   * Default is <defaultParent>.
-   * descendants - Optional boolean specifying whether all descendants should be
-   * selected. Default is false.
+   * @param parent Optional parent `Cell` whose children should be selected.
+   * @param includeDescendants  Optional boolean specifying whether all
+   * descendants should be selected.
    */
   selectAll(
     parent: Cell = this.getDefaultParent()!,
-    descendants?: boolean,
+    includeDescendants: boolean = false,
   ) {
-    const cells = descendants
+    const cells = includeDescendants
       ? this.model.filterDescendants(
         cell => (cell !== parent && this.view.getState(cell) != null),
         parent,
@@ -8767,96 +8076,92 @@ export class Graph extends Events {
       : this.model.getChildren(parent)
 
     if (cells != null) {
-      this.setSelectionCells(cells)
+      this.setSelectedCells(cells)
     }
   }
 
   /**
-   * Select all vertices inside the given parent or the default parent.
+   * Select all nodes inside the given parent or the default parent.
    */
   selectNodes(parent: Cell) {
-    this.selectCells(true, false, parent)
+    this.selectCellsImpl(true, false, parent)
   }
 
   /**
-   * Select all vertices inside the given parent or the default parent.
+   * Select all edges inside the given parent or the default parent.
    */
   selectEdges(parent: Cell) {
-    this.selectCells(false, true, parent)
+    this.selectCellsImpl(false, true, parent)
   }
 
   /**
-   * Selects all vertices and/or edges depending on the given boolean
+   * Selects all nodes and/or edges depending on the given boolean
    * arguments recursively, starting at the given parent or the default
-   * parent if no parent is specified. Use <selectAll> to select all cells.
-   * For vertices, only cells with no children are selected.
+   * parent if no parent is specified.
    *
-   * Parameters:
-   *
-   * vertices - Boolean indicating if vertices should be selected.
-   * edges - Boolean indicating if edges should be selected.
-   * parent - Optional <Cell> that acts as the root of the recursion.
-   * Default is <defaultParent>.
+   * @param includeNodes Indicating if nodes should be selected.
+   * @param includeEdges Indicating if edges should be selected.
+   * @param parent Optional parent `Cell` that acts as the root of the recursion.
    */
-  selectCells(
-    vertices: boolean,
-    edges: boolean,
+  protected selectCellsImpl(
+    includeNodes: boolean,
+    includeEdges: boolean,
     parent: Cell = this.getDefaultParent()!,
   ) {
     const cells = this.model.filterDescendants(
       cell => (
         this.view.getState(cell) != null &&
-        ((this.model.getChildCount(cell) === 0 && this.model.isNode(cell) && vertices
-          && !this.model.isEdge(this.model.getParent(cell)!)) ||
-          (this.model.isEdge(cell) && edges))
+        (
+          // nodes
+          (
+            this.model.getChildCount(cell) === 0 &&
+            this.model.isNode(cell) &&
+            includeNodes &&
+            !this.model.isEdge(this.model.getParent(cell))
+          ) ||
+          // edges
+          (
+            this.model.isEdge(cell) && includeEdges
+          )
+        )
       ),
       parent,
     )
 
     if (cells != null) {
-      this.setSelectionCells(cells)
+      this.setSelectedCells(cells)
     }
   }
 
   /**
    * Selects the given cell by either adding it to the selection or
-   * replacing the selection depending on whether the given mouse event is a
-   * toggle event.
-   *
-   * Parameters:
-   *
-   * cell - <Cell> to be selected.
-   * evt - Optional mouseevent that triggered the selection.
+   * replacing the selection depending on whether the given mouse event
+   * is a toggle event.
    */
-  selectCellForEvent(cell: Cell, e: MouseEvent) {
+  selectCellForEvent(cell: Cell | null, e: MouseEvent) {
     const isSelected = this.isCellSelected(cell)
 
     if (this.isToggleEvent(e)) {
       if (isSelected) {
-        this.removeSelectionCell(cell)
+        this.unSelectCell(cell)
       } else {
-        this.addSelectionCell(cell)
+        this.selectCell(cell)
       }
-    } else if (!isSelected || this.getSelectionCount() !== 1) {
-      this.setSelectionCell(cell)
+    } else if (!isSelected || this.getSelecedCellCount() !== 1) {
+      this.setSelectedCell(cell)
     }
   }
 
   /**
    * Selects the given cells by either adding them to the selection or
-   * replacing the selection depending on whether the given mouse event is a
-   * toggle event.
-   *
-   * Parameters:
-   *
-   * cells - Array of <Cells> to be selected.
-   * evt - Optional mouseevent that triggered the selection.
+   * replacing the selection depending on whether the given mouse event
+   * is a toggle event.
    */
-  selectCellsForEvent(cells: Cell[], e: MouseEvent) {
+  protected selectCellsForEvent(cells: Cell[], e: MouseEvent) {
     if (this.isToggleEvent(e)) {
-      this.addSelectionCells(cells)
+      this.selectCells(cells)
     } else {
-      this.setSelectionCells(cells)
+      this.setSelectedCells(cells)
     }
   }
   // #endregion
@@ -8864,54 +8169,32 @@ export class Graph extends Events {
   // #region ======== Selection state
 
   /**
-   * Creates a new handler for the given cell state. This implementation
-   * returns a new <mxEdgeHandler> of the corresponding cell is an edge,
-   * otherwise it returns an <mxVertexHandler>.
-   *
-   * Parameters:
-   *
-   * state - <CellState> whose handler should be created.
+   * Creates a new handler for the given cell state.
    */
-  createHandler(state: CellState) {
-    let result = null
-
+  createHandler(state: CellState | null) {
     if (state != null) {
       if (this.model.isEdge(state.cell)) {
-        const source = state.getVisibleTerminalState(true)
-        const target = state.getVisibleTerminalState(false)
+        const sourceState = state.getVisibleTerminalState(true)
+        const targetState = state.getVisibleTerminalState(false)
         const geo = this.getCellGeometry(state.cell)
 
         const edgeStyle = this.view.getEdgeFunction(
-          state, geo != null ? geo.points : null, source!, target!,
+          state, geo != null ? geo.points : null, sourceState!, targetState!,
         )
-        result = this.createEdgeHandler(state, edgeStyle)
-      } else {
-        result = this.createVertexHandler(state)
+        return this.createEdgeHandler(state, edgeStyle)
       }
+
+      return this.createNodeHandler(state)
     }
 
-    return result
+    return null
   }
 
-  /**
-   * Hooks to create a new <mxVertexHandler> for the given <CellState>.
-   *
-   * Parameters:
-   *
-   * state - <CellState> to create the handler for.
-   */
-  createVertexHandler(state: CellState) {
-    // return new VertexHandler(state)
+  protected createNodeHandler(state: CellState) {
+    return new NodeHandler(this, state)
   }
 
-  /**
-   * Hooks to create a new <mxEdgeHandler> for the given <CellState>.
-   *
-   * Parameters:
-   *
-   * state - <CellState> to create the handler for.
-   */
-  createEdgeHandler(state: CellState, edgeStyle: any) {
+  protected createEdgeHandler(state: CellState, edgeStyle: any) {
     let result = null
 
     if (
@@ -8932,25 +8215,11 @@ export class Graph extends Events {
     return result
   }
 
-  /**
-   * Hooks to create a new <mxEdgeSegmentHandler> for the given <CellState>.
-   *
-   * Parameters:
-   *
-   * state - <CellState> to create the handler for.
-   */
-  createEdgeSegmentHandler(state: CellState) {
+  protected createEdgeSegmentHandler(state: CellState) {
     // return new EdgeSegmentHandler(state)
   }
 
-  /**
-   * Hooks to create a new <mxElbowEdgeHandler> for the given <CellState>.
-   *
-   * Parameters:
-   *
-   * state - <CellState> to create the handler for.
-   */
-  createElbowEdgeHandler(state: CellState) {
+  protected createElbowEdgeHandler(state: CellState) {
     // return new ElbowEdgeHandler(state)
   }
 
@@ -8959,33 +8228,24 @@ export class Graph extends Events {
   // #region ======== Graph events
 
   /**
-   * Adds a listener to the graph event dispatch loop. The listener
-   * must implement the mouseDown, mouseMove and mouseUp methods
-   * as shown in the <mxMouseEvent> class.
-   *
-   * Parameters:
-   *
-   * listener - Listener to be added to the graph event listeners.
+   * Holds the mouse event listeners.
    */
-  addMouseListener(listener: any) {
-    if (this.mouseListeners == null) {
-      this.mouseListeners = []
-    }
-
-    this.mouseListeners.push(listener)
-  }
+  protected mouseListeners: IMouseHandler[]
 
   /**
-   * Removes the specified graph listener.
-   *
-   * Parameters:
-   *
-   * listener - Listener to be removed from the graph event listeners.
+   * Adds a listener to the graph event dispatch loop. The listener
+   * must implement the mouseDown, mouseMove and mouseUp
    */
-  removeMouseListener(listener: any) {
+  addMouseListener(handler: IMouseHandler) {
+    if (!this.mouseListeners.includes(handler)) {
+      this.mouseListeners.push(handler)
+    }
+  }
+
+  removeMouseListener(handler: IMouseHandler) {
     if (this.mouseListeners != null) {
       for (let i = 0; i < this.mouseListeners.length; i += 1) {
-        if (this.mouseListeners[i] === listener) {
+        if (this.mouseListeners[i] === handler) {
           this.mouseListeners.splice(i, 1)
           break
         }
@@ -8994,31 +8254,31 @@ export class Graph extends Events {
   }
 
   /**
-   * Sets the graphX and graphY properties if the given <mxMouseEvent> if
-   * required and returned the event.
-   *
-   * Parameters:
-   *
-   * me - <mxMouseEvent> to be updated.
-   * evtName - Name of the mouse event.
+   * Sets the graphX and graphY properties for the given `CustomMouseEvent`.
    */
-  updateMouseEvent(e: CustomMouseEvent, name: string) {
+  protected updateMouseEvent(e: CustomMouseEvent, eventName: string) {
     if (e.graphX == null || e.graphY == null) {
-      const pt = util.convertPoint(this.container, e.getX(), e.getY())
+      const clientX = e.getClientX()
+      const clientY = e.getClientY()
+      const p = util.clientToGraph(this.container, clientX, clientY)
 
-      e.graphX = pt.x - this.panDx
-      e.graphY = pt.y - this.panDy
+      e.graphX = p.x - this.panDx
+      e.graphY = p.y - this.panDy
 
-      // Searches for rectangles using method if native hit detection is disabled on shape
-      if (e.getCell() == null && this.isMouseDown && name === DomEvent.MOUSE_MOVE) {
+      if (
+        this.isMouseDown &&
+        eventName === DomEvent.MOUSE_MOVE &&
+        e.getCell() == null
+      ) {
+        const ignoreFn = (state: CellState) => (
+          state.shape == null ||
+          state.shape.paintBackground !== RectangleShape.prototype.paintBackground ||
+          state.style.pointerEvents !== false ||
+          (state.shape.fill != null && state.shape.fill !== constants.NONE)
+        )
+
         e.state = this.view.getState(
-          this.getCellAt(pt.x, pt.y, null, false, false, (state: CellState) => {
-            return (
-              state.shape == null ||
-              state.shape.paintBackground !== RectangleShape.prototype.paintBackground ||
-              state.style.pointerEvents !== false ||
-              (state.shape.fill != null && state.shape.fill !== constants.NONE))
-          }),
+          this.getCellAt(p.x, p.y, null, false, false, ignoreFn),
         )
       }
     }
@@ -9026,90 +8286,90 @@ export class Graph extends Events {
     return e
   }
 
-  /**
-   * Returns the state for the given touch event.
-   */
-  getStateForTouchEvent(e: MouseEvent) {
+  protected getStateForTouchEvent(e: TouchEvent) {
     const x = DomEvent.getClientX(e)
     const y = DomEvent.getClientY(e)
-
-    // Dispatches the drop event to the graph which
-    // consumes and executes the source function
-    const pt = util.convertPoint(this.container, x, y)
-
-    return this.view.getState(this.getCellAt(pt.x, pt.y))
+    const p = util.clientToGraph(this.container, x, y)
+    return this.view.getState(this.getCellAt(p.x, p.y))
   }
 
+  protected lastEvent: MouseEvent
+  protected eventSource: HTMLElement | null
+  protected mouseMoveRedirect: null | ((e: MouseEvent) => void)
+  protected mouseUpRedirect: null | ((e: MouseEvent) => void)
+  protected ignoreMouseEvents: boolean
+
+  protected lastTouchX: number = 0
+  protected lastTouchY: number = 0
+  protected lastTouchTime: number = 0
+  protected lastTouchCell: Cell | null
+  protected lastTouchEvent: MouseEvent
+  protected fireDoubleClick: boolean
+  protected doubleClickCounter: number = 0
+
   /**
-   * Returns true if the event should be ignored in <fireMouseEvent>.
+   * Returns true if the event should be ignored.
    */
-
-  private lastEvent: MouseEvent
-  private eventSource: HTMLElement | null
-  private mouseMoveRedirect: null | ((e: MouseEvent) => void)
-  private mouseUpRedirect: null | ((e: MouseEvent) => void)
-  private ignoreMouseEvents: boolean
-
-  private lastTouchCell: Cell | null
-  private lastTouchEvent: MouseEvent
-  private lastTouchX: number = 0
-  private lastTouchY: number = 0
-  private lastTouchTime: number = 0
-  private fireDoubleClick: boolean
-  private doubleClickCounter: number = 0
-  private tapAndHoldThread: number = 0
-
-  isEventIgnored(name: string, e: CustomMouseEvent, sender: any) {
-    const mouseEvent = DomEvent.isMouseEvent(e.getEvent())
+  protected isEventIgnored(eventName: string, e: CustomMouseEvent, sender: any) {
+    const evt = e.getEvent()
+    const eventSource = e.getSource()
+    const isMouseEvent = DomEvent.isMouseEvent(evt)
     let result = false
 
     // Drops events that are fired more than once
-    if (e.getEvent() === this.lastEvent) {
+    if (evt === this.lastEvent) {
       result = true
     } else {
-      this.lastEvent = e.getEvent()
+      this.lastEvent = evt
     }
 
-    // Installs event listeners to capture the complete gesture from the event source
-    // for non-MS touch events as a workaround for all events for the same geture being
-    // fired from the event source even if that was removed from the DOM.
-    if (this.eventSource != null && name !== DomEvent.MOUSE_MOVE) {
-      DomEvent.removeGestureListeners(
+    // Installs event listeners to capture the complete gesture from the
+    // event source for non-MS touch events as a workaround for all events
+    // for the same geture being fired from the event source even if that
+    // was removed from the DOM.
+    if (this.eventSource != null && eventName !== DomEvent.MOUSE_MOVE) {
+
+      DomEvent.removeMouseListeners(
         this.eventSource,
         null,
         this.mouseMoveRedirect,
         this.mouseUpRedirect,
       )
-      this.mouseMoveRedirect = null
-      this.mouseUpRedirect = null
+
       this.eventSource = null
+      this.mouseUpRedirect = null
+      this.mouseMoveRedirect = null
+
     } else if (
       !detector.IS_CHROME &&
       this.eventSource != null &&
-      e.getSource() !== this.eventSource
+      this.eventSource !== eventSource
     ) {
+
       result = true
+
     } else if (
       detector.SUPPORT_TOUCH &&
-      name === DomEvent.MOUSE_DOWN &&
-      !mouseEvent &&
-      !DomEvent.isPenEvent(e.getEvent())
+      eventName === DomEvent.MOUSE_DOWN &&
+      !isMouseEvent &&
+      !DomEvent.isPenEvent(evt)
     ) {
-      this.eventSource = e.getSource()
+
+      this.eventSource = eventSource
       this.mouseMoveRedirect = (e: MouseEvent) => {
         this.fireMouseEvent(
           DomEvent.MOUSE_MOVE,
-          new CustomMouseEvent(e, this.getStateForTouchEvent(e)),
+          new CustomMouseEvent(e, this.getStateForTouchEvent(e as any)),
         )
       }
       this.mouseUpRedirect = (e: MouseEvent) => {
         this.fireMouseEvent(
           DomEvent.MOUSE_UP,
-          new CustomMouseEvent(e, this.getStateForTouchEvent(e)),
+          new CustomMouseEvent(e, this.getStateForTouchEvent(e as any)),
         )
       }
 
-      DomEvent.addGestureListeners(
+      DomEvent.addMouseListeners(
         this.eventSource,
         null,
         this.mouseMoveRedirect,
@@ -9119,57 +8379,67 @@ export class Graph extends Events {
 
     // Factored out the workarounds for FF to make it easier to override/remove
     // Note this method has side-effects!
-    if (this.isSyntheticEventIgnored(name, e, sender)) {
+    if (this.isSyntheticEventIgnored(eventName, e, sender)) {
       result = true
     }
 
     // Never fires mouseUp/-Down for double clicks
     if (
       !DomEvent.isPopupTrigger(this.lastEvent) &&
-      name !== DomEvent.MOUSE_MOVE &&
+      eventName !== DomEvent.MOUSE_MOVE &&
       this.lastEvent.detail === 2
     ) {
       return true
     }
 
     // Filters out of sequence events or mixed event types during a gesture
-    if (name === DomEvent.MOUSE_UP && this.isMouseDown) {
+    if (eventName === DomEvent.MOUSE_UP && this.isMouseDown) {
       this.isMouseDown = false
-    } else if (name === DomEvent.MOUSE_DOWN && !this.isMouseDown) {
+    } else if (eventName === DomEvent.MOUSE_DOWN && !this.isMouseDown) {
       this.isMouseDown = true
-      this.isMouseTrigger = mouseEvent
+      this.isMouseTrigger = isMouseEvent
     } else if (
       !result && ((
-        (!detector.IS_FIREFOX || name !== DomEvent.MOUSE_MOVE) &&
-        this.isMouseDown && this.isMouseTrigger !== mouseEvent) ||
-        (name === DomEvent.MOUSE_DOWN && this.isMouseDown) ||
-        (name === DomEvent.MOUSE_UP && !this.isMouseDown))
+        (!detector.IS_FIREFOX || eventName !== DomEvent.MOUSE_MOVE) &&
+        this.isMouseDown && this.isMouseTrigger !== isMouseEvent) ||
+        (eventName === DomEvent.MOUSE_DOWN && this.isMouseDown) ||
+        (eventName === DomEvent.MOUSE_UP && !this.isMouseDown))
     ) {
-      // Drops mouse events that are fired during touch gestures as a workaround for Webkit
-      // and mouse events that are not in sync with the current internal button state
+      // Drops mouse events that are fired during touch gestures
+      // as a workaround for Webkit and mouse events that are not
+      // in sync with the current internal button state
       result = true
     }
 
-    if (!result && name === DomEvent.MOUSE_DOWN) {
-      this.lastMouseX = e.getX()
-      this.lastMouseY = e.getY()
+    if (!result && eventName === DomEvent.MOUSE_DOWN) {
+      this.lastMouseX = e.getClientX()
+      this.lastMouseY = e.getClientY()
     }
 
     return result
   }
 
-  /**
-   * Hook for ignoring synthetic mouse events after touchend in Firefox.
-   */
-  isSyntheticEventIgnored(evtName: string, e: CustomMouseEvent, sender: any) {
+  protected isSyntheticEventIgnored(
+    eventName: string,
+    e: CustomMouseEvent,
+    sender: any,
+  ) {
     let result = false
-    const mouseEvent = DomEvent.isMouseEvent(e.getEvent())
+    const isMouseEvent = DomEvent.isMouseEvent(e.getEvent())
 
     // LATER: This does not cover all possible cases that can go wrong in FF
-    if (this.ignoreMouseEvents && mouseEvent && evtName !== DomEvent.MOUSE_MOVE) {
-      this.ignoreMouseEvents = evtName !== DomEvent.MOUSE_UP
+    if (
+      this.ignoreMouseEvents &&
+      isMouseEvent &&
+      eventName !== DomEvent.MOUSE_MOVE
+    ) {
+      this.ignoreMouseEvents = eventName !== DomEvent.MOUSE_UP
       result = true
-    } else if (detector.IS_FIREFOX && !mouseEvent && evtName === DomEvent.MOUSE_UP) {
+    } else if (
+      detector.IS_FIREFOX &&
+      !isMouseEvent &&
+      eventName === DomEvent.MOUSE_UP
+    ) {
       this.ignoreMouseEvents = true
     }
 
@@ -9177,33 +8447,27 @@ export class Graph extends Events {
   }
 
   /**
-   * Returns true if the event should be ignored in <fireMouseEvent>. This
-   * implementation returns true for select, option and input (if not of type
-   * checkbox, radio, button, submit or file) event sources if the event is not
-   * a mouse event or a left mouse button press event.
-   *
-   * Parameters:
-   *
-   * evtName - The name of the event.
-   * me - <mxMouseEvent> that should be ignored.
+   * Returns true if the event should be ignored.
    */
-  isEventSourceIgnored(evtName: string, e: CustomMouseEvent) {
-    const source = e.getSource()
-    const name = (source.nodeName != null) ? source.nodeName.toLowerCase() : ''
-    const candidate = (
-      !DomEvent.isMouseEvent(e.getEvent()) ||
-      DomEvent.isLeftMouseButton(e.getEvent())
+  protected isEventSourceIgnored(eventName: string, e: CustomMouseEvent) {
+    const evt = e.getEvent()
+    const elem = e.getSource()
+    const nodeName = elem.nodeName ? elem.nodeName.toLowerCase() : ''
+    const inputType = (elem as HTMLInputElement).type
+
+    const isLeftMouseButton = (
+      !DomEvent.isMouseEvent(evt) ||
+      DomEvent.isLeftMouseButton(evt)
     )
 
-    const inputType = (source as HTMLInputElement).type
-
     return (
-      evtName === DomEvent.MOUSE_DOWN &&
-      candidate &&
+      eventName === DomEvent.MOUSE_DOWN &&
+      isLeftMouseButton &&
       (
-        name === 'select' || name === 'option' ||
+        nodeName === 'select' ||
+        nodeName === 'option' ||
         (
-          name === 'input' &&
+          nodeName === 'input' &&
           inputType !== 'checkbox' &&
           inputType !== 'radio' &&
           inputType !== 'button' &&
@@ -9214,329 +8478,251 @@ export class Graph extends Events {
     )
   }
 
-  /**
-   * Returns the <CellState> to be used when firing the mouse event for the
-   * given state. This implementation returns the given state.
-   *
-   * Parameters:
-   *
-   * <CellState> - State whose event source should be returned.
-   */
-  getEventState(state: CellState) {
+  protected getEventState(state: CellState | null) {
     return state
   }
 
   /**
-   * Dispatches the given event in the graph event dispatch loop. Possible
-   * event names are <DomEvent.MOUSE_DOWN>, <DomEvent.MOUSE_MOVE> and
-   * <DomEvent.MOUSE_UP>. All listeners are invoked for all events regardless
-   * of the consumed state of the event.
-   *
-   * Parameters:
-   *
-   * evtName - String that specifies the type of event to be dispatched.
-   * e - <mxMouseEvent> to be fired.
-   * sender - Optional sender argument. Default is this.
+   * Dispatches the given event to the graph event dispatch loop.
    */
-  fireMouseEvent(name: string, e: CustomMouseEvent, sender?: any) {
-    if (this.isEventSourceIgnored(name, e)) {
-      if (this.tooltipHandler != null) {
-        this.tooltipHandler.hide()
-      }
-
+  fireMouseEvent(eventName: string, e: CustomMouseEvent, sender: any = this) {
+    // Ignore left click on some form-input elements.
+    if (this.isEventSourceIgnored(eventName, e)) {
+      this.hideTooltip()
       return
     }
 
-    if (sender == null) {
-      sender = this // tslint:disable-line
-    }
-
     // Updates the graph coordinates in the event
-    e = this.updateMouseEvent(e, name) // tslint:disable-line
+    this.updateMouseEvent(e, eventName)
 
-    // Detects and processes double taps for touch-based devices which do
-    // not have native double click events or where detection of double
-    // click is not always possible (quirks, IE10+). Note that this can only
-    // handle double clicks on cells because the sequence of events in IE
-    // prevents detection on the background, it fires two mouse ups, one of
-    // which without a cell but no mousedown for the second click which means
-    // we cannot detect which mouseup(s) are part of the first click, ie we
-    // do not know when the first click ends.
+    const evt = e.getEvent()
+    const cell = e.getCell()
+    const clientX = e.getClientX()
+    const clientY = e.getClientY()
+
+    // Detects and processes double taps for touch-based devices
+    // which do not have native double click events.
     if (
-      (!this.nativeDblClickEnabled && !DomEvent.isPopupTrigger(e.getEvent())) ||
+      (!this.nativeDblClickEnabled && !DomEvent.isPopupTrigger(evt)) ||
       (
-        this.doubleTapEnabled &&
-        detector.SUPPORT_TOUCH &&
-        (DomEvent.isTouchEvent(e.getEvent()) || DomEvent.isPenEvent(e.getEvent())))
+        this.doubleTapEnabled && detector.SUPPORT_TOUCH &&
+        (DomEvent.isTouchEvent(evt) || DomEvent.isPenEvent(evt))
+      )
     ) {
       const currentTime = new Date().getTime()
 
-      // NOTE: Second mouseDown for double click missing in quirks mode
-      if (
-        (!detector.IS_QUIRKS && name === DomEvent.MOUSE_DOWN) ||
-        (detector.IS_QUIRKS && name === DomEvent.MOUSE_UP && !this.fireDoubleClick)
-      ) {
+      if (eventName === DomEvent.MOUSE_DOWN) {
+        // mark a double click event
         if (
           this.lastTouchEvent != null &&
-          this.lastTouchEvent !== e.getEvent() &&
+          this.lastTouchEvent !== evt &&
           currentTime - this.lastTouchTime < this.doubleTapTimeout &&
-          Math.abs(this.lastTouchX - e.getX()) < this.doubleTapTolerance &&
-          Math.abs(this.lastTouchY - e.getY()) < this.doubleTapTolerance &&
+          Math.abs(this.lastTouchX - clientX) < this.doubleTapTolerance &&
+          Math.abs(this.lastTouchY - clientY) < this.doubleTapTolerance &&
           this.doubleClickCounter < 2
         ) {
+
           this.doubleClickCounter += 1
-          let doubleClickFired = false
+          this.fireDoubleClick = true
+          this.lastTouchTime = 0
 
-          if (name === DomEvent.MOUSE_UP) {
-            if (e.getCell() === this.lastTouchCell && this.lastTouchCell != null) {
-              this.lastTouchTime = 0
-              const cell = this.lastTouchCell
-              this.lastTouchCell = null
+          DomEvent.consume(evt)
+          return
 
-              // Fires native dblclick event via event source
-              // NOTE: This fires two double click events on edges in quirks mode. While
-              // trying to fix this, we realized that nativeDoubleClick can be disabled for
-              // quirks and IE10+ (or we didn't find the case mentioned above where it
-              // would not work), ie. all double clicks seem to be working without this.
-              if (detector.IS_QUIRKS) {
-                // e.getSource().fireEvent('ondblclick')
-              }
+        }
 
-              this.dblClick(e.getEvent(), cell)
-              doubleClickFired = true
-            }
-          } else {
-            this.fireDoubleClick = true
-            this.lastTouchTime = 0
-          }
-
-          // Do not ignore mouse up in quirks in this case
-          if (!detector.IS_QUIRKS || doubleClickFired) {
-            DomEvent.consume(e.getEvent())
-            return
-          }
-        } else if (this.lastTouchEvent == null || this.lastTouchEvent !== e.getEvent()) {
-          this.lastTouchCell = e.getCell()
-          this.lastTouchX = e.getX()
-          this.lastTouchY = e.getY()
+        // reset
+        if (this.lastTouchEvent == null || this.lastTouchEvent !== evt) {
+          this.lastTouchX = clientX
+          this.lastTouchY = clientY
+          this.lastTouchCell = cell
           this.lastTouchTime = currentTime
-          this.lastTouchEvent = e.getEvent()
+          this.lastTouchEvent = evt
           this.doubleClickCounter = 0
         }
-      } else if ((this.isMouseDown || name === DomEvent.MOUSE_UP) && this.fireDoubleClick) {
-        this.fireDoubleClick = false
-        const cell = this.lastTouchCell
-        this.lastTouchCell = null
+
+      } else if (
+        (this.isMouseDown || eventName === DomEvent.MOUSE_UP) &&
+        this.fireDoubleClick
+      ) {
+
+        const lastTouchCell = this.lastTouchCell
+
         this.isMouseDown = false
+        this.lastTouchCell = null
+        this.fireDoubleClick = false
 
         // Workaround for Chrome/Safari not firing native double click
         // events for double touch on background
-        const valid = (cell != null) ||
+        const valid = (lastTouchCell != null) ||
           (
-            (DomEvent.isTouchEvent(e.getEvent()) || DomEvent.isPenEvent(e.getEvent())) &&
+            (DomEvent.isTouchEvent(evt) || DomEvent.isPenEvent(evt)) &&
             (detector.IS_CHROME || detector.IS_SAFARI)
           )
 
         if (
           valid &&
-          Math.abs(this.lastTouchX - e.getX()) < this.doubleTapTolerance &&
-          Math.abs(this.lastTouchY - e.getY()) < this.doubleTapTolerance
+          Math.abs(this.lastTouchX - clientX) < this.doubleTapTolerance &&
+          Math.abs(this.lastTouchY - clientY) < this.doubleTapTolerance
         ) {
-          this.dblClick(e.getEvent(), cell)
+          this.dblClick(evt, lastTouchCell)
         } else {
-          DomEvent.consume(e.getEvent())
+          DomEvent.consume(evt)
         }
 
         return
       }
     }
 
-    if (!this.isEventIgnored(name, e, sender)) {
-      // Updates the event state via getEventState
-      e.state = this.getEventState(e.getState()!)
-      // this.fireEvent(
-      //   new DomEventObject(DomEvent.FIRE_MOUSE_EVENT, 'eventName', name, 'event', e)
-      //   )
+    if (this.isEventIgnored(eventName, e, sender)) {
+      return
+    }
 
+    // Updates the event state via getEventState
+    e.state = this.getEventState(e.getState())
+
+    this.trigger(DomEvent.FIRE_MOUSE_EVENT, { eventName, e, sender })
+
+    if (
+      detector.IS_OPERA ||
+      detector.IS_SAFARI ||
+      detector.IS_CHROME ||
+      detector.IS_IE11 ||
+      detector.IS_IE ||
+      evt.target !== this.container
+    ) {
       if (
-        detector.IS_OPERA || detector.IS_SAFARI || detector.IS_CHROME || detector.IS_IE11 ||
-        detector.IS_IE || e.getEvent().target !== this.container
+        eventName === DomEvent.MOUSE_MOVE &&
+        this.isMouseDown &&
+        this.autoScroll &&
+        !DomEvent.isMultiTouchEvent(evt)
       ) {
-        if (
-          name === DomEvent.MOUSE_MOVE &&
-          this.isMouseDown &&
-          this.autoScroll &&
-          !DomEvent.isMultiTouchEvent(e.getEvent)
-        ) {
 
-          this.scrollPointToVisible(e.getGraphX(), e.getGraphY(), this.autoExtend)
+        this.scrollPointToVisible(
+          e.getGraphX(),
+          e.getGraphY(),
+          this.autoExtend,
+        )
 
-        } else if (
-          name === DomEvent.MOUSE_UP &&
-          this.ignoreScrollbars &&
-          this.translateToScrollPosition &&
-          (this.container.scrollLeft !== 0 || this.container.scrollTop !== 0)
-        ) {
-          const s = this.view.scale
-          const tr = this.view.translate
-          this.view.setTranslate(
-            tr.x - this.container.scrollLeft / s,
-            tr.y - this.container.scrollTop / s,
-          )
-          this.container.scrollLeft = 0
-          this.container.scrollTop = 0
-        }
-
-        if (this.mouseListeners != null) {
-          const args = [sender, e]
-
-          // Does not change returnValue in Opera
-          if (!e.getEvent().preventDefault) {
-            e.getEvent().returnValue = true
-          }
-
-          for (let i = 0; i < this.mouseListeners.length; i += 1) {
-            const l = this.mouseListeners[i]
-
-            if (name === DomEvent.MOUSE_DOWN) {
-              l.mouseDown.apply(l, args)
-            } else if (name === DomEvent.MOUSE_MOVE) {
-              l.mouseMove.apply(l, args)
-            } else if (name === DomEvent.MOUSE_UP) {
-              l.mouseUp.apply(l, args)
-            }
-          }
-        }
-
-        // Invokes the click handler
-        if (name === DomEvent.MOUSE_UP) {
-          this.click(e)
-        }
+      } else if (
+        eventName === DomEvent.MOUSE_UP &&
+        this.ignoreScrollbars &&
+        this.translateToScrollPosition &&
+        (this.container.scrollLeft !== 0 || this.container.scrollTop !== 0)
+      ) {
+        const s = this.view.scale
+        const tr = this.view.translate
+        this.view.setTranslate(
+          tr.x - this.container.scrollLeft / s,
+          tr.y - this.container.scrollTop / s,
+        )
+        this.container.scrollLeft = 0
+        this.container.scrollTop = 0
       }
 
-      // Detects tapAndHold events using a timer
-      if (
-        (DomEvent.isTouchEvent(e.getEvent()) || DomEvent.isPenEvent(e.getEvent())) &&
-        name === DomEvent.MOUSE_DOWN &&
-        this.tapAndHoldEnabled && !this.tapAndHoldInProgress
-      ) {
-        this.tapAndHoldInProgress = true
-        this.initialTouchX = e.getGraphX()
-        this.initialTouchY = e.getGraphY()
+      this.mouseListeners && this.mouseListeners.forEach((handler) => {
+        if (eventName === DomEvent.MOUSE_DOWN) {
+          handler.mouseDown(e, sender)
+        } else if (eventName === DomEvent.MOUSE_MOVE) {
+          handler.mouseMove(e, sender)
+        } else if (eventName === DomEvent.MOUSE_UP) {
+          handler.mouseUp(e, sender)
+        }
+      })
 
-        const handler = function () {
+      if (eventName === DomEvent.MOUSE_UP) {
+        this.click(e)
+      }
+    }
+
+    // Detects tapAndHold events using a timer
+    if (
+      DomEvent.isTouchOrPenEvent(evt) &&
+      eventName === DomEvent.MOUSE_DOWN &&
+      this.tapAndHoldEnabled &&
+      !this.tapAndHoldInProgress
+    ) {
+      this.initialTouchX = e.getGraphX()
+      this.initialTouchY = e.getGraphY()
+
+      if (this.tapAndHoldTimer) {
+        window.clearTimeout(this.tapAndHoldTimer)
+      }
+
+      this.tapAndHoldTimer = window.setTimeout(
+        () => {
           if (this.tapAndHoldValid) {
             this.tapAndHold(e)
           }
-
-          this.tapAndHoldInProgress = false
           this.tapAndHoldValid = false
-        }
+          this.tapAndHoldInProgress = false
+        },
+        this.tapAndHoldDelay,
+      )
 
-        if (this.tapAndHoldThread) {
-          window.clearTimeout(this.tapAndHoldThread)
-        }
+      this.tapAndHoldValid = true
+      this.tapAndHoldInProgress = true
 
-        this.tapAndHoldThread = window.setTimeout(handler, this.tapAndHoldDelay)
-        this.tapAndHoldValid = true
-      } else if (name === DomEvent.MOUSE_UP) {
-        this.tapAndHoldInProgress = false
-        this.tapAndHoldValid = false
-      } else if (this.tapAndHoldValid) {
-        this.tapAndHoldValid =
-          Math.abs(this.initialTouchX - e.getGraphX()) < this.tolerance &&
-          Math.abs(this.initialTouchY - e.getGraphY()) < this.tolerance
-      }
+    } else if (eventName === DomEvent.MOUSE_UP) {
 
-      // Stops editing for all events other than from cellEditor
-      if (
-        name === DomEvent.MOUSE_DOWN &&
-        this.isEditing() &&
-        !this.cellEditor.isEventSource(e.getEvent())
-      ) {
-        this.stopEditing(!this.isInvokesStopCellEditing())
-      }
+      this.tapAndHoldValid = false
+      this.tapAndHoldInProgress = false
 
-      this.consumeMouseEvent(name, e, sender)
+    } else if (this.tapAndHoldValid) { // hint
+      this.tapAndHoldValid =
+        Math.abs(this.initialTouchX - e.getGraphX()) < this.tolerance &&
+        Math.abs(this.initialTouchY - e.getGraphY()) < this.tolerance
     }
+
+    // Stops editing for all events other than from cellEditor
+    if (
+      eventName === DomEvent.MOUSE_DOWN &&
+      this.isEditing() &&
+      !this.cellEditor.isEventSource(evt)
+    ) {
+      this.stopEditing(!this.isInvokesStopCellEditing())
+    }
+
+    this.consumeMouseEvent(eventName, e)
   }
 
-  /**
-   * Consumes the given <mxMouseEvent> if it's a touchStart event.
-   */
-  consumeMouseEvent(name: string, e: CustomMouseEvent, sender: any) {
-    // Workaround for duplicate click in Windows 8 with Chrome/FF/Opera with touch
-    if (name === DomEvent.MOUSE_DOWN && DomEvent.isTouchEvent(e.getEvent())) {
+  protected consumeMouseEvent(name: string, e: CustomMouseEvent) {
+    if (
+      name === DomEvent.MOUSE_DOWN &&
+      DomEvent.isTouchEvent(e.getEvent())
+    ) {
       e.consume(false)
     }
   }
 
-  /**
-   * Dispatches a <DomEvent.GESTURE> event. The following example will resize the
-   * cell under the mouse based on the scale property of the native touch event.
-   *
-   * (code)
-   * graph.addListener(DomEvent.GESTURE, function(sender, eo)
-   * {
-   *   var evt = eo.getProperty('event');
-   *   var state = graph.view.getState(eo.getProperty('cell'));
-   *
-   *   if (graph.isEnabled() && graph.isCellResizable(state.cell) && Math.abs(1 - evt.scale) > 0.2)
-   *   {
-   *     var scale = graph.view.scale;
-   *     var tr = graph.view.translate;
-   *
-   *     var w = state.width * evt.scale;
-   *     var h = state.height * evt.scale;
-   *     var x = state.x - (w - state.width) / 2;
-   *     var y = state.y - (h - state.height) / 2;
-   *
-   *     var bounds = new Rect(graph.snap(x / scale) - tr.x,
-   *     		graph.snap(y / scale) - tr.y, graph.snap(w / scale), graph.snap(h / scale));
-   *     graph.resizeCell(state.cell, bounds);
-   *     eo.consume();
-   *   }
-   * });
-   * (end)
-   *
-   * Parameters:
-   *
-   * evt - Gestureend event that represents the gesture.
-   * cell - Optional <Cell> associated with the gesture.
-   */
   fireGestureEvent(e: MouseEvent, cell?: Cell) {
     // Resets double tap event handling when gestures take place
     this.lastTouchTime = 0
-    // this.fireEvent(new DomEventObject(DomEvent.GESTURE, 'event', e, 'cell', cell))
+    this.trigger(DomEvent.GESTURE, { e, cell })
   }
 
-  destroyed: boolean = false
-  destroy() {
-    if (!this.destroyed) {
-      this.destroyed = true
+  // #endregion
 
-      if (this.tooltipHandler != null) {
-        this.tooltipHandler.destroy()
-      }
+  // #region dispose
 
-      if (this.selectionCellsHandler != null) {
-        this.selectionCellsHandler.destroy()
-      }
+  protected disposed = false
 
-      if (this.panningHandler != null) {
-        this.panningHandler.destroy()
-      }
+  get isDisposed() {
+    return this.disposed
+  }
 
-      if (this.popupMenuHandler != null) {
-        this.popupMenuHandler.destroy()
-      }
+  dispose() {
+    if (!this.disposed) {
+      this.disposed = true
+
+      this.tooltipHandler.dispose()
+      this.panningHandler.dispose()
+      this.popupMenuHandler.dispose()
+      this.selectionHandler.dispose()
+      this.graphHandler.dispose()
 
       if (this.connectionHandler != null) {
         this.connectionHandler.destroy()
-      }
-
-      if (this.graphHandler != null) {
-        this.graphHandler.destroy()
       }
 
       if (this.cellEditor != null) {
@@ -9544,10 +8730,10 @@ export class Graph extends Events {
       }
 
       if (this.view != null) {
-        this.view.destroy()
+        this.view.dispose()
       }
 
-      this.model.off(Model.eventNames.change, this.graphModelChanged);
+      this.model.off(Model.events.change, this.onModelChanged);
       (this as any).container = null
     }
   }
@@ -9556,10 +8742,25 @@ export class Graph extends Events {
 }
 
 export namespace Graph {
-  export interface Options {
+  export interface Hooks {
+    createModel?: (graph: Graph) => Model
+    createView?: (graph: Graph) => View
+    createRenderer?: (graph: Graph) => Renderer
+    createStyleSheet?: (graph: Graph) => StyleSheet
+    createSelectionManager?: (graph: Graph) => SelectionManager
+    createTooltipHandler?: (graph: Graph) => TooltipHandler
+    createSelectionHandler?: (graph: Graph) => SelectionHandler
+    createGraphHandler?: (graph: Graph) => GraphHandler
+    createPanningHandler?: (graph: Graph) => PanningHandler
+    createPopupMenuHandler?: (graph: Graph) => PopupMenuHandler
+    getTooltip?: (cell: Cell) => string | HTMLElement
+  }
+
+  export interface Options extends Hooks {
+    dialect?: Dialect,
     model?: Model,
-    renderHint?: 'exact' | 'faster' | 'fastest',
-    stylesheet?: Stylesheet,
+    styleSheet?: StyleSheet,
+    hooks?: Hooks,
   }
 
   export interface CreateNodeOptions {
@@ -9579,7 +8780,7 @@ export namespace Graph {
   }
 
   export interface CreateEdgeOptions {
-    id?: string
+    id?: string | null
     data?: any
     style?: CellStyle
   }
@@ -9591,7 +8792,7 @@ export namespace Graph {
     targetNode?: Cell,
   }
 
-  export const eventNames = {
+  export const events = {
     root: 'root',
     addOverlay: 'addOverlay',
     removeOverlay: 'removeOverlay',
@@ -9620,5 +8821,11 @@ export namespace Graph {
     updateCellSize: 'updateCellSize',
     resizeCells: 'resizeCells',
     cellsResized: 'cellsResized',
+
+    pan: 'pan',
+    fireMouseEvent: 'fireMouseEvent',
+    showContextMenu: 'showContextMenu',
+    hideContextMenu: 'hideContextMenu',
+    selectionChanged: 'selectionChanged',
   }
 }

@@ -16,7 +16,7 @@ export { util, shapes, changes }
 export const registerShape = shapes.Shape.registerShape
 
 registerShape(ShapeName.rectangle, shapes.RectangleShape)
-registerShape(ShapeName.ellipse, shapes.Ellipse)
+registerShape(ShapeName.ellipse, shapes.EllipseShape)
 registerShape(ShapeName.doubleEllipse, shapes.DoubleEllipse)
 registerShape(ShapeName.rhombus, shapes.Rhombus)
 registerShape(ShapeName.cylinder, shapes.Cylinder)

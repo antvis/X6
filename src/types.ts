@@ -1,5 +1,6 @@
 import { FontStyle, Point } from './struct'
 
+export type Dialect = 'svg' | 'html'
 export type Align = 'left' | 'center' | 'right'
 export type VAlign = 'top' | 'middle' | 'bottom'
 export type LabelPosition = 'left' | 'center' | 'right'
@@ -29,13 +30,13 @@ export interface CellStyle {
    * Defines the key for the horizontal relative coordinate connection
    * point of an edge with its source terminal.
    */
-  exitX?: string
+  exitX?: number
 
   /**
    * Defines the key for the vertical relative coordinate connection
    * point of an edge with its source terminal.
    */
-  exitY?: string
+  exitY?: number
 
   /**
    * Defines the key for the horizontal offset of the connection point
@@ -53,13 +54,13 @@ export interface CellStyle {
    * Defines the key for the horizontal relative coordinate connection
    * point of an edge with its target terminal.
    */
-  entryX?: string
+  entryX?: number
 
   /**
    * Defines the key for the vertical relative coordinate connection
    * point of an edge with its target terminal.
    */
-  entryY?: string
+  entryY?: number
 
   /**
    * Defines the key for the horizontal offset of the connection point
@@ -321,7 +322,7 @@ export interface CellStyle {
   deletable?: boolean
 
   shape?: string
-  edgeStyle?: string
+  edge?: string
 
   /**
    * Jetty size is the minimum length of the orthogonal segment

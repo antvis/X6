@@ -1,14 +1,15 @@
 import { IChange } from './change'
+import { Graph } from '../core/graph'
 import { Cell } from '../core/cell'
-import { GraphSelectionModel } from '../handler/graph-selection-model'
+import { SelectionManager } from '../core/selection-manager'
 
 export class SelectionChange implements IChange {
-  public readonly selection: GraphSelectionModel
+  public readonly selection: SelectionManager
   public added: Cell[] | null
   public removed: Cell[] | null
 
   constructor(
-    selection: GraphSelectionModel,
+    selection: SelectionManager,
     added: Cell[] | null,
     removed: Cell[] | null,
   ) {
@@ -30,7 +31,7 @@ export class SelectionChange implements IChange {
     this.added = this.removed
     this.removed = tmp
 
-    this.selection.trigger('change', {
+    this.selection.graph.trigger(Graph.events.selectionChanged, {
       added: this.added,
       removed: this.removed,
     })

@@ -3,7 +3,9 @@ import { CellState } from './cell-state'
 import { CellOverlay } from './cell-overlay'
 import { TextDirection } from '../types'
 import { Rectangle, Point } from '../struct'
-import { constants, DomEvent, CustomMouseEvent, detector } from '../common'
+import { constants, detector } from '../common'
+import { DomEvent } from '../common/dom-event'
+import { CustomMouseEvent } from '../common/mouse-event'
 import { Shape, Stencil, Connector, RectangleShape, Text, ImageShape } from '../shape'
 
 export class Renderer {
@@ -31,6 +33,127 @@ export class Renderer {
    */
   forceControlClickHandler: boolean = false
 
+  redraw(
+    state: CellState,
+    force: boolean = false,
+    rendering: boolean = false,
+  ) {
+    const shapeChanged = this.redrawShape(state, force, rendering)
+
+    if (state.shape != null && (rendering == null || rendering)) {
+      this.redrawLabel(state, shapeChanged)
+      this.redrawCellOverlays(state, shapeChanged)
+      this.redrawControl(state, shapeChanged)
+    }
+  }
+
+  // #region redraw shape
+
+  private redrawShape(state: CellState, force: boolean, rendering: boolean) {
+    const model = state.view.graph.model
+    let shapeChanged = false
+
+    // Forces creation of new shape if shape style has changed
+    if (
+      state.shape != null &&
+      state.style != null &&
+      state.shape.style != null &&
+      state.shape.style.shape !== state.style.shape
+    ) {
+      state.shape.dispose()
+      state.shape = null
+    }
+
+    if (
+      state.shape == null &&
+      state.view.graph.container != null &&
+      state.cell !== state.view.currentRoot &&
+      (model.isNode(state.cell) || model.isEdge(state.cell))
+    ) {
+      state.shape = this.createShape(state)
+
+      if (state.shape != null) {
+        state.shape.minSvgStrokeWidth = this.minSvgStrokeWidth
+        state.shape.antiAlias = this.antiAlias
+
+        this.createIndicatorShape(state)
+        this.initializeShape(state)
+        this.createCellOverlays(state)
+        this.installListeners(state)
+
+        // Forces a refresh of the handler if one exists
+        if (state.view.graph.selectionHandler) {
+          state.view.graph.selectionHandler.updateHandler(state)
+        }
+      }
+    } else if (
+      // update shape for style changed
+      !force &&
+      state.shape != null &&
+      (
+        !util.equalEntries(state.shape.style, state.style) ||
+        this.checkPlaceholderStyles(state)
+      )
+    ) {
+      state.shape.resetStyle()
+      this.configureShape(state)
+
+      if (state.view.graph.selectionHandler) {
+        state.view.graph.selectionHandler.updateHandler(state)
+      }
+
+      force = true // tslint:disable-line
+    }
+
+    if (state.shape != null) {
+      // Handles changes of the collapse icon
+      this.createControl(state)
+
+      // Redraws the cell if required, ignores changes to bounds if points are
+      // defined as the bounds are updated for the given points inside the shape
+      if (force || this.isShapeInvalid(state, state.shape)) {
+
+        if (state.absolutePoints != null) {
+          state.shape.points = state.absolutePoints.slice() as Point[]
+          delete state.shape.bounds
+        } else {
+          delete state.shape.points
+          state.shape.bounds = state.bounds.clone()
+        }
+
+        state.shape.scale = state.view.scale
+
+        if (rendering == null || rendering) {
+          state.shape.redraw()
+        } else {
+          state.shape.updateBoundingBox()
+        }
+
+        shapeChanged = true
+      }
+    }
+
+    return shapeChanged
+  }
+
+  /**
+   * Returns true if the given shape must be repainted.
+   */
+  private isShapeInvalid(state: CellState, shape: Shape) {
+    return (
+      shape.bounds == null ||
+      shape.scale !== state.view.scale ||
+      (
+        state.absolutePoints == null &&
+        !shape.bounds.equals(state.bounds)
+      ) ||
+      (
+        state.absolutePoints != null &&
+        !util.equalPoints(shape.points!, state.absolutePoints as Point[])
+      )
+    )
+  }
+
   private getShapeConstructor(state: CellState) {
     let ctor = Shape.getShape(state.style.shape)
     if (ctor == null) {
@@ -42,7 +165,7 @@ export class Renderer {
     return ctor
   }
 
-  private createShape(state: CellState): Shape | null {
+  createShape(state: CellState): Shape | null {
     let shape = null
     // Checks if there is a stencil for the name and creates
     // a shape instance for the stencil if one exists
@@ -147,18 +270,10 @@ export class Renderer {
     }
   }
 
-  /**
-   * Resolves special keywords 'inherit', 'indicated' and 'swimlane' and sets
-   * the respective color on the shape.
-   */
-  checkPlaceholderStyles(state: CellState) {
+  private checkPlaceholderStyles(state: CellState) {
     if (state.style != null) {
       const values = ['inherit', 'swimlane', 'indicated']
-      const styles = [
-        'fill',
-        'stroke',
-        'gradientColor',
-      ]
+      const styles = ['fill', 'stroke', 'gradientColor']
 
       for (let i = 0, ii = styles.length; i < ii; i += 1) {
         if (values.includes((state.style as any)[styles[i]])) {
@@ -170,11 +285,381 @@ export class Renderer {
     return false
   }
 
+  private createCellOverlays(state: CellState) {
+    const graph = state.view.graph
+    const overlays = graph.getCellOverlays(state.cell)
+    let map: WeakMap<CellOverlay, ImageShape> | null = null
+    let set: CellOverlay[] | null = null
+
+    if (overlays != null) {
+      map = new WeakMap<CellOverlay, ImageShape>()
+      set = []
+
+      overlays.forEach((overlay) => {
+        let shape: ImageShape | null = null
+
+        if (state.overlayMap && state.overlayMap.has(overlay)) {
+          shape = state.overlayMap.get(overlay)!
+
+          // remove used from set and map
+          state.overlayMap.delete(overlay)
+          const index = state.overlaySet!.indexOf(overlay)
+          state.overlaySet!.splice(index, 1)
+        }
+
+        if (shape == null) {
+          shape = new ImageShape(new Rectangle(), overlay.image.src)
+          shape.dialect = state.view.graph.dialect
+          shape.preserveImageAspect = false
+          shape.overlay = overlay
+
+          this.initializeOverlay(state, shape)
+          this.installCellOverlayListeners(state, overlay, shape)
+
+          if (overlay.cursor != null) {
+            shape.elem!.style.cursor = overlay.cursor
+          }
+        }
+
+        map!.set(overlay, shape)
+        set!.push(overlay)
+      })
+    }
+
+    // clean unused
+    state.eachOverlay(shape => shape && shape.dispose())
+
+    state.overlayMap = map
+    state.overlaySet = set
+  }
+
+  private initializeOverlay(state: CellState, overlayShape: Shape) {
+    overlayShape.init(state.view.getOverlayPane()!)
+  }
+
+  private installCellOverlayListeners(
+    state: CellState,
+    overlay: CellOverlay,
+    overlayShape: Shape,
+  ) {
+    const graph = state.view.graph
+    const elem = overlayShape.elem!
+
+    DomEvent.addListener(elem, 'click', (evt) => {
+      if (graph.isEditing()) {
+        graph.stopEditing(!graph.isInvokesStopCellEditing())
+      }
+
+      overlay.trigger('click', { cell: state.cell })
+    })
+
+    DomEvent.addMouseListeners(
+      elem,
+      (e: MouseEvent) => { DomEvent.consume(e) },
+      (e: MouseEvent) => {
+        graph.fireMouseEvent(
+          DomEvent.MOUSE_MOVE, new CustomMouseEvent(e, state),
+        )
+      },
+    )
+
+    if (detector.SUPPORT_TOUCH) {
+      DomEvent.addListener(elem, 'touchend', (evt) => {
+        overlay.trigger('click', { cell: state.cell })
+      })
+    }
+  }
+
+  private installListeners(state: CellState) {
+    const graph = state.view.graph
+    const elem = state.shape!.elem!
+
+    // Workaround for touch devices routing all events for a mouse
+    // gesture (down, move, up) via the initial DOM node. Same for
+    // HTML images in all IE versions (VML images are working).
+    const getState = (e: MouseEvent) => {
+      let result: CellState = state
+
+      if (
+        (
+          graph.dialect !== constants.DIALECT_SVG &&
+          util.getNodeName(DomEvent.getSource(e)) === 'img'
+        ) ||
+        detector.SUPPORT_TOUCH
+      ) {
+        const x = DomEvent.getClientX(e)
+        const y = DomEvent.getClientY(e)
+
+        // Dispatches the drop event to the graph which
+        // consumes and executes the source function
+        const pt = util.clientToGraph(graph.container, x, y)
+        result = graph.view.getState(graph.getCellAt(pt.x, pt.y))!
+      }
+
+      return result
+    }
+
+    DomEvent.addMouseListeners(
+      elem,
+      (e: MouseEvent) => {
+        if (this.isShapeEvent(state, e)) {
+          graph.fireMouseEvent(
+            DomEvent.MOUSE_DOWN, new CustomMouseEvent(e, state),
+          )
+        }
+      },
+      (e: MouseEvent) => {
+        if (this.isShapeEvent(state, e)) {
+          graph.fireMouseEvent(
+            DomEvent.MOUSE_MOVE, new CustomMouseEvent(e, getState(e)),
+          )
+        }
+      },
+      (e: MouseEvent) => {
+        if (this.isShapeEvent(state, e)) {
+          graph.fireMouseEvent(
+            DomEvent.MOUSE_UP, new CustomMouseEvent(e, getState(e)),
+          )
+        }
+      },
+    )
+
+    // Uses double click timeout in mxGraph for quirks mode
+    if (graph.nativeDblClickEnabled) {
+      DomEvent.addListener(elem, 'dblclick', (e: MouseEvent) => {
+        if (this.isShapeEvent(state, e)) {
+          graph.dblClick(e, state.cell)
+          DomEvent.consume(e)
+        }
+      })
+    }
+  }
+
+  private createControl(state: CellState) {
+    const graph = state.view.graph
+    const image = graph.getFoldingImage(state)
+
+    if (graph.foldingEnabled && image != null) {
+      if (state.control == null) {
+        const bounds = new Rectangle(0, 0, image.width, image.height)
+        state.control = new ImageShape(bounds, image.src)
+        state.control.dialect = graph.dialect
+        state.control.preserveImageAspect = false
+
+        this.initControl(
+          state,
+          state.control,
+          true,
+          this.createControlClickHandler(state),
+        )
+      }
+    } else if (state.control != null) {
+      state.control.dispose()
+      state.control = null
+    }
+  }
+
+  private createControlClickHandler(state: CellState) {
+    const graph = state.view.graph
+    return (e: MouseEvent) => {
+      if (this.forceControlClickHandler || graph.isEnabled()) {
+        const collapsed = !graph.isCellCollapsed(state.cell)
+        graph.foldCells(collapsed, false, [state.cell], false)
+        DomEvent.consume(e)
+      }
+    }
+  }
+
+  private initControl(
+    state: CellState,
+    control: ImageShape,
+    handleEvents: boolean,
+    clickHandler: (e: MouseEvent) => any,
+  ) {
+    const graph = state.view.graph
+
+    // In the special case where the label is in HTML and the display is SVG the image
+    // should go into the graph container directly in order to be clickable. Otherwise
+    // it is obscured by the HTML label that overlaps the cell.
+    const isForceHtml = (
+      graph.isHtmlLabel(state.cell) &&
+      detector.NO_FOREIGNOBJECT &&
+      graph.dialect === constants.DIALECT_SVG
+    )
+
+    if (isForceHtml) {
+      control.dialect = constants.DIALECT_PREFERHTML
+      control.init(graph.container)
+      control.elem!.style.zIndex = '1'
+    } else {
+      control.init(state.view.getOverlayPane()!)
+    }
+
+    const elem = control.elem!
+
+    // Workaround for missing click event on iOS is to check tolerance below
+    if (clickHandler != null && !detector.IS_IOS) {
+      if (graph.isEnabled()) {
+        elem.style.cursor = 'pointer'
+      }
+
+      DomEvent.addListener(elem, 'click', clickHandler)
+    }
+
+    if (handleEvents) {
+      let first: Point | null = null
+
+      DomEvent.addMouseListeners(
+        elem,
+        (e: MouseEvent) => {
+          first = new Point(DomEvent.getClientX(e), DomEvent.getClientY(e))
+          graph.fireMouseEvent(
+            DomEvent.MOUSE_DOWN, new CustomMouseEvent(e, state),
+          )
+          DomEvent.consume(e)
+        },
+        (e: MouseEvent) => {
+          graph.fireMouseEvent(
+            DomEvent.MOUSE_MOVE, new CustomMouseEvent(e, state),
+          )
+        },
+        (e: MouseEvent) => {
+          graph.fireMouseEvent(
+            DomEvent.MOUSE_UP, new CustomMouseEvent(e, state),
+          )
+          DomEvent.consume(e)
+        },
+      )
+
+      // Uses capture phase for event interception to stop bubble phase
+      if (clickHandler != null && detector.IS_IOS) {
+        DomEvent.addListener(elem, 'touchend', (e: TouchEvent) => {
+          if (first != null) {
+            const tol = graph.tolerance
+            if (
+              Math.abs(first.x - DomEvent.getClientX(e)) < tol &&
+              Math.abs(first.y - DomEvent.getClientY(e)) < tol
+            ) {
+              clickHandler.call(clickHandler, e)
+              DomEvent.consume(e)
+            }
+          }
+        })
+      }
+    }
+
+    return elem
+  }
+
+  // #endregion
+
+  // #region redrawlabel
+
+  private redrawLabel(state: CellState, forced?: boolean) {
+    const graph = state.view.graph
+    const txt = this.getLabelValue(state)
+    const wrapping = graph.isWrapping(state.cell)
+    const clipping = graph.isLabelClipped(state.cell)
+
+    const isForceHtml = (
+      state.view.graph.isHtmlLabel(state.cell) ||
+      (txt != null && util.isHTMLNode(txt))
+    )
+
+    const dialect = isForceHtml
+      ? constants.DIALECT_STRICTHTML
+      : state.view.graph.dialect
+
+    const overflow = state.style.overflow || 'visible'
+
+    if (
+      state.text != null && (
+        state.text.wrap !== wrapping ||
+        state.text.clipped !== clipping ||
+        state.text.overflow !== overflow ||
+        state.text.dialect !== dialect
+      )) {
+      state.text.dispose()
+      state.text = null
+    }
+
+    if (
+      state.text == null &&
+      txt != null &&
+      (util.isHTMLNode(txt) || txt.length > 0)
+    ) {
+      this.createLabel(state, txt)
+    } else if (
+      state.text != null &&
+      (txt == null || txt.length === 0)
+    ) {
+      state.text.dispose()
+      state.text = null
+    }
+
+    if (state.text != null) {
+      // Forced is true if the style has changed, so to get the updated
+      // result in getLabelBounds we apply the new style to the shape
+      if (forced) {
+        // Checks if a full repaint is needed
+        if (
+          state.text.lastValue != null &&
+          this.isTextShapeInvalid(state, state.text)
+        ) {
+          // Forces a full repaint
+          state.text.lastValue = null
+        }
+
+        state.text.resetStyle()
+        state.text.apply(state)
+
+        // Special case where value is obtained via hook in graph
+        state.text.verticalAlign = graph.getVerticalAlign(state)
+      }
+
+      const bounds = this.getLabelBounds(state)
+      const nextScale = this.getTextScale(state)
+
+      if (
+        forced ||
+        state.text.value !== txt ||
+        state.text.wrap !== wrapping ||
+        state.text.overflow !== overflow ||
+        state.text.clipped !== clipping ||
+        state.text.scale !== nextScale ||
+        state.text.dialect !== dialect ||
+        !state.text.bounds.equals(bounds)
+      ) {
+        // Forces an update of the text bounding box
+        if (
+          state.text.bounds.width !== 0 &&
+          state.unscaledWidth != null &&
+          Math.round((state.text.bounds.width / state.text.scale * nextScale) - bounds.width) !== 0
+        ) {
+          state.unscaledWidth = null
+        }
+
+        state.text.dialect = dialect
+        state.text.value = txt
+        state.text.bounds = bounds
+        state.text.scale = nextScale
+        state.text.wrap = wrapping
+        state.text.clipped = clipping
+        state.text.overflow = overflow
+
+        // Preserves visible state
+        const vis = state.text!.elem!.style.visibility
+        this.redrawLabelShape(state.text)
+        state.text!.elem!.style.visibility = vis
+      }
+    }
+  }
+
   getLabelValue(state: CellState) {
     return state.view.graph.getLabel(state.cell)
   }
 
-  createLabel(state: CellState, value: string) {
+  private createLabel(state: CellState, value: string) {
     const graph = state.view.graph
 
     if (
@@ -241,7 +726,7 @@ export class Renderer {
 
           // Dispatches the drop event to the graph which
           // consumes and executes the source function
-          const pt = util.convertPoint(graph.container, x, y)
+          const pt = util.clientToGraph(graph.container, x, y)
           result = graph.view.getState(graph.getCellAt(pt.x, pt.y))!
         }
 
@@ -249,11 +734,13 @@ export class Renderer {
       }
 
       // TODO: Add handling for special touch device gestures
-      DomEvent.addGestureListeners(
+      DomEvent.addMouseListeners(
         state.text.elem!,
         (e: MouseEvent) => {
           if (this.isLabelEvent(state, e)) {
-            graph.fireMouseEvent(DomEvent.MOUSE_DOWN, new CustomMouseEvent(e, state))
+            graph.fireMouseEvent(
+              DomEvent.MOUSE_DOWN, new CustomMouseEvent(e, state),
+            )
             forceGetCell = (
               graph.dialect !== constants.DIALECT_SVG &&
               util.getNodeName(DomEvent.getSource(e)) === 'img'
@@ -262,12 +749,16 @@ export class Renderer {
         },
         (e: MouseEvent) => {
           if (this.isLabelEvent(state, e)) {
-            graph.fireMouseEvent(DomEvent.MOUSE_MOVE, new CustomMouseEvent(e, getState(e)))
+            graph.fireMouseEvent(
+              DomEvent.MOUSE_MOVE, new CustomMouseEvent(e, getState(e)),
+            )
           }
         },
         (e: MouseEvent) => {
           if (this.isLabelEvent(state, e)) {
-            graph.fireMouseEvent(DomEvent.MOUSE_UP, new CustomMouseEvent(e, getState(e)))
+            graph.fireMouseEvent(
+              DomEvent.MOUSE_UP, new CustomMouseEvent(e, getState(e)),
+            )
             forceGetCell = false
           }
         },
@@ -297,426 +788,7 @@ export class Renderer {
     }
   }
 
-  createCellOverlays(state: CellState) {
-    const graph = state.view.graph
-    const overlays = graph.getCellOverlays(state.cell)
-    let map: WeakMap<CellOverlay, ImageShape> | null = null
-    let set: CellOverlay[] | null = null
-
-    if (overlays != null) {
-      map = new WeakMap<CellOverlay, ImageShape>()
-      set = []
-
-      overlays.forEach((overlay) => {
-        let shape: ImageShape | null = null
-
-        if (state.overlayMap && state.overlayMap.has(overlay)) {
-          shape = state.overlayMap.get(overlay)!
-
-          // remove used from set and map
-          state.overlayMap.delete(overlay)
-          const index = state.overlaySet!.indexOf(overlay)
-          state.overlaySet!.splice(index, 1)
-        }
-
-        if (shape == null) {
-          const img = new ImageShape(new Rectangle(), overlay.image.src)
-          img.dialect = state.view.graph.dialect
-          img.preserveImageAspect = false
-          img.overlay = overlay
-
-          this.initializeOverlay(state, img)
-          this.installCellOverlayListeners(state, overlay, img)
-
-          if (overlay.cursor != null) {
-            img.elem!.style.cursor = overlay.cursor
-          }
-
-          map!.set(overlay, img)
-          set!.push(overlay)
-        } else {
-          map!.set(overlay, shape)
-          set!.push(overlay)
-        }
-      })
-    }
-
-    // clean unused
-    if (state.overlaySet != null) {
-      state.overlaySet.forEach((overlay) => {
-        const shape = state.overlayMap!.get(overlay)!
-        shape.destroy()
-      })
-    }
-
-    state.overlayMap = map
-    state.overlaySet = set
-  }
-
-  private initializeOverlay(state: CellState, overlayShape: Shape) {
-    overlayShape.init(state.view.getOverlayPane()!)
-  }
-
-  private installCellOverlayListeners(
-    state: CellState,
-    overlay: CellOverlay,
-    overlayShape: Shape,
-  ) {
-    const graph = state.view.graph
-    const elem = overlayShape.elem!
-
-    DomEvent.addListener(elem, 'click', (evt) => {
-      if (graph.isEditing()) {
-        graph.stopEditing(!graph.isInvokesStopCellEditing())
-      }
-
-      overlay.trigger('clicl', { cell: state.cell })
-    })
-
-    DomEvent.addGestureListeners(
-      elem,
-      (e: MouseEvent) => { DomEvent.consume(e) },
-      (e: MouseEvent) => {
-        graph.fireMouseEvent(
-          DomEvent.MOUSE_MOVE,
-          new CustomMouseEvent(e, state),
-        )
-      },
-    )
-
-    if (detector.SUPPORT_TOUCH) {
-      DomEvent.addListener(elem, 'touchend', (evt) => {
-        overlay.trigger('clicl', { cell: state.cell })
-      })
-    }
-  }
-
-  createControl(state: CellState) {
-    const graph = state.view.graph
-    const image = graph.getFoldingImage(state)
-
-    if (graph.foldingEnabled && image != null) {
-      if (state.control == null) {
-        const b = new Rectangle(0, 0, image.width, image.height)
-        state.control = new ImageShape(b, image.src)
-        state.control.dialect = graph.dialect
-        state.control.preserveImageAspect = false
-
-        this.initControl(
-          state,
-          state.control,
-          true,
-          this.createControlClickHandler(state),
-        )
-      }
-    } else if (state.control != null) {
-      state.control.destroy()
-      state.control = null
-    }
-  }
-
-  createControlClickHandler(state: CellState) {
-    const graph = state.view.graph
-    return (e: MouseEvent) => {
-      if (this.forceControlClickHandler || graph.isEnabled()) {
-        const collapsed = !graph.isCellCollapsed(state.cell)
-        graph.foldCells(collapsed, false, [state.cell], false, e)
-        DomEvent.consume(e)
-      }
-    }
-  }
-
-  private initControl(
-    state: CellState,
-    control: ImageShape,
-    handleEvents: boolean,
-    clickHandler: (e: MouseEvent) => any,
-  ) {
-    const graph = state.view.graph
-
-    // In the special case where the label is in HTML and the display is SVG the image
-    // should go into the graph container directly in order to be clickable. Otherwise
-    // it is obscured by the HTML label that overlaps the cell.
-    const isForceHtml = (
-      graph.isHtmlLabel(state.cell) &&
-      detector.NO_FOREIGNOBJECT &&
-      graph.dialect === constants.DIALECT_SVG
-    )
-
-    if (isForceHtml) {
-      control.dialect = constants.DIALECT_PREFERHTML
-      control.init(graph.container)
-      control.elem!.style.zIndex = '1'
-    } else {
-      control.init(state.view.getOverlayPane()!)
-    }
-
-    const elem = control.elem!
-
-    // Workaround for missing click event on iOS is to check tolerance below
-    if (clickHandler != null && !detector.IS_IOS) {
-      if (graph.isEnabled()) {
-        elem.style.cursor = 'pointer'
-      }
-
-      DomEvent.addListener(elem, 'click', clickHandler)
-    }
-
-    if (handleEvents) {
-      let first: Point | null = null
-
-      DomEvent.addGestureListeners(
-        elem,
-        (e: MouseEvent) => {
-          first = new Point(DomEvent.getClientX(e), DomEvent.getClientY(e))
-          graph.fireMouseEvent(DomEvent.MOUSE_DOWN, new CustomMouseEvent(e, state))
-          DomEvent.consume(e)
-        },
-        (e: MouseEvent) => {
-          graph.fireMouseEvent(DomEvent.MOUSE_MOVE, new CustomMouseEvent(e, state))
-        },
-        (e: MouseEvent) => {
-          graph.fireMouseEvent(DomEvent.MOUSE_UP, new CustomMouseEvent(e, state))
-          DomEvent.consume(e)
-        },
-      )
-
-      // Uses capture phase for event interception to stop bubble phase
-      if (clickHandler != null && detector.IS_IOS) {
-        DomEvent.addListener(elem, 'touchend', (e: TouchEvent) => {
-          if (first != null) {
-            const tol = graph.tolerance
-            if (
-              Math.abs(first.x - DomEvent.getClientX(e)) < tol &&
-              Math.abs(first.y - DomEvent.getClientY(e)) < tol
-            ) {
-              clickHandler.call(clickHandler, e)
-              DomEvent.consume(e)
-            }
-          }
-        })
-      }
-    }
-
-    return elem
-  }
-
-  /**
-   * Returns true if the event is for the shape of the given state.
-   */
-  isShapeEvent(state: CellState, e: MouseEvent) {
-    return true
-  }
-
-  /**
-   * Returns true if the event is for the label of the given state.
-   */
-  isLabelEvent(state: CellState, e: MouseEvent) {
-    return true
-  }
-
-  installListeners(state: CellState) {
-    const graph = state.view.graph
-    const elem = state.shape!.elem!
-
-    // Workaround for touch devices routing all events for a mouse
-    // gesture (down, move, up) via the initial DOM node. Same for
-    // HTML images in all IE versions (VML images are working).
-    const getState = (e: MouseEvent) => {
-      let result: CellState = state
-
-      if ((
-        graph.dialect !== constants.DIALECT_SVG &&
-        util.getNodeName(DomEvent.getSource(e)) === 'img'
-      ) || detector.SUPPORT_TOUCH
-      ) {
-        const x = DomEvent.getClientX(e)
-        const y = DomEvent.getClientY(e)
-
-        // Dispatches the drop event to the graph which
-        // consumes and executes the source function
-        const pt = util.convertPoint(graph.container, x, y)
-        result = graph.view.getState(graph.getCellAt(pt.x, pt.y))!
-      }
-
-      return result
-    }
-
-    DomEvent.addGestureListeners(
-      elem,
-      (e: MouseEvent) => {
-        if (this.isShapeEvent(state, e)) {
-          graph.fireMouseEvent(DomEvent.MOUSE_DOWN, new CustomMouseEvent(e, state))
-        }
-      },
-      (e: MouseEvent) => {
-        if (this.isShapeEvent(state, e)) {
-          graph.fireMouseEvent(DomEvent.MOUSE_MOVE, new CustomMouseEvent(e, getState(e)))
-        }
-      },
-      (e: MouseEvent) => {
-        if (this.isShapeEvent(state, e)) {
-          graph.fireMouseEvent(DomEvent.MOUSE_UP, new CustomMouseEvent(e, getState(e)))
-        }
-      },
-    )
-
-    // Uses double click timeout in mxGraph for quirks mode
-    if (graph.nativeDblClickEnabled) {
-      DomEvent.addListener(elem, 'dblclick', (e: MouseEvent) => {
-        if (this.isShapeEvent(state, e)) {
-          graph.dblClick(e, state.cell)
-          DomEvent.consume(e)
-        }
-      })
-    }
-  }
-
-  redrawLabel(state: CellState, forced?: boolean) {
-    const graph = state.view.graph
-    const value = this.getLabelValue(state)
-    const wrapping = graph.isWrapping(state.cell)
-    const clipping = graph.isLabelClipped(state.cell)
-    const isForceHtml = (
-      state.view.graph.isHtmlLabel(state.cell) ||
-      (value != null && util.isHTMLNode(value))
-    )
-
-    const dialect = isForceHtml ? constants.DIALECT_STRICTHTML : state.view.graph.dialect
-    const overflow = state.style.overflow || 'visible'
-
-    if (
-      state.text != null && (
-        state.text.wrap !== wrapping ||
-        state.text.clipped !== clipping ||
-        state.text.overflow !== overflow ||
-        state.text.dialect !== dialect
-      )) {
-      state.text.destroy()
-      state.text = null
-    }
-
-    if (
-      state.text == null &&
-      value != null &&
-      (util.isHTMLNode(value) || value.length > 0)
-    ) {
-      this.createLabel(state, value)
-    } else if (
-      state.text != null &&
-      (value == null || value.length === 0)
-    ) {
-      state.text.destroy()
-      state.text = null
-    }
-
-    if (state.text != null) {
-      // Forced is true if the style has changed, so to get the updated
-      // result in getLabelBounds we apply the new style to the shape
-      if (forced) {
-        // Checks if a full repaint is needed
-        if (
-          state.text.lastValue != null &&
-          this.isTextShapeInvalid(state, state.text)
-        ) {
-          // Forces a full repaint
-          state.text.lastValue = null
-        }
-
-        state.text.resetStyle()
-        state.text.apply(state)
-
-        // Special case where value is obtained via hook in graph
-        state.text.verticalAlign = graph.getVerticalAlign(state)
-      }
-
-      const bounds = this.getLabelBounds(state)
-      const nextScale = this.getTextScale(state)
-
-      if (
-        forced ||
-        state.text.value !== value ||
-        state.text.wrap !== wrapping ||
-        state.text.overflow !== overflow ||
-        state.text.clipped !== clipping ||
-        state.text.scale !== nextScale ||
-        state.text.dialect !== dialect ||
-        !state.text.bounds.equals(bounds)
-      ) {
-        // Forces an update of the text bounding box
-        if (
-          state.text.bounds.width !== 0 &&
-          state.unscaledWidth != null &&
-          Math.round((state.text.bounds.width / state.text.scale * nextScale) - bounds.width) !== 0
-        ) {
-          state.unscaledWidth = null
-        }
-
-        state.text.dialect = dialect
-        state.text.value = value
-        state.text.bounds = bounds
-        state.text.scale = nextScale
-        state.text.wrap = wrapping
-        state.text.clipped = clipping
-        state.text.overflow = overflow
-
-        // Preserves visible state
-        const vis = state.text!.elem!.style.visibility
-        this.redrawLabelShape(state.text)
-        state.text!.elem!.style.visibility = vis
-      }
-    }
-  }
-
-  isTextShapeInvalid(state: CellState, shape: Text) {
-    const check = (prop: string, styleName: string, defaultValue?: any) => {
-      let result = false
-
-      const raw = (shape as any)[prop]
-      const set = ((state.style as any)[styleName] || defaultValue)
-
-      // Workaround for spacing added to directional spacing
-      if (
-        styleName === 'spacingTop' ||
-        styleName === 'spacingRight' ||
-        styleName === 'spacingBottom' ||
-        styleName === 'spacingLeft'
-      ) {
-        result = parseFloat(raw) - shape.spacing !== set
-      } else {
-        result = raw !== set
-      }
-
-      return result
-    }
-
-    return check('fontStyle', 'fontStyle', constants.DEFAULT_FONTSTYLE) ||
-      check('family', 'fontFamily', constants.DEFAULT_FONTFAMILY) ||
-      check('size', 'fontSize', constants.DEFAULT_FONTSIZE) ||
-      check('color', 'fontColor', 'black') ||
-      check('align', 'align', '') ||
-      check('valign', 'verticalAlign', '') ||
-      check('spacing', 'spacing', 2) ||
-      check('spacingTop', 'spacingTop', 0) ||
-      check('spacingRight', 'spacingRight', 0) ||
-      check('spacingBottom', 'spacingBottom', 0) ||
-      check('spacingLeft', 'spacingLeft', 0) ||
-      check('horizontal', 'horizontal', true) ||
-      check('background', 'labelBackgroundColor') ||
-      check('border', 'labelBorderColor') ||
-      check('opacity', 'textOpacity', 100) ||
-      check('textDirection', 'textDirection', constants.DEFAULT_TEXT_DIRECTION)
-  }
-
-  redrawLabelShape(shape: Shape) {
-    shape.redraw()
-  }
-
-  getTextScale(state: CellState) {
-    return state.view.scale
-  }
-
-  getLabelBounds(state: CellState) {
+  private getLabelBounds(state: CellState) {
     const graph = state.view.graph
     const scale = state.view.scale
     const isEdge = graph.getModel().isEdge(state.cell)
@@ -793,7 +865,69 @@ export class Renderer {
     return bounds
   }
 
-  rotateLabelBounds(state: CellState, bounds: Rectangle) {
+  private getTextScale(state: CellState) {
+    return state.view.scale
+  }
+
+  private redrawLabelShape(shape: Shape) {
+    shape.redraw()
+  }
+
+  /**
+   * Returns true if the event is for the shape of the given state.
+   */
+  private isShapeEvent(state: CellState, e: MouseEvent) {
+    return true
+  }
+
+  /**
+   * Returns true if the event is for the label of the given state.
+   */
+  private isLabelEvent(state: CellState, e: MouseEvent) {
+    return true
+  }
+
+  private isTextShapeInvalid(state: CellState, shape: Text) {
+    const check = (prop: string, styleName: string, defaultValue?: any) => {
+      let result = false
+
+      const raw = (shape as any)[prop]
+      const set = ((state.style as any)[styleName] || defaultValue)
+
+      // Workaround for spacing added to directional spacing
+      if (
+        styleName === 'spacingTop' ||
+        styleName === 'spacingRight' ||
+        styleName === 'spacingBottom' ||
+        styleName === 'spacingLeft'
+      ) {
+        result = parseFloat(raw) - shape.spacing !== set
+      } else {
+        result = raw !== set
+      }
+
+      return result
+    }
+
+    return check('fontStyle', 'fontStyle', constants.DEFAULT_FONTSTYLE) ||
+      check('family', 'fontFamily', constants.DEFAULT_FONTFAMILY) ||
+      check('size', 'fontSize', constants.DEFAULT_FONTSIZE) ||
+      check('color', 'fontColor', 'black') ||
+      check('align', 'align', '') ||
+      check('valign', 'verticalAlign', '') ||
+      check('spacing', 'spacing', 2) ||
+      check('spacingTop', 'spacingTop', 0) ||
+      check('spacingRight', 'spacingRight', 0) ||
+      check('spacingBottom', 'spacingBottom', 0) ||
+      check('spacingLeft', 'spacingLeft', 0) ||
+      check('horizontal', 'horizontal', true) ||
+      check('background', 'labelBackgroundColor') ||
+      check('border', 'labelBorderColor') ||
+      check('opacity', 'textOpacity', 100) ||
+      check('textDirection', 'textDirection', constants.DEFAULT_TEXT_DIRECTION)
+  }
+
+  private rotateLabelBounds(state: CellState, bounds: Rectangle) {
     bounds.y -= state.text!.margin.y * bounds.height
     bounds.x -= state.text!.margin.x * bounds.width
 
@@ -850,18 +984,19 @@ export class Renderer {
     }
   }
 
-  redrawCellOverlays(state: CellState, forced?: boolean) {
+  // #endregion
+
+  private redrawCellOverlays(state: CellState, forced?: boolean) {
     this.createCellOverlays(state)
     if (state.overlayMap != null) {
       const rot = util.mod(state.style.rotation || 0, 90)
-      const rad = util.toRadians(rot)
+      const rad = util.toRad(rot)
       const cos = Math.cos(rad)
       const sin = Math.sin(rad)
 
-      state.overlaySet!.forEach((overlay) => {
-        const shape = state.overlayMap!.get(overlay)!
+      state.eachOverlay((img) => {
+        const shape = img!
         const bounds = shape.overlay!.getBounds(state)
-
         if (!state.view.graph.getModel().isEdge(state.cell)) {
           if (state.shape != null && rot !== 0) {
             let cx = bounds.getCenterX()
@@ -895,7 +1030,7 @@ export class Renderer {
     }
   }
 
-  redrawControl(state: CellState, forced?: boolean) {
+  private redrawControl(state: CellState, forced?: boolean) {
     const image = state.view.graph.getFoldingImage(state)
 
     if (state.control != null && image != null) {
@@ -920,7 +1055,7 @@ export class Renderer {
     }
   }
 
-  getControlBounds(state: CellState, w: number, h: number) {
+  private getControlBounds(state: CellState, w: number, h: number) {
     if (state.control != null) {
       const s = state.view.scale
       let cx = state.bounds.getCenterX()
@@ -945,7 +1080,7 @@ export class Renderer {
           }
 
           if (rot !== 0) {
-            const rad = util.toRadians(rot)
+            const rad = util.toRad(rot)
             const cos = Math.cos(rad)
             const sin = Math.sin(rad)
 
@@ -1014,7 +1149,7 @@ export class Renderer {
         } else if (temp == null) {
           // Special case: First HTML node should be first sibling after canvas
           if (shape.elem.parentNode === state.view.graph.container) {
-            let canvas = state.view.getCanvas()
+            let canvas = state.view.getStage()
             while (canvas != null && canvas.parentNode !== state.view.graph.container) {
               canvas = canvas.parentNode as HTMLElement
             }
@@ -1046,170 +1181,32 @@ export class Renderer {
     return [node, htmlNode]
   }
 
-  getShapesForState(state: CellState) {
+  private getShapesForState(state: CellState) {
     return [state.shape, state.text, state.control]
-  }
-
-  /**
-   * Updates the bounds or points and scale of the shapes for the given cell
-   * state. This is called in mxGraphView.validatePoints as the last step of
-   * updating all cells.
-   */
-  redraw(
-    state: CellState,
-    force: boolean = false,
-    rendering: boolean = false,
-  ) {
-    const shapeChanged = this.redrawShape(state, force, rendering)
-
-    if (state.shape != null && (rendering == null || rendering)) {
-      this.redrawLabel(state, shapeChanged)
-      this.redrawCellOverlays(state, shapeChanged)
-      this.redrawControl(state, shapeChanged)
-    }
-  }
-
-  /**
-   * Redraws the shape for the given cell state.
-   */
-  private redrawShape(state: CellState, force: boolean, rendering: boolean) {
-    const model = state.view.graph.model
-    let shapeChanged = false
-
-    // Forces creation of new shape if shape style has changed
-    if (
-      state.shape != null &&
-      state.style != null &&
-      state.shape.style != null &&
-      state.shape.style.shape !== state.style.shape
-    ) {
-      state.shape.destroy()
-      state.shape = null
-    }
-
-    if (
-      state.shape == null &&
-      state.view.graph.container != null &&
-      state.cell !== state.view.currentRoot &&
-      (model.isNode(state.cell) || model.isEdge(state.cell))
-    ) {
-      state.shape = this.createShape(state)
-
-      if (state.shape != null) {
-        state.shape.minSvgStrokeWidth = this.minSvgStrokeWidth
-        state.shape.antiAlias = this.antiAlias
-
-        this.createIndicatorShape(state)
-        this.initializeShape(state)
-        this.createCellOverlays(state)
-        this.installListeners(state)
-
-        // Forces a refresh of the handler if one exists
-        if (state.view.graph.selectionCellsHandler) {
-          state.view.graph.selectionCellsHandler.updateHandler(state)
-        }
-      }
-    } else if (
-      !force &&
-      state.shape != null &&
-      (
-        !util.equalEntries(state.shape.style, state.style) ||
-        this.checkPlaceholderStyles(state)
-      )
-    ) {
-      state.shape.resetStyle()
-      this.configureShape(state)
-      // LATER: Ignore update for realtime to fix reset of current gesture
-      state.view.graph.selectionCellsHandler.updateHandler(state)
-      force = true // tslint:disable-line
-    }
-
-    if (state.shape != null) {
-      // Handles changes of the collapse icon
-      this.createControl(state)
-
-      // Redraws the cell if required, ignores changes to bounds if points are
-      // defined as the bounds are updated for the given points inside the shape
-      if (force || this.isShapeInvalid(state, state.shape)) {
-        if (state.absolutePoints != null) {
-          state.shape.points = state.absolutePoints.slice() as Point[]
-          delete state.shape.bounds
-        } else {
-          delete state.shape.points
-          state.shape.bounds = state.bounds.clone()
-        }
-
-        state.shape.scale = state.view.scale
-
-        if (rendering == null || rendering) {
-          this.doRedrawShape(state)
-        } else {
-          state.shape.updateBoundingBox()
-        }
-
-        shapeChanged = true
-      }
-    }
-
-    return shapeChanged
-  }
-
-  /**
-   * Invokes redraw on the shape of the given state.
-   */
-  private doRedrawShape(state: CellState) {
-    state.shape!.redraw()
-  }
-
-  /**
-   * Returns true if the given shape must be repainted.
-   */
-  isShapeInvalid(state: CellState, shape: Shape) {
-    return (
-      shape.bounds == null ||
-      shape.scale !== state.view.scale ||
-      (
-        state.absolutePoints == null &&
-        !shape.bounds.equals(state.bounds)
-      ) ||
-      (
-        state.absolutePoints != null &&
-        !util.equalPoints(shape.points!, state.absolutePoints as Point[])
-      )
-    )
   }
 
   /**
    * Destroys the shapes associated with the given cell state.
    */
   destroy(state: CellState) {
-    // 一个 Cell 一定包含自己的基础图形 -> shape
-    // 可能包含一个 label 图形 -> text
-    // 可能包含一个 control 图形 -> control
-    // 可能包含多个 overlays 图形 -> overlays
-
     if (state.shape != null) {
       if (state.text != null) {
-        state.text.destroy()
+        state.text.dispose()
         state.text = null
       }
 
       if (state.overlayMap && state.overlaySet) {
-        state.overlaySet.forEach((overlay) => {
-          const shape = state.overlayMap!.get(overlay)!
-          shape.destroy()
-        })
-
+        state.eachOverlay(shape => shape && shape.dispose())
         state.overlaySet = null
         state.overlayMap = null
       }
 
       if (state.control != null) {
-        state.control.destroy()
+        state.control.dispose()
         state.control = null
       }
 
-      state.shape.destroy()
+      state.shape.dispose()
       state.shape = null
     }
   }

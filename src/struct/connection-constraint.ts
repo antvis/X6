@@ -9,7 +9,7 @@ export class ConnectionConstraint {
     /**
      * Specifies the fixed location of the connection point.
      */
-    public point: Point | null,
+    public point: Point | null = null,
     /**
      * Specifies if the point should be projected onto the
      * perimeter of the terminal.

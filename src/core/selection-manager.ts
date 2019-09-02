@@ -1,14 +1,13 @@
-import { Events } from '../common'
-import { Cell, Graph } from '../core'
+import { Cell } from './cell'
+import { Graph } from './graph'
 import { SelectionChange, UndoableEdit } from '../change'
 
-export class GraphSelectionModel extends Events {
+export class SelectionManager {
   graph: Graph
   cells: Cell[]
   private single: boolean
 
   constructor(graph: Graph) {
-    super()
     this.graph = graph
     this.cells = []
   }
@@ -21,7 +20,7 @@ export class GraphSelectionModel extends Events {
     this.single = single
   }
 
-  isSelected(cell: Cell) {
+  isSelected(cell: Cell | null) {
     if (cell != null) {
       return this.cells.includes(cell)
     }
@@ -37,7 +36,7 @@ export class GraphSelectionModel extends Events {
     this.changeSelection(null, this.cells)
   }
 
-  setCell(cell: Cell) {
+  setCell(cell: Cell | null) {
     if (cell != null) {
       this.setCells([cell])
     }
@@ -51,7 +50,7 @@ export class GraphSelectionModel extends Events {
     }
   }
 
-  addCell(cell: Cell) {
+  addCell(cell: Cell | null) {
     if (cell != null) {
       this.addCells([cell])
     }
@@ -76,7 +75,7 @@ export class GraphSelectionModel extends Events {
     }
   }
 
-  removeCell(cell: Cell) {
+  removeCell(cell: Cell | null) {
     if (cell != null) {
       this.removeCells([cell])
     }
@@ -113,7 +112,6 @@ export class GraphSelectionModel extends Events {
       change.execute()
       const edit = new UndoableEdit(this.graph.model, { significant: false })
       edit.add(change)
-      this.trigger('undo', edit)
     }
   }
 

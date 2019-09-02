@@ -28,7 +28,7 @@ export class Events {
     return this.on(eventName, cb, this)
   }
 
-  off(eventName: string, handler: Events.Handler, context?: any) {
+  off(eventName: string | null, handler: Events.Handler | null, context?: any) {
     // removing *all* events.
     if (!(eventName || handler || context)) {
       this.eventListeners = {}

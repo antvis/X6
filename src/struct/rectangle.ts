@@ -13,7 +13,7 @@ export class Rectangle {
     this.height = height == null ? 0 : height
   }
 
-  setRectangle(x: number, y: number, width: number, height: number) {
+  update(x: number, y: number, width: number, height: number) {
     this.x = x
     this.y = y
     this.width = width
@@ -63,6 +63,35 @@ export class Rectangle {
       this.width = maxX - minX
       this.height = maxY - minY
     }
+  }
+
+  containsPoint(point: Point) {
+    return (
+      point != null &&
+      point.x >= this.x &&
+      point.x <= this.x + this.width &&
+      point.y >= this.y &&
+      point.y <= this.y + this.height
+    )
+  }
+
+  containsRect(rect: Rectangle) {
+    const x2 = rect.x
+    const y2 = rect.y
+    const w2 = rect.width
+    const h2 = rect.height
+
+    const x1 = this.x
+    const y1 = this.y
+    const w1 = this.width
+    const h1 = this.height
+
+    return (
+      x2 >= x1 &&
+      y2 >= y1 &&
+      (x2 + w2) <= (x1 + w1) &&
+      (y2 + h2) <= (y1 + h1)
+    )
   }
 
   intersect(rect: Rectangle | Rectangle.RectangleLike) {

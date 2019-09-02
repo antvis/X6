@@ -3,17 +3,17 @@ import { CellState } from '../core'
 import { Point, Rectangle } from '../struct'
 import { Direction } from '../types'
 
-export function toRadians(deg: number) {
+export function toRad(deg: number) {
   return Math.PI * deg / 180
 }
 
-export function toDegree(rad: number) {
+export function toDeg(rad: number) {
   return rad * 180 / Math.PI
 }
 
 export function getBoundingBox(rect: Rectangle, rotation: number, cx?: Point) {
   if (rect != null && rotation != null && rotation !== 0) {
-    const rad = toRadians(rotation)
+    const rad = toRad(rotation)
     const cos = Math.cos(rad)
     const sin = Math.sin(rad)
 
@@ -288,6 +288,85 @@ export function intersection(
 
   // No intersection
   return null
+}
+
+export function intersects(a: Rectangle, b: Rectangle) {
+  let tw = a.width
+  let th = a.height
+  let rw = b.width
+  let rh = b.height
+
+  if (rw <= 0 || rh <= 0 || tw <= 0 || th <= 0) {
+    return false
+  }
+
+  const tx = a.x
+  const ty = a.y
+  const rx = b.x
+  const ry = b.y
+
+  rw += rx
+  rh += ry
+  tw += tx
+  th += ty
+
+  return (
+    (rw < rx || rw > tx) &&
+    (rh < ry || rh > ty) &&
+    (tw < tx || tw > rx) &&
+    (th < ty || th > ry)
+  )
+}
+
+export function intersectsHotspot(
+  state: CellState,
+  x: number,
+  y: number,
+  hotspot: number = 1,
+  min: number = 0,
+  max: number = 0,
+) {
+  if (hotspot > 0) {
+    let cx = state.bounds.getCenterX()
+    let cy = state.bounds.getCenterY()
+    let w = state.bounds.width
+    let h = state.bounds.height
+
+    const start = (state.style.startSize || 0) * state.view.scale
+    if (start > 0) {
+      if (state.style.horizontal !== false) {
+        cy = state.bounds.y + start / 2
+        h = start
+      } else {
+        cx = state.bounds.x + start / 2
+        w = start
+      }
+    }
+
+    w = Math.max(min, w * hotspot)
+    h = Math.max(min, h * hotspot)
+
+    if (max > 0) {
+      w = Math.min(w, max)
+      h = Math.min(h, max)
+    }
+
+    const rect = new Rectangle(cx - w / 2, cy - h / 2, w, h)
+    const alpha = toRad(state.style.rotation || 0)
+
+    if (alpha !== 0) {
+      const cos = Math.cos(-alpha)
+      const sin = Math.sin(-alpha)
+      const cx = state.bounds.getCenter()
+      const pt = rotatePoint(new Point(x, y), cos, sin, cx)
+      x = pt.x // tslint:disable-line
+      y = pt.y // tslint:disable-line
+    }
+
+    return contains(rect, x, y)
+  }
+
+  return true
 }
 
 /**

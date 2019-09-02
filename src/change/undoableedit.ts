@@ -11,14 +11,14 @@ export class UndoableEdit implements IDisposable {
   private readonly onChange?: (edit?: UndoableEdit) => void
   private readonly onDispose?: (edit?: UndoableEdit) => void
 
-  constructor(model: Events, options: UndoableEdit.Options) {
+  constructor(model: Events, options: UndoableEdit.Options = {}) {
     this.model = model
     this.changes = []
     this.undone = false
     this.redone = false
     this.onChange = options.onChange
     this.onDispose = options.onDispose
-    this.significant = options.significant
+    this.significant = options.significant !== false
   }
 
   isEmpty() {
@@ -34,7 +34,7 @@ export class UndoableEdit implements IDisposable {
   }
 
   isSignificant() {
-    return !this.significant
+    return this.significant
   }
 
   add(change: IChange) {
@@ -49,7 +49,7 @@ export class UndoableEdit implements IDisposable {
       return
     }
 
-    this.model.trigger(Model.eventNames.startEdit)
+    this.model.trigger(Model.events.startEdit)
     const count = this.changes.length
 
     for (let i = count - 1; i >= 0; i -= 1) {
@@ -60,12 +60,12 @@ export class UndoableEdit implements IDisposable {
         change.undo()
       }
 
-      this.model.trigger(Model.eventNames.executed, change)
+      this.model.trigger(Model.events.executed, change)
     }
 
     this.undone = true
     this.redone = false
-    this.model.trigger(Model.eventNames.endEdit)
+    this.model.trigger(Model.events.endEdit)
 
     this.notify()
   }
@@ -78,7 +78,7 @@ export class UndoableEdit implements IDisposable {
       return
     }
 
-    this.model.trigger(Model.eventNames.startEdit)
+    this.model.trigger(Model.events.startEdit)
     this.changes.forEach((change) => {
       if (change.execute != null) {
         change.execute()
@@ -86,11 +86,11 @@ export class UndoableEdit implements IDisposable {
         change.redo()
       }
 
-      this.model.trigger(Model.eventNames.executed, change)
+      this.model.trigger(Model.events.executed, change)
     })
     this.undone = false
     this.redone = true
-    this.model.trigger(Model.eventNames.endEdit)
+    this.model.trigger(Model.events.endEdit)
 
     this.notify()
   }
@@ -130,6 +130,6 @@ export namespace UndoableEdit {
     /**
      * Specifies if the undoable change is significant.
      */
-    significant: boolean,
+    significant?: boolean,
   }
 }

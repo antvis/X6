@@ -2,7 +2,7 @@ import { Perimeter } from './perimeter'
 import { CellStyle } from '../types'
 import { ShapeName } from '../struct'
 
-export class Stylesheet {
+export class StyleSheet {
   styles: { [name: string]: CellStyle }
 
   constructor() {
@@ -17,9 +17,9 @@ export class Stylesheet {
       perimeter: Perimeter.rectangle,
       align: 'center',
       verticalAlign: 'middle',
-      fill: '#C3D9FF',
-      stroke: '#6482B9',
-      fontColor: '#774400',
+      fill: '#f6edfc',
+      stroke: '#712ed1',
+      fontColor: 'rgba(0, 0, 0, 0.65)',
     }
 
     return style
@@ -31,8 +31,8 @@ export class Stylesheet {
       endArrow: ShapeName.arrowClassic,
       align: 'center',
       verticalAlign: 'middle',
-      stroke: '#6482B9',
-      fontColor: '#446299',
+      stroke: '#8f8f8f',
+      fontColor: 'rgba(0, 0, 0, 0.65)',
     }
     return style
   }

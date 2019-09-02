@@ -13,8 +13,6 @@ export class HelloWorld extends React.Component {
       const node2 = graph.insertNode({ data: 'World!', x: 200, y: 150, width: 80, height: 30 })
       graph.insertEdge({ sourceNode: node1, targetNode: node2 })
     })
-
-    console.log(graph)
   }
 
   refContainer = (container: HTMLDivElement) => {

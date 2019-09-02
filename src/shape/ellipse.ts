@@ -2,7 +2,7 @@ import { Shape } from './shape'
 import { Rectangle } from '../struct'
 import { SvgCanvas2D } from '../canvas'
 
-export class Ellipse extends Shape {
+export class EllipseShape extends Shape {
   constructor(
     bounds: Rectangle,
     fill: string,

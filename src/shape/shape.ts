@@ -3,11 +3,11 @@ import * as images from '../assets/images'
 import { Stencil } from './stencil'
 import { CellState } from '../core'
 import { SvgCanvas2D } from '../canvas'
-import { detector, constants, DomEvent } from '../common'
+import { detector, constants, DomEvent, IDisposable } from '../common'
 import { Rectangle, Point } from '../struct'
 import { CellStyle, Direction } from '../types'
 
-export class Shape {
+export class Shape implements IDisposable {
   state: CellState
 
   /**
@@ -139,6 +139,7 @@ export class Shape {
 
   constructor(stencil?: Stencil) {
     this.stencil = stencil != null ? stencil : null
+    this.style = {}
     this.initStyle()
   }
 
@@ -176,11 +177,13 @@ export class Shape {
   /**
    * Creaing the DOM node and adding it into the given container.
    */
-  init(container: HTMLElement | SVGElement) {
-    if (this.elem == null) {
-      this.elem = this.create(container)
-      if (container != null) {
-        container.appendChild(this.elem)
+  init(container: HTMLElement | SVGElement | null) {
+    if (container) {
+      if (this.elem == null) {
+        this.elem = this.create(container)
+        if (container != null) {
+          container.appendChild(this.elem)
+        }
       }
     }
   }
@@ -1114,7 +1117,17 @@ export class Shape {
     return rotation
   }
 
-  destroy() {
+  protected disposed = false
+
+  get isDisposed() {
+    return this.disposed
+  }
+
+  dispose() {
+    if (this.disposed) {
+      return
+    }
+
     if (this.elem != null) {
       DomEvent.release(this.elem as HTMLElement)
       if (this.elem.parentNode != null) {
@@ -1127,6 +1140,8 @@ export class Shape {
     // Decrements refCount and removes unused
     this.releaseSvgGradients(this.oldGradients)
     this.oldGradients = null
+
+    this.disposed = true
   }
 }
 

@@ -50,7 +50,7 @@ export class CellState {
   /**
    * An array of `Point` that represent the absolute points of an edge.
    */
-  absolutePoints: (Point | null)[]
+  absolutePoints: Point[]
 
   /**
    * The visible source terminal state.
@@ -153,7 +153,7 @@ export class CellState {
     return bounds
   }
 
-  setAbsoluteTerminalPoint(point: Point | null, isSource?: boolean) {
+  setAbsoluteTerminalPoint(point: Point, isSource?: boolean) {
     if (this.absolutePoints == null) {
       this.absolutePoints = []
     }
@@ -256,7 +256,7 @@ export class CellState {
     this.segments = state.segments
     this.unscaledWidth = state.unscaledWidth
 
-    this.bounds.setRectangle(
+    this.bounds.update(
       state.bounds.x,
       state.bounds.y,
       state.bounds.width,
@@ -264,11 +264,16 @@ export class CellState {
     )
   }
 
-  eachOverlay(iterator: (shape: ImageShape | null | undefined) => void) {
+  eachOverlay(
+    iterator: (
+      shape: ImageShape | null | undefined,
+      overlay: CellOverlay,
+    ) => void,
+  ) {
     if (this.overlaySet) {
       this.overlaySet.forEach((overlay) => {
         const shape = this.overlayMap && this.overlayMap.get(overlay)
-        iterator(shape)
+        iterator(shape, overlay)
       })
     }
   }

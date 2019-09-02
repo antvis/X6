@@ -51,7 +51,7 @@ export const constants = {
   HIGHLIGHT_COLOR: '#00FF00',
   CONSTRAINT_HIGHLIGHT_SIZE: 2,
 
-  CURSOR_MOVABLE_VERTEX: 'move',
+  CURSOR_MOVABLE_NODE: 'move',
   CURSOR_MOVABLE_EDGE: 'move',
   CURSOR_LABEL_HANDLE: 'default',
   CURSOR_TERMINAL_HANDLE: 'pointer',

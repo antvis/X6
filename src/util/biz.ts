@@ -36,7 +36,7 @@ export function sortCells(cells: Cell[], ascending: boolean = true) {
  * Converts the specified point (x, y) using the offset of the specified
  * container and returns a new `Point` with the result.
  */
-export function convertPoint(container: HTMLElement, x: number, y: number) {
+export function clientToGraph(container: HTMLElement, x: number, y: number) {
   const origin = getScrollOrigin(container, false)
   const offset = getOffset(container)
 

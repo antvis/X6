@@ -6,9 +6,9 @@ import { Shape } from './shape'
 export class RectangleShape extends Shape {
   constructor(
     bounds: Rectangle,
-    fill?: string,
-    stroke?: string,
-    strokewidth?: number,
+    fill?: string | null,
+    stroke?: string | null,
+    strokewidth?: number | null,
   ) {
     super()
     this.bounds = bounds

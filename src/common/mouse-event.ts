@@ -14,6 +14,7 @@ export class CustomMouseEvent {
    * The x-coordinate of the event in the graph.
    */
   graphX: number
+
   /**
    * The y-coordinate of the event in the graph.
    */
@@ -32,7 +33,7 @@ export class CustomMouseEvent {
     return DomEvent.getSource(this.e) as HTMLElement
   }
 
-  isSource(shape: Shape) {
+  isSource(shape: Shape | null) {
     if (shape != null) {
       return isAncestorNode(shape.elem as HTMLElement, this.getSource())
     }
@@ -40,11 +41,11 @@ export class CustomMouseEvent {
     return false
   }
 
-  getX() {
+  getClientX() {
     return DomEvent.getClientX(this.e)
   }
 
-  getY() {
+  getClientY() {
     return DomEvent.getClientY(this.e)
   }
 
@@ -62,10 +63,7 @@ export class CustomMouseEvent {
 
   getCell() {
     const state = this.getState()
-    if (state != null) {
-      return state.cell
-    }
-    return null
+    return state ? state.cell : null
   }
 
   isPopupTrigger() {
@@ -96,50 +94,63 @@ export class CustomMouseEvent {
 }
 
 export namespace CustomMouseEvent {
+  /**
+	 * Redirects the mouse events from the given DOM node to the graph
+	 * dispatch loop using the event and given state as event arguments.
+	 */
   export function redirectMouseEvents(
-    elem: HTMLElement,
+    elem: HTMLElement | SVGElement,
     graph: Graph,
-    state: CellState | ((e: MouseEvent) => CellState),
-    onMouseDown?: (e: MouseEvent) => any,
-    onMouseMove?: (e: MouseEvent) => any,
-    onMouseUp?: (e: MouseEvent) => any,
-    onDblClick?: (e: MouseEvent) => any,
+    state: CellState | ((e: MouseEvent) => CellState) | null,
+    onMouseDown?: ((e: MouseEvent) => any) | null,
+    onMouseMove?: ((e: MouseEvent) => any) | null,
+    onMouseUp?: ((e: MouseEvent) => any) | null,
+    onDblClick?: ((e: MouseEvent) => any) | null,
   ) {
-    const getState = function (e: MouseEvent) {
+    const getState = (e: MouseEvent) => {
       return (typeof state === 'function') ? state(e) : state
     }
 
-    DomEvent.addGestureListeners(
+    DomEvent.addMouseListeners(
       elem,
       (e: MouseEvent) => {
-        if (onMouseDown != null) {
+        if (onMouseDown) {
           onMouseDown(e)
         } else if (!DomEvent.isConsumed(e)) {
-          graph.fireMouseEvent('mouseDown', new CustomMouseEvent(e, getState(e)))
+          graph.fireMouseEvent(
+            DomEvent.MOUSE_DOWN,
+            new CustomMouseEvent(e, getState(e)),
+          )
         }
       },
       (e: MouseEvent) => {
-        if (onMouseMove != null) {
+        if (onMouseMove) {
           onMouseMove(e)
         } else if (!DomEvent.isConsumed(e)) {
-          graph.fireMouseEvent('mouseMove', new CustomMouseEvent(e, getState(e)))
+          graph.fireMouseEvent(
+            DomEvent.MOUSE_MOVE,
+            new CustomMouseEvent(e, getState(e)),
+          )
         }
       },
       (e: MouseEvent) => {
-        if (onMouseUp != null) {
+        if (onMouseUp) {
           onMouseUp(e)
         } else if (!DomEvent.isConsumed(e)) {
-          graph.fireMouseEvent('mouseUp', new CustomMouseEvent(e, getState(e)))
+          graph.fireMouseEvent(
+            DomEvent.MOUSE_UP,
+            new CustomMouseEvent(e, getState(e)),
+          )
         }
       },
     )
 
     DomEvent.addListener(elem, 'dblclick', (e: MouseEvent) => {
-      if (onDblClick != null) {
+      if (onDblClick) {
         onDblClick(e)
       } else if (!DomEvent.isConsumed(e)) {
-        const tmp = getState(e)
-        graph.dblClick(e, (tmp != null) ? tmp.cell : null)
+        const state = getState(e)
+        graph.dblClick(e, state ? state.cell : null)
       }
     })
   }

@@ -7,27 +7,33 @@ export function getDocumentMode() {
   return (document as any).documentMode as number
 }
 
-export function getNodeName(node: HTMLElement | SVGElement) {
+export function getNodeName(node: Element) {
   return node.nodeName.toLowerCase()
 }
 
-export function setAttributes(
-  elem: HTMLElement | SVGElement,
-  attrs: { [key: string]: any },
-) {
+export function setAttributes(elem: Element, attrs: { [key: string]: any }) {
   if (elem != null) {
     Object.keys(attrs).forEach(name => elem.setAttribute(name, attrs[name]))
   }
 }
 
-export function prepend(
-  parent: HTMLElement | SVGElement,
-  child: HTMLElement | SVGElement,
-) {
+export function prepend(parent: Element, child: Element) {
   if (parent.firstChild != null) {
     parent.insertBefore(child, parent.firstChild)
   } else {
     parent.appendChild(child)
+  }
+}
+
+export function toBack(elem: Element | null) {
+  if (elem && elem.parentNode && elem.parentNode.firstChild !== elem) {
+    elem.parentNode.insertBefore(elem, this.shape.elem.parentNode.firstChild)
+  }
+}
+
+export function remove(elem: Element | null) {
+  if (elem && elem.parentNode) {
+    elem.parentNode.removeChild(elem)
   }
 }
 
@@ -115,13 +121,13 @@ export function isHTMLNode(
 * @param ancestor DOM node that represents the ancestor.
 * @param child DOM node that represents the child.
 */
-export function isAncestorNode(ancestor: HTMLElement, child: HTMLElement) {
+export function isAncestorNode(ancestor: Element, child: Element) {
   let parent = child
   while (parent != null) {
     if (parent === ancestor) {
       return true
     }
-    parent = parent.parentNode as HTMLElement
+    parent = parent.parentNode as Element
   }
 
   return false
@@ -144,7 +150,7 @@ export function getChildNodes(
   return children
 }
 
-export function getCurrentStyle(elem: HTMLElement, name?: string) {
+export function getCurrentStyle(elem: Element, name?: string) {
   // IE9+
   const computed = (
     elem.ownerDocument &&
@@ -203,7 +209,7 @@ export function getDocumentScrollOrigin(doc: Document) {
 }
 
 /**
- * Returns the top, left corner of the viewrect as an <mxPoint>.
+ * Returns the top, left corner of the viewrect.
  *
  * Parameters:
  *
@@ -252,29 +258,30 @@ export function getScrollOrigin(
 
 /**
  * Returns the offset for the specified container as an `Point`. The
- * offset is the distance from the top left corner of the container to the
- * top left corner of the document.
+ * offset is the distance from the top left corner of the container
+ * to the top left corner of the document.
  */
 export function getOffset(
-  container: HTMLElement,
+  container: Element,
   scrollOffset: boolean = false,
 ) {
+
+  const b = document.body
+  const d = document.documentElement
+
   let offsetLeft = 0
   let offsetTop = 0
 
   // Ignores document scroll origin for fixed elements
   let fixed = false
   let elem = container
-  const b = document.body
-  const d = document.documentElement
-
   while (elem != null && elem !== b && elem !== d && !fixed) {
     const style = getCurrentStyle(elem)
     if (style != null) {
       fixed = fixed || style.position === 'fixed'
     }
 
-    elem = elem.parentNode as HTMLDivElement
+    elem = elem.parentNode as Element
   }
 
   if (!scrollOffset && !fixed) {
@@ -415,3 +422,65 @@ export function getSizeForString(
 export function toPx(px: number) {
   return `${px}px`
 }
+
+export function getDocumentSize() {
+  const b = document.body
+  const d = document.documentElement
+
+  try {
+    return new Rectangle(
+      0,
+      0,
+      b.clientWidth || d.clientWidth,
+      Math.max(b.clientHeight || 0, d.clientHeight),
+    )
+  } catch (e) {
+    return new Rectangle()
+  }
+}
+
+export function ensureInViewport(elem: HTMLElement) {
+  const containerSize = getDocumentSize()
+  const offset = getDocumentScrollOrigin(elem.ownerDocument!)
+  const offsetX = offset.x
+  const offsetY = offset.y
+
+  const left = elem.offsetLeft
+  const width = elem.offsetWidth
+  const right = (offsetX) + containerSize.width
+
+  if (left + width > right) {
+    elem.style.left = toPx(Math.max(offsetX, right - width))
+  }
+
+  const top = elem.offsetTop
+  const height = elem.offsetHeight
+  const bottom = offsetY + containerSize.height
+
+  if (top + height > bottom) {
+    elem.style.top = toPx(Math.max(offsetY, bottom - height))
+  }
+}
+
+export const clearSelection = function () {
+  if ((document as any).selection) {
+    return function () {
+      (document as any).selection.empty()
+    }
+  }
+
+  if (window.getSelection) {
+    return function () {
+      const selection = window.getSelection()
+      if (selection) {
+        if (selection.empty) {
+          selection.empty()
+        } else if (selection.removeAllRanges) {
+          selection.removeAllRanges()
+        }
+      }
+    }
+  }
+
+  return function () { }
+}()

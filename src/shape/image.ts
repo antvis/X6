@@ -13,9 +13,9 @@ export class ImageShape extends RectangleShape {
   constructor(
     bounds: Rectangle,
     image: string,
-    fill?: string,
-    stroke?: string,
-    strokewidth?: number,
+    fill?: string | null,
+    stroke?: string | null,
+    strokewidth?: number | null,
   ) {
     super(bounds, fill, stroke, strokewidth)
     this.image = image

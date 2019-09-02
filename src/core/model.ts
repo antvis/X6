@@ -35,15 +35,15 @@ export class Model extends Events {
     }
   }
 
-  isNode(cell: Cell) {
+  isNode(cell: Cell | null) {
     return cell != null ? cell.isNode() : false
   }
 
-  isEdge(cell: Cell) {
+  isEdge(cell: Cell | null) {
     return cell != null ? cell.isEdge() : false
   }
 
-  isConnectable(cell: Cell) {
+  isConnectable(cell: Cell | null) {
     return cell != null ? cell.isConnectable() : false
   }
 
@@ -51,7 +51,7 @@ export class Model extends Events {
     return this.getRoot().getChildAt(0)
   }
 
-  isOrphan(cell: Cell): boolean {
+  isOrphan(cell: Cell | null): boolean {
     return cell != null ? cell.isOrphan() : true
   }
 
@@ -61,7 +61,7 @@ export class Model extends Events {
 
   contains(cell: Cell): boolean
   contains(ancestor: Cell, descendant?: Cell): boolean {
-    if (descendant == null) {
+    if (descendant === undefined) {
       descendant = ancestor // tslint:disable-line:no-parameter-reassignment
       ancestor = this.root  // tslint:disable-line:no-parameter-reassignment
     }
@@ -69,11 +69,11 @@ export class Model extends Events {
     return this.isAncestor(ancestor, descendant)
   }
 
-  getAncestors(descendant: Cell): Cell[] {
+  getAncestors(descendant: Cell | null): Cell[] {
     return descendant != null ? descendant.getAncestors() : []
   }
 
-  getDescendants(ancestor: Cell): Cell[] {
+  getDescendants(ancestor: Cell | null): Cell[] {
     return ancestor != null ? ancestor.getDescendants() : []
   }
 
@@ -97,12 +97,13 @@ export class Model extends Events {
   }
 
   getChildCells(
-    parent: Cell,
+    parent: Cell | null,
     includeNodes: boolean = false,
     includeEdges: boolean = false,
   ) {
     const result: Cell[] = []
-    parent.eachChild((child) => {
+
+    parent && parent.eachChild((child) => {
       if (
         (!includeEdges && !includeNodes) ||
         (includeEdges && this.isEdge(child)) ||
@@ -111,6 +112,7 @@ export class Model extends Events {
         result.push(child)
       }
     })
+
     return result
   }
 
@@ -120,6 +122,7 @@ export class Model extends Events {
   public cellIdPostfix: string = ''
   public autoCreateCellId: boolean = true
   private nextCellId: number = 0
+
   private createCellId(cell: Cell) {
     const id = this.nextCellId
     this.nextCellId += 1
@@ -134,7 +137,7 @@ export class Model extends Events {
     this.setRoot(this.createRoot())
   }
 
-  isRoot(cell: Cell) {
+  isRoot(cell: Cell | null) {
     return (cell != null && this.root === cell)
   }
 
@@ -177,7 +180,7 @@ export class Model extends Events {
     return new Cell()
   }
 
-  isLayer(cell: Cell): boolean {
+  isLayer(cell: Cell | null): boolean {
     const parent = this.getParent(cell)
     return parent != null ? this.isRoot(parent) : false
   }
@@ -199,12 +202,12 @@ export class Model extends Events {
     return this.cells != null ? this.cells[id] : null
   }
 
-  getParent(cell: Cell) {
+  getParent(cell: Cell | null) {
     return cell != null ? cell.getParent() : null
   }
 
   getChildren(
-    parent: Cell,
+    parent: Cell | null,
     isNode: boolean = false,
     isEdge: boolean = false,
   ) {
@@ -225,11 +228,11 @@ export class Model extends Events {
     return result
   }
 
-  getChildNodes(parent: Cell) {
+  getChildNodes(parent: Cell | null) {
     return this.getChildren(parent, true, false)
   }
 
-  getChildEdges(parent: Cell) {
+  getChildEdges(parent: Cell | null) {
     return this.getChildren(parent, false, true)
   }
 
@@ -237,12 +240,12 @@ export class Model extends Events {
     return cell != null ? cell.getChildCount() : 0
   }
 
-  getChildAt(cell: Cell, index: number) {
+  getChildAt(cell: Cell | null, index: number) {
     return cell != null ? cell.getChildAt(index) : null
   }
 
   eachChild(
-    cell: Cell,
+    cell: Cell | null,
     iterator: (child: Cell, index: number, children: Cell[]) => void,
     thisArg?: any,
   ) {
@@ -259,7 +262,7 @@ export class Model extends Events {
     return util.filter(cells, filter, thisArg)
   }
 
-  getNearestCommonAncestor(cell1: Cell, cell2: Cell) {
+  getNearestCommonAncestor(cell1: Cell | null, cell2: Cell | null) {
     if (cell1 != null && cell2 != null) {
       let path2 = CellPath.create(cell2)
       if (path2 != null && path2.length > 0) {
@@ -295,7 +298,7 @@ export class Model extends Events {
   /**
    * 将 `cell` 插入到指定的 `parent` 中
    */
-  add(parent: Cell, child: Cell, index?: number) {
+  add(parent: Cell | null, child: Cell | null, index?: number) {
     if (child !== parent && parent != null && child != null) {
       if (index == null) {
         // tslint:disable-next-line
@@ -315,7 +318,7 @@ export class Model extends Events {
     return child
   }
 
-  cellAdded(cell: Cell) {
+  cellAdded(cell: Cell | null) {
     if (cell != null) {
       if (cell.getId() == null && this.autoCreateCellId) {
         cell.setId(this.createCellId(cell))
@@ -422,7 +425,7 @@ export class Model extends Events {
     }
   }
 
-  getOrigin(cell: Cell) {
+  getOrigin(cell: Cell | null) {
     let result: Point
     if (cell != null) {
       result = this.getOrigin(this.getParent(cell)!)
@@ -440,16 +443,19 @@ export class Model extends Events {
     return result
   }
 
-  remove(cell: Cell) {
-    if (cell === this.root) {
-      this.setRoot(null)
-    } else if (this.getParent(cell) != null) {
-      this.execute(new ChildChange(this, null, cell))
+  remove(cell: Cell | null) {
+    if (cell != null) {
+      if (cell === this.root) {
+        this.setRoot(null)
+      } else if (this.getParent(cell) != null) {
+        this.execute(new ChildChange(this, null, cell))
+      }
     }
+
     return cell
   }
 
-  cellRemoved(cell: Cell) {
+  cellRemoved(cell: Cell | null) {
     if (cell != null && this.cells != null) {
       cell.eachChild(child => this.cellRemoved(child))
       if (cell.getId() != null) {
@@ -481,7 +487,7 @@ export class Model extends Events {
     return previous
   }
 
-  getTerminal(edge: Cell, isSource?: boolean) {
+  getTerminal(edge: Cell | null, isSource?: boolean) {
     return edge != null ? edge.getTerminal(isSource) : null
   }
 
@@ -512,11 +518,15 @@ export class Model extends Events {
     this.endUpdate()
   }
 
-  getEdgeCount(node: Cell) {
+  getEdgeCount(node: Cell | null) {
     return node != null ? node.getEdgeCount() : 0
   }
 
-  getDirectedEdgeCount(node: Cell, outgoing: boolean, ignoredEdge?: Cell) {
+  getDirectedEdgeCount(
+    node: Cell | null,
+    outgoing: boolean,
+    ignoredEdge?: Cell | null,
+  ) {
     let count = 0
     this.eachEdge(node, (edge) => {
       if (
@@ -530,24 +540,24 @@ export class Model extends Events {
     return count
   }
 
-  getEdgeAt(node: Cell, index: number) {
+  getEdgeAt(node: Cell | null, index: number) {
     return node != null ? node.getEdgeAt(index) : null
   }
 
-  getConnections(node: Cell) {
+  getConnections(node: Cell | null) {
     return this.getEdges(node, true, true, false)
   }
 
-  getIncomingEdges(node: Cell) {
+  getIncomingEdges(node: Cell | null) {
     return this.getEdges(node, true, false, false)
   }
 
-  getOutgoingEdges(node: Cell) {
+  getOutgoingEdges(node: Cell | null) {
     return this.getEdges(node, false, true, false)
   }
 
   getEdges(
-    node: Cell,
+    node: Cell | null,
     incoming: boolean = true,
     outgoing: boolean = true,
     includeLoops: boolean = true,
@@ -573,7 +583,7 @@ export class Model extends Events {
   }
 
   eachEdge(
-    node: Cell,
+    node: Cell | null,
     iterator: (edge: Cell, index: number, edges: Cell[]) => void,
     thisArg?: any,
   ) {
@@ -590,8 +600,8 @@ export class Model extends Events {
    * @param directed 为 `true` 时要求边一定是从起始节点到终止节点
    */
   getEdgesBetween(
-    sourceNode: Cell,
-    targetNode: Cell,
+    sourceNode: Cell | null,
+    targetNode: Cell | null,
     directed: boolean = false,
   ) {
     const tmp1 = this.getEdgeCount(sourceNode)
@@ -694,7 +704,7 @@ export class Model extends Events {
     return rest
   }
 
-  getData(cell: Cell) {
+  getData(cell: Cell | null) {
     return cell != null ? cell.getData() : null
   }
 
@@ -708,7 +718,7 @@ export class Model extends Events {
     return previous
   }
 
-  getGeometry(cell: Cell) {
+  getGeometry(cell: Cell | null) {
     return cell != null ? cell.getGeometry() : null
   }
 
@@ -724,7 +734,7 @@ export class Model extends Events {
     return previous
   }
 
-  getStyle(cell: Cell) {
+  getStyle(cell: Cell | null) {
     return cell != null ? cell.getStyle() : null
   }
 
@@ -740,7 +750,7 @@ export class Model extends Events {
     return previous
   }
 
-  isCollapsed(node: Cell) {
+  isCollapsed(node: Cell | null) {
     return node != null ? node.isCollapsed() : false
   }
 
@@ -768,7 +778,7 @@ export class Model extends Events {
     return previous
   }
 
-  isVisible(cell: Cell) {
+  isVisible(cell: Cell | null) {
     return cell != null ? cell.isVisible() : false
   }
 
@@ -802,9 +812,9 @@ export class Model extends Events {
   private endingUpdate: boolean = false
 
   execute(change: IChange) {
-    this.trigger(Model.eventNames.execute, change)
+    this.trigger(Model.events.execute, change)
     change.execute()
-    this.trigger(Model.eventNames.executed, change)
+    this.trigger(Model.events.executed, change)
 
     this.beginUpdate()
     this.currentEdit.add(change)
@@ -813,29 +823,29 @@ export class Model extends Events {
 
   beginUpdate() {
     this.updateLevel += 1
-    this.trigger(Model.eventNames.beginUpdate)
+    this.trigger(Model.events.beginUpdate)
     if (this.updateLevel === 1) {
-      this.trigger(Model.eventNames.startEdit)
+      this.trigger(Model.events.startEdit)
     }
   }
 
   endUpdate() {
     this.updateLevel -= 1
     if (this.updateLevel === 0) {
-      this.trigger(Model.eventNames.endEdit)
+      this.trigger(Model.events.endEdit)
     }
 
     if (!this.endingUpdate) {
       this.endingUpdate = this.updateLevel === 0
       const edit = this.currentEdit
-      this.trigger(Model.eventNames.endUpdate, edit)
+      this.trigger(Model.events.endUpdate, edit)
 
       try {
         if (this.endingUpdate && !this.currentEdit.isEmpty()) {
-          this.trigger(Model.eventNames.beforeUndo, edit)
+          this.trigger(Model.events.beforeUndo, edit)
           this.currentEdit = this.createUndoableEdit()
           edit.notify()
-          this.trigger(Model.eventNames.afterUndo, edit)
+          this.trigger(Model.events.afterUndo, edit)
         }
       } finally {
         this.endingUpdate = false
@@ -856,7 +866,7 @@ export class Model extends Events {
     return new UndoableEdit(this, {
       significant,
       onChange: (edit: UndoableEdit) => {
-        this.trigger(Model.eventNames.change, edit.changes)
+        this.trigger(Model.events.change, edit.changes)
       },
     })
   }
@@ -926,7 +936,6 @@ export class Model extends Events {
 
         mapping[CellPath.create(cell)] = target!
 
-        // 递归
         this.mergeChildrenImpl(cell, target, cloneAllEdges, mapping)
       })
     } finally {
@@ -1026,7 +1035,7 @@ export class Model extends Events {
 }
 
 export namespace Model {
-  export const eventNames = {
+  export const events = {
     change: 'change',
     execute: 'execute',
     executed: 'executed',

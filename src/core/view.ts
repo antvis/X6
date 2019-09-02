@@ -3,29 +3,56 @@ import {
   constants,
   detector,
   Events,
+  IDisposable,
   DomEvent,
   CustomMouseEvent,
 } from '../common'
+import { Cell } from './cell'
+import { Graph } from './graph'
+import { Geometry } from './geometry'
+import { CellState } from './cell-state'
 import { StyleRegistry } from '../stylesheet'
 import { RectangleShape, ImageShape } from '../shape'
-import { Cell, Graph, Geometry, CellState } from '.'
 import { UndoableEdit, CurrentRootChange } from '../change'
 import { Point, Rectangle, ConnectionConstraint, Image } from '../struct'
 
-export class View extends Events {
+export class View extends Events implements IDisposable {
   graph: Graph
   scale: number
   translate: Point
 
-  private canvas: HTMLElement | SVGGElement | null
-  private backgroundPane: HTMLElement | SVGGElement | null
-  private drawPane: HTMLElement | SVGGElement | null
-  private overlayPane: HTMLElement | SVGGElement | null
-  private decoratorPane: HTMLElement | SVGGElement | null
-  private states: WeakMap<Cell, CellState>
-  private readonly invalidatings: WeakSet<Cell>
-  private backgroundImage: ImageShape | null
-  private backgroundPageShape: RectangleShape | null
+  /**
+   * Specifies if a gesture should be captured when it goes outside of the
+   * graph container.
+   *
+   * Default is `true`.
+   */
+  captureDocumentGesture: boolean = true
+
+  /**
+   * A `Cell` that acts as the root of the displayed cell hierarchy.
+   */
+  currentRoot: Cell | null
+
+  /**
+   * Specifies if the style should be updated in each validation step. If this
+   * is `false` then the style is only updated if the state is created or if the
+   * style of the cell was changed.
+   *
+   * Default is `false`.
+   */
+  updateStyle: boolean = false
+
+  protected stage: HTMLElement | SVGGElement | null
+  protected backgroundPane: HTMLElement | SVGGElement | null
+  protected drawPane: HTMLElement | SVGGElement | null
+  protected overlayPane: HTMLElement | SVGGElement | null
+  protected decoratorPane: HTMLElement | SVGGElement | null
+
+  protected states: WeakMap<Cell, CellState>
+  protected readonly invalidatings: WeakSet<Cell>
+  protected backgroundImage: ImageShape | null
+  protected backgroundPageShape: RectangleShape | null
 
   /**
    * Shared temporary DIV is used for text measuring
@@ -50,7 +77,7 @@ export class View extends Events {
   /**
    * Specifies if shapes should be created, updated and destroyed
    */
-  private rendering: boolean = true
+  protected rendering: boolean = true
 
   isRendering() {
     return this.rendering
@@ -69,7 +96,7 @@ export class View extends Events {
    *
    * NOTE: Enabling this carries a possible security risk.
    */
-  private allowEval: boolean = false
+  protected allowEval: boolean = false
 
   isAllowEval() {
     return this.allowEval
@@ -79,29 +106,7 @@ export class View extends Events {
     this.allowEval = allowEval
   }
 
-  /**
-   * Specifies if a gesture should be captured when it goes outside of the
-   * graph container.
-   *
-   * Default is `true`.
-   */
-  captureDocumentGesture: boolean = true
-
-  /**
-   * A `Cell` that acts as the root of the displayed cell hierarchy.
-   */
-  currentRoot: Cell | null
-
-  /**
-   * Specifies if the style should be updated in each validation step. If this
-   * is `false` then the style is only updated if the state is created or if the
-   * style of the cell was changed.
-   *
-   * Default is `false`.
-   */
-  updateStyle: boolean = false
-
-  private graphBounds: Rectangle
+  protected graphBounds: Rectangle
 
   getGraphBounds() {
     return this.graphBounds
@@ -126,7 +131,7 @@ export class View extends Events {
           const state = this.getState(cell)
           if (state != null) {
             if (result == null) {
-              result = Rectangle.clone(state.bounds)
+              result = state.bounds.clone()
             } else {
               result.add(state.bounds)
             }
@@ -174,7 +179,7 @@ export class View extends Events {
     return result
   }
 
-  private getEmptyBounds() {
+  protected getEmptyBounds() {
     return new Rectangle(
       this.translate.x * this.scale,
       this.translate.y * this.scale,
@@ -187,10 +192,7 @@ export class View extends Events {
     if (this.currentRoot !== root) {
       const change = new CurrentRootChange(this, root)
       change.execute()
-      const edit = new UndoableEdit(
-        this.graph.getModel(),
-        { significant: true },
-      )
+      const edit = new UndoableEdit(this.graph.getModel())
       edit.add(change)
       this.trigger('undo', edit)
       this.graph.sizeDidChange()
@@ -213,14 +215,14 @@ export class View extends Events {
       this.translate.y = ty
 
       this.scaledOrTranslated()
-    }
 
-    this.trigger('scaleAndTranslate', {
-      previousScale,
-      previousTranslate,
-      scale,
-      translate: this.translate,
-    })
+      this.trigger('scaleAndTranslate', {
+        previousScale,
+        previousTranslate,
+        scale,
+        translate: this.translate,
+      })
+    }
   }
 
   getScale() {
@@ -232,9 +234,8 @@ export class View extends Events {
     if (this.scale !== scale) {
       this.scale = scale
       this.scaledOrTranslated()
+      this.trigger('scale', { scale, previousScale })
     }
-
-    this.trigger('scale', { scale, previousScale })
   }
 
   getTranslate() {
@@ -248,12 +249,14 @@ export class View extends Events {
       this.translate.y = ty
 
       this.scaledOrTranslated()
+      this.trigger('translate', {
+        previousTranslate,
+        translate: this.translate,
+      })
     }
-
-    this.trigger('translate', { previousTranslate, translate: this.translate })
   }
 
-  private scaledOrTranslated() {
+  protected scaledOrTranslated() {
     this.revalidate()
     this.graph.sizeDidChange()
   }
@@ -330,7 +333,7 @@ export class View extends Events {
    * and the given cell is visible. If the cell is not visible but the state
    * exists then it is removed.
    */
-  private validateCell(cell: Cell, visible: boolean = true) {
+  protected validateCell(cell: Cell, visible: boolean = true) {
     if (cell != null) {
       visible = visible && this.graph.isCellVisible(cell) // tslint:disable-line
       const state = this.getState(cell, visible)
@@ -353,7 +356,7 @@ export class View extends Events {
   /**
    * Validates and repaints
    */
-  private validateCellState(cell: Cell | null, recurse: boolean = true) {
+  protected validateCellState(cell: Cell | null, recurse: boolean = true) {
     let state = null
     if (cell != null) {
       state = this.getState(cell)
@@ -384,11 +387,7 @@ export class View extends Events {
 
           // repaint
           if (cell !== this.currentRoot && !state.invalid) {
-            console.log(state)
-            console.log(cell)
-            console.log(cell.geometry)
             this.graph.renderer.redraw(state, false, this.isRendering())
-
             state.updateCachedBounds()
           }
         }
@@ -412,12 +411,12 @@ export class View extends Events {
 
   // #region :::::::::: Validate Background ::::::::::
 
-  private validateBackground() {
+  protected validateBackground() {
     this.validateBackgroundImage()
     this.validateBackgroundPage()
   }
 
-  private validateBackgroundImage() {
+  protected validateBackgroundImage() {
     const bg = this.graph.getBackgroundImage()
     if (bg != null) {
       if (
@@ -425,7 +424,7 @@ export class View extends Events {
         this.backgroundImage.image !== bg.src
       ) {
         if (this.backgroundImage != null) {
-          this.backgroundImage.destroy()
+          this.backgroundImage.dispose()
         }
 
         const bounds = new Rectangle(0, 0, 1, 1)
@@ -437,12 +436,12 @@ export class View extends Events {
 
       this.redrawBackgroundImage(this.backgroundImage, bg)
     } else if (this.backgroundImage != null) {
-      this.backgroundImage.destroy()
+      this.backgroundImage.dispose()
       this.backgroundImage = null
     }
   }
 
-  private redrawBackgroundImage(backgroundImage: ImageShape, bg: Image) {
+  protected redrawBackgroundImage(backgroundImage: ImageShape, bg: Image) {
     backgroundImage.scale = this.scale
     backgroundImage.bounds.x = this.scale * this.translate.x
     backgroundImage.bounds.y = this.scale * this.translate.y
@@ -452,7 +451,7 @@ export class View extends Events {
     backgroundImage.redraw()
   }
 
-  private validateBackgroundPage() {
+  protected validateBackgroundPage() {
     if (this.graph.pageVisible) {
       const bounds = this.getBackgroundPageBounds()
       if (this.backgroundPageShape == null) {
@@ -476,26 +475,32 @@ export class View extends Events {
 
         // Adds basic listeners for graph event dispatching outside of the
         // container and finishing the handling of a single gesture
-        DomEvent.addGestureListeners(
+        DomEvent.addMouseListeners(
           this.backgroundPageShape.elem!,
           (e: MouseEvent) => {
-            this.graph.fireMouseEvent('mouseDown', new CustomMouseEvent(e))
+            this.graph.fireMouseEvent(
+              DomEvent.MOUSE_DOWN, new CustomMouseEvent(e),
+            )
           },
           (e: MouseEvent) => {
             // Hides the tooltip if mouse is outside container
             if (
               this.graph.tooltipHandler != null &&
-              this.graph.tooltipHandler.isHideOnHover()
+              this.graph.tooltipHandler.hideOnHover
             ) {
               this.graph.tooltipHandler.hide()
             }
 
             if (this.graph.isMouseDown && !DomEvent.isConsumed(e)) {
-              this.graph.fireMouseEvent('mouseMove', new CustomMouseEvent(e))
+              this.graph.fireMouseEvent(
+                DomEvent.MOUSE_MOVE, new CustomMouseEvent(e),
+              )
             }
           },
           (e: MouseEvent) => {
-            this.graph.fireMouseEvent('mouseUp', new CustomMouseEvent(e))
+            this.graph.fireMouseEvent(
+              DomEvent.MOUSE_UP, new CustomMouseEvent(e),
+            )
           },
         )
       } else {
@@ -504,12 +509,12 @@ export class View extends Events {
         this.backgroundPageShape.redraw()
       }
     } else if (this.backgroundPageShape != null) {
-      this.backgroundPageShape.destroy()
+      this.backgroundPageShape.dispose()
       this.backgroundPageShape = null
     }
   }
 
-  private getBackgroundPageBounds() {
+  protected getBackgroundPageBounds() {
     const pageFormat = this.graph.pageFormat
     const pageScale = this.scale * this.graph.pageScale
     const bounds = new Rectangle(
@@ -526,23 +531,23 @@ export class View extends Events {
 
   // #region :::::::::::: Update DOM Order :::::::::::
 
-  private lastNode: HTMLElement | null = null
-  private lastHtmlNode: HTMLElement | null = null
-  private lastForegroundNode: HTMLElement | null = null
-  private lastForegroundHtmlNode: HTMLElement | null = null
+  protected lastNode: HTMLElement | null = null
+  protected lastHtmlNode: HTMLElement | null = null
+  protected lastForegroundNode: HTMLElement | null = null
+  protected lastForegroundHtmlNode: HTMLElement | null = null
 
-  private resetValidationState() {
+  protected resetValidationState() {
     this.lastNode = null
     this.lastHtmlNode = null
     this.lastForegroundNode = null
     this.lastForegroundHtmlNode = null
   }
 
-  private stateValidated(state: CellState) {
+  protected stateValidated(state: CellState) {
     this.updateDomOrder(state)
   }
 
-  private updateDomOrder(state: CellState) {
+  protected updateDomOrder(state: CellState) {
     const foreground = (
       (this.model.isEdge(state.cell) && this.graph.keepEdgesInForeground) ||
       (this.model.isNode(state.cell) && this.graph.keepEdgesInBackground)
@@ -569,7 +574,7 @@ export class View extends Events {
 
   // #region ::::::::::: Update Cell State :::::::::::
 
-  private updateCellState(state: CellState) {
+  protected updateCellState(state: CellState) {
     state.edgeLength = 0
     state.origin.x = 0
     state.origin.y = 0
@@ -642,13 +647,13 @@ export class View extends Events {
     state.updateCachedBounds()
   }
 
-  private updateNodeState(state: CellState, geo: Geometry) {
+  protected updateNodeState(state: CellState, geo: Geometry) {
     const parent = this.model.getParent(state.cell)!
     const parentState = this.getState(parent)
 
     if (geo.relative && parentState != null && !this.model.isEdge(parent)) {
       const rot = parentState.style.rotation || 0
-      const rad = util.toRadians(rot)
+      const rad = util.toRad(rot)
       if (rad !== 0) {
         const cos = Math.cos(rad)
         const sin = Math.sin(rad)
@@ -667,7 +672,7 @@ export class View extends Events {
    * Updates the `absoluteOffset` of the given node cell state.
    * This takes into account the label position styles.
    */
-  private updateNodeLabelOffset(state: CellState) {
+  updateNodeLabelOffset(state: CellState) {
     const h = state.style.labelPosition || 'center'
     if (h === 'left') {
       let lw = state.style.labelWidth
@@ -711,7 +716,7 @@ export class View extends Events {
     }
   }
 
-  private updateEdgeState(state: CellState, geo: Geometry) {
+  protected updateEdgeState(state: CellState, geo: Geometry) {
     const sourceState = state.getVisibleTerminalState(true)!
     const targetState = state.getVisibleTerminalState(false)!
 
@@ -755,7 +760,7 @@ export class View extends Events {
    * Sets the initial absolute terminal points in the given state
    * before the edge style is computed.
    */
-  private updateFixedTerminalPoints(
+  updateFixedTerminalPoints(
     edgeState: CellState,
     sourceState: CellState,
     targetState: CellState,
@@ -767,20 +772,20 @@ export class View extends Events {
     this.updateFixedTerminalPoint(edgeState, targetState, false, targetConstraint)
   }
 
-  private updateFixedTerminalPoint(
+  updateFixedTerminalPoint(
     edgeState: CellState,
     terminalState: CellState,
     isSource: boolean,
     constraint: ConnectionConstraint,
   ) {
     const point = this.getFixedTerminalPoint(edgeState, terminalState, isSource, constraint)
-    edgeState.setAbsoluteTerminalPoint(point, isSource)
+    edgeState.setAbsoluteTerminalPoint(point!, isSource)
   }
 
   /**
    * Returns the fixed source or target terminal point for the given edge.
    */
-  private getFixedTerminalPoint(
+  protected getFixedTerminalPoint(
     edgeState: CellState,
     terminalState: CellState,
     isSource: boolean,
@@ -849,13 +854,13 @@ export class View extends Events {
 
         // Restores previous bounds
         if (srcBounds != null) {
-          src.bounds.setRectangle(
+          src.bounds.update(
             srcBounds.x, srcBounds.y, srcBounds.width, srcBounds.height,
           )
         }
 
         if (trgBounds != null) {
-          trg.bounds.setRectangle(
+          trg.bounds.update(
             trgBounds.x, trgBounds.y, trgBounds.width, trgBounds.height,
           )
         }
@@ -874,7 +879,7 @@ export class View extends Events {
     }
   }
 
-  private getTerminalPortState(
+  getTerminalPortState(
     edgeState: CellState,
     terminalState: CellState,
     isSource: boolean,
@@ -921,7 +926,7 @@ export class View extends Events {
         state.bounds.height,
       )
 
-      state.bounds.setRectangle(
+      state.bounds.update(
         asp.x,
         asp.y,
         state.shape.stencil.w0 * asp.width,
@@ -932,7 +937,7 @@ export class View extends Events {
     return previous
   }
 
-  private updateFloatingTerminalPoints(
+  updateFloatingTerminalPoints(
     edgeState: CellState,
     sourceState: CellState,
     targetState: CellState,
@@ -954,7 +959,7 @@ export class View extends Events {
     }
   }
 
-  private updateFloatingTerminalPoint(
+  protected updateFloatingTerminalPoint(
     edgeState: CellState,
     relateState: CellState,
     opposeState: CellState,
@@ -967,7 +972,7 @@ export class View extends Events {
       isSource,
     )
 
-    edgeState.setAbsoluteTerminalPoint(point, isSource)
+    edgeState.setAbsoluteTerminalPoint(point!, isSource)
   }
 
   /**
@@ -978,7 +983,7 @@ export class View extends Events {
    * @param opposeState the terminal on the other side of the edge.
    * @param isSource Boolean indicating if target is the source terminal state.
    */
-  private getFloatingTerminalPoint(
+  protected getFloatingTerminalPoint(
     edgeState: CellState,
     relateState: CellState,
     opposeState: CellState,
@@ -990,7 +995,7 @@ export class View extends Events {
     let nextPoint = this.getNextPoint(edgeState, opposeState, isSource)
     const center = relateState.bounds.getCenter()
     const rot = relateState.style.rotation || 0
-    const rad = util.toRadians(rot)
+    const rad = util.toRad(rot)
     if (rad !== 0) {
       // rotate with related cell
       const cos = Math.cos(-rad)
@@ -1028,7 +1033,7 @@ export class View extends Events {
    * Returns the nearest point in the list of absolute points
    * or the center of the opposite terminal.
    */
-  private getNextPoint(
+  protected getNextPoint(
     edgeState: CellState,
     opposeState: CellState,
     isSource: boolean,
@@ -1169,8 +1174,8 @@ export class View extends Events {
   isLoopStyleEnabled(
     edgeState: CellState,
     points?: Point[] | null,
-    sourceState?: CellState,
-    targetState?: CellState,
+    sourceState?: CellState | null,
+    targetState?: CellState | null,
   ) {
     const sc = this.graph.getConnectionConstraint(edgeState, sourceState, true)
     const tc = this.graph.getConnectionConstraint(edgeState, targetState, false)
@@ -1194,27 +1199,27 @@ export class View extends Events {
   getEdgeFunction(
     edgeState: CellState,
     points?: Point[] | null,
-    sourceState?: CellState,
-    targetState?: CellState,
+    sourceState?: CellState | null,
+    targetState?: CellState | null,
   ) {
-    let edgeStyle = this.isLoopStyleEnabled(edgeState, points, sourceState, targetState)
+    let edge = this.isLoopStyleEnabled(edgeState, points, sourceState, targetState)
       ? (edgeState.style.loopStyle || this.graph.defaultLoopStyle)
       : edgeState.style.noEdgeStyle
         ? null
-        : edgeState.style.edgeStyle
+        : edgeState.style.edge
 
     // Converts string values to objects
-    if (typeof edgeStyle === 'string') {
-      let tmp = StyleRegistry.getValue(edgeStyle)
+    if (typeof edge === 'string') {
+      let tmp = StyleRegistry.getValue(edge)
       if (tmp == null && this.isAllowEval()) {
-        tmp = util.evalString(edgeStyle)
+        tmp = util.evalString(edge)
       }
 
-      edgeStyle = tmp
+      edge = tmp
     }
 
-    if (typeof edgeStyle === 'function') {
-      return edgeStyle
+    if (typeof edge === 'function') {
+      return edge
     }
 
     return null
@@ -1230,7 +1235,7 @@ export class View extends Events {
     return state.bounds.getCenterY() + f * state.bounds.height
   }
 
-  private isCellCollapsed(cell: Cell) {
+  protected isCellCollapsed(cell: Cell) {
     return this.graph.isCellCollapsed(cell)
   }
 
@@ -1277,7 +1282,7 @@ export class View extends Events {
    * @param state The state of the parent edge.
    * @param geometry `Geometry` that represents the relative location.
    */
-  private getPoint(state: CellState, geometry?: Geometry) {
+  getPoint(state: CellState, geometry?: Geometry) {
     let x = state.bounds.getCenterX()
     let y = state.bounds.getCenterY()
 
@@ -1537,26 +1542,6 @@ export class View extends Events {
 
   // #region ::::::::::::::: Cell State ::::::::::::::
 
-  /**
-   * Removes the state of the given cell and all descendants
-   * if the given cell is not the current root.
-   */
-  clear(
-    cell: Cell | null = this.model.getRoot(),
-    force: boolean = false,
-    recurse: boolean = true,
-  ) {
-    if (cell) {
-      this.removeState(cell)
-
-      if (recurse && (force || cell !== this.currentRoot)) {
-        cell.eachChild(child => this.clear(child, force, true))
-      } else {
-        this.invalidate(cell)
-      }
-    }
-  }
-
   createState(cell: Cell) {
     return new CellState(this, cell, this.graph.getCellStyle(cell))
   }
@@ -1564,7 +1549,6 @@ export class View extends Events {
   removeState(cell: Cell) {
     const state = this.states.get(cell)
     if (state != null) {
-      this.graph.renderer.destroy(state)
       state.invalid = true
       state.destroy()
       this.states.delete(cell)
@@ -1595,6 +1579,26 @@ export class View extends Events {
   }
 
   /**
+   * Removes the state of the given cell and all descendants
+   * if the given cell is not the current root.
+   */
+  clear(
+    cell: Cell | null = this.model.getRoot(),
+    force: boolean = false,
+    recurse: boolean = true,
+  ) {
+    if (cell) {
+      this.removeState(cell)
+
+      if (recurse && (force || cell !== this.currentRoot)) {
+        cell.eachChild(child => this.clear(child, force, true))
+      } else {
+        this.invalidate(cell)
+      }
+    }
+  }
+
+  /**
    * Returns `CellState` for the given array of `Cells`. The array
    * contains all states that are not null, that is, the returned
    * array may have less elements than the given array. If no argument
@@ -1622,75 +1626,27 @@ export class View extends Events {
   // #region ::::::::::::::::: Init ::::::::::::::::::
 
   /**
-   * Returns true if the event origin is one of the
-   * drawing panes or containers of the view.
-   */
-  private isContainerEvent(e: MouseEvent) {
-    const source = DomEvent.getSource(e)
-    return (
-      source === this.graph.container ||
-      source.parentNode === this.backgroundPane ||
-      (
-        source.parentNode != null &&
-        source.parentNode.parentNode === this.backgroundPane
-      ) ||
-      source === this.canvas!.parentNode ||
-      source === this.canvas ||
-      source === this.backgroundPane ||
-      source === this.drawPane ||
-      source === this.overlayPane ||
-      source === this.decoratorPane
-    )
-  }
-
-  /**
-   * Returns true if the event origin is one of the scrollbars of the
-   * container in IE. Such events are ignored.
-   */
-  private isScrollEvent(e: MouseEvent) {
-    const offset = util.getOffset(this.graph.container)
-    const pt = new Point(e.clientX - offset.x, e.clientY - offset.y)
-
-    const outWidth = this.graph.container.offsetWidth
-    const inWidth = this.graph.container.clientWidth
-
-    if (outWidth > inWidth && pt.x > inWidth + 2 && pt.x <= outWidth) {
-      return true
-    }
-
-    const outHeight = this.graph.container.offsetHeight
-    const inHeight = this.graph.container.clientHeight
-
-    if (outHeight > inHeight && pt.y > inHeight + 2 && pt.y <= outHeight) {
-      return true
-    }
-
-    return false
-  }
-
-  /**
    * Initializes the graph event dispatch loop for the specified
    * container and create the required DOM nodes for the display.
    */
   init() {
     this.installListeners()
-    const graph = this.graph
-    if (graph.dialect === constants.DIALECT_SVG) {
-      this.createSvg()
+    if (this.graph.dialect === constants.DIALECT_SVG) {
+      this.initSvgPanes()
     } else {
-      this.createHtml()
+      this.initHtmlPanes()
     }
   }
 
-  private mouseMoveHandler: ((e: MouseEvent) => void) | null
-  private mouseUpHandler: ((e: MouseEvent) => void) | null
-  private installListeners() {
+  protected mouseMoveHandler: ((e: MouseEvent) => void) | null
+  protected mouseUpHandler: ((e: MouseEvent) => void) | null
+
+  protected installListeners() {
     const graph = this.graph
     const container = graph.container
 
     if (container != null) {
       // Support for touch device gestures (eg. pinch to zoom)
-      // Double-tap handling is implemented in mxGraph.fireMouseEvent
       if (detector.SUPPORT_TOUCH) {
         DomEvent.addListener(container, 'gesturestart', (e: MouseEvent) => {
           graph.fireGestureEvent(e)
@@ -1709,10 +1665,11 @@ export class View extends Events {
       }
 
       // Adds basic listeners for graph event dispatching
-      DomEvent.addGestureListeners(
+      DomEvent.addMouseListeners(
         container,
         (e: MouseEvent) => {
-          // Condition to avoid scrollbar events starting a rubberband selection
+          // Condition to avoid scrollbar events starting
+          // a rubberband selection
           if (
             this.isContainerEvent(e) &&
             (
@@ -1726,24 +1683,24 @@ export class View extends Events {
               !this.isScrollEvent(e)
             )
           ) {
-            graph.fireMouseEvent('mouseDown', new CustomMouseEvent(e))
+            graph.fireMouseEvent(DomEvent.MOUSE_DOWN, new CustomMouseEvent(e))
           }
         },
         (e: MouseEvent) => {
           if (this.isContainerEvent(e)) {
-            graph.fireMouseEvent('mouseMove', new CustomMouseEvent(e))
+            graph.fireMouseEvent(DomEvent.MOUSE_MOVE, new CustomMouseEvent(e))
           }
         },
         (e: MouseEvent) => {
           if (this.isContainerEvent(e)) {
-            graph.fireMouseEvent('mouseUp', new CustomMouseEvent(e))
+            graph.fireMouseEvent(DomEvent.MOUSE_UP, new CustomMouseEvent(e))
           }
         },
       )
 
-      // Adds listener for double click handling on background, this does always
-      // use native event handler, we assume that the DOM of the background
-      // does not change during the double click
+      // Adds listener for double click handling on background, this does
+      // always use native event handler, we assume that the DOM of the
+      // background does not change during the double click
       DomEvent.addListener(container, 'dblclick', (e: MouseEvent) => {
         if (this.isContainerEvent(e)) {
           graph.dblClick(e)
@@ -1765,64 +1722,56 @@ export class View extends Events {
 
           // Dispatches the drop event to the graph which
           // consumes and executes the source function
-          const pt = util.convertPoint(container, x, y)
+          const pt = util.clientToGraph(container, x, y)
           state = graph.view.getState(graph.getCellAt(pt.x, pt.y))
         }
 
         return state
       }
 
-      // Adds basic listeners for graph event dispatching outside of the
-      // container and finishing the handling of a single gesture
-      // Implemented via graph event dispatch loop to avoid duplicate events
-      // in Firefox and Chrome
+      // Adds basic listeners for graph event dispatching outside of
+      // the container and finishing the handling of a single gesture
+      // Implemented via graph event dispatch loop to avoid duplicate
+      // events in Firefox and Chrome
       graph.addMouseListener({
-        mouseDown() {
-          graph.popupMenuHandler.hideMenu()
-        },
+        mouseDown() { graph.popupMenuHandler.hideMenu() },
         mouseMove() { },
         mouseUp() { },
+      })
+
+      // Hides tooltips and resets tooltip timer if mouse leaves container
+      DomEvent.addListener(container, 'mouseleave', () => {
+        graph.tooltipHandler.hide()
       })
 
       this.mouseMoveHandler = (e: MouseEvent) => {
         // Hides the tooltip if mouse is outside container
         if (
           graph.tooltipHandler != null &&
-          graph.tooltipHandler.isHideOnHover()
+          graph.tooltipHandler.hideOnHover
         ) {
           graph.tooltipHandler.hide()
         }
 
         if (
-          this.captureDocumentGesture &&
-          graph.isMouseDown &&
-          graph.container != null &&
-          !this.isContainerEvent(e) &&
-          graph.container.style.display !== 'none' &&
-          graph.container.style.visibility !== 'hidden' &&
+          this.shouldHandleDocumentEvent(e) &&
           !DomEvent.isConsumed(e)
         ) {
-          graph.fireMouseEvent(
-            'mouseMove',
-            new CustomMouseEvent(e, getState(e)!),
+          this.graph.fireMouseEvent(
+            DomEvent.MOUSE_MOVE, new CustomMouseEvent(e, getState(e)),
           )
         }
       }
 
       this.mouseUpHandler = (e: MouseEvent) => {
-        if (
-          this.captureDocumentGesture &&
-          graph.isMouseDown &&
-          graph.container != null &&
-          !this.isContainerEvent(e) &&
-          graph.container.style.display !== 'none' &&
-          graph.container.style.visibility !== 'hidden'
-        ) {
-          graph.fireMouseEvent('mouseUp', new CustomMouseEvent(e))
+        if (this.shouldHandleDocumentEvent(e)) {
+          this.graph.fireMouseEvent(
+            DomEvent.MOUSE_UP, new CustomMouseEvent(e),
+          )
         }
       }
 
-      DomEvent.addGestureListeners(
+      DomEvent.addMouseListeners(
         document,
         null,
         this.mouseMoveHandler,
@@ -1831,11 +1780,75 @@ export class View extends Events {
     }
   }
 
-  private createHtml() {
+  protected shouldHandleDocumentEvent(e: MouseEvent) {
+    return (
+      this.captureDocumentGesture &&
+      this.graph.isMouseDown &&
+      this.isContainerVisible() &&
+      !this.isContainerEvent(e)
+    )
+  }
+
+  protected isContainerVisible() {
+    return (
+      this.graph.container != null &&
+      this.graph.container.style.display !== 'none' &&
+      this.graph.container.style.visibility !== 'hidden'
+    )
+  }
+
+  /**
+   * Returns true if the event origin is one of the
+   * drawing panes or containers of the view.
+   */
+  protected isContainerEvent(e: MouseEvent) {
+    const source = DomEvent.getSource(e)
+    return (
+      source === this.graph.container ||
+      source.parentNode === this.backgroundPane ||
+      (
+        source.parentNode != null &&
+        source.parentNode.parentNode === this.backgroundPane
+      ) ||
+      source === this.stage ||
+      source === this.stage!.parentNode ||
+      source === this.backgroundPane ||
+      source === this.drawPane ||
+      source === this.overlayPane ||
+      source === this.decoratorPane
+    )
+  }
+
+  /**
+   * Returns true if the event origin is one of the scrollbars of the
+   * container in IE. Such events are ignored.
+   */
+  protected isScrollEvent(e: MouseEvent) {
+    const offset = util.getOffset(this.graph.container)
+    const pt = new Point(e.clientX - offset.x, e.clientY - offset.y)
+
+    const outWidth = this.graph.container.offsetWidth
+    const inWidth = this.graph.container.clientWidth
+
+    if (outWidth > inWidth && pt.x > inWidth + 2 && pt.x <= outWidth) {
+      return true
+    }
+
+    const outHeight = this.graph.container.offsetHeight
+    const inHeight = this.graph.container.clientHeight
+
+    if (outHeight > inHeight && pt.y > inHeight + 2 && pt.y <= outHeight) {
+      return true
+    }
+
+    return false
+  }
+
+  protected initHtmlPanes() {
     const container = this.graph.container
     if (container != null) {
-      this.canvas = this.createHtmlPane('100%', '100%')
-      this.canvas.style.overflow = 'hidden'
+      this.stage = this.createHtmlPane('100%', '100%')
+      this.stage.style.overflow = 'hidden'
 
       // Uses minimal size for inner DIVs on Canvas. This is required
       // for correct event processing in IE. If we have an overlapping
@@ -1845,12 +1858,12 @@ export class View extends Events {
       this.overlayPane = this.createHtmlPane('1px', '1px')
       this.decoratorPane = this.createHtmlPane('1px', '1px')
 
-      this.canvas.appendChild(this.backgroundPane)
-      this.canvas.appendChild(this.drawPane)
-      this.canvas.appendChild(this.overlayPane)
-      this.canvas.appendChild(this.decoratorPane)
+      this.stage.appendChild(this.backgroundPane)
+      this.stage.appendChild(this.drawPane)
+      this.stage.appendChild(this.overlayPane)
+      this.stage.appendChild(this.decoratorPane)
 
-      container.appendChild(this.canvas)
+      container.appendChild(this.stage)
       this.updateContainerStyle(container)
 
       // Implements minWidth/minHeight in quirks mode
@@ -1859,13 +1872,13 @@ export class View extends Events {
           const bounds = this.getGraphBounds()
           const width = bounds.x + bounds.width + this.graph.border
           const height = bounds.y + bounds.height + this.graph.border
-          this.updateHtmlCanvasSize(width, height)
+          this.updateHtmlStageSize(width, height)
         })
       }
     }
   }
 
-  private createHtmlPane(width?: string, height?: string) {
+  protected createHtmlPane(width?: string, height?: string) {
     const div = document.createElement('div')
     if (width != null && height != null) {
       div.style.position = 'absolute'
@@ -1880,41 +1893,38 @@ export class View extends Events {
     return div
   }
 
-  updateHtmlCanvasSize(width: number, height: number) {
-    if (this.graph.container != null) {
+  updateHtmlStageSize(width: number, height: number) {
+    if (this.graph.container != null && this.stage != null) {
       const ow = this.graph.container.offsetWidth
       const oh = this.graph.container.offsetHeight
 
       if (ow < width) {
-        this.canvas!.style.width = `${width}px`
+        this.stage.style.width = `${width}px`
       } else {
-        this.canvas!.style.width = '100%'
+        this.stage.style.width = '100%'
       }
 
       if (oh < height) {
-        this.canvas!.style.height = `${height}px`
+        this.stage.style.height = `${height}px`
       } else {
-        this.canvas!.style.height = '100%'
+        this.stage.style.height = '100%'
       }
     }
   }
 
-  private createSvg() {
+  protected initSvgPanes() {
     const container = this.graph.container
-    const createPane = () => (
-      document.createElementNS(constants.NS_SVG, 'g') as SVGGElement
-    )
 
-    this.canvas = createPane()
-    this.backgroundPane = createPane()
-    this.drawPane = createPane()
-    this.overlayPane = createPane()
-    this.decoratorPane = createPane()
+    this.stage = this.createSvgPane()
+    this.backgroundPane = this.createSvgPane()
+    this.drawPane = this.createSvgPane()
+    this.overlayPane = this.createSvgPane()
+    this.decoratorPane = this.createSvgPane()
 
-    this.canvas.appendChild(this.backgroundPane)
-    this.canvas.appendChild(this.drawPane)
-    this.canvas.appendChild(this.overlayPane)
-    this.canvas.appendChild(this.decoratorPane)
+    this.stage.appendChild(this.backgroundPane)
+    this.stage.appendChild(this.drawPane)
+    this.stage.appendChild(this.overlayPane)
+    this.stage.appendChild(this.decoratorPane)
 
     const root = document.createElementNS(constants.NS_SVG, 'svg') as SVGElement
     root.style.left = '0px'
@@ -1922,7 +1932,7 @@ export class View extends Events {
     root.style.width = '100%'
     root.style.height = '100%'
     root.style.display = 'block'
-    root.appendChild(this.canvas)
+    root.appendChild(this.stage)
 
     if (detector.IS_IE || detector.IS_IE11) {
       root.style.overflow = 'hidden'
@@ -1934,7 +1944,11 @@ export class View extends Events {
     }
   }
 
-  private updateContainerStyle(container: HTMLElement) {
+  protected createSvgPane() {
+    return document.createElementNS(constants.NS_SVG, 'g') as SVGGElement
+  }
+
+  protected updateContainerStyle(container: HTMLElement) {
     const position = util.getCurrentStyle(container, 'position')
     if (position === 'static') {
       container.style.position = 'relative'
@@ -1952,8 +1966,8 @@ export class View extends Events {
    *
    * In SVG dialect, it'is a SVGGElement.
    */
-  getCanvas() {
-    return this.canvas
+  getStage() {
+    return this.stage
   }
 
   getBackgroundPane() {
@@ -1972,31 +1986,43 @@ export class View extends Events {
     return this.decoratorPane
   }
 
-  destroy() {
-    let root: SVGSVGElement | HTMLDivElement | null = (this.canvas != null)
-      ? (this.canvas as SVGElement).ownerSVGElement
-      : null
-    if (root == null) {
-      root = this.canvas as HTMLDivElement
+  protected disposed = false
+  get isDisposed() {
+    return this.disposed
+  }
+
+  dispose() {
+    if (this.disposed) {
+      return
+    }
+    this.disposed = true
+
+    let stage: SVGSVGElement | HTMLDivElement | null =
+      (this.stage != null)
+        ? (this.stage as SVGElement).ownerSVGElement
+        : null
+
+    if (stage == null) {
+      stage = this.stage as HTMLDivElement
     }
 
-    if (root != null && root.parentNode != null) {
+    if (stage != null) {
       this.clear(this.currentRoot, true)
 
-      DomEvent.removeGestureListeners(
+      DomEvent.removeMouseListeners(
         document,
         null,
         this.mouseMoveHandler,
         this.mouseUpHandler,
       )
-      DomEvent.release(this.graph.container)
 
-      root.parentNode.removeChild(root)
+      DomEvent.release(this.graph.container)
+      util.remove(stage)
 
       this.mouseMoveHandler = null
       this.mouseUpHandler = null
 
-      this.canvas = null
+      this.stage = null
       this.backgroundPane = null
       this.drawPane = null
       this.overlayPane = null
@@ -2005,4 +2031,15 @@ export class View extends Events {
   }
 
   // #endregion
+}
+
+export namespace View {
+  export const events = {
+    undo: 'undo',
+    scale: 'scale',
+    translate: 'translate',
+    scaleAndTranslate: 'scaleAndTranslate',
+    up: 'up',
+    down: 'down',
+  }
 }

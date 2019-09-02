@@ -1,6 +1,7 @@
 import React from 'react'
 import { Route, Link } from 'react-router-dom'
 import { HelloWorld } from './hello-world'
+import { Layers } from './layers'
 import './index.less'
 
 export const Examples: React.SFC<Examples.Props> = () => (
@@ -13,10 +14,14 @@ export const Examples: React.SFC<Examples.Props> = () => (
         <li>
           <Link to="/examples/hello-world">Hello World</Link>
         </li>
+        <li>
+          <Link to="/examples/layers">Layers</Link>
+        </li>
       </ul>
     </div>
     <div className="examples-content">
-      <Route path="/examples/hello-world/" component={HelloWorld} />
+      <Route path="/examples/hello-world" component={HelloWorld} />
+      <Route path="/examples/layers" component={Layers} />
     </div>
   </div>
 )

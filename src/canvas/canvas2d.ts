@@ -223,7 +223,7 @@ export class Canvas2D {
     cx: number,
     cy: number,
   ) {
-    const rad = util.toRadians(theta)
+    const rad = util.toRad(theta)
     return util.rotatePoint(
       new Point(x, y),
       Math.cos(rad),
