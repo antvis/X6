@@ -237,9 +237,9 @@ export class RubberbandHandler extends MouseHandler {
         temp.style.pointerEvents = 'none'
         temp.style.opacity = '0'
 
-        window.setTimeout(() => { util.remove(temp) }, 200)
+        window.setTimeout(() => { util.removeElement(temp) }, 200)
       } else {
-        util.remove(this.div)
+        util.removeElement(this.div)
       }
     }
 

@@ -35,6 +35,8 @@ export class Shape implements IDisposable {
    */
   style: CellStyle
 
+  className?: string
+
   /**
    * The scale in which the shape is being painted.
    */
@@ -216,6 +218,7 @@ export class Shape implements IDisposable {
     if (this.elem) {
       const elem = this.elem
 
+      this.updateClassName()
       this.updateBoundsFromPoints()
 
       if (this.visible && this.isValidBounds()) {
@@ -236,13 +239,18 @@ export class Shape implements IDisposable {
     }
   }
 
+  protected updateClassName() {
+    if (this.className != null && this.elem != null) {
+      if (!this.hasClass(this.className)) {
+        this.addClass(this.className)
+      }
+    }
+  }
+
   protected empty() {
     if (this.elem != null) {
-
       if (Private.isSvgElem(this.elem)) {
-        while (this.elem.lastChild != null) {
-          this.elem.removeChild(this.elem.lastChild)
-        }
+        util.emptyElement(this.elem)
       } else {
         const cursorStyle = (this.cursor != null)
           ? ` cursor: ${this.cursor};`
@@ -1004,6 +1012,22 @@ export class Shape implements IDisposable {
     if (this.elem != null) {
       this.elem.style.cursor = this.cursor
     }
+  }
+
+  hasClass(selector: string | null) {
+    return util.hasClass(this.elem, selector)
+  }
+
+  addClass(selector: string | null) {
+    return util.addClass(this.elem, selector)
+  }
+
+  removeClass(selector: string | null) {
+    return util.removeClass(this.elem, selector)
+  }
+
+  toggleClass(selector: string | null) {
+    return util.toggleClass(this.elem, selector)
   }
 
   protected isRoundable() {

@@ -217,7 +217,7 @@ export class TooltipHandler extends MouseHandler {
 
     if (this.elem != null) {
       DomEvent.release(this.elem)
-      util.remove(this.elem)
+      util.removeElement(this.elem)
       this.elem = null
     }
 

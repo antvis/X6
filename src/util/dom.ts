@@ -3,6 +3,127 @@ import { detector, constants } from '../common'
 import { getBaseUrl } from './bom'
 import { ucFirst } from './string'
 
+const rclass = /[\t\r\n\f]/g
+const rnotwhite = (/\S+/g)
+
+const fillSpaces = (str: string) => ` ${str} `
+
+export function getClassName(elem: Element) {
+  return elem && elem.getAttribute && elem.getAttribute('class') || ''
+}
+
+export function hasClass(elem: Element | null, selector: string | null) {
+  if (elem == null || selector == null) {
+    return false
+  }
+
+  const classNames = fillSpaces(getClassName(elem))
+  const className = fillSpaces(selector)
+
+  return elem.nodeType === 1
+    ? classNames.replace(rclass, ' ').includes(className)
+    : false
+}
+
+export function addClass(
+  elem: Element | null,
+  selector: ((cls: string) => string) | string | null,
+): void {
+  if (elem == null || selector == null) {
+    return
+  }
+
+  if (typeof selector === 'function') {
+    return addClass(elem, selector(getClassName(elem)))
+  }
+
+  if (typeof selector === 'string' && elem.nodeType === 1) {
+    const classes = selector.match(rnotwhite) || []
+    const oldValue = fillSpaces(getClassName(elem)).replace(rclass, ' ')
+    let newValue = classes.reduce(
+      (memo, cls) => {
+        if (memo.indexOf(fillSpaces(cls)) < 0) {
+          return `${memo}${cls} `
+        }
+        return memo
+      },
+      oldValue,
+    )
+
+    newValue = newValue.trim()
+
+    if (oldValue !== newValue) {
+      elem.setAttribute('class', newValue)
+    }
+  }
+}
+
+export function removeClass(
+  elem: Element | null,
+  selector: ((cls: string) => string) | string | null,
+): void {
+  if (elem == null) {
+    return
+  }
+
+  if (typeof selector === 'function') {
+    return removeClass(elem, selector(getClassName(elem)))
+  }
+
+  if ((!selector || typeof selector === 'string') && elem.nodeType === 1) {
+    const classes = (selector || '').match(rnotwhite) || []
+    const oldValue = fillSpaces(getClassName(elem)).replace(rclass, ' ')
+    let newValue = classes.reduce(
+      (memo, cls) => {
+        const className = fillSpaces(cls)
+        if (memo.indexOf(className) > -1) {
+          return memo.replace(className, ' ')
+        }
+
+        return memo
+
+      },
+      oldValue,
+    )
+
+    newValue = selector ? newValue.trim() : ''
+
+    if (oldValue !== newValue) {
+      elem.setAttribute('class', newValue)
+    }
+  }
+}
+
+export function toggleClass(
+  elem: Element | null,
+  selector: ((cls: string, state?: boolean) => string) | string | null,
+  stateVal?: boolean,
+): void {
+  if (elem == null || selector == null) {
+    return
+  }
+
+  if (stateVal != null && typeof selector === 'string') {
+    stateVal
+      ? addClass(elem, selector)
+      : removeClass(elem, selector)
+
+    return
+  }
+
+  if (typeof selector === 'function') {
+    return toggleClass(elem, selector(getClassName(elem), stateVal), stateVal)
+  }
+
+  if (typeof selector === 'string') {
+    (selector.match(rnotwhite) || []).forEach((cls) => {
+      hasClass(elem, cls)
+        ? removeClass(elem, cls)
+        : addClass(elem, cls)
+    })
+  }
+}
+
 export function getDocumentMode() {
   return (document as any).documentMode as number
 }
@@ -17,6 +138,24 @@ export function setAttributes(elem: Element, attrs: { [key: string]: any }) {
   }
 }
 
+export function createElement(tagName: string, doc?: Document) {
+  return (doc || document).createElement(tagName)
+}
+
+export function removeElement(elem: Element | null) {
+  if (elem && elem.parentNode) {
+    elem.parentNode.removeChild(elem)
+  }
+}
+
+export function emptyElement(elem: Element | null) {
+  if (elem != null) {
+    while (elem.firstChild) {
+      elem.removeChild(elem.firstChild)
+    }
+  }
+}
+
 export function prepend(parent: Element, child: Element) {
   if (parent.firstChild != null) {
     parent.insertBefore(child, parent.firstChild)
@@ -28,12 +167,6 @@ export function prepend(parent: Element, child: Element) {
 export function toBack(elem: Element | null) {
   if (elem && elem.parentNode && elem.parentNode.firstChild !== elem) {
     elem.parentNode.insertBefore(elem, this.shape.elem.parentNode.firstChild)
-  }
-}
-
-export function remove(elem: Element | null) {
-  if (elem && elem.parentNode) {
-    elem.parentNode.removeChild(elem)
   }
 }
 
@@ -218,14 +351,6 @@ export function getDocumentScrollOrigin(doc: Document) {
 
 /**
  * Returns the top, left corner of the viewrect.
- *
- * Parameters:
- *
- * node - DOM node whose scroll origin should be returned.
- * includeAncestors - Whether the scroll origin of the ancestors should be
- * included. Default is false.
- * includeDocument - Whether the scroll origin of the document should be
- * included. Default is true.
  */
 export function getScrollOrigin(
   node: HTMLElement,
@@ -320,18 +445,24 @@ export function getTextContent(elem: HTMLElement) {
   return ''
 }
 
+const evalKey = '__EvalFunctionResult__'
 export function evalString(exp: string) {
   let result = null
 
   if (exp.indexOf('function') >= 0) {
     try {
-      eval('var __EvalFunctionResult__=' + exp) // tslint:disable-line
-      result = (window as any).__EvalFunctionResult__
-      delete (window as any).__EvalFunctionResult__
+      const tmp = (window as any)[evalKey]
+      eval(`var ${evalKey}=${exp}`) // tslint:disable-line:no-eval
+      result = (window as any)[evalKey]
+      if (tmp != null) {
+        (window as any)[evalKey] = tmp
+      } else {
+        delete (window as any)[evalKey]
+      }
     } catch (e) { }
   } else {
     try {
-      result = eval(exp) // tslint:disable-line
+      result = eval(exp) // tslint:disable-line:no-eval
     } catch (e) { }
   }
 

@@ -370,37 +370,40 @@ export class NodeHandler extends MouseHandler {
     size?: number | null,
     fillColor?: string,
   ) {
-
     const wh = size || constants.HANDLE_SIZE
     const bounds = new Rectangle(0, 0, wh, wh)
-    const sizer = this.createHandleShape(bounds, index, fillColor)
+    const handle = this.createHandleShape(bounds, index, fillColor)
 
     if (
-      sizer.isHtmlAllowed() &&
+      handle.isHtmlAllowed() &&
       this.state.text &&
       this.state.text.elem &&
       this.state.text.elem.parentNode === this.graph.container
     ) {
-      sizer.bounds.width -= 1
-      sizer.bounds.height -= 1
-      sizer.dialect = 'html'
-      sizer.init(this.graph.container)
+      handle.bounds.width -= 1
+      handle.bounds.height -= 1
+      handle.dialect = 'html'
+      handle.init(this.graph.container)
     } else {
-      sizer.dialect = 'svg'
-      sizer.init(this.graph.view.getOverlayPane()!)
+      handle.dialect = 'svg'
+      handle.init(this.graph.view.getOverlayPane()!)
     }
 
-    CustomMouseEvent.redirectMouseEvents(sizer.elem!, this.graph, this.state)
+    if (cursor.indexOf('-resize') >= 0) {
+      handle.className = `${this.graph.prefixCls}-${cursor}`
+    }
+
+    CustomMouseEvent.redirectMouseEvents(handle.elem!, this.graph, this.state)
 
     if (this.graph.isEnabled()) {
-      sizer.setCursor(cursor)
+      handle.setCursor(cursor)
     }
 
     if (!this.isSizerVisible(index)) {
-      sizer.visible = false
+      handle.visible = false
     }
 
-    return sizer
+    return handle
   }
 
   protected createHandleShape(

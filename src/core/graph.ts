@@ -83,6 +83,8 @@ export class Graph extends Events implements IDisposable {
 
   isMouseDown: boolean = false
 
+  prefixCls: string = 'x6'
+
   /**
    * Holds the <CellEditor> that is used as the in-place editing.
    */

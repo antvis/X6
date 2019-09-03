@@ -2017,7 +2017,7 @@ export class View extends Events implements IDisposable {
       )
 
       DomEvent.release(this.graph.container)
-      util.remove(stage)
+      util.removeElement(stage)
 
       this.mouseMoveHandler = null
       this.mouseUpHandler = null
