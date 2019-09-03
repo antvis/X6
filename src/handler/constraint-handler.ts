@@ -1,6 +1,7 @@
 import * as util from '../util'
 import * as images from '../assets/images'
-import { Graph, Model, View, CellState } from '../core'
+import { Graph, Model, CellState } from '../core'
+import { View } from '../core/view'
 import { Rectangle, Point, Image, ConnectionConstraint } from '../struct'
 import { constants, DomEvent, CustomMouseEvent } from '../common'
 import { RectangleShape, ImageShape } from '../shape'
@@ -266,7 +267,7 @@ export class ConstraintHandler extends BaseHandler {
 
             if (this.focusHighlight == null) {
               const hl = this.createHighlightShape()
-              hl.dialect = constants.DIALECT_SVG
+              hl.dialect = 'svg'
               hl.pointerEvents = false
 
               hl.init(this.graph.getView().getOverlayPane())
@@ -336,7 +337,7 @@ export class ConstraintHandler extends BaseHandler {
         )
 
         const icon = new ImageShape(bounds, src)
-        icon.dialect = constants.DIALECT_SVG
+        icon.dialect = 'svg'
         icon.preserveImageAspect = false
         icon.init(this.graph.getView().getDecoratorPane())
 

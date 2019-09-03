@@ -141,7 +141,7 @@ export class GraphHandler extends MouseHandler {
   protected refreshHandler: (() => void) | null
 
   protected highlight: CellHighlight | null
-  protected delayedSelection: boolean
+  protected cellSelected: boolean
   protected cell: Cell | null
   protected cells: Cell[]
   protected target: Cell | null
@@ -169,7 +169,6 @@ export class GraphHandler extends MouseHandler {
     this.escapeHandler = () => this.reset()
     this.graph.on(Graph.events.escape, this.escapeHandler)
 
-    // Updates the preview box for remote changes
     this.refreshHandler = () => {
       if (this.origin != null) {
         try {
@@ -199,7 +198,7 @@ export class GraphHandler extends MouseHandler {
     }
   }
 
-  protected isDelayedSelection(cell: Cell | null, e: CustomMouseEvent) {
+  protected isCellSelected(cell: Cell | null, e: CustomMouseEvent) {
     return this.graph.isCellSelected(cell)
   }
 
@@ -212,14 +211,17 @@ export class GraphHandler extends MouseHandler {
       e.getState() != null && !DomEvent.isMultiTouchEvent(e.getEvent())
     ) {
       const cell = this.getCell(e)
-      this.delayedSelection = this.isDelayedSelection(cell, e)
+      this.cellSelected = this.isCellSelected(cell, e)
       this.cell = null
 
       // select cell
-      if (this.selectable && !this.delayedSelection) {
-        this.graph.selectCellForEvent(cell, e.getEvent())
+      if (this.selectable && !this.cellSelected) {
+        // Trigger selection change, then selectionHandler will refresh,
+        // result to create cell resize/rotate handle knots.
+        this.graph.selectionManager.selectCellForEvent(cell, e.getEvent())
       }
 
+      // start move cell(s)
       if (this.movable && cell) {
         const model = this.graph.model
         const geo = cell.getGeometry()
@@ -244,9 +246,10 @@ export class GraphHandler extends MouseHandler {
           )
         ) {
 
-          this.start(cell, e.getClientX(), e.getClientY())
+          this.start(cell, e)
 
-        } else if (this.delayedSelection) {
+        } else if (this.cellSelected) {
+
           this.cell = cell
         }
 
@@ -256,10 +259,12 @@ export class GraphHandler extends MouseHandler {
     }
   }
 
-  protected start(cell: Cell, x: number, y: number) {
+  protected start(cell: Cell, e: CustomMouseEvent) {
     this.cell = cell
-    this.cells = this.getCells(this.cell)
-    this.origin = util.clientToGraph(this.graph.container, x, y)
+    this.cells = this.getCells(cell, e.getEvent())
+    this.origin = util.clientToGraph(
+      this.graph.container, e.getClientX(), e.getClientY(),
+    )
     this.bounds = this.graph.view.getBounds(this.cells)
     this.previewBounds = this.getPreviewBounds(this.cells)
 
@@ -268,15 +273,17 @@ export class GraphHandler extends MouseHandler {
     }
   }
 
-  /**
-   * This implementation returns all selection cells that are movable,
-   * or the given initial cell if the given cell is not selected and movable.
-   */
-  protected getCells(cell: Cell) {
-    if (!this.delayedSelection && this.graph.isCellMovable(cell)) {
+  protected getCells(cell: Cell, e: MouseEvent) {
+    if (
+      !this.cellSelected &&
+      this.graph.isCellMovable(cell) &&
+      !this.graph.isToggleEvent(e)
+    ) {
       return [cell]
     }
 
+    // cell is selected before mouse-down, so return all moveable
+    // cells in selection.
     return this.graph.getMovableCells(this.graph.getSelectedCells())
   }
 
@@ -500,10 +507,10 @@ export class GraphHandler extends MouseHandler {
     shape.dashed = true
 
     if (this.htmlPreview) {
-      shape.dialect = constants.DIALECT_STRICTHTML
+      shape.dialect = 'html'
       shape.init(this.graph.container)
     } else {
-      shape.dialect = constants.DIALECT_SVG
+      shape.dialect = 'svg'
       shape.init(this.graph.view.getOverlayPane()!)
       shape.pointerEvents = false
     }
@@ -535,7 +542,7 @@ export class GraphHandler extends MouseHandler {
     }
   }
 
-  protected isCloneForEvent(e: CustomMouseEvent) {
+  protected isClone(e: CustomMouseEvent) {
     return (
       this.graph.isCloneEvent(e.getEvent()) &&
       this.graph.isCellsCloneable() &&
@@ -546,12 +553,12 @@ export class GraphHandler extends MouseHandler {
   protected updateDropTarget(e: CustomMouseEvent) {
     const graph = this.graph
     const cell = e.getCell()
-    const clone = this.isCloneForEvent(e)
+    const clone = this.isClone(e)
 
     let target = null
 
     if (graph.isDropEnabled() && this.highlightable) {
-      // Contains a call to getCellAt to find the cell under the mouse
+      // Call getCellAt to find the cell under the mouse
       target = graph.getDropTarget(this.cells, e.getEvent(), cell, clone)
     }
 
@@ -577,10 +584,14 @@ export class GraphHandler extends MouseHandler {
         state = graph.view.getState(cell)
 
         if (state != null) {
-          const error = graph.getEdgeValidationError(null, this.cell, cell)
+          const error = graph.validator.getEdgeValidationError(
+            null, this.cell, cell,
+          )
+
           const color = (error == null) ?
             constants.VALID_COLOR :
             constants.INVALID_CONNECT_TARGET_COLOR
+
           this.setHighlightColor(color)
           active = true
         }
@@ -607,6 +618,7 @@ export class GraphHandler extends MouseHandler {
       ) {
         const graph = this.graph
         const cell = e.getCell()
+        const evt = e.getEvent()
 
         if (
           this.connectOnDrop &&
@@ -617,10 +629,10 @@ export class GraphHandler extends MouseHandler {
           graph.isEdgeValid(null, this.cell, cell)
         ) {
 
-          graph.connectionHandler.connect(this.cell, cell, e.getEvent())
+          graph.connectionHandler.connect(this.cell, cell, evt, null)
 
         } else {
-          const clone = this.isCloneForEvent(e)
+          const clone = this.isClone(e)
           const target = this.target
           const scale = graph.view.scale
           const dx = this.roundLength(this.dx / scale)
@@ -629,16 +641,16 @@ export class GraphHandler extends MouseHandler {
           if (
             target &&
             graph.isSplitEnabled() &&
-            graph.isSplitTarget(target, this.cells, e.getEvent())
+            graph.isSplitTarget(target, this.cells, evt)
           ) {
             graph.splitEdge(target, this.cells, null, dx, dy)
           } else {
-            this.moveCells(this.cells, dx, dy, clone, this.target, e.getEvent())
+            this.moveCells(this.cells, dx, dy, clone, this.target, evt)
           }
         }
       } else if (
         this.selectable &&
-        this.delayedSelection &&
+        this.cellSelected &&
         this.cell != null
       ) {
         this.selectDelayed(e)
@@ -657,7 +669,7 @@ export class GraphHandler extends MouseHandler {
       !this.graph.isCellSelected(this.cell) ||
       !this.graph.popupMenuHandler.isPopupTrigger(e)
     ) {
-      this.graph.selectCellForEvent(this.cell, e.getEvent())
+      this.graph.selectionManager.selectCellForEvent(this.cell, e.getEvent())
     }
   }
 
@@ -671,34 +683,56 @@ export class GraphHandler extends MouseHandler {
     this.origin = null
     this.cell = null
     this.target = null
+    this.cellSelected = false
     this.shouldConsumeMouseUp = false
-    this.delayedSelection = false
   }
 
   /**
    * Returns true if the given cells should be removed from the
    * parent for the specified mousereleased event.
    */
-  shouldRemoveCellsFromParent(parent: Cell | null, cells: Cell[], e: MouseEvent) {
+  protected shouldRemoveCellsFromParent(
+    parent: Cell | null,
+    cells: Cell[],
+    e: MouseEvent,
+  ) {
     if (this.graph.model.isNode(parent)) {
       const pState = this.graph.view.getState(parent)
-
       if (pState != null) {
-        let pt = util.clientToGraph(
+        let pos = util.clientToGraph(
           this.graph.container,
           DomEvent.getClientX(e),
           DomEvent.getClientY(e),
         )
-        const alpha = util.toRad(pState.style.rotation || 0)
+        const alpha = util.toRad(util.getRotation(pState))
         if (alpha !== 0) {
           const cos = Math.cos(-alpha)
           const sin = Math.sin(-alpha)
           const cx = pState.bounds.getCenter()
-          pt = util.rotatePoint(pt, cos, sin, cx)
+          pos = util.rotatePoint(pos, cos, sin, cx)
         }
 
-        return !util.contains(pState.bounds, pt.x, pt.y)
+        return !util.contains(pState.bounds, pos.x, pos.y)
       }
+    }
+
+    return false
+  }
+
+  protected shouldRemoveParent(parent: Cell) {
+    const state = this.graph.view.getState(parent)
+    if (
+      state != null && (
+        this.graph.model.isEdge(state.cell) ||
+        this.graph.model.isNode(state.cell)
+      ) &&
+      this.graph.isCellDeletable(state.cell) &&
+      this.graph.model.getChildCount(state.cell) === 0
+    ) {
+      const stroke = state.style.stroke || constants.NONE
+      const fill = state.style.fill || constants.NONE
+
+      return stroke === constants.NONE && fill === constants.NONE
     }
 
     return false
@@ -707,7 +741,7 @@ export class GraphHandler extends MouseHandler {
   /**
    * Moves the given cells by the specified amount.
    */
-  moveCells(
+  protected moveCells(
     cells: Cell[],
     dx: number,
     dy: number,
@@ -780,28 +814,6 @@ export class GraphHandler extends MouseHandler {
     }
   }
 
-  shouldRemoveParent(parent: Cell) {
-    const state = this.graph.view.getState(parent)
-    if (
-      state != null && (
-        this.graph.model.isEdge(state.cell) ||
-        this.graph.model.isNode(state.cell)
-      ) &&
-      this.graph.isCellDeletable(state.cell) &&
-      this.graph.model.getChildCount(state.cell) === 0
-    ) {
-      const stroke = state.style.stroke || constants.NONE
-      const fill = state.style.fill || constants.NONE
-
-      return stroke === constants.NONE && fill === constants.NONE
-    }
-
-    return false
-  }
-
-  /**
-   * Destroy the preview and highlight shapes.
-   */
   protected disposeShapes() {
     // Destroys the preview dashed rectangle
     if (this.previewShape != null) {

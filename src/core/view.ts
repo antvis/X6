@@ -195,7 +195,7 @@ export class View extends Events implements IDisposable {
       const edit = new UndoableEdit(this.graph.getModel())
       edit.add(change)
       this.trigger('undo', edit)
-      this.graph.sizeDidChange()
+      this.graph.viewport.sizeDidChange()
     }
 
     return root
@@ -258,7 +258,7 @@ export class View extends Events implements IDisposable {
 
   protected scaledOrTranslated() {
     this.revalidate()
-    this.graph.sizeDidChange()
+    this.graph.viewport.sizeDidChange()
   }
 
   // #endregion
@@ -468,7 +468,7 @@ export class View extends Events implements IDisposable {
             this.backgroundPageShape.elem!,
             'dblclick',
             (e: MouseEvent) => {
-              this.graph.dblClick(e)
+              this.graph.eventManager.dblClick(e)
             },
           )
         }
@@ -1703,7 +1703,7 @@ export class View extends Events implements IDisposable {
       // background does not change during the double click
       DomEvent.addListener(container, 'dblclick', (e: MouseEvent) => {
         if (this.isContainerEvent(e)) {
-          graph.dblClick(e)
+          graph.eventManager.dblClick(e)
         }
       })
 

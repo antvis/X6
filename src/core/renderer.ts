@@ -1,7 +1,7 @@
 import * as util from '../util'
 import { CellState } from './cell-state'
 import { CellOverlay } from './cell-overlay'
-import { TextDirection } from '../types'
+import { TextDirection, Dialect } from '../types'
 import { Rectangle, Point } from '../struct'
 import { constants, detector } from '../common'
 import { DomEvent } from '../common/dom-event'
@@ -428,7 +428,7 @@ export class Renderer {
     if (graph.nativeDblClickEnabled) {
       DomEvent.addListener(elem, 'dblclick', (e: MouseEvent) => {
         if (this.isShapeEvent(state, e)) {
-          graph.dblClick(e, state.cell)
+          graph.eventManager.dblClick(e, state.cell)
           DomEvent.consume(e)
         }
       })
@@ -484,11 +484,11 @@ export class Renderer {
     const isForceHtml = (
       graph.isHtmlLabel(state.cell) &&
       detector.NO_FOREIGNOBJECT &&
-      graph.dialect === constants.DIALECT_SVG
+      graph.dialect === 'svg'
     )
 
     if (isForceHtml) {
-      control.dialect = constants.DIALECT_PREFERHTML
+      control.dialect = 'html'
       control.init(graph.container)
       control.elem!.style.zIndex = '1'
     } else {
@@ -566,9 +566,7 @@ export class Renderer {
       (txt != null && util.isHTMLNode(txt))
     )
 
-    const dialect = isForceHtml
-      ? constants.DIALECT_STRICTHTML
-      : state.view.graph.dialect
+    const dialect: Dialect = isForceHtml ? 'html' : state.view.graph.dialect
 
     const overflow = state.style.overflow || 'visible'
 
@@ -701,9 +699,7 @@ export class Renderer {
       )
 
       state.text.opacity = state.style.textOpacity || 100
-      state.text.dialect = isForceHtml
-        ? constants.DIALECT_STRICTHTML
-        : state.view.graph.dialect
+      state.text.dialect = isForceHtml ? 'html' : state.view.graph.dialect
 
       state.text.style = state.style
       state.text.state = state
@@ -771,7 +767,7 @@ export class Renderer {
           'dblclick',
           (e: MouseEvent) => {
             if (this.isLabelEvent(state, e)) {
-              graph.dblClick(e, state.cell)
+              graph.eventManager.dblClick(e, state.cell)
               DomEvent.consume(e)
             }
           },

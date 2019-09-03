@@ -12,7 +12,7 @@ export class SelectionHandler extends MouseHandler {
    */
   maxHandlers = 100
 
-  handlers: Dictionary<Cell, NodeHandler>
+  protected handlers: Dictionary<Cell, NodeHandler>
 
   private refreshHandler: (() => void) | null
 
@@ -50,12 +50,10 @@ export class SelectionHandler extends MouseHandler {
       if (state != null) {
         let handler: NodeHandler | null = oldHandlers.delete(cell) || null
         if (handler != null) {
-
           if (handler.state !== state) {
             handler.dispose()
             handler = null
           } else if (!this.isHandlerActive(handler)) {
-
             if ((handler as any).refresh != null) {
               (handler as any).refresh()
             }
@@ -64,7 +62,7 @@ export class SelectionHandler extends MouseHandler {
         }
 
         if (handler == null) {
-          handler = this.graph.createHandler(state) as NodeHandler
+          handler = this.graph.handlerManager.createCellHandler(state) as NodeHandler
           this.trigger(SelectionHandler.events.addHandler, { state })
         }
 
@@ -93,7 +91,7 @@ export class SelectionHandler extends MouseHandler {
       const y = handler.startY
 
       handler.dispose()
-      handler = this.graph.createHandler(state) as NodeHandler
+      handler = this.graph.handlerManager.createCellHandler(state) as NodeHandler
 
       if (handler != null) {
         this.handlers.set(state.cell, handler)
@@ -102,10 +100,6 @@ export class SelectionHandler extends MouseHandler {
         }
       }
     }
-  }
-
-  getHandler(cell: Cell) {
-    return this.handlers.get(cell)
   }
 
   protected reset() {
@@ -119,24 +113,28 @@ export class SelectionHandler extends MouseHandler {
     return handler.index != null
   }
 
-  protected canHandle() {
+  protected canHandle(e: CustomMouseEvent) {
     return this.graph.isEnabled() && this.isEnabled()
   }
 
+  getHandler(cell: Cell) {
+    return this.handlers.get(cell)
+  }
+
   mouseDown(e: CustomMouseEvent, sender: any) {
-    if (this.canHandle()) {
+    if (this.canHandle(e)) {
       this.handlers.each(h => h.mouseDown(e, sender))
     }
   }
 
   mouseMove(e: CustomMouseEvent, sender: any) {
-    if (this.canHandle()) {
+    if (this.canHandle(e)) {
       this.handlers.each(h => h.mouseMove(e, sender))
     }
   }
 
   mouseUp(e: CustomMouseEvent, sender: any) {
-    if (this.canHandle()) {
+    if (this.canHandle(e)) {
       this.handlers.each(h => h.mouseUp(e, sender))
     }
   }

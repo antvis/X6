@@ -1,5 +1,6 @@
 import * as util from '../util'
-import { Graph, Model, View, Cell, CellState, Geometry } from '../core'
+import { Graph, Model, Cell, CellState, Geometry } from '../core'
+import { View } from '../core/view'
 import { Rectangle, Point, Image, ConnectionConstraint } from '../struct'
 import { constants, DomEvent, CustomMouseEvent } from '../common'
 import { Shape, ImageShape, Polyline } from '../shape'
@@ -12,7 +13,7 @@ export class ConnectionHandler extends MouseHandler {
   /**
    * Function that is used for creating new edges.
    */
-  factoryMethod: (source: Cell, target: Cell, style: CellStyle) => Cell
+  factoryMethod?: (source: Cell, target: Cell, style: CellStyle) => Cell
 
   /**
    * Specifies if icons should be displayed inside the graph container instead
@@ -168,7 +169,7 @@ export class ConnectionHandler extends MouseHandler {
 
   constructor(
     graph: Graph,
-    factoryMethod: (source: Cell, target: Cell, style: CellStyle) => Cell,
+    factoryMethod?: (source: Cell, target: Cell, style: CellStyle) => Cell,
   ) {
     super(graph)
     this.factoryMethod = factoryMethod
@@ -216,7 +217,7 @@ export class ConnectionHandler extends MouseHandler {
     source: Cell,
     target: Cell,
     evt: MouseEvent,
-    dropTarget: Cell,
+    dropTarget: Cell | null,
   ) {
     return this.insertBeforeSource && source !== target
   }
@@ -234,7 +235,7 @@ export class ConnectionHandler extends MouseHandler {
       ? this.graph.renderer.createShape(this.edgeState)!
       : new Polyline([], constants.INVALID_COLOR)
 
-    shape.dialect = constants.DIALECT_SVG
+    shape.dialect = 'svg'
     shape.scale = this.graph.view.scale
     shape.pointerEvents = false
     shape.dashed = true
@@ -384,7 +385,9 @@ export class ConnectionHandler extends MouseHandler {
       return ''
     }
 
-    return this.graph.getEdgeValidationError(null, source, target)
+    return this.graph.validator.getEdgeValidationError(
+      null, source, target,
+    )
   }
 
   /**
@@ -435,10 +438,10 @@ export class ConnectionHandler extends MouseHandler {
       icon.preserveImageAspect = false
 
       if (this.isMoveIconToFrontForState(state)) {
-        icon.dialect = constants.DIALECT_STRICTHTML
+        icon.dialect = 'html'
         icon.init(this.graph.container)
       } else {
-        icon.dialect = constants.DIALECT_SVG
+        icon.dialect = 'svg'
         icon.init(this.graph.getView().getOverlayPane())
 
         // Move the icon back in the overlay pane
@@ -1388,7 +1391,7 @@ export class ConnectionHandler extends MouseHandler {
    * dropTarget - <mxCell> that represents the cell under the mouse when it was
    * released.
    */
-  connect(source: Cell, target: Cell, evt: MouseEvent, dropTarget: Cell) {
+  connect(source: Cell, target: Cell, evt: MouseEvent, dropTarget: Cell | null) {
     if (target != null || this.isCreateTarget(evt) || this.graph.allowDanglingEdges) {
       // Uses the common parent of source and target or
       // the default parent to insert the edge

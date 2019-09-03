@@ -5,7 +5,7 @@ import { CellState } from '../core'
 import { SvgCanvas2D } from '../canvas'
 import { detector, constants, DomEvent, IDisposable } from '../common'
 import { Rectangle, Point } from '../struct'
-import { CellStyle, Direction } from '../types'
+import { CellStyle, Direction, Dialect } from '../types'
 
 export class Shape implements IDisposable {
   state: CellState
@@ -23,7 +23,7 @@ export class Shape implements IDisposable {
   /**
    * The dialect in which the shape is to be painted.
    */
-  dialect: string
+  dialect: Dialect
 
   /**
    * The `Stencil` instance that defines the shape.

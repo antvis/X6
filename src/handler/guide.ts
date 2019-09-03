@@ -135,7 +135,7 @@ export class Guide implements IDisposable {
 
           if (this.guideX == null) {
             this.guideX = this.createGuideShape(true)
-            this.guideX.dialect = constants.DIALECT_SVG
+            this.guideX.dialect = 'svg'
             this.guideX.pointerEvents = false
             this.guideX.init(this.graph.view.getOverlayPane()!)
           }
@@ -169,7 +169,7 @@ export class Guide implements IDisposable {
 
           if (this.guideY == null) {
             this.guideY = this.createGuideShape(false)
-            this.guideY.dialect = constants.DIALECT_SVG
+            this.guideY.dialect = 'svg'
             this.guideY.pointerEvents = false
             this.guideY.init(this.graph.view.getOverlayPane()!)
           }

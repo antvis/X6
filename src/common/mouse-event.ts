@@ -150,7 +150,7 @@ export namespace CustomMouseEvent {
         onDblClick(e)
       } else if (!DomEvent.isConsumed(e)) {
         const state = getState(e)
-        graph.dblClick(e, state ? state.cell : null)
+        graph.eventManager.dblClick(e, state ? state.cell : null)
       }
     })
   }

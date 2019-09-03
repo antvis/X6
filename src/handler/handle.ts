@@ -57,10 +57,10 @@ export class Handle {
 
   initShape(isHtml?: boolean) {
     if (isHtml && this.shape.isHtmlAllowed()) {
-      this.shape.dialect = constants.DIALECT_STRICTHTML
+      this.shape.dialect = 'html'
       this.shape.init(this.graph.container)
     } else {
-      this.shape.dialect = constants.DIALECT_SVG
+      this.shape.dialect = 'svg'
 
       if (this.cursor != null) {
         this.shape.init(this.graph.view.getOverlayPane()!)

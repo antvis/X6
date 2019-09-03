@@ -1,14 +1,13 @@
-import { Cell } from './cell'
-import { Graph } from './graph'
+import { Graph, Cell } from '../core'
 import { SelectionChange, UndoableEdit } from '../change'
+import { BaseManager } from './manager-base'
 
-export class SelectionManager {
-  graph: Graph
+export class Selection extends BaseManager {
   cells: Cell[]
   private single: boolean
 
   constructor(graph: Graph) {
-    this.graph = graph
+    super(graph)
     this.cells = []
   }
 

@@ -37,6 +37,14 @@ export function remove(elem: Element | null) {
   }
 }
 
+export function isVisible(elem: HTMLElement | SVGElement | null) {
+  return (
+    elem != null &&
+    elem.style.display !== 'none' &&
+    elem.style.visibility !== 'hidden'
+  )
+}
+
 export function createXmlDocument() {
   let doc = null
   if (document.implementation && document.implementation.createDocument) {

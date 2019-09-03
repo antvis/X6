@@ -7,7 +7,10 @@ import { Geometry } from './geometry'
 import { CellState } from './cell-state'
 import { CellOverlay } from './cell-overlay'
 import { Renderer } from './renderer'
+import { Multiplicity } from './multiplicity'
 import { StyleSheet, EdgeStyle } from '../stylesheet'
+import { Label } from '../shape'
+import { Align, VAlign, CellStyle, Dialect } from '../types'
 import {
   constants,
   detector,
@@ -33,42 +36,52 @@ import {
   ShapeName,
   PageFormat,
 } from '../struct'
-import { SelectionManager } from './selection-manager'
-import { RectangleShape, Polyline, Label } from '../shape'
-import { Align, VAlign, CellStyle, Dialect } from '../types'
 import {
   IMouseHandler,
-  NodeHandler,
   TooltipHandler,
   PopupMenuHandler,
   PanningHandler,
   SelectionHandler,
   GraphHandler,
+  ConnectionHandler,
+  NodeHandler,
+  EdgeHandler,
 } from '../handler'
+import {
+  EventManager,
+  HandlerManager,
+  Selection,
+  SelectionManager,
+  ValidationManager,
+  ViewportManager,
+  ConnectionManager,
+  CellManager,
+} from '../manager'
 
 export class Graph extends Events implements IDisposable {
-  container: HTMLElement
-  model: Model
-  view: View
-  styleSheet: StyleSheet
-  selectionManager: SelectionManager
-  renderer: Renderer
+  public readonly container: HTMLElement
+  public readonly model: Model
+  public readonly view: View
+  public readonly styleSheet: StyleSheet
+  public readonly renderer: Renderer
+  public readonly eventManager: EventManager
+  public readonly selection: Selection
+  public readonly selectionManager: SelectionManager
+  public readonly connectionManager: ConnectionManager
+  public readonly handlerManager: HandlerManager
+  public readonly validator: ValidationManager
+  public readonly viewport: ViewportManager
+  public readonly cellManager: CellManager
 
   tooltipHandler: TooltipHandler
   popupMenuHandler: PopupMenuHandler
   selectionHandler: SelectionHandler
-  connectionHandler: any
+  connectionHandler: ConnectionHandler
   panningHandler: PanningHandler
   panningManager: any
   graphHandler: GraphHandler
 
-  protected verticalPageBreaks: Polyline[]
-  protected horizontalPageBreaks: Polyline[]
-
   isMouseDown: boolean = false
-  protected isMouseTrigger: boolean = false
-  protected lastMouseX: number
-  protected lastMouseY: number
 
   /**
    * Holds the <CellEditor> that is used as the in-place editing.
@@ -76,10 +89,10 @@ export class Graph extends Events implements IDisposable {
   cellEditor: any
 
   /**
-   * An array of <mxMultiplicities> describing the allowed
+   * An array of `Multiplicity` describing the allowed
    * connections in a graph.
    */
-  multiplicities: any[]
+  multiplicities: Multiplicity[] = []
 
   /**
    * Dialect to be used for drawing the graph.
@@ -147,12 +160,6 @@ export class Graph extends Events implements IDisposable {
    * Default is `500` ms.
    */
   tapAndHoldDelay: number = 500
-
-  protected tapAndHoldInProgress: boolean = false
-  protected tapAndHoldValid: boolean = false
-  protected tapAndHoldTimer: number = 0
-  protected initialTouchX: number = 0
-  protected initialTouchY: number = 0
 
   /**
    * Tolerance for a move to be handled as a single click.
@@ -308,14 +315,18 @@ export class Graph extends Events implements IDisposable {
   cellsMovable = true
 
   /**
-   * Specifies the return value for edges in <isLabelMovable>. Default is true.
+   * Specifies if the label of edge movable.
+   *
+   * Default is `true`.
    */
-  edgeLabelsMovable = true
+  edgeLabelsMovable: boolean = true
 
   /**
-   * Specifies the return value for nodes in <isLabelMovable>. Default is false.
+   * Specifies if the label of node movable.
+   *
+   * Default is `false`.
    */
-  nodeLabelsMovable = false
+  nodeLabelsMovable: boolean = false
 
   /**
    * Specifies the return value for <isDropEnabled>. Default is false.
@@ -569,9 +580,11 @@ export class Graph extends Events implements IDisposable {
 
   /**
    * Specifies if multiple edges in the same direction between the same pair of
-   * nodes are allowed. Default is true.
+   * nodes are allowed.
+   *
+   * Default is `true`.
    */
-  multigraph = true
+  multigraph: boolean = true
 
   /**
    * Variable: connectableEdges
@@ -629,11 +642,6 @@ export class Graph extends Events implements IDisposable {
   swimlaneIndicatorColorAttribute = 'fill'
 
   /**
-   * Holds the list of image bundles.
-   */
-  imageBundles: any[]
-
-  /**
    * Specifies the minimum scale to be applied in `fit`.
    *
    * Default is `0.1`. Set to `null` to allow any value.
@@ -673,18 +681,37 @@ export class Graph extends Events implements IDisposable {
     this.styleSheet = options.styleSheet || this.createStyleSheet()
     this.view = this.createView()
     this.renderer = this.createRenderer()
-    this.selectionManager = this.createSelectionManager()
-    this.mouseListeners = []
-    this.multiplicities = []
-    this.imageBundles = []
+    this.selection = this.createSelection()
+
+    // The order of the following initializations should not be modified.
 
     this.model.on(Model.events.change, this.onModelChanged, this)
-    this.createHandlers()
+
+    this.eventManager = new EventManager(this)
+    this.handlerManager = new HandlerManager(this)
+    this.cellManager = new CellManager(this)
+    this.selectionManager = new SelectionManager(this)
+    this.connectionManager = new ConnectionManager(this)
+    this.validator = new ValidationManager(this)
+    this.viewport = new ViewportManager(this)
 
     if (container != null) {
       this.init(container)
     }
+
     this.view.revalidate()
+  }
+
+  getModel() {
+    return this.model
+  }
+
+  getView() {
+    return this.view
+  }
+
+  getStylesheet() {
+    return this.styleSheet
   }
 
   protected createModel() {
@@ -715,29 +742,10 @@ export class Graph extends Events implements IDisposable {
     )
   }
 
-  protected createSelectionManager() {
-    return (this.hooks.createSelectionManager != null &&
-      this.hooks.createSelectionManager(this) ||
-      new SelectionManager(this)
-    )
-  }
-
-  protected createHandlers() {
-    this.tooltipHandler = this.createTooltipHandler()
-    this.tooltipHandler.disable()
-    this.selectionHandler = this.createSelectionHandler()
-    // this.connectionHandler = this.createConnectionHandler()
-    // this.connectionHandler.setEnabled(false)
-    this.graphHandler = this.createGraphHandler()
-    this.panningHandler = this.createPanningHandler()
-    this.panningHandler.disablePanning()
-    this.popupMenuHandler = this.createPopupMenuHandler()
-  }
-
-  protected createTooltipHandler() {
-    return (this.hooks.createTooltipHandler != null &&
-      this.hooks.createTooltipHandler(this) ||
-      new TooltipHandler(this)
+  protected createSelection() {
+    return (this.hooks.createSelection != null &&
+      this.hooks.createSelection(this) ||
+      new Selection(this)
     )
   }
 
@@ -747,39 +755,55 @@ export class Graph extends Events implements IDisposable {
     }
   }
 
-  protected createSelectionHandler() {
-    return (this.hooks.createSelectionHandler != null &&
-      this.hooks.createSelectionHandler(this) ||
-      new SelectionHandler(this)
-    )
+  enableTooltips() {
+    this.tooltipHandler.enable()
   }
 
-  protected createGraphHandler() {
-    return (this.hooks.createGraphHandler != null &&
-      this.hooks.createGraphHandler(this) ||
-      new GraphHandler(this)
-    )
+  disableTooltips() {
+    this.tooltipHandler.disable()
   }
 
-  protected createPanningHandler() {
-    return (this.hooks.createPanningHandler != null &&
-      this.hooks.createPanningHandler(this) ||
-      new PanningHandler(this)
-    )
+  setConnectable(connectable: boolean) {
+    if (connectable) {
+      this.connectionHandler.enable()
+    } else {
+      this.connectionHandler.disable()
+    }
   }
 
-  protected createPopupMenuHandler() {
-    return (this.hooks.createPopupMenuHandler != null &&
-      this.hooks.createPopupMenuHandler(this) ||
-      new PopupMenuHandler(this)
-    )
+  enableConnection() {
+    this.connectionHandler.enable()
+  }
+
+  disableConnection() {
+    this.connectionHandler.disable()
+  }
+
+  isConnectable() {
+    return this.connectionHandler.isEnabled()
+  }
+
+  enablePanning() {
+    this.panningHandler.enablePanning()
+  }
+
+  disablePanning() {
+    this.panningHandler.disablePanning()
+  }
+
+  enablePinch() {
+    this.panningHandler.enablePinch()
+  }
+
+  disablePinch() {
+    this.panningHandler.disablePinch()
   }
 
   protected init(container: HTMLElement) {
     // TODO:
     // this.cellEditor = new CellEditor(this)
     this.view.init()
-    this.sizeDidChange()
+    this.viewport.sizeDidChange()
 
     if (detector.IS_IE) {
       DomEvent.addListener(window, 'unload', () => {
@@ -798,22 +822,6 @@ export class Graph extends Events implements IDisposable {
 
   batchUpdate(update: () => void) {
     this.model.batchUpdate(update)
-  }
-
-  getModel() {
-    return this.model
-  }
-
-  getView() {
-    return this.view
-  }
-
-  getStylesheet() {
-    return this.styleSheet
-  }
-
-  setStylesheet(stylesheet: StyleSheet) {
-    this.styleSheet = stylesheet
   }
 
   /**
@@ -860,7 +868,7 @@ export class Graph extends Events implements IDisposable {
     changes.forEach(change => this.processChange(change))
     this.updateSelection()
     this.view.validate()
-    this.sizeDidChange()
+    this.viewport.sizeDidChange()
   }
 
   protected processChange(change: IChange) {
@@ -958,7 +966,7 @@ export class Graph extends Events implements IDisposable {
     }
   }
 
-  // #region ======== Overlays
+  // #region :::::::::::: Overlays
 
   /**
    * Adds an `CellOverlay` for the specified cell.
@@ -1085,7 +1093,7 @@ export class Graph extends Events implements IDisposable {
 
   // #endregion
 
-  // #region ======== In-place Editing
+  // #region :::::::::::: In-place Editing
 
   startEditing(e?: MouseEvent) {
     this.startEditingAtCell(null, e)
@@ -1142,575 +1150,7 @@ export class Graph extends Events implements IDisposable {
 
   // #endregion
 
-  // #region ======== Event processing
-
-  /**
-   * Processes an escape keystroke.
-   */
-  escape(e: KeyboardEvent) {
-    this.trigger(Graph.events.escape, { e })
-  }
-
-  /**
-   * Processes a singleclick on an optional cell and fires a <click> event.
-   * The click event is fired initially. If the graph is enabled and the
-   * event has not been consumed, then the cell is selected using
-   * <selectCellForEvent> or the selection is cleared using
-   * <clearSelection>. The events consumed state is set to true if the
-   * corresponding <mxMouseEvent> has been consumed.
-   */
-  click(e: CustomMouseEvent) {
-    const evt = e.getEvent()
-    let cell = e.getCell()
-    const consumed = e.isConsumed()
-
-    this.trigger('click', { e: evt })
-
-    // Handles the event if it has not been consumed
-    if (this.isEnabled() && !DomEvent.isConsumed(evt) && !consumed) {
-      if (cell != null) {
-        if (this.isTransparentClickEvent(evt)) {
-          let active = false
-
-          const tmp = this.getCellAt(
-            e.graphX,
-            e.graphY,
-            null,
-            false,
-            false,
-            (state: CellState) => {
-              const selected = this.isCellSelected(state.cell)
-              active = active || selected
-              return !active || selected
-            },
-          )
-
-          if (tmp != null) {
-            cell = tmp
-          }
-        }
-
-        this.selectCellForEvent(cell, evt)
-      } else {
-        let swimlane = null
-
-        if (this.isSwimlaneSelectionEnabled()) {
-          // Gets the swimlane at the location (includes
-          // content area of swimlanes)
-          swimlane = this.getSwimlaneAt(e.getGraphX(), e.getGraphY())
-        }
-
-        // Selects the swimlane and consumes the event
-        if (swimlane != null) {
-          this.selectCellForEvent(swimlane, evt)
-        } else if (!this.isToggleEvent(evt)) {
-          // Ignores the event if the control key is pressed
-          this.clearSelection()
-        }
-      }
-    }
-  }
-
-  /**
-   * Processes a doubleclick on an optional cell and fires a <dblclick>
-   * event. The event is fired initially. If the graph is enabled and the
-   * event has not been consumed, then <edit> is called with the given
-   * cell. The event is ignored if no cell was specified.
-   */
-  dblClick(e: MouseEvent, cell?: Cell | null) {
-    this.trigger('doubleClick', { e })
-    // Handles the event if it has not been consumed
-    if (
-      this.isEnabled() &&
-      !DomEvent.isConsumed(e) &&
-      cell != null &&
-      this.isCellEditable(cell) &&
-      !this.isEditing(cell)
-    ) {
-      this.startEditingAtCell(cell, e)
-      DomEvent.consume(e)
-    }
-  }
-
-  /**
-   * Handles the <mxMouseEvent> by highlighting the <CellState>.
-   *
-   * Parameters:
-   *
-   * me - <mxMouseEvent> that represents the touch event.
-   * state - Optional <CellState> that is associated with the event.
-   */
-  tapAndHold(e: CustomMouseEvent) {
-    const evt = e.getEvent()
-    this.trigger('tapAndHold', { e })
-
-    if (DomEvent.isConsumed(evt)) {
-      // Resets the state of the panning handler
-      this.panningHandler.panningTrigger = false
-    }
-
-    // Handles the event if it has not been consumed
-    // if (
-    //   this.isEnabled() &&
-    //   !DomEvent.isConsumed(evt) &&
-    //   this.connectionHandler.isEnabled()
-    // ) {
-    //   const state = this.view.getState(this.connectionHandler.marker.getCell(e))
-
-    //   if (state != null) {
-    //     this.connectionHandler.marker.currentColor = this.connectionHandler.marker.validColor
-    //     this.connectionHandler.marker.markedState = state
-    //     this.connectionHandler.marker.mark()
-
-    //     this.connectionHandler.first = new Point(e.getGraphX(), e.getGraphY())
-    //     this.connectionHandler.edgeState = this.connectionHandler.createEdgeState(e)
-    //     this.connectionHandler.previous = state
-    //     this.connectionHandler.fireEvent(new DomEventObject(DomEvent.START,
-    //                     'state', this.connectionHandler.previous))
-    //   }
-    // }
-  }
-
-  /**
-   * Scrolls the graph to the given point, extending
-   * the graph container if specified.
-   */
-  scrollPointToVisible(
-    x: number,
-    y: number,
-    extend: boolean = false,
-    border: number = 20,
-  ) {
-    if (
-      !this.timerAutoScroll && (
-        this.ignoreScrollbars ||
-        util.hasScrollbars(this.container)
-      )
-    ) {
-      const c = this.container
-
-      if (
-        x >= c.scrollLeft &&
-        y >= c.scrollTop &&
-        x <= c.scrollLeft + c.clientWidth &&
-        y <= c.scrollTop + c.clientHeight
-      ) {
-        let dx = c.scrollLeft + c.clientWidth - x
-
-        if (dx < border) {
-          const old = c.scrollLeft
-          c.scrollLeft += border - dx
-
-          // Automatically extends the canvas size to the bottom, right
-          // if the event is outside of the canvas and the edge of the
-          // canvas has been reached. Notes: Needs fix for IE.
-          if (extend && old === c.scrollLeft) {
-            if (this.dialect === constants.DIALECT_SVG) {
-              const root = (this.view.getDrawPane() as SVGElement).ownerSVGElement!
-              const width = this.container.scrollWidth + border - dx
-
-              // Updates the clipping region. This is an expensive
-              // operation that should not be executed too often.
-              root.style.width = util.toPx(width)
-            } else {
-              const width = Math.max(c.clientWidth, c.scrollWidth) + border - dx
-              const stage = this.view.getStage()!
-              stage.style.width = util.toPx(width)
-            }
-
-            c.scrollLeft += border - dx
-          }
-        } else {
-          dx = x - c.scrollLeft
-
-          if (dx < border) {
-            c.scrollLeft -= border - dx
-          }
-        }
-
-        let dy = c.scrollTop + c.clientHeight - y
-
-        if (dy < border) {
-          const old = c.scrollTop
-          c.scrollTop += border - dy
-
-          if (old === c.scrollTop && extend) {
-            if (this.dialect === constants.DIALECT_SVG) {
-              const root = (this.view.getDrawPane() as SVGElement).ownerSVGElement!
-              const height = this.container.scrollHeight + border - dy
-
-              // Updates the clipping region. This is an expensive
-              // operation that should not be executed too often.
-              root.style.height = util.toPx(height)
-            } else {
-              const height = Math.max(c.clientHeight, c.scrollHeight) + border - dy
-              const canvas = this.view.getStage()!
-              canvas.style.height = util.toPx(height)
-            }
-
-            c.scrollTop += border - dy
-          }
-        } else {
-          dy = y - c.scrollTop
-
-          if (dy < border) {
-            c.scrollTop -= border - dy
-          }
-        }
-      }
-    } else if (this.allowAutoPanning && !this.panningHandler.isActive()) {
-      if (this.panningManager == null) {
-        this.panningManager = this.createPanningManager()
-      }
-
-      this.panningManager.panTo(x + this.panDx, y + this.panDy)
-    }
-  }
-
-  createPanningManager() {
-    // TODO: xx
-    // return new PanningManager(this)
-  }
-
-  /**
-   * Returns the size of the border and padding on all four sides of the
-   * container. The left, top, right and bottom borders are stored in the x, y,
-   * width and height of the returned <Rect>, respectively.
-   */
-  getBorderSizes() {
-    const css = util.getCurrentStyle(this.container)
-    return new Rectangle(
-      util.parseCssNumber(css.paddingLeft) +
-      (css.borderLeftStyle !== 'none' ? util.parseCssNumber(css.borderLeftWidth) : 0),
-      util.parseCssNumber(css.paddingTop) +
-      (css.borderTopStyle !== 'none' ? util.parseCssNumber(css.borderTopWidth) : 0),
-      util.parseCssNumber(css.paddingRight) +
-      (css.borderRightStyle !== 'none' ? util.parseCssNumber(css.borderRightWidth) : 0),
-      util.parseCssNumber(css.paddingBottom) +
-      (css.borderBottomStyle !== 'none' ? util.parseCssNumber(css.borderBottomWidth) : 0))
-  }
-
-  /**
-   * Returns the preferred size of the background page if <preferPageSize> is true.
-   */
-  getPreferredPageSize(bounds: Rectangle, width: number, height: number) {
-    // const scale = this.view.scale
-    const tr = this.view.translate
-    const fmt = this.pageFormat
-    const ps = this.pageScale
-    const page = new Rectangle(0, 0, Math.ceil(fmt.width * ps), Math.ceil(fmt.height * ps))
-
-    const hCount = (this.pageBreaksVisible) ? Math.ceil(width / page.width) : 1
-    const vCount = (this.pageBreaksVisible) ? Math.ceil(height / page.height) : 1
-
-    return new Rectangle(0, 0, hCount * page.width + 2 + tr.x, vCount * page.height + 2 + tr.y)
-  }
-
-  /**
-   * Scales the graph such that the complete diagram fits into <container> and
-   * returns the current scale in the view. To fit an initial graph prior to
-   * rendering, set <mxGraphView.rendering> to false prior to changing the model
-   * and execute the following after changing the model.
-   *
-   * (code)
-   * graph.fit();
-   * graph.view.rendering = true;
-   * graph.refresh();
-   * (end)
-   *
-   * To fit and center the graph, the following code can be used.
-   *
-   * (code)
-   * var margin = 2;
-   * var max = 3;
-   *
-   * var bounds = graph.getGraphBounds();
-   * var cw = graph.container.clientWidth - margin;
-   * var ch = graph.container.clientHeight - margin;
-   * var w = bounds.width / graph.view.scale;
-   * var h = bounds.height / graph.view.scale;
-   * var s = Math.min(max, Math.min(cw / w, ch / h));
-   *
-   * graph.view.scaleAndTranslate(s,
-   *   (margin + cw - w * s) / (2 * s) - bounds.x / graph.view.scale,
-   *   (margin + ch - h * s) / (2 * s) - bounds.y / graph.view.scale);
-   * (end)
-   *
-   * Parameters:
-   *
-   * border - Optional number that specifies the border. Default is <border>.
-   * keepOrigin - Optional boolean that specifies if the translate should be
-   * changed. Default is false.
-   * margin - Optional margin in pixels. Default is 0.
-   * enabled - Optional boolean that specifies if the scale should be set or
-   * just returned. Default is true.
-   * ignoreWidth - Optional boolean that specifies if the width should be
-   * ignored. Default is false.
-   * ignoreHeight - Optional boolean that specifies if the height should be
-   * ignored. Default is false.
-   * maxHeight - Optional maximum height.
-   */
-  fit(
-    border: number = this.getBorder(),
-    keepOrigin: boolean = false,
-    margin: number = 0,
-    enabled: boolean = true,
-    ignoreWidth: boolean = false,
-    ignoreHeight: boolean = false,
-    maxHeight?: number,
-  ) {
-    if (this.container != null) {
-      // Adds spacing and border from css
-      const cssBorder = this.getBorderSizes()
-      let w1 = this.container.offsetWidth - cssBorder.x - cssBorder.width - 1
-      let h1 = maxHeight != null
-        ? maxHeight
-        : this.container.offsetHeight - cssBorder.y - cssBorder.height - 1
-      let bounds = this.view.getGraphBounds()
-
-      if (bounds.width > 0 && bounds.height > 0) {
-        if (keepOrigin && bounds.x != null && bounds.y != null) {
-          bounds = bounds.clone()
-          bounds.width += bounds.x
-          bounds.height += bounds.y
-          bounds.x = 0
-          bounds.y = 0
-        }
-
-        // LATER: Use unscaled bounding boxes to fix rounding errors
-        const s = this.view.scale
-        let w2 = bounds.width / s
-        let h2 = bounds.height / s
-
-        // Fits to the size of the background image if required
-        if (this.backgroundImage != null) {
-          w2 = Math.max(w2, this.backgroundImage.width - bounds.x / s)
-          h2 = Math.max(h2, this.backgroundImage.height - bounds.y / s)
-        }
-
-        const b = ((keepOrigin) ? border : 2 * border) + margin + 1
-
-        w1 -= b
-        h1 -= b
-
-        let s2 = (((ignoreWidth) ? h1 / h2 : (ignoreHeight) ? w1 / w2 :
-          Math.min(w1 / w2, h1 / h2)))
-
-        if (this.minFitScale != null) {
-          s2 = Math.max(s2, this.minFitScale)
-        }
-
-        if (this.maxFitScale != null) {
-          s2 = Math.min(s2, this.maxFitScale)
-        }
-
-        if (enabled) {
-          if (!keepOrigin) {
-            if (!util.hasScrollbars(this.container)) {
-              const x0 = (bounds.x != null)
-                ? Math.floor(this.view.translate.x - bounds.x / s + border / s2 + margin / 2)
-                : border
-
-              const y0 = (bounds.y != null)
-                ? Math.floor(this.view.translate.y - bounds.y / s + border / s2 + margin / 2)
-                : border
-
-              this.view.scaleAndTranslate(s2, x0, y0)
-            } else {
-              this.view.setScale(s2)
-              const b2 = this.getGraphBounds()
-
-              if (b2.x != null) {
-                this.container.scrollLeft = b2.x
-              }
-
-              if (b2.y != null) {
-                this.container.scrollTop = b2.y
-              }
-            }
-          } else if (this.view.scale !== s2) {
-            this.view.setScale(s2)
-          }
-        } else {
-          return s2
-        }
-      }
-    }
-
-    return this.view.scale
-  }
-
-  /**
-   * Called when the size of the graph has changed. This implementation fires
-   * a <size> event after updating the clipping region of the SVG element in
-   * SVG-bases browsers.
-   */
-  sizeDidChange() {
-    const bounds = this.getGraphBounds()
-
-    if (this.container != null) {
-      const border = this.getBorder()
-
-      let width = Math.max(0, bounds.x + bounds.width + 2 * border * this.view.scale)
-      let height = Math.max(0, bounds.y + bounds.height + 2 * border * this.view.scale)
-
-      if (this.minimumContainerSize != null) {
-        width = Math.max(width, this.minimumContainerSize.width)
-        height = Math.max(height, this.minimumContainerSize.height)
-      }
-
-      if (this.resizeContainer) {
-        this.doResizeContainer(width, height)
-      }
-
-      if (this.preferPageSize || (!detector.IS_IE && this.pageVisible)) {
-        const size = this.getPreferredPageSize(bounds, Math.max(1, width), Math.max(1, height))
-
-        if (size != null) {
-          width = size.width * this.view.scale
-          height = size.height * this.view.scale
-        }
-      }
-
-      if (this.minimumGraphSize != null) {
-        width = Math.max(width, this.minimumGraphSize.width * this.view.scale)
-        height = Math.max(height, this.minimumGraphSize.height * this.view.scale)
-      }
-
-      width = Math.ceil(width)
-      height = Math.ceil(height)
-
-      if (this.dialect === 'svg') {
-        const root = (this.view.getDrawPane() as SVGGElement).ownerSVGElement
-        if (root != null) {
-          root.style.minWidth = `${Math.max(1, width)}px`
-          root.style.minHeight = `${Math.max(1, height)}px`
-          root.style.width = '100%'
-          root.style.height = '100%'
-        }
-      } else {
-        if (detector.IS_QUIRKS) {
-          // Quirks mode does not support minWidth/-Height
-          this.view.updateHtmlStageSize(Math.max(1, width), Math.max(1, height))
-        } else {
-          const canvas = this.view.getStage()!
-          canvas.style.minWidth = `${Math.max(1, width)}px`
-          canvas.style.minHeight = `${Math.max(1, height)}px`
-        }
-      }
-
-      this.updatePageBreaks(this.pageBreaksVisible, width, height)
-    }
-
-    this.trigger(Graph.events.size, bounds)
-  }
-
-  /**
-   * Resizes the container for the given graph width and height.
-   */
-  doResizeContainer(width: number, height: number) {
-    const w = this.maximumContainerSize != null
-      ? Math.min(this.maximumContainerSize.width, width)
-      : width
-
-    const h = this.maximumContainerSize != null
-      ? Math.min(this.maximumContainerSize.height, height)
-      : height
-
-    this.container.style.width = `${Math.ceil(w)}px`
-    this.container.style.height = `${Math.ceil(h)}px`
-  }
-
-  /**
-   * Invokes from <sizeDidChange> to redraw the page breaks.
-   *
-   * Parameters:
-   *
-   * visible - Boolean that specifies if page breaks should be shown.
-   * width - Specifies the width of the container in pixels.
-   * height - Specifies the height of the container in pixels.
-   */
-  updatePageBreaks(visible: boolean, width: number, height: number) {
-    const scale = this.view.scale
-    const tr = this.view.translate
-    const fmt = this.pageFormat
-    const ps = scale * this.pageScale
-    const bounds = new Rectangle(0, 0, fmt.width * ps, fmt.height * ps)
-
-    const gb = Rectangle.clone(this.getGraphBounds())
-    gb.width = Math.max(1, gb.width)
-    gb.height = Math.max(1, gb.height)
-
-    bounds.x = Math.floor((gb.x - tr.x * scale) / bounds.width) * bounds.width + tr.x * scale
-    bounds.y = Math.floor((gb.y - tr.y * scale) / bounds.height) * bounds.height + tr.y * scale
-
-    gb.width = Math.ceil((gb.width + (gb.x - bounds.x)) / bounds.width) * bounds.width
-    gb.height = Math.ceil((gb.height + (gb.y - bounds.y)) / bounds.height) * bounds.height
-
-    // Does not show page breaks if the scale is too small
-    // tslint:disable-next-line
-    visible = visible && Math.min(bounds.width, bounds.height) > this.minPageBreakDist
-
-    const horizontalCount = (visible) ? Math.ceil(gb.height / bounds.height) + 1 : 0
-    const verticalCount = (visible) ? Math.ceil(gb.width / bounds.width) + 1 : 0
-    const right = (verticalCount - 1) * bounds.width
-    const bottom = (horizontalCount - 1) * bounds.height
-
-    if (this.horizontalPageBreaks == null && horizontalCount > 0) {
-      this.horizontalPageBreaks = []
-    }
-
-    if (this.verticalPageBreaks == null && verticalCount > 0) {
-      this.verticalPageBreaks = []
-    }
-
-    const drawPageBreaks = (breaks: Polyline[]) => {
-      if (breaks != null) {
-        const count = breaks === this.horizontalPageBreaks
-          ? horizontalCount
-          : verticalCount
-
-        for (let i = 0; i <= count; i += 1) {
-          const pts = breaks === this.horizontalPageBreaks
-            ? [
-              new Point(Math.round(bounds.x), Math.round(bounds.y + i * bounds.height)),
-              new Point(Math.round(bounds.x + right), Math.round(bounds.y + i * bounds.height)),
-            ]
-            : [
-              new Point(Math.round(bounds.x + i * bounds.width), Math.round(bounds.y)),
-              new Point(Math.round(bounds.x + i * bounds.width), Math.round(bounds.y + bottom)),
-            ]
-
-          if (breaks[i] != null) {
-            breaks[i].points = pts
-            breaks[i].redraw()
-          } else {
-            const pageBreak = new Polyline(pts, this.pageBreakColor)
-            pageBreak.dialect = this.dialect
-            pageBreak.pointerEvents = false
-            pageBreak.dashed = this.pageBreakDashed
-            pageBreak.init(this.view.getBackgroundPane()!)
-            pageBreak.redraw()
-
-            breaks[i] = pageBreak
-          }
-        }
-
-        for (let i = count; i < breaks.length; i += 1) {
-          breaks[i].dispose()
-        }
-
-        breaks.splice(count, breaks.length - count)
-      }
-    }
-
-    drawPageBreaks(this.horizontalPageBreaks)
-    drawPageBreaks(this.verticalPageBreaks)
-  }
-
-  // #endregion
-
-  // #region ======== Cell styles
+  // #region :::::::::::: Cell styles
 
   /**
    * Returns a key-value pair object representing the cell style for the
@@ -1908,7 +1348,7 @@ export class Graph extends Events implements IDisposable {
 
   // #endregion
 
-  // #region ======== Cell alignment and orientation
+  // #region :::::::::::: Cell alignment and orientation
 
   /**
    * Aligns the given cells vertically or horizontally according to the given
@@ -2035,35 +1475,9 @@ export class Graph extends Events implements IDisposable {
     return edge
   }
 
-  // TODO:
-  // addImageBundle(bundle) {
-  //   this.imageBundles.push(bundle)
-  // }
-
-  // removeImageBundle(bundle) {
-  //   this.imageBundles = this.imageBundles.filter(item => item !== bundle)
-  // }
-
-  // /**
-  //  * Searches all `imageBundles` for the specified key and returns the value
-  //  * for the first match or null if the key is not found.
-  //  */
-  // getImageFromBundles(key) {
-  //   if (key != null) {
-  //     for (let i = 0, ii = this.imageBundles.length; i < ii; i += 1) {
-  //       const image = this.imageBundles[i].getImage(key)
-  //       if (image != null) {
-  //         return image
-  //       }
-  //     }
-  //   }
-
-  //   return null
-  // }
-
   // #endregion
 
-  // #region ======== Order
+  // #region :::::::::::: Order
 
   /**
    * Moves the given cells to the front or back. The change is carried out
@@ -2112,7 +1526,7 @@ export class Graph extends Events implements IDisposable {
 
   // #endregion
 
-  // #region ======== Grouping
+  // #region :::::::::::: Grouping
 
   /**
    * Adds the cells into the given group. The change is carried out using
@@ -2408,7 +1822,7 @@ export class Graph extends Events implements IDisposable {
 
   // #endregion
 
-  // #region ======== Cell cloning, insertion and removal
+  // #region :::::::::::: Cell cloning, insertion and removal
 
   /**
    * Returns the clone for the given cell.
@@ -2468,11 +1882,11 @@ export class Graph extends Events implements IDisposable {
           if (
             !allowInvalidEdges &&
             this.model.isEdge(clones[i]!) &&
-            this.getEdgeValidationError(
+            !this.isEdgeValid(
               clones[i],
-              this.model.getTerminal(clones[i]!, true)!,
-              this.model.getTerminal(clones[i]!, false)!,
-            ) != null
+              this.model.getTerminal(clones[i], true),
+              this.model.getTerminal(clones[i], false),
+            )
           ) {
             (clones as any)[i] = null
           } else {
@@ -2940,7 +2354,7 @@ export class Graph extends Events implements IDisposable {
 
   // #endregion
 
-  // #region ======== Cell visibility
+  // #region :::::::::::: Cell visibility
 
   toggleCells(
     show: boolean,
@@ -2969,7 +2383,7 @@ export class Graph extends Events implements IDisposable {
 
   // #endregion
 
-  // #region ======== Folding
+  // #region :::::::::::: Folding
 
   foldCells(
     collapse: boolean,
@@ -3114,7 +2528,7 @@ export class Graph extends Events implements IDisposable {
 
   // #endregion
 
-  // #region ======== Cell sizing
+  // #region :::::::::::: Cell sizing
 
   updateCellSize(cell: Cell, ignoreChildren: boolean = false) {
     this.model.batchUpdate(() => {
@@ -3546,7 +2960,7 @@ export class Graph extends Events implements IDisposable {
 
   // #endregion
 
-  // #region ======== Cell moving
+  // #region :::::::::::: Cell moving
 
   importCells(
     cells: Cell[],
@@ -4017,80 +3431,13 @@ export class Graph extends Events implements IDisposable {
 
   // #endregion
 
-  // #region ======== Cell connecting and connection constraints
+  // #region :::::::::::: Cell connecting and connection constraints
 
   /**
    * Returns the constraint used to connect to the outline of the given state.
    */
   getOutlineConstraint(point: Point, terminalState: CellState, me: any) {
-    if (terminalState.shape != null) {
-      const bounds = this.view.getPerimeterBounds(terminalState)
-      const direction = terminalState.style.direction
-
-      if (direction === 'north' || direction === 'south') {
-        bounds.x += bounds.width / 2 - bounds.height / 2
-        bounds.y += bounds.height / 2 - bounds.width / 2
-        const tmp = bounds.width
-        bounds.width = bounds.height
-        bounds.height = tmp
-      }
-
-      const alpha = util.toRad(terminalState.shape.getShapeRotation())
-
-      if (alpha !== 0) {
-        const cos = Math.cos(-alpha)
-        const sin = Math.sin(-alpha)
-
-        const ct = new Point(bounds.getCenterX(), bounds.getCenterY())
-        // tslint:disable-next-line
-        point = util.rotatePoint(point, cos, sin, ct)
-      }
-
-      let sx = 1
-      let sy = 1
-      let dx = 0
-      let dy = 0
-
-      // LATER: Add flipping support for image shapes
-      if (this.getModel().isNode(terminalState.cell)) {
-        let flipH = terminalState.style.flipH
-        let flipV = terminalState.style.flipV
-
-        if (direction === 'north' || direction === 'south') {
-          const tmp = flipH
-          flipH = flipV
-          flipV = tmp
-        }
-
-        if (flipH) {
-          sx = -1
-          dx = -bounds.width
-        }
-
-        if (flipV) {
-          sy = -1
-          dy = -bounds.height
-        }
-      }
-
-      // tslint:disable-next-line
-      point = new Point(
-        (point.x - bounds.x) * sx - dx + bounds.x,
-        (point.y - bounds.y) * sy - dy + bounds.y,
-      )
-
-      const x = (bounds.width === 0)
-        ? 0
-        : Math.round((point.x - bounds.x) * 1000 / bounds.width) / 1000
-
-      const y = (bounds.height === 0)
-        ? 0
-        : Math.round((point.y - bounds.y) * 1000 / bounds.height) / 1000
-
-      return new ConnectionConstraint(new Point(x, y), false)
-    }
-
-    return null
+    return this.connectionManager.getOutlineConstraint(point, terminalState, me)
   }
 
   /**
@@ -4539,7 +3886,7 @@ export class Graph extends Events implements IDisposable {
 
   // #endregion
 
-  // #region ======== Drilldown
+  // #region :::::::::::: Drilldown
 
   /**
    * Returns the translation to be used if the given cell is the root cell as
@@ -4713,209 +4060,53 @@ export class Graph extends Events implements IDisposable {
 
   // #endregion
 
-  // #region ======== Graph display
+  // #region :::::::::::: Graph display
 
   /**
-   * Returns the bounds of the visible graph. Shortcut to
-   * <mxGraphView.getGraphBounds>. See also: <getBoundingBoxFromGeometry>.
+   * Returns the bounds of the visible graph.
    */
   getGraphBounds() {
     return this.view.getGraphBounds()
   }
 
   /**
-   * Returns the scaled, translated bounds for the given cell. See
-   * <mxGraphView.getBounds> for arrays.
+   * Returns the scaled, translated bounds for the given cell.
    *
-   * Parameters:
-   *
-   * cell - <Cell> whose bounds should be returned.
-   * includeEdge - Optional boolean that specifies if the bounds of
-   * the connected edges should be included. Default is false.
-   * includeDescendants - Optional boolean that specifies if the bounds
-   * of all descendants should be included. Default is false.
+   * @param cell The `Cell` whose bounds should be returned.
+   * @param includeEdges Optional boolean that specifies if the bounds of
+   * the connected edges should be included. Default is `false`.
+   * @param includeDescendants Optional boolean that specifies if the bounds
+   * of all descendants should be included. Default is `false`.
    */
   getCellBounds(
     cell: Cell,
     includeEdges: boolean = false,
     includeDescendants: boolean = false,
   ) {
-    let cells = [cell]
-
-    // Includes all connected edges
-    if (includeEdges) {
-      cells = cells.concat(this.model.getEdges(cell))
-    }
-
-    let result = this.view.getBounds(cells)
-
-    // Recursively includes the bounds of the children
-    if (includeDescendants) {
-      const childCount = this.model.getChildCount(cell)
-
-      for (let i = 0; i < childCount; i += 1) {
-        const tmp = this.getCellBounds(
-          this.model.getChildAt(cell, i)!,
-          includeEdges,
-          true,
-        )!
-
-        if (result != null) {
-          result.add(tmp)
-        } else {
-          result = tmp
-        }
-      }
-    }
-
-    return result
+    return this.viewport.getCellBounds(
+      cell,
+      includeEdges,
+      includeDescendants,
+    )
   }
 
   /**
    * Returns the bounding box for the geometries of the nodes in the
-   * given array of cells. This can be used to find the graph bounds during
-   * a layout operation (ie. before the last endUpdate) as follows:
-   *
-   * (code)
-   * var cells = graph.getChildCells(graph.getDefaultParent(), true, true);
-   * var bounds = graph.getBoundingBoxFromGeometry(cells, true);
-   * (end)
-   *
-   * This can then be used to move cells to the origin:
-   *
-   * (code)
-   * if (bounds.x < 0 || bounds.y < 0)
-   * {
-   *   graph.moveCells(cells, -Math.min(bounds.x, 0), -Math.min(bounds.y, 0))
-   * }
-   * (end)
-   *
-   * Or to translate the graph view:
-   *
-   * (code)
-   * if (bounds.x < 0 || bounds.y < 0)
-   * {
-   *   graph.view.setTranslate(-Math.min(bounds.x, 0), -Math.min(bounds.y, 0));
-   * }
-   * (end)
-   *
-   * Parameters:
-   *
-   * cells - Array of <Cells> whose bounds should be returned.
-   * includeEdges - Specifies if edge bounds should be included by computing
-   * the bounding box for all points in geometry. Default is false.
+   * given array of cells.
    */
   getBoundingBoxFromGeometry(cells: Cell[], includeEdges: boolean = false) {
-    let result = null
-
-    if (cells != null) {
-      for (let i = 0; i < cells.length; i += 1) {
-        if (includeEdges || this.model.isNode(cells[i])) {
-          // Computes the bounding box for the points in the geometry
-          const geo = this.getCellGeometry(cells[i])
-
-          if (geo != null) {
-            let bbox = null
-
-            if (this.model.isEdge(cells[i])) {
-
-              const pts = geo.points
-              let tmp = new Rectangle(pts[0].x, pts[0].y, 0, 0)
-
-              const addPoint = (pt: Point | null) => {
-                if (pt != null) {
-                  if (tmp == null) {
-                    tmp = new Rectangle(pt.x, pt.y, 0, 0)
-                  } else {
-                    tmp.add(new Rectangle(pt.x, pt.y, 0, 0))
-                  }
-                }
-              }
-
-              if (this.model.getTerminal(cells[i], true) == null) {
-                addPoint(geo.getTerminalPoint(true))
-              }
-
-              if (this.model.getTerminal(cells[i], false) == null) {
-                addPoint(geo.getTerminalPoint(false))
-              }
-
-              if (pts != null && pts.length > 0) {
-                for (let j = 1; j < pts.length; j += 1) {
-                  addPoint(pts[j])
-                }
-              }
-
-              bbox = tmp
-            } else {
-              const parent = this.model.getParent(cells[i])!
-
-              if (geo.relative) {
-                if (this.model.isNode(parent) && parent !== this.view.currentRoot) {
-                  const tmp = this.getBoundingBoxFromGeometry([parent], false)
-
-                  if (tmp != null) {
-                    bbox = new Rectangle(
-                      geo.bounds.x * tmp.width,
-                      geo.bounds.y * tmp.height,
-                      geo.bounds.width,
-                      geo.bounds.height,
-                    )
-
-                    if (util.indexOf(cells, parent) >= 0) {
-                      bbox.x += tmp.x
-                      bbox.y += tmp.y
-                    }
-                  }
-                }
-              } else {
-                bbox = Rectangle.clone(geo.bounds)
-
-                if (this.model.isNode(parent) && util.indexOf(cells, parent) >= 0) {
-                  const tmp = this.getBoundingBoxFromGeometry([parent], false)
-
-                  if (tmp != null) {
-                    bbox.x += tmp.x
-                    bbox.y += tmp.y
-                  }
-                }
-              }
-
-              if (bbox != null && geo.offset != null) {
-                bbox.x += geo.offset.x
-                bbox.y += geo.offset.y
-              }
-            }
-
-            if (bbox != null) {
-              if (result == null) {
-                result = Rectangle.clone(bbox)
-              } else {
-                result.add(bbox)
-              }
-            }
-          }
-        }
-      }
-    }
-
-    return result
+    return this.viewport.getBoundingBoxFromGeometry(cells, includeEdges)
   }
 
   /**
    * Clears all cell states or the states for the hierarchy starting at the
-   * given cell and validates the graph. This fires a refresh event as the
-   * last step.
-   *
-   * Parameters:
-   *
-   * cell - Optional <Cell> for which the cell states should be cleared.
+   * given cell and validates the graph.
    */
   refresh(cell: Cell) {
     this.view.clear(cell, cell == null)
     this.view.validate()
-    this.sizeDidChange()
-    // this.fireEvent(new DomEventObject(DomEvent.REFRESH))
+    this.viewport.sizeDidChange()
+    this.trigger(Graph.events.refresh)
   }
 
   /**
@@ -4928,135 +4119,14 @@ export class Graph extends Events implements IDisposable {
     return value
   }
 
-  /**
-   * Shifts the graph display by the given amount. This is used to preview
-   * panning operations, use <mxGraphView.setTranslate> to set a persistent
-   * translation of the view. Fires <DomEvent.PAN>.
-   *
-   * Parameters:
-   *
-   * dx - Amount to shift the graph along the x-axis.
-   * dy - Amount to shift the graph along the y-axis.
-   */
-
-  protected shiftPreview1: HTMLElement | null
-  protected shiftPreview2: HTMLElement | null
-
   panGraph(dx: number, dy: number) {
-    if (this.useScrollbarsForPanning && util.hasScrollbars(this.container)) {
-      this.container.scrollLeft = -dx
-      this.container.scrollTop = -dy
-    } else {
-      const canvas = this.view.getStage()!
-
-      if (this.dialect === constants.DIALECT_SVG) {
-        // Puts everything inside the container in a DIV so that it
-        // can be moved without changing the state of the container
-        if (dx === 0 && dy === 0) {
-          // Workaround for ignored removeAttribute on SVG element in IE9 standards
-          if (detector.IS_IE) {
-            canvas.setAttribute('transform', `translate(${dx},${dy})`)
-          } else {
-            canvas.removeAttribute('transform')
-          }
-
-          if (this.shiftPreview1 != null) {
-            let child = this.shiftPreview1.firstChild
-
-            while (child != null) {
-              const next = child.nextSibling
-              this.container.appendChild(child)
-              child = next
-            }
-
-            if (this.shiftPreview1.parentNode != null) {
-              this.shiftPreview1.parentNode.removeChild(this.shiftPreview1)
-            }
-
-            this.shiftPreview1 = null
-
-            this.container.appendChild(canvas.parentNode!)
-
-            child = this.shiftPreview2!.firstChild
-
-            while (child != null) {
-              const next = child.nextSibling
-              this.container.appendChild(child)
-              child = next
-            }
-
-            if (this.shiftPreview2!.parentNode != null) {
-              this.shiftPreview2!.parentNode.removeChild(this.shiftPreview2!)
-            }
-
-            this.shiftPreview2 = null
-          }
-        } else {
-          canvas.setAttribute('transform', `translate(${dx},${dy})`)
-
-          if (this.shiftPreview1 == null) {
-            // Needs two divs for stuff before and after the SVG element
-            this.shiftPreview1 = document.createElement('div')
-            this.shiftPreview1.style.position = 'absolute'
-            this.shiftPreview1.style.overflow = 'visible'
-
-            this.shiftPreview2 = document.createElement('div')
-            this.shiftPreview2.style.position = 'absolute'
-            this.shiftPreview2.style.overflow = 'visible'
-
-            let current = this.shiftPreview1
-            let child = this.container.firstChild as HTMLElement
-
-            while (child != null) {
-              const next = child.nextSibling as HTMLElement
-
-              // SVG element is moved via transform attribute
-              if (child !== canvas.parentNode) {
-                current.appendChild(child)
-              } else {
-                current = this.shiftPreview2
-              }
-
-              child = next
-            }
-
-            // Inserts elements only if not empty
-            if (this.shiftPreview1.firstChild != null) {
-              this.container.insertBefore(this.shiftPreview1, canvas.parentNode)
-            }
-
-            if (this.shiftPreview2.firstChild != null) {
-              this.container.appendChild(this.shiftPreview2)
-            }
-          }
-
-          this.shiftPreview1.style.left = `${dx}px`
-          this.shiftPreview1.style.top = `${dy}px`
-          this.shiftPreview2!.style.left = util.toPx(dx)
-          this.shiftPreview2!.style.top = util.toPx(dy)
-        }
-      } else {
-        canvas.style.left = util.toPx(dx)
-        canvas.style.top = util.toPx(dy)
-      }
-
-      this.panDx = dx
-      this.panDy = dy
-
-      this.trigger(DomEvent.PAN)
-    }
+    this.viewport.panGraph(dx, dy)
   }
 
-  /**
-   * Zooms into the graph by <zoomFactor>.
-   */
   zoomIn() {
     this.zoom(this.zoomFactor)
   }
 
-  /**
-   * Zooms out of the graph by <zoomFactor>.
-   */
   zoomOut() {
     this.zoom(1 / this.zoomFactor)
   }
@@ -5086,14 +4156,14 @@ export class Graph extends Events implements IDisposable {
   /**
    * Centers the graph in the container.
    *
-   * Parameters:
-   *
-   * horizontal - Optional boolean that specifies if the graph should be centered
-   * horizontally. Default is true.
-   * vertical - Optional boolean that specifies if the graph should be centered
-   * vertically. Default is true.
-   * cx - Optional float that specifies the horizontal center. Default is 0.5.
-   * cy - Optional float that specifies the vertical center. Default is 0.5.
+   * @param horizontal Optional boolean that specifies if the graph should be
+   * centered horizontally. Default is `true`.
+   * @param vertical Optional boolean that specifies if the graph should be
+   * centered vertically. Default is `true`.
+   * @param cx Optional float that specifies the horizontal center.
+   * Default is `0.5`.
+   * @param cy Optional float that specifies the vertical center.
+   * Default is `0.5`.
    */
   center(
     horizontal: boolean = true,
@@ -5101,360 +4171,96 @@ export class Graph extends Events implements IDisposable {
     cx: number = 0.5,
     cy: number = 0.5,
   ) {
-    const hasScrollbars = util.hasScrollbars(this.container)
-    const cw = this.container.clientWidth
-    const ch = this.container.clientHeight
-    const bounds = this.getGraphBounds()
-
-    const t = this.view.translate
-    const s = this.view.scale
-
-    let dx = (horizontal) ? cw - bounds.width : 0
-    let dy = (vertical) ? ch - bounds.height : 0
-
-    if (!hasScrollbars) {
-      this.view.setTranslate(
-        horizontal
-          ? Math.floor(t.x - bounds.x * s + dx * cx / s)
-          : t.x,
-        vertical
-          ? Math.floor(t.y - bounds.y * s + dy * cy / s)
-          : t.y,
-      )
-    } else {
-      bounds.x -= t.x
-      bounds.y -= t.y
-
-      const sw = this.container.scrollWidth
-      const sh = this.container.scrollHeight
-
-      if (sw > cw) {
-        dx = 0
-      }
-
-      if (sh > ch) {
-        dy = 0
-      }
-
-      this.view.setTranslate(Math.floor(dx / 2 - bounds.x), Math.floor(dy / 2 - bounds.y))
-      this.container.scrollLeft = (sw - cw) / 2
-      this.container.scrollTop = (sh - ch) / 2
-    }
+    this.viewport.center(horizontal, vertical, cx, cy)
   }
 
   /**
    * Zooms the graph using the given factor. Center is an optional boolean
-   * argument that keeps the graph scrolled to the center. If the center argument
-   * is omitted, then <centerZoom> will be used as its value.
+   * argument that keeps the graph scrolled to the center.
    */
   zoom(factor: number, center: boolean = this.centerZoom) {
-    const scale = Math.round(this.view.scale * factor * 100) / 100
-    const state = this.view.getState(this.getSelectedCell())
-    // tslint:disable-next-line
-    factor = scale / this.view.scale
-
-    if (this.keepSelectionVisibleOnZoom && state != null) {
-      const rect = new Rectangle(
-        state.bounds.x * factor,
-        state.bounds.y * factor,
-        state.bounds.width * factor,
-        state.bounds.height * factor,
-      )
-
-      // Refreshes the display only once if a scroll is carried out
-      this.view.scale = scale
-
-      if (!this.scrollRectToVisible(rect)) {
-        this.view.revalidate()
-
-        // Forces an event to be fired but does not revalidate again
-        this.view.setScale(scale)
-      }
-    } else {
-      const hasScrollbars = util.hasScrollbars(this.container)
-
-      if (center && !hasScrollbars) {
-        let dx = this.container.offsetWidth
-        let dy = this.container.offsetHeight
-
-        if (factor > 1) {
-          const f = (factor - 1) / (scale * 2)
-          dx *= -f
-          dy *= -f
-        } else {
-          const f = (1 / factor - 1) / (this.view.scale * 2)
-          dx *= f
-          dy *= f
-        }
-
-        this.view.scaleAndTranslate(
-          scale,
-          this.view.translate.x + dx,
-          this.view.translate.y + dy,
-        )
-      } else {
-        // Allows for changes of translate and scrollbars during setscale
-        const tx = this.view.translate.x
-        const ty = this.view.translate.y
-        const sl = this.container.scrollLeft
-        const st = this.container.scrollTop
-
-        this.view.setScale(scale)
-
-        if (hasScrollbars) {
-          let dx = 0
-          let dy = 0
-
-          if (center) {
-            dx = this.container.offsetWidth * (factor - 1) / 2
-            dy = this.container.offsetHeight * (factor - 1) / 2
-          }
-
-          this.container.scrollLeft = (this.view.translate.x - tx) * this.view.scale
-            + Math.round(sl * factor + dx)
-          this.container.scrollTop = (this.view.translate.y - ty) * this.view.scale
-            + Math.round(st * factor + dy)
-        }
-      }
-    }
+    this.viewport.zoom(factor, center)
   }
 
   /**
-   * Zooms the graph to the specified rectangle. If the rectangle does not have same aspect
-   * ratio as the display container, it is increased in the smaller relative dimension only
-   * until the aspect match. The original rectangle is centralised within this expanded one.
+   * Scales the graph such that the complete diagram fits into container.
    *
-   * Note that the input rectangular must be un-scaled and un-translated.
+   * @param border Optional number that specifies the border.
+   * @param keepOrigin Optional boolean that specifies if the translate
+   * should be changed. Default is `false`.
+   * @param margin Optional margin in pixels. Default is `0`.
+   * @param enabled Optional boolean that specifies if the scale should
+   * be set or just returned. Default is `true`.
+   * @param ignoreWidth Optional boolean that specifies if the width should
+   * be ignored. Default is `false`.
+   * @param ignoreHeight Optional boolean that specifies if the height should
+   * be ignored. Default is `false`.
+   * @param maxHeight Optional maximum height.
+   */
+  fit(
+    border: number = this.getBorder(),
+    keepOrigin: boolean = false,
+    margin: number = 0,
+    enabled: boolean = true,
+    ignoreWidth: boolean = false,
+    ignoreHeight: boolean = false,
+    maxHeight?: number,
+  ) {
+    return this.viewport.fit(
+      border, keepOrigin, margin, enabled,
+      ignoreWidth, ignoreHeight, maxHeight,
+    )
+  }
+
+  /**
+   * Zooms the graph to the specified rectangle. If the rectangle does not have
+   * same aspect ratio as the display container, it is increased in the smaller
+   * relative dimension only until the aspect match. The original rectangle is
+   * centralised within this expanded one.
    *
-   * Parameters:
-   *
-   * rect - The un-scaled and un-translated rectangluar region that should be just visible
-   * after the operation
+   * Note that the input rectangle must be un-scaled and un-translated.
    */
   zoomToRect(rect: Rectangle) {
-    const scaleX = this.container.clientWidth / rect.width
-    const scaleY = this.container.clientHeight / rect.height
-    const aspectFactor = scaleX / scaleY
-
-    // Remove any overlap of the rect outside the client area
-    rect.x = Math.max(0, rect.x)
-    rect.y = Math.max(0, rect.y)
-    let rectRight = Math.min(this.container.scrollWidth, rect.x + rect.width)
-    let rectBottom = Math.min(this.container.scrollHeight, rect.y + rect.height)
-    rect.width = rectRight - rect.x
-    rect.height = rectBottom - rect.y
-
-    // The selection area has to be increased to the same aspect
-    // ratio as the container, centred around the centre point of the
-    // original rect passed in.
-    if (aspectFactor < 1.0) {
-      // Height needs increasing
-      const newHeight = rect.height / aspectFactor
-      const deltaHeightBuffer = (newHeight - rect.height) / 2.0
-      rect.height = newHeight
-
-      // Assign up to half the buffer to the upper part of the rect, not crossing 0
-      // put the rest on the bottom
-      const upperBuffer = Math.min(rect.y, deltaHeightBuffer)
-      rect.y = rect.y - upperBuffer
-
-      // Check if the bottom has extended too far
-      rectBottom = Math.min(this.container.scrollHeight, rect.y + rect.height)
-      rect.height = rectBottom - rect.y
-    } else {
-      // Width needs increasing
-      const newWidth = rect.width * aspectFactor
-      const deltaWidthBuffer = (newWidth - rect.width) / 2.0
-      rect.width = newWidth
-
-      // Assign up to half the buffer to the upper part of the rect, not crossing 0
-      // put the rest on the bottom
-      const leftBuffer = Math.min(rect.x, deltaWidthBuffer)
-      rect.x = rect.x - leftBuffer
-
-      // Check if the right hand side has extended too far
-      rectRight = Math.min(this.container.scrollWidth, rect.x + rect.width)
-      rect.width = rectRight - rect.x
-    }
-
-    const scale = this.container.clientWidth / rect.width
-    const newScale = this.view.scale * scale
-
-    if (!util.hasScrollbars(this.container)) {
-      this.view.scaleAndTranslate(
-        newScale,
-        (this.view.translate.x - rect.x / this.view.scale),
-        (this.view.translate.y - rect.y / this.view.scale),
-      )
-    } else {
-      this.view.setScale(newScale)
-      this.container.scrollLeft = Math.round(rect.x * scale)
-      this.container.scrollTop = Math.round(rect.y * scale)
-    }
+    this.viewport.zoomToRect(rect)
   }
 
   /**
    * Pans the graph so that it shows the given cell. Optionally the cell may
    * be centered in the container.
-   *
-   * To center a given graph if the <container> has no scrollbars, use the following code.
-   *
-   * [code]
-   * var bounds = graph.getGraphBounds();
-   * graph.view.setTranslate(-bounds.x - (bounds.width - container.clientWidth) / 2,
-   * 						   -bounds.y - (bounds.height - container.clientHeight) / 2);
-   * [/code]
-   *
-   * Parameters:
-   *
-   * cell - <Cell> to be made visible.
-   * center - Optional boolean flag. Default is false.
    */
   scrollCellToVisible(cell: Cell, center: boolean = false) {
-    const x = -this.view.translate.x
-    const y = -this.view.translate.y
-
-    const state = this.view.getState(cell)
-
-    if (state != null) {
-      const bounds = new Rectangle(
-        x + state.bounds.x,
-        y + state.bounds.y,
-        state.bounds.width,
-        state.bounds.height,
-      )
-
-      if (center && this.container != null) {
-        const w = this.container.clientWidth
-        const h = this.container.clientHeight
-
-        bounds.x = bounds.getCenterX() - w / 2
-        bounds.width = w
-        bounds.y = bounds.getCenterY() - h / 2
-        bounds.height = h
-      }
-
-      const tr = new Point(this.view.translate.x, this.view.translate.y)
-
-      if (this.scrollRectToVisible(bounds)) {
-        // Triggers an update via the view's event source
-        const tr2 = new Point(this.view.translate.x, this.view.translate.y)
-        this.view.translate.x = tr.x
-        this.view.translate.y = tr.y
-        this.view.setTranslate(tr2.x, tr2.y)
-      }
-    }
+    this.viewport.scrollCellToVisible(cell, center)
   }
 
   /**
    * Pans the graph so that it shows the given rectangle.
-   *
-   * Parameters:
-   *
-   * rect - <Rect> to be made visible.
    */
   scrollRectToVisible(rect: Rectangle) {
-    let isChanged = false
-
-    if (rect != null) {
-      const w = this.container.offsetWidth
-      const h = this.container.offsetHeight
-
-      const widthLimit = Math.min(w, rect.width)
-      const heightLimit = Math.min(h, rect.height)
-
-      if (util.hasScrollbars(this.container)) {
-        const c = this.container
-        rect.x += this.view.translate.x
-        rect.y += this.view.translate.y
-        let dx = c.scrollLeft - rect.x
-        const ddx = Math.max(dx - c.scrollLeft, 0)
-
-        if (dx > 0) {
-          c.scrollLeft -= dx + 2
-        } else {
-          dx = rect.x + widthLimit - c.scrollLeft - c.clientWidth
-
-          if (dx > 0) {
-            c.scrollLeft += dx + 2
-          }
-        }
-
-        let dy = c.scrollTop - rect.y
-        const ddy = Math.max(0, dy - c.scrollTop)
-
-        if (dy > 0) {
-          c.scrollTop -= dy + 2
-        } else {
-          dy = rect.y + heightLimit - c.scrollTop - c.clientHeight
-
-          if (dy > 0) {
-            c.scrollTop += dy + 2
-          }
-        }
-
-        if (!this.useScrollbarsForPanning && (ddx !== 0 || ddy !== 0)) {
-          this.view.setTranslate(ddx, ddy)
-        }
-      } else {
-        const x = -this.view.translate.x
-        const y = -this.view.translate.y
-
-        const s = this.view.scale
-
-        if (rect.x + widthLimit > x + w) {
-          this.view.translate.x -= (rect.x + widthLimit - w - x) / s
-          isChanged = true
-        }
-
-        if (rect.y + heightLimit > y + h) {
-          this.view.translate.y -= (rect.y + heightLimit - h - y) / s
-          isChanged = true
-        }
-
-        if (rect.x < x) {
-          this.view.translate.x += (x - rect.x) / s
-          isChanged = true
-        }
-
-        if (rect.y < y) {
-          this.view.translate.y += (y - rect.y) / s
-          isChanged = true
-        }
-
-        if (isChanged) {
-          this.view.refresh()
-          // Repaints selection marker (ticket 18)
-          this.selectionHandler.refresh()
-        }
-      }
-    }
-
-    return isChanged
+    return this.viewport.scrollRectToVisible(rect)
   }
 
   /**
-   * Returns the <mxGeometry> for the given cell. This implementation uses
-   * <mxGraphModel.getGeometry>. Subclasses can override this to implement
-   * specific geometries for cells in only one graph, that is, it can return
-   * geometries that depend on the current state of the view.
+   * Scrolls the graph to the given point, extending
+   * the graph container if specified.
+   */
+  scrollPointToVisible(
+    x: number,
+    y: number,
+    extend: boolean = false,
+    border: number = 20,
+  ) {
+    this.viewport.scrollPointToVisible(x, y, extend, border)
+  }
+
+  /**
+   * Returns the `Geometry` for the given cell.
    */
   getCellGeometry(cell: Cell) {
     return this.model.getGeometry(cell)
   }
 
   /**
-   * Returns true if the given cell is visible in this graph. This
-   * implementation uses <mxGraphModel.isVisible>. Subclassers can override
-   * this to implement specific visibility for cells in only one graph, that
-   * is, without affecting the visible state of the cell.
-   *
-   * When using dynamic filter expressions for cell visibility, then the
-   * graph should be revalidated after the filter expression has changed.
-   *
-   * Parameters:
-   *
-   * cell - <Cell> whose visible state should be returned.
+   * Returns true if the given cell is visible in this graph.
    */
   isCellVisible(cell: Cell | null) {
     return cell != null ? this.model.isVisible(cell) : false
@@ -5468,17 +4274,12 @@ export class Graph extends Events implements IDisposable {
   }
 
   /**
-   * Returns true if the given cell is connectable in this graph. This
-   * implementation uses <mxGraphModel.isConnectable>. Subclassers can override
-   * this to implement specific connectable states for cells in only one graph,
-   * that is, without affecting the connectable state of the cell in the model.
-   *
-   * Parameters:
-   *
-   * cell - <Cell> whose connectable state should be returned.
+   * Returns true if the given cell is connectable in this graph.
    */
   isCellConnectable(cell: Cell | null) {
-    return this.model.isConnectable(cell)
+    return this.hooks.isCellConnectable
+      ? this.hooks.isCellConnectable(cell)
+      : this.model.isConnectable(cell)
   }
 
   /**
@@ -5504,10 +4305,6 @@ export class Graph extends Events implements IDisposable {
 
   /**
    * Returns true if the given cell state is a loop.
-   *
-   * Parameters:
-   *
-   * state - <CellState> that represents a potential loop.
    */
   isLoop(state: CellState) {
     const src = state.getVisibleTerminalState(true)
@@ -5517,28 +4314,26 @@ export class Graph extends Events implements IDisposable {
   }
 
   /**
-   * Returns true if the given event is a clone event. This implementation
-   * returns true if control is pressed.
+   * Returns true if the given event is a clone event.
    */
   isCloneEvent(e: MouseEvent) {
     return DomEvent.isControlDown(e)
   }
 
   /**
-   * Hook for implementing click-through behaviour on selected cells. If this
-   * returns true the cell behind the selected cell will be selected. This
-   * implementation returns false;
+   * Click-through behaviour on selected cells. If this returns true the
+   * cell behind the selected cell will be selected.
    */
   isTransparentClickEvent(e: MouseEvent) {
-    return false
+    return this.hooks.isTransparentClickEvent
+      ? this.hooks.isTransparentClickEvent(e)
+      : false
   }
 
   /**
-   * Returns true if the given event is a toggle event. This implementation
-   * returns true if the meta key (Cmd) is pressed on Macs or if control is
-   * pressed on any other platform.
+   * Returns true if the given event is a toggle event.
    */
-  protected isToggleEvent(e: MouseEvent) {
+  isToggleEvent(e: MouseEvent) {
     return detector.IS_MAC ? DomEvent.isMetaDown(e) : DomEvent.isControlDown(e)
   }
 
@@ -5550,310 +4345,62 @@ export class Graph extends Events implements IDisposable {
   }
 
   /**
-   * Returns true if the given mouse event should be aligned to the grid.
+   * Returns true if the given mouse event should be constrained.
    */
   isConstrainedEvent(e: MouseEvent) {
     return DomEvent.isShiftDown(e)
   }
 
   /**
-   * Returns true if the given mouse event should not allow any connections to be
-   * made. This implementation returns false.
+   * Returns true if the given mouse event should not allow any connections
+   * to be made.
    */
   isIgnoreTerminalEvent(e: MouseEvent) {
-    return false
+    return this.hooks.isIgnoreTerminalEvent
+      ? this.hooks.isIgnoreTerminalEvent(e)
+      : false
   }
 
   // #endregion
 
-  // #region ======== Validation
+  // #region :::::::::::: Validation
 
-  /**
-   * Displays the given validation error in a dialog. This implementation uses
-   * util.alert.
-   */
-  validationAlert(message: string) {
-    // TOOD: trigger an event
-    // util.alert(message)
-  }
-
-  /**
-   * Checks if the return value of <getEdgeValidationError> for the given
-   * arguments is null.
-   *
-   * Parameters:
-   *
-   * edge - <Cell> that represents the edge to validate.
-   * source - <Cell> that represents the source terminal.
-   * target - <Cell> that represents the target terminal.
-   */
-  isEdgeValid(edge: Cell | null, source: Cell | null, target: Cell | null) {
-    return this.getEdgeValidationError(edge, source, target) == null
-  }
-
-  /**
-   * Returns the validation error message to be displayed when inserting or
-   * changing an edges' connectivity. A return value of null means the edge
-   * is valid, a return value of '' means it's not valid, but do not display
-   * an error message. Any other (non-empty) string returned from this method
-   * is displayed as an error message when trying to connect an edge to a
-   * source and target. This implementation uses the <multiplicities>, and
-   * checks <multigraph>, <allowDanglingEdges> and <allowLoops> to generate
-   * validation errors.
-   *
-   * For extending this method with specific checks for source/target cells,
-   * the method can be extended as follows. Returning an empty string means
-   * the edge is invalid with no error message, a non-null string specifies
-   * the error message, and null means the edge is valid.
-   *
-   * (code)
-   * graph.getEdgeValidationError (edge, source, target)
-   * {
-   *   if (source != null && target != null &&
-   *     this.model.getValue(source) != null &&
-   *     this.model.getValue(target) != null)
-   *   {
-   *     if (target is not valid for source)
-   *     {
-   *       return 'Invalid Target';
-   *     }
-   *   }
-   *
-   *   // "Supercall"
-   *   return getEdgeValidationError.apply(this, arguments);
-   * }
-   * (end)
-   *
-   * Parameters:
-   *
-   * edge - <Cell> that represents the edge to validate.
-   * source - <Cell> that represents the source terminal.
-   * target - <Cell> that represents the target terminal.
-   */
-  getEdgeValidationError(
-    edge: Cell | null,
-    source: Cell | null,
-    target: Cell | null,
-  ) {
-    if (
-      edge != null &&
-      !this.isAllowDanglingEdges() &&
-      (source == null || target == null)
-    ) {
-      return ''
-    }
-
-    if (
-      edge != null &&
-      this.model.getTerminal(edge, true) == null &&
-      this.model.getTerminal(edge, false) == null
-    ) {
-      return null
-    }
-
-    // Checks if we're dealing with a loop
-    if (!this.allowLoops && source === target && source != null) {
-      return ''
-    }
-
-    // Checks if the connection is generally allowed
-    if (!this.isValidConnection(source, target)) {
-      return ''
-    }
-
-    if (source != null && target != null) {
-      let error = ''
-
-      // Checks if the cells are already connected
-      // and adds an error message if required
-      if (!this.multigraph) {
-        const tmp = this.model.getEdgesBetween(source, target, true)
-
-        // Checks if the source and target are not connected by another edge
-        if (tmp.length > 1 || (tmp.length === 1 && tmp[0] !== edge)) {
-          error += `(mxResources.get(this.alreadyConnectedResource) ||
-            this.alreadyConnectedResource)`
-        }
-      }
-
-      // Gets the number of outgoing edges from the source
-      // and the number of incoming edges from the target
-      // without counting the edge being currently changed.
-      const sourceOut = this.model.getDirectedEdgeCount(source, true, edge)
-      const targetIn = this.model.getDirectedEdgeCount(target, false, edge)
-
-      // Checks the change against each multiplicity rule
-      if (this.multiplicities != null) {
-        for (let i = 0; i < this.multiplicities.length; i += 1) {
-          const err = this.multiplicities[i].check(
-            this, edge, source, target, sourceOut, targetIn,
-          )
-
-          if (err != null) {
-            error += err
-          }
-        }
-      }
-
-      // Validates the source and target terminals independently
-      const err = this.validateEdge(edge, source, target)
-
-      if (err != null) {
-        error += err
-      }
-
-      return (error.length > 0) ? error : null
-    }
-
-    return (this.allowDanglingEdges) ? null : ''
-  }
-
-  /**
-   * Hook method for subclassers to return an error message for the given
-   * edge and terminals. This implementation returns null.
-   *
-   * Parameters:
-   *
-   * edge - <Cell> that represents the edge to validate.
-   * source - <Cell> that represents the source terminal.
-   * target - <Cell> that represents the target terminal.
-   */
   validateEdge(edge: Cell | null, source: Cell | null, target: Cell | null) {
-    return null
+    return this.hooks.validateEdge
+      ? this.hooks.validateEdge(edge, source, target)
+      : null
+  }
+
+  validateCell(cell: Cell, context: any) {
+    return this.hooks.validateCell
+      ? this.hooks.validateCell(cell, context)
+      : null
+  }
+
+  validationAlert(message: string) {
+    console.warn(message)
+  }
+
+  isEdgeValid(edge: Cell | null, source: Cell | null, target: Cell | null) {
+    return this.validator.getEdgeValidationError(
+      edge, source, target,
+    ) == null
   }
 
   /**
    * Validates the graph by validating each descendant of the given cell or
-   * the root of the model. Context is an object that contains the validation
-   * state for the complete validation run. The validation errors are
-   * attached to their cells using <setCellWarning>. Returns null in the case of
-   * successful validation or an array of strings (warnings) in the case of
-   * failed validations.
-   *
-   * Paramters:
-   *
-   * cell - Optional <Cell> to start the validation recursion. Default is
-   * the graph root.
-   * context - Object that represents the global validation state.
+   * the root of the model.
    */
   validateGraph(
     cell: Cell = this.model.getRoot(),
     context: any = {},
   ): string | null {
-
-    let isValid = true
-    const childCount = this.model.getChildCount(cell)
-
-    for (let i = 0; i < childCount; i += 1) {
-      const tmp = this.model.getChildAt(cell, i)!
-      let ctx = context
-
-      if (this.isValidRoot(tmp)) {
-        ctx = new Object()
-      }
-
-      const warn: string | null = this.validateGraph(tmp, ctx)
-      if (warn != null) {
-        this.setCellWarning(tmp, warn.replace(/\n/g, '<br>'))
-      } else {
-        this.setCellWarning(tmp, null)
-      }
-
-      isValid = isValid && warn == null
-    }
-
-    let warning = ''
-
-    // Adds error for invalid children if collapsed (children invisible)
-    if (this.isCellCollapsed(cell) && !isValid) {
-      warning += ` (mxResources.get(this.containsValidationErrorsResource) ||
-        this.containsValidationErrorsResource)`
-    }
-
-    // Checks edges and cells using the defined multiplicities
-    if (this.model.isEdge(cell)) {
-      warning += this.getEdgeValidationError(
-        cell,
-        this.model.getTerminal(cell, true)!,
-        this.model.getTerminal(cell, false)!,
-      ) || ''
-    } else {
-      warning += this.getCellValidationError(cell) || ''
-    }
-
-    // Checks custom validation rules
-    const err = this.validateCell(cell, context)
-
-    if (err != null) {
-      warning += err
-    }
-
-    // Updates the display with the warning icons
-    // before any potential alerts are displayed.
-    // LATER: Move this into addCellOverlay. Redraw
-    // should check if overlay was added or removed.
-    if (this.model.getParent(cell) == null) {
-      this.view.validate()
-    }
-
-    return (warning.length > 0 || !isValid) ? warning as string : null
-  }
-
-  /**
-   * Checks all <multiplicities> that cannot be enforced while the graph is
-   * being modified, namely, all multiplicities that require a minimum of
-   * 1 edge.
-   *
-   * Parameters:
-   *
-   * cell - <Cell> for which the multiplicities should be checked.
-   */
-  getCellValidationError(cell: Cell) {
-    const outCount = this.model.getDirectedEdgeCount(cell, true)
-    const inCount = this.model.getDirectedEdgeCount(cell, false)
-    const value = this.model.getData(cell)
-    let error = ''
-
-    if (this.multiplicities != null) {
-      for (let i = 0; i < this.multiplicities.length; i += 1) {
-        const rule = this.multiplicities[i]
-
-        if (
-          rule.source &&
-          util.isHTMLNode(value, rule.type, rule.attr, rule.value) &&
-          (outCount > rule.max || outCount < rule.min)
-        ) {
-          error += `${rule.countError}\n`
-        } else if (
-          !rule.source &&
-          util.isHTMLNode(value, rule.type, rule.attr, rule.value) &&
-          (inCount > rule.max || inCount < rule.min)
-        ) {
-          error += `${rule.countError}\n`
-        }
-      }
-    }
-
-    return (error.length > 0) ? error : null
-  }
-
-  /**
-   * Hook method for subclassers to return an error message for the given
-   * cell and validation context. This implementation returns null. Any HTML
-   * breaks will be converted to linefeeds in the calling method.
-   *
-   * Parameters:
-   *
-   * cell - <Cell> that represents the cell to validate.
-   * context - Object that represents the global validation state.
-   */
-  validateCell(cell: Cell, context: any) {
-    return null
+    return this.validator.validateGraph(cell, context)
   }
 
   // #endregion
 
-  // #region ======== Graph appearance
+  // #region :::::::::::: Graph appearance
 
   /**
    * Returns the <backgroundImage> as an <mxImage>.
@@ -6261,7 +4808,7 @@ export class Graph extends Events implements IDisposable {
 
   // #endregion
 
-  // #region ======== Graph behaviour
+  // #region :::::::::::: Graph behaviour
 
   isResizeContainer() {
     return this.resizeContainer
@@ -6875,48 +5422,6 @@ export class Graph extends Events implements IDisposable {
   }
 
   /**
-   * Specifies if the graph should allow new connections. This implementation
-   * updates <mxConnectionHandler.enabled> in <connectionHandler>.
-   *
-   * Parameters:
-   *
-   * connectable - Boolean indicating if new connections should be allowed.
-   */
-  setConnectable(connectable: boolean) {
-    this.connectionHandler.setEnabled(connectable)
-  }
-
-  /**
-   * Returns true if the <connectionHandler> is enabled.
-   */
-  isConnectable() {
-    return this.connectionHandler.isEnabled()
-  }
-
-  /**
-   * Specifies if tooltips should be enabled. This implementation updates
-   * <mxTooltipHandler.enabled> in <tooltipHandler>.
-   *
-   * Parameters:
-   *
-   * enabled - Boolean indicating if tooltips should be enabled.
-   */
-  setTooltips(enabled: boolean) {
-    if (enabled) {
-      this.tooltipHandler.enable()
-    } else {
-      this.tooltipHandler.disable()
-    }
-  }
-
-  /**
-   * Specifies if panning should be enabled.
-   */
-  setPanning(enabled: boolean) {
-    this.panningHandler.panningEnabled = enabled
-  }
-
-  /**
    * Returns true if the given cell is currently being edited.
    * If no cell is specified then this returns true if any
    * cell is currently being edited.
@@ -7133,7 +5638,7 @@ export class Graph extends Events implements IDisposable {
       cells != null &&
       cells.length === 1 &&
       this.isCellConnectable(cells[0]) &&
-      this.getEdgeValidationError(target, this.model.getTerminal(target, true)!, cells[0]) == null
+      this.isEdgeValid(target, this.model.getTerminal(target, true), cells[0])
     ) {
       const src = this.model.getTerminal(target, true)!
       const trg = this.model.getTerminal(target, false)!
@@ -7163,7 +5668,12 @@ export class Graph extends Events implements IDisposable {
    * cell - <Cell> that is under the mousepointer.
    * clone - Optional boolean to indicate of cells will be cloned.
    */
-  getDropTarget(cells: Cell[], evt: MouseEvent, cell: Cell | null, clone?: boolean) {
+  getDropTarget(
+    cells: Cell[],
+    evt: MouseEvent,
+    cell: Cell | null,
+    clone?: boolean,
+  ) {
 
     if (!this.isSwimlaneNesting()) {
       for (let i = 0; i < cells.length; i += 1) {
@@ -7222,7 +5732,7 @@ export class Graph extends Events implements IDisposable {
 
   // #endregion
 
-  // #region ======== Cell retrieval
+  // #region :::::::::::: Cell retrieval
 
   getCurrentRoot() {
     return this.view.currentRoot
@@ -7865,195 +6375,103 @@ export class Graph extends Events implements IDisposable {
 
   // #endregion
 
-  // #region ======== Selection
-
-  getSelection() {
-    return this.selectionManager
-  }
-
-  setSelection(cellSelection: SelectionManager) {
-    this.selectionManager = cellSelection
-  }
-
-  /**
-   * Removes selected cells that are not in the model from the selection.
-   */
-  updateSelection() {
-    const cells = this.getSelectedCells()
-    const removed: Cell[] = []
-
-    cells.forEach((cell) => {
-      if (!this.model.contains(cell) || !this.isCellVisible(cell)) {
-        removed.push(cell)
-      } else {
-        let parent = this.model.getParent(cell)
-
-        while (parent != null && parent !== this.view.currentRoot) {
-          if (this.isCellCollapsed(parent) || !this.isCellVisible(parent)) {
-            removed.push(cell)
-            break
-          }
-          parent = this.model.getParent(parent)
-        }
-      }
-    })
-
-    if (removed.length) {
-      this.unSelectCells(removed)
-    }
-  }
+  // #region :::::::::::: Selection
 
   isCellSelected(cell: Cell | null) {
-    return this.selectionManager.isSelected(cell)
+    return this.selection.isSelected(cell)
   }
 
   isSelectionEmpty() {
-    return this.selectionManager.isEmpty()
+    return this.selection.isEmpty()
   }
 
   clearSelection() {
-    return this.selectionManager.clear()
+    return this.selection.clear()
   }
 
   getSelecedCellCount() {
-    return this.selectionManager.cells.length
+    return this.selection.cells.length
   }
 
   getSelectedCell() {
-    return this.selectionManager.cells[0]
+    return this.selection.cells[0]
   }
 
   getSelectedCells() {
-    return this.selectionManager.cells.slice()
+    return this.selection.cells.slice()
   }
 
   /**
    * Replace selection cells with the given cell
    */
   setSelectedCell(cell: Cell | null) {
-    this.selectionManager.setCell(cell)
+    this.selection.setCell(cell)
   }
 
   /**
    * Replace selection cells with the given cells
    */
   setSelectedCells(cells: Cell[]) {
-    this.selectionManager.setCells(cells)
+    this.selection.setCells(cells)
   }
 
   /**
    * Adds the given cell to the selection.
    */
   selectCell(cell: Cell | null) {
-    this.selectionManager.addCell(cell)
+    this.selection.addCell(cell)
   }
 
   /**
    * Adds the given cells to the selection.
    */
   selectCells(cells: Cell[]) {
-    this.selectionManager.addCells(cells)
+    this.selection.addCells(cells)
   }
 
   /**
    * Removes the given cell from the selection.
    */
   unSelectCell(cell: Cell | null) {
-    this.selectionManager.removeCell(cell)
+    this.selection.removeCell(cell)
   }
 
   /**
    * Removes the given cells from the selection.
    */
   unSelectCells(cells: Cell[]) {
-    this.selectionManager.removeCells(cells)
+    this.selection.removeCells(cells)
+  }
+
+  /**
+   * Removes selected cells that are not in the model from the selection.
+   */
+  updateSelection() {
+    this.selectionManager.updateSelection()
   }
 
   /**
    * Selects and returns the cells inside the given rectangle for the
    * specified event.
-   *
-   * @param rect The region to be selected.
-   * @param e Mouseevent that triggered the selection.
    */
   selectCellsInRegion(rect: Rectangle, e: MouseEvent) {
-    const cells = this.getCellsInRegion(rect.x, rect.y, rect.width, rect.height)
-    this.selectCellsForEvent(cells, e)
-
-    return cells
+    return this.selectionManager.selectCellsInRegion(rect, e)
   }
 
   selectNextCell() {
-    this.selectCellImpl(true)
+    this.selectionManager.selectCell(true)
   }
 
   selectPreviousCell() {
-    this.selectCellImpl()
+    this.selectionManager.selectCell()
   }
 
   selectParentCell() {
-    this.selectCellImpl(false, true)
+    this.selectionManager.selectCell(false, true)
   }
 
   selectChildCell() {
-    this.selectCellImpl(false, false, true)
-  }
-
-  /**
-   * Selects the next, parent, first child or previous cell.
-   *
-   * @param isNext Boolean indicating if the next cell should be selected.
-   * @param isParent Boolean indicating if the parent cell should be selected.
-   * @param isChild Boolean indicating if the first child cell should be selected.
-   */
-  protected selectCellImpl(
-    isNext: boolean = false,
-    isParent: boolean = false,
-    isChild: boolean = false,
-  ) {
-    const selection = this.selectionManager
-    const cell = (selection.cells.length > 0) ? selection.cells[0] : null
-
-    if (selection.cells.length > 1) {
-      selection.clear()
-    }
-
-    const parent = (cell != null) ?
-      this.model.getParent(cell)! :
-      this.getDefaultParent()!
-
-    const childCount = this.model.getChildCount(parent)
-
-    if (cell == null && childCount > 0) {
-      const child = this.model.getChildAt(parent, 0)!
-      this.setSelectedCell(child)
-    } else if (
-      (cell == null || isParent) &&
-      this.view.getState(parent) != null &&
-      this.model.getGeometry(parent) != null
-    ) {
-      if (this.getCurrentRoot() !== parent) {
-        this.setSelectedCell(parent)
-      }
-    } else if (cell != null && isChild) {
-      const tmp = this.model.getChildCount(cell)
-      if (tmp > 0) {
-        const child = this.model.getChildAt(cell, 0)!
-        this.setSelectedCell(child)
-      }
-    } else if (childCount > 0) {
-      let i = parent.getChildIndex(cell!)
-      if (isNext) {
-        i += 1
-        const child = this.model.getChildAt(parent, i % childCount)!
-        this.setSelectedCell(child)
-      } else {
-        i -= 1
-        const index = (i < 0) ? childCount - 1 : i
-        const child = this.model.getChildAt(parent, index)!
-        this.setSelectedCell(child)
-      }
-    }
+    this.selectionManager.selectCell(false, false, true)
   }
 
   /**
@@ -8068,642 +6486,52 @@ export class Graph extends Events implements IDisposable {
     parent: Cell = this.getDefaultParent()!,
     includeDescendants: boolean = false,
   ) {
-    const cells = includeDescendants
-      ? this.model.filterDescendants(
-        cell => (cell !== parent && this.view.getState(cell) != null),
-        parent,
-      )
-      : this.model.getChildren(parent)
-
-    if (cells != null) {
-      this.setSelectedCells(cells)
-    }
+    this.selectionManager.selectAll(parent, includeDescendants)
   }
 
   /**
    * Select all nodes inside the given parent or the default parent.
    */
   selectNodes(parent: Cell) {
-    this.selectCellsImpl(true, false, parent)
+    this.selectionManager.selectCells(true, false, parent)
   }
 
   /**
    * Select all edges inside the given parent or the default parent.
    */
   selectEdges(parent: Cell) {
-    this.selectCellsImpl(false, true, parent)
-  }
-
-  /**
-   * Selects all nodes and/or edges depending on the given boolean
-   * arguments recursively, starting at the given parent or the default
-   * parent if no parent is specified.
-   *
-   * @param includeNodes Indicating if nodes should be selected.
-   * @param includeEdges Indicating if edges should be selected.
-   * @param parent Optional parent `Cell` that acts as the root of the recursion.
-   */
-  protected selectCellsImpl(
-    includeNodes: boolean,
-    includeEdges: boolean,
-    parent: Cell = this.getDefaultParent()!,
-  ) {
-    const cells = this.model.filterDescendants(
-      cell => (
-        this.view.getState(cell) != null &&
-        (
-          // nodes
-          (
-            this.model.getChildCount(cell) === 0 &&
-            this.model.isNode(cell) &&
-            includeNodes &&
-            !this.model.isEdge(this.model.getParent(cell))
-          ) ||
-          // edges
-          (
-            this.model.isEdge(cell) && includeEdges
-          )
-        )
-      ),
-      parent,
-    )
-
-    if (cells != null) {
-      this.setSelectedCells(cells)
-    }
-  }
-
-  /**
-   * Selects the given cell by either adding it to the selection or
-   * replacing the selection depending on whether the given mouse event
-   * is a toggle event.
-   */
-  selectCellForEvent(cell: Cell | null, e: MouseEvent) {
-    const isSelected = this.isCellSelected(cell)
-
-    if (this.isToggleEvent(e)) {
-      if (isSelected) {
-        this.unSelectCell(cell)
-      } else {
-        this.selectCell(cell)
-      }
-    } else if (!isSelected || this.getSelecedCellCount() !== 1) {
-      this.setSelectedCell(cell)
-    }
-  }
-
-  /**
-   * Selects the given cells by either adding them to the selection or
-   * replacing the selection depending on whether the given mouse event
-   * is a toggle event.
-   */
-  protected selectCellsForEvent(cells: Cell[], e: MouseEvent) {
-    if (this.isToggleEvent(e)) {
-      this.selectCells(cells)
-    } else {
-      this.setSelectedCells(cells)
-    }
+    this.selectionManager.selectCells(false, true, parent)
   }
   // #endregion
 
-  // #region ======== Selection state
-
-  /**
-   * Creates a new handler for the given cell state.
-   */
-  createHandler(state: CellState | null) {
-    if (state != null) {
-      if (this.model.isEdge(state.cell)) {
-        const sourceState = state.getVisibleTerminalState(true)
-        const targetState = state.getVisibleTerminalState(false)
-        const geo = this.getCellGeometry(state.cell)
-
-        const edgeStyle = this.view.getEdgeFunction(
-          state, geo != null ? geo.points : null, sourceState!, targetState!,
-        )
-        return this.createEdgeHandler(state, edgeStyle)
-      }
-
-      return this.createNodeHandler(state)
-    }
-
-    return null
-  }
-
-  protected createNodeHandler(state: CellState) {
-    return new NodeHandler(this, state)
-  }
-
-  protected createEdgeHandler(state: CellState, edgeStyle: any) {
-    let result = null
-
-    if (
-      edgeStyle === EdgeStyle.loop ||
-      edgeStyle === EdgeStyle.elbowConnector ||
-      edgeStyle === EdgeStyle.sideToSide ||
-      edgeStyle === EdgeStyle.topToBottom) {
-      result = this.createElbowEdgeHandler(state)
-    } else if (
-      edgeStyle === EdgeStyle.segmentConnector ||
-      edgeStyle === EdgeStyle.orthConnector
-    ) {
-      result = this.createEdgeSegmentHandler(state)
-    } else {
-      // result = new EdgeHandler(state)
-    }
-
-    return result
-  }
-
-  protected createEdgeSegmentHandler(state: CellState) {
-    // return new EdgeSegmentHandler(state)
-  }
-
-  protected createElbowEdgeHandler(state: CellState) {
-    // return new ElbowEdgeHandler(state)
-  }
-
-  // #endregion
-
-  // #region ======== Graph events
-
-  /**
-   * Holds the mouse event listeners.
-   */
-  protected mouseListeners: IMouseHandler[]
+  // #region :::::::::::: eventloop
 
   /**
    * Adds a listener to the graph event dispatch loop. The listener
    * must implement the mouseDown, mouseMove and mouseUp
    */
   addMouseListener(handler: IMouseHandler) {
-    if (!this.mouseListeners.includes(handler)) {
-      this.mouseListeners.push(handler)
-    }
+    this.eventManager.addMouseListener(handler)
   }
 
   removeMouseListener(handler: IMouseHandler) {
-    if (this.mouseListeners != null) {
-      for (let i = 0; i < this.mouseListeners.length; i += 1) {
-        if (this.mouseListeners[i] === handler) {
-          this.mouseListeners.splice(i, 1)
-          break
-        }
-      }
-    }
-  }
-
-  /**
-   * Sets the graphX and graphY properties for the given `CustomMouseEvent`.
-   */
-  protected updateMouseEvent(e: CustomMouseEvent, eventName: string) {
-    if (e.graphX == null || e.graphY == null) {
-      const clientX = e.getClientX()
-      const clientY = e.getClientY()
-      const p = util.clientToGraph(this.container, clientX, clientY)
-
-      e.graphX = p.x - this.panDx
-      e.graphY = p.y - this.panDy
-
-      if (
-        this.isMouseDown &&
-        eventName === DomEvent.MOUSE_MOVE &&
-        e.getCell() == null
-      ) {
-        const ignoreFn = (state: CellState) => (
-          state.shape == null ||
-          state.shape.paintBackground !== RectangleShape.prototype.paintBackground ||
-          state.style.pointerEvents !== false ||
-          (state.shape.fill != null && state.shape.fill !== constants.NONE)
-        )
-
-        e.state = this.view.getState(
-          this.getCellAt(p.x, p.y, null, false, false, ignoreFn),
-        )
-      }
-    }
-
-    return e
-  }
-
-  protected getStateForTouchEvent(e: TouchEvent) {
-    const x = DomEvent.getClientX(e)
-    const y = DomEvent.getClientY(e)
-    const p = util.clientToGraph(this.container, x, y)
-    return this.view.getState(this.getCellAt(p.x, p.y))
-  }
-
-  protected lastEvent: MouseEvent
-  protected eventSource: HTMLElement | null
-  protected mouseMoveRedirect: null | ((e: MouseEvent) => void)
-  protected mouseUpRedirect: null | ((e: MouseEvent) => void)
-  protected ignoreMouseEvents: boolean
-
-  protected lastTouchX: number = 0
-  protected lastTouchY: number = 0
-  protected lastTouchTime: number = 0
-  protected lastTouchCell: Cell | null
-  protected lastTouchEvent: MouseEvent
-  protected fireDoubleClick: boolean
-  protected doubleClickCounter: number = 0
-
-  /**
-   * Returns true if the event should be ignored.
-   */
-  protected isEventIgnored(eventName: string, e: CustomMouseEvent, sender: any) {
-    const evt = e.getEvent()
-    const eventSource = e.getSource()
-    const isMouseEvent = DomEvent.isMouseEvent(evt)
-    let result = false
-
-    // Drops events that are fired more than once
-    if (evt === this.lastEvent) {
-      result = true
-    } else {
-      this.lastEvent = evt
-    }
-
-    // Installs event listeners to capture the complete gesture from the
-    // event source for non-MS touch events as a workaround for all events
-    // for the same geture being fired from the event source even if that
-    // was removed from the DOM.
-    if (this.eventSource != null && eventName !== DomEvent.MOUSE_MOVE) {
-
-      DomEvent.removeMouseListeners(
-        this.eventSource,
-        null,
-        this.mouseMoveRedirect,
-        this.mouseUpRedirect,
-      )
-
-      this.eventSource = null
-      this.mouseUpRedirect = null
-      this.mouseMoveRedirect = null
-
-    } else if (
-      !detector.IS_CHROME &&
-      this.eventSource != null &&
-      this.eventSource !== eventSource
-    ) {
-
-      result = true
-
-    } else if (
-      detector.SUPPORT_TOUCH &&
-      eventName === DomEvent.MOUSE_DOWN &&
-      !isMouseEvent &&
-      !DomEvent.isPenEvent(evt)
-    ) {
-
-      this.eventSource = eventSource
-      this.mouseMoveRedirect = (e: MouseEvent) => {
-        this.fireMouseEvent(
-          DomEvent.MOUSE_MOVE,
-          new CustomMouseEvent(e, this.getStateForTouchEvent(e as any)),
-        )
-      }
-      this.mouseUpRedirect = (e: MouseEvent) => {
-        this.fireMouseEvent(
-          DomEvent.MOUSE_UP,
-          new CustomMouseEvent(e, this.getStateForTouchEvent(e as any)),
-        )
-      }
-
-      DomEvent.addMouseListeners(
-        this.eventSource,
-        null,
-        this.mouseMoveRedirect,
-        this.mouseUpRedirect,
-      )
-    }
-
-    // Factored out the workarounds for FF to make it easier to override/remove
-    // Note this method has side-effects!
-    if (this.isSyntheticEventIgnored(eventName, e, sender)) {
-      result = true
-    }
-
-    // Never fires mouseUp/-Down for double clicks
-    if (
-      !DomEvent.isPopupTrigger(this.lastEvent) &&
-      eventName !== DomEvent.MOUSE_MOVE &&
-      this.lastEvent.detail === 2
-    ) {
-      return true
-    }
-
-    // Filters out of sequence events or mixed event types during a gesture
-    if (eventName === DomEvent.MOUSE_UP && this.isMouseDown) {
-      this.isMouseDown = false
-    } else if (eventName === DomEvent.MOUSE_DOWN && !this.isMouseDown) {
-      this.isMouseDown = true
-      this.isMouseTrigger = isMouseEvent
-    } else if (
-      !result && ((
-        (!detector.IS_FIREFOX || eventName !== DomEvent.MOUSE_MOVE) &&
-        this.isMouseDown && this.isMouseTrigger !== isMouseEvent) ||
-        (eventName === DomEvent.MOUSE_DOWN && this.isMouseDown) ||
-        (eventName === DomEvent.MOUSE_UP && !this.isMouseDown))
-    ) {
-      // Drops mouse events that are fired during touch gestures
-      // as a workaround for Webkit and mouse events that are not
-      // in sync with the current internal button state
-      result = true
-    }
-
-    if (!result && eventName === DomEvent.MOUSE_DOWN) {
-      this.lastMouseX = e.getClientX()
-      this.lastMouseY = e.getClientY()
-    }
-
-    return result
-  }
-
-  protected isSyntheticEventIgnored(
-    eventName: string,
-    e: CustomMouseEvent,
-    sender: any,
-  ) {
-    let result = false
-    const isMouseEvent = DomEvent.isMouseEvent(e.getEvent())
-
-    // LATER: This does not cover all possible cases that can go wrong in FF
-    if (
-      this.ignoreMouseEvents &&
-      isMouseEvent &&
-      eventName !== DomEvent.MOUSE_MOVE
-    ) {
-      this.ignoreMouseEvents = eventName !== DomEvent.MOUSE_UP
-      result = true
-    } else if (
-      detector.IS_FIREFOX &&
-      !isMouseEvent &&
-      eventName === DomEvent.MOUSE_UP
-    ) {
-      this.ignoreMouseEvents = true
-    }
-
-    return result
-  }
-
-  /**
-   * Returns true if the event should be ignored.
-   */
-  protected isEventSourceIgnored(eventName: string, e: CustomMouseEvent) {
-    const evt = e.getEvent()
-    const elem = e.getSource()
-    const nodeName = elem.nodeName ? elem.nodeName.toLowerCase() : ''
-    const inputType = (elem as HTMLInputElement).type
-
-    const isLeftMouseButton = (
-      !DomEvent.isMouseEvent(evt) ||
-      DomEvent.isLeftMouseButton(evt)
-    )
-
-    return (
-      eventName === DomEvent.MOUSE_DOWN &&
-      isLeftMouseButton &&
-      (
-        nodeName === 'select' ||
-        nodeName === 'option' ||
-        (
-          nodeName === 'input' &&
-          inputType !== 'checkbox' &&
-          inputType !== 'radio' &&
-          inputType !== 'button' &&
-          inputType !== 'submit' &&
-          inputType !== 'file'
-        )
-      )
-    )
-  }
-
-  protected getEventState(state: CellState | null) {
-    return state
+    this.eventManager.removeMouseListener(handler)
   }
 
   /**
    * Dispatches the given event to the graph event dispatch loop.
    */
   fireMouseEvent(eventName: string, e: CustomMouseEvent, sender: any = this) {
-    // Ignore left click on some form-input elements.
-    if (this.isEventSourceIgnored(eventName, e)) {
-      this.hideTooltip()
-      return
-    }
-
-    // Updates the graph coordinates in the event
-    this.updateMouseEvent(e, eventName)
-
-    const evt = e.getEvent()
-    const cell = e.getCell()
-    const clientX = e.getClientX()
-    const clientY = e.getClientY()
-
-    // Detects and processes double taps for touch-based devices
-    // which do not have native double click events.
-    if (
-      (!this.nativeDblClickEnabled && !DomEvent.isPopupTrigger(evt)) ||
-      (
-        this.doubleTapEnabled && detector.SUPPORT_TOUCH &&
-        (DomEvent.isTouchEvent(evt) || DomEvent.isPenEvent(evt))
-      )
-    ) {
-      const currentTime = new Date().getTime()
-
-      if (eventName === DomEvent.MOUSE_DOWN) {
-        // mark a double click event
-        if (
-          this.lastTouchEvent != null &&
-          this.lastTouchEvent !== evt &&
-          currentTime - this.lastTouchTime < this.doubleTapTimeout &&
-          Math.abs(this.lastTouchX - clientX) < this.doubleTapTolerance &&
-          Math.abs(this.lastTouchY - clientY) < this.doubleTapTolerance &&
-          this.doubleClickCounter < 2
-        ) {
-
-          this.doubleClickCounter += 1
-          this.fireDoubleClick = true
-          this.lastTouchTime = 0
-
-          DomEvent.consume(evt)
-          return
-
-        }
-
-        // reset
-        if (this.lastTouchEvent == null || this.lastTouchEvent !== evt) {
-          this.lastTouchX = clientX
-          this.lastTouchY = clientY
-          this.lastTouchCell = cell
-          this.lastTouchTime = currentTime
-          this.lastTouchEvent = evt
-          this.doubleClickCounter = 0
-        }
-
-      } else if (
-        (this.isMouseDown || eventName === DomEvent.MOUSE_UP) &&
-        this.fireDoubleClick
-      ) {
-
-        const lastTouchCell = this.lastTouchCell
-
-        this.isMouseDown = false
-        this.lastTouchCell = null
-        this.fireDoubleClick = false
-
-        // Workaround for Chrome/Safari not firing native double click
-        // events for double touch on background
-        const valid = (lastTouchCell != null) ||
-          (
-            (DomEvent.isTouchEvent(evt) || DomEvent.isPenEvent(evt)) &&
-            (detector.IS_CHROME || detector.IS_SAFARI)
-          )
-
-        if (
-          valid &&
-          Math.abs(this.lastTouchX - clientX) < this.doubleTapTolerance &&
-          Math.abs(this.lastTouchY - clientY) < this.doubleTapTolerance
-        ) {
-          this.dblClick(evt, lastTouchCell)
-        } else {
-          DomEvent.consume(evt)
-        }
-
-        return
-      }
-    }
-
-    if (this.isEventIgnored(eventName, e, sender)) {
-      return
-    }
-
-    // Updates the event state via getEventState
-    e.state = this.getEventState(e.getState())
-
-    this.trigger(DomEvent.FIRE_MOUSE_EVENT, { eventName, e, sender })
-
-    if (
-      detector.IS_OPERA ||
-      detector.IS_SAFARI ||
-      detector.IS_CHROME ||
-      detector.IS_IE11 ||
-      detector.IS_IE ||
-      evt.target !== this.container
-    ) {
-      if (
-        eventName === DomEvent.MOUSE_MOVE &&
-        this.isMouseDown &&
-        this.autoScroll &&
-        !DomEvent.isMultiTouchEvent(evt)
-      ) {
-
-        this.scrollPointToVisible(
-          e.getGraphX(),
-          e.getGraphY(),
-          this.autoExtend,
-        )
-
-      } else if (
-        eventName === DomEvent.MOUSE_UP &&
-        this.ignoreScrollbars &&
-        this.translateToScrollPosition &&
-        (this.container.scrollLeft !== 0 || this.container.scrollTop !== 0)
-      ) {
-        const s = this.view.scale
-        const tr = this.view.translate
-        this.view.setTranslate(
-          tr.x - this.container.scrollLeft / s,
-          tr.y - this.container.scrollTop / s,
-        )
-        this.container.scrollLeft = 0
-        this.container.scrollTop = 0
-      }
-
-      this.mouseListeners && this.mouseListeners.forEach((handler) => {
-        if (eventName === DomEvent.MOUSE_DOWN) {
-          handler.mouseDown(e, sender)
-        } else if (eventName === DomEvent.MOUSE_MOVE) {
-          handler.mouseMove(e, sender)
-        } else if (eventName === DomEvent.MOUSE_UP) {
-          handler.mouseUp(e, sender)
-        }
-      })
-
-      if (eventName === DomEvent.MOUSE_UP) {
-        this.click(e)
-      }
-    }
-
-    // Detects tapAndHold events using a timer
-    if (
-      DomEvent.isTouchOrPenEvent(evt) &&
-      eventName === DomEvent.MOUSE_DOWN &&
-      this.tapAndHoldEnabled &&
-      !this.tapAndHoldInProgress
-    ) {
-      this.initialTouchX = e.getGraphX()
-      this.initialTouchY = e.getGraphY()
-
-      if (this.tapAndHoldTimer) {
-        window.clearTimeout(this.tapAndHoldTimer)
-      }
-
-      this.tapAndHoldTimer = window.setTimeout(
-        () => {
-          if (this.tapAndHoldValid) {
-            this.tapAndHold(e)
-          }
-          this.tapAndHoldValid = false
-          this.tapAndHoldInProgress = false
-        },
-        this.tapAndHoldDelay,
-      )
-
-      this.tapAndHoldValid = true
-      this.tapAndHoldInProgress = true
-
-    } else if (eventName === DomEvent.MOUSE_UP) {
-
-      this.tapAndHoldValid = false
-      this.tapAndHoldInProgress = false
-
-    } else if (this.tapAndHoldValid) { // hint
-      this.tapAndHoldValid =
-        Math.abs(this.initialTouchX - e.getGraphX()) < this.tolerance &&
-        Math.abs(this.initialTouchY - e.getGraphY()) < this.tolerance
-    }
-
-    // Stops editing for all events other than from cellEditor
-    if (
-      eventName === DomEvent.MOUSE_DOWN &&
-      this.isEditing() &&
-      !this.cellEditor.isEventSource(evt)
-    ) {
-      this.stopEditing(!this.isInvokesStopCellEditing())
-    }
-
-    this.consumeMouseEvent(eventName, e)
-  }
-
-  protected consumeMouseEvent(name: string, e: CustomMouseEvent) {
-    if (
-      name === DomEvent.MOUSE_DOWN &&
-      DomEvent.isTouchEvent(e.getEvent())
-    ) {
-      e.consume(false)
-    }
+    this.eventManager.fireMouseEvent(eventName, e, sender)
   }
 
   fireGestureEvent(e: MouseEvent, cell?: Cell) {
-    // Resets double tap event handling when gestures take place
-    this.lastTouchTime = 0
-    this.trigger(DomEvent.GESTURE, { e, cell })
+    this.eventManager.fireGestureEvent(e, cell)
   }
 
   // #endregion
 
-  // #region dispose
+  // #region :::::::::::: dispose
 
   protected disposed = false
 
@@ -8720,10 +6548,7 @@ export class Graph extends Events implements IDisposable {
       this.popupMenuHandler.dispose()
       this.selectionHandler.dispose()
       this.graphHandler.dispose()
-
-      if (this.connectionHandler != null) {
-        this.connectionHandler.destroy()
-      }
+      this.connectionHandler.dispose()
 
       if (this.cellEditor != null) {
         this.cellEditor.destroy()
@@ -8747,13 +6572,31 @@ export namespace Graph {
     createView?: (graph: Graph) => View
     createRenderer?: (graph: Graph) => Renderer
     createStyleSheet?: (graph: Graph) => StyleSheet
-    createSelectionManager?: (graph: Graph) => SelectionManager
+    createSelection?: (graph: Graph) => Selection
+
     createTooltipHandler?: (graph: Graph) => TooltipHandler
+    createConnectionHandler?: (graph: Graph) => ConnectionHandler
     createSelectionHandler?: (graph: Graph) => SelectionHandler
     createGraphHandler?: (graph: Graph) => GraphHandler
     createPanningHandler?: (graph: Graph) => PanningHandler
     createPopupMenuHandler?: (graph: Graph) => PopupMenuHandler
+    createNodeHandler?: (graph: Graph, state: CellState) => NodeHandler
+    createEdgeHandler?: (graph: Graph, state: CellState) => EdgeHandler
+    createElbowEdgeHandler?: (graph: Graph, state: CellState) => EdgeHandler
+    createEdgeSegmentHandler?: (graph: Graph, state: CellState) => EdgeHandler
+
     getTooltip?: (cell: Cell) => string | HTMLElement
+
+    isCellConnectable?: (cell: Cell | null) => boolean
+    isTransparentClickEvent?: (e: MouseEvent) => boolean
+    isIgnoreTerminalEvent?: (e: MouseEvent) => boolean
+
+    validateCell?: (cell: Cell, context: any) => string | null
+    validateEdge?: (
+      edge: Cell | null,
+      source: Cell | null,
+      target: Cell | null,
+    ) => string | null
   }
 
   export interface Options extends Hooks {
@@ -8793,6 +6636,7 @@ export namespace Graph {
   }
 
   export const events = {
+    refresh: 'refresh',
     root: 'root',
     addOverlay: 'addOverlay',
     removeOverlay: 'removeOverlay',
@@ -8801,7 +6645,6 @@ export namespace Graph {
     editingStarted: 'editingStarted',
     editingStopped: 'editingStopped',
     labelChanged: 'labelChanged',
-    escape: 'escape',
     size: 'size',
     alignCells: 'alignCells',
     flipEdge: 'flipEdge',
@@ -8822,10 +6665,17 @@ export namespace Graph {
     resizeCells: 'resizeCells',
     cellsResized: 'cellsResized',
 
+    escape: 'escape',
+    click: 'click',
+    dblclick: 'dblclick',
+    tapAndHold: 'tapAndHold',
+
     pan: 'pan',
     fireMouseEvent: 'fireMouseEvent',
     showContextMenu: 'showContextMenu',
     hideContextMenu: 'hideContextMenu',
     selectionChanged: 'selectionChanged',
+
+    save: 'save',
   }
 }

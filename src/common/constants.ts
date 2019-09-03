@@ -94,22 +94,20 @@ export const constants = {
   INVALID_COLOR: '#FF0000',
 
   /**
-   * Defines the color to be used for the selection border of edges. Use
-   * 'none' for no color. Default is #00FF00.
+   * Defines the color to be used for the selection border of edges.
    */
-  EDGE_SELECTION_COLOR: '#00FF00',
+  EDGE_SELECTION_COLOR: '#2ddb73',
 
   /**
-   * Defines the color to be used for the selection border of vertices. Use
-   * 'none' for no color. Default is #00FF00.
+   * Defines the color to be used for the selection border of vertices.
    */
-  VERTEX_SELECTION_COLOR: '#00FF00',
+  NODE_SELECTION_COLOR: '#2ddb73',
 
   /**
    * Defines the strokewidth to be used for vertex selections.
    * Default is 1.
    */
-  VERTEX_SELECTION_STROKEWIDTH: 1,
+  NODE_SELECTION_STROKEWIDTH: 1,
 
   /**
    * Defines the strokewidth to be used for edge selections.
@@ -121,7 +119,7 @@ export const constants = {
    * Defines the dashed state to be used for the vertex selection
    * border. Default is true.
    */
-  VERTEX_SELECTION_DASHED: true,
+  NODE_SELECTION_DASHED: true,
 
   /**
    * Defines the dashed state to be used for the edge selection
@@ -154,9 +152,11 @@ export const constants = {
   OUTLINE_STROKEWIDTH: detector.IS_IE ? 2 : 3,
 
   /**
-   * Defines the default size for handles. Default is 6.
+   * Defines the default size for handles.
+   *
+   * Default is `8`.
    */
-  HANDLE_SIZE: 6,
+  HANDLE_SIZE: 8,
 
   /**
    * Defines the default size for label handles. Default is 4.
@@ -164,16 +164,14 @@ export const constants = {
   LABEL_HANDLE_SIZE: 4,
 
   /**
-   * Defines the color to be used for the handle fill color. Use 'none' for
-   * no color. Default is #00FF00 (green).
+   * Defines the color to be used for the handle fill color.
    */
-  HANDLE_FILLCOLOR: '#00FF00',
+  HANDLE_FILLCOLOR: '#2ddb73',
 
   /**
-   * Defines the color to be used for the handle stroke color. Use 'none' for
-   * no color. Default is black.
+   * Defines the color to be used for the handle stroke color.
    */
-  HANDLE_STROKECOLOR: 'black',
+  HANDLE_STROKECOLOR: '#ffffff',
 
   /**
    * Defines the color to be used for the label handle fill color. Use 'none'

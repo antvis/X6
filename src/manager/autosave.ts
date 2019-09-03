@@ -1,10 +1,8 @@
-import { Events } from '../common'
 import { IChange } from '../change'
 import { Graph, Model } from '../core'
+import { BaseManager } from './manager-base'
 
-export class AutoSave extends Events {
-  graph: Graph | null
-
+export class AutoSave extends BaseManager {
   /**
    * Minimum amount of seconds between two consecutive autosaves.
    */
@@ -26,7 +24,7 @@ export class AutoSave extends Events {
   private timestamp: number = 0
 
   constructor(graph: Graph) {
-    super()
+    super(graph)
     this.setGraph(graph)
   }
 
@@ -47,7 +45,11 @@ export class AutoSave extends Events {
       this.graph.model.off(Model.events.change, this.onModelChanged, this)
     }
 
-    this.graph = graph
+    if (graph != null) {
+      this.graph = graph
+    } else {
+      delete this.graph
+    }
 
     if (this.graph != null) {
       this.graph.model.on(Model.events.change, this.onModelChanged, this)
@@ -77,7 +79,7 @@ export class AutoSave extends Events {
   }
 
   private save() {
-    this.trigger('save')
+    this.graph.trigger(Graph.events.save)
   }
 
   reset() {

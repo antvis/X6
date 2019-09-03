@@ -140,7 +140,7 @@ export class KeyboardHandler extends BaseHandler {
 
   escape(e: KeyboardEvent) {
     if (this.graph.isEscapeEnabled()) {
-      this.graph.escape(e)
+      this.graph.eventManager.escape(e)
     }
   }
 

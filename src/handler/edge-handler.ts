@@ -190,9 +190,9 @@ export class EdgeHandler extends MouseHandler {
     // for the initial configuration and preview
     this.abspoints = this.getSelectionPoints(this.state)
     this.preview = this.createSelectionShape(this.abspoints)
-    this.preview.dialect = (this.graph.dialect !== constants.DIALECT_SVG)
-      ? constants.DIALECT_MIXEDHTML
-      : constants.DIALECT_SVG
+    this.preview.dialect = (this.graph.dialect !== 'svg')
+      ? 'html'
+      : 'svg'
     this.preview.pointerEvents = false
     this.preview.init(this.graph.view.getOverlayPane())
     this.preview.setCursor(constants.CURSOR_MOVABLE_EDGE)
@@ -211,7 +211,7 @@ export class EdgeHandler extends MouseHandler {
         const pstate = this.graph.view.getState(parent)
         if (pstate != null) {
           this.parentHighlight = this.createParentHighlightShape(pstate.bounds)
-          this.parentHighlight.dialect = constants.DIALECT_SVG
+          this.parentHighlight.dialect = 'svg'
           this.parentHighlight.pointerEvents = false
           this.parentHighlight.rotation = util.getRotation(pstate)
           this.parentHighlight.init(this.graph.view.getOverlayPane())
@@ -396,7 +396,9 @@ export class EdgeHandler extends MouseHandler {
    * given source, target pair is not valid. Otherwise it returns null.
    */
   protected validateConnection(source: Cell | null, target: Cell | null) {
-    return this.graph.getEdgeValidationError(this.state.cell, source, target)
+    return this.graph.validator.getEdgeValidationError(
+      this.state.cell, source, target,
+    )
   }
 
   /**
@@ -563,12 +565,12 @@ export class EdgeHandler extends MouseHandler {
     dblClick?: (evt: MouseEvent) => void,
   ) {
     if (this.preferHtml) {
-      bend.dialect = constants.DIALECT_STRICTHTML
+      bend.dialect = 'html'
       bend.init(this.graph.container)
     } else {
-      bend.dialect = (this.graph.dialect !== constants.DIALECT_SVG)
-        ? constants.DIALECT_MIXEDHTML
-        : constants.DIALECT_SVG
+      bend.dialect = (this.graph.dialect !== 'svg')
+        ? 'html'
+        : 'svg'
       bend.init(this.graph.view.getOverlayPane())
     }
 

@@ -1,15 +1,15 @@
 import { IChange } from './change'
 import { Graph } from '../core/graph'
 import { Cell } from '../core/cell'
-import { SelectionManager } from '../core/selection-manager'
+import { Selection } from '../manager'
 
 export class SelectionChange implements IChange {
-  public readonly selection: SelectionManager
   public added: Cell[] | null
   public removed: Cell[] | null
+  public readonly selection: Selection
 
   constructor(
-    selection: SelectionManager,
+    selection: Selection,
     added: Cell[] | null,
     removed: Cell[] | null,
   ) {

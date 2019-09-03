@@ -104,7 +104,7 @@ export class CellHighlight extends BaseHandler {
       shape.dashed = this.dashed
       shape.shadow = false
 
-      shape.dialect = constants.DIALECT_SVG
+      shape.dialect = 'svg'
       shape.svgPointerEvents = 'stroke'
 
       shape.init(this.graph.view.getOverlayPane())
