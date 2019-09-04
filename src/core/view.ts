@@ -10,7 +10,7 @@ import {
 import { Cell } from './cell'
 import { Graph } from './graph'
 import { Geometry } from './geometry'
-import { CellState } from './cell-state'
+import { CellState } from './state'
 import { StyleRegistry } from '../stylesheet'
 import { RectangleShape, ImageShape } from '../shape'
 import { UndoableEdit, CurrentRootChange } from '../change'

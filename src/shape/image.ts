@@ -1,14 +1,14 @@
 import * as util from '../util'
 import { RectangleShape } from './rectangle'
 import { SvgCanvas2D } from '../canvas'
-import { Rectangle } from '../struct'
-import { CellState, CellOverlay } from '../core'
+import { Rectangle, Overlay } from '../struct'
+import { CellState } from '../core'
 
 export class ImageShape extends RectangleShape {
 
   image: string
   preserveImageAspect: boolean = true
-  overlay?: CellOverlay
+  overlay?: Overlay
 
   constructor(
     bounds: Rectangle,

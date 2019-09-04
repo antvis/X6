@@ -1,8 +1,7 @@
 import * as util from '../util'
 import { Events } from '../common'
-import { Point } from '../struct'
+import { Point, CellPath } from '../struct'
 import { Cell } from './cell'
-import { CellPath } from './cell-path'
 import { Geometry } from './geometry'
 import {
   IChange,

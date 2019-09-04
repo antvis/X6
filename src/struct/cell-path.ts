@@ -1,4 +1,4 @@
-import { Cell } from './cell'
+import { Cell } from '../core'
 
 export namespace CellPath {
 

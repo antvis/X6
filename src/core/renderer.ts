@@ -1,8 +1,7 @@
 import * as util from '../util'
-import { CellState } from './cell-state'
-import { CellOverlay } from './cell-overlay'
+import { CellState } from './state'
 import { TextDirection, Dialect } from '../types'
-import { Rectangle, Point } from '../struct'
+import { Rectangle, Point, Overlay } from '../struct'
 import { constants, detector } from '../common'
 import { DomEvent } from '../common/dom-event'
 import { CustomMouseEvent } from '../common/mouse-event'
@@ -288,11 +287,11 @@ export class Renderer {
   private createCellOverlays(state: CellState) {
     const graph = state.view.graph
     const overlays = graph.getCellOverlays(state.cell)
-    let map: WeakMap<CellOverlay, ImageShape> | null = null
-    let set: CellOverlay[] | null = null
+    let map: WeakMap<Overlay, ImageShape> | null = null
+    let set: Overlay[] | null = null
 
     if (overlays != null) {
-      map = new WeakMap<CellOverlay, ImageShape>()
+      map = new WeakMap<Overlay, ImageShape>()
       set = []
 
       overlays.forEach((overlay) => {
@@ -339,7 +338,7 @@ export class Renderer {
 
   private installCellOverlayListeners(
     state: CellState,
-    overlay: CellOverlay,
+    overlay: Overlay,
     overlayShape: Shape,
   ) {
     const graph = state.view.graph

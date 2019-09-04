@@ -3,11 +3,9 @@ import * as images from '../assets/images'
 import { Cell } from './cell'
 import { View } from './view'
 import { Model } from './model'
+import { CellState } from './state'
 import { Geometry } from './geometry'
-import { CellState } from './cell-state'
-import { CellOverlay } from './cell-overlay'
 import { Renderer } from './renderer'
-import { Multiplicity } from './multiplicity'
 import { StyleSheet, EdgeStyle } from '../stylesheet'
 import { Label } from '../shape'
 import { Align, VAlign, CellStyle, Dialect } from '../types'
@@ -25,8 +23,10 @@ import {
   Point,
   Constraint,
   Image,
+  Overlay,
   ShapeName,
-  PageFormat,
+  PageSize,
+  Multiplicity,
 } from '../struct'
 import {
   IMouseHandler,
@@ -226,7 +226,7 @@ export class Graph extends Events implements IDisposable {
    * <mxPrintPreview> and for painting the background page if <pageVisible> is
    * true and the pagebreaks if <pageBreaksVisible> is true.
    */
-  pageFormat: Rectangle = PageFormat.A4_PORTRAIT
+  pageFormat: Rectangle = PageSize.A4_PORTRAIT
 
   /**
    * Specifies the scale of the background page. Default is 1.5.
@@ -867,7 +867,7 @@ export class Graph extends Events implements IDisposable {
   /**
    * Adds an `CellOverlay` for the specified cell.
    */
-  addCellOverlay(cell: Cell, overlay: CellOverlay) {
+  addCellOverlay(cell: Cell, overlay: Overlay) {
     if (cell.overlays == null) {
       cell.overlays = []
     }
@@ -897,7 +897,7 @@ export class Graph extends Events implements IDisposable {
    * Removes and returns the given `CellOverlay` from the given cell.
    * If no overlay is given, then all overlays are removed.
    */
-  removeCellOverlay(cell: Cell, overlay?: CellOverlay | null) {
+  removeCellOverlay(cell: Cell, overlay?: Overlay | null) {
     if (overlay == null) {
       this.removeCellOverlays(cell)
     } else {
@@ -964,7 +964,7 @@ export class Graph extends Events implements IDisposable {
   ) {
     if (warning != null && warning.length > 0) {
       // Creates the overlay with the image and warning
-      const overlay = new CellOverlay(
+      const overlay = new Overlay(
         img,
         `<font color=red>${warning}</font>`,
       )

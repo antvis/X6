@@ -1,8 +1,7 @@
 import { detector } from './detector'
 import { isAncestorNode } from '../util'
-import { Graph } from '../core'
+import { Graph, CellState } from '../core'
 import { Shape } from '../shape'
-import { CellState } from '../core/cell-state'
 import { DomEvent } from './dom-event'
 
 export class CustomMouseEvent {

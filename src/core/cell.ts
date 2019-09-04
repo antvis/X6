@@ -1,7 +1,7 @@
 import * as util from '../util'
 import { IDisposable } from '../common'
 import { Geometry } from './geometry'
-import { CellOverlay } from './cell-overlay'
+import { Overlay } from '../struct'
 import { CellStyle } from '../types'
 
 export class Cell implements IDisposable {
@@ -20,7 +20,7 @@ export class Cell implements IDisposable {
   public sourceNode: Cell | null
   public targetNode: Cell | null
 
-  public overlays: CellOverlay[] | null
+  public overlays: Overlay[] | null
 
   private node?: boolean
   private edge?: boolean

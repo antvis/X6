@@ -1,6 +1,5 @@
 import { isHTMLNode } from '../util'
-import { Graph } from './graph'
-import { Cell } from './cell'
+import { Graph, Cell } from '../core'
 
 export class Multiplicity {
   constructor(options: Multiplicity.Options) {
@@ -23,7 +22,6 @@ export class Multiplicity {
    * terminal of an edge.
    */
   isSource?: boolean
-
   nodeName?: string
   attrName?: string
   attrValue?: string

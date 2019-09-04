@@ -1,8 +1,7 @@
-import { Cell } from '.'
+import { Point, Rectangle, Overlay } from '../struct'
+import { Cell } from './cell'
 import { View } from './view'
 import { Shape, ImageShape, Text } from '../shape'
-import { CellOverlay } from './cell-overlay'
-import { Point, Rectangle } from '../struct'
 import { CellStyle } from '../types'
 
 export class CellState {
@@ -104,8 +103,8 @@ export class CellState {
    */
   control: ImageShape | null
 
-  overlaySet: CellOverlay[] | null
-  overlayMap: WeakMap<CellOverlay, ImageShape> | null
+  overlaySet: Overlay[] | null
+  overlayMap: WeakMap<Overlay, ImageShape> | null
 
   constructor(
     public view: View,
@@ -267,7 +266,7 @@ export class CellState {
   eachOverlay(
     iterator: (
       shape: ImageShape | null | undefined,
-      overlay: CellOverlay,
+      overlay: Overlay,
     ) => void,
   ) {
     if (this.overlaySet) {

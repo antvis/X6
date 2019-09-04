@@ -1,7 +1,6 @@
 import { Cell, CellState } from '../core'
-import { CellPath } from '../core/cell-path'
 import { getOffset, getScrollOrigin } from './dom'
-import { Point, DirectionMask } from '../struct'
+import { Point, DirectionMask, CellPath } from '../struct'
 import { Align, VAlign } from '../types'
 
 /**

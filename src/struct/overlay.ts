@@ -1,9 +1,9 @@
-import { Point, Rectangle, Image } from '../struct'
-import { CellState } from './cell-state'
+import { Point, Rectangle, Image } from '.'
+import { CellState } from '../core/state'
 import { Events } from '../common'
 import { Align, VAlign } from '../types'
 
-export class CellOverlay extends Events {
+export class Overlay extends Events {
   image: Image
   tooltip: string
   align: Align
