@@ -9,7 +9,7 @@ import {
   PopupMenuHandler,
   NodeHandler,
   EdgeHandler,
-  ElbowEdgeHandler,
+  EdgeElbowHandler,
   EdgeSegmentHandler,
 } from '../handler'
 import { EdgeStyle } from '../stylesheet'
@@ -148,7 +148,7 @@ export class HandlerManager extends BaseManager {
   protected createElbowEdgeHandler(state: State) {
     return (this.hooks.createElbowEdgeHandler != null &&
       this.hooks.createElbowEdgeHandler(this.graph, state) ||
-      new ElbowEdgeHandler(this.graph, state)
+      new EdgeElbowHandler(this.graph, state)
     )
   }
 }

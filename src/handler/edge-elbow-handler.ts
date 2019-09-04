@@ -4,7 +4,7 @@ import { constants, DomEvent } from '../common'
 import { EdgeStyle } from '../stylesheet'
 import { EdgeHandler } from './edge-handler'
 
-export class ElbowEdgeHandler extends EdgeHandler {
+export class EdgeElbowHandler extends EdgeHandler {
   /**
    * Specifies if a double click on the middle handle should trigger flip
    *

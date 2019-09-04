@@ -2,9 +2,9 @@ import * as util from '../util'
 import { Cell, State } from '../core'
 import { Rectangle, Point } from '../struct'
 import { constants, CustomMouseEvent } from '../common'
-import { ElbowEdgeHandler } from './elbow-edge-handler'
+import { EdgeElbowHandler } from './edge-elbow-handler'
 
-export class EdgeSegmentHandler extends ElbowEdgeHandler {
+export class EdgeSegmentHandler extends EdgeElbowHandler {
 
   getCurrentPoints() {
     let pts = this.state.absolutePoints
