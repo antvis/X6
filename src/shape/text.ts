@@ -2,7 +2,7 @@ import * as util from '../util'
 import { constants, detector } from '../common'
 import { Shape } from './shape'
 import { SvgCanvas2D } from '../canvas'
-import { CellState } from '../core'
+import { State } from '../core'
 import { Rectangle, Point, FontStyle } from '../struct'
 import { Align, VAlign, TextDirection } from '../types'
 
@@ -326,7 +326,7 @@ export class Text extends Shape {
     delete this.margin
   }
 
-  apply(state: CellState) {
+  apply(state: State) {
     const spacing = this.spacing
     super.apply(state)
 

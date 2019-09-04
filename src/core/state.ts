@@ -4,7 +4,7 @@ import { View } from './view'
 import { Shape, ImageShape, Text } from '../shape'
 import { CellStyle } from '../types'
 
-export class CellState {
+export class State {
   /**
    * scale and translated bounds
    */
@@ -54,12 +54,12 @@ export class CellState {
   /**
    * The visible source terminal state.
    */
-  visibleSourceState: CellState | null
+  visibleSourceState: State | null
 
   /**
    * The visible target terminal state.
    */
-  visibleTargetState: CellState | null
+  visibleTargetState: State | null
 
   /**
    * The distance between the first and last point for an edge.
@@ -196,7 +196,7 @@ export class CellState {
     return isSource ? this.visibleSourceState : this.visibleTargetState
   }
 
-  setVisibleTerminalState(state: CellState | null, isSource?: boolean) {
+  setVisibleTerminalState(state: State | null, isSource?: boolean) {
     if (isSource) {
       this.visibleSourceState = state
     } else {
@@ -242,7 +242,7 @@ export class CellState {
   /**
    * Copies all fields from the given state to this state.
    */
-  setState(state: CellState) {
+  setState(state: State) {
     this.view = state.view
     this.cell = state.cell
     this.style = state.style
@@ -278,7 +278,7 @@ export class CellState {
   }
 
   clone() {
-    const cloned = new CellState(this.view, this.cell, this.style)
+    const cloned = new State(this.view, this.cell, this.style)
 
     cloned.bounds = this.bounds.clone()
 

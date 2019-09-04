@@ -1,5 +1,5 @@
 import * as util from '../util'
-import { Graph, CellState } from '../core'
+import { Graph, State } from '../core'
 import { BaseManager } from './manager-base'
 import { Point, Constraint } from '../struct'
 
@@ -8,7 +8,7 @@ export class ConnectionManager extends BaseManager {
     super(graph)
   }
 
-  getOutlineConstraint(point: Point, terminalState: CellState, me: any) {
+  getOutlineConstraint(point: Point, terminalState: State, me: any) {
     if (terminalState.shape != null) {
       const bounds = this.view.getPerimeterBounds(terminalState)
       const direction = terminalState.style.direction

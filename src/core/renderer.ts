@@ -1,5 +1,5 @@
 import * as util from '../util'
-import { CellState } from './state'
+import { State } from './state'
 import { TextDirection, Dialect } from '../types'
 import { Rectangle, Point, Overlay } from '../struct'
 import { constants, detector } from '../common'
@@ -33,7 +33,7 @@ export class Renderer {
   forceControlClickHandler: boolean = false
 
   redraw(
-    state: CellState,
+    state: State,
     force: boolean = false,
     rendering: boolean = false,
   ) {
@@ -48,7 +48,7 @@ export class Renderer {
 
   // #region redraw shape
 
-  private redrawShape(state: CellState, force: boolean, rendering: boolean) {
+  private redrawShape(state: State, force: boolean, rendering: boolean) {
     const model = state.view.graph.model
     let shapeChanged = false
 
@@ -138,7 +138,7 @@ export class Renderer {
   /**
    * Returns true if the given shape must be repainted.
    */
-  private isShapeInvalid(state: CellState, shape: Shape) {
+  private isShapeInvalid(state: State, shape: Shape) {
     return (
       shape.bounds == null ||
       shape.scale !== state.view.scale ||
@@ -153,7 +153,7 @@ export class Renderer {
     )
   }
 
-  private getShapeConstructor(state: CellState) {
+  private getShapeConstructor(state: State) {
     let ctor = Shape.getShape(state.style.shape)
     if (ctor == null) {
       ctor = state.cell.isEdge()
@@ -164,7 +164,7 @@ export class Renderer {
     return ctor
   }
 
-  createShape(state: CellState): Shape | null {
+  createShape(state: State): Shape | null {
     let shape = null
     // Checks if there is a stencil for the name and creates
     // a shape instance for the stencil if one exists
@@ -179,7 +179,7 @@ export class Renderer {
     return shape
   }
 
-  private createIndicatorShape(state: CellState) {
+  private createIndicatorShape(state: State) {
     if (state != null && state.shape != null) {
       state.shape.indicatorShape = Shape.getShape(
         state.view.graph.getIndicatorShape(state),
@@ -187,7 +187,7 @@ export class Renderer {
     }
   }
 
-  private initializeShape(state: CellState) {
+  private initializeShape(state: State) {
     if (state != null && state.shape != null) {
       state.shape.dialect = state.view.graph.dialect
       this.configureShape(state)
@@ -195,7 +195,7 @@ export class Renderer {
     }
   }
 
-  private configureShape(state: CellState) {
+  private configureShape(state: State) {
     if (state != null && state.shape != null) {
       const graph = state.view.graph
       state.shape.apply(state)
@@ -216,7 +216,7 @@ export class Renderer {
    * This implementation resolves these keywords on the fill, stroke
    * and gradient color keys.
    */
-  private postConfigureShape(state: CellState) {
+  private postConfigureShape(state: State) {
     if (state != null && state.shape != null) {
       this.resolveColor(state, 'fill', 'fill')
       this.resolveColor(state, 'stroke', 'stroke')
@@ -230,7 +230,7 @@ export class Renderer {
    * Resolves special keywords 'inherit', 'indicated' and 'swimlane' and sets
    * the respective color on the shape.
    */
-  private resolveColor(state: CellState, field: string, key: string) {
+  private resolveColor(state: State, field: string, key: string) {
     const graph = state.view.graph
     const value = (state.shape as any)[field]
     let referenced = null
@@ -269,7 +269,7 @@ export class Renderer {
     }
   }
 
-  private checkPlaceholderStyles(state: CellState) {
+  private checkPlaceholderStyles(state: State) {
     if (state.style != null) {
       const values = ['inherit', 'swimlane', 'indicated']
       const styles = ['fill', 'stroke', 'gradientColor']
@@ -284,7 +284,7 @@ export class Renderer {
     return false
   }
 
-  private createCellOverlays(state: CellState) {
+  private createCellOverlays(state: State) {
     const graph = state.view.graph
     const overlays = graph.getCellOverlays(state.cell)
     let map: WeakMap<Overlay, ImageShape> | null = null
@@ -332,12 +332,12 @@ export class Renderer {
     state.overlaySet = set
   }
 
-  private initializeOverlay(state: CellState, overlayShape: Shape) {
+  private initializeOverlay(state: State, overlayShape: Shape) {
     overlayShape.init(state.view.getOverlayPane()!)
   }
 
   private installCellOverlayListeners(
-    state: CellState,
+    state: State,
     overlay: Overlay,
     overlayShape: Shape,
   ) {
@@ -369,7 +369,7 @@ export class Renderer {
     }
   }
 
-  private installListeners(state: CellState) {
+  private installListeners(state: State) {
     const graph = state.view.graph
     const elem = state.shape!.elem!
 
@@ -377,7 +377,7 @@ export class Renderer {
     // gesture (down, move, up) via the initial DOM node. Same for
     // HTML images in all IE versions (VML images are working).
     const getState = (e: MouseEvent) => {
-      let result: CellState = state
+      let result: State = state
 
       if (
         (
@@ -434,7 +434,7 @@ export class Renderer {
     }
   }
 
-  private createControl(state: CellState) {
+  private createControl(state: State) {
     const graph = state.view.graph
     const image = graph.getFoldingImage(state)
 
@@ -458,7 +458,7 @@ export class Renderer {
     }
   }
 
-  private createControlClickHandler(state: CellState) {
+  private createControlClickHandler(state: State) {
     const graph = state.view.graph
     return (e: MouseEvent) => {
       if (this.forceControlClickHandler || graph.isEnabled()) {
@@ -470,7 +470,7 @@ export class Renderer {
   }
 
   private initControl(
-    state: CellState,
+    state: State,
     control: ImageShape,
     handleEvents: boolean,
     clickHandler: (e: MouseEvent) => any,
@@ -554,7 +554,7 @@ export class Renderer {
 
   // #region redrawlabel
 
-  private redrawLabel(state: CellState, forced?: boolean) {
+  private redrawLabel(state: State, forced?: boolean) {
     const graph = state.view.graph
     const txt = this.getLabelValue(state)
     const wrapping = graph.isWrapping(state.cell)
@@ -652,11 +652,11 @@ export class Renderer {
     }
   }
 
-  getLabelValue(state: CellState) {
+  getLabelValue(state: State) {
     return state.view.graph.getLabel(state.cell)
   }
 
-  private createLabel(state: CellState, value: string) {
+  private createLabel(state: State, value: string) {
     const graph = state.view.graph
 
     if (
@@ -713,7 +713,7 @@ export class Renderer {
       let forceGetCell = false
 
       const getState = (e: MouseEvent) => {
-        let result: CellState = state
+        let result: State = state
 
         if (detector.SUPPORT_TOUCH || forceGetCell) {
           const x = DomEvent.getClientX(e)
@@ -775,7 +775,7 @@ export class Renderer {
     }
   }
 
-  private initializeLabel(state: CellState, shape: Shape) {
+  private initializeLabel(state: State, shape: Shape) {
     if (detector.NO_FOREIGNOBJECT && shape.dialect !== constants.DIALECT_SVG) {
       shape.init(state.view.graph.container)
     } else {
@@ -783,7 +783,7 @@ export class Renderer {
     }
   }
 
-  private getLabelBounds(state: CellState) {
+  private getLabelBounds(state: State) {
     const graph = state.view.graph
     const scale = state.view.scale
     const isEdge = graph.getModel().isEdge(state.cell)
@@ -860,7 +860,7 @@ export class Renderer {
     return bounds
   }
 
-  private getTextScale(state: CellState) {
+  private getTextScale(state: State) {
     return state.view.scale
   }
 
@@ -871,18 +871,18 @@ export class Renderer {
   /**
    * Returns true if the event is for the shape of the given state.
    */
-  private isShapeEvent(state: CellState, e: MouseEvent) {
+  private isShapeEvent(state: State, e: MouseEvent) {
     return true
   }
 
   /**
    * Returns true if the event is for the label of the given state.
    */
-  private isLabelEvent(state: CellState, e: MouseEvent) {
+  private isLabelEvent(state: State, e: MouseEvent) {
     return true
   }
 
-  private isTextShapeInvalid(state: CellState, shape: Text) {
+  private isTextShapeInvalid(state: State, shape: Text) {
     const check = (prop: string, styleName: string, defaultValue?: any) => {
       let result = false
 
@@ -922,7 +922,7 @@ export class Renderer {
       check('textDirection', 'textDirection', constants.DEFAULT_TEXT_DIRECTION)
   }
 
-  private rotateLabelBounds(state: CellState, bounds: Rectangle) {
+  private rotateLabelBounds(state: State, bounds: Rectangle) {
     bounds.y -= state.text!.margin.y * bounds.height
     bounds.x -= state.text!.margin.x * bounds.width
 
@@ -981,7 +981,7 @@ export class Renderer {
 
   // #endregion
 
-  private redrawCellOverlays(state: CellState, forced?: boolean) {
+  private redrawCellOverlays(state: State, forced?: boolean) {
     this.createCellOverlays(state)
     if (state.overlayMap != null) {
       const rot = util.mod(state.style.rotation || 0, 90)
@@ -1025,7 +1025,7 @@ export class Renderer {
     }
   }
 
-  private redrawControl(state: CellState, forced?: boolean) {
+  private redrawControl(state: State, forced?: boolean) {
     const image = state.view.graph.getFoldingImage(state)
 
     if (state.control != null && image != null) {
@@ -1050,7 +1050,7 @@ export class Renderer {
     }
   }
 
-  private getControlBounds(state: CellState, w: number, h: number) {
+  private getControlBounds(state: State, w: number, h: number) {
     if (state.control != null) {
       const s = state.view.scale
       let cx = state.bounds.getCenterX()
@@ -1120,7 +1120,7 @@ export class Renderer {
    * will not go into the <drawPane> (eg. HTML labels without foreignObjects).
    */
   insertStateAfter(
-    state: CellState,
+    state: State,
     node: HTMLElement | null,
     htmlNode: HTMLElement | null,
   ) {
@@ -1176,14 +1176,14 @@ export class Renderer {
     return [node, htmlNode]
   }
 
-  private getShapesForState(state: CellState) {
+  private getShapesForState(state: State) {
     return [state.shape, state.text, state.control]
   }
 
   /**
    * Destroys the shapes associated with the given cell state.
    */
-  destroy(state: CellState) {
+  destroy(state: State) {
     if (state.shape != null) {
       if (state.text != null) {
         state.text.dispose()

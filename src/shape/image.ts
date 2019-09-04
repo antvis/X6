@@ -2,7 +2,7 @@ import * as util from '../util'
 import { RectangleShape } from './rectangle'
 import { SvgCanvas2D } from '../canvas'
 import { Rectangle, Overlay } from '../struct'
-import { CellState } from '../core'
+import { State } from '../core'
 
 export class ImageShape extends RectangleShape {
 
@@ -28,7 +28,7 @@ export class ImageShape extends RectangleShape {
     return 0
   }
 
-  apply(state: CellState) {
+  apply(state: State) {
     super.apply(state)
 
     this.fill = null

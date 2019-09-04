@@ -1,5 +1,5 @@
 import { Point, Rectangle, Image } from '.'
-import { CellState } from '../core/state'
+import { State } from '../core/state'
 import { Events } from '../common'
 import { Align, VAlign } from '../types'
 
@@ -37,7 +37,7 @@ export class Overlay extends Events {
     this.cursor = (cursor != null) ? cursor : 'help'
   }
 
-  getBounds(state: CellState) {
+  getBounds(state: State) {
     const isEdge = state.cell.isEdge()
     const s = state.view.scale
     let pt = null

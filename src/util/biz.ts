@@ -1,4 +1,4 @@
-import { Cell, CellState } from '../core'
+import { Cell, State } from '../core'
 import { getOffset, getScrollOrigin } from './dom'
 import { Point, DirectionMask, CellPath } from '../struct'
 import { Align, VAlign } from '../types'
@@ -88,8 +88,8 @@ export function getAlignmentAsPoint(align: Align, valign: VAlign) {
 * defaultValue - Default value to be returned.
 */
 export function getPortConstraints(
-  terminal: CellState,
-  edge: CellState,
+  terminal: State,
+  edge: State,
   isSource: boolean,
   defaultValue: DirectionMask,
 ) {

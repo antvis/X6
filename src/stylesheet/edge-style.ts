@@ -1,6 +1,6 @@
 import * as util from '../util'
 import { constants } from '../common'
-import { CellState } from '../core'
+import { State } from '../core'
 import { Point, Rectangle, DirectionMask, EdgeType } from '../struct'
 
 export namespace EdgeStyle {
@@ -25,9 +25,9 @@ export namespace EdgeStyle {
    * @param result The actual points of the edge.
    */
   export function entityRelation(
-    edgeState: CellState,
-    sourceState: CellState,
-    targetState: CellState,
+    edgeState: State,
+    sourceState: State,
+    targetState: State,
     points: Point[],
     result: Point[],
   ) {
@@ -44,7 +44,7 @@ export namespace EdgeStyle {
 
     if (p0 != null) {
       // tslint:disable-next-line
-      sourceState = new CellState(sourceState.view, sourceState.cell)
+      sourceState = new State(sourceState.view, sourceState.cell)
       sourceState.bounds.x = p0.x
       sourceState.bounds.y = p0.y
     } else if (sourceState != null) {
@@ -75,7 +75,7 @@ export namespace EdgeStyle {
 
     if (pe != null) {
       // tslint:disable-next-line
-      targetState = new CellState(targetState.view, targetState.cell)
+      targetState = new State(targetState.view, targetState.cell)
       targetState.bounds.x = pe.x
       targetState.bounds.y = pe.y
     } else if (targetState != null) {
@@ -143,9 +143,9 @@ export namespace EdgeStyle {
   }
 
   export function loop(
-    edgeState: CellState,
-    sourceState: CellState,
-    targetState: CellState,
+    edgeState: State,
+    sourceState: State,
+    targetState: State,
     points: Point[],
     result: Point[],
   ) {
@@ -229,9 +229,9 @@ export namespace EdgeStyle {
    * parameters.
    */
   export function elbowConnector(
-    edgeState: CellState,
-    sourceState: CellState,
-    targetState: CellState,
+    edgeState: State,
+    sourceState: State,
+    targetState: State,
     points: Point[],
     result: Point[],
   ) {
@@ -292,9 +292,9 @@ export namespace EdgeStyle {
    * Implements a vertical elbow edge.
    */
   export function sideToSide(
-    edgeState: CellState,
-    sourceState: CellState,
-    targetState: CellState,
+    edgeState: State,
+    sourceState: State,
+    targetState: State,
     points: Point[],
     result: Point[],
   ) {
@@ -310,14 +310,14 @@ export namespace EdgeStyle {
 
     if (p0 != null) {
       // tslint:disable-next-line
-      sourceState = new CellState(sourceState.view, sourceState.cell)
+      sourceState = new State(sourceState.view, sourceState.cell)
       sourceState.bounds.x = p0.x
       sourceState.bounds.y = p0.y
     }
 
     if (pe != null) {
       // tslint:disable-next-line
-      targetState = new CellState(targetState.view, targetState.cell)
+      targetState = new State(targetState.view, targetState.cell)
       targetState.bounds.x = pe.x
       targetState.bounds.y = pe.y
     }
@@ -388,9 +388,9 @@ export namespace EdgeStyle {
    * Implements a horizontal elbow edge.
    */
   export function topToBottom(
-    edgeState: CellState,
-    sourceState: CellState,
-    targetState: CellState,
+    edgeState: State,
+    sourceState: State,
+    targetState: State,
     points: Point[],
     result: Point[],
   ) {
@@ -406,14 +406,14 @@ export namespace EdgeStyle {
 
     if (p0 != null) {
       // tslint:disable-next-line
-      sourceState = new CellState(sourceState.view, sourceState.cell)
+      sourceState = new State(sourceState.view, sourceState.cell)
       sourceState.bounds.x = p0.x
       sourceState.bounds.y = p0.y
     }
 
     if (pe != null) {
       // tslint:disable-next-line
-      targetState = new CellState(sourceState.view, sourceState.cell)
+      targetState = new State(sourceState.view, sourceState.cell)
       targetState.bounds.x = pe.x
       targetState.bounds.y = pe.y
     }
@@ -484,9 +484,9 @@ export namespace EdgeStyle {
    * Implements an orthogonal edge style.
    */
   export function segmentConnector(
-    edgeState: CellState,
-    sourceState: CellState,
-    targetState: CellState,
+    edgeState: State,
+    sourceState: State,
+    targetState: State,
     hints: Point[],
     result: Point[],
   ) {
@@ -577,7 +577,7 @@ export namespace EdgeStyle {
 
       hint = hints[0]
 
-      let currentTerm: CellState | null = sourceState
+      let currentTerm: State | null = sourceState
       let currentPt = pts[0]
       let hozChan = false
       let vertChan = false
@@ -860,9 +860,9 @@ export namespace EdgeStyle {
   export const VERTEX_MASK = 3072
 
   export function getJettySize(
-    edgeState: CellState,
-    sourceState: CellState,
-    targetState: CellState,
+    edgeState: State,
+    sourceState: State,
+    targetState: State,
     points: Point[],
     isSource?: boolean,
   ) {
@@ -909,9 +909,9 @@ export namespace EdgeStyle {
    *
    */
   export function orthConnector(
-    edgeState: CellState,
-    sourceState: CellState,
-    targetState: CellState,
+    edgeState: State,
+    sourceState: State,
+    targetState: State,
     points: Point[],
     result: Point[],
   ) {

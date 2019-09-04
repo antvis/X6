@@ -1,5 +1,5 @@
 import { getValue } from './object'
-import { CellState } from '../core'
+import { State } from '../core'
 import { Point, Rectangle } from '../struct'
 import { Direction } from '../types'
 
@@ -319,7 +319,7 @@ export function intersects(a: Rectangle, b: Rectangle) {
 }
 
 export function intersectsHotspot(
-  state: CellState,
+  state: State,
   x: number,
   y: number,
   hotspot: number = 1,
@@ -480,7 +480,7 @@ export function relativeCcw(
   return (ccw < 0.0) ? -1 : ((ccw > 0.0) ? 1 : 0)
 }
 
-export function findNearestSegment(state: CellState, x: number, y: number) {
+export function findNearestSegment(state: State, x: number, y: number) {
   const len = state.absolutePoints.length
   let index = -1
   if (len > 0) {

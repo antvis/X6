@@ -1,12 +1,12 @@
 import { detector } from './detector'
 import { isAncestorNode } from '../util'
-import { Graph, CellState } from '../core'
+import { Graph, State } from '../core'
 import { Shape } from '../shape'
 import { DomEvent } from './dom-event'
 
 export class CustomMouseEvent {
   e: MouseEvent
-  state: CellState | null
+  state: State | null
   consumed: boolean = false
 
   /**
@@ -19,7 +19,7 @@ export class CustomMouseEvent {
    */
   graphY: number
 
-  constructor(e: MouseEvent, state?: CellState | null) {
+  constructor(e: MouseEvent, state?: State | null) {
     this.e = e
     this.state = state || null
   }
@@ -100,7 +100,7 @@ export namespace CustomMouseEvent {
   export function redirectMouseEvents(
     elem: HTMLElement | SVGElement,
     graph: Graph,
-    state: CellState | ((e: MouseEvent) => CellState) | null,
+    state: State | ((e: MouseEvent) => State) | null,
     onMouseDown?: ((e: MouseEvent) => any) | null,
     onMouseMove?: ((e: MouseEvent) => any) | null,
     onMouseUp?: ((e: MouseEvent) => any) | null,

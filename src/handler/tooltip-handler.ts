@@ -1,6 +1,6 @@
 import * as util from '../util'
 import { MouseHandler } from './handler-mouse'
-import { Graph, CellState } from '../core'
+import { Graph, State } from '../core'
 import { DomEvent, CustomMouseEvent } from '../common'
 
 export class TooltipHandler extends MouseHandler {
@@ -30,7 +30,7 @@ export class TooltipHandler extends MouseHandler {
   protected timer: number | null
   protected lastX: number
   protected lastY: number
-  protected state: CellState | null
+  protected state: State | null
   protected sourceElem: HTMLElement
   protected isStateSource: boolean
 
@@ -129,7 +129,7 @@ export class TooltipHandler extends MouseHandler {
   protected reset(
     e: CustomMouseEvent,
     restart: boolean = false,
-    state: CellState | null = null,
+    state: State | null = null,
   ) {
     if (!this.ignoreTouchEvents || DomEvent.isMouseEvent(e.getEvent())) {
       this.clearTimer()

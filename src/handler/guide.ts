@@ -1,11 +1,11 @@
 import { constants, IDisposable } from '../common'
 import { Rectangle, Point } from '../struct'
-import { Graph, CellState } from '../core'
+import { Graph, State } from '../core'
 import { Polyline } from '../shape'
 
 export class Guide implements IDisposable {
   graph: Graph
-  states: CellState[]
+  states: State[]
 
   /**
    * Specifies if horizontal guides are enabled.
@@ -38,12 +38,12 @@ export class Guide implements IDisposable {
    */
   rounded: boolean = false
 
-  constructor(graph: Graph, states: CellState[]) {
+  constructor(graph: Graph, states: State[]) {
     this.graph = graph
     this.setStates(states)
   }
 
-  setStates(states: CellState[]) {
+  setStates(states: State[]) {
     this.states = states
   }
 
@@ -66,7 +66,7 @@ export class Guide implements IDisposable {
     return guide
   }
 
-  protected getGuideColor(state: CellState, horizontal: boolean) {
+  protected getGuideColor(state: State, horizontal: boolean) {
     return constants.GUIDE_COLOR
   }
 
@@ -88,11 +88,11 @@ export class Guide implements IDisposable {
       let dy = delta.y
 
       let activeX = false
-      let stateX: CellState | null = null
+      let stateX: State | null = null
       let valueX = null
 
       let activeY = false
-      let stateY: CellState | null = null
+      let stateY: State | null = null
       let valueY = null
 
       const tol = this.getGuideTolerance()
@@ -111,7 +111,7 @@ export class Guide implements IDisposable {
       const middle = b.getCenterY()
 
       // Snaps the left, center and right to the given x-coordinate
-      const snapX = (x: number, state: CellState) => {
+      const snapX = (x: number, state: State) => {
         const xx = x + this.graph.panDx
         let active = false
 
@@ -145,7 +145,7 @@ export class Guide implements IDisposable {
       }
 
       // Snaps the top, middle or bottom to the given y-coordinate
-      const snapY = (y: number, state: CellState) => {
+      const snapY = (y: number, state: State) => {
         const yy = y + this.graph.panDy
         let active = false
 
@@ -223,7 +223,7 @@ export class Guide implements IDisposable {
         } else {
 
           if (stateX != null && valueX != null) {
-            const state = stateX as CellState
+            const state = stateX as State
             const minY = Math.min(
               bounds.y + dy - this.graph.panDy,
               state.bounds.y,
@@ -258,7 +258,7 @@ export class Guide implements IDisposable {
           this.guideY.elem.style.visibility = 'hidden'
         } else {
           if (stateY != null && valueY != null) {
-            const state = stateY as CellState
+            const state = stateY as State
             const minX = Math.min(
               bounds.x + dx - this.graph.panDx,
               state.bounds.x,
@@ -296,9 +296,9 @@ export class Guide implements IDisposable {
 
   protected getDelta(
     bounds: Rectangle,
-    stateX: CellState | null,
+    stateX: State | null,
     dx: number,
-    stateY: CellState | null,
+    stateY: State | null,
     dy: number,
   ) {
     if (this.rounded || (stateX != null && stateX.cell == null)) {

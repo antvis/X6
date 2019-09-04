@@ -1,5 +1,5 @@
 import * as util from '../util'
-import { Graph, CellState, Model } from '../core'
+import { Graph, State, Model } from '../core'
 import { View } from '../core/view'
 import { constants, CustomMouseEvent } from '../common'
 import { Shape } from '../shape'
@@ -7,7 +7,7 @@ import { Rectangle } from '../struct'
 import { BaseHandler } from './handler-base'
 
 export class CellHighlight extends BaseHandler {
-  state: CellState | null
+  state: State | null
   shape: Shape | null
   opacity: number
   strokeWidth: number
@@ -81,7 +81,7 @@ export class CellHighlight extends BaseHandler {
   /**
    * Updates the highlight after a change of the model or view.
    */
-  getStrokeWidth(state: CellState) {
+  getStrokeWidth(state: State) {
     return this.strokeWidth
   }
 
@@ -160,7 +160,7 @@ export class CellHighlight extends BaseHandler {
     this.highlight(null)
   }
 
-  highlight(state: CellState | null) {
+  highlight(state: State | null) {
     if (this.state !== state) {
       if (this.shape != null) {
         this.shape.dispose()

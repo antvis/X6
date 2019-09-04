@@ -1,7 +1,7 @@
 import * as util from '../util'
 import { constants } from '../common'
 import { Shape } from './shape'
-import { CellState } from '../core'
+import { State } from '../core'
 import { SvgCanvas2D } from '../canvas'
 import { Rectangle, Point } from '../struct'
 
@@ -38,7 +38,7 @@ export class ArrowConnector extends Shape {
     this.arrowSpacing = constants.ARROW_SPACING
   }
 
-  apply(state: CellState) {
+  apply(state: State) {
     super.apply(state)
 
     if (this.style != null) {

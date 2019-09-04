@@ -1,4 +1,4 @@
-import { Graph, Model, Cell, CellState } from '../core'
+import { Graph, Model, Cell, State } from '../core'
 import { View } from '../core/view'
 import { MouseHandler } from './handler-mouse'
 import { CustomMouseEvent, Dictionary } from '../common'
@@ -82,7 +82,7 @@ export class SelectionHandler extends MouseHandler {
   /**
    * Updates the handler for the given shape if one exists.
    */
-  updateHandler(state: CellState) {
+  updateHandler(state: State) {
     let handler = this.handlers.delete(state.cell)
     if (handler != null) {
       // Transfers the current state to the new handler

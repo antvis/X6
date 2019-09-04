@@ -1,5 +1,5 @@
 import * as util from '../util'
-import { Graph, CellState, Cell } from '../core'
+import { Graph, State, Cell } from '../core'
 import { constants, CustomMouseEvent } from '../common'
 import { BaseHandler } from './handler-base'
 import { CellHighlight } from './cell-highlight'
@@ -22,12 +22,12 @@ export class CellMarker extends BaseHandler {
   /**
    * The marked `CellState` if it is valid.
    */
-  validState: CellState | null = null
+  validState: State | null = null
 
   /**
    * The marked `CellState`.
    */
-  markedState: CellState | null = null
+  markedState: State | null = null
 
   validColor: string
   invalidColor: string
@@ -88,7 +88,7 @@ export class CellMarker extends BaseHandler {
    * Sets and marks the current valid state.
    */
   setCurrentState(
-    state: CellState | null,
+    state: State | null,
     e: CustomMouseEvent,
     color?: string,
   ) {
@@ -137,13 +137,13 @@ export class CellMarker extends BaseHandler {
     this.mark()
   }
 
-  isValidState(state: CellState) {
+  isValidState(state: State) {
     return true
   }
 
   getMarkerColor(
     e: Event,
-    state: CellState | null,
+    state: State | null,
     isValid: boolean,
   ) {
     return isValid ? this.validColor : this.invalidColor
@@ -160,11 +160,11 @@ export class CellMarker extends BaseHandler {
     return e.getCell()
   }
 
-  getStateToMark(state: CellState | null) {
+  getStateToMark(state: State | null) {
     return state
   }
 
-  intersects(state: CellState, e: CustomMouseEvent) {
+  intersects(state: State, e: CustomMouseEvent) {
     if (this.hotspotable) {
       return util.intersectsHotspot(
         state,

@@ -3,7 +3,7 @@ import * as images from '../assets/images'
 import { Cell } from './cell'
 import { View } from './view'
 import { Model } from './model'
-import { CellState } from './state'
+import { State } from './state'
 import { Geometry } from './geometry'
 import { Renderer } from './renderer'
 import { StyleSheet, EdgeStyle } from '../stylesheet'
@@ -3332,7 +3332,7 @@ export class Graph extends Events implements IDisposable {
   /**
    * Returns the constraint used to connect to the outline of the given state.
    */
-  getOutlineConstraint(point: Point, terminalState: CellState, me: any) {
+  getOutlineConstraint(point: Point, terminalState: State, me: any) {
     return this.connectionManager.getOutlineConstraint(point, terminalState, me)
   }
 
@@ -3347,7 +3347,7 @@ export class Graph extends Events implements IDisposable {
    * source - Boolean that specifies if the terminal is the source or target.
    */
   getAllConnectionConstraints(
-    terminalState: CellState,
+    terminalState: State,
     isSource: boolean,
   ) {
     if (
@@ -3366,8 +3366,8 @@ export class Graph extends Events implements IDisposable {
    * point.
    */
   getConnectionConstraint(
-    edgeState: CellState,
-    terminalState?: CellState | null,
+    edgeState: State,
+    terminalState?: State | null,
     isSource: boolean = false,
   ) {
 
@@ -3505,7 +3505,7 @@ export class Graph extends Events implements IDisposable {
    * constraint as returned by <getConnectionConstraint>.
    */
   getConnectionPoint(
-    terminalState: CellState,
+    terminalState: State,
     constraint: Constraint,
     round: boolean = true,
   ) {
@@ -4183,7 +4183,7 @@ export class Graph extends Events implements IDisposable {
    * Returns true if perimeter points should be computed such that the
    * resulting edge has only horizontal or vertical segments.
    */
-  isOrthogonal(edgeState: CellState) {
+  isOrthogonal(edgeState: State) {
     const orthogonal = edgeState.style.orthogonal
     if (orthogonal != null) {
       return orthogonal
@@ -4203,7 +4203,7 @@ export class Graph extends Events implements IDisposable {
   /**
    * Returns true if the given cell state is a loop.
    */
-  isLoop(state: CellState) {
+  isLoop(state: State) {
     const src = state.getVisibleTerminalState(true)
     const trg = state.getVisibleTerminalState(false)
 
@@ -4321,7 +4321,7 @@ export class Graph extends Events implements IDisposable {
    * Returns the <mxImage> used to display the collapsed state of
    * the specified cell state. This returns null for all edges.
    */
-  getFoldingImage(state: CellState) {
+  getFoldingImage(state: State) {
     if (
       state != null &&
       this.foldingEnabled &&
@@ -4472,7 +4472,7 @@ export class Graph extends Events implements IDisposable {
    * y - Y-coordinate of the mouse.
    */
   getTooltip(
-    state: CellState | null,
+    state: State | null,
     trigger: HTMLElement,
     x: number,
     y: number,
@@ -4618,7 +4618,7 @@ export class Graph extends Events implements IDisposable {
   /**
    * Returns the image URL for the given cell state.
    */
-  getImage(state: CellState): string | null {
+  getImage(state: State): string | null {
     return (state != null)
       ? state.style.image || null
       : null
@@ -4627,47 +4627,47 @@ export class Graph extends Events implements IDisposable {
   /**
    * Returns the vertical alignment for the given cell state.
    */
-  getVerticalAlign(state: CellState): VAlign {
+  getVerticalAlign(state: State): VAlign {
     return state && state.style.verticalAlign || 'middle'
   }
 
-  getAlign(state: CellState): Align {
+  getAlign(state: State): Align {
     return state && state.style.align || 'center'
   }
 
   /**
    * Returns the indicator color for the given cell state.
    */
-  getIndicatorColor(state: CellState) {
+  getIndicatorColor(state: State) {
     return state && state.style.indicatorColor || null
   }
 
-  getIndicatorDirection(state: CellState) {
+  getIndicatorDirection(state: State) {
     return state && state.style.indicatorDirection || null
   }
 
-  getIndicatorStrokeColor(state: CellState) {
+  getIndicatorStrokeColor(state: State) {
     return state && state.style.indicatorStrokeColor || null
   }
 
   /**
    * Returns the indicator gradient color for the given cell state.
    */
-  getIndicatorGradientColor(state: CellState) {
+  getIndicatorGradientColor(state: State) {
     return state && state.style.indicatorGradientColor || null
   }
 
   /**
    * Returns the indicator shape for the given cell state.
    */
-  getIndicatorShape(state: CellState) {
+  getIndicatorShape(state: State) {
     return state && state.style.indicatorShape || null
   }
 
   /**
    * Returns the indicator image for the given cell state.
    */
-  getIndicatorImage(state: CellState) {
+  getIndicatorImage(state: State) {
     return state && state.style.indicatorImage || null
   }
 
@@ -5709,7 +5709,7 @@ export class Graph extends Events implements IDisposable {
     parent?: Cell | null,
     includeNodes: boolean = true,
     includeEdges: boolean = true,
-    ignoreFn?: (state: CellState, x?: number, y?: number) => boolean,
+    ignoreFn?: (state: State, x?: number, y?: number) => boolean,
   ): Cell | null {
     if (parent == null) {
       // tslint:disable-next-line
@@ -5749,7 +5749,7 @@ export class Graph extends Events implements IDisposable {
   /**
    * Returns the bottom-most cell that intersects the given point (x, y)
    */
-  intersects(state: CellState | null, x: number, y: number) {
+  intersects(state: State | null, x: number, y: number) {
     if (state != null) {
       const points = state.absolutePoints
       if (points != null) {
@@ -6482,10 +6482,10 @@ export namespace Graph {
     createGraphHandler?: (graph: Graph) => GraphHandler
     createPanningHandler?: (graph: Graph) => PanningHandler
     createPopupMenuHandler?: (graph: Graph) => PopupMenuHandler
-    createNodeHandler?: (graph: Graph, state: CellState) => NodeHandler
-    createEdgeHandler?: (graph: Graph, state: CellState) => EdgeHandler
-    createElbowEdgeHandler?: (graph: Graph, state: CellState) => EdgeHandler
-    createEdgeSegmentHandler?: (graph: Graph, state: CellState) => EdgeHandler
+    createNodeHandler?: (graph: Graph, state: State) => NodeHandler
+    createEdgeHandler?: (graph: Graph, state: State) => EdgeHandler
+    createElbowEdgeHandler?: (graph: Graph, state: State) => EdgeHandler
+    createEdgeSegmentHandler?: (graph: Graph, state: State) => EdgeHandler
 
     getTooltip?: (cell: Cell) => string | HTMLElement
 

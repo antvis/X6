@@ -1,6 +1,6 @@
-import { CellState } from '../core'
+import { State } from '../core'
 
-export function getRotation(state: CellState | null, defaultValue: number = 0) {
+export function getRotation(state: State | null, defaultValue: number = 0) {
   return state && state.style && state.style.rotation || defaultValue
 }
 

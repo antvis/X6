@@ -1,5 +1,5 @@
 import * as util from '../util'
-import { Cell, CellState, Graph } from '../core'
+import { Cell, State, Graph } from '../core'
 import { Rectangle, Point, Image, Constraint } from '../struct'
 import { constants, DomEvent, CustomMouseEvent, detector } from '../common'
 import { Shape, RectangleShape, ImageShape, EllipseShape } from '../shape'
@@ -10,7 +10,7 @@ import { EdgeStyle } from '../stylesheet'
 
 export class EdgeHandler extends MouseHandler {
 
-  state: CellState
+  state: State
   bends: (ImageShape | null)[] | (EllipseShape | null)[] | null = null
   virtualBends: ImageShape[] | EllipseShape[] | null = null
 
@@ -168,7 +168,7 @@ export class EdgeHandler extends MouseHandler {
   isLabel: boolean
   currentPoint: Point
 
-  constructor(graph: Graph, state: CellState) {
+  constructor(graph: Graph, state: State) {
     super(graph)
     this.state = state
     this.init()
@@ -247,7 +247,7 @@ export class EdgeHandler extends MouseHandler {
   /**
    * Returns the list of points that defines the selection stroke.
    */
-  protected getSelectionPoints(state: CellState) {
+  protected getSelectionPoints(state: State) {
     return state.absolutePoints
   }
 
@@ -285,7 +285,7 @@ export class EdgeHandler extends MouseHandler {
   }
 
   protected isPreferHtml() {
-    const check = (state: CellState | null) => (
+    const check = (state: State | null) => (
       state != null &&
       state.text != null &&
       state.text.elem != null &&
@@ -648,7 +648,7 @@ export class EdgeHandler extends MouseHandler {
   /**
    * Adds a control point for the given state and event.
    */
-  protected addPoint(state: CellState, evt: MouseEvent) {
+  protected addPoint(state: State, evt: MouseEvent) {
     const pt = util.clientToGraph(
       this.graph.container,
       DomEvent.getClientX(evt),
@@ -663,7 +663,7 @@ export class EdgeHandler extends MouseHandler {
   /**
    * Adds a control point at the given point.
    */
-  protected addPointAt(state: CellState, x: number, y: number) {
+  protected addPointAt(state: State, x: number, y: number) {
     let geo = this.graph.getCellGeometry(state.cell)
     if (geo != null) {
       geo = geo.clone()
@@ -701,7 +701,7 @@ export class EdgeHandler extends MouseHandler {
   /**
    * Removes the control point at the given index from the given state.
    */
-  protected removePoint(state: CellState, index: number) {
+  protected removePoint(state: State, index: number) {
     if (index > 0 && index < this.absolutePoints.length - 1) {
       let geo = this.graph.getCellGeometry(this.state.cell)
       if (geo != null && geo.points != null) {
@@ -916,7 +916,7 @@ export class EdgeHandler extends MouseHandler {
       }
 
       // Temporary function
-      const snapToTerminal = (terminal: CellState | null) => {
+      const snapToTerminal = (terminal: State | null) => {
         if (terminal != null) {
           snapToPoint(
             new Point(
@@ -1173,9 +1173,9 @@ export class EdgeHandler extends MouseHandler {
    * the state of the constraint handler.
    */
   protected updatePreviewState(
-    edge: CellState,
+    edge: State,
     point: Point,
-    terminalState: CellState | null,
+    terminalState: State | null,
     e: CustomMouseEvent,
     outline: boolean,
   ) {
@@ -1482,7 +1482,7 @@ export class EdgeHandler extends MouseHandler {
   /**
    * Changes the coordinates for the label of the given edge.
    */
-  protected moveLabel(edgeState: CellState, x: number, y: number) {
+  protected moveLabel(edgeState: State, x: number, y: number) {
     const model = this.graph.getModel()
     const scale = this.graph.view.scale
     let geo = model.getGeometry(edgeState.cell)
@@ -2025,7 +2025,7 @@ export namespace EdgeHandler {
     }
 
     // Sets the highlight color according to validateConnection
-    isValidState(state: CellState) {
+    isValidState(state: State) {
       const model = this.graph.getModel()
       const other = this.graph.view.getTerminalPortState(
         state, this.graph.view.getState(

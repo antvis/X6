@@ -1,6 +1,6 @@
 import * as util from '../util'
 import * as images from '../assets/images'
-import { Graph, Model, CellState } from '../core'
+import { Graph, Model, State } from '../core'
 import { View } from '../core/view'
 import { Rectangle, Point, Image, Constraint } from '../struct'
 import { constants, DomEvent, CustomMouseEvent } from '../common'
@@ -26,7 +26,7 @@ export class ConstraintHandler extends BaseHandler {
   private focusIcons: ImageShape[] | null
   private focusPoints: Point[] | null
 
-  currentFocus: CellState | null
+  currentFocus: State | null
   currentConstraint: Constraint | null
   currentPoint: Point | null
 
@@ -119,7 +119,7 @@ export class ConstraintHandler extends BaseHandler {
    * Returns the tolerance to be used for intersecting connection points.
    */
   getImageForConstraint(
-    state: CellState,
+    state: State,
     constraint: Constraint,
     point?: Point | null,
   ) {
@@ -140,7 +140,7 @@ export class ConstraintHandler extends BaseHandler {
    *
    * This implementation always returns false.
    */
-  isStateIgnored(state: CellState, isSource: boolean) {
+  isStateIgnored(state: State, isSource: boolean) {
     return false
   }
 
@@ -274,7 +274,7 @@ export class ConstraintHandler extends BaseHandler {
               hl.init(this.graph.getView().getOverlayPane())
               this.focusHighlight = hl
 
-              const getState = () => (this.currentFocus || state) as CellState
+              const getState = () => (this.currentFocus || state) as State
 
               CustomMouseEvent.redirectMouseEvents(
                 hl.elem!, this.graph, getState,
@@ -304,7 +304,7 @@ export class ConstraintHandler extends BaseHandler {
    * the handler is not enabled then the outline is painted, but the constraints
    * are ignored.
    */
-  setFocus(e: CustomMouseEvent, state: CellState, isSource: boolean) {
+  setFocus(e: CustomMouseEvent, state: State, isSource: boolean) {
     this.constraints = (
       state != null &&
       !this.isStateIgnored(state, isSource) &&

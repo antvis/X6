@@ -1,14 +1,14 @@
 import * as util from '../util'
 import * as images from '../assets/images'
 import { Stencil } from './stencil'
-import { CellState } from '../core'
+import { State } from '../core'
 import { SvgCanvas2D } from '../canvas'
 import { detector, constants, DomEvent, IDisposable } from '../common'
 import { Rectangle, Point } from '../struct'
 import { CellStyle, Direction, Dialect } from '../types'
 
 export class Shape implements IDisposable {
-  state: CellState
+  state: State
 
   /**
    * Specifies if the shape is visible.
@@ -954,7 +954,7 @@ export class Shape implements IDisposable {
   /**
    * Applies the style of the given `CellState` to the shape.
    */
-  apply(state: CellState) {
+  apply(state: State) {
     this.state = state
     this.style = state.style // keeps a reference to style
 

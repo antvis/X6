@@ -1,5 +1,5 @@
 import * as util from '../util'
-import { Graph, Model, Cell, CellState, Geometry } from '../core'
+import { Graph, Model, Cell, State, Geometry } from '../core'
 import { View } from '../core/view'
 import { Rectangle, Point, Image, Constraint } from '../struct'
 import { constants, DomEvent, CustomMouseEvent } from '../common'
@@ -104,7 +104,7 @@ export class ConnectionHandler extends MouseHandler {
    * Optional `CellState` that represents the preview edge while the
    * handler is active.
    */
-  edgeState: CellState | null = null
+  edgeState: State | null = null
 
   /**
    * Counts the number of mouseDown events since the start. The initial mouse
@@ -154,16 +154,16 @@ export class ConnectionHandler extends MouseHandler {
   private escapeHandler: (() => void) | null
   private changeHandler: (() => void) | null
   private drillHandler: (() => void) | null
-  private previous: CellState | null
+  private previous: State | null
   private first: Point | null
   private currentPoint: Point | null
   private originalPoint: Point | null
-  private currentState: CellState | null
+  private currentState: State | null
   private shape: Shape | null
   private icon: ImageShape | null
   private icons: ImageShape[] | null
   private selectedIcon: ImageShape | null
-  private iconState: CellState | null
+  private iconState: State | null
   private sourceConstraint: Constraint | null
   private waypoints: Point[] | null
 
@@ -315,7 +315,7 @@ export class ConnectionHandler extends MouseHandler {
     }
 
     // Sets the highlight color according to validateConnection
-    marker.isValidState = (state: CellState) => {
+    marker.isValidState = (state: State) => {
       if (this.isConnecting()) {
         return this.error == null
       }
@@ -345,7 +345,7 @@ export class ConnectionHandler extends MouseHandler {
   /**
    * Starts a new connection for the given state and coordinates.
    */
-  start(state: CellState, x: number, y: number, edgeState: CellState) {
+  start(state: State, x: number, y: number, edgeState: State) {
     this.previous = state
     this.first = new Point(x, y)
     this.edgeState = (edgeState != null) ? edgeState : this.createEdgeState(null)
@@ -394,7 +394,7 @@ export class ConnectionHandler extends MouseHandler {
    * Hook to return the <mxImage> used for the connection icon of the given
    * <mxCellState>. This implementation returns <connectImage>.
    */
-  getConnectImage(state: CellState) {
+  getConnectImage(state: State) {
     return this.connectImage
   }
 
@@ -406,7 +406,7 @@ export class ConnectionHandler extends MouseHandler {
    *
    * state - <mxCellState> whose connect icons should be returned.
    */
-  isMoveIconToFrontForState(state: CellState) {
+  isMoveIconToFrontForState(state: State) {
     if (state.text && state.text.elem!.parentNode === this.graph.container) {
       return true
     }
@@ -422,7 +422,7 @@ export class ConnectionHandler extends MouseHandler {
    *
    * state - <mxCellState> whose connect icons should be returned.
    */
-  createIcons(state: CellState) {
+  createIcons(state: State) {
     const image = this.getConnectImage(state)
 
     if (image != null && state != null) {
@@ -479,7 +479,7 @@ export class ConnectionHandler extends MouseHandler {
     return null
   }
 
-  redrawIcons(icons: ImageShape[] | null, state: CellState) {
+  redrawIcons(icons: ImageShape[] | null, state: State) {
     if (icons != null && icons[0] != null && state != null) {
       const pos = this.getIconPosition(icons[0], state)
       icons[0].bounds.x = pos.x
@@ -488,7 +488,7 @@ export class ConnectionHandler extends MouseHandler {
     }
   }
 
-  getIconPosition(icon: ImageShape, state: CellState) {
+  getIconPosition(icon: ImageShape, state: State) {
     const scale = this.graph.view.scale
     let cx = state.bounds.getCenterX()
     let cy = state.bounds.getCenterY()
@@ -608,14 +608,14 @@ export class ConnectionHandler extends MouseHandler {
    * connecting. This implementation returns true if the state is not movable
    * in the graph.
    */
-  isImmediateConnectSource(state: CellState) {
+  isImmediateConnectSource(state: State) {
     return !this.graph.isCellMovable(state.cell)
   }
 
   /**
    * Hook to return an <mxCellState> which may be used during the preview.
    */
-  createEdgeState(e: CustomMouseEvent | null): CellState | null {
+  createEdgeState(e: CustomMouseEvent | null): State | null {
     return null
   }
 
@@ -1115,7 +1115,7 @@ export class ConnectionHandler extends MouseHandler {
    * state - <mxCellState> that represents the target cell state.
    * me - <mxMouseEvent> that represents the mouse move.
    */
-  getTargetPerimeterPoint(state: CellState, e: CustomMouseEvent) {
+  getTargetPerimeterPoint(state: State, e: CustomMouseEvent) {
     let result = null
     const view = state.view
     const targetPerimeter = view.getPerimeterFunction(state)
@@ -1149,7 +1149,7 @@ export class ConnectionHandler extends MouseHandler {
    * next - <Point> that represents the next point along the previewed edge.
    * me - <mxMouseEvent> that represents the mouse move.
    */
-  getSourcePerimeterPoint(state: CellState, next: Point, me: CustomMouseEvent) {
+  getSourcePerimeterPoint(state: State, next: Point, me: CustomMouseEvent) {
     let result = null
     const view = state.view
     const sourcePerimeter = view.getPerimeterFunction(state)
@@ -1190,7 +1190,7 @@ export class ConnectionHandler extends MouseHandler {
    * icons - Array of currently displayed icons.
    * me - <mxMouseEvent> that contains the mouse event.
    */
-  updateIcons(state: CellState, icons: ImageShape[], e: CustomMouseEvent) {
+  updateIcons(state: State, icons: ImageShape[], e: CustomMouseEvent) {
     // empty
   }
 

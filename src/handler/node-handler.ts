@@ -1,5 +1,5 @@
 import * as util from '../util'
-import { Cell, CellState, Graph } from '../core'
+import { Cell, State, Graph } from '../core'
 import { Rectangle, Point, Image } from '../struct'
 import { constants, DomEvent, CustomMouseEvent, detector } from '../common'
 import { Shape, RectangleShape, EllipseShape, ImageShape } from '../shape'
@@ -8,7 +8,7 @@ import { EdgeHandler } from './edge-handler'
 
 export class NodeHandler extends MouseHandler {
   graph: Graph
-  state: CellState
+  state: State
   startX: number
   startY: number
 
@@ -138,10 +138,10 @@ export class NodeHandler extends MouseHandler {
   protected inTolerance: boolean
   protected childOffsetX: number
   protected childOffsetY: number
-  protected parentState: CellState | null
+  protected parentState: State | null
   protected currentAlpha: number | null
 
-  constructor(graph: Graph, state: CellState) {
+  constructor(graph: Graph, state: State) {
     super(graph)
     this.state = state
     this.init()
@@ -303,7 +303,7 @@ export class NodeHandler extends MouseHandler {
    * Returns true if the center of the node should be maintained
    * during the resize.
    */
-  protected isCentered(state: CellState, e: CustomMouseEvent) {
+  protected isCentered(state: State, e: CustomMouseEvent) {
     return false
   }
 
@@ -332,7 +332,7 @@ export class NodeHandler extends MouseHandler {
     }
   }
 
-  protected getSelectionBounds(state: CellState) {
+  protected getSelectionBounds(state: State) {
     return new Rectangle(
       Math.round(state.bounds.x),
       Math.round(state.bounds.y),
@@ -1009,7 +1009,7 @@ export class NodeHandler extends MouseHandler {
     }
   }
 
-  protected isRecursiveResize(state: CellState, e: CustomMouseEvent) {
+  protected isRecursiveResize(state: State, e: CustomMouseEvent) {
     return this.graph.isRecursiveResize()
   }
 

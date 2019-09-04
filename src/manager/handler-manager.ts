@@ -1,4 +1,4 @@
-import { Graph, CellState } from '../core'
+import { Graph, State } from '../core'
 import { BaseManager } from './manager-base'
 import {
   TooltipHandler,
@@ -87,7 +87,7 @@ export class HandlerManager extends BaseManager {
     )
   }
 
-  createCellHandler(state: CellState | null) {
+  createCellHandler(state: State | null) {
     if (state != null) {
       if (this.model.isEdge(state.cell)) {
         const sourceState = state.getVisibleTerminalState(true)
@@ -106,14 +106,14 @@ export class HandlerManager extends BaseManager {
     return null
   }
 
-  protected createNodeHandler(state: CellState) {
+  protected createNodeHandler(state: State) {
     return (this.hooks.createNodeHandler != null &&
       this.hooks.createNodeHandler(this.graph, state) ||
       new NodeHandler(this.graph, state)
     )
   }
 
-  protected createEdgeHandler(state: CellState, edgeFn: any) {
+  protected createEdgeHandler(state: State, edgeFn: any) {
     let result = null
 
     if (
@@ -138,14 +138,14 @@ export class HandlerManager extends BaseManager {
     return result
   }
 
-  protected createEdgeSegmentHandler(state: CellState) {
+  protected createEdgeSegmentHandler(state: State) {
     return (this.hooks.createEdgeSegmentHandler != null &&
       this.hooks.createEdgeSegmentHandler(this.graph, state) ||
       new EdgeSegmentHandler(this.graph, state)
     )
   }
 
-  protected createElbowEdgeHandler(state: CellState) {
+  protected createElbowEdgeHandler(state: State) {
     return (this.hooks.createElbowEdgeHandler != null &&
       this.hooks.createElbowEdgeHandler(this.graph, state) ||
       new ElbowEdgeHandler(this.graph, state)

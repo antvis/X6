@@ -1,5 +1,5 @@
 import * as util from '../util'
-import { Cell, CellState } from '../core'
+import { Cell, State } from '../core'
 import { Rectangle, Point } from '../struct'
 import { constants, CustomMouseEvent } from '../common'
 import { ElbowEdgeHandler } from './elbow-edge-handler'
@@ -85,9 +85,9 @@ export class EdgeSegmentHandler extends ElbowEdgeHandler {
   }
 
   updatePreviewState(
-    edge: CellState,
+    edge: State,
     point: Point,
-    terminalState: CellState | null,
+    terminalState: State | null,
     e: CustomMouseEvent,
     outline: boolean,
   ) {

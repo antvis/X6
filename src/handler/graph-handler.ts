@@ -1,6 +1,6 @@
 import * as util from '../util'
 import { detector, constants, CustomMouseEvent, DomEvent } from '../common'
-import { Graph, Cell, Model, CellState } from '../core'
+import { Graph, Cell, Model, State } from '../core'
 import { Rectangle, Point } from '../struct'
 import { RectangleShape } from '../shape'
 import { Guide } from './guide'
@@ -353,7 +353,7 @@ export class GraphHandler extends MouseHandler {
       parent,
     )
 
-    return this.graph.view.getCellStates(cells) as CellState[]
+    return this.graph.view.getCellStates(cells) as State[]
   }
 
   /**

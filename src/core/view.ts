@@ -10,7 +10,7 @@ import {
 import { Cell } from './cell'
 import { Graph } from './graph'
 import { Geometry } from './geometry'
-import { CellState } from './state'
+import { State } from './state'
 import { StyleRegistry } from '../stylesheet'
 import { RectangleShape, ImageShape } from '../shape'
 import { UndoableEdit, CurrentRootChange } from '../change'
@@ -49,7 +49,7 @@ export class View extends Events implements IDisposable {
   protected overlayPane: HTMLElement | SVGGElement | null
   protected decoratorPane: HTMLElement | SVGGElement | null
 
-  protected states: WeakMap<Cell, CellState>
+  protected states: WeakMap<Cell, State>
   protected readonly invalidatings: WeakSet<Cell>
   protected backgroundImage: ImageShape | null
   protected backgroundPageShape: RectangleShape | null
@@ -66,7 +66,7 @@ export class View extends Events implements IDisposable {
     this.scale = 1
     this.translate = new Point()
     this.graphBounds = new Rectangle()
-    this.states = new WeakMap<Cell, CellState>()
+    this.states = new WeakMap<Cell, State>()
     this.invalidatings = new WeakSet<Cell>()
   }
 
@@ -147,7 +147,7 @@ export class View extends Events implements IDisposable {
    * Returns the bounding box of the shape and the label for the
    * given `CellState` and its children if recurse is true.
    */
-  getBoundingBox(state: CellState | null, recurse: boolean = true) {
+  getBoundingBox(state: State | null, recurse: boolean = true) {
     let result: Rectangle | null = null
     if (state != null) {
       if (state.shape != null && state.shape.boundingBox != null) {
@@ -543,11 +543,11 @@ export class View extends Events implements IDisposable {
     this.lastForegroundHtmlNode = null
   }
 
-  protected stateValidated(state: CellState) {
+  protected stateValidated(state: State) {
     this.updateDomOrder(state)
   }
 
-  protected updateDomOrder(state: CellState) {
+  protected updateDomOrder(state: State) {
     const foreground = (
       (this.model.isEdge(state.cell) && this.graph.keepEdgesInForeground) ||
       (this.model.isNode(state.cell) && this.graph.keepEdgesInBackground)
@@ -574,7 +574,7 @@ export class View extends Events implements IDisposable {
 
   // #region ::::::::::: Update Cell State :::::::::::
 
-  protected updateCellState(state: CellState) {
+  protected updateCellState(state: State) {
     state.edgeLength = 0
     state.origin.x = 0
     state.origin.y = 0
@@ -647,7 +647,7 @@ export class View extends Events implements IDisposable {
     state.updateCachedBounds()
   }
 
-  protected updateNodeState(state: CellState, geo: Geometry) {
+  protected updateNodeState(state: State, geo: Geometry) {
     const parent = this.model.getParent(state.cell)!
     const parentState = this.getState(parent)
 
@@ -672,7 +672,7 @@ export class View extends Events implements IDisposable {
    * Updates the `absoluteOffset` of the given node cell state.
    * This takes into account the label position styles.
    */
-  updateNodeLabelOffset(state: CellState) {
+  updateNodeLabelOffset(state: State) {
     const h = state.style.labelPosition || 'center'
     if (h === 'left') {
       let lw = state.style.labelWidth
@@ -716,7 +716,7 @@ export class View extends Events implements IDisposable {
     }
   }
 
-  protected updateEdgeState(state: CellState, geo: Geometry) {
+  protected updateEdgeState(state: State, geo: Geometry) {
     const sourceState = state.getVisibleTerminalState(true)!
     const targetState = state.getVisibleTerminalState(false)!
 
@@ -761,9 +761,9 @@ export class View extends Events implements IDisposable {
    * before the edge style is computed.
    */
   updateFixedTerminalPoints(
-    edgeState: CellState,
-    sourceState: CellState,
-    targetState: CellState,
+    edgeState: State,
+    sourceState: State,
+    targetState: State,
   ) {
     const sourceConstraint = this.graph.getConnectionConstraint(edgeState, sourceState, true)
     this.updateFixedTerminalPoint(edgeState, sourceState, true, sourceConstraint)
@@ -773,8 +773,8 @@ export class View extends Events implements IDisposable {
   }
 
   updateFixedTerminalPoint(
-    edgeState: CellState,
-    terminalState: CellState,
+    edgeState: State,
+    terminalState: State,
     isSource: boolean,
     constraint: Constraint,
   ) {
@@ -786,8 +786,8 @@ export class View extends Events implements IDisposable {
    * Returns the fixed source or target terminal point for the given edge.
    */
   protected getFixedTerminalPoint(
-    edgeState: CellState,
-    terminalState: CellState,
+    edgeState: State,
+    terminalState: State,
     isSource: boolean,
     constraint: Constraint,
   ) {
@@ -832,10 +832,10 @@ export class View extends Events implements IDisposable {
    * target - <mxCellState> that represents the target terminal.
    */
   updatePoints(
-    edge: CellState,
+    edge: State,
     points: Point[],
-    sourceState: CellState,
-    targetState: CellState,
+    sourceState: State,
+    targetState: State,
   ) {
     if (edge != null) {
       const pts = []
@@ -880,8 +880,8 @@ export class View extends Events implements IDisposable {
   }
 
   getTerminalPortState(
-    edgeState: CellState,
-    terminalState: CellState,
+    edgeState: State,
+    terminalState: State,
     isSource: boolean,
   ) {
     // get port id from edge, then try to get port-cell
@@ -908,7 +908,7 @@ export class View extends Events implements IDisposable {
    * bounds as an `Rectangle` if the bounds have been modified or null
    * otherwise.
    */
-  updateBoundsFromStencil(state: CellState) {
+  updateBoundsFromStencil(state: State) {
     let previous = null
 
     if (
@@ -938,9 +938,9 @@ export class View extends Events implements IDisposable {
   }
 
   updateFloatingTerminalPoints(
-    edgeState: CellState,
-    sourceState: CellState,
-    targetState: CellState,
+    edgeState: State,
+    sourceState: State,
+    targetState: State,
   ) {
     const pts = edgeState.absolutePoints
     const p0 = pts[0]
@@ -960,9 +960,9 @@ export class View extends Events implements IDisposable {
   }
 
   protected updateFloatingTerminalPoint(
-    edgeState: CellState,
-    relateState: CellState,
-    opposeState: CellState,
+    edgeState: State,
+    relateState: State,
+    opposeState: State,
     isSource: boolean,
   ) {
     const point = this.getFloatingTerminalPoint(
@@ -984,9 +984,9 @@ export class View extends Events implements IDisposable {
    * @param isSource Boolean indicating if target is the source terminal state.
    */
   protected getFloatingTerminalPoint(
-    edgeState: CellState,
-    relateState: CellState,
-    opposeState: CellState,
+    edgeState: State,
+    relateState: State,
+    opposeState: State,
     isSource: boolean,
   ) {
     // tslint:disable-next-line:no-parameter-reassignment
@@ -1034,8 +1034,8 @@ export class View extends Events implements IDisposable {
    * or the center of the opposite terminal.
    */
   protected getNextPoint(
-    edgeState: CellState,
-    opposeState: CellState,
+    edgeState: State,
+    opposeState: State,
     isSource: boolean,
   ) {
     let point = null
@@ -1069,7 +1069,7 @@ export class View extends Events implements IDisposable {
    * @param border Optional border between the perimeter and the shape.
    */
   getPerimeterPoint(
-    terminalState: CellState,
+    terminalState: State,
     nextPoint: Point,
     orthogonal: boolean,
     border: number = 0,
@@ -1122,7 +1122,7 @@ export class View extends Events implements IDisposable {
     return result
   }
 
-  getPerimeterFunction(state: CellState) {
+  getPerimeterFunction(state: State) {
     let perimeter = state.style.perimeter
     if (typeof perimeter === 'string') {
       let tmp = StyleRegistry.getValue(perimeter)
@@ -1140,7 +1140,7 @@ export class View extends Events implements IDisposable {
     return null
   }
 
-  getPerimeterBounds(terminalState: CellState, border: number = 0) {
+  getPerimeterBounds(terminalState: State, border: number = 0) {
     if (terminalState != null) {
       // tslint:disable-next-line
       border += (terminalState.style.perimeterSpacing || 0)
@@ -1152,7 +1152,7 @@ export class View extends Events implements IDisposable {
   /**
    * Transforms the given control point to an absolute point.
    */
-  transformControlPoint(state: CellState, pt: Point) {
+  transformControlPoint(state: State, pt: Point) {
     if (state != null && pt != null) {
       const orig = state.origin
 
@@ -1172,10 +1172,10 @@ export class View extends Events implements IDisposable {
    * associated.
    */
   isLoopStyleEnabled(
-    edgeState: CellState,
+    edgeState: State,
     points?: Point[] | null,
-    sourceState?: CellState | null,
-    targetState?: CellState | null,
+    sourceState?: State | null,
+    targetState?: State | null,
   ) {
     const sc = this.graph.getConnectionConstraint(edgeState, sourceState, true)
     const tc = this.graph.getConnectionConstraint(edgeState, targetState, false)
@@ -1197,10 +1197,10 @@ export class View extends Events implements IDisposable {
    * Returns the edge style function to be used to render the given edge state.
    */
   getEdgeFunction(
-    edgeState: CellState,
+    edgeState: State,
     points?: Point[] | null,
-    sourceState?: CellState | null,
-    targetState?: CellState | null,
+    sourceState?: State | null,
+    targetState?: State | null,
   ) {
     let edge = this.isLoopStyleEnabled(edgeState, points, sourceState, targetState)
       ? (edgeState.style.loopStyle || this.graph.defaultLoopStyle)
@@ -1225,12 +1225,12 @@ export class View extends Events implements IDisposable {
     return null
   }
 
-  getRoutingCenterX(state: CellState) {
+  getRoutingCenterX(state: State) {
     const f = state.style.routingCenterX || 0
     return state.bounds.getCenterX() + f * state.bounds.width
   }
 
-  getRoutingCenterY(state: CellState) {
+  getRoutingCenterY(state: State) {
     const f = state.style.routingCenterY || 0
     return state.bounds.getCenterY() + f * state.bounds.height
   }
@@ -1282,7 +1282,7 @@ export class View extends Events implements IDisposable {
    * @param state The state of the parent edge.
    * @param geometry `Geometry` that represents the relative location.
    */
-  getPoint(state: CellState, geometry?: Geometry) {
+  getPoint(state: State, geometry?: Geometry) {
     let x = state.bounds.getCenterX()
     let y = state.bounds.getCenterY()
 
@@ -1340,7 +1340,7 @@ export class View extends Events implements IDisposable {
     return new Point(x, y)
   }
 
-  updateEdgeBounds(state: CellState) {
+  updateEdgeBounds(state: State) {
     const points = state.absolutePoints
     const p0 = points[0]!
     const pe = points[points.length - 1]!
@@ -1402,7 +1402,7 @@ export class View extends Events implements IDisposable {
    * relative distance between the center along the line and the absolute
    * orthogonal distance if the geometry is relative.
    */
-  updateEdgeLabelOffset(state: CellState) {
+  updateEdgeLabelOffset(state: State) {
 
     state.absoluteOffset.x = state.bounds.getCenterX()
     state.absoluteOffset.y = state.bounds.getCenterY()
@@ -1451,7 +1451,7 @@ export class View extends Events implements IDisposable {
    * @param x Specifies the x-coordinate of the absolute label location.
    * @param y Specifies the y-coordinate of the absolute label location.
    */
-  getRelativePoint(edgeState: CellState, x: number, y: number) {
+  getRelativePoint(edgeState: State, x: number, y: number) {
     const geometry = edgeState.cell.getGeometry()
     if (geometry != null) {
       const pointCount = edgeState.absolutePoints.length
@@ -1543,7 +1543,7 @@ export class View extends Events implements IDisposable {
   // #region ::::::::::::::: Cell State ::::::::::::::
 
   createState(cell: Cell) {
-    return new CellState(this, cell, this.graph.getCellStyle(cell))
+    return new State(this, cell, this.graph.getCellStyle(cell))
   }
 
   removeState(cell: Cell) {
@@ -1609,7 +1609,7 @@ export class View extends Events implements IDisposable {
       return this.states
     }
 
-    const result: CellState[] = []
+    const result: State[] = []
 
     cells.forEach((cell) => {
       const state = this.getState(cell)

@@ -1,5 +1,5 @@
 import * as util from '../util'
-import { Graph, Cell, CellState } from '../core'
+import { Graph, Cell, State } from '../core'
 import { DomEvent, CustomMouseEvent, detector } from '../common'
 import { IMouseHandler } from '../handler'
 import { RectangleShape } from '../shape'
@@ -71,7 +71,7 @@ export class EventLoop extends BaseManager {
         eventName === DomEvent.MOUSE_MOVE &&
         e.getCell() == null
       ) {
-        const ignoreFn = (state: CellState) => (
+        const ignoreFn = (state: State) => (
           state.shape == null ||
           state.shape.paintBackground !== RectangleShape.prototype.paintBackground ||
           state.style.pointerEvents !== false ||
@@ -261,7 +261,7 @@ export class EventLoop extends BaseManager {
     )
   }
 
-  protected getEventState(state: CellState | null) {
+  protected getEventState(state: State | null) {
     return state
   }
 
@@ -504,7 +504,7 @@ export class EventLoop extends BaseManager {
             null,
             false,
             false,
-            (state: CellState) => {
+            (state: State) => {
               const selected = this.graph.isCellSelected(state.cell)
               active = active || selected
               return !active || selected

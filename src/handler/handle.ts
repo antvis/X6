@@ -1,18 +1,18 @@
 import * as util from '../util'
-import { Graph, CellState } from '../core'
+import { Graph, State } from '../core'
 import { Shape, ImageShape, RectangleShape } from '../shape'
 import { Rectangle, Point, Image } from '../struct'
 import { CustomMouseEvent, constants } from '../common'
 
 export class Handle {
   graph: Graph
-  state: CellState
+  state: State
   cursor: string = 'default'
   image: Image | null
   shape: Shape
   ignoreGrid = false
 
-  constructor(state: CellState, cursor?: string, image?: Image) {
+  constructor(state: State, cursor?: string, image?: Image) {
     this.graph = state.view.graph
     this.state = state
     if (cursor != null) {
