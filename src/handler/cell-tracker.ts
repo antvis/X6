@@ -9,7 +9,7 @@ export class CellTracker extends CellMarker implements IMouseHandler {
     color: string,
     getCell?: (e: CustomMouseEvent) => Cell,
   ) {
-    super(graph, color)
+    super(graph, { validColor: color })
 
     if (getCell != null) {
       this.getCell = getCell

@@ -164,7 +164,7 @@ export class TooltipHandler extends MouseHandler {
   protected willShow() {
     return (
       !this.disposed &&
-      !this.graph.isMouseDown &&
+      !this.graph.eventloop.isMouseDown &&
       !this.graph.isEditing() &&
       (
         !this.graph.popupMenuHandler ||

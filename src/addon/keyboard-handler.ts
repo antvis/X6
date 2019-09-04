@@ -1,7 +1,7 @@
 import * as util from '../util'
 import { Graph } from '../core'
 import { DomEvent } from '../common'
-import { BaseHandler } from './handler-base'
+import { BaseHandler } from '../handler'
 
 export class KeyboardHandler extends BaseHandler {
   /**
@@ -12,24 +12,24 @@ export class KeyboardHandler extends BaseHandler {
   /**
    * Maps from keycodes to functions for non-pressed control keys.
    */
-  protected normalKeys: { [code: number]: KeyHandler.KeydownHandler }
+  protected normalKeys: { [code: number]: KeyboardHandler.KeydownHandler }
 
   /**
    * Maps from keycodes to functions for pressed shift keys.
    */
-  protected shiftKeys: { [code: number]: KeyHandler.KeydownHandler }
+  protected shiftKeys: { [code: number]: KeyboardHandler.KeydownHandler }
 
   /**
    * Maps from keycodes to functions for pressed control keys.
    */
-  protected controlKeys: { [code: number]: KeyHandler.KeydownHandler }
+  protected controlKeys: { [code: number]: KeyboardHandler.KeydownHandler }
 
   /**
    * Maps from keycodes to functions for pressed control and shift keys.
    */
-  protected controlShiftKeys: { [code: number]: KeyHandler.KeydownHandler }
+  protected controlShiftKeys: { [code: number]: KeyboardHandler.KeydownHandler }
 
-  protected keydownHandler: KeyHandler.KeydownHandler
+  protected onKeyDown: KeyboardHandler.KeydownHandler
 
   constructor(graph: Graph, target?: HTMLElement) {
     super(graph)
@@ -41,34 +41,34 @@ export class KeyboardHandler extends BaseHandler {
     this.controlKeys = {}
     this.controlShiftKeys = {}
 
-    this.keydownHandler = (e: KeyboardEvent) => {
+    this.onKeyDown = (e: KeyboardEvent) => {
       this.keyDown(e)
     }
 
-    DomEvent.addListener(this.target, 'keydown', this.keydownHandler)
+    DomEvent.addListener(this.target, 'keydown', this.onKeyDown)
   }
 
-  bindKey(code: number, fn: KeyHandler.KeydownHandler) {
+  bindKey(code: number, fn: KeyboardHandler.KeydownHandler) {
     this.normalKeys[code] = fn
   }
 
-  bindShiftKey(code: number, fn: KeyHandler.KeydownHandler) {
+  bindShiftKey(code: number, fn: KeyboardHandler.KeydownHandler) {
     this.shiftKeys[code] = fn
   }
 
-  bindControlKey(code: number, fn: KeyHandler.KeydownHandler) {
+  bindControlKey(code: number, fn: KeyboardHandler.KeydownHandler) {
     this.controlKeys[code] = fn
   }
 
-  bindControlShiftKey(code: number, fn: KeyHandler.KeydownHandler) {
+  bindControlShiftKey(code: number, fn: KeyboardHandler.KeydownHandler) {
     this.controlShiftKeys[code] = fn
   }
 
-  isControlDown(e: KeyboardEvent) {
+  protected isControlDown(e: KeyboardEvent) {
     return DomEvent.isControlDown(e)
   }
 
-  isShiftDown(e: KeyboardEvent) {
+  protected isShiftDown(e: KeyboardEvent) {
     return DomEvent.isShiftDown(e)
   }
 
@@ -76,7 +76,7 @@ export class KeyboardHandler extends BaseHandler {
    * Returns the function associated with the given key event or null if no
    * function is associated with the given event.
    */
-  getFunction(e: KeyboardEvent) {
+  protected getFunction(e: KeyboardEvent) {
     if (e != null && !DomEvent.isAltDown(e)) {
       if (this.isControlDown(e)) {
         if (this.isShiftDown(e)) {
@@ -96,7 +96,7 @@ export class KeyboardHandler extends BaseHandler {
     return null
   }
 
-  isGraphEvent(e: KeyboardEvent) {
+  protected isGraphEvent(e: KeyboardEvent) {
     const source = DomEvent.getSource(e)
     // Accepts events from the target object or
     // in-place editing inside graph
@@ -111,7 +111,7 @@ export class KeyboardHandler extends BaseHandler {
     return util.isAncestorNode(this.graph.container, source)
   }
 
-  isEnabledForEvent(e: KeyboardEvent) {
+  protected isEnabledForEvent(e: KeyboardEvent) {
     return (
       this.isEnabled() &&
       this.graph.isEnabled() &&
@@ -120,11 +120,11 @@ export class KeyboardHandler extends BaseHandler {
     )
   }
 
-  isEventIgnored(e: KeyboardEvent) {
+  protected isEventIgnored(e: KeyboardEvent) {
     return this.graph.isEditing()
   }
 
-  keyDown(e: KeyboardEvent) {
+  protected keyDown(e: KeyboardEvent) {
     if (this.isEnabledForEvent(e)) {
       if (e.keyCode === 27) {
         this.escape(e)
@@ -138,9 +138,9 @@ export class KeyboardHandler extends BaseHandler {
     }
   }
 
-  escape(e: KeyboardEvent) {
+  protected escape(e: KeyboardEvent) {
     if (this.graph.isEscapeEnabled()) {
-      this.graph.eventManager.escape(e)
+      this.graph.eventloop.escape(e)
     }
   }
 
@@ -149,8 +149,8 @@ export class KeyboardHandler extends BaseHandler {
       return
     }
 
-    if (this.target != null && this.keydownHandler != null) {
-      DomEvent.removeListener(this.target, 'keydown', this.keydownHandler)
+    if (this.target != null && this.onKeyDown != null) {
+      DomEvent.removeListener(this.target, 'keydown', this.onKeyDown)
     }
     this.target = null
 
@@ -158,6 +158,6 @@ export class KeyboardHandler extends BaseHandler {
   }
 }
 
-export namespace KeyHandler {
+export namespace KeyboardHandler {
   export type KeydownHandler = (e: KeyboardEvent) => void
 }

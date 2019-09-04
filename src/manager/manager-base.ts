@@ -25,15 +25,15 @@ export class BaseManager implements IDisposable {
     return this.graph.hooks
   }
 
-  get isDisposed() {
-    return this.disposed
+  get disposed() {
+    return this.destoryed
   }
 
-  protected disposed: boolean = false
+  private destoryed: boolean = false
 
   dispose(): void {
-    if (!this.disposed) {
-      this.disposed = true
+    if (!this.destoryed) {
+      this.destoryed = true
     }
   }
 }

@@ -8,7 +8,7 @@ export interface IDisposable {
    * #### Notes
    * This property is always safe to access.
    */
-  readonly isDisposed: boolean
+  readonly disposed: boolean
 
   /**
    * Dispose of the resources held by the object.
@@ -42,7 +42,7 @@ export class DisposableDelegate implements IDisposable {
   /**
    * Test whether the delegate has been disposed.
    */
-  get isDisposed(): boolean {
+  get disposed(): boolean {
     return !this.callback
   }
 
@@ -63,7 +63,7 @@ export class DisposableDelegate implements IDisposable {
  * An object which manages a collection of disposable items.
  */
 export class DisposableSet implements IDisposable {
-  private disposed = false
+  private destoryed = false
   private items = new Set<IDisposable>()
 
   /**
@@ -74,8 +74,8 @@ export class DisposableSet implements IDisposable {
   /**
    * Test whether the set has been disposed.
    */
-  get isDisposed(): boolean {
-    return this.disposed
+  get disposed(): boolean {
+    return this.destoryed
   }
 
   /**
@@ -85,10 +85,11 @@ export class DisposableSet implements IDisposable {
    * Items are disposed in the order they are added to the set.
    */
   dispose(): void {
-    if (this.disposed) {
+    if (this.destoryed) {
       return
     }
-    this.disposed = true
+    this.destoryed = true
+
     this.items.forEach((item) => { item.dispose() })
     this.items.clear()
   }

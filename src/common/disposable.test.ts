@@ -3,7 +3,7 @@ import { DisposableDelegate, DisposableSet, IDisposable } from './disposable'
 class TestDisposable implements IDisposable {
   count = 0
 
-  get isDisposed(): boolean {
+  get disposed(): boolean {
     return this.count > 0
   }
 
@@ -23,16 +23,16 @@ describe('disposable', () => {
       })
     })
 
-    describe('#isDisposed', () => {
+    describe('#disposed', () => {
       it('should be `false` before object is disposed', () => {
         const delegate = new DisposableDelegate(() => { })
-        expect(delegate.isDisposed).toBe(false)
+        expect(delegate.disposed).toBe(false)
       })
 
       it('should be `true` after object is disposed', () => {
         const delegate = new DisposableDelegate(() => { })
         delegate.dispose()
-        expect(delegate.isDisposed).toBe(true)
+        expect(delegate.disposed).toBe(true)
       })
     })
 
@@ -67,16 +67,16 @@ describe('disposable', () => {
       })
     })
 
-    describe('#isDisposed', () => {
+    describe('#disposed', () => {
       it('should be `false` before object is disposed', () => {
         const set = new DisposableSet()
-        expect(set.isDisposed).toBe(false)
+        expect(set.disposed).toBe(false)
       })
 
       it('should be `true` after object is disposed', () => {
         const set = new DisposableSet()
         set.dispose()
-        expect(set.isDisposed).toBe(true)
+        expect(set.disposed).toBe(true)
       })
     })
 

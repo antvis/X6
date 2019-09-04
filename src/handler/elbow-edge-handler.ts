@@ -17,7 +17,7 @@ export class ElbowEdgeHandler extends EdgeHandler {
 
     // Source
     let bend = this.createHandleShape(0)
-    this.initBend(bend)
+    this.initHandle(bend)
     bend.setCursor(constants.CURSOR_TERMINAL_HANDLE)
     bends.push(bend)
 
@@ -33,7 +33,7 @@ export class ElbowEdgeHandler extends EdgeHandler {
 
     // Target
     bend = this.createHandleShape(2)
-    this.initBend(bend)
+    this.initHandle(bend)
     bend.setCursor(constants.CURSOR_TERMINAL_HANDLE)
     bends.push(bend)
 
@@ -42,7 +42,7 @@ export class ElbowEdgeHandler extends EdgeHandler {
 
   createVirtualBend(dblClickHandler?: (evt: MouseEvent) => void) {
     const bend = this.createHandleShape()
-    this.initBend(bend, dblClickHandler)
+    this.initHandle(bend, dblClickHandler)
 
     bend.setCursor(this.getCursorForBend())
 

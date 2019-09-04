@@ -5,21 +5,6 @@ import { BaseHandler } from './handler-base'
 import { CellHighlight } from './cell-highlight'
 
 export class CellMarker extends BaseHandler {
-  constructor(
-    graph: Graph,
-    public validColor: string = constants.DEFAULT_VALID_COLOR,
-    public invalidColor: string = constants.DEFAULT_INVALID_COLOR,
-    /**
-     * Specifies the portion of the width and height that should trigger
-     * a highlight. The area around the center of the cell to be marked
-     * is used as the hotspot. Possible values are between 0 and 1.
-     */
-    public hotspot: number = constants.DEFAULT_HOTSPOT,
-  ) {
-    super(graph)
-    this.highlight = new CellHighlight(graph)
-  }
-
   highlight: CellHighlight
 
   /**
@@ -30,19 +15,43 @@ export class CellMarker extends BaseHandler {
   hotspotable: boolean = false
 
   /**
-   * Holds the current marker color.
+   * The current marker color.
    */
   currentColor: string | null = null
 
   /**
-   * Holds the marked `CellState` if it is valid.
+   * The marked `CellState` if it is valid.
    */
   validState: CellState | null = null
 
   /**
-   * Holds the marked `CellState`.
+   * The marked `CellState`.
    */
   markedState: CellState | null = null
+
+  validColor: string
+  invalidColor: string
+  hotspot: number
+
+  constructor(
+    graph: Graph,
+    options: CellMarker.Options = {},
+  ) {
+    super(graph)
+    this.validColor = options.validColor != null
+      ? options.validColor
+      : constants.DEFAULT_VALID_COLOR
+
+    this.invalidColor = options.invalidColor != null
+      ? options.invalidColor
+      : constants.DEFAULT_INVALID_COLOR
+
+    this.hotspot = options.hotspot != null
+      ? options.hotspot
+      : constants.DEFAULT_HOTSPOT
+
+    this.highlight = new CellHighlight(graph)
+  }
 
   hasValidState() {
     return this.validState != null
@@ -171,15 +180,29 @@ export class CellMarker extends BaseHandler {
   }
 
   dispose() {
-    if (!this.disposed) {
-      this.disposed = true
-      this.highlight.dispose()
+    if (this.disposed) {
+      return
     }
+
+    this.highlight.dispose()
+
+    super.dispose()
   }
 }
 
 export namespace CellMarker {
   export const events = {
     mark: 'mark',
+  }
+
+  export interface Options {
+    validColor?: string
+    invalidColor?: string
+    /**
+     * Specifies the portion of the width and height that should trigger
+     * a highlight. The area around the center of the cell to be marked
+     * is used as the hotspot. Possible values are between 0 and 1.
+     */
+    hotspot?: number
   }
 }

@@ -118,7 +118,7 @@ export class Handle {
       this.rotatePoint(
         this.snapPoint(
           this.rotatePoint(pt, alpha1),
-          this.ignoreGrid || !this.graph.isGridEnabledEvent(e.getEvent()),
+          this.ignoreGrid || !this.graph.isGridEnabledForEvent(e.getEvent()),
         ),
         alpha2,
       ),

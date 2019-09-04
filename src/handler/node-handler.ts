@@ -159,7 +159,7 @@ export class NodeHandler extends MouseHandler {
       this.reset()
     }
 
-    this.state.view.graph.on(DomEvent.ESCAPE, this.escapeHandler)
+    this.state.view.graph.on(Graph.events.escape, this.escapeHandler)
   }
 
   protected init() {
@@ -680,7 +680,7 @@ export class NodeHandler extends MouseHandler {
 
       e.consume()
 
-    } else if (!this.graph.isMouseDown && this.getHandleForEvent(e) != null) {
+    } else if (!this.graph.eventloop.isMouseDown && this.getHandleForEvent(e) != null) {
       // Workaround for disabling the connect highlight when over handle
       e.consume(false)
     }
@@ -691,7 +691,7 @@ export class NodeHandler extends MouseHandler {
     const trans = this.graph.view.translate
     const scale = this.graph.view.scale
 
-    if (this.graph.isGridEnabledEvent(e.getEvent())) {
+    if (this.graph.isGridEnabledForEvent(e.getEvent())) {
       point.x = (this.graph.snap(point.x / scale - trans.x) + trans.x) * scale
       point.y = (this.graph.snap(point.y / scale - trans.y) + trans.y) * scale
     }
@@ -719,7 +719,7 @@ export class NodeHandler extends MouseHandler {
     }
 
     // Rotation raster
-    if (this.rotationRaster && this.graph.isGridEnabledEvent(e.getEvent())) {
+    if (this.rotationRaster && this.graph.isGridEnabledForEvent(e.getEvent())) {
       const dx = point.x - this.state.bounds.getCenterX()
       const dy = point.y - this.state.bounds.getCenterY()
       const dist = Math.abs(Math.sqrt(dx * dx + dy * dy) - 20) * 3
@@ -769,7 +769,7 @@ export class NodeHandler extends MouseHandler {
       dx / scale,
       dy / scale,
       this.index!,
-      this.graph.isGridEnabledEvent(e.getEvent()),
+      this.graph.isGridEnabledForEvent(e.getEvent()),
       1,
       new Point(0, 0),
       this.isConstrained(e),
@@ -975,7 +975,7 @@ export class NodeHandler extends MouseHandler {
 
         } else {
 
-          const gridEnabled = this.graph.isGridEnabledEvent(e.getEvent())
+          const gridEnabled = this.graph.isGridEnabledForEvent(e.getEvent())
           const alpha = util.toRad(util.getRotation(this.state))
           const cos = Math.cos(-alpha)
           const sin = Math.sin(-alpha)

@@ -1,7 +1,7 @@
 export * from './manager-base'
 
-export * from './autosave'
-export * from './event-manager'
+export * from './change-manager'
+export * from './eventloop'
 export * from './selection'
 export * from './selection-manager'
 export * from './panning-manager'

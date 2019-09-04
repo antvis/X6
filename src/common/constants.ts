@@ -161,7 +161,7 @@ export const constants = {
   /**
    * Defines the default size for label handles. Default is 4.
    */
-  LABEL_HANDLE_SIZE: 4,
+  LABEL_HANDLE_SIZE: 8,
 
   /**
    * Defines the color to be used for the handle fill color.
@@ -177,29 +177,25 @@ export const constants = {
    * Defines the color to be used for the label handle fill color. Use 'none'
    * for no color. Default is yellow.
    */
-  LABEL_HANDLE_FILLCOLOR: 'yellow',
+  LABEL_HANDLE_FILLCOLOR: '#5b59e7',
 
   /**
-   * Defines the color to be used for the connect handle fill color. Use
-   * 'none' for no color. Default is #0000FF (blue).
+   * Defines the color to be used for the connect handle fill color.
    */
-  CONNECT_HANDLE_FILLCOLOR: '#0000FF',
+  CONNECT_HANDLE_FILLCOLOR: '#2ddb73',
 
   /**
-   * Defines the color to be used for the locked handle fill color. Use
-   * 'none' for no color. Default is #FF0000 (red).
+   * Defines the color to be used for the locked handle fill color.
    */
-  LOCKED_HANDLE_FILLCOLOR: '#FF0000',
+  LOCKED_HANDLE_FILLCOLOR: '#f5544f',
 
   /**
-   * Defines the color to be used for the outline sizer fill color. Use
-   * 'none' for no color. Default is #00FFFF.
+   * Defines the color to be used for the outline sizer fill color.
    */
   OUTLINE_HANDLE_FILLCOLOR: '#00FFFF',
 
   /**
-   * Defines the color to be used for the outline sizer stroke color. Use
-   * 'none' for no color. Default is #0033FF.
+   * Defines the color to be used for the outline sizer stroke color.
    */
   OUTLINE_HANDLE_STROKECOLOR: '#0033FF',
 
@@ -211,7 +207,7 @@ export const constants = {
   /**
    * Defines the default size (in px). Default is 11.
    */
-  DEFAULT_FONTSIZE: 11,
+  DEFAULT_FONTSIZE: 12,
 
   /**
    * Defines the default value for the <STYLE_TEXT_DIRECTION> if no value is

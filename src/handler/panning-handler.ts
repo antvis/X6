@@ -138,7 +138,7 @@ export class PanningHandler extends MouseHandler {
       }
     }
 
-    this.graph.on(DomEvent.GESTURE, this.gestureHandler)
+    this.graph.on(Graph.events.gesture, this.gestureHandler)
 
     this.mouseUpListener = () => {
       if (this.active) {
@@ -315,7 +315,7 @@ export class PanningHandler extends MouseHandler {
 
     this.graph.removeMouseListener(this)
     this.graph.off(Graph.events.fireMouseEvent, this.forcePanningHandler)
-    this.graph.off(DomEvent.GESTURE, this.gestureHandler)
+    this.graph.off(Graph.events.gesture, this.gestureHandler)
 
     DomEvent.removeListener(document, 'mouseup', this.mouseUpListener)
 

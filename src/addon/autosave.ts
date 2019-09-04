@@ -1,8 +1,10 @@
 import { IChange } from '../change'
 import { Graph, Model } from '../core'
-import { BaseManager } from './manager-base'
+import { Disablable } from '../common'
 
-export class AutoSave extends BaseManager {
+export class AutoSave extends Disablable {
+  graph: Graph
+
   /**
    * Minimum amount of seconds between two consecutive autosaves.
    */
@@ -19,25 +21,12 @@ export class AutoSave extends BaseManager {
    */
   threshold: number = 5
 
-  private enabled: boolean = true
   private changeCount: number = 0
   private timestamp: number = 0
 
   constructor(graph: Graph) {
-    super(graph)
+    super()
     this.setGraph(graph)
-  }
-
-  isEnabled() {
-    return this.enabled
-  }
-
-  enable() {
-    this.enabled = true
-  }
-
-  disable() {
-    this.enabled = false
   }
 
   setGraph(graph: Graph | null) {
@@ -79,7 +68,7 @@ export class AutoSave extends BaseManager {
   }
 
   private save() {
-    this.graph.trigger(Graph.events.save)
+    this.trigger(AutoSave.events.save)
   }
 
   reset() {
@@ -87,7 +76,17 @@ export class AutoSave extends BaseManager {
     this.timestamp = new Date().getTime()
   }
 
-  destroy() {
+  dispose() {
+    if (this.disposed) {
+      return
+    }
     this.setGraph(null)
+    super.dispose()
+  }
+}
+
+export namespace AutoSave {
+  export const events = {
+    save: 'save',
   }
 }

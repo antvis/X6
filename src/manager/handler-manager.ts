@@ -94,10 +94,10 @@ export class HandlerManager extends BaseManager {
         const targetState = state.getVisibleTerminalState(false)
         const geo = this.graph.getCellGeometry(state.cell)
 
-        const edgeStyle = this.view.getEdgeFunction(
+        const edgeFn = this.view.getEdgeFunction(
           state, geo != null ? geo.points : null, sourceState!, targetState!,
         )
-        return this.createEdgeHandler(state, edgeStyle)
+        return this.createEdgeHandler(state, edgeFn)
       }
 
       return this.createNodeHandler(state)
@@ -113,18 +113,19 @@ export class HandlerManager extends BaseManager {
     )
   }
 
-  protected createEdgeHandler(state: CellState, edgeStyle: any) {
+  protected createEdgeHandler(state: CellState, edgeFn: any) {
     let result = null
 
     if (
-      edgeStyle === EdgeStyle.loop ||
-      edgeStyle === EdgeStyle.elbowConnector ||
-      edgeStyle === EdgeStyle.sideToSide ||
-      edgeStyle === EdgeStyle.topToBottom) {
+      edgeFn === EdgeStyle.loop ||
+      edgeFn === EdgeStyle.elbowConnector ||
+      edgeFn === EdgeStyle.sideToSide ||
+      edgeFn === EdgeStyle.topToBottom
+    ) {
       result = this.createElbowEdgeHandler(state)
     } else if (
-      edgeStyle === EdgeStyle.segmentConnector ||
-      edgeStyle === EdgeStyle.orthConnector
+      edgeFn === EdgeStyle.segmentConnector ||
+      edgeFn === EdgeStyle.orthConnector
     ) {
       result = this.createEdgeSegmentHandler(state)
     } else {

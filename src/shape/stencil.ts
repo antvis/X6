@@ -3,11 +3,11 @@ import { Shape } from './shape'
 import { constants } from '../common'
 import { SvgCanvas2D } from '../canvas'
 import { Direction, Align, VAlign, LineCap, LineJoin } from '../types'
-import { Point, Rectangle, ConnectionConstraint, NodeType } from '../struct'
+import { Point, Rectangle, Constraint, NodeType } from '../struct'
 
 export class Stencil extends Shape {
   desc: HTMLElement
-  constraints: ConnectionConstraint[]
+  constraints: Constraint[]
   aspect: string
   w0: number
   h0: number
@@ -59,7 +59,7 @@ export class Stencil extends Shape {
     const name = node.getAttribute('name') || ''
     const perimeter = node.getAttribute('perimeter') === '1'
 
-    return new ConnectionConstraint(new Point(x, y), perimeter, name)
+    return new Constraint(new Point(x, y), perimeter, name)
   }
 
   evaluateTextAttribute(node: HTMLElement, name: string, shape: Shape) {

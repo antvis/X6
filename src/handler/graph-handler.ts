@@ -9,13 +9,6 @@ import { MouseHandler } from './handler-mouse'
 
 export class GraphHandler extends MouseHandler {
   /**
-   * Specifies if drop targets under the mouse should be enabled.
-   *
-   * Default is `true`.
-   */
-  highlightable: boolean = true
-
-  /**
    * Specifies if cloning by control-drag is enabled.
    *
    * Default is `true`.
@@ -42,6 +35,13 @@ export class GraphHandler extends MouseHandler {
    * Default is `true`.
    */
   rotatable: boolean = true
+
+  /**
+   * Specifies if drop targets under the mouse should be enabled.
+   *
+   * Default is `true`.
+   */
+  highlightEnabled: boolean = true
 
   /**
    * Specifies if other cells should be used for snapping
@@ -141,7 +141,7 @@ export class GraphHandler extends MouseHandler {
   protected refreshHandler: (() => void) | null
 
   protected highlight: CellHighlight | null
-  protected cellSelected: boolean
+  protected delayedSelection: boolean
   protected cell: Cell | null
   protected cells: Cell[]
   protected target: Cell | null
@@ -198,7 +198,7 @@ export class GraphHandler extends MouseHandler {
     }
   }
 
-  protected isCellSelected(cell: Cell | null, e: CustomMouseEvent) {
+  protected isDelayedSelection(cell: Cell | null, e: CustomMouseEvent) {
     return this.graph.isCellSelected(cell)
   }
 
@@ -211,11 +211,11 @@ export class GraphHandler extends MouseHandler {
       e.getState() != null && !DomEvent.isMultiTouchEvent(e.getEvent())
     ) {
       const cell = this.getCell(e)
-      this.cellSelected = this.isCellSelected(cell, e)
+      this.delayedSelection = this.isDelayedSelection(cell, e)
       this.cell = null
 
-      // select cell
-      if (this.selectable && !this.cellSelected) {
+      // Select cell which was not selected immediately
+      if (this.selectable && !this.delayedSelection) {
         // Trigger selection change, then selectionHandler will refresh,
         // result to create cell resize/rotate handle knots.
         this.graph.selectionManager.selectCellForEvent(cell, e.getEvent())
@@ -248,7 +248,7 @@ export class GraphHandler extends MouseHandler {
 
           this.start(cell, e)
 
-        } else if (this.cellSelected) {
+        } else if (this.delayedSelection) {
 
           this.cell = cell
         }
@@ -275,7 +275,7 @@ export class GraphHandler extends MouseHandler {
 
   protected getCells(cell: Cell, e: MouseEvent) {
     if (
-      !this.cellSelected &&
+      !this.delayedSelection &&
       this.graph.isCellMovable(cell) &&
       !this.graph.isToggleEvent(e)
     ) {
@@ -364,7 +364,7 @@ export class GraphHandler extends MouseHandler {
 
     if (
       !e.isConsumed() &&
-      graph.isMouseDown &&
+      graph.eventloop.isMouseDown &&
       this.cell != null &&
       this.origin != null &&
       this.bounds != null
@@ -387,16 +387,17 @@ export class GraphHandler extends MouseHandler {
       ) {
         // Highlight is used for highlighting drop targets
         if (this.highlight == null) {
-          this.highlight = new CellHighlight(
-            this.graph, constants.DROP_TARGET_COLOR, 3,
-          )
+          this.highlight = new CellHighlight(this.graph, {
+            highlightColor: constants.DROP_TARGET_COLOR,
+            strokeWidth: 3,
+          })
         }
 
         if (this.previewShape == null) {
           this.previewShape = this.createPreviewShape(this.bounds)
         }
 
-        const gridEnabled = graph.isGridEnabledEvent(e.getEvent())
+        const gridEnabled = graph.isGridEnabledForEvent(e.getEvent())
         let hideGuide = true
 
         if (this.guide && this.isGuideEnabledForEvent(e)) {
@@ -453,7 +454,7 @@ export class GraphHandler extends MouseHandler {
   protected shouldUpdateCursor(e: CustomMouseEvent) {
     return (
       !e.isConsumed() &&
-      !this.graph.isMouseDown &&
+      !this.graph.eventloop.isMouseDown &&
       this.updateCursor &&
       (this.movable || this.cloneable) &&
       e.getState() != null
@@ -557,7 +558,7 @@ export class GraphHandler extends MouseHandler {
 
     let target = null
 
-    if (graph.isDropEnabled() && this.highlightable) {
+    if (graph.isDropEnabled() && this.highlightEnabled) {
       // Call getCellAt to find the cell under the mouse
       target = graph.getDropTarget(this.cells, e.getEvent(), cell, clone)
     }
@@ -650,7 +651,7 @@ export class GraphHandler extends MouseHandler {
         }
       } else if (
         this.selectable &&
-        this.cellSelected &&
+        this.delayedSelection &&
         this.cell != null
       ) {
         this.selectDelayed(e)
@@ -683,7 +684,7 @@ export class GraphHandler extends MouseHandler {
     this.origin = null
     this.cell = null
     this.target = null
-    this.cellSelected = false
+    this.delayedSelection = false
     this.shouldConsumeMouseUp = false
   }
 

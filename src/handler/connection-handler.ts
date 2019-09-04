@@ -1,7 +1,7 @@
 import * as util from '../util'
 import { Graph, Model, Cell, CellState, Geometry } from '../core'
 import { View } from '../core/view'
-import { Rectangle, Point, Image, ConnectionConstraint } from '../struct'
+import { Rectangle, Point, Image, Constraint } from '../struct'
 import { constants, DomEvent, CustomMouseEvent } from '../common'
 import { Shape, ImageShape, Polyline } from '../shape'
 import { CellMarker } from './cell-marker'
@@ -164,7 +164,7 @@ export class ConnectionHandler extends MouseHandler {
   private icons: ImageShape[] | null
   private selectedIcon: ImageShape | null
   private iconState: CellState | null
-  private sourceConstraint: ConnectionConstraint | null
+  private sourceConstraint: Constraint | null
   private waypoints: Point[] | null
 
   constructor(
@@ -812,7 +812,7 @@ export class ConnectionHandler extends MouseHandler {
   mouseMove(e: CustomMouseEvent) {
     if (
       !e.isConsumed() &&
-      (this.ignoreMouseDown || this.first != null || !this.graph.isMouseDown)
+      (this.ignoreMouseDown || this.first != null || !this.graph.eventloop.isMouseDown)
     ) {
       // Handles special case when handler is disabled during highlight
       if (!this.isEnabled() && this.currentState != null) {
@@ -826,7 +826,7 @@ export class ConnectionHandler extends MouseHandler {
       let point = new Point(e.getGraphX(), e.getGraphY())
       this.error = null
 
-      if (this.graph.isGridEnabledEvent(e.getEvent())) {
+      if (this.graph.isGridEnabledForEvent(e.getEvent())) {
         point = new Point(
           (this.graph.snap(point.x / scale - tr.x) + tr.x) * scale,
           (this.graph.snap(point.y / scale - tr.y) + tr.y) * scale,
@@ -1026,14 +1026,14 @@ export class ConnectionHandler extends MouseHandler {
         this.previous === this.currentState &&
         this.currentState != null &&
         this.icons == null &&
-        !this.graph.isMouseDown
+        !this.graph.eventloop.isMouseDown
       ) {
         // Makes sure that no cursors are changed
         e.consume()
       }
 
       if (
-        !this.graph.isMouseDown &&
+        !this.graph.eventloop.isMouseDown &&
         this.currentState != null &&
         this.icons != null
       ) {
@@ -1055,7 +1055,7 @@ export class ConnectionHandler extends MouseHandler {
     }
   }
 
-  updateEdgeState(current: Point, constraint: ConnectionConstraint | null) {
+  updateEdgeState(current: Point, constraint: Constraint | null) {
     // TODO: Use generic method for writing constraint to style
     if (this.sourceConstraint != null && this.sourceConstraint.point != null) {
       this.edgeState!.style.exitX = this.sourceConstraint.point.x
@@ -1233,7 +1233,7 @@ export class ConnectionHandler extends MouseHandler {
    * implementation returns true if the constraints are not pointing to the
    * same fixed connection point.
    */
-  checkConstraints(c1: ConnectionConstraint | null, c2: ConnectionConstraint | null) {
+  checkConstraints(c1: Constraint | null, c2: Constraint | null) {
     return (
       c1 == null || c2 == null || c1.point == null || c2.point == null ||
       !c1.point.equals(c2.point) || c1.dx !== c2.dx || c1.dy !== c2.dy ||
@@ -1653,7 +1653,7 @@ export class ConnectionHandler extends MouseHandler {
 
     if (edge == null) {
       edge = new Cell(data || '')
-      edge.actAsEdge(true)
+      edge.asEdge(true)
       edge.setStyle(style)
 
       const geo = new Geometry()

@@ -166,7 +166,13 @@ export function prepend(parent: Element, child: Element) {
 
 export function toBack(elem: Element | null) {
   if (elem && elem.parentNode && elem.parentNode.firstChild !== elem) {
-    elem.parentNode.insertBefore(elem, this.shape.elem.parentNode.firstChild)
+    elem.parentNode.insertBefore(elem, elem.parentNode.firstChild)
+  }
+}
+
+export function toFront(elem: Element | null) {
+  if (elem && elem.parentNode) {
+    elem.parentNode.appendChild(elem)
   }
 }
 

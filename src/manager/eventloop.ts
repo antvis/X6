@@ -5,7 +5,9 @@ import { IMouseHandler } from '../handler'
 import { RectangleShape } from '../shape'
 import { BaseManager } from './manager-base'
 
-export class EventManager extends BaseManager {
+export class EventLoop extends BaseManager {
+  isMouseDown: boolean = false
+
   protected mouseListeners: IMouseHandler[]
 
   protected lastMouseX: number
@@ -65,7 +67,7 @@ export class EventManager extends BaseManager {
       e.graphY = p.y - this.graph.panDy
 
       if (
-        this.graph.isMouseDown &&
+        this.isMouseDown &&
         eventName === DomEvent.MOUSE_MOVE &&
         e.getCell() == null
       ) {
@@ -177,17 +179,17 @@ export class EventManager extends BaseManager {
     }
 
     // Filters out of sequence events or mixed event types during a gesture
-    if (eventName === DomEvent.MOUSE_UP && this.graph.isMouseDown) {
-      this.graph.isMouseDown = false
-    } else if (eventName === DomEvent.MOUSE_DOWN && !this.graph.isMouseDown) {
-      this.graph.isMouseDown = true
+    if (eventName === DomEvent.MOUSE_UP && this.isMouseDown) {
+      this.isMouseDown = false
+    } else if (eventName === DomEvent.MOUSE_DOWN && !this.isMouseDown) {
+      this.isMouseDown = true
       this.isMouseTrigger = isMouseEvent
     } else if (
       !result && ((
         (!detector.IS_FIREFOX || eventName !== DomEvent.MOUSE_MOVE) &&
-        this.graph.isMouseDown && this.isMouseTrigger !== isMouseEvent) ||
-        (eventName === DomEvent.MOUSE_DOWN && this.graph.isMouseDown) ||
-        (eventName === DomEvent.MOUSE_UP && !this.graph.isMouseDown))
+        this.isMouseDown && this.isMouseTrigger !== isMouseEvent) ||
+        (eventName === DomEvent.MOUSE_DOWN && this.isMouseDown) ||
+        (eventName === DomEvent.MOUSE_UP && !this.isMouseDown))
     ) {
       // Drops mouse events that are fired during touch gestures
       // as a workaround for Webkit and mouse events that are not
@@ -329,13 +331,13 @@ export class EventManager extends BaseManager {
         }
 
       } else if (
-        (this.graph.isMouseDown || eventName === DomEvent.MOUSE_UP) &&
+        (this.isMouseDown || eventName === DomEvent.MOUSE_UP) &&
         this.fireDoubleClick
       ) {
 
         const lastTouchCell = this.lastTouchCell
 
-        this.graph.isMouseDown = false
+        this.isMouseDown = false
         this.lastTouchCell = null
         this.fireDoubleClick = false
 
@@ -380,7 +382,7 @@ export class EventManager extends BaseManager {
     ) {
       if (
         eventName === DomEvent.MOUSE_MOVE &&
-        this.graph.isMouseDown &&
+        this.isMouseDown &&
         this.graph.autoScroll &&
         !DomEvent.isMultiTouchEvent(evt)
       ) {
@@ -476,7 +478,7 @@ export class EventManager extends BaseManager {
   fireGestureEvent(e: MouseEvent, cell?: Cell) {
     // Resets double tap event handling when gestures take place
     this.lastTouchTime = 0
-    this.graph.trigger(DomEvent.GESTURE, { e, cell })
+    this.graph.trigger(Graph.events.gesture, { e, cell })
   }
 
   escape(e: KeyboardEvent) {

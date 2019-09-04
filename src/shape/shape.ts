@@ -1141,14 +1141,14 @@ export class Shape implements IDisposable {
     return rotation
   }
 
-  protected disposed = false
+  private destoryed = false
 
-  get isDisposed() {
-    return this.disposed
+  get disposed() {
+    return this.destoryed
   }
 
   dispose() {
-    if (this.disposed) {
+    if (this.destoryed) {
       return
     }
 
@@ -1165,7 +1165,7 @@ export class Shape implements IDisposable {
     this.releaseSvgGradients(this.oldGradients)
     this.oldGradients = null
 
-    this.disposed = true
+    this.destoryed = true
   }
 }
 

@@ -198,7 +198,7 @@ export class EdgeSegmentHandler extends ElbowEdgeHandler {
 
     // Merges adjacent edge segments
     if (geo != null && geo.points != null && geo.points.length > 0) {
-      const pts = this.abspoints
+      const pts = this.absolutePoints
       let pt0 = pts[0]
       let pt1 = pts[1]
       result = []
@@ -254,7 +254,7 @@ export class EdgeSegmentHandler extends ElbowEdgeHandler {
 
     // Source
     let bend = this.createHandleShape(0)
-    this.initBend(bend)
+    this.initHandle(bend)
     bend.setCursor(constants.CURSOR_TERMINAL_HANDLE)
     bends.push(bend)
 
@@ -283,7 +283,7 @@ export class EdgeSegmentHandler extends ElbowEdgeHandler {
 
     // Target
     bend = this.createHandleShape(pts.length)
-    this.initBend(bend)
+    this.initHandle(bend)
     bend.setCursor(constants.CURSOR_TERMINAL_HANDLE)
     bends.push(bend)
 

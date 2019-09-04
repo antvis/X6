@@ -22,8 +22,8 @@ export class Cell implements IDisposable {
 
   public overlays: CellOverlay[] | null
 
-  private isnode?: boolean
-  private isedge?: boolean
+  private node?: boolean
+  private edge?: boolean
 
   constructor(
     data?: any,
@@ -39,11 +39,11 @@ export class Cell implements IDisposable {
   // #region edge
 
   isEdge() {
-    return this.isedge === true
+    return this.edge === true
   }
 
-  actAsEdge(isEdge: boolean) {
-    this.isedge = isEdge
+  asEdge(v: boolean) {
+    this.edge = v
   }
 
   getTerminal(isSource?: boolean) {
@@ -72,11 +72,11 @@ export class Cell implements IDisposable {
   // #region node
 
   isNode() {
-    return this.isnode != null
+    return this.node != null
   }
 
-  actAsNode(isNode: boolean) {
-    this.isnode = isNode
+  asNode(v: boolean) {
+    this.node = v
   }
 
   isConnectable() {
@@ -192,8 +192,8 @@ export class Cell implements IDisposable {
     return this.parent == null
   }
 
-  isAncestor(descendant: Cell) {
-    if (!descendant) {
+  isAncestor(descendant: Cell | null) {
+    if (descendant == null) {
       return false
     }
 
@@ -378,14 +378,14 @@ export class Cell implements IDisposable {
 
   // #region IDisposable
 
-  private disposed: boolean = false
+  private destoryed: boolean = false
 
-  get isDisposed() {
-    return this.disposed
+  get disposed() {
+    return this.destoryed
   }
 
   dispose() {
-    if (this.isDisposed) {
+    if (this.destoryed) {
       return
     }
 
@@ -398,7 +398,7 @@ export class Cell implements IDisposable {
     this.removeFromTerminal(true)
     this.removeFromTerminal(false)
 
-    this.disposed = true
+    this.destoryed = true
   }
 
   // #endregion

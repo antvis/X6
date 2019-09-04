@@ -428,7 +428,7 @@ export class Renderer {
     if (graph.nativeDblClickEnabled) {
       DomEvent.addListener(elem, 'dblclick', (e: MouseEvent) => {
         if (this.isShapeEvent(state, e)) {
-          graph.eventManager.dblClick(e, state.cell)
+          graph.eventloop.dblClick(e, state.cell)
           DomEvent.consume(e)
         }
       })
@@ -767,7 +767,7 @@ export class Renderer {
           'dblclick',
           (e: MouseEvent) => {
             if (this.isLabelEvent(state, e)) {
-              graph.eventManager.dblClick(e, state.cell)
+              graph.eventloop.dblClick(e, state.cell)
               DomEvent.consume(e)
             }
           },

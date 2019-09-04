@@ -2,7 +2,7 @@ import * as util from '../util'
 import * as images from '../assets/images'
 import { Graph, Model, CellState } from '../core'
 import { View } from '../core/view'
-import { Rectangle, Point, Image, ConnectionConstraint } from '../struct'
+import { Rectangle, Point, Image, Constraint } from '../struct'
 import { constants, DomEvent, CustomMouseEvent } from '../common'
 import { RectangleShape, ImageShape } from '../shape'
 import { BaseHandler } from './handler-base'
@@ -20,14 +20,15 @@ export class ConstraintHandler extends BaseHandler {
 
   private resetHandler: (() => void) | null
   private containerEventInstalled = false
-  currentFocus: CellState | null
-  currentConstraint: ConnectionConstraint | null
-  currentPoint: Point | null
   private currentFocusArea: Rectangle | null
   private focusHighlight: RectangleShape | null
-  private constraints: ConnectionConstraint[] | null
+  private constraints: Constraint[] | null
   private focusIcons: ImageShape[] | null
   private focusPoints: Point[] | null
+
+  currentFocus: CellState | null
+  currentConstraint: Constraint | null
+  currentPoint: Point | null
 
   constructor(graph: Graph) {
     super(graph)
@@ -119,7 +120,7 @@ export class ConstraintHandler extends BaseHandler {
    */
   getImageForConstraint(
     state: CellState,
-    constraint: ConnectionConstraint,
+    constraint: Constraint,
     point?: Point | null,
   ) {
     return this.pointImage

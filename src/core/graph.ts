@@ -11,6 +11,7 @@ import { Multiplicity } from './multiplicity'
 import { StyleSheet, EdgeStyle } from '../stylesheet'
 import { Label } from '../shape'
 import { Align, VAlign, CellStyle, Dialect } from '../types'
+import { IChange, RootChange, ChildChange } from '../change'
 import {
   constants,
   detector,
@@ -20,18 +21,9 @@ import {
   IDisposable,
 } from '../common'
 import {
-  IChange,
-  RootChange,
-  ChildChange,
-  StyleChange,
-  DataChange,
-  TerminalChange,
-  GeometryChange,
-} from '../change'
-import {
   Rectangle,
   Point,
-  ConnectionConstraint,
+  Constraint,
   Image,
   ShapeName,
   PageFormat,
@@ -48,7 +40,8 @@ import {
   EdgeHandler,
 } from '../handler'
 import {
-  EventManager,
+  ChangeManager,
+  EventLoop,
   HandlerManager,
   Selection,
   SelectionManager,
@@ -64,7 +57,9 @@ export class Graph extends Events implements IDisposable {
   public readonly view: View
   public readonly styleSheet: StyleSheet
   public readonly renderer: Renderer
-  public readonly eventManager: EventManager
+
+  public readonly changeManager: ChangeManager
+  public readonly eventloop: EventLoop
   public readonly selection: Selection
   public readonly selectionManager: SelectionManager
   public readonly connectionManager: ConnectionManager
@@ -80,8 +75,6 @@ export class Graph extends Events implements IDisposable {
   panningHandler: PanningHandler
   panningManager: any
   graphHandler: GraphHandler
-
-  isMouseDown: boolean = false
 
   prefixCls: string = 'x6'
 
@@ -114,10 +107,11 @@ export class Graph extends Events implements IDisposable {
   gridEnabled = true
 
   /**
-   * Specifies if ports are enabled. This is used in <cellConnected> to update
-   * the respective style. Default is true.
+   * Specifies if ports are enabled.
+   *
+   * Default is `true`.
    */
-  portsEnabled = true
+  portsEnabled: boolean = true
 
   /**
    * Specifies if native double click events should be detected.
@@ -358,7 +352,9 @@ export class Graph extends Events implements IDisposable {
   cellsSelectable = true
 
   /**
-   * Specifies the return value for <isCellDisconntable>. Default is true.
+   * Specifies if cells is disconnectable.
+   *
+   * Default is `true`.
    */
   cellsDisconnectable = true
 
@@ -565,9 +561,11 @@ export class Graph extends Events implements IDisposable {
 
   /**
    * Specifies if edge control points should be reset after the the edge has been
-   * reconnected. Default is true.
+   * reconnected.
+   *
+   * Default is `true`.
    */
-  resetEdgesOnConnect = true
+  resetEdgesOnConnect: boolean = true
 
   /**
    * Specifies if loops (aka self-references) are allowed. Default is false.
@@ -686,10 +684,8 @@ export class Graph extends Events implements IDisposable {
     this.selection = this.createSelection()
 
     // The order of the following initializations should not be modified.
-
-    this.model.on(Model.events.change, this.onModelChanged, this)
-
-    this.eventManager = new EventManager(this)
+    this.changeManager = new ChangeManager(this)
+    this.eventloop = new EventLoop(this)
     this.handlerManager = new HandlerManager(this)
     this.cellManager = new CellManager(this)
     this.selectionManager = new SelectionManager(this)
@@ -816,7 +812,7 @@ export class Graph extends Events implements IDisposable {
       DomEvent.addListener(container, 'selectstart', (e: MouseEvent) => {
         return (
           this.isEditing() ||
-          (!this.isMouseDown && !DomEvent.isShiftDown(e))
+          (!this.eventloop.isMouseDown && !DomEvent.isShiftDown(e))
         )
       })
     }
@@ -864,108 +860,6 @@ export class Graph extends Events implements IDisposable {
     })
 
     return cells
-  }
-
-  protected onModelChanged(changes: IChange[]) {
-    changes.forEach(change => this.processChange(change))
-    this.updateSelection()
-    this.view.validate()
-    this.viewport.sizeDidChange()
-  }
-
-  protected processChange(change: IChange) {
-    if (change instanceof RootChange) {
-
-      // removes all cells and clears the selection if the root changes.
-      this.clearSelection()
-      this.setDefaultParent(null)
-      this.removeCellState(change.previous)
-
-      if (this.resetViewOnRootChange) {
-        this.view.scale = 1
-        this.view.translate.x = 0
-        this.view.translate.y = 0
-      }
-
-    } else if (change instanceof ChildChange) {
-
-      const newParent = this.model.getParent(change.child)!
-      this.view.invalidate(change.child, true, true)
-
-      // invisible
-      if (
-        !this.model.contains(newParent) ||
-        this.isCellCollapsed(newParent)
-      ) {
-        this.view.invalidate(change.child, true, true)
-        this.removeCellState(change.child)
-        // currentRoot being removed
-        if (this.getCurrentRoot() === change.child) {
-          this.home()
-        }
-      }
-
-      if (newParent !== change.previous) {
-        // Refreshes the collapse/expand icons on the parents
-        if (newParent != null) {
-          this.view.invalidate(newParent, false, false)
-        }
-
-        if (change.previous != null) {
-          this.view.invalidate(change.previous, false, false)
-        }
-      }
-
-    } else if (
-      change instanceof TerminalChange ||
-      change instanceof GeometryChange
-    ) {
-
-      // Handles two special cases where the shape does not need to
-      // be recreated, it only needs to be invalidated.
-
-      // Checks if the geometry has changed to avoid unnessecary revalidation
-      if (
-        change instanceof TerminalChange || (
-          (change.previous == null && change.geometry != null) ||
-          (change.previous != null && !change.previous.equals(change.geometry))
-        )
-      ) {
-        this.view.invalidate(change.cell)
-      }
-    } else if (change instanceof DataChange) {
-
-      // Handles special case where only the shape, but no
-      // descendants need to be recreated.
-      this.view.invalidate(change.cell, false, false)
-
-    } else if (change instanceof StyleChange) {
-
-      // Requires a new Shape in JavaScript.
-      this.view.invalidate(change.cell, true, true)
-      const state = this.view.getState(change.cell)
-      if (state != null) {
-        state.invalidStyle = true
-      }
-
-    } else if (change.cell != null && change.cell instanceof Cell) {
-
-      // Removes the state from the cache by default.
-      this.removeCellState(change.cell)
-    }
-  }
-
-  /**
-   * Removes all cached information for the given cell and its descendants.
-   *
-   * This is called when a cell was removed from the model.
-   */
-  protected removeCellState(cell: Cell | null) {
-    if (cell) {
-      cell.eachChild(child => this.removeCellState(child))
-      this.view.invalidate(cell, false, true)
-      this.view.removeState(cell)
-    }
   }
 
   // #region :::::::::::: Overlays
@@ -1282,7 +1176,7 @@ export class Graph extends Events implements IDisposable {
    */
   setCellStyles(
     key: string,
-    value: string | number | boolean | null,
+    value?: string | number | boolean | null,
     cells: Cell[] = this.getSelectedCells(),
   ) {
     if (cells != null && cells.length > 0) {
@@ -1652,7 +1546,7 @@ export class Graph extends Events implements IDisposable {
    */
   protected createGroupCell(cells: Cell[]) {
     const group = new Cell()
-    group.actAsNode(true)
+    group.asNode(true)
     group.setConnectable(false)
     return group
   }
@@ -1975,7 +1869,7 @@ export class Graph extends Events implements IDisposable {
     geo.relative = options.relative != null ? options.relative : false
     const node = new Cell(options.data, geo, options.style)
     node.setId(options.id)
-    node.actAsNode(true)
+    node.asNode(true)
     node.setConnectable(true)
 
     return node
@@ -1998,7 +1892,7 @@ export class Graph extends Events implements IDisposable {
 
     const edge = new Cell(options.data, geo, options.style)
     edge.setId(options.id)
-    edge.actAsEdge(true)
+    edge.asEdge(true)
 
     return edge
   }
@@ -3505,7 +3399,7 @@ export class Graph extends Events implements IDisposable {
       dy = isFinite(dy) ? dy : 0
     }
 
-    return new ConnectionConstraint(point, perimeter, null, dx, dy)
+    return new Constraint(point, perimeter, null, dx, dy)
   }
 
   /**
@@ -3525,7 +3419,7 @@ export class Graph extends Events implements IDisposable {
     edge: Cell,
     terminal: Cell | null,
     isSource: boolean,
-    constraint?: ConnectionConstraint | null,
+    constraint?: Constraint | null,
   ) {
     if (constraint != null) {
       this.model.beginUpdate()
@@ -3612,7 +3506,7 @@ export class Graph extends Events implements IDisposable {
    */
   getConnectionPoint(
     terminalState: CellState,
-    constraint: ConnectionConstraint,
+    constraint: Constraint,
     round: boolean = true,
   ) {
     let result: Point | null = null
@@ -3724,7 +3618,7 @@ export class Graph extends Events implements IDisposable {
     edge: Cell,
     terminal: Cell | null,
     isSource: boolean,
-    constraint?: ConnectionConstraint,
+    constraint?: Constraint,
   ) {
     this.model.beginUpdate()
     try {
@@ -3756,7 +3650,7 @@ export class Graph extends Events implements IDisposable {
     edge: Cell,
     terminal: Cell | null,
     isSource: boolean,
-    constraint?: ConnectionConstraint,
+    constraint?: Constraint,
   ) {
     if (edge != null) {
       this.model.beginUpdate()
@@ -3777,9 +3671,10 @@ export class Graph extends Events implements IDisposable {
             terminal = this.getTerminalForPort(terminal, isSource)!
           }
 
-          // Sets or resets all previous information for connecting to a child port
-          const key = isSource ? 'sourcePort' : 'targetPort'
-          this.setCellStyles(key, id as string, [edge])
+          if (id != null) {
+            const key = isSource ? 'sourcePort' : 'targetPort'
+            this.setCellStyles(key, id, [edge])
+          }
         }
 
         this.model.setTerminal(edge, terminal, isSource)
@@ -4342,7 +4237,7 @@ export class Graph extends Events implements IDisposable {
   /**
    * Returns true if the given mouse event should be aligned to the grid.
    */
-  isGridEnabledEvent(e: MouseEvent) {
+  isGridEnabledForEvent(e: MouseEvent) {
     return e != null && !DomEvent.isAltDown(e)
   }
 
@@ -4703,7 +4598,7 @@ export class Graph extends Events implements IDisposable {
    *
    * swimlane - <Cell> whose start size should be returned.
    */
-  getStartSize(swimlane: Cell) {
+  getStartSize(swimlane: Cell | null) {
     const result = new Rectangle()
     const state = this.view.getState(swimlane)
     const style = (state != null) ? state.style : this.getCellStyle(swimlane)
@@ -4793,7 +4688,7 @@ export class Graph extends Events implements IDisposable {
    *
    * cell - <Cell> to be checked.
    */
-  isSwimlane(cell: Cell) {
+  isSwimlane(cell: Cell | null) {
     if (cell != null) {
       if (this.model.getParent(cell) !== this.model.getRoot()) {
         const state = this.view.getState(cell)
@@ -5020,7 +4915,7 @@ export class Graph extends Events implements IDisposable {
     return this.model.filterCells(cells, cell => this.isCellMovable(cell))
   }
 
-  isLabelMovable(cell: Cell) {
+  isLabelMovable(cell: Cell | null) {
     return (
       !this.isCellLocked(cell) &&
       (
@@ -5268,13 +5163,7 @@ export class Graph extends Events implements IDisposable {
   }
 
   /**
-   * Returns true if the given cell is bendable. This returns <cellsBendable>
-   * for all given cells if <isLocked> does not return true for the given
-   * cell and its style does not specify <constants.STYLE_BENDABLE> to be 0.
-   *
-   * Parameters:
-   *
-   * cell - <Cell> whose bendable state should be returned.
+   * Returns true if the given cell is bendable.
    */
   isCellBendable(cell: Cell) {
     const state = this.view.getState(cell)
@@ -5900,7 +5789,7 @@ export class Graph extends Events implements IDisposable {
    * Returns true if the given coordinate pair is inside the content
    * of the given swimlane.
    */
-  hitsSwimlaneContent(swimlane: Cell, x: number, y: number) {
+  hitsSwimlaneContent(swimlane: Cell | null, x: number, y: number) {
     const state = this.getView().getState(swimlane)
     const size = this.getStartSize(swimlane)
 
@@ -6513,56 +6402,67 @@ export class Graph extends Events implements IDisposable {
    * must implement the mouseDown, mouseMove and mouseUp
    */
   addMouseListener(handler: IMouseHandler) {
-    this.eventManager.addMouseListener(handler)
+    this.eventloop.addMouseListener(handler)
   }
 
   removeMouseListener(handler: IMouseHandler) {
-    this.eventManager.removeMouseListener(handler)
+    this.eventloop.removeMouseListener(handler)
   }
 
   /**
    * Dispatches the given event to the graph event dispatch loop.
    */
   fireMouseEvent(eventName: string, e: CustomMouseEvent, sender: any = this) {
-    this.eventManager.fireMouseEvent(eventName, e, sender)
+    this.eventloop.fireMouseEvent(eventName, e, sender)
   }
 
   fireGestureEvent(e: MouseEvent, cell?: Cell) {
-    this.eventManager.fireGestureEvent(e, cell)
+    this.eventloop.fireGestureEvent(e, cell)
   }
 
   // #endregion
 
   // #region :::::::::::: dispose
 
-  protected disposed = false
+  private destoryed = false
 
-  get isDisposed() {
-    return this.disposed
+  get disposed() {
+    return this.destoryed
   }
 
   dispose() {
-    if (!this.disposed) {
-      this.disposed = true
-
-      this.tooltipHandler.dispose()
-      this.panningHandler.dispose()
-      this.popupMenuHandler.dispose()
-      this.selectionHandler.dispose()
-      this.graphHandler.dispose()
-      this.connectionHandler.dispose()
-
-      if (this.cellEditor != null) {
-        this.cellEditor.destroy()
-      }
-
-      if (this.view != null) {
-        this.view.dispose()
-      }
-
-      this.model.off(Model.events.change, this.onModelChanged);
-      (this as any).container = null
+    if (this.destoryed) {
+      return
     }
+
+    this.destoryed = true
+
+    this.changeManager.dispose()
+    this.eventloop.dispose()
+    this.selection.dispose()
+    this.selectionManager.dispose()
+    this.connectionManager.dispose()
+    this.handlerManager.dispose()
+    this.validator.dispose()
+    this.viewport.dispose()
+    this.cellManager.dispose()
+
+    this.tooltipHandler.dispose()
+    this.panningHandler.dispose()
+    this.popupMenuHandler.dispose()
+    this.selectionHandler.dispose()
+    this.graphHandler.dispose()
+    this.connectionHandler.dispose()
+
+    if (this.cellEditor != null) {
+      this.cellEditor.destroy()
+    }
+
+    if (this.view != null) {
+      this.view.dispose()
+    }
+
+    (this as any).container = null
   }
 
   // #endregion
@@ -6667,17 +6567,16 @@ export namespace Graph {
     resizeCells: 'resizeCells',
     cellsResized: 'cellsResized',
 
-    escape: 'escape',
     click: 'click',
     dblclick: 'dblclick',
     tapAndHold: 'tapAndHold',
+    escape: 'escape',
 
     pan: 'pan',
+    gesture: 'gesture',
     fireMouseEvent: 'fireMouseEvent',
     showContextMenu: 'showContextMenu',
     hideContextMenu: 'hideContextMenu',
     selectionChanged: 'selectionChanged',
-
-    save: 'save',
   }
 }

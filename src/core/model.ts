@@ -55,7 +55,7 @@ export class Model extends Events {
     return cell != null ? cell.isOrphan() : true
   }
 
-  isAncestor(ancestor: Cell, descendant: Cell): boolean {
+  isAncestor(ancestor: Cell, descendant: Cell | null): boolean {
     return ancestor.isAncestor(descendant)
   }
 

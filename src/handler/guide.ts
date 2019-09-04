@@ -328,14 +328,14 @@ export class Guide implements IDisposable {
     }
   }
 
-  protected disposed = false
+  protected destoryed = false
 
-  get isDisposed() {
-    return this.disposed
+  get disposed() {
+    return this.destoryed
   }
 
   dispose() {
-    if (this.disposed) {
+    if (this.destoryed) {
       return
     }
 
@@ -349,6 +349,6 @@ export class Guide implements IDisposable {
       this.guideY = null
     }
 
-    this.disposed = true
+    this.destoryed = true
   }
 }

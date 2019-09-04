@@ -10,6 +10,9 @@ export class CellHighlight extends BaseHandler {
   state: CellState | null
   shape: Shape | null
   opacity: number
+  strokeWidth: number
+  highlightColor: string | null
+  dashed: boolean
 
   /**
    * Specifies if the highlights should appear on top of everything
@@ -17,34 +20,38 @@ export class CellHighlight extends BaseHandler {
    *
    * Default is `false`.
    */
-  keepOnTop = false
+  keepOnTop: boolean
 
   /**
    * Specifies the spacing between the highlight for vertices and the node.
    *
    * Default is `2`.
    */
-  spacing = 2
+  spacing: number
 
   private resetHandler: () => void
   private repaintHandler: () => void
 
   constructor(
     graph: Graph,
-    public highlightColor: string | null = constants.DEFAULT_VALID_COLOR,
-    public strokeWidth = constants.HIGHLIGHT_STROKEWIDTH,
-    public dashed: boolean = false,
+    options: CellHighlight.Options = {},
   ) {
     super(graph)
-    this.opacity = constants.HIGHLIGHT_OPACITY
+
+    this.highlightColor = options.highlightColor || constants.DEFAULT_VALID_COLOR
+    this.strokeWidth = options.strokeWidth || constants.HIGHLIGHT_STROKEWIDTH
+    this.opacity = options.opacity || constants.HIGHLIGHT_OPACITY
+    this.dashed = options.dashed != null ? options.dashed : false
+    this.keepOnTop = options.keepOnTop != null ? options.keepOnTop : false
+    this.spacing = options.spacing || 2
 
     this.repaintHandler = () => {
       if (this.state != null) {
-        const tmp = this.graph.view.getState(this.state.cell)
-        if (tmp == null) {
+        const state = this.graph.view.getState(this.state.cell)
+        if (state == null) {
           this.hide()
         } else {
-          this.state = tmp
+          this.state = state
           this.repaint()
         }
       }
@@ -90,7 +97,7 @@ export class CellHighlight extends BaseHandler {
     }
   }
 
-  createShape() {
+  protected createShape() {
     if (this.state) {
       const shape = this.graph.renderer.createShape(this.state)!
 
@@ -135,7 +142,7 @@ export class CellHighlight extends BaseHandler {
           this.state.bounds.width + 2 * this.spacing,
           this.state.bounds.height + 2 * this.spacing,
         )
-        this.shape.rotation = this.state.style.rotation || 0
+        this.shape.rotation = util.getRotation(this.state)
         this.shape.strokeWidth = this.getStrokeWidth(this.state) / this.state.view.scale
         this.shape.outline = true
       }
@@ -201,5 +208,16 @@ export class CellHighlight extends BaseHandler {
     }
 
     super.dispose()
+  }
+}
+
+export namespace CellHighlight {
+  export interface Options {
+    highlightColor?: string
+    strokeWidth?: number
+    opacity?: number
+    dashed?: boolean
+    keepOnTop?: boolean
+    spacing?: number
   }
 }

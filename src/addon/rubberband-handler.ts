@@ -1,8 +1,8 @@
 import * as util from '../util'
-import { MouseHandler } from './handler-mouse'
 import { Graph } from '../core'
 import { CustomMouseEvent, DomEvent, detector } from '../common'
 import { Rectangle, Point } from '../struct'
+import { MouseHandler } from '../handler'
 
 export class RubberbandHandler extends MouseHandler {
   /**
@@ -29,16 +29,16 @@ export class RubberbandHandler extends MouseHandler {
    */
   protected sharedDiv: HTMLDivElement | null = null
 
-  private panHandler: () => void
-  private gestureHandler: () => void
-  private forceRubberbandHandler: (
+  private onPan: () => void
+  private onGesture: () => void
+  private onMouseEvent: (
     arg: {
       eventName: string,
       e: CustomMouseEvent,
     },
   ) => void
-  private dragHandler: null | ((e: MouseEvent) => void)
-  private dropHandler: null | ((e: MouseEvent) => void)
+  private onMouseMove: null | ((e: MouseEvent) => void)
+  private onMouseUp: null | ((e: MouseEvent) => void)
 
   protected origin: Point | null
   protected currentX: number = 0
@@ -54,7 +54,7 @@ export class RubberbandHandler extends MouseHandler {
     this.graph.addMouseListener(this)
 
     // Handles force rubberband event
-    this.forceRubberbandHandler = ({ eventName, e }) => {
+    this.onMouseEvent = ({ eventName, e }) => {
       if (
         eventName === DomEvent.MOUSE_DOWN &&
         this.isForceRubberbandEvent(e)
@@ -63,18 +63,18 @@ export class RubberbandHandler extends MouseHandler {
       }
     }
 
-    this.graph.on(Graph.events.fireMouseEvent, this.forceRubberbandHandler)
+    this.graph.on(Graph.events.fireMouseEvent, this.onMouseEvent)
 
-    this.panHandler = () => { this.repaint() }
-    this.graph.on(Graph.events.pan, this.panHandler)
+    this.onPan = () => { this.repaint() }
+    this.graph.on(Graph.events.pan, this.onPan)
 
-    this.gestureHandler = () => {
+    this.onGesture = () => {
       if (this.origin != null) {
         this.reset()
       }
     }
 
-    this.graph.on(DomEvent.GESTURE, this.gestureHandler)
+    this.graph.on(Graph.events.gesture, this.onGesture)
   }
 
   /**
@@ -140,11 +140,11 @@ export class RubberbandHandler extends MouseHandler {
       return me
     }
 
-    this.dragHandler = (e: MouseEvent) => {
+    this.onMouseMove = (e: MouseEvent) => {
       this.mouseMove(createEvent(e))
     }
 
-    this.dropHandler = (e: MouseEvent) => {
+    this.onMouseUp = (e: MouseEvent) => {
       this.mouseUp(createEvent(e))
     }
 
@@ -152,7 +152,7 @@ export class RubberbandHandler extends MouseHandler {
     // mouse leaves the container in Firefox
     if (detector.IS_FIREFOX) {
       DomEvent.addMouseListeners(
-        document, null, this.dragHandler, this.dropHandler,
+        document, null, this.onMouseMove, this.onMouseUp,
       )
     }
   }
@@ -244,11 +244,11 @@ export class RubberbandHandler extends MouseHandler {
     }
 
     DomEvent.removeMouseListeners(
-      document, null, this.dragHandler, this.dropHandler,
+      document, null, this.onMouseMove, this.onMouseUp,
     )
 
-    this.dragHandler = null
-    this.dropHandler = null
+    this.onMouseMove = null
+    this.onMouseUp = null
 
     this.currentX = 0
     this.currentY = 0
@@ -289,9 +289,9 @@ export class RubberbandHandler extends MouseHandler {
     }
 
     this.graph.removeMouseListener(this)
-    this.graph.off(DomEvent.FIRE_MOUSE_EVENT, this.forceRubberbandHandler)
-    this.graph.off(DomEvent.PAN, this.panHandler)
-    this.graph.off(DomEvent.GESTURE, this.gestureHandler)
+    this.graph.off(Graph.events.pan, this.onPan)
+    this.graph.off(Graph.events.gesture, this.onGesture)
+    this.graph.off(Graph.events.fireMouseEvent, this.onMouseEvent)
 
     this.reset()
 

@@ -101,17 +101,19 @@ export class UndoableEdit implements IDisposable {
     }
   }
 
-  private disposed: boolean = false
-  get isDisposed() {
-    return this.disposed
+  private destoryed: boolean = false
+
+  get disposed() {
+    return this.destoryed
   }
 
   dispose(): void {
-    if (this.disposed) {
+    if (this.destoryed) {
       return
     }
 
-    this.disposed = true
+    this.destoryed = true
+
     if (this.onDispose) {
       this.onDispose(this)
     }

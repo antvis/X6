@@ -1,7 +1,7 @@
 import * as util from '../util'
 import { Graph, CellState } from '../core'
 import { BaseManager } from './manager-base'
-import { Point, ConnectionConstraint } from '../struct'
+import { Point, Constraint } from '../struct'
 
 export class ConnectionManager extends BaseManager {
   constructor(graph: Graph) {
@@ -73,7 +73,7 @@ export class ConnectionManager extends BaseManager {
         ? 0
         : Math.round((point.y - bounds.y) * 1000 / bounds.height) / 1000
 
-      return new ConnectionConstraint(new Point(x, y), false)
+      return new Constraint(new Point(x, y), false)
     }
 
     return null

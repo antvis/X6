@@ -38,7 +38,7 @@ export class PopupMenuHandler extends MouseHandler {
     this.gestureHandler = () => {
       this.inTolerance = false
     }
-    this.graph.on(DomEvent.GESTURE, this.gestureHandler)
+    this.graph.on(Graph.events.gesture, this.gestureHandler)
   }
 
   isPopupTrigger(e: CustomMouseEvent) {
@@ -122,7 +122,7 @@ export class PopupMenuHandler extends MouseHandler {
     }
 
     this.graph.removeMouseListener(this)
-    this.graph.off(DomEvent.GESTURE, this.gestureHandler)
+    this.graph.off(Graph.events.gesture, this.gestureHandler)
 
     super.dispose()
   }

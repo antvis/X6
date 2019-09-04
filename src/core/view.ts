@@ -14,7 +14,7 @@ import { CellState } from './cell-state'
 import { StyleRegistry } from '../stylesheet'
 import { RectangleShape, ImageShape } from '../shape'
 import { UndoableEdit, CurrentRootChange } from '../change'
-import { Point, Rectangle, ConnectionConstraint, Image } from '../struct'
+import { Point, Rectangle, Constraint, Image } from '../struct'
 
 export class View extends Events implements IDisposable {
   graph: Graph
@@ -468,7 +468,7 @@ export class View extends Events implements IDisposable {
             this.backgroundPageShape.elem!,
             'dblclick',
             (e: MouseEvent) => {
-              this.graph.eventManager.dblClick(e)
+              this.graph.eventloop.dblClick(e)
             },
           )
         }
@@ -491,7 +491,7 @@ export class View extends Events implements IDisposable {
               this.graph.tooltipHandler.hide()
             }
 
-            if (this.graph.isMouseDown && !DomEvent.isConsumed(e)) {
+            if (this.graph.eventloop.isMouseDown && !DomEvent.isConsumed(e)) {
               this.graph.fireMouseEvent(
                 DomEvent.MOUSE_MOVE, new CustomMouseEvent(e),
               )
@@ -776,7 +776,7 @@ export class View extends Events implements IDisposable {
     edgeState: CellState,
     terminalState: CellState,
     isSource: boolean,
-    constraint: ConnectionConstraint,
+    constraint: Constraint,
   ) {
     const point = this.getFixedTerminalPoint(edgeState, terminalState, isSource, constraint)
     edgeState.setAbsoluteTerminalPoint(point!, isSource)
@@ -789,7 +789,7 @@ export class View extends Events implements IDisposable {
     edgeState: CellState,
     terminalState: CellState,
     isSource: boolean,
-    constraint: ConnectionConstraint,
+    constraint: Constraint,
   ) {
     let point: Point | null = null
 
@@ -1703,7 +1703,7 @@ export class View extends Events implements IDisposable {
       // background does not change during the double click
       DomEvent.addListener(container, 'dblclick', (e: MouseEvent) => {
         if (this.isContainerEvent(e)) {
-          graph.eventManager.dblClick(e)
+          graph.eventloop.dblClick(e)
         }
       })
 
@@ -1783,7 +1783,7 @@ export class View extends Events implements IDisposable {
   protected shouldHandleDocumentEvent(e: MouseEvent) {
     return (
       this.captureDocumentGesture &&
-      this.graph.isMouseDown &&
+      this.graph.eventloop.isMouseDown &&
       this.isContainerVisible() &&
       !this.isContainerEvent(e)
     )
@@ -1986,16 +1986,17 @@ export class View extends Events implements IDisposable {
     return this.decoratorPane
   }
 
-  protected disposed = false
-  get isDisposed() {
-    return this.disposed
+  private destoryed = false
+
+  get disposed() {
+    return this.destoryed
   }
 
   dispose() {
-    if (this.disposed) {
+    if (this.destoryed) {
       return
     }
-    this.disposed = true
+    this.destoryed = true
 
     let stage: SVGSVGElement | HTMLDivElement | null =
       (this.stage != null)

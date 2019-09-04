@@ -4,7 +4,7 @@ import { Point } from './point'
  * Defines an object that contains the constraints about how to
  * connect one side of an edge to its terminal.
  */
-export class ConnectionConstraint {
+export class Constraint {
   constructor(
     /**
      * Specifies the fixed location of the connection point.
