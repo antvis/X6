@@ -1,9 +1,9 @@
-import { constants, IDisposable } from '../common'
+import { constants, Disposable } from '../common'
 import { Rectangle, Point } from '../struct'
 import { Graph, State } from '../core'
 import { Polyline } from '../shape'
 
-export class Guide implements IDisposable {
+export class Guide extends Disposable {
   graph: Graph
   states: State[]
 
@@ -39,6 +39,7 @@ export class Guide implements IDisposable {
   rounded: boolean = false
 
   constructor(graph: Graph, states: State[]) {
+    super()
     this.graph = graph
     this.setStates(states)
   }
@@ -328,14 +329,8 @@ export class Guide implements IDisposable {
     }
   }
 
-  protected destoryed = false
-
-  get disposed() {
-    return this.destoryed
-  }
-
   dispose() {
-    if (this.destoryed) {
+    if (this.disposed) {
       return
     }
 
@@ -349,6 +344,6 @@ export class Guide implements IDisposable {
       this.guideY = null
     }
 
-    this.destoryed = true
+    super.dispose()
   }
 }

@@ -1,21 +1,21 @@
 import { Primer } from './primer'
 
 export class Disablable extends Primer {
-  private flag: boolean = true
+  private disabled: boolean = false
 
   get enabled() {
-    return this.flag
+    return !this.disabled
   }
 
   isEnabled() {
-    return this.flag
+    return !this.disabled
   }
 
   enable() {
-    this.flag = true
+    this.disabled = false
   }
 
   disable() {
-    this.flag = false
+    this.disabled = true
   }
 }

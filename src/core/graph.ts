@@ -9,15 +9,7 @@ import { Renderer } from './renderer'
 import { StyleSheet, EdgeStyle } from '../stylesheet'
 import { Label } from '../shape'
 import { Align, VAlign, CellStyle, Dialect } from '../types'
-import { IChange, RootChange, ChildChange } from '../change'
-import {
-  constants,
-  detector,
-  Events,
-  DomEvent,
-  CustomMouseEvent,
-  IDisposable,
-} from '../common'
+import { constants, detector, DomEvent, CustomMouseEvent, Disablable } from '../common'
 import {
   Rectangle,
   Point,
@@ -51,7 +43,7 @@ import {
   CellManager,
 } from '../manager'
 
-export class Graph extends Events implements IDisposable {
+export class Graph extends Disablable {
   public readonly container: HTMLElement
   public readonly model: Model
   public readonly view: View
@@ -233,11 +225,6 @@ export class Graph extends Events implements IDisposable {
    * Not yet implemented.
    */
   pageScale = 1.5
-
-  /**
-   * Specifies the return value for <isEnabled>. Default is true.
-   */
-  enabled = true
 
   /**
    * Specifies if <mxKeyHandler> should invoke <escape> when the escape key
@@ -804,10 +791,6 @@ export class Graph extends Events implements IDisposable {
     this.viewport.sizeDidChange()
 
     if (detector.IS_IE) {
-      DomEvent.addListener(window, 'unload', () => {
-        this.dispose()
-      })
-
       // disable shift-click for text
       DomEvent.addListener(container, 'selectstart', (e: MouseEvent) => {
         return (
@@ -820,46 +803,6 @@ export class Graph extends Events implements IDisposable {
 
   batchUpdate(update: () => void) {
     this.model.batchUpdate(update)
-  }
-
-  /**
-   * Returns the cells to be selected for the given array of changes.
-   */
-  getSelectionCellsForChanges(changes: IChange[]) {
-    const dict = new WeakMap<Cell, boolean>()
-    const cells: Cell[] = []
-
-    const addCell = (cell: Cell) => {
-      if (!dict.get(cell) && this.model.contains(cell)) {
-        if (this.model.isEdge(cell) || this.model.isNode(cell)) {
-          dict.set(cell, true)
-          cells.push(cell)
-        } else {
-          cell.eachChild(child => addCell(child))
-        }
-      }
-    }
-
-    changes.forEach((change) => {
-      if (!(change instanceof RootChange)) {
-        let cell = null
-
-        if (change instanceof ChildChange) {
-          cell = change.child
-        } else {
-          const tmp = (change as any).cell
-          if (tmp != null && tmp instanceof Cell) {
-            cell = tmp
-          }
-        }
-
-        if (cell != null) {
-          addCell(cell)
-        }
-      }
-    })
-
-    return cells
   }
 
   // #region :::::::::::: Overlays
@@ -4715,17 +4658,6 @@ export class Graph extends Events implements IDisposable {
     this.resizeContainer = value
   }
 
-  isEnabled() {
-    return this.enabled
-  }
-
-  /**
-   * Specifies if the graph should allow any interactions.
-   */
-  setEnabled(value: boolean) {
-    this.enabled = value
-  }
-
   isEscapeEnabled() {
     return this.escapeEnabled
   }
@@ -6424,19 +6356,7 @@ export class Graph extends Events implements IDisposable {
 
   // #region :::::::::::: dispose
 
-  private destoryed = false
-
-  get disposed() {
-    return this.destoryed
-  }
-
-  dispose() {
-    if (this.destoryed) {
-      return
-    }
-
-    this.destoryed = true
-
+  protected disposeManagers() {
     this.changeManager.dispose()
     this.eventloop.dispose()
     this.selection.dispose()
@@ -6446,13 +6366,24 @@ export class Graph extends Events implements IDisposable {
     this.validator.dispose()
     this.viewport.dispose()
     this.cellManager.dispose()
+  }
 
+  protected disposeHandlers() {
     this.tooltipHandler.dispose()
     this.panningHandler.dispose()
     this.popupMenuHandler.dispose()
     this.selectionHandler.dispose()
     this.graphHandler.dispose()
     this.connectionHandler.dispose()
+  }
+
+  dispose() {
+    if (this.disposed) {
+      return
+    }
+
+    this.disposeManagers()
+    this.disposeHandlers()
 
     if (this.cellEditor != null) {
       this.cellEditor.destroy()
@@ -6463,6 +6394,8 @@ export class Graph extends Events implements IDisposable {
     }
 
     (this as any).container = null
+
+    super.dispose()
   }
 
   // #endregion

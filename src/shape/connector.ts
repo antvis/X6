@@ -25,7 +25,7 @@ export class Connector extends Polyline {
     const sourceMarker = this.createMarker(c, pts, true)
     const targetMarker = this.createMarker(c, pts, false)
 
-    super.paintEdgeShape(c, this.points)
+    super.paintEdgeShape(c, pts)
 
     // Disables shadows, dashed styles and fixes fill color for markers
     c.setFillColor(this.stroke!)
@@ -50,7 +50,7 @@ export class Connector extends Polyline {
     const len = pts.length
     const type = isSource ? this.style.startArrow : this.style.endArrow
 
-    let p0 = (isSource) ? pts[1] : pts[len - 2]
+    let p0 = isSource ? pts[1] : pts[len - 2]
     const pe = isSource ? pts[0] : pts[len - 1]
 
     if (type != null && p0 != null && pe != null) {

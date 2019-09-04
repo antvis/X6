@@ -72,6 +72,7 @@ function createArrow(widthFactor: number = 2) {
       type !== ShapeName.arrowClassicThin
     ) ? 1 : 3 / 4
 
+    // update the end point on edge
     pe.x += -unitX * f - endOffsetX
     pe.y += -unitY * f - endOffsetY
 

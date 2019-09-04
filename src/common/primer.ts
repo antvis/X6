@@ -10,13 +10,13 @@ export class Primer extends Events implements IDisposable {
     }
   }
 
-  private destoryed: boolean = false
+  private _disposed: boolean = false // tslint:disable-line:variable-name
 
   get disposed() {
-    return this.destoryed
+    return this._disposed
   }
 
   dispose() {
-    this.destoryed = true
+    this._disposed = true
   }
 }

@@ -1,8 +1,8 @@
 import { Model } from '../core'
-import { IDisposable, Events } from '../common'
+import { Disposable, Events } from '../common'
 import { IChange } from './change'
 
-export class UndoableEdit implements IDisposable {
+export class UndoableEdit extends Disposable {
   public undone: boolean
   public redone: boolean
   public readonly model: Events
@@ -12,6 +12,7 @@ export class UndoableEdit implements IDisposable {
   private readonly onDispose?: (edit?: UndoableEdit) => void
 
   constructor(model: Events, options: UndoableEdit.Options = {}) {
+    super()
     this.model = model
     this.changes = []
     this.undone = false
@@ -101,22 +102,16 @@ export class UndoableEdit implements IDisposable {
     }
   }
 
-  private destoryed: boolean = false
-
-  get disposed() {
-    return this.destoryed
-  }
-
   dispose(): void {
-    if (this.destoryed) {
+    if (this.disposed) {
       return
     }
-
-    this.destoryed = true
 
     if (this.onDispose) {
       this.onDispose(this)
     }
+
+    super.dispose()
   }
 }
 

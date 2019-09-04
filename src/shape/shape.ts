@@ -3,11 +3,11 @@ import * as images from '../assets/images'
 import { Stencil } from './stencil'
 import { State } from '../core'
 import { SvgCanvas2D } from '../canvas'
-import { detector, constants, DomEvent, IDisposable } from '../common'
+import { detector, constants, DomEvent, Disposable } from '../common'
 import { Rectangle, Point } from '../struct'
 import { CellStyle, Direction, Dialect } from '../types'
 
-export class Shape implements IDisposable {
+export class Shape extends Disposable {
   state: State
 
   /**
@@ -140,6 +140,7 @@ export class Shape implements IDisposable {
   rounded: boolean = false
 
   constructor(stencil?: Stencil) {
+    super()
     this.stencil = stencil != null ? stencil : null
     this.style = {}
     this.initStyle()
@@ -1141,14 +1142,8 @@ export class Shape implements IDisposable {
     return rotation
   }
 
-  private destoryed = false
-
-  get disposed() {
-    return this.destoryed
-  }
-
   dispose() {
-    if (this.destoryed) {
+    if (this.disposed) {
       return
     }
 
@@ -1165,7 +1160,7 @@ export class Shape implements IDisposable {
     this.releaseSvgGradients(this.oldGradients)
     this.oldGradients = null
 
-    this.destoryed = true
+    super.dispose()
   }
 }
 

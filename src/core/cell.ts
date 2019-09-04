@@ -1,10 +1,10 @@
 import * as util from '../util'
-import { IDisposable } from '../common'
+import { Disposable } from '../common'
 import { Geometry } from './geometry'
 import { Overlay } from '../struct'
 import { CellStyle } from '../types'
 
-export class Cell implements IDisposable {
+export class Cell extends Disposable {
   public id?: string | null
   public data?: any
   public style: CellStyle
@@ -30,6 +30,7 @@ export class Cell implements IDisposable {
     geometry?: Geometry,
     style: CellStyle = {},
   ) {
+    super()
     this.data = data
     this.style = style
     this.geometry = geometry || null
@@ -378,14 +379,8 @@ export class Cell implements IDisposable {
 
   // #region IDisposable
 
-  private destoryed: boolean = false
-
-  get disposed() {
-    return this.destoryed
-  }
-
   dispose() {
-    if (this.destoryed) {
+    if (this.disposed) {
       return
     }
 
@@ -398,7 +393,7 @@ export class Cell implements IDisposable {
     this.removeFromTerminal(true)
     this.removeFromTerminal(false)
 
-    this.destoryed = true
+    super.dispose()
   }
 
   // #endregion

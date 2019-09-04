@@ -118,6 +118,46 @@ export class ChangeManager extends BaseManager {
     }
   }
 
+  /**
+   * Returns the cells to be selected for the given array of changes.
+   */
+  getSelectionCellsForChanges(changes: IChange[]) {
+    const dict = new WeakMap<Cell, boolean>()
+    const cells: Cell[] = []
+
+    const addCell = (cell: Cell) => {
+      if (!dict.get(cell) && this.model.contains(cell)) {
+        if (this.model.isEdge(cell) || this.model.isNode(cell)) {
+          dict.set(cell, true)
+          cells.push(cell)
+        } else {
+          cell.eachChild(child => addCell(child))
+        }
+      }
+    }
+
+    changes.forEach((change) => {
+      if (!(change instanceof RootChange)) {
+        let cell = null
+
+        if (change instanceof ChildChange) {
+          cell = change.child
+        } else {
+          const tmp = (change as any).cell
+          if (tmp != null && tmp instanceof Cell) {
+            cell = tmp
+          }
+        }
+
+        if (cell != null) {
+          addCell(cell)
+        }
+      }
+    })
+
+    return cells
+  }
+
   dispose() {
     if (this.disposed) {
       return

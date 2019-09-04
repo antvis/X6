@@ -1,16 +1,12 @@
 import { Graph } from '../core'
-import { DomEvent, IDisposable, detector } from '../common'
+import { Disposable } from '../common'
 
-export class BaseManager implements IDisposable {
+export class BaseManager extends Disposable {
   graph: Graph
 
   constructor(graph: Graph) {
+    super()
     this.graph = graph
-    if (detector.IS_IE) {
-      DomEvent.addListener(window, 'unload', () => {
-        this.dispose()
-      })
-    }
   }
 
   get model() {
@@ -23,17 +19,5 @@ export class BaseManager implements IDisposable {
 
   get hooks() {
     return this.graph.hooks
-  }
-
-  get disposed() {
-    return this.destoryed
-  }
-
-  private destoryed: boolean = false
-
-  dispose(): void {
-    if (!this.destoryed) {
-      this.destoryed = true
-    }
   }
 }

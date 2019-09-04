@@ -31,10 +31,10 @@ export class Polyline extends Shape {
     const prev = c.pointerEventsValue
     c.pointerEventsValue = 'stroke'
 
-    if (this.style.curved) {
-      this.paintLine(c, pts, this.rounded)
-    } else {
+    if (this.style.curved === true) {
       this.paintCurvedLine(c, pts)
+    } else {
+      this.paintLine(c, pts, this.rounded)
     }
 
     c.pointerEventsValue = prev

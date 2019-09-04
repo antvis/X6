@@ -1,3 +1,6 @@
+import { detector } from './detector'
+import { DomEvent } from './dom-event'
+
 /**
  * An object which implements the disposable pattern.
  */
@@ -22,6 +25,26 @@ export interface IDisposable {
    * after it has been disposed unless otherwise explicitly noted.
    */
   dispose(): void
+}
+
+export class Disposable implements IDisposable {
+  constructor() {
+    if (detector.IS_IE) {
+      DomEvent.addListener(window, 'unload', () => {
+        this.dispose()
+      })
+    }
+  }
+
+  private _disposed: boolean = false // tslint:disable-line:variable-name
+
+  get disposed() {
+    return this._disposed
+  }
+
+  dispose() {
+    this._disposed = true
+  }
 }
 
 /**
@@ -63,7 +86,7 @@ export class DisposableDelegate implements IDisposable {
  * An object which manages a collection of disposable items.
  */
 export class DisposableSet implements IDisposable {
-  private destoryed = false
+  private _disposed = false // tslint:disable-line:variable-name
   private items = new Set<IDisposable>()
 
   /**
@@ -75,7 +98,7 @@ export class DisposableSet implements IDisposable {
    * Test whether the set has been disposed.
    */
   get disposed(): boolean {
-    return this.destoryed
+    return this._disposed
   }
 
   /**
@@ -85,10 +108,10 @@ export class DisposableSet implements IDisposable {
    * Items are disposed in the order they are added to the set.
    */
   dispose(): void {
-    if (this.destoryed) {
+    if (this._disposed) {
       return
     }
-    this.destoryed = true
+    this._disposed = true
 
     this.items.forEach((item) => { item.dispose() })
     this.items.clear()

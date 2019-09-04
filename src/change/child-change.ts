@@ -51,26 +51,28 @@ export class ChildChange implements IChange {
   }
 
   private connect(edge: Cell, isConnect: boolean = true) {
-    const sourceNode = edge.getTerminal(true)
-    const targetNode = edge.getTerminal(false)
-    if (sourceNode != null) {
-      if (isConnect) {
-        this.model.doTerminalChange(edge, sourceNode, true)
-      } else {
-        this.model.doTerminalChange(edge, null, true)
+    if (edge.isEdge()) {
+      const sourceNode = edge.getTerminal(true)
+      const targetNode = edge.getTerminal(false)
+      if (sourceNode != null) {
+        if (isConnect) {
+          this.model.doTerminalChange(edge, sourceNode, true)
+        } else {
+          this.model.doTerminalChange(edge, null, true)
+        }
       }
-    }
 
-    if (targetNode != null) {
-      if (isConnect) {
-        this.model.doTerminalChange(edge, targetNode, false)
-      } else {
-        this.model.doTerminalChange(edge, null, false)
+      if (targetNode != null) {
+        if (isConnect) {
+          this.model.doTerminalChange(edge, targetNode, false)
+        } else {
+          this.model.doTerminalChange(edge, null, false)
+        }
       }
-    }
 
-    edge.setTerminal(sourceNode, true)
-    edge.setTerminal(targetNode, false)
+      edge.setTerminal(sourceNode, true)
+      edge.setTerminal(targetNode, false)
+    }
 
     edge.eachChild(child => this.connect(child, isConnect))
   }

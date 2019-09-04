@@ -2,10 +2,9 @@ import * as util from '../util'
 import {
   constants,
   detector,
-  Events,
-  IDisposable,
   DomEvent,
   CustomMouseEvent,
+  Primer,
 } from '../common'
 import { Cell } from './cell'
 import { Graph } from './graph'
@@ -16,7 +15,7 @@ import { RectangleShape, ImageShape } from '../shape'
 import { UndoableEdit, CurrentRootChange } from '../change'
 import { Point, Rectangle, Constraint, Image } from '../struct'
 
-export class View extends Events implements IDisposable {
+export class View extends Primer {
   graph: Graph
   scale: number
   translate: Point
@@ -311,14 +310,14 @@ export class View extends Events implements IDisposable {
   validate(cell?: Cell) {
     this.resetValidationState()
 
-    const c = cell || (this.currentRoot != null
+    const top = cell || (this.currentRoot != null
       ? this.currentRoot
       : this.graph.model.getRoot()
     )
 
     const boundingBox = this.getBoundingBox(
       this.validateCellState(
-        this.validateCell(c),
+        this.validateCell(top),
       ),
     )
 
@@ -1986,17 +1985,10 @@ export class View extends Events implements IDisposable {
     return this.decoratorPane
   }
 
-  private destoryed = false
-
-  get disposed() {
-    return this.destoryed
-  }
-
   dispose() {
-    if (this.destoryed) {
+    if (this.disposed) {
       return
     }
-    this.destoryed = true
 
     let stage: SVGSVGElement | HTMLDivElement | null =
       (this.stage != null)
@@ -2029,6 +2021,8 @@ export class View extends Events implements IDisposable {
       this.overlayPane = null
       this.decoratorPane = null
     }
+
+    super.dispose()
   }
 
   // #endregion
