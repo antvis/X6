@@ -1,19 +1,24 @@
 import { Perimeter } from './perimeter'
 import { CellStyle } from '../types'
-import { ShapeName } from '../struct'
+import { Shapes } from '../struct'
 
 export class StyleSheet {
-  styles: { [name: string]: CellStyle }
+  styles: {
+    defaultNode: CellStyle,
+    defaultEdge: CellStyle,
+    [name: string]: CellStyle,
+  }
 
   constructor() {
-    this.styles = {}
-    this.setDefaultNodeStyle(this.createDefaultNodeStyle())
-    this.setDefaultEdgeStyle(this.createDefaultEdgeStyle())
+    this.styles = {
+      defaultNode: this.createDefaultNodeStyle(),
+      defaultEdge: this.createDefaultEdgeStyle(),
+    }
   }
 
   createDefaultNodeStyle(): CellStyle {
     const style: CellStyle = {
-      shape: ShapeName.rectangle,
+      shape: Shapes.rectangle,
       perimeter: Perimeter.rectangle,
       align: 'center',
       verticalAlign: 'middle',
@@ -27,8 +32,8 @@ export class StyleSheet {
 
   createDefaultEdgeStyle(): CellStyle {
     const style: CellStyle = {
-      shape: ShapeName.connector,
-      endArrow: ShapeName.arrowClassic,
+      shape: Shapes.connector,
+      endArrow: Shapes.arrowClassic,
       align: 'center',
       verticalAlign: 'middle',
       stroke: '#8f8f8f',
@@ -38,19 +43,19 @@ export class StyleSheet {
   }
 
   setDefaultNodeStyle(style: CellStyle) {
-    this.setCellStyle('defaultNode', style)
+    this.styles.defaultNode = style
   }
 
   setDefaultEdgeStyle(style: CellStyle) {
-    this.setCellStyle('defaultEdge', style)
+    this.styles.defaultEdge = style
   }
 
   getDefaultNodeStyle() {
-    return this.styles['defaultNode'] as CellStyle
+    return this.styles.defaultNode
   }
 
   getDefaultEdgeStyle() {
-    return this.styles['defaultEdge'] as CellStyle
+    return this.styles.defaultEdge
   }
 
   setCellStyle(name: string, style: CellStyle) {

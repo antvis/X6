@@ -311,7 +311,7 @@ export class ConstraintHandler extends BaseHandler {
       this.graph.isCellConnectable(state.cell)
     ) ? (
         this.isEnabled()
-          ? (this.graph.getAllConnectionConstraints(state, isSource) || [])
+          ? (this.graph.getConstraints(state.cell, isSource) || [])
           : []
       )
       : null

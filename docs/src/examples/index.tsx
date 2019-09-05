@@ -1,6 +1,9 @@
 import React from 'react'
 import { Route, Link } from 'react-router-dom'
-import { HelloWorld } from './hello-world'
+import { HelloWorld } from './helloworld'
+import { HelloPort } from './helloport'
+import { Constraints } from './constraints'
+import { Guide } from './guide'
 import { Layers } from './layers'
 import './index.less'
 
@@ -12,7 +15,16 @@ export const Examples: React.SFC<Examples.Props> = () => (
      </h2>
       <ul>
         <li>
-          <Link to="/examples/hello-world">Hello World</Link>
+          <Link to="/examples/helloworld">Hello World</Link>
+        </li>
+        <li>
+          <Link to="/examples/helloport">Hello Port</Link>
+        </li>
+        <li>
+          <Link to="/examples/constraints">Constraints</Link>
+        </li>
+        <li>
+          <Link to="/examples/guide">Guide</Link>
         </li>
         <li>
           <Link to="/examples/layers">Layers</Link>
@@ -20,7 +32,10 @@ export const Examples: React.SFC<Examples.Props> = () => (
       </ul>
     </div>
     <div className="examples-content">
-      <Route path="/examples/hello-world" component={HelloWorld} />
+      <Route path="/examples/helloworld" component={HelloWorld} />
+      <Route path="/examples/helloport" component={HelloPort} />
+      <Route path="/examples/constraints" component={Constraints} />
+      <Route path="/examples/guide" component={Guide} />
       <Route path="/examples/layers" component={Layers} />
     </div>
   </div>

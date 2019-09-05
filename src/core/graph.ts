@@ -4,6 +4,7 @@ import { Cell } from './cell'
 import { View } from './view'
 import { Model } from './model'
 import { State } from './state'
+import { Feature } from './feature'
 import { Geometry } from './geometry'
 import { Renderer } from './renderer'
 import { StyleSheet, EdgeStyle } from '../stylesheet'
@@ -16,7 +17,7 @@ import {
   Constraint,
   Image,
   Overlay,
-  ShapeName,
+  Shapes,
   PageSize,
   Multiplicity,
 } from '../struct'
@@ -30,6 +31,7 @@ import {
   ConnectionHandler,
   NodeHandler,
   EdgeHandler,
+  RubberbandHandler,
 } from '../handler'
 import {
   ChangeManager,
@@ -67,8 +69,14 @@ export class Graph extends Disablable {
   panningHandler: PanningHandler
   panningManager: any
   graphHandler: GraphHandler
+  rubberbandHandler: RubberbandHandler
 
-  prefixCls: string = 'x6'
+  /**
+   * Dialect to be used for drawing the graph.
+   */
+  dialect: Dialect
+
+  prefixCls: string
 
   /**
    * Holds the <CellEditor> that is used as the in-place editing.
@@ -80,23 +88,6 @@ export class Graph extends Disablable {
    * connections in a graph.
    */
   multiplicities: Multiplicity[] = []
-
-  /**
-   * Dialect to be used for drawing the graph.
-   */
-  dialect: Dialect
-
-  /**
-   * Specifies the grid size.
-   *
-   * Default is `10`.
-   */
-  gridSize: number = 10
-
-  /**
-   * Specifies if the grid is enabled. This is used in <snap>.
-   */
-  gridEnabled = true
 
   /**
    * Specifies if ports are enabled.
@@ -656,14 +647,13 @@ export class Graph extends Disablable {
   expandedImage: Image = images.expanded
   warningImage: Image = images.warning
 
-  hooks: Graph.Hooks
+  options: Graph.Options
 
   constructor(container: HTMLElement, options: Graph.Options = {}) {
     super()
 
+    this.options = Feature.get(options)
     this.container = container
-    this.dialect = options.dialect === 'html' ? 'html' : 'svg'
-    this.hooks = options.hooks || {}
     this.model = options.model || this.createModel()
     this.styleSheet = options.styleSheet || this.createStyleSheet()
     this.view = this.createView()
@@ -679,6 +669,8 @@ export class Graph extends Disablable {
     this.connectionManager = new ConnectionManager(this)
     this.validator = new ValidationManager(this)
     this.viewport = new ViewportManager(this)
+
+    Feature.init(this)
 
     if (container != null) {
       this.init(container)
@@ -700,38 +692,66 @@ export class Graph extends Disablable {
   }
 
   protected createModel() {
-    return (this.hooks.createModel != null &&
-      this.hooks.createModel(this) ||
+    return (
+      util.call(this.options.createModel, this, this) ||
       new Model()
     )
   }
 
   protected createView() {
-    return (this.hooks.createView != null &&
-      this.hooks.createView(this) ||
+    return (
+      util.call(this.options.createView, this, this) ||
       new View(this)
     )
   }
 
   protected createStyleSheet() {
-    return (this.hooks.createStyleSheet != null &&
-      this.hooks.createStyleSheet(this) ||
+    return (
+      util.call(this.options.createStyleSheet, this, this) ||
       new StyleSheet()
     )
   }
 
   protected createRenderer() {
-    return (this.hooks.createRenderer != null &&
-      this.hooks.createRenderer(this) ||
+    return (
+      util.call(this.options.createRenderer, this, this) ||
       new Renderer()
     )
   }
 
   protected createSelection() {
-    return (this.hooks.createSelection != null &&
-      this.hooks.createSelection(this) ||
+    return (
+      util.call(this.options.createSelection, this, this) ||
       new Selection(this)
     )
+  }
+
+  /**
+   * Specifies the grid size.
+   *
+   * Default is `10`.
+   */
+  gridSize: number
+
+  /**
+   * Specifies if the grid is enabled.
+   */
+  gridEnabled: boolean
+
+  getGridSize() {
+    return this.gridSize
+  }
+
+  setGridSize(size: number) {
+    this.gridSize = size
+  }
+
+  enableGrid() {
+    this.gridEnabled = true
+  }
+
+  disableGrid() {
+    this.gridEnabled = false
   }
 
   hideTooltip() {
@@ -740,7 +760,23 @@ export class Graph extends Disablable {
     }
   }
 
-  enableTooltips() {
+  enableGuide() {
+    this.graphHandler.guideEnabled = true
+  }
+
+  disableGuide() {
+    this.graphHandler.guideEnabled = false
+  }
+
+  enableRubberband() {
+    this.rubberbandHandler.enable()
+  }
+
+  disableRubberband() {
+    this.rubberbandHandler.disable()
+  }
+
+  enableTooltip() {
     this.tooltipHandler.enable()
   }
 
@@ -791,7 +827,6 @@ export class Graph extends Disablable {
     this.viewport.sizeDidChange()
 
     if (detector.IS_IE) {
-      // disable shift-click for text
       DomEvent.addListener(container, 'selectstart', (e: MouseEvent) => {
         return (
           this.isEditing() ||
@@ -2248,7 +2283,7 @@ export class Graph extends Disablable {
       this.model.batchUpdate(() => {
         cells.forEach((cell) => {
           if (
-            (!checkFoldable || this.isCellFoldable(cell, collapse)) &&
+            (!checkFoldable || this.isFoldable(cell, collapse)) &&
             collapse !== this.isCellCollapsed(cell)
           ) {
             this.model.setCollapsed(cell, collapse)
@@ -2450,7 +2485,7 @@ export class Graph extends Disablable {
 
       // Adds dimension of image if shape is a label
       if (this.getImage(state) != null || style.image != null) {
-        if (style.shape === ShapeName.label) {
+        if (style.shape === Shapes.label) {
           if (style.verticalAlign === 'middle') {
             dx += style.imageWidth || Label.prototype.imageSize
           }
@@ -3289,16 +3324,22 @@ export class Graph extends Disablable {
    * terminal - <CellState> that represents the terminal.
    * source - Boolean that specifies if the terminal is the source or target.
    */
-  getAllConnectionConstraints(
-    terminalState: State,
-    isSource: boolean,
-  ) {
+  getConstraints(terminal: Cell, isSource: boolean) {
+    const ret = util.call(
+      this.options.getConstraints, this, terminal, isSource,
+    )
+
+    if (ret != null) {
+      return ret
+    }
+
+    const state = this.view.getState(terminal)
     if (
-      terminalState != null &&
-      terminalState.shape != null &&
-      terminalState.shape.stencil != null
+      state != null &&
+      state.shape != null &&
+      state.shape.stencil != null
     ) {
-      return terminalState.shape.stencil.constraints
+      return state.shape.stencil.constraints
     }
 
     return null
@@ -3342,7 +3383,7 @@ export class Graph extends Disablable {
       dy = isFinite(dy) ? dy : 0
     }
 
-    return new Constraint(point, perimeter, null, dx, dy)
+    return new Constraint({ point, perimeter, dx, dy })
   }
 
   /**
@@ -3770,24 +3811,12 @@ export class Graph extends Disablable {
    * terminal and the port should be referenced by the ID in either the
    * constants.STYLE_SOURCE_PORT or the or the
    * constants.STYLE_TARGET_PORT. Note that a port should not be movable.
-   * This implementation always returns false.
-   *
-   * A typical implementation is the following:
-   *
-   * (code)
-   * graph.isPort (cell)
-   * {
-   *   var geo = this.getCellGeometry(cell);
-   *
-   *   return (geo != null) ? geo.relative : false;
-   * };
-   * (end)
-   *
-   * Parameters:
-   *
-   * cell - <Cell> that represents the port.
    */
   isPort(cell: Cell) {
+    const ret = util.call(this.options.isPort, this, cell)
+    if (ret != null) {
+      return ret
+    }
     return false
   }
 
@@ -4117,9 +4146,12 @@ export class Graph extends Disablable {
    * Returns true if the given cell is connectable in this graph.
    */
   isCellConnectable(cell: Cell | null) {
-    return this.hooks.isCellConnectable
-      ? this.hooks.isCellConnectable(cell)
-      : this.model.isConnectable(cell)
+    const ret = util.call(this.options.isCellConnectable, this, cell)
+    if (ret != null) {
+      return ret
+    }
+
+    return this.model.isConnectable(cell)
   }
 
   /**
@@ -4165,9 +4197,11 @@ export class Graph extends Disablable {
    * cell behind the selected cell will be selected.
    */
   isTransparentClickEvent(e: MouseEvent) {
-    return this.hooks.isTransparentClickEvent
-      ? this.hooks.isTransparentClickEvent(e)
-      : false
+    const ret = util.call(this.options.isTransparentClickEvent, this, e)
+    if (ret != null) {
+      return ret
+    }
+    return false
   }
 
   /**
@@ -4196,9 +4230,12 @@ export class Graph extends Disablable {
    * to be made.
    */
   isIgnoreTerminalEvent(e: MouseEvent) {
-    return this.hooks.isIgnoreTerminalEvent
-      ? this.hooks.isIgnoreTerminalEvent(e)
-      : false
+    const ret = util.call(this.options.isIgnoreTerminalEvent, this, e)
+    if (ret != null) {
+      return ret
+    }
+
+    return false
   }
 
   // #endregion
@@ -4206,15 +4243,21 @@ export class Graph extends Disablable {
   // #region :::::::::::: Validation
 
   validateEdge(edge: Cell | null, source: Cell | null, target: Cell | null) {
-    return this.hooks.validateEdge
-      ? this.hooks.validateEdge(edge, source, target)
-      : null
+    const ret = util.call(this.options.validateEdge, this, edge, source, target)
+    if (ret != null) {
+      return ret
+    }
+
+    return null
   }
 
   validateCell(cell: Cell, context: any) {
-    return this.hooks.validateCell
-      ? this.hooks.validateCell(cell, context)
-      : null
+    const ret = util.call(this.options.validateCell, this, cell, context)
+    if (ret != null) {
+      return ret
+    }
+
+    return null
   }
 
   validationAlert(message: string) {
@@ -4271,7 +4314,7 @@ export class Graph extends Disablable {
       !this.getModel().isEdge(state.cell)
     ) {
       const collapsed = this.isCellCollapsed(state.cell)
-      if (this.isCellFoldable(state.cell, !collapsed)) {
+      if (this.isFoldable(state.cell, !collapsed)) {
         return (collapsed) ? this.collapsedImage : this.expandedImage
       }
     }
@@ -4638,7 +4681,7 @@ export class Graph extends Disablable {
         const style = (state != null) ? state.style : this.getCellStyle(cell)
 
         if (style != null && !this.model.isEdge(cell)) {
-          return (style.shape === ShapeName.swimlane)
+          return (style.shape === Shapes.swimlane)
         }
       }
     }
@@ -4890,14 +4933,6 @@ export class Graph extends Disablable {
 
   setPortsEnabled(value: boolean) {
     this.portsEnabled = value
-  }
-
-  getGridSize() {
-    return this.gridSize
-  }
-
-  setGridSize(value: number) {
-    this.gridSize = value
   }
 
   getTolerance() {
@@ -5408,22 +5443,22 @@ export class Graph extends Disablable {
    * Returns the cells which are movable in the given array of cells.
    */
   getFoldableCells(cells: Cell[], collapse: boolean) {
-    return this.model.filterCells(cells, cell => this.isCellFoldable(cell, collapse))
+    return this.model.filterCells(cells, cell => this.isFoldable(cell, collapse))
   }
 
   /**
-   * Returns true if the given cell is foldable. This implementation
-   * returns true if the cell has at least one child and its style
-   * does not specify <constants.STYLE_FOLDABLE> to be 0.
+   * Returns true if the given cell is foldable.
    */
-  isCellFoldable(cell: Cell, nextCollapseState: boolean) {
+  isFoldable(cell: Cell, nextCollapseState: boolean) {
+    const ret = util.call(this.options.isFoldable, this, cell, nextCollapseState)
+    if (ret != null) {
+      return ret
+    }
+
     const state = this.view.getState(cell)
     const style = (state != null) ? state.style : this.getCellStyle(cell)
 
-    return (
-      this.model.getChildCount(cell) > 0 &&
-      style.foldable !== true
-    )
+    return (this.model.getChildCount(cell) > 0 && style.foldable !== false)
   }
 
   /**
@@ -6402,70 +6437,78 @@ export class Graph extends Disablable {
 }
 
 export namespace Graph {
-  export interface Hooks {
-    createModel?: (graph: Graph) => Model
-    createView?: (graph: Graph) => View
-    createRenderer?: (graph: Graph) => Renderer
-    createStyleSheet?: (graph: Graph) => StyleSheet
-    createSelection?: (graph: Graph) => Selection
+  interface Hooks {
+    createModel?: (this: Graph, graph: Graph) => Model
+    createView?: (this: Graph, graph: Graph) => View
+    createRenderer?: (this: Graph, graph: Graph) => Renderer
+    createStyleSheet?: (this: Graph, graph: Graph) => StyleSheet
+    createSelection?: (this: Graph, graph: Graph) => Selection
 
-    createTooltipHandler?: (graph: Graph) => TooltipHandler
-    createConnectionHandler?: (graph: Graph) => ConnectionHandler
-    createSelectionHandler?: (graph: Graph) => SelectionHandler
-    createGraphHandler?: (graph: Graph) => GraphHandler
-    createPanningHandler?: (graph: Graph) => PanningHandler
-    createPopupMenuHandler?: (graph: Graph) => PopupMenuHandler
-    createNodeHandler?: (graph: Graph, state: State) => NodeHandler
-    createEdgeHandler?: (graph: Graph, state: State) => EdgeHandler
-    createElbowEdgeHandler?: (graph: Graph, state: State) => EdgeHandler
-    createEdgeSegmentHandler?: (graph: Graph, state: State) => EdgeHandler
+    createTooltipHandler?: (this: Graph, graph: Graph) => TooltipHandler
+    createConnectionHandler?: (this: Graph, graph: Graph) => ConnectionHandler
+    createSelectionHandler?: (this: Graph, graph: Graph) => SelectionHandler
+    createGraphHandler?: (this: Graph, graph: Graph) => GraphHandler
+    createPanningHandler?: (this: Graph, graph: Graph) => PanningHandler
+    createPopupMenuHandler?: (this: Graph, graph: Graph) => PopupMenuHandler
+    createNodeHandler?: (this: Graph, graph: Graph, state: State) => NodeHandler
+    createEdgeHandler?: (this: Graph, graph: Graph, state: State) => EdgeHandler
+    createElbowEdgeHandler?: (this: Graph, graph: Graph, state: State) => EdgeHandler
+    createEdgeSegmentHandler?: (this: Graph, graph: Graph, state: State) => EdgeHandler
+    createRubberbandHandler?: (this: Graph, graph: Graph) => RubberbandHandler
 
-    getTooltip?: (cell: Cell) => string | HTMLElement
+    getTooltip?: (this: Graph, cell: Cell) => string | HTMLElement
+    getConstraints?: (
+      this: Graph,
+      cell: Cell,
+      isSource: boolean,
+    ) => Constraint[] | null
 
-    isCellConnectable?: (cell: Cell | null) => boolean
-    isTransparentClickEvent?: (e: MouseEvent) => boolean
-    isIgnoreTerminalEvent?: (e: MouseEvent) => boolean
+    isPort?: (this: Graph, cell: Cell) => boolean | null
+    isFoldable?: (this: Graph, cell: Cell, nextCollapseState: boolean) => boolean | null
+    isCellConnectable?: (this: Graph, cell: Cell | null) => boolean | null
 
-    validateCell?: (cell: Cell, context: any) => string | null
+    isTransparentClickEvent?: (this: Graph, e: MouseEvent) => boolean | null
+    isIgnoreTerminalEvent?: (this: Graph, e: MouseEvent) => boolean | null
+
+    validateCell?: (this: Graph, cell: Cell, context: any) => string | null
     validateEdge?: (
+      this: Graph,
       edge: Cell | null,
       source: Cell | null,
       target: Cell | null,
     ) => string | null
   }
 
-  export interface Options extends Hooks {
-    dialect?: Dialect,
+  export interface Options extends Hooks, Feature.Options {
     model?: Model,
     styleSheet?: StyleSheet,
-    hooks?: Hooks,
   }
 
   export interface CreateNodeOptions {
-    id?: string
-    data?: any
-    x?: number
-    y?: number
-    width?: number
-    height?: number
-    style?: CellStyle
-    relative?: boolean
+    id?: string,
+    data?: any,
+    x?: number,
+    y?: number,
+    width?: number,
+    height?: number,
+    style?: CellStyle,
+    relative?: boolean,
   }
 
   export interface InsertNodeOptions extends CreateNodeOptions {
-    parent?: Cell
-    index?: number
+    parent?: Cell,
+    index?: number,
   }
 
   export interface CreateEdgeOptions {
-    id?: string | null
-    data?: any
-    style?: CellStyle
+    id?: string | null,
+    data?: any,
+    style?: CellStyle,
   }
 
   export interface InsertEdgeOptions extends CreateEdgeOptions {
-    parent?: Cell
-    index?: number
+    parent?: Cell,
+    index?: number,
     sourceNode?: Cell,
     targetNode?: Cell,
   }

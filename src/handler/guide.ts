@@ -1,6 +1,6 @@
-import { constants, Disposable } from '../common'
+import { Disposable } from '../common'
 import { Rectangle, Point } from '../struct'
-import { Graph, State } from '../core'
+import { Graph, State, Cell } from '../core'
 import { Polyline } from '../shape'
 
 export class Guide extends Disposable {
@@ -22,25 +22,20 @@ export class Guide extends Disposable {
   vertical: boolean = true
 
   /**
-   * Holds the `Shape` for the horizontal guide.
-   */
-  guideX: Polyline | null = null
-
-  /**
-   * Holds the `Shape` for the vertical guide.
-   */
-  guideY: Polyline | null = null
-
-  /**
    * Specifies if rounded coordinates should be used.
    *
    * Default is `false`.
    */
   rounded: boolean = false
 
-  constructor(graph: Graph, states: State[]) {
+  protected options: Guide.Options
+  protected guideX: Polyline | null = null
+  protected guideY: Polyline | null = null
+
+  constructor(graph: Graph, states: State[], options: Guide.Options) {
     super()
     this.graph = graph
+    this.options = options
     this.setStates(states)
   }
 
@@ -48,27 +43,41 @@ export class Guide extends Disposable {
     this.states = states
   }
 
-  isEnabledForEvent(e: MouseEvent) {
-    return true
-  }
-
   protected getGuideTolerance() {
     return this.graph.gridSize / 2
   }
 
-  protected createGuideShape(horizontal?: boolean) {
-    const guide = new Polyline(
-      [],
-      constants.GUIDE_COLOR,
-      constants.GUIDE_STROKEWIDTH,
-    )
-    guide.dashed = true
-
-    return guide
+  protected createGuideShape(horizontal: boolean) {
+    return new Polyline()
   }
 
-  protected getGuideColor(state: State, horizontal: boolean) {
-    return constants.GUIDE_COLOR
+  protected initGuideShape(horizontal: boolean) {
+    const guide = horizontal ? this.guideX : this.guideY
+    if (guide != null) {
+      guide.dialect = 'svg'
+      guide.pointerEvents = false
+      guide.init(this.graph.view.getOverlayPane())
+    }
+  }
+
+  protected redrawGuideShape(state: State, horizontal: boolean) {
+    const guide = horizontal ? this.guideX : this.guideY
+    if (guide != null) {
+      const style = this.options.getStrockStyle({ horizontal, cell: state.cell })
+      guide.stroke = style.stroke
+      guide.strokeWidth = style.strokeWidth
+      guide.dashed = style.dashed
+      guide.elem!.style.visibility = null
+
+      let cls = `${this.graph.prefixCls}-guide`
+      cls += ` ${cls}-${horizontal ? 'horizontal' : 'vertical'}`
+      if (style.className) {
+        cls += ` ${style.className}`
+      }
+
+      guide.className = cls
+      guide.redraw()
+    }
   }
 
   move(
@@ -136,9 +145,7 @@ export class Guide extends Disposable {
 
           if (this.guideX == null) {
             this.guideX = this.createGuideShape(true)
-            this.guideX.dialect = 'svg'
-            this.guideX.pointerEvents = false
-            this.guideX.init(this.graph.view.getOverlayPane()!)
+            this.initGuideShape(true)
           }
         }
 
@@ -170,9 +177,7 @@ export class Guide extends Disposable {
 
           if (this.guideY == null) {
             this.guideY = this.createGuideShape(false)
-            this.guideY.dialect = 'svg'
-            this.guideY.pointerEvents = false
-            this.guideY.init(this.graph.view.getOverlayPane()!)
+            this.initGuideShape(false)
           }
         }
 
@@ -184,15 +189,15 @@ export class Guide extends Disposable {
         if (state != null) {
           // Align x
           if (this.horizontal) {
-            snapX(state.bounds.x, state)
             snapX(state.bounds.getCenterX(), state)
+            snapX(state.bounds.x, state)
             snapX(state.bounds.x + state.bounds.width, state)
           }
 
           // Align y
           if (this.vertical) {
-            snapY(state.bounds.y, state)
             snapY(state.bounds.getCenterY(), state)
+            snapY(state.bounds.y, state)
             snapY(state.bounds.y + state.bounds.height, state)
           }
         }
@@ -247,9 +252,7 @@ export class Guide extends Disposable {
               ]
             }
 
-            this.guideX.stroke = this.getGuideColor(stateX!, true)
-            this.guideX.elem.style.visibility = 'visible'
-            this.guideX.redraw()
+            this.redrawGuideShape(stateX!, true)
           }
         }
       }
@@ -282,9 +285,7 @@ export class Guide extends Disposable {
               ]
             }
 
-            this.guideY.stroke = this.getGuideColor(stateY, false)
-            this.guideY.elem.style.visibility = 'visible'
-            this.guideY.redraw()
+            this.redrawGuideShape(stateY, false)
           }
         }
       }
@@ -321,11 +322,11 @@ export class Guide extends Disposable {
 
   protected setVisible(visible: boolean) {
     if (this.guideX && this.guideX.elem) {
-      this.guideX.elem.style.visibility = visible ? 'visible' : 'hidden'
+      this.guideX.elem.style.visibility = visible ? null : 'hidden'
     }
 
     if (this.guideY && this.guideY.elem) {
-      this.guideY.elem.style.visibility = visible ? 'visible' : 'hidden'
+      this.guideY.elem.style.visibility = visible ? null : 'hidden'
     }
   }
 
@@ -345,5 +346,16 @@ export class Guide extends Disposable {
     }
 
     super.dispose()
+  }
+}
+
+export namespace Guide {
+  export interface Options {
+    getStrockStyle: (o: { cell: Cell, horizontal: boolean }) => {
+      stroke: string,
+      strokeWidth: number,
+      dashed: boolean,
+      className?: string,
+    }
   }
 }

@@ -2,15 +2,16 @@ import * as util from '../util'
 import { Graph } from '../core'
 import { CustomMouseEvent, DomEvent, detector } from '../common'
 import { Rectangle, Point } from '../struct'
-import { MouseHandler } from '../handler'
+import { MouseHandler } from '.'
+import { Feature } from '../core/feature'
 
 export class RubberbandHandler extends MouseHandler {
   /**
    * Specifies the default opacity to be used for the rubberband div.
    *
-   * Default is 20.
+   * Default is `0.2`.
    */
-  opacity = 20
+  opacity: number = 0.2
 
   /**
    * Optional fade out effect.
@@ -75,6 +76,10 @@ export class RubberbandHandler extends MouseHandler {
     }
 
     this.graph.on(Graph.events.gesture, this.onGesture)
+  }
+
+  protected getNativeClassName() {
+    return `${this.graph.prefixCls}-rubberband`
   }
 
   /**
@@ -188,8 +193,8 @@ export class RubberbandHandler extends MouseHandler {
   protected createShape() {
     if (this.sharedDiv == null) {
       this.sharedDiv = document.createElement('div')
-      this.sharedDiv.className = 'x6-rubberband'
-      this.sharedDiv.style.opacity = `${this.opacity / 100}`
+      this.sharedDiv.className = this.getNativeClassName()
+      this.sharedDiv.style.opacity = `${this.opacity}`
     }
 
     this.graph.container.appendChild(this.sharedDiv)
@@ -276,6 +281,31 @@ export class RubberbandHandler extends MouseHandler {
       this.width = Math.max(this.origin.x, x) - this.x
       this.height = Math.max(this.origin.y, y) - this.y
 
+      const style = Feature.getRubberbandStyle({
+        graph: this.graph,
+        x: this.x,
+        y: this.y,
+        width: this.width,
+        height: this.height,
+      })
+
+      if (style.className) {
+        this.div.className = `${this.getNativeClassName()} ${style.className}`
+      }
+
+      if (style.opacity != null) {
+        this.div.style.opacity = `${style.opacity}`
+      }
+
+      if (style.border != null) {
+        this.div.style.border = style.border
+      }
+
+      if (style.background != null) {
+        this.div.style.background = style.background
+      }
+
+      this.div.style.position = 'absolute'
       this.div.style.left = util.toPx(this.x)
       this.div.style.top = util.toPx(this.y)
       this.div.style.width = util.toPx(Math.max(1, this.width))

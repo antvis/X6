@@ -1,4 +1,4 @@
-export enum ShapeName {
+export enum Shapes {
   rectangle = 'rectangle',
   ellipse = 'ellipse',
   doubleEllipse = 'doubleEllipse',

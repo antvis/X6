@@ -73,7 +73,7 @@ export class ConnectionManager extends BaseManager {
         ? 0
         : Math.round((point.y - bounds.y) * 1000 / bounds.height) / 1000
 
-      return new Constraint(new Point(x, y), false)
+      return new Constraint({ point: new Point(x, y), perimeter: false })
     }
 
     return null

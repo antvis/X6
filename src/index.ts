@@ -1,7 +1,7 @@
 import * as util from './util'
 import * as shapes from './shape'
 import * as changes from './change'
-import { ShapeName } from './struct'
+import { Shapes } from './struct'
 
 export * from './version'
 export * from './core'
@@ -15,19 +15,19 @@ export { util, shapes, changes }
 
 export const registerShape = shapes.Shape.registerShape
 
-registerShape(ShapeName.rectangle, shapes.RectangleShape)
-registerShape(ShapeName.ellipse, shapes.EllipseShape)
-registerShape(ShapeName.doubleEllipse, shapes.DoubleEllipse)
-registerShape(ShapeName.rhombus, shapes.Rhombus)
-registerShape(ShapeName.cylinder, shapes.Cylinder)
-registerShape(ShapeName.connector, shapes.Connector)
-registerShape(ShapeName.actor, shapes.Actor)
-registerShape(ShapeName.triangle, shapes.Triangle)
-registerShape(ShapeName.hexagon, shapes.Hexagon)
-registerShape(ShapeName.cloud, shapes.Cloud)
-registerShape(ShapeName.line, shapes.Line)
-registerShape(ShapeName.arrow, shapes.Arrow)
-registerShape(ShapeName.arrowConnector, shapes.ArrowConnector)
-registerShape(ShapeName.swimlane, shapes.Swimlane)
-registerShape(ShapeName.image, shapes.ImageShape)
-registerShape(ShapeName.label, shapes.Label)
+registerShape(Shapes.rectangle, shapes.RectangleShape)
+registerShape(Shapes.ellipse, shapes.EllipseShape)
+registerShape(Shapes.doubleEllipse, shapes.DoubleEllipse)
+registerShape(Shapes.rhombus, shapes.Rhombus)
+registerShape(Shapes.cylinder, shapes.Cylinder)
+registerShape(Shapes.connector, shapes.Connector)
+registerShape(Shapes.actor, shapes.Actor)
+registerShape(Shapes.triangle, shapes.Triangle)
+registerShape(Shapes.hexagon, shapes.Hexagon)
+registerShape(Shapes.cloud, shapes.Cloud)
+registerShape(Shapes.line, shapes.Line)
+registerShape(Shapes.arrow, shapes.Arrow)
+registerShape(Shapes.arrowConnector, shapes.ArrowConnector)
+registerShape(Shapes.swimlane, shapes.Swimlane)
+registerShape(Shapes.image, shapes.ImageShape)
+registerShape(Shapes.label, shapes.Label)

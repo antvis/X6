@@ -219,12 +219,12 @@ export class Shape extends Disposable {
     if (this.elem) {
       const elem = this.elem
 
-      this.updateClassName()
       this.updateBoundsFromPoints()
 
       if (this.visible && this.isValidBounds()) {
-        elem.style.visibility = 'visible'
+        elem.style.visibility = null
         this.empty()
+        this.updateClassName()
 
         if (Private.isSvgElem(elem)) {
           this.redrawSvgShape()
@@ -235,6 +235,7 @@ export class Shape extends Disposable {
         this.updateBoundingBox()
       } else {
         elem.style.visibility = 'hidden'
+        this.updateClassName()
         this.boundingBox = null
       }
     }
@@ -242,9 +243,7 @@ export class Shape extends Disposable {
 
   protected updateClassName() {
     if (this.className != null && this.elem != null) {
-      if (!this.hasClass(this.className)) {
-        this.addClass(this.className)
-      }
+      util.setAttributes(this.elem, { class: this.className })
     }
   }
 

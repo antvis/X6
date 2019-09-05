@@ -1,3 +1,4 @@
+import * as util from '../util'
 import { Graph, State } from '../core'
 import { BaseManager } from './manager-base'
 import {
@@ -11,6 +12,7 @@ import {
   EdgeHandler,
   EdgeElbowHandler,
   EdgeSegmentHandler,
+  RubberbandHandler,
 } from '../handler'
 import { EdgeStyle } from '../stylesheet'
 
@@ -43,47 +45,57 @@ export class HandlerManager extends BaseManager {
     this.graph.panningHandler.disablePanning()
 
     this.graph.popupMenuHandler = this.createPopupMenuHandler()
+
+    this.graph.rubberbandHandler = this.createRubberbandHandler()
+    this.graph.disableRubberband()
   }
 
   protected createTooltipHandler() {
-    return (this.hooks.createTooltipHandler != null &&
-      this.hooks.createTooltipHandler(this.graph) ||
+    return (
+      util.call(this.options.createTooltipHandler, this, this) ||
       new TooltipHandler(this.graph)
     )
   }
 
   protected createConnectionHandler() {
-    return (this.hooks.createConnectionHandler != null &&
-      this.hooks.createConnectionHandler(this.graph) ||
+    return (
+      util.call(this.options.createConnectionHandler, this, this) ||
       new ConnectionHandler(this.graph)
     )
   }
 
   protected createSelectionHandler() {
-    return (this.hooks.createSelectionHandler != null &&
-      this.hooks.createSelectionHandler(this.graph) ||
+    return (
+      util.call(this.options.createSelectionHandler, this, this) ||
       new SelectionHandler(this.graph)
     )
   }
 
   protected createGraphHandler() {
-    return (this.hooks.createGraphHandler != null &&
-      this.hooks.createGraphHandler(this.graph) ||
+    return (
+      util.call(this.options.createGraphHandler, this, this) ||
       new GraphHandler(this.graph)
     )
   }
 
   protected createPanningHandler() {
-    return (this.hooks.createPanningHandler != null &&
-      this.hooks.createPanningHandler(this.graph) ||
+    return (
+      util.call(this.options.createPanningHandler, this, this) ||
       new PanningHandler(this.graph)
     )
   }
 
   protected createPopupMenuHandler() {
-    return (this.hooks.createPopupMenuHandler != null &&
-      this.hooks.createPopupMenuHandler(this.graph) ||
+    return (
+      util.call(this.options.createPopupMenuHandler, this, this) ||
       new PopupMenuHandler(this.graph)
+    )
+  }
+
+  protected createRubberbandHandler() {
+    return (
+      util.call(this.options.createRubberbandHandler, this, this) ||
+      new RubberbandHandler(this.graph)
     )
   }
 
@@ -107,8 +119,8 @@ export class HandlerManager extends BaseManager {
   }
 
   protected createNodeHandler(state: State) {
-    return (this.hooks.createNodeHandler != null &&
-      this.hooks.createNodeHandler(this.graph, state) ||
+    return (
+      util.call(this.options.createNodeHandler, this, this, state) ||
       new NodeHandler(this.graph, state)
     )
   }
@@ -129,8 +141,8 @@ export class HandlerManager extends BaseManager {
     ) {
       result = this.createEdgeSegmentHandler(state)
     } else {
-      return (this.hooks.createEdgeHandler != null &&
-        this.hooks.createEdgeHandler(this.graph, state) ||
+      return (
+        util.call(this.options.createEdgeHandler, this, this, state) ||
         new EdgeHandler(this.graph, state)
       )
     }
@@ -139,15 +151,15 @@ export class HandlerManager extends BaseManager {
   }
 
   protected createEdgeSegmentHandler(state: State) {
-    return (this.hooks.createEdgeSegmentHandler != null &&
-      this.hooks.createEdgeSegmentHandler(this.graph, state) ||
+    return (
+      util.call(this.options.createEdgeSegmentHandler, this, this, state) ||
       new EdgeSegmentHandler(this.graph, state)
     )
   }
 
   protected createElbowEdgeHandler(state: State) {
-    return (this.hooks.createElbowEdgeHandler != null &&
-      this.hooks.createElbowEdgeHandler(this.graph, state) ||
+    return (
+      util.call(this.options.createElbowEdgeHandler, this, this, state) ||
       new EdgeElbowHandler(this.graph, state)
     )
   }

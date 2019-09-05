@@ -9,8 +9,8 @@ export class HelloWorld extends React.Component {
     const graph = new Graph(this.container)
 
     graph.batchUpdate(() => {
-      const node1 = graph.insertNode({ data: 'Hello', x: 200, y: 20, width: 80, height: 30 })
-      const node2 = graph.insertNode({ data: 'World', x: 200, y: 150, width: 80, height: 30 })
+      const node1 = graph.insertNode({ data: 'Hello', x: 60, y: 60, width: 80, height: 30 })
+      const node2 = graph.insertNode({ data: 'World', x: 240, y: 240, width: 80, height: 30 })
       graph.insertEdge({ data: 'Edge Label', sourceNode: node1, targetNode: node2 })
     })
   }

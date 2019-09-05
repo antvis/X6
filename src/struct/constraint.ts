@@ -5,27 +5,67 @@ import { Point } from './point'
  * connect one side of an edge to its terminal.
  */
 export class Constraint {
-  constructor(
+  /**
+   * The fixed location of the connection point.
+   */
+  public point: Point | null
+
+  /**
+   * Specifies if the point should be projected onto the
+   * perimeter of the terminal.
+   */
+  public perimeter: boolean
+
+  /**
+   * The name of the constraint.
+   */
+  public name: string | null
+
+  /**
+   * The horizontal offset of the constraint.
+   */
+  public dx: number
+
+  /**
+   * The vertical offset of the constraint.
+   */
+  public dy: number
+
+  constructor(options: Constraint.Options = {}) {
+    this.name = options.name || null
+    this.point = options.point || null
+    this.perimeter = options.perimeter === false ? false : true
+    this.dx = options.dx != null ? options.dx : 0
+    this.dy = options.dy != null ? options.dy : 0
+  }
+}
+
+export namespace Constraint {
+  export interface Options {
     /**
-     * Specifies the fixed location of the connection point.
+     * The fixed location of the connection point.
      */
-    public point: Point | null = null,
+    point?: Point | null
+
     /**
      * Specifies if the point should be projected onto the
      * perimeter of the terminal.
      */
-    public perimeter: boolean = true,
+    perimeter?: boolean
+
     /**
-     * Optional string that specifies the name of the constraint.
+     * The name of the constraint.
      */
-    public name: string | null = null,
+    name?: string
+
     /**
-     * Optional float that specifies the horizontal offset of the constraint.
+     * The horizontal offset of the constraint.
      */
-    public dx: number = 0,
+    dx?: number
+
     /**
-     * Optional float that specifies the vertical offset of the constraint.
+     * The vertical offset of the constraint.
      */
-    public dy: number = 0,
-  ) { }
+    dy?: number
+  }
 }

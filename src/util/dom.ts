@@ -132,7 +132,10 @@ export function getNodeName(node: Element) {
   return node.nodeName.toLowerCase()
 }
 
-export function setAttributes(elem: Element, attrs: { [key: string]: any }) {
+export function setAttributes(
+  elem: Element | null,
+  attrs: { [key: string]: any },
+) {
   if (elem != null) {
     Object.keys(attrs).forEach(name => elem.setAttribute(name, attrs[name]))
   }

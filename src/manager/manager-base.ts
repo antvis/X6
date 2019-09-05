@@ -17,7 +17,7 @@ export class BaseManager extends Disposable {
     return this.graph.view
   }
 
-  get hooks() {
-    return this.graph.hooks
+  get options() {
+    return this.graph.options
   }
 }

@@ -59,7 +59,7 @@ export class Stencil extends Shape {
     const name = node.getAttribute('name') || ''
     const perimeter = node.getAttribute('perimeter') === '1'
 
-    return new Constraint(new Point(x, y), perimeter, name)
+    return new Constraint({ perimeter, name, point: new Point(x, y) })
   }
 
   evaluateTextAttribute(node: HTMLElement, name: string, shape: Shape) {

@@ -96,27 +96,54 @@ export function extend(target: { [key: string]: any } = {}, ...sources: any[]) {
   return target
 }
 
+export function mergec(
+  target: { [key: string]: any },
+  source: { [key: string]: any },
+  options: {
+    ignoreNull?: boolean,
+    ignoreUndefined?: boolean,
+    decorator?: (
+      source: { [key: string]: any },
+      target: { [key: string]: any },
+      key: string,
+    ) => any,
+  } = {},
+) {
+  for (const name in source) {
+    const src = target[name]
+    const copy = source[name]
+    const copyIsArray = Array.isArray(copy)
+
+    if (copyIsArray || isPlainObject(copy)) {
+      let clone
+
+      if (copyIsArray) {
+        clone = src && Array.isArray(src) ? src : []
+      } else {
+        clone = src && isPlainObject(src) ? src : {}
+      }
+
+      target[name] = mergec(clone, copy, options)
+    } else {
+      if (
+        copy != null ||
+        (copy === null && options.ignoreNull !== true) ||
+        (copy === undefined && options.ignoreUndefined !== true)
+      ) {
+        target[name] = options.decorator
+          ? options.decorator(target, source, name)
+          : copy
+      }
+    }
+  }
+
+  return target
+}
+
 export function merge(target: { [key: string]: any } = {}, ...sources: any[]) {
   sources.forEach((source) => {
     if (source) {
-      for (const name in source) {
-        const src = target[name]
-        const copy = source[name]
-        const copyIsArray = Array.isArray(copy)
-
-        if (copyIsArray || isPlainObject(copy)) {
-          let clone
-          if (copyIsArray) {
-            clone = src && Array.isArray(src) ? src : []
-          } else {
-            clone = src && isPlainObject(src) ? src : {}
-          }
-
-          target[name] = merge(clone, copy)
-        } else {
-          target[name] = copy
-        }
-      }
+      mergec(target, source)
     }
   })
 

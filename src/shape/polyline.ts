@@ -5,8 +5,8 @@ import { SvgCanvas2D } from '../canvas'
 
 export class Polyline extends Shape {
   constructor(
-    points: Point[],
-    stroke: string,
+    points: Point[] = [],
+    stroke: string | null = null,
     strokewidth: number = 1,
   ) {
     super()
