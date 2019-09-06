@@ -1,6 +1,6 @@
 import * as util from '../util'
 import { constants } from '../common'
-import { State } from '../core'
+import { State, Cell } from '../core'
 import { Point, Rectangle, DirectionMask, EdgeType } from '../struct'
 
 export namespace EdgeStyle {
@@ -44,7 +44,7 @@ export namespace EdgeStyle {
 
     if (p0 != null) {
       // tslint:disable-next-line
-      sourceState = new State(view, (sourceState ? sourceState.cell : null) as any)
+      sourceState = new State(view, sourceState ? sourceState.cell : new Cell())
       sourceState.bounds.x = p0.x
       sourceState.bounds.y = p0.y
     } else if (sourceState != null) {
@@ -75,7 +75,7 @@ export namespace EdgeStyle {
 
     if (pe != null) {
       // tslint:disable-next-line
-      targetState = new State(view, (targetState ? targetState.cell : null) as any)
+      targetState = new State(view, targetState ? targetState.cell : new Cell())
       targetState.bounds.x = pe.x
       targetState.bounds.y = pe.y
     } else if (targetState != null) {
@@ -310,14 +310,14 @@ export namespace EdgeStyle {
 
     if (p0 != null) {
       // tslint:disable-next-line
-      sourceState = new State(view, (sourceState ? sourceState.cell : null) as any)
+      sourceState = new State(view, sourceState ? sourceState.cell : new Cell())
       sourceState.bounds.x = p0.x
       sourceState.bounds.y = p0.y
     }
 
     if (pe != null) {
       // tslint:disable-next-line
-      targetState = new State(view, (targetState ? targetState.cell : null) as any)
+      targetState = new State(view, targetState ? targetState.cell : new Cell())
       targetState.bounds.x = pe.x
       targetState.bounds.y = pe.y
     }

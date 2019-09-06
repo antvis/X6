@@ -574,7 +574,7 @@ export class View extends Primer {
   // #region ::::::::::: Update Cell State :::::::::::
 
   protected updateCellState(state: State) {
-    state.edgeLength = 0
+    state.totalLength = 0
     state.origin.x = 0
     state.origin.y = 0
     state.absoluteOffset.x = 0
@@ -1285,20 +1285,20 @@ export class View extends Primer {
     let x = state.bounds.getCenterX()
     let y = state.bounds.getCenterY()
 
-    if (state.segments != null && (geometry == null || geometry.relative)) {
+    if (state.segmentsLength != null && (geometry == null || geometry.relative)) {
 
       const cc = state.absolutePoints.length
       const gx = geometry != null ? geometry.bounds.x / 2 : 0
-      const dist = Math.round((gx + 0.5) * state.edgeLength)
+      const dist = Math.round((gx + 0.5) * state.totalLength)
 
-      let segment = state.segments[0]
+      let segment = state.segmentsLength[0]
       let length = 0
       let index = 0
 
       while (dist >= Math.round(length + segment) && index < cc - 1) {
         index += 1
         length += segment
-        segment = state.segments[index]
+        segment = state.segmentsLength[index]
       }
 
       const factor = (segment === 0) ? 0 : (dist - length) / segment
@@ -1381,8 +1381,8 @@ export class View extends Primer {
         }
       }
 
-      state.segments = segments
-      state.edgeLength = length
+      state.segmentsLength = segments
+      state.totalLength = length
 
       const markerSize = 1 // TODO: include marker size
 
@@ -1407,7 +1407,7 @@ export class View extends Primer {
     state.absoluteOffset.y = state.bounds.getCenterY()
 
     const points = state.absolutePoints
-    if (points != null && points.length > 0 && state.segments != null) {
+    if (points != null && points.length > 0 && state.segmentsLength != null) {
 
       const geometry = state.cell.getGeometry()!
       if (geometry.relative) {
@@ -1456,8 +1456,8 @@ export class View extends Primer {
       const pointCount = edgeState.absolutePoints.length
 
       if (geometry.relative && pointCount > 1) {
-        const totalLength = edgeState.edgeLength
-        const segments = edgeState.segments
+        const totalLength = edgeState.totalLength
+        const segments = edgeState.segmentsLength
 
         // Works which line segment the point of the label is closest to
         let p0 = edgeState.absolutePoints[0]!

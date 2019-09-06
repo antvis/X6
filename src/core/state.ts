@@ -1,3 +1,4 @@
+import { Dictionary } from '../common'
 import { Point, Rectangle, Overlay } from '../struct'
 import { Cell } from './cell'
 import { View } from './view'
@@ -69,13 +70,13 @@ export class State {
   /**
    * The length of an edge.
    */
-  edgeLength: number = 0
+  totalLength: number = 0
 
   /**
    * Array of numbers that represent the cached length of
    * each segment of the edge.
    */
-  segments: number[]
+  segmentsLength: number[]
 
   /**
    * Specifies if the state is invalid.
@@ -103,8 +104,7 @@ export class State {
    */
   control: ImageShape | null
 
-  overlaySet: Overlay[] | null
-  overlayMap: WeakMap<Overlay, ImageShape> | null
+  overlays: Dictionary<Overlay, ImageShape> | null
 
   constructor(
     public view: View,
@@ -251,8 +251,8 @@ export class State {
     this.absoluteOffset = state.absoluteOffset
     this.boundingBox = state.boundingBox
     this.terminalDistance = state.terminalDistance
-    this.edgeLength = state.edgeLength
-    this.segments = state.segments
+    this.totalLength = state.totalLength
+    this.segmentsLength = state.segmentsLength
     this.unscaledWidth = state.unscaledWidth
 
     this.bounds.update(
@@ -261,20 +261,6 @@ export class State {
       state.bounds.width,
       state.bounds.height,
     )
-  }
-
-  eachOverlay(
-    iterator: (
-      shape: ImageShape | null | undefined,
-      overlay: Overlay,
-    ) => void,
-  ) {
-    if (this.overlaySet) {
-      this.overlaySet.forEach((overlay) => {
-        const shape = this.overlayMap && this.overlayMap.get(overlay)
-        iterator(shape, overlay)
-      })
-    }
   }
 
   clone() {
@@ -299,8 +285,8 @@ export class State {
     }
 
     cloned.terminalDistance = this.terminalDistance
-    cloned.edgeLength = this.edgeLength
-    cloned.segments = this.segments
+    cloned.totalLength = this.totalLength
+    cloned.segmentsLength = this.segmentsLength
     cloned.unscaledWidth = this.unscaledWidth
 
     return cloned

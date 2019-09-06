@@ -2806,9 +2806,8 @@ export class Graph extends Disablable {
         // tip = util.escape(mxResources.get(tip) || tip).replace(/\\n/g, '<br>')
       }
 
-      if (tip == null && state.overlaySet != null) {
-        state.overlaySet.forEach((overlay) => {
-          const shape = state.overlayMap!.get(overlay)!
+      if (tip == null && state.overlays != null) {
+        state.overlays.each((shape) => {
           if (tip == null &&
             (trigger === shape.elem || trigger.parentNode === shape.elem)
           ) {

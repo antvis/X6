@@ -2,7 +2,7 @@ import * as util from '../util'
 import { State } from './state'
 import { TextDirection, Dialect } from '../types'
 import { Rectangle, Point, Overlay } from '../struct'
-import { constants, detector } from '../common'
+import { constants, detector, Dictionary } from '../common'
 import { DomEvent } from '../common/dom-event'
 import { CustomMouseEvent } from '../common/mouse-event'
 import { Shape, Stencil, Connector, RectangleShape, Text, ImageShape } from '../shape'
@@ -287,23 +287,17 @@ export class Renderer {
   private createCellOverlays(state: State) {
     const graph = state.view.graph
     const overlays = graph.getOverlays(state.cell)
-    let map: WeakMap<Overlay, ImageShape> | null = null
-    let set: Overlay[] | null = null
+    let dic: Dictionary<Overlay, ImageShape> | null = null
 
     if (overlays != null) {
-      map = new WeakMap<Overlay, ImageShape>()
-      set = []
-
+      dic = new Dictionary<Overlay, ImageShape>()
       overlays.forEach((overlay) => {
         let shape: ImageShape | null = null
 
-        if (state.overlayMap && state.overlayMap.has(overlay)) {
-          shape = state.overlayMap.get(overlay)!
-
+        if (state.overlays && state.overlays.has(overlay)) {
+          shape = state.overlays.get(overlay)!
           // remove used from set and map
-          state.overlayMap.delete(overlay)
-          const index = state.overlaySet!.indexOf(overlay)
-          state.overlaySet!.splice(index, 1)
+          state.overlays.delete(overlay)
         }
 
         if (shape == null) {
@@ -320,16 +314,15 @@ export class Renderer {
           }
         }
 
-        map!.set(overlay, shape)
-        set!.push(overlay)
+        dic!.set(overlay, shape)
       })
     }
 
     // clean unused
-    state.eachOverlay(shape => shape && shape.dispose())
-
-    state.overlayMap = map
-    state.overlaySet = set
+    if (state.overlays != null) {
+      state.overlays.each(shape => shape && shape.dispose())
+    }
+    state.overlays = dic
   }
 
   private initializeOverlay(state: State, overlayShape: Shape) {
@@ -983,13 +976,13 @@ export class Renderer {
 
   private redrawCellOverlays(state: State, forced?: boolean) {
     this.createCellOverlays(state)
-    if (state.overlayMap != null) {
+    if (state.overlays != null) {
       const rot = util.mod(state.style.rotation || 0, 90)
       const rad = util.toRad(rot)
       const cos = Math.cos(rad)
       const sin = Math.sin(rad)
 
-      state.eachOverlay((img) => {
+      state.overlays.each((img) => {
         const shape = img!
         const bounds = shape.overlay!.getBounds(state)
         if (!state.view.graph.getModel().isEdge(state.cell)) {
@@ -1190,10 +1183,8 @@ export class Renderer {
         state.text = null
       }
 
-      if (state.overlayMap && state.overlaySet) {
-        state.eachOverlay(shape => shape && shape.dispose())
-        state.overlaySet = null
-        state.overlayMap = null
+      if (state.overlays !== null) {
+        state.overlays.each(shape => shape && shape.dispose())
       }
 
       if (state.control != null) {
