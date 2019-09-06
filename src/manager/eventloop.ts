@@ -57,6 +57,27 @@ export class EventLoop extends BaseManager {
     }
   }
 
+  /**
+   * Returns an `Point` representing the given event in the unscaled,
+   * non-translated coordinate space.
+   */
+  getPointForEvent(e: MouseEvent, addOffset: boolean = true) {
+    const p = util.clientToGraph(
+      this.graph.container,
+      DomEvent.getClientX(e),
+      DomEvent.getClientY(e),
+    )
+
+    const s = this.view.scale
+    const tr = this.view.translate
+    const off = addOffset ? this.graph.gridSize / 2 : 0
+
+    p.x = this.graph.snap(p.x / s - tr.x - off)
+    p.y = this.graph.snap(p.y / s - tr.y - off)
+
+    return p
+  }
+
   protected updateMouseEvent(e: CustomMouseEvent, eventName: string) {
     if (e.graphX == null || e.graphY == null) {
       const x = e.getClientX()

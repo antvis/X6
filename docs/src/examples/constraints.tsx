@@ -28,7 +28,7 @@ export class Constraints extends React.Component {
     graph.enableConnection()
 
     graph.batchUpdate(() => {
-      const n1 = graph.insertNode({
+      const n1 = graph.addNode({
         data: 'Triangle',
         x: 20, y: 20, width: 80, height: 60,
         style: {
@@ -37,12 +37,12 @@ export class Constraints extends React.Component {
         },
       })
 
-      const n2 = graph.insertNode({
+      const n2 = graph.addNode({
         data: 'Rectangle',
         x: 200, y: 20, width: 80, height: 30,
       })
 
-      const n3 = graph.insertNode({
+      const n3 = graph.addNode({
         data: 'Ellipse',
         x: 200, y: 150, width: 80, height: 60,
         style: {
@@ -51,7 +51,7 @@ export class Constraints extends React.Component {
         },
       })
 
-      graph.insertEdge({
+      graph.addEdge({
         sourceNode: n1,
         targetNode: n3,
         style: {
@@ -66,7 +66,7 @@ export class Constraints extends React.Component {
         },
       })
 
-      graph.insertEdge({
+      graph.addEdge({
         sourceNode: n2,
         targetNode: n3,
         style: {

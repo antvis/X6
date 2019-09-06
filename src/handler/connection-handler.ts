@@ -1564,7 +1564,7 @@ export class ConnectionHandler extends MouseHandler {
     style: CellStyle,
   ) {
     if (this.factoryMethod == null) {
-      return this.graph.insertEdge({ parent, id, data, sourceNode, targetNode, style })
+      return this.graph.addEdge({ parent, id, data, sourceNode, targetNode, style })
     }
 
     let edge = this.createEdge(data, sourceNode, targetNode, style)

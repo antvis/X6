@@ -15,8 +15,8 @@ export class Guide extends React.Component {
     })
 
     graph.batchUpdate(() => {
-      graph.insertNode({ data: 'Hello', x: 60, y: 60, width: 80, height: 70 })
-      graph.insertNode({ data: 'World', x: 240, y: 240, width: 80, height: 40 })
+      graph.addNode({ data: 'Hello', x: 60, y: 60, width: 80, height: 70 })
+      graph.addNode({ data: 'World', x: 240, y: 240, width: 80, height: 40 })
     })
   }
 

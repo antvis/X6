@@ -1,3 +1,4 @@
+export * from './cell-editor'
 export * from './cell-highlight'
 export * from './cell-marker'
 export * from './cell-tracker'

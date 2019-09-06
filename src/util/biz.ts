@@ -4,6 +4,7 @@ import { Point, DirectionMask, CellPath } from '../struct'
 import { Align, VAlign } from '../types'
 
 /**
+ * // TODO: Move to cell-path
  * Sorts the given cells according to the order in the cell hierarchy.
  * Ascending is optional and defaults to true.
  */

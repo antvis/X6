@@ -44,7 +44,7 @@ export namespace EdgeStyle {
 
     if (p0 != null) {
       // tslint:disable-next-line
-      sourceState = new State(sourceState.view, sourceState.cell)
+      sourceState = new State(view, (sourceState ? sourceState.cell : null) as any)
       sourceState.bounds.x = p0.x
       sourceState.bounds.y = p0.y
     } else if (sourceState != null) {
@@ -75,7 +75,7 @@ export namespace EdgeStyle {
 
     if (pe != null) {
       // tslint:disable-next-line
-      targetState = new State(targetState.view, targetState.cell)
+      targetState = new State(view, (targetState ? targetState.cell : null) as any)
       targetState.bounds.x = pe.x
       targetState.bounds.y = pe.y
     } else if (targetState != null) {
@@ -310,14 +310,14 @@ export namespace EdgeStyle {
 
     if (p0 != null) {
       // tslint:disable-next-line
-      sourceState = new State(sourceState.view, sourceState.cell)
+      sourceState = new State(view, (sourceState ? sourceState.cell : null) as any)
       sourceState.bounds.x = p0.x
       sourceState.bounds.y = p0.y
     }
 
     if (pe != null) {
       // tslint:disable-next-line
-      targetState = new State(targetState.view, targetState.cell)
+      targetState = new State(view, (targetState ? targetState.cell : null) as any)
       targetState.bounds.x = pe.x
       targetState.bounds.y = pe.y
     }

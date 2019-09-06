@@ -632,3 +632,58 @@ export const clearSelection = function () {
 
   return function () { }
 }()
+
+export function extractTextWithWhitespace(elems: Element[]) {
+  const blocks = [
+    'BLOCKQUOTE', 'DIV',
+    'H1', 'H2', 'H3', 'H4', 'H5', 'H6',
+    'OL', 'P', 'PRE', 'TABLE', 'UL',
+  ]
+  const ret: string[] = []
+
+  function doExtract(elts: Element[]) {
+    // Single break should be ignored
+    if (
+      elts.length === 1 &&
+      (getNodeName(elts[0]) === 'br' || elts[0].innerHTML === '\n')
+    ) {
+      return
+    }
+
+    for (let i = 0, ii = elts.length; i < ii; i += 1) {
+      const elem = elts[i]
+      const nodeName = getNodeName(elem).toUpperCase()
+
+      // DIV with a br or linefeed forces a linefeed
+      if (
+        nodeName === 'BR' ||
+        elem.innerHTML === '\n' ||
+        (
+          (elts.length === 1 || i === 0) &&
+          (nodeName === 'DIV' && elem.innerHTML.toLowerCase() === '<br>')
+        )
+      ) {
+        ret.push('\n')
+      } else {
+        if (elem.nodeType === 3 || elem.nodeType === 4) {
+          if (elem.nodeValue != null && elem.nodeValue.length > 0) {
+            ret.push(elem.nodeValue)
+          }
+        } else if (elem.nodeType !== 8 && elem.childNodes.length > 0) {
+          doExtract(elem.childNodes as any)
+        }
+
+        if (
+          i < elts.length - 1 &&
+          blocks.includes(getNodeName(elts[i + 1]).toUpperCase())
+        ) {
+          ret.push('\n')
+        }
+      }
+    }
+  }
+
+  doExtract(elems)
+
+  return ret.join('')
+}

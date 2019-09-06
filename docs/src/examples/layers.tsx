@@ -22,7 +22,7 @@ export class Layers extends React.Component {
     this.layer1 = layer1
 
     graph.batchUpdate(() => {
-      const node1 = graph.insertNode({
+      const node1 = graph.addNode({
         parent: layer1, data: 'Hello,',
         x: 20, y: 20, width: 80, height: 30,
         style: {
@@ -30,7 +30,7 @@ export class Layers extends React.Component {
         },
       })
 
-      const node2 = graph.insertNode({
+      const node2 = graph.addNode({
         parent: layer1, data: 'Hello,',
         x: 200, y: 20, width: 80, height: 30,
         style: {
@@ -38,12 +38,12 @@ export class Layers extends React.Component {
         },
       })
 
-      const node3 = graph.insertNode({
+      const node3 = graph.addNode({
         parent: layer0, data: 'World!',
         x: 110, y: 150, width: 80, height: 30,
       })
 
-      const edge1 = graph.insertEdge({
+      const edge1 = graph.addEdge({
         parent: layer1,
         sourceNode: node1,
         targetNode: node3,
@@ -53,14 +53,14 @@ export class Layers extends React.Component {
       })
       edge1.geometry!.addPoint(60, 165)
 
-      const edge2 = graph.insertEdge({
+      const edge2 = graph.addEdge({
         parent: layer0,
         sourceNode: node2,
         targetNode: node3,
       })
       edge2.geometry!.addPoint(240, 165)
 
-      const edge3 = graph.insertEdge({
+      const edge3 = graph.addEdge({
         parent: layer0,
         sourceNode: node1,
         targetNode: node2,
@@ -70,7 +70,7 @@ export class Layers extends React.Component {
       })
       edge3.geometry!.addPoint(150, 30)
 
-      const edge4 = graph.insertEdge({
+      const edge4 = graph.addEdge({
         parent: layer1,
         sourceNode: node2,
         targetNode: node1,

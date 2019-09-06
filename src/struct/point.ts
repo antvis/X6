@@ -44,7 +44,7 @@ export class Point {
   }
 
   clone() {
-    return Point.fromPoint(this)
+    return Point.clone(this)
   }
 
   valueOf() {
@@ -62,7 +62,7 @@ export namespace Point {
     y: number
   }
 
-  export function fromPoint(p: Point | PointLike) {
+  export function clone(p: Point | PointLike) {
     return new Point(p.x, p.y)
   }
 

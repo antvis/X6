@@ -1026,7 +1026,7 @@ export class NodeHandler extends MouseHandler {
 
           if (style != null) {
             const total = (style.rotation || 0) + angle
-            this.graph.setCellStyles('rotation', total, [cell])
+            this.graph.setCellsStyle('rotation', total, [cell])
           }
         }
 

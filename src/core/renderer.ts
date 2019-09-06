@@ -286,7 +286,7 @@ export class Renderer {
 
   private createCellOverlays(state: State) {
     const graph = state.view.graph
-    const overlays = graph.getCellOverlays(state.cell)
+    const overlays = graph.getOverlays(state.cell)
     let map: WeakMap<Overlay, ImageShape> | null = null
     let set: Overlay[] | null = null
 

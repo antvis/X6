@@ -20,4 +20,8 @@ export class BaseManager extends Disposable {
   get options() {
     return this.graph.options
   }
+
+  get renderer() {
+    return this.graph.renderer
+  }
 }

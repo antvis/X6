@@ -25,9 +25,9 @@ export class ValidationManager extends BaseManager {
 
       const warn: string | null = this.validateGraph(tmp, ctx)
       if (warn != null) {
-        this.graph.setCellWarning(tmp, warn.replace(/\n/g, '<br>'))
+        this.graph.addWarningOverlay(tmp, warn.replace(/\n/g, '<br>'))
       } else {
-        this.graph.setCellWarning(tmp, null)
+        this.graph.addWarningOverlay(tmp, null)
       }
 
       isValid = isValid && warn == null

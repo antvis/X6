@@ -89,7 +89,7 @@ export class Handle {
   }
 
   copyStyle(key: string) {
-    this.graph.setCellStyles(
+    this.graph.setCellsStyle(
       key,
       (this.state.style as any)[key],
       [this.state.cell],

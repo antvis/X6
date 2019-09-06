@@ -17,8 +17,8 @@ export class Cell extends Disposable {
   public collapsed: boolean
   public connectable: boolean
 
-  public sourceNode: Cell | null
-  public targetNode: Cell | null
+  public source: Cell | null
+  public target: Cell | null
 
   public overlays: Overlay[] | null
 
@@ -48,14 +48,14 @@ export class Cell extends Disposable {
   }
 
   getTerminal(isSource?: boolean) {
-    return isSource ? this.sourceNode : this.targetNode
+    return isSource ? this.source : this.target
   }
 
   setTerminal(terminal: Cell | null, isSource?: boolean) {
     if (isSource) {
-      this.sourceNode = terminal
+      this.source = terminal
     } else {
-      this.targetNode = terminal
+      this.target = terminal
     }
 
     return terminal
@@ -334,6 +334,14 @@ export class Cell extends Disposable {
 
   setGeometry(geometry: Geometry) {
     this.geometry = geometry
+  }
+
+  getOverlays() {
+    return this.overlays
+  }
+
+  setOverlays(overlays: Overlay[] | null) {
+    this.overlays = overlays
   }
 
   // #region visible
