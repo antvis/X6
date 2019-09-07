@@ -68,6 +68,7 @@
     "react-dom": "^16.9.0",
     "react-router-dom": "^5.0.1",
     "rimraf": "^2.6.3",
+    "simulate-event": "^1.4.0",
     "source-map-loader": "^0.2.4",
     "style-loader": "^1.0.0",
     "ts-jest": "^24.0.2",
