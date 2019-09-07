@@ -559,7 +559,7 @@ export class EdgeHandler extends MouseHandler {
         shape && util.isVisible(shape.elem) &&
         (
           e.isSource(shape) ||
-          (hit && util.intersects(shape.bounds, hit))
+          (hit && shape.bounds.isIntersectWith(hit))
         )
       ) {
         const dx = e.getGraphX() - shape.bounds.getCenterX()
@@ -975,7 +975,7 @@ export class EdgeHandler extends MouseHandler {
             for (let i = 0, ii = this.bends.length; i < ii; i += 1) {
               if (i !== index) {
                 const bend = this.bends[i]
-                if (bend != null && util.contains(bend.bounds, pt.x, pt.y)) {
+                if (bend != null && bend.bounds.containsPoint(pt)) {
 
                   if (DomEvent.isVisualHandle(index)) {
                     points.splice(DomEvent.getVisualHandle(index), 1)
@@ -1832,7 +1832,7 @@ export class EdgeHandler extends MouseHandler {
   protected checkLabelHandle(b: Rectangle) {
     if (this.labelShape != null) {
       const b2 = this.labelShape.bounds
-      if (util.intersects(b, b2)) {
+      if (b.isIntersectWith(b2)) {
         if (b.getCenterY() < b2.getCenterY()) {
           b2.y = b.y + b.height
         } else {
@@ -1866,7 +1866,7 @@ export class EdgeHandler extends MouseHandler {
               this.handleImage == null &&
               this.labelShape != null &&
               this.labelShape.visible &&
-              util.intersects(bend.bounds, this.labelShape.bounds)
+              bend.bounds.isIntersectWith(this.labelShape.bounds)
             ) {
               const w = constants.HANDLE_SIZE + 3
               const h = constants.HANDLE_SIZE + 3

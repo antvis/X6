@@ -167,28 +167,6 @@ export function arcToCurves(
   return result
 }
 
-export function equalPoints(a: Point[], b: Point[]) {
-  if (
-    (a == null && b != null) ||
-    (a != null && b == null) ||
-    (a != null && b != null && a.length !== b.length)) {
-    return false
-  }
-
-  if (a != null && b != null) {
-    for (let i = 0, ii = a.length; i < ii; i += 1) {
-      if (
-        a[i] === b[i] ||
-        (a[i] != null && !a[i].equals(b[i]))
-      ) {
-        return false
-      }
-    }
-  }
-
-  return true
-}
-
 /**
  * Adds the given margins to the given rectangle and rotates and flips the
  * rectangle according to the respective styles in style.
@@ -255,13 +233,6 @@ export function getDirectedBounds(
   )
 }
 
-export function contains(bounds: Rectangle, x: number, y: number) {
-  return (
-    bounds.x <= x && bounds.x + bounds.width >= x &&
-    bounds.y <= y && bounds.y + bounds.height >= y
-  )
-}
-
 /**
 * Returns the intersection of two lines as an `Point`.
 */
@@ -286,34 +257,6 @@ export function intersection(
 
   // No intersection
   return null
-}
-
-export function intersects(a: Rectangle, b: Rectangle) {
-  let tw = a.width
-  let th = a.height
-  let rw = b.width
-  let rh = b.height
-
-  if (rw <= 0 || rh <= 0 || tw <= 0 || th <= 0) {
-    return false
-  }
-
-  const tx = a.x
-  const ty = a.y
-  const rx = b.x
-  const ry = b.y
-
-  rw += rx
-  rh += ry
-  tw += tx
-  th += ty
-
-  return (
-    (rw < rx || rw > tx) &&
-    (rh < ry || rh > ty) &&
-    (tw < tx || tw > rx) &&
-    (th < ty || th > ry)
-  )
 }
 
 export function intersectsHotspot(
@@ -361,7 +304,7 @@ export function intersectsHotspot(
       y = pt.y // tslint:disable-line
     }
 
-    return contains(rect, x, y)
+    return rect.containsPoint({ x, y })
   }
 
   return true

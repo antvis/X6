@@ -49,7 +49,7 @@ export function call<T>(
   return invoke(func, args, ctx)
 }
 
-export function repush<T>(array: T[], item: T) {
+function repush<T>(array: T[], item: T) {
   for (let i = 0, ii = array.length; i < ii; i += 1) {
     if (array[i] === item) {
       return array.push(array.splice(i, 1)[0])
@@ -81,4 +81,22 @@ export function cacher<T extends Function>(
   }
 
   return f as any as T
+}
+
+export function once<T extends Function>(this: any, fn: T): T {
+  const ctx = this // tslint:disable-line
+
+  let called = false
+  let result: any
+
+  return function (...args: any[]) {
+    if (called) {
+      return result
+    }
+
+    called = true
+    result = invoke(fn as any, args, ctx)
+
+    return result
+  } as any as T
 }

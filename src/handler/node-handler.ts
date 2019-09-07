@@ -469,7 +469,7 @@ export class NodeHandler extends MouseHandler {
           e.isSource(shape) ||
           (
             hit != null &&
-            util.intersects(shape.bounds, hit) &&
+            shape.bounds.isIntersectWith(hit) &&
             util.isVisible(shape.elem)
           )
         )

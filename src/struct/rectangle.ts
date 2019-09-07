@@ -51,6 +51,80 @@ export class Rectangle {
     return new Point(this.x, this.y + this.height)
   }
 
+  containsPoint(x: number, y: number): boolean
+  containsPoint(point: Point | Point.PointLike): boolean
+  containsPoint(x: number | Point | Point.PointLike, y?: number): boolean {
+    const point = typeof x === 'number' ? { x, y: y! } : x
+    return (
+      point != null &&
+      point.x >= this.x &&
+      point.x <= this.x + this.width &&
+      point.y >= this.y &&
+      point.y <= this.y + this.height
+    )
+  }
+
+  containsRect(x: number, y: number, w: number, h: number): boolean
+  containsRect(rect: Rectangle | Rectangle.RectangleLike): boolean
+  containsRect(
+    x: number | Rectangle | Rectangle.RectangleLike,
+    y?: number, w?: number, h?: number,
+  ) {
+    const b = typeof x === 'number' ? { x, y: y!, width: w!, height: h! } : x
+
+    const x1 = this.x
+    const y1 = this.y
+    const w1 = this.width
+    const h1 = this.height
+
+    const x2 = b.x
+    const y2 = b.y
+    const w2 = b.width
+    const h2 = b.height
+
+    return (
+      x2 >= x1 &&
+      y2 >= y1 &&
+      (x2 + w2) <= (x1 + w1) &&
+      (y2 + h2) <= (y1 + h1)
+    )
+  }
+
+  isIntersectWith(x: number, y: number, w: number, h: number): boolean
+  isIntersectWith(rect: Rectangle | Rectangle.RectangleLike): boolean
+  isIntersectWith(
+    x: number | Rectangle | Rectangle.RectangleLike,
+    y?: number, w?: number, h?: number,
+  ) {
+    const b = typeof x === 'number' ? { x, y: y!, width: w!, height: h! } : x
+
+    let w1 = this.width
+    let h1 = this.height
+    let w2 = b.width
+    let h2 = b.height
+
+    if (w2 <= 0 || h2 <= 0 || w1 <= 0 || h1 <= 0) {
+      return false
+    }
+
+    const x1 = this.x
+    const y1 = this.y
+    const x2 = b.x
+    const y2 = b.y
+
+    w2 += x2
+    h2 += y2
+    w1 += x1
+    h1 += y1
+
+    return (
+      (w2 < x2 || w2 > x1) &&
+      (h2 < y2 || h2 > y1) &&
+      (w1 < x1 || w1 > x2) &&
+      (h1 < y1 || h1 > y2)
+    )
+  }
+
   add(rect: Rectangle | Rectangle.RectangleLike) {
     if (rect != null) {
       const minX = Math.min(this.x, rect.x)
@@ -63,35 +137,6 @@ export class Rectangle {
       this.width = maxX - minX
       this.height = maxY - minY
     }
-  }
-
-  containsPoint(point: Point | Point.PointLike) {
-    return (
-      point != null &&
-      point.x >= this.x &&
-      point.x <= this.x + this.width &&
-      point.y >= this.y &&
-      point.y <= this.y + this.height
-    )
-  }
-
-  containsRect(rect: Rectangle | Rectangle.RectangleLike) {
-    const x2 = rect.x
-    const y2 = rect.y
-    const w2 = rect.width
-    const h2 = rect.height
-
-    const x1 = this.x
-    const y1 = this.y
-    const w1 = this.width
-    const h1 = this.height
-
-    return (
-      x2 >= x1 &&
-      y2 >= y1 &&
-      (x2 + w2) <= (x1 + w1) &&
-      (y2 + h2) <= (y1 + h1)
-    )
   }
 
   intersect(rect: Rectangle | Rectangle.RectangleLike) {

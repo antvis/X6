@@ -187,20 +187,6 @@ export function clone<T>(
   return null
 }
 
-export function removeDuplicates<T extends Object>(arr: T[]) {
-  const dict = new WeakSet<T>()
-  const result: T[] = []
-
-  arr.forEach((item) => {
-    if (!dict.has(item)) {
-      result.push(item)
-      dict.add(item)
-    }
-  })
-
-  return result
-}
-
 export function equalEntries(a: any, b: any) {
   if (
     (a == null && b != null) ||

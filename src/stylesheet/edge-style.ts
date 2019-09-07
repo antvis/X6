@@ -170,7 +170,7 @@ export namespace EdgeStyle {
       let pt = (points != null && points.length > 0) ? points[0] : null
       if (pt != null) {
         pt = view.transformControlPoint(edgeState, pt)!
-        if (util.contains(sourceState.bounds, pt.x, pt.y)) {
+        if (sourceState.bounds.containsPoint(pt.x, pt.y)) {
           pt = null
         }
       }
@@ -351,15 +351,15 @@ export namespace EdgeStyle {
       }
 
       if (
-        !util.contains(targetState.bounds, x, y1) &&
-        !util.contains(sourceState.bounds, x, y1)
+        !targetState.bounds.containsPoint(x, y1) &&
+        !sourceState.bounds.containsPoint(x, y1)
       ) {
         result.push(new Point(x, y1))
       }
 
       if (
-        !util.contains(targetState.bounds, x, y2) &&
-        !util.contains(sourceState.bounds, x, y2)
+        !targetState.bounds.containsPoint(x, y2) &&
+        !sourceState.bounds.containsPoint(x, y2)
       ) {
         result.push(new Point(x, y2))
       }
@@ -367,8 +367,8 @@ export namespace EdgeStyle {
       if (result.length === 1) {
         if (pt != null) {
           if (
-            !util.contains(targetState.bounds, x, pt.y) &&
-            !util.contains(sourceState.bounds, x, pt.y)
+            !targetState.bounds.containsPoint(x, pt.y) &&
+            !sourceState.bounds.containsPoint(x, pt.y)
           ) {
             result.push(new Point(x, pt.y))
           }
@@ -438,8 +438,8 @@ export namespace EdgeStyle {
       const y = (pt != null) ? pt.y : Math.round(b + (t - b) / 2)
 
       if (
-        !util.contains(targetState.bounds, x, y) &&
-        !util.contains(sourceState.bounds, x, y)
+        !targetState.bounds.containsPoint(x, y) &&
+        !sourceState.bounds.containsPoint(x, y)
       ) {
         result.push(new Point(x, y))
       }
@@ -453,8 +453,8 @@ export namespace EdgeStyle {
       }
 
       if (
-        !util.contains(targetState.bounds, x, y) &&
-        !util.contains(sourceState.bounds, x, y)
+        !targetState.bounds.containsPoint(x, y) &&
+        !sourceState.bounds.containsPoint(x, y)
       ) {
         result.push(new Point(x, y))
       }
@@ -462,8 +462,8 @@ export namespace EdgeStyle {
       if (result.length === 1) {
         if (pt != null && result.length === 1) {
           if (
-            !util.contains(targetState.bounds, pt.x, y) &&
-            !util.contains(sourceState.bounds, pt.x, y)
+            !targetState.bounds.containsPoint(pt.x, y) &&
+            !sourceState.bounds.containsPoint(pt.x, y)
           ) {
             result.push(new Point(pt.x, y))
           }
@@ -751,7 +751,7 @@ export namespace EdgeStyle {
       while (
         result.length > 1 &&
         result[1] != null &&
-        util.contains(sourceState.bounds, result[1].x, result[1].y)
+        sourceState.bounds.containsPoint(result[1])
       ) {
         result.splice(1, 1)
       }
@@ -762,7 +762,7 @@ export namespace EdgeStyle {
       while (
         result.length > 1 &&
         result[result.length - 1] != null &&
-        util.contains(targetState.bounds, result[result.length - 1].x, result[result.length - 1].y)
+        targetState.bounds.containsPoint(result[result.length - 1])
       ) {
         result.splice(result.length - 1, 1)
       }

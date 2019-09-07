@@ -19,6 +19,7 @@ import {
   Shapes,
   PageSize,
   Multiplicity,
+  CellPath,
 } from '../struct'
 import {
   CellEditor,
@@ -948,7 +949,7 @@ export class Graph extends Disablable {
   groupCells(
     group?: Cell,
     border: number = 0,
-    cells: Cell[] = util.sortCells(this.getSelectedCells(), true),
+    cells: Cell[] = CellPath.sortCells(this.getSelectedCells(), true),
   ) {
     return this.cellManager.groupCells(group!, border, cells)
   }
@@ -1246,7 +1247,7 @@ export class Graph extends Disablable {
    */
   orderCells(
     toBack: boolean = false,
-    cells: Cell[] = util.sortCells(this.getSelectedCells(), true),
+    cells: Cell[] = CellPath.sortCells(this.getSelectedCells(), true),
   ) {
     return this.cellManager.orderCells(toBack, cells)
   }

@@ -1,4 +1,3 @@
-import * as util from '../util'
 import { Cell, State } from '../core'
 import { Rectangle, Point } from '../struct'
 import { constants, CustomMouseEvent } from '../common'
@@ -75,8 +74,10 @@ export class EdgeSegmentHandler extends EdgeElbowHandler {
       const x = result[0].x * scale + tr.x
       const y = result[0].y * scale + tr.y
 
-      if ((source != null && util.contains(source.bounds, x, y)) ||
-        (target != null && util.contains(target.bounds, x, y))) {
+      if (
+        (source != null && source.bounds.containsPoint(x, y)) ||
+        (target != null && target.bounds.containsPoint(x, y))
+      ) {
         result = [point, point]
       }
     }

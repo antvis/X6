@@ -1,4 +1,3 @@
-import * as util from '../util'
 import { Rectangle, Point, EdgeType } from '../struct'
 import { constants, DomEvent } from '../common'
 import { EdgeStyle } from '../stylesheet'
@@ -149,7 +148,7 @@ export class EdgeElbowHandler extends EdgeHandler {
       this.handleImage == null &&
       this.labelShape != null &&
       this.labelShape.visible &&
-      util.intersects(bounds, this.labelShape.bounds)
+      bounds.isIntersectWith(this.labelShape.bounds)
     ) {
       w = constants.HANDLE_SIZE + 3
       h = constants.HANDLE_SIZE + 3

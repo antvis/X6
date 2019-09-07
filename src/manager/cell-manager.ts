@@ -253,7 +253,7 @@ export class CellManager extends BaseManager {
       ...cells,
       ...this.getAllEdges(cells),
     ]
-    return util.removeDuplicates<Cell>(merged)
+    return util.uniq<Cell>(merged)
   }
 
   getAllEdges(cells: Cell[]) {

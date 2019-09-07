@@ -715,7 +715,7 @@ export class GraphHandler extends MouseHandler {
           pos = util.rotatePoint(pos, cos, sin, cx)
         }
 
-        return !util.contains(pState.bounds, pos.x, pos.y)
+        return !pState.bounds.containsPoint(pos)
       }
     }
 

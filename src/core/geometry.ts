@@ -193,7 +193,7 @@ export class Geometry {
       ) &&
       (
         (this.points == null && geo.points == null) ||
-        (this.points != null && util.equalPoints(this.points, geo.points))
+        (this.points != null && Point.equalPoints(this.points, geo.points))
       ) &&
       (
         (this.offset == null && geo.offset == null) ||

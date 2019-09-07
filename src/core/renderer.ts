@@ -148,7 +148,7 @@ export class Renderer {
       ) ||
       (
         state.absolutePoints != null &&
-        !util.equalPoints(shape.points!, state.absolutePoints as Point[])
+        !Point.equalPoints(shape.points!, state.absolutePoints as Point[])
       )
     )
   }

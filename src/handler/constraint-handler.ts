@@ -1,4 +1,3 @@
-import * as util from '../util'
 import * as images from '../assets/images'
 import { Graph, Model, State } from '../core'
 import { View } from '../core/view'
@@ -223,7 +222,7 @@ export class ConstraintHandler extends BaseHandler {
           this.currentFocus == null ||
           state != null ||
           !this.graph.model.isNode(this.currentFocus.cell) ||
-          !util.intersects(this.currentFocusArea, mouse)
+          !this.currentFocusArea.isIntersectWith(mouse)
         ) &&
         (state !== this.currentFocus)
       ) {
@@ -397,7 +396,7 @@ export class ConstraintHandler extends BaseHandler {
     isSource: boolean,
     existingEdge: boolean,
   ) {
-    return util.intersects(icon.bounds, mouse)
+    return icon.bounds.isIntersectWith(mouse)
   }
 
   dispose() {

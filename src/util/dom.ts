@@ -128,8 +128,11 @@ export function getDocumentMode() {
   return (document as any).documentMode as number
 }
 
-export function getNodeName(node: Element) {
-  return node.nodeName.toLowerCase()
+export function getNodeName(node: Element, lowercase: boolean = true) {
+  const nodeName = node.nodeName
+  return lowercase
+    ? nodeName.toLowerCase()
+    : nodeName.toUpperCase()
 }
 
 export function setAttributes(
@@ -141,8 +144,8 @@ export function setAttributes(
   }
 }
 
-export function createElement(tagName: string, doc?: Document) {
-  return (doc || document).createElement(tagName)
+export function createElement(tagName: string, doc: Document = document) {
+  return doc.createElement(tagName)
 }
 
 export function removeElement(elem: Element | null) {

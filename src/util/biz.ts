@@ -1,36 +1,7 @@
-import { Cell, State } from '../core'
+import { State } from '../core'
 import { getOffset, getScrollOrigin } from './dom'
-import { Point, DirectionMask, CellPath } from '../struct'
+import { Point, DirectionMask } from '../struct'
 import { Align, VAlign } from '../types'
-
-/**
- * // TODO: Move to cell-path
- * Sorts the given cells according to the order in the cell hierarchy.
- * Ascending is optional and defaults to true.
- */
-export function sortCells(cells: Cell[], ascending: boolean = true) {
-  const lookup = new WeakMap<Cell, string[]>()
-
-  cells.sort((o1, o2) => {
-    let p1 = lookup.get(o1)
-    if (p1 == null) {
-      p1 = CellPath.create(o1).split(CellPath.PATH_SEPARATOR)
-      lookup.set(o1, p1)
-    }
-
-    let p2 = lookup.get(o2)
-
-    if (p2 == null) {
-      p2 = CellPath.create(o2).split(CellPath.PATH_SEPARATOR)
-      lookup.set(o2, p2)
-    }
-
-    const comp = CellPath.compare(p1, p2)
-    return (comp === 0) ? 0 : (((comp > 0) === ascending) ? 1 : -1)
-  })
-
-  return cells
-}
 
 /**
  * Converts the specified point (x, y) using the offset of the specified

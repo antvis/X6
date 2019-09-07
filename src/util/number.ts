@@ -12,3 +12,9 @@ export function clamp(value: number, min: number, max: number) {
     ? (value < min ? min : value > max ? max : value)
     : (value < max ? max : value > min ? min : value)
 }
+
+export function isBetween(value: number, min: number, max: number) {
+  return min < max
+    ? (value >= min && value <= max)
+    : (value >= max && value <= min)
+}

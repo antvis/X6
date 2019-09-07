@@ -76,4 +76,26 @@ export namespace Point {
 
     return new Point(x, y)
   }
+
+  export function equalPoints(a: Point[], b: Point[]) {
+    if (
+      (a == null && b != null) ||
+      (a != null && b == null) ||
+      (a != null && b != null && a.length !== b.length)) {
+      return false
+    }
+
+    if (a != null && b != null) {
+      for (let i = 0, ii = a.length; i < ii; i += 1) {
+        if (
+          a[i] === b[i] ||
+          (a[i] != null && !a[i].equals(b[i]))
+        ) {
+          return false
+        }
+      }
+    }
+
+    return true
+  }
 }

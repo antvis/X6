@@ -82,4 +82,32 @@ export namespace CellPath {
 
     return comp
   }
+
+  /**
+   * Sorts the given cells according to the order in the cell hierarchy.
+   * Ascending is optional and defaults to true.
+   */
+  export function sortCells(cells: Cell[], ascending: boolean = true) {
+    const dict = new WeakMap<Cell, string[]>()
+
+    cells.sort((o1, o2) => {
+      let p1 = dict.get(o1)
+      if (p1 == null) {
+        p1 = create(o1).split(PATH_SEPARATOR)
+        dict.set(o1, p1)
+      }
+
+      let p2 = dict.get(o2)
+
+      if (p2 == null) {
+        p2 = create(o2).split(PATH_SEPARATOR)
+        dict.set(o2, p2)
+      }
+
+      const comp = compare(p1, p2)
+      return (comp === 0) ? 0 : (((comp > 0) === ascending) ? 1 : -1)
+    })
+
+    return cells
+  }
 }
