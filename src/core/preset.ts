@@ -1,4 +1,13 @@
 import { Graph } from './graph'
+import { Perimeter } from '../stylesheet'
+import { Shapes } from '../struct'
+import { CellStyle } from '../types'
+
+const commonStyle: CellStyle = {
+  align: 'center',
+  verticalAlign: 'middle',
+  fontColor: 'rgba(0, 0, 0, 0.65)',
+}
 
 export const defaultOptions: Graph.Options = {
   prefixCls: 'x6',
@@ -10,10 +19,26 @@ export const defaultOptions: Graph.Options = {
   tapAndHoldEnabled: true,
   tapAndHoldDelay: 500,
 
+  nodeStyle: {
+    ...commonStyle,
+    shape: Shapes.rectangle,
+    perimeter: Perimeter.rectangle,
+    fill: '#f6edfc',
+    stroke: '#712ed1',
+  },
+
+  edgeStyle: {
+    ...commonStyle,
+    shape: Shapes.connector,
+    endArrow: Shapes.arrowClassic,
+    stroke: '#8f8f8f',
+  },
+
   grid: {
     enabled: true,
     size: 10,
   },
+
   guide: {
     enabled: false,
     rounded: false,
@@ -27,9 +52,11 @@ export const defaultOptions: Graph.Options = {
       enabled: true,
     },
   },
+
   tooltip: {
     enabled: false,
   },
+
   rubberband: {
     enabled: false,
     fadeOut: false,
