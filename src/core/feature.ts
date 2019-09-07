@@ -2,7 +2,7 @@ import * as util from '../util'
 import { Cell } from './cell'
 import { State } from './state'
 import { Graph } from './graph'
-import { Dialect } from '../types'
+import { Dialect, CellStyle } from '../types'
 import { Guide } from '../handler'
 import { Image } from '../struct'
 import { defaultOptions } from './preset'
@@ -266,6 +266,8 @@ export namespace Feature {
   }
 
   export interface Options extends GraphBehavior {
+    nodeStyle?: CellStyle,
+    edgeStyle?: CellStyle,
     grid?: GridOptions | boolean,
     guide?: GuideOptions | boolean,
     tooltip?: TooltipOptions | boolean,
@@ -307,6 +309,14 @@ export namespace Feature {
 
     graph.prefixCls = options.prefixCls!
     graph.dialect = options.dialect === 'html' ? 'html' : 'svg'
+
+    if (options.backgroundImage != null) {
+      graph.backgroundImage = options.backgroundImage
+    }
+
+    if (options.htmlLabels != null) {
+      graph.htmlLabels = options.htmlLabels
+    }
 
     // grid
     // ----

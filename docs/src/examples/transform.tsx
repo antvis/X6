@@ -1,7 +1,7 @@
 import React from 'react'
 import { Graph, DomEvent } from '../../../src'
 
-export class Translate extends React.Component {
+export class Transform extends React.Component {
   private container: HTMLDivElement
   private graph: Graph
 

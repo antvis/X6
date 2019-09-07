@@ -3576,6 +3576,10 @@ export namespace Graph {
     collapsed?: boolean,
     connectable?: boolean,
     overlays?: Overlay[],
+    /**
+     * Stores alternate values for x, y, width and height in a rectangle.
+     */
+    alternateBounds?: Rectangle | Rectangle.RectangleLike,
   }
 
   export interface AddNodeOptions extends CreateNodeOptions {

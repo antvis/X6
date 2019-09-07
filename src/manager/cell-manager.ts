@@ -14,18 +14,22 @@ export class CellManager extends BaseManager {
   // #region :::::::::::: Creating
 
   createNode(options: Graph.CreateNodeOptions): Cell {
-    const geom = new Geometry(
+    const geo = new Geometry(
       options.x,
       options.y,
       options.width,
       options.height,
     )
-    geom.relative = options.relative != null ? options.relative : false
+    geo.relative = options.relative != null ? options.relative : false
     if (options.offset != null) {
-      geom.offset = Point.clone(options.offset)
+      geo.offset = Point.clone(options.offset)
     }
 
-    const node = new Cell(options.data, geom, options.style)
+    if (options.alternateBounds != null) {
+      geo.alternateBounds = Rectangle.clone(options.alternateBounds)
+    }
+
+    const node = new Cell(options.data, geo, options.style)
     node.setId(options.id)
     node.asNode(true)
 
