@@ -10,7 +10,7 @@ export type LineCap = 'butt' | 'round' | 'square'
 export type LineJoin = 'miter' | 'round' | 'bevel'
 export type TextDirection = '' | 'auto' | 'ltr' | 'rtl'
 
-export interface CellStyle {
+export interface Style {
   perimeter?: string | ((...args: any[]) => Point)
   sourcePort?: string
   targetPort?: string

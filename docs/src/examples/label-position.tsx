@@ -1,5 +1,5 @@
 import React from 'react'
-import { Graph, DomEvent, CellStyle } from '../../../src'
+import { Graph, DomEvent, Style } from '../../../src'
 
 export class LabelPosition extends React.Component {
   private container: HTMLDivElement
@@ -9,7 +9,7 @@ export class LabelPosition extends React.Component {
     const graph = new Graph(this.container)
 
     graph.batchUpdate(() => {
-      const style: CellStyle = {
+      const style: Style = {
         shape: 'image',
         image: 'https://gw.alipayobjects.com/zos/basement_prod/759f4922-517b-4e62-adea-5c431f049f47.svg', // tslint:disable-line
 

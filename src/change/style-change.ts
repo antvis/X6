@@ -1,15 +1,15 @@
 import { IChange } from './change'
 import { Cell } from '../core/cell'
 import { Model } from '../core/model'
-import { CellStyle } from '../types'
+import { Style } from '../types'
 
 export class StyleChange implements IChange {
   public readonly model: Model
   public cell: Cell
-  public style: CellStyle
-  public previous: CellStyle
+  public style: Style
+  public previous: Style
 
-  constructor(model: Model, cell: Cell, style: CellStyle) {
+  constructor(model: Model, cell: Cell, style: Style) {
     this.model = model
     this.cell = cell
     this.style = style

@@ -5,7 +5,7 @@ import { State } from '../core'
 import { SvgCanvas2D } from '../canvas'
 import { detector, constants, DomEvent, Disposable } from '../common'
 import { Rectangle, Point } from '../struct'
-import { CellStyle, Direction, Dialect } from '../types'
+import { Style, Direction, Dialect } from '../types'
 
 export class Shape extends Disposable {
   state: State
@@ -33,7 +33,7 @@ export class Shape extends Disposable {
   /**
    * Optional reference to the style of the corresponding `CellState`.
    */
-  style: CellStyle
+  style: Style
 
   className?: string
 

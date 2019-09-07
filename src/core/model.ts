@@ -15,7 +15,7 @@ import {
   GeometryChange,
   UndoableEdit,
 } from '../change'
-import { CellStyle } from '../types'
+import { Style } from '../types'
 
 export class Model extends Events {
   private root: Cell
@@ -737,13 +737,13 @@ export class Model extends Events {
     return cell != null ? cell.getStyle() : null
   }
 
-  setStyle(cell: Cell, style: CellStyle) {
+  setStyle(cell: Cell, style: Style) {
     if (style !== this.getStyle(cell)) {
       this.execute(new StyleChange(this, cell, style))
     }
   }
 
-  doStyleChange(cell: Cell, style: CellStyle) {
+  doStyleChange(cell: Cell, style: Style) {
     const previous = this.getStyle(cell)!
     cell.setStyle(style)
     return previous

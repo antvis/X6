@@ -11,13 +11,13 @@ export class Geometry {
 
   /**
    * The source `Point` of the edge. This is used if the corresponding
-   * edge does not have a source `Node`. Otherwise it is ignored.
+   * edge does not have a source node. Otherwise it is ignored.
    */
   sourcePoint: Point
 
   /**
    * The target `Point` of the edge. This is used if the corresponding
-   * edge does not have a target `Node`. Otherwise it is ignored.
+   * edge does not have a target node. Otherwise it is ignored.
    */
   targetPoint: Point
 
@@ -89,6 +89,12 @@ export class Geometry {
     this.points.push(new Point(x, y))
   }
 
+  /**
+   * Translates the geometry by the specified amount.
+   *
+   * @param dx Specifies the x-coordinate of the translation.
+   * @param dy Specifies the y-coordinate of the translation.
+   */
   translate(dx: number, dy: number) {
     if (!this.relative) {
       Private.translatePoint(this.bounds, dx, dy)
@@ -102,6 +108,12 @@ export class Geometry {
     }
   }
 
+  /**
+   * Rotates the geometry by the given angle around the given center.
+   *
+   * @param angle Specifies the rotation angle in degrees.
+   * @param cx Specifies the center of the rotation.
+   */
   rotate(angle: number, cx: Point) {
     const rad = util.toRad(angle)
     const cos = Math.cos(rad)
@@ -123,9 +135,17 @@ export class Geometry {
     }
   }
 
+  /**
+   * Scales the geometry by the given amount.
+   *
+   * @param sx The horizontal scale factor.
+   * @param sy The vertical scale factor.
+   * @param fixedAspect Optional boolean to keep the aspect ratio fixed.
+   */
   scale(sx: number, sy: number, fixedAspect?: boolean) {
     Private.scalePoint(this.sourcePoint, sx, sy)
     Private.scalePoint(this.targetPoint, sx, sy)
+
     if (this.points != null) {
       this.points.forEach(p => Private.scalePoint(p, sx, sy))
     }

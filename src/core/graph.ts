@@ -8,7 +8,7 @@ import { Feature } from './feature'
 import { Geometry } from './geometry'
 import { Renderer } from './renderer'
 import { StyleSheet, EdgeStyle } from '../stylesheet'
-import { Align, VAlign, CellStyle, Dialect } from '../types'
+import { Align, VAlign, Style, Dialect } from '../types'
 import { constants, detector, DomEvent, CustomMouseEvent, Disablable } from '../common'
 import {
   Rectangle,
@@ -91,7 +91,7 @@ export class Graph extends Disablable {
    *
    * Default is `null`.
    */
-  alternateEdgeStyle: CellStyle
+  alternateEdgeStyle: Style
 
   /**
    * Specifies if native double click events should be detected.
@@ -798,7 +798,7 @@ export class Graph extends Disablable {
    * Sets the style of the specified cells. If no cells are given, then
    * the current selected cells are changed.
    */
-  setCellStyle(style: CellStyle, cells: Cell[] = this.getSelectedCells()) {
+  setCellStyle(style: Style, cells: Cell[] = this.getSelectedCells()) {
     this.cellManager.setCellStyle(style, cells)
   }
 
@@ -829,8 +829,8 @@ export class Graph extends Disablable {
     return this.cellManager.toggleCellsStyle(key, defaultValue, cells)
   }
 
-  updateStyle(style: CellStyle, cell?: Cell): void
-  updateStyle(style: CellStyle, cells?: Cell[]): void
+  updateStyle(style: Style, cell?: Cell): void
+  updateStyle(style: Style, cells?: Cell[]): void
   updateStyle(
     key: string,
     value?: string | number | boolean | null,
@@ -842,11 +842,11 @@ export class Graph extends Disablable {
     cells?: Cell[],
   ): void
   updateStyle(
-    key: string | CellStyle,
+    key: string | Style,
     value?: (string | number | boolean | null) | Cell | Cell[],
     cells?: Cell | Cell[],
   ) {
-    const style: CellStyle = typeof key === 'string' ? { [key]: value } : key
+    const style: Style = typeof key === 'string' ? { [key]: value } : key
     let targets = (typeof key === 'string' ? cells : value) as (Cell | Cell[])
     if (targets == null) {
       targets = this.getSelectedCells()
@@ -3572,7 +3572,7 @@ export namespace Graph {
 
     id?: string,
     data?: any,
-    style?: CellStyle,
+    style?: Style,
     visible?: boolean,
     collapsed?: boolean,
     connectable?: boolean,
@@ -3596,7 +3596,7 @@ export namespace Graph {
 
     id?: string | null,
     data?: any,
-    style?: CellStyle,
+    style?: Style,
     visible?: boolean,
     overlays?: Overlay[],
   }

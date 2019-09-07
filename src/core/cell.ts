@@ -2,12 +2,12 @@ import * as util from '../util'
 import { Disposable } from '../common'
 import { Geometry } from './geometry'
 import { Overlay } from '../struct'
-import { CellStyle } from '../types'
+import { Style } from '../types'
 
 export class Cell extends Disposable {
   public id?: string | null
   public data?: any
-  public style: CellStyle
+  public style: Style
   public visible: boolean
   public geometry: Geometry | null
 
@@ -28,7 +28,7 @@ export class Cell extends Disposable {
   constructor(
     data?: any,
     geometry?: Geometry,
-    style: CellStyle = {},
+    style: Style = {},
   ) {
     super()
     this.data = data
@@ -324,7 +324,7 @@ export class Cell extends Disposable {
     return this.style || null
   }
 
-  setStyle(style: CellStyle) {
+  setStyle(style: Style) {
     this.style = style
   }
 

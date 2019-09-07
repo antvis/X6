@@ -1,9 +1,9 @@
 import { Graph } from './graph'
 import { Perimeter } from '../stylesheet'
 import { Shapes } from '../struct'
-import { CellStyle } from '../types'
+import { Style } from '../types'
 
-const commonStyle: CellStyle = {
+const commonStyle: Style = {
   align: 'center',
   verticalAlign: 'middle',
   fontColor: 'rgba(0, 0, 0, 0.65)',

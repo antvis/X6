@@ -2,7 +2,7 @@ import * as util from '../util'
 import { Cell } from './cell'
 import { State } from './state'
 import { Graph } from './graph'
-import { Dialect, CellStyle } from '../types'
+import { Dialect, Style } from '../types'
 import { Guide } from '../handler'
 import { Image } from '../struct'
 import { defaultOptions } from './preset'
@@ -266,8 +266,8 @@ export namespace Feature {
   }
 
   export interface Options extends GraphBehavior {
-    nodeStyle?: CellStyle,
-    edgeStyle?: CellStyle,
+    nodeStyle?: Style,
+    edgeStyle?: Style,
     grid?: GridOptions | boolean,
     guide?: GuideOptions | boolean,
     tooltip?: TooltipOptions | boolean,

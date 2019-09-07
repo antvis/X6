@@ -5,7 +5,7 @@ import { Rectangle, Point, Image, Constraint } from '../struct'
 import { constants, DomEvent, CustomMouseEvent } from '../common'
 import { Shape, ImageShape, Polyline } from '../shape'
 import { CellMarker } from './cell-marker'
-import { CellStyle } from '../types'
+import { Style } from '../types'
 import { ConstraintHandler } from './constraint-handler'
 import { MouseHandler } from './handler-mouse'
 
@@ -13,7 +13,7 @@ export class ConnectionHandler extends MouseHandler {
   /**
    * Function that is used for creating new edges.
    */
-  factoryMethod?: (source: Cell, target: Cell, style: CellStyle) => Cell
+  factoryMethod?: (source: Cell, target: Cell, style: Style) => Cell
 
   /**
    * Specifies if icons should be displayed inside the graph container instead
@@ -169,7 +169,7 @@ export class ConnectionHandler extends MouseHandler {
 
   constructor(
     graph: Graph,
-    factoryMethod?: (source: Cell, target: Cell, style: CellStyle) => Cell,
+    factoryMethod?: (source: Cell, target: Cell, style: Style) => Cell,
   ) {
     super(graph)
     this.factoryMethod = factoryMethod
@@ -1563,7 +1563,7 @@ export class ConnectionHandler extends MouseHandler {
     data: any,
     sourceNode: Cell,
     targetNode: Cell,
-    style: CellStyle,
+    style: Style,
   ) {
     if (this.factoryMethod == null) {
       return this.graph.addEdge({ parent, id, data, sourceNode, targetNode, style })
@@ -1645,7 +1645,7 @@ export class ConnectionHandler extends MouseHandler {
    * target - <mxCell> that represents the target terminal.
    * style - Optional style from the preview edge.
    */
-  createEdge(data: any, source: Cell, target: Cell, style: CellStyle) {
+  createEdge(data: any, source: Cell, target: Cell, style: Style) {
     let edge = null
 
     // Creates a new edge using the factoryMethod

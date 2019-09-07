@@ -3,7 +3,7 @@ import { constants } from '../common'
 import { BaseManager } from './manager-base'
 import { EdgeStyle } from '../stylesheet'
 import { Graph, Cell, Geometry, State } from '../core'
-import { CellStyle, Align, VAlign } from '../types'
+import { Style, Align, VAlign } from '../types'
 import { Point, Rectangle, Overlay, Image, Shapes, Constraint } from '../struct'
 
 export class CellManager extends BaseManager {
@@ -2270,7 +2270,7 @@ export class CellManager extends BaseManager {
     return {}
   }
 
-  setCellStyle(style: CellStyle, cells: Cell[]) {
+  setCellStyle(style: Style, cells: Cell[]) {
     if (cells != null) {
       this.model.batchUpdate(() => {
         cells.forEach(cell => this.model.setStyle(cell, style))

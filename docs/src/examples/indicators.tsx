@@ -1,5 +1,5 @@
 import React from 'react'
-import { Graph, DomEvent, CellStyle } from '../../../src'
+import { Graph, DomEvent, Style } from '../../../src'
 
 export class Indicators extends React.Component {
   private container: HTMLDivElement
@@ -9,7 +9,7 @@ export class Indicators extends React.Component {
     const graph = new Graph(this.container)
 
     graph.batchUpdate(() => {
-      const style: CellStyle = {
+      const style: Style = {
         shape: 'label',
         align: 'center',
         verticalAlign: 'bottom',

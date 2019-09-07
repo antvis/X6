@@ -1,5 +1,5 @@
 import React from 'react'
-import { Graph, DomEvent, Image, CellStyle } from '../../../src'
+import { Graph, DomEvent, Image, Style } from '../../../src'
 
 export class Images extends React.Component {
   private container: HTMLDivElement
@@ -22,7 +22,7 @@ export class Images extends React.Component {
         },
       })
 
-      const style: CellStyle = {
+      const style: Style = {
         shape: 'label',
         stroke: '#ccc',
         align: 'center',
