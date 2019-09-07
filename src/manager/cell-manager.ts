@@ -4,7 +4,6 @@ import { BaseManager } from './manager-base'
 import { Graph, Cell, Geometry, State } from '../core'
 import { CellStyle, Align, VAlign } from '../types'
 import { Point, Rectangle, Overlay, Image, Shapes, Constraint } from '../struct'
-import { Label } from '../shape'
 
 export class CellManager extends BaseManager {
   constructor(graph: Graph) {
@@ -13,119 +12,7 @@ export class CellManager extends BaseManager {
 
   // #region :::::::::::: Creating
 
-  /**
-   * Returns the clones for the given cells. If the terminal of an edge is not
-   * in the given array, then the respective end is assigned a terminal point
-   * and the terminal is removed.
-   *
-   * @param cells - Array of `Cell`s to be cloned.
-   * @param allowInvalidEdges - Optional boolean that specifies if invalid
-   * edges should be cloned. Default is `true`.
-   * @param mapping - Optional mapping for existing clones.
-   * @param keepPosition - Optional boolean indicating if the position of the
-   * cells should be updated to reflect the lost parent cell. Default is `false`.
-   */
-  cloneCells(
-    cells: Cell[],
-    allowInvalidEdges: boolean = true,
-    mapping: WeakMap<Cell, Cell> = new WeakMap<Cell, Cell>(),
-    keepPosition: boolean = false,
-  ) {
-    let clones: Cell[] = []
-    if (cells != null) {
-      // Creates a dictionary for fast lookups
-      const dict = new WeakMap<Cell, boolean>()
-      const tmp = []
-
-      cells.forEach((cell) => {
-        dict.set(cell, true)
-        tmp.push(cell)
-      })
-
-      if (tmp.length > 0) {
-        const scale = this.view.scale
-        const trans = this.view.translate
-
-        clones = this.model.cloneCells(cells, true, mapping) as Cell[]
-
-        for (let i = 0, ii = cells.length; i < ii; i += 1) {
-          if (
-            !allowInvalidEdges &&
-            this.model.isEdge(clones[i]!) &&
-            !this.graph.isEdgeValid(
-              clones[i],
-              this.model.getTerminal(clones[i], true),
-              this.model.getTerminal(clones[i], false),
-            )
-          ) {
-            (clones as any)[i] = null
-          } else {
-            const geom = this.model.getGeometry(clones[i]!)
-            if (geom != null) {
-              const state = this.view.getState(cells[i])
-              const pstate = this.view.getState(this.model.getParent(cells[i])!)
-
-              if (state != null && pstate != null) {
-                const dx = keepPosition ? 0 : pstate.origin.x
-                const dy = keepPosition ? 0 : pstate.origin.y
-
-                if (this.model.isEdge(clones[i])) {
-                  const pts = state.absolutePoints
-                  if (pts != null) {
-                    // Checks if the source is cloned or sets the terminal point
-                    let source = this.model.getTerminal(cells[i], true)
-                    while (source != null && !dict.get(source)) {
-                      source = this.model.getParent(source)
-                    }
-
-                    if (source == null && pts[0] != null) {
-                      geom.setTerminalPoint(
-                        new Point(
-                          pts[0]!.x / scale - trans.x,
-                          pts[0]!.y / scale - trans.y,
-                        ),
-                        true,
-                      )
-                    }
-
-                    // Checks if the target is cloned or sets the terminal point
-                    let target = this.model.getTerminal(cells[i], false)
-                    while (target != null && !dict.get(target)) {
-                      target = this.model.getParent(target)
-                    }
-
-                    const n = pts.length - 1
-
-                    if (target == null && pts[n] != null) {
-                      geom.setTerminalPoint(
-                        new Point(
-                          pts[n]!.x / scale - trans.x,
-                          pts[n]!.y / scale - trans.y,
-                        ),
-                        false,
-                      )
-                    }
-
-                    // Translates the control points
-                    geom.points && geom.points.forEach((p) => {
-                      p.x += dx
-                      p.y += dy
-                    })
-                  }
-                } else {
-                  geom.translate(dx, dy)
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-
-    return clones
-  }
-
-  createNode(options: Graph.CreateNodeOptions = {}): Cell {
+  createNode(options: Graph.CreateNodeOptions): Cell {
     const geom = new Geometry(
       options.x,
       options.y,
@@ -164,7 +51,7 @@ export class CellManager extends BaseManager {
     return node
   }
 
-  createEdge(options: Graph.CreateEdgeOptions = {}): Cell {
+  createEdge(options: Graph.CreateEdgeOptions): Cell {
     const geom = new Geometry()
     geom.relative = true
 
@@ -203,8 +90,8 @@ export class CellManager extends BaseManager {
 
   addCells(
     cells: Cell[],
-    parent: Cell = this.graph.getDefaultParent()!,
-    index: number = this.model.getChildCount(parent),
+    parent: Cell,
+    index: number,
     sourceNode?: Cell,
     targetNode?: Cell,
   ) {
@@ -342,11 +229,11 @@ export class CellManager extends BaseManager {
     }
 
     this.model.batchUpdate(() => {
-      this.cellsRemoved(removing)
       this.graph.trigger(Graph.events.removeCells, {
         includeEdges,
         cells: removing,
       })
+      this.cellsRemoved(removing)
     })
 
     return removing
@@ -397,557 +284,6 @@ export class CellManager extends BaseManager {
 
         this.graph.trigger(Graph.events.cellsRemoved, { cells })
       })
-    }
-  }
-
-  splitEdge(
-    edge: Cell,
-    cells: Cell[],
-    newEdge: Cell | null,
-    dx: number,
-    dy: number,
-  ) {
-    const parent = this.model.getParent(edge)
-    const source = this.model.getTerminal(edge, true)
-
-    this.model.batchUpdate(() => {
-      if (newEdge == null) {
-        newEdge = this.graph.cloneCell(edge) // tslint:disable-line
-
-        // Removes waypoints before/after new cell
-        const state = this.view.getState(edge)
-        let geo = this.graph.getCellGeometry(newEdge)
-
-        if (geo != null && geo.points != null && state != null) {
-          const t = this.view.translate
-          const s = this.view.scale
-          const idx = util.findNearestSegment(state, (dx + t.x) * s, (dy + t.y) * s)
-          geo.points = geo.points.slice(0, idx)
-
-          geo = this.graph.getCellGeometry(edge)
-
-          if (geo != null && geo.points != null) {
-            geo = geo.clone()
-            geo.points = geo.points.slice(idx)
-            this.model.setGeometry(edge, geo)
-          }
-        }
-      }
-
-      this.cellsMoved(cells, dx, dy, false, false)
-      this.cellsAdded(cells, parent!, this.model.getChildCount(parent), null, null, true)
-      this.cellsAdded([newEdge], parent!, this.model.getChildCount(parent), source, cells[0], false)
-      this.cellConnected(edge, cells[0], true)
-
-      this.graph.trigger(Graph.events.splitEdge, { edge, cells, newEdge, dx, dy })
-    })
-
-    return newEdge
-  }
-
-  // #endregion
-
-  // #region :::::::::::: Grouping
-
-  /**
-   * Adds the cells into the given group. The change is carried out using
-   * <cellsAdded>, <cellsMoved> and <cellsResized>. This method fires
-   * <DomEvent.GROUP_CELLS> while the transaction is in progress. Returns the
-   * new group. A group is only created if there is at least one entry in the
-   * given array of cells.
-   *
-   * Parameters:
-   *
-   * group - <Cell> that represents the target group. If null is specified
-   * then a new group is created using <createGroupCell>.
-   * border - Optional integer that specifies the border between the child
-   * area and the group bounds. Default is 0.
-   * cells - Optional array of <Cells> to be grouped. If null is specified
-   * then the selection cells are used.
-   */
-  groupCells(
-    group: Cell,
-    border: number = 0,
-    cells: Cell[] = util.sortCells(this.graph.getSelectedCells(), true),
-  ) {
-
-    // tslint:disable-next-line
-    cells = this.getCellsForGroup(cells)
-
-    if (group == null) {
-      // tslint:disable-next-line
-      group = this.createGroupCell(cells)
-    }
-
-    const bounds = this.getBoundsForGroup(group, cells, border)
-
-    if (cells.length > 0 && bounds != null) {
-      // Uses parent of group or previous parent of first child
-      let parent = this.model.getParent(group)
-      if (parent == null) {
-        parent = this.model.getParent(cells[0])
-      }
-
-      this.model.batchUpdate(() => {
-        // Checks if the group has a geometry and
-        // creates one if one does not exist
-        if (this.graph.getCellGeometry(group) == null) {
-          this.model.setGeometry(group, new Geometry())
-        }
-
-        // Adds the group into the parent
-        let index = this.model.getChildCount(parent!)
-        this.cellsAdded([group], parent!, index, null, null, false, false, false)
-
-        // Adds the children into the group and moves
-        index = this.model.getChildCount(group)
-        this.cellsAdded(cells, group, index, null, null, false, false, false)
-        this.cellsMoved(cells, -bounds.x, -bounds.y, false, false, false)
-
-        // Resizes the group
-        this.cellsResized([group], [bounds], false)
-
-        this.graph.trigger(Graph.events.groupCells, { group, cells, border })
-      })
-    }
-
-    return group
-  }
-
-  /**
-   * Returns the cells with the same parent as the first cell
-   * in the given array.
-   */
-  protected getCellsForGroup(cells: Cell[]) {
-    const result = []
-
-    if (cells != null && cells.length > 0) {
-      const parent = this.model.getParent(cells[0])
-      result.push(cells[0])
-
-      // Filters selection cells with the same parent
-      for (let i = 1, ii = cells.length; i < ii; i += 1) {
-        if (this.model.getParent(cells[i]) === parent) {
-          result.push(cells[i])
-        }
-      }
-    }
-
-    return result
-  }
-
-  /**
-   * Returns the bounds to be used for the given group and children.
-   */
-  protected getBoundsForGroup(group: Cell, children: Cell[], border: number) {
-    const result = this.graph.getBoundingBoxFromGeometry(children, true)
-    if (result != null) {
-      if (this.graph.isSwimlane(group)) {
-        const size = this.graph.getStartSize(group)
-
-        result.x -= size.width
-        result.y -= size.height
-        result.width += size.width
-        result.height += size.height
-      }
-
-      // Adds the border
-      if (border != null) {
-        result.x -= border
-        result.y -= border
-        result.width += 2 * border
-        result.height += 2 * border
-      }
-    }
-
-    return result
-  }
-
-  /**
-   * Hook for creating the group cell to hold the given array of <Cells> if
-   * no group cell was given to the <group> function.
-   */
-  protected createGroupCell(cells: Cell[]) {
-    const group = new Cell()
-    group.asNode(true)
-    group.setConnectable(false)
-    return group
-  }
-
-  /**
- * Ungroups the given cells by moving the children the children to their
- * parents parent and removing the empty groups. Returns the children that
- * have been removed from the groups.
- *
- * Parameters:
- *
- * cells - Array of cells to be ungrouped. If null is specified then the
- * selection cells are used.
- */
-  ungroupCells(cells: Cell[]) {
-    let result: Cell[] = []
-
-    // tslint:disable-next-line
-    cells = cells.filter(cell => this.model.getChildCount(cell) > 0)
-
-    if (cells != null && cells.length > 0) {
-      this.model.batchUpdate(() => {
-        cells.forEach((cell) => {
-          let children = this.model.getChildren(cell)
-          if (children != null && children.length > 0) {
-            children = children.slice()
-            const parent = this.model.getParent(cell)!
-            const index = this.model.getChildCount(parent)
-
-            this.cellsAdded(children, parent, index, null, null, true)
-            result = result.concat(children)
-          }
-        })
-
-        this.removeCellsAfterUngroup(cells)
-        this.graph.trigger(Graph.events.ungroupCells, { cells })
-      })
-    }
-
-    return result
-  }
-
-  /**
-   * Hook to remove the groups after <ungroupCells>.
-   */
-  removeCellsAfterUngroup(cells: Cell[]) {
-    this.cellsRemoved(this.addAllEdges(cells))
-  }
-
-  removeCellsFromParent(cells: Cell[]) {
-    this.model.batchUpdate(() => {
-      const parent = this.graph.getDefaultParent()!
-      const index = this.model.getChildCount(parent)
-
-      this.cellsAdded(cells, parent, index, null, null, true)
-      this.graph.trigger(Graph.events.removeCellsFromParent, { cells })
-    })
-
-    return cells
-  }
-
-  /**
-   * Updates the bounds of the given groups to include all children and returns
-   * the passed-in cells. Call this with the groups in parent to child order,
-   * top-most group first, the cells are processed in reverse order and cells
-   * with no children are ignored.
-   *
-   * Parameters:
-   *
-   * cells - The groups whose bounds should be updated. If this is null, then
-   * the selection cells are used.
-   * border - Optional border to be added in the group. Default is 0.
-   * moveGroup - Optional boolean that allows the group to be moved. Default
-   * is false.
-   * topBorder - Optional top border to be added in the group. Default is 0.
-   * rightBorder - Optional top border to be added in the group. Default is 0.
-   * bottomBorder - Optional top border to be added in the group. Default is 0.
-   * leftBorder - Optional top border to be added in the group. Default is 0.
-   */
-  updateGroupBounds(
-    cells: Cell[],
-    border: number = 0,
-    moveGroup: boolean = false,
-    topBorder: number = 0,
-    rightBorder: number = 0,
-    bottomBorder: number = 0,
-    leftBorder: number = 0,
-  ) {
-    this.model.beginUpdate()
-    try {
-      for (let i = cells.length - 1; i >= 0; i -= 1) {
-        let geo = this.graph.getCellGeometry(cells[i])
-        if (geo != null) {
-          const children = this.graph.getChildCells(cells[i])
-
-          if (children != null && children.length > 0) {
-            const bounds = this.graph.getBoundingBoxFromGeometry(children, true)
-
-            if (bounds != null && bounds.width > 0 && bounds.height > 0) {
-              let left = 0
-              let top = 0
-
-              // Adds the size of the title area for swimlanes
-              if (this.graph.isSwimlane(cells[i])) {
-                const size = this.graph.getStartSize(cells[i])
-                left = size.width
-                top = size.height
-              }
-
-              geo = geo.clone()
-
-              if (moveGroup) {
-                geo.bounds.x = Math.round(geo.bounds.x + bounds.x - border - left - leftBorder)
-                geo.bounds.y = Math.round(geo.bounds.y + bounds.y - border - top - topBorder)
-              }
-
-              geo.bounds.width =
-                Math.round(bounds.width + 2 * border + left + leftBorder + rightBorder)
-              geo.bounds.height =
-                Math.round(bounds.height + 2 * border + top + topBorder + bottomBorder)
-
-              this.model.setGeometry(cells[i], geo)
-              this.moveCells(
-                children,
-                border + left - bounds.x + leftBorder,
-                border + top - bounds.y + topBorder,
-              )
-            }
-          }
-        }
-      }
-    } finally {
-      this.model.endUpdate()
-    }
-
-    return cells
-  }
-
-  // #endregion
-
-  // #region :::::::::::: Connecting
-
-  connectCell(
-    edge: Cell,
-    terminal: Cell | null,
-    isSource: boolean,
-    constraint?: Constraint,
-  ) {
-    this.model.beginUpdate()
-    try {
-      // const previous = this.model.getTerminal(edge, isSource)
-      this.cellConnected(edge, terminal, isSource, constraint)
-      // this.fireEvent(new DomEventObject(DomEvent.CONNECT_CELL,
-      //   'edge', edge, 'terminal', terminal, 'source', isSource,
-      //   'previous', previous))
-    } finally {
-      this.model.endUpdate()
-    }
-
-    return edge
-  }
-
-  protected cellConnected(
-    edge: Cell,
-    terminal: Cell | null,
-    isSource: boolean,
-    constraint?: Constraint,
-  ) {
-    if (edge != null) {
-      this.model.beginUpdate()
-      try {
-        // const previous = this.model.getTerminal(edge, isSource)
-
-        // Updates the constraint
-        this.setConnectionConstraint(edge, terminal, isSource, constraint)
-
-        // Checks if the new terminal is a port, uses the ID of the port in the
-        // style and the parent of the port as the actual terminal of the edge.
-        if (this.graph.isPortsEnabled()) {
-          let id = null
-
-          if (terminal != null && this.graph.isPort(terminal)) {
-            id = terminal.getId()
-            // tslint:disable-next-line
-            terminal = this.graph.getTerminalForPort(terminal, isSource)!
-          }
-
-          if (id != null) {
-            const key = isSource ? 'sourcePort' : 'targetPort'
-            this.setCellsStyle(key, id, [edge])
-          }
-        }
-
-        this.model.setTerminal(edge, terminal, isSource)
-
-        if (this.graph.resetEdgesOnConnect) {
-          this.resetEdge(edge)
-        }
-
-        // this.fireEvent(new DomEventObject(DomEvent.CELL_CONNECTED,
-        //   'edge', edge, 'terminal', terminal, 'source', isSource,
-        //   'previous', previous))
-      } finally {
-        this.model.endUpdate()
-      }
-    }
-  }
-
-  /**
- * Sets the <mxConnectionConstraint> that describes the given connection point.
- * If no constraint is given then nothing is changed. To remove an existing
- * constraint from the given edge, use an empty constraint instead.
- *
- * Parameters:
- *
- * edge - <Cell> that represents the edge.
- * terminal - <Cell> that represents the terminal.
- * source - Boolean indicating if the terminal is the source or target.
- * constraint - Optional <mxConnectionConstraint> to be used for this
- * connection.
- */
-  setConnectionConstraint(
-    edge: Cell,
-    terminal: Cell | null,
-    isSource: boolean,
-    constraint?: Constraint | null,
-  ) {
-    if (constraint != null) {
-      this.model.beginUpdate()
-
-      try {
-        if (constraint == null || constraint.point == null) {
-          this.setCellsStyle(
-            isSource ? 'exitX' : 'entryX',
-            null,
-            [edge],
-          )
-          this.setCellsStyle(
-            isSource ? 'exitY' : 'entryY',
-            null,
-            [edge],
-          )
-          this.setCellsStyle(
-            isSource ? 'exitDx' : 'entryDx',
-            null,
-            [edge],
-          )
-          this.setCellsStyle(
-            isSource ? 'exitDy' : 'entryDy',
-            null,
-            [edge],
-          )
-          this.setCellsStyle(
-            isSource ? 'exitPerimeter' : 'entryPerimeter',
-            null,
-            [edge],
-          )
-        } else if (constraint.point != null) {
-          this.setCellsStyle(
-            isSource ? 'exitX' : 'entryX',
-            `${constraint.point.x}`,
-            [edge],
-          )
-          this.setCellsStyle(
-            isSource ? 'exitY' : 'entryY',
-            `${constraint.point.y}`,
-            [edge],
-          )
-          this.setCellsStyle(
-            isSource ? 'exitDx' : 'entryDx',
-            `${constraint.dx}`,
-            [edge],
-          )
-          this.setCellsStyle(
-            isSource ? 'exitDy' : 'entryDy',
-            `${constraint.dy}`,
-            [edge],
-          )
-
-          // Only writes 0 since 1 is default
-          if (!constraint.perimeter) {
-            this.setCellsStyle(
-              isSource ? 'exitPerimeter' : 'entryPerimeter',
-              '0',
-              [edge],
-            )
-          } else {
-            this.setCellsStyle(
-              isSource ? 'exitPerimeter' : 'entryPerimeter',
-              null,
-              [edge],
-            )
-          }
-        }
-      } finally {
-        this.model.endUpdate()
-      }
-    }
-  }
-
-  disconnectGraph(cells: Cell[]) {
-    if (cells != null) {
-      this.model.beginUpdate()
-      try {
-        const scale = this.view.scale
-        const tr = this.view.translate
-
-        // Fast lookup for finding cells in array
-        const dict = new WeakMap<Cell, boolean>()
-
-        for (let i = 0; i < cells.length; i += 1) {
-          dict.set(cells[i], true)
-        }
-
-        for (let i = 0; i < cells.length; i += 1) {
-          if (this.model.isEdge(cells[i])) {
-            let geo = this.model.getGeometry(cells[i])
-
-            if (geo != null) {
-              const state = this.view.getState(cells[i])
-              const pstate = this.view.getState(
-                this.model.getParent(cells[i]))
-
-              if (state != null &&
-                pstate != null) {
-                geo = geo.clone()
-
-                const dx = -pstate.origin.x
-                const dy = -pstate.origin.y
-                const pts = state.absolutePoints
-
-                let src = this.model.getTerminal(cells[i], true)
-
-                if (src != null && this.graph.isCellDisconnectable(cells[i], src, true)) {
-                  while (src != null && !dict.get(src)) {
-                    src = this.model.getParent(src)
-                  }
-
-                  if (src == null) {
-                    geo.setTerminalPoint(
-                      new Point(
-                        pts[0]!.x / scale - tr.x + dx,
-                        pts[0]!.y / scale - tr.y + dy,
-                      ),
-                      true,
-                    )
-                    this.model.setTerminal(cells[i], null, true)
-                  }
-                }
-
-                let trg = this.model.getTerminal(cells[i], false)
-
-                if (trg != null && this.graph.isCellDisconnectable(cells[i], trg, false)) {
-                  while (trg != null && !dict.get(trg)) {
-                    trg = this.model.getParent(trg)
-                  }
-
-                  if (trg == null) {
-                    const n = pts.length - 1
-                    geo.setTerminalPoint(
-                      new Point(
-                        pts[n]!.x / scale - tr.x + dx,
-                        pts[n]!.y / scale - tr.y + dy,
-                      ),
-                      false,
-                    )
-                    this.model.setTerminal(cells[i], null, false)
-                  }
-                }
-
-                this.model.setGeometry(cells[i], geo)
-              }
-            }
-          }
-        }
-      } finally {
-        this.model.endUpdate()
-      }
     }
   }
 
@@ -1005,6 +341,619 @@ export class CellManager extends BaseManager {
     }
   }
 
+  splitEdge(
+    edge: Cell,
+    cells: Cell[],
+    newEdge: Cell | null,
+    dx: number,
+    dy: number,
+  ) {
+    this.model.batchUpdate(() => {
+      const parent = this.model.getParent(edge)
+      const source = this.model.getTerminal(edge, true)
+
+      if (newEdge == null) {
+        newEdge = this.graph.cloneCell(edge) // tslint:disable-line
+
+        // Removes waypoints before/after new cell
+        const state = this.view.getState(edge)
+        let geo = this.graph.getCellGeometry(newEdge)
+
+        if (geo != null && geo.points != null && state != null) {
+          const t = this.view.translate
+          const s = this.view.scale
+          const idx = util.findNearestSegment(
+            state,
+            (dx + t.x) * s,
+            (dy + t.y) * s,
+          )
+
+          geo.points = geo.points.slice(0, idx)
+
+          geo = this.graph.getCellGeometry(edge)
+
+          if (geo != null && geo.points != null) {
+            geo = geo.clone()
+            geo.points = geo.points.slice(idx)
+            this.model.setGeometry(edge, geo)
+          }
+        }
+      }
+
+      this.cellsMoved(cells, dx, dy, false, false)
+
+      let index = this.model.getChildCount(parent)
+      this.cellsAdded(cells, parent!, index, null, null, true)
+
+      index = this.model.getChildCount(parent)
+      this.cellsAdded([newEdge], parent!, index, source, cells[0], false)
+      this.cellConnected(edge, cells[0], true)
+
+      this.graph.trigger(
+        Graph.events.splitEdge,
+        { edge, cells, newEdge, dx, dy },
+      )
+    })
+
+    return newEdge
+  }
+
+  cloneCells(
+    cells: Cell[],
+    allowInvalidEdges: boolean = true,
+    mapping: WeakMap<Cell, Cell> = new WeakMap<Cell, Cell>(),
+    keepPosition: boolean = false,
+  ) {
+    let clones: Cell[] = []
+    if (cells != null) {
+      // Creates a dictionary for fast lookups
+      const dict = new WeakMap<Cell, boolean>()
+      const tmp = []
+
+      cells.forEach((cell) => {
+        dict.set(cell, true)
+        tmp.push(cell)
+      })
+
+      if (tmp.length > 0) {
+        const scale = this.view.scale
+        const trans = this.view.translate
+
+        clones = this.model.cloneCells(cells, true, mapping) as Cell[]
+
+        for (let i = 0, ii = cells.length; i < ii; i += 1) {
+          if (
+            !allowInvalidEdges &&
+            this.model.isEdge(clones[i]!) &&
+            !this.graph.isEdgeValid(
+              clones[i],
+              this.model.getTerminal(clones[i], true),
+              this.model.getTerminal(clones[i], false),
+            )
+          ) {
+            (clones as any)[i] = null
+          } else {
+            const geom = this.model.getGeometry(clones[i]!)
+            if (geom != null) {
+              const state = this.view.getState(cells[i])
+              const pstate = this.view.getState(this.model.getParent(cells[i])!)
+
+              if (state != null && pstate != null) {
+                const dx = keepPosition ? 0 : pstate.origin.x
+                const dy = keepPosition ? 0 : pstate.origin.y
+
+                if (this.model.isEdge(clones[i])) {
+                  const pts = state.absolutePoints
+                  if (pts != null) {
+                    // Checks if the source is cloned or sets the terminal point
+                    let source = this.model.getTerminal(cells[i], true)
+                    while (source != null && !dict.get(source)) {
+                      source = this.model.getParent(source)
+                    }
+
+                    if (source == null && pts[0] != null) {
+                      geom.setTerminalPoint(
+                        new Point(
+                          pts[0]!.x / scale - trans.x,
+                          pts[0]!.y / scale - trans.y,
+                        ),
+                        true,
+                      )
+                    }
+
+                    // Checks if the target is cloned or sets the terminal point
+                    let target = this.model.getTerminal(cells[i], false)
+                    while (target != null && !dict.get(target)) {
+                      target = this.model.getParent(target)
+                    }
+
+                    const n = pts.length - 1
+
+                    if (target == null && pts[n] != null) {
+                      geom.setTerminalPoint(
+                        new Point(
+                          pts[n]!.x / scale - trans.x,
+                          pts[n]!.y / scale - trans.y,
+                        ),
+                        false,
+                      )
+                    }
+
+                    // Translates the control points
+                    geom.points && geom.points.forEach((p) => {
+                      p.x += dx
+                      p.y += dy
+                    })
+                  }
+                } else {
+                  geom.translate(dx, dy)
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    return clones
+  }
+
+  // #endregion
+
+  // #region :::::::::::: Grouping
+
+  groupCells(group: Cell, border: number, cells: Cell[]) {
+    cells = this.getCellsForGroup(cells) // tslint:disable-line
+
+    if (group == null) {
+      group = this.graph.createGroup(cells) // tslint:disable-line
+    }
+
+    if (cells.length > 0) {
+      const bounds = this.getBoundsForGroup(group, cells, border)
+      if (bounds != null) {
+        // Uses parent of group or previous parent of first child
+        let parent = this.model.getParent(group)
+        if (parent == null) {
+          parent = this.model.getParent(cells[0])
+        }
+
+        this.model.batchUpdate(() => {
+          // Ensure the group's geometry
+          if (this.graph.getCellGeometry(group) == null) {
+            this.model.setGeometry(group, new Geometry())
+          }
+
+          // Adds the group into the parent
+          let index = this.model.getChildCount(parent!)
+          this.cellsAdded(
+            [group], parent!, index, null, null, false, false, false,
+          )
+
+          // Adds the children into the group and moves
+          index = this.model.getChildCount(group)
+          this.cellsAdded(cells, group, index, null, null, false, false, false)
+          this.cellsMoved(cells, -bounds.x, -bounds.y, false, false, false)
+
+          // Resizes the group
+          this.cellsResized([group], [bounds], false)
+
+          this.graph.trigger(Graph.events.groupCells, { group, cells, border })
+        })
+      }
+    }
+
+    return group
+  }
+
+  /**
+   * Returns the cells with the same parent as the first cell
+   * in the given array.
+   */
+  protected getCellsForGroup(cells: Cell[]) {
+    const result = []
+
+    if (cells != null && cells.length > 0) {
+      const parent = this.model.getParent(cells[0])
+      result.push(cells[0])
+
+      // Filters selection cells with the same parent
+      for (let i = 1, ii = cells.length; i < ii; i += 1) {
+        if (this.model.getParent(cells[i]) === parent) {
+          result.push(cells[i])
+        }
+      }
+    }
+
+    return result
+  }
+
+  /**
+   * Returns the bounds to be used for the given group and children.
+   */
+  protected getBoundsForGroup(group: Cell, children: Cell[], border: number) {
+    const result = this.graph.getBoundingBoxFromGeometry(children, true)
+    if (result != null) {
+      if (this.graph.isSwimlane(group)) {
+        const size = this.graph.getStartSize(group)
+
+        result.x -= size.width
+        result.y -= size.height
+        result.width += size.width
+        result.height += size.height
+      }
+
+      // Adds the border
+      if (border != null) {
+        result.x -= border
+        result.y -= border
+        result.width += 2 * border
+        result.height += 2 * border
+      }
+    }
+
+    return result
+  }
+
+  ungroupCells(cells?: Cell[]) {
+    let result: Cell[] = []
+
+    if (cells == null) {
+      const selected = this.graph.getSelectedCells()
+      // Finds the cells with children
+      // tslint:disable-next-line
+      cells = selected.filter(cell => this.model.getChildCount(cell) > 0)
+    }
+
+    if (cells != null && cells.length > 0) {
+      this.model.batchUpdate(() => {
+        cells!.forEach((cell) => {
+          let children = this.model.getChildren(cell)
+          if (children != null && children.length > 0) {
+            children = children.slice()
+            const parent = this.model.getParent(cell)!
+            const index = this.model.getChildCount(parent)
+
+            this.cellsAdded(children, parent, index, null, null, true)
+            result = result.concat(children)
+          }
+        })
+
+        this.removeGroupsAfterUngroup(cells!)
+        this.graph.trigger(Graph.events.ungroupCells, { cells })
+      })
+    }
+
+    return result
+  }
+
+  removeGroupsAfterUngroup(cells: Cell[]) {
+    this.cellsRemoved(this.addAllEdges(cells))
+  }
+
+  removeCellsFromParent(cells: Cell[]) {
+    this.model.batchUpdate(() => {
+      const parent = this.graph.getDefaultParent()!
+      const index = this.model.getChildCount(parent)
+
+      this.cellsAdded(cells, parent, index, null, null, true)
+      this.graph.trigger(Graph.events.removeCellsFromParent, { cells })
+    })
+
+    return cells
+  }
+
+  updateGroupBounds(
+    cells: Cell[],
+    border: number = 0,
+    moveGroup: boolean = false,
+    topBorder: number = 0,
+    rightBorder: number = 0,
+    bottomBorder: number = 0,
+    leftBorder: number = 0,
+  ) {
+    this.model.batchUpdate(() => {
+      for (let i = cells.length - 1; i >= 0; i -= 1) {
+
+        let geo = this.graph.getCellGeometry(cells[i])
+        if (geo != null) {
+
+          const children = this.graph.getChildCells(cells[i])
+          if (children != null && children.length > 0) {
+
+            const bounds = this.graph.getBoundingBoxFromGeometry(children, true)
+            if (bounds != null && bounds.width > 0 && bounds.height > 0) {
+              let left = 0
+              let top = 0
+
+              // Adds the size of the title area for swimlanes
+              if (this.graph.isSwimlane(cells[i])) {
+                const size = this.graph.getStartSize(cells[i])
+                left = size.width
+                top = size.height
+              }
+
+              geo = geo.clone()
+
+              if (moveGroup) {
+                geo.bounds.x = Math.round(
+                  geo.bounds.x + bounds.x - border - left - leftBorder,
+                )
+
+                geo.bounds.y = Math.round(
+                  geo.bounds.y + bounds.y - border - top - topBorder,
+                )
+              }
+
+              geo.bounds.width = Math.round(
+                bounds.width + 2 * border + left + leftBorder + rightBorder,
+              )
+
+              geo.bounds.height = Math.round(
+                bounds.height + 2 * border + top + topBorder + bottomBorder,
+              )
+
+              this.model.setGeometry(cells[i], geo)
+
+              this.moveCells(
+                children,
+                border + left - bounds.x + leftBorder,
+                border + top - bounds.y + topBorder,
+              )
+            }
+          }
+        }
+      }
+    })
+
+    return cells
+  }
+
+  // #endregion
+
+  // #region :::::::::::: Connection
+
+  connectCell(
+    edge: Cell,
+    terminal: Cell | null,
+    isSource: boolean,
+    constraint?: Constraint,
+  ) {
+    this.model.batchUpdate(() => {
+      const previous = this.model.getTerminal(edge, isSource)
+      this.graph.trigger(Graph.events.connectCell, {
+        edge, terminal, isSource, constraint, previous,
+      })
+
+      this.cellConnected(edge, terminal, isSource, constraint)
+    })
+    return edge
+  }
+
+  protected cellConnected(
+    edge: Cell,
+    terminal: Cell | null,
+    isSource: boolean,
+    constraint?: Constraint,
+  ) {
+    if (edge != null) {
+      this.model.batchUpdate(() => {
+        const previous = this.model.getTerminal(edge, isSource)
+
+        // Updates the constraint
+        this.setConnectionConstraint(edge, terminal, isSource, constraint)
+
+        // Checks if the new terminal is a port, uses the ID of the port
+        // in the style and the parent of the port as the actual terminal
+        // of the edge.
+        if (this.graph.isPortsEnabled()) {
+          let id = null
+
+          if (terminal != null && this.graph.isPort(terminal)) {
+            id = terminal.getId()
+            // tslint:disable-next-line
+            terminal = this.graph.getTerminalForPort(terminal, isSource)!
+          }
+
+          if (id != null) {
+            const key = isSource ? 'sourcePort' : 'targetPort'
+            this.updateCellsStyle(key, id, [edge])
+          }
+        }
+
+        this.model.setTerminal(edge, terminal, isSource)
+
+        if (this.graph.resetEdgesOnConnect) {
+          this.resetEdge(edge)
+        }
+
+        this.graph.trigger(Graph.events.cellConnected, {
+          edge, terminal, isSource, previous, constraint,
+        })
+      })
+    }
+  }
+
+  getConnectionConstraint(
+    edgeState: State,
+    terminalState?: State | null,
+    isSource: boolean = false,
+  ) {
+
+    let point: Point | null = null
+    const style = edgeState.style
+
+    // connection point specified in style
+    const x = isSource ? style.exitX : style.entryX
+    if (x != null) {
+      const y = isSource ? style.exitY : style.entryY
+      if (y != null) {
+        point = new Point(x, y)
+      }
+    }
+
+    let perimeter = true
+    let dx = 0
+    let dy = 0
+
+    if (point != null) {
+      perimeter = (isSource
+        ? style.exitPerimeter
+        : style.entryPerimeter
+      ) !== false
+
+      // Add entry/exit offset
+      dx = (isSource ? style.exitDx : style.entryDx) as number
+      dy = (isSource ? style.exitDy : style.entryDy) as number
+
+      dx = isFinite(dx) ? dx : 0
+      dy = isFinite(dy) ? dy : 0
+    }
+
+    return new Constraint({ point, perimeter, dx, dy })
+  }
+
+  setConnectionConstraint(
+    edge: Cell,
+    terminal: Cell | null,
+    isSource: boolean,
+    constraint?: Constraint | null,
+  ) {
+    if (constraint != null) {
+      this.model.batchUpdate(() => {
+        if (constraint == null || constraint.point == null) {
+          this.updateCellsStyle(isSource ? 'exitX' : 'entryX', null, [edge])
+          this.updateCellsStyle(isSource ? 'exitY' : 'entryY', null, [edge])
+          this.updateCellsStyle(isSource ? 'exitDx' : 'entryDx', null, [edge])
+          this.updateCellsStyle(isSource ? 'exitDy' : 'entryDy', null, [edge])
+          this.updateCellsStyle(
+            isSource ? 'exitPerimeter' : 'entryPerimeter',
+            null,
+            [edge],
+          )
+        } else if (constraint.point != null) {
+
+          this.updateCellsStyle(
+            isSource ? 'exitX' : 'entryX',
+            `${constraint.point.x}`,
+            [edge],
+          )
+          this.updateCellsStyle(
+            isSource ? 'exitY' : 'entryY',
+            `${constraint.point.y}`,
+            [edge],
+          )
+          this.updateCellsStyle(
+            isSource ? 'exitDx' : 'entryDx',
+            `${constraint.dx}`,
+            [edge],
+          )
+          this.updateCellsStyle(
+            isSource ? 'exitDy' : 'entryDy',
+            `${constraint.dy}`,
+            [edge],
+          )
+
+          // Only writes `false` since `true` is default
+          if (!constraint.perimeter) {
+            this.updateCellsStyle(
+              isSource ? 'exitPerimeter' : 'entryPerimeter',
+              false,
+              [edge],
+            )
+          } else {
+            this.updateCellsStyle(
+              isSource ? 'exitPerimeter' : 'entryPerimeter',
+              null,
+              [edge],
+            )
+          }
+        }
+      })
+    }
+  }
+
+  disconnectGraph(cells: Cell[]) {
+    if (cells != null) {
+      this.model.batchUpdate(() => {
+        const s = this.view.scale
+        const t = this.view.translate
+
+        const dict = new WeakMap<Cell, boolean>()
+        cells.forEach(c => (dict.set(c, true)))
+
+        cells.forEach((edge) => {
+          if (this.model.isEdge(edge)) {
+            let geo = this.model.getGeometry(edge)
+            if (geo != null) {
+              const state = this.view.getState(edge)
+              const pstate = this.view.getState(this.model.getParent(edge))
+
+              if (state != null && pstate != null) {
+                geo = geo.clone()
+
+                const dx = -pstate.origin.x
+                const dy = -pstate.origin.y
+                const pts = state.absolutePoints
+
+                let src = this.model.getTerminal(edge, true)
+                if (
+                  src != null &&
+                  this.graph.isCellDisconnectable(edge, src, true)
+                ) {
+
+                  while (src != null && !dict.get(src)) {
+                    src = this.model.getParent(src)
+                  }
+
+                  if (src == null) {
+                    geo.setTerminalPoint(
+                      new Point(
+                        pts[0]!.x / s - t.x + dx,
+                        pts[0]!.y / s - t.y + dy,
+                      ),
+                      true,
+                    )
+                    this.model.setTerminal(edge, null, true)
+                  }
+                }
+
+                let trg = this.model.getTerminal(edge, false)
+                if (
+                  trg != null &&
+                  this.graph.isCellDisconnectable(edge, trg, false)
+                ) {
+
+                  while (trg != null && !dict.get(trg)) {
+                    trg = this.model.getParent(trg)
+                  }
+
+                  if (trg == null) {
+                    const n = pts.length - 1
+                    geo.setTerminalPoint(
+                      new Point(
+                        pts[n]!.x / s - t.x + dx,
+                        pts[n]!.y / s - t.y + dy,
+                      ),
+                      false,
+                    )
+                    this.model.setTerminal(edge, null, false)
+                  }
+                }
+
+                this.model.setGeometry(edge, geo)
+              }
+            }
+          }
+        })
+      })
+    }
+  }
+
+  /**
+   * Returns the nearest point in the list of absolute points
+   * or the center of the opposite terminal.
+   */
   getConnectionPoint(
     terminalState: State,
     constraint: Constraint,
@@ -1102,6 +1051,77 @@ export class CellManager extends BaseManager {
     return result
   }
 
+  getOutlineConstraint(point: Point, terminalState: State, me: any) {
+    if (terminalState.shape != null) {
+      const bounds = this.view.getPerimeterBounds(terminalState)
+      const direction = terminalState.style.direction
+
+      if (direction === 'north' || direction === 'south') {
+        bounds.x += bounds.width / 2 - bounds.height / 2
+        bounds.y += bounds.height / 2 - bounds.width / 2
+        const tmp = bounds.width
+        bounds.width = bounds.height
+        bounds.height = tmp
+      }
+
+      const alpha = util.toRad(terminalState.shape.getShapeRotation())
+
+      if (alpha !== 0) {
+        const cos = Math.cos(-alpha)
+        const sin = Math.sin(-alpha)
+
+        const ct = new Point(bounds.getCenterX(), bounds.getCenterY())
+        // tslint:disable-next-line
+        point = util.rotatePoint(point, cos, sin, ct)
+      }
+
+      let sx = 1
+      let sy = 1
+      let dx = 0
+      let dy = 0
+
+      // LATER: Add flipping support for image shapes
+      if (this.model.isNode(terminalState.cell)) {
+        let flipH = terminalState.style.flipH
+        let flipV = terminalState.style.flipV
+
+        if (direction === 'north' || direction === 'south') {
+          const tmp = flipH
+          flipH = flipV
+          flipV = tmp
+        }
+
+        if (flipH) {
+          sx = -1
+          dx = -bounds.width
+        }
+
+        if (flipV) {
+          sy = -1
+          dy = -bounds.height
+        }
+      }
+
+      // tslint:disable-next-line
+      point = new Point(
+        (point.x - bounds.x) * sx - dx + bounds.x,
+        (point.y - bounds.y) * sy - dy + bounds.y,
+      )
+
+      const x = (bounds.width === 0)
+        ? 0
+        : Math.round((point.x - bounds.x) * 1000 / bounds.width) / 1000
+
+      const y = (bounds.height === 0)
+        ? 0
+        : Math.round((point.y - bounds.y) * 1000 / bounds.height) / 1000
+
+      return new Constraint({ point: new Point(x, y), perimeter: false })
+    }
+
+    return null
+  }
+
   // #endregion
 
   // #region :::::::::::: Sizing
@@ -1118,8 +1138,8 @@ export class CellManager extends BaseManager {
 
   updateCellSize(cell: Cell, ignoreChildren: boolean = false) {
     this.model.batchUpdate(() => {
-      this.cellSizeUpdated(cell, ignoreChildren)
       this.graph.trigger(Graph.events.updateCellSize, { cell, ignoreChildren })
+      this.cellSizeUpdated(cell, ignoreChildren)
     })
     return cell
   }
@@ -1127,15 +1147,14 @@ export class CellManager extends BaseManager {
   cellSizeUpdated(cell: Cell, ignoreChildren: boolean) {
     if (cell != null) {
       this.model.batchUpdate(() => {
-        const size = this.getPreferredSizeForCell(cell)
+        const size = this.getCellPreferredSize(cell)
         let geo = this.model.getGeometry(cell)
         if (size != null && geo != null) {
           const collapsed = this.graph.isCellCollapsed(cell)
           geo = geo.clone()
 
           if (this.graph.isSwimlane(cell)) {
-            const state = this.view.getState(cell)
-            const style = (state != null) ? state.style : this.getCellStyle(cell)
+            const style = this.graph.getStyle(cell)
             const cellStyle = this.model.getStyle(cell) || {}
 
             if (style.horizontal !== false) {
@@ -1167,11 +1186,11 @@ export class CellManager extends BaseManager {
           if (!ignoreChildren && !collapsed) {
             const bounds = this.view.getBounds(this.model.getChildren(cell))
             if (bounds != null) {
-              const tr = this.view.translate
-              const scale = this.view.scale
+              const t = this.view.translate
+              const s = this.view.scale
 
-              const width = (bounds.x + bounds.width) / scale - geo.bounds.x - tr.x
-              const height = (bounds.y + bounds.height) / scale - geo.bounds.y - tr.y
+              const width = (bounds.x + bounds.width) / s - geo.bounds.x - t.x
+              const height = (bounds.y + bounds.height) / s - geo.bounds.y - t.y
 
               geo.bounds.width = Math.max(geo.bounds.width, width)
               geo.bounds.height = Math.max(geo.bounds.height, height)
@@ -1184,14 +1203,14 @@ export class CellManager extends BaseManager {
     }
   }
 
-  protected getPreferredSizeForCell(cell: Cell) {
+  protected getCellPreferredSize(cell: Cell) {
     let result = null
 
     if (cell != null && !this.model.isEdge(cell)) {
-      const state = this.view.getState(cell) || this.view.createState(cell)
+      const state = this.view.getState(cell, true)!
       const style = state.style
-
       const fontSize = style.fontSize || constants.DEFAULT_FONTSIZE
+
       let dx = 0
       let dy = 0
 
@@ -1199,11 +1218,11 @@ export class CellManager extends BaseManager {
       if (this.graph.getImage(state) != null || style.image != null) {
         if (style.shape === Shapes.label) {
           if (style.verticalAlign === 'middle') {
-            dx += style.imageWidth || Label.prototype.imageSize
+            dx += style.imageWidth || 0
           }
 
           if (style.align !== 'center') {
-            dy += style.imageHeight || Label.prototype.imageSize
+            dy += style.imageHeight || 0
           }
         }
       }
@@ -1218,10 +1237,7 @@ export class CellManager extends BaseManager {
       dy += style.spacingBottom || 0
 
       // Add spacing for collapse/expand icon
-      // LATER: Check alignment and use constants
-      // for image spacing
       const image = this.graph.getFoldingImage(state)
-
       if (image != null) {
         dx += image.width + 8
       }
@@ -1263,8 +1279,8 @@ export class CellManager extends BaseManager {
 
   resizeCells(cells: Cell[], bounds: Rectangle[], recurse: boolean) {
     this.model.batchUpdate(() => {
-      this.cellsResized(cells, bounds, recurse)
       this.graph.trigger(Graph.events.resizeCells, { cells, bounds })
+      this.cellsResized(cells, bounds, recurse)
     })
     return cells
   }
@@ -1278,33 +1294,24 @@ export class CellManager extends BaseManager {
       this.model.batchUpdate(() => {
         for (let i = 0, ii = cells.length; i < ii; i += 1) {
           this.cellResized(cells[i], bounds[i], false, recurse)
+
           if (this.graph.isExtendParent(cells[i])) {
             this.extendParent(cells[i])
           }
+
           this.constrainChild(cells[i])
         }
 
         if (this.graph.resetEdgesOnResize) {
-          this.resetEdges(cells)
+          this.resetOtherEdges(cells)
         }
-
-        this.graph.trigger(Graph.events.cellsResized, { cells, bounds })
       })
+
+      this.graph.trigger(Graph.events.cellsResized, { cells, bounds })
     }
   }
 
-  /**
-   * Resizes the parents recursively so that they contain the complete area
-   * of the resized child cell.
-   *
-   * Parameters:
-   *
-   * cell - <Cell> whose bounds should be changed.
-   * bounds - <Rects> that represent the new bounds.
-   * ignoreRelative - Boolean that indicates if relative cells should be ignored.
-   * recurse - Optional boolean that specifies if the children should be resized.
-   */
-  cellResized(
+  protected cellResized(
     cell: Cell,
     bounds: Rectangle,
     ignoreRelative: boolean,
@@ -1351,29 +1358,14 @@ export class CellManager extends BaseManager {
         }
 
         this.model.setGeometry(cell, geo!)
-        this.graph.constrainChildCells(cell)
+        this.constrainChildCells(cell)
       })
     }
   }
 
-  /**
-   * Scales the points, position and size of the given cell according to the
-   * given vertical and horizontal scaling factors.
-   *
-   * Parameters:
-   *
-   * cell - <Cell> whose geometry should be scaled.
-   * dx - Horizontal scaling factor.
-   * dy - Vertical scaling factor.
-   * recurse - Boolean indicating if the child cells should be scaled.
-   */
-  scaleCell(cell: Cell, dx: number, dy: number, recurse: boolean) {
+  scaleCell(cell: Cell, sx: number, sy: number, recurse: boolean) {
     let geo = this.model.getGeometry(cell)
-
     if (geo != null) {
-      const state = this.view.getState(cell)
-      const style = (state != null) ? state.style : this.getCellStyle(cell)
-
       geo = geo.clone()
 
       // Stores values for restoring based on style
@@ -1382,16 +1374,17 @@ export class CellManager extends BaseManager {
       const w = geo.bounds.width
       const h = geo.bounds.height
 
-      geo.scale(dx, dy, style.aspect)
+      const style = this.graph.getStyle(cell)
+      geo.scale(sx, sy, style.aspect)
 
       if (style.resizeWidth === true) {
-        geo.bounds.width = w * dx
+        geo.bounds.width = w * sx
       } else if (style.resizeWidth === false) {
         geo.bounds.width = w
       }
 
       if (style.resizeHeight === true) {
-        geo.bounds.height = h * dy
+        geo.bounds.height = h * sy
       } else if (style.resizeHeight === false) {
         geo.bounds.height = h
       }
@@ -1414,12 +1407,20 @@ export class CellManager extends BaseManager {
     }
   }
 
-  extendParent(cell: Cell) {
+  /**
+   * Resizes the parents recursively so that they contain the complete
+   * area of the resized child cell.
+   */
+  protected extendParent(cell: Cell | null) {
     if (cell != null) {
       const parent = this.model.getParent(cell)
       let pgeo = this.graph.getCellGeometry(parent!)
 
-      if (parent != null && pgeo != null && !this.graph.isCellCollapsed(parent)) {
+      if (
+        parent != null &&
+        pgeo != null &&
+        !this.graph.isCellCollapsed(parent)
+      ) {
         const geo = this.graph.getCellGeometry(cell)
 
         if (
@@ -1431,8 +1432,16 @@ export class CellManager extends BaseManager {
           )
         ) {
           pgeo = pgeo.clone()
-          pgeo.bounds.width = Math.max(pgeo.bounds.width, geo.bounds.x + geo.bounds.width)
-          pgeo.bounds.height = Math.max(pgeo.bounds.height, geo.bounds.y + geo.bounds.height)
+
+          pgeo.bounds.width = Math.max(
+            pgeo.bounds.width,
+            geo.bounds.x + geo.bounds.width,
+          )
+
+          pgeo.bounds.height = Math.max(
+            pgeo.bounds.height,
+            geo.bounds.y + geo.bounds.height,
+          )
 
           this.cellsResized([parent], [pgeo.bounds], false)
         }
@@ -1440,48 +1449,53 @@ export class CellManager extends BaseManager {
     }
   }
 
+  /**
+   * Keeps the given cell inside the bounds.
+   *
+   * @param cell - The cell will be constrained.
+   * @param  sizeFirst - Specifies if the size should be changed first.
+   * Default is `true`.
+   */
   constrainChild(cell: Cell, sizeFirst: boolean = true) {
     if (cell != null) {
       let geo = this.graph.getCellGeometry(cell)
-
-      if (geo != null && (this.graph.isConstrainRelativeChildren() || !geo.relative)) {
+      if (
+        geo != null &&
+        (this.graph.isConstrainRelativeChildren() || !geo.relative)
+      ) {
         const parent = this.model.getParent(cell)!
         // const pgeo = this.getCellGeometry(parent)
         let max = this.graph.getMaximumGraphBounds()
-
         // Finds parent offset
         if (max != null) {
           const off = this.graph.getBoundingBoxFromGeometry([parent], false)
-
           if (off != null) {
-            max = Rectangle.clone(max)
-
+            max = max.clone()
             max.x -= off.x
             max.y -= off.y
           }
         }
 
         if (this.graph.isConstrainChild(cell)) {
-          let tmp = this.getCellContainmentArea(cell)
-
-          if (tmp != null) {
+          let area = this.getCellContainmentArea(cell)
+          if (area != null) {
             const overlap = this.graph.getOverlap(cell)
 
             if (overlap > 0) {
-              tmp = Rectangle.clone(tmp)
+              area = Rectangle.clone(area)
 
-              tmp.x -= tmp.width * overlap
-              tmp.y -= tmp.height * overlap
-              tmp.width += 2 * tmp.width * overlap
-              tmp.height += 2 * tmp.height * overlap
+              area.x -= area.width * overlap
+              area.y -= area.height * overlap
+              area.width += 2 * area.width * overlap
+              area.height += 2 * area.height * overlap
             }
 
             // Find the intersection between max and tmp
             if (max == null) {
-              max = tmp
+              max = area
             } else {
               max = Rectangle.clone(max)
-              max.intersect(tmp)
+              max.intersect(area)
             }
           }
         }
@@ -1558,24 +1572,28 @@ export class CellManager extends BaseManager {
     }
   }
 
+  /**
+   * Constrains the children of the given cell.
+   */
+  constrainChildCells(cell: Cell) {
+    cell.eachChild(child => this.constrainChild(child))
+  }
+
   getCellContainmentArea(cell: Cell) {
     if (cell != null && !this.model.isEdge(cell)) {
       const parent = this.model.getParent(cell)
-
       if (parent != null && parent !== this.graph.getDefaultParent()) {
-        const g = this.model.getGeometry(parent)
-
-        if (g != null) {
+        const geo = this.model.getGeometry(parent)
+        if (geo != null) {
           let x = 0
           let y = 0
-          let w = g.bounds.width
-          let h = g.bounds.height
+          let w = geo.bounds.width
+          let h = geo.bounds.height
 
           if (this.graph.isSwimlane(parent)) {
             const size = this.graph.getStartSize(parent)
+            const style = this.graph.getStyle(parent)
 
-            const state = this.view.getState(parent)
-            const style = (state != null) ? state.style : this.getCellStyle(parent)
             const dir = style.direction || 'east'
             const flipH = style.flipH === true
             const flipV = style.flipV === true
@@ -1608,22 +1626,33 @@ export class CellManager extends BaseManager {
     return null
   }
 
+  getBoundingBox(cells: Cell[]) {
+    let result: Rectangle | null = null
+
+    if (cells == null || cells.length <= 0) {
+      return result
+    }
+
+    cells.forEach((cell) => {
+      if (this.model.isNode(cell) || this.model.isEdge(cell)) {
+        const bbox = this.view.getBoundingBox(this.view.getState(cell), true)
+        if (bbox != null) {
+          if (result == null) {
+            result = Rectangle.clone(bbox)
+          } else {
+            result.add(bbox)
+          }
+        }
+      }
+    })
+
+    return result
+  }
+
   // #endregion
 
   // #region :::::::::::: Moving
 
-  /**
-   * Moves or clones the specified cells and moves the cells or clones by the
-   * given amount, adding them to the optional target cell.
-   *
-   * @param cells Array of `Cell`s to be moved, cloned or added to the target.
-   * @param dx Specifies the x-coordinate of the vector. Default is `0`.
-   * @param dy Specifies the y-coordinate of the vector. Default is `0`.
-   * @param clone Indicating if the cells should be cloned. Default is `false`.
-   * @param target The new parent of the cells.
-   * @param e Mouseevent that triggered the invocation.
-   * @param cache Optional mapping for existing clones.
-   */
   moveCells(
     cells: Cell[],
     dx: number = 0,
@@ -1638,10 +1667,8 @@ export class CellManager extends BaseManager {
       cells = this.model.getTopmostCells(cells) // tslint:disable-line
 
       this.model.batchUpdate(() => {
-        // Faster cell lookups to remove relative edge labels with selected
-        // terminals to avoid explicit and implicit move at same time
         const dict = new WeakMap<Cell, boolean>()
-        cells.forEach(cell => (dict.set(cell, true)))
+        cells.forEach(c => (dict.set(c, true)))
 
         const isSelected = (cell: Cell | null) => {
           let node = cell
@@ -1694,9 +1721,18 @@ export class CellManager extends BaseManager {
           this.graph.setAllowNegativeCoordinates(true)
         }
 
+        this.graph.trigger(
+          Graph.events.moveCells,
+          { cells, dx, dy, clone, target, e },
+        )
+
         this.cellsMoved(
           cells, dx, dy,
-          !clone && this.graph.isDisconnectOnMove() && this.graph.isAllowDanglingEdges(),
+          (
+            !clone &&
+            this.graph.isDisconnectOnMove() &&
+            this.graph.isAllowDanglingEdges()
+          ),
           target == null,
           this.graph.isExtendParentsOnMove() && target == null,
         )
@@ -1707,21 +1743,12 @@ export class CellManager extends BaseManager {
           const index = this.model.getChildCount(target)
           this.cellsAdded(cells, target, index, null, null, true)
         }
-
-        // Dispatches a move event
-        // this.fireEvent(new DomEventObject(DomEvent.MOVE_CELLS, 'cells', cells,
-        //   'dx', dx, 'dy', dy, 'clone', clone, 'target', target, 'event', evt))
       })
     }
 
     return cells
   }
 
-  /**
-   * Moves the specified cells by the given vector, disconnecting the cells
-   * using disconnectGraph is disconnect is true. This method fires
-   * <DomEvent.CELLS_MOVED> while the transaction is in progress.
-   */
   protected cellsMoved(
     cells: Cell[],
     dx: number,
@@ -1731,45 +1758,43 @@ export class CellManager extends BaseManager {
     extend: boolean = false,
   ) {
     if (cells != null && (dx !== 0 || dy !== 0)) {
-      this.model.beginUpdate()
-      try {
+      this.model.batchUpdate(() => {
         if (disconnect) {
           this.disconnectGraph(cells)
         }
 
-        for (let i = 0; i < cells.length; i += 1) {
-          this.translateCell(cells[i], dx, dy)
-
-          if (extend && this.graph.isExtendParent(cells[i])) {
-            this.extendParent(cells[i])
+        cells.forEach((cell) => {
+          this.translateCell(cell, dx, dy)
+          if (extend && this.graph.isExtendParent(cell)) {
+            this.extendParent(cell)
           } else if (constrain) {
-            this.constrainChild(cells[i])
+            this.constrainChild(cell)
           }
-        }
+        })
 
         if (this.graph.resetEdgesOnMove) {
-          this.resetEdges(cells)
+          this.resetOtherEdges(cells)
         }
 
-        // this.fireEvent(new DomEventObject(DomEvent.CELLS_MOVED,
-        //   'cells', cells, 'dx', dx, 'dy', dy, 'disconnect', disconnect))
-      } finally {
-        this.model.endUpdate()
-      }
+        this.graph.trigger(
+          Graph.events.cellsMoved,
+          { cells, dx, dy, disconnect },
+        )
+      })
     }
   }
 
-  /**
-   * Translates the geometry of the given cell and stores the new,
-   * translated geometry in the model as an atomic change.
-   */
   translateCell(cell: Cell, dx: number, dy: number) {
     let geo = this.model.getGeometry(cell)
     if (geo != null) {
       geo = geo.clone()
-      geo.translate(+dx, +dy)
+      geo.translate(dx, dy)
 
-      if (!geo.relative && this.model.isNode(cell) && !this.graph.isAllowNegativeCoordinates()) {
+      if (
+        !geo.relative &&
+        this.model.isNode(cell) &&
+        !this.graph.isAllowNegativeCoordinates()
+      ) {
         geo.bounds.x = Math.max(0, geo.bounds.x)
         geo.bounds.y = Math.max(0, geo.bounds.y)
       }
@@ -1779,9 +1804,7 @@ export class CellManager extends BaseManager {
         let angle = 0
 
         if (this.model.isNode(parent)) {
-          const state = this.view.getState(parent)
-          const style = (state != null) ? state.style : this.getCellStyle(parent)
-
+          const style = this.graph.getStyle(parent)
           angle = style.rotation || 0
         }
 
@@ -1789,7 +1812,9 @@ export class CellManager extends BaseManager {
           const rad = util.toRad(-angle)
           const cos = Math.cos(rad)
           const sin = Math.sin(rad)
-          const pt = util.rotatePoint(new Point(dx, dy), cos, sin, new Point(0, 0))
+          const pt = util.rotatePoint(
+            new Point(dx, dy), cos, sin, new Point(0, 0),
+          )
           dx = pt.x // tslint:disable-line
           dy = pt.y // tslint:disable-line
         }
@@ -1806,44 +1831,28 @@ export class CellManager extends BaseManager {
     }
   }
 
-  resetEdges(cells: Cell[]) {
+  resetOtherEdges(cells: Cell[]) {
     if (cells != null) {
       // Prepares faster cells lookup
       const dict = new WeakMap<Cell, boolean>()
+      cells.forEach(c => (dict.set(c, true)))
 
-      for (let i = 0; i < cells.length; i += 1) {
-        dict.set(cells[i], true)
-      }
-
-      this.model.beginUpdate()
-      try {
-        for (let i = 0; i < cells.length; i += 1) {
-          const edges = this.model.getEdges(cells[i])
-
+      this.model.batchUpdate(() => {
+        cells.forEach((cell) => {
+          const edges = this.model.getEdges(cell)
           if (edges != null) {
-            for (let j = 0; j < edges.length; j += 1) {
-              const state = this.view.getState(edges[j])
-
-              const source = (state != null)
-                ? state.getVisibleTerminal(true)
-                : this.view.getVisibleTerminal(edges[j], true)
-
-              const target = (state != null)
-                ? state.getVisibleTerminal(false)
-                : this.view.getVisibleTerminal(edges[j], false)
-
+            edges.forEach((edge) => {
+              const [source, target] = this.getVisibleTerminals(edge)
               // Checks if one of the terminals is not in the given array
               if (!dict.get(source!) || !dict.get(target!)) {
-                this.resetEdge(edges[j])
+                this.resetEdge(edge)
               }
-            }
+            })
           }
 
-          this.resetEdges(this.model.getChildren(cells[i]))
-        }
-      } finally {
-        this.model.endUpdate()
-      }
+          this.resetOtherEdges(this.model.getChildren(cell))
+        })
+      })
     }
   }
 
@@ -1861,16 +1870,133 @@ export class CellManager extends BaseManager {
 
   // #endregion
 
+  // #region :::::::::::: Align
+
+  alignCells(
+    align: Align | VAlign,
+    cells: Cell[],
+    param?: number,
+  ) {
+    if (cells != null && cells.length > 1) {
+
+      let coord = param
+
+      // Finds the required coordinate for the alignment
+      if (coord == null) {
+        for (let i = 0, ii = cells.length; i < ii; i += 1) {
+          const state = this.view.getState(cells[i])
+          if (state != null && !this.model.isEdge(cells[i])) {
+            if (coord == null) {
+              if (align === 'center') {
+                coord = state.bounds.x + state.bounds.width / 2
+              } else if (align === 'right') {
+                coord = state.bounds.x + state.bounds.width
+              } else if (align === 'top') {
+                coord = state.bounds.y
+              } else if (align === 'middle') {
+                coord = state.bounds.y + state.bounds.height / 2
+              } else if (align === 'bottom') {
+                coord = state.bounds.y + state.bounds.height
+              } else {
+                coord = state.bounds.x
+              }
+            } else {
+              if (align === 'right') {
+                coord = Math.max(coord, state.bounds.x + state.bounds.width)
+              } else if (align === 'top') {
+                coord = Math.min(coord, state.bounds.y)
+              } else if (align === 'bottom') {
+                coord = Math.max(coord, state.bounds.y + state.bounds.height)
+              } else {
+                coord = Math.min(coord, state.bounds.x)
+              }
+            }
+          }
+        }
+      }
+
+      // Aligns the cells to the coordinate
+      this.model.batchUpdate(() => {
+        const s = this.view.scale
+        cells.forEach((cell) => {
+          const state = this.view.getState(cell)
+          if (state != null && coord != null) {
+            const bounds = state.bounds
+            let geo = this.graph.getCellGeometry(cell)
+            if (geo != null && !this.model.isEdge(cell)) {
+              geo = geo.clone()
+
+              if (align === 'center') {
+                geo.bounds.x += (coord - bounds.x - bounds.width / 2) / s
+              } else if (align === 'right') {
+                geo.bounds.x += (coord - bounds.x - bounds.width) / s
+              } else if (align === 'top') {
+                geo.bounds.y += (coord - bounds.y) / s
+              } else if (align === 'middle') {
+                geo.bounds.y += (coord - bounds.y - bounds.height / 2) / s
+              } else if (align === 'bottom') {
+                geo.bounds.y += (coord - bounds.y - bounds.height) / s
+              } else {
+                geo.bounds.x += (coord - bounds.x) / s
+              }
+
+              this.graph.resizeCell(cell, geo.bounds)
+            }
+          }
+        })
+      })
+
+      this.graph.trigger(Graph.events.alignCells, { align, cells })
+    }
+
+    return cells
+  }
+
+  //#endregion
+
+  // #region :::::::::::: Order
+
+  orderCells(toBack: boolean, cells: Cell[]) {
+    this.model.batchUpdate(() => {
+      this.graph.trigger(Graph.events.orderCells, { cells, toBack })
+      this.cellsOrdered(cells, toBack)
+    })
+    return cells
+  }
+
+  protected cellsOrdered(cells: Cell[], toBack: boolean) {
+    if (cells != null) {
+      this.model.batchUpdate(() => {
+        cells.forEach((cell, i) => {
+          const parent = this.model.getParent(cell)!
+
+          if (toBack) {
+            this.model.add(parent, cell, i)
+          } else {
+            this.model.add(
+              parent, cell,
+              this.model.getChildCount(parent) - 1,
+            )
+          }
+        })
+
+        this.graph.trigger(Graph.events.cellsOrdered, { cells, toBack })
+      })
+    }
+  }
+
+  //#endregion
+
   // #region :::::::::::: Visibility
 
   toggleCells(show: boolean, cells: Cell[], includeEdges: boolean) {
     const arr = includeEdges ? this.addAllEdges(cells) : cells
     this.model.batchUpdate(() => {
-      this.setCellsVisibleImpl(arr, show)
       this.graph.trigger(
         Graph.events.toggleCells,
         { show, includeEdges, cells: arr },
       )
+      this.setCellsVisibleImpl(arr, show)
     })
 
     return arr
@@ -1896,8 +2022,8 @@ export class CellManager extends BaseManager {
   ) {
     this.graph.stopEditing(false)
     this.model.batchUpdate(() => {
-      this.cellsFolded(cells, collapse, recurse, checkFoldable)
       this.graph.trigger(Graph.events.foldCells, { collapse, recurse, cells })
+      this.cellsFolded(cells, collapse, recurse, checkFoldable)
     })
     return cells
   }
@@ -1930,8 +2056,8 @@ export class CellManager extends BaseManager {
             this.constrainChild(cell)
           }
         })
-        this.graph.trigger(Graph.events.cellsFolded, { cells, collapse, recurse })
       })
+      this.graph.trigger(Graph.events.cellsFolded, { cells, collapse, recurse })
     }
   }
 
@@ -1948,10 +2074,10 @@ export class CellManager extends BaseManager {
   }
 
   /**
-   * Updates or sets the alternate bounds in the given geometry for the given
-   * cell depending on whether the cell is going to be collapsed. If no
-   * alternate bounds are defined in the geometry and
-   * <collapseToPreferredSize> is true, then the preferred size is used for
+   * Updates or sets the alternate bounds in the given geometry for the
+   * given cell depending on whether the cell is going to be collapsed.
+   * If no alternate bounds are defined in the geometry and
+   * `collapseToPreferredSize` is true, then the preferred size is used for
    * the alternate bounds. The top, left corner is always kept at the same
    * location.
    */
@@ -1961,14 +2087,13 @@ export class CellManager extends BaseManager {
     willCollapse: boolean,
   ) {
     if (cell != null && geo != null) {
-      const state = this.view.getState(cell)
-      const style = (state != null) ? state.style : this.getCellStyle(cell)
+      const style = this.graph.getStyle(cell)
 
       if (geo.alternateBounds == null) {
         let bounds = geo.bounds
 
         if (this.graph.collapseToPreferredSize) {
-          const tmp = this.getPreferredSizeForCell(cell)
+          const tmp = this.getCellPreferredSize(cell)
           if (tmp != null) {
             bounds = tmp
             const startSize = style.startSize || 0
@@ -1986,7 +2111,6 @@ export class CellManager extends BaseManager {
         geo.alternateBounds.y = geo.bounds.y
 
         const alpha = util.toRad(style.rotation || 0)
-
         if (alpha !== 0) {
           const dx = geo.alternateBounds.getCenterX() - geo.bounds.getCenterX()
           const dy = geo.alternateBounds.getCenterY() - geo.bounds.getCenterY()
@@ -2118,30 +2242,7 @@ export class CellManager extends BaseManager {
     }
   }
 
-  toggleCellsStyle(
-    key: string,
-    defaultValue: boolean = false,
-    cells: Cell[],
-  ) {
-    let value = null
-    if (cells != null && cells.length > 0) {
-      const state = this.view.getState(cells[0])
-      const style = state != null ? state.style : this.getCellStyle(cells[0])
-      if (style != null) {
-        const cur = (style as any)[key]
-        if (cur == null) {
-          value = defaultValue
-        } else {
-          value = cur ? false : true
-        }
-        this.setCellsStyle(key, value, cells)
-      }
-    }
-
-    return value
-  }
-
-  setCellsStyle(
+  updateCellsStyle(
     key: string,
     value?: string | number | boolean | null,
     cells?: Cell[],
@@ -2164,6 +2265,29 @@ export class CellManager extends BaseManager {
     }
   }
 
+  toggleCellsStyle(
+    key: string,
+    defaultValue: boolean = false,
+    cells: Cell[],
+  ) {
+    let value = null
+    if (cells != null && cells.length > 0) {
+      const state = this.view.getState(cells[0])
+      const style = state != null ? state.style : this.getCellStyle(cells[0])
+      if (style != null) {
+        const cur = (style as any)[key]
+        if (cur == null) {
+          value = defaultValue
+        } else {
+          value = cur ? false : true
+        }
+        this.updateCellsStyle(key, value, cells)
+      }
+    }
+
+    return value
+  }
+
   setCellStyleFlags(
     key: string,
     flag: number,
@@ -2172,116 +2296,16 @@ export class CellManager extends BaseManager {
   ) {
     if (cells != null && cells.length > 0) {
       if (value == null) {
-        const state = this.view.getState(cells[0])
-        const style = state ? state.style : this.getCellStyle(cells[0])
+        const style = this.graph.getStyle(cells[0])
         const current = parseInt((style as any)[key], 10) || 0
         value = !((current & flag) === flag) // tslint:disable-line
       }
 
-      this.setCellsStyle(key, value ? flag : null, cells)
+      this.updateCellsStyle(key, value ? flag : null, cells)
     }
   }
 
   // #endregion
-
-  // #region :::::::::::: Align
-
-  alignCells(
-    align: Align | VAlign,
-    cells: Cell[],
-    param?: number,
-  ) {
-    if (cells != null && cells.length > 1) {
-      // Finds the required coordinate for the alignment
-      if (param == null) {
-        for (let i = 0, ii = cells.length; i < ii; i += 1) {
-          const state = this.view.getState(cells[i])
-          if (state != null && !this.model.isEdge(cells[i])) {
-            if (param == null) {
-              if (align === 'center') {
-                // tslint:disable-next-line:no-parameter-reassignment
-                param = state.bounds.x + state.bounds.width / 2
-                break
-              } else if (align === 'right') {
-                // tslint:disable-next-line:no-parameter-reassignment
-                param = state.bounds.x + state.bounds.width
-              } else if (align === 'top') {
-                // tslint:disable-next-line:no-parameter-reassignment
-                param = state.bounds.y
-              } else if (align === 'middle') {
-                // tslint:disable-next-line:no-parameter-reassignment
-                param = state.bounds.y + state.bounds.height / 2
-                break
-              } else if (align === 'bottom') {
-                // tslint:disable-next-line:no-parameter-reassignment
-                param = state.bounds.y + state.bounds.height
-              } else {
-                // tslint:disable-next-line:no-parameter-reassignment
-                param = state.bounds.x
-              }
-            } else {
-              if (align === 'right') {
-                // tslint:disable-next-line:no-parameter-reassignment
-                param = Math.max(param, state.bounds.x + state.bounds.width)
-              } else if (align === 'top') {
-                // tslint:disable-next-line:no-parameter-reassignment
-                param = Math.min(param, state.bounds.y)
-              } else if (align === 'bottom') {
-                // tslint:disable-next-line:no-parameter-reassignment
-                param = Math.max(param, state.bounds.y + state.bounds.height)
-              } else {
-                // tslint:disable-next-line:no-parameter-reassignment
-                param = Math.min(param, state.bounds.x)
-              }
-            }
-          }
-        }
-      }
-
-      // Aligns the cells to the coordinate
-      if (param != null) {
-        const s = this.view.scale
-        this.model.beginUpdate()
-        try {
-          for (let i = 0, ii = cells.length; i < ii; i += 1) {
-            const state = this.view.getState(cells[i])
-
-            if (state != null) {
-              let geo = this.graph.getCellGeometry(cells[i])
-
-              if (geo != null && !this.model.isEdge(cells[i])) {
-                geo = geo.clone()
-
-                if (align === 'center') {
-                  geo.bounds.x += (param - state.bounds.x - state.bounds.width / 2) / s
-                } else if (align === 'right') {
-                  geo.bounds.x += (param - state.bounds.x - state.bounds.width) / s
-                } else if (align === 'top') {
-                  geo.bounds.y += (param - state.bounds.y) / s
-                } else if (align === 'middle') {
-                  geo.bounds.y += (param - state.bounds.y - state.bounds.height / 2) / s
-                } else if (align === 'bottom') {
-                  geo.bounds.y += (param - state.bounds.y - state.bounds.height) / s
-                } else {
-                  geo.bounds.x += (param - state.bounds.x) / s
-                }
-
-                this.graph.resizeCell(cells[i], geo.bounds)
-              }
-            }
-          }
-
-          this.graph.trigger(Graph.events.alignCells, { align, cells })
-        } finally {
-          this.model.endUpdate()
-        }
-      }
-    }
-
-    return cells
-  }
-
-  //#endregion
 
   // #region :::::::::::: Flip
 
@@ -2306,38 +2330,6 @@ export class CellManager extends BaseManager {
 
   //#endregion
 
-  // #region :::::::::::: Order
-
-  orderCells(cells: Cell[], toBack: boolean) {
-    this.model.batchUpdate(() => {
-      this.graph.trigger(Graph.events.orderCells, { cells, toBack })
-      this.cellsOrdered(cells, toBack)
-    })
-    return cells
-  }
-
-  protected cellsOrdered(cells: Cell[], toBack: boolean) {
-    if (cells != null) {
-      this.model.batchUpdate(() => {
-        for (let i = 0, ii = cells.length; i < ii; i += 1) {
-          const parent = this.model.getParent(cells[i])!
-
-          if (toBack) {
-            this.model.add(parent, cells[i], i)
-          } else {
-            this.model.add(
-              parent, cells[i],
-              this.model.getChildCount(parent) - 1,
-            )
-          }
-        }
-        this.graph.trigger(Graph.events.cellsOrdered, { cells, toBack })
-      })
-    }
-  }
-
-  //#endregion
-
   // #region :::::::::::: Drilldown
 
   enterGroup(cell: Cell) {
@@ -2350,13 +2342,15 @@ export class CellManager extends BaseManager {
   exitGroup() {
     const root = this.model.getRoot()
     const current = this.graph.getCurrentRoot()
-
     if (current != null) {
-      let next = this.model.getParent(current)!
+      let next = this.model.getParent(current)
 
       // Finds the next valid root in the hierarchy
-      while (next !== root && !this.graph.isValidRoot(next) &&
-        this.model.getParent(next) !== root) {
+      while (
+        next !== root &&
+        !this.graph.isValidRoot(next) &&
+        this.model.getParent(next) !== root
+      ) {
         next = this.model.getParent(next)!
       }
 
@@ -2368,9 +2362,8 @@ export class CellManager extends BaseManager {
         this.view.setCurrentRoot(next)
       }
 
-      const state = this.view.getState(current)
-
       // Selects the previous root in the graph
+      const state = this.view.getState(current)
       if (state != null) {
         this.graph.setSelectedCell(current)
       }
@@ -2425,7 +2418,7 @@ export class CellManager extends BaseManager {
 
       if (this.graph.isSwimlane(child)) {
         const state = this.view.getState(child)
-        if (this.intersects(state, x, y)) {
+        if (this.isIntersected(state, x, y)) {
           return child
         }
       }
@@ -2448,25 +2441,26 @@ export class CellManager extends BaseManager {
     }
 
     if (parent != null) {
-      const childCount = this.model.getChildCount(parent)
-      for (let i = childCount - 1; i >= 0; i -= 1) {
+      const c = this.model.getChildCount(parent)
+      for (let i = c - 1; i >= 0; i -= 1) {
         const cell = this.model.getChildAt(parent, i)!
-        const result = this.getCellAt(x, y, cell, includeNodes, includeEdges, ignoreFn)!
+        const result = this.getCellAt(
+          x, y, cell, includeNodes, includeEdges, ignoreFn,
+        )
+
         if (result != null) {
           return result
         }
 
-        if (
-          this.graph.isCellVisible(cell) && (
-            includeEdges && this.model.isEdge(cell) ||
-            includeNodes && this.model.isNode(cell)
-          )
-        ) {
+        if (this.graph.isCellVisible(cell) && (
+          (includeEdges && this.model.isEdge(cell)) ||
+          (includeNodes && this.model.isNode(cell))
+        )) {
           const state = this.view.getState(cell)
           if (
             state != null &&
             (ignoreFn == null || !ignoreFn(state, x, y)) &&
-            this.intersects(state, x, y)
+            this.isIntersected(state, x, y)
           ) {
             return cell
           }
@@ -2477,37 +2471,34 @@ export class CellManager extends BaseManager {
     return null
   }
 
-  /**
-   * Returns the bottom-most cell that intersects the given point (x, y)
-   */
-  protected intersects(state: State | null, x: number, y: number) {
+  protected isIntersected(state: State | null, x: number, y: number) {
     if (state != null) {
       const points = state.absolutePoints
       if (points != null) {
-        const t2 = this.graph.tolerance * this.graph.tolerance
+        const hotspot = this.graph.tolerance * this.graph.tolerance
         let pt = points[0]!
-        for (let i = 1; i < points.length; i += 1) {
+        for (let i = 1, ii = points.length; i < ii; i += 1) {
           const next = points[i]!
           const dist = util.ptSegmentDist(pt.x, pt.y, next.x, next.y, x, y)
-          if (dist <= t2) {
+          if (dist <= hotspot) {
             return true
           }
 
           pt = next
         }
       } else {
-        const alpha = util.toRad(state.style.rotation || 0)
+        const alpha = util.toRad(util.getRotation(state))
         if (alpha !== 0) {
           const cos = Math.cos(-alpha)
           const sin = Math.sin(-alpha)
-          const cx = state.bounds.getOrigin()
+          const cx = state.bounds.getCenter()
           const pt = util.rotatePoint(new Point(x, y), cos, sin, cx)
           if (state.bounds.containsPoint(pt)) {
             return true
           }
         }
 
-        if (state.bounds.containsPoint(new Point(x, y))) {
+        if (state.bounds.containsPoint({ x, y })) {
           return true
         }
       }
@@ -2516,14 +2507,18 @@ export class CellManager extends BaseManager {
     return false
   }
 
+  /**
+   * Returns true if the given point is inside the content of the
+   * given swimlane.
+   */
   hitsSwimlaneContent(swimlane: Cell | null, x: number, y: number) {
     const state = this.view.getState(swimlane)
     const size = this.graph.getStartSize(swimlane)
 
     if (state != null) {
       const scale = this.view.scale
-      const dx = x - state.bounds.x // tslint:disable-line
-      const dy = y - state.bounds.y // tslint:disable-line
+      const dx = x - state.bounds.x
+      const dy = y - state.bounds.y
 
       if (size.width > 0 && dx > 0 && dx > size.width * scale) {
         return true
@@ -2560,24 +2555,25 @@ export class CellManager extends BaseManager {
     edges.forEach((edge) => {
       const [source, target] = this.getVisibleTerminals(edge)
 
-      if (
-        (includeLoops && source === target) ||
-        (
-          (source !== target) &&
+      if (source === target) {
+        if (includeLoops) {
+          result.push(edge)
+        }
+      } else {
+        if (
           (
-            (
-              incoming &&
-              target === node &&
-              (parent == null || this.isValidAncestor(source!, parent, recurse))) ||
-            (
-              outgoing &&
-              source === node &&
-              (parent == null || this.isValidAncestor(target!, parent, recurse))
-            )
+            incoming &&
+            target === node &&
+            (parent == null || this.isValidAncestor(source!, parent, recurse)))
+          ||
+          (
+            outgoing &&
+            source === node &&
+            (parent == null || this.isValidAncestor(target!, parent, recurse))
           )
-        )
-      ) {
-        result.push(edge)
+        ) {
+          result.push(edge)
+        }
       }
     })
 
@@ -2604,18 +2600,18 @@ export class CellManager extends BaseManager {
       : this.model.getParent(cell) === parent
   }
 
-  getOpposites(
+  getOppositeNodes(
     edges: Cell[],
     terminal: Cell,
     includeSources: boolean = true,
     includeTargets: boolean = true,
   ) {
-    const terminals: Cell[] = []
+    const result: Cell[] = []
     const map = new WeakMap<Cell, boolean>()
-    const add = (opposite: Cell) => {
-      if (!map.get(opposite)) {
-        map.set(opposite, true)
-        terminals.push(opposite)
+    const add = (cell: Cell) => {
+      if (!map.get(cell)) {
+        map.set(cell, true)
+        result.push(cell)
       }
     }
 
@@ -2639,7 +2635,7 @@ export class CellManager extends BaseManager {
       }
     })
 
-    return terminals
+    return result
   }
 
   getEdgesBetween(source: Cell, target: Cell, directed: boolean = false) {
@@ -2673,7 +2669,7 @@ export class CellManager extends BaseManager {
       parent && parent.eachChild((cell) => {
         const state = this.view.getState(cell)
         if (state != null && this.graph.isCellVisible(cell)) {
-          const rot = state.style.rotation || 0
+          const rot = util.getRotation(state)
           const bounds = rot === 0
             ? state.bounds
             : util.getBoundingBox(state.bounds, rot)
@@ -2697,21 +2693,21 @@ export class CellManager extends BaseManager {
   }
 
   getCellsBeyond(
-    x0: number,
-    y0: number,
+    x: number,
+    y: number,
     parent: Cell,
-    rightHalfpane: boolean = false,
-    bottomHalfpane: boolean = false,
+    isRight: boolean = false,
+    isBottom: boolean = false,
   ) {
     const result: Cell[] = []
 
-    if (rightHalfpane || bottomHalfpane) {
+    if (isRight || isBottom) {
       parent && parent.eachChild((child) => {
         const state = this.view.getState(child)
         if (this.graph.isCellVisible(child) && state != null) {
           if (
-            (!rightHalfpane || state.bounds.x >= x0) &&
-            (!bottomHalfpane || state.bounds.y >= y0)
+            (!isRight || state.bounds.x >= x) &&
+            (!isBottom || state.bounds.y >= y)
           ) {
             result.push(child)
           }
@@ -2773,7 +2769,7 @@ export class CellManager extends BaseManager {
   traverse(
     node: Cell,
     directed: boolean = true,
-    func: (node: Cell, edge: Cell | null) => boolean,
+    func: (node: Cell, edge: Cell | null) => any,
     edge?: Cell,
     visited: WeakMap<Cell, boolean> = new WeakMap<Cell, boolean>(),
     inverse: boolean = false,
@@ -2783,7 +2779,7 @@ export class CellManager extends BaseManager {
         visited.set(node, true)
 
         const result = func(node, edge || null)
-        if (result == null || result) {
+        if (result !== false) {
           node.eachEdge((edge) => {
             const isSource = this.model.getTerminal(edge, true) === node
             if (!directed || (!inverse === isSource)) {

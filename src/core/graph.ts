@@ -196,10 +196,7 @@ export class Graph extends Disablable {
   preferPageSize = false
 
   /**
-   * Specifies the page format for the background page. Default is
-   * <constants.PAGE_FORMAT_A4_PORTRAIT>. This is used as the default in
-   * <mxPrintPreview> and for painting the background page if <pageVisible> is
-   * true and the pagebreaks if <pageBreaksVisible> is true.
+   * Specifies the page format for the background page.
    */
   pageFormat: Rectangle = PageSize.A4_PORTRAIT
 
@@ -291,11 +288,6 @@ export class Graph extends Disablable {
   splitEnabled = true
 
   /**
-   * Specifies the return value for <isCellResizable>. Default is true.
-   */
-  cellsResizable = true
-
-  /**
    * Specifies the return value for <isCellsBendable>. Default is true.
    */
   cellsBendable = true
@@ -377,15 +369,18 @@ export class Graph extends Disablable {
   autoExtend = true
 
   /**
-   * <Rect> that specifies the area in which all cells in the diagram
-   * should be placed. Uses in <getMaximumGraphBounds>. Use a width or height of
-   * 0 if you only want to give a upper, left corner.
+   * `Rectangle` that specifies the area in which all cells in the diagram
+   * should be placed. Use a width or height of 0 if you only want to give
+   * a upper, left corner.
    */
   maximumGraphBounds: Rectangle | null
 
   /**
-   * <Rect> that specifies the minimum size of the graph. This is ignored
-   * if the graph container has no scrollbars. Default is null.
+   * `Rectangle` that specifies the minimum size of the graph.
+   *
+   * This is ignored if the graph container has no scrollbars.
+   *
+   * Default is `null`.
    */
   minimumGraphSize: Rectangle | null
 
@@ -400,12 +395,6 @@ export class Graph extends Disablable {
    * <resizeContainer> is true.
    */
   maximumContainerSize: Rectangle | null
-
-  /**
-   * Specifies if the container should be resized to the graph size when
-   * the graph size has changed. Default is false.
-   */
-  resizeContainer: boolean = false
 
   /**
    * Border to be added to the bottom and right side when the container is
@@ -428,24 +417,6 @@ export class Graph extends Disablable {
   keepEdgesInBackground = false
 
   /**
-   * Specifies if negative coordinates for nodes are allowed. Default is true.
-   */
-  allowNegativeCoordinates = true
-
-  /**
-   * Specifies if a child should be constrained inside the parent bounds after a
-   * move or resize of the child. Default is true.
-   */
-  constrainChildren = true
-
-  /**
-   * Specifies if child cells with relative geometries should be constrained
-   * inside the parent bounds, if <constrainChildren> is true, and/or the
-   * <maximumGraphBounds>. Default is false.
-   */
-  constrainRelativeChildren = false
-
-  /**
    * Specifies if a parent should contain the child bounds after a resize of
    * the child. Default is true. This has precedence over <constrainChildren>.
    */
@@ -464,22 +435,11 @@ export class Graph extends Disablable {
   extendParentsOnMove = false
 
   /**
-   * Specifies the return value for <isRecursiveResize>. Default is
-   * false for backwards compatiblity.
+   * Specifies the factor used for `zoomIn` and `zoomOut`.
+   *
+   * Default is `1.2`
    */
-  recursiveResize = false
-
-  /**
-   * Specifies if the cell size should be changed to the preferred size when
-   * a cell is first collapsed. Default is true.
-   */
-  collapseToPreferredSize = true
-
-  /**
-   * Specifies the factor used for <zoomIn> and <zoomOut>. Default is 1.2
-   * (120%).
-   */
-  zoomFactor = 1.2
+  zoomFactor: number = 1.2
 
   /**
    * Specifies if the viewport should automatically contain the selection cells
@@ -499,13 +459,15 @@ export class Graph extends Disablable {
    *
    * Default is `true`.
    */
-  public resetViewOnRootChange: boolean = true
+  resetViewOnRootChange: boolean = true
 
   /**
    * Specifies if edge control points should be reset after the resize of a
-   * connected cell. Default is false.
+   * connected cell.
+   *
+   * Default is `false`.
    */
-  resetEdgesOnResize = false
+  resetEdgesOnResize: boolean = false
 
   /**
    * Specifies if edge control points should be reset after the move of a
@@ -527,8 +489,7 @@ export class Graph extends Disablable {
   allowLoops = false
 
   /**
-   * <EdgeStyle> to be used for loops. This is a fallback for loops if the
-   * <constants.STYLE_LOOP> is undefined. Default is <EdgeStyle.Loop>.
+   * <EdgeStyle> to be used for loops.
    */
   defaultLoopStyle = EdgeStyle.loop
 
@@ -591,7 +552,7 @@ export class Graph extends Disablable {
 
   /**
    * The attribute used to find the color for the indicator if the indicator
-   * color is set to 'swimlane'. Default is <constants.STYLE_FILLCOLOR>.
+   * color is set to 'swimlane'.
    */
   swimlaneIndicatorColorAttribute = 'fill'
 
@@ -815,6 +776,646 @@ export class Graph extends Disablable {
     this.model.batchUpdate(update)
   }
 
+  // #region :::::::::::: Cell Creation
+
+  @afterCreate()
+  createNode(options: Graph.CreateNodeOptions = {}): Cell {
+    return this.cellManager.createNode(options)
+  }
+
+  @afterCreate()
+  createEdge(options: Graph.CreateEdgeOptions = {}): Cell {
+    return this.cellManager.createEdge(options)
+  }
+
+  addNode(options: Graph.AddNodeOptions): Cell
+  addNode(node: Cell, parent?: Cell, index?: number): Cell
+  addNode(
+    node?: Cell | Graph.AddNodeOptions,
+    parent?: Cell,
+    index?: number,
+  ): Cell {
+    if (node instanceof Cell) {
+      return this.addNodes([node], parent, index)[0]
+    }
+
+    const options = node != null ? node : {}
+    const cell = this.createNode(options)
+    return this.addNodes([cell], options.parent, options.index)[0]
+  }
+
+  addNodes(nodes: Cell[], parent?: Cell, index?: number): Cell[] {
+    return this.addCells(nodes, parent, index)
+  }
+
+  addEdge(options: Graph.AddEdgeOptions): Cell
+  addEdge(
+    edge: Cell,
+    parent?: Cell,
+    source?: Cell,
+    target?: Cell,
+    index?: number,
+  ): Cell
+  addEdge(
+    edge?: Cell | Graph.AddEdgeOptions,
+    parent?: Cell,
+    source?: Cell,
+    target?: Cell,
+    index?: number,
+  ) {
+    if (edge instanceof Cell) {
+      return this.addCell(edge, parent, index, source, target)
+    }
+    const options = edge != null ? edge : {}
+    const cell = this.createEdge(options)
+    return this.addCell(
+      cell,
+      options.parent,
+      options.index,
+      options.sourceNode,
+      options.targetNode,
+    )
+  }
+
+  /**
+   * Adds the cell to the parent and connects it to the given source and
+   * target terminals.
+   *
+   * @param cell - `Cell` to be inserted into the given parent.
+   * @param parent - `Cell` that represents the new parent. If no parent is
+   * given then the default parent is used.
+   * @param index - Optional index to insert the cells at.
+   * @param source - Optional `Cell` that represents the source terminal.
+   * @param target - Optional `Cell` that represents the target terminal.
+   */
+  addCell(
+    cell: Cell,
+    parent?: Cell,
+    index?: number,
+    source?: Cell,
+    target?: Cell,
+  ) {
+    return this.addCells([cell], parent, index, source, target)[0]
+  }
+
+  /**
+   * Adds the cells to the parent at the given index, connecting each cell to
+   * the optional source and target terminal.
+   *
+   * @param cells - Array of `Cell`s to be inserted.
+   * @param parent - `Cell` that represents the new parent. If no parent is
+   * given then the default parent is used.
+   * @param index - Optional index to insert the cells at.
+   * @param source - Optional source `Cell` for all inserted cells.
+   * @param target - Optional target `Cell` for all inserted cells.
+   */
+  addCells(
+    cells: Cell[],
+    parent: Cell = this.getDefaultParent()!,
+    index: number = this.model.getChildCount(parent),
+    source?: Cell,
+    target?: Cell,
+  ) {
+    return this.cellManager.addCells(cells, parent, index, source, target)
+  }
+
+  /**
+   * Removes the given cells from the graph including all connected
+   * edges if `includeEdges` is `true`.
+   */
+  removeCells(
+    cells: Cell[] = this.getDeletableCells(this.getSelectedCells()),
+    includeEdges: boolean = true,
+  ) {
+    return this.cellManager.removeCells(cells, includeEdges)
+  }
+
+  /**
+   * Splits the given edge by adding the newEdge between the previous source
+   * and the given cell and reconnecting the source of the given edge to the
+   * given cell.
+   *
+   * @param edge The edge to be splitted.
+   * @param cells The cells to insert into the edge.
+   * @param newEdge The edge to be inserted.
+   * @param dx The vector to move the cells.
+   * @param dy The vector to move the cells.
+   */
+  splitEdge(
+    edge: Cell,
+    cells: Cell[],
+    newEdge: Cell | null,
+    dx: number = 0,
+    dy: number = 0,
+  ) {
+    return this.cellManager.splitEdge(edge, cells, newEdge, dx, dy)
+  }
+
+  /**
+   * Returns the clone for the given cell.
+   *
+   * @param cell `Cell` to be cloned.
+   * @param allowInvalidEdges Optional boolean that specifies if invalid
+   * edges should be cloned.  Default is `true`.
+   * @param mapping Optional mapping for existing clones.
+   * @param keepPosition Optional boolean indicating if the position
+   * of the cells should be updated to reflect the lost parent cell.
+   * Default is `false`.
+   */
+  cloneCell(
+    cell: Cell,
+    allowInvalidEdges: boolean = true,
+    mapping: WeakMap<Cell, Cell> = new WeakMap<Cell, Cell>(),
+    keepPosition: boolean = false,
+  ) {
+    return this.cloneCells([cell], allowInvalidEdges, mapping, keepPosition)[0]
+  }
+
+  /**
+   * Returns the clones for the given cells. If the terminal of an edge is
+   * not in the given array, then the respective end is assigned a terminal
+   * point and the terminal is removed.
+   *
+   * @param cells - Array of `Cell`s to be cloned.
+   * @param allowInvalidEdges - Optional boolean that specifies if
+   * invalid edges should be cloned. Default is `true`.
+   * @param mapping - Optional mapping for existing clones.
+   * @param keepPosition - Optional boolean indicating if the position
+   * of the cells should be updated to reflect the lost parent cell.
+   * Default is `false`.
+   */
+  cloneCells(
+    cells: Cell[],
+    allowInvalidEdges: boolean = true,
+    mapping: WeakMap<Cell, Cell> = new WeakMap<Cell, Cell>(),
+    keepPosition: boolean = false,
+  ) {
+    return this.cellManager.cloneCells(
+      cells, allowInvalidEdges, mapping, keepPosition,
+    )
+  }
+
+  // #endregion
+
+  // #region :::::::::::: Cell Connecting
+
+  /**
+   * Connects the specified end of the given edge to the given terminal.
+   *
+   * @param edge - The edge will be updated.
+   * @param terminal - The new terminal to be used.
+   * @param isSource - Indicating if the new terminal is the source or target.
+   * @param constraint - Optional `Constraint` to be used for this connection.
+   */
+  connectCell(
+    edge: Cell,
+    terminal: Cell | null,
+    isSource: boolean,
+    constraint?: Constraint,
+  ) {
+    return this.cellManager.connectCell(edge, terminal, isSource, constraint)
+  }
+
+  /**
+   * Disconnects the given edges from the terminals which are not in the
+   * given array.
+   */
+  disconnectGraph(cells: Cell[]) {
+    return this.cellManager.disconnectGraph(cells)
+  }
+
+  @hook()
+  getConstraints(terminal: Cell, isSource: boolean) {
+    const state = this.view.getState(terminal)
+    if (
+      state != null &&
+      state.shape != null &&
+      state.shape.stencil != null
+    ) {
+      return state.shape.stencil.constraints
+    }
+
+    return null
+  }
+
+  /**
+   * Returns an `Constraint` that describes the given connection point.
+   */
+  getConnectionConstraint(
+    edgeState: State,
+    terminalState?: State | null,
+    isSource: boolean = false,
+  ) {
+    return this.cellManager.getConnectionConstraint(
+      edgeState, terminalState, isSource,
+    )
+  }
+
+  setConnectionConstraint(
+    edge: Cell,
+    terminal: Cell | null,
+    isSource: boolean,
+    constraint?: Constraint | null,
+  ) {
+    return this.cellManager.setConnectionConstraint(
+      edge, terminal, isSource, constraint,
+    )
+  }
+
+  // #endregion
+
+  // #region :::::::::::: Cell Moving
+
+  moveCell(
+    cell: Cell,
+    dx: number = 0,
+    dy: number = 0,
+    clone: boolean = false,
+    target?: Cell | null,
+    e?: MouseEvent,
+    cache?: WeakMap<Cell, Cell>,
+  ) {
+    return this.moveCells([cell], dx, dy, clone, target, e, cache)
+  }
+
+  /**
+   * Moves or clones the specified cells and moves the cells or clones by the
+   * given amount, adding them to the optional target cell.
+   *
+   * @param cells Array of `Cell`s to be moved, cloned or added to the target.
+   * @param dx Specifies the x-coordinate of the vector. Default is `0`.
+   * @param dy Specifies the y-coordinate of the vector. Default is `0`.
+   * @param clone Indicating if the cells should be cloned. Default is `false`.
+   * @param target The new parent of the cells.
+   * @param e Mouseevent that triggered the invocation.
+   * @param cache Optional mapping for existing clones.
+   */
+  moveCells(
+    cells: Cell[],
+    dx: number = 0,
+    dy: number = 0,
+    clone: boolean = false,
+    target?: Cell | null,
+    e?: MouseEvent,
+    cache?: WeakMap<Cell, Cell>,
+  ) {
+    return this.cellManager.moveCells(cells, dx, dy, clone, target, e, cache)
+  }
+
+  /**
+   * Clones and inserts the given cells into the graph.
+   *
+   * @param cells Array of `Cell`s to be cloned.
+   * @param dx Specifies the x-coordinate of the vector. Default is `0`.
+   * @param dy Specifies the y-coordinate of the vector. Default is `0`.
+   * @param target The new parent of the cells.
+   * @param e Mouseevent that triggered the invocation.
+   * @param cache Optional mapping for existing clones.
+   */
+  importCells(
+    cells: Cell[],
+    dx: number,
+    dy: number,
+    target?: Cell,
+    e?: MouseEvent,
+    cache?: WeakMap<Cell, Cell>,
+  ) {
+    return this.moveCells(cells, dx, dy, true, target, e, cache)
+  }
+
+  /**
+   * Translates the geometry of the given cell and stores the new,
+   * translated geometry in the model as an atomic change.
+   */
+  translateCell(cell: Cell, dx: number, dy: number) {
+    this.cellManager.translateCell(cell, dx, dy)
+  }
+
+  getMaximumGraphBounds() {
+    return this.maximumGraphBounds
+  }
+
+  /**
+   * Resets the control points of the edges that are connected to the given
+   * cells if not both ends of the edge are in the given cells array.
+   */
+  resetOtherEdges(cells: Cell[]) {
+    this.cellManager.resetOtherEdges(cells)
+  }
+
+  /**
+   * Resets the control points of the given edge.
+   */
+  resetEdge(edge: Cell) {
+    this.cellManager.resetEdge(edge)
+  }
+
+  // #endregion
+
+  // #region :::::::::::: Cell Style
+
+  getStyle(cell: Cell | null) {
+    const state = this.view.getState(cell)
+    return (state != null) ? state.style : this.getCellStyle(cell)
+  }
+
+  /**
+   * Returns a key-value pair object representing the cell style for
+   * the given cell.
+   *
+   * Note: You should try to use the cached style in the state before
+   * using this method.
+   */
+  getCellStyle(cell: Cell | null) {
+    return this.cellManager.getCellStyle(cell)
+  }
+
+  /**
+   * Sets the style of the specified cells. If no cells are given, then
+   * the current selected cells are changed.
+   */
+  setCellStyle(style: CellStyle, cells: Cell[] = this.getSelectedCells()) {
+    this.cellManager.setCellStyle(style, cells)
+  }
+
+  /**
+   * Toggles the boolean value for the given key in the style of the given
+   * cell and returns the new value. Optional boolean default value if no
+   * value is defined. If no cell is specified then the current selected
+   * cell is used.
+   */
+  toggleCellStyle(
+    key: string,
+    defaultValue: boolean = false,
+    cell: Cell = this.getSelectedCell(),
+  ) {
+    return this.toggleCellsStyle(key, defaultValue, [cell])
+  }
+
+  /**
+   * Toggles the boolean value for the given key in the style of the given
+   * cells and returns the new value. If no cells are specified, then the
+   * current selected cells are used.
+   */
+  toggleCellsStyle(
+    key: string,
+    defaultValue: boolean = false,
+    cells: Cell[] = this.getSelectedCells(),
+  ) {
+    return this.cellManager.toggleCellsStyle(key, defaultValue, cells)
+  }
+
+  updateStyle(style: CellStyle, cell?: Cell): void
+  updateStyle(style: CellStyle, cells?: Cell[]): void
+  updateStyle(
+    key: string,
+    value?: string | number | boolean | null,
+    cell?: Cell,
+  ): void
+  updateStyle(
+    key: string,
+    value?: string | number | boolean | null,
+    cells?: Cell[],
+  ): void
+  updateStyle(
+    key: string | CellStyle,
+    value?: (string | number | boolean | null) | Cell | Cell[],
+    cells?: Cell | Cell[],
+  ) {
+    const style: CellStyle = typeof key === 'string' ? { [key]: value } : key
+    let targets = (typeof key === 'string' ? cells : value) as (Cell | Cell[])
+    if (targets == null) {
+      targets = this.getSelectedCells()
+    }
+    if (!util.isArray(targets)) {
+      targets = [targets as Cell]
+    }
+
+    Object.keys(style).forEach((name) => {
+      this.updateCellsStyle(
+        name,
+        (style as any)[name],
+        targets as Cell[],
+      )
+    })
+  }
+
+  updateCellStyle(
+    key: string,
+    value?: string | number | boolean | null,
+    cell: Cell = this.getSelectedCell(),
+  ) {
+    this.updateCellsStyle(key, value, [cell])
+  }
+
+  /**
+   * Sets the key to value in the styles of the given cells. This will modify
+   * the existing cell styles in-place and override any existing assignment
+   * for the given key. If no cells are specified, then the selection cells
+   * are changed. If no value is specified, then the respective key is
+   * removed from the styles.
+   */
+  updateCellsStyle(
+    key: string,
+    value?: string | number | boolean | null,
+    cells: Cell[] = this.getSelectedCells(),
+  ) {
+    this.cellManager.updateCellsStyle(key, value, cells)
+  }
+
+  /**
+   * Toggles the given bit for the given key in the styles of the specified
+   * cells.
+   */
+  toggleCellStyleFlags(
+    key: string,
+    flag: number,
+    cells: Cell[] = this.getSelectedCells(),
+  ) {
+    this.setCellStyleFlags(key, flag, null, cells)
+  }
+
+  /**
+   * Sets or toggles the given bit for the given key in the styles of the
+   * specified cells.
+   */
+  setCellStyleFlags(
+    key: string,
+    flag: number,
+    value: boolean | null,
+    cells: Cell[] = this.getSelectedCells(),
+  ) {
+    this.cellManager.setCellStyleFlags(key, flag, value, cells)
+  }
+
+  // #endregion
+
+  // #region :::::::::::: Cell Visibility
+
+  toggleCells(
+    show: boolean,
+    cells: Cell[] = this.getSelectedCells(),
+    includeEdges: boolean = true,
+  ) {
+    return this.cellManager.toggleCells(show, cells, includeEdges)
+  }
+
+  // #endregion
+
+  // #region :::::::::::: Cell Grouping
+
+  @afterCreate()
+  createGroup(cells: Cell[]) {
+    const group = new Cell()
+    group.asNode(true)
+    group.setConnectable(false)
+    return group
+  }
+
+  /**
+   * Adds the cells into the given group.
+   *
+   * @param group The target group. If null is specified then a new group
+   * is created.
+   * @param border Optional integer that specifies the border between the
+   * child area and the group bounds. Default is `0`.
+   * @param cells Optional array of `Cell`s to be grouped. If null is
+   * specified then the selection cells are used.
+   */
+  groupCells(
+    group?: Cell,
+    border: number = 0,
+    cells: Cell[] = util.sortCells(this.getSelectedCells(), true),
+  ) {
+    return this.cellManager.groupCells(group!, border, cells)
+  }
+
+  ungroup(group: Cell) {
+    return this.ungroups([group])
+  }
+
+  /**
+   * Ungroups the given cells by moving the children to their parents parent
+   * and removing the empty groups. Returns the children that have been
+   * removed from the groups.
+   *
+   * @param cells Array of cells to be ungrouped. If null is specified then
+   * the selection cells are used.
+   */
+  ungroups(cells?: Cell[]) {
+    return this.cellManager.ungroupCells(cells)
+  }
+
+  /**
+   * Updates the bounds of the given groups to include all children and
+   * returns the passed-in cells. Call this with the groups in parent to child order,
+   * top-most group first, the cells are processed in reverse order and cells
+   * with no children are ignored.
+   *
+   * @param cells - The groups whose bounds should be updated. If this is
+   * null, then the selection cells are used.
+   * @param border - Optional border to be added in the group. Default is `0`.
+   * @param moveGroup - Optional boolean that allows the group to be moved.
+   * Default is `false`.
+   * @param topBorder - Optional top border to be added in the group.
+   * Default is `0`.
+   * @param rightBorder - Optional top border to be added in the group.
+   * Default is `0`.
+   * @param bottomBorder - Optional top border to be added in the group.
+   * Default is `0`.
+   * @param leftBorder - Optional top border to be added in the group.
+   * Default is `0`.
+   */
+  updateGroupBounds(
+    cells: Cell[] = this.getSelectedCells(),
+    border: number = 0,
+    moveGroup: boolean = false,
+    topBorder: number = 0,
+    rightBorder: number = 0,
+    bottomBorder: number = 0,
+    leftBorder: number = 0,
+  ) {
+    return this.cellManager.updateGroupBounds(
+      cells, border, moveGroup, topBorder,
+      rightBorder, bottomBorder, leftBorder,
+    )
+  }
+
+  /**
+   * Removes the specified cells from their parents and adds them to the
+   * default parent. Returns the cells that were removed from their parents.
+   */
+  removeCellsFromParent(cells: Cell[] = this.getSelectedCells()) {
+    return this.cellManager.removeCellsFromParent(cells)
+  }
+
+  // #endregion
+
+  // #region :::::::::::: Cell Sizing
+
+  /**
+   * Resizes the specified cell to just fit around the its label
+   * and/or children.
+   *
+   * @param cell `Cells` to be resized.
+   * @param recurse Optional boolean which specifies if all descendants
+   * should be autosized. Default is `true`.
+   */
+  autoSizeCell(cell: Cell, recurse: boolean = true) {
+    this.cellManager.autoSizeCell(cell, recurse)
+  }
+
+  /**
+   * Sets the bounds of the given cell.
+   */
+  resizeCell(cell: Cell, bounds: Rectangle, recurse?: boolean) {
+    return this.resizeCells([cell], [bounds], recurse)[0]
+  }
+
+  /**
+   * Sets the bounds of the given cells.
+   */
+  resizeCells(
+    cells: Cell[],
+    bounds: Rectangle[],
+    recurse: boolean = this.isRecursiveResize(),
+  ) {
+    return this.cellManager.resizeCells(cells, bounds, recurse)
+  }
+
+  /**
+   * Resizes the child cells of the given cell for the given new geometry with
+   * respect to the current geometry of the cell.
+   */
+  resizeChildCells(cell: Cell, newGeo: Geometry) {
+    const geo = this.model.getGeometry(cell)!
+    const dx = newGeo.bounds.width / geo.bounds.width
+    const dy = newGeo.bounds.height / geo.bounds.height
+    cell.eachChild(child => this.scaleCell(child, dx, dy, true))
+  }
+
+  /**
+   * Scales the points, position and size of the given cell according to the
+   * given vertical and horizontal scaling factors.
+   *
+   * @param cell - The cell to be scaled.
+   * @param sx - Horizontal scaling factor.
+   * @param sy - Vertical scaling factor.
+   * @param recurse - Boolean indicating if the child cells should be scaled.
+   */
+  scaleCell(cell: Cell, sx: number, sy: number, recurse: boolean) {
+    this.cellManager.scaleCell(cell, sx, sy, recurse)
+  }
+
+  /**
+   * Returns the bounding box for the given array of `Cell`s.
+   */
+  getBoundingBox(cells: Cell[]) {
+    return this.cellManager.getBoundingBox(cells)
+  }
+
+  // #endregion
+
   // #region :::::::::::: Cell Overlay
 
   /**
@@ -868,7 +1469,9 @@ export class Graph extends Disablable {
     selectOnClick: boolean = false,
   ) {
     if (warning != null && warning.length > 0) {
-      return this.cellManager.addWarningOverlay(cell, warning, img, selectOnClick)
+      return this.cellManager.addWarningOverlay(
+        cell, warning, img, selectOnClick,
+      )
     }
 
     this.removeOverlays(cell)
@@ -877,22 +1480,18 @@ export class Graph extends Disablable {
 
   // #endregion
 
-  // #region :::::::::::: In-place Editing
+  // #region :::::::::::: Cell Editing
 
   startEditing(e?: MouseEvent) {
     this.startEditingAtCell(null, e)
   }
 
-  startEditingAtCell(cell?: Cell | null, e?: MouseEvent) {
+  startEditingAtCell(
+    cell: Cell | null = this.getSelectedCell(),
+    e?: MouseEvent,
+  ) {
     if (e == null || !DomEvent.isMultiTouchEvent(e)) {
-      if (cell == null) {
-        cell = this.getSelectedCell() // tslint:disable-line
-        if (cell != null && !this.isCellEditable(cell)) {
-          cell = null // tslint:disable-line
-        }
-      }
-
-      if (cell != null) {
+      if (cell != null && this.isCellEditable(cell)) {
         this.trigger(Graph.events.startEditing, { cell, e })
         this.cellEditor.startEditing(cell, e)
         this.trigger(Graph.events.editingStarted, { cell, e })
@@ -903,6 +1502,7 @@ export class Graph extends Disablable {
   /**
    * Returns the initial value for in-place editing.
    */
+  @hook()
   getEditingValue(cell: Cell, e?: Event) {
     return this.convertDataToString(cell)
   }
@@ -912,111 +1512,23 @@ export class Graph extends Disablable {
     this.trigger(Graph.events.editingStopped, { cancel })
   }
 
-  labelChanged(cell: Cell, value: string, e?: Event) {
+  updateLabel(cell: Cell, label: string, e?: Event) {
     this.model.batchUpdate(() => {
       const old = cell.data
-      this.cellLabelChanged(cell, value, this.isAutoSizeCell(cell))
-      this.trigger(Graph.events.labelChanged, { cell, value, old, e })
+      const data = this.putLabel(cell, label)
+      this.dataChanged(cell, data, this.isAutoSizeCell(cell))
+      this.trigger(Graph.events.labelChanged, { cell, data, old, e })
     })
     return cell
   }
 
-  cellLabelChanged(cell: Cell, value: string, autoSize: boolean) {
+  protected dataChanged(cell: Cell, data: any, autoSize: boolean) {
     this.model.batchUpdate(() => {
-      this.model.setData(cell, value)
+      this.model.setData(cell, data)
       if (autoSize) {
         this.cellManager.cellSizeUpdated(cell, false)
       }
     })
-  }
-
-  // #endregion
-
-  // #region :::::::::::: Cell Style
-
-  /**
-   * Returns a key-value pair object representing the cell style for
-   * the given cell.
-   *
-   * Note: You should try to use the cached style in the state before
-   * using this method.
-   */
-  getCellStyle(cell: Cell | null) {
-    return this.cellManager.getCellStyle(cell)
-  }
-
-  /**
-   * Sets the style of the specified cells. If no cells are given, then
-   * the current selected cells are changed.
-   */
-  setCellStyle(style: CellStyle, cells: Cell[] = this.getSelectedCells()) {
-    this.cellManager.setCellStyle(style, cells)
-  }
-
-  /**
-   * Toggles the boolean value for the given key in the style of the given
-   * cell and returns the new value. If no cell is specified then
-   * the current selected cell is used.
-   */
-  toggleCellStyle(
-    key: string,
-    defaultValue: boolean = false,
-    cell: Cell = this.getSelectedCell(),
-  ) {
-    return this.toggleCellsStyle(key, defaultValue, [cell])
-  }
-
-  /**
-   * Toggles the boolean value for the given key in the style of the given
-   * cells and returns the new value. If no cells are specified, then the
-   * current selected cells are used.
-   */
-  toggleCellsStyle(
-    key: string,
-    defaultValue: boolean = false,
-    cells: Cell[] = this.getSelectedCells(),
-  ) {
-    return this.cellManager.toggleCellsStyle(key, defaultValue, cells)
-  }
-
-  /**
-   * Sets the key to value in the styles of the given cells. This will modify
-   * the existing cell styles in-place and override any existing assignment
-   * for the given key. If no cells are specified, then the selection cells
-   * are changed. If no value is specified, then the respective key is
-   * removed from the styles.
-   */
-  setCellsStyle(
-    key: string,
-    value?: string | number | boolean | null,
-    cells: Cell[] = this.getSelectedCells(),
-  ) {
-    this.cellManager.setCellsStyle(key, value, cells)
-  }
-
-  /**
-   * Toggles the given bit for the given key in the styles of the specified
-   * cells.
-   */
-  toggleCellStyleFlags(
-    key: string,
-    flag: number,
-    cells: Cell[] = this.getSelectedCells(),
-  ) {
-    this.setCellStyleFlags(key, flag, null, cells)
-  }
-
-  /**
-   * Sets or toggles the given bit for the given key in the styles of the
-   * specified cells.
-   */
-  setCellStyleFlags(
-    key: string,
-    flag: number,
-    value: boolean | null,
-    cells: Cell[] = this.getSelectedCells(),
-  ) {
-    this.cellManager.setCellStyleFlags(key, flag, value, cells)
   }
 
   // #endregion
@@ -1047,13 +1559,13 @@ export class Graph extends Disablable {
 
   // #region :::::::::::: Cell Order
 
-  toggleCells(
-    show: boolean,
-    cells: Cell[] = this.getSelectedCells(),
-    includeEdges: boolean = true,
-  ) {
-    return this.cellManager.toggleCells(show, cells, includeEdges)
-  }
+  /**
+   * Specifies if the cell size should be changed to the preferred size when
+   * a cell is first collapsed.
+   *
+   * Default is `true`.
+   */
+  collapseToPreferredSize: boolean = true
 
   foldCells(
     collapse: boolean,
@@ -1068,608 +1580,72 @@ export class Graph extends Disablable {
    * Moves the given cells to the front or back.
    */
   orderCells(
-    cells: Cell[] = util.sortCells(this.getSelectedCells(), true),
     toBack: boolean = false,
-  ) {
-    return this.cellManager.orderCells(cells, toBack)
-  }
-
-  // #endregion
-
-  // #region :::::::::::: Cell Grouping
-
-  /**
-   * Adds the cells into the given group. The change is carried out using
-   * <cellsAdded>, <cellsMoved> and <cellsResized>. This method fires
-   * <DomEvent.GROUP_CELLS> while the transaction is in progress. Returns the
-   * new group. A group is only created if there is at least one entry in the
-   * given array of cells.
-   *
-   * Parameters:
-   *
-   * group - <Cell> that represents the target group. If null is specified
-   * then a new group is created using <createGroupCell>.
-   * border - Optional integer that specifies the border between the child
-   * area and the group bounds. Default is 0.
-   * cells - Optional array of <Cells> to be grouped. If null is specified
-   * then the selection cells are used.
-   */
-  groupCells(
-    group: Cell,
-    border: number = 0,
     cells: Cell[] = util.sortCells(this.getSelectedCells(), true),
   ) {
-    return this.cellManager.groupCells(group, border, cells)
-  }
-
-  /**
-   * Ungroups the given cells by moving the children the children to their
-   * parents parent and removing the empty groups. Returns the children that
-   * have been removed from the groups.
-   *
-   * Parameters:
-   *
-   * cells - Array of cells to be ungrouped. If null is specified then the
-   * selection cells are used.
-   */
-  ungroupCells(cells: Cell[] = this.getSelectedCells()) {
-    return this.cellManager.ungroupCells(cells)
-  }
-
-  /**
-   * Removes the specified cells from their parents and adds them to the
-   * default parent. Returns the cells that were removed from their parents.
-   */
-  removeCellsFromParent(cells: Cell[] = this.getSelectedCells()) {
-    return this.cellManager.removeCellsFromParent(cells)
-  }
-
-  /**
-   * Updates the bounds of the given groups to include all children and returns
-   * the passed-in cells. Call this with the groups in parent to child order,
-   * top-most group first, the cells are processed in reverse order and cells
-   * with no children are ignored.
-   *
-   * Parameters:
-   *
-   * cells - The groups whose bounds should be updated. If this is null, then
-   * the selection cells are used.
-   * border - Optional border to be added in the group. Default is 0.
-   * moveGroup - Optional boolean that allows the group to be moved. Default
-   * is false.
-   * topBorder - Optional top border to be added in the group. Default is 0.
-   * rightBorder - Optional top border to be added in the group. Default is 0.
-   * bottomBorder - Optional top border to be added in the group. Default is 0.
-   * leftBorder - Optional top border to be added in the group. Default is 0.
-   */
-  updateGroupBounds(
-    cells: Cell[] = this.getSelectedCells(),
-    border: number = 0,
-    moveGroup: boolean = false,
-    topBorder: number = 0,
-    rightBorder: number = 0,
-    bottomBorder: number = 0,
-    leftBorder: number = 0,
-  ) {
-    return this.cellManager.updateGroupBounds(
-      cells, border, moveGroup, topBorder,
-      rightBorder, bottomBorder, leftBorder,
-    )
-  }
-
-  /**
-   * Returns the bounding box for the given array of <Cells>. The bounding box for
-   * each cell and its descendants is computed using <mxGraphView.getBoundingBox>.
-   */
-  getBoundingBox(cells: Cell[]) {
-    let result: Rectangle | null = null
-
-    if (cells == null || cells.length <= 0) {
-      return result
-    }
-
-    cells.forEach((cell) => {
-      if (this.model.isNode(cell) || this.model.isEdge(cell)) {
-        const bbox = this.view.getBoundingBox(this.view.getState(cell), true)
-        if (bbox != null) {
-          if (result == null) {
-            result = Rectangle.clone(bbox)
-          } else {
-            result.add(bbox)
-          }
-        }
-      }
-    })
-
-    return result
-  }
-
-  // #endregion
-
-  // #region :::::::::::: Cell Creation
-
-  /**
-   * Returns the clone for the given cell.
-   *
-   * @param cell `Cell` to be cloned.
-   * @param allowInvalidEdges Optional boolean that specifies if invalid edges
-   * should be cloned.  Default is `true`.
-   * @param mapping Optional mapping for existing clones.
-   * @param keepPosition Optional boolean indicating if the position of the
-   * cells should be updated to reflect the lost parent cell.
-   */
-  cloneCell(
-    cell: Cell,
-    allowInvalidEdges: boolean = true,
-    mapping: WeakMap<Cell, Cell> = new WeakMap<Cell, Cell>(),
-    keepPosition: boolean = false,
-  ) {
-    return this.cloneCells([cell], allowInvalidEdges, mapping, keepPosition)[0]
-  }
-
-  /**
-   * Returns the clones for the given cells. If the terminal of an edge is not
-   * in the given array, then the respective end is assigned a terminal point
-   * and the terminal is removed.
-   *
-   * @param cells - Array of `Cell`s to be cloned.
-   * @param allowInvalidEdges - Optional boolean that specifies if invalid
-   * edges should be cloned. Default is `true`.
-   * @param mapping - Optional mapping for existing clones.
-   * @param keepPosition - Optional boolean indicating if the position of the
-   * cells should be updated to reflect the lost parent cell. Default is `false`.
-   */
-  cloneCells(
-    cells: Cell[],
-    allowInvalidEdges: boolean = true,
-    mapping: WeakMap<Cell, Cell> = new WeakMap<Cell, Cell>(),
-    keepPosition: boolean = false,
-  ) {
-    return this.cellManager.cloneCells(
-      cells, allowInvalidEdges, mapping, keepPosition,
-    )
-  }
-
-  addNode(options: Graph.AddNodeOptions): Cell
-  addNode(node: Cell, parent?: Cell, index?: number): Cell
-  addNode(
-    node?: Cell | Graph.AddNodeOptions,
-    parent?: Cell,
-    index?: number,
-  ): Cell {
-    if (node instanceof Cell) {
-      return this.addNodes([node], parent, index)[0]
-    }
-
-    const options = node != null ? node : {}
-    const cell = this.createNode(options)
-    return this.addNodes([cell], options.parent, options.index)[0]
-  }
-
-  addNodes(nodes: Cell[], parent?: Cell, index?: number): Cell[] {
-    return this.addCells(nodes, parent, index)
-  }
-
-  createNode(options: Graph.CreateNodeOptions = {}): Cell {
-    return this.cellManager.createNode(options)
-  }
-
-  addEdge(options: Graph.AddEdgeOptions): Cell
-  addEdge(
-    edge: Cell,
-    parent?: Cell,
-    source?: Cell,
-    target?: Cell,
-    index?: number,
-  ): Cell
-  addEdge(
-    edge?: Cell | Graph.AddEdgeOptions,
-    parent?: Cell,
-    source?: Cell,
-    target?: Cell,
-    index?: number,
-  ) {
-    if (edge instanceof Cell) {
-      return this.addCell(edge, parent, index, source, target)
-    }
-    const options = edge != null ? edge : {}
-    const cell = this.createEdge(options)
-    return this.addCell(
-      cell,
-      options.parent,
-      options.index,
-      options.sourceNode,
-      options.targetNode,
-    )
-  }
-
-  createEdge(options: Graph.CreateEdgeOptions = {}): Cell {
-    return this.cellManager.createEdge(options)
-  }
-
-  /**
-   * Adds the cell to the parent and connects it to the given source and
-   * target terminals.
-   *
-   * @param cell - `Cell` to be inserted into the given parent.
-   * @param parent - `Cell` that represents the new parent. If no parent is
-   * given then the default parent is used.
-   * @param index - Optional index to insert the cells at. Default is to append.
-   * @param source - Optional `Cell` that represents the source terminal.
-   * @param target - Optional `Cell` that represents the target terminal.
-   */
-  addCell(
-    cell: Cell,
-    parent?: Cell,
-    index?: number,
-    source?: Cell,
-    target?: Cell,
-  ) {
-    return this.addCells([cell], parent, index, source, target)[0]
-  }
-
-  /**
-   * Adds the cells to the parent at the given index, connecting each cell to
-   * the optional source and target terminal.
-   *
-   * @param cells - Array of `Cell`s to be inserted.
-   * @param parent - `Cell` that represents the new parent. If no parent is
-   * given then the default parent is used.
-   * @param index - Optional index to insert the cells at. Default is to append.
-   * @param source - Optional source `Cell` for all inserted cells.
-   * @param target - Optional target `Cell` for all inserted cells.
-   */
-  addCells(
-    cells: Cell[],
-    parent: Cell = this.getDefaultParent()!,
-    index: number = this.model.getChildCount(parent),
-    source?: Cell,
-    target?: Cell,
-  ) {
-    return this.cellManager.addCells(cells, parent, index, source, target)
-  }
-
-  /**
-   * Removes the given cells from the graph including all connected
-   * edges if `includeEdges` is `true`.
-   */
-  removeCells(
-    cells: Cell[] = this.getDeletableCells(this.getSelectedCells()),
-    includeEdges: boolean = true,
-  ) {
-    return this.cellManager.removeCells(cells, includeEdges)
-  }
-
-  /**
-   * Splits the given edge by adding the newEdge between the previous source
-   * and the given cell and reconnecting the source of the given edge to the
-   * given cell.
-   *
-   * @param edge The edge to be splitted.
-   * @param cells The cells to insert into the edge.
-   * @param newEdge The edge to be inserted.
-   * @param dx The vector to move the cells.
-   * @param dy The vector to move the cells.
-   */
-  splitEdge(
-    edge: Cell,
-    cells: Cell[],
-    newEdge: Cell | null,
-    dx: number = 0,
-    dy: number = 0,
-  ) {
-    return this.cellManager.splitEdge(edge, cells, newEdge, dx, dy)
-  }
-
-  // #endregion
-
-  // #region :::::::::::: Cell Sizing
-
-  /**
-   * Resizes the specified cell to just fit around the its label
-   * and/or children.
-   *
-   * @param cell `Cells` to be resized.
-   * @param  recurse Optional boolean which specifies if all descendants
-   * should be autosized. Default is `true`.
-   */
-  autoSizeCell(cell: Cell, recurse: boolean = true) {
-    this.cellManager.autoSizeCell(cell, recurse)
-  }
-
-  updateCellSize(cell: Cell, ignoreChildren: boolean = false) {
-    return this.cellManager.updateCellSize(cell, ignoreChildren)
-  }
-
-  /**
-   * Sets the bounds of the given cell using <resizeCells>. Returns the
-   * cell which was passed to the function.
-   */
-  resizeCell(cell: Cell, bounds: Rectangle, recurse?: boolean) {
-    return this.resizeCells([cell], [bounds], recurse)[0]
-  }
-
-  /**
-   * Sets the bounds of the given cells and fires a <DomEvent.RESIZE_CELLS>
-   * event while the transaction is in progress. Returns the cells which
-   * have been passed to the function.
-   */
-  resizeCells(
-    cells: Cell[],
-    bounds: Rectangle[],
-    recurse: boolean = this.isRecursiveResize(),
-  ) {
-    return this.cellManager.resizeCells(cells, bounds, recurse)
-  }
-
-  /**
-   * Resizes the child cells of the given cell for the given new geometry with
-   * respect to the current geometry of the cell.
-   *
-   * Parameters:
-   *
-   * cell - <Cell> that has been resized.
-   * newGeo - <mxGeometry> that represents the new bounds.
-   */
-  resizeChildCells(cell: Cell, newGeo: Geometry) {
-    const geo = this.model.getGeometry(cell)!
-    const dx = newGeo.bounds.width / geo.bounds.width
-    const dy = newGeo.bounds.height / geo.bounds.height
-    cell.eachChild(child => this.scaleCell(child, dx, dy, true))
-  }
-
-  /**
-   * Scales the points, position and size of the given cell according to the
-   * given vertical and horizontal scaling factors.
-   *
-   * Parameters:
-   *
-   * cell - <Cell> whose geometry should be scaled.
-   * dx - Horizontal scaling factor.
-   * dy - Vertical scaling factor.
-   * recurse - Boolean indicating if the child cells should be scaled.
-   */
-  scaleCell(cell: Cell, dx: number, dy: number, recurse: boolean) {
-    this.cellManager.scaleCell(cell, dx, dy, recurse)
-  }
-
-  /**
-   * Resizes the parents recursively so that they contain the complete
-   * area of the resized child cell.
-   */
-  extendParent(cell: Cell) {
-    this.cellManager.extendParent(cell)
-  }
-
-  /**
-   * Keeps the given cell inside the bounds returned by
-   * <getCellContainmentArea> for its parent, according to the rules defined by
-   * <getOverlap> and <isConstrainChild>. This modifies the cell's geometry
-   * in-place and does not clone it.
-   *
-   * Parameters:
-   *
-   * cells - <Cell> which should be constrained.
-   * sizeFirst - Specifies if the size should be changed first. Default is true.
-   */
-  constrainChild(cell: Cell, sizeFirst: boolean = true) {
-    return this.cellManager.constrainChild(cell, sizeFirst)
-  }
-
-  /**
-   * Constrains the children of the given cell.
-   */
-  constrainChildCells(cell: Cell) {
-    cell.eachChild(child => this.constrainChild(child))
-  }
-
-  // #endregion
-
-  // #region :::::::::::: Cell Moving
-
-  importCells(
-    cells: Cell[],
-    dx: number,
-    dy: number,
-    target?: Cell,
-    e?: MouseEvent,
-    mapping?: WeakMap<Cell, Cell>,
-  ) {
-    return this.moveCells(cells, dx, dy, true, target, e, mapping)
-  }
-
-  /**
-   * Moves or clones the specified cells and moves the cells or clones by the
-   * given amount, adding them to the optional target cell.
-   *
-   * @param cells Array of `Cell`s to be moved, cloned or added to the target.
-   * @param dx Specifies the x-coordinate of the vector. Default is `0`.
-   * @param dy Specifies the y-coordinate of the vector. Default is `0`.
-   * @param clone Indicating if the cells should be cloned. Default is `false`.
-   * @param target The new parent of the cells.
-   * @param e Mouseevent that triggered the invocation.
-   * @param cache Optional mapping for existing clones.
-   */
-  moveCells(
-    cells: Cell[],
-    dx: number = 0,
-    dy: number = 0,
-    clone: boolean = false,
-    target?: Cell | null,
-    e?: MouseEvent,
-    cache?: WeakMap<Cell, Cell>,
-  ) {
-    return this.cellManager.moveCells(cells, dx, dy, clone, target, e, cache)
-  }
-
-  /**
-   * Translates the geometry of the given cell and stores the new,
-   * translated geometry in the model as an atomic change.
-   */
-  translateCell(cell: Cell, dx: number, dy: number) {
-    this.cellManager.translateCell(cell, dx, dy)
-  }
-
-  /**
-   * Returns the bounds inside which the diagram should be kept as an
-   * <Rect>.
-   */
-  getMaximumGraphBounds() {
-    return this.maximumGraphBounds
-  }
-
-  /**
-   * Resets the control points of the edges that are connected to the given
-   * cells if not both ends of the edge are in the given cells array.
-   */
-  resetEdges(edges: Cell[]) {
-    this.cellManager.resetEdges(edges)
-  }
-
-  /**
-   * Resets the control points of the given edge.
-   */
-  resetEdge(edge: Cell) {
-    this.cellManager.resetEdge(edge)
-  }
-
-  // #endregion
-
-  // #region :::::::::::: Cell Connecting
-
-  /**
-   * Returns the constraint used to connect to the outline of the given state.
-   */
-  getOutlineConstraint(point: Point, terminalState: State, me: any) {
-    return this.connectionManager.getOutlineConstraint(point, terminalState, me)
-  }
-
-  getConstraints(terminal: Cell, isSource: boolean) {
-    const ret = util.call(
-      this.options.getConstraints, this, terminal, isSource,
-    )
-
-    if (ret != null) {
-      return ret
-    }
-
-    const state = this.view.getState(terminal)
-    if (
-      state != null &&
-      state.shape != null &&
-      state.shape.stencil != null
-    ) {
-      return state.shape.stencil.constraints
-    }
-
-    return null
-  }
-
-  getCellContainmentArea(cell: Cell) {
-    return this.cellManager.getCellContainmentArea(cell)
-  }
-
-  /**
-   * Returns an `ConnectionConstraint` that describes the given connection
-   * point.
-   */
-  getConnectionConstraint(
-    edgeState: State,
-    terminalState?: State | null,
-    isSource: boolean = false,
-  ) {
-
-    let point: Point | null = null
-
-    // connection point specified in style
-    const x = isSource ? edgeState.style.exitX : edgeState.style.entryX
-    if (x != null) {
-      const y = isSource ? edgeState.style.exitY : edgeState.style.entryY
-      if (y != null) {
-        point = new Point(x, y)
-      }
-    }
-
-    let perimeter = false
-    let dx = 0
-    let dy = 0
-
-    if (point != null) {
-      perimeter = isSource
-        ? edgeState.style.exitPerimeter !== false
-        : edgeState.style.entryPerimeter !== false
-
-      // Add entry/exit offset
-      dx = (isSource ? edgeState.style.exitDx : edgeState.style.entryDx) as number
-      dy = (isSource ? edgeState.style.exitDy : edgeState.style.entryDy) as number
-
-      dx = isFinite(dx) ? dx : 0
-      dy = isFinite(dy) ? dy : 0
-    }
-
-    return new Constraint({ point, perimeter, dx, dy })
-  }
-
-  setConnectionConstraint(
-    edge: Cell,
-    terminal: Cell | null,
-    isSource: boolean,
-    constraint?: Constraint | null,
-  ) {
-    return this.cellManager.setConnectionConstraint(edge, terminal, isSource, constraint)
-  }
-
-  /**
-   * Returns the nearest point in the list of absolute points
-   * or the center of the opposite terminal.
-   *
-   * Parameters:
-   *
-   * node - <CellState> that represents the vertex.
-   * constraint - <mxConnectionConstraint> that represents the connection point
-   * constraint as returned by <getConnectionConstraint>.
-   */
-  getConnectionPoint(
-    terminalState: State,
-    constraint: Constraint,
-    round: boolean = true,
-  ) {
-    return this.cellManager.getConnectionPoint(terminalState, constraint, round)
-  }
-
-  /**
-   * Connects the specified end of the given edge to the given terminal
-   * using <cellConnected> and fires <DomEvent.CONNECT_CELL> while the
-   * transaction is in progress. Returns the updated edge.
-   *
-   * Parameters:
-   *
-   * edge - <Cell> whose terminal should be updated.
-   * terminal - <Cell> that represents the new terminal to be used.
-   * source - Boolean indicating if the new terminal is the source or target.
-   * constraint - Optional <mxConnectionConstraint> to be used for this
-   * connection.
-   */
-  connectCell(
-    edge: Cell,
-    terminal: Cell | null,
-    isSource: boolean,
-    constraint?: Constraint,
-  ) {
-    return this.cellManager.connectCell(edge, terminal, isSource, constraint)
-  }
-
-  /**
-   * Disconnects the given edges from the terminals which are not in the
-   * given array.
-   */
-  disconnectGraph(cells: Cell[]) {
-    return this.cellManager.disconnectGraph(cells)
+    return this.cellManager.orderCells(toBack, cells)
   }
 
   // #endregion
 
   // #region :::::::::::: Drilldown
+
+  /**
+   * Returns true if the given cell is a valid root.
+   */
+  @hook()
+  isValidRoot(cell: Cell | null) {
+    return (cell != null)
+  }
+
+  /**
+   * Returns true if the given cell is a "port", that is, when connecting
+   * to it, the cell returned by `getTerminalForPort` should be used as the
+   * terminal and the port should be referenced by the ID in either the
+   * `'sourcePort'` or the or the `'targetPort'`.
+   */
+  @hook()
+  isPort(cell: Cell) {
+    return false
+  }
+
+  /**
+   * Returns the terminal to be used for a given port.
+   */
+  @hook()
+  getTerminalForPort(cell: Cell, isSource: boolean) {
+    return this.model.getParent(cell)
+  }
+
+  /**
+   * Returns the offset to be used for the cells inside the given cell.
+   */
+  @hook()
+  getChildOffsetForCell(cell: Cell): Point | null {
+    return null
+  }
+
+  /**
+   * Uses the given cell as the root of the displayed cell hierarchy.
+   */
+  enterGroup(cell: Cell = this.getSelectedCell()) {
+    this.cellManager.enterGroup(cell)
+  }
+
+  /**
+   * Changes the current root to the next valid root.
+   */
+  exitGroup() {
+    this.cellManager.exitGroup()
+  }
+
+  /**
+   * Uses the root of the model as the root of the displayed
+   * cell hierarchy and selects the previous root.
+   */
+  home() {
+    this.cellManager.home()
+  }
 
   /**
    * Returns the translation to be used if the given cell is the root cell as
@@ -1703,70 +1679,9 @@ export class Graph extends Disablable {
    *
    * cell - <Cell> that represents the root.
    */
+  @hook()
   getTranslateForRoot(cell: Cell | null): Point | null {
     return null
-  }
-
-  /**
-   * Returns true if the given cell is a "port", that is, when connecting to
-   * it, the cell returned by getTerminalForPort should be used as the
-   * terminal and the port should be referenced by the ID in either the
-   * constants.STYLE_SOURCE_PORT or the or the
-   * constants.STYLE_TARGET_PORT. Note that a port should not be movable.
-   */
-  isPort(cell: Cell) {
-    const ret = util.call(this.options.isPort, this, cell)
-    if (ret != null) {
-      return ret
-    }
-    return false
-  }
-
-  /**
-   * Returns the terminal to be used for a given port.
-   */
-  getTerminalForPort(cell: Cell, isSource: boolean) {
-    return this.model.getParent(cell)
-  }
-
-  /**
-   * Returns the offset to be used for the cells inside the given cell.
-   */
-  getChildOffsetForCell(cell: Cell): Point | null {
-    return null
-  }
-
-  /**
-   * Uses the given cell as the root of the displayed cell hierarchy.
-   */
-  enterGroup(cell: Cell = this.getSelectedCell()) {
-    this.cellManager.enterGroup(cell)
-  }
-
-  /**
-   * Changes the current root to the next valid root.
-   */
-  exitGroup() {
-    this.cellManager.exitGroup()
-  }
-
-  /**
-   * Uses the root of the model as the root of the displayed
-   * cell hierarchy and selects the previous root.
-   */
-  home() {
-    this.cellManager.home()
-  }
-
-  /**
-   * Returns true if the given cell is a valid root.
-   */
-  isValidRoot(cell: Cell) {
-    const ret = util.call(this.options.isValidRoot, this, cell)
-    if (ret != null) {
-      return ret
-    }
-    return (cell != null)
   }
 
   // #endregion
@@ -1789,7 +1704,7 @@ export class Graph extends Disablable {
    * Returns the nearest ancestor of the given cell which is a
    * swimlane, or the given cell, if it is itself a swimlane.
    */
-  getSwimlane(cell: Cell | null) {
+  getSwimlane(cell: Cell | null): Cell | null {
     return this.cellManager.getSwimlane(cell)
   }
 
@@ -1806,7 +1721,7 @@ export class Graph extends Disablable {
   }
 
   /**
-   * Returns the bottom-most cell that intersects the given point (x, y) in
+   * Returns the bottom-most cell that intersects the given point in
    * the cell hierarchy starting at the given parent.
    *
    * @param x X-coordinate of the location to be checked.
@@ -1839,14 +1754,6 @@ export class Graph extends Disablable {
   }
 
   /**
-   * Returns true if the given coordinate pair is inside the content
-   * of the given swimlane.
-   */
-  hitsSwimlaneContent(swimlane: Cell | null, x: number, y: number) {
-    return this.cellManager.hitsSwimlaneContent(swimlane, x, y)
-  }
-
-  /**
    * Returns the visible child nodes of the given parent.
    */
   getChildNodes(parent: Cell) {
@@ -1861,7 +1768,7 @@ export class Graph extends Disablable {
   }
 
   /**
-   * Returns the visible child nodes or edges in the given parent.
+   * Returns the visible child nodes or edges of the given parent.
    */
   getChildCells(
     parent: Cell = this.getDefaultParent(),
@@ -1874,12 +1781,6 @@ export class Graph extends Disablable {
 
   /**
    * Returns all visible edges connected to the given cell without loops.
-   *
-   * Parameters:
-   *
-   * cell - <Cell> whose connections should be returned.
-   * parent - Optional parent of the opposite end for a connection to be
-   * returned.
    */
   getConnections(node: Cell, parent?: Cell | null) {
     return this.getEdges(node, parent, true, true, false)
@@ -1922,8 +1823,8 @@ export class Graph extends Disablable {
    * result. Default is `true`.
    * @param includeLoops - Specifies if loops should be included in the
    * result. Default is `true`.
-   * @param recurse - Optional boolean the specifies if the parent specified
-   * only need be an ancestral parent, true, or the direct parent, false.
+   * @param recurse - Specifies if the parent specified only need be
+   * an ancestral parent, true, or the direct parent, false.
    */
   getEdges(
     node: Cell,
@@ -1947,8 +1848,6 @@ export class Graph extends Disablable {
    * Returns all distinct visible opposite cells for the specified terminal
    * on the given edges.
    *
-   * Parameters:
-   *
    * @param edges Array of `Cell`s that contains the edges whose opposite
    * terminals should be returned.
    * @param terminal - Specifies the end whose opposite should be returned.
@@ -1957,13 +1856,13 @@ export class Graph extends Disablable {
    * @param includeTargets - Optional boolean that specifies if target
    * terminals should be included in the result. Default is `true`.
    */
-  getOpposites(
+  getOppositeNodes(
     edges: Cell[],
     terminal: Cell,
     includeSources: boolean = true,
     includeTargets: boolean = true,
   ) {
-    return this.cellManager.getOpposites(
+    return this.cellManager.getOppositeNodes(
       edges,
       terminal,
       includeSources,
@@ -2005,31 +1904,25 @@ export class Graph extends Disablable {
 
   /**
    * Returns the children of the given parent that are contained in the
-   * halfpane from the given point (x0, y0) rightwards or downwards
+   * canvas from the given point (x0, y0) rightwards or downwards
    * depending on rightHalfpane and bottomHalfpane.
    *
-   * @param x0 X-coordinate of the origin.
-   * @param y0 Y-coordinate of the origin.
+   * @param x X-coordinate of the origin.
+   * @param y Y-coordinate of the origin.
    * @param parent Optional `Cell` whose children should be checked.
-   * @param rightHalfpane - Boolean indicating if the cells in the right
-   * halfpane from the origin should be returned.
-   * @param bottomHalfpane - Boolean indicating if the cells in the bottom
-   * halfpane from the origin should be returned.
+   * @param isRight - Boolean indicating if the cells in the right
+   * canvas from the origin should be returned.
+   * @param isBottom - Boolean indicating if the cells in the bottom
+   * canvas from the origin should be returned.
    */
   getCellsBeyond(
-    x0: number,
-    y0: number,
+    x: number,
+    y: number,
     parent: Cell = this.getDefaultParent(),
-    rightHalfpane: boolean = false,
-    bottomHalfpane: boolean = false,
+    isRight: boolean = false,
+    isBottom: boolean = false,
   ) {
-    return this.cellManager.getCellsBeyond(
-      x0,
-      y0,
-      parent,
-      rightHalfpane,
-      bottomHalfpane,
-    )
+    return this.cellManager.getCellsBeyond(x, y, parent, isRight, isBottom)
   }
 
   /**
@@ -2043,7 +1936,8 @@ export class Graph extends Disablable {
    * Default is `false`.
    * @param invert - Optional boolean that specifies if outgoing or incoming
    * edges should be counted for a tree root. If `false` then outgoing edges
-   * will be counted. Default is `false`.
+   * will be counted.
+   * Default is `false`.
    */
   findTreeRoots(
     parent: Cell | null,
@@ -2060,19 +1954,6 @@ export class Graph extends Disablable {
    * each node is only visited once. The function may return false if the
    * traversal should stop at the given node.
    *
-   * Example:
-   *
-   * (code)
-   * mxLog.show();
-   * var cell = graph.getSelectionCell();
-   * graph.traverse(cell, false, function(vertex, edge)
-   * {
-   *   mxLog.debug(graph.getLabel(vertex));
-   * });
-   * (end)
-   *
-   * Parameters:
-   *
    * @param node The node where the traversal starts.
    * @param directed Optional boolean indicating if edges should only be
    * traversed from source to target. Default is `true`.
@@ -2088,7 +1969,7 @@ export class Graph extends Disablable {
   traverse(
     node: Cell,
     directed: boolean = true,
-    func: (node: Cell, edge: Cell | null) => boolean,
+    func: (node: Cell, edge: Cell | null) => any,
     edge?: Cell,
     visited: WeakMap<Cell, boolean> = new WeakMap<Cell, boolean>(),
     inverse: boolean = false,
@@ -2100,32 +1981,14 @@ export class Graph extends Disablable {
 
   // #region :::::::::::: Validation
 
+  @hook()
   validateEdge(edge: Cell | null, source: Cell | null, target: Cell | null) {
-    const ret = util.call(this.options.validateEdge, this, edge, source, target)
-    if (ret != null) {
-      return ret
-    }
-
     return null
   }
 
+  @hook()
   validateCell(cell: Cell, context: any) {
-    const ret = util.call(this.options.validateCell, this, cell, context)
-    if (ret != null) {
-      return ret
-    }
-
     return null
-  }
-
-  validationAlert(message: string) {
-    console.warn(message)
-  }
-
-  isEdgeValid(edge: Cell | null, source: Cell | null, target: Cell | null) {
-    return this.validator.getEdgeValidationError(
-      edge, source, target,
-    ) == null
   }
 
   /**
@@ -2137,6 +2000,16 @@ export class Graph extends Disablable {
     context: any = {},
   ): string | null {
     return this.validator.validateGraph(cell, context)
+  }
+
+  isEdgeValid(edge: Cell | null, source: Cell | null, target: Cell | null) {
+    return this.validator.getEdgeValidationError(
+      edge, source, target,
+    ) == null
+  }
+
+  validationWarn(message: string) {
+    console.warn(message)
   }
 
   // #endregion
@@ -2515,28 +2388,16 @@ export class Graph extends Disablable {
   }
 
   /**
-   * Returns true if the given cell is connectable in this graph.
-   */
-  isCellConnectable(cell: Cell | null) {
-    const ret = util.call(this.options.isCellConnectable, this, cell)
-    if (ret != null) {
-      return ret
-    }
-
-    return this.model.isConnectable(cell)
-  }
-
-  /**
    * Returns true if perimeter points should be computed such that the
    * resulting edge has only horizontal or vertical segments.
    */
-  isOrthogonal(edgeState: State) {
-    const orthogonal = edgeState.style.orthogonal
+  isOrthogonal(state: State) {
+    const orthogonal = state.style.orthogonal
     if (orthogonal != null) {
       return orthogonal
     }
 
-    const tmp = this.view.getEdgeFunction(edgeState)
+    const tmp = this.view.getEdgeFunction(state)
     return (
       tmp === EdgeStyle.segmentConnector ||
       tmp === EdgeStyle.elbowConnector ||
@@ -2560,25 +2421,15 @@ export class Graph extends Disablable {
   /**
    * Returns true if the given event is a clone event.
    */
+  @hook()
   isCloneEvent(e: MouseEvent) {
     return DomEvent.isControlDown(e)
   }
 
   /**
-   * Click-through behaviour on selected cells. If this returns true the
-   * cell behind the selected cell will be selected.
-   */
-  isTransparentClickEvent(e: MouseEvent) {
-    const ret = util.call(this.options.isTransparentClickEvent, this, e)
-    if (ret != null) {
-      return ret
-    }
-    return false
-  }
-
-  /**
    * Returns true if the given event is a toggle event.
    */
+  @hook()
   isToggleEvent(e: MouseEvent) {
     return detector.IS_MAC ? DomEvent.isMetaDown(e) : DomEvent.isControlDown(e)
   }
@@ -2586,6 +2437,7 @@ export class Graph extends Disablable {
   /**
    * Returns true if the given mouse event should be aligned to the grid.
    */
+  @hook()
   isGridEnabledForEvent(e: MouseEvent) {
     return e != null && !DomEvent.isAltDown(e)
   }
@@ -2593,6 +2445,7 @@ export class Graph extends Disablable {
   /**
    * Returns true if the given mouse event should be constrained.
    */
+  @hook()
   isConstrainedEvent(e: MouseEvent) {
     return DomEvent.isShiftDown(e)
   }
@@ -2601,12 +2454,17 @@ export class Graph extends Disablable {
    * Returns true if the given mouse event should not allow any connections
    * to be made.
    */
+  @hook()
   isIgnoreTerminalEvent(e: MouseEvent) {
-    const ret = util.call(this.options.isIgnoreTerminalEvent, this, e)
-    if (ret != null) {
-      return ret
-    }
+    return false
+  }
 
+  /**
+   * Click-through behaviour on selected cells. If this returns true the
+   * cell behind the selected cell will be selected.
+   */
+  @hook()
+  isTransparentClickEvent(e: MouseEvent) {
     return false
   }
 
@@ -2654,7 +2512,8 @@ export class Graph extends Disablable {
   /**
    * Returns the textual representation for the given cell.
    */
-  convertDataToString(cell: Cell) {
+  @hook()
+  convertDataToString(cell: Cell): string {
     const data = this.model.getData(cell)
     if (data != null) {
       if (util.isHTMLNode(data)) {
@@ -2672,19 +2531,23 @@ export class Graph extends Disablable {
   /**
    * Returns a string or DOM node that represents the label for the given cell.
    */
+  @hook()
   getLabel(cell: Cell) {
     let result = ''
 
     if (this.labelsVisible && cell != null) {
-      const state = this.view.getState(cell)
-      const style = (state != null) ? state.style : this.getCellStyle(cell)
-
+      const style = this.getStyle(cell)
       if (!style.noLabel) {
         result = this.convertDataToString(cell)
       }
     }
 
     return result
+  }
+
+  putLabel(cell: Cell, label: string) {
+    const data = cell.getData()
+    return typeof data === 'object' ? { ...data } : label
   }
 
   /**
@@ -2707,7 +2570,7 @@ export class Graph extends Disablable {
    *
    * Returns true if no white-space CSS style directive should be used for
    * displaying the given cells label. This implementation returns true if
-   * <constants.STYLE_WHITE_SPACE> in the style of the given cell is 'wrap'.
+   * <constan.STYLE_WHITE_SPACE> in the style of the given cell is 'wrap'.
    *
    * This is used as a workaround for IE ignoring the white-space directive
    * of child elements if the directive appears in a parent element. It
@@ -2755,7 +2618,7 @@ export class Graph extends Disablable {
   /**
    * Returns true if the overflow portion of labels should be hidden. If this
    * returns true then node labels will be clipped to the size of the vertices.
-   * This implementation returns true if <constants.STYLE_OVERFLOW> in the
+   * This implementation returns true if <constas.STYLE_OVERFLOW> in the
    * style of the given cell is 'hidden'.
    *
    * Parameters:
@@ -2903,20 +2766,14 @@ export class Graph extends Disablable {
   }
 
   /**
-   * Returns the start size of the given swimlane, that is, the width or
-   * height of the part that contains the title, depending on the
-   * horizontal style. The return value is an <Rect> with either
+   * Returns the start size of the given swimlane, that is, the width
+   * or height of the part that contains the title, depending on the
+   * horizontal style. The return value is an `Rectangle` with either
    * width or height set as appropriate.
-   *
-   * Parameters:
-   *
-   * swimlane - <Cell> whose start size should be returned.
    */
   getStartSize(swimlane: Cell | null) {
     const result = new Rectangle()
-    const state = this.view.getState(swimlane)
-    const style = (state != null) ? state.style : this.getCellStyle(swimlane)
-
+    const style = this.getStyle(swimlane)
     if (style != null) {
       const size = style.startSize || constants.DEFAULT_STARTSIZE
       if (style.horizontal !== false) {
@@ -3019,6 +2876,18 @@ export class Graph extends Disablable {
 
   // #region :::::::::::: Graph Behaviour
 
+  /**
+   * Specifies if the container should be resized to the graph size when
+   * the graph size has changed.
+   *
+   * Default is `false`.
+   */
+  resizeContainer: boolean = false
+
+  /**
+   * Specifies if the container should be resized to the graph size when
+   * the graph size has changed.
+   */
   isResizeContainer() {
     return this.resizeContainer
   }
@@ -3122,7 +2991,7 @@ export class Graph extends Disablable {
   /**
    * Returns true if the given cell is cloneable. This implementation returns
    * <isCellsCloneable> for all cells unless a cell style specifies
-   * <constants.STYLE_CLONEABLE> to be 0.
+   * <connts.STYLE_CLONEABLE> to be 0.
    *
    * Parameters:
    *
@@ -3418,14 +3287,7 @@ export class Graph extends Disablable {
   }
 
   /**
-   * Returns true if the given cell is resizable. This returns
-   * <cellsResizable> for all given cells if <isCellLocked> does not return
-   * true for the given cell and its style does not specify
-   * <constants.STYLE_RESIZABLE> to be 0.
-   *
-   * Parameters:
-   *
-   * cell - <Cell> whose resizable state should be returned.
+   * Returns true if the given cell is resizable.
    */
   isCellResizable(cell: Cell) {
     const state = this.view.getState(cell)
@@ -3439,20 +3301,18 @@ export class Graph extends Disablable {
   }
 
   /**
-   * Returns <cellsResizable>.
+   * Specifies if the graph should allow resizing of cells.
+   *
+   * Default is `true`.
    */
+  cellsResizable = true
+
   isCellsResizable() {
     return this.cellsResizable
   }
 
   /**
-   * Specifies if the graph should allow resizing of cells. This
-   * implementation updates <cellsResizable>.
-   *
-   * Parameters:
-   *
-   * value - Boolean indicating if the graph should allow resizing of
-   * cells.
+   * Specifies if the graph should allow resizing of cells.
    */
   setCellsResizable(value: boolean) {
     this.cellsResizable = value
@@ -3509,18 +3369,10 @@ export class Graph extends Disablable {
   }
 
   /**
-   * Returns true if the given cell is editable. This returns <cellsEditable> for
-   * all given cells if <isCellLocked> does not return true for the given cell
-   * and its style does not specify <constants.STYLE_EDITABLE> to be 0.
-   *
-   * Parameters:
-   *
-   * cell - <Cell> whose editable state should be returned.
+   * Returns true if the given cell is editable.
    */
   isCellEditable(cell: Cell) {
-    const state = this.view.getState(cell)
-    const style = (state != null) ? state.style : this.getCellStyle(cell)
-
+    const style = this.getStyle(cell)
     return this.isCellsEditable() &&
       !this.isCellLocked(cell) &&
       style.editable !== false
@@ -3577,14 +3429,17 @@ export class Graph extends Disablable {
   }
 
   /**
-   * Returns true if the given cell is a valid source for new connections.
-   * This implementation returns true for all non-null values and is
-   * called by is called by <isValidConnection>.
-   *
-   * Parameters:
-   *
-   * cell - <Cell> that represents a possible source or null.
+   * Returns true if the given cell is connectable in this graph.
    */
+  @hook()
+  isCellConnectable(cell: Cell | null) {
+    return this.model.isConnectable(cell)
+  }
+
+  /**
+   * Returns true if the given cell is a valid source for new connections.
+   */
+  @hook()
   isValidSource(cell: Cell | null) {
     return (
       (cell == null && this.allowDanglingEdges) ||
@@ -3597,28 +3452,15 @@ export class Graph extends Disablable {
   }
 
   /**
-   * Returns <isValidSource> for the given cell. This is called by
-   * <isValidConnection>.
-   *
-   * Parameters:
-   *
-   * cell - <Cell> that represents a possible target or null.
+   * Returns true if the given cell is a valid target for new connections.
    */
+  @hook()
   isValidTarget(cell: Cell | null) {
     return this.isValidSource(cell)
   }
 
   /**
    * Returns true if the given target cell is a valid target for source.
-   * This is a boolean implementation for not allowing connections between
-   * certain pairs of nodes and is called by <getEdgeValidationError>.
-   * This implementation returns true if <isValidSource> returns true for
-   * the source and <isValidTarget> returns true for the target.
-   *
-   * Parameters:
-   *
-   * source - <Cell> that represents the source cell.
-   * target - <Cell> that represents the target cell.
    */
   isValidConnection(source: Cell | null, target: Cell | null) {
     return this.isValidSource(source) && this.isValidTarget(target)
@@ -3641,8 +3483,7 @@ export class Graph extends Disablable {
    * updated after a change of the label.
    */
   isAutoSizeCell(cell: Cell) {
-    const state = this.view.getState(cell)
-    const style = (state != null) ? state.style : this.getCellStyle(cell)
+    const style = this.getStyle(cell)
     return this.isAutoSizeCells() || style.autosize === true
   }
 
@@ -3667,15 +3508,11 @@ export class Graph extends Disablable {
 
   /**
    * Returns true if the parent of the given cell should be extended if the
-   * child has been resized so that it overlaps the parent. This
-   * implementation returns <isExtendParents> if the cell is not an edge.
-   *
-   * Parameters:
-   *
-   * cell - <Cell> that has been resized.
+   * child has been resized so that it overlaps the parent.
    */
+  @hook()
   isExtendParent(cell: Cell) {
-    return !this.getModel().isEdge(cell) && this.isExtendParents()
+    return !this.model.isEdge(cell) && this.isExtendParents()
   }
 
   isExtendParents() {
@@ -3702,6 +3539,8 @@ export class Graph extends Disablable {
     this.extendParentsOnMove = value
   }
 
+  recursiveResize: boolean = false
+
   isRecursiveResize() {
     return this.recursiveResize
   }
@@ -3711,19 +3550,21 @@ export class Graph extends Disablable {
   }
 
   /**
-   * Returns true if the given cell should be kept inside the bounds of its
-   * parent according to the rules defined by <getOverlap> and
-   * <isAllowOverlapParent>. This implementation returns false for all children
-   * of edges and <isConstrainChildren> otherwise.
-   *
-   * Parameters:
-   *
-   * cell - <Cell> that should be constrained.
+   * Returns true if the given cell should be kept inside the
+   * bounds of its parent.
    */
   isConstrainChild(cell: Cell) {
     return this.isConstrainChildren() &&
-      !this.getModel().isEdge(this.getModel().getParent(cell)!)
+      !this.model.isEdge(this.model.getParent(cell)!)
   }
+
+  /**
+   * Specifies if a child should be constrained inside the parent
+   * bounds after a move or resize of the child.
+   *
+   * Default is `true`.
+   */
+  constrainChildren: boolean = true
 
   isConstrainChildren() {
     return this.constrainChildren
@@ -3733,6 +3574,14 @@ export class Graph extends Disablable {
     this.constrainChildren = value
   }
 
+  /**
+   * Specifies if child cells with relative geometries should be
+   * constrained inside the parent bounds.
+   *
+   * Default is `false`.
+   */
+  constrainRelativeChildren: boolean = false
+
   isConstrainRelativeChildren() {
     return this.constrainRelativeChildren
   }
@@ -3740,6 +3589,13 @@ export class Graph extends Disablable {
   setConstrainRelativeChildren(value: boolean) {
     this.constrainRelativeChildren = value
   }
+
+  /**
+   * Specifies if negative coordinates for nodes are allowed.
+   *
+   * Default is `true`.
+   */
+  allowNegativeCoordinates = true
 
   isAllowNegativeCoordinates() {
     return this.allowNegativeCoordinates
@@ -3787,12 +3643,8 @@ export class Graph extends Disablable {
   /**
    * Returns true if the given cell is foldable.
    */
+  @hook()
   isFoldable(cell: Cell, nextCollapseState: boolean) {
-    const ret = util.call(this.options.isFoldable, this, cell, nextCollapseState)
-    if (ret != null) {
-      return ret
-    }
-
     const state = this.view.getState(cell)
     const style = (state != null) ? state.style : this.getCellStyle(cell)
 
@@ -3975,8 +3827,53 @@ export class Graph extends Disablable {
   // #endregion
 }
 
+function hook(hookName?: string) {
+  return (
+    target: Graph,
+    methodName: string,
+    descriptor: PropertyDescriptor,
+  ) => {
+    const raw = descriptor.value
+    const name = hookName || methodName
+
+    descriptor.value = function (this: Graph, ...args: any[]) {
+      const hook = (this.options as any)[name]
+      if (hook != null) {
+        const ret = util.apply(hook, this, args)
+        if (ret != null) {
+          return ret
+        }
+      }
+
+      return raw.call(this, ...args)
+    }
+  }
+}
+
+function afterCreate(aopName?: string) {
+  return (
+    target: Graph,
+    methodName: string,
+    descriptor: PropertyDescriptor,
+  ) => {
+    const raw = descriptor.value
+    const name = aopName || `on${util.ucFirst(methodName)}`
+
+    descriptor.value = function (this: Graph, ...args: any[]) {
+      const instance = raw.call(this, ...args)
+      const aop = (this.options as any)[name]
+      if (aop != null) {
+        args.unshift(instance)
+        return util.apply(aop, this, args)
+      }
+
+      return instance
+    }
+  }
+}
+
 export namespace Graph {
-  interface Hooks {
+  export interface Hooks {
     createModel?: (this: Graph, graph: Graph) => Model
     createView?: (this: Graph, graph: Graph) => View
     createRenderer?: (this: Graph, graph: Graph) => Renderer
@@ -3995,20 +3892,25 @@ export namespace Graph {
     createEdgeSegmentHandler?: (this: Graph, graph: Graph, state: State) => EdgeHandler
     createRubberbandHandler?: (this: Graph, graph: Graph) => RubberbandHandler
 
-    getTooltip?: (this: Graph, cell: Cell) => string | HTMLElement
-    getConstraints?: (
-      this: Graph,
-      cell: Cell,
-      isSource: boolean,
-    ) => Constraint[] | null
-
-    isPort?: (this: Graph, cell: Cell) => boolean | null
-    isFoldable?: (this: Graph, cell: Cell, nextCollapseState: boolean) => boolean | null
-    isCellConnectable?: (this: Graph, cell: Cell | null) => boolean | null
-    isValidRoot?: (this: Graph, cell: Cell) => boolean | null
-
-    isTransparentClickEvent?: (this: Graph, e: MouseEvent) => boolean | null
+    isCloneEvent?: (e: MouseEvent) => boolean | null
+    isToggleEvent?: (e: MouseEvent) => boolean | null
+    isConstrainedEvent?: (e: MouseEvent) => boolean | null
+    isGridEnabledForEvent?: (e: MouseEvent) => boolean | null
     isIgnoreTerminalEvent?: (this: Graph, e: MouseEvent) => boolean | null
+    isTransparentClickEvent?: (this: Graph, e: MouseEvent) => boolean | null
+
+    isValidSource?: (this: Graph, cell: Cell | null) => boolean | null
+    isValidTarget?: (this: Graph, cell: Cell | null) => boolean | null
+    isCellConnectable?: (this: Graph, cell: Cell | null) => boolean | null
+
+    isValidRoot?: (this: Graph, cell: Cell | null) => boolean | null
+    isPort?: (this: Graph, cell: Cell) => boolean | null
+    getTerminalForPort?: (this: Graph, cell: Cell, isSource: boolean) => Cell | null
+    getChildOffsetForCell?: (this: Graph, cell: Cell) => Point | null
+    getTranslateForRoot?: (this: Graph, cell: Cell | null) => Point | null
+
+    isExtendParent?: (this: Graph, cell: Cell) => boolean | null
+    isFoldable?: (this: Graph, cell: Cell, nextCollapseState: boolean) => boolean | null
 
     validateCell?: (this: Graph, cell: Cell, context: any) => string | null
     validateEdge?: (
@@ -4017,7 +3919,27 @@ export namespace Graph {
       source: Cell | null,
       target: Cell | null,
     ) => string | null
+
+    getTooltip?: (this: Graph, cell: Cell) => string | HTMLElement
+    getConstraints?: (
+      this: Graph,
+      cell: Cell,
+      isSource: boolean,
+    ) => Constraint[] | null
+
+    getLabel?: (this: Graph, cell: Cell) => string | null
+    putLabel?: (this: Graph, cell: Cell, label: string) => null | any
+    getEditingValue?: (this: Graph, cell: Cell, e?: Event) => string | null
+    convertDataToString?: (this: Graph, cell: Cell) => string | null
+
+    // after creation
+    // ----
+    onCreateNode?: (this: Graph, node: Cell, options: Graph.CreateNodeOptions) => Cell
+    onCreateEdge?: (this: Graph, edge: Cell, options: Graph.CreateEdgeOptions) => Cell
+    onCreateGroup?: (this: Graph, group: Cell, cells: Cell[]) => Cell
   }
+
+  export type HookNames = keyof Hooks
 
   export interface Options extends Hooks, Feature.Options {
     model?: Model,
@@ -4075,6 +3997,8 @@ export namespace Graph {
     removeCells: 'removeCells',
     cellsRemoved: 'cellsRemoved',
     removeCellsFromParent: 'removeCellsFromParent',
+    connectCell: 'connectCell',
+    cellConnected: 'cellConnected',
     groupCells: 'groupCells',
     ungroupCells: 'ungroupCells',
     splitEdge: 'splitEdge',
@@ -4091,6 +4015,8 @@ export namespace Graph {
     toggleCells: 'toggleCells',
     flipEdge: 'flipEdge',
     alignCells: 'alignCells',
+    moveCells: 'moveCells',
+    cellsMoved: 'cellsMoved',
 
     startEditing: 'startEditing',
     editingStarted: 'editingStarted',

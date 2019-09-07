@@ -788,7 +788,7 @@ export class NodeHandler extends MouseHandler {
       }
 
       if (this.graph.isConstrainChild(this.state.cell)) {
-        let tmp = this.graph.getCellContainmentArea(this.state.cell)
+        let tmp = this.graph.cellManager.getCellContainmentArea(this.state.cell)
 
         if (tmp != null) {
           const overlap = this.graph.getOverlap(this.state.cell)
@@ -1026,7 +1026,7 @@ export class NodeHandler extends MouseHandler {
 
           if (style != null) {
             const total = (style.rotation || 0) + angle
-            this.graph.setCellsStyle('rotation', total, [cell])
+            this.graph.updateCellsStyle('rotation', total, [cell])
           }
         }
 

@@ -17,9 +17,7 @@ export function getBoundingBox(rect: Rectangle, rotation: number, cx?: Point) {
     const cos = Math.cos(rad)
     const sin = Math.sin(rad)
 
-    cx = (cx != null) // tslint:disable-line
-      ? cx
-      : new Point(rect.x + rect.width / 2, rect.y + rect.height / 2)
+    cx = (cx != null) ? cx : rect.getCenter() // tslint:disable-line
 
     let p1 = new Point(rect.x, rect.y)
     let p2 = new Point(rect.x + rect.width, rect.y)

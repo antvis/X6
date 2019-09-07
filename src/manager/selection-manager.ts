@@ -7,12 +7,12 @@ export class SelectionManager extends BaseManager {
     super(graph)
   }
 
-  private setSelectedCells(cells: Cell[]) {
-    this.graph.setSelectedCells(cells)
-  }
-
   private setSelectedCell(cell: Cell | null) {
     this.graph.setSelectedCell(cell)
+  }
+
+  private setSelectedCells(cells: Cell[]) {
+    this.graph.setSelectedCells(cells)
   }
 
   updateSelection() {

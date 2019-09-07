@@ -90,7 +90,7 @@ export class ConstraintHandler extends BaseHandler {
       this.currentFocusArea = state.bounds.clone()
 
       for (let i = 0; i < this.constraints.length; i += 1) {
-        const cp = this.graph.getConnectionPoint(state, this.constraints[i])!
+        const cp = this.graph.cellManager.getConnectionPoint(state, this.constraints[i])!
         const img = this.getImageForConstraint(state, this.constraints[i], cp)
 
         const bounds = new Rectangle(
@@ -327,7 +327,7 @@ export class ConstraintHandler extends BaseHandler {
       this.focusIcons = []
 
       for (let i = 0; i < this.constraints.length; i += 1) {
-        const cp = this.graph.getConnectionPoint(state, this.constraints[i])!
+        const cp = this.graph.cellManager.getConnectionPoint(state, this.constraints[i])!
         const img = this.getImageForConstraint(state, this.constraints[i], cp)
         const src = img.src
         const bounds = new Rectangle(

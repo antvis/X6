@@ -1006,7 +1006,7 @@ export class EdgeHandler extends MouseHandler {
               const c = this.graph.getConnectionConstraint(this.state, src, true)
 
               // Checks if point is not fixed
-              if (c == null || this.graph.getConnectionPoint(src, c) == null) {
+              if (c == null || this.graph.cellManager.getConnectionPoint(src, c) == null) {
                 abs[0] = new Point(src.view.getRoutingCenterX(src), src.view.getRoutingCenterY(src))
               }
             }
@@ -1017,7 +1017,7 @@ export class EdgeHandler extends MouseHandler {
               const c = this.graph.getConnectionConstraint(this.state, trg, false)
 
               // Checks if point is not fixed
-              if (c == null || this.graph.getConnectionPoint(trg, c) == null) {
+              if (c == null || this.graph.cellManager.getConnectionPoint(trg, c) == null) {
                 abs[abs.length - 1] = new Point(
                   trg.view.getRoutingCenterX(trg),
                   trg.view.getRoutingCenterY(trg),
@@ -1197,7 +1197,9 @@ export class EdgeHandler extends MouseHandler {
           point = new Point(e.getGraphX(), e.getGraphY())
         }
 
-        constraint = this.graph.getOutlineConstraint(point, terminalState, e)
+        constraint = this.graph.cellManager.getOutlineConstraint(
+          point, terminalState, e,
+        )
         this.constraintHandler.setFocus(e, terminalState, this.isSource)
         this.constraintHandler.currentConstraint = constraint
         this.constraintHandler.currentPoint = point
@@ -1297,7 +1299,7 @@ export class EdgeHandler extends MouseHandler {
         if (this.error != null) {
 
           if (this.error.length > 0) {
-            this.graph.validationAlert(this.error)
+            this.graph.validationWarn(this.error)
           }
 
         } else if (DomEvent.isCustomHandle(index)) {
@@ -2002,7 +2004,7 @@ export namespace EdgeHandler {
       if (
         (
           this.graph.isSwimlane(cell) && this.currentPoint != null &&
-          this.graph.hitsSwimlaneContent(cell, this.currentPoint.x, this.currentPoint.y)
+          this.graph.cellManager.hitsSwimlaneContent(cell, this.currentPoint.x, this.currentPoint.y)
         )
         ||
         !this.edgeHandler.isConnectableCell(cell)

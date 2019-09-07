@@ -82,7 +82,6 @@ export class Multiplicity {
       (this.isSource && this.checkTerminal(graph, source, edge)) ||
       (!this.isSource && this.checkTerminal(graph, target, edge))
     ) {
-
       if (this.countError != null) {
         if (
           (
@@ -114,7 +113,7 @@ export class Multiplicity {
     return (error.length > 0) ? error : null
   }
 
-  checkNeighbors(
+  protected checkNeighbors(
     graph: Graph,
     edge: Cell | null,
     source: Cell | null,
@@ -147,7 +146,11 @@ export class Multiplicity {
   /**
    * Checks the given terminal cell and returns true if this rule applies.
    */
-  checkTerminal(graph: Graph, terminal: Cell | null, edge: Cell | null) {
+  protected checkTerminal(
+    graph: Graph,
+    terminal: Cell | null,
+    edge: Cell | null,
+  ) {
     const data = graph.model.getData(terminal)
     return this.checkType(
       graph, data, this.nodeName, this.attrName, this.attrValue,
@@ -157,19 +160,19 @@ export class Multiplicity {
   /**
    * Checks the type of the given value.
    */
-  checkType(
+  protected checkType(
     graph: Graph,
-    value: any,
+    data: any,
     nodeName?: string,
     attrName?: string,
     attrValue?: string,
   ) {
-    if (value != null) {
-      if (!isNaN(value.nodeType)) {
-        return isHTMLNode(value, nodeName, attrName, attrValue)
+    if (data != null) {
+      if (!isNaN(data.nodeType)) {
+        return isHTMLNode(data, nodeName, attrName, attrValue)
       }
 
-      return value === nodeName
+      return data === nodeName
     }
 
     return false

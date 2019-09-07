@@ -280,7 +280,7 @@ export class ConnectionHandler extends MouseHandler {
       if ((
         this.graph.isSwimlane(cell) &&
         this.currentPoint != null &&
-        this.graph.hitsSwimlaneContent(cell, this.currentPoint.x, this.currentPoint.y)
+        this.graph.cellManager.hitsSwimlaneContent(cell, this.currentPoint.x, this.currentPoint.y)
       ) || !this.isConnectableCell(cell)
       ) {
         cell = null
@@ -728,7 +728,9 @@ export class ConnectionHandler extends MouseHandler {
           point = new Point(e.getGraphX(), e.getGraphY()) // tslint:disable-line
         }
 
-        const constraint = this.graph.getOutlineConstraint(point, this.currentState, e)
+        const constraint = this.graph.cellManager.getOutlineConstraint(
+          point, this.currentState, e,
+        )
         this.constraintHandler.setFocus(e, this.currentState, false)
         this.constraintHandler.currentConstraint = constraint
         this.constraintHandler.currentPoint = point
@@ -1285,7 +1287,7 @@ export class ConnectionHandler extends MouseHandler {
         // Displays the error message if it is not an empty string,
         // for empty error messages, the event is silently dropped
         if (this.error != null && this.error.length > 0) {
-          this.graph.validationAlert(this.error)
+          this.graph.validationWarn(this.error)
         }
       }
 

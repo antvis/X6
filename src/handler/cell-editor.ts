@@ -331,7 +331,7 @@ export class CellEditor extends Disposable {
   }
 
   protected applyValue(state: State, value: string) {
-    this.graph.labelChanged(state.cell, value, this.trigger)
+    this.graph.updateLabel(state.cell, value, this.trigger)
   }
 
   protected getInitialValue(state: State, trigger?: Event) {
@@ -705,7 +705,7 @@ export class CellEditor extends Disposable {
             }
 
             if (this.align != null) {
-              this.graph.setCellsStyle('align', this.align, [state.cell])
+              this.graph.updateCellsStyle('align', this.align, [state.cell])
             }
           })
         }

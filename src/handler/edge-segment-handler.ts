@@ -151,7 +151,7 @@ export class EdgeSegmentHandler extends EdgeElbowHandler {
         const sc = this.graph.getConnectionConstraint(edge, source, true)
 
         if (sc != null) {
-          const pt = this.graph.getConnectionPoint(source, sc)
+          const pt = this.graph.cellManager.getConnectionPoint(source, sc)
 
           if (pt != null) {
             this.convertPoint(pt, false)
@@ -165,7 +165,7 @@ export class EdgeSegmentHandler extends EdgeElbowHandler {
         const tc = this.graph.getConnectionConstraint(edge, target, false)
 
         if (tc) {
-          const pt = this.graph.getConnectionPoint(target, tc)
+          const pt = this.graph.cellManager.getConnectionPoint(target, tc)
 
           if (pt != null) {
             this.convertPoint(pt, false)

@@ -65,7 +65,7 @@ export class Rectangle {
     }
   }
 
-  containsPoint(point: Point) {
+  containsPoint(point: Point | Point.PointLike) {
     return (
       point != null &&
       point.x >= this.x &&
@@ -75,7 +75,7 @@ export class Rectangle {
     )
   }
 
-  containsRect(rect: Rectangle) {
+  containsRect(rect: Rectangle | Rectangle.RectangleLike) {
     const x2 = rect.x
     const y2 = rect.y
     const w2 = rect.width

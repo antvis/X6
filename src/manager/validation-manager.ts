@@ -7,37 +7,30 @@ export class ValidationManager extends BaseManager {
     super(graph)
   }
 
-  validateGraph(
-    cell: Cell = this.model.getRoot(),
-    context: any = {},
-  ): string | null {
-
+  validateGraph(cell: Cell, context: any): string | null {
     let isValid = true
-    const childCount = this.model.getChildCount(cell)
 
-    for (let i = 0; i < childCount; i += 1) {
-      const tmp = this.model.getChildAt(cell, i)!
+    this.model.eachChild(cell, (child) => {
       let ctx = context
-
-      if (this.graph.isValidRoot(tmp)) {
+      if (this.graph.isValidRoot(child)) {
         ctx = new Object()
       }
 
-      const warn: string | null = this.validateGraph(tmp, ctx)
+      const warn: string | null = this.validateGraph(child, ctx)
       if (warn != null) {
-        this.graph.addWarningOverlay(tmp, warn.replace(/\n/g, '<br>'))
+        this.graph.addWarningOverlay(child, warn.replace(/\n/g, '<br>'))
       } else {
-        this.graph.addWarningOverlay(tmp, null)
+        this.graph.addWarningOverlay(child, null)
       }
 
       isValid = isValid && warn == null
-    }
+    })
 
     let warning = ''
 
     // Adds error for invalid children if collapsed (children invisible)
     if (this.graph.isCellCollapsed(cell) && !isValid) {
-      warning += 'ValidationErrors'
+      warning += 'Validation Errors. '
     }
 
     // Checks edges and cells using the defined multiplicities
@@ -53,7 +46,6 @@ export class ValidationManager extends BaseManager {
 
     // Checks custom validation rules
     const err = this.graph.validateCell(cell, context)
-
     if (err != null) {
       warning += err
     }
@@ -71,17 +63,20 @@ export class ValidationManager extends BaseManager {
 
   /**
    * Returns the validation error message to be displayed when inserting or
-   * changing an edges' connectivity. A return value of null means the edge
-   * is valid, a return value of '' means it's not valid, but do not display
-   * an error message. Any other (non-empty) string returned from this method
-   * is displayed as an error message when trying to connect an edge to a
-   * source and target.
+   * changing an edges' connectivity.
+   *
+   * A return value of null means the edge is valid.
+   * A return value of '' means it's invalid, but do not have an error message.
+   * Any other (non-empty) string returned from this method is displayed as
+   * an error message.
    */
   getEdgeValidationError(
     edge: Cell | null,
     source: Cell | null,
     target: Cell | null,
   ) {
+
+    // dangling edge
     if (
       edge != null &&
       !this.graph.allowDanglingEdges &&
@@ -130,15 +125,14 @@ export class ValidationManager extends BaseManager {
 
       // Checks the change against each multiplicity rule
       if (this.graph.multiplicities != null) {
-        for (let i = 0, ii = this.graph.multiplicities.length; i < ii; i += 1) {
-          const err = this.graph.multiplicities[i].check(
+        this.graph.multiplicities.forEach((m) => {
+          const err = m.check(
             this.graph, edge, source, target, sourceOut, targetIn,
           )
-
           if (err != null) {
             error += err
           }
-        }
+        })
       }
 
       // Validates the source and target terminals independently
@@ -155,29 +149,28 @@ export class ValidationManager extends BaseManager {
   }
 
   getCellValidationError(cell: Cell) {
+    const data = this.model.getData(cell)
     const outCount = this.model.getDirectedEdgeCount(cell, true)
     const inCount = this.model.getDirectedEdgeCount(cell, false)
-    const value = this.model.getData(cell)
+
     let error = ''
 
     if (this.graph.multiplicities != null) {
-      for (let i = 0; i < this.graph.multiplicities.length; i += 1) {
-        const rule = this.graph.multiplicities[i]
-
+      this.graph.multiplicities.forEach((rule) => {
         if (
           rule.isSource &&
-          isHTMLNode(value, rule.nodeName, rule.attrName, rule.attrValue) &&
+          isHTMLNode(data, rule.nodeName, rule.attrName, rule.attrValue) &&
           ((rule.max > 0 && outCount > rule.max) || outCount < rule.min)
         ) {
           error += `${rule.countError}\n`
         } else if (
           !rule.isSource &&
-          isHTMLNode(value, rule.nodeName, rule.attrName, rule.attrValue) &&
+          isHTMLNode(data, rule.nodeName, rule.attrName, rule.attrValue) &&
           ((rule.max > 0 && inCount > rule.max) || inCount < rule.min)
         ) {
           error += `${rule.countError}\n`
         }
-      }
+      })
     }
 
     return (error.length > 0) ? error : null

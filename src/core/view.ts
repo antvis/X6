@@ -793,7 +793,7 @@ export class View extends Primer {
     let point: Point | null = null
 
     if (constraint != null) {
-      point = this.graph.getConnectionPoint(
+      point = this.graph.cellManager.getConnectionPoint(
         terminalState,
         constraint,
         this.graph.isOrthogonal(edgeState),
