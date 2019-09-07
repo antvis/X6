@@ -1519,8 +1519,8 @@ export class ConnectionHandler extends MouseHandler {
             const pt = (this.originalPoint != null) ?
               new Point(this.originalPoint.x / s - t.x, this.originalPoint.y / s - t.y) :
               new Point(this.currentPoint!.x / s - t.x, this.currentPoint!.y / s - t.y)
-            pt.x -= this.graph.panDx / this.graph.view.scale
-            pt.y -= this.graph.panDy / this.graph.view.scale
+            pt.x -= this.graph.tx / this.graph.view.scale
+            pt.y -= this.graph.ty / this.graph.view.scale
             geo.setTerminalPoint(pt, false)
           }
 
@@ -1599,8 +1599,8 @@ export class ConnectionHandler extends MouseHandler {
       const t = this.graph.view.translate
       const s = this.graph.view.scale
       const point = new Point(this.currentPoint!.x / s - t.x, this.currentPoint!.y / s - t.y)
-      geo.bounds.x = Math.round(point.x - geo.bounds.width / 2 - this.graph.panDx / s)
-      geo.bounds.y = Math.round(point.y - geo.bounds.height / 2 - this.graph.panDy / s)
+      geo.bounds.x = Math.round(point.x - geo.bounds.width / 2 - this.graph.tx / s)
+      geo.bounds.y = Math.round(point.y - geo.bounds.height / 2 - this.graph.ty / s)
 
       // Aligns with source if within certain tolerance
       const tol = this.getAlignmentTolerance(evt)

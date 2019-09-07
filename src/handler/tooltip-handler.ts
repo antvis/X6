@@ -147,7 +147,7 @@ export class TooltipHandler extends MouseHandler {
           this.timer = window.setTimeout(
             () => {
               if (this.willShow()) {
-                const tip = this.graph.getTooltip(state!, elem, x, y)
+                const tip = this.graph.cellManager.getTooltip(state!, elem, x, y)
                 this.show(tip, x, y)
                 this.state = state!
                 this.sourceElem = elem

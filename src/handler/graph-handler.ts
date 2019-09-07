@@ -165,7 +165,7 @@ export class GraphHandler extends MouseHandler {
       this.updateHint()
     }
 
-    this.graph.on(Graph.events.pan, this.panHandler)
+    this.graph.on(Graph.events.translate, this.panHandler)
 
     this.escapeHandler = () => this.reset()
     this.graph.on(Graph.events.escape, this.escapeHandler)
@@ -463,7 +463,7 @@ export class GraphHandler extends MouseHandler {
   }
 
   protected setMovableCursor(e: CustomMouseEvent) {
-    let cursor = this.graph.getCursorForMouseEvent(e)
+    let cursor = this.graph.eventloop.getCursorForEvent(e)
     if (
       cursor == null &&
       this.graph.isEnabled() &&
@@ -535,8 +535,8 @@ export class GraphHandler extends MouseHandler {
       this.dy != null
     ) {
       this.previewShape.bounds = new Rectangle(
-        Math.round(this.previewBounds.x + this.dx - this.graph.panDx),
-        Math.round(this.previewBounds.y + this.dy - this.graph.panDy),
+        Math.round(this.previewBounds.x + this.dx - this.graph.tx),
+        Math.round(this.previewBounds.y + this.dy - this.graph.ty),
         this.previewBounds.width,
         this.previewBounds.height,
       )
@@ -795,8 +795,8 @@ export class GraphHandler extends MouseHandler {
       // tslint:disable-next-line
       cells = this.graph.moveCells(
         cells,
-        dx - this.graph.panDx / this.graph.view.scale,
-        dy - this.graph.panDy / this.graph.view.scale,
+        dx - this.graph.tx / this.graph.view.scale,
+        dy - this.graph.ty / this.graph.view.scale,
         clone,
         target,
         evt,
@@ -843,7 +843,7 @@ export class GraphHandler extends MouseHandler {
 
     this.graph.removeMouseListener(this)
 
-    this.graph.off(Graph.events.pan, this.panHandler)
+    this.graph.off(Graph.events.translate, this.panHandler)
     this.panHandler = null
 
     this.graph.off(Graph.events.escape, this.escapeHandler)

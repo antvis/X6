@@ -30,151 +30,153 @@ export class ViewportManager extends BaseManager {
 
     // Recursively includes the bounds of the children
     if (includeDescendants) {
-      const childCount = this.model.getChildCount(cell)
-
-      for (let i = 0; i < childCount; i += 1) {
-        const tmp = this.getCellBounds(
-          this.model.getChildAt(cell, i)!,
-          includeEdges,
-          true,
-        )!
-
-        if (result != null) {
-          result.add(tmp)
-        } else {
-          result = tmp
+      cell.eachChild((child) => {
+        const tmp = this.getCellBounds(child, includeEdges, true)
+        if (tmp != null) {
+          if (result != null) {
+            result.add(tmp)
+          } else {
+            result = tmp
+          }
         }
-      }
+      })
     }
 
     return result
   }
 
   getBoundingBoxFromGeometry(cells: Cell[], includeEdges: boolean) {
-    let result = null
+    let result: Rectangle | null = null
 
-    if (cells != null) {
-      for (let i = 0; i < cells.length; i += 1) {
-        if (includeEdges || this.model.isNode(cells[i])) {
-          // Computes the bounding box for the points in the geometry
-          const geo = this.graph.getCellGeometry(cells[i])
+    cells && cells.forEach((cell) => {
+      if (includeEdges || this.model.isNode(cell)) {
 
-          if (geo != null) {
-            let bbox = null
+        // Computes the bounding box for the points in the geometry
+        const geo = this.graph.getCellGeometry(cell)
+        if (geo != null) {
+          let bbox = null
 
-            if (this.model.isEdge(cells[i])) {
+          if (this.model.isEdge(cell)) {
 
-              const pts = geo.points
-              let tmp = new Rectangle(pts[0].x, pts[0].y, 0, 0)
+            const pts = geo.points
+            let tmp = new Rectangle(pts[0].x, pts[0].y, 0, 0)
 
-              const addPoint = (pt: Point | null) => {
-                if (pt != null) {
-                  if (tmp == null) {
-                    tmp = new Rectangle(pt.x, pt.y, 0, 0)
-                  } else {
-                    tmp.add(new Rectangle(pt.x, pt.y, 0, 0))
-                  }
+            const addPoint = (pt: Point | null) => {
+              if (pt != null) {
+                const rect = new Rectangle(pt.x, pt.y, 0, 0)
+                if (tmp == null) {
+                  tmp = rect
+                } else {
+                  tmp.add(rect)
                 }
               }
+            }
 
-              if (this.model.getTerminal(cells[i], true) == null) {
-                addPoint(geo.getTerminalPoint(true))
+            if (this.model.getTerminal(cell, true) == null) {
+              addPoint(geo.getTerminalPoint(true))
+            }
+
+            if (this.model.getTerminal(cell, false) == null) {
+              addPoint(geo.getTerminalPoint(false))
+            }
+
+            if (pts != null && pts.length > 0) {
+              for (let j = 1; j < pts.length; j += 1) {
+                addPoint(pts[j])
               }
+            }
 
-              if (this.model.getTerminal(cells[i], false) == null) {
-                addPoint(geo.getTerminalPoint(false))
-              }
+            bbox = tmp
+          } else {
+            const parent = this.model.getParent(cell)!
 
-              if (pts != null && pts.length > 0) {
-                for (let j = 1; j < pts.length; j += 1) {
-                  addPoint(pts[j])
-                }
-              }
+            if (geo.relative) {
+              if (
+                this.model.isNode(parent) &&
+                parent !== this.view.currentRoot
+              ) {
+                const tmp = this.getBoundingBoxFromGeometry([parent], false)
 
-              bbox = tmp
-            } else {
-              const parent = this.model.getParent(cells[i])!
+                if (tmp != null) {
+                  bbox = new Rectangle(
+                    geo.bounds.x * tmp.width,
+                    geo.bounds.y * tmp.height,
+                    geo.bounds.width,
+                    geo.bounds.height,
+                  )
 
-              if (geo.relative) {
-                if (
-                  this.model.isNode(parent) &&
-                  parent !== this.view.currentRoot
-                ) {
-                  const tmp = this.getBoundingBoxFromGeometry([parent], false)
-
-                  if (tmp != null) {
-                    bbox = new Rectangle(
-                      geo.bounds.x * tmp.width,
-                      geo.bounds.y * tmp.height,
-                      geo.bounds.width,
-                      geo.bounds.height,
-                    )
-
-                    if (util.indexOf(cells, parent) >= 0) {
-                      bbox.x += tmp.x
-                      bbox.y += tmp.y
-                    }
-                  }
-                }
-              } else {
-                bbox = Rectangle.clone(geo.bounds)
-
-                if (this.model.isNode(parent) && util.indexOf(cells, parent) >= 0) {
-                  const tmp = this.getBoundingBoxFromGeometry([parent], false)
-
-                  if (tmp != null) {
+                  if (util.indexOf(cells, parent) >= 0) {
                     bbox.x += tmp.x
                     bbox.y += tmp.y
                   }
                 }
               }
+            } else {
+              bbox = Rectangle.clone(geo.bounds)
 
-              if (bbox != null && geo.offset != null) {
-                bbox.x += geo.offset.x
-                bbox.y += geo.offset.y
+              if (this.model.isNode(parent) && util.indexOf(cells, parent) >= 0) {
+                const tmp = this.getBoundingBoxFromGeometry([parent], false)
+
+                if (tmp != null) {
+                  bbox.x += tmp.x
+                  bbox.y += tmp.y
+                }
               }
             }
 
-            if (bbox != null) {
-              if (result == null) {
-                result = Rectangle.clone(bbox)
-              } else {
-                result.add(bbox)
-              }
+            if (bbox != null && geo.offset != null) {
+              bbox.x += geo.offset.x
+              bbox.y += geo.offset.y
+            }
+          }
+
+          if (bbox != null) {
+            if (result == null) {
+              result = bbox.clone()
+            } else {
+              result.add(bbox)
             }
           }
         }
       }
-    }
+    })
 
-    return result
+    return result != null ? result! : null
   }
 
   protected shiftPreview1: HTMLElement | null
   protected shiftPreview2: HTMLElement | null
 
-  panGraph(dx: number, dy: number) {
+  translate(tx: number, ty: number) {
     if (
-      this.graph.useScrollbarsForPanning &&
+      this.graph.useScrollbarsForTranslate &&
       util.hasScrollbars(this.container)
     ) {
-      this.container.scrollLeft = -dx
-      this.container.scrollTop = -dy
-    } else {
-      const canvas = this.view.getStage()!
+      const container = this.container
+      const maxScrollLeft = container.scrollWidth - container.clientWidth
+      const maxScrollTop = container.scrollHeight - container.clientHeight
+      const scrollLeft = util.clamp(tx, 0, maxScrollLeft)
+      const scrollTop = util.clamp(ty, 0, maxScrollTop)
+      container.scrollLeft = scrollLeft
+      container.scrollTop = scrollTop
+      this.graph.tx = scrollLeft
+      this.graph.ty = scrollTop
 
+    } else {
+
+      const stage = this.view.getStage()!
       if (this.graph.dialect === 'svg') {
         // Puts everything inside the container in a DIV so that it
         // can be moved without changing the state of the container
-        if (dx === 0 && dy === 0) {
+        if (tx === 0 && ty === 0) {
           // Workaround for ignored removeAttribute on SVG element in IE9 standards
           if (detector.IS_IE) {
-            canvas.setAttribute('transform', `translate(${dx},${dy})`)
+            stage.setAttribute('transform', `translate(${tx},${ty})`)
           } else {
-            canvas.removeAttribute('transform')
+            stage.removeAttribute('transform')
           }
 
-          if (this.shiftPreview1 != null) {
+          if (this.shiftPreview1 != null && this.shiftPreview2 != null) {
             let child = this.shiftPreview1.firstChild
 
             while (child != null) {
@@ -183,15 +185,12 @@ export class ViewportManager extends BaseManager {
               child = next
             }
 
-            if (this.shiftPreview1.parentNode != null) {
-              this.shiftPreview1.parentNode.removeChild(this.shiftPreview1)
-            }
-
+            util.removeElement(this.shiftPreview1)
             this.shiftPreview1 = null
 
-            this.container.appendChild(canvas.parentNode!)
+            this.container.appendChild(stage.parentNode!)
 
-            child = this.shiftPreview2!.firstChild
+            child = this.shiftPreview2.firstChild
 
             while (child != null) {
               const next = child.nextSibling
@@ -199,14 +198,11 @@ export class ViewportManager extends BaseManager {
               child = next
             }
 
-            if (this.shiftPreview2!.parentNode != null) {
-              this.shiftPreview2!.parentNode.removeChild(this.shiftPreview2!)
-            }
-
+            util.removeElement(this.shiftPreview2)
             this.shiftPreview2 = null
           }
         } else {
-          canvas.setAttribute('transform', `translate(${dx},${dy})`)
+          stage.setAttribute('transform', `translate(${tx},${ty})`)
 
           if (this.shiftPreview1 == null) {
             // Needs two divs for stuff before and after the SVG element
@@ -225,7 +221,7 @@ export class ViewportManager extends BaseManager {
               const next = child.nextSibling as HTMLElement
 
               // SVG element is moved via transform attribute
-              if (child !== canvas.parentNode) {
+              if (child !== stage.parentNode) {
                 current.appendChild(child)
               } else {
                 current = this.shiftPreview2
@@ -236,7 +232,7 @@ export class ViewportManager extends BaseManager {
 
             // Inserts elements only if not empty
             if (this.shiftPreview1.firstChild != null) {
-              this.container.insertBefore(this.shiftPreview1, canvas.parentNode)
+              this.container.insertBefore(this.shiftPreview1, stage.parentNode)
             }
 
             if (this.shiftPreview2.firstChild != null) {
@@ -244,21 +240,24 @@ export class ViewportManager extends BaseManager {
             }
           }
 
-          this.shiftPreview1.style.left = `${dx}px`
-          this.shiftPreview1.style.top = `${dy}px`
-          this.shiftPreview2!.style.left = util.toPx(dx)
-          this.shiftPreview2!.style.top = util.toPx(dy)
+          this.shiftPreview1.style.left = `${tx}px`
+          this.shiftPreview1.style.top = `${ty}px`
+          this.shiftPreview2!.style.left = util.toPx(tx)
+          this.shiftPreview2!.style.top = util.toPx(ty)
         }
       } else {
-        canvas.style.left = util.toPx(dx)
-        canvas.style.top = util.toPx(dy)
+        stage.style.left = util.toPx(tx)
+        stage.style.top = util.toPx(ty)
       }
 
-      this.graph.panDx = dx
-      this.graph.panDy = dy
-
-      this.graph.trigger(Graph.events.pan)
+      this.graph.tx = tx
+      this.graph.ty = ty
     }
+
+    this.graph.trigger(Graph.events.translate, {
+      tx: this.graph.tx,
+      ty: this.graph.ty,
+    })
   }
 
   center(
@@ -268,9 +267,9 @@ export class ViewportManager extends BaseManager {
     cy: number,
   ) {
     const hasScrollbars = util.hasScrollbars(this.container)
+    const bounds = this.graph.getGraphBounds()
     const cw = this.container.clientWidth
     const ch = this.container.clientHeight
-    const bounds = this.graph.getGraphBounds()
 
     const t = this.view.translate
     const s = this.view.scale
@@ -279,14 +278,9 @@ export class ViewportManager extends BaseManager {
     let dy = (vertical) ? ch - bounds.height : 0
 
     if (!hasScrollbars) {
-      this.view.setTranslate(
-        horizontal
-          ? Math.floor(t.x - bounds.x * s + dx * cx / s)
-          : t.x,
-        vertical
-          ? Math.floor(t.y - bounds.y * s + dy * cy / s)
-          : t.y,
-      )
+      const tx = horizontal ? Math.floor(t.x - bounds.x * s + dx * cx / s) : t.x
+      const ty = vertical ? Math.floor(t.y - bounds.y * s + dy * cy / s) : t.y
+      this.view.setTranslate(tx, ty)
     } else {
       bounds.x -= t.x
       bounds.y -= t.y
@@ -522,7 +516,7 @@ export class ViewportManager extends BaseManager {
           }
         }
 
-        if (!this.graph.useScrollbarsForPanning && (ddx !== 0 || ddy !== 0)) {
+        if (!this.graph.useScrollbarsForTranslate && (ddx !== 0 || ddy !== 0)) {
           this.view.setTranslate(ddx, ddy)
         }
       } else {
@@ -654,8 +648,8 @@ export class ViewportManager extends BaseManager {
       }
 
       this.graph.panningManager.panTo(
-        x + this.graph.panDx,
-        y + this.graph.panDy,
+        x + this.graph.tx,
+        y + this.graph.ty,
       )
     }
   }

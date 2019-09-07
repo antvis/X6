@@ -182,7 +182,7 @@ export class Renderer {
   private createIndicatorShape(state: State) {
     if (state != null && state.shape != null) {
       state.shape.indicatorShape = Shape.getShape(
-        state.view.graph.getIndicatorShape(state),
+        state.view.graph.cellManager.getIndicatorShape(state),
       )
     }
   }
@@ -199,12 +199,12 @@ export class Renderer {
     if (state != null && state.shape != null) {
       const graph = state.view.graph
       state.shape.apply(state)
-      state.shape.image = graph.getImage(state)
-      state.shape.indicatorImage = graph.getIndicatorImage(state)
-      state.shape.indicatorColor = graph.getIndicatorColor(state)
-      state.shape.indicatorDirection = graph.getIndicatorDirection(state)
-      state.shape.indicatorStrokeColor = graph.getIndicatorStrokeColor(state)
-      state.shape.indicatorGradientColor = graph.getIndicatorGradientColor(state)
+      state.shape.image = graph.cellManager.getImage(state)
+      state.shape.indicatorImage = graph.cellManager.getIndicatorImage(state)
+      state.shape.indicatorColor = graph.cellManager.getIndicatorColor(state)
+      state.shape.indicatorDirection = graph.cellManager.getIndicatorDirection(state)
+      state.shape.indicatorStrokeColor = graph.cellManager.getIndicatorStrokeColor(state)
+      state.shape.indicatorGradientColor = graph.cellManager.getIndicatorGradientColor(state)
 
       this.postConfigureShape(state)
     }
@@ -604,7 +604,7 @@ export class Renderer {
         state.text.apply(state)
 
         // Special case where value is obtained via hook in graph
-        state.text.verticalAlign = graph.getVerticalAlign(state)
+        state.text.verticalAlign = graph.cellManager.getVerticalAlign(state)
       }
 
       const bounds = this.getLabelBounds(state)
@@ -666,8 +666,8 @@ export class Renderer {
         value,
         new Rectangle(),
         {
-          align: graph.getAlign(state),
-          valign: graph.getVerticalAlign(state),
+          align: graph.cellManager.getAlign(state),
+          valign: graph.cellManager.getVerticalAlign(state),
           color: state.style.fontColor,
           family: state.style.fontFamily,
           size: state.style.fontSize,
@@ -810,9 +810,9 @@ export class Renderer {
 
       const sc = state.style.stroke || constants.NONE
       if (sc !== constants.NONE && sc !== '') {
-        const s = (state.style.strokeWidth || 1) * scale
-        const dx = 1 + Math.floor((s - 1) / 2)
-        const dh = Math.floor(s + 1)
+        const sw = (state.style.strokeWidth || 1) * scale
+        const dx = 1 + Math.floor((sw - 1) / 2)
+        const dh = Math.floor(sw + 1)
 
         bounds.x += dx
         bounds.y += dx

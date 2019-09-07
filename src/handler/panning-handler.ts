@@ -245,7 +245,7 @@ export class PanningHandler extends MouseHandler {
           this.dy = this.graph.snap(this.dy)
         }
 
-        this.graph.panGraph(this.dx + this.dx0, this.dy + this.dy0)
+        this.graph.translate(this.dx + this.dx0, this.dy + this.dy0)
       }
 
       this.trigger(PanningHandler.events.pan, { e })
@@ -279,12 +279,12 @@ export class PanningHandler extends MouseHandler {
       if (this.dx != null && this.dy != null) {
         // Ignores if scrollbars have been used for panning
         if (
-          !this.graph.useScrollbarsForPanning ||
+          !this.graph.useScrollbarsForTranslate ||
           !util.hasScrollbars(this.graph.container)
         ) {
           const scale = this.graph.view.scale
           const trans = this.graph.view.translate
-          this.graph.panGraph(0, 0)
+          this.graph.translate(0, 0)
           this.panGraph(trans.x + this.dx / scale, trans.y + this.dy / scale)
         }
 

@@ -78,14 +78,18 @@ export class EventLoop extends BaseManager {
     return p
   }
 
+  getCursorForEvent(e: CustomMouseEvent): string | null {
+    return this.graph.getCursor(e.getCell())
+  }
+
   protected updateMouseEvent(e: CustomMouseEvent, eventName: string) {
     if (e.graphX == null || e.graphY == null) {
       const x = e.getClientX()
       const y = e.getClientY()
       const p = util.clientToGraph(this.graph.container, x, y)
 
-      e.graphX = p.x - this.graph.panDx
-      e.graphY = p.y - this.graph.panDy
+      e.graphX = p.x - this.graph.tx
+      e.graphY = p.y - this.graph.ty
 
       if (
         this.isMouseDown &&

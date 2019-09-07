@@ -1,6 +1,7 @@
 import * as util from '../util'
 import { constants } from '../common'
 import { BaseManager } from './manager-base'
+import { EdgeStyle } from '../stylesheet'
 import { Graph, Cell, Geometry, State } from '../core'
 import { CellStyle, Align, VAlign } from '../types'
 import { Point, Rectangle, Overlay, Image, Shapes, Constraint } from '../struct'
@@ -169,7 +170,7 @@ export class CellManager extends BaseManager {
 
           this.model.add(parent, cells[i], index + i)
 
-          if (this.graph.autoSizeCellsOnAdd) {
+          if (this.graph.autoSizeOnAdded) {
             this.autoSizeCell(cells[i], true)
           }
 
@@ -1122,6 +1123,37 @@ export class CellManager extends BaseManager {
     return null
   }
 
+  /**
+   * Returns true if perimeter points should be computed such that the
+   * resulting edge has only horizontal or vertical segments.
+   */
+  isOrthogonal(state: State) {
+    const orthogonal = state.style.orthogonal
+    if (orthogonal != null) {
+      return orthogonal
+    }
+
+    const tmp = this.view.getEdgeFunction(state)
+    return (
+      tmp === EdgeStyle.segmentConnector ||
+      tmp === EdgeStyle.elbowConnector ||
+      tmp === EdgeStyle.sideToSide ||
+      tmp === EdgeStyle.topToBottom ||
+      tmp === EdgeStyle.entityRelation ||
+      tmp === EdgeStyle.orthConnector
+    )
+  }
+
+  /**
+   * Returns true if the given cell state is a loop.
+   */
+  isLoop(state: State) {
+    const src = state.getVisibleTerminalState(true)
+    const trg = state.getVisibleTerminalState(false)
+
+    return (src != null && src === trg)
+  }
+
   // #endregion
 
   // #region :::::::::::: Sizing
@@ -1215,7 +1247,7 @@ export class CellManager extends BaseManager {
       let dy = 0
 
       // Adds dimension of image if shape is a label
-      if (this.graph.getImage(state) != null || style.image != null) {
+      if (this.getImage(state) != null || style.image != null) {
         if (style.shape === Shapes.label) {
           if (style.verticalAlign === 'middle') {
             dx += style.imageWidth || 0
@@ -2790,6 +2822,117 @@ export class CellManager extends BaseManager {
         }
       }
     }
+  }
+
+  // #endregion
+
+  // #region :::::::::::: State
+
+  /**
+   * Returns the string or DOM node that represents the tooltip for
+   * the given state, node and coordinate pair.
+   *
+   * @param state The cell whose tooltip should be returned.
+   * @param trigger DOM node that is currently under the mouse.
+   * @param x X-coordinate of the mouse.
+   * @param y Y-coordinate of the mouse.
+   */
+  getTooltip(
+    state: State | null,
+    trigger: HTMLElement,
+    x: number,
+    y: number,
+  ) {
+    let tip: string | null = null
+    if (state != null) {
+      // Checks if the mouse is over the folding icon
+      if (
+        state.control != null && (
+          trigger === state.control.elem ||
+          trigger.parentNode === state.control.elem
+        )
+      ) {
+        tip = 'Collapse/Expand'
+      }
+
+      if (tip == null && state.overlays != null) {
+        state.overlays.each((shape) => {
+          if (tip == null &&
+            (trigger === shape.elem || trigger.parentNode === shape.elem)
+          ) {
+            tip = shape.overlay!.toString()
+          }
+        })
+      }
+
+      if (tip == null) {
+        const handler = this.graph.selectionHandler.getHandler(state.cell)
+        const getTooltipForNode = handler && (handler as any).getTooltipForNode
+        if (getTooltipForNode && typeof (getTooltipForNode) === 'function') {
+          tip = getTooltipForNode(trigger)
+        }
+      }
+
+      if (tip == null) {
+        tip = this.graph.getTooltip(state.cell)
+      }
+    }
+
+    return tip
+  }
+
+  /**
+   * Returns the image URL for the given cell state.
+   */
+  getImage(state: State): string | null {
+    return (state != null) && state.style.image || null
+  }
+
+  /**
+   * Returns the vertical alignment for the given cell state.
+   */
+  getVerticalAlign(state: State): VAlign {
+    return state && state.style.verticalAlign || 'middle'
+  }
+
+  getAlign(state: State): Align {
+    return state && state.style.align || 'center'
+  }
+
+  /**
+   * Returns the indicator color for the given cell state.
+   */
+  getIndicatorColor(state: State) {
+    return state && state.style.indicatorColor || null
+  }
+
+  getIndicatorDirection(state: State) {
+    return state && state.style.indicatorDirection || null
+  }
+
+  getIndicatorStrokeColor(state: State) {
+    return state && state.style.indicatorStrokeColor || null
+  }
+
+  /**
+   * Returns the indicator gradient color for the given cell state.
+   */
+  getIndicatorGradientColor(state: State) {
+    return state && state.style.indicatorGradientColor || null
+  }
+
+  /**
+   * Returns the indicator shape for the given cell state.
+   */
+  getIndicatorShape(state: State) {
+    return state && state.style.indicatorShape || null
+  }
+
+  /**
+   * Returns the indicator image for the given cell state.
+   */
+  getIndicatorImage(state: State) {
+    return state && state.style.indicatorImage || null
   }
 
   // #endregion

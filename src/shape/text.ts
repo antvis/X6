@@ -403,12 +403,14 @@ export class Text extends Shape {
           elem.firstChild.firstChild != null &&
           elem.firstChild.firstChild.nodeName === 'foreignObject'
         ) {
+
           elem = elem.firstChild.firstChild as HTMLElement
           ow = parseInt(elem.getAttribute('width')!, 10) * this.scale
           oh = parseInt(elem.getAttribute('height')!, 10) * this.scale
+
         } else {
           try {
-            const b = (elem as HTMLElement).getBoundingClientRect()
+            const b = (elem as SVGGElement).getBBox()
 
             // Workaround for bounding box of empty string
             if (typeof this.value === 'string' && this.value === '') {
@@ -416,7 +418,7 @@ export class Text extends Shape {
             } else if (b.width === 0 && b.height === 0) {
               this.boundingBox = null
             } else {
-              this.boundingBox = new Rectangle(b.left, b.top, b.width, b.height)
+              this.boundingBox = new Rectangle(b.x, b.y, b.width, b.height)
             }
             return
           } catch (e) { }

@@ -242,8 +242,12 @@ export class View extends Primer {
   }
 
   setTranslate(tx: number, ty: number) {
-    const previousTranslate = new Point(this.translate.x, this.translate.y)
     if (this.translate.x !== tx || this.translate.y !== ty) {
+      const previousTranslate = new Point(
+        this.translate.x,
+        this.translate.y,
+      )
+
       this.translate.x = tx
       this.translate.y = ty
 
@@ -796,7 +800,7 @@ export class View extends Primer {
       point = this.graph.cellManager.getConnectionPoint(
         terminalState,
         constraint,
-        this.graph.isOrthogonal(edgeState),
+        this.graph.cellManager.isOrthogonal(edgeState),
       )
     }
 
@@ -1011,7 +1015,7 @@ export class View extends Primer {
 
     border = isNaN(border) || !isFinite(border) ? 0 : border
 
-    const orth = this.graph.isOrthogonal(edgeState)
+    const orth = this.graph.cellManager.isOrthogonal(edgeState)
     let p = this.getPerimeterPoint(
       relateState,
       nextPoint!,
