@@ -13,9 +13,10 @@ export class HelloPort extends React.Component {
       isFoldable() {
         return false
       },
+      edgeStyle:{
+        edge:'elbow'
+      },
     })
-
-    graph.styleSheet.styles.defaultEdge.edge = 'elbow'
 
     graph.enableConnection()
 

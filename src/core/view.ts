@@ -1,19 +1,13 @@
 import * as util from '../util'
-import {
-  constants,
-  detector,
-  DomEvent,
-  CustomMouseEvent,
-  Primer,
-} from '../common'
 import { Cell } from './cell'
+import { State } from './state'
 import { Graph } from './graph'
 import { Geometry } from './geometry'
-import { State } from './state'
-import { StyleRegistry } from '../stylesheet'
+import { getRouter, getPerimeter } from './registry'
 import { RectangleShape, ImageShape } from '../shape'
 import { UndoableEdit, CurrentRootChange } from '../change'
 import { Point, Rectangle, Constraint, Image } from '../struct'
+import { detector, DomEvent, MouseEventEx, Primer } from '../common'
 
 export class View extends Primer {
   graph: Graph
@@ -45,18 +39,13 @@ export class View extends Primer {
   protected stage: HTMLElement | SVGGElement | null
   protected backgroundPane: HTMLElement | SVGGElement | null
   protected drawPane: HTMLElement | SVGGElement | null
-  protected overlayPane: HTMLElement | SVGGElement | null
   protected decoratorPane: HTMLElement | SVGGElement | null
+  protected overlayPane: HTMLElement | SVGGElement | null
 
   protected states: WeakMap<Cell, State>
   protected readonly invalidatings: WeakSet<Cell>
   protected backgroundImage: ImageShape | null
   protected backgroundPageShape: RectangleShape | null
-
-  /**
-   * Shared temporary DIV is used for text measuring
-   */
-  textDiv: HTMLElement
 
   constructor(graph: Graph) {
     super()
@@ -88,8 +77,7 @@ export class View extends Primer {
 
   /**
    * Specifies if string values in cell styles should be evaluated using
-   * `eval`. This will only be used if the string values can't be mapped
-   * to objects using `StyleRegistry`.
+   * `eval`.
    *
    * Default is `false`.
    *
@@ -105,6 +93,8 @@ export class View extends Primer {
     this.allowEval = allowEval
   }
 
+  // #region ::::::::::: Bounds & Bouding ::::::::::::
+
   protected graphBounds: Rectangle
 
   getGraphBounds() {
@@ -116,7 +106,7 @@ export class View extends Primer {
   }
 
   /**
-   * Returns the union of all `CellStates` for the given array of `Cell`s.
+   * Returns the union of all state's bounds for the given `Cell`s.
    *
    * @param cells Array of `Cell` whose bounds should be returned.
    */
@@ -143,8 +133,9 @@ export class View extends Primer {
   }
 
   /**
-   * Returns the bounding box of the shape and the label for the
-   * given `CellState` and its children if recurse is true.
+   * Returns the bounding box of the shape and the label for the given
+   * `State` and its children if recurse is true. A bouding box is the
+   * smallest rectangle that includes all pixels of the shape.
    */
   getBoundingBox(state: State | null, recurse: boolean = true) {
     let result: Rectangle | null = null
@@ -185,19 +176,40 @@ export class View extends Primer {
     )
   }
 
+  // #endregion
+
   // #region ::::::::::: Translate & Scale :::::::::::
 
-  setCurrentRoot(root: Cell | null) {
-    if (this.currentRoot !== root) {
-      const change = new CurrentRootChange(this, root)
-      change.execute()
-      const edit = new UndoableEdit(this.graph.getModel())
-      edit.add(change)
-      this.trigger('undo', edit)
-      this.graph.viewport.sizeDidChange()
-    }
+  getScale() {
+    return this.scale
+  }
 
-    return root
+  setScale(scale: number) {
+    const previousScale = this.scale
+    if (this.scale !== scale) {
+      this.scale = scale
+      this.scaledOrTranslated()
+      this.trigger('scale', { scale, previousScale })
+    }
+  }
+
+  getTranslate() {
+    return this.translate
+  }
+
+  setTranslate(tx: number, ty: number) {
+    if (this.translate.x !== tx || this.translate.y !== ty) {
+      const previousTranslate = this.translate.clone()
+
+      this.translate.x = tx
+      this.translate.y = ty
+
+      this.scaledOrTranslated()
+      this.trigger('translate', {
+        previousTranslate,
+        translate: this.translate,
+      })
+    }
   }
 
   scaleAndTranslate(scale: number, tx: number, ty: number) {
@@ -219,41 +231,6 @@ export class View extends Primer {
         previousScale,
         previousTranslate,
         scale,
-        translate: this.translate,
-      })
-    }
-  }
-
-  getScale() {
-    return this.scale
-  }
-
-  setScale(scale: number) {
-    const previousScale = this.scale
-    if (this.scale !== scale) {
-      this.scale = scale
-      this.scaledOrTranslated()
-      this.trigger('scale', { scale, previousScale })
-    }
-  }
-
-  getTranslate() {
-    return this.translate
-  }
-
-  setTranslate(tx: number, ty: number) {
-    if (this.translate.x !== tx || this.translate.y !== ty) {
-      const previousTranslate = new Point(
-        this.translate.x,
-        this.translate.y,
-      )
-
-      this.translate.x = tx
-      this.translate.y = ty
-
-      this.scaledOrTranslated()
-      this.trigger('translate', {
-        previousTranslate,
         translate: this.translate,
       })
     }
@@ -282,8 +259,8 @@ export class View extends Primer {
   }
 
   /**
-   * Invalidates the state of the given cell, all
-   * its descendants and connected edges.
+   * Invalidates the state of the given cell, all its descendants and
+   * connected edges.
    */
   invalidate(
     cell: Cell = this.model.getRoot(),
@@ -314,14 +291,14 @@ export class View extends Primer {
   validate(cell?: Cell) {
     this.resetValidationState()
 
-    const top = cell || (this.currentRoot != null
+    const start = cell || (this.currentRoot != null
       ? this.currentRoot
       : this.graph.model.getRoot()
     )
 
     const boundingBox = this.getBoundingBox(
       this.validateCellState(
-        this.validateCell(top),
+        this.validateCell(start),
       ),
     )
 
@@ -332,16 +309,17 @@ export class View extends Primer {
   }
 
   /**
-   * Recursively creates the cell state for the given cell if visible is true
-   * and the given cell is visible. If the cell is not visible but the state
-   * exists then it is removed.
+   * Recursively creates the cell state for the given cell if visible
+   * is `true` and the given cell is visible. If the cell is not visible
+   * but the state exists then it is removed.
    */
   protected validateCell(cell: Cell, visible: boolean = true) {
     if (cell != null) {
       visible = visible && this.graph.isCellVisible(cell) // tslint:disable-line
       const state = this.getState(cell, visible)
       if (state != null && !visible) {
-        this.removeState(cell) // remove unvisible cell's state
+        // remove unvisible cell's state
+        this.removeState(cell)
       } else {
         cell.eachChild((child) => {
           const childVisible = visible && (
@@ -412,169 +390,6 @@ export class View extends Primer {
 
   // #endregion
 
-  // #region :::::::::: Validate Background ::::::::::
-
-  protected validateBackground() {
-    this.validateBackgroundImage()
-    this.validateBackgroundPage()
-  }
-
-  protected validateBackgroundImage() {
-    const bg = this.graph.getBackgroundImage()
-    if (bg != null) {
-      if (
-        this.backgroundImage == null ||
-        this.backgroundImage.image !== bg.src
-      ) {
-        if (this.backgroundImage != null) {
-          this.backgroundImage.dispose()
-        }
-
-        const bounds = new Rectangle(0, 0, 1, 1)
-        this.backgroundImage = new ImageShape(bounds, bg.src)
-        this.backgroundImage.dialect = this.graph.dialect
-        this.backgroundImage.init(this.backgroundPane!)
-        this.backgroundImage.redraw()
-      }
-
-      this.redrawBackgroundImage(this.backgroundImage, bg)
-    } else if (this.backgroundImage != null) {
-      this.backgroundImage.dispose()
-      this.backgroundImage = null
-    }
-  }
-
-  protected redrawBackgroundImage(backgroundImage: ImageShape, bg: Image) {
-    backgroundImage.scale = this.scale
-    backgroundImage.bounds.x = this.scale * this.translate.x
-    backgroundImage.bounds.y = this.scale * this.translate.y
-    backgroundImage.bounds.width = this.scale * bg.width
-    backgroundImage.bounds.height = this.scale * bg.height
-
-    backgroundImage.redraw()
-  }
-
-  protected validateBackgroundPage() {
-    if (this.graph.pageVisible) {
-      const bounds = this.getBackgroundPageBounds()
-      if (this.backgroundPageShape == null) {
-        this.backgroundPageShape = new RectangleShape(bounds, 'white', 'black')
-        this.backgroundPageShape.scale = this.scale
-        this.backgroundPageShape.shadow = true
-        this.backgroundPageShape.dialect = this.graph.dialect
-        this.backgroundPageShape.init(this.backgroundPane!)
-        this.backgroundPageShape.redraw()
-
-        // Adds listener for double click handling on background
-        if (this.graph.nativeDblClickEnabled) {
-          DomEvent.addListener(
-            this.backgroundPageShape.elem!,
-            'dblclick',
-            (e: MouseEvent) => {
-              this.graph.eventloop.dblClick(e)
-            },
-          )
-        }
-
-        // Adds basic listeners for graph event dispatching outside of the
-        // container and finishing the handling of a single gesture
-        DomEvent.addMouseListeners(
-          this.backgroundPageShape.elem!,
-          (e: MouseEvent) => {
-            this.graph.fireMouseEvent(
-              DomEvent.MOUSE_DOWN, new CustomMouseEvent(e),
-            )
-          },
-          (e: MouseEvent) => {
-            // Hides the tooltip if mouse is outside container
-            if (
-              this.graph.tooltipHandler != null &&
-              this.graph.tooltipHandler.hideOnHover
-            ) {
-              this.graph.tooltipHandler.hide()
-            }
-
-            if (this.graph.eventloop.isMouseDown && !DomEvent.isConsumed(e)) {
-              this.graph.fireMouseEvent(
-                DomEvent.MOUSE_MOVE, new CustomMouseEvent(e),
-              )
-            }
-          },
-          (e: MouseEvent) => {
-            this.graph.fireMouseEvent(
-              DomEvent.MOUSE_UP, new CustomMouseEvent(e),
-            )
-          },
-        )
-      } else {
-        this.backgroundPageShape.scale = this.scale
-        this.backgroundPageShape.bounds = bounds
-        this.backgroundPageShape.redraw()
-      }
-    } else if (this.backgroundPageShape != null) {
-      this.backgroundPageShape.dispose()
-      this.backgroundPageShape = null
-    }
-  }
-
-  protected getBackgroundPageBounds() {
-    const pageFormat = this.graph.pageFormat
-    const pageScale = this.scale * this.graph.pageScale
-    const bounds = new Rectangle(
-      this.scale * this.translate.x,
-      this.scale * this.translate.y,
-      pageFormat.width * pageScale,
-      pageFormat.height * pageScale,
-    )
-
-    return bounds
-  }
-
-  // #endregion
-
-  // #region :::::::::::: Update DOM Order :::::::::::
-
-  protected lastNode: HTMLElement | null = null
-  protected lastHtmlNode: HTMLElement | null = null
-  protected lastForegroundNode: HTMLElement | null = null
-  protected lastForegroundHtmlNode: HTMLElement | null = null
-
-  protected resetValidationState() {
-    this.lastNode = null
-    this.lastHtmlNode = null
-    this.lastForegroundNode = null
-    this.lastForegroundHtmlNode = null
-  }
-
-  protected stateValidated(state: State) {
-    this.updateDomOrder(state)
-  }
-
-  protected updateDomOrder(state: State) {
-    const foreground = (
-      (this.model.isEdge(state.cell) && this.graph.keepEdgesInForeground) ||
-      (this.model.isNode(state.cell) && this.graph.keepEdgesInBackground)
-    )
-    const htmlNode = foreground
-      ? this.lastForegroundHtmlNode || this.lastHtmlNode
-      : this.lastHtmlNode
-    const node = foreground
-      ? this.lastForegroundNode || this.lastNode
-      : this.lastNode
-
-    const result = this.graph.renderer.insertStateAfter(state, node, htmlNode)
-
-    if (foreground) {
-      this.lastForegroundHtmlNode = result[1]
-      this.lastForegroundNode = result[0]
-    } else {
-      this.lastHtmlNode = result[1]
-      this.lastNode = result[0]
-    }
-  }
-
-  // #endregion
-
   // #region ::::::::::: Update Cell State :::::::::::
 
   protected updateCellState(state: State) {
@@ -586,56 +401,61 @@ export class View extends Primer {
 
     if (state.cell !== this.currentRoot) {
       const parent = this.model.getParent(state.cell)!
-      const parentState = this.getState(parent)
+      const pState = this.getState(parent)
 
       // inherit parent's origin
-      if (parentState != null && parent !== this.currentRoot) {
-        state.origin.x += parentState.origin.x
-        state.origin.y += parentState.origin.y
+      if (pState != null && parent !== this.currentRoot) {
+        state.origin.add(pState.origin)
       }
 
       // invoke hook
-      let offset = this.graph.getChildOffsetForCell(state.cell)
+      let offset = this.graph.getChildOffset(state.cell)
       if (offset != null) {
-        state.origin.x += offset.x
-        state.origin.y += offset.y
+        state.origin.add(offset)
       }
 
-      const scale = this.scale
-      const trans = this.translate
+      const s = this.scale
+      const t = this.translate
       const geo = this.graph.getCellGeometry(state.cell)
-
       if (geo != null) {
         if (!this.model.isEdge(state.cell)) {
           offset = geo.offset || new Point()
 
-          if (geo.relative && parentState != null) {
-            if (this.model.isEdge(parentState.cell)) {
-              const origin = this.getPoint(parentState, geo)
+          if (geo.relative && pState != null) {
+            // parent is edge
+            if (this.model.isEdge(pState.cell)) {
+              const origin = this.getPointOnEdge(pState, geo)
               if (origin != null) {
-                state.origin.x += (origin.x / scale) - parentState.origin.x - trans.x
-                state.origin.y += (origin.y / scale) - parentState.origin.y - trans.y
+                state.origin.add(
+                  ((origin.x / s) - t.x) - pState.origin.x,
+                  ((origin.y / s) - t.y) - pState.origin.y,
+                )
               }
             } else {
-              state.origin.x += geo.bounds.x * parentState.bounds.width / scale + offset.x
-              state.origin.y += geo.bounds.y * parentState.bounds.height / scale + offset.y
+              // parent is node
+              state.origin.add(
+                geo.bounds.x * pState.bounds.width / s + offset.x,
+                geo.bounds.y * pState.bounds.height / s + offset.y,
+              )
             }
           } else {
             state.origin.x += geo.bounds.x
             state.origin.y += geo.bounds.y
 
-            state.absoluteOffset.x = scale * offset.x
-            state.absoluteOffset.y = scale * offset.y
+            // update label position
+            state.absoluteOffset.x = s * offset.x
+            state.absoluteOffset.y = s * offset.y
           }
         }
 
         state.unscaledWidth = geo.bounds.width
         state.unscaledHeight = geo.bounds.height
 
-        state.bounds.x = scale * (trans.x + state.origin.x)
-        state.bounds.y = scale * (trans.y + state.origin.y)
-        state.bounds.width = scale * geo.bounds.width
-        state.bounds.height = scale * geo.bounds.height
+        // transform
+        state.bounds.x = s * (t.x + state.origin.x)
+        state.bounds.y = s * (t.y + state.origin.y)
+        state.bounds.width = s * geo.bounds.width
+        state.bounds.height = s * geo.bounds.height
 
         if (this.model.isNode(state.cell)) {
           this.updateNodeState(state, geo)
@@ -652,17 +472,15 @@ export class View extends Primer {
 
   protected updateNodeState(state: State, geo: Geometry) {
     const parent = this.model.getParent(state.cell)!
-    const parentState = this.getState(parent)
+    const pState = this.getState(parent)
 
-    if (geo.relative && parentState != null && !this.model.isEdge(parent)) {
-      const rot = parentState.style.rotation || 0
-      const rad = util.toRad(rot)
-      if (rad !== 0) {
-        const cos = Math.cos(rad)
-        const sin = Math.sin(rad)
+    // relative and parent is node, apply ratation
+    if (geo.relative && pState != null && !this.model.isEdge(parent)) {
+      const rot = util.getRotation(pState)
+      if (rot !== 0) {
         const nodeCenter = state.bounds.getCenter()
-        const parentCenter = parentState.bounds.getCenter()
-        const pt = util.rotatePoint(nodeCenter, cos, sin, parentCenter)
+        const parentCenter = pState.bounds.getCenter()
+        const pt = util.rotatePoint(nodeCenter, rot, parentCenter)
         state.bounds.x = pt.x - state.bounds.width / 2
         state.bounds.y = pt.y - state.bounds.height / 2
       }
@@ -685,7 +503,7 @@ export class View extends Primer {
         lw = state.bounds.width
       }
 
-      state.absoluteOffset.x -= lw as number
+      state.absoluteOffset.x -= lw
 
     } else if (h === 'right') {
 
@@ -728,8 +546,8 @@ export class View extends Primer {
     // Also removes connected edges that have no visible terminals.
     if (
       (sourceState == null && this.model.getTerminal(state.cell, true) != null) ||
-      (sourceState == null && geo.getTerminalPoint(true) == null) ||
       (targetState == null && this.model.getTerminal(state.cell, false) != null) ||
+      (sourceState == null && geo.getTerminalPoint(true) == null) ||
       (targetState == null && geo.getTerminalPoint(false) == null)
     ) {
 
@@ -737,8 +555,10 @@ export class View extends Primer {
 
     } else {
 
+      // constraint point or manual specified point
       this.updateFixedTerminalPoints(state, sourceState, targetState)
-      this.updatePoints(state, geo.points, sourceState, targetState)
+      this.updateRouterPoints(state, geo.points, sourceState, targetState)
+      // get float(intersection) point when there's no fixed point.
       this.updateFloatingTerminalPoints(state, sourceState, targetState)
 
       const points = state.absolutePoints
@@ -760,19 +580,27 @@ export class View extends Primer {
   }
 
   /**
-   * Sets the initial absolute terminal points in the given state
-   * before the edge style is computed.
+   * Sets the initial absolute terminal points in the given state before
+   * the edge style is computed.
    */
   updateFixedTerminalPoints(
     edgeState: State,
     sourceState: State,
     targetState: State,
   ) {
-    const sourceConstraint = this.graph.getConnectionConstraint(edgeState, sourceState, true)
-    this.updateFixedTerminalPoint(edgeState, sourceState, true, sourceConstraint)
+    const sourceConstraint = this.graph.getConnectionConstraint(
+      edgeState, sourceState, true,
+    )
+    this.updateFixedTerminalPoint(
+      edgeState, sourceState, true, sourceConstraint,
+    )
 
-    const targetConstraint = this.graph.getConnectionConstraint(edgeState, targetState, false)
-    this.updateFixedTerminalPoint(edgeState, targetState, false, targetConstraint)
+    const targetConstraint = this.graph.getConnectionConstraint(
+      edgeState, targetState, false,
+    )
+    this.updateFixedTerminalPoint(
+      edgeState, targetState, false, targetConstraint,
+    )
   }
 
   updateFixedTerminalPoint(
@@ -781,7 +609,9 @@ export class View extends Primer {
     isSource: boolean,
     constraint: Constraint,
   ) {
-    const point = this.getFixedTerminalPoint(edgeState, terminalState, isSource, constraint)
+    const point = this.getFixedTerminalPoint(
+      edgeState, terminalState, isSource, constraint,
+    )
     edgeState.setAbsoluteTerminalPoint(point!, isSource)
   }
 
@@ -797,7 +627,7 @@ export class View extends Primer {
     let point: Point | null = null
 
     if (constraint != null) {
-      point = this.graph.cellManager.getConnectionPoint(
+      point = this.getConnectionPoint(
         terminalState,
         constraint,
         this.graph.cellManager.isOrthogonal(edgeState),
@@ -809,13 +639,13 @@ export class View extends Primer {
       const geom = edgeState.cell.getGeometry()!
       point = geom.getTerminalPoint(isSource)
       if (point != null) {
-        const scale = this.scale
-        const trans = this.translate
-        const origin = edgeState.origin
+        const s = this.scale
+        const t = this.translate
+        const o = edgeState.origin
 
         point = new Point(
-          scale * (trans.x + point.x + origin.x),
-          scale * (trans.y + point.y + origin.y),
+          s * (t.x + point.x + o.x),
+          s * (t.y + point.y + o.y),
         )
       }
     }
@@ -824,61 +654,154 @@ export class View extends Primer {
   }
 
   /**
-   * Updates the absolute points in the given state using the specified array
-   * of <mxPoints> as the relative points.
-   *
-   * Parameters:
-   *
-   * edge - <mxCellState> whose absolute points should be updated.
-   * points - Array of <mxPoints> that constitute the relative points.
-   * source - <mxCellState> that represents the source terminal.
-   * target - <mxCellState> that represents the target terminal.
+   * Returns the nearest point in the list of absolute points
+   * or the center of the opposite terminal.
    */
-  updatePoints(
-    edge: State,
+  getConnectionPoint(
+    terminalState: State,
+    constraint: Constraint,
+    round: boolean = true,
+  ) {
+    let result: Point | null = null
+
+    if (terminalState != null && constraint.point != null) {
+      const direction = terminalState.style.direction
+      const bounds = this.getPerimeterBounds(terminalState)
+      const cx = bounds.getCenter()
+
+      let r1 = 0
+
+      if (
+        direction != null &&
+        terminalState.style.anchorPointDirection !== false
+      ) {
+        if (direction === 'north') {
+          r1 += 270
+        } else if (direction === 'west') {
+          r1 += 180
+        } else if (direction === 'south') {
+          r1 += 90
+        }
+
+        // Bounds need to be rotated by 90 degrees for further computation
+        if (direction === 'north' || direction === 'south') {
+          bounds.rotate90()
+        }
+      }
+
+      const s = this.scale
+      result = new Point(
+        bounds.x + constraint.point.x * bounds.width + constraint.dx * s,
+        bounds.y + constraint.point.y * bounds.height + constraint.dy * s,
+      )
+
+      // Rotation for direction before projection on perimeter
+      let r2 = terminalState.style.rotation || 0
+
+      if (constraint.perimeter) {
+        if (r1 !== 0) {
+          result = util.rotatePoint(result, r1, cx)
+        }
+
+        result = this.getPerimeterPoint(terminalState, result, false)
+
+      } else {
+        r2 += r1
+
+        if (this.model.isNode(terminalState.cell)) {
+          const flipH = util.isFlipH(terminalState)
+          const flipV = util.isFlipV(terminalState)
+
+          if (flipH) {
+            result.x = 2 * bounds.getCenterX() - result.x
+          }
+
+          if (flipV) {
+            result.y = 2 * bounds.getCenterY() - result.y
+          }
+        }
+      }
+
+      // Generic rotation after projection on perimeter
+      if (r2 !== 0 && result != null) {
+        result = util.rotatePoint(result, r2, cx)
+      }
+    }
+
+    if (round && result != null) {
+      result.x = Math.round(result.x)
+      result.y = Math.round(result.y)
+    }
+
+    return result
+  }
+
+  /**
+   * Updates the absolute points in the given state using the specified array
+   * of `Point`s as the relative points.
+   *
+   * @param edgeState The edge state whose absolute points should be updated.
+   * @param points Array of `Point`s that constitute the relative points.
+   * @param sourceState The source terminal state.
+   * @param targetState The target terminal state.
+   */
+  updateRouterPoints(
+    edgeState: State,
     points: Point[],
     sourceState: State,
     targetState: State,
   ) {
-    if (edge != null) {
+    if (edgeState != null) {
       const pts = []
-      pts.push(edge.absolutePoints[0])
 
-      const edgeFn = this.getEdgeFunction(edge, points, sourceState, targetState)
-      if (edgeFn != null) {
-        const src = this.getTerminalPortState(edge, sourceState, true)
-        const trg = this.getTerminalPortState(edge, targetState, false)
+      // source connection point
+      pts.push(edgeState.absolutePoints[0])
+
+      const router = this.getEdgeFunction(
+        edgeState,
+        points,
+        sourceState,
+        targetState,
+      )
+
+      if (router != null) {
+
+        const sps = this.getTerminalPortState(edgeState, sourceState, true)
+        const tps = this.getTerminalPortState(edgeState, targetState, false)
 
         // Uses the stencil bounds for routing and restores after routing
-        const srcBounds = this.updateBoundsFromStencil(src)
-        const trgBounds = this.updateBoundsFromStencil(trg)
+        const srcBounds = this.updateBoundsFromStencil(sps)
+        const trgBounds = this.updateBoundsFromStencil(tps)
 
-        edgeFn(edge, src, trg, points, pts as Point[])
+        router(edgeState, sps, tps, points, pts)
 
         // Restores previous bounds
         if (srcBounds != null) {
-          src.bounds.update(
+          sps.bounds.update(
             srcBounds.x, srcBounds.y, srcBounds.width, srcBounds.height,
           )
         }
 
         if (trgBounds != null) {
-          trg.bounds.update(
+          tps.bounds.update(
             trgBounds.x, trgBounds.y, trgBounds.width, trgBounds.height,
           )
         }
+
       } else if (points != null) {
+
         points.forEach((p) => {
           if (p != null) {
-            pts.push(this.transformControlPoint(edge, p.clone()))
+            pts.push(this.transformControlPoint(edgeState, p))
           }
         })
       }
 
-      const tmp = edge.absolutePoints
+      // target connection point
+      const tmp = edgeState.absolutePoints
       pts.push(tmp[tmp.length - 1])
 
-      edge.absolutePoints = pts
+      edgeState.absolutePoints = pts
     }
   }
 
@@ -921,7 +844,7 @@ export class View extends Primer {
       state.shape.stencil.aspect === 'fixed'
     ) {
       previous = Rectangle.clone(state.bounds)
-      const asp = state.shape.stencil!.computeAspect(
+      const asp = state.shape.stencil.computeAspect(
         state.shape,
         state.bounds.x,
         state.bounds.y,
@@ -995,15 +918,14 @@ export class View extends Primer {
     // tslint:disable-next-line:no-parameter-reassignment
     relateState = this.getTerminalPortState(edgeState, relateState, isSource)
 
-    let nextPoint = this.getNextPoint(edgeState, opposeState, isSource)
+    const rot = util.getRotation(relateState)
+    const orth = this.graph.cellManager.isOrthogonal(edgeState)
     const center = relateState.bounds.getCenter()
-    const rot = relateState.style.rotation || 0
-    const rad = util.toRad(rot)
-    if (rad !== 0) {
+
+    let nextPoint = this.getNextPoint(edgeState, opposeState, isSource)
+    if (rot !== 0) {
       // rotate with related cell
-      const cos = Math.cos(-rad)
-      const sin = Math.sin(-rad)
-      nextPoint = util.rotatePoint(nextPoint!, cos, sin, center)
+      nextPoint = util.rotatePoint(nextPoint!, -rot, center)
     }
 
     let border = edgeState.style.perimeterSpacing || 0
@@ -1015,18 +937,15 @@ export class View extends Primer {
 
     border = isNaN(border) || !isFinite(border) ? 0 : border
 
-    const orth = this.graph.cellManager.isOrthogonal(edgeState)
     let p = this.getPerimeterPoint(
       relateState,
       nextPoint!,
-      rad === 0 && orth,
+      rot === 0 && orth,
       border,
     )
 
-    if (rad !== 0) {
-      const cos = Math.cos(rad)
-      const sin = Math.sin(rad)
-      p = util.rotatePoint(p!, cos, sin, center)
+    if (rot !== 0) {
+      p = util.rotatePoint(p!, rot, center)
     }
 
     return p
@@ -1063,12 +982,12 @@ export class View extends Primer {
    * point between the perimeter and the line between the center of
    * the shape and the given point.
    *
-   * @param terminalState the source or target terminal.
-   * @param nextPoint `Point` that lies outside of the given terminal.
+   * @param terminalState the source or target terminal state.
+   * @param nextPoint The `Point` that lies outside of the given terminal.
    * @param orthogonal Specifies if the orthogonal projection onto the
-   *                   perimeter should be returned. If this is false then
-   *                   the intersection of the perimeter and the line between
-   *                   the next and the center point is returned.
+   * perimeter should be returned. If this is `false` then the intersection
+   * of the perimeter and the line between the next and the center point
+   * is returned.
    * @param border Optional border between the perimeter and the shape.
    */
   getPerimeterPoint(
@@ -1091,8 +1010,8 @@ export class View extends Primer {
           let flipV = false
 
           if (this.graph.model.isNode(terminalState.cell)) {
-            flipH = terminalState.style.flipH === true
-            flipV = terminalState.style.flipV === true
+            flipH = util.isFlipH(terminalState)
+            flipV = util.isFlipV(terminalState)
 
             if (flipH) {
               result.x = 2 * bounds.getCenterX() - result.x
@@ -1118,7 +1037,7 @@ export class View extends Primer {
       }
 
       if (result == null) {
-        result = this.getPoint(terminalState)
+        result = this.getPointOnEdge(terminalState)
       }
     }
 
@@ -1128,12 +1047,7 @@ export class View extends Primer {
   getPerimeterFunction(state: State) {
     let perimeter = state.style.perimeter
     if (typeof perimeter === 'string') {
-      let tmp = StyleRegistry.getValue(perimeter)
-      if (tmp == null && this.isAllowEval()) {
-        tmp = util.evalString(perimeter)
-      }
-
-      perimeter = tmp
+      perimeter = getPerimeter(perimeter, this.isAllowEval())
     }
 
     if (typeof perimeter === 'function') {
@@ -1143,6 +1057,9 @@ export class View extends Primer {
     return null
   }
 
+  /**
+   * Returns the `Rectangle` that should be used as the perimeter of the cell.
+   */
   getPerimeterBounds(terminalState: State, border: number = 0) {
     if (terminalState != null) {
       // tslint:disable-next-line
@@ -1155,25 +1072,19 @@ export class View extends Primer {
   /**
    * Transforms the given control point to an absolute point.
    */
-  transformControlPoint(state: State, pt: Point) {
-    if (state != null && pt != null) {
+  transformControlPoint(state: State, p: Point) {
+    if (state != null && p != null) {
       const orig = state.origin
 
       return new Point(
-        this.scale * (pt.x + this.translate.x + orig.x),
-        this.scale * (pt.y + this.translate.y + orig.y),
+        this.scale * (p.x + this.translate.x + orig.x),
+        this.scale * (p.y + this.translate.y + orig.y),
       )
     }
 
     return null
   }
 
-  /**
-   * Returns true if the given edge should be routed with <mxGraph.defaultLoopStyle>
-   * or the <constants.STYLE_LOOP> defined for the given edge. This implementation
-   * returns true if the given edge is a loop and does not have connections constraints
-   * associated.
-   */
   isLoopStyleEnabled(
     edgeState: State,
     points?: Point[] | null,
@@ -1205,7 +1116,9 @@ export class View extends Primer {
     sourceState?: State | null,
     targetState?: State | null,
   ) {
-    let edge = this.isLoopStyleEnabled(edgeState, points, sourceState, targetState)
+    let edge = this.isLoopStyleEnabled(
+      edgeState, points, sourceState, targetState,
+    )
       ? (edgeState.style.loopStyle || this.graph.defaultLoopStyle)
       : edgeState.style.noEdgeStyle
         ? null
@@ -1213,12 +1126,7 @@ export class View extends Primer {
 
     // Converts string values to objects
     if (typeof edge === 'string') {
-      let tmp = StyleRegistry.getValue(edge)
-      if (tmp == null && this.isAllowEval()) {
-        tmp = util.evalString(edge)
-      }
-
-      edge = tmp
+      edge = getRouter(edge, this.isAllowEval())
     }
 
     if (typeof edge === 'function') {
@@ -1279,20 +1187,22 @@ export class View extends Primer {
   }
 
   /**
-   * Returns the absolute point on the edge for the given relative
-   * `Geometry` as an `Point`.
+   * Returns the absolute point on the edge for the given relative geometry.
    *
    * @param state The state of the parent edge.
-   * @param geometry `Geometry` that represents the relative location.
+   * @param geo `Geometry` that represents the relative location.
    */
-  getPoint(state: State, geometry?: Geometry) {
+  getPointOnEdge(state: State, geo?: Geometry) {
     let x = state.bounds.getCenterX()
     let y = state.bounds.getCenterY()
 
-    if (state.segmentsLength != null && (geometry == null || geometry.relative)) {
+    if (
+      state.segmentsLength != null &&
+      (geo == null || geo.relative)
+    ) {
 
       const cc = state.absolutePoints.length
-      const gx = geometry != null ? geometry.bounds.x / 2 : 0
+      const gx = geo != null ? geo.bounds.x / 2 : 0
       const dist = Math.round((gx + 0.5) * state.totalLength)
 
       let segment = state.segmentsLength[0]
@@ -1314,10 +1224,9 @@ export class View extends Primer {
         let offsetX = 0
         let offsetY = 0
 
-        if (geometry != null) {
-          gy = geometry.bounds.y
-          const offset = geometry.offset
-
+        if (geo != null) {
+          gy = geo.bounds.y
+          const offset = geo.offset
           if (offset != null) {
             offsetX = offset.x
             offsetY = offset.y
@@ -1332,8 +1241,8 @@ export class View extends Primer {
         x = p0.x + dx * factor + (nx * gy + offsetX) * this.scale
         y = p0.y + dy * factor - (ny * gy - offsetY) * this.scale
       }
-    } else if (geometry != null) {
-      const offset = geometry.offset
+    } else if (geo != null) {
+      const offset = geo.offset
       if (offset != null) {
         x += offset.x
         y += offset.y
@@ -1388,7 +1297,8 @@ export class View extends Primer {
       state.segmentsLength = segments
       state.totalLength = length
 
-      const markerSize = 1 // TODO: include marker size
+      // TODO: include marker size
+      const markerSize = 1
 
       state.bounds.x = minX
       state.bounds.y = minY
@@ -1415,7 +1325,7 @@ export class View extends Primer {
 
       const geometry = state.cell.getGeometry()!
       if (geometry.relative) {
-        const offset = this.getPoint(state, geometry)
+        const offset = this.getPointOnEdge(state, geometry)
         if (offset != null) {
           state.absoluteOffset = offset
         }
@@ -1553,7 +1463,7 @@ export class View extends Primer {
     const state = this.states.get(cell)
     if (state != null) {
       state.invalid = true
-      state.destroy()
+      state.dispose()
       this.states.delete(cell)
     }
     return state
@@ -1604,14 +1514,9 @@ export class View extends Primer {
   /**
    * Returns `CellState` for the given array of `Cells`. The array
    * contains all states that are not null, that is, the returned
-   * array may have less elements than the given array. If no argument
-   * is given, then this returns `this.states`.
+   * array may have less elements than the given array.
    */
-  getCellStates(cells?: Cell[]) {
-    if (cells == null) {
-      return this.states
-    }
-
+  getCellStates(cells: Cell[]) {
     const result: State[] = []
 
     cells.forEach((cell) => {
@@ -1626,6 +1531,245 @@ export class View extends Primer {
 
   // #endregion
 
+  // #region :::::::::: Validate Background ::::::::::
+
+  protected validateBackground() {
+    this.validateBackgroundImage()
+    this.validateBackgroundPage()
+  }
+
+  protected validateBackgroundImage() {
+    const bg = this.graph.getBackgroundImage()
+    if (bg != null) {
+      if (
+        this.backgroundImage == null ||
+        this.backgroundImage.image !== bg.src
+      ) {
+        if (this.backgroundImage != null) {
+          this.backgroundImage.dispose()
+        }
+
+        this.backgroundImage = new ImageShape(new Rectangle(), bg.src)
+        this.backgroundImage.dialect = this.graph.dialect
+        this.backgroundImage.init(this.backgroundPane!)
+      }
+
+      this.redrawBackgroundImage(this.backgroundImage, bg)
+
+    } else if (this.backgroundImage != null) {
+      this.backgroundImage.dispose()
+      this.backgroundImage = null
+    }
+  }
+
+  protected redrawBackgroundImage(backgroundImage: ImageShape, bg: Image) {
+    backgroundImage.scale = this.scale
+    backgroundImage.bounds.x = this.scale * this.translate.x
+    backgroundImage.bounds.y = this.scale * this.translate.y
+    backgroundImage.bounds.width = this.scale * bg.width
+    backgroundImage.bounds.height = this.scale * bg.height
+
+    backgroundImage.redraw()
+  }
+
+  protected validateBackgroundPage() {
+    if (this.graph.pageVisible) {
+      const bounds = this.getBackgroundPageBounds()
+      if (this.backgroundPageShape == null) {
+        this.backgroundPageShape = new RectangleShape(bounds, 'white', 'black')
+        this.backgroundPageShape.scale = this.scale
+        this.backgroundPageShape.shadow = true
+        this.backgroundPageShape.dialect = this.graph.dialect
+        this.backgroundPageShape.init(this.backgroundPane!)
+        this.backgroundPageShape.redraw()
+
+        // Adds listener for double click handling on background
+        if (this.graph.nativeDblClickEnabled) {
+          DomEvent.addListener(
+            this.backgroundPageShape.elem!,
+            'dblclick',
+            (e: MouseEvent) => {
+              this.graph.eventloop.dblClick(e)
+            },
+          )
+        }
+
+        // Adds basic listeners for graph event dispatching outside of the
+        // container and finishing the handling of a single gesture
+        DomEvent.addMouseListeners(
+          this.backgroundPageShape.elem!,
+          (e: MouseEvent) => {
+            this.graph.fireMouseEvent(
+              DomEvent.MOUSE_DOWN, new MouseEventEx(e),
+            )
+          },
+          (e: MouseEvent) => {
+            // Hides the tooltip if mouse is outside container
+            if (
+              this.graph.tooltipHandler != null &&
+              this.graph.tooltipHandler.hideOnHover
+            ) {
+              this.graph.hideTooltip()
+            }
+
+            if (this.graph.eventloop.isMouseDown && !DomEvent.isConsumed(e)) {
+              this.graph.fireMouseEvent(
+                DomEvent.MOUSE_MOVE, new MouseEventEx(e),
+              )
+            }
+          },
+          (e: MouseEvent) => {
+            this.graph.fireMouseEvent(
+              DomEvent.MOUSE_UP, new MouseEventEx(e),
+            )
+          },
+        )
+      } else {
+        this.backgroundPageShape.scale = this.scale
+        this.backgroundPageShape.bounds = bounds
+        this.backgroundPageShape.redraw()
+      }
+    } else if (this.backgroundPageShape != null) {
+      this.backgroundPageShape.dispose()
+      this.backgroundPageShape = null
+    }
+  }
+
+  protected getBackgroundPageBounds() {
+    const pageFormat = this.graph.pageFormat
+    const pageScale = this.scale * this.graph.pageScale
+    const bounds = new Rectangle(
+      this.scale * this.translate.x,
+      this.scale * this.translate.y,
+      pageFormat.width * pageScale,
+      pageFormat.height * pageScale,
+    )
+
+    return bounds
+  }
+
+  // #endregion
+
+  // #region :::::::::::: Update DOM Order :::::::::::
+
+  protected lastNode: HTMLElement | null = null
+  protected lastHtmlNode: HTMLElement | null = null
+  protected lastForegroundNode: HTMLElement | null = null
+  protected lastForegroundHtmlNode: HTMLElement | null = null
+
+  protected resetValidationState() {
+    this.lastNode = null
+    this.lastHtmlNode = null
+    this.lastForegroundNode = null
+    this.lastForegroundHtmlNode = null
+  }
+
+  protected stateValidated(state: State) {
+    this.updateDomOrder(state)
+  }
+
+  protected updateDomOrder(state: State) {
+    const foreground = (
+      (this.model.isEdge(state.cell) && this.graph.keepEdgesInForeground) ||
+      (this.model.isNode(state.cell) && this.graph.keepEdgesInBackground)
+    )
+    const htmlNode = foreground
+      ? this.lastForegroundHtmlNode || this.lastHtmlNode
+      : this.lastHtmlNode
+    const node = foreground
+      ? this.lastForegroundNode || this.lastNode
+      : this.lastNode
+
+    const result = this.insertStateAfter(state, node, htmlNode)
+
+    if (foreground) {
+      this.lastForegroundHtmlNode = result[1]
+      this.lastForegroundNode = result[0]
+    } else {
+      this.lastHtmlNode = result[1]
+      this.lastNode = result[0]
+    }
+  }
+
+  /**
+   * Inserts the shapes of the state after the given nodes in the DOM.
+   *
+   * @param state The state to be inserted.
+   * @param node Node in `drawPane` after which the shapes should be inserted.
+   * @param htmlNode Node in the graph container after which the shapes should
+   * be inserted that will not go into the `drawPane` (eg. HTML labels without
+   * foreignObjects).
+   */
+  protected insertStateAfter(
+    state: State,
+    node: HTMLElement | null,
+    htmlNode: HTMLElement | null,
+  ) {
+    const shapes = this.getShapesForState(state)
+    shapes.forEach((shape) => {
+      if (shape != null && shape.elem != null) {
+        const isHtml = (
+          shape.elem.parentNode !== state.view.getDrawPane() &&
+          shape.elem.parentNode !== state.view.getOverlayPane()
+        )
+
+        const temp = isHtml ? htmlNode : node
+
+        if (temp != null && temp.nextSibling !== shape.elem) {
+          // prepend
+          if (temp.nextSibling == null) {
+            temp.parentNode!.appendChild(shape.elem)
+          } else {
+            temp.parentNode!.insertBefore(shape.elem, temp.nextSibling)
+          }
+        } else if (temp == null) {
+
+          const sParent = shape.elem.parentNode!
+
+          // Special case: First HTML node should be first sibling after canvas
+          if (sParent === state.view.graph.container) {
+            let stage = state.view.getStage()
+            while (
+              stage != null &&
+              stage.parentNode !== state.view.graph.container
+            ) {
+              stage = stage.parentNode as HTMLElement
+            }
+
+            if (stage != null && stage.nextSibling != null) {
+              if (stage.nextSibling !== shape.elem) {
+                sParent.insertBefore(shape.elem, stage.nextSibling)
+              }
+            } else {
+              sParent.appendChild(shape.elem)
+            }
+          } else if (
+            sParent.firstChild != null &&
+            sParent.firstChild !== shape.elem
+          ) {
+            // Inserts the node as the first child of the parent
+            // to implement the order
+            sParent.insertBefore(shape.elem, sParent.firstChild)
+          }
+        }
+
+        if (isHtml) {
+          htmlNode = shape.elem as HTMLElement // tslint:disable-line
+        } else {
+          node = shape.elem as HTMLElement // tslint:disable-line
+        }
+      }
+    })
+
+    return [node, htmlNode]
+  }
+
+  private getShapesForState(state: State) {
+    return [state.shape, state.text, state.control]
+  }
+
+  // #endregion
+
   // #region ::::::::::::::::: Init ::::::::::::::::::
 
   /**
@@ -1634,7 +1778,7 @@ export class View extends Primer {
    */
   init() {
     this.installListeners()
-    if (this.graph.dialect === constants.DIALECT_SVG) {
+    if (this.graph.dialect === 'svg') {
       this.initSvgPanes()
     } else {
       this.initHtmlPanes()
@@ -1648,139 +1792,140 @@ export class View extends Primer {
     const graph = this.graph
     const container = graph.container
 
-    if (container != null) {
-      // Support for touch device gestures (eg. pinch to zoom)
-      if (detector.SUPPORT_TOUCH) {
-        DomEvent.addListener(container, 'gesturestart', (e: MouseEvent) => {
-          graph.fireGestureEvent(e)
-          DomEvent.consume(e)
-        })
+    if (container == null) {
+      return
+    }
 
-        DomEvent.addListener(container, 'gesturechange', (e: MouseEvent) => {
-          graph.fireGestureEvent(e)
-          DomEvent.consume(e)
-        })
-
-        DomEvent.addListener(container, 'gestureend', (e: MouseEvent) => {
-          graph.fireGestureEvent(e)
-          DomEvent.consume(e)
-        })
-      }
-
-      // Adds basic listeners for graph event dispatching
-      DomEvent.addMouseListeners(
-        container,
-        (e: MouseEvent) => {
-          // Condition to avoid scrollbar events starting
-          // a rubberband selection
-          if (
-            this.isContainerEvent(e) &&
-            (
-              (
-                !detector.IS_IE &&
-                !detector.IS_IE11 &&
-                !detector.IS_CHROME &&
-                !detector.IS_OPERA &&
-                !detector.IS_SAFARI
-              ) ||
-              !this.isScrollEvent(e)
-            )
-          ) {
-            graph.fireMouseEvent(DomEvent.MOUSE_DOWN, new CustomMouseEvent(e))
-          }
-        },
-        (e: MouseEvent) => {
-          if (this.isContainerEvent(e)) {
-            graph.fireMouseEvent(DomEvent.MOUSE_MOVE, new CustomMouseEvent(e))
-          }
-        },
-        (e: MouseEvent) => {
-          if (this.isContainerEvent(e)) {
-            graph.fireMouseEvent(DomEvent.MOUSE_UP, new CustomMouseEvent(e))
-          }
-        },
-      )
-
-      // Adds listener for double click handling on background, this does
-      // always use native event handler, we assume that the DOM of the
-      // background does not change during the double click
-      DomEvent.addListener(container, 'dblclick', (e: MouseEvent) => {
-        if (this.isContainerEvent(e)) {
-          graph.eventloop.dblClick(e)
-        }
+    // Support for touch device gestures (eg. pinch to zoom)
+    if (detector.SUPPORT_TOUCH) {
+      DomEvent.addListener(container, 'gesturestart', (e: MouseEvent) => {
+        graph.fireGestureEvent(e)
+        DomEvent.consume(e)
       })
+
+      DomEvent.addListener(container, 'gesturechange', (e: MouseEvent) => {
+        graph.fireGestureEvent(e)
+        DomEvent.consume(e)
+      })
+
+      DomEvent.addListener(container, 'gestureend', (e: MouseEvent) => {
+        graph.fireGestureEvent(e)
+        DomEvent.consume(e)
+      })
+    }
+
+    // Adds basic listeners for graph event dispatching
+    DomEvent.addMouseListeners(
+      container,
+      (e: MouseEvent) => {
+
+        if (
+          this.isContainerEvent(e) &&
+          // Avoid scrollbar events starting a rubberband selection
+          (
+            (
+              !detector.IS_IE &&
+              !detector.IS_IE11 &&
+              !detector.IS_CHROME &&
+              !detector.IS_OPERA &&
+              !detector.IS_SAFARI
+            ) || !this.isScrollEvent(e)
+          )
+        ) {
+          graph.fireMouseEvent(DomEvent.MOUSE_DOWN, new MouseEventEx(e))
+        }
+      },
+      (e: MouseEvent) => {
+        if (this.isContainerEvent(e)) {
+          graph.fireMouseEvent(DomEvent.MOUSE_MOVE, new MouseEventEx(e))
+        }
+      },
+      (e: MouseEvent) => {
+        if (this.isContainerEvent(e)) {
+          graph.fireMouseEvent(DomEvent.MOUSE_UP, new MouseEventEx(e))
+        }
+      },
+    )
+
+    // Adds basic listeners for graph event dispatching outside of
+    // the container and finishing the handling of a single gesture
+    // Implemented via graph event dispatch loop to avoid duplicate
+    // events in Firefox and Chrome
+    graph.addMouseListener({
+      mouseDown() { graph.popupMenuHandler.hideMenu() },
+      mouseMove() { },
+      mouseUp() { },
+    })
+
+    // Adds listener for double click handling on background, this does
+    // always use native event handler, we assume that the DOM of the
+    // background does not change during the double click
+    DomEvent.addListener(container, 'dblclick', (e: MouseEvent) => {
+      if (this.isContainerEvent(e)) {
+        graph.eventloop.dblClick(e)
+      }
+    })
+
+    // Hides tooltips and resets tooltip timer if mouse leaves container
+    DomEvent.addListener(container, 'mouseleave', () => {
+      graph.hideTooltip()
+    })
+
+    // Workaround for touch events which started on some DOM node
+    // on top of the container, in which case the cells under the
+    // mouse for the move and up events are not detected.
+    const getState = (e: MouseEvent) => {
+      let state = null
 
       // Workaround for touch events which started on some DOM node
       // on top of the container, in which case the cells under the
       // mouse for the move and up events are not detected.
-      const getState = (e: MouseEvent) => {
-        let state = null
+      if (detector.SUPPORT_TOUCH) {
+        const x = DomEvent.getClientX(e)
+        const y = DomEvent.getClientY(e)
 
-        // Workaround for touch events which started on some DOM node
-        // on top of the container, in which case the cells under the
-        // mouse for the move and up events are not detected.
-        if (detector.SUPPORT_TOUCH) {
-          const x = DomEvent.getClientX(e)
-          const y = DomEvent.getClientY(e)
-
-          // Dispatches the drop event to the graph which
-          // consumes and executes the source function
-          const pt = util.clientToGraph(container, x, y)
-          state = graph.view.getState(graph.getCellAt(pt.x, pt.y))
-        }
-
-        return state
+        // Dispatches the drop event to the graph which
+        // consumes and executes the source function
+        const p = util.clientToGraph(container, x, y)
+        state = graph.view.getState(graph.getCellAt(p.x, p.y))
       }
 
-      // Adds basic listeners for graph event dispatching outside of
-      // the container and finishing the handling of a single gesture
-      // Implemented via graph event dispatch loop to avoid duplicate
-      // events in Firefox and Chrome
-      graph.addMouseListener({
-        mouseDown() { graph.popupMenuHandler.hideMenu() },
-        mouseMove() { },
-        mouseUp() { },
-      })
-
-      // Hides tooltips and resets tooltip timer if mouse leaves container
-      DomEvent.addListener(container, 'mouseleave', () => {
-        graph.tooltipHandler.hide()
-      })
-
-      this.mouseMoveHandler = (e: MouseEvent) => {
-        // Hides the tooltip if mouse is outside container
-        if (
-          graph.tooltipHandler != null &&
-          graph.tooltipHandler.hideOnHover
-        ) {
-          graph.tooltipHandler.hide()
-        }
-
-        if (
-          this.shouldHandleDocumentEvent(e) &&
-          !DomEvent.isConsumed(e)
-        ) {
-          this.graph.fireMouseEvent(
-            DomEvent.MOUSE_MOVE, new CustomMouseEvent(e, getState(e)),
-          )
-        }
-      }
-
-      this.mouseUpHandler = (e: MouseEvent) => {
-        if (this.shouldHandleDocumentEvent(e)) {
-          this.graph.fireMouseEvent(
-            DomEvent.MOUSE_UP, new CustomMouseEvent(e),
-          )
-        }
-      }
-
-      DomEvent.addMouseListeners(
-        document,
-        null,
-        this.mouseMoveHandler,
-        this.mouseUpHandler,
-      )
+      return state
     }
+
+    this.mouseMoveHandler = (e: MouseEvent) => {
+      // Hides the tooltip if mouse is outside container
+      if (
+        graph.tooltipHandler != null &&
+        graph.tooltipHandler.hideOnHover
+      ) {
+        graph.hideTooltip()
+      }
+
+      if (
+        this.shouldHandleDocumentEvent(e) &&
+        !DomEvent.isConsumed(e)
+      ) {
+        this.graph.fireMouseEvent(
+          DomEvent.MOUSE_MOVE, new MouseEventEx(e, getState(e)),
+        )
+      }
+    }
+
+    this.mouseUpHandler = (e: MouseEvent) => {
+      if (this.shouldHandleDocumentEvent(e)) {
+        this.graph.fireMouseEvent(
+          DomEvent.MOUSE_UP, new MouseEventEx(e),
+        )
+      }
+    }
+
+    DomEvent.addMouseListeners(
+      document,
+      null,
+      this.mouseMoveHandler,
+      this.mouseUpHandler,
+    )
   }
 
   protected shouldHandleDocumentEvent(e: MouseEvent) {
@@ -1793,11 +1938,7 @@ export class View extends Primer {
   }
 
   protected isContainerVisible() {
-    return (
-      this.graph.container != null &&
-      this.graph.container.style.display !== 'none' &&
-      this.graph.container.style.visibility !== 'hidden'
-    )
+    return util.isVisible(this.graph.container)
   }
 
   /**
@@ -1823,8 +1964,8 @@ export class View extends Primer {
   }
 
   /**
-   * Returns true if the event origin is one of the scrollbars of the
-   * container in IE. Such events are ignored.
+   * Returns true if the event origin is one of the scrollbars
+   * of the container in IE. Such events are ignored.
    */
   protected isScrollEvent(e: MouseEvent) {
     const offset = util.getOffset(this.graph.container)
@@ -1882,7 +2023,7 @@ export class View extends Primer {
   }
 
   protected createHtmlPane(width?: string, height?: string) {
-    const div = document.createElement('div')
+    const div = util.createElement('div')
     if (width != null && height != null) {
       div.style.position = 'absolute'
       div.style.left = '0px'
@@ -1929,7 +2070,7 @@ export class View extends Primer {
     this.stage.appendChild(this.overlayPane)
     this.stage.appendChild(this.decoratorPane)
 
-    const root = document.createElementNS(constants.NS_SVG, 'svg') as SVGElement
+    const root = util.createSVGElement('svg')
     root.style.left = '0px'
     root.style.top = '0px'
     root.style.width = '100%'
@@ -1948,7 +2089,7 @@ export class View extends Primer {
   }
 
   protected createSvgPane() {
-    return document.createElementNS(constants.NS_SVG, 'g') as SVGGElement
+    return util.createSVGElement('g') as SVGGElement
   }
 
   protected updateContainerStyle(container: HTMLElement) {
@@ -1970,23 +2111,36 @@ export class View extends Primer {
    * In SVG dialect, it'is a SVGGElement.
    */
   getStage() {
-    return this.stage
+    return this.stage!
   }
 
   getBackgroundPane() {
-    return this.backgroundPane
+    return this.backgroundPane!
   }
 
   getDrawPane() {
-    return this.drawPane
+    return this.drawPane!
   }
 
   getOverlayPane() {
-    return this.overlayPane
+    return this.overlayPane!
   }
 
   getDecoratorPane() {
-    return this.decoratorPane
+    return this.decoratorPane!
+  }
+
+  setCurrentRoot(root: Cell | null) {
+    if (this.currentRoot !== root) {
+      const change = new CurrentRootChange(this, root)
+      change.execute()
+      const edit = new UndoableEdit(this.graph.getModel())
+      edit.add(change)
+      this.trigger('undo', edit)
+      this.graph.viewport.sizeDidChange()
+    }
+
+    return root
   }
 
   dispose() {
@@ -2034,11 +2188,11 @@ export class View extends Primer {
 
 export namespace View {
   export const events = {
+    up: 'up',
+    down: 'down',
     undo: 'undo',
     scale: 'scale',
     translate: 'translate',
     scaleAndTranslate: 'scaleAndTranslate',
-    up: 'up',
-    down: 'down',
   }
 }

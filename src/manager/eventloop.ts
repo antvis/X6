@@ -1,6 +1,6 @@
 import * as util from '../util'
 import { Graph, Cell, State } from '../core'
-import { DomEvent, CustomMouseEvent, detector } from '../common'
+import { DomEvent, MouseEventEx, detector } from '../common'
 import { IMouseHandler } from '../handler'
 import { RectangleShape } from '../shape'
 import { BaseManager } from './manager-base'
@@ -78,11 +78,11 @@ export class EventLoop extends BaseManager {
     return p
   }
 
-  getCursorForEvent(e: CustomMouseEvent): string | null {
+  getCursorForEvent(e: MouseEventEx): string | null {
     return this.graph.getCursor(e.getCell())
   }
 
-  protected updateMouseEvent(e: CustomMouseEvent, eventName: string) {
+  protected updateMouseEvent(e: MouseEventEx, eventName: string) {
     if (e.graphX == null || e.graphY == null) {
       const x = e.getClientX()
       const y = e.getClientY()
@@ -119,7 +119,7 @@ export class EventLoop extends BaseManager {
     return this.graph.view.getState(this.graph.getCellAt(p.x, p.y))
   }
 
-  protected isEventIgnored(eventName: string, e: CustomMouseEvent, sender: any) {
+  protected isEventIgnored(eventName: string, e: MouseEventEx, sender: any) {
     const evt = e.getEvent()
     const eventSource = e.getSource()
     const isMouseEvent = DomEvent.isMouseEvent(evt)
@@ -168,14 +168,14 @@ export class EventLoop extends BaseManager {
       this.mouseMoveRedirect = (e: MouseEvent) => {
         this.fireMouseEvent(
           DomEvent.MOUSE_MOVE,
-          new CustomMouseEvent(e, this.getStateForTouchEvent(e as any)),
+          new MouseEventEx(e, this.getStateForTouchEvent(e as any)),
           sender,
         )
       }
       this.mouseUpRedirect = (e: MouseEvent) => {
         this.fireMouseEvent(
           DomEvent.MOUSE_UP,
-          new CustomMouseEvent(e, this.getStateForTouchEvent(e as any)),
+          new MouseEventEx(e, this.getStateForTouchEvent(e as any)),
           sender,
         )
       }
@@ -232,7 +232,7 @@ export class EventLoop extends BaseManager {
 
   protected isSyntheticEventIgnored(
     eventName: string,
-    e: CustomMouseEvent,
+    e: MouseEventEx,
     sender: any,
   ) {
     let result = false
@@ -257,7 +257,7 @@ export class EventLoop extends BaseManager {
     return result
   }
 
-  protected isEventSourceIgnored(eventName: string, e: CustomMouseEvent) {
+  protected isEventSourceIgnored(eventName: string, e: MouseEventEx) {
     const evt = e.getEvent()
     const elem = e.getSource()
     const nodeName = elem.nodeName ? elem.nodeName.toLowerCase() : ''
@@ -290,7 +290,7 @@ export class EventLoop extends BaseManager {
     return state
   }
 
-  protected consumeMouseEvent(name: string, e: CustomMouseEvent) {
+  protected consumeMouseEvent(name: string, e: MouseEventEx) {
     if (
       name === DomEvent.MOUSE_DOWN &&
       DomEvent.isTouchEvent(e.getEvent())
@@ -299,7 +299,7 @@ export class EventLoop extends BaseManager {
     }
   }
 
-  fireMouseEvent(eventName: string, e: CustomMouseEvent, sender: any) {
+  fireMouseEvent(eventName: string, e: MouseEventEx, sender: any) {
     // Ignore left click on some form-input elements.
     if (this.isEventSourceIgnored(eventName, e)) {
       this.graph.hideTooltip()
@@ -510,7 +510,7 @@ export class EventLoop extends BaseManager {
     this.graph.trigger(Graph.events.escape, { e })
   }
 
-  click(e: CustomMouseEvent) {
+  click(e: MouseEventEx) {
     const evt = e.getEvent()
     let cell = e.getCell()
     const consumed = e.isConsumed()
@@ -577,7 +577,7 @@ export class EventLoop extends BaseManager {
     }
   }
 
-  tapAndHold(e: CustomMouseEvent) {
+  tapAndHold(e: MouseEventEx) {
     const evt = e.getEvent()
     this.graph.trigger(Graph.events.tapAndHold, { e })
 

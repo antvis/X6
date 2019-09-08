@@ -4,15 +4,15 @@ import { TextDirection, Dialect } from '../types'
 import { Rectangle, Point, Overlay } from '../struct'
 import { constants, detector, Dictionary } from '../common'
 import { DomEvent } from '../common/dom-event'
-import { CustomMouseEvent } from '../common/mouse-event'
+import { MouseEventEx } from '../common/mouse-event'
 import { Shape, Stencil, Connector, RectangleShape, Text, ImageShape } from '../shape'
 
 export class Renderer {
+  antiAlias: boolean = true
+  minSvgStrokeWidth: number = 1
   defaultEdgeShape = Connector
   defaultNodeShape = RectangleShape
   defaultTextShape = Text
-  antiAlias: boolean = true
-  minSvgStrokeWidth: number = 1
 
   /**
    * Specifies if spacing and label position should be ignored
@@ -350,7 +350,7 @@ export class Renderer {
       (e: MouseEvent) => { DomEvent.consume(e) },
       (e: MouseEvent) => {
         graph.fireMouseEvent(
-          DomEvent.MOUSE_MOVE, new CustomMouseEvent(e, state),
+          DomEvent.MOUSE_MOVE, new MouseEventEx(e, state),
         )
       },
     )
@@ -396,21 +396,21 @@ export class Renderer {
       (e: MouseEvent) => {
         if (this.isShapeEvent(state, e)) {
           graph.fireMouseEvent(
-            DomEvent.MOUSE_DOWN, new CustomMouseEvent(e, state),
+            DomEvent.MOUSE_DOWN, new MouseEventEx(e, state),
           )
         }
       },
       (e: MouseEvent) => {
         if (this.isShapeEvent(state, e)) {
           graph.fireMouseEvent(
-            DomEvent.MOUSE_MOVE, new CustomMouseEvent(e, getState(e)),
+            DomEvent.MOUSE_MOVE, new MouseEventEx(e, getState(e)),
           )
         }
       },
       (e: MouseEvent) => {
         if (this.isShapeEvent(state, e)) {
           graph.fireMouseEvent(
-            DomEvent.MOUSE_UP, new CustomMouseEvent(e, getState(e)),
+            DomEvent.MOUSE_UP, new MouseEventEx(e, getState(e)),
           )
         }
       },
@@ -506,18 +506,18 @@ export class Renderer {
         (e: MouseEvent) => {
           first = new Point(DomEvent.getClientX(e), DomEvent.getClientY(e))
           graph.fireMouseEvent(
-            DomEvent.MOUSE_DOWN, new CustomMouseEvent(e, state),
+            DomEvent.MOUSE_DOWN, new MouseEventEx(e, state),
           )
           DomEvent.consume(e)
         },
         (e: MouseEvent) => {
           graph.fireMouseEvent(
-            DomEvent.MOUSE_MOVE, new CustomMouseEvent(e, state),
+            DomEvent.MOUSE_MOVE, new MouseEventEx(e, state),
           )
         },
         (e: MouseEvent) => {
           graph.fireMouseEvent(
-            DomEvent.MOUSE_UP, new CustomMouseEvent(e, state),
+            DomEvent.MOUSE_UP, new MouseEventEx(e, state),
           )
           DomEvent.consume(e)
         },
@@ -727,7 +727,7 @@ export class Renderer {
         (e: MouseEvent) => {
           if (this.isLabelEvent(state, e)) {
             graph.fireMouseEvent(
-              DomEvent.MOUSE_DOWN, new CustomMouseEvent(e, state),
+              DomEvent.MOUSE_DOWN, new MouseEventEx(e, state),
             )
             forceGetCell = (
               graph.dialect !== constants.DIALECT_SVG &&
@@ -738,14 +738,14 @@ export class Renderer {
         (e: MouseEvent) => {
           if (this.isLabelEvent(state, e)) {
             graph.fireMouseEvent(
-              DomEvent.MOUSE_MOVE, new CustomMouseEvent(e, getState(e)),
+              DomEvent.MOUSE_MOVE, new MouseEventEx(e, getState(e)),
             )
           }
         },
         (e: MouseEvent) => {
           if (this.isLabelEvent(state, e)) {
             graph.fireMouseEvent(
-              DomEvent.MOUSE_UP, new CustomMouseEvent(e, getState(e)),
+              DomEvent.MOUSE_UP, new MouseEventEx(e, getState(e)),
             )
             forceGetCell = false
           }
@@ -958,11 +958,9 @@ export class Renderer {
       const cx = state.bounds.getCenterX()
       const cy = state.bounds.getCenterY()
       if (bounds.x !== cx || bounds.y !== cy) {
-        const rad = theta * (Math.PI / 180)
         const pt = util.rotatePoint(
           new Point(bounds.x, bounds.y),
-          Math.cos(rad),
-          Math.sin(rad),
+          theta,
           new Point(cx, cy),
         )
 
@@ -990,7 +988,7 @@ export class Renderer {
             let cx = bounds.getCenterX()
             let cy = bounds.getCenterY()
 
-            const point = util.rotatePoint(
+            const point = util.rotatePointEx(
               new Point(cx, cy),
               cos,
               sin,
@@ -1068,18 +1066,13 @@ export class Renderer {
           }
 
           if (rot !== 0) {
-            const rad = util.toRad(rot)
-            const cos = Math.cos(rad)
-            const sin = Math.sin(rad)
-
-            const point = util.rotatePoint(
+            const p = util.rotatePoint(
               new Point(cx, cy),
-              cos,
-              sin,
+              rot,
               state.bounds.getCenter(),
             )
-            cx = point.x
-            cy = point.y
+            cx = p.x
+            cy = p.y
           }
         }
       }
@@ -1100,100 +1093,5 @@ export class Renderer {
     }
 
     return null
-  }
-
-  /**
-   * Inserts the given array of `Shape`s after the given nodes in the DOM.
-   *
-   * Parameters:
-   *
-   * shapes - Array of <mxShapes> to be inserted.
-   * node - Node in <drawPane> after which the shapes should be inserted.
-   * htmlNode - Node in the graph container after which the shapes should be inserted that
-   * will not go into the <drawPane> (eg. HTML labels without foreignObjects).
-   */
-  insertStateAfter(
-    state: State,
-    node: HTMLElement | null,
-    htmlNode: HTMLElement | null,
-  ) {
-    const shapes = this.getShapesForState(state)
-    shapes.forEach((shape) => {
-      if (shape != null && shape.elem != null) {
-        const html = (
-          shape.elem.parentNode !== state.view.getDrawPane() &&
-          shape.elem.parentNode !== state.view.getOverlayPane()
-        )
-
-        const temp = html ? htmlNode : node
-
-        if (temp != null && temp.nextSibling !== shape.elem) {
-          // prepend
-          if (temp.nextSibling == null) {
-            temp.parentNode!.appendChild(shape.elem)
-          } else {
-            temp.parentNode!.insertBefore(shape.elem, temp.nextSibling)
-          }
-        } else if (temp == null) {
-          // Special case: First HTML node should be first sibling after canvas
-          if (shape.elem.parentNode === state.view.graph.container) {
-            let canvas = state.view.getStage()
-            while (canvas != null && canvas.parentNode !== state.view.graph.container) {
-              canvas = canvas.parentNode as HTMLElement
-            }
-
-            if (canvas != null && canvas.nextSibling != null) {
-              if (canvas.nextSibling !== shape.elem) {
-                shape.elem.parentNode.insertBefore(shape.elem, canvas.nextSibling)
-              }
-            } else {
-              shape.elem.parentNode.appendChild(shape.elem)
-            }
-          } else if (
-            shape.elem.parentNode!.firstChild != null &&
-            shape.elem.parentNode!.firstChild !== shape.elem
-          ) {
-            // Inserts the node as the first child of the parent to implement the order
-            shape.elem.parentNode!.insertBefore(shape.elem, shape.elem.parentNode!.firstChild)
-          }
-        }
-
-        if (html) {
-          htmlNode = shape.elem as HTMLElement // tslint:disable-line
-        } else {
-          node = shape.elem as HTMLElement // tslint:disable-line
-        }
-      }
-    })
-
-    return [node, htmlNode]
-  }
-
-  private getShapesForState(state: State) {
-    return [state.shape, state.text, state.control]
-  }
-
-  /**
-   * Destroys the shapes associated with the given cell state.
-   */
-  destroy(state: State) {
-    if (state.shape != null) {
-      if (state.text != null) {
-        state.text.dispose()
-        state.text = null
-      }
-
-      if (state.overlays !== null) {
-        state.overlays.each(shape => shape && shape.dispose())
-      }
-
-      if (state.control != null) {
-        state.control.dispose()
-        state.control = null
-      }
-
-      state.shape.dispose()
-      state.shape = null
-    }
   }
 }

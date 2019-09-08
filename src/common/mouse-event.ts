@@ -4,7 +4,7 @@ import { Graph, State } from '../core'
 import { Shape } from '../shape'
 import { DomEvent } from './dom-event'
 
-export class CustomMouseEvent {
+export class MouseEventEx {
   e: MouseEvent
   state: State | null
   consumed: boolean = false
@@ -92,7 +92,7 @@ export class CustomMouseEvent {
   }
 }
 
-export namespace CustomMouseEvent {
+export namespace MouseEventEx {
   /**
 	 * Redirects the mouse events from the given DOM node to the graph
 	 * dispatch loop using the event and given state as event arguments.
@@ -118,7 +118,7 @@ export namespace CustomMouseEvent {
         } else if (!DomEvent.isConsumed(e)) {
           graph.fireMouseEvent(
             DomEvent.MOUSE_DOWN,
-            new CustomMouseEvent(e, getState(e)),
+            new MouseEventEx(e, getState(e)),
           )
         }
       },
@@ -128,7 +128,7 @@ export namespace CustomMouseEvent {
         } else if (!DomEvent.isConsumed(e)) {
           graph.fireMouseEvent(
             DomEvent.MOUSE_MOVE,
-            new CustomMouseEvent(e, getState(e)),
+            new MouseEventEx(e, getState(e)),
           )
         }
       },
@@ -138,7 +138,7 @@ export namespace CustomMouseEvent {
         } else if (!DomEvent.isConsumed(e)) {
           graph.fireMouseEvent(
             DomEvent.MOUSE_UP,
-            new CustomMouseEvent(e, getState(e)),
+            new MouseEventEx(e, getState(e)),
           )
         }
       },

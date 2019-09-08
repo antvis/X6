@@ -1,7 +1,7 @@
 import { constants } from '../common'
 import { SvgCanvas2D } from '../canvas'
 import { Polyline } from './polyline'
-import { Marker } from './marker'
+import { createMarker } from '../marker'
 import { Rectangle, Point } from '../struct'
 
 export class Connector extends Polyline {
@@ -86,18 +86,18 @@ export class Connector extends Polyline {
         ? this.style.startFilled !== false
         : this.style.endFilled !== false
 
-      result = Marker.createMarker(
-        c,
-        this,
+      result = createMarker({
         type,
         pe,
         unitX,
         unitY,
         size,
         isSource,
-        this.strokeWidth as number,
         filled,
-      )
+        canvas: c,
+        shape: this,
+        strokeWidth: this.strokeWidth as number,
+      })
     }
 
     return result

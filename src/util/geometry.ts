@@ -24,10 +24,10 @@ export function getBoundingBox(rect: Rectangle, rotation: number, cx?: Point) {
     let p3 = new Point(p2.x, rect.y + rect.height)
     let p4 = new Point(rect.x, p3.y)
 
-    p1 = rotatePoint(p1, cos, sin, cx)
-    p2 = rotatePoint(p2, cos, sin, cx)
-    p3 = rotatePoint(p3, cos, sin, cx)
-    p4 = rotatePoint(p4, cos, sin, cx)
+    p1 = rotatePointEx(p1, cos, sin, cx)
+    p2 = rotatePointEx(p2, cos, sin, cx)
+    p3 = rotatePointEx(p3, cos, sin, cx)
+    p4 = rotatePointEx(p4, cos, sin, cx)
 
     const result = new Rectangle(p1.x, p1.y, 0, 0)
     result.add(new Rectangle(p2.x, p2.y, 0, 0))
@@ -42,9 +42,33 @@ export function getBoundingBox(rect: Rectangle, rotation: number, cx?: Point) {
 
 export function rotatePoint(
   point: Point | Point.PointLike,
+  degree: number,
+  center: Point | Point.PointLike = new Point(),
+) {
+  let sin = 0
+  let cos = 1
+
+  const d = degree % 360
+  if (d === 90) {
+    sin = 1
+  } else if (d === 180) {
+    cos = -1
+  } else if (d === 270) {
+    sin = -1
+  } else {
+    const rad = toRad(degree)
+    sin = Math.sin(rad)
+    cos = Math.cos(rad)
+  }
+
+  return rotatePointEx(point, cos, sin, center)
+}
+
+export function rotatePointEx(
+  point: Point | Point.PointLike,
   cos: number,
   sin: number,
-  center: Point = new Point(),
+  center: Point | Point.PointLike = new Point(),
 ) {
   const dx = point.x - center.x
   const dy = point.y - center.y
@@ -299,7 +323,7 @@ export function intersectsHotspot(
       const cos = Math.cos(-alpha)
       const sin = Math.sin(-alpha)
       const cx = state.bounds.getCenter()
-      const pt = rotatePoint(new Point(x, y), cos, sin, cx)
+      const pt = rotatePointEx(new Point(x, y), cos, sin, cx)
       x = pt.x // tslint:disable-line
       y = pt.y // tslint:disable-line
     }

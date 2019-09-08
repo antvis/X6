@@ -2,7 +2,7 @@ import * as images from '../assets/images'
 import { Graph, Model, State } from '../core'
 import { View } from '../core/view'
 import { Rectangle, Point, Image, Constraint } from '../struct'
-import { constants, DomEvent, CustomMouseEvent } from '../common'
+import { constants, DomEvent, MouseEventEx } from '../common'
 import { RectangleShape, ImageShape } from '../shape'
 import { BaseHandler } from './handler-base'
 
@@ -89,7 +89,7 @@ export class ConstraintHandler extends BaseHandler {
       this.currentFocusArea = state.bounds.clone()
 
       for (let i = 0; i < this.constraints.length; i += 1) {
-        const cp = this.graph.cellManager.getConnectionPoint(state, this.constraints[i])!
+        const cp = this.graph.view.getConnectionPoint(state, this.constraints[i])!
         const img = this.getImageForConstraint(state, this.constraints[i], cp)
 
         const bounds = new Rectangle(
@@ -110,7 +110,7 @@ export class ConstraintHandler extends BaseHandler {
   /**
    * Returns the tolerance to be used for intersecting connection points.
    */
-  getTolerance(e: CustomMouseEvent) {
+  getTolerance(e: MouseEventEx) {
     return this.graph.getTolerance()
   }
 
@@ -130,7 +130,7 @@ export class ConstraintHandler extends BaseHandler {
    *
    * This implementation always returns false.
    */
-  isEventIgnored(e: CustomMouseEvent) {
+  isEventIgnored(e: MouseEventEx) {
     return false
   }
 
@@ -149,14 +149,14 @@ export class ConstraintHandler extends BaseHandler {
    *
    * This implementation returns true if shift and alt are pressed.
    */
-  isKeepFocusEvent(e: CustomMouseEvent) {
+  isKeepFocusEvent(e: MouseEventEx) {
     return DomEvent.isShiftDown(e.getEvent())
   }
 
   /**
    * Returns the cell for the given event.
    */
-  getCellForEvent(e: CustomMouseEvent, point: Point) {
+  getCellForEvent(e: MouseEventEx, point: Point) {
     let cell = e.getCell()
 
     // Gets cell under actual point if different from event location
@@ -186,7 +186,7 @@ export class ConstraintHandler extends BaseHandler {
    * Source is a boolean indicating if the cell is a source or target.
    */
   update(
-    e: CustomMouseEvent,
+    e: MouseEventEx,
     isSource: boolean,
     existingEdge: boolean,
     point: Point | null,
@@ -275,7 +275,7 @@ export class ConstraintHandler extends BaseHandler {
 
               const getState = () => (this.currentFocus || state) as State
 
-              CustomMouseEvent.redirectMouseEvents(
+              MouseEventEx.redirectMouseEvents(
                 hl.elem!, this.graph, getState,
               )
             }
@@ -303,7 +303,7 @@ export class ConstraintHandler extends BaseHandler {
    * the handler is not enabled then the outline is painted, but the constraints
    * are ignored.
    */
-  setFocus(e: CustomMouseEvent, state: State, isSource: boolean) {
+  setFocus(e: MouseEventEx, state: State, isSource: boolean) {
     this.constraints = (
       state != null &&
       !this.isStateIgnored(state, isSource) &&
@@ -326,7 +326,7 @@ export class ConstraintHandler extends BaseHandler {
       this.focusIcons = []
 
       for (let i = 0; i < this.constraints.length; i += 1) {
-        const cp = this.graph.cellManager.getConnectionPoint(state, this.constraints[i])!
+        const cp = this.graph.view.getConnectionPoint(state, this.constraints[i])!
         const img = this.getImageForConstraint(state, this.constraints[i], cp)
         const src = img.src
         const bounds = new Rectangle(
@@ -355,7 +355,7 @@ export class ConstraintHandler extends BaseHandler {
 
         icon.redraw()
 
-        CustomMouseEvent.redirectMouseEvents(icon.elem!, this.graph, getState)
+        MouseEventEx.redirectMouseEvents(icon.elem!, this.graph, getState)
         this.currentFocusArea.add(icon.bounds)
         this.focusIcons.push(icon)
         this.focusPoints.push(cp)

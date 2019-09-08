@@ -1,4 +1,5 @@
-import { FontStyle, Point } from './struct'
+import { FontStyle } from './struct'
+import { PerimeterFunction, RoutingFunction } from './core/registry'
 
 export type Dialect = 'svg' | 'html'
 export type Align = 'left' | 'center' | 'right'
@@ -11,7 +12,7 @@ export type LineJoin = 'miter' | 'round' | 'bevel'
 export type TextDirection = '' | 'auto' | 'ltr' | 'rtl'
 
 export interface Style {
-  perimeter?: string | ((...args: any[]) => Point)
+  perimeter?: string | PerimeterFunction | null
   sourcePort?: string
   targetPort?: string
   portConstraint?: string
@@ -27,57 +28,56 @@ export interface Style {
   orthogonal?: boolean
 
   /**
-   * Defines the key for the horizontal relative coordinate connection
-   * point of an edge with its source terminal.
+   * The horizontal relative coordinate connection point of an edge with
+   * its source terminal.
    */
   exitX?: number
 
   /**
-   * Defines the key for the vertical relative coordinate connection
-   * point of an edge with its source terminal.
+   * The vertical relative coordinate connection point of an edge with
+   * its source terminal.
    */
   exitY?: number
 
   /**
-   * Defines the key for the horizontal offset of the connection point
-   * of an edge with its source terminal.
+   * The horizontal offset of the connection point of an edge with its
+   * source terminal.
    */
   exitDx?: number
 
   /**
-   * Defines the key for the vertical offset of the connection point
-   * of an edge with its source terminal.
+   * The vertical offset of the connection point of an edge with its
+   * source terminal.
    */
   exitDy?: number
 
   /**
-   * Defines the key for the horizontal relative coordinate connection
-   * point of an edge with its target terminal.
+   * The horizontal relative coordinate connection point of an edge with
+   * its target terminal.
    */
   entryX?: number
 
   /**
-   * Defines the key for the vertical relative coordinate connection
-   * point of an edge with its target terminal.
+   * The vertical relative coordinate connection point of an edge with
+   * its target terminal.
    */
   entryY?: number
 
   /**
-   * Defines the key for the horizontal offset of the connection point
-   * of an edge with its target terminal.
+   * The horizontal offset of the connection point of an edge with its
+   * target terminal.
    */
   entryDx?: number
 
   /**
-   * Defines the key for the vertical offset of the connection point
-   * of an edge with its target terminal.
+   * The vertical offset of the connection point of an edge with its
+   * target terminal.
    */
   entryDy?: number
 
   /**
    * Defines if the perimeter should be used to find the exact entry point
-   * along the perimeter of the source. Possible values are `false` and
-   * `true`.
+   * along the perimeter of the source.
    *
    * Default is `true`.
    */
@@ -85,8 +85,7 @@ export interface Style {
 
   /**
    * Defines if the perimeter should be used to find the exact entry point
-   * along the perimeter of the target. Possible values are `false` and
-   * `true`.
+   * along the perimeter of the target.
    *
    * Default is `true`.
    */
@@ -286,6 +285,21 @@ export interface Style {
   movable?: boolean
 
   /**
+   * This style specifies if a cell can be rotated.
+   */
+  rotatable?: boolean
+
+  /**
+   * This style specifies if a cell can be cloned.
+   */
+  cloneable?: boolean
+
+  /**
+   * This style specifies if a cell can be deleted.
+   */
+  deletable?: boolean
+
+  /**
    * This style specifies if a cell can be resized.
    */
   resizable?: boolean
@@ -306,23 +320,8 @@ export interface Style {
    */
   resizeHeight?: boolean
 
-  /**
-   * This style specifies if a cell can be rotated.
-   */
-  rotatable?: boolean
-
-  /**
-   * This style specifies if a cell can be cloned.
-   */
-  cloneable?: boolean
-
-  /**
-   * This style specifies if a cell can be deleted.
-   */
-  deletable?: boolean
-
   shape?: string
-  edge?: string
+  edge?: string | RoutingFunction | null
 
   /**
    * Jetty size is the minimum length of the orthogonal segment

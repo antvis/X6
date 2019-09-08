@@ -148,6 +148,13 @@ export function createElement(tagName: string, doc: Document = document) {
   return doc.createElement(tagName)
 }
 
+export function createSVGElement(tagName: string, doc: Document = document) {
+  return doc.createElementNS(
+    'http://www.w3.org/2000/svg',
+    tagName,
+  ) as SVGElement
+}
+
 export function removeElement(elem: Element | null) {
   if (elem && elem.parentNode) {
     elem.parentNode.removeChild(elem)

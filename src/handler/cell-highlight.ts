@@ -1,7 +1,7 @@
 import * as util from '../util'
 import { Graph, State, Model } from '../core'
 import { View } from '../core/view'
-import { constants, CustomMouseEvent } from '../common'
+import { constants, MouseEventEx } from '../common'
 import { Shape } from '../shape'
 import { Rectangle } from '../struct'
 import { BaseHandler } from './handler-base'
@@ -116,7 +116,7 @@ export class CellHighlight extends BaseHandler {
 
       shape.init(this.graph.view.getOverlayPane())
 
-      CustomMouseEvent.redirectMouseEvents(shape.elem!, this.graph, this.state)
+      MouseEventEx.redirectMouseEvents(shape.elem!, this.graph, this.state)
 
       return shape
     }

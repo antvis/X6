@@ -1,7 +1,8 @@
+
 import { Graph } from './graph'
-import { Perimeter } from '../stylesheet'
-import { Shapes } from '../struct'
 import { Style } from '../types'
+import { rectangle } from '../perimeter'
+import { ShapeNames, MarkerNames } from '../struct'
 
 const commonStyle: Style = {
   align: 'center',
@@ -21,16 +22,16 @@ export const defaultOptions: Graph.Options = {
 
   nodeStyle: {
     ...commonStyle,
-    shape: Shapes.rectangle,
-    perimeter: Perimeter.rectangle,
+    shape: ShapeNames.rectangle,
+    perimeter: rectangle,
     fill: '#f6edfc',
     stroke: '#712ed1',
   },
 
   edgeStyle: {
     ...commonStyle,
-    shape: Shapes.connector,
-    endArrow: Shapes.arrowClassic,
+    shape: ShapeNames.connector,
+    endArrow: MarkerNames.classic,
     stroke: '#8f8f8f',
   },
 

@@ -772,12 +772,13 @@ export class ViewportManager extends BaseManager {
    */
   sizeDidChange() {
     const bounds = this.graph.getGraphBounds()
+    const scale = this.view.scale
 
     if (this.container != null) {
       const border = this.graph.getBorder()
 
-      let width = Math.max(0, bounds.x + bounds.width + 2 * border * this.view.scale)
-      let height = Math.max(0, bounds.y + bounds.height + 2 * border * this.view.scale)
+      let width = Math.max(0, bounds.x + bounds.width + 2 * border * scale)
+      let height = Math.max(0, bounds.y + bounds.height + 2 * border * scale)
 
       if (this.graph.minimumContainerSize != null) {
         width = Math.max(width, this.graph.minimumContainerSize.width)
@@ -788,39 +789,46 @@ export class ViewportManager extends BaseManager {
         this.doResizeContainer(width, height)
       }
 
-      if (this.graph.preferPageSize || (!detector.IS_IE && this.graph.pageVisible)) {
-        const size = this.getPreferredPageSize(bounds, Math.max(1, width), Math.max(1, height))
+      if (
+        this.graph.preferPageSize ||
+        (!detector.IS_IE && this.graph.pageVisible)
+      ) {
+        const size = this.getPreferredPageSize(
+          bounds,
+          Math.max(1, width),
+          Math.max(1, height),
+        )
 
         if (size != null) {
-          width = size.width * this.view.scale
-          height = size.height * this.view.scale
+          width = size.width * scale
+          height = size.height * scale
         }
       }
 
       if (this.graph.minimumGraphSize != null) {
-        width = Math.max(width, this.graph.minimumGraphSize.width * this.view.scale)
-        height = Math.max(height, this.graph.minimumGraphSize.height * this.view.scale)
+        width = Math.max(width, this.graph.minimumGraphSize.width * scale)
+        height = Math.max(height, this.graph.minimumGraphSize.height * scale)
       }
 
       width = Math.ceil(width)
       height = Math.ceil(height)
 
       if (this.graph.dialect === 'svg') {
-        const root = (this.view.getDrawPane() as SVGGElement).ownerSVGElement
-        if (root != null) {
-          root.style.minWidth = `${Math.max(1, width)}px`
-          root.style.minHeight = `${Math.max(1, height)}px`
-          root.style.width = '100%'
-          root.style.height = '100%'
+        const svg = (this.view.getDrawPane() as SVGGElement).ownerSVGElement
+        if (svg != null) {
+          svg.style.minWidth = `${Math.max(1, width)}px`
+          svg.style.minHeight = `${Math.max(1, height)}px`
+          svg.style.width = '100%'
+          svg.style.height = '100%'
         }
       } else {
         if (detector.IS_QUIRKS) {
           // Quirks mode does not support minWidth/-Height
           this.view.updateHtmlStageSize(Math.max(1, width), Math.max(1, height))
         } else {
-          const canvas = this.view.getStage()!
-          canvas.style.minWidth = `${Math.max(1, width)}px`
-          canvas.style.minHeight = `${Math.max(1, height)}px`
+          const stage = this.view.getStage()!
+          stage.style.minWidth = `${Math.max(1, width)}px`
+          stage.style.minHeight = `${Math.max(1, height)}px`
         }
       }
 

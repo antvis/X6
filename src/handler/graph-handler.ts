@@ -1,12 +1,11 @@
 import * as util from '../util'
-import { detector, constants, CustomMouseEvent, DomEvent } from '../common'
-import { Graph, Cell, Model, State } from '../core'
+import { detector, constants, MouseEventEx, DomEvent } from '../common'
+import { Graph, Cell, Model, Feature } from '../core'
 import { Rectangle, Point } from '../struct'
 import { RectangleShape } from '../shape'
 import { Guide } from './guide'
 import { CellHighlight } from './cell-highlight'
 import { MouseHandler } from './handler-mouse'
-import { Feature } from '../core/feature'
 
 export class GraphHandler extends MouseHandler {
   /**
@@ -199,14 +198,14 @@ export class GraphHandler extends MouseHandler {
     }
   }
 
-  protected isDelayedSelection(cell: Cell | null, e: CustomMouseEvent) {
+  protected isDelayedSelection(cell: Cell | null, e: MouseEventEx) {
     return this.graph.isCellSelected(cell)
   }
 
   /**
    * Select the given cell and create a handle for it.
    */
-  mouseDown(e: CustomMouseEvent) {
+  mouseDown(e: MouseEventEx) {
     if (
       !e.isConsumed() && this.isEnabled() && this.graph.isEnabled() &&
       e.getState() != null && !DomEvent.isMultiTouchEvent(e.getEvent())
@@ -260,7 +259,7 @@ export class GraphHandler extends MouseHandler {
     }
   }
 
-  protected start(cell: Cell, e: CustomMouseEvent) {
+  protected start(cell: Cell, e: MouseEventEx) {
     this.cell = cell
     this.cells = this.getCells(cell, e.getEvent())
     this.origin = util.clientToGraph(
@@ -354,13 +353,13 @@ export class GraphHandler extends MouseHandler {
       parent,
     )
 
-    return this.graph.view.getCellStates(cells) as State[]
+    return this.graph.view.getCellStates(cells)
   }
 
   /**
    * Highlight possible drop targets and update the preview.
    */
-  mouseMove(e: CustomMouseEvent) {
+  mouseMove(e: MouseEventEx) {
     const graph = this.graph
 
     if (
@@ -452,7 +451,7 @@ export class GraphHandler extends MouseHandler {
     }
   }
 
-  protected shouldUpdateCursor(e: CustomMouseEvent) {
+  protected shouldUpdateCursor(e: MouseEventEx) {
     return (
       !e.isConsumed() &&
       !this.graph.eventloop.isMouseDown &&
@@ -462,7 +461,7 @@ export class GraphHandler extends MouseHandler {
     )
   }
 
-  protected setMovableCursor(e: CustomMouseEvent) {
+  protected setMovableCursor(e: MouseEventEx) {
     let cursor = this.graph.eventloop.getCursorForEvent(e)
     if (
       cursor == null &&
@@ -483,7 +482,7 @@ export class GraphHandler extends MouseHandler {
     }
   }
 
-  protected getDelta(e: CustomMouseEvent) {
+  protected getDelta(e: MouseEventEx) {
     const scale = this.graph.view.scale
     const point = util.clientToGraph(
       this.graph.container,
@@ -520,7 +519,7 @@ export class GraphHandler extends MouseHandler {
     return shape
   }
 
-  protected isGuideEnabledForEvent(e: CustomMouseEvent) {
+  protected isGuideEnabledForEvent(e: MouseEventEx) {
     return Feature.isGuideEnabled({
       e: e.getEvent(),
       graph: this.graph,
@@ -545,7 +544,7 @@ export class GraphHandler extends MouseHandler {
     }
   }
 
-  protected isClone(e: CustomMouseEvent) {
+  protected isClone(e: MouseEventEx) {
     return (
       this.graph.isCloneEvent(e.getEvent()) &&
       this.graph.isCellsCloneable() &&
@@ -553,7 +552,7 @@ export class GraphHandler extends MouseHandler {
     )
   }
 
-  protected updateDropTarget(e: CustomMouseEvent) {
+  protected updateDropTarget(e: MouseEventEx) {
     const graph = this.graph
     const cell = e.getCell()
     const clone = this.isClone(e)
@@ -613,7 +612,7 @@ export class GraphHandler extends MouseHandler {
   /**
    * Handles the event by applying the changes to the selection cells.
    */
-  mouseUp(e: CustomMouseEvent) {
+  mouseUp(e: MouseEventEx) {
     if (!e.isConsumed()) {
       if (
         this.cell && this.origin && this.previewShape &&
@@ -667,7 +666,7 @@ export class GraphHandler extends MouseHandler {
     this.reset()
   }
 
-  protected selectDelayed(e: CustomMouseEvent) {
+  protected selectDelayed(e: MouseEventEx) {
     if (
       !this.graph.isCellSelected(this.cell) ||
       !this.graph.popupMenuHandler.isPopupTrigger(e)
@@ -707,12 +706,10 @@ export class GraphHandler extends MouseHandler {
           DomEvent.getClientX(e),
           DomEvent.getClientY(e),
         )
-        const alpha = util.toRad(util.getRotation(pState))
-        if (alpha !== 0) {
-          const cos = Math.cos(-alpha)
-          const sin = Math.sin(-alpha)
+        const rot = util.getRotation(pState)
+        if (rot !== 0) {
           const cx = pState.bounds.getCenter()
-          pos = util.rotatePoint(pos, cos, sin, cx)
+          pos = util.rotatePoint(pos, -rot, cx)
         }
 
         return !pState.bounds.containsPoint(pos)

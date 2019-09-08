@@ -121,7 +121,7 @@ export class Geometry {
 
     if (!this.relative) {
       const ct = this.bounds.getCenter()
-      const pt = util.rotatePoint(ct, cos, sin, cx)
+      const pt = util.rotatePointEx(ct, cos, sin, cx)
 
       this.bounds.x = Math.round(pt.x - this.bounds.width / 2)
       this.bounds.y = Math.round(pt.y - this.bounds.height / 2)
@@ -243,7 +243,7 @@ namespace Private {
     sin: number,
     center: Point) {
     if (point != null) {
-      const p = util.rotatePoint(point, cos, sin, center)
+      const p = util.rotatePointEx(point, cos, sin, center)
       point.x = Math.round(p.x)
       point.y = Math.round(p.y)
     }

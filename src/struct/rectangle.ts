@@ -13,13 +13,6 @@ export class Rectangle {
     this.height = height == null ? 0 : height
   }
 
-  update(x: number, y: number, width: number, height: number) {
-    this.x = x
-    this.y = y
-    this.width = width
-    this.height = height
-  }
-
   getCenterX() {
     return this.x + this.width / 2
   }
@@ -49,6 +42,20 @@ export class Rectangle {
 
   getBottomLeft() {
     return new Point(this.x, this.y + this.height)
+  }
+
+  update(rect: Rectangle | Rectangle.RectangleLike): void
+  update(x: number, y: number, width: number, height: number): void
+  update(
+    x: number | Rectangle | Rectangle.RectangleLike,
+    y?: number, w?: number, h?: number,
+  ): void {
+    const b = typeof x === 'number' ? { x, y: y!, width: w!, height: h! } : x
+
+    this.x = b.x
+    this.y = b.y
+    this.width = b.width
+    this.height = b.height
   }
 
   containsPoint(x: number, y: number): boolean

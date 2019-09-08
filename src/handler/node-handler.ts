@@ -1,7 +1,7 @@
 import * as util from '../util'
 import { Cell, State, Graph } from '../core'
 import { Rectangle, Point, Image } from '../struct'
-import { constants, DomEvent, CustomMouseEvent, detector } from '../common'
+import { constants, DomEvent, MouseEventEx, detector } from '../common'
 import { Shape, RectangleShape, EllipseShape, ImageShape } from '../shape'
 import { MouseHandler } from './handler-mouse'
 import { EdgeHandler } from './edge-handler'
@@ -172,7 +172,7 @@ export class NodeHandler extends MouseHandler {
     this.selectionShape.rotation = util.getRotation(this.state)
     this.selectionShape.init(this.graph.view.getOverlayPane())
 
-    CustomMouseEvent.redirectMouseEvents(
+    MouseEventEx.redirectMouseEvents(
       this.selectionShape.elem!,
       this.graph,
       this.state,
@@ -292,7 +292,7 @@ export class NodeHandler extends MouseHandler {
   /**
    * Returns true if the aspect ratio of the cell should be maintained.
    */
-  protected isConstrained(e: CustomMouseEvent) {
+  protected isConstrained(e: MouseEventEx) {
     return (
       DomEvent.isShiftDown(e.getEvent()) ||
       this.state.style.aspect === true
@@ -303,7 +303,7 @@ export class NodeHandler extends MouseHandler {
    * Returns true if the center of the node should be maintained
    * during the resize.
    */
-  protected isCentered(state: State, e: CustomMouseEvent) {
+  protected isCentered(state: State, e: MouseEventEx) {
     return false
   }
 
@@ -393,7 +393,7 @@ export class NodeHandler extends MouseHandler {
       handle.className = `${this.graph.prefixCls}-${cursor}`
     }
 
-    CustomMouseEvent.redirectMouseEvents(handle.elem!, this.graph, this.state)
+    MouseEventEx.redirectMouseEvents(handle.elem!, this.graph, this.state)
 
     if (this.graph.isEnabled()) {
       handle.setCursor(cursor)
@@ -450,7 +450,7 @@ export class NodeHandler extends MouseHandler {
   /**
    * Returns the index of the handle for the given event.
    */
-  protected getHandleForEvent(e: CustomMouseEvent) {
+  protected getHandleForEvent(e: MouseEventEx) {
     // Connection highlight may consume events before they reach sizer handle
     const tol = DomEvent.isMouseEvent(e.getEvent()) ? 1 : this.tolerance
     const hit = (this.checkHandleBounds && (detector.IS_IE || tol > 0))
@@ -504,11 +504,11 @@ export class NodeHandler extends MouseHandler {
     return null
   }
 
-  protected isCustomHandleEvent(e: CustomMouseEvent) {
+  protected isCustomHandleEvent(e: MouseEventEx) {
     return true
   }
 
-  mouseDown(e: CustomMouseEvent, sender: any) {
+  mouseDown(e: MouseEventEx, sender: any) {
     const tol = DomEvent.isMouseEvent(e.getEvent()) ? 0 : this.tolerance
     if (
       !e.isConsumed() &&
@@ -620,7 +620,7 @@ export class NodeHandler extends MouseHandler {
     this.setHandlesVisible(false)
   }
 
-  protected checkTolerance(e: CustomMouseEvent) {
+  protected checkTolerance(e: MouseEventEx) {
     if (this.inTolerance && this.startX != null && this.startY != null) {
       if (
         DomEvent.isMouseEvent(e.getEvent()) ||
@@ -635,7 +635,7 @@ export class NodeHandler extends MouseHandler {
   /**
    * Hook for subclassers do show details while the handler is active.
    */
-  protected updateHint(e: CustomMouseEvent) { }
+  protected updateHint(e: MouseEventEx) { }
 
   /**
    * Hooks for subclassers to hide details when the handler gets inactive.
@@ -656,7 +656,7 @@ export class NodeHandler extends MouseHandler {
     return Math.round(length)
   }
 
-  mouseMove(e: CustomMouseEvent, sender: any) {
+  mouseMove(e: MouseEventEx, sender: any) {
     if (!e.isConsumed() && this.index != null) {
       this.checkTolerance(e)
 
@@ -686,7 +686,7 @@ export class NodeHandler extends MouseHandler {
     }
   }
 
-  protected moveLabel(e: CustomMouseEvent) {
+  protected moveLabel(e: MouseEventEx) {
     const point = new Point(e.getGraphX(), e.getGraphY())
     const trans = this.graph.view.translate
     const scale = this.graph.view.scale
@@ -705,7 +705,7 @@ export class NodeHandler extends MouseHandler {
     }
   }
 
-  protected rotateNode(e: CustomMouseEvent) {
+  protected rotateNode(e: MouseEventEx) {
     const point = new Point(e.getGraphX(), e.getGraphY())
     const dx = this.state.bounds.getCenterX() - point.x
     const dy = this.state.bounds.getCenterY() - point.y
@@ -743,7 +743,7 @@ export class NodeHandler extends MouseHandler {
     }
   }
 
-  protected resizeNode(e: CustomMouseEvent) {
+  protected resizeNode(e: MouseEventEx) {
     const point = new Point(e.getGraphX(), e.getGraphY())
     const trans = this.graph.view.translate
     const scale = this.graph.view.scale
@@ -895,7 +895,7 @@ export class NodeHandler extends MouseHandler {
     }
   }
 
-  protected updateLivePreview(e: CustomMouseEvent) {
+  protected updateLivePreview(e: MouseEventEx) {
     // TODO: Apply child offset to children in live preview
     const scale = this.graph.view.scale
     const trans = this.graph.view.translate
@@ -948,7 +948,7 @@ export class NodeHandler extends MouseHandler {
     this.state.setState(tempState)
   }
 
-  mouseUp(e: CustomMouseEvent, sender: any) {
+  mouseUp(e: MouseEventEx, sender: any) {
     if (this.index != null && this.state != null) {
       const point = new Point(e.getGraphX(), e.getGraphY())
       const index = this.index
@@ -1009,7 +1009,7 @@ export class NodeHandler extends MouseHandler {
     }
   }
 
-  protected isRecursiveResize(state: State, e: CustomMouseEvent) {
+  protected isRecursiveResize(state: State, e: MouseEventEx) {
     return this.graph.isRecursiveResize()
   }
 
@@ -1364,49 +1364,49 @@ export class NodeHandler extends MouseHandler {
           const da = Math.round(alpha * 4 / Math.PI)
 
           const ct = box.getCenter()
-          let pt = util.rotatePoint(new Point(box.x, box.y), cos, sin, ct)
+          let pt = util.rotatePointEx(new Point(box.x, box.y), cos, sin, ct)
           this.moveHandleTo(this.handles[0], pt.x, pt.y)
           this.handles[0].setCursor(cursors[util.mod(0 + da, cursors.length)])
 
           pt.x = cx
           pt.y = box.y
-          pt = util.rotatePoint(pt, cos, sin, ct)
+          pt = util.rotatePointEx(pt, cos, sin, ct)
           this.moveHandleTo(this.handles[1], pt.x, pt.y)
           this.handles[1].setCursor(cursors[util.mod(1 + da, cursors.length)])
 
           pt.x = right
           pt.y = box.y
-          pt = util.rotatePoint(pt, cos, sin, ct)
+          pt = util.rotatePointEx(pt, cos, sin, ct)
           this.moveHandleTo(this.handles[2], pt.x, pt.y)
           this.handles[2].setCursor(cursors[util.mod(2 + da, cursors.length)])
 
           pt.x = box.x
           pt.y = cy
-          pt = util.rotatePoint(pt, cos, sin, ct)
+          pt = util.rotatePointEx(pt, cos, sin, ct)
           this.moveHandleTo(this.handles[3], pt.x, pt.y)
           this.handles[3].setCursor(cursors[util.mod(7 + da, cursors.length)])
 
           pt.x = right
           pt.y = cy
-          pt = util.rotatePoint(pt, cos, sin, ct)
+          pt = util.rotatePointEx(pt, cos, sin, ct)
           this.moveHandleTo(this.handles[4], pt.x, pt.y)
           this.handles[4].setCursor(cursors[util.mod(3 + da, cursors.length)])
 
           pt.x = box.x
           pt.y = bottom
-          pt = util.rotatePoint(pt, cos, sin, ct)
+          pt = util.rotatePointEx(pt, cos, sin, ct)
           this.moveHandleTo(this.handles[5], pt.x, pt.y)
           this.handles[5].setCursor(cursors[util.mod(6 + da, cursors.length)])
 
           pt.x = cx
           pt.y = bottom
-          pt = util.rotatePoint(pt, cos, sin, ct)
+          pt = util.rotatePointEx(pt, cos, sin, ct)
           this.moveHandleTo(this.handles[6], pt.x, pt.y)
           this.handles[6].setCursor(cursors[util.mod(5 + da, cursors.length)])
 
           pt.x = right
           pt.y = bottom
-          pt = util.rotatePoint(pt, cos, sin, ct)
+          pt = util.rotatePointEx(pt, cos, sin, ct)
           this.moveHandleTo(this.handles[7], pt.x, pt.y)
           this.handles[7].setCursor(cursors[util.mod(4 + da, cursors.length)])
 
@@ -1435,15 +1435,11 @@ export class NodeHandler extends MouseHandler {
     }
 
     if (this.rotationShape != null) {
-      const alpha = util.toRad(this.currentAlpha != null
+      const rot = this.currentAlpha != null
         ? this.currentAlpha
-        : util.getRotation(this.state),
-      )
-      const cos = Math.cos(alpha)
-      const sin = Math.sin(alpha)
-
+        : util.getRotation(this.state)
       const ct = this.state.bounds.getCenter()
-      const pt = util.rotatePoint(this.getRotationHandlePosition(), cos, sin, ct)
+      const pt = util.rotatePoint(this.getRotationHandlePosition(), rot, ct)
 
       if (this.rotationShape.elem != null) {
         this.moveHandleTo(this.rotationShape, pt.x, pt.y)

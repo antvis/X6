@@ -17,6 +17,14 @@ export class Point {
     )
   }
 
+  add(x: number, y: number): void
+  add(p: Point | Point.PointLike): void
+  add(x: number | Point | Point.PointLike, y?: number) {
+    const p = typeof x === 'number' ? { x, y: y! } : x
+    this.x += p.x
+    this.y += p.y
+  }
+
   update(x: number = 0, y: number = 0) {
     this.x = x
     this.y = y
@@ -28,12 +36,7 @@ export class Point {
   }
 
   rotate(angle: number, center: Point = new Point()) {
-    const rad = util.toRad(angle)
-    const cos = Math.cos(rad)
-    const sin = Math.sin(rad)
-
-    const p = util.rotatePoint(this, cos, sin, center)
-
+    const p = util.rotatePoint(this, angle, center)
     this.x = p.x
     this.y = p.y
   }
@@ -41,6 +44,11 @@ export class Point {
   scalePoint(sx: number, sy: number = sx) {
     this.x *= sx
     this.y *= sy
+  }
+
+  round() {
+    this.x = Math.round(this.x)
+    this.y = Math.round(this.y)
   }
 
   clone() {

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Graph, Point, Constraint, Shapes, Perimeters } from '../../../src'
+import { Graph, Point, Constraint, ShapeNames, perimeters } from '../../../src'
 
 export class Constraints extends React.Component {
   private container: HTMLDivElement
@@ -32,8 +32,8 @@ export class Constraints extends React.Component {
         data: 'Triangle',
         x: 20, y: 20, width: 80, height: 60,
         style: {
-          shape: Shapes.triangle,
-          perimeter: Perimeters.triangle,
+          shape: ShapeNames.triangle,
+          perimeter: perimeters.triangle,
         },
       })
 
@@ -46,8 +46,8 @@ export class Constraints extends React.Component {
         data: 'Ellipse',
         x: 200, y: 150, width: 80, height: 60,
         style: {
-          shape: Shapes.ellipse,
-          perimeter: Perimeters.ellipse,
+          shape: ShapeNames.ellipse,
+          perimeter: perimeters.ellipse,
         },
       })
 

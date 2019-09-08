@@ -1,13 +1,13 @@
 import { CellMarker } from './cell-marker'
 import { IMouseHandler } from './handler-mouse'
 import { Graph, Cell } from '../core'
-import { CustomMouseEvent } from '../common'
+import { MouseEventEx } from '../common'
 
 export class CellTracker extends CellMarker implements IMouseHandler {
   constructor(
     graph: Graph,
     color: string,
-    getCell?: (e: CustomMouseEvent) => Cell,
+    getCell?: (e: MouseEventEx) => Cell,
   ) {
     super(graph, { validColor: color })
 
@@ -18,15 +18,15 @@ export class CellTracker extends CellMarker implements IMouseHandler {
     this.graph.addMouseListener(this)
   }
 
-  mouseDown(e: CustomMouseEvent, sender: any) { }
+  mouseDown(e: MouseEventEx, sender: any) { }
 
-  mouseMove(e: CustomMouseEvent, sender: any) {
+  mouseMove(e: MouseEventEx, sender: any) {
     if (this.isEnabled()) {
       this.process(e)
     }
   }
 
-  mouseUp(e: CustomMouseEvent, sender: any) { }
+  mouseUp(e: MouseEventEx, sender: any) { }
 
   dispose() {
     if (this.disposed) {

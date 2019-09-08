@@ -1,7 +1,7 @@
 import * as util from '../util'
 import { MouseHandler } from './handler-mouse'
 import { Graph } from '../core'
-import { CustomMouseEvent, DomEvent } from '../common'
+import { MouseEventEx, DomEvent } from '../common'
 
 export class PopupMenuHandler extends MouseHandler {
   useLeftButtonForPopup: boolean = false
@@ -41,14 +41,14 @@ export class PopupMenuHandler extends MouseHandler {
     this.graph.on(Graph.events.gesture, this.gestureHandler)
   }
 
-  isPopupTrigger(e: CustomMouseEvent) {
+  isPopupTrigger(e: MouseEventEx) {
     return e.isPopupTrigger() || (
       this.useLeftButtonForPopup &&
       DomEvent.isLeftMouseButton(e.getEvent())
     )
   }
 
-  mouseDown(e: CustomMouseEvent) {
+  mouseDown(e: MouseEventEx) {
     const evt = e.getEvent()
     if (this.isEnabled() && !DomEvent.isMultiTouchEvent(evt)) {
       const me = DomEvent.getMainEvent(evt) as MouseEvent
@@ -61,7 +61,7 @@ export class PopupMenuHandler extends MouseHandler {
     }
   }
 
-  mouseMove(e: CustomMouseEvent) {
+  mouseMove(e: MouseEventEx) {
     if (this.inTolerance && this.screenX != null && this.screenY != null) {
       const me = DomEvent.getMainEvent(e.getEvent()) as MouseEvent
       if (
@@ -73,7 +73,7 @@ export class PopupMenuHandler extends MouseHandler {
     }
   }
 
-  mouseUp(e: CustomMouseEvent) {
+  mouseUp(e: MouseEventEx) {
     if (this.validTrigger && this.inTolerance) {
       const cell = this.getCell(e)
 

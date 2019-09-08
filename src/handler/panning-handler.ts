@@ -1,7 +1,7 @@
 import * as util from '../util'
 import { MouseHandler } from './handler-mouse'
 import { Graph } from '../core'
-import { CustomMouseEvent, DomEvent } from '../common'
+import { MouseEventEx, DomEvent } from '../common'
 
 export class PanningHandler extends MouseHandler {
 
@@ -68,7 +68,7 @@ export class PanningHandler extends MouseHandler {
   private forcePanningHandler: (
     arg: {
       eventName: string,
-      e: CustomMouseEvent,
+      e: MouseEventEx,
     },
   ) => void
   private gestureHandler: (arg: { e: MouseEvent }) => void
@@ -79,7 +79,7 @@ export class PanningHandler extends MouseHandler {
   protected startY: number = 0
   protected active: boolean = false
   protected initialScale: number | null = null
-  protected mouseDownEvent: CustomMouseEvent | null
+  protected mouseDownEvent: MouseEventEx | null
   protected dx0: number
   protected dy0: number
   panningTrigger: boolean
@@ -176,7 +176,7 @@ export class PanningHandler extends MouseHandler {
   /**
    * Returns true if the given event should start panning.
    */
-  protected isForcePanningEvent(e: CustomMouseEvent) {
+  protected isForcePanningEvent(e: MouseEventEx) {
     return this.ignoreCell || DomEvent.isMultiTouchEvent(e.getEvent())
   }
 
@@ -184,7 +184,7 @@ export class PanningHandler extends MouseHandler {
    * Returns true if the given event is a panning trigger for the
    * optional given cell.
    */
-  protected isPanningTrigger(e: CustomMouseEvent) {
+  protected isPanningTrigger(e: MouseEventEx) {
     const evt = e.getEvent()
 
     return (
@@ -203,7 +203,7 @@ export class PanningHandler extends MouseHandler {
     return this.active || this.initialScale != null
   }
 
-  mouseDown(e: CustomMouseEvent) {
+  mouseDown(e: MouseEventEx) {
     this.mouseDownEvent = e
 
     if (
@@ -220,7 +220,7 @@ export class PanningHandler extends MouseHandler {
   /**
    * Starts panning at the given event.
    */
-  protected start(e: CustomMouseEvent) {
+  protected start(e: MouseEventEx) {
     this.startX = e.getClientX()
     this.startY = e.getClientY()
     this.dx = null
@@ -234,7 +234,7 @@ export class PanningHandler extends MouseHandler {
   /**
    * Handles the event by updating the panning on the graph.
    */
-  mouseMove(e: CustomMouseEvent) {
+  mouseMove(e: MouseEventEx) {
     this.dx = e.getClientX() - this.startX
     this.dy = e.getClientY() - this.startY
 
@@ -274,7 +274,7 @@ export class PanningHandler extends MouseHandler {
    * Handles the event by setting the translation on the view or showing the
    * popupmenu.
    */
-  mouseUp(e: CustomMouseEvent) {
+  mouseUp(e: MouseEventEx) {
     if (this.active) {
       if (this.dx != null && this.dy != null) {
         // Ignores if scrollbars have been used for panning

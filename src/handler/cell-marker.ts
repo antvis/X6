@@ -1,6 +1,6 @@
 import * as util from '../util'
 import { Graph, State, Cell } from '../core'
-import { constants, CustomMouseEvent } from '../common'
+import { constants, MouseEventEx } from '../common'
 import { BaseHandler } from './handler-base'
 import { CellHighlight } from './cell-highlight'
 
@@ -74,7 +74,7 @@ export class CellMarker extends BaseHandler {
     }
   }
 
-  process(e: CustomMouseEvent) {
+  process(e: MouseEventEx) {
     let state = null
     if (this.isEnabled()) {
       state = this.getState(e)
@@ -89,7 +89,7 @@ export class CellMarker extends BaseHandler {
    */
   setCurrentState(
     state: State | null,
-    e: CustomMouseEvent,
+    e: MouseEventEx,
     color?: string,
   ) {
     const isValid = state ? this.isValidState(state) : false
@@ -149,14 +149,14 @@ export class CellMarker extends BaseHandler {
     return isValid ? this.validColor : this.invalidColor
   }
 
-  getState(e: CustomMouseEvent) {
+  getState(e: MouseEventEx) {
     const cell = this.getCell(e)
     const state = this.getStateToMark(this.graph.view.getState(cell))
 
     return (state != null && this.intersects(state, e)) ? state : null
   }
 
-  getCell(e: CustomMouseEvent) {
+  getCell(e: MouseEventEx) {
     return e.getCell()
   }
 
@@ -164,7 +164,7 @@ export class CellMarker extends BaseHandler {
     return state
   }
 
-  intersects(state: State, e: CustomMouseEvent) {
+  intersects(state: State, e: MouseEventEx) {
     if (this.hotspotable) {
       return util.intersectsHotspot(
         state,

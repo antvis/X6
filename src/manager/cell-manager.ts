@@ -1,11 +1,10 @@
 import * as util from '../util'
+import * as routers from '../router'
 import { constants } from '../common'
 import { BaseManager } from './manager-base'
-import { EdgeStyle } from '../stylesheet'
 import { Graph, Cell, Geometry, State } from '../core'
 import { Style, Align, VAlign } from '../types'
-import { Point, Rectangle, Overlay, Image, Shapes, Constraint } from '../struct'
-
+import { Point, Rectangle, Overlay, Image, ShapeNames, Constraint } from '../struct'
 export class CellManager extends BaseManager {
   constructor(graph: Graph) {
     super(graph)
@@ -955,107 +954,6 @@ export class CellManager extends BaseManager {
     }
   }
 
-  /**
-   * Returns the nearest point in the list of absolute points
-   * or the center of the opposite terminal.
-   */
-  getConnectionPoint(
-    terminalState: State,
-    constraint: Constraint,
-    round: boolean = true,
-  ) {
-    let result: Point | null = null
-
-    if (terminalState != null && constraint.point != null) {
-      const direction = terminalState.style.direction
-      const bounds = this.view.getPerimeterBounds(terminalState)
-      const cx = bounds.getCenter()
-
-      let r1 = 0
-
-      if (
-        direction != null &&
-        terminalState.style.anchorPointDirection !== false
-      ) {
-        if (direction === 'north') {
-          r1 += 270
-        } else if (direction === 'west') {
-          r1 += 180
-        } else if (direction === 'south') {
-          r1 += 90
-        }
-
-        // Bounds need to be rotated by 90 degrees for further computation
-        if (
-          direction === 'north' ||
-          direction === 'south'
-        ) {
-          bounds.rotate90()
-        }
-      }
-
-      const scale = this.view.scale
-
-      result = new Point(
-        bounds.x + constraint.point.x * bounds.width + constraint.dx * scale,
-        bounds.y + constraint.point.y * bounds.height + constraint.dy * scale,
-      )
-
-      // Rotation for direction before projection on perimeter
-      let r2 = terminalState.style.rotation || 0
-
-      if (constraint.perimeter) {
-        if (r1 !== 0) {
-          // Only 90 degrees steps possible here so no trig needed
-          let cos = 0
-          let sin = 0
-
-          if (r1 === 90) {
-            sin = 1
-          } else if (r1 === 180) {
-            cos = -1
-          } else if (r1 === 270) {
-            sin = -1
-          }
-          result = util.rotatePoint(result, cos, sin, cx)
-        }
-
-        result = this.view.getPerimeterPoint(terminalState, result, false)
-
-      } else {
-        r2 += r1
-
-        if (this.model.isNode(terminalState.cell)) {
-          const flipH = terminalState.style.flipH === true
-          const flipV = terminalState.style.flipV === true
-
-          if (flipH) {
-            result.x = 2 * bounds.getCenterX() - result.x
-          }
-
-          if (flipV) {
-            result.y = 2 * bounds.getCenterY() - result.y
-          }
-        }
-      }
-
-      // Generic rotation after projection on perimeter
-      if (r2 !== 0 && result != null) {
-        const rad = util.toRad(r2)
-        const cos = Math.cos(rad)
-        const sin = Math.sin(rad)
-        result = util.rotatePoint(result, cos, sin, cx)
-      }
-    }
-
-    if (round && result != null) {
-      result.x = Math.round(result.x)
-      result.y = Math.round(result.y)
-    }
-
-    return result
-  }
-
   getOutlineConstraint(point: Point, terminalState: State, me: any) {
     if (terminalState.shape != null) {
       const bounds = this.view.getPerimeterBounds(terminalState)
@@ -1069,15 +967,11 @@ export class CellManager extends BaseManager {
         bounds.height = tmp
       }
 
-      const alpha = util.toRad(terminalState.shape.getShapeRotation())
-
-      if (alpha !== 0) {
-        const cos = Math.cos(-alpha)
-        const sin = Math.sin(-alpha)
-
+      const rot = terminalState.shape.getShapeRotation()
+      if (rot !== 0) {
         const ct = new Point(bounds.getCenterX(), bounds.getCenterY())
         // tslint:disable-next-line
-        point = util.rotatePoint(point, cos, sin, ct)
+        point = util.rotatePoint(point, -rot, ct)
       }
 
       let sx = 1
@@ -1139,12 +1033,12 @@ export class CellManager extends BaseManager {
 
     const tmp = this.view.getEdgeFunction(state)
     return (
-      tmp === EdgeStyle.segmentConnector ||
-      tmp === EdgeStyle.elbowConnector ||
-      tmp === EdgeStyle.sideToSide ||
-      tmp === EdgeStyle.topToBottom ||
-      tmp === EdgeStyle.entityRelation ||
-      tmp === EdgeStyle.orthConnector
+      tmp === routers.segmentConnector ||
+      tmp === routers.elbowConnector ||
+      tmp === routers.sideToSide ||
+      tmp === routers.topToBottom ||
+      tmp === routers.entityRelation ||
+      tmp === routers.orthConnector
     )
   }
 
@@ -1252,7 +1146,7 @@ export class CellManager extends BaseManager {
 
       // Adds dimension of image if shape is a label
       if (this.getImage(state) != null || style.image != null) {
-        if (style.shape === Shapes.label) {
+        if (style.shape === ShapeNames.label) {
           if (style.verticalAlign === 'middle') {
             dx += style.imageWidth || 0
           }
@@ -1837,20 +1731,15 @@ export class CellManager extends BaseManager {
 
       if (geo.relative && !this.model.isEdge(cell)) {
         const parent = this.model.getParent(cell)!
-        let angle = 0
+        let rot = 0
 
         if (this.model.isNode(parent)) {
           const style = this.graph.getStyle(parent)
-          angle = style.rotation || 0
+          rot = style.rotation || 0
         }
 
-        if (angle !== 0) {
-          const rad = util.toRad(-angle)
-          const cos = Math.cos(rad)
-          const sin = Math.sin(rad)
-          const pt = util.rotatePoint(
-            new Point(dx, dy), cos, sin, new Point(0, 0),
-          )
+        if (rot !== 0) {
+          const pt = util.rotatePoint(new Point(dx, dy), -rot, new Point(0, 0))
           dx = pt.x // tslint:disable-line
           dy = pt.y // tslint:disable-line
         }
@@ -2257,8 +2146,8 @@ export class CellManager extends BaseManager {
   getCellStyle(cell: Cell | null) {
     if (cell != null) {
       const defaultStyle = this.model.isEdge(cell)
-        ? this.graph.styleSheet.getDefaultEdgeStyle()
-        : this.graph.styleSheet.getDefaultNodeStyle()
+        ? this.graph.options.edgeStyle
+        : this.graph.options.nodeStyle
 
       const style = this.model.getStyle(cell) || {}
       return {
@@ -2523,12 +2412,10 @@ export class CellManager extends BaseManager {
           pt = next
         }
       } else {
-        const alpha = util.toRad(util.getRotation(state))
-        if (alpha !== 0) {
-          const cos = Math.cos(-alpha)
-          const sin = Math.sin(-alpha)
+        const rot = util.getRotation(state)
+        if (rot !== 0) {
           const cx = state.bounds.getCenter()
-          const pt = util.rotatePoint(new Point(x, y), cos, sin, cx)
+          const pt = util.rotatePoint(new Point(x, y), -rot, cx)
           if (state.bounds.containsPoint(pt)) {
             return true
           }

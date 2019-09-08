@@ -2,7 +2,7 @@ import * as util from '../util'
 import { Graph, State } from '../core'
 import { Shape, ImageShape, RectangleShape } from '../shape'
 import { Rectangle, Point, Image } from '../struct'
-import { CustomMouseEvent, constants } from '../common'
+import { MouseEventEx, constants } from '../common'
 
 export class Handle {
   graph: Graph
@@ -67,7 +67,7 @@ export class Handle {
       }
     }
 
-    CustomMouseEvent.redirectMouseEvents(
+    MouseEventEx.redirectMouseEvents(
       this.shape.elem!,
       this.graph,
       this.state,
@@ -80,7 +80,7 @@ export class Handle {
     throw new Error('Method not implemented.')
   }
 
-  setPosition(bounds: Rectangle, p: Point, e: CustomMouseEvent) {
+  setPosition(bounds: Rectangle, p: Point, e: MouseEventEx) {
     throw new Error('Method not implemented.')
   }
 
@@ -96,7 +96,7 @@ export class Handle {
     )
   }
 
-  processEvent(e: CustomMouseEvent) {
+  processEvent(e: MouseEventEx) {
     const scale = this.graph.view.scale
     const tr = this.graph.view.translate
     let pt = new Point(
@@ -203,13 +203,10 @@ export class Handle {
   /**
    * Rotates the point by the given angle.
    */
-  protected rotatePoint(pt: Point, alpha: number) {
+  protected rotatePoint(pt: Point, deg: number) {
     const bounds = this.state.getCellBounds()
     const cx = bounds.getCenter()
-    const cos = Math.cos(alpha)
-    const sin = Math.sin(alpha)
-
-    return util.rotatePoint(pt, cos, sin, cx)
+    return util.rotatePoint(pt, deg, cx)
   }
 
   /**

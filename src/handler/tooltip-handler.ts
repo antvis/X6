@@ -1,7 +1,7 @@
 import * as util from '../util'
 import { MouseHandler } from './handler-mouse'
 import { Graph, State } from '../core'
-import { DomEvent, CustomMouseEvent } from '../common'
+import { DomEvent, MouseEventEx } from '../common'
 
 export class TooltipHandler extends MouseHandler {
   /**
@@ -40,12 +40,12 @@ export class TooltipHandler extends MouseHandler {
     this.graph.addMouseListener(this)
   }
 
-  mouseDown(e: CustomMouseEvent) {
+  mouseDown(e: MouseEventEx) {
     this.reset(e, false)
     this.hideTooltip()
   }
 
-  mouseMove(e: CustomMouseEvent) {
+  mouseMove(e: MouseEventEx) {
     const clientX = e.getClientX()
     const clientY = e.getClientY()
 
@@ -76,7 +76,7 @@ export class TooltipHandler extends MouseHandler {
     this.lastY = e.getClientY()
   }
 
-  mouseUp(e: CustomMouseEvent) {
+  mouseUp(e: MouseEventEx) {
     this.reset(e, true)
     this.hideTooltip()
   }
@@ -127,7 +127,7 @@ export class TooltipHandler extends MouseHandler {
   }
 
   protected reset(
-    e: CustomMouseEvent,
+    e: MouseEventEx,
     restart: boolean = false,
     state: State | null = null,
   ) {

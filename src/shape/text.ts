@@ -273,9 +273,7 @@ export class Text extends Shape {
       )
     ) {
       if (util.getNodeName(this.elem!) === 'div' && this.isHtmlAllowed()) {
-        this.updateSize(
-          this.elem as HTMLElement,
-          (this.state == null || this.state.view.textDiv == null))
+        this.updateSize(this.elem as HTMLElement, this.state == null)
         this.updateHtmlTransform()
         this.updateBoundingBox()
       } else {
@@ -429,17 +427,6 @@ export class Text extends Shape {
           ow = this.offsetWidth * this.scale
           oh = this.offsetHeight * this.scale
         } else {
-          const td = (this.state != null) ? this.state.view.textDiv : null
-          // Cannot get node size while container hidden so a
-          // shared temporary DIV is used for text measuring
-          if (td != null) {
-            this.updateFont(td)
-            this.updateSize(td, false)
-            this.updateInnerHtml(td)
-
-            elem = td
-          }
-
           let sizeDiv = elem as HTMLDivElement
           if (
             sizeDiv.firstChild != null &&
@@ -542,10 +529,7 @@ export class Text extends Shape {
 
     this.updateValue()
     this.updateFont(this.elem as HTMLElement)
-    this.updateSize(
-      this.elem as HTMLElement,
-      (this.state == null || this.state.view.textDiv == null),
-    )
+    this.updateSize(this.elem as HTMLElement, this.state == null)
 
     this.offsetWidth = null
     this.offsetHeight = null

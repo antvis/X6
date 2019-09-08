@@ -16,9 +16,9 @@ export class CurrentRootChange implements IChange {
     this.isUp = root == null
 
     if (!this.isUp) {
-      let tmp = view.currentRoot
       const model = view.graph.getModel()
 
+      let tmp = view.currentRoot
       while (tmp != null) {
         if (tmp === root) {
           this.isUp = true
@@ -34,9 +34,9 @@ export class CurrentRootChange implements IChange {
     this.view.currentRoot = this.previous
     this.previous = tmp
 
-    const translate = this.view.graph.getTranslateForRoot(this.view.currentRoot)
-    if (translate != null) {
-      this.view.translate = new Point(-translate.x, -translate.y)
+    const t = this.view.graph.getTranslateForCurrentRoot(this.view.currentRoot)
+    if (t != null) {
+      this.view.translate = new Point(-t.x, -t.y)
     }
 
     if (this.isUp) {
@@ -48,8 +48,8 @@ export class CurrentRootChange implements IChange {
 
     const name = this.isUp ? View.events.up : View.events.down
     this.view.trigger(name, {
-      root: this.view.currentRoot,
       previous: this.previous,
+      currentRoot: this.view.currentRoot,
     })
     this.isUp = !this.isUp
   }

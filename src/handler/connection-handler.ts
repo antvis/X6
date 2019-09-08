@@ -2,7 +2,7 @@ import * as util from '../util'
 import { Graph, Model, Cell, State, Geometry } from '../core'
 import { View } from '../core/view'
 import { Rectangle, Point, Image, Constraint } from '../struct'
-import { constants, DomEvent, CustomMouseEvent } from '../common'
+import { constants, DomEvent, MouseEventEx } from '../common'
 import { Shape, ImageShape, Polyline } from '../shape'
 import { CellMarker } from './cell-marker'
 import { Style } from '../types'
@@ -241,7 +241,7 @@ export class ConnectionHandler extends MouseHandler {
     shape.dashed = true
     shape.init(this.graph.getView().getOverlayPane())
 
-    CustomMouseEvent.redirectMouseEvents(shape.elem!, this.graph, null)
+    MouseEventEx.redirectMouseEvents(shape.elem!, this.graph, null)
 
     return shape
   }
@@ -256,7 +256,7 @@ export class ConnectionHandler extends MouseHandler {
 
     // Overrides to return cell at location only if valid (so that
     // there is no highlight for invalid cells)
-    marker.getCell = (e: CustomMouseEvent) => {
+    marker.getCell = (e: MouseEventEx) => {
       let cell = CellMarker.prototype.getCell.call(marker, e)
       this.error = null
 
@@ -367,7 +367,7 @@ export class ConnectionHandler extends MouseHandler {
     return this.first != null && this.shape != null
   }
 
-  isValidSource(cell: Cell, e: CustomMouseEvent) {
+  isValidSource(cell: Cell, e: MouseEventEx) {
     return this.graph.isValidSource(cell)
   }
 
@@ -461,12 +461,12 @@ export class ConnectionHandler extends MouseHandler {
         if (!DomEvent.isConsumed(evt)) {
           this.icon = icon
           this.graph.fireMouseEvent(
-            DomEvent.MOUSE_DOWN, new CustomMouseEvent(evt, getState()),
+            DomEvent.MOUSE_DOWN, new MouseEventEx(evt, getState()),
           )
         }
       }
 
-      CustomMouseEvent.redirectMouseEvents(
+      MouseEventEx.redirectMouseEvents(
         icon.elem!, this.graph, getState, mouseDown,
       )
 
@@ -499,12 +499,10 @@ export class ConnectionHandler extends MouseHandler {
       cx = (size.width !== 0) ? state.bounds.x + size.width * scale / 2 : cx
       cy = (size.height !== 0) ? state.bounds.y + size.height * scale / 2 : cy
 
-      const alpha = util.toRad(util.getRotation(state))
-      if (alpha !== 0) {
-        const cos = Math.cos(alpha)
-        const sin = Math.sin(alpha)
+      const rot = util.getRotation(state)
+      if (rot !== 0) {
         const ct = state.bounds.getCenter()
-        const pt = util.rotatePoint(new Point(cx, cy), cos, sin, ct)
+        const pt = util.rotatePoint(new Point(cx, cy), rot, ct)
         cx = pt.x
         cy = pt.y
       }
@@ -536,7 +534,7 @@ export class ConnectionHandler extends MouseHandler {
    * <constraintHandler> are not null, or <previous> and <error> are not null and
    * <icons> is null or <icons> and <icon> are not null.
    */
-  isStartEvent(e: CustomMouseEvent) {
+  isStartEvent(e: MouseEventEx) {
     return (
       (
         this.constraintHandler.currentFocus != null &&
@@ -555,7 +553,7 @@ export class ConnectionHandler extends MouseHandler {
   /**
    * Handles the event by initiating a new connection.
    */
-  mouseDown(e: CustomMouseEvent) {
+  mouseDown(e: MouseEventEx) {
     this.mouseDownCounter += 1
 
     if (
@@ -615,7 +613,7 @@ export class ConnectionHandler extends MouseHandler {
   /**
    * Hook to return an <mxCellState> which may be used during the preview.
    */
-  createEdgeState(e: CustomMouseEvent | null): State | null {
+  createEdgeState(e: MouseEventEx | null): State | null {
     return null
   }
 
@@ -623,7 +621,7 @@ export class ConnectionHandler extends MouseHandler {
    * Returns true if <outlineConnect> is true and the source of the event is the outline shape
    * or shift is pressed.
    */
-  isOutlineConnectEvent(e: CustomMouseEvent) {
+  isOutlineConnectEvent(e: MouseEventEx) {
     const offset = util.getOffset(this.graph.container)
     const evt = e.getEvent()
 
@@ -663,7 +661,7 @@ export class ConnectionHandler extends MouseHandler {
    * Updates the current state for a given mouse move event by using
    * the <marker>.
    */
-  updateCurrentState(e: CustomMouseEvent, point: Point) {
+  updateCurrentState(e: MouseEventEx, point: Point) {
     this.constraintHandler.update(
       e,
       this.first == null,
@@ -790,7 +788,7 @@ export class ConnectionHandler extends MouseHandler {
    * Called to snap the given point to the current preview. This snaps to the
    * first point of the preview if alt is not pressed.
    */
-  snapToPreview(e: CustomMouseEvent, point: Point) {
+  snapToPreview(e: MouseEventEx, point: Point) {
     if (!DomEvent.isAltDown(e.getEvent()) && this.previous != null) {
       const tol = this.graph.gridSize * this.graph.view.scale / 2
       const tmp = this.sourceConstraint
@@ -811,7 +809,7 @@ export class ConnectionHandler extends MouseHandler {
    * Handles the event by updating the preview edge or by highlighting
    * a possible source or target terminal.
    */
-  mouseMove(e: CustomMouseEvent) {
+  mouseMove(e: MouseEventEx) {
     if (
       !e.isConsumed() &&
       (this.ignoreMouseDown || this.first != null || !this.graph.eventloop.isMouseDown)
@@ -1104,7 +1102,10 @@ export class ConnectionHandler extends MouseHandler {
       }
     }
 
-    this.graph.view.updatePoints(this.edgeState!, realPoints!, this.previous!, this.currentState!)
+    this.graph.view.updateRouterPoints(
+      this.edgeState!, realPoints!, this.previous!, this.currentState!,
+    )
+
     this.graph.view.updateFloatingTerminalPoints(
       this.edgeState!, this.previous!, this.currentState!,
     )
@@ -1117,7 +1118,7 @@ export class ConnectionHandler extends MouseHandler {
    * state - <mxCellState> that represents the target cell state.
    * me - <mxMouseEvent> that represents the mouse move.
    */
-  getTargetPerimeterPoint(state: State, e: CustomMouseEvent) {
+  getTargetPerimeterPoint(state: State, e: MouseEventEx) {
     let result = null
     const view = state.view
     const targetPerimeter = view.getPerimeterFunction(state)
@@ -1128,7 +1129,7 @@ export class ConnectionHandler extends MouseHandler {
         : this.previous!.bounds.getCenter()
 
       const tmp = targetPerimeter(
-        view.getPerimeterBounds(state), this.edgeState, next, false,
+        view.getPerimeterBounds(state), this.edgeState!, next, false,
       )
 
       if (tmp != null) {
@@ -1151,26 +1152,26 @@ export class ConnectionHandler extends MouseHandler {
    * next - <Point> that represents the next point along the previewed edge.
    * me - <mxMouseEvent> that represents the mouse move.
    */
-  getSourcePerimeterPoint(state: State, next: Point, me: CustomMouseEvent) {
+  getSourcePerimeterPoint(state: State, next: Point, me: MouseEventEx) {
     let result = null
     const view = state.view
     const sourcePerimeter = view.getPerimeterFunction(state)
     const c = state.bounds.getCenter()
 
     if (sourcePerimeter != null) {
-      const theta = util.getRotation(state)
-      const rad = -theta * (Math.PI / 180)
-
-      if (theta !== 0) {
+      const rot = util.getRotation(state)
+      if (rot !== 0) {
         // tslint:disable-next-line
-        next = util.rotatePoint(new Point(next.x, next.y), Math.cos(rad), Math.sin(rad), c)
+        next = util.rotatePoint(new Point(next.x, next.y), -rot, c)
       }
 
-      let tmp = sourcePerimeter(view.getPerimeterBounds(state), state, next, false)
+      let tmp = sourcePerimeter(
+        view.getPerimeterBounds(state), state, next, false,
+      )
 
       if (tmp != null) {
-        if (theta !== 0) {
-          tmp = util.rotatePoint(new Point(tmp.x, tmp.y), Math.cos(-rad), Math.sin(-rad), c)
+        if (rot !== 0) {
+          tmp = util.rotatePoint(new Point(tmp.x, tmp.y), rot, c)
         }
 
         result = tmp
@@ -1192,7 +1193,7 @@ export class ConnectionHandler extends MouseHandler {
    * icons - Array of currently displayed icons.
    * me - <mxMouseEvent> that contains the mouse event.
    */
-  updateIcons(state: State, icons: ImageShape[], e: CustomMouseEvent) {
+  updateIcons(state: State, icons: ImageShape[], e: MouseEventEx) {
     // empty
   }
 
@@ -1202,14 +1203,14 @@ export class ConnectionHandler extends MouseHandler {
    * called if <waypointsEnabled> is true. This implemtation returns true
    * if there is a cell state in the given event.
    */
-  isStopEvent(e: CustomMouseEvent) {
+  isStopEvent(e: MouseEventEx) {
     return e.getState() != null
   }
 
   /**
    * Adds the waypoint for the given event to <waypoints>.
    */
-  addWaypointForEvent(e: CustomMouseEvent) {
+  addWaypointForEvent(e: MouseEventEx) {
     const point = util.clientToGraph(this.graph.container, e.getClientX(), e.getClientY())
     const dx = Math.abs(point.x - this.first!.x)
     const dy = Math.abs(point.y - this.first!.y)
@@ -1246,7 +1247,7 @@ export class ConnectionHandler extends MouseHandler {
   /**
    * Handles the event by inserting the new connection.
    */
-  mouseUp(e: CustomMouseEvent) {
+  mouseUp(e: MouseEventEx) {
     if (!e.isConsumed() && this.isConnecting()) {
       if (this.waypointsEnabled && !this.isStopEvent(e)) {
         this.addWaypointForEvent(e)

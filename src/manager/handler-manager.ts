@@ -1,4 +1,5 @@
 import * as util from '../util'
+import * as routers from '../router'
 import { Graph, State } from '../core'
 import { BaseManager } from './manager-base'
 import {
@@ -14,7 +15,6 @@ import {
   EdgeSegmentHandler,
   RubberbandHandler,
 } from '../handler'
-import { EdgeStyle } from '../stylesheet'
 
 export class HandlerManager extends BaseManager {
   private inited: boolean = false
@@ -129,15 +129,15 @@ export class HandlerManager extends BaseManager {
     let result = null
 
     if (
-      edgeFn === EdgeStyle.loop ||
-      edgeFn === EdgeStyle.elbowConnector ||
-      edgeFn === EdgeStyle.sideToSide ||
-      edgeFn === EdgeStyle.topToBottom
+      edgeFn === routers.loop ||
+      edgeFn === routers.elbowConnector ||
+      edgeFn === routers.sideToSide ||
+      edgeFn === routers.topToBottom
     ) {
       result = this.createElbowEdgeHandler(state)
     } else if (
-      edgeFn === EdgeStyle.segmentConnector ||
-      edgeFn === EdgeStyle.orthConnector
+      edgeFn === routers.segmentConnector ||
+      edgeFn === routers.orthConnector
     ) {
       result = this.createEdgeSegmentHandler(state)
     } else {

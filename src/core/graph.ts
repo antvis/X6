@@ -1,5 +1,6 @@
 import * as util from '../util'
 import * as images from '../assets/images'
+import * as routers from '../router'
 import { Cell } from './cell'
 import { View } from './view'
 import { Model } from './model'
@@ -7,16 +8,15 @@ import { State } from './state'
 import { Feature } from './feature'
 import { Geometry } from './geometry'
 import { Renderer } from './renderer'
-import { StyleSheet, EdgeStyle } from '../stylesheet'
 import { Align, VAlign, Style, Dialect } from '../types'
-import { constants, detector, DomEvent, CustomMouseEvent, Disablable } from '../common'
+import { constants, detector, DomEvent, MouseEventEx, Disablable } from '../common'
 import {
   Rectangle,
   Point,
   Constraint,
   Image,
   Overlay,
-  Shapes,
+  ShapeNames,
   PageSize,
   Multiplicity,
   CellPath,
@@ -49,7 +49,6 @@ export class Graph extends Disablable {
   public readonly container: HTMLElement
   public readonly model: Model
   public readonly view: View
-  public readonly styleSheet: StyleSheet
   public readonly renderer: Renderer
 
   public readonly cellEditor: CellEditor
@@ -325,7 +324,7 @@ export class Graph extends Disablable {
    */
   resetEdgesOnConnect: boolean = true
 
-  defaultLoopStyle = EdgeStyle.loop
+  defaultLoopStyle = routers.loop
 
   /**
    * The attribute used to find the color for the indicator if the indicator
@@ -355,7 +354,6 @@ export class Graph extends Disablable {
     this.options = Feature.get(options)
     this.container = container
     this.model = options.model || this.createModel()
-    this.styleSheet = options.styleSheet || this.createStyleSheet()
     this.view = this.createView()
     this.renderer = this.createRenderer()
     this.selection = this.createSelection()
@@ -401,10 +399,6 @@ export class Graph extends Disablable {
     return this.view
   }
 
-  getStylesheet() {
-    return this.styleSheet
-  }
-
   protected createModel() {
     return (
       util.call(this.options.createModel, this, this) ||
@@ -416,13 +410,6 @@ export class Graph extends Disablable {
     return (
       util.call(this.options.createView, this, this) ||
       new View(this)
-    )
-  }
-
-  protected createStyleSheet() {
-    return (
-      util.call(this.options.createStyleSheet, this, this) ||
-      new StyleSheet()
     )
   }
 
@@ -1287,7 +1274,7 @@ export class Graph extends Disablable {
    * Returns the offset to be used for the cells inside the given cell.
    */
   @hook()
-  getChildOffsetForCell(cell: Cell): Point | null {
+  getChildOffset(cell: Cell): Point | null {
     return null
   }
 
@@ -1314,21 +1301,19 @@ export class Graph extends Disablable {
   }
 
   /**
-   * Returns the translation to be used if the given cell is the root cell as
-   * an <Point>. This implementation returns null.
+   * Returns the translation to be used in view.
    *
    * Example:
    *
-   * To keep the children at their absolute position while stepping into groups,
-   * this function can be overridden as follows.
+   * To keep the children at their absolute position while stepping
+   * into groups, this function can be overridden as follows.
    *
-   * (code)
-   * var offset = new Point(0, 0);
+   * ```
+   * const offset = new Point(0, 0);
    *
    * while (cell != null)
    * {
-   *   var geo = this.model.getGeometry(cell);
-   *
+   *   const geo = this.model.getGeometry(cell);
    *   if (geo != null)
    *   {
    *     offset.x -= geo.x;
@@ -1339,14 +1324,11 @@ export class Graph extends Disablable {
    * }
    *
    * return offset;
-   * (end)
-   *
-   * Parameters:
-   *
-   * cell - <Cell> that represents the root.
+   * ```
+   * @param currentRoot - The `currentRoot` fo the view.
    */
   @hook()
-  getTranslateForRoot(cell: Cell | null): Point | null {
+  getTranslateForCurrentRoot(currentRoot: Cell | null): Point | null {
     return null
   }
 
@@ -1831,7 +1813,7 @@ export class Graph extends Disablable {
   /**
    * Dispatches the given event to the graph event dispatch loop.
    */
-  fireMouseEvent(eventName: string, e: CustomMouseEvent, sender: any = this) {
+  fireMouseEvent(eventName: string, e: MouseEventEx, sender: any = this) {
     this.eventloop.fireMouseEvent(eventName, e, sender)
   }
 
@@ -2334,7 +2316,7 @@ export class Graph extends Disablable {
       if (this.model.getParent(cell) !== this.model.getRoot()) {
         const style = this.getStyle(cell)
         if (style != null && !this.model.isEdge(cell)) {
-          return (style.shape === Shapes.swimlane)
+          return (style.shape === ShapeNames.swimlane)
         }
       }
     }
@@ -3492,7 +3474,6 @@ export namespace Graph {
     createModel?: (this: Graph, graph: Graph) => Model
     createView?: (this: Graph, graph: Graph) => View
     createRenderer?: (this: Graph, graph: Graph) => Renderer
-    createStyleSheet?: (this: Graph, graph: Graph) => StyleSheet
     createSelection?: (this: Graph, graph: Graph) => Selection
 
     createTooltipHandler?: (this: Graph, graph: Graph) => TooltipHandler
@@ -3521,9 +3502,9 @@ export namespace Graph {
 
     isValidRoot?: (this: Graph, cell: Cell | null) => boolean | null
     isPort?: (this: Graph, cell: Cell) => boolean | null
+    getChildOffset?: (this: Graph, cell: Cell) => Point | null
     getTerminalForPort?: (this: Graph, cell: Cell, isSource: boolean) => Cell | null
-    getChildOffsetForCell?: (this: Graph, cell: Cell) => Point | null
-    getTranslateForRoot?: (this: Graph, cell: Cell | null) => Point | null
+    getTranslateForCurrentRoot?: (this: Graph, currentRoot: Cell | null) => Point | null
 
     isExtendParent?: (this: Graph, cell: Cell) => boolean | null
     isFoldable?: (this: Graph, cell: Cell, nextCollapseState: boolean) => boolean | null
@@ -3559,15 +3540,36 @@ export namespace Graph {
 
   export interface Options extends Hooks, Feature.Options {
     model?: Model,
-    styleSheet?: StyleSheet,
   }
 
   export interface CreateNodeOptions {
+    /**
+     * Specifies the x-coordinate of the node. For relative geometries, this
+     * defines the percentage x-coordinate relative the parent width, which
+     * value should be within `0-1`. For absolute geometries, this defines the
+     * absolute x-coordinate in the graph.
+     */
     x?: number,
+    /**
+     * Specifies the y-coordinate of the node. For relative geometries, this
+     * defines the percentage y-coordinate relative the parent height, which
+     * value should be within `0-1`. For absolute geometries, this defines the
+     * absolute y-coordinate in the graph.
+     */
     y?: number,
     width?: number,
     height?: number,
+    /**
+     * Specifies if the coordinates in the geometry are to be interpreted
+     * as relative coordinates. If this is `true`, then the coordinates are
+     * relative to the origin of the parent cell.
+     */
     relative?: boolean,
+    /**
+     * For relative geometries, this defines the absolute offset from the
+     * point defined by the relative coordinates. For absolute geometries,
+     * this defines the offset for the label.
+     */
     offset?: Point | Point.PointLike,
 
     id?: string,
@@ -3589,8 +3591,21 @@ export namespace Graph {
   }
 
   export interface CreateEdgeOptions {
+    /**
+     * The source `Point` of the edge. This is used if the corresponding
+     * edge does not have a source node. Otherwise it is ignored.
+     */
     sourcePoint?: Point | Point.PointLike,
+    /**
+     * The target `Point` of the edge. This is used if the corresponding
+     * edge does not have a target node. Otherwise it is ignored.
+     */
     targetPoint?: Point | Point.PointLike,
+    /**
+     * Specifies the control points along the edge. These points are the
+     * intermediate points on the edge, for the endpoints use `targetPoint`
+     * and `sourcePoint` or set the terminals of the edge to a non-null value.
+     */
     points?: (Point | Point.PointLike)[],
     offset?: Point | Point.PointLike,
 

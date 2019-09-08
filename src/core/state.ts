@@ -1,15 +1,30 @@
-import { Dictionary } from '../common'
-import { Point, Rectangle, Overlay } from '../struct'
 import { Cell } from './cell'
 import { View } from './view'
-import { Shape, ImageShape, Text } from '../shape'
 import { Style } from '../types'
+import { Dictionary, Disablable } from '../common'
+import { Shape, ImageShape, Text } from '../shape'
+import { Point, Rectangle, Overlay } from '../struct'
 
-export class State {
+export class State extends Disablable {
+  /**
+   * Specifies if the state is invalid.
+   */
+  invalid: boolean = true
+
+  /**
+   * Specifies if the style is invalid.
+   */
+  invalidStyle: boolean = false
+
   /**
    * scale and translated bounds
    */
   bounds: Rectangle
+
+  /**
+   * The smallest rectangle that includes all pixels of shapes in the state.
+   */
+  boundingBox: Rectangle
 
   /**
    * The unscaled, untranslated bounds.
@@ -23,10 +38,10 @@ export class State {
    */
   paintBounds: Rectangle
 
-  boundingBox: Rectangle
-
   /**
    * The origin for all child cells.
+   *
+   * It is a unscaled, untranslated point.
    */
   origin: Point
 
@@ -79,16 +94,6 @@ export class State {
   segmentsLength: number[]
 
   /**
-   * Specifies if the state is invalid.
-   */
-  invalid: boolean = true
-
-  /**
-   * Specifies if the style is invalid.
-   */
-  invalidStyle: boolean = false
-
-  /**
    * A `Shape` instance that represents the cell graphically.
    */
   shape: Shape | null
@@ -108,20 +113,17 @@ export class State {
 
   constructor(
     public view: View,
-    public cell: Cell,
-    /**
-     * Key-Value pairs that represent the style of the cell.
-     */
+    public cell: Cell = new Cell(),
     public style: Style = {},
   ) {
+    super()
     this.origin = new Point()
     this.bounds = new Rectangle()
     this.absoluteOffset = new Point()
   }
 
   /**
-   * Returns the `Rectangle` that should be used as the perimeter
-   * of the cell.
+   * Returns the `Rectangle` that should be used as the perimeter of the cell.
    *
    * @param border Optional border to be added around the perimeter bounds.
    * @param bounds Optional `Rectangle` to be used as the initial bounds.
@@ -152,7 +154,7 @@ export class State {
     return bounds
   }
 
-  setAbsoluteTerminalPoint(point: Point, isSource?: boolean) {
+  setAbsoluteTerminalPoint(point: Point, isSource: boolean) {
     if (this.absolutePoints == null) {
       this.absolutePoints = []
     }
@@ -226,6 +228,7 @@ export class State {
   updateCachedBounds() {
     const s = this.view.scale
     const t = this.view.translate
+
     this.cellBounds = new Rectangle(
       this.bounds.x / s - t.x,
       this.bounds.y / s - t.y,
@@ -234,6 +237,7 @@ export class State {
     )
 
     this.paintBounds = Rectangle.clone(this.cellBounds)
+
     if (this.shape != null && this.shape.isPaintBoundsInverted()) {
       this.paintBounds.rotate90()
     }
@@ -255,12 +259,7 @@ export class State {
     this.segmentsLength = state.segmentsLength
     this.unscaledWidth = state.unscaledWidth
 
-    this.bounds.update(
-      state.bounds.x,
-      state.bounds.y,
-      state.bounds.width,
-      state.bounds.height,
-    )
+    this.bounds.update(state.bounds)
   }
 
   clone() {
@@ -292,7 +291,30 @@ export class State {
     return cloned
   }
 
-  destroy() {
-    this.view.graph.renderer.destroy(this)
+  dispose() {
+    if (this.disposed) {
+      return
+    }
+
+    if (this.shape != null) {
+      if (this.text != null) {
+        this.text.dispose()
+        this.text = null
+      }
+
+      if (this.overlays !== null) {
+        this.overlays.each(shape => shape && shape.dispose())
+      }
+
+      if (this.control != null) {
+        this.control.dispose()
+        this.control = null
+      }
+
+      this.shape.dispose()
+      this.shape = null
+    }
+
+    super.dispose()
   }
 }

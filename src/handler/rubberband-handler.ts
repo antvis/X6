@@ -1,9 +1,8 @@
 import * as util from '../util'
-import { Graph } from '../core'
-import { CustomMouseEvent, DomEvent, detector } from '../common'
+import { Graph, Feature } from '../core'
+import { MouseEventEx, DomEvent, detector } from '../common'
 import { Rectangle, Point } from '../struct'
 import { MouseHandler } from '.'
-import { Feature } from '../core/feature'
 
 export class RubberbandHandler extends MouseHandler {
   /**
@@ -35,7 +34,7 @@ export class RubberbandHandler extends MouseHandler {
   private onMouseEvent: (
     arg: {
       eventName: string,
-      e: CustomMouseEvent,
+      e: MouseEventEx,
     },
   ) => void
   private onMouseMove: null | ((e: MouseEvent) => void)
@@ -85,11 +84,11 @@ export class RubberbandHandler extends MouseHandler {
   /**
    * Returns true if the given event should start rubberband selection.
    */
-  protected isForceRubberbandEvent(e: CustomMouseEvent) {
+  protected isForceRubberbandEvent(e: MouseEventEx) {
     return DomEvent.isAltDown(e.getEvent())
   }
 
-  protected getPosition(e: CustomMouseEvent) {
+  protected getPosition(e: MouseEventEx) {
     const origin = util.getScrollOrigin(this.graph.container)
     const offset = util.getOffset(this.graph.container)
 
@@ -105,7 +104,7 @@ export class RubberbandHandler extends MouseHandler {
   /**
    * Handles the event by initiating a rubberband selection.
    */
-  mouseDown(e: CustomMouseEvent) {
+  mouseDown(e: MouseEventEx) {
     if (
       this.isEnabled() &&
       this.graph.isEnabled() &&
@@ -117,7 +116,7 @@ export class RubberbandHandler extends MouseHandler {
     }
   }
 
-  protected prepare(e: CustomMouseEvent) {
+  protected prepare(e: MouseEventEx) {
     const { x, y } = this.getPosition(e)
     this.start(x, y)
 
@@ -136,7 +135,7 @@ export class RubberbandHandler extends MouseHandler {
     const container = this.graph.container
 
     const createEvent = (e: MouseEvent) => {
-      const me = new CustomMouseEvent(e)
+      const me = new MouseEventEx(e)
       const pt = util.clientToGraph(container, me.getClientX(), me.getClientY())
 
       me.graphX = pt.x
@@ -165,7 +164,7 @@ export class RubberbandHandler extends MouseHandler {
   /**
    * Handles the event by updating therubberband selection.
    */
-  mouseMove(e: CustomMouseEvent) {
+  mouseMove(e: MouseEventEx) {
     if (!e.isConsumed() && this.origin != null) {
       const { x, y } = this.getPosition(e)
       const dx = this.origin.x - x
@@ -215,7 +214,7 @@ export class RubberbandHandler extends MouseHandler {
     return this.div != null && this.div.style.display !== 'none'
   }
 
-  mouseUp(e: CustomMouseEvent) {
+  mouseUp(e: MouseEventEx) {
     const active = this.isActive()
     this.reset()
 

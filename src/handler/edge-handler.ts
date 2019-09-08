@@ -1,12 +1,12 @@
+import * as routers from '../router'
 import * as util from '../util'
 import { Cell, State, Graph } from '../core'
 import { Rectangle, Point, Image, Constraint } from '../struct'
-import { constants, DomEvent, CustomMouseEvent, detector } from '../common'
+import { constants, DomEvent, MouseEventEx, detector } from '../common'
 import { Shape, RectangleShape, ImageShape, EllipseShape } from '../shape'
 import { MouseHandler } from './handler-mouse'
 import { CellMarker } from './cell-marker'
 import { ConstraintHandler } from './constraint-handler'
-import { EdgeStyle } from '../stylesheet'
 
 export class EdgeHandler extends MouseHandler {
 
@@ -201,7 +201,7 @@ export class EdgeHandler extends MouseHandler {
     this.previewShape.init(this.graph.view.getOverlayPane())
     this.previewShape.setCursor(constants.CURSOR_MOVABLE_EDGE)
 
-    CustomMouseEvent.redirectMouseEvents(
+    MouseEventEx.redirectMouseEvents(
       this.previewShape.elem!, this.graph, this.state,
     )
 
@@ -405,7 +405,7 @@ export class EdgeHandler extends MouseHandler {
       this.state, geo.points, sourceState, targetState,
     ) : null
 
-    return edgeFn !== EdgeStyle.entityRelation
+    return edgeFn !== routers.entityRelation
   }
 
   protected isHandleEnabled(index: number) {
@@ -489,7 +489,7 @@ export class EdgeHandler extends MouseHandler {
       handle.init(this.graph.view.getOverlayPane())
     }
 
-    CustomMouseEvent.redirectMouseEvents(
+    MouseEventEx.redirectMouseEvents(
       handle.elem!, this.graph, this.state,
       null, null, null, dblClick,
     )
@@ -522,25 +522,25 @@ export class EdgeHandler extends MouseHandler {
   /**
    * Returns true if the given event allows virtual bends to be added.
    */
-  protected isAddVirtualBendEvent(e: CustomMouseEvent) {
+  protected isAddVirtualBendEvent(e: MouseEventEx) {
     return true
   }
 
   /**
    * Returns true if the given event allows custom handles to be changed.
    */
-  protected isCustomHandleEvent(e: CustomMouseEvent) {
+  protected isCustomHandleEvent(e: MouseEventEx) {
     return true
   }
 
-  protected isSnapToTerminalsEvent(e: CustomMouseEvent) {
+  protected isSnapToTerminalsEvent(e: MouseEventEx) {
     return this.snapToTerminals && !DomEvent.isAltDown(e.getEvent())
   }
 
   /**
    * Returns the index of the handle for the given event.
    */
-  protected getHandleForEvent(e: CustomMouseEvent) {
+  protected getHandleForEvent(e: MouseEventEx) {
     // Connection highlight may consume events before they reach sizer handle
     const tol = !DomEvent.isMouseEvent(e.getEvent()) ? this.tolerance : 1
     const hit = (this.checkHandleBounds && (detector.IS_IE || tol > 0)) ?
@@ -614,7 +614,7 @@ export class EdgeHandler extends MouseHandler {
    * control point. The source and target points are used for reconnecting
    * the edge.
    */
-  mouseDown(e: CustomMouseEvent) {
+  mouseDown(e: MouseEventEx) {
     const index = this.getHandleForEvent(e)!
     if (this.bends != null && index != null && this.bends[index] != null) {
       this.snapPoint = this.bends[index]!.bounds.getCenter()
@@ -751,7 +751,7 @@ export class EdgeHandler extends MouseHandler {
     }
   }
 
-  mouseMove(e: CustomMouseEvent) {
+  mouseMove(e: MouseEventEx) {
     if (this.index != null && this.marker != null) {
       this.currentPoint = this.getPointForEvent(e)
       this.error = null
@@ -870,7 +870,7 @@ export class EdgeHandler extends MouseHandler {
   /**
    * Hook for subclassers do show details while the handler is active.
    */
-  protected updateHint(e: CustomMouseEvent, point: Point) { }
+  protected updateHint(e: MouseEventEx, point: Point) { }
 
   /**
    * Hooks for subclassers to hide details when the handler gets inactive.
@@ -884,7 +884,7 @@ export class EdgeHandler extends MouseHandler {
   /**
    * Returns the point for the given event.
    */
-  protected getPointForEvent(e: CustomMouseEvent) {
+  protected getPointForEvent(e: MouseEventEx) {
     const view = this.graph.view
     const scale = view.scale
     const result = new Point(
@@ -951,7 +951,7 @@ export class EdgeHandler extends MouseHandler {
    * Updates the given preview state taking into account
    * the state of the constraint handler.
    */
-  protected getPreviewPoints(pt: Point, e: CustomMouseEvent) {
+  protected getPreviewPoints(pt: Point, e: MouseEventEx) {
     const point = new Point(pt.x, pt.y)
     const index = this.index!
     const geo = this.graph.getCellGeometry(this.state.cell)!
@@ -1006,7 +1006,7 @@ export class EdgeHandler extends MouseHandler {
               const c = this.graph.getConnectionConstraint(this.state, src, true)
 
               // Checks if point is not fixed
-              if (c == null || this.graph.cellManager.getConnectionPoint(src, c) == null) {
+              if (c == null || this.graph.view.getConnectionPoint(src, c) == null) {
                 abs[0] = new Point(src.view.getRoutingCenterX(src), src.view.getRoutingCenterY(src))
               }
             }
@@ -1017,7 +1017,7 @@ export class EdgeHandler extends MouseHandler {
               const c = this.graph.getConnectionConstraint(this.state, trg, false)
 
               // Checks if point is not fixed
-              if (c == null || this.graph.cellManager.getConnectionPoint(trg, c) == null) {
+              if (c == null || this.graph.view.getConnectionPoint(trg, c) == null) {
                 abs[abs.length - 1] = new Point(
                   trg.view.getRoutingCenterX(trg),
                   trg.view.getRoutingCenterY(trg),
@@ -1059,7 +1059,7 @@ export class EdgeHandler extends MouseHandler {
    * Updates the given preview state taking into account
    * the state of the constraint handler.
    */
-  protected getPreviewTerminalState(e: CustomMouseEvent) {
+  protected getPreviewTerminalState(e: MouseEventEx) {
     this.constraintHandler.update(
       e,
       this.isSource,
@@ -1134,7 +1134,7 @@ export class EdgeHandler extends MouseHandler {
    * Returns true if <outlineConnect> is true and the source of the event is the outline shape
    * or shift is pressed.
    */
-  protected isOutlineConnectEvent(me: CustomMouseEvent) {
+  protected isOutlineConnectEvent(me: MouseEventEx) {
     const offset = util.getOffset(this.graph.container)
     const evt = me.getEvent()
 
@@ -1176,7 +1176,7 @@ export class EdgeHandler extends MouseHandler {
     edge: State,
     point: Point,
     terminalState: State | null,
-    e: CustomMouseEvent,
+    e: MouseEventEx,
     outline: boolean,
   ) {
     // Computes the points for the edge style and terminals
@@ -1274,11 +1274,11 @@ export class EdgeHandler extends MouseHandler {
       }
     }
 
-    edge.view.updatePoints(edge, this.points || [], sourceState!, targetState!)
+    edge.view.updateRouterPoints(edge, this.points || [], sourceState!, targetState!)
     edge.view.updateFloatingTerminalPoints(edge, sourceState!, targetState!)
   }
 
-  mouseUp(e: CustomMouseEvent) {
+  mouseUp(e: MouseEventEx) {
     if (this.index != null && this.marker != null) {
       const index = this.index!
       let edge = this.state.cell
@@ -1501,7 +1501,7 @@ export class EdgeHandler extends MouseHandler {
         // Resets the offset inside the geometry to find the offset
         // from the resulting point
         geo.offset = new Point(0, 0)
-        pt = this.graph.view.getPoint(edgeState, geo)
+        pt = this.graph.view.getPointOnEdge(edgeState, geo)
         geo.offset = new Point(
           Math.round((x - pt.x) / scale),
           Math.round((y - pt.y) / scale),
@@ -1534,7 +1534,7 @@ export class EdgeHandler extends MouseHandler {
     terminal: Cell,
     isSource: boolean,
     clone: boolean,
-    e: CustomMouseEvent,
+    e: MouseEventEx,
   ) {
     this.graph.batchUpdate(() => {
       let constraint = this.constraintHandler.currentConstraint
@@ -1980,7 +1980,7 @@ export namespace EdgeHandler {
 
     // Only returns edges if they are connectable and never returns
     // the edge that is currently being modified
-    getCell(e: CustomMouseEvent) {
+    getCell(e: MouseEventEx) {
       const model = this.graph.getModel()
       let cell = super.getCell(e)
 

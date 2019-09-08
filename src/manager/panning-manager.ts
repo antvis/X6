@@ -1,6 +1,6 @@
 import * as util from '../util'
 import { Graph } from '../core'
-import { CustomMouseEvent, DomEvent } from '../common'
+import { MouseEventEx, DomEvent } from '../common'
 import { IMouseHandler } from '../handler'
 import { BaseManager } from './manager-base'
 
@@ -51,9 +51,9 @@ export class PanningManager extends BaseManager {
     super(graph)
 
     this.mouseListener = {
-      mouseDown(e: CustomMouseEvent, sender: any) { },
-      mouseMove(e: CustomMouseEvent, sender: any) { },
-      mouseUp: (e: CustomMouseEvent, sender: any) => {
+      mouseDown(e: MouseEventEx, sender: any) { },
+      mouseMove(e: MouseEventEx, sender: any) { },
+      mouseUp: (e: MouseEventEx, sender: any) => {
         if (this.active) {
           this.stop()
         }

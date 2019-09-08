@@ -9,10 +9,8 @@ export * from './multiplicity'
 // enums
 // ----
 export * from './direction'
-export * from './edges'
 export * from './fontstyle'
 export * from './nodetype'
 export * from './pagesize'
-export * from './perimeters'
-export * from './shapes'
+export * from './names'
 export * from './cursors'

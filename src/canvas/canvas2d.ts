@@ -217,19 +217,11 @@ export class Canvas2D {
   }
 
   rotatePoint(
-    x: number,
-    y: number,
-    theta: number,
-    cx: number,
-    cy: number,
+    x: number, y: number,
+    deg: number,
+    cx: number, cy: number,
   ) {
-    const rad = util.toRad(theta)
-    return util.rotatePoint(
-      new Point(x, y),
-      Math.cos(rad),
-      Math.sin(rad),
-      new Point(cx, cy),
-    )
+    return util.rotatePoint(new Point(x, y), deg, new Point(cx, cy))
   }
 
   scale(s: number) {

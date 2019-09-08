@@ -1,6 +1,6 @@
 import { Cell, State } from '../core'
 import { Rectangle, Point } from '../struct'
-import { constants, CustomMouseEvent } from '../common'
+import { constants, MouseEventEx } from '../common'
 import { EdgeElbowHandler } from './edge-elbow-handler'
 
 export class EdgeSegmentHandler extends EdgeElbowHandler {
@@ -32,7 +32,7 @@ export class EdgeSegmentHandler extends EdgeElbowHandler {
     return pts
   }
 
-  getPreviewPoints(point: Point, e: CustomMouseEvent) {
+  getPreviewPoints(point: Point, e: MouseEventEx) {
     if (this.isSource || this.isTarget) {
       return super.getPreviewPoints(point, e)
     }
@@ -89,7 +89,7 @@ export class EdgeSegmentHandler extends EdgeElbowHandler {
     edge: State,
     point: Point,
     terminalState: State | null,
-    e: CustomMouseEvent,
+    e: MouseEventEx,
     outline: boolean,
   ) {
     super.updatePreviewState(edge, point, terminalState, e, outline)
@@ -152,7 +152,7 @@ export class EdgeSegmentHandler extends EdgeElbowHandler {
         const sc = this.graph.getConnectionConstraint(edge, source, true)
 
         if (sc != null) {
-          const pt = this.graph.cellManager.getConnectionPoint(source, sc)
+          const pt = this.graph.view.getConnectionPoint(source, sc)
 
           if (pt != null) {
             this.convertPoint(pt, false)
@@ -166,7 +166,7 @@ export class EdgeSegmentHandler extends EdgeElbowHandler {
         const tc = this.graph.getConnectionConstraint(edge, target, false)
 
         if (tc) {
-          const pt = this.graph.cellManager.getConnectionPoint(target, tc)
+          const pt = this.graph.view.getConnectionPoint(target, tc)
 
           if (pt != null) {
             this.convertPoint(pt, false)
@@ -181,7 +181,7 @@ export class EdgeSegmentHandler extends EdgeElbowHandler {
 
       // LATER: Check if points and result are different
       edge.view.updateFixedTerminalPoints(edge, source!, target!)
-      edge.view.updatePoints(edge, this.points, source!, target!)
+      edge.view.updateRouterPoints(edge, this.points, source!, target!)
       edge.view.updateFloatingTerminalPoints(edge, source!, target!)
     }
   }
@@ -191,7 +191,7 @@ export class EdgeSegmentHandler extends EdgeElbowHandler {
     terminal: Cell,
     isSource: boolean,
     clone: boolean,
-    e: CustomMouseEvent,
+    e: MouseEventEx,
   ) {
     const model = this.graph.getModel()
     const geo = model.getGeometry(edge)

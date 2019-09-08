@@ -1,7 +1,7 @@
 import { Graph, Model, Cell, State } from '../core'
 import { View } from '../core/view'
 import { MouseHandler } from './handler-mouse'
-import { CustomMouseEvent, Dictionary } from '../common'
+import { MouseEventEx, Dictionary } from '../common'
 import { NodeHandler } from './node-handler'
 
 export class SelectionHandler extends MouseHandler {
@@ -113,7 +113,7 @@ export class SelectionHandler extends MouseHandler {
     return handler.index != null
   }
 
-  protected canHandle(e: CustomMouseEvent) {
+  protected canHandle(e: MouseEventEx) {
     return this.graph.isEnabled() && this.isEnabled()
   }
 
@@ -121,19 +121,19 @@ export class SelectionHandler extends MouseHandler {
     return this.handlers.get(cell)
   }
 
-  mouseDown(e: CustomMouseEvent, sender: any) {
+  mouseDown(e: MouseEventEx, sender: any) {
     if (this.canHandle(e)) {
       this.handlers.each(h => h.mouseDown(e, sender))
     }
   }
 
-  mouseMove(e: CustomMouseEvent, sender: any) {
+  mouseMove(e: MouseEventEx, sender: any) {
     if (this.canHandle(e)) {
       this.handlers.each(h => h.mouseMove(e, sender))
     }
   }
 
-  mouseUp(e: CustomMouseEvent, sender: any) {
+  mouseUp(e: MouseEventEx, sender: any) {
     if (this.canHandle(e)) {
       this.handlers.each(h => h.mouseUp(e, sender))
     }

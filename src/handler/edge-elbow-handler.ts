@@ -1,6 +1,6 @@
-import { Rectangle, Point, EdgeType } from '../struct'
+import * as routers from '../router'
+import { Rectangle, Point, RouterNames } from '../struct'
 import { constants, DomEvent } from '../common'
-import { EdgeStyle } from '../stylesheet'
 import { EdgeHandler } from './edge-handler'
 
 export class EdgeElbowHandler extends EdgeHandler {
@@ -55,11 +55,11 @@ export class EdgeElbowHandler extends EdgeHandler {
   getCursorForBend() {
     const edge = this.state.style.edge as any
     return (
-      edge === EdgeStyle.topToBottom ||
-      edge === EdgeType.topToBottom ||
+      edge === routers.topToBottom ||
+      edge === RouterNames.topToBottom ||
       (
-        (edge === EdgeStyle.elbowConnector ||
-          edge === EdgeType.elbow
+        (edge === routers.elbowConnector ||
+          edge === RouterNames.elbow
         ) &&
         this.state.style.elbow === 'vertical')
     )
