@@ -20,9 +20,12 @@ export enum ShapeNames {
 export enum MarkerNames {
   classic = 'classic',
   classicThin = 'classicThin',
+  block = 'block',
+  blockThin = 'blockThin',
   open = 'open',
   openThin = 'openThin',
   diamond = 'diamond',
+  diamondThin = 'diamondThin',
   oval = 'oval',
 }
 

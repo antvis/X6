@@ -1,7 +1,7 @@
-import { DrawMarkerOptions } from '.'
+import { DrawMarkerOptions } from './'
 
 export function oval({
-  canvas,
+  c,
   pe,
   unitX,
   unitY,
@@ -16,12 +16,12 @@ export function oval({
   pe.y -= unitY * a
 
   return function () {
-    canvas.ellipse(pt.x - a, pt.y - a, size, size)
+    c.ellipse(pt.x - a, pt.y - a, size, size)
 
     if (filled) {
-      canvas.fillAndStroke()
+      c.fillAndStroke()
     } else {
-      canvas.stroke()
+      c.stroke()
     }
   }
 }

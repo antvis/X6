@@ -48,12 +48,12 @@ export class Connector extends Polyline {
   createMarker(c: SvgCanvas2D, pts: Point[], isSource: boolean) {
     let result = null
     const len = pts.length
-    const type = isSource ? this.style.startArrow : this.style.endArrow
+    const name = isSource ? this.style.startArrow : this.style.endArrow
 
     let p0 = isSource ? pts[1] : pts[len - 2]
     const pe = isSource ? pts[0] : pts[len - 1]
 
-    if (type != null && p0 != null && pe != null) {
+    if (name != null && p0 != null && pe != null) {
       let count = 1
 
       // Uses next non-overlapping point
@@ -69,16 +69,12 @@ export class Connector extends Polyline {
       // Computes the norm and the inverse norm
       const dx = pe.x - p0.x
       const dy = pe.y - p0.y
-
       const dist = Math.max(1, Math.sqrt(dx * dx + dy * dy))
-
       const unitX = dx / dist
       const unitY = dy / dist
 
-      const size = (isSource
-        ? this.style.startSize
-        : this.style.endSize
-      ) || constants.DEFAULT_MARKERSIZE
+      const size = (isSource ? this.style.startSize : this.style.endSize)
+        || constants.DEFAULT_MARKERSIZE
 
       // Allow for stroke width in the end point used and the
       // orthogonal vectors describing the direction of the marker
@@ -87,16 +83,16 @@ export class Connector extends Polyline {
         : this.style.endFilled !== false
 
       result = createMarker({
-        type,
+        c,
+        name,
         pe,
         unitX,
         unitY,
         size,
         isSource,
         filled,
-        canvas: c,
         shape: this,
-        strokeWidth: this.strokeWidth as number,
+        sw: this.strokeWidth as number,
       })
     }
 

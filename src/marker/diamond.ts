@@ -1,14 +1,14 @@
 import { MarkerNames } from '../struct'
-import { DrawMarkerOptions } from '.'
+import { DrawMarkerOptions } from './'
 
 export function diamond({
-  canvas,
-  type,
+  c,
+  name,
   pe,
-  unitX,
-  unitY,
+  unitX: cos,
+  unitY: sin,
   size,
-  strokeWidth,
+  sw,
   filled,
 }: DrawMarkerOptions) {
 
@@ -17,12 +17,12 @@ export function diamond({
   // only half the strokewidth is processed ). Or 0.9862 for thin diamond.
   // Note these values and the tk variable below are dependent, update
   // both together (saves trig hard coding it).
-  const swFactor = (type === MarkerNames.diamond) ? 0.7071 : 0.9862
-  const endOffsetX = unitX * strokeWidth * swFactor
-  const endOffsetY = unitY * strokeWidth * swFactor
+  const swFactor = (name === MarkerNames.diamond) ? 0.7071 : 0.9862
 
-  unitX = unitX * (size + strokeWidth) // tslint:disable-line
-  unitY = unitY * (size + strokeWidth) // tslint:disable-line
+  const endOffsetX = cos * sw * swFactor
+  const endOffsetY = sin * sw * swFactor
+  const unitX = cos * (size + sw)
+  const unitY = sin * (size + sw)
 
   const pt = pe.clone()
   pt.x -= endOffsetX
@@ -32,20 +32,20 @@ export function diamond({
   pe.y += -unitY - endOffsetY
 
   // thickness factor for diamond
-  const tk = ((type === MarkerNames.diamond) ? 2 : 3.4)
+  const tk = ((name === MarkerNames.diamond) ? 2 : 3.4)
 
   return function () {
-    canvas.begin()
-    canvas.moveTo(pt.x, pt.y)
-    canvas.lineTo(pt.x - unitX / 2 - unitY / tk, pt.y + unitX / tk - unitY / 2)
-    canvas.lineTo(pt.x - unitX, pt.y - unitY)
-    canvas.lineTo(pt.x - unitX / 2 + unitY / tk, pt.y - unitY / 2 - unitX / tk)
-    canvas.close()
+    c.begin()
+    c.moveTo(pt.x, pt.y)
+    c.lineTo(pt.x - unitX / 2 - unitY / tk, pt.y + unitX / tk - unitY / 2)
+    c.lineTo(pt.x - unitX, pt.y - unitY)
+    c.lineTo(pt.x - unitX / 2 + unitY / tk, pt.y - unitY / 2 - unitX / tk)
+    c.close()
 
     if (filled) {
-      canvas.fillAndStroke()
+      c.fillAndStroke()
     } else {
-      canvas.stroke()
+      c.stroke()
     }
   }
 }
