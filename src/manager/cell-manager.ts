@@ -2145,13 +2145,12 @@ export class CellManager extends BaseManager {
 
   getCellStyle(cell: Cell | null) {
     if (cell != null) {
-      const defaultStyle = this.model.isEdge(cell)
+      const preset = this.model.isEdge(cell)
         ? this.graph.options.edgeStyle
         : this.graph.options.nodeStyle
-
       const style = this.model.getStyle(cell) || {}
       return {
-        ...defaultStyle,
+        ...preset,
         ...style,
       }
     }

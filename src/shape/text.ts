@@ -219,17 +219,17 @@ export class Text extends Shape {
     } else {
 
       // Checks if text contains HTML markup
-      const realHtml = util.isHTMLNode(this.value) || this.dialect === constants.DIALECT_STRICTHTML
+      const realHtml = util.isHtmlElem(this.value) || this.dialect === 'html'
       const fmt = realHtml ? 'html' : ''
       let val = this.value
 
-      if (fmt === 'html' && !util.isHTMLNode(this.value)) {
+      if (fmt === 'html' && !util.isHtmlElem(this.value)) {
         val = util.replaceTrailingNewlines(val, '<div><br></div>')
       }
 
       // Handles trailing newlines to make sure they are visible in rendering output
       val = (
-        !util.isHTMLNode(this.value) &&
+        !util.isHtmlElem(this.value) &&
         this.replaceLinefeeds &&
         fmt === 'html'
       ) ? val.replace(/\n/g, '<br/>') : val
@@ -268,8 +268,8 @@ export class Text extends Shape {
       this.cacheEnabled &&
       this.lastValue === this.value &&
       (
-        util.isHTMLNode(this.value) ||
-        this.dialect === constants.DIALECT_STRICTHTML
+        util.isHtmlElem(this.value) ||
+        this.dialect === 'html'
       )
     ) {
       if (util.getNodeName(this.elem!) === 'div' && this.isHtmlAllowed()) {
@@ -293,8 +293,8 @@ export class Text extends Shape {
     } else {
       super.redraw()
       if (
-        util.isHTMLNode(this.value) ||
-        this.dialect === constants.DIALECT_STRICTHTML
+        util.isHtmlElem(this.value) ||
+        this.dialect === 'html'
       ) {
         this.lastValue = this.value
       } else {
@@ -326,6 +326,7 @@ export class Text extends Shape {
 
   apply(state: State) {
     const spacing = this.spacing
+
     super.apply(state)
 
     if (this.style != null) {
@@ -583,11 +584,11 @@ export class Text extends Shape {
   }
 
   updateInnerHtml(elt: HTMLElement) {
-    if (util.isHTMLNode(this.value)) {
+    if (util.isHtmlElem(this.value)) {
       elt.innerHTML = (this.value as any as HTMLElement).outerHTML
     } else {
       let val = this.value
-      if (this.dialect !== constants.DIALECT_STRICTHTML) {
+      if (this.dialect !== 'html') {
         val = util.escape(val)
       }
 
@@ -601,13 +602,13 @@ export class Text extends Shape {
   }
 
   updateValue() {
-    if (util.isHTMLNode(this.value)) {
+    if (util.isHtmlElem(this.value)) {
       this.elem!.innerHTML = ''
       this.elem!.appendChild(this.value as any as HTMLElement)
     } else {
       let val = this.value
 
-      if (this.dialect !== constants.DIALECT_STRICTHTML) {
+      if (this.dialect !== 'html') {
         val = util.escape(val)
       }
 
@@ -662,7 +663,7 @@ export class Text extends Shape {
       const divs = this.elem!.getElementsByTagName('div')
       if (divs.length > 0) {
         let dir = this.textDirection
-        if (dir === 'auto' && this.dialect !== constants.DIALECT_STRICTHTML) {
+        if (dir === 'auto' && this.dialect !== 'html') {
           dir = this.getAutoDirection()
         }
 

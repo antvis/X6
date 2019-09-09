@@ -148,10 +148,10 @@ export function createElement(tagName: string, doc: Document = document) {
   return doc.createElement(tagName)
 }
 
-export function createSVGElement(tagName: string, doc: Document = document) {
-  return doc.createElementNS(
-    'http://www.w3.org/2000/svg',
-    tagName,
+export function createSvgElement(tagName: string, doc: Document = document) {
+  return (doc.createElementNS
+    ? doc.createElementNS('http://www.w3.org/2000/svg', tagName)
+    : createElement(tagName, doc)
   ) as SVGElement
 }
 
@@ -251,7 +251,7 @@ export function fillElementWithText(elem: Element, text: string) {
  * @param attributeName Optional attribute name to check.
  * @param attributeValue Optional attribute value to check.
  */
-export function isHTMLNode(
+export function isHtmlElem(
   elem: any,
   nodeName?: string,
   attributeName?: string,
@@ -271,6 +271,13 @@ export function isHTMLNode(
   }
 
   return false
+}
+
+export function isSvgElem(elem: any) {
+  return (
+    elem != null &&
+    (elem as SVGElement).ownerSVGElement != null
+  )
 }
 
 /**

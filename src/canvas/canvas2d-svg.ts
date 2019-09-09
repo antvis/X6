@@ -6,6 +6,10 @@ import { Canvas2D } from './canvas2d'
 import { Rectangle, FontStyle } from '../struct'
 import { Align, VAlign, Direction } from '../types'
 
+const NS_SVG = 'http://www.w3.org/2000/svg'
+const NS_XHTML = 'http://www.w3.org/1999/xhtml'
+const NS_XLINK = 'http://www.w3.org/1999/xlink'
+
 export class SvgCanvas2D extends Canvas2D {
   /**
 	 * The container for the SVG content.
@@ -169,7 +173,7 @@ export class SvgCanvas2D extends Canvas2D {
   ) {
     const doc = this.root.ownerDocument!
     if (doc.createElementNS != null) {
-      return doc.createElementNS(namespace || constants.NS_SVG, tagName) as T
+      return doc.createElementNS(namespace || NS_SVG, tagName) as T
     }
 
     const elem = doc.createElement(tagName)
@@ -702,7 +706,7 @@ export class SvgCanvas2D extends Canvas2D {
       ) {
         a.setAttribute('xlink:href', href)
       } else {
-        a.setAttributeNS(constants.NS_XLINK, 'xlink:href', href)
+        a.setAttributeNS(NS_XLINK, 'xlink:href', href)
       }
 
       this.root.appendChild(a)
@@ -737,7 +741,7 @@ export class SvgCanvas2D extends Canvas2D {
     if (img.setAttributeNS == null) {
       img.setAttribute('xlink:href', src)
     } else {
-      img.setAttributeNS(constants.NS_XLINK, 'xlink:href', src)
+      img.setAttributeNS(NS_XLINK, 'xlink:href', src)
     }
 
     if (!aspect) {
@@ -1124,7 +1128,7 @@ export class SvgCanvas2D extends Canvas2D {
       const div2 = document.createElement('div')
       div2.style.display = (detector.IS_QUIRKS) ? 'inline' : 'inline-block'
       div2.style.wordWrap = constants.WORD_WRAP
-      div2.innerHTML = (util.isHTMLNode(str))
+      div2.innerHTML = (util.isHtmlElem(str))
         ? (str as any as HTMLElement).outerHTML
         : str
       clone.appendChild(div2)
@@ -1798,7 +1802,7 @@ export class SvgCanvas2D extends Canvas2D {
 
     let val = str
 
-    if (!util.isHTMLNode(val)) {
+    if (!util.isHtmlElem(val)) {
       val = this.convertHtml(val)
       if (overflow !== 'fill' && overflow !== 'width') {
         // Workaround for no wrapping in HTML canvas for image
@@ -1818,10 +1822,10 @@ export class SvgCanvas2D extends Canvas2D {
     // Uses DOM API where available. This cannot be used in IE to avoid
     // an opening and two (!) closing TBODY tags being added to tables.
     if (!detector.IS_IE && document.createElementNS) {
-      const div = document.createElementNS(constants.NS_XHTML, 'div')
+      const div = document.createElementNS(NS_XHTML, 'div')
       div.setAttribute('style', stl)
 
-      if (util.isHTMLNode(val)) {
+      if (util.isHtmlElem(val)) {
         const n = val as any as HTMLElement
         if (this.root.ownerDocument !== document) {
           div.appendChild(n.cloneNode(true)) // creates a copy for export
@@ -1836,7 +1840,7 @@ export class SvgCanvas2D extends Canvas2D {
     }
 
     // Serializes for export
-    if (util.isHTMLNode(val) && this.root.ownerDocument !== document) {
+    if (util.isHtmlElem(val) && this.root.ownerDocument !== document) {
       val = (val as any as HTMLElement).outerHTML
     }
 

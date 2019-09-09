@@ -583,7 +583,7 @@ export class CellEditor extends Disposable {
           state != null &&
           state.text != null &&
           state.text.dialect !== 'html' &&
-          !util.isHTMLNode(state.text.value)
+          !util.isHtmlElem(state.text.value)
         ) {
           dir = state.text.getAutoDirection()
         }

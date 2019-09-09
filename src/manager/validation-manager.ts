@@ -1,4 +1,4 @@
-import { isHTMLNode } from '../util'
+import { isHtmlElem } from '../util'
 import { Graph, Cell } from '../core'
 import { BaseManager } from './manager-base'
 
@@ -159,13 +159,13 @@ export class ValidationManager extends BaseManager {
       this.graph.multiplicities.forEach((rule) => {
         if (
           rule.isSource &&
-          isHTMLNode(data, rule.nodeName, rule.attrName, rule.attrValue) &&
+          isHtmlElem(data, rule.nodeName, rule.attrName, rule.attrValue) &&
           ((rule.max > 0 && outCount > rule.max) || outCount < rule.min)
         ) {
           error += `${rule.countError}\n`
         } else if (
           !rule.isSource &&
-          isHTMLNode(data, rule.nodeName, rule.attrName, rule.attrValue) &&
+          isHtmlElem(data, rule.nodeName, rule.attrName, rule.attrValue) &&
           ((rule.max > 0 && inCount > rule.max) || inCount < rule.min)
         ) {
           error += `${rule.countError}\n`

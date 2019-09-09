@@ -19,8 +19,8 @@ export class Label extends RectangleShape {
    */
   spacing: number = 2
 
-  indicatorShape: any
   indicator: Shape
+  indicatorShape: any
   indicatorImage: string | null
   indicatorColor: string | null
   indicatorStrokeColor: string | null

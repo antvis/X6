@@ -12,13 +12,16 @@ export type LineJoin = 'miter' | 'round' | 'bevel'
 export type TextDirection = '' | 'auto' | 'ltr' | 'rtl'
 
 export interface Style {
+  shape?: string
+  edge?: string | RoutingFunction | null
+
   perimeter?: string | PerimeterFunction | null
   sourcePort?: string
   targetPort?: string
   portConstraint?: string
+  portConstraintRotation?: number
   sourcePortConstraint?: string
   targetPortConstraint?: string
-  portConstraintRotation?: number
 
   /**
    * Defines if the connection points on either end of the edge should be
@@ -92,9 +95,10 @@ export interface Style {
   entryPerimeter?: boolean
 
   cursor?: string
-  pointerEvents?: boolean
-  rotation?: number
   opacity?: number
+  rotation?: number
+  className?: string
+  pointerEvents?: boolean
 
   fill?: string
   fillOpacity?: number
@@ -104,8 +108,8 @@ export interface Style {
   strokeOpacity?: number
 
   dashed?: boolean
-  fixDash?: boolean
   dashPattern?: string
+  fixDash?: boolean
 
   fontColor?: string
   fontFamily?: string
@@ -155,6 +159,7 @@ export interface Style {
   labelBackgroundColor?: string
   labelBorderColor?: string
   labelPadding?: number
+  labelClassName?: string
   /**
    * If this is true then no label is visible for a given cell.
    */
@@ -319,9 +324,6 @@ export interface Style {
    * height will not be resized.
    */
   resizeHeight?: boolean
-
-  shape?: string
-  edge?: string | RoutingFunction | null
 
   /**
    * Jetty size is the minimum length of the orthogonal segment

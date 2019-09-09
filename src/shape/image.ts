@@ -55,7 +55,7 @@ export class ImageShape extends RectangleShape {
    * this shape. This implementation falls back to <createVml>
    * so that the HTML creation is optional.
    */
-  createHtml() {
+  createHtmlDiv() {
     const node = document.createElement('div')
     node.style.position = 'absolute'
     return node

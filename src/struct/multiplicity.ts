@@ -1,4 +1,4 @@
-import { isHTMLNode } from '../util'
+import { isHtmlElem } from '../util'
 import { Graph, Cell } from '../core'
 
 export class Multiplicity {
@@ -169,7 +169,7 @@ export class Multiplicity {
   ) {
     if (data != null) {
       if (!isNaN(data.nodeType)) {
-        return isHTMLNode(data, nodeName, attrName, attrValue)
+        return isHtmlElem(data, nodeName, attrName, attrValue)
       }
 
       return data === nodeName

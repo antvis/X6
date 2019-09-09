@@ -94,7 +94,7 @@ export class TooltipHandler extends MouseHandler {
         this.elem.style.left = util.toPx(x + origin.x)
         this.elem.style.top = util.toPx(y + origin.y)
 
-        if (util.isHTMLNode(tip)) {
+        if (util.isHtmlElem(tip)) {
           this.elem.innerHTML = ''
           this.elem.appendChild(tip as HTMLElement)
         } else {
@@ -121,7 +121,7 @@ export class TooltipHandler extends MouseHandler {
     return (
       (tip != null) && (
         (util.isString(tip) && (tip as string).length > 0) ||
-        util.isHTMLNode(tip)
+        util.isHtmlElem(tip)
       )
     )
   }

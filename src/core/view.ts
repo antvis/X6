@@ -2070,7 +2070,7 @@ export class View extends Primer {
     this.stage.appendChild(this.overlayPane)
     this.stage.appendChild(this.decoratorPane)
 
-    const root = util.createSVGElement('svg')
+    const root = util.createSvgElement('svg')
     root.style.left = '0px'
     root.style.top = '0px'
     root.style.width = '100%'
@@ -2089,7 +2089,7 @@ export class View extends Primer {
   }
 
   protected createSvgPane() {
-    return util.createSVGElement('g') as SVGGElement
+    return util.createSvgElement('g') as SVGGElement
   }
 
   protected updateContainerStyle(container: HTMLElement) {

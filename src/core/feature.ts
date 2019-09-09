@@ -12,6 +12,7 @@ export namespace Feature {
   interface GraphBehavior {
     prefixCls?: string,
     dialect?: Dialect,
+    antiAlias?: boolean,
     /**
      * Specifies if native double click events should be detected.
      */

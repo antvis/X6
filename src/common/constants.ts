@@ -19,20 +19,6 @@ export const constants = {
    */
   MAX_HOTSPOT_SIZE: 0,
 
-  RENDERING_HINT_EXACT: 'exact',
-  RENDERING_HINT_FASTER: 'faster',
-  RENDERING_HINT_FASTEST: 'fastest',
-
-  DIALECT_SVG: 'svg',
-  DIALECT_VML: 'vml',
-  DIALECT_MIXEDHTML: 'mixedHtml',
-  DIALECT_PREFERHTML: 'preferHtml',
-  DIALECT_STRICTHTML: 'strictHtml',
-
-  NS_SVG: 'http://www.w3.org/2000/svg',
-  NS_XHTML: 'http://www.w3.org/1999/xhtml',
-  NS_XLINK: 'http://www.w3.org/1999/xlink',
-
   SHADOWCOLOR: 'gray',
   SHADOW_OFFSET_X: 2,
   SHADOW_OFFSET_Y: 3,

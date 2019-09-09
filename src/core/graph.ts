@@ -2182,7 +2182,7 @@ export class Graph extends Disablable {
   convertDataToString(cell: Cell): string {
     const data = this.model.getData(cell)
     if (data != null) {
-      if (util.isHTMLNode(data)) {
+      if (util.isHtmlElem(data)) {
         return data.nodeName
       }
 
@@ -2342,6 +2342,18 @@ export class Graph extends Disablable {
     }
 
     return result
+  }
+
+  @hook()
+  getCellClassName(cell: Cell) {
+    const style = this.getStyle(cell)
+    return style.className || null
+  }
+
+  @hook()
+  getLabelClassName(cell: Cell) {
+    const style = this.getStyle(cell)
+    return style.labelClassName || null
   }
 
   // #endregion
@@ -3520,6 +3532,8 @@ export namespace Graph {
     getLink?: (this: Graph, cell: Cell) => string | null
     getCursor?: (this: Graph, cell: Cell) => string | null
     getTooltip?: (this: Graph, cell: Cell) => string | HTMLElement | null
+    getCellClassName?: (this: Graph, cell: Cell) => string | null
+    getLabelClassName?: (this: Graph, cell: Cell) => string | null
     getConstraints?: (
       this: Graph,
       cell: Cell,

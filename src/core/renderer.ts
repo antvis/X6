@@ -41,18 +41,18 @@ export class Renderer {
 
     if (state.shape != null && (rendering == null || rendering)) {
       this.redrawLabel(state, shapeChanged)
-      this.redrawCellOverlays(state, shapeChanged)
+      this.redrawOverlays(state, shapeChanged)
       this.redrawControl(state, shapeChanged)
     }
   }
 
   // #region redraw shape
 
-  private redrawShape(state: State, force: boolean, rendering: boolean) {
+  protected redrawShape(state: State, force: boolean, rendering: boolean) {
     const model = state.view.graph.model
     let shapeChanged = false
 
-    // Forces creation of new shape if shape style has changed
+    // Forces creation of new shape if shape name has changed
     if (
       state.shape != null &&
       state.style != null &&
@@ -72,12 +72,12 @@ export class Renderer {
       state.shape = this.createShape(state)
 
       if (state.shape != null) {
-        state.shape.minSvgStrokeWidth = this.minSvgStrokeWidth
         state.shape.antiAlias = this.antiAlias
+        state.shape.minSvgStrokeWidth = this.minSvgStrokeWidth
 
         this.createIndicatorShape(state)
         this.initializeShape(state)
-        this.createCellOverlays(state)
+        this.createOverlays(state)
         this.installListeners(state)
 
         // Forces a refresh of the handler if one exists
@@ -91,7 +91,7 @@ export class Renderer {
       state.shape != null &&
       (
         !util.equalEntries(state.shape.style, state.style) ||
-        this.checkPlaceholderStyles(state)
+        this.hasPlaceholderStyles(state)
       )
     ) {
       state.shape.resetStyle()
@@ -106,20 +106,22 @@ export class Renderer {
 
     if (state.shape != null) {
       // Handles changes of the collapse icon
-      this.createControl(state)
+      this.createFoldingButton(state)
 
-      // Redraws the cell if required, ignores changes to bounds if points are
-      // defined as the bounds are updated for the given points inside the shape
+      // Redraws the cell if required, ignores changes to bounds if
+      // points are defined as the bounds are updated for the given
+      // points inside the shape
       if (force || this.isShapeInvalid(state, state.shape)) {
 
         if (state.absolutePoints != null) {
-          state.shape.points = state.absolutePoints.slice() as Point[]
+          state.shape.points = state.absolutePoints.slice()
           delete state.shape.bounds
         } else {
           delete state.shape.points
           state.shape.bounds = state.bounds.clone()
         }
 
+        state.shape.className = this.getCellClassName(state)
         state.shape.scale = state.view.scale
 
         if (rendering == null || rendering) {
@@ -138,7 +140,7 @@ export class Renderer {
   /**
    * Returns true if the given shape must be repainted.
    */
-  private isShapeInvalid(state: State, shape: Shape) {
+  protected isShapeInvalid(state: State, shape: Shape) {
     return (
       shape.bounds == null ||
       shape.scale !== state.view.scale ||
@@ -153,7 +155,7 @@ export class Renderer {
     )
   }
 
-  private getShapeConstructor(state: State) {
+  protected getShapeConstructor(state: State) {
     let ctor = Shape.getShape(state.style.shape)
     if (ctor == null) {
       ctor = state.cell.isEdge()
@@ -179,7 +181,7 @@ export class Renderer {
     return shape
   }
 
-  private createIndicatorShape(state: State) {
+  protected createIndicatorShape(state: State) {
     if (state != null && state.shape != null) {
       state.shape.indicatorShape = Shape.getShape(
         state.view.graph.cellManager.getIndicatorShape(state),
@@ -187,15 +189,15 @@ export class Renderer {
     }
   }
 
-  private initializeShape(state: State) {
+  protected initializeShape(state: State) {
     if (state != null && state.shape != null) {
       state.shape.dialect = state.view.graph.dialect
       this.configureShape(state)
-      state.shape.init(state.view.getDrawPane()!)
+      state.shape.init(state.view.getDrawPane())
     }
   }
 
-  private configureShape(state: State) {
+  protected configureShape(state: State) {
     if (state != null && state.shape != null) {
       const graph = state.view.graph
       state.shape.apply(state)
@@ -216,7 +218,7 @@ export class Renderer {
    * This implementation resolves these keywords on the fill, stroke
    * and gradient color keys.
    */
-  private postConfigureShape(state: State) {
+  protected postConfigureShape(state: State) {
     if (state != null && state.shape != null) {
       this.resolveColor(state, 'fill', 'fill')
       this.resolveColor(state, 'stroke', 'stroke')
@@ -230,7 +232,7 @@ export class Renderer {
    * Resolves special keywords 'inherit', 'indicated' and 'swimlane' and sets
    * the respective color on the shape.
    */
-  private resolveColor(state: State, field: string, key: string) {
+  protected resolveColor(state: State, field: string, key: string) {
     const graph = state.view.graph
     const value = (state.shape as any)[field]
     let referenced = null
@@ -269,10 +271,10 @@ export class Renderer {
     }
   }
 
-  private checkPlaceholderStyles(state: State) {
+  protected hasPlaceholderStyles(state: State) {
     if (state.style != null) {
-      const values = ['inherit', 'swimlane', 'indicated']
       const styles = ['fill', 'stroke', 'gradientColor']
+      const values = ['inherit', 'swimlane', 'indicated']
 
       for (let i = 0, ii = styles.length; i < ii; i += 1) {
         if (values.includes((state.style as any)[styles[i]])) {
@@ -284,7 +286,7 @@ export class Renderer {
     return false
   }
 
-  private createCellOverlays(state: State) {
+  protected createOverlays(state: State) {
     const graph = state.view.graph
     const overlays = graph.getOverlays(state.cell)
     let dic: Dictionary<Overlay, ImageShape> | null = null
@@ -307,7 +309,7 @@ export class Renderer {
           shape.overlay = overlay
 
           this.initializeOverlay(state, shape)
-          this.installCellOverlayListeners(state, overlay, shape)
+          this.installOverlayListeners(state, overlay, shape)
 
           if (overlay.cursor != null) {
             shape.elem!.style.cursor = overlay.cursor
@@ -322,14 +324,15 @@ export class Renderer {
     if (state.overlays != null) {
       state.overlays.each(shape => shape && shape.dispose())
     }
+
     state.overlays = dic
   }
 
-  private initializeOverlay(state: State, overlayShape: Shape) {
-    overlayShape.init(state.view.getOverlayPane()!)
+  protected initializeOverlay(state: State, overlayShape: Shape) {
+    overlayShape.init(state.view.getOverlayPane())
   }
 
-  private installCellOverlayListeners(
+  protected installOverlayListeners(
     state: State,
     overlay: Overlay,
     overlayShape: Shape,
@@ -362,7 +365,7 @@ export class Renderer {
     }
   }
 
-  private installListeners(state: State) {
+  protected installListeners(state: State) {
     const graph = state.view.graph
     const elem = state.shape!.elem!
 
@@ -374,7 +377,7 @@ export class Renderer {
 
       if (
         (
-          graph.dialect !== constants.DIALECT_SVG &&
+          graph.dialect !== 'svg' &&
           util.getNodeName(DomEvent.getSource(e)) === 'img'
         ) ||
         detector.SUPPORT_TOUCH
@@ -427,7 +430,7 @@ export class Renderer {
     }
   }
 
-  private createControl(state: State) {
+  protected createFoldingButton(state: State) {
     const graph = state.view.graph
     const image = graph.getFoldingImage(state)
 
@@ -438,11 +441,11 @@ export class Renderer {
         state.control.dialect = graph.dialect
         state.control.preserveImageAspect = false
 
-        this.initControl(
+        this.initFoldingButton(
           state,
           state.control,
           true,
-          this.createControlClickHandler(state),
+          this.createFoldingClickHandler(state),
         )
       }
     } else if (state.control != null) {
@@ -451,7 +454,7 @@ export class Renderer {
     }
   }
 
-  private createControlClickHandler(state: State) {
+  protected createFoldingClickHandler(state: State) {
     const graph = state.view.graph
     return (e: MouseEvent) => {
       if (this.forceControlClickHandler || graph.isEnabled()) {
@@ -462,7 +465,7 @@ export class Renderer {
     }
   }
 
-  private initControl(
+  protected initFoldingButton(
     state: State,
     control: ImageShape,
     handleEvents: boolean,
@@ -547,7 +550,7 @@ export class Renderer {
 
   // #region redrawlabel
 
-  private redrawLabel(state: State, forced?: boolean) {
+  protected redrawLabel(state: State, forced?: boolean) {
     const graph = state.view.graph
     const txt = this.getLabelValue(state)
     const wrapping = graph.isWrapping(state.cell)
@@ -555,11 +558,10 @@ export class Renderer {
 
     const isForceHtml = (
       state.view.graph.isHtmlLabel(state.cell) ||
-      (txt != null && util.isHTMLNode(txt))
+      (txt != null && util.isHtmlElem(txt))
     )
 
     const dialect: Dialect = isForceHtml ? 'html' : state.view.graph.dialect
-
     const overflow = state.style.overflow || 'visible'
 
     if (
@@ -576,7 +578,7 @@ export class Renderer {
     if (
       state.text == null &&
       txt != null &&
-      (util.isHTMLNode(txt) || txt.length > 0)
+      (util.isHtmlElem(txt) || txt.length > 0)
     ) {
       this.createLabel(state, txt)
     } else if (
@@ -624,22 +626,25 @@ export class Renderer {
         if (
           state.text.bounds.width !== 0 &&
           state.unscaledWidth != null &&
-          Math.round((state.text.bounds.width / state.text.scale * nextScale) - bounds.width) !== 0
+          Math.round(
+            (state.text.bounds.width / state.text.scale * nextScale)
+            - bounds.width,
+          ) !== 0
         ) {
           state.unscaledWidth = null
         }
 
         state.text.dialect = dialect
+        state.text.scale = nextScale
         state.text.value = txt
         state.text.bounds = bounds
-        state.text.scale = nextScale
         state.text.wrap = wrapping
         state.text.clipped = clipping
         state.text.overflow = overflow
 
         // Preserves visible state
         const vis = state.text!.elem!.style.visibility
-        this.redrawLabelShape(state.text)
+        this.redrawLabelShape(state)
         state.text!.elem!.style.visibility = vis
       }
     }
@@ -649,7 +654,7 @@ export class Renderer {
     return state.view.graph.getLabel(state.cell)
   }
 
-  private createLabel(state: State, value: string) {
+  protected createLabel(state: State, value: string) {
     const graph = state.view.graph
 
     if (
@@ -659,7 +664,7 @@ export class Renderer {
       // Avoids using DOM node for empty labels
       const isForceHtml = (
         graph.isHtmlLabel(state.cell) ||
-        (value != null && util.isHTMLNode(value))
+        (value != null && util.isHtmlElem(value))
       )
 
       state.text = new this.defaultTextShape(
@@ -730,7 +735,7 @@ export class Renderer {
               DomEvent.MOUSE_DOWN, new MouseEventEx(e, state),
             )
             forceGetCell = (
-              graph.dialect !== constants.DIALECT_SVG &&
+              graph.dialect !== 'svg' &&
               util.getNodeName(DomEvent.getSource(e)) === 'img'
             )
           }
@@ -768,15 +773,15 @@ export class Renderer {
     }
   }
 
-  private initializeLabel(state: State, shape: Shape) {
-    if (detector.NO_FOREIGNOBJECT && shape.dialect !== constants.DIALECT_SVG) {
+  protected initializeLabel(state: State, shape: Shape) {
+    if (detector.NO_FOREIGNOBJECT && shape.dialect !== 'svg') {
       shape.init(state.view.graph.container)
     } else {
-      shape.init(state.view.getDrawPane()!)
+      shape.init(state.view.getDrawPane())
     }
   }
 
-  private getLabelBounds(state: State) {
+  protected getLabelBounds(state: State) {
     const graph = state.view.graph
     const scale = state.view.scale
     const isEdge = graph.getModel().isEdge(state.cell)
@@ -853,29 +858,31 @@ export class Renderer {
     return bounds
   }
 
-  private getTextScale(state: State) {
+  protected getTextScale(state: State) {
     return state.view.scale
   }
 
-  private redrawLabelShape(shape: Shape) {
+  protected redrawLabelShape(state: State) {
+    const shape = state.text!
+    shape.className = this.getLabelClassName(state)
     shape.redraw()
   }
 
   /**
    * Returns true if the event is for the shape of the given state.
    */
-  private isShapeEvent(state: State, e: MouseEvent) {
+  protected isShapeEvent(state: State, e: MouseEvent) {
     return true
   }
 
   /**
    * Returns true if the event is for the label of the given state.
    */
-  private isLabelEvent(state: State, e: MouseEvent) {
+  protected isLabelEvent(state: State, e: MouseEvent) {
     return true
   }
 
-  private isTextShapeInvalid(state: State, shape: Text) {
+  protected isTextShapeInvalid(state: State, shape: Text) {
     const check = (prop: string, styleName: string, defaultValue?: any) => {
       let result = false
 
@@ -915,7 +922,7 @@ export class Renderer {
       check('textDirection', 'textDirection', constants.DEFAULT_TEXT_DIRECTION)
   }
 
-  private rotateLabelBounds(state: State, bounds: Rectangle) {
+  protected rotateLabelBounds(state: State, bounds: Rectangle) {
     bounds.y -= state.text!.margin.y * bounds.height
     bounds.x -= state.text!.margin.x * bounds.width
 
@@ -972,10 +979,49 @@ export class Renderer {
 
   // #endregion
 
-  private redrawCellOverlays(state: State, forced?: boolean) {
-    this.createCellOverlays(state)
+  // #region className
+
+  protected getCellClassName(state: State) {
+    const graph = state.view.graph
+    const model = graph.model
+    const cell = state.cell
+    const prefixCls = graph.prefixCls
+    const isEdge = model.isEdge(cell)
+    const isNode = model.isNode(cell)
+
+    let className = `${prefixCls}-cell`
+    if (isEdge) {
+      className += ` ${prefixCls}-edge`
+    }
+    if (isNode) {
+      className += ` ${prefixCls}-node`
+    }
+
+    const manual = graph.getCellClassName(cell)
+    if (manual != null && manual.length > 0) {
+      className += ` ${manual}`
+    }
+
+    return className
+  }
+
+  protected getLabelClassName(state: State) {
+    const graph = state.view.graph
+    const prefixCls = graph.prefixCls
+    let className = `${prefixCls}-label`
+    const manual = graph.getLabelClassName(state.cell)
+    if (manual != null && manual.length > 0) {
+      className += ` ${manual}`
+    }
+    return className
+  }
+
+  // #endregion
+
+  protected redrawOverlays(state: State, forced?: boolean) {
+    this.createOverlays(state)
     if (state.overlays != null) {
-      const rot = util.mod(state.style.rotation || 0, 90)
+      const rot = util.mod(util.getRotation(state), 90)
       const rad = util.toRad(rot)
       const cos = Math.cos(rad)
       const sin = Math.sin(rad)
@@ -1016,7 +1062,7 @@ export class Renderer {
     }
   }
 
-  private redrawControl(state: State, forced?: boolean) {
+  protected redrawControl(state: State, forced?: boolean) {
     const image = state.view.graph.getFoldingImage(state)
 
     if (state.control != null && image != null) {
@@ -1041,7 +1087,7 @@ export class Renderer {
     }
   }
 
-  private getControlBounds(state: State, w: number, h: number) {
+  protected getControlBounds(state: State, w: number, h: number) {
     if (state.control != null) {
       const s = state.view.scale
       let cx = state.bounds.getCenterX()

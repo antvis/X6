@@ -127,11 +127,13 @@ export class Shape extends Disposable {
   flipV: boolean
   gradientColor: string | null
   gradientDirection?: Direction
+
   startArrow?: string
   endArrow?: string
   startSize?: number
   endSize?: number
   direction?: Direction | null
+
   spacing: number = 0
 
   glass: boolean = false
@@ -192,16 +194,16 @@ export class Shape extends Disposable {
   }
 
   protected create(container: HTMLElement | SVGElement) {
-    return Private.isSvgElem(container)
-      ? this.createSvg()  // g
-      : this.createHtml() // div
+    return util.isSvgElem(container)
+      ? this.createSvgGroup()  // g
+      : this.createHtmlDiv() // div
   }
 
-  protected createSvg(): SVGGElement {
-    return Private.createSvgElement('g') as SVGGElement
+  protected createSvgGroup(): SVGGElement {
+    return util.createSvgElement('g') as SVGGElement
   }
 
-  protected createHtml(): HTMLDivElement {
+  protected createHtmlDiv(): HTMLDivElement {
     const elem = document.createElement('div') as HTMLDivElement
     elem.style.position = 'absolute'
     return elem
@@ -226,7 +228,7 @@ export class Shape extends Disposable {
         this.empty()
         this.updateClassName()
 
-        if (Private.isSvgElem(elem)) {
+        if (util.isSvgElem(elem)) {
           this.redrawSvgShape()
         } else {
           this.redrawHtmlShape()
@@ -242,14 +244,14 @@ export class Shape extends Disposable {
   }
 
   protected updateClassName() {
-    if (this.className != null && this.elem != null) {
-      util.setAttributes(this.elem, { class: this.className })
+    if (this.elem != null) {
+      this.elem.setAttribute('class', this.className || '')
     }
   }
 
   protected empty() {
     if (this.elem != null) {
-      if (Private.isSvgElem(this.elem)) {
+      if (util.isSvgElem(this.elem)) {
         util.emptyElement(this.elem)
       } else {
         const cursorStyle = (this.cursor != null)
@@ -302,7 +304,7 @@ export class Shape extends Disposable {
   protected createCanvas() {
     let canvas: SvgCanvas2D | null = null
 
-    if (Private.isSvgElem(this.elem)) {
+    if (util.isSvgElem(this.elem)) {
       canvas = this.createSvgCanvas()
     }
 
@@ -686,7 +688,7 @@ export class Shape extends Disposable {
     w: number,
     h: number,
   ) {
-    const rect = Private.createSvgElement('rect') as SVGElement
+    const rect = util.createSvgElement('rect')
     util.setAttributes(rect, {
       x, y, w, h,
       fill: 'none',
@@ -958,28 +960,29 @@ export class Shape extends Disposable {
     this.state = state
     this.style = state.style // keeps a reference to style
 
+    this.opacity = this.style.opacity || this.opacity
+    this.spacing = this.style.spacing || this.spacing
+    this.rotation = this.style.rotation || this.rotation
+    this.direction = this.style.direction || this.direction
+
     this.fill = this.style.fill || this.fill
+    this.fillOpacity = this.style.fillOpacity || this.fillOpacity
     this.gradientColor = this.style.gradientColor || this.gradientColor
     this.gradientDirection = this.style.gradientDirection || this.gradientDirection
-    this.opacity = this.style.opacity || this.opacity
-    this.fillOpacity = this.style.fillOpacity || this.fillOpacity
-    this.strokeOpacity = this.style.strokeOpacity || this.strokeOpacity
+
     this.stroke = this.style.stroke || this.stroke
     this.strokeWidth = this.style.strokeWidth || this.strokeWidth
-    this.spacing = this.style.spacing || this.spacing
+    this.strokeOpacity = this.style.strokeOpacity || this.strokeOpacity
+
     this.startSize = this.style.startSize || this.startSize
     this.endSize = this.style.endSize || this.endSize
     this.startArrow = this.style.startArrow || this.startArrow
     this.endArrow = this.style.endArrow || this.endArrow
-    this.rotation = this.style.rotation || this.rotation
-    this.direction = this.style.direction || this.direction
+
     this.flipH = this.style.flipH || this.flipH
     this.flipV = this.style.flipV || this.flipV
 
-    if (
-      this.direction === 'north' ||
-      this.direction === 'south'
-    ) {
+    if (this.direction === 'north' || this.direction === 'south') {
       const tmp = this.flipH
       this.flipH = this.flipV
       this.flipV = tmp
@@ -1037,7 +1040,7 @@ export class Shape extends Disposable {
   // #region boundingBox
 
   updateBoundingBox() {
-    if (this.useSvgBoundingBox && Private.isSvgElem(this.elem)) {
+    if (this.useSvgBoundingBox && util.isSvgElem(this.elem)) {
       try {
         const b = (this.elem as SVGGraphicsElement).getBBox()
         if (b.width > 0 && b.height > 0) {
@@ -1160,19 +1163,6 @@ export class Shape extends Disposable {
     this.oldGradients = null
 
     super.dispose()
-  }
-}
-
-namespace Private {
-  export function createSvgElement(tagName: string = 'g') {
-    return document.createElementNS(constants.NS_SVG, tagName)
-  }
-
-  export function isSvgElem(elem: any) {
-    return (
-      elem != null &&
-      (elem as SVGElement).ownerSVGElement != null
-    )
   }
 }
 
