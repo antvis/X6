@@ -7,7 +7,7 @@ import { Rectangle, Point, FontStyle } from '../struct'
 import { Align, VAlign, TextDirection } from '../types'
 
 export class Text extends Shape {
-  value: string
+  value: HTMLElement | string
   fontColor: string
   align: Align
   verticalAlign: VAlign
@@ -35,7 +35,7 @@ export class Text extends Shape {
   private unrotatedBoundingBox: Rectangle | null
 
   constructor(
-    value: string,
+    value: HTMLElement | string,
     bounds: Rectangle,
     {
       align,
@@ -155,7 +155,7 @@ export class Text extends Shape {
   /**
    * Contains the last rendered text value. Used for caching.
    */
-  lastValue: string | null = null
+  lastValue: HTMLElement | string | null = null
 
   /**
    * Specifies if caching for HTML labels should be enabled.
@@ -224,7 +224,7 @@ export class Text extends Shape {
       let val = this.value
 
       if (fmt === 'html' && !util.isHtmlElem(this.value)) {
-        val = util.replaceTrailingNewlines(val, '<div><br></div>')
+        val = util.replaceTrailingNewlines(val as string, '<div><br></div>')
       }
 
       // Handles trailing newlines to make sure they are visible in rendering output
@@ -232,7 +232,7 @@ export class Text extends Shape {
         !util.isHtmlElem(this.value) &&
         this.replaceLinefeeds &&
         fmt === 'html'
-      ) ? val.replace(/\n/g, '<br/>') : val
+      ) ? (val as string).replace(/\n/g, '<br/>') : val
 
       let dir = this.textDirection
       if (dir === 'auto' && !realHtml) {
@@ -245,7 +245,7 @@ export class Text extends Shape {
 
       c.text(
         x, y, w, h,
-        val,
+        val as string,
         this.align,
         this.verticalAlign,
         this.wrap,
@@ -365,7 +365,7 @@ export class Text extends Shape {
   getAutoDirection(): TextDirection {
     // Looks for strong (directional) characters
     // tslint:disable-next-line
-    const tmp = /[A-Za-z\u05d0-\u065f\u066a-\u06ef\u06fa-\u07ff\ufb1d-\ufdff\ufe70-\ufefc]/.exec(this.value)
+    const tmp = /[A-Za-z\u05d0-\u065f\u066a-\u06ef\u06fa-\u07ff\ufb1d-\ufdff\ufe70-\ufefc]/.exec(this.value as string)
 
     // Returns the direction defined by the character
     return (tmp != null && tmp.length > 0 && tmp[0] > 'z')
@@ -589,11 +589,11 @@ export class Text extends Shape {
     } else {
       let val = this.value
       if (this.dialect !== 'html') {
-        val = util.escape(val)
+        val = util.escape(val as string)
       }
 
       // Handles trailing newlines to make sure they are visible in rendering output
-      val = util.replaceTrailingNewlines(val, '<div>&nbsp;</div>')
+      val = util.replaceTrailingNewlines(val as string, '<div>&nbsp;</div>')
       val = this.replaceLinefeeds ? val.replace(/\n/g, '<br/>') : val
       val = `<div style="display:inline-block;_display:inline;">${val}</div>`
 
@@ -609,11 +609,11 @@ export class Text extends Shape {
       let val = this.value
 
       if (this.dialect !== 'html') {
-        val = util.escape(val)
+        val = util.escape(val as string)
       }
 
       // Handles trailing newlines to make sure they are visible in rendering output
-      val = util.replaceTrailingNewlines(val, '<div><br></div>')
+      val = util.replaceTrailingNewlines(val as string, '<div><br></div>')
       val = (this.replaceLinefeeds) ? val.replace(/\n/g, '<br/>') : val
 
       const bg = (this.background != null && this.background !== constants.NONE)

@@ -8,7 +8,7 @@ import { MouseEventEx } from '../common/mouse-event'
 import { Shape, Stencil, Connector, RectangleShape, Text, ImageShape } from '../shape'
 
 export class Renderer {
-  antiAlias: boolean = true
+  antialiased: boolean = true
   minSvgStrokeWidth: number = 1
   defaultEdgeShape = Connector
   defaultNodeShape = RectangleShape
@@ -72,7 +72,7 @@ export class Renderer {
       state.shape = this.createShape(state)
 
       if (state.shape != null) {
-        state.shape.antiAlias = this.antiAlias
+        state.shape.antialiased = this.antialiased
         state.shape.minSvgStrokeWidth = this.minSvgStrokeWidth
 
         this.createIndicatorShape(state)
@@ -578,12 +578,12 @@ export class Renderer {
     if (
       state.text == null &&
       txt != null &&
-      (util.isHtmlElem(txt) || txt.length > 0)
+      (util.isHtmlElem(txt) || (txt as string).length > 0)
     ) {
       this.createLabel(state, txt)
     } else if (
       state.text != null &&
-      (txt == null || txt.length === 0)
+      (txt == null || (txt as string).length === 0)
     ) {
       state.text.dispose()
       state.text = null
@@ -636,7 +636,7 @@ export class Renderer {
 
         state.text.dialect = dialect
         state.text.scale = nextScale
-        state.text.value = txt
+        state.text.value = txt!
         state.text.bounds = bounds
         state.text.wrap = wrapping
         state.text.clipped = clipping
@@ -654,7 +654,7 @@ export class Renderer {
     return state.view.graph.getLabel(state.cell)
   }
 
-  protected createLabel(state: State, value: string) {
+  protected createLabel(state: State, value: HTMLElement | string) {
     const graph = state.view.graph
 
     if (

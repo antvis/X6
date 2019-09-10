@@ -53,6 +53,7 @@
     "@types/react": "^16.8.18",
     "@types/react-dom": "^16.8.4",
     "@types/react-router-dom": "^4.3.5",
+    "@types/webpack-env": "^1.14.0",
     "base64-img": "^1.0.4",
     "coveralls": "^3.0.6",
     "css-loader": "^3.2.0",

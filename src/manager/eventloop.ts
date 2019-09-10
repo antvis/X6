@@ -79,7 +79,7 @@ export class EventLoop extends BaseManager {
   }
 
   getCursorForEvent(e: MouseEventEx): string | null {
-    return this.graph.getCursor(e.getCell())
+    return this.graph.getCellCursor(e.getCell())
   }
 
   protected updateMouseEvent(e: MouseEventEx, eventName: string) {

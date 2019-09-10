@@ -11,6 +11,8 @@ import { Indicators } from './indicators'
 import { LabelPosition } from './label-position'
 import { Labels } from './labels'
 import { Markers } from './markers'
+import { Editing } from './editing'
+import { Permissions } from './permissions'
 
 import './index.less'
 
@@ -32,6 +34,8 @@ export const Examples: React.SFC<Examples.Props> = () => (
         <li><Link to="/examples/label-position">Label Position</Link></li>
         <li><Link to="/examples/labels">Labels</Link></li>
         <li><Link to="/examples/markers">Markers</Link></li>
+        <li><Link to="/examples/editing">Editing</Link></li>
+        <li><Link to="/examples/permissions">Permissions</Link></li>
       </ul>
     </div>
     <div className="examples-content">
@@ -46,6 +50,8 @@ export const Examples: React.SFC<Examples.Props> = () => (
       <Route path="/examples/label-position" component={LabelPosition} />
       <Route path="/examples/labels" component={Labels} />
       <Route path="/examples/markers" component={Markers} />
+      <Route path="/examples/editing" component={Editing} />
+      <Route path="/examples/permissions" component={Permissions} />
     </div>
   </div>
 )

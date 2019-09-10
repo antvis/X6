@@ -1,5 +1,6 @@
 import * as util from '../util'
-import { Graph, Feature } from '../core'
+import { Graph } from '../core'
+import { getRubberbandStyle } from '../core/option'
 import { MouseEventEx, DomEvent, detector } from '../common'
 import { Rectangle, Point } from '../struct'
 import { MouseHandler } from '.'
@@ -280,7 +281,7 @@ export class RubberbandHandler extends MouseHandler {
       this.width = Math.max(this.origin.x, x) - this.x
       this.height = Math.max(this.origin.y, y) - this.y
 
-      const style = Feature.getRubberbandStyle({
+      const style = getRubberbandStyle({
         graph: this.graph,
         x: this.x,
         y: this.y,

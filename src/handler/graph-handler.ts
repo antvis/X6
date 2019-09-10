@@ -1,11 +1,12 @@
 import * as util from '../util'
 import { detector, constants, MouseEventEx, DomEvent } from '../common'
-import { Graph, Cell, Model, Feature } from '../core'
+import { Graph, Cell, Model } from '../core'
 import { Rectangle, Point } from '../struct'
 import { RectangleShape } from '../shape'
 import { Guide } from './guide'
 import { CellHighlight } from './cell-highlight'
 import { MouseHandler } from './handler-mouse'
+import { createGuide, isGuideEnabled } from '../core/option'
 
 export class GraphHandler extends MouseHandler {
   /**
@@ -269,7 +270,7 @@ export class GraphHandler extends MouseHandler {
     this.previewBounds = this.getPreviewBounds(this.cells)
 
     if (this.guideEnabled) {
-      this.guide = Feature.createGuide(this.graph, this.getGuideStates())
+      this.guide = createGuide(this.graph, this.getGuideStates())
     }
   }
 
@@ -520,7 +521,7 @@ export class GraphHandler extends MouseHandler {
   }
 
   protected isGuideEnabledForEvent(e: MouseEventEx) {
-    return Feature.isGuideEnabled({
+    return isGuideEnabled({
       e: e.getEvent(),
       graph: this.graph,
     })

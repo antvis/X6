@@ -780,12 +780,12 @@ export class ViewportManager extends BaseManager {
       let width = Math.max(0, bounds.x + bounds.width + 2 * border * scale)
       let height = Math.max(0, bounds.y + bounds.height + 2 * border * scale)
 
-      if (this.graph.minimumContainerSize != null) {
-        width = Math.max(width, this.graph.minimumContainerSize.width)
-        height = Math.max(height, this.graph.minimumContainerSize.height)
+      if (this.graph.minContainerSize != null) {
+        width = Math.max(width, this.graph.minContainerSize.width)
+        height = Math.max(height, this.graph.minContainerSize.height)
       }
 
-      if (this.graph.resizeContainer) {
+      if (this.graph.shouldResizeContainer()) {
         this.doResizeContainer(width, height)
       }
 
@@ -805,9 +805,9 @@ export class ViewportManager extends BaseManager {
         }
       }
 
-      if (this.graph.minimumGraphSize != null) {
-        width = Math.max(width, this.graph.minimumGraphSize.width * scale)
-        height = Math.max(height, this.graph.minimumGraphSize.height * scale)
+      if (this.graph.minGraphSize != null) {
+        width = Math.max(width, this.graph.minGraphSize.width * scale)
+        height = Math.max(height, this.graph.minGraphSize.height * scale)
       }
 
       width = Math.ceil(width)
@@ -832,7 +832,7 @@ export class ViewportManager extends BaseManager {
         }
       }
 
-      this.updatePageBreaks(this.graph.pageBreaksVisible, width, height)
+      this.updatePageBreaks(this.graph.pageBreakEnabled, width, height)
     }
 
     this.graph.trigger(Graph.events.size, bounds)
@@ -852,8 +852,8 @@ export class ViewportManager extends BaseManager {
     const ps = this.graph.pageScale
     const page = new Rectangle(0, 0, Math.ceil(fmt.width * ps), Math.ceil(fmt.height * ps))
 
-    const hCount = (this.graph.pageBreaksVisible) ? Math.ceil(width / page.width) : 1
-    const vCount = (this.graph.pageBreaksVisible) ? Math.ceil(height / page.height) : 1
+    const hCount = (this.graph.pageBreakEnabled) ? Math.ceil(width / page.width) : 1
+    const vCount = (this.graph.pageBreakEnabled) ? Math.ceil(height / page.height) : 1
 
     return new Rectangle(0, 0, hCount * page.width + 2 + tr.x, vCount * page.height + 2 + tr.y)
   }
@@ -862,12 +862,12 @@ export class ViewportManager extends BaseManager {
    * Resizes the container for the given graph width and height.
    */
   protected doResizeContainer(width: number, height: number) {
-    const w = this.graph.maximumContainerSize != null
-      ? Math.min(this.graph.maximumContainerSize.width, width)
+    const w = this.graph.maxContainerSize != null
+      ? Math.min(this.graph.maxContainerSize.width, width)
       : width
 
-    const h = this.graph.maximumContainerSize != null
-      ? Math.min(this.graph.maximumContainerSize.height, height)
+    const h = this.graph.maxContainerSize != null
+      ? Math.min(this.graph.maxContainerSize.height, height)
       : height
 
     this.container.style.width = `${Math.ceil(w)}px`

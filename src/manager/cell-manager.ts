@@ -1174,7 +1174,7 @@ export class CellManager extends BaseManager {
 
       // Adds space for label
       let value = this.renderer.getLabelValue(state)
-      if (value != null && value.length > 0) {
+      if (value != null && typeof value === 'string' && value.length > 0) {
         if (!this.graph.isHtmlLabel(state.cell)) {
           value = util.escape(value)
         }
@@ -1637,7 +1637,7 @@ export class CellManager extends BaseManager {
 
         if (clone) {
           // tslint:disable-next-line
-          cells = this.cloneCells(cells, this.graph.isCloneInvalidEdges(), cache)!
+          cells = this.cloneCells(cells, this.graph.isInvalidEdgesClonable(), cache)!
 
           if (target == null) {
             // tslint:disable-next-line
@@ -1661,7 +1661,7 @@ export class CellManager extends BaseManager {
           (
             !clone &&
             this.graph.isDisconnectOnMove() &&
-            this.graph.isAllowDanglingEdges()
+            this.graph.isDanglingEdgesEnabled()
           ),
           target == null,
           this.graph.isExtendParentsOnMove() && target == null,
@@ -1963,7 +1963,7 @@ export class CellManager extends BaseManager {
       this.model.batchUpdate(() => {
         cells.forEach((cell) => {
           if (
-            (!checkFoldable || this.graph.isFoldable(cell, collapse)) &&
+            (!checkFoldable || this.graph.isCellFoldable(cell, collapse)) &&
             collapse !== this.graph.isCellCollapsed(cell)
           ) {
             this.model.setCollapsed(cell, collapse)

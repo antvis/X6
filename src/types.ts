@@ -117,7 +117,7 @@ export interface Style {
   fontStyle?: FontStyle
   textOpacity?: number
   textDirection?: TextDirection
-  overflow?: string
+  overflow?: 'fill' | 'width' | 'visible' | 'hidden'
   whiteSpace?: 'nowrap' | 'wrap'
   align?: Align
   verticalAlign?: VAlign

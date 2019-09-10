@@ -62,7 +62,7 @@ export class SelectionHandler extends MouseHandler {
         }
 
         if (handler == null) {
-          handler = this.graph.handlerManager.createCellHandler(state) as NodeHandler
+          handler = this.graph.createCellHandler(state) as NodeHandler
           this.trigger(SelectionHandler.events.addHandler, { state })
         }
 
@@ -91,7 +91,7 @@ export class SelectionHandler extends MouseHandler {
       const y = handler.startY
 
       handler.dispose()
-      handler = this.graph.handlerManager.createCellHandler(state) as NodeHandler
+      handler = this.graph.createCellHandler(state) as NodeHandler
 
       if (handler != null) {
         this.handlers.set(state.cell, handler)

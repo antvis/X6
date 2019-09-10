@@ -1119,7 +1119,7 @@ export class View extends Primer {
     let edge = this.isLoopStyleEnabled(
       edgeState, points, sourceState, targetState,
     )
-      ? (edgeState.style.loopStyle || this.graph.defaultLoopStyle)
+      ? (edgeState.style.loopStyle || this.graph.defaultLoopRouter)
       : edgeState.style.noEdgeStyle
         ? null
         : edgeState.style.edge

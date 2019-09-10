@@ -142,8 +142,10 @@ export class CellEditor extends Disposable {
 
   init() {
     this.textarea = document.createElement('div')
-    this.textarea.className = 'mxCellEditor mxPlainTextEditor'
     this.textarea.contentEditable = 'true'
+
+    const prefixCls = this.graph.prefixCls
+    this.textarea.className = `${prefixCls}-cell-editor`
 
     // Workaround for selection outside of DIV if height is 0
     if (detector.IS_CHROME) {
@@ -293,7 +295,7 @@ export class CellEditor extends Disposable {
     return (
       e.keyCode === 113 /* F2 */ ||
       (
-        this.graph.isEnterStopsCellEditing() &&
+        this.graph.shouldStopEditingOnEnter() &&
         e.keyCode === 13 /* Enter */ &&
         !DomEvent.isControlDown(e) &&
         !DomEvent.isShiftDown(e)
@@ -335,7 +337,7 @@ export class CellEditor extends Disposable {
   }
 
   protected getInitialValue(state: State, trigger?: Event) {
-    let result = util.escape(this.graph.getEditingValue(state.cell, trigger))
+    let result = util.escape(this.graph.getEditingContent(state.cell, trigger))
 
     // Workaround for trailing line breaks being ignored in the editor
     if (

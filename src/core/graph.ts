@@ -5,11 +5,25 @@ import { Cell } from './cell'
 import { View } from './view'
 import { Model } from './model'
 import { State } from './state'
-import { Feature } from './feature'
 import { Geometry } from './geometry'
 import { Renderer } from './renderer'
+import { IHooks } from './hook'
+import { RoutingFunction } from './registry'
 import { Align, VAlign, Style, Dialect } from '../types'
-import { constants, detector, DomEvent, MouseEventEx, Disablable } from '../common'
+import {
+  SimpleOptions,
+  CompositeOptions,
+  GraphOptions,
+  getOptions,
+  applyOptions,
+} from './option'
+import {
+  constants,
+  detector,
+  DomEvent,
+  MouseEventEx,
+  Disablable,
+} from '../common'
 import {
   Rectangle,
   Point,
@@ -30,14 +44,15 @@ import {
   SelectionHandler,
   GraphHandler,
   ConnectionHandler,
+  RubberbandHandler,
   NodeHandler,
   EdgeHandler,
-  RubberbandHandler,
+  EdgeElbowHandler,
+  EdgeSegmentHandler,
 } from '../handler'
 import {
   ChangeManager,
   EventLoop,
-  HandlerManager,
   Selection,
   SelectionManager,
   ValidationManager,
@@ -45,7 +60,12 @@ import {
   CellManager,
 } from '../manager'
 
-export class Graph extends Disablable {
+export class Graph extends Disablable implements
+  IHooks,
+  SimpleOptions,
+  CompositeOptions {
+
+  public readonly options: Graph.Options
   public readonly container: HTMLElement
   public readonly model: Model
   public readonly view: View
@@ -56,85 +76,45 @@ export class Graph extends Disablable {
   public readonly eventloop: EventLoop
   public readonly selection: Selection
   public readonly selectionManager: SelectionManager
-  public readonly handlerManager: HandlerManager
   public readonly validator: ValidationManager
   public readonly viewport: ViewportManager
   public readonly cellManager: CellManager
 
-  tooltipHandler: TooltipHandler
-  popupMenuHandler: PopupMenuHandler
-  selectionHandler: SelectionHandler
-  connectionHandler: ConnectionHandler
-  panningHandler: PanningHandler
+  public readonly tooltipHandler: TooltipHandler
+  public readonly popupMenuHandler: PopupMenuHandler
+  public readonly selectionHandler: SelectionHandler
+  public readonly connectionHandler: ConnectionHandler
+  public readonly panningHandler: PanningHandler
+  public readonly graphHandler: GraphHandler
+  public readonly rubberbandHandler: RubberbandHandler
   panningManager: any
-  graphHandler: GraphHandler
-  rubberbandHandler: RubberbandHandler
+
+  public tx: number = 0
+  public ty: number = 0
+
+  /**
+   * Get the native value of hooked method.
+   */
+  public getNativeValue: <T>() => (T | null)
+
+  // #region :::::::::::: Properties
 
   prefixCls: string
   dialect: Dialect
-
-  /**
-   * An array of `Multiplicity` describing the allowed
-   * connections in a graph.
-   */
+  antialiased: boolean
   multiplicities: Multiplicity[] = []
-
-  /**
-   * Specifies the default parent to be used to insert new cells.
-   */
-  defaultParent: Cell | null
-
-  /**
-   * Specifies the alternate edge style to be used if the main control point
-   * on an edge is being doubleclicked.
-   *
-   * Default is `null`.
-   */
   alternateEdgeStyle: Style
-
-  /**
-   * Specifies if native double click events should be detected.
-   *
-   * Default is `true`.
-   */
   nativeDblClickEnabled: boolean = true
-
-  /**
-   * Specifies if double taps on touch-based devices should be handled as a
-   * double click.
-   *
-   * Default is `true`.
-   */
   doubleTapEnabled: boolean = true
-
-  /**
-   * Specifies the timeout for double taps and non-native double clicks.
-   *
-   * Default is `500` ms.
-   */
   doubleTapTimeout: number = 500
-
-  /**
-   * Specifies the tolerance for double taps and double clicks in quirks mode.
-   *
-   * Default is `25` pixels.
-   */
   doubleTapTolerance: number = 25
-
-  /**
-   * Specifies if tap and hold should be used for starting connections on
-   * touch-based devices.
-   *
-   * Default is `true`.
-   */
   tapAndHoldEnabled: boolean = true
-
-  /**
-   * Specifies the time for a tap and hold.
-   *
-   * Default is `500` ms.
-   */
   tapAndHoldDelay: number = 500
+
+  pageBreakEnabled: boolean = false
+  pageBreakColor = 'gray'
+  pageBreakDashed: boolean = true
+  minPageBreakDist: number = 20
 
   /**
    * Specifies if the background page should be visible.
@@ -143,215 +123,415 @@ export class Graph extends Disablable {
    */
   pageVisible: boolean = false
 
-  /**
-   * Specifies if a dashed line should be drawn between multiple pages.
-   *
-   * Default is `false`.
-   */
-  pageBreaksVisible: boolean = false
-
-  /**
-   * Specifies the color for page breaks.
-   *
-   * Default is `'gray'`.
-   */
-  pageBreakColor = 'gray'
-
-  /**
-   * Specifies the page breaks should be dashed. Default is true.
-   */
-  pageBreakDashed: boolean = true
-
-  /**
-   * Specifies the minimum distance for page breaks to be visible.
-   *
-   * Default is `20` (in pixels).
-   */
-  minPageBreakDist: number = 20
-
-  /**
-   * Specifies if the graph size should be rounded to the next page
-   * number in `sizeDidChange`.
-   *
-   * This is only used if the graph container has scrollbars.
-   *
-   * Default is `false`.
-   */
   preferPageSize: boolean = false
-
-  /**
-   * Specifies the page format for the background page.
-   */
   pageFormat: Rectangle = PageSize.A4_PORTRAIT
+  pageScale: number = 1.5
 
-  /**
-   * Specifies the scale of the background page.
-   *
-   * Default is `1.5`.
-   *
-   * Not yet implemented.
-   */
-  pageScale = 1.5
+  backgroundImage: Image
+  getBackgroundImage() { return this.backgroundImage }
+  setBackgroundImage(image: Image) { this.backgroundImage = image }
 
-  /**
-   * Specifies if the graph should automatically scroll if the mouse goes near
-   * the container edge while dragging. This is only taken into account if the
-   * container has scrollbars.
-   *
-   * Default is `true`.
-   *
-   * If you need this to work without scrollbars then set `ignoreScrollbars` to
-   * true. Please consult the `ignoreScrollbars` for details. In general, with
-   * no scrollbars, the use of `allowAutoPanning` is recommended.
-   */
   autoScroll: boolean = true
-
-  /**
-   * Specifies if the graph should automatically scroll regardless of the
-   * scrollbars. This will scroll the container using positive values for
-   * scroll positions. To avoid possible conflicts with panning, set
-   * `translateToScrollPosition` to true.
-   */
   ignoreScrollbars: boolean = false
-
-  /**
-   * Specifies if the graph should automatically convert the current scroll
-   * position to a translate in the graph view when a mouseUp event is received.
-   * This can be used to avoid conflicts when using `autoScroll` and
-   * `ignoreScrollbars` with no scrollbars in the container.
-   */
   translateToScrollPosition: boolean = false
-
-  /**
-   * Specifies if autoscrolling should be carried out via mxPanningManager even
-   * if the container has scrollbars. This disables <scrollPointToVisible> and
-   * uses <mxPanningManager> instead. If this is true then <autoExtend> is
-   * disabled. It should only be used with a scroll buffer or when scollbars
-   * are visible and scrollable in all directions. Default is false.
-   */
   timerAutoScroll: boolean = false
-
-  /**
-   * Specifies if panning via <panGraph> should be allowed to implement autoscroll
-   * if no scrollbars are available in <scrollPointToVisible>. To enable panning
-   * inside the container, near the edge, set <mxPanningManager.border> to a
-   * positive value. Default is false.
-   */
   allowAutoPanning: boolean = false
-
-  /**
-   * Specifies if the size of the graph should be automatically extended if the
-   * mouse goes near the container edge while dragging. This is only taken into
-   * account if the container has scrollbars. Default is true. See <autoScroll>.
-   */
   autoExtend: boolean = true
-
-  /**
-   * `Rectangle` that specifies the area in which all cells in the diagram
-   * should be placed. Use a width or height of 0 if you only want to give
-   * a upper, left corner.
-   */
-  maximumGraphBounds: Rectangle | null
-
-  /**
-   * `Rectangle` that specifies the minimum size of the graph.
-   *
-   * This is ignored if the graph container has no scrollbars.
-   *
-   * Default is `null`.
-   */
-  minimumGraphSize: Rectangle | null
-
-  /**
-   * <Rect> that specifies the minimum size of the <container> if
-   * <resizeContainer> is true.
-   */
-  minimumContainerSize: Rectangle | null
-
-  /**
-   * <Rect> that specifies the maximum size of the container if
-   * <resizeContainer> is true.
-   */
-  maximumContainerSize: Rectangle | null
-
-  /**
-   * Specifies if edges should appear in the foreground regardless of
-   * their order in the model. If `keepEdgesInForeground` and
-   * `keepEdgesInBackground` are both true then the normal order is applied.
-   *
-   * Default is `false`.
-   */
+  maxGraphBounds: Rectangle | null
+  minGraphSize: Rectangle | null
+  minContainerSize: Rectangle | null
+  maxContainerSize: Rectangle | null
   keepEdgesInForeground: boolean = false
-
-  /**
-   * Specifies if edges should appear in the background regardless of
-   * their order in the model. If `keepEdgesInForeground` and
-   * `keepEdgesInBackground` are both true then the normal order is applied.
-   *
-   * Default is `false`.
-   */
   keepEdgesInBackground: boolean = false
-
-  /**
-   * Specifies if the scale and translate should be reset if
-   * the root changes in the model.
-   *
-   * Default is `true`.
-   */
   resetViewOnRootChange: boolean = true
-
-  /**
-   * Specifies if edge control points should be reset after the resize of a
-   * connected cell.
-   *
-   * Default is `false`.
-   */
   resetEdgesOnResize: boolean = false
-
-  /**
-   * Specifies if edge control points should be reset after the move of a
-   * connected cell.
-   *
-   * Default is `false`.
-   */
   resetEdgesOnMove: boolean = false
-
-  /**
-   * Specifies if edge control points should be reset after the the edge
-   * has been reconnected.
-   *
-   * Default is `true`.
-   */
   resetEdgesOnConnect: boolean = true
-
-  defaultLoopStyle = routers.loop
-
-  /**
-   * The attribute used to find the color for the indicator if the indicator
-   * color is set to 'swimlane'.
-   */
+  defaultLoopRouter: RoutingFunction = routers.loop
   swimlaneIndicatorColorAttribute: string = 'fill'
-
-  /**
-   * Specifies the minimum scale to be applied in `fit`.
-   *
-   * Default is `0.1`. Set to `null` to allow any value.
-   */
   minFitScale: number = 0.1
-
-  /**
-   * Specifies the maximum scale to be applied in `fit`.
-   *
-   * Default is `8`. Set to `null` to allow any value.
-   */
   maxFitScale: number = 8
+  useScrollbarsForTranslate: boolean = true
+  keepSelectionVisibleOnZoom: boolean = false
+  centerZoom: boolean = true
+  zoomFactor: number = 1.2
+  cellsLocked: boolean = false
+  isCellsLocked() {
+    return this.cellsLocked
+  }
+  setCellsLocked(value: boolean) {
+    this.cellsLocked = value
+  }
 
-  options: Graph.Options
+  cellsCloneable: boolean = true
+  isCellsCloneable() {
+    return this.cellsCloneable
+  }
+  setCellsCloneable(value: boolean) {
+    this.cellsCloneable = value
+  }
+
+  cellsSelectable: boolean = true
+  isCellsSelectable() {
+    return this.cellsSelectable
+  }
+  setCellsSelectable(value: boolean) {
+    this.cellsSelectable = value
+  }
+
+  cellsDeletable: boolean = true
+  isCellsDeletable() {
+    return this.cellsDeletable
+  }
+  setCellsDeletable(value: boolean) {
+    this.cellsDeletable = value
+  }
+
+  nodeLabelsMovable: boolean = false
+  isNodeLabelsMovable() {
+    return this.nodeLabelsMovable
+  }
+  setNodeLabelsMovable(value: boolean) {
+    this.nodeLabelsMovable = value
+  }
+
+  edgeLabelsMovable: boolean = true
+  isEdgeLabelsMovable() {
+    return this.edgeLabelsMovable
+  }
+  setEdgeLabelsMovable(value: boolean) {
+    this.edgeLabelsMovable = value
+  }
+
+  cellsMovable: boolean = true
+  isCellsMovable() {
+    return this.cellsMovable
+  }
+  setCellsMovable(value: boolean) {
+    this.cellsMovable = value
+  }
+
+  cellsResizable: boolean = true
+  isCellsResizable() {
+    return this.cellsResizable
+  }
+  setCellsResizable(value: boolean) {
+    this.cellsResizable = value
+  }
+
+  cellsBendable: boolean = true
+  isCellsBendable() {
+    return this.cellsBendable
+  }
+  setCellsBendable(value: boolean) {
+    this.cellsBendable = value
+  }
+
+  cellsEditable: boolean = true
+  isCellsEditable() {
+    return this.cellsEditable
+  }
+  setCellsEditable(value: boolean) {
+    this.cellsEditable = value
+  }
+
+  cellsDisconnectable: boolean = true
+  isCellsDisconnectable() {
+    return this.cellsDisconnectable
+  }
+  setCellsDisconnectable(value: boolean) {
+    this.cellsDisconnectable = value
+  }
+
+  foldingEnabled: boolean = true
+  isFoldable() {
+    return this.foldingEnabled
+  }
+  enableFolding() {
+    this.foldingEnabled = true
+  }
+  disableFolding() {
+    this.foldingEnabled = false
+  }
+
+  collapsedImage: Image = images.collapsed
+  getCollapsedImage() {
+    return this.collapsedImage
+  }
+  setCollapsedImage(image: Image) {
+    this.collapsedImage = image
+  }
+
+  expandedImage: Image = images.expanded
+  getExpandedImage() {
+    return this.expandedImage
+  }
+  setExpandedImage(image: Image) {
+    this.expandedImage = image
+  }
+
+  htmlLabels: boolean = false
+  isHtmlLabels() {
+    return this.htmlLabels
+  }
+  setHtmlLabels(value: boolean) {
+    this.htmlLabels = value
+  }
+
+  labelsVisible: boolean = true
+
+  border: number = 0
+  getBorder() {
+    return this.border
+  }
+  setBorder(value: number) {
+    this.border = value
+  }
+
+  autoResizeContainer: boolean = false
+  shouldResizeContainer() {
+    return this.autoResizeContainer
+  }
+  enableAutoResizeContainer() {
+    this.autoResizeContainer = true
+  }
+  disableAutoResizeContainer() {
+    this.autoResizeContainer = false
+  }
+
+  escapeEnabled: boolean = true
+  isEscapeEnabled() {
+    return this.escapeEnabled
+  }
+  enableEscape() {
+    this.escapeEnabled = true
+  }
+  disableEscape() {
+    this.escapeEnabled = false
+  }
+
+  invokesStopCellEditing: boolean = true
+  isInvokesStopCellEditing() {
+    return this.invokesStopCellEditing
+  }
+  setInvokesStopCellEditing(value: boolean) {
+    this.invokesStopCellEditing = value
+  }
+
+  stopEditingOnPressEnter: boolean = false
+  shouldStopEditingOnEnter() {
+    return this.stopEditingOnPressEnter
+  }
+  setEnterStopsCellEditing(value: boolean) {
+    this.stopEditingOnPressEnter = value
+  }
+
+  exportEnabled: boolean = true
+  importEnabled: boolean = true
+
+  portsEnabled: boolean = true
+  isPortsEnabled() {
+    return this.portsEnabled
+  }
+  setPortsEnabled(value: boolean) {
+    this.portsEnabled = value
+  }
+
+  gridEnabled: boolean = false
+  isGridEnabled() {
+    return this.gridEnabled
+  }
+  enableGrid() {
+    this.gridEnabled = true
+  }
+  disableGrid() {
+    this.gridEnabled = false
+  }
+
+  gridSize: number
+  getGridSize() {
+    return this.gridSize
+  }
+  setGridSize(size: number) {
+    this.gridSize = size
+  }
+
+
+
+  tolerance: number = 4
+  getTolerance() {
+    return this.tolerance
+  }
+  setTolerance(value: number) {
+    this.tolerance = value
+  }
+
+  swimlaneNesting: boolean = true
+  isSwimlaneNesting() {
+    return this.swimlaneNesting
+  }
+  setSwimlaneNesting(value: boolean) {
+    this.swimlaneNesting = value
+  }
+
+  swimlaneSelectionEnabled: boolean = true
+  isSwimlaneSelectionEnabled() {
+    return this.swimlaneSelectionEnabled
+  }
+  setSwimlaneSelectionEnabled(value: boolean) {
+    this.swimlaneSelectionEnabled = value
+  }
+
+  multigraph: boolean = true
+  isMultigraph() {
+    return this.multigraph
+  }
+  enableMultigraph() {
+    this.multigraph = true
+  }
+  disableMultigraph() {
+    this.multigraph = true
+  }
+
+  allowLoops: boolean = false
+  isAllowLoops() {
+    return this.allowLoops
+  }
+  enableLoops() {
+    this.allowLoops = true
+  }
+  disableLoops() {
+    this.allowLoops = true
+  }
+
+  allowDanglingEdges: boolean = true
+  isDanglingEdgesEnabled() {
+    return this.allowDanglingEdges
+  }
+  enableDanglingEdges() {
+    this.allowDanglingEdges = true
+  }
+  disableDanglingEdges() {
+    this.allowDanglingEdges = false
+  }
+
+  edgesConnectable: boolean = false
+  setEdgesConnectable(value: boolean) {
+    this.edgesConnectable = value
+  }
+  isEdgesConnectable() {
+    return this.edgesConnectable
+  }
+
+  invalidEdgesClonable: boolean = false
+  enableCloneInvalidEdges() {
+    this.invalidEdgesClonable = true
+  }
+  disableCloneInvalidEdges() {
+    this.invalidEdgesClonable = false
+  }
+  isInvalidEdgesClonable() {
+    return this.invalidEdgesClonable
+  }
+
+  disconnectOnMove: boolean = true
+  isDisconnectOnMove() {
+    return this.disconnectOnMove
+  }
+  setDisconnectOnMove(value: boolean) {
+    this.disconnectOnMove = value
+  }
+
+  dropEnabled: boolean = false
+  isDropEnabled() {
+    return this.dropEnabled
+  }
+  setDropEnabled(value: boolean) {
+    this.dropEnabled = value
+  }
+
+  splitEnabled: boolean = true
+  isSplitEnabled() {
+    return this.splitEnabled
+  }
+  setSplitEnabled(value: boolean) {
+    this.splitEnabled = value
+  }
+
+  autoSizeOnAdded: boolean = false
+
+  autoSizeOnEdited: boolean = false
+  isAutoSizeCells() {
+    return this.autoSizeOnEdited
+  }
+  setAutoSizeCells(value: boolean) {
+    this.autoSizeOnEdited = value
+  }
+
+  extendParents: boolean = true
+  isExtendParents() {
+    return this.extendParents
+  }
+  setExtendParents(value: boolean) {
+    this.extendParents = value
+  }
+
+  extendParentsOnAdd: boolean = true
+  isExtendParentsOnAdd() {
+    return this.extendParentsOnAdd
+  }
+  setExtendParentsOnAdd(value: boolean) {
+    this.extendParentsOnAdd = value
+  }
+
+  extendParentsOnMove: boolean = false
+  isExtendParentsOnMove() {
+    return this.extendParentsOnMove
+  }
+  setExtendParentsOnMove(value: boolean) {
+    this.extendParentsOnMove = value
+  }
+
+  recursiveResize: boolean = false
+  isRecursiveResize() {
+    return this.recursiveResize
+  }
+  setRecursiveResize(value: boolean) {
+    this.recursiveResize = value
+  }
+
+  constrainChildren: boolean = true
+  isConstrainChildren() {
+    return this.constrainChildren
+  }
+  setConstrainChildren(value: boolean) {
+    this.constrainChildren = value
+  }
+
+  constrainRelativeChildren: boolean = false
+  isConstrainRelativeChildren() {
+    return this.constrainRelativeChildren
+  }
+  setConstrainRelativeChildren(value: boolean) {
+    this.constrainRelativeChildren = value
+  }
+
+  allowNegativeCoordinates = true
+  isAllowNegativeCoordinates() {
+    return this.allowNegativeCoordinates
+  }
+  setAllowNegativeCoordinates(value: boolean) {
+    this.allowNegativeCoordinates = value
+  }
+
+  defaultOverlap: number = 0.5
+
+  // #endregion
 
   constructor(container: HTMLElement, options: Graph.Options = {}) {
     super()
 
-    this.options = Feature.get(options)
+    this.options = getOptions(options)
     this.container = container
     this.model = options.model || this.createModel()
     this.view = this.createView()
@@ -362,13 +542,24 @@ export class Graph extends Disablable {
     this.cellEditor = new CellEditor(this)
     this.changeManager = new ChangeManager(this)
     this.eventloop = new EventLoop(this)
-    this.handlerManager = new HandlerManager(this)
     this.cellManager = new CellManager(this)
     this.selectionManager = new SelectionManager(this)
     this.validator = new ValidationManager(this)
     this.viewport = new ViewportManager(this)
 
-    Feature.init(this)
+    this.tooltipHandler = this.createTooltipHandler()
+    this.disableTooltips()
+    this.selectionHandler = this.createSelectionHandler()
+    this.connectionHandler = this.createConnectionHandler()
+    this.disableConnection()
+    this.graphHandler = this.createGraphHandler()
+    this.panningHandler = this.createPanningHandler()
+    this.panningHandler.disablePanning()
+    this.popupMenuHandler = this.createPopupMenuHandler()
+    this.rubberbandHandler = this.createRubberbandHandler()
+    this.disableRubberband()
+
+    applyOptions(this)
 
     if (container != null) {
       this.init(container)
@@ -376,6 +567,8 @@ export class Graph extends Disablable {
 
     this.view.revalidate()
   }
+
+  // #region :::::::::::: init
 
   protected init(container: HTMLElement) {
     this.view.init()
@@ -399,33 +592,122 @@ export class Graph extends Disablable {
     return this.view
   }
 
-  protected createModel() {
-    return (
-      util.call(this.options.createModel, this, this) ||
-      new Model()
-    )
+  @hook()
+  createModel() {
+    return new Model()
   }
 
-  protected createView() {
-    return (
-      util.call(this.options.createView, this, this) ||
-      new View(this)
-    )
+  @hook()
+  createView() {
+    return new View(this)
   }
 
-  protected createRenderer() {
-    return (
-      util.call(this.options.createRenderer, this, this) ||
-      new Renderer()
-    )
+  @hook()
+  createRenderer() {
+    return new Renderer()
   }
 
-  protected createSelection() {
-    return (
-      util.call(this.options.createSelection, this, this) ||
-      new Selection(this)
-    )
+  @hook()
+  createSelection() {
+    return new Selection(this)
   }
+
+  @hook()
+  createTooltipHandler() {
+    return new TooltipHandler(this)
+  }
+
+  @hook()
+  createConnectionHandler() {
+    return new ConnectionHandler(this)
+  }
+
+  @hook()
+  createSelectionHandler() {
+    return new SelectionHandler(this)
+  }
+
+  @hook()
+  createGraphHandler() {
+    return new GraphHandler(this)
+  }
+
+  @hook()
+  createPanningHandler() {
+    return new PanningHandler(this)
+  }
+
+  @hook()
+  createPopupMenuHandler() {
+    return new PopupMenuHandler(this)
+  }
+
+  @hook()
+  createRubberbandHandler() {
+    return new RubberbandHandler(this)
+  }
+
+  createCellHandler(state: State | null) {
+    if (state != null) {
+      if (this.model.isEdge(state.cell)) {
+        const sourceState = state.getVisibleTerminalState(true)
+        const targetState = state.getVisibleTerminalState(false)
+        const geo = this.getCellGeometry(state.cell)
+
+        const edgeFn = this.view.getEdgeFunction(
+          state, geo != null ? geo.points : null, sourceState!, targetState!,
+        )
+        return this.createEdgeHandler(state, edgeFn)
+      }
+
+      return this.createNodeHandler(state)
+    }
+
+    return null
+  }
+
+  @hook()
+  createNodeHandler(state: State) {
+    return new NodeHandler(this, state)
+  }
+
+  @hook()
+  createEdgeHandler(state: State, edgeFn: RoutingFunction | null) {
+    let result = null
+
+    if (
+      edgeFn === routers.loop ||
+      edgeFn === routers.elbowConnector ||
+      edgeFn === routers.sideToSide ||
+      edgeFn === routers.topToBottom
+    ) {
+      result = this.createElbowEdgeHandler(state)
+    } else if (
+      edgeFn === routers.segmentConnector ||
+      edgeFn === routers.orthConnector
+    ) {
+      result = this.createEdgeSegmentHandler(state)
+    } else {
+      return (
+        util.call(this.options.createEdgeHandler, this, this, state) ||
+        new EdgeHandler(this, state)
+      )
+    }
+
+    return result
+  }
+
+  @hook()
+  createEdgeSegmentHandler(state: State) {
+    return new EdgeSegmentHandler(this, state)
+  }
+
+  @hook()
+  createElbowEdgeHandler(state: State) {
+    return new EdgeElbowHandler(this, state)
+  }
+
+  // #endregion
 
   // #region :::::::::::: Cell Creation
 
@@ -743,7 +1025,7 @@ export class Graph extends Disablable {
   }
 
   getMaximumGraphBounds() {
-    return this.maximumGraphBounds
+    return this.maxGraphBounds
   }
 
   /**
@@ -1152,11 +1434,8 @@ export class Graph extends Disablable {
     }
   }
 
-  /**
-   * Returns the initial value for in-place editing.
-   */
   @hook()
-  getEditingValue(cell: Cell, e?: Event) {
+  getEditingContent(cell: Cell, e?: Event) {
     return this.convertDataToString(cell)
   }
 
@@ -1243,36 +1522,21 @@ export class Graph extends Disablable {
 
   // #region :::::::::::: Drilldown
 
-  /**
-   * Returns true if the given cell is a valid root.
-   */
   @hook()
   isValidRoot(cell: Cell | null) {
     return (cell != null)
   }
 
-  /**
-   * Returns true if the given cell is a "port", that is, when connecting
-   * to it, the cell returned by `getTerminalForPort` should be used as the
-   * terminal and the port should be referenced by the ID in either the
-   * `'sourcePort'` or the or the `'targetPort'`.
-   */
   @hook()
   isPort(cell: Cell) {
     return false
   }
 
-  /**
-   * Returns the terminal to be used for a given port.
-   */
   @hook()
   getTerminalForPort(cell: Cell, isSource: boolean) {
     return this.model.getParent(cell)
   }
 
-  /**
-   * Returns the offset to be used for the cells inside the given cell.
-   */
   @hook()
   getChildOffset(cell: Cell): Point | null {
     return null
@@ -1300,33 +1564,6 @@ export class Graph extends Disablable {
     this.cellManager.home()
   }
 
-  /**
-   * Returns the translation to be used in view.
-   *
-   * Example:
-   *
-   * To keep the children at their absolute position while stepping
-   * into groups, this function can be overridden as follows.
-   *
-   * ```
-   * const offset = new Point(0, 0);
-   *
-   * while (cell != null)
-   * {
-   *   const geo = this.model.getGeometry(cell);
-   *   if (geo != null)
-   *   {
-   *     offset.x -= geo.x;
-   *     offset.y -= geo.y;
-   *   }
-   *
-   *   cell = this.model.getParent(cell);
-   * }
-   *
-   * return offset;
-   * ```
-   * @param currentRoot - The `currentRoot` fo the view.
-   */
   @hook()
   getTranslateForCurrentRoot(currentRoot: Cell | null): Point | null {
     return null
@@ -1343,6 +1580,11 @@ export class Graph extends Disablable {
   getDefaultParent(): Cell {
     return this.cellManager.getDefaultParent()
   }
+
+  /**
+   * Specifies the default parent to be used to insert new cells.
+   */
+  defaultParent: Cell | null
 
   setDefaultParent(cell: Cell | null) {
     this.defaultParent = cell
@@ -1821,51 +2063,31 @@ export class Graph extends Disablable {
     this.eventloop.fireGestureEvent(e, cell)
   }
 
-  /**
-     * Returns true if the given event is a clone event.
-     */
   @hook()
   isCloneEvent(e: MouseEvent) {
     return DomEvent.isControlDown(e)
   }
 
-  /**
-   * Returns true if the given event is a toggle event.
-   */
   @hook()
   isToggleEvent(e: MouseEvent) {
     return detector.IS_MAC ? DomEvent.isMetaDown(e) : DomEvent.isControlDown(e)
   }
 
-  /**
-   * Returns true if the given mouse event should be aligned to the grid.
-   */
-  @hook()
-  isGridEnabledForEvent(e: MouseEvent) {
-    return e != null && !DomEvent.isAltDown(e)
-  }
-
-  /**
-   * Returns true if the given mouse event should be constrained.
-   */
   @hook()
   isConstrainedEvent(e: MouseEvent) {
     return DomEvent.isShiftDown(e)
   }
 
-  /**
-   * Returns true if the given mouse event should not allow any connections
-   * to be made.
-   */
+  @hook()
+  isGridEnabledForEvent(e: MouseEvent) {
+    return e != null && !DomEvent.isAltDown(e)
+  }
+
   @hook()
   isIgnoreTerminalEvent(e: MouseEvent) {
     return false
   }
 
-  /**
-   * Click-through behaviour on selected cells. If this returns true the
-   * cell behind the selected cell will be selected.
-   */
   @hook()
   isTransparentClickEvent(e: MouseEvent) {
     return false
@@ -1932,19 +2154,6 @@ export class Graph extends Disablable {
     return value
   }
 
-  /**
-   * Specifies if scrollbars should be used for translate if any scrollbars
-   * are available. If scrollbars are enabled in CSS, but no scrollbars
-   * appear because the graph is smaller than the container size, then no
-   * panning occurs if this is true.
-   *
-   * Default is `true`.
-   */
-  useScrollbarsForTranslate: boolean = true
-
-  tx: number = 0
-  ty: number = 0
-
   translate(x: number, y: number, relative: boolean = false) {
     const tx = relative ? this.tx + x : x
     const ty = relative ? this.ty + y : y
@@ -1958,29 +2167,6 @@ export class Graph extends Disablable {
   translateBy(x: number, y: number) {
     this.translate(x, y, true)
   }
-
-  /**
-   * Specifies if the viewport should automatically contain the selection
-   * cells after a zoom operation.
-   *
-   * Default is `false`.
-   */
-  keepSelectionVisibleOnZoom: boolean = false
-
-  /**
-   * Specifies if the zoom operations should go into the center of the actual
-   * diagram rather than going from top, left.
-   *
-   * Default is `true`.
-   */
-  centerZoom: boolean = true
-
-  /**
-   * Specifies the factor used for `zoomIn` and `zoomOut`.
-   *
-   * Default is `1.2`
-   */
-  zoomFactor: number = 1.2
 
   zoomIn() {
     this.zoom(this.zoomFactor)
@@ -2122,43 +2308,140 @@ export class Graph extends Disablable {
     return this.model.getGeometry(cell)
   }
 
-  /**
-   * Returns true if the given cell is visible in this graph.
-   */
-  isCellVisible(cell: Cell | null) {
-    return cell != null ? this.model.isVisible(cell) : false
-  }
-
-  /**
-   * Returns `true` if the given cell is collapsed in this graph.
-   */
-  isCellCollapsed(cell: Cell) {
-    return this.model.isCollapsed(cell)
-  }
-
   // #endregion
 
   // #region :::::::::::: Graph Appearance
 
-  backgroundImage: Image
-
-  getBackgroundImage() {
-    return this.backgroundImage
+  @hook()
+  isCellVisible(cell: Cell | null) {
+    return cell != null ? this.model.isVisible(cell) : false
   }
 
-  setBackgroundImage(image: Image) {
-    this.backgroundImage = image
+  @hook()
+  isCellLocked(cell: Cell | null) {
+    const geometry = this.model.getGeometry(cell)
+    return (
+      this.isCellsLocked() || (geometry != null &&
+        this.model.isNode(cell) && geometry.relative)
+    )
   }
 
   /**
-   * Specifies if folding (collapse and expand via an image icon in the graph
-   * should be enabled).
-   *
-   * Default is `true`.
+   * Returns the cells which may be exported in the given array of cells.
    */
-  foldingEnabled: boolean = true
-  collapsedImage: Image = images.collapsed
-  expandedImage: Image = images.expanded
+  getCloneableCells(cells: Cell[]) {
+    return this.model.filterCells(cells, cell => this.isCellCloneable(cell))
+  }
+
+  @hook()
+  isCellCloneable(cell: Cell) {
+    const style = this.getStyle(cell)
+    return this.isCellsCloneable() && style.cloneable !== false
+  }
+
+  @hook()
+  isCellSelectable(cell: Cell) {
+    return this.isCellsSelectable()
+  }
+
+  getDeletableCells(cells: Cell[]) {
+    return this.model.filterCells(cells, cell => this.isCellDeletable(cell))
+  }
+
+  @hook()
+  isCellDeletable(cell: Cell) {
+    const style = this.getStyle(cell)
+    return this.isCellsDeletable() && style.deletable === true
+  }
+
+  @hook()
+  isCellRotatable(cell: Cell) {
+    const style = this.getStyle(cell)
+    return style.rotatable !== false
+  }
+
+  getMovableCells(cells: Cell[]) {
+    return this.model.filterCells(cells, cell => this.isCellMovable(cell))
+  }
+
+  @hook()
+  isLabelMovable(cell: Cell | null) {
+    return (
+      !this.isCellLocked(cell) &&
+      (
+        (this.model.isEdge(cell) && this.edgeLabelsMovable) ||
+        (this.model.isNode(cell) && this.nodeLabelsMovable)
+      )
+    )
+  }
+
+  @hook()
+  isCellMovable(cell: Cell | null) {
+    const style = this.getStyle(cell)
+    return (
+      this.isCellsMovable() &&
+      !this.isCellLocked(cell) &&
+      style.movable !== false
+    )
+  }
+
+  @hook()
+  isCellResizable(cell: Cell) {
+    const style = this.getStyle(cell)
+    return (
+      this.isCellsResizable() &&
+      !this.isCellLocked(cell) &&
+      style.resizable !== false
+    )
+  }
+
+  @hook()
+  isCellBendable(cell: Cell) {
+    const style = this.getStyle(cell)
+    return (
+      this.isCellsBendable() &&
+      !this.isCellLocked(cell) &&
+      style.bendable !== false
+    )
+  }
+
+  @hook()
+  isCellEditable(cell: Cell) {
+    const style = this.getStyle(cell)
+    return this.isCellsEditable() &&
+      !this.isCellLocked(cell) &&
+      style.editable !== false
+  }
+
+  @hook()
+  isCellDisconnectable(cell: Cell, terminal: Cell, isSource: boolean) {
+    return this.isCellsDisconnectable() && !this.isCellLocked(cell)
+  }
+
+  @hook()
+  isCellConnectable(cell: Cell | null) {
+    return this.model.isConnectable(cell)
+  }
+
+  @hook()
+  isCellCollapsed(cell: Cell) {
+    return this.model.isCollapsed(cell)
+  }
+
+  @hook()
+  isCellFoldable(cell: Cell, nextCollapseState: boolean) {
+    const style = this.getStyle(cell)
+    return (this.model.getChildCount(cell) > 0 && style.foldable !== false)
+  }
+
+  /**
+   * Returns the cells which are movable in the given array of cells.
+   */
+  getFoldableCells(cells: Cell[], collapse: boolean) {
+    return this.model.filterCells(
+      cells, cell => this.isCellFoldable(cell, collapse),
+    )
+  }
 
   getFoldingImage(state: State) {
     if (
@@ -2167,17 +2450,49 @@ export class Graph extends Disablable {
       !this.getModel().isEdge(state.cell)
     ) {
       const collapsed = this.isCellCollapsed(state.cell)
-      if (this.isFoldable(state.cell, !collapsed)) {
-        return (collapsed) ? this.collapsedImage : this.expandedImage
+      if (this.isCellFoldable(state.cell, !collapsed)) {
+        return collapsed ? this.collapsedImage : this.expandedImage
       }
     }
 
     return null
   }
 
-  /**
-   * Returns the textual representation for the given cell.
-   */
+  @hook()
+  isTerminalPointMovable(cell: Cell, isSource: boolean) {
+    return true
+  }
+
+  @hook()
+  isHtmlLabel(cell: Cell) {
+    return this.isHtmlLabels()
+  }
+
+  @hook()
+  isWrapping(cell: Cell) {
+    const style = this.getStyle(cell)
+    return style != null ? style.whiteSpace === 'wrap' : false
+  }
+
+  @hook()
+  isLabelClipped(cell: Cell) {
+    const style = this.getStyle(cell)
+    return (style != null) ? style.overflow === 'hidden' : false
+  }
+
+  @hook()
+  isSwimlane(cell: Cell | null) {
+    if (cell != null) {
+      if (this.model.getParent(cell) !== this.model.getRoot()) {
+        const style = this.getStyle(cell)
+        if (style != null && !this.model.isEdge(cell)) {
+          return (style.shape === ShapeNames.swimlane)
+        }
+      }
+    }
+    return false
+  }
+
   @hook()
   convertDataToString(cell: Cell): string {
     const data = this.model.getData(cell)
@@ -2194,18 +2509,8 @@ export class Graph extends Disablable {
     return ''
   }
 
-  /**
-   * Specifies if labels should be visible.
-   *
-   * Default is `true`.
-   */
-  labelsVisible: boolean = true
-
-  /**
-   * Returns a string or DOM node that represents the label for the given cell.
-   */
   @hook()
-  getLabel(cell: Cell) {
+  getLabel(cell: Cell): HTMLElement | string | null {
     let result = ''
 
     if (this.labelsVisible && cell != null) {
@@ -2218,117 +2523,32 @@ export class Graph extends Disablable {
     return result
   }
 
+  @hook()
   putLabel(cell: Cell, label: string) {
     const data = cell.getData()
-    return typeof data === 'object' ? { ...data } : label
+    if (typeof data === 'object') {
+      throw new Error('Method not implemented.')
+    }
+
+    return label
   }
 
-  /**
-   * Returns true if the label must be rendered as HTML markup.
-   */
-  isHtmlLabel(cell: Cell) {
-    return this.isHtmlLabels()
-  }
-
-  htmlLabels: boolean = false
-
-  isHtmlLabels() {
-    return this.htmlLabels
-  }
-
-  setHtmlLabels(value: boolean) {
-    this.htmlLabels = value
-  }
-
-  /**
-   * This enables wrapping for HTML labels.
-   *
-   * Returns true if no white-space CSS style directive should be used for
-   * displaying the given cells label.
-   *
-   * This is used as a workaround for IE ignoring the white-space directive
-   * of child elements if the directive appears in a parent element. It
-   * should be overridden to return true if a white-space directive is used
-   * in the HTML markup that represents the given cells label.
-   */
-  isWrapping(cell: Cell) {
-    const style = this.getStyle(cell)
-    return style != null ? style.whiteSpace === 'wrap' : false
-  }
-
-  /**
-   * Returns true if the overflow portion of labels should be hidden. If this
-   * returns true then node labels will be clipped to the size of the vertices.
-   */
-  isLabelClipped(cell: Cell) {
-    const style = this.getStyle(cell)
-    return (style != null) ? style.overflow === 'hidden' : false
-  }
-
-  /**
-   * Returns the string or DOM node to be used as the tooltip
-   * for the given cell.
-   */
   @hook()
   getTooltip(cell: Cell) {
     return this.convertDataToString(cell)
   }
 
-  /**
-   * Returns the string to be used as the link for the given cell.
-   */
   @hook()
-  getLink(cell: Cell) {
+  getCellLink(cell: Cell) {
     return null
   }
 
-  /**
-   * Returns the cursor value to be used for the CSS of the shape for the
-   * given cell.
-   */
   @hook()
-  getCursor(cell: Cell | null) {
+  getCellCursor(cell: Cell | null) {
     return null
   }
 
-  /**
-   * Border to be added to the bottom and right side when the
-   * container is being resized after the graph has been changed.
-   *
-   * Default is `0`.
-   */
-  border: number = 0
-
-  getBorder() {
-    return this.border
-  }
-
-  setBorder(value: number) {
-    this.border = value
-  }
-
-  /**
-   * Returns true if the given cell is a swimlane in the graph. A
-   * swimlane is a container cell with some specific behaviour.
-   */
-  isSwimlane(cell: Cell | null) {
-    if (cell != null) {
-      if (this.model.getParent(cell) !== this.model.getRoot()) {
-        const style = this.getStyle(cell)
-        if (style != null && !this.model.isEdge(cell)) {
-          return (style.shape === ShapeNames.swimlane)
-        }
-      }
-    }
-    return false
-  }
-
-  /**
-   * Returns the start size of the given swimlane, that is, the width
-   * or height of the part that contains the title, depending on the
-   * horizontal style. The return value is an `Rectangle` with either
-   * width or height set as appropriate.
-   */
+  @hook()
   getStartSize(swimlane: Cell | null) {
     const result = new Rectangle()
     const style = this.getStyle(swimlane)
@@ -2427,168 +2647,19 @@ export class Graph extends Disablable {
   }
 
   /**
-   * Specifies if the container should be resized to the graph size when
-   * the graph size has changed.
-   *
-   * Default is `false`.
-   */
-  resizeContainer: boolean = false
-
-  /**
-   * Specifies if the container should be resized to the graph size when
-   * the graph size has changed.
-   */
-  isResizeContainer() {
-    return this.resizeContainer
-  }
-
-  setResizeContainer(value: boolean) {
-    this.resizeContainer = value
-  }
-
-  /**
-   * Specifies if handle escape key press.
-   *
-   * Default is `true`.
-   */
-  escapeEnabled: boolean = true
-
-  isEscapeEnabled() {
-    return this.escapeEnabled
-  }
-
-  setEscapeEnabled(value: boolean) {
-    this.escapeEnabled = value
-  }
-
-  /**
-   * If true, when editing is to be stopped by way of selection changing,
-   * data in diagram changing or other means stopCellEditing is invoked, and
-   * changes are saved.
-   *
-   * Default is `true`.
-   */
-  invokesStopCellEditing: boolean = true
-
-  isInvokesStopCellEditing() {
-    return this.invokesStopCellEditing
-  }
-
-  setInvokesStopCellEditing(value: boolean) {
-    this.invokesStopCellEditing = value
-  }
-
-  /**
-   * If true, pressing the enter key without pressing control or shift will
-   * stop editing and accept the new value.
-   *
-   * Note: You can always use F2 and escape to stop editing.
-   *
-   * Default is `false`.
-   */
-  stopEditingOnEnter: boolean = false
-
-  isEnterStopsCellEditing() {
-    return this.stopEditingOnEnter
-  }
-
-  setEnterStopsCellEditing(value: boolean) {
-    this.stopEditingOnEnter = value
-  }
-
-  /**
-   * Returns true if the given cell may not be moved, sized, bended,
-   * disconnected, edited or selected.
-   */
-  @hook()
-  isCellLocked(cell: Cell | null) {
-    const geometry = this.model.getGeometry(cell)
-    return (
-      this.isCellsLocked() || (geometry != null &&
-        this.model.isNode(cell) && geometry.relative)
-    )
-  }
-
-  cellsLocked: boolean = false
-
-  /**
-   * Returns true if the given cell may not be moved, sized, bended,
-   * disconnected, edited or selected.
-   *
-   * Default is `false`.
-   */
-  isCellsLocked() {
-    return this.cellsLocked
-  }
-
-  /**
-   * Sets if any cell may be moved, sized, bended, disconnected, edited or
-   * selected.
-   */
-  setCellsLocked(value: boolean) {
-    this.cellsLocked = value
-  }
-
-  /**
-   * Returns the cells which may be exported in the given array of cells.
-   */
-  getCloneableCells(cells: Cell[]) {
-    return this.model.filterCells(cells, cell => this.isCellCloneable(cell))
-  }
-
-  /**
-   * Returns true if the given cell is cloneable.
-   */
-  isCellCloneable(cell: Cell) {
-    const style = this.getStyle(cell)
-    return this.isCellsCloneable() && style.cloneable !== false
-  }
-
-  cellsCloneable: boolean = true
-
-  /**
-   * Returns true if the graph allows cloning of cells by using control-drag.
-   *
-   * Default is `true`.
-   */
-  isCellsCloneable() {
-    return this.cellsCloneable
-  }
-
-  /**
-   * Specifies if the graph should allow cloning of cells by holding
-   * down the control key while cells are being moved.
-   */
-  setCellsCloneable(value: boolean) {
-    this.cellsCloneable = value
-  }
-
-  /**
    * Returns the cells which may be exported in the given array of cells.
    */
   getExportableCells(cells: Cell[]) {
     return this.model.filterCells(cells, cell => this.canExportCell(cell))
   }
 
-  exportEnabled: boolean = true
-
-  /**
-   * Returns true if the given cell may be exported to the clipboard.
-   *
-   * Default is `true`.
-   */
   canExportCell(cell: Cell) {
     return this.exportEnabled
   }
 
-  /**
-   * Returns the cells which may be imported in the given array of cells.
-   */
   getImportableCells(cells: Cell[]) {
     return this.model.filterCells(cells, cell => this.canImportCell(cell))
   }
-
-  importEnabled: boolean = true
 
   /**
    * Returns true if the given cell may be imported from the clipboard.
@@ -2599,486 +2670,24 @@ export class Graph extends Disablable {
     return this.importEnabled
   }
 
-  cellsSelectable: boolean = true
-
-  isCellSelectable(cell: Cell) {
-    return this.isCellsSelectable()
-  }
-
-  isCellsSelectable() {
-    return this.cellsSelectable
-  }
-
-  setCellsSelectable(value: boolean) {
-    this.cellsSelectable = value
-  }
-
-  getDeletableCells(cells: Cell[]) {
-    return this.model.filterCells(cells, cell => this.isCellDeletable(cell))
-  }
-
-  isCellDeletable(cell: Cell) {
-    const style = this.getStyle(cell)
-    return this.isCellsDeletable() && style.deletable === true
-  }
-
-  cellsDeletable: boolean = true
-
-  isCellsDeletable() {
-    return this.cellsDeletable
-  }
-
-  setCellsDeletable(value: boolean) {
-    this.cellsDeletable = value
-  }
-
-  isCellRotatable(cell: Cell) {
-    const style = this.getStyle(cell)
-    return style.rotatable !== false
-  }
-
-  getMovableCells(cells: Cell[]) {
-    return this.model.filterCells(cells, cell => this.isCellMovable(cell))
-  }
-
-  isLabelMovable(cell: Cell | null) {
-    return (
-      !this.isCellLocked(cell) &&
-      (
-        (this.model.isEdge(cell) && this.edgeLabelsMovable) ||
-        (this.model.isNode(cell) && this.nodeLabelsMovable)
-      )
-    )
-  }
-
-  isCellMovable(cell: Cell | null) {
-    const style = this.getStyle(cell)
-    return (
-      this.isCellsMovable() &&
-      !this.isCellLocked(cell) &&
-      style.movable !== false
-    )
-  }
-
-  cellsMovable: boolean = true
-
-  isCellsMovable() {
-    return this.cellsMovable
-  }
-
-  setCellsMovable(value: boolean) {
-    this.cellsMovable = value
-  }
-
-  /**
-   * Specifies if the grid is enabled.
-   */
-  gridEnabled: boolean = false
-
-  enableGrid() {
-    this.gridEnabled = true
-  }
-
-  disableGrid() {
-    this.gridEnabled = false
-  }
-
-  /**
-   * Specifies the grid size.
-   *
-   * Default is `10`.
-   */
-  gridSize: number
-
-  getGridSize() {
-    return this.gridSize
-  }
-
-  setGridSize(size: number) {
-    this.gridSize = size
-  }
-
-  isGridEnabled() {
-    return this.gridEnabled
-  }
-
-  /**
-   * Specifies if ports are enabled.
-   *
-   * Default is `true`.
-   */
-  portsEnabled: boolean = true
-
-  isPortsEnabled() {
-    return this.portsEnabled
-  }
-
-  setPortsEnabled(value: boolean) {
-    this.portsEnabled = value
-  }
-
-  /**
-   * Tolerance for a move to be handled as a single click.
-   *
-   * Default is `4` pixels.
-   */
-  tolerance = 4
-
-  getTolerance() {
-    return this.tolerance
-  }
-
-  setTolerance(value: number) {
-    this.tolerance = value
-  }
-
-  /**
-   * Specifies if the label of node movable.
-   *
-   * Default is `false`.
-   */
-  nodeLabelsMovable: boolean = false
-
-  isNodeLabelsMovable() {
-    return this.nodeLabelsMovable
-  }
-
-  setNodeLabelsMovable(value: boolean) {
-    this.nodeLabelsMovable = value
-  }
-
-  /**
-   * Specifies if the label of edge movable.
-   *
-   * Default is `true`.
-   */
-  edgeLabelsMovable: boolean = true
-
-  isEdgeLabelsMovable() {
-    return this.edgeLabelsMovable
-  }
-
-  setEdgeLabelsMovable(value: boolean) {
-    this.edgeLabelsMovable = value
-  }
-
-  /**
-   * Specifies if nesting of swimlanes is allowed.
-   *
-   * Default is `true`.
-   */
-  swimlaneNesting: boolean = true
-
-  isSwimlaneNesting() {
-    return this.swimlaneNesting
-  }
-
-  /**
-   * Specifies if swimlanes can be nested by drag and drop.
-   */
-  setSwimlaneNesting(value: boolean) {
-    this.swimlaneNesting = value
-  }
-
-  /**
-   * Specifies if swimlanes should be selectable via the content if the
-   * mouse is released.
-   *
-   * Default is `true`.
-   */
-  swimlaneSelectionEnabled: boolean = true
-
-  isSwimlaneSelectionEnabled() {
-    return this.swimlaneSelectionEnabled
-  }
-
-  /**
-   * Specifies if swimlanes should be selected if the mouse is
-   * released over their content area.
-   */
-  setSwimlaneSelectionEnabled(value: boolean) {
-    this.swimlaneSelectionEnabled = value
-  }
-
-  /**
-   * Specifies if multiple edges in the same direction between the
-   * same pair of nodes are allowed.
-   *
-   * Default is `true`.
-   */
-  multigraph: boolean = true
-
-  isMultigraph() {
-    return this.multigraph
-  }
-
-  /**
-   * Specifies if the graph should allow multiple connections between the
-   * same pair of nodes.
-   */
-  setMultigraph(value: boolean) {
-    this.multigraph = value
-  }
-
-  /**
-   * Specifies if loops (aka self-references) are allowed.
-   *
-   * Default is `false`.
-   */
-  allowLoops: boolean = false
-
-  isAllowLoops() {
-    return this.allowLoops
-  }
-
-  setAllowLoops(value: boolean) {
-    this.allowLoops = value
-  }
-
-  /**
-   * Specifies if edges with disconnected terminals are allowed in the graph.
-   *
-   * Default is `true`.
-   */
-  allowDanglingEdges: boolean = true
-
-  /**
-   * Specifies if dangling edges are allowed, that is, if edges are allowed
-   * that do not have a source and/or target terminal defined.
-   */
-  setAllowDanglingEdges(value: boolean) {
-    this.allowDanglingEdges = value
-  }
-
-  isAllowDanglingEdges() {
-    return this.allowDanglingEdges
-  }
-
-  /**
-   * Specifies if edges are connectable.
-   *
-   * Default is `false`.
-   */
-  connectableEdges: boolean = false
-
-  setConnectableEdges(value: boolean) {
-    this.connectableEdges = value
-  }
-
-  isConnectableEdges() {
-    return this.connectableEdges
-  }
-
-  /**
-   * Specifies if edges that are cloned should be validated and only
-   * inserted if they are valid.
-   *
-   * Default is `false`.
-   */
-  cloneInvalidEdges: boolean = false
-
-  /**
-   * Specifies if edges should be inserted when cloned but not valid.
-   * If false such edges will be silently ignored.
-   */
-  setCloneInvalidEdges(value: boolean) {
-    this.cloneInvalidEdges = value
-  }
-
-  isCloneInvalidEdges() {
-    return this.cloneInvalidEdges
-  }
-
-  /**
-   * Specifies if edges should be disconnected from their terminals
-   * when they are moved.
-   *
-   * Default is `true`.
-   */
-  disconnectOnMove: boolean = true
-
-  isDisconnectOnMove() {
-    return this.disconnectOnMove
-  }
-
-  setDisconnectOnMove(value: boolean) {
-    this.disconnectOnMove = value
-  }
-
-  dropEnabled: boolean = false
-
-  isDropEnabled() {
-    return this.dropEnabled
-  }
-
-  /**
-   * Specifies if the graph should allow dropping of cells onto or into other
-   * cells.
-   */
-  setDropEnabled(value: boolean) {
-    this.dropEnabled = value
-  }
-
-  /**
-   * Specifies if dropping onto edges should be splited.
-   *
-   * Default is `true`.
-   */
-  splitEnabled: boolean = true
-
-  isSplitEnabled() {
-    return this.splitEnabled
-  }
-
-  /**
-   * Specifies if dropping onto edges should be enabled.
-   */
-  setSplitEnabled(value: boolean) {
-    this.splitEnabled = value
-  }
-
-  /**
-   * Returns true if the given cell is resizable.
-   */
-  isCellResizable(cell: Cell) {
-    const style = this.getStyle(cell)
-    return (
-      this.isCellsResizable() &&
-      !this.isCellLocked(cell) &&
-      style.resizable !== false
-    )
-  }
-
-  /**
-   * Specifies if the graph should allow resizing of cells.
-   *
-   * Default is `true`.
-   */
-  cellsResizable = true
-
-  isCellsResizable() {
-    return this.cellsResizable
-  }
-
-  /**
-   * Specifies if the graph should allow resizing of cells.
-   */
-  setCellsResizable(value: boolean) {
-    this.cellsResizable = value
-  }
-
-  /**
-   * Returns true if the given terminal point is movable.
-   */
-  isTerminalPointMovable(cell: Cell, isSource: boolean) {
-    return true
-  }
-
-  /**
-   * Returns true if the given cell is bendable.
-   */
-  isCellBendable(cell: Cell) {
-    const style = this.getStyle(cell)
-    return (
-      this.isCellsBendable() &&
-      !this.isCellLocked(cell) &&
-      style.bendable !== false
-    )
-  }
-
-  cellsBendable: boolean = true
-
-  isCellsBendable() {
-    return this.cellsBendable
-  }
-
-  /**
-   * Specifies if the graph should allow bending of edges.
-   */
-  setCellsBendable(value: boolean) {
-    this.cellsBendable = value
-  }
-
-  /**
-   * Returns true if the given cell is editable.
-   */
-  isCellEditable(cell: Cell) {
-    const style = this.getStyle(cell)
-    return this.isCellsEditable() &&
-      !this.isCellLocked(cell) &&
-      style.editable !== false
-  }
-
-  cellsEditable: boolean = true
-
-  isCellsEditable() {
-    return this.cellsEditable
-  }
-
-  /**
-   * Specifies if the graph should allow in-place editing for cell labels.
-   */
-  setCellsEditable(value: boolean) {
-    this.cellsEditable = value
-  }
-
-  /**
-   * Returns true if the given cell is disconnectable from the source or
-   * target terminal.
-   */
-  isCellDisconnectable(cell: Cell, terminal: Cell, isSource: boolean) {
-    return this.isCellsDisconnectable() && !this.isCellLocked(cell)
-  }
-
-  /**
-   * Specifies if cells is disconnectable.
-   *
-   * Default is `true`.
-   */
-  cellsDisconnectable: boolean = true
-
-  isCellsDisconnectable() {
-    return this.cellsDisconnectable
-  }
-
-  setCellsDisconnectable(value: boolean) {
-    this.cellsDisconnectable = value
-  }
-
-  /**
-   * Returns true if the given cell is connectable in this graph.
-   */
-  @hook()
-  isCellConnectable(cell: Cell | null) {
-    return this.model.isConnectable(cell)
-  }
-
-  /**
-   * Returns true if the given cell is a valid source for new connections.
-   */
   @hook()
   isValidSource(cell: Cell | null) {
     return (
       (cell == null && this.allowDanglingEdges) ||
       (
         cell != null && (
-          !this.model.isEdge(cell) || this.connectableEdges) &&
+          !this.model.isEdge(cell) || this.edgesConnectable) &&
         this.isCellConnectable(cell)
       )
     )
   }
 
-  /**
-   * Returns true if the given cell is a valid target for new connections.
-   */
   @hook()
   isValidTarget(cell: Cell | null) {
     return this.isValidSource(cell)
   }
 
-  /**
-   * Returns true if the given target cell is a valid target for source.
-   */
+  @hook()
   isValidConnection(source: Cell | null, target: Cell | null) {
     return this.isValidSource(source) && this.isValidTarget(target)
   }
@@ -3095,157 +2704,22 @@ export class Graph extends Disablable {
     return false
   }
 
-  /**
-   * Returns true if the size of the given cell should automatically be
-   * updated after a change of the label.
-   */
+  @hook()
   isAutoSizeCell(cell: Cell) {
     const style = this.getStyle(cell)
     return this.isAutoSizeCells() || style.autosize === true
   }
 
-  /**
-  * Specifies if autoSize style should be applied when cells are added.
-  *
-  * Default is `false`.
-  */
-  autoSizeOnAdded: boolean = false
-
-  /**
-   * Specifies if the graph should automatically update the cell
-   * size after an edit.
-   *
-   * Default is `false`.
-   */
-  autoSizeOnEdited: boolean = false
-
-  isAutoSizeCells() {
-    return this.autoSizeOnEdited
-  }
-
-  /**
-   * Specifies if cell sizes should be automatically updated
-   * after a label change.
-   */
-  setAutoSizeCells(value: boolean) {
-    this.autoSizeOnEdited = value
-  }
-
-  /**
-   * Returns true if the parent of the given cell should be extended
-   * if the child has been resized so that it overlaps the parent.
-   */
   @hook()
   isExtendParent(cell: Cell) {
     return !this.model.isEdge(cell) && this.isExtendParents()
   }
 
-  /**
-   * Specifies if a parent should contain the child bounds after
-   * a resize of the child.
-   *
-   * Default is `true`.
-   */
-  extendParents: boolean = true
-
-  isExtendParents() {
-    return this.extendParents
-  }
-
-  setExtendParents(value: boolean) {
-    this.extendParents = value
-  }
-
-  extendParentsOnAdd: boolean = true
-
-  isExtendParentsOnAdd() {
-    return this.extendParentsOnAdd
-  }
-
-  setExtendParentsOnAdd(value: boolean) {
-    this.extendParentsOnAdd = value
-  }
-
-  extendParentsOnMove: boolean = false
-
-  isExtendParentsOnMove() {
-    return this.extendParentsOnMove
-  }
-
-  setExtendParentsOnMove(value: boolean) {
-    this.extendParentsOnMove = value
-  }
-
-  recursiveResize: boolean = false
-
-  isRecursiveResize() {
-    return this.recursiveResize
-  }
-
-  setRecursiveResize(value: boolean) {
-    this.recursiveResize = value
-  }
-
-  /**
-   * Returns true if the given cell should be kept inside the
-   * bounds of its parent.
-   */
+  @hook()
   isConstrainChild(cell: Cell) {
     return this.isConstrainChildren() &&
       !this.model.isEdge(this.model.getParent(cell)!)
   }
-
-  /**
-   * Specifies if a child should be constrained inside the parent
-   * bounds after a move or resize of the child.
-   *
-   * Default is `true`.
-   */
-  constrainChildren: boolean = true
-
-  isConstrainChildren() {
-    return this.constrainChildren
-  }
-
-  setConstrainChildren(value: boolean) {
-    this.constrainChildren = value
-  }
-
-  /**
-   * Specifies if child cells with relative geometries should be
-   * constrained inside the parent bounds.
-   *
-   * Default is `false`.
-   */
-  constrainRelativeChildren: boolean = false
-
-  isConstrainRelativeChildren() {
-    return this.constrainRelativeChildren
-  }
-
-  setConstrainRelativeChildren(value: boolean) {
-    this.constrainRelativeChildren = value
-  }
-
-  /**
-   * Specifies if negative coordinates for nodes are allowed.
-   *
-   * Default is `true`.
-   */
-  allowNegativeCoordinates = true
-
-  isAllowNegativeCoordinates() {
-    return this.allowNegativeCoordinates
-  }
-
-  setAllowNegativeCoordinates(value: boolean) {
-    this.allowNegativeCoordinates = value
-  }
-
-  /**
-   * Specifies the portion of the child which is allowed to overlap the parent.
-   */
-  defaultOverlap: number = 0.5
 
   /**
    * Returns a decimal number representing the amount of the width and height
@@ -3266,26 +2740,7 @@ export class Graph extends Disablable {
     return false
   }
 
-  /**
-   * Returns the cells which are movable in the given array of cells.
-   */
-  getFoldableCells(cells: Cell[], collapse: boolean) {
-    return this.model.filterCells(cells, cell => this.isFoldable(cell, collapse))
-  }
-
-  /**
-   * Returns true if the given cell is foldable.
-   */
   @hook()
-  isFoldable(cell: Cell, nextCollapseState: boolean) {
-    const style = this.getStyle(cell)
-    return (this.model.getChildCount(cell) > 0 && style.foldable !== false)
-  }
-
-  /**
-   * Returns true if the given cell is a valid drop target for
-   * the specified cells.
-   */
   isValidDropTarget(target: Cell, cells: Cell[], e: MouseEvent) {
     return target != null && ((this.isSplitEnabled() &&
       this.isSplitTarget(target, cells, e)) || (!this.model.isEdge(target) &&
@@ -3293,10 +2748,7 @@ export class Graph extends Disablable {
           !this.isCellCollapsed(target)))))
   }
 
-  /**
-   * Returns true if the given edge may be splitted into two edges
-   * with the given cell as a new terminal between the two.
-   */
+  @hook()
   isSplitTarget(target: Cell, cells: Cell[], e: MouseEvent) {
     if (
       this.model.isEdge(target) &&
@@ -3397,7 +2849,6 @@ export class Graph extends Disablable {
     this.eventloop.dispose()
     this.selection.dispose()
     this.selectionManager.dispose()
-    this.handlerManager.dispose()
     this.validator.dispose()
     this.viewport.dispose()
     this.cellManager.dispose()
@@ -3448,7 +2899,10 @@ function hook(hookName?: string) {
     descriptor.value = function (this: Graph, ...args: any[]) {
       const hook = (this.options as any)[name]
       if (hook != null) {
-        const ret = util.apply(hook, this, args)
+        this.getNativeValue = raw.bind(this, ...args)
+        const ret = util.call(hook, this, ...args)
+        delete this.getNativeValue
+
         if (ret != null) {
           return ret
         }
@@ -3482,77 +2936,7 @@ function afterCreate(aopName?: string) {
 }
 
 export namespace Graph {
-  export interface Hooks {
-    createModel?: (this: Graph, graph: Graph) => Model
-    createView?: (this: Graph, graph: Graph) => View
-    createRenderer?: (this: Graph, graph: Graph) => Renderer
-    createSelection?: (this: Graph, graph: Graph) => Selection
-
-    createTooltipHandler?: (this: Graph, graph: Graph) => TooltipHandler
-    createConnectionHandler?: (this: Graph, graph: Graph) => ConnectionHandler
-    createSelectionHandler?: (this: Graph, graph: Graph) => SelectionHandler
-    createGraphHandler?: (this: Graph, graph: Graph) => GraphHandler
-    createPanningHandler?: (this: Graph, graph: Graph) => PanningHandler
-    createPopupMenuHandler?: (this: Graph, graph: Graph) => PopupMenuHandler
-    createNodeHandler?: (this: Graph, graph: Graph, state: State) => NodeHandler
-    createEdgeHandler?: (this: Graph, graph: Graph, state: State) => EdgeHandler
-    createElbowEdgeHandler?: (this: Graph, graph: Graph, state: State) => EdgeHandler
-    createEdgeSegmentHandler?: (this: Graph, graph: Graph, state: State) => EdgeHandler
-    createRubberbandHandler?: (this: Graph, graph: Graph) => RubberbandHandler
-
-    isCloneEvent?: (e: MouseEvent) => boolean | null
-    isToggleEvent?: (e: MouseEvent) => boolean | null
-    isConstrainedEvent?: (e: MouseEvent) => boolean | null
-    isGridEnabledForEvent?: (e: MouseEvent) => boolean | null
-    isIgnoreTerminalEvent?: (this: Graph, e: MouseEvent) => boolean | null
-    isTransparentClickEvent?: (this: Graph, e: MouseEvent) => boolean | null
-
-    isValidSource?: (this: Graph, cell: Cell | null) => boolean | null
-    isValidTarget?: (this: Graph, cell: Cell | null) => boolean | null
-    isCellConnectable?: (this: Graph, cell: Cell | null) => boolean | null
-    isCellLocked?: (this: Graph, cell: Cell | null) => boolean | null
-
-    isValidRoot?: (this: Graph, cell: Cell | null) => boolean | null
-    isPort?: (this: Graph, cell: Cell) => boolean | null
-    getChildOffset?: (this: Graph, cell: Cell) => Point | null
-    getTerminalForPort?: (this: Graph, cell: Cell, isSource: boolean) => Cell | null
-    getTranslateForCurrentRoot?: (this: Graph, currentRoot: Cell | null) => Point | null
-
-    isExtendParent?: (this: Graph, cell: Cell) => boolean | null
-    isFoldable?: (this: Graph, cell: Cell, nextCollapseState: boolean) => boolean | null
-
-    validateCell?: (this: Graph, cell: Cell, context: any) => string | null
-    validateEdge?: (
-      this: Graph,
-      edge: Cell | null,
-      source: Cell | null,
-      target: Cell | null,
-    ) => string | null
-
-    getLink?: (this: Graph, cell: Cell) => string | null
-    getCursor?: (this: Graph, cell: Cell) => string | null
-    getTooltip?: (this: Graph, cell: Cell) => string | HTMLElement | null
-    getCellClassName?: (this: Graph, cell: Cell) => string | null
-    getLabelClassName?: (this: Graph, cell: Cell) => string | null
-    getConstraints?: (
-      this: Graph,
-      cell: Cell,
-      isSource: boolean,
-    ) => Constraint[] | null
-
-    getLabel?: (this: Graph, cell: Cell) => string | null
-    putLabel?: (this: Graph, cell: Cell, label: string) => null | any
-    getEditingValue?: (this: Graph, cell: Cell, e?: Event) => string | null
-    convertDataToString?: (this: Graph, cell: Cell) => string | null
-
-    // after creation
-    // ----
-    onCreateNode?: (this: Graph, node: Cell, options: Graph.CreateNodeOptions) => Cell
-    onCreateEdge?: (this: Graph, edge: Cell, options: Graph.CreateEdgeOptions) => Cell
-    onCreateGroup?: (this: Graph, group: Cell, cells: Cell[]) => Cell
-  }
-
-  export interface Options extends Hooks, Feature.Options {
+  export interface Options extends Partial<IHooks>, GraphOptions {
     model?: Model,
   }
 

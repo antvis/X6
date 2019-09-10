@@ -10,11 +10,11 @@ export class HelloPort extends React.Component {
         const geo = this.getCellGeometry(cell)
         return (geo != null) ? geo.relative : false
       },
-      isFoldable() {
+      isCellFoldable() {
         return false
       },
-      edgeStyle:{
-        edge:'elbow'
+      edgeStyle: {
+        edge: 'elbow',
       },
     })
 

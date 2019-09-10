@@ -1360,7 +1360,7 @@ export class EdgeHandler extends MouseHandler {
 
               edge = this.connect(edge, terminal!, this.isSource, clone, e)
             })
-          } else if (this.graph.isAllowDanglingEdges()) {
+          } else if (this.graph.isDanglingEdgesEnabled()) {
             const s = this.graph.view.scale
             const t = this.graph.view.translate
             const i = this.isSource ? 0 : this.absolutePoints.length - 1
@@ -1703,7 +1703,7 @@ export class EdgeHandler extends MouseHandler {
       const txt = this.graph.getLabel(cell)
       this.labelShape.visible = (
         txt != null &&
-        txt.length > 0 &&
+        (txt as string).length > 0 &&
         this.graph.isLabelMovable(cell)
       )
     }
@@ -2011,7 +2011,7 @@ export namespace EdgeHandler {
         ||
         (
           cell === this.state.cell ||
-          (cell != null && !this.graph.connectableEdges && model.isEdge(cell))
+          (cell != null && !this.graph.edgesConnectable && model.isEdge(cell))
         )
         ||
         model.isAncestor(this.state.cell, cell)

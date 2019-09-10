@@ -18,7 +18,7 @@ export class Shape extends Disposable {
   /**
    * Rendering hint for configuring the canvas.
    */
-  antiAlias: boolean = true
+  antialiased: boolean = true
 
   /**
    * The dialect in which the shape is to be painted.
@@ -343,7 +343,7 @@ export class Shape extends Disposable {
       this.elem!.removeAttribute('transform')
     }
 
-    if (!this.antiAlias) {
+    if (!this.antialiased) {
       canvas.format = (val: any) => Math.round(parseFloat(val))
     }
 
