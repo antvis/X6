@@ -150,10 +150,10 @@ export class Shape extends Disposable {
 
   protected initStyle() {
     this.rotation = 0
-    this.opacity = 100
-    this.fillOpacity = 100
+    this.opacity = 1
+    this.fillOpacity = 1
     this.strokeWidth = 1
-    this.strokeOpacity = 100
+    this.strokeOpacity = 1
     this.flipH = false
     this.flipV = false
   }
@@ -415,8 +415,8 @@ export class Shape extends Disposable {
   protected updateHtmlFilters(node: HTMLElement) {
     let f = ''
 
-    if (this.opacity < 100) {
-      f += `alpha(opacity=${this.opacity})`
+    if (this.opacity < 1) {
+      f += `alpha(opacity=${this.opacity * 100})`
     }
 
     if (this.shadow) {
@@ -625,9 +625,9 @@ export class Shape extends Disposable {
     h: number,
   ) {
 
-    c.setAlpha(this.opacity / 100)
-    c.setFillAlpha(this.fillOpacity / 100)
-    c.setStrokeAlpha(this.strokeOpacity / 100)
+    c.setAlpha(this.opacity)
+    c.setFillAlpha(this.fillOpacity)
+    c.setStrokeAlpha(this.strokeOpacity)
 
     if (this.shadow != null) {
       c.setShadow(this.shadow)

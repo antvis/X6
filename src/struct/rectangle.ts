@@ -44,6 +44,15 @@ export class Rectangle {
     return new Point(this.x, this.y + this.height)
   }
 
+  round() {
+    return new Rectangle(
+      Math.round(this.x),
+      Math.round(this.y),
+      Math.round(this.width),
+      Math.round(this.height),
+    )
+  }
+
   update(rect: Rectangle | Rectangle.RectangleLike): void
   update(x: number, y: number, width: number, height: number): void
   update(

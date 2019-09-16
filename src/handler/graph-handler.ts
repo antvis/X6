@@ -6,15 +6,15 @@ import { RectangleShape } from '../shape'
 import { Guide } from './guide'
 import { CellHighlight } from './cell-highlight'
 import { MouseHandler } from './handler-mouse'
-import { createGuide, isGuideEnabled } from '../core/option'
+import { createGuide, isGuideEnabled, applyMovingPreviewStyle } from '../option'
 
 export class GraphHandler extends MouseHandler {
   /**
-   * Specifies if cloning by control-drag is enabled.
+   * Specifies if selecting is enabled.
    *
    * Default is `true`.
    */
-  cloneable: boolean = true
+  selectable: boolean = true
 
   /**
    * Specifies if moving is enabled.
@@ -24,11 +24,11 @@ export class GraphHandler extends MouseHandler {
   movable: boolean = true
 
   /**
-   * Specifies if selecting is enabled.
+   * Specifies if cloning by control-drag is enabled.
    *
    * Default is `true`.
    */
-  selectable: boolean = true
+  cloneable: boolean = true
 
   /**
    * Specifies if the bounding box should allow for rotation.
@@ -86,7 +86,7 @@ export class GraphHandler extends MouseHandler {
    *
    * Default is `false`.
    */
-  connectOnDrop: boolean = false
+  connectOnDrop: boolean = true
 
   /**
    * Specifies if the view should be scrolled so that a moved cell is
@@ -107,14 +107,14 @@ export class GraphHandler extends MouseHandler {
   /**
    * Specifies the color of the preview shape.
    *
-   * Default is `black`.
+   * Default is `#000`.
    */
-  previewColor: string = 'black'
+  previewColor: string = '#000'
 
   /**
-   * Specifies if the graph container should be used for preview. If this
-   * is used then drop target detection relies entirely on `graph.getCellAt`
-   * because the HTML preview does not "let events through".
+   * Specifies if draw a html preview. If this is used then drop target
+   * detection relies entirely on `graph.getCellAt` because the HTML
+   * preview does not "let events through".
    *
    * Default is `false`.
    */
@@ -183,6 +183,10 @@ export class GraphHandler extends MouseHandler {
     }
 
     this.graph.model.on(Model.events.change, this.refreshHandler)
+  }
+
+  config() {
+
   }
 
   protected updateHint() { }
@@ -263,14 +267,12 @@ export class GraphHandler extends MouseHandler {
   protected start(cell: Cell, e: MouseEventEx) {
     this.cell = cell
     this.cells = this.getCells(cell, e.getEvent())
-    this.origin = util.clientToGraph(
-      this.graph.container, e.getClientX(), e.getClientY(),
-    )
+    this.origin = util.clientToGraph(this.graph.container, e)
     this.bounds = this.graph.view.getBounds(this.cells)
     this.previewBounds = this.getPreviewBounds(this.cells)
 
     if (this.guideEnabled) {
-      this.guide = createGuide(this.graph, this.getGuideStates())
+      this.guide = createGuide(this.graph, this.getStatesForGuide())
     }
   }
 
@@ -342,7 +344,7 @@ export class GraphHandler extends MouseHandler {
     return result
   }
 
-  protected getGuideStates() {
+  protected getStatesForGuide() {
     const parent = this.graph.getDefaultParent()
     const cells = this.graph.model.filterDescendants(
       cell => (
@@ -376,10 +378,10 @@ export class GraphHandler extends MouseHandler {
         return
       }
 
+      const tol = graph.tolerance
       let delta = this.getDelta(e)
       let dx = delta.x
       let dy = delta.y
-      const tol = graph.tolerance
 
       if (
         this.previewShape ||
@@ -485,11 +487,7 @@ export class GraphHandler extends MouseHandler {
 
   protected getDelta(e: MouseEventEx) {
     const scale = this.graph.view.scale
-    const point = util.clientToGraph(
-      this.graph.container,
-      e.getClientX(),
-      e.getClientY(),
-    )
+    const point = util.clientToGraph(this.graph.container, e)
 
     return new Point(
       this.roundLength((point.x - this.origin!.x) / scale) * scale,
@@ -513,8 +511,10 @@ export class GraphHandler extends MouseHandler {
       shape.init(this.graph.container)
     } else {
       shape.dialect = 'svg'
-      shape.init(this.graph.view.getOverlayPane()!)
       shape.pointerEvents = false
+      // shape.pointerEvents = true
+      // shape.svgPointerEvents = 'fill'
+      shape.init(this.graph.view.getOverlayPane()!)
     }
 
     return shape
@@ -534,12 +534,21 @@ export class GraphHandler extends MouseHandler {
       this.dx != null &&
       this.dy != null
     ) {
-      this.previewShape.bounds = new Rectangle(
+      const bounds = this.previewShape.bounds = new Rectangle(
         Math.round(this.previewBounds.x + this.dx - this.graph.tx),
         Math.round(this.previewBounds.y + this.dy - this.graph.ty),
         this.previewBounds.width,
         this.previewBounds.height,
       )
+
+      applyMovingPreviewStyle({
+        graph: this.graph,
+        shape: this.previewShape,
+        x: bounds.x,
+        y: bounds.y,
+        width: bounds.width,
+        height: bounds.height,
+      })
 
       this.previewShape.redraw()
     }
@@ -563,6 +572,7 @@ export class GraphHandler extends MouseHandler {
     if (graph.isDropEnabled() && this.highlightEnabled) {
       // Call getCellAt to find the cell under the mouse
       target = graph.getDropTarget(this.cells, e.getEvent(), cell, clone)
+      // console.log(cell, target)
     }
 
     let state = graph.view.getState(target)
@@ -580,6 +590,7 @@ export class GraphHandler extends MouseHandler {
 
       this.target = null
 
+      // Drag a cell onto another cell, then drop it to trigger a connection.
       if (
         this.connectOnDrop && cell && this.cells.length === 1 &&
         cell.isNode() && graph.isCellConnectable(cell)
@@ -622,6 +633,8 @@ export class GraphHandler extends MouseHandler {
         const graph = this.graph
         const cell = e.getCell()
         const evt = e.getEvent()
+
+        console.log(this.target)
 
         if (
           this.connectOnDrop &&
@@ -692,7 +705,7 @@ export class GraphHandler extends MouseHandler {
 
   /**
    * Returns true if the given cells should be removed from the
-   * parent for the specified mousereleased event.
+   * parent for the specified mouseup event.
    */
   protected shouldRemoveCellsFromParent(
     parent: Cell | null,
@@ -702,11 +715,7 @@ export class GraphHandler extends MouseHandler {
     if (this.graph.model.isNode(parent)) {
       const pState = this.graph.view.getState(parent)
       if (pState != null) {
-        let pos = util.clientToGraph(
-          this.graph.container,
-          DomEvent.getClientX(e),
-          DomEvent.getClientY(e),
-        )
+        let pos = util.clientToGraph(this.graph.container, e)
         const rot = util.getRotation(pState)
         if (rot !== 0) {
           const cx = pState.bounds.getCenter()
@@ -769,7 +778,9 @@ export class GraphHandler extends MouseHandler {
 
     // Cloning into locked cells is not allowed
     // tslint:disable-next-line
-    clone = clone && !this.graph.isCellLocked(target || this.graph.getDefaultParent())
+    clone = clone && !this.graph.isCellLocked(
+      target || this.graph.getDefaultParent(),
+    )
 
     this.graph.batchUpdate(() => {
       const parents: Cell[] = []

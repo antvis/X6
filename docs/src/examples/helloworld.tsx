@@ -6,8 +6,7 @@ export class HelloWorld extends React.Component {
 
   componentDidMount() {
     DomEvent.disableContextMenu(this.container)
-    const graph = new Graph(this.container, {
-    })
+    const graph = new Graph(this.container)
 
     graph.batchUpdate(() => {
       const node1 = graph.addNode({ data: 'Hello', x: 60, y: 60, width: 80, height: 30 })

@@ -2,19 +2,41 @@ import { State } from '../core'
 import { getOffset, getScrollOrigin } from './dom'
 import { Point, DirectionMask } from '../struct'
 import { Align, VAlign } from '../types'
+import { MouseEventEx, DomEvent } from '../common'
 
 /**
  * Converts the specified point (x, y) using the offset of the specified
  * container and returns a new `Point` with the result.
  */
-export function clientToGraph(container: HTMLElement, x: number, y: number) {
+export function clientToGraph(container: HTMLElement, e: MouseEvent): Point
+export function clientToGraph(container: HTMLElement, e: MouseEventEx): Point
+export function clientToGraph(container: HTMLElement, x: number, y: number): Point
+export function clientToGraph(
+  container: HTMLElement,
+  x: number | MouseEvent | MouseEventEx,
+  y?: number,
+) {
   const origin = getScrollOrigin(container, false)
   const offset = getOffset(container)
 
   offset.x -= origin.x
   offset.y -= origin.y
 
-  return new Point(x - offset.x, y - offset.y)
+  let clientX
+  let clisntY
+
+  if (x instanceof MouseEventEx) {
+    clientX = x.getClientX()
+    clisntY = x.getClientY()
+  } else if (x instanceof Event) {
+    clientX = DomEvent.getClientX(x)
+    clisntY = DomEvent.getClientY(x)
+  } else {
+    clientX = x
+    clisntY = y!
+  }
+
+  return new Point(clientX - offset.x, clisntY - offset.y)
 }
 
 /**

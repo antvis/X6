@@ -2,7 +2,7 @@ import * as images from '../assets/images'
 import { loop } from '../router'
 import { Style } from '../types'
 import { rectangle } from '../perimeter'
-import { FullOptions } from './option'
+import { FullOptions } from './core'
 import { ShapeNames, MarkerNames, PageSize } from '../struct'
 
 const commonStyle: Style = {
@@ -67,7 +67,6 @@ export const defaultOptions: FullOptions = {
   nodeLabelsMovable: false,
   edgeLabelsMovable: true,
   cellsMovable: true,
-  cellsResizable: true,
   cellsBendable: true,
   cellsEditable: true,
   cellsDisconnectable: true,
@@ -92,6 +91,7 @@ export const defaultOptions: FullOptions = {
   grid: {
     enabled: true,
     size: 10,
+    scaled: false,
   },
 
   tolerance: 4,
@@ -120,8 +120,8 @@ export const defaultOptions: FullOptions = {
     ...commonStyle,
     shape: ShapeNames.rectangle,
     perimeter: rectangle,
-    fill: '#f6edfc',
-    stroke: '#712ed1',
+    fill: '#fff',
+    stroke: '#000',
   },
 
   edgeStyle: {
@@ -134,7 +134,7 @@ export const defaultOptions: FullOptions = {
   guide: {
     enabled: false,
     rounded: false,
-    dashed: false,
+    dashed: true,
     stroke: '#1890ff',
     strokeWidth: 1,
     horizontal: {
@@ -147,6 +147,10 @@ export const defaultOptions: FullOptions = {
 
   tooltip: {
     enabled: false,
+    delay: 500,
+    zIndex: 9999,
+    hideOnHover: false,
+    ignoreTouchEvents: true,
   },
 
   rubberband: {
@@ -155,5 +159,96 @@ export const defaultOptions: FullOptions = {
     border: '1px solid #0000ff',
     background: '#0077ff',
     opacity: 0.2,
+  },
+
+  contextMenu: {
+    enabled: false,
+    isLeftButton: false,
+    selectCellsOnContextMenu: true,
+    clearSelectionOnBackground: true,
+  },
+
+  movingPreview: {
+    html: false,
+    minimumSize: 6,
+    opacity: 1,
+    dashed: true,
+    stroke: '#000',
+    strokeWidth: 1,
+    fill: 'none',
+    cursor: 'move',
+  },
+
+  selectionPreview: {
+    opacity: 1,
+    stroke: '#108ee9',
+    strokeWidth: 1,
+    dashed: true,
+    fill: 'none',
+  },
+
+  resize: {
+    enabled: true,
+    centered: false,
+    livePreview: false,
+    manageHandles: false,
+  },
+
+  resizeHandle: {
+    single: false,
+    shape: 'ellipse',
+    size: 8,
+    opacity: 1,
+    fill: '#108ee9',
+    stroke: '#fff',
+    strokeWidth: 1,
+    dashed: false,
+  },
+
+  resizePreview: {
+    opacity: 1,
+    stroke: '#108ee9',
+    strokeWidth: 1,
+    dashed: true,
+    fill: 'rgba(24,144,255,0.05)',
+  },
+
+  rotate: {
+    enabled: false,
+    rasterized: true,
+    livePreview: false,
+  },
+
+  rotateHandle: {
+    image: images.rotate,
+    shape: 'ellipse',
+    size: 10,
+    opacity: 1,
+    fill: '#108ee9',
+    stroke: '#fff',
+    strokeWidth: 1,
+    dashed: false,
+    cursor: 'crosshair',
+    offset: { x: 0, y: -20 },
+  },
+
+  rotatePreview: {
+    opacity: 1,
+    stroke: '#108ee9',
+    strokeWidth: 1,
+    dashed: true,
+    fill: 'rgba(24,144,255,0.05)',
+  },
+
+  labelHandle: {
+    shape: 'ellipse',
+    size: 10,
+    opacity: 1,
+    fill: '#108ee9',
+    stroke: '#fff',
+    strokeWidth: 1,
+    dashed: false,
+    cursor: 'move',
+    offset: { x: 0, y: -8 },
   },
 }

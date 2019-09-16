@@ -1,10 +1,26 @@
 import * as util from '../util'
 import { Cell, State, Graph } from '../core'
-import { Rectangle, Point, Image } from '../struct'
+import { Rectangle, Point } from '../struct'
 import { constants, DomEvent, MouseEventEx, detector } from '../common'
-import { Shape, RectangleShape, EllipseShape, ImageShape } from '../shape'
-import { MouseHandler } from './handler-mouse'
+import { Shape, RectangleShape } from '../shape'
+import { Handle } from './handle'
 import { EdgeHandler } from './edge-handler'
+import { MouseHandler } from './handler-mouse'
+import {
+  applySelectionPreviewStyle,
+  createResizeHandle,
+  createRotationHandle,
+  getRotationHandleOffset,
+  getRotationHandleCursor,
+  createLabelHandle,
+  getLabelHandleCursor,
+  getLabelHandleOffset,
+  applyResizePreviewStyle,
+  applyRotatePreviewStyle,
+  ResizeHandleOptions,
+  ResizeOption,
+  RotateOptions,
+} from '../option'
 
 export class NodeHandler extends MouseHandler {
   graph: Graph
@@ -13,17 +29,17 @@ export class NodeHandler extends MouseHandler {
   startY: number
 
   /**
+   * The index of the current handle.
+   */
+  index: number | null = null
+
+  /**
    * Specifies if only one sizer handle at the bottom, right corner should be
    * used.
    *
    * Default is `false`.
    */
-  singleSizer: boolean = false
-
-  /**
-   * The index of the current handle.
-   */
-  index: number | null = null
+  singleResizeHandle: boolean = false
 
   /**
    * Specifies if the bounds of handles should be used for hit-detection
@@ -32,13 +48,6 @@ export class NodeHandler extends MouseHandler {
    * Default is `true`.
    */
   checkHandleBounds: boolean = true
-
-  /**
-   * Optional `Image` to be used as handles.
-   *
-   * Default is `null`.
-   */
-  handleImage: Image | null = null
 
   /**
    * Specifies if sizers should be hidden and spaced if the node is small.
@@ -55,26 +64,12 @@ export class NodeHandler extends MouseHandler {
   tolerance: number = 0
 
   /**
-   * Specifies if a rotation handle should be visible.
-   *
-   * Default is `false`.
-   */
-  rotatable: boolean = false
-
-  /**
    * Specifies if rotation steps should be "rasterized" depening on the
    * distance to the handle.
    *
    * Default is `true`.
    */
   rotationRaster: boolean = true
-
-  /**
-   * Specifies the cursor for the rotation handle.
-   *
-   * Default is `'crosshair'`.
-   */
-  rotationCursor: string = 'crosshair'
 
   /**
    * Specifies if the parent should be highlighted if a child cell is selected.
@@ -84,40 +79,18 @@ export class NodeHandler extends MouseHandler {
   parentHighlightable: boolean = false
 
   /**
-   * Specifies if resize should change the cell in-place.
-   *
-   * Default is `false`.
-   */
-  livePreview: boolean = false
-
-  /**
    * Specifies if the size of groups should be constrained by the children.
    *
    * Default is `false`.
    */
   constrainGroupByChildren: boolean = false
 
-  /**
-   * Vertical spacing for rotation icon.
-   *
-   * Default is `-16`.
-   */
-  rotationHandleVSpacing = -16
-
-  /**
-   * The horizontal offset for the handles. This is updated in `redrawHandles`
-   * if `manageHandles` is `true` and the sizers are offset horizontally.
-   */
-  protected horizontalOffset: number = 0
-
-  /**
-   * The horizontal offset for the handles. This is updated in `redrawHandles`
-   * if `manageHandles` is `true` and the sizers are offset vertically.
-   */
-  protected verticalOffset: number = 0
+  resizeLivePreview: boolean = false
+  rotateLivePreview: boolean = false
 
   private escapeHandler: (() => void) | null
-
+  protected horizontalOffset: number = 0
+  protected verticalOffset: number = 0
   protected x0: number
   protected y0: number
 
@@ -128,12 +101,12 @@ export class NodeHandler extends MouseHandler {
 
   protected selectionShape: RectangleShape | null
   protected previewShape: RectangleShape | null
-  protected handles: (RectangleShape | EllipseShape | ImageShape)[] | null
-  protected edgeHandlers: EdgeHandler[] | null
-  protected labelShape: RectangleShape | null
-  protected rotationShape: EllipseShape
-  protected customHandles: Shape[] | null
   protected parentHighlight: RectangleShape | null
+  protected handles: (Shape)[] | null
+  protected labelShape: Shape | null
+  protected rotationShape: Shape
+  protected customHandles: Handle[] | null
+  protected edgeHandlers: EdgeHandler[] | null
 
   protected inTolerance: boolean
   protected childOffsetX: number
@@ -144,16 +117,14 @@ export class NodeHandler extends MouseHandler {
   constructor(graph: Graph, state: State) {
     super(graph)
     this.state = state
+    this.config()
     this.init()
     this.escapeHandler = () => {
-      if (this.livePreview && this.index != null) {
-        // Redraws the live preview
-        this.state.view.graph.renderer.redraw(this.state, true)
-
-        // Redraws connected edges
-        this.state.view.invalidate(this.state.cell)
-        this.state.invalid = false
-        this.state.view.validate()
+      if (
+        (this.rotateLivePreview || this.resizeLivePreview) &&
+        this.index != null
+      ) {
+        this.redrawLivePreview()
       }
 
       this.reset()
@@ -162,7 +133,33 @@ export class NodeHandler extends MouseHandler {
     this.state.view.graph.on(Graph.events.escape, this.escapeHandler)
   }
 
+  protected config() {
+    const options = this.graph.options
+
+    const resize = options.resize as ResizeOption
+    this.manageHandles = resize.manageHandles
+    this.resizeLivePreview = resize.livePreview
+
+    const resizeHandle = options.resizeHandle as ResizeHandleOptions
+    this.singleResizeHandle = resizeHandle.single
+
+    const rotate = options.rotate as RotateOptions
+    this.rotateLivePreview = rotate.livePreview
+    this.rotationRaster = rotate.rasterized
+  }
+
   protected init() {
+    this.initSelectionShape()
+    this.initHandles()
+    this.customHandles = this.createCustomHandles()
+    this.redraw()
+
+    if (this.constrainGroupByChildren) {
+      this.updateMinBounds()
+    }
+  }
+
+  protected initSelectionShape() {
     this.selectionBounds = this.getSelectionBounds(this.state)
     this.bounds = this.selectionBounds.clone()
     this.selectionShape = this.createSelectionShape(this.bounds)
@@ -181,7 +178,9 @@ export class NodeHandler extends MouseHandler {
     if (this.graph.isCellMovable(this.state.cell)) {
       this.selectionShape.setCursor(constants.CURSOR_MOVABLE_NODE)
     }
+  }
 
+  protected initHandles() {
     this.handles = []
 
     // Adds the sizer handles
@@ -198,24 +197,24 @@ export class NodeHandler extends MouseHandler {
         let i = 0
 
         if (resizable) {
-          if (!this.singleSizer) {
-            this.handles.push(this.createHandle('nw-resize', i))
+          if (!this.singleResizeHandle) {
+            this.handles.push(this.createHandle(i, 'nw-resize'))
             i += 1
-            this.handles.push(this.createHandle('n-resize', i))
+            this.handles.push(this.createHandle(i, 'n-resize'))
             i += 1
-            this.handles.push(this.createHandle('ne-resize', i))
+            this.handles.push(this.createHandle(i, 'ne-resize'))
             i += 1
-            this.handles.push(this.createHandle('w-resize', i))
+            this.handles.push(this.createHandle(i, 'w-resize'))
             i += 1
-            this.handles.push(this.createHandle('e-resize', i))
+            this.handles.push(this.createHandle(i, 'e-resize'))
             i += 1
-            this.handles.push(this.createHandle('sw-resize', i))
+            this.handles.push(this.createHandle(i, 'sw-resize'))
             i += 1
-            this.handles.push(this.createHandle('s-resize', i))
+            this.handles.push(this.createHandle(i, 's-resize'))
             i += 1
           }
 
-          this.handles.push(this.createHandle('se-resize', i))
+          this.handles.push(this.createHandle(i, 'se-resize'))
         }
 
         const geo = this.state.cell.getGeometry()
@@ -226,55 +225,30 @@ export class NodeHandler extends MouseHandler {
           !this.graph.isSwimlane(this.state.cell) &&
           labelMovable
         ) {
-          this.labelShape = this.createHandle(
-            constants.CURSOR_LABEL_HANDLE,
-            DomEvent.LABEL_HANDLE,
-            constants.LABEL_HANDLE_SIZE,
-            constants.LABEL_HANDLE_FILLCOLOR,
-          ) as RectangleShape
+          this.labelShape = this.createHandle(DomEvent.getLabelHandle())
           this.handles.push(this.labelShape)
         }
-
       } else if (
         !resizable &&
         this.graph.isCellMovable(this.state.cell) &&
         this.state.bounds.width < 2 &&
         this.state.bounds.height < 2
       ) {
-        this.labelShape = this.createHandle(
-          constants.CURSOR_MOVABLE_NODE,
-          DomEvent.LABEL_HANDLE,
-          null,
-          constants.LABEL_HANDLE_FILLCOLOR,
-        ) as RectangleShape
+        this.labelShape = this.createHandle(DomEvent.getLabelHandle())
         this.handles.push(this.labelShape)
       }
     }
 
     // Adds the rotation handler
     if (this.isRotationHandleVisible()) {
-      this.rotationShape = this.createHandle(
-        this.rotationCursor,
-        DomEvent.ROTATION_HANDLE,
-        constants.HANDLE_SIZE + 3,
-        constants.HANDLE_FILLCOLOR,
-      ) as EllipseShape
-
+      this.rotationShape = this.createHandle(DomEvent.getRotationHandle())
       this.handles.push(this.rotationShape)
-    }
-
-    this.customHandles = this.createCustomHandles()
-    this.redraw()
-
-    if (this.constrainGroupByChildren) {
-      this.updateMinBounds()
     }
   }
 
   protected isRotationHandleVisible() {
     return (
       this.graph.isEnabled() &&
-      this.rotatable &&
       this.graph.isCellRotatable(this.state.cell) &&
       (
         this.graph.graphHandler.maxCellCount <= 0 ||
@@ -303,8 +277,12 @@ export class NodeHandler extends MouseHandler {
    * Returns true if the center of the node should be maintained
    * during the resize.
    */
-  protected isCentered(state: State, e: MouseEventEx) {
-    return false
+  protected isCentered(cell: Cell, e: MouseEventEx) {
+    const options = this.graph.options.resize as ResizeOption
+    if (typeof options.centered === 'function') {
+      return options.centered.call(this.graph, cell, e)
+    }
+    return options.centered
   }
 
   protected isSizerVisible(index: number) {
@@ -333,46 +311,55 @@ export class NodeHandler extends MouseHandler {
   }
 
   protected getSelectionBounds(state: State) {
-    return new Rectangle(
-      Math.round(state.bounds.x),
-      Math.round(state.bounds.y),
-      Math.round(state.bounds.width),
-      Math.round(state.bounds.height),
-    )
-  }
-
-  protected getSelectionColor() {
-    return constants.NODE_SELECTION_COLOR
-  }
-
-  protected getSelectionStrokeWidth() {
-    return constants.NODE_SELECTION_STROKEWIDTH
-  }
-
-  protected isSelectionDashed() {
-    return constants.NODE_SELECTION_DASHED
+    return state.bounds.round()
   }
 
   protected createSelectionShape(bounds: Rectangle) {
-    const shape = new RectangleShape(bounds, null, this.getSelectionColor())
-    shape.strokeWidth = this.getSelectionStrokeWidth()
-    shape.dashed = this.isSelectionDashed()
-    return shape
+    return applySelectionPreviewStyle({
+      graph: this.graph,
+      cell: this.state.cell,
+      shape: new RectangleShape(bounds),
+    }) as RectangleShape
+  }
+
+  protected createResizePreviewShape(bounds: Rectangle) {
+    return applyResizePreviewStyle({
+      graph: this.graph,
+      cell: this.state.cell,
+      shape: new RectangleShape(bounds),
+    }) as RectangleShape
+  }
+
+  protected createRotatePreviewShape(bounds: Rectangle) {
+    return applyRotatePreviewStyle({
+      graph: this.graph,
+      cell: this.state.cell,
+      shape: new RectangleShape(bounds),
+    }) as RectangleShape
   }
 
   protected createParentHighlightShape(bounds: Rectangle) {
     return this.createSelectionShape(bounds)
   }
 
-  protected createHandle(
-    cursor: string,
-    index: number,
-    size?: number | null,
-    fillColor?: string,
-  ) {
-    const wh = size || constants.HANDLE_SIZE
-    const bounds = new Rectangle(0, 0, wh, wh)
-    const handle = this.createHandleShape(bounds, index, fillColor)
+  protected createHandle(index: number, cursor?: string) {
+    let handle
+    const args = {
+      graph: this.graph,
+      cell: this.state.cell,
+    }
+
+    if (DomEvent.isLabelHandle(index)) {
+      handle = createLabelHandle(args)
+      // tslint:disable-next-line
+      cursor = getLabelHandleCursor({ ...args, shape: handle })
+    } else if (DomEvent.isRotationHandle(index)) {
+      handle = createRotationHandle(args)
+      // tslint:disable-next-line
+      cursor = getRotationHandleCursor({ ...args, shape: handle })
+    } else {
+      handle = createResizeHandle({ ...args, index, cursor: cursor! })
+    }
 
     if (
       handle.isHtmlAllowed() &&
@@ -386,11 +373,7 @@ export class NodeHandler extends MouseHandler {
       handle.init(this.graph.container)
     } else {
       handle.dialect = 'svg'
-      handle.init(this.graph.view.getOverlayPane()!)
-    }
-
-    if (cursor.indexOf('-resize') >= 0) {
-      handle.className = `${this.graph.prefixCls}-${cursor}`
+      handle.init(this.graph.view.getOverlayPane())
     }
 
     MouseEventEx.redirectMouseEvents(handle.elem!, this.graph, this.state)
@@ -406,38 +389,7 @@ export class NodeHandler extends MouseHandler {
     return handle
   }
 
-  protected createHandleShape(
-    bounds: Rectangle,
-    index: number,
-    fillColor?: string,
-  ) {
-    if (this.handleImage != null) {
-      const b = new Rectangle(
-        bounds.x,
-        bounds.y,
-        this.handleImage.width,
-        this.handleImage.height,
-      )
-      const shape = new ImageShape(b, this.handleImage.src)
-      shape.preserveImageAspect = false
-      return shape
-    }
-
-    const fill = fillColor || constants.HANDLE_FILLCOLOR
-    const stroke = constants.HANDLE_STROKECOLOR
-
-    if (index === DomEvent.ROTATION_HANDLE) {
-      return new EllipseShape(bounds, fill, stroke)
-    }
-
-    return new EllipseShape(bounds, fill, stroke)
-  }
-
-  protected moveHandleTo(
-    shape: RectangleShape | EllipseShape | ImageShape,
-    x: number,
-    y: number,
-  ) {
+  protected moveHandleTo(shape: Shape, x: number, y: number) {
     if (shape != null) {
       shape.bounds.x = Math.floor(x - shape.bounds.width / 2)
       shape.bounds.y = Math.floor(y - shape.bounds.height / 2)
@@ -447,9 +399,6 @@ export class NodeHandler extends MouseHandler {
     }
   }
 
-  /**
-   * Returns the index of the handle for the given event.
-   */
   protected getHandleForEvent(e: MouseEventEx) {
     // Connection highlight may consume events before they reach sizer handle
     const tol = DomEvent.isMouseEvent(e.getEvent()) ? 1 : this.tolerance
@@ -479,18 +428,18 @@ export class NodeHandler extends MouseHandler {
     if (this.customHandles != null && this.isCustomHandleEvent(e)) {
       // Inverse loop order to match display order
       for (let i = this.customHandles.length - 1; i >= 0; i -= 1) {
-        // if (checkShape(this.customHandles[i].shape)) {
-        //   return DomEvent.CUSTOM_HANDLE - i
-        // }
+        if (checkShape(this.customHandles[i].shape)) {
+          return DomEvent.getCustomHandle(i)
+        }
       }
     }
 
     if (checkShape(this.rotationShape)) {
-      return DomEvent.ROTATION_HANDLE
+      return DomEvent.getRotationHandle()
     }
 
     if (checkShape(this.labelShape)) {
-      return DomEvent.LABEL_HANDLE
+      return DomEvent.getLabelHandle()
     }
 
     if (this.handles != null) {
@@ -509,7 +458,7 @@ export class NodeHandler extends MouseHandler {
   }
 
   mouseDown(e: MouseEventEx, sender: any) {
-    const tol = DomEvent.isMouseEvent(e.getEvent()) ? 0 : this.tolerance
+    const tol = DomEvent.isMouseEvent(e.getEvent()) ? 1 : this.tolerance
     if (
       !e.isConsumed() &&
       this.graph.isEnabled() &&
@@ -523,14 +472,14 @@ export class NodeHandler extends MouseHandler {
     }
   }
 
-  start(x: number, y: number, index: number) {
+  start(graphX: number, graphY: number, index: number) {
     if (this.selectionShape != null) {
+      this.index = index
+      this.startX = graphX
+      this.startY = graphY
       this.inTolerance = true
       this.childOffsetX = 0
       this.childOffsetY = 0
-      this.index = index
-      this.startX = x
-      this.startY = y
 
       // Saves reference to parent state
       const model = this.state.view.graph.model
@@ -541,54 +490,6 @@ export class NodeHandler extends MouseHandler {
         (model.isNode(parent) || model.isEdge(parent))
       ) {
         this.parentState = this.graph.view.getState(parent)
-      }
-
-      // Creates a preview that can be on top of any HTML label
-      this.selectionShape.elem!.style.display =
-        (index === DomEvent.ROTATION_HANDLE) ? 'inline' : 'none'
-
-      // Creates the border that represents the new bounds
-      if (!this.livePreview || this.isUnapparent()) {
-        this.previewShape = this.createSelectionShape(this.bounds)
-
-        if (
-          util.getRotation(this.state) === 0 &&
-          this.state.text != null &&
-          this.state.text.elem!.parentNode === this.graph.container
-        ) {
-          this.previewShape.dialect = 'html'
-          this.previewShape.init(this.graph.container)
-        } else {
-          this.previewShape.dialect = 'svg'
-          this.previewShape.init(this.graph.view.getOverlayPane())
-        }
-      }
-
-      // Prepares the handles for live preview
-      if (this.livePreview) {
-        this.hideSizers()
-
-        if (index === DomEvent.ROTATION_HANDLE) {
-          this.rotationShape.elem!.style.display = ''
-        } else if (index === DomEvent.LABEL_HANDLE) {
-          this.labelShape!.elem!.style.display = ''
-        } else if (this.handles != null && this.handles[index] != null) {
-          this.handles[index].elem!.style.display = ''
-        } else if (index <= DomEvent.CUSTOM_HANDLE && this.customHandles != null) {
-          // this.customHandles[DomEvent.CUSTOM_HANDLE - index].setVisible(true)
-        }
-
-        // Gets the array of connected edge handlers for redrawing
-        const edges = this.graph.getEdges(this.state.cell)
-        this.edgeHandlers = []
-        for (let i = 0, ii = edges.length; i < ii; i += 1) {
-          const handler = this.graph.selectionHandler.getHandler(
-            edges[i],
-          ) as any as EdgeHandler
-          if (handler != null) {
-            this.edgeHandlers.push(handler)
-          }
-        }
       }
     }
   }
@@ -603,33 +504,17 @@ export class NodeHandler extends MouseHandler {
   }
 
   protected setHandlesVisible(visible: boolean) {
-    if (this.handles != null) {
-      for (let i = 0, ii = this.handles.length; i < ii; i += 1) {
-        this.handles[i].elem!.style.display = visible ? '' : 'none'
-      }
-    }
+    this.handles && this.handles.forEach(
+      handle => (handle.elem!.style.display = visible ? '' : 'none'),
+    )
 
-    // if (this.customHandles != null) {
-    //   for (let i = 0; i < this.customHandles.length; i += 1) {
-    //     this.customHandles[i].setVisible(visible)
-    //   }
-    // }
+    this.customHandles && this.customHandles.forEach(
+      handle => handle.setVisible(visible),
+    )
   }
 
   protected hideSizers() {
     this.setHandlesVisible(false)
-  }
-
-  protected checkTolerance(e: MouseEventEx) {
-    if (this.inTolerance && this.startX != null && this.startY != null) {
-      if (
-        DomEvent.isMouseEvent(e.getEvent()) ||
-        Math.abs(e.getGraphX() - this.startX) > this.graph.tolerance ||
-        Math.abs(e.getGraphY() - this.startY) > this.graph.tolerance
-      ) {
-        this.inTolerance = false
-      }
-    }
   }
 
   /**
@@ -656,20 +541,38 @@ export class NodeHandler extends MouseHandler {
     return Math.round(length)
   }
 
+  protected checkTolerance(e: MouseEventEx) {
+    if (this.inTolerance && this.startX != null && this.startY != null) {
+      if (
+        DomEvent.isMouseEvent(e.getEvent()) ||
+        Math.abs(e.getGraphX() - this.startX) > this.graph.tolerance ||
+        Math.abs(e.getGraphY() - this.startY) > this.graph.tolerance
+      ) {
+        this.inTolerance = false
+      }
+    }
+  }
+
   mouseMove(e: MouseEventEx, sender: any) {
     if (!e.isConsumed() && this.index != null) {
       this.checkTolerance(e)
 
       // Checks tolerance for ignoring single clicks
       if (!this.inTolerance) {
-        if (this.index <= DomEvent.CUSTOM_HANDLE) {
-          // if (this.customHandles != null) {
-          //   this.customHandles[DomEvent.CUSTOM_HANDLE - this.index].processEvent(e)
-          //   this.customHandles[DomEvent.CUSTOM_HANDLE - this.index].active = true
-          // }
-        } else if (this.index === DomEvent.LABEL_HANDLE) {
+
+        if (this.previewShape == null) {
+          this.preparePreview()
+        }
+
+        if (DomEvent.isCustomHandle(this.index)) {
+          if (this.customHandles != null) {
+            const idx = DomEvent.getCustomHandle(this.index)
+            this.customHandles[idx].processEvent(e)
+            this.customHandles[idx].active = true
+          }
+        } else if (DomEvent.isLabelHandle(this.index)) {
           this.moveLabel(e)
-        } else if (this.index === DomEvent.ROTATION_HANDLE) {
+        } else if (DomEvent.isRotationHandle(this.index)) {
           this.rotateNode(e)
         } else {
           this.resizeNode(e)
@@ -680,20 +583,83 @@ export class NodeHandler extends MouseHandler {
 
       e.consume()
 
-    } else if (!this.graph.eventloop.isMouseDown && this.getHandleForEvent(e) != null) {
+    } else if (
+      !this.graph.eventloop.isMouseDown &&
+      this.getHandleForEvent(e) != null
+    ) {
       // Workaround for disabling the connect highlight when over handle
       e.consume(false)
     }
   }
 
+  protected preparePreview() {
+    const livePreview = this.resizeLivePreview || this.rotateLivePreview
+    const index = this.index!
+    const isRotate = DomEvent.isRotationHandle(index)
+    const isResize = !isRotate
+      && !DomEvent.isCustomHandle(index)
+      && !DomEvent.isLabelHandle(index)
+
+    this.selectionShape!.elem!.style.display = 'none'
+
+    if (isResize || isRotate) {
+      if (!livePreview || this.isUnapparent()) {
+        this.previewShape = isResize
+          ? this.createResizePreviewShape(this.bounds)
+          : this.createRotatePreviewShape(this.bounds)
+
+        if (
+          this.state.text != null &&
+          this.state.text.elem!.parentNode === this.graph.container
+        ) {
+          this.previewShape.dialect = 'html'
+          this.previewShape.init(this.graph.container)
+        } else {
+          this.previewShape.dialect = 'svg'
+          this.previewShape.init(this.graph.view.getOverlayPane())
+        }
+      }
+    }
+
+    // Prepares the handles for live preview
+    if (livePreview) {
+      this.hideSizers()
+
+      if (DomEvent.isRotationHandle(index)) {
+        this.rotationShape.elem!.style.display = ''
+      } else if (DomEvent.isLabelHandle(index)) {
+        this.labelShape!.elem!.style.display = ''
+      } else if (this.handles != null && this.handles[index] != null) {
+        this.handles[index].elem!.style.display = ''
+      } else if (
+        DomEvent.isCustomHandle(index) &&
+        this.customHandles != null
+      ) {
+        this.customHandles[DomEvent.getCustomHandle(index)].setVisible(true)
+      }
+
+      // Gets the array of connected edge handlers for redrawing
+      this.edgeHandlers = []
+      const edges = this.graph.getEdges(this.state.cell)
+      for (let i = 0, ii = edges.length; i < ii; i += 1) {
+        const handler = this.graph.selectionHandler.getHandler(
+          edges[i],
+        ) as any as EdgeHandler
+        if (handler != null) {
+          this.edgeHandlers.push(handler)
+        }
+      }
+    }
+  }
+
   protected moveLabel(e: MouseEventEx) {
-    const point = new Point(e.getGraphX(), e.getGraphY())
-    const trans = this.graph.view.translate
-    const scale = this.graph.view.scale
+    const p = new Point(e.getGraphX(), e.getGraphY())
+    const t = this.graph.view.translate
+    const s = this.graph.view.scale
 
     if (this.graph.isGridEnabledForEvent(e.getEvent())) {
-      point.x = (this.graph.snap(point.x / scale - trans.x) + trans.x) * scale
-      point.y = (this.graph.snap(point.y / scale - trans.y) + trans.y) * scale
+      p.x = (this.graph.snap(p.x / s - t.x) + t.x) * s
+      p.y = (this.graph.snap(p.y / s - t.y) + t.y) * s
     }
 
     if (this.handles) {
@@ -701,14 +667,14 @@ export class NodeHandler extends MouseHandler {
         ? this.handles.length - 2
         : this.handles.length - 1
 
-      this.moveHandleTo(this.handles[index], point.x, point.y)
+      this.moveHandleTo(this.handles[index], p.x, p.y)
     }
   }
 
   protected rotateNode(e: MouseEventEx) {
-    const point = new Point(e.getGraphX(), e.getGraphY())
-    const dx = this.state.bounds.getCenterX() - point.x
-    const dy = this.state.bounds.getCenterY() - point.y
+    const p = new Point(e.getGraphX(), e.getGraphY())
+    const dx = this.state.bounds.getCenterX() - p.x
+    const dy = this.state.bounds.getCenterY() - p.y
 
     this.currentAlpha = (dx !== 0)
       ? Math.atan(dy / dx) * 180 / Math.PI + 90
@@ -720,8 +686,8 @@ export class NodeHandler extends MouseHandler {
 
     // Rotation raster
     if (this.rotationRaster && this.graph.isGridEnabledForEvent(e.getEvent())) {
-      const dx = point.x - this.state.bounds.getCenterX()
-      const dy = point.y - this.state.bounds.getCenterY()
+      const dx = p.x - this.state.bounds.getCenterX()
+      const dy = p.y - this.state.bounds.getCenterY()
       const dist = Math.abs(Math.sqrt(dx * dx + dy * dy) - 20) * 3
       const raster = Math.max(
         1,
@@ -733,47 +699,43 @@ export class NodeHandler extends MouseHandler {
       this.currentAlpha = this.roundAngle(this.currentAlpha)
     }
 
-    if (this.selectionShape) {
-      this.selectionShape.rotation = this.currentAlpha
-      this.selectionShape.redraw()
+    if (this.previewShape) {
+      this.drawPreview()
     }
 
-    if (this.livePreview) {
+    if ((this.rotateLivePreview || this.resizeLivePreview)) {
       this.drawHandles()
     }
   }
 
   protected resizeNode(e: MouseEventEx) {
-    const point = new Point(e.getGraphX(), e.getGraphY())
-    const trans = this.graph.view.translate
-    const scale = this.graph.view.scale
+    const p = new Point(e.getGraphX(), e.getGraphY())
+    const t = this.graph.view.translate
+    const s = this.graph.view.scale
     const geo = this.graph.getCellGeometry(this.state.cell)!
     const ct = this.state.bounds.getCenter()
-    const alpha = util.toRad(util.getRotation(this.state))
+    const rot = util.toRad(util.getRotation(this.state))
 
-    let cos = Math.cos(-alpha)
-    let sin = Math.sin(-alpha)
+    let cos = Math.cos(-rot)
+    let sin = Math.sin(-rot)
 
-    let dx = point.x - this.startX
-    let dy = point.y - this.startY
+    let dx = p.x - this.startX
+    let dy = p.y - this.startY
 
     // Rotates vector for mouse gesture
-    const tx = cos * dx - sin * dy
-    const ty = sin * dx + cos * dy
-
-    dx = tx
-    dy = ty
+    dx = cos * dx - sin * dy
+    dy = sin * dx + cos * dy
 
     this.unscaledBounds = this.union(
       geo.bounds,
-      dx / scale,
-      dy / scale,
+      dx / s,
+      dy / s,
       this.index!,
       this.graph.isGridEnabledForEvent(e.getEvent()),
       1,
       new Point(0, 0),
       this.isConstrained(e),
-      this.isCentered(this.state, e),
+      this.isCentered(this.state.cell, e),
     )
 
     // Keeps node within maximum graph or parent bounds
@@ -783,8 +745,8 @@ export class NodeHandler extends MouseHandler {
       // Handles child cells
       if (max != null && this.parentState != null) {
         max = max.clone()
-        max.x -= (this.parentState.bounds.x - trans.x * scale) / scale
-        max.y -= (this.parentState.bounds.y - trans.y * scale) / scale
+        max.x -= this.parentState.bounds.x / s - t.x
+        max.y -= this.parentState.bounds.y / s - t.y
       }
 
       if (this.graph.isConstrainChild(this.state.cell)) {
@@ -822,12 +784,18 @@ export class NodeHandler extends MouseHandler {
           this.unscaledBounds.y = max.y
         }
 
-        if (this.unscaledBounds.x + this.unscaledBounds.width > max.x + max.width) {
+        if (
+          this.unscaledBounds.x + this.unscaledBounds.width >
+          max.x + max.width
+        ) {
           this.unscaledBounds.width -= this.unscaledBounds.x +
             this.unscaledBounds.width - max.x - max.width
         }
 
-        if (this.unscaledBounds.y + this.unscaledBounds.height > max.y + max.height) {
+        if (
+          this.unscaledBounds.y + this.unscaledBounds.height >
+          max.y + max.height
+        ) {
           this.unscaledBounds.height -= this.unscaledBounds.y +
             this.unscaledBounds.height - max.y - max.height
         }
@@ -835,12 +803,12 @@ export class NodeHandler extends MouseHandler {
     }
 
     this.bounds = new Rectangle(
-      (this.parentState != null ? this.parentState.bounds.x : trans.x * scale)
-      + (this.unscaledBounds.x) * scale,
-      (this.parentState != null ? this.parentState.bounds.y : trans.y * scale)
-      + (this.unscaledBounds.y) * scale,
-      this.unscaledBounds.width * scale,
-      this.unscaledBounds.height * scale,
+      (this.parentState != null ? this.parentState.bounds.x : t.x * s)
+      + (this.unscaledBounds.x) * s,
+      (this.parentState != null ? this.parentState.bounds.y : t.y * s)
+      + (this.unscaledBounds.y) * s,
+      this.unscaledBounds.width * s,
+      this.unscaledBounds.height * s,
     )
 
     if (geo.relative && this.parentState != null) {
@@ -848,10 +816,10 @@ export class NodeHandler extends MouseHandler {
       this.bounds.y += this.state.bounds.y - this.parentState.bounds.y
     }
 
-    cos = Math.cos(alpha)
-    sin = Math.sin(alpha)
+    cos = Math.cos(rot)
+    sin = Math.sin(rot)
 
-    const c2 = new Point(this.bounds.getCenterX(), this.bounds.getCenterY())
+    const c2 = this.bounds.getCenter()
 
     dx = c2.x - ct.x
     dy = c2.y - ct.y
@@ -872,13 +840,16 @@ export class NodeHandler extends MouseHandler {
     this.bounds.y += dy3
 
     // Rounds unscaled bounds to int
-    this.unscaledBounds.x = this.roundLength(this.unscaledBounds.x + dx3 / scale)
-    this.unscaledBounds.y = this.roundLength(this.unscaledBounds.y + dy3 / scale)
+    this.unscaledBounds.x = this.roundLength(this.unscaledBounds.x + dx3 / s)
+    this.unscaledBounds.y = this.roundLength(this.unscaledBounds.y + dy3 / s)
     this.unscaledBounds.width = this.roundLength(this.unscaledBounds.width)
     this.unscaledBounds.height = this.roundLength(this.unscaledBounds.height)
 
     // Shifts the children according to parent offset
-    if (!this.graph.isCellCollapsed(this.state.cell) && (dx3 !== 0 || dy3 !== 0)) {
+    if (
+      !this.graph.isCellCollapsed(this.state.cell) &&
+      (dx3 !== 0 || dy3 !== 0)
+    ) {
       this.childOffsetX = this.state.bounds.x - this.bounds.x + dx5
       this.childOffsetY = this.state.bounds.y - this.bounds.y + dy5
     } else {
@@ -886,39 +857,34 @@ export class NodeHandler extends MouseHandler {
       this.childOffsetY = 0
     }
 
-    if (this.livePreview) {
+    if ((this.rotateLivePreview || this.resizeLivePreview)) {
       this.updateLivePreview(e)
     }
 
-    if (this.previewShape != null) {
+    if (this.previewShape) {
       this.drawPreview()
     }
   }
 
   protected updateLivePreview(e: MouseEventEx) {
-    // TODO: Apply child offset to children in live preview
-    const scale = this.graph.view.scale
-    const trans = this.graph.view.translate
+    const s = this.graph.view.scale
+    const t = this.graph.view.translate
 
     // Saves current state
     const tempState = this.state.clone()
 
     // Temporarily changes size and origin
-    this.state.bounds.x = this.bounds.x
-    this.state.bounds.y = this.bounds.y
+    this.state.bounds.update(this.bounds)
     this.state.origin = new Point(
-      this.state.bounds.x / scale - trans.x,
-      this.state.bounds.y / scale - trans.y,
+      this.state.bounds.x / s - t.x,
+      this.state.bounds.y / s - t.y,
     )
-    this.state.bounds.width = this.bounds.width
-    this.state.bounds.height = this.bounds.height
 
     // Needed to force update of text bounds
     this.state.unscaledWidth = null
 
     // Redraws cell and handles
-    let off = this.state.absoluteOffset
-    off = new Point(off.x, off.y)
+    // const off = this.state.absoluteOffset.clone()
 
     // Required to store and reset absolute offset for updating label position
     this.state.absoluteOffset.x = 0
@@ -928,24 +894,28 @@ export class NodeHandler extends MouseHandler {
     if (geo != null) {
       const offset = geo.offset
       if (offset != null && !geo.relative) {
-        this.state.absoluteOffset.x = this.state.view.scale * offset.x
-        this.state.absoluteOffset.y = this.state.view.scale * offset.y
+        this.state.absoluteOffset.x = s * offset.x
+        this.state.absoluteOffset.y = s * offset.y
       }
 
       this.state.view.updateNodeLabelOffset(this.state)
     }
 
-    // Draws the live preview
-    this.state.view.graph.renderer.redraw(this.state, true)
-
-    // Redraws connected edges TODO: Include child edges
-    this.state.view.invalidate(this.state.cell)
-    this.state.invalid = false
-    this.state.view.validate()
+    this.redrawLivePreview()
     this.drawHandles()
 
     // Restores current state
     this.state.setState(tempState)
+  }
+
+  protected redrawLivePreview() {
+    // Redraws the live preview
+    this.state.view.graph.renderer.redraw(this.state, true)
+
+    // Redraws connected edges
+    this.state.view.invalidate(this.state.cell)
+    this.state.invalid = false
+    this.state.view.validate()
   }
 
   mouseUp(e: MouseEventEx, sender: any) {
@@ -957,12 +927,13 @@ export class NodeHandler extends MouseHandler {
 
       this.graph.batchUpdate(() => {
 
-        if (index <= DomEvent.CUSTOM_HANDLE) {
-          // if (this.customHandles != null) {
-          //   this.customHandles[DomEvent.CUSTOM_HANDLE - index].active = false
-          //   this.customHandles[DomEvent.CUSTOM_HANDLE - index].execute()
-          // }
-        } else if (index === DomEvent.ROTATION_HANDLE) {
+        if (DomEvent.isCustomHandle(index)) {
+          if (this.customHandles != null) {
+            const idx = DomEvent.getCustomHandle(index)
+            this.customHandles[idx].active = false
+            this.customHandles[idx].execute()
+          }
+        } else if (DomEvent.isRotationHandle(index)) {
 
           if (this.currentAlpha != null) {
             const delta = this.currentAlpha - util.getRotation(this.state)
@@ -983,12 +954,8 @@ export class NodeHandler extends MouseHandler {
           let dx = point.x - this.startX
           let dy = point.y - this.startY
 
-          // Rotates vector for mouse gesture
-          const tx = cos * dx - sin * dy
-          const ty = sin * dx + cos * dy
-
-          dx = tx
-          dy = ty
+          dx = cos * dx - sin * dy
+          dy = sin * dx + cos * dy
 
           const scale = this.graph.view.scale
           const recurse = this.isRecursiveResize(this.state, e)
@@ -1021,9 +988,7 @@ export class NodeHandler extends MouseHandler {
 
       if (model.isNode(cell) || model.isEdge(cell)) {
         if (!model.isEdge(cell)) {
-          const state = this.graph.view.getState(cell)
-          const style = (state != null) ? state.style : this.graph.getCellStyle(cell)
-
+          const style = this.graph.getStyle(cell)
           if (style != null) {
             const total = (style.rotation || 0) + angle
             this.graph.updateCellsStyle('rotation', total, [cell])
@@ -1111,7 +1076,7 @@ export class NodeHandler extends MouseHandler {
     constrained: boolean,
     centered: boolean,
   ) {
-    if (this.singleSizer) {
+    if (this.singleResizeHandle) {
       let x = bounds.x + bounds.width + dx
       let y = bounds.y + bounds.height + dy
 
@@ -1245,16 +1210,27 @@ export class NodeHandler extends MouseHandler {
       this.handles[this.index].elem!.style.display = ''
     }
 
+    this.index = null
     this.currentAlpha = null
     this.inTolerance = false
-    this.index = null
+
+    // Checks if handler has been destroyed
+    if (this.selectionShape != null) {
+      this.selectionShape.elem!.style.display = ''
+      this.selectionBounds = this.getSelectionBounds(this.state)
+      this.bounds = this.selectionBounds.clone()
+      this.drawPreview()
+    }
 
     if (this.previewShape != null) {
       this.previewShape.dispose()
       this.previewShape = null
     }
 
-    if (this.livePreview && this.handles != null) {
+    if (
+      (this.rotateLivePreview || this.resizeLivePreview) &&
+      this.handles != null
+    ) {
       for (let i = 0; i < this.handles.length; i += 1) {
         if (this.handles[i] != null) {
           this.handles[i].elem!.style.display = ''
@@ -1262,23 +1238,15 @@ export class NodeHandler extends MouseHandler {
       }
     }
 
-    // if (this.customHandles != null) {
-    //   for (let i = 0; i < this.customHandles.length; i += 1) {
-    //     if (this.customHandles[i].active) {
-    //       this.customHandles[i].active = false
-    //       this.customHandles[i].reset()
-    //     } else {
-    //       this.customHandles[i].setVisible(true)
-    //     }
-    //   }
-    // }
-
-    // Checks if handler has been destroyed
-    if (this.selectionShape != null) {
-      this.selectionShape.elem!.style.display = 'inline'
-      this.selectionBounds = this.getSelectionBounds(this.state)
-      this.bounds = this.selectionBounds.clone()
-      this.drawPreview()
+    if (this.customHandles != null) {
+      for (let i = 0; i < this.customHandles.length; i += 1) {
+        if (this.customHandles[i].active) {
+          this.customHandles[i].active = false
+          this.customHandles[i].reset()
+        } else {
+          this.customHandles[i].setVisible(true)
+        }
+      }
     }
 
     this.removeHint()
@@ -1339,7 +1307,7 @@ export class NodeHandler extends MouseHandler {
       const right = box.x + box.width
       const bottom = box.y + box.height
 
-      if (this.singleSizer) {
+      if (this.singleResizeHandle) {
         this.moveHandleTo(this.handles[0], right, bottom)
       } else {
         const cx = box.x + box.width / 2
@@ -1410,23 +1378,33 @@ export class NodeHandler extends MouseHandler {
           this.moveHandleTo(this.handles[7], pt.x, pt.y)
           this.handles[7].setCursor(cursors[util.mod(4 + da, cursors.length)])
 
+          const offset = getLabelHandleOffset({
+            graph: this.graph,
+            cell: this.state.cell,
+            shape: this.labelShape!,
+          })
           this.moveHandleTo(
-            this.handles[8],
-            cx + this.state.absoluteOffset.x,
-            cy + this.state.absoluteOffset.y,
+            this.handles[8], // labelShape
+            cx + this.state.absoluteOffset.x + offset.x,
+            cy + this.state.absoluteOffset.y + offset.y,
           )
         } else if (
           this.state.bounds.width >= 2 &&
           this.state.bounds.height >= 2
         ) {
+          const offset = getLabelHandleOffset({
+            graph: this.graph,
+            cell: this.state.cell,
+            shape: this.labelShape!,
+          })
           this.moveHandleTo(
             this.handles[0], // labelShape
-            cx + this.state.absoluteOffset.x,
-            cy + this.state.absoluteOffset.y,
+            cx + this.state.absoluteOffset.x + offset.x,
+            cy + this.state.absoluteOffset.y + offset.y,
           )
         } else {
           this.moveHandleTo(
-            this.handles[0], // labelShape
+            this.handles[0],
             this.state.bounds.x,
             this.state.bounds.y,
           )
@@ -1440,7 +1418,6 @@ export class NodeHandler extends MouseHandler {
         : util.getRotation(this.state)
       const ct = this.state.bounds.getCenter()
       const pt = util.rotatePoint(this.getRotationHandlePosition(), rot, ct)
-
       if (this.rotationShape.elem != null) {
         this.moveHandleTo(this.rotationShape, pt.x, pt.y)
 
@@ -1458,17 +1435,17 @@ export class NodeHandler extends MouseHandler {
       this.edgeHandlers.forEach(h => h.redraw())
     }
 
-    // if (this.customHandles != null) {
-    //   for (let i = 0; i < this.customHandles.length; i += 1) {
-    //     const temp = this.customHandles[i].shape.node.style.display
-    //     this.customHandles[i].redraw()
-    //     this.customHandles[i].shape.node.style.display = temp
+    if (this.customHandles != null) {
+      for (let i = 0; i < this.customHandles.length; i += 1) {
+        const temp = this.customHandles[i].shape.elem!.style.display
+        this.customHandles[i].redraw()
+        this.customHandles[i].shape.elem!.style.display = temp
 
-    //     // Hides custom handles during text editing
-    //     this.customHandles[i].shape.node.style.visibility =
-    //       this.graph.isEditing() ? 'hidden' : ''
-    //   }
-    // }
+        // Hides custom handles during text editing
+        this.customHandles[i].shape.elem!.style.visibility =
+          this.graph.isEditing() ? 'hidden' : ''
+      }
+    }
 
     this.updateParentHighlight()
   }
@@ -1494,9 +1471,15 @@ export class NodeHandler extends MouseHandler {
   }
 
   protected getRotationHandlePosition() {
+    const offset = getRotationHandleOffset({
+      graph: this.graph,
+      cell: this.state.cell,
+      shape: this.rotationShape,
+    })
+
     return new Point(
-      this.bounds.x + this.bounds.width / 2,
-      this.bounds.y + this.rotationHandleVSpacing,
+      this.bounds.x + this.bounds.width / 2 + offset.x,
+      this.bounds.y + offset.y,
     )
   }
 
@@ -1532,19 +1515,26 @@ export class NodeHandler extends MouseHandler {
   }
 
   protected drawPreview() {
+    const rotation = this.currentAlpha == null
+      ? util.getRotation(this.state)
+      : this.currentAlpha
+
     if (this.previewShape != null) {
       this.previewShape.bounds = this.bounds
       // html
       if (this.previewShape.elem!.parentNode === this.graph.container) {
-        this.previewShape.bounds.width = Math.max(0, this.previewShape.bounds.width - 1)
-        this.previewShape.bounds.height = Math.max(0, this.previewShape.bounds.height - 1)
+        this.previewShape.bounds.width =
+          Math.max(0, this.previewShape.bounds.width - 1)
+        this.previewShape.bounds.height =
+          Math.max(0, this.previewShape.bounds.height - 1)
       }
 
-      this.previewShape.rotation = (this.state.style.rotation || 0)
+      this.previewShape.rotation = rotation
       this.previewShape.redraw()
     }
 
     if (this.selectionShape) {
+      this.selectionShape.rotation = rotation
       this.selectionShape.bounds = this.bounds
       this.selectionShape.redraw()
     }
@@ -1564,6 +1554,11 @@ export class NodeHandler extends MouseHandler {
       this.escapeHandler = null
     }
 
+    if (this.selectionShape != null) {
+      this.selectionShape.dispose()
+      this.selectionShape = null
+    }
+
     if (this.previewShape != null) {
       this.previewShape.dispose()
       this.previewShape = null
@@ -1574,29 +1569,14 @@ export class NodeHandler extends MouseHandler {
       this.parentHighlight = null
     }
 
-    if (this.selectionShape != null) {
-      this.selectionShape.dispose()
-      this.selectionShape = null
-    }
-
     this.labelShape = null
     this.removeHint()
 
-    if (this.handles != null) {
-      for (let i = 0, ii = this.handles.length; i < ii; i += 1) {
-        this.handles[i].dispose()
-      }
+    this.handles && this.handles.forEach(h => h.dispose())
+    this.handles = null
 
-      this.handles = null
-    }
-
-    if (this.customHandles != null) {
-      for (let i = 0, ii = this.customHandles.length; i < ii; i += 1) {
-        this.customHandles[i].dispose()
-      }
-
-      this.customHandles = null
-    }
+    this.customHandles && this.customHandles.forEach(h => h.dispose())
+    this.customHandles = null
 
     super.dispose()
   }

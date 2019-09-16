@@ -1,12 +1,24 @@
 import * as util from '../util'
-import { Cell } from './cell'
-import { State } from './state'
-import { Graph } from './graph'
+import { Graph } from '../core'
+import { RoutingFunction } from '../core/registry'
 import { Dialect, Style } from '../types'
-import { Guide } from '../handler'
 import { Image, Multiplicity, Rectangle } from '../struct'
 import { defaultOptions } from './preset'
-import { RoutingFunction } from './registry'
+import { GuideOptions } from './guide'
+import { RubberbandOptions } from './rubberband'
+import { MovingPreviewOptions } from './moving'
+import { SelectionPreviewOptions } from './selection'
+import {
+  ResizeOption,
+  ResizeHandleOptions,
+  ResizePreviewOptions,
+} from './resize'
+import {
+  RotateOptions,
+  RotateHandleOptions,
+  RotatePreviewOptions
+} from './rotation'
+import { LabelHandleOptions } from './label'
 
 export interface CompositeOptions {
   /**
@@ -58,6 +70,15 @@ export interface CompositeOptions {
   foldingEnabled: boolean
   collapsedImage: Image
   expandedImage: Image
+
+  /**
+   * Specifies if the graph should allow resizing of cells.
+   *
+   * Default is `true`.
+   */
+  cellsResizable: boolean
+
+  cellsRotatable: boolean
 }
 
 export interface SimpleOptions {
@@ -389,13 +410,6 @@ export interface SimpleOptions {
   cellsMovable: boolean
 
   /**
-   * Specifies if the graph should allow resizing of cells.
-   *
-   * Default is `true`.
-   */
-  cellsResizable: boolean
-
-  /**
    * Specifies if the graph should allow bending of edges.
    *
    * Default is `true`.
@@ -640,56 +654,12 @@ export interface SimpleOptions {
 }
 
 export interface GridOptions {
-  enabled: boolean,
-  size: number,
-}
-
-export type OptionItem<T, S> = S | ((this: Graph, arg: T) => S)
-
-export interface GuideSubOptions {
+  enabled: boolean
+  size: number
   /**
-   * Specifies if horizontal or vertical guide are enabled.
-   *
-   * Default is `true`.
+   * Specifies if the grid should be scaled.
    */
-  enabled: boolean,
-  dashed: OptionItem<GetGuideStyleArgs, boolean>,
-  stroke: OptionItem<GetGuideStyleArgs, string>,
-  strokeWidth: OptionItem<GetGuideStyleArgs, number>,
-  className: OptionItem<GetGuideStyleArgs, string>,
-}
-
-export interface GuideOptions {
-  /**
-   * Specifies if guides are enabled.
-   *
-   * Default is `false`.
-   */
-  enabled: OptionItem<IsGuideEnabledArgs, boolean>,
-
-  /**
-   * Specifies if rounded coordinates should be used.
-   *
-   * Default is `false`.
-   */
-  rounded: boolean,
-
-  dashed: OptionItem<GetGuideStyleArgs, boolean>,
-  stroke: OptionItem<GetGuideStyleArgs, string>,
-  strokeWidth: OptionItem<GetGuideStyleArgs, number>,
-  className?: OptionItem<GetGuideStyleArgs, string>,
-
-  horizontal: Partial<GuideSubOptions> | boolean,
-  vertical: Partial<GuideSubOptions> | boolean,
-}
-
-export interface RubberbandOptions {
-  enabled: boolean,
-  fadeOut: boolean,
-  opacity: OptionItem<GetRubberbandStyleArgs, number>,
-  border: OptionItem<GetRubberbandStyleArgs, string>,
-  background: OptionItem<GetRubberbandStyleArgs, string>,
-  className?: OptionItem<GetRubberbandStyleArgs, string>,
+  scaled: boolean
 }
 
 export interface TooltipOptions {
@@ -698,7 +668,29 @@ export interface TooltipOptions {
    *
    * Default is `false`.
    */
-  enabled: boolean,
+  enabled: boolean
+
+  /**
+   * Delay to show the tooltip in milliseconds.
+   */
+  delay: number
+
+  zIndex: number
+
+  /**
+   * Specifies if the tooltip should be hidden if the mouse is moved
+   * over the current cell.
+   *
+   * Default is `false`.
+   */
+  hideOnHover: boolean
+
+  /**
+   * Specifies if touch and pen events should be ignored.
+   *
+   * Default is `true`.
+   */
+  ignoreTouchEvents: boolean
 }
 
 export interface PageBreakOptions {
@@ -727,6 +719,31 @@ export interface FoldingOptions {
   expandedImage: Image,
 }
 
+export interface ContextMenuOptions {
+  enabled: boolean,
+
+  /**
+   * Specifies is use left mouse button as context menu trigger.
+   */
+  isLeftButton: boolean
+
+  /**
+   * Specifies if cells should be selected if a popupmenu is
+   * displayed for them.
+   *
+   * Default is `true`.
+   */
+  selectCellsOnContextMenu: boolean
+
+  /**
+   * Specifies if cells should be deselected if a popupmenu is
+   * displayed for the diagram background.
+   *
+   * Default is `true`.
+   */
+  clearSelectionOnBackground: boolean
+}
+
 export interface FullOptions extends SimpleOptions {
   nodeStyle: Style,
   edgeStyle: Style,
@@ -736,6 +753,16 @@ export interface FullOptions extends SimpleOptions {
   folding: FoldingOptions,
   rubberband: RubberbandOptions,
   pageBreak: PageBreakOptions,
+  contextMenu: ContextMenuOptions,
+  movingPreview: MovingPreviewOptions,
+  selectionPreview: SelectionPreviewOptions,
+  resize: ResizeOption,
+  resizeHandle: ResizeHandleOptions,
+  resizePreview: ResizePreviewOptions,
+  rotate: RotateOptions,
+  rotateHandle: RotateHandleOptions,
+  rotatePreview: RotatePreviewOptions,
+  labelHandle: LabelHandleOptions,
 }
 
 export interface GraphOptions extends Partial<SimpleOptions> {
@@ -747,6 +774,16 @@ export interface GraphOptions extends Partial<SimpleOptions> {
   folding?: Partial<FoldingOptions> | boolean,
   rubberband?: Partial<RubberbandOptions> | boolean,
   pageBreak?: Partial<PageBreakOptions> | boolean,
+  contextMenu?: Partial<ContextMenuOptions> | boolean,
+  movingPreview?: Partial<MovingPreviewOptions>,
+  selectionPreview?: Partial<SelectionPreviewOptions>,
+  resize?: Partial<ResizeOption> | boolean,
+  resizeHandle?: Partial<ResizeHandleOptions>,
+  resizePreview?: Partial<ResizePreviewOptions>,
+  rotate?: Partial<RotateOptions> | boolean,
+  rotateHandle?: Partial<RotateHandleOptions>,
+  rotatePreview?: Partial<RotatePreviewOptions>,
+  labelHandle?: Partial<LabelHandleOptions>,
 }
 
 export function getOptions(options: GraphOptions) {
@@ -781,20 +818,8 @@ export function applyOptions(graph: Graph) {
 
   Object.keys(options).forEach((key: keyof GraphOptions) => {
     const val = options[key]
-    if (val != null && typeof val !== 'function') {
-      if (!(
-
-        key === 'grid' ||
-        key === 'pageBreak' ||
-        key === 'guide' ||
-        key === 'tooltip' ||
-        key === 'folding' ||
-        key === 'rubberband' ||
-        key === 'nodeStyle' ||
-        key === 'edgeStyle'
-      )) {
-        (graph as any)[key] = val
-      }
+    if (val != null && typeof val !== 'function' && typeof val !== 'object') {
+      (graph as any)[key] = val
     }
   })
 
@@ -827,6 +852,16 @@ function expandCompositeOptions(graph: Graph) {
   graph.foldingEnabled = folding.enabled
   graph.expandedImage = folding.expandedImage
   graph.collapsedImage = folding.collapsedImage
+
+  // resize
+  // ----
+  const resize = options.resize as ResizeOption
+  graph.cellsResizable = resize.enabled
+
+  // rotate
+  // ----
+  const rotate = options.rotate as RotateOptions
+  graph.cellsRotatable = rotate.enabled
 }
 
 function configHandlers(graph: Graph) {
@@ -838,125 +873,7 @@ function configHandlers(graph: Graph) {
     graph.enableGuide()
   }
 
-  // tooltip
-  // ----
-  if ((options.tooltip as TooltipOptions).enabled) {
-    graph.enableTooltip()
-  }
-
-  // rubberband
-  // ----
-  const rubberbandOptions = options.rubberband as RubberbandOptions
-  if (rubberbandOptions.enabled) {
-    graph.enableRubberband()
-  }
-  graph.rubberbandHandler.fadeOut = rubberbandOptions.fadeOut as boolean
-  graph.rubberbandHandler.opacity = rubberbandOptions.opacity as number
-}
-
-type DrillFn<T> = (...args: any[]) => T
-function drill<T>(
-  fn: T | DrillFn<T> | undefined,
-  ctx: any,
-  ...args: any[]
-): T {
-  return typeof fn === 'function'
-    ? (fn as DrillFn<T>).call(ctx, ...args)
-    : fn
-}
-
-export interface IsGuideEnabledArgs {
-  graph: Graph,
-  e: MouseEvent,
-}
-
-export function isGuideEnabled(o: IsGuideEnabledArgs) {
-  const guide = o.graph.options.guide as GuideOptions
-  if (guide != null) {
-    if (typeof guide.enabled === 'function') {
-      return guide.enabled.call(o.graph, o)
-    }
-
-    if (typeof guide.enabled === 'boolean') {
-      return guide.enabled
-    }
-  }
-
-  return true
-}
-
-export interface GetGuideStyleArgs {
-  graph: Graph,
-  cell: Cell,
-  horizontal: boolean
-}
-
-function getGuideStrockStyle(o: GetGuideStyleArgs) {
-  const graph = o.graph
-  const options = o.graph.options.guide as GuideOptions
-  const sub = (o.horizontal
-    ? options.horizontal
-    : options.vertical
-  ) as GuideSubOptions
-
-  const dashed = (sub.dashed || options.dashed)
-  const stroke = (sub.stroke || options.stroke)
-  const strokeWidth = (sub.strokeWidth || options.strokeWidth)
-  const className = (sub.className || options.className)
-
-  return {
-    dashed: drill(dashed, graph, o),
-    stroke: drill(stroke, graph, o),
-    strokeWidth: drill(strokeWidth, graph, o),
-    className: drill(className, graph, o),
-  }
-}
-
-export function createGuide(graph: Graph, states: State[]) {
-  const options = graph.options.guide as GuideOptions
-  const horizontal = options.horizontal as GuideSubOptions
-  const vertical = options.vertical as GuideSubOptions
-
-  const guide = new Guide(
-    graph,
-    states,
-    {
-      getStrockStyle: o => getGuideStrockStyle({ ...o, graph }),
-    },
-  )
-
-  const guideEnabled = graph.graphHandler.guideEnabled
-
-  guide.rounded = options.rounded!
-
-  guide.horizontal = horizontal && horizontal.enabled != null
-    ? horizontal.enabled
-    : guideEnabled
-
-  guide.vertical = vertical && vertical.enabled != null
-    ? vertical.enabled
-    : guideEnabled
-
-  return guide
-}
-
-export interface GetRubberbandStyleArgs {
-  graph: Graph,
-  x: number,
-  y: number,
-  width: number,
-  height: number,
-}
-
-export function getRubberbandStyle(o: GetRubberbandStyleArgs) {
-  const graph = o.graph
-  const options = graph.options.rubberband as RubberbandOptions
-  const { opacity, border, background, className } = options
-
-  return {
-    className: drill(className, graph, o),
-    opacity: drill(opacity, graph, o),
-    border: drill(border, graph, o),
-    background: drill(background, graph, o),
-  }
+  graph.tooltipHandler.config(options.tooltip as TooltipOptions)
+  graph.rubberbandHandler.config(options.rubberband as RubberbandOptions)
+  graph.popupMenuHandler.config(options.contextMenu as ContextMenuOptions)
 }

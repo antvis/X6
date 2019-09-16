@@ -16,7 +16,7 @@ import {
   GraphOptions,
   getOptions,
   applyOptions,
-} from './option'
+} from '../option'
 import {
   constants,
   detector,
@@ -219,6 +219,14 @@ export class Graph extends Disablable implements
     this.cellsResizable = value
   }
 
+  cellsRotatable: boolean = false
+  isCellsRotatable() {
+    return this.cellsRotatable
+  }
+  setCellsRotatable(value: boolean) {
+    this.cellsRotatable = value
+  }
+
   cellsBendable: boolean = true
   isCellsBendable() {
     return this.cellsBendable
@@ -355,8 +363,6 @@ export class Graph extends Disablable implements
   setGridSize(size: number) {
     this.gridSize = size
   }
-
-
 
   tolerance: number = 4
   getTolerance() {
@@ -548,7 +554,6 @@ export class Graph extends Disablable implements
     this.viewport = new ViewportManager(this)
 
     this.tooltipHandler = this.createTooltipHandler()
-    this.disableTooltips()
     this.selectionHandler = this.createSelectionHandler()
     this.connectionHandler = this.createConnectionHandler()
     this.disableConnection()
@@ -557,7 +562,6 @@ export class Graph extends Disablable implements
     this.panningHandler.disablePanning()
     this.popupMenuHandler = this.createPopupMenuHandler()
     this.rubberbandHandler = this.createRubberbandHandler()
-    this.disableRubberband()
 
     applyOptions(this)
 
@@ -2357,7 +2361,11 @@ export class Graph extends Disablable implements
   @hook()
   isCellRotatable(cell: Cell) {
     const style = this.getStyle(cell)
-    return style.rotatable !== false
+    return (
+      this.isCellsRotatable() &&
+      !this.isCellLocked(cell) &&
+      style.rotatable !== false
+    )
   }
 
   getMovableCells(cells: Cell[]) {

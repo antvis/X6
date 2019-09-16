@@ -10,11 +10,13 @@ export class Handle {
   cursor: string = 'default'
   image: Image | null
   shape: Shape
-  ignoreGrid = false
+  ignoreGrid: boolean = false
+  active: boolean
 
   constructor(state: State, cursor?: string, image?: Image) {
     this.graph = state.view.graph
     this.state = state
+
     if (cursor != null) {
       this.cursor = cursor
     }
@@ -61,9 +63,8 @@ export class Handle {
       this.shape.init(this.graph.container)
     } else {
       this.shape.dialect = 'svg'
-
       if (this.cursor != null) {
-        this.shape.init(this.graph.view.getOverlayPane()!)
+        this.shape.init(this.graph.view.getOverlayPane())
       }
     }
 
@@ -97,34 +98,34 @@ export class Handle {
   }
 
   processEvent(e: MouseEventEx) {
-    const scale = this.graph.view.scale
-    const tr = this.graph.view.translate
-    let pt = new Point(
-      e.getGraphX() / scale - tr.x,
-      e.getGraphY() / scale - tr.y,
+    const s = this.graph.view.scale
+    const t = this.graph.view.translate
+    let p = new Point(
+      e.getGraphX() / s - t.x,
+      e.getGraphY() / s - t.y,
     )
 
     // Center shape on mouse cursor
     if (this.shape != null && this.shape.bounds != null) {
-      pt.x -= this.shape.bounds.width / scale / 4
-      pt.y -= this.shape.bounds.height / scale / 4
+      p.x -= this.shape.bounds.width / s / 4
+      p.y -= this.shape.bounds.height / s / 4
     }
 
     // Snaps to grid for the rotated position then applies the
     // rotation for the direction after that
     const alpha1 = -util.toRad(this.getRotation())
     const alpha2 = -util.toRad(this.getTotalRotation()) - alpha1
-    pt = this.flipPoint(
+    p = this.flipPoint(
       this.rotatePoint(
         this.snapPoint(
-          this.rotatePoint(pt, alpha1),
+          this.rotatePoint(p, alpha1),
           this.ignoreGrid || !this.graph.isGridEnabledForEvent(e.getEvent()),
         ),
         alpha2,
       ),
     )
 
-    this.setPosition(this.state.getPaintBounds(), pt, e)
+    this.setPosition(this.state.getPaintBounds(), p, e)
     this.positionChanged()
     this.redraw()
   }
@@ -178,10 +179,10 @@ export class Handle {
         const alpha = util.toRad(this.getTotalRotation())
         pt = this.rotatePoint(this.flipPoint(pt), alpha)
 
-        const scale = this.graph.view.scale
-        const tr = this.graph.view.translate
-        this.shape.bounds.x = Math.floor((pt.x + tr.x) * scale - this.shape.bounds.width / 2)
-        this.shape.bounds.y = Math.floor((pt.y + tr.y) * scale - this.shape.bounds.height / 2)
+        const s = this.graph.view.scale
+        const t = this.graph.view.translate
+        this.shape.bounds.x = Math.floor((pt.x + t.x) * s - this.shape.bounds.width / 2)
+        this.shape.bounds.y = Math.floor((pt.y + t.y) * s - this.shape.bounds.height / 2)
 
         // Needed to force update of text bounds
         this.shape.redraw()
@@ -249,7 +250,7 @@ export class Handle {
     this.positionChanged()
   }
 
-  destroy() {
+  dispose() {
     if (this.shape != null) {
       this.shape.dispose()
       delete this.shape

@@ -11,6 +11,10 @@ export class Disablable extends Primer {
     return !this.disabled
   }
 
+  setEnadled(enabled: boolean) {
+    this.disabled = !enabled
+  }
+
   enable() {
     this.disabled = false
   }

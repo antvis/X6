@@ -209,7 +209,7 @@ export function equalEntries(a: any, b: any) {
       const av = (a as any)[key]
       const bv = (b as any)[key]
 
-      if ((!isNaN(av) || !isNaN(bv)) && av !== av) {
+      if ((!isNaN(av) || !isNaN(bv)) && av !== bv) {
         return false
       }
     }

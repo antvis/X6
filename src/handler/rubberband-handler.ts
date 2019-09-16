@@ -1,9 +1,9 @@
 import * as util from '../util'
 import { Graph } from '../core'
-import { getRubberbandStyle } from '../core/option'
+import { MouseHandler } from '.'
 import { MouseEventEx, DomEvent, detector } from '../common'
 import { Rectangle, Point } from '../struct'
-import { MouseHandler } from '.'
+import { getRubberbandStyle, RubberbandOptions } from '../option'
 
 export class RubberbandHandler extends MouseHandler {
   /**
@@ -76,6 +76,20 @@ export class RubberbandHandler extends MouseHandler {
     }
 
     this.graph.on(Graph.events.gesture, this.onGesture)
+  }
+
+  config(options: RubberbandOptions) {
+    if (options.enabled) {
+      this.enable()
+    } else {
+      this.disable()
+    }
+
+    this.fadeOut = options.fadeOut
+
+    if (typeof options.opacity === 'number') {
+      this.opacity = options.opacity
+    }
   }
 
   protected getNativeClassName() {

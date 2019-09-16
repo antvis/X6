@@ -2,12 +2,13 @@ import * as util from '../util'
 import { MouseHandler } from './handler-mouse'
 import { Graph, State } from '../core'
 import { DomEvent, MouseEventEx } from '../common'
+import { TooltipOptions } from '../option'
 
 export class TooltipHandler extends MouseHandler {
   /**
    * Delay to show the tooltip in milliseconds.
    */
-  delay: number
+  delay: number = 500
 
   zIndex: number = 9999
 
@@ -24,7 +25,7 @@ export class TooltipHandler extends MouseHandler {
    *
    * Default is `false`.
    */
-  hideOnHover = false
+  hideOnHover: boolean = false
 
   protected elem: HTMLDivElement | null = null
   protected timer: number | null
@@ -34,10 +35,22 @@ export class TooltipHandler extends MouseHandler {
   protected sourceElem: HTMLElement
   protected isStateSource: boolean
 
-  constructor(graph: Graph, delay: number = 500) {
+  constructor(graph: Graph) {
     super(graph)
-    this.delay = delay
     this.graph.addMouseListener(this)
+  }
+
+  config(options: TooltipOptions) {
+    this.delay = options.delay
+    this.zIndex = options.zIndex
+    this.hideOnHover = options.hideOnHover
+    this.ignoreTouchEvents = options.ignoreTouchEvents
+
+    if (options.enabled) {
+      this.enable()
+    } else {
+      this.disable()
+    }
   }
 
   mouseDown(e: MouseEventEx) {
@@ -62,7 +75,10 @@ export class TooltipHandler extends MouseHandler {
             !this.isStateSource ||
             (
               state &&
-              this.isStateSource === (e.isSource(state.shape) || !e.isSource(state.text))
+              this.isStateSource === (
+                e.isSource(state.shape) ||
+                !e.isSource(state.text)
+              )
             )
           )
         )

@@ -1,5 +1,6 @@
 import React from 'react'
 import { Route, Link } from 'react-router-dom'
+import { Test } from './test'
 import { HelloWorld } from './helloworld'
 import { HelloPort } from './helloport'
 import { Constraints } from './constraints'
@@ -39,6 +40,7 @@ export const Examples: React.SFC<Examples.Props> = () => (
       </ul>
     </div>
     <div className="examples-content">
+      <Route path="/examples/test" component={Test} />
       <Route path="/examples/helloworld" component={HelloWorld} />
       <Route path="/examples/helloport" component={HelloPort} />
       <Route path="/examples/constraints" component={Constraints} />

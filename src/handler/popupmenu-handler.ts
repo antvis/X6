@@ -1,6 +1,7 @@
 import * as util from '../util'
 import { MouseHandler } from './handler-mouse'
 import { Graph } from '../core'
+import { ContextMenuOptions } from '../option'
 import { MouseEventEx, DomEvent } from '../common'
 
 export class PopupMenuHandler extends MouseHandler {
@@ -39,6 +40,13 @@ export class PopupMenuHandler extends MouseHandler {
       this.inTolerance = false
     }
     this.graph.on(Graph.events.gesture, this.gestureHandler)
+  }
+
+  config(options: ContextMenuOptions) {
+    this.setEnadled(options.enabled)
+    this.useLeftButtonForPopup = options.isLeftButton
+    this.selectOnPopup = options.selectCellsOnContextMenu
+    this.clearSelectionOnBackground = options.clearSelectionOnBackground
   }
 
   isPopupTrigger(e: MouseEventEx) {
