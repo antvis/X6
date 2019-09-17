@@ -7,7 +7,6 @@ export class Test extends React.Component {
   componentDidMount() {
     DomEvent.disableContextMenu(this.container)
     const graph = new Graph(this.container, {
-      dropEnabled: true,
       rubberband: true,
       guide: true,
       rotate: true,

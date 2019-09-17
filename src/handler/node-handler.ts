@@ -10,16 +10,16 @@ import {
   applySelectionPreviewStyle,
   createResizeHandle,
   createRotationHandle,
-  getRotationHandleOffset,
-  getRotationHandleCursor,
   createLabelHandle,
   getLabelHandleCursor,
   getLabelHandleOffset,
   applyResizePreviewStyle,
   applyRotatePreviewStyle,
-  ResizeHandleOptions,
   ResizeOption,
+  ResizeHandleOptions,
   RotateOptions,
+  getRotationHandleOffset,
+  getRotationHandleCursor,
 } from '../option'
 
 export class NodeHandler extends MouseHandler {
@@ -151,7 +151,6 @@ export class NodeHandler extends MouseHandler {
   protected init() {
     this.initSelectionShape()
     this.initHandles()
-    this.customHandles = this.createCustomHandles()
     this.redraw()
 
     if (this.constrainGroupByChildren) {
@@ -244,6 +243,8 @@ export class NodeHandler extends MouseHandler {
       this.rotationShape = this.createHandle(DomEvent.getRotationHandle())
       this.handles.push(this.rotationShape)
     }
+
+    this.customHandles = this.createCustomHandles()
   }
 
   protected isRotationHandleVisible() {
