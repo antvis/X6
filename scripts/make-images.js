@@ -25,6 +25,7 @@ fs.readdir(dir, (err, files) => {
     const filepath = path.join(dir, file);
     const size = sizeOf(filepath);
     const base64 = base64Img.base64Sync(filepath);
+    console.log(file)
     lines.push(`export const ${filename} = new Image('${base64}', ${size.width}, ${size.height})`)
   });
 
@@ -36,7 +37,7 @@ fs.readdir(dir, (err, files) => {
       throw new Error(`Generate image assets filed: ${err}`);
     }
 
-    console.log(`Generate image assets.`);
+    console.log(`\nGenerate image assets.`);
   });
 });
 

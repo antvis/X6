@@ -2,7 +2,7 @@ import * as images from '../assets/images'
 import { loop } from '../router'
 import { Style } from '../types'
 import { rectangle } from '../perimeter'
-import { FullOptions } from './core'
+import { FullOptions } from './graph'
 import { ShapeNames, MarkerNames, PageSize } from '../struct'
 
 const commonStyle: Style = {

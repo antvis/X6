@@ -34,7 +34,6 @@ registerShape(ShapeNames.arrow, shapes.Arrow)
 registerShape(ShapeNames.arrowConnector, shapes.ArrowConnector)
 registerShape(ShapeNames.html, shapes.HtmlShape)
 
-
 // #endregion
 
 // #region marker

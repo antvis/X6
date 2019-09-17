@@ -1,6 +1,6 @@
 export * from './preset'
 
-export * from './core'
+export * from './graph'
 export * from './guide'
 export * from './rubberband'
 export * from './moving'

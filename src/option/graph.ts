@@ -16,7 +16,7 @@ import {
 import {
   RotateOptions,
   RotateHandleOptions,
-  RotatePreviewOptions
+  RotatePreviewOptions,
 } from './rotation'
 import { LabelHandleOptions } from './label'
 
