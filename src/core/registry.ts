@@ -32,6 +32,8 @@ registerShape(ShapeNames.swimlane, shapes.Swimlane)
 registerShape(ShapeNames.connector, shapes.Connector)
 registerShape(ShapeNames.arrow, shapes.Arrow)
 registerShape(ShapeNames.arrowConnector, shapes.ArrowConnector)
+registerShape(ShapeNames.html, shapes.HtmlShape)
+
 
 // #endregion
 

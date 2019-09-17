@@ -336,4 +336,8 @@ export interface Style {
   orthogonalLoop?: boolean
   routingCenterX?: number
   routingCenterY?: number
+
+  css?: {
+    [selector: string]: Partial<CSSStyleDeclaration>,
+  }
 }

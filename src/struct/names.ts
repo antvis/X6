@@ -15,6 +15,7 @@ export enum ShapeNames {
   connector = 'connector',
   arrow = 'arrow',
   arrowConnector = 'arrowConnector',
+  html = 'html',
 }
 
 export enum MarkerNames {

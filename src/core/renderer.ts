@@ -5,7 +5,7 @@ import { Rectangle, Point, Overlay } from '../struct'
 import { constants, detector, Dictionary } from '../common'
 import { DomEvent } from '../common/dom-event'
 import { MouseEventEx } from '../common/mouse-event'
-import { Shape, Stencil, Connector, RectangleShape, Text, ImageShape } from '../shape'
+import { Shape, Stencil, Connector, RectangleShape, Text, ImageShape, HtmlShape } from '../shape'
 
 export class Renderer {
   antialiased: boolean = true
@@ -119,6 +119,14 @@ export class Renderer {
         } else {
           delete state.shape.points
           state.shape.bounds = state.bounds.clone()
+        }
+
+        // htmlShape
+        if (state.shape instanceof HtmlShape) {
+          state.shape.markup = state.view.graph.getHtml(state.cell)
+          if (state.style.css != null) {
+            state.shape.css = state.style.css
+          }
         }
 
         state.shape.className = this.getCellClassName(state)

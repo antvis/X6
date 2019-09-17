@@ -297,6 +297,9 @@ export interface IHooks {
    */
   getStartSize: CellHook<Rectangle>
   getConstraints: CellIsSourceHook<Constraint[]>
+
+  getHtml: CellHook<string | HTMLElement>
+
   /**
    * Returns a string or DOM node that represents the label for
    * the given cell.

@@ -1793,7 +1793,7 @@ export class Graph extends Disablable implements
     parent: Cell = this.getCurrentRoot() || this.model.getRoot(),
     result: Cell[] = [],
   ) {
-    return this.cellManager.getCellsInRegion(x, x, w, h, parent, result)
+    return this.cellManager.getCellsInRegion(x, y, w, h, parent, result)
   }
 
   /**
@@ -2515,6 +2515,15 @@ export class Graph extends Disablable implements
     }
 
     return ''
+  }
+
+  @hook()
+  getHtml(cell: Cell): HTMLElement | string | null {
+    let result = ''
+    if (cell != null) {
+      result = this.convertDataToString(cell)
+    }
+    return result
   }
 
   @hook()

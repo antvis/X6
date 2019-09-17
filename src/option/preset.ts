@@ -156,7 +156,7 @@ export const defaultOptions: FullOptions = {
   rubberband: {
     enabled: false,
     fadeOut: false,
-    border: '1px solid #0000ff',
+    border: '1px solid #108ee9',
     background: '#0077ff',
     opacity: 0.2,
   },
@@ -210,7 +210,7 @@ export const defaultOptions: FullOptions = {
     stroke: '#108ee9',
     strokeWidth: 1,
     dashed: true,
-    fill: 'rgba(24,144,255,0.05)',
+    fill: 'rgba(24, 144, 255, 0.05)',
   },
 
   rotate: {
@@ -237,14 +237,14 @@ export const defaultOptions: FullOptions = {
     stroke: '#108ee9',
     strokeWidth: 1,
     dashed: true,
-    fill: 'rgba(24,144,255,0.05)',
+    fill: 'rgba(24, 144, 255, 0.05)',
   },
 
   labelHandle: {
     shape: 'ellipse',
     size: 10,
     opacity: 1,
-    fill: '#108ee9',
+    fill: 'rgba(24,144,255,1)',
     stroke: '#fff',
     strokeWidth: 1,
     dashed: false,

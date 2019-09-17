@@ -245,6 +245,7 @@ export class RubberbandHandler extends MouseHandler {
    */
   protected execute(e: MouseEvent) {
     const rect = new Rectangle(this.x, this.y, this.width, this.height)
+    console.log(rect)
     this.graph.selectCellsInRegion(rect, e)
   }
 

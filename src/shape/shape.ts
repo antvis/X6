@@ -401,15 +401,18 @@ export class Shape extends Disposable {
 
     elem.style.overflow = 'hidden'
     elem.style.borderWidth = `${Math.max(1, sw)}px`
-    elem.style.left = `${Math.round(this.bounds.x - sw / 2)}px`
-    elem.style.top = `${Math.round(this.bounds.y - sw / 2)}px`
+    elem.style.left = `${Math.round(this.bounds.x - sw)}px`
+    elem.style.top = `${Math.round(this.bounds.y - sw)}px`
 
     if (document.compatMode === 'CSS1Compat') {
       sw = -sw
     }
 
-    elem.style.width = `${Math.round(Math.max(0, this.bounds.width + sw))}px`
-    elem.style.height = `${Math.round(Math.max(0, this.bounds.height + sw))}px`
+    const width = Math.round(Math.max(0, this.bounds.width + 2 * sw))
+    const height = Math.round(Math.max(0, this.bounds.height + 2 * sw))
+
+    elem.style.width = `${width}px`
+    elem.style.height = `${height}px`
   }
 
   protected updateHtmlFilters(node: HTMLElement) {

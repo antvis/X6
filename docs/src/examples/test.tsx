@@ -28,8 +28,27 @@ export class Test extends React.Component {
 
       graph.addNode({ data: 'X6', x: 300, y: 120, width: 120, height: 60 })
 
-      // graph.addNode({ data: 'World', x: 240, y: 240, width: 80, height: 30 })
+      graph.addNode({
+        data: '<div class="outer">' +
+          '<div class="inner">HTML Markup</div>' +
+          '<div class="inner">New Line</div>' +
+          '</div>',
+        x: 480,
+        y: 240,
+        width: 120,
+        height: 60,
+        style: {
+          shape: 'html',
+          noLabel: true,
+          css: {
+            '.outer': { width: '100%', height: '100%' },
+            '.outer .inner': { textAlign: 'center', fontSize: '12px' },
+          },
+        },
+      })
     })
+
+    // graph.zoomTo(1.5)
   }
 
   refContainer = (container: HTMLDivElement) => {
