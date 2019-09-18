@@ -196,6 +196,7 @@ export const defaultOptions: FullOptions = {
 
   resizeHandle: {
     single: false,
+    visible: true,
     shape: 'ellipse',
     size: 8,
     opacity: 1,
@@ -250,5 +251,20 @@ export const defaultOptions: FullOptions = {
     dashed: false,
     cursor: 'move',
     offset: { x: 0, y: -8 },
+  },
+
+  constraint: {
+    image: images.cross,
+    cursor: 'pointer',
+  },
+
+  constraintHighlight: {
+    shape: 'ellipse',
+    cursor: 'pointer',
+    opacity: 1,
+    fill: 'none',
+    stroke: 'rgba(0, 255, 0, 0.2)',
+    strokeWidth: 10,
+    dashed: false,
   },
 }

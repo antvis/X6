@@ -1,9 +1,10 @@
 import * as util from '../util'
 import { Graph, Cell, State } from '../core'
 import { DomEvent, MouseEventEx, detector } from '../common'
-import { IMouseHandler } from '../handler'
+import { IMouseHandler, ConnectionHandler } from '../handler'
 import { RectangleShape } from '../shape'
 import { BaseManager } from './manager-base'
+import { Point } from '../struct'
 
 export class EventLoop extends BaseManager {
   isMouseDown: boolean = false
@@ -62,18 +63,13 @@ export class EventLoop extends BaseManager {
    * non-translated coordinate space.
    */
   getPointForEvent(e: MouseEvent, addOffset: boolean = true) {
-    const p = util.clientToGraph(
-      this.graph.container,
-      DomEvent.getClientX(e),
-      DomEvent.getClientY(e),
-    )
-
     const s = this.view.scale
-    const tr = this.view.translate
-    const off = addOffset ? this.graph.gridSize / 2 : 0
+    const t = this.view.translate
+    const o = addOffset ? this.graph.gridSize / 2 : 0
+    const p = util.clientToGraph(this.graph.container, e)
 
-    p.x = this.graph.snap(p.x / s - tr.x - off)
-    p.y = this.graph.snap(p.y / s - tr.y - off)
+    p.x = this.graph.snap(p.x / s - t.x - o)
+    p.y = this.graph.snap(p.y / s - t.y - o)
 
     return p
   }
@@ -84,9 +80,7 @@ export class EventLoop extends BaseManager {
 
   protected updateMouseEvent(e: MouseEventEx, eventName: string) {
     if (e.graphX == null || e.graphY == null) {
-      const x = e.getClientX()
-      const y = e.getClientY()
-      const p = util.clientToGraph(this.graph.container, x, y)
+      const p = util.clientToGraph(this.graph.container, e)
 
       e.graphX = p.x - this.graph.tx
       e.graphY = p.y - this.graph.ty
@@ -113,9 +107,7 @@ export class EventLoop extends BaseManager {
   }
 
   protected getStateForTouchEvent(e: TouchEvent) {
-    const x = DomEvent.getClientX(e)
-    const y = DomEvent.getClientY(e)
-    const p = util.clientToGraph(this.graph.container, x, y)
+    const p = util.clientToGraph(this.graph.container, e)
     return this.graph.view.getState(this.graph.getCellAt(p.x, p.y))
   }
 
@@ -158,8 +150,8 @@ export class EventLoop extends BaseManager {
       result = true
 
     } else if (
-      detector.SUPPORT_TOUCH &&
       eventName === DomEvent.MOUSE_DOWN &&
+      detector.SUPPORT_TOUCH &&
       !isMouseEvent &&
       !DomEvent.isPenEvent(evt)
     ) {
@@ -210,9 +202,11 @@ export class EventLoop extends BaseManager {
       this.isMouseDown = true
       this.isMouseTrigger = isMouseEvent
     } else if (
-      !result && ((
-        (!detector.IS_FIREFOX || eventName !== DomEvent.MOUSE_MOVE) &&
-        this.isMouseDown && this.isMouseTrigger !== isMouseEvent) ||
+      !result && (
+        (
+          (!detector.IS_FIREFOX || eventName !== DomEvent.MOUSE_MOVE) &&
+          this.isMouseDown && this.isMouseTrigger !== isMouseEvent
+        ) ||
         (eventName === DomEvent.MOUSE_DOWN && this.isMouseDown) ||
         (eventName === DomEvent.MOUSE_UP && !this.isMouseDown))
     ) {
@@ -257,7 +251,7 @@ export class EventLoop extends BaseManager {
     return result
   }
 
-  protected isEventSourceIgnored(eventName: string, e: MouseEventEx) {
+  protected isEventIgnoredBySource(eventName: string, e: MouseEventEx) {
     const evt = e.getEvent()
     const elem = e.getSource()
     const nodeName = elem.nodeName ? elem.nodeName.toLowerCase() : ''
@@ -290,9 +284,9 @@ export class EventLoop extends BaseManager {
     return state
   }
 
-  protected consumeMouseEvent(name: string, e: MouseEventEx) {
+  protected consumeMouseEvent(eventName: string, e: MouseEventEx) {
     if (
-      name === DomEvent.MOUSE_DOWN &&
+      eventName === DomEvent.MOUSE_DOWN &&
       DomEvent.isTouchEvent(e.getEvent())
     ) {
       e.consume(false)
@@ -301,7 +295,7 @@ export class EventLoop extends BaseManager {
 
   fireMouseEvent(eventName: string, e: MouseEventEx, sender: any) {
     // Ignore left click on some form-input elements.
-    if (this.isEventSourceIgnored(eventName, e)) {
+    if (this.isEventIgnoredBySource(eventName, e)) {
       this.graph.hideTooltip()
       return
     }
@@ -422,19 +416,22 @@ export class EventLoop extends BaseManager {
         eventName === DomEvent.MOUSE_UP &&
         this.graph.ignoreScrollbars &&
         this.graph.translateToScrollPosition &&
-        (this.graph.container.scrollLeft !== 0 || this.graph.container.scrollTop !== 0)
+        (
+          this.graph.container.scrollLeft !== 0 ||
+          this.graph.container.scrollTop !== 0
+        )
       ) {
         const s = this.graph.view.scale
-        const tr = this.graph.view.translate
+        const t = this.graph.view.translate
         this.graph.view.setTranslate(
-          tr.x - this.graph.container.scrollLeft / s,
-          tr.y - this.graph.container.scrollTop / s,
+          t.x - this.graph.container.scrollLeft / s,
+          t.y - this.graph.container.scrollTop / s,
         )
         this.graph.container.scrollLeft = 0
         this.graph.container.scrollTop = 0
       }
 
-      this.mouseListeners && this.mouseListeners.forEach((handler) => {
+      this.mouseListeners.forEach((handler) => {
         if (eventName === DomEvent.MOUSE_DOWN) {
           handler.mouseDown(e, sender)
         } else if (eventName === DomEvent.MOUSE_MOVE) {
@@ -512,10 +509,10 @@ export class EventLoop extends BaseManager {
 
   click(e: MouseEventEx) {
     const evt = e.getEvent()
-    let cell = e.getCell()
     const consumed = e.isConsumed()
+    let cell = e.getCell()
 
-    this.graph.trigger(Graph.events.click, { e })
+    this.graph.trigger(Graph.events.click, { cell, e: evt })
 
     // Handles the event if it has not been consumed
     if (this.graph.isEnabled() && !DomEvent.isConsumed(evt) && !consumed) {
@@ -564,6 +561,7 @@ export class EventLoop extends BaseManager {
 
   dblClick(e: MouseEvent, cell?: Cell | null) {
     this.graph.trigger(Graph.events.dblclick, { e, cell })
+
     // Handles the event if it has not been consumed
     if (
       this.graph.isEnabled() &&
@@ -586,25 +584,27 @@ export class EventLoop extends BaseManager {
       this.graph.panningHandler.panningTrigger = false
     }
 
-    // Handles the event if it has not been consumed
-    // if (
-    //   this.isEnabled() &&
-    //   !DomEvent.isConsumed(evt) &&
-    //   this.connectionHandler.isEnabled()
-    // ) {
-    //   const state = this.view.getState(this.connectionHandler.marker.getCell(e))
+    if (
+      !DomEvent.isConsumed(evt) &&
+      this.graph.isEnabled() &&
+      this.graph.connectionHandler.isEnabled()
+    ) {
+      const connHandler = this.graph.connectionHandler
+      const state = this.view.getState(connHandler.marker.getCell(e))
 
-    //   if (state != null) {
-    //     this.connectionHandler.marker.currentColor = this.connectionHandler.marker.validColor
-    //     this.connectionHandler.marker.markedState = state
-    //     this.connectionHandler.marker.mark()
+      if (state != null) {
+        connHandler.marker.currentColor = connHandler.marker.validColor
+        connHandler.marker.markedState = state
+        connHandler.marker.mark()
 
-    //     this.connectionHandler.first = new Point(e.getGraphX(), e.getGraphY())
-    //     this.connectionHandler.edgeState = this.connectionHandler.createEdgeState(e)
-    //     this.connectionHandler.previous = state
-    //     this.connectionHandler.fireEvent(new DomEventObject(DomEvent.START,
-    //                     'state', this.connectionHandler.previous))
-    //   }
-    // }
+        connHandler.first = new Point(e.getGraphX(), e.getGraphY())
+        connHandler.edgeState = connHandler.createEdgeState(e)
+        connHandler.previous = state
+        connHandler.trigger(
+          ConnectionHandler.events.start,
+          { previous: connHandler.previous },
+        )
+      }
+    }
   }
 }

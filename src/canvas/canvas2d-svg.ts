@@ -590,7 +590,7 @@ export class SvgCanvas2D extends Canvas2D {
     // other browsers need a stroke color to perform the hit-detection but
     // do not ignore the visibility attribute. Side-effect is that Opera's
     // hit detection for horizontal/vertical edges seems to ignore the tol.
-    tol.setAttribute('stroke', (detector.IS_OT) ? 'none' : 'white')
+    tol.setAttribute('stroke', detector.IS_OT ? 'none' : 'rgba(255,255,255,0)')
 
     return tol
   }

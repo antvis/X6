@@ -46,8 +46,6 @@ export class Test extends React.Component {
         },
       })
     })
-
-    // graph.zoomTo(1.5)
   }
 
   refContainer = (container: HTMLDivElement) => {

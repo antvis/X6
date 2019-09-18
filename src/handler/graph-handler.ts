@@ -1,12 +1,16 @@
 import * as util from '../util'
-import { detector, constants, MouseEventEx, DomEvent } from '../common'
 import { Graph, Cell, Model } from '../core'
 import { Rectangle, Point } from '../struct'
 import { RectangleShape } from '../shape'
 import { Guide } from './guide'
 import { CellHighlight } from './cell-highlight'
 import { MouseHandler } from './handler-mouse'
-import { createGuide, isGuideEnabled, applyMovingPreviewStyle } from '../option'
+import { detector, constants, MouseEventEx, DomEvent } from '../common'
+import {
+  createGuide,
+  isGuideEnabled,
+  applyMovingPreviewStyle,
+} from '../option'
 
 export class GraphHandler extends MouseHandler {
   /**
@@ -86,7 +90,7 @@ export class GraphHandler extends MouseHandler {
    *
    * Default is `false`.
    */
-  connectOnDrop: boolean = true
+  connectOnDrop: boolean = false
 
   /**
    * Specifies if the view should be scrolled so that a moved cell is

@@ -47,6 +47,26 @@ export class Disposable implements IDisposable {
   }
 }
 
+export namespace Disposable {
+  export function aop() {
+    return (
+      target: any,
+      methodName: string,
+      descriptor: PropertyDescriptor,
+    ) => {
+      const raw = descriptor.value
+      const proto = target.__proto__ as IDisposable
+      descriptor.value = function (this: IDisposable) {
+        if (this.disposed) {
+          return
+        }
+        raw.call(this)
+        proto.dispose.call(this)
+      }
+    }
+  }
+}
+
 /**
  * A disposable object which delegates to a callback function.
  */

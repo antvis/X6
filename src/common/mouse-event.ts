@@ -3,6 +3,7 @@ import { isAncestorNode } from '../util'
 import { Graph, State } from '../core'
 import { Shape } from '../shape'
 import { DomEvent } from './dom-event'
+import { Point } from '../struct'
 
 export class MouseEventEx {
   e: MouseEvent
@@ -48,12 +49,20 @@ export class MouseEventEx {
     return DomEvent.getClientY(this.e)
   }
 
+  getClientPos() {
+    return new Point(this.getClientX(), this.getClientY())
+  }
+
   getGraphX() {
     return this.graphX
   }
 
   getGraphY() {
     return this.graphY
+  }
+
+  getGraphPos() {
+    return new Point(this.graphX, this.graphY)
   }
 
   getState() {
@@ -98,7 +107,7 @@ export namespace MouseEventEx {
 	 * dispatch loop using the event and given state as event arguments.
 	 */
   export function redirectMouseEvents(
-    elem: HTMLElement | SVGElement,
+    elem: HTMLElement | SVGElement | null,
     graph: Graph,
     state: State | ((e: MouseEvent) => State) | null,
     onMouseDown?: ((e: MouseEvent) => any) | null,
@@ -106,6 +115,10 @@ export namespace MouseEventEx {
     onMouseUp?: ((e: MouseEvent) => any) | null,
     onDblClick?: ((e: MouseEvent) => any) | null,
   ) {
+    if (elem == null) {
+      return
+    }
+
     const getState = (e: MouseEvent) => {
       return (typeof state === 'function') ? state(e) : state
     }

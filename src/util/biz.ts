@@ -8,12 +8,13 @@ import { MouseEventEx, DomEvent } from '../common'
  * Converts the specified point (x, y) using the offset of the specified
  * container and returns a new `Point` with the result.
  */
+export function clientToGraph(container: HTMLElement, e: TouchEvent): Point
 export function clientToGraph(container: HTMLElement, e: MouseEvent): Point
 export function clientToGraph(container: HTMLElement, e: MouseEventEx): Point
 export function clientToGraph(container: HTMLElement, x: number, y: number): Point
 export function clientToGraph(
   container: HTMLElement,
-  x: number | MouseEvent | MouseEventEx,
+  x: number | MouseEvent | TouchEvent | MouseEventEx,
   y?: number,
 ) {
   const origin = getScrollOrigin(container, false)
@@ -202,4 +203,12 @@ export function reversePortConstraints(constraint: DirectionMask) {
   result |= (constraint & DirectionMask.east) >> 3
 
   return result
+}
+
+export function hasHtmlLabel(state: State) {
+  return (
+    state != null &&
+    state.text != null &&
+    state.text.elem!.parentNode === state.view.graph.container
+  )
 }

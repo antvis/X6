@@ -153,6 +153,8 @@ export class Rectangle {
       this.width = maxX - minX
       this.height = maxY - minY
     }
+
+    return this
   }
 
   intersect(rect: Rectangle | Rectangle.RectangleLike) {
@@ -168,6 +170,8 @@ export class Rectangle {
       this.width = Math.min(r1, r2) - this.x
       this.height = Math.min(b1, b2) - this.y
     }
+
+    return this
   }
 
   grow(amount: number) {
@@ -175,6 +179,8 @@ export class Rectangle {
     this.y -= amount
     this.width += 2 * amount
     this.height += 2 * amount
+
+    return this
   }
 
   rotate90() {
@@ -184,6 +190,8 @@ export class Rectangle {
     const tmp = this.width
     this.width = this.height
     this.height = tmp
+
+    return this
   }
 
   equals(rect: Rectangle | Rectangle.RectangleLike) {

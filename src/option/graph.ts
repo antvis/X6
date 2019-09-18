@@ -19,6 +19,10 @@ import {
   RotatePreviewOptions,
 } from './rotation'
 import { LabelHandleOptions } from './label'
+import {
+  ConstraintOptions,
+  ConstraintHighlightOptions,
+} from './constraint'
 
 export interface CompositeOptions {
   /**
@@ -228,7 +232,9 @@ export interface SimpleOptions {
   /**
    * Specifies if the size of the graph should be automatically extended if the
    * mouse goes near the container edge while dragging. This is only taken into
-   * account if the container has scrollbars. Default is true. See <autoScroll>.
+   * account if the container has scrollbars.
+   *
+   * Default is `true`.
    */
   autoExtend: boolean
 
@@ -763,6 +769,8 @@ export interface FullOptions extends SimpleOptions {
   rotateHandle: RotateHandleOptions,
   rotatePreview: RotatePreviewOptions,
   labelHandle: LabelHandleOptions,
+  constraint: ConstraintOptions,
+  constraintHighlight: ConstraintHighlightOptions,
 }
 
 export interface GraphOptions extends Partial<SimpleOptions> {
@@ -784,6 +792,8 @@ export interface GraphOptions extends Partial<SimpleOptions> {
   rotateHandle?: Partial<RotateHandleOptions>,
   rotatePreview?: Partial<RotatePreviewOptions>,
   labelHandle?: Partial<LabelHandleOptions>,
+  constraint?: Partial<ConstraintOptions>,
+  constraintHighlight?: Partial<ConstraintHighlightOptions>,
 }
 
 export function getOptions(options: GraphOptions) {

@@ -1,12 +1,10 @@
 import * as util from '../util'
 import { Graph, State, Cell } from '../core'
-import { constants, MouseEventEx } from '../common'
+import { constants, MouseEventEx, Disposable } from '../common'
 import { BaseHandler } from './handler-base'
 import { CellHighlight } from './cell-highlight'
 
 export class CellMarker extends BaseHandler {
-  highlight: CellHighlight
-
   /**
    * Specifies if the hotspot is enabled.
    *
@@ -29,6 +27,7 @@ export class CellMarker extends BaseHandler {
    */
   markedState: State | null = null
 
+  highlight: CellHighlight
   validColor: string
   invalidColor: string
   hotspot: number
@@ -74,19 +73,6 @@ export class CellMarker extends BaseHandler {
     }
   }
 
-  process(e: MouseEventEx) {
-    let state = null
-    if (this.isEnabled()) {
-      state = this.getState(e)
-      this.setCurrentState(state, e)
-    }
-
-    return state
-  }
-
-  /**
-   * Sets and marks the current valid state.
-   */
   setCurrentState(
     state: State | null,
     e: MouseEventEx,
@@ -109,7 +95,6 @@ export class CellMarker extends BaseHandler {
         this.markedState = state
         this.mark()
       } else if (this.markedState != null) {
-        this.markedState = null
         this.unmark()
       }
     }
@@ -134,6 +119,7 @@ export class CellMarker extends BaseHandler {
   }
 
   unmark() {
+    this.markedState = null
     this.mark()
   }
 
@@ -149,10 +135,19 @@ export class CellMarker extends BaseHandler {
     return isValid ? this.validColor : this.invalidColor
   }
 
+  process(e: MouseEventEx) {
+    let state = null
+    if (this.isEnabled()) {
+      state = this.getState(e)
+      this.setCurrentState(state, e)
+    }
+
+    return state
+  }
+
   getState(e: MouseEventEx) {
     const cell = this.getCell(e)
     const state = this.getStateToMark(this.graph.view.getState(cell))
-
     return (state != null && this.intersects(state, e)) ? state : null
   }
 
@@ -179,14 +174,9 @@ export class CellMarker extends BaseHandler {
     return true
   }
 
+  @Disposable.aop()
   dispose() {
-    if (this.disposed) {
-      return
-    }
-
     this.highlight.dispose()
-
-    super.dispose()
   }
 }
 

@@ -317,15 +317,12 @@ export function intersectsHotspot(
     }
 
     const rect = new Rectangle(cx - w / 2, cy - h / 2, w, h)
-    const alpha = toRad(state.style.rotation || 0)
 
-    if (alpha !== 0) {
-      const cos = Math.cos(-alpha)
-      const sin = Math.sin(-alpha)
+    const rot = state.style.rotation || 0
+    if (rot !== 0) {
       const cx = state.bounds.getCenter()
-      const pt = rotatePointEx(new Point(x, y), cos, sin, cx)
-      x = pt.x // tslint:disable-line
-      y = pt.y // tslint:disable-line
+      const pt = rotatePoint(new Point(x, y), -rot, cx)
+      return rect.containsPoint(pt)
     }
 
     return rect.containsPoint({ x, y })

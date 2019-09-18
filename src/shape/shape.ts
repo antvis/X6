@@ -240,6 +240,10 @@ export class Shape extends Disposable {
         this.updateClassName()
         this.boundingBox = null
       }
+
+      if (this.cursor) {
+        this.setCursor(this.cursor)
+      }
     }
   }
 

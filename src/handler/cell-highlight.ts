@@ -1,18 +1,18 @@
 import * as util from '../util'
 import { Graph, State, Model } from '../core'
 import { View } from '../core/view'
-import { constants, MouseEventEx } from '../common'
+import { constants, MouseEventEx, Disposable } from '../common'
 import { Shape } from '../shape'
-import { Rectangle } from '../struct'
 import { BaseHandler } from './handler-base'
 
 export class CellHighlight extends BaseHandler {
   state: State | null
   shape: Shape | null
   opacity: number
-  strokeWidth: number
   highlightColor: string | null
+  strokeWidth: number
   dashed: boolean
+  spacing: number
 
   /**
    * Specifies if the highlights should appear on top of everything
@@ -21,13 +21,6 @@ export class CellHighlight extends BaseHandler {
    * Default is `false`.
    */
   keepOnTop: boolean
-
-  /**
-   * Specifies the spacing between the highlight for vertices and the node.
-   *
-   * Default is `2`.
-   */
-  spacing: number
 
   private resetHandler: () => void
   private repaintHandler: () => void
@@ -102,7 +95,6 @@ export class CellHighlight extends BaseHandler {
       const shape = this.graph.renderer.createShape(this.state)!
 
       shape.svgStrokeTolerance = this.graph.tolerance
-      shape.points = this.state.absolutePoints
 
       shape.apply(this.state)
 
@@ -130,20 +122,16 @@ export class CellHighlight extends BaseHandler {
   repaint() {
     if (this.state != null && this.shape != null) {
       this.shape.scale = this.state.view.scale
+      const sw = this.getStrokeWidth(this.state)
 
       if (this.graph.model.isEdge(this.state.cell)) {
-        this.shape.strokeWidth = this.getStrokeWidth(this.state)
+        this.shape.strokeWidth = sw
         this.shape.points = this.state.absolutePoints
         this.shape.outline = false
       } else {
-        this.shape.bounds = new Rectangle(
-          this.state.bounds.x - this.spacing,
-          this.state.bounds.y - this.spacing,
-          this.state.bounds.width + 2 * this.spacing,
-          this.state.bounds.height + 2 * this.spacing,
-        )
+        this.shape.bounds = this.state.bounds.clone().grow(this.spacing)
         this.shape.rotation = util.getRotation(this.state)
-        this.shape.strokeWidth = this.getStrokeWidth(this.state) / this.state.view.scale
+        this.shape.strokeWidth = sw / this.state.view.scale
         this.shape.outline = true
       }
 
@@ -193,11 +181,8 @@ export class CellHighlight extends BaseHandler {
     return hit
   }
 
+  @Disposable.aop()
   dispose() {
-    if (this.disposed) {
-      return
-    }
-
     this.graph.view.off(null, this.resetHandler)
     this.graph.view.off(null, this.repaintHandler)
     this.graph.model.off(null, this.repaintHandler)
@@ -206,8 +191,6 @@ export class CellHighlight extends BaseHandler {
       this.shape.dispose()
       this.shape = null
     }
-
-    super.dispose()
   }
 }
 

@@ -20,6 +20,7 @@ import {
   RotateOptions,
   getRotationHandleOffset,
   getRotationHandleCursor,
+  isResizeHandleVisible,
 } from '../option'
 
 export class NodeHandler extends MouseHandler {
@@ -287,7 +288,11 @@ export class NodeHandler extends MouseHandler {
   }
 
   protected isSizerVisible(index: number) {
-    return true
+    return isResizeHandleVisible({
+      index,
+      graph: this.graph,
+      cell: this.state.cell,
+    })
   }
 
   protected updateMinBounds() {

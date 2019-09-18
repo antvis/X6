@@ -2,7 +2,7 @@ import { Graph, Cell } from '../core'
 import { Shape, ImageShape } from '../shape'
 import { Rectangle } from '../struct'
 import { HandleOptions, createHandleShape } from './handle'
-import { BaseStyle, drill, applyBaseStyle, applyClassName } from './util'
+import { BaseStyle, drill, applyBaseStyle, applyClassName, OptionItem } from './util'
 import { MouseEventEx } from '../common'
 
 export interface ResizeOption {
@@ -41,6 +41,8 @@ export interface ResizeHandleOptions extends
    * Default is `false`.
    */
   single: boolean
+
+  visible: OptionItem<IsResizeHandleVisibleArgs, boolean>
 }
 
 export interface CreateResizeHandleShapeArgs {
@@ -109,4 +111,16 @@ export function applyResizePreviewStyle(args: ApplyResizePreviewStyleArgs) {
   }
 
   return shape
+}
+
+export interface IsResizeHandleVisibleArgs {
+  graph: Graph
+  cell: Cell
+  index: number
+}
+
+export function isResizeHandleVisible(args: IsResizeHandleVisibleArgs) {
+  const { graph } = args
+  const options = graph.options.resizeHandle as ResizeHandleOptions
+  return drill(options.visible, graph, args)
 }

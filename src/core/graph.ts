@@ -23,6 +23,7 @@ import {
   DomEvent,
   MouseEventEx,
   Disablable,
+  Disposable,
 } from '../common'
 import {
   Rectangle,
@@ -2880,11 +2881,8 @@ export class Graph extends Disablable implements
     this.connectionHandler.dispose()
   }
 
+  @Disposable.aop()
   dispose() {
-    if (this.disposed) {
-      return
-    }
-
     this.disposeManagers()
     this.disposeHandlers()
 
@@ -2897,8 +2895,6 @@ export class Graph extends Disablable implements
     }
 
     (this as any).container = null
-
-    super.dispose()
   }
 
   // #endregion

@@ -794,7 +794,7 @@ export class EdgeHandler extends MouseHandler {
 
         if (
           this.constraintHandler.currentConstraint != null &&
-          this.constraintHandler.currentFocus != null &&
+          this.constraintHandler.currentState != null &&
           this.constraintHandler.currentPoint != null
         ) {
 
@@ -1070,7 +1070,7 @@ export class EdgeHandler extends MouseHandler {
     )
 
     if (
-      this.constraintHandler.currentFocus != null &&
+      this.constraintHandler.currentState != null &&
       this.constraintHandler.currentConstraint != null
     ) {
       // Handles special case where grid is large and connection point is at actual point in which
@@ -1078,7 +1078,7 @@ export class EdgeHandler extends MouseHandler {
       if (
         this.marker.highlight != null &&
         this.marker.highlight.state != null &&
-        this.marker.highlight.state.cell === this.constraintHandler.currentFocus.cell
+        this.marker.highlight.state.cell === this.constraintHandler.currentState.cell
       ) {
         // Direct repaint needed if cell already highlighted
         if (this.marker.highlight.shape!.stroke !== 'transparent') {
@@ -1086,7 +1086,7 @@ export class EdgeHandler extends MouseHandler {
           this.marker.highlight.repaint()
         }
       } else {
-        this.marker.markCell(this.constraintHandler.currentFocus.cell, 'transparent')
+        this.marker.markCell(this.constraintHandler.currentState.cell, 'transparent')
       }
 
       const model = this.graph.getModel()
@@ -1098,15 +1098,15 @@ export class EdgeHandler extends MouseHandler {
         !this.isSource,
       )
       const otherCell = (other != null) ? other.cell : null
-      const source = (this.isSource) ? this.constraintHandler.currentFocus.cell : otherCell
-      const target = (this.isSource) ? otherCell : this.constraintHandler.currentFocus.cell
+      const source = (this.isSource) ? this.constraintHandler.currentState.cell : otherCell
+      const target = (this.isSource) ? otherCell : this.constraintHandler.currentState.cell
 
       // Updates the error message of the handler
       this.error = this.validateConnection(source, target)
       let result = null
 
       if (this.error == null) {
-        result = this.constraintHandler.currentFocus
+        result = this.constraintHandler.currentState
       } else {
         this.constraintHandler.reset()
       }
@@ -1215,7 +1215,7 @@ export class EdgeHandler extends MouseHandler {
 
       if (
         this.constraintHandler.currentConstraint != null &&
-        this.constraintHandler.currentFocus != null
+        this.constraintHandler.currentState != null
       ) {
         this.marker.highlight.shape.stroke = (outline)
           ? constants.OUTLINE_HIGHLIGHT_COLOR : 'transparent'
@@ -1320,9 +1320,9 @@ export class EdgeHandler extends MouseHandler {
 
           if (
             this.constraintHandler.currentConstraint != null &&
-            this.constraintHandler.currentFocus != null
+            this.constraintHandler.currentState != null
           ) {
-            terminal = this.constraintHandler.currentFocus.cell
+            terminal = this.constraintHandler.currentState.cell
           }
 
           if (
