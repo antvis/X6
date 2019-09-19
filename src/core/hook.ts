@@ -78,7 +78,7 @@ export interface IHooks {
    * Returns`true`if the given mouse event should not allow any connections
    * to be made.
    */
-  isIgnoreTerminalEvent: EventHook<boolean>
+  isConnectionIgnored: EventHook<boolean>
 
   /**
    * Click-through behaviour on selected cells. If this returns`true`the

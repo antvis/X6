@@ -23,6 +23,12 @@ import {
   ConstraintOptions,
   ConstraintHighlightOptions,
 } from './constraint'
+import {
+  ConnectionOptions,
+  ConnectionIconOptions,
+  ConnectionPreviewOptions,
+  ConnectionHighlightOptions,
+} from './connection'
 
 export interface CompositeOptions {
   /**
@@ -751,49 +757,57 @@ export interface ContextMenuOptions {
 }
 
 export interface FullOptions extends SimpleOptions {
-  nodeStyle: Style,
-  edgeStyle: Style,
-  grid: GridOptions,
-  guide: GuideOptions,
-  tooltip: TooltipOptions,
-  folding: FoldingOptions,
-  rubberband: RubberbandOptions,
-  pageBreak: PageBreakOptions,
-  contextMenu: ContextMenuOptions,
-  movingPreview: MovingPreviewOptions,
-  selectionPreview: SelectionPreviewOptions,
-  resize: ResizeOption,
-  resizeHandle: ResizeHandleOptions,
-  resizePreview: ResizePreviewOptions,
-  rotate: RotateOptions,
-  rotateHandle: RotateHandleOptions,
-  rotatePreview: RotatePreviewOptions,
-  labelHandle: LabelHandleOptions,
-  constraint: ConstraintOptions,
-  constraintHighlight: ConstraintHighlightOptions,
+  nodeStyle: Style
+  edgeStyle: Style
+  grid: GridOptions
+  guide: GuideOptions
+  tooltip: TooltipOptions
+  folding: FoldingOptions
+  rubberband: RubberbandOptions
+  pageBreak: PageBreakOptions
+  contextMenu: ContextMenuOptions
+  movingPreview: MovingPreviewOptions
+  selectionPreview: SelectionPreviewOptions
+  resize: ResizeOption
+  resizeHandle: ResizeHandleOptions
+  resizePreview: ResizePreviewOptions
+  rotate: RotateOptions
+  rotateHandle: RotateHandleOptions
+  rotatePreview: RotatePreviewOptions
+  labelHandle: LabelHandleOptions
+  constraint: ConstraintOptions
+  constraintHighlight: ConstraintHighlightOptions
+  connection: ConnectionOptions
+  connectionIcon: ConnectionIconOptions
+  connectionPreview: ConnectionPreviewOptions
+  connectionHighlight: ConnectionHighlightOptions
 }
 
 export interface GraphOptions extends Partial<SimpleOptions> {
-  nodeStyle?: Style,
-  edgeStyle?: Style,
-  grid?: Partial<GridOptions> | boolean,
-  guide?: Partial<GuideOptions> | boolean,
-  tooltip?: Partial<TooltipOptions> | boolean,
-  folding?: Partial<FoldingOptions> | boolean,
-  rubberband?: Partial<RubberbandOptions> | boolean,
-  pageBreak?: Partial<PageBreakOptions> | boolean,
-  contextMenu?: Partial<ContextMenuOptions> | boolean,
-  movingPreview?: Partial<MovingPreviewOptions>,
-  selectionPreview?: Partial<SelectionPreviewOptions>,
-  resize?: Partial<ResizeOption> | boolean,
-  resizeHandle?: Partial<ResizeHandleOptions>,
-  resizePreview?: Partial<ResizePreviewOptions>,
-  rotate?: Partial<RotateOptions> | boolean,
-  rotateHandle?: Partial<RotateHandleOptions>,
-  rotatePreview?: Partial<RotatePreviewOptions>,
-  labelHandle?: Partial<LabelHandleOptions>,
-  constraint?: Partial<ConstraintOptions>,
-  constraintHighlight?: Partial<ConstraintHighlightOptions>,
+  nodeStyle?: Style
+  edgeStyle?: Style
+  grid?: Partial<GridOptions> | boolean
+  guide?: Partial<GuideOptions> | boolean
+  tooltip?: Partial<TooltipOptions> | boolean
+  folding?: Partial<FoldingOptions> | boolean
+  rubberband?: Partial<RubberbandOptions> | boolean
+  pageBreak?: Partial<PageBreakOptions> | boolean
+  contextMenu?: Partial<ContextMenuOptions> | boolean
+  movingPreview?: Partial<MovingPreviewOptions>
+  selectionPreview?: Partial<SelectionPreviewOptions>
+  resize?: Partial<ResizeOption> | boolean
+  resizeHandle?: Partial<ResizeHandleOptions>
+  resizePreview?: Partial<ResizePreviewOptions>
+  rotate?: Partial<RotateOptions> | boolean
+  rotateHandle?: Partial<RotateHandleOptions>
+  rotatePreview?: Partial<RotatePreviewOptions>
+  labelHandle?: Partial<LabelHandleOptions>
+  constraint?: Partial<ConstraintOptions>
+  constraintHighlight?: Partial<ConstraintHighlightOptions>
+  connection?: Partial<ConnectionOptions>
+  connectionIcon?: Partial<ConnectionIconOptions>
+  connectionPreview?: Partial<ConnectionPreviewOptions>
+  connectionHighlight?: Partial<ConnectionHighlightOptions>
 }
 
 export function getOptions(options: GraphOptions) {
@@ -886,4 +900,5 @@ function configHandlers(graph: Graph) {
   graph.tooltipHandler.config(options.tooltip as TooltipOptions)
   graph.rubberbandHandler.config(options.rubberband as RubberbandOptions)
   graph.popupMenuHandler.config(options.contextMenu as ContextMenuOptions)
+  graph.connectionHandler.config(options.connection as ConnectionOptions)
 }

@@ -2,9 +2,9 @@ import { Cell } from '../core'
 import {
   BaseArgs,
   BaseStyle,
-  drill,
   applyBaseStyle,
   applyClassName,
+  applyManualStyle,
 } from './util'
 
 export interface SelectionPreviewOptions
@@ -21,16 +21,8 @@ export function applySelectionPreviewStyle(
   const options = graph.options.selectionPreview as SelectionPreviewOptions
 
   applyBaseStyle(args, options)
-  applyClassName(
-    shape,
-    graph.prefixCls,
-    'selection-preview',
-    drill(options.className, graph, args),
-  )
-
-  if (options.style) {
-    options.style(args)
-  }
+  applyClassName(args, options, 'selection-preview')
+  applyManualStyle(args, options)
 
   return shape
 }

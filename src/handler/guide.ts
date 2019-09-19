@@ -54,7 +54,6 @@ export class Guide extends Disposable {
   protected initGuideShape(horizontal: boolean) {
     const guide = horizontal ? this.guideX : this.guideY
     if (guide != null) {
-      guide.dialect = 'svg'
       guide.pointerEvents = false
       guide.init(this.graph.view.getOverlayPane())
     }

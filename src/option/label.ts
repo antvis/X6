@@ -8,6 +8,7 @@ import {
   drill,
   applyBaseStyle,
   applyClassName,
+  applyManualStyle,
 } from './util'
 
 export interface LabelOptions {
@@ -43,16 +44,8 @@ export function createLabelHandle(args: CreateLabelHandleShapeArgs) {
     applyBaseStyle(newArgs, options)
   }
 
-  applyClassName(
-    shape,
-    graph.prefixCls,
-    'label-handle',
-    drill(options.className, graph, newArgs),
-  )
-
-  if (options.style) {
-    options.style(newArgs)
-  }
+  applyClassName(newArgs, options, 'label-handle')
+  applyManualStyle(newArgs, options)
 
   return shape
 }

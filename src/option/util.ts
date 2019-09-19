@@ -1,3 +1,4 @@
+import * as util from '../util'
 import { Graph } from '../core'
 import { Shape } from '../shape'
 
@@ -26,39 +27,77 @@ export interface StrokeStyle<T> {
   strokeWidth: OptionItem<T, number>,
 }
 
-export interface BaseStyle<T> extends StrokeStyle<T> {
-  className?: OptionItem<T, string>
+export interface FillStyle<T> {
   opacity: OptionItem<T, number>
   fill: OptionItem<T, string>
-  style?: (args: T) => void
 }
 
-export function applyBaseStyle<T extends BaseArgs>(args: T, style: BaseStyle<T>) {
+export interface CurosrStyle<T> {
+  cursor: OptionItem<T, string>
+}
+
+export interface ClassNameStyle<T> {
+  className?: OptionItem<T, string>
+}
+
+export interface ManualStyle<T> {
+  manual?: (args: T) => void
+}
+
+export interface BaseStyle<T> extends
+  ManualStyle<T>,
+  ClassNameStyle<T>,
+  StrokeStyle<T>,
+  FillStyle<T> { }
+
+export function applyBaseStyle<T extends BaseArgs>(
+  args: T,
+  style: BaseStyle<T>,
+) {
+  applyStrokeStyle(args, style)
+  applyFillStyle(args, style)
+}
+
+export function applyStrokeStyle<T extends BaseArgs>(
+  args: T,
+  style: StrokeStyle<T>,
+) {
   const { shape, graph } = args
   shape.stroke = drill(style.stroke, graph, args)
   shape.strokeWidth = drill(style.strokeWidth, graph, args)
-  shape.fill = drill(style.fill, graph, args)
   shape.dashed = drill(style.dashed, graph, args)
+}
+
+export function applyFillStyle<T extends BaseArgs>(
+  args: T,
+  style: FillStyle<T>,
+) {
+  const { shape, graph } = args
+  shape.fill = drill(style.fill, graph, args)
   shape.opacity = drill(style.opacity, graph, args)
 }
 
-export function applyClassName(
-  shape: Shape,
-  prefix: string,
+export function applyClassName<T extends BaseArgs>(
+  args: T,
+  style: ClassNameStyle<T>,
   native?: string,
-  manual?: string,
 ) {
-  let className: string = ''
+  const manual = drill(style.className, args.graph, args)
+  util.applyClassName(args.shape, args.graph.prefixCls, native, manual)
+}
 
-  if (native) {
-    className += `${prefix}-${native}`
-  }
+export function applyCursorStyle<T extends BaseArgs>(
+  args: T,
+  style: CurosrStyle<T>,
+) {
+  args.shape.cursor = drill(style.cursor, args.graph, args)
+}
 
-  if (manual) {
-    className += ` ${manual}`
-  }
-
-  if (className.length) {
-    shape.className = className
+export function applyManualStyle<T extends BaseArgs>(
+  args: T,
+  style: ManualStyle<T>,
+) {
+  if (style.manual) {
+    style.manual(args)
   }
 }

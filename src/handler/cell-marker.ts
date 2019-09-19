@@ -1,55 +1,36 @@
 import * as util from '../util'
 import { Graph, State, Cell } from '../core'
-import { constants, MouseEventEx, Disposable } from '../common'
+import { MouseEventEx, Disposable } from '../common'
 import { BaseHandler } from './handler-base'
 import { CellHighlight } from './cell-highlight'
 
 export class CellMarker extends BaseHandler {
-  /**
-   * Specifies if the hotspot is enabled.
-   *
-   * Default is `false`.
-   */
-  hotspotable: boolean = false
-
-  /**
-   * The current marker color.
-   */
-  currentColor: string | null = null
-
-  /**
-   * The marked `CellState` if it is valid.
-   */
+  highlight: CellHighlight
   validState: State | null = null
-
-  /**
-   * The marked `CellState`.
-   */
   markedState: State | null = null
 
-  highlight: CellHighlight
   validColor: string
   invalidColor: string
+  currentColor: string | null = null
+
+  hotspotable: boolean
   hotspot: number
+  minHotspotSize: number
+  maxHotspotSize: number
 
   constructor(
     graph: Graph,
     options: CellMarker.Options = {},
   ) {
     super(graph)
-    this.validColor = options.validColor != null
-      ? options.validColor
-      : constants.DEFAULT_VALID_COLOR
+    this.validColor = options.validColor ? options.validColor : '#00FF00'
+    this.invalidColor = options.invalidColor ? options.invalidColor : '#FF0000'
+    this.hotspot = options.hotspot != null ? options.hotspot : 0.3
+    this.hotspotable = options.hotspotable != null ? options.hotspotable : false
+    this.minHotspotSize = options.minHotspotSize != null ? options.minHotspotSize : 8
+    this.maxHotspotSize = options.maxHotspotSize != null ? options.maxHotspotSize : 0
 
-    this.invalidColor = options.invalidColor != null
-      ? options.invalidColor
-      : constants.DEFAULT_INVALID_COLOR
-
-    this.hotspot = options.hotspot != null
-      ? options.hotspot
-      : constants.DEFAULT_HOTSPOT
-
-    this.highlight = new CellHighlight(graph)
+    this.highlight = new CellHighlight(graph, options)
   }
 
   hasValidState() {
@@ -66,7 +47,6 @@ export class CellMarker extends BaseHandler {
 
   reset() {
     this.validState = null
-
     if (this.markedState != null) {
       this.markedState = null
       this.unmark()
@@ -161,13 +141,15 @@ export class CellMarker extends BaseHandler {
 
   intersects(state: State, e: MouseEventEx) {
     if (this.hotspotable) {
+      // 在中心区域按下鼠标触发连线
+      // 在边缘区域按下鼠标触发移动
       return util.intersectsHotspot(
         state,
         e.getGraphX(),
         e.getGraphY(),
         this.hotspot,
-        constants.MIN_HOTSPOT_SIZE,
-        constants.MAX_HOTSPOT_SIZE,
+        this.minHotspotSize,
+        this.maxHotspotSize,
       )
     }
 
@@ -185,14 +167,12 @@ export namespace CellMarker {
     mark: 'mark',
   }
 
-  export interface Options {
+  export interface Options extends CellHighlight.Options {
     validColor?: string
     invalidColor?: string
-    /**
-     * Specifies the portion of the width and height that should trigger
-     * a highlight. The area around the center of the cell to be marked
-     * is used as the hotspot. Possible values are between 0 and 1.
-     */
     hotspot?: number
+    hotspotable?: boolean
+    minHotspotSize?: number
+    maxHotspotSize?: number
   }
 }

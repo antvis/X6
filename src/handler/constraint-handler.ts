@@ -1,27 +1,25 @@
 import * as util from '../util'
-import { Graph, Model, State } from '../core'
 import { View } from '../core/view'
-import { Rectangle, Point, Constraint } from '../struct'
-import { DomEvent, MouseEventEx, Disposable } from '../common'
+import { Graph, Model, State } from '../core'
 import { Shape, ImageShape } from '../shape'
 import { BaseHandler } from './handler-base'
-import {
-  getConstraintOptions,
-  createConstraintHighlightShape,
-} from '../option'
+import { Rectangle, Point, Constraint } from '../struct'
+import { DomEvent, MouseEventEx, Disposable } from '../common'
+import { getConstraintOptions, createConstraintHighlightShape } from '../option'
 
 export class ConstraintHandler extends BaseHandler {
   private resetHandler: (() => void) | null
   private containerEventInstalled = false
-  private currentArea: Rectangle | null
-  private highlight: Shape | null
-  private icons: ImageShape[] | null
-  private points: Point[] | null
-  private constraints: Constraint[] | null
+
+  protected highlight: Shape | null
+  protected icons: ImageShape[] | null
+  protected points: Point[] | null
+  protected constraints: Constraint[] | null
 
   currentState: State | null
   currentPoint: Point | null
   currentConstraint: Constraint | null
+  currentArea: Rectangle | null
 
   constructor(graph: Graph) {
     super(graph)
@@ -43,9 +41,6 @@ export class ConstraintHandler extends BaseHandler {
     this.graph.view.on(View.events.scaleAndTranslate, this.resetHandler)
   }
 
-  /**
-   * Resets the state of this handler.
-   */
   reset() {
     this.destroyIcons()
     this.destroyHighlight()
@@ -54,21 +49,6 @@ export class ConstraintHandler extends BaseHandler {
     this.currentPoint = null
     this.currentState = null
     this.currentConstraint = null
-  }
-
-  destroyIcons() {
-    if (this.icons != null) {
-      this.icons.forEach(i => i.dispose())
-      this.icons = null
-      this.points = null
-    }
-  }
-
-  destroyHighlight() {
-    if (this.highlight) {
-      this.highlight.dispose()
-      this.highlight = null
-    }
   }
 
   redraw() {
@@ -91,10 +71,6 @@ export class ConstraintHandler extends BaseHandler {
         this.currentArea.add(this.icons[i].bounds)
       }
     }
-  }
-
-  getTolerance(e: MouseEventEx) {
-    return this.graph.getTolerance()
   }
 
   protected redrawConstraint(
@@ -123,24 +99,14 @@ export class ConstraintHandler extends BaseHandler {
       icon.dialect = 'svg'
       icon.preserveImageAspect = false
       icon.init(this.graph.view.getDecoratorPane())
-
-      // Move the icon behind all other overlays
       util.toBack(icon.elem)
 
-      const getState = () => (this.currentState != null)
-        ? this.currentState
-        : state
-
-      MouseEventEx.redirectMouseEvents(icon.elem!, this.graph, getState)
+      const getState = () => (this.currentState || state)
+      MouseEventEx.redirectMouseEvents(icon.elem, this.graph, getState)
     }
 
-    const prefixCls = this.graph.prefixCls
-    let cls = `${prefixCls}-constraint`
-    if (className) {
-      cls += ` ${className}`
-    }
+    util.applyClassName(icon, this.graph.prefixCls, 'constraint', className)
 
-    icon.className = cls
     icon.image = image.src
     icon.bounds = bounds
     icon.cursor = cursor
@@ -150,11 +116,15 @@ export class ConstraintHandler extends BaseHandler {
     return icon
   }
 
-  isEventIgnored(e: MouseEventEx) {
+  protected getTolerance(e: MouseEventEx) {
+    return this.graph.getTolerance()
+  }
+
+  protected isEventIgnored(e: MouseEventEx) {
     return false
   }
 
-  isStateIgnored(state: State, isSource: boolean) {
+  protected isStateIgnored(state: State, isSource: boolean) {
     return false
   }
 
@@ -164,18 +134,30 @@ export class ConstraintHandler extends BaseHandler {
    *
    * This implementation returns true if shift is pressed.
    */
-  isKeepFocusEvent(e: MouseEventEx) {
+  protected isKeepFocusEvent(e: MouseEventEx) {
     return DomEvent.isShiftDown(e.getEvent())
   }
 
-  /**
-   * Returns the cell for the given event.
-   */
-  getCellForEvent(e: MouseEventEx, point: Point | null) {
+  protected getConstraints(state: State, isSource: boolean) {
+    if (
+      this.isEnabled() &&
+      state != null &&
+      !this.isStateIgnored(state, isSource) &&
+      this.graph.isCellConnectable(state.cell)
+    ) {
+      return this.graph.getConstraints(state.cell, isSource)
+    }
+
+    return null
+  }
+
+  protected getCell(e: MouseEventEx, point: Point | null) {
     let cell = e.getCell()
 
     // Gets cell under actual point if different from event location
-    if (cell == null && point != null &&
+    if (
+      cell == null &&
+      point != null &&
       (e.getGraphX() !== point.x || e.getGraphY() !== point.y)
     ) {
       cell = this.graph.getCellAt(point.x, point.y)
@@ -223,7 +205,7 @@ export class ConstraintHandler extends BaseHandler {
         2 * tol,
       )
 
-      const state = this.graph.view.getState(this.getCellForEvent(e, point))
+      const state = this.graph.view.getState(this.getCell(e, point))
 
       // Keeps focus icons visible while over node bounds and
       // no other cell under mouse or shift is pressed
@@ -240,12 +222,11 @@ export class ConstraintHandler extends BaseHandler {
       ) {
         this.currentState = null
         this.currentArea = null
-        this.setFocus(e, state!, isSource)
+        this.focus(e, state!, isSource)
       }
 
       this.currentPoint = null
       this.currentConstraint = null
-      let minDistSq: number | null = null
 
       // highlight hovering constraint
       if (
@@ -254,7 +235,9 @@ export class ConstraintHandler extends BaseHandler {
         this.constraints != null &&
         (state == null || this.currentState === state)
       ) {
-        let highlightBounds: Rectangle | null = null
+        let bounds: Rectangle | null = null
+        let minDist: number | null = null
+
         const cx = mouse.getCenterX()
         const cy = mouse.getCenterY()
 
@@ -272,25 +255,22 @@ export class ConstraintHandler extends BaseHandler {
               )
             )
             &&
-            (minDistSq == null || dis < minDistSq)
+            (minDist == null || dis < minDist)
           ) {
             this.currentPoint = this.points[i]
             this.currentConstraint = this.constraints[i]
-            minDistSq = dis
-
-            highlightBounds = this.icons[i].bounds.clone()
-            highlightBounds.grow(1)
-            highlightBounds.width -= 1
-            highlightBounds.height -= 1
+            minDist = dis
+            bounds = this.icons[i].bounds.clone()
 
             if (this.highlight == null) {
+              // lazy
               this.highlight = this.createHighlightShape(state)
             }
           }
         }
 
-        if (highlightBounds != null && this.highlight != null) {
-          this.highlight.bounds = highlightBounds
+        if (bounds != null && this.highlight != null) {
+          this.highlight.bounds = bounds
           this.highlight.redraw()
         }
       }
@@ -306,24 +286,9 @@ export class ConstraintHandler extends BaseHandler {
     }
   }
 
-  /**
-   * Transfers the focus to the given state as a source or target terminal.
-   * If the handler is not enabled then the outline is painted, but the
-   * constraints are ignored.
-   */
-  setFocus(e: MouseEventEx, state: State, isSource: boolean) {
-    this.constraints = (
-      state != null &&
-      !this.isStateIgnored(state, isSource) &&
-      this.graph.isCellConnectable(state.cell)
-    ) ? (
-        this.isEnabled()
-          ? (this.graph.getConstraints(state.cell, isSource) || [])
-          : []
-      )
-      : null
+  focus(e: MouseEventEx, state: State, isSource: boolean) {
+    this.constraints = this.getConstraints(state, isSource)
 
-    // Only uses cells which have constraints
     if (this.constraints != null) {
       this.currentState = state
       this.currentArea = state.bounds.clone()
@@ -337,9 +302,9 @@ export class ConstraintHandler extends BaseHandler {
         const c = this.constraints[i]
         const p = this.graph.view.getConnectionPoint(state, c)!
         const icon = this.redrawConstraint(state, c, p)
-        this.currentArea.add(icon.bounds)
         this.icons.push(icon)
         this.points.push(p)
+        this.currentArea.add(icon.bounds)
       }
 
       this.currentArea.grow(this.getTolerance(e))
@@ -350,17 +315,13 @@ export class ConstraintHandler extends BaseHandler {
     }
   }
 
-  /**
-   * Create the shape used to paint the highlight.
-   */
-  createHighlightShape(state: State | null) {
+  protected createHighlightShape(state: State | null) {
     const s = (this.currentState || state)!
     const shape = createConstraintHighlightShape({
       graph: this.graph,
       cell: s.cell,
     })
 
-    shape.dialect = 'svg'
     shape.init(this.graph.view.getOverlayPane())
     const getState = () => (this.currentState || state) as State
     MouseEventEx.redirectMouseEvents(shape.elem, this.graph, getState)
@@ -368,16 +329,28 @@ export class ConstraintHandler extends BaseHandler {
     return shape
   }
 
-  /**
-   * Returns true if the given icon intersects the given rectangle.
-   */
-  intersects(
+  protected intersects(
     icon: ImageShape,
     mouse: Rectangle,
     isSource: boolean,
     existingEdge: boolean,
   ) {
     return icon.bounds.isIntersectWith(mouse)
+  }
+
+  protected destroyIcons() {
+    if (this.icons != null) {
+      this.icons.forEach(i => i.dispose())
+      this.icons = null
+      this.points = null
+    }
+  }
+
+  protected destroyHighlight() {
+    if (this.highlight) {
+      this.highlight.dispose()
+      this.highlight = null
+    }
   }
 
   @Disposable.aop()

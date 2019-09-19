@@ -9,7 +9,6 @@ import { CellMarker } from './cell-marker'
 import { ConstraintHandler } from './constraint-handler'
 
 export class EdgeHandler extends MouseHandler {
-
   state: State
   bends: (ImageShape | null)[] | (EllipseShape | null)[] | null = null
   virtualBends: ImageShape[] | EllipseShape[] | null = null
@@ -149,6 +148,7 @@ export class EdgeHandler extends MouseHandler {
    * Default is `false`.
    */
   manageLabelHandle: boolean = false
+
   labelHandleImage: Image
   labelShape: ImageShape | RectangleShape | EllipseShape | null
   labelPos: Point | null
@@ -215,7 +215,6 @@ export class EdgeHandler extends MouseHandler {
         const pstate = this.graph.view.getState(parent)
         if (pstate != null) {
           this.parentHighlight = this.createParentHighlightShape(pstate.bounds)
-          this.parentHighlight.dialect = 'svg'
           this.parentHighlight.pointerEvents = false
           this.parentHighlight.rotation = util.getRotation(pstate)
           this.parentHighlight.init(this.graph.view.getOverlayPane())
@@ -760,7 +759,7 @@ export class EdgeHandler extends MouseHandler {
 
       // Uses the current point from the constraint handler if available
       if (
-        !this.graph.isIgnoreTerminalEvent(evt) &&
+        !this.graph.isConnectionIgnored(evt) &&
         DomEvent.isShiftDown(evt) &&
         this.snapPoint != null
       ) {
@@ -1114,7 +1113,7 @@ export class EdgeHandler extends MouseHandler {
       return result
     }
 
-    if (!this.graph.isIgnoreTerminalEvent(e.getEvent())) {
+    if (!this.graph.isConnectionIgnored(e.getEvent())) {
       this.marker.process(e)
       const state = this.marker.getValidState()
 
@@ -1200,7 +1199,7 @@ export class EdgeHandler extends MouseHandler {
         constraint = this.graph.cellManager.getOutlineConstraint(
           point, terminalState, e,
         )
-        this.constraintHandler.setFocus(e, terminalState, this.isSource)
+        this.constraintHandler.focus(e, terminalState, this.isSource)
         this.constraintHandler.currentConstraint = constraint
         this.constraintHandler.currentPoint = point
       } else {
@@ -1288,7 +1287,7 @@ export class EdgeHandler extends MouseHandler {
       // Ignores event if mouse has not been moved
       if (e.getClientX() !== this.startX || e.getClientY() !== this.startY) {
         const clone = (
-          !this.graph.isIgnoreTerminalEvent(e.getEvent()) &&
+          !this.graph.isConnectionIgnored(e.getEvent()) &&
           this.graph.isCloneEvent(e.getEvent()) &&
           this.cloneable &&
           this.graph.isCellsCloneable()

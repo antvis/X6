@@ -3,6 +3,7 @@ import { getOffset, getScrollOrigin } from './dom'
 import { Point, DirectionMask } from '../struct'
 import { Align, VAlign } from '../types'
 import { MouseEventEx, DomEvent } from '../common'
+import { Shape } from '../shape'
 
 /**
  * Converts the specified point (x, y) using the offset of the specified
@@ -211,4 +212,23 @@ export function hasHtmlLabel(state: State) {
     state.text != null &&
     state.text.elem!.parentNode === state.view.graph.container
   )
+}
+
+export function applyClassName(
+  shape: Shape,
+  prefix: string,
+  native?: string,
+  manual?: string,
+) {
+  let className = ''
+  if (native) {
+    className += `${prefix}-${native}`
+  }
+  if (manual) {
+    className += ` ${manual}`
+  }
+
+  if (className.length > 0) {
+    shape.className = className
+  }
 }

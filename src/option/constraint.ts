@@ -7,6 +7,8 @@ import {
   drill,
   applyBaseStyle,
   applyClassName,
+  applyCursorStyle,
+  applyManualStyle,
 } from './util'
 
 export interface ConstraintOptions {
@@ -36,9 +38,9 @@ export function getConstraintOptions(args: GetConstraintOptionsArgs) {
 }
 
 export interface ConstraintHighlightOptions
-  extends BaseStyle<CreateConstraintHighlightShapeArgs> {
+  extends BaseStyle<ApplyConstraintHighlightShapeStyleArgs> {
   shape: OptionItem<CreateConstraintHighlightShapeArgs, string>
-  cursor: OptionItem<CreateConstraintHighlightShapeArgs, string>
+  cursor: OptionItem<ApplyConstraintHighlightShapeStyleArgs, string>
 }
 
 export interface CreateConstraintHighlightShapeArgs {
@@ -60,20 +62,11 @@ export function createConstraintHighlightShape(
   const ctor = Shape.getShape(raw) || EllipseShape
   const shape = new ctor() as Shape
   const newArgs = { ...args, shape }
-  applyBaseStyle<ApplyConstraintHighlightShapeStyleArgs>(newArgs, opts)
 
-  applyClassName(
-    shape,
-    graph.prefixCls,
-    'constraint-highlight',
-    drill(opts.className, graph, newArgs),
-  )
-
-  if (opts.style) {
-    opts.style(newArgs)
-  }
-
-  shape.cursor = drill(opts.cursor, graph, args)
+  applyBaseStyle(newArgs, opts)
+  applyClassName(newArgs, opts, 'constraint-highlight')
+  applyCursorStyle(newArgs, opts)
+  applyManualStyle(newArgs, opts)
 
   return shape
 }

@@ -2,9 +2,10 @@ import {
   BaseArgs,
   BaseStyle,
   OptionItem,
-  drill,
   applyBaseStyle,
   applyClassName,
+  applyCursorStyle,
+  applyManualStyle,
 } from './util'
 
 export interface MovingPreviewOptions
@@ -29,24 +30,10 @@ export interface ApplyMovingPreviewStyleArgs extends BaseArgs {
 }
 
 export function applyMovingPreviewStyle(args: ApplyMovingPreviewStyleArgs) {
-  const graph = args.graph
-  const shape = args.shape
-  const options = graph.options.movingPreview as MovingPreviewOptions
+  const options = args.graph.options.movingPreview as MovingPreviewOptions
 
   applyBaseStyle(args, options)
-  applyClassName(
-    shape,
-    graph.prefixCls,
-    'moving-preview',
-    drill(options.className, graph, args),
-  )
-
-  shape.cursor = drill(options.cursor, graph, args)
-  if (shape.cursor) {
-    shape.setCursor(shape.cursor)
-  }
-
-  if (options.style) {
-    options.style(args)
-  }
+  applyClassName(args, options, 'moving-preview')
+  applyCursorStyle(args, options)
+  applyManualStyle(args, options)
 }

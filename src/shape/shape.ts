@@ -23,7 +23,7 @@ export class Shape extends Disposable {
   /**
    * The dialect in which the shape is to be painted.
    */
-  dialect: Dialect
+  dialect: Dialect = 'svg'
 
   /**
    * The `Stencil` instance that defines the shape.

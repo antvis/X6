@@ -1,9 +1,16 @@
 import { Graph, Cell } from '../core'
 import { Shape, ImageShape } from '../shape'
 import { Rectangle } from '../struct'
-import { HandleOptions, createHandleShape } from './handle'
-import { BaseStyle, drill, applyBaseStyle, applyClassName, OptionItem } from './util'
 import { MouseEventEx } from '../common'
+import { HandleOptions, createHandleShape } from './handle'
+import {
+  BaseStyle,
+  OptionItem,
+  drill,
+  applyBaseStyle,
+  applyClassName,
+  applyManualStyle,
+} from './util'
 
 export interface ResizeOption {
   /**
@@ -71,16 +78,8 @@ export function createResizeHandle(args: CreateResizeHandleShapeArgs) {
     applyBaseStyle(newArgs, options)
   }
 
-  applyClassName(
-    shape,
-    graph.prefixCls,
-    cursor,
-    drill(options.className, graph, newArgs),
-  )
-
-  if (options.style) {
-    options.style(newArgs)
-  }
+  applyClassName(newArgs, options, cursor)
+  applyManualStyle(newArgs, options)
 
   return shape
 }
@@ -95,22 +94,11 @@ export interface ApplyResizePreviewStyleArgs {
 }
 
 export function applyResizePreviewStyle(args: ApplyResizePreviewStyleArgs) {
-  const { shape, graph } = args
-  const options = graph.options.resizePreview as ResizePreviewOptions
-
+  const options = args.graph.options.resizePreview as ResizePreviewOptions
   applyBaseStyle(args, options)
-  applyClassName(
-    shape,
-    graph.prefixCls,
-    'resize-preview',
-    drill(options.className, graph, args),
-  )
-
-  if (options.style) {
-    options.style(args)
-  }
-
-  return shape
+  applyClassName(args, options, 'resize-preview')
+  applyManualStyle(args, options)
+  return args.shape
 }
 
 export interface IsResizeHandleVisibleArgs {

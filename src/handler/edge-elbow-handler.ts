@@ -167,5 +167,4 @@ export class EdgeElbowHandler extends EdgeHandler {
       this.checkLabelHandle(this.bends![1]!.bounds)
     }
   }
-
 }

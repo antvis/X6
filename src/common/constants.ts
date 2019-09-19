@@ -3,7 +3,11 @@ import { detector } from './detector'
 export const constants = {
   /**
    * Defines the portion of the cell which is to be used as a connectable
-   * region. Default is 0.3. Possible values are 0 < x <= 1.
+   * region.
+   *
+   * Default is `0.3`.
+   *
+   * Possible values are 0 < x <= 1.
    */
   DEFAULT_HOTSPOT: 0.3,
 

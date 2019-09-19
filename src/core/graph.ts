@@ -2089,7 +2089,7 @@ export class Graph extends Disablable implements
   }
 
   @hook()
-  isIgnoreTerminalEvent(e: MouseEvent) {
+  isConnectionIgnored(e: MouseEvent) {
     return false
   }
 

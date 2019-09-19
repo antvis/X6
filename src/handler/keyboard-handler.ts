@@ -1,13 +1,13 @@
 import * as util from '../util'
 import { Graph } from '../core'
-import { DomEvent } from '../common'
+import { DomEvent, Disposable } from '../common'
 import { BaseHandler } from '../handler'
 
 export class KeyboardHandler extends BaseHandler {
   /**
    * The target DOM where the key event listeners are installed.
    */
-  protected target: HTMLElement | null = null
+  protected readonly target: HTMLElement
 
   /**
    * Maps from keycodes to functions for non-pressed control keys.
@@ -144,17 +144,9 @@ export class KeyboardHandler extends BaseHandler {
     }
   }
 
+  @Disposable.aop()
   dispose() {
-    if (this.disposed) {
-      return
-    }
-
-    if (this.target != null && this.onKeyDown != null) {
-      DomEvent.removeListener(this.target, 'keydown', this.onKeyDown)
-    }
-    this.target = null
-
-    super.dispose()
+    DomEvent.removeListener(this.target, 'keydown', this.onKeyDown)
   }
 }
 

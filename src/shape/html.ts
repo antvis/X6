@@ -1,14 +1,27 @@
 import * as util from '../util'
-import { Shape } from './shape'
+import { SvgCanvas2D } from '../canvas'
+import { RectangleShape } from './rectangle'
+import { Rectangle } from '../struct'
 
-export class HtmlShape extends Shape {
+export class HtmlShape extends RectangleShape {
   constructor(
     public markup: HTMLElement | string | null,
     public css: {
       [selector: string]: Partial<CSSStyleDeclaration>,
     },
   ) {
-    super()
+    super(new Rectangle())
+  }
+
+  paintBackground(
+    c: SvgCanvas2D,
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+  ) {
+    super.paintBackground(c, x, y, w, h)
+    this.renderHtml()
   }
 
   renderHtml() {
@@ -20,18 +33,15 @@ export class HtmlShape extends Shape {
     if (deg !== 0) {
       transform += ` rotate(${deg},${bounds.width / 2},${bounds.height / 2})`
     }
-
     g.setAttribute('transform', transform)
 
     const fo = util.createSvgElement('foreignObject')
     util.setAttributes(fo, { width: bounds.width, height: bounds.height })
 
     const div = util.createElement('div')
-    this.updateHtmlBounds(div)
-    this.updateHtmlFilters(div)
-    this.updateHtmlColors(div)
-    div.style.left = ''
-    div.style.top = ''
+    div.style.width = util.toPx(bounds.width)
+    div.style.height = util.toPx(bounds.height)
+    div.style.overflow = 'hidden'
 
     g.appendChild(fo)
     fo.appendChild(div)
@@ -40,13 +50,10 @@ export class HtmlShape extends Shape {
     if (this.scale !== 1) {
       wrap = util.createElement('div')
       wrap.style.overflow = 'hidden'
-      const width = Math.round(parseInt(div.style.width!, 10) / this.scale)
-      const height = Math.round(parseInt(div.style.height!, 10) / this.scale)
-      wrap.style.width = `${width || 0}px`
-      wrap.style.height = `${height || 0}px`
+      wrap.style.width = util.toPx(Math.round(bounds.width / this.scale))
+      wrap.style.height = util.toPx(Math.round(bounds.height / this.scale))
       wrap.style.transform = `scale(${this.scale})`
       wrap.style.transformOrigin = '0 0'
-
       div.appendChild(wrap)
     }
 
@@ -76,13 +83,5 @@ export class HtmlShape extends Shape {
         })
       })
     }
-  }
-
-  redrawSvgShape() {
-    this.renderHtml()
-  }
-
-  redrawHtmlShape() {
-    this.renderHtml()
   }
 }

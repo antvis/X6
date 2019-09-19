@@ -597,12 +597,12 @@ export class EventLoop extends BaseManager {
         connHandler.marker.markedState = state
         connHandler.marker.mark()
 
-        connHandler.first = new Point(e.getGraphX(), e.getGraphY())
+        connHandler.sourcePoint = new Point(e.getGraphX(), e.getGraphY())
         connHandler.edgeState = connHandler.createEdgeState(e)
-        connHandler.previous = state
+        connHandler.sourceState = state
         connHandler.trigger(
           ConnectionHandler.events.start,
-          { previous: connHandler.previous },
+          { previous: connHandler.sourceState },
         )
       }
     }

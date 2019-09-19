@@ -8,6 +8,7 @@ import {
   drill,
   applyBaseStyle,
   applyClassName,
+  applyManualStyle,
 } from './util'
 
 export interface RotateOptions {
@@ -53,21 +54,12 @@ export function createRotationHandle(args: CreateRotateHandleShapeArgs) {
   if (!(shape instanceof ImageShape)) {
     const size = drill(options.size, graph, newArgs)
     const bounds = new Rectangle(0, 0, size, size)
-
     shape.bounds = bounds
     applyBaseStyle(newArgs, options)
   }
 
-  applyClassName(
-    shape,
-    graph.prefixCls,
-    'rotation-handle',
-    drill(options.className, graph, newArgs),
-  )
-
-  if (options.style) {
-    options.style(newArgs)
-  }
+  applyClassName(newArgs, options, 'rotation-handle')
+  applyManualStyle(newArgs, options)
 
   return shape
 }
@@ -95,16 +87,8 @@ export function applyRotatePreviewStyle(args: ApplyRotatePreviewStyleArgs) {
   const options = graph.options.rotatePreview as RotatePreviewOptions
 
   applyBaseStyle(args, options)
-  applyClassName(
-    shape,
-    graph.prefixCls,
-    'rotate-preview',
-    drill(options.className, graph, args),
-  )
-
-  if (options.style) {
-    options.style(args)
-  }
+  applyClassName(args, options, 'rotate-preview')
+  applyManualStyle(args, options)
 
   return shape
 }

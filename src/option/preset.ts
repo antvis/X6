@@ -11,6 +11,13 @@ const commonStyle: Style = {
   fontColor: 'rgba(0, 0, 0, 0.65)',
 }
 
+export const COLOR_PRIMARY = '#1890ff'
+export const COLOR_VALID = '#2ddb73'
+export const COLOR_INVALID = '#f5222d'
+export const CURSOR_MOVE = 'move'
+export const CURSOR_CROSS = 'crosshair'
+export const CURSOR_POINTER = 'pointer'
+
 export const defaultOptions: FullOptions = {
   prefixCls: 'x6',
   dialect: 'svg',
@@ -135,7 +142,7 @@ export const defaultOptions: FullOptions = {
     enabled: false,
     rounded: false,
     dashed: true,
-    stroke: '#1890ff',
+    stroke: COLOR_PRIMARY,
     strokeWidth: 1,
     horizontal: {
       enabled: true,
@@ -156,7 +163,7 @@ export const defaultOptions: FullOptions = {
   rubberband: {
     enabled: false,
     fadeOut: false,
-    border: '1px solid #108ee9',
+    border: '1px solid #1890ff',
     background: '#0077ff',
     opacity: 0.2,
   },
@@ -176,12 +183,12 @@ export const defaultOptions: FullOptions = {
     stroke: '#000',
     strokeWidth: 1,
     fill: 'none',
-    cursor: 'move',
+    cursor: CURSOR_MOVE,
   },
 
   selectionPreview: {
     opacity: 1,
-    stroke: '#108ee9',
+    stroke: COLOR_PRIMARY,
     strokeWidth: 1,
     dashed: true,
     fill: 'none',
@@ -197,10 +204,10 @@ export const defaultOptions: FullOptions = {
   resizeHandle: {
     single: false,
     visible: true,
-    shape: 'ellipse',
+    shape: ShapeNames.ellipse,
     size: 8,
     opacity: 1,
-    fill: '#108ee9',
+    fill: COLOR_PRIMARY,
     stroke: '#fff',
     strokeWidth: 1,
     dashed: false,
@@ -208,7 +215,7 @@ export const defaultOptions: FullOptions = {
 
   resizePreview: {
     opacity: 1,
-    stroke: '#108ee9',
+    stroke: COLOR_PRIMARY,
     strokeWidth: 1,
     dashed: true,
     fill: 'rgba(24, 144, 255, 0.05)',
@@ -222,49 +229,92 @@ export const defaultOptions: FullOptions = {
 
   rotateHandle: {
     image: images.rotate,
-    shape: 'ellipse',
+    shape: ShapeNames.ellipse,
     size: 10,
     opacity: 1,
-    fill: '#108ee9',
+    fill: COLOR_PRIMARY,
     stroke: '#fff',
     strokeWidth: 1,
     dashed: false,
-    cursor: 'crosshair',
+    cursor: CURSOR_CROSS,
     offset: { x: 0, y: -20 },
   },
 
   rotatePreview: {
     opacity: 1,
-    stroke: '#108ee9',
+    stroke: COLOR_PRIMARY,
     strokeWidth: 1,
     dashed: true,
     fill: 'rgba(24, 144, 255, 0.05)',
   },
 
   labelHandle: {
-    shape: 'ellipse',
+    shape: ShapeNames.ellipse,
     size: 10,
     opacity: 1,
-    fill: 'rgba(24,144,255,1)',
+    fill: COLOR_PRIMARY,
     stroke: '#fff',
     strokeWidth: 1,
     dashed: false,
-    cursor: 'move',
+    cursor: CURSOR_MOVE,
     offset: { x: 0, y: -8 },
   },
 
   constraint: {
     image: images.cross,
-    cursor: 'pointer',
+    cursor: CURSOR_POINTER,
   },
 
   constraintHighlight: {
-    shape: 'ellipse',
-    cursor: 'pointer',
-    opacity: 1,
+    shape: ShapeNames.ellipse,
+    cursor: CURSOR_POINTER,
+    opacity: 0.3,
     fill: 'none',
-    stroke: 'rgba(0, 255, 0, 0.2)',
+    stroke: COLOR_VALID,
     strokeWidth: 10,
     dashed: false,
+  },
+
+  connection: {
+    autoSelect: true,
+    autoCreateTarget: false,
+    waypointsEnabled: false,
+    ignoreMouseDown: false,
+    outlineConnect: false,
+    livePreview: false,
+    insertBeforeSource: false,
+    cursor: CURSOR_POINTER,
+  },
+
+  connectionIcon: {
+    // image: images.rotate,
+    toFront: false,
+    toBack: false,
+    centerTarget: false,
+    cursor: CURSOR_POINTER,
+    offset: { x: 0, y: 16 },
+  },
+
+  connectionHighlight: {
+    validColor: COLOR_VALID,
+    invalidColor: COLOR_INVALID,
+    strokeWidth: 3,
+    dashed: false,
+    spacing: 2,
+    opacity: 0.3,
+    keepOnTop: false,
+
+    hotspotable: true,
+    hotspot: 0.3,
+    maxHotspotSize: 0,
+    minHotspotSize: 8,
+  },
+
+  connectionPreview: {
+    opacity: 1,
+    fill: 'none',
+    dashed: true,
+    strokeWidth: 2,
+    stroke: ({ valid }) => (valid ? COLOR_VALID : COLOR_INVALID),
   },
 }
