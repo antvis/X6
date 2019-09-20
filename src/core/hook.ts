@@ -7,6 +7,7 @@ import { Renderer } from './renderer'
 import { Selection } from '../manager'
 import { Point, Constraint, Rectangle } from '../struct'
 import {
+  KeyboardHandler,
   TooltipHandler,
   PopupMenuHandler,
   PanningHandler,
@@ -36,6 +37,7 @@ export interface IHooks {
   createRenderer: BareHook<Renderer>
   createSelection: BareHook<Selection>
 
+  createKeyboardHandler: BareHook<KeyboardHandler>
   createTooltipHandler: BareHook<TooltipHandler>
   createConnectionHandler: BareHook<ConnectionHandler>
   createSelectionHandler: BareHook<SelectionHandler>

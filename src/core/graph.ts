@@ -40,6 +40,7 @@ import {
   CellEditor,
   IMouseHandler,
   TooltipHandler,
+  KeyboardHandler,
   PopupMenuHandler,
   PanningHandler,
   SelectionHandler,
@@ -81,6 +82,7 @@ export class Graph extends Disablable implements
   public readonly viewport: ViewportManager
   public readonly cellManager: CellManager
 
+  public readonly keyboardHandler: KeyboardHandler
   public readonly tooltipHandler: TooltipHandler
   public readonly popupMenuHandler: PopupMenuHandler
   public readonly selectionHandler: SelectionHandler
@@ -554,10 +556,10 @@ export class Graph extends Disablable implements
     this.validator = new ValidationManager(this)
     this.viewport = new ViewportManager(this)
 
+    this.keyboardHandler = this.createKeyboardHandler()
     this.tooltipHandler = this.createTooltipHandler()
     this.selectionHandler = this.createSelectionHandler()
     this.connectionHandler = this.createConnectionHandler()
-    this.disableConnection()
     this.graphHandler = this.createGraphHandler()
     this.panningHandler = this.createPanningHandler()
     this.panningHandler.disablePanning()
@@ -615,6 +617,11 @@ export class Graph extends Disablable implements
   @hook()
   createSelection() {
     return new Selection(this)
+  }
+
+  @hook()
+  createKeyboardHandler() {
+    return new KeyboardHandler(this)
   }
 
   @hook()
@@ -2856,6 +2863,45 @@ export class Graph extends Disablable implements
     }
 
     return (!this.model.isLayer(cell) && parent == null) ? cell : null
+  }
+
+  // #endregion
+
+  // #region :::::::::::: Keyboard
+
+  enableKeyboard() {
+    this.keyboardHandler.enable()
+  }
+
+  disableKeyboard() {
+    this.keyboardHandler.disable()
+  }
+
+  bindKey(
+    keys: string | string[],
+    handler: KeyboardHandler.Handler,
+    action?: KeyboardHandler.Action,
+  ) {
+    this.keyboardHandler.bind(keys, handler, action)
+  }
+
+  unbindKey(
+    keys: string | string[],
+    action?: KeyboardHandler.Action,
+  ) {
+    this.keyboardHandler.unbind(keys, action)
+  }
+
+  onKeyPress(keys: string | string[], handler: KeyboardHandler.Handler) {
+    this.bindKey(keys, handler, 'keypress')
+  }
+
+  onKeyDown(keys: string | string[], handler: KeyboardHandler.Handler) {
+    this.bindKey(keys, handler, 'keydown')
+  }
+
+  onKeyUp(keys: string | string[], handler: KeyboardHandler.Handler) {
+    this.bindKey(keys, handler, 'keyup')
   }
 
   // #endregion

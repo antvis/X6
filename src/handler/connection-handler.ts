@@ -93,12 +93,12 @@ export class ConnectionHandler extends MouseHandler {
 
   constructor(graph: Graph) {
     super(graph)
-    this.config()
     this.graph.addMouseListener(this)
+    this.config()
     this.init()
   }
 
-  config() {
+  protected config() {
     const options = this.graph.options.connection as ConnectionOptions
     this.factoryMethod = options.createEdge
     this.autoSelect = options.autoSelect
@@ -108,6 +108,12 @@ export class ConnectionHandler extends MouseHandler {
     this.livePreview = options.livePreview
     this.insertBeforeSource = options.insertBeforeSource
     this.outlineConnect = options.outlineConnect
+
+    if (options.enabled) {
+      this.enable()
+    } else {
+      this.disable()
+    }
   }
 
   protected init() {

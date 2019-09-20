@@ -70,13 +70,28 @@ export class SelectionHandler extends MouseHandler {
           this.handlers.set(cell, handler)
         }
       }
+      this.refreshClassName(state, true)
     })
 
     // Destroys all unused handlers
     oldHandlers.each((handler) => {
+      this.refreshClassName(handler.state, false)
       this.trigger(SelectionHandler.events.removeHandler, { state: handler.state })
       handler.dispose()
     })
+  }
+
+  refreshClassName(state: State | null, selected: boolean) {
+    if (state) {
+      const className = `${this.graph.prefixCls}-cell-selected`
+      if (selected) {
+        state.shape && state.shape.addClass(className)
+        state.text && state.text.addClass(className)
+      } else {
+        state.shape && state.shape.removeClass(className)
+        state.text && state.text.removeClass(className)
+      }
+    }
   }
 
   /**

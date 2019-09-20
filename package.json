@@ -21,13 +21,14 @@
     "clean": "rimraf ./lib",
     "test": "jest",
     "dev": "webpack-dev-server --open --config webpack.config.js",
+    "less": "lessc ./src/index.less ./lib/index.css",
     "build:images": "node ./scripts/make-images.js",
     "build:version": "node ./scripts/make-version.js",
-    "build": "tsc",
+    "build": "yarn run build:images && yarn run build:version && yarn run less && tsc",
     "lint": "tslint -c tslint.json -p tsconfig.lint.json --fix",
     "coveralls": "cat ./test/coverage/lcov.info | coveralls",
     "prepublish": "yarn test",
-    "prebuild": "yarn run lint && yarn run clean && yarn run build:images && yarn run build:version",
+    "prebuild": "yarn run lint && yarn run clean",
     "pretest": "rimraf ./test/coverage"
   },
   "husky": {
@@ -50,6 +51,7 @@
   "license": "MIT",
   "devDependencies": {
     "@types/jest": "^24.0.17",
+    "@types/mousetrap": "^1.6.3",
     "@types/react": "^16.8.18",
     "@types/react-dom": "^16.8.4",
     "@types/react-router-dom": "^4.3.5",
@@ -80,5 +82,8 @@
     "webpack": "^4.39.2",
     "webpack-cli": "^3.3.7",
     "webpack-dev-server": "^3.8.0"
+  },
+  "dependencies": {
+    "mousetrap": "^1.6.3"
   }
 }

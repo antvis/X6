@@ -12,6 +12,7 @@ import {
 } from './util'
 
 export interface ConnectionOptions {
+  enabled: boolean
   /**
    * Function that is used for creating new edges.
    */

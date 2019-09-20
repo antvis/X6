@@ -119,7 +119,7 @@ export class TooltipHandler extends MouseHandler {
           this.elem.innerHTML = (tip as string).replace(/\n/g, '<br>')
         }
 
-        this.elem.style.visibility = ''
+        this.elem.style.display = ''
 
         util.ensureInViewport(this.elem)
       }
@@ -200,7 +200,7 @@ export class TooltipHandler extends MouseHandler {
 
   protected hideTooltip() {
     if (this.elem != null) {
-      this.elem.style.visibility = 'hidden'
+      this.elem.style.display = 'none'
       this.elem.innerHTML = ''
     }
   }
@@ -208,15 +208,15 @@ export class TooltipHandler extends MouseHandler {
   protected isHidden() {
     return (
       this.elem == null ||
-      this.elem.style.visibility === 'hidden'
+      this.elem.style.display === 'none'
     )
   }
 
   protected init() {
     if (document.body != null) {
       this.elem = document.createElement('div')
-      this.elem.className = 'x6-tooltip'
-      this.elem.style.visibility = 'hidden'
+      this.elem.className = `${this.graph.prefixCls}-tooltip`
+      this.elem.style.display = 'node'
 
       document.body.appendChild(this.elem)
 

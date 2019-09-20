@@ -1,99 +1,59 @@
 import * as util from '../util'
+import Mousetrap from 'mousetrap'
 import { Graph } from '../core'
 import { DomEvent, Disposable } from '../common'
 import { BaseHandler } from '../handler'
+import { KeyboardOptions } from '../option'
 
 export class KeyboardHandler extends BaseHandler {
-  /**
-   * The target DOM where the key event listeners are installed.
-   */
-  protected readonly target: HTMLElement
+  public readonly target: HTMLElement | Document
+  public readonly mousetrap: MousetrapInstance
 
-  /**
-   * Maps from keycodes to functions for non-pressed control keys.
-   */
-  protected normalKeys: { [code: number]: KeyboardHandler.KeydownHandler }
-
-  /**
-   * Maps from keycodes to functions for pressed shift keys.
-   */
-  protected shiftKeys: { [code: number]: KeyboardHandler.KeydownHandler }
-
-  /**
-   * Maps from keycodes to functions for pressed control keys.
-   */
-  protected controlKeys: { [code: number]: KeyboardHandler.KeydownHandler }
-
-  /**
-   * Maps from keycodes to functions for pressed control and shift keys.
-   */
-  protected controlShiftKeys: { [code: number]: KeyboardHandler.KeydownHandler }
-
-  protected onKeyDown: KeyboardHandler.KeydownHandler
-
-  constructor(graph: Graph, target?: HTMLElement) {
+  constructor(graph: Graph) {
     super(graph)
-    this.target = target || document.documentElement
-
-    // Creates the arrays to map from keycodes to functions
-    this.normalKeys = {}
-    this.shiftKeys = {}
-    this.controlKeys = {}
-    this.controlShiftKeys = {}
-
-    this.onKeyDown = (e: KeyboardEvent) => {
-      this.keyDown(e)
+    const options = this.graph.options.keyboard as KeyboardOptions
+    if (options.enabled) {
+      this.enable()
+    } else {
+      this.disable()
     }
 
-    DomEvent.addListener(this.target, 'keydown', this.onKeyDown)
-  }
+    this.target = options.global ? document : this.graph.container
 
-  bindKey(code: number, fn: KeyboardHandler.KeydownHandler) {
-    this.normalKeys[code] = fn
-  }
+    const handler = this // tslint:disable-line
+    class MousetrapEx extends Mousetrap {
+      stopCallback(
+        e: KeyboardEvent,
+        elem: HTMLElement,
+        combo: string,
+      ) {
+        if (handler.isEnabledForEvent(e)) {
+          if (e.keyCode === 27 || !handler.isEventIgnored(e)) {
+            handler.escape(e)
+            return super.stopCallback(e, elem, combo)
+          }
 
-  bindShiftKey(code: number, fn: KeyboardHandler.KeydownHandler) {
-    this.shiftKeys[code] = fn
-  }
-
-  bindControlKey(code: number, fn: KeyboardHandler.KeydownHandler) {
-    this.controlKeys[code] = fn
-  }
-
-  bindControlShiftKey(code: number, fn: KeyboardHandler.KeydownHandler) {
-    this.controlShiftKeys[code] = fn
-  }
-
-  protected isControlDown(e: KeyboardEvent) {
-    return DomEvent.isControlDown(e)
-  }
-
-  protected isShiftDown(e: KeyboardEvent) {
-    return DomEvent.isShiftDown(e)
-  }
-
-  /**
-   * Returns the function associated with the given key event or null if no
-   * function is associated with the given event.
-   */
-  protected getFunction(e: KeyboardEvent) {
-    if (e != null && !DomEvent.isAltDown(e)) {
-      if (this.isControlDown(e)) {
-        if (this.isShiftDown(e)) {
-          return this.controlShiftKeys[e.keyCode]
+          if (!handler.isEventIgnored(e)) {
+            return super.stopCallback(e, elem, combo)
+          }
         }
 
-        return this.controlKeys[e.keyCode]
+        return false
       }
-
-      if (this.isShiftDown(e)) {
-        return this.shiftKeys[e.keyCode]
-      }
-
-      return this.normalKeys[e.keyCode]
     }
+    this.mousetrap = new MousetrapEx(this.target as Element)
+  }
 
-    return null
+  bind(
+    keys: string | string[],
+    callback: KeyboardHandler.Handler,
+    action?: KeyboardHandler.Action,
+  ) {
+    this.mousetrap.bind(keys, callback, action)
+  }
+
+  unbind(keys: string | string[], action?: KeyboardHandler.Action) {
+    this.mousetrap.unbind(keys, action)
   }
 
   protected isGraphEvent(e: KeyboardEvent) {
@@ -124,20 +84,6 @@ export class KeyboardHandler extends BaseHandler {
     return this.graph.isEditing()
   }
 
-  protected keyDown(e: KeyboardEvent) {
-    if (this.isEnabledForEvent(e)) {
-      if (e.keyCode === 27) {
-        this.escape(e)
-      } else if (!this.isEventIgnored(e)) {
-        const fn = this.getFunction(e)
-        if (fn != null) {
-          fn(e)
-          DomEvent.consume(e)
-        }
-      }
-    }
-  }
-
   protected escape(e: KeyboardEvent) {
     if (this.graph.isEscapeEnabled()) {
       this.graph.eventloop.escape(e)
@@ -146,10 +92,11 @@ export class KeyboardHandler extends BaseHandler {
 
   @Disposable.aop()
   dispose() {
-    DomEvent.removeListener(this.target, 'keydown', this.onKeyDown)
+    this.mousetrap.reset()
   }
 }
 
 export namespace KeyboardHandler {
-  export type KeydownHandler = (e: KeyboardEvent) => void
+  export type Action = 'keypress' | 'keydown' | 'keyup'
+  export type Handler = (e: KeyboardEvent) => void
 }

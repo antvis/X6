@@ -2,6 +2,7 @@ import { Disposable } from '../common'
 import { Rectangle, Point } from '../struct'
 import { Graph, State, Cell } from '../core'
 import { Polyline } from '../shape'
+import { util } from '..'
 
 export class Guide extends Disposable {
   graph: Graph
@@ -62,19 +63,23 @@ export class Guide extends Disposable {
   protected redrawGuideShape(state: State, horizontal: boolean) {
     const guide = horizontal ? this.guideX : this.guideY
     if (guide != null) {
-      const style = this.options.getStrockStyle({ horizontal, cell: state.cell })
+      const style = this.options.getStrockStyle({
+        horizontal,
+        cell: state.cell,
+      })
+
       guide.stroke = style.stroke
       guide.strokeWidth = style.strokeWidth
       guide.dashed = style.dashed
       guide.elem!.style.visibility = null
 
-      let cls = `${this.graph.prefixCls}-guide`
-      cls += ` ${cls}-${horizontal ? 'horizontal' : 'vertical'}`
-      if (style.className) {
-        cls += ` ${style.className}`
-      }
+      util.applyClassName(
+        guide,
+        this.graph.prefixCls,
+        `guide ${horizontal ? 'horizontal' : 'vertical'}`,
+        style.className,
+      )
 
-      guide.className = cls
       guide.redraw()
     }
   }

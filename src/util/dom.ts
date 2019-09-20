@@ -169,6 +169,18 @@ export function emptyElement(elem: Element | null) {
   }
 }
 
+export function hideElement(elem: HTMLElement | null) {
+  if (elem) {
+    elem.style.display = 'none'
+  }
+}
+
+export function showElement(elem: HTMLElement | null) {
+  if (elem) {
+    elem.style.display = ''
+  }
+}
+
 export function prepend(parent: Element, child: Element) {
   if (parent.firstChild != null) {
     parent.insertBefore(child, parent.firstChild)

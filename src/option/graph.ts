@@ -90,12 +90,19 @@ export interface CompositeOptions {
   cellsResizable: boolean
 
   cellsRotatable: boolean
+
+  /**
+   * Specifies if handle escape key press.
+   *
+   * Default is `true`.
+   */
+  escapeEnabled: boolean
 }
 
 export interface SimpleOptions {
-  prefixCls: string,
-  dialect: Dialect,
-  antialiased: boolean,
+  prefixCls: string
+  dialect: Dialect
+  antialiased: boolean
 
   /**
    * An array of `Multiplicity` describing the allowed connections in
@@ -475,13 +482,6 @@ export interface SimpleOptions {
   autoResizeContainer: boolean
 
   /**
-   * Specifies if handle escape key press.
-   *
-   * Default is `true`.
-   */
-  escapeEnabled: boolean
-
-  /**
    * If true, when editing is to be stopped by way of selection
    * changing, data in diagram changing or other means stopCellEditing
    * is invoked, and changes are saved.
@@ -707,19 +707,19 @@ export interface TooltipOptions {
 }
 
 export interface PageBreakOptions {
-  enabled: boolean,
+  enabled: boolean
   /**
    * Specifies the stroke color for page breaks.
    */
-  stroke: string,
+  stroke: string
   /**
    * Specifies the page breaks should be dashed.
    */
-  dsahed: boolean,
+  dsahed: boolean
   /**
    * Specifies the minimum distance for page breaks to be visible.
    */
-  minDist: number,
+  minDist: number
 }
 
 export interface FoldingOptions {
@@ -727,13 +727,13 @@ export interface FoldingOptions {
    * Specifies if folding (collapse and expand via an image icon
    * in the graph should be enabled).
    */
-  enabled: boolean,
-  collapsedImage: Image,
-  expandedImage: Image,
+  enabled: boolean
+  collapsedImage: Image
+  expandedImage: Image
 }
 
 export interface ContextMenuOptions {
-  enabled: boolean,
+  enabled: boolean
 
   /**
    * Specifies is use left mouse button as context menu trigger.
@@ -757,6 +757,18 @@ export interface ContextMenuOptions {
   clearSelectionOnBackground: boolean
 }
 
+export interface KeyboardOptions {
+  enabled: boolean
+  global: boolean
+
+  /**
+   * Specifies if handle escape key press.
+   *
+   * Default is `true`.
+   */
+  escape: boolean
+}
+
 export interface FullOptions extends SimpleOptions {
   nodeStyle: Style
   edgeStyle: Style
@@ -764,6 +776,7 @@ export interface FullOptions extends SimpleOptions {
   guide: GuideOptions
   tooltip: TooltipOptions
   folding: FoldingOptions
+  keyboard: KeyboardOptions
   rubberband: RubberbandOptions
   pageBreak: PageBreakOptions
   contextMenu: ContextMenuOptions
@@ -792,6 +805,7 @@ export interface GraphOptions extends Partial<SimpleOptions> {
   guide?: Partial<GuideOptions> | boolean
   tooltip?: Partial<TooltipOptions> | boolean
   folding?: Partial<FoldingOptions> | boolean
+  keyboard?: Partial<KeyboardOptions> | boolean
   rubberband?: Partial<RubberbandOptions> | boolean
   pageBreak?: Partial<PageBreakOptions> | boolean
   contextMenu?: Partial<ContextMenuOptions> | boolean
@@ -806,7 +820,7 @@ export interface GraphOptions extends Partial<SimpleOptions> {
   labelHandle?: Partial<LabelHandleOptions>
   constraint?: Partial<ConstraintOptions>
   constraintHighlight?: Partial<ConstraintHighlightOptions>
-  connection?: Partial<ConnectionOptions>
+  connection?: Partial<ConnectionOptions> | boolean
   connectionIcon?: Partial<ConnectionIconOptions>
   connectionPreview?: Partial<ConnectionPreviewOptions>
   connectionHighlight?: Partial<ConnectionHighlightOptions>
@@ -840,8 +854,6 @@ export function getOptions(options: GraphOptions) {
 
 export function applyOptions(graph: Graph) {
   const options = graph.options
-
-  console.log(options)
 
   Object.keys(options).forEach((key: keyof GraphOptions) => {
     const val = options[key]
@@ -889,6 +901,11 @@ function expand(graph: Graph) {
   // ----
   const rotate = options.rotate as RotateOptions
   graph.cellsRotatable = rotate.enabled
+
+  // keyboard
+  // ----
+  const keyboard = options.keyboard as KeyboardOptions
+  graph.escapeEnabled = keyboard.escape
 }
 
 function config(graph: Graph) {

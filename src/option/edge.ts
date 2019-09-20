@@ -11,6 +11,10 @@ import {
   applyManualStyle,
 } from './util'
 
+export interface EdgeOptions {
+
+}
+
 export interface EdgeHandleOptions extends
   BaseStyle<ApplyEdgeHandleStyleArgs>,
   HandleOptions<CreateEdgeHandleShapeArgs, ApplyEdgeHandleStyleArgs> {

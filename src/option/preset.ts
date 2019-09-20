@@ -88,7 +88,6 @@ export const defaultOptions: FullOptions = {
   labelsVisible: true,
   border: 0,
   autoResizeContainer: false,
-  escapeEnabled: true,
   invokesStopCellEditing: true,
   stopEditingOnPressEnter: false,
   exportEnabled: true,
@@ -158,6 +157,12 @@ export const defaultOptions: FullOptions = {
     zIndex: 9999,
     hideOnHover: false,
     ignoreTouchEvents: true,
+  },
+
+  keyboard: {
+    enabled: false,
+    global: false,
+    escape: true,
   },
 
   rubberband: {
@@ -277,6 +282,7 @@ export const defaultOptions: FullOptions = {
   },
 
   connection: {
+    enabled: false,
     autoSelect: true,
     autoCreateTarget: false,
     waypointsEnabled: false,
