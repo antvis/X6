@@ -37,11 +37,9 @@
     }
   },
   "lint-staged": {
-    "linters": {
-      "src/**/*.ts": [
-        "tslint -c tslint.json -p ./tsconfig.json --fix"
-      ]
-    }
+    "src/**/*.ts": [
+      "tslint -c tslint.json -p ./tsconfig.json --fix"
+    ]
   },
   "author": {
     "name": "bubkooo",
