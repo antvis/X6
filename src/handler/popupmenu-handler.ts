@@ -33,6 +33,7 @@ export class PopupMenuHandler extends MouseHandler {
 
   constructor(graph: Graph) {
     super(graph)
+    this.config()
     this.graph.addMouseListener(this)
 
     // Does not show menu if any touch gestures take place after the trigger
@@ -42,7 +43,8 @@ export class PopupMenuHandler extends MouseHandler {
     this.graph.on(Graph.events.gesture, this.gestureHandler)
   }
 
-  config(options: ContextMenuOptions) {
+  config() {
+    const options = this.graph.options.contextMenu as ContextMenuOptions
     this.setEnadled(options.enabled)
     this.useLeftButtonForPopup = options.isLeftButton
     this.selectOnPopup = options.selectCellsOnContextMenu

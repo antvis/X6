@@ -1,6 +1,6 @@
 import { Cell, State } from '../core'
 import { Rectangle, Point } from '../struct'
-import { constants, MouseEventEx } from '../common'
+import { MouseEventEx } from '../common'
 import { EdgeElbowHandler } from './edge-elbow-handler'
 
 export class EdgeSegmentHandler extends EdgeElbowHandler {
@@ -25,7 +25,12 @@ export class EdgeSegmentHandler extends EdgeElbowHandler {
         const cx = pts[0].x + (pts[pts.length - 1].x - pts[0].x) / 2
         const cy = pts[0].y + (pts[pts.length - 1].y - pts[0].y) / 2
 
-        pts = [pts[0], new Point(cx, cy), new Point(cx, cy), pts[pts.length - 1]]
+        pts = [
+          pts[0],
+          new Point(cx, cy),
+          new Point(cx, cy),
+          pts[pts.length - 1],
+        ]
       }
     }
 
@@ -33,7 +38,7 @@ export class EdgeSegmentHandler extends EdgeElbowHandler {
   }
 
   getPreviewPoints(point: Point, e: MouseEventEx) {
-    if (this.isSource || this.isTarget) {
+    if (this.isSourceHandle || this.isTargetHandle) {
       return super.getPreviewPoints(point, e)
     }
 
@@ -95,7 +100,7 @@ export class EdgeSegmentHandler extends EdgeElbowHandler {
     super.updatePreviewState(edge, point, terminalState, e, outline)
 
     // Checks and corrects preview by running edge style again
-    if (!this.isSource && !this.isTarget) {
+    if (!this.isSourceHandle && !this.isTargetHandle) {
       point = this.convertPoint(point.clone(), false) // tslint:disable-line
       const pts = edge.absolutePoints
       let pt0 = pts[0]
@@ -244,20 +249,19 @@ export class EdgeSegmentHandler extends EdgeElbowHandler {
 
   start(x: number, y: number, index: number) {
     super.start(x, y, index)
-    const bend = this.bends && this.bends[index]
-    if (bend != null && !this.isSource && !this.isTarget) {
+    const bend = this.handles && this.handles[index]
+    if (bend != null && !this.isSourceHandle && !this.isTargetHandle) {
       bend.elem!.style.opacity = '100'
     }
   }
 
-  createBends() {
-    const bends = []
+  createHandles() {
+    const handles = []
 
     // Source
-    let bend = this.createHandleShape(0)
-    this.initHandle(bend)
-    bend.setCursor(constants.CURSOR_TERMINAL_HANDLE)
-    bends.push(bend)
+    let handle = this.createHandleShape(0)
+    this.initHandle(handle)
+    handles.push(handle)
 
     const pts = this.getCurrentPoints()
 
@@ -268,8 +272,8 @@ export class EdgeSegmentHandler extends EdgeElbowHandler {
       }
 
       for (let i = 0; i < pts.length - 1; i += 1) {
-        bend = this.createVirtualBend()
-        bends.push(bend)
+        handle = this.createVirtualHandle()
+        handles.push(handle)
         let horizontal = Math.round(pts[i].x - pts[i + 1].x) === 0
 
         // Special case where dy is 0 as well
@@ -277,18 +281,17 @@ export class EdgeSegmentHandler extends EdgeElbowHandler {
           horizontal = Math.round(pts[i].x - pts[i + 2].x) === 0
         }
 
-        bend.setCursor((horizontal) ? 'col-resize' : 'row-resize')
+        handle.setCursor((horizontal) ? 'col-resize' : 'row-resize')
         this.points.push(new Point(0, 0))
       }
     }
 
     // Target
-    bend = this.createHandleShape(pts.length)
-    this.initHandle(bend)
-    bend.setCursor(constants.CURSOR_TERMINAL_HANDLE)
-    bends.push(bend)
+    handle = this.createHandleShape(pts.length)
+    this.initHandle(handle)
+    handles.push(handle)
 
-    return bends
+    return handles
   }
 
   redraw() {
@@ -296,7 +299,7 @@ export class EdgeSegmentHandler extends EdgeElbowHandler {
     super.redraw()
   }
 
-  redrawInnerBends(p0: Point, pe: Point) {
+  redrawInnerHandles(p0: Point, pe: Point) {
     if (this.graph.isCellBendable(this.state.cell)) {
       const pts = this.getCurrentPoints()
       if (pts != null && pts.length > 1) {
@@ -322,7 +325,7 @@ export class EdgeSegmentHandler extends EdgeElbowHandler {
         }
 
         for (let i = 0; i < pts.length - 1; i += 1) {
-          const bend = this.bends && this.bends[i + 1]
+          const bend = this.handles && this.handles[i + 1]
           if (bend != null) {
             const p0 = pts[i]
             const pe = pts[i + 1]
@@ -343,13 +346,12 @@ export class EdgeSegmentHandler extends EdgeElbowHandler {
         }
 
         if (straight) {
-          if (this.bends) {
-            this.bends[1]!.elem!.style.opacity = `${this.virtualBendOpacity}`
-            this.bends[3]!.elem!.style.opacity = `${this.virtualBendOpacity}`
+          if (this.handles) {
+            // this.handles[1]!.elem!.style.opacity = `${this.virtualHandleOpacity}`
+            // this.handles[3]!.elem!.style.opacity = `${this.virtualHandleOpacity}`
           }
         }
       }
     }
   }
-
 }

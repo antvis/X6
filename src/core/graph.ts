@@ -682,7 +682,7 @@ export class Graph extends Disablable implements
 
     if (
       edgeFn === routers.loop ||
-      edgeFn === routers.elbowConnector ||
+      edgeFn === routers.elbow ||
       edgeFn === routers.sideToSide ||
       edgeFn === routers.topToBottom
     ) {

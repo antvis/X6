@@ -1034,7 +1034,7 @@ export class CellManager extends BaseManager {
     const tmp = this.view.getEdgeFunction(state)
     return (
       tmp === routers.segmentConnector ||
-      tmp === routers.elbowConnector ||
+      tmp === routers.elbow ||
       tmp === routers.sideToSide ||
       tmp === routers.topToBottom ||
       tmp === routers.entityRelation ||

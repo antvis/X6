@@ -14,7 +14,7 @@ import {
   getConnectionIcon,
   applyConnectionPreviewStyle,
   getConnectionHighlightOptions,
-} from '../option/connection'
+} from '../option'
 
 export class ConnectionHandler extends MouseHandler {
   marker: CellMarker
@@ -91,17 +91,15 @@ export class ConnectionHandler extends MouseHandler {
   private selectedIcon: ImageShape | null
   private iconState: State | null
 
-  constructor(
-    graph: Graph,
-    factoryMethod?: (source: Cell, target: Cell, style: Style) => Cell,
-  ) {
+  constructor(graph: Graph) {
     super(graph)
-    this.factoryMethod = factoryMethod
+    this.config()
     this.graph.addMouseListener(this)
     this.init()
   }
 
-  config(options: ConnectionOptions) {
+  config() {
+    const options = this.graph.options.connection as ConnectionOptions
     this.factoryMethod = options.createEdge
     this.autoSelect = options.autoSelect
     this.autoCreateTarget = options.autoCreateTarget
@@ -591,7 +589,6 @@ export class ConnectionHandler extends MouseHandler {
       this.constraintHandler.currentConstraint != null
     ) {
       // Transparent cell hilight when constraint point is highlighted.
-      const transparent = 'rgba(255,255,255,0)'
       if (
         this.marker &&
         this.marker.highlight != null &&
@@ -601,15 +598,15 @@ export class ConnectionHandler extends MouseHandler {
       ) {
         if (
           this.marker.highlight.shape != null &&
-          this.marker.highlight.shape.stroke !== transparent
+          this.marker.highlight.shape.stroke !== 'transparent'
         ) {
-          this.marker.highlight.shape.stroke = transparent
+          this.marker.highlight.shape.stroke = 'transparent'
           this.marker.highlight.repaint()
         }
       } else {
         this.marker.markCell(
           this.constraintHandler.currentState.cell,
-          transparent,
+          'transparent',
         )
       }
 

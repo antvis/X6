@@ -5,7 +5,7 @@ import { Point, RouterNames } from '../struct'
  * Uses either `sideToSide>` or `topToBottom` depending on the horizontal
  * flag in the cell style.
  */
-export function elbowConnector(
+export function elbow(
   edgeState: State,
   sourceState: State,
   targetState: State,

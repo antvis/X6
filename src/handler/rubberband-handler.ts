@@ -52,6 +52,7 @@ export class RubberbandHandler extends MouseHandler {
 
   constructor(graph: Graph) {
     super(graph)
+    this.config()
     this.graph.addMouseListener(this)
 
     // Handles force rubberband event
@@ -78,7 +79,9 @@ export class RubberbandHandler extends MouseHandler {
     this.graph.on(Graph.events.gesture, this.onGesture)
   }
 
-  config(options: RubberbandOptions) {
+  config() {
+    const options = this.graph.options.rubberband as RubberbandOptions
+
     if (options.enabled) {
       this.enable()
     } else {

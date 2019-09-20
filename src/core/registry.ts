@@ -77,7 +77,7 @@ export function getRouter(name: string, allowEval: boolean = false) {
   return getEntity<RoutingFunction>(routerMap, name, allowEval)
 }
 
-registerRouter(RouterNames.elbow, routers.elbowConnector)
+registerRouter(RouterNames.elbow, routers.elbow)
 registerRouter(RouterNames.entityRelation, routers.entityRelation)
 registerRouter(RouterNames.loop, routers.loop)
 registerRouter(RouterNames.sideToSide, routers.sideToSide)

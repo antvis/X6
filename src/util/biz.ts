@@ -206,11 +206,12 @@ export function reversePortConstraints(constraint: DirectionMask) {
   return result
 }
 
-export function hasHtmlLabel(state: State) {
+export function hasHtmlLabel(state: State | null) {
   return (
     state != null &&
     state.text != null &&
-    state.text.elem!.parentNode === state.view.graph.container
+    state.text.elem != null &&
+    state.text.elem.parentNode === state.view.graph.container
   )
 }
 

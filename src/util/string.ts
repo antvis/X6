@@ -62,3 +62,14 @@ export function hashcode(str: string): number {
 export function sanitizeText(text: string) {
   return text.replace(/ /g, '\u00A0')
 }
+
+export function isValidLabel(label: string | HTMLElement | null) {
+  if (label != null) {
+    if (typeof label === 'string') {
+      return label.length > 0
+    }
+    return true
+  }
+
+  return false
+}

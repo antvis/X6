@@ -37,10 +37,12 @@ export class TooltipHandler extends MouseHandler {
 
   constructor(graph: Graph) {
     super(graph)
+    this.config()
     this.graph.addMouseListener(this)
   }
 
-  config(options: TooltipOptions) {
+  config() {
+    const options = this.graph.options.tooltip as TooltipOptions
     this.delay = options.delay
     this.zIndex = options.zIndex
     this.hideOnHover = options.hideOnHover

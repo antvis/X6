@@ -11,17 +11,16 @@ export class EdgeElbowHandler extends EdgeHandler {
    */
   flipEnabled: boolean = true
 
-  createBends() {
-    const bends = []
+  createHandles() {
+    const handles = []
 
     // Source
-    let bend = this.createHandleShape(0)
-    this.initHandle(bend)
-    bend.setCursor(constants.CURSOR_TERMINAL_HANDLE)
-    bends.push(bend)
+    let handle = this.createHandleShape(0)
+    this.initHandle(handle)
+    handles.push(handle)
 
     // Virtual
-    bends.push(this.createVirtualBend((evt: MouseEvent) => {
+    handles.push(this.createVirtualHandle((evt: MouseEvent) => {
       if (!DomEvent.isConsumed(evt) && this.flipEnabled) {
         this.graph.flipEdge(this.state.cell)
         DomEvent.consume(evt)
@@ -31,24 +30,20 @@ export class EdgeElbowHandler extends EdgeHandler {
     this.points!.push(new Point(0, 0))
 
     // Target
-    bend = this.createHandleShape(2)
-    this.initHandle(bend)
-    bend.setCursor(constants.CURSOR_TERMINAL_HANDLE)
-    bends.push(bend)
+    handle = this.createHandleShape(2)
+    this.initHandle(handle)
+    handles.push(handle)
 
-    return bends
+    return handles
   }
 
-  createVirtualBend(dblClickHandler?: (evt: MouseEvent) => void) {
+  createVirtualHandle(dblClickHandler?: (evt: MouseEvent) => void) {
     const bend = this.createHandleShape()
     this.initHandle(bend, dblClickHandler)
-
     bend.setCursor(this.getCursorForBend())
-
     if (!this.graph.isCellBendable(this.state.cell)) {
       bend.elem!.style.display = 'none'
     }
-
     return bend
   }
 
@@ -58,10 +53,12 @@ export class EdgeElbowHandler extends EdgeHandler {
       edge === routers.topToBottom ||
       edge === RouterNames.topToBottom ||
       (
-        (edge === routers.elbowConnector ||
+        (
+          edge === routers.elbow ||
           edge === RouterNames.elbow
         ) &&
-        this.state.style.elbow === 'vertical')
+        this.state.style.elbow === 'vertical'
+      )
     )
       ? 'row-resize'
       : 'col-resize'
@@ -71,16 +68,14 @@ export class EdgeElbowHandler extends EdgeHandler {
     let tip = null
 
     if (
-      this.bends != null &&
-      this.bends[1] != null &&
+      this.handles != null &&
+      this.handles[1] != null &&
       (
-        elem === this.bends[1]!.elem ||
-        elem.parentNode === this.bends[1]!.elem
+        elem === this.handles[1]!.elem ||
+        elem.parentNode === this.handles[1]!.elem
       )
     ) {
-      tip = 'doubleClickOrientation'
-      // tip = this.doubleClickOrientationResource
-      // tip = mxResources.get(tip) || tip // translate
+      tip = 'Double Click Orientation'
     }
 
     return tip
@@ -91,8 +86,8 @@ export class EdgeElbowHandler extends EdgeHandler {
    * graph coordinates and applies the grid.
    */
   convertPoint(point: Point, gridEnabled: boolean) {
-    const scale = this.graph.getView().getScale()
-    const tr = this.graph.getView().getTranslate()
+    const s = this.graph.getView().getScale()
+    const t = this.graph.getView().getTranslate()
     const origin = this.state.origin
 
     if (gridEnabled) {
@@ -100,13 +95,13 @@ export class EdgeElbowHandler extends EdgeHandler {
       point.y = this.graph.snap(point.y)
     }
 
-    point.x = Math.round(point.x / scale - tr.x - origin.x)
-    point.y = Math.round(point.y / scale - tr.y - origin.y)
+    point.x = Math.round(point.x / s - t.x - origin.x)
+    point.y = Math.round(point.y / s - t.y - origin.y)
 
     return point
   }
 
-  redrawInnerBends(p0: Point, pe: Point) {
+  redrawInnerHandles(p0: Point, pe: Point) {
     const g = this.graph.model.getGeometry(this.state.cell)!
     const pts = this.state.absolutePoints
     let pt = null
@@ -132,7 +127,7 @@ export class EdgeElbowHandler extends EdgeHandler {
 
     // Makes handle slightly bigger if the yellow  label handle
     // exists and intersects this green handle
-    const b = this.bends![1]!.bounds
+    const b = this.handles![1]!.bounds
     let w = b.width
     let h = b.height
     let bounds = new Rectangle(
@@ -145,10 +140,9 @@ export class EdgeElbowHandler extends EdgeHandler {
     if (this.manageLabelHandle) {
       this.checkLabelHandle(bounds)
     } else if (
-      this.handleImage == null &&
-      this.labelShape != null &&
-      this.labelShape.visible &&
-      bounds.isIntersectWith(this.labelShape.bounds)
+      this.labelHandleShape != null &&
+      this.labelHandleShape.visible &&
+      bounds.isIntersectWith(this.labelHandleShape.bounds)
     ) {
       w = constants.HANDLE_SIZE + 3
       h = constants.HANDLE_SIZE + 3
@@ -160,11 +154,11 @@ export class EdgeElbowHandler extends EdgeHandler {
       )
     }
 
-    this.bends![1]!.bounds = bounds
-    this.bends![1]!.redraw()
+    this.handles![1]!.bounds = bounds
+    this.handles![1]!.redraw()
 
     if (this.manageLabelHandle) {
-      this.checkLabelHandle(this.bends![1]!.bounds)
+      this.checkLabelHandle(this.handles![1]!.bounds)
     }
   }
 }

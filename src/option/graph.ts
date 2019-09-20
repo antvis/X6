@@ -29,6 +29,7 @@ import {
   ConnectionPreviewOptions,
   ConnectionHighlightOptions,
 } from './connection'
+import { EdgeHandleOptions } from './edge'
 
 export interface CompositeOptions {
   /**
@@ -781,6 +782,7 @@ export interface FullOptions extends SimpleOptions {
   connectionIcon: ConnectionIconOptions
   connectionPreview: ConnectionPreviewOptions
   connectionHighlight: ConnectionHighlightOptions
+  edgeHandle: EdgeHandleOptions
 }
 
 export interface GraphOptions extends Partial<SimpleOptions> {
@@ -808,6 +810,7 @@ export interface GraphOptions extends Partial<SimpleOptions> {
   connectionIcon?: Partial<ConnectionIconOptions>
   connectionPreview?: Partial<ConnectionPreviewOptions>
   connectionHighlight?: Partial<ConnectionHighlightOptions>
+  edgeHandle?: Partial<EdgeHandleOptions>
 }
 
 export function getOptions(options: GraphOptions) {
@@ -849,11 +852,11 @@ export function applyOptions(graph: Graph) {
 
   graph.dialect = options.dialect === 'html' ? 'html' : 'svg'
 
-  expandCompositeOptions(graph)
-  configHandlers(graph)
+  expand(graph)
+  config(graph)
 }
 
-function expandCompositeOptions(graph: Graph) {
+function expand(graph: Graph) {
   const options = graph.options
 
   // grid
@@ -888,7 +891,7 @@ function expandCompositeOptions(graph: Graph) {
   graph.cellsRotatable = rotate.enabled
 }
 
-function configHandlers(graph: Graph) {
+function config(graph: Graph) {
   const options = graph.options
 
   // guide
@@ -896,9 +899,4 @@ function configHandlers(graph: Graph) {
   if ((options.guide as GuideOptions).enabled) {
     graph.enableGuide()
   }
-
-  graph.tooltipHandler.config(options.tooltip as TooltipOptions)
-  graph.rubberbandHandler.config(options.rubberband as RubberbandOptions)
-  graph.popupMenuHandler.config(options.contextMenu as ContextMenuOptions)
-  graph.connectionHandler.config(options.connection as ConnectionOptions)
 }

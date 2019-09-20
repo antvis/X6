@@ -136,6 +136,7 @@ export interface ConnectionHighlightOptions {
 
 export interface GetConnectionHighlightOptionsArgs {
   graph: Graph
+  cell?: Cell
 }
 
 export function getConnectionHighlightOptions(

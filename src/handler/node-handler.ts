@@ -1,7 +1,7 @@
 import * as util from '../util'
 import { Cell, State, Graph } from '../core'
 import { Rectangle, Point } from '../struct'
-import { constants, DomEvent, MouseEventEx, detector } from '../common'
+import { DomEvent, MouseEventEx, detector, Disposable } from '../common'
 import { Shape, RectangleShape } from '../shape'
 import { Handle } from './handle'
 import { EdgeHandler } from './edge-handler'
@@ -21,6 +21,7 @@ import {
   getRotationHandleOffset,
   getRotationHandleCursor,
   isResizeHandleVisible,
+  getSelectionPreviewCursor,
 } from '../option'
 
 export class NodeHandler extends MouseHandler {
@@ -163,20 +164,23 @@ export class NodeHandler extends MouseHandler {
     this.selectionBounds = this.getSelectionBounds(this.state)
     this.bounds = this.selectionBounds.clone()
     this.selectionShape = this.createSelectionShape(this.bounds)
-
-    this.selectionShape.dialect = 'svg'
     this.selectionShape.pointerEvents = false
     this.selectionShape.rotation = util.getRotation(this.state)
     this.selectionShape.init(this.graph.view.getOverlayPane())
 
     MouseEventEx.redirectMouseEvents(
-      this.selectionShape.elem!,
+      this.selectionShape.elem,
       this.graph,
       this.state,
     )
 
     if (this.graph.isCellMovable(this.state.cell)) {
-      this.selectionShape.setCursor(constants.CURSOR_MOVABLE_NODE)
+      const cursor = getSelectionPreviewCursor({
+        graph: this.graph,
+        cell: this.state.cell,
+        shape: this.selectionShape,
+      })
+      this.selectionShape.setCursor(cursor)
     }
   }
 
@@ -382,7 +386,7 @@ export class NodeHandler extends MouseHandler {
       handle.init(this.graph.view.getOverlayPane())
     }
 
-    MouseEventEx.redirectMouseEvents(handle.elem!, this.graph, this.state)
+    MouseEventEx.redirectMouseEvents(handle.elem, this.graph, this.state)
 
     if (this.graph.isEnabled()) {
       handle.setCursor(cursor)
@@ -1550,11 +1554,8 @@ export class NodeHandler extends MouseHandler {
     }
   }
 
+  @Disposable.aop()
   dispose() {
-    if (this.disposed) {
-      return
-    }
-
     if (this.escapeHandler != null) {
       this.state.view.graph.off(DomEvent.ESCAPE, this.escapeHandler)
       this.escapeHandler = null
@@ -1583,7 +1584,5 @@ export class NodeHandler extends MouseHandler {
 
     this.customHandles && this.customHandles.forEach(h => h.dispose())
     this.customHandles = null
-
-    super.dispose()
   }
 }

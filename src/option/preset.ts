@@ -135,7 +135,7 @@ export const defaultOptions: FullOptions = {
     ...commonStyle,
     shape: ShapeNames.connector,
     endArrow: MarkerNames.classic,
-    stroke: '#8f8f8f',
+    stroke: '#888',
   },
 
   guide: {
@@ -192,6 +192,7 @@ export const defaultOptions: FullOptions = {
     strokeWidth: 1,
     dashed: true,
     fill: 'none',
+    cursor: ({ cell }) => cell.isNode() || cell.isEdge() ? CURSOR_MOVE : '',
   },
 
   resize: {
@@ -316,5 +317,27 @@ export const defaultOptions: FullOptions = {
     dashed: true,
     strokeWidth: 2,
     stroke: ({ valid }) => (valid ? COLOR_VALID : COLOR_INVALID),
+  },
+
+  edgeHandle: {
+    addable: false,
+    removable: false,
+    dblClickRemoveEnabled: false,
+    mergeRemoveEnabled: false,
+    straightRemoveEnabled: false,
+    virtualHandlesEnabled: false,
+    manageLabelHandle: false,
+    // handle style
+    shape: ShapeNames.ellipse,
+    size: 8,
+    fill: COLOR_PRIMARY,
+    stroke: '#fff',
+    strokeWidth: 1,
+    dashed: false,
+    opacity: ({ visual }) => visual ? 0.2 : 1,
+    cursor: ({ isSource, isTarget, visual }) =>
+      (isSource || isTarget) && visual !== true
+        ? CURSOR_POINTER
+        : CURSOR_CROSS,
   },
 }
