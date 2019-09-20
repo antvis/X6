@@ -1,8 +1,21 @@
 export const isNil = (val: any) => val == null
 export const isNull = (val: any) => val === null
-export const isString = (val: any) => typeof val === 'string'
-export const isNumber = (val: any) => typeof val === 'number'
-export const isBoolean = (val: any) => typeof val === 'boolean'
+
+export const isString = (val: any) => (
+  val instanceof String ||
+  typeof val === 'string'
+)
+
+export const isNumber = (val: any) => (
+  val instanceof Number ||
+  typeof val === 'number'
+)
+
+export const isBoolean = (val: any) => (
+  val instanceof Boolean ||
+  typeof val === 'boolean'
+)
+
 export const isUndefined = (val: any) => typeof val === 'undefined'
 
 export function isObject(val: any) {
@@ -27,7 +40,14 @@ export function isArrayLike(val: any) {
     return true
   }
 
-  if (isFunction(val) || isWindow(val)) {
+  if (
+    isNil(val) ||
+    isFunction(val) ||
+    isWindow(val) ||
+    isNumber(val) ||
+    isString(val) ||
+    isBoolean(val)
+  ) {
     return false
   }
 
