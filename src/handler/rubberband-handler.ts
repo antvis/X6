@@ -1,7 +1,7 @@
 import * as util from '../util'
 import { Graph } from '../core'
 import { MouseHandler } from '.'
-import { MouseEventEx, DomEvent, detector } from '../common'
+import { MouseEventEx, DomEvent, detector, Disposable } from '../common'
 import { Rectangle, Point } from '../struct'
 import { getRubberbandStyle, RubberbandOptions } from '../option'
 
@@ -331,11 +331,8 @@ export class RubberbandHandler extends MouseHandler {
     }
   }
 
+  @Disposable.aop()
   dispose() {
-    if (this.disposed) {
-      return
-    }
-
     this.graph.removeMouseListener(this)
     this.graph.off(Graph.events.translate, this.onPan)
     this.graph.off(Graph.events.gesture, this.onGesture)
@@ -346,7 +343,5 @@ export class RubberbandHandler extends MouseHandler {
     if (this.sharedDiv != null) {
       this.sharedDiv = null
     }
-
-    super.dispose()
   }
 }

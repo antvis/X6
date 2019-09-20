@@ -1,7 +1,7 @@
 import { Cell } from './cell'
 import { View } from './view'
 import { Style } from '../types'
-import { Dictionary, Disablable } from '../common'
+import { Dictionary, Disablable, Disposable } from '../common'
 import { Shape, ImageShape, Text } from '../shape'
 import { Point, Rectangle, Overlay } from '../struct'
 
@@ -291,11 +291,8 @@ export class State extends Disablable {
     return cloned
   }
 
+  @Disposable.aop()
   dispose() {
-    if (this.disposed) {
-      return
-    }
-
     if (this.shape != null) {
       if (this.text != null) {
         this.text.dispose()
@@ -314,7 +311,5 @@ export class State extends Disablable {
       this.shape.dispose()
       this.shape = null
     }
-
-    super.dispose()
   }
 }

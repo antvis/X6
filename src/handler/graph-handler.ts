@@ -5,7 +5,7 @@ import { RectangleShape } from '../shape'
 import { Guide } from './guide'
 import { CellHighlight } from './cell-highlight'
 import { MouseHandler } from './handler-mouse'
-import { detector, constants, MouseEventEx, DomEvent } from '../common'
+import { detector, constants, MouseEventEx, DomEvent, Disposable } from '../common'
 import {
   createGuide,
   isGuideEnabled,
@@ -849,11 +849,8 @@ export class GraphHandler extends MouseHandler {
     }
   }
 
+  @Disposable.aop()
   dispose() {
-    if (this.disposed) {
-      return
-    }
-
     this.graph.removeMouseListener(this)
 
     this.graph.off(Graph.events.translate, this.panHandler)
@@ -867,7 +864,5 @@ export class GraphHandler extends MouseHandler {
 
     this.disposeShapes()
     this.removeHint()
-
-    super.dispose()
   }
 }

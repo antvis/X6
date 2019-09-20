@@ -387,11 +387,8 @@ export class Cell extends Disposable {
 
   // #region IDisposable
 
+  @Disposable.aop()
   dispose() {
-    if (this.disposed) {
-      return
-    }
-
     // node
     this.eachChild(child => child.dispose())
     this.eachEdge(edge => edge.dispose())
@@ -400,8 +397,6 @@ export class Cell extends Disposable {
     // edge
     this.removeFromTerminal(true)
     this.removeFromTerminal(false)
-
-    super.dispose()
   }
 
   // #endregion

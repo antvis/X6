@@ -1,7 +1,7 @@
 import * as util from '../util'
 import { MouseHandler } from './handler-mouse'
 import { Graph, State } from '../core'
-import { DomEvent, MouseEventEx } from '../common'
+import { DomEvent, MouseEventEx, Disposable } from '../common'
 import { TooltipOptions } from '../option'
 
 export class TooltipHandler extends MouseHandler {
@@ -226,11 +226,8 @@ export class TooltipHandler extends MouseHandler {
     }
   }
 
+  @Disposable.aop()
   dispose() {
-    if (this.disposed) {
-      return
-    }
-
     this.graph.removeMouseListener(this)
 
     if (this.elem != null) {
@@ -238,7 +235,5 @@ export class TooltipHandler extends MouseHandler {
       util.removeElement(this.elem)
       this.elem = null
     }
-
-    super.dispose()
   }
 }

@@ -1,6 +1,6 @@
 import { IChange } from '../change'
 import { Graph, Model } from '../core'
-import { Disablable } from '../common'
+import { Disablable, Disposable } from '../common'
 
 export class AutoSave extends Disablable {
   graph: Graph
@@ -76,12 +76,9 @@ export class AutoSave extends Disablable {
     this.timestamp = new Date().getTime()
   }
 
+  @Disposable.aop()
   dispose() {
-    if (this.disposed) {
-      return
-    }
     this.setGraph(null)
-    super.dispose()
   }
 }
 

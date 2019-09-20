@@ -7,7 +7,7 @@ import { getRouter, getPerimeter } from './registry'
 import { RectangleShape, ImageShape } from '../shape'
 import { UndoableEdit, CurrentRootChange } from '../change'
 import { Point, Rectangle, Constraint, Image } from '../struct'
-import { detector, DomEvent, MouseEventEx, Primer } from '../common'
+import { detector, DomEvent, MouseEventEx, Primer, Disposable } from '../common'
 
 export class View extends Primer {
   graph: Graph
@@ -2143,11 +2143,8 @@ export class View extends Primer {
     return root
   }
 
+  @Disposable.aop()
   dispose() {
-    if (this.disposed) {
-      return
-    }
-
     let stage: SVGSVGElement | HTMLDivElement | null =
       (this.stage != null)
         ? (this.stage as SVGElement).ownerSVGElement
@@ -2179,8 +2176,6 @@ export class View extends Primer {
       this.overlayPane = null
       this.decoratorPane = null
     }
-
-    super.dispose()
   }
 
   // #endregion

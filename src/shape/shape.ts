@@ -3,9 +3,9 @@ import * as images from '../assets/images'
 import { Stencil } from './stencil'
 import { State } from '../core'
 import { SvgCanvas2D } from '../canvas'
-import { detector, constants, DomEvent, Disposable } from '../common'
 import { Rectangle, Point } from '../struct'
 import { Style, Direction, Dialect } from '../types'
+import { detector, constants, DomEvent, Disposable } from '../common'
 
 export class Shape extends Disposable {
   state: State
@@ -1151,11 +1151,8 @@ export class Shape extends Disposable {
     return rotation
   }
 
+  @Disposable.aop()
   dispose() {
-    if (this.disposed) {
-      return
-    }
-
     if (this.elem != null) {
       DomEvent.release(this.elem as HTMLElement)
       if (this.elem.parentNode != null) {
@@ -1168,8 +1165,6 @@ export class Shape extends Disposable {
     // Decrements refCount and removes unused
     this.releaseSvgGradients(this.oldGradients)
     this.oldGradients = null
-
-    super.dispose()
   }
 }
 

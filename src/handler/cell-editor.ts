@@ -856,11 +856,8 @@ export class CellEditor extends Disposable {
     return this.editingCell
   }
 
+  @Disposable.aop()
   dispose() {
-    if (this.disposed) {
-      return
-    }
-
     if (this.textarea != null) {
       DomEvent.release(this.textarea)
       util.removeElement(this.textarea)
@@ -874,7 +871,5 @@ export class CellEditor extends Disposable {
     if (this.zoomHandler) {
       this.graph.view.off(null, this.zoomHandler)
     }
-
-    super.dispose()
   }
 }

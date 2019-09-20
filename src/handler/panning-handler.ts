@@ -1,7 +1,7 @@
 import * as util from '../util'
 import { MouseHandler } from './handler-mouse'
 import { Graph } from '../core'
-import { MouseEventEx, DomEvent } from '../common'
+import { MouseEventEx, DomEvent, Disposable } from '../common'
 
 export class PanningHandler extends MouseHandler {
 
@@ -308,18 +308,13 @@ export class PanningHandler extends MouseHandler {
     this.graph.view.setTranslate(dx, dy)
   }
 
+  @Disposable.aop()
   dispose() {
-    if (this.disposed) {
-      return
-    }
-
     this.graph.removeMouseListener(this)
     this.graph.off(Graph.events.fireMouseEvent, this.forcePanningHandler)
     this.graph.off(Graph.events.gesture, this.gestureHandler)
 
     DomEvent.removeListener(document, 'mouseup', this.mouseUpListener)
-
-    super.dispose()
   }
 }
 

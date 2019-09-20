@@ -334,11 +334,8 @@ export class Guide extends Disposable {
     }
   }
 
+  @Disposable.aop()
   dispose() {
-    if (this.disposed) {
-      return
-    }
-
     if (this.guideX) {
       this.guideX.dispose()
       this.guideX = null
@@ -348,8 +345,6 @@ export class Guide extends Disposable {
       this.guideY.dispose()
       this.guideY = null
     }
-
-    super.dispose()
   }
 }
 

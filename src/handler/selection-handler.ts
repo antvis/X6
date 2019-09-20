@@ -1,7 +1,7 @@
 import { Graph, Model, Cell, State } from '../core'
 import { View } from '../core/view'
 import { MouseHandler } from './handler-mouse'
-import { MouseEventEx, Dictionary } from '../common'
+import { MouseEventEx, Dictionary, Disposable } from '../common'
 import { NodeHandler } from './node-handler'
 
 export class SelectionHandler extends MouseHandler {
@@ -154,19 +154,14 @@ export class SelectionHandler extends MouseHandler {
     }
   }
 
+  @Disposable.aop()
   dispose() {
-    if (this.disposed) {
-      return
-    }
-
     this.graph.removeMouseListener(this)
 
     this.graph.off(null, this.refreshHandler)
     this.graph.view.off(null, this.refreshHandler)
     this.graph.model.off(null, this.refreshHandler)
     this.refreshHandler = null
-
-    super.dispose()
   }
 }
 

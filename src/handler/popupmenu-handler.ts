@@ -2,7 +2,7 @@ import * as util from '../util'
 import { MouseHandler } from './handler-mouse'
 import { Graph } from '../core'
 import { ContextMenuOptions } from '../option'
-import { MouseEventEx, DomEvent } from '../common'
+import { MouseEventEx, DomEvent, Disposable } from '../common'
 
 export class PopupMenuHandler extends MouseHandler {
   useLeftButtonForPopup: boolean = false
@@ -126,14 +126,9 @@ export class PopupMenuHandler extends MouseHandler {
     return this.showing
   }
 
+  @Disposable.aop()
   dispose() {
-    if (this.disposed) {
-      return
-    }
-
     this.graph.removeMouseListener(this)
     this.graph.off(Graph.events.gesture, this.gestureHandler)
-
-    super.dispose()
   }
 }
