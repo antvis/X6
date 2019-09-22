@@ -145,11 +145,11 @@ export class EdgeHandler extends MouseHandler {
   protected points: Point[] | null
   protected absolutePoints: Point[]
   protected snapPoint: Point | null
-  protected startX: number
-  protected startY: number
-  protected index: number | null
-  protected active: boolean
 
+  startX: number
+  startY: number
+  active: boolean
+  index: number | null
   isSourceHandle: boolean
   isTargetHandle: boolean
   isLabelHandle: boolean
@@ -650,7 +650,7 @@ export class EdgeHandler extends MouseHandler {
     }
   }
 
-  protected start(x: number, y: number, index: number) {
+  start(x: number, y: number, index: number) {
     this.startX = x
     this.startY = y
     this.isLabelHandle = DomEvent.isLabelHandle(index)
@@ -1355,7 +1355,7 @@ export class EdgeHandler extends MouseHandler {
   /**
    * Resets the state of this handler.
    */
-  protected reset() {
+  reset() {
     if (this.active) {
       this.refresh()
     }

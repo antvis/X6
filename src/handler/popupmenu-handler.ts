@@ -1,32 +1,30 @@
 import * as util from '../util'
-import { MouseHandler } from './handler-mouse'
 import { Graph } from '../core'
+import { MouseHandler } from './handler-mouse'
 import { ContextMenuOptions } from '../option'
 import { MouseEventEx, DomEvent, Disposable } from '../common'
 
 export class PopupMenuHandler extends MouseHandler {
-  useLeftButtonForPopup: boolean = false
+  /**
+   * Specifies is use left mouse button as context menu trigger.
+   */
+  isLeftButton: boolean
 
   /**
-   * Specifies if cells should be selected if a popupmenu is displayed for them.
-   *
-   * Default is `true`.
+   * Specifies if cells should be selected if a popupmenu is
+   * displayed for them.
    */
-  selectOnPopup: boolean = true
+  selectOnPopup: boolean
 
   /**
-   * Specifies if cells should be deselected if a popupmenu is displayed for
-   * the diagram background.
-   *
-   * Default is `true`.
+   * Specifies if cells should be deselected if a popupmenu is
+   * displayed for the diagram background.
    */
-  clearSelectionOnBackground: boolean = true
+  clearSelectionOnBackground: boolean
 
   protected gestureHandler: () => void
-  protected triggerX: number
-  protected triggerY: number
-  protected screenX: number
-  protected screenY: number
+  protected startX: number
+  protected startY: number
   protected validTrigger: boolean
   protected inTolerance: boolean
   protected showing: boolean = false
@@ -43,17 +41,17 @@ export class PopupMenuHandler extends MouseHandler {
     this.graph.on(Graph.events.gesture, this.gestureHandler)
   }
 
-  config() {
+  protected config() {
     const options = this.graph.options.contextMenu as ContextMenuOptions
     this.setEnadled(options.enabled)
-    this.useLeftButtonForPopup = options.isLeftButton
+    this.isLeftButton = options.isLeftButton
     this.selectOnPopup = options.selectCellsOnContextMenu
     this.clearSelectionOnBackground = options.clearSelectionOnBackground
   }
 
   isPopupTrigger(e: MouseEventEx) {
     return e.isPopupTrigger() || (
-      this.useLeftButtonForPopup &&
+      this.isLeftButton &&
       DomEvent.isLeftMouseButton(e.getEvent())
     )
   }
@@ -62,21 +60,19 @@ export class PopupMenuHandler extends MouseHandler {
     const evt = e.getEvent()
     if (this.isEnabled() && !DomEvent.isMultiTouchEvent(evt)) {
       const me = DomEvent.getMainEvent(evt) as MouseEvent
-      this.triggerX = e.getGraphX()
-      this.triggerY = e.getGraphY()
-      this.screenX = me.screenX
-      this.screenY = me.screenY
+      this.startX = me.screenX
+      this.startY = me.screenY
       this.validTrigger = this.isPopupTrigger(e)
       this.inTolerance = true
     }
   }
 
   mouseMove(e: MouseEventEx) {
-    if (this.inTolerance && this.screenX != null && this.screenY != null) {
+    if (this.inTolerance && this.startX != null && this.startY != null) {
       const me = DomEvent.getMainEvent(e.getEvent()) as MouseEvent
       if (
-        Math.abs(me.screenX - this.screenX) > this.graph.tolerance ||
-        Math.abs(me.screenY - this.screenY) > this.graph.tolerance
+        Math.abs(me.screenX - this.startX) > this.graph.tolerance ||
+        Math.abs(me.screenY - this.startY) > this.graph.tolerance
       ) {
         this.inTolerance = false
       }
@@ -86,17 +82,18 @@ export class PopupMenuHandler extends MouseHandler {
   mouseUp(e: MouseEventEx) {
     if (this.validTrigger && this.inTolerance) {
       const cell = this.getCell(e)
+      if (this.graph.isEnabled()) {
+        if (
+          cell != null &&
+          this.selectOnPopup &&
+          !this.graph.isCellSelected(cell)
+        ) {
+          this.graph.setSelectedCell(cell)
+        }
 
-      // Selects the cell for which the context menu is being displayed
-      if (
-        this.graph.isEnabled() &&
-        this.selectOnPopup &&
-        cell != null &&
-        !this.graph.isCellSelected(cell)
-      ) {
-        this.graph.setSelectedCell(cell)
-      } else if (this.clearSelectionOnBackground && cell == null) {
-        this.graph.clearSelection()
+        if (cell == null && this.clearSelectionOnBackground) {
+          this.clearSelectionOnBackground
+        }
       }
 
       // Hides the tooltip if there is one
@@ -122,7 +119,7 @@ export class PopupMenuHandler extends MouseHandler {
     this.graph.trigger(Graph.events.hideContextMenu)
   }
 
-  isMenuShowing() {
+  isShowing() {
     return this.showing
   }
 

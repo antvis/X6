@@ -216,7 +216,7 @@ export function hasHtmlLabel(state: State | null) {
 }
 
 export function applyClassName(
-  shape: Shape,
+  shape: Shape | HTMLElement,
   prefix: string,
   native?: string,
   manual?: string,

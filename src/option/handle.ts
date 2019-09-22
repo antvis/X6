@@ -1,5 +1,5 @@
 import { Graph } from '../core'
-import { Shape, RectangleShape, ImageShape } from '../shape'
+import { Shape, ImageShape, EllipseShape } from '../shape'
 import { Rectangle, Image } from '../struct'
 import { drill, OptionItem } from './util'
 
@@ -36,6 +36,6 @@ export function createHandleShape<T extends CreateHandleShapeArgs>(
   }
 
   const raw = drill(options.shape, graph, args)
-  const ctor = Shape.getShape(raw) || RectangleShape
+  const ctor = Shape.getShape(raw) || EllipseShape
   return new ctor() as Shape
 }

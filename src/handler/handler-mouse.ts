@@ -1,5 +1,5 @@
 import { Graph } from '../core'
-import { MouseEventEx } from '../common'
+import { DomEvent, MouseEventEx } from '../common'
 import { BaseHandler } from './handler-base'
 
 export class MouseHandler extends BaseHandler implements IMouseHandler {
@@ -13,6 +13,22 @@ export class MouseHandler extends BaseHandler implements IMouseHandler {
 
   getCell(e: MouseEventEx) {
     return e.getCell()
+  }
+
+  isOnCell(e: MouseEventEx) {
+    return this.getState(e) != null
+  }
+
+  isValid(e: MouseEventEx) {
+    return (
+      this.isEnabled() &&
+      this.graph.isEnabled() &&
+      !e.isConsumed()
+    )
+  }
+
+  isMultiTouchEvent(e: MouseEventEx) {
+    return DomEvent.isMultiTouchEvent(e.getEvent())
   }
 
   consume(e: MouseEventEx, eventName: string) {

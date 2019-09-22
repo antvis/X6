@@ -1,25 +1,18 @@
 import { Graph, Model, Cell, State } from '../core'
 import { View } from '../core/view'
 import { MouseHandler } from './handler-mouse'
-import { MouseEventEx, Dictionary, Disposable } from '../common'
 import { NodeHandler } from './node-handler'
+import { EdgeHandler } from './edge-handler'
+import { MouseEventEx, Dictionary, Disposable } from '../common'
 
 export class SelectionHandler extends MouseHandler {
-  /**
-   * Defines the maximum number of handlers to paint individually.
-   *
-   * Default is `100`.
-   */
-  maxHandlers = 100
-
-  protected handlers: Dictionary<Cell, NodeHandler>
-
+  protected handlers: Dictionary<Cell, NodeHandler | EdgeHandler>
   private refreshHandler: (() => void) | null
 
   constructor(graph: Graph) {
     super(graph)
 
-    this.handlers = new Dictionary<Cell, NodeHandler>()
+    this.handlers = new Dictionary<Cell, NodeHandler | EdgeHandler>()
     this.graph.addMouseListener(this)
 
     this.refreshHandler = () => {
@@ -27,6 +20,7 @@ export class SelectionHandler extends MouseHandler {
         this.refresh()
       }
     }
+
     this.graph.on(Graph.events.selectionChanged, this.refreshHandler)
     this.graph.view.on(View.events.scale, this.refreshHandler)
     this.graph.view.on(View.events.translate, this.refreshHandler)
@@ -40,7 +34,6 @@ export class SelectionHandler extends MouseHandler {
    * Reloads or updates all handlers.
    */
   refresh() {
-    // Removes all existing handlers
     const oldHandlers = this.handlers
     this.handlers = new Dictionary<Cell, NodeHandler>()
 
@@ -48,7 +41,7 @@ export class SelectionHandler extends MouseHandler {
     this.graph.getSelectedCells().forEach((cell) => {
       const state = this.graph.view.getState(cell)
       if (state != null) {
-        let handler: NodeHandler | null = oldHandlers.delete(cell) || null
+        let handler = oldHandlers.delete(cell) || null
         if (handler != null) {
           if (handler.state !== state) {
             handler.dispose()
@@ -62,7 +55,7 @@ export class SelectionHandler extends MouseHandler {
         }
 
         if (handler == null) {
-          handler = this.graph.createCellHandler(state) as NodeHandler
+          handler = this.graph.createCellHandler(state)
           this.trigger(SelectionHandler.events.addHandler, { state })
         }
 
@@ -76,7 +69,9 @@ export class SelectionHandler extends MouseHandler {
     // Destroys all unused handlers
     oldHandlers.each((handler) => {
       this.refreshClassName(handler.state, false)
-      this.trigger(SelectionHandler.events.removeHandler, { state: handler.state })
+      this.trigger(SelectionHandler.events.removeHandler, {
+        state: handler.state,
+      })
       handler.dispose()
     })
   }
@@ -106,7 +101,7 @@ export class SelectionHandler extends MouseHandler {
       const y = handler.startY
 
       handler.dispose()
-      handler = this.graph.createCellHandler(state) as NodeHandler
+      handler = this.graph.createCellHandler(state)!
 
       if (handler != null) {
         this.handlers.set(state.cell, handler)
@@ -124,7 +119,7 @@ export class SelectionHandler extends MouseHandler {
   /**
    * Returns true if the given handler is active and should not be redrawn.
    */
-  protected isHandlerActive(handler: NodeHandler) {
+  protected isHandlerActive(handler: NodeHandler | EdgeHandler) {
     return handler.index != null
   }
 

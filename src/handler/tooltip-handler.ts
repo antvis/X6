@@ -6,13 +6,6 @@ import { TooltipOptions } from '../option'
 
 export class TooltipHandler extends MouseHandler {
   /**
-   * Delay to show the tooltip in milliseconds.
-   */
-  delay: number = 500
-
-  zIndex: number = 9999
-
-  /**
    * Specifies if touch and pen events should be ignored.
    *
    * Default is `true`.
@@ -26,6 +19,9 @@ export class TooltipHandler extends MouseHandler {
    * Default is `false`.
    */
   hideOnHover: boolean = false
+
+  delay: number = 500
+  zIndex: number = 9999
 
   protected elem: HTMLDivElement | null = null
   protected timer: number | null
@@ -47,12 +43,7 @@ export class TooltipHandler extends MouseHandler {
     this.zIndex = options.zIndex
     this.hideOnHover = options.hideOnHover
     this.ignoreTouchEvents = options.ignoreTouchEvents
-
-    if (options.enabled) {
-      this.enable()
-    } else {
-      this.disable()
-    }
+    this.setEnadled(options.enabled)
   }
 
   mouseDown(e: MouseEventEx) {
@@ -120,7 +111,6 @@ export class TooltipHandler extends MouseHandler {
         }
 
         this.elem.style.display = ''
-
         util.ensureInViewport(this.elem)
       }
     }
@@ -151,11 +141,8 @@ export class TooltipHandler extends MouseHandler {
   ) {
     if (!this.ignoreTouchEvents || DomEvent.isMouseEvent(e.getEvent())) {
       this.clearTimer()
-
       if (restart && this.isEnabled() && this.isHidden()) {
-
         state = state || this.getState(e) // tslint:disable-line
-
         if (state != null) {
           const x = e.getClientX()
           const y = e.getClientY()
@@ -184,10 +171,7 @@ export class TooltipHandler extends MouseHandler {
       !this.disposed &&
       !this.graph.eventloop.isMouseDown &&
       !this.graph.isEditing() &&
-      (
-        !this.graph.popupMenuHandler ||
-        !this.graph.popupMenuHandler.isMenuShowing()
-      )
+      !this.graph.popupMenuHandler.isShowing()
     )
   }
 
@@ -214,7 +198,7 @@ export class TooltipHandler extends MouseHandler {
 
   protected init() {
     if (document.body != null) {
-      this.elem = document.createElement('div')
+      this.elem = util.createElement('div') as HTMLDivElement
       this.elem.className = `${this.graph.prefixCls}-tooltip`
       this.elem.style.display = 'node'
 
@@ -229,7 +213,6 @@ export class TooltipHandler extends MouseHandler {
   @Disposable.aop()
   dispose() {
     this.graph.removeMouseListener(this)
-
     if (this.elem != null) {
       DomEvent.release(this.elem)
       util.removeElement(this.elem)

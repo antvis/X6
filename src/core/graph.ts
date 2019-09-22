@@ -1995,7 +1995,10 @@ export class Graph extends Disablable implements
    * Selects and returns the cells inside the given rectangle for the
    * specified event.
    */
-  selectCellsInRegion(rect: Rectangle, e: MouseEvent) {
+  selectCellsInRegion(
+    rect: Rectangle | Rectangle.RectangleLike,
+    e: MouseEvent,
+  ) {
     return this.selectionManager.selectCellsInRegion(rect, e)
   }
 

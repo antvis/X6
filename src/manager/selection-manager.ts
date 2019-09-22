@@ -47,7 +47,10 @@ export class SelectionManager extends BaseManager {
    * Selects and returns the cells inside the given rectangle for the
    * specified event.
    */
-  selectCellsInRegion(rect: Rectangle, e: MouseEvent) {
+  selectCellsInRegion(
+    rect: Rectangle | Rectangle.RectangleLike,
+    e: MouseEvent,
+  ) {
     const cells = this.graph.getCellsInRegion(
       rect.x, rect.y, rect.width, rect.height,
     )

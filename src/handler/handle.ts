@@ -1,29 +1,41 @@
 import * as util from '../util'
 import { Graph, State } from '../core'
-import { Shape, ImageShape, RectangleShape } from '../shape'
-import { Rectangle, Point, Image } from '../struct'
-import { MouseEventEx, constants } from '../common'
+import { MouseEventEx } from '../common'
+import { COLOR_PRIMARY } from '../option/preset'
+import { Shape, ImageShape, EllipseShape } from '../shape'
+import { Rectangle, Point, Image, ShapeNames } from '../struct'
 
 export class Handle {
   graph: Graph
   state: State
-  cursor: string = 'default'
-  image: Image | null
   shape: Shape
-  ignoreGrid: boolean = false
   active: boolean
 
-  constructor(state: State, cursor?: string, image?: Image) {
+  ignoreGrid: boolean
+  image: Image | null
+  shapeName: string
+  size: number
+  stroke: string
+  strokeWidth: number
+  dashed: boolean
+  fill: string
+  opacity: number
+  cursor: string | null
+
+  constructor(state: State, options: Handle.Options) {
     this.graph = state.view.graph
     this.state = state
 
-    if (cursor != null) {
-      this.cursor = cursor
-    }
-
-    if (image) {
-      this.image = image
-    }
+    this.ignoreGrid = options.ignoreGrid === true || false
+    this.image = options.image || null
+    this.shapeName = options.shape || ShapeNames.ellipse
+    this.size = options.size || 8
+    this.stroke = options.stroke || COLOR_PRIMARY
+    this.strokeWidth = options.strokeWidth != null ? options.strokeWidth : 1
+    this.dashed = options.dashed === true || false
+    this.fill = options.fill || COLOR_PRIMARY
+    this.opacity = options.opacity != null ? options.opacity : 1
+    this.cursor = options.cursor || null
 
     this.init()
   }
@@ -45,16 +57,11 @@ export class Handle {
   }
 
   createShape(isHtml?: boolean) {
-    return new RectangleShape(
-      new Rectangle(
-        0,
-        0,
-        constants.HANDLE_SIZE,
-        constants.HANDLE_SIZE,
-      ),
-      constants.HANDLE_FILLCOLOR,
-      constants.HANDLE_STROKECOLOR,
-    )
+    const name = this.shapeName
+    const ctor = name && Shape.getShape(name) || EllipseShape
+    const shape = new ctor() as Shape
+    shape.bounds = new Rectangle(0, 0, this.size, this.size)
+    return shape
   }
 
   initShape(isHtml?: boolean) {
@@ -63,9 +70,7 @@ export class Handle {
       this.shape.init(this.graph.container)
     } else {
       this.shape.dialect = 'svg'
-      if (this.cursor != null) {
-        this.shape.init(this.graph.view.getOverlayPane())
-      }
+      this.shape.init(this.graph.view.getOverlayPane())
     }
 
     MouseEventEx.redirectMouseEvents(
@@ -74,7 +79,7 @@ export class Handle {
       this.state,
     )
 
-    this.shape.elem!.style.cursor = this.cursor
+    this.shape.elem!.style.cursor = this.cursor || ''
   }
 
   getPosition(bounds: Rectangle): Point {
@@ -130,10 +135,6 @@ export class Handle {
     this.redraw()
   }
 
-  /**
-   * Called after <setPosition> has been called in <processEvent>. This repaints
-   * the state using <mxCellRenderer>.
-   */
   positionChanged() {
     if (this.state.text != null) {
       this.state.text.apply(this.state)
@@ -174,17 +175,17 @@ export class Handle {
    */
   redraw() {
     if (this.shape != null && this.state.shape != null) {
-      let pt = this.getPosition(this.state.getPaintBounds())
-      if (pt != null) {
+      let p = this.getPosition(this.state.getPaintBounds())
+      if (p != null) {
         const alpha = util.toRad(this.getTotalRotation())
-        pt = this.rotatePoint(this.flipPoint(pt), alpha)
+        p = this.rotatePoint(this.flipPoint(p), alpha)
 
         const s = this.graph.view.scale
         const t = this.graph.view.translate
-        this.shape.bounds.x = Math.floor((pt.x + t.x) * s - this.shape.bounds.width / 2)
-        this.shape.bounds.y = Math.floor((pt.y + t.y) * s - this.shape.bounds.height / 2)
-
-        // Needed to force update of text bounds
+        const x = Math.floor((p.x + t.x) * s - this.shape.bounds.width / 2)
+        const y = Math.floor((p.y + t.y) * s - this.shape.bounds.height / 2)
+        this.shape.bounds.x = x
+        this.shape.bounds.y = y
         this.shape.redraw()
       }
     }
@@ -195,10 +196,7 @@ export class Handle {
    * true if the text node is in the graph container.
    */
   protected isHtmlRequired() {
-    if (this.state.text != null) {
-      return this.state.text.elem!.parentNode === this.graph.container
-    }
-    return false
+    return util.hasHtmlLabel(this.state)
   }
 
   /**
@@ -213,29 +211,29 @@ export class Handle {
   /**
    * Flips the given point vertically and/or horizontally.
    */
-  protected flipPoint(pt: Point) {
+  protected flipPoint(p: Point) {
     if (this.state.shape != null) {
       const bounds = this.state.getCellBounds()
 
       if (this.state.shape.flipH) {
-        pt.x = 2 * bounds.x + bounds.width - pt.x
+        p.x = 2 * bounds.x + bounds.width - p.x
       }
 
       if (this.state.shape.flipV) {
-        pt.y = 2 * bounds.y + bounds.height - pt.y
+        p.y = 2 * bounds.y + bounds.height - p.y
       }
     }
 
-    return pt
+    return p
   }
 
-  protected snapPoint(pt: Point, ignore?: boolean) {
+  protected snapPoint(p: Point, ignore?: boolean) {
     if (!ignore) {
-      pt.x = this.graph.snap(pt.x)
-      pt.y = this.graph.snap(pt.y)
+      p.x = this.graph.snap(p.x)
+      p.y = this.graph.snap(p.y)
     }
 
-    return pt
+    return p
   }
 
   setVisible(visible: boolean) {
@@ -255,5 +253,20 @@ export class Handle {
       this.shape.dispose()
       delete this.shape
     }
+  }
+}
+
+export namespace Handle {
+  export interface Options {
+    ignoreGrid?: boolean
+    image?: Image
+    shape?: string
+    size?: number
+    stroke?: string
+    strokeWidth?: number
+    dashed?: boolean
+    fill?: string
+    opacity?: number
+    cursor?: string
   }
 }

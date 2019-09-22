@@ -7,27 +7,13 @@ import { getRubberbandStyle, RubberbandOptions } from '../option'
 
 export class RubberbandHandler extends MouseHandler {
   /**
-   * Specifies the default opacity to be used for the rubberband div.
-   *
-   * Default is `0.2`.
-   */
-  opacity: number = 0.2
-
-  /**
    * Optional fade out effect.
    *
    * Default is `false`.
    */
   fadeOut: boolean = false
 
-  /**
-   * Holds the DIV element which is currently visible.
-   */
-  div: HTMLDivElement | null = null
-
-  /**
-   * Holds the DIV element which is used to display the rubberband.
-   */
+  protected div: HTMLDivElement | null = null
   protected sharedDiv: HTMLDivElement | null = null
 
   private onPan: () => void
@@ -81,22 +67,8 @@ export class RubberbandHandler extends MouseHandler {
 
   config() {
     const options = this.graph.options.rubberband as RubberbandOptions
-
-    if (options.enabled) {
-      this.enable()
-    } else {
-      this.disable()
-    }
-
+    this.setEnadled(options.enabled)
     this.fadeOut = options.fadeOut
-
-    if (typeof options.opacity === 'number') {
-      this.opacity = options.opacity
-    }
-  }
-
-  protected getNativeClassName() {
-    return `${this.graph.prefixCls}-rubberband`
   }
 
   /**
@@ -119,16 +91,11 @@ export class RubberbandHandler extends MouseHandler {
     }
   }
 
-  /**
-   * Handles the event by initiating a rubberband selection.
-   */
   mouseDown(e: MouseEventEx) {
     if (
-      this.isEnabled() &&
-      this.graph.isEnabled() &&
-      !e.isConsumed() &&
-      e.getState() == null && // on background
-      !DomEvent.isMultiTouchEvent(e.getEvent())
+      this.isValid(e) &&
+      !this.isOnCell(e) &&
+      !this.isMultiTouchEvent(e)
     ) {
       this.prepare(e)
     }
@@ -144,21 +111,15 @@ export class RubberbandHandler extends MouseHandler {
     e.consume(false)
   }
 
-  /**
-   * Sets the start point for the rubberband selection.
-   */
   protected start(x: number, y: number) {
     this.origin = new Point(x, y)
 
     const container = this.graph.container
-
     const createEvent = (e: MouseEvent) => {
       const me = new MouseEventEx(e)
-      const pt = util.clientToGraph(container, me.getClientX(), me.getClientY())
-
+      const pt = util.clientToGraph(container, me)
       me.graphX = pt.x
       me.graphY = pt.y
-
       return me
     }
 
@@ -179,9 +140,6 @@ export class RubberbandHandler extends MouseHandler {
     }
   }
 
-  /**
-   * Handles the event by updating therubberband selection.
-   */
   mouseMove(e: MouseEventEx) {
     if (!e.isConsumed() && this.origin != null) {
       const { x, y } = this.getPosition(e)
@@ -194,8 +152,7 @@ export class RubberbandHandler extends MouseHandler {
           this.div = this.createShape()
         }
 
-        // Clears selection while rubberbanding. This is required because
-        // the event is not consumed in mouseDown.
+        // Clears selection while rubberbanding.
         util.clearSelection()
 
         this.update(x, y)
@@ -204,14 +161,9 @@ export class RubberbandHandler extends MouseHandler {
     }
   }
 
-  /**
-   * Creates the rubberband selection shape.
-   */
   protected createShape() {
     if (this.sharedDiv == null) {
       this.sharedDiv = document.createElement('div')
-      this.sharedDiv.className = this.getNativeClassName()
-      this.sharedDiv.style.opacity = `${this.opacity}`
     }
 
     this.graph.container.appendChild(this.sharedDiv)
@@ -225,30 +177,65 @@ export class RubberbandHandler extends MouseHandler {
     return result
   }
 
-  /**
-   * Returns true if this handler is active.
-   */
-  protected isActive() {
-    return this.div != null && this.div.style.display !== 'none'
+  protected update(x: number, y: number) {
+    this.currentX = x
+    this.currentY = y
+
+    this.repaint()
+  }
+
+  protected repaint() {
+    if (this.div && this.origin) {
+      const x = this.currentX - this.graph.tx
+      const y = this.currentY - this.graph.ty
+
+      this.x = Math.min(this.origin.x, x)
+      this.y = Math.min(this.origin.y, y)
+      this.width = Math.max(this.origin.x, x) - this.x
+      this.height = Math.max(this.origin.y, y) - this.y
+
+      const style = getRubberbandStyle({
+        graph: this.graph,
+        x: this.x,
+        y: this.y,
+        width: this.width,
+        height: this.height,
+      })
+
+      util.applyClassName(
+        this.div,
+        this.graph.prefixCls,
+        'rubberband',
+        style.className,
+      )
+
+      this.div.style.opacity = `${style.opacity || ''}`
+      this.div.style.border = style.border
+      this.div.style.background = style.background
+
+      this.div.style.position = 'absolute'
+      this.div.style.left = util.toPx(this.x)
+      this.div.style.top = util.toPx(this.y)
+      this.div.style.width = util.toPx(Math.max(1, this.width))
+      this.div.style.height = util.toPx(Math.max(1, this.height))
+    }
   }
 
   mouseUp(e: MouseEventEx) {
     const active = this.isActive()
     this.reset()
-
     if (active) {
       this.execute(e.getEvent())
       e.consume()
     }
   }
 
-  /**
-   * Resets the state of this handler and selects the current region
-   * for the given event.
-   */
+  protected isActive() {
+    return this.div != null && this.div.style.display !== 'none'
+  }
+
   protected execute(e: MouseEvent) {
     const rect = new Rectangle(this.x, this.y, this.width, this.height)
-    console.log(rect)
     this.graph.selectCellsInRegion(rect, e)
   }
 
@@ -277,58 +264,6 @@ export class RubberbandHandler extends MouseHandler {
     this.currentY = 0
     this.origin = null
     this.div = null
-  }
-
-  protected update(x: number, y: number) {
-    this.currentX = x
-    this.currentY = y
-
-    this.repaint()
-  }
-
-  /**
-   * Computes the bounding box and updates the style of the <div>.
-   */
-  protected repaint() {
-    if (this.div && this.origin) {
-      const x = this.currentX - this.graph.tx
-      const y = this.currentY - this.graph.ty
-
-      this.x = Math.min(this.origin.x, x)
-      this.y = Math.min(this.origin.y, y)
-      this.width = Math.max(this.origin.x, x) - this.x
-      this.height = Math.max(this.origin.y, y) - this.y
-
-      const style = getRubberbandStyle({
-        graph: this.graph,
-        x: this.x,
-        y: this.y,
-        width: this.width,
-        height: this.height,
-      })
-
-      if (style.className) {
-        this.div.className = `${this.getNativeClassName()} ${style.className}`
-      }
-
-      if (style.opacity != null) {
-        this.div.style.opacity = `${style.opacity}`
-      }
-
-      if (style.border != null) {
-        this.div.style.border = style.border
-      }
-
-      if (style.background != null) {
-        this.div.style.background = style.background
-      }
-
-      this.div.style.position = 'absolute'
-      this.div.style.left = util.toPx(this.x)
-      this.div.style.top = util.toPx(this.y)
-      this.div.style.width = util.toPx(Math.max(1, this.width))
-      this.div.style.height = util.toPx(Math.max(1, this.height))
-    }
   }
 
   @Disposable.aop()
