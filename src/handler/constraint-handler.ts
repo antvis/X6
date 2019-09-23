@@ -182,7 +182,7 @@ export class ConstraintHandler extends BaseHandler {
     e: MouseEventEx,
     isSource: boolean,
     existingEdge: boolean,
-    point: Point | null,
+    currentPoint: Point | null,
   ) {
     if (this.isEnabled() && !this.isEventIgnored(e)) {
 
@@ -195,8 +195,8 @@ export class ConstraintHandler extends BaseHandler {
       }
 
       const tol = this.getTolerance(e)
-      const x = (point != null) ? point.x : e.getGraphX()
-      const y = (point != null) ? point.y : e.getGraphY()
+      const x = (currentPoint != null) ? currentPoint.x : e.getGraphX()
+      const y = (currentPoint != null) ? currentPoint.y : e.getGraphY()
       const grid = new Rectangle(x - tol, y - tol, 2 * tol, 2 * tol)
       const mouse = new Rectangle(
         e.getGraphX() - tol,
@@ -205,7 +205,7 @@ export class ConstraintHandler extends BaseHandler {
         2 * tol,
       )
 
-      const state = this.graph.view.getState(this.getCell(e, point))
+      const state = this.graph.view.getState(this.getCell(e, currentPoint))
 
       // Keeps focus icons visible while over node bounds and
       // no other cell under mouse or shift is pressed
@@ -250,7 +250,7 @@ export class ConstraintHandler extends BaseHandler {
             (
               this.intersects(this.icons[i], mouse, isSource, existingEdge) ||
               (
-                point != null &&
+                currentPoint != null &&
                 this.intersects(this.icons[i], grid, isSource, existingEdge)
               )
             )

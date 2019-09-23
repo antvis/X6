@@ -23,7 +23,7 @@ export class MouseHandler extends BaseHandler implements IMouseHandler {
     return (
       this.isEnabled() &&
       this.graph.isEnabled() &&
-      !e.isConsumed()
+      !this.isConsumed(e)
     )
   }
 

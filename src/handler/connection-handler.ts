@@ -1,19 +1,18 @@
 import * as util from '../util'
-import { View } from '../core/view'
-import { Graph, Model, Cell, State, Geometry } from '../core'
-import { Rectangle, Point, Constraint } from '../struct'
-import { constants, DomEvent, MouseEventEx, Disposable } from '../common'
-import { Shape, ImageShape, Polyline } from '../shape'
 import { Style } from '../types'
-import { MouseHandler } from './handler-mouse'
+import { View } from '../core/view'
 import { CellMarker } from './cell-marker'
+import { MouseHandler } from './handler-mouse'
+import { Shape, ImageShape, Polyline } from '../shape'
 import { ConstraintHandler } from './constraint-handler'
+import { Rectangle, Point, Constraint } from '../struct'
+import { Graph, Model, Cell, State, Geometry } from '../core'
+import { constants, DomEvent, MouseEventEx, Disposable } from '../common'
+import { ConnectionHandlerMarker } from './connection-handler-marker'
 import {
   ConnectionOptions,
   getConnectionIconOptions,
-  getConnectionIcon,
   applyConnectionPreviewStyle,
-  getConnectionHighlightOptions,
 } from '../option'
 
 export class ConnectionHandler extends MouseHandler {
@@ -23,6 +22,7 @@ export class ConnectionHandler extends MouseHandler {
   edgeState: State | null = null
 
   factoryMethod?: (source: Cell, target: Cell, style: Style) => Cell
+
   autoSelect: boolean = true
   autoCreateTarget: boolean = false
 
@@ -39,15 +39,6 @@ export class ConnectionHandler extends MouseHandler {
    * handler only highlights the source if no button is being pressed.
    */
   ignoreMouseDown: boolean = false
-
-  /**
-   * Specifies if connections to the outline of a highlighted target should be
-   * enabled. This will allow to place the connection point along the outline of
-   * the highlighted target.
-   *
-   * Default is `false`.
-   */
-  outlineConnect: boolean = false
 
   /**
    * Specifies if the actual shape of the edge state should be used for
@@ -72,15 +63,15 @@ export class ConnectionHandler extends MouseHandler {
    */
   insertBeforeSource: boolean = false
 
-  private changeHandler: (() => void) | null
   private resetHandler: (() => void) | null
+  private changeHandler: (() => void) | null
 
   sourcePoint: Point | null
   sourceState: State | null
   sourceConstraint: Constraint | null
 
-  private targetPoint: Point | null
-  private currentPoint: Point | null
+  currentPoint: Point | null
+  targetPoint: Point | null
   private currentState: State | null
   private previewShape: Shape | null
   private waypoints: Point[] | null
@@ -88,7 +79,7 @@ export class ConnectionHandler extends MouseHandler {
 
   private icon: ImageShape | null
   private icons: ImageShape[] | null
-  private selectedIcon: ImageShape | null
+  private activeIcon: ImageShape | null
   private iconState: State | null
 
   constructor(graph: Graph) {
@@ -107,13 +98,7 @@ export class ConnectionHandler extends MouseHandler {
     this.ignoreMouseDown = options.ignoreMouseDown
     this.livePreview = options.livePreview
     this.insertBeforeSource = options.insertBeforeSource
-    this.outlineConnect = options.outlineConnect
-
-    if (options.enabled) {
-      this.enable()
-    } else {
-      this.disable()
-    }
+    this.setEnadled(options.enabled)
   }
 
   protected init() {
@@ -160,31 +145,27 @@ export class ConnectionHandler extends MouseHandler {
     return this.insertBeforeSource && source !== target
   }
 
-  protected isCreateTarget(e: MouseEvent) {
+  isCreateTarget(e: MouseEvent) {
     return this.autoCreateTarget
   }
 
-  protected isConnecting() {
+  isConnecting() {
     return this.sourcePoint != null && this.previewShape != null
   }
 
-  protected isValidSource(cell: Cell) {
+  isValidSource(cell: Cell) {
     return this.graph.isValidSource(cell)
   }
 
-  protected isValidTarget(cell: Cell) {
+  isValidTarget(cell: Cell) {
     return this.graph.isValidTarget(cell)
   }
 
-  protected isConnectableCell(cell: Cell) {
+  isConnectableCell(cell: Cell | null) {
     return this.graph.isCellConnectable(cell)
   }
 
-  protected isCellEnabled(cell: Cell) {
-    return true
-  }
-
-  protected validateConnection(source: Cell, target: Cell) {
+  validateConnection(source: Cell, target: Cell) {
     if (!this.isValidTarget(target) || !this.isValidSource(source)) {
       return ''
     }
@@ -218,9 +199,7 @@ export class ConnectionHandler extends MouseHandler {
     this.mouseDownCounter += 1
 
     if (
-      !e.isConsumed() &&
-      this.isEnabled() &&
-      this.graph.isEnabled() &&
+      this.isValid(e) &&
       !this.isConnecting() &&
       this.isStartEvent(e)
     ) {
@@ -243,7 +222,6 @@ export class ConnectionHandler extends MouseHandler {
       if (this.waypointsEnabled && this.previewShape == null) {
         this.waypoints = null
         this.previewShape = this.createPreview()
-
         if (this.edgeState != null) {
           this.previewShape.apply(this.edgeState)
         }
@@ -259,68 +237,8 @@ export class ConnectionHandler extends MouseHandler {
       e.consume()
     }
 
-    this.selectedIcon = this.icon
+    this.activeIcon = this.icon
     this.icon = null
-  }
-
-  /**
-   * Returns true if a tap on the given source state should immediately start
-   * connecting. This implementation returns true if the state is not movable
-   * in the graph.
-   */
-  protected isImmediateConnectSource(state: State) {
-    return !this.graph.isCellMovable(state.cell)
-  }
-
-  protected isOutlineConnectEvent(e: MouseEventEx) {
-    const evt = e.getEvent()
-    const state = e.getState()
-
-    if (this.outlineConnect && !DomEvent.isShiftDown(evt)) {
-
-      if (
-        e.isSource(this.marker.highlight.shape) ||
-        (DomEvent.isAltDown(evt) && state != null)
-      ) {
-        return true
-      }
-
-      const clientX = DomEvent.getClientX(evt)
-      const clientY = DomEvent.getClientY(evt)
-
-      if (this.marker.highlight.isHighlightAt(clientX, clientY)) {
-        return true
-      }
-
-      const doc = document.documentElement
-      const left = (window.pageXOffset || doc.scrollLeft) - (doc.clientLeft || 0)
-      const top = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0)
-      const offset = util.getOffset(this.graph.container)
-      const p = this.currentPoint!
-
-      const gridX = p.x - this.graph.container.scrollLeft + offset.x - left
-      const gridY = p.y - this.graph.container.scrollTop + offset.y - top
-
-      if (
-        state == null &&
-        (gridX !== clientX || gridY !== clientY) &&
-        this.marker.highlight.isHighlightAt(gridX, gridY)
-      ) {
-        return true
-      }
-    }
-
-    return false
-  }
-
-  protected convertWaypoint(point: Point) {
-    const s = this.graph.view.getScale()
-    const t = this.graph.view.getTranslate()
-
-    point.x = point.x / s - t.x
-    point.y = point.y / s - t.y
-
-    return point
   }
 
   /**
@@ -329,20 +247,21 @@ export class ConnectionHandler extends MouseHandler {
    */
   mouseMove(e: MouseEventEx) {
     if (
-      !e.isConsumed() &&
+      !this.isConsumed(e) &&
       (
         this.ignoreMouseDown ||
         this.sourcePoint != null ||
-        !this.graph.eventloop.isMouseDown
+        !this.isMouseDown()
       )
     ) {
+
       // Handles special case when handler is disabled during highlight
       if (!this.isEnabled() && this.currentState != null) {
         this.destroyIcons()
         this.currentState = null
       }
 
-      const point = this.getMousePosition(e)
+      const point = this.getCurrentPosition(e)
       this.currentPoint = point
       this.error = null
 
@@ -353,7 +272,8 @@ export class ConnectionHandler extends MouseHandler {
         )
         &&
         (
-          this.previewShape != null || this.sourcePoint == null ||
+          this.previewShape != null ||
+          this.sourcePoint == null ||
           Math.abs(e.getGraphX() - this.sourcePoint.x) > this.graph.tolerance ||
           Math.abs(e.getGraphY() - this.sourcePoint.y) > this.graph.tolerance
         )
@@ -368,14 +288,14 @@ export class ConnectionHandler extends MouseHandler {
         let currentPoint = point
         let currentConstraint = null
 
-        // Uses the current point from the constraint handler if available
+        // Uses the fixed point from the constraint handler if available
         if (
           this.constraintHandler.currentConstraint != null &&
           this.constraintHandler.currentState != null &&
           this.constraintHandler.currentPoint != null
         ) {
-          currentConstraint = this.constraintHandler.currentConstraint
           currentPoint = this.constraintHandler.currentPoint.clone()
+          currentConstraint = this.constraintHandler.currentConstraint
         } else if (
           this.sourceState != null &&
           !this.graph.isConnectionIgnored(e.getEvent()) &&
@@ -493,7 +413,7 @@ export class ConnectionHandler extends MouseHandler {
       } else if (!this.isEnabled() || !this.graph.isEnabled()) {
         this.constraintHandler.reset()
       } else if (
-        // 当鼠标移动到 Node 中心附近位置，触发 CellMarker 高亮当前 Node 时
+        // 当鼠标移动到 Node 中心附近时，触发 CellMarker 高亮 或 创建 Icon
         this.sourceState !== this.currentState &&
         this.edgeState == null
       ) {
@@ -515,18 +435,18 @@ export class ConnectionHandler extends MouseHandler {
         this.sourceState = this.currentState
 
       } else if (
-        // 鼠标在中心位置附近移动时，一切不变
+        // 鼠标在中心位置附近移动时，保持高亮
         this.sourceState === this.currentState &&
         this.currentState != null &&
         this.icons == null &&
-        !this.graph.eventloop.isMouseDown
+        !this.isMouseDown()
       ) {
         e.consume()
       }
 
       // 更新 icons
       if (
-        !this.graph.eventloop.isMouseDown &&
+        !this.isMouseDown() &&
         this.currentState != null &&
         this.icons != null
       ) {
@@ -547,47 +467,51 @@ export class ConnectionHandler extends MouseHandler {
     }
   }
 
-  protected getMousePosition(e: MouseEventEx) {
-    const view = this.graph.view
-    const s = view.scale
-    const t = view.translate
-    const point = e.getGraphPos()
+  protected getCurrentPosition(e: MouseEventEx) {
+    const s = this.graph.view.scale
+    const t = this.graph.view.translate
+    const p = e.getGraphPos()
 
     // snap to grid
     if (this.graph.isGridEnabledForEvent(e.getEvent())) {
-      point.update(
-        (this.graph.snap(point.x / s - t.x) + t.x) * s,
-        (this.graph.snap(point.y / s - t.y) + t.y) * s,
+      p.update(
+        (this.graph.snap(p.x / s - t.x) + t.x) * s,
+        (this.graph.snap(p.y / s - t.y) + t.y) * s,
       )
     }
 
     // snap to sourcePoint
     if (!DomEvent.isAltDown(e.getEvent()) && this.sourceState != null) {
-      const tol = this.graph.gridSize * this.graph.view.scale / 2
+      const tol = this.graph.gridSize * s / 2
       const tmp = this.sourcePoint
         ? this.sourcePoint
         : this.sourceState.bounds.getCenter()
 
       if (Math.abs(tmp.x - e.getGraphX()) < tol) {
-        point.x = tmp.x
+        p.x = tmp.x
       }
 
       if (Math.abs(tmp.y - e.getGraphY()) < tol) {
-        point.y = tmp.y
+        p.y = tmp.y
       }
     }
 
-    return point
+    return p
   }
 
   protected updateCurrentState(e: MouseEventEx, point: Point) {
+    const isSource = this.sourcePoint == null
+    const existingEdge = false
+    const currentPoint = (
+      this.sourcePoint == null ||
+      e.isSource(this.marker.highlight.shape)
+    ) ? null : point
+
     this.constraintHandler.update(
       e,
-      this.sourcePoint == null,
-      false,
-      (this.sourcePoint == null || e.isSource(this.marker.highlight.shape))
-        ? null
-        : point,
+      isSource,
+      existingEdge,
+      currentPoint,
     )
 
     if (
@@ -619,7 +543,8 @@ export class ConnectionHandler extends MouseHandler {
       // Updates validation state.
       if (this.sourceState != null) {
         this.error = this.validateConnection(
-          this.sourceState.cell, this.constraintHandler.currentState.cell,
+          this.sourceState.cell,
+          this.constraintHandler.currentState.cell,
         )
 
         if (this.error == null) {
@@ -637,63 +562,6 @@ export class ConnectionHandler extends MouseHandler {
       } else {
         this.marker.process(e)
         this.currentState = this.marker.getValidState()
-
-        if (
-          this.currentState != null &&
-          !this.isCellEnabled(this.currentState.cell)
-        ) {
-          this.currentState = null
-        }
-      }
-
-      const outline = this.isOutlineConnectEvent(e)
-
-      if (this.currentState != null && outline) {
-        // Handles special case where mouse is on outline away from actual
-        // end point in which case the grid is ignored and mouse point is
-        // used instead
-        if (e.isSource(this.marker.highlight.shape)) {
-          point = new Point(e.getGraphX(), e.getGraphY()) // tslint:disable-line
-        }
-
-        const constraint = this.graph.cellManager.getOutlineConstraint(
-          point, this.currentState, e,
-        )
-        this.constraintHandler.focus(e, this.currentState, false)
-        this.constraintHandler.currentConstraint = constraint
-        this.constraintHandler.currentPoint = point
-      }
-
-      if (this.outlineConnect) {
-        if (
-          this.marker.highlight != null &&
-          this.marker.highlight.shape != null
-        ) {
-          const s = this.graph.view.scale
-
-          if (
-            this.constraintHandler.currentConstraint != null &&
-            this.constraintHandler.currentState != null
-          ) {
-
-            this.marker.highlight.shape.stroke = constants.OUTLINE_HIGHLIGHT_COLOR
-            this.marker.highlight.shape.strokeWidth =
-              constants.OUTLINE_HIGHLIGHT_STROKEWIDTH / s / s
-            this.marker.highlight.repaint()
-
-          } else if (this.marker.hasValidState()) {
-
-            if (this.marker.getValidState() !== e.getState()) {
-              this.marker.highlight.shape.stroke = 'transparent'
-              this.currentState = null
-            } else {
-              this.marker.highlight.shape.stroke = constants.DEFAULT_VALID_COLOR
-            }
-
-            this.marker.highlight.shape.strokeWidth = constants.HIGHLIGHT_STROKEWIDTH / s / s
-            this.marker.highlight.repaint()
-          }
-        }
       }
     }
   }
@@ -721,7 +589,7 @@ export class ConnectionHandler extends MouseHandler {
 
     this.edgeState.absolutePoints = [
       null,
-      (this.currentState != null) ? null : currentPoint,
+      this.currentState != null ? null : currentPoint,
     ] as any
 
     this.graph.view.updateFixedTerminalPoint(
@@ -741,19 +609,21 @@ export class ConnectionHandler extends MouseHandler {
 
       this.edgeState.setAbsoluteTerminalPoint(null as any, false)
       this.graph.view.updateFixedTerminalPoint(
-        this.edgeState, this.currentState, false, constraint,
+        this.edgeState,
+        this.currentState,
+        false,
+        constraint,
       )
     }
 
     // Scales and translates the waypoints to the model
-    let realPoints = null
-
+    let pts = null
     if (this.waypoints != null) {
-      realPoints = this.waypoints.map(p => this.convertWaypoint(p.clone()))
+      pts = this.waypoints.map(p => this.normalizeWaypoint(p.clone()))
     }
 
     this.graph.view.updateRouterPoints(
-      this.edgeState, realPoints!, this.sourceState!, this.currentState!,
+      this.edgeState, pts!, this.sourceState!, this.currentState!,
     )
 
     this.graph.view.updateFloatingTerminalPoints(
@@ -821,9 +691,9 @@ export class ConnectionHandler extends MouseHandler {
   }
 
   mouseUp(e: MouseEventEx) {
-    if (!e.isConsumed() && this.isConnecting()) {
+    if (!this.isConsumed(e) && this.isConnecting()) {
       if (this.waypointsEnabled && !this.isStopEvent(e)) {
-        this.addWaypointForEvent(e)
+        this.addWaypoint(e)
         e.consume()
         return
       }
@@ -881,30 +751,41 @@ export class ConnectionHandler extends MouseHandler {
     }
   }
 
-  protected addWaypointForEvent(e: MouseEventEx) {
+  protected addWaypoint(e: MouseEventEx) {
     const point = util.clientToGraph(this.graph.container, e)
     const dx = Math.abs(point.x - this.sourcePoint!.x)
     const dy = Math.abs(point.y - this.sourcePoint!.y)
-    const addPoint = this.waypoints != null || (
-      this.mouseDownCounter > 1 &&
+    const addPoint = (this.waypoints != null) ||
       (
-        dx > this.graph.tolerance ||
-        dy > this.graph.tolerance
+        this.mouseDownCounter > 1 &&
+        (
+          dx > this.graph.tolerance ||
+          dy > this.graph.tolerance
+        )
       )
-    )
 
     if (addPoint) {
       if (this.waypoints == null) {
         this.waypoints = []
       }
 
-      const scale = this.graph.view.scale
-      const point = new Point(
-        this.graph.snap(e.getGraphX() / scale) * scale,
-        this.graph.snap(e.getGraphY() / scale) * scale,
+      const s = this.graph.view.scale
+      const p = new Point(
+        this.graph.snap(e.getGraphX() / s) * s,
+        this.graph.snap(e.getGraphY() / s) * s,
       )
-      this.waypoints.push(point)
+      this.waypoints.push(p)
     }
+  }
+
+  protected normalizeWaypoint(point: Point) {
+    const s = this.graph.view.getScale()
+    const t = this.graph.view.getTranslate()
+
+    point.x = point.x / s - t.x
+    point.y = point.y / s - t.y
+
+    return point
   }
 
   protected checkConstraints(c1: Constraint | null, c2: Constraint | null) {
@@ -921,107 +802,7 @@ export class ConnectionHandler extends MouseHandler {
   }
 
   protected createMarker() {
-    const options = getConnectionHighlightOptions({ graph: this.graph })
-    const marker = new CellMarker(this.graph, options)
-
-    marker.getCell = (e: MouseEventEx) => {
-      let cell = CellMarker.prototype.getCell.call(marker, e)
-      this.error = null
-
-      // Checks for cell at preview point (with grid)
-      if (cell == null && this.currentPoint != null) {
-        cell = this.graph.getCellAt(this.currentPoint.x, this.currentPoint.y)
-      }
-
-      // Uses connectable parent node if one exists
-      if (cell != null && !this.graph.isCellConnectable(cell)) {
-        const parent = this.graph.getModel().getParent(cell)
-
-        if (
-          this.graph.model.isNode(parent) &&
-          this.graph.isCellConnectable(parent)
-        ) {
-          cell = parent
-        }
-      }
-
-      if (
-        (
-          this.graph.isSwimlane(cell) &&
-          this.currentPoint != null &&
-          this.graph.cellManager.hitsSwimlaneContent(
-            cell, this.currentPoint.x, this.currentPoint.y,
-          )
-        ) ||
-        !this.isConnectableCell(cell)
-      ) {
-        cell = null
-      }
-
-      if (cell != null) {
-
-        if (this.isConnecting()) {
-          if (this.sourceState != null) {
-            this.error = this.validateConnection(this.sourceState.cell, cell)
-            if (this.error != null && this.error.length >= 0) {
-              cell = null
-              if (this.isCreateTarget(e.getEvent())) {
-                this.error = null
-              }
-            }
-          }
-        } else if (!this.isValidSource(cell)) {
-          cell = null
-        }
-
-      } else if (
-        this.isConnecting() &&
-        !this.isCreateTarget(e.getEvent()) &&
-        !this.graph.allowDanglingEdges
-      ) {
-        this.error = ''
-      }
-
-      return cell
-    }
-
-    // Sets the highlight color according to validateConnection
-    marker.isValidState = (state: State) => {
-      if (this.isConnecting()) {
-        return this.error == null
-      }
-
-      return CellMarker.prototype.isValidState.call(marker, state)
-    }
-
-    const hasConnectIcon = (state: State | null) => {
-      if (state != null) {
-        return getConnectionIcon({
-          graph: this.graph,
-          cell: state.cell,
-        }) != null
-      }
-
-      return false
-    }
-
-    marker.getMarkerColor = (evt, state, isValid) => {
-      return (!hasConnectIcon(state) || this.isConnecting())
-        ? CellMarker.prototype.getMarkerColor.call(marker, evt, state, isValid)
-        : null
-    }
-
-    // Overrides to use hotspot only for source selection otherwise
-    // intersects always returns true when over a cell
-    marker.intersects = (state, evt) => {
-      if (hasConnectIcon(state) || this.isConnecting()) {
-        return true
-      }
-
-      return CellMarker.prototype.intersects.call(marker, state, evt)
-    }
-
-    return marker
+    return new ConnectionHandlerMarker(this.graph, this)
   }
 
   /**
@@ -1032,32 +813,33 @@ export class ConnectionHandler extends MouseHandler {
   }
 
   protected createIcons(state: State) {
-    const opts = getConnectionIconOptions({
+    const options = getConnectionIconOptions({
       graph: this.graph,
       cell: state.cell,
     })
 
-    if (opts.image != null && state != null) {
+    if (options.image != null && state != null) {
       this.iconState = state
       const icons = []
-      const bounds = new Rectangle(0, 0, opts.image.width, opts.image.height)
-      const icon = new ImageShape(bounds, opts.image.src, null, null, 0)
+      const image = options.image
+      const bounds = new Rectangle(0, 0, image.width, image.height)
+      const icon = new ImageShape(bounds, image.src, null, null, 0)
 
       icon.preserveImageAspect = false
-      icon.cursor = opts.cursor
+      icon.cursor = options.cursor
 
-      if (util.hasHtmlLabel(state) || opts.toFront) {
+      if (util.hasHtmlLabel(state) || options.toFront) {
         icon.dialect = 'html'
         icon.init(this.graph.container)
       } else {
         icon.dialect = 'svg'
         icon.init(this.graph.view.getOverlayPane())
-        if (opts.toBack) {
+        if (options.toBack) {
           util.toBack(icon.elem)
         }
       }
 
-      const getState = () => this.currentState || state
+      const getState = () => (this.currentState || state)
       const mouseDown = (evt: MouseEvent) => {
         // Updates the local icon before firing the mouse down event.
         if (!DomEvent.isConsumed(evt)) {
@@ -1118,28 +900,28 @@ export class ConnectionHandler extends MouseHandler {
   }
 
   protected updateIcon(e: MouseEventEx) {
-    if (this.selectedIcon != null) {
-      const w = this.selectedIcon.bounds.width
-      const h = this.selectedIcon.bounds.height
-      const opts = getConnectionIconOptions({
+    if (this.activeIcon != null) {
+      const w = this.activeIcon.bounds.width
+      const h = this.activeIcon.bounds.height
+      const options = getConnectionIconOptions({
         graph: this.graph,
         cell: this.sourceState!.cell,
       })
 
-      if (this.currentState != null && opts.centerTarget) {
-        const p = this.getIconPosition(this.selectedIcon, this.currentState)
-        this.selectedIcon.bounds.x = p.x
-        this.selectedIcon.bounds.y = p.y
+      if (this.currentState != null && options.centerTarget) {
+        const p = this.getIconPosition(this.activeIcon, this.currentState)
+        this.activeIcon.bounds.x = p.x
+        this.activeIcon.bounds.y = p.y
       } else {
         const bounds = new Rectangle(
-          e.getGraphX() + opts.offset.x,
-          e.getGraphY() + opts.offset.y,
+          e.getGraphX() + options.offset.x,
+          e.getGraphY() + options.offset.y,
           w, h,
         )
-        this.selectedIcon.bounds = bounds
+        this.activeIcon.bounds = bounds
       }
 
-      this.selectedIcon.redraw()
+      this.activeIcon.redraw()
     }
   }
 
@@ -1155,7 +937,7 @@ export class ConnectionHandler extends MouseHandler {
       this.icons.forEach(i => i.dispose())
       this.icons = null
       this.icon = null
-      this.selectedIcon = null
+      this.activeIcon = null
       this.iconState = null
     }
   }
@@ -1165,7 +947,6 @@ export class ConnectionHandler extends MouseHandler {
       ? this.graph.renderer.createShape(this.edgeState)!
       : new Polyline()
 
-    shape.dialect = 'svg'
     shape.scale = this.graph.view.scale
     shape.pointerEvents = false
     shape.init(this.graph.view.getOverlayPane())
@@ -1233,18 +1014,12 @@ export class ConnectionHandler extends MouseHandler {
   }
 
   /**
-   * Function: connect
+   * Connects the given source and target using a new edge.
    *
-   * Connects the given source and target using a new edge. This
-   * implementation uses <createEdge> to create the edge.
-   *
-   * Parameters:
-   *
-   * source - <mxCell> that represents the source terminal.
-   * target - <mxCell> that represents the target terminal.
-   * evt - Mousedown event of the connect gesture.
-   * dropTarget - <mxCell> that represents the cell under the mouse when it was
-   * released.
+   * @param source The source terminal.
+   * @param target The target terminal.
+   * @param evt - Mousedown event of the connect gesture.
+   * @param dropTarget The cell under the mouse when it was released.
    */
   connect(
     source: Cell,
@@ -1255,11 +1030,9 @@ export class ConnectionHandler extends MouseHandler {
     if (
       target != null ||
       this.isCreateTarget(evt) ||
-      this.graph.allowDanglingEdges
+      this.graph.isDanglingEdgesEnabled()
     ) {
 
-      // Uses the common parent of source and target or
-      // the default parent to insert the edge
       const model = this.graph.getModel()
       let terminalInserted = false
       let edge = null
@@ -1276,7 +1049,6 @@ export class ConnectionHandler extends MouseHandler {
           if (target != null) {
             // tslint:disable-next-line
             dropTarget = this.graph.getDropTarget([target], evt, dropTarget)!
-            terminalInserted = true
 
             // Disables edges as drop targets if the target cell was created
             if (
@@ -1294,13 +1066,17 @@ export class ConnectionHandler extends MouseHandler {
             }
 
             this.graph.addCell(target, dropTarget)
+            terminalInserted = true
           }
         }
 
         let parent = this.graph.getDefaultParent()
 
+        // Uses the common parent of source and target or
+        // the default parent to insert the edge.
         if (
-          source != null && target != null &&
+          source != null &&
+          target != null &&
           model.getParent(source) === model.getParent(target) &&
           model.getParent(model.getParent(source)) !== model.getRoot()
         ) {
@@ -1315,7 +1091,7 @@ export class ConnectionHandler extends MouseHandler {
         }
 
         // Uses the value of the preview edge state for inserting
-        // the new edge into the graph
+        // the new edge into the graph.
         let data = null
         let style = {}
 
@@ -1341,8 +1117,6 @@ export class ConnectionHandler extends MouseHandler {
             model.setGeometry(edge, this.edgeState.cell.geometry!)
           }
 
-          const parent = model.getParent(source)
-
           // Inserts edge before source
           if (this.isInsertBefore(edge, source, target!, evt, dropTarget)) {
             let tmp = source
@@ -1352,7 +1126,12 @@ export class ConnectionHandler extends MouseHandler {
               tmp = this.graph.model.getParent(tmp)!
             }
 
-            if (tmp != null && tmp.parent != null && tmp.parent === edge.parent) {
+            if (
+              tmp != null &&
+              tmp.parent != null &&
+              tmp.parent === edge.parent
+            ) {
+              const parent = model.getParent(source)
               model.add(parent, edge, tmp.parent.getChildIndex(tmp))
             }
           }
@@ -1404,16 +1183,11 @@ export class ConnectionHandler extends MouseHandler {
     }
   }
 
-  selectCells(edge: Cell, target: Cell | null) {
+  protected selectCells(edge: Cell, target: Cell | null) {
     this.graph.setSelectedCell(edge)
   }
 
-  /**
-   * Creates, inserts and returns the new edge for the given parameters. This
-   * implementation does only use <createEdge> if <factoryMethod> is defined,
-   * otherwise <mxGraph.insertEdge> will be used.
-   */
-  insertEdge(
+  protected insertEdge(
     parent: Cell,
     id: string | null,
     data: any,
@@ -1429,6 +1203,26 @@ export class ConnectionHandler extends MouseHandler {
 
     let edge = this.createEdge(data, sourceNode, targetNode, style)
     edge = this.graph.addEdge(edge, parent, sourceNode, targetNode)
+
+    return edge
+  }
+
+  protected createEdge(data: any, source: Cell, target: Cell, style: Style) {
+    let edge = null
+
+    // Creates a new edge using the factoryMethod
+    if (this.factoryMethod != null) {
+      edge = this.factoryMethod(source, target, style)
+    }
+
+    if (edge == null) {
+      edge = new Cell(data)
+      edge.asEdge(true)
+      edge.setStyle(style)
+      const geo = new Geometry()
+      geo.relative = true
+      edge.setGeometry(geo)
+    }
 
     return edge
   }
@@ -1480,26 +1274,6 @@ export class ConnectionHandler extends MouseHandler {
     return (this.graph.isGridEnabled())
       ? this.graph.gridSize / 2
       : this.graph.tolerance
-  }
-
-  protected createEdge(data: any, source: Cell, target: Cell, style: Style) {
-    let edge = null
-
-    // Creates a new edge using the factoryMethod
-    if (this.factoryMethod != null) {
-      edge = this.factoryMethod(source, target, style)
-    }
-
-    if (edge == null) {
-      edge = new Cell(data)
-      edge.asEdge(true)
-      edge.setStyle(style)
-      const geo = new Geometry()
-      geo.relative = true
-      edge.setGeometry(geo)
-    }
-
-    return edge
   }
 
   @Disposable.aop()

@@ -56,7 +56,7 @@ export class CellMarker extends BaseHandler {
   setCurrentState(
     state: State | null,
     e: MouseEventEx,
-    color?: string,
+    color?: string | null,
   ) {
     const isValid = state ? this.isValidState(state) : false
     // tslint:disable-next-line
@@ -69,7 +69,7 @@ export class CellMarker extends BaseHandler {
     }
 
     if (state !== this.markedState || color !== this.currentColor) {
-      this.currentColor = color
+      this.currentColor = color || null
 
       if (state != null && this.currentColor != null) {
         this.markedState = state
@@ -111,7 +111,7 @@ export class CellMarker extends BaseHandler {
     e: Event,
     state: State | null,
     isValid: boolean,
-  ) {
+  ): string | null {
     return isValid ? this.validColor : this.invalidColor
   }
 
