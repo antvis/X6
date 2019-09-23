@@ -10,6 +10,7 @@ import {
   applyBaseStyle,
   applyManualStyle,
 } from './util'
+import { CellHighlight } from '../handler'
 
 export interface ConnectionOptions {
   enabled: boolean
@@ -152,6 +153,27 @@ export function getConnectionHighlightOptions(
   })
 
   return result as ConnectionHighlightOptions
+}
+
+export interface ApplyConnectionHighlightStyleArgs {
+  graph: Graph
+  cell: Cell
+  valid: boolean
+  highlight: CellHighlight
+}
+
+export function applyConnectionHighlightStyle(
+  args: ApplyConnectionHighlightStyleArgs,
+) {
+  const { graph, valid, highlight } = args
+  const opts = graph.options.connectionHighlight as ConnectionHighlightOptions
+  highlight.highlightColor = drill(
+    valid ? opts.validColor : opts.invalidColor, graph, args,
+  )
+  highlight.strokeWidth = drill(opts.strokeWidth, graph, args)
+  highlight.dashed = drill(opts.dashed, graph, args)
+  highlight.opacity = drill(opts.opacity, graph, args)
+  highlight.spacing = drill(opts.spacing, graph, args)
 }
 
 export interface ConnectionIconOptions {

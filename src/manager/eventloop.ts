@@ -74,10 +74,6 @@ export class EventLoop extends BaseManager {
     return p
   }
 
-  getCursorForEvent(e: MouseEventEx): string | null {
-    return this.graph.getCellCursor(e.getCell())
-  }
-
   protected updateMouseEvent(e: MouseEventEx, eventName: string) {
     if (e.graphX == null || e.graphY == null) {
       const p = util.clientToGraph(this.graph.container, e)

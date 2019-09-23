@@ -1,28 +1,6 @@
 import { detector } from './detector'
 
 export const constants = {
-  /**
-   * Defines the portion of the cell which is to be used as a connectable
-   * region.
-   *
-   * Default is `0.3`.
-   *
-   * Possible values are 0 < x <= 1.
-   */
-  DEFAULT_HOTSPOT: 0.3,
-
-  /**
-   * Defines the minimum size in pixels of the portion of the cell which is
-   * to be used as a connectable region. Default is 8.
-   */
-  MIN_HOTSPOT_SIZE: 8,
-
-  /**
-   * Defines the maximum size in pixels of the portion of the cell which is
-   * to be used as a connectable region. Use 0 for no maximum. Default is 0.
-   */
-  MAX_HOTSPOT_SIZE: 0,
-
   SHADOWCOLOR: 'gray',
   SHADOW_OFFSET_X: 2,
   SHADOW_OFFSET_Y: 3,

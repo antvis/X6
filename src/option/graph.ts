@@ -6,7 +6,7 @@ import { Image, Multiplicity, Rectangle } from '../struct'
 import { defaultOptions } from './preset'
 import { GuideOptions } from './guide'
 import { RubberbandOptions } from './rubberband'
-import { MovingPreviewOptions } from './moving'
+import { MovingPreviewOptions, DropTargetHighlightOptions } from './moving'
 import { SelectionPreviewOptions } from './selection'
 import {
   ResizeOption,
@@ -591,6 +591,14 @@ export interface SimpleOptions {
   disconnectOnMove: boolean
 
   /**
+   * Specifies if drop events are interpreted as new connections if
+   * no other drop action is defined.
+   *
+   * Default is `false`.
+   */
+  connectOnDrop: boolean
+
+  /**
    * Specifies if the graph should allow dropping of cells onto or
    * into other cells.
    *
@@ -604,6 +612,37 @@ export interface SimpleOptions {
    * Default is `true`.
    */
   splitEnabled: boolean
+
+  /**
+   * Specifies if a move cursor should be shown if the mouse
+   * is over a movable cell.
+   *
+   * Default is `true`.
+   */
+  autoUpdateCursor: boolean
+
+  /**
+   * Specifies if cells may be moved out of their parents.
+   *
+   * Default is `true`.
+   */
+  allowRemoveCellsFromParent: boolean
+
+  /**
+   * If empty parents should be removed from the model after all child cells
+   * have been moved out.
+   *
+   * Default is `true`.
+   */
+  autoRemoveEmptyParent: boolean
+
+  /**
+   * Specifies if the view should be scrolled so that a moved cell is
+   * visible.
+   *
+   * Default is `true`.
+   */
+  scrollOnMove: boolean
 
   /**
   * Specifies if autoSize style should be applied when cells are added.
@@ -664,6 +703,16 @@ export interface SimpleOptions {
    * Default is `0.5`.
    */
   defaultOverlap: number
+
+  /**
+   * Defines the maximum number of cells to paint subhandles for.
+   *
+   * Default is `20` for IE and `50` for others. Set this to `0` if you
+   * want an unlimited number of handles to be displayed. This is only
+   * recommended if the number of cells in the graph is limited to a
+   * small number, eg. `500`.
+   */
+  maxCellCountForHandle: number
 }
 
 export interface GridOptions {
@@ -786,6 +835,7 @@ export interface FullOptions extends SimpleOptions {
   rubberband: RubberbandOptions
   pageBreak: PageBreakOptions
   contextMenu: ContextMenuOptions
+  dropTargetHighlight: DropTargetHighlightOptions
   movingPreview: MovingPreviewOptions
   selectionPreview: SelectionPreviewOptions
   resize: ResizeOption
@@ -815,6 +865,7 @@ export interface GraphOptions extends Partial<SimpleOptions> {
   rubberband?: Partial<RubberbandOptions> | boolean
   pageBreak?: Partial<PageBreakOptions> | boolean
   contextMenu?: Partial<ContextMenuOptions> | boolean
+  dropTargetHighlight?: Partial<DropTargetHighlightOptions>
   movingPreview?: Partial<MovingPreviewOptions>
   selectionPreview?: Partial<SelectionPreviewOptions>
   resize?: Partial<ResizeOption> | boolean
@@ -871,7 +922,6 @@ export function applyOptions(graph: Graph) {
   graph.dialect = options.dialect === 'html' ? 'html' : 'svg'
 
   expand(graph)
-  config(graph)
 }
 
 function expand(graph: Graph) {
@@ -912,14 +962,4 @@ function expand(graph: Graph) {
   // ----
   const keyboard = options.keyboard as KeyboardOptions
   graph.escapeEnabled = keyboard.escape
-}
-
-function config(graph: Graph) {
-  const options = graph.options
-
-  // guide
-  // ----
-  if ((options.guide as GuideOptions).enabled) {
-    graph.enableGuide()
-  }
 }

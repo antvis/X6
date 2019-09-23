@@ -38,17 +38,7 @@ export interface IsGuideEnabledArgs {
 
 export function isGuideEnabled(o: IsGuideEnabledArgs) {
   const guide = o.graph.options.guide as GuideOptions
-  if (guide != null) {
-    if (typeof guide.enabled === 'function') {
-      return guide.enabled.call(o.graph, o)
-    }
-
-    if (typeof guide.enabled === 'boolean') {
-      return guide.enabled
-    }
-  }
-
-  return true
+  return drill(guide.enabled, o.graph, o)
 }
 
 export interface GetGuideStyleArgs {
@@ -91,17 +81,15 @@ export function createGuide(graph: Graph, states: State[]) {
     },
   )
 
-  const guideEnabled = graph.graphHandler.guideEnabled
-
-  guide.rounded = options.rounded!
+  guide.rounded = options.rounded
 
   guide.horizontal = horizontal && horizontal.enabled != null
     ? horizontal.enabled
-    : guideEnabled
+    : true
 
   guide.vertical = vertical && vertical.enabled != null
     ? vertical.enabled
-    : guideEnabled
+    : true
 
   return guide
 }

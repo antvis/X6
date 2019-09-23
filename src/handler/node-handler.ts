@@ -188,8 +188,8 @@ export class NodeHandler extends MouseHandler {
     this.handles = []
 
     // Adds the sizer handles
-    const maxCells = this.graph.graphHandler.maxCellCount || 0
-    if (maxCells <= 0 || this.graph.getSelecedCellCount() < maxCells) {
+    const max = this.graph.options.maxCellCountForHandle || 0
+    if (max <= 0 || this.graph.getSelecedCellCount() < max) {
       const resizable = this.graph.isCellResizable(this.state.cell)
       const labelMovable = this.graph.isLabelMovable(this.state.cell)
 
@@ -253,13 +253,11 @@ export class NodeHandler extends MouseHandler {
   }
 
   protected isRotationHandleVisible() {
+    const max = this.graph.options.maxCellCountForHandle || 0
     return (
       this.graph.isEnabled() &&
       this.graph.isCellRotatable(this.state.cell) &&
-      (
-        this.graph.graphHandler.maxCellCount <= 0 ||
-        this.graph.getSelecedCellCount() < this.graph.graphHandler.maxCellCount
-      ) &&
+      (max <= 0 || this.graph.getSelecedCellCount() < max) &&
       this.state.bounds.width >= 2 &&
       this.state.bounds.height >= 2
     )

@@ -1,6 +1,7 @@
 import * as images from '../assets/images'
 import { loop } from '../router'
 import { Style } from '../types'
+import { detector } from '../common'
 import { rectangle } from '../perimeter'
 import { FullOptions } from './graph'
 import { ShapeNames, MarkerNames, PageSize } from '../struct'
@@ -109,8 +110,13 @@ export const defaultOptions: FullOptions = {
   edgesConnectable: false,
   invalidEdgesClonable: false,
   disconnectOnMove: true,
+  connectOnDrop: false,
   dropEnabled: false,
   splitEnabled: true,
+  autoUpdateCursor: true,
+  allowRemoveCellsFromParent: true,
+  autoRemoveEmptyParent: true,
+  scrollOnMove: true,
   autoSizeOnAdded: false,
   autoSizeOnEdited: false,
   extendParents: true,
@@ -121,6 +127,7 @@ export const defaultOptions: FullOptions = {
   constrainRelativeChildren: false,
   allowNegativeCoordinates: true,
   defaultOverlap: 0.5,
+  maxCellCountForHandle: detector.IS_IE ? 20 : 50,
 
   nodeStyle: {
     ...commonStyle,
@@ -178,6 +185,14 @@ export const defaultOptions: FullOptions = {
     isLeftButton: false,
     selectCellsOnContextMenu: true,
     clearSelectionOnBackground: true,
+  },
+
+  dropTargetHighlight: {
+    stroke: '#0000FF',
+    strokeWidth: 3,
+    dashed: false,
+    opacity: 0.3,
+    spacing: 2,
   },
 
   movingPreview: {

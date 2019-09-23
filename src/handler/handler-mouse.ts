@@ -31,6 +31,14 @@ export class MouseHandler extends BaseHandler implements IMouseHandler {
     return DomEvent.isMultiTouchEvent(e.getEvent())
   }
 
+  isMouseDown() {
+    return this.graph.eventloop.isMouseDown
+  }
+
+  isConsumed(e: MouseEventEx) {
+    return e.isConsumed()
+  }
+
   consume(e: MouseEventEx, eventName: string) {
     e.consume()
   }

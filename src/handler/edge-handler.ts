@@ -226,8 +226,8 @@ export class EdgeHandler extends MouseHandler {
 
     // Creates bends for the non-routed absolute points
     // or bends that don't correspond to points
-    const maxCellCount = this.graph.graphHandler.maxCellCount
-    if (maxCellCount <= 0 || this.graph.getSelecedCellCount() < maxCellCount) {
+    const max = this.graph.options.maxCellCountForHandle || 0
+    if (max <= 0 || this.graph.getSelecedCellCount() < max) {
       this.handles = this.createHandles()
       if (this.isVirtualHandlesEnabled()) {
         this.virtualHandles = this.createVirtualHandles()

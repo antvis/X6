@@ -451,12 +451,52 @@ export class Graph extends Disablable implements
     this.disconnectOnMove = value
   }
 
+  connectOnDrop: boolean = false
+  isConnectOnDrop() {
+    return this.connectOnDrop
+  }
+  setConnectOnDrop(value: boolean) {
+    this.connectOnDrop = value
+  }
+
   dropEnabled: boolean = false
   isDropEnabled() {
     return this.dropEnabled
   }
   setDropEnabled(value: boolean) {
     this.dropEnabled = value
+  }
+
+  autoUpdateCursor: boolean = true
+  isAutoUpdateCursor() {
+    return this.autoUpdateCursor
+  }
+  setAutoUpdateCursor(value: boolean) {
+    this.autoUpdateCursor = value
+  }
+
+  allowRemoveCellsFromParent: boolean
+  isRemoveCellsFromParentAllowed() {
+    return this.allowRemoveCellsFromParent
+  }
+  setRemoveCellsFromParentAllowed(allowed: boolean) {
+    this.allowRemoveCellsFromParent = allowed
+  }
+
+  autoRemoveEmptyParent: boolean
+  isAutoRemoveEmptyParent() {
+    return this.autoRemoveEmptyParent
+  }
+  setAutoRemoveEmptyParent(value: boolean) {
+    this.autoRemoveEmptyParent = value
+  }
+
+  scrollOnMove: boolean
+  isScrollOnMove() {
+    return this.scrollOnMove
+  }
+  setScrollOnMove(value: boolean) {
+    this.scrollOnMove = value
   }
 
   splitEnabled: boolean = true
@@ -534,6 +574,7 @@ export class Graph extends Disablable implements
   }
 
   defaultOverlap: number = 0.5
+  maxCellCountForHandle: number
 
   // #endregion
 
@@ -2607,22 +2648,6 @@ export class Graph extends Disablable implements
   // #endregion
 
   // #region :::::::::::: Graph Behaviour
-
-  enableGuide() {
-    this.graphHandler.guideEnabled = true
-  }
-
-  disableGuide() {
-    this.graphHandler.guideEnabled = false
-  }
-
-  enableRubberband() {
-    this.rubberbandHandler.enable()
-  }
-
-  disableRubberband() {
-    this.rubberbandHandler.disable()
-  }
 
   hideTooltip() {
     if (this.tooltipHandler) {
