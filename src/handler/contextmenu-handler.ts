@@ -1,23 +1,23 @@
 import * as util from '../util'
 import { Graph } from '../core'
 import { MouseHandler } from './handler-mouse'
-import { ContextMenuOptions } from '../option'
+import { ContextMenuOptions, ShowContextMenuArgs } from '../option'
 import { MouseEventEx, DomEvent, Disposable } from '../common'
 
-export class PopupMenuHandler extends MouseHandler {
+export class ContextMenuHandler extends MouseHandler {
   /**
    * Specifies is use left mouse button as context menu trigger.
    */
   isLeftButton: boolean
 
   /**
-   * Specifies if cells should be selected if a popupmenu is
+   * Specifies if cells should be selected if a contextmenu is
    * displayed for them.
    */
   selectOnPopup: boolean
 
   /**
-   * Specifies if cells should be deselected if a popupmenu is
+   * Specifies if cells should be deselected if a contextmenu is
    * displayed for the diagram background.
    */
   clearSelectionOnBackground: boolean
@@ -28,6 +28,8 @@ export class PopupMenuHandler extends MouseHandler {
   protected validTrigger: boolean
   protected inTolerance: boolean
   protected showing: boolean = false
+  protected doHide: (() => void) | null
+  protected doShow: ((args: ShowContextMenuArgs) => void) | null
 
   constructor(graph: Graph) {
     super(graph)
@@ -43,10 +45,13 @@ export class PopupMenuHandler extends MouseHandler {
 
   protected config() {
     const options = this.graph.options.contextMenu as ContextMenuOptions
-    this.setEnadled(options.enabled)
     this.isLeftButton = options.isLeftButton
     this.selectOnPopup = options.selectCellsOnContextMenu
     this.clearSelectionOnBackground = options.clearSelectionOnBackground
+    this.doShow = options.show || null
+    this.doHide = options.hide || null
+
+    this.setEnadled(options.enabled)
   }
 
   isPopupTrigger(e: MouseEventEx) {
@@ -99,13 +104,16 @@ export class PopupMenuHandler extends MouseHandler {
       // Hides the tooltip if there is one
       this.graph.hideTooltip()
 
-      const origin = util.getScrollOrigin(document.body)
-      this.graph.trigger(Graph.events.showContextMenu, {
-        cell,
-        e: e.getEvent(),
-        x: e.getClientX() + origin.x,
-        y: e.getClientY() + origin.y,
-      })
+      if (this.doShow) {
+        const origin = util.getScrollOrigin(document.body)
+        this.doShow.call(this.graph, {
+          cell,
+          e: e.getEvent(),
+          x: e.getClientX() + origin.x,
+          y: e.getClientY() + origin.y,
+        })
+      }
+
       this.showing = true
       e.consume()
     }
@@ -116,7 +124,7 @@ export class PopupMenuHandler extends MouseHandler {
 
   hideMenu() {
     this.showing = false
-    this.graph.trigger(Graph.events.hideContextMenu)
+    this.doHide && this.doHide()
   }
 
   isShowing() {

@@ -41,7 +41,7 @@ import {
   IMouseHandler,
   TooltipHandler,
   KeyboardHandler,
-  PopupMenuHandler,
+  ContextMenuHandler,
   PanningHandler,
   SelectionHandler,
   GraphHandler,
@@ -84,7 +84,7 @@ export class Graph extends Disablable implements
 
   public readonly keyboardHandler: KeyboardHandler
   public readonly tooltipHandler: TooltipHandler
-  public readonly popupMenuHandler: PopupMenuHandler
+  public readonly contextMenuHandler: ContextMenuHandler
   public readonly selectionHandler: SelectionHandler
   public readonly connectionHandler: ConnectionHandler
   public readonly panningHandler: PanningHandler
@@ -604,7 +604,7 @@ export class Graph extends Disablable implements
     this.graphHandler = this.createGraphHandler()
     this.panningHandler = this.createPanningHandler()
     this.panningHandler.disablePanning()
-    this.popupMenuHandler = this.createPopupMenuHandler()
+    this.contextMenuHandler = this.createContextMenuHandler()
     this.rubberbandHandler = this.createRubberbandHandler()
 
     applyOptions(this)
@@ -691,8 +691,8 @@ export class Graph extends Disablable implements
   }
 
   @hook()
-  createPopupMenuHandler() {
-    return new PopupMenuHandler(this)
+  createContextMenuHandler() {
+    return new ContextMenuHandler(this)
   }
 
   @hook()
@@ -2945,7 +2945,7 @@ export class Graph extends Disablable implements
   protected disposeHandlers() {
     this.tooltipHandler.dispose()
     this.panningHandler.dispose()
-    this.popupMenuHandler.dispose()
+    this.contextMenuHandler.dispose()
     this.selectionHandler.dispose()
     this.graphHandler.dispose()
     this.connectionHandler.dispose()
@@ -3148,8 +3148,6 @@ export namespace Graph {
     translate: 'translate',
     gesture: 'gesture',
     fireMouseEvent: 'fireMouseEvent',
-    showContextMenu: 'showContextMenu',
-    hideContextMenu: 'hideContextMenu',
     selectionChanged: 'selectionChanged',
   }
 }

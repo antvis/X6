@@ -5,10 +5,11 @@ import { Dialect, Style } from '../types'
 import { Image, Multiplicity, Rectangle } from '../struct'
 import { defaultOptions } from './preset'
 import { GuideOptions } from './guide'
-import { RubberbandOptions } from './rubberband'
 import { TooltipOptions } from './tooltip'
-import { MovingPreviewOptions, DropTargetHighlightOptions } from './moving'
+import { RubberbandOptions } from './rubberband'
+import { ContextMenuOptions } from './contextmenu'
 import { SelectionPreviewOptions } from './selection'
+import { MovingPreviewOptions, DropTargetHighlightOptions } from './moving'
 import {
   ResizeOption,
   ResizeHandleOptions,
@@ -749,31 +750,6 @@ export interface FoldingOptions {
   enabled: boolean
   collapsedImage: Image
   expandedImage: Image
-}
-
-export interface ContextMenuOptions {
-  enabled: boolean
-
-  /**
-   * Specifies is use left mouse button as context menu trigger.
-   */
-  isLeftButton: boolean
-
-  /**
-   * Specifies if cells should be selected if a popupmenu is
-   * displayed for them.
-   *
-   * Default is `true`.
-   */
-  selectCellsOnContextMenu: boolean
-
-  /**
-   * Specifies if cells should be deselected if a popupmenu is
-   * displayed for the diagram background.
-   *
-   * Default is `true`.
-   */
-  clearSelectionOnBackground: boolean
 }
 
 export interface KeyboardOptions {

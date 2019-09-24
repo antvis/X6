@@ -584,7 +584,7 @@ export class GraphHandler extends MouseHandler {
   protected selectDelayed(e: MouseEventEx) {
     if (
       !this.graph.isCellSelected(this.cell) ||
-      !this.graph.popupMenuHandler.isPopupTrigger(e)
+      !this.graph.contextMenuHandler.isPopupTrigger(e)
     ) {
       this.graph.selectionManager.selectCellForEvent(this.cell, e.getEvent())
     }

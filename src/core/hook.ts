@@ -9,7 +9,7 @@ import { Point, Constraint, Rectangle } from '../struct'
 import {
   KeyboardHandler,
   TooltipHandler,
-  PopupMenuHandler,
+  ContextMenuHandler,
   PanningHandler,
   SelectionHandler,
   GraphHandler,
@@ -43,7 +43,7 @@ export interface IHooks {
   createSelectionHandler: BareHook<SelectionHandler>
   createGraphHandler: BareHook<GraphHandler>
   createPanningHandler: BareHook<PanningHandler>
-  createPopupMenuHandler: BareHook<PopupMenuHandler>
+  createContextMenuHandler: BareHook<ContextMenuHandler>
   createRubberbandHandler: BareHook<RubberbandHandler>
   createNodeHandler: StateHook<NodeHandler>
   createEdgeHandler: (

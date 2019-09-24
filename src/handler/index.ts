@@ -2,7 +2,7 @@ export * from './handle'
 export * from './handler-base'
 export * from './handler-mouse'
 
-export * from './popupmenu-handler'
+export * from './contextmenu-handler'
 export * from './selection-handler'
 export * from './tooltip-handler'
 export * from './keyboard-handler'

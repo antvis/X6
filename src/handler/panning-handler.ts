@@ -271,8 +271,8 @@ export class PanningHandler extends MouseHandler {
   }
 
   /**
-   * Handles the event by setting the translation on the view or showing the
-   * popupmenu.
+   * Handles the event by setting the translation on the view or
+   * showing the contextmenu.
    */
   mouseUp(e: MouseEventEx) {
     if (this.active) {

@@ -1852,7 +1852,7 @@ export class View extends Primer {
     // Implemented via graph event dispatch loop to avoid duplicate
     // events in Firefox and Chrome
     graph.addMouseListener({
-      mouseDown() { graph.popupMenuHandler.hideMenu() },
+      mouseDown() { graph.contextMenuHandler.hideMenu() },
       mouseMove() { },
       mouseUp() { },
     })

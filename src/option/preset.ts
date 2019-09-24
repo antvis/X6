@@ -166,6 +166,13 @@ export const defaultOptions: FullOptions = {
     ignoreTouchEvents: true,
   },
 
+  contextMenu: {
+    enabled: false,
+    isLeftButton: false,
+    selectCellsOnContextMenu: true,
+    clearSelectionOnBackground: true,
+  },
+
   keyboard: {
     enabled: false,
     global: false,
@@ -178,13 +185,6 @@ export const defaultOptions: FullOptions = {
     border: '1px solid #1890ff',
     background: '#0077ff',
     opacity: 0.2,
-  },
-
-  contextMenu: {
-    enabled: false,
-    isLeftButton: false,
-    selectCellsOnContextMenu: true,
-    clearSelectionOnBackground: true,
   },
 
   dropTargetHighlight: {
