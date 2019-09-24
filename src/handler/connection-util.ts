@@ -1,49 +1,32 @@
-import * as util from '../util'
-import { Point } from '../struct'
-import { Graph } from '../core'
 import { CellMarker } from './cell-marker'
-import { DomEvent, MouseEventEx } from '../common'
+import { ConstraintHandler } from './constraint-handler'
 
-export function isOutlineConnect(
-  e: MouseEventEx,
-  graph: Graph,
+/**
+ * Transparent cell hilight when constraint point is highlighted.
+ */
+export function transparentMarker(
+  constraintHandler: ConstraintHandler,
   marker: CellMarker,
-  currentPoint: Point,
 ) {
-  const evt = e.getEvent()
-  const state = e.getState()
-
-  if (!DomEvent.isShiftDown(evt)) {
-
+  if (
+    constraintHandler.currentState != null &&
+    constraintHandler.currentConstraint != null
+  ) {
     if (
-      e.isSource(marker.highlight.shape) ||
-      (DomEvent.isAltDown(evt) && state != null)
+      marker.highlight != null &&
+      marker.highlight.shape != null &&
+      marker.highlight.state != null &&
+      marker.highlight.state.cell === constraintHandler.currentState.cell
     ) {
-      return true
-    }
-
-    const clientX = DomEvent.getClientX(evt)
-    const clientY = DomEvent.getClientY(evt)
-    if (marker.highlight.isHighlightAt(clientX, clientY)) {
-      return true
-    }
-
-    const doc = document.documentElement
-    const container = graph.container
-    const left = (window.pageXOffset || doc.scrollLeft) - (doc.clientLeft || 0)
-    const top = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0)
-    const offset = util.getOffset(container)
-    const gridX = currentPoint.x - container.scrollLeft + offset.x - left
-    const gridY = currentPoint.y - container.scrollTop + offset.y - top
-
-    if (
-      state == null &&
-      (gridX !== clientX || gridY !== clientY) &&
-      marker.highlight.isHighlightAt(gridX, gridY)
-    ) {
-      return true
+      if (marker.highlight.shape.stroke !== 'transparent') {
+        marker.highlight.shape.stroke = 'transparent'
+        marker.highlight.repaint()
+      }
+    } else {
+      marker.markCell(
+        constraintHandler.currentState.cell,
+        'transparent',
+      )
     }
   }
-
-  return false
 }

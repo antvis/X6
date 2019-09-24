@@ -85,7 +85,7 @@ export class EdgeElbowHandler extends EdgeHandler {
    * Converts the given point in-place from screen to unscaled, untranslated
    * graph coordinates and applies the grid.
    */
-  convertPoint(point: Point, gridEnabled: boolean) {
+  normalizePoint(point: Point, gridEnabled: boolean) {
     const s = this.graph.getView().getScale()
     const t = this.graph.getView().getTranslate()
     const origin = this.state.origin

@@ -1,7 +1,6 @@
 import * as util from '../util'
 import { Style } from '../types'
 import { View } from '../core/view'
-import { CellMarker } from './cell-marker'
 import { MouseHandler } from './handler-mouse'
 import { Shape, ImageShape, Polyline } from '../shape'
 import { ConstraintHandler } from './constraint-handler'
@@ -14,9 +13,10 @@ import {
   getConnectionIconOptions,
   applyConnectionPreviewStyle,
 } from '../option'
+import { transparentMarker } from './connection-util'
 
 export class ConnectionHandler extends MouseHandler {
-  marker: CellMarker
+  marker: ConnectionHandlerMarker
   constraintHandler: ConstraintHandler
   error: string | null = null
   edgeState: State | null = null
@@ -102,7 +102,7 @@ export class ConnectionHandler extends MouseHandler {
   }
 
   protected init() {
-    this.marker = this.createMarker()
+    this.marker = new ConnectionHandlerMarker(this.graph, this)
     this.constraintHandler = new ConstraintHandler(this.graph)
 
     // Redraws the icons if the graph changes
@@ -518,27 +518,7 @@ export class ConnectionHandler extends MouseHandler {
       this.constraintHandler.currentState != null &&
       this.constraintHandler.currentConstraint != null
     ) {
-      // Transparent cell hilight when constraint point is highlighted.
-      if (
-        this.marker &&
-        this.marker.highlight != null &&
-        this.marker.highlight.state != null &&
-        this.marker.highlight.state.cell ===
-        this.constraintHandler.currentState.cell
-      ) {
-        if (
-          this.marker.highlight.shape != null &&
-          this.marker.highlight.shape.stroke !== 'transparent'
-        ) {
-          this.marker.highlight.shape.stroke = 'transparent'
-          this.marker.highlight.repaint()
-        }
-      } else {
-        this.marker.markCell(
-          this.constraintHandler.currentState.cell,
-          'transparent',
-        )
-      }
+      transparentMarker(this.constraintHandler, this.marker)
 
       // Updates validation state.
       if (this.sourceState != null) {
@@ -799,10 +779,6 @@ export class ConnectionHandler extends MouseHandler {
       c1.dy !== c2.dy ||
       c1.perimeter !== c2.perimeter
     )
-  }
-
-  protected createMarker() {
-    return new ConnectionHandlerMarker(this.graph, this)
   }
 
   /**

@@ -43,12 +43,12 @@ export class EdgeSegmentHandler extends EdgeElbowHandler {
     }
 
     const pts = this.getCurrentPoints()
-    let last = this.convertPoint(pts[0].clone(), false)
-    point = this.convertPoint(point.clone(), false) // tslint:disable-line
+    let last = this.normalizePoint(pts[0].clone(), false)
+    point = this.normalizePoint(point.clone(), false) // tslint:disable-line
     let result: Point[] = []
 
     for (let i = 1, ii = pts.length; i < ii; i += 1) {
-      const pt = this.convertPoint(pts[i].clone(), false)
+      const pt = this.normalizePoint(pts[i].clone(), false)
 
       if (i === this.index) {
         if (Math.round(last.x - pt.x) === 0) {
@@ -95,13 +95,12 @@ export class EdgeSegmentHandler extends EdgeElbowHandler {
     point: Point,
     terminalState: State | null,
     e: MouseEventEx,
-    outline: boolean,
   ) {
-    super.updatePreviewState(edge, point, terminalState, e, outline)
+    super.updatePreviewState(edge, point, terminalState, e)
 
     // Checks and corrects preview by running edge style again
     if (!this.isSourceHandle && !this.isTargetHandle) {
-      point = this.convertPoint(point.clone(), false) // tslint:disable-line
+      point = this.normalizePoint(point.clone(), false) // tslint:disable-line
       const pts = edge.absolutePoints
       let pt0 = pts[0]
       let pt1 = pts[1]
@@ -116,7 +115,7 @@ export class EdgeSegmentHandler extends EdgeElbowHandler {
           (Math.round(pt0.x - pt1.x) !== 0 || Math.round(pt1.x - pt2.x) !== 0) &&
           (Math.round(pt0.y - pt1.y) !== 0 || Math.round(pt1.y - pt2.y) !== 0)
         ) {
-          result.push(this.convertPoint(pt1.clone(), false))
+          result.push(this.normalizePoint(pt1.clone(), false))
         }
 
         pt0 = pt1
@@ -160,7 +159,7 @@ export class EdgeSegmentHandler extends EdgeElbowHandler {
           const pt = this.graph.view.getConnectionPoint(source, sc)
 
           if (pt != null) {
-            this.convertPoint(pt, false)
+            this.normalizePoint(pt, false)
             y0 = pt.y
           }
         }
@@ -174,7 +173,7 @@ export class EdgeSegmentHandler extends EdgeElbowHandler {
           const pt = this.graph.view.getConnectionPoint(target, tc)
 
           if (pt != null) {
-            this.convertPoint(pt, false)
+            this.normalizePoint(pt, false)
             ye = pt.y
           }
         }
@@ -217,7 +216,7 @@ export class EdgeSegmentHandler extends EdgeElbowHandler {
           (Math.round(pt0.x - pt1.x) !== 0 || Math.round(pt1.x - pt2.x) !== 0) &&
           (Math.round(pt0.y - pt1.y) !== 0 || Math.round(pt1.y - pt2.y) !== 0)
         ) {
-          result.push(this.convertPoint(pt1.clone(), false))
+          result.push(this.normalizePoint(pt1.clone(), false))
         }
 
         pt0 = pt1
