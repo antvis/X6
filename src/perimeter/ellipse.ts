@@ -4,7 +4,7 @@ import { Rectangle, Point } from '../struct'
 export function ellipse(
   bounds: Rectangle,
   state: State,
-  next: Point = new Point(),
+  next: Point | Point.PointLike = new Point(),
   orthogonal: boolean = false,
 ) {
   const x = bounds.x
@@ -16,21 +16,23 @@ export function ellipse(
   const px = next.x
   const py = next.y
 
-  // Calculates straight line equation through
-  // point and ellipse center y = d * x + h
   const dx = px - cx
   const dy = py - cy
 
-  if (dx === 0 && dy !== 0) {
-    return new Point(cx, cy + b * dy / Math.abs(dy))
-  }
   if (dx === 0 && dy === 0) {
     return new Point(px, py)
+  }
+
+  if (dx === 0 && dy !== 0) {
+    return new Point(cx, cy + (dy > 0 ? b : -b))
   }
 
   if (orthogonal) {
     if (py >= y && py <= y + bounds.height) {
       const ty = py - cy
+      /**
+       * 椭圆标准方程 `x²/a² + y²/b² = 1`
+       */
       let tx = Math.sqrt(a * a * (1 - (ty * ty) / (b * b))) || 0
 
       if (px <= x) {
@@ -52,39 +54,41 @@ export function ellipse(
     }
   }
 
-  // Calculates intersection
+  /**
+   * 点与椭圆圆心的直线方程 `y = d * x + h`
+   */
   const d = dy / dx
   const h = cy - d * cx
-  const e = a * a * d * d + b * b
-  const f = -2 * cx * e
-  const g = a * a * d * d * cx * cx +
-    b * b * cx * cx -
-    a * a * b * b
-  const det = Math.sqrt(f * f - 4 * e * g)
+  /**
+   * 中心不在原点的椭圆标准方程
+   * => `(x-cx)²/a² + (y-cy)²/b² = 1`
+   * => `(x-cx)²/a² + d²(x-cx)²/b² = 1`
+   */
+  const m = a * a * d * d + b * b
+  const n = -2 * cx * m
+  const l = m * cx * cx - a * a * b * b
+  /**
+   * 得到二次方程 `mx² + nx + l = 0`
+   */
+  const det = Math.sqrt(n * n - 4 * m * l)
 
-  // Two solutions (perimeter points)
-  const xout1 = (-f + det) / (2 * e)
-  const xout2 = (-f - det) / (2 * e)
-  const yout1 = d * xout1 + h
-  const yout2 = d * xout2 + h
-  const dist1 = (
-    Math.sqrt(Math.pow((xout1 - px), 2) + Math.pow((yout1 - py), 2))
-  )
-  const dist2 = (
-    Math.sqrt(Math.pow((xout2 - px), 2) + Math.pow((yout2 - py), 2))
-  )
+  // 远近两个交点
+  const xo1 = (-n + det) / (2 * m)
+  const xo2 = (-n - det) / (2 * m)
+  const yo1 = d * xo1 + h
+  const yo2 = d * xo2 + h
 
-  // Correct solution
-  let xout = 0
-  let yout = 0
+  const dist1 = (Math.sqrt(
+    Math.pow((xo1 - px), 2) +
+    Math.pow((yo1 - py), 2),
+  ))
 
-  if (dist1 < dist2) {
-    xout = xout1
-    yout = yout1
-  } else {
-    xout = xout2
-    yout = yout2
-  }
+  const dist2 = (Math.sqrt(
+    Math.pow((xo2 - px), 2) +
+    Math.pow((yo2 - py), 2),
+  ))
 
-  return new Point(xout, yout)
+  const xo = dist1 < dist2 ? xo1 : xo2
+  const yo = dist1 < dist2 ? yo1 : yo2
+  return new Point(xo, yo)
 }

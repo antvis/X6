@@ -637,33 +637,3 @@ export function orthConnector(
     }
   }
 }
-
-// function getRoutePattern(
-//   dir: DirectionMask[],
-//   quad: number,
-//   dx: number,
-//   dy: number,
-// ) {
-//   let sourceIndex = dir[0] === DirectionMask.east ? 3 : dir[0]
-//   let targetIndex = dir[1] === DirectionMask.east ? 3 : dir[1]
-
-//   sourceIndex -= quad
-//   targetIndex -= quad
-
-//   if (sourceIndex < 1) {
-//     sourceIndex += 4
-//   }
-//   if (targetIndex < 1) {
-//     targetIndex += 4
-//   }
-
-//   let result = routePatterns[sourceIndex - 1][targetIndex - 1]
-
-//   if (dx === 0 || dy === 0) {
-//     if (inlineRoutePatterns[sourceIndex - 1][targetIndex - 1] != null) {
-//       result = inlineRoutePatterns[sourceIndex - 1][targetIndex - 1]!
-//     }
-//   }
-
-//   return result
-// }

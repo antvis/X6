@@ -2,7 +2,7 @@ import { State, Cell } from '../core'
 import { Point, RouterNames } from '../struct'
 
 /**
- * Uses either `sideToSide>` or `topToBottom` depending on the horizontal
+ * Uses either `sideToSide` or `topToBottom` depending on the horizontal
  * flag in the cell style.
  */
 export function elbow(

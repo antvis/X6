@@ -5,6 +5,7 @@ export enum FontStyle {
 }
 
 export namespace FontStyle {
+
   export function isBold(fontStyle?: FontStyle | null) {
     return (
       fontStyle != null &&

@@ -19,4 +19,20 @@ export class Image {
   toString() {
     return this.src
   }
+
+  valueOf() {
+    return {
+      src: this.src,
+      width: this.width,
+      height: this.height,
+    }
+  }
+}
+
+export namespace Image {
+  export interface ImageLike {
+    src: string
+    width: number
+    height: number
+  }
 }

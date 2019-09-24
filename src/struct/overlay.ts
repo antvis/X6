@@ -5,7 +5,7 @@ import { Align, VAlign } from '../types'
 
 export class Overlay extends Events {
   image: Image
-  tooltip: string
+  tooltip: string | null
   align: Align
   verticalAlign: VAlign
   offset: Point
@@ -19,22 +19,18 @@ export class Overlay extends Events {
    */
   defaultOverlap: number = 0.5
 
-  constructor(
-    image: Image,
-    tooltip: string,
-    align?: Align,
-    verticalAlign?: VAlign,
-    offset?: Point,
-    cursor?: string,
-  ) {
+  constructor(options: Overlay.Options) {
     super()
 
-    this.image = image
-    this.tooltip = tooltip
-    this.align = (align != null) ? align : this.align
-    this.verticalAlign = (verticalAlign != null) ? verticalAlign : this.verticalAlign
-    this.offset = (offset != null) ? offset : new Point()
-    this.cursor = (cursor != null) ? cursor : 'help'
+    this.image = options.image
+    this.tooltip = options.tooltip || null
+    this.align = (options.align != null) ? options.align : this.align
+    this.verticalAlign = options.verticalAlign != null
+      ? options.verticalAlign
+      : this.verticalAlign
+
+    this.offset = options.offset != null ? options.offset : new Point()
+    this.cursor = options.cursor != null ? options.cursor : 'help'
   }
 
   getBounds(state: State) {
@@ -88,5 +84,16 @@ export class Overlay extends Events {
 
   toString() {
     return this.tooltip
+  }
+}
+
+export namespace Overlay {
+  export interface Options {
+    image: Image
+    tooltip?: string
+    align?: Align
+    verticalAlign?: VAlign
+    offset?: Point
+    cursor?: string
   }
 }
