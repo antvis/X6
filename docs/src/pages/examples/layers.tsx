@@ -1,7 +1,7 @@
 import React from 'react'
-import { Graph, Cell, DomEvent } from '../../../src'
+import { Graph, Cell, DomEvent } from '../../../../src'
 
-export class Layers extends React.Component {
+export default class Layers extends React.Component {
   private container: HTMLDivElement
   private graph: Graph
   private layer0: Cell

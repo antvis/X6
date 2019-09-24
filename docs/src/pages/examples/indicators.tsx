@@ -1,7 +1,7 @@
 import React from 'react'
-import { Graph, DomEvent, Style } from '../../../src'
+import { Graph, DomEvent, Style } from '../../../../src'
 
-export class Indicators extends React.Component {
+export default class Indicators extends React.Component {
   private container: HTMLDivElement
 
   componentDidMount() {

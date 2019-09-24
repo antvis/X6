@@ -1,7 +1,7 @@
 import React from 'react'
-import { Graph, DomEvent } from '../../../src'
+import { Graph, DomEvent } from '../../../../src'
 
-export class HelloWorld extends React.Component {
+export default class HelloWorld extends React.Component {
   private container: HTMLDivElement
 
   componentDidMount() {
@@ -23,7 +23,8 @@ export class HelloWorld extends React.Component {
     return (
       <div
         ref={this.refContainer}
-        className="graph-container" />
+        className="graph-container"
+      />
     )
   }
 }

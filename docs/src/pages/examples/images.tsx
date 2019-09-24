@@ -1,7 +1,7 @@
 import React from 'react'
-import { Graph, DomEvent, Image, Style } from '../../../src'
+import { Graph, DomEvent, Image, Style } from '../../../../src'
 
-export class Images extends React.Component {
+export default class Images extends React.Component {
   private container: HTMLDivElement
 
   componentDidMount() {

@@ -1,7 +1,7 @@
 import React from 'react'
-import { Graph, DomEvent } from '../../../src'
+import { Graph, DomEvent } from '../../../../src'
 
-export class Test extends React.Component {
+export default class Test extends React.Component {
   private container: HTMLDivElement
 
   componentDidMount() {

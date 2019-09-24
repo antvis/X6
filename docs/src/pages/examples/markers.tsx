@@ -1,9 +1,9 @@
 import React from 'react'
-import { Graph, Style } from '../../../src'
-import '../../../src/addon/markers'
-import { getMakerNames } from '../../../src/marker'
+import { Graph, Style } from '../../../../src'
+import { getMakerNames } from '../../../../src/marker'
+import '../../../../src/addon/markers'
 
-export class Markers extends React.Component {
+export default class Markers extends React.Component {
   private container: HTMLDivElement
 
   componentDidMount() {

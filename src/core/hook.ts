@@ -319,7 +319,7 @@ export interface IHooks {
    * Returns the string or DOM node to be used as the tooltip for
    * the given cell.
    */
-  getTooltip: CellHook<string | HTMLElement>
+  getTooltip: CellHook<string | HTMLElement | null>
 
   /**
    * Returns the textual representation for the given cell.

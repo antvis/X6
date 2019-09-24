@@ -1,0 +1,11 @@
+extends:
+  - tslint-react
+  - tslint-eslint-rules
+rules:
+  eofline: true
+  semicolon:
+    - true
+    - never
+  no-construct: true
+  no-debugger: true
+  no-reference: true

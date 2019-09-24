@@ -1,7 +1,7 @@
 import React from 'react'
-import { Graph, DomEvent, Style } from '../../../src'
+import { Graph, DomEvent, Style } from '../../../../src'
 
-export class LabelPosition extends React.Component {
+export default class LabelPosition extends React.Component {
   private container: HTMLDivElement
 
   componentDidMount() {

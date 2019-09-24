@@ -1,7 +1,7 @@
 import React from 'react'
-import { Graph, DomEvent } from '../../../src'
+import { Graph, DomEvent } from '../../../../src'
 
-export class Guide extends React.Component {
+export default class Events extends React.Component {
   private container: HTMLDivElement
 
   componentDidMount() {
@@ -12,6 +12,9 @@ export class Guide extends React.Component {
         dashed: true,
       },
       rubberband: true,
+      tooltip: {
+        enabled: true,
+      },
     })
 
     graph.batchUpdate(() => {

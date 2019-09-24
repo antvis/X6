@@ -1,7 +1,9 @@
 import React from 'react'
-import { Graph, Point, Constraint, ShapeNames, perimeters } from '../../../src'
+import {
+  Graph, Point, Constraint, ShapeNames, perimeters,
+} from '../../../../src'
 
-export class Constraints extends React.Component {
+export default class Constraints extends React.Component {
   private container: HTMLDivElement
 
   componentDidMount() {

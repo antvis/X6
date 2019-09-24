@@ -1,7 +1,7 @@
 import React from 'react'
-import { Graph } from '../../../src'
+import { Graph } from '../../../../src'
 
-export class Editing extends React.Component {
+export default class Editing extends React.Component {
   private container: HTMLDivElement
 
   componentDidMount() {

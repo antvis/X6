@@ -1,7 +1,7 @@
 import React from 'react'
-import { Graph, Point } from '../../../src'
+import { Graph, Point } from '../../../../src'
 
-export class HelloPort extends React.Component {
+export default class HelloPort extends React.Component {
   private container: HTMLDivElement
 
   componentDidMount() {

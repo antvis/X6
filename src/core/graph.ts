@@ -2557,10 +2557,6 @@ export class Graph extends Disablable implements
   convertDataToString(cell: Cell): string {
     const data = this.model.getData(cell)
     if (data != null) {
-      if (util.isHtmlElem(data)) {
-        return data.nodeName
-      }
-
       if (typeof (data.toString) === 'function') {
         return data.toString()
       }
