@@ -12,9 +12,6 @@ export default class Events extends React.Component {
         dashed: true,
       },
       rubberband: true,
-      tooltip: {
-        enabled: true,
-      },
     })
 
     graph.batchUpdate(() => {

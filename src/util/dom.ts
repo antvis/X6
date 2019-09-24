@@ -616,29 +616,6 @@ export function getDocumentSize() {
   }
 }
 
-export function ensureInViewport(elem: HTMLElement) {
-  const containerSize = getDocumentSize()
-  const offset = getDocumentScrollOrigin(elem.ownerDocument!)
-  const offsetX = offset.x
-  const offsetY = offset.y
-
-  const left = elem.offsetLeft
-  const width = elem.offsetWidth
-  const right = (offsetX) + containerSize.width
-
-  if (left + width > right) {
-    elem.style.left = toPx(Math.max(offsetX, right - width))
-  }
-
-  const top = elem.offsetTop
-  const height = elem.offsetHeight
-  const bottom = offsetY + containerSize.height
-
-  if (top + height > bottom) {
-    elem.style.top = toPx(Math.max(offsetY, bottom - height))
-  }
-}
-
 export const clearSelection = function () {
   if ((document as any).selection) {
     return function () {

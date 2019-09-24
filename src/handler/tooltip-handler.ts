@@ -1,8 +1,8 @@
 import * as util from '../util'
 import { MouseHandler } from './handler-mouse'
-import { Graph, State } from '../core'
+import { Graph, State, Cell } from '../core'
 import { DomEvent, MouseEventEx, Disposable } from '../common'
-import { TooltipOptions } from '../option'
+import { TooltipOptions, ShowTooltipArgs } from '../option'
 
 export class TooltipHandler extends MouseHandler {
   /**
@@ -23,13 +23,16 @@ export class TooltipHandler extends MouseHandler {
   delay: number = 500
   zIndex: number = 9999
 
-  protected elem: HTMLDivElement | null = null
+  protected doHide: (() => void) | null
+  protected doShow: ((args: ShowTooltipArgs) => void) | null
+
   protected timer: number | null
   protected lastX: number
   protected lastY: number
   protected state: State | null
   protected sourceElem: HTMLElement
   protected isStateSource: boolean
+  protected showing: boolean = false
 
   constructor(graph: Graph) {
     super(graph)
@@ -43,6 +46,8 @@ export class TooltipHandler extends MouseHandler {
     this.zIndex = options.zIndex
     this.hideOnHover = options.hideOnHover
     this.ignoreTouchEvents = options.ignoreTouchEvents
+    this.doShow = options.show || null
+    this.doHide = options.hide || null
     this.setEnadled(options.enabled)
   }
 
@@ -90,28 +95,17 @@ export class TooltipHandler extends MouseHandler {
     this.hideTooltip()
   }
 
-  show(tip: string | HTMLElement | null, x: number, y: number) {
+  show(
+    cell: Cell,
+    elem: HTMLElement,
+    tip: string | HTMLElement | null,
+    x: number,
+    y: number,
+  ) {
     if (this.canShow(tip)) {
-      if (this.elem == null) {
-        this.init()
-      }
-
-      if (this.elem) {
-        const origin = util.getScrollOrigin(document.body)
-
-        this.elem.style.zIndex = `${this.zIndex}`
-        this.elem.style.left = util.toPx(x + origin.x)
-        this.elem.style.top = util.toPx(y + origin.y)
-
-        if (util.isHtmlElem(tip)) {
-          this.elem.innerHTML = ''
-          this.elem.appendChild(tip as HTMLElement)
-        } else {
-          this.elem.innerHTML = (tip as string).replace(/\n/g, '<br>')
-        }
-
-        this.elem.style.display = ''
-        util.ensureInViewport(this.elem)
+      this.showing = true
+      if (this.doShow) {
+        this.doShow.call(this.graph, { cell, elem, x, y, tip: tip! })
       }
     }
   }
@@ -153,7 +147,7 @@ export class TooltipHandler extends MouseHandler {
             () => {
               if (this.willShow()) {
                 const tip = this.graph.cellManager.getTooltip(state!, elem, x, y)
-                this.show(tip, x, y)
+                this.show(state!.cell, elem, tip, x, y)
                 this.state = state!
                 this.sourceElem = elem
                 this.isStateSource = isStateSource
@@ -183,40 +177,16 @@ export class TooltipHandler extends MouseHandler {
   }
 
   protected hideTooltip() {
-    if (this.elem != null) {
-      this.elem.style.display = 'none'
-      this.elem.innerHTML = ''
-    }
+    this.showing = false
+    this.doHide && this.doHide.call(this.graph)
   }
 
   protected isHidden() {
-    return (
-      this.elem == null ||
-      this.elem.style.display === 'none'
-    )
-  }
-
-  protected init() {
-    if (document.body != null) {
-      this.elem = util.createElement('div') as HTMLDivElement
-      this.elem.className = `${this.graph.prefixCls}-tooltip`
-      this.elem.style.display = 'node'
-
-      document.body.appendChild(this.elem)
-
-      DomEvent.addMouseListeners(this.elem, () => {
-        this.hideTooltip()
-      })
-    }
+    return !this.showing
   }
 
   @Disposable.aop()
   dispose() {
     this.graph.removeMouseListener(this)
-    if (this.elem != null) {
-      DomEvent.release(this.elem)
-      util.removeElement(this.elem)
-      this.elem = null
-    }
   }
 }

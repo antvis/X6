@@ -54,8 +54,12 @@ export type DrawMarker = (options: DrawMarkerOptions) => (() => void)
 
 const markers: { [name: string]: DrawMarker } = {}
 
-export function registerMarker(name: string, fn: DrawMarker) {
-  if (markers[name]) {
+export function registerMarker(
+  name: string,
+  fn: DrawMarker,
+  force: boolean = false,
+) {
+  if (markers[name] && !force) {
     throw new Error(`Marker with name '${name}' already registered.`)
   }
   markers[name] = fn

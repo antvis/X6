@@ -16,23 +16,23 @@ import {
 
 export const registerShape = shapes.Shape.registerShape
 
-registerShape(ShapeNames.rectangle, shapes.RectangleShape)
-registerShape(ShapeNames.ellipse, shapes.EllipseShape)
-registerShape(ShapeNames.doubleEllipse, shapes.DoubleEllipse)
-registerShape(ShapeNames.triangle, shapes.Triangle)
-registerShape(ShapeNames.hexagon, shapes.Hexagon)
-registerShape(ShapeNames.cylinder, shapes.Cylinder)
-registerShape(ShapeNames.rhombus, shapes.Rhombus)
-registerShape(ShapeNames.actor, shapes.Actor)
-registerShape(ShapeNames.cloud, shapes.Cloud)
-registerShape(ShapeNames.line, shapes.Line)
-registerShape(ShapeNames.image, shapes.ImageShape)
-registerShape(ShapeNames.label, shapes.Label)
-registerShape(ShapeNames.swimlane, shapes.Swimlane)
-registerShape(ShapeNames.connector, shapes.Connector)
-registerShape(ShapeNames.arrow, shapes.Arrow)
-registerShape(ShapeNames.arrowConnector, shapes.ArrowConnector)
-registerShape(ShapeNames.html, shapes.HtmlShape)
+registerShape(ShapeNames.rectangle, shapes.RectangleShape, true)
+registerShape(ShapeNames.ellipse, shapes.EllipseShape, true)
+registerShape(ShapeNames.doubleEllipse, shapes.DoubleEllipse, true)
+registerShape(ShapeNames.triangle, shapes.Triangle, true)
+registerShape(ShapeNames.hexagon, shapes.Hexagon, true)
+registerShape(ShapeNames.cylinder, shapes.Cylinder, true)
+registerShape(ShapeNames.rhombus, shapes.Rhombus, true)
+registerShape(ShapeNames.actor, shapes.Actor, true)
+registerShape(ShapeNames.cloud, shapes.Cloud, true)
+registerShape(ShapeNames.line, shapes.Line, true)
+registerShape(ShapeNames.image, shapes.ImageShape, true)
+registerShape(ShapeNames.label, shapes.Label, true)
+registerShape(ShapeNames.swimlane, shapes.Swimlane, true)
+registerShape(ShapeNames.connector, shapes.Connector, true)
+registerShape(ShapeNames.arrow, shapes.Arrow, true)
+registerShape(ShapeNames.arrowConnector, shapes.ArrowConnector, true)
+registerShape(ShapeNames.html, shapes.HtmlShape, true)
 
 // #endregion
 
@@ -53,8 +53,12 @@ export type RoutingFunction = (
 ) => void
 
 const routerMap: { [name: string]: RoutingFunction } = {}
-export function registerRouter(name: string, routing: RoutingFunction) {
-  if (routerMap[name]) {
+export function registerRouter(
+  name: string,
+  routing: RoutingFunction,
+  force: boolean = false,
+) {
+  if (routerMap[name] && !force) {
     throw new Error(`Router with name '${name}' already registered.`)
   }
   routerMap[name] = routing
@@ -77,13 +81,13 @@ export function getRouter(name: string, allowEval: boolean = false) {
   return getEntity<RoutingFunction>(routerMap, name, allowEval)
 }
 
-registerRouter(RouterNames.elbow, routers.elbow)
-registerRouter(RouterNames.entityRelation, routers.entityRelation)
-registerRouter(RouterNames.loop, routers.loop)
-registerRouter(RouterNames.sideToSide, routers.sideToSide)
-registerRouter(RouterNames.topToBottom, routers.topToBottom)
-registerRouter(RouterNames.orthogonal, routers.orthConnector)
-registerRouter(RouterNames.segment, routers.segmentConnector)
+registerRouter(RouterNames.elbow, routers.elbow, true)
+registerRouter(RouterNames.entityRelation, routers.entityRelation, true)
+registerRouter(RouterNames.loop, routers.loop, true)
+registerRouter(RouterNames.sideToSide, routers.sideToSide, true)
+registerRouter(RouterNames.topToBottom, routers.topToBottom, true)
+registerRouter(RouterNames.orthogonal, routers.orthConnector, true)
+registerRouter(RouterNames.segment, routers.segmentConnector, true)
 
 // #endregion
 
@@ -98,8 +102,12 @@ export type PerimeterFunction = (
 
 const perimeterMap: { [name: string]: PerimeterFunction } = {}
 
-export function registerPerimeter(name: string, permeter: PerimeterFunction) {
-  if (perimeterMap[name]) {
+export function registerPerimeter(
+  name: string,
+  permeter: PerimeterFunction,
+  force: boolean = false,
+) {
+  if (perimeterMap[name] && !force) {
     throw new Error(`Perimeter with name '${name}' already registered.`)
   }
   perimeterMap[name] = permeter
@@ -109,10 +117,10 @@ export function getPerimeter(name: string, allowEval: boolean = false) {
   return getEntity<PerimeterFunction>(perimeterMap, name, allowEval)
 }
 
-registerPerimeter(PerimeterNames.ellipse, perimeters.ellipse)
-registerPerimeter(PerimeterNames.rectangle, perimeters.rectangle)
-registerPerimeter(PerimeterNames.rhombus, perimeters.rhombus)
-registerPerimeter(PerimeterNames.triangle, perimeters.triangle)
-registerPerimeter(PerimeterNames.hexagon, perimeters.hexagon)
+registerPerimeter(PerimeterNames.ellipse, perimeters.ellipse, true)
+registerPerimeter(PerimeterNames.rectangle, perimeters.rectangle, true)
+registerPerimeter(PerimeterNames.rhombus, perimeters.rhombus, true)
+registerPerimeter(PerimeterNames.triangle, perimeters.triangle, true)
+registerPerimeter(PerimeterNames.hexagon, perimeters.hexagon, true)
 
 // #endregion

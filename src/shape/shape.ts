@@ -1173,8 +1173,12 @@ export namespace Shape {
 
   const shapes: { [name: string]: ShapeClass } = {}
 
-  export function registerShape(name: string, ctor: ShapeClass) {
-    if (shapes[name] != null) {
+  export function registerShape(
+    name: string,
+    ctor: ShapeClass,
+    force: boolean = false,
+  ) {
+    if (shapes[name] != null && !force) {
       throw new Error(`Shape with name '${name}' already registered.`)
     }
 
