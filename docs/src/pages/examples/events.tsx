@@ -33,7 +33,8 @@ export default class Events extends React.Component {
         <div
           ref={this.refContainer}
           tabIndex={-1}
-          className="graph-container big" />
+          className="graph-container big"
+        />
       </div>
     )
   }

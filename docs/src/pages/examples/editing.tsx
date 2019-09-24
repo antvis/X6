@@ -49,7 +49,8 @@ export default class Editing extends React.Component {
     return (
       <div
         ref={this.refContainer}
-        className="graph-container" />
+        className="graph-container"
+      />
     )
   }
 }

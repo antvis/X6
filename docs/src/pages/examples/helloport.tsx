@@ -50,7 +50,8 @@ export default class HelloPort extends React.Component {
         <p>Using the isPort hook for visually connecting to another cell.</p>
         <div
           ref={this.refContainer}
-          className="graph-container" />
+          className="graph-container"
+        />
       </div>
     )
   }

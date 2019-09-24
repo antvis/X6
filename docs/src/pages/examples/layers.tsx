@@ -1,4 +1,5 @@
 import React from 'react'
+import { Checkbox } from 'antd'
 import { Graph, Cell, DomEvent } from '../../../../src'
 
 export default class Layers extends React.Component {
@@ -6,6 +7,11 @@ export default class Layers extends React.Component {
   private graph: Graph
   private layer0: Cell
   private layer1: Cell
+
+  state = {
+    layer0Visible: true,
+    layer1Visible: true,
+  }
 
   componentDidMount() {
     DomEvent.disableContextMenu(this.container)
@@ -84,16 +90,20 @@ export default class Layers extends React.Component {
     })
   }
 
-  handleLayer0Click = () => {
-    this.graph.model.setVisible(this.layer0, !this.graph.model.isVisible(this.layer0))
-  }
-
-  handleLayer1Click = () => {
-    this.graph.model.setVisible(this.layer1, !this.graph.model.isVisible(this.layer1))
-  }
-
   refContainer = (container: HTMLDivElement) => {
     this.container = container
+  }
+
+  onLayer0Changed = (e: any) => {
+    const checked = e.target.checked
+    this.setState({ layer0Visible: checked })
+    this.graph.model.setVisible(this.layer0, checked)
+  }
+
+  onLayer1Changed = (e: any) => {
+    const checked = e.target.checked
+    this.setState({ layer1Visible: checked })
+    this.graph.model.setVisible(this.layer1, checked)
   }
 
   render() {
@@ -101,8 +111,18 @@ export default class Layers extends React.Component {
       <div>
         <div ref={this.refContainer} className="graph-container" />
         <div style={{ marginTop: 8, fontSize: 12 }}>
-          <button onClick={this.handleLayer0Click}>Layer 0</button>
-          <button onClick={this.handleLayer1Click}>Layer 1</button>
+          <Checkbox
+            checked={this.state.layer0Visible}
+            onChange={this.onLayer0Changed}
+          >
+            Layer 0
+          </Checkbox>
+          <Checkbox
+            checked={this.state.layer1Visible}
+            onChange={this.onLayer1Changed}
+          >
+            Layer 1
+          </Checkbox>
         </div>
       </div>
     )

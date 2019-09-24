@@ -90,7 +90,8 @@ export default class Images extends React.Component {
       <div
         ref={this.refContainer}
         style={{ width: 852, height: 480 }}
-        className="graph-container" />
+        className="graph-container"
+      />
     )
   }
 }

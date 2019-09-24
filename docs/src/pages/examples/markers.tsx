@@ -29,7 +29,8 @@ export default class Markers extends React.Component {
     return (
       <div
         ref={this.refContainer}
-        className="graph-container big" />
+        className="graph-container big"
+      />
     )
   }
 }

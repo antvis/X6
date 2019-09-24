@@ -64,7 +64,8 @@ export default class LabelPosition extends React.Component {
     return (
       <div
         ref={this.refContainer}
-        className="graph-container" />
+        className="graph-container"
+      />
     )
   }
 }

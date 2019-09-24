@@ -94,7 +94,8 @@ export default class Constraints extends React.Component {
         <p>Using fixed connection points for connecting edges to vertices.</p>
         <div
           ref={this.refContainer}
-          className="graph-container" />
+          className="graph-container"
+        />
       </div>
     )
   }

@@ -87,23 +87,28 @@ export default class Transform extends React.Component {
             <button
               style={{ position: 'absolute', left: 40, top: 8 }}
               onClick={this.onTop}
-            >▲</button>
+            >▲
+            </button>
             <button
               style={{ position: 'absolute', left: 72, top: 32 }}
               onClick={this.onRight}
-            >▶</button>
+            >▶
+            </button>
             <button
               style={{ position: 'absolute', left: 40, top: 56 }}
               onClick={this.onBottom}
-            >▼</button>
+            >▼
+            </button>
             <button
               style={{ position: 'absolute', left: 8, top: 32 }}
               onClick={this.onLeft}
-            >◀</button>
+            >◀
+            </button>
             <button
               style={{ position: 'absolute', left: 41, top: 32 }}
               onClick={this.onCenter}
-            >▣</button>
+            >▣
+            </button>
             <button
               style={{ position: 'absolute', left: 120, top: 32 }}
               onClick={this.onZoomOut}
@@ -133,7 +138,8 @@ export default class Transform extends React.Component {
         <div
           ref={this.refContainer}
           style={style}
-          className="graph-container" />
+          className="graph-container"
+        />
       </div>
 
     )

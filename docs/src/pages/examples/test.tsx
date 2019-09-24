@@ -57,7 +57,8 @@ export default class Test extends React.Component {
       <div>
         <div
           ref={this.refContainer}
-          className="graph-container big" />
+          className="graph-container big"
+        />
       </div>
 
     )

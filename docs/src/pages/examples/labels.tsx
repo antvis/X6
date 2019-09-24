@@ -79,7 +79,8 @@ export default class Labels extends React.Component {
     return (
       <div
         ref={this.refContainer}
-        className="graph-container" />
+        className="graph-container"
+      />
     )
   }
 }
