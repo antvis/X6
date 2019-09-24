@@ -55,24 +55,25 @@ export function ellipse(
   }
 
   /**
-   * 点与椭圆圆心的直线方程 `y = d * x + h`
+   * The line equation from center to point
+   * `y = d * x + h`
    */
   const d = dy / dx
   const h = cy - d * cx
   /**
-   * 中心不在原点的椭圆标准方程
-   * => `(x-cx)²/a² + (y-cy)²/b² = 1`
-   * => `(x-cx)²/a² + d²(x-cx)²/b² = 1`
+   * ellipse's standard equation
+   * `(x-cx)²/a² + (y-cy)²/b² = 1`
+   * `(x-cx)²/a² + d²(x-cx)²/b² = 1`
    */
   const m = a * a * d * d + b * b
   const n = -2 * cx * m
   const l = m * cx * cx - a * a * b * b
   /**
-   * 得到二次方程 `mx² + nx + l = 0`
+   * get quadratic equation `mx² + nx + l = 0`
    */
   const det = Math.sqrt(n * n - 4 * m * l)
 
-  // 远近两个交点
+  // two intersection points(near and far)
   const xo1 = (-n + det) / (2 * m)
   const xo2 = (-n - det) / (2 * m)
   const yo1 = d * xo1 + h
