@@ -2,8 +2,6 @@ export * from './util'
 export * from './preset'
 
 export * from './graph'
-export * from './rubberband'
-export * from './contextmenu'
 export * from './resize'
 export * from './selection'
 export * from './rotation'

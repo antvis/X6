@@ -4,9 +4,13 @@ import { RoutingFunction } from '../core/registry'
 import { Dialect, Style } from '../types'
 import { Image, Multiplicity, Rectangle } from '../struct'
 import { defaultOptions } from './preset'
-import { GuideHandler, TooltipHandler, MovingHandler } from '../handler'
-import { RubberbandOptions } from './rubberband'
-import { ContextMenuOptions } from './contextmenu'
+import {
+  ContextMenuHandler,
+  RubberbandHandler,
+  GuideHandler,
+  TooltipHandler,
+  MovingHandler,
+} from '../handler'
 import { SelectionPreviewOptions } from './selection'
 import {
   ResizeOption,
@@ -776,9 +780,9 @@ export interface FullOptions extends SimpleOptions {
   tooltip: TooltipHandler.TooltipOptions
   folding: FoldingOptions
   keyboard: KeyboardOptions
-  rubberband: RubberbandOptions
+  rubberband: RubberbandHandler.RubberbandOptions
   pageBreak: PageBreakOptions
-  contextMenu: ContextMenuOptions
+  contextMenu: ContextMenuHandler.ContextMenuOptions
   dropTargetHighlight: MovingHandler.DropTargetHighlightOptions
   movingPreview: MovingHandler.MovingPreviewOptions
   selectionPreview: SelectionPreviewOptions
@@ -806,9 +810,9 @@ export interface GraphOptions extends Partial<SimpleOptions> {
   tooltip?: Partial<TooltipHandler.TooltipOptions> | boolean
   folding?: Partial<FoldingOptions> | boolean
   keyboard?: Partial<KeyboardOptions> | boolean
-  rubberband?: Partial<RubberbandOptions> | boolean
+  rubberband?: Partial<RubberbandHandler.RubberbandOptions> | boolean
   pageBreak?: Partial<PageBreakOptions> | boolean
-  contextMenu?: Partial<ContextMenuOptions> | boolean
+  contextMenu?: Partial<ContextMenuHandler.ContextMenuOptions> | boolean
   dropTargetHighlight?: Partial<MovingHandler.DropTargetHighlightOptions>
   movingPreview?: Partial<MovingHandler.MovingPreviewOptions>
   selectionPreview?: Partial<SelectionPreviewOptions>

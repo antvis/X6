@@ -1,7 +1,6 @@
 import * as util from '../util'
-import { Graph } from '../core'
+import { Graph, Cell } from '../core'
 import { MouseHandler } from './handler-mouse'
-import { ContextMenuOptions, ShowContextMenuArgs } from '../option'
 import { MouseEventEx, DomEvent, Disposable } from '../common'
 
 export class ContextMenuHandler extends MouseHandler {
@@ -29,7 +28,8 @@ export class ContextMenuHandler extends MouseHandler {
   protected inTolerance: boolean
   protected showing: boolean = false
   protected doHide: (() => void) | null
-  protected doShow: ((args: ShowContextMenuArgs) => void) | null
+  protected doShow:
+    ((args: ContextMenuHandler.ShowContextMenuArgs) => void) | null
 
   constructor(graph: Graph) {
     super(graph)
@@ -44,7 +44,9 @@ export class ContextMenuHandler extends MouseHandler {
   }
 
   protected config() {
-    const options = this.graph.options.contextMenu as ContextMenuOptions
+    const options = this.graph.options.contextMenu as
+      ContextMenuHandler.ContextMenuOptions
+
     this.isLeftButton = options.isLeftButton
     this.selectOnPopup = options.selectCellsOnContextMenu
     this.clearSelectionOnBackground = options.clearSelectionOnBackground
@@ -135,5 +137,42 @@ export class ContextMenuHandler extends MouseHandler {
   dispose() {
     this.graph.removeMouseListener(this)
     this.graph.off(Graph.events.gesture, this.gestureHandler)
+  }
+}
+
+export namespace ContextMenuHandler {
+  export interface ContextMenuOptions {
+    enabled: boolean
+
+    /**
+     * Specifies is use left mouse button as context menu trigger.
+     */
+    isLeftButton: boolean
+
+    /**
+     * Specifies if cells should be selected if a contextmenu is
+     * displayed for them.
+     *
+     * Default is `true`.
+     */
+    selectCellsOnContextMenu: boolean
+
+    /**
+     * Specifies if cells should be deselected if a contextmenu is
+     * displayed for the diagram background.
+     *
+     * Default is `true`.
+     */
+    clearSelectionOnBackground: boolean
+
+    show?: (this: Graph, args: ShowContextMenuArgs) => void
+    hide?: (this: Graph) => void
+  }
+
+  export interface ShowContextMenuArgs {
+    cell: Cell | null
+    e: MouseEvent
+    x: number
+    y: number
   }
 }

@@ -1,9 +1,9 @@
 import * as util from '../util'
 import { Graph } from '../core'
 import { MouseHandler } from '.'
-import { MouseEventEx, DomEvent, detector, Disposable } from '../common'
 import { Rectangle, Point } from '../struct'
-import { getRubberbandStyle, RubberbandOptions } from '../option'
+import { OptionItem, drill } from '../option'
+import { MouseEventEx, DomEvent, detector, Disposable } from '../common'
 
 export class RubberbandHandler extends MouseHandler {
   /**
@@ -66,7 +66,9 @@ export class RubberbandHandler extends MouseHandler {
   }
 
   config() {
-    const options = this.graph.options.rubberband as RubberbandOptions
+    const options = this.graph.options.rubberband as
+      RubberbandHandler.RubberbandOptions
+
     this.setEnadled(options.enabled)
     this.fadeOut = options.fadeOut
   }
@@ -194,7 +196,7 @@ export class RubberbandHandler extends MouseHandler {
       this.width = Math.max(this.origin.x, x) - this.x
       this.height = Math.max(this.origin.y, y) - this.y
 
-      const style = getRubberbandStyle({
+      const style = RubberbandHandler.getRubberbandStyle({
         graph: this.graph,
         x: this.x,
         y: this.y,
@@ -277,6 +279,39 @@ export class RubberbandHandler extends MouseHandler {
 
     if (this.sharedDiv != null) {
       this.sharedDiv = null
+    }
+  }
+}
+
+export namespace RubberbandHandler {
+
+  export interface RubberbandOptions {
+    enabled: boolean,
+    fadeOut: boolean,
+    opacity: OptionItem<GetRubberbandStyleArgs, number>,
+    border: OptionItem<GetRubberbandStyleArgs, string>,
+    background: OptionItem<GetRubberbandStyleArgs, string>,
+    className?: OptionItem<GetRubberbandStyleArgs, string>,
+  }
+
+  export interface GetRubberbandStyleArgs {
+    graph: Graph,
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+  }
+
+  export function getRubberbandStyle(e: GetRubberbandStyleArgs) {
+    const graph = e.graph
+    const options = graph.options.rubberband as RubberbandOptions
+    const { opacity, border, background, className } = options
+
+    return {
+      className: drill(className, graph, e),
+      opacity: drill(opacity, graph, e),
+      border: drill(border, graph, e),
+      background: drill(background, graph, e),
     }
   }
 }
