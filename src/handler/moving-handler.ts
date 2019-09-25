@@ -7,10 +7,16 @@ import { MouseHandler } from './handler-mouse'
 import { CellHighlight } from './cell-highlight'
 import { MouseEventEx, DomEvent, Disposable } from '../common'
 import {
-  applyMovingPreviewStyle,
-  MovingPreviewOptions,
-  applyDropTargetHighlightStyle,
   applyConnectionHighlightStyle,
+  BaseArgs,
+  BaseStyle,
+  OptionItem,
+  StrokeStyle,
+  drill,
+  applyBaseStyle,
+  applyClassName,
+  applyCursorStyle,
+  applyManualStyle,
 } from '../option'
 
 export class MovingHandler extends MouseHandler {
@@ -62,10 +68,7 @@ export class MovingHandler extends MouseHandler {
     this.graph.addMouseListener(this)
 
     // Repaints the handler after autoscroll
-    this.onPan = () => {
-      this.updatePreview()
-    }
-
+    this.onPan = () => this.updatePreview()
     this.graph.on(Graph.events.translate, this.onPan)
 
     this.onEscape = () => this.reset()
@@ -75,7 +78,7 @@ export class MovingHandler extends MouseHandler {
       if (this.origin != null) {
         try {
           this.bounds = this.graph.view.getBounds(this.cells)
-          this.previewBounds = this.getPreviewBounds(this.cells)
+          this.previewBounds = movment.getPreviewBounds(this, this.cells)
           this.updatePreview()
         } catch (e) {
           this.reset()
@@ -86,15 +89,17 @@ export class MovingHandler extends MouseHandler {
     this.graph.model.on(Model.events.change, this.onRefresh)
   }
 
-  config() {
-    const options = this.graph.options.movingPreview as MovingPreviewOptions
+  protected config() {
+    const options = this.graph.options.movingPreview as
+      MovingHandler.MovingPreviewOptions
+
     this.htmlPreview = options.html
     this.minimumSize = options.minimumSize
   }
 
   mouseDown(e: MouseEventEx) {
-    if (movment.canMove0(this, e)) {
-      if (movment.canMove1(this, e)) {
+    if (movment.isValid(this, e)) {
+      if (movment.canMove(this, e)) {
         this.start(e)
       }
 
@@ -111,61 +116,7 @@ export class MovingHandler extends MouseHandler {
     this.cells = movment.getCells(this, this.cell, e)
     this.origin = util.clientToGraph(this.graph.container, e)
     this.bounds = this.graph.view.getBounds(this.cells)
-    this.previewBounds = this.getPreviewBounds(this.cells)
-  }
-
-  protected getPreviewBounds(cells: Cell[]) {
-    const bounds = this.getBoundingBox(cells)
-    if (bounds != null) {
-      // Corrects width and height
-      bounds.width = Math.max(0, bounds.width - 1)
-      bounds.height = Math.max(0, bounds.height - 1)
-
-      if (bounds.width < this.minimumSize) {
-        const dx = this.minimumSize - bounds.width
-        bounds.x -= dx / 2
-        bounds.width = this.minimumSize
-      } else {
-        bounds.x = Math.round(bounds.x)
-        bounds.width = Math.ceil(bounds.width)
-      }
-
-      if (bounds.height < this.minimumSize) {
-        const dy = this.minimumSize - bounds.height
-        bounds.y -= dy / 2
-        bounds.height = this.minimumSize
-      } else {
-        bounds.y = Math.round(bounds.y)
-        bounds.height = Math.ceil(bounds.height)
-      }
-    }
-
-    return bounds
-  }
-
-  protected getBoundingBox(cells: Cell[]): Rectangle | null {
-    let result: Rectangle | null = null
-    const model = this.graph.getModel()
-
-    cells && cells.forEach((cell) => {
-      if (model.isNode(cell) || model.isEdge(cell)) {
-        const state = this.graph.view.getState(cell)
-        if (state) {
-          let bbox = state.bounds
-          if (model.isNode(cell) && state.shape && state.shape.boundingBox) {
-            bbox = state.shape.boundingBox
-          }
-
-          if (result == null) {
-            result = bbox.clone()
-          } else {
-            result.add(bbox)
-          }
-        }
-      }
-    })
-
-    return result
+    this.previewBounds = movment.getPreviewBounds(this, this.cells)
   }
 
   mouseMove(e: MouseEventEx) {
@@ -280,7 +231,7 @@ export class MovingHandler extends MouseHandler {
         this.previewBounds.height,
       )
 
-      applyMovingPreviewStyle({
+      MovingHandler.applyMovingPreviewStyle({
         graph: this.graph,
         shape: this.previewShape,
         x: bounds.x,
@@ -318,7 +269,7 @@ export class MovingHandler extends MouseHandler {
     if (state && (graph.model.getParent(this.cell) !== target || clone)) {
       if (this.target !== target) {
         this.target = target
-        applyDropTargetHighlightStyle({
+        MovingHandler.applyDropTargetHighlightStyle({
           graph,
           cell: target!,
           highlight: this.highlight!,
@@ -574,5 +525,69 @@ export class MovingHandler extends MouseHandler {
     this.onRefresh = null
 
     this.destoryShapes()
+  }
+}
+
+export namespace MovingHandler {
+  export interface MovingPreviewOptions
+    extends BaseStyle<ApplyMovingPreviewStyleArgs> {
+    /**
+     * Specifies if draw a html preview. If this is used then drop target
+     * detection relies entirely on `graph.getCellAt` because the HTML
+     * preview does not "let events through".
+     *
+     * Default is `false`.
+     */
+    html: boolean
+
+    /**
+     * Specifies the minimum number of pixels for the width and height of a
+     * selection bounds.
+     *
+     * Default is `6`.
+     */
+    minimumSize: number
+
+    cursor: OptionItem<ApplyMovingPreviewStyleArgs, string>
+  }
+
+  export interface ApplyMovingPreviewStyleArgs extends BaseArgs {
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+  }
+
+  export function applyMovingPreviewStyle(args: ApplyMovingPreviewStyleArgs) {
+    const options = args.graph.options.movingPreview as MovingPreviewOptions
+
+    applyBaseStyle(args, options)
+    applyClassName(args, options, 'moving-preview')
+    applyCursorStyle(args, options)
+    applyManualStyle(args, options)
+  }
+
+  export interface ApplyDropTargetHighlightStyleArgs {
+    graph: Graph,
+    cell: Cell,
+    highlight: CellHighlight,
+  }
+
+  export interface DropTargetHighlightOptions
+    extends StrokeStyle<ApplyDropTargetHighlightStyleArgs> {
+    opacity: OptionItem<ApplyDropTargetHighlightStyleArgs, number>
+    spacing: OptionItem<ApplyDropTargetHighlightStyleArgs, number>
+  }
+
+  export function applyDropTargetHighlightStyle(
+    args: ApplyDropTargetHighlightStyleArgs,
+  ) {
+    const { graph, highlight } = args
+    const opts = graph.options.dropTargetHighlight as DropTargetHighlightOptions
+    highlight.highlightColor = drill(opts.stroke, graph, args)
+    highlight.strokeWidth = drill(opts.strokeWidth, graph, args)
+    highlight.dashed = drill(opts.dashed, graph, args)
+    highlight.opacity = drill(opts.opacity, graph, args)
+    highlight.spacing = drill(opts.spacing, graph, args)
   }
 }

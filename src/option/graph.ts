@@ -4,12 +4,10 @@ import { RoutingFunction } from '../core/registry'
 import { Dialect, Style } from '../types'
 import { Image, Multiplicity, Rectangle } from '../struct'
 import { defaultOptions } from './preset'
-import { GuideOptions } from './guide'
-import { TooltipOptions } from './tooltip'
+import { GuideHandler, TooltipHandler, MovingHandler } from '../handler'
 import { RubberbandOptions } from './rubberband'
 import { ContextMenuOptions } from './contextmenu'
 import { SelectionPreviewOptions } from './selection'
-import { MovingPreviewOptions, DropTargetHighlightOptions } from './moving'
 import {
   ResizeOption,
   ResizeHandleOptions,
@@ -774,15 +772,15 @@ export interface FullOptions extends SimpleOptions {
   nodeStyle: Style
   edgeStyle: Style
   grid: GridOptions
-  guide: GuideOptions
-  tooltip: TooltipOptions
+  guide: GuideHandler.GuideOptions
+  tooltip: TooltipHandler.TooltipOptions
   folding: FoldingOptions
   keyboard: KeyboardOptions
   rubberband: RubberbandOptions
   pageBreak: PageBreakOptions
   contextMenu: ContextMenuOptions
-  dropTargetHighlight: DropTargetHighlightOptions
-  movingPreview: MovingPreviewOptions
+  dropTargetHighlight: MovingHandler.DropTargetHighlightOptions
+  movingPreview: MovingHandler.MovingPreviewOptions
   selectionPreview: SelectionPreviewOptions
   resize: ResizeOption
   resizeHandle: ResizeHandleOptions
@@ -804,15 +802,15 @@ export interface GraphOptions extends Partial<SimpleOptions> {
   nodeStyle?: Style
   edgeStyle?: Style
   grid?: Partial<GridOptions> | boolean
-  guide?: Partial<GuideOptions> | boolean
-  tooltip?: Partial<TooltipOptions> | boolean
+  guide?: Partial<GuideHandler.GuideOptions> | boolean
+  tooltip?: Partial<TooltipHandler.TooltipOptions> | boolean
   folding?: Partial<FoldingOptions> | boolean
   keyboard?: Partial<KeyboardOptions> | boolean
   rubberband?: Partial<RubberbandOptions> | boolean
   pageBreak?: Partial<PageBreakOptions> | boolean
   contextMenu?: Partial<ContextMenuOptions> | boolean
-  dropTargetHighlight?: Partial<DropTargetHighlightOptions>
-  movingPreview?: Partial<MovingPreviewOptions>
+  dropTargetHighlight?: Partial<MovingHandler.DropTargetHighlightOptions>
+  movingPreview?: Partial<MovingHandler.MovingPreviewOptions>
   selectionPreview?: Partial<SelectionPreviewOptions>
   resize?: Partial<ResizeOption> | boolean
   resizeHandle?: Partial<ResizeHandleOptions>
