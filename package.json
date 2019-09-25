@@ -1,7 +1,7 @@
 {
   "name": "x6",
-  "version": "1.0.0",
-  "description": "",
+  "version": "0.1.0",
+  "description": "JavaScript diagramming library",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "files": [
@@ -14,21 +14,23 @@
     "src": "src/"
   },
   "keywords": [
+    "diagramming",
     "graph",
     "editor"
   ],
   "scripts": {
     "clean": "rimraf ./lib",
-    "test": "jest",
+    "lint": "tslint -c tslint.json -p tsconfig.lint.json --fix",
     "less": "lessc ./src/index.less ./lib/index.css",
     "build:images": "node ./scripts/make-images.js",
     "build:version": "node ./scripts/make-version.js",
+    "build:watch": "tsc -w",
     "build": "yarn run build:images && yarn run build:version && yarn run less && tsc",
-    "lint": "tslint -c tslint.json -p tsconfig.lint.json --fix",
-    "coveralls": "cat ./test/coverage/lcov.info | coveralls",
-    "prepublish": "yarn test",
     "prebuild": "yarn run lint && yarn run clean",
-    "pretest": "rimraf ./test/coverage"
+    "test": "jest",
+    "coveralls": "cat ./test/coverage/lcov.info | coveralls",
+    "pretest": "rimraf ./test/coverage",
+    "prepublish": "yarn test"
   },
   "husky": {
     "hooks": {

@@ -6,7 +6,7 @@ import { Style } from '../types'
 
 export class Cell extends Disposable {
   public id?: string | null
-  public data?: any
+  public data: any
   public style: Style
   public visible: boolean
   public geometry: Geometry | null
@@ -31,7 +31,7 @@ export class Cell extends Disposable {
     style: Style = {},
   ) {
     super()
-    this.data = data
+    this.data = data || null
     this.style = style
     this.geometry = geometry || null
     this.visible = true

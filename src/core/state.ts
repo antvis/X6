@@ -17,7 +17,7 @@ export class State extends Disablable {
   invalidStyle: boolean = false
 
   /**
-   * scale and translated bounds
+   * The scale and translated bounds.
    */
   bounds: Rectangle
 
@@ -32,9 +32,9 @@ export class State extends Disablable {
   cellBounds: Rectangle
 
   /**
-   * the unscaled, untranslated paint bounds. This is the same as
-   * `cellBounds` but with a 90 degree rotation if the shape's
-   * `isPaintBoundsInverted` returns true.
+   * The unscaled, untranslated bounds. This is the same as `cellBounds`
+   * but with a 90 degree rotation if the shape's `isPaintBoundsInverted`
+   * returns true.
    */
   paintBounds: Rectangle
 
@@ -179,16 +179,6 @@ export class State extends Disablable {
     }
   }
 
-  setCursor(cursor?: string) {
-    if (this.shape != null) {
-      this.shape.setCursor(cursor)
-    }
-
-    if (this.text != null) {
-      this.text.setCursor(cursor)
-    }
-  }
-
   getVisibleTerminal(isSource?: boolean) {
     const state = this.getVisibleTerminalState(isSource)
     return state != null ? state.cell : null
@@ -260,6 +250,16 @@ export class State extends Disablable {
     this.unscaledWidth = state.unscaledWidth
 
     this.bounds.update(state.bounds)
+  }
+
+  setCursor(cursor?: string) {
+    if (this.shape != null) {
+      this.shape.setCursor(cursor)
+    }
+
+    if (this.text != null) {
+      this.text.setCursor(cursor)
+    }
   }
 
   clone() {

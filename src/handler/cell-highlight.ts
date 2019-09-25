@@ -15,6 +15,8 @@ export class CellHighlight extends BaseHandler {
   dashed: boolean
   spacing: number
   topMost: boolean
+  className: string | null
+  cellClassName: string | null
 
   private resetHandler: () => void
   private repaintHandler: () => void
@@ -31,6 +33,8 @@ export class CellHighlight extends BaseHandler {
     this.dashed = options.dashed != null ? options.dashed : false
     this.topMost = options.keepOnTop != null ? options.keepOnTop : false
     this.spacing = options.spacing || 2
+    this.className = options.className || null
+    this.cellClassName = options.cellClassName || null
 
     this.repaintHandler = () => {
       if (this.state != null) {
@@ -126,10 +130,13 @@ export class CellHighlight extends BaseHandler {
         this.shape = null
       }
 
+      const prev = this.state
       this.state = state
 
       if (this.state != null) {
         this.drawHighlight()
+      } else if (prev != null && this.cellClassName != null) {
+        // remove target cell class name
       }
     }
   }
@@ -179,5 +186,7 @@ export namespace CellHighlight {
      * Default is `false`.
      */
     keepOnTop?: boolean
+    className?: string
+    cellClassName?: string
   }
 }

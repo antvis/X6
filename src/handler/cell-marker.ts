@@ -53,7 +53,7 @@ export class CellMarker extends BaseHandler {
     }
   }
 
-  setCurrentState(
+  protected setCurrentState(
     state: State | null,
     e: MouseEventEx,
     color?: string | null,
@@ -80,9 +80,28 @@ export class CellMarker extends BaseHandler {
     }
   }
 
-  /**
-   * Marks the given cell using the given color.
-   */
+  mark() {
+    this.highlight.setHighlightColor(this.currentColor)
+    this.highlight.highlight(this.markedState)
+  }
+
+  protected unmark() {
+    this.markedState = null
+    this.mark()
+  }
+
+  protected isValidState(state: State) {
+    return true
+  }
+
+  protected getMarkerColor(
+    e: Event,
+    state: State | null,
+    isValid: boolean,
+  ): string | null {
+    return isValid ? this.validColor : this.invalidColor
+  }
+
   markCell(cell: Cell, color: string = this.validColor) {
     const state = this.graph.view.getState(cell)
     if (state != null) {
@@ -90,29 +109,6 @@ export class CellMarker extends BaseHandler {
       this.markedState = state
       this.mark()
     }
-  }
-
-  mark() {
-    this.highlight.setHighlightColor(this.currentColor)
-    this.highlight.highlight(this.markedState)
-    this.trigger(CellMarker.events.mark, { state: this.markedState })
-  }
-
-  unmark() {
-    this.markedState = null
-    this.mark()
-  }
-
-  isValidState(state: State) {
-    return true
-  }
-
-  getMarkerColor(
-    e: Event,
-    state: State | null,
-    isValid: boolean,
-  ): string | null {
-    return isValid ? this.validColor : this.invalidColor
   }
 
   process(e: MouseEventEx) {
@@ -125,24 +121,28 @@ export class CellMarker extends BaseHandler {
     return state
   }
 
-  getState(e: MouseEventEx) {
+  protected getState(e: MouseEventEx) {
     const cell = this.getCell(e)
     const state = this.getStateToMark(this.graph.view.getState(cell))
-    return (state != null && this.intersects(state, e)) ? state : null
+    return this.intersects(state, e) ? state : null
   }
 
-  getCell(e: MouseEventEx) {
+  protected getCell(e: MouseEventEx) {
     return e.getCell()
   }
 
-  getStateToMark(state: State | null) {
+  protected getStateToMark(state: State | null) {
     return state
   }
 
-  intersects(state: State, e: MouseEventEx) {
+  protected intersects(state: State | null, e: MouseEventEx) {
+    if (state == null) {
+      return false
+    }
+
+    // 在中心区域按下鼠标触发连线
+    // 在边缘区域按下鼠标触发移动
     if (this.hotspotable) {
-      // 在中心区域按下鼠标触发连线
-      // 在边缘区域按下鼠标触发移动
       return util.intersectsHotspot(
         state,
         e.getGraphX(),
@@ -163,10 +163,6 @@ export class CellMarker extends BaseHandler {
 }
 
 export namespace CellMarker {
-  export const events = {
-    mark: 'mark',
-  }
-
   export interface Options extends CellHighlight.Options {
     validColor?: string
     invalidColor?: string

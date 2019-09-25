@@ -95,8 +95,11 @@ export class Guide extends Disposable {
       bounds != null &&
       delta != null
     ) {
-      const trans = this.graph.view.translate
-      const scale = this.graph.view.scale
+      const t = this.graph.view.translate
+      const s = this.graph.view.scale
+      const tol = this.getGuideTolerance()
+      let tolX = tol
+      let tolY = tol
 
       let dx = delta.x
       let dy = delta.y
@@ -108,10 +111,6 @@ export class Guide extends Disposable {
       let activeY = false
       let stateY: State | null = null
       let valueY = null
-
-      const tol = this.getGuideTolerance()
-      let tolX = tol
-      let tolY = tol
 
       const b = bounds.clone()
       b.x += delta.x
@@ -211,16 +210,16 @@ export class Guide extends Disposable {
       if (gridEnabled) {
         if (!activeX) {
           const tx = bounds.x -
-            (this.graph.snap(bounds.x / scale - trans.x) + trans.x) * scale
+            (this.graph.snap(bounds.x / s - t.x) + t.x) * s
 
-          dx = this.graph.snap(dx / scale) * scale - tx
+          dx = this.graph.snap(dx / s) * s - tx
         }
 
         if (!activeY) {
           const ty = bounds.y -
-            (this.graph.snap(bounds.y / scale - trans.y) + trans.y) * scale
+            (this.graph.snap(bounds.y / s - t.y) + t.y) * s
 
-          dy = this.graph.snap(dy / scale) * scale - ty
+          dy = this.graph.snap(dy / s) * s - ty
         }
       }
 

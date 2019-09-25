@@ -1,21 +1,19 @@
 import * as util from '../util'
+import * as movment from './moving-handler-util'
+import { RectangleShape } from '../shape'
 import { Graph, Cell, Model } from '../core'
 import { Rectangle, Point } from '../struct'
-import { RectangleShape } from '../shape'
-import { Guide } from './guide'
-import { CellHighlight } from './cell-highlight'
 import { MouseHandler } from './handler-mouse'
+import { CellHighlight } from './cell-highlight'
 import { MouseEventEx, DomEvent, Disposable } from '../common'
 import {
-  createGuide,
-  isGuideEnabled,
   applyMovingPreviewStyle,
   MovingPreviewOptions,
   applyDropTargetHighlightStyle,
   applyConnectionHighlightStyle,
 } from '../option'
 
-export class GraphHandler extends MouseHandler {
+export class MovingHandler extends MouseHandler {
   /**
    * Specifies the minimum number of pixels for the width and height of a
    * selection bounds.
@@ -40,24 +38,23 @@ export class GraphHandler extends MouseHandler {
    */
   scaleGrid: boolean = false
 
-  guide: Guide | null = null
   protected onPan: (() => void) | null
   protected onEscape: (() => void) | null
   protected onRefresh: (() => void) | null
 
-  protected highlight: CellHighlight | null
+  protected dx: number | null
+  protected dy: number | null
+
   protected cell: Cell | null
   protected cells: Cell[]
   protected target: Cell | null
   protected origin: Point | null
   protected bounds: Rectangle | null
   protected previewBounds: Rectangle | null
-  protected previewShape: RectangleShape | null
-  protected delayedSelection: boolean
   protected shouldConsumeMouseUp: boolean
 
-  protected dx: number | null
-  protected dy: number | null
+  protected highlight: CellHighlight | null
+  protected previewShape: RectangleShape | null
 
   constructor(graph: Graph) {
     super(graph)
@@ -67,7 +64,6 @@ export class GraphHandler extends MouseHandler {
     // Repaints the handler after autoscroll
     this.onPan = () => {
       this.updatePreview()
-      this.updateHint()
     }
 
     this.graph.on(Graph.events.translate, this.onPan)
@@ -96,93 +92,26 @@ export class GraphHandler extends MouseHandler {
     this.minimumSize = options.minimumSize
   }
 
-  protected updateHint() { }
-
-  protected removeHint() { }
-
-  protected roundLength(len: number) {
-    return Math.round(len * 2) / 2
-  }
-
-  protected isDelayedSelection(cell: Cell | null, e: MouseEventEx) {
-    return this.graph.isCellSelected(cell)
-  }
-
   mouseDown(e: MouseEventEx) {
-    if (
-      this.isValid(e) &&
-      this.isOnCell(e) &&
-      !this.isMultiTouchEvent(e)
-    ) {
-      const cell = this.getCell(e)
-      this.delayedSelection = this.isDelayedSelection(cell, e)
-      this.cell = null
-
-      // Select cell which was not selected immediately
-      if (!this.delayedSelection && this.graph.isCellsSelectable()) {
-        // Trigger selection change, then selectionHandler will refresh,
-        // result to create cell resize/rotate handle knots.
-        this.graph.selectionManager.selectCellForEvent(cell, e.getEvent())
+    if (movment.canMove0(this, e)) {
+      if (movment.canMove1(this, e)) {
+        this.start(e)
       }
 
-      // start move cell(s)
+      const cell = this.getCell(e)
       if (cell && this.graph.isCellsMovable()) {
-        const model = this.graph.model
-        const geo = cell.getGeometry()
-
-        if (
-          this.graph.isCellMovable(cell) &&
-          (
-            this.graph.isDanglingEdgesEnabled()
-            ||
-            (
-              !cell.isEdge() ||
-              this.graph.getSelecedCellCount() > 1 ||
-              (geo && geo.points && geo.points.length > 0) ||
-              model.getTerminal(cell, true) == null ||
-              model.getTerminal(cell, false) == null
-            )
-            ||
-            (
-              this.graph.isCloneEvent(e.getEvent()) &&
-              this.graph.isCellsCloneable()
-            )
-          )
-        ) {
-
-          this.start(cell, e)
-
-        } else if (this.delayedSelection) {
-
-          this.cell = cell
-        }
-
         this.shouldConsumeMouseUp = true
         this.consume(e, DomEvent.MOUSE_DOWN)
       }
     }
   }
 
-  protected start(cell: Cell, e: MouseEventEx) {
-    this.cell = cell
-    this.cells = this.getCells(cell, e.getEvent())
+  protected start(e: MouseEventEx) {
+    this.cell = this.getCell(e)!
+    this.cells = movment.getCells(this, this.cell, e)
     this.origin = util.clientToGraph(this.graph.container, e)
     this.bounds = this.graph.view.getBounds(this.cells)
     this.previewBounds = this.getPreviewBounds(this.cells)
-  }
-
-  protected getCells(cell: Cell, e: MouseEvent) {
-    if (
-      !this.delayedSelection &&
-      this.graph.isCellMovable(cell) &&
-      !this.graph.isToggleEvent(e)
-    ) {
-      return [cell]
-    }
-
-    // cell is selected before mouse-down, so return all moveable
-    // cells in selection.
-    return this.graph.getMovableCells(this.graph.getSelectedCells())
   }
 
   protected getPreviewBounds(cells: Cell[]) {
@@ -239,24 +168,6 @@ export class GraphHandler extends MouseHandler {
     return result
   }
 
-  protected getStatesForGuide() {
-    const parent = this.graph.getDefaultParent()
-    const cells = this.graph.model.filterDescendants(
-      cell => (
-        this.graph.view.getState(cell) != null &&
-        this.graph.model.isNode(cell) &&
-        cell.geometry != null &&
-        !cell.geometry.relative
-      ),
-      parent,
-    )
-
-    return this.graph.view.getCellStates(cells)
-  }
-
-  /**
-   * Highlight possible drop targets and update the preview.
-   */
   mouseMove(e: MouseEventEx) {
     if (
       !this.isConsumed(e) &&
@@ -273,7 +184,7 @@ export class GraphHandler extends MouseHandler {
 
       const graph = this.graph
       const tol = graph.tolerance
-      let delta = this.getDelta(e)
+      const delta = movment.getDelta(this, this.origin, e)
       let dx = delta.x
       let dy = delta.y
 
@@ -288,23 +199,15 @@ export class GraphHandler extends MouseHandler {
         }
 
         if (this.previewShape == null) {
-          this.previewShape = this.createPreviewShape(this.bounds)
+          this.previewShape = this.createPreview(this.bounds)
         }
 
-        const gridEnabled = graph.isGridEnabledForEvent(e.getEvent())
-        let hideGuide = true
+        if (graph.guideHandler.active) {
 
-        if (this.isGuideEnabledForEvent(e)) {
-          if (!this.guide) {
-            this.guide = createGuide(this.graph, this.getStatesForGuide())
-          }
+          dx = graph.guideHandler.dx!
+          dy = graph.guideHandler.dy!
 
-          delta = this.guide.move(this.bounds, new Point(dx, dy), gridEnabled)
-          dx = delta.x
-          dy = delta.y
-          hideGuide = false
-
-        } else if (gridEnabled) {
+        } else if (graph.isGridEnabledForEvent(e.getEvent())) {
 
           const t = graph.view.translate
           const s = graph.view.scale
@@ -317,10 +220,6 @@ export class GraphHandler extends MouseHandler {
 
           dx = v.x - tx
           dy = v.y - ty
-        }
-
-        if (this.guide && hideGuide) {
-          this.guide.hide()
         }
 
         // Constrained movement if shift key is pressed
@@ -338,59 +237,13 @@ export class GraphHandler extends MouseHandler {
         this.updateDropTarget(e)
       }
 
-      this.updateHint()
       this.consume(e, DomEvent.MOUSE_MOVE)
 
       // Cancels the bubbling of events to the container so
       // that the droptarget is not reset due to an mouseMove
       // fired on the container with no associated state.
       DomEvent.consume(e.getEvent())
-
-    } else if (this.shouldUpdateCursor(e)) {
-      this.setMovableCursor(e)
     }
-  }
-
-  protected shouldUpdateCursor(e: MouseEventEx) {
-    return (
-      this.graph.isAutoUpdateCursor() &&
-      !this.isConsumed(e) &&
-      !this.isMouseDown() &&
-      (this.graph.isCellsMovable() || this.graph.isCellsCloneable()) &&
-      this.isOnCell(e)
-    )
-  }
-
-  protected setMovableCursor(e: MouseEventEx) {
-    let cursor = this.getCursorForEvent(e)
-    if (
-      cursor == null &&
-      this.graph.isEnabled() &&
-      this.graph.isCellsMovable() &&
-      this.graph.isCellMovable(e.getCell())
-    ) {
-      cursor = 'move'
-    }
-
-    // Sets the cursor on the original source state under the mouse
-    // instead of the event source state which can be the parent
-    if (cursor != null && e.state != null) {
-      e.state.setCursor(cursor)
-    }
-  }
-
-  protected getCursorForEvent(e: MouseEventEx): string | null {
-    return this.graph.getCellCursor(e.getCell())
-  }
-
-  protected getDelta(e: MouseEventEx) {
-    const s = this.graph.view.scale
-    const p = util.clientToGraph(this.graph.container, e)
-
-    return new Point(
-      this.roundLength((p.x - this.origin!.x) / s) * s,
-      this.roundLength((p.y - this.origin!.y) / s) * s,
-    )
   }
 
   protected snap(p: Point) {
@@ -400,10 +253,8 @@ export class GraphHandler extends MouseHandler {
     return p
   }
 
-  protected createPreviewShape(bounds: Rectangle) {
+  protected createPreview(bounds: Rectangle) {
     const shape = new RectangleShape(bounds)
-    shape.dashed = true
-
     if (this.htmlPreview) {
       shape.dialect = 'html'
       shape.init(this.graph.container)
@@ -412,7 +263,6 @@ export class GraphHandler extends MouseHandler {
       shape.pointerEvents = false
       shape.init(this.graph.view.getOverlayPane())
     }
-
     return shape
   }
 
@@ -441,13 +291,6 @@ export class GraphHandler extends MouseHandler {
 
       this.previewShape.redraw()
     }
-  }
-
-  protected isGuideEnabledForEvent(e: MouseEventEx) {
-    return isGuideEnabled({
-      graph: this.graph,
-      e: e.getEvent(),
-    })
   }
 
   protected isClone(e: MouseEventEx) {
@@ -552,8 +395,8 @@ export class GraphHandler extends MouseHandler {
           const clone = this.isClone(e)
           const target = this.target
           const scale = graph.view.scale
-          const dx = this.roundLength(this.dx / scale)
-          const dy = this.roundLength(this.dy / scale)
+          const dx = movment.roundLength(this.dx / scale)
+          const dy = movment.roundLength(this.dy / scale)
 
           if (
             target &&
@@ -565,12 +408,6 @@ export class GraphHandler extends MouseHandler {
             this.moveCells(this.cells, dx, dy, clone, this.target, evt)
           }
         }
-      } else if (
-        this.graph.isCellsSelectable() &&
-        this.delayedSelection &&
-        this.cell != null
-      ) {
-        this.selectDelayed(e)
       }
     }
 
@@ -579,29 +416,6 @@ export class GraphHandler extends MouseHandler {
     }
 
     this.reset()
-  }
-
-  protected selectDelayed(e: MouseEventEx) {
-    if (
-      !this.graph.isCellSelected(this.cell) ||
-      !this.graph.contextMenuHandler.isPopupTrigger(e)
-    ) {
-      this.graph.selectionManager.selectCellForEvent(this.cell, e.getEvent())
-    }
-  }
-
-  protected reset() {
-    this.destoryShapes()
-    this.removeHint()
-
-    this.dx = null
-    this.dy = null
-    this.guide = null
-    this.origin = null
-    this.cell = null
-    this.target = null
-    this.delayedSelection = false
-    this.shouldConsumeMouseUp = false
   }
 
   protected shouldRemoveCellsFromParent(
@@ -725,22 +539,25 @@ export class GraphHandler extends MouseHandler {
   }
 
   protected destoryShapes() {
-    // Destroys the preview dashed rectangle
     if (this.previewShape != null) {
       this.previewShape.dispose()
       this.previewShape = null
     }
 
-    if (this.guide != null) {
-      this.guide.dispose()
-      this.guide = null
-    }
-
-    // Destroys the drop target highlight
     if (this.highlight != null) {
       this.highlight.dispose()
       this.highlight = null
     }
+  }
+
+  protected reset() {
+    this.destoryShapes()
+    this.dx = null
+    this.dy = null
+    this.origin = null
+    this.cell = null
+    this.target = null
+    this.shouldConsumeMouseUp = false
   }
 
   @Disposable.aop()
@@ -757,6 +574,5 @@ export class GraphHandler extends MouseHandler {
     this.onRefresh = null
 
     this.destoryShapes()
-    this.removeHint()
   }
 }

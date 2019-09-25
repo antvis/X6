@@ -81,10 +81,6 @@ export class Overlay extends Events {
       h * s,
     )
   }
-
-  toString() {
-    return this.tooltip
-  }
 }
 
 export namespace Overlay {

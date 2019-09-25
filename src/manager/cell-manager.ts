@@ -2051,12 +2051,13 @@ export class CellManager extends BaseManager {
   addWarningOverlay(
     cell: Cell,
     warning: string | null,
-    img: Image,
+    image: Image,
     selectOnClick: boolean,
   ) {
-    const overlay = new Overlay(
-      img,
-      `<font color=red>${warning}</font>`,
+    const overlay = new Overlay({
+      image,
+      tooltip: `<font color=red>${warning}</font>`,
+    },
     )
 
     // Adds a handler for single mouseclicks to select the cell

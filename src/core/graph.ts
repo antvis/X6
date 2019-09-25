@@ -40,11 +40,13 @@ import {
   CellEditor,
   IMouseHandler,
   TooltipHandler,
+  UpdateCursorHandler,
   KeyboardHandler,
   ContextMenuHandler,
   PanningHandler,
+  GuideHandler,
+  MovingHandler,
   SelectionHandler,
-  GraphHandler,
   ConnectionHandler,
   RubberbandHandler,
   NodeHandler,
@@ -84,11 +86,13 @@ export class Graph extends Disablable implements
 
   public readonly keyboardHandler: KeyboardHandler
   public readonly tooltipHandler: TooltipHandler
+  public readonly updateCursorHandler: UpdateCursorHandler
   public readonly contextMenuHandler: ContextMenuHandler
+  public readonly guideHandler: GuideHandler
   public readonly selectionHandler: SelectionHandler
   public readonly connectionHandler: ConnectionHandler
   public readonly panningHandler: PanningHandler
-  public readonly graphHandler: GraphHandler
+  public readonly movingHandler: MovingHandler
   public readonly rubberbandHandler: RubberbandHandler
   panningManager: any
 
@@ -588,7 +592,6 @@ export class Graph extends Disablable implements
     this.renderer = this.createRenderer()
     this.selection = this.createSelection()
 
-    // The order of the following initializations should not be modified.
     this.cellEditor = new CellEditor(this)
     this.changeManager = new ChangeManager(this)
     this.eventloop = new EventLoop(this)
@@ -597,15 +600,18 @@ export class Graph extends Disablable implements
     this.validator = new ValidationManager(this)
     this.viewport = new ViewportManager(this)
 
-    this.keyboardHandler = this.createKeyboardHandler()
+    // The order of the following initializations should not be modified.
     this.tooltipHandler = this.createTooltipHandler()
+    this.updateCursorHandler = new UpdateCursorHandler(this)
     this.selectionHandler = this.createSelectionHandler()
     this.connectionHandler = this.createConnectionHandler()
-    this.graphHandler = this.createGraphHandler()
+    this.guideHandler = new GuideHandler(this)
+    this.movingHandler = this.createMovingHandler()
     this.panningHandler = this.createPanningHandler()
     this.panningHandler.disablePanning()
     this.contextMenuHandler = this.createContextMenuHandler()
     this.rubberbandHandler = this.createRubberbandHandler()
+    this.keyboardHandler = this.createKeyboardHandler()
 
     applyOptions(this)
 
@@ -681,8 +687,8 @@ export class Graph extends Disablable implements
   }
 
   @hook()
-  createGraphHandler() {
-    return new GraphHandler(this)
+  createMovingHandler() {
+    return new MovingHandler(this)
   }
 
   @hook()
@@ -2947,7 +2953,7 @@ export class Graph extends Disablable implements
     this.panningHandler.dispose()
     this.contextMenuHandler.dispose()
     this.selectionHandler.dispose()
-    this.graphHandler.dispose()
+    this.movingHandler.dispose()
     this.connectionHandler.dispose()
   }
 

@@ -43,17 +43,11 @@ export class MouseHandler extends BaseHandler implements IMouseHandler {
     e.consume()
   }
 
-  mouseDown(e?: MouseEventEx, sender?: any) {
-    throw new Error('Method not implemented.')
-  }
+  mouseDown(e: MouseEventEx, sender?: any) { }
 
-  mouseMove(e?: MouseEventEx, sender?: any) {
-    throw new Error('Method not implemented.')
-  }
+  mouseMove(e: MouseEventEx, sender?: any) { }
 
-  mouseUp(e?: MouseEventEx, sender?: any) {
-    throw new Error('Method not implemented.')
-  }
+  mouseUp(e: MouseEventEx, sender?: any) { }
 }
 
 export interface IMouseHandler {

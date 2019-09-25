@@ -5,6 +5,7 @@ import { State } from './state'
 import { Graph } from './graph'
 import { Renderer } from './renderer'
 import { Selection } from '../manager'
+import { RoutingFunction } from './registry'
 import { Point, Constraint, Rectangle } from '../struct'
 import {
   KeyboardHandler,
@@ -12,13 +13,12 @@ import {
   ContextMenuHandler,
   PanningHandler,
   SelectionHandler,
-  GraphHandler,
+  MovingHandler,
   ConnectionHandler,
   NodeHandler,
   EdgeHandler,
   RubberbandHandler,
 } from '../handler'
-import { RoutingFunction } from './registry'
 
 type Nilable<T> = T | null | undefined
 type BareHook<T> = (this: Graph) => Nilable<T>
@@ -41,7 +41,7 @@ export interface IHooks {
   createTooltipHandler: BareHook<TooltipHandler>
   createConnectionHandler: BareHook<ConnectionHandler>
   createSelectionHandler: BareHook<SelectionHandler>
-  createGraphHandler: BareHook<GraphHandler>
+  createMovingHandler: BareHook<MovingHandler>
   createPanningHandler: BareHook<PanningHandler>
   createContextMenuHandler: BareHook<ContextMenuHandler>
   createRubberbandHandler: BareHook<RubberbandHandler>
@@ -74,7 +74,7 @@ export interface IHooks {
   /**
    * Returns`true`if the given mouse event should be aligned to the grid.
    */
-  isGridEnabledForEvent: EventHook<boolean>
+  isGridEnabled: EventHook<boolean>
 
   /**
    * Returns`true`if the given mouse event should not allow any connections

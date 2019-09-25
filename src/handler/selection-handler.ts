@@ -6,8 +6,10 @@ import { EdgeHandler } from './edge-handler'
 import { MouseEventEx, Dictionary, Disposable } from '../common'
 
 export class SelectionHandler extends MouseHandler {
-  protected handlers: Dictionary<Cell, NodeHandler | EdgeHandler>
   private refreshHandler: (() => void) | null
+  protected handlers: Dictionary<Cell, NodeHandler | EdgeHandler>
+  protected delayedSelection: boolean
+  protected cell: Cell | null
 
   constructor(graph: Graph) {
     super(graph)
@@ -56,7 +58,6 @@ export class SelectionHandler extends MouseHandler {
 
         if (handler == null) {
           handler = this.graph.createCellHandler(state)
-          this.trigger(SelectionHandler.events.addHandler, { state })
         }
 
         if (handler != null) {
@@ -69,24 +70,8 @@ export class SelectionHandler extends MouseHandler {
     // Destroys all unused handlers
     oldHandlers.each((handler) => {
       this.refreshClassName(handler.state, false)
-      this.trigger(SelectionHandler.events.removeHandler, {
-        state: handler.state,
-      })
       handler.dispose()
     })
-  }
-
-  refreshClassName(state: State | null, selected: boolean) {
-    if (state) {
-      const className = `${this.graph.prefixCls}-cell-selected`
-      if (selected) {
-        state.shape && state.shape.addClass(className)
-        state.text && state.text.addClass(className)
-      } else {
-        state.shape && state.shape.removeClass(className)
-        state.text && state.text.removeClass(className)
-      }
-    }
   }
 
   /**
@@ -112,6 +97,19 @@ export class SelectionHandler extends MouseHandler {
     }
   }
 
+  protected refreshClassName(state: State | null, selected: boolean) {
+    if (state) {
+      const className = `${this.graph.prefixCls}-cell-selected`
+      if (selected) {
+        state.shape && state.shape.addClass(className)
+        state.text && state.text.addClass(className)
+      } else {
+        state.shape && state.shape.removeClass(className)
+        state.text && state.text.removeClass(className)
+      }
+    }
+  }
+
   protected reset() {
     this.handlers.each(h => h.reset())
   }
@@ -127,12 +125,22 @@ export class SelectionHandler extends MouseHandler {
     return this.graph.isEnabled() && this.isEnabled()
   }
 
+  protected isDelayedSelection(cell: Cell | null, e: MouseEventEx) {
+    return this.graph.isCellSelected(cell)
+  }
+
   getHandler(cell: Cell) {
     return this.handlers.get(cell)
   }
 
   mouseDown(e: MouseEventEx, sender: any) {
     if (this.canHandle(e)) {
+      const cell = this.getCell(e)
+      // Select cell which was not selected immediately
+      if (cell !== null && !this.graph.isCellSelected(cell)) {
+        this.graph.selectionManager.selectCellForEvent(cell, e.getEvent())
+      }
+
       this.handlers.each(h => h.mouseDown(e, sender))
     }
   }
@@ -157,12 +165,5 @@ export class SelectionHandler extends MouseHandler {
     this.graph.view.off(null, this.refreshHandler)
     this.graph.model.off(null, this.refreshHandler)
     this.refreshHandler = null
-  }
-}
-
-export namespace SelectionHandler {
-  export const events = {
-    addHandler: 'addHandler',
-    removeHandler: 'removeHandler',
   }
 }

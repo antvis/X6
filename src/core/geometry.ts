@@ -5,7 +5,7 @@ export class Geometry {
   bounds: Rectangle
 
   /**
-   * Stores alternate values for x, y, width and height in a rectangle.
+   * Stores alternated values for x, y, width and height in a rectangle.
    */
   alternateBounds: Rectangle
 
@@ -30,23 +30,25 @@ export class Geometry {
 
   /**
    * For edges, this holds the offset (in pixels) from the position defined
-   * by `x` and `y` on the edge. For relative geometries (for nodes), this
-   * defines the absolute offset from the point defined by the relative
-   * coordinates. For absolute geometries (for nodes), this defines the
-   * offset for the label.
+   * by `x` and `y` on the edge.
+   *
+   * For relative geometries (for nodes), this defines the absolute offset
+   * from the point defined by the relative coordinates.
+   *
+   * For absolute geometries (for nodes), this defines the offset for the
+   * label.
    */
   offset: Point
 
   /**
    * Specifies if the coordinates in the geometry are to be interpreted as
    * relative coordinates. For edges, this is used to define the location of
-   * the edge label relative to the edge as rendered on the display. For
-   * nodes, this specifies the relative location inside the bounds of the
-   * parent cell.
+   * the edge label relative to the edge. For nodes, this specifies the
+   * relative location inside the bounds of the parent cell.
    *
-   * If this is `true`, then the coordinates are relative to the origin of the
-   * parent cell or, for edges, the edge label position is relative to the
-   * center of the edge as rendered on screen.
+   * If this is `true`, then the coordinates are relative to the origin of
+   * the parent cell or, for edges, the edge label position is relative to
+   * the center of the edge as rendered on screen.
    */
   relative: boolean = false
 
@@ -111,27 +113,27 @@ export class Geometry {
   /**
    * Rotates the geometry by the given angle around the given center.
    *
-   * @param angle Specifies the rotation angle in degrees.
-   * @param cx Specifies the center of the rotation.
+   * @param degree Specifies the rotation angle in degrees.
+   * @param center Specifies the center of the rotation.
    */
-  rotate(angle: number, cx: Point) {
-    const rad = util.toRad(angle)
+  rotate(degree: number, center: Point) {
+    const rad = util.toRad(degree)
     const cos = Math.cos(rad)
     const sin = Math.sin(rad)
 
     if (!this.relative) {
       const ct = this.bounds.getCenter()
-      const pt = util.rotatePointEx(ct, cos, sin, cx)
+      const pt = util.rotatePointEx(ct, cos, sin, center)
 
       this.bounds.x = Math.round(pt.x - this.bounds.width / 2)
       this.bounds.y = Math.round(pt.y - this.bounds.height / 2)
     }
 
-    Private.rotatePoint(this.sourcePoint, cos, sin, cx)
-    Private.rotatePoint(this.targetPoint, cos, sin, cx)
+    Private.rotatePoint(this.sourcePoint, cos, sin, center)
+    Private.rotatePoint(this.targetPoint, cos, sin, center)
 
     if (this.points != null) {
-      this.points.forEach(p => Private.rotatePoint(p, cos, sin, cx))
+      this.points.forEach(p => Private.rotatePoint(p, cos, sin, center))
     }
   }
 
@@ -200,7 +202,10 @@ export class Geometry {
       this.bounds.equals(geo.bounds) &&
       (
         (this.alternateBounds == null && geo.alternateBounds == null) ||
-        (this.alternateBounds != null && this.alternateBounds.equals(geo.alternateBounds))
+        (
+          this.alternateBounds != null &&
+          this.alternateBounds.equals(geo.alternateBounds)
+        )
       ) &&
 
       (

@@ -190,3 +190,4 @@ export class TooltipHandler extends MouseHandler {
     this.graph.removeMouseListener(this)
   }
 }
+
