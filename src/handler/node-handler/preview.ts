@@ -4,7 +4,7 @@ import { Graph, State, Cell } from '../../core'
 import { Rectangle, Point } from '../../struct'
 import { RectangleShape } from '../../shape'
 import { NodeHandler } from './handler'
-import { EdgeHandler } from '../edge-handler'
+import { EdgeHandler } from '../edge-handler/handler'
 import {
   ResizeOption,
   applyResizePreviewStyle,

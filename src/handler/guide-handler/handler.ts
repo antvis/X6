@@ -1,11 +1,11 @@
-import * as util from '../util'
-import * as movment from './moving-handler-util'
+import * as util from '../../util'
+import * as movment from '../moving-handler/util'
 import { Guide } from './guide'
-import { Rectangle, Point } from '../struct'
-import { Graph, Cell, State } from '../core'
-import { MouseHandler } from './handler-mouse'
-import { MouseEventEx, Disposable } from '../common'
-import { StrokeStyle, OptionItem, drill } from '../option'
+import { Rectangle, Point } from '../../struct'
+import { Graph, Cell, State } from '../../core'
+import { MouseHandler } from '../handler-mouse'
+import { MouseEventEx, Disposable } from '../../common'
+import { StrokeStyle, OptionItem, drill } from '../../option'
 
 export class GuideHandler extends MouseHandler {
   dx: number | null

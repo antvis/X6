@@ -1,7 +1,8 @@
-import { Image, Point } from '../struct'
-import { Graph, Cell } from '../core'
-import { Shape } from '../shape'
-import { Style } from '../types'
+import { Image, Point } from '../../struct'
+import { Graph, Cell } from '../../core'
+import { Shape } from '../../shape'
+import { Style } from '../../types'
+import { CellHighlight } from '..'
 import {
   OptionItem,
   BaseStyle,
@@ -9,8 +10,7 @@ import {
   applyClassName,
   applyBaseStyle,
   applyManualStyle,
-} from './util'
-import { CellHighlight } from '../handler'
+} from '../../option'
 
 export interface ConnectionOptions {
   enabled: boolean

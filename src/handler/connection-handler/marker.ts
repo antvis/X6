@@ -1,10 +1,13 @@
-import { Graph, State } from '../core'
-import { CellMarker } from './cell-marker'
-import { ConnectionHandler } from './connection-handler'
-import { getConnectionHighlightOptions, getConnectionIcon } from '../option'
-import { MouseEventEx } from '../common'
+import { Graph, State } from '../../core'
+import { MouseEventEx } from '../../common'
+import { CellMarker } from '../cell-marker'
+import { ConnectionHandler } from './handler'
+import {
+  getConnectionIcon,
+  getConnectionHighlightOptions,
+} from './option'
 
-export class ConnectionHandlerMarker extends CellMarker {
+export class ConnectionMarker extends CellMarker {
   handler: ConnectionHandler
 
   constructor(graph: Graph, handler: ConnectionHandler) {

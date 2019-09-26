@@ -1,5 +1,5 @@
-import { CellMarker } from './cell-marker'
-import { ConstraintHandler } from './constraint-handler'
+import { CellMarker } from '../cell-marker'
+import { ConstraintHandler } from '../constraint-handler'
 
 /**
  * Transparent cell hilight when constraint point is highlighted.

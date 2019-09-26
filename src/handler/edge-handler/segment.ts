@@ -1,7 +1,7 @@
-import { Cell, State } from '../core'
-import { Rectangle, Point } from '../struct'
-import { MouseEventEx } from '../common'
-import { EdgeElbowHandler } from './edge-elbow-handler'
+import { Cell, State } from '../../core'
+import { Rectangle, Point } from '../../struct'
+import { MouseEventEx } from '../../common'
+import { EdgeElbowHandler } from './elbow'
 
 export class EdgeSegmentHandler extends EdgeElbowHandler {
 

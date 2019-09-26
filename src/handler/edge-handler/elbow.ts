@@ -1,7 +1,7 @@
-import * as routers from '../router'
-import { Rectangle, Point, RouterNames } from '../struct'
-import { constants, DomEvent } from '../common'
-import { EdgeHandler } from './edge-handler'
+import * as routers from '../../router'
+import { Rectangle, Point, RouterNames } from '../../struct'
+import { constants, DomEvent } from '../../common'
+import { EdgeHandler } from './handler'
 
 export class EdgeElbowHandler extends EdgeHandler {
   /**

@@ -1,8 +1,8 @@
-import { Disposable } from '../common'
-import { Rectangle, Point } from '../struct'
-import { Graph, State, Cell } from '../core'
-import { Polyline } from '../shape'
-import { util } from '..'
+import { Disposable } from '../../common'
+import { Rectangle, Point } from '../../struct'
+import { Graph, State, Cell } from '../../core'
+import { Polyline } from '../../shape'
+import { util } from '../..'
 
 export class Guide extends Disposable {
   graph: Graph

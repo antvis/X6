@@ -1,22 +1,22 @@
-import * as util from '../util'
-import { Style } from '../types'
-import { View } from '../core/view'
-import { MouseHandler } from './handler-mouse'
-import { Shape, ImageShape, Polyline } from '../shape'
-import { ConstraintHandler } from './constraint-handler'
-import { Rectangle, Point, Constraint } from '../struct'
-import { Graph, Model, Cell, State, Geometry } from '../core'
-import { constants, DomEvent, MouseEventEx, Disposable } from '../common'
-import { ConnectionHandlerMarker } from './connection-handler-marker'
+import * as util from '../../util'
+import { Style } from '../../types'
+import { View } from '../../core/view'
+import { MouseHandler } from '../handler-mouse'
+import { Shape, ImageShape, Polyline } from '../../shape'
+import { ConstraintHandler } from '../constraint-handler'
+import { Rectangle, Point, Constraint } from '../../struct'
+import { Graph, Model, Cell, State, Geometry } from '../../core'
+import { constants, DomEvent, MouseEventEx, Disposable } from '../../common'
+import { ConnectionMarker } from './marker'
+import { transparentMarker } from './util'
 import {
   ConnectionOptions,
   getConnectionIconOptions,
   applyConnectionPreviewStyle,
-} from '../option'
-import { transparentMarker } from './connection-util'
+} from './option'
 
 export class ConnectionHandler extends MouseHandler {
-  marker: ConnectionHandlerMarker
+  marker: ConnectionMarker
   constraintHandler: ConstraintHandler
   error: string | null = null
   edgeState: State | null = null
@@ -102,7 +102,7 @@ export class ConnectionHandler extends MouseHandler {
   }
 
   protected init() {
-    this.marker = new ConnectionHandlerMarker(this.graph, this)
+    this.marker = new ConnectionMarker(this.graph, this)
     this.constraintHandler = new ConstraintHandler(this.graph)
 
     // Redraws the icons if the graph changes

@@ -1,33 +1,33 @@
-import * as routers from '../router'
-import * as util from '../util'
-import { Cell, State, Graph } from '../core'
-import { Rectangle, Point, Constraint } from '../struct'
-import { Shape, RectangleShape } from '../shape'
-import { MouseHandler } from './handler-mouse'
-import { CellMarker } from './cell-marker'
-import { ConstraintHandler } from './constraint-handler'
-import { Handle } from './handle'
+import * as routers from '../../router'
+import * as util from '../../util'
+import { Cell, State, Graph } from '../../core'
+import { Rectangle, Point, Constraint } from '../../struct'
+import { Shape, RectangleShape } from '../../shape'
+import { MouseHandler } from '../handler-mouse'
+import { CellMarker } from '../cell-marker'
+import { ConstraintHandler } from '../constraint-handler'
+import { Handle } from '../handle'
+import { EdgeHandlerMarker } from './marker'
+import { transparentMarker } from '../connection-handler/util'
 import {
   detector,
   DomEvent,
   MouseEventEx,
   IDisposable,
   Disposable,
-} from '../common'
+} from '../../common'
 import {
   createEdgeHandle,
   getEdgeHandleCursor,
   getEdgeHandleOptions,
-} from '../option'
+} from '../../option'
 import {
   createLabelHandle,
   getLabelHandleCursor,
   getLabelHandleOffset,
   applySelectionPreviewStyle,
   getSelectionPreviewCursor,
-} from './node-handler'
-import { EdgeHandlerMarker } from './edge-handler-marker'
-import { transparentMarker } from './connection-util'
+} from '../node-handler'
 
 export class EdgeHandler extends MouseHandler {
   state: State

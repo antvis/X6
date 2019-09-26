@@ -1,13 +1,13 @@
-import * as util from '../util'
-import * as movment from './moving-handler-util'
-import { RectangleShape } from '../shape'
-import { Graph, Cell, Model } from '../core'
-import { Rectangle, Point } from '../struct'
-import { MouseHandler } from './handler-mouse'
-import { CellHighlight } from './cell-highlight'
-import { MouseEventEx, DomEvent, Disposable } from '../common'
+import * as util from '../../util'
+import * as movment from './util'
+import { RectangleShape } from '../../shape'
+import { Graph, Cell, Model } from '../../core'
+import { Rectangle, Point } from '../../struct'
+import { MouseHandler } from '../handler-mouse'
+import { CellHighlight } from '../cell-highlight'
+import { MouseEventEx, DomEvent, Disposable } from '../../common'
+import { applyConnectionHighlightStyle } from '../connection-handler/option'
 import {
-  applyConnectionHighlightStyle,
   BaseArgs,
   BaseStyle,
   OptionItem,
@@ -17,7 +17,7 @@ import {
   applyClassName,
   applyCursorStyle,
   applyManualStyle,
-} from '../option'
+} from '../../option'
 
 export class MovingHandler extends MouseHandler {
   /**

@@ -28,7 +28,7 @@ import {
   ConnectionIconOptions,
   ConnectionPreviewOptions,
   ConnectionHighlightOptions,
-} from './connection'
+} from '../handler/connection-handler/option'
 import { EdgeHandleOptions } from './edge'
 
 export interface CompositeOptions {

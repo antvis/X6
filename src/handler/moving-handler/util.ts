@@ -1,9 +1,9 @@
-import * as util from '../util'
-import { Cell, Graph } from '../core'
-import { MouseEventEx } from '../common'
-import { Point, Rectangle } from '../struct'
-import { MouseHandler } from './handler-mouse'
-import { MovingHandler } from './moving-handler'
+import * as util from '../../util'
+import { Cell, Graph } from '../../core'
+import { MouseEventEx } from '../../common'
+import { Point, Rectangle } from '../../struct'
+import { MouseHandler } from '../handler-mouse'
+import { MovingHandler } from './handler'
 
 export function isValid(handler: MouseHandler, e: MouseEventEx) {
   return (

@@ -1,8 +1,8 @@
-import { State, Graph } from '../core'
-import { MouseEventEx } from '../common'
-import { CellMarker } from './cell-marker'
-import { EdgeHandler } from './edge-handler'
-import { getConnectionHighlightOptions } from '../option'
+import { State, Graph } from '../../core'
+import { MouseEventEx } from '../../common'
+import { CellMarker } from '../cell-marker'
+import { EdgeHandler } from './handler'
+import { getConnectionHighlightOptions } from '../connection-handler/option'
 
 export class EdgeHandlerMarker extends CellMarker {
   edgeHandler: EdgeHandler
