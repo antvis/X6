@@ -1308,8 +1308,6 @@ export class SvgCanvas2D extends Canvas2D {
     }
 
     // Workaround for rendering offsets
-    // TODO: Check if export needs these fixes, too
-    // if (this.root.ownerDocument == document)
     if (overflow !== 'fill' && detector.IS_FIREFOX && detector.IS_WINDOWS) {
       dy -= 2
     }
@@ -1718,8 +1716,6 @@ export class SvgCanvas2D extends Canvas2D {
 
       // Handles special HTML entities < and > and double escaping
       // and converts unclosed br, hr and img tags to XHTML
-
-      // TODO: Convert all unclosed tags
       ta.innerHTML = raw
         .replace(/&amp;/g, '&amp;amp;')
         .replace(/&#60;/g, '&amp;lt;')
