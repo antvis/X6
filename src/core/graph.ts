@@ -40,7 +40,7 @@ import {
   CellEditor,
   IMouseHandler,
   TooltipHandler,
-  UpdateCursorHandler,
+  CursorHandler,
   KeyboardHandler,
   ContextMenuHandler,
   PanningHandler,
@@ -86,7 +86,7 @@ export class Graph extends Disablable implements
 
   public readonly keyboardHandler: KeyboardHandler
   public readonly tooltipHandler: TooltipHandler
-  public readonly updateCursorHandler: UpdateCursorHandler
+  public readonly cursorHandler: CursorHandler
   public readonly contextMenuHandler: ContextMenuHandler
   public readonly guideHandler: GuideHandler
   public readonly selectionHandler: SelectionHandler
@@ -602,10 +602,10 @@ export class Graph extends Disablable implements
 
     // The order of the following initializations should not be modified.
     this.tooltipHandler = this.createTooltipHandler()
-    this.updateCursorHandler = new UpdateCursorHandler(this)
+    this.cursorHandler = this.createCursorHandler()
     this.selectionHandler = this.createSelectionHandler()
     this.connectionHandler = this.createConnectionHandler()
-    this.guideHandler = new GuideHandler(this)
+    this.guideHandler = this.createGuideHandler()
     this.movingHandler = this.createMovingHandler()
     this.panningHandler = this.createPanningHandler()
     this.panningHandler.disablePanning()
@@ -674,6 +674,16 @@ export class Graph extends Disablable implements
   @hook()
   createTooltipHandler() {
     return new TooltipHandler(this)
+  }
+
+  @hook()
+  createCursorHandler() {
+    return new CursorHandler(this)
+  }
+
+  @hook()
+  createGuideHandler() {
+    return new GuideHandler(this)
   }
 
   @hook()

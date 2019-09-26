@@ -18,6 +18,8 @@ import {
   NodeHandler,
   EdgeHandler,
   RubberbandHandler,
+  CursorHandler,
+  GuideHandler,
 } from '../handler'
 
 type Nilable<T> = T | null | undefined
@@ -37,6 +39,8 @@ export interface IHooks {
   createRenderer: BareHook<Renderer>
   createSelection: BareHook<Selection>
 
+  createCursorHandler: BareHook<CursorHandler>
+  createGuideHandler: BareHook<GuideHandler>
   createKeyboardHandler: BareHook<KeyboardHandler>
   createTooltipHandler: BareHook<TooltipHandler>
   createConnectionHandler: BareHook<ConnectionHandler>
