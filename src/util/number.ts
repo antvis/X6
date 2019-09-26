@@ -8,12 +8,20 @@ export function mod(n: number, m: number) {
 }
 
 export function clamp(value: number, min: number, max: number) {
+  if (isNaN(value)) {
+    return NaN
+  }
+
+  if (isNaN(min) || isNaN(max)) {
+    return 0
+  }
+
   return min < max
     ? (value < min ? min : value > max ? max : value)
     : (value < max ? max : value > min ? min : value)
 }
 
-export function isBetween(value: number, min: number, max: number) {
+export function inRange(value: number, min: number, max: number) {
   return min < max
     ? (value >= min && value <= max)
     : (value >= max && value <= min)
