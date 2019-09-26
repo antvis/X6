@@ -1,8 +1,8 @@
-import { Graph, Cell } from '../core'
-import { Shape, ImageShape } from '../shape'
-import { Rectangle } from '../struct'
-import { MouseEventEx } from '../common'
-import { HandleOptions, createHandleShape } from './handle'
+import { Graph, Cell } from '../../core'
+import { Shape, ImageShape } from '../../shape'
+import { Rectangle } from '../../struct'
+import { MouseEventEx } from '../../common'
+import { HandleOptions, createHandleShape } from './knob-option'
 import {
   BaseStyle,
   OptionItem,
@@ -10,7 +10,7 @@ import {
   applyBaseStyle,
   applyClassName,
   applyManualStyle,
-} from './util'
+} from '../../option'
 
 export interface ResizeOption {
   /**
@@ -27,14 +27,6 @@ export interface ResizeOption {
    */
   centered: boolean | ((this: Graph, cell: Cell, e: MouseEventEx) => boolean)
 
-  /**
-   * Specifies if resize handle should be hidden and spaced if the node
-   * is too small.
-   *
-   * Default is `false`.
-   */
-  manageHandles: boolean
-
   livePreview: boolean
 }
 
@@ -48,6 +40,14 @@ export interface ResizeHandleOptions extends
    * Default is `false`.
    */
   single: boolean
+
+  /**
+   * Specifies if resize handle should be hidden and spaced if the node
+   * is too small.
+   *
+   * Default is `false`.
+   */
+  adaptive: boolean
 
   visible: OptionItem<IsResizeHandleVisibleArgs, boolean>
 }

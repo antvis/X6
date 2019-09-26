@@ -8,21 +8,27 @@ import { EdgeHandler } from './edge-handler'
 import { MouseHandler } from './handler-mouse'
 import {
   applySelectionPreviewStyle,
-  createResizeHandle,
-  createRotationHandle,
+  getSelectionPreviewCursor,
+} from './node/selection-option'
+import {
   createLabelHandle,
   getLabelHandleCursor,
   getLabelHandleOffset,
-  applyResizePreviewStyle,
-  applyRotatePreviewStyle,
+} from './node/label-option'
+import {
   ResizeOption,
   ResizeHandleOptions,
+  createResizeHandle,
+  applyResizePreviewStyle,
+  isResizeHandleVisible,
+} from './node/resize-option'
+import {
   RotateOptions,
+  createRotationHandle,
+  applyRotatePreviewStyle,
   getRotationHandleOffset,
   getRotationHandleCursor,
-  isResizeHandleVisible,
-  getSelectionPreviewCursor,
-} from '../option'
+} from './node/rotation-option'
 
 export class NodeHandler extends MouseHandler {
   graph: Graph
@@ -96,7 +102,7 @@ export class NodeHandler extends MouseHandler {
   protected x0: number
   protected y0: number
 
-  protected bounds: Rectangle
+  bounds: Rectangle
   protected selectionBounds: Rectangle
   protected minBounds: Rectangle | null
   protected unscaledBounds: Rectangle | null
@@ -139,10 +145,10 @@ export class NodeHandler extends MouseHandler {
     const options = this.graph.options
 
     const resize = options.resize as ResizeOption
-    this.manageHandles = resize.manageHandles
     this.resizeLivePreview = resize.livePreview
 
     const resizeHandle = options.resizeHandle as ResizeHandleOptions
+    this.manageHandles = resizeHandle.adaptive
     this.singleResizeHandle = resizeHandle.single
 
     const rotate = options.rotate as RotateOptions
@@ -468,8 +474,7 @@ export class NodeHandler extends MouseHandler {
   mouseDown(e: MouseEventEx, sender: any) {
     const tol = DomEvent.isMouseEvent(e.getEvent()) ? 1 : this.tolerance
     if (
-      !e.isConsumed() &&
-      this.graph.isEnabled() &&
+      this.isValid(e) &&
       (tol > 0 || e.getState() === this.state)
     ) {
       const handle = this.getHandleForEvent(e)
@@ -1583,4 +1588,8 @@ export class NodeHandler extends MouseHandler {
     this.customHandles && this.customHandles.forEach(h => h.dispose())
     this.customHandles = null
   }
+}
+
+export namespace NodeHandler {
+
 }

@@ -219,11 +219,11 @@ export const defaultOptions: FullOptions = {
     enabled: true,
     centered: false,
     livePreview: false,
-    manageHandles: false,
   },
 
   resizeHandle: {
     single: false,
+    adaptive: false,
     visible: true,
     shape: ShapeNames.ellipse,
     size: 8,

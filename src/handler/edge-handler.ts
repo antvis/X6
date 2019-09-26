@@ -17,13 +17,15 @@ import {
 import {
   createEdgeHandle,
   getEdgeHandleCursor,
+  getEdgeHandleOptions,
+} from '../option'
+import {
   createLabelHandle,
   getLabelHandleCursor,
   getLabelHandleOffset,
-  getEdgeHandleOptions,
-  getSelectionPreviewCursor,
   applySelectionPreviewStyle,
-} from '../option'
+  getSelectionPreviewCursor,
+} from './node-handler'
 import { EdgeHandlerMarker } from './edge-handler-marker'
 import { transparentMarker } from './connection-util'
 

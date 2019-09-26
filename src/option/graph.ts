@@ -10,19 +10,15 @@ import {
   GuideHandler,
   TooltipHandler,
   MovingHandler,
-} from '../handler'
-import { SelectionPreviewOptions } from './selection'
-import {
   ResizeOption,
   ResizeHandleOptions,
   ResizePreviewOptions,
-} from './resize'
-import {
   RotateOptions,
   RotateHandleOptions,
   RotatePreviewOptions,
-} from './rotation'
-import { LabelHandleOptions } from './label'
+  LabelHandleOptions,
+  SelectionPreviewOptions,
+} from '../handler'
 import {
   ConstraintOptions,
   ConstraintHighlightOptions,

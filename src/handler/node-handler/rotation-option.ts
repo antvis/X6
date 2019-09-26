@@ -1,7 +1,7 @@
-import { Graph, Cell } from '../core'
-import { Shape, ImageShape } from '../shape'
-import { Point, Rectangle } from '../struct'
-import { HandleOptions, createHandleShape } from './handle'
+import { Graph, Cell } from '../../core'
+import { Shape, ImageShape } from '../../shape'
+import { Point, Rectangle } from '../../struct'
+import { HandleOptions, createHandleShape } from '../../option/handle'
 import {
   BaseStyle,
   OptionItem,
@@ -9,7 +9,7 @@ import {
   applyBaseStyle,
   applyClassName,
   applyManualStyle,
-} from './util'
+} from '../../option'
 
 export interface RotateOptions {
   enabled: boolean

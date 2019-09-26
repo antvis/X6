@@ -169,13 +169,20 @@ export function emptyElement(elem: Element | null) {
   }
 }
 
-export function hideElement(elem: HTMLElement | null) {
+export function isHiddenElement(elem: HTMLElement | SVGElement | null) {
+  if (elem) {
+    return elem.style.display === 'none'
+  }
+  return false
+}
+
+export function hideElement(elem: HTMLElement | SVGElement | null) {
   if (elem) {
     elem.style.display = 'none'
   }
 }
 
-export function showElement(elem: HTMLElement | null) {
+export function showElement(elem: HTMLElement | SVGElement | null) {
   if (elem) {
     elem.style.display = ''
   }
