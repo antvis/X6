@@ -4,35 +4,38 @@ import { RoutingFunction } from '../core/registry'
 import { Dialect, Style } from '../types'
 import { Image, Multiplicity, Rectangle } from '../struct'
 import { defaultOptions } from './preset'
+import { TooltipOptions } from '../handler/tooltip/option'
+import { ContextMenuOptions } from '../handler/contextmenu/option'
+import { KeyboardOptions } from '../handler/keyboard/option'
+import { RubberbandOptions } from '../handler/rubberband/option'
+import { GuideOptions } from '../handler/guide/option'
 import {
-  ContextMenuHandler,
-  RubberbandHandler,
-  GuideHandler,
-  TooltipHandler,
   ResizeOption,
   ResizeHandleOptions,
   ResizePreviewOptions,
+} from '../handler/node/resize-option'
+import {
   RotateOptions,
   RotateHandleOptions,
   RotatePreviewOptions,
-  LabelHandleOptions,
-  SelectionPreviewOptions,
-} from '../handler'
+} from '../handler/node/rotation-option'
+import { SelectionPreviewOptions } from '../handler/node/selection-option'
+import { LabelHandleOptions } from '../handler/node/label-option'
+import { EdgeHandleOptions } from '../handler/edge/option'
 import {
   ConstraintOptions,
   ConstraintHighlightOptions,
-} from './constraint'
+} from '../handler/constraint/option'
 import {
   ConnectionOptions,
   ConnectionIconOptions,
   ConnectionPreviewOptions,
   ConnectionHighlightOptions,
-} from '../handler/connection-handler/option'
+} from '../handler/connection/option'
 import {
   MovingPreviewOptions,
   DropTargetHighlightOptions,
-} from '../handler/moving-handler/option'
-import { EdgeHandleOptions } from './edge'
+} from '../handler/moving/option'
 
 export interface CompositeOptions {
   /**
@@ -753,35 +756,17 @@ export interface FoldingOptions {
   expandedImage: Image
 }
 
-export interface KeyboardOptions {
-  enabled: boolean
-
-  /**
-   * Specifies if keyboard event should bind on docuemnt or on container.
-   *
-   * Default is `false` that will bind keyboard event on the container.
-   */
-  global: boolean
-
-  /**
-   * Specifies if handle escape key press.
-   *
-   * Default is `true`.
-   */
-  escape: boolean
-}
-
 export interface FullOptions extends SimpleOptions {
   nodeStyle: Style
   edgeStyle: Style
   grid: GridOptions
-  guide: GuideHandler.GuideOptions
-  tooltip: TooltipHandler.TooltipOptions
+  guide: GuideOptions
+  tooltip: TooltipOptions
   folding: FoldingOptions
   keyboard: KeyboardOptions
-  rubberband: RubberbandHandler.RubberbandOptions
+  rubberband: RubberbandOptions
   pageBreak: PageBreakOptions
-  contextMenu: ContextMenuHandler.ContextMenuOptions
+  contextMenu: ContextMenuOptions
   dropTargetHighlight: DropTargetHighlightOptions
   movingPreview: MovingPreviewOptions
   selectionPreview: SelectionPreviewOptions
@@ -805,13 +790,13 @@ export interface GraphOptions extends Partial<SimpleOptions> {
   nodeStyle?: Style
   edgeStyle?: Style
   grid?: Partial<GridOptions> | boolean
-  guide?: Partial<GuideHandler.GuideOptions> | boolean
-  tooltip?: Partial<TooltipHandler.TooltipOptions> | boolean
+  guide?: Partial<GuideOptions> | boolean
+  tooltip?: Partial<TooltipOptions> | boolean
   folding?: Partial<FoldingOptions> | boolean
   keyboard?: Partial<KeyboardOptions> | boolean
-  rubberband?: Partial<RubberbandHandler.RubberbandOptions> | boolean
+  rubberband?: Partial<RubberbandOptions> | boolean
   pageBreak?: Partial<PageBreakOptions> | boolean
-  contextMenu?: Partial<ContextMenuHandler.ContextMenuOptions> | boolean
+  contextMenu?: Partial<ContextMenuOptions> | boolean
   dropTargetHighlight?: Partial<DropTargetHighlightOptions>
   movingPreview?: Partial<MovingPreviewOptions>
   selectionPreview?: Partial<SelectionPreviewOptions>
