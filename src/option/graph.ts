@@ -9,7 +9,6 @@ import {
   RubberbandHandler,
   GuideHandler,
   TooltipHandler,
-  MovingHandler,
   ResizeOption,
   ResizeHandleOptions,
   ResizePreviewOptions,
@@ -29,6 +28,10 @@ import {
   ConnectionPreviewOptions,
   ConnectionHighlightOptions,
 } from '../handler/connection-handler/option'
+import {
+  MovingPreviewOptions,
+  DropTargetHighlightOptions,
+} from '../handler/moving-handler/option'
 import { EdgeHandleOptions } from './edge'
 
 export interface CompositeOptions {
@@ -779,8 +782,8 @@ export interface FullOptions extends SimpleOptions {
   rubberband: RubberbandHandler.RubberbandOptions
   pageBreak: PageBreakOptions
   contextMenu: ContextMenuHandler.ContextMenuOptions
-  dropTargetHighlight: MovingHandler.DropTargetHighlightOptions
-  movingPreview: MovingHandler.MovingPreviewOptions
+  dropTargetHighlight: DropTargetHighlightOptions
+  movingPreview: MovingPreviewOptions
   selectionPreview: SelectionPreviewOptions
   resize: ResizeOption
   resizeHandle: ResizeHandleOptions
@@ -809,8 +812,8 @@ export interface GraphOptions extends Partial<SimpleOptions> {
   rubberband?: Partial<RubberbandHandler.RubberbandOptions> | boolean
   pageBreak?: Partial<PageBreakOptions> | boolean
   contextMenu?: Partial<ContextMenuHandler.ContextMenuOptions> | boolean
-  dropTargetHighlight?: Partial<MovingHandler.DropTargetHighlightOptions>
-  movingPreview?: Partial<MovingHandler.MovingPreviewOptions>
+  dropTargetHighlight?: Partial<DropTargetHighlightOptions>
+  movingPreview?: Partial<MovingPreviewOptions>
   selectionPreview?: Partial<SelectionPreviewOptions>
   resize?: Partial<ResizeOption> | boolean
   resizeHandle?: Partial<ResizeHandleOptions>

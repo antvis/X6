@@ -1,7 +1,7 @@
 import { Graph, Cell } from '../../core'
 import { Shape, ImageShape } from '../../shape'
 import { Point, Rectangle } from '../../struct'
-import { HandleOptions, createHandleShape } from '../../option/handle'
+import { HandleOptions, createHandleShape } from './knob-option'
 import {
   BaseStyle,
   OptionItem,

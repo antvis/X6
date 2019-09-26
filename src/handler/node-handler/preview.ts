@@ -47,14 +47,13 @@ export class Preview extends Disposable {
   startX: number
   startY: number
   bounds: Rectangle
-  protected selectionBounds: Rectangle
   protected x0: number
   protected y0: number
   protected minBounds: Rectangle | null
   protected unscaledBounds: Rectangle | null
+  protected currentDeg: number | null
   protected inTolerance: boolean
 
-  protected currentAlpha: number | null
   protected selectionShape: RectangleShape | null
   protected previewShape: RectangleShape | null
   protected parentHighlight: RectangleShape | null
@@ -115,10 +114,6 @@ export class Preview extends Disposable {
       })
       this.selectionShape.setCursor(cursor)
     }
-  }
-
-  protected getSelectionBounds(state: State) {
-    return state.bounds.round()
   }
 
   protected createSelectionShape(bounds: Rectangle) {
@@ -507,14 +502,13 @@ export class Preview extends Disposable {
   }
 
   updateBounds() {
-    this.selectionBounds = this.getSelectionBounds(this.state)
-    this.bounds = this.selectionBounds.clone()
+    this.bounds = this.state.bounds.round()
   }
 
   drawPreview() {
-    const rotation = this.currentAlpha == null
+    const rotation = this.currentDeg == null
       ? util.getRotation(this.state)
-      : this.currentAlpha
+      : this.currentDeg
 
     if (this.previewShape != null) {
       this.previewShape.bounds = this.bounds
@@ -558,12 +552,12 @@ export class Preview extends Disposable {
     const dx = this.state.bounds.getCenterX() - p.x
     const dy = this.state.bounds.getCenterY() - p.y
 
-    this.currentAlpha = (dx !== 0)
+    this.currentDeg = (dx !== 0)
       ? Math.atan(dy / dx) * 180 / Math.PI + 90
       : (dy < 0 ? 180 : 0)
 
     if (dx > 0) {
-      this.currentAlpha -= 180
+      this.currentDeg -= 180
     }
 
     // Rotation raster
@@ -579,9 +573,9 @@ export class Preview extends Disposable {
         5 * Math.min(3, Math.max(0, Math.round(80 / Math.abs(dist)))),
       )
 
-      this.currentAlpha = Math.round(this.currentAlpha / raster) * raster
+      this.currentDeg = Math.round(this.currentDeg / raster) * raster
     } else {
-      this.currentAlpha = this.roundAngle(this.currentAlpha)
+      this.currentDeg = this.roundAngle(this.currentDeg)
     }
 
     if (this.previewShape) {
@@ -752,12 +746,12 @@ export class Preview extends Disposable {
   }
 
   hasRotated() {
-    return this.currentAlpha != null
+    return this.currentDeg != null
   }
 
   getRotation() {
-    if (this.currentAlpha != null) {
-      return this.currentAlpha - util.getRotation(this.state)
+    if (this.currentDeg != null) {
+      return this.currentDeg - util.getRotation(this.state)
     }
     return 0
   }
@@ -776,7 +770,7 @@ export class Preview extends Disposable {
 
   resetShape() {
     this.inTolerance = false
-    this.currentAlpha = null
+    this.currentDeg = null
     if (this.previewShape != null) {
       this.previewShape.dispose()
       this.previewShape = null

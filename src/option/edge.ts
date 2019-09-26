@@ -1,7 +1,10 @@
 import { Graph, Cell } from '../core'
 import { Shape, ImageShape } from '../shape'
 import { Rectangle } from '../struct'
-import { HandleOptions, createHandleShape } from './handle'
+import {
+  HandleOptions,
+  createHandleShape,
+} from '../handler/node-handler/knob-option'
 import {
   BaseStyle,
   OptionItem,
