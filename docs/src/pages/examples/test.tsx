@@ -9,10 +9,15 @@ export default class Test extends React.Component {
     const graph = new Graph(this.container, {
       rubberband: true,
       guide: true,
-      rotate: true,
       nodeLabelsMovable: true,
       resize: {
-        livePreview: true
+        livePreview: true,
+      },
+      resizeHandle: {
+        single: false,
+      },
+      rotate: {
+        enabled: true,
       }
     })
 

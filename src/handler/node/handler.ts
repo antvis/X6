@@ -57,9 +57,10 @@ export class NodeHandler extends MouseHandler {
   }
 
   mouseDown(e: MouseEventEx, sneder: any) {
-    const index = this.knobs.getHandle(e)
-    if (index != null) {
-      this.start(e.getGraphX(), e.getGraphY(), index)
+    const ret = this.knobs.getHandle(e)
+    if (ret != null) {
+      this.start(e.getGraphX(), e.getGraphY(), ret.index)
+      this.addOverlay(ret.cursor)
       e.consume()
     }
   }
@@ -73,9 +74,7 @@ export class NodeHandler extends MouseHandler {
   mouseMove(e: MouseEventEx, sneder: any) {
     if (!e.isConsumed() && this.index != null) {
       if (this.preview.canMove(e)) {
-
         this.preview.ensurePreview()
-
         if (DomEvent.isCustomHandle(this.index)) {
           this.knobs.processCustomHandle(e, this.index)
         } else if (DomEvent.isLabelHandle(this.index)) {
@@ -84,11 +83,10 @@ export class NodeHandler extends MouseHandler {
           this.preview.rotate(e)
         } else {
           this.preview.resize(e)
+          this.updateOverlayCursor(e)
         }
       }
-
       e.consume()
-
     } else if (
       !this.isMouseDown() &&
       this.knobs.getHandleForEvent(e) != null
@@ -123,8 +121,101 @@ export class NodeHandler extends MouseHandler {
       })
 
       e.consume()
+      this.removeOverlay()
       this.reset()
     }
+  }
+
+  private overlayCursor: string | null
+  protected updateOverlayCursor(e: MouseEventEx) {
+    if (this.overlayCursor == null) {
+      this.overlayCursor = this.getOverlayCursor()
+    }
+
+    const oldBounds = this.preview.getStateBounds()
+    const curBounds = this.preview.bounds.round()
+
+    let cursor = this.overlayCursor
+    if (cursor === 'nw-resize') {
+      const fixedX = curBounds.x === oldBounds.x + oldBounds.width
+      const fixedY = curBounds.y === oldBounds.y + oldBounds.height
+      if (fixedX && fixedY) {
+        cursor = 'se-resize'
+      } else if (fixedX) {
+        cursor = 'ne-resize'
+      } else if (fixedY) {
+        cursor = 'sw-resize'
+      } else {
+        cursor = 'nw-resize'
+      }
+    } else if (cursor === 'n-resize') {
+      const fixedY = curBounds.y === oldBounds.y + oldBounds.height
+      if (fixedY) {
+        cursor = 's-resize'
+      } else {
+        cursor = 'n-resize'
+      }
+    } else if (cursor === 'ne-resize') {
+      const fixedX = curBounds.x + curBounds.width === oldBounds.x
+      const fixedY = curBounds.y === oldBounds.y + oldBounds.height
+      if (fixedX && fixedY) {
+        cursor = 'sw-resize'
+      } else if (fixedX) {
+        cursor = 'nw-resize'
+      } else if (fixedY) {
+        cursor = 'se-resize'
+      } else {
+        cursor = 'ne-resize'
+      }
+    } else if (cursor === 'e-resize') {
+      const fixedX = curBounds.x + curBounds.width === oldBounds.x
+      if (fixedX) {
+        cursor = 'w-resize'
+      } else {
+        cursor = 'e-resize'
+      }
+    } else if (cursor === 'se-resize') {
+      const fixedX = curBounds.x + curBounds.width === oldBounds.x
+      const fixedY = curBounds.y + curBounds.height === oldBounds.y
+      if (fixedX && fixedY) {
+        cursor = 'nw-resize'
+      } else if (fixedX) {
+        cursor = 'sw-resize'
+      } else if (fixedY) {
+        cursor = 'ne-resize'
+      } else {
+        cursor = 'se-resize'
+      }
+    } else if (cursor === 's-resize') {
+      const fixedY = curBounds.y + curBounds.height === oldBounds.y
+      if (fixedY) {
+        cursor = 'n-resize'
+      } else {
+        cursor = 's-resize'
+      }
+    } else if (cursor === 'sw-resize') {
+      const fixedX = curBounds.x === oldBounds.x + oldBounds.width
+      const fixedY = curBounds.y + curBounds.height === oldBounds.y
+      if (fixedX && fixedY) {
+        cursor = 'ne-resize'
+      } else if (fixedX) {
+        cursor = 'se-resize'
+      } else if (fixedY) {
+        cursor = 'nw-resize'
+      } else {
+        cursor = 'sw-resize'
+      }
+    } else if (cursor === 'w-resize') {
+      const fixedX = curBounds.x === oldBounds.x + oldBounds.width
+      if (fixedX) {
+        cursor = 'e-resize'
+      } else {
+        cursor = 'w-resize'
+      }
+    }
+
+    this.setOverlayCursor(cursor)
+    console.log(oldBounds, curBounds)
   }
 
   protected isRecursiveResize(state: State, e: MouseEventEx) {
@@ -226,6 +317,7 @@ export class NodeHandler extends MouseHandler {
     this.knobs.reset()
     this.preview.resetShape()
     this.index = null
+    this.overlayCursor = null
     this.redrawKnobs()
     this.preview.reset()
   }

@@ -231,5 +231,8 @@ export function applyClassName(
 
   if (className.length > 0) {
     shape.className = className
+    if (shape instanceof Shape && shape.elem) {
+      shape.elem.setAttribute('class', className)
+    }
   }
 }

@@ -13,6 +13,7 @@ import {
   ResizeHandleOptions,
   createResizeHandle,
   isResizeHandleVisible,
+  updateResizeHandleCalssName,
 } from './resize-option'
 import {
   createRotationHandle,
@@ -68,23 +69,23 @@ export class Knobs extends Disposable {
       let i = 0
 
       if (!this.singleResizeHandle) {
-        this.handles.push(this.createHandle(i, 'nw-resize'))
+        this.handles.push(this.createHandle(i))
         i += 1
-        this.handles.push(this.createHandle(i, 'n-resize'))
+        this.handles.push(this.createHandle(i))
         i += 1
-        this.handles.push(this.createHandle(i, 'ne-resize'))
+        this.handles.push(this.createHandle(i))
         i += 1
-        this.handles.push(this.createHandle(i, 'w-resize'))
+        this.handles.push(this.createHandle(i))
         i += 1
-        this.handles.push(this.createHandle(i, 'e-resize'))
+        this.handles.push(this.createHandle(i))
         i += 1
-        this.handles.push(this.createHandle(i, 'sw-resize'))
+        this.handles.push(this.createHandle(i))
         i += 1
-        this.handles.push(this.createHandle(i, 's-resize'))
+        this.handles.push(this.createHandle(i))
         i += 1
       }
 
-      this.handles.push(this.createHandle(i, 'se-resize'))
+      this.handles.push(this.createHandle(i))
     }
 
     if (this.canRenderLabelHandle()) {
@@ -143,8 +144,9 @@ export class Knobs extends Disposable {
     return null
   }
 
-  protected createHandle(index: number, cursor?: string) {
+  protected createHandle(index: number) {
     let handle
+    let cursor: string | null = null
     const args = {
       graph: this.graph,
       cell: this.state.cell,
@@ -152,14 +154,12 @@ export class Knobs extends Disposable {
 
     if (DomEvent.isLabelHandle(index)) {
       handle = createLabelHandle(args)
-      // tslint:disable-next-line
       cursor = getLabelHandleCursor({ ...args, shape: handle })
     } else if (DomEvent.isRotationHandle(index)) {
       handle = createRotationHandle(args)
-      // tslint:disable-next-line
       cursor = getRotationHandleCursor({ ...args, shape: handle })
     } else {
-      handle = createResizeHandle({ ...args, index, cursor: cursor! })
+      handle = createResizeHandle({ ...args, index })
       handle.visible = this.isResizeHandleVisible(index)
     }
 
@@ -175,7 +175,7 @@ export class Knobs extends Disposable {
 
     MouseEventEx.redirectMouseEvents(handle.elem, this.graph, this.state)
 
-    if (this.graph.isEnabled()) {
+    if (this.graph.isEnabled() && cursor != null) {
       handle.setCursor(cursor)
     }
 
@@ -239,24 +239,37 @@ export class Knobs extends Disposable {
     if (this.customHandles != null && this.isCustomHandleEvent(e)) {
       // Inverse loop order to match display order
       for (let i = this.customHandles.length - 1; i >= 0; i -= 1) {
-        if (checkShape(this.customHandles[i].shape)) {
-          return DomEvent.getCustomHandle(i)
+        const shape = this.customHandles[i].shape
+        if (checkShape(shape)) {
+          return {
+            index: DomEvent.getCustomHandle(i),
+            cursor: shape.cursor,
+          }
         }
       }
     }
 
     if (checkShape(this.rotationShape)) {
-      return DomEvent.getRotationHandle()
+      return {
+        index: DomEvent.getRotationHandle(),
+        cursor: this.rotationShape!.cursor,
+      }
     }
 
     if (checkShape(this.labelShape)) {
-      return DomEvent.getLabelHandle()
+      return {
+        index: DomEvent.getLabelHandle(),
+        cursor: this.labelShape!.cursor,
+      }
     }
 
     if (this.handles != null) {
       for (let i = 0, ii = this.handles.length; i < ii; i += 1) {
         if (checkShape(this.handles[i])) {
-          return i
+          return {
+            index: i,
+            cursor: this.handles[i].cursor,
+          }
         }
       }
     }
@@ -333,6 +346,7 @@ export class Knobs extends Disposable {
     let bounds = this.bounds
 
     if (this.handles != null && this.handles.length > 0 && this.handles[0]) {
+
       if (
         this.master.index == null &&
         this.manageHandles &&
@@ -361,78 +375,65 @@ export class Knobs extends Disposable {
         }
       }
 
-      const cx = bounds.getCenterX()
-      const cy = bounds.getCenterY()
+      const ct = bounds.getCenter()
       const right = bounds.x + bounds.width
       const bottom = bounds.y + bounds.height
+      const alpha = util.toRad(util.getRotation(this.state))
+      const cos = Math.cos(alpha)
+      const sin = Math.sin(alpha)
+      let pt = new Point()
+
+      const draw = (index: number, handle?: Shape) => {
+        const cursor = this.getCurosr(index)
+        const shape = handle || this.handles![index]
+        pt = util.rotatePointEx(pt, cos, sin, ct)
+        this.moveHandleTo(shape, pt.x, pt.y)
+        if (this.graph.isEnabled()) {
+          shape.setCursor(cursor)
+        }
+
+        updateResizeHandleCalssName({
+          index,
+          shape,
+          cursor,
+          graph: this.graph,
+          cell: this.state.cell,
+        })
+      }
 
       if (this.singleResizeHandle) {
-        this.moveHandleTo(this.handles[0], right, bottom)
+        pt = bounds.getCorner()
+        draw(7, this.handles[0])
       } else {
         if (this.handles.length >= 8) {
-          const cursors = [
-            'nw-resize',
-            'n-resize',
-            'ne-resize',
-            'e-resize',
-            'se-resize',
-            's-resize',
-            'sw-resize',
-            'w-resize',
-          ]
 
-          const alpha = util.toRad(util.getRotation(this.state))
-          const cos = Math.cos(alpha)
-          const sin = Math.sin(alpha)
-          const da = Math.round(alpha * 4 / Math.PI)
+          pt = bounds.getOrigin()
+          draw(0)
 
-          const ct = bounds.getCenter()
-          let pt = new Point(bounds.x, bounds.y)
-          pt = util.rotatePointEx(pt, cos, sin, ct)
-          this.moveHandleTo(this.handles[0], pt.x, pt.y)
-          this.handles[0].setCursor(cursors[util.mod(0 + da, cursors.length)])
-
-          pt.x = cx
+          pt.x = ct.x
           pt.y = bounds.y
-          pt = util.rotatePointEx(pt, cos, sin, ct)
-          this.moveHandleTo(this.handles[1], pt.x, pt.y)
-          this.handles[1].setCursor(cursors[util.mod(1 + da, cursors.length)])
+          draw(1)
 
-          pt.x = right
-          pt.y = bounds.y
-          pt = util.rotatePointEx(pt, cos, sin, ct)
-          this.moveHandleTo(this.handles[2], pt.x, pt.y)
-          this.handles[2].setCursor(cursors[util.mod(2 + da, cursors.length)])
+          pt = bounds.getTopRight()
+          draw(2)
 
           pt.x = bounds.x
-          pt.y = cy
-          pt = util.rotatePointEx(pt, cos, sin, ct)
-          this.moveHandleTo(this.handles[3], pt.x, pt.y)
-          this.handles[3].setCursor(cursors[util.mod(7 + da, cursors.length)])
+          pt.y = ct.y
+          draw(3)
 
           pt.x = right
-          pt.y = cy
-          pt = util.rotatePointEx(pt, cos, sin, ct)
-          this.moveHandleTo(this.handles[4], pt.x, pt.y)
-          this.handles[4].setCursor(cursors[util.mod(3 + da, cursors.length)])
+          pt.y = ct.y
+          draw(4)
 
-          pt.x = bounds.x
-          pt.y = bottom
-          pt = util.rotatePointEx(pt, cos, sin, ct)
-          this.moveHandleTo(this.handles[5], pt.x, pt.y)
-          this.handles[5].setCursor(cursors[util.mod(6 + da, cursors.length)])
+          pt = bounds.getBottomLeft()
+          draw(5)
 
-          pt.x = cx
+          pt.x = ct.x
           pt.y = bottom
-          pt = util.rotatePointEx(pt, cos, sin, ct)
-          this.moveHandleTo(this.handles[6], pt.x, pt.y)
-          this.handles[6].setCursor(cursors[util.mod(5 + da, cursors.length)])
+          draw(6)
 
-          pt.x = right
-          pt.y = bottom
-          pt = util.rotatePointEx(pt, cos, sin, ct)
-          this.moveHandleTo(this.handles[7], pt.x, pt.y)
-          this.handles[7].setCursor(cursors[util.mod(4 + da, cursors.length)])
+          pt = bounds.getCorner()
+          draw(7)
         }
       }
     }
@@ -474,6 +475,34 @@ export class Knobs extends Disposable {
         elem.style.visibility = this.graph.isEditing() ? 'hidden' : ''
       })
     }
+  }
+
+  getCurosr(index: number) {
+    const cursors = [
+      'nw-resize',
+      'n-resize',
+      'ne-resize',
+      'e-resize',
+      'se-resize',
+      's-resize',
+      'sw-resize',
+      'w-resize',
+    ]
+
+    const indexMap: { [key: number]: number } = {
+      0: 0,
+      1: 1,
+      2: 2,
+      3: 7,
+      4: 3,
+      5: 6,
+      6: 5,
+      7: 4,
+    }
+
+    const alpha = util.toRad(util.getRotation(this.state))
+    const da = Math.round(alpha * 4 / Math.PI)
+    return cursors[util.mod(indexMap[index] + da, cursors.length)]
   }
 
   protected getHandlePadding() {

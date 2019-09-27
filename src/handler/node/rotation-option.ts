@@ -20,7 +20,6 @@ export interface RotateOptions {
    * Default is `true`.
    */
   rasterized: boolean
-  livePreview: boolean
 }
 
 export interface RotateHandleOptions extends

@@ -34,8 +34,8 @@ export interface ResizeHandleOptions extends
   BaseStyle<ApplyResizeHandleStyleArgs>,
   HandleOptions<CreateResizeHandleShapeArgs, ApplyResizeHandleStyleArgs> {
   /**
-   * Specifies if only one sizer handle at the bottom, right corner should be
-   * used.
+   * Specifies if only one sizer handle at the bottom, right corner should
+   * be used.
    *
    * Default is `false`.
    */
@@ -50,20 +50,21 @@ export interface ResizeHandleOptions extends
   adaptive: boolean
 
   /**
-   * Optional tolerance for hit-detection.
+   * Optional tolerance for hit and adaptive detection.
    *
    * Default is `8`.
    */
   tolerance: number
 
   visible: OptionItem<IsResizeHandleVisibleArgs, boolean>
+  className?: OptionItem<ApplyResizeHandleClassNameArgs, string>
 }
 
 export interface CreateResizeHandleShapeArgs {
   graph: Graph
   cell: Cell
   index: number
-  cursor: string
+
 }
 
 export interface ApplyResizeHandleStyleArgs
@@ -71,8 +72,14 @@ export interface ApplyResizeHandleStyleArgs
   shape: Shape
 }
 
+export interface ApplyResizeHandleClassNameArgs
+  extends CreateResizeHandleShapeArgs {
+  cursor: string
+  shape: Shape
+}
+
 export function createResizeHandle(args: CreateResizeHandleShapeArgs) {
-  const { graph, cursor } = args
+  const { graph } = args
   const options = graph.options.resizeHandle as ResizeHandleOptions
   const shape = createHandleShape(args, options)
   const newArgs = { ...args, shape }
@@ -85,10 +92,30 @@ export function createResizeHandle(args: CreateResizeHandleShapeArgs) {
     applyBaseStyle(newArgs, options)
   }
 
-  applyClassName(newArgs, options, cursor)
+  // applyClassName(newArgs, options, cursor)
   applyManualStyle(newArgs, options)
 
   return shape
+}
+
+export function updateResizeHandleCalssName(
+  args: ApplyResizeHandleClassNameArgs,
+) {
+  const { graph, cursor } = args
+  const options = graph.options.resizeHandle as ResizeHandleOptions
+  applyClassName(args, options, `cursor-${cursor}`)
+}
+
+export interface IsResizeHandleVisibleArgs {
+  graph: Graph
+  cell: Cell
+  index: number
+}
+
+export function isResizeHandleVisible(args: IsResizeHandleVisibleArgs) {
+  const { graph } = args
+  const options = graph.options.resizeHandle as ResizeHandleOptions
+  return drill(options.visible, graph, args)
 }
 
 export interface ResizePreviewOptions
@@ -106,16 +133,4 @@ export function applyResizePreviewStyle(args: ApplyResizePreviewStyleArgs) {
   applyClassName(args, options, 'resize-preview')
   applyManualStyle(args, options)
   return args.shape
-}
-
-export interface IsResizeHandleVisibleArgs {
-  graph: Graph
-  cell: Cell
-  index: number
-}
-
-export function isResizeHandleVisible(args: IsResizeHandleVisibleArgs) {
-  const { graph } = args
-  const options = graph.options.resizeHandle as ResizeHandleOptions
-  return drill(options.visible, graph, args)
 }

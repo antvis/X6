@@ -405,7 +405,7 @@ export class ConnectionHandler extends MouseHandler {
           this.drawPreview()
         }
 
-        this.setCursor()
+        this.setGlobalCursor(this.cursor)
 
         DomEvent.consume(e.getEvent())
         e.consume()
@@ -950,27 +950,13 @@ export class ConnectionHandler extends MouseHandler {
     }
   }
 
-  private savedContainerCursor: string
-  private setCursor() {
-    if (this.cursor != null) {
-      this.savedContainerCursor = this.graph.container.style.cursor
-      this.graph.container.style.cursor = this.cursor
-    }
-  }
-
-  private reverseCursor() {
-    if (this.cursor != null && this.graph.container != null) {
-      this.graph.container.style.cursor = this.savedContainerCursor
-    }
-  }
-
   protected reset() {
     if (this.previewShape != null) {
       this.previewShape.dispose()
       this.previewShape = null
     }
 
-    this.reverseCursor()
+    this.resetGlobalCursor()
     this.destroyIcons()
     this.marker.reset()
     this.constraintHandler.reset()

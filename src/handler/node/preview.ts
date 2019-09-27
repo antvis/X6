@@ -43,7 +43,6 @@ export class Preview extends Disposable {
   rotationRaster: boolean = true
 
   resizeLivePreview: boolean
-  rotateLivePreview: boolean
 
   startX: number
   startY: number
@@ -84,7 +83,6 @@ export class Preview extends Disposable {
     this.resizeLivePreview = resize.livePreview
 
     const rotate = options.rotate as RotateOptions
-    this.rotateLivePreview = rotate.livePreview
     this.rotationRaster = rotate.rasterized
   }
 
@@ -214,13 +212,11 @@ export class Preview extends Disposable {
     const tempState = this.state.clone()
 
     // Temporarily changes size and origin
-    console.log(this.state.bounds.clone(), this.bounds)
     this.state.bounds.update(this.bounds)
     this.state.origin = new Point(
       this.state.bounds.x / s - t.x,
       this.state.bounds.y / s - t.y,
     )
-    console.log(this.state.bounds.clone())
 
     // Needed to force update of text bounds
     this.state.unscaledWidth = null
@@ -454,7 +450,7 @@ export class Preview extends Disposable {
   }
 
   isLivePreview() {
-    return (this.rotateLivePreview || this.resizeLivePreview)
+    return this.resizeLivePreview
   }
 
   ensurePreview() {
@@ -470,20 +466,19 @@ export class Preview extends Disposable {
       && !DomEvent.isLabelHandle(index)
 
     this.hideSelectionShape()
+    if (isResize && (!this.resizeLivePreview || this.isUnapparent())) {
+      this.previewShape = this.createResizePreview(this.bounds)
+    } else if (isRotate) {
+      this.previewShape = this.createRotatePreview(this.bounds)
+    }
 
-    if (isResize || isRotate) {
-      if (!livePreview || this.isUnapparent()) {
-        this.previewShape = isResize
-          ? this.createResizePreview(this.bounds)
-          : this.createRotatePreview(this.bounds)
-
-        if (util.hasHtmlLabel(this.state)) {
-          this.previewShape.dialect = 'html'
-          this.previewShape.init(this.graph.container)
-        } else {
-          this.previewShape.dialect = 'svg'
-          this.previewShape.init(this.graph.view.getOverlayPane())
-        }
+    if (this.previewShape) {
+      if (util.hasHtmlLabel(this.state)) {
+        this.previewShape.dialect = 'html'
+        this.previewShape.init(this.graph.container)
+      } else {
+        this.previewShape.dialect = 'svg'
+        this.previewShape.init(this.graph.view.getOverlayPane())
       }
     }
 
@@ -505,8 +500,12 @@ export class Preview extends Disposable {
     }
   }
 
+  getStateBounds() {
+    return this.state.bounds.round()
+  }
+
   updateBounds() {
-    this.bounds = this.state.bounds.round()
+    this.bounds = this.getStateBounds()
   }
 
   drawPreview() {
@@ -584,9 +583,7 @@ export class Preview extends Disposable {
       this.drawPreview()
     }
 
-    if (this.rotateLivePreview) {
-      this.handler.redrawKnobs()
-    }
+    this.handler.redrawKnobs()
   }
 
   resize(e: MouseEventEx) {

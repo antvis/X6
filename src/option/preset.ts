@@ -246,7 +246,6 @@ export const defaultOptions: FullOptions = {
   rotate: {
     enabled: false,
     rasterized: true,
-    livePreview: false,
   },
 
   rotateHandle: {

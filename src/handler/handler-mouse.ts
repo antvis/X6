@@ -1,3 +1,4 @@
+import * as util from '../util'
 import { Graph } from '../core'
 import { DomEvent, MouseEventEx } from '../common'
 import { BaseHandler } from './handler-base'
@@ -41,6 +42,51 @@ export class MouseHandler extends BaseHandler implements IMouseHandler {
 
   consume(e: MouseEventEx, eventName: string) {
     e.consume()
+  }
+
+  private overlay: HTMLDivElement | null
+  addOverlay(cursor?: string | null) {
+    const overlay = util.createElement('div') as HTMLDivElement
+    overlay.style.position = 'absolute'
+    overlay.style.zIndex = '99999'
+    overlay.style.left = '0'
+    overlay.style.top = '0'
+    overlay.style.right = '0'
+    overlay.style.bottom = '0'
+    overlay.style.border = '0'
+    overlay.style.background = 'rgba(255, 255, 255, 0)'
+    this.overlay = overlay
+    this.setOverlayCursor(cursor)
+    document.body.appendChild(overlay)
+  }
+
+  removeOverlay() {
+    util.removeElement(this.overlay)
+  }
+
+  getOverlayCursor() {
+    return this.overlay ? this.overlay.style.cursor : null
+  }
+
+  setOverlayCursor(cursor?: string | null) {
+    if (this.overlay) {
+      this.overlay.style.cursor = cursor == null ? '' : cursor
+    }
+  }
+
+  private savedBodyCursor: string
+  private savedContainerCursor: string
+  setGlobalCursor(cursor: string | null | undefined) {
+    this.savedBodyCursor = document.body.style.cursor
+    this.savedContainerCursor = this.graph.container.style.cursor
+    document.body.style.cursor = cursor || ''
+  }
+
+  resetGlobalCursor() {
+    document.body.style.cursor = this.savedBodyCursor
+    this.graph.container.style.cursor = this.savedContainerCursor
+    this.savedBodyCursor = ''
+    this.savedContainerCursor = ''
   }
 
   mouseDown(e: MouseEventEx, sender?: any) { }
