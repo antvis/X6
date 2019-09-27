@@ -215,7 +215,6 @@ export class NodeHandler extends MouseHandler {
     }
 
     this.setOverlayCursor(cursor)
-    console.log(oldBounds, curBounds)
   }
 
   protected isRecursiveResize(state: State, e: MouseEventEx) {
