@@ -25,11 +25,11 @@ import {
   createLabelHandle,
   getLabelHandleCursor,
   getLabelHandleOffset,
-} from '../node/label-option'
+} from '../node/option-label'
 import {
   applySelectionPreviewStyle,
   getSelectionPreviewCursor,
-} from '../node/selection-option'
+} from '../node/option-selection'
 
 export class EdgeHandler extends MouseHandler {
   state: State

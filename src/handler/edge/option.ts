@@ -4,7 +4,7 @@ import { Rectangle } from '../../struct'
 import {
   HandleOptions,
   createHandleShape,
-} from '../node/knob-option'
+} from '../node/option-knob'
 import {
   BaseStyle,
   OptionItem,

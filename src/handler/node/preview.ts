@@ -8,15 +8,15 @@ import { EdgeHandler } from '../edge/handler'
 import {
   ResizeOption,
   applyResizePreviewStyle,
-} from './resize-option'
+} from './option-resize'
 import {
   RotateOptions,
   applyRotatePreviewStyle,
-} from './rotation-option'
+} from './option-rotation'
 import {
   getSelectionPreviewCursor,
   applySelectionPreviewStyle,
-} from './selection-option'
+} from './option-selection'
 
 export class Preview extends Disposable {
 

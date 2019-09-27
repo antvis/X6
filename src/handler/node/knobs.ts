@@ -8,18 +8,18 @@ import {
   createLabelHandle,
   getLabelHandleCursor,
   getLabelHandleOffset,
-} from './label-option'
+} from './option-label'
 import {
   ResizeHandleOptions,
   createResizeHandle,
   isResizeHandleVisible,
   updateResizeHandleCalssName,
-} from './resize-option'
+} from './option-resize'
 import {
   createRotationHandle,
   getRotationHandleCursor,
   getRotationHandleOffset,
-} from './rotation-option'
+} from './option-rotation'
 
 export class Knobs extends Disposable {
   singleResizeHandle: boolean

@@ -2,7 +2,7 @@ import { Graph, Cell } from '../../core'
 import { Shape, ImageShape } from '../../shape'
 import { Rectangle } from '../../struct'
 import { MouseEventEx } from '../../common'
-import { HandleOptions, createHandleShape } from './knob-option'
+import { HandleOptions, createHandleShape } from './option-knob'
 import {
   BaseStyle,
   OptionItem,

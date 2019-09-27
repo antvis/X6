@@ -13,14 +13,14 @@ import {
   ResizeOption,
   ResizeHandleOptions,
   ResizePreviewOptions,
-} from '../handler/node/resize-option'
+} from '../handler/node/option-resize'
 import {
   RotateOptions,
   RotateHandleOptions,
   RotatePreviewOptions,
-} from '../handler/node/rotation-option'
-import { SelectionPreviewOptions } from '../handler/node/selection-option'
-import { LabelHandleOptions } from '../handler/node/label-option'
+} from '../handler/node/option-rotation'
+import { SelectionPreviewOptions } from '../handler/node/option-selection'
+import { LabelHandleOptions } from '../handler/node/option-label'
 import { EdgeHandleOptions } from '../handler/edge/option'
 import {
   ConstraintOptions,

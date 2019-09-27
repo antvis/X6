@@ -121,6 +121,7 @@ export class NodeHandler extends MouseHandler {
       })
 
       e.consume()
+
       this.removeOverlay()
       this.reset()
     }
