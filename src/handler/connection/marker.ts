@@ -1,4 +1,4 @@
-import { Graph, State } from '../../core'
+import { State } from '../../core'
 import { MouseEventEx } from '../../common'
 import { CellMarker } from '../cell-marker'
 import { ConnectionHandler } from './handler'
@@ -8,23 +8,21 @@ import {
 } from './option'
 
 export class ConnectionMarker extends CellMarker {
-  handler: ConnectionHandler
+  master: ConnectionHandler
 
-  constructor(graph: Graph, handler: ConnectionHandler) {
-    const options = getConnectionHighlightOptions({
-      graph,
-    })
-    super(graph, options)
-    this.handler = handler
+  constructor(master: ConnectionHandler) {
+    const options = getConnectionHighlightOptions({ graph: master.graph })
+    super(master.graph, options)
+    this.master = master
   }
 
   getCell(e: MouseEventEx) {
     let cell = super.getCell(e)
 
-    this.handler.error = null
+    this.master.error = null
 
     // Checks for cell at preview point (with grid)
-    const currentPoint = this.handler.currentPoint
+    const currentPoint = this.master.currentPoint
     if (cell == null && currentPoint != null) {
       cell = this.graph.getCellAt(currentPoint.x, currentPoint.y)
     }
@@ -32,7 +30,6 @@ export class ConnectionMarker extends CellMarker {
     // Uses connectable parent node if one exists
     if (cell != null && !this.graph.isCellConnectable(cell)) {
       const parent = this.graph.getModel().getParent(cell)
-
       if (
         this.graph.model.isNode(parent) &&
         this.graph.isCellConnectable(parent)
@@ -41,51 +38,56 @@ export class ConnectionMarker extends CellMarker {
       }
     }
 
-    if (
-      (
-        this.graph.isSwimlane(cell) &&
-        currentPoint != null &&
-        this.graph.cellManager.hitsSwimlaneContent(
-          cell, currentPoint.x, currentPoint.y,
-        )
-      ) ||
-      !this.handler.isConnectableCell(cell)
-    ) {
-      cell = null
+    if (cell != null) {
+      if (!this.master.isConnectableCell(cell)) {
+        cell = null
+      }
     }
 
     if (cell != null) {
-      if (this.handler.isConnecting()) {
-        if (this.handler.sourceState != null) {
-          this.handler.error = this.handler.validateConnection(
-            this.handler.sourceState.cell, cell,
+      if (
+        currentPoint != null &&
+        this.graph.isSwimlane(cell) &&
+        this.graph.cellManager.hitsSwimlaneContent(
+          cell, currentPoint.x, currentPoint.y,
+        )
+      ) {
+        cell = null
+      }
+    }
+
+    if (cell != null) {
+      if (this.master.isConnecting()) {
+        if (this.master.sourceState != null) {
+          this.master.error = this.master.validateConnection(
+            this.master.sourceState.cell, cell,
           )
 
-          if (this.handler.error != null && this.handler.error.length >= 0) {
+          if (this.master.error != null && this.master.error.length >= 0) {
             cell = null
-            if (this.handler.isCreateTarget(e.getEvent())) {
-              this.handler.error = null
+            if (this.master.isCreateTarget(e.getEvent())) {
+              this.master.error = null
             }
           }
         }
-      } else if (!this.handler.isValidSource(cell)) {
+      } else if (!this.master.isValidSource(cell)) {
         cell = null
       }
 
     } else if (
-      this.handler.isConnecting() &&
-      !this.handler.isCreateTarget(e.getEvent()) &&
+      this.master.isConnecting() &&
+      !this.master.isCreateTarget(e.getEvent()) &&
       !this.graph.isDanglingEdgesEnabled()
     ) {
-      this.handler.error = ''
+      this.master.error = ''
     }
 
     return cell
   }
 
   isValidState(state: State) {
-    if (this.handler.isConnecting()) {
-      return this.handler.error == null
+    if (this.master.isConnecting()) {
+      return this.master.error == null
     }
     return super.isValidState(state)
   }
@@ -102,13 +104,13 @@ export class ConnectionMarker extends CellMarker {
   }
 
   getMarkerColor(evt: Event, state: State, isValid: boolean) {
-    return (!this.hasConnectIcon(state) || this.handler.isConnecting())
+    return (!this.hasConnectIcon(state) || this.master.isConnecting())
       ? super.getMarkerColor(evt, state, isValid)
       : null
   }
 
   intersects(state: State, e: MouseEventEx) {
-    if (this.hasConnectIcon(state) || this.handler.isConnecting()) {
+    if (this.hasConnectIcon(state) || this.master.isConnecting()) {
       return true
     }
     return super.intersects(state, e)

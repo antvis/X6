@@ -16,7 +16,7 @@ export default class Transform extends React.Component {
     graph.batchUpdate(() => {
       const node1 = graph.addNode({ data: 'Hello', x: 60, y: 60, width: 80, height: 30 })
       const node2 = graph.addNode({ data: 'World', x: 240, y: 240, width: 80, height: 30 })
-      graph.addEdge({ data: 'Edge Label', sourceNode: node1, targetNode: node2 })
+      graph.addEdge({ data: 'Edge Label', source: node1, target: node2 })
     })
 
     this.setState({

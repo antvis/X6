@@ -52,7 +52,7 @@ export interface ResizeHandleOptions extends
   /**
    * Optional tolerance for hit and adaptive detection.
    *
-   * Default is `8`.
+   * Default is `4`.
    */
   tolerance: number
 

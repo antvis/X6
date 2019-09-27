@@ -834,8 +834,8 @@ export class Graph extends Disablable implements
       cell,
       options.parent,
       options.index,
-      options.sourceNode,
-      options.targetNode,
+      options.source,
+      options.target,
     )
   }
 
@@ -3116,8 +3116,8 @@ export namespace Graph {
   export interface AddEdgeOptions extends CreateEdgeOptions {
     parent?: Cell,
     index?: number,
-    sourceNode?: Cell,
-    targetNode?: Cell,
+    source?: Cell,
+    target?: Cell,
   }
 
   export const events = {

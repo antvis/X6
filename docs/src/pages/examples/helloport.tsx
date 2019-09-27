@@ -35,8 +35,8 @@ export default class HelloPort extends React.Component {
       const n2 = graph.addNode({ data: 'Port 1', x: 200, y: 20, width: 80, height: 30 })
       const n3 = graph.addNode({ data: 'Port 2', x: 200, y: 150, width: 80, height: 30 })
 
-      graph.addEdge({ sourceNode: n11, targetNode: n2 })
-      graph.addEdge({ sourceNode: n12, targetNode: n3 })
+      graph.addEdge({ source: n11, target: n2 })
+      graph.addEdge({ source: n12, target: n3 })
     })
   }
 

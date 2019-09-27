@@ -54,8 +54,8 @@ export default class Constraints extends React.Component {
       })
 
       graph.addEdge({
-        sourceNode: n1,
-        targetNode: n3,
+        source: n1,
+        target: n3,
         data: 'label',
         style: {
           edge: 'elbow',
@@ -70,8 +70,8 @@ export default class Constraints extends React.Component {
       })
 
       graph.addEdge({
-        sourceNode: n2,
-        targetNode: n3,
+        source: n2,
+        target: n3,
         style: {
           edge: 'elbow',
           elbow: 'horizontal',

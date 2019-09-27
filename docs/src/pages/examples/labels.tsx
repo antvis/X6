@@ -65,8 +65,8 @@ export default class Labels extends React.Component {
 
       graph.addEdge({
         data: 'edgeLabelsMovable',
-        sourceNode: node1,
-        targetNode: node2,
+        source: node1,
+        target: node2,
       })
     })
   }

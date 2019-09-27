@@ -9,7 +9,7 @@ export default class Test extends React.Component {
     const graph = new Graph(this.container, {
       rubberband: true,
       guide: true,
-      nodeLabelsMovable: true,
+      nodeLabelsMovable: false,
       resize: {
         livePreview: true,
       },
@@ -32,7 +32,7 @@ export default class Test extends React.Component {
         x: 240, y: 240, width: 80, height: 30,
       })
 
-      graph.addEdge({ data: 'Label', sourceNode: node1, targetNode: node2 })
+      graph.addEdge({ data: 'Label', source: node1, target: node2 })
 
       graph.addNode({ data: 'X6', x: 300, y: 120, width: 120, height: 60 })
 

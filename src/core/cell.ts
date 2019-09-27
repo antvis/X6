@@ -404,7 +404,7 @@ export class Cell extends Disposable {
 
 export namespace Cell {
   export const ignoredKeysWhenClone = [
-    'id', 'data', 'parent', 'sourceNode',
-    'targetNode', 'children', 'edges',
+    'id', 'data', 'parent', 'source',
+    'target', 'children', 'edges',
   ]
 }

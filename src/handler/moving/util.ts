@@ -3,7 +3,6 @@ import { Cell, Graph } from '../../core'
 import { MouseEventEx } from '../../common'
 import { Point, Rectangle } from '../../struct'
 import { MouseHandler } from '../handler-mouse'
-import { MovingHandler } from './handler'
 
 export function isValid(handler: MouseHandler, e: MouseEventEx) {
   return (
@@ -81,9 +80,12 @@ export function getDelta(
   )
 }
 
-export function getPreviewBounds(handler: MovingHandler, cells: Cell[]) {
-  const minimumSize = handler.minimumSize
-  const bounds = getBoundingBox(handler.graph, cells)
+export function getPreviewBounds(
+  graph: Graph,
+  minimumSize: number,
+  cells: Cell[],
+) {
+  const bounds = getBoundingBox(graph, cells)
   if (bounds != null) {
     // Corrects width and height
     bounds.width = Math.max(0, bounds.width - 1)

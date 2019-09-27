@@ -63,18 +63,18 @@ export class Preview extends Disposable {
   protected childOffsetY: number
   protected parentState: State | null
 
-  constructor(public handler: NodeHandler) {
+  constructor(public master: NodeHandler) {
     super()
     this.config()
     this.init()
   }
 
   protected get graph() {
-    return this.handler.graph
+    return this.master.graph
   }
 
   protected get state() {
-    return this.handler.state
+    return this.master.state
   }
 
   protected config() {
@@ -240,7 +240,7 @@ export class Preview extends Disposable {
     }
 
     this.redrawLivePreview()
-    this.handler.redrawKnobs()
+    this.master.redrawKnobs()
 
     // Restores current state
     this.state.setState(tempState)
@@ -285,7 +285,7 @@ export class Preview extends Disposable {
     constrained: boolean,
     centered: boolean,
   ) {
-    if (this.handler.knobs.singleResizeHandle) {
+    if (this.master.knobs.singleResizeHandle) {
       let x = bounds.x + bounds.width + dx
       let y = bounds.y + bounds.height + dy
 
@@ -459,7 +459,7 @@ export class Preview extends Disposable {
     }
 
     const livePreview = this.isLivePreview()
-    const index = this.handler.index!
+    const index = this.master.index!
     const isRotate = DomEvent.isRotationHandle(index)
     const isResize = !isRotate
       && !DomEvent.isCustomHandle(index)
@@ -484,7 +484,7 @@ export class Preview extends Disposable {
 
     // Prepares the handles for live preview
     if (livePreview) {
-      this.handler.knobs.showActiveHandle(index)
+      this.master.knobs.showActiveHandle(index)
 
       // Gets the array of connected edge handlers for redrawing
       this.edgeHandlers = []
@@ -583,7 +583,7 @@ export class Preview extends Disposable {
       this.drawPreview()
     }
 
-    this.handler.redrawKnobs()
+    this.master.redrawKnobs()
   }
 
   resize(e: MouseEventEx) {
@@ -608,11 +608,11 @@ export class Preview extends Disposable {
       geo.bounds,
       dx / s,
       dy / s,
-      this.handler.index!,
+      this.master.index!,
       this.graph.isGridEnabledForEvent(e.getEvent()),
       1,
       new Point(0, 0),
-      this.handler.isConstrained(e),
+      this.master.isConstrained(e),
       this.isCentered(this.state.cell, e),
     )
 
@@ -717,10 +717,10 @@ export class Preview extends Disposable {
     this.bounds.y += dy3
 
     // Rounds unscaled bounds to int
-    this.unscaledBounds.x = this.handler.round(this.unscaledBounds.x + dx3 / s)
-    this.unscaledBounds.y = this.handler.round(this.unscaledBounds.y + dy3 / s)
-    this.unscaledBounds.width = this.handler.round(this.unscaledBounds.width)
-    this.unscaledBounds.height = this.handler.round(this.unscaledBounds.height)
+    this.unscaledBounds.x = this.master.round(this.unscaledBounds.x + dx3 / s)
+    this.unscaledBounds.y = this.master.round(this.unscaledBounds.y + dy3 / s)
+    this.unscaledBounds.width = this.master.round(this.unscaledBounds.width)
+    this.unscaledBounds.height = this.master.round(this.unscaledBounds.height)
 
     // Shifts the children according to parent offset
     if (

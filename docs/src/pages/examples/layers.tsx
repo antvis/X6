@@ -51,8 +51,8 @@ export default class Layers extends React.Component {
 
       const edge1 = graph.addEdge({
         parent: layer1,
-        sourceNode: node1,
-        targetNode: node3,
+        source: node1,
+        target: node3,
         style: {
           stroke: '#712ed1',
         },
@@ -61,15 +61,15 @@ export default class Layers extends React.Component {
 
       const edge2 = graph.addEdge({
         parent: layer0,
-        sourceNode: node2,
-        targetNode: node3,
+        source: node2,
+        target: node3,
       })
       edge2.geometry!.addPoint(240, 165)
 
       const edge3 = graph.addEdge({
         parent: layer0,
-        sourceNode: node1,
-        targetNode: node2,
+        source: node1,
+        target: node2,
         style: {
           edge: 'topToBottom',
         },
@@ -78,8 +78,8 @@ export default class Layers extends React.Component {
 
       const edge4 = graph.addEdge({
         parent: layer1,
-        sourceNode: node2,
-        targetNode: node1,
+        source: node2,
+        target: node1,
         style: {
           edge: 'topToBottom',
           stroke: '#712ed1',

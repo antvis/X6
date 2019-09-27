@@ -21,7 +21,7 @@ export class ConnectionHandler extends MouseHandler {
   error: string | null = null
   edgeState: State | null = null
 
-  factoryMethod?: (source: Cell, target: Cell, style: Style) => Cell
+  factoryMethod?: (e: { source: Cell, target: Cell, style: Style }) => Cell
 
   autoSelect: boolean = true
   autoCreateTarget: boolean = false
@@ -72,7 +72,7 @@ export class ConnectionHandler extends MouseHandler {
 
   currentPoint: Point | null
   targetPoint: Point | null
-  private currentState: State | null
+  currentState: State | null
   private previewShape: Shape | null
   private waypoints: Point[] | null
   protected mouseDownCounter: number = 0
@@ -102,7 +102,7 @@ export class ConnectionHandler extends MouseHandler {
   }
 
   protected init() {
-    this.marker = new ConnectionMarker(this.graph, this)
+    this.marker = new ConnectionMarker(this)
     this.constraintHandler = new ConstraintHandler(this.graph)
 
     // Redraws the icons if the graph changes
@@ -135,16 +135,6 @@ export class ConnectionHandler extends MouseHandler {
     this.graph.view.on(View.events.up, this.resetHandler)
   }
 
-  protected isInsertBefore(
-    edge: Cell,
-    source: Cell,
-    target: Cell,
-    evt: MouseEvent,
-    dropTarget: Cell | null,
-  ) {
-    return this.insertBeforeSource && source !== target
-  }
-
   isCreateTarget(e: MouseEvent) {
     return this.autoCreateTarget
   }
@@ -175,6 +165,16 @@ export class ConnectionHandler extends MouseHandler {
     )
   }
 
+  protected isInsertBefore(
+    edge: Cell,
+    source: Cell,
+    target: Cell,
+    evt: MouseEvent,
+    dropTarget: Cell | null,
+  ) {
+    return this.insertBeforeSource && source !== target
+  }
+
   protected isStartEvent(e: MouseEventEx) {
     return (
       (
@@ -195,55 +195,9 @@ export class ConnectionHandler extends MouseHandler {
     return e.getState() != null
   }
 
-  mouseDown(e: MouseEventEx) {
-    this.mouseDownCounter += 1
-
-    if (
-      this.isValid(e) &&
-      !this.isConnecting() &&
-      this.isStartEvent(e)
-    ) {
-      if (
-        this.constraintHandler.currentConstraint != null &&
-        this.constraintHandler.currentState != null &&
-        this.constraintHandler.currentPoint != null
-      ) {
-        this.sourceState = this.constraintHandler.currentState
-        this.sourcePoint = this.constraintHandler.currentPoint.clone()
-        this.sourceConstraint = this.constraintHandler.currentConstraint
-      } else {
-        // Stores the location of the initial mousedown
-        this.sourcePoint = e.getGraphPos()
-      }
-
-      this.edgeState = this.createEdgeState(e)
-      this.mouseDownCounter = 1
-
-      if (this.waypointsEnabled && this.previewShape == null) {
-        this.waypoints = null
-        this.previewShape = this.createPreview()
-        if (this.edgeState != null) {
-          this.previewShape.apply(this.edgeState)
-        }
-      }
-
-      // Stores the starting point in the geometry of the preview
-      if (this.sourceState == null && this.edgeState != null) {
-        const p = this.graph.getPointForEvent(e.getEvent())
-        this.edgeState.cell.geometry!.setTerminalPoint(p, true)
-      }
-
-      this.trigger(ConnectionHandler.events.start, { state: this.sourceState })
-      e.consume()
-    }
-
-    this.activeIcon = this.icon
-    this.icon = null
-  }
-
   /**
-   * Handles the event by updating the preview edge or by highlighting
-   * a possible source or target terminal.
+   * Updating the preview edge or highlighting a possible source
+   * or target terminal.
    */
   mouseMove(e: MouseEventEx) {
     if (
@@ -465,6 +419,52 @@ export class ConnectionHandler extends MouseHandler {
     } else {
       this.constraintHandler.reset()
     }
+  }
+
+  mouseDown(e: MouseEventEx) {
+    this.mouseDownCounter += 1
+
+    if (
+      this.isValid(e) &&
+      !this.isConnecting() &&
+      this.isStartEvent(e)
+    ) {
+      if (
+        this.constraintHandler.currentConstraint != null &&
+        this.constraintHandler.currentState != null &&
+        this.constraintHandler.currentPoint != null
+      ) {
+        this.sourceState = this.constraintHandler.currentState
+        this.sourcePoint = this.constraintHandler.currentPoint.clone()
+        this.sourceConstraint = this.constraintHandler.currentConstraint
+      } else {
+        // Stores the location of the initial mousedown
+        this.sourcePoint = e.getGraphPos()
+      }
+
+      this.edgeState = this.createEdgeState(e)
+      this.mouseDownCounter = 1
+
+      if (this.waypointsEnabled && this.previewShape == null) {
+        this.waypoints = null
+        this.previewShape = this.createPreview()
+        if (this.edgeState != null) {
+          this.previewShape.apply(this.edgeState)
+        }
+      }
+
+      // Stores the starting point in the geometry of the preview
+      if (this.sourceState == null && this.edgeState != null) {
+        const p = this.graph.getPointForEvent(e.getEvent())
+        this.edgeState.cell.geometry!.setTerminalPoint(p, true)
+      }
+
+      this.trigger(ConnectionHandler.events.start, { state: this.sourceState })
+      e.consume()
+    }
+
+    this.activeIcon = this.icon
+    this.icon = null
   }
 
   protected getCurrentPosition(e: MouseEventEx) {
@@ -788,6 +788,8 @@ export class ConnectionHandler extends MouseHandler {
     return null
   }
 
+  // #region icons
+
   protected createIcons(state: State) {
     const options = getConnectionIconOptions({
       graph: this.graph,
@@ -918,6 +920,10 @@ export class ConnectionHandler extends MouseHandler {
     }
   }
 
+  // #endregion
+
+  // #region preview
+
   protected createPreview() {
     const shape = (this.livePreview && this.edgeState)
       ? this.graph.renderer.createShape(this.edgeState)!
@@ -950,6 +956,8 @@ export class ConnectionHandler extends MouseHandler {
     }
   }
 
+  // #endregion
+
   protected reset() {
     if (this.previewShape != null) {
       this.previewShape.dispose()
@@ -971,8 +979,6 @@ export class ConnectionHandler extends MouseHandler {
     this.error = null
 
     this.mouseDownCounter = 0
-
-    this.trigger(ConnectionHandler.events.reset)
   }
 
   /**
@@ -1153,18 +1159,16 @@ export class ConnectionHandler extends MouseHandler {
     parent: Cell,
     id: string | null,
     data: any,
-    sourceNode: Cell,
-    targetNode: Cell,
+    source: Cell,
+    target: Cell,
     style: Style,
   ) {
     if (this.factoryMethod == null) {
-      return this.graph.addEdge({
-        parent, id, data, sourceNode, targetNode, style,
-      })
+      return this.graph.addEdge({ parent, id, data, source, target, style })
     }
 
-    let edge = this.createEdge(data, sourceNode, targetNode, style)
-    edge = this.graph.addEdge(edge, parent, sourceNode, targetNode)
+    let edge = this.createEdge(data, source, target, style)
+    edge = this.graph.addEdge(edge, parent, source, target)
 
     return edge
   }
@@ -1174,7 +1178,7 @@ export class ConnectionHandler extends MouseHandler {
 
     // Creates a new edge using the factoryMethod
     if (this.factoryMethod != null) {
-      edge = this.factoryMethod(source, target, style)
+      edge = this.factoryMethod({ source, target, style })
     }
 
     if (edge == null) {
@@ -1190,7 +1194,7 @@ export class ConnectionHandler extends MouseHandler {
   }
 
   /**
-   * Hook method for creating new vertices on the fly if no target was
+   * Hook method for creating a new node on the fly if no target was
    * under the mouse.
    */
   protected createTargetNode(evt: MouseEvent, source: Cell) {
@@ -1274,7 +1278,6 @@ export class ConnectionHandler extends MouseHandler {
 export namespace ConnectionHandler {
   export const events = {
     start: 'start',
-    reset: 'reset',
     connect: 'connect',
   }
 }

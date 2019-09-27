@@ -17,7 +17,16 @@ export interface ConnectionOptions {
   /**
    * Function that is used for creating new edges.
    */
-  createEdge?: (source: Cell, target: Cell, style: Style) => Cell
+  createEdge?: (
+    this: Graph,
+    e: { source: Cell, target: Cell, style: Style },
+  ) => Cell
+
+  /**
+   * Function that is used for creating new nodes if no target
+   * was under the mouse.
+   */
+  createTargetNode?: (this: Graph, source: Cell, evt: MouseEvent) => Cell
 
   /**
    * Specifies the cursor to be used while the handler is active.
