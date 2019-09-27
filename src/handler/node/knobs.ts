@@ -1,10 +1,9 @@
 import * as util from '../../util'
 import { Handle } from '../handle'
-import { Graph } from '../../core'
 import { Shape } from '../../shape'
 import { NodeHandler } from './handler'
 import { Rectangle, Point } from '../../struct'
-import { detector, Disposable, DomEvent, MouseEventEx } from '../../common'
+import { Disposable, DomEvent, MouseEventEx } from '../../common'
 import {
   createLabelHandle,
   getLabelHandleCursor,
@@ -22,45 +21,37 @@ import {
 } from './rotation-option'
 
 export class Knobs extends Disposable {
-  checkHandleBounds: boolean = true
   singleResizeHandle: boolean
   manageHandles: boolean
+  tolerance: number
 
-  /**
-   * Optional tolerance for hit-detection.
-   *
-   * Default is `0`.
-   */
-  tolerance: number = 0
-
-  protected handles: (Shape)[] | null
+  protected handles: Shape[] | null
   protected labelShape: Shape | null
-  protected rotationShape: Shape
+  protected rotationShape: Shape | null
   protected customHandles: Handle[] | null
-  protected horizontalOffset: number = 0
-  protected verticalOffset: number = 0
-  protected currentAlpha: number | null
 
-  constructor(
-    public graph: Graph,
-    public handler: NodeHandler,
-  ) {
+  constructor(public master: NodeHandler) {
     super()
     this.config()
     this.init()
   }
 
+  protected get graph() {
+    return this.master.graph
+  }
+
   protected get state() {
-    return this.handler.state
+    return this.master.state
   }
 
   protected get bounds() {
-    return this.handler.preview.bounds
+    return this.master.preview.bounds
   }
 
   protected config() {
     const options = this.graph.options
     const resizeHandle = options.resizeHandle as ResizeHandleOptions
+    this.tolerance = resizeHandle.tolerance
     this.manageHandles = resizeHandle.adaptive
     this.singleResizeHandle = resizeHandle.single
   }
@@ -68,64 +59,40 @@ export class Knobs extends Disposable {
   protected init() {
     this.handles = []
 
-    // Adds the sizer handles
     const max = this.graph.options.maxCellCountForHandle || 0
-    if (max <= 0 || this.graph.getSelecedCellCount() < max) {
-      const resizable = this.graph.isCellResizable(this.state.cell)
-      const labelMovable = this.graph.isLabelMovable(this.state.cell)
-
-      if (resizable || (
-        labelMovable &&
-        this.state.bounds.width >= 2 &&
-        this.state.bounds.height >= 2
-      )) {
-        let i = 0
-
-        if (resizable) {
-          if (!this.singleResizeHandle) {
-            this.handles.push(this.createHandle(i, 'nw-resize'))
-            i += 1
-            this.handles.push(this.createHandle(i, 'n-resize'))
-            i += 1
-            this.handles.push(this.createHandle(i, 'ne-resize'))
-            i += 1
-            this.handles.push(this.createHandle(i, 'w-resize'))
-            i += 1
-            this.handles.push(this.createHandle(i, 'e-resize'))
-            i += 1
-            this.handles.push(this.createHandle(i, 'sw-resize'))
-            i += 1
-            this.handles.push(this.createHandle(i, 's-resize'))
-            i += 1
-          }
-
-          this.handles.push(this.createHandle(i, 'se-resize'))
-        }
-
-        const geo = this.state.cell.getGeometry()
-
-        if (
-          geo != null &&
-          !geo.relative &&
-          !this.graph.isSwimlane(this.state.cell) &&
-          labelMovable
-        ) {
-          this.labelShape = this.createHandle(DomEvent.getLabelHandle())
-          this.handles.push(this.labelShape)
-        }
-      } else if (
-        !resizable &&
-        this.graph.isCellMovable(this.state.cell) &&
-        this.state.bounds.width < 2 &&
-        this.state.bounds.height < 2
-      ) {
-        this.labelShape = this.createHandle(DomEvent.getLabelHandle())
-        this.handles.push(this.labelShape)
-      }
+    if (max > 0 && this.graph.getSelecedCellCount() > max) {
+      return
     }
 
-    // Adds the rotation handler
-    if (this.isRotationHandleVisible()) {
+    if (this.canRenderResizeHandle()) {
+      let i = 0
+
+      if (!this.singleResizeHandle) {
+        this.handles.push(this.createHandle(i, 'nw-resize'))
+        i += 1
+        this.handles.push(this.createHandle(i, 'n-resize'))
+        i += 1
+        this.handles.push(this.createHandle(i, 'ne-resize'))
+        i += 1
+        this.handles.push(this.createHandle(i, 'w-resize'))
+        i += 1
+        this.handles.push(this.createHandle(i, 'e-resize'))
+        i += 1
+        this.handles.push(this.createHandle(i, 'sw-resize'))
+        i += 1
+        this.handles.push(this.createHandle(i, 's-resize'))
+        i += 1
+      }
+
+      this.handles.push(this.createHandle(i, 'se-resize'))
+    }
+
+    if (this.canRenderLabelHandle()) {
+      this.labelShape = this.createHandle(DomEvent.getLabelHandle())
+      this.handles.push(this.labelShape)
+    }
+
+    if (this.canRenderRotationHandle()) {
       this.rotationShape = this.createHandle(DomEvent.getRotationHandle())
       this.handles.push(this.rotationShape)
     }
@@ -133,7 +100,29 @@ export class Knobs extends Disposable {
     this.customHandles = this.createCustomHandles()
   }
 
-  protected isRotationHandleVisible() {
+  protected canRenderResizeHandle() {
+    return (
+      this.master.isEnabled() &&
+      this.graph.isCellResizable(this.state.cell)
+    )
+  }
+
+  protected canRenderLabelHandle() {
+    if (
+      this.master.isEnabled() &&
+      this.graph.isLabelMovable(this.state.cell) &&
+      !this.graph.isSwimlane(this.state.cell)
+    ) {
+      const geo = this.state.cell.getGeometry()
+      if (geo && !geo.relative) {
+        return true
+      }
+    }
+
+    return false
+  }
+
+  protected canRenderRotationHandle() {
     return (
       this.graph.isEnabled() &&
       this.graph.isCellRotatable(this.state.cell) &&
@@ -171,14 +160,10 @@ export class Knobs extends Disposable {
       cursor = getRotationHandleCursor({ ...args, shape: handle })
     } else {
       handle = createResizeHandle({ ...args, index, cursor: cursor! })
+      handle.visible = this.isResizeHandleVisible(index)
     }
 
-    if (
-      handle.isHtmlAllowed() &&
-      this.state.text &&
-      this.state.text.elem &&
-      this.state.text.elem.parentNode === this.graph.container
-    ) {
+    if (handle.isHtmlAllowed() && util.hasHtmlLabel(this.state)) {
       handle.bounds.width -= 1
       handle.bounds.height -= 1
       handle.dialect = 'html'
@@ -194,19 +179,15 @@ export class Knobs extends Disposable {
       handle.setCursor(cursor)
     }
 
-    if (!this.isResizeHandleVisible(index)) {
-      handle.visible = false
-    }
-
     return handle
   }
 
-  protected moveHandleTo(shape: Shape, x: number, y: number) {
-    if (shape != null) {
-      shape.bounds.x = Math.floor(x - shape.bounds.width / 2)
-      shape.bounds.y = Math.floor(y - shape.bounds.height / 2)
-      if (util.isVisible(shape.elem)) {
-        shape.redraw()
+  protected moveHandleTo(handle: Shape, x: number, y: number) {
+    if (handle != null) {
+      handle.bounds.x = Math.floor(x - handle.bounds.width / 2)
+      handle.bounds.y = Math.floor(y - handle.bounds.height / 2)
+      if (util.isVisible(handle.elem)) {
+        handle.redraw()
       }
     }
   }
@@ -215,10 +196,14 @@ export class Knobs extends Disposable {
     return true
   }
 
+  protected getTolerance(e: MouseEventEx) {
+    return DomEvent.isMouseEvent(e.getEvent()) ? 1 : this.tolerance
+  }
+
   getHandle(e: MouseEventEx) {
-    const tol = DomEvent.isMouseEvent(e.getEvent()) ? 1 : this.tolerance
+    const tol = this.getTolerance(e)
     if (
-      this.handler.isValid(e) &&
+      this.master.isValid(e) &&
       (tol > 0 || e.getState() === this.state)
     ) {
       return this.getHandleForEvent(e)
@@ -227,9 +212,8 @@ export class Knobs extends Disposable {
   }
 
   getHandleForEvent(e: MouseEventEx) {
-    // Connection highlight may consume events before they reach sizer handle
-    const tol = DomEvent.isMouseEvent(e.getEvent()) ? 1 : this.tolerance
-    const hit = (this.checkHandleBounds && (detector.IS_IE || tol > 0))
+    const tol = this.getTolerance(e)
+    const hit = tol > 0
       ? new Rectangle(
         e.getGraphX() - tol,
         e.getGraphY() - tol,
@@ -282,24 +266,24 @@ export class Knobs extends Disposable {
 
   processCustomHandle(e: MouseEventEx, index: number) {
     if (this.customHandles != null) {
-      const idx = DomEvent.getCustomHandle(index)
-      this.customHandles[idx].processEvent(e)
-      this.customHandles[idx].active = true
+      const i = DomEvent.getCustomHandle(index)
+      this.customHandles[i].processEvent(e)
+      this.customHandles[i].active = true
     }
   }
 
   executeCustomHandle(index: number) {
     if (this.customHandles != null) {
-      const idx = DomEvent.getCustomHandle(index)
-      this.customHandles[idx].active = false
-      this.customHandles[idx].execute()
+      const i = DomEvent.getCustomHandle(index)
+      this.customHandles[i].active = false
+      this.customHandles[i].execute()
     }
   }
 
   moveLabel(e: MouseEventEx) {
-    const p = new Point(e.getGraphX(), e.getGraphY())
     const t = this.graph.view.translate
     const s = this.graph.view.scale
+    const p = e.getGraphPos()
 
     if (this.graph.isGridEnabledForEvent(e.getEvent())) {
       p.x = (this.graph.snap(p.x / s - t.x) + t.x) * s
@@ -321,13 +305,13 @@ export class Knobs extends Disposable {
 
   reset() {
     if (this.handles != null) {
-      const index = this.handler.index
-      const knob = index != null ? this.handles[index] : null
-      if (knob != null && util.isHiddenElement(knob.elem)) {
-        util.showElement(knob.elem)
+      const index = this.master.index
+      const handle = index != null ? this.handles[index] : null
+      if (handle != null && util.isHiddenElement(handle.elem)) {
+        util.showElement(handle.elem)
       }
 
-      if (this.handler.preview.isLivePreview()) {
+      if (this.master.preview.isLivePreview()) {
         this.handles.forEach(h => h && util.showElement(h.elem))
       }
     }
@@ -345,58 +329,46 @@ export class Knobs extends Disposable {
   }
 
   redraw() {
-    this.verticalOffset = 0
-    this.horizontalOffset = 0
-
     const tol = this.tolerance
     let bounds = this.bounds
 
-    if (this.handles && this.handles.length > 0 && this.handles[0]) {
+    if (this.handles != null && this.handles.length > 0 && this.handles[0]) {
       if (
-        this.handler.index == null &&
+        this.master.index == null &&
         this.manageHandles &&
         this.handles.length >= 8
       ) {
         const padding = this.getHandlePadding()
-        this.horizontalOffset = padding.x
-        this.verticalOffset = padding.y
+        const offsetX = padding.x
+        const offsetY = padding.y
 
-        if (this.horizontalOffset !== 0 || this.verticalOffset !== 0) {
+        if (offsetX !== 0 || offsetY !== 0) {
           bounds = bounds.clone()
-          bounds.x -= this.horizontalOffset / 2
-          bounds.width += this.horizontalOffset
-          bounds.y -= this.verticalOffset / 2
-          bounds.height += this.verticalOffset
+          bounds.x -= offsetX / 2
+          bounds.width += offsetX
+          bounds.y -= offsetY / 2
+          bounds.height += offsetY
         }
 
-        if (this.handles.length >= 8) {
-          if (
-            (bounds.width < 2 * this.handles[0].bounds.width + 2 * tol) ||
-            (bounds.height < 2 * this.handles[0].bounds.height + 2 * tol)
-          ) {
-            this.handles[0].elem!.style.display = 'none'
-            this.handles[2].elem!.style.display = 'none'
-            this.handles[5].elem!.style.display = 'none'
-            this.handles[7].elem!.style.display = 'none'
-          } else {
-            this.handles[0].elem!.style.display = ''
-            this.handles[2].elem!.style.display = ''
-            this.handles[5].elem!.style.display = ''
-            this.handles[7].elem!.style.display = ''
-          }
+        const idxs = [0, 2, 5, 7]
+        if (
+          (bounds.width < 2 * this.handles[0].bounds.width + 2 * tol) ||
+          (bounds.height < 2 * this.handles[0].bounds.height + 2 * tol)
+        ) {
+          idxs.forEach(i => util.hideElement(this.handles![i].elem))
+        } else {
+          idxs.forEach(i => util.showElement(this.handles![i].elem))
         }
       }
 
+      const cx = bounds.getCenterX()
+      const cy = bounds.getCenterY()
       const right = bounds.x + bounds.width
       const bottom = bounds.y + bounds.height
 
       if (this.singleResizeHandle) {
         this.moveHandleTo(this.handles[0], right, bottom)
       } else {
-        const cx = bounds.x + bounds.width / 2
-        const cy = bounds.y + bounds.height / 2
-
-        // resizable
         if (this.handles.length >= 8) {
           const cursors = [
             'nw-resize',
@@ -461,71 +433,51 @@ export class Knobs extends Disposable {
           pt = util.rotatePointEx(pt, cos, sin, ct)
           this.moveHandleTo(this.handles[7], pt.x, pt.y)
           this.handles[7].setCursor(cursors[util.mod(4 + da, cursors.length)])
-
-          const offset = getLabelHandleOffset({
-            graph: this.graph,
-            cell: this.state.cell,
-            shape: this.labelShape!,
-          })
-          this.moveHandleTo(
-            this.handles[8], // labelShape
-            cx + this.state.absoluteOffset.x + offset.x,
-            cy + this.state.absoluteOffset.y + offset.y,
-          )
-        } else if (
-          this.state.bounds.width >= 2 &&
-          this.state.bounds.height >= 2
-        ) {
-          const offset = getLabelHandleOffset({
-            graph: this.graph,
-            cell: this.state.cell,
-            shape: this.labelShape!,
-          })
-          this.moveHandleTo(
-            this.handles[0], // labelShape
-            cx + this.state.absoluteOffset.x + offset.x,
-            cy + this.state.absoluteOffset.y + offset.y,
-          )
-        } else {
-          this.moveHandleTo(
-            this.handles[0],
-            this.state.bounds.x,
-            this.state.bounds.y,
-          )
         }
       }
     }
 
+    if (this.labelShape != null) {
+      const cx = bounds.getCenterX()
+      const cy = bounds.getCenterY()
+      const offset = getLabelHandleOffset({
+        graph: this.graph,
+        cell: this.state.cell,
+        shape: this.labelShape,
+      })
+      this.moveHandleTo(
+        this.labelShape,
+        cx + this.state.absoluteOffset.x + offset.x,
+        cy + this.state.absoluteOffset.y + offset.y,
+      )
+    }
+
     if (this.rotationShape != null) {
-      const rot = this.currentAlpha != null
-        ? this.currentAlpha
-        : util.getRotation(this.state)
+      const rot = this.master.preview.getRotationForRedraw()
       const ct = this.state.bounds.getCenter()
       const pt = util.rotatePoint(this.getRotationHandlePosition(), rot, ct)
-      if (this.rotationShape.elem != null) {
+      const elem = this.rotationShape.elem
+      if (elem != null) {
         this.moveHandleTo(this.rotationShape, pt.x, pt.y)
-
         // Hides rotation handle during text editing
-        this.rotationShape.elem.style.visibility =
-          this.graph.isEditing() ? 'hidden' : ''
+        elem.style.visibility = this.graph.isEditing() ? 'hidden' : ''
       }
     }
 
     if (this.customHandles != null) {
-      for (let i = 0; i < this.customHandles.length; i += 1) {
-        const temp = this.customHandles[i].shape.elem!.style.display
-        this.customHandles[i].redraw()
-        this.customHandles[i].shape.elem!.style.display = temp
-
+      this.customHandles.forEach((customHandle) => {
+        const elem = customHandle.shape.elem!
+        const temp = elem.style.display
+        customHandle.redraw()
+        elem.style.display = temp
         // Hides custom handles during text editing
-        this.customHandles[i].shape.elem!.style.visibility =
-          this.graph.isEditing() ? 'hidden' : ''
-      }
+        elem.style.visibility = this.graph.isEditing() ? 'hidden' : ''
+      })
     }
   }
 
   protected getHandlePadding() {
-    const result = new Point(0, 0)
+    const result = new Point()
     let tol = this.tolerance
 
     if (
@@ -548,7 +500,7 @@ export class Knobs extends Disposable {
     const offset = getRotationHandleOffset({
       graph: this.graph,
       cell: this.state.cell,
-      shape: this.rotationShape,
+      shape: this.rotationShape!,
     })
 
     return new Point(
@@ -559,7 +511,9 @@ export class Knobs extends Disposable {
 
   protected setHandlesVisible(visible: boolean) {
     this.handles && this.handles.forEach(
-      handle => (handle.elem!.style.display = visible ? '' : 'none'),
+      handle => visible
+        ? util.showElement(handle.elem)
+        : util.hideElement(handle.elem),
     )
 
     this.customHandles && this.customHandles.forEach(
@@ -567,29 +521,26 @@ export class Knobs extends Disposable {
     )
   }
 
-  showActiveKnob(index: number) {
+  showActiveHandle(index: number) {
     this.setHandlesVisible(false)
 
-    if (DomEvent.isRotationHandle(index)) {
+    if (DomEvent.isRotationHandle(index) && this.rotationShape != null) {
       util.showElement(this.rotationShape.elem)
-    } else if (DomEvent.isLabelHandle(index)) {
-      util.showElement(this.labelShape!.elem)
+    } else if (DomEvent.isLabelHandle(index) && this.labelShape != null) {
+      util.showElement(this.labelShape.elem)
     } else if (this.handles != null && this.handles[index] != null) {
       util.showElement(this.handles[index].elem)
-    } else if (
-      DomEvent.isCustomHandle(index) &&
-      this.customHandles != null
-    ) {
+    } else if (DomEvent.isCustomHandle(index) && this.customHandles != null) {
       this.customHandles[DomEvent.getCustomHandle(index)].setVisible(true)
     }
   }
 
   @Disposable.aop()
   dispose() {
-    this.labelShape = null
-
     this.handles && this.handles.forEach(h => h.dispose())
     this.handles = null
+    this.labelShape = null
+    this.rotationShape = null
 
     this.customHandles && this.customHandles.forEach(h => h.dispose())
     this.customHandles = null

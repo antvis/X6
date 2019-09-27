@@ -1,6 +1,6 @@
 import * as util from '../../util'
 import { Disposable, MouseEventEx, DomEvent } from '../../common'
-import { Graph, State, Cell } from '../../core'
+import { State, Cell } from '../../core'
 import { Rectangle, Point } from '../../struct'
 import { RectangleShape } from '../../shape'
 import { NodeHandler } from './handler'
@@ -42,8 +42,9 @@ export class Preview extends Disposable {
    */
   rotationRaster: boolean = true
 
-  resizeLivePreview: boolean = false
-  rotateLivePreview: boolean = false
+  resizeLivePreview: boolean
+  rotateLivePreview: boolean
+
   startX: number
   startY: number
   bounds: Rectangle
@@ -63,13 +64,14 @@ export class Preview extends Disposable {
   protected childOffsetY: number
   protected parentState: State | null
 
-  constructor(
-    public graph: Graph,
-    public handler: NodeHandler,
-  ) {
+  constructor(public handler: NodeHandler) {
     super()
     this.config()
     this.init()
+  }
+
+  protected get graph() {
+    return this.handler.graph
   }
 
   protected get state() {
@@ -485,7 +487,7 @@ export class Preview extends Disposable {
 
     // Prepares the handles for live preview
     if (livePreview) {
-      this.handler.knobs.showActiveKnob(index)
+      this.handler.knobs.showActiveHandle(index)
 
       // Gets the array of connected edge handlers for redrawing
       this.edgeHandlers = []
@@ -506,9 +508,7 @@ export class Preview extends Disposable {
   }
 
   drawPreview() {
-    const rotation = this.currentDeg == null
-      ? util.getRotation(this.state)
-      : this.currentDeg
+    const rotation = this.getRotationForRedraw()
 
     if (this.previewShape != null) {
       this.previewShape.bounds = this.bounds
@@ -747,6 +747,12 @@ export class Preview extends Disposable {
 
   hasRotated() {
     return this.currentDeg != null
+  }
+
+  getRotationForRedraw() {
+    return this.currentDeg == null
+      ? util.getRotation(this.state)
+      : this.currentDeg
   }
 
   getRotation() {

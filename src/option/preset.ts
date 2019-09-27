@@ -223,7 +223,8 @@ export const defaultOptions: FullOptions = {
 
   resizeHandle: {
     single: false,
-    adaptive: false,
+    adaptive: true,
+    tolerance: 8,
     visible: true,
     shape: ShapeNames.ellipse,
     size: 8,

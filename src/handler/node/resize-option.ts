@@ -49,6 +49,13 @@ export interface ResizeHandleOptions extends
    */
   adaptive: boolean
 
+  /**
+   * Optional tolerance for hit-detection.
+   *
+   * Default is `8`.
+   */
+  tolerance: number
+
   visible: OptionItem<IsResizeHandleVisibleArgs, boolean>
 }
 

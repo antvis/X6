@@ -10,6 +10,10 @@ export default class Test extends React.Component {
       rubberband: true,
       guide: true,
       rotate: true,
+      nodeLabelsMovable: true,
+      resize: {
+        livePreview: true
+      }
     })
 
     graph.batchUpdate(() => {

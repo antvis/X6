@@ -40,8 +40,8 @@ export class NodeHandler extends MouseHandler {
   }
 
   protected init() {
-    this.knobs = new Knobs(this.graph, this)
-    this.preview = new Preview(this.graph, this)
+    this.knobs = new Knobs(this)
+    this.preview = new Preview(this)
     this.redraw()
   }
 
