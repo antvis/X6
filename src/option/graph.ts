@@ -817,8 +817,9 @@ export interface GraphOptions extends Partial<SimpleOptions> {
 }
 
 export function getOptions(options: GraphOptions) {
+  const defaults = util.merge({}, defaultOptions)
   const result = util.mergec(
-    defaultOptions,
+    defaults,
     options,
     {
       decorator: (target, source, key) => {

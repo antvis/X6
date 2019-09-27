@@ -35,7 +35,7 @@ export class Renderer {
   redraw(
     state: State,
     force: boolean = false,
-    rendering: boolean = false,
+    rendering?: boolean,
   ) {
     const shapeChanged = this.redrawShape(state, force, rendering)
 
@@ -48,7 +48,7 @@ export class Renderer {
 
   // #region redraw shape
 
-  protected redrawShape(state: State, force: boolean, rendering: boolean) {
+  protected redrawShape(state: State, force: boolean, rendering?: boolean) {
     const model = state.view.graph.model
     let shapeChanged = false
 

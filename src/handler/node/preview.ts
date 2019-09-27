@@ -214,11 +214,13 @@ export class Preview extends Disposable {
     const tempState = this.state.clone()
 
     // Temporarily changes size and origin
+    console.log(this.state.bounds.clone(), this.bounds)
     this.state.bounds.update(this.bounds)
     this.state.origin = new Point(
       this.state.bounds.x / s - t.x,
       this.state.bounds.y / s - t.y,
     )
+    console.log(this.state.bounds.clone())
 
     // Needed to force update of text bounds
     this.state.unscaledWidth = null
@@ -582,17 +584,17 @@ export class Preview extends Disposable {
       this.drawPreview()
     }
 
-    if (this.isLivePreview()) {
+    if (this.rotateLivePreview) {
       this.handler.redrawKnobs()
     }
   }
 
   resize(e: MouseEventEx) {
-    const p = new Point(e.getGraphX(), e.getGraphY())
     const t = this.graph.view.translate
     const s = this.graph.view.scale
+    const p = e.getGraphPos()
+    const c = this.state.bounds.getCenter()
     const geo = this.graph.getCellGeometry(this.state.cell)!
-    const ct = this.state.bounds.getCenter()
     const rot = util.toRad(util.getRotation(this.state))
 
     let cos = Math.cos(-rot)
@@ -630,7 +632,6 @@ export class Preview extends Disposable {
 
       if (this.graph.isConstrainChild(this.state.cell)) {
         let tmp = this.graph.cellManager.getCellContainmentArea(this.state.cell)
-
         if (tmp != null) {
           const overlap = this.graph.getOverlap(this.state.cell)
 
@@ -700,8 +701,8 @@ export class Preview extends Disposable {
 
     const c2 = this.bounds.getCenter()
 
-    dx = c2.x - ct.x
-    dy = c2.y - ct.y
+    dx = c2.x - c.x
+    dy = c2.y - c.y
 
     const dx2 = cos * dx - sin * dy
     const dy2 = sin * dx + cos * dy
@@ -736,7 +737,7 @@ export class Preview extends Disposable {
       this.childOffsetY = 0
     }
 
-    if ((this.rotateLivePreview || this.resizeLivePreview)) {
+    if (this.resizeLivePreview) {
       this.updateLivePreview(e)
     }
 
