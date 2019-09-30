@@ -11,7 +11,7 @@ export default class Test extends React.Component {
       guide: true,
       nodeLabelsMovable: false,
       resize: {
-        livePreview: true,
+        // livePreview: true,
       },
       resizeHandle: {
         single: false,

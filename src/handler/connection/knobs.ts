@@ -6,7 +6,7 @@ import { ConnectionHandler } from './handler'
 import { getConnectionIconOptions } from './option'
 import { Disposable, MouseEventEx, DomEvent } from '../../common'
 
-export class Icons extends Disposable {
+export class Knobs extends Disposable {
   private icon: ImageShape | null
   private icons: ImageShape[] | null
   private activeIcon: ImageShape | null
@@ -20,15 +20,34 @@ export class Icons extends Disposable {
     return this.master.graph
   }
 
+  get preview() {
+    return this.master.preview
+  }
+
   get sourceState() {
-    return this.master.sourceState
+    return this.preview.sourceState
   }
 
   get currentState() {
-    return this.master.currentState
+    return this.preview.currentState
   }
 
-  protected createIcons(state: State) {
+  isStarted() {
+    return (
+      this.isEmpty() ||
+      (this.icons != null && this.icon != null)
+    )
+  }
+
+  isEmpty() {
+    return this.icons == null
+  }
+
+  resetIcons(state: State) {
+    this.icons = this.createIcons(state)
+  }
+
+  createIcons(state: State) {
     const options = getConnectionIconOptions({
       graph: this.graph,
       cell: state.cell,
@@ -80,12 +99,80 @@ export class Icons extends Disposable {
     return null
   }
 
+  active() {
+    this.activeIcon = this.icon
+    this.icon = null
+  }
+
+  refresh() {
+    if (this.iconState != null) {
+      this.iconState = this.graph.view.getState(this.iconState.cell)
+    }
+
+    if (this.iconState != null) {
+      this.redrawIcons(this.icons, this.iconState)
+      return true
+    }
+
+    return false
+  }
+
   protected redrawIcons(icons: ImageShape[] | null, state: State) {
     if (icons != null && icons[0] != null && state != null) {
       const pos = this.getIconPosition(icons[0], state)
       icons[0].bounds.x = pos.x
       icons[0].bounds.y = pos.y
       icons[0].redraw()
+    }
+  }
+
+  updateIcons(e: MouseEventEx, state: State | null) {
+    if (!this.master.isMouseDown() && state != null && this.icons != null) {
+      let hits = false
+      const target = e.getSource()
+      for (let i = 0, ii = this.icons.length; i < ii; i += 1) {
+        hits =
+          target === this.icons[i].elem ||
+          target.parentNode === this.icons[i].elem
+
+        if (hits) {
+          break
+        }
+      }
+
+      if (!hits) {
+        this.doUpdateIcons(e, state, this.icons)
+      }
+    }
+  }
+
+  protected doUpdateIcons(e: MouseEventEx, state: State, icons: ImageShape[]) {
+    // empty
+  }
+
+  updateIcon(e: MouseEventEx) {
+    if (this.activeIcon != null) {
+      const w = this.activeIcon.bounds.width
+      const h = this.activeIcon.bounds.height
+      const options = getConnectionIconOptions({
+        graph: this.graph,
+        cell: this.sourceState!.cell,
+      })
+
+      if (this.currentState != null && options.centerTarget) {
+        const p = this.getIconPosition(this.activeIcon, this.currentState)
+        this.activeIcon.bounds.x = p.x
+        this.activeIcon.bounds.y = p.y
+      } else {
+        const bounds = new Rectangle(
+          e.getGraphX() + options.offset.x,
+          e.getGraphY() + options.offset.y,
+          w, h,
+        )
+        this.activeIcon.bounds = bounds
+      }
+
+      this.activeIcon.redraw()
     }
   }
 
@@ -113,33 +200,6 @@ export class Icons extends Disposable {
       cx - icon.bounds.width / 2,
       cy - icon.bounds.height / 2,
     )
-  }
-
-  protected updateIcon(e: MouseEventEx) {
-    console.log(this.icon)
-    if (this.activeIcon != null) {
-      const w = this.activeIcon.bounds.width
-      const h = this.activeIcon.bounds.height
-      const options = getConnectionIconOptions({
-        graph: this.graph,
-        cell: this.sourceState!.cell,
-      })
-
-      if (this.currentState != null && options.centerTarget) {
-        const p = this.getIconPosition(this.activeIcon, this.currentState)
-        this.activeIcon.bounds.x = p.x
-        this.activeIcon.bounds.y = p.y
-      } else {
-        const bounds = new Rectangle(
-          e.getGraphX() + options.offset.x,
-          e.getGraphY() + options.offset.y,
-          w, h,
-        )
-        this.activeIcon.bounds = bounds
-      }
-
-      this.activeIcon.redraw()
-    }
   }
 
   destroyIcons() {

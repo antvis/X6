@@ -2,12 +2,17 @@ import React from 'react'
 import {
   Graph, Point, Constraint, ShapeNames, perimeters,
 } from '../../../../src'
+import * as images from '../../../../src/assets/images'
 
 export default class Constraints extends React.Component {
   private container: HTMLDivElement
 
   componentDidMount() {
     const graph = new Graph(this.container, {
+      connection: {},
+      connectionIcon: {
+        image: images.share,
+      },
       getConstraints(cell) {
         if (cell != null && this.model.isNode(cell)) {
           return [

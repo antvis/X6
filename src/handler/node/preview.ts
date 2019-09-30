@@ -62,6 +62,7 @@ export class Preview extends Disposable {
   protected childOffsetX: number
   protected childOffsetY: number
   protected parentState: State | null
+  private overlayCursor: string | null
 
   constructor(public master: NodeHandler) {
     super()
@@ -741,6 +742,98 @@ export class Preview extends Disposable {
     if (this.previewShape) {
       this.drawPreview()
     }
+
+    this.updateOverlayCursor(e)
+  }
+
+  protected updateOverlayCursor(e: MouseEventEx) {
+    if (this.overlayCursor == null) {
+      this.overlayCursor = this.master.getOverlayCursor()
+    }
+
+    const oldBounds = this.getStateBounds()
+    const curBounds = this.bounds.round()
+
+    let cursor = this.overlayCursor
+    if (cursor === 'nw-resize') {
+      const fixedX = curBounds.x === oldBounds.x + oldBounds.width
+      const fixedY = curBounds.y === oldBounds.y + oldBounds.height
+      if (fixedX && fixedY) {
+        cursor = 'se-resize'
+      } else if (fixedX) {
+        cursor = 'ne-resize'
+      } else if (fixedY) {
+        cursor = 'sw-resize'
+      } else {
+        cursor = 'nw-resize'
+      }
+    } else if (cursor === 'n-resize') {
+      const fixedY = curBounds.y === oldBounds.y + oldBounds.height
+      if (fixedY) {
+        cursor = 's-resize'
+      } else {
+        cursor = 'n-resize'
+      }
+    } else if (cursor === 'ne-resize') {
+      const fixedX = curBounds.x + curBounds.width === oldBounds.x
+      const fixedY = curBounds.y === oldBounds.y + oldBounds.height
+      if (fixedX && fixedY) {
+        cursor = 'sw-resize'
+      } else if (fixedX) {
+        cursor = 'nw-resize'
+      } else if (fixedY) {
+        cursor = 'se-resize'
+      } else {
+        cursor = 'ne-resize'
+      }
+    } else if (cursor === 'e-resize') {
+      const fixedX = curBounds.x + curBounds.width === oldBounds.x
+      if (fixedX) {
+        cursor = 'w-resize'
+      } else {
+        cursor = 'e-resize'
+      }
+    } else if (cursor === 'se-resize') {
+      const fixedX = curBounds.x + curBounds.width === oldBounds.x
+      const fixedY = curBounds.y + curBounds.height === oldBounds.y
+      if (fixedX && fixedY) {
+        cursor = 'nw-resize'
+      } else if (fixedX) {
+        cursor = 'sw-resize'
+      } else if (fixedY) {
+        cursor = 'ne-resize'
+      } else {
+        cursor = 'se-resize'
+      }
+    } else if (cursor === 's-resize') {
+      const fixedY = curBounds.y + curBounds.height === oldBounds.y
+      if (fixedY) {
+        cursor = 'n-resize'
+      } else {
+        cursor = 's-resize'
+      }
+    } else if (cursor === 'sw-resize') {
+      const fixedX = curBounds.x === oldBounds.x + oldBounds.width
+      const fixedY = curBounds.y + curBounds.height === oldBounds.y
+      if (fixedX && fixedY) {
+        cursor = 'ne-resize'
+      } else if (fixedX) {
+        cursor = 'se-resize'
+      } else if (fixedY) {
+        cursor = 'nw-resize'
+      } else {
+        cursor = 'sw-resize'
+      }
+    } else if (cursor === 'w-resize') {
+      const fixedX = curBounds.x === oldBounds.x + oldBounds.width
+      if (fixedX) {
+        cursor = 'e-resize'
+      } else {
+        cursor = 'w-resize'
+      }
+    }
+
+    this.master.setOverlayCursor(cursor)
   }
 
   hasRotated() {
@@ -790,6 +883,7 @@ export class Preview extends Disposable {
   reset() {
     this.edgeHandlers = null
     this.unscaledBounds = null
+    this.overlayCursor = null
   }
 
   @Disposable.aop()

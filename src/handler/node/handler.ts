@@ -25,6 +25,12 @@ export class NodeHandler extends MouseHandler {
     super(graph)
     this.state = state
     this.init()
+  }
+
+  protected init() {
+    this.knobs = new Knobs(this)
+    this.preview = new Preview(this)
+    this.redraw()
     this.escapeHandler = () => {
       if (
         this.preview.isLivePreview() &&
@@ -37,12 +43,6 @@ export class NodeHandler extends MouseHandler {
     }
 
     this.state.view.graph.on(Graph.events.escape, this.escapeHandler)
-  }
-
-  protected init() {
-    this.knobs = new Knobs(this)
-    this.preview = new Preview(this)
-    this.redraw()
   }
 
   isConstrained(e: MouseEventEx) {
@@ -83,7 +83,6 @@ export class NodeHandler extends MouseHandler {
           this.preview.rotate(e)
         } else {
           this.preview.resize(e)
-          this.updateOverlayCursor(e)
         }
       }
       e.consume()
@@ -125,97 +124,6 @@ export class NodeHandler extends MouseHandler {
       this.removeOverlay()
       this.reset()
     }
-  }
-
-  private overlayCursor: string | null
-  protected updateOverlayCursor(e: MouseEventEx) {
-    if (this.overlayCursor == null) {
-      this.overlayCursor = this.getOverlayCursor()
-    }
-
-    const oldBounds = this.preview.getStateBounds()
-    const curBounds = this.preview.bounds.round()
-
-    let cursor = this.overlayCursor
-    if (cursor === 'nw-resize') {
-      const fixedX = curBounds.x === oldBounds.x + oldBounds.width
-      const fixedY = curBounds.y === oldBounds.y + oldBounds.height
-      if (fixedX && fixedY) {
-        cursor = 'se-resize'
-      } else if (fixedX) {
-        cursor = 'ne-resize'
-      } else if (fixedY) {
-        cursor = 'sw-resize'
-      } else {
-        cursor = 'nw-resize'
-      }
-    } else if (cursor === 'n-resize') {
-      const fixedY = curBounds.y === oldBounds.y + oldBounds.height
-      if (fixedY) {
-        cursor = 's-resize'
-      } else {
-        cursor = 'n-resize'
-      }
-    } else if (cursor === 'ne-resize') {
-      const fixedX = curBounds.x + curBounds.width === oldBounds.x
-      const fixedY = curBounds.y === oldBounds.y + oldBounds.height
-      if (fixedX && fixedY) {
-        cursor = 'sw-resize'
-      } else if (fixedX) {
-        cursor = 'nw-resize'
-      } else if (fixedY) {
-        cursor = 'se-resize'
-      } else {
-        cursor = 'ne-resize'
-      }
-    } else if (cursor === 'e-resize') {
-      const fixedX = curBounds.x + curBounds.width === oldBounds.x
-      if (fixedX) {
-        cursor = 'w-resize'
-      } else {
-        cursor = 'e-resize'
-      }
-    } else if (cursor === 'se-resize') {
-      const fixedX = curBounds.x + curBounds.width === oldBounds.x
-      const fixedY = curBounds.y + curBounds.height === oldBounds.y
-      if (fixedX && fixedY) {
-        cursor = 'nw-resize'
-      } else if (fixedX) {
-        cursor = 'sw-resize'
-      } else if (fixedY) {
-        cursor = 'ne-resize'
-      } else {
-        cursor = 'se-resize'
-      }
-    } else if (cursor === 's-resize') {
-      const fixedY = curBounds.y + curBounds.height === oldBounds.y
-      if (fixedY) {
-        cursor = 'n-resize'
-      } else {
-        cursor = 's-resize'
-      }
-    } else if (cursor === 'sw-resize') {
-      const fixedX = curBounds.x === oldBounds.x + oldBounds.width
-      const fixedY = curBounds.y + curBounds.height === oldBounds.y
-      if (fixedX && fixedY) {
-        cursor = 'ne-resize'
-      } else if (fixedX) {
-        cursor = 'se-resize'
-      } else if (fixedY) {
-        cursor = 'nw-resize'
-      } else {
-        cursor = 'sw-resize'
-      }
-    } else if (cursor === 'w-resize') {
-      const fixedX = curBounds.x === oldBounds.x + oldBounds.width
-      if (fixedX) {
-        cursor = 'e-resize'
-      } else {
-        cursor = 'w-resize'
-      }
-    }
-
-    this.setOverlayCursor(cursor)
   }
 
   protected isRecursiveResize(state: State, e: MouseEventEx) {
@@ -317,7 +225,6 @@ export class NodeHandler extends MouseHandler {
     this.knobs.reset()
     this.preview.resetShape()
     this.index = null
-    this.overlayCursor = null
     this.redrawKnobs()
     this.preview.reset()
   }

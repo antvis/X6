@@ -1,11 +1,15 @@
 import React from 'react'
 import { Graph, Point } from '../../../../src'
+import * as images from '../../../../src/assets/images'
 
 export default class HelloPort extends React.Component {
   private container: HTMLDivElement
 
   componentDidMount() {
     const graph = new Graph(this.container, {
+      connectionIcon: {
+        image: images.share,
+      },
       isPort(cell) {
         const geo = this.getCellGeometry(cell)
         return (geo != null) ? geo.relative : false

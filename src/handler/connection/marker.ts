@@ -16,13 +16,17 @@ export class ConnectionMarker extends CellMarker {
     this.master = master
   }
 
+  get preview() {
+    return this.master.preview
+  }
+
   getCell(e: MouseEventEx) {
     let cell = super.getCell(e)
 
-    this.master.error = null
+    this.preview.error = null
 
     // Checks for cell at preview point (with grid)
-    const currentPoint = this.master.currentPoint
+    const currentPoint = this.preview.currentPoint
     if (cell == null && currentPoint != null) {
       cell = this.graph.getCellAt(currentPoint.x, currentPoint.y)
     }
@@ -57,16 +61,16 @@ export class ConnectionMarker extends CellMarker {
     }
 
     if (cell != null) {
-      if (this.master.isConnecting()) {
-        if (this.master.sourceState != null) {
-          this.master.error = this.master.validateConnection(
-            this.master.sourceState.cell, cell,
+      if (this.preview.isConnecting()) {
+        if (this.preview.sourceState != null) {
+          this.preview.error = this.master.validateConnection(
+            this.preview.sourceState.cell, cell,
           )
 
-          if (this.master.error != null && this.master.error.length >= 0) {
+          if (this.preview.error != null && this.preview.error.length >= 0) {
             cell = null
             if (this.master.isCreateTarget(e.getEvent())) {
-              this.master.error = null
+              this.preview.error = null
             }
           }
         }
@@ -75,19 +79,19 @@ export class ConnectionMarker extends CellMarker {
       }
 
     } else if (
-      this.master.isConnecting() &&
+      this.preview.isConnecting() &&
       !this.master.isCreateTarget(e.getEvent()) &&
       !this.graph.isDanglingEdgesEnabled()
     ) {
-      this.master.error = ''
+      this.preview.error = ''
     }
 
     return cell
   }
 
   isValidState(state: State) {
-    if (this.master.isConnecting()) {
-      return this.master.error == null
+    if (this.preview.isConnecting()) {
+      return this.preview.error == null
     }
     return super.isValidState(state)
   }
@@ -104,13 +108,13 @@ export class ConnectionMarker extends CellMarker {
   }
 
   getMarkerColor(evt: Event, state: State, isValid: boolean) {
-    return (!this.hasConnectIcon(state) || this.master.isConnecting())
+    return (!this.hasConnectIcon(state) || this.preview.isConnecting())
       ? super.getMarkerColor(evt, state, isValid)
       : null
   }
 
   intersects(state: State, e: MouseEventEx) {
-    if (this.hasConnectIcon(state) || this.master.isConnecting()) {
+    if (this.hasConnectIcon(state) || this.preview.isConnecting()) {
       return true
     }
     return super.intersects(state, e)
