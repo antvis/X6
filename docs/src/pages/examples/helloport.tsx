@@ -7,6 +7,9 @@ export default class HelloPort extends React.Component {
 
   componentDidMount() {
     const graph = new Graph(this.container, {
+      connection: {
+        waypointsEnabled: true,
+      },
       connectionIcon: {
         image: images.share,
       },

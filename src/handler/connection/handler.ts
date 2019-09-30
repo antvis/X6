@@ -44,7 +44,7 @@ export class ConnectionHandler extends MouseHandler {
    *
    * Default is `null`.
    */
-  cursor: string | null = 'pointer'
+  cursor: string | null
 
   /**
    * Specifies if new edges should be inserted before the source node in the
@@ -67,6 +67,7 @@ export class ConnectionHandler extends MouseHandler {
 
   protected config() {
     const options = this.graph.options.connection as ConnectionOptions
+    this.cursor = options.cursor
     this.factoryMethod = options.createEdge
     this.autoSelect = options.autoSelect
     this.autoCreateTarget = options.autoCreateTarget
@@ -152,10 +153,11 @@ export class ConnectionHandler extends MouseHandler {
     ) {
       this.mouseDownCounter = 1
       this.preview.start(e)
-      e.consume()
+      this.setGlobalCursor(this.cursor)
       this.trigger(ConnectionHandler.events.start, {
         state: this.preview.sourceState,
       })
+      e.consume()
     }
 
     this.knobs.active()
@@ -193,6 +195,7 @@ export class ConnectionHandler extends MouseHandler {
 
       this.preview.execute(e)
       this.knobs.destroyIcons()
+      this.resetGlobalCursor()
       e.consume()
     }
 

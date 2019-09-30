@@ -197,8 +197,6 @@ export class Preview extends Disposable {
 
       this.drawPreview()
     }
-
-    this.master.setGlobalCursor(this.master.cursor)
   }
 
   protected updateTerminalPoints(e: MouseEventEx, point: Point) {
@@ -647,8 +645,6 @@ export class Preview extends Disposable {
   }
 
   reset() {
-    this.master.resetGlobalCursor()
-
     if (this.previewShape != null) {
       this.previewShape.dispose()
       this.previewShape = null

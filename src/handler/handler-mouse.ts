@@ -62,6 +62,7 @@ export class MouseHandler extends BaseHandler implements IMouseHandler {
 
   removeOverlay() {
     util.removeElement(this.overlay)
+    this.overlay = null
   }
 
   getOverlayCursor() {
