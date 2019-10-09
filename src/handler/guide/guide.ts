@@ -61,7 +61,7 @@ export class Guide extends Disposable {
   }
 
   protected redrawGuideShape(state: State, horizontal: boolean) {
-    const guide = horizontal ? this.guideX : this.guideY
+    const guide = horizontal ? this.guideY : this.guideX
     if (guide != null) {
       const style = this.options.getStrockStyle({
         horizontal,
@@ -255,7 +255,7 @@ export class Guide extends Disposable {
               ]
             }
 
-            this.redrawGuideShape(stateX!, true)
+            this.redrawGuideShape(stateX!, false)
           }
         }
       }
@@ -288,7 +288,7 @@ export class Guide extends Disposable {
               ]
             }
 
-            this.redrawGuideShape(stateY, false)
+            this.redrawGuideShape(stateY, true)
           }
         }
       }

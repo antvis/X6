@@ -55,10 +55,10 @@ function getGuideStrockStyle(o: GetGuideStyleArgs) {
     : options.vertical
   ) as GuideSubOptions
 
-  const dashed = (sub.dashed || options.dashed)
-  const stroke = (sub.stroke || options.stroke)
-  const strokeWidth = (sub.strokeWidth || options.strokeWidth)
-  const className = (sub.className || options.className)
+  const dashed = sub.dashed != null ? sub.dashed : options.dashed
+  const stroke = sub.stroke != null ? sub.stroke : options.stroke
+  const strokeWidth = sub.strokeWidth != null ? sub.strokeWidth : options.strokeWidth
+  const className = sub.className != null ? sub.className : options.className
 
   return {
     dashed: drill(dashed, graph, o),

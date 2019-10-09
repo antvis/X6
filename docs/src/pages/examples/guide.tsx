@@ -10,6 +10,10 @@ export default class Guide extends React.Component {
       guide: {
         enabled: true,
         dashed: true,
+        horizontal: {
+          dashed: false,
+          stroke: '#ff0000',
+        },
       },
       rubberband: true,
     })

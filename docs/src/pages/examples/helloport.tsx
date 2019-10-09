@@ -1,6 +1,5 @@
 import React from 'react'
 import { Graph, Point } from '../../../../src'
-import * as images from '../../../../src/assets/images'
 
 export default class HelloPort extends React.Component {
   private container: HTMLDivElement
@@ -9,9 +8,6 @@ export default class HelloPort extends React.Component {
     const graph = new Graph(this.container, {
       connection: {
         waypointsEnabled: true,
-      },
-      connectionIcon: {
-        image: images.share,
       },
       isPort(cell) {
         const geo = this.getCellGeometry(cell)
