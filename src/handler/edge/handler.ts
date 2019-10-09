@@ -7,7 +7,7 @@ import { MouseHandler } from '../handler-mouse'
 import { CellMarker } from '../cell-marker'
 import { ConstraintHandler } from '../constraint/handler'
 import { Handle } from '../handle'
-import { EdgeHandlerMarker } from './marker'
+import { EdgeMarker } from './marker'
 import { transparentMarker } from '../connection/util'
 import {
   detector,
@@ -181,7 +181,7 @@ export class EdgeHandler extends MouseHandler {
   }
 
   init() {
-    this.marker = new EdgeHandlerMarker(this.graph, this)
+    this.marker = new EdgeMarker(this.graph, this)
     this.constraintHandler = new ConstraintHandler(this.graph)
 
     // Clones the original points from the cell

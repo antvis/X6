@@ -4,7 +4,7 @@ import { CellMarker } from '../cell-marker'
 import { EdgeHandler } from './handler'
 import { getConnectionHighlightOptions } from '../connection/option'
 
-export class EdgeHandlerMarker extends CellMarker {
+export class EdgeMarker extends CellMarker {
   edgeHandler: EdgeHandler
 
   constructor(graph: Graph, edgeHandler: EdgeHandler) {
