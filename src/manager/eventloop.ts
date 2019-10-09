@@ -580,25 +580,27 @@ export class EventLoop extends BaseManager {
       this.graph.panningHandler.panningTrigger = false
     }
 
+    const connHandler = this.graph.connectionHandler
     if (
       !DomEvent.isConsumed(evt) &&
       this.graph.isEnabled() &&
-      this.graph.connectionHandler.isEnabled()
+      connHandler.isEnabled()
     ) {
-      const connHandler = this.graph.connectionHandler
-      const state = this.view.getState(connHandler.marker.getCell(e))
+
+      const marker = connHandler.preview.marker
+      const state = this.view.getState(marker.getCell(e))
 
       if (state != null) {
-        connHandler.marker.currentColor = connHandler.marker.validColor
-        connHandler.marker.markedState = state
-        connHandler.marker.mark()
+        marker.currentColor = marker.validColor
+        marker.markedState = state
+        marker.mark()
 
-        connHandler.sourcePoint = new Point(e.getGraphX(), e.getGraphY())
-        connHandler.edgeState = connHandler.createEdgeState(e)
-        connHandler.sourceState = state
+        connHandler.preview.sourcePoint = new Point(e.getGraphX(), e.getGraphY())
+        connHandler.preview.edgeState = connHandler.preview.createEdgeState(e)
+        connHandler.preview.sourceState = state
         connHandler.trigger(
           ConnectionHandler.events.start,
-          { previous: connHandler.sourceState },
+          { previous: connHandler.preview.sourceState },
         )
       }
     }

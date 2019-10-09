@@ -608,7 +608,7 @@ export class Preview extends Disposable {
     )
   }
 
-  protected createEdgeState(e: MouseEventEx | null): State | null {
+  createEdgeState(e: MouseEventEx | null): State | null {
     return null
   }
 
