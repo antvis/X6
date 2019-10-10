@@ -38,13 +38,13 @@ export default class Images extends React.Component {
       }
 
       graph.addNode({
-        data: 'Top',
+        data: 'Top\nTop',
         x: 60, y: 80, width: 128, height: 128,
         style: { ...style },
       })
 
       graph.addNode({
-        data: 'Bottom',
+        data: 'Bottom\nBottom',
         x: 60, y: 240, width: 128, height: 128,
         style: {
           ...style,
@@ -54,7 +54,7 @@ export default class Images extends React.Component {
       })
 
       graph.addNode({
-        data: 'Left',
+        data: 'Left\nLeft',
         x: 240, y: 80, width: 128, height: 128,
         style: {
           ...style,
@@ -67,7 +67,7 @@ export default class Images extends React.Component {
       })
 
       graph.addNode({
-        data: 'Right',
+        data: 'Right\nRight',
         x: 240, y: 240, width: 128, height: 128,
         style: {
           ...style,

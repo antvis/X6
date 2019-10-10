@@ -54,7 +54,7 @@ export default class Layers extends React.Component {
         source: node1,
         target: node3,
         style: {
-          stroke: '#712ed1',
+          stroke: '#1890ff',
         },
       })
       edge1.geometry!.addPoint(60, 165)
@@ -82,7 +82,7 @@ export default class Layers extends React.Component {
         target: node1,
         style: {
           edge: 'topToBottom',
-          stroke: '#712ed1',
+          stroke: '#1890ff',
         },
       })
       edge4.geometry!.addPoint(150, 40)

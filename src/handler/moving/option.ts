@@ -31,6 +31,13 @@ export interface MovingPreviewOptions
    */
   minimumSize: number
 
+  /**
+   * Specifies if the grid should be scaled.
+   *
+   * Default is `false`.
+   */
+  scaleGrid: boolean
+
   cursor: OptionItem<ApplyMovingPreviewStyleArgs, string>
 }
 

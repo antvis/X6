@@ -122,6 +122,15 @@ export class Graph extends Disablable implements
   pageBreakColor = 'gray'
   pageBreakDashed: boolean = true
   minPageBreakDist: number = 20
+  togglePageBreak() {
+    this.pageBreakEnabled = !this.pageBreakEnabled
+  }
+  enablePageBreak() {
+    this.pageBreakEnabled = true
+  }
+  disablePageBreak() {
+    this.pageBreakEnabled = false
+  }
 
   /**
    * Specifies if the background page should be visible.
@@ -131,8 +140,8 @@ export class Graph extends Disablable implements
   pageVisible: boolean = false
 
   preferPageSize: boolean = false
-  pageFormat: Rectangle = PageSize.A4_PORTRAIT
-  pageScale: number = 1.5
+  pageFormat: Rectangle | Rectangle.RectangleLike
+  pageScale: number = 1
 
   backgroundImage: Image
   getBackgroundImage() { return this.backgroundImage }
@@ -584,7 +593,6 @@ export class Graph extends Disablable implements
 
   constructor(container: HTMLElement, options: Graph.Options = {}) {
     super()
-
     this.options = getOptions(options)
     this.container = container
     this.model = options.model || this.createModel()
@@ -2212,8 +2220,12 @@ export class Graph extends Disablable implements
   refresh(cell: Cell) {
     this.view.clear(cell, cell == null)
     this.view.validate()
-    this.viewport.sizeDidChange()
+    this.sizeDidChange()
     this.trigger(Graph.events.refresh)
+  }
+
+  sizeDidChange() {
+    this.viewport.sizeDidChange()
   }
 
   /**

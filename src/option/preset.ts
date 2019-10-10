@@ -42,7 +42,7 @@ export const defaultOptions: FullOptions = {
   pageVisible: false,
   preferPageSize: false,
   pageFormat: PageSize.A4_PORTRAIT,
-  pageScale: 1.5,
+  pageScale: 1,
   backgroundImage: null,
   autoScroll: true,
   ignoreScrollbars: false,
@@ -197,6 +197,7 @@ export const defaultOptions: FullOptions = {
 
   movingPreview: {
     html: false,
+    scaleGrid: false,
     minimumSize: 6,
     opacity: 1,
     dashed: true,

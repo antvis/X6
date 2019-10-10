@@ -188,7 +188,7 @@ export interface SimpleOptions {
   /**
    * Specifies the page format for the background page.
    */
-  pageFormat: Rectangle
+  pageFormat: Rectangle | Rectangle.RectangleLike
 
   /**
    * Specifies the scale of the background page.
@@ -847,9 +847,15 @@ export function applyOptions(graph: Graph) {
 
   Object.keys(options).forEach((key: keyof GraphOptions) => {
     const val = options[key]
-    if (val != null && typeof val !== 'function' && typeof val !== 'object') {
-      (graph as any)[key] = val
+    if (val != null) {
+      if (
+        val instanceof Image ||
+        (typeof val !== 'function' && typeof val !== 'object')
+      ) {
+        (graph as any)[key] = val
+      }
     }
+
   })
 
   graph.dialect = options.dialect === 'html' ? 'html' : 'svg'
@@ -868,6 +874,7 @@ function expand(graph: Graph) {
 
   // pageBreak
   // ----
+  graph.pageFormat = options.pageFormat
   const pageBreak = options.pageBreak as PageBreakOptions
   graph.pageBreakEnabled = pageBreak.enabled
   graph.pageBreakColor = pageBreak.stroke
