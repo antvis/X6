@@ -71,6 +71,10 @@ export class GuideHandler extends MouseHandler {
 
   protected reset() {
     this.hideGuide()
+    if (this.guide) {
+      this.guide.dispose()
+    }
+
     this.dx = null
     this.dy = null
     this.cell = null
