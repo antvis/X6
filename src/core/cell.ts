@@ -43,7 +43,7 @@ export class Cell extends Disposable {
     return this.edge === true
   }
 
-  asEdge(v: boolean) {
+  asEdge(v: boolean = true) {
     this.edge = v
   }
 
@@ -76,16 +76,19 @@ export class Cell extends Disposable {
     return this.node != null
   }
 
-  asNode(v: boolean) {
+  asNode(v: boolean = true) {
     this.node = v
   }
 
-  isConnectable() {
-    return !!this.connectable
+  getEdges() {
+    return this.edges
   }
 
-  setConnectable(connectable: boolean) {
-    this.connectable = connectable
+  eachEdge(
+    iterator: (edge: Cell, index: number, edges: Cell[]) => void,
+    context?: any,
+  ) {
+    return util.forEach(this.edges, iterator, context)
   }
 
   getEdgeCount() {
@@ -93,7 +96,7 @@ export class Cell extends Disposable {
   }
 
   getEdgeIndex(edge: Cell) {
-    return util.indexOf<Cell>(this.edges, edge)
+    return util.indexOf(this.edges, edge)
   }
 
   getEdgeAt(index: number) {
@@ -139,15 +142,16 @@ export class Cell extends Disposable {
     return edge
   }
 
-  getEdges() {
-    return this.edges
+  isConnectable() {
+    return this.connectable
   }
 
-  eachEdge(
-    iterator: (edge: Cell, index: number, edges: Cell[]) => void,
-    context?: any,
-  ) {
-    return util.forEach(this.edges, iterator, context)
+  setConnectable(connectable: boolean) {
+    this.connectable = connectable
+  }
+
+  toggleConnectable() {
+    this.connectable = !this.connectable
   }
 
   isCollapsed() {
@@ -207,26 +211,26 @@ export class Cell extends Disposable {
   }
 
   getAncestors() {
-    const result: Cell[] = []
+    const ancestors: Cell[] = []
     let parent = this.parent
 
-    while (parent) {
-      result.push(parent)
+    while (parent != null) {
+      ancestors.push(parent)
       parent = parent.parent
     }
 
-    return result
+    return ancestors
   }
 
   getDescendants() {
-    let result: Cell[] = []
+    const descendants: Cell[] = []
     if (this.children) {
       this.eachChild((child) => {
-        result.push(child)
-        result = result.concat(child.getDescendants())
+        descendants.push(child)
+        descendants.push(...child.getDescendants())
       })
     }
-    return result
+    return descendants
   }
 
   // #endregion
@@ -242,7 +246,7 @@ export class Cell extends Disposable {
   }
 
   getChildIndex(child: Cell) {
-    return util.indexOf<Cell>(this.children, child)
+    return util.indexOf(this.children, child)
   }
 
   getChildAt(index: number) {
@@ -284,8 +288,8 @@ export class Cell extends Disposable {
     if (this.children != null && index >= 0) {
       child = this.getChildAt(index)
       if (child != null) {
-        this.children.splice(index, 1)
         child.setParent(null)
+        this.children.splice(index, 1)
       }
     }
 
@@ -300,49 +304,6 @@ export class Cell extends Disposable {
   }
 
   // #endregion
-
-  getId() {
-    return this.id
-  }
-
-  setId(id?: string | null) {
-    this.id = id
-  }
-
-  getData() {
-    return this.data
-  }
-
-  setData(value: any) {
-    this.data = value
-  }
-
-  /**
-   * Return style as a string of the form `[(stylename|key=value);]`.
-   */
-  getStyle() {
-    return this.style || null
-  }
-
-  setStyle(style: Style) {
-    this.style = style
-  }
-
-  getGeometry() {
-    return this.geometry
-  }
-
-  setGeometry(geometry: Geometry) {
-    this.geometry = geometry
-  }
-
-  getOverlays() {
-    return this.overlays
-  }
-
-  setOverlays(overlays: Overlay[] | null) {
-    this.overlays = overlays
-  }
 
   // #region visible
 
@@ -366,26 +327,66 @@ export class Cell extends Disposable {
     return this.isVisible() ? this.hide() : this.show()
   }
 
+  // #endregion
+
+  getId() {
+    return this.id
+  }
+
+  setId(id?: string | null) {
+    this.id = id
+  }
+
+  getData() {
+    return this.data
+  }
+
+  setData(data: any) {
+    this.data = data
+  }
+
+  getStyle() {
+    return this.style
+  }
+
+  setStyle(style: Style) {
+    this.style = style
+  }
+
+  getGeometry() {
+    return this.geometry
+  }
+
+  setGeometry(geometry: Geometry) {
+    this.geometry = geometry
+  }
+
+  getOverlays() {
+    return this.overlays
+  }
+
+  setOverlays(overlays: Overlay[] | null) {
+    this.overlays = overlays
+  }
+
   clone() {
     const clone = util.clone<Cell>(this, Cell.ignoredKeysWhenClone)!
-    clone.setData(this.cloneValue())
+    clone.setData(this.cloneData())
     return clone
   }
 
-  protected cloneValue() {
-    let value = this.getData()
-    if (value != null) {
-      if (util.isFunction(value.clone)) {
-        value = value.clone()
-      } else if (!isNaN(value.nodeType)) {
-        value = value.cloneNode(true)
+  protected cloneData() {
+    let data = this.getData()
+    if (data != null) {
+      if (util.isFunction(data.clone)) {
+        data = data.clone()
+      } else if (!isNaN(data.nodeType)) {
+        data = data.cloneNode(true)
       }
     }
 
-    return value
+    return data
   }
-
-  // #region IDisposable
 
   @Disposable.aop()
   dispose() {
@@ -398,8 +399,6 @@ export class Cell extends Disposable {
     this.removeFromTerminal(true)
     this.removeFromTerminal(false)
   }
-
-  // #endregion
 }
 
 export namespace Cell {

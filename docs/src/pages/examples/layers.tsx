@@ -28,58 +28,47 @@ export default class Layers extends React.Component {
     this.layer1 = layer1
 
     graph.batchUpdate(() => {
-      const node1 = graph.addNode({
-        parent: layer1, data: 'Hello,',
+      const hello1 = graph.addNode({
+        parent: layer1,
+        data: 'Hello,',
         x: 20, y: 20, width: 80, height: 30,
         style: {
           fill: '#c0c0c0',
         },
       })
 
-      const node2 = graph.addNode({
-        parent: layer1, data: 'Hello,',
+      const hello2 = graph.addNode({
+        parent: layer1,
+        data: 'Hello,',
         x: 200, y: 20, width: 80, height: 30,
         style: {
           fill: '#c0c0c0',
         },
       })
 
-      const node3 = graph.addNode({
-        parent: layer0, data: 'World!',
-        x: 110, y: 150, width: 80, height: 30,
+      const world = graph.addNode({
+        parent: layer0,
+        data: 'World!',
+        x: 110,
+        y: 150,
+        width: 80,
+        height: 30,
       })
 
       const edge1 = graph.addEdge({
         parent: layer1,
-        source: node1,
-        target: node3,
+        source: hello1,
+        target: world,
         style: {
           stroke: '#1890ff',
         },
       })
       edge1.geometry!.addPoint(60, 165)
 
-      const edge2 = graph.addEdge({
-        parent: layer0,
-        source: node2,
-        target: node3,
-      })
-      edge2.geometry!.addPoint(240, 165)
-
-      const edge3 = graph.addEdge({
-        parent: layer0,
-        source: node1,
-        target: node2,
-        style: {
-          edge: 'topToBottom',
-        },
-      })
-      edge3.geometry!.addPoint(150, 30)
-
       const edge4 = graph.addEdge({
         parent: layer1,
-        source: node2,
-        target: node1,
+        source: hello2,
+        target: hello1,
         style: {
           edge: 'topToBottom',
           stroke: '#1890ff',
@@ -87,6 +76,22 @@ export default class Layers extends React.Component {
       })
       edge4.geometry!.addPoint(150, 40)
 
+      const edge2 = graph.addEdge({
+        parent: layer0,
+        source: hello2,
+        target: world,
+      })
+      edge2.geometry!.addPoint(240, 165)
+
+      const edge3 = graph.addEdge({
+        parent: layer0,
+        source: hello1,
+        target: hello2,
+        style: {
+          edge: 'topToBottom',
+        },
+      })
+      edge3.geometry!.addPoint(150, 30)
     })
   }
 
@@ -110,7 +115,7 @@ export default class Layers extends React.Component {
     return (
       <div>
         <div ref={this.refContainer} className="graph-container" />
-        <div style={{ marginTop: 8, fontSize: 12 }}>
+        <div style={{ marginTop: 8, fontSize: 12, userSelect: 'none' }}>
           <Checkbox
             checked={this.state.layer0Visible}
             onChange={this.onLayer0Changed}

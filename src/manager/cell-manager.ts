@@ -662,7 +662,7 @@ export class CellManager extends BaseManager {
         let geo = this.graph.getCellGeometry(cells[i])
         if (geo != null) {
 
-          const children = this.graph.getChildCells(cells[i])
+          const children = this.graph.getChildren(cells[i])
           if (children != null && children.length > 0) {
 
             const bounds = this.graph.getBoundingBoxFromGeometry(children, true)
@@ -796,9 +796,9 @@ export class CellManager extends BaseManager {
       }
     }
 
-    let perimeter = true
     let dx = 0
     let dy = 0
+    let perimeter = true
 
     if (point != null) {
       perimeter = (isSource

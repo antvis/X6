@@ -2,10 +2,22 @@ import * as util from '../util'
 import { State } from './state'
 import { TextDirection, Dialect } from '../types'
 import { Rectangle, Point, Overlay } from '../struct'
-import { constants, detector, Dictionary } from '../common'
-import { DomEvent } from '../common/dom-event'
-import { MouseEventEx } from '../common/mouse-event'
-import { Shape, Stencil, Connector, RectangleShape, Text, ImageShape, HtmlShape } from '../shape'
+import {
+  constants,
+  detector,
+  Dictionary,
+  DomEvent,
+  MouseEventEx,
+} from '../common'
+import {
+  Shape,
+  Stencil,
+  Connector,
+  RectangleShape,
+  Text,
+  ImageShape,
+  HtmlShape,
+} from '../shape'
 
 export class Renderer {
   antialiased: boolean = true
@@ -16,7 +28,7 @@ export class Renderer {
 
   /**
    * Specifies if spacing and label position should be ignored
-   * if overflow is fill or width.
+   * if overflow is `fill` or `width`.
    */
   legacySpacing: boolean = true
 
@@ -38,7 +50,6 @@ export class Renderer {
     rendering?: boolean,
   ) {
     const shapeChanged = this.redrawShape(state, force, rendering)
-
     if (state.shape != null && (rendering == null || rendering)) {
       this.redrawLabel(state, shapeChanged)
       this.redrawOverlays(state, shapeChanged)
@@ -70,7 +81,6 @@ export class Renderer {
       (model.isNode(state.cell) || model.isEdge(state.cell))
     ) {
       state.shape = this.createShape(state)
-
       if (state.shape != null) {
         state.shape.antialiased = this.antialiased
         state.shape.minSvgStrokeWidth = this.minSvgStrokeWidth
@@ -79,7 +89,6 @@ export class Renderer {
         this.initializeShape(state)
         this.createOverlays(state)
         this.installListeners(state)
-
         // Forces a refresh of the handler if one exists
         if (state.view.graph.selectionHandler) {
           state.view.graph.selectionHandler.updateHandler(state)
@@ -96,7 +105,6 @@ export class Renderer {
     ) {
       state.shape.resetStyle()
       this.configureShape(state)
-
       if (state.view.graph.selectionHandler) {
         state.view.graph.selectionHandler.updateHandler(state)
       }

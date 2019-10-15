@@ -1,10 +1,9 @@
 import { Cell } from '../core'
 
 export namespace CellPath {
+  const separator = '.'
 
-  export const PATH_SEPARATOR = '.'
-
-  export function create(cell: Cell) {
+  export function getCellPath(cell: Cell) {
     const idxs = []
     if (cell != null) {
       let child = cell
@@ -18,12 +17,12 @@ export namespace CellPath {
       }
     }
 
-    return idxs.join(PATH_SEPARATOR)
+    return idxs.join(separator)
   }
 
   export function getParentPath(path: string) {
     if (path != null) {
-      const index = path.lastIndexOf(PATH_SEPARATOR)
+      const index = path.lastIndexOf(separator)
       if (index >= 0) {
         return path.substring(0, index)
       }
@@ -34,37 +33,37 @@ export namespace CellPath {
 
   export function resolve(root: Cell, path: string): Cell {
     let child = root
-
-    if (path != null) {
-      const tokens = path.split(PATH_SEPARATOR)
-      for (let i = 0; i < tokens.length; i += 1) {
-        child = child.getChildAt(parseInt(tokens[i], 10))!
+    path.split(separator).forEach((token) => {
+      const index = parseInt(token, 10)
+      const result = child.getChildAt(index)
+      if (result == null) {
+        throw new Error(`Can not resolve cell from path: ${path}`)
+      } else {
+        child = result
       }
-    }
-
+    })
     return child
   }
 
   export function compare(p1: string[], p2: string[]) {
     let comp = 0
-
     const min = Math.min(p1.length, p2.length)
-    for (let i = 0; i < min; i += 1) {
-      if (p1[i] !== p2[i]) {
-        if (
-          p1[i].length === 0 ||
-          p2[i].length === 0
-        ) {
-          comp = p1[i] === p2[i]
-            ? 0
-            : ((p1[i] > p2[i]) ? 1 : -1)
-        } else {
-          const t1 = parseInt(p1[i], 10)
-          const t2 = parseInt(p2[i], 10)
 
+    for (let i = 0; i < min; i += 1) {
+      const v1 = p1[i]
+      const v2 = p2[i]
+
+      if (v1 !== v2) {
+        if (v1.length === 0 || v2.length === 0) {
+          comp = v1 === v2
+            ? 0
+            : (v1 > v2 ? 1 : -1)
+        } else {
+          const t1 = parseInt(v1, 10)
+          const t2 = parseInt(v2, 10)
           comp = t1 === t2
             ? 0
-            : ((t1 > t2) ? 1 : -1)
+            : (t1 > t2 ? 1 : -1)
         }
 
         break
@@ -76,7 +75,7 @@ export namespace CellPath {
       const t1 = p1.length
       const t2 = p2.length
       if (t1 !== t2) {
-        comp = (t1 > t2) ? 1 : -1
+        comp = t1 > t2 ? 1 : -1
       }
     }
 
@@ -89,25 +88,58 @@ export namespace CellPath {
    */
   export function sortCells(cells: Cell[], ascending: boolean = true) {
     const dict = new WeakMap<Cell, string[]>()
-
-    cells.sort((o1, o2) => {
-      let p1 = dict.get(o1)
-      if (p1 == null) {
-        p1 = create(o1).split(PATH_SEPARATOR)
-        dict.set(o1, p1)
+    const ensure = (c: Cell) => {
+      let p = dict.get(c)
+      if (p == null) {
+        p = getCellPath(c).split(separator)
+        dict.set(c, p)
       }
+      return p
+    }
 
-      let p2 = dict.get(o2)
-
-      if (p2 == null) {
-        p2 = create(o2).split(PATH_SEPARATOR)
-        dict.set(o2, p2)
-      }
-
+    return cells.sort((c1, c2) => {
+      const p1 = ensure(c1)
+      const p2 = ensure(c2)
       const comp = compare(p1, p2)
-      return (comp === 0) ? 0 : (((comp > 0) === ascending) ? 1 : -1)
+      return comp === 0
+        ? 0
+        : ((comp > 0) === ascending ? 1 : -1)
     })
+  }
 
-    return cells
+  export function getNearestCommonAncestor(
+    cell1: Cell | null,
+    cell2: Cell | null,
+  ): Cell | null {
+    if (cell1 != null && cell2 != null) {
+      let path2 = getCellPath(cell2)
+      if (path2 != null && path2.length > 0) {
+        let cell: Cell | null = cell1
+        let path1 = getCellPath(cell)
+
+        // exchange
+        if (path2.length < path1.length) {
+          cell = cell2
+          const tmp = path1
+          path1 = path2
+          path2 = tmp
+        }
+
+        while (cell != null) {
+          const parent: Cell | null = cell.getParent()
+          if (
+            path2.indexOf(path1 + separator) === 0 &&
+            parent != null
+          ) {
+            return cell
+          }
+
+          path1 = getParentPath(path1)
+          cell = parent
+        }
+      }
+    }
+
+    return null
   }
 }

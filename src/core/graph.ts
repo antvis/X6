@@ -32,7 +32,6 @@ import {
   Image,
   Overlay,
   ShapeNames,
-  PageSize,
   Multiplicity,
   CellPath,
 } from '../struct'
@@ -634,7 +633,7 @@ export class Graph extends Disablable implements
 
   protected init(container: HTMLElement) {
     this.view.init()
-    this.viewport.sizeDidChange()
+    this.sizeDidChange()
 
     if (detector.IS_IE) {
       DomEvent.addListener(container, 'selectstart', (e: MouseEvent) => {
@@ -1724,25 +1723,25 @@ export class Graph extends Disablable implements
    * Returns the visible child nodes of the given parent.
    */
   getChildNodes(parent: Cell) {
-    return this.getChildCells(parent, true, false)
+    return this.getChildren(parent, true, false)
   }
 
   /**
    * Returns the visible child edges of the given parent.
    */
   getChildEdges(parent: Cell) {
-    return this.getChildCells(parent, false, true)
+    return this.getChildren(parent, false, true)
   }
 
   /**
    * Returns the visible child nodes or edges of the given parent.
    */
-  getChildCells(
+  getChildren(
     parent: Cell = this.getDefaultParent(),
     includeNodes: boolean = false,
     includeEdges: boolean = false,
   ) {
-    const cells = this.model.getChildCells(parent, includeNodes, includeEdges)
+    const cells = this.model.getChildren(parent, includeNodes, includeEdges)
     return cells.filter(cell => this.isCellVisible(cell))
   }
 

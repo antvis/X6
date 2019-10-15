@@ -28,9 +28,9 @@ export class View extends Primer {
   currentRoot: Cell | null
 
   /**
-   * Specifies if the style should be updated in each validation step. If this
-   * is `false` then the style is only updated if the state is created or if the
-   * style of the cell was changed.
+   * Specifies if the style should be updated in each validation step.
+   * If this is `false` then the style is only updated if the state
+   * is created or if the style of the cell was changed.
    *
    * Default is `false`.
    */
@@ -43,9 +43,9 @@ export class View extends Primer {
   protected overlayPane: HTMLElement | SVGGElement | null
 
   protected states: WeakMap<Cell, State>
-  protected readonly invalidatings: WeakSet<Cell>
   protected backgroundImage: ImageShape | null
   protected backgroundPageShape: RectangleShape | null
+  protected readonly invalidatings: WeakSet<Cell>
 
   constructor(graph: Graph) {
     super()
@@ -226,7 +226,6 @@ export class View extends Primer {
       this.translate.y = ty
 
       this.scaledOrTranslated()
-
       this.trigger('scaleAndTranslate', {
         previousScale,
         previousTranslate,
@@ -238,7 +237,7 @@ export class View extends Primer {
 
   protected scaledOrTranslated() {
     this.revalidate()
-    this.graph.viewport.sizeDidChange()
+    this.graph.sizeDidChange()
   }
 
   // #endregion
@@ -359,7 +358,7 @@ export class View extends Primer {
           // terminal
           const source = this.getVisibleTerminal(cell, true)
           const target = this.getVisibleTerminal(cell, false)
-          const sourceState = this.validateCellState(source, true)
+          const sourceState = this.validateCellState(source, false)
           const targetState = this.validateCellState(target, false)
           state.setVisibleTerminalState(sourceState, true)
           state.setVisibleTerminalState(targetState, false)
@@ -367,7 +366,7 @@ export class View extends Primer {
           this.updateCellState(state)
 
           // repaint
-          if (cell !== this.currentRoot && !state.invalid) {
+          if (cell !== this.currentRoot) {
             this.graph.renderer.redraw(state, false, this.isRendering())
             state.updateCachedBounds()
           }
@@ -375,8 +374,8 @@ export class View extends Primer {
 
         // recursion
         if (recurse && !state.invalid) {
+          // Updates order in DOM if recursively traversing
           if (state.shape != null) {
-            // Updates order in DOM if recursively traversing
             this.stateValidated(state)
           }
 
@@ -392,7 +391,7 @@ export class View extends Primer {
 
   // #region ::::::::::: Update Cell State :::::::::::
 
-  protected updateCellState(state: State) {
+  updateCellState(state: State) {
     state.totalLength = 0
     state.origin.x = 0
     state.origin.y = 0
@@ -400,7 +399,7 @@ export class View extends Primer {
     state.absoluteOffset.y = 0
 
     if (state.cell !== this.currentRoot) {
-      const parent = this.model.getParent(state.cell)!
+      const parent = this.model.getParent(state.cell)
       const pState = this.getState(parent)
 
       // inherit parent's origin
@@ -439,8 +438,10 @@ export class View extends Primer {
               )
             }
           } else {
-            state.origin.x += geo.bounds.x
-            state.origin.y += geo.bounds.y
+            state.origin.add(
+              geo.bounds.x,
+              geo.bounds.y,
+            )
 
             // update label position
             state.absoluteOffset.x = s * offset.x
@@ -470,11 +471,11 @@ export class View extends Primer {
     state.updateCachedBounds()
   }
 
-  protected updateNodeState(state: State, geo: Geometry) {
-    const parent = this.model.getParent(state.cell)!
+  updateNodeState(state: State, geo: Geometry) {
+    const parent = this.model.getParent(state.cell)
     const pState = this.getState(parent)
 
-    // relative and parent is node, apply ratation
+    // Apply ratation when relative and parent is node.
     if (geo.relative && pState != null && !this.model.isEdge(parent)) {
       const rot = util.getRotation(pState)
       if (rot !== 0) {
@@ -537,13 +538,11 @@ export class View extends Primer {
     }
   }
 
-  protected updateEdgeState(state: State, geo: Geometry) {
+  updateEdgeState(state: State, geo: Geometry) {
     const sourceState = state.getVisibleTerminalState(true)!
     const targetState = state.getVisibleTerminalState(false)!
 
-    // This will remove edges with no terminals and no terminal points
-    // as such edges are invalid and produce NPEs in the edge styles.
-    // Also removes connected edges that have no visible terminals.
+    // Remove edges with invalid terminals.
     if (
       (sourceState == null && this.model.getTerminal(state.cell, true) != null) ||
       (targetState == null && this.model.getTerminal(state.cell, false) != null) ||
@@ -555,22 +554,20 @@ export class View extends Primer {
 
     } else {
 
-      // constraint point or manual specified point
+      // Get fixed point from constraint point or manual specified point.
       this.updateFixedTerminalPoints(state, sourceState, targetState)
       this.updateRouterPoints(state, geo.points, sourceState, targetState)
-      // get float(intersection) point when there's no fixed point.
+      // Get float(intersection) point when there's no fixed point.
       this.updateFloatingTerminalPoints(state, sourceState, targetState)
 
       const points = state.absolutePoints
+      // Remove edges with invalid points.
       if (state.cell !== this.currentRoot && (
         points == null ||
         points.length < 2 ||
         points[0] == null ||
         points[points.length - 1] == null
       )) {
-        // This will remove edges with invalid points from the list of
-        // states in the view. Happens if the one of the terminals and
-        // the corresponding terminal point is null.
         this.clear(state.cell, true)
       } else {
         this.updateEdgeBounds(state)
@@ -579,10 +576,6 @@ export class View extends Primer {
     }
   }
 
-  /**
-   * Sets the initial absolute terminal points in the given state before
-   * the edge style is computed.
-   */
   updateFixedTerminalPoints(
     edgeState: State,
     sourceState: State,
@@ -618,7 +611,7 @@ export class View extends Primer {
   /**
    * Returns the fixed source or target terminal point for the given edge.
    */
-  protected getFixedTerminalPoint(
+  getFixedTerminalPoint(
     edgeState: State,
     terminalState: State,
     isSource: boolean,
@@ -654,8 +647,8 @@ export class View extends Primer {
   }
 
   /**
-   * Returns the nearest point in the list of absolute points
-   * or the center of the opposite terminal.
+   * Returns the nearest point in the list of absolute points or the
+   * center of the opposite terminal.
    */
   getConnectionPoint(
     terminalState: State,
@@ -737,8 +730,8 @@ export class View extends Primer {
   }
 
   /**
-   * Updates the absolute points in the given state using the specified array
-   * of `Point`s as the relative points.
+   * Updates the absolute points in the given state using the specified
+   * array of `Point`s as the relative points.
    *
    * @param edgeState The edge state whose absolute points should be updated.
    * @param points Array of `Point`s that constitute the relative points.
@@ -1551,7 +1544,7 @@ export class View extends Primer {
 
         this.backgroundImage = new ImageShape(new Rectangle(), bg.src)
         this.backgroundImage.dialect = this.graph.dialect
-        this.backgroundImage.init(this.backgroundPane!)
+        this.backgroundImage.init(this.backgroundPane)
       }
 
       this.redrawBackgroundImage(this.backgroundImage, bg)
@@ -1580,7 +1573,7 @@ export class View extends Primer {
         this.backgroundPageShape.scale = this.scale
         this.backgroundPageShape.shadow = true
         this.backgroundPageShape.dialect = this.graph.dialect
-        this.backgroundPageShape.init(this.backgroundPane!)
+        this.backgroundPageShape.init(this.backgroundPane)
         this.backgroundPageShape.redraw()
 
         // Adds listener for double click handling on background
@@ -1588,9 +1581,7 @@ export class View extends Primer {
           DomEvent.addListener(
             this.backgroundPageShape.elem!,
             'dblclick',
-            (e: MouseEvent) => {
-              this.graph.eventloop.dblClick(e)
-            },
+            (e: MouseEvent) => { this.graph.eventloop.dblClick(e) },
           )
         }
 
@@ -1599,9 +1590,7 @@ export class View extends Primer {
         DomEvent.addMouseListeners(
           this.backgroundPageShape.elem!,
           (e: MouseEvent) => {
-            this.graph.fireMouseEvent(
-              DomEvent.MOUSE_DOWN, new MouseEventEx(e),
-            )
+            this.graph.fireMouseEvent(DomEvent.MOUSE_DOWN, new MouseEventEx(e))
           },
           (e: MouseEvent) => {
             // Hides the tooltip if mouse is outside container
@@ -1613,15 +1602,11 @@ export class View extends Primer {
             }
 
             if (this.graph.eventloop.isMouseDown && !DomEvent.isConsumed(e)) {
-              this.graph.fireMouseEvent(
-                DomEvent.MOUSE_MOVE, new MouseEventEx(e),
-              )
+              this.graph.fireMouseEvent(DomEvent.MOUSE_MOVE, new MouseEventEx(e))
             }
           },
           (e: MouseEvent) => {
-            this.graph.fireMouseEvent(
-              DomEvent.MOUSE_UP, new MouseEventEx(e),
-            )
+            this.graph.fireMouseEvent(DomEvent.MOUSE_UP, new MouseEventEx(e))
           },
         )
       } else {
@@ -1818,7 +1803,6 @@ export class View extends Primer {
     DomEvent.addMouseListeners(
       container,
       (e: MouseEvent) => {
-
         if (
           this.isContainerEvent(e) &&
           // Avoid scrollbar events starting a rubberband selection
@@ -2136,7 +2120,7 @@ export class View extends Primer {
       change.execute()
       const edit = new UndoableEdit(this.graph.getModel())
       edit.add(change)
-      this.trigger('undo', edit)
+      this.trigger(View.events.undo, edit)
       this.graph.viewport.sizeDidChange()
     }
 

@@ -1,5 +1,5 @@
-import { Model } from '../core'
 import { Disposable, Events } from '../common'
+import { Model } from '../core'
 import { IChange } from './change'
 
 export class UndoableEdit extends Disposable {
@@ -43,7 +43,7 @@ export class UndoableEdit extends Disposable {
   }
 
   /**
-   * Undoes all changes in this edit.
+   * Undoes all changes.
    */
   undo() {
     if (this.undone) {
@@ -72,7 +72,7 @@ export class UndoableEdit extends Disposable {
   }
 
   /**
-   * Redoes all changes in this edit.
+   * Redoes all changes.
    */
   redo() {
     if (this.redone) {
@@ -102,31 +102,26 @@ export class UndoableEdit extends Disposable {
     }
   }
 
+  @Disposable.aop()
   dispose(): void {
-    if (this.disposed) {
-      return
-    }
-
     if (this.onDispose) {
       this.onDispose(this)
     }
-
-    super.dispose()
   }
 }
 
 export namespace UndoableEdit {
   export interface Options {
     /**
+     * Specifies if the undoable change is significant.
+     */
+    significant?: boolean,
+
+    /**
      * Triggered after an `undo` or `redo` has been carried out.
      */
     onChange?: (edit?: UndoableEdit) => void,
 
     onDispose?: (edit?: UndoableEdit) => void,
-
-    /**
-     * Specifies if the undoable change is significant.
-     */
-    significant?: boolean,
   }
 }

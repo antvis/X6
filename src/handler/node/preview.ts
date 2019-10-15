@@ -185,7 +185,7 @@ export class Preview extends Disposable {
   }
 
   protected updateMinBounds() {
-    const children = this.graph.getChildCells(this.state.cell)
+    const children = this.graph.getChildren(this.state.cell)
     if (children.length > 0) {
       this.minBounds = this.graph.view.getBounds(children)
       if (this.minBounds != null) {

@@ -46,13 +46,6 @@ export class State extends Disablable {
   origin: Point
 
   /**
-   * For edges, this is the absolute coordinates of the label position.
-   * For nodes, this is the offset of the label relative to the top, left
-   * corner of the node.
-   */
-  absoluteOffset: Point
-
-  /**
    * The unscaled width of the state.
    */
   unscaledWidth: number | null
@@ -61,6 +54,13 @@ export class State extends Disablable {
    * The unscaled height of the state.
    */
   unscaledHeight: number | null
+
+  /**
+   * For edges, this is the absolute coordinates of the label position.
+   * For nodes, this is the offset of the label relative to the top, left
+   * corner of the node.
+   */
+  absoluteOffset: Point
 
   /**
    * An array of `Point` that represent the absolute points of an edge.
@@ -205,7 +205,7 @@ export class State extends Disablable {
 
   /**
    * Returns the unscaled, untranslated paint bounds. This is the same as
-   * `getCellBounds` but with a 90 degree rotation if the shape's
+   * `getCellBounds()` but with a 90 degree rotation if the shape's
    * `isPaintBoundsInverted` returns true.
    */
   getPaintBounds() {
@@ -226,7 +226,7 @@ export class State extends Disablable {
       this.bounds.height / s,
     )
 
-    this.paintBounds = Rectangle.clone(this.cellBounds)
+    this.paintBounds = this.cellBounds.clone()
 
     if (this.shape != null && this.shape.isPaintBoundsInverted()) {
       this.paintBounds.rotate90()
@@ -241,15 +241,15 @@ export class State extends Disablable {
     this.cell = state.cell
     this.style = state.style
     this.origin = state.origin
-    this.absolutePoints = state.absolutePoints
-    this.absoluteOffset = state.absoluteOffset
+    this.bounds.update(state.bounds)
     this.boundingBox = state.boundingBox
+    this.absoluteOffset = state.absoluteOffset
+    this.absolutePoints = state.absolutePoints
     this.terminalDistance = state.terminalDistance
     this.totalLength = state.totalLength
     this.segmentsLength = state.segmentsLength
     this.unscaledWidth = state.unscaledWidth
-
-    this.bounds.update(state.bounds)
+    this.unscaledHeight = state.unscaledHeight
   }
 
   setCursor(cursor?: string) {
@@ -266,17 +266,16 @@ export class State extends Disablable {
     const cloned = new State(this.view, this.cell, this.style)
 
     cloned.bounds = this.bounds.clone()
-
     if (this.absolutePoints != null) {
       cloned.absolutePoints = this.absolutePoints.map(p => p ? p.clone() : p)
     }
 
-    if (this.origin != null) {
-      cloned.origin = this.origin.clone()
-    }
-
     if (this.absoluteOffset != null) {
       cloned.absoluteOffset = this.absoluteOffset.clone()
+    }
+
+    if (this.origin != null) {
+      cloned.origin = this.origin.clone()
     }
 
     if (this.boundingBox != null) {
@@ -287,6 +286,7 @@ export class State extends Disablable {
     cloned.totalLength = this.totalLength
     cloned.segmentsLength = this.segmentsLength
     cloned.unscaledWidth = this.unscaledWidth
+    cloned.unscaledHeight = this.unscaledHeight
 
     return cloned
   }

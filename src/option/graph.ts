@@ -168,12 +168,23 @@ export interface SimpleOptions {
    */
   tapAndHoldDelay: number
 
+  backgroundImage: Image | null
+
   /**
    * Specifies if the background page should be visible.
    *
    * Default is `false`.
    */
   pageVisible: boolean
+
+  /**
+   * Specifies the scale of the background page.
+   *
+   * Default is `1`.
+   *
+   * Not yet implemented.
+   */
+  pageScale: number
 
   /**
    * Specifies if the graph size should be rounded to the next page
@@ -189,17 +200,6 @@ export interface SimpleOptions {
    * Specifies the page format for the background page.
    */
   pageFormat: Rectangle | Rectangle.RectangleLike
-
-  /**
-   * Specifies the scale of the background page.
-   *
-   * Default is `1.5`.
-   *
-   * Not yet implemented.
-   */
-  pageScale: number
-
-  backgroundImage: Image | null
 
   /**
    * Specifies if the graph should automatically scroll if the mouse
@@ -874,7 +874,7 @@ function expand(graph: Graph) {
 
   // pageBreak
   // ----
-  graph.pageFormat = options.pageFormat
+  graph.pageFormat = options.pageFormat!
   const pageBreak = options.pageBreak as PageBreakOptions
   graph.pageBreakEnabled = pageBreak.enabled
   graph.pageBreakColor = pageBreak.stroke

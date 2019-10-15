@@ -1,8 +1,9 @@
 import * as util from '../util'
 import { Events } from '../common'
-import { Point, CellPath } from '../struct'
 import { Cell } from './cell'
+import { Style } from '../types'
 import { Geometry } from './geometry'
+import { Point, CellPath } from '../struct'
 import {
   IChange,
   RootChange,
@@ -15,14 +16,12 @@ import {
   GeometryChange,
   UndoableEdit,
 } from '../change'
-import { Style } from '../types'
 
 export class Model extends Events {
   private root: Cell
   private cells: { [id: string]: Cell }
   private currentEdit: UndoableEdit
   private maintainEdgeParent = true
-  private ignoreRelativeEdgeParent = true
 
   constructor(root?: Cell) {
     super()
@@ -32,6 +31,92 @@ export class Model extends Events {
     } else {
       this.clear()
     }
+  }
+
+  // #region cell id
+
+  public cellIdPrefix = 'cell-'
+  public cellIdPostfix = ''
+  public autoCreateCellId = true
+  private nextCellId = 0
+
+  private createCellId(cell: Cell) {
+    const id = this.nextCellId
+    this.nextCellId += 1
+    return `${this.cellIdPrefix}${id}${this.cellIdPostfix}`
+  }
+
+  // #endregion
+
+  // #region root
+
+  clear() {
+    this.setRoot(this.createRoot())
+  }
+
+  createRoot() {
+    const root = new Cell()
+    root.insertChild(this.createLayer())
+    return root
+  }
+
+  isRoot(cell: Cell | null) {
+    return (cell != null && this.root === cell)
+  }
+
+  getRoot(cell?: Cell) {
+    let root: Cell = this.root
+    let curr = cell
+
+    while (curr != null) {
+      root = curr
+      curr = this.getParent(curr) as any
+    }
+
+    return root
+  }
+
+  setRoot(root: Cell | null) {
+    this.execute(new RootChange(this, root))
+  }
+
+  doRootChange(newRoot: Cell) {
+    const oldRoot = this.root
+    this.root = newRoot
+    this.cells = {}
+    this.nextCellId = 0
+    this.cellAdded(newRoot)
+    return oldRoot
+  }
+
+  // #endregion
+
+  // #region layer
+
+  createLayer(): Cell {
+    return new Cell()
+  }
+
+  isLayer(cell: Cell | null): boolean {
+    const parent = this.getParent(cell)
+    return parent != null ? this.isRoot(parent) : false
+  }
+
+  getLayers(): Cell[] {
+    return this.getRoot().children || []
+  }
+
+  eachLayer(
+    iterator: (layer: Cell, index: number, layers: Cell[]) => void,
+    context?: any,
+  ) {
+    util.forEach(this.getLayers(), iterator, context)
+  }
+
+  // #endregion
+
+  getCell(id: string) {
+    return this.cells != null ? this.cells[id] : null
   }
 
   isNode(cell: Cell | null) {
@@ -58,8 +143,8 @@ export class Model extends Events {
     return ancestor.isAncestor(descendant)
   }
 
-  contains(cell: Cell): boolean
-  contains(ancestor: Cell, descendant?: Cell): boolean {
+  contains(cell: Cell | null): boolean
+  contains(ancestor: Cell, descendant?: Cell | null): boolean {
     if (descendant === undefined) {
       descendant = ancestor // tslint:disable-line:no-parameter-reassignment
       ancestor = this.root  // tslint:disable-line:no-parameter-reassignment
@@ -95,129 +180,23 @@ export class Model extends Events {
     return result
   }
 
-  getChildCells(
-    parent: Cell | null,
-    includeNodes: boolean = false,
-    includeEdges: boolean = false,
-  ) {
-    const result: Cell[] = []
-
-    parent && parent.eachChild((child) => {
-      if (
-        (!includeEdges && !includeNodes) ||
-        (includeEdges && this.isEdge(child)) ||
-        (includeNodes && this.isNode(child))
-      ) {
-        result.push(child)
-      }
-    })
-
-    return result
-  }
-
-  // #region cell id
-
-  public cellIdPrefix: string = 'cell-'
-  public cellIdPostfix: string = ''
-  public autoCreateCellId: boolean = true
-  private nextCellId: number = 0
-
-  private createCellId(cell: Cell) {
-    const id = this.nextCellId
-    this.nextCellId += 1
-    return `${this.cellIdPrefix}${id}${this.cellIdPostfix}`
-  }
-
-  // #endregion
-
-  // #region root
-
-  clear() {
-    this.setRoot(this.createRoot())
-  }
-
-  isRoot(cell: Cell | null) {
-    return (cell != null && this.root === cell)
-  }
-
-  createRoot() {
-    const root = new Cell()
-    root.insertChild(this.createLayer())
-    return root
-  }
-
-  getRoot(cell?: Cell) {
-    let root: Cell = this.root
-    let curr = cell
-
-    while (curr != null) {
-      root = curr
-      curr = this.getParent(curr) as any
-    }
-
-    return root
-  }
-
-  setRoot(root: Cell | null) {
-    this.execute(new RootChange(this, root))
-  }
-
-  doRootChange(newRoot: Cell) {
-    const prev = this.root
-    this.root = newRoot
-    this.cells = {}
-    this.nextCellId = 0
-    this.cellAdded(newRoot)
-    return prev
-  }
-
-  // #endregion
-
-  // #region layer
-
-  createLayer(): Cell {
-    return new Cell()
-  }
-
-  isLayer(cell: Cell | null): boolean {
-    const parent = this.getParent(cell)
-    return parent != null ? this.isRoot(parent) : false
-  }
-
-  getLayers(): Cell[] {
-    return this.getRoot().children || []
-  }
-
-  eachLayer(
-    iterator: (layer: Cell, index: number, layers: Cell[]) => void,
-    context?: any,
-  ) {
-    util.forEach(this.getLayers(), iterator, context)
-  }
-
-  // #endregion
-
-  getCell(id: string) {
-    return this.cells != null ? this.cells[id] : null
-  }
-
   getParent(cell: Cell | null) {
     return cell != null ? cell.getParent() : null
   }
 
   getChildren(
     parent: Cell | null,
-    isNode: boolean = false,
-    isEdge: boolean = false,
+    includeNodes: boolean = false,
+    includeEdges: boolean = false,
   ) {
     const result: Cell[] = []
     const children = parent != null ? parent.getChildren() : null
     if (children && children.length) {
       children.forEach((child) => {
         if (
-          (!isEdge && !isNode) ||
-          (isEdge && this.isEdge(child)) ||
-          (isNode && this.isNode(child))
+          (!includeEdges && !includeNodes) ||
+          (includeEdges && this.isEdge(child)) ||
+          (includeNodes && this.isNode(child))
         ) {
           result.push(child)
         }
@@ -261,42 +240,13 @@ export class Model extends Events {
     return util.filter(cells, filter, thisArg)
   }
 
+  /**
+   * Returns the nearest common ancestor for the specified cells.
+   */
   getNearestCommonAncestor(cell1: Cell | null, cell2: Cell | null) {
-    if (cell1 != null && cell2 != null) {
-      let path2 = CellPath.create(cell2)
-      if (path2 != null && path2.length > 0) {
-        let cell: Cell | null = cell1
-        let current = CellPath.create(cell)
-
-        // exchange
-        if (path2.length < current.length) {
-          cell = cell2
-          const tmp = current
-          current = path2
-          path2 = tmp
-        }
-
-        while (cell != null) {
-          const parent = this.getParent(cell)
-          if (
-            path2.indexOf(current + CellPath.PATH_SEPARATOR) === 0 &&
-            parent != null
-          ) {
-            return cell
-          }
-
-          current = CellPath.getParentPath(current)
-          cell = parent
-        }
-      }
-    }
-
-    return null
+    return CellPath.getNearestCommonAncestor(cell1, cell2)
   }
 
-  /**
-   * 将 `cell` 插入到指定的 `parent` 中
-   */
   add(parent: Cell | null, child: Cell | null, index?: number) {
     if (child !== parent && parent != null && child != null) {
       if (index == null) {
@@ -326,10 +276,11 @@ export class Model extends Events {
       if (cell.getId() != null) {
         let collision = this.getCell(cell.getId()!)
         if (collision !== cell) {
-          // 创建新 ID 直到没有检查到重复元素为止
+          // ensure unique id
           while (collision != null) {
-            cell.setId(this.createCellId(cell))
-            collision = this.getCell(cell.getId()!)
+            const id = this.createCellId(cell)
+            cell.setId(id)
+            collision = this.getCell(id)
           }
 
           if (this.cells == null) {
@@ -340,63 +291,53 @@ export class Model extends Events {
         }
       }
 
-      // 确保被删除元素的 ID 不会被重复使用
-      if (util.isNumeric(cell.getId())) {
-        this.nextCellId = Math.max(this.nextCellId, +(cell.getId()!))
+      const id = cell.getId()
+      if (id != null && util.isNumeric(id)) {
+        this.nextCellId = Math.max(this.nextCellId, +id)
       }
 
-      // 递归处理所有子元素
       cell.eachChild(child => this.cellAdded(child))
     }
   }
 
-  updateEdgeParents(cell: Cell, ancestor: Cell = this.getRoot(cell)) {
+  protected updateEdgeParents(
+    cell: Cell,
+    ancestor: Cell = this.getRoot(cell),
+  ) {
     cell.eachChild(child => this.updateEdgeParents(child, ancestor))
     cell.eachEdge((edge) => {
       // Updates edge parent if edge and child have
       // a common ancestor node (does not need to be
-      // the model root node)
+      // the model's root node)
       if (this.isAncestor(ancestor, edge)) {
         this.updateEdgeParent(edge, ancestor)
       }
     })
   }
 
-  updateEdgeParent(edge: Cell, ancestor: Cell) {
-    let sourceNode = this.getTerminal(edge, true)
-    let targetNode = this.getTerminal(edge, false)
-    let cell = null
-
-    // Uses the first non-relative descendants of the source node
+  protected getNonRelativeTerminal(edge: Cell, isSource: boolean) {
+    let ret = this.getTerminal(edge, isSource)
     while (
-      sourceNode != null &&
-      !this.isEdge(sourceNode) &&
-      sourceNode.geometry != null &&
-      sourceNode.geometry.relative
+      ret != null &&
+      !this.isEdge(ret) &&
+      ret.geometry != null &&
+      ret.geometry.relative
     ) {
-      sourceNode = this.getParent(sourceNode)
+      ret = this.getParent(ret)
     }
+    return ret
+  }
 
-    // Uses the first non-relative descendants of the target node
-    while (
-      targetNode != null &&
-      this.ignoreRelativeEdgeParent &&
-      !this.isEdge(targetNode) &&
-      targetNode.geometry != null &&
-      targetNode.geometry.relative
-    ) {
-      targetNode = this.getParent(targetNode)
-    }
-
+  protected updateEdgeParent(edge: Cell, ancestor: Cell) {
+    const source = this.getNonRelativeTerminal(edge, true)
+    const target = this.getNonRelativeTerminal(edge, false)
     if (
-      this.isAncestor(ancestor, sourceNode!) &&
-      this.isAncestor(ancestor, targetNode!)
+      this.isAncestor(ancestor, source) &&
+      this.isAncestor(ancestor, target)
     ) {
-      if (sourceNode === targetNode) {
-        cell = this.getParent(sourceNode!)
-      } else {
-        cell = this.getNearestCommonAncestor(sourceNode!, targetNode!)
-      }
+      const cell = source === target
+        ? this.getParent(source)
+        : this.getNearestCommonAncestor(source, target)
 
       if (
         cell != null &&
@@ -406,9 +347,9 @@ export class Model extends Events {
         ) &&
         this.getParent(edge) !== cell
       ) {
-        let geo = this.getGeometry(edge)!
+        let geo = this.getGeometry(edge)
         if (geo != null) {
-          const origin1 = this.getOrigin(this.getParent(edge)!)
+          const origin1 = this.getOrigin(this.getParent(edge))
           const origin2 = this.getOrigin(cell)
 
           const dx = origin2.x - origin1.x
@@ -424,10 +365,10 @@ export class Model extends Events {
     }
   }
 
-  getOrigin(cell: Cell | null) {
+  protected getOrigin(cell: Cell | null) {
     let result: Point
     if (cell != null) {
-      result = this.getOrigin(this.getParent(cell)!)
+      result = this.getOrigin(this.getParent(cell))
       if (!this.isEdge(cell)) {
         const geo = this.getGeometry(cell)
         if (geo != null) {
@@ -457,8 +398,9 @@ export class Model extends Events {
   cellRemoved(cell: Cell | null) {
     if (cell != null && this.cells != null) {
       cell.eachChild(child => this.cellRemoved(child))
-      if (cell.getId() != null) {
-        delete this.cells[cell.getId()!]
+      const id = cell.getId()
+      if (id != null) {
+        delete this.cells[id]
       }
     }
   }
@@ -474,8 +416,8 @@ export class Model extends Events {
     }
 
     // Adds or removes the cell from the model
-    const par = this.contains(parent!)
-    const pre = this.contains(previous!)
+    const par = this.contains(parent)
+    const pre = this.contains(previous)
 
     if (par && !pre) {
       this.cellAdded(cell)
@@ -493,7 +435,6 @@ export class Model extends Events {
   setTerminal(edge: Cell, terminal: Cell | null, isSource: boolean = false) {
     const changed = terminal !== this.getTerminal(edge, isSource)
     this.execute(new TerminalChange(this, edge, terminal, isSource))
-
     if (this.maintainEdgeParent && changed) {
       this.updateEdgeParent(edge, this.getRoot())
     }
@@ -510,10 +451,17 @@ export class Model extends Events {
     return previous
   }
 
-  setTerminals(edge: Cell, sourceNode: Cell, targetNode: Cell) {
+  getTerminals(edge: Cell | null) {
+    return [
+      this.getTerminal(edge, true),
+      this.getTerminal(edge, false),
+    ]
+  }
+
+  setTerminals(edge: Cell, source: Cell, target: Cell) {
     this.beginUpdate()
-    this.setTerminal(edge, sourceNode, true)
-    this.setTerminal(edge, targetNode, false)
+    this.setTerminal(edge, source, true)
+    this.setTerminal(edge, target, false)
     this.endUpdate()
   }
 
@@ -521,15 +469,23 @@ export class Model extends Events {
     return node != null ? node.getEdgeCount() : 0
   }
 
+  /**
+   * Get the count of incoming or outgoing edges, ignoring the given edge.
+   *
+   * @param node The node whose edge count should be returned.
+   * @param outgoing Specifies if the number of outgoing or incoming
+   * edges should be returned.
+   * @param ignore The edge to be ignored.
+   */
   getDirectedEdgeCount(
     node: Cell | null,
     outgoing: boolean,
-    ignoredEdge?: Cell | null,
+    ignore?: Cell | null,
   ) {
     let count = 0
     this.eachEdge(node, (edge) => {
       if (
-        edge !== ignoredEdge &&
+        edge !== ignore &&
         this.getTerminal(edge, outgoing) === node
       ) {
         count += 1
@@ -543,14 +499,23 @@ export class Model extends Events {
     return node != null ? node.getEdgeAt(index) : null
   }
 
+  /**
+   * Get all edges of the given cell without loops.
+   */
   getConnections(node: Cell | null) {
     return this.getEdges(node, true, true, false)
   }
 
+  /**
+   * Get the incoming edges of the given cell without loops.
+   */
   getIncomingEdges(node: Cell | null) {
     return this.getEdges(node, true, false, false)
   }
 
+  /**
+   * Get the outgoing edges of the given cell without loops.
+   */
   getOutgoingEdges(node: Cell | null) {
     return this.getEdges(node, false, true, false)
   }
@@ -563,15 +528,15 @@ export class Model extends Events {
   ) {
     const result: Cell[] = []
     this.eachEdge(node, (edge) => {
-      const sourceNode = this.getTerminal(edge, true)
-      const targetNode = this.getTerminal(edge, false)
+      const source = this.getTerminal(edge, true)
+      const target = this.getTerminal(edge, false)
       if (
-        (includeLoops && sourceNode === targetNode) ||
+        (includeLoops && source === target) ||
         (
-          (sourceNode !== targetNode) &&
+          (source !== target) &&
           (
-            (incoming && targetNode === node) ||
-            (outgoing && sourceNode === node)
+            (incoming && target === node) ||
+            (outgoing && source === node)
           )
         )
       ) {
@@ -592,44 +557,46 @@ export class Model extends Events {
   }
 
   /**
-   * 获取两个节点之间的边
+   * Get all edges between the given source and target node. If `directed`
+   * is `true`, then only edges from the source to the target are returned,
+   * otherwise, all edges between the two cells are returned.
    *
-   * @param sourceNode 起始节点
-   * @param targetNode 终止节点
-   * @param directed 为 `true` 时要求边一定是从起始节点到终止节点
+   * @param source The source node of the edge to be returned.
+   * @param target The target node of the edge to be returned.
+   * @param directed Optional boolean that specifies if the direction
+   * of the edge should be taken into account. Default is `false`.
    */
   getEdgesBetween(
-    sourceNode: Cell | null,
-    targetNode: Cell | null,
+    source: Cell | null,
+    target: Cell | null,
     directed: boolean = false,
   ) {
-    const tmp1 = this.getEdgeCount(sourceNode)
-    const tmp2 = this.getEdgeCount(targetNode)
+    const tmp1 = this.getEdgeCount(source)
+    const tmp2 = this.getEdgeCount(target)
 
-    // Assumes the source has less connected edges
-    let terminal = sourceNode
-    let edgeCount = tmp1
+    // Assumes the source has less connected edges.
+    let terminal = source
+    let count = tmp1
 
-    // Uses the smaller array of connected edges
-    // for searching the edge
+    // Uses the smaller array of connected edges for searching the edge.
     if (tmp2 < tmp1) {
-      edgeCount = tmp2
-      terminal = targetNode
+      count = tmp2
+      terminal = target
     }
 
     const result = []
 
-    // Checks if the edge is connected to the correct
-    // cell and returns the first match
-    for (let i = 0; i < edgeCount; i += 1) {
-      const edge = this.getEdgeAt(terminal, i)!
-      const src = this.getTerminal(edge, true)
-      const trg = this.getTerminal(edge, false)
-      const directedMatch = (src === sourceNode) && (trg === targetNode)
-      const oppositeMatch = (trg === sourceNode) && (src === targetNode)
-
-      if (directedMatch || (!directed && oppositeMatch)) {
-        result.push(edge)
+    // Checks if the edge is connected to the correct cell
+    // and collects the first match.
+    for (let i = 0; i < count; i += 1) {
+      const edge = this.getEdgeAt(terminal, i)
+      if (edge != null) {
+        const [s, t] = this.getTerminals(edge)
+        const directedMatch = (s === source) && (t === target)
+        const oppositeMatch = (t === source) && (s === target)
+        if (directedMatch || (!directed && oppositeMatch)) {
+          result.push(edge)
+        }
       }
     }
 
@@ -645,28 +612,25 @@ export class Model extends Events {
     const terminals: Cell[] = []
     if (edges != null) {
       edges.forEach((edge) => {
-        const sourceNode = this.getTerminal(edge, true)
-        const targetNode = this.getTerminal(edge, false)
+        const [source, target] = this.getTerminals(edge)
         if (
-          // Checks if the terminal is the source of
-          // the edge and if the target should be
-          // stored in the result
-          sourceNode === terminal &&
-          targetNode != null &&
-          targetNode !== terminal &&
+          // Checks if the terminal is the source of the edge
+          // and if the target should be stored in the result.
+          source === terminal &&
+          target != null &&
+          target !== terminal &&
           isTarget
         ) {
-          terminals.push(targetNode)
+          terminals.push(target)
         } else if (
-          // Checks if the terminal is the taget of
-          // the edge and if the source should be
-          // stored in the result
-          targetNode === terminal &&
-          sourceNode != null &&
-          sourceNode !== terminal &&
+          // Checks if the terminal is the taget of the edge
+          // and if the source should be stored in the result.
+          target === terminal &&
+          source != null &&
+          source !== terminal &&
           isSource
         ) {
-          terminals.push(sourceNode)
+          terminals.push(source)
         }
       })
     }
@@ -674,9 +638,6 @@ export class Model extends Events {
     return terminals
   }
 
-  /**
-   * 获取一组节点中处于最顶层的节点
-   */
   getTopmostCells(cells: Cell[]) {
     const dict = new WeakMap<Cell, boolean>()
     const rest: Cell[] = []
@@ -840,7 +801,7 @@ export class Model extends Events {
       this.trigger(Model.events.endUpdate, edit)
 
       try {
-        if (this.endingUpdate && !this.currentEdit.isEmpty()) {
+        if (this.endingUpdate && !edit.isEmpty()) {
           this.trigger(Model.events.beforeUndo, edit)
           this.currentEdit = this.createUndoableEdit()
           edit.notify()
@@ -873,33 +834,27 @@ export class Model extends Events {
   // #endregion
 
   mergeChildren(from: Cell, to: Cell, cloneAllEdges: boolean = true) {
-    this.beginUpdate()
-    try {
+    this.batchUpdate(() => {
       const mapping: { [path: string]: Cell } = {}
       this.mergeChildrenImpl(from, to, cloneAllEdges, mapping)
 
-      // Post-processes all edges in the mapping and
-      // reconnects the terminals to the corresponding
-      // cells in the target model
+      // Post-processes all edges in the mapping and reconnects the
+      // terminals to the corresponding cells in the target model.
       for (const key in mapping) {
         const cell = mapping[key]
         let terminal = this.getTerminal(cell, true)
-
         if (terminal != null) {
-          terminal = mapping[CellPath.create(terminal)]
+          terminal = mapping[CellPath.getCellPath(terminal)]
           this.setTerminal(cell, terminal, true)
         }
 
         terminal = this.getTerminal(cell, false)
-
         if (terminal != null) {
-          terminal = mapping[CellPath.create(terminal)]
+          terminal = mapping[CellPath.getCellPath(terminal)]
           this.setTerminal(cell, terminal, false)
         }
       }
-    } finally {
-      this.endUpdate()
-    }
+    })
   }
 
   private mergeChildrenImpl(
@@ -908,11 +863,10 @@ export class Model extends Events {
     cloneAllEdges: boolean,
     mapping: { [path: string]: Cell },
   ) {
-    this.beginUpdate()
-    try {
+    this.batchUpdate(() => {
       from.eachChild((cell) => {
         const id = cell.getId()
-        let target = (id != null && (!this.isEdge(cell) || !cloneAllEdges))
+        let target = id != null && (!this.isEdge(cell) || !cloneAllEdges)
           ? this.getCell(id)
           : null
 
@@ -926,20 +880,15 @@ export class Model extends Events {
           cloned.setTerminal(cell.getTerminal(true), true)
           cloned.setTerminal(cell.getTerminal(false), false)
 
-          // Do *NOT* use model.add as this will move the edge away
-          // from the parent in updateEdgeParent if maintainEdgeParent
-          // is enabled in the target model
           target = to.insertChild(cloned)
           this.cellAdded(target)
         }
 
-        mapping[CellPath.create(cell)] = target!
+        mapping[CellPath.getCellPath(cell)] = target!
 
         this.mergeChildrenImpl(cell, target, cloneAllEdges, mapping)
       })
-    } finally {
-      this.endUpdate()
-    }
+    })
   }
 
   getParents(cells: Cell[]) {
@@ -974,7 +923,7 @@ export class Model extends Events {
     const clones = []
     for (let i = 0; i < cells.length; i += 1) {
       if (cells[i] != null) {
-        clones.push(this.cloneCellImpl(cells[i], cache, includeChildren))
+        clones.push(this.cloneCellImpl(cells[i], includeChildren, cache))
       } else {
         clones.push(null)
       }
@@ -991,8 +940,8 @@ export class Model extends Events {
 
   private cloneCellImpl(
     cell: Cell,
-    cache: WeakMap<Cell, Cell>,
     includeChildren: boolean,
+    cache: WeakMap<Cell, Cell>,
   ) {
     let clone = cache.get(cell)
     if (clone == null) {
@@ -1001,7 +950,7 @@ export class Model extends Events {
 
       if (includeChildren) {
         cell.eachChild((child) => {
-          const cloneChild = this.cloneCellImpl(child, cache, true)
+          const cloneChild = this.cloneCellImpl(child, true, cache)
           clone!.insertChild(cloneChild)
         })
       }
@@ -1011,17 +960,17 @@ export class Model extends Events {
   }
 
   private restoreClone(clone: Cell, cell: Cell, cache: WeakMap<Cell, Cell>) {
-    const sourceNode = this.getTerminal(cell, true)
-    if (sourceNode != null) {
-      const tmp = cache.get(sourceNode)
+    const source = this.getTerminal(cell, true)
+    if (source != null) {
+      const tmp = cache.get(source)
       if (tmp != null) {
         tmp.insertEdge(clone, true)
       }
     }
 
-    const targetNode = this.getTerminal(cell, false)
-    if (targetNode != null) {
-      const tmp = cache.get(targetNode)
+    const target = this.getTerminal(cell, false)
+    if (target != null) {
+      const tmp = cache.get(target)
       if (tmp != null) {
         tmp.insertEdge(clone, false)
       }

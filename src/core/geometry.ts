@@ -2,22 +2,25 @@ import * as util from '../util'
 import { Point, Rectangle } from '../struct'
 
 export class Geometry {
+  /**
+   * Stores the position in `x` and `y`, the size in `width` and `height`.
+   */
   bounds: Rectangle
 
   /**
-   * Stores alternated values for x, y, width and height in a rectangle.
+   * Stores alternated `x`, `y`, `width` and `height` in a rectangle.
    */
   alternateBounds: Rectangle
 
   /**
-   * The source `Point` of the edge. This is used if the corresponding
-   * edge does not have a source node. Otherwise it is ignored.
+   * The source `Point` of the edge. This is used if the edge does not
+   * have a source node. Otherwise it is ignored.
    */
   sourcePoint: Point
 
   /**
-   * The target `Point` of the edge. This is used if the corresponding
-   * edge does not have a target node. Otherwise it is ignored.
+   * The target `Point` of the edge. This is used if the  edge does not
+   * have a target node. Otherwise it is ignored.
    */
   targetPoint: Point
 
@@ -29,7 +32,7 @@ export class Geometry {
   points: Point[]
 
   /**
-   * For edges, this holds the offset (in pixels) from the position defined
+   * For edges, this holds the offset from the position defined
    * by `x` and `y` on the edge.
    *
    * For relative geometries (for nodes), this defines the absolute offset
@@ -42,9 +45,13 @@ export class Geometry {
 
   /**
    * Specifies if the coordinates in the geometry are to be interpreted as
-   * relative coordinates. For edges, this is used to define the location of
-   * the edge label relative to the edge. For nodes, this specifies the
-   * relative location inside the bounds of the parent cell.
+   * relative coordinates.
+   *
+   * For edges, this is used to define the location of the edge label
+   * relative to the edge.
+   *
+   * For nodes, this specifies the relative location inside the bounds of
+   * the parent cell.
    *
    * If this is `true`, then the coordinates are relative to the origin of
    * the parent cell or, for edges, the edge label position is relative to
@@ -65,9 +72,9 @@ export class Geometry {
 
   swap() {
     if (this.alternateBounds != null) {
-      const old = Rectangle.clone(this.bounds)
-      this.bounds = Rectangle.clone(this.alternateBounds)
-      this.alternateBounds = old
+      const tmp = this.bounds.clone()
+      this.bounds = this.alternateBounds.clone()
+      this.alternateBounds = tmp
     }
   }
 
@@ -84,16 +91,22 @@ export class Geometry {
     return point
   }
 
-  addPoint(x: number, y: number) {
+  addPoint(point: Point | Point.PointLike): void
+  addPoint(x: number, y: number): void
+  addPoint(x: number | Point | Point.PointLike, y?: number) {
     if (this.points == null) {
       this.points = []
     }
-    this.points.push(new Point(x, y))
+
+    const p = typeof x === 'number'
+      ? new Point(x, y!)
+      : Point.clone(x)
+
+    this.points.push(p)
   }
 
   /**
    * Translates the geometry by the specified amount.
-   *
    * @param dx Specifies the x-coordinate of the translation.
    * @param dy Specifies the y-coordinate of the translation.
    */
@@ -145,13 +158,6 @@ export class Geometry {
    * @param fixedAspect Optional boolean to keep the aspect ratio fixed.
    */
   scale(sx: number, sy: number, fixedAspect?: boolean) {
-    Private.scalePoint(this.sourcePoint, sx, sy)
-    Private.scalePoint(this.targetPoint, sx, sy)
-
-    if (this.points != null) {
-      this.points.forEach(p => Private.scalePoint(p, sx, sy))
-    }
-
     if (!this.relative) {
       Private.scalePoint(this.bounds, sx, sy)
 
@@ -162,6 +168,13 @@ export class Geometry {
 
       this.bounds.width *= sx
       this.bounds.height *= sy
+    }
+
+    Private.scalePoint(this.sourcePoint, sx, sy)
+    Private.scalePoint(this.targetPoint, sx, sy)
+
+    if (this.points != null) {
+      this.points.forEach(p => Private.scalePoint(p, sx, sy))
     }
   }
 
@@ -246,7 +259,8 @@ namespace Private {
     point: Point | Point.PointLike,
     cos: number,
     sin: number,
-    center: Point) {
+    center: Point,
+  ) {
     if (point != null) {
       const p = util.rotatePointEx(point, cos, sin, center)
       point.x = Math.round(p.x)

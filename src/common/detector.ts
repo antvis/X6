@@ -12,14 +12,14 @@ export namespace detector {
   export const IS_MAC = navigator.appVersion.indexOf('Mac') > 0
 
   /**
+   * True if the user agent is an iPad, iPhone or iPod.
+   */
+  export const IS_IOS = (ua.match(/(iPad|iPhone|iPod)/g) ? true : false)
+
+  /**
 	 * True if the client is a Chrome OS.
 	 */
   export const IS_CHROMEOS = /\bCrOS\b/.test(ua)
-
-  /**
-	 * True if the user agent is an iPad, iPhone or iPod.
-	 */
-  export const IS_IOS = (ua.match(/(iPad|iPhone|iPod)/g) ? true : false)
 
   export const IS_IE = ua.indexOf('MSIE') >= 0
   export const IS_IE6 = ua.indexOf('MSIE 6') >= 0
