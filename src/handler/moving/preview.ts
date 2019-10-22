@@ -176,8 +176,8 @@ export class Preview extends Disposable {
       this.dy != null
     ) {
       const bounds = this.previewShape.bounds = new Rectangle(
-        Math.round(this.previewBounds.x + this.dx - this.graph.tx),
-        Math.round(this.previewBounds.y + this.dy - this.graph.ty),
+        Math.round(this.previewBounds.x + this.dx - this.graph.panDx),
+        Math.round(this.previewBounds.y + this.dy - this.graph.panDy),
         this.previewBounds.width,
         this.previewBounds.height,
       )

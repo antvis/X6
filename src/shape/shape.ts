@@ -403,6 +403,7 @@ export class Shape extends Disposable {
       ? 0
       : Math.ceil(Number(this.strokeWidth) * this.scale)
 
+    elem.style.boxSizing = 'content-box'
     elem.style.overflow = 'hidden'
     elem.style.borderWidth = `${Math.max(1, sw)}px`
     elem.style.left = `${Math.round(this.bounds.x - sw)}px`

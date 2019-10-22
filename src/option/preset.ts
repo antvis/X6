@@ -64,7 +64,7 @@ export const defaultOptions: FullOptions = {
   swimlaneIndicatorColorAttribute: 'fill',
   minFitScale: 0.1,
   maxFitScale: 8,
-  useScrollbarsForTranslate: true,
+  useScrollbarsForPanning: true,
   keepSelectionVisibleOnZoom: false,
   centerZoom: true,
   zoomFactor: 1.2,

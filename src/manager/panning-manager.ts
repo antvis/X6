@@ -98,12 +98,12 @@ export class PanningManager extends BaseManager {
         if (this.scrollbars) {
           const left = -this.graph.container.scrollLeft - Math.ceil(this.dx)
           const top = -this.graph.container.scrollTop - Math.ceil(this.dy)
-          this.graph.translate(left, top)
-          this.graph.tx = this.scrollLeft - this.graph.container.scrollLeft
-          this.graph.ty = this.scrollTop - this.graph.container.scrollTop
-          this.graph.trigger(Graph.events.translate)
+          this.graph.pan(left, top)
+          this.graph.panDx = this.scrollLeft - this.graph.container.scrollLeft
+          this.graph.panDy = this.scrollTop - this.graph.container.scrollTop
+          this.graph.trigger(Graph.events.pan)
         } else {
-          this.graph.translate(this.getDx(), this.getDy())
+          this.graph.pan(this.getDx(), this.getDy())
         }
       },
       this.delay,
@@ -129,20 +129,20 @@ export class PanningManager extends BaseManager {
       this.tdy = 0
 
       if (!this.scrollbars) {
-        const px = this.graph.tx
-        const py = this.graph.ty
+        const px = this.graph.panDx
+        const py = this.graph.panDy
 
         if (px !== 0 || py !== 0) {
-          this.graph.translate(0, 0)
+          this.graph.pan(0, 0)
           this.graph.view.setTranslate(
             this.t0x + px / this.graph.view.scale,
             this.t0y + py / this.graph.view.scale,
           )
         }
       } else {
-        this.graph.tx = 0
-        this.graph.ty = 0
-        this.graph.trigger(Graph.events.translate)
+        this.graph.panDx = 0
+        this.graph.panDy = 0
+        this.graph.trigger(Graph.events.pan)
       }
     }
   }

@@ -1,0 +1,144 @@
+@menu-bg: #fff;
+@menu-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);
+@menu-item-divider-bg: rgba(150, 150, 150, 0.1);
+@menu-item-text-color: #616161;
+@menu-submenu-arrow-color: #212121;
+@menu-item-hover-bg: #dcdcdc;
+@menu-item-hover-color: #212121;
+
+:global {
+  .nb-menu {
+    position: relative;
+    display: inline-block;
+    min-width: 160px;
+    min-height: 32px;
+    margin: 0;
+    padding: 4px 0;
+    outline: 0;
+    background-color: @menu-bg;
+    box-shadow: @menu-shadow;
+
+    .nb-menu-item {
+      position: relative;
+    }
+
+    .nb-menu-item-active > .nb-menu-button, .nb-menu-item:hover > .nb-menu-button {
+      color: @menu-item-hover-color;
+      background: @menu-item-hover-bg;
+    }
+
+    .nb-menu-item-divider {
+      display: block;
+      width: 100%;
+      height: 1px;
+      margin: 4px 0;
+      pointer-events: none;
+      background: @menu-item-divider-bg;
+    }
+
+    .nb-menu-button {
+      position: relative;
+      display: flex;
+      align-content: center;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      height: 28px;
+      padding: 0 12px;
+      cursor: pointer;
+      text-align: left;
+      color: @menu-item-text-color;
+      border: none;
+      outline: none;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .nb-menu-item-hidden {
+      display: none;
+    }
+
+    .nb-menu-item-disabled > .nb-menu-button, .nb-menu-item-disabled:hover > .nb-menu-button {
+      cursor: not-allowed;
+      opacity: 0.4;
+      color: @menu-item-text-color;
+      background-color: transparent;
+    }
+
+    .nb-menu-item-icon {
+      position: absolute;
+      top: 50%;
+      left: 6px;
+      font-size: 12px;
+      display: none;
+      width: 24px;
+      height: 24px;
+      margin-top: -12px;
+    }
+
+    .nb-menu-item-text {
+      font-size: 12px;
+      overflow: hidden;
+      max-width: 240px;
+      padding-right: 24px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .nb-menu-item-hotkey {
+      font-size: 13px;
+    }
+
+    .nb-menu-submenu-arrow, .nb-menu-submenu.nb-menu-item-disabled:hover > .nb-menu-button > .nb-menu-submenu-arrow {
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      width: 0;
+      height: 0;
+      pointer-events: none;
+      opacity: 0.4;
+      border-top: 4px solid rgba(0, 0, 0, 0);
+      border-bottom: 4px solid rgba(0, 0, 0, 0);
+      border-left: 5px solid @menu-submenu-arrow-color;
+    }
+
+    .nb-menu-submenu-menu, .nb-menu-submenu.nb-menu-item-disabled:hover > .nb-menu-submenu-menu {
+      position: absolute;
+      z-index: 9999;
+      top: -5px;
+      left: 100%;
+      visibility: hidden;
+      min-width: 200px;
+      padding: 5px 0;
+      transition: all 0.25s cubic-bezier(0.3, 1.2, 0.2, 1);
+      transform: translateX(-10px);
+      opacity: 0;
+      background: @menu-bg;
+      box-shadow: @menu-shadow;;
+    }
+
+    .nb-menu-submenu:hover > .nb-menu-button > .nb-menu-submenu-arrow {
+      opacity: 0.8;
+    }
+
+    .nb-menu-submenu:hover > .nb-menu-submenu-menu {
+      visibility: visible;
+      transform: translateX(0);
+      opacity: 1;
+    }
+
+    .nb-menu.nb-menu-has-icon .nb-menu-button {
+      padding-left: 30px;
+
+      .nb-menu-item-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .nb-menu-item-text {
+        padding-left: 2px;
+      }
+    }
+  }
+}

@@ -14,7 +14,7 @@ export default class PageBreaks extends React.Component {
     const pageFormat = { x: 0, y: 0, width: 100, height: 160 }
     const graph = new Graph(this.container, {
       pageFormat,
-      pageVisible: true,
+      // pageVisible: true,
       pageBreak: {
         enabled: this.state.pageBreaksVisible,
         dsahed: true,

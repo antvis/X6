@@ -1,9 +1,10 @@
 import * as util from '../util'
+import { Size } from '../types'
 import { Graph, Cell } from '../core'
 import { detector } from '../common'
-import { BaseManager } from './manager-base'
-import { Rectangle, Point } from '../struct'
 import { Polyline } from '../shape'
+import { Rectangle, Point } from '../struct'
+import { BaseManager } from './manager-base'
 
 export class ViewportManager extends BaseManager {
   constructor(graph: Graph) {
@@ -19,11 +20,11 @@ export class ViewportManager extends BaseManager {
     includeEdges: boolean,
     includeDescendants: boolean,
   ) {
-    let cells = [cell]
+    const cells = [cell]
 
     // Includes all connected edges
     if (includeEdges) {
-      cells = cells.concat(this.model.getEdges(cell))
+      cells.push(...this.model.getEdges(cell))
     }
 
     let result = this.view.getBounds(cells)
@@ -147,20 +148,26 @@ export class ViewportManager extends BaseManager {
   protected shiftPreview1: HTMLElement | null
   protected shiftPreview2: HTMLElement | null
 
-  translate(tx: number, ty: number) {
+  /**
+   * Shifts the graph display by the given amount. This is used to preview
+   * panning operations, use `view.setTranslate` to set a persistent
+   * translation of the view.
+   *
+   * @param dx Amount to shift the graph along the x-axis.
+   * @param dy Amount to shift the graph along the y-axis.
+   */
+  pan(dx: number, dy: number) {
     if (
-      this.graph.useScrollbarsForTranslate &&
+      this.graph.useScrollbarsForPanning &&
       util.hasScrollbars(this.container)
     ) {
       const container = this.container
       const maxScrollLeft = container.scrollWidth - container.clientWidth
       const maxScrollTop = container.scrollHeight - container.clientHeight
-      const scrollLeft = util.clamp(tx, 0, maxScrollLeft)
-      const scrollTop = util.clamp(ty, 0, maxScrollTop)
+      const scrollLeft = util.clamp(dx, 0, maxScrollLeft)
+      const scrollTop = util.clamp(dy, 0, maxScrollTop)
       container.scrollLeft = scrollLeft
       container.scrollTop = scrollTop
-      this.graph.tx = scrollLeft
-      this.graph.ty = scrollTop
 
     } else {
 
@@ -168,17 +175,11 @@ export class ViewportManager extends BaseManager {
       if (this.graph.dialect === 'svg') {
         // Puts everything inside the container in a DIV so that it
         // can be moved without changing the state of the container
-        if (tx === 0 && ty === 0) {
-          // Workaround for ignored removeAttribute on SVG element in IE9 standards
-          if (detector.IS_IE) {
-            stage.setAttribute('transform', `translate(${tx},${ty})`)
-          } else {
-            stage.removeAttribute('transform')
-          }
+        if (dx === 0 && dy === 0) {
+          stage.removeAttribute('transform')
 
           if (this.shiftPreview1 != null && this.shiftPreview2 != null) {
             let child = this.shiftPreview1.firstChild
-
             while (child != null) {
               const next = child.nextSibling
               this.container.appendChild(child)
@@ -191,7 +192,6 @@ export class ViewportManager extends BaseManager {
             this.container.appendChild(stage.parentNode!)
 
             child = this.shiftPreview2.firstChild
-
             while (child != null) {
               const next = child.nextSibling
               this.container.appendChild(child)
@@ -202,7 +202,7 @@ export class ViewportManager extends BaseManager {
             this.shiftPreview2 = null
           }
         } else {
-          stage.setAttribute('transform', `translate(${tx},${ty})`)
+          stage.setAttribute('transform', `translate(${dx},${dy})`)
 
           if (this.shiftPreview1 == null) {
             // Needs two divs for stuff before and after the SVG element
@@ -219,7 +219,6 @@ export class ViewportManager extends BaseManager {
 
             while (child != null) {
               const next = child.nextSibling as HTMLElement
-
               // SVG element is moved via transform attribute
               if (child !== stage.parentNode) {
                 current.appendChild(child)
@@ -240,24 +239,21 @@ export class ViewportManager extends BaseManager {
             }
           }
 
-          this.shiftPreview1.style.left = `${tx}px`
-          this.shiftPreview1.style.top = `${ty}px`
-          this.shiftPreview2!.style.left = util.toPx(tx)
-          this.shiftPreview2!.style.top = util.toPx(ty)
+          this.shiftPreview1.style.left = `${dx}px`
+          this.shiftPreview1.style.top = `${dy}px`
+          this.shiftPreview2!.style.left = util.toPx(dx)
+          this.shiftPreview2!.style.top = util.toPx(dy)
         }
       } else {
-        stage.style.left = util.toPx(tx)
-        stage.style.top = util.toPx(ty)
+        stage.style.left = util.toPx(dx)
+        stage.style.top = util.toPx(dy)
       }
 
-      this.graph.tx = tx
-      this.graph.ty = ty
+      this.graph.panDx = dx
+      this.graph.panDy = dy
     }
 
-    this.graph.trigger(Graph.events.translate, {
-      tx: this.graph.tx,
-      ty: this.graph.ty,
-    })
+    this.graph.trigger(Graph.events.pan, { dx, dy })
   }
 
   center(
@@ -282,9 +278,6 @@ export class ViewportManager extends BaseManager {
       const ty = vertical ? Math.floor(t.y - bounds.y * s + dy * cy / s) : t.y
       this.view.setTranslate(tx, ty)
     } else {
-      bounds.x -= t.x
-      bounds.y -= t.y
-
       const sw = this.container.scrollWidth
       const sh = this.container.scrollHeight
 
@@ -297,8 +290,8 @@ export class ViewportManager extends BaseManager {
       }
 
       this.view.setTranslate(
-        Math.floor(dx / 2 - bounds.x),
-        Math.floor(dy / 2 - bounds.y),
+        Math.floor(dx / 2 - (bounds.x - t.x)),
+        Math.floor(dy / 2 - (bounds.y - t.y)),
       )
 
       this.container.scrollLeft = (sw - cw) / 2
@@ -322,16 +315,13 @@ export class ViewportManager extends BaseManager {
 
       // Refreshes the display only once if a scroll is carried out
       this.view.scale = scale
-
       if (!this.scrollRectToVisible(rect)) {
         this.view.revalidate()
-
         // Forces an event to be fired but does not revalidate again
         this.view.setScale(scale)
       }
     } else {
       const hasScrollbars = util.hasScrollbars(this.container)
-
       if (center && !hasScrollbars) {
         let dx = this.container.offsetWidth
         let dy = this.container.offsetHeight
@@ -369,25 +359,26 @@ export class ViewportManager extends BaseManager {
             dy = this.container.offsetHeight * (factor - 1) / 2
           }
 
-          this.container.scrollLeft = (this.view.translate.x - tx) * this.view.scale
-            + Math.round(sl * factor + dx)
-          this.container.scrollTop = (this.view.translate.y - ty) * this.view.scale
-            + Math.round(st * factor + dy)
+          const t = this.view.translate
+          const s = this.view.scale
+          this.container.scrollLeft = (t.x - tx) * s + Math.round(sl * factor + dx)
+          this.container.scrollTop = (t.y - ty) * s + Math.round(st * factor + dy)
         }
       }
     }
   }
 
   zoomToRect(rect: Rectangle) {
-    const scaleX = this.container.clientWidth / rect.width
-    const scaleY = this.container.clientHeight / rect.height
+    const container = this.container
+    const scaleX = container.clientWidth / rect.width
+    const scaleY = container.clientHeight / rect.height
     const aspectFactor = scaleX / scaleY
 
     // Remove any overlap of the rect outside the client area
     rect.x = Math.max(0, rect.x)
     rect.y = Math.max(0, rect.y)
-    let rectRight = Math.min(this.container.scrollWidth, rect.x + rect.width)
-    let rectBottom = Math.min(this.container.scrollHeight, rect.y + rect.height)
+    let rectRight = Math.min(container.scrollWidth, rect.x + rect.width)
+    let rectBottom = Math.min(container.scrollHeight, rect.y + rect.height)
     rect.width = rectRight - rect.x
     rect.height = rectBottom - rect.y
 
@@ -400,13 +391,13 @@ export class ViewportManager extends BaseManager {
       const deltaHeightBuffer = (newHeight - rect.height) / 2.0
       rect.height = newHeight
 
-      // Assign up to half the buffer to the upper part of the rect, not crossing 0
-      // put the rest on the bottom
+      // Assign up to half the buffer to the upper part of the rect,
+      // not crossing 0 put the rest on the bottom
       const upperBuffer = Math.min(rect.y, deltaHeightBuffer)
       rect.y = rect.y - upperBuffer
 
       // Check if the bottom has extended too far
-      rectBottom = Math.min(this.container.scrollHeight, rect.y + rect.height)
+      rectBottom = Math.min(container.scrollHeight, rect.y + rect.height)
       rect.height = rectBottom - rect.y
     } else {
       // Width needs increasing
@@ -414,20 +405,20 @@ export class ViewportManager extends BaseManager {
       const deltaWidthBuffer = (newWidth - rect.width) / 2.0
       rect.width = newWidth
 
-      // Assign up to half the buffer to the upper part of the rect, not crossing 0
-      // put the rest on the bottom
+      // Assign up to half the buffer to the upper part of the rect,
+      // not crossing 0 put the rest on the bottom
       const leftBuffer = Math.min(rect.x, deltaWidthBuffer)
       rect.x = rect.x - leftBuffer
 
       // Check if the right hand side has extended too far
-      rectRight = Math.min(this.container.scrollWidth, rect.x + rect.width)
+      rectRight = Math.min(container.scrollWidth, rect.x + rect.width)
       rect.width = rectRight - rect.x
     }
 
-    const scale = this.container.clientWidth / rect.width
+    const scale = container.clientWidth / rect.width
     const newScale = this.view.scale * scale
 
-    if (!util.hasScrollbars(this.container)) {
+    if (!util.hasScrollbars(container)) {
       this.view.scaleAndTranslate(
         newScale,
         (this.view.translate.x - rect.x / this.view.scale),
@@ -435,8 +426,8 @@ export class ViewportManager extends BaseManager {
       )
     } else {
       this.view.setScale(newScale)
-      this.container.scrollLeft = Math.round(rect.x * scale)
-      this.container.scrollTop = Math.round(rect.y * scale)
+      container.scrollLeft = Math.round(rect.x * scale)
+      container.scrollTop = Math.round(rect.y * scale)
     }
   }
 
@@ -445,7 +436,6 @@ export class ViewportManager extends BaseManager {
     const y = -this.view.translate.y
 
     const state = this.view.getState(cell)
-
     if (state != null) {
       const bounds = new Rectangle(
         x + state.bounds.x,
@@ -516,10 +506,12 @@ export class ViewportManager extends BaseManager {
           }
         }
 
-        if (!this.graph.useScrollbarsForTranslate && (ddx !== 0 || ddy !== 0)) {
+        if (!this.graph.useScrollbarsForPanning && (ddx !== 0 || ddy !== 0)) {
           this.view.setTranslate(ddx, ddy)
         }
+
       } else {
+
         const x = -this.view.translate.x
         const y = -this.view.translate.y
 
@@ -648,8 +640,8 @@ export class ViewportManager extends BaseManager {
       }
 
       this.graph.panningManager.panTo(
-        x + this.graph.tx,
-        y + this.graph.ty,
+        x + this.graph.panDx,
+        y + this.graph.panDy,
       )
     }
   }
@@ -767,14 +759,11 @@ export class ViewportManager extends BaseManager {
     return this.view.scale
   }
 
-  /**
-   * Called when the size of the graph has changed.
-   */
   sizeDidChange() {
     const bounds = this.graph.getGraphBounds()
-    const scale = this.view.scale
 
     if (this.container != null) {
+      const scale = this.view.scale
       const border = this.graph.getBorder()
 
       let width = Math.max(0, bounds.x + bounds.width + 2 * border * scale)
@@ -786,14 +775,14 @@ export class ViewportManager extends BaseManager {
       }
 
       if (this.graph.shouldResizeContainer()) {
-        this.doResizeContainer(width, height)
+        this.resizeContainer(width, height)
       }
 
       if (
         this.graph.preferPageSize ||
         (!detector.IS_IE && this.graph.pageVisible)
       ) {
-        const size = this.getPreferredPageSize(
+        const size = this.graph.getPreferredPageSize(
           bounds,
           Math.max(1, width),
           Math.max(1, height),
@@ -822,46 +811,45 @@ export class ViewportManager extends BaseManager {
           svg.style.height = '100%'
         }
       } else {
-        if (detector.IS_QUIRKS) {
-          // Quirks mode does not support minWidth/-Height
-          this.view.updateHtmlStageSize(Math.max(1, width), Math.max(1, height))
-        } else {
-          const stage = this.view.getStage()!
-          stage.style.minWidth = `${Math.max(1, width)}px`
-          stage.style.minHeight = `${Math.max(1, height)}px`
-        }
+        const stage = this.view.getStage()!
+        stage.style.minWidth = `${Math.max(1, width)}px`
+        stage.style.minHeight = `${Math.max(1, height)}px`
       }
 
-      this.updatePageBreaks(this.graph.pageBreakEnabled, width, height)
+      this.graph.updatePageBreaks(this.graph.pageBreakEnabled, width, height)
     }
 
     this.graph.trigger(Graph.events.size, bounds)
   }
 
   /**
-   * Returns the preferred size of the background page if <preferPageSize> is true.
+   * Returns the preferred size of the background page.
    */
-  protected getPreferredPageSize(
+  getPreferredPageSize(
     bounds: Rectangle,
     width: number,
     height: number,
-  ) {
+  ): Size {
     // const scale = this.view.scale
     const tr = this.view.translate
     const fmt = this.graph.pageFormat
     const ps = this.graph.pageScale
-    const page = new Rectangle(0, 0, Math.ceil(fmt.width * ps), Math.ceil(fmt.height * ps))
+    const pw = Math.ceil(fmt.width * ps)
+    const ph = Math.ceil(fmt.height * ps)
+    const pageBreakEnabled = this.graph.pageBreakEnabled
+    const hCount = pageBreakEnabled ? Math.ceil(width / pw) : 1
+    const vCount = pageBreakEnabled ? Math.ceil(height / ph) : 1
 
-    const hCount = (this.graph.pageBreakEnabled) ? Math.ceil(width / page.width) : 1
-    const vCount = (this.graph.pageBreakEnabled) ? Math.ceil(height / page.height) : 1
-
-    return new Rectangle(0, 0, hCount * page.width + 2 + tr.x, vCount * page.height + 2 + tr.y)
+    return {
+      width: hCount * pw + 2 + tr.x,
+      height: vCount * ph + 2 + tr.y,
+    }
   }
 
   /**
    * Resizes the container for the given graph width and height.
    */
-  protected doResizeContainer(width: number, height: number) {
+  protected resizeContainer(width: number, height: number) {
     const w = this.graph.maxContainerSize != null
       ? Math.min(this.graph.maxContainerSize.width, width)
       : width
@@ -870,35 +858,25 @@ export class ViewportManager extends BaseManager {
       ? Math.min(this.graph.maxContainerSize.height, height)
       : height
 
-    this.container.style.width = `${Math.ceil(w)}px`
-    this.container.style.height = `${Math.ceil(h)}px`
+    this.container.style.width = util.toPx(Math.ceil(w))
+    this.container.style.height = util.toPx(Math.ceil(h))
   }
 
-  protected verticalPageBreaks: Polyline[]
-  protected horizontalPageBreaks: Polyline[]
-
-  /**
-   * Invokes from <sizeDidChange> to redraw the page breaks.
-   *
-   * Parameters:
-   *
-   * visible - Boolean that specifies if page breaks should be shown.
-   * width - Specifies the width of the container in pixels.
-   * height - Specifies the height of the container in pixels.
-   */
-  protected updatePageBreaks(visible: boolean, width: number, height: number) {
-    const scale = this.view.scale
-    const tr = this.view.translate
+  verticalPageBreaks: Polyline[]
+  horizontalPageBreaks: Polyline[]
+  updatePageBreaks(visible: boolean, width: number, height: number) {
+    const s = this.view.scale
+    const t = this.view.translate
     const fmt = this.graph.pageFormat
-    const ps = scale * this.graph.pageScale
+    const ps = s * this.graph.pageScale
     const bounds = new Rectangle(0, 0, fmt.width * ps, fmt.height * ps)
 
-    const gb = Rectangle.clone(this.graph.getGraphBounds())
+    const gb = this.graph.getGraphBounds().clone()
     gb.width = Math.max(1, gb.width)
     gb.height = Math.max(1, gb.height)
 
-    bounds.x = Math.floor((gb.x - tr.x * scale) / bounds.width) * bounds.width + tr.x * scale
-    bounds.y = Math.floor((gb.y - tr.y * scale) / bounds.height) * bounds.height + tr.y * scale
+    bounds.x = Math.floor((gb.x - t.x * s) / bounds.width) * bounds.width + t.x * s
+    bounds.y = Math.floor((gb.y - t.y * s) / bounds.height) * bounds.height + t.y * s
 
     gb.width = Math.ceil((gb.width + (gb.x - bounds.x)) / bounds.width) * bounds.width
     gb.height = Math.ceil((gb.height + (gb.y - bounds.y)) / bounds.height) * bounds.height
@@ -907,24 +885,24 @@ export class ViewportManager extends BaseManager {
     // tslint:disable-next-line
     visible = visible && Math.min(bounds.width, bounds.height) > this.graph.minPageBreakDist
 
-    const horizontalCount = (visible) ? Math.ceil(gb.height / bounds.height) + 1 : 0
-    const verticalCount = (visible) ? Math.ceil(gb.width / bounds.width) + 1 : 0
-    const right = (verticalCount - 1) * bounds.width
-    const bottom = (horizontalCount - 1) * bounds.height
+    const hCount = visible ? Math.ceil(gb.height / bounds.height) + 1 : 0
+    const vCount = visible ? Math.ceil(gb.width / bounds.width) + 1 : 0
+    const right = (vCount - 1) * bounds.width
+    const bottom = (hCount - 1) * bounds.height
 
-    if (this.horizontalPageBreaks == null && horizontalCount > 0) {
+    if (this.horizontalPageBreaks == null && hCount > 0) {
       this.horizontalPageBreaks = []
     }
 
-    if (this.verticalPageBreaks == null && verticalCount > 0) {
+    if (this.verticalPageBreaks == null && vCount > 0) {
       this.verticalPageBreaks = []
     }
 
     const drawPageBreaks = (breaks: Polyline[]) => {
       if (breaks != null) {
         const count = breaks === this.horizontalPageBreaks
-          ? horizontalCount
-          : verticalCount
+          ? hCount
+          : vCount
 
         for (let i = 0; i <= count; i += 1) {
           const pts = breaks === this.horizontalPageBreaks
@@ -943,9 +921,83 @@ export class ViewportManager extends BaseManager {
           } else {
             const pageBreak = new Polyline(pts, this.graph.pageBreakColor)
             pageBreak.dialect = this.graph.dialect
-            pageBreak.pointerEvents = false
             pageBreak.dashed = this.graph.pageBreakDashed
-            pageBreak.init(this.view.getBackgroundPane()!)
+            pageBreak.pointerEvents = false
+            pageBreak.init(this.view.getBackgroundPane())
+            pageBreak.redraw()
+
+            breaks[i] = pageBreak
+          }
+        }
+
+        for (let i = count; i < breaks.length; i += 1) {
+          breaks[i].dispose()
+        }
+
+        breaks.splice(count, breaks.length - count)
+      }
+    }
+
+    drawPageBreaks(this.horizontalPageBreaks)
+    drawPageBreaks(this.verticalPageBreaks)
+  }
+
+  uu(visible: boolean, width: number, height: number) {
+    const s = this.view.scale
+    const t = this.view.translate
+    const fmt = this.graph.pageFormat
+    const ps = s * this.graph.pageScale
+    const bounds2 = this.view.getBackgroundPageBounds()
+
+    width = bounds2.width // tslint:disable-line
+    height = bounds2.height // tslint:disable-line
+    const bounds = new Rectangle(
+      s * t.x,
+      s * t.y,
+      fmt.width * ps,
+      fmt.height * ps,
+    )
+
+    // tslint:disable-next-line
+    visible = visible && Math.min(bounds.width, bounds.height) > this.graph.minPageBreakDist
+
+    const hCount = visible ? Math.ceil(height / bounds.height) - 1 : 0
+    const vCount = visible ? Math.ceil(width / bounds.width) - 1 : 0
+    const right = bounds2.x + width
+    const bottom = bounds2.y + height
+
+    if (this.horizontalPageBreaks == null && hCount > 0) {
+      this.horizontalPageBreaks = []
+    }
+
+    if (this.verticalPageBreaks == null && vCount > 0) {
+      this.verticalPageBreaks = []
+    }
+
+    const drawPageBreaks = (breaks: Polyline[]) => {
+      if (breaks != null) {
+        const count = (breaks === this.horizontalPageBreaks) ? hCount : vCount
+
+        for (let i = 0; i <= count; i += 1) {
+          const pts = breaks === this.horizontalPageBreaks ?
+            [
+              new Point(Math.round(bounds2.x), Math.round(bounds2.y + (i + 1) * bounds.height)),
+              new Point(Math.round(right), Math.round(bounds2.y + (i + 1) * bounds.height)),
+            ] :
+            [
+              new Point(Math.round(bounds2.x + (i + 1) * bounds.width), Math.round(bounds2.y)),
+              new Point(Math.round(bounds2.x + (i + 1) * bounds.width), Math.round(bottom)),
+            ]
+
+          if (breaks[i] != null) {
+            breaks[i].points = pts
+            breaks[i].redraw()
+          } else {
+            const pageBreak = new Polyline(pts, this.graph.pageBreakColor)
+            pageBreak.dialect = this.graph.dialect
+            pageBreak.dashed = this.graph.pageBreakDashed
+            pageBreak.pointerEvents = false
+            pageBreak.init(this.view.getBackgroundPane())
             pageBreak.redraw()
 
             breaks[i] = pageBreak

@@ -9,7 +9,7 @@ import { Geometry } from './geometry'
 import { Renderer } from './renderer'
 import { IHooks } from './hook'
 import { RoutingFunction } from './registry'
-import { Align, VAlign, Style, Dialect } from '../types'
+import { Align, VAlign, Style, Dialect, Size } from '../types'
 import {
   SimpleOptions,
   CompositeOptions,
@@ -95,8 +95,8 @@ export class Graph extends Disablable implements
   public readonly rubberbandHandler: RubberbandHandler
   panningManager: any
 
-  public tx: number = 0
-  public ty: number = 0
+  public panDx: number = 0
+  public panDy: number = 0
 
   /**
    * Get the native value of hooked method.
@@ -139,7 +139,7 @@ export class Graph extends Disablable implements
   pageVisible: boolean = false
 
   preferPageSize: boolean = false
-  pageFormat: Rectangle | Rectangle.RectangleLike
+  pageFormat: Size
   pageScale: number = 1
 
   backgroundImage: Image
@@ -153,9 +153,9 @@ export class Graph extends Disablable implements
   allowAutoPanning: boolean = false
   autoExtend: boolean = true
   maxGraphBounds: Rectangle | null
-  minGraphSize: Rectangle | null
-  minContainerSize: Rectangle | null
-  maxContainerSize: Rectangle | null
+  minGraphSize: Size | null
+  minContainerSize: Size | null
+  maxContainerSize: Size | null
   keepEdgesInForeground: boolean = false
   keepEdgesInBackground: boolean = false
   resetViewOnRootChange: boolean = true
@@ -166,7 +166,7 @@ export class Graph extends Disablable implements
   swimlaneIndicatorColorAttribute: string = 'fill'
   minFitScale: number = 0.1
   maxFitScale: number = 8
-  useScrollbarsForTranslate: boolean = true
+  useScrollbarsForPanning: boolean = true
   keepSelectionVisibleOnZoom: boolean = false
   centerZoom: boolean = true
   zoomFactor: number = 1.2
@@ -2227,6 +2227,18 @@ export class Graph extends Disablable implements
     this.viewport.sizeDidChange()
   }
 
+  updatePageBreaks(visible: boolean, width: number, height: number) {
+    this.viewport.updatePageBreaks(visible, width, height)
+  }
+
+  getPreferredPageSize(
+    bounds: Rectangle,
+    width: number,
+    height: number,
+  ): Size {
+    return this.viewport.getPreferredPageSize(bounds, width, height)
+  }
+
   /**
    * Snaps the given numeric value to the grid.
    */
@@ -2237,18 +2249,18 @@ export class Graph extends Disablable implements
     return value
   }
 
-  translate(x: number, y: number, relative: boolean = false) {
-    const tx = relative ? this.tx + x : x
-    const ty = relative ? this.ty + y : y
-    this.viewport.translate(tx, ty)
+  pan(x: number, y: number, relative: boolean = false) {
+    const tx = relative ? this.panDx + x : x
+    const ty = relative ? this.panDy + y : y
+    this.viewport.pan(tx, ty)
   }
 
-  translateTo(x: number, y: number) {
-    this.translate(x, y, false)
+  panTo(x: number, y: number) {
+    this.pan(x, y, false)
   }
 
-  translateBy(x: number, y: number) {
-    this.translate(x, y, true)
+  panBy(x: number, y: number) {
+    this.pan(x, y, true)
   }
 
   zoomIn() {
@@ -2874,8 +2886,8 @@ export class Graph extends Disablable implements
       DomEvent.getClientX(e),
       DomEvent.getClientY(e),
     )
-    p.x -= this.tx
-    p.y -= this.ty
+    p.x -= this.panDx
+    p.y -= this.panDy
     const swimlane = this.getSwimlaneAt(p.x, p.y)
 
     if (cell == null) {
@@ -3172,7 +3184,7 @@ export namespace Graph {
     tapAndHold: 'tapAndHold',
     escape: 'escape',
 
-    translate: 'translate',
+    pan: 'pan',
     gesture: 'gesture',
     fireMouseEvent: 'fireMouseEvent',
     selectionChanged: 'selectionChanged',

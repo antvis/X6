@@ -125,7 +125,7 @@ export class Guide extends Disposable {
 
       // Snaps the left, center and right to the given x-coordinate
       const snapX = (x: number, state: State) => {
-        const xx = x + this.graph.tx
+        const xx = x + this.graph.panDx
         let active = false
 
         if (Math.abs(xx - center) < tolX) {
@@ -144,7 +144,7 @@ export class Guide extends Disposable {
 
         if (active) {
           stateX = state
-          valueX = Math.round(xx - this.graph.tx)
+          valueX = Math.round(xx - this.graph.panDx)
 
           if (this.guideX == null) {
             this.guideX = this.createGuideShape(true)
@@ -157,7 +157,7 @@ export class Guide extends Disposable {
 
       // Snaps the top, middle or bottom to the given y-coordinate
       const snapY = (y: number, state: State) => {
-        const yy = y + this.graph.ty
+        const yy = y + this.graph.panDy
         let active = false
 
         if (Math.abs(yy - middle) < tolY) {
@@ -176,7 +176,7 @@ export class Guide extends Disposable {
 
         if (active) {
           stateY = state
-          valueY = Math.round(yy - this.graph.ty)
+          valueY = Math.round(yy - this.graph.panDy)
 
           if (this.guideY == null) {
             this.guideY = this.createGuideShape(false)
@@ -234,12 +234,12 @@ export class Guide extends Disposable {
           if (stateX != null && valueX != null) {
             const state = stateX as State
             const minY = Math.min(
-              bounds.y + dy - this.graph.ty,
+              bounds.y + dy - this.graph.panDy,
               state.bounds.y,
             )
 
             const maxY = Math.max(
-              bounds.y + bounds.height + dy - this.graph.ty,
+              bounds.y + bounds.height + dy - this.graph.panDy,
               state.bounds.y + state.bounds.height,
             )
 
@@ -250,8 +250,8 @@ export class Guide extends Disposable {
               ]
             } else {
               this.guideX.points = [
-                new Point(valueX, -this.graph.ty),
-                new Point(valueX, c.scrollHeight - 3 - this.graph.ty),
+                new Point(valueX, -this.graph.panDy),
+                new Point(valueX, c.scrollHeight - 3 - this.graph.panDy),
               ]
             }
 
@@ -267,12 +267,12 @@ export class Guide extends Disposable {
           if (stateY != null && valueY != null) {
             const state = stateY as State
             const minX = Math.min(
-              bounds.x + dx - this.graph.tx,
+              bounds.x + dx - this.graph.panDx,
               state.bounds.x,
             )
 
             const maxX = Math.max(
-              bounds.x + bounds.width + dx - this.graph.tx,
+              bounds.x + bounds.width + dx - this.graph.panDx,
               state.bounds.x + state.bounds.width,
             )
 
@@ -283,8 +283,8 @@ export class Guide extends Disposable {
               ]
             } else {
               this.guideY.points = [
-                new Point(-this.graph.tx, valueY),
-                new Point(c.scrollWidth - 3 - this.graph.tx, valueY),
+                new Point(-this.graph.panDx, valueY),
+                new Point(c.scrollWidth - 3 - this.graph.panDx, valueY),
               ]
             }
 

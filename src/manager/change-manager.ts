@@ -21,7 +21,7 @@ export class ChangeManager extends BaseManager {
     changes.forEach(change => this.processChange(change))
     this.graph.updateSelection()
     this.view.validate()
-    this.graph.viewport.sizeDidChange()
+    this.graph.sizeDidChange()
   }
 
   protected processChange(change: IChange) {

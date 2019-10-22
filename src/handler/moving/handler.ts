@@ -18,7 +18,7 @@ export class MovingHandler extends MouseHandler {
     this.graph.addMouseListener(this)
 
     this.onPan = () => this.preview.updatePreview()
-    this.graph.on(Graph.events.translate, this.onPan)
+    this.graph.on(Graph.events.pan, this.onPan)
 
     this.onEscape = () => this.reset()
     this.graph.on(Graph.events.escape, this.onEscape)
@@ -215,8 +215,8 @@ export class MovingHandler extends MouseHandler {
       // tslint:disable-next-line
       cells = this.graph.moveCells(
         cells,
-        dx - this.graph.tx / this.graph.view.scale,
-        dy - this.graph.ty / this.graph.view.scale,
+        dx - this.graph.panDx / this.graph.view.scale,
+        dy - this.graph.panDy / this.graph.view.scale,
         clone,
         target,
         evt,
@@ -249,7 +249,7 @@ export class MovingHandler extends MouseHandler {
   dispose() {
     this.graph.removeMouseListener(this)
 
-    this.graph.off(Graph.events.translate, this.onPan)
+    this.graph.off(Graph.events.pan, this.onPan)
     this.onPan = null
 
     this.graph.off(Graph.events.escape, this.onEscape)

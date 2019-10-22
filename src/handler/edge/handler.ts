@@ -1158,8 +1158,8 @@ export class EdgeHandler extends MouseHandler {
               p.y -= pstate.origin.y
             }
 
-            p.x -= this.graph.tx / s
-            p.y -= this.graph.ty / s
+            p.x -= this.graph.panDx / s
+            p.y -= this.graph.panDy / s
 
             // Destroys and recreates this handler
             edge = this.changeTerminalPoint(edge, p, this.isSourceHandle, clone)

@@ -8,11 +8,20 @@
     "precommit": "lint-staged"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.25",
+    "@fortawesome/react-fontawesome": "^0.1.7",
     "antd": "^3.19.5",
+    "clamp": "^1.0.1",
+    "classnames": "^2.2.6",
+    "invariant": "^2.2.4",
+    "mousetrap": "^1.6.3",
+    "rc-dropdown": "^2.4.1",
+    "rc-util": "^4.13.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6"
   },
   "devDependencies": {
+    "@types/classnames": "^2.2.9",
     "@types/jest": "^23.3.12",
     "@types/react": "^16.7.18",
     "@types/react-dom": "^16.0.11",

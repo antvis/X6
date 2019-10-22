@@ -11,6 +11,11 @@ export type LineCap = 'butt' | 'round' | 'square'
 export type LineJoin = 'miter' | 'round' | 'bevel'
 export type TextDirection = '' | 'auto' | 'ltr' | 'rtl'
 
+export interface Size {
+  width: number
+  height: number
+}
+
 export interface Style {
   shape?: string
   edge?: string | RoutingFunction | null

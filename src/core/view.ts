@@ -1575,40 +1575,7 @@ export class View extends Primer {
         this.backgroundPageShape.dialect = this.graph.dialect
         this.backgroundPageShape.init(this.backgroundPane)
         this.backgroundPageShape.redraw()
-
-        // Adds listener for double click handling on background
-        if (this.graph.nativeDblClickEnabled) {
-          DomEvent.addListener(
-            this.backgroundPageShape.elem!,
-            'dblclick',
-            (e: MouseEvent) => { this.graph.eventloop.dblClick(e) },
-          )
-        }
-
-        // Adds basic listeners for graph event dispatching outside of the
-        // container and finishing the handling of a single gesture
-        DomEvent.addMouseListeners(
-          this.backgroundPageShape.elem!,
-          (e: MouseEvent) => {
-            this.graph.fireMouseEvent(DomEvent.MOUSE_DOWN, new MouseEventEx(e))
-          },
-          (e: MouseEvent) => {
-            // Hides the tooltip if mouse is outside container
-            if (
-              this.graph.tooltipHandler != null &&
-              this.graph.tooltipHandler.hideOnHover
-            ) {
-              this.graph.hideTooltip()
-            }
-
-            if (this.graph.eventloop.isMouseDown && !DomEvent.isConsumed(e)) {
-              this.graph.fireMouseEvent(DomEvent.MOUSE_MOVE, new MouseEventEx(e))
-            }
-          },
-          (e: MouseEvent) => {
-            this.graph.fireMouseEvent(DomEvent.MOUSE_UP, new MouseEventEx(e))
-          },
-        )
+        this.setupBackgroundPage()
       } else {
         this.backgroundPageShape.scale = this.scale
         this.backgroundPageShape.bounds = bounds
@@ -1620,7 +1587,45 @@ export class View extends Primer {
     }
   }
 
-  protected getBackgroundPageBounds() {
+  protected setupBackgroundPage() {
+    if (this.backgroundPageShape != null) {
+      // Adds listener for double click handling on background
+      if (this.graph.nativeDblClickEnabled) {
+        DomEvent.addListener(
+          this.backgroundPageShape.elem!,
+          'dblclick',
+          (e: MouseEvent) => { this.graph.eventloop.dblClick(e) },
+        )
+      }
+
+      // Adds basic listeners for graph event dispatching outside of the
+      // container and finishing the handling of a single gesture
+      DomEvent.addMouseListeners(
+        this.backgroundPageShape.elem!,
+        (e: MouseEvent) => {
+          this.graph.fireMouseEvent(DomEvent.MOUSE_DOWN, new MouseEventEx(e))
+        },
+        (e: MouseEvent) => {
+          // Hides the tooltip if mouse is outside container
+          if (
+            this.graph.tooltipHandler != null &&
+            this.graph.tooltipHandler.hideOnHover
+          ) {
+            this.graph.hideTooltip()
+          }
+
+          if (this.graph.eventloop.isMouseDown && !DomEvent.isConsumed(e)) {
+            this.graph.fireMouseEvent(DomEvent.MOUSE_MOVE, new MouseEventEx(e))
+          }
+        },
+        (e: MouseEvent) => {
+          this.graph.fireMouseEvent(DomEvent.MOUSE_UP, new MouseEventEx(e))
+        },
+      )
+    }
+  }
+
+  getBackgroundPageBounds() {
     const pageFormat = this.graph.pageFormat
     const pageScale = this.scale * this.graph.pageScale
     const bounds = new Rectangle(

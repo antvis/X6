@@ -1,0 +1,97 @@
+@menubar-menu-item-color: #616161;
+@menubar-menu-item-hover-color: #212121;
+@menubar-menu-item-hover-bg: rgba(255,255,255,0);
+@menubar-menu-item-active-color: #212121;
+@menubar-menu-item-active-bg: #fff;
+@menubar-item-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+
+:global {
+  .nb-menubar {
+    display: flex;
+    flex: 1;
+    flex-direction: row;
+    margin: 0;
+    padding: 0;
+
+    .nb-menubar-content {
+      display: flex;
+      flex: 1 1;
+      flex-direction: row;
+      justify-content: space-between;
+    }
+
+    .nb-menubar-content-inner, .nb-menubar-content-extras, .nb-menubar-item, .nb-menubar-item-text {
+      position: relative;
+      display: inline-flex;
+      flex-direction: row;
+    }
+
+    .nb-menubar-content-extras {
+      align-content: center;
+      align-items: center;
+    }
+
+    .nb-menubar-item {
+      position: relative;
+    }
+
+    .nb-menubar-item-hidden {
+      display: none;
+    }
+
+    .nb-menubar-item-text {
+      position: relative;
+      font-size: 12px;
+      align-content: center;
+      align-items: center;
+      padding: 0 10px;
+      cursor: pointer;
+      user-select: none;
+      color: @menubar-menu-item-color;
+
+      &:hover {
+        color: @menubar-menu-item-hover-color;
+        background: @menubar-menu-item-hover-bg;
+      }
+    }
+
+    .nb-menubar-item-text-active, .nb-menubar-item-text-active:hover {
+      color: @menubar-menu-item-active-color;
+      background: @menubar-menu-item-active-bg;
+      box-shadow: @menubar-item-shadow;
+
+      &::after {
+        position: absolute;
+        z-index: 10000;
+        bottom: 4px;
+        left: 0;
+        width: 100%;
+        height: 6px;
+        content: ' ';
+        background: @menubar-menu-item-active-bg;
+      }
+    }
+
+    .nb-menubar-item-dropdown {
+      position: absolute;
+      z-index: 9999;
+      top: 28px;
+      left: 0;
+      visibility: hidden;
+      min-height: 34px;
+      transition: all 0.25s cubic-bezier(0.3, 1.2, 0.2, 1);
+      transform: translateY(-10px);
+      opacity: 0;;
+
+      .nb-menu {
+        min-width: 240px;
+      }
+    }
+
+    .nb-menubar-item-active > .nb-menubar-item-dropdown {
+      visibility: visible;
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+}

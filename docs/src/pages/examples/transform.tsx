@@ -6,7 +6,7 @@ export default class Transform extends React.Component {
   private graph: Graph
 
   state = {
-    useScrollbarsForTranslate: false,
+    useScrollbarsForPanning: false,
   }
 
   componentDidMount() {
@@ -20,7 +20,7 @@ export default class Transform extends React.Component {
     })
 
     this.setState({
-      useScrollbarsForTranslate: graph.useScrollbarsForTranslate,
+      useScrollbarsForPanning: graph.useScrollbarsForPanning,
     })
   }
 
@@ -29,19 +29,19 @@ export default class Transform extends React.Component {
   }
 
   onTop = () => {
-    this.graph.translateBy(0, -5)
+    this.graph.panBy(0, -5)
   }
 
   onLeft = () => {
-    this.graph.translateBy(-5, 0)
+    this.graph.panBy(-5, 0)
   }
 
   onBottom = () => {
-    this.graph.translateBy(0, 5)
+    this.graph.panBy(0, 5)
   }
 
   onRight = () => {
-    this.graph.translateBy(5, 0)
+    this.graph.panBy(5, 0)
   }
 
   onCenter = () => {
@@ -49,7 +49,7 @@ export default class Transform extends React.Component {
   }
 
   onChangeTranslateMode = (e: any) => {
-    this.setState({ useScrollbarsForTranslate: e.target.checked })
+    this.setState({ useScrollbarsForPanning: e.target.checked })
   }
 
   onZoomIn = () => {
@@ -69,8 +69,8 @@ export default class Transform extends React.Component {
   }
 
   render() {
-    const useScrollbarsForTranslate = this.state.useScrollbarsForTranslate
-    const style = useScrollbarsForTranslate ? { overflow: 'auto' } : {}
+    const useScrollbarsForPanning = this.state.useScrollbarsForPanning
+    const style = useScrollbarsForPanning ? { overflow: 'auto' } : {}
 
     return (
       <div>
@@ -78,10 +78,10 @@ export default class Transform extends React.Component {
           <label>
             <input
               type="checkbox"
-              checked={useScrollbarsForTranslate}
+              checked={useScrollbarsForPanning}
               onChange={this.onChangeTranslateMode}
             />
-            Use Scrollbars For Translate
+            Use Scrollbars For Panning
           </label>
           <div style={{ position: 'relative', height: 96 }}>
             <button

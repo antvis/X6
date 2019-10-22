@@ -1,7 +1,7 @@
 import * as util from '../util'
 import { Graph } from '../core'
 import { RoutingFunction } from '../core/registry'
-import { Dialect, Style } from '../types'
+import { Dialect, Style, Size } from '../types'
 import { Image, Multiplicity, Rectangle } from '../struct'
 import { defaultOptions } from './preset'
 import { TooltipOptions } from '../handler/tooltip/option'
@@ -95,6 +95,11 @@ export interface CompositeOptions {
    */
   cellsResizable: boolean
 
+  /**
+   * Specifies if the graph should allow rotating of cells.
+   *
+   * Default is `true`.
+   */
   cellsRotatable: boolean
 
   /**
@@ -181,8 +186,6 @@ export interface SimpleOptions {
    * Specifies the scale of the background page.
    *
    * Default is `1`.
-   *
-   * Not yet implemented.
    */
   pageScale: number
 
@@ -199,7 +202,7 @@ export interface SimpleOptions {
   /**
    * Specifies the page format for the background page.
    */
-  pageFormat: Rectangle | Rectangle.RectangleLike
+  pageFormat: Size
 
   /**
    * Specifies if the graph should automatically scroll if the mouse
@@ -266,25 +269,16 @@ export interface SimpleOptions {
   maxGraphBounds: Rectangle | null
 
   /**
-   * `Rectangle` that specifies the minimum size of the graph.
+   * The minimum size of the graph.
    *
    * This is ignored if the graph container has no scrollbars.
    *
    * Default is `null`.
    */
-  minGraphSize: Rectangle | null
+  minGraphSize: Size | null
 
-  /**
-   * <Rect> that specifies the minimum size of the <container> if
-   * <resizeContainer> is true.
-   */
-  minContainerSize: Rectangle | null
-
-  /**
-   * <Rect> that specifies the maximum size of the container if
-   * <resizeContainer> is true.
-   */
-  maxContainerSize: Rectangle | null
+  minContainerSize: Size | null
+  maxContainerSize: Size | null
 
   /**
    * Specifies if edges should appear in the foreground regardless
@@ -347,21 +341,7 @@ export interface SimpleOptions {
   swimlaneIndicatorColorAttribute: string
 
   /**
-   * Specifies the minimum scale to be applied in `fit`.
-   *
-   * Default is `0.1`. Set to `null` to allow any value.
-   */
-  minFitScale: number
-
-  /**
-   * Specifies the maximum scale to be applied in `fit`.
-   *
-   * Default is `8`. Set to `null` to allow any value.
-   */
-  maxFitScale: number
-
-  /**
-   * Specifies if scrollbars should be used for translate if
+   * Specifies if scrollbars should be used for panning if
    * any scrollbars are available. If scrollbars are enabled
    * in CSS, but no scrollbars appear because the graph is
    * smaller than the container size, then no panning occurs
@@ -369,7 +349,7 @@ export interface SimpleOptions {
    *
    * Default is `true`.
    */
-  useScrollbarsForTranslate: boolean
+  useScrollbarsForPanning: boolean
 
   /**
    * Specifies if the viewport should automatically contain
@@ -393,6 +373,20 @@ export interface SimpleOptions {
    * Default is `1.2`
    */
   zoomFactor: number
+
+  /**
+   * Specifies the minimum scale to be applied in `fit`.
+   *
+   * Default is `0.1`. Set to `null` to allow any value.
+   */
+  minFitScale: number
+
+  /**
+   * Specifies the maximum scale to be applied in `fit`.
+   *
+   * Default is `8`. Set to `null` to allow any value.
+   */
+  maxFitScale: number
 
   /**
    * Specifies if the cells in the graph can be moved, sized, bended,
