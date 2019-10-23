@@ -1,6 +1,6 @@
 @menu-bg: #fff;
 @menu-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);
-@menu-item-divider-bg: rgba(150, 150, 150, 0.1);
+@menu-item-divider-bg: rgba(150, 150, 150, 0.2);
 @menu-item-text-color: #616161;
 @menu-submenu-arrow-color: #212121;
 @menu-item-hover-bg: #dcdcdc;
@@ -86,6 +86,7 @@
 
     .x6-menu-item-hotkey {
       font-size: 13px;
+      opacity: 0.75;
     }
 
     .x6-menu-submenu-arrow, .x6-menu-submenu.x6-menu-item-disabled:hover > .x6-menu-button > .x6-menu-submenu-arrow {
@@ -108,6 +109,7 @@
       left: 100%;
       visibility: hidden;
       min-width: 200px;
+      margin-left: -4px;
       padding: 5px 0;
       transition: all 0.25s cubic-bezier(0.3, 1.2, 0.2, 1);
       transform: translateX(-10px);

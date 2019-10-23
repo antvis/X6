@@ -2,6 +2,7 @@ import React from 'react'
 import { Menubar, Menu } from '../../../components'
 
 const MenuItem = Menu.Item
+const SubMenu = Menu.SubMenu
 const Divider = Menu.Divider
 const MenubarItem = Menubar.Item
 
@@ -42,8 +43,16 @@ export class GraphMenubar extends React.PureComponent {
         </MenubarItem>
         <MenubarItem text="View">
           <Menu>
-            <MenuItem>Help</MenuItem>
-            <MenuItem>About</MenuItem>
+            <MenuItem hotkey="Cmd+Shift+P">Format Pannel</MenuItem>
+            <MenuItem hotkey="Cmd+Shift+M">MiniMap</MenuItem>
+            <MenuItem hotkey="Cmd+Shift+L">Layers</MenuItem>
+            <Divider />
+            <MenuItem hotkey="Cmd+Shift+G">Grid</MenuItem>
+            <MenuItem>Guides</MenuItem>
+            <Divider />
+            <MenuItem hotkey="Cmd+H">Reset View</MenuItem>
+            <MenuItem hotkey="Cmd + (Numpad)">Zoom In</MenuItem>
+            <MenuItem hotkey="Cmd - (Numpad)">Zoom Out</MenuItem>
           </Menu>
         </MenubarItem>
         <MenubarItem text="Arrange">
@@ -51,7 +60,12 @@ export class GraphMenubar extends React.PureComponent {
             <MenuItem hotkey='Cmd+Shift+F'>To Front</MenuItem>
             <MenuItem hotkey='Cmd+Shift+B'>To Back</MenuItem>
             <Divider />
-            <MenuItem>Direction</MenuItem>
+            <SubMenu text="Direction">
+              <MenuItem>Flip Horizontal</MenuItem>
+              <MenuItem>Flip Vertical</MenuItem>
+              <Divider />
+              <MenuItem>Rotation</MenuItem>
+            </SubMenu>
             <MenuItem hotkey='Cmd+R'>Rotate shape only by 90° / Reverse</MenuItem>
             <Divider />
             <MenuItem>Align</MenuItem>

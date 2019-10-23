@@ -28,6 +28,9 @@ export class Editor extends Primer {
       connection: {
         enabled: true
       },
+      rotate: {
+        enabled: true,
+      },
       preferPageSize: true,
       rubberband: true,
       createView() {
@@ -47,4 +50,6 @@ export class Editor extends Primer {
     this.graph.resetScrollbars()
     this.trigger('resetGraphView')
   }
+
+
 }

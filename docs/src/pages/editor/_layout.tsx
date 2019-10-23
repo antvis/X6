@@ -1,6 +1,5 @@
 import React from 'react'
-import { GraphToolbar } from './graph'
-import { GraphMenubar } from './graph'
+import { GraphToolbar, GraphMenubar, Sidebar } from './graph'
 import './_layout.less'
 
 const Layout: React.FC = props => {
@@ -14,7 +13,7 @@ const Layout: React.FC = props => {
       </div>
       <div className="x6-editor-wrap">
         <div className="x6-editor-sidebar">
-          sidebar
+          <Sidebar />
         </div>
         <div className="x6-editor-graph">
           {props.children}
