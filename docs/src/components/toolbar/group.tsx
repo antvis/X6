@@ -4,7 +4,7 @@ import classnames from 'classnames'
 export const ToolbarGroup: React.SFC<ToolbarGroup.Props> = (
   { children, className },
 ) => (
-    <div className={classnames('nb-toolbar-group', className)}>
+    <div className={classnames('x6-toolbar-group', className)}>
       {children}
     </div>
   )

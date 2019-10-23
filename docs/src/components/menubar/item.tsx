@@ -4,7 +4,7 @@ import addEventListener from 'rc-util/lib/Dom/addEventListener'
 import { MenubarContext } from './context'
 
 export class MenubarItem extends React.PureComponent<MenubarItem.Props, MenubarItem.State> {
-  private popupClassName = 'nb-menubar-item-dropdown'
+  private popupClassName = 'x6-menubar-item-dropdown'
   private removeDocClickEvent: (() => void) | null
 
   state = { active: false }
@@ -122,17 +122,17 @@ export class MenubarItem extends React.PureComponent<MenubarItem.Props, MenubarI
 
     return (
       <div
-        className={classnames('nb-menubar-item', {
-          'nb-menubar-item-hidden': hidden,
-          'nb-menubar-item-hover': menubarActived,
-          'nb-menubar-item-active': currentMenuActived,
+        className={classnames('x6-menubar-item', {
+          'x6-menubar-item-hidden': hidden,
+          'x6-menubar-item-hover': menubarActived,
+          'x6-menubar-item-active': currentMenuActived,
         })}
         onMouseEnter={this.onMouseEnter}
         onMouseLeave={this.onMouseLeave}
       >
         <div
-          className={classnames('nb-menubar-item-text', {
-            'nb-menubar-item-text-active': currentMenuActived,
+          className={classnames('x6-menubar-item-text', {
+            'x6-menubar-item-text-active': currentMenuActived,
           })}
           onClick={this.onClick}
         >

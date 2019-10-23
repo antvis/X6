@@ -21,18 +21,18 @@ export class Toolbar extends React.PureComponent<Toolbar.Props>{
 
     return (
       <div
-        className={classnames('nb-toolbar', className, {
-          [`nb-toolbar-${size}`]: size,
-          ['nb-toolbar-hover-effect']: hoverEffect,
+        className={classnames('x6-toolbar', className, {
+          [`x6-toolbar-${size}`]: size,
+          ['x6-toolbar-hover-effect']: hoverEffect,
         })}
       >
-        <div className="nb-toolbar-content">
-          <div className="nb-toolbar-content-inner">
+        <div className="x6-toolbar-content">
+          <div className="x6-toolbar-content-inner">
             <ContextProvider value={contextValue}>
               {children}
             </ContextProvider>
           </div>
-          {extra && (<div className="nb-toolbar-content-extras">{extra}</div>)}
+          {extra && (<div className="x6-toolbar-content-extras">{extra}</div>)}
         </div>
       </div>
     )

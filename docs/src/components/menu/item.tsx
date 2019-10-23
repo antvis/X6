@@ -59,12 +59,12 @@ export namespace MenuItem {
     const { className, disabled, active, hidden } = props
     return {
       className: classnames(
-        'nb-menu-item',
+        'x6-menu-item',
         extraCls,
         {
-          'nb-menu-item-active': active,
-          'nb-menu-item-hidden': hidden,
-          'nb-menu-item-disabled': disabled,
+          'x6-menu-item-active': active,
+          'x6-menu-item-hidden': hidden,
+          'x6-menu-item-disabled': disabled,
         },
         className,
       ),
@@ -80,10 +80,10 @@ export namespace MenuItem {
     const { icon, text, hotkey, children } = props
     return (
       <React.Fragment>
-        <button className="nb-menu-button" onClick={handleClick}>
+        <button className="x6-menu-button" onClick={handleClick}>
           {
             icon && (
-              <span className="nb-menu-item-icon">
+              <span className="x6-menu-item-icon">
                 {
                   typeof icon === 'string'
                     ? (<Icon type={icon as string} />)
@@ -92,10 +92,10 @@ export namespace MenuItem {
               </span>
             )
           }
-          <span className="nb-menu-item-text">{text || children}</span>
+          <span className="x6-menu-item-text">{text || children}</span>
           {
             hotkey && (
-              <span className="nb-menu-item-hotkey">
+              <span className="x6-menu-item-hotkey">
                 {hotkey}
                 {/* {HotkeyUtil.getHotkeyForDisplay(hotkey)} */}
               </span>

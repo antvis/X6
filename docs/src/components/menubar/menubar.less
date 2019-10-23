@@ -6,40 +6,40 @@
 @menubar-item-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
 
 :global {
-  .nb-menubar {
+  .x6-menubar {
     display: flex;
     flex: 1;
     flex-direction: row;
     margin: 0;
     padding: 0;
 
-    .nb-menubar-content {
+    .x6-menubar-content {
       display: flex;
       flex: 1 1;
       flex-direction: row;
       justify-content: space-between;
     }
 
-    .nb-menubar-content-inner, .nb-menubar-content-extras, .nb-menubar-item, .nb-menubar-item-text {
+    .x6-menubar-content-inner, .x6-menubar-content-extras, .x6-menubar-item, .x6-menubar-item-text {
       position: relative;
       display: inline-flex;
       flex-direction: row;
     }
 
-    .nb-menubar-content-extras {
+    .x6-menubar-content-extras {
       align-content: center;
       align-items: center;
     }
 
-    .nb-menubar-item {
+    .x6-menubar-item {
       position: relative;
     }
 
-    .nb-menubar-item-hidden {
+    .x6-menubar-item-hidden {
       display: none;
     }
 
-    .nb-menubar-item-text {
+    .x6-menubar-item-text {
       position: relative;
       font-size: 12px;
       align-content: center;
@@ -55,7 +55,7 @@
       }
     }
 
-    .nb-menubar-item-text-active, .nb-menubar-item-text-active:hover {
+    .x6-menubar-item-text-active, .x6-menubar-item-text-active:hover {
       color: @menubar-menu-item-active-color;
       background: @menubar-menu-item-active-bg;
       box-shadow: @menubar-item-shadow;
@@ -72,7 +72,7 @@
       }
     }
 
-    .nb-menubar-item-dropdown {
+    .x6-menubar-item-dropdown {
       position: absolute;
       z-index: 9999;
       top: 28px;
@@ -81,14 +81,18 @@
       min-height: 34px;
       transition: all 0.25s cubic-bezier(0.3, 1.2, 0.2, 1);
       transform: translateY(-10px);
-      opacity: 0;;
+      opacity: 0;
 
-      .nb-menu {
+      .x6-menu {
         min-width: 240px;
+      }
+
+      & > .x6-menu {
+        border-radius: 0 4px 4px 4px;
       }
     }
 
-    .nb-menubar-item-active > .nb-menubar-item-dropdown {
+    .x6-menubar-item-active > .x6-menubar-item-dropdown {
       visibility: visible;
       transform: translateY(0);
       opacity: 1;

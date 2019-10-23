@@ -1,31 +1,33 @@
 :global {
-  .nb-dropdown {
+  .x6-dropdown {
     position: absolute;
     z-index: 9999;
     top: -9999px;
     left: -9999px;
     display: block;
     overflow-y: scroll;
-    max-height: 150px;
+    max-height: 240px;
+    border-radius: 4px;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);
   }
 
-  .nb-dropdown-hidden {
+  .x6-dropdown-hidden {
     display: none;
   }
 
-  .nb-dropdown.slide-down-enter.slide-down-enter-active.nb-dropdown-placement-bottomLeft, .nb-dropdown.slide-down-appear.slide-down-appear-active.nb-dropdown-placement-bottomLeft, .nb-dropdown.slide-down-enter.slide-down-enter-active.nb-dropdown-placement-bottomCenter, .nb-dropdown.slide-down-appear.slide-down-appear-active.nb-dropdown-placement-bottomCenter, .nb-dropdown.slide-down-enter.slide-down-enter-active.nb-dropdown-placement-bottomRight, .nb-dropdown.slide-down-appear.slide-down-appear-active.nb-dropdown-placement-bottomRight {
+  .x6-dropdown.slide-down-enter.slide-down-enter-active.x6-dropdown-placement-bottomLeft, .x6-dropdown.slide-down-appear.slide-down-appear-active.x6-dropdown-placement-bottomLeft, .x6-dropdown.slide-down-enter.slide-down-enter-active.x6-dropdown-placement-bottomCenter, .x6-dropdown.slide-down-appear.slide-down-appear-active.x6-dropdown-placement-bottomCenter, .x6-dropdown.slide-down-enter.slide-down-enter-active.x6-dropdown-placement-bottomRight, .x6-dropdown.slide-down-appear.slide-down-appear-active.x6-dropdown-placement-bottomRight {
     animation-name: antSlideUpIn;
   }
 
-  .nb-dropdown.slide-up-enter.slide-up-enter-active.nb-dropdown-placement-topLeft, .nb-dropdown.slide-up-appear.slide-up-appear-active.nb-dropdown-placement-topLeft, .nb-dropdown.slide-up-enter.slide-up-enter-active.nb-dropdown-placement-topCenter, .nb-dropdown.slide-up-appear.slide-up-appear-active.nb-dropdown-placement-topCenter, .nb-dropdown.slide-up-enter.slide-up-enter-active.nb-dropdown-placement-topRight, .nb-dropdown.slide-up-appear.slide-up-appear-active.nb-dropdown-placement-topRight {
+  .x6-dropdown.slide-up-enter.slide-up-enter-active.x6-dropdown-placement-topLeft, .x6-dropdown.slide-up-appear.slide-up-appear-active.x6-dropdown-placement-topLeft, .x6-dropdown.slide-up-enter.slide-up-enter-active.x6-dropdown-placement-topCenter, .x6-dropdown.slide-up-appear.slide-up-appear-active.x6-dropdown-placement-topCenter, .x6-dropdown.slide-up-enter.slide-up-enter-active.x6-dropdown-placement-topRight, .x6-dropdown.slide-up-appear.slide-up-appear-active.x6-dropdown-placement-topRight {
     animation-name: antSlideDownIn;
   }
 
-  .nb-dropdown.slide-down-leave.slide-down-leave-active.nb-dropdown-placement-bottomLeft, .nb-dropdown.slide-down-leave.slide-down-leave-active.nb-dropdown-placement-bottomCenter, .nb-dropdown.slide-down-leave.slide-down-leave-active.nb-dropdown-placement-bottomRight {
+  .x6-dropdown.slide-down-leave.slide-down-leave-active.x6-dropdown-placement-bottomLeft, .x6-dropdown.slide-down-leave.slide-down-leave-active.x6-dropdown-placement-bottomCenter, .x6-dropdown.slide-down-leave.slide-down-leave-active.x6-dropdown-placement-bottomRight {
     animation-name: antSlideUpOut;
   }
 
-  .nb-dropdown.slide-up-leave.slide-up-leave-active.nb-dropdown-placement-topLeft, .nb-dropdown.slide-up-leave.slide-up-leave-active.nb-dropdown-placement-topCenter, .nb-dropdown.slide-up-leave.slide-up-leave-active.nb-dropdown-placement-topRight {
+  .x6-dropdown.slide-up-leave.slide-up-leave-active.x6-dropdown-placement-topLeft, .x6-dropdown.slide-up-leave.slide-up-leave-active.x6-dropdown-placement-topCenter, .x6-dropdown.slide-up-leave.slide-up-leave-active.x6-dropdown-placement-topRight {
     animation-name: antSlideDownOut;
   }
 }

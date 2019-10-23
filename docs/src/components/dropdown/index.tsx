@@ -51,7 +51,7 @@ export class Dropdown extends React.Component<Dropdown.Props, any> {
       <RcDropdown
         {...this.props}
         alignPoint={alignPoint}
-        prefixCls="nb-dropdown"
+        prefixCls="x6-dropdown"
         trigger={triggers}
         overlay={fixedOverlay}
         transitionName={this.getTransitionName()}

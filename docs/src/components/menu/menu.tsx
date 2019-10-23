@@ -37,8 +37,8 @@ export class Menu extends React.PureComponent<Menu.Props> {
     return (
       <div
         className={classnames(
-          'nb-menu', {
-          'nb-menu-has-icon': hasIcon,
+          'x6-menu', {
+          'x6-menu-has-icon': hasIcon,
         },
           className,
         )}

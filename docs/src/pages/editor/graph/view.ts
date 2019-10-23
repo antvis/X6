@@ -19,12 +19,15 @@ export class GraphView extends View {
     super.validate()
   }
 
-
   validateBackgroundPage() {
     const graph = this.graph
     if (graph.container) {
       if (graph.pageVisible) {
         const bounds = this.getBackgroundPageBounds()
+
+        bounds.x += 1
+        bounds.y += 1
+
         if (this.backgroundPageShape == null) {
           let firstChild = graph.container.firstChild as HTMLElement
           while (firstChild && firstChild.nodeType != NodeType.element) {

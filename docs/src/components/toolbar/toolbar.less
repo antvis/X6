@@ -1,5 +1,5 @@
 :global {
-  .nb-toolbar {
+  .x6-toolbar {
     display: flex;
     overflow: hidden;
     flex-direction: row;
@@ -8,7 +8,7 @@
     padding: 0;
     padding-left: 4px;
 
-    .nb-toolbar-content {
+    .x6-toolbar-content {
       display: flex;
       overflow: hidden;
       flex: 1;
@@ -16,17 +16,17 @@
       justify-content: space-between;
     }
 
-    .nb-toolbar-content-inner, .nb-toolbar-content-extras, .nb-toolbar-group, .nb-toolbar-item, .nb-toolbar-item-icon, .nb-toolbar-item-text {
+    .x6-toolbar-content-inner, .x6-toolbar-content-extras, .x6-toolbar-group, .x6-toolbar-item, .x6-toolbar-item-icon, .x6-toolbar-item-text {
       display: flex;
       flex-direction: row;
     }
 
-    .nb-toolbar-content-extras {
+    .x6-toolbar-content-extras {
       align-content: center;
       align-items: center;
     }
 
-    .nb-toolbar-group {
+    .x6-toolbar-group {
       &::before {
         align-self: center;
         width: 1px;
@@ -34,7 +34,7 @@
         margin: 0 6px;
         content: ' ';
         pointer-events: none;
-        background-color: rgba(255, 255, 255, 0.15);
+        background-color: rgba(0, 0, 0, 0.15);
       }
 
       &:first-child::before {
@@ -42,39 +42,40 @@
       }
     }
 
-    .nb-toolbar-item {
+    .x6-toolbar-item {
       align-content: center;
       align-items: center;
       margin: 0;
       padding: 0 4px;
       cursor: pointer;
       user-select: none;
+      color: #616161;
       border: 0;
       border-radius: 0;
       outline: none;
       background-color: transparent;
       box-shadow: none;
 
-      &.nb-toolbar-item-hidden {
+      &.x6-toolbar-item-hidden {
         display: none;
       }
 
-      &.nb-toolbar-item-disabled, &.nb-toolbar-item-disabled:hover {
+      &.x6-toolbar-item-disabled, &.x6-toolbar-item-disabled:hover {
         cursor: not-allowed;
         opacity: 0.4;
       }
 
-      &.nb-toolbar-item-disabled .nb-toolbar-item-icon &:active {
+      &.x6-toolbar-item-disabled .x6-toolbar-item-icon &:active {
         transform: none;
       }
     }
 
-    .nb-toolbar-item-icon, .nb-toolbar-item-text {
+    .x6-toolbar-item-icon, .x6-toolbar-item-text {
       align-content: center;
       align-items: center;
     }
 
-    .nb-toolbar-item-icon {
+    .x6-toolbar-item-icon {
       font-size: 16px;
       transition: transform 50ms ease;
 
@@ -83,37 +84,48 @@
       }
     }
 
-    .nb-toolbar-item-text {
+    .x6-toolbar-item-text {
       padding-left: 4px;
     }
 
-    .nb-toolbar-item-dropdown-wrap {
+    .x6-toolbar-item-dropdown-wrap {
       margin-top: -13px;
     }
 
-    &.nb-toolbar-small {
-      .nb-toolbar-item {
+    &.x6-toolbar-small {
+      .x6-toolbar-item {
         margin: 0 2px;
       }
 
-      .nb-toolbar-item-icon {
+      .x6-toolbar-item-icon {
         font-size: 14px;
       }
     }
 
-    &.nb-toolbar-mini {
-      .nb-toolbar-item {
+    &.x6-toolbar-mini {
+      .x6-toolbar-item {
         padding: 0 6px;
       }
 
-      .nb-toolbar-item-icon {
+      .x6-toolbar-item-icon {
         font-size: 12px;
       }
     }
   }
 
-  .nb-toolbar-item.nb-toolbar-item-active, .nb-toolbar.nb-toolbar-hover-effect .nb-toolbar-item:hover {
+  .x6-toolbar.x6-toolbar-hover-effect .x6-toolbar-item {
+    color: #616161;
+  }
+
+  .x6-toolbar-item.x6-toolbar-item-active, .x6-toolbar.x6-toolbar-hover-effect .x6-toolbar-item:hover {
+    color: #212121;
     border-radius: 2px;
-    background-color: #353535;
+    background-color: #dcdcdc;
+  }
+
+  .x6-toolbar.x6-toolbar-hover-effect.x6-toolbar-small {
+    .x6-toolbar-item {
+      padding: 0 6px;
+    }
   }
 }

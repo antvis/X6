@@ -38,14 +38,14 @@ export class Menubar extends React.PureComponent<Menubar.Props, Menubar.State> {
     }
 
     return (
-      <div className={classnames('nb-menubar', className)}>
-        <div className="nb-menubar-content">
-          <div className="nb-menubar-content-inner">
+      <div className={classnames('x6-menubar', className)}>
+        <div className="x6-menubar-content">
+          <div className="x6-menubar-content-inner">
             <ContextProvider value={contextValue}>
               {children}
             </ContextProvider>
           </div>
-          {extra && (<div className="nb-menubar-content-extras">{extra}</div>)}
+          {extra && (<div className="x6-menubar-content-extras">{extra}</div>)}
         </div>
       </div>
     )

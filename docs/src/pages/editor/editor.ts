@@ -25,6 +25,9 @@ export class Editor extends Primer {
         width: 800,
         height: 960,
       },
+      connection: {
+        enabled: true
+      },
       preferPageSize: true,
       rubberband: true,
       createView() {

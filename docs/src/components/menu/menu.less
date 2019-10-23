@@ -7,7 +7,7 @@
 @menu-item-hover-color: #212121;
 
 :global {
-  .nb-menu {
+  .x6-menu {
     position: relative;
     display: inline-block;
     min-width: 160px;
@@ -18,16 +18,16 @@
     background-color: @menu-bg;
     box-shadow: @menu-shadow;
 
-    .nb-menu-item {
+    .x6-menu-item {
       position: relative;
     }
 
-    .nb-menu-item-active > .nb-menu-button, .nb-menu-item:hover > .nb-menu-button {
+    .x6-menu-item-active > .x6-menu-button, .x6-menu-item:hover > .x6-menu-button {
       color: @menu-item-hover-color;
       background: @menu-item-hover-bg;
     }
 
-    .nb-menu-item-divider {
+    .x6-menu-item-divider {
       display: block;
       width: 100%;
       height: 1px;
@@ -36,7 +36,7 @@
       background: @menu-item-divider-bg;
     }
 
-    .nb-menu-button {
+    .x6-menu-button {
       position: relative;
       display: flex;
       align-content: center;
@@ -54,18 +54,18 @@
       box-shadow: none;
     }
 
-    .nb-menu-item-hidden {
+    .x6-menu-item-hidden {
       display: none;
     }
 
-    .nb-menu-item-disabled > .nb-menu-button, .nb-menu-item-disabled:hover > .nb-menu-button {
+    .x6-menu-item-disabled > .x6-menu-button, .x6-menu-item-disabled:hover > .x6-menu-button {
       cursor: not-allowed;
       opacity: 0.4;
       color: @menu-item-text-color;
       background-color: transparent;
     }
 
-    .nb-menu-item-icon {
+    .x6-menu-item-icon {
       position: absolute;
       top: 50%;
       left: 6px;
@@ -76,20 +76,19 @@
       margin-top: -12px;
     }
 
-    .nb-menu-item-text {
+    .x6-menu-item-text {
       font-size: 12px;
       overflow: hidden;
-      max-width: 240px;
-      padding-right: 24px;
+      padding-right: 56px;
       white-space: nowrap;
       text-overflow: ellipsis;
     }
 
-    .nb-menu-item-hotkey {
+    .x6-menu-item-hotkey {
       font-size: 13px;
     }
 
-    .nb-menu-submenu-arrow, .nb-menu-submenu.nb-menu-item-disabled:hover > .nb-menu-button > .nb-menu-submenu-arrow {
+    .x6-menu-submenu-arrow, .x6-menu-submenu.x6-menu-item-disabled:hover > .x6-menu-button > .x6-menu-submenu-arrow {
       position: absolute;
       top: 10px;
       right: 12px;
@@ -102,7 +101,7 @@
       border-left: 5px solid @menu-submenu-arrow-color;
     }
 
-    .nb-menu-submenu-menu, .nb-menu-submenu.nb-menu-item-disabled:hover > .nb-menu-submenu-menu {
+    .x6-menu-submenu-menu, .x6-menu-submenu.x6-menu-item-disabled:hover > .x6-menu-submenu-menu {
       position: absolute;
       z-index: 9999;
       top: -5px;
@@ -117,26 +116,26 @@
       box-shadow: @menu-shadow;;
     }
 
-    .nb-menu-submenu:hover > .nb-menu-button > .nb-menu-submenu-arrow {
+    .x6-menu-submenu:hover > .x6-menu-button > .x6-menu-submenu-arrow {
       opacity: 0.8;
     }
 
-    .nb-menu-submenu:hover > .nb-menu-submenu-menu {
+    .x6-menu-submenu:hover > .x6-menu-submenu-menu {
       visibility: visible;
       transform: translateX(0);
       opacity: 1;
     }
 
-    .nb-menu.nb-menu-has-icon .nb-menu-button {
+    .x6-menu.x6-menu-has-icon .x6-menu-button {
       padding-left: 30px;
 
-      .nb-menu-item-icon {
+      .x6-menu-item-icon {
         display: flex;
         align-items: center;
         justify-content: center;
       }
 
-      .nb-menu-item-text {
+      .x6-menu-item-text {
         padding-left: 2px;
       }
     }

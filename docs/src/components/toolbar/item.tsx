@@ -33,12 +33,12 @@ export class ToolbarItem extends React.PureComponent<ToolbarItem.Props>{
     const props: any = {
       onClick: this.handleClick,
       className: classnames(
-        'nb-toolbar-item',
+        'x6-toolbar-item',
         {
-          'nb-toolbar-item-hidden': hidden,
-          'nb-toolbar-item-active': active,
-          'nb-toolbar-item-disabled': disabled,
-          'nb-toolbar-item-dropdown': dropdown,
+          'x6-toolbar-item-hidden': hidden,
+          'x6-toolbar-item-active': active,
+          'x6-toolbar-item-disabled': disabled,
+          'x6-toolbar-item-dropdown': dropdown,
         },
         className,
       ),
@@ -52,7 +52,7 @@ export class ToolbarItem extends React.PureComponent<ToolbarItem.Props>{
       <button {...props}>
         {
           icon && (
-            <span className="nb-toolbar-item-icon">
+            <span className="x6-toolbar-item-icon">
               {
                 typeof icon === 'string'
                   ? (<Icon icon={icon as string} />)
@@ -63,7 +63,7 @@ export class ToolbarItem extends React.PureComponent<ToolbarItem.Props>{
         }
         {
           (text || children) && (
-            <span className="nb-toolbar-item-text">
+            <span className="x6-toolbar-item-text">
               {text || children}
             </span>
           )

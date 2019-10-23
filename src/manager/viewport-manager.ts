@@ -980,14 +980,14 @@ export class ViewportManager extends BaseManager {
 
         for (let i = 0; i <= count; i += 1) {
           const pts = breaks === this.horizontalPageBreaks ?
-            [
-              new Point(Math.round(bounds2.x), Math.round(bounds2.y + (i + 1) * bounds.height)),
-              new Point(Math.round(right), Math.round(bounds2.y + (i + 1) * bounds.height)),
-            ] :
-            [
-              new Point(Math.round(bounds2.x + (i + 1) * bounds.width), Math.round(bounds2.y)),
-              new Point(Math.round(bounds2.x + (i + 1) * bounds.width), Math.round(bottom)),
-            ]
+          [
+            new Point(Math.round(bounds2.x), Math.round(bounds2.y + (i + 1) * bounds.height)),
+            new Point(Math.round(right), Math.round(bounds2.y + (i + 1) * bounds.height)),
+          ] :
+          [
+            new Point(Math.round(bounds2.x + (i + 1) * bounds.width), Math.round(bounds2.y)),
+            new Point(Math.round(bounds2.x + (i + 1) * bounds.width), Math.round(bottom)),
+          ]
 
           if (breaks[i] != null) {
             breaks[i].points = pts
