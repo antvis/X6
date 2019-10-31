@@ -1,7 +1,7 @@
 import { State } from '../core'
 import { Rectangle, Point } from '../struct'
 
-export function ellipse(
+export function ellipsePerimeter(
   bounds: Rectangle,
   state: State,
   next: Point | Point.PointLike = new Point(),

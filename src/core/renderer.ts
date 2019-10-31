@@ -13,18 +13,18 @@ import {
   Shape,
   Stencil,
   Connector,
-  RectangleShape,
   Text,
-  ImageShape,
   HtmlShape,
+  ImageShape,
+  RectangleShape,
 } from '../shape'
 
 export class Renderer {
   antialiased: boolean = true
   minSvgStrokeWidth: number = 1
-  defaultEdgeShape = Connector
-  defaultNodeShape = RectangleShape
   defaultTextShape = Text
+  defaultNodeShape = RectangleShape
+  defaultEdgeShape = Connector
 
   /**
    * Specifies if spacing and label position should be ignored

@@ -2564,6 +2564,10 @@ export class Graph extends Disablable implements
 
   @hook()
   isHtmlLabel(cell: Cell) {
+    const style = this.getStyle(cell)
+    if (style != null && style.htmlLabel != null) {
+      return style.htmlLabel
+    }
     return this.isHtmlLabels()
   }
 

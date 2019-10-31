@@ -2,14 +2,14 @@ import * as images from '../assets/images'
 import { loop } from '../router'
 import { Style } from '../types'
 import { detector } from '../common'
-import { rectangle } from '../perimeter'
 import { FullOptions } from './graph'
+import { rectanglePerimeter } from '../perimeter'
 import { ShapeNames, MarkerNames, PageSize } from '../struct'
 
 const commonStyle: Style = {
   align: 'center',
   verticalAlign: 'middle',
-  fontColor: 'rgba(0, 0, 0, 0.65)',
+  fontColor: 'rgba(0, 0, 0, 1)',
 }
 
 export const COLOR_PRIMARY = '#1890ff'
@@ -132,7 +132,7 @@ export const defaultOptions: FullOptions = {
   nodeStyle: {
     ...commonStyle,
     shape: ShapeNames.rectangle,
-    perimeter: rectangle,
+    perimeter: rectanglePerimeter,
     fill: '#fff',
     stroke: '#000',
   },

@@ -2,7 +2,7 @@ import { State } from '../core'
 import { intersection } from '../util'
 import { Rectangle, Point } from '../struct'
 
-export function triangle(
+export function trianglePerimeter(
   bounds: Rectangle,
   state: State,
   next: Point = new Point(),

@@ -9,3 +9,5 @@ rules:
   no-construct: true
   no-debugger: true
   no-reference: true
+  jsx-no-multiline-js: false
+  jsx-no-lambda: false

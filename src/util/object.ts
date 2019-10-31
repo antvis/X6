@@ -85,6 +85,15 @@ export function getNumber(obj: any, key: string, defaultValue: number) {
   return value as number
 }
 
+export function getBoolean(obj: any, key: string, defaultValue: boolean) {
+  const value = obj != null ? obj[key] : null
+  if (value == null) {
+    return defaultValue
+  }
+
+  return !!value
+}
+
 export function extend(target: { [key: string]: any } = {}, ...sources: any[]) {
   sources.forEach((source) => {
     if (source) {

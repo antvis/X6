@@ -1,5 +1,6 @@
 import React from 'react'
 import { GraphToolbar, GraphMenubar, Sidebar } from './graph'
+import { version } from '../../../../src'
 import './_layout.less'
 
 const Layout: React.FC = props => {
@@ -23,7 +24,9 @@ const Layout: React.FC = props => {
         </div>
       </div>
       <div className="x6-editor-footer">
-        footer
+        <span className="version">
+          x6 v{version}
+        </span>
       </div>
     </div>
   )

@@ -17,6 +17,7 @@ export interface Size {
 }
 
 export interface Style {
+  [key: string]: any
   shape?: string
   edge?: string | RoutingFunction | null
 
@@ -126,6 +127,7 @@ export interface Style {
   whiteSpace?: 'nowrap' | 'wrap'
   align?: Align
   verticalAlign?: VAlign
+  htmlLabel?: boolean
   labelWidth?: number
 
   /**

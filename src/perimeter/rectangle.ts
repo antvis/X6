@@ -1,7 +1,7 @@
 import { State } from '../core'
 import { Rectangle, Point } from '../struct'
 
-export function rectangle(
+export function rectanglePerimeter(
   bounds: Rectangle,
   state: State,
   next: Point = new Point(),

@@ -40,7 +40,7 @@ export default class Constraints extends React.Component {
         x: 20, y: 20, width: 80, height: 60,
         style: {
           shape: ShapeNames.triangle,
-          perimeter: perimeters.triangle,
+          perimeter: perimeters.trianglePerimeter,
         },
       })
 
@@ -54,7 +54,7 @@ export default class Constraints extends React.Component {
         x: 200, y: 150, width: 80, height: 60,
         style: {
           shape: ShapeNames.ellipse,
-          perimeter: perimeters.ellipse,
+          perimeter: perimeters.ellipsePerimeter,
         },
       })
 

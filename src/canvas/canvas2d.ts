@@ -319,9 +319,7 @@ export class Canvas2D {
     this.addOp(this.closeOp)
   }
 
-  end() {
-    throw new Error('Method not implemented.')
-  }
+  end() { }
 }
 
 export namespace Canvas2D {

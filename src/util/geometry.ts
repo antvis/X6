@@ -468,3 +468,26 @@ export function findNearestSegment(state: State, x: number, y: number) {
 
   return index
 }
+
+export function getPerimeterPoint(pts: Point[], center: Point, point: Point) {
+  let min = null
+
+  for (let i = 0, ii = pts.length - 1; i < ii; i += 1) {
+    const pt = intersection(
+      pts[i].x, pts[i].y, pts[i + 1].x, pts[i + 1].y,
+      center.x, center.y, point.x, point.y,
+    )
+
+    if (pt != null) {
+      const dx = point.x - pt.x
+      const dy = point.y - pt.y
+      const ip = { p: pt, distSq: dy * dy + dx * dx }
+
+      if (ip != null && (min == null || min.distSq > ip.distSq)) {
+        min = ip
+      }
+    }
+  }
+
+  return (min != null) ? min.p : null
+}

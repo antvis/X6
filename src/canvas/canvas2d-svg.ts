@@ -833,7 +833,7 @@ export class SvgCanvas2D extends Canvas2D {
        *   <g transform="translate(1061,297)scale(0.5)">
        *     <foreignObject style="overflow:visible;" pointer-events="all" width="41" height="12">
        *       <div style="...">
-       *         <div xmlns="http://www.w3.org/1999/xhtml" style="...">
+       *         <div style="...">
        *           Hello
        *         </div>
        *       </div>
@@ -1663,7 +1663,7 @@ export class SvgCanvas2D extends Canvas2D {
   /**
   * Specifies if use `DomParser` to parse HTML string to XHTML.
   */
-  useDomParser: boolean
+  useDomParser: boolean = true
 
   /**
    * Converts the given HTML string to XHTML.
@@ -1692,23 +1692,23 @@ export class SvgCanvas2D extends Canvas2D {
       document.implementation != null &&
       document.implementation.createDocument != null
     ) {
-      const xd = document.implementation.createDocument(
+      const doc = document.implementation.createDocument(
         'http://www.w3.org/1999/xhtml', 'html', null,
       )
-      const xb = xd.createElement('body')
-      xd.documentElement.appendChild(xb)
+      const body = doc.createElement('body')
+      doc.documentElement.appendChild(body)
 
       const div = document.createElement('div')
       div.innerHTML = raw
-      let child = div.firstChild
 
+      let child = div.firstChild
       while (child != null) {
         const next = child.nextSibling
-        xb.appendChild(xd.adoptNode(child))
+        body.appendChild(doc.adoptNode(child))
         child = next
       }
 
-      return xb.innerHTML
+      return body.innerHTML
     }
 
     {
@@ -1809,7 +1809,7 @@ export class SvgCanvas2D extends Canvas2D {
 
         // inner div always needed to measure wrapped text
         // tslint:disable-next-line
-        val = `<div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; text-align: inherit; text-decoration: inherit; ${css}">${val}</div>`
+        val = `<div style="display: inline-block; text-align: inherit; text-decoration: inherit; ${css}">${val}</div>`
       } else {
         stl += css
       }
@@ -1841,7 +1841,7 @@ export class SvgCanvas2D extends Canvas2D {
     }
 
     return util.parseXml(
-      `<div xmlns="http://www.w3.org/1999/xhtml" style="${stl}">${val}</div>`,
+      `<div style="${stl}">${val}</div>`,
     ).documentElement
   }
 

@@ -117,10 +117,10 @@ export function getPerimeter(name: string, allowEval: boolean = false) {
   return getEntity<PerimeterFunction>(perimeterMap, name, allowEval)
 }
 
-registerPerimeter(PerimeterNames.ellipse, perimeters.ellipse, true)
-registerPerimeter(PerimeterNames.rectangle, perimeters.rectangle, true)
-registerPerimeter(PerimeterNames.rhombus, perimeters.rhombus, true)
-registerPerimeter(PerimeterNames.triangle, perimeters.triangle, true)
-registerPerimeter(PerimeterNames.hexagon, perimeters.hexagon, true)
+registerPerimeter(PerimeterNames.ellipse, perimeters.ellipsePerimeter, true)
+registerPerimeter(PerimeterNames.rectangle, perimeters.rectanglePerimeter, true)
+registerPerimeter(PerimeterNames.rhombus, perimeters.rhombusPerimeter, true)
+registerPerimeter(PerimeterNames.triangle, perimeters.trianglePerimeter, true)
+registerPerimeter(PerimeterNames.hexagon, perimeters.hexagonPerimeter, true)
 
 // #endregion
