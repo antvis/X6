@@ -64,6 +64,11 @@ export function getPalettes() {
   return palettes
 }
 
+const dataCache: WeakMap<HTMLElement, DataItem> = new WeakMap()
+export function getDataItem(elem: HTMLElement) {
+  return dataCache.get(elem)
+}
+
 let graph: EditorGraph
 
 function createTempGraph() {
@@ -128,7 +133,11 @@ export function getRenderer(item: DataItem) {
       })
     }
 
-    renderThumb(graph, container, thumbWidth, thumbHeight, thumbBorder)
+    const elem = renderThumb(
+      graph, container, thumbWidth, thumbHeight, thumbBorder,
+    )
+
+    dataCache.set(elem, item)
   }
 }
 
@@ -142,7 +151,7 @@ export function getRendererForCells(cells: Cell[]) {
     const graph = getTempGraph()
     graph.view.scaleAndTranslate(1, 0, 0)
     graph.addCells(cells)
-    renderThumb(graph, container, thumbWidth, thumbHeight, thumbBorder)
+    return renderThumb(graph, container, thumbWidth, thumbHeight, thumbBorder)
   }
 }
 
@@ -183,6 +192,8 @@ function renderThumb(
 
   container.appendChild(node)
   graph.getModel().clear()
+
+  return node
 }
 
 function getTagsForStencil(

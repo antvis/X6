@@ -7,6 +7,14 @@ export class Disablable extends Primer {
     return !this.disabled
   }
 
+  enable() {
+    this.disabled = false
+  }
+
+  disable() {
+    this.disabled = true
+  }
+
   isEnabled() {
     return !this.disabled
   }
@@ -15,11 +23,7 @@ export class Disablable extends Primer {
     this.disabled = !enabled
   }
 
-  enable() {
-    this.disabled = false
-  }
-
-  disable() {
-    this.disabled = true
+  toggleEnadled() {
+    this.disabled = !this.disabled
   }
 }

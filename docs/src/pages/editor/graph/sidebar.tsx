@@ -1,6 +1,7 @@
 import React from 'react'
 import { Collapse, Icon, Input } from 'antd'
 import { getPalettes, PaletteItem } from './sidebar-util'
+import { initDnd } from './sidebar-dnd'
 import './sidebar.less'
 
 export class Sidebar extends React.PureComponent {
@@ -19,6 +20,7 @@ export class Sidebar extends React.PureComponent {
           items.forEach(item => item.render(
             container, thumbWidth, thumbHeight, thumbBorder
           ))
+          initDnd(container)
         }
 
         if (palette.items) {

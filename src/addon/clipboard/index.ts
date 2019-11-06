@@ -1,5 +1,5 @@
-import { Cell, Graph } from '../core'
-import { Rectangle } from '../struct'
+import { Rectangle } from '../../struct'
+import { Cell, Graph } from '../../core'
 
 export namespace Clipboard {
   /**
