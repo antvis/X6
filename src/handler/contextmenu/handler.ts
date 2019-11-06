@@ -22,6 +22,9 @@ export class ContextMenuHandler extends MouseHandler {
    */
   clearSelectionOnBackground: boolean
 
+  triggerX: number
+  triggerY: number
+
   protected gestureHandler: () => void
   protected startX: number
   protected startY: number
@@ -67,6 +70,8 @@ export class ContextMenuHandler extends MouseHandler {
     const evt = e.getEvent()
     if (this.isEnabled() && !DomEvent.isMultiTouchEvent(evt)) {
       const me = DomEvent.getMainEvent(evt) as MouseEvent
+      this.triggerX = e.getGraphX()
+      this.triggerY = e.getGraphY()
       this.startX = me.screenX
       this.startY = me.screenY
       this.validTrigger = this.isPopupTrigger(e)

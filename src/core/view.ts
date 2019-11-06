@@ -1526,7 +1526,7 @@ export class View extends Primer {
 
   // #region :::::::::: Validate Background ::::::::::
 
-  protected validateBackground() {
+  validateBackground() {
     this.validateBackgroundImage()
     this.validateBackgroundPage()
   }

@@ -269,6 +269,8 @@ export interface Style {
    */
   aspect?: boolean
 
+  locked?: boolean
+
   /**
    * This specifies if a cell should be resized automatically if
    * the value has changed.
@@ -305,6 +307,11 @@ export interface Style {
    * This style specifies if a cell can be cloned.
    */
   cloneable?: boolean
+
+  /**
+   * This style specifies if a cell can be connected.
+   */
+  connectable?: boolean
 
   /**
    * This style specifies if a cell can be deleted.

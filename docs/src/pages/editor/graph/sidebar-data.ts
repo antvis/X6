@@ -1,14 +1,23 @@
 import '../../../../../src/addon/shapes'
-import { Style } from '../../../../../src'
+import { Style, Point, Cell, Geometry } from '../../../../../src'
+import {
+  PaletteItem,
+  getRenderer,
+  getRendererForCells,
+} from './sidebar-util'
 
 export interface DataItem {
   title: string
   tags: string
-  data?: any,
+  data?: any
   width: number
   height: number
   style: Style
+  isEdge?: boolean
+  points?: Point[]
 }
+
+const lineTags = 'line lines connector connectors connection connections arrow arrows'
 
 export const generals: DataItem[] = [
   {
@@ -289,4 +298,202 @@ export const generals: DataItem[] = [
       shape: 'dataStorage',
     },
   },
+  {
+    title: 'Curve',
+    tags: 'curve',
+    width: 50,
+    height: 50,
+    points: [new Point(50, 50), new Point(0, 0)],
+    isEdge: true,
+    style: {
+      curved: true,
+    },
+  },
+  {
+    title: 'Bidirectional Arrow',
+    tags: `${lineTags} bidirectional`,
+    width: 50,
+    height: 50,
+    isEdge: true,
+    style: {
+      shape: 'flexArrow',
+      startArrow: 'classic',
+      endArrow: 'classic',
+    },
+  },
+  {
+    title: 'Arrow',
+    tags: `${lineTags} directional directed`,
+    width: 50,
+    height: 50,
+    isEdge: true,
+    style: {
+      shape: 'flexArrow',
+      endArrow: 'classic',
+    },
+  },
+  {
+    title: 'Link',
+    tags: `${lineTags} link`,
+    width: 50,
+    height: 50,
+    isEdge: true,
+    style: {
+      shape: 'link',
+    },
+  },
+  {
+    title: 'Line',
+    tags: `${lineTags} simple undirected plain blank no`,
+    width: 50,
+    height: 50,
+    isEdge: true,
+    style: {
+      endArrow: undefined,
+    },
+  },
+  {
+    title: 'Dashed Line',
+    tags: `${lineTags} dashed undirected no`,
+    width: 50,
+    height: 50,
+    isEdge: true,
+    style: {
+      dashed: true,
+      endArrow: undefined,
+    },
+  },
+  {
+    title: 'Bidirectional Connector',
+    tags: `${lineTags} bidirectional`,
+    width: 50,
+    height: 50,
+    isEdge: true,
+    style: {
+      startArrow: 'classic',
+      endArrow: 'classic',
+    },
+  },
+  {
+    title: 'Directional Connector',
+    tags: `${lineTags} directional directed`,
+    width: 50,
+    height: 50,
+    isEdge: true,
+    style: {
+      endArrow: 'classic',
+    },
+  },
 ]
+
+const umlTags = 'uml static class'
+export function getUMLPaletteItems() {
+  const items: PaletteItem[] = []
+
+  items.push(
+    ...[
+      {
+        title: 'Object',
+        data: 'Object',
+        tags: `${umlTags} object instance`,
+        width: 110,
+        height: 50,
+        style: {
+          shape: 'rectangle',
+        },
+      },
+      {
+        title: 'Interface',
+        data: '&laquo;interface&raquo;<br><b>Name</b>',
+        tags: `${umlTags} interface object instance annotated annotation`,
+        width: 110,
+        height: 50,
+        style: {
+          shape: 'rectangle',
+          htmlLabel: true,
+        },
+      },
+    ].map(data => (
+      {
+        data,
+        render: getRenderer(data),
+      }
+    ))
+  )
+
+  const field = new Cell(
+    '+ field: type',
+    new Geometry(0, 0, 100, 20),
+    {
+      fill: 'none',
+      stroke: 'none',
+      align: 'left',
+      verticalAlign: 'top',
+      spacingLeft: 4,
+      spacingRight: 4,
+      overflow: 'hidden',
+      rotatable: false,
+      portConstraint: 'eastwest',
+    },
+  )
+  field.asNode(true)
+
+  const divider = new Cell('', new Geometry(0, 0, 40, 8), {
+    shape: 'line',
+    strokeWidth: 1,
+    fill: 'none',
+    align: 'left',
+    verticalAlign: 'middle',
+    spacingTop: -1,
+    spacingLeft: 3,
+    spacingRight: 3,
+    rotatable: false,
+    labelPosition: 'right',
+    portConstraint: 'eastwest',
+  })
+  divider.asNode(true)
+
+  const createItem = (fn: () => PaletteItem) => {
+    items.push(fn())
+  }
+
+  createItem(() => {
+    const data: DataItem = {
+      title: 'Class',
+      tags: `${umlTags} object instance`,
+      width: 160,
+      height: 90,
+      style: {
+        shape: 'swimlane',
+        align: 'center',
+        verticalAlign: 'top',
+        childLayout: 'stackLayout',
+        horizontal: true,
+        startSize: 26,
+        horizontalStack: 0,
+        resizeParent: true,
+        resizeParentMax: 0,
+        resizeLast: 0,
+        collapsible: 1,
+        marginBottom: 0,
+      },
+    }
+
+    const cell = new Cell(
+      'Classname',
+      new Geometry(0, 0, data.width, data.height),
+      data.style,
+    )
+
+    cell.asNode(true)
+    // cell.insertChild(field.clone())
+    // cell.insertChild(divider.clone())
+
+    return {
+      data,
+      render: getRendererForCells([cell])
+    }
+  })
+
+  return items
+}

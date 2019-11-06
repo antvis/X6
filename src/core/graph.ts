@@ -141,6 +141,15 @@ export class Graph extends Disablable implements
   preferPageSize: boolean = false
   pageFormat: Size
   pageScale: number = 1
+  updatePageScale(scale: number) {
+    if (this.pageScale !== scale) {
+      this.pageScale = scale
+      if (this.pageVisible) {
+        this.sizeDidChange()
+        this.view.validateBackground()
+      }
+    }
+  }
 
   backgroundImage: Image
   getBackgroundImage() { return this.backgroundImage }
@@ -369,6 +378,9 @@ export class Graph extends Disablable implements
   }
   disableGrid() {
     this.gridEnabled = false
+  }
+  toggleGrid() {
+    this.gridEnabled = !this.gridEnabled
   }
 
   gridSize: number
@@ -888,6 +900,27 @@ export class Graph extends Disablable implements
     return this.cellManager.addCells(cells, parent, index, source, target)
   }
 
+  duplicateCells(
+    cells: Cell[] = this.getSelectedCells(),
+    append: boolean = true,
+  ) {
+    return this.cellManager.duplicateCells(cells, append)
+  }
+
+  turnCells(cells: Cell[] = this.getSelectedCells()) {
+    return this.cellManager.turnCells(cells)
+  }
+
+  deleteCells(
+    cells: Cell[] = this.getDeletableCells(this.getSelectedCells()),
+    includeEdges: boolean = true,
+    selectParentAfterDelete: boolean = true,
+  ) {
+    return this.cellManager.deleteCells(
+      cells, includeEdges, selectParentAfterDelete,
+    )
+  }
+
   /**
    * Removes the given cells from the graph including all connected
    * edges if `includeEdges` is `true`.
@@ -1208,7 +1241,6 @@ export class Graph extends Disablable implements
       )
     })
   }
-
   updateCellStyle(
     key: string,
     value?: string | number | boolean | null,
@@ -1257,6 +1289,10 @@ export class Graph extends Disablable implements
     this.cellManager.setCellStyleFlags(key, flag, value, cells)
   }
 
+  toggleCellsLocked(cells: Cell[] = this.getSelectedCells()) {
+    this.cellManager.toggleCellsLocked(cells)
+  }
+
   // #endregion
 
   // #region :::::::::::: Cell Visibility
@@ -1275,9 +1311,8 @@ export class Graph extends Disablable implements
 
   @afterCreate()
   createGroup(cells: Cell[]) {
-    const group = new Cell()
+    const group = new Cell({ connectable: false })
     group.asNode(true)
-    group.setConnectable(false)
     return group
   }
 
@@ -1292,7 +1327,7 @@ export class Graph extends Disablable implements
    * specified then the selection cells are used.
    */
   groupCells(
-    group?: Cell,
+    group: Cell | null = null,
     border: number = 0,
     cells: Cell[] = CellPath.sortCells(this.getSelectedCells(), true),
   ) {
@@ -2100,14 +2135,14 @@ export class Graph extends Disablable implements
   /**
    * Select all nodes inside the given parent or the default parent.
    */
-  selectNodes(parent: Cell) {
+  selectNodes(parent: Cell = this.getDefaultParent()!) {
     this.selectionManager.selectCells(true, false, parent)
   }
 
   /**
    * Select all edges inside the given parent or the default parent.
    */
-  selectEdges(parent: Cell) {
+  selectEdges(parent: Cell = this.getDefaultParent()!) {
     this.selectionManager.selectCells(false, true, parent)
   }
 
@@ -2414,10 +2449,20 @@ export class Graph extends Disablable implements
 
   @hook()
   isCellLocked(cell: Cell | null) {
+    if (this.isCellsLocked()) {
+      return true
+    }
+
+    const style = this.getStyle(cell)
+    if (style.locked) {
+      return true
+    }
+
     const geometry = this.model.getGeometry(cell)
     return (
-      this.isCellsLocked() || (geometry != null &&
-        this.model.isNode(cell) && geometry.relative)
+      geometry != null &&
+      this.model.isNode(cell) &&
+      geometry.relative
     )
   }
 
@@ -2519,7 +2564,8 @@ export class Graph extends Disablable implements
 
   @hook()
   isCellConnectable(cell: Cell | null) {
-    return this.model.isConnectable(cell)
+    const style = this.getStyle(cell)
+    return style.connectable !== false
   }
 
   @hook()
@@ -3101,7 +3147,6 @@ export namespace Graph {
     style?: Style,
     visible?: boolean,
     collapsed?: boolean,
-    connectable?: boolean,
     overlays?: Overlay[],
     /**
      * Stores alternate values for x, y, width and height in a rectangle.

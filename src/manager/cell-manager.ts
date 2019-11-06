@@ -38,12 +38,6 @@ export class CellManager extends BaseManager {
       node.setVisible(true)
     }
 
-    if (options.connectable != null) {
-      node.setConnectable(options.connectable)
-    } else {
-      node.setConnectable(true)
-    }
-
     if (options.collapsed != null) {
       node.setCollapsed(options.collapsed)
     }
@@ -207,6 +201,62 @@ export class CellManager extends BaseManager {
           { cells, parent, index, sourceNode, targetNode, absolute },
         )
       })
+    }
+  }
+
+  duplicateCells(cells: Cell[], append: boolean) {
+    const model = this.model
+    const diff = this.graph.gridSize
+    const sources = model.getTopmostCells(cells)
+    const select: Cell[] = []
+
+    model.batchUpdate(() => {
+      const clones = this.cloneCells(sources, false, undefined, true)
+      for (let i = 0, ii = sources.length; i < ii; i += 1) {
+        const parent = model.getParent(sources[i])
+        const child = this.moveCells([clones[i]], diff, diff, false)[0]
+        select.push(child)
+
+        if (append) {
+          model.add(parent, clones[i])
+        } else {
+          const index = parent!.getChildIndex(sources[i])
+          model.add(parent, clones[i], index + 1)
+        }
+      }
+    })
+
+    this.graph.selectCells(select)
+
+    return select
+  }
+
+  deleteCells(
+    cells: Cell[],
+    includeEdges: boolean,
+    selectParentAfterDelete: boolean,
+  ) {
+    if (cells != null && cells.length > 0) {
+      const graph = this.graph
+      this.graph.eventloop.escape(new KeyboardEvent(''))
+      const parents = selectParentAfterDelete
+        ? graph.model.getParents(cells)
+        : null
+
+      graph.removeCells(cells, includeEdges)
+
+      // Selects parents for easier editing of groups
+      if (parents != null) {
+        const select = parents.filter(cell => (
+          graph.model.contains(cell) &&
+          (
+            graph.model.isNode(cell) ||
+            graph.model.isEdge(cell)
+          )
+        ))
+
+        graph.selectCells(select)
+      }
     }
   }
 
@@ -500,6 +550,99 @@ export class CellManager extends BaseManager {
     }
 
     return clones
+  }
+
+  turnCells(cells: Cell[]) {
+    const model = this.model
+    const select: Cell[] = []
+
+    model.batchUpdate(() => {
+      for (let i = 0, ii = cells.length; i < ii; i += 1) {
+        const cell = cells[i]
+
+        if (model.isEdge(cell)) {
+          const src = model.getTerminal(cell, true)
+          const trg = model.getTerminal(cell, false)
+
+          model.setTerminal(cell, trg, true)
+          model.setTerminal(cell, src, false)
+
+          let geo = model.getGeometry(cell)
+          if (geo != null) {
+            geo = geo.clone()
+
+            if (geo.points != null) {
+              geo.points.reverse()
+            }
+
+            const sp = geo.getTerminalPoint(true)
+            const tp = geo.getTerminalPoint(false)
+
+            geo.setTerminalPoint(sp, false)
+            geo.setTerminalPoint(tp, true)
+            model.setGeometry(cell, geo)
+
+            // Inverts constraints
+            const edgeState = this.view.getState(cell)
+            const sourceState = this.view.getState(src)
+            const targetState = this.view.getState(trg)
+
+            if (edgeState != null) {
+              const sc = sourceState != null
+                ? this.getConnectionConstraint(edgeState, sourceState, true)
+                : null
+              const tc = targetState != null
+                ? this.getConnectionConstraint(edgeState, targetState, false)
+                : null
+
+              this.setConnectionConstraint(cell, src, true, tc)
+              this.setConnectionConstraint(cell, trg, false, sc)
+            }
+
+            select.push(cell)
+          }
+
+        } else if (model.isNode(cell)) {
+
+          let geo = model.getGeometry(cell)
+          if (geo != null) {
+            // Rotates the size and position in the geometry
+            geo = geo.clone()
+            const bounds = geo.bounds
+            bounds.x += bounds.width / 2 - bounds.height / 2
+            bounds.y += bounds.height / 2 - bounds.width / 2
+            const tmp = bounds.width
+            bounds.width = bounds.height
+            bounds.height = tmp
+            model.setGeometry(cell, geo)
+
+            // Reads the current direction and advances by 90 degrees
+            const state = this.view.getState(cell)
+            if (state != null) {
+              const style = state.style
+              let direction = style.direction || 'east'
+              if (direction === 'east') {
+                direction = 'south'
+              } else if (direction === 'south') {
+                direction = 'west'
+              } else if (direction === 'west') {
+                direction = 'north'
+              } else if (direction === 'north') {
+                direction = 'east'
+              }
+
+              this.setCellStyle({ ...style, direction }, [cell])
+            }
+
+            select.push(cell)
+          }
+        }
+      }
+    })
+
+    this.graph.selectCells(select)
+
+    return select
   }
 
   // #endregion
@@ -1612,7 +1755,7 @@ export class CellManager extends BaseManager {
     return cells
   }
 
-  protected cellsMoved(
+  cellsMoved(
     cells: Cell[],
     dx: number,
     dy: number,
@@ -2077,7 +2220,7 @@ export class CellManager extends BaseManager {
 
   // #region :::::::::::: Style
 
-  getCellStyle(cell: Cell | null) {
+  getCellStyle(cell: Cell | null): Style {
     if (cell != null) {
       const preset = this.model.isEdge(cell)
         ? this.graph.options.edgeStyle
@@ -2160,6 +2303,13 @@ export class CellManager extends BaseManager {
       }
 
       this.updateCellsStyle(key, value ? flag : null, cells)
+    }
+  }
+
+  toggleCellsLocked(cells: Cell[]) {
+    if (cells.length > 0) {
+      const style = this.graph.getStyle(cells[0])
+      this.toggleCellsStyle('locked', !!style.locked, cells)
     }
   }
 

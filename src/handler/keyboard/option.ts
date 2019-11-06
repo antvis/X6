@@ -14,4 +14,6 @@ export interface KeyboardOptions {
    * Default is `true`.
    */
   escape: boolean
+
+  formatkey?: (key: string) => string
 }

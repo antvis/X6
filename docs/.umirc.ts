@@ -1,11 +1,11 @@
-import fs from 'fs';
-import path from 'path';
-import lessToJs from 'less-vars-to-js';
-import { IConfig } from 'umi-types';
+import fs from 'fs'
+import path from 'path'
+import lessToJs from 'less-vars-to-js'
+import { IConfig } from 'umi-types'
 
-const getVariables = (filename) => {
+const getVariables = (filename: string) => {
   const content = fs.readFileSync(path.join(__dirname, `./src/style/${filename}`), 'utf8')
-  return lessToJs(content);
+  return lessToJs(content)
 }
 
 const theme = {
@@ -32,4 +32,4 @@ const config: IConfig = {
   ],
 }
 
-export default config;
+export default config

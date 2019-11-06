@@ -1,13 +1,14 @@
 import * as util from '../../util'
-import Mousetrap from 'mousetrap'
 import { Graph } from '../../core'
-import { BaseHandler } from '..'
 import { DomEvent, Disposable } from '../../common'
+import { BaseHandler } from '..'
+import { Mousetrap } from './mousetrap'
 import { KeyboardOptions } from './option'
 
 export class KeyboardHandler extends BaseHandler {
   public readonly target: HTMLElement | Document
-  public readonly mousetrap: MousetrapInstance
+  public readonly mousetrap: Mousetrap
+  private readonly formatkey: (key: string) => string
 
   constructor(graph: Graph) {
     super(graph)
@@ -19,29 +20,8 @@ export class KeyboardHandler extends BaseHandler {
     }
 
     this.target = options.global ? document : this.graph.container
-
-    const handler = this // tslint:disable-line
-    class MousetrapEx extends Mousetrap {
-      stopCallback(
-        e: KeyboardEvent,
-        elem: HTMLElement,
-        combo: string,
-      ) {
-        if (handler.isEnabledForEvent(e)) {
-          if (e.keyCode === 27 || !handler.isEventIgnored(e)) {
-            handler.escape(e)
-            return super.stopCallback(e, elem, combo)
-          }
-
-          if (!handler.isEventIgnored(e)) {
-            return super.stopCallback(e, elem, combo)
-          }
-        }
-
-        return false
-      }
-    }
-    this.mousetrap = new MousetrapEx(this.target as Element)
+    this.formatkey = options.formatkey || ((key: string) => key)
+    this.mousetrap = new Mousetrap(this.target as Element, this)
   }
 
   bind(
@@ -49,20 +29,27 @@ export class KeyboardHandler extends BaseHandler {
     callback: KeyboardHandler.Handler,
     action?: KeyboardHandler.Action,
   ) {
-    this.mousetrap.bind(keys, callback, action)
+    this.mousetrap.bind(this.getKeys(keys), callback, action)
   }
 
   unbind(keys: string | string[], action?: KeyboardHandler.Action) {
-    this.mousetrap.unbind(keys, action)
+    this.mousetrap.unbind(this.getKeys(keys), action)
+  }
+
+  private getKeys(keys: string | string[]) {
+    return (Array.isArray(keys) ? keys : [keys]).map(this.formatkey)
   }
 
   protected isGraphEvent(e: KeyboardEvent) {
     const source = DomEvent.getSource(e)
-    // Accepts events from the target object or
-    // in-place editing inside graph
+    if (source === this.target || source.parentNode === this.target) {
+      return true
+    }
+
+    // Accepts events from in-place editing inside graph
     if (
-      (source === this.target || source.parentNode === this.target) ||
-      (this.graph.cellEditor != null && this.graph.cellEditor.isEventSource(e))
+      this.graph.cellEditor != null &&
+      this.graph.cellEditor.isEventSource(e)
     ) {
       return true
     }
@@ -71,7 +58,7 @@ export class KeyboardHandler extends BaseHandler {
     return util.isAncestorNode(this.graph.container, source)
   }
 
-  protected isEnabledForEvent(e: KeyboardEvent) {
+  isEnabledForEvent(e: KeyboardEvent) {
     return (
       this.isEnabled() &&
       this.graph.isEnabled() &&
@@ -80,11 +67,11 @@ export class KeyboardHandler extends BaseHandler {
     )
   }
 
-  protected isEventIgnored(e: KeyboardEvent) {
+  isEventIgnored(e: KeyboardEvent) {
     return this.graph.isEditing()
   }
 
-  protected escape(e: KeyboardEvent) {
+  escape(e: KeyboardEvent) {
     if (this.graph.isEscapeEnabled()) {
       this.graph.eventloop.escape(e)
     }

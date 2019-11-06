@@ -127,10 +127,6 @@ export class Model extends Events {
     return cell != null ? cell.isEdge() : false
   }
 
-  isConnectable(cell: Cell | null) {
-    return cell != null ? cell.isConnectable() : false
-  }
-
   getDefaultParent() {
     return this.getRoot().getChildAt(0)
   }

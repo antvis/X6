@@ -1,5 +1,6 @@
 import React from 'react'
 import { GraphToolbar, GraphMenubar, Sidebar } from './graph'
+import { FormatDiagram } from './graph/fromat-diagram'
 import { version } from '../../../../src'
 import './_layout.less'
 
@@ -20,7 +21,7 @@ const Layout: React.FC = props => {
           {props.children}
         </div>
         <div className="x6-editor-format">
-          format
+          <FormatDiagram />
         </div>
       </div>
       <div className="x6-editor-footer">

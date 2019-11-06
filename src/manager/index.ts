@@ -1,5 +1,4 @@
 export * from './manager-base'
-
 export * from './change-manager'
 export * from './eventloop'
 export * from './selection'

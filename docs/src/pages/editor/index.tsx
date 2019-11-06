@@ -1,11 +1,17 @@
 import React from 'react'
 import { Editor } from './editor'
 
-export default class Guide extends React.Component {
+let editor: Editor
+
+export function getEditor() {
+  return editor
+}
+
+export default class X6Editor extends React.Component {
   private container: HTMLDivElement
 
   componentDidMount() {
-    new Editor(this.container)
+    editor = new Editor(this.container)
   }
 
   refContainer = (container: HTMLDivElement) => {

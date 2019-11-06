@@ -24,19 +24,31 @@ export default class HelloPort extends React.Component {
     graph.enableConnection()
 
     graph.batchUpdate(() => {
-      const n1 = graph.addNode({ data: 'Hello', x: 20, y: 80, width: 80, height: 30 })
-      n1.setConnectable(false)
+      const n1 = graph.addNode({
+        data: 'Hello',
+        x: 20, y: 80,
+        width: 80, height: 30,
+        connectable: false,
+      })
 
-      const n11 = graph.addNode({ parent: n1, x: 1, y: 0, width: 10, height: 10 })
+      const n11 = graph.addNode({
+        parent: n1, x: 1, y: 0, width: 10, height: 10,
+      })
       n11.geometry!.offset = new Point(-5, -5)
       n11.geometry!.relative = true
 
-      const n12 = graph.addNode({ parent: n1, x: 1, y: 1, width: 10, height: 10 })
+      const n12 = graph.addNode({
+        parent: n1, x: 1, y: 1, width: 10, height: 10,
+      })
       n12.geometry!.offset = new Point(-5, -5)
       n12.geometry!.relative = true
 
-      const n2 = graph.addNode({ data: 'Port 1', x: 200, y: 20, width: 80, height: 30 })
-      const n3 = graph.addNode({ data: 'Port 2', x: 200, y: 150, width: 80, height: 30 })
+      const n2 = graph.addNode({
+        data: 'Port 1', x: 200, y: 20, width: 80, height: 30,
+      })
+      const n3 = graph.addNode({
+        data: 'Port 2', x: 200, y: 150, width: 80, height: 30,
+      })
 
       graph.addEdge({ source: n11, target: n2 })
       graph.addEdge({ source: n12, target: n3 })

@@ -6,15 +6,14 @@ import { SvgCanvas2D } from '../canvas'
 import { Rectangle, Point } from '../struct'
 
 export class ArrowConnector extends Shape {
-
   useSvgBoundingBox: boolean = true
   arrowWidth: number
   arrowSpacing: number
 
   constructor(
-    points: Point[],
-    fill: string,
-    stroke: string,
+    points: Point[] = [],
+    fill: string = 'none',
+    stroke: string = 'none',
     strokewidth: number = 1,
     arrowWidth: number = constants.ARROW_WIDTH,
     spacing: number = constants.ARROW_SPACING,

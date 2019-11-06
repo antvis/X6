@@ -6,16 +6,16 @@ import { Direction, Align, VAlign, LineCap, LineJoin } from '../types'
 import { Point, Rectangle, Constraint, NodeType } from '../struct'
 
 export class Stencil extends Shape {
-  desc: HTMLElement
+  desc: Element
   constraints: Constraint[]
   aspect: string
   w0: number
   h0: number
-  bgNode: HTMLElement
-  fgNode: HTMLElement
+  bgNode: Element
+  fgNode: Element
   strokeWidth: string
 
-  constructor(desc: HTMLElement) {
+  constructor(desc: Element) {
     super()
     this.desc = desc
     this.parseDescription()
@@ -24,8 +24,8 @@ export class Stencil extends Shape {
 
   parseDescription() {
     // LATER: Preprocess nodes for faster painting
-    this.fgNode = this.desc.getElementsByTagName('foreground')[0] as HTMLElement
-    this.bgNode = this.desc.getElementsByTagName('background')[0] as HTMLElement
+    this.fgNode = this.desc.getElementsByTagName('foreground')[0] as Element
+    this.bgNode = this.desc.getElementsByTagName('background')[0] as Element
     this.w0 = Number(this.desc.getAttribute('w') || 100)
     this.h0 = Number(this.desc.getAttribute('h') || 100)
 
@@ -33,27 +33,29 @@ export class Stencil extends Shape {
     // - variable means fill the available space
     // - fixed means use w0 and h0 to compute the aspect
     const aspect = this.desc.getAttribute('aspect')
-    this.aspect = (aspect != null) ? aspect : 'variable'
+    this.aspect = aspect != null ? aspect : 'variable'
 
     // Possible values for strokewidth are all numbers and "inherit"
     // where the inherit means take the value from the style (ie. the
     // user-defined stroke-width). Note that the strokewidth is scaled
     // by the minimum scaling that is used to draw the shape (sx, sy).
     const sw = this.desc.getAttribute('strokewidth')
-    this.strokeWidth = (sw != null) ? sw : '1'
+    this.strokeWidth = sw != null ? sw : '1'
   }
 
   parseConstraints() {
     const conn = this.desc.getElementsByTagName('connections')[0]
     if (conn != null && conn.childNodes && conn.childNodes.length) {
       this.constraints = []
-      conn.childNodes.forEach((child: HTMLElement) => {
-        this.constraints.push(this.parseConstraint(child))
+      conn.childNodes.forEach((child: Element) => {
+        if (child.nodeType === NodeType.element) {
+          this.constraints.push(this.parseConstraint(child))
+        }
       })
     }
   }
 
-  parseConstraint(node: HTMLElement) {
+  parseConstraint(node: Element) {
     const x = Number(node.getAttribute('x'))
     const y = Number(node.getAttribute('y'))
     const name = node.getAttribute('name') || ''
@@ -62,14 +64,14 @@ export class Stencil extends Shape {
     return new Constraint({ perimeter, name, point: new Point(x, y) })
   }
 
-  evaluateTextAttribute(node: HTMLElement, name: string, shape: Shape) {
+  evaluateTextAttribute(node: Element, name: string, shape: Shape) {
     return this.evaluateAttribute(node, name, shape)
   }
 
-  evaluateAttribute(node: HTMLElement, name: string, shape: Shape) {
+  evaluateAttribute(node: Element, name: string, shape: Shape) {
     let result = node.getAttribute(name)
     if (result == null) {
-      const text = util.getTextContent(node)
+      const text = util.getTextContent(node as HTMLElement)
 
       if (text != null && Stencil.allowEval) {
         const func = util.evalString(text)
@@ -132,18 +134,18 @@ export class Stencil extends Shape {
     canvas: SvgCanvas2D,
     shape: Shape,
     x: number, y: number, w: number, h: number,
-    node: HTMLElement,
+    node: Element,
     aspect: Rectangle,
     disableShadow: boolean,
     paint: boolean,
   ) {
     if (node != null && w > 0 && h > 0) {
-      let child = node.firstChild as HTMLElement
+      let child = node.firstChild as Element
       while (child != null) {
         if (child.nodeType === NodeType.element) {
           this.drawNode(canvas, shape, child, aspect, disableShadow, paint)
         }
-        child = child.nextSibling as HTMLElement
+        child = child.nextSibling as Element
       }
     }
   }
@@ -201,7 +203,7 @@ export class Stencil extends Shape {
   drawNode(
     canvas: SvgCanvas2D,
     shape: Shape,
-    node: HTMLElement,
+    node: Element,
     aspect: Rectangle,
     disableShadow: boolean,
     paint: boolean,
@@ -229,7 +231,7 @@ export class Stencil extends Shape {
           const arcSize = Number(node.getAttribute('arcSize'))
 
           // Renders the elements inside the given path
-          let childNode = node.firstChild as HTMLElement
+          let childNode = node.firstChild as Element
           while (childNode != null) {
             if (childNode.nodeType === NodeType.element) {
               const childName = childNode.nodeName
@@ -249,7 +251,7 @@ export class Stencil extends Shape {
                 break
               }
             }
-            childNode = childNode.nextSibling as HTMLElement
+            childNode = childNode.nextSibling as Element
           }
 
           if (!parseRegularly && pointCount > 0) {
@@ -277,7 +279,7 @@ export class Stencil extends Shape {
               this.drawNode(
                 canvas,
                 shape,
-                childNode as HTMLElement,
+                childNode as Element,
                 aspect,
                 disableShadow,
                 paint,
@@ -483,16 +485,16 @@ export namespace Stencil {
    * Static global variable that specifies the default value for the
    * localized attribute of the text element. Default is `false`.
    */
-  export const defaultLocalized = false
+  export let defaultLocalized = false
 
   /**
    * Static global switch that specifies if the use of eval is allowed
    * for evaluating text content and images. Default is `false`. Set
    * this to `true` if stencils can not contain user input.
    */
-  export const allowEval = false
+  export let allowEval = false
 
-  const stencils: { [name: string]: Stencil } = {}
+  export const stencils: { [name: string]: Stencil } = {}
 
   export function addStencil(name: string, stencil: Stencil) {
     stencils[name] = stencil

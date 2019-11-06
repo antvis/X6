@@ -1,11 +1,15 @@
 import { EditorGraph } from './graph'
-import { DataItem, generals } from './sidebar-data'
-import { util } from '../../../../../src'
+import { util, Point, Style, Cell } from '../../../../../src'
+import arrowUrl from '../../../../../src/addon/stencils/arrows.xml'
+import flowchartUrl from '../../../../../src/addon/stencils/flowchart.xml'
+import { StencilRegistry } from './stencil-registry'
+import { DataItem, generals, getUMLPaletteItems } from './sidebar-data'
 
 export interface Palette {
   title: string
   expand: boolean
-  items: PaletteItem[]
+  items?: PaletteItem[]
+  load?: Promise<PaletteItem[]>
 }
 
 export interface PaletteItem {
@@ -20,16 +24,41 @@ export interface PaletteItem {
 
 const palettes: Palette[] = []
 
-palettes.push({
-  title: 'General',
-  expand: true,
-  items: generals.map(data => (
-    {
-      data,
-      render: getRenderer(data),
-    }
-  )),
-})
+palettes.push(
+  {
+    title: 'General',
+    expand: true,
+    items: generals.map(data => (
+      {
+        data,
+        render: getRenderer(data),
+      }
+    )),
+  },
+  {
+    title: 'Flow',
+    expand: true,
+    load: loadStencil(flowchartUrl, {
+      fill: '#fff',
+      stroke: '#000',
+      strokeWidth: 2,
+    }),
+  },
+  {
+    title: 'UML',
+    expand: true,
+    items: getUMLPaletteItems(),
+  },
+  {
+    title: 'Arrows',
+    expand: true,
+    load: loadStencil(arrowUrl, {
+      fill: '#fff',
+      stroke: '#000',
+      strokeWidth: 2,
+    }),
+  },
+)
 
 export function getPalettes() {
   return palettes
@@ -70,7 +99,7 @@ function getTempGraph() {
   return graph
 }
 
-function getRenderer(item: DataItem) {
+export function getRenderer(item: DataItem) {
   return (
     container: HTMLDivElement,
     thumbWidth: number,
@@ -82,42 +111,120 @@ function getRenderer(item: DataItem) {
     const graph = getTempGraph()
 
     graph.view.scaleAndTranslate(1, 0, 0)
-    graph.addNode({
-      width,
-      height,
-      data: item.data,
-      style: item.style,
-    })
-
-    const bounds = graph.getGraphBounds()
-    const scale = Math.floor(Math.min(
-      (thumbWidth - 2 * thumbBorder) / bounds.width,
-      (thumbHeight - 2 * thumbBorder) / bounds.height,
-    ) * 100) / 100
-
-    graph.view.scaleAndTranslate(
-      scale,
-      Math.floor((thumbWidth - bounds.width * scale) / 2 / scale - bounds.x),
-      Math.floor((thumbHeight - bounds.height * scale) / 2 / scale - bounds.y),
-    )
-
-    let node = util.createElement('div')
-    if (graph.dialect === 'svg') {
-      const stage = graph.view.getStage() as SVGGElement
-      const svg = stage.ownerSVGElement!.cloneNode(true) as SVGElement
-      svg.style.position = 'relative'
-      svg.style.overflow = 'hidden'
-      svg.style.left = ''
-      svg.style.top = ''
-      svg.style.width = util.toPx(thumbWidth)
-      svg.style.height = util.toPx(thumbHeight)
-
-      node.appendChild(svg)
+    if (item.isEdge) {
+      graph.addEdge({
+        data: item.data,
+        style: { ...item.style, stroke: '#000' },
+        points: item.points ? [...item.points] : [],
+        sourcePoint: new Point(0, height),
+        targetPoint: new Point(width, 0),
+      })
     } else {
-      node.innerHTML = graph.container.innerHTML
+      graph.addNode({
+        width,
+        height,
+        data: item.data,
+        style: item.style,
+      })
     }
 
-    container.appendChild(node)
-    graph.getModel().clear()
+    renderThumb(graph, container, thumbWidth, thumbHeight, thumbBorder)
   }
+}
+
+export function getRendererForCells(cells: Cell[]) {
+  return (
+    container: HTMLDivElement,
+    thumbWidth: number,
+    thumbHeight: number,
+    thumbBorder: number,
+  ) => {
+    const graph = getTempGraph()
+    graph.view.scaleAndTranslate(1, 0, 0)
+    graph.addCells(cells)
+    renderThumb(graph, container, thumbWidth, thumbHeight, thumbBorder)
+  }
+}
+
+function renderThumb(
+  graph: EditorGraph,
+  container: HTMLDivElement,
+  thumbWidth: number,
+  thumbHeight: number,
+  thumbBorder: number,
+) {
+  const bounds = graph.getGraphBounds()
+  const scale = Math.floor(Math.min(
+    (thumbWidth - 2 * thumbBorder) / bounds.width,
+    (thumbHeight - 2 * thumbBorder) / bounds.height,
+  ) * 100) / 100
+
+  graph.view.scaleAndTranslate(
+    scale,
+    Math.floor((thumbWidth - bounds.width * scale) / 2 / scale - bounds.x),
+    Math.floor((thumbHeight - bounds.height * scale) / 2 / scale - bounds.y),
+  )
+
+  let node = util.createElement('div')
+  if (graph.dialect === 'svg') {
+    const stage = graph.view.getStage() as SVGGElement
+    const svg = stage.ownerSVGElement!.cloneNode(true) as SVGElement
+    svg.style.position = 'relative'
+    svg.style.overflow = 'hidden'
+    svg.style.left = ''
+    svg.style.top = ''
+    svg.style.width = util.toPx(thumbWidth)
+    svg.style.height = util.toPx(thumbHeight)
+
+    node.appendChild(svg)
+  } else {
+    node.innerHTML = graph.container.innerHTML
+  }
+
+  container.appendChild(node)
+  graph.getModel().clear()
+}
+
+function getTagsForStencil(
+  packageName: string,
+  stencilName: string,
+  moreTags?: string[]
+) {
+  const tags = packageName.split('.').map(tag => tag.replace(/_/g, ' '))
+
+  tags.push(stencilName.replace(/_/g, ' '))
+
+  if (moreTags != null) {
+    tags.push(...moreTags)
+  }
+
+  return tags
+}
+
+function loadStencil(url: string, style: Style) {
+  const items: PaletteItem[] = []
+
+  return StencilRegistry.loadStencilSet(url, false, (
+    packageName: string,
+    stencilName: string,
+    title: string,
+    width: number,
+    height: number,
+  ) => {
+    const shapeName = StencilRegistry.getShapeName(packageName, stencilName)
+    const tags = getTagsForStencil(packageName, stencilName)
+
+    const data: DataItem = {
+      title,
+      width,
+      height,
+      style: { ...style, shape: shapeName },
+      tags: tags.join(' '),
+    }
+
+    items.push({
+      data,
+      render: getRenderer(data),
+    })
+  }).then(() => items)
 }

@@ -1,7 +1,8 @@
-import { Events } from '../common/events'
-import { UndoableEdit } from './undoableedit'
+import { Primer, Disposable } from '../common'
+import { UndoableEdit } from '../change/undoableedit'
+import { Graph, View, Model } from '../core'
 
-export class UndoManager extends Events {
+export class UndoManager extends Primer {
   private size: number
   private cursor: number
   private history: UndoableEdit[]
@@ -15,7 +16,7 @@ export class UndoManager extends Events {
   clear() {
     this.cursor = 0
     this.history = []
-    this.trigger(UndoManager.EVENTS.CLEAR)
+    this.trigger(UndoManager.events.clear)
   }
 
   isEmpty() {
@@ -37,7 +38,7 @@ export class UndoManager extends Events {
       edit.undo()
 
       if (edit.isSignificant()) {
-        this.trigger(UndoManager.EVENTS.UNDO, edit)
+        this.trigger(UndoManager.events.undo, edit)
         break
       }
     }
@@ -50,13 +51,13 @@ export class UndoManager extends Events {
       const edit = this.history[this.cursor]
       edit.redo()
       if (edit.isSignificant()) {
-        this.trigger(UndoManager.EVENTS.REDO, edit)
+        this.trigger(UndoManager.events.redo, edit)
         break
       }
     }
   }
 
-  undoableEditHappened(edit: UndoableEdit) {
+  add(edit: UndoableEdit) {
     this.trim()
 
     if (
@@ -68,7 +69,7 @@ export class UndoManager extends Events {
 
     this.history.push(edit)
     this.cursor = this.history.length
-    this.trigger(UndoManager.EVENTS.ADD, edit)
+    this.trigger(UndoManager.events.add, edit)
   }
 
   trim() {
@@ -81,13 +82,38 @@ export class UndoManager extends Events {
       edits.forEach(edit => edit.dispose())
     }
   }
+
+  @Disposable.aop()
+  dispose() {
+    this.clear()
+  }
 }
 
 export namespace UndoManager {
-  export const EVENTS = {
-    ADD: 'add',
-    UNDO: 'undo',
-    REDO: 'redo',
-    CLEAR: 'clear',
+  export function create(graph: Graph) {
+    const undoManager = new UndoManager()
+    const undoListener = (edit: UndoableEdit) => undoManager.add(edit)
+    graph.view.on(View.events.undo, undoListener)
+    graph.model.on(Model.events.afterUndo, undoListener)
+
+    const undoHandler = (edit: UndoableEdit) => {
+      const cells = graph.changeManager
+        .getSelectionCellsForChanges(edit.changes)
+        .filter(cell => (graph.view.getState(cell) != null))
+
+      graph.selectCells(cells)
+    }
+
+    undoManager.on(UndoManager.events.undo, undoHandler)
+    undoManager.on(UndoManager.events.redo, undoHandler)
+
+    return undoManager
+  }
+
+  export const events = {
+    add: 'add',
+    undo: 'undo',
+    redo: 'redo',
+    clear: 'clear',
   }
 }

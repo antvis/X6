@@ -15,7 +15,6 @@ export class Cell extends Disposable {
   public children: Cell[] | null
   public edges: Cell[] | null
   public collapsed: boolean
-  public connectable: boolean
 
   public source: Cell | null
   public target: Cell | null
@@ -140,18 +139,6 @@ export class Cell extends Disposable {
     }
 
     return edge
-  }
-
-  isConnectable() {
-    return this.connectable
-  }
-
-  setConnectable(connectable: boolean) {
-    this.connectable = connectable
-  }
-
-  toggleConnectable() {
-    this.connectable = !this.connectable
   }
 
   isCollapsed() {
