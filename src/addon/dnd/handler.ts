@@ -125,10 +125,10 @@ function prepare(e: MouseEvent | TouchEvent) {
     data.trigger,
   )
 
-  data.proxy = getDndElement(
+  data.preview = getDndElement(
     instance,
     data.trigger,
-    options.proxy,
+    options.preview,
     () => (data!.target.cloneNode(true) as HTMLElement),
   )
 
@@ -142,20 +142,20 @@ function prepare(e: MouseEvent | TouchEvent) {
   // 将代理元素插入文档，设置样式等
   data.instance.trigger(Dnd.events.prepare, data)
 
-  const proxyOffset = getOffset(data.trigger)
+  const triggerOffset = getOffset(data.trigger)
   const triggerWidth = outerWidth(data.trigger)
   const triggerHeight = outerHeight(data.trigger)
-  const rateX = (data.pageX - proxyOffset.left) / triggerWidth
-  const rateY = (data.pageY - proxyOffset.top) / triggerHeight
+  const rateX = (data.pageX - triggerOffset.left) / triggerWidth
+  const rateY = (data.pageY - triggerOffset.top) / triggerHeight
 
-  proxyWidth = outerWidth(data.proxy)
-  proxyHeight = outerHeight(data.proxy)
+  previewWidth = outerWidth(data.preview)
+  previewHeight = outerHeight(data.preview)
 
-  data.diffX = rateX * proxyWidth
-  data.diffY = rateY * proxyHeight
+  data.diffX = rateX * previewWidth
+  data.diffY = rateY * previewHeight
 
-  data.proxy.style.left = `${data.pageX - data.diffX}px`
-  data.proxy.style.top = `${data.pageY - data.diffY}px`
+  data.preview.style.left = `${data.pageX - data.diffX}px`
+  data.preview.style.top = `${data.pageY - data.diffY}px`
 
   addListeners(['mousemove', 'mouseup', 'touchmove', 'touchend'])
 }
@@ -165,8 +165,8 @@ let fixLeft: number
 let regionOffset: { left: number, top: number } | null
 let regionHeight: number
 let regionWidth: number
-let proxyWidth: number
-let proxyHeight: number
+let previewWidth: number
+let previewHeight: number
 
 function onDragStart() {
   const state = data!
@@ -174,13 +174,13 @@ function onDragStart() {
   state.isPreparing = false
   state.isDragging = true
 
-  const proxyOffset = getOffset(state.proxy)
-  const parentOffset = getOffset(state.proxy.parentNode as HTMLElement)
-  const style = state.proxy.style
+  const previewOffset = getOffset(state.preview)
+  const parentOffset = getOffset(state.preview.parentNode as HTMLElement)
+  const style = state.preview.style
 
   // 修正值
-  fixLeft = proxyOffset.left - parentOffset.left - parseFloat(style.left || '0')
-  fixTop = proxyOffset.top - parentOffset.top - parseFloat(style.top || '0')
+  fixLeft = previewOffset.left - parentOffset.left - parseFloat(style.left || '0')
+  fixTop = previewOffset.top - parentOffset.top - parseFloat(style.top || '0')
 
   // 区域
   regionOffset = getOffset(state.region)
@@ -201,7 +201,7 @@ function onDragging() {
     const offset = regionOffset!
     if (
       left >= offset.left &&
-      left + proxyWidth <= offset.left + regionWidth
+      left + previewWidth <= offset.left + regionWidth
     ) {
       return left - fixLeft
     }
@@ -210,14 +210,14 @@ function onDragging() {
       return offset.left - fixLeft
     }
 
-    return offset.left + regionWidth - proxyWidth - fixLeft
+    return offset.left + regionWidth - previewWidth - fixLeft
   }
 
   const getTop = () => {
     const offset = regionOffset!
     if (
       top >= offset.top &&
-      top + proxyHeight <= offset.top + regionHeight
+      top + previewHeight <= offset.top + regionHeight
     ) {
       return top - fixTop
     }
@@ -226,10 +226,10 @@ function onDragging() {
       return offset.top - fixTop
     }
 
-    return offset.top + regionHeight - proxyHeight - fixTop
+    return offset.top + regionHeight - previewHeight - fixTop
   }
 
-  const style = state.proxy.style
+  const style = state.preview.style
   if (axis !== 'y') {
     style.left = `${getLeft()}px`
   }
@@ -250,7 +250,7 @@ function onDragEnterLeaveOver() {
   }
 
   if (state.activeContainer) {
-    if (!isContained(state.activeContainer, state.proxy, fully)) {
+    if (!isContained(state.activeContainer, state.preview, fully)) {
       state.instance.trigger(Dnd.events.dragLeave, state)
       state.activeContainer = null
     } else {
@@ -259,7 +259,7 @@ function onDragEnterLeaveOver() {
   } else {
     for (let i = 0, ii = containers.length; i < ii; i += 1) {
       const container = containers[i]
-      if (isContained(container, state.proxy, fully)) {
+      if (isContained(container, state.preview, fully)) {
         state.activeContainer = container
         state.instance.trigger(Dnd.events.dragEnter, state)
         break
@@ -284,8 +284,8 @@ function clear() {
   regionOffset = null
   regionHeight = 0
   regionWidth = 0
-  proxyWidth = 0
-  proxyHeight = 0
+  previewWidth = 0
+  previewHeight = 0
 }
 
 function updatePosition(e: MouseEvent | TouchEvent) {

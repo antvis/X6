@@ -53,7 +53,7 @@ export namespace Dnd {
     /**
      * 拖动时的代理元素
      */
-    proxy?: HTMLElementOrFunc
+    preview?: HTMLElementOrFunc
     /**
      * 目标元素，拖动结束时实际移动的元素
      */
@@ -72,7 +72,7 @@ export namespace Dnd {
     instance: Dnd,
     trigger: HTMLElement
     target: HTMLElement
-    proxy: HTMLElement
+    preview: HTMLElement
     region: HTMLElement
     containers: HTMLElement[]
     activeContainer?: HTMLElement | null

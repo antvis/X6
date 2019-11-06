@@ -24,7 +24,7 @@ export function initDnd(palette: HTMLDivElement) {
 
 function onPrepare(state: Dnd.State) {
   const data = getDataItem(state.trigger)
-  const proxy = state.proxy
+  const proxy = state.preview
 
   proxy.className = 'x6-cell-thumb-proxy'
   if (data) {
@@ -36,9 +36,9 @@ function onPrepare(state: Dnd.State) {
 }
 
 function onDragEnd(state: Dnd.State) {
-  const parent = state.proxy.parentNode
+  const parent = state.preview.parentNode
   if (parent != null) {
-    parent.removeChild(state.proxy)
+    parent.removeChild(state.preview)
   }
 }
 
