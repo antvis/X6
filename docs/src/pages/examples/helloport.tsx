@@ -26,9 +26,13 @@ export default class HelloPort extends React.Component {
     graph.batchUpdate(() => {
       const n1 = graph.addNode({
         data: 'Hello',
-        x: 20, y: 80,
-        width: 80, height: 30,
-        connectable: false,
+        x: 20,
+        y: 80,
+        width: 80,
+        height: 30,
+        style: {
+          connectable: false,
+        }
       })
 
       const n11 = graph.addNode({

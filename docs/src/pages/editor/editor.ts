@@ -1,5 +1,5 @@
 import { EditorGraph, GraphView } from './graph'
-import { Primer, Style, Constraint, Point } from '../../../../src'
+import { Primer, Style, Constraint, Point, FontStyle } from '../../../../src'
 import avatarMale from './images/male.png'
 import avatarFemale from './images/female.png'
 import './editor.less'
@@ -66,7 +66,7 @@ export class Editor extends Primer {
     graph.batchUpdate(() => {
       const size = { width: 80, height: 30 }
       const n1 = graph.addNode({ ...size, data: 'Hello', x: 240, y: 60 })
-      const n2 = graph.addNode({ ...size, data: 'World', x: 440, y: 240 })
+      const n2 = graph.addNode({ ...size, data: 'World', x: 400, y: 200 })
       graph.addEdge({ source: n1, target: n2 })
     })
   }
@@ -112,43 +112,63 @@ export class Editor extends Primer {
         strokeWidth: 2,
       }
 
+      const parent = graph.addNode({
+        data: '组织关系图',
+        x: 50, y: 300, width: 700, height: 600,
+        alternateBounds: { x: 0, y: 0, width: 88, height: 20 },
+        style: {
+          editable: false,
+          rotatable: false,
+          resizable: false,
+          connectable: false,
+          align: 'left',
+          verticalAlign: 'top',
+          spacingLeft: 16,
+          strokeWidth: 2,
+          stroke: '#7a4ff9',
+          fontStyle: FontStyle.bold,
+          fontColor: '#7a4ff9',
+        }
+      })
+
       const ceo = graph.addNode({
-        ...size, style, x: 310, y: 400,
+        ...size, style, parent, x: 260, y: 40,
         data: this.renderORGHTML('ceo', avatarMale, 'CEO', 'Bart Simpson')
       })
       const vp1 = graph.addNode({
-        ...size, style, x: 80, y: 560,
+        ...size, style, parent, x: 40, y: 220,
         data: this.renderORGHTML('vp', avatarMale, 'Marketing', 'Homer Simpson')
 
       })
       const vp2 = graph.addNode({
-        ...size, style, x: 310, y: 560,
+        ...size, style, parent, x: 260, y: 220,
         data: this.renderORGHTML('vp', avatarFemale, 'Sales', 'Marge Simpson')
 
       })
       const vp3 = graph.addNode({
-        ...size, style, x: 540, y: 560,
+        ...size, style, parent, x: 480, y: 220,
         data: this.renderORGHTML('vp', avatarFemale, 'Production', 'Lisa Simpson')
       })
 
-      graph.addEdge({ source: ceo, target: vp1, style: { ...edgeStyle } })
-      graph.addEdge({ source: ceo, target: vp2, style: { ...edgeStyle } })
-      graph.addEdge({ source: ceo, target: vp3, style: { ...edgeStyle } })
+      graph.addEdge({ parent, source: ceo, target: vp1, style: { ...edgeStyle } })
+      graph.addEdge({ parent, source: ceo, target: vp2, style: { ...edgeStyle } })
+      graph.addEdge({ parent, source: ceo, target: vp3, style: { ...edgeStyle } })
 
       const m1 = graph.addNode({
-        ...size, style, x: 185, y: 720,
+        ...size, style, parent, x: 145, y: 360,
         data: this.renderORGHTML('manager', avatarMale, 'Manager', 'Lenny Leonard')
       })
       const m2 = graph.addNode({
-        ...size, style, x: 185, y: 860,
+        ...size, style, parent, x: 145, y: 480,
         data: this.renderORGHTML('manager', avatarMale, 'Manager', 'Carl Carlson')
       })
       const m3 = graph.addNode({
-        ...size, style, x: 415, y: 720,
+        ...size, style, parent, x: 365, y: 360,
         data: this.renderORGHTML('manager', avatarFemale, 'Manager', 'Maggie Simpson')
       })
 
       graph.addEdge({
+        parent,
         source: vp1,
         target: m1,
         style: {
@@ -161,6 +181,7 @@ export class Editor extends Primer {
         }
       })
       graph.addEdge({
+        parent,
         source: vp1,
         target: m2,
         style: {
@@ -173,6 +194,7 @@ export class Editor extends Primer {
         }
       })
       graph.addEdge({
+        parent,
         source: vp2,
         target: m3,
         style: {
