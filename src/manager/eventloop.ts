@@ -7,7 +7,6 @@ import { BaseManager } from './manager-base'
 import { Point } from '../struct'
 
 export class EventLoop extends BaseManager {
-  isMouseDown: boolean = false
 
   protected mouseListeners: IMouseHandler[]
 
@@ -21,7 +20,9 @@ export class EventLoop extends BaseManager {
   protected lastTouchCell: Cell | null
   protected lastTouchEvent: MouseEvent
 
-  protected isMouseTrigger: boolean = false
+  isMouseDown: boolean = false
+  isMouseTrigger: boolean = false
+
   protected fireDoubleClick: boolean = false
   protected doubleClickCounter: number = 0
 

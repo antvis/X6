@@ -46,8 +46,8 @@ export function handle(e: MouseEvent) {
     addListeners(['mouseup', 'touchend'])
     onMouseDown(e)
   } else if (
-    eventName === 'mousemove' ||
-    eventName === 'touchmove'
+    (eventName === 'mousemove' || eventName === 'touchmove') &&
+    state != null
   ) {
     if (state.isPreparing) {
       onDragStart()
@@ -61,8 +61,8 @@ export function handle(e: MouseEvent) {
     clearSelection()
     e.preventDefault()
   } else if (
-    eventName === 'mouseup' ||
-    eventName === 'touchend'
+    (eventName === 'mouseup' || eventName === 'touchend') &&
+    state != null
   ) {
     removeListeners(['mouseup', 'touchend'])
     if (timer) {
@@ -94,12 +94,12 @@ function onMouseDown(e: MouseEvent | TouchEvent) {
 }
 
 function prepare(e: MouseEvent | TouchEvent) {
-  let trigger: HTMLElement | null = null
+  let element: HTMLElement | null = null
   let instance: Dnd | null = null
   const parents = getParents(e.target as HTMLElement)
   for (let i = 0, ii = parents.length; i < ii; i += 1) {
-    trigger = parents[i]
-    instance = Dnd.getInstance(trigger)
+    element = parents[i]
+    instance = Dnd.getInstance(element)
     if (instance != null) {
       break
     }
@@ -114,27 +114,21 @@ function prepare(e: MouseEvent | TouchEvent) {
 
   data = {} as Dnd.State
   data.e = e
+  data.element = element!
   data.instance = instance
   data.isPreparing = true
   data.isDragging = false
-  data.trigger = trigger!
-  data.target = getDndElement(
-    instance,
-    data.trigger,
-    options.target,
-    data.trigger,
-  )
 
   data.preview = getDndElement(
     instance,
-    data.trigger,
+    data.element,
     options.preview,
-    () => (data!.target.cloneNode(true) as HTMLElement),
+    () => (data!.element.cloneNode(true) as HTMLElement),
   )
 
-  data.region = getDndElement(instance, data.trigger, options.region, doc.body)
+  data.region = getDndElement(instance, data.element, options.region, doc.body)
   data.containers = typeof options.containers === 'function'
-    ? options.containers.call(instance, data.trigger)
+    ? options.containers.call(instance, data.element)
     : options.containers
 
   updatePosition(e)
@@ -142,11 +136,11 @@ function prepare(e: MouseEvent | TouchEvent) {
   // 将代理元素插入文档，设置样式等
   data.instance.trigger(Dnd.events.prepare, data)
 
-  const triggerOffset = getOffset(data.trigger)
-  const triggerWidth = outerWidth(data.trigger)
-  const triggerHeight = outerHeight(data.trigger)
-  const rateX = (data.pageX - triggerOffset.left) / triggerWidth
-  const rateY = (data.pageY - triggerOffset.top) / triggerHeight
+  const offset = getOffset(data.element)
+  const width = outerWidth(data.element)
+  const height = outerHeight(data.element)
+  const rateX = (data.pageX - offset.left) / width
+  const rateY = (data.pageY - offset.top) / height
 
   previewWidth = outerWidth(data.preview)
   previewHeight = outerHeight(data.preview)

@@ -9,10 +9,10 @@ export class Dnd extends Primer {
     super()
     this.options = options
     this.disabled = options.disabled != null ? options.disabled : false
-    if (options.trigger == null || options.trigger.nodeType !== 1) {
+    if (options.element == null || options.element.nodeType !== 1) {
       throw new Error('The trigger element for dnd is illegal.')
     }
-    Dnd.stamp(options.trigger, this)
+    Dnd.stamp(options.element, this)
   }
 
   enable() {
@@ -42,25 +42,9 @@ export namespace Dnd {
     ((this: Dnd, trigger: HTMLElement) => HTMLElement)
 
   export interface Options {
-    /**
-     * 触发拖动的元素
-     */
-    trigger: HTMLElement
-    /**
-     * 接受拖动结果的容器
-     */
+    element: HTMLElement
     containers: HTMLElement[] | ((this: Dnd, trigger: HTMLElement) => HTMLElement[])
-    /**
-     * 拖动时的代理元素
-     */
     preview?: HTMLElementOrFunc
-    /**
-     * 目标元素，拖动结束时实际移动的元素
-     */
-    target?: HTMLElementOrFunc
-    /**
-     * 区域限制的元素
-     */
     region?: HTMLElementOrFunc
     fully?: boolean
     axis?: 'x' | 'y'
@@ -70,8 +54,7 @@ export namespace Dnd {
   export interface State {
     e: MouseEvent | TouchEvent
     instance: Dnd,
-    trigger: HTMLElement
-    target: HTMLElement
+    element: HTMLElement
     preview: HTMLElement
     region: HTMLElement
     containers: HTMLElement[]

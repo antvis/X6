@@ -106,14 +106,14 @@ export class GuideHandler extends MouseHandler {
     }
   }
 
-  protected isGuideEnabledForEvent(e: MouseEventEx) {
+  isGuideEnabledForEvent(e: MouseEventEx | MouseEvent) {
     return isGuideEnabled({
       graph: this.graph,
-      e: e.getEvent(),
+      e: e instanceof MouseEventEx ? e.getEvent() : e,
     })
   }
 
-  protected getStatesForGuide() {
+  getStatesForGuide() {
     const parent = this.graph.getDefaultParent()
     const cells = this.graph.model.filterDescendants(
       cell => (

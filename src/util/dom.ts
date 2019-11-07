@@ -398,11 +398,11 @@ export function getDocumentScrollOrigin(doc: Document) {
  * Returns the top, left corner of the viewrect.
  */
 export function getScrollOrigin(
-  node: HTMLElement,
+  node: HTMLElement | null,
   includeAncestors: boolean = false,
   includeDocument: boolean = true,
 ) {
-  const doc = (node != null) ? node.ownerDocument! : document
+  const doc = node != null ? node.ownerDocument! : document
   const b = doc.body
   const d = doc.documentElement
   const result = new Point()
