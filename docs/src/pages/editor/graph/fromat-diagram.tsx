@@ -1,18 +1,19 @@
 import React from 'react'
-import { Checkbox, InputNumber, Select } from 'antd'
+import { Checkbox, InputNumber, Select, Radio } from 'antd'
 import { ColorResult } from 'react-color'
 import { ColorPicker } from '../../../components'
 import { getEditor } from '../index'
-import './format.less'
 import { GuideOptions } from '../../../../../src/handler/guide/option'
 import { PageSize } from '../../../../../src'
+import './format.less'
 
 export class FormatDiagram extends React.PureComponent {
   state = {
-    grid: true,
+    gridEnabled: true,
     gridSize: 10,
     minGridSize: 4,
     gridColor: '#ff0000',
+    gridStyle: 'line',
     guide: true,
     pageView: true,
     pageSize: 'a4',
@@ -31,7 +32,7 @@ export class FormatDiagram extends React.PureComponent {
     const guideOptions = graph.options.guide as GuideOptions
 
     this.setState({
-      grid: graph.gridEnabled,
+      gridEnabled: graph.gridEnabled,
       gridSize: graph.gridSize,
       minGridSize: graph.view.minGridSize,
       gridColor: graph.view.gridColor,
@@ -48,7 +49,7 @@ export class FormatDiagram extends React.PureComponent {
     graph.view.validate()
 
     this.setState({
-      grid: checked,
+      gridEnabled: checked,
     })
   }
 
@@ -76,6 +77,14 @@ export class FormatDiagram extends React.PureComponent {
     this.setState({
       guide: checked,
     })
+  }
+
+  onGridStyleChange = (e: any) => {
+    const gridStyle = e.target.value
+    const graph = this.graph
+    graph.view.gridStyle = gridStyle
+    graph.view.validateBackgroundPage()
+    this.setState({ gridStyle })
   }
 
   onPageSizeChange = (value: string) => {
@@ -107,28 +116,56 @@ export class FormatDiagram extends React.PureComponent {
           Diagram
         </div>
         <div className="x6-editor-format-content">
+
           <div className="x6-editor-format-section ">
-            <div className="section-title">View</div>
+            <div className="section-title">Grid</div>
             <div className="section-item">
               <Checkbox
-                checked={this.state.grid}
-                style={{ width: 88 }}
+                checked={this.state.gridEnabled}
                 onChange={this.onGridEnableChange}
               >
-                Grid
+                Enabled
               </Checkbox>
+            </div>
+            <div className="section-item">
+              <span style={{ width: 64 }}>
+                Grid Size
+              </span>
               <InputNumber
+                style={{ flex: 1 }}
                 min={this.state.minGridSize}
                 value={this.state.gridSize}
-                style={{ width: 56 }}
+                disabled={!this.state.gridEnabled}
                 onChange={this.onGridSizeChange}
               />
+            </div>
+            <div className="section-item">
+              <span style={{ width: 64 }}>
+                Grid Color
+              </span>
               <ColorPicker
+                style={{ flex: 1 }}
                 value={this.state.gridColor}
                 onChange={this.onGridColorChange}
-                style={{ width: 56, marginLeft: 8 }}
+                disabled={!this.state.gridEnabled}
               />
             </div>
+            <div className="section-item">
+              <span style={{ width: 64 }}>
+                Grid Style
+              </span>
+              <Radio.Group
+                value={this.state.gridStyle}
+                onChange={this.onGridStyleChange}
+                disabled={!this.state.gridEnabled}
+              >
+                <Radio value="line">Line</Radio>
+                <Radio value="dot">Dot</Radio>
+              </Radio.Group>
+            </div>
+          </div>
+          <div className="x6-editor-format-section ">
+            <div className="section-title">Options</div>
             <div className="section-item">
               <Checkbox
                 checked={this.state.guide}

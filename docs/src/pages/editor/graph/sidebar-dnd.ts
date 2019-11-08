@@ -47,11 +47,10 @@ function onDrop(state: Dnd.State) {
     state.activeContainer === graph.container &&
     state.data != null
   ) {
-    const offset = util.getOffset(state.activeContainer)
+    const shape = graph.view.getBackgroundPageShape()!
+    const offset = util.getOffset(shape.elem as HTMLElement)
     const x = state.pageX - offset.x - state.diffX
     const y = state.pageY - offset.y - state.diffY
-
-    // console.log(offset, origin)
 
     graph.addNode({
       x,
@@ -60,8 +59,6 @@ function onDrop(state: Dnd.State) {
       height: state.data.height,
       style: state.data.style,
     })
-
   }
-  // console.log(state)
 }
 

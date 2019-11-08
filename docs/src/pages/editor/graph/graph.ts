@@ -185,6 +185,7 @@ export class EditorGraph extends Graph {
 
   resetScrollbars() {
     const container = this.container
+
     if (this.pageVisible && util.hasScrollbars(container)) {
       const padding = this.getPagePadding()
       container.scrollLeft = Math.floor(Math.min(

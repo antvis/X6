@@ -2119,6 +2119,10 @@ export class View extends Primer {
     return this.decoratorPane!
   }
 
+  getBackgroundPageShape() {
+    return this.backgroundPageShape
+  }
+
   setCurrentRoot(root: Cell | null) {
     if (this.currentRoot !== root) {
       const change = new CurrentRootChange(this, root)

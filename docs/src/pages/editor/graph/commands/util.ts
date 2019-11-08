@@ -1,6 +1,6 @@
-import * as util from '../../util'
-import { Graph } from '../../core'
-import { Point, FontStyle } from '../../struct'
+import * as util from '../../../../../../src/util'
+import { Graph } from '../../../../../../src/core'
+import { Point, FontStyle } from '../../../../../../src/struct'
 
 export function autosize(graph: Graph) {
   const cells = graph.getSelectedCells()

@@ -1,14 +1,25 @@
 import React from 'react'
 import { Toolbar, Icon, Menu } from '../../../components'
+import { getEditor } from '..'
 
 const Item = Toolbar.Item
 const Group = Toolbar.Group
 
 export class GraphToolbar extends React.PureComponent {
+  handleClick = (name: string) => {
+    console.log(name)
+    const editor = getEditor()
+    if (editor) {
+      const cmd = editor.commands.get(name)
+      if (cmd) {
+        console.log(cmd)
+      }
+    }
+  }
+
   renderZoomDropdown() {
     const MenuItem = Menu.Item
     const Divider = Menu.Divider
-
 
     return (
       <Menu hasIcon={false}>
@@ -30,7 +41,7 @@ export class GraphToolbar extends React.PureComponent {
 
   render() {
     return (
-      <Toolbar hoverEffect={true} size="small">
+      <Toolbar hoverEffect={true} size="small" onClick={this.handleClick}>
         <Group>
           <Item
             name="zoom"
@@ -42,11 +53,8 @@ export class GraphToolbar extends React.PureComponent {
           </Item>
         </Group>
         <Group>
-          <Item
-            name="zoomin"
-            tooltip="Zoom In (Cmd + (Numpad))"
-            icon={<Icon icon={Icons.zoomIn} svg={true} />} />
-          <Item name="zoomout" tooltip="Zoom Out (Cmd - (Numpad))" icon={<Icon icon={Icons.zoomOut} svg={true} />} />
+          <Item name="zoomIn" tooltip="Zoom In (Cmd + (Numpad))" icon={<Icon icon={Icons.zoomIn} svg={true} />} />
+          <Item name="zoomOut" tooltip="Zoom Out (Cmd - (Numpad))" icon={<Icon icon={Icons.zoomOut} svg={true} />} />
         </Group>
         <Group>
           <Item name="undo" tooltip="Undo (Cmd+Z)" icon={<Icon icon={Icons.undo} svg={true} />} />

@@ -1,11 +1,13 @@
 import { EditorGraph, GraphView } from './graph'
 import { Primer, Style, Constraint, Point, FontStyle } from '../../../../src'
+import { Commands } from './graph/commands'
 import avatarMale from './images/male.png'
 import avatarFemale from './images/female.png'
 import './editor.less'
 
 export class Editor extends Primer {
   graph: EditorGraph
+  commands: Commands
 
   constructor(container: HTMLElement) {
     super()
@@ -34,6 +36,11 @@ export class Editor extends Primer {
       rotate: {
         enabled: true,
       },
+      keyboard: {
+        enabled: true,
+        global: true,
+        escape: true,
+      },
       preferPageSize: true,
       rubberband: true,
       createView() {
@@ -57,6 +64,8 @@ export class Editor extends Primer {
         return null
       },
     })
+
+    this.commands = new Commands(this.graph)
 
     this.start()
   }

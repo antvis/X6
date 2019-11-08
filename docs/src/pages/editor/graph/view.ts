@@ -1,5 +1,6 @@
 import { View, Rectangle, NodeType, util } from '../../../../../src'
 import { RectangleShape } from '../../../../../src/shape'
+import { createGrid } from '../../../../../src/addon/grid'
 import { EditorGraph } from './graph'
 
 export class GraphView extends View {
@@ -63,6 +64,7 @@ export class GraphView extends View {
   gridSteps: number = 4
   minGridSize: number = 4
   gridColor: string = '#e0e0e0'
+  gridStyle: 'line' | 'dot' = 'line'
 
   validateBackgroundStyles() {
     const graph = this.graph
@@ -79,37 +81,18 @@ export class GraphView extends View {
       const position = util.toPx(ox) + ' ' + util.toPx(oy)
 
       const style = this.backgroundPageShape.elem!.style
+
       style.backgroundColor = '#ffffff'
-      style.backgroundImage = this.createGridBackgroundImage()
+      style.backgroundImage = createGrid({
+        size: this.graph.gridSize * this.scale,
+        minSize: this.minGridSize,
+        color: this.gridColor,
+        step: this.gridSteps,
+        style: this.gridStyle,
+      })
+
       style.backgroundPosition = position
     }
-  }
-
-  createGridBackgroundImage(color: string = this.gridColor) {
-    let tmp = this.graph.gridSize * this.scale
-    while (tmp < this.minGridSize) { tmp *= 2 }
-    const tmp2 = this.gridSteps * tmp
-    const d = []
-    for (let i = 1, ii = this.gridSteps; i < ii; i += 1) {
-      const tmp3 = i * tmp
-      d.push(`M 0 ${tmp3} L ${tmp2} ${tmp3} M ${tmp3} 0 L ${tmp3} ${tmp2}`)
-    }
-
-    const size = tmp2
-    const svg =
-      `<svg width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg">` +
-      '  <defs>' +
-      `    <pattern id="grid" width="${tmp2}" height="${tmp2}" patternUnits="userSpaceOnUse">` +
-      `      <path d="${d.join(' ')}" fill="none" stroke="${color}" opacity="0.2" stroke-width="1"/>` +
-      `      <path d="M ${tmp2} 0 L 0 0 0 ${tmp2}" fill="none" stroke="${color}" stroke-width="1"/>` +
-      '    </pattern>' +
-      '  </defs>' +
-      '  <rect width="100%" height="100%" fill="url(#grid)"/>' +
-      '</svg>'
-
-    const image = unescape(encodeURIComponent(svg))
-    const base64 = `url(data:image/svg+xml;base64,${window.btoa(image)})`
-    return base64
   }
 
   getBackgroundPageBounds() {

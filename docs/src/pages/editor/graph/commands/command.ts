@@ -1,19 +1,30 @@
-import { Primer } from '../../common'
-import { Graph } from '../../core'
+import { Primer } from '../../../../../../src/common'
+import { Graph } from '../../../../../../src'
 
 export class Command extends Primer {
   name: string
+  handler: (graph: Graph, arg?: any) => void
   visible: boolean
   enabled: boolean
   shortcut?: string
+  icon?: string
+  isSwitch?: boolean
+  isChecked?: (graph: Graph) => void
 
   constructor(options: Command.Options) {
     super()
 
     this.name = options.name
+    this.handler = options.handler
+
     this.enabled = options.enabled != null ? options.enabled : true
     this.visible = options.visible != null ? options.visible : true
+
+    this.icon = options.icon
     this.shortcut = options.shortcut
+
+    this.isSwitch = options.isSwitch
+    this.isChecked = options.isChecked
   }
 
   enable() {
@@ -42,16 +53,12 @@ export class Command extends Primer {
       this.enable()
     }
   }
-
-  isChecked() {
-
-  }
 }
 
 export namespace Command {
   export interface Options {
     name: string
-    handler: (arg1?: any) => void
+    handler: (graph: Graph, arg?: any) => void
     icon?: string
     visible?: boolean
     enabled?: boolean
