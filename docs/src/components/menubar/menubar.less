@@ -2,7 +2,7 @@
 @menubar-menu-item-hover-color: #212121;
 @menubar-menu-item-hover-bg: rgba(255,255,255,0);
 @menubar-menu-item-active-color: #212121;
-@menubar-menu-item-active-bg: #fff;
+@menubar-menu-item-active-bg: #ffffff;
 @menubar-item-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
 
 :global {
@@ -20,7 +20,10 @@
       justify-content: space-between;
     }
 
-    .x6-menubar-content-inner, .x6-menubar-content-extras, .x6-menubar-item, .x6-menubar-item-text {
+    .x6-menubar-content-inner,
+    .x6-menubar-content-extras,
+    .x6-menubar-item,
+    .x6-menubar-item-text {
       position: relative;
       display: inline-flex;
       flex-direction: row;
@@ -55,7 +58,8 @@
       }
     }
 
-    .x6-menubar-item-text-active, .x6-menubar-item-text-active:hover {
+    .x6-menubar-item-text-active,
+    .x6-menubar-item-text-active:hover {
       color: @menubar-menu-item-active-color;
       background: @menubar-menu-item-active-bg;
       box-shadow: @menubar-item-shadow;

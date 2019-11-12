@@ -22,7 +22,14 @@ export class Dropdown extends React.Component<Dropdown.Props, any> {
   }
 
   render() {
-    const { children, overlay: overlayElements, trigger, disabled, onMenuClick } = this.props
+    const {
+      children,
+      overlay: overlayElements,
+      trigger,
+      disabled,
+      onMenuClick
+    } = this.props
+
     const child = React.Children.only(children)
     const overlay = React.Children.only(overlayElements) as any
 
@@ -47,6 +54,8 @@ export class Dropdown extends React.Component<Dropdown.Props, any> {
       fixedOverlay = React.cloneElement(overlay, { onClick })
     }
 
+    console.log(this.props)
+
     return (
       <RcDropdown
         {...this.props}
@@ -66,7 +75,8 @@ export namespace Dropdown {
   export type Trigger = ('click' | 'hover' | 'contextMenu')
 
   export interface Props {
-    className?: string
+    overlayClassName?: string
+    openClassName?: string
     disabled?: boolean
     visible?: boolean
     align?: Object

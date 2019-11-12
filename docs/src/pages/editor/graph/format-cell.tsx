@@ -44,13 +44,13 @@ export class FormatCell
         <div className="x6-editor-format-content">
           <div className="x6-editor-format-section ">
             <div className="section-item">
-              <Checkbox style={{ width: 120 }}>
+              <Checkbox style={{ width: 136 }}>
                 Fill
               </Checkbox>
               <ColorPicker value="#ffffff" style={{ flex: 1 }} />
             </div>
             <div className="section-item">
-              <Checkbox style={{ width: 120 }}>
+              <Checkbox style={{ width: 136 }}>
                 Gradient
               </Checkbox>
               <ColorPicker value="#ffffff" style={{ flex: 1 }} />
@@ -58,7 +58,7 @@ export class FormatCell
           </div>
           <div className="x6-editor-format-section ">
             <div className="section-item">
-              <Checkbox style={{ width: 120 }}>
+              <Checkbox style={{ width: 136 }}>
                 Line
               </Checkbox>
               <ColorPicker value="#000" style={{ flex: 1 }} />
@@ -66,7 +66,7 @@ export class FormatCell
             <div className="section-item">
               <Select
                 defaultValue="solid"
-                style={{ width: 104, marginRight: 16 }}
+                style={{ width: 120, marginRight: 16 }}
                 className="x6-linestyle-select"
                 dropdownClassName="x6-linestyle-select-dropdown"
               >
@@ -93,7 +93,7 @@ export class FormatCell
           </div>
           <div className="x6-editor-format-section ">
             <div className="section-item">
-              <Checkbox style={{ width: 120 }}>
+              <Checkbox style={{ width: 136 }}>
                 Opacity
               </Checkbox>
               <InputNumber

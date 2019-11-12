@@ -47,8 +47,8 @@ export class UndoManager extends Primer {
   redo() {
     const count = this.history.length
     while (this.cursor < count) {
-      this.cursor += 1
       const edit = this.history[this.cursor]
+      this.cursor += 1
       edit.redo()
       if (edit.isSignificant()) {
         this.trigger(UndoManager.events.redo, edit)
@@ -92,7 +92,9 @@ export class UndoManager extends Primer {
 export namespace UndoManager {
   export function create(graph: Graph) {
     const undoManager = new UndoManager()
-    const undoListener = (edit: UndoableEdit) => undoManager.add(edit)
+    const undoListener = (edit: UndoableEdit) => {
+      undoManager.add(edit)
+    }
     graph.view.on(View.events.undo, undoListener)
     graph.model.on(Model.events.afterUndo, undoListener)
 
@@ -101,7 +103,7 @@ export namespace UndoManager {
         .getSelectionCellsForChanges(edit.changes)
         .filter(cell => (graph.view.getState(cell) != null))
 
-      graph.selectCells(cells)
+      graph.setSelectedCells(cells)
     }
 
     undoManager.on(UndoManager.events.undo, undoHandler)

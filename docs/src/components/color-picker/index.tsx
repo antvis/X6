@@ -7,6 +7,13 @@ import './index.less'
 
 export class ColorPicker extends
   React.Component<ColorPicker.Props, ColorPicker.State> {
+
+  handleChange = (value: ColorResult) => {
+    if (this.props.onChange) {
+      this.props.onChange(value)
+    }
+  }
+
   render() {
     const { value, onChange, disabled, ...props } = this.props
     const popoverProps: PopoverProps = {}
@@ -28,7 +35,6 @@ export class ColorPicker extends
         overlayClassName="x6-editor-color-picker-overlay"
       >
         <div
-
           className={
             classnames(
               'x6-editor-color-picker', {
@@ -55,7 +61,5 @@ export namespace ColorPicker {
     disabled?: boolean
   }
 
-  export interface State {
-    active: boolean
-  }
+  export interface State { }
 }

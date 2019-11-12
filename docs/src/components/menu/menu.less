@@ -1,4 +1,4 @@
-@menu-bg: #fff;
+@menu-bg: #ffffff;
 @menu-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);
 @menu-item-divider-bg: rgba(150, 150, 150, 0.2);
 @menu-item-text-color: #616161;
@@ -22,7 +22,8 @@
       position: relative;
     }
 
-    .x6-menu-item-active > .x6-menu-button, .x6-menu-item:hover > .x6-menu-button {
+    .x6-menu-item-active > .x6-menu-button,
+    .x6-menu-item:hover > .x6-menu-button {
       color: @menu-item-hover-color;
       background: @menu-item-hover-bg;
     }
@@ -58,7 +59,8 @@
       display: none;
     }
 
-    .x6-menu-item-disabled > .x6-menu-button, .x6-menu-item-disabled:hover > .x6-menu-button {
+    .x6-menu-item-disabled > .x6-menu-button,
+    .x6-menu-item-disabled:hover > .x6-menu-button {
       cursor: not-allowed;
       opacity: 0.4;
       color: @menu-item-text-color;
@@ -89,7 +91,8 @@
       opacity: 0.75;
     }
 
-    .x6-menu-submenu-arrow, .x6-menu-submenu.x6-menu-item-disabled:hover > .x6-menu-button > .x6-menu-submenu-arrow {
+    .x6-menu-submenu-arrow,
+    .x6-menu-submenu.x6-menu-item-disabled:hover > .x6-menu-button > .x6-menu-submenu-arrow {
       position: absolute;
       top: 10px;
       right: 12px;
@@ -102,7 +105,8 @@
       border-left: 5px solid @menu-submenu-arrow-color;
     }
 
-    .x6-menu-submenu-menu, .x6-menu-submenu.x6-menu-item-disabled:hover > .x6-menu-submenu-menu {
+    .x6-menu-submenu-menu,
+    .x6-menu-submenu.x6-menu-item-disabled:hover > .x6-menu-submenu-menu {
       position: absolute;
       z-index: 9999;
       top: -5px;

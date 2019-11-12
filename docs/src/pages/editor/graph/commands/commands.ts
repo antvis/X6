@@ -101,7 +101,7 @@ export namespace Commands {
       name: 'delete',
       shortcut: 'Delete',
       handler: (graph: Graph, e?: KeyboardEvent) => {
-        deleteCells(graph, e != null && DomEvent.isShiftDown(e))
+        deleteCells(graph, e != null ? DomEvent.isShiftDown(e) : true)
       },
     },
     {

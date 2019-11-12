@@ -1,8 +1,11 @@
 import React from 'react'
+import { SketchPicker, ColorResult } from 'react-color'
 import { Toolbar, Icon, Menu } from '../../../components'
 import { fetchEditor } from '..'
 import { Editor } from '../editor'
 import { Graph } from '../../../../../src'
+import { UndoManager } from '../../../../../src/addon/undomanager'
+import './toolbar.less'
 
 const Item = Toolbar.Item
 const Group = Toolbar.Group
@@ -13,6 +16,8 @@ export class GraphToolbar
     scale: 1,
     editor: null,
     hasSelectedCell: false,
+    canUndo: false,
+    canRedo: false,
   }
 
   componentDidMount() {
@@ -20,6 +25,18 @@ export class GraphToolbar
       editor.graph.on(Graph.events.selectionChanged, () => {
         this.setState({ hasSelectedCell: editor.graph.hasSelectedCell() })
       })
+
+      const updateUndoState = () => {
+        this.setState({
+          canUndo: editor.commands.undoManager.canUndo(),
+          canRedo: editor.commands.undoManager.canRedo(),
+        })
+      }
+
+      editor.commands.undoManager.on(UndoManager.events.undo, updateUndoState)
+      editor.commands.undoManager.on(UndoManager.events.redo, updateUndoState)
+
+      updateUndoState()
       this.setState({ editor })
     })
   }
@@ -91,6 +108,21 @@ export class GraphToolbar
     )
   }
 
+  setFillColor = (value: ColorResult) => { }
+
+  setLineColor = (value: ColorResult) => { }
+
+  renderColorPicker(name: string, onChange: (value: ColorResult) => void) {
+    const MenuItem = Menu.Item
+    return (
+      <Menu hasIcon={false}>
+        <MenuItem name={name}>
+          <SketchPicker width="220px" onChange={onChange} />
+        </MenuItem>
+      </Menu>
+    )
+  }
+
   render() {
     const editor = this.state.editor
     if (editor == null) {
@@ -98,11 +130,6 @@ export class GraphToolbar
     }
 
     const graph = editor.graph
-    const commands = editor.commands
-    const undoManager = commands.undoManager
-
-    console.log(undoManager.canRedo())
-    console.log(undoManager.canUndo())
 
     return (
       <Toolbar hoverEffect={true} size="small" onClick={this.handleClick}>
@@ -142,13 +169,13 @@ export class GraphToolbar
           <Item
             name="undo"
             tooltip="Undo (Cmd+Z)"
-            disabled={!undoManager.canUndo()}
+            disabled={!this.state.canUndo}
             icon={<Icon icon={Icons.undo} svg={true} />}
           />
           <Item
             name="redo"
             tooltip="Redo (Cmd+Shift+Z)"
-            disabled={!undoManager.canRedo()}
+            disabled={!this.state.canRedo}
             icon={<Icon icon={Icons.redo} svg={true} />}
           />
         </Group>
@@ -178,12 +205,16 @@ export class GraphToolbar
           <Item
             name="fill"
             tooltip="Fill Color..."
+            dropdown={this.renderColorPicker('fillColor', this.setFillColor)}
+            dropdownProps={{ overlayClassName: 'x6-color-picker-dropdown' }}
             disabled={!this.state.hasSelectedCell}
             icon={<Icon icon={Icons.brush} svg={true} />}
           />
           <Item
             name="stroke"
             tooltip="Line Color..."
+            dropdown={this.renderColorPicker('lineColor', this.setLineColor)}
+            dropdownProps={{ overlayClassName: 'x6-color-picker-dropdown' }}
             disabled={!this.state.hasSelectedCell}
             icon={<Icon icon={Icons.pen} svg={true} />}
           />
@@ -205,6 +236,8 @@ export namespace GraphToolbar {
     scale: number
     editor: Editor | null
     hasSelectedCell: boolean
+    canUndo: boolean
+    canRedo: boolean
   }
 }
 

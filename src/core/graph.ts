@@ -2497,7 +2497,7 @@ export class Graph extends Disablable implements
   @hook()
   isCellDeletable(cell: Cell) {
     const style = this.getStyle(cell)
-    return this.isCellsDeletable() && style.deletable === true
+    return this.isCellsDeletable() && style.deletable !== false
   }
 
   @hook()
