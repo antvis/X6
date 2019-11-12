@@ -7,6 +7,19 @@ export function getEditor() {
   return editor
 }
 
+export function fetchEditor() {
+  return new Promise<Editor>((resolve) => {
+    const watch = () => {
+      if (editor != null) {
+        resolve(editor)
+      } else {
+        setTimeout(watch, 100)
+      }
+    }
+    watch()
+  })
+}
+
 export default class X6Editor extends React.Component {
   private container: HTMLDivElement
 

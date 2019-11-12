@@ -300,11 +300,11 @@ export class ViewportManager extends BaseManager {
   }
 
   zoom(factor: number, center: boolean) {
-    const scale = Math.round(this.view.scale * factor * 100) / 100
-    const state = this.view.getState(this.graph.getSelectedCell())
-    // tslint:disable-next-line
-    factor = scale / this.view.scale
+    let scale = Math.round(this.view.scale * factor * 100) / 100
+    scale = util.clamp(scale, this.graph.minScale, this.graph.maxScale)
+    factor = scale / this.view.scale // tslint:disable-line
 
+    const state = this.view.getState(this.graph.getSelectedCell())
     if (this.graph.keepSelectionVisibleOnZoom && state != null) {
       const rect = new Rectangle(
         state.bounds.x * factor,

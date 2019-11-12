@@ -5,6 +5,7 @@ import { ColorPicker } from '../../../components'
 import { getEditor } from '../index'
 import { GuideOptions } from '../../../../../src/handler/guide/option'
 import { PageSize } from '../../../../../src'
+import { RubberbandOptions } from '../../../../../src/handler/rubberband/option'
 import './format.less'
 
 export class FormatDiagram extends React.PureComponent {
@@ -17,6 +18,7 @@ export class FormatDiagram extends React.PureComponent {
     guide: true,
     pageView: true,
     pageSize: 'a4',
+    rubberband: true,
   }
 
   get editor() {
@@ -38,6 +40,7 @@ export class FormatDiagram extends React.PureComponent {
       gridColor: graph.view.gridColor,
       guide: guideOptions.enabled,
       pageView: graph.pageVisible,
+      rubberband: graph.rubberbandHandler.isEnabled(),
     })
   }
 
@@ -68,23 +71,38 @@ export class FormatDiagram extends React.PureComponent {
     this.setState({ gridSize: value })
   }
 
-  onGuideEnableChang = (e: any) => {
-    const checked = e.target.checked
-    const graph = this.graph
-    const guideOptions = graph.options.guide as GuideOptions
-
-    guideOptions.enabled = checked
-    this.setState({
-      guide: checked,
-    })
-  }
-
   onGridStyleChange = (e: any) => {
     const gridStyle = e.target.value
     const graph = this.graph
     graph.view.gridStyle = gridStyle
     graph.view.validateBackgroundPage()
     this.setState({ gridStyle })
+  }
+
+  onGuideEnableChanged = (e: any) => {
+    const graph = this.graph
+    const options = graph.options.guide as GuideOptions
+    const checked = e.target.checked
+
+    options.enabled = checked
+    graph.guideHandler.setEnadled(checked)
+
+    this.setState({
+      guide: checked,
+    })
+  }
+
+  onRubberbandEnableChanged = (e: any) => {
+    const graph = this.graph
+    const options = graph.options.rubberband as RubberbandOptions
+    const checked = e.target.checked
+
+    options.enabled = checked
+    graph.rubberbandHandler.setEnadled(checked)
+
+    this.setState({
+      rubberband: checked,
+    })
   }
 
   onPageSizeChange = (value: string) => {
@@ -128,11 +146,12 @@ export class FormatDiagram extends React.PureComponent {
               </Checkbox>
             </div>
             <div className="section-item">
-              <span style={{ width: 64 }}>
+              <span style={{ width: 80 }}>
                 Grid Size
               </span>
               <InputNumber
                 style={{ flex: 1 }}
+                className="x6-editor-format-number"
                 min={this.state.minGridSize}
                 value={this.state.gridSize}
                 disabled={!this.state.gridEnabled}
@@ -140,7 +159,7 @@ export class FormatDiagram extends React.PureComponent {
               />
             </div>
             <div className="section-item">
-              <span style={{ width: 64 }}>
+              <span style={{ width: 80 }}>
                 Grid Color
               </span>
               <ColorPicker
@@ -151,7 +170,7 @@ export class FormatDiagram extends React.PureComponent {
               />
             </div>
             <div className="section-item">
-              <span style={{ width: 64 }}>
+              <span style={{ width: 80 }}>
                 Grid Style
               </span>
               <Radio.Group
@@ -169,9 +188,17 @@ export class FormatDiagram extends React.PureComponent {
             <div className="section-item">
               <Checkbox
                 checked={this.state.guide}
-                onChange={this.onGuideEnableChang}
+                onChange={this.onGuideEnableChanged}
               >
                 Snap Lines
+              </Checkbox>
+            </div>
+            <div className="section-item">
+              <Checkbox
+                checked={this.state.rubberband}
+                onChange={this.onRubberbandEnableChanged}
+              >
+                Rubberband
               </Checkbox>
             </div>
           </div>

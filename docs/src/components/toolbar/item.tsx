@@ -26,8 +26,9 @@ export class ToolbarItem extends React.PureComponent<ToolbarItem.Props>{
 
   renderButton() {
     const {
-      className, hidden, disabled, active, icon, text, children,
+      className, hidden, disabled, active, icon, text,
       dropdown, tooltip, tooltipProps, tooltipAsTitle,
+      children,
     } = this.props
 
     const props: any = {
@@ -71,7 +72,7 @@ export class ToolbarItem extends React.PureComponent<ToolbarItem.Props>{
       </button>
     )
 
-    if (tooltip && !tooltipAsTitle) {
+    if (tooltip && !tooltipAsTitle && !disabled) {
       return (
         <Tooltip
           title={tooltip}

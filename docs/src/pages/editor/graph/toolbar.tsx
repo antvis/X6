@@ -1,18 +1,70 @@
 import React from 'react'
 import { Toolbar, Icon, Menu } from '../../../components'
-import { getEditor } from '..'
+import { fetchEditor } from '..'
+import { Editor } from '../editor'
+import { Graph } from '../../../../../src'
 
 const Item = Toolbar.Item
 const Group = Toolbar.Group
 
-export class GraphToolbar extends React.PureComponent {
+export class GraphToolbar
+  extends React.PureComponent<GraphToolbar.Props, GraphToolbar.State> {
+  state: GraphToolbar.State = {
+    scale: 1,
+    editor: null,
+    hasSelectedCell: false,
+  }
+
+  componentDidMount() {
+    fetchEditor().then((editor) => {
+      editor.graph.on(Graph.events.selectionChanged, () => {
+        this.setState({ hasSelectedCell: editor.graph.hasSelectedCell() })
+      })
+      this.setState({ editor })
+    })
+  }
+
   handleClick = (name: string) => {
-    console.log(name)
-    const editor = getEditor()
-    if (editor) {
-      const cmd = editor.commands.get(name)
+    const editor = this.state.editor!
+    const graph = editor.graph
+    const commands = editor.commands
+    const cmd = commands.get(name)
+
+    if (cmd) {
+      if (name === 'redo' || name === 'undo') {
+        cmd.handler(graph, commands.undoManager)
+      } else {
+        cmd.handler(graph)
+      }
+      if (
+        name === 'resetView' ||
+        name === 'zoomIn' ||
+        name === 'zoomOut' ||
+        name === 'fitWindow' ||
+        name === 'fitPage' ||
+        name === 'fitTwoPages' ||
+        name === 'fitPageWidth'
+      ) {
+        this.setState({ scale: graph.view.scale })
+      }
+
+
+    } else if (
+      name === '25' ||
+      name === '50' ||
+      name === '75' ||
+      name === '100' ||
+      name === '125' ||
+      name === '150' ||
+      name === '200' ||
+      name === '300' ||
+      name === '400'
+    ) {
+      const scale = parseInt(name, 10) / 100
+      this.setState({ scale })
+      const cmd = editor.commands.get('customZoom')
       if (cmd) {
-        console.log(cmd)
+        cmd.handler(graph, scale)
       }
     }
   }
@@ -23,8 +75,8 @@ export class GraphToolbar extends React.PureComponent {
 
     return (
       <Menu hasIcon={false}>
-        <MenuItem name="reset" hotkey="Cmd+H">Reset View</MenuItem>
-        <MenuItem name="fit" hotkey="Cmd+Shift+H">Fit Window</MenuItem>
+        <MenuItem name="resetView" hotkey="Cmd+H">Reset View</MenuItem>
+        <MenuItem name="fitWindow" hotkey="Cmd+Shift+H">Fit Window</MenuItem>
         <Divider />
         <MenuItem name="25">25%</MenuItem>
         <MenuItem name="50">50%</MenuItem>
@@ -40,6 +92,18 @@ export class GraphToolbar extends React.PureComponent {
   }
 
   render() {
+    const editor = this.state.editor
+    if (editor == null) {
+      return null
+    }
+
+    const graph = editor.graph
+    const commands = editor.commands
+    const undoManager = commands.undoManager
+
+    console.log(undoManager.canRedo())
+    console.log(undoManager.canUndo())
+
     return (
       <Toolbar hoverEffect={true} size="small" onClick={this.handleClick}>
         <Group>
@@ -49,31 +113,98 @@ export class GraphToolbar extends React.PureComponent {
             tooltip="Zoom (Alt+Mousewheel)"
             dropdown={this.renderZoomDropdown()}
           >
-            100%
+            <span
+              style={{
+                display: 'inline-block',
+                width: 40,
+                textAlign: 'right'
+              }}
+            >
+              {(this.state.scale * 100).toFixed(0)}%
+            </span>
           </Item>
         </Group>
         <Group>
-          <Item name="zoomIn" tooltip="Zoom In (Cmd + (Numpad))" icon={<Icon icon={Icons.zoomIn} svg={true} />} />
-          <Item name="zoomOut" tooltip="Zoom Out (Cmd - (Numpad))" icon={<Icon icon={Icons.zoomOut} svg={true} />} />
+          <Item
+            name="zoomIn"
+            tooltip="Zoom In (Cmd + (Numpad))"
+            disabled={graph.view.scale === graph.maxScale}
+            icon={<Icon icon={Icons.zoomIn} svg={true} />}
+          />
+          <Item
+            name="zoomOut"
+            tooltip="Zoom Out (Cmd - (Numpad))"
+            disabled={graph.view.scale === graph.minScale}
+            icon={<Icon icon={Icons.zoomOut} svg={true} />}
+          />
         </Group>
         <Group>
-          <Item name="undo" tooltip="Undo (Cmd+Z)" icon={<Icon icon={Icons.undo} svg={true} />} />
-          <Item name="redo" tooltip="Redo (Cmd+Shift+Z)" icon={<Icon icon={Icons.redo} svg={true} />} />
+          <Item
+            name="undo"
+            tooltip="Undo (Cmd+Z)"
+            disabled={!undoManager.canUndo()}
+            icon={<Icon icon={Icons.undo} svg={true} />}
+          />
+          <Item
+            name="redo"
+            tooltip="Redo (Cmd+Shift+Z)"
+            disabled={!undoManager.canRedo()}
+            icon={<Icon icon={Icons.redo} svg={true} />}
+          />
         </Group>
         <Group>
-          <Item name="delete" tooltip="Delete (Delete)" icon={<Icon icon={Icons.del} svg={true} />} />
+          <Item
+            name="delete"
+            tooltip="Delete (Delete)"
+            disabled={!this.state.hasSelectedCell}
+            icon={<Icon icon={Icons.del} svg={true} />}
+          />
         </Group>
         <Group>
-          <Item name="toFront" tooltip="To Front (Cmd+Shift+F)" icon={<Icon icon={Icons.toFront} svg={true} />} />
-          <Item name="toBack" tooltip="To Back (Cmd+Shift+B)" icon={<Icon icon={Icons.toBack} svg={true} />} />
+          <Item
+            name="toFront"
+            tooltip="To Front (Cmd+Shift+F)"
+            disabled={!this.state.hasSelectedCell}
+            icon={<Icon icon={Icons.toFront} svg={true} />}
+          />
+          <Item
+            name="toBack"
+            tooltip="To Back (Cmd+Shift+B)"
+            disabled={!this.state.hasSelectedCell}
+            icon={<Icon icon={Icons.toBack} svg={true} />}
+          />
         </Group>
         <Group>
-          <Item name="fill" tooltip="Fill Color..." icon={<Icon icon={Icons.brush} svg={true} />} />
-          <Item name="stroke" tooltip="Line Color..." icon={<Icon icon={Icons.pen} svg={true} />} />
-          <Item name="shadow" tooltip="Shadow" icon={<Icon icon={Icons.shadow} svg={true} />} />
+          <Item
+            name="fill"
+            tooltip="Fill Color..."
+            disabled={!this.state.hasSelectedCell}
+            icon={<Icon icon={Icons.brush} svg={true} />}
+          />
+          <Item
+            name="stroke"
+            tooltip="Line Color..."
+            disabled={!this.state.hasSelectedCell}
+            icon={<Icon icon={Icons.pen} svg={true} />}
+          />
+          <Item
+            name="shadow"
+            tooltip="Shadow"
+            disabled={!this.state.hasSelectedCell}
+            icon={<Icon icon={Icons.shadow} svg={true} />}
+          />
         </Group>
       </Toolbar>
     )
+  }
+}
+
+export namespace GraphToolbar {
+  export interface Props { }
+  export interface State {
+    scale: number
+    editor: Editor | null
+    hasSelectedCell: boolean
   }
 }
 

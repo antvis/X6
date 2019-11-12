@@ -178,7 +178,9 @@ export class Graph extends Disablable implements
   useScrollbarsForPanning: boolean = true
   keepSelectionVisibleOnZoom: boolean = false
   centerZoom: boolean = true
-  zoomFactor: number = 1.2
+  scaleFactor: number = 1.5
+  minScale: number = 0.01
+  maxScale: number = 16
   cellsLocked: boolean = false
   isCellsLocked() {
     return this.cellsLocked
@@ -2041,6 +2043,10 @@ export class Graph extends Disablable implements
     return this.selection.cells.slice()
   }
 
+  hasSelectedCell() {
+    return this.selection.cells.length > 0
+  }
+
   /**
    * Replace selection cells with the given cell
    */
@@ -2299,11 +2305,11 @@ export class Graph extends Disablable implements
   }
 
   zoomIn() {
-    this.zoom(this.zoomFactor)
+    this.zoom(this.scaleFactor)
   }
 
   zoomOut() {
-    this.zoom(1 / this.zoomFactor)
+    this.zoom(1 / this.scaleFactor)
   }
 
   /**

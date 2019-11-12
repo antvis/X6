@@ -66,7 +66,6 @@ export class Editor extends Primer {
     })
 
     this.commands = new Commands(this.graph)
-
     this.start()
   }
 

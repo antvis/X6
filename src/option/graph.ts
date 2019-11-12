@@ -372,7 +372,9 @@ export interface SimpleOptions {
    *
    * Default is `1.2`
    */
-  zoomFactor: number
+  scaleFactor: number
+  minScale: number
+  maxScale: number
 
   /**
    * Specifies the minimum scale to be applied in `fit`.

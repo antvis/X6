@@ -235,12 +235,56 @@ export namespace Commands {
     {
       name: 'zoomIn',
       shortcut: `${ctrlKey} + (Numpad) / Alt+Mousewheel`,
-      handler: (graph: Graph) => graph.zoomIn(),
+      handler: (graph: Graph) => {
+        let scale = graph.view.scale
+        if (scale >= 8) {
+          scale += 8
+        } else if (scale >= 4) {
+          scale += 4
+        } else if (scale >= 2) {
+          scale += 1
+        } else if (scale >= 1.5) {
+          scale += 0.5
+        } else if (scale >= 1) {
+          scale += 0.25
+        } else if (scale >= 0.7) {
+          scale += 0.15
+        } else if (scale >= 0.4) {
+          scale += 0.1
+        } else if (scale >= 0.15) {
+          scale += 0.05
+        } else if (scale >= 0.01) {
+          scale += 0.01
+        }
+        graph.zoomTo(scale)
+      }
     },
     {
       name: 'zoomOut',
       shortcut: `${ctrlKey} - (Numpad) / Alt+Mousewheel`,
-      handler: (graph: Graph) => graph.zoomOut(),
+      handler: (graph: Graph) => {
+        let scale = graph.view.scale
+        if (scale <= 0.15) {
+          scale -= 0.01
+        } else if (scale <= 0.4) {
+          scale -= 0.05
+        } else if (scale <= 0.7) {
+          scale -= 0.1
+        } else if (scale <= 1) {
+          scale -= 0.15
+        } else if (scale <= 1.5) {
+          scale -= 0.25
+        } else if (scale <= 2) {
+          scale -= 0.5
+        } else if (scale <= 4) {
+          scale -= 1
+        } else if (scale <= 8) {
+          scale -= 4
+        } else if (scale <= 16) {
+          scale -= 8
+        }
+        graph.zoomTo(scale)
+      },
     },
     {
       name: 'fitWindow',
@@ -263,9 +307,9 @@ export namespace Commands {
     },
     {
       name: 'customZoom',
-      handler: (graph: Graph, val: number) => {
-        if (!isNaN(val) && val > 0) {
-          graph.zoomTo(val / 100)
+      handler: (graph: Graph, scale: number) => {
+        if (!isNaN(scale) && scale > 0) {
+          graph.zoomTo(scale)
         }
       },
     },
