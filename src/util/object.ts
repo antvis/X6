@@ -206,11 +206,15 @@ export function equalEntries(a: any, b: any) {
   }
 
   let count = 0
+
   if (a != null && b != null) {
+
     for (const key in b) {
       if (key) { }
       count += 1
     }
+
+    const nan = (v: any) => (typeof v === 'number' && isNaN(v))
 
     for (const key in a) {
       count -= 1
@@ -218,7 +222,7 @@ export function equalEntries(a: any, b: any) {
       const av = (a as any)[key]
       const bv = (b as any)[key]
 
-      if ((!isNaN(av) || !isNaN(bv)) && av !== bv) {
+      if ((!nan(av) || !nan(bv)) && av !== bv) {
         return false
       }
     }

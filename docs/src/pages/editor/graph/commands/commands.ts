@@ -212,6 +212,18 @@ export namespace Commands {
     // #endregion
 
     {
+      name: 'fillColor',
+      handler: (graph: Graph, color: string) => graph.updateCellsStyle('fill', color),
+    },
+    {
+      name: 'lineColor',
+      handler: (graph: Graph, color: string) => graph.updateCellsStyle('stroke', color),
+    },
+    {
+      name: 'shadow',
+      handler: (graph: Graph) => graph.toggleCellsStyle('shadow', true)
+    },
+    {
       name: 'autosize',
       shortcut: `${ctrlKey}+Shift+Y`,
       handler: (graph: Graph) => autosize(graph),

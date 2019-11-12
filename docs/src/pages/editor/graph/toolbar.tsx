@@ -3,7 +3,7 @@ import { SketchPicker, ColorResult } from 'react-color'
 import { Toolbar, Icon, Menu } from '../../../components'
 import { fetchEditor } from '..'
 import { Editor } from '../editor'
-import { Graph } from '../../../../../src'
+import { Graph, Cell } from '../../../../../src'
 import { UndoManager } from '../../../../../src/addon/undomanager'
 import './toolbar.less'
 
@@ -15,15 +15,15 @@ export class GraphToolbar
   state: GraphToolbar.State = {
     scale: 1,
     editor: null,
-    hasSelectedCell: false,
     canUndo: false,
     canRedo: false,
+    selectedCells: [],
   }
 
   componentDidMount() {
     fetchEditor().then((editor) => {
       editor.graph.on(Graph.events.selectionChanged, () => {
-        this.setState({ hasSelectedCell: editor.graph.hasSelectedCell() })
+        this.setState({ selectedCells: editor.graph.getSelectedCells() })
       })
 
       const updateUndoState = () => {
@@ -108,16 +108,40 @@ export class GraphToolbar
     )
   }
 
-  setFillColor = (value: ColorResult) => { }
+  setFillColor = (value: ColorResult) => {
+    const editor = this.state.editor!
+    const graph = editor.graph
+    const commands = editor.commands
+    const cmd = commands.get('fillColor')
+    if (cmd) {
+      cmd.handler(graph, value.hex)
+    }
+  }
 
-  setLineColor = (value: ColorResult) => { }
+  setLineColor = (value: ColorResult) => {
+    const editor = this.state.editor!
+    const graph = editor.graph
+    const commands = editor.commands
+    const cmd = commands.get('lineColor')
+    if (cmd) {
+      cmd.handler(graph, value.hex)
+    }
+  }
 
-  renderColorPicker(name: string, onChange: (value: ColorResult) => void) {
+  renderColorPicker(
+    name: string,
+    value: string,
+    onChange: (value: ColorResult) => void
+  ) {
     const MenuItem = Menu.Item
     return (
       <Menu hasIcon={false}>
         <MenuItem name={name}>
-          <SketchPicker width="220px" onChange={onChange} />
+          <SketchPicker
+            width="220px"
+            color={value}
+            onChange={onChange}
+          />
         </MenuItem>
       </Menu>
     )
@@ -130,6 +154,18 @@ export class GraphToolbar
     }
 
     const graph = editor.graph
+    const hasSelectedCell = this.state.selectedCells.length > 0
+    let fillColor: string = '#ffffff'
+    let lineColor: string = '#000000'
+    if (hasSelectedCell) {
+      const style = graph.getStyle(this.state.selectedCells[0])
+      if (style.fill) {
+        fillColor = style.fill
+      }
+      if (style.stroke) {
+        lineColor = style.stroke
+      }
+    }
 
     return (
       <Toolbar hoverEffect={true} size="small" onClick={this.handleClick}>
@@ -183,7 +219,7 @@ export class GraphToolbar
           <Item
             name="delete"
             tooltip="Delete (Delete)"
-            disabled={!this.state.hasSelectedCell}
+            disabled={!hasSelectedCell}
             icon={<Icon icon={Icons.del} svg={true} />}
           />
         </Group>
@@ -191,13 +227,13 @@ export class GraphToolbar
           <Item
             name="toFront"
             tooltip="To Front (Cmd+Shift+F)"
-            disabled={!this.state.hasSelectedCell}
+            disabled={!hasSelectedCell}
             icon={<Icon icon={Icons.toFront} svg={true} />}
           />
           <Item
             name="toBack"
             tooltip="To Back (Cmd+Shift+B)"
-            disabled={!this.state.hasSelectedCell}
+            disabled={!hasSelectedCell}
             icon={<Icon icon={Icons.toBack} svg={true} />}
           />
         </Group>
@@ -205,23 +241,23 @@ export class GraphToolbar
           <Item
             name="fill"
             tooltip="Fill Color..."
-            dropdown={this.renderColorPicker('fillColor', this.setFillColor)}
+            dropdown={this.renderColorPicker('fill-color', fillColor, this.setFillColor)}
             dropdownProps={{ overlayClassName: 'x6-color-picker-dropdown' }}
-            disabled={!this.state.hasSelectedCell}
+            disabled={!hasSelectedCell}
             icon={<Icon icon={Icons.brush} svg={true} />}
           />
           <Item
             name="stroke"
             tooltip="Line Color..."
-            dropdown={this.renderColorPicker('lineColor', this.setLineColor)}
+            dropdown={this.renderColorPicker('line-color', lineColor, this.setLineColor)}
             dropdownProps={{ overlayClassName: 'x6-color-picker-dropdown' }}
-            disabled={!this.state.hasSelectedCell}
+            disabled={!hasSelectedCell}
             icon={<Icon icon={Icons.pen} svg={true} />}
           />
           <Item
             name="shadow"
             tooltip="Shadow"
-            disabled={!this.state.hasSelectedCell}
+            disabled={!hasSelectedCell}
             icon={<Icon icon={Icons.shadow} svg={true} />}
           />
         </Group>
@@ -235,9 +271,9 @@ export namespace GraphToolbar {
   export interface State {
     scale: number
     editor: Editor | null
-    hasSelectedCell: boolean
     canUndo: boolean
     canRedo: boolean
+    selectedCells: Cell[]
   }
 }
 

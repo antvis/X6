@@ -54,8 +54,6 @@ export class Dropdown extends React.Component<Dropdown.Props, any> {
       fixedOverlay = React.cloneElement(overlay, { onClick })
     }
 
-    console.log(this.props)
-
     return (
       <RcDropdown
         {...this.props}
