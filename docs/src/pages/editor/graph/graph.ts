@@ -1,10 +1,113 @@
-import { Graph, Rectangle, Point, util } from '../../../../../src'
+import {
+  util,
+  detector,
+  Rectangle,
+  Point,
+  DomEvent,
+  Graph,
+} from '../../../../../src'
 import { Polyline } from '../../../../../src/shape'
 import { GraphView } from './view'
 
 export class EditorGraph extends Graph {
   view: GraphView
   autoTranslate: boolean
+  cursorPosition: Point
+  lazyZoomDelay: number = 10
+  updateZoomTimeout: number | null
+  cumulativeZoomFactor: number = 1
+
+  initMouseWheel() {
+    DomEvent.addMouseWheelListener(
+      (e, up) => {
+        if (this.isZoomWheelEvent(e)) {
+          let source = DomEvent.getSource(e)
+          while (source != null) {
+            if (source == this.container) {
+              this.cursorPosition = new Point(DomEvent.getClientX(e), DomEvent.getClientY(e))
+              this.lazyZoom(up)
+              DomEvent.consume(e)
+              return false
+            }
+
+            source = source.parentNode as Element
+          }
+        }
+      },
+      this.container
+    )
+  }
+
+  isZoomWheelEvent(e: MouseEvent) {
+    return (
+      DomEvent.isAltDown(e) ||
+      (detector.IS_MAC && DomEvent.isMetaDown(e)) ||
+      (!detector.IS_MAC && DomEvent.isControlDown(e))
+    )
+  }
+
+  lazyZoom(zoomIn: boolean) {
+    if (this.updateZoomTimeout != null) {
+      window.clearTimeout(this.updateZoomTimeout)
+    }
+
+    // Switches to 1% zoom steps below 15%
+    // Lower bound depdends on rounding below
+    if (zoomIn) {
+      if (this.view.scale * this.cumulativeZoomFactor < 0.15) {
+        this.cumulativeZoomFactor = (this.view.scale + 0.01) / this.view.scale
+      } else {
+        // Uses to 5% zoom steps for better grid rendering in webkit
+        // and to avoid rounding errors for zoom steps
+        this.cumulativeZoomFactor *= this.scaleFactor
+        this.cumulativeZoomFactor = Math.round(this.view.scale * this.cumulativeZoomFactor * 20) / 20 / this.view.scale
+      }
+    }
+    else {
+      if (this.view.scale * this.cumulativeZoomFactor <= 0.15) {
+        this.cumulativeZoomFactor = (this.view.scale - 0.01) / this.view.scale
+      } else {
+        // Uses to 5% zoom steps for better grid rendering in webkit
+        // and to avoid rounding errors for zoom steps
+        this.cumulativeZoomFactor /= this.scaleFactor
+        this.cumulativeZoomFactor = Math.round(this.view.scale * this.cumulativeZoomFactor * 20) / 20 / this.view.scale
+      }
+    }
+
+    this.cumulativeZoomFactor = Math.max(0.01, Math.min(this.view.scale * this.cumulativeZoomFactor, 160) / this.view.scale)
+    this.updateZoomTimeout = window.setTimeout(
+      () => {
+        var offset = util.getOffset(this.container)
+        var dx = 0
+        var dy = 0
+
+        if (this.cursorPosition != null) {
+          dx = this.container.offsetWidth / 2 - this.cursorPosition.x + offset.x
+          dy = this.container.offsetHeight / 2 - this.cursorPosition.y + offset.y
+        }
+
+        var prev = this.view.scale
+        this.zoom(this.cumulativeZoomFactor)
+        var s = this.view.scale
+
+        if (s != prev) {
+          // if (resize != null) {
+          //   ui.chromelessResize(false, null, dx * (this.cumulativeZoomFactor - 1),
+          //     dy * (this.cumulativeZoomFactor - 1))
+          // }
+
+          if (util.hasScrollbars(this.container) && (dx != 0 || dy != 0)) {
+            this.container.scrollLeft -= dx * (this.cumulativeZoomFactor - 1)
+            this.container.scrollTop -= dy * (this.cumulativeZoomFactor - 1)
+          }
+        }
+
+        this.cumulativeZoomFactor = 1
+        this.updateZoomTimeout = null
+      },
+      this.lazyZoomDelay
+    )
+  }
 
   sizeDidChange() {
     if (this.container && util.hasScrollbars(this.container)) {
@@ -213,4 +316,6 @@ export class EditorGraph extends Graph {
       }
     }
   }
+
+
 }

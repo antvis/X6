@@ -41,6 +41,10 @@ export class GraphToolbar
     })
   }
 
+  componentWillUnmount() {
+    console.log('toolbar unmount')
+  }
+
   handleClick = (name: string) => {
     const editor = this.state.editor!
     const graph = editor.graph
@@ -190,13 +194,13 @@ export class GraphToolbar
         <Group>
           <Item
             name="zoomIn"
-            tooltip="Zoom In (Cmd + (Numpad))"
+            tooltip="Zoom In (Cmd + +) / Alt + Mousewheel"
             disabled={graph.view.scale === graph.maxScale}
             icon={<Icon icon={Icons.zoomIn} svg={true} />}
           />
           <Item
             name="zoomOut"
-            tooltip="Zoom Out (Cmd - (Numpad))"
+            tooltip="Zoom Out (Cmd + -) / Alt + Mousewheel"
             disabled={graph.view.scale === graph.minScale}
             icon={<Icon icon={Icons.zoomOut} svg={true} />}
           />
@@ -204,13 +208,13 @@ export class GraphToolbar
         <Group>
           <Item
             name="undo"
-            tooltip="Undo (Cmd+Z)"
+            tooltip="Undo (Cmd + Z)"
             disabled={!this.state.canUndo}
             icon={<Icon icon={Icons.undo} svg={true} />}
           />
           <Item
             name="redo"
-            tooltip="Redo (Cmd+Shift+Z)"
+            tooltip="Redo (Cmd + Shift + Z)"
             disabled={!this.state.canRedo}
             icon={<Icon icon={Icons.redo} svg={true} />}
           />
@@ -226,13 +230,13 @@ export class GraphToolbar
         <Group>
           <Item
             name="toFront"
-            tooltip="To Front (Cmd+Shift+F)"
+            tooltip="To Front (Cmd + Shift + F)"
             disabled={!hasSelectedCell}
             icon={<Icon icon={Icons.toFront} svg={true} />}
           />
           <Item
             name="toBack"
-            tooltip="To Back (Cmd+Shift+B)"
+            tooltip="To Back (Cmd + Shift + B)"
             disabled={!hasSelectedCell}
             icon={<Icon icon={Icons.toBack} svg={true} />}
           />

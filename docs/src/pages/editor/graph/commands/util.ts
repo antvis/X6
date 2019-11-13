@@ -153,6 +153,6 @@ export function toggleFontStyle(
     document.execCommand(FontStyle[fontStyle], false)
   } else {
     graph.stopEditing(false)
-    graph.toggleCellStyleFlags('fontStyle', fontStyle)
+    graph.toggleCellsStyleFlag('fontStyle', fontStyle)
   }
 }

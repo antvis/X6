@@ -44,6 +44,7 @@
   .x6-editor-format-content {
     overflow: auto;
     flex: 1;
+    user-select: none;
   }
 
   .x6-editor-format-section {
@@ -61,10 +62,32 @@
       align-items: center;
       flex-direction: row;
       min-height: 32px;
+      min-height: 34px;
       padding: 4px 0;
     }
 
-    .ant-select, .ant-select-selection--single, .ant-input-number {
+    .ant-btn-flag {
+      font-size: 12px;
+      width: 28px;
+      height: 26px;
+      margin-right: 4px;
+    }
+
+    .ant-btn-flag:focus {
+      color: rgba(0, 0, 0, 0.65);
+      border-color: #d9d9d9;
+      background-color: #ffffff;
+    }
+
+    .ant-btn-checked {
+      color: #1890ff !important;
+      border-color: #1890ff !important;
+      background-color: transparent !important;
+    }
+
+    .ant-select,
+    .ant-select-selection--single,
+    .ant-input-number {
       height: 26px;
     }
 
@@ -100,12 +123,13 @@
 
 
 
-  .x6-linestyle-select, .x6-linestyle-select-dropdown {
+  .x6-linestyle-select,
+  .x6-linestyle-select-dropdown {
     .linestyle-item {
       position: relative;
       display: block;
       height: 20px;
-      border: 1px solid #fff;
+      border: 1px solid #ffffff;
       border-radius: 2px;
 
       &::after {
@@ -115,7 +139,7 @@
         left: 4px;
         height: 1px;
         content: ' ';
-        border-bottom: 1px solid #000;
+        border-bottom: 1px solid #000000;
       }
 
       &.dashed::after {
@@ -151,7 +175,8 @@
       padding: 4px 8px;
     }
 
-    .ant-select-dropdown-menu-item-active:not(.ant-select-dropdown-menu-item-disabled), .ant-select-dropdown-menu-item:hover:not(.ant-select-dropdown-menu-item-disabled) {
+    .ant-select-dropdown-menu-item-active:not(.ant-select-dropdown-menu-item-disabled),
+    .ant-select-dropdown-menu-item:hover:not(.ant-select-dropdown-menu-item-disabled) {
       background-color: transparent;
     }
 

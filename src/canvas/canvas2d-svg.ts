@@ -1538,7 +1538,7 @@ export class SvgCanvas2D extends Canvas2D {
       node.setAttribute('font-style', 'italic')
     }
 
-    if (FontStyle.isBold(s.fontStyle)) {
+    if (FontStyle.isUnderlined(s.fontStyle)) {
       node.setAttribute('text-decoration', 'underline')
     }
   }

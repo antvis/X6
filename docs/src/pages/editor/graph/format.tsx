@@ -1,5 +1,5 @@
 import React from 'react'
-import { Graph } from '../../../../../src'
+import { Graph, Cell } from '../../../../../src'
 import { FormatCell } from './format-cell'
 import { FormatDiagram } from './fromat-diagram'
 import { fetchEditor } from '..'
@@ -8,20 +8,22 @@ import './format.less'
 export class Format
   extends React.PureComponent<Format.Props, Format.State> {
   state = {
-    hasSelectedCell: true
+    selectedCell: null,
   }
 
   componentDidMount() {
     fetchEditor().then((editor) => {
       editor.graph.on(Graph.events.selectionChanged, () => {
-        this.setState({ hasSelectedCell: editor.graph.hasSelectedCell() })
+        this.setState({
+          selectedCell: editor.graph.getSelectedCell()
+        })
       })
     })
   }
 
   render() {
-    return this.state.hasSelectedCell
-      ? <FormatCell />
+    return this.state.selectedCell != null
+      ? <FormatCell cell={this.state.selectedCell!} />
       : <FormatDiagram />
   }
 }
@@ -29,6 +31,6 @@ export class Format
 export namespace Format {
   export interface Props { }
   export interface State {
-    hasSelectedCell: boolean
+    selectedCell: Cell | null
   }
 }

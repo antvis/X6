@@ -1,4 +1,4 @@
-import { Graph, FontStyle, detector, DomEvent } from '../../../../../../src'
+import { Graph, FontStyle, detector, DomEvent, Geometry } from '../../../../../../src'
 import { UndoManager } from '../../../../../../src/addon/undomanager'
 import { Clipboard } from '../../../../../../src/addon/clipboard'
 import { GuideOptions } from '../../../../../../src/handler/guide/option'
@@ -40,6 +40,29 @@ export class Commands {
       ? cmd
       : new Command(cmd)
 
+    if (result.shortcut) {
+      let callback = (e: KeyboardEvent) => {
+        e.preventDefault()
+        result.handler(this.graph)
+        return false
+      }
+      if (result.name === 'undo' || result.name === 'redo') {
+        callback = (e: KeyboardEvent) => {
+          e.preventDefault()
+          result.handler(this.graph, this.undoManager)
+          return false
+        }
+      }
+
+      this.graph.keyboardHandler.bind(
+        result.shortcut
+          .replace('Delete', 'backspace')
+          .replace('Cmd', 'command')
+          .toLowerCase(),
+        callback,
+      )
+    }
+
     this.commands[result.name] = result
 
     return result
@@ -68,9 +91,7 @@ export namespace Commands {
     {
       name: 'redo',
       handler: (graph: Graph, undoManager: UndoManager) => { undoManager.redo() },
-      shortcut: detector.IS_WINDOWS
-        ? `${ctrlKey}+Shift+Z`
-        : `${ctrlKey}+Y`,
+      shortcut: `${ctrlKey}+Shift+Z`,
     },
     {
       name: 'copy',
@@ -216,12 +237,32 @@ export namespace Commands {
       handler: (graph: Graph, color: string) => graph.updateCellsStyle('fill', color),
     },
     {
+      name: 'gradientColor',
+      handler: (graph: Graph, color: string) => graph.updateCellsStyle('gradientColor', color),
+    },
+    {
       name: 'lineColor',
       handler: (graph: Graph, color: string) => graph.updateCellsStyle('stroke', color),
     },
     {
       name: 'shadow',
-      handler: (graph: Graph) => graph.toggleCellsStyle('shadow', true)
+      handler: (graph: Graph, shadow: boolean = true) => graph.toggleCellsStyle('shadow', shadow)
+    },
+    {
+      name: 'opacity',
+      handler: (graph: Graph, opacity?: number) => graph.updateCellsStyle('opacity', opacity)
+    },
+    {
+      name: 'strokeColor',
+      handler: (graph: Graph, color?: string) => graph.updateCellsStyle('stroke', color)
+    },
+    {
+      name: 'strokeWidth',
+      handler: (graph: Graph, strokeWidth?: number) => graph.updateCellsStyle('strokeWidth', strokeWidth)
+    },
+    {
+      name: 'strokeDashed',
+      handler: (graph: Graph, dashed: boolean = true) => graph.toggleCellsStyle('dashed', dashed)
     },
     {
       name: 'autosize',
@@ -237,6 +278,82 @@ export namespace Commands {
       handler: (graph: Graph) => formattedText(graph),
     },
 
+    {
+      name: 'updateGeometry',
+      handler: (graph: Graph, geom: Geometry) => {
+        graph.batchUpdate(() => {
+          graph.getSelectedCells().forEach((cell) => {
+            graph.model.setGeometry(cell, geom)
+          })
+        })
+      }
+    },
+
+    {
+      name: 'rotate',
+      handler: (graph: Graph, rotate?: number) => graph.updateCellsStyle('rotation', rotate)
+    },
+    {
+      name: 'flipH',
+      handler: (graph: Graph, v: boolean = true) => graph.toggleCellsStyle('flipH', v)
+    },
+    {
+      name: 'flipV',
+      handler: (graph: Graph, v: boolean = true) => graph.toggleCellsStyle('flipV', v)
+    },
+
+    {
+      name: 'fontFamily',
+      handler: (graph: Graph, fontFamily?: string) => graph.updateCellsStyle('fontFamily', fontFamily)
+    },
+    {
+      name: 'fontColor',
+      handler: (graph: Graph, fontColor?: string) => graph.updateCellsStyle('fontColor', fontColor)
+    },
+    {
+      name: 'fontSize',
+      handler: (graph: Graph, fontSize?: number) => graph.updateCellsStyle('fontSize', fontSize)
+    },
+    {
+      name: 'labelBorderColor',
+      handler: (graph: Graph, color?: string) => graph.updateCellsStyle('labelBorderColor', color)
+    },
+    {
+      name: 'labelBackgroundColor',
+      handler: (graph: Graph, color?: string) => graph.updateCellsStyle('labelBackgroundColor', color)
+    },
+    {
+      name: 'align',
+      handler: (graph: Graph, align?: string) => graph.updateCellsStyle('align', align)
+    },
+    {
+      name: 'valign',
+      handler: (graph: Graph, valign?: string) => graph.updateCellsStyle('verticalAlign', valign)
+    },
+    {
+      name: 'labelPosition',
+      handler: (graph: Graph, position?: string) => {
+        if (position != null) {
+          const arr = position.split(' ')
+          if (arr.length === 2) {
+            graph.updateCellsStyle('labelPosition', arr[1])
+            graph.updateCellsStyle('labelVerticalPosition', arr[0])
+          } else if (arr.length === 1) {
+            if (arr[0] === 'top' || arr[0] === 'bottom') {
+              graph.updateCellsStyle('labelPosition')
+              graph.updateCellsStyle('labelVerticalPosition', arr[0])
+            } else {
+              graph.updateCellsStyle('labelPosition', arr[0])
+              graph.updateCellsStyle('labelVerticalPosition')
+            }
+          }
+        } else {
+          graph.updateCellsStyle('labelPosition', 'center')
+          graph.updateCellsStyle('labelVerticalPosition')
+        }
+      }
+    },
+
     // #region view
 
     {
@@ -246,7 +363,7 @@ export namespace Commands {
     },
     {
       name: 'zoomIn',
-      shortcut: `${ctrlKey} + (Numpad) / Alt+Mousewheel`,
+      shortcut: `${ctrlKey} + =`,
       handler: (graph: Graph) => {
         let scale = graph.view.scale
         if (scale >= 8) {
@@ -273,7 +390,7 @@ export namespace Commands {
     },
     {
       name: 'zoomOut',
-      shortcut: `${ctrlKey} - (Numpad) / Alt+Mousewheel`,
+      shortcut: `${ctrlKey} + -`,
       handler: (graph: Graph) => {
         let scale = graph.view.scale
         if (scale <= 0.15) {

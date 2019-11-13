@@ -2289,20 +2289,47 @@ export class CellManager extends BaseManager {
     return value
   }
 
-  setCellStyleFlags(
+  setCellsStyleFlag(
     key: string,
     flag: number,
-    value: boolean | null,
+    add: boolean | null,
     cells: Cell[],
   ) {
     if (cells != null && cells.length > 0) {
-      if (value == null) {
+      if (add == null) {
         const style = this.graph.getStyle(cells[0])
         const current = parseInt((style as any)[key], 10) || 0
-        value = !((current & flag) === flag) // tslint:disable-line
+        add = !((current & flag) === flag) // tslint:disable-line
       }
 
-      this.updateCellsStyle(key, value ? flag : null, cells)
+      this.model.batchUpdate(() => {
+        cells.forEach((cell) => {
+          if (cell != null) {
+            this.setCellStyleFlag(key, flag, add!, cell)
+          }
+        })
+      })
+    }
+  }
+
+  setCellStyleFlag(
+    key: string,
+    flag: number,
+    add: boolean,
+    cell: Cell,
+  ) {
+    const style = this.graph.getStyle(cell)
+    const current = parseInt((style as any)[key], 10) || 0
+    const exists = ((current & flag) === flag)
+    let target = current
+    if (add && !exists) {
+      target += flag
+    } else if (!add && exists) {
+      target -= flag
+    }
+
+    if (target !== current) {
+      this.updateCellsStyle(key, target, [cell])
     }
   }
 

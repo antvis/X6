@@ -524,7 +524,7 @@ export function setAttributeWithAnchor(
     !detector.IS_IE &&
     !detector.IS_IE11 &&
     !detector.IS_EDGE &&
-    this.root.ownerDocument === document
+    elem.ownerDocument === document
   ) {
     const base = getBaseUrl().replace(/([\(\)])/g, '\\$1')
     elem.setAttribute(attrName, `url(${base}#${id})`)

@@ -1270,25 +1270,25 @@ export class Graph extends Disablable implements
    * Toggles the given bit for the given key in the styles of the specified
    * cells.
    */
-  toggleCellStyleFlags(
+  toggleCellsStyleFlag(
     key: string,
     flag: number,
     cells: Cell[] = this.getSelectedCells(),
   ) {
-    this.setCellStyleFlags(key, flag, null, cells)
+    this.setCellsStyleFlag(key, flag, null, cells)
   }
 
   /**
    * Sets or toggles the given bit for the given key in the styles of the
    * specified cells.
    */
-  setCellStyleFlags(
+  setCellsStyleFlag(
     key: string,
     flag: number,
     value: boolean | null,
     cells: Cell[] = this.getSelectedCells(),
   ) {
-    this.cellManager.setCellStyleFlags(key, flag, value, cells)
+    this.cellManager.setCellsStyleFlag(key, flag, value, cells)
   }
 
   toggleCellsLocked(cells: Cell[] = this.getSelectedCells()) {
