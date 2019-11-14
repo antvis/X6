@@ -7,7 +7,7 @@ module.exports = {
     '**/src/**/*.test.ts',
     '**/src/**/*.spec.ts',
   ],
-  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
+  moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx'],
   collectCoverage: true,
   coverageDirectory: './test/coverage',
   coverageReporters: ['lcov'],
