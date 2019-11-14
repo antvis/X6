@@ -16,7 +16,6 @@ import { Image } from '../struct'
 
 `
 const lines = []
-
 const dir = path.join(process.cwd(), './src/assets/images')
 
 fs.readdir(dir, (err, files) => {
@@ -29,7 +28,6 @@ fs.readdir(dir, (err, files) => {
     lines.push(`export const ${filename} = new Image('${base64}', ${size.width}, ${size.height})`)
   });
 
-
   const code = prefix + lines.join('\n')
 
   fs.writeFile('src/assets/images.ts', code, err => {
@@ -40,5 +38,3 @@ fs.readdir(dir, (err, files) => {
     console.log(`\nGenerate image assets.`);
   });
 });
-
-
