@@ -4,7 +4,7 @@ import { Shape } from './shape'
 import { SvgCanvas2D } from '../canvas'
 import { State } from '../core'
 import { Rectangle, Point, FontStyle } from '../struct'
-import { Align, VAlign, TextDirection } from '../types'
+import { Align, VAlign, WritingDirection } from '../types'
 
 export class Text extends Shape {
   value: HTMLElement | string
@@ -26,7 +26,7 @@ export class Text extends Shape {
   clipped: boolean
   overflow: string
   labelPadding: number
-  textDirection: TextDirection
+  textDirection: WritingDirection
   margin: Point
 
   private lastUnscaledWidth: number
@@ -320,7 +320,7 @@ export class Text extends Shape {
     this.horizontal = true
     delete this.background
     delete this.borderColor
-    this.textDirection = constants.DEFAULT_TEXT_DIRECTION as TextDirection
+    this.textDirection = constants.DEFAULT_TEXT_DIRECTION as WritingDirection
     delete this.margin
   }
 
@@ -348,7 +348,7 @@ export class Text extends Shape {
       this.borderColor = this.style.labelBorderColor || this.borderColor
       this.textDirection = (
         this.style.textDirection || constants.DEFAULT_TEXT_DIRECTION
-      ) as TextDirection
+      ) as WritingDirection
 
       this.opacity = this.style.textOpacity || 100
 
@@ -362,15 +362,15 @@ export class Text extends Shape {
   /**
    * Used to determine the automatic text direction.
    */
-  getAutoDirection(): TextDirection {
+  getAutoDirection(): WritingDirection {
     // Looks for strong (directional) characters
     // tslint:disable-next-line
     const tmp = /[A-Za-z\u05d0-\u065f\u066a-\u06ef\u06fa-\u07ff\ufb1d-\ufdff\ufe70-\ufefc]/.exec(this.value as string)
 
     // Returns the direction defined by the character
     return (tmp != null && tmp.length > 0 && tmp[0] > 'z')
-      ? 'rtl' as TextDirection
-      : 'ltr' as TextDirection
+      ? 'rtl' as WritingDirection
+      : 'ltr' as WritingDirection
   }
 
   updateBoundingBox() {
@@ -835,6 +835,6 @@ export namespace Text {
     clipped?: boolean,
     overflow?: string,
     labelPadding?: number,
-    textDirection: TextDirection
+    textDirection: WritingDirection
   }
 }

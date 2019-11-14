@@ -9,7 +9,7 @@ export type LabelVerticalPosition = 'top' | 'middle' | 'bottom'
 export type Direction = 'north' | 'south' | 'east' | 'west'
 export type LineCap = 'butt' | 'round' | 'square'
 export type LineJoin = 'miter' | 'round' | 'bevel'
-export type TextDirection = '' | 'auto' | 'ltr' | 'rtl'
+export type WritingDirection = '' | 'auto' | 'ltr' | 'rtl'
 
 export interface Size {
   width: number
@@ -17,11 +17,15 @@ export interface Size {
 }
 
 export interface Style {
+  /**
+   * Custom styles
+   */
   [key: string]: any
-  shape?: string
-  edge?: string | RoutingFunction | null
 
+  shape?: string | null
+  edge?: string | RoutingFunction | null
   perimeter?: string | PerimeterFunction | null
+
   sourcePort?: string
   targetPort?: string
   portConstraint?: string
@@ -108,27 +112,40 @@ export interface Style {
 
   fill?: string
   fillOpacity?: number
+  gradientColor?: string
+  gradientDirection?: Direction
 
   stroke?: string
   strokeWidth?: number
   strokeOpacity?: number
-
   dashed?: boolean
   dashPattern?: string
   fixDash?: boolean
 
-  fontColor?: string
-  fontFamily?: string
+  flipH?: boolean
+  flipV?: boolean
+
+  /**
+   * If this is true then no label is visible for a given cell.
+   */
+  noLabel?: boolean
   fontSize?: number
+  fontColor?: string
   fontStyle?: FontStyle
+  fontFamily?: string
   textOpacity?: number
-  textDirection?: TextDirection
-  overflow?: 'fill' | 'width' | 'visible' | 'hidden'
-  whiteSpace?: 'nowrap' | 'wrap'
+  textDirection?: WritingDirection
   align?: Align
   verticalAlign?: VAlign
+  overflow?: 'fill' | 'width' | 'visible' | 'hidden'
+  whiteSpace?: 'nowrap' | 'wrap'
   htmlLabel?: boolean
+  horizontal?: boolean
+  labelBackgroundColor?: string
+  labelBorderColor?: string
+  labelClassName?: string
   labelWidth?: number
+  labelPadding?: number
 
   /**
    * The horizontal label position of vertices. Possible values are
@@ -163,20 +180,8 @@ export interface Style {
    * use `verticalAlign` style.
    */
   labelVerticalPosition?: LabelVerticalPosition
-  labelBackgroundColor?: string
-  labelBorderColor?: string
-  labelPadding?: number
-  labelClassName?: string
-  /**
-   * If this is true then no label is visible for a given cell.
-   */
-  noLabel?: boolean
-
-  gradientColor?: string
-  gradientDirection?: Direction
 
   direction?: Direction
-  horizontal?: boolean
 
   separatorColor?: string
   swimlaneFillColor?: string
@@ -196,9 +201,6 @@ export interface Style {
   imageFlipH?: boolean
   imageFlipV?: boolean
 
-  flipH?: boolean
-  flipV?: boolean
-
   /**
    * If this is true then no edge style is applied for a given edge.
    */
@@ -215,11 +217,11 @@ export interface Style {
   indicatorDirection?: Direction
 
   segment?: number
-  endArrow?: string
-  startArrow?: string
   endSize?: number
-  startSize?: number
+  endArrow?: string
   endFilled?: boolean
+  startSize?: number
+  startArrow?: string
   startFilled?: boolean
 
   glass?: boolean

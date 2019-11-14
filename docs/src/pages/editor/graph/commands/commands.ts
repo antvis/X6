@@ -331,6 +331,10 @@ export namespace Commands {
       handler: (graph: Graph, valign?: string) => graph.updateCellsStyle('verticalAlign', valign)
     },
     {
+      name: 'horizontal',
+      handler: (graph: Graph, horizontal?: boolean) => graph.updateCellsStyle('horizontal', horizontal)
+    },
+    {
       name: 'labelPosition',
       handler: (graph: Graph, position?: string) => {
         if (position != null) {

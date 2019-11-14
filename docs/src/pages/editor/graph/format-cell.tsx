@@ -57,6 +57,7 @@ export class FormatCell
       fontColor: style.fontColor,
       align: style.align,
       valign: style.verticalAlign,
+      horizontal: style.horizontal,
       labelBorderColor: style.labelBorderColor,
       labelBackgroundColor: style.labelBackgroundColor,
       labelPosition: labelPosition,
@@ -588,6 +589,12 @@ export class FormatCell
     this.setState({ valign })
   }
 
+  toggleHorizontal = () => {
+    const vertical = this.state.horizontal === false
+    this.executeCommand('horizontal', vertical)
+    this.setState({ horizontal: vertical })
+  }
+
   updateFontColor(color: string) {
     this.executeCommand('fontColor', color)
     this.setState({ fontColor: color })
@@ -677,8 +684,8 @@ export class FormatCell
               style={{ marginRight: 23 }}
             />
             <Button
-              className={classnames('ant-btn-flag', 'ant-btn-icon-only', { 'ant-btn-checked': FontStyle.isUnderlined(this.state.fontStyle) })}
-              onClick={this.toggleUnderline}
+              className={classnames('ant-btn-flag', 'ant-btn-icon-only', { 'ant-btn-checked': this.state.horizontal === false })}
+              onClick={this.toggleHorizontal}
             >
               <i className="anticon">
                 <svg width="14px" height="14px" fill="currentColor" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
@@ -899,6 +906,7 @@ export namespace FormatCell {
     fontStyle?: FontStyle
     align?: Align
     valign?: VAlign
+    horizontal?: boolean
     fontColor?: string
     labelBorderColor?: string
     labelBackgroundColor?: string

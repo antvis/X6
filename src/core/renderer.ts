@@ -1,6 +1,6 @@
 import * as util from '../util'
 import { State } from './state'
-import { TextDirection, Dialect } from '../types'
+import { WritingDirection, Dialect } from '../types'
 import { Rectangle, Point, Overlay } from '../struct'
 import {
   constants,
@@ -707,7 +707,7 @@ export class Renderer {
           labelPadding: state.style.labelPadding,
           textDirection: (
             state.style.textDirection || constants.DEFAULT_TEXT_DIRECTION
-          ) as TextDirection,
+          ) as WritingDirection,
         },
       )
 
