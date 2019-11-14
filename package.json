@@ -16,7 +16,10 @@
   "keywords": [
     "diagramming",
     "graph",
-    "editor"
+    "flowchart",
+    "uml",
+    "editor",
+    "svg"
   ],
   "scripts": {
     "clean": "rimraf ./lib",
