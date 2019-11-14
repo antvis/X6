@@ -20,9 +20,8 @@
     ]
   },
   "include": [
-    "src/**/*.d.ts",
     "src/**/*.ts",
-    "src/addon/react/icon/index.tsx"
+    "src/**/*.d.ts"
   ],
   "exclude": [
     "src/**/*.test.ts",
