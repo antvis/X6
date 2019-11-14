@@ -12,3 +12,47 @@
 [![NPM Package](https://img.shields.io/npm/v/@antv/x6.svg?style=flat-square)](https://www.npmjs.com/package/@antv/x6)
 [![NPM Downloads](http://img.shields.io/npm/dm/@antv/x6.svg?style=flat-square)](https://www.npmjs.com/package/@antv/x6)
 [![NPM Dependencies](https://img.shields.io/david/antvis/x6?style=flat-square)](https://www.npmjs.com/package/@antv/x6)
+
+## Installation
+
+```shell
+# npm
+$ npm install @antv/x6 --save
+
+# yarn
+$ yarn add @antv/x6
+```
+
+## Usage
+
+```html
+<div id="container" style="width: 600px; height: 400px"></div>
+```
+
+```ts
+import { Graph } from '@antv/x6'
+
+const container = document.getElementById('container')
+const graph = new Graph(container)
+const node1 = graph.addNode({ data: 'Hello', x: 60, y: 60, width: 80, height: 30 })
+const node2 = graph.addNode({ data: 'World', x: 240, y: 240, width: 80, height: 30 })
+const edge = graph.addEdge({ data: 'x6', source: node1, target: node2 })
+```
+
+## Development
+
+```shell
+$ yarn
+
+# build
+$ yarn run build
+
+# run test case
+$ yarn run test
+```
+
+## Contributing
+
+Pull requests and stars are highly welcome.
+
+For bugs and feature requests, please [create an issue](https://github.com/antvis/x6/issues/new).
