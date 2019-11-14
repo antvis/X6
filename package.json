@@ -1,5 +1,5 @@
 {
-  "name": "x6",
+  "name": "@antv/x6",
   "version": "0.1.0",
   "description": "JavaScript diagramming library",
   "main": "lib/index.js",
@@ -14,10 +14,10 @@
     "src": "src/"
   },
   "keywords": [
-    "diagramming",
-    "graph",
+    "diagram",
     "flowchart",
     "uml",
+    "graph",
     "editor",
     "svg"
   ],
