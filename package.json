@@ -33,7 +33,7 @@
     "test": "jest",
     "coveralls": "cat ./test/coverage/lcov.info | coveralls",
     "pretest": "rimraf ./test/coverage",
-    "prepublish": "yarn test"
+    "prepublish": "yarn test && yarn build"
   },
   "husky": {
     "hooks": {
@@ -54,6 +54,7 @@
   "devDependencies": {
     "@types/jest": "^24.0.17",
     "@types/mousetrap": "^1.6.3",
+    "@types/sinon": "^7.5.0",
     "base64-img": "^1.0.4",
     "coveralls": "^3.0.6",
     "husky": "^3.0.3",
@@ -62,6 +63,7 @@
     "less": "^3.10.3",
     "lint-staged": "^9.2.1",
     "rimraf": "^2.6.3",
+    "sinon": "^7.5.0",
     "ts-jest": "^24.0.2",
     "tslint": "^5.18.0",
     "tslint-config-airbnb": "^5.11.2",
