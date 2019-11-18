@@ -441,11 +441,6 @@
   resolved "https://registry.npm.taobao.org/@types/minimatch/download/@types/minimatch-3.0.3.tgz?cache=0&sync_timestamp=1572464707542&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40types%2Fminimatch%2Fdownload%2F%40types%2Fminimatch-3.0.3.tgz#3dca0e3f33b200fc7d1139c0cd96c1268cadfd9d"
   integrity sha1-PcoOPzOyAPx9ETnAzZbBJoyt/Z0=
 
-"@types/mousetrap@^1.6.3":
-  version "1.6.3"
-  resolved "https://registry.npm.taobao.org/@types/mousetrap/download/@types/mousetrap-1.6.3.tgz#3159a01a2b21c9155a3d8f85588885d725dc987d"
-  integrity sha1-MVmgGishyRVaPY+FWIiF1yXcmH0=
-
 "@types/node@*":
   version "12.12.8"
   resolved "https://registry.npm.taobao.org/@types/node/download/@types/node-12.12.8.tgz?cache=0&sync_timestamp=1573848614685&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40types%2Fnode%2Fdownload%2F%40types%2Fnode-12.12.8.tgz#dab418655af39ce2fa99286a0bed21ef8072ac9d"
