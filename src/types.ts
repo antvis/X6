@@ -19,6 +19,13 @@ export interface Size {
   height: number
 }
 
+export interface Margin {
+  top: number
+  right: number
+  bottom: number
+  left: number
+}
+
 interface ShapeStyle {
   shape?: string
   className?: string

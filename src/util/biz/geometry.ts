@@ -1,3 +1,5 @@
+/* tslint:disable:no-parameter-reassignment */
+
 import { State } from '../../core'
 import { Direction } from '../../types'
 import { Point, Rectangle } from '../../struct'
@@ -9,35 +11,6 @@ export function toRad(deg: number) {
 
 export function toDeg(rad: number) {
   return rad * 180 / Math.PI
-}
-
-export function getBoundingBox(rect: Rectangle, rotation: number, cx?: Point) {
-  if (rect != null && rotation != null && rotation !== 0) {
-    const rad = toRad(rotation)
-    const cos = Math.cos(rad)
-    const sin = Math.sin(rad)
-
-    cx = (cx != null) ? cx : rect.getCenter() // tslint:disable-line
-
-    let p1 = new Point(rect.x, rect.y)
-    let p2 = new Point(rect.x + rect.width, rect.y)
-    let p3 = new Point(p2.x, rect.y + rect.height)
-    let p4 = new Point(rect.x, p3.y)
-
-    p1 = rotatePointEx(p1, cos, sin, cx)
-    p2 = rotatePointEx(p2, cos, sin, cx)
-    p3 = rotatePointEx(p3, cos, sin, cx)
-    p4 = rotatePointEx(p4, cos, sin, cx)
-
-    const result = new Rectangle(p1.x, p1.y, 0, 0)
-    result.add(new Rectangle(p2.x, p2.y, 0, 0))
-    result.add(new Rectangle(p3.x, p3.y, 0, 0))
-    result.add(new Rectangle(p4.x, p4.y, 0, 0))
-
-    return result
-  }
-
-  return rect
 }
 
 export function rotatePoint(
@@ -78,6 +51,35 @@ export function rotatePointEx(
   return new Point(x1 + center.x, y1 + center.y)
 }
 
+export function rotateRectangle(rect: Rectangle, rotation: number, cx?: Point) {
+  if (rect != null && rotation != null && rotation !== 0) {
+    const rad = toRad(rotation)
+    const cos = Math.cos(rad)
+    const sin = Math.sin(rad)
+
+    cx = (cx != null) ? cx : rect.getCenter()
+
+    let p1 = new Point(rect.x, rect.y)
+    let p2 = new Point(rect.x + rect.width, rect.y)
+    let p3 = new Point(p2.x, rect.y + rect.height)
+    let p4 = new Point(rect.x, p3.y)
+
+    p1 = rotatePointEx(p1, cos, sin, cx)
+    p2 = rotatePointEx(p2, cos, sin, cx)
+    p3 = rotatePointEx(p3, cos, sin, cx)
+    p4 = rotatePointEx(p4, cos, sin, cx)
+
+    const result = new Rectangle(p1.x, p1.y, 0, 0)
+    result.add(new Rectangle(p2.x, p2.y, 0, 0))
+    result.add(new Rectangle(p3.x, p3.y, 0, 0))
+    result.add(new Rectangle(p4.x, p4.y, 0, 0))
+
+    return result
+  }
+
+  return rect
+}
+
 /**
  * Converts the given arc to a series of curves.
  */
@@ -85,17 +87,19 @@ export function arcToCurves(
   x0: number, y0: number,
   r1: number, r2: number,
   angle: number,
-  largeArcFlag: number, sweepFlag: number,
-  x: number, y: number,
+  largeArcFlag: number,
+  sweepFlag: number,
+  x: number,
+  y: number,
 ) {
   if (r1 === 0 || r2 === 0) {
     return []
   }
 
-  x -= x0 // tslint:disable-line:no-parameter-reassignment
-  y -= y0 // tslint:disable-line:no-parameter-reassignment
-  r1 = Math.abs(r1) // tslint:disable-line:no-parameter-reassignment
-  r2 = Math.abs(r2) // tslint:disable-line:no-parameter-reassignment
+  x -= x0
+  y -= y0
+  r1 = Math.abs(r1)
+  r2 = Math.abs(r2)
 
   const fS = sweepFlag
   const psai = angle
@@ -114,8 +118,8 @@ export function arcToCurves(
   let sds
 
   if (lamda > 1) {
-    r1 = Math.sqrt(lamda) * r1 // tslint:disable-line:no-parameter-reassignment
-    r2 = Math.sqrt(lamda) * r2 // tslint:disable-line:no-parameter-reassignment
+    r1 = Math.sqrt(lamda) * r1
+    r2 = Math.sqrt(lamda) * r2
     sds = 0
   } else {
     let seif = 1
@@ -349,10 +353,10 @@ export function ptSegmentDist(
   px: number, py: number,
 ) {
 
-  x2 -= x1 // tslint:disable-line
-  y2 -= y1 // tslint:disable-line
-  px -= x1 // tslint:disable-line
-  py -= y1 // tslint:disable-line
+  x2 -= x1
+  y2 -= y1
+  px -= x1
+  py -= y1
 
   let dotprod = px * x2 + py * y2
   let projlenSq
@@ -360,8 +364,8 @@ export function ptSegmentDist(
   if (dotprod <= 0.0) {
     projlenSq = 0.0
   } else {
-    px = x2 - px // tslint:disable-line
-    py = y2 - py // tslint:disable-line
+    px = x2 - px
+    py = y2 - py
     dotprod = px * x2 + py * y2
 
     if (dotprod <= 0.0) {
@@ -419,18 +423,18 @@ export function relativeCcw(
   x2: number, y2: number,
   px: number, py: number,
 ) {
-  x2 -= x1 // tslint:disable-line
-  y2 -= y1 // tslint:disable-line
-  px -= x1 // tslint:disable-line
-  py -= y1 // tslint:disable-line
+  x2 -= x1
+  y2 -= y1
+  px -= x1
+  py -= y1
   let ccw = px * y2 - py * x2
 
   if (ccw === 0.0) {
     ccw = px * x2 + py * y2
 
     if (ccw > 0.0) {
-      px -= x2 // tslint:disable-line
-      py -= y2 // tslint:disable-line
+      px -= x2
+      py -= y2
       ccw = px * x2 + py * y2
 
       if (ccw < 0.0) {

@@ -11,14 +11,14 @@ export class InternalStorageShape extends RectangleShape {
     return false
   }
 
-  paintForeground(
+  drawForeground(
     c: SvgCanvas2D,
     x: number,
     y: number,
     w: number,
     h: number,
   ) {
-    super.paintForeground(c, x, y, w, h)
+    super.drawForeground(c, x, y, w, h)
 
     let inset = 0
     if (this.rounded) {

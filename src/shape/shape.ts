@@ -1,11 +1,11 @@
 import * as util from '../util'
 import * as images from '../assets/images'
-import { Stencil } from './stencil'
 import { State } from '../core'
+import { Stencil } from './stencil'
 import { SvgCanvas2D } from '../canvas'
+import { DomEvent, Disposable } from '../common'
 import { Rectangle, Point } from '../struct'
 import { Style, Direction, Dialect } from '../types'
-import { constants, DomEvent, Disposable } from '../common'
 
 export class Shape extends Disposable {
   state: State
@@ -31,7 +31,7 @@ export class Shape extends Disposable {
   stencil: Stencil | null
 
   /**
-   * Optional reference to the style of the corresponding `CellState`.
+   * Optional reference to the style of the corresponding `State`.
    */
   style: Style
 
@@ -85,14 +85,17 @@ export class Shape extends Disposable {
    */
   stencilPointerEvents: boolean = false
 
+  svgPointerEvents: string = 'all'
+
   /**
-   * Allows to use the SVG bounding box in SVG. Default is false
-   * for performance reasons.
+   * Allows to use the SVG bounding box in SVG.
+   *
+   * Default is `false` for performance reasons.
    */
   useSvgBoundingBox: boolean = false
 
   /**
-   * Minimum stroke width for SVG output.
+   * Minimum stroke width.
    */
   minSvgStrokeWidth: number = 1
 
@@ -101,12 +104,10 @@ export class Shape extends Disposable {
    */
   svgStrokeTolerance: number = 8
 
-  svgPointerEvents: string = 'all'
-
   oldGradients: SvgCanvas2D.Gradients | null
 
-  //
   image: string | null
+
   indicatorShape: Shape.ShapeClass | null
   indicatorImage: string | null
   indicatorColor: string | null
@@ -118,13 +119,11 @@ export class Shape extends Disposable {
   cursor?: string
   opacity: number
   rotation: number
-  fill: string | null
+  fillColor: string | null
   fillOpacity: number
-  stroke: string | null
-  strokeWidth: number | string
+  strokeColor: string | null
+  strokeWidth: number
   strokeOpacity: number
-  flipH: boolean
-  flipV: boolean
   gradientColor: string | null
   gradientDirection?: Direction
 
@@ -136,10 +135,16 @@ export class Shape extends Disposable {
 
   spacing: number = 0
 
+  flipH: boolean = false
+  flipV: boolean = false
   glass: boolean = false
   dashed: boolean = false
-  shadow: boolean = false
   rounded: boolean = false
+
+  shadow: boolean = false
+  shadowColor: string = 'gray'
+  shadowOffsetX: number = 2
+  shadowOffsetY: number = 3
 
   constructor(stencil?: Stencil) {
     super()
@@ -148,7 +153,7 @@ export class Shape extends Disposable {
     this.initStyle()
   }
 
-  protected initStyle() {
+  initStyle() {
     this.rotation = 0
     this.opacity = 1
     this.fillOpacity = 1
@@ -161,17 +166,17 @@ export class Shape extends Disposable {
   resetStyle() {
     this.initStyle()
 
-    this.spacing = 0
-
-    delete this.fill
+    delete this.fillColor
     delete this.gradientColor
     delete this.gradientDirection
-    delete this.stroke
+    delete this.strokeColor
     delete this.startSize
     delete this.endSize
     delete this.startArrow
     delete this.endArrow
     delete this.direction
+
+    this.spacing = 0
 
     this.glass = false
     this.shadow = false
@@ -183,12 +188,38 @@ export class Shape extends Disposable {
    * Creaing the DOM node and adding it into the given container.
    */
   init(container: HTMLElement | SVGElement | null) {
-    if (container) {
+    if (container != null) {
       if (this.elem == null) {
         this.elem = this.create(container)
         if (container != null) {
           container.appendChild(this.elem)
         }
+      }
+    }
+  }
+
+  redraw() {
+    const elem = this.elem
+    if (elem != null) {
+      this.updateBoundsFromPoints()
+      this.updateClassName()
+
+      if (this.visible && this.isValidBounds()) {
+        elem.style.visibility = ''
+        this.clean()
+        if (util.isSvgElem(elem)) {
+          this.redrawSvgShape()
+        } else {
+          this.redrawHtmlShape()
+        }
+        this.updateBoundingBox()
+      } else {
+        elem.style.visibility = 'hidden'
+        this.boundingBox = null
+      }
+
+      if (this.cursor) {
+        this.setCursor(this.cursor)
       }
     }
   }
@@ -204,191 +235,23 @@ export class Shape extends Disposable {
   }
 
   protected createHtmlDiv(): HTMLDivElement {
-    const elem = document.createElement('div') as HTMLDivElement
+    const elem = util.createElement('div') as HTMLDivElement
     elem.style.position = 'absolute'
     return elem
   }
 
-  protected getSvgScreenOffset(): number {
-    let sw = (this.stencil && this.stencil.strokeWidth !== 'inherit')
-      ? Number(this.stencil.strokeWidth)
-      : this.strokeWidth as number
-    sw = Math.max(1, Math.round(sw * this.scale))
-    return (util.mod(sw, 2) === 1) ? 0.5 : 0
-  }
-
-  redraw() {
-    if (this.elem) {
-      const elem = this.elem
-
-      this.updateBoundsFromPoints()
-
-      if (this.visible && this.isValidBounds()) {
-        elem.style.visibility = ''
-        this.empty()
-        this.updateClassName()
-
-        if (util.isSvgElem(elem)) {
-          this.redrawSvgShape()
-        } else {
-          this.redrawHtmlShape()
-        }
-
-        this.updateBoundingBox()
-      } else {
-        elem.style.visibility = 'hidden'
-        this.updateClassName()
-        this.boundingBox = null
-      }
-
-      if (this.cursor) {
-        this.setCursor(this.cursor)
-      }
-    }
-  }
-
-  protected updateClassName() {
-    if (this.elem != null) {
-      this.elem.setAttribute('class', this.className || '')
-    }
-  }
-
-  protected empty() {
+  protected clean() {
     if (this.elem != null) {
       if (util.isSvgElem(this.elem)) {
         util.emptyElement(this.elem)
       } else {
-        const cursorStyle = (this.cursor != null)
-          ? ` cursor: ${this.cursor};`
-          : ''
-        this.elem.style.cssText = `position: absolute;${cursorStyle}`
+        this.elem.style.cssText = 'position: absolute;'
         this.elem.innerHTML = ''
       }
     }
   }
 
-  protected updateBoundsFromPoints() {
-    const points = this.points
-    if (points != null && points.length > 0 && points[0] != null) {
-      this.bounds = new Rectangle(points[0].x, points[0].y, 1, 1)
-      for (let i = 1, ii = points.length; i < ii; i += 1) {
-        if (points[i] != null) {
-          this.bounds.add(new Rectangle(points[i].x, points[i].y, 1, 1))
-        }
-      }
-    }
-  }
-
-  protected isValidBounds() {
-    return (
-      !isNaN(this.scale) &&
-      isFinite(this.scale) &&
-      this.scale > 0 &&
-      this.bounds != null &&
-      !isNaN(this.bounds.x) &&
-      !isNaN(this.bounds.y) &&
-      !isNaN(this.bounds.width) &&
-      !isNaN(this.bounds.height) &&
-      this.bounds.width > 0 &&
-      this.bounds.height > 0
-    )
-  }
-
-  protected redrawSvgShape() {
-    const canvas = this.createCanvas()
-    if (canvas != null) {
-      this.paint(canvas)
-      if (this.elem !== canvas.root) {
-        this.elem!.insertAdjacentHTML('beforeend', canvas.root.outerHTML)
-      }
-      this.destroyCanvas(canvas)
-    }
-  }
-
-  protected createCanvas() {
-    let canvas: SvgCanvas2D | null = null
-
-    if (util.isSvgElem(this.elem)) {
-      canvas = this.createSvgCanvas()
-    }
-
-    // draw outline
-    if (canvas != null && this.outline) {
-      canvas.setStrokeWidth(+this.strokeWidth)
-      canvas.setStrokeColor(this.stroke)
-      if (this.dashed != null) {
-        canvas.setDashed(this.dashed)
-      }
-
-      canvas.setStrokeWidth = () => { }
-      canvas.setStrokeColor = () => { }
-      canvas.setDashed = () => { }
-
-      canvas.setFillColor = () => { }
-      canvas.setGradient = () => { }
-      canvas.text = () => { }
-    }
-
-    return canvas
-  }
-
-  protected createSvgCanvas() {
-    const canvas = new SvgCanvas2D(this.elem as SVGElement, false)
-    canvas.minStrokeWidth = this.minSvgStrokeWidth
-    canvas.strokeTolerance = this.pointerEvents ? this.svgStrokeTolerance : 0
-    canvas.pointerEvents = this.pointerEvents
-    canvas.pointerEventsValue = this.svgPointerEvents
-
-    const offset = this.getSvgScreenOffset()
-    if (offset !== 0) {
-      this.elem!.setAttribute('transform', `translate(${offset},${offset})`)
-    } else {
-      this.elem!.removeAttribute('transform')
-    }
-
-    if (!this.antialiased) {
-      canvas.format = (val: any) => Math.round(parseFloat(val))
-    }
-
-    return canvas
-  }
-
-  protected destroyCanvas(canvas: SvgCanvas2D) {
-    if (canvas instanceof SvgCanvas2D) {
-      for (const key in canvas.gradients) {
-        const gradient = canvas.gradients[key]
-        if (gradient != null) {
-          (gradient as any).refCount = ((gradient as any).refCount || 0) + 1
-        }
-      }
-
-      this.releaseSvgGradients(this.oldGradients)
-      this.oldGradients = canvas.gradients
-    }
-  }
-
-  protected releaseSvgGradients(gradients: SvgCanvas2D.Gradients | null) {
-    if (gradients != null) {
-      Object.keys(gradients).forEach((key) => {
-        const gradient = gradients[key]
-        if (gradient != null) {
-          let refCount = (gradient as any).refCount || 0
-          refCount = refCount > 0 ? refCount - 1 : 0;
-          (gradient as any).refCount = refCount
-
-          if (refCount === 0 && gradient.parentNode != null) {
-            gradient.parentNode.removeChild(gradient)
-          }
-        }
-      })
-    }
-  }
-
-  // #region html
-
-  isHtmlAllowed() {
-    return false
-  }
+  // #region draw html
 
   protected redrawHtmlShape() {
     const elem = this.elem as HTMLElement
@@ -400,10 +263,10 @@ export class Shape extends Disposable {
   protected updateHtmlBounds(elem: HTMLElement) {
     let sw = util.getDocumentMode() >= 9
       ? 0
-      : Math.ceil(Number(this.strokeWidth) * this.scale)
+      : Math.ceil(this.strokeWidth * this.scale)
 
-    elem.style.boxSizing = 'content-box'
     elem.style.overflow = 'hidden'
+    elem.style.boxSizing = 'content-box'
     elem.style.borderWidth = `${Math.max(1, sw)}px`
     elem.style.left = `${Math.round(this.bounds.x - sw)}px`
     elem.style.top = `${Math.round(this.bounds.y - sw)}px`
@@ -420,33 +283,31 @@ export class Shape extends Disposable {
   }
 
   protected updateHtmlFilters(node: HTMLElement) {
-    let f = ''
+    let filter = ''
 
     if (this.opacity < 1) {
-      f += `alpha(opacity=${this.opacity * 100})`
+      filter += `alpha(opacity=${this.opacity * 100})`
     }
 
     if (this.shadow) {
-      f += (
+      filter += (
         'progid:DXImageTransform.Microsoft.dropShadow (' +
-        `OffX='${Math.round(constants.SHADOW_OFFSET_X * this.scale)}',` +
-        `OffY='${Math.round(constants.SHADOW_OFFSET_Y * this.scale)}',` +
-        `Color='${constants.SHADOWCOLOR}')`
+        `OffX='${Math.round(this.shadowOffsetX * this.scale)}',` +
+        `OffY='${Math.round(this.shadowOffsetY * this.scale)}',` +
+        `Color='${this.shadowColor}')`
       )
     }
 
     if (
-      this.fill != null &&
-      this.fill !== constants.NONE &&
-      this.gradientColor &&
-      this.gradientColor !== constants.NONE
+      util.isValidColor(this.fillColor) &&
+      util.isValidColor(this.gradientColor)
     ) {
-      let start = this.fill
+      let start = this.fillColor
       let end = this.gradientColor
       let type = '0'
 
       const lookup = { east: 0, south: 1, west: 2, north: 3 }
-      let dir = (this.direction != null) ? lookup[this.direction] : 0
+      let dir = this.direction != null ? lookup[this.direction] : 0
       if (this.gradientDirection != null) {
         dir = util.mod(dir + lookup[this.gradientDirection] - 1, 4)
       }
@@ -464,7 +325,7 @@ export class Shape extends Disposable {
         type = '1'
       }
 
-      f += (
+      filter += (
         'progid:DXImageTransform.Microsoft.gradient(' +
         `startColorStr='${start}', ` +
         `endColorStr='${end}', ` +
@@ -472,14 +333,14 @@ export class Shape extends Disposable {
       )
     }
 
-    node.style.filter = f
+    node.style.filter = filter
   }
 
   protected updateHtmlColors(node: HTMLElement) {
-    let color = this.stroke
+    let color = this.strokeColor
 
-    if (color != null && color !== constants.NONE) {
-      node.style.borderColor = color
+    if (util.isValidColor(color)) {
+      node.style.borderColor = color!
 
       if (this.dashed) {
         node.style.borderStyle = 'dashed'
@@ -489,17 +350,17 @@ export class Shape extends Disposable {
 
       const borderWidth = Math.max(
         1,
-        Math.ceil(Number(this.strokeWidth) * this.scale),
+        Math.ceil(this.strokeWidth * this.scale),
       )
       node.style.borderWidth = `${borderWidth}px`
     } else {
       node.style.borderWidth = '0px'
     }
 
-    color = this.outline ? null : this.fill
+    color = this.outline ? null : this.fillColor
 
-    if (color != null && color !== constants.NONE) {
-      node.style.backgroundColor = color
+    if (util.isValidColor(color)) {
+      node.style.backgroundColor = color!
       node.style.backgroundImage = 'none'
     } else if (this.pointerEvents) {
       node.style.backgroundColor = 'transparent'
@@ -508,19 +369,119 @@ export class Shape extends Disposable {
     }
   }
 
-  /**
-   * Sets a transparent background CSS style to catch all events.
-   */
-  protected setTransparentBackgroundImage(elem: HTMLElement) {
-    elem.style.backgroundImage = `url('${images.transparent.src}')`
-  }
-
   // #endregion
 
-  // #region svg
+  // #region draw svg
 
-  paint(c: SvgCanvas2D, update?: boolean) {
-    let strokeDrawn = false
+  protected redrawSvgShape() {
+    const canvas = this.createCanvas()
+    if (canvas != null) {
+      this.draw(canvas)
+      if (this.elem != null && this.elem !== canvas.root) {
+        this.elem.insertAdjacentHTML('beforeend', canvas.root.outerHTML)
+      }
+      this.destroyCanvas(canvas)
+    }
+  }
+
+  protected createCanvas() {
+    let canvas: SvgCanvas2D | null = null
+
+    if (util.isSvgElem(this.elem)) {
+      canvas = this.createSvgCanvas()
+    }
+
+    // draw outline
+    if (canvas != null && this.outline) {
+      canvas.setStrokeWidth(this.strokeWidth)
+      canvas.setStrokeColor(this.strokeColor)
+      if (this.dashed != null) {
+        canvas.setDashed(this.dashed)
+      }
+
+      canvas.setStrokeWidth = () => { }
+      canvas.setStrokeColor = () => { }
+      canvas.setDashed = () => { }
+
+      canvas.setFillColor = () => { }
+      canvas.setGradient = () => { }
+      canvas.drawText = () => { }
+    }
+
+    return canvas
+  }
+
+  protected getSvgScreenOffset(): number {
+    let sw = (this.stencil && this.stencil.strokeWidth !== -1)
+      ? this.stencil.strokeWidth
+      : this.strokeWidth
+    sw = Math.max(1, Math.round(sw * this.scale))
+    return util.mod(sw, 2) === 1 ? 0.5 : 0
+  }
+
+  protected createSvgCanvas() {
+    const elem = this.elem as SVGElement
+    const canvas = new SvgCanvas2D(elem, false)
+    canvas.minStrokeWidth = this.minSvgStrokeWidth
+    canvas.strokeTolerance = this.pointerEvents ? this.svgStrokeTolerance : 0
+    canvas.pointerEvents = this.pointerEvents
+    canvas.pointerEventsValue = this.svgPointerEvents
+
+    const offset = this.getSvgScreenOffset()
+    if (offset !== 0) {
+      elem.setAttribute('transform', `translate(${offset},${offset})`)
+    } else {
+      elem.removeAttribute('transform')
+    }
+
+    if (!this.antialiased) {
+      canvas.format = (val: any) => Math.round(parseFloat(val))
+    }
+
+    return canvas
+  }
+
+  protected destroyCanvas(canvas: SvgCanvas2D) {
+    if (canvas instanceof SvgCanvas2D) {
+      for (const key in canvas.gradients) {
+        const gradient = canvas.gradients[key]
+        if (gradient != null) {
+          const refCount = this.getGradientRefConut(gradient) + 1
+          this.setGradientRefConut(gradient, refCount)
+        }
+      }
+
+      this.destroySvgGradients(this.oldGradients)
+      this.oldGradients = canvas.gradients
+    }
+  }
+
+  protected destroySvgGradients(gradients: SvgCanvas2D.Gradients | null) {
+    if (gradients != null) {
+      Object.keys(gradients).forEach((key) => {
+        const gradient = gradients[key]
+        if (gradient != null) {
+          let refCount = this.getGradientRefConut(gradient)
+          refCount = refCount > 0 ? refCount - 1 : 0
+          this.setGradientRefConut(gradient, refCount)
+          if (refCount === 0) {
+            util.removeElement(gradient)
+          }
+        }
+      })
+    }
+  }
+
+  protected getGradientRefConut(gradient: SVGGradientElement) {
+    return ((gradient as any).refCount || 0) as number
+  }
+
+  protected setGradientRefConut(gradient: SVGGradientElement, count: number) {
+    (gradient as any).refCount = count
+  }
+
+  draw(c: SvgCanvas2D, update?: boolean) {
+    let outlineDrawn = false
 
     // draw outline
     if (c != null && this.outline) {
@@ -528,12 +489,12 @@ export class Shape extends Disposable {
       const fillAndStroke = c.fillAndStroke
 
       c.stroke = (...args) => {
-        strokeDrawn = true
+        outlineDrawn = true
         stroke.apply(c, args)
       }
 
       c.fillAndStroke = (...args) => {
-        strokeDrawn = true
+        outlineDrawn = true
         fillAndStroke.apply(c, args)
       }
     }
@@ -545,7 +506,7 @@ export class Shape extends Disposable {
     let w = this.bounds.width / s
     let h = this.bounds.height / s
 
-    if (this.isPaintBoundsInverted()) {
+    if (this.drawBoundsInverted()) {
       const tmp1 = (w - h) / 2
       x += tmp1
       y -= tmp1
@@ -559,26 +520,13 @@ export class Shape extends Disposable {
     this.configureCanvas(c, x, y, w, h)
 
     // Adds background rectangle to capture events
-    let bg = null
-    if (
-      (this.stencil == null && this.points == null && this.shapePointerEvents) ||
-      (this.stencil != null && this.stencilPointerEvents)
-    ) {
-      if (this.dialect === 'svg') {
-        const bbox = this.createBoundingBox()
-        bg = this.createTransparentSvgRectangle(
-          bbox.x, bbox.y, bbox.width, bbox.height,
-        )
-        this.elem!.appendChild(bg)
-      }
-    }
+    const bg = this.drawGhostBackground()
 
     if (this.stencil != null) {
       this.stencil.drawShape(c, this, x, y, w, h)
     } else {
-
       // Stencils have separate strokewidth
-      c.setStrokeWidth(this.strokeWidth as number)
+      c.setStrokeWidth(this.strokeWidth)
 
       if (this.points != null) {
         const pts: Point[] = []
@@ -587,9 +535,9 @@ export class Shape extends Disposable {
             pts.push(new Point(p.x / s, p.y / s))
           }
         })
-        this.paintEdgeShape(c, pts)
+        this.drawEdgeShape(c, pts)
       } else {
-        this.paintNodeShape(c, x, y, w, h)
+        this.drawNodeShape(c, x, y, w, h)
       }
     }
 
@@ -597,8 +545,8 @@ export class Shape extends Disposable {
       bg.setAttribute('transform', c.state.transform)
     }
 
-    // Draws highlight rectangle if no stroke was used
-    if (c != null && this.outline && !strokeDrawn) {
+    // Draw a highlight rectangle if no stroke was used
+    if (this.outline && !outlineDrawn) {
       c.rect(x, y, w, h)
       c.stroke()
     }
@@ -638,6 +586,8 @@ export class Shape extends Disposable {
 
     if (this.shadow != null) {
       c.setShadow(this.shadow)
+      c.setShadowColor(this.shadowColor)
+      c.setShadowOffset(this.shadowOffsetX, this.shadowOffsetY)
     }
 
     // Dash
@@ -648,21 +598,19 @@ export class Shape extends Disposable {
       )
     }
 
-    const dash = this.style && this.style.dashPattern
+    const dash = this.style.dashPattern
     if (dash != null) {
       c.setDashPattern(dash)
     }
 
     if (
-      this.fill != null &&
-      this.fill !== constants.NONE &&
-      this.gradientColor &&
-      this.gradientColor !== constants.NONE
+      util.isValidColor(this.fillColor) &&
+      util.isValidColor(this.gradientColor)
     ) {
       const b = this.getGradientBounds(c, x, y, w, h)
       c.setGradient(
-        this.fill,
-        this.gradientColor,
+        this.fillColor!,
+        this.gradientColor!,
         b.x,
         b.y,
         b.width,
@@ -670,63 +618,63 @@ export class Shape extends Disposable {
         this.gradientDirection!,
       )
     } else {
-      c.setFillColor(this.fill)
+      c.setFillColor(this.fillColor)
     }
 
-    c.setStrokeColor(this.stroke)
-  }
-
-  protected getGradientBounds(
-    c: SvgCanvas2D,
-    x: number,
-    y: number,
-    w: number,
-    h: number,
-  ) {
-    return new Rectangle(x, y, w, h)
+    c.setStrokeColor(this.strokeColor)
   }
 
   /**
    * Create a transparent rectangle that catches all events.
    */
-  protected createTransparentSvgRectangle(
-    x: number,
-    y: number,
-    w: number,
-    h: number,
-  ) {
-    const rect = util.createSvgElement('rect')
-    util.setAttributes(rect, {
-      x, y, w, h,
-      fill: 'none',
-      stroke: 'none',
-      'pointer-events': 'all',
-    })
+  protected drawGhostBackground() {
+    let rect = null
+
+    if (
+      (this.stencil == null && this.points == null && this.shapePointerEvents) ||
+      (this.stencil != null && this.stencilPointerEvents)
+    ) {
+      if (this.dialect === 'svg') {
+        const bbox = this.createBoundingBox()
+        rect = util.createSvgElement('rect')
+        util.setAttributes(rect, {
+          x: bbox.x,
+          y: bbox.y,
+          width: bbox.width,
+          height: bbox.height,
+          fill: 'none',
+          stroke: 'none',
+          'pointer-events': 'all',
+        })
+
+        this.elem!.appendChild(rect)
+      }
+    }
+
     return rect
   }
 
-  protected paintEdgeShape(c: SvgCanvas2D, points: Point[]) { }
+  protected drawEdgeShape(c: SvgCanvas2D, points: Point[]) { }
 
-  protected paintNodeShape(
+  protected drawNodeShape(
     c: SvgCanvas2D,
     x: number,
     y: number,
     w: number,
     h: number,
   ) {
-    this.paintBackground(c, x, y, w, h)
-
+    this.drawBackground(c, x, y, w, h)
     if (
       !this.outline ||
       this.style == null ||
       !this.style.backgroundOutline
     ) {
       c.setShadow(false)
-      this.paintForeground(c, x, y, w, h)
+      this.drawForeground(c, x, y, w, h)
     }
   }
 
-  paintBackground(
+  drawBackground(
     c: SvgCanvas2D,
     x: number,
     y: number,
@@ -734,7 +682,7 @@ export class Shape extends Disposable {
     h: number,
   ) { }
 
-  paintForeground(
+  drawForeground(
     c: SvgCanvas2D,
     x: number,
     y: number,
@@ -742,29 +690,7 @@ export class Shape extends Disposable {
     h: number,
   ) { }
 
-  protected getArcSize(w: number, h: number, f?: number) {
-    let r = 0
-
-    const absoluteArcSize = this.style.absoluteArcSize
-    if (absoluteArcSize) {
-      r = Math.min(
-        w / 2,
-        Math.min(
-          h / 2,
-          (this.style.arcSize || constants.LINE_ARCSIZE) / 2,
-        ),
-      )
-    } else {
-      const f = (
-        this.style.arcSize || constants.RECTANGLE_ROUNDING_FACTOR * 100
-      ) / 100
-      r = Math.min(w * f, h * f)
-    }
-
-    return r
-  }
-
-  protected paintGlassEffect(
+  drawGlassEffect(
     c: SvgCanvas2D,
     x: number,
     y: number,
@@ -772,13 +698,16 @@ export class Shape extends Disposable {
     h: number,
     arc: number,
   ) {
-    const sw = Math.ceil((this.strokeWidth as number) / 2)
+    const sw = Math.ceil(this.strokeWidth / 2)
     const size = 0.4
 
     c.setGradient(
       '#ffffff',
       '#ffffff',
-      x, y, w, h * 0.6,
+      x,
+      y,
+      w,
+      h * 0.6,
       'south',
       0.9,
       0.1,
@@ -805,10 +734,7 @@ export class Shape extends Disposable {
     c.fill()
   }
 
-  /**
-   * Paints the given points with rounded corners.
-   */
-  paintPoints(
+  drawPoints(
     c: SvgCanvas2D,
     points: Point[],
     rounded: boolean,
@@ -824,7 +750,10 @@ export class Shape extends Disposable {
       if (close && rounded) {
         points = points.slice() // tslint:disable-line
         const p0 = points[0]
-        const wp = new Point(pe.x + (p0.x - pe.x) / 2, pe.y + (p0.y - pe.y) / 2)
+        const wp = new Point(
+          pe.x + (p0.x - pe.x) / 2,
+          pe.y + (p0.y - pe.y) / 2,
+        )
         points.splice(0, 0, wp)
       }
 
@@ -838,7 +767,7 @@ export class Shape extends Disposable {
         c.lineTo(pt.x, pt.y)
       }
 
-      while (i < ((close) ? points.length : points.length - 1)) {
+      while (i < (close ? points.length : points.length - 1)) {
         let tmp = points[util.mod(i, points.length)]
         let dx = pt.x - tmp.x
         let dy = pt.y - tmp.y
@@ -904,6 +833,8 @@ export class Shape extends Disposable {
 
   // #endregion
 
+  // #region label
+
   getLabelBounds(rect: Rectangle) {
     const direction = (this.style.direction || 'east') as Direction
 
@@ -914,7 +845,7 @@ export class Shape extends Disposable {
       direction !== 'north' &&
       this.state != null &&
       this.state.text != null &&
-      this.state.text.isPaintBoundsInverted()
+      this.state.text.drawBoundsInverted()
     ) {
       bounds = bounds.clone()
       const tmp = bounds.width
@@ -932,7 +863,7 @@ export class Shape extends Disposable {
       if (
         this.state != null &&
         this.state.text != null &&
-        this.state.text.isPaintBoundsInverted()
+        this.state.text.drawBoundsInverted()
       ) {
         const tmp1 = margin.x
         margin.x = margin.height
@@ -952,17 +883,126 @@ export class Shape extends Disposable {
   }
 
   /**
-   * Returns the scaled top, left, bottom and right margin to be used for
-   * computing the label bounds as an `Rectangle`, where the bottom and right
-   * margin are defined in the width and height of the rectangle, respectively.
+   * Returns the scaled top, left, bottom and right margin
+   * to be used for computing the label bounds.
    */
   getLabelMargins(rect: Rectangle): Rectangle | null {
     return null
   }
 
+  // #endregion
+
+  // #region boundingBox
+
+  updateBoundingBox() {
+    if (this.useSvgBoundingBox && util.isSvgElem(this.elem)) {
+      try {
+        const b = (this.elem as SVGGraphicsElement).getBBox()
+        if (b.width > 0 && b.height > 0) {
+          this.boundingBox = new Rectangle(b.x, b.y, b.width, b.height)
+          this.boundingBox.grow(this.strokeWidth * this.scale / 2)
+          return
+        }
+      } catch (e) { }
+    }
+
+    if (this.bounds != null) {
+      let bbox = this.createBoundingBox()
+      if (bbox != null) {
+        this.augmentBoundingBox(bbox)
+        const rot = this.getShapeRotation()
+        if (rot !== 0) {
+          bbox = util.rotateRectangle(bbox, rot)
+        }
+      }
+
+      this.boundingBox = bbox
+    }
+  }
+
+  protected updateBoundsFromPoints() {
+    const points = this.points
+    if (points != null && points.length > 0 && points[0] != null) {
+      this.bounds = new Rectangle(points[0].x, points[0].y, 1, 1)
+      for (let i = 1, ii = points.length; i < ii; i += 1) {
+        if (points[i] != null) {
+          this.bounds.add(new Rectangle(points[i].x, points[i].y, 1, 1))
+        }
+      }
+    }
+  }
+
+  protected isValidBounds() {
+    return (
+      !isNaN(this.scale) &&
+      isFinite(this.scale) &&
+      this.scale > 0 &&
+      this.bounds != null &&
+      !isNaN(this.bounds.x) &&
+      !isNaN(this.bounds.y) &&
+      !isNaN(this.bounds.width) &&
+      !isNaN(this.bounds.height) &&
+      this.bounds.width > 0 &&
+      this.bounds.height > 0
+    )
+  }
+
   /**
-   * Applies the style of the given `CellState` to the shape.
+   * Returns a new rectangle that represents the bounding box
+   * of the bare shape with no shadows or strokeWidth.
    */
+  protected createBoundingBox() {
+    const bbox = this.bounds.clone()
+    if ((
+      this.stencil != null && (
+        this.direction === 'north' ||
+        this.direction === 'south'
+      )
+    ) ||
+      this.drawBoundsInverted()
+    ) {
+      bbox.rotate90()
+    }
+
+    return bbox
+  }
+
+  /**
+   * Augments the bounding box with the strokewidth and shadow offsets.
+   */
+  protected augmentBoundingBox(bbox: Rectangle) {
+    if (this.shadow) {
+      bbox.width += Math.ceil(this.shadowOffsetX * this.scale)
+      bbox.height += Math.ceil(this.shadowOffsetY * this.scale)
+    }
+
+    bbox.grow(this.strokeWidth * this.scale / 2)
+  }
+
+  protected getGradientBounds(
+    c: SvgCanvas2D,
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+  ) {
+    return new Rectangle(x, y, w, h)
+  }
+
+  /**
+   * Returns true if the bounds should be inverted.
+   */
+  drawBoundsInverted() {
+    return (
+      this.stencil == null && (
+        this.direction === 'north' ||
+        this.direction === 'south'
+      )
+    )
+  }
+
+  // #endregion
+
   apply(state: State) {
     this.state = state
     this.style = state.style // keeps a reference to style
@@ -972,19 +1012,19 @@ export class Shape extends Disposable {
     this.rotation = this.style.rotation || this.rotation
     this.direction = this.style.direction || this.direction
 
-    this.fill = this.style.fill || this.fill
+    this.fillColor = this.style.fill || this.fillColor
     this.fillOpacity = this.style.fillOpacity || this.fillOpacity
     this.gradientColor = this.style.gradientColor || this.gradientColor
     this.gradientDirection = this.style.gradientDirection || this.gradientDirection
 
-    this.stroke = this.style.stroke || this.stroke
+    this.strokeColor = this.style.stroke || this.strokeColor
     this.strokeWidth = this.style.strokeWidth || this.strokeWidth
     this.strokeOpacity = this.style.strokeOpacity || this.strokeOpacity
 
-    this.startSize = this.style.startSize || this.startSize
-    this.endSize = this.style.endSize || this.endSize
     this.startArrow = this.style.startArrow || this.startArrow
+    this.startSize = this.style.startSize || this.startSize
     this.endArrow = this.style.endArrow || this.endArrow
+    this.endSize = this.style.endSize || this.endSize
 
     this.flipH = this.style.flipH || this.flipH
     this.flipV = this.style.flipV || this.flipV
@@ -1000,16 +1040,16 @@ export class Shape extends Disposable {
     this.dashed = this.style.dashed || this.dashed
     this.rounded = this.style.rounded || this.rounded
 
-    if (this.fill === constants.NONE) {
-      this.fill = null
+    if (this.fillColor === 'none') {
+      this.fillColor = null
     }
 
-    if (this.gradientColor === constants.NONE) {
+    if (this.gradientColor === 'none') {
       this.gradientColor = null
     }
 
-    if (this.stroke === constants.NONE) {
-      this.stroke = null
+    if (this.strokeColor === 'none') {
+      this.strokeColor = null
     }
   }
 
@@ -1040,85 +1080,26 @@ export class Shape extends Disposable {
     return util.toggleClass(this.elem, selector)
   }
 
-  protected isRoundable() {
+  updateClassName() {
+    if (this.elem != null) {
+      this.elem.setAttribute('class', this.className || '')
+    }
+  }
+
+  isHtmlAllowed() {
     return false
   }
 
-  // #region boundingBox
-
-  updateBoundingBox() {
-    if (this.useSvgBoundingBox && util.isSvgElem(this.elem)) {
-      try {
-        const b = (this.elem as SVGGraphicsElement).getBBox()
-        if (b.width > 0 && b.height > 0) {
-          this.boundingBox = new Rectangle(b.x, b.y, b.width, b.height)
-          this.boundingBox.grow(+this.strokeWidth * this.scale / 2)
-          return
-        }
-      } catch (e) { }
-    }
-
-    if (this.bounds != null) {
-      let bbox = this.createBoundingBox()
-      if (bbox != null) {
-        this.augmentBoundingBox(bbox)
-        const rot = this.getShapeRotation()
-
-        if (rot !== 0) {
-          bbox = util.getBoundingBox(bbox, rot)
-        }
-      }
-
-      this.boundingBox = bbox
-    }
+  isRoundable() {
+    return false
   }
 
   /**
-   * Returns a new rectangle that represents the bounding box
-   * of the bare shape with no shadows or strokewidths.
+   * Sets a transparent background CSS style to catch all events.
    */
-  protected createBoundingBox() {
-    const bbox = this.bounds.clone()
-
-    if ((
-      this.stencil != null && (
-        this.direction === 'north' ||
-        this.direction === 'south'
-      )
-    ) ||
-      this.isPaintBoundsInverted()
-    ) {
-      bbox.rotate90()
-    }
-
-    return bbox
+  setTransparentBackgroundImage(elem: HTMLElement | SVGElement) {
+    elem.style.backgroundImage = `url('${images.transparent.src}')`
   }
-
-  /**
-   * Augments the bounding box with the strokewidth and shadow offsets.
-   */
-  protected augmentBoundingBox(bbox: Rectangle) {
-    if (this.shadow) {
-      bbox.width += Math.ceil(constants.SHADOW_OFFSET_X * this.scale)
-      bbox.height += Math.ceil(constants.SHADOW_OFFSET_Y * this.scale)
-    }
-
-    bbox.grow(+this.strokeWidth * this.scale / 2)
-  }
-
-  /**
-   * Returns true if the bounds should be inverted.
-   */
-  isPaintBoundsInverted() {
-    return (
-      this.stencil == null && (
-        this.direction === 'north' ||
-        this.direction === 'south'
-      )
-    )
-  }
-
-  // #endregion
 
   getRotation() {
     return (this.rotation != null) ? this.rotation : 0
@@ -1151,19 +1132,37 @@ export class Shape extends Disposable {
     return rotation
   }
 
+  getArcSize(w: number, h: number, f?: number) {
+    let size = 0
+
+    const absoluteArcSize = this.style.absoluteArcSize
+    if (absoluteArcSize) {
+      size = Math.min(
+        w / 2,
+        Math.min(h / 2, this.getLineArcSize()),
+      )
+    } else {
+      const f = (this.style.arcSize || 15) / 100
+      size = Math.min(w * f, h * f)
+    }
+
+    return size
+  }
+
+  getLineArcSize() {
+    return (this.style.arcSize || 20) / 2
+  }
+
   @Disposable.aop()
   dispose() {
     if (this.elem != null) {
       DomEvent.release(this.elem as HTMLElement)
-      if (this.elem.parentNode != null) {
-        this.elem.parentNode.removeChild(this.elem)
-      }
-
+      util.removeElement(this.elem)
       this.elem = null
     }
 
     // Decrements refCount and removes unused
-    this.releaseSvgGradients(this.oldGradients)
+    this.destroySvgGradients(this.oldGradients)
     this.oldGradients = null
   }
 }

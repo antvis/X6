@@ -258,8 +258,8 @@ export class Preview extends Disposable {
     return (
       // returns true if the shape is transparent.
       this.state.shape != null &&
-      util.isNoneColor(this.state.shape.fill) &&
-      util.isNoneColor(this.state.shape.stroke)
+      !util.isValidColor(this.state.shape.fillColor) &&
+      !util.isValidColor(this.state.shape.strokeColor)
     )
   }
 

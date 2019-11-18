@@ -4,7 +4,7 @@ import { SvgCanvas2D } from '../../canvas'
 import { Style } from '../../types'
 import { Point, Rectangle } from '../../struct'
 import { State, registerShape, registerPerimeter } from '../../core'
-import { getFactor, getLineArcSize } from './util'
+import { getFactor } from './util'
 
 export class TrapezoidShape extends Actor {
   factor: number = 0.2
@@ -21,9 +21,9 @@ export class TrapezoidShape extends Actor {
     h: number,
   ) {
     const dx = getFactor(this.style, this.factor, w, 0.5)
-    const arcSize = getLineArcSize(this.style)
+    const arcSize = this.getLineArcSize()
 
-    this.paintPoints(
+    this.drawPoints(
       c,
       [
         new Point(0, h),

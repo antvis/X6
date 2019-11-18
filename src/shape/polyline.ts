@@ -1,17 +1,16 @@
 import { Shape } from './shape'
 import { Point } from '../struct'
-import { constants } from '../common'
 import { SvgCanvas2D } from '../canvas'
 
 export class Polyline extends Shape {
   constructor(
     points: Point[] = [],
-    stroke: string | null = null,
+    strokeColor: string | null = null,
     strokewidth: number = 1,
   ) {
     super()
     this.points = points
-    this.stroke = stroke
+    this.strokeColor = strokeColor
     this.strokeWidth = strokewidth
   }
 
@@ -23,31 +22,31 @@ export class Polyline extends Shape {
     return 0
   }
 
-  isPaintBoundsInverted() {
+  drawBoundsInverted() {
     return false
   }
 
-  paintEdgeShape(c: SvgCanvas2D, pts: Point[]) {
+  drawEdgeShape(c: SvgCanvas2D, pts: Point[]) {
     const prev = c.pointerEventsValue
     c.pointerEventsValue = 'stroke'
 
     if (this.style.curved === true) {
-      this.paintCurvedLine(c, pts)
+      this.drawCurvedLine(c, pts)
     } else {
-      this.paintLine(c, pts, this.rounded)
+      this.drawLine(c, pts, this.rounded)
     }
 
     c.pointerEventsValue = prev
   }
 
-  paintLine(c: SvgCanvas2D, pts: Point[], rounded: boolean) {
-    const arcSize = (this.style.arcSize || constants.LINE_ARCSIZE) / 2
+  protected drawLine(c: SvgCanvas2D, pts: Point[], rounded: boolean) {
+    const arcSize = this.getLineArcSize()
     c.begin()
-    this.paintPoints(c, pts, rounded, arcSize, false)
+    this.drawPoints(c, pts, rounded, arcSize, false)
     c.stroke()
   }
 
-  paintCurvedLine(c: SvgCanvas2D, pts: Point[]) {
+  protected drawCurvedLine(c: SvgCanvas2D, pts: Point[]) {
     c.begin()
 
     const pt = pts[0]

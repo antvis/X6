@@ -5,18 +5,18 @@ import { SvgCanvas2D } from '../canvas'
 export class Actor extends Shape {
   constructor(
     bounds: Rectangle,
-    fill: string,
+    fillColor: string,
     stroke: string,
     strokewidth: number = 1,
   ) {
     super()
     this.bounds = bounds
-    this.fill = fill
-    this.stroke = stroke
+    this.fillColor = fillColor
+    this.strokeColor = stroke
     this.strokeWidth = strokewidth
   }
 
-  paintNodeShape(
+  drawNodeShape(
     c: SvgCanvas2D,
     x: number,
     y: number,
@@ -36,11 +36,11 @@ export class Actor extends Shape {
     w: number,
     h: number,
   ) {
-    const width = w / 3
+    const f = w / 3
     c.moveTo(0, h)
     c.curveTo(0, 3 * h / 5, 0, 2 * h / 5, w / 2, 2 * h / 5)
-    c.curveTo(w / 2 - width, 2 * h / 5, w / 2 - width, 0, w / 2, 0)
-    c.curveTo(w / 2 + width, 0, w / 2 + width, 2 * h / 5, w / 2, 2 * h / 5)
+    c.curveTo(w / 2 - f, 2 * h / 5, w / 2 - f, 0, w / 2, 0)
+    c.curveTo(w / 2 + f, 0, w / 2 + f, 2 * h / 5, w / 2, 2 * h / 5)
     c.curveTo(w, 2 * h / 5, w, 3 * h / 5, w, h)
     c.close()
   }

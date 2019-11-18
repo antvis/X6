@@ -1,4 +1,4 @@
-import { constants } from '../common'
+import * as util from '../util'
 import { Rectangle } from '../struct'
 import { SvgCanvas2D } from '../canvas'
 import { Shape } from './shape'
@@ -6,22 +6,22 @@ import { Shape } from './shape'
 export class RectangleShape extends Shape {
   constructor(
     bounds: Rectangle,
-    fill?: string | null,
-    stroke?: string | null,
+    fillColor?: string | null,
+    strokeColor?: string | null,
     strokewidth?: number | null,
   ) {
     super()
     this.bounds = bounds
-    this.fill = fill != null ? fill : null
-    this.stroke = stroke != null ? stroke : null
+    this.fillColor = fillColor != null ? fillColor : null
+    this.strokeColor = strokeColor != null ? strokeColor : null
     this.strokeWidth = strokewidth != null ? strokewidth : 1
   }
 
-  protected isRoundable() {
+  isRoundable() {
     return true
   }
 
-  paintBackground(
+  drawBackground(
     c: SvgCanvas2D,
     x: number,
     y: number,
@@ -32,10 +32,10 @@ export class RectangleShape extends Shape {
 
     if (
       events ||
-      (this.fill != null && this.fill !== constants.NONE) ||
-      (this.stroke != null && this.stroke !== constants.NONE)
+      util.isValidColor(this.fillColor) ||
+      util.isValidColor(this.strokeColor)
     ) {
-      if (!events && (this.fill == null || this.fill === constants.NONE)) {
+      if (!events && !util.isValidColor(this.fillColor)) {
         c.pointerEvents = false
       }
 
@@ -50,7 +50,7 @@ export class RectangleShape extends Shape {
     }
   }
 
-  paintForeground(
+  drawForeground(
     c: SvgCanvas2D,
     x: number,
     y: number,
@@ -60,12 +60,11 @@ export class RectangleShape extends Shape {
     if (
       this.glass &&
       !this.outline &&
-      this.fill != null &&
-      this.fill !== constants.NONE
+      util.isValidColor(this.fillColor)
     ) {
-      this.paintGlassEffect(c, x, y, w, h, this.getArcSize(
-        w + (this.strokeWidth as number),
-        h + (this.strokeWidth as number),
+      this.drawGlassEffect(c, x, y, w, h, this.getArcSize(
+        w + this.strokeWidth,
+        h + this.strokeWidth ,
       ))
     }
   }

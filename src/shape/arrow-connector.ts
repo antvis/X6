@@ -1,30 +1,29 @@
 import * as util from '../util'
-import { constants } from '../common'
 import { Shape } from './shape'
 import { State } from '../core'
 import { SvgCanvas2D } from '../canvas'
 import { Rectangle, Point } from '../struct'
 
 export class ArrowConnector extends Shape {
-  useSvgBoundingBox: boolean = true
   arrowWidth: number
   arrowSpacing: number
+  useSvgBoundingBox: boolean = true
 
   constructor(
     points: Point[] = [],
     fill: string = 'none',
     stroke: string = 'none',
     strokewidth: number = 1,
-    arrowWidth: number = constants.ARROW_WIDTH,
-    spacing: number = constants.ARROW_SPACING,
-    startSize: number = constants.ARROW_SIZE / 5,
-    endSize: number = constants.ARROW_SIZE / 5,
+    arrowWidth: number = 30,
+    spacing: number = 0,
+    startSize: number = 30 / 5,
+    endSize: number = 30 / 5,
   ) {
     super()
 
     this.points = points
-    this.fill = fill
-    this.stroke = stroke
+    this.fillColor = fill
+    this.strokeColor = stroke
     this.strokeWidth = strokewidth
     this.arrowWidth = arrowWidth
     this.arrowSpacing = spacing
@@ -34,15 +33,15 @@ export class ArrowConnector extends Shape {
 
   resetStyle() {
     super.resetStyle()
-    this.arrowSpacing = constants.ARROW_SPACING
+    this.arrowSpacing = 0
   }
 
   apply(state: State) {
     super.apply(state)
 
     if (this.style != null) {
-      this.startSize = (this.style.startSize || constants.ARROW_SIZE / 5) * 3
-      this.endSize = (this.style.endSize || constants.ARROW_SIZE / 5) * 3
+      this.startSize = (this.style.startSize || 30 / 5) * 3
+      this.endSize = (this.style.endSize || 30 / 5) * 3
     }
   }
 
@@ -59,28 +58,30 @@ export class ArrowConnector extends Shape {
       w = Math.max(w, this.getEndArrowWidth())
     }
 
-    bbox.grow((w / 2 + (this.strokeWidth as number)) * this.scale)
+    bbox.grow((w / 2 + this.strokeWidth) * this.scale)
   }
 
-  paintEdgeShape(c: SvgCanvas2D, pts: Point[]) {
-    let strokeWidth = this.strokeWidth as number
+  drawEdgeShape(c: SvgCanvas2D, pts: Point[]) {
+    let strokeWidth = this.strokeWidth
     if (this.outline) {
       strokeWidth = Math.max(
         1,
-        (this.style.strokeWidth || this.strokeWidth as number),
+        (this.style.strokeWidth || this.strokeWidth),
       )
     }
 
     const startWidth = this.getStartArrowWidth() + strokeWidth
     const endWidth = this.getEndArrowWidth() + strokeWidth
-    const edgeWidth = this.outline ? this.getEdgeWidth() + strokeWidth : this.getEdgeWidth()
+    const edgeWidth = this.outline
+      ? this.getEdgeWidth() + strokeWidth
+      : this.getEdgeWidth()
     const openEnded = this.isOpenEnded()
     const markerStart = this.isMarkerStart()
     const markerEnd = this.isMarkerEnd()
-    const spacing = (openEnded) ? 0 : this.arrowSpacing + strokeWidth / 2
+    const isRounded = this.isArrowRounded()
+    const spacing = openEnded ? 0 : this.arrowSpacing + strokeWidth / 2
     const startSize = this.startSize! + strokeWidth
     const endSize = this.endSize! + strokeWidth
-    const isRounded = this.isArrowRounded()
 
     // Base vector (between first points)
     const pe = pts[pts.length - 1]
@@ -199,7 +200,7 @@ export class ArrowConnector extends Shape {
           // bend, 0.35 covers all but the most extreme cases
           const strokeWidthFactor = Math.max(
             tmp,
-            Math.min((this.strokeWidth as number) / 200 + 0.04, 0.35),
+            Math.min(this.strokeWidth / 200 + 0.04, 0.35),
           )
 
           const angleFactor = (pos !== 0 && isRounded)
@@ -263,9 +264,23 @@ export class ArrowConnector extends Shape {
     orthy = - edgeWidth * nx1
 
     if (markerEnd && !openEnded) {
-      this.paintMarker(c, pe.x, pe.y, -nx, -ny, endSize, endWidth, edgeWidth, spacing, false)
+      this.paintMarker(
+        c,
+        pe.x,
+        pe.y,
+        -nx,
+        -ny,
+        endSize,
+        endWidth,
+        edgeWidth,
+        spacing,
+        false,
+      )
     } else {
-      c.lineTo(pe.x - spacing * nx1 + orthx / 2, pe.y - spacing * ny1 + orthy / 2)
+      c.lineTo(
+        pe.x - spacing * nx1 + orthx / 2,
+        pe.y - spacing * ny1 + orthy / 2,
+      )
 
       const inStartX = pe.x - spacing * nx1 - orthx / 2
       const inStartY = pe.y - spacing * ny1 - orthy / 2
@@ -310,7 +325,16 @@ export class ArrowConnector extends Shape {
       if (markerStart && !openEnded) {
         c.begin()
         this.paintMarker(
-          c, pts[0].x, pts[0].y, startNx, startNy, startSize, startWidth, edgeWidth, spacing, true,
+          c,
+          pts[0].x,
+          pts[0].y,
+          startNx,
+          startNy,
+          startSize,
+          startWidth,
+          edgeWidth,
+          spacing,
+          true,
         )
         c.stroke()
         c.end()
@@ -319,7 +343,16 @@ export class ArrowConnector extends Shape {
       if (markerEnd && !openEnded) {
         c.begin()
         this.paintMarker(
-          c, pe.x, pe.y, -nx, -ny, endSize, endWidth, edgeWidth, spacing, true,
+          c,
+          pe.x,
+          pe.y,
+          -nx,
+          -ny,
+          endSize,
+          endWidth,
+          edgeWidth,
+          spacing,
+          true,
         )
         c.stroke()
         c.end()
@@ -327,11 +360,6 @@ export class ArrowConnector extends Shape {
     }
   }
 
-  /**
-   * Function: paintEdgeShape
-   *
-   * Paints the line shape.
-   */
   paintMarker(
     c: SvgCanvas2D,
     ptX: number,
@@ -357,26 +385,38 @@ export class ArrowConnector extends Shape {
       c.lineTo(ptX - orthx + spaceX, ptY - orthy + spaceY)
     }
 
-    c.lineTo(ptX - orthx / widthArrowRatio + spaceX, ptY - orthy / widthArrowRatio + spaceY)
-    c.lineTo(ptX + spacing * nx, ptY + spacing * ny)
-    c.lineTo(ptX + orthx / widthArrowRatio + spaceX, ptY + orthy / widthArrowRatio + spaceY)
-    c.lineTo(ptX + orthx + spaceX, ptY + orthy + spaceY)
+    c.lineTo(
+      ptX - orthx / widthArrowRatio + spaceX,
+      ptY - orthy / widthArrowRatio + spaceY,
+    )
+    c.lineTo(
+      ptX + spacing * nx,
+      ptY + spacing * ny,
+    )
+    c.lineTo(
+      ptX + orthx / widthArrowRatio + spaceX,
+      ptY + orthy / widthArrowRatio + spaceY,
+    )
+    c.lineTo(
+      ptX + orthx + spaceX,
+      ptY + orthy + spaceY,
+    )
   }
 
   isArrowRounded() {
     return this.rounded
   }
 
+  getEdgeWidth() {
+    return 30 / 3
+  }
+
   getStartArrowWidth() {
-    return constants.ARROW_WIDTH
+    return 30
   }
 
   getEndArrowWidth() {
-    return constants.ARROW_WIDTH
-  }
-
-  getEdgeWidth() {
-    return constants.ARROW_WIDTH / 3
+    return 30
   }
 
   isOpenEnded() {
@@ -384,10 +424,10 @@ export class ArrowConnector extends Shape {
   }
 
   isMarkerStart() {
-    return (this.style.startArrow || constants.NONE) !== constants.NONE
+    return (this.style.startArrow || 'none') !== 'none'
   }
 
   isMarkerEnd() {
-    return (this.style.endArrow || constants.NONE) !== constants.NONE
+    return (this.style.endArrow || 'none') !== 'none'
   }
 }

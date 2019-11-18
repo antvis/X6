@@ -1,6 +1,6 @@
 import * as routers from '../../router'
+import { DomEvent } from '../../common'
 import { Rectangle, Point, RouterNames } from '../../struct'
-import { constants, DomEvent } from '../../common'
 import { EdgeHandler } from './handler'
 
 export class EdgeElbowHandler extends EdgeHandler {
@@ -144,8 +144,8 @@ export class EdgeElbowHandler extends EdgeHandler {
       this.labelHandleShape.visible &&
       bounds.isIntersectWith(this.labelHandleShape.bounds)
     ) {
-      w = constants.HANDLE_SIZE + 3
-      h = constants.HANDLE_SIZE + 3
+      w = 8 + 3
+      h = 8 + 3
       bounds = new Rectangle(
         Math.floor(pt.x - w / 2),
         Math.floor(pt.y - h / 2),

@@ -5,13 +5,13 @@ import { SvgCanvas2D } from '../canvas'
 export class Line extends Shape {
   constructor(
     public bounds: Rectangle,
-    public stroke: string,
+    public strokeColor: string,
     public strokeWidth: number = 1,
   ) {
     super()
   }
 
-  protected paintNodeShape(
+  protected drawNodeShape(
     c: SvgCanvas2D,
     x: number,
     y: number,

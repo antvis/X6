@@ -7,7 +7,7 @@ export class NoteShape extends Cylinder {
   factor: number = 30
   darkOpacity: number = 0
 
-  paintNodeShape(
+  drawNodeShape(
     c: SvgCanvas2D,
     x: number,
     y: number,

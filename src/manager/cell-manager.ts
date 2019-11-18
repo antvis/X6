@@ -1,6 +1,5 @@
 import * as util from '../util'
 import * as routers from '../router'
-import { constants } from '../common'
 import { BaseManager } from './manager-base'
 import { Graph, Cell, Geometry, State } from '../core'
 import { Style, Align, VAlign } from '../types'
@@ -1215,7 +1214,7 @@ export class CellManager extends BaseManager {
     if (cell != null && !this.model.isEdge(cell)) {
       const state = this.view.getState(cell, true)!
       const style = state.style
-      const fontSize = style.fontSize || constants.DEFAULT_FONTSIZE
+      const fontSize = style.fontSize || 12
 
       let dx = 0
       let dy = 0
@@ -2705,7 +2704,7 @@ export class CellManager extends BaseManager {
           const rot = util.getRotation(state)
           const bounds = rot === 0
             ? state.bounds
-            : util.getBoundingBox(state.bounds, rot)
+            : util.rotateRectangle(state.bounds, rot)
 
           if (
             (

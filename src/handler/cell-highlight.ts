@@ -62,7 +62,7 @@ export class CellHighlight extends BaseHandler {
   setHighlightColor(color: string | null) {
     this.highlightColor = color
     if (this.shape != null) {
-      this.shape.stroke = color
+      this.shape.strokeColor = color
     }
   }
 
@@ -81,7 +81,7 @@ export class CellHighlight extends BaseHandler {
 
       shape.svgStrokeTolerance = this.graph.tolerance
       shape.apply(this.state)
-      shape.stroke = this.highlightColor
+      shape.strokeColor = this.highlightColor
       shape.opacity = this.opacity
       shape.dashed = this.dashed
       shape.shadow = false

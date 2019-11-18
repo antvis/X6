@@ -4,7 +4,6 @@ export * from './primer'
 export * from './disablable'
 
 export * from './detector'
-export * from './constants'
 export * from './dom-event'
 export * from './mouse-event'
 

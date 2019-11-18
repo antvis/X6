@@ -1,5 +1,4 @@
 import * as util from '../util'
-import { constants } from '../common'
 import { State } from '../core'
 import { Point, Rectangle, DirectionMask } from '../struct'
 import { segmentConnector } from './seg'
@@ -90,13 +89,13 @@ function getJettySize(
     const type = (isSource
       ? edgeState.style.startArrow
       : edgeState.style.endArrow
-    ) || constants.NONE
+    ) || 'none'
 
-    if (type !== constants.NONE) {
+    if (type !== 'none') {
       const size = (isSource
         ? edgeState.style.startSize
         : edgeState.style.endSize
-      ) || constants.DEFAULT_MARKERSIZE
+      ) || 6
 
       value = Math.max(
         2,
@@ -117,9 +116,9 @@ function getJettySize(
  *
  * Parameters:
  *
- * state - <mxCellState> that represents the edge to be updated.
- * source - <mxCellState> that represents the source terminal.
- * target - <mxCellState> that represents the target terminal.
+ * state - `State` that represents the edge to be updated.
+ * source - `State` that represents the source terminal.
+ * target - `State` that represents the target terminal.
  * points - List of relative control points.
  * result - Array of <Points> that represent the actual points of the
  * edge.
@@ -194,7 +193,7 @@ export function orthConnector(
     )
     rotation = sourceState.style.rotation || 0
     if (rotation !== 0) {
-      const newRect = util.getBoundingBox(
+      const newRect = util.rotateRectangle(
         new Rectangle(sourceX, sourceY, sourceWidth, sourceHeight),
         rotation,
       )
@@ -211,7 +210,7 @@ export function orthConnector(
     )
     rotation = targetState.style.rotation || 0
     if (rotation !== 0) {
-      const newRect = util.getBoundingBox(
+      const newRect = util.rotateRectangle(
         new Rectangle(targetX, targetY, targetWidth, targetHeight),
         rotation,
       )

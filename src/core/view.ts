@@ -848,8 +848,8 @@ export class View extends Primer {
       state.bounds.update(
         asp.x,
         asp.y,
-        state.shape.stencil.w0 * asp.width,
-        state.shape.stencil.h0 * asp.height,
+        state.shape.stencil.width * asp.sx,
+        state.shape.stencil.height * asp.sy,
       )
     }
 
@@ -1146,7 +1146,7 @@ export class View extends Primer {
   /**
    * Returns the nearest ancestor terminal that is visible. The edge appears
    * to be connected to this terminal on the display. The result of this method
-   * is cached in `CellState`.
+   * is cached in `State`.
    */
   getVisibleTerminal(edge: Cell, isSsource: boolean) {
     const model = this.graph.getModel()
@@ -1505,7 +1505,7 @@ export class View extends Primer {
   }
 
   /**
-   * Returns `CellState` for the given array of `Cells`. The array
+   * Returns `State` for the given array of `Cells`. The array
    * contains all states that are not null, that is, the returned
    * array may have less elements than the given array.
    */

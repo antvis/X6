@@ -1,14 +1,10 @@
 import { State } from '../../core'
 import { getOffset, getScrollOrigin } from '../dom'
+import { MouseEventEx, DomEvent } from '../../common'
 import { Point, DirectionMask } from '../../struct'
 import { Align, VAlign } from '../../types'
-import { MouseEventEx, DomEvent } from '../../common'
 import { Shape } from '../../shape'
 
-/**
- * Converts the specified point (x, y) using the offset of the specified
- * container and returns a new `Point` with the result.
- */
 export function clientToGraph(container: HTMLElement, e: TouchEvent): Point
 export function clientToGraph(container: HTMLElement, e: MouseEvent): Point
 export function clientToGraph(container: HTMLElement, e: MouseEventEx): Point
@@ -42,9 +38,8 @@ export function clientToGraph(
 }
 
 /**
- *
- * Returns an `Point` that represents the horizontal and vertical alignment
- * for numeric computations.
+ * Returns an `Point` that represents the horizontal and vertical
+ * alignment for numeric computations.
  *
  * X is -0.5 for center, -1 for right and 0 for left alignment.
  * Y is -0.5 for middle, -1 for bottom and 0 for top alignment.
@@ -71,18 +66,13 @@ export function getAlignmentAsPoint(align: Align, valign: VAlign) {
 }
 
 /**
-* Returns an integer mask of the port constraints of the given map
-* @param dict the style map to determine the port constraints for
-* @param defaultValue Default value to return if the key is undefined.
-* @return the mask of port constraint directions
-*
-* Parameters:
-*
-* terminal - <mxCelState> that represents the terminal.
-* edge - <mxCellState> that represents the edge.
-* source - Boolean that specifies if the terminal is the source terminal.
-* defaultValue - Default value to be returned.
-*/
+ * Returns an integer mask of the port constraints.
+ *
+ * @param terminal `State` that represents the terminal.
+ * @param edge `State` that represents the edge.
+ * @param isSource Specifies if the terminal is the source terminal.
+ * @param defaultValue Default value to be returned.
+ */
 export function getPortConstraints(
   terminal: State,
   edge: State,
@@ -192,8 +182,9 @@ export function getPortConstraints(
 }
 
 /**
- * Reverse the port constraint bitmask. For example, north | east
- * becomes south | west
+ * Reverse the port constraint bitmask.
+ *
+ * For example, north | east becomes south | west
  */
 export function reversePortConstraints(constraint: DirectionMask) {
   let result = 0

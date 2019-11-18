@@ -21,7 +21,7 @@ export class LinkShape extends ArrowConnector {
   getEdgeWidth() {
     return (
       util.getNumber(this.style, 'width', this.defaultWidth) +
-      Math.max(0, +this.strokeWidth - 1)
+      Math.max(0, this.strokeWidth - 1)
     )
   }
 }

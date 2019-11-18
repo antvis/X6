@@ -13,11 +13,11 @@ export class ImageShape extends RectangleShape {
   constructor(
     bounds: Rectangle,
     image: string,
-    fill?: string | null,
-    stroke?: string | null,
+    fillColor?: string | null,
+    strokeColor?: string | null,
     strokewidth?: number | null,
   ) {
-    super(bounds, fill, stroke, strokewidth)
+    super(bounds, fillColor, strokeColor, strokewidth)
     this.image = image
   }
 
@@ -31,8 +31,8 @@ export class ImageShape extends RectangleShape {
   apply(state: State) {
     super.apply(state)
 
-    this.fill = null
-    this.stroke = null
+    this.fillColor = null
+    this.strokeColor = null
     this.gradientColor = null
 
     if (this.style != null) {
@@ -42,36 +42,21 @@ export class ImageShape extends RectangleShape {
     }
   }
 
-  /**
-   * Returns true if HTML is allowed for this shape.
-   * This implementation always returns false.
-   */
   isHtmlAllowed() {
     return !this.preserveImageAspect
   }
 
-  /**
-   * Creates and returns the HTML DOM node(s) to represent
-   * this shape. This implementation falls back to <createVml>
-   * so that the HTML creation is optional.
-   */
+  isRoundable() {
+    return false
+  }
+
   createHtmlDiv() {
     const node = document.createElement('div')
     node.style.position = 'absolute'
     return node
   }
 
-  /**
-   * Disables inherited roundable support.
-   */
-  isRoundable() {
-    return false
-  }
-
-  /**
-   * Generic background painting implementation.
-   */
-  paintNodeShape(
+  drawNodeShape(
     c: SvgCanvas2D,
     x: number,
     y: number,
@@ -79,51 +64,46 @@ export class ImageShape extends RectangleShape {
     h: number,
   ) {
     if (this.image != null) {
-      const fill = this.style.imageBackgroundColor
-      let stroke = this.style.imageBorderColor
+      const fillColor = this.style.imageBackgroundColor
+      const strokeColor = this.style.imageBorderColor
 
-      if (fill != null) {
+      if (fillColor != null) {
         // Stroke rendering required for shadow
-        c.setFillColor(fill)
-        c.setStrokeColor(stroke)
+        c.setFillColor(fillColor)
+        c.setStrokeColor(strokeColor)
         c.rect(x, y, w, h)
         c.fillAndStroke()
       }
 
       c.image(x, y, w, h, this.image, this.preserveImageAspect, false, false)
 
-      stroke = this.style.imageBorderColor
-
-      if (stroke != null) {
+      if (strokeColor != null) {
         c.setShadow(false)
-        c.setStrokeColor(stroke)
+        c.setStrokeColor(strokeColor)
         c.rect(x, y, w, h)
         c.stroke()
       }
     } else {
-      super.paintBackground(c, x, y, w, h)
+      super.drawBackground(c, x, y, w, h)
     }
   }
 
-  /**
-   * Overrides <mxShape.redraw> to preserve the aspect ratio of images.
-   */
   redrawHtmlShape() {
     const elem = this.elem!
 
     elem.style.left = `${Math.round(this.bounds.x)}px`
-    elem.style.top = `${Math.round(this.bounds.y)}`
+    elem.style.top = `${Math.round(this.bounds.y)}px`
     elem.style.width = `${Math.max(0, Math.round(this.bounds.width))}px`
-    elem.style.height = `${Math.max(0, Math.round(this.bounds.height))}`
+    elem.style.height = `${Math.max(0, Math.round(this.bounds.height))}px`
 
     elem.innerHTML = ''
 
     if (this.image != null) {
-      const fill = this.style.imageBackgroundColor
-      const stroke = this.style.imageBorderColor
+      const fillColor = this.style.imageBackgroundColor
+      const strokeColor = this.style.imageBorderColor
 
-      elem.style.backgroundColor = fill || ''
-      elem.style.borderColor = stroke || ''
+      elem.style.backgroundColor = fillColor || ''
+      elem.style.borderColor = strokeColor || ''
 
       const img = document.createElement('img')
       img.setAttribute('border', '0')
@@ -154,7 +134,6 @@ export class ImageShape extends RectangleShape {
         util.setPrefixedStyle(img.style, 'transform', '')
       }
 
-      // Known problem: IE clips top line of image for certain angles
       img.style.width = elem.style.width
       img.style.height = elem.style.height
 

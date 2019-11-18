@@ -1,4 +1,3 @@
-import { constants } from '../common'
 import { Shape } from './Shape'
 import { RectangleShape } from './rectangle'
 import { SvgCanvas2D } from '../canvas'
@@ -7,10 +6,11 @@ import { Direction } from '../types'
 
 export class Label extends RectangleShape {
   image: string | null
+
   /**
    * Default width and height for the image.
    */
-  imageSize: number = constants.DEFAULT_IMAGESIZE
+  imageSize: number = 24
 
   /**
    * Default value for image spacing.
@@ -44,11 +44,11 @@ export class Label extends RectangleShape {
   constructor(
     bounds: Rectangle,
     image: string,
-    fill: string,
-    stroke: string,
+    fillColor: string,
+    strokeColor: string,
     strokewidth: number = 1,
   ) {
-    super(bounds, fill, stroke, strokewidth)
+    super(bounds, fillColor, strokeColor, strokewidth)
   }
 
   init(container: HTMLElement) {
@@ -61,14 +61,10 @@ export class Label extends RectangleShape {
     }
   }
 
-  /**
-   * Reconfigures this shape. This will update the colors of the indicator
-   * and reconfigure it if required.
-   */
   redraw() {
     if (this.indicator != null) {
-      this.indicator.fill = this.indicatorColor
-      this.indicator.stroke = this.indicatorStrokeColor
+      this.indicator.fillColor = this.indicatorColor
+      this.indicator.strokeColor = this.indicatorStrokeColor
       this.indicator.gradientColor = this.indicatorGradientColor
       this.indicator.direction = this.indicatorDirection
     }
@@ -76,10 +72,6 @@ export class Label extends RectangleShape {
     super.redraw()
   }
 
-  /**
-   * Returns true for non-rounded, non-rotated shapes with
-   * no glass gradient and no indicator shape.
-   */
   isHtmlAllowed() {
     return (
       super.isHtmlAllowed() &&
@@ -88,7 +80,7 @@ export class Label extends RectangleShape {
     )
   }
 
-  paintForeground(
+  drawForeground(
     c: SvgCanvas2D,
     x: number,
     y: number,
@@ -97,8 +89,7 @@ export class Label extends RectangleShape {
   ) {
     this.paintImage(c, x, y, w, h)
     this.paintIndicator(c, x, y, w, h)
-
-    super.paintForeground(c, x, y, w, h)
+    super.drawForeground(c, x, y, w, h)
   }
 
   paintImage(
@@ -131,8 +122,8 @@ export class Label extends RectangleShape {
   ) {
     const align = this.style.imageAlign || 'left'
     const valign = this.style.imageVerticalAlign || 'middle'
-    const width = this.style.imageWidth || constants.DEFAULT_IMAGESIZE
-    const height = this.style.imageHeight || constants.DEFAULT_IMAGESIZE
+    const width = this.style.imageWidth || this.imageSize
+    const height = this.style.imageHeight || this.imageSize
     const spacing = (this.style.spacing || this.spacing) + 5
 
     let x1 = x
@@ -168,7 +159,7 @@ export class Label extends RectangleShape {
   ) {
     if (this.indicator != null) {
       this.indicator.bounds = this.getIndicatorBounds(x, y, w, h)
-      this.indicator.paint(c)
+      this.indicator.draw(c)
     } else if (this.indicatorImage != null) {
       const bounds = this.getIndicatorBounds(x, y, w, h)
       c.image(

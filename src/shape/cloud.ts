@@ -5,11 +5,11 @@ import { SvgCanvas2D } from '../canvas'
 export class Cloud extends Actor {
   constructor(
     bounds: Rectangle,
-    fill: string,
-    stroke: string,
+    fillColor: string,
+    strokeColor: string,
     strokewidth: number = 1,
   ) {
-    super(bounds, fill, stroke, strokewidth)
+    super(bounds, fillColor, strokeColor, strokewidth)
   }
 
   redrawPath(

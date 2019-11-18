@@ -22,7 +22,7 @@ export class ParallelogramShape extends Actor {
     const dx = getFactor(this.style, this.factor, w)
     const arcSize = (this.state.style.arcSize || 20) / 2
 
-    this.paintPoints(
+    this.drawPoints(
       c,
       [
         new Point(0, h),

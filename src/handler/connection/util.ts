@@ -18,8 +18,8 @@ export function transparentMarker(
       marker.highlight.state != null &&
       marker.highlight.state.cell === constraintHandler.currentState.cell
     ) {
-      if (marker.highlight.shape.stroke !== 'transparent') {
-        marker.highlight.shape.stroke = 'transparent'
+      if (marker.highlight.shape.strokeColor !== 'transparent') {
+        marker.highlight.shape.strokeColor = 'transparent'
         marker.highlight.repaint()
       }
     } else {

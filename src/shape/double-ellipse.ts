@@ -5,18 +5,18 @@ import { SvgCanvas2D } from '../canvas'
 export class DoubleEllipse extends Shape {
   constructor(
     bounds: Rectangle,
-    fill: string,
-    stroke: string,
+    fillColor: string,
+    strokeColor: string,
     strokewidth: number = 1,
   ) {
     super()
     this.bounds = bounds
-    this.fill = fill
-    this.stroke = stroke
+    this.fillColor = fillColor
+    this.strokeColor = strokeColor
     this.strokeWidth = strokewidth
   }
 
-  paintBackground(
+  drawBackground(
     c: SvgCanvas2D,
     x: number,
     y: number,
@@ -27,7 +27,7 @@ export class DoubleEllipse extends Shape {
     c.fillAndStroke()
   }
 
-  paintForeground(
+  drawForeground(
     c: SvgCanvas2D,
     x: number,
     y: number,
@@ -36,7 +36,7 @@ export class DoubleEllipse extends Shape {
   ) {
     if (!this.outline) {
       const margin = this.style.margin ||
-        Math.min(3 + (this.strokeWidth as number), Math.min(w / 5, h / 5))
+        Math.min(3 + this.strokeWidth, Math.min(w / 5, h / 5))
 
       const xx = x + margin
       const yy = y + margin
@@ -53,7 +53,7 @@ export class DoubleEllipse extends Shape {
 
   getLabelBounds(rect: Rectangle) {
     const defaultMargin = Math.min(
-      3 + (this.strokeWidth as number),
+      3 + this.strokeWidth,
       Math.min(rect.width / 5 / this.scale, rect.height / 5 / this.scale),
     )
     const margin = (this.style.margin || defaultMargin) * this.scale
