@@ -1,7 +1,7 @@
-import { getValue } from './object'
-import { State } from '../core'
-import { Point, Rectangle } from '../struct'
-import { Direction } from '../types'
+import { State } from '../../core'
+import { Direction } from '../../types'
+import { Point, Rectangle } from '../../struct'
+import { getValue } from '../object'
 
 export function toRad(deg: number) {
   return Math.PI * deg / 180

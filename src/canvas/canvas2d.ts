@@ -1,6 +1,4 @@
 import * as util from '../util'
-import { constants, UrlConverter } from '../common'
-import { Point, FontStyle } from '../struct'
 import { Direction, LineCap, LineJoin } from '../types'
 
 export class Canvas2D {
@@ -27,10 +25,7 @@ export class Canvas2D {
    */
   rotateHtml: boolean = true
 
-  urlConverter: UrlConverter
-
   constructor() {
-    this.urlConverter = new UrlConverter()
     this.reset()
   }
 
@@ -40,47 +35,43 @@ export class Canvas2D {
     const state: Canvas2D.State = {
       tx: 0,
       ty: 0,
-
-      alpha: 1,
       scale: 1,
       transform: null,
 
-      fillAlpha: 1,
+      opacity: 1,
+      fillOpacity: 1,
       fillColor: null,
-
-      strokeAlpha: 1,
-      strokeColor: null,
-      strokeWidth: 1,
-
-      gradientFillAlpha: 1,
       gradientColor: null,
-      gradientAlpha: 1,
+      gradientOpacity: 1,
+      gradientFillOpacity: 1,
       gradientDirection: 'north',
 
+      strokeColor: null,
+      strokeWidth: 1,
+      strokeOpacity: 1,
       dashed: false,
       dashPattern: '3 3',
       fixDash: false,
-
       lineCap: 'butt',
       lineJoin: 'miter',
       miterLimit: 10,
 
-      fontColor: '#000000',
-      fontBackgroundColor: null,
-      fontBorderColor: null,
-      fontSize: constants.DEFAULT_FONTSIZE,
-      fontFamily: constants.DEFAULT_FONTFAMILY,
+      fontSize: 12,
       fontStyle: 0,
+      fontColor: '#000000',
+      fontFamily: 'Arial,Helvetica',
+      fontBorderColor: null,
+      fontBackgroundColor: null,
 
       shadow: false,
-      shadowColor: constants.SHADOWCOLOR,
-      shadowAlpha: constants.SHADOW_OPACITY,
-      shadowDx: constants.SHADOW_OFFSET_X,
-      shadowDy: constants.SHADOW_OFFSET_Y,
+      shadowColor: 'gray',
+      shadowOpacity: 1,
+      shadowOffsetX: 2,
+      shadowOffsetY: 3,
 
       rotation: 0,
-      rotationCx: 0,
-      rotationCy: 0,
+      rotationCenterX: 0,
+      rotationCenterY: 0,
     }
     return state
   }
@@ -101,21 +92,17 @@ export class Canvas2D {
     }
   }
 
-  setAlpha(alpha: number) {
-    this.state.alpha = alpha
+  setOpacity(opacity: number) {
+    this.state.opacity = opacity
   }
 
-  setFillAlpha(fillAlpha: number) {
-    this.state.fillAlpha = fillAlpha
+  setFillOpacity(fillOpacity: number) {
+    this.state.fillOpacity = fillOpacity
   }
 
   setFillColor(fillColor?: string | null) {
     this.state.fillColor = Canvas2D.getColor(fillColor)
     this.state.gradientColor = null
-  }
-
-  setStrokeAlpha(strokeAlpha: number) {
-    this.state.strokeAlpha = strokeAlpha
   }
 
   setStrokeColor(strokeColor?: string | null) {
@@ -126,6 +113,10 @@ export class Canvas2D {
     this.state.strokeWidth = strokeWidth
   }
 
+  setStrokeOpacity(strokeOpacity: number) {
+    this.state.strokeOpacity = strokeOpacity
+  }
+
   setGradient(
     color1: string,
     color2: string,
@@ -134,14 +125,14 @@ export class Canvas2D {
     w: number,
     h: number,
     direction: Direction,
-    alpha1?: number,
-    alpha2?: number,
+    opacity1?: number,
+    opacity2?: number,
   ) {
     this.state.fillColor = color1
     this.state.gradientColor = color2
+    this.state.gradientFillOpacity = (opacity1 != null) ? opacity1 : 1
+    this.state.gradientOpacity = (opacity2 != null) ? opacity2 : 1
     this.state.gradientDirection = direction
-    this.state.gradientFillAlpha = (alpha1 != null) ? alpha1 : 1
-    this.state.gradientAlpha = (alpha2 != null) ? alpha2 : 1
   }
 
   setDashed(dashed: boolean, fixDash: boolean = false) {
@@ -169,23 +160,25 @@ export class Canvas2D {
     this.state.fontColor = Canvas2D.getColor(fontColor)
   }
 
-  setFontBackgroundColor(fontBackgroundColor: string) {
-    this.state.fontBackgroundColor = Canvas2D.getColor(fontBackgroundColor)
-  }
-
   setFontBorderColor(fontBorderColor: string) {
     this.state.fontBorderColor = Canvas2D.getColor(fontBorderColor)
   }
 
+  setFontBackgroundColor(fontBackgroundColor: string) {
+    this.state.fontBackgroundColor = Canvas2D.getColor(fontBackgroundColor)
+  }
+
   setFontSize(fontSize: number | string) {
-    this.state.fontSize = parseFloat(fontSize as string)
+    this.state.fontSize = typeof fontSize === 'number'
+      ? fontSize
+      : parseFloat(fontSize)
   }
 
   setFontFamily(fontFamily: string) {
     this.state.fontFamily = fontFamily
   }
 
-  setFontStyle(fontStyle: number) {
+  setFontStyle(fontStyle: number | null) {
     this.state.fontStyle = fontStyle == null ? 0 : fontStyle
   }
 
@@ -197,13 +190,13 @@ export class Canvas2D {
     this.state.shadowColor = Canvas2D.getColor(shadowColor)
   }
 
-  setShadowAlpha(shadowAlpha: number) {
-    this.state.shadowAlpha = shadowAlpha
+  setShadowOpacity(shadowOpacity: number) {
+    this.state.shadowOpacity = shadowOpacity
   }
 
   setShadowOffset(dx: number, dy: number) {
-    this.state.shadowDx = dx
-    this.state.shadowDy = dy
+    this.state.shadowOffsetX = dx
+    this.state.shadowOffsetY = dy
   }
 
   // #endregion
@@ -221,7 +214,7 @@ export class Canvas2D {
     deg: number,
     cx: number, cy: number,
   ) {
-    return util.rotatePoint(new Point(x, y), deg, new Point(cx, cy))
+    return util.rotatePoint({ x, y }, deg, { x: cx, y: cy })
   }
 
   scale(s: number) {
@@ -247,16 +240,15 @@ export class Canvas2D {
   addOp(op: string, ...pts: number[]) {
     if (this.path != null) {
       this.path.push(op)
-      const s = this.state
+      const state = this.state
 
       for (let i = 0, ii = pts.length; i < ii; i += 2) {
         this.lastX = pts[i]
         this.lastY = pts[i + 1]
-
-        const x = `${this.format((this.lastX + s.tx) * s.scale)}`
-        const y = `${this.format((this.lastY + s.ty) * s.scale)}`
-
-        this.path.push(x, y)
+        this.path.push(
+          `${this.format((this.lastX + state.tx) * state.scale)}`,
+          `${this.format((this.lastY + state.ty) * state.scale)}`,
+        )
       }
     }
   }
@@ -326,58 +318,55 @@ export namespace Canvas2D {
   export interface State {
     tx: number
     ty: number
-
-    /**
-     * Opacity for the canvas.
-     */
-    alpha: number
     scale: number
     transform: string | null
 
     /**
+     * Opacity for the canvas.
+     */
+    opacity: number
+
+    /**
      * Opacity for background.
      *
-     * The background final opacity should be `alpha * fillAlpha`
+     * The background final opacity should be `opacity * fillOpacity`
      */
-    fillAlpha: number
+    fillOpacity: number
     fillColor: string | null
-
-    strokeAlpha: number
-    strokeColor: string | null
-    strokeWidth: number
-
-    gradientAlpha: number
-    gradientFillAlpha: number
     gradientColor: string | null
+    gradientOpacity: number
+    gradientFillOpacity: number
     gradientDirection: Direction
 
+    strokeColor: string | null
+    strokeWidth: number
+    strokeOpacity: number
     dashed: boolean
     dashPattern: string
     /**
      * Specifies if use fixed(`1`) dash size.
      */
     fixDash: boolean
-
     lineCap: LineCap
     lineJoin: LineJoin
     miterLimit: number
 
-    fontColor: string | null
-    fontBackgroundColor: string | null
-    fontBorderColor: string | null
     fontSize: number
+    fontColor: string | null
+    fontStyle: number
     fontFamily: string
-    fontStyle: FontStyle,
+    fontBorderColor: string | null
+    fontBackgroundColor: string | null
 
-    shadow: boolean,
+    shadow: boolean
     shadowColor: string | null
-    shadowAlpha: number
-    shadowDx: number
-    shadowDy: number
+    shadowOpacity: number
+    shadowOffsetX: number
+    shadowOffsetY: number
 
     rotation: number
-    rotationCx: number
-    rotationCy: number
+    rotationCenterX: number
+    rotationCenterY: number
   }
 
   export function getColor(color?: string | null) {

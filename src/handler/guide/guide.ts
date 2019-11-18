@@ -71,7 +71,7 @@ export class Guide extends Disposable {
       guide.stroke = style.stroke
       guide.strokeWidth = style.strokeWidth
       guide.dashed = style.dashed
-      guide.elem!.style.visibility = null
+      guide.elem!.style.visibility = ''
 
       util.applyClassName(
         guide,
@@ -325,11 +325,11 @@ export class Guide extends Disposable {
 
   protected setVisible(visible: boolean) {
     if (this.guideX && this.guideX.elem) {
-      this.guideX.elem.style.visibility = visible ? null : 'hidden'
+      this.guideX.elem.style.visibility = visible ? '' : 'hidden'
     }
 
     if (this.guideY && this.guideY.elem) {
-      this.guideY.elem.style.visibility = visible ? null : 'hidden'
+      this.guideY.elem.style.visibility = visible ? '' : 'hidden'
     }
   }
 

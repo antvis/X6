@@ -5,7 +5,7 @@ import { State } from '../core'
 import { SvgCanvas2D } from '../canvas'
 import { Rectangle, Point } from '../struct'
 import { Style, Direction, Dialect } from '../types'
-import { detector, constants, DomEvent, Disposable } from '../common'
+import { constants, DomEvent, Disposable } from '../common'
 
 export class Shape extends Disposable {
   state: State
@@ -224,7 +224,7 @@ export class Shape extends Disposable {
       this.updateBoundsFromPoints()
 
       if (this.visible && this.isValidBounds()) {
-        elem.style.visibility = null
+        elem.style.visibility = ''
         this.empty()
         this.updateClassName()
 
@@ -338,7 +338,6 @@ export class Shape extends Disposable {
     canvas.strokeTolerance = this.pointerEvents ? this.svgStrokeTolerance : 0
     canvas.pointerEvents = this.pointerEvents
     canvas.pointerEventsValue = this.svgPointerEvents
-    canvas.blockImagePointerEvents = detector.IS_FIREFOX
 
     const offset = this.getSvgScreenOffset()
     if (offset !== 0) {
@@ -633,9 +632,9 @@ export class Shape extends Disposable {
     h: number,
   ) {
 
-    c.setAlpha(this.opacity)
-    c.setFillAlpha(this.fillOpacity)
-    c.setStrokeAlpha(this.strokeOpacity)
+    c.setOpacity(this.opacity)
+    c.setFillOpacity(this.fillOpacity)
+    c.setStrokeOpacity(this.strokeOpacity)
 
     if (this.shadow != null) {
       c.setShadow(this.shadow)

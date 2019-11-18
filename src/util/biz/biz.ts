@@ -1,9 +1,9 @@
-import { State } from '../core'
-import { getOffset, getScrollOrigin } from './dom'
-import { Point, DirectionMask } from '../struct'
-import { Align, VAlign } from '../types'
-import { MouseEventEx, DomEvent } from '../common'
-import { Shape } from '../shape'
+import { State } from '../../core'
+import { getOffset, getScrollOrigin } from '../dom'
+import { Point, DirectionMask } from '../../struct'
+import { Align, VAlign } from '../../types'
+import { MouseEventEx, DomEvent } from '../../common'
+import { Shape } from '../../shape'
 
 /**
  * Converts the specified point (x, y) using the offset of the specified
@@ -213,6 +213,17 @@ export function hasHtmlLabel(state: State | null) {
     state.text.elem != null &&
     state.text.elem.parentNode === state.view.graph.container
   )
+}
+
+export function isValidLabel(label: string | HTMLElement | null) {
+  if (label != null) {
+    if (typeof label === 'string') {
+      return label.length > 0
+    }
+    return true
+  }
+
+  return false
 }
 
 export function applyClassName(

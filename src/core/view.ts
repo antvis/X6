@@ -2082,7 +2082,7 @@ export class View extends Primer {
   }
 
   protected updateContainerStyle(container: HTMLElement) {
-    const position = util.getCurrentStyle(container, 'position')
+    const position = util.getComputedStyle(container, 'position')
     if (position === 'static') {
       container.style.position = 'relative'
     }
