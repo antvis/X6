@@ -1,4 +1,4 @@
-import { Shape } from './Shape'
+import { Shape } from './shape'
 import { RectangleShape } from './rectangle'
 import { SvgCanvas2D } from '../canvas'
 import { Rectangle } from '../struct'
