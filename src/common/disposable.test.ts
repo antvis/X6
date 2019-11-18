@@ -1,4 +1,10 @@
-import { DisposableDelegate, DisposableSet, IDisposable } from './disposable'
+import {
+  Disposable,
+  IDisposable,
+  DisposableSet,
+  DisposableDelegate,
+} from './disposable'
+import { detector } from './detector'
 
 class TestDisposable implements IDisposable {
   count = 0
@@ -12,7 +18,48 @@ class TestDisposable implements IDisposable {
   }
 }
 
+class AOPTest extends Disposable {
+  a = 1
+
+  @Disposable.aop()
+  dispose() {
+    this.a = 0
+  }
+}
+
 describe('disposable', () => {
+
+  describe('Disablable', () => {
+    it('should be `false` before object is disposed', () => {
+      const obj = new Disposable()
+      expect(obj.disposed).toBe(false)
+    })
+
+    it('should be `true` after object is disposed', () => {
+      const obj = new Disposable()
+      obj.dispose()
+      expect(obj.disposed).toBe(true)
+    })
+
+    it('should add `unload` listener for ie', () => {
+      (detector as any).IS_IE = true
+      const obj = new Disposable()
+      expect(obj.disposed).toBe(false);
+      (detector as any).IS_IE = false
+    })
+
+    it('shoule work with `aop`', () => {
+      const obj = new AOPTest()
+      expect(obj.disposed).toBe(false)
+      expect(obj.a).toBe(1)
+      obj.dispose()
+      expect(obj.disposed).toBe(true)
+      expect(obj.a).toBe(0)
+      obj.dispose()
+      expect(obj.disposed).toBe(true)
+      expect(obj.a).toBe(0)
+    })
+  })
 
   describe('DisposableDelegate', () => {
 
