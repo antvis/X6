@@ -1,7 +1,7 @@
 import * as util from '../util'
 import { Direction, LineCap, LineJoin } from '../types'
 
-export class Canvas2D {
+export abstract class Canvas2D {
   state: Canvas2D.State
   states: Canvas2D.State[]
   path: string[]

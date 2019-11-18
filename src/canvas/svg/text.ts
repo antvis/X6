@@ -1,8 +1,8 @@
 /* tslint:disable:no-parameter-reassignment */
 
 import * as util from '../../util'
-import { Rectangle, FontStyle } from '../../struct'
 import { Align, VAlign } from '../../types'
+import { Rectangle, FontStyle } from '../../struct'
 import { SvgCanvas2DBase } from './base'
 import { SvgCanvas2D } from './index'
 
@@ -240,7 +240,7 @@ export class SvgCanvas2DText extends SvgCanvas2DBase {
    * plain text and html for HTML markup. Note that HTML markup is only
    * supported if foreignObject is supported and `foEnabled` is true.
    */
-  text(
+  drawText(
     x: number,
     y: number,
     w: number,
