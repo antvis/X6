@@ -1108,8 +1108,8 @@ export class EdgeHandler extends MouseHandler {
             this.marker.hasValidState() &&
             this.marker.highlight != null &&
             this.marker.highlight.shape != null &&
-            this.marker.highlight.shape.stroke !== 'transparent' &&
-            this.marker.highlight.shape.stroke !== 'white'
+            this.marker.highlight.shape.strokeColor !== 'transparent' &&
+            this.marker.highlight.shape.strokeColor !== 'white'
           ) {
             terminal = this.marker.validState!.cell
           }
@@ -1228,7 +1228,7 @@ export class EdgeHandler extends MouseHandler {
    */
   protected setPreviewColor(color: string | null) {
     if (this.previewShape != null) {
-      this.previewShape.stroke = color
+      this.previewShape.strokeColor = color
     }
   }
 

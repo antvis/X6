@@ -3,7 +3,7 @@ import { SvgCanvas2D } from '../../canvas'
 import { registerShape } from '../../core'
 
 export class UmlActorShape extends Shape {
-  paintBackground(
+  drawBackground(
     c: SvgCanvas2D,
     x: number,
     y: number,

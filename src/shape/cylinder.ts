@@ -8,18 +8,18 @@ export class Cylinder extends Shape {
 
   constructor(
     bounds: Rectangle,
-    fill: string,
-    stroke: string,
+    fillColor: string,
+    strokeColor: string,
     strokewidth: number = 1,
   ) {
     super()
     this.bounds = bounds
-    this.fill = fill
-    this.stroke = stroke
+    this.fillColor = fillColor
+    this.strokeColor = strokeColor
     this.strokeWidth = strokewidth
   }
 
-  paintNodeShape(
+  drawNodeShape(
     c: SvgCanvas2D,
     x: number,
     y: number,
@@ -57,8 +57,8 @@ export class Cylinder extends Shape {
     const dy = this.getCylinderSize(x, y, w, h)
 
     if (
-      (isForeground && this.fill != null) ||
-      (!isForeground && this.fill == null)
+      (isForeground && this.fillColor != null) ||
+      (!isForeground && this.fillColor == null)
     ) {
       c.moveTo(0, dy)
       c.curveTo(0, 2 * dy, w, 2 * dy, w, dy)

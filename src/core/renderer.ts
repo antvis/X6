@@ -1,9 +1,8 @@
 import * as util from '../util'
 import { State } from './state'
-import { WritingDirection, Dialect } from '../types'
+import { Dialect } from '../types'
 import { Rectangle, Point, Overlay } from '../struct'
 import {
-  constants,
   detector,
   Dictionary,
   DomEvent,
@@ -705,9 +704,7 @@ export class Renderer {
           clipped: graph.isLabelClipped(state.cell),
           overflow: state.style.overflow,
           labelPadding: state.style.labelPadding,
-          textDirection: (
-            state.style.textDirection || constants.DEFAULT_TEXT_DIRECTION
-          ) as WritingDirection,
+          textDirection: state.style.textDirection || '',
         },
       )
 
@@ -816,7 +813,7 @@ export class Renderer {
       }
     } else {
       // Inverts label position
-      if (state.text!.isPaintBoundsInverted()) {
+      if (state.text!.drawBoundsInverted()) {
         const tmp = bounds.x
         bounds.x = bounds.y
         bounds.y = tmp
@@ -829,8 +826,8 @@ export class Renderer {
       bounds.width = Math.max(1, state.bounds.width)
       bounds.height = Math.max(1, state.bounds.height)
 
-      const sc = state.style.stroke || constants.NONE
-      if (sc !== constants.NONE && sc !== '') {
+      const sc = state.style.stroke || 'none'
+      if (sc !== 'none' && sc !== '') {
         const sw = (state.style.strokeWidth || 1) * scale
         const dx = 1 + Math.floor((sw - 1) / 2)
         const dh = Math.floor(sw + 1)
@@ -842,7 +839,7 @@ export class Renderer {
       }
     }
 
-    if (state.text!.isPaintBoundsInverted()) {
+    if (state.text!.drawBoundsInverted()) {
       // Rotates around center of state
       const t = (state.bounds.width - state.bounds.height) / 2
       bounds.x += t
@@ -920,9 +917,10 @@ export class Renderer {
       return result
     }
 
-    return check('fontStyle', 'fontStyle', constants.DEFAULT_FONTSTYLE) ||
-      check('family', 'fontFamily', constants.DEFAULT_FONTFAMILY) ||
-      check('size', 'fontSize', constants.DEFAULT_FONTSIZE) ||
+    return (
+      check('fontStyle', 'fontStyle', 0) ||
+      check('family', 'fontFamily', 'Arial,Helvetica') ||
+      check('size', 'fontSize', 12) ||
       check('color', 'fontColor', 'black') ||
       check('align', 'align', '') ||
       check('valign', 'verticalAlign', '') ||
@@ -935,7 +933,8 @@ export class Renderer {
       check('background', 'labelBackgroundColor') ||
       check('border', 'labelBorderColor') ||
       check('opacity', 'textOpacity', 100) ||
-      check('textDirection', 'textDirection', constants.DEFAULT_TEXT_DIRECTION)
+      check('textDirection', 'textDirection', '')
+    )
   }
 
   protected rotateLabelBounds(state: State, bounds: Rectangle) {
@@ -1120,7 +1119,7 @@ export class Renderer {
           if (this.legacyControlPosition) {
             rot = state.style.rotation || 0
           } else {
-            if (state.shape.isPaintBoundsInverted()) {
+            if (state.shape.drawBoundsInverted()) {
               const t = (state.bounds.width - state.bounds.height) / 2
               cx += t
               cy -= t

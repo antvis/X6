@@ -1,26 +1,22 @@
-import { constants } from '../common'
+import * as util from '../util'
 import { Shape } from './shape'
 import { SvgCanvas2D } from '../canvas'
 import { Rectangle } from '../struct'
 
 export class Swimlane extends Shape {
-  /**
-   * Default imagewidth and imageheight if an image but no imagewidth
-   * and imageheight are defined in the style.
-   */
-  imageSize = 16
   image: string | null
+  imageSize: number = 16
 
   constructor(
     bounds: Rectangle,
-    fill: string,
-    stroke: string,
+    fillColor: string,
+    strokeColor: string,
     strokewidth: number = 1,
   ) {
     super()
     this.bounds = bounds
-    this.fill = fill
-    this.stroke = stroke
+    this.fillColor = fillColor
+    this.strokeColor = strokeColor
     this.strokeWidth = strokewidth
   }
 
@@ -28,11 +24,17 @@ export class Swimlane extends Shape {
     return true
   }
 
+  isHorizontal() {
+    return this.style.horizontal !== false
+  }
+
   getTitleSize() {
-    return Math.max(
-      0,
-      this.style.startSize || constants.DEFAULT_STARTSIZE,
-    )
+    return Math.max(0, this.style.startSize || 40)
+  }
+
+  getArcSize(w: number, h: number, start: number) {
+    const f = (this.style.arcSize || 15) / 100
+    return start * f * 3
   }
 
   getLabelBounds(rect: Rectangle) {
@@ -62,21 +64,17 @@ export class Swimlane extends Shape {
     // Shape is horizontal
     if (!shapeVertical) {
       const tmp = Math.min(bounds.height, start * this.scale)
-
       if (realFlipH || realFlipV) {
         bounds.y += bounds.height - tmp
       }
-
       bounds.height = tmp
 
     } else {
 
       const tmp = Math.min(bounds.width, start * this.scale)
-
       if (realFlipH || realFlipV) {
         bounds.x += bounds.width - tmp
       }
-
       bounds.width = tmp
     }
 
@@ -102,16 +100,7 @@ export class Swimlane extends Shape {
 
   }
 
-  getArcSize(w: number, h: number, start: number) {
-    const f = (this.style.arcSize || constants.RECTANGLE_ROUNDING_FACTOR * 100) / 100
-    return start * f * 3
-  }
-
-  isHorizontal() {
-    return this.style.horizontal !== false
-  }
-
-  paintNodeShape(
+  drawNodeShape(
     c: SvgCanvas2D,
     x: number,
     y: number,
@@ -119,7 +108,7 @@ export class Swimlane extends Shape {
     h: number,
   ) {
     let start = this.getTitleSize()
-    const fill = this.style.swimlaneFillColor || constants.NONE
+    const fillColor = this.style.swimlaneFillColor || 'none'
     const swimlaneLine = this.style.swimlaneLine !== false
 
     let r = 0
@@ -133,15 +122,15 @@ export class Swimlane extends Shape {
     c.translate(x, y)
 
     if (!this.rounded) {
-      this.paintSwimlane(c, x, y, w, h, start, fill, swimlaneLine)
+      this.drawSwimlane(c, x, y, w, h, start, fillColor, swimlaneLine)
     } else {
       r = this.getArcSize(w, h, start)
       r = Math.min(((this.isHorizontal()) ? h : w) - start, Math.min(start, r))
-      this.paintRoundedSwimlane(c, x, y, w, h, start, r, fill, swimlaneLine)
+      this.drawRoundedSwimlane(c, x, y, w, h, start, r, fillColor, swimlaneLine)
     }
 
-    const sep = this.style.separatorColor || constants.NONE
-    this.paintSeparator(c, x, y, w, h, start, sep)
+    const separatorColor = this.style.separatorColor || 'none'
+    this.drawSeparator(c, x, y, w, h, start, separatorColor)
 
     if (this.image != null) {
       const bounds = this.getImageBounds(x, y, w, h)
@@ -159,18 +148,18 @@ export class Swimlane extends Shape {
 
     if (this.glass) {
       c.setShadow(false)
-      this.paintGlassEffect(c, 0, 0, w, start, r)
+      this.drawGlassEffect(c, 0, 0, w, start, r)
     }
   }
 
-  paintSwimlane(
+  protected drawSwimlane(
     c: SvgCanvas2D,
     x: number,
     y: number,
     w: number,
     h: number,
     start: number,
-    fill: string,
+    fillColor: string,
     swimlaneLine: boolean,
   ) {
     c.begin()
@@ -183,23 +172,13 @@ export class Swimlane extends Shape {
       c.fillAndStroke()
 
       if (start < h) {
-        if (fill === constants.NONE) {
-          c.pointerEvents = false
-        } else {
-          c.setFillColor(fill)
-        }
-
-        c.begin()
-        c.moveTo(0, start)
-        c.lineTo(0, h)
-        c.lineTo(w, h)
-        c.lineTo(w, start)
-
-        if (fill === constants.NONE) {
-          c.stroke()
-        } else {
-          c.fillAndStroke()
-        }
+        this.scopedDraw(c, fillColor, () => {
+          c.begin()
+          c.moveTo(0, start)
+          c.lineTo(0, h)
+          c.lineTo(w, h)
+          c.lineTo(w, start)
+        })
       }
     } else {
       c.moveTo(start, 0)
@@ -209,32 +188,22 @@ export class Swimlane extends Shape {
       c.fillAndStroke()
 
       if (start < w) {
-        if (fill === constants.NONE) {
-          c.pointerEvents = false
-        } else {
-          c.setFillColor(fill)
-        }
-
-        c.begin()
-        c.moveTo(start, 0)
-        c.lineTo(w, 0)
-        c.lineTo(w, h)
-        c.lineTo(start, h)
-
-        if (fill === constants.NONE) {
-          c.stroke()
-        } else {
-          c.fillAndStroke()
-        }
+        this.scopedDraw(c, fillColor, () => {
+          c.begin()
+          c.moveTo(start, 0)
+          c.lineTo(w, 0)
+          c.lineTo(w, h)
+          c.lineTo(start, h)
+        })
       }
     }
 
     if (swimlaneLine) {
-      this.paintDivider(c, x, y, w, h, start, fill === constants.NONE)
+      this.drawDivider(c, x, y, w, h, start, fillColor === 'none')
     }
   }
 
-  paintRoundedSwimlane(
+  protected drawRoundedSwimlane(
     c: SvgCanvas2D,
     x: number,
     y: number,
@@ -242,7 +211,7 @@ export class Swimlane extends Shape {
     h: number,
     start: number,
     r: number,
-    fill: string,
+    fillColor: string,
     swimlaneLine: boolean,
   ) {
     c.begin()
@@ -257,25 +226,15 @@ export class Swimlane extends Shape {
       c.fillAndStroke()
 
       if (start < h) {
-        if (fill === constants.NONE) {
-          c.pointerEvents = false
-        } else {
-          c.setFillColor(fill)
-        }
-
-        c.begin()
-        c.moveTo(0, start)
-        c.lineTo(0, h - r)
-        c.quadTo(0, h, Math.min(w / 2, r), h)
-        c.lineTo(w - Math.min(w / 2, r), h)
-        c.quadTo(w, h, w, h - r)
-        c.lineTo(w, start)
-
-        if (fill === constants.NONE) {
-          c.stroke()
-        } else {
-          c.fillAndStroke()
-        }
+        this.scopedDraw(c, fillColor, () => {
+          c.begin()
+          c.moveTo(0, start)
+          c.lineTo(0, h - r)
+          c.quadTo(0, h, Math.min(w / 2, r), h)
+          c.lineTo(w - Math.min(w / 2, r), h)
+          c.quadTo(w, h, w, h - r)
+          c.lineTo(w, start)
+        })
       }
     } else {
       c.moveTo(start, 0)
@@ -287,37 +246,27 @@ export class Swimlane extends Shape {
       c.fillAndStroke()
 
       if (start < w) {
-        if (fill === constants.NONE) {
-          c.pointerEvents = false
-        } else {
-          c.setFillColor(fill)
-        }
-
-        c.begin()
-        c.moveTo(start, h)
-        c.lineTo(w - r, h)
-        c.quadTo(w, h, w, h - Math.min(h / 2, r))
-        c.lineTo(w, Math.min(h / 2, r))
-        c.quadTo(w, 0, w - r, 0)
-        c.lineTo(start, 0)
-
-        if (fill === constants.NONE) {
-          c.stroke()
-        } else {
-          c.fillAndStroke()
-        }
+        this.scopedDraw(c, fillColor, () => {
+          c.begin()
+          c.moveTo(start, h)
+          c.lineTo(w - r, h)
+          c.quadTo(w, h, w, h - Math.min(h / 2, r))
+          c.lineTo(w, Math.min(h / 2, r))
+          c.quadTo(w, 0, w - r, 0)
+          c.lineTo(start, 0)
+        })
       }
     }
 
     if (swimlaneLine) {
-      this.paintDivider(c, x, y, w, h, start, fill === constants.NONE)
+      this.drawDivider(c, x, y, w, h, start, !util.isValidColor(fillColor))
     }
   }
 
   /**
    * Paints the divider between swimlane title and content area.
    */
-  paintDivider(
+  protected drawDivider(
     c: SvgCanvas2D,
     x: number,
     y: number,
@@ -346,7 +295,7 @@ export class Swimlane extends Shape {
   /**
    * Paints the vertical or horizontal separator line between swimlanes.
    */
-  paintSeparator(
+  protected drawSeparator(
     c: SvgCanvas2D,
     x: number,
     y: number,
@@ -355,7 +304,7 @@ export class Swimlane extends Shape {
     start: number,
     color?: string,
   ) {
-    if (color !== constants.NONE) {
+    if (util.isValidColor(color)) {
       c.setStrokeColor(color)
       c.setDashed(true)
       c.begin()
@@ -373,7 +322,7 @@ export class Swimlane extends Shape {
     }
   }
 
-  getImageBounds(
+  protected getImageBounds(
     x: number,
     y: number,
     w: number,
@@ -389,6 +338,22 @@ export class Swimlane extends Shape {
     }
 
     return new Rectangle(x, y, this.imageSize, this.imageSize)
+  }
 
+  private scopedDraw(c: SvgCanvas2D, fillColor: string, fn: () => void) {
+    const valid = util.isValidColor(fillColor)
+    if (valid) {
+      c.setFillColor(fillColor)
+    } else {
+      c.pointerEvents = false
+    }
+
+    fn()
+
+    if (valid) {
+      c.fillAndStroke()
+    } else {
+      c.stroke()
+    }
   }
 }

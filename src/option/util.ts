@@ -63,7 +63,7 @@ export function applyStrokeStyle<T extends BaseArgs>(
   style: StrokeStyle<T>,
 ) {
   const { shape, graph } = args
-  shape.stroke = drill(style.stroke, graph, args)
+  shape.strokeColor = drill(style.stroke, graph, args)
   shape.strokeWidth = drill(style.strokeWidth, graph, args)
   shape.dashed = drill(style.dashed, graph, args)
 }
@@ -73,7 +73,7 @@ export function applyFillStyle<T extends BaseArgs>(
   style: FillStyle<T>,
 ) {
   const { shape, graph } = args
-  shape.fill = drill(style.fill, graph, args)
+  shape.fillColor = drill(style.fill, graph, args)
   shape.opacity = drill(style.opacity, graph, args)
 }
 

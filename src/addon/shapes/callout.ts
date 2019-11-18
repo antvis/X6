@@ -4,7 +4,7 @@ import { SvgCanvas2D } from '../../canvas'
 import { Point, Rectangle } from '../../struct'
 import { State, registerShape, registerPerimeter } from '../../core'
 import { rectanglePerimeter } from '../../perimeter'
-import { getFactor, getLineArcSize } from './util'
+import { getFactor } from './util'
 
 export class CalloutShape extends Actor {
   base = 20
@@ -32,13 +32,13 @@ export class CalloutShape extends Actor {
     w: number,
     h: number,
   ) {
-    const arcSize = getLineArcSize(this.style)
+    const arcSize = this.getLineArcSize()
     const s = getFactor(this.style, this.factor, h)
     const dx1 = getFactor(this.style, this.position1, w, 1, 'position')
     const dx2 = getFactor(this.style, this.position2, w, 1, 'position2')
     const base = getFactor(this.style, this.base, w, 1, 'base')
 
-    this.paintPoints(
+    this.drawPoints(
       c,
       [
         new Point(0, 0),

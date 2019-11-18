@@ -3,7 +3,6 @@ import { Actor } from '../../shape'
 import { SvgCanvas2D } from '../../canvas'
 import { Point } from '../../struct'
 import { registerShape } from '../../core'
-import { getLineArcSize } from './util'
 
 export class CardShape extends Actor {
   factor: number = 30
@@ -19,11 +18,11 @@ export class CardShape extends Actor {
     w: number,
     h: number,
   ) {
+    const arcSize = this.getLineArcSize()
     const factor = util.getNumber(this.style, 'factor', this.factor)
     const s = Math.max(0, Math.min(w, Math.min(h, factor)))
-    const arcSize = getLineArcSize(this.style)
 
-    this.paintPoints(
+    this.drawPoints(
       c,
       [
         new Point(s, 0),

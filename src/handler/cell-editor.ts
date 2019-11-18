@@ -1,7 +1,7 @@
 import * as util from '../util'
+import { detector, DomEvent, Disposable } from '../common'
 import { Graph, Cell, State, Model } from '../core'
 import { View } from '../core/view'
-import { detector, constants, DomEvent, Disposable } from '../common'
 import { Rectangle, FontStyle } from '../struct'
 import { Align } from '../types'
 
@@ -390,7 +390,7 @@ export class CellEditor extends Disposable {
           (this.bounds.width >= 2 || this.bounds.height >= 2) &&
           this.textarea.innerHTML !== this.getEmptyLabelText(this.editingCell!)
         ) {
-          this.textarea.style.wordWrap = constants.WORD_WRAP
+          this.textarea.style.wordWrap = 'normal'
           this.textarea.style.whiteSpace = 'normal'
 
           if (state.style.overflow !== 'fill') {
@@ -474,7 +474,7 @@ export class CellEditor extends Disposable {
           (this.bounds.width >= 2 || this.bounds.height >= 2) &&
           this.textarea.innerHTML !== this.getEmptyLabelText(this.editingCell!)
         ) {
-          this.textarea.style.wordWrap = constants.WORD_WRAP
+          this.textarea.style.wordWrap = 'normal'
           this.textarea.style.whiteSpace = 'normal'
 
           // Forces automatic reflow if text is removed from an oversize label and normal word wrap
@@ -554,9 +554,9 @@ export class CellEditor extends Disposable {
     const state = this.graph.view.getState(cell)
     if (state != null && this.textarea != null) {
       // Configures the style of the in-place editor
-      const size = state.style.fontSize || constants.DEFAULT_FONTSIZE
-      const family = state.style.fontFamily || constants.DEFAULT_FONTFAMILY
-      const color = state.style.fontColor || 'black'
+      const size = state.style.fontSize || 12
+      const family = state.style.fontFamily || 'Arial,Helvetica'
+      const color = state.style.fontColor || '#000000'
       const align = state.style.align || 'left'
       const fontStyle = state.style.fontStyle
       const bold = FontStyle.isBold(fontStyle)
@@ -565,9 +565,7 @@ export class CellEditor extends Disposable {
 
       const style = this.textarea.style
 
-      style.lineHeight = constants.ABSOLUTE_LINE_HEIGHT
-        ? util.toPx(Math.round(size * constants.LINE_HEIGHT))
-        : `${constants.LINE_HEIGHT}`
+      style.lineHeight = '1.2'
       style.backgroundColor = this.getBackgroundColor(state)
       style.textDecoration = (uline) ? 'underline' : ''
       style.fontWeight = (bold) ? 'bold' : 'normal'

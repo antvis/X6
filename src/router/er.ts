@@ -1,5 +1,4 @@
 import * as util from '../util'
-import { constants } from '../common'
 import { State, Cell } from '../core'
 import { Point, DirectionMask } from '../struct'
 
@@ -31,7 +30,7 @@ export function entityRelation(
 ) {
   const view = edgeState.view
   const graph = view.graph
-  const segment = (edgeState.style.segment || constants.ENTITY_SEGMENT)
+  const segment = edgeState.style.segment || 30
     * view.scale
 
   const pts = edgeState.absolutePoints

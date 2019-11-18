@@ -13,26 +13,27 @@ export class HtmlShape extends RectangleShape {
     super(new Rectangle())
   }
 
-  paintBackground(
+  drawBackground(
     c: SvgCanvas2D,
     x: number,
     y: number,
     w: number,
     h: number,
   ) {
-    super.paintBackground(c, x, y, w, h)
+    super.drawBackground(c, x, y, w, h)
     this.renderHtml()
   }
 
   renderHtml() {
     const bounds = this.bounds
 
-    const g = util.createSvgElement('g')
     let transform = `translate(${bounds.x},${bounds.y})`
     const deg = this.getShapeRotation()
     if (deg !== 0) {
       transform += ` rotate(${deg},${bounds.width / 2},${bounds.height / 2})`
     }
+
+    const g = util.createSvgElement('g')
     g.setAttribute('transform', transform)
 
     const fo = util.createSvgElement('foreignObject')

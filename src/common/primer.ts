@@ -10,13 +10,13 @@ export class Primer extends Events implements IDisposable {
     }
   }
 
-  private _disposed: boolean = false // tslint:disable-line:variable-name
+  private isDisposed: boolean = false
 
   get disposed() {
-    return this._disposed
+    return this.isDisposed
   }
 
-  dispose() {
-    this._disposed = true
+  public dispose() {
+    this.isDisposed = true
   }
 }

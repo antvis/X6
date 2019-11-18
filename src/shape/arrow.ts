@@ -1,4 +1,3 @@
-import { constants } from '../common'
 import { Shape } from './shape'
 import { Rectangle, Point } from '../struct'
 import { SvgCanvas2D } from '../canvas'
@@ -8,8 +7,8 @@ export class Arrow extends Shape {
 
   constructor(
     points: Point[],
-    fill: string,
-    stroke: string,
+    fillColor: string,
+    strokeColor: string,
     strokewidth?: number,
     arrowWidth?: number,
     spacing?: number,
@@ -17,25 +16,25 @@ export class Arrow extends Shape {
   ) {
     super()
     this.points = points
-    this.fill = fill
-    this.stroke = stroke
-    this.strokeWidth = (strokewidth != null) ? strokewidth : 1
-    this.arrowWidth = (arrowWidth != null) ? arrowWidth : constants.ARROW_WIDTH
-    this.spacing = (spacing != null) ? spacing : constants.ARROW_SPACING
-    this.endSize = (endSize != null) ? endSize : constants.ARROW_SIZE
+    this.fillColor = fillColor
+    this.strokeColor = strokeColor
+    this.strokeWidth = strokewidth != null ? strokewidth : 1
+    this.arrowWidth = arrowWidth != null ? arrowWidth : 30
+    this.spacing = spacing != null ? spacing : 0
+    this.endSize = endSize != null ? endSize : 30
   }
 
   augmentBoundingBox(bbox: Rectangle) {
     super.augmentBoundingBox(bbox)
     const w = Math.max(this.arrowWidth, this.endSize as number)
-    bbox.grow((w / 2 + (this.strokeWidth as number)) * this.scale)
+    bbox.grow((w / 2 + this.strokeWidth) * this.scale)
   }
 
-  paintEdgeShape(c: SvgCanvas2D, points: Point[]) {
+  drawEdgeShape(c: SvgCanvas2D, points: Point[]) {
     // Geometry of arrow
-    const spacing = constants.ARROW_SPACING
-    const width = constants.ARROW_WIDTH
-    const arrow = constants.ARROW_SIZE
+    const spacing = this.spacing
+    const width = this.arrowWidth
+    const size = this.endSize!
 
     // Base vector (between end points)
     const p0 = points[0]
@@ -43,7 +42,7 @@ export class Arrow extends Shape {
     const dx = pe.x - p0.x
     const dy = pe.y - p0.y
     const dist = Math.sqrt(dx * dx + dy * dy)
-    const length = dist - 2 * spacing - arrow
+    const length = dist - 2 * spacing - size
 
     // Computes the norm and the inverse norm
     const nx = dx / dist

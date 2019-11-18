@@ -1,19 +1,18 @@
 import { Shape } from './shape'
-import { constants } from '../common'
 import { Rectangle, Point } from '../struct'
 import { SvgCanvas2D } from '../canvas'
 
 export class Rhombus extends Shape {
   constructor(
     bounds: Rectangle,
-    fill: string,
-    stroke: string,
+    fillColor: string,
+    strokeColor: string,
     strokewidth: number = 1,
   ) {
     super()
     this.bounds = bounds
-    this.fill = fill
-    this.stroke = stroke
+    this.fillColor = fillColor
+    this.strokeColor = strokeColor
     this.strokeWidth = strokewidth
   }
 
@@ -21,20 +20,19 @@ export class Rhombus extends Shape {
     return true
   }
 
-  paintNodeShape(
+  drawNodeShape(
     c: SvgCanvas2D,
     x: number,
     y: number,
     w: number,
     h: number,
   ) {
-    const arcSize = (this.style.arcSize || constants.LINE_ARCSIZE) / 2
-
+    const arcSize = this.getLineArcSize()
     const hw = w / 2
     const hh = h / 2
 
     c.begin()
-    this.paintPoints(
+    this.drawPoints(
       c,
       [
         new Point(x + hw, y),

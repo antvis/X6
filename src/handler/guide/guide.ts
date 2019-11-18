@@ -68,7 +68,7 @@ export class Guide extends Disposable {
         cell: state.cell,
       })
 
-      guide.stroke = style.stroke
+      guide.strokeColor = style.stroke
       guide.strokeWidth = style.strokeWidth
       guide.dashed = style.dashed
       guide.elem!.style.visibility = ''

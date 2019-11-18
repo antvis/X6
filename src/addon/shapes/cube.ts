@@ -22,7 +22,7 @@ export class CubeShape extends Cylinder {
     return null
   }
 
-  paintNodeShape(
+  drawNodeShape(
     c: SvgCanvas2D,
     x: number,
     y: number,
@@ -47,6 +47,7 @@ export class CubeShape extends Cylinder {
     c.lineTo(0, 0)
     c.close()
     c.end()
+
     c.fillAndStroke()
 
     if (!this.outline) {
@@ -54,7 +55,7 @@ export class CubeShape extends Cylinder {
 
       if (op !== 0) {
         c.setFillOpacity(Math.abs(op))
-        c.setFillColor((op < 0) ? '#FFFFFF' : '#000000')
+        c.setFillColor((op < 0) ? '#ffffff' : '#000000')
         c.begin()
         c.moveTo(0, 0)
         c.lineTo(w - s, 0)
@@ -66,7 +67,7 @@ export class CubeShape extends Cylinder {
 
       if (op2 !== 0) {
         c.setFillOpacity(Math.abs(op2))
-        c.setFillColor((op2 < 0) ? '#FFFFFF' : '#000000')
+        c.setFillColor((op2 < 0) ? '#ffffff' : '#000000')
         c.begin()
         c.moveTo(0, 0)
         c.lineTo(s, s)

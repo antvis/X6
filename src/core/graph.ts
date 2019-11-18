@@ -18,7 +18,6 @@ import {
   applyOptions,
 } from '../option'
 import {
-  constants,
   detector,
   DomEvent,
   MouseEventEx,
@@ -2713,7 +2712,7 @@ export class Graph extends Disablable implements
     const result = new Rectangle()
     const style = this.getStyle(swimlane)
     if (style != null) {
-      const size = style.startSize || constants.DEFAULT_STARTSIZE
+      const size = style.startSize || 40
       if (style.horizontal !== false) {
         result.height = size
       } else {

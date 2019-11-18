@@ -1,16 +1,15 @@
-import { constants } from '../common'
 import { SvgCanvas2D } from '../canvas'
-import { Polyline } from './polyline'
 import { createMarker } from '../marker'
 import { Rectangle, Point } from '../struct'
+import { Polyline } from './polyline'
 
 export class Connector extends Polyline {
   constructor(
     points: Point[],
-    stroke: string,
+    strokeColor: string,
     strokewidth: number = 1,
   ) {
-    super(points, stroke, strokewidth)
+    super(points, strokeColor, strokewidth)
   }
 
   updateBoundingBox() {
@@ -18,17 +17,17 @@ export class Connector extends Polyline {
     super.updateBoundingBox()
   }
 
-  paintEdgeShape(c: SvgCanvas2D, pts: Point[]) {
+  drawEdgeShape(c: SvgCanvas2D, pts: Point[]) {
     // The indirection via functions for markers is needed in
     // order to apply the offsets before painting the line and
     // paint the markers after painting the line.
     const sourceMarker = this.createMarker(c, pts, true)
     const targetMarker = this.createMarker(c, pts, false)
 
-    super.paintEdgeShape(c, pts)
+    super.drawEdgeShape(c, pts)
 
     // Disables shadows, dashed styles and fixes fill color for markers
-    c.setFillColor(this.stroke!)
+    c.setFillColor(this.strokeColor!)
     c.setShadow(false)
     c.setDashed(false)
 
@@ -41,10 +40,6 @@ export class Connector extends Polyline {
     }
   }
 
-  /**
-   * Prepares the marker by adding offsets in pts and returning a function to
-   * paint the marker.
-   */
   createMarker(c: SvgCanvas2D, pts: Point[], isSource: boolean) {
     let result = null
     const len = pts.length
@@ -73,8 +68,7 @@ export class Connector extends Polyline {
       const unitX = dx / dist
       const unitY = dy / dist
 
-      const size = (isSource ? this.style.startSize : this.style.endSize)
-        || constants.DEFAULT_MARKERSIZE
+      const size = (isSource ? this.style.startSize : this.style.endSize) || 6
 
       // Allow for stroke width in the end point used and the
       // orthogonal vectors describing the direction of the marker
@@ -92,7 +86,7 @@ export class Connector extends Polyline {
         isSource,
         filled,
         shape: this,
-        sw: this.strokeWidth as number,
+        sw: this.strokeWidth,
       })
     }
 
@@ -105,15 +99,12 @@ export class Connector extends Polyline {
     // Adds marker sizes
     let size = 0
 
-    if (this.style.startArrow || constants.NONE !== constants.NONE) {
-      size = (this.style.startSize || constants.DEFAULT_MARKERSIZE) + 1
+    if ((this.style.startArrow || 'none') !== 'none') {
+      size = (this.style.startSize || 6) + 1
     }
 
-    if ((this.style.endArrow || constants.NONE) !== constants.NONE) {
-      size = Math.max(
-        size,
-        (this.style.endSize || constants.DEFAULT_MARKERSIZE),
-      ) + 1
+    if ((this.style.endArrow || 'none') !== 'none') {
+      size = Math.max(size, (this.style.endSize || 6)) + 1
     }
 
     bbox.grow(size * this.scale)

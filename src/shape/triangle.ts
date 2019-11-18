@@ -1,16 +1,15 @@
 import { Actor } from './actor'
 import { Rectangle, Point } from '../struct'
-import { constants } from '../common'
 import { SvgCanvas2D } from '../canvas'
 
 export class Triangle extends Actor {
   constructor(
     bounds: Rectangle,
-    fill: string,
-    stroke: string,
+    fillColor: string,
+    strokeColor: string,
     strokewidth: number = 1,
   ) {
-    super(bounds, fill, stroke, strokewidth)
+    super(bounds, fillColor, strokeColor, strokewidth)
   }
 
   isRoundable() {
@@ -24,8 +23,8 @@ export class Triangle extends Actor {
     w: number,
     h: number,
   ) {
-    const arcSize = (this.style.arcSize || constants.LINE_ARCSIZE) / 2
-    this.paintPoints(
+    const arcSize = this.getLineArcSize()
+    this.drawPoints(
       c,
       [
         new Point(0, 0),

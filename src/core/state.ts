@@ -143,8 +143,8 @@ export class State extends Disablable {
 
       bounds.x = aspect.x
       bounds.y = aspect.y
-      bounds.width = this.shape.stencil.w0 * aspect.width
-      bounds.height = this.shape.stencil.h0 * aspect.height
+      bounds.width = this.shape.stencil.width * aspect.sx
+      bounds.height = this.shape.stencil.height * aspect.sy
     }
 
     if (border !== 0) {
@@ -228,7 +228,7 @@ export class State extends Disablable {
 
     this.paintBounds = this.cellBounds.clone()
 
-    if (this.shape != null && this.shape.isPaintBoundsInverted()) {
+    if (this.shape != null && this.shape.drawBoundsInverted()) {
       this.paintBounds.rotate90()
     }
   }

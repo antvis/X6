@@ -1,5 +1,4 @@
 import * as util from '../util'
-import { constants, detector } from '../common'
 import { Shape } from './shape'
 import { SvgCanvas2D } from '../canvas'
 import { State } from '../core'
@@ -41,8 +40,8 @@ export class Text extends Shape {
       align,
       valign,
       color,
-      family,
-      size,
+      family: fontFamily,
+      size: fontSize,
       fontStyle,
       spacing,
       spacingTop,
@@ -62,24 +61,24 @@ export class Text extends Shape {
     super()
     this.value = value
     this.bounds = bounds
-    this.fontColor = (color != null) ? color : 'black'
-    this.align = (align != null) ? align : 'center'
-    this.verticalAlign = (valign != null) ? valign : 'middle'
-    this.fontFamily = (family != null) ? family : constants.DEFAULT_FONTFAMILY
-    this.fontSize = (size != null) ? size : constants.DEFAULT_FONTSIZE
-    this.fontStyle = (fontStyle != null) ? fontStyle : constants.DEFAULT_FONTSTYLE
+    this.fontColor = color != null ? color : '#000000'
+    this.align = align != null ? align : 'center'
+    this.verticalAlign = valign != null ? valign : 'middle'
+    this.fontFamily = fontFamily != null ? fontFamily : 'Arial,Helvetica'
+    this.fontSize = fontSize != null ? fontSize : 12
+    this.fontStyle = fontStyle != null ? fontStyle : 0
     this.spacing = parseInt(spacing as any || 2, 10)
     this.spacingTop = this.spacing + parseInt(spacingTop as any || 0, 10)
     this.spacingRight = this.spacing + parseInt(spacingRight as any || 0, 10)
     this.spacingBottom = this.spacing + parseInt(spacingBottom as any || 0, 10)
     this.spacingLeft = this.spacing + parseInt(spacingLeft as any || 0, 10)
-    this.horizontal = (horizontal != null) ? horizontal : true
+    this.horizontal = horizontal != null ? horizontal : true
     this.background = background
     this.borderColor = border
-    this.wrap = (wrap != null) ? wrap : false
-    this.clipped = (clipped != null) ? clipped : false
-    this.overflow = (overflow != null) ? overflow : 'visible'
-    this.labelPadding = (labelPadding != null) ? labelPadding : 0
+    this.wrap = wrap != null ? wrap : false
+    this.clipped = clipped != null ? clipped : false
+    this.overflow = overflow != null ? overflow : 'visible'
+    this.labelPadding = labelPadding != null ? labelPadding : 0
     this.textDirection = textDirection
     this.rotation = 0
     this.updateMargin()
@@ -185,7 +184,7 @@ export class Text extends Shape {
     )
   }
 
-  paint(c: SvgCanvas2D, update?: boolean) {
+  draw(c: SvgCanvas2D, update?: boolean) {
     // Scale is passed-through to canvas
     const s = this.scale
     const x = this.bounds.x / s
@@ -243,7 +242,7 @@ export class Text extends Shape {
         dir = ''
       }
 
-      c.text(
+      c.drawText(
         x, y, w, h,
         val as string,
         this.align,
@@ -283,7 +282,7 @@ export class Text extends Shape {
           canvas.updateText != null &&
           canvas.invalidateCachedOffsetSize != null
         ) {
-          this.paint(canvas, true)
+          this.draw(canvas, true)
           this.destroyCanvas(canvas)
           this.updateBoundingBox()
         } else {
@@ -309,9 +308,9 @@ export class Text extends Shape {
     this.fontColor = 'black'
     this.align = 'center'
     this.verticalAlign = 'middle'
-    this.fontFamily = constants.DEFAULT_FONTFAMILY
-    this.fontSize = constants.DEFAULT_FONTSIZE
-    this.fontStyle = constants.DEFAULT_FONTSTYLE
+    this.fontFamily = 'Arial,Helvetica'
+    this.fontSize = 12
+    this.fontStyle = 0
     this.spacing = 2
     this.spacingTop = 2
     this.spacingRight = 2
@@ -320,7 +319,7 @@ export class Text extends Shape {
     this.horizontal = true
     delete this.background
     delete this.borderColor
-    this.textDirection = constants.DEFAULT_TEXT_DIRECTION as WritingDirection
+    this.textDirection = ''
     delete this.margin
   }
 
@@ -330,6 +329,7 @@ export class Text extends Shape {
     super.apply(state)
 
     if (this.style != null) {
+      this.opacity = this.style.textOpacity || 1
       this.fontStyle = this.style.fontStyle || this.fontStyle
       this.fontFamily = this.style.fontFamily || this.fontFamily
       this.fontSize = this.style.fontSize || this.fontSize
@@ -346,11 +346,7 @@ export class Text extends Shape {
       this.horizontal = this.style.horizontal || this.horizontal
       this.background = this.style.labelBackgroundColor || this.background
       this.borderColor = this.style.labelBorderColor || this.borderColor
-      this.textDirection = (
-        this.style.textDirection || constants.DEFAULT_TEXT_DIRECTION
-      ) as WritingDirection
-
-      this.opacity = this.style.textOpacity || 100
+      this.textDirection = this.style.textDirection || ''
 
       this.updateMargin()
     }
@@ -457,7 +453,7 @@ export class Text extends Shape {
     if (this.boundingBox != null) {
       if (rot !== 0) {
         // Accounts for pre-rotated x and y
-        const bbox = util.getBoundingBox(
+        const bbox = util.rotateRectangle(
           new Rectangle(
             this.margin.x * this.boundingBox.width,
             this.margin.y * this.boundingBox.height,
@@ -494,7 +490,7 @@ export class Text extends Shape {
       : 0
   }
 
-  isPaintBoundsInverted() {
+  drawBoundsInverted() {
     return (
       !this.horizontal &&
       this.state != null &&
@@ -576,8 +572,8 @@ export class Text extends Shape {
     style.left = `${left}px`
     style.top = `${Math.round(this.bounds.y - dy * (this.overflow !== 'fill' ? 3 : 1))}px`
 
-    if (this.opacity < 100) {
-      style.opacity = `${this.opacity / 100}`
+    if (this.opacity < 1) {
+      style.opacity = `${this.opacity}`
     } else {
       style.opacity = ''
     }
@@ -616,11 +612,11 @@ export class Text extends Shape {
       val = util.replaceTrailingNewlines(val as string, '<div><br></div>')
       val = (this.replaceLinefeeds) ? val.replace(/\n/g, '<br/>') : val
 
-      const bg = (this.background != null && this.background !== constants.NONE)
+      const bg = util.isValidColor(this.background)
         ? this.background
         : null
 
-      const bd = (this.borderColor != null && this.borderColor !== constants.NONE)
+      const bd = util.isValidColor(this.borderColor)
         ? this.borderColor
         : null
 
@@ -644,12 +640,7 @@ export class Text extends Shape {
           css += `border:1px solid ${bd}; `
         }
 
-        // Wrapper DIV for background, zoom needed for inline in quirks
-        // and to measure wrapped font sizes in all browsers
-        // FIXME: Background size in quirks mode for wrapped text
-        const lh = constants.ABSOLUTE_LINE_HEIGHT
-          ? `${this.fontSize * constants.LINE_HEIGHT}px`
-          : constants.LINE_HEIGHT
+        const lh = `${this.fontSize * 1.2}px`
 
         val = `<div
         style="zoom:1; ${css} display: inline-block; _display:inline;
@@ -679,10 +670,7 @@ export class Text extends Shape {
   updateFont(elem: HTMLElement) {
     const style = elem.style
 
-    style.lineHeight = constants.ABSOLUTE_LINE_HEIGHT
-      ? `${this.fontSize * constants.LINE_HEIGHT}px`
-      : `${constants.LINE_HEIGHT}`
-
+    style.lineHeight = `${this.fontSize * 1.2}px`
     style.fontSize = `${this.fontSize}px`
     style.fontFamily = this.fontFamily
     style.verticalAlign = 'top'
@@ -724,13 +712,7 @@ export class Text extends Shape {
     // go wrong if the cell is outside of the viewable area
     if (this.clipped) {
       style.overflow = 'hidden'
-
-      if (!detector.IS_QUIRKS) {
-        style.maxHeight = `${h}px`
-        style.maxWidth = `${w}px`
-      } else {
-        style.width = `${w}px`
-      }
+      style.width = `${w}px`
     } else if (this.overflow === 'fill') {
       style.width = `${w + 1}px`
       style.height = `${h + 1}px`
@@ -742,7 +724,7 @@ export class Text extends Shape {
     }
 
     if (this.wrap && w > 0) {
-      style.wordWrap = constants.WORD_WRAP
+      style.wordWrap = 'normal'
       style.whiteSpace = 'normal'
       style.width = `${w}px`
 

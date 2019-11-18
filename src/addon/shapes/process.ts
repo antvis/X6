@@ -47,7 +47,7 @@ export class ProcessShape extends RectangleShape {
     return rect
   }
 
-  paintForeground(
+  drawForeground(
     c: SvgCanvas2D,
     x: number,
     y: number,
@@ -63,7 +63,7 @@ export class ProcessShape extends RectangleShape {
     c.lineTo(x + w - inset, y + h)
     c.stroke()
 
-    super.paintForeground(c, x, y, w, h)
+    super.drawForeground(c, x, y, w, h)
   }
 }
 

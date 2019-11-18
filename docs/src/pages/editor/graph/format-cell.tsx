@@ -188,9 +188,11 @@ export class FormatCell
 
   renderStyleTab() {
     const hasStroke = (
-      (this.state.strokeWidth != null &&
-        this.state.strokeWidth > 0) ||
-      !util.isNoneColor(this.state.strokeColor)
+      (
+        this.state.strokeWidth != null &&
+        this.state.strokeWidth > 0
+      ) ||
+      util.isValidColor(this.state.strokeColor)
     )
 
     return (
@@ -200,12 +202,12 @@ export class FormatCell
             <Checkbox
               style={{ width: 136, fontWeight: 600 }}
               onChange={this.onFillCheckedChange}
-              checked={!util.isNoneColor(this.state.fill)}
+              checked={util.isValidColor(this.state.fill)}
             >
               Fill
             </Checkbox>
             {
-              !util.isNoneColor(this.state.fill) && (
+              util.isValidColor(this.state.fill) && (
                 <ColorPicker
                   value={this.state.fill!}
                   onChange={this.onFillChange}
@@ -218,12 +220,12 @@ export class FormatCell
             <Checkbox
               style={{ width: 136, fontWeight: 600 }}
               onChange={this.onGradientCheckedChange}
-              checked={!util.isNoneColor(this.state.gradient)}
+              checked={util.isValidColor(this.state.gradient)}
             >
               Gradient
             </Checkbox>
             {
-              !util.isNoneColor(this.state.gradient) && (
+              util.isValidColor(this.state.gradient) && (
                 <ColorPicker
                   onChange={this.onGradientChange}
                   value={this.state.gradient!}
@@ -759,12 +761,12 @@ export class FormatCell
             <Checkbox
               style={{ width: 144, fontWeight: 600 }}
               onChange={this.onFontColorCheckedChange}
-              checked={!util.isNoneColor(this.state.fontColor)}
+              checked={util.isValidColor(this.state.fontColor)}
             >
               Font Color
             </Checkbox>
             {
-              !util.isNoneColor(this.state.fontColor) && (
+              util.isValidColor(this.state.fontColor) && (
                 <ColorPicker
                   value={this.state.fontColor!}
                   onChange={this.onFontColorChange}
@@ -777,12 +779,12 @@ export class FormatCell
             <Checkbox
               style={{ width: 144, fontWeight: 600 }}
               onChange={this.onLabelBorderColorCheckedChange}
-              checked={!util.isNoneColor(this.state.labelBorderColor)}
+              checked={util.isValidColor(this.state.labelBorderColor)}
             >
               Border Color
             </Checkbox>
             {
-              !util.isNoneColor(this.state.labelBorderColor) && (
+              util.isValidColor(this.state.labelBorderColor) && (
                 <ColorPicker
                   value={this.state.labelBorderColor!}
                   onChange={this.onLabelBorderColorChange}
@@ -795,12 +797,12 @@ export class FormatCell
             <Checkbox
               style={{ width: 144, fontWeight: 600 }}
               onChange={this.onLabelBgColorCheckedChange}
-              checked={!util.isNoneColor(this.state.labelBackgroundColor)}
+              checked={util.isValidColor(this.state.labelBackgroundColor)}
             >
               Background Color
             </Checkbox>
             {
-              !util.isNoneColor(this.state.labelBackgroundColor) && (
+              util.isValidColor(this.state.labelBackgroundColor) && (
                 <ColorPicker
                   value={this.state.labelBackgroundColor!}
                   onChange={this.onLabelBgColorChange}

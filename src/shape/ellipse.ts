@@ -5,18 +5,18 @@ import { SvgCanvas2D } from '../canvas'
 export class EllipseShape extends Shape {
   constructor(
     bounds: Rectangle,
-    fill: string,
-    stroke: string,
+    fillColor: string,
+    strokeColor: string,
     strokewidth: number = 1,
   ) {
     super()
     this.bounds = bounds
-    this.fill = fill
-    this.stroke = stroke
+    this.fillColor = fillColor
+    this.strokeColor = strokeColor
     this.strokeWidth = strokewidth
   }
 
-  paintNodeShape(
+  drawNodeShape(
     c: SvgCanvas2D,
     x: number,
     y: number,

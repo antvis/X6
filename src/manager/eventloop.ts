@@ -89,9 +89,9 @@ export class EventLoop extends BaseManager {
       ) {
         const ignoreFn = (state: State) => (
           state.shape == null ||
-          state.shape.paintBackground !== RectangleShape.prototype.paintBackground ||
+          state.shape.drawBackground !== RectangleShape.prototype.drawBackground ||
           state.style.pointerEvents !== false ||
-          !util.isNoneColor(state.shape.fill)
+          util.isValidColor(state.shape.fillColor)
         )
 
         e.state = this.graph.view.getState(
