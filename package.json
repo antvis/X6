@@ -23,7 +23,7 @@
   ],
   "scripts": {
     "clean": "rimraf ./lib",
-    "lint": "tslint -c tslint.json -p tsconfig.lint.json --fix",
+    "lint": "tslint -c tslint.json -p tsconfig.json --fix",
     "less": "lessc ./src/index.less ./lib/index.css",
     "build:images": "node ./scripts/make-images.js",
     "build:version": "node ./scripts/make-version.js",
