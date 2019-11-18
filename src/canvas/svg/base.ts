@@ -1,9 +1,9 @@
 import * as util from '../../util'
-import { Canvas2D } from '../canvas2d'
 import { Direction } from '../../types'
+import { Canvas2D } from '../canvas2d'
 import { SvgCanvas2D } from './index'
 
-export class SvgCanvas2DBase extends Canvas2D {
+export abstract class SvgCanvas2DBase extends Canvas2D {
   originalRoot?: SVGElement
 
   /**
