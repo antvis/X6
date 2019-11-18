@@ -42,7 +42,7 @@
   },
   "lint-staged": {
     "src/**/*.ts": [
-      "tslint -c tslint.json -p ./tsconfig.json --fix"
+      "tslint -c tslint.json -p ./tsconfig.lint.json --fix"
     ]
   },
   "author": {
