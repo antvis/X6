@@ -1,14 +1,15 @@
-import * as util from '../util'
+import { split } from '../util/string'
+import { invoke } from '../util/function'
 
 export class Events {
   private eventListeners: { [name: string]: any[] } = {}
 
   on(eventName: string, handler: Events.Handler, context?: any) {
-    if (!handler) {
+    if (handler == null) {
       return this
     }
 
-    util.split(eventName).forEach((name) => {
+    split(eventName).forEach((name) => {
       if (!this.eventListeners[name]) {
         this.eventListeners[name] = []
       }
@@ -28,7 +29,11 @@ export class Events {
     return this.on(eventName, cb, this)
   }
 
-  off(eventName: string | null, handler: Events.Handler | null, context?: any) {
+  off(
+    eventName?: string | null,
+    handler?: Events.Handler | null,
+    context?: any,
+  ) {
     // removing *all* events.
     if (!(eventName || handler || context)) {
       this.eventListeners = {}
@@ -37,7 +42,7 @@ export class Events {
 
     const eventListeners = this.eventListeners
     const eventNames = eventName
-      ? util.split(eventName)
+      ? split(eventName)
       : Object.keys(eventListeners)
 
     eventNames.forEach((name) => {
@@ -68,7 +73,7 @@ export class Events {
   trigger(eventName: string, ...args: any[]) {
     let pass = true
     const any = this.eventListeners['*']
-    util.split(eventName).forEach((name) => {
+    split(eventName).forEach((name) => {
       let callbacks
 
       if (name !== '*') {
@@ -98,7 +103,7 @@ export namespace Events {
     let pass = true
 
     for (let i = 0, l = list.length; i < l; i += 2) {
-      pass = (util.invoke(list[i], args, list[i + 1]) !== false) && pass
+      pass = (invoke(list[i], args, list[i + 1]) !== false) && pass
     }
 
     return pass
