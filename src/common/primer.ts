@@ -1,4 +1,7 @@
-import { IDisposable, Events, DomEvent, detector } from '../common'
+import { detector } from './detector'
+import { Events } from './events'
+import { DomEvent } from './dom-event'
+import { IDisposable } from './disposable'
 
 export class Primer extends Events implements IDisposable {
   constructor() {
