@@ -657,7 +657,7 @@ export class ViewportManager extends BaseManager {
    * width and height of the returned <Rect>, respectively.
    */
   getBorderSizes() {
-    const css = util.getCurrentStyle(this.container)
+    const css = util.getComputedStyle(this.container)
     return new Rectangle(
       util.parseCssNumber(css.paddingLeft) +
       (css.borderLeftStyle !== 'none' ? util.parseCssNumber(css.borderLeftWidth) : 0),

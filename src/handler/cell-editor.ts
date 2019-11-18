@@ -172,7 +172,7 @@ export class CellEditor extends Disposable {
       const drawPane = this.graph.view.getDrawPane() as SVGElement
       const root = drawPane.ownerSVGElement
       if (root != null) {
-        absoluteRoot = util.getCurrentStyle(root).position === 'absolute'
+        absoluteRoot = util.getComputedStyle(root).position === 'absolute'
       }
     }
 
@@ -539,7 +539,7 @@ export class CellEditor extends Disposable {
   }
 
   getBackgroundColor(state: State) {
-    return null
+    return ''
   }
 
   startEditing(cell: Cell, trigger?: Event) {
@@ -669,7 +669,7 @@ export class CellEditor extends Disposable {
   stopEditing(cancel: boolean = false) {
     if (this.editingCell != null) {
       if (this.textNode != null) {
-        this.textNode.style.visibility = null
+        this.textNode.style.visibility = ''
         this.textNode = null
       }
 

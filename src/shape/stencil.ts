@@ -453,11 +453,11 @@ export class Stencil extends Shape {
       } else if (name === 'fillcolor') {
         canvas.setFillColor(node.getAttribute('color')!)
       } else if (name === 'alpha') {
-        canvas.setAlpha(Number(node.getAttribute('alpha')))
+        canvas.setOpacity(Number(node.getAttribute('alpha')))
       } else if (name === 'fillalpha') {
-        canvas.setAlpha(Number(node.getAttribute('alpha')))
+        canvas.setOpacity(Number(node.getAttribute('alpha')))
       } else if (name === 'strokealpha') {
-        canvas.setAlpha(Number(node.getAttribute('alpha')))
+        canvas.setOpacity(Number(node.getAttribute('alpha')))
       } else if (name === 'fontcolor') {
         canvas.setFontColor(node.getAttribute('color')!)
       } else if (name === 'fontstyle') {

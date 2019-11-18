@@ -35,7 +35,7 @@ export class NoteShape extends Cylinder {
       c.setShadow(false)
 
       if (op !== 0) {
-        c.setFillAlpha(Math.abs(op))
+        c.setFillOpacity(Math.abs(op))
         c.setFillColor((op < 0) ? '#FFFFFF' : '#000000')
         c.begin()
         c.moveTo(w - s, 0)

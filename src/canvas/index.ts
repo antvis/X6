@@ -1,2 +1,2 @@
 export * from './canvas2d'
-export * from './canvas2d-svg'
+export * from './svg'

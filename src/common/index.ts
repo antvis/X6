@@ -9,4 +9,3 @@ export * from './dom-event'
 export * from './mouse-event'
 
 export * from './dictionary'
-export * from './url-converter'

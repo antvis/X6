@@ -53,7 +53,7 @@ export class CubeShape extends Cylinder {
       c.setShadow(false)
 
       if (op !== 0) {
-        c.setFillAlpha(Math.abs(op))
+        c.setFillOpacity(Math.abs(op))
         c.setFillColor((op < 0) ? '#FFFFFF' : '#000000')
         c.begin()
         c.moveTo(0, 0)
@@ -65,7 +65,7 @@ export class CubeShape extends Cylinder {
       }
 
       if (op2 !== 0) {
-        c.setFillAlpha(Math.abs(op2))
+        c.setFillOpacity(Math.abs(op2))
         c.setFillColor((op2 < 0) ? '#FFFFFF' : '#000000')
         c.begin()
         c.moveTo(0, 0)

@@ -122,15 +122,18 @@ export class ImageShape extends RectangleShape {
       const fill = this.style.imageBackgroundColor
       const stroke = this.style.imageBorderColor
 
-      elem.style.backgroundColor = fill || null
-      elem.style.borderColor = stroke || null
+      elem.style.backgroundColor = fill || ''
+      elem.style.borderColor = stroke || ''
 
       const img = document.createElement('img')
       img.setAttribute('border', '0')
       img.style.position = 'absolute'
       img.src = this.image
 
-      let filter = this.opacity < 100 ? `alpha(opacity=${this.opacity})` : ''
+      let filter = this.opacity < 1
+        ? `alpha(opacity=${this.opacity * 100})`
+        : ''
+
       elem.style.filter = filter
 
       if (this.flipH && this.flipV) {

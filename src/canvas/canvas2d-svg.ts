@@ -2,13 +2,14 @@
 
 import * as util from '../util'
 import { detector, constants } from '../common'
-import { Canvas2D } from './canvas2d'
 import { Rectangle, FontStyle } from '../struct'
 import { Align, VAlign, Direction } from '../types'
-
-const NS_SVG = 'http://www.w3.org/2000/svg'
-const NS_XHTML = 'http://www.w3.org/1999/xhtml'
-const NS_XLINK = 'http://www.w3.org/1999/xlink'
+import { Canvas2D } from './canvas2d'
+import {
+  applyFontStyle,
+  createGradientId,
+  shouldAppendToDocument,
+} from './util'
 
 export class SvgCanvas2D extends Canvas2D {
   /**
@@ -71,14 +72,6 @@ export class SvgCanvas2D extends Canvas2D {
   imageOffset: number = 0
 
   /**
-   * Specifies if a transparent rectangle should be added on top of images
-   * to absorb all pointer events.
-   *
-   * This is only needed in Firefox to disable control-clicks on images.
-   */
-  blockImagePointerEvents = false
-
-  /**
    * Adds transparent paths for strokes.
    */
   strokeTolerance: number = 0
@@ -101,27 +94,20 @@ export class SvgCanvas2D extends Canvas2D {
 
   /**
    * Value for active pointer events.
-   * Default `'all'`
+   *
+   * Default `all`
    */
   pointerEventsValue: string = 'all'
 
   constructor(root: SVGElement, styleEnabled: boolean = false) {
     super()
-
     this.root = root
     this.gradients = {}
     this.styleEnabled = styleEnabled
 
-    let svg = null
-
-    // root not in current document
-    if (root.ownerDocument !== document) {
-      let node = root
-      while (node != null && node.nodeName.toLowerCase() !== 'svg') {
-        node = node.parentNode as SVGElement
-      }
-      svg = node
-    }
+    const svg = root.ownerDocument === document
+      ? null
+      : util.getOwnerSVG(root)
 
     if (svg != null) {
       // try to get defs in current svg
@@ -155,13 +141,14 @@ export class SvgCanvas2D extends Canvas2D {
   private createStylesheet() {
     const style = this.createElement('style')
     style.setAttribute('type', 'text/css')
-    util.fillElementWithText(
+    util.appendText(
       style,
       'svg {' +
-      `font-family: ${constants.DEFAULT_FONTFAMILY}; ` +
-      `font-size: ${constants.DEFAULT_FONTSIZE}; ` +
-      'fill: none; ' +
-      'stroke-miterlimit: 10;}',
+      '  fill: none; ' +
+      '  font-size: 12; ' +
+      '  font-family: Arial,Helvetica; ' +
+      '  stroke-miterlimit: 10;' +
+      '}',
     )
 
     return style
@@ -173,7 +160,7 @@ export class SvgCanvas2D extends Canvas2D {
   ) {
     const doc = this.root.ownerDocument!
     if (doc.createElementNS != null) {
-      return doc.createElementNS(namespace || NS_SVG, tagName) as T
+      return doc.createElementNS(namespace || SvgCanvas2D.NS_SVG, tagName) as T
     }
 
     const elem = doc.createElement(tagName)
@@ -192,30 +179,19 @@ export class SvgCanvas2D extends Canvas2D {
     h: number,
   ) {
     if (this.foAltText != null) {
-      const s = this.state
+      const state = this.state
       const alt = this.createElement('text')
       util.setAttributes(alt, {
         x: Math.round(w / 2),
-        y: Math.round((h + s.fontSize) / 2),
-        fill: s.fontColor || 'black',
+        y: Math.round((h + state.fontSize) / 2),
+        fill: state.fontColor || '#000000',
         'text-anchor': 'middle',
-        'font-size': `${s.fontSize}px`,
-        'font-family': s.fontFamily,
+        'font-size': `${state.fontSize}px`,
+        'font-family': state.fontFamily,
       })
 
-      if (FontStyle.isBold(s.fontStyle)) {
-        alt.setAttribute('font-weight', 'bold')
-      }
-
-      if (FontStyle.isItalic(s.fontStyle)) {
-        alt.setAttribute('font-style', 'italic')
-      }
-
-      if (FontStyle.isUnderlined(s.fontStyle)) {
-        alt.setAttribute('text-decoration', 'underline')
-      }
-
-      util.fillElementWithText(alt, this.foAltText)
+      applyFontStyle(alt, state.fontStyle)
+      util.appendText(alt, this.foAltText)
 
       return alt
     }
@@ -223,56 +199,11 @@ export class SvgCanvas2D extends Canvas2D {
     return null
   }
 
-  // #region gradient
-
-  private createGradientId(
-    startColor: string,
-    stopColor: string,
-    alpha1: number,
-    alpha2: number,
-    direction: Direction,
-  ) {
-    let a = startColor
-    let b = stopColor
-
-    if (a.charAt(0) === '#') {
-      a = a.substring(1)
-    }
-
-    if (b.charAt(0) === '#') {
-      b = b.substring(1)
-    }
-
-    a = `${a.toLowerCase()}@${alpha1}`
-    b = `${b.toLowerCase()}@${alpha2}`
-
-    // Wrong gradient directions possible?
-    let dir = null
-
-    if (direction == null || direction === 'south') {
-      dir = 's'
-    } else if (direction === 'east') {
-      dir = 'e'
-    } else {
-      const tmp = startColor
-      a = stopColor
-      b = tmp
-
-      if (direction === 'north') {
-        dir = 's'
-      } else if (direction === 'west') {
-        dir = 'e'
-      }
-    }
-
-    return `gradient-${a}-${b}-${dir}`
-  }
-
   private createSvgGradient(
     startColor: string,
     stopColor: string,
-    alpha1: number,
-    alpha2: number,
+    opacity1: number,
+    opacity2: number,
     direction: Direction,
   ): SVGGradientElement {
     const gradient = this.createElement('linearGradient') as SVGGradientElement
@@ -292,15 +223,15 @@ export class SvgCanvas2D extends Canvas2D {
     }
 
     const start = this.createElement('stop')
-    const startStyle = (alpha1 < 1) ? ` stop-opacity: ${alpha1};` : ''
+    const startStyle = (opacity1 < 1) ? `stop-opacity: ${opacity1};` : ''
     start.setAttribute('offset', '0%')
-    start.setAttribute('style', `stop-color: ${startColor};${startStyle}`)
+    start.setAttribute('style', `stop-color: ${startColor}; ${startStyle}`)
     gradient.appendChild(start)
 
     const stop = this.createElement('stop')
-    const stopStyle = (alpha2 < 1) ? ` stop-opacity: ${alpha2};` : ''
+    const stopStyle = (opacity2 < 1) ? `stop-opacity: ${opacity2};` : ''
     stop.setAttribute('offset', '100%')
-    stop.setAttribute('style', `stop-color: ${stopColor};${stopStyle}`)
+    stop.setAttribute('style', `stop-color: ${stopColor}; ${stopStyle}`)
     gradient.appendChild(stop)
 
     return gradient
@@ -309,12 +240,12 @@ export class SvgCanvas2D extends Canvas2D {
   getSvgGradientId(
     startColor: string,
     stopColor: string,
-    alpha1: number,
-    alpha2: number,
+    opacity1: number,
+    opacity2: number,
     direction: Direction,
   ): string {
-    const id = this.createGradientId(
-      startColor, stopColor, alpha1, alpha2, direction,
+    const id = createGradientId(
+      startColor, stopColor, opacity1, opacity2, direction,
     )
 
     let gradient = this.gradients[id]
@@ -339,7 +270,7 @@ export class SvgCanvas2D extends Canvas2D {
 
       if (gradient == null) {
         gradient = this.createSvgGradient(
-          startColor, stopColor, alpha1, alpha2, direction,
+          startColor, stopColor, opacity1, opacity2, direction,
         )
         gradient.setAttribute('id', tmpId)
 
@@ -355,8 +286,6 @@ export class SvgCanvas2D extends Canvas2D {
 
     return gradient.getAttribute('id')!
   }
-
-  // #endregion
 
   // #region addNode
 
@@ -377,9 +306,9 @@ export class SvgCanvas2D extends Canvas2D {
       return
     }
 
-    const s = this.state
     const elem = this.elem
-    const nodeName = util.getNodeName(elem)
+    const state = this.state
+    const nodeName = elem.nodeName.toLowerCase()
 
     if (nodeName === 'path') {
       if (this.path != null && this.path.length > 0) {
@@ -390,34 +319,25 @@ export class SvgCanvas2D extends Canvas2D {
     }
 
     // fill
-    if (filled && s.fillColor != null) {
+    if (filled && state.fillColor != null) {
       this.updateFill()
     } else if (!this.styleEnabled) {
-      // see: https://bugzilla.mozilla.org/show_bug.cgi?id=814952
-      if (nodeName === 'ellipse' && detector.IS_FIREFOX) {
-        elem.setAttribute('fill', 'transparent')
-      } else {
-        elem.setAttribute('fill', 'none')
-      }
-
-      // Sets the actual filled state for stroke tolerance
-      filled = false
+      elem.setAttribute('fill', 'none')
+      filled = false // Sets the actual filled state for stroke tolerance
     }
 
     // stroke
-    if (stroked && s.strokeColor != null) {
+    if (stroked && state.strokeColor != null) {
       this.updateStroke()
     } else if (!this.styleEnabled) {
-      // if `styleEnabled` is `true`, we set elem style by `setAttribute`
-      // may overwrite the style defined in stylesheet.
       elem.setAttribute('stroke', 'none')
     }
 
-    if (s.transform != null && s.transform.length > 0) {
-      elem.setAttribute('transform', s.transform)
+    if (state.transform != null && state.transform.length > 0) {
+      elem.setAttribute('transform', state.transform)
     }
 
-    if (s.shadow && s.shadowColor) {
+    if (state.shadow && state.shadowColor) {
       this.root.appendChild(this.createShadow(elem))
     }
 
@@ -434,20 +354,8 @@ export class SvgCanvas2D extends Canvas2D {
       elem.setAttribute('pointer-events', 'none')
     }
 
-    // 不要将那些不可见并没有绑定事件的元素添加到文档流中
-    if (
-      (
-        nodeName !== 'rect' &&
-        nodeName !== 'path' &&
-        nodeName !== 'ellipse'
-      ) ||
-      (
-        elem.getAttribute('fill') !== 'none' &&
-        elem.getAttribute('fill') !== 'transparent'
-      ) ||
-      elem.getAttribute('stroke') !== 'none' ||
-      elem.getAttribute('pointer-events') !== 'none'
-    ) {
+    // Do not append invisible element to document.
+    if (shouldAppendToDocument(elem)) {
       this.root.appendChild(elem)
     }
 
@@ -455,25 +363,28 @@ export class SvgCanvas2D extends Canvas2D {
   }
 
   private updateFill() {
-    const s = this.state
     const elem = this.elem!
+    const state = this.state
 
-    if (s.alpha < 1 || s.fillAlpha < 1) {
-      elem.setAttribute('fill-opacity', `${s.alpha * s.fillAlpha}`)
+    if (state.opacity < 1 || state.fillOpacity < 1) {
+      elem.setAttribute(
+        'fill-opacity',
+        `${state.opacity * state.fillOpacity}`,
+      )
     }
 
-    if (s.fillColor != null) {
-      if (s.gradientColor != null) {
+    if (state.fillColor != null) {
+      if (state.gradientColor != null) {
         const id = this.getSvgGradientId(
-          s.fillColor,
-          s.gradientColor,
-          s.gradientFillAlpha,
-          s.gradientAlpha,
-          s.gradientDirection,
+          state.fillColor,
+          state.gradientColor,
+          state.gradientFillOpacity,
+          state.gradientOpacity,
+          state.gradientDirection,
         )
         util.setAttributeWithAnchor(elem, 'fill', id)
       } else {
-        elem.setAttribute('fill', s.fillColor)
+        elem.setAttribute('fill', state.fillColor)
       }
     }
   }
@@ -486,13 +397,13 @@ export class SvgCanvas2D extends Canvas2D {
   }
 
   private updateStroke() {
-    const s = this.state
     const elem = this.elem!
+    const state = this.state
 
-    elem.setAttribute('stroke', s.strokeColor!)
+    elem.setAttribute('stroke', state.strokeColor!)
 
-    if (s.alpha < 1 || s.strokeAlpha < 1) {
-      elem.setAttribute('stroke-opacity', `${s.alpha * s.strokeAlpha}`)
+    if (state.opacity < 1 || state.strokeOpacity < 1) {
+      elem.setAttribute('stroke-opacity', `${state.opacity * state.strokeOpacity}`)
     }
 
     const sw = this.getStrokeWidth()
@@ -500,32 +411,35 @@ export class SvgCanvas2D extends Canvas2D {
       elem.setAttribute('stroke-width', `${sw}`)
     }
 
-    if (util.getNodeName(elem) === 'path') {
-      this.updatePathStrokeAttributes()
+    if (elem.nodeName.toLowerCase() === 'path') {
+      this.updatePathStroke()
     }
 
-    if (s.dashed) {
+    if (state.dashed) {
       elem.setAttribute('stroke-dasharray', this.createDashPattern(
-        (s.fixDash ? 1 : s.strokeWidth) * s.scale),
+        (state.fixDash ? 1 : state.strokeWidth) * state.scale),
       )
     }
   }
 
-  private updatePathStrokeAttributes() {
-    const s = this.state
+  private updatePathStroke() {
     const elem = this.elem!
+    const state = this.state
 
-    if (s.lineJoin != null && s.lineJoin !== 'miter') {
-      elem.setAttribute('stroke-linejoin', s.lineJoin)
+    if (state.lineJoin != null && state.lineJoin !== 'miter') {
+      elem.setAttribute('stroke-linejoin', state.lineJoin)
     }
 
-    if (s.lineCap != null && s.lineCap !== 'butt') {
-      elem.setAttribute('stroke-linecap', s.lineCap)
+    if (state.lineCap != null && state.lineCap !== 'butt') {
+      elem.setAttribute('stroke-linecap', state.lineCap)
     }
 
     // Miterlimit 10 is default in our document
-    if (s.miterLimit != null && (!this.styleEnabled || s.miterLimit !== 10)) {
-      elem.setAttribute('stroke-miterlimit', `${s.miterLimit}`)
+    if (
+      state.miterLimit != null &&
+      (!this.styleEnabled || state.miterLimit !== 10)
+    ) {
+      elem.setAttribute('stroke-miterlimit', `${state.miterLimit}`)
     }
   }
 
@@ -545,30 +459,26 @@ export class SvgCanvas2D extends Canvas2D {
   }
 
   private createShadow(elem: SVGElement) {
-    const s = this.state
+    const state = this.state
     const shadow = elem.cloneNode(true) as SVGElement
 
-    // Firefox uses transparent for no fill in ellipses
-    if (
-      shadow.getAttribute('fill') !== 'none' &&
-      (!detector.IS_FIREFOX || shadow.getAttribute('fill') !== 'transparent')
-    ) {
-      shadow.setAttribute('fill', s.shadowColor!)
+    if (shadow.getAttribute('fill') !== 'none') {
+      shadow.setAttribute('fill', state.shadowColor!)
     }
 
     if (shadow.getAttribute('stroke') !== 'none') {
-      shadow.setAttribute('stroke', s.shadowColor!)
+      shadow.setAttribute('stroke', state.shadowColor!)
     }
 
-    const tx = this.format(s.shadowDx * s.scale)
-    const ty = this.format(s.shadowDy * s.scale)
+    const tx = this.format(state.shadowOffsetX * state.scale)
+    const ty = this.format(state.shadowOffsetY * state.scale)
 
     shadow.setAttribute(
       'transform',
-      `translate(${tx},${ty})${s.transform || ''}`,
+      `translate(${tx},${ty})${state.transform || ''}`,
     )
 
-    shadow.setAttribute('opacity', `${s.shadowAlpha}`)
+    shadow.setAttribute('opacity', `${state.shadowOpacity}`)
 
     return shadow
   }
@@ -580,28 +490,18 @@ export class SvgCanvas2D extends Canvas2D {
       this.strokeTolerance
     )
 
+    tol.setAttribute('fill', 'none')
+    tol.setAttribute('stroke', 'rgba(255,255,255,0)')
     tol.setAttribute('stroke-width', `${sw}`)
     tol.setAttribute('pointer-events', 'stroke')
-    tol.setAttribute('fill', 'none')
     tol.setAttribute('visibility', 'hidden')
     tol.removeAttribute('stroke-dasharray')
-
-    // Workaround for Opera ignoring the visiblity attribute above while
-    // other browsers need a stroke color to perform the hit-detection but
-    // do not ignore the visibility attribute. Side-effect is that Opera's
-    // hit detection for horizontal/vertical edges seems to ignore the tol.
-    tol.setAttribute('stroke', detector.IS_OT ? 'none' : 'rgba(255,255,255,0)')
 
     return tol
   }
 
   // #endregion
 
-  /**
-   * Sets the rotation of the canvas.
-   *
-   * Note that rotation cannot be concatenated.
-   */
   rotate(
     deg: number,
     flipH: boolean,
@@ -610,14 +510,14 @@ export class SvgCanvas2D extends Canvas2D {
     cy: number,
   ) {
     if (deg !== 0 || flipH || flipV) {
-      const s = this.state
+      const state = this.state
 
-      cx += s.tx
-      cy += s.ty
-      cx *= s.scale
-      cy *= s.scale
+      cx += state.tx
+      cy += state.ty
+      cx *= state.scale
+      cy *= state.scale
 
-      s.transform = s.transform || ''
+      state.transform = state.transform || ''
 
       if (flipH && flipV) {
         deg += 180
@@ -627,7 +527,7 @@ export class SvgCanvas2D extends Canvas2D {
         const ty = flipV ? cy : 0
         const sy = flipV ? -1 : 1
 
-        s.transform += (
+        state.transform += (
           `translate(${this.format(tx)},${this.format(ty)})` +
           `scale(${this.format(sx)},${this.format(sy)})` +
           `translate(${this.format(-tx)},${this.format(-ty)})`
@@ -639,12 +539,13 @@ export class SvgCanvas2D extends Canvas2D {
       }
 
       if (deg !== 0) {
-        s.transform += `rotate(${this.format(deg)},${this.format(cx)},${this.format(cy)})`
+        state.transform +=
+          `rotate(${this.format(deg)},${this.format(cx)},${this.format(cy)})`
       }
 
-      s.rotation = s.rotation + deg
-      s.rotationCx = cx
-      s.rotationCy = cy
+      state.rotation = state.rotation + deg
+      state.rotationCenterX = cx
+      state.rotationCenterY = cy
     }
   }
 
@@ -654,13 +555,13 @@ export class SvgCanvas2D extends Canvas2D {
   }
 
   rect(x: number, y: number, w: number, h: number) {
-    const s = this.state
+    const state = this.state
     this.elem = this.createElement('rect')
     util.setAttributes(this.elem, {
-      x: this.format((x + s.tx) * s.scale),
-      y: this.format((y + s.ty) * s.scale),
-      width: this.format(w * s.scale),
-      height: this.format(h * s.scale),
+      x: this.format((x + state.tx) * state.scale),
+      y: this.format((y + state.ty) * state.scale),
+      width: this.format(w * state.scale),
+      height: this.format(h * state.scale),
     })
   }
 
@@ -681,13 +582,13 @@ export class SvgCanvas2D extends Canvas2D {
   }
 
   ellipse(x: number, y: number, w: number, h: number) {
-    const s = this.state
+    const state = this.state
     this.elem = this.createElement('ellipse')
     util.setAttributes(this.elem, {
-      cx: this.format((x + w / 2 + s.tx) * s.scale),
-      cy: this.format((y + h / 2 + s.ty) * s.scale),
-      rx: w / 2 * s.scale,
-      ry: h / 2 * s.scale,
+      cx: this.format((x + w / 2 + state.tx) * state.scale),
+      cy: this.format((y + h / 2 + state.ty) * state.scale),
+      rx: w / 2 * state.scale,
+      ry: h / 2 * state.scale,
     })
   }
 
@@ -697,16 +598,10 @@ export class SvgCanvas2D extends Canvas2D {
     } else {
       this.originalRoot = this.root
       const a = this.createElement('a')
-      if (
-        a.setAttributeNS == null ||
-        (
-          this.root.ownerDocument !== document &&
-          (document as any).documentMode == null
-        )
-      ) {
+      if (a.setAttributeNS == null) {
         a.setAttribute('xlink:href', href)
       } else {
-        a.setAttributeNS(NS_XLINK, 'xlink:href', href)
+        a.setAttributeNS(SvgCanvas2D.NS_XLINK, 'xlink:href', href)
       }
 
       this.root.appendChild(a)
@@ -724,32 +619,32 @@ export class SvgCanvas2D extends Canvas2D {
     flipH: boolean = false,
     flipV: boolean = false,
   ) {
-    const s = this.state
+    const state = this.state
 
-    src = this.urlConverter.toAbsolute(src)
-    x += s.tx
-    y += s.ty
+    src = util.toAbsoluteUrl(src)
+    x += state.tx
+    y += state.ty
 
     const img = this.createElement('image')
     util.setAttributes(img, {
-      x: this.format(x * s.scale) + this.imageOffset,
-      y: this.format(y * s.scale) + this.imageOffset,
-      width: this.format(w * s.scale),
-      height: this.format(h * s.scale),
+      x: this.format(x * state.scale) + this.imageOffset,
+      y: this.format(y * state.scale) + this.imageOffset,
+      width: this.format(w * state.scale),
+      height: this.format(h * state.scale),
     })
 
     if (img.setAttributeNS == null) {
       img.setAttribute('xlink:href', src)
     } else {
-      img.setAttributeNS(NS_XLINK, 'xlink:href', src)
+      img.setAttributeNS(SvgCanvas2D.NS_XLINK, 'xlink:href', src)
     }
 
     if (!aspect) {
       img.setAttribute('preserveAspectRatio', 'none')
     }
 
-    if (s.alpha < 1 || s.fillAlpha < 1) {
-      img.setAttribute('opacity', `${s.alpha * s.fillAlpha}`)
+    if (state.opacity < 1 || state.fillOpacity < 1) {
+      img.setAttribute('opacity', `${state.opacity * state.fillOpacity}`)
     }
 
     let transform = this.state.transform || ''
@@ -771,7 +666,7 @@ export class SvgCanvas2D extends Canvas2D {
 
       // adds image tansformation to existing transform
       transform += `scale(${sx},${sy})`
-      transform += `translate(${tx * s.scale},${ty * s.scale})`
+      transform += `translate(${tx * state.scale},${ty * state.scale})`
     }
 
     if (transform.length > 0) {
@@ -783,31 +678,12 @@ export class SvgCanvas2D extends Canvas2D {
     }
 
     this.root.appendChild(img)
-
-    // Disables control-clicks on images in Firefox to open in new tab
-    // by putting a rect in the foreground that absorbs all events and
-    // disabling all pointer-events on the original image tag.
-    if (this.blockImagePointerEvents) {
-      img.setAttribute('style', 'pointer-events: none;')
-      const rect = this.createElement('rect')
-      util.setAttributes(rect, {
-        visibility: 'hidden',
-        'pointer-events': 'fill',
-        x: this.format(x * s.scale),
-        y: this.format(y * s.scale),
-        width: this.format(w * s.scale),
-        height: this.format(h * s.scale),
-      })
-      this.root.appendChild(rect)
-    }
   }
 
   // #region Draw text
 
   /**
    * Updates existing DOM nodes for text rendering.
-   *
-   * TODO: Merge common parts with text function below.
    */
   updateText(
     x: number,
@@ -831,7 +707,7 @@ export class SvgCanvas2D extends Canvas2D {
       /**
        * <g style="cursor: move;">
        *   <g transform="translate(1061,297)scale(0.5)">
-       *     <foreignObject style="overflow:visible;" pointer-events="all" width="41" height="12">
+       *     <foreignObject ...>
        *       <div style="...">
        *         <div style="...">
        *           Hello
@@ -962,8 +838,8 @@ export class SvgCanvas2D extends Canvas2D {
           (x + w / 2) * s.scale,
           (y + h / 2) * s.scale,
           s.rotation,
-          s.rotationCx,
-          s.rotationCy,
+          s.rotationCenterX,
+          s.rotationCenterY,
         )
         x = pt.x - w * s.scale / 2
         y = pt.y - h * s.scale / 2
@@ -1076,8 +952,8 @@ export class SvgCanvas2D extends Canvas2D {
     // fix rendering order in Chrome
     const group = this.createElement('g')
 
-    if (s.alpha < 1) {
-      group.setAttribute('opacity', `${s.alpha}`)
+    if (s.opacity < 1) {
+      group.setAttribute('opacity', `${s.opacity}`)
     }
 
     const fo = this.createElement('foreignObject') as SVGForeignObjectElement
@@ -1286,8 +1162,8 @@ export class SvgCanvas2D extends Canvas2D {
       h = oh
     }
 
-    if (s.alpha < 1) {
-      group.setAttribute('opacity', `${s.alpha}`)
+    if (s.opacity < 1) {
+      group.setAttribute('opacity', `${s.opacity}`)
     }
 
     let dx = 0
@@ -1322,8 +1198,8 @@ export class SvgCanvas2D extends Canvas2D {
         (x + w / 2) * s.scale,
         (y + h / 2) * s.scale,
         s.rotation,
-        s.rotationCx,
-        s.rotationCy,
+        s.rotationCenterX,
+        s.rotationCenterY,
       )
       x = pt.x - w * s.scale / 2
       y = pt.y - h * s.scale / 2
@@ -1443,8 +1319,8 @@ export class SvgCanvas2D extends Canvas2D {
       node.setAttribute('transform', tr)
     }
 
-    if (s.alpha < 1) {
-      node.setAttribute('opacity', `${s.alpha}`)
+    if (s.opacity < 1) {
+      node.setAttribute('opacity', `${s.opacity}`)
     }
 
     const lines = str.split('\n')
@@ -1482,7 +1358,7 @@ export class SvgCanvas2D extends Canvas2D {
           x: this.format(x * s.scale) + this.textOffset,
           y: this.format(cy * s.scale) + this.textOffset,
         })
-        util.fillElementWithText(text, lines[i])
+        util.appendText(text, lines[i])
         node.appendChild(text)
       }
 
@@ -1818,7 +1694,7 @@ export class SvgCanvas2D extends Canvas2D {
     // Uses DOM API where available. This cannot be used in IE to avoid
     // an opening and two (!) closing TBODY tags being added to tables.
     if (!detector.IS_IE && document.createElementNS) {
-      const div = document.createElementNS(NS_XHTML, 'div')
+      const div = document.createElementNS(SvgCanvas2D.NS_XHTML, 'div')
       div.setAttribute('style', stl)
 
       if (util.isHtmlElem(val)) {
@@ -1868,4 +1744,7 @@ export class SvgCanvas2D extends Canvas2D {
 
 export namespace SvgCanvas2D {
   export type Gradients = { [key: string]: SVGGradientElement }
+  export const NS_SVG = 'http://www.w3.org/2000/svg'
+  export const NS_XHTML = 'http://www.w3.org/1999/xhtml'
+  export const NS_XLINK = 'http://www.w3.org/1999/xlink'
 }
