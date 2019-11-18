@@ -45,10 +45,10 @@ const edge = graph.addEdge({ data: 'x6', source: node1, target: node2 })
 $ yarn
 
 # build
-$ yarn run build
+$ yarn build
 
 # run test case
-$ yarn run test
+$ yarn test
 ```
 
 ## Contributing
