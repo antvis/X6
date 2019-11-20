@@ -70,8 +70,15 @@ export namespace Point {
     y: number
   }
 
-  export function clone(p: Point | PointLike) {
+  export type PointData = [number, number]
+
+  export function clone(p: Point | PointLike | PointData) {
+    if (Array.isArray(p)) {
+      return new Point(p[0], p[1])
+    }
+
     return new Point(p.x, p.y)
+
   }
 
   /**

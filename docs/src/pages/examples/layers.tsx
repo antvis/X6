@@ -40,7 +40,10 @@ export default class Layers extends React.Component {
       const hello2 = graph.addNode({
         parent: layer1,
         data: 'Hello,',
-        x: 200, y: 20, width: 80, height: 30,
+        x: 200,
+        y: 20,
+        width: 80,
+        height: 30,
         style: {
           fill: '#c0c0c0',
         },
@@ -55,43 +58,43 @@ export default class Layers extends React.Component {
         height: 30,
       })
 
-      const edge1 = graph.addEdge({
+      graph.addEdge({
         parent: layer1,
         source: hello1,
         target: world,
+        points: [{ x: 60, y: 165 }],
         style: {
           stroke: '#1890ff',
         },
       })
-      edge1.geometry!.addPoint(60, 165)
 
-      const edge4 = graph.addEdge({
+      graph.addEdge({
         parent: layer1,
         source: hello2,
         target: hello1,
+        points: [{ x: 150, y: 40 }],
         style: {
           edge: 'topToBottom',
           stroke: '#1890ff',
         },
       })
-      edge4.geometry!.addPoint(150, 40)
 
-      const edge2 = graph.addEdge({
+      graph.addEdge({
         parent: layer0,
         source: hello2,
         target: world,
+        points: [{ x: 240, y: 165 }],
       })
-      edge2.geometry!.addPoint(240, 165)
 
-      const edge3 = graph.addEdge({
+      graph.addEdge({
         parent: layer0,
         source: hello1,
         target: hello2,
+        points: [[150, 30]],
         style: {
           edge: 'topToBottom',
         },
       })
-      edge3.geometry!.addPoint(150, 30)
     })
   }
 

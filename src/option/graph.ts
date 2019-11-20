@@ -84,7 +84,7 @@ export interface CompositeOptions {
    *
    * Default is `true`.
    */
-  foldingEnabled: boolean
+  cellsFoldable: boolean
   collapsedImage: Image
   expandedImage: Image
 
@@ -880,7 +880,7 @@ function expand(graph: Graph) {
   // folding
   // ----
   const folding = options.folding as FoldingOptions
-  graph.foldingEnabled = folding.enabled
+  graph.cellsFoldable = folding.enabled
   graph.expandedImage = folding.expandedImage
   graph.collapsedImage = folding.collapsedImage
 
