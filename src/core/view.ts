@@ -549,11 +549,8 @@ export class View extends Primer {
       (sourceState == null && geo.getTerminalPoint(true) == null) ||
       (targetState == null && geo.getTerminalPoint(false) == null)
     ) {
-
       this.clear(state.cell, true)
-
     } else {
-
       // Get fixed point from constraint point or manual specified point.
       this.updateFixedTerminalPoints(state, sourceState, targetState)
       this.updateRouterPoints(state, geo.points, sourceState, targetState)
@@ -1194,23 +1191,22 @@ export class View extends Primer {
       (geo == null || geo.relative)
     ) {
 
-      const cc = state.absolutePoints.length
       const gx = geo != null ? geo.bounds.x / 2 : 0
       const dist = Math.round((gx + 0.5) * state.totalLength)
+      const len = state.absolutePoints.length
 
-      let segment = state.segmentsLength[0]
-      let length = 0
       let index = 0
-
-      while (dist >= Math.round(length + segment) && index < cc - 1) {
+      let length = 0
+      let segment = state.segmentsLength[0]
+      while (dist >= Math.round(length + segment) && index < len - 1) {
         index += 1
         length += segment
         segment = state.segmentsLength[index]
       }
 
-      const factor = (segment === 0) ? 0 : (dist - length) / segment
-      const p0 = state.absolutePoints[index - 1]
-      const pe = state.absolutePoints[index]
+      const factor = segment === 0 ? 0 : (dist - length) / segment
+      const p0 = state.absolutePoints[index]
+      const pe = state.absolutePoints[index + 1]
 
       if (p0 != null && pe != null) {
         let gy = 0
@@ -1228,8 +1224,8 @@ export class View extends Primer {
 
         const dx = pe.x - p0.x
         const dy = pe.y - p0.y
-        const nx = (segment === 0) ? 0 : dy / segment
-        const ny = (segment === 0) ? 0 : dx / segment
+        const nx = segment === 0 ? 0 : dy / segment
+        const ny = segment === 0 ? 0 : dx / segment
 
         x = p0.x + dx * factor + (nx * gy + offsetX) * this.scale
         y = p0.y + dy * factor - (ny * gy - offsetY) * this.scale
@@ -1314,8 +1310,8 @@ export class View extends Primer {
     state.absoluteOffset.y = state.bounds.getCenterY()
 
     const points = state.absolutePoints
+    console.log(points)
     if (points != null && points.length > 0 && state.segmentsLength != null) {
-
       const geometry = state.cell.getGeometry()!
       if (geometry.relative) {
         const offset = this.getPointOnEdge(state, geometry)

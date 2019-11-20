@@ -344,6 +344,7 @@ export const defaultOptions: FullOptions = {
   },
 
   edgeHandle: {
+    cloneable: false,
     addable: false,
     removable: false,
     dblClickRemoveEnabled: false,

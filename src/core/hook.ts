@@ -49,6 +49,7 @@ export interface IHooks {
   createPanningHandler: BareHook<PanningHandler>
   createContextMenuHandler: BareHook<ContextMenuHandler>
   createRubberbandHandler: BareHook<RubberbandHandler>
+  createCellHandler: StateHook<NodeHandler | EdgeHandler>
   createNodeHandler: StateHook<NodeHandler>
   createEdgeHandler: (
     this: Graph,

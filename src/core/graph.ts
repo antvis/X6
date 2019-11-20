@@ -276,15 +276,15 @@ export class Graph extends Disablable implements
     this.cellsDisconnectable = value
   }
 
-  foldingEnabled: boolean = true
+  cellsFoldable: boolean = true
   isFoldable() {
-    return this.foldingEnabled
+    return this.cellsFoldable
   }
   enableFolding() {
-    this.foldingEnabled = true
+    this.cellsFoldable = true
   }
   disableFolding() {
-    this.foldingEnabled = false
+    this.cellsFoldable = false
   }
 
   collapsedImage: Image = images.collapsed
@@ -736,6 +736,7 @@ export class Graph extends Disablable implements
     return new RubberbandHandler(this)
   }
 
+  @hook(null, true)
   createCellHandler(state: State | null) {
     if (state != null) {
       if (this.model.isEdge(state.cell)) {
@@ -850,13 +851,20 @@ export class Graph extends Disablable implements
     }
     const options = edge != null ? edge : {}
     const cell = this.createEdge(options)
-    return this.addCell(
+
+    this.addCell(
       cell,
       options.parent,
       options.index,
       options.source,
       options.target,
     )
+
+    if (this.resetEdgesOnConnect && options.points != null) {
+      options.points.forEach(p => cell.geometry!.addPoint(p))
+    }
+
+    return cell
   }
 
   /**
@@ -2596,7 +2604,7 @@ export class Graph extends Disablable implements
   getFoldingImage(state: State) {
     if (
       state != null &&
-      this.foldingEnabled &&
+      this.cellsFoldable &&
       !this.getModel().isEdge(state.cell)
     ) {
       const collapsed = this.isCellCollapsed(state.cell)
@@ -3064,7 +3072,10 @@ export class Graph extends Disablable implements
   // #endregion
 }
 
-function hook(hookName?: string) {
+function hook(
+  hookName?: string | null,
+  ignoreNullResult: boolean = false,
+) {
   return (
     target: Graph,
     methodName: string,
@@ -3080,7 +3091,7 @@ function hook(hookName?: string) {
         const ret = util.call(hook, this, ...args)
         delete this.getNativeValue
 
-        if (ret != null) {
+        if (ret != null || ignoreNullResult) {
           return ret
         }
       }
@@ -3090,7 +3101,7 @@ function hook(hookName?: string) {
   }
 }
 
-function afterCreate(aopName?: string) {
+function afterCreate(aopName?: string | null) {
   return (
     target: Graph,
     methodName: string,
@@ -3180,7 +3191,7 @@ export namespace Graph {
      * intermediate points on the edge, for the endpoints use `targetPoint`
      * and `sourcePoint` or set the terminals of the edge to a non-null value.
      */
-    points?: (Point | Point.PointLike)[],
+    points?: (Point | Point.PointLike | Point.PointData)[],
     offset?: Point | Point.PointLike,
 
     id?: string | null,

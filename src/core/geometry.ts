@@ -91,9 +91,9 @@ export class Geometry {
     return point
   }
 
-  addPoint(point: Point | Point.PointLike): void
+  addPoint(point: Point | Point.PointLike | Point.PointData): void
   addPoint(x: number, y: number): void
-  addPoint(x: number | Point | Point.PointLike, y?: number) {
+  addPoint(x: number | Point | Point.PointLike | Point.PointData, y?: number) {
     if (this.points == null) {
       this.points = []
     }

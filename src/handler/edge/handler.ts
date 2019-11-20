@@ -48,9 +48,9 @@ export class EdgeHandler extends MouseHandler {
   /**
    * Specifies if cloning by control-drag is enabled.
    *
-   * Default is `true`.
+   * Default is `false`.
    */
-  cloneable: boolean = true
+  cloneable: boolean = false
 
   /**
    * Specifies if adding handles by shift-click is enabled.
@@ -171,6 +171,7 @@ export class EdgeHandler extends MouseHandler {
       graph: this.graph,
       cell: this.state.cell,
     })
+    this.cloneable = options.cloneable
     this.addable = options.addable
     this.removable = options.removable
     this.dblClickRemoveEnabled = options.dblClickRemoveEnabled

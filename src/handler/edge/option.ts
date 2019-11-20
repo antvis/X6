@@ -24,6 +24,13 @@ export interface EdgeHandleOptions extends
   cursor: OptionItem<GetEdgeHandleCursorArgs, string>
 
   /**
+   * Specifies if cloning by control-drag is enabled.
+   *
+   * Default is `false`.
+   */
+  cloneable: OptionItem<GetEdgeHandleOptionsArgs, boolean>
+
+  /**
    * Specifies if adding handles by shift-click is enabled.
    *
    * Default is `false`.
@@ -88,6 +95,7 @@ export function getEdgeHandleOptions(args: GetEdgeHandleOptionsArgs) {
   const { graph } = args
   const options = graph.options.edgeHandle as EdgeHandleOptions
   return {
+    cloneable: drill(options.cloneable, graph, args),
     addable: drill(options.addable, graph, args),
     removable: drill(options.removable, graph, args),
     dblClickRemoveEnabled: drill(options.dblClickRemoveEnabled, graph, args),

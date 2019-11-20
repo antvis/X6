@@ -65,7 +65,7 @@ export class CellManager extends BaseManager {
     }
 
     if (options.points != null) {
-      geom.points = options.points.map(p => Point.clone(p))
+      options.points.forEach(p => geom.addPoint(p))
     }
 
     const edge = new Cell(options.data, geom, options.style)
@@ -119,7 +119,7 @@ export class CellManager extends BaseManager {
     if (cells != null && parent != null && index != null) {
       this.model.batchUpdate(() => {
         const pState = absolute ? this.view.getState(parent) : null
-        const o1 = (pState != null) ? pState.origin : null
+        const o1 = pState != null ? pState.origin : null
         const zero = new Point(0, 0)
 
         for (let i = 0, ii = cells.length; i < ii; i += 1) {
@@ -130,7 +130,7 @@ export class CellManager extends BaseManager {
 
           const oldParent = this.model.getParent(cells[i])
 
-          // Keeps the cell at its absolute location
+          // Keeps the cell at it's absolute location.
           if (o1 != null && cells[i] !== parent && parent !== oldParent) {
             const oldState = this.view.getState(oldParent)
             const o2 = (oldState != null) ? oldState.origin : zero

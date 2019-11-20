@@ -449,7 +449,7 @@ export class Renderer {
     const graph = state.view.graph
     const image = graph.getFoldingImage(state)
 
-    if (graph.foldingEnabled && image != null) {
+    if (graph.cellsFoldable && image != null) {
       if (state.control == null) {
         const bounds = new Rectangle(0, 0, image.width, image.height)
         state.control = new ImageShape(bounds, image.src)
