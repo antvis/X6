@@ -1,7 +1,7 @@
 import * as util from '../../util'
 import * as movment from './util'
-import { MouseEventEx, DomEvent, Disposable } from '../../common'
 import { Graph, Cell, Model } from '../../core'
+import { MouseEventEx, DomEvent, Disposable } from '../../common'
 import { MouseHandler } from '../handler-mouse'
 import { Preview } from './preview'
 

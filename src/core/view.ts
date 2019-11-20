@@ -1310,7 +1310,6 @@ export class View extends Primer {
     state.absoluteOffset.y = state.bounds.getCenterY()
 
     const points = state.absolutePoints
-    console.log(points)
     if (points != null && points.length > 0 && state.segmentsLength != null) {
       const geometry = state.cell.getGeometry()!
       if (geometry.relative) {

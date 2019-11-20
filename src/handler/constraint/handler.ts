@@ -8,18 +8,18 @@ import { DomEvent, MouseEventEx, Disposable } from '../../common'
 import { getConstraintOptions, createConstraintHighlightShape } from './option'
 
 export class ConstraintHandler extends BaseHandler {
-  private resetHandler: (() => void) | null
-  private containerEventInstalled = false
-
-  protected highlight: Shape | null
-  protected icons: ImageShape[] | null
-  protected points: Point[] | null
-  protected constraints: Constraint[] | null
-
   currentState: State | null
   currentPoint: Point | null
-  currentConstraint: Constraint | null
   currentArea: Rectangle | null
+  currentConstraint: Constraint | null
+
+  protected icons: ImageShape[] | null
+  protected points: Point[] | null
+  protected highlight: Shape | null
+  protected constraints: Constraint[] | null
+
+  private resetHandler: (() => void) | null
+  private containerEventInstalled = false
 
   constructor(graph: Graph) {
     super(graph)

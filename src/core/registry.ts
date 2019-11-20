@@ -1,8 +1,8 @@
+import * as util from '../util'
 import * as shapes from '../shape'
 import * as routers from '../router'
 import * as perimeters from '../perimeter'
 import { registerMarker } from '../marker'
-import { evalString } from '../util'
 import { State } from './state'
 import {
   Point,
@@ -58,7 +58,7 @@ export function registerRouter(
   routing: RoutingFunction,
   force: boolean = false,
 ) {
-  if (routerMap[name] && !force) {
+  if (routerMap[name] && !force && !util.isApplyHMR()) {
     throw new Error(`Router with name '${name}' already registered.`)
   }
   routerMap[name] = routing
@@ -71,7 +71,7 @@ function getEntity<T>(
 ): T | null {
   let ret = map[name]
   if (ret == null && allowEval) {
-    ret = evalString(name)
+    ret = util.exec(name)
   }
 
   return typeof ret === 'function' ? ret : null
@@ -107,7 +107,7 @@ export function registerPerimeter(
   permeter: PerimeterFunction,
   force: boolean = false,
 ) {
-  if (perimeterMap[name] && !force) {
+  if (perimeterMap[name] && !force && !util.isApplyHMR()) {
     throw new Error(`Perimeter with name '${name}' already registered.`)
   }
   perimeterMap[name] = permeter

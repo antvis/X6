@@ -67,7 +67,7 @@ export class Stencil extends Shape {
     if (result == null) {
       const text = util.getTextContent(node as HTMLElement)
       if (text != null && Stencil.allowEval) {
-        const func = util.evalString(text)
+        const func = util.exec(text)
         if (typeof func === 'function') {
           result = func(shape)
         }

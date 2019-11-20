@@ -258,7 +258,6 @@ export class Handle {
 
 export namespace Handle {
   export interface Options {
-    ignoreGrid?: boolean
     image?: Image
     shape?: string
     size?: number
@@ -268,5 +267,6 @@ export namespace Handle {
     fill?: string
     opacity?: number
     cursor?: string
+    ignoreGrid?: boolean
   }
 }
