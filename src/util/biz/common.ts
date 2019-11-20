@@ -1,9 +1,21 @@
 import { State } from '../../core'
+import { Shape } from '../../shape'
 import { getOffset, getScrollOrigin } from '../dom'
 import { MouseEventEx, DomEvent } from '../../common'
 import { Point, DirectionMask } from '../../struct'
 import { Align, VAlign } from '../../types'
-import { Shape } from '../../shape'
+
+export function getHMRStatus() {
+  const mod = module as any
+  if (mod != null && mod.hot != null && mod.hot.status != null) {
+    return mod.hot.status()
+  }
+  return 'unkonwn'
+}
+
+export function isApplyHMR() {
+  return getHMRStatus() === 'apply'
+}
 
 export function clientToGraph(container: HTMLElement, e: TouchEvent): Point
 export function clientToGraph(container: HTMLElement, e: MouseEvent): Point

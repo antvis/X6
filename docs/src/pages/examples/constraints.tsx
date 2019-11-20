@@ -2,7 +2,7 @@ import React from 'react'
 import {
   Graph, Point, Constraint, ShapeNames, perimeters,
 } from '../../../../src'
-import * as images from '../../../../src/assets/images'
+// import * as images from '../../../../src/assets/images'
 
 export default class Constraints extends React.Component {
   private container: HTMLDivElement
@@ -10,9 +10,9 @@ export default class Constraints extends React.Component {
   componentDidMount() {
     const graph = new Graph(this.container, {
       connection: {},
-      connectionIcon: {
-        image: images.share,
-      },
+      // connectionIcon: {
+      //   image: images.share,
+      // },
       getConstraints(cell) {
         if (cell != null && this.model.isNode(cell)) {
           return [
@@ -96,7 +96,7 @@ export default class Constraints extends React.Component {
   render() {
     return (
       <div>
-        <p>Using fixed connection points for connecting edges to vertices.</p>
+        <p>Using fixed connection points for connecting edges to nodes.</p>
         <div
           ref={this.refContainer}
           className="graph-container"

@@ -1,3 +1,4 @@
+import * as util from '../util'
 import { Shape } from '../shape'
 import { SvgCanvas2D } from '../canvas'
 import { Point, MarkerNames } from '../struct'
@@ -59,7 +60,7 @@ export function registerMarker(
   fn: DrawMarker,
   force: boolean = false,
 ) {
-  if (markers[name] && !force) {
+  if (markers[name] && !force && !util.isApplyHMR()) {
     throw new Error(`Marker with name '${name}' already registered.`)
   }
   markers[name] = fn

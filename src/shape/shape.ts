@@ -1177,7 +1177,7 @@ export namespace Shape {
     ctor: ShapeClass,
     force: boolean = false,
   ) {
-    if (shapes[name] != null && !force) {
+    if (shapes[name] != null && !force && !util.isApplyHMR()) {
       throw new Error(`Shape with name '${name}' already registered.`)
     }
 

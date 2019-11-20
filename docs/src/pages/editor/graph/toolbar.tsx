@@ -41,9 +41,7 @@ export class GraphToolbar
     })
   }
 
-  componentWillUnmount() {
-    console.log('toolbar unmount')
-  }
+  componentWillUnmount() { }
 
   handleClick = (name: string) => {
     const editor = this.state.editor!

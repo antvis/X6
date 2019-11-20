@@ -63,8 +63,15 @@ export function getByPath(
   return ret
 }
 
+export function fixValue<T>(
+  v: T | null | undefined,
+  defaultValue: T | null | undefined,
+) {
+  return v == null ? defaultValue : v
+}
+
 export function getValue(obj: any, key: string, defaultValue?: any) {
-  let value = (obj != null) ? obj[key] : null
+  let value = obj != null ? obj[key] : null
   if (value == null) {
     value = defaultValue
   }
@@ -72,7 +79,7 @@ export function getValue(obj: any, key: string, defaultValue?: any) {
 }
 
 export function getNumber(obj: any, key: string, defaultValue: number) {
-  let value = (obj != null) ? obj[key] : null
+  let value = obj != null ? obj[key] : null
   if (value == null) {
     return defaultValue
   }
