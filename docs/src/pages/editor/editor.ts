@@ -90,7 +90,7 @@ export class Editor extends Primer {
       <div class="x6-editor-demo-org ${type}">
         <div class="avatar" style="background-image:url(${avatar})"></div>
         <div class="info">
-          <div class="title">${title}</div>
+          <div class="title">${title}<i/></div>
           <div class="name">${name}</div>
         </div>
       </div>
