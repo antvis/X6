@@ -15,8 +15,6 @@ export class MovingHandler extends MouseHandler {
   constructor(graph: Graph) {
     super(graph)
     this.preview = new Preview(this)
-    this.graph.addMouseListener(this)
-
     this.onPan = () => this.preview.updatePreview()
     this.graph.on(Graph.events.pan, this.onPan)
 

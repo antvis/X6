@@ -37,7 +37,6 @@ export class TooltipHandler extends MouseHandler {
   constructor(graph: Graph) {
     super(graph)
     this.config()
-    this.graph.addMouseListener(this)
   }
 
   config() {

@@ -43,6 +43,7 @@ import {
   ContextMenuHandler,
   PanningHandler,
   GuideHandler,
+  SelectHandler,
   MovingHandler,
   SelectionHandler,
   ConnectionHandler,
@@ -91,6 +92,7 @@ export class Graph extends Disablable implements
   public readonly connectionHandler: ConnectionHandler
   public readonly panningHandler: PanningHandler
   public readonly movingHandler: MovingHandler
+  public readonly selectHandler: SelectHandler
   public readonly rubberbandHandler: RubberbandHandler
   panningManager: any
 
@@ -626,6 +628,7 @@ export class Graph extends Disablable implements
     this.selectionHandler = this.createSelectionHandler()
     this.connectionHandler = this.createConnectionHandler()
     this.guideHandler = this.createGuideHandler()
+    this.selectHandler = this.createSelectHandler()
     this.movingHandler = this.createMovingHandler()
     this.panningHandler = this.createPanningHandler()
     this.panningHandler.disablePanning()
@@ -704,6 +707,11 @@ export class Graph extends Disablable implements
   @hook()
   createGuideHandler() {
     return new GuideHandler(this)
+  }
+
+  @hook()
+  createSelectHandler() {
+    return new SelectHandler(this)
   }
 
   @hook()

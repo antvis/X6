@@ -16,6 +16,7 @@ export * from './rubberband/handler'
 export * from './guide/handler'
 export * from './panning/handler'
 
+export * from './select/handler'
 export * from './selection/handler'
 export * from './connection/handler'
 export * from './moving/handler'

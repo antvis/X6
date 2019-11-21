@@ -39,7 +39,6 @@ export class RubberbandHandler extends MouseHandler {
   constructor(graph: Graph) {
     super(graph)
     this.config()
-    this.graph.addMouseListener(this)
 
     // Handles force rubberband event
     this.onMouseEvent = ({ eventName, e }) => {

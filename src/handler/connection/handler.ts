@@ -60,7 +60,6 @@ export class ConnectionHandler extends MouseHandler {
 
   constructor(graph: Graph) {
     super(graph)
-    this.graph.addMouseListener(this)
     this.config()
     this.init()
   }

@@ -15,8 +15,6 @@ export class SelectionHandler extends MouseHandler {
     super(graph)
 
     this.handlers = new Dictionary<Cell, NodeHandler | EdgeHandler>()
-    this.graph.addMouseListener(this)
-
     this.refreshHandler = () => {
       if (this.isEnabled()) {
         this.refresh()
@@ -32,9 +30,6 @@ export class SelectionHandler extends MouseHandler {
     this.graph.model.on(Model.events.change, this.refreshHandler)
   }
 
-  /**
-   * Reloads or updates all handlers.
-   */
   refresh() {
     const oldHandlers = this.handlers
     this.handlers = new Dictionary<Cell, NodeHandler>()
@@ -67,7 +62,7 @@ export class SelectionHandler extends MouseHandler {
       this.refreshClassName(state, true)
     })
 
-    // Destroys all unused handlers
+    // Destroys unused handlers
     oldHandlers.each((handler) => {
       this.refreshClassName(handler.state, false)
       handler.dispose()
@@ -125,21 +120,17 @@ export class SelectionHandler extends MouseHandler {
     return this.graph.isEnabled() && this.isEnabled()
   }
 
-  protected isDelayedSelection(cell: Cell | null, e: MouseEventEx) {
-    return this.graph.isCellSelected(cell)
-  }
-
   getHandler(cell: Cell) {
     return this.handlers.get(cell)
   }
 
   mouseDown(e: MouseEventEx, sender: any) {
     if (this.canHandle(e)) {
-      const cell = this.getCell(e)
+      // const cell = this.getCell(e)
       // Select cell which was not selected immediately
-      if (cell !== null && !this.graph.isCellSelected(cell)) {
-        this.graph.selectionManager.selectCellForEvent(cell, e.getEvent())
-      }
+      // if (cell !== null && !this.graph.isCellSelected(cell)) {
+      //   this.graph.selectionManager.selectCellForEvent(cell, e.getEvent())
+      // }
 
       this.handlers.each(h => h.mouseDown(e, sender))
     }

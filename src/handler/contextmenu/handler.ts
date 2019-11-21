@@ -38,7 +38,6 @@ export class ContextMenuHandler extends MouseHandler {
   constructor(graph: Graph) {
     super(graph)
     this.config()
-    this.graph.addMouseListener(this)
 
     // Does not show menu if any touch gestures take place after the trigger
     this.gestureHandler = () => {

@@ -1,8 +1,8 @@
 import * as util from '../../util'
 import * as movment from '../moving/util'
+import { Cell } from '../../core'
 import { Guide } from './guide'
 import { Rectangle, Point } from '../../struct'
-import { Graph, Cell } from '../../core'
 import { MouseHandler } from '../handler-mouse'
 import { MouseEventEx, Disposable } from '../../common'
 import { createGuide, isGuideEnabled } from './option'
@@ -15,11 +15,6 @@ export class GuideHandler extends MouseHandler {
   bounds: Rectangle | null
   guide: Guide | null = null
   active: boolean = false
-
-  constructor(graph: Graph) {
-    super(graph)
-    this.graph.addMouseListener(this)
-  }
 
   mouseDown(e: MouseEventEx) {
     if (

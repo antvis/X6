@@ -20,6 +20,7 @@ import {
   RubberbandHandler,
   CursorHandler,
   GuideHandler,
+  SelectHandler,
 } from '../handler'
 
 type Nilable<T> = T | null | undefined
@@ -45,6 +46,7 @@ export interface IHooks {
   createTooltipHandler: BareHook<TooltipHandler>
   createConnectionHandler: BareHook<ConnectionHandler>
   createSelectionHandler: BareHook<SelectionHandler>
+  createSelectHandler: BareHook<SelectHandler>
   createMovingHandler: BareHook<MovingHandler>
   createPanningHandler: BareHook<PanningHandler>
   createContextMenuHandler: BareHook<ContextMenuHandler>
