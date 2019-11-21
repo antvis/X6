@@ -22,6 +22,7 @@ const Layout: React.FC = props => {
           <li><NavLink to="/examples/markers">Markers</NavLink></li>
           <li><NavLink to="/examples/editing">Editing</NavLink></li>
           <li><NavLink to="/examples/pagebreaks">Page Breaks</NavLink></li>
+          <li><NavLink to="/examples/custom-render">Custom Render</NavLink></li>
         </ul>
         <h2>Charts</h2>
         <ul>

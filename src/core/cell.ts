@@ -1,15 +1,18 @@
 import * as util from '../util'
+import { Graph } from './'
 import { Disposable } from '../common'
 import { Geometry } from './geometry'
-import { Overlay } from '../struct'
 import { Style } from '../types'
+import { Overlay, Point, Rectangle } from '../struct'
 
 export class Cell extends Disposable {
   public id?: string | null
   public data: any
   public style: Style
   public visible: boolean
+  public render: Cell.Renderer | null
   public geometry: Geometry | null
+  public overlays: Overlay[] | null
 
   public parent: Cell | null
   public children: Cell[] | null
@@ -18,8 +21,6 @@ export class Cell extends Disposable {
 
   public source: Cell | null
   public target: Cell | null
-
-  public overlays: Overlay[] | null
 
   private node?: boolean
   private edge?: boolean
@@ -316,6 +317,14 @@ export class Cell extends Disposable {
 
   // #endregion
 
+  getRender() {
+    return this.render
+  }
+
+  setRender(renderer: Cell.Renderer | null) {
+    this.render = renderer
+  }
+
   getId() {
     return this.id
   }
@@ -393,4 +402,157 @@ export namespace Cell {
     'id', 'data', 'parent', 'source',
     'target', 'children', 'edges',
   ]
+
+  export type Renderer = (
+    this: Graph,
+    elem: HTMLElement | SVGElement,
+    cell: Cell,
+  ) => void
+
+  interface CreationOptions {
+    id?: string | null,
+    data?: any,
+    style?: Style,
+    visible?: boolean,
+    overlays?: Overlay[],
+    render?: Renderer | null
+  }
+
+  export interface CreateNodeOptions extends CreationOptions {
+    /**
+     * Specifies the x-coordinate of the node. For relative geometries, this
+     * defines the percentage x-coordinate relative the parent width, which
+     * value should be within `0-1`. For absolute geometries, this defines the
+     * absolute x-coordinate in the graph.
+     */
+    x?: number,
+    /**
+     * Specifies the y-coordinate of the node. For relative geometries, this
+     * defines the percentage y-coordinate relative the parent height, which
+     * value should be within `0-1`. For absolute geometries, this defines the
+     * absolute y-coordinate in the graph.
+     */
+    y?: number,
+    width?: number,
+    height?: number,
+    /**
+     * Specifies if the coordinates in the geometry are to be interpreted
+     * as relative coordinates. If this is `true`, then the coordinates are
+     * relative to the origin of the parent cell.
+     */
+    relative?: boolean,
+    /**
+     * For relative geometries, this defines the absolute offset from the
+     * point defined by the relative coordinates. For absolute geometries,
+     * this defines the offset for the label.
+     */
+    offset?: Point | Point.PointLike,
+
+    collapsed?: boolean,
+
+    /**
+     * Stores alternate values for x, y, width and height in a rectangle.
+     */
+    alternateBounds?: Rectangle | Rectangle.RectangleLike,
+  }
+
+  export interface CreateEdgeOptions extends CreationOptions {
+    /**
+     * The source `Point` of the edge. This is used if the corresponding
+     * edge does not have a source node. Otherwise it is ignored.
+     */
+    sourcePoint?: Point | Point.PointLike,
+    /**
+     * The target `Point` of the edge. This is used if the corresponding
+     * edge does not have a target node. Otherwise it is ignored.
+     */
+    targetPoint?: Point | Point.PointLike,
+    /**
+     * Specifies the control points along the edge. These points are the
+     * intermediate points on the edge, for the endpoints use `targetPoint`
+     * and `sourcePoint` or set the terminals of the edge to a non-null value.
+     */
+    points?: (Point | Point.PointLike | Point.PointData)[],
+    offset?: Point | Point.PointLike,
+  }
+
+  export function createNode(options: CreateNodeOptions = {}): Cell {
+    const geo = new Geometry(
+      options.x,
+      options.y,
+      options.width,
+      options.height,
+    )
+
+    geo.relative = options.relative != null ? options.relative : false
+
+    if (options.offset != null) {
+      geo.offset = Point.clone(options.offset)
+    }
+
+    if (options.alternateBounds != null) {
+      geo.alternateBounds = Rectangle.clone(options.alternateBounds)
+    }
+
+    const node = new Cell(options.data, geo, options.style)
+    if (options.collapsed != null) {
+      node.setCollapsed(options.collapsed)
+    }
+
+    return applyCommonOptions(node, options, true)
+  }
+
+  export function createEdge(options: CreateEdgeOptions): Cell {
+    const geom = new Geometry()
+    geom.relative = true
+
+    if (options.sourcePoint != null) {
+      geom.sourcePoint = Point.clone(options.sourcePoint)
+    }
+
+    if (options.targetPoint != null) {
+      geom.targetPoint = Point.clone(options.targetPoint)
+    }
+
+    if (options.offset != null) {
+      geom.offset = Point.clone(options.offset)
+    }
+
+    if (options.points != null) {
+      options.points.forEach(p => geom.addPoint(p))
+    }
+
+    const edge = new Cell(options.data, geom, options.style)
+    return applyCommonOptions(edge, options, false)
+  }
+
+  function applyCommonOptions(
+    node: Cell,
+    options: CreationOptions,
+    isNode: boolean,
+  ) {
+    node.setId(options.id)
+
+    if (isNode) {
+      node.asNode(true)
+    } else {
+      node.asEdge(true)
+    }
+
+    if (options.visible != null) {
+      node.setVisible(options.visible)
+    } else {
+      node.setVisible(true)
+    }
+
+    if (options.overlays != null) {
+      node.setOverlays(options.overlays)
+    }
+
+    if (options.render) {
+      node.setRender(options.render)
+    }
+
+    return node
+  }
 }

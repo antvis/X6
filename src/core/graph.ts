@@ -810,13 +810,13 @@ export class Graph extends Disablable implements
   // #region :::::::::::: Cell Creation
 
   @afterCreate()
-  createNode(options: Graph.CreateNodeOptions = {}): Cell {
-    return this.cellManager.createNode(options)
+  createNode(options: Cell.CreateNodeOptions = {}): Cell {
+    return Cell.createNode(options)
   }
 
   @afterCreate()
-  createEdge(options: Graph.CreateEdgeOptions = {}): Cell {
-    return this.cellManager.createEdge(options)
+  createEdge(options: Cell.CreateEdgeOptions = {}): Cell {
+    return Cell.createEdge(options)
   }
 
   addNode(options: Graph.AddNodeOptions): Cell
@@ -3136,80 +3136,12 @@ export namespace Graph {
     model?: Model,
   }
 
-  export interface CreateNodeOptions {
-    /**
-     * Specifies the x-coordinate of the node. For relative geometries, this
-     * defines the percentage x-coordinate relative the parent width, which
-     * value should be within `0-1`. For absolute geometries, this defines the
-     * absolute x-coordinate in the graph.
-     */
-    x?: number,
-    /**
-     * Specifies the y-coordinate of the node. For relative geometries, this
-     * defines the percentage y-coordinate relative the parent height, which
-     * value should be within `0-1`. For absolute geometries, this defines the
-     * absolute y-coordinate in the graph.
-     */
-    y?: number,
-    width?: number,
-    height?: number,
-    /**
-     * Specifies if the coordinates in the geometry are to be interpreted
-     * as relative coordinates. If this is `true`, then the coordinates are
-     * relative to the origin of the parent cell.
-     */
-    relative?: boolean,
-    /**
-     * For relative geometries, this defines the absolute offset from the
-     * point defined by the relative coordinates. For absolute geometries,
-     * this defines the offset for the label.
-     */
-    offset?: Point | Point.PointLike,
-
-    id?: string,
-    data?: any,
-    style?: Style,
-    visible?: boolean,
-    collapsed?: boolean,
-    overlays?: Overlay[],
-    /**
-     * Stores alternate values for x, y, width and height in a rectangle.
-     */
-    alternateBounds?: Rectangle | Rectangle.RectangleLike,
-  }
-
-  export interface AddNodeOptions extends CreateNodeOptions {
+  export interface AddNodeOptions extends Cell.CreateNodeOptions {
     parent?: Cell,
     index?: number,
   }
 
-  export interface CreateEdgeOptions {
-    /**
-     * The source `Point` of the edge. This is used if the corresponding
-     * edge does not have a source node. Otherwise it is ignored.
-     */
-    sourcePoint?: Point | Point.PointLike,
-    /**
-     * The target `Point` of the edge. This is used if the corresponding
-     * edge does not have a target node. Otherwise it is ignored.
-     */
-    targetPoint?: Point | Point.PointLike,
-    /**
-     * Specifies the control points along the edge. These points are the
-     * intermediate points on the edge, for the endpoints use `targetPoint`
-     * and `sourcePoint` or set the terminals of the edge to a non-null value.
-     */
-    points?: (Point | Point.PointLike | Point.PointData)[],
-    offset?: Point | Point.PointLike,
-
-    id?: string | null,
-    data?: any,
-    style?: Style,
-    visible?: boolean,
-    overlays?: Overlay[],
-  }
-
-  export interface AddEdgeOptions extends CreateEdgeOptions {
+  export interface AddEdgeOptions extends Cell.CreateEdgeOptions {
     parent?: Cell,
     index?: number,
     source?: Cell,
