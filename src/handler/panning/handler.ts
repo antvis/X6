@@ -4,7 +4,6 @@ import { Graph } from '../../core'
 import { MouseEventEx, DomEvent, Disposable } from '../../common'
 
 export class PanningHandler extends MouseHandler {
-
   /**
    * Specifies if panning should be active for the left mouse button.
    *
@@ -86,8 +85,6 @@ export class PanningHandler extends MouseHandler {
 
   constructor(graph: Graph) {
     super(graph)
-
-    this.graph.addMouseListener(this)
 
     // Handles force panning event
     this.forcePanningHandler = ({ eventName, e }) => {

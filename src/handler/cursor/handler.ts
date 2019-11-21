@@ -1,13 +1,7 @@
-import { Graph } from '../../core'
 import { MouseHandler } from '../handler-mouse'
 import { MouseEventEx } from '../../common'
 
 export class CursorHandler extends MouseHandler {
-  constructor(graph: Graph) {
-    super(graph)
-    this.graph.addMouseListener(this)
-  }
-
   mouseMove(e: MouseEventEx, sender?: any) {
     if (this.shouldUpdateCursor(e)) {
       this.setMovableCursor(e)

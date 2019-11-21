@@ -9,7 +9,9 @@ export default class Constraints extends React.Component {
 
   componentDidMount() {
     const graph = new Graph(this.container, {
-      connection: {},
+      connection: {
+        enabled: true,
+      },
       // connectionIcon: {
       //   image: images.share,
       // },
@@ -31,8 +33,6 @@ export default class Constraints extends React.Component {
         return null
       },
     })
-
-    graph.enableConnection()
 
     graph.batchUpdate(() => {
       const n1 = graph.addNode({
