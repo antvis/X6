@@ -1,8 +1,8 @@
+import { FontStyle } from './struct'
 import {
   RoutingFunction,
   PerimeterFunction,
 } from './core/registry'
-import { FontStyle } from './struct'
 
 export type Dialect = 'svg' | 'html'
 export type Align = 'left' | 'center' | 'right'

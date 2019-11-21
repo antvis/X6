@@ -47,7 +47,7 @@ $ yarn
 # build
 $ yarn build
 
-# run test case
+# run test
 $ yarn test
 ```
 

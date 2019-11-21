@@ -53,6 +53,7 @@ export class Renderer {
       this.redrawLabel(state, shapeChanged)
       this.redrawOverlays(state, shapeChanged)
       this.redrawControl(state, shapeChanged)
+      this.customRender(state, shapeChanged)
     }
   }
 
@@ -1154,5 +1155,12 @@ export class Renderer {
     }
 
     return null
+  }
+
+  protected customRender(state: State, shapeChanged: boolean) {
+    const render = state.cell.getRender()
+    if (render != null && state.shape != null) {
+      render.call(state.view.graph, state.shape.elem, state.cell)
+    }
   }
 }

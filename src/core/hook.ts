@@ -366,13 +366,13 @@ export interface IHooks {
   onCreateNode?: (
     this: Graph,
     newNode: Cell,
-    options: Graph.CreateNodeOptions,
+    options: Cell.CreateNodeOptions,
   ) => Cell
 
   onCreateEdge?: (
     this: Graph,
     newEdge: Cell,
-    options: Graph.CreateEdgeOptions,
+    options: Cell.CreateEdgeOptions,
   ) => Cell
 
   onCreateGroup?: (

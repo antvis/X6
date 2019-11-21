@@ -4,86 +4,10 @@ import { BaseManager } from './manager-base'
 import { Graph, Cell, Geometry, State } from '../core'
 import { Style, Align, VAlign } from '../types'
 import { Point, Rectangle, Overlay, Image, ShapeNames, Constraint } from '../struct'
+
 export class CellManager extends BaseManager {
-  constructor(graph: Graph) {
-    super(graph)
-  }
 
   // #region :::::::::::: Creating
-
-  createNode(options: Graph.CreateNodeOptions): Cell {
-    const geo = new Geometry(
-      options.x,
-      options.y,
-      options.width,
-      options.height,
-    )
-    geo.relative = options.relative != null ? options.relative : false
-    if (options.offset != null) {
-      geo.offset = Point.clone(options.offset)
-    }
-
-    if (options.alternateBounds != null) {
-      geo.alternateBounds = Rectangle.clone(options.alternateBounds)
-    }
-
-    const node = new Cell(options.data, geo, options.style)
-    node.setId(options.id)
-    node.asNode(true)
-
-    if (options.visible != null) {
-      node.setVisible(options.visible)
-    } else {
-      node.setVisible(true)
-    }
-
-    if (options.collapsed != null) {
-      node.setCollapsed(options.collapsed)
-    }
-
-    if (options.overlays != null) {
-      node.setOverlays(options.overlays)
-    }
-
-    return node
-  }
-
-  createEdge(options: Graph.CreateEdgeOptions): Cell {
-    const geom = new Geometry()
-    geom.relative = true
-
-    if (options.sourcePoint != null) {
-      geom.sourcePoint = Point.clone(options.sourcePoint)
-    }
-
-    if (options.targetPoint != null) {
-      geom.targetPoint = Point.clone(options.targetPoint)
-    }
-
-    if (options.offset != null) {
-      geom.offset = Point.clone(options.offset)
-    }
-
-    if (options.points != null) {
-      options.points.forEach(p => geom.addPoint(p))
-    }
-
-    const edge = new Cell(options.data, geom, options.style)
-    edge.setId(options.id)
-    edge.asEdge(true)
-
-    if (options.visible != null) {
-      edge.setVisible(options.visible)
-    } else {
-      edge.setVisible(true)
-    }
-
-    if (options.overlays != null) {
-      edge.setOverlays(options.overlays)
-    }
-
-    return edge
-  }
 
   addCells(
     cells: Cell[],
