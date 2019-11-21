@@ -17,7 +17,7 @@
         color: #f1f1f1;
       }
 
-      .title::after {
+      .title > i {
         border-bottom-color: #f1f1f1;
       }
     }
@@ -44,21 +44,16 @@
     }
 
     .title {
-      position: relative;
       font-family: Courier New;
       font-size: 14px;
       display: inline-block;
       letter-spacing: 0;
       word-spacing: -5px;
 
-      &::after {
-        position: absolute;
-        top: 100%;
-        right: 0;
-        left: 0;
+      > i {
+        display: block;
         height: 1px;
-        margin-top: -5px;
-        content: ' ';
+        margin-top: -4px;
         border-bottom: 1px solid #000000;
       }
     }
