@@ -36,7 +36,7 @@ export function invoke<T>(
 export function apply<T>(
   func: ((...args: any[]) => T) | null | undefined,
   ctx: any,
-  args: any[],
+  args: any[] = [],
 ): T {
   return invoke(func, args, ctx)
 }
@@ -57,17 +57,18 @@ function repush<T>(array: T[], item: T) {
   }
 }
 
-const keys: string[] = []
-const cache: { [kry: string]: any } = {}
-
 export function cacher<T extends Function>(
   fn: T,
   ctx?: any,
-  postProcessor?: (v: any) => any,
+  postProcessor?: (v: any, hasCache?: boolean) => any,
 ): T {
+  const keys: string[] = []
+  const cache: { [kry: string]: any } = {}
   const f = (...args: any[]) => {
+    let hasCache = false
     const key = args.join('\u2400')
     if (key in cache) {
+      hasCache = true
       repush(keys, key)
     } else {
       if (keys.length >= 1000) {
@@ -77,15 +78,13 @@ export function cacher<T extends Function>(
       cache[key] = invoke(fn as any, args, ctx)
     }
 
-    return postProcessor ? postProcessor(cache[key]) : cache[key]
+    return postProcessor ? postProcessor(cache[key], hasCache) : cache[key]
   }
 
   return f as any as T
 }
 
-export function once<T extends Function>(this: any, fn: T): T {
-  const ctx = this // tslint:disable-line
-
+export function once<T extends Function>(fn: T, ctx?: any): T {
   let called = false
   let result: any
 
