@@ -1,6 +1,6 @@
 import {
-  isNil, isNull, isString, isNumber, isBoolean, isUndefined,
-  isObject, isArray, isArrayLike, isFunction, isWindow,
+  isNil, isNull, isString, isNumber, isNumeric, isBoolean,
+  isUndefined, isObject, isArray, isArrayLike, isFunction, isWindow,
 } from './lang'
 
 describe('lang', () => {
@@ -72,6 +72,23 @@ describe('lang', () => {
       expect(isNumber([1, 2, 3])).toBe(false)
       expect(isNumber(new Date)).toBe(false)
       expect(isNumber(new Error)).toBe(false)
+    })
+  })
+
+  describe('#isNumeric', () => {
+    it('should return true with numberic string', () => {
+      expect(isNumeric('1')).toBe(true)
+      expect(isNumeric('1.2')).toBe(true)
+    })
+
+    it('should return true with invalid types', () => {
+      expect(isNumeric(null)).toBe(false)
+      expect(isNumeric(undefined)).toBe(false)
+      expect(isNumeric({ a: 1 })).toBe(false)
+      expect(isNumeric([1])).toBe(false)
+      expect(isNumeric(new Date)).toBe(false)
+      expect(isNumeric(/a/g)).toBe(false)
+
     })
   })
 

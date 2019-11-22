@@ -1,6 +1,6 @@
 import { escape, unescape } from './escape'
 
-describe('escape', () => {
+describe('string', () => {
   let escaped = '&amp;&lt;&gt;&quot;&#39;/'
   let unescaped = '&<>"\'/'
 

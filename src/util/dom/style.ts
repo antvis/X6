@@ -1,6 +1,6 @@
 import { Point } from '../../struct'
 import { detector } from '../../common'
-import { ucFirst } from '../string/normal'
+import { ucFirst } from '../string/common'
 import { getDocumentMode } from './attr'
 
 export const setPrefixedStyle = function () {

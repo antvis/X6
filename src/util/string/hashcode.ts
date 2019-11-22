@@ -1,20 +1,31 @@
 /**
  * Return a simple hash code from a string.
- * See http://werxltd.com/wp/2010/05/13/javascript-implementation-of-javas-string-hashcode-method/.
+ * Source from: https://github.com/sindresorhus/fnv1a/blob/master/index.js#L25
  */
 export function hashcode(str: string): number {
-  let hash = 0
-  const length = str.length
+  let hash = 2166136261
+  let isUnicoded = false
+  let string = str
 
-  if (length === 0) {
-    return hash
+  for (let i = 0, ii = string.length; i < ii; i += 1) {
+    let characterCode = string.charCodeAt(i)
+
+    // Non-ASCII characters trigger the Unicode escape logic
+    if (characterCode > 0x7F && !isUnicoded) {
+      string = unescape(encodeURIComponent(string))
+      characterCode = string.charCodeAt(i)
+      isUnicoded = true
+    }
+
+    hash ^= characterCode
+    hash += (
+      (hash << 1) +
+      (hash << 4) +
+      (hash << 7) +
+      (hash << 8) +
+      (hash << 24)
+    )
   }
 
-  for (let i = 0; i < length; i += 1) {
-    const c = str.charCodeAt(i)
-    hash = ((hash << 5) - hash) + c
-    hash &= hash // Convert to 32bit integer
-  }
-
-  return hash
+  return hash >>> 0
 }
