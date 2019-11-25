@@ -1,5 +1,5 @@
+import { Point } from '../struct'
 import { State, Cell } from '../core'
-import { Point, RouterNames } from '../struct'
 
 /**
  * Uses either `sideToSide` or `topToBottom` depending on the horizontal
@@ -55,9 +55,11 @@ export function elbow(
     }
   }
 
-  if (!horizontal && (
-    vertical ||
-    edgeState.style.elbow === RouterNames.vertical)
+  if (
+    !horizontal && (
+      vertical ||
+      edgeState.style.elbow === 'vertical'
+    )
   ) {
     topToBottom(edgeState, sourceState, targetState, points, result)
   } else {
@@ -183,14 +185,14 @@ export function topToBottom(
 
   if (p0 != null) {
     // tslint:disable-next-line
-    sourceState = new State(sourceState.view, sourceState.cell)
+    sourceState = new State(view, sourceState ? sourceState.cell : new Cell())
     sourceState.bounds.x = p0.x
     sourceState.bounds.y = p0.y
   }
 
   if (pe != null) {
     // tslint:disable-next-line
-    targetState = new State(sourceState.view, sourceState.cell)
+    targetState = new State(view, targetState ? targetState.cell : new Cell())
     targetState.bounds.x = pe.x
     targetState.bounds.y = pe.y
   }

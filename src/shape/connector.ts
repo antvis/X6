@@ -17,14 +17,14 @@ export class Connector extends Polyline {
     super.updateBoundingBox()
   }
 
-  drawEdgeShape(c: SvgCanvas2D, pts: Point[]) {
+  drawEdgeShape(c: SvgCanvas2D, points: Point[]) {
     // The indirection via functions for markers is needed in
     // order to apply the offsets before painting the line and
     // paint the markers after painting the line.
-    const sourceMarker = this.createMarker(c, pts, true)
-    const targetMarker = this.createMarker(c, pts, false)
+    const sourceMarker = this.createMarker(c, points, true)
+    const targetMarker = this.createMarker(c, points, false)
 
-    super.drawEdgeShape(c, pts)
+    super.drawEdgeShape(c, points)
 
     // Disables shadows, dashed styles and fixes fill color for markers
     c.setFillColor(this.strokeColor!)
@@ -40,13 +40,13 @@ export class Connector extends Polyline {
     }
   }
 
-  createMarker(c: SvgCanvas2D, pts: Point[], isSource: boolean) {
+  createMarker(c: SvgCanvas2D, points: Point[], isSource: boolean) {
     let result = null
-    const len = pts.length
+    const len = points.length
     const name = isSource ? this.style.startArrow : this.style.endArrow
 
-    let p0 = isSource ? pts[1] : pts[len - 2]
-    const pe = isSource ? pts[0] : pts[len - 1]
+    let p0 = isSource ? points[1] : points[len - 2]
+    const pe = isSource ? points[0] : points[len - 1]
 
     if (name != null && p0 != null && pe != null) {
       let count = 1
@@ -57,7 +57,7 @@ export class Connector extends Polyline {
         Math.round(p0.x - pe.x) === 0 &&
         Math.round(p0.y - pe.y) === 0
       ) {
-        p0 = (isSource) ? pts[1 + count] : pts[len - 2 - count]
+        p0 = (isSource) ? points[1 + count] : points[len - 2 - count]
         count += 1
       }
 

@@ -31,10 +31,8 @@ export enum MarkerNames {
 }
 
 export enum RouterNames {
-  vertical = 'vertical',
-  horizontal = 'horizontal',
   elbow = 'elbow',
-  entityRelation = 'entityRelation',
+  er = 'er',
   loop = 'loop',
   sideToSide = 'sideToSide',
   topToBottom = 'topToBottom',
