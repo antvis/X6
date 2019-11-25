@@ -138,7 +138,7 @@ export class CellEditor extends Disposable {
    *
    * Default is `2` in quirks, `0` in IE11 and `1` in other browsers and modes.
    */
-  wordWrapPadding = (detector.IS_QUIRKS) ? 2 : (!detector.IS_IE11) ? 1 : 0
+  wordWrapPadding = (!detector.IS_IE11) ? 1 : 0
 
   init() {
     this.textarea = document.createElement('div')
@@ -341,7 +341,6 @@ export class CellEditor extends Disposable {
 
     // Workaround for trailing line breaks being ignored in the editor
     if (
-      !detector.IS_QUIRKS &&
       util.getDocumentMode() !== 8 &&
       util.getDocumentMode() !== 9 &&
       util.getDocumentMode() !== 10
@@ -374,15 +373,8 @@ export class CellEditor extends Disposable {
         this.bounds = this.getEditorBounds(state)
         this.textarea.style.width = util.toPx(Math.round(this.bounds.width / scale))
         this.textarea.style.height = util.toPx(Math.round(this.bounds.height / scale))
-
-        // FIXME: Offset when scaled
-        if (util.getDocumentMode() === 8 || detector.IS_QUIRKS) {
-          this.textarea.style.left = util.toPx(Math.round(this.bounds.x))
-          this.textarea.style.top = util.toPx(Math.round(this.bounds.y))
-        } else {
-          this.textarea.style.left = util.toPx(Math.max(0, Math.round(this.bounds.x + 1)))
-          this.textarea.style.top = util.toPx(Math.max(0, Math.round(this.bounds.y + 1)))
-        }
+        this.textarea.style.left = util.toPx(Math.max(0, Math.round(this.bounds.x + 1)))
+        this.textarea.style.top = util.toPx(Math.max(0, Math.round(this.bounds.y + 1)))
 
         // Installs native word wrapping and avoids word wrap for empty label placeholder
         if (
@@ -501,31 +493,8 @@ export class CellEditor extends Disposable {
           this.textarea.style.height = 'auto'
         }
 
-        const ow = this.textarea.scrollWidth
-        const oh = this.textarea.scrollHeight
-
-        // TODO: Update CSS width and height if smaller than minResize or remove minResize
-        // if (this.minResize != null)
-        // {
-        // 	ow = Math.max(ow, this.minResize.width);
-        // 	oh = Math.max(oh, this.minResize.height);
-        // }
-
-        // LATER: Keep in visible area, add fine tuning for pixel precision
-        if (util.getDocumentMode() === 8) {
-          // LATER: Scaled wrapping and position is wrong in IE8
-          this.textarea.style.left = util.toPx(Math.max(0, Math.ceil((this.bounds.x - m.x * (this.bounds.width - (ow + 1) * scale) + ow * (scale - 1) * 0 + (m.x + 0.5) * 2) / scale))) // tslint:disable-line
-          this.textarea.style.top = util.toPx(Math.max(0, Math.ceil((this.bounds.y - m.y * (this.bounds.height - (oh + 0.5) * scale) + oh * (scale - 1) * 0 + Math.abs(m.y + 0.5) * 1) / scale))) // tslint:disable-line
-          // Workaround for wrong event handling width and height
-          this.textarea.style.width = util.toPx(Math.round(ow * scale))
-          this.textarea.style.height = util.toPx(Math.round(oh * scale))
-        } else if (detector.IS_QUIRKS) {
-          this.textarea.style.left = util.toPx(Math.max(0, Math.ceil(this.bounds.x - m.x * (this.bounds.width - (ow + 1) * scale) + ow * (scale - 1) * 0 + (m.x + 0.5) * 2))) // tslint:disable-line
-          this.textarea.style.top = util.toPx(Math.max(0, Math.ceil(this.bounds.y - m.y * (this.bounds.height - (oh + 0.5) * scale) + oh * (scale - 1) * 0 + Math.abs(m.y + 0.5) * 1))) // tslint:disable-line
-        } else {
-          this.textarea.style.left = util.toPx(Math.max(0, Math.round(this.bounds.x - m.x * (this.bounds.width - 2)) + 1)) // tslint:disable-line
-          this.textarea.style.top = util.toPx(Math.max(0, Math.round(this.bounds.y - m.y * (this.bounds.height - 4) + ((m.y == -1) ? 3 : 0)) + 1)) // tslint:disable-line
-        }
+        this.textarea.style.left = util.toPx(Math.max(0, Math.round(this.bounds.x - m.x * (this.bounds.width - 2)) + 1)) // tslint:disable-line
+        this.textarea.style.top = util.toPx(Math.max(0, Math.round(this.bounds.y - m.y * (this.bounds.height - 4) + ((m.y == -1) ? 3 : 0)) + 1)) // tslint:disable-line
       }
 
       util.setPrefixedStyle(this.textarea.style, 'transformOrigin', '0px 0px')

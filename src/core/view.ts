@@ -1993,16 +1993,6 @@ export class View extends Primer {
 
       container.appendChild(this.stage)
       this.updateContainerStyle(container)
-
-      // Implements minWidth/minHeight in quirks mode
-      if (detector.IS_QUIRKS) {
-        DomEvent.addListener(window, 'resize', () => {
-          const bounds = this.getGraphBounds()
-          const width = bounds.x + bounds.width + this.graph.border
-          const height = bounds.y + bounds.height + this.graph.border
-          this.updateHtmlStageSize(width, height)
-        })
-      }
     }
   }
 
