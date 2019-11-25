@@ -505,13 +505,13 @@ export class EdgeHandler extends MouseHandler {
       // Inverse loop order to match display order
       for (let i = this.customHandles.length - 1; i >= 0; i -= 1) {
         if (checkShape(this.customHandles[i].shape)) {
-          return DomEvent.getCustomHandle(i)
+          return Handle.getCustomHandle(i)
         }
       }
     }
 
     if (e.isSource(this.state.text) || checkShape(this.labelHandleShape)) {
-      result = DomEvent.getLabelHandle()
+      result = Handle.getLabelHandle()
     }
 
     if (this.handles != null) {
@@ -525,7 +525,7 @@ export class EdgeHandler extends MouseHandler {
     if (this.virtualHandles != null && this.isAddVirtualBendEvent(e)) {
       for (let i = 0, ii = this.virtualHandles.length; i < ii; i += 1) {
         if (checkShape(this.virtualHandles[i])) {
-          result = DomEvent.getVisualHandle(i)
+          result = Handle.getVisualHandle(i)
         }
       }
     }
@@ -553,12 +553,12 @@ export class EdgeHandler extends MouseHandler {
       if (this.removable && this.isRemovePointEvent(e.getEvent())) {
         this.removePoint(this.state, index)
       } else if (
-        !DomEvent.isLabelHandle(index) ||
+        !Handle.isLabelHandle(index) ||
         this.graph.isLabelMovable(e.getCell())
       ) {
 
-        if (DomEvent.isVisualHandle(index) && this.virtualHandles) {
-          const handle = this.virtualHandles[DomEvent.getVisualHandle(index)]
+        if (Handle.isVisualHandle(index) && this.virtualHandles) {
+          const handle = this.virtualHandles[Handle.getVisualHandle(index)]
           handle.elem!.style.opacity = '100'
         }
 
@@ -634,7 +634,7 @@ export class EdgeHandler extends MouseHandler {
   start(x: number, y: number, index: number) {
     this.startX = x
     this.startY = y
-    this.isLabelHandle = DomEvent.isLabelHandle(index)
+    this.isLabelHandle = Handle.isLabelHandle(index)
     this.isSourceHandle = this.handles ? index === 0 : false
     this.isTargetHandle = this.handles ? index === this.handles.length - 1 : false
 
@@ -654,9 +654,9 @@ export class EdgeHandler extends MouseHandler {
 
     // Hides other custom handles
     if (this.index != null) {
-      if (DomEvent.isCustomHandle(this.index)) {
+      if (Handle.isCustomHandle(this.index)) {
         if (this.customHandles != null) {
-          const idx = DomEvent.getCustomHandle(this.index)
+          const idx = Handle.getCustomHandle(this.index)
           for (let i = 0, ii = this.customHandles.length; i < ii; i += 1) {
             if (i !== idx) {
               this.customHandles[i].setVisible(false)
@@ -672,10 +672,10 @@ export class EdgeHandler extends MouseHandler {
       this.error = null
       this.currentPoint = this.getCurrentPoint(e)
 
-      if (DomEvent.isCustomHandle(this.index)) {
+      if (Handle.isCustomHandle(this.index)) {
 
         if (this.customHandles != null) {
-          const idx = DomEvent.getCustomHandle(this.index)
+          const idx = Handle.getCustomHandle(this.index)
           this.customHandles[idx].processEvent(e)
         }
 
@@ -844,8 +844,8 @@ export class EdgeHandler extends MouseHandler {
         points = [point]
       } else {
         // Adds point from virtual handle
-        if (DomEvent.isVisualHandle(index)) {
-          points.splice(DomEvent.getVisualHandle(index), 0, point)
+        if (Handle.isVisualHandle(index)) {
+          points.splice(Handle.getVisualHandle(index), 0, point)
         }
 
         // Removes point if dragged on terminal point
@@ -854,8 +854,8 @@ export class EdgeHandler extends MouseHandler {
             if (i !== index) {
               const handle = this.handles[i]
               if (handle != null && handle.bounds.containsPoint(p)) {
-                if (DomEvent.isVisualHandle(index)) {
-                  points.splice(DomEvent.getVisualHandle(index), 1)
+                if (Handle.isVisualHandle(index)) {
+                  points.splice(Handle.getVisualHandle(index), 1)
                 } else {
                   points.splice(index - 1, 1)
                 }
@@ -917,7 +917,7 @@ export class EdgeHandler extends MouseHandler {
         }
 
         // Updates existing point
-        if (result == null && !DomEvent.isVisualHandle(index)) {
+        if (result == null && !Handle.isVisualHandle(index)) {
           points[index - 1] = point
         }
       }
@@ -1082,10 +1082,10 @@ export class EdgeHandler extends MouseHandler {
           if (this.error.length > 0) {
             this.graph.validationWarn(this.error)
           }
-        } else if (DomEvent.isCustomHandle(index)) {
+        } else if (Handle.isCustomHandle(index)) {
           if (this.customHandles != null) {
             this.graph.batchUpdate(() => {
-              this.customHandles![DomEvent.getCustomHandle(index)].execute()
+              this.customHandles![Handle.getCustomHandle(index)].execute()
             })
           }
 

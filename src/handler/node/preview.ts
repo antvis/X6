@@ -1,4 +1,5 @@
 import * as util from '../../util'
+import { Handle } from '../handle'
 import { Disposable, MouseEventEx, DomEvent } from '../../common'
 import { State, Cell } from '../../core'
 import { Rectangle, Point } from '../../struct'
@@ -461,10 +462,10 @@ export class Preview extends Disposable {
 
     const livePreview = this.isLivePreview()
     const index = this.master.index!
-    const isRotate = DomEvent.isRotationHandle(index)
+    const isRotate = Handle.isRotationHandle(index)
     const isResize = !isRotate
-      && !DomEvent.isCustomHandle(index)
-      && !DomEvent.isLabelHandle(index)
+      && !Handle.isCustomHandle(index)
+      && !Handle.isLabelHandle(index)
 
     this.hideSelectionShape()
     if (isResize && (!this.resizeLivePreview || this.isUnapparent())) {

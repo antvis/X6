@@ -401,7 +401,7 @@ export namespace DomEvent {
    * Returns true if the event has been consumed using `consume`.
    */
   export function isConsumed(e: Event) {
-    return (e as any).isConsumed != null && (e as any).isConsumed
+    return (e as any).isConsumed === true
   }
 
   export function consume(
@@ -431,167 +431,12 @@ export namespace DomEvent {
     }
   }
 
-  /**
-    * Index for the label handle in an MouseEvent. This should be a negative
-    * value that does not interfere with any possible handle indices.
-    *
-    * Default is -1.
-    */
-  export const LABEL_HANDLE = -1
-
-  export function getLabelHandle() {
-    return LABEL_HANDLE
-  }
-
-  export function isLabelHandle(index: number) {
-    return LABEL_HANDLE === index
-  }
-
-  /**
-    * Index for the rotation handle in an MouseEvent. This should be a
-    * negative value that does not interfere with any possible handle indices.
-    *
-    * Default is -2.
-    */
-  export const ROTATION_HANDLE = -2
-
-  export function getRotationHandle() {
-    return ROTATION_HANDLE
-  }
-
-  export function isRotationHandle(index: number) {
-    return ROTATION_HANDLE === index
-  }
-
-  /**
-   * Start index for the custom handles in an MouseEvent. This should be a
-   * negative value and is the start index which is decremented for each
-   * custom handle.
-   *
-   * Default is -100.
-   */
-  export const CUSTOM_HANDLE = -100
-
-  export function isCustomHandle(index: number | null) {
-    return (index != null && index <= CUSTOM_HANDLE && index > VIRTUAL_HANDLE)
-  }
-
-  export function getCustomHandle(index: number) {
-    return CUSTOM_HANDLE - index
-  }
-
-  /**
-   * Start index for the virtual handles in an MouseEvent. This should be a
-   * negative value and is the start index which is decremented for each
-   * virtual handle.
-   *
-   * Default is -100000. This assumes that there are no more
-   * than VIRTUAL_HANDLE - CUSTOM_HANDLE custom handles.
-   */
-  export const VIRTUAL_HANDLE = -100000
-
-  export function isVisualHandle(index: number | null) {
-    return index != null && index <= VIRTUAL_HANDLE
-  }
-
-  export function getVisualHandle(index: number) {
-    return VIRTUAL_HANDLE - index
-  }
-
+  export const CLICK = 'click'
+  export const DOUBLE_CLICK = 'doubleClick'
   export const MOUSE_DOWN = 'mouseDown'
   export const MOUSE_MOVE = 'mouseMove'
   export const MOUSE_UP = 'mouseUp'
-  export const ACTIVATE = 'activate'
-  export const RESIZE_START = 'resizeStart'
-  export const RESIZE = 'resize'
-  export const RESIZE_END = 'resizeEnd'
-  export const MOVE_START = 'moveStart'
-  export const MOVE = 'move'
-  export const MOVE_END = 'moveEnd'
-  export const PAN_START = 'panStart'
-  export const PAN = 'pan'
-  export const PAN_END = 'panEnd'
-  export const MINIMIZE = 'minimize'
-  export const NORMALIZE = 'normalize'
-  export const MAXIMIZE = 'maximize'
-  export const HIDE = 'hide'
-  export const SHOW = 'show'
-  export const CLOSE = 'close'
-  export const DESTROY = 'destroy'
-  export const REFRESH = 'refresh'
-  export const SIZE = 'size'
-  export const SELECT = 'select'
-  export const FIRED = 'fired'
-  export const FIRE_MOUSE_EVENT = 'fireMouseEvent'
-  export const GESTURE = 'gesture'
-  export const TAP_AND_HOLD = 'tapAndHold'
-  export const GET = 'get'
-  export const RECEIVE = 'receive'
-  export const CONNECT = 'connect'
-  export const DISCONNECT = 'disconnect'
-  export const SUSPEND = 'suspend'
-  export const RESUME = 'resume'
-  export const MARK = 'mark'
-  export const ROOT = 'root'
-  export const POST = 'post'
-  export const OPEN = 'open'
-  export const SAVE = 'save'
-  export const BEFORE_ADD_VERTEX = 'beforeAddVertex'
-  export const ADD_VERTEX = 'addVertex'
-  export const AFTER_ADD_VERTEX = 'afterAddVertex'
-  export const DONE = 'done'
-  export const EXECUTE = 'execute'
-  export const EXECUTED = 'executed'
-  export const BEGIN_UPDATE = 'beginUpdate'
-  export const START_EDIT = 'startEdit'
-  export const END_UPDATE = 'endUpdate'
-  export const END_EDIT = 'endEdit'
-  export const BEFORE_UNDO = 'beforeUndo'
-  export const UNDO = 'undo'
-  export const REDO = 'redo'
-  export const CHANGE = 'change'
-  export const NOTIFY = 'notify'
-  export const LAYOUT_CELLS = 'layoutCells'
-  export const CLICK = 'click'
-  export const SCALE = 'scale'
-  export const TRANSLATE = 'translate'
-  export const SCALE_AND_TRANSLATE = 'scaleAndTranslate'
-  export const UP = 'up'
-  export const DOWN = 'down'
-  export const ADD = 'add'
-  export const REMOVE = 'remove'
-  export const CLEAR = 'clear'
-  export const ADD_CELLS = 'addCells'
-  export const CELLS_ADDED = 'cellsAdded'
-  export const MOVE_CELLS = 'moveCells'
-  export const CELLS_MOVED = 'cellsMoved'
-  export const RESIZE_CELLS = 'resizeCells'
-  export const CELLS_RESIZED = 'cellsResized'
-  export const TOGGLE_CELLS = 'toggleCells'
-  export const CELLS_TOGGLED = 'cellsToggled'
-  export const ORDER_CELLS = 'orderCells'
-  export const CELLS_ORDERED = 'cellsOrdered'
-  export const REMOVE_CELLS = 'removeCells'
-  export const CELLS_REMOVED = 'cellsRemoved'
-  export const GROUP_CELLS = 'groupCells'
-  export const UNGROUP_CELLS = 'ungroupCells'
-  export const REMOVE_CELLS_FROM_PARENT = 'removeCellsFromParent'
-  export const FOLD_CELLS = 'foldCells'
-  export const CELLS_FOLDED = 'cellsFolded'
-  export const ALIGN_CELLS = 'alignCells'
-  export const LABEL_CHANGED = 'labelChanged'
-  export const CONNECT_CELL = 'connectCell'
-  export const CELL_CONNECTED = 'cellConnected'
-  export const SPLIT_EDGE = 'splitEdge'
-  export const FLIP_EDGE = 'flipEdge'
-  export const START_EDITING = 'startEditing'
-  export const EDITING_STARTED = 'editingStarted'
-  export const EDITING_STOPPED = 'editingStopped'
-  export const ADD_OVERLAY = 'addOverlay'
-  export const REMOVE_OVERLAY = 'removeOverlay'
-  export const UPDATE_CELL_SIZE = 'updateCellSize'
   export const ESCAPE = 'escape'
-  export const DOUBLE_CLICK = 'doubleClick'
-  export const START = 'start'
-  export const RESET = 'reset'
+  export const FIRE_MOUSE_EVENT = 'fireMouseEvent'
+  export const START_EDITING = 'startEditing'
 }

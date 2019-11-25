@@ -2,9 +2,7 @@ export * from './events'
 export * from './disposable'
 export * from './primer'
 export * from './disablable'
-
 export * from './detector'
-export * from './dom-event'
-export * from './mouse-event'
-
+export * from './domevent'
+export * from './eventobject'
 export * from './dictionary'

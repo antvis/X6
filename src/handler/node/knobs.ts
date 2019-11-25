@@ -89,12 +89,12 @@ export class Knobs extends Disposable {
     }
 
     if (this.canRenderLabelHandle()) {
-      this.labelShape = this.createHandle(DomEvent.getLabelHandle())
+      this.labelShape = this.createHandle(Handle.getLabelHandle())
       this.handles.push(this.labelShape)
     }
 
     if (this.canRenderRotationHandle()) {
-      this.rotationShape = this.createHandle(DomEvent.getRotationHandle())
+      this.rotationShape = this.createHandle(Handle.getRotationHandle())
       this.handles.push(this.rotationShape)
     }
 
@@ -152,10 +152,10 @@ export class Knobs extends Disposable {
       cell: this.state.cell,
     }
 
-    if (DomEvent.isLabelHandle(index)) {
+    if (Handle.isLabelHandle(index)) {
       handle = createLabelHandle(args)
       cursor = getLabelHandleCursor({ ...args, shape: handle })
-    } else if (DomEvent.isRotationHandle(index)) {
+    } else if (Handle.isRotationHandle(index)) {
       handle = createRotationHandle(args)
       cursor = getRotationHandleCursor({ ...args, shape: handle })
     } else {
@@ -242,7 +242,7 @@ export class Knobs extends Disposable {
         const shape = this.customHandles[i].shape
         if (checkShape(shape)) {
           return {
-            index: DomEvent.getCustomHandle(i),
+            index: Handle.getCustomHandle(i),
             cursor: shape.cursor,
           }
         }
@@ -251,14 +251,14 @@ export class Knobs extends Disposable {
 
     if (checkShape(this.rotationShape)) {
       return {
-        index: DomEvent.getRotationHandle(),
+        index: Handle.getRotationHandle(),
         cursor: this.rotationShape!.cursor,
       }
     }
 
     if (checkShape(this.labelShape)) {
       return {
-        index: DomEvent.getLabelHandle(),
+        index: Handle.getLabelHandle(),
         cursor: this.labelShape!.cursor,
       }
     }
@@ -279,7 +279,7 @@ export class Knobs extends Disposable {
 
   processCustomHandle(e: MouseEventEx, index: number) {
     if (this.customHandles != null) {
-      const i = DomEvent.getCustomHandle(index)
+      const i = Handle.getCustomHandle(index)
       this.customHandles[i].processEvent(e)
       this.customHandles[i].active = true
     }
@@ -287,7 +287,7 @@ export class Knobs extends Disposable {
 
   executeCustomHandle(index: number) {
     if (this.customHandles != null) {
-      const i = DomEvent.getCustomHandle(index)
+      const i = Handle.getCustomHandle(index)
       this.customHandles[i].active = false
       this.customHandles[i].execute()
     }
@@ -553,14 +553,14 @@ export class Knobs extends Disposable {
   showActiveHandle(index: number) {
     this.setHandlesVisible(false)
 
-    if (DomEvent.isRotationHandle(index) && this.rotationShape != null) {
+    if (Handle.isRotationHandle(index) && this.rotationShape != null) {
       util.showElement(this.rotationShape.elem)
-    } else if (DomEvent.isLabelHandle(index) && this.labelShape != null) {
+    } else if (Handle.isLabelHandle(index) && this.labelShape != null) {
       util.showElement(this.labelShape.elem)
     } else if (this.handles != null && this.handles[index] != null) {
       util.showElement(this.handles[index].elem)
-    } else if (DomEvent.isCustomHandle(index) && this.customHandles != null) {
-      this.customHandles[DomEvent.getCustomHandle(index)].setVisible(true)
+    } else if (Handle.isCustomHandle(index) && this.customHandles != null) {
+      this.customHandles[Handle.getCustomHandle(index)].setVisible(true)
     }
   }
 
