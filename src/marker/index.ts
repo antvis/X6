@@ -60,7 +60,7 @@ export function registerMarker(
   fn: DrawMarker,
   force: boolean = false,
 ) {
-  if (markers[name] && !force && !util.isApplyHMR()) {
+  if (markers[name] && !force && !util.isApplyingHMR()) {
     throw new Error(`Marker with name '${name}' already registered.`)
   }
   markers[name] = fn

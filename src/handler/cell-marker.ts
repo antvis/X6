@@ -143,7 +143,7 @@ export class CellMarker extends BaseHandler {
     // 在中心区域按下鼠标触发连线
     // 在边缘区域按下鼠标触发移动
     if (this.hotspotable) {
-      return util.intersectsHotspot(
+      return util.isInHotspot(
         state,
         e.getGraphX(),
         e.getGraphY(),

@@ -1,6 +1,6 @@
 import { State } from '../core'
-import { intersection } from '../util'
 import { Rectangle, Point } from '../struct'
+import { getLinesIntersection } from '../util'
 
 export function trianglePerimeter(
   bounds: Rectangle,
@@ -8,9 +8,7 @@ export function trianglePerimeter(
   next: Point = new Point(),
   orthogonal: boolean = false,
 ) {
-  const direction = (state != null)
-    ? state.style.direction
-    : null
+  const direction = state != null ? state.style.direction : null
   const vertical = direction === 'north' || direction === 'south'
 
   const x = bounds.x
@@ -41,15 +39,12 @@ export function trianglePerimeter(
   let dx = next.x - cx
   let dy = next.y - cy
 
-  const alpha = (vertical) ? Math.atan2(dx, dy) : Math.atan2(dy, dx)
-  const t = (vertical) ? Math.atan2(w, h) : Math.atan2(h, w)
+  const alpha = vertical ? Math.atan2(dx, dy) : Math.atan2(dy, dx)
+  const t = vertical ? Math.atan2(w, h) : Math.atan2(h, w)
 
   let base = false
 
-  if (
-    direction === 'north' ||
-    direction === 'west'
-  ) {
+  if (direction === 'north' || direction === 'west') {
     base = alpha > -t && alpha < t
   } else {
     base = alpha < -Math.PI + t || alpha > Math.PI - t
@@ -58,8 +53,12 @@ export function trianglePerimeter(
   let result = null
 
   if (base) {
-    if (orthogonal && ((vertical && next.x >= start.x && next.x <= end.x) ||
-      (!vertical && next.y >= start.y && next.y <= end.y))) {
+    if (
+      orthogonal && (
+        (vertical && next.x >= start.x && next.x <= end.x) ||
+        (!vertical && next.y >= start.y && next.y <= end.y)
+      )
+    ) {
       if (vertical) {
         result = new Point(next.x, start.y)
       } else {
@@ -116,11 +115,11 @@ export function trianglePerimeter(
 
     if ((vertical && next.x <= x + w / 2) ||
       (!vertical && next.y <= y + h / 2)) {
-      result = intersection(
+      result = getLinesIntersection(
         next.x, next.y, cx, cy, start.x, start.y, corner.x, corner.y,
       )
     } else {
-      result = intersection(
+      result = getLinesIntersection(
         next.x, next.y, cx, cy, corner.x, corner.y, end.x, end.y,
       )
     }

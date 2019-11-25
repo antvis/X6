@@ -1,9 +1,9 @@
 /* tslint:disable:no-parameter-reassignment */
 
+import { getValue } from '../object'
 import { State } from '../../core'
 import { Direction } from '../../types'
 import { Point, Rectangle } from '../../struct'
-import { getValue } from '../object'
 
 export function toRad(deg: number) {
   return Math.PI * deg / 180
@@ -262,23 +262,29 @@ export function getDirectedBounds(
 }
 
 /**
-* Returns the intersection of two lines as an `Point`.
+ * Returns the intersection of two lines as an `Point`.
+ *
+ * see: https://stackoverflow.com/a/38977789
 */
-export function intersection(
-  x0: number, y0: number, x1: number, y1: number, // first line
-  x2: number, y2: number, x3: number, y3: number, // second line
+export function getLinesIntersection(
+  x1: number, y1: number, x2: number, y2: number, // first line
+  x3: number, y3: number, x4: number, y4: number, // second line
 ) {
-  const d = ((y3 - y2) * (x1 - x0)) - ((x3 - x2) * (y1 - y0))
-  const a = ((x3 - x2) * (y0 - y2)) - ((y3 - y2) * (x0 - x2))
-  const b = ((x1 - x0) * (y0 - y2)) - ((y1 - y0) * (x0 - x2))
+  const a = ((x4 - x3) * (y1 - y3)) - ((y4 - y3) * (x1 - x3))
+  const b = ((x2 - x1) * (y1 - y3)) - ((y2 - y1) * (x1 - x3))
+  const d = ((y4 - y3) * (x2 - x1)) - ((x4 - x3) * (y2 - y1))
+
+  // Two lines are parallel.
+  if (d === 0) {
+    return null
+  }
 
   const ua = a / d
   const ub = b / d
 
   if (ua >= 0.0 && ua <= 1.0 && ub >= 0.0 && ub <= 1.0) {
-    // Get the intersection point
-    const x = x0 + ua * (x1 - x0)
-    const y = y0 + ua * (y1 - y0)
+    const x = x1 + ua * (x2 - x1)
+    const y = y1 + ua * (y2 - y1)
 
     return new Point(x, y)
   }
@@ -287,7 +293,7 @@ export function intersection(
   return null
 }
 
-export function intersectsHotspot(
+export function isInHotspot(
   state: State,
   x: number,
   y: number,
@@ -338,7 +344,7 @@ export function intersectsHotspot(
 /**
  * Returns the square distance between a segment and a point. To get the
  * distance between a point and a line (with infinite length) use
- * `util.ptLineDist`.
+ * `ptLineDist`.
  *
  * @param x1 X-coordinate of point 1 of the line.
  * @param y1 Y-coordinate of point 1 of the line.
@@ -477,7 +483,7 @@ export function getPerimeterPoint(pts: Point[], center: Point, point: Point) {
   let min = null
 
   for (let i = 0, ii = pts.length - 1; i < ii; i += 1) {
-    const pt = intersection(
+    const pt = getLinesIntersection(
       pts[i].x, pts[i].y, pts[i + 1].x, pts[i + 1].y,
       center.x, center.y, point.x, point.y,
     )

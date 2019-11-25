@@ -58,7 +58,7 @@ export function registerRouter(
   routing: RoutingFunction,
   force: boolean = false,
 ) {
-  if (routerMap[name] && !force && !util.isApplyHMR()) {
+  if (routerMap[name] && !force && !util.isApplyingHMR()) {
     throw new Error(`Router with name '${name}' already registered.`)
   }
   routerMap[name] = routing
@@ -107,7 +107,7 @@ export function registerPerimeter(
   permeter: PerimeterFunction,
   force: boolean = false,
 ) {
-  if (perimeterMap[name] && !force && !util.isApplyHMR()) {
+  if (perimeterMap[name] && !force && !util.isApplyingHMR()) {
     throw new Error(`Perimeter with name '${name}' already registered.`)
   }
   perimeterMap[name] = permeter

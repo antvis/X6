@@ -13,7 +13,7 @@ export function getHMRStatus() {
   return 'unkonwn'
 }
 
-export function isApplyHMR() {
+export function isApplyingHMR() {
   return getHMRStatus() === 'apply'
 }
 
