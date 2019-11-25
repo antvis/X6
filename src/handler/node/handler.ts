@@ -4,6 +4,7 @@ import { Preview } from './preview'
 import { MouseHandler } from '../handler-mouse'
 import { Cell, State, Graph } from '../../core'
 import { DomEvent, MouseEventEx, Disposable } from '../../common'
+import { Handle } from '../handle'
 
 export class NodeHandler extends MouseHandler {
   graph: Graph
@@ -75,11 +76,11 @@ export class NodeHandler extends MouseHandler {
     if (!e.isConsumed() && this.index != null) {
       if (this.preview.canMove(e)) {
         this.preview.ensurePreview()
-        if (DomEvent.isCustomHandle(this.index)) {
+        if (Handle.isCustomHandle(this.index)) {
           this.knobs.processCustomHandle(e, this.index)
-        } else if (DomEvent.isLabelHandle(this.index)) {
+        } else if (Handle.isLabelHandle(this.index)) {
           this.knobs.moveLabel(e)
-        } else if (DomEvent.isRotationHandle(this.index)) {
+        } else if (Handle.isRotationHandle(this.index)) {
           this.preview.rotate(e)
         } else {
           this.preview.resize(e)
@@ -101,9 +102,9 @@ export class NodeHandler extends MouseHandler {
       this.index = null
 
       this.graph.batchUpdate(() => {
-        if (DomEvent.isCustomHandle(index)) {
+        if (Handle.isCustomHandle(index)) {
           this.knobs.executeCustomHandle(index)
-        } else if (DomEvent.isRotationHandle(index)) {
+        } else if (Handle.isRotationHandle(index)) {
           if (this.preview.hasRotated()) {
             const delta = this.preview.getRotation()
             if (delta !== 0) {
@@ -112,7 +113,7 @@ export class NodeHandler extends MouseHandler {
           } else {
             this.rotationHandleClick()
           }
-        } else if (DomEvent.isLabelHandle(index)) {
+        } else if (Handle.isLabelHandle(index)) {
           this.moveLabel()
         } else {
           this.resizeNode(e)

@@ -269,4 +269,71 @@ export namespace Handle {
     cursor?: string
     ignoreGrid?: boolean
   }
+
+  /**
+    * Index for the label handle in an MouseEvent. This should be a negative
+    * value that does not interfere with any possible handle indices.
+    *
+    * Default is -1.
+    */
+  export const LABEL_HANDLE = -1
+
+  export function getLabelHandle() {
+    return LABEL_HANDLE
+  }
+
+  export function isLabelHandle(index: number) {
+    return LABEL_HANDLE === index
+  }
+
+  /**
+    * Index for the rotation handle in an MouseEvent. This should be a
+    * negative value that does not interfere with any possible handle indices.
+    *
+    * Default is -2.
+    */
+  export const ROTATION_HANDLE = -2
+
+  export function getRotationHandle() {
+    return ROTATION_HANDLE
+  }
+
+  export function isRotationHandle(index: number) {
+    return ROTATION_HANDLE === index
+  }
+
+  /**
+   * Start index for the custom handles in an MouseEvent. This should be a
+   * negative value and is the start index which is decremented for each
+   * custom handle.
+   *
+   * Default is -100.
+   */
+  export const CUSTOM_HANDLE = -100
+
+  export function isCustomHandle(index: number | null) {
+    return (index != null && index <= CUSTOM_HANDLE && index > VIRTUAL_HANDLE)
+  }
+
+  export function getCustomHandle(index: number) {
+    return CUSTOM_HANDLE - index
+  }
+
+  /**
+   * Start index for the virtual handles in an MouseEvent. This should be a
+   * negative value and is the start index which is decremented for each
+   * virtual handle.
+   *
+   * Default is -100000. This assumes that there are no more
+   * than VIRTUAL_HANDLE - CUSTOM_HANDLE custom handles.
+   */
+  export const VIRTUAL_HANDLE = -100000
+
+  export function isVisualHandle(index: number | null) {
+    return index != null && index <= VIRTUAL_HANDLE
+  }
+
+  export function getVisualHandle(index: number) {
+    return VIRTUAL_HANDLE - index
+  }
 }

@@ -1,5 +1,5 @@
 import { detector } from './detector'
-import { DomEvent } from './dom-event'
+import { DomEvent } from './domevent'
 
 /**
  * An object which implements the disposable pattern.
