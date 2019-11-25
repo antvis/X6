@@ -2,11 +2,11 @@ language: node_js
 node_js:
   - 8
   - 10
-cache:
-  directories:
-    - node_modules
-install: npm install
+install:
+  - npm install -g yarn
+  - yarn
 script:
-  - npm test
+  - yarn build
+  - yarn test
 after_script:
-  - npm run coveralls
+  - yarn run coveralls
