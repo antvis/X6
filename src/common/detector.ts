@@ -27,7 +27,8 @@ export namespace detector {
   export const IS_EDGE = !!ua.match(/Edge\//)
 
   /**
-   * True if the browser is IE11 in enterprise mode (IE8 standards mode).
+   * A flag indicating whether the browser is IE11 in enterprise
+   * mode (IE8 standards mode).
    */
   export const IS_EM = (
     'spellcheck' in document.createElement('textarea') &&
@@ -35,7 +36,7 @@ export namespace detector {
   )
 
   /**
-   * True if the current browser is Netscape (including Firefox).
+   * A flag indicating whether the browser is Netscape (including Firefox).
    */
   export const IS_NETSCAPE = (
     ua.indexOf('Mozilla/') >= 0 &&
@@ -44,7 +45,7 @@ export namespace detector {
   )
 
   /**
-	 * True if the current browser is Opera.
+	 * A flag indicating whether the the current browser is Opera.
 	 */
   export const IS_OPERA = (
     ua.indexOf('Opera/') >= 0 ||
@@ -52,7 +53,7 @@ export namespace detector {
   )
 
   /**
-	 * True if the current browser is Safari.
+	 * A flag indicating whether the the current browser is Safari.
 	 */
   export const IS_SAFARI = (
     ua.indexOf('AppleWebKit/') >= 0 &&
@@ -61,7 +62,7 @@ export namespace detector {
   )
 
   /**
-	 * True if the current browser is Google Chrome.
+	 * A flag indicating whether the the current browser is Google Chrome.
 	 */
   export const IS_CHROME = (
     ua.indexOf('Chrome/') >= 0 &&
@@ -69,7 +70,7 @@ export namespace detector {
   )
 
   /**
-	 * True if the this is running inside a Chrome App.
+	 * A flag indicating whether the the this is running inside a Chrome App.
 	 */
   export const IS_CHROME_APP = (
     (window as any).chrome != null &&
@@ -78,14 +79,14 @@ export namespace detector {
   )
 
   /**
-	 * True if the current browser is Firefox.
+	 * A flag indicating whether the the current browser is Firefox.
 	 */
   export const IS_FIREFOX = ua.indexOf('Firefox/') >= 0
 
   /**
-	 * True if -moz-transform is available as a CSS style. This is the case
-	 * for all Firefox-based browsers newer than or equal 3, such as Camino,
-	 * Iceweasel, Seamonkey and Iceape.
+	 * A flag indicating whether `-moz-transform` is available as a CSS style.
+   * This is the case for all Firefox-based browsers newer than or equal 3,
+   * such as Camino, Iceweasel, Seamonkey and Iceape.
 	 */
   export const IS_MT = (
     (
@@ -109,8 +110,8 @@ export namespace detector {
   )
 
   /**
-	 * True if -o-transform is available as a CSS style, ie for Opera
-   * browsers based on a Presto engine with version 2.5 or later.
+	 * A flag indicating whether `-o-transform` is available as a CSS style,
+   * ie for Opera browsers based on a Presto engine with version 2.5 or later.
 	 */
   export const IS_OT = (
     ua.indexOf('Presto/') >= 0 &&
@@ -123,13 +124,14 @@ export namespace detector {
   )
 
   /**
-	 * True if this device supports touchstart/-move/-end events (Apple iOS,
-	 * Android, Chromebook and Chrome Browser on touch-enabled devices).
+	 * A flag indicating whether this device supports touchstart/-move/-end
+   * events (Apple iOS, Android, Chromebook and Chrome Browser on touch-enabled
+   * devices).
 	 */
   export const SUPPORT_TOUCH = 'ontouchstart' in document.documentElement
 
   /**
-	 * True if this device supports Microsoft pointer events.
+	 * A flag indicating whether this device supports Microsoft pointer events.
 	 */
   export const SUPPORT_POINTER = (
     (window as any).PointerEvent != null &&
@@ -137,8 +139,8 @@ export namespace detector {
   )
 
   /**
-   * True if foreignObject support is not available. This is the case for
-   * Opera, older SVG-based browsers and all versions of IE.
+   * A flag indicating whether foreignObject support is not available. This
+   * is the case for Opera, older SVG-based browsers and all versions of IE.
    */
   export const NO_FOREIGNOBJECT = (
     !document.createElementNS ||
@@ -151,7 +153,8 @@ export namespace detector {
 
   const href = document.location.href
   /**
-	 * True if the documents location does not start with http:// or https://.
+	 * A flag indicating whether the documents location does not start
+   * with `http://` or `https://`.
 	 */
   export const IS_LOCAL = (
     href.indexOf('http://') < 0 &&
