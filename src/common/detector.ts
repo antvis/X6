@@ -2,22 +2,22 @@ const ua = navigator.userAgent
 
 export namespace detector {
   /**
-	 * True if the client is a Windows.
+	 * A flag indicating whether the platform is Windiws.
 	 */
   export const IS_WINDOWS = navigator.appVersion.indexOf('Win') > 0
 
   /**
-	 * True if the client is a Mac.
+	 * A flag indicating whether the platform is Mac.
 	 */
   export const IS_MAC = navigator.appVersion.indexOf('Mac') > 0
 
   /**
-   * True if the user agent is an iPad, iPhone or iPod.
+   * A flag indicating whether the platform is iPad, iPhone or iPod.
    */
   export const IS_IOS = (ua.match(/(iPad|iPhone|iPod)/g) ? true : false)
 
   /**
-	 * True if the client is a Chrome OS.
+	 * A flag indicating whether the platform is Chrome OS.
 	 */
   export const IS_CHROMEOS = /\bCrOS\b/.test(ua)
 
@@ -25,17 +25,6 @@ export namespace detector {
   export const IS_IE6 = ua.indexOf('MSIE 6') >= 0
   export const IS_IE11 = !!ua.match(/Trident\/7\./)
   export const IS_EDGE = !!ua.match(/Edge\//)
-
-  /**
-   * True if the current browser is Internet Explorer and it is in quirks mode.
-   */
-  export const IS_QUIRKS = (
-    ua.indexOf('MSIE') >= 0 &&
-    (
-      (document as any).documentMode == null ||
-      (document as any).documentMode === 5
-    )
-  )
 
   /**
    * True if the browser is IE11 in enterprise mode (IE8 standards mode).
