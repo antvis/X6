@@ -82,7 +82,7 @@ export function getRouter(name: string, allowEval: boolean = false) {
 }
 
 registerRouter(RouterNames.elbow, routers.elbow, true)
-registerRouter(RouterNames.entityRelation, routers.entityRelation, true)
+registerRouter(RouterNames.er, routers.entityRelation, true)
 registerRouter(RouterNames.loop, routers.loop, true)
 registerRouter(RouterNames.sideToSide, routers.sideToSide, true)
 registerRouter(RouterNames.topToBottom, routers.topToBottom, true)
