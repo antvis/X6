@@ -11,27 +11,27 @@ export function rectanglePerimeter(
   const cy = bounds.getCenterY()
   const dx = next.x - cx
   const dy = next.y - cy
+  const f = Math.atan2(bounds.height, bounds.width)
   const alpha = Math.atan2(dy, dx)
   const p = new Point(0, 0)
   const PI = Math.PI
   const PI_HALF = Math.PI / 2
   const beta = PI_HALF - alpha
-  const t = Math.atan2(bounds.height, bounds.width)
 
-  if (alpha < -PI + t || alpha > PI - t) {
-    // Left edge
+  if (alpha < -PI + f || alpha > PI - f) {
+    // left
     p.x = bounds.x
     p.y = cy - bounds.width * Math.tan(alpha) / 2
-  } else if (alpha < -t) {
-    // Top Edge
+  } else if (alpha < -f) {
+    // top
     p.y = bounds.y
     p.x = cx - bounds.height * Math.tan(beta) / 2
-  } else if (alpha < t) {
-    // Right Edge
+  } else if (alpha < f) {
+    // right
     p.x = bounds.x + bounds.width
     p.y = cy + bounds.width * Math.tan(alpha) / 2
   } else {
-    // Bottom Edge
+    // bottom
     p.y = bounds.y + bounds.height
     p.x = cx + bounds.height * Math.tan(beta) / 2
   }

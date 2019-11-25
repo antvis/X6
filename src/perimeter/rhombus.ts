@@ -1,6 +1,6 @@
 import { State } from '../core'
-import { intersection } from '../util'
 import { Rectangle, Point } from '../struct'
+import { getLinesIntersection } from '../util'
 
 export function rhombusPerimeter(
   bounds: Rectangle,
@@ -52,16 +52,16 @@ export function rhombusPerimeter(
   // set the slope and offset of the border line accordingly
   if (px < cx) {
     if (py < cy) {
-      return intersection(px, py, tx, ty, cx, y, x, cy)!
+      return getLinesIntersection(px, py, tx, ty, cx, y, x, cy)!
     }
 
-    return intersection(px, py, tx, ty, cx, y + h, x, cy)!
+    return getLinesIntersection(px, py, tx, ty, cx, y + h, x, cy)!
 
   }
 
   if (py < cy) {
-    return intersection(px, py, tx, ty, cx, y, x + w, cy)!
+    return getLinesIntersection(px, py, tx, ty, cx, y, x + w, cy)!
   }
 
-  return intersection(px, py, tx, ty, cx, y + h, x + w, cy)!
+  return getLinesIntersection(px, py, tx, ty, cx, y + h, x + w, cy)!
 }

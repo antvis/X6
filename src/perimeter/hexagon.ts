@@ -1,6 +1,6 @@
 import { State } from '../core'
-import { intersection } from '../util'
 import { Rectangle, Point } from '../struct'
+import { getLinesIntersection } from '../util'
 
 export function hexagonPerimeter(
   bounds: Rectangle,
@@ -23,13 +23,12 @@ export function hexagonPerimeter(
   const pi = Math.PI
   const pi2 = Math.PI / 2
 
-  let result = new Point(cx, cy)
-
   const direction = state && state.style.direction || 'east'
   const vertical = direction === 'north' || direction === 'south'
 
   let a = new Point()
   let b = new Point()
+  let result: null | Point = new Point(cx, cy)
 
   // Only consider corrects quadrants for the orthogonal case.
   if (
@@ -38,8 +37,7 @@ export function hexagonPerimeter(
     (px > x + w) && (py < y) ||
     (px > x + w) && (py > y + h)
   ) {
-    // tslint:disable-next-line
-    orthogonal = false
+    orthogonal = false // tslint:disable-line
   }
 
   if (orthogonal) {
@@ -223,7 +221,7 @@ export function hexagonPerimeter(
       }
     }
 
-    result = intersection(tx, ty, next.x, next.y, a.x, a.y, b.x, b.y)!
+    result = getLinesIntersection(tx, ty, next.x, next.y, a.x, a.y, b.x, b.y)!
 
   } else {
     if (vertical) {
@@ -349,7 +347,7 @@ export function hexagonPerimeter(
       }
     }
 
-    result = intersection(cx, cy, next.x, next.y, a.x, a.y, b.x, b.y)!
+    result = getLinesIntersection(cx, cy, next.x, next.y, a.x, a.y, b.x, b.y)
   }
 
   if (result == null) {
