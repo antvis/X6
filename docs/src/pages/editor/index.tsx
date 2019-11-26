@@ -1,8 +1,8 @@
 import React from 'react'
 import { Editor } from './editor'
-import * as x6 from '../../../../src'
+// import * as x6 from '../../../../src'
 
-console.log(x6)
+// console.log(x6)
 
 let editor: Editor
 

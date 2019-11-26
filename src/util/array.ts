@@ -80,7 +80,9 @@ export function reduce<T, U>(
   iterator: (memo: U, value: T, index: number, array: T[]) => U,
   initialValue: U,
 ): U {
-  return arr ? proto.reduce.call(arr, iterator, initialValue) : initialValue
+  return arr
+    ? proto.reduce.call(arr, iterator, initialValue)
+    : initialValue
 }
 
 export function reduceRight<T, U>(
@@ -88,7 +90,9 @@ export function reduceRight<T, U>(
   iterator: (memo: U, value: T, index: number, array: T[]) => U,
   initialValue: U,
 ): U {
-  return arr ? proto.reduceRight.call(arr, iterator, initialValue) : initialValue
+  return arr
+    ? proto.reduceRight.call(arr, iterator, initialValue)
+    : initialValue
 }
 
 /**
