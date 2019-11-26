@@ -1,6 +1,6 @@
 import * as util from '../util'
 import * as images from '../assets/images'
-import * as routers from '../router'
+import * as routers from '../route'
 import { Cell } from './cell'
 import { View } from './view'
 import { Model } from './model'
@@ -8,7 +8,6 @@ import { State } from './state'
 import { Geometry } from './geometry'
 import { Renderer } from './renderer'
 import { IHooks } from './hook'
-import { RoutingFunction } from './registry'
 import { Align, VAlign, Style, Dialect, Size } from '../types'
 import {
   SimpleOptions,
@@ -30,7 +29,6 @@ import {
   Constraint,
   Image,
   Overlay,
-  ShapeNames,
   Multiplicity,
   CellPath,
 } from '../struct'
@@ -172,7 +170,7 @@ export class Graph extends Disablable implements
   resetEdgesOnResize: boolean = false
   resetEdgesOnMove: boolean = false
   resetEdgesOnConnect: boolean = true
-  defaultLoopRouter: RoutingFunction = routers.loop
+  defaultLoopRouter: routers.Route.Router = routers.loop
   swimlaneIndicatorColorAttribute: string = 'fill'
   minFitScale: number = 0.1
   maxFitScale: number = 8
@@ -752,7 +750,7 @@ export class Graph extends Disablable implements
         const targetState = state.getVisibleTerminalState(false)
         const geo = this.getCellGeometry(state.cell)
 
-        const edgeFn = this.view.getEdgeFunction(
+        const edgeFn = this.view.getRoute(
           state, geo != null ? geo.points : null, sourceState!, targetState!,
         )
         return this.createEdgeHandler(state, edgeFn)
@@ -770,7 +768,7 @@ export class Graph extends Disablable implements
   }
 
   @hook()
-  createEdgeHandler(state: State, edgeFn: RoutingFunction | null) {
+  createEdgeHandler(state: State, edgeFn: routers.Route.Router | null) {
     let result = null
 
     if (
@@ -781,8 +779,8 @@ export class Graph extends Disablable implements
     ) {
       result = this.createElbowEdgeHandler(state)
     } else if (
-      edgeFn === routers.segmentConnector ||
-      edgeFn === routers.orthConnector
+      edgeFn === routers.segment ||
+      edgeFn === routers.orth
     ) {
       result = this.createEdgeSegmentHandler(state)
     } else {
@@ -2656,7 +2654,7 @@ export class Graph extends Disablable implements
       if (this.model.getParent(cell) !== this.model.getRoot()) {
         const style = this.getStyle(cell)
         if (style != null && !this.model.isEdge(cell)) {
-          return (style.shape === ShapeNames.swimlane)
+          return (style.shape === 'swimlane')
         }
       }
     }

@@ -1,10 +1,10 @@
 import * as images from '../assets/images'
-import { loop } from '../router'
+import { loop } from '../route/loop'
 import { Style } from '../types'
 import { detector } from '../common'
+import { PageSize } from '../struct'
 import { FullOptions } from './graph'
-import { rectanglePerimeter } from '../perimeter'
-import { ShapeNames, MarkerNames, PageSize } from '../struct'
+import { rectanglePerimeter } from '../perimeter/rectangle'
 
 const commonStyle: Style = {
   align: 'center',
@@ -133,7 +133,7 @@ export const defaultOptions: FullOptions = {
 
   nodeStyle: {
     ...commonStyle,
-    shape: ShapeNames.rectangle,
+    shape: 'rectangle',
     perimeter: rectanglePerimeter,
     fill: '#fff',
     stroke: '#000',
@@ -141,8 +141,8 @@ export const defaultOptions: FullOptions = {
 
   edgeStyle: {
     ...commonStyle,
-    shape: ShapeNames.connector,
-    endArrow: MarkerNames.classic,
+    shape: 'connector',
+    endArrow: 'classic',
     stroke: '#888',
   },
 
@@ -229,7 +229,7 @@ export const defaultOptions: FullOptions = {
     adaptive: true,
     tolerance: 4,
     visible: true,
-    shape: ShapeNames.ellipse,
+    shape: 'ellipse',
     size: 8,
     opacity: 1,
     fill: COLOR_PRIMARY,
@@ -253,7 +253,7 @@ export const defaultOptions: FullOptions = {
 
   rotateHandle: {
     image: images.rotate,
-    shape: ShapeNames.ellipse,
+    shape: 'ellipse',
     size: 10,
     opacity: 1,
     fill: COLOR_PRIMARY,
@@ -273,7 +273,7 @@ export const defaultOptions: FullOptions = {
   },
 
   labelHandle: {
-    shape: ShapeNames.ellipse,
+    shape: 'ellipse',
     size: 10,
     opacity: 1,
     fill: COLOR_PRIMARY,
@@ -290,7 +290,7 @@ export const defaultOptions: FullOptions = {
   },
 
   constraintHighlight: {
-    shape: ShapeNames.ellipse,
+    shape: 'ellipse',
     cursor: CURSOR_POINTER,
     opacity: 0.3,
     fill: 'none',
@@ -353,7 +353,7 @@ export const defaultOptions: FullOptions = {
     virtualHandlesEnabled: false,
     manageLabelHandle: false,
     // handle style
-    shape: ShapeNames.ellipse,
+    shape: 'ellipse',
     size: 8,
     fill: COLOR_PRIMARY,
     stroke: '#fff',

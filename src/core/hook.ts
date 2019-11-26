@@ -5,7 +5,7 @@ import { State } from './state'
 import { Graph } from './graph'
 import { Renderer } from './renderer'
 import { Selection } from '../manager'
-import { RoutingFunction } from './registry'
+import { Route } from '../route'
 import { Point, Constraint, Rectangle } from '../struct'
 import {
   KeyboardHandler,
@@ -56,7 +56,7 @@ export interface IHooks {
   createEdgeHandler: (
     this: Graph,
     state: State,
-    edgeFn: RoutingFunction | null,
+    edgeFn: Route.Router | null,
   ) => Nilable<EdgeHandler>
   createElbowEdgeHandler: StateHook<EdgeHandler>
   createEdgeSegmentHandler: StateHook<EdgeHandler>

@@ -1,4 +1,5 @@
-import { Graph, FontStyle, detector, DomEvent, Geometry } from '../../../../../../src'
+import { Graph, FontStyle, Geometry } from '../../../../../../src'
+import { detector, DomEvent } from '../../../../../../src/common'
 import { UndoManager } from '../../../../../../src/addon/undomanager'
 import { Clipboard } from '../../../../../../src/addon/clipboard'
 import { GuideOptions } from '../../../../../../src/handler/guide/option'

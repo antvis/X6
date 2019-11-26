@@ -1,9 +1,9 @@
 import * as util from '../util'
-import * as routers from '../router'
+import * as routers from '../route'
 import { BaseManager } from './manager-base'
 import { Graph, Cell, Geometry, State } from '../core'
 import { Style, Align, VAlign } from '../types'
-import { Point, Rectangle, Overlay, Image, ShapeNames, Constraint } from '../struct'
+import { Point, Rectangle, Overlay, Image, Constraint } from '../struct'
 
 export class CellManager extends BaseManager {
 
@@ -1030,14 +1030,14 @@ export class CellManager extends BaseManager {
       return orthogonal
     }
 
-    const tmp = this.view.getEdgeFunction(state)
+    const route = this.view.getRoute(state)
     return (
-      tmp === routers.segmentConnector ||
-      tmp === routers.elbow ||
-      tmp === routers.sideToSide ||
-      tmp === routers.topToBottom ||
-      tmp === routers.entityRelation ||
-      tmp === routers.orthConnector
+      route === routers.segment ||
+      route === routers.elbow ||
+      route === routers.sideToSide ||
+      route === routers.topToBottom ||
+      route === routers.er ||
+      route === routers.orth
     )
   }
 
@@ -1145,7 +1145,7 @@ export class CellManager extends BaseManager {
 
       // Adds dimension of image if shape is a label
       if (this.getImage(state) != null || style.image != null) {
-        if (style.shape === ShapeNames.label) {
+        if (style.shape === 'label') {
           if (style.verticalAlign === 'middle') {
             dx += style.imageWidth || 0
           }

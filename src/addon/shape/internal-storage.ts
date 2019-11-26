@@ -1,7 +1,6 @@
 import * as util from '../../util'
-import { RectangleShape } from '../../shape'
 import { SvgCanvas2D } from '../../canvas'
-import { registerShape } from '../../core'
+import { Shape, RectangleShape } from '../../shape'
 
 export class InternalStorageShape extends RectangleShape {
   dx: number = 20
@@ -41,4 +40,4 @@ export class InternalStorageShape extends RectangleShape {
   }
 }
 
-registerShape('internalStorage', InternalStorageShape)
+Shape.register('internalStorage', InternalStorageShape)

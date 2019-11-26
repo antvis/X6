@@ -63,12 +63,12 @@ export default class Routers extends React.Component {
     })
 
     graph.addEdge({
-      data: 'orthogonal',
+      data: 'orth',
       sourcePoint: { x: 320, y: 32 * 8 },
       targetPoint: { x: 520, y: 32 * 10 },
       style: {
         ...style,
-        edge: 'orthogonal',
+        edge: 'orth',
       },
     })
 

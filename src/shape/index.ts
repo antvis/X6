@@ -1,6 +1,5 @@
 export * from './shape'
 export * from './stencil'
-
 export * from './actor'
 export * from './arrow'
 export * from './arrow-connector'

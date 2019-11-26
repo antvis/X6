@@ -1,9 +1,8 @@
 import * as util from '../../util'
-import { Actor } from '../../shape'
-import { SvgCanvas2D } from '../../canvas'
-import { Rectangle } from '../../struct'
-import { registerShape } from '../../core'
 import { getFactor } from './util'
+import { Rectangle } from '../../struct'
+import { SvgCanvas2D } from '../../canvas'
+import { Shape, Actor } from '../../shape'
 
 export class TapeShape extends Actor {
   factor: number = 0.4
@@ -51,4 +50,4 @@ export class TapeShape extends Actor {
   }
 }
 
-registerShape('tape', TapeShape)
+Shape.register('tape', TapeShape)

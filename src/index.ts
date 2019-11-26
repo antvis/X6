@@ -1,14 +1,18 @@
+import './registry'
+
 import * as util from './util'
 import * as shapes from './shape'
-import * as changes from './change'
-import * as routers from './router'
-import * as perimeters from './perimeter'
 
 export * from './version'
-export * from './core'
-export * from './struct'
-export * from './canvas'
 export * from './common'
+export * from './struct'
 export * from './types'
+export * from './change'
+export * from './core'
 
-export { util, shapes, changes, routers, perimeters }
+export { Shape } from './shape'
+export { Route } from './route'
+export { Marker } from './marker'
+export { Perimeter } from './perimeter'
+
+export { util, shapes }

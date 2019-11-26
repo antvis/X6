@@ -6,6 +6,7 @@ import { SvgCanvas2D } from '../canvas'
 import { DomEvent, Disposable } from '../common'
 import { Rectangle, Point } from '../struct'
 import { Style, Direction, Dialect } from '../types'
+import { registerEntity } from '../util/biz/registry'
 
 export class Shape extends Disposable {
   state: State
@@ -108,7 +109,7 @@ export class Shape extends Disposable {
 
   image: string | null
 
-  indicatorShape: Shape.ShapeClass | null
+  indicatorShape: Shape.ShapeConstructor | null
   indicatorImage: string | null
   indicatorColor: string | null
   indicatorStrokeColor: string | null
@@ -1168,23 +1169,25 @@ export class Shape extends Disposable {
 }
 
 export namespace Shape {
-  export type ShapeClass = new (...args: any[]) => Shape
+  export type ShapeConstructor = new (...args: any[]) => Shape
 
-  const shapes: { [name: string]: ShapeClass } = {}
+  const shapes: { [name: string]: ShapeConstructor } = {}
 
-  export function registerShape(
+  export function register(
     name: string,
-    ctor: ShapeClass,
+    ctor: ShapeConstructor,
     force: boolean = false,
   ) {
-    if (shapes[name] != null && !force && !util.isApplyingHMR()) {
+    registerEntity(shapes, name, ctor, force, () => {
       throw new Error(`Shape with name '${name}' already registered.`)
-    }
-
-    shapes[name] = ctor
+    })
   }
 
   export function getShape(name?: string | null) {
     return name != null && shapes[name] || null
+  }
+
+  export function getShapeNames() {
+    return Object.keys(shapes)
   }
 }

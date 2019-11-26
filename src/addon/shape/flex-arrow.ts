@@ -1,6 +1,5 @@
 import * as util from '../../util'
-import { ArrowConnector } from '../../shape'
-import { registerShape } from '../../core'
+import { Shape, ArrowConnector } from '../../shape'
 
 export class FlexArrowShape extends ArrowConnector {
   defaultWidth = 10
@@ -33,4 +32,4 @@ export class FlexArrowShape extends ArrowConnector {
   }
 }
 
-registerShape('flexArrow', FlexArrowShape)
+Shape.register('flexArrow', FlexArrowShape)

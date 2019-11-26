@@ -1,7 +1,6 @@
-import { Actor } from '../../shape'
-import { SvgCanvas2D } from '../../canvas'
-import { registerShape } from '../../core'
 import { getFactor } from './util'
+import { SvgCanvas2D } from '../../canvas'
+import { Shape, Actor } from '../../shape'
 
 export class DataStorageShape extends Actor {
   factor: number = 0.1
@@ -24,4 +23,4 @@ export class DataStorageShape extends Actor {
   }
 }
 
-registerShape('dataStorage', DataStorageShape)
+Shape.register('dataStorage', DataStorageShape)

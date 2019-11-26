@@ -1,15 +1,16 @@
-import { DrawMarkerOptions } from './'
+import { Marker } from './'
 
 export function createOpenMarker(widthFactor: number = 2) {
-  return ({
-    c,
-    pe,
-    unitX: cos,
-    unitY: sin,
-    size,
-    sw,
-  }: DrawMarkerOptions) => {
-
+  return (
+    {
+      c,
+      pe,
+      unitX: cos,
+      unitY: sin,
+      size,
+      sw,
+    }: Marker.DrawMarkerOptions,
+  ) => {
     // The angle of the forward facing arrow sides against the x axis is
     // 26.565 degrees, 1/sin(26.565) = 2.236 / 2 = 1.118 ( / 2 allows for
     // only half the strokewidth is processed ).

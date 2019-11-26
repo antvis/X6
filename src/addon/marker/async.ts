@@ -1,6 +1,6 @@
-import { registerMarker, DrawMarkerOptions } from '../../marker'
+import { Marker } from '../../marker'
 
-registerMarker('async', (
+Marker.register('async', (
   {
     c,
     pe,
@@ -35,9 +35,15 @@ registerMarker('async', (
     c.moveTo(pt.x, pt.y)
 
     if (isSource) {
-      c.lineTo(pt.x - unitX - unitY / 2, pt.y - unitY + unitX / 2)
+      c.lineTo(
+        pt.x - unitX - unitY / 2,
+        pt.y - unitY + unitX / 2,
+      )
     } else {
-      c.lineTo(pt.x + unitY / 2 - unitX, pt.y - unitY - unitX / 2)
+      c.lineTo(
+        pt.x + unitY / 2 - unitX,
+        pt.y - unitY - unitX / 2,
+      )
     }
 
     c.lineTo(pt.x - unitX, pt.y - unitY)
@@ -52,7 +58,17 @@ registerMarker('async', (
 })
 
 function createOpenAsyncArrow(widthFactor: number = 2) {
-  return ({ c, pe, unitX, unitY, size, isSource, sw }: DrawMarkerOptions) => {
+  return (
+    {
+      c,
+      pe,
+      unitX,
+      unitY,
+      size,
+      isSource,
+      sw,
+    }: Marker.DrawMarkerOptions,
+  ) => {
     unitX = unitX * (size + sw) // tslint:disable-line
     unitY = unitY * (size + sw) // tslint:disable-line
 
@@ -79,4 +95,4 @@ function createOpenAsyncArrow(widthFactor: number = 2) {
   }
 }
 
-registerMarker('openAsync', createOpenAsyncArrow(2))
+Marker.register('openAsync', createOpenAsyncArrow(2))

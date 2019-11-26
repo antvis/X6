@@ -3,7 +3,8 @@ import { Cell } from './cell'
 import { State } from './state'
 import { Graph } from './graph'
 import { Geometry } from './geometry'
-import { getRouter, getPerimeter } from './registry'
+import { Route } from '../route'
+import { Perimeter } from '../perimeter'
 import { RectangleShape, ImageShape } from '../shape'
 import { UndoableEdit, CurrentRootChange } from '../change'
 import { Point, Rectangle, Constraint, Image } from '../struct'
@@ -747,7 +748,7 @@ export class View extends Primer {
       // source connection point
       pts.push(edgeState.absolutePoints[0])
 
-      const router = this.getEdgeFunction(
+      const router = this.getRoute(
         edgeState,
         points,
         sourceState,
@@ -1037,7 +1038,7 @@ export class View extends Primer {
   getPerimeterFunction(state: State) {
     let perimeter = state.style.perimeter
     if (typeof perimeter === 'string') {
-      perimeter = getPerimeter(perimeter, this.isAllowEval())
+      perimeter = Perimeter.getPerimeter(perimeter, this.isAllowEval())
     }
 
     if (typeof perimeter === 'function') {
@@ -1100,7 +1101,7 @@ export class View extends Primer {
   /**
    * Returns the edge style function to be used to render the given edge state.
    */
-  getEdgeFunction(
+  getRoute(
     edgeState: State,
     points?: Point[] | null,
     sourceState?: State | null,
@@ -1116,7 +1117,7 @@ export class View extends Primer {
 
     // Converts string values to objects
     if (typeof edge === 'string') {
-      edge = getRouter(edge, this.isAllowEval())
+      edge = Route.getRouter(edge, this.isAllowEval())
     }
 
     if (typeof edge === 'function') {

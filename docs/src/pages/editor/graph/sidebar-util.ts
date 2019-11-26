@@ -1,7 +1,7 @@
 import { EditorGraph } from './graph'
 import { util, Point, Style, Cell } from '../../../../../src'
-import arrowUrl from '../../../../../src/addon/stencils/arrows.xml'
-import flowchartUrl from '../../../../../src/addon/stencils/flowchart.xml'
+import arrowUrl from '../../../../../src/addon/stencil/arrows.xml'
+import flowchartUrl from '../../../../../src/addon/stencil/flowchart.xml'
 import { StencilRegistry } from './stencil-registry'
 import { DataItem, generals, getUMLPaletteItems } from './sidebar-data'
 

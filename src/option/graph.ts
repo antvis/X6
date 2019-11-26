@@ -1,6 +1,6 @@
 import * as util from '../util'
 import { Graph } from '../core'
-import { RoutingFunction } from '../core/registry'
+import { Route } from '../route'
 import { Dialect, Style, Size } from '../types'
 import { Image, Multiplicity, Rectangle } from '../struct'
 import { defaultOptions } from './preset'
@@ -332,7 +332,7 @@ export interface SimpleOptions {
    */
   resetEdgesOnConnect: boolean
 
-  defaultLoopRouter: RoutingFunction
+  defaultLoopRouter: Route.Router
 
   /**
    * The attribute used to find the color for the indicator if

@@ -1,10 +1,11 @@
 import * as util from '../../util'
-import { Actor } from '../../shape'
-import { SvgCanvas2D } from '../../canvas'
-import { Point, Rectangle } from '../../struct'
-import { State, registerShape, registerPerimeter } from '../../core'
-import { rectanglePerimeter } from '../../perimeter'
 import { getFactor } from './util'
+import { State } from '../../core'
+import { Shape, Actor } from '../../shape'
+import { SvgCanvas2D } from '../../canvas'
+import { Perimeter } from '../../perimeter'
+import { Point, Rectangle } from '../../struct'
+import { rectanglePerimeter } from '../../perimeter/rectangle'
 
 export class CalloutShape extends Actor {
   base = 20
@@ -69,5 +70,5 @@ export function calloutPerimeter(
   return rectanglePerimeter(directedBounds, state, next, orthogonal)
 }
 
-registerShape('callout', CalloutShape)
-registerPerimeter('calloutPerimeter', calloutPerimeter)
+Shape.register('callout', CalloutShape)
+Perimeter.register('calloutPerimeter', calloutPerimeter)

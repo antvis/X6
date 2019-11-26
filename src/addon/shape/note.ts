@@ -1,7 +1,6 @@
 import * as util from '../../util'
-import { Cylinder } from '../../shape'
 import { SvgCanvas2D } from '../../canvas'
-import { registerShape } from '../../core'
+import { Shape, Cylinder } from '../../shape'
 
 export class NoteShape extends Cylinder {
   factor: number = 30
@@ -55,4 +54,4 @@ export class NoteShape extends Cylinder {
   }
 }
 
-registerShape('note', NoteShape)
+Shape.register('note', NoteShape)

@@ -21,7 +21,7 @@ import { Point, DirectionMask } from '../struct'
  * @param points List of relative control points.
  * @param result The actual points of the edge.
  */
-export function entityRelation(
+export function er(
   edgeState: State,
   sourceState: State,
   targetState: State,

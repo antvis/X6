@@ -1,7 +1,7 @@
 import * as util from '../util'
 import { State } from '../core'
 import { Point, Rectangle, DirectionMask } from '../struct'
-import { segmentConnector } from './seg'
+import { segment } from './segment'
 
 const orthBuffer = 10
 const orthPointsFallback = true
@@ -124,7 +124,7 @@ function getJettySize(
  * edge.
  *
  */
-export function orthConnector(
+export function orth(
   edgeState: State,
   sourceState: State,
   targetState: State,
@@ -177,7 +177,7 @@ export function orthConnector(
     (orthPointsFallback && (points != null && points.length > 0)) ||
     sourceEdge || targetEdge
   ) {
-    segmentConnector(edgeState, sourceState, targetState, points, result)
+    segment(edgeState, sourceState, targetState, points, result)
     return
   }
 

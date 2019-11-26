@@ -1,10 +1,9 @@
 import * as util from '../../util'
-import { RectangleShape } from '../../shape'
+import { getFactor } from './util'
 import { SvgCanvas2D } from '../../canvas'
 import { Rectangle } from '../../struct'
 import { Direction } from '../../types'
-import { registerShape } from '../../core'
-import { getFactor } from './util'
+import { Shape, RectangleShape } from '../../shape'
 
 export class ProcessShape extends RectangleShape {
   factor: number = 0.1
@@ -67,4 +66,4 @@ export class ProcessShape extends RectangleShape {
   }
 }
 
-registerShape('process', ProcessShape)
+Shape.register('process', ProcessShape)

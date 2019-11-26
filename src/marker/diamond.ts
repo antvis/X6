@@ -1,23 +1,23 @@
-import { MarkerNames } from '../struct'
-import { DrawMarkerOptions } from './'
+import { Marker } from './'
 
-export function diamond({
-  c,
-  name,
-  pe,
-  unitX: cos,
-  unitY: sin,
-  size,
-  sw,
-  filled,
-}: DrawMarkerOptions) {
-
+export function diamond(
+  {
+    c,
+    name,
+    pe,
+    unitX: cos,
+    unitY: sin,
+    size,
+    sw,
+    filled,
+  }: Marker.DrawMarkerOptions,
+) {
   // The angle of the forward facing arrow sides against the x axis is
   // 45 degrees, 1/sin(45) = 1.4142 / 2 = 0.7071 ( / 2 allows for
   // only half the strokewidth is processed ). Or 0.9862 for thin diamond.
   // Note these values and the tk variable below are dependent, update
   // both together (saves trig hard coding it).
-  const swFactor = (name === MarkerNames.diamond) ? 0.7071 : 0.9862
+  const swFactor = (name === 'diamond') ? 0.7071 : 0.9862
 
   const endOffsetX = cos * sw * swFactor
   const endOffsetY = sin * sw * swFactor
@@ -32,7 +32,7 @@ export function diamond({
   pe.y += -unitY - endOffsetY
 
   // thickness factor for diamond
-  const tk = ((name === MarkerNames.diamond) ? 2 : 3.4)
+  const tk = ((name === 'diamond') ? 2 : 3.4)
 
   return function () {
     c.begin()

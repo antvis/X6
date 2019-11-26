@@ -16,7 +16,6 @@ export default class CustomRender extends React.Component {
         width: 80,
         height: 30,
         render(elem, cell) {
-          console.log(cell)
           const rect = elem.querySelector('rect') as SVGRectElement
           rect.style.stroke = '#ff0000'
           rect.style.strokeWidth = '2'
