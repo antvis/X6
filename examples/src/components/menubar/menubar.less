@@ -1,0 +1,109 @@
+@menubar-menu-item-color: #616161;
+@menubar-menu-item-hover-color: #212121;
+@menubar-menu-item-hover-bg: rgba(255,255,255,0);
+@menubar-menu-item-active-color: #212121;
+@menubar-menu-item-active-bg: #ffffff;
+@menubar-item-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+
+:global {
+  .x6-menubar {
+    display: flex;
+    flex: 1;
+    flex-direction: row;
+    margin: 0;
+    padding: 0;
+
+    .x6-menubar-content {
+      display: flex;
+      flex: 1 1;
+      flex-direction: row;
+      justify-content: space-between;
+    }
+
+    .x6-menubar-content-inner,
+    .x6-menubar-content-extras,
+    .x6-menubar-item,
+    .x6-menubar-item-text {
+      position: relative;
+      display: inline-flex;
+      flex-direction: row;
+    }
+
+    .x6-menubar-content-extras {
+      align-content: center;
+      align-items: center;
+    }
+
+    .x6-menubar-item {
+      position: relative;
+    }
+
+    .x6-menubar-item-hidden {
+      display: none;
+    }
+
+    .x6-menubar-item-text {
+      position: relative;
+      font-size: 12px;
+      align-content: center;
+      align-items: center;
+      padding: 0 10px;
+      cursor: pointer;
+      user-select: none;
+      color: @menubar-menu-item-color;
+
+      &:hover {
+        color: @menubar-menu-item-hover-color;
+        background: @menubar-menu-item-hover-bg;
+      }
+    }
+
+    .x6-menubar-item-text-active,
+    .x6-menubar-item-text-active:hover {
+      color: @menubar-menu-item-active-color;
+      background: @menubar-menu-item-active-bg;
+      box-shadow: @menubar-item-shadow;
+
+      &::after {
+        position: absolute;
+        z-index: 10000;
+        bottom: 2px;
+        left: 0;
+        width: 100%;
+        height: 6px;
+        content: ' ';
+        background: @menubar-menu-item-active-bg;
+      }
+    }
+
+    .x6-menubar-item-dropdown {
+      position: absolute;
+      z-index: 9999;
+      top: 28px;
+      left: 0;
+      visibility: hidden;
+      min-height: 34px;
+      transition: all 0.25s cubic-bezier(0.3, 1.2, 0.2, 1);
+      transform: translateY(-10px);
+      opacity: 0;
+
+      .x6-menu {
+        min-width: 240px;
+      }
+
+      & > .x6-menu {
+        border-radius: 0 4px 4px 4px;
+      }
+
+      .x6-menu-submenu-menu {
+        border-radius: 4px;
+      }
+    }
+
+    .x6-menubar-item-active > .x6-menubar-item-dropdown {
+      visibility: visible;
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+}
