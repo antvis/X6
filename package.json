@@ -14,10 +14,12 @@
     "src": "src/"
   },
   "keywords": [
+    "x6",
     "diagram",
     "flowchart",
     "uml",
     "graph",
+    "x6-editor",
     "editor",
     "svg"
   ],
@@ -51,6 +53,14 @@
   },
   "contributors": [],
   "license": "MIT",
+  "homepage": "https://github.com/antvis/x6",
+  "bugs": {
+    "url": "https://github.com/antvis/x6/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/antvis/x6.git"
+  },
   "devDependencies": {
     "@types/jest": "^24.0.17",
     "@types/sinon": "^7.5.0",
