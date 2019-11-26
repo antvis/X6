@@ -1,5 +1,5 @@
-import * as routers from '../../router'
 import * as util from '../../util'
+import * as routers from '../../route'
 import { Cell, State, Graph } from '../../core'
 import { Rectangle, Point, Constraint } from '../../struct'
 import { Shape, RectangleShape } from '../../shape'
@@ -379,11 +379,11 @@ export class EdgeHandler extends MouseHandler {
     const geo = this.graph.getCellGeometry(this.state.cell)
     const sourceState = this.state.getVisibleTerminalState(true)
     const targetState = this.state.getVisibleTerminalState(false)
-    const edgeFn = (geo != null) ? this.graph.view.getEdgeFunction(
+    const edgeFn = (geo != null) ? this.graph.view.getRoute(
       this.state, geo.points, sourceState, targetState,
     ) : null
 
-    return edgeFn !== routers.entityRelation
+    return edgeFn !== routers.er
   }
 
   protected isHandleEnabled(index: number) {

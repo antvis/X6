@@ -2,8 +2,8 @@ import * as util from '../util'
 import { Graph, State } from '../core'
 import { MouseEventEx } from '../common'
 import { COLOR_PRIMARY } from '../option/preset'
+import { Rectangle, Point, Image } from '../struct'
 import { Shape, ImageShape, EllipseShape } from '../shape'
-import { Rectangle, Point, Image, ShapeNames } from '../struct'
 
 export class Handle {
   graph: Graph
@@ -28,7 +28,7 @@ export class Handle {
 
     this.ignoreGrid = options.ignoreGrid === true || false
     this.image = options.image || null
-    this.shapeName = options.shape || ShapeNames.ellipse
+    this.shapeName = options.shape || 'ellipse'
     this.size = options.size || 8
     this.stroke = options.stroke || COLOR_PRIMARY
     this.strokeWidth = options.strokeWidth != null ? options.strokeWidth : 1

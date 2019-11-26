@@ -1,7 +1,6 @@
 import React from 'react'
-import { Graph, Style } from '../../../../src'
-import { getMakerNames } from '../../../../src/marker'
-import '../../../../src/addon/markers'
+import { Graph, Style, Marker } from '../../../../src'
+import '../../../../src/addon/marker'
 
 export default class Markers extends React.Component {
   private container: HTMLDivElement
@@ -10,7 +9,7 @@ export default class Markers extends React.Component {
     const graph = new Graph(this.container)
     const style: Style = { labelBackgroundColor: '#fff' }
     graph.batchUpdate(() => {
-      getMakerNames().forEach((name, i) => {
+      Marker.getMakerNames().forEach((name, i) => {
         graph.addEdge({
           data: name,
           sourcePoint: { x: 24, y: 32 * (i + 1) },

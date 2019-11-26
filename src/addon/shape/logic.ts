@@ -1,6 +1,5 @@
-import { Actor } from '../../shape'
 import { SvgCanvas2D } from '../../canvas'
-import { registerShape } from '../../core'
+import { Shape, Actor } from '../../shape'
 
 export class OrShape extends Actor {
   redrawPath(
@@ -35,5 +34,5 @@ export class XorShape extends Actor {
   }
 }
 
-registerShape('or', OrShape)
-registerShape('xor', XorShape)
+Shape.register('or', OrShape)
+Shape.register('xor', XorShape)

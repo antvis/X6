@@ -1,18 +1,18 @@
-import { MarkerNames } from '../struct'
-import { DrawMarkerOptions } from './'
+import { Marker } from './'
 
 export function createClassicMarker(widthFactor: number = 2) {
-  return function ({
-    c,
-    name,
-    pe,
-    unitX: cos,
-    unitY: sin,
-    size,
-    sw,
-    filled,
-  }: DrawMarkerOptions) {
-
+  return function (
+    {
+      c,
+      name,
+      pe,
+      unitX: cos,
+      unitY: sin,
+      size,
+      sw,
+      filled,
+    }: Marker.DrawMarkerOptions,
+  ) {
     // The angle of the forward facing arrow sides against the x axis is
     // 26.565 degrees, 1/sin(26.565) = 2.236 / 2 = 1.118 ( / 2 allows for
     // only half the strokewidth is processed ).
@@ -27,8 +27,8 @@ export function createClassicMarker(widthFactor: number = 2) {
     pt.y -= endOffsetY
 
     const f = (
-      name !== MarkerNames.classic &&
-      name !== MarkerNames.classicThin
+      name !== 'classic' &&
+      name !== 'classicThin'
     ) ? 1 : 3 / 4
 
     // update the end point on edge
@@ -44,8 +44,8 @@ export function createClassicMarker(widthFactor: number = 2) {
       )
 
       if (
-        name === MarkerNames.classic ||
-        name === MarkerNames.classicThin
+        name === 'classic' ||
+        name === 'classicThin'
       ) {
         c.lineTo(pt.x - unitX * 3 / 4, pt.y - unitY * 3 / 4)
       }

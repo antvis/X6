@@ -1,8 +1,6 @@
 import { FontStyle } from './struct'
-import {
-  RoutingFunction,
-  PerimeterFunction,
-} from './core/registry'
+import { Route } from './route'
+import { Perimeter } from './perimeter'
 
 export type Dialect = 'svg' | 'html'
 export type Align = 'left' | 'center' | 'right'
@@ -129,8 +127,8 @@ interface LabelStyle {
 }
 
 interface EdgeStyle {
-  edge?: string | RoutingFunction | null
-  perimeter?: string | PerimeterFunction | null
+  edge?: string | Route.Router | null
+  perimeter?: string | Perimeter.PerimeterFunction | null
 
   /**
    * If this is true then no edge style is applied for a given edge.

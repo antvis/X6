@@ -1,6 +1,5 @@
 import { Shape } from '../../shape'
 import { SvgCanvas2D } from '../../canvas'
-import { registerShape } from '../../core'
 
 export class UmlActorShape extends Shape {
   drawBackground(
@@ -37,4 +36,4 @@ export class UmlActorShape extends Shape {
   }
 }
 
-registerShape('umlActor', UmlActorShape)
+Shape.register('umlActor', UmlActorShape)

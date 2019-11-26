@@ -1,7 +1,5 @@
 import React from 'react'
-import {
-  Graph, Point, Constraint, ShapeNames, perimeters,
-} from '../../../../src'
+import { Graph, Point, Constraint } from '../../../../src'
 // import * as images from '../../../../src/assets/images'
 
 export default class Constraints extends React.Component {
@@ -39,8 +37,8 @@ export default class Constraints extends React.Component {
         data: 'Triangle',
         x: 20, y: 20, width: 80, height: 60,
         style: {
-          shape: ShapeNames.triangle,
-          perimeter: perimeters.trianglePerimeter,
+          shape: 'triangle',
+          perimeter: 'triangle',
         },
       })
 
@@ -53,8 +51,8 @@ export default class Constraints extends React.Component {
         data: 'Ellipse',
         x: 200, y: 150, width: 80, height: 60,
         style: {
-          shape: ShapeNames.ellipse,
-          perimeter: perimeters.ellipsePerimeter,
+          shape: 'ellipse',
+          perimeter: 'ellipse',
         },
       })
 

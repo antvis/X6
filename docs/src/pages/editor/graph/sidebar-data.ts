@@ -1,4 +1,4 @@
-import '../../../../../src/addon/shapes'
+import '../../../../../src/addon/shape'
 import { Style, Point, Cell, Geometry } from '../../../../../src'
 import {
   PaletteItem,

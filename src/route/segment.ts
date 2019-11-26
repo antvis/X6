@@ -4,7 +4,7 @@ import { Point } from '../struct'
 /**
  * Orthogonal edge style.
  */
-export function segmentConnector(
+export function segment(
   edgeState: State,
   sourceState: State,
   targetState: State,

@@ -1,8 +1,9 @@
 import * as util from '../../util'
-import { Actor } from '../../shape'
+import { State } from '../../core'
 import { SvgCanvas2D } from '../../canvas'
+import { Shape, Actor } from '../../shape'
+import { Perimeter } from '../../perimeter'
 import { Point, Rectangle } from '../../struct'
-import { State, registerShape, registerPerimeter } from '../../core'
 import { getFactor } from './util'
 
 export class ParallelogramShape extends Actor {
@@ -88,5 +89,5 @@ export function parallelogramPerimeter(
   return util.getPerimeterPoint(points, center, next) as Point
 }
 
-registerShape('parallelogram', ParallelogramShape)
-registerPerimeter('parallelogramPerimeter', parallelogramPerimeter)
+Shape.register('parallelogram', ParallelogramShape)
+Perimeter.register('parallelogramPerimeter', parallelogramPerimeter)

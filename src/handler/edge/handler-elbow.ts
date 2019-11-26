@@ -1,6 +1,6 @@
-import * as routers from '../../router'
+import * as routers from '../../route'
 import { DomEvent } from '../../common'
-import { Rectangle, Point, RouterNames } from '../../struct'
+import { Rectangle, Point } from '../../struct'
 import { EdgeHandler } from './handler'
 
 export class EdgeElbowHandler extends EdgeHandler {
@@ -51,11 +51,11 @@ export class EdgeElbowHandler extends EdgeHandler {
     const edge = this.state.style.edge as any
     return (
       edge === routers.topToBottom ||
-      edge === RouterNames.topToBottom ||
+      edge === 'topToBottom' ||
       (
         (
           edge === routers.elbow ||
-          edge === RouterNames.elbow
+          edge === 'elbow'
         ) &&
         this.state.style.elbow === 'vertical'
       )
