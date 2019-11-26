@@ -49,6 +49,11 @@ $ yarn build
 
 # run test
 $ yarn test
+
+# run examples
+$ cd expamples
+$ yarn 
+$ yarn start
 ```
 
 ## Contributing
