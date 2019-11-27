@@ -1,4 +1,5 @@
 import * as util from '../util'
+import { preset } from '../option'
 import { Shape } from './shape'
 import { SvgCanvas2D } from '../canvas'
 import { Rectangle } from '../struct'
@@ -29,11 +30,11 @@ export class Swimlane extends Shape {
   }
 
   getTitleSize() {
-    return Math.max(0, this.style.startSize || 40)
+    return Math.max(0, this.style.startSize || preset.defaultStartSize)
   }
 
   getArcSize(w: number, h: number, start: number) {
-    const f = (this.style.arcSize || 15) / 100
+    const f = (this.style.arcSize || preset.rectangleRoundFactor * 100) / 100
     return start * f * 3
   }
 

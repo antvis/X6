@@ -1,6 +1,7 @@
 import * as util from '../util'
 import { State } from './state'
 import { Dialect } from '../types'
+import { preset } from '../option'
 import { Rectangle, Point, Overlay } from '../struct'
 import {
   detector,
@@ -919,10 +920,10 @@ export class Renderer {
     }
 
     return (
-      check('fontStyle', 'fontStyle', 0) ||
-      check('family', 'fontFamily', 'Arial,Helvetica') ||
-      check('size', 'fontSize', 12) ||
-      check('color', 'fontColor', 'black') ||
+      check('fontStyle', 'fontStyle', preset.defaultFontStyle) ||
+      check('family', 'fontFamily', preset.defaultFontFamily) ||
+      check('size', 'fontSize', preset.defaultFontSize) ||
+      check('color', 'fontColor', preset.defaultFontColor) ||
       check('align', 'align', '') ||
       check('valign', 'verticalAlign', '') ||
       check('spacing', 'spacing', 2) ||

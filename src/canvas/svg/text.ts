@@ -1,6 +1,7 @@
 /* tslint:disable:no-parameter-reassignment */
 
 import * as util from '../../util'
+import { preset } from '../../option'
 import { Align, VAlign } from '../../types'
 import { Rectangle, FontStyle } from '../../struct'
 import { SvgCanvas2DBase } from './base'
@@ -47,8 +48,8 @@ export class SvgCanvas2DText extends SvgCanvas2DBase {
    * Default is 1.
    */
   lineHeightCorrection: number = 1
-  lineHeight: number = 1.2
-  absoluteLineHeight: boolean = false
+  lineHeight: number = preset.defaultLineHeight
+  absoluteLineHeight: boolean = preset.defaultAbsoluteLineHeight
 
   /**
    * Specifies if offsetWidth and offsetHeight should be cached.

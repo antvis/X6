@@ -1,4 +1,5 @@
 import * as util from '../util'
+import { preset } from '../option'
 import { State } from '../core'
 import { Point, Rectangle, DirectionMask } from '../struct'
 import { segment } from './segment'
@@ -95,7 +96,7 @@ function getJettySize(
       const size = (isSource
         ? edgeState.style.startSize
         : edgeState.style.endSize
-      ) || 6
+      ) || preset.defaultMarkerSize
 
       value = Math.max(
         2,

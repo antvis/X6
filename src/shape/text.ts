@@ -1,4 +1,5 @@
 import * as util from '../util'
+import { preset } from '../option'
 import { Shape } from './shape'
 import { SvgCanvas2D } from '../canvas'
 import { State } from '../core'
@@ -61,12 +62,12 @@ export class Text extends Shape {
     super()
     this.value = value
     this.bounds = bounds
-    this.fontColor = color != null ? color : '#000000'
+    this.fontColor = color != null ? color : preset.defaultFontColor
     this.align = align != null ? align : 'center'
     this.verticalAlign = valign != null ? valign : 'middle'
-    this.fontFamily = fontFamily != null ? fontFamily : 'Arial,Helvetica'
-    this.fontSize = fontSize != null ? fontSize : 12
-    this.fontStyle = fontStyle != null ? fontStyle : 0
+    this.fontFamily = fontFamily != null ? fontFamily : preset.defaultFontFamily
+    this.fontSize = fontSize != null ? fontSize : preset.defaultFontSize
+    this.fontStyle = fontStyle != null ? fontStyle : preset.defaultFontStyle
     this.spacing = parseInt(spacing as any || 2, 10)
     this.spacingTop = this.spacing + parseInt(spacingTop as any || 0, 10)
     this.spacingRight = this.spacing + parseInt(spacingRight as any || 0, 10)
@@ -640,7 +641,7 @@ export class Text extends Shape {
           css += `border:1px solid ${bd}; `
         }
 
-        const lh = `${this.fontSize * 1.2}px`
+        const lh = `${this.fontSize * preset.defaultLineHeight}px`
 
         val = `<div
         style="zoom:1; ${css} display: inline-block; _display:inline;
@@ -670,7 +671,7 @@ export class Text extends Shape {
   updateFont(elem: HTMLElement) {
     const style = elem.style
 
-    style.lineHeight = `${this.fontSize * 1.2}px`
+    style.lineHeight = `${this.fontSize * preset.defaultLineHeight}px`
     style.fontSize = `${this.fontSize}px`
     style.fontFamily = this.fontFamily
     style.verticalAlign = 'top'

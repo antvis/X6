@@ -1,4 +1,5 @@
 import * as util from '../../util'
+import { preset } from '../../option'
 import { Direction } from '../../types'
 import { Canvas2D } from '../canvas2d'
 import { SvgCanvas2D } from './index'
@@ -95,8 +96,8 @@ export abstract class SvgCanvas2DBase extends Canvas2D {
       style,
       'svg {' +
       '  fill: none; ' +
-      '  font-size: 12; ' +
-      '  font-family: Arial,Helvetica; ' +
+      `  font-size: ${preset.defaultFontSize}; ` +
+      `  font-family: ${preset.defaultFontFamily}; ` +
       '  stroke-miterlimit: 10;' +
       '}',
     )

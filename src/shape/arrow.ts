@@ -1,3 +1,4 @@
+import { preset } from '../option'
 import { Shape } from './shape'
 import { Rectangle, Point } from '../struct'
 import { SvgCanvas2D } from '../canvas'
@@ -19,9 +20,9 @@ export class Arrow extends Shape {
     this.fillColor = fillColor
     this.strokeColor = strokeColor
     this.strokeWidth = strokewidth != null ? strokewidth : 1
-    this.arrowWidth = arrowWidth != null ? arrowWidth : 30
-    this.spacing = spacing != null ? spacing : 0
-    this.endSize = endSize != null ? endSize : 30
+    this.arrowWidth = arrowWidth != null ? arrowWidth : preset.defaultArrowWidth
+    this.spacing = spacing != null ? spacing : preset.defaultArrowSpacing
+    this.endSize = endSize != null ? endSize : preset.defaultArrowSize
   }
 
   augmentBoundingBox(bbox: Rectangle) {

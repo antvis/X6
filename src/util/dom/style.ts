@@ -1,5 +1,6 @@
 import { Point } from '../../struct'
 import { detector } from '../../common'
+import { preset } from '../../option'
 import { ucFirst } from '../string/common'
 import { getDocumentMode } from './attr'
 
@@ -182,15 +183,15 @@ export function getOffset(
 
 export function getSizeForString(
   text: string,
-  fontSize: number = 12,
-  fontFamily: string = 'Arial,Helvetica',
+  fontSize: number = preset.defaultFontSize,
+  fontFamily: string = preset.defaultFontFamily,
   textWidth?: number,
 ) {
   const div = document.createElement('div')
 
   div.style.fontFamily = fontFamily
   div.style.fontSize = `${Math.round(fontSize)}px`
-  div.style.lineHeight = `${Math.round(fontSize * 1.2)}`
+  div.style.lineHeight = `${Math.round(fontSize * preset.defaultLineHeight)}`
 
   // Disables block layout and outside wrapping and hides the div
   div.style.position = 'absolute'

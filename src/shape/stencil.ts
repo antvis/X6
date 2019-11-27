@@ -3,6 +3,7 @@ import { Shape } from './shape'
 import { SvgCanvas2D } from '../canvas'
 import { Point, Constraint, NodeType } from '../struct'
 import { Direction, Align, VAlign, LineCap, LineJoin } from '../types'
+import { preset } from '../option'
 
 export class Stencil extends Shape {
   width: number
@@ -275,7 +276,10 @@ export class Stencil extends Shape {
           this.getAttributeNumber(node, 'h') * sy,
         )
       } else if (name === 'roundrect') {
-        const arcsize = this.getAttributeNumber(node, 'arcsize') || 15
+        const arcsize = (
+          this.getAttributeNumber(node, 'arcsize') ||
+          preset.rectangleRoundFactor * 100
+        )
         const w = this.getAttributeNumber(node, 'w') * sx
         const h = this.getAttributeNumber(node, 'h') * sy
         const f = arcsize / 100

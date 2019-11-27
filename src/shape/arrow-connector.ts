@@ -1,4 +1,5 @@
 import * as util from '../util'
+import { preset } from '../option'
 import { Shape } from './shape'
 import { State } from '../core'
 import { SvgCanvas2D } from '../canvas'
@@ -14,10 +15,10 @@ export class ArrowConnector extends Shape {
     fill: string = 'none',
     stroke: string = 'none',
     strokewidth: number = 1,
-    arrowWidth: number = 30,
-    spacing: number = 0,
-    startSize: number = 30 / 5,
-    endSize: number = 30 / 5,
+    arrowWidth: number = preset.defaultArrowWidth,
+    spacing: number = preset.defaultArrowSpacing,
+    startSize: number = preset.defaultArrowSize / 5,
+    endSize: number = preset.defaultArrowSize / 5,
   ) {
     super()
 
@@ -33,15 +34,15 @@ export class ArrowConnector extends Shape {
 
   resetStyle() {
     super.resetStyle()
-    this.arrowSpacing = 0
+    this.arrowSpacing = preset.defaultArrowSpacing
   }
 
   apply(state: State) {
     super.apply(state)
 
     if (this.style != null) {
-      this.startSize = (this.style.startSize || 30 / 5) * 3
-      this.endSize = (this.style.endSize || 30 / 5) * 3
+      this.startSize = (this.style.startSize || preset.defaultArrowSize / 5) * 3
+      this.endSize = (this.style.endSize || preset.defaultArrowSize / 5) * 3
     }
   }
 
@@ -408,15 +409,15 @@ export class ArrowConnector extends Shape {
   }
 
   getEdgeWidth() {
-    return 30 / 3
+    return preset.defaultArrowSize / 3
   }
 
   getStartArrowWidth() {
-    return 30
+    return preset.defaultArrowSize
   }
 
   getEndArrowWidth() {
-    return 30
+    return preset.defaultArrowSize
   }
 
   isOpenEnded() {

@@ -1,5 +1,6 @@
 import * as util from '../util'
 import { Direction, LineCap, LineJoin } from '../types'
+import { preset } from '../option'
 
 export abstract class Canvas2D {
   state: Canvas2D.State
@@ -56,18 +57,18 @@ export abstract class Canvas2D {
       lineJoin: 'miter',
       miterLimit: 10,
 
-      fontSize: 12,
-      fontStyle: 0,
-      fontColor: '#000000',
-      fontFamily: 'Arial,Helvetica',
+      fontSize: preset.defaultFontSize,
+      fontStyle: preset.defaultFontStyle,
+      fontColor: preset.defaultFontColor,
+      fontFamily: preset.defaultFontFamily,
       fontBorderColor: null,
       fontBackgroundColor: null,
 
       shadow: false,
-      shadowColor: 'gray',
-      shadowOpacity: 1,
-      shadowOffsetX: 2,
-      shadowOffsetY: 3,
+      shadowColor: preset.defaultShadowColor,
+      shadowOpacity: preset.defaultShadowOpacity,
+      shadowOffsetX: preset.defaultShadowOffsetX,
+      shadowOffsetY: preset.defaultShadowOffsetY,
 
       rotation: 0,
       rotationCenterX: 0,
