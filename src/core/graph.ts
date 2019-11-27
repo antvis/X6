@@ -15,6 +15,7 @@ import {
   GraphOptions,
   getOptions,
   applyOptions,
+  preset,
 } from '../option'
 import {
   detector,
@@ -2726,7 +2727,7 @@ export class Graph extends Disablable implements
     const result = new Rectangle()
     const style = this.getStyle(swimlane)
     if (style != null) {
-      const size = style.startSize || 40
+      const size = style.startSize || preset.defaultStartSize
       if (style.horizontal !== false) {
         result.height = size
       } else {

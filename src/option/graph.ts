@@ -3,7 +3,7 @@ import { Graph } from '../core'
 import { Route } from '../route'
 import { Dialect, Style, Size } from '../types'
 import { Image, Multiplicity, Rectangle } from '../struct'
-import { defaultOptions } from './preset'
+import { preset } from './preset'
 import { TooltipOptions } from '../handler/tooltip/option'
 import { ContextMenuOptions } from '../handler/contextmenu/option'
 import { KeyboardOptions } from '../handler/keyboard/option'
@@ -108,6 +108,110 @@ export interface CompositeOptions {
    * Default is `true`.
    */
   escapeEnabled: boolean
+}
+
+export interface GlobalConfig {
+  trackable: boolean
+  trackInfo: { [key: string]: any }
+  defaultShadowColor: string
+  defaultShadowOffsetX: number
+  defaultShadowOffsetY: number
+  defaultShadowOpacity: number
+
+  /**
+   * Defines the default style for all fonts.
+   *
+   * Default is `0`.
+   */
+  defaultFontStyle: number
+
+  /**
+   * Defines the default size for all fonts.
+   *
+   * Default is `12`.
+   */
+  defaultFontSize: number
+
+  /**
+   * Defines the default family for all fonts.
+   *
+   * Default is `Arial,Helvetica`.
+   */
+  defaultFontFamily: string
+
+  /**
+   * Defines the default color for all fonts.
+   *
+   * Default is `#000000`.
+   */
+  defaultFontColor: string
+  defaultLineHeight: number
+  defaultAbsoluteLineHeight: boolean
+
+  /**
+   * Defines the default start size for swimlanes.
+   *
+   * Default is `40`.
+   */
+  defaultStartSize: number
+
+  /**
+   * Defines the default size for all markers.
+   *
+   * Default is `6`.
+   */
+  defaultMarkerSize: number
+
+  /**
+   * Defines the default width and height for images used in the
+   * label shape.
+   *
+   * Default is `24`.
+   */
+  defaultImageSize: number
+
+  /**
+   * Defines the length of the horizontal segment of an Entity Relation.
+   *
+   * Default is `30`.
+   */
+  defaultSegmentLength: number
+
+  /**
+   * Defines the rounding factor for rounded rectangles in percent between
+   * `0` and `1`. Values should be smaller than `0.5`.
+   *
+   * Default is `0.15`.
+   */
+  rectangleRoundFactor: number
+
+  /**
+   * Defines the size of the arcs for rounded edges.
+   *
+   * Default is `20`.
+   */
+  defaultLineArcSize: number
+
+  /**
+  * Defines the spacing between the arrow shape and its terminals.
+  *
+  * Default is `0`.
+  */
+  defaultArrowSpacing: number
+
+  /**
+   * Defines the width of the arrow shape.
+   *
+   * Default is `30`.
+   */
+  defaultArrowWidth: number
+
+  /**
+   * Defines the size of the arrowhead in the arrow shape.
+   *
+   * Default is `30`.
+   */
+  defaultArrowSize: number
 }
 
 export interface SimpleOptions {
@@ -752,7 +856,7 @@ export interface FoldingOptions {
   expandedImage: Image
 }
 
-export interface FullOptions extends SimpleOptions {
+export interface FullOptions extends SimpleOptions, GlobalConfig {
   nodeStyle: Style
   edgeStyle: Style
   grid: GridOptions
@@ -782,7 +886,9 @@ export interface FullOptions extends SimpleOptions {
   edgeHandle: EdgeHandleOptions
 }
 
-export interface GraphOptions extends Partial<SimpleOptions> {
+export interface GraphOptions extends
+  Partial<SimpleOptions>,
+  Partial<GlobalConfig> {
   nodeStyle?: Style
   edgeStyle?: Style
   grid?: Partial<GridOptions> | boolean
@@ -813,7 +919,7 @@ export interface GraphOptions extends Partial<SimpleOptions> {
 }
 
 export function getOptions(options: GraphOptions) {
-  const defaults = util.merge({}, defaultOptions)
+  const defaults = util.merge({}, preset)
   const result = util.mergec(
     defaults,
     options,

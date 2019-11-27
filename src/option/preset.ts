@@ -1,9 +1,9 @@
 import * as images from '../assets/images'
-import { loop } from '../route/loop'
 import { Style } from '../types'
 import { detector } from '../common'
 import { PageSize } from '../struct'
 import { FullOptions } from './graph'
+import { loop } from '../route/loop'
 import { rectanglePerimeter } from '../perimeter/rectangle'
 
 const commonStyle: Style = {
@@ -19,7 +19,31 @@ export const CURSOR_MOVE = 'move'
 export const CURSOR_CROSS = 'crosshair'
 export const CURSOR_POINTER = 'pointer'
 
-export const defaultOptions: FullOptions = {
+export const preset: FullOptions = {
+  // global config
+  trackable: true,
+  trackInfo: {},
+  defaultShadowColor: '#808080',
+  defaultShadowOffsetX: 2,
+  defaultShadowOffsetY: 3,
+  defaultShadowOpacity: 1,
+  defaultFontSize: 12,
+  defaultFontStyle: 0,
+  defaultFontColor: '#000000',
+  defaultFontFamily: 'Arial,Helvetica',
+  defaultLineHeight: 1.2,
+  defaultAbsoluteLineHeight: false,
+  defaultStartSize: 40,
+  defaultMarkerSize: 6,
+  defaultImageSize: 24,
+  defaultSegmentLength: 30,
+  rectangleRoundFactor: 0.15,
+  defaultLineArcSize: 20,
+  defaultArrowSpacing: 0,
+  defaultArrowSize: 30,
+  defaultArrowWidth: 30,
+
+  //
   prefixCls: 'x6',
   dialect: 'svg',
   antialiased: true,

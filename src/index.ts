@@ -1,3 +1,4 @@
+import './track'
 import './registry'
 
 import * as util from './util'
@@ -10,6 +11,7 @@ export * from './types'
 export * from './change'
 export * from './core'
 
+export { preset } from './option'
 export { Shape } from './shape'
 export { Route } from './route'
 export { Marker } from './marker'

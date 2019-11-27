@@ -1,4 +1,5 @@
 import * as util from '../util'
+import { preset } from '../option'
 import { detector, DomEvent, Disposable } from '../common'
 import { Graph, Cell, State, Model } from '../core'
 import { View } from '../core/view'
@@ -523,9 +524,9 @@ export class CellEditor extends Disposable {
     const state = this.graph.view.getState(cell)
     if (state != null && this.textarea != null) {
       // Configures the style of the in-place editor
-      const size = state.style.fontSize || 12
-      const family = state.style.fontFamily || 'Arial,Helvetica'
-      const color = state.style.fontColor || '#000000'
+      const size = state.style.fontSize || preset.defaultFontSize
+      const family = state.style.fontFamily || preset.defaultFontFamily
+      const color = state.style.fontColor || preset.defaultFontColor
       const align = state.style.align || 'left'
       const fontStyle = state.style.fontStyle
       const bold = FontStyle.isBold(fontStyle)
@@ -534,7 +535,7 @@ export class CellEditor extends Disposable {
 
       const style = this.textarea.style
 
-      style.lineHeight = '1.2'
+      style.lineHeight = `${preset.defaultLineHeight}`
       style.backgroundColor = this.getBackgroundColor(state)
       style.textDecoration = (uline) ? 'underline' : ''
       style.fontWeight = (bold) ? 'bold' : 'normal'

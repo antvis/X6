@@ -1,3 +1,4 @@
+import { preset } from '../option'
 import { Shape } from './shape'
 import { RectangleShape } from './rectangle'
 import { SvgCanvas2D } from '../canvas'
@@ -10,7 +11,7 @@ export class Label extends RectangleShape {
   /**
    * Default width and height for the image.
    */
-  imageSize: number = 24
+  imageSize: number = preset.defaultImageSize
 
   /**
    * Default value for image spacing.
