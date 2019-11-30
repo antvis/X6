@@ -1,0 +1,108 @@
+{
+  "name": "@antv/x6-components",
+  "version": "0.1.0",
+  "description": "React components for building x6 editors",
+  "main": "lib/index.js",
+  "module": "es/index.js",
+  "types": "lib/index.d.ts",
+  "files": [
+    "lib",
+    "es"
+  ],
+  "directories": {
+    "es": "es/",
+    "lib": "lib/",
+    "src": "src/"
+  },
+  "sideEffects": [
+    "es/**/style/*",
+    "lib/**/style/*",
+    "*.less"
+  ],
+  "scripts": {
+    "test": "echo 'Error: no test specified'",
+    "lint": "yarn lint:ts && yarn lint:style",
+    "lint:ts": "tslint -c tslint.json -p tsconfig.json --fix",
+    "lint:style": "stylelint 'src/**/*.less' --syntax less --fix",
+    "clean": "concurrently 'rimraf ./lib' 'rimraf ./es'",
+    "watch": "onchange -d 1000 -k ./src/**/* -- yarn build",
+    "build:es": "tsc --module es2015 --target es2015 --outDir ./es",
+    "build:lib": "tsc --module commonjs --target es5 --outDir ./lib",
+    "build:less": "node ./scripts/less.js",
+    "build": "concurrently 'yarn build:lib' 'yarn build:es' && yarn build:less",
+    "prebuild": "yarn clean"
+  },
+  "keywords": [
+    "x6",
+    "x6-editor",
+    "editor",
+    "ui",
+    "component",
+    "components",
+    "react-components"
+  ],
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "src/**/*.ts": [
+      "tslint -c tslint.json -p ./tsconfig.json --fix"
+    ],
+    "src/**/*.less": [
+      "stylelint --syntax less --fix"
+    ]
+  },
+  "dependencies": {
+    "classnames": "^2.2.6",
+    "rc-dropdown": "^3.0.0-alpha.0",
+    "rc-util": "^4.15.7",
+    "react-color": "^2.17.3"
+  },
+  "devDependencies": {
+    "@types/antd": "^1.0.0",
+    "@types/classnames": "^2.2.9",
+    "@types/react": "^16.9.13",
+    "@types/react-color": "^3.0.1",
+    "antd": "^3.25.3",
+    "concurrently": "^5.0.0",
+    "cross-env": "^6.0.0",
+    "fs-extra": "^8.1.0",
+    "husky": "^3.1.0",
+    "lint-staged": "^9.5.0",
+    "onchange": "^6.1.0",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
+    "rimraf": "^3.0.0",
+    "stylelint": "^12.0.0",
+    "stylelint-config-prettier": "^6.0.0",
+    "stylelint-config-rational-order": "^0.1.2",
+    "stylelint-config-standard": "^19.0.0",
+    "stylelint-declaration-block-no-ignored-properties": "^2.1.0",
+    "stylelint-order": "^3.0.0",
+    "tslint": "^5.20.1",
+    "tslint-eslint-rules": "^5.4.0",
+    "tslint-react": "^4.1.0",
+    "typescript": "^3.7.2"
+  },
+  "peerDependencies": {
+    "antd": ">=3.19.5",
+    "react": ">=16.8.6",
+    "react-dom": ">=16.8.6"
+  },
+  "author": {
+    "name": "bubkoo",
+    "email": "bubkoo.wy@gmail.com"
+  },
+  "contributors": [],
+  "license": "MIT",
+  "homepage": "https://github.com/antvis/x6",
+  "bugs": {
+    "url": "https://github.com/antvis/x6/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/antvis/x6.git"
+  }
+}

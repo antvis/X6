@@ -1,0 +1,16 @@
+{
+  "singleQuote": true,
+  "semi": false,
+  "printWidth": 80,
+  "trailingComma": "es5",
+  "arrowParens": "always",
+  "proseWrap": "never",
+  "overrides": [
+    {
+      "files": ".prettierrc",
+      "options": {
+        "parser": "json"
+      }
+    }
+  ]
+}

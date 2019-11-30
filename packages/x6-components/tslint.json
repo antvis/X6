@@ -1,0 +1,12 @@
+{
+  "extends": ["tslint-react", "tslint-eslint-rules"],
+  "rules": {
+    "no-construct": true,
+    "no-debugger": true,
+    "no-reference": true,
+    "jsx-no-multiline-js": false,
+    "jsx-no-lambda": false,
+    "semicolon": [true, "never"],
+    "ter-arrow-parens": [true, "always"]
+  }
+}

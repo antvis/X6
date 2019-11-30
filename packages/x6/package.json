@@ -1,0 +1,88 @@
+{
+  "name": "@antv/x6",
+  "version": "0.1.0",
+  "description": "JavaScript diagramming library",
+  "main": "lib/index.js",
+  "module": "es/index.js",
+  "types": "lib/index.d.ts",
+  "files": [
+    "lib",
+    "es"
+  ],
+  "directories": {
+    "lib": "lib/",
+    "src": "src/"
+  },
+  "keywords": [
+    "x6",
+    "diagram",
+    "flowchart",
+    "uml",
+    "graph",
+    "x6-editor",
+    "editor",
+    "svg"
+  ],
+  "scripts": {
+    "clean": "concurrently 'rimraf ./lib' 'rimraf ./es'",
+    "lint": "tslint -c tslint.json -p tsconfig.json --fix",
+    "build:lib": "tsc",
+    "build:es": "tsc --module es2015 --target es2015 --outDir ./es",
+    "build:less": "lessc ./src/index.less ./lib/index.css",
+    "build:images": "node ./scripts/make-images.js",
+    "build:version": "node ./scripts/make-version.js",
+    "build:watch": "tsc -w",
+    "build": "concurrently 'yarn build:images' 'yarn build:version' 'yarn build:less' 'yarn build:lib' 'yarn build:es'",
+    "prebuild": "concurrently 'yarn lint' 'yarn clean'",
+    "test": "jest",
+    "pretest": "rimraf ./test/coverage",
+    "coveralls": "cat ./test/coverage/lcov.info | coveralls",
+    "prepublish": "yarn test && yarn build"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "src/**/*.ts": [
+      "tslint -c tslint.json -p ./tsconfig.lint.json --fix"
+    ]
+  },
+  "devDependencies": {
+    "@types/jest": "^24.0.17",
+    "@types/sinon": "^7.5.0",
+    "base64-img": "^1.0.4",
+    "concurrently": "^5.0.0",
+    "coveralls": "^3.0.6",
+    "husky": "^3.0.3",
+    "image-size": "^0.7.4",
+    "jest": "^24.8.0",
+    "less": "^3.10.3",
+    "lint-staged": "^9.2.1",
+    "rimraf": "^3.0.0",
+    "sinon": "^7.5.0",
+    "ts-jest": "^24.0.2",
+    "tslint": "^5.18.0",
+    "tslint-config-airbnb": "^5.11.2",
+    "typescript": "^3.5.3"
+  },
+  "dependencies": {
+    "@antv/x6-components": "^0.1.0",
+    "mousetrap": "^1.6.3"
+  },
+  "author": {
+    "name": "bubkoo",
+    "email": "bubkoo.wy@gmail.com"
+  },
+  "contributors": [],
+  "license": "MIT",
+  "homepage": "https://github.com/antvis/x6",
+  "bugs": {
+    "url": "https://github.com/antvis/x6/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/antvis/x6.git"
+  }
+}
