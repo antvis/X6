@@ -21,7 +21,8 @@
   ],
   "scripts": {
     "test": "echo 'Error: no test specified'",
-    "lint": "yarn lint:ts && yarn lint:style",
+    "lint": "yarn lint:ts && yarn lint:es && yarn lint:style",
+    "lint:es": "eslint --ext .js scripts --fix",
     "lint:ts": "tslint -c tslint.json -p tsconfig.json --fix",
     "lint:style": "stylelint 'src/**/*.less' --syntax less --fix",
     "clean": "concurrently 'rimraf ./lib' 'rimraf ./es'",
@@ -45,13 +46,19 @@
     "react-components"
   ],
   "lint-staged": {
-    "src/**/*.ts": [
+    "**/*": [
       "pretty-quick — staged",
+      "git add"
+    ],
+    "src/**/*.ts": [
       "tslint -c tslint.json -p ./tsconfig.json --fix",
       "git add"
     ],
+    "*.js": [
+      "eslint --fix",
+      "git add"
+    ],
     "src/**/*.less": [
-      "pretty-quick — staged",
       "stylelint --syntax less --fix",
       "git add"
     ]
@@ -70,6 +77,10 @@
     "antd": "^3.25.3",
     "concurrently": "^5.0.0",
     "cross-env": "^6.0.0",
+    "eslint": "^6.1.0",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-config-prettier": "^6.7.0",
+    "eslint-plugin-import": "^2.18.2",
     "fs-extra": "^8.1.0",
     "lint-staged": "^9.5.0",
     "onchange": "^6.1.0",
