@@ -2,13 +2,6 @@
   "extends": "tslint-config-airbnb",
   "rules": {
     "import-name": false,
-    "semicolon": [
-      true,
-      "never"
-    ],
-    "ter-arrow-parens": [
-      true,
-      "always"
-    ]
+    "semicolon": [true, "never"]
   }
 }
