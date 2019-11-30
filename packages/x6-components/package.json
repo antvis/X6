@@ -20,7 +20,6 @@
     "*.less"
   ],
   "scripts": {
-    "test": "echo 'Error: no test specified'",
     "lint": "yarn lint:ts && yarn lint:es && yarn lint:style",
     "lint:es": "eslint --ext .js scripts --fix",
     "lint:ts": "tslint -c tslint.json -p tsconfig.json --fix",

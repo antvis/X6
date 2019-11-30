@@ -5,7 +5,6 @@
   "scripts": {
     "start": "umi dev",
     "build": "umi build",
-    "test": "umi test",
     "lint": "yarn lint:ts",
     "lint:es": "eslint --ext .js src mock tests",
     "lint:ts": "tslint -c tslint.json -p tsconfig.json --fix",
