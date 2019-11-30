@@ -42,7 +42,8 @@
   },
   "lint-staged": {
     "src/**/*.ts": [
-      "tslint -c tslint.json -p ./tsconfig.lint.json --fix"
+      "tslint -c tslint.json -p ./tsconfig.lint.json --fix",
+      "git add"
     ]
   },
   "devDependencies": {
