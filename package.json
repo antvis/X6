@@ -7,6 +7,7 @@
     "build": "lerna run build",
     "lint": "lerna run lint",
     "test": "lerna run test",
+    "coveralls": "lerna run coveralls",
     "version": "lerna version",
     "clean:modules": "rimraf ./packages/*/node_modules && rimraf ./examples/*/node_modules && rimraf ./node_modules"
   },
