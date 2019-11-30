@@ -5,7 +5,7 @@ export function ellipsePerimeter(
   bounds: Rectangle,
   state: State,
   next: Point | Point.PointLike = new Point(),
-  orthogonal: boolean = false,
+  orthogonal: boolean = false
 ) {
   const x = bounds.x
   const y = bounds.y

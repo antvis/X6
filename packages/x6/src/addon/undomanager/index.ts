@@ -73,10 +73,10 @@ export class UndoManager extends Primer {
     if (this.history.length > this.cursor) {
       const edits = this.history.splice(
         this.cursor,
-        this.history.length - this.cursor,
+        this.history.length - this.cursor
       )
 
-      edits.forEach((edit) => edit.dispose())
+      edits.forEach(edit => edit.dispose())
     }
   }
 
@@ -98,7 +98,7 @@ export namespace UndoManager {
     const undoHandler = (edit: UndoableEdit) => {
       const cells = graph.changeManager
         .getSelectionCellsForChanges(edit.changes)
-        .filter((cell) => graph.view.getState(cell) != null)
+        .filter(cell => graph.view.getState(cell) != null)
 
       graph.setSelectedCells(cells)
     }

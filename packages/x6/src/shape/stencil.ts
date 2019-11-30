@@ -87,7 +87,7 @@ export class Stencil extends Shape {
     x: number,
     y: number,
     w: number,
-    h: number,
+    h: number
   ) {
     const direction = shape.style.direction
     const aspect = this.computeAspect(shape, x, y, w, h, direction)
@@ -117,7 +117,7 @@ export class Stencil extends Shape {
       this.bgNode,
       aspect,
       false,
-      true,
+      true
     )
 
     this.drawChildren(
@@ -130,7 +130,7 @@ export class Stencil extends Shape {
       this.fgNode,
       aspect,
       true,
-      !shape.outline || !shape.style.backgroundOutline,
+      !shape.outline || !shape.style.backgroundOutline
     )
   }
 
@@ -144,7 +144,7 @@ export class Stencil extends Shape {
     node: Element,
     aspect: { x: number; y: number; sx: number; sy: number },
     disableShadow: boolean,
-    paint: boolean,
+    paint: boolean
   ) {
     if (node != null && w > 0 && h > 0) {
       let child = node.firstChild as Element
@@ -163,7 +163,7 @@ export class Stencil extends Shape {
     node: Element,
     aspect: { x: number; y: number; sx: number; sy: number },
     disableShadow: boolean,
-    paint: boolean,
+    paint: boolean
   ) {
     const x0 = aspect.x
     const y0 = aspect.y
@@ -200,8 +200,8 @@ export class Stencil extends Shape {
                 segs[segs.length - 1].push(
                   new Point(
                     x0 + this.getAttributeNumber(node, 'x') * sx,
-                    y0 + this.getAttributeNumber(node, 'y') * sy,
-                  ),
+                    y0 + this.getAttributeNumber(node, 'y') * sy
+                  )
                 )
                 pointCount += 1
               } else {
@@ -241,7 +241,7 @@ export class Stencil extends Shape {
                 childNode as Element,
                 aspect,
                 disableShadow,
-                paint,
+                paint
               )
             }
             childNode = childNode.nextSibling
@@ -252,19 +252,19 @@ export class Stencil extends Shape {
       } else if (name === 'move') {
         canvas.moveTo(
           x0 + this.getAttributeNumber(node, 'x') * sx,
-          y0 + this.getAttributeNumber(node, 'y') * sy,
+          y0 + this.getAttributeNumber(node, 'y') * sy
         )
       } else if (name === 'line') {
         canvas.lineTo(
           x0 + this.getAttributeNumber(node, 'x') * sx,
-          y0 + this.getAttributeNumber(node, 'y') * sy,
+          y0 + this.getAttributeNumber(node, 'y') * sy
         )
       } else if (name === 'quad') {
         canvas.quadTo(
           x0 + this.getAttributeNumber(node, 'x1') * sx,
           y0 + this.getAttributeNumber(node, 'y1') * sy,
           x0 + this.getAttributeNumber(node, 'x2') * sx,
-          y0 + this.getAttributeNumber(node, 'y2') * sy,
+          y0 + this.getAttributeNumber(node, 'y2') * sy
         )
       } else if (name === 'curve') {
         canvas.curveTo(
@@ -273,7 +273,7 @@ export class Stencil extends Shape {
           x0 + this.getAttributeNumber(node, 'x2') * sx,
           y0 + this.getAttributeNumber(node, 'y2') * sy,
           x0 + this.getAttributeNumber(node, 'x3') * sx,
-          y0 + this.getAttributeNumber(node, 'y3') * sy,
+          y0 + this.getAttributeNumber(node, 'y3') * sy
         )
       } else if (name === 'arc') {
         canvas.arcTo(
@@ -283,14 +283,14 @@ export class Stencil extends Shape {
           this.getAttributeNumber(node, 'large-arc-flag'),
           this.getAttributeNumber(node, 'sweep-flag'),
           x0 + this.getAttributeNumber(node, 'x') * sx,
-          y0 + this.getAttributeNumber(node, 'y') * sy,
+          y0 + this.getAttributeNumber(node, 'y') * sy
         )
       } else if (name === 'rect') {
         canvas.rect(
           x0 + this.getAttributeNumber(node, 'x') * sx,
           y0 + this.getAttributeNumber(node, 'y') * sy,
           this.getAttributeNumber(node, 'w') * sx,
-          this.getAttributeNumber(node, 'h') * sy,
+          this.getAttributeNumber(node, 'h') * sy
         )
       } else if (name === 'roundrect') {
         const arcsize =
@@ -307,14 +307,14 @@ export class Stencil extends Shape {
           w,
           h,
           r,
-          r,
+          r
         )
       } else if (name === 'ellipse') {
         canvas.ellipse(
           x0 + this.getAttributeNumber(node, 'x') * sx,
           y0 + this.getAttributeNumber(node, 'y') * sy,
           this.getAttributeNumber(node, 'w') * sx,
-          this.getAttributeNumber(node, 'h') * sy,
+          this.getAttributeNumber(node, 'h') * sy
         )
       } else if (name === 'image') {
         if (!shape.outline) {
@@ -327,7 +327,7 @@ export class Stencil extends Shape {
             src!,
             false,
             node.getAttribute('flipH') === '1',
-            node.getAttribute('flipV') === '1',
+            node.getAttribute('flipV') === '1'
           )
         }
       } else if (name === 'text') {
@@ -365,7 +365,7 @@ export class Stencil extends Shape {
             '',
             '',
             false,
-            rotation,
+            rotation
           )
         }
       } else if (name === 'include-shape') {
@@ -449,7 +449,7 @@ export class Stencil extends Shape {
     y: number,
     w: number,
     h: number,
-    direction?: Direction,
+    direction?: Direction
   ) {
     let x0 = x
     let y0 = y
@@ -487,7 +487,7 @@ export class Stencil extends Shape {
   protected getAttributeNumber(
     node: Element,
     attrName: string,
-    defaultValue: number = 0,
+    defaultValue: number = 0
   ) {
     const raw = node.getAttribute(attrName)
     if (raw == null || raw === '') {

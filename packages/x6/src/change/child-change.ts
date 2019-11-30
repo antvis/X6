@@ -31,7 +31,7 @@ export class ChildChange implements IChange {
       tmp = this.model.doChildChange(
         this.child,
         this.previous,
-        this.previousIndex,
+        this.previousIndex
       )
 
       if (this.previous != null) {
@@ -69,6 +69,6 @@ export class ChildChange implements IChange {
       edge.setTerminal(targetNode, false)
     }
 
-    edge.eachChild((child) => this.connect(child, isConnect))
+    edge.eachChild(child => this.connect(child, isConnect))
   }
 }

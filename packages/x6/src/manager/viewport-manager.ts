@@ -18,7 +18,7 @@ export class ViewportManager extends BaseManager {
   getCellBounds(
     cell: Cell,
     includeEdges: boolean,
-    includeDescendants: boolean,
+    includeDescendants: boolean
   ) {
     const cells = [cell]
 
@@ -31,7 +31,7 @@ export class ViewportManager extends BaseManager {
 
     // Recursively includes the bounds of the children
     if (includeDescendants) {
-      cell.eachChild((child) => {
+      cell.eachChild(child => {
         const tmp = this.getCellBounds(child, includeEdges, true)
         if (tmp != null) {
           if (result != null) {
@@ -50,7 +50,7 @@ export class ViewportManager extends BaseManager {
     let result: Rectangle | null = null
 
     cells &&
-      cells.forEach((cell) => {
+      cells.forEach(cell => {
         if (includeEdges || this.model.isNode(cell)) {
           // Computes the bounding box for the points in the geometry
           const geo = this.graph.getCellGeometry(cell)
@@ -102,7 +102,7 @@ export class ViewportManager extends BaseManager {
                       geo.bounds.x * tmp.width,
                       geo.bounds.y * tmp.height,
                       geo.bounds.width,
-                      geo.bounds.height,
+                      geo.bounds.height
                     )
 
                     if (util.indexOf(cells, parent) >= 0) {
@@ -288,7 +288,7 @@ export class ViewportManager extends BaseManager {
 
       this.view.setTranslate(
         Math.floor(dx / 2 - (bounds.x - t.x)),
-        Math.floor(dy / 2 - (bounds.y - t.y)),
+        Math.floor(dy / 2 - (bounds.y - t.y))
       )
 
       this.container.scrollLeft = (sw - cw) / 2
@@ -307,7 +307,7 @@ export class ViewportManager extends BaseManager {
         state.bounds.x * factor,
         state.bounds.y * factor,
         state.bounds.width * factor,
-        state.bounds.height * factor,
+        state.bounds.height * factor
       )
 
       // Refreshes the display only once if a scroll is carried out
@@ -336,7 +336,7 @@ export class ViewportManager extends BaseManager {
         this.view.scaleAndTranslate(
           scale,
           this.view.translate.x + dx,
-          this.view.translate.y + dy,
+          this.view.translate.y + dy
         )
       } else {
         // Allows for changes of translate and scrollbars during setscale
@@ -421,7 +421,7 @@ export class ViewportManager extends BaseManager {
       this.view.scaleAndTranslate(
         newScale,
         this.view.translate.x - rect.x / this.view.scale,
-        this.view.translate.y - rect.y / this.view.scale,
+        this.view.translate.y - rect.y / this.view.scale
       )
     } else {
       this.view.setScale(newScale)
@@ -440,7 +440,7 @@ export class ViewportManager extends BaseManager {
         x + state.bounds.x,
         y + state.bounds.y,
         state.bounds.width,
-        state.bounds.height,
+        state.bounds.height
       )
 
       if (center && this.container != null) {
@@ -634,7 +634,7 @@ export class ViewportManager extends BaseManager {
 
       this.graph.panningManager.panTo(
         x + this.graph.panDx,
-        y + this.graph.panDy,
+        y + this.graph.panDy
       )
     }
   }
@@ -667,7 +667,7 @@ export class ViewportManager extends BaseManager {
       util.parseCssNumber(css.paddingBottom) +
         (css.borderBottomStyle !== 'none'
           ? util.parseCssNumber(css.borderBottomWidth)
-          : 0),
+          : 0)
     )
   }
 
@@ -678,7 +678,7 @@ export class ViewportManager extends BaseManager {
     enabled: boolean,
     ignoreWidth: boolean,
     ignoreHeight: boolean,
-    maxHeight?: number,
+    maxHeight?: number
   ) {
     if (this.container != null) {
       // Adds spacing and border from css
@@ -738,7 +738,7 @@ export class ViewportManager extends BaseManager {
                       this.view.translate.x -
                         bounds.x / s +
                         border / s2 +
-                        margin / 2,
+                        margin / 2
                     )
                   : border
 
@@ -748,7 +748,7 @@ export class ViewportManager extends BaseManager {
                       this.view.translate.y -
                         bounds.y / s +
                         border / s2 +
-                        margin / 2,
+                        margin / 2
                     )
                   : border
 
@@ -803,7 +803,7 @@ export class ViewportManager extends BaseManager {
         const size = this.graph.getPreferredPageSize(
           bounds,
           Math.max(1, width),
-          Math.max(1, height),
+          Math.max(1, height)
         )
 
         if (size != null) {
@@ -928,25 +928,25 @@ export class ViewportManager extends BaseManager {
           const pts =
             breaks === this.horizontalPageBreaks
               ? [
-                new Point(
+                  new Point(
                     Math.round(bounds.x),
-                    Math.round(bounds.y + i * bounds.height),
+                    Math.round(bounds.y + i * bounds.height)
                   ),
-                new Point(
+                  new Point(
                     Math.round(bounds.x + right),
-                    Math.round(bounds.y + i * bounds.height),
+                    Math.round(bounds.y + i * bounds.height)
                   ),
-              ]
+                ]
               : [
-                new Point(
+                  new Point(
                     Math.round(bounds.x + i * bounds.width),
-                    Math.round(bounds.y),
+                    Math.round(bounds.y)
                   ),
-                new Point(
+                  new Point(
                     Math.round(bounds.x + i * bounds.width),
-                    Math.round(bounds.y + bottom),
+                    Math.round(bounds.y + bottom)
                   ),
-              ]
+                ]
 
           if (breaks[i] != null) {
             breaks[i].points = pts
@@ -988,7 +988,7 @@ export class ViewportManager extends BaseManager {
       s * t.x,
       s * t.y,
       fmt.width * ps,
-      fmt.height * ps,
+      fmt.height * ps
     )
 
     // tslint:disable-next-line
@@ -1017,25 +1017,25 @@ export class ViewportManager extends BaseManager {
           const pts =
             breaks === this.horizontalPageBreaks
               ? [
-                new Point(
+                  new Point(
                     Math.round(bounds2.x),
-                    Math.round(bounds2.y + (i + 1) * bounds.height),
+                    Math.round(bounds2.y + (i + 1) * bounds.height)
                   ),
-                new Point(
+                  new Point(
                     Math.round(right),
-                    Math.round(bounds2.y + (i + 1) * bounds.height),
+                    Math.round(bounds2.y + (i + 1) * bounds.height)
                   ),
-              ]
+                ]
               : [
-                new Point(
+                  new Point(
                     Math.round(bounds2.x + (i + 1) * bounds.width),
-                    Math.round(bounds2.y),
+                    Math.round(bounds2.y)
                   ),
-                new Point(
+                  new Point(
                     Math.round(bounds2.x + (i + 1) * bounds.width),
-                    Math.round(bottom),
+                    Math.round(bottom)
                   ),
-              ]
+                ]
 
           if (breaks[i] != null) {
             breaks[i].points = pts

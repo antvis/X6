@@ -35,7 +35,7 @@ export class Dictionary<T extends Object, V> {
   }
 
   each(iterator: (value: V, key: T) => void) {
-    this.arr.forEach((key) => {
+    this.arr.forEach(key => {
       const value = this.map.get(key)!
       iterator(value, key)
     })

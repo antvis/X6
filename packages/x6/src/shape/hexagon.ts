@@ -7,7 +7,7 @@ export class Hexagon extends Actor {
     bounds: Rectangle,
     fillColor: string,
     strokeColor: string,
-    strokewidth: number = 1,
+    strokewidth: number = 1
   ) {
     super(bounds, fillColor, strokeColor, strokewidth)
   }
@@ -26,7 +26,7 @@ export class Hexagon extends Actor {
       ],
       this.rounded,
       arcSize,
-      true,
+      true
     )
   }
 }

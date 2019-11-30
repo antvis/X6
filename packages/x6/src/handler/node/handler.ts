@@ -146,13 +146,13 @@ export class NodeHandler extends MouseHandler {
             geo = geo.clone()
             geo.rotate(
               angle,
-              new Point(pgeo.bounds.width / 2, pgeo.bounds.height / 2),
+              new Point(pgeo.bounds.width / 2, pgeo.bounds.height / 2)
             )
             model.setGeometry(cell, geo)
           }
 
           if ((model.isNode(cell) && !geo.relative) || model.isEdge(cell)) {
-            cell.eachChild((child) => this.rotateNode(child, angle, cell))
+            cell.eachChild(child => this.rotateNode(child, angle, cell))
           }
         }
       }
@@ -194,7 +194,7 @@ export class NodeHandler extends MouseHandler {
           this.moveChildren(
             cell,
             Math.round(childOffsetX / scale),
-            Math.round(childOffsetY / scale),
+            Math.round(childOffsetY / scale)
           )
         }
 
@@ -205,7 +205,7 @@ export class NodeHandler extends MouseHandler {
   }
 
   protected moveChildren(cell: Cell, dx: number, dy: number) {
-    cell.eachChild((child) => {
+    cell.eachChild(child => {
       let geo = this.graph.getCellGeometry(child)
       if (geo != null) {
         geo = geo.clone()

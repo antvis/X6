@@ -128,7 +128,7 @@ export class Preview extends Disposable {
     if (this.graph.isGridEnabledForEvent(e.getEvent())) {
       p.update(
         (this.graph.snap(p.x / s - t.x) + t.x) * s,
-        (this.graph.snap(p.y / s - t.y) + t.y) * s,
+        (this.graph.snap(p.y / s - t.y) + t.y) * s
       )
     }
 
@@ -254,7 +254,7 @@ export class Preview extends Disposable {
 
   protected updateEdgeState(
     currentPoint: Point,
-    currentConstraint: Constraint | null,
+    currentConstraint: Constraint | null
   ) {
     if (this.edgeState == null) {
       return
@@ -282,7 +282,7 @@ export class Preview extends Disposable {
       this.edgeState,
       this.sourceState!,
       true,
-      this.sourceConstraint!,
+      this.sourceConstraint!
     )
 
     if (this.currentState != null) {
@@ -291,7 +291,7 @@ export class Preview extends Disposable {
         currentConstraint = this.graph.getConnectionConstraint(
           this.edgeState,
           this.sourceState,
-          false,
+          false
         )
       }
 
@@ -300,27 +300,27 @@ export class Preview extends Disposable {
         this.edgeState,
         this.currentState,
         false,
-        currentConstraint,
+        currentConstraint
       )
     }
 
     // Scales and translates the waypoints to the model
     let pts = null
     if (this.waypoints != null) {
-      pts = this.waypoints.map((p) => this.normalizeWaypoint(p))
+      pts = this.waypoints.map(p => this.normalizeWaypoint(p))
     }
 
     this.graph.view.updateRouterPoints(
       this.edgeState,
       pts!,
       this.sourceState!,
-      this.currentState!,
+      this.currentState!
     )
 
     this.graph.view.updateFloatingTerminalPoints(
       this.edgeState,
       this.sourceState!,
-      this.currentState!,
+      this.currentState!
     )
   }
 
@@ -339,7 +339,7 @@ export class Preview extends Disposable {
         view.getPerimeterBounds(state),
         this.edgeState!,
         next,
-        false,
+        false
       )
 
       if (tmp != null) {
@@ -355,7 +355,7 @@ export class Preview extends Disposable {
   protected getSourcePerimeterPoint(
     state: State,
     next: Point,
-    e: MouseEventEx,
+    e: MouseEventEx
   ) {
     let result = null
     const view = state.view
@@ -447,7 +447,7 @@ export class Preview extends Disposable {
       if (this.sourceState != null) {
         this.error = this.master.validateConnection(
           this.sourceState.cell,
-          this.constraintHandler.currentState.cell,
+          this.constraintHandler.currentState.cell
         )
 
         if (this.error == null) {
@@ -535,7 +535,7 @@ export class Preview extends Disposable {
       ) {
         this.graph.selectionManager.selectCellForEvent(
           this.marker.validState.cell,
-          e.getEvent(),
+          e.getEvent()
         )
       }
 
@@ -575,7 +575,7 @@ export class Preview extends Disposable {
       const s = this.graph.view.scale
       const p = new Point(
         this.graph.snap(e.getGraphX() / s) * s,
-        this.graph.snap(e.getGraphY() / s) * s,
+        this.graph.snap(e.getGraphY() / s) * s
       )
       this.waypoints.push(p)
     }

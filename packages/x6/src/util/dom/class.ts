@@ -22,7 +22,7 @@ export function hasClass(elem: Element | null, selector: string | null) {
 
 export function addClass(
   elem: Element | null,
-  selector: ((cls: string) => string) | string | null,
+  selector: ((cls: string) => string) | string | null
 ): void {
   if (elem == null || selector == null) {
     return
@@ -40,7 +40,7 @@ export function addClass(
         return `${memo}${cls} `
       }
       return memo
-    },                            oldValue)
+    }, oldValue)
 
     newValue = newValue.trim()
 
@@ -52,7 +52,7 @@ export function addClass(
 
 export function removeClass(
   elem: Element | null,
-  selector: ((cls: string) => string) | string | null,
+  selector: ((cls: string) => string) | string | null
 ): void {
   if (elem == null) {
     return
@@ -72,7 +72,7 @@ export function removeClass(
       }
 
       return memo
-    },                            oldValue)
+    }, oldValue)
 
     newValue = selector ? newValue.trim() : ''
 
@@ -85,7 +85,7 @@ export function removeClass(
 export function toggleClass(
   elem: Element | null,
   selector: ((cls: string, state?: boolean) => string) | string | null,
-  stateVal?: boolean,
+  stateVal?: boolean
 ): void {
   if (elem == null || selector == null) {
     return
@@ -103,7 +103,7 @@ export function toggleClass(
 
   if (typeof selector === 'string') {
     const metches = selector.match(rnotwhite) || []
-    metches.forEach((cls) => {
+    metches.forEach(cls => {
       hasClass(elem, cls) ? removeClass(elem, cls) : addClass(elem, cls)
     })
   }

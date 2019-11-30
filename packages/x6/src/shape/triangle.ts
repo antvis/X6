@@ -7,7 +7,7 @@ export class Triangle extends Actor {
     bounds: Rectangle,
     fillColor: string,
     strokeColor: string,
-    strokewidth: number = 1,
+    strokewidth: number = 1
   ) {
     super(bounds, fillColor, strokeColor, strokewidth)
   }
@@ -23,7 +23,7 @@ export class Triangle extends Actor {
       [new Point(0, 0), new Point(w, 0.5 * h), new Point(0, h)],
       this.rounded,
       arcSize,
-      true,
+      true
     )
   }
 }

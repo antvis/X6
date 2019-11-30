@@ -111,7 +111,7 @@ export class MovingHandler extends MouseHandler {
   protected shouldRemoveCellsFromParent(
     parent: Cell | null,
     cells: Cell[],
-    e: MouseEvent,
+    e: MouseEvent
   ) {
     if (this.graph.model.isNode(parent)) {
       const pState = this.graph.view.getState(parent)
@@ -155,7 +155,7 @@ export class MovingHandler extends MouseHandler {
     dy: number,
     clone: boolean,
     target: Cell | null,
-    evt: MouseEvent,
+    evt: MouseEvent
   ) {
     if (clone) {
       // tslint:disable-next-line
@@ -186,8 +186,8 @@ export class MovingHandler extends MouseHandler {
       if (!clone && target != null && this.graph.isAutoRemoveEmptyParent()) {
         // Collects all non-selected parents
         const dict = new WeakMap<Cell, boolean>()
-        cells.forEach((cell) => dict.set(cell, true))
-        cells.forEach((cell) => {
+        cells.forEach(cell => dict.set(cell, true))
+        cells.forEach(cell => {
           const parent = this.graph.model.getParent(cell)
           if (parent != null && !dict.get(parent)) {
             dict.set(parent, true)
@@ -205,11 +205,11 @@ export class MovingHandler extends MouseHandler {
         dy - this.graph.panDy / this.graph.view.scale,
         clone,
         target,
-        evt,
+        evt
       )
 
       // Removes parent if all child cells are removed
-      const temp = parents.filter((parent) => this.shouldRemoveParent(parent))
+      const temp = parents.filter(parent => this.shouldRemoveParent(parent))
       this.graph.removeCells(temp, false)
     })
 

@@ -215,7 +215,7 @@ export class Knobs extends Disposable {
             e.getGraphX() - tol,
             e.getGraphY() - tol,
             2 * tol,
-            2 * tol,
+            2 * tol
           )
         : null
 
@@ -319,12 +319,12 @@ export class Knobs extends Disposable {
       }
 
       if (this.master.preview.isLivePreview()) {
-        this.handles.forEach((h) => h && util.showElement(h.elem))
+        this.handles.forEach(h => h && util.showElement(h.elem))
       }
     }
 
     if (this.customHandles != null) {
-      this.customHandles.forEach((customHandle) => {
+      this.customHandles.forEach(customHandle => {
         if (customHandle.active) {
           customHandle.active = false
           customHandle.reset()
@@ -362,9 +362,9 @@ export class Knobs extends Disposable {
           bounds.width < 2 * this.handles[0].bounds.width + 2 * tol ||
           bounds.height < 2 * this.handles[0].bounds.height + 2 * tol
         ) {
-          idxs.forEach((i) => util.hideElement(this.handles![i].elem))
+          idxs.forEach(i => util.hideElement(this.handles![i].elem))
         } else {
-          idxs.forEach((i) => util.showElement(this.handles![i].elem))
+          idxs.forEach(i => util.showElement(this.handles![i].elem))
         }
       }
 
@@ -441,7 +441,7 @@ export class Knobs extends Disposable {
       this.moveHandleTo(
         this.labelShape,
         cx + this.state.absoluteOffset.x + offset.x,
-        cy + this.state.absoluteOffset.y + offset.y,
+        cy + this.state.absoluteOffset.y + offset.y
       )
     }
 
@@ -458,7 +458,7 @@ export class Knobs extends Disposable {
     }
 
     if (this.customHandles != null) {
-      this.customHandles.forEach((customHandle) => {
+      this.customHandles.forEach(customHandle => {
         const elem = customHandle.shape.elem!
         const temp = elem.style.display
         customHandle.redraw()
@@ -526,18 +526,18 @@ export class Knobs extends Disposable {
 
     return new Point(
       this.bounds.x + this.bounds.width / 2 + offset.x,
-      this.bounds.y + offset.y,
+      this.bounds.y + offset.y
     )
   }
 
   protected setHandlesVisible(visible: boolean) {
     this.handles &&
-      this.handles.forEach((handle) =>
-        visible ? util.showElement(handle.elem) : util.hideElement(handle.elem),
+      this.handles.forEach(handle =>
+        visible ? util.showElement(handle.elem) : util.hideElement(handle.elem)
       )
 
     this.customHandles &&
-      this.customHandles.forEach((handle) => handle.setVisible(visible))
+      this.customHandles.forEach(handle => handle.setVisible(visible))
   }
 
   showActiveHandle(index: number) {
@@ -556,12 +556,12 @@ export class Knobs extends Disposable {
 
   @Disposable.aop()
   dispose() {
-    this.handles && this.handles.forEach((h) => h.dispose())
+    this.handles && this.handles.forEach(h => h.dispose())
     this.handles = null
     this.labelShape = null
     this.rotationShape = null
 
-    this.customHandles && this.customHandles.forEach((h) => h.dispose())
+    this.customHandles && this.customHandles.forEach(h => h.dispose())
     this.customHandles = null
   }
 }

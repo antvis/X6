@@ -108,7 +108,7 @@ export class Model extends Events {
 
   eachLayer(
     iterator: (layer: Cell, index: number, layers: Cell[]) => void,
-    context?: any,
+    context?: any
   ) {
     util.forEach(this.getLayers(), iterator, context)
   }
@@ -159,7 +159,7 @@ export class Model extends Events {
 
   filterDescendants(
     filter: (cell: Cell) => boolean,
-    parent: Cell = this.getRoot(),
+    parent: Cell = this.getRoot()
   ) {
     const result: Cell[] = []
 
@@ -169,7 +169,7 @@ export class Model extends Events {
       result.push(parent)
     }
 
-    parent.eachChild((child) => {
+    parent.eachChild(child => {
       result.push(...this.filterDescendants(filter, child))
     })
 
@@ -183,12 +183,12 @@ export class Model extends Events {
   getChildren(
     parent: Cell | null,
     includeNodes: boolean = false,
-    includeEdges: boolean = false,
+    includeEdges: boolean = false
   ) {
     const result: Cell[] = []
     const children = parent != null ? parent.getChildren() : null
     if (children && children.length) {
-      children.forEach((child) => {
+      children.forEach(child => {
         if (
           (!includeEdges && !includeNodes) ||
           (includeEdges && this.isEdge(child)) ||
@@ -221,7 +221,7 @@ export class Model extends Events {
   eachChild(
     cell: Cell | null,
     iterator: (child: Cell, index: number, children: Cell[]) => void,
-    thisArg?: any,
+    thisArg?: any
   ) {
     if (cell != null) {
       cell.eachChild(iterator, thisArg)
@@ -231,7 +231,7 @@ export class Model extends Events {
   filterCells(
     cells: Cell[],
     filter: (cell: Cell, index: number, arr: Cell[]) => boolean,
-    thisArg?: any,
+    thisArg?: any
   ): Cell[] {
     return util.filter(cells, filter, thisArg)
   }
@@ -292,13 +292,13 @@ export class Model extends Events {
         this.nextCellId = Math.max(this.nextCellId, +id)
       }
 
-      cell.eachChild((child) => this.cellAdded(child))
+      cell.eachChild(child => this.cellAdded(child))
     }
   }
 
   protected updateEdgeParents(cell: Cell, ancestor: Cell = this.getRoot(cell)) {
-    cell.eachChild((child) => this.updateEdgeParents(child, ancestor))
-    cell.eachEdge((edge) => {
+    cell.eachChild(child => this.updateEdgeParents(child, ancestor))
+    cell.eachEdge(edge => {
       // Updates edge parent if edge and child have
       // a common ancestor node (does not need to be
       // the model's root node)
@@ -388,7 +388,7 @@ export class Model extends Events {
 
   cellRemoved(cell: Cell | null) {
     if (cell != null && this.cells != null) {
-      cell.eachChild((child) => this.cellRemoved(child))
+      cell.eachChild(child => this.cellRemoved(child))
       const id = cell.getId()
       if (id != null) {
         delete this.cells[id]
@@ -468,10 +468,10 @@ export class Model extends Events {
   getDirectedEdgeCount(
     node: Cell | null,
     outgoing: boolean,
-    ignore?: Cell | null,
+    ignore?: Cell | null
   ) {
     let count = 0
-    this.eachEdge(node, (edge) => {
+    this.eachEdge(node, edge => {
       if (edge !== ignore && this.getTerminal(edge, outgoing) === node) {
         count += 1
       }
@@ -509,10 +509,10 @@ export class Model extends Events {
     node: Cell | null,
     incoming: boolean = true,
     outgoing: boolean = true,
-    includeLoops: boolean = true,
+    includeLoops: boolean = true
   ) {
     const result: Cell[] = []
-    this.eachEdge(node, (edge) => {
+    this.eachEdge(node, edge => {
       const source = this.getTerminal(edge, true)
       const target = this.getTerminal(edge, false)
       if (
@@ -529,7 +529,7 @@ export class Model extends Events {
   eachEdge(
     node: Cell | null,
     iterator: (edge: Cell, index: number, edges: Cell[]) => void,
-    thisArg?: any,
+    thisArg?: any
   ) {
     if (node != null) {
       node.eachEdge(iterator, thisArg)
@@ -549,7 +549,7 @@ export class Model extends Events {
   getEdgesBetween(
     source: Cell | null,
     target: Cell | null,
-    directed: boolean = false,
+    directed: boolean = false
   ) {
     const tmp1 = this.getEdgeCount(source)
     const tmp2 = this.getEdgeCount(target)
@@ -587,11 +587,11 @@ export class Model extends Events {
     edges: Cell[],
     terminal: Cell,
     isSource: boolean = true,
-    isTarget: boolean = true,
+    isTarget: boolean = true
   ) {
     const terminals: Cell[] = []
     if (edges != null) {
-      edges.forEach((edge) => {
+      edges.forEach(edge => {
         const [source, target] = this.getTerminals(edge)
         if (
           // Checks if the terminal is the source of the edge
@@ -622,8 +622,8 @@ export class Model extends Events {
     const dict = new WeakMap<Cell, boolean>()
     const rest: Cell[] = []
 
-    cells.forEach((cell) => dict.set(cell, true))
-    cells.forEach((cell) => {
+    cells.forEach(cell => dict.set(cell, true))
+    cells.forEach(cell => {
       let topmost = true
       let parent = this.getParent(cell)
 
@@ -841,10 +841,10 @@ export class Model extends Events {
     from: Cell,
     to: Cell,
     cloneAllEdges: boolean,
-    mapping: { [path: string]: Cell },
+    mapping: { [path: string]: Cell }
   ) {
     this.batchUpdate(() => {
-      from.eachChild((cell) => {
+      from.eachChild(cell => {
         const id = cell.getId()
         let target =
           id != null && (!this.isEdge(cell) || !cloneAllEdges)
@@ -876,7 +876,7 @@ export class Model extends Events {
     const parents: Cell[] = []
     if (cells != null) {
       const dict = new WeakMap<Cell, boolean>()
-      cells.forEach((cell) => {
+      cells.forEach(cell => {
         const parent = this.getParent(cell)
         if (parent != null && !dict.get(parent)) {
           dict.set(parent, true)
@@ -899,7 +899,7 @@ export class Model extends Events {
   cloneCells(
     cells: Cell[],
     includeChildren: boolean,
-    cache: WeakMap<Cell, Cell> = new WeakMap<Cell, Cell>(),
+    cache: WeakMap<Cell, Cell> = new WeakMap<Cell, Cell>()
   ) {
     const clones = []
     for (let i = 0; i < cells.length; i += 1) {
@@ -922,7 +922,7 @@ export class Model extends Events {
   private cloneCellImpl(
     cell: Cell,
     includeChildren: boolean,
-    cache: WeakMap<Cell, Cell>,
+    cache: WeakMap<Cell, Cell>
   ) {
     let clone = cache.get(cell)
     if (clone == null) {
@@ -930,7 +930,7 @@ export class Model extends Events {
       cache.set(cell, clone)
 
       if (includeChildren) {
-        cell.eachChild((child) => {
+        cell.eachChild(child => {
           const cloneChild = this.cloneCellImpl(child, true, cache)
           clone!.insertChild(cloneChild)
         })

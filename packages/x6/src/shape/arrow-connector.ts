@@ -18,7 +18,7 @@ export class ArrowConnector extends Shape {
     arrowWidth: number = preset.defaultArrowWidth,
     spacing: number = preset.defaultArrowSpacing,
     startSize: number = preset.defaultArrowSize / 5,
-    endSize: number = preset.defaultArrowSize / 5,
+    endSize: number = preset.defaultArrowSize / 5
   ) {
     super()
 
@@ -139,7 +139,7 @@ export class ArrowConnector extends Shape {
         startWidth,
         edgeWidth,
         spacing,
-        true,
+        true
       )
     } else {
       const outStartX = pts[0].x + orthx / 2 + spacing * nx
@@ -171,7 +171,7 @@ export class ArrowConnector extends Shape {
         pts[i + 1].x,
         pts[i + 1].y,
         pts[i + 2].x,
-        pts[i + 2].y,
+        pts[i + 2].y
       )
 
       dx1 = pts[i + 2].x - pts[i + 1].x
@@ -201,7 +201,7 @@ export class ArrowConnector extends Shape {
           // bend, 0.35 covers all but the most extreme cases
           const strokeWidthFactor = Math.max(
             tmp,
-            Math.min(this.strokeWidth / 200 + 0.04, 0.35),
+            Math.min(this.strokeWidth / 200 + 0.04, 0.35)
           )
 
           const angleFactor =
@@ -219,7 +219,7 @@ export class ArrowConnector extends Shape {
             // not drawing curved sections between segments
             // just draw straight to the intersection point
             c.lineTo(outX, outY)
-            ; (function (x, y) {
+            ;(function(x, y) {
               fns.push(() => {
                 c.lineTo(x, y)
               })
@@ -231,14 +231,14 @@ export class ArrowConnector extends Shape {
             const c2y = inY - nx1 * edgeWidth
             c.lineTo(c1x, c1y)
             c.quadTo(outX, outY, c2x, c2y)
-            ; (function (x, y) {
+            ;(function(x, y) {
               fns.push(() => {
                 c.lineTo(x, y)
               })
             })(inX, inY)
           } else {
             c.lineTo(outX, outY)
-            ; (function (x, y) {
+            ;(function(x, y) {
               const c1x = outX - ny * edgeWidth
               const c1y = outY + nx * edgeWidth
               const c2x = outX - ny1 * edgeWidth
@@ -273,12 +273,12 @@ export class ArrowConnector extends Shape {
         endWidth,
         edgeWidth,
         spacing,
-        false,
+        false
       )
     } else {
       c.lineTo(
         pe.x - spacing * nx1 + orthx / 2,
-        pe.y - spacing * ny1 + orthy / 2,
+        pe.y - spacing * ny1 + orthy / 2
       )
 
       const inStartX = pe.x - spacing * nx1 - orthx / 2
@@ -333,7 +333,7 @@ export class ArrowConnector extends Shape {
           startWidth,
           edgeWidth,
           spacing,
-          true,
+          true
         )
         c.stroke()
         c.end()
@@ -351,7 +351,7 @@ export class ArrowConnector extends Shape {
           endWidth,
           edgeWidth,
           spacing,
-          true,
+          true
         )
         c.stroke()
         c.end()
@@ -369,7 +369,7 @@ export class ArrowConnector extends Shape {
     arrowWidth: number,
     edgeWidth: number,
     spacing: number,
-    initialMove: boolean,
+    initialMove: boolean
   ) {
     const widthArrowRatio = edgeWidth / arrowWidth
     const orthx = (edgeWidth * ny) / 2
@@ -386,12 +386,12 @@ export class ArrowConnector extends Shape {
 
     c.lineTo(
       ptX - orthx / widthArrowRatio + spaceX,
-      ptY - orthy / widthArrowRatio + spaceY,
+      ptY - orthy / widthArrowRatio + spaceY
     )
     c.lineTo(ptX + spacing * nx, ptY + spacing * ny)
     c.lineTo(
       ptX + orthx / widthArrowRatio + spaceX,
-      ptY + orthy / widthArrowRatio + spaceY,
+      ptY + orthy / widthArrowRatio + spaceY
     )
     c.lineTo(ptX + orthx + spaceX, ptY + orthy + spaceY)
   }

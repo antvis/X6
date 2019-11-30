@@ -91,7 +91,7 @@ export class TooltipHandler extends MouseHandler {
     elem: HTMLElement,
     tip: string | HTMLElement | null,
     x: number,
-    y: number,
+    y: number
   ) {
     if (this.canShow(tip)) {
       this.showing = true
@@ -121,7 +121,7 @@ export class TooltipHandler extends MouseHandler {
   protected reset(
     e: MouseEventEx,
     restart: boolean = false,
-    state: State | null = null,
+    state: State | null = null
   ) {
     if (!this.ignoreTouchEvents || DomEvent.isMouseEvent(e.getEvent())) {
       this.clearTimer()
@@ -142,7 +142,7 @@ export class TooltipHandler extends MouseHandler {
               this.sourceElem = elem
               this.isStateSource = isStateSource
             }
-          },                             this.delay)
+          }, this.delay)
         }
       }
     }

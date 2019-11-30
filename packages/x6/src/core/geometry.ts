@@ -65,7 +65,7 @@ export class Geometry {
     x: number = 0,
     y: number = 0,
     width: number = 0,
-    height: number = 0,
+    height: number = 0
   ) {
     this.bounds = new Rectangle(x, y, width, height)
   }
@@ -117,7 +117,7 @@ export class Geometry {
     Private.translatePoint(this.targetPoint, dx, dy)
 
     if (this.translateControlPoints && this.points != null) {
-      this.points.forEach((p) => Private.translatePoint(p, dx, dy))
+      this.points.forEach(p => Private.translatePoint(p, dx, dy))
     }
   }
 
@@ -144,7 +144,7 @@ export class Geometry {
     Private.rotatePoint(this.targetPoint, cos, sin, center)
 
     if (this.points != null) {
-      this.points.forEach((p) => Private.rotatePoint(p, cos, sin, center))
+      this.points.forEach(p => Private.rotatePoint(p, cos, sin, center))
     }
   }
 
@@ -172,7 +172,7 @@ export class Geometry {
     Private.scalePoint(this.targetPoint, sx, sy)
 
     if (this.points != null) {
-      this.points.forEach((p) => Private.scalePoint(p, sx, sy))
+      this.points.forEach(p => Private.scalePoint(p, sx, sy))
     }
   }
 
@@ -193,7 +193,7 @@ export class Geometry {
     }
 
     if (this.points != null) {
-      geo.points = this.points.map((p) => p.clone())
+      geo.points = this.points.map(p => p.clone())
     }
 
     if (this.offset != null) {
@@ -232,7 +232,7 @@ namespace Private {
   export function translatePoint(
     point: Point | Point.PointLike,
     dx: number,
-    dy: number,
+    dy: number
   ) {
     if (point != null) {
       point.x += dx
@@ -246,7 +246,7 @@ namespace Private {
     point: Point | Point.PointLike,
     cos: number,
     sin: number,
-    center: Point,
+    center: Point
   ) {
     if (point != null) {
       const p = util.rotatePointEx(point, cos, sin, center)
@@ -260,7 +260,7 @@ namespace Private {
   export function scalePoint(
     point: Point | Point.PointLike,
     sx: number,
-    sy: number,
+    sy: number
   ) {
     if (point != null) {
       point.x *= sx

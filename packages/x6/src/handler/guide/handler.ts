@@ -21,7 +21,7 @@ export class GuideHandler extends MouseHandler {
       this.origin = util.clientToGraph(this.graph.container, e)
       this.cell = this.getCell(e)!
       this.bounds = this.graph.view.getBounds(
-        movment.getCells(this, this.cell, e),
+        movment.getCells(this, this.cell, e)
       )
     }
   }
@@ -108,12 +108,12 @@ export class GuideHandler extends MouseHandler {
   getStatesForGuide() {
     const parent = this.graph.getDefaultParent()
     const cells = this.graph.model.filterDescendants(
-      (cell) =>
+      cell =>
         this.graph.view.getState(cell) != null &&
         this.graph.model.isNode(cell) &&
         cell.geometry != null &&
         !cell.geometry.relative,
-      parent,
+      parent
     )
 
     return this.graph.view.getCellStates(cells)

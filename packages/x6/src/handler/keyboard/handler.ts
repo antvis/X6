@@ -27,7 +27,7 @@ export class KeyboardHandler extends BaseHandler {
   bind(
     keys: string | string[],
     callback: KeyboardHandler.Handler,
-    action?: KeyboardHandler.Action,
+    action?: KeyboardHandler.Action
   ) {
     this.mousetrap.bind(this.getKeys(keys), callback, action)
   }

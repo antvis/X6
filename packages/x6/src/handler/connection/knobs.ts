@@ -78,7 +78,7 @@ export class Knobs extends Disposable {
           this.icon = icon
           this.graph.fireMouseEvent(
             DomEvent.MOUSE_DOWN,
-            new MouseEventEx(evt, getState()),
+            new MouseEventEx(evt, getState())
           )
         }
       }
@@ -87,7 +87,7 @@ export class Knobs extends Disposable {
         icon.elem,
         this.graph,
         getState,
-        mouseDown,
+        mouseDown
       )
 
       icons.push(icon)
@@ -169,7 +169,7 @@ export class Knobs extends Disposable {
           e.getGraphX() + options.offset.x,
           e.getGraphY() + options.offset.y,
           w,
-          h,
+          h
         )
         this.activeIcon.bounds = bounds
       }
@@ -203,7 +203,7 @@ export class Knobs extends Disposable {
 
   destroyIcons() {
     if (this.icons != null) {
-      this.icons.forEach((i) => i.dispose())
+      this.icons.forEach(i => i.dispose())
       this.icons = null
       this.icon = null
       this.activeIcon = null

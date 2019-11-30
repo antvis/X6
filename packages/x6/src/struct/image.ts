@@ -13,7 +13,7 @@ export class Image {
     /**
      * Integer that specifies the height of the image.
      */
-    public height: number,
+    public height: number
   ) {}
 
   toString() {

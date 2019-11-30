@@ -3,7 +3,7 @@ import { isFunction } from './lang'
 export function invoke<T>(
   func: ((...args: any[]) => T) | null | undefined,
   args: any[],
-  ctx: any,
+  ctx: any
 ): T {
   let ret
 
@@ -36,7 +36,7 @@ export function invoke<T>(
 export function apply<T>(
   func: ((...args: any[]) => T) | null | undefined,
   ctx: any,
-  args: any[] = [],
+  args: any[] = []
 ): T {
   return invoke(func, args, ctx)
 }
@@ -60,7 +60,7 @@ function repush<T>(array: T[], item: T) {
 export function cacher<T extends Function>(
   fn: T,
   ctx?: any,
-  postProcessor?: (v: any, hasCache?: boolean) => any,
+  postProcessor?: (v: any, hasCache?: boolean) => any
 ): T {
   const keys: string[] = []
   const cache: { [kry: string]: any } = {}
@@ -88,7 +88,7 @@ export function once<T extends Function>(fn: T, ctx?: any): T {
   let called = false
   let result: any
 
-  return (function (...args: any[]) {
+  return (function(...args: any[]) {
     if (called) {
       return result
     }

@@ -57,7 +57,7 @@ export class Text extends Shape {
       overflow,
       labelPadding,
       textDirection,
-    }: Text.Options,
+    }: Text.Options
   ) {
     super()
     this.value = value
@@ -218,7 +218,7 @@ export class Text extends Shape {
         this.wrap,
         this.overflow,
         this.clipped,
-        this.getTextRotation(),
+        this.getTextRotation()
       )
     } else {
       // Checks if text contains HTML markup
@@ -258,7 +258,7 @@ export class Text extends Shape {
         this.overflow,
         this.clipped,
         this.getTextRotation(),
-        dir,
+        dir
       )
     }
 
@@ -367,7 +367,7 @@ export class Text extends Shape {
     // Looks for strong (directional) characters
     // tslint:disable-next-line
     const tmp = /[A-Za-z\u05d0-\u065f\u066a-\u06ef\u06fa-\u07ff\ufb1d-\ufdff\ufe70-\ufefc]/.exec(
-      this.value as string,
+      this.value as string
     )
 
     // Returns the direction defined by the character
@@ -456,10 +456,10 @@ export class Text extends Shape {
             this.margin.x * this.boundingBox.width,
             this.margin.y * this.boundingBox.height,
             this.boundingBox.width,
-            this.boundingBox.height,
+            this.boundingBox.height
           ),
           rot,
-          new Point(0, 0),
+          new Point(0, 0)
         )
 
         this.unrotatedBoundingBox = this.boundingBox.clone()
@@ -534,7 +534,7 @@ export class Text extends Shape {
       util.setPrefixedStyle(
         style,
         'transformOrigin',
-        `${-dx * 100}% ${-dy * 100}%`,
+        `${-dx * 100}% ${-dy * 100}%`
       )
 
       util.setPrefixedStyle(
@@ -542,27 +542,27 @@ export class Text extends Shape {
         'transform',
         `translate(${dx * 100}%, ${dy * 100}%)` +
           `scale(${this.scale}) ` +
-          `rotate(${theta}deg)`,
+          `rotate(${theta}deg)`
       )
     } else {
       util.setPrefixedStyle(style, 'transformOrigin', '0% 0%')
       util.setPrefixedStyle(
         style,
         'transform',
-        `scale(${this.scale}) ` + `translate(${dx * 100}%, ${dy * 100}%)`,
+        `scale(${this.scale}) ` + `translate(${dx * 100}%, ${dy * 100}%)`
       )
     }
 
     const left = Math.round(
       this.bounds.x -
         Math.ceil(
-          dx * (this.overflow !== 'fill' && this.overflow !== 'width' ? 3 : 1),
-        ),
+          dx * (this.overflow !== 'fill' && this.overflow !== 'width' ? 3 : 1)
+        )
     )
 
     style.left = `${left}px`
     style.top = `${Math.round(
-      this.bounds.y - dy * (this.overflow !== 'fill' ? 3 : 1),
+      this.bounds.y - dy * (this.overflow !== 'fill' ? 3 : 1)
     )}px`
 
     if (this.opacity < 1) {

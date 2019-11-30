@@ -7,7 +7,7 @@ const escapeMap: { [key: string]: string } = {
 }
 
 const unescapeMap: { [key: string]: string } = {}
-Object.keys(escapeMap).forEach((key) => {
+Object.keys(escapeMap).forEach(key => {
   unescapeMap[escapeMap[key]] = key
 })
 
@@ -18,7 +18,7 @@ function createEscape(map: { [key: string]: string }) {
 
   return (str: string) => {
     return testRegexp.test(str)
-      ? str.replace(replaceRegexp, (match) => map[match])
+      ? str.replace(replaceRegexp, match => map[match])
       : str
   }
 }

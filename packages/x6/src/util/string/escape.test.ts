@@ -21,7 +21,7 @@ describe('string', () => {
     })
 
     const chars: string[] = ['`', '/']
-    chars.forEach((chr) => {
+    chars.forEach(chr => {
       it(`should not escape the ${chr} character`, () => {
         expect(escape(chr)).toEqual(chr)
       })
@@ -46,7 +46,7 @@ describe('string', () => {
     })
 
     const entities = ['&#96;', '&#x2F;']
-    entities.forEach((entity) => {
+    entities.forEach(entity => {
       it(`should not unescape the ${entity} entity`, () => {
         expect(unescape(entity)).toEqual(entity)
       })

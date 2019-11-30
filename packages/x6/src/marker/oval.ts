@@ -13,7 +13,7 @@ export function oval({
   pe.x -= unitX * a
   pe.y -= unitY * a
 
-  return function () {
+  return function() {
     c.ellipse(pt.x - a, pt.y - a, size, size)
 
     if (filled) {

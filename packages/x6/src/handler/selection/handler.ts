@@ -35,7 +35,7 @@ export class SelectionHandler extends MouseHandler {
     this.handlers = new Dictionary<Cell, NodeHandler>()
 
     // Creates handles for all selection cells
-    this.graph.getSelectedCells().forEach((cell) => {
+    this.graph.getSelectedCells().forEach(cell => {
       const state = this.graph.view.getState(cell)
       if (state != null) {
         let handler = oldHandlers.delete(cell) || null
@@ -63,7 +63,7 @@ export class SelectionHandler extends MouseHandler {
     })
 
     // Destroys unused handlers
-    oldHandlers.each((handler) => {
+    oldHandlers.each(handler => {
       this.refreshClassName(handler.state, false)
       handler.dispose()
     })
@@ -106,7 +106,7 @@ export class SelectionHandler extends MouseHandler {
   }
 
   protected reset() {
-    this.handlers.each((h) => h.reset())
+    this.handlers.each(h => h.reset())
   }
 
   /**
@@ -132,19 +132,19 @@ export class SelectionHandler extends MouseHandler {
       //   this.graph.selectionManager.selectCellForEvent(cell, e.getEvent())
       // }
 
-      this.handlers.each((h) => h.mouseDown(e, sender))
+      this.handlers.each(h => h.mouseDown(e, sender))
     }
   }
 
   mouseMove(e: MouseEventEx, sender: any) {
     if (this.canHandle(e)) {
-      this.handlers.each((h) => h.mouseMove(e, sender))
+      this.handlers.each(h => h.mouseMove(e, sender))
     }
   }
 
   mouseUp(e: MouseEventEx, sender: any) {
     if (this.canHandle(e)) {
-      this.handlers.each((h) => h.mouseUp(e, sender))
+      this.handlers.each(h => h.mouseUp(e, sender))
     }
   }
 

@@ -13,7 +13,7 @@ export class Arrow extends Shape {
     strokewidth?: number,
     arrowWidth?: number,
     spacing?: number,
-    endSize?: number,
+    endSize?: number
   ) {
     super()
     this.points = points

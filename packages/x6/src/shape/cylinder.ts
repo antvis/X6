@@ -10,7 +10,7 @@ export class Cylinder extends Shape {
     bounds: Rectangle,
     fillColor: string,
     strokeColor: string,
-    strokewidth: number = 1,
+    strokewidth: number = 1
   ) {
     super()
     this.bounds = bounds
@@ -43,7 +43,7 @@ export class Cylinder extends Shape {
     y: number,
     w: number,
     h: number,
-    isForeground?: boolean,
+    isForeground?: boolean
   ) {
     const dy = this.getCylinderSize(x, y, w, h)
 

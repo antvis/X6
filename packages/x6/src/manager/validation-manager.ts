@@ -10,7 +10,7 @@ export class ValidationManager extends BaseManager {
   validateGraph(cell: Cell, context: any): string | null {
     let isValid = true
 
-    this.model.eachChild(cell, (child) => {
+    this.model.eachChild(cell, child => {
       let ctx = context
       if (this.graph.isValidRoot(child)) {
         ctx = new Object()
@@ -39,7 +39,7 @@ export class ValidationManager extends BaseManager {
         this.getEdgeValidationError(
           cell,
           this.model.getTerminal(cell, true),
-          this.model.getTerminal(cell, false),
+          this.model.getTerminal(cell, false)
         ) || ''
     } else {
       warning += this.getCellValidationError(cell) || ''
@@ -74,7 +74,7 @@ export class ValidationManager extends BaseManager {
   getEdgeValidationError(
     edge: Cell | null,
     source: Cell | null,
-    target: Cell | null,
+    target: Cell | null
   ) {
     // dangling edge
     if (
@@ -125,14 +125,14 @@ export class ValidationManager extends BaseManager {
 
       // Checks the change against each multiplicity rule
       if (this.graph.multiplicities != null) {
-        this.graph.multiplicities.forEach((m) => {
+        this.graph.multiplicities.forEach(m => {
           const err = m.check(
             this.graph,
             edge,
             source,
             target,
             sourceOut,
-            targetIn,
+            targetIn
           )
           if (err != null) {
             error += err
@@ -161,7 +161,7 @@ export class ValidationManager extends BaseManager {
     let error = ''
 
     if (this.graph.multiplicities != null) {
-      this.graph.multiplicities.forEach((rule) => {
+      this.graph.multiplicities.forEach(rule => {
         if (
           rule.isSource &&
           isHtmlElem(data, rule.nodeName, rule.attrName, rule.attrValue) &&

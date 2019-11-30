@@ -33,7 +33,7 @@ export namespace CellPath {
 
   export function resolve(root: Cell, path: string): Cell {
     let child = root
-    path.split(separator).forEach((token) => {
+    path.split(separator).forEach(token => {
       const index = parseInt(token, 10)
       const result = child.getChildAt(index)
       if (result == null) {
@@ -103,7 +103,7 @@ export namespace CellPath {
 
   export function getNearestCommonAncestor(
     cell1: Cell | null,
-    cell2: Cell | null,
+    cell2: Cell | null
   ): Cell | null {
     if (cell1 != null && cell2 != null) {
       let path2 = getCellPath(cell2)

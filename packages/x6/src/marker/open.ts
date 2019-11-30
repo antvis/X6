@@ -25,16 +25,16 @@ export function createOpenMarker(widthFactor: number = 2) {
     pe.x += -endOffsetX * 2
     pe.y += -endOffsetY * 2
 
-    return function () {
+    return function() {
       c.begin()
       c.moveTo(
         pt.x - unitX - unitY / widthFactor,
-        pt.y - unitY + unitX / widthFactor,
+        pt.y - unitY + unitX / widthFactor
       )
       c.lineTo(pt.x, pt.y)
       c.lineTo(
         pt.x + unitY / widthFactor - unitX,
-        pt.y - unitY - unitX / widthFactor,
+        pt.y - unitY - unitX / widthFactor
       )
       c.stroke()
     }
