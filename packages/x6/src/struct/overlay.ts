@@ -74,7 +74,7 @@ export class Overlay extends Events {
       Math.round(pt!.x - (w * this.defaultOverlap - this.offset.x) * s),
       Math.round(pt!.y - (h * this.defaultOverlap - this.offset.y) * s),
       w * s,
-      h * s
+      h * s,
     )
   }
 }

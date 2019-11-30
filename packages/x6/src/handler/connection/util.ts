@@ -6,7 +6,7 @@ import { ConstraintHandler } from '../constraint/handler'
  */
 export function transparentMarker(
   constraintHandler: ConstraintHandler,
-  marker: CellMarker
+  marker: CellMarker,
 ) {
   if (
     constraintHandler.currentState != null &&

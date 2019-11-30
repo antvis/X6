@@ -26,12 +26,12 @@ export class CubeShape extends Cylinder {
     const darkOpacity = util.getNumber(
       this.style,
       'darkOpacity',
-      this.darkOpacity
+      this.darkOpacity,
     )
     const darkOpacity2 = util.getNumber(
       this.style,
       'darkOpacity2',
-      this.darkOpacity2
+      this.darkOpacity2,
     )
     const s = Math.max(0, Math.min(w, Math.min(h, factor)))
     const op = Math.max(-1, Math.min(1, darkOpacity))

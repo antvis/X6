@@ -8,7 +8,7 @@ export class RectangleShape extends Shape {
     bounds: Rectangle,
     fillColor?: string | null,
     strokeColor?: string | null,
-    strokewidth?: number | null
+    strokewidth?: number | null,
   ) {
     super()
     this.bounds = bounds
@@ -52,7 +52,7 @@ export class RectangleShape extends Shape {
         y,
         w,
         h,
-        this.getArcSize(w + this.strokeWidth, h + this.strokeWidth)
+        this.getArcSize(w + this.strokeWidth, h + this.strokeWidth),
       )
     }
   }

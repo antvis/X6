@@ -30,7 +30,7 @@ export class StepShape extends Actor {
       ],
       this.rounded,
       arcSize,
-      true
+      true,
     )
 
     c.end()
@@ -41,7 +41,7 @@ export function stepPerimeter(
   bounds: Rectangle,
   state: State,
   next: Point,
-  orthogonal: boolean
+  orthogonal: boolean,
 ) {
   const defaultFactor = StepShape.prototype.factor
   const style: Style = state ? state.style : {}

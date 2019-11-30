@@ -39,7 +39,7 @@ Marker.register(
         c.stroke()
       }
     }
-  }
+  },
 )
 
 function createOpenAsyncArrow(widthFactor: number = 2) {
@@ -64,12 +64,12 @@ function createOpenAsyncArrow(widthFactor: number = 2) {
       if (isSource) {
         c.lineTo(
           pt.x - unitX - unitY / widthFactor,
-          pt.y - unitY + unitX / widthFactor
+          pt.y - unitY + unitX / widthFactor,
         )
       } else {
         c.lineTo(
           pt.x + unitY / widthFactor - unitX,
-          pt.y - unitY - unitX / widthFactor
+          pt.y - unitY - unitX / widthFactor,
         )
       }
 

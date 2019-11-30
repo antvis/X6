@@ -182,7 +182,7 @@ export class Renderer {
   protected createIndicatorShape(state: State) {
     if (state != null && state.shape != null) {
       state.shape.indicatorShape = Shape.getShape(
-        state.view.graph.cellManager.getIndicatorShape(state)
+        state.view.graph.cellManager.getIndicatorShape(state),
       )
     }
   }
@@ -203,13 +203,13 @@ export class Renderer {
       state.shape.indicatorImage = graph.cellManager.getIndicatorImage(state)
       state.shape.indicatorColor = graph.cellManager.getIndicatorColor(state)
       state.shape.indicatorDirection = graph.cellManager.getIndicatorDirection(
-        state
+        state,
       )
       state.shape.indicatorStrokeColor = graph.cellManager.getIndicatorStrokeColor(
-        state
+        state,
       )
       state.shape.indicatorGradientColor = graph.cellManager.getIndicatorGradientColor(
-        state
+        state,
       )
 
       this.postConfigureShape(state)
@@ -244,7 +244,7 @@ export class Renderer {
     if (value === 'inherit') {
       referenced = graph.model.getParent(state.cell)
     } else if (value === 'swimlane') {
-      ;(state.shape as any)[field] = key === 'stroke' ? '#000000' : '#ffffff'
+      (state.shape as any)[field] = key === 'stroke' ? '#000000' : '#ffffff'
 
       if (graph.model.getTerminal(state.cell, false) != null) {
         referenced = graph.model.getTerminal(state.cell, false)
@@ -256,18 +256,18 @@ export class Renderer {
       // tslint:disable-next-line
       key = graph.swimlaneIndicatorColorAttribute
     } else if (value === 'indicated') {
-      ;(state.shape as any)[field] = state.shape!.indicatorColor
+      (state.shape as any)[field] = state.shape!.indicatorColor
     }
 
     if (referenced != null) {
       const rstate = graph.view.getState(referenced)
-      ;(state.shape as any)[field] = null
+      ; (state.shape as any)[field] = null
 
       if (rstate != null) {
         if (rstate.shape != null && field !== 'indicatorColor') {
-          ;(state.shape as any)[field] = (rstate.shape as any)[field]
+          (state.shape as any)[field] = (rstate.shape as any)[field]
         } else {
-          ;(state.shape as any)[field] = (rstate.style as any)[key]
+          (state.shape as any)[field] = (rstate.style as any)[key]
         }
       }
     }
@@ -337,7 +337,7 @@ export class Renderer {
   protected installOverlayListeners(
     state: State,
     overlay: Overlay,
-    overlayShape: Shape
+    overlayShape: Shape,
   ) {
     const graph = state.view.graph
     const elem = overlayShape.elem!
@@ -357,7 +357,7 @@ export class Renderer {
       },
       (e: MouseEvent) => {
         graph.fireMouseEvent(DomEvent.MOUSE_MOVE, new MouseEventEx(e, state))
-      }
+      },
     )
 
     if (detector.SUPPORT_TOUCH) {
@@ -405,7 +405,7 @@ export class Renderer {
         if (this.isShapeEvent(state, e)) {
           graph.fireMouseEvent(
             DomEvent.MOUSE_MOVE,
-            new MouseEventEx(e, getState(e))
+            new MouseEventEx(e, getState(e)),
           )
         }
       },
@@ -413,10 +413,10 @@ export class Renderer {
         if (this.isShapeEvent(state, e)) {
           graph.fireMouseEvent(
             DomEvent.MOUSE_UP,
-            new MouseEventEx(e, getState(e))
+            new MouseEventEx(e, getState(e)),
           )
         }
-      }
+      },
     )
 
     // Uses double click timeout in mxGraph for quirks mode
@@ -445,7 +445,7 @@ export class Renderer {
           state,
           state.control,
           true,
-          this.createFoldingClickHandler(state)
+          this.createFoldingClickHandler(state),
         )
       }
     } else if (state.control != null) {
@@ -469,7 +469,7 @@ export class Renderer {
     state: State,
     control: ImageShape,
     handleEvents: boolean,
-    clickHandler: (e: MouseEvent) => any
+    clickHandler: (e: MouseEvent) => any,
   ) {
     const graph = state.view.graph
 
@@ -516,7 +516,7 @@ export class Renderer {
         (e: MouseEvent) => {
           graph.fireMouseEvent(DomEvent.MOUSE_UP, new MouseEventEx(e, state))
           DomEvent.consume(e)
-        }
+        },
       )
 
       // Uses capture phase for event interception to stop bubble phase
@@ -620,7 +620,7 @@ export class Renderer {
           state.unscaledWidth != null &&
           Math.round(
             (state.text.bounds.width / state.text.scale) * nextScale -
-              bounds.width
+            bounds.width,
           ) !== 0
         ) {
           state.unscaledWidth = null
@@ -715,7 +715,7 @@ export class Renderer {
           if (this.isLabelEvent(state, e)) {
             graph.fireMouseEvent(
               DomEvent.MOUSE_DOWN,
-              new MouseEventEx(e, state)
+              new MouseEventEx(e, state),
             )
             forceGetCell =
               graph.dialect !== 'svg' &&
@@ -726,7 +726,7 @@ export class Renderer {
           if (this.isLabelEvent(state, e)) {
             graph.fireMouseEvent(
               DomEvent.MOUSE_MOVE,
-              new MouseEventEx(e, getState(e))
+              new MouseEventEx(e, getState(e)),
             )
           }
         },
@@ -734,11 +734,11 @@ export class Renderer {
           if (this.isLabelEvent(state, e)) {
             graph.fireMouseEvent(
               DomEvent.MOUSE_UP,
-              new MouseEventEx(e, getState(e))
+              new MouseEventEx(e, getState(e)),
             )
             forceGetCell = false
           }
-        }
+        },
       )
 
       // Uses double click timeout in mxGraph for quirks mode
@@ -924,17 +924,17 @@ export class Renderer {
       bounds.width = Math.max(
         0,
         bounds.width -
-          (h === 'center' && lw == null
-            ? state.text!.spacingLeft * s + state.text!.spacingRight * s
-            : 0)
+        (h === 'center' && lw == null
+          ? state.text!.spacingLeft * s + state.text!.spacingRight * s
+          : 0),
       )
 
       bounds.height = Math.max(
         0,
         bounds.height -
-          (v === 'middle'
-            ? state.text!.spacingTop * s + state.text!.spacingBottom * s
-            : 0)
+        (v === 'middle'
+          ? state.text!.spacingTop * s + state.text!.spacingBottom * s
+          : 0),
       )
     }
 
@@ -948,7 +948,7 @@ export class Renderer {
         const pt = util.rotatePoint(
           new Point(bounds.x, bounds.y),
           theta,
-          new Point(cx, cy)
+          new Point(cx, cy),
         )
 
         bounds.x = pt.x
@@ -1018,7 +1018,7 @@ export class Renderer {
               new Point(cx, cy),
               cos,
               sin,
-              state.bounds.getCenter()
+              state.bounds.getCenter(),
             )
 
             cx = point.x
@@ -1095,7 +1095,7 @@ export class Renderer {
             const p = util.rotatePoint(
               new Point(cx, cy),
               rot,
-              state.bounds.getCenter()
+              state.bounds.getCenter(),
             )
             cx = p.x
             cy = p.y
@@ -1105,17 +1105,17 @@ export class Renderer {
 
       return state.view.graph.getModel().isEdge(state.cell)
         ? new Rectangle(
-            Math.round(cx - (w / 2) * s),
-            Math.round(cy - (h / 2) * s),
-            Math.round(w * s),
-            Math.round(h * s)
-          )
+          Math.round(cx - (w / 2) * s),
+          Math.round(cy - (h / 2) * s),
+          Math.round(w * s),
+          Math.round(h * s),
+        )
         : new Rectangle(
-            Math.round(cx - (w / 2) * s),
-            Math.round(cy - (h / 2) * s),
-            Math.round(w * s),
-            Math.round(h * s)
-          )
+          Math.round(cx - (w / 2) * s),
+          Math.round(cy - (h / 2) * s),
+          Math.round(w * s),
+          Math.round(h * s),
+        )
     }
 
     return null

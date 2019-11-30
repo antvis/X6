@@ -73,7 +73,7 @@ export class UndoManager extends Primer {
     if (this.history.length > this.cursor) {
       const edits = this.history.splice(
         this.cursor,
-        this.history.length - this.cursor
+        this.history.length - this.cursor,
       )
 
       edits.forEach((edit) => edit.dispose())

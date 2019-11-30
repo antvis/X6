@@ -98,7 +98,7 @@ export function createResizeHandle(args: CreateResizeHandleShapeArgs) {
 }
 
 export function updateResizeHandleCalssName(
-  args: ApplyResizeHandleClassNameArgs
+  args: ApplyResizeHandleClassNameArgs,
 ) {
   const { graph, cursor } = args
   const options = graph.options.resizeHandle as ResizeHandleOptions

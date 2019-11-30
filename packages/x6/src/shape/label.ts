@@ -47,7 +47,7 @@ export class Label extends RectangleShape {
     image: string,
     fillColor: string,
     strokeColor: string,
-    strokewidth: number = 1
+    strokewidth: number = 1,
   ) {
     super(bounds, fillColor, strokeColor, strokewidth)
   }
@@ -98,7 +98,7 @@ export class Label extends RectangleShape {
         this.image,
         false,
         false,
-        false
+        false,
       )
     }
   }
@@ -148,7 +148,7 @@ export class Label extends RectangleShape {
         this.indicatorImage,
         false,
         false,
-        false
+        false,
       )
     }
   }
@@ -203,7 +203,7 @@ export class Label extends RectangleShape {
         this.bounds.x,
         this.bounds.y,
         this.bounds.width,
-        this.bounds.height
+        this.bounds.height,
       )
 
       bounds.x -= this.bounds.x

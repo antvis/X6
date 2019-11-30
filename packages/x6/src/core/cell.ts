@@ -82,7 +82,7 @@ export class Cell extends Disposable {
 
   eachEdge(
     iterator: (edge: Cell, index: number, edges: Cell[]) => void,
-    context?: any
+    context?: any,
   ) {
     return util.forEach(this.edges, iterator, context)
   }
@@ -279,7 +279,7 @@ export class Cell extends Disposable {
 
   eachChild(
     iterator: (child: Cell, index: number, children: Cell[]) => void,
-    context?: any
+    context?: any,
   ) {
     return util.forEach(this.children, iterator, context)
   }
@@ -404,7 +404,7 @@ export namespace Cell {
   export type Renderer = (
     this: Graph,
     elem: HTMLElement | SVGElement,
-    cell: Cell
+    cell: Cell,
   ) => void
 
   interface CreationOptions {
@@ -479,7 +479,7 @@ export namespace Cell {
       options.x,
       options.y,
       options.width,
-      options.height
+      options.height,
     )
 
     geo.relative = options.relative != null ? options.relative : false
@@ -527,7 +527,7 @@ export namespace Cell {
   function applyCommonOptions(
     node: Cell,
     options: CreationOptions,
-    isNode: boolean
+    isNode: boolean,
   ) {
     node.setId(options.id)
 

@@ -13,7 +13,7 @@ export class TerminalChange implements IChange {
     model: Model,
     cell: Cell,
     terminal: Cell | null,
-    isSource: boolean
+    isSource: boolean,
   ) {
     this.model = model
     this.cell = cell
@@ -28,7 +28,7 @@ export class TerminalChange implements IChange {
       this.previous = this.model.doTerminalChange(
         this.cell,
         this.previous,
-        this.isSource
+        this.isSource,
       )
     }
   }

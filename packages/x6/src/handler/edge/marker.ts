@@ -54,7 +54,7 @@ export class EdgeMarker extends CellMarker {
         this.graph.cellManager.hitsSwimlaneContent(
           cell,
           this.currentPoint.x,
-          this.currentPoint.y
+          this.currentPoint.y,
         )) ||
       !this.edgeHandler.isConnectableCell(cell) ||
       cell === this.state.cell ||
@@ -77,9 +77,9 @@ export class EdgeMarker extends CellMarker {
     const other = this.graph.view.getTerminalPortState(
       state,
       this.graph.view.getState(
-        model.getTerminal(this.state.cell, !this.isSource)
+        model.getTerminal(this.state.cell, !this.isSource),
       )!,
-      !this.isSource
+      !this.isSource,
     )
     const otherCell = other != null ? other.cell : null
     const source = this.isSource ? state.cell : otherCell

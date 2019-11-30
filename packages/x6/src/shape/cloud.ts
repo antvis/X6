@@ -7,7 +7,7 @@ export class Cloud extends Actor {
     bounds: Rectangle,
     fillColor: string,
     strokeColor: string,
-    strokewidth: number = 1
+    strokewidth: number = 1,
   ) {
     super(bounds, fillColor, strokeColor, strokewidth)
   }

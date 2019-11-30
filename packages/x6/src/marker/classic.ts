@@ -1,7 +1,7 @@
 import { Marker } from '.'
 
 export function createClassicMarker(widthFactor: number = 2) {
-  return function({
+  return function ({
     c,
     name,
     pe,
@@ -30,12 +30,12 @@ export function createClassicMarker(widthFactor: number = 2) {
     pe.x += -unitX * f - endOffsetX
     pe.y += -unitY * f - endOffsetY
 
-    return function() {
+    return function () {
       c.begin()
       c.moveTo(pt.x, pt.y)
       c.lineTo(
         pt.x - unitX - unitY / widthFactor,
-        pt.y - unitY + unitX / widthFactor
+        pt.y - unitY + unitX / widthFactor,
       )
 
       if (name === 'classic' || name === 'classicThin') {
@@ -44,7 +44,7 @@ export function createClassicMarker(widthFactor: number = 2) {
 
       c.lineTo(
         pt.x + unitY / widthFactor - unitX,
-        pt.y - unitY - unitX / widthFactor
+        pt.y - unitY - unitX / widthFactor,
       )
 
       c.close()

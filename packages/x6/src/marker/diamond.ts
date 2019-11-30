@@ -32,7 +32,7 @@ export function diamond({
   // thickness factor for diamond
   const tk = name === 'diamond' ? 2 : 3.4
 
-  return function() {
+  return function () {
     c.begin()
     c.moveTo(pt.x, pt.y)
     c.lineTo(pt.x - unitX / 2 - unitY / tk, pt.y + unitX / tk - unitY / 2)

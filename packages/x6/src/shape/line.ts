@@ -6,7 +6,7 @@ export class Line extends Shape {
   constructor(
     public bounds: Rectangle,
     public strokeColor: string,
-    public strokeWidth: number = 1
+    public strokeWidth: number = 1,
   ) {
     super()
   }
@@ -16,7 +16,7 @@ export class Line extends Shape {
     x: number,
     y: number,
     w: number,
-    h: number
+    h: number,
   ) {
     const mid = y + h / 2
     c.begin()

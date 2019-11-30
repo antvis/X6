@@ -49,13 +49,13 @@ export class SelectionManager extends BaseManager {
    */
   selectCellsInRegion(
     rect: Rectangle | Rectangle.RectangleLike,
-    e: MouseEvent
+    e: MouseEvent,
   ) {
     const cells = this.graph.getCellsInRegion(
       rect.x,
       rect.y,
       rect.width,
-      rect.height
+      rect.height,
     )
     this.selectCellsForEvent(cells, e)
 
@@ -72,7 +72,7 @@ export class SelectionManager extends BaseManager {
   selectCell(
     isNext: boolean = false,
     isParent: boolean = false,
-    isChild: boolean = false
+    isChild: boolean = false,
   ) {
     const selection = this.graph.selection
     const cell = selection.cells.length > 0 ? selection.cells[0] : null
@@ -124,7 +124,7 @@ export class SelectionManager extends BaseManager {
     const cells = includeDescendants
       ? this.model.filterDescendants(
           (cell) => cell !== parent && this.view.getState(cell) != null,
-          parent
+          parent,
         )
       : this.model.getChildren(parent)
 
@@ -145,7 +145,7 @@ export class SelectionManager extends BaseManager {
   selectCells(
     includeNodes: boolean,
     includeEdges: boolean,
-    parent: Cell = this.graph.getDefaultParent()!
+    parent: Cell = this.graph.getDefaultParent()!,
   ) {
     const cells = this.model.filterDescendants(
       (cell) =>
@@ -157,7 +157,7 @@ export class SelectionManager extends BaseManager {
           !this.model.isEdge(this.model.getParent(cell))) ||
           // edges
           (this.model.isEdge(cell) && includeEdges)),
-      parent
+      parent,
     )
 
     if (cells != null) {

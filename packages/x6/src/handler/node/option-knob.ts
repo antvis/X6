@@ -18,7 +18,7 @@ export interface CreateHandleShapeArgs {
 
 export function createHandleShape<T extends CreateHandleShapeArgs>(
   args: T,
-  options: HandleOptions<T, T>
+  options: HandleOptions<T, T>,
 ) {
   const { graph } = args
   const image = drill(options.image, graph, args)

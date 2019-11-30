@@ -6,7 +6,7 @@ export function rhombusPerimeter(
   bounds: Rectangle,
   state: State,
   next: Point = new Point(),
-  orthogonal: boolean = false
+  orthogonal: boolean = false,
 ) {
   const x = bounds.x
   const y = bounds.y

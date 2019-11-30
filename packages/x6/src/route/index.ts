@@ -14,7 +14,7 @@ export namespace Route {
     sourceState: State,
     targetState: State,
     points: Point[],
-    result: Point[]
+    result: Point[],
   ) => void
 
   const routers: { [name: string]: Router } = {}
@@ -22,7 +22,7 @@ export namespace Route {
   export function register(
     name: string,
     router: Router,
-    force: boolean = false
+    force: boolean = false,
   ) {
     util.registerEntity(routers, name, router, force, () => {
       throw new Error(`Router with name '${name}' already registered.`)

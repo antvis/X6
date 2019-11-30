@@ -31,7 +31,7 @@ export class ChildChange implements IChange {
       tmp = this.model.doChildChange(
         this.child,
         this.previous,
-        this.previousIndex
+        this.previousIndex,
       )
 
       if (this.previous != null) {

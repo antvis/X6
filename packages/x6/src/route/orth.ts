@@ -94,7 +94,7 @@ function getJettySize(
   sourceState: State,
   targetState: State,
   points: Point[],
-  isSource?: boolean
+  isSource?: boolean,
 ) {
   let value =
     (isSource
@@ -143,7 +143,7 @@ export function orth(
   sourceState: State,
   targetState: State,
   points: Point[],
-  result: Point[]
+  result: Point[],
 ) {
   const graph = edgeState.view.graph
   const sourceEdge =
@@ -211,13 +211,13 @@ export function orth(
       sourceState,
       edgeState,
       true,
-      DirectionMask.all
+      DirectionMask.all,
     )
     rotation = sourceState.style.rotation || 0
     if (rotation !== 0) {
       const newRect = util.rotateRectangle(
         new Rectangle(sourceX, sourceY, sourceWidth, sourceHeight),
-        rotation
+        rotation,
       )
       sourceX = newRect.x
       sourceY = newRect.y
@@ -231,13 +231,13 @@ export function orth(
       targetState,
       edgeState,
       false,
-      DirectionMask.all
+      DirectionMask.all,
     )
     rotation = targetState.style.rotation || 0
     if (rotation !== 0) {
       const newRect = util.rotateRectangle(
         new Rectangle(targetX, targetY, targetWidth, targetHeight),
-        rotation
+        rotation,
       )
       targetX = newRect.x
       targetY = newRect.y
@@ -642,7 +642,7 @@ export function orth(
     }
 
     result.push(
-      new Point(Math.round(wayPoints1[i][0]), Math.round(wayPoints1[i][1]))
+      new Point(Math.round(wayPoints1[i][0]), Math.round(wayPoints1[i][1])),
     )
   }
 

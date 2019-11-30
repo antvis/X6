@@ -45,7 +45,7 @@ export class Handle {
     if (this.image != null) {
       const shape = new ImageShape(
         new Rectangle(0, 0, this.image.width, this.image.height),
-        this.image.src
+        this.image.src,
       )
       shape.preserveImageAspect = false
       this.shape = shape
@@ -115,10 +115,10 @@ export class Handle {
       this.rotatePoint(
         this.snapPoint(
           this.rotatePoint(p, alpha1),
-          this.ignoreGrid || !this.graph.isGridEnabledForEvent(e.getEvent())
+          this.ignoreGrid || !this.graph.isGridEnabledForEvent(e.getEvent()),
         ),
-        alpha2
-      )
+        alpha2,
+      ),
     )
 
     this.setPosition(this.state.getPaintBounds(), p, e)

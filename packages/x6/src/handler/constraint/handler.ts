@@ -77,7 +77,7 @@ export class ConstraintHandler extends BaseHandler {
     state: State,
     constraint: Constraint,
     point: Point,
-    icon?: ImageShape
+    icon?: ImageShape,
   ) {
     const { image, cursor, className } = getConstraintOptions({
       constraint,
@@ -90,7 +90,7 @@ export class ConstraintHandler extends BaseHandler {
       Math.round(point.x - image.width / 2),
       Math.round(point.y - image.height / 2),
       image.width,
-      image.height
+      image.height,
     )
 
     if (icon == null) {
@@ -182,14 +182,14 @@ export class ConstraintHandler extends BaseHandler {
     e: MouseEventEx,
     isSource: boolean,
     existingEdge: boolean,
-    currentPoint: Point | null
+    currentPoint: Point | null,
   ) {
     if (this.isEnabled() && !this.isEventIgnored(e)) {
       if (!this.containerEventInstalled && this.graph.container) {
         DomEvent.addListener(
           this.graph.container,
           'mouseleave',
-          this.resetHandler!
+          this.resetHandler!,
         )
       }
 
@@ -201,7 +201,7 @@ export class ConstraintHandler extends BaseHandler {
         e.getGraphX() - tol,
         e.getGraphY() - tol,
         2 * tol,
-        2 * tol
+        2 * tol,
       )
 
       const state = this.graph.view.getState(this.getCell(e, currentPoint))
@@ -250,7 +250,7 @@ export class ConstraintHandler extends BaseHandler {
                   this.icons[i],
                   grid,
                   isSource,
-                  existingEdge
+                  existingEdge,
                 ))) &&
             (minDist == null || dis < minDist)
           ) {
@@ -328,7 +328,7 @@ export class ConstraintHandler extends BaseHandler {
     icon: ImageShape,
     mouse: Rectangle,
     isSource: boolean,
-    existingEdge: boolean
+    existingEdge: boolean,
   ) {
     return icon.bounds.isIntersectWith(mouse)
   }
@@ -361,7 +361,7 @@ export class ConstraintHandler extends BaseHandler {
         DomEvent.removeListener(
           this.graph.container,
           'mouseleave',
-          this.resetHandler
+          this.resetHandler,
         )
       }
 

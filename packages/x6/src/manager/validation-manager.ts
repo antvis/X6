@@ -39,7 +39,7 @@ export class ValidationManager extends BaseManager {
         this.getEdgeValidationError(
           cell,
           this.model.getTerminal(cell, true),
-          this.model.getTerminal(cell, false)
+          this.model.getTerminal(cell, false),
         ) || ''
     } else {
       warning += this.getCellValidationError(cell) || ''
@@ -74,7 +74,7 @@ export class ValidationManager extends BaseManager {
   getEdgeValidationError(
     edge: Cell | null,
     source: Cell | null,
-    target: Cell | null
+    target: Cell | null,
   ) {
     // dangling edge
     if (
@@ -132,7 +132,7 @@ export class ValidationManager extends BaseManager {
             source,
             target,
             sourceOut,
-            targetIn
+            targetIn,
           )
           if (err != null) {
             error += err

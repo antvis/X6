@@ -50,7 +50,7 @@ export interface BaseStyle<T>
 
 export function applyBaseStyle<T extends BaseArgs>(
   args: T,
-  style: BaseStyle<T>
+  style: BaseStyle<T>,
 ) {
   applyStrokeStyle(args, style)
   applyFillStyle(args, style)
@@ -58,7 +58,7 @@ export function applyBaseStyle<T extends BaseArgs>(
 
 export function applyStrokeStyle<T extends BaseArgs>(
   args: T,
-  style: StrokeStyle<T>
+  style: StrokeStyle<T>,
 ) {
   const { shape, graph } = args
   shape.strokeColor = drill(style.stroke, graph, args)
@@ -68,7 +68,7 @@ export function applyStrokeStyle<T extends BaseArgs>(
 
 export function applyFillStyle<T extends BaseArgs>(
   args: T,
-  style: FillStyle<T>
+  style: FillStyle<T>,
 ) {
   const { shape, graph } = args
   shape.fillColor = drill(style.fill, graph, args)
@@ -78,7 +78,7 @@ export function applyFillStyle<T extends BaseArgs>(
 export function applyClassName<T extends BaseArgs>(
   args: T,
   style: ClassNameStyle<T>,
-  native?: string
+  native?: string,
 ) {
   const manual = drill(style.className, args.graph, args)
   util.applyClassName(args.shape, args.graph.prefixCls, native, manual)
@@ -86,14 +86,14 @@ export function applyClassName<T extends BaseArgs>(
 
 export function applyCursorStyle<T extends BaseArgs>(
   args: T,
-  style: CurosrStyle<T>
+  style: CurosrStyle<T>,
 ) {
   args.shape.cursor = drill(style.cursor, args.graph, args)
 }
 
 export function applyManualStyle<T extends BaseArgs>(
   args: T,
-  style: ManualStyle<T>
+  style: ManualStyle<T>,
 ) {
   if (style.manual) {
     style.manual(args)

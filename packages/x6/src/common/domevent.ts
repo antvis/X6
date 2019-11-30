@@ -7,36 +7,36 @@ export namespace DomEvent {
   function addToList(
     elem: HTMLElement | SVGElement | Document | Window,
     name: string,
-    handler: Handler
+    handler: Handler,
   ) {
     if ((elem as any)[LIST_KEY] == null) {
-      ;(elem as any)[LIST_KEY] = []
+      (elem as any)[LIST_KEY] = []
     }
-    ;(elem as any)[LIST_KEY].push({ name, handler })
+    (elem as any)[LIST_KEY].push({ name, handler })
   }
 
   export const addListener = window.addEventListener
     ? (
-        elem: HTMLElement | SVGElement | Document | Window,
-        name: string,
-        handler: Handler
-      ) => {
-        elem.addEventListener(name, handler, false)
-        addToList(elem, name, handler)
-      }
+      elem: HTMLElement | SVGElement | Document | Window,
+      name: string,
+      handler: Handler,
+    ) => {
+      elem.addEventListener(name, handler, false)
+      addToList(elem, name, handler)
+    }
     : (
-        elem: HTMLElement | SVGElement | Document | Window,
-        name: string,
-        handler: Handler
-      ) => {
-        ;(elem as any).attachEvent(`on${name}`, handler)
-        addToList(elem, name, handler)
-      }
+      elem: HTMLElement | SVGElement | Document | Window,
+      name: string,
+      handler: Handler,
+    ) => {
+      (elem as any).attachEvent(`on${name}`, handler)
+      addToList(elem, name, handler)
+    }
 
   function removeFromList(
     elem: HTMLElement | SVGElement | Document | Window,
     name: string,
-    handler: Handler
+    handler: Handler,
   ) {
     const list = (elem as any)[LIST_KEY]
     if (list != null) {
@@ -56,21 +56,21 @@ export namespace DomEvent {
 
   export const removeListener = window.removeEventListener
     ? (
-        elem: HTMLElement | SVGElement | Document | Window,
-        name: string,
-        handler: Handler
-      ) => {
-        elem.removeEventListener(name, handler, false)
-        removeFromList(elem, name, handler)
-      }
+      elem: HTMLElement | SVGElement | Document | Window,
+      name: string,
+      handler: Handler,
+    ) => {
+      elem.removeEventListener(name, handler, false)
+      removeFromList(elem, name, handler)
+    }
     : (
-        elem: HTMLElement | SVGElement | Document | Window,
-        name: string,
-        handler: Handler
-      ) => {
-        ;(elem as any).detachEvent(`on${name}`, handler)
-        removeFromList(elem, name, handler)
-      }
+      elem: HTMLElement | SVGElement | Document | Window,
+      name: string,
+      handler: Handler,
+    ) => {
+      (elem as any).detachEvent(`on${name}`, handler)
+      removeFromList(elem, name, handler)
+    }
 
   export function removeAllListeners(elem: HTMLElement | SVGElement) {
     const list = (elem as any)[LIST_KEY]
@@ -86,13 +86,13 @@ export namespace DomEvent {
     elem: HTMLElement | SVGElement | Document | Window,
     startListener?: Handler | null,
     moveListener?: Handler | null,
-    endListener?: Handler | null
+    endListener?: Handler | null,
   ) {
     if (startListener != null) {
       addListener(
         elem,
         detector.SUPPORT_POINTER ? 'pointerdown' : 'mousedown',
-        startListener
+        startListener,
       )
     }
 
@@ -100,7 +100,7 @@ export namespace DomEvent {
       addListener(
         elem,
         detector.SUPPORT_POINTER ? 'pointermove' : 'mousemove',
-        moveListener
+        moveListener,
       )
     }
 
@@ -108,7 +108,7 @@ export namespace DomEvent {
       addListener(
         elem,
         detector.SUPPORT_POINTER ? 'pointerup' : 'mouseup',
-        endListener
+        endListener,
       )
     }
 
@@ -131,13 +131,13 @@ export namespace DomEvent {
     elem: HTMLElement | SVGElement | Document | Window,
     startListener: Handler | null,
     moveListener: Handler | null,
-    endListener: Handler | null
+    endListener: Handler | null,
   ) {
     if (startListener != null) {
       removeListener(
         elem,
         detector.SUPPORT_POINTER ? 'pointerdown' : 'mousedown',
-        startListener
+        startListener,
       )
     }
 
@@ -145,7 +145,7 @@ export namespace DomEvent {
       removeListener(
         elem,
         detector.SUPPORT_POINTER ? 'pointermove' : 'mousemove',
-        moveListener
+        moveListener,
       )
     }
 
@@ -153,7 +153,7 @@ export namespace DomEvent {
       removeListener(
         elem,
         detector.SUPPORT_POINTER ? 'pointerup' : 'mouseup',
-        endListener
+        endListener,
       )
     }
 
@@ -183,15 +183,15 @@ export namespace DomEvent {
           elem.childNodes.forEach((child) => release(child as HTMLElement))
         }
       }
-    } catch (e) {}
+    } catch (e) { }
   }
 
   export function addMouseWheelListener(
     func: (e: MouseWheelEvent, direction: boolean) => any,
-    target?: HTMLElement
+    target?: HTMLElement,
   ) {
     if (func != null) {
-      const wheelHandler = function(e: MouseWheelEvent) {
+      const wheelHandler = function (e: MouseWheelEvent) {
         // IE does not give an event object but the
         // global event object is the mousewheel event
         // at this point in time.
@@ -253,8 +253,8 @@ export namespace DomEvent {
     return e.pointerType != null
       ? e.pointerType === 'touch' || e.pointerType === e.MSPOINTER_TYPE_TOUCH
       : e.mozInputSource != null
-      ? e.mozInputSource === 5
-      : e.type.indexOf('touch') === 0
+        ? e.mozInputSource === 5
+        : e.type.indexOf('touch') === 0
   }
 
   /**
@@ -265,8 +265,8 @@ export namespace DomEvent {
     return e.pointerType != null
       ? e.pointerType === 'pen' || e.pointerType === e.MSPOINTER_TYPE_PEN
       : e.mozInputSource != null
-      ? e.mozInputSource === 2
-      : e.type.indexOf('pen') === 0
+        ? e.mozInputSource === 2
+        : e.type.indexOf('pen') === 0
   }
 
   export function isTouchOrPenEvent(e: any) {
@@ -294,8 +294,8 @@ export namespace DomEvent {
     return e.pointerType != null
       ? e.pointerType === 'mouse' || e.pointerType === e.MSPOINTER_TYPE_MOUSE
       : e.mozInputSource != null
-      ? e.mozInputSource === 1
-      : e.type.indexOf('mouse') === 0
+        ? e.mozInputSource === 1
+        : e.type.indexOf('mouse') === 0
   }
 
   export function isLeftMouseButton(e: any) {
@@ -397,7 +397,7 @@ export namespace DomEvent {
   export function consume(
     e: Event,
     preventDefault: boolean = true,
-    stopPropagation: boolean = true
+    stopPropagation: boolean = true,
   ) {
     if (preventDefault) {
       if (e.preventDefault) {
@@ -412,7 +412,7 @@ export namespace DomEvent {
     }
 
     // Opera
-    ;(e as any).isConsumed = true
+    (e as any).isConsumed = true
 
     // Other browsers
     if (!e.preventDefault) {

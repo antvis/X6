@@ -32,7 +32,7 @@ export class Events {
   off(
     eventName?: string | null,
     handler?: Events.Handler | null,
-    context?: any
+    context?: any,
   ) {
     // removing *all* events.
     if (!(eventName || handler || context)) {

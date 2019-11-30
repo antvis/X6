@@ -54,7 +54,7 @@ export interface ApplyConstraintHighlightShapeStyleArgs
 }
 
 export function createConstraintHighlightShape(
-  args: CreateConstraintHighlightShapeArgs
+  args: CreateConstraintHighlightShapeArgs,
 ) {
   const { graph } = args
   const opts = graph.options.constraintHighlight as ConstraintHighlightOptions

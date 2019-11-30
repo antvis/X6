@@ -52,11 +52,11 @@ export namespace Disposable {
     return (
       target: any,
       methodName: string,
-      descriptor: PropertyDescriptor
+      descriptor: PropertyDescriptor,
     ) => {
       const raw = descriptor.value
       const proto = target.__proto__ as IDisposable
-      descriptor.value = function(this: IDisposable) {
+      descriptor.value = function (this: IDisposable) {
         if (this.disposed) {
           return
         }

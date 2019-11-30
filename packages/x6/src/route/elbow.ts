@@ -10,7 +10,7 @@ export function elbow(
   sourceState: State,
   targetState: State,
   points: Point[],
-  result: Point[]
+  result: Point[],
 ) {
   let pt = points != null && points.length > 0 ? points[0] : null
   let vertical = false
@@ -21,13 +21,13 @@ export function elbow(
       const left = Math.min(sourceState.bounds.x, targetState.bounds.x)
       const right = Math.max(
         sourceState.bounds.x + sourceState.bounds.width,
-        targetState.bounds.x + targetState.bounds.width
+        targetState.bounds.x + targetState.bounds.width,
       )
 
       const top = Math.min(sourceState.bounds.y, targetState.bounds.y)
       const bottom = Math.max(
         sourceState.bounds.y + sourceState.bounds.height,
-        targetState.bounds.y + targetState.bounds.height
+        targetState.bounds.y + targetState.bounds.height,
       )
 
       pt = edgeState.view.transformControlPoint(edgeState, pt)!
@@ -38,7 +38,7 @@ export function elbow(
       const left = Math.max(sourceState.bounds.x, targetState.bounds.x)
       const right = Math.min(
         sourceState.bounds.x + sourceState.bounds.width,
-        targetState.bounds.x + targetState.bounds.width
+        targetState.bounds.x + targetState.bounds.width,
       )
 
       vertical = left === right
@@ -47,7 +47,7 @@ export function elbow(
         const top = Math.max(sourceState.bounds.y, targetState.bounds.y)
         const bottom = Math.min(
           sourceState.bounds.y + sourceState.bounds.height,
-          targetState.bounds.y + targetState.bounds.height
+          targetState.bounds.y + targetState.bounds.height,
         )
 
         horizontal = top === bottom
@@ -70,7 +70,7 @@ export function sideToSide(
   sourceState: State,
   targetState: State,
   points: Point[],
-  result: Point[]
+  result: Point[],
 ) {
   const view = edgeState.view
   let pt = points != null && points.length > 0 ? points[0] : null
@@ -100,7 +100,7 @@ export function sideToSide(
     const l = Math.max(sourceState.bounds.x, targetState.bounds.x)
     const r = Math.min(
       sourceState.bounds.x + sourceState.bounds.width,
-      targetState.bounds.x + targetState.bounds.width
+      targetState.bounds.x + targetState.bounds.width,
     )
 
     const x = pt != null ? pt.x : Math.round(r + (l - r) / 2)
@@ -150,7 +150,7 @@ export function sideToSide(
         const t = Math.max(sourceState.bounds.y, targetState.bounds.y)
         const b = Math.min(
           sourceState.bounds.y + sourceState.bounds.height,
-          targetState.bounds.y + targetState.bounds.height
+          targetState.bounds.y + targetState.bounds.height,
         )
         result.push(new Point(x, t + (b - t) / 2))
       }
@@ -166,7 +166,7 @@ export function topToBottom(
   sourceState: State,
   targetState: State,
   points: Point[],
-  result: Point[]
+  result: Point[],
 ) {
   const view = edgeState.view
   let pt = points != null && points.length > 0 ? points[0] : null
@@ -196,7 +196,7 @@ export function topToBottom(
     const t = Math.max(sourceState.bounds.y, targetState.bounds.y)
     const b = Math.min(
       sourceState.bounds.y + sourceState.bounds.height,
-      targetState.bounds.y + targetState.bounds.height
+      targetState.bounds.y + targetState.bounds.height,
     )
 
     let x = view.getRoutingCenterX(sourceState)
@@ -247,7 +247,7 @@ export function topToBottom(
         const l = Math.max(sourceState.bounds.x, targetState.bounds.x)
         const r = Math.min(
           sourceState.bounds.x + sourceState.bounds.width,
-          targetState.bounds.x + targetState.bounds.width
+          targetState.bounds.x + targetState.bounds.width,
         )
 
         result.push(new Point(l + (r - l) / 2, y))

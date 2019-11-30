@@ -13,15 +13,15 @@ export function createXmlDocument() {
  * and returns the new document.
  */
 export const parseXml = (window as any).DOMParser
-  ? function(xml: string) {
-      const parser = new DOMParser()
-      return parser.parseFromString(xml, 'text/xml')
-    }
-  : function(xml: string) {
-      const result = createXmlDocument()
-      result.async = false
-      result.validateOnParse = false
-      result.resolveExternals = false
-      result.loadXML(xml)
-      return result
-    }
+  ? function (xml: string) {
+    const parser = new DOMParser()
+    return parser.parseFromString(xml, 'text/xml')
+  }
+  : function (xml: string) {
+    const result = createXmlDocument()
+    result.async = false
+    result.validateOnParse = false
+    result.resolveExternals = false
+    result.loadXML(xml)
+    return result
+  }

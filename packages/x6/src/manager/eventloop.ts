@@ -94,7 +94,7 @@ export class EventLoop extends BaseManager {
           util.isValidColor(state.shape.fillColor)
 
         e.state = this.graph.view.getState(
-          this.graph.getCellAt(p.x, p.y, null, false, false, ignoreFn)
+          this.graph.getCellAt(p.x, p.y, null, false, false, ignoreFn),
         )
       }
     }
@@ -129,7 +129,7 @@ export class EventLoop extends BaseManager {
         this.eventSource,
         null,
         this.mouseMoveRedirect,
-        this.mouseUpRedirect
+        this.mouseUpRedirect,
       )
 
       this.eventSource = null
@@ -152,14 +152,14 @@ export class EventLoop extends BaseManager {
         this.fireMouseEvent(
           DomEvent.MOUSE_MOVE,
           new MouseEventEx(e, this.getStateForTouchEvent(e as any)),
-          sender
+          sender,
         )
       }
       this.mouseUpRedirect = (e: MouseEvent) => {
         this.fireMouseEvent(
           DomEvent.MOUSE_UP,
           new MouseEventEx(e, this.getStateForTouchEvent(e as any)),
-          sender
+          sender,
         )
       }
 
@@ -167,7 +167,7 @@ export class EventLoop extends BaseManager {
         this.eventSource,
         null,
         this.mouseMoveRedirect,
-        this.mouseUpRedirect
+        this.mouseUpRedirect,
       )
     }
 
@@ -217,7 +217,7 @@ export class EventLoop extends BaseManager {
   protected isSyntheticEventIgnored(
     eventName: string,
     e: MouseEventEx,
-    sender: any
+    sender: any,
   ) {
     let result = false
     const isMouseEvent = DomEvent.isMouseEvent(e.getEvent())
@@ -386,7 +386,7 @@ export class EventLoop extends BaseManager {
         this.graph.scrollPointToVisible(
           e.getGraphX(),
           e.getGraphY(),
-          this.graph.autoExtend
+          this.graph.autoExtend,
         )
       } else if (
         eventName === DomEvent.MOUSE_UP &&
@@ -399,7 +399,7 @@ export class EventLoop extends BaseManager {
         const t = this.graph.view.translate
         this.graph.view.setTranslate(
           t.x - this.graph.container.scrollLeft / s,
-          t.y - this.graph.container.scrollTop / s
+          t.y - this.graph.container.scrollTop / s,
         )
         this.graph.container.scrollLeft = 0
         this.graph.container.scrollTop = 0
@@ -440,7 +440,7 @@ export class EventLoop extends BaseManager {
         }
         this.tapAndHoldValid = false
         this.tapAndHoldInProgress = false
-      }, this.graph.tapAndHoldDelay)
+      },                                       this.graph.tapAndHoldDelay)
 
       this.tapAndHoldValid = true
       this.tapAndHoldInProgress = true
@@ -499,7 +499,7 @@ export class EventLoop extends BaseManager {
               const selected = this.graph.isCellSelected(state.cell)
               active = active || selected
               return !active || selected
-            }
+            },
           )
 
           if (tmp != null) {
@@ -569,7 +569,7 @@ export class EventLoop extends BaseManager {
 
         connHandler.preview.sourcePoint = new Point(
           e.getGraphX(),
-          e.getGraphY()
+          e.getGraphY(),
         )
         connHandler.preview.edgeState = connHandler.preview.createEdgeState(e)
         connHandler.preview.sourceState = state

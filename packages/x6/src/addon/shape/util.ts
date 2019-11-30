@@ -6,7 +6,7 @@ export function getFactor(
   defaultFactor: number,
   size: number,
   max: number = 1,
-  key: string = 'factor'
+  key: string = 'factor',
 ) {
   const factor = util.getNumber(style, key, defaultFactor)
   return clampFactor(factor, size, max)

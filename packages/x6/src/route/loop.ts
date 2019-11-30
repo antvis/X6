@@ -6,7 +6,7 @@ export function loop(
   sourceState: State,
   targetState: State,
   points: Point[],
-  result: Point[]
+  result: Point[],
 ) {
   const pts = edgeState.absolutePoints
   const p0 = pts[0]

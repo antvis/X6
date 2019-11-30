@@ -135,7 +135,7 @@ export class ConnectionHandler extends MouseHandler {
     source: Cell,
     target: Cell,
     evt: MouseEvent,
-    dropTarget: Cell | null
+    dropTarget: Cell | null,
   ) {
     return this.insertBeforeSource && source !== target
   }
@@ -208,7 +208,7 @@ export class ConnectionHandler extends MouseHandler {
     source: Cell,
     target: Cell | null,
     evt: MouseEvent,
-    dropTarget: Cell | null
+    dropTarget: Cell | null,
   ) {
     if (
       target != null ||
@@ -298,14 +298,14 @@ export class ConnectionHandler extends MouseHandler {
             edge,
             source,
             true,
-            sourceConstraint
+            sourceConstraint,
           )
 
           this.graph.setConnectionConstraint(
             edge,
             target,
             false,
-            currentConstraint
+            currentConstraint,
           )
 
           // Uses geometry of the preview edge state
@@ -357,7 +357,7 @@ export class ConnectionHandler extends MouseHandler {
               this.preview.targetPoint || this.preview.currentPoint!
             const p = new Point(
               targetPoint.x / s - t.x,
-              targetPoint.y / s - t.y
+              targetPoint.y / s - t.y,
             )
 
             p.x -= this.graph.panDx / s
@@ -392,7 +392,7 @@ export class ConnectionHandler extends MouseHandler {
     data: any,
     source: Cell,
     target: Cell,
-    style: Style
+    style: Style,
   ) {
     if (this.factoryMethod == null) {
       return this.graph.addEdge({ parent, id, data, source, target, style })
@@ -433,13 +433,13 @@ export class ConnectionHandler extends MouseHandler {
       const s = this.graph.view.scale
       const p = new Point(
         this.preview.currentPoint!.x / s - t.x,
-        this.preview.currentPoint!.y / s - t.y
+        this.preview.currentPoint!.y / s - t.y,
       )
       geo.bounds.x = Math.round(
-        p.x - geo.bounds.width / 2 - this.graph.panDx / s
+        p.x - geo.bounds.width / 2 - this.graph.panDx / s,
       )
       geo.bounds.y = Math.round(
-        p.y - geo.bounds.height / 2 - this.graph.panDy / s
+        p.y - geo.bounds.height / 2 - this.graph.panDy / s,
       )
 
       // Aligns with source if within certain tolerance
