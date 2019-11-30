@@ -1,8 +1,10 @@
 #!/usr/bin/env node
 
+'use strict'
+
 const fs = require('fs')
-const fse = require('fs-extra')
 const path = require('path')
+const fse = require('fs-extra')
 
 const cwd = process.cwd()
 const es = path.join(cwd, 'es')
@@ -49,9 +51,7 @@ console.log('Copy style files to output directory\n')
 fs.readdir(src, (err, files) => {
   files.forEach(file => {
     const dir =
-      file === 'style' // ./src/style
-        ? path.join(src, file)
-        : path.join(src, file, 'style')
+      file === 'style' ? path.join(src, file) : path.join(src, file, 'style')
     readdir(dir)
   })
 })
