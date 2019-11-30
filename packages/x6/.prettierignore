@@ -1,7 +1,8 @@
 *.md
+*.sh
 *.yml
 *.svg
-*.sh
+*.gif
 .DS_Store
 .gitignore
 .npmignore
