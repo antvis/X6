@@ -1,0 +1,4 @@
+diff a/packages/x6/src/util/bom/selection.ts b/packages/x6/src/util/bom/selection.ts	(rejected hunks)
+@@ -4 +4 @@ export const clearSelection = (function() {
+-      (document as any).selection.empty()
++      ;(document as any).selection.empty()
