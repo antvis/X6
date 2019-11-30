@@ -1,0 +1,27 @@
+{
+  "extends": [
+    "tslint-react",
+    "tslint-eslint-rules"
+  ],
+  "linterOptions": {
+    "exclude": [
+      "node_modules/**"
+    ]
+  },
+  "rules": {
+    "eofline": true,
+    "semicolon": [
+      true,
+      "never"
+    ],
+    "ter-arrow-parens": [
+      true,
+      "always"
+    ],
+    "no-construct": true,
+    "no-debugger": true,
+    "no-reference": true,
+    "jsx-no-multiline-js": false,
+    "jsx-no-lambda": false
+  }
+}

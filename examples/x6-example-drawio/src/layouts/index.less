@@ -1,0 +1,96 @@
+a {
+  cursor: pointer;
+  transition: color 0.3s ease;
+  text-decoration: none;
+  color: #108ee9;
+  outline: none;
+  background: transparent;
+}
+
+:global {
+  .x6-editor {
+    position: relative;
+    display: flex;
+    overflow: hidden;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+  }
+
+  .x6-editor-menubar {
+    display: flex;
+    flex-direction: row;
+    height: 32px;
+    padding-left: 16px;
+    border-bottom: 1px solid #e9e9e9;
+    background-color: #fbfbfb;
+  }
+
+  .x6-editor-toolbar {
+    display: flex;
+    flex-direction: row;
+    height: 40px;
+    padding: 6px 0;
+    border-bottom: 1px solid #e9e9e9;
+    background-color: #fbfbfb;
+  }
+
+  .x6-editor-wrap {
+    position: relative;
+    display: flex;
+    overflow: hidden;
+    flex: 1;
+    flex-direction: row;
+  }
+
+  .x6-editor-format,
+  .x6-editor-sidebar {
+    position: relative;
+    overflow: hidden;
+    background-color: #ffffff;
+  }
+
+  .x6-editor-sidebar {
+    width: 240px;
+    border-right: 1px solid #e9e9e9;
+    background-color: #fbfbfb;
+  }
+
+  .x6-editor-format {
+    width: 240px;
+    border-left: 1px solid #e9e9e9;
+    background-color: #fbfbfb;
+  }
+
+  .x6-editor-graph {
+    position: relative;
+    overflow: hidden;
+    flex: 1;
+    background-color: #f8f9fa;
+  }
+
+  .x6-editor-footer {
+    line-height: 24px;
+    height: 24px;
+    border-top: 1px solid #e9e9e9;
+    background-color: #fbfbfb;
+
+    .version {
+      font-size: 10px;
+      float: right;
+      margin-right: 8px;
+      color: #808080;
+    }
+  }
+
+  .x6-graph-container {
+    overflow: auto;
+    width: 100%;
+    height: 100%;
+    outline: 0;
+  }
+
+  .x6-editor-background {
+    box-shadow: 0 0 2px 1px #e9e9e9;
+  }
+}
