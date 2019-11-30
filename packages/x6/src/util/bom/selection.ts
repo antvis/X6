@@ -1,7 +1,8 @@
 export const clearSelection = (function() {
-  if ((document as any).selection) {
+  const doc = document as any
+  if (doc.selection) {
     return function() {
-      ;(document as any).selection.empty()
+      doc.selection.empty()
     }
   }
 
