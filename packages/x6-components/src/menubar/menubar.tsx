@@ -1,8 +1,8 @@
-import React from "react"
-import classnames from "classnames"
-import addEventListener from "rc-util/lib/Dom/addEventListener"
-import { MenubarItem } from "./item"
-import { MenubarContext } from "./context"
+import React from 'react'
+import classnames from 'classnames'
+import addEventListener from 'rc-util/lib/Dom/addEventListener'
+import { MenubarItem } from './item'
+import { MenubarContext } from './context'
 
 export class Menubar extends React.PureComponent<Menubar.Props, Menubar.State> {
   private removeDocClickEvent: (() => void) | null
@@ -30,7 +30,7 @@ export class Menubar extends React.PureComponent<Menubar.Props, Menubar.State> {
     if (!this.removeDocClickEvent) {
       this.removeDocClickEvent = addEventListener(
         document.documentElement,
-        "click",
+        'click',
         this.onDocumentClick
       ).remove
     }
@@ -42,7 +42,7 @@ export class Menubar extends React.PureComponent<Menubar.Props, Menubar.State> {
     const contextValue: MenubarContext.Contexts = {
       prefixCls: baseCls,
       activeMenubar: this.activeMenubar,
-      menubarActived: this.state.active
+      menubarActived: this.state.active,
     }
 
     return (
@@ -74,6 +74,6 @@ export namespace Menubar {
   }
 
   export const defaultProps: Props = {
-    prefixCls: "x6"
+    prefixCls: 'x6',
   }
 }

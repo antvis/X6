@@ -1,12 +1,12 @@
-import React from "react"
-import classNames from "classnames"
-import { Tooltip } from "antd"
-import { TooltipProps } from "antd/lib/tooltip"
-import "antd/lib/tooltip/style"
-import { Icon } from "../icon"
-import { Menu } from "../menu"
-import { Dropdown } from "../dropdown"
-import { ToolbarContext } from "./context"
+import React from 'react'
+import classNames from 'classnames'
+import { Tooltip } from 'antd'
+import { TooltipProps } from 'antd/lib/tooltip'
+import 'antd/lib/tooltip/style'
+import { Icon } from '../icon'
+import { Menu } from '../menu'
+import { Dropdown } from '../dropdown'
+import { ToolbarContext } from './context'
 
 class ToolbarItemInner extends React.PureComponent<ToolbarItemInner.Props> {
   handleClick = () => {
@@ -42,7 +42,7 @@ class ToolbarItemInner extends React.PureComponent<ToolbarItemInner.Props> {
       tooltip,
       tooltipProps,
       tooltipAsTitle,
-      children
+      children,
     } = this.props
     const { prefixCls } = this.props.context
 
@@ -55,10 +55,10 @@ class ToolbarItemInner extends React.PureComponent<ToolbarItemInner.Props> {
           [`${baseCls}-hidden`]: hidden,
           [`${baseCls}-active`]: active,
           [`${baseCls}-disabled`]: disabled,
-          [`${baseCls}-dropdown`]: dropdown
+          [`${baseCls}-dropdown`]: dropdown,
         },
         className
-      )
+      ),
     }
 
     if (tooltip && tooltipAsTitle) {
@@ -72,8 +72,8 @@ class ToolbarItemInner extends React.PureComponent<ToolbarItemInner.Props> {
             {React.isValidElement(icon) ? (
               icon
             ) : (
-                <Icon type={icon as string | Icon.IconData} />
-              )}
+              <Icon type={icon as string | Icon.IconData} />
+            )}
           </span>
         )}
         {(text || children) && (
@@ -111,17 +111,17 @@ class ToolbarItemInner extends React.PureComponent<ToolbarItemInner.Props> {
         <div>
           {dropdown && dropdown.type === Menu
             ? React.cloneElement(dropdown, {
-              onClick: this.handleDropdownItemClick
-            })
+                onClick: this.handleDropdownItemClick,
+              })
             : dropdown}
         </div>
       )
 
       const props = {
-        trigger: ["click"],
+        trigger: ['click'],
         ...dropdownProps,
         disabled,
-        overlay
+        overlay,
       } as Dropdown.Props
 
       return <Dropdown {...props}>{content}</Dropdown>
@@ -137,14 +137,14 @@ namespace ToolbarItemInner {
   }
 }
 
-export const ToolbarItem: React.SFC<ToolbarItem.Props> = (props) => (
+export const ToolbarItem: React.SFC<ToolbarItem.Props> = props => (
   <ToolbarContext.Consumer>
-    {(context) => <ToolbarItemInner context={context} {...props} />}
+    {context => <ToolbarItemInner context={context} {...props} />}
   </ToolbarContext.Consumer>
 )
 
 ToolbarItem.defaultProps = {
-  dropdownArrow: true
+  dropdownArrow: true,
 }
 
 export namespace ToolbarItem {

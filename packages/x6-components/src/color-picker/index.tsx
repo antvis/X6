@@ -1,22 +1,22 @@
-import React from "react"
-import classNames from "classnames"
-import { Popover } from "antd"
-import { PopoverProps } from "antd/lib/popover"
-import "antd/lib/popover/style"
-import addEventListener from "rc-util/lib/Dom/addEventListener"
+import React from 'react'
+import classNames from 'classnames'
+import { Popover } from 'antd'
+import { PopoverProps } from 'antd/lib/popover'
+import 'antd/lib/popover/style'
+import addEventListener from 'rc-util/lib/Dom/addEventListener'
 import {
   SketchPicker,
   SketchPickerProps,
   RGBColor,
-  ColorResult
-} from "react-color"
+  ColorResult,
+} from 'react-color'
 
 export { ColorResult } from 'react-color'
 
 export class ColorPicker extends React.Component<
   ColorPicker.Props,
   ColorPicker.State
-  > {
+> {
   private removeDocClickEvent: (() => void) | null
   private container: HTMLDivElement
 
@@ -24,7 +24,7 @@ export class ColorPicker extends React.Component<
     super(props)
     this.state = {
       active: false,
-      color: props.color
+      color: props.color,
     }
   }
 
@@ -56,7 +56,7 @@ export class ColorPicker extends React.Component<
 
     this.setState({
       active: false,
-      color: value.rgb
+      color: value.rgb,
     })
     this.unbindDocEvent()
   }
@@ -71,7 +71,7 @@ export class ColorPicker extends React.Component<
       if (!this.removeDocClickEvent) {
         this.removeDocClickEvent = addEventListener(
           document.documentElement,
-          "click",
+          'click',
           this.onDocumentClick
         ).remove
       }
@@ -102,7 +102,7 @@ export class ColorPicker extends React.Component<
     }
 
     const colorStr =
-      typeof color === "string"
+      typeof color === 'string'
         ? color
         : `rgba(${color.r},${color.g},${color.b},${color.a})`
 
@@ -119,12 +119,12 @@ export class ColorPicker extends React.Component<
           ref={this.refContainer}
           onClick={this.handleClick}
           className={classNames(baseCls, {
-            [`${baseCls}-disabled`]: disabled
+            [`${baseCls}-disabled`]: disabled,
           })}
         >
           <div
             className={`${baseCls}-block`}
-            style={{ backgroundColor: disabled ? "#c4c4c4" : colorStr }}
+            style={{ backgroundColor: disabled ? '#c4c4c4' : colorStr }}
           />
         </div>
       </Popover>
@@ -147,7 +147,7 @@ export namespace ColorPicker {
   }
 
   export const defaultProps: Props = {
-    prefixCls: "x6",
-    color: "#1890FF"
+    prefixCls: 'x6',
+    color: '#1890FF',
   }
 }

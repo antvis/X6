@@ -1,7 +1,7 @@
-import React, { MouseEvent } from "react"
-import classNames from "classnames"
-import { Icon } from "../icon"
-import { MenuContext } from "./context"
+import React, { MouseEvent } from 'react'
+import classNames from 'classnames'
+import { Icon } from '../icon'
+import { MenuContext } from './context'
 
 export class MenuItemInner extends React.PureComponent<MenuItemInner.Props> {
   componentDidMount() {
@@ -63,10 +63,10 @@ export namespace MenuItemInner {
         {
           [`${baseCls}-active`]: active,
           [`${baseCls}-hidden`]: hidden,
-          [`${baseCls}-disabled`]: disabled
+          [`${baseCls}-disabled`]: disabled,
         },
         className
-      )
+      ),
     }
   }
 
@@ -87,8 +87,8 @@ export namespace MenuItemInner {
               {React.isValidElement(icon) ? (
                 icon
               ) : (
-                  <Icon type={icon as string | Icon.IconData} />
-                )}
+                <Icon type={icon as string | Icon.IconData} />
+              )}
             </span>
           )}
           <span className={`${baseCls}-text`}>{text || children}</span>
@@ -101,9 +101,9 @@ export namespace MenuItemInner {
   }
 }
 
-export const MenuItem: React.SFC<MenuItem.Props> = (props) => (
+export const MenuItem: React.SFC<MenuItem.Props> = props => (
   <MenuContext.Consumer>
-    {(context) => <MenuItemInner context={context} {...props} />}
+    {context => <MenuItemInner context={context} {...props} />}
   </MenuContext.Consumer>
 )
 

@@ -1,12 +1,12 @@
-import React from "react"
-import { MenuContext } from "./context"
-import { MenuItem, MenuItemInner } from "./item"
+import React from 'react'
+import { MenuContext } from './context'
+import { MenuItem, MenuItemInner } from './item'
 
-export const MenuSubMenu: React.SFC<MenuItem.Props> = (props) => {
+export const MenuSubMenu: React.SFC<MenuItem.Props> = props => {
   const { hotkey, children, ...others } = props
   return (
     <MenuContext.Consumer>
-      {(context) => {
+      {context => {
         const { prefixCls } = context
         const wrapProps = MenuItemInner.getProps(
           { context, ...props },
