@@ -1,84 +1,26 @@
 {
-  "name": "@antv/x6",
-  "version": "0.1.0",
-  "description": "JavaScript diagramming library",
-  "main": "lib/index.js",
-  "types": "lib/index.d.ts",
-  "files": [
-    "lib/**/*.d.ts",
-    "lib/**/*.js",
-    "src/**/*.ts"
-  ],
-  "directories": {
-    "lib": "lib/",
-    "src": "src/"
-  },
-  "keywords": [
-    "x6",
-    "diagram",
-    "flowchart",
-    "uml",
-    "graph",
-    "x6-editor",
-    "editor",
-    "svg"
-  ],
+  "private": true,
+  "name": "x6",
   "scripts": {
-    "clean": "rimraf ./lib",
-    "lint": "tslint -c tslint.json -p tsconfig.json --fix",
-    "less": "lessc ./src/index.less ./lib/index.css",
-    "build:images": "node ./scripts/make-images.js",
-    "build:version": "node ./scripts/make-version.js",
-    "build:watch": "tsc -w",
-    "build": "yarn run build:images && yarn run build:version && yarn run less && tsc",
-    "prebuild": "yarn run lint && yarn run clean",
-    "test": "jest",
-    "coveralls": "cat ./test/coverage/lcov.info | coveralls",
-    "pretest": "rimraf ./test/coverage",
-    "prepublish": "yarn test && yarn build"
+    "bootstrap": "lerna bootstrap",
+    "clean": "lerna run clean",
+    "build": "lerna run build",
+    "lint": "lerna run lint",
+    "test": "lerna run test",
+    "version": "lerna version",
+    "clean:modules": "rimraf ./packages/*/node_modules && rimraf ./examples/*/node_modules && rimraf ./node_modules"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged"
+      "pre-commit": "lerna run --concurrency 1 --stream precommit"
     }
   },
-  "lint-staged": {
-    "src/**/*.ts": [
-      "tslint -c tslint.json -p ./tsconfig.lint.json --fix"
-    ]
-  },
-  "author": {
-    "name": "bubkoo",
-    "email": "bubkoo.wy@gmail.com"
-  },
-  "contributors": [],
-  "license": "MIT",
-  "homepage": "https://github.com/antvis/x6",
-  "bugs": {
-    "url": "https://github.com/antvis/x6/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/antvis/x6.git"
-  },
   "devDependencies": {
-    "@types/jest": "^24.0.17",
-    "@types/sinon": "^7.5.0",
-    "base64-img": "^1.0.4",
-    "coveralls": "^3.0.6",
-    "husky": "^3.0.3",
-    "image-size": "^0.7.4",
-    "jest": "^24.8.0",
-    "less": "^3.10.3",
-    "lint-staged": "^9.2.1",
-    "rimraf": "^2.6.3",
-    "sinon": "^7.5.0",
-    "ts-jest": "^24.0.2",
-    "tslint": "^5.18.0",
-    "tslint-config-airbnb": "^5.11.2",
-    "typescript": "^3.5.3"
+    "husky": "^3.1.0",
+    "lerna": "^3.19.0"
   },
-  "dependencies": {
-    "mousetrap": "^1.6.3"
-  }
+  "workspaces": [
+    "examples/*",
+    "packages/*"
+  ]
 }
