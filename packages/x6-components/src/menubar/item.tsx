@@ -1,48 +1,48 @@
-import React from "react";
-import classnames from "classnames";
-import addEventListener from "rc-util/lib/Dom/addEventListener";
-import { MenubarContext } from "./context";
+import React from "react"
+import classnames from "classnames"
+import addEventListener from "rc-util/lib/Dom/addEventListener"
+import { MenubarContext } from "./context"
 
 class MenubarItemInner extends React.PureComponent<
   MenubarItemInner.Props,
   MenubarItemInner.State
-> {
-  private readonly popupClassName: string;
-  private removeDocClickEvent: (() => void) | null;
+  > {
+  private readonly popupClassName: string
+  private removeDocClickEvent: (() => void) | null
 
   constructor(props: MenubarItemInner.Props) {
-    super(props);
-    this.popupClassName = `${props.context.prefixCls}-item-dropdown`;
-    this.state = { active: false };
+    super(props)
+    this.popupClassName = `${props.context.prefixCls}-item-dropdown`
+    this.state = { active: false }
   }
 
   onDocumentClick = () => {
-    this.deactive();
-  };
+    this.deactive()
+  }
 
   onClick = (e: React.MouseEvent) => {
-    this.props.context.activeMenubar();
-    this.removeDeactive(e.currentTarget.parentElement);
-    this.active();
-  };
+    this.props.context.activeMenubar()
+    this.removeDeactive(e.currentTarget.parentElement)
+    this.active()
+  }
 
   isPrevMenuHiddening(e: React.MouseEvent): boolean {
-    const toElement = (e.nativeEvent as any).toElement;
+    const toElement = (e.nativeEvent as any).toElement
     if (toElement && toElement.className === this.popupClassName) {
-      return true;
+      return true
     }
 
-    const currentTarget = e.currentTarget as HTMLDivElement;
-    const childNodes = currentTarget.parentElement!.childNodes;
+    const currentTarget = e.currentTarget as HTMLDivElement
+    const childNodes = currentTarget.parentElement!.childNodes
     for (let i = 0, l = childNodes.length; i < l; i += 1) {
-      const child = childNodes[i] as HTMLDivElement;
-      const popupElem = child.querySelector(`.${this.popupClassName}`)!;
+      const child = childNodes[i] as HTMLDivElement
+      const popupElem = child.querySelector(`.${this.popupClassName}`)!
       if (popupElem.contains(toElement)) {
-        return true;
+        return true
       }
     }
 
-    return false;
+    return false
   }
 
   onMouseEnter = (e: React.MouseEvent) => {
@@ -51,93 +51,93 @@ class MenubarItemInner extends React.PureComponent<
       !this.state.active &&
       !this.isPrevMenuHiddening(e)
     ) {
-      const currentTarget = e.currentTarget as HTMLDivElement;
-      const childNodes = currentTarget.parentElement!.childNodes;
+      const currentTarget = e.currentTarget as HTMLDivElement
+      const childNodes = currentTarget.parentElement!.childNodes
 
-      childNodes.forEach(child => {
+      childNodes.forEach((child) => {
         if (child === currentTarget) {
-          this.removeDeactive(child);
+          this.removeDeactive(child)
         } else {
-          this.callDeactive(child);
+          this.callDeactive(child)
         }
-      });
+      })
 
-      this.active();
+      this.active()
     }
-  };
+  }
 
   onMouseLeave = (e: React.MouseEvent) => {
-    const relatedTarget = e.relatedTarget;
-    const currentTarget = e.currentTarget as HTMLDivElement;
+    const relatedTarget = e.relatedTarget
+    const currentTarget = e.currentTarget as HTMLDivElement
 
     if (
       this.props.context.menubarActived &&
       this.state.active &&
       !this.isPrevMenuHiddening(e)
     ) {
-      const childNodes = currentTarget.parentElement!.childNodes;
-      let shoudDeactive = false;
+      const childNodes = currentTarget.parentElement!.childNodes
+      let shoudDeactive = false
       if (relatedTarget !== window) {
         for (let i = 0, l = childNodes.length; i < l; i += 1) {
-          const child = childNodes[i];
+          const child = childNodes[i]
           if (
             child === relatedTarget ||
             child.contains(relatedTarget as HTMLDivElement)
           ) {
-            shoudDeactive = true;
-            break;
+            shoudDeactive = true
+            break
           }
         }
       }
 
       if (shoudDeactive) {
-        this.deactive();
+        this.deactive()
       } else {
         // 缓存一下，当再次 hover 到其他菜单时被调用
-        this.cacheDeactive(currentTarget);
+        this.cacheDeactive(currentTarget)
       }
     }
-  };
+  }
 
   cacheDeactive(elem: any) {
-    elem.DEACTIVE = this.deactive;
+    elem.DEACTIVE = this.deactive
   }
 
   callDeactive(elem: any) {
     if (elem.DEACTIVE) {
-      elem.DEACTIVE();
-      delete elem.DEACTIVE;
+      elem.DEACTIVE()
+      delete elem.DEACTIVE
     }
   }
 
   removeDeactive(elem: any) {
-    delete elem.DEACTIVE;
+    delete elem.DEACTIVE
   }
 
   active = () => {
-    this.setState({ active: true });
+    this.setState({ active: true })
     if (!this.removeDocClickEvent) {
       this.removeDocClickEvent = addEventListener(
         document.documentElement,
         "click",
         this.onDocumentClick
-      ).remove;
+      ).remove
     }
-  };
+  }
 
   deactive = () => {
-    this.setState({ active: false });
+    this.setState({ active: false })
     if (this.removeDocClickEvent) {
-      this.removeDocClickEvent();
-      this.removeDocClickEvent = null;
+      this.removeDocClickEvent()
+      this.removeDocClickEvent = null
     }
-  };
+  }
 
   render() {
-    const { text, children, hidden } = this.props;
-    const { prefixCls, menubarActived } = this.props.context;
-    const currentMenuActived = menubarActived && this.state.active;
-    const baseCls = `${prefixCls}-item`;
+    const { text, children, hidden } = this.props
+    const { prefixCls, menubarActived } = this.props.context
+    const currentMenuActived = menubarActived && this.state.active
+    const baseCls = `${prefixCls}-item`
 
     return (
       <div
@@ -159,29 +159,29 @@ class MenubarItemInner extends React.PureComponent<
         </div>
         <div className={this.popupClassName}>{children}</div>
       </div>
-    );
+    )
   }
 }
 
 namespace MenubarItemInner {
   export interface Props extends MenubarItem.Props {
-    context: MenubarContext.Contexts;
+    context: MenubarContext.Contexts
   }
 
   export interface State {
-    active?: boolean;
+    active?: boolean
   }
 }
 
-export const MenubarItem: React.SFC<MenubarItem.Props> = props => (
+export const MenubarItem: React.SFC<MenubarItem.Props> = (props) => (
   <MenubarContext.Consumer>
-    {context => <MenubarItemInner context={context} {...props} />}
+    {(context) => <MenubarItemInner context={context} {...props} />}
   </MenubarContext.Consumer>
-);
+)
 
 export namespace MenubarItem {
   export interface Props {
-    text: string;
-    hidden?: boolean;
+    text: string
+    hidden?: boolean
   }
 }

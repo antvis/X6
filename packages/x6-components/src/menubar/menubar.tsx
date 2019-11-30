@@ -1,49 +1,49 @@
-import React from "react";
-import classnames from "classnames";
-import addEventListener from "rc-util/lib/Dom/addEventListener";
-import { MenubarItem } from "./item";
-import { MenubarContext } from "./context";
+import React from "react"
+import classnames from "classnames"
+import addEventListener from "rc-util/lib/Dom/addEventListener"
+import { MenubarItem } from "./item"
+import { MenubarContext } from "./context"
 
 export class Menubar extends React.PureComponent<Menubar.Props, Menubar.State> {
-  private removeDocClickEvent: (() => void) | null;
+  private removeDocClickEvent: (() => void) | null
 
-  state = { active: false };
+  state = { active: false }
 
   componentWillUnmount() {
-    this.unbindDocEvent();
+    this.unbindDocEvent()
   }
 
   onDocumentClick = () => {
-    this.setState({ active: false });
-    this.unbindDocEvent();
-  };
+    this.setState({ active: false })
+    this.unbindDocEvent()
+  }
 
   unbindDocEvent() {
     if (this.removeDocClickEvent) {
-      this.removeDocClickEvent();
-      this.removeDocClickEvent = null;
+      this.removeDocClickEvent()
+      this.removeDocClickEvent = null
     }
   }
 
   activeMenubar = () => {
-    this.setState({ active: true });
+    this.setState({ active: true })
     if (!this.removeDocClickEvent) {
       this.removeDocClickEvent = addEventListener(
         document.documentElement,
         "click",
         this.onDocumentClick
-      ).remove;
+      ).remove
     }
-  };
+  }
 
   render() {
-    const { prefixCls, className, children, extra } = this.props;
-    const baseCls = `${prefixCls}-menubar`;
+    const { prefixCls, className, children, extra } = this.props
+    const baseCls = `${prefixCls}-menubar`
     const contextValue: MenubarContext.Contexts = {
       prefixCls: baseCls,
       activeMenubar: this.activeMenubar,
       menubarActived: this.state.active
-    };
+    }
 
     return (
       <div className={classnames(baseCls, className)}>
@@ -56,24 +56,24 @@ export class Menubar extends React.PureComponent<Menubar.Props, Menubar.State> {
           {extra && <div className={`${baseCls}-content-extras`}>{extra}</div>}
         </div>
       </div>
-    );
+    )
   }
 }
 
 export namespace Menubar {
-  export const Item = MenubarItem;
+  export const Item = MenubarItem
 
   export interface Props {
-    prefixCls?: string;
-    className?: string;
-    extra?: React.ReactNode;
+    prefixCls?: string
+    className?: string
+    extra?: React.ReactNode
   }
 
   export interface State {
-    active?: boolean;
+    active?: boolean
   }
 
   export const defaultProps: Props = {
     prefixCls: "x6"
-  };
+  }
 }

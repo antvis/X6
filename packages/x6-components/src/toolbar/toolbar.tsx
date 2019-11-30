@@ -1,15 +1,15 @@
-import React from "react";
-import classNames from "classnames";
-import { ToolbarItem } from "./item";
-import { ToolbarGroup } from "./group";
-import { ToolbarContext } from "./context";
+import React from "react"
+import classNames from "classnames"
+import { ToolbarItem } from "./item"
+import { ToolbarGroup } from "./group"
+import { ToolbarContext } from "./context"
 
 export class Toolbar extends React.PureComponent<Toolbar.Props> {
   onClick = (key: string, value?: any) => {
     if (this.props.onClick) {
-      this.props.onClick(key, value);
+      this.props.onClick(key, value)
     }
-  };
+  }
 
   render() {
     const {
@@ -19,9 +19,9 @@ export class Toolbar extends React.PureComponent<Toolbar.Props> {
       extra,
       size,
       hoverEffect
-    } = this.props;
+    } = this.props
 
-    const baseCls = `${prefixCls}-toolbar`;
+    const baseCls = `${prefixCls}-toolbar`
     return (
       <div
         className={classNames(baseCls, className, {
@@ -43,25 +43,25 @@ export class Toolbar extends React.PureComponent<Toolbar.Props> {
           {extra && <div className={`${baseCls}-content-extras`}>{extra}</div>}
         </div>
       </div>
-    );
+    )
   }
 }
 
 export namespace Toolbar {
-  export const Item = ToolbarItem;
-  export const Group = ToolbarGroup;
+  export const Item = ToolbarItem
+  export const Group = ToolbarGroup
 
   export interface Props {
-    prefixCls?: string;
-    className?: string;
-    extra?: React.ReactNode;
-    size?: "small" | "big";
-    hoverEffect?: boolean;
-    onClick?: (name: string, value?: any) => void;
+    prefixCls?: string
+    className?: string
+    extra?: React.ReactNode
+    size?: "small" | "big"
+    hoverEffect?: boolean
+    onClick?: (name: string, value?: any) => void
   }
 
   export const defaultProps: Props = {
     prefixCls: "x6",
     hoverEffect: false
-  };
+  }
 }

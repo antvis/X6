@@ -30,7 +30,8 @@
     "build:lib": "tsc --module commonjs --target es5 --outDir ./lib",
     "build:less": "node ./scripts/less.js",
     "build": "concurrently 'yarn build:lib' 'yarn build:es' && yarn build:less",
-    "prebuild": "yarn clean"
+    "prebuild": "yarn clean",
+    "precommit": "lint-staged"
   },
   "keywords": [
     "x6",
@@ -41,17 +42,14 @@
     "components",
     "react-components"
   ],
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
   "lint-staged": {
     "src/**/*.ts": [
-      "tslint -c tslint.json -p ./tsconfig.json --fix"
+      "tslint -c tslint.json -p ./tsconfig.json --fix",
+      "git add"
     ],
     "src/**/*.less": [
-      "stylelint --syntax less --fix"
+      "stylelint --syntax less --fix",
+      "git add"
     ]
   },
   "dependencies": {
