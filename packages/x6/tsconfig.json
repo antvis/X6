@@ -2,6 +2,7 @@
   "compilerOptions": {
     "sourceMap": true,
     "declaration": true,
+    "skipLibCheck": true,
     "esModuleInterop": true,
     "noImplicitAny": true,
     "noEmitOnError": true,
