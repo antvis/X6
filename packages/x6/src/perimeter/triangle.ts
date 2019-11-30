@@ -6,7 +6,7 @@ export function trianglePerimeter(
   bounds: Rectangle,
   state: State,
   next: Point = new Point(),
-  orthogonal: boolean = false
+  orthogonal: boolean = false,
 ) {
   const direction = state != null ? state.style.direction : null
   const vertical = direction === 'north' || direction === 'south'
@@ -106,7 +106,7 @@ export function trianglePerimeter(
         start.x,
         start.y,
         corner.x,
-        corner.y
+        corner.y,
       )
     } else {
       result = getLinesIntersection(
@@ -117,7 +117,7 @@ export function trianglePerimeter(
         corner.x,
         corner.y,
         end.x,
-        end.y
+        end.y,
       )
     }
   }

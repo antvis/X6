@@ -65,7 +65,7 @@ export class Geometry {
     x: number = 0,
     y: number = 0,
     width: number = 0,
-    height: number = 0
+    height: number = 0,
   ) {
     this.bounds = new Rectangle(x, y, width, height)
   }
@@ -232,7 +232,7 @@ namespace Private {
   export function translatePoint(
     point: Point | Point.PointLike,
     dx: number,
-    dy: number
+    dy: number,
   ) {
     if (point != null) {
       point.x += dx
@@ -246,7 +246,7 @@ namespace Private {
     point: Point | Point.PointLike,
     cos: number,
     sin: number,
-    center: Point
+    center: Point,
   ) {
     if (point != null) {
       const p = util.rotatePointEx(point, cos, sin, center)
@@ -260,7 +260,7 @@ namespace Private {
   export function scalePoint(
     point: Point | Point.PointLike,
     sx: number,
-    sy: number
+    sy: number,
   ) {
     if (point != null) {
       point.x *= sx

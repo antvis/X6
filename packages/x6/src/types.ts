@@ -267,7 +267,7 @@ interface CustomStyle {
 
 interface CustomCSS {
   css?: {
-    [selector: string]: Partial<CSSStyleDeclaration>
+    [selector: string]: Partial<CSSStyleDeclaration>,
   }
 }
 

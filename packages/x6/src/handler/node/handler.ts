@@ -146,7 +146,7 @@ export class NodeHandler extends MouseHandler {
             geo = geo.clone()
             geo.rotate(
               angle,
-              new Point(pgeo.bounds.width / 2, pgeo.bounds.height / 2)
+              new Point(pgeo.bounds.width / 2, pgeo.bounds.height / 2),
             )
             model.setGeometry(cell, geo)
           }
@@ -194,7 +194,7 @@ export class NodeHandler extends MouseHandler {
           this.moveChildren(
             cell,
             Math.round(childOffsetX / scale),
-            Math.round(childOffsetY / scale)
+            Math.round(childOffsetY / scale),
           )
         }
 

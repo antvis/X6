@@ -111,7 +111,7 @@ export class MovingHandler extends MouseHandler {
   protected shouldRemoveCellsFromParent(
     parent: Cell | null,
     cells: Cell[],
-    e: MouseEvent
+    e: MouseEvent,
   ) {
     if (this.graph.model.isNode(parent)) {
       const pState = this.graph.view.getState(parent)
@@ -155,7 +155,7 @@ export class MovingHandler extends MouseHandler {
     dy: number,
     clone: boolean,
     target: Cell | null,
-    evt: MouseEvent
+    evt: MouseEvent,
   ) {
     if (clone) {
       // tslint:disable-next-line
@@ -205,7 +205,7 @@ export class MovingHandler extends MouseHandler {
         dy - this.graph.panDy / this.graph.view.scale,
         clone,
         target,
-        evt
+        evt,
       )
 
       // Removes parent if all child cells are removed

@@ -114,7 +114,7 @@ export class State extends Disablable {
   constructor(
     public view: View,
     public cell: Cell = new Cell(),
-    public style: Style = {}
+    public style: Style = {},
   ) {
     super()
     this.origin = new Point()
@@ -130,7 +130,7 @@ export class State extends Disablable {
    */
   getPerimeterBounds(
     border: number = 0,
-    bounds: Rectangle = Rectangle.clone(this.bounds)
+    bounds: Rectangle = Rectangle.clone(this.bounds),
   ) {
     if (
       this.shape != null &&
@@ -142,7 +142,7 @@ export class State extends Disablable {
         bounds.x,
         bounds.y,
         bounds.width,
-        bounds.height
+        bounds.height,
       )
 
       bounds.x = aspect.x
@@ -227,7 +227,7 @@ export class State extends Disablable {
       this.bounds.x / s - t.x,
       this.bounds.y / s - t.y,
       this.bounds.width / s,
-      this.bounds.height / s
+      this.bounds.height / s,
     )
 
     this.paintBounds = this.cellBounds.clone()
@@ -272,7 +272,7 @@ export class State extends Disablable {
     cloned.bounds = this.bounds.clone()
     if (this.absolutePoints != null) {
       cloned.absolutePoints = this.absolutePoints.map((p) =>
-        p ? p.clone() : p
+        p ? p.clone() : p,
       )
     }
 

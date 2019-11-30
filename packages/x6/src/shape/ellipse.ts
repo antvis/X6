@@ -7,7 +7,7 @@ export class EllipseShape extends Shape {
     bounds: Rectangle,
     fillColor: string,
     strokeColor: string,
-    strokewidth: number = 1
+    strokewidth: number = 1,
   ) {
     super()
     this.bounds = bounds

@@ -8,7 +8,7 @@ export function hasOwn(obj: any, key: string) {
 export function forIn<T>(
   obj: T,
   iterator: (val: any, key: string, obj: T) => void,
-  context?: any
+  context?: any,
 ) {
   Object.keys(obj).forEach((key: string) => {
     iterator.call(context, (obj as any)[key], key, obj)
@@ -44,7 +44,7 @@ export function isEmptyObject(obj: any) {
 export function getByPath(
   obj: { [key: string]: any },
   path: string,
-  delimiter: string | RegExp = '.'
+  delimiter: string | RegExp = '.',
 ) {
   let ret
   const paths = split(path, delimiter)
@@ -114,9 +114,9 @@ export function mergec(
     decorator?: (
       source: { [key: string]: any },
       target: { [key: string]: any },
-      key: string
-    ) => any
-  } = {}
+      key: string,
+    ) => any,
+  } = {},
 ) {
   for (const name in source) {
     const src = target[name]
@@ -176,7 +176,7 @@ export function destroy(obj: any) {
 export function clone<T>(
   obj: any,
   ignores?: string[],
-  shallow: boolean = false
+  shallow: boolean = false,
 ) {
   if (obj != null && typeof obj.constructor === 'function') {
     const result = new obj.constructor() as { [key: string]: any }

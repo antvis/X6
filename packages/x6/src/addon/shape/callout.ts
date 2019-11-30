@@ -22,7 +22,7 @@ export class CalloutShape extends Actor {
       0,
       0,
       0,
-      util.getNumber(this.style, 'factor', this.factor) * this.scale
+      util.getNumber(this.style, 'factor', this.factor) * this.scale,
     )
   }
 
@@ -47,7 +47,7 @@ export class CalloutShape extends Actor {
       this.rounded,
       arcSize,
       true,
-      [4]
+      [4],
     )
   }
 }
@@ -56,12 +56,12 @@ export function calloutPerimeter(
   bounds: Rectangle,
   state: State,
   next: Point,
-  orthogonal: boolean
+  orthogonal: boolean,
 ) {
   const factor = getFactor(
     state.style,
     CalloutShape.prototype.factor,
-    bounds.height
+    bounds.height,
   )
   const rect = new Rectangle(0, 0, 0, factor * state.view.scale)
   const directedBounds = util.getDirectedBounds(bounds, rect, state.style)

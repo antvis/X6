@@ -7,7 +7,7 @@ export class DoubleEllipse extends Shape {
     bounds: Rectangle,
     fillColor: string,
     strokeColor: string,
-    strokewidth: number = 1
+    strokewidth: number = 1,
   ) {
     super()
     this.bounds = bounds
@@ -43,7 +43,7 @@ export class DoubleEllipse extends Shape {
   getLabelBounds(rect: Rectangle) {
     const defaultMargin = Math.min(
       3 + this.strokeWidth,
-      Math.min(rect.width / 5 / this.scale, rect.height / 5 / this.scale)
+      Math.min(rect.width / 5 / this.scale, rect.height / 5 / this.scale),
     )
     const margin = (this.style.margin || defaultMargin) * this.scale
 
@@ -51,7 +51,7 @@ export class DoubleEllipse extends Shape {
       rect.x + margin,
       rect.y + margin,
       rect.width - 2 * margin,
-      rect.height - 2 * margin
+      rect.height - 2 * margin,
     )
   }
 }

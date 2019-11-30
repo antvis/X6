@@ -66,7 +66,7 @@ export class PanningHandler extends MouseHandler {
   private mouseUpListener: () => void
   private forcePanningHandler: (arg: {
     eventName: string
-    e: MouseEventEx
+    e: MouseEventEx,
   }) => void
   private gestureHandler: (arg: { e: MouseEvent }) => void
 

@@ -92,7 +92,7 @@ export function isHtmlElem(
   elem: any,
   nodeName?: string,
   attributeName?: string,
-  attributeValue?: string
+  attributeValue?: string,
 ) {
   if (
     elem != null &&

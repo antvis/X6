@@ -66,7 +66,7 @@ export class Selection extends BaseManager {
       }
 
       const added = candidate.filter(
-        (cell) => !this.isSelected(cell) && this.graph.isCellSelectable(cell)
+        (cell) => !this.isSelected(cell) && this.graph.isCellSelectable(cell),
       )
 
       this.changeSelection(added, removed)
@@ -100,7 +100,7 @@ export class Selection extends BaseManager {
 
   private changeSelection(
     added: Cell[] | null = null,
-    removed: Cell[] | null = null
+    removed: Cell[] | null = null,
   ) {
     if (
       (added != null && added.length > 0 && added[0] != null) ||

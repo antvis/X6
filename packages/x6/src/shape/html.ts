@@ -7,8 +7,8 @@ export class HtmlShape extends RectangleShape {
   constructor(
     public markup: HTMLElement | string | null,
     public css: {
-      [selector: string]: Partial<CSSStyleDeclaration>
-    }
+      [selector: string]: Partial<CSSStyleDeclaration>,
+    },
   ) {
     super(new Rectangle())
   }
@@ -73,7 +73,7 @@ export class HtmlShape extends RectangleShape {
         const item = this.css[selector]
         div.querySelectorAll(selector).forEach((elem: HTMLElement) => {
           Object.keys(item).forEach((key) => {
-            ;(elem.style as any)[key] = (item as any)[key]
+            (elem.style as any)[key] = (item as any)[key]
           })
         })
       })

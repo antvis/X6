@@ -7,7 +7,7 @@ export class Actor extends Shape {
     bounds: Rectangle,
     fillColor: string,
     stroke: string,
-    strokewidth: number = 1
+    strokewidth: number = 1,
   ) {
     super()
     this.bounds = bounds

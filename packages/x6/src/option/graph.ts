@@ -888,7 +888,7 @@ export interface FullOptions extends SimpleOptions, GlobalConfig {
 
 export interface GraphOptions
   extends Partial<SimpleOptions>,
-    Partial<GlobalConfig> {
+  Partial<GlobalConfig> {
   nodeStyle?: Style
   edgeStyle?: Style
   grid?: Partial<GridOptions> | boolean
@@ -950,7 +950,7 @@ export function applyOptions(graph: Graph) {
         val instanceof Image ||
         (typeof val !== 'function' && typeof val !== 'object')
       ) {
-        ;(graph as any)[key] = val
+        (graph as any)[key] = val
       }
     }
   })

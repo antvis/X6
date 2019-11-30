@@ -11,7 +11,7 @@ export class SelectionChange implements IChange {
   constructor(
     selection: Selection,
     added: Cell[] | null,
-    removed: Cell[] | null
+    removed: Cell[] | null,
   ) {
     this.selection = selection
     this.added = added != null ? added.slice() : null

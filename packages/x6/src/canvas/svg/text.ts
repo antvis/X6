@@ -74,7 +74,7 @@ export class SvgCanvas2DText extends SvgCanvas2DBase {
     wrap: boolean,
     overflow: string,
     clip: boolean = false,
-    rotation: number = 0
+    rotation: number = 0,
   ) {
     /**
      * <g style="cursor: move;">
@@ -167,9 +167,9 @@ export class SvgCanvas2DText extends SvgCanvas2DBase {
           : sizeDiv.offsetHeight
 
       if (this.cacheOffsetSize) {
-        ;(group as any).__CachedOffsetWidth__ = tmp
-        ;(group as any).__CachedFinalOffsetWidth__ = ow
-        ;(group as any).__CachedFinalOffsetHeight__ = oh
+        (group as any).__CachedOffsetWidth__ = tmp
+          ; (group as any).__CachedFinalOffsetWidth__ = ow
+          ; (group as any).__CachedFinalOffsetHeight__ = oh
       }
 
       ow += padX
@@ -215,7 +215,7 @@ export class SvgCanvas2DText extends SvgCanvas2DBase {
           (y + h / 2) * state.scale,
           state.rotation,
           state.rotationCenterX,
-          state.rotationCenterY
+          state.rotationCenterY,
         )
         x = pt.x - (w * state.scale) / 2
         y = pt.y - (h * state.scale) / 2
@@ -230,7 +230,7 @@ export class SvgCanvas2DText extends SvgCanvas2DBase {
 
       group.setAttribute(
         'transform',
-        `translate(${Math.round(x)},${Math.round(y)}) ${tr}`
+        `translate(${Math.round(x)},${Math.round(y)}) ${tr}`,
       )
 
       fo.setAttribute('width', `${Math.round(Math.max(1, w))}`)
@@ -256,7 +256,7 @@ export class SvgCanvas2DText extends SvgCanvas2DBase {
     overflow: string,
     clip?: boolean,
     rotation: number = 0,
-    dir: string | null = null
+    dir: string | null = null,
   ) {
     if (this.textEnabled && str != null) {
       if (this.foEnabled && format === 'html') {
@@ -272,7 +272,7 @@ export class SvgCanvas2DText extends SvgCanvas2DBase {
           overflow,
           clip,
           rotation,
-          dir
+          dir,
         )
       } else {
         this.drawSVGText(
@@ -287,7 +287,7 @@ export class SvgCanvas2DText extends SvgCanvas2DBase {
           overflow,
           clip,
           rotation,
-          dir
+          dir,
         )
       }
     }
@@ -305,7 +305,7 @@ export class SvgCanvas2DText extends SvgCanvas2DBase {
     overflow: string,
     clip?: boolean,
     rotation: number = 0,
-    dir: string | null = null
+    dir: string | null = null,
   ) {
     const state = this.state
     x += state.tx
@@ -354,7 +354,7 @@ export class SvgCanvas2DText extends SvgCanvas2DBase {
       valign,
       style,
       overflow,
-      wrap && w > 0 ? 'normal' : null
+      wrap && w > 0 ? 'normal' : null,
     ) as HTMLDivElement
 
     // Ignores invalid XHTML labels
@@ -412,7 +412,7 @@ export class SvgCanvas2DText extends SvgCanvas2DBase {
       }
 
       if (this.cacheOffsetSize) {
-        ;(group as any).__CachedOffsetWidth__ = tmp
+        (group as any).__CachedOffsetWidth__ = tmp
       }
 
       // Disables wrapping if text is not wrapped for given width
@@ -447,8 +447,8 @@ export class SvgCanvas2DText extends SvgCanvas2DBase {
       oh = sizeDiv.offsetHeight
 
       if (this.cacheOffsetSize) {
-        ;(group as any).__CachedFinalOffsetWidth__ = ow
-        ;(group as any).__CachedFinalOffsetHeight__ = oh
+        (group as any).__CachedFinalOffsetWidth__ = ow;
+        (group as any).__CachedFinalOffsetHeight__ = oh
       }
 
       oh -= padY
@@ -498,7 +498,7 @@ export class SvgCanvas2DText extends SvgCanvas2DBase {
         (y + h / 2) * state.scale,
         state.rotation,
         state.rotationCenterX,
-        state.rotationCenterY
+        state.rotationCenterY,
       )
       x = p.x - (w * state.scale) / 2
       y = p.y - (h * state.scale) / 2
@@ -513,7 +513,7 @@ export class SvgCanvas2DText extends SvgCanvas2DBase {
 
     group.setAttribute(
       'transform',
-      `translate(${Math.round(x)},${Math.round(y)}) ${transform}`
+      `translate(${Math.round(x)},${Math.round(y)}) ${transform}`,
     )
     fo.setAttribute('width', `${Math.round(Math.max(1, w))}`)
     fo.setAttribute('height', `${Math.round(Math.max(1, h))}`)
@@ -524,7 +524,7 @@ export class SvgCanvas2DText extends SvgCanvas2DBase {
       if (alt != null) {
         fo.setAttribute(
           'requiredFeatures',
-          'http://www.w3.org/TR/SVG11/feature#Extensibility'
+          'http://www.w3.org/TR/SVG11/feature#Extensibility',
         )
         const sw = this.createElement('switch')
         sw.appendChild(fo)
@@ -546,7 +546,7 @@ export class SvgCanvas2DText extends SvgCanvas2DBase {
     overflow: string,
     clip: boolean = false,
     rotation: number = 0,
-    dir: string | null = null
+    dir: string | null = null,
   ) {
     const node = this.createElement('g')
     this.applyFont(node, align, dir)
@@ -617,7 +617,7 @@ export class SvgCanvas2DText extends SvgCanvas2DBase {
       overflow === 'fill' ? h : textHeight,
       align,
       valign,
-      overflow
+      overflow,
     )
   }
 
@@ -630,7 +630,7 @@ export class SvgCanvas2DText extends SvgCanvas2DBase {
     h: number,
     align: Align,
     valign: VAlign,
-    overflow: string
+    overflow: string,
   ) {
     if (clip && w > 0 && h > 0) {
       const state = this.state
@@ -656,7 +656,7 @@ export class SvgCanvas2DText extends SvgCanvas2DBase {
         cx * state.scale - 2,
         cy * state.scale - 2,
         w * state.scale + 4,
-        h * state.scale + 4
+        h * state.scale + 4,
       )
 
       if (this.defs != null) {
@@ -749,7 +749,7 @@ export class SvgCanvas2DText extends SvgCanvas2DBase {
     h: number,
     align: Align,
     valign: VAlign,
-    overflow?: string
+    overflow?: string,
   ) {
     const state = this.state
     if (state.fontBackgroundColor != null || state.fontBorderColor != null) {
@@ -772,7 +772,7 @@ export class SvgCanvas2DText extends SvgCanvas2DBase {
           (x + 1) * state.scale,
           y * state.scale,
           (w - 2) * state.scale,
-          (h + 2) * state.scale
+          (h + 2) * state.scale,
         )
       } else if (
         (node as any).getBBox != null &&
@@ -781,7 +781,7 @@ export class SvgCanvas2DText extends SvgCanvas2DBase {
         try {
           bbox = (node as any).getBBox()
           bbox = new Rectangle(bbox.x, bbox.y + 1, bbox.width, bbox.height)
-        } catch (e) {}
+        } catch (e) { }
       } else {
         // Computes size if not in document or no getBBox available
         const div = document.createElement('div')
@@ -828,7 +828,7 @@ export class SvgCanvas2DText extends SvgCanvas2DBase {
           (x + 1) * state.scale,
           (y + 2) * state.scale,
           w * state.scale,
-          (h + 1) * state.scale
+          (h + 1) * state.scale,
         )
       }
 
@@ -870,7 +870,7 @@ export class SvgCanvas2DText extends SvgCanvas2DBase {
     valign: VAlign,
     style: string,
     overflow: string,
-    whiteSpace: string | null
+    whiteSpace: string | null,
   ) {
     const state = this.state
 
@@ -965,7 +965,7 @@ export class SvgCanvas2DText extends SvgCanvas2DBase {
     x: number,
     y: number,
     w: number,
-    h: number
+    h: number,
   ) {
     if (this.foAltText != null) {
       const state = this.state

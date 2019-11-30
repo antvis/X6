@@ -77,7 +77,7 @@ export class Guide extends Disposable {
         guide,
         this.graph.prefixCls,
         `guide ${horizontal ? 'horizontal' : 'vertical'}`,
-        style.className
+        style.className,
       )
 
       guide.redraw()
@@ -228,12 +228,12 @@ export class Guide extends Disposable {
             const state = stateX as State
             const minY = Math.min(
               bounds.y + dy - this.graph.panDy,
-              state.bounds.y
+              state.bounds.y,
             )
 
             const maxY = Math.max(
               bounds.y + bounds.height + dy - this.graph.panDy,
-              state.bounds.y + state.bounds.height
+              state.bounds.y + state.bounds.height,
             )
 
             if (minY != null && maxY != null) {
@@ -261,12 +261,12 @@ export class Guide extends Disposable {
             const state = stateY as State
             const minX = Math.min(
               bounds.x + dx - this.graph.panDx,
-              state.bounds.x
+              state.bounds.x,
             )
 
             const maxX = Math.max(
               bounds.x + bounds.width + dx - this.graph.panDx,
-              state.bounds.x + state.bounds.width
+              state.bounds.x + state.bounds.width,
             )
 
             if (minX != null && maxX != null) {
@@ -297,7 +297,7 @@ export class Guide extends Disposable {
     stateX: State | null,
     dx: number,
     stateY: State | null,
-    dy: number
+    dy: number,
   ) {
     if (this.rounded || (stateX != null && stateX.cell == null)) {
       // tslint:disable-next-line
@@ -344,12 +344,12 @@ export namespace Guide {
   export interface Options {
     getStrockStyle: (o: {
       cell: Cell
-      horizontal: boolean
+      horizontal: boolean,
     }) => {
       stroke: string
       strokeWidth: number
       dashed: boolean
-      className?: string
+      className?: string,
     }
   }
 }

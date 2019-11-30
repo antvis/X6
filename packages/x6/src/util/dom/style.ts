@@ -4,7 +4,7 @@ import { preset } from '../../option'
 import { ucFirst } from '../string/common'
 import { getDocumentMode } from './attr'
 
-export const setPrefixedStyle = (function() {
+export const setPrefixedStyle = (function () {
   let prefix: string | null = null
 
   if (detector.IS_OT) {
@@ -21,7 +21,7 @@ export const setPrefixedStyle = (function() {
     prefix = 'ms'
   }
 
-  return function(style: any, name: string, value: string) {
+  return function (style: any, name: string, value: string) {
     style[name] = value
     if (prefix != null && name.length > 0) {
       const prefixedName = prefix + ucFirst(name)
@@ -102,7 +102,7 @@ export function getDocumentScrollOrigin(doc: Document) {
 export function getScrollOrigin(
   node: HTMLElement | null,
   includeAncestors: boolean = false,
-  includeDocument: boolean = true
+  includeDocument: boolean = true,
 ) {
   const doc = node != null ? node.ownerDocument! : document
   const b = doc.body
@@ -178,7 +178,7 @@ export function getSizeForString(
   text: string,
   fontSize: number = preset.defaultFontSize,
   fontFamily: string = preset.defaultFontFamily,
-  textWidth?: number
+  textWidth?: number,
 ) {
   const div = document.createElement('div')
 

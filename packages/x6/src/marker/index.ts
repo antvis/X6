@@ -69,7 +69,7 @@ export namespace Marker {
   export function register(
     name: string,
     draw: DrawMarker,
-    force: boolean = false
+    force: boolean = false,
   ) {
     registerEntity(markers, name, draw, force, () => {
       throw new Error(`Marker with name '${name}' already registered.`)

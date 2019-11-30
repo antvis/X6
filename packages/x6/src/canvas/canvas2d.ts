@@ -127,7 +127,7 @@ export abstract class Canvas2D {
     h: number,
     direction: Direction,
     opacity1?: number,
-    opacity2?: number
+    opacity2?: number,
   ) {
     this.state.fillColor = color1
     this.state.gradientColor = color2
@@ -228,7 +228,7 @@ export abstract class Canvas2D {
     flipH: boolean,
     flipV: boolean,
     cx: number,
-    cy: number
+    cy: number,
   ) {
     throw new Error('Method not implemented.')
   }
@@ -243,7 +243,7 @@ export abstract class Canvas2D {
         this.lastY = pts[i + 1]
         this.path.push(
           `${this.format((this.lastX + state.tx) * state.scale)}`,
-          `${this.format((this.lastY + state.ty) * state.scale)}`
+          `${this.format((this.lastY + state.ty) * state.scale)}`,
         )
       }
     }
@@ -273,7 +273,7 @@ export abstract class Canvas2D {
     x2: number,
     y2: number,
     x3: number,
-    y3: number
+    y3: number,
   ) {
     this.addOp(this.curveOp, x1, y1, x2, y2, x3, y3)
   }
@@ -285,7 +285,7 @@ export abstract class Canvas2D {
     largeArcFlag: number,
     sweepFlag: number,
     x: number,
-    y: number
+    y: number,
   ) {
     const curves = util.arcToCurves(
       this.lastX,
@@ -296,7 +296,7 @@ export abstract class Canvas2D {
       largeArcFlag,
       sweepFlag,
       x,
-      y
+      y,
     )
 
     if (curves != null) {
@@ -307,7 +307,7 @@ export abstract class Canvas2D {
           curves[i + 2],
           curves[i + 3],
           curves[i + 4],
-          curves[i + 5]
+          curves[i + 5],
         )
       }
     }

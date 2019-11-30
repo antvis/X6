@@ -8,7 +8,7 @@ export class DataChange implements IChange {
   constructor(
     public readonly model: Model,
     public cell: Cell,
-    public data: any
+    public data: any,
   ) {
     this.previous = data
   }

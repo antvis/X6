@@ -1,12 +1,12 @@
-export const clearSelection = (function() {
+export const clearSelection = (function () {
   if ((document as any).selection) {
-    return function() {
-      ;(document as any).selection.empty()
+    return function () {
+      (document as any).selection.empty()
     }
   }
 
   if (window.getSelection) {
-    return function() {
+    return function () {
       const selection = window.getSelection()
       if (selection) {
         if (selection.empty) {
@@ -18,5 +18,5 @@ export const clearSelection = (function() {
     }
   }
 
-  return function() {}
+  return function () { }
 })()

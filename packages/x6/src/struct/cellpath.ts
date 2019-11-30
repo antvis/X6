@@ -103,7 +103,7 @@ export namespace CellPath {
 
   export function getNearestCommonAncestor(
     cell1: Cell | null,
-    cell2: Cell | null
+    cell2: Cell | null,
   ): Cell | null {
     if (cell1 != null && cell2 != null) {
       let path2 = getCellPath(cell2)
