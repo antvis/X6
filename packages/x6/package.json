@@ -1,6 +1,6 @@
 {
   "name": "@antv/x6",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "JavaScript diagramming library",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -83,7 +83,7 @@
     "typescript": "^3.5.3"
   },
   "dependencies": {
-    "@antv/x6-components": "^0.1.0",
+    "@antv/x6-components": "^0.1.1",
     "mousetrap": "^1.6.3"
   },
   "author": {
