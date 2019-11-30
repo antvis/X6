@@ -1,5 +1,5 @@
-import React from "react";
-import { MenuContext } from "./context";
+import React from "react"
+import { MenuContext } from "./context"
 
 export const MenuDivider: React.SFC = () => (
   <MenuContext.Consumer>
@@ -7,4 +7,4 @@ export const MenuDivider: React.SFC = () => (
       <div className={`${prefixCls}-item ${prefixCls}-item-divider`} />
     )}
   </MenuContext.Consumer>
-);
+)

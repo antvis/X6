@@ -15,7 +15,14 @@
     "noUnusedParameters": true,
     "experimentalDecorators": true,
     "skipLibCheck": true,
-    "lib": ["dom", "es2017"]
+    "lib": [
+      "dom",
+      "es2017"
+    ]
   },
-  "include": ["src/**/*ts", "src/**/*.d.ts", "typings/*.d.ts"]
+  "include": [
+    "src/**/*ts",
+    "src/**/*.d.ts",
+    "typings/*.d.ts"
+  ]
 }

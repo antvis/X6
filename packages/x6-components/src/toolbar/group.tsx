@@ -1,6 +1,6 @@
-import React from "react";
-import classNames from "classnames";
-import { ToolbarContext } from "./context";
+import React from "react"
+import classNames from "classnames"
+import { ToolbarContext } from "./context"
 
 export const ToolbarGroup: React.SFC<ToolbarGroup.Props> = ({
   children,
@@ -13,10 +13,10 @@ export const ToolbarGroup: React.SFC<ToolbarGroup.Props> = ({
       </div>
     )}
   </ToolbarContext.Consumer>
-);
+)
 
 export namespace ToolbarGroup {
   export interface Props {
-    className?: string;
+    className?: string
   }
 }
