@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+'use strict'
+
 const fs = require('fs')
 const path = require('path')
 const sizeOf = require('image-size')
@@ -18,7 +20,7 @@ const lines = []
 const dir = path.join(process.cwd(), './src/assets/images')
 
 fs.readdir(dir, (err, files) => {
-  files.forEach((file) => {
+  files.forEach(file => {
     const filename = path.basename(file, path.extname(file))
     const filepath = path.join(dir, file)
     const size = sizeOf(filepath)
@@ -31,9 +33,9 @@ fs.readdir(dir, (err, files) => {
 
   const code = prefix + lines.join('\n')
 
-  fs.writeFile('src/assets/images.ts', code, (err) => {
-    if (err) {
-      throw new Error(`Generate image assets filed: ${err}`)
+  fs.writeFile('src/assets/images.ts', code, error => {
+    if (error) {
+      throw new Error(`Generate image assets filed: ${error}`)
     }
 
     console.log(`\nGenerate image assets.`)
