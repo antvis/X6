@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+'use strict'
+
 const fs = require('fs')
 const version = JSON.parse(fs.readFileSync('package.json', 'utf8')).version
 
@@ -12,7 +14,7 @@ const version = '${version}'
 export { version }
 `
 
-fs.writeFile('src/version.ts', code, (err) => {
+fs.writeFile('src/version.ts', code, err => {
   if (err) {
     throw new Error(`Could not save version file ${version}: ${err}`)
   }
