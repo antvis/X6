@@ -30,30 +30,25 @@ $ yarn add @antv/x6
 ```
 
 ```ts
-import { Graph } from '@antv/x6'
+import { Graph } from "@antv/x6";
 
-const container = document.getElementById('container')
-const graph = new Graph(container)
-const node1 = graph.addNode({ data: 'Hello', x: 60, y: 60, width: 80, height: 30 })
-const node2 = graph.addNode({ data: 'World', x: 240, y: 240, width: 80, height: 30 })
-const edge = graph.addEdge({ data: 'x6', source: node1, target: node2 })
-```
-
-## Development
-
-```shell
-$ yarn
-
-# build
-$ yarn build
-
-# run test
-$ yarn test
-
-# run examples
-$ cd expamples
-$ yarn 
-$ yarn start
+const container = document.getElementById("container");
+const graph = new Graph(container);
+const node1 = graph.addNode({
+  data: "Hello",
+  x: 60,
+  y: 60,
+  width: 80,
+  height: 30
+});
+const node2 = graph.addNode({
+  data: "World",
+  x: 240,
+  y: 240,
+  width: 80,
+  height: 30
+});
+const edge = graph.addEdge({ data: "x6", source: node1, target: node2 });
 ```
 
 ## Contributing
