@@ -12,6 +12,8 @@
 .umi
 .umi-production
 package.json
+tsconfig.json
+tslint.json
 AUTHORS.txt
 CNAME
 LICENSE
