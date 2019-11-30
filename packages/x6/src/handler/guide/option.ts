@@ -74,7 +74,7 @@ export function createGuide(graph: Graph, states: State[]) {
   const vertical = options.vertical as GuideSubOptions
 
   const guide = new Guide(graph, states, {
-    getStrockStyle: (o) => getGuideStrockStyle({ ...o, graph }),
+    getStrockStyle: o => getGuideStrockStyle({ ...o, graph }),
   })
 
   guide.rounded = options.rounded

@@ -182,7 +182,7 @@ export class CellEditor extends Disposable {
 
   protected installListeners(elem: HTMLDivElement) {
     // Applies value if text is dragged
-    DomEvent.addListener(elem, 'dragstart', (e) => {
+    DomEvent.addListener(elem, 'dragstart', e => {
       this.graph.stopEditing(false)
       DomEvent.consume(e)
     })
@@ -371,16 +371,16 @@ export class CellEditor extends Disposable {
         // Specifies the bounds of the editor box
         this.bounds = this.getEditorBounds(state)
         this.textarea.style.width = util.toPx(
-          Math.round(this.bounds.width / scale),
+          Math.round(this.bounds.width / scale)
         )
         this.textarea.style.height = util.toPx(
-          Math.round(this.bounds.height / scale),
+          Math.round(this.bounds.height / scale)
         )
         this.textarea.style.left = util.toPx(
-          Math.max(0, Math.round(this.bounds.x + 1)),
+          Math.max(0, Math.round(this.bounds.x + 1))
         )
         this.textarea.style.top = util.toPx(
-          Math.max(0, Math.round(this.bounds.y + 1)),
+          Math.max(0, Math.round(this.bounds.y + 1))
         )
 
         // Installs native word wrapping and avoids word wrap for empty label placeholder
@@ -394,7 +394,7 @@ export class CellEditor extends Disposable {
 
           if (state.style.overflow !== 'fill') {
             this.textarea.style.width = util.toPx(
-              Math.round(this.bounds.width / scale) + this.wordWrapPadding,
+              Math.round(this.bounds.width / scale) + this.wordWrapPadding
             )
           }
         } else {
@@ -410,7 +410,7 @@ export class CellEditor extends Disposable {
         if (m == null) {
           m = util.getAlignmentAsPoint(
             this.align || state.style.align || 'center',
-            state.style.verticalAlign || 'middle',
+            state.style.verticalAlign || 'middle'
           )
         }
 
@@ -419,7 +419,7 @@ export class CellEditor extends Disposable {
             state.absoluteOffset.x,
             state.absoluteOffset.y,
             0,
-            0,
+            0
           )
           if (lw != null) {
             const tmp = (lw + 2) * scale
@@ -461,7 +461,7 @@ export class CellEditor extends Disposable {
                 (hpos === 'center' && lw == null
                   ? spacingLeft + spacingRight
                   : 0),
-              bds.height - (vpos === 'middle' ? spacingTop + spacingBottom : 0),
+              bds.height - (vpos === 'middle' ? spacingTop + spacingBottom : 0)
             )
           }
 
@@ -469,7 +469,7 @@ export class CellEditor extends Disposable {
             bds.x + state.absoluteOffset.x,
             bds.y + state.absoluteOffset.y,
             bds.width,
-            bds.height,
+            bds.height
           )
         }
 
@@ -513,8 +513,8 @@ export class CellEditor extends Disposable {
         this.textarea.style.left = util.toPx(
           Math.max(
             0,
-            Math.round(this.bounds.x - m.x * (this.bounds.width - 2)) + 1,
-          ),
+            Math.round(this.bounds.x - m.x * (this.bounds.width - 2)) + 1
+          )
         ) // tslint:disable-line
         this.textarea.style.top = util.toPx(
           Math.max(
@@ -522,9 +522,9 @@ export class CellEditor extends Disposable {
             Math.round(
               this.bounds.y -
                 m.y * (this.bounds.height - 4) +
-                (m.y === -1 ? 3 : 0),
-            ) + 1,
-          ),
+                (m.y === -1 ? 3 : 0)
+            ) + 1
+          )
         ) // tslint:disable-line
       }
 
@@ -732,7 +732,7 @@ export class CellEditor extends Disposable {
       0,
       0,
       30,
-      this.textarea!.style.textAlign === 'left' ? 120 : 40,
+      this.textarea!.style.textAlign === 'left' ? 120 : 40
     )
   }
 
@@ -765,7 +765,7 @@ export class CellEditor extends Disposable {
         state.bounds.x,
         state.bounds.y,
         Math.max(minWidth, state.bounds.width - spacingLeft - spacingRight),
-        Math.max(minHeight, state.bounds.height - spacingTop - spacingBottom),
+        Math.max(minHeight, state.bounds.height - spacingTop - spacingBottom)
       )
 
       const hpos = state.style.labelPosition || 'center'
@@ -831,7 +831,7 @@ export class CellEditor extends Disposable {
       Math.round(result.x),
       Math.round(result.y),
       Math.round(result.width),
-      Math.round(result.height),
+      Math.round(result.height)
     )
   }
 

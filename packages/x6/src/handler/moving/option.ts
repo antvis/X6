@@ -70,7 +70,7 @@ export interface DropTargetHighlightOptions
 }
 
 export function applyDropTargetHighlightStyle(
-  args: ApplyDropTargetHighlightStyleArgs,
+  args: ApplyDropTargetHighlightStyleArgs
 ) {
   const { graph, highlight } = args
   const opts = graph.options.dropTargetHighlight as DropTargetHighlightOptions

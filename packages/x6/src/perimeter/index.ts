@@ -13,7 +13,7 @@ export namespace Perimeter {
     bounds: Rectangle,
     state: State,
     next: Point,
-    orthogonal: boolean,
+    orthogonal: boolean
   ) => Point
 
   const perimeters: { [name: string]: PerimeterFunction } = {}
@@ -21,7 +21,7 @@ export namespace Perimeter {
   export function register(
     name: string,
     permeter: PerimeterFunction,
-    force: boolean = false,
+    force: boolean = false
   ) {
     util.registerEntity(perimeters, name, permeter, force, () => {
       throw new Error(`Perimeter with name '${name}' already registered.`)
@@ -32,7 +32,7 @@ export namespace Perimeter {
     return util.getEntityFromRegistry<PerimeterFunction>(
       perimeters,
       name,
-      allowEval,
+      allowEval
     )
   }
 

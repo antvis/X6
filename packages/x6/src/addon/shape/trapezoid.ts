@@ -28,7 +28,7 @@ export class TrapezoidShape extends Actor {
       ],
       this.rounded,
       arcSize,
-      true,
+      true
     )
   }
 }
@@ -37,7 +37,7 @@ export function trapezoidPerimeter(
   bounds: Rectangle,
   state: State,
   next: Point,
-  orthogonal: boolean,
+  orthogonal: boolean
 ) {
   const defaultFactor = TrapezoidShape.prototype.factor
   const style: Style = state ? state.style : {}

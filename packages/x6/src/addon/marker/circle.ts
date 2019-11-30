@@ -31,7 +31,7 @@ function circleMarker({
 }
 
 Marker.register('circle', circleMarker)
-Marker.register('circlePlus', (options) => {
+Marker.register('circlePlus', options => {
   const { c, pe, unitX, unitY, size, sw } = options
 
   const pt = pe.clone()

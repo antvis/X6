@@ -25,7 +25,9 @@
   ],
   "scripts": {
     "clean": "concurrently 'rimraf ./lib' 'rimraf ./es'",
-    "lint": "tslint -c tslint.json -p tsconfig.json --fix",
+    "lint": "yarn lint:ts && yarn lint:es",
+    "lint:es": "eslint --ext .js scripts --fix",
+    "lint:ts": "tslint -c tslint.json -p tsconfig.json --fix",
     "build:lib": "tsc",
     "build:es": "tsc --module es2015 --target es2015 --outDir ./es",
     "build:less": "lessc ./src/index.less ./lib/index.css",
@@ -37,10 +39,20 @@
     "test": "jest",
     "pretest": "rimraf ./test/coverage",
     "coveralls": "cat ./test/coverage/lcov.info | coveralls",
+    "prettier": "prettier -c --write '**/*'",
+    "pretty-quick": "pretty-quick",
     "prepublish": "yarn test && yarn build",
     "precommit": "lint-staged"
   },
   "lint-staged": {
+    "**/*": [
+      "pretty-quick — staged",
+      "git add"
+    ],
+    "*.js": [
+      "eslint --fix",
+      "git add"
+    ],
     "src/**/*.ts": [
       "tslint -c tslint.json -p ./tsconfig.lint.json --fix",
       "git add"
@@ -52,6 +64,10 @@
     "base64-img": "^1.0.4",
     "concurrently": "^5.0.0",
     "coveralls": "^3.0.6",
+    "eslint": "^6.1.0",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-config-prettier": "^6.7.0",
+    "eslint-plugin-import": "^2.18.2",
     "image-size": "^0.7.4",
     "jest": "^24.8.0",
     "less": "^3.10.3",
@@ -63,6 +79,7 @@
     "ts-jest": "^24.0.2",
     "tslint": "^5.18.0",
     "tslint-config-airbnb": "^5.11.2",
+    "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.5.3"
   },
   "dependencies": {

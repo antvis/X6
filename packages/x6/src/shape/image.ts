@@ -14,7 +14,7 @@ export class ImageShape extends RectangleShape {
     image: string,
     fillColor?: string | null,
     strokeColor?: string | null,
-    strokewidth?: number | null,
+    strokewidth?: number | null
   ) {
     super(bounds, fillColor, strokeColor, strokewidth)
     this.image = image
@@ -125,7 +125,7 @@ export class ImageShape extends RectangleShape {
         util.setPrefixedStyle(
           img.style,
           'transform',
-          `rotate(${this.rotation}deg)`,
+          `rotate(${this.rotation}deg)`
         )
       } else {
         util.setPrefixedStyle(img.style, 'transform', '')

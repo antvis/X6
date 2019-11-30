@@ -104,7 +104,7 @@ export class PanningManager extends BaseManager {
       } else {
         this.graph.pan(this.getDx(), this.getDy())
       }
-    },                        this.delay)
+    }, this.delay)
   }
 
   start() {
@@ -133,7 +133,7 @@ export class PanningManager extends BaseManager {
           this.graph.pan(0, 0)
           this.graph.view.setTranslate(
             this.t0x + px / this.graph.view.scale,
-            this.t0y + py / this.graph.view.scale,
+            this.t0y + py / this.graph.view.scale
           )
         }
       } else {

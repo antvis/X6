@@ -3,17 +3,17 @@ import { getUrlWithoutHash } from '../bom'
 
 export function setAttributes(
   elem: Element | null,
-  attrs: { [key: string]: any },
+  attrs: { [key: string]: any }
 ) {
   if (elem != null) {
-    Object.keys(attrs).forEach((name) => elem.setAttribute(name, attrs[name]))
+    Object.keys(attrs).forEach(name => elem.setAttribute(name, attrs[name]))
   }
 }
 
 export function setAttributeWithAnchor(
   elem: SVGElement,
   attrName: string,
-  id: string,
+  id: string
 ) {
   if (
     !detector.IS_IE &&

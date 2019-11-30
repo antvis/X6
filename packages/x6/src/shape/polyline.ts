@@ -6,7 +6,7 @@ export class Polyline extends Shape {
   constructor(
     points: Point[] = [],
     strokeColor: string | null = null,
-    strokewidth: number = 1,
+    strokewidth: number = 1
   ) {
     super()
     this.points = points

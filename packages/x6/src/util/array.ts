@@ -9,7 +9,7 @@ export function toArray(arr: any) {
 export function slice<T>(
   arr: undefined | null | T[],
   start?: number,
-  end?: number,
+  end?: number
 ) {
   return arr ? proto.slice.call(arr, start, end) : []
 }
@@ -29,7 +29,7 @@ export function lastIndexOf<T>(arr: undefined | null | T[], item: T): number {
 export function map<T, U>(
   arr: undefined | null | T[],
   iterator: (value: T, index: number, array: T[]) => U,
-  thisArg?: any,
+  thisArg?: any
 ): U[] {
   return arr ? proto.map.call(arr, iterator, thisArg) : []
 }
@@ -37,7 +37,7 @@ export function map<T, U>(
 export function some<T>(
   arr: undefined | null | T[],
   iterator: (value: T, index: number, array: T[]) => boolean,
-  thisArg?: any,
+  thisArg?: any
 ): boolean {
   return arr ? proto.some.call(arr, iterator, thisArg) : false
 }
@@ -45,7 +45,7 @@ export function some<T>(
 export function every<T>(
   arr: undefined | null | T[],
   iterator: (value: T, index: number, array: T[]) => boolean,
-  thisArg?: any,
+  thisArg?: any
 ): boolean {
   return arr ? proto.every.call(arr, iterator, thisArg) : false
 }
@@ -53,7 +53,7 @@ export function every<T>(
 export function filter<T>(
   arr: undefined | null | T[],
   iterator: (value: T, index: number, array: T[]) => boolean,
-  thisArg?: any,
+  thisArg?: any
 ) {
   return arr ? proto.filter.call(arr, iterator, thisArg) : []
 }
@@ -61,7 +61,7 @@ export function filter<T>(
 export function forEach<T>(
   arr: undefined | null | T[],
   iterator: (value: T, index: number, array: T[]) => void,
-  thisArg?: any,
+  thisArg?: any
 ): void {
   arr && proto.forEach.call(arr, iterator, thisArg)
 }
@@ -69,7 +69,7 @@ export function forEach<T>(
 export function reduce<T, U>(
   arr: undefined | null | T[],
   iterator: (memo: U, value: T, index: number, array: T[]) => U,
-  initialValue: U,
+  initialValue: U
 ): U {
   return arr ? proto.reduce.call(arr, iterator, initialValue) : initialValue
 }
@@ -77,7 +77,7 @@ export function reduce<T, U>(
 export function reduceRight<T, U>(
   arr: undefined | null | T[],
   iterator: (memo: U, value: T, index: number, array: T[]) => U,
-  initialValue: U,
+  initialValue: U
 ): U {
   return arr
     ? proto.reduceRight.call(arr, iterator, initialValue)
@@ -91,7 +91,7 @@ export function uniq<T extends Object>(arr: T[]) {
   const dict = new WeakSet<T>()
   const result: T[] = []
 
-  arr.forEach((item) => {
+  arr.forEach(item => {
     if (!dict.has(item)) {
       result.push(item)
       dict.add(item)

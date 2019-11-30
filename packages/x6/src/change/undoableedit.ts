@@ -80,7 +80,7 @@ export class UndoableEdit extends Disposable {
     }
 
     this.model.trigger(Model.events.startEdit)
-    this.changes.forEach((change) => {
+    this.changes.forEach(change => {
       if (change.execute != null) {
         change.execute()
       } else if (change.redo != null) {

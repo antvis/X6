@@ -6,7 +6,7 @@ export function loop(
   sourceState: State,
   targetState: State,
   points: Point[],
-  result: Point[],
+  result: Point[]
 ) {
   const pts = edgeState.absolutePoints
   const p0 = pts[0]
@@ -14,7 +14,7 @@ export function loop(
 
   if (p0 != null && pe != null) {
     if (points != null && points.length > 0) {
-      points.forEach((point) => {
+      points.forEach(point => {
         const p = edgeState.view.transformControlPoint(edgeState, point)!
         result.push(new Point(p.x, p.y))
       })

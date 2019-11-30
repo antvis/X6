@@ -55,7 +55,7 @@ export class CellMarker extends BaseHandler {
   protected setCurrentState(
     state: State | null,
     e: MouseEventEx,
-    color?: string | null,
+    color?: string | null
   ) {
     const isValid = state ? this.isValidState(state) : false
     // tslint:disable-next-line
@@ -96,7 +96,7 @@ export class CellMarker extends BaseHandler {
   protected getMarkerColor(
     e: Event,
     state: State | null,
-    isValid: boolean,
+    isValid: boolean
   ): string | null {
     return isValid ? this.validColor : this.invalidColor
   }
@@ -148,7 +148,7 @@ export class CellMarker extends BaseHandler {
         e.getGraphY(),
         this.hotspot,
         this.minHotspotSize,
-        this.maxHotspotSize,
+        this.maxHotspotSize
       )
     }
 

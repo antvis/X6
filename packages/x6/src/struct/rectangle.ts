@@ -46,7 +46,7 @@ export class Rectangle {
       Math.round(this.x),
       Math.round(this.y),
       Math.round(this.width),
-      Math.round(this.height),
+      Math.round(this.height)
     )
   }
 
@@ -56,7 +56,7 @@ export class Rectangle {
     x: number | Rectangle | Rectangle.RectangleLike,
     y?: number,
     w?: number,
-    h?: number,
+    h?: number
   ): void {
     const b = typeof x === 'number' ? { x, y: y!, width: w!, height: h! } : x
 
@@ -85,7 +85,7 @@ export class Rectangle {
     x: number | Rectangle | Rectangle.RectangleLike,
     y?: number,
     w?: number,
-    h?: number,
+    h?: number
   ) {
     const b = typeof x === 'number' ? { x, y: y!, width: w!, height: h! } : x
 
@@ -108,7 +108,7 @@ export class Rectangle {
     x: number | Rectangle | Rectangle.RectangleLike,
     y?: number,
     w?: number,
-    h?: number,
+    h?: number
   ) {
     const b = typeof x === 'number' ? { x, y: y!, width: w!, height: h! } : x
 

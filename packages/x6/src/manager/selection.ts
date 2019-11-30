@@ -44,7 +44,7 @@ export class Selection extends BaseManager {
   setCells(cells: Cell[]) {
     if (cells != null) {
       const arr = this.single ? [this.getFirstSelectableCell(cells)] : cells
-      const added = arr.filter((cell) => this.graph.isCellSelectable(cell!))
+      const added = arr.filter(cell => this.graph.isCellSelectable(cell!))
       this.changeSelection(added as Cell[], this.cells)
     }
   }
@@ -66,7 +66,7 @@ export class Selection extends BaseManager {
       }
 
       const added = candidate.filter(
-        (cell) => !this.isSelected(cell) && this.graph.isCellSelectable(cell),
+        cell => !this.isSelected(cell) && this.graph.isCellSelectable(cell)
       )
 
       this.changeSelection(added, removed)
@@ -81,7 +81,7 @@ export class Selection extends BaseManager {
 
   removeCells(cells: Cell[]) {
     if (cells != null) {
-      const removed = cells.filter((cell) => this.isSelected(cell))
+      const removed = cells.filter(cell => this.isSelected(cell))
       this.changeSelection(null, removed)
     }
   }
@@ -100,7 +100,7 @@ export class Selection extends BaseManager {
 
   private changeSelection(
     added: Cell[] | null = null,
-    removed: Cell[] | null = null,
+    removed: Cell[] | null = null
   ) {
     if (
       (added != null && added.length > 0 && added[0] != null) ||

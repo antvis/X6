@@ -17,4 +17,4 @@ setTimeout(() => {
     const d = encodeURIComponent(JSON.stringify([trackInfo]))
     image.src = `${SERVER_URL}?BIProfile=merge&d=${d}`
   }
-},         3000)
+}, 3000)

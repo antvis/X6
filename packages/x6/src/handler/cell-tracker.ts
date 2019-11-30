@@ -7,7 +7,7 @@ export class CellTracker extends CellMarker implements IMouseHandler {
   constructor(
     graph: Graph,
     color: string,
-    getCell?: (e: MouseEventEx) => Cell,
+    getCell?: (e: MouseEventEx) => Cell
   ) {
     super(graph, { validColor: color })
 

@@ -242,7 +242,7 @@ export class EdgeHandler extends MouseHandler {
     MouseEventEx.redirectMouseEvents(
       this.previewShape.elem,
       this.graph,
-      this.state,
+      this.state
     )
   }
 
@@ -287,7 +287,7 @@ export class EdgeHandler extends MouseHandler {
     return this.graph.validator.getEdgeValidationError(
       this.state.cell,
       source,
-      target,
+      target
     )
   }
 
@@ -305,7 +305,7 @@ export class EdgeHandler extends MouseHandler {
 
         if (isTerminal || bendable) {
           const handle = this.createHandleShape(i)
-          const dblClick = ((index) => () => {
+          const dblClick = (index => () => {
             if (this.dblClickRemoveEnabled) {
               this.removePoint(this.state, index)
             }
@@ -390,7 +390,7 @@ export class EdgeHandler extends MouseHandler {
             this.state,
             geo.points,
             sourceState,
-            targetState,
+            targetState
           )
         : null
 
@@ -437,7 +437,7 @@ export class EdgeHandler extends MouseHandler {
       null,
       null,
       null,
-      dblClick,
+      dblClick
     )
   }
 
@@ -487,7 +487,7 @@ export class EdgeHandler extends MouseHandler {
             e.getGraphX() - tol,
             e.getGraphY() - tol,
             2 * tol,
-            2 * tol,
+            2 * tol
           )
         : null
 
@@ -611,7 +611,7 @@ export class EdgeHandler extends MouseHandler {
         const index = util.findNearestSegment(
           state,
           p.x * s + offset.x,
-          p.y * s + offset.y,
+          p.y * s + offset.y
         )
         geo.points.splice(index, 0, p)
       }
@@ -716,7 +716,7 @@ export class EdgeHandler extends MouseHandler {
 
         const state = this.clonePreviewState(
           this.currentPoint,
-          (terminalState && terminalState.cell) || null,
+          (terminalState && terminalState.cell) || null
         )
 
         this.updatePreviewState(state, this.currentPoint, terminalState, e)
@@ -764,7 +764,7 @@ export class EdgeHandler extends MouseHandler {
 
     const result = new Point(
       this.roundLength(e.getGraphX() / s) * s,
-      this.roundLength(e.getGraphY() / s) * s,
+      this.roundLength(e.getGraphY() / s) * s
     )
 
     let overrideX = false
@@ -790,8 +790,8 @@ export class EdgeHandler extends MouseHandler {
           snapToPoint(
             new Point(
               view.getRoutingCenterX(terminal),
-              view.getRoutingCenterY(terminal),
-            ),
+              view.getRoutingCenterY(terminal)
+            )
           )
         }
       }
@@ -800,7 +800,7 @@ export class EdgeHandler extends MouseHandler {
       snapToTerminal(this.state.getVisibleTerminalState(false))
 
       if (this.state.absolutePoints != null) {
-        this.state.absolutePoints.forEach((p) => snapToPoint(p))
+        this.state.absolutePoints.forEach(p => snapToPoint(p))
       }
     }
 
@@ -887,7 +887,7 @@ export class EdgeHandler extends MouseHandler {
             ) {
               abs[0] = new Point(
                 src.view.getRoutingCenterX(src),
-                src.view.getRoutingCenterY(src),
+                src.view.getRoutingCenterY(src)
               )
             }
           }
@@ -902,7 +902,7 @@ export class EdgeHandler extends MouseHandler {
             ) {
               abs[abs.length - 1] = new Point(
                 trg.view.getRoutingCenterX(trg),
-                trg.view.getRoutingCenterY(trg),
+                trg.view.getRoutingCenterY(trg)
               )
             }
           }
@@ -917,7 +917,7 @@ export class EdgeHandler extends MouseHandler {
                 abs[idx + 1].x,
                 abs[idx + 1].y,
                 p.x,
-                p.y,
+                p.y
               ) < tol
             ) {
               points!.splice(idx - 1, 1)
@@ -945,7 +945,7 @@ export class EdgeHandler extends MouseHandler {
       e,
       this.isSourceHandle,
       true,
-      e.isSource(this.marker.highlight.shape) ? null : this.currentPoint,
+      e.isSource(this.marker.highlight.shape) ? null : this.currentPoint
     )
 
     if (
@@ -958,9 +958,9 @@ export class EdgeHandler extends MouseHandler {
       const other = this.graph.view.getTerminalPortState(
         this.state,
         this.graph.view.getState(
-          model.getTerminal(this.state.cell, !this.isSourceHandle),
+          model.getTerminal(this.state.cell, !this.isSourceHandle)
         )!,
-        !this.isSourceHandle,
+        !this.isSourceHandle
       )
       const otherCell = other != null ? other.cell : null
 
@@ -1007,7 +1007,7 @@ export class EdgeHandler extends MouseHandler {
     edgeState: State,
     point: Point,
     terminalState: State | null,
-    e: MouseEventEx,
+    e: MouseEventEx
   ) {
     // Computes the points for the edge style and terminals
     const sourceState = this.isSourceHandle
@@ -1021,12 +1021,12 @@ export class EdgeHandler extends MouseHandler {
     let sourceC = this.graph.getConnectionConstraint(
       edgeState,
       sourceState,
-      true,
+      true
     )
     let targetC = this.graph.getConnectionConstraint(
       edgeState,
       targetState,
-      false,
+      false
     )
     const constraint = this.constraintHandler.currentConstraint
 
@@ -1064,7 +1064,7 @@ export class EdgeHandler extends MouseHandler {
         edgeState,
         sourceState!,
         true,
-        sourceC,
+        sourceC
       )
     }
 
@@ -1073,7 +1073,7 @@ export class EdgeHandler extends MouseHandler {
         edgeState,
         targetState!,
         false,
-        targetC,
+        targetC
       )
     }
 
@@ -1088,12 +1088,12 @@ export class EdgeHandler extends MouseHandler {
       edgeState,
       this.points || [],
       sourceState!,
-      targetState!,
+      targetState!
     )
     edgeState.view.updateFloatingTerminalPoints(
       edgeState,
       sourceState!,
-      targetState!,
+      targetState!
     )
   }
 
@@ -1174,7 +1174,7 @@ export class EdgeHandler extends MouseHandler {
                 terminal!,
                 this.isSourceHandle,
                 clone,
-                e,
+                e
               )
             })
           } else if (this.graph.isDanglingEdgesEnabled()) {
@@ -1187,7 +1187,7 @@ export class EdgeHandler extends MouseHandler {
             p.y = this.roundLength(p.y / s - t.y)
 
             const pstate = this.graph.view.getState(
-              this.graph.getModel().getParent(edge),
+              this.graph.getModel().getParent(edge)
             )
 
             if (pstate != null) {
@@ -1286,7 +1286,7 @@ export class EdgeHandler extends MouseHandler {
     point.y = Math.round(point.y / s - t.y)
 
     const pstate = this.graph.view.getState(
-      this.graph.getModel().getParent(this.state.cell),
+      this.graph.getModel().getParent(this.state.cell)
     )
 
     if (pstate != null) {
@@ -1319,7 +1319,7 @@ export class EdgeHandler extends MouseHandler {
         pt = this.graph.view.getPointOnEdge(edgeState, geo)
         geo.offset = new Point(
           Math.round((x - pt.x) / scale),
-          Math.round((y - pt.y) / scale),
+          Math.round((y - pt.y) / scale)
         )
       } else {
         const points = edgeState.absolutePoints
@@ -1332,7 +1332,7 @@ export class EdgeHandler extends MouseHandler {
 
           geo.offset = new Point(
             Math.round((x - cx) / scale),
-            Math.round((y - cy) / scale),
+            Math.round((y - cy) / scale)
           )
           geo.bounds.x = 0
           geo.bounds.y = 0
@@ -1348,7 +1348,7 @@ export class EdgeHandler extends MouseHandler {
     terminal: Cell,
     isSource: boolean,
     clone: boolean,
-    e: MouseEventEx,
+    e: MouseEventEx
   ) {
     this.graph.batchUpdate(() => {
       let constraint = this.constraintHandler.currentConstraint
@@ -1369,7 +1369,7 @@ export class EdgeHandler extends MouseHandler {
     edge: Cell,
     point: Point,
     isSource: boolean,
-    clone: boolean,
+    clone: boolean
   ) {
     const model = this.graph.getModel()
     this.graph.batchUpdate(() => {
@@ -1490,7 +1490,7 @@ export class EdgeHandler extends MouseHandler {
         Math.round(this.labelPos.x - bounds.width / 2 + offset.x),
         Math.round(this.labelPos.y - bounds.height / 2 + offset.y),
         bounds.width,
-        bounds.height,
+        bounds.height
       )
 
       // Shows or hides the label handle depending on the label
@@ -1524,7 +1524,7 @@ export class EdgeHandler extends MouseHandler {
             Math.floor(x - handle.bounds.width / 2),
             Math.floor(y - handle.bounds.height / 2),
             handle.bounds.width,
-            handle.bounds.height,
+            handle.bounds.height
           )
           handle.redraw()
           pl = point
@@ -1541,7 +1541,7 @@ export class EdgeHandler extends MouseHandler {
     }
 
     if (this.customHandles != null) {
-      this.customHandles.forEach((c) => c.redraw())
+      this.customHandles.forEach(c => c.redraw())
     }
   }
 
@@ -1611,14 +1611,14 @@ export class EdgeHandler extends MouseHandler {
                 Math.round(x - w / 2),
                 Math.round(y - h / 2),
                 w,
-                h,
+                h
               )
             }
 
             handle.redraw()
           } else {
             handle.dispose()
-            ; (this.handles as any)[i] = null
+            ;(this.handles as any)[i] = null
           }
         }
       }
@@ -1634,7 +1634,7 @@ export class EdgeHandler extends MouseHandler {
         Math.round(x - b.width / 2),
         Math.round(y - b.height / 2),
         b.width,
-        b.height,
+        b.height
       )
     }
   }
@@ -1658,14 +1658,14 @@ export class EdgeHandler extends MouseHandler {
 
   protected setHandlesVisible(visible: boolean) {
     this.handles &&
-      this.handles.forEach((h) => {
+      this.handles.forEach(h => {
         if (h && h.elem) {
           h.elem.style.display = visible ? '' : 'none'
         }
       })
 
     this.virtualHandles &&
-      this.virtualHandles.forEach((h) => {
+      this.virtualHandles.forEach(h => {
         if (h && h.elem) {
           h.elem.style.display = visible ? '' : 'none'
         }
@@ -1676,12 +1676,12 @@ export class EdgeHandler extends MouseHandler {
     }
 
     if (this.customHandles != null) {
-      this.customHandles.forEach((c) => c.setVisible(visible))
+      this.customHandles.forEach(c => c.setVisible(visible))
     }
   }
 
   protected destroyHandles(handles: (IDisposable | Handle | null)[] | null) {
-    handles && handles.forEach((h) => h && h.dispose())
+    handles && handles.forEach(h => h && h.dispose())
   }
 
   @Disposable.aop()

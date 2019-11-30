@@ -27,7 +27,7 @@ export function er(
   sourceState: State,
   targetState: State,
   points: Point[],
-  result: Point[],
+  result: Point[]
 ) {
   const view = edgeState.view
   const graph = view.graph
@@ -50,7 +50,7 @@ export function er(
       sourceState,
       edgeState,
       true,
-      DirectionMask.none,
+      DirectionMask.none
     )
     if (
       constraint !== DirectionMask.none &&
@@ -82,7 +82,7 @@ export function er(
       targetState,
       edgeState,
       false,
-      DirectionMask.none,
+      DirectionMask.none
     )
 
     if (

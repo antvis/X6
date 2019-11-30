@@ -19,7 +19,7 @@ export interface ConnectionOptions {
    */
   createEdge?: (
     this: Graph,
-    e: { source: Cell; target: Cell; style: Style },
+    e: { source: Cell; target: Cell; style: Style }
   ) => Cell
 
   /**
@@ -151,7 +151,7 @@ export interface GetConnectionHighlightOptionsArgs {
 }
 
 export function getConnectionHighlightOptions(
-  args: GetConnectionHighlightOptionsArgs,
+  args: GetConnectionHighlightOptionsArgs
 ) {
   const options = args.graph.options
     .connectionHighlight as ConnectionHighlightOptions
@@ -172,14 +172,14 @@ export interface ApplyConnectionHighlightStyleArgs {
 }
 
 export function applyConnectionHighlightStyle(
-  args: ApplyConnectionHighlightStyleArgs,
+  args: ApplyConnectionHighlightStyleArgs
 ) {
   const { graph, valid, highlight } = args
   const opts = graph.options.connectionHighlight as ConnectionHighlightOptions
   highlight.highlightColor = drill(
     valid ? opts.validColor : opts.invalidColor,
     graph,
-    args,
+    args
   )
   highlight.strokeWidth = drill(opts.strokeWidth, graph, args)
   highlight.dashed = drill(opts.dashed, graph, args)
@@ -250,7 +250,7 @@ export function getConnectionIcon(args: GetConnectionIconOptionsArgs) {
 }
 
 export interface ConnectionPreviewOptions
-  extends BaseStyle<ApplyConnectionPreviewStyleArgs> { }
+  extends BaseStyle<ApplyConnectionPreviewStyleArgs> {}
 
 export interface ApplyConnectionPreviewStyleArgs {
   graph: Graph
@@ -260,7 +260,7 @@ export interface ApplyConnectionPreviewStyleArgs {
 }
 
 export function applyConnectionPreviewStyle(
-  args: ApplyConnectionPreviewStyleArgs,
+  args: ApplyConnectionPreviewStyleArgs
 ) {
   const { graph } = args
   const options = graph.options.connectionPreview as ConnectionPreviewOptions

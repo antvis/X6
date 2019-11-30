@@ -26,11 +26,11 @@ type EventName =
   | 'touchend'
 
 export function addListeners(names: EventName[]) {
-  names.forEach((name) => DomEvent.addListener(doc, name, handle))
+  names.forEach(name => DomEvent.addListener(doc, name, handle))
 }
 
 export function removeListeners(names: EventName[]) {
-  names.forEach((name) => DomEvent.removeListener(doc, name, handle))
+  names.forEach(name => DomEvent.removeListener(doc, name, handle))
 }
 
 export function handle(e: MouseEvent) {
@@ -88,7 +88,7 @@ function onMouseDown(e: MouseEvent | TouchEvent) {
   timer = window.setTimeout(() => {
     timer = 0
     prepare(e)
-  },                        delay)
+  }, delay)
 }
 
 function prepare(e: MouseEvent | TouchEvent) {
@@ -121,7 +121,7 @@ function prepare(e: MouseEvent | TouchEvent) {
     instance,
     data.element,
     options.preview,
-    () => data!.element.cloneNode(true) as HTMLElement,
+    () => data!.element.cloneNode(true) as HTMLElement
   )
 
   data.region = getDndElement(instance, data.element, options.region, doc.body)

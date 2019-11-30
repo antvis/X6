@@ -116,7 +116,7 @@ export class View extends Primer {
 
     if (cells != null && cells.length > 0) {
       const model = this.graph.getModel()
-      cells.forEach((cell) => {
+      cells.forEach(cell => {
         if (model.isNode(cell) || model.isEdge(cell)) {
           const state = this.getState(cell)
           if (state != null) {
@@ -154,7 +154,7 @@ export class View extends Primer {
       }
 
       if (recurse) {
-        state.cell.eachChild((child) => {
+        state.cell.eachChild(child => {
           const boundingBox = this.getBoundingBox(this.getState(child))
           if (boundingBox != null) {
             if (result == null) {
@@ -173,7 +173,7 @@ export class View extends Primer {
   protected getEmptyBounds() {
     return new Rectangle(
       this.translate.x * this.scale,
-      this.translate.y * this.scale,
+      this.translate.y * this.scale
     )
   }
 
@@ -265,7 +265,7 @@ export class View extends Primer {
   invalidate(
     cell: Cell = this.model.getRoot(),
     recurse: boolean = true,
-    includeEdges: boolean = true,
+    includeEdges: boolean = true
   ) {
     const state = this.getState(cell)
     if (state != null) {
@@ -277,11 +277,11 @@ export class View extends Primer {
       this.invalidatings.add(cell)
 
       if (recurse) {
-        cell.eachChild((child) => this.invalidate(child, recurse, includeEdges))
+        cell.eachChild(child => this.invalidate(child, recurse, includeEdges))
       }
 
       if (includeEdges) {
-        cell.eachEdge((edge) => this.invalidate(edge, recurse, includeEdges))
+        cell.eachEdge(edge => this.invalidate(edge, recurse, includeEdges))
       }
 
       this.invalidatings.delete(cell)
@@ -296,7 +296,7 @@ export class View extends Primer {
       (this.currentRoot != null ? this.currentRoot : this.graph.model.getRoot())
 
     const boundingBox = this.getBoundingBox(
-      this.validateCellState(this.validateCell(start)),
+      this.validateCellState(this.validateCell(start))
     )
 
     this.setGraphBounds(boundingBox || this.getEmptyBounds())
@@ -318,7 +318,7 @@ export class View extends Primer {
         // remove unvisible cell's state
         this.removeState(cell)
       } else {
-        cell.eachChild((child) => {
+        cell.eachChild(child => {
           const childVisible =
             visible &&
             (!this.graph.isCellCollapsed(cell) || cell === this.currentRoot)
@@ -376,7 +376,7 @@ export class View extends Primer {
             this.stateValidated(state)
           }
 
-          cell.eachChild((child) => this.validateCellState(child, true))
+          cell.eachChild(child => this.validateCellState(child, true))
         }
       }
     }
@@ -424,14 +424,14 @@ export class View extends Primer {
               if (origin != null) {
                 state.origin.add(
                   origin.x / s - t.x - pState.origin.x,
-                  origin.y / s - t.y - pState.origin.y,
+                  origin.y / s - t.y - pState.origin.y
                 )
               }
             } else {
               // parent is node
               state.origin.add(
                 (geo.bounds.x * pState.bounds.width) / s + offset.x,
-                (geo.bounds.y * pState.bounds.height) / s + offset.y,
+                (geo.bounds.y * pState.bounds.height) / s + offset.y
               )
             }
           } else {
@@ -569,30 +569,30 @@ export class View extends Primer {
   updateFixedTerminalPoints(
     edgeState: State,
     sourceState: State,
-    targetState: State,
+    targetState: State
   ) {
     const sourceConstraint = this.graph.getConnectionConstraint(
       edgeState,
       sourceState,
-      true,
+      true
     )
     this.updateFixedTerminalPoint(
       edgeState,
       sourceState,
       true,
-      sourceConstraint,
+      sourceConstraint
     )
 
     const targetConstraint = this.graph.getConnectionConstraint(
       edgeState,
       targetState,
-      false,
+      false
     )
     this.updateFixedTerminalPoint(
       edgeState,
       targetState,
       false,
-      targetConstraint,
+      targetConstraint
     )
   }
 
@@ -600,13 +600,13 @@ export class View extends Primer {
     edgeState: State,
     terminalState: State,
     isSource: boolean,
-    constraint: Constraint,
+    constraint: Constraint
   ) {
     const point = this.getFixedTerminalPoint(
       edgeState,
       terminalState,
       isSource,
-      constraint,
+      constraint
     )
     edgeState.setAbsoluteTerminalPoint(point!, isSource)
   }
@@ -618,7 +618,7 @@ export class View extends Primer {
     edgeState: State,
     terminalState: State,
     isSource: boolean,
-    constraint: Constraint,
+    constraint: Constraint
   ) {
     let point: Point | null = null
 
@@ -626,7 +626,7 @@ export class View extends Primer {
       point = this.getConnectionPoint(
         terminalState,
         constraint,
-        this.graph.cellManager.isOrthogonal(edgeState),
+        this.graph.cellManager.isOrthogonal(edgeState)
       )
     }
 
@@ -653,7 +653,7 @@ export class View extends Primer {
   getConnectionPoint(
     terminalState: State,
     constraint: Constraint,
-    round: boolean = true,
+    round: boolean = true
   ) {
     let result: Point | null = null
 
@@ -685,7 +685,7 @@ export class View extends Primer {
       const s = this.scale
       result = new Point(
         bounds.x + constraint.point.x * bounds.width + constraint.dx * s,
-        bounds.y + constraint.point.y * bounds.height + constraint.dy * s,
+        bounds.y + constraint.point.y * bounds.height + constraint.dy * s
       )
 
       // Rotation for direction before projection on perimeter
@@ -741,7 +741,7 @@ export class View extends Primer {
     edgeState: State,
     points: Point[],
     sourceState: State,
-    targetState: State,
+    targetState: State
   ) {
     if (edgeState != null) {
       const pts = []
@@ -767,7 +767,7 @@ export class View extends Primer {
             srcBounds.x,
             srcBounds.y,
             srcBounds.width,
-            srcBounds.height,
+            srcBounds.height
           )
         }
 
@@ -776,11 +776,11 @@ export class View extends Primer {
             trgBounds.x,
             trgBounds.y,
             trgBounds.width,
-            trgBounds.height,
+            trgBounds.height
           )
         }
       } else if (points != null) {
-        points.forEach((p) => {
+        points.forEach(p => {
           if (p != null) {
             pts.push(this.transformControlPoint(edgeState, p))
           }
@@ -798,7 +798,7 @@ export class View extends Primer {
   getTerminalPortState(
     edgeState: State,
     terminalState: State,
-    isSource: boolean,
+    isSource: boolean
   ) {
     // get port id from edge, then try to get port-cell
     const portId = isSource
@@ -839,14 +839,14 @@ export class View extends Primer {
         state.bounds.x,
         state.bounds.y,
         state.bounds.width,
-        state.bounds.height,
+        state.bounds.height
       )
 
       state.bounds.update(
         asp.x,
         asp.y,
         state.shape.stencil.width * asp.sx,
-        state.shape.stencil.height * asp.sy,
+        state.shape.stencil.height * asp.sy
       )
     }
 
@@ -856,7 +856,7 @@ export class View extends Primer {
   updateFloatingTerminalPoints(
     edgeState: State,
     sourceState: State,
-    targetState: State,
+    targetState: State
   ) {
     const pts = edgeState.absolutePoints
     const p0 = pts[0]
@@ -867,7 +867,7 @@ export class View extends Primer {
         edgeState,
         targetState,
         sourceState,
-        false,
+        false
       )
     }
 
@@ -876,7 +876,7 @@ export class View extends Primer {
         edgeState,
         sourceState,
         targetState,
-        true,
+        true
       )
     }
   }
@@ -885,13 +885,13 @@ export class View extends Primer {
     edgeState: State,
     relateState: State,
     opposeState: State,
-    isSource: boolean,
+    isSource: boolean
   ) {
     const point = this.getFloatingTerminalPoint(
       edgeState,
       relateState,
       opposeState,
-      isSource,
+      isSource
     )
 
     edgeState.setAbsoluteTerminalPoint(point!, isSource)
@@ -909,7 +909,7 @@ export class View extends Primer {
     edgeState: State,
     relateState: State,
     opposeState: State,
-    isSource: boolean,
+    isSource: boolean
   ) {
     // tslint:disable-next-line:no-parameter-reassignment
     relateState = this.getTerminalPortState(edgeState, relateState, isSource)
@@ -936,7 +936,7 @@ export class View extends Primer {
       relateState,
       nextPoint!,
       rot === 0 && orth,
-      border,
+      border
     )
 
     if (rot !== 0) {
@@ -953,7 +953,7 @@ export class View extends Primer {
   protected getNextPoint(
     edgeState: State,
     opposeState: State,
-    isSource: boolean,
+    isSource: boolean
   ) {
     let point = null
     const pts = edgeState.absolutePoints
@@ -987,7 +987,7 @@ export class View extends Primer {
     terminalState: State,
     nextPoint: Point,
     orthogonal: boolean,
-    border: number = 0,
+    border: number = 0
   ) {
     let result: Point | null = null
     if (terminalState != null) {
@@ -1069,7 +1069,7 @@ export class View extends Primer {
 
       return new Point(
         this.scale * (p.x + this.translate.x + orig.x),
-        this.scale * (p.y + this.translate.y + orig.y),
+        this.scale * (p.y + this.translate.y + orig.y)
       )
     }
 
@@ -1080,7 +1080,7 @@ export class View extends Primer {
     edgeState: State,
     points?: Point[] | null,
     sourceState?: State | null,
-    targetState?: State | null,
+    targetState?: State | null
   ) {
     const sc = this.graph.getConnectionConstraint(edgeState, sourceState, true)
     const tc = this.graph.getConnectionConstraint(edgeState, targetState, false)
@@ -1103,13 +1103,13 @@ export class View extends Primer {
     edgeState: State,
     points?: Point[] | null,
     sourceState?: State | null,
-    targetState?: State | null,
+    targetState?: State | null
   ) {
     let edge = this.isLoopStyleEnabled(
       edgeState,
       points,
       sourceState,
-      targetState,
+      targetState
     )
       ? edgeState.style.loopStyle || this.graph.defaultLoopRouter
       : edgeState.style.noEdgeStyle
@@ -1414,7 +1414,7 @@ export class View extends Primer {
         }
 
         let yDistance = Math.sqrt(
-          util.ptSegmentDist(p0.x, p0.y, pe.x, pe.y, x, y),
+          util.ptSegmentDist(p0.x, p0.y, pe.x, pe.y, x, y)
         )
         const direction = util.relativeCcw(p0.x, p0.y, pe.x, pe.y, x, y)
         if (direction === -1) {
@@ -1424,7 +1424,7 @@ export class View extends Primer {
         // Constructs the relative point for the label
         return new Point(
           ((totalLength / 2 - length - projlen) / totalLength) * -2,
-          yDistance / this.scale,
+          yDistance / this.scale
         )
       }
     }
@@ -1479,13 +1479,13 @@ export class View extends Primer {
   clear(
     cell: Cell | null = this.model.getRoot(),
     force: boolean = false,
-    recurse: boolean = true,
+    recurse: boolean = true
   ) {
     if (cell) {
       this.removeState(cell)
 
       if (recurse && (force || cell !== this.currentRoot)) {
-        cell.eachChild((child) => this.clear(child, force, true))
+        cell.eachChild(child => this.clear(child, force, true))
       } else {
         this.invalidate(cell)
       }
@@ -1500,7 +1500,7 @@ export class View extends Primer {
   getCellStates(cells: Cell[]) {
     const result: State[] = []
 
-    cells.forEach((cell) => {
+    cells.forEach(cell => {
       const state = this.getState(cell)
       if (state != null) {
         result.push(state)
@@ -1583,7 +1583,7 @@ export class View extends Primer {
           'dblclick',
           (e: MouseEvent) => {
             this.graph.eventloop.dblClick(e)
-          },
+          }
         )
       }
 
@@ -1609,7 +1609,7 @@ export class View extends Primer {
         },
         (e: MouseEvent) => {
           this.graph.fireMouseEvent(DomEvent.MOUSE_UP, new MouseEventEx(e))
-        },
+        }
       )
     }
   }
@@ -1621,7 +1621,7 @@ export class View extends Primer {
       this.scale * this.translate.x,
       this.scale * this.translate.y,
       pageFormat.width * pageScale,
-      pageFormat.height * pageScale,
+      pageFormat.height * pageScale
     )
 
     return bounds
@@ -1681,10 +1681,10 @@ export class View extends Primer {
   protected insertStateAfter(
     state: State,
     node: HTMLElement | null,
-    htmlNode: HTMLElement | null,
+    htmlNode: HTMLElement | null
   ) {
     const shapes = this.getShapesForState(state)
-    shapes.forEach((shape) => {
+    shapes.forEach(shape => {
       if (shape != null && shape.elem != null) {
         const isHtml =
           shape.elem.parentNode !== state.view.getDrawPane() &&
@@ -1816,7 +1816,7 @@ export class View extends Primer {
         if (this.isContainerEvent(e)) {
           graph.fireMouseEvent(DomEvent.MOUSE_UP, new MouseEventEx(e))
         }
-      },
+      }
     )
 
     // Adds basic listeners for graph event dispatching outside of
@@ -1876,7 +1876,7 @@ export class View extends Primer {
       if (this.shouldHandleDocumentEvent(e) && !DomEvent.isConsumed(e)) {
         this.graph.fireMouseEvent(
           DomEvent.MOUSE_MOVE,
-          new MouseEventEx(e, getState(e)),
+          new MouseEventEx(e, getState(e))
         )
       }
     }
@@ -1891,7 +1891,7 @@ export class View extends Primer {
       document,
       null,
       this.mouseMoveHandler,
-      this.mouseUpHandler,
+      this.mouseUpHandler
     )
   }
 
@@ -2118,7 +2118,7 @@ export class View extends Primer {
         document,
         null,
         this.mouseMoveHandler,
-        this.mouseUpHandler,
+        this.mouseUpHandler
       )
 
       DomEvent.release(this.graph.container)

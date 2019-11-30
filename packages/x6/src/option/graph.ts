@@ -888,7 +888,7 @@ export interface FullOptions extends SimpleOptions, GlobalConfig {
 
 export interface GraphOptions
   extends Partial<SimpleOptions>,
-  Partial<GlobalConfig> {
+    Partial<GlobalConfig> {
   nodeStyle?: Style
   edgeStyle?: Style
   grid?: Partial<GridOptions> | boolean

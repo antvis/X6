@@ -102,7 +102,7 @@ export function toXHTML(html: string, useDomParser: boolean) {
     const doc = document.implementation.createDocument(
       'http://www.w3.org/1999/xhtml',
       'html',
-      null,
+      null
     )
     const body = doc.createElement('body')
     doc.documentElement.appendChild(body)

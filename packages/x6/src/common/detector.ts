@@ -121,7 +121,7 @@ export namespace detector {
     !document.createElementNS ||
     `${document.createElementNS(
       'http://www.w3.org/2000/svg',
-      'foreignObject',
+      'foreignObject'
     )}` !== '[object SVGForeignObjectElement]' ||
     ua.indexOf('Opera/') >= 0
 

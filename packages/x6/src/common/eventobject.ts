@@ -112,7 +112,7 @@ export namespace MouseEventEx {
     onMouseDown?: ((e: MouseEvent) => any) | null,
     onMouseMove?: ((e: MouseEvent) => any) | null,
     onMouseUp?: ((e: MouseEvent) => any) | null,
-    onDblClick?: ((e: MouseEvent) => any) | null,
+    onDblClick?: ((e: MouseEvent) => any) | null
   ) {
     if (elem == null) {
       return
@@ -130,7 +130,7 @@ export namespace MouseEventEx {
         } else if (!DomEvent.isConsumed(e)) {
           graph.fireMouseEvent(
             DomEvent.MOUSE_DOWN,
-            new MouseEventEx(e, getState(e)),
+            new MouseEventEx(e, getState(e))
           )
         }
       },
@@ -140,7 +140,7 @@ export namespace MouseEventEx {
         } else if (!DomEvent.isConsumed(e)) {
           graph.fireMouseEvent(
             DomEvent.MOUSE_MOVE,
-            new MouseEventEx(e, getState(e)),
+            new MouseEventEx(e, getState(e))
           )
         }
       },
@@ -150,10 +150,10 @@ export namespace MouseEventEx {
         } else if (!DomEvent.isConsumed(e)) {
           graph.fireMouseEvent(
             DomEvent.MOUSE_UP,
-            new MouseEventEx(e, getState(e)),
+            new MouseEventEx(e, getState(e))
           )
         }
-      },
+      }
     )
 
     DomEvent.addListener(elem, 'dblclick', (e: MouseEvent) => {

@@ -18,7 +18,7 @@ export class ChangeManager extends BaseManager {
   }
 
   protected onModelChanged(changes: IChange[]) {
-    changes.forEach((change) => this.processChange(change))
+    changes.forEach(change => this.processChange(change))
     this.graph.updateSelection()
     this.view.validate()
     this.graph.sizeDidChange()
@@ -102,7 +102,7 @@ export class ChangeManager extends BaseManager {
    */
   protected removeCellState(cell: Cell | null) {
     if (cell) {
-      cell.eachChild((child) => this.removeCellState(child))
+      cell.eachChild(child => this.removeCellState(child))
       this.view.invalidate(cell, false, true)
       this.view.removeState(cell)
     }
@@ -121,12 +121,12 @@ export class ChangeManager extends BaseManager {
           dict.set(cell, true)
           cells.push(cell)
         } else {
-          cell.eachChild((child) => addCell(child))
+          cell.eachChild(child => addCell(child))
         }
       }
     }
 
-    changes.forEach((change) => {
+    changes.forEach(change => {
       if (!(change instanceof RootChange)) {
         let cell = null
 

@@ -8,7 +8,7 @@ export class VisibleChange implements IChange {
   constructor(
     public readonly model: Model,
     public cell: Cell,
-    public visible: boolean,
+    public visible: boolean
   ) {
     this.previous = visible
   }
