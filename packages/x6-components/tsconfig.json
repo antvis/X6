@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./",
+    "outDir": "./lib",
+    "target": "es5",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "jsx": "react",
+    "sourceMap": true,
+    "declaration": true,
+    "esModuleInterop": true,
+    "strictNullChecks": true,
+    "noImplicitAny": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "experimentalDecorators": true,
+    "skipLibCheck": true,
+    "lib": ["dom", "es2017"]
+  },
+  "include": ["src/**/*ts", "src/**/*.d.ts", "typings/*.d.ts"]
+}
