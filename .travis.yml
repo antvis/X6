@@ -4,7 +4,7 @@ node_js:
   - 10
 install:
   - npm install -g yarn
-  - yarn
+  - yarn bootstrap
 script:
   - yarn build
   - yarn test
