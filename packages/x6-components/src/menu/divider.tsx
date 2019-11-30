@@ -1,5 +1,5 @@
-import React from "react"
-import { MenuContext } from "./context"
+import React from 'react'
+import { MenuContext } from './context'
 
 export const MenuDivider: React.SFC = () => (
   <MenuContext.Consumer>

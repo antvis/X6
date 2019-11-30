@@ -1,18 +1,18 @@
-import React from "react"
-import classNames from "classnames"
-import RcDropdown from "rc-dropdown"
-import { Menu } from "../menu"
+import React from 'react'
+import classNames from 'classnames'
+import RcDropdown from 'rc-dropdown'
+import { Menu } from '../menu'
 
 export class Dropdown extends React.Component<Dropdown.Props, any> {
   getTransitionName() {
-    const { placement = "", transitionName } = this.props
+    const { placement = '', transitionName } = this.props
     if (transitionName !== undefined) {
       return transitionName
     }
-    if (placement.indexOf("top") >= 0) {
-      return "slide-down"
+    if (placement.indexOf('top') >= 0) {
+      return 'slide-down'
     }
-    return "slide-up"
+    return 'slide-up'
   }
 
   render() {
@@ -24,7 +24,7 @@ export class Dropdown extends React.Component<Dropdown.Props, any> {
         (children as any).props.className,
         `${prefixCls}-trigger`
       ),
-      disabled
+      disabled,
     })
 
     const triggers = disabled
@@ -34,7 +34,7 @@ export class Dropdown extends React.Component<Dropdown.Props, any> {
       : [trigger]
 
     let alignPoint
-    if (triggers && triggers.indexOf("contextMenu") !== -1) {
+    if (triggers && triggers.indexOf('contextMenu') !== -1) {
       alignPoint = true
     }
 
@@ -67,14 +67,14 @@ export class Dropdown extends React.Component<Dropdown.Props, any> {
 }
 
 export namespace Dropdown {
-  export type Trigger = "click" | "hover" | "contextMenu"
+  export type Trigger = 'click' | 'hover' | 'contextMenu'
   export type Placement =
-    | "topLeft"
-    | "topCenter"
-    | "topRight"
-    | "bottomLeft"
-    | "bottomCenter"
-    | "bottomRight"
+    | 'topLeft'
+    | 'topCenter'
+    | 'topRight'
+    | 'bottomLeft'
+    | 'bottomCenter'
+    | 'bottomRight'
 
   export interface Props {
     prefixCls?: string
@@ -95,10 +95,10 @@ export namespace Dropdown {
   }
 
   export const defaultProps = {
-    trigger: "hover",
-    prefixCls: "x6",
+    trigger: 'hover',
+    prefixCls: 'x6',
     mouseEnterDelay: 0.15,
     mouseLeaveDelay: 0.1,
-    placement: "bottomLeft"
+    placement: 'bottomLeft',
   }
 }

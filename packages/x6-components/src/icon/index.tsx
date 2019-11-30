@@ -1,18 +1,18 @@
-import React from "react"
-import { Icon as AntdIcon } from "antd"
-import { IconProps as AntdIconProps } from "antd/lib/icon"
+import React from 'react'
+import { Icon as AntdIcon } from 'antd'
+import { IconProps as AntdIconProps } from 'antd/lib/icon'
 
 export const Icon: React.SFC<Icon.Props> = ({ type: icon, svg, ...props }) => {
-  if (typeof icon === "object") {
+  if (typeof icon === 'object') {
     const { width, height, pathData } = icon
     return (
       <AntdIcon {...props} viewBox={`0 0 ${width} ${height}`}>
-        <path d={Array.isArray(pathData) ? pathData.join(" ") : pathData} />
+        <path d={Array.isArray(pathData) ? pathData.join(' ') : pathData} />
       </AntdIcon>
     )
   }
 
-  if (typeof icon === "string" && svg) {
+  if (typeof icon === 'string' && svg) {
     const matches1 = icon.match(/viewBox="(.*?)"/i)
     const matches2 = icon.match(/<svg.*?>(.*?)<\/svg>/i)
     const viewBox = matches1 && matches1[1]

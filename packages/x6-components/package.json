@@ -30,6 +30,8 @@
     "build:lib": "tsc --module commonjs --target es5 --outDir ./lib",
     "build:less": "node ./scripts/less.js",
     "build": "concurrently 'yarn build:lib' 'yarn build:es' && yarn build:less",
+    "prettier": "prettier -c --write '**/*'",
+    "pretty-quick": "pretty-quick",
     "prebuild": "yarn clean",
     "precommit": "lint-staged"
   },
@@ -44,10 +46,12 @@
   ],
   "lint-staged": {
     "src/**/*.ts": [
+      "pretty-quick — staged",
       "tslint -c tslint.json -p ./tsconfig.json --fix",
       "git add"
     ],
     "src/**/*.less": [
+      "pretty-quick — staged",
       "stylelint --syntax less --fix",
       "git add"
     ]
@@ -67,9 +71,10 @@
     "concurrently": "^5.0.0",
     "cross-env": "^6.0.0",
     "fs-extra": "^8.1.0",
-    "husky": "^3.1.0",
     "lint-staged": "^9.5.0",
     "onchange": "^6.1.0",
+    "prettier": "^1.19.1",
+    "pretty-quick": "^2.0.1",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "rimraf": "^3.0.0",

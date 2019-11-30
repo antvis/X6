@@ -1,9 +1,9 @@
-import React, { MouseEvent } from "react"
-import classNames from "classnames"
-import { MenuItem } from "./item"
-import { MenuDivider } from "./divider"
-import { MenuContext } from "./context"
-import { MenuSubMenu } from "./submenu"
+import React, { MouseEvent } from 'react'
+import classNames from 'classnames'
+import { MenuItem } from './item'
+import { MenuDivider } from './divider'
+import { MenuContext } from './context'
+import { MenuSubMenu } from './submenu'
 
 export class Menu extends React.PureComponent<Menu.Props> {
   private onClick = (name: string, e?: MouseEvent) => {
@@ -36,7 +36,7 @@ export class Menu extends React.PureComponent<Menu.Props> {
       prefixCls: baseCls,
       onClick: this.onClick,
       registerHotkey: this.registerHotkey,
-      unregisterHotkey: this.unregisterHotkey
+      unregisterHotkey: this.unregisterHotkey,
     }
 
     return (
@@ -44,7 +44,7 @@ export class Menu extends React.PureComponent<Menu.Props> {
         className={classNames(
           baseCls,
           {
-            [`${baseCls}-has-icon`]: hasIcon
+            [`${baseCls}-has-icon`]: hasIcon,
           },
           className
         )}
@@ -71,7 +71,7 @@ export namespace Menu {
   }
 
   export const defaultProps: Props = {
-    prefixCls: "x6",
-    stopPropagation: false
+    prefixCls: 'x6',
+    stopPropagation: false,
   }
 }

@@ -1,12 +1,12 @@
-import React from "react"
-import classnames from "classnames"
-import addEventListener from "rc-util/lib/Dom/addEventListener"
-import { MenubarContext } from "./context"
+import React from 'react'
+import classnames from 'classnames'
+import addEventListener from 'rc-util/lib/Dom/addEventListener'
+import { MenubarContext } from './context'
 
 class MenubarItemInner extends React.PureComponent<
   MenubarItemInner.Props,
   MenubarItemInner.State
-  > {
+> {
   private readonly popupClassName: string
   private removeDocClickEvent: (() => void) | null
 
@@ -54,7 +54,7 @@ class MenubarItemInner extends React.PureComponent<
       const currentTarget = e.currentTarget as HTMLDivElement
       const childNodes = currentTarget.parentElement!.childNodes
 
-      childNodes.forEach((child) => {
+      childNodes.forEach(child => {
         if (child === currentTarget) {
           this.removeDeactive(child)
         } else {
@@ -119,7 +119,7 @@ class MenubarItemInner extends React.PureComponent<
     if (!this.removeDocClickEvent) {
       this.removeDocClickEvent = addEventListener(
         document.documentElement,
-        "click",
+        'click',
         this.onDocumentClick
       ).remove
     }
@@ -144,14 +144,14 @@ class MenubarItemInner extends React.PureComponent<
         className={classnames(baseCls, {
           [`${baseCls}-hidden`]: hidden,
           [`${baseCls}-hover`]: menubarActived,
-          [`${baseCls}-active`]: currentMenuActived
+          [`${baseCls}-active`]: currentMenuActived,
         })}
         onMouseEnter={this.onMouseEnter}
         onMouseLeave={this.onMouseLeave}
       >
         <div
           className={classnames(`${baseCls}-text`, {
-            [`${baseCls}-text-active`]: currentMenuActived
+            [`${baseCls}-text-active`]: currentMenuActived,
           })}
           onClick={this.onClick}
         >
@@ -173,9 +173,9 @@ namespace MenubarItemInner {
   }
 }
 
-export const MenubarItem: React.SFC<MenubarItem.Props> = (props) => (
+export const MenubarItem: React.SFC<MenubarItem.Props> = props => (
   <MenubarContext.Consumer>
-    {(context) => <MenubarItemInner context={context} {...props} />}
+    {context => <MenubarItemInner context={context} {...props} />}
   </MenubarContext.Consumer>
 )
 

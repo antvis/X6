@@ -26,19 +26,19 @@ $ yarn add @antv/x6-components
 Import component and style:
 
 ```ts
-import { Menu } from "@antv/x6-components/es/menu";
-import "@antv/x6-components/es/menu/style";
+import { Menu } from '@antv/x6-components/es/menu'
+import '@antv/x6-components/es/menu/style'
 ```
 
 We strongly recommend using [babel-plugin-import](https://github.com/ant-design/babel-plugin-import), which can convert the following code to the '@antv/x6-components/es/xxx' way:
 
 ```ts
-import { Menu } from "@antv/x6-components";
+import { Menu } from '@antv/x6-components'
 ```
 
 And this plugin will also load corresponding styles too. Via `.babelrc` or babel-loader:
 
-```json
+```js
 {
   "plugins": [
     [

@@ -1,10 +1,10 @@
-import React from "react"
-import classNames from "classnames"
-import { ToolbarContext } from "./context"
+import React from 'react'
+import classNames from 'classnames'
+import { ToolbarContext } from './context'
 
 export const ToolbarGroup: React.SFC<ToolbarGroup.Props> = ({
   children,
-  className
+  className,
 }) => (
   <ToolbarContext.Consumer>
     {({ prefixCls }) => (
