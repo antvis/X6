@@ -5,6 +5,7 @@
   },
   "rules": {
     "semicolon": [true, "never"],
+    "quotemark": [true, "single", "jsx-double"],
     "no-construct": true,
     "no-debugger": true,
     "no-reference": true,
