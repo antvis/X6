@@ -28,6 +28,12 @@ const BasicLayout: React.FC = props => (
         <li>
           <NavLink to="/colorpicker">ColorPicker</NavLink>
         </li>
+        <li>
+          <NavLink to="/scrollbox">ScrollBox</NavLink>
+        </li>
+        <li>
+          <NavLink to="/auto-scrollbox">AutoScrollBox</NavLink>
+        </li>
       </ul>
     </div>
     <div className="content">{props.children}</div>

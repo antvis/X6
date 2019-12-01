@@ -21,7 +21,7 @@ export default class MenuExample extends React.PureComponent {
       <div style={{ height: '100%' }}>
         <div
           style={{
-            background: '#eee',
+            background: '#f5f5f5',
             display: 'flex',
             height: 30,
             paddingLeft: 12,
