@@ -5,20 +5,20 @@ export namespace StencilRegistry {
 
   function loadStencil(url: string) {
     return fetch(url)
-      .then((response) => response.text())
-      .then((str) => new window.DOMParser().parseFromString(str, 'text/xml'))
+      .then(response => response.text())
+      .then(str => new window.DOMParser().parseFromString(str, 'text/xml'))
   }
 
   export function loadStencilSet(
     url: string,
     force: boolean = false,
-    callback: ParseStencilCallback | null = null,
+    callback: ParseStencilCallback | null = null
   ) {
     var xmlDoc = packages[url]
     if (force || xmlDoc == null) {
       let install = false
       if (xmlDoc == null) {
-        return loadStencil(url).then((doc) => {
+        return loadStencil(url).then(doc => {
           packages[url] = doc
           install = true
           parseStencilSet(doc.documentElement, install, callback)
@@ -34,7 +34,7 @@ export namespace StencilRegistry {
   }
 
   export function parseStencilSets(stencils: string[]) {
-    stencils.forEach((stencil) => {
+    stencils.forEach(stencil => {
       const parser = new DOMParser()
       const doc = parser.parseFromString(stencil, 'text/xml')
       parseStencilSet(doc.documentElement)
@@ -46,7 +46,7 @@ export namespace StencilRegistry {
     stencilName: string,
     name: string,
     w: number,
-    h: number,
+    h: number
   ) => void
 
   export function getShapeName(packageName: string, stencilName: string) {
@@ -56,7 +56,7 @@ export namespace StencilRegistry {
   export function parseStencilSet(
     root: Element,
     install: boolean = true,
-    callback: ParseStencilCallback | null = null,
+    callback: ParseStencilCallback | null = null
   ) {
     if (root.nodeName == 'stencils') {
       let shapes = root.firstChild as Element
@@ -81,7 +81,10 @@ export namespace StencilRegistry {
           if (name != null) {
             const stencilName = name.replace(/ /g, '_')
             if (install) {
-              shapes.Stencil.addStencil(getShapeName(packageName, stencilName), new shapes.Stencil(shape))
+              shapes.Stencil.addStencil(
+                getShapeName(packageName, stencilName),
+                new shapes.Stencil(shape)
+              )
             }
 
             if (callback != null) {

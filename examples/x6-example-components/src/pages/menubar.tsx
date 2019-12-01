@@ -1,6 +1,6 @@
-import React from "react"
-import { message } from "antd"
-import { Menubar, Menu } from "@antv/x6-components"
+import React from 'react'
+import { message } from 'antd'
+import { Menubar, Menu } from '@antv/x6-components'
 
 const MenuItem = Menu.Item
 const SubMenu = Menu.SubMenu
@@ -13,20 +13,20 @@ export default class MenuExample extends React.PureComponent {
   }
 
   onMenuItemClick = () => {
-    this.onMenuClick("undo")
+    this.onMenuClick('undo')
   }
 
   render() {
     return (
-      <div style={{ height: "100%" }}>
+      <div style={{ height: '100%' }}>
         <div
           style={{
-            background: "#eee",
-            display: "flex",
+            background: '#eee',
+            display: 'flex',
             height: 30,
             paddingLeft: 12,
             paddingRight: 12,
-            margin: "-24px -24px 0 -24px"
+            margin: '-24px -24px 0 -24px',
           }}
         >
           <Menubar extra={<div>Extra Component</div>}>

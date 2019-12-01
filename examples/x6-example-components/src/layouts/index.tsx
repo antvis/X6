@@ -1,8 +1,8 @@
-import React from "react"
-import NavLink from "umi/navlink"
-import "./index.less"
+import React from 'react'
+import NavLink from 'umi/navlink'
+import './index.less'
 
-const BasicLayout: React.FC = (props) => (
+const BasicLayout: React.FC = props => (
   <div className="wrap">
     <div className="nav">
       <h2>Components</h2>
@@ -21,6 +21,9 @@ const BasicLayout: React.FC = (props) => (
         </li>
         <li>
           <NavLink to="/toolbar">Toolbar</NavLink>
+        </li>
+        <li>
+          <NavLink to="/contextmenu">ContextMenu</NavLink>
         </li>
         <li>
           <NavLink to="/colorpicker">ColorPicker</NavLink>

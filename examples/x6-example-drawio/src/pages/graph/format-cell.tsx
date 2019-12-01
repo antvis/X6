@@ -5,7 +5,10 @@ import { ColorPicker, ColorResult } from '@antv/x6-components'
 import { Cell, util, Geometry, FontStyle, VAlign, Align } from '@antv/x6'
 import { getEditor } from '../index'
 
-export class FormatCell extends React.PureComponent<FormatCell.Props, FormatCell.State> {
+export class FormatCell extends React.PureComponent<
+  FormatCell.Props,
+  FormatCell.State
+> {
   constructor(props: FormatCell.Props) {
     super(props)
 
@@ -266,8 +269,8 @@ export class FormatCell extends React.PureComponent<FormatCell.Props, FormatCell
                 value={this.state.strokeWidth || 1}
                 onChange={this.onStrokeWidthChanged}
                 className="x6-editor-format-number right"
-                formatter={(value) => `${value!} pt`}
-                parser={(value) => value!.replace(' pt', '')}
+                formatter={value => `${value!} pt`}
+                parser={value => value!.replace(' pt', '')}
                 style={{ flex: 1 }}
               />
             </div>
@@ -288,10 +291,14 @@ export class FormatCell extends React.PureComponent<FormatCell.Props, FormatCell
                 max={100}
                 step={1}
                 onChange={this.onOpacityChange}
-                value={util.clamp(+(this.state.opacity! * 100).toFixed(0), 0, 100)}
+                value={util.clamp(
+                  +(this.state.opacity! * 100).toFixed(0),
+                  0,
+                  100
+                )}
                 className="x6-editor-format-number right"
-                formatter={(value) => `${value!}%`}
-                parser={(value) => value!.replace('%', '')}
+                formatter={value => `${value!}%`}
+                parser={value => value!.replace('%', '')}
                 style={{ flex: 1 }}
               />
             )}
@@ -323,12 +330,16 @@ export class FormatCell extends React.PureComponent<FormatCell.Props, FormatCell
   }
 
   onWidthChanged = (w: number) => {
-    const h = this.state.constrained ? (w * this.state.h) / this.state.w : this.state.h
+    const h = this.state.constrained
+      ? (w * this.state.h) / this.state.w
+      : this.state.h
     this.updateSize(w, h)
   }
 
   onHeightChanged = (h: number) => {
-    const w = this.state.constrained ? (h * this.state.w) / this.state.h : this.state.w
+    const w = this.state.constrained
+      ? (h * this.state.w) / this.state.h
+      : this.state.w
     this.updateSize(w, h)
   }
 
@@ -337,7 +348,7 @@ export class FormatCell extends React.PureComponent<FormatCell.Props, FormatCell
       this.setState({ x })
       this.executeCommand(
         'updateGeometry',
-        new Geometry(x, this.state.y, this.state.w, this.state.h),
+        new Geometry(x, this.state.y, this.state.w, this.state.h)
       )
     }
   }
@@ -347,7 +358,7 @@ export class FormatCell extends React.PureComponent<FormatCell.Props, FormatCell
       this.setState({ y })
       this.executeCommand(
         'updateGeometry',
-        new Geometry(this.state.x, y, this.state.w, this.state.h),
+        new Geometry(this.state.x, y, this.state.w, this.state.h)
       )
     }
   }
@@ -398,8 +409,8 @@ export class FormatCell extends React.PureComponent<FormatCell.Props, FormatCell
               value={this.state.w}
               onChange={this.onWidthChanged}
               className="x6-editor-format-number right"
-              formatter={(value) => `${value!} pt`}
-              parser={(value) => value!.replace(' pt', '')}
+              formatter={value => `${value!} pt`}
+              parser={value => value!.replace(' pt', '')}
               style={{ flex: 1, marginRight: 2 }}
             />
             <InputNumber
@@ -408,8 +419,8 @@ export class FormatCell extends React.PureComponent<FormatCell.Props, FormatCell
               value={this.state.h}
               onChange={this.onHeightChanged}
               className="x6-editor-format-number right"
-              formatter={(value) => `${value!} pt`}
-              parser={(value) => value!.replace(' pt', '')}
+              formatter={value => `${value!} pt`}
+              parser={value => value!.replace(' pt', '')}
               style={{ flex: 1, marginLeft: 2 }}
             />
           </div>
@@ -441,8 +452,8 @@ export class FormatCell extends React.PureComponent<FormatCell.Props, FormatCell
               value={this.state.x}
               onChange={this.onLeftChanged}
               className="x6-editor-format-number right"
-              formatter={(value) => `${value!} pt`}
-              parser={(value) => value!.replace(' pt', '')}
+              formatter={value => `${value!} pt`}
+              parser={value => value!.replace(' pt', '')}
               style={{ flex: 1, marginRight: 2 }}
             />
             <InputNumber
@@ -451,8 +462,8 @@ export class FormatCell extends React.PureComponent<FormatCell.Props, FormatCell
               value={this.state.y}
               onChange={this.onTopChanged}
               className="x6-editor-format-number right"
-              formatter={(value) => `${value!} pt`}
-              parser={(value) => value!.replace(' pt', '')}
+              formatter={value => `${value!} pt`}
+              parser={value => value!.replace(' pt', '')}
               style={{ flex: 1, marginLeft: 2 }}
             />
           </div>
@@ -475,8 +486,8 @@ export class FormatCell extends React.PureComponent<FormatCell.Props, FormatCell
               onChange={this.onRotationChanged}
               value={(this.state.rotation || 0) % 360}
               className="x6-editor-format-number right"
-              formatter={(value) => `${value!}°`}
-              parser={(value) => value!.replace('°', '')}
+              formatter={value => `${value!}°`}
+              parser={value => value!.replace('°', '')}
               style={{ flex: 1 }}
             />
           </div>
@@ -633,7 +644,7 @@ export class FormatCell extends React.PureComponent<FormatCell.Props, FormatCell
                 'Georgia',
                 'Lucida Console',
                 'Tahoma',
-              ].map((name) => (
+              ].map(name => (
                 <Select.Option key={name} value={name}>
                   <div style={{ fontFamily: name }}>{name}</div>
                 </Select.Option>
@@ -687,8 +698,8 @@ export class FormatCell extends React.PureComponent<FormatCell.Props, FormatCell
               value={this.state.fontSize || 12}
               onChange={this.onFontSizeChanged}
               className="x6-editor-format-number right"
-              formatter={(value) => `${value!}pt`}
-              parser={(value) => value!.replace('pt', '')}
+              formatter={value => `${value!}pt`}
+              parser={value => value!.replace('pt', '')}
               style={{ flex: 1 }}
             />
           </div>
@@ -852,7 +863,7 @@ export class FormatCell extends React.PureComponent<FormatCell.Props, FormatCell
                 'Bottom Left',
                 'Bottom',
                 'Bottom Right',
-              ].map((p) => (
+              ].map(p => (
                 <Select.Option key={p} value={p.toLowerCase()}>
                   {p}
                 </Select.Option>

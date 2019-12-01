@@ -18,7 +18,7 @@ export interface PaletteItem {
     container: HTMLDivElement,
     thumbWidth: number,
     thumbHeight: number,
-    thumbBorder: number,
+    thumbBorder: number
   ) => void
 }
 
@@ -28,7 +28,7 @@ palettes.push(
   {
     title: 'General',
     expand: true,
-    items: generals.map((data) => ({
+    items: generals.map(data => ({
       data,
       render: getRenderer(data),
     })),
@@ -55,7 +55,7 @@ palettes.push(
       stroke: '#000',
       strokeWidth: 2,
     }),
-  },
+  }
 )
 
 export function getPalettes() {
@@ -107,7 +107,7 @@ export function getRenderer(item: DataItem) {
     container: HTMLDivElement,
     thumbWidth: number,
     thumbHeight: number,
-    thumbBorder: number,
+    thumbBorder: number
   ) => {
     const width = item.width
     const height = item.height
@@ -131,7 +131,13 @@ export function getRenderer(item: DataItem) {
       })
     }
 
-    const elem = renderThumb(graph, container, thumbWidth, thumbHeight, thumbBorder)
+    const elem = renderThumb(
+      graph,
+      container,
+      thumbWidth,
+      thumbHeight,
+      thumbBorder
+    )
 
     dataCache.set(elem, item)
   }
@@ -142,7 +148,7 @@ export function getRendererForCells(cells: Cell[]) {
     container: HTMLDivElement,
     thumbWidth: number,
     thumbHeight: number,
-    thumbBorder: number,
+    thumbBorder: number
   ) => {
     const graph = getTempGraph()
     graph.view.scaleAndTranslate(1, 0, 0)
@@ -156,21 +162,21 @@ function renderThumb(
   container: HTMLDivElement,
   thumbWidth: number,
   thumbHeight: number,
-  thumbBorder: number,
+  thumbBorder: number
 ) {
   const bounds = graph.getGraphBounds()
   const scale =
     Math.floor(
       Math.min(
         (thumbWidth - 2 * thumbBorder) / bounds.width,
-        (thumbHeight - 2 * thumbBorder) / bounds.height,
-      ) * 100,
+        (thumbHeight - 2 * thumbBorder) / bounds.height
+      ) * 100
     ) / 100
 
   graph.view.scaleAndTranslate(
     scale,
     Math.floor((thumbWidth - bounds.width * scale) / 2 / scale - bounds.x),
-    Math.floor((thumbHeight - bounds.height * scale) / 2 / scale - bounds.y),
+    Math.floor((thumbHeight - bounds.height * scale) / 2 / scale - bounds.y)
   )
 
   let node = util.createElement('div')
@@ -195,8 +201,12 @@ function renderThumb(
   return node
 }
 
-function getTagsForStencil(packageName: string, stencilName: string, moreTags?: string[]) {
-  const tags = packageName.split('.').map((tag) => tag.replace(/_/g, ' '))
+function getTagsForStencil(
+  packageName: string,
+  stencilName: string,
+  moreTags?: string[]
+) {
+  const tags = packageName.split('.').map(tag => tag.replace(/_/g, ' '))
 
   tags.push(stencilName.replace(/_/g, ' '))
 
@@ -213,7 +223,13 @@ function loadStencil(url: string, style: Style) {
   return StencilRegistry.loadStencilSet(
     url,
     false,
-    (packageName: string, stencilName: string, title: string, width: number, height: number) => {
+    (
+      packageName: string,
+      stencilName: string,
+      title: string,
+      width: number,
+      height: number
+    ) => {
       const shapeName = StencilRegistry.getShapeName(packageName, stencilName)
       const tags = getTagsForStencil(packageName, stencilName)
 
@@ -229,6 +245,6 @@ function loadStencil(url: string, style: Style) {
         data,
         render: getRenderer(data),
       })
-    },
+    }
   ).then(() => items)
 }

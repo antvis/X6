@@ -1,4 +1,4 @@
-import { IConfig } from "umi-types"
+import { IConfig } from "umi-types";
 
 // ref: https://umijs.org/config/
 const config: IConfig = {
@@ -28,12 +28,11 @@ const config: IConfig = {
       "import",
       {
         libraryName: "@antv/x6-components",
-        libraryDirectory: "es",
         transformToDefaultImport: false,
         style: true
       }
     ]
-  ],
-}
+  ]
+};
 
-export default config
+export default config;

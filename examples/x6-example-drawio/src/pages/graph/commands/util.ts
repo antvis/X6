@@ -5,7 +5,7 @@ export function autosize(graph: Graph) {
 
   if (cells != null) {
     graph.batchUpdate(() => {
-      cells.forEach((cell) => {
+      cells.forEach(cell => {
         if (graph.model.getChildCount(cell)) {
           graph.updateGroupBounds([cell], 20)
         } else {
@@ -20,7 +20,8 @@ export function autosize(graph: Graph) {
             graph.isWrapping(cell)
           ) {
             geo = geo.clone()
-            geo.bounds.height = state.text.boundingBox!.height / graph.view.scale
+            geo.bounds.height =
+              state.text.boundingBox!.height / graph.view.scale
             graph.model.setGeometry(cell, geo)
           } else {
             graph.cellManager.updateCellSize(cell)
@@ -46,7 +47,7 @@ export function formattedText(graph: Graph) {
   if (cells != null && cells.length > 0) {
     graph.stopEditing()
     graph.batchUpdate(() => {
-      cells.forEach((cell) => {
+      cells.forEach(cell => {
         const state = graph.view.getState(cell)
         if (state != null) {
           let label = graph.getLabel(state.cell)
@@ -85,7 +86,8 @@ export function fitPage(graph: Graph, padding: Point = new Point()) {
   const ps = graph.pageScale
   const cw = graph.container.clientWidth - 10
   const ch = graph.container.clientHeight - 10
-  const scale = Math.floor(20 * Math.min(cw / fmt.width / ps, ch / fmt.height / ps)) / 20
+  const scale =
+    Math.floor(20 * Math.min(cw / fmt.width / ps, ch / fmt.height / ps)) / 20
   graph.zoomTo(scale)
 
   if (util.hasScrollbars(graph.container)) {
@@ -93,7 +95,7 @@ export function fitPage(graph: Graph, padding: Point = new Point()) {
     graph.container.scrollLeft =
       Math.min(
         padding.x * graph.view.scale,
-        (graph.container.scrollWidth - graph.container.clientWidth) / 2,
+        (graph.container.scrollWidth - graph.container.clientWidth) / 2
       ) - 1
   }
 }
@@ -108,18 +110,20 @@ export function fitTwoPages(graph: Graph, padding: Point = new Point()) {
   const cw = graph.container.clientWidth - 10
   const ch = graph.container.clientHeight - 10
 
-  const scale = Math.floor(20 * Math.min(cw / (2 * fmt.width) / ps, ch / fmt.height / ps)) / 20
+  const scale =
+    Math.floor(20 * Math.min(cw / (2 * fmt.width) / ps, ch / fmt.height / ps)) /
+    20
   graph.zoomTo(scale)
 
   if (util.hasScrollbars(graph.container)) {
     graph.container.scrollTop = Math.min(
       padding.y,
-      (graph.container.scrollHeight - graph.container.clientHeight) / 2,
+      (graph.container.scrollHeight - graph.container.clientHeight) / 2
     )
 
     graph.container.scrollLeft = Math.min(
       padding.x,
-      (graph.container.scrollWidth - graph.container.clientWidth) / 2,
+      (graph.container.scrollWidth - graph.container.clientWidth) / 2
     )
   }
 }
@@ -139,7 +143,7 @@ export function fitPageWidth(graph: Graph, padding: Point = new Point()) {
   if (util.hasScrollbars(graph.container)) {
     graph.container.scrollLeft = Math.min(
       padding.x * graph.view.scale,
-      (graph.container.scrollWidth - graph.container.clientWidth) / 2,
+      (graph.container.scrollWidth - graph.container.clientWidth) / 2
     )
   }
 }
