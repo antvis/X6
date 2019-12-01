@@ -1,5 +1,5 @@
 import React from 'react'
-import { Graph, DomEvent, Constraint, Point } from '@antv/x6'
+import { Graph, DomEvent, Anchor, Point } from '@antv/x6'
 import './index.less'
 import styles from '../index.less'
 
@@ -32,13 +32,13 @@ export default class FlowChart extends React.Component {
       isLabelMovable() {
         return false
       },
-      getConstraints(cell) {
+      getAnchors(cell) {
         if (cell != null && this.model.isNode(cell)) {
           return [
-            new Constraint({ point: new Point(0.5, 0) }),
-            new Constraint({ point: new Point(0, 0.5) }),
-            new Constraint({ point: new Point(1, 0.5) }),
-            new Constraint({ point: new Point(0.5, 1) }),
+            new Anchor({ point: new Point(0.5, 0) }),
+            new Anchor({ point: new Point(0, 0.5) }),
+            new Anchor({ point: new Point(1, 0.5) }),
+            new Anchor({ point: new Point(0.5, 1) }),
           ]
         }
         return null

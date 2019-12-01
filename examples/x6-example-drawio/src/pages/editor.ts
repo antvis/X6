@@ -1,4 +1,4 @@
-import { Primer, Style, Constraint, Point, FontStyle } from '@antv/x6'
+import { Primer, Style, Anchor, Point, FontStyle } from '@antv/x6'
 import { EditorGraph, GraphView } from './graph'
 import { Commands } from './graph/commands'
 import avatarMale from './images/male.png'
@@ -46,19 +46,19 @@ export class Editor extends Primer {
       createView() {
         return new GraphView(this)
       },
-      getConstraints(cell) {
+      getAnchors(cell) {
         if (cell != null && this.model.isNode(cell)) {
           return [
-            new Constraint({ point: new Point(0, 0) }),
-            new Constraint({ point: new Point(0.5, 0) }),
-            new Constraint({ point: new Point(1, 0) }),
+            new Anchor({ point: new Point(0, 0) }),
+            new Anchor({ point: new Point(0.5, 0) }),
+            new Anchor({ point: new Point(1, 0) }),
 
-            new Constraint({ point: new Point(0, 0.5) }),
-            new Constraint({ point: new Point(1, 0.5) }),
+            new Anchor({ point: new Point(0, 0.5) }),
+            new Anchor({ point: new Point(1, 0.5) }),
 
-            new Constraint({ point: new Point(0, 1) }),
-            new Constraint({ point: new Point(0.5, 1) }),
-            new Constraint({ point: new Point(1, 1) }),
+            new Anchor({ point: new Point(0, 1) }),
+            new Anchor({ point: new Point(0.5, 1) }),
+            new Anchor({ point: new Point(1, 1) }),
           ]
         }
         return null
@@ -171,12 +171,32 @@ export class Editor extends Primer {
         parent,
         x: 480,
         y: 220,
-        data: this.renderORGHTML('vp', avatarFemale, 'Production', 'Lisa Simpson'),
+        data: this.renderORGHTML(
+          'vp',
+          avatarFemale,
+          'Production',
+          'Lisa Simpson'
+        ),
       })
 
-      graph.addEdge({ parent, source: ceo, target: vp1, style: { ...edgeStyle } })
-      graph.addEdge({ parent, source: ceo, target: vp2, style: { ...edgeStyle } })
-      graph.addEdge({ parent, source: ceo, target: vp3, style: { ...edgeStyle } })
+      graph.addEdge({
+        parent,
+        source: ceo,
+        target: vp1,
+        style: { ...edgeStyle },
+      })
+      graph.addEdge({
+        parent,
+        source: ceo,
+        target: vp2,
+        style: { ...edgeStyle },
+      })
+      graph.addEdge({
+        parent,
+        source: ceo,
+        target: vp3,
+        style: { ...edgeStyle },
+      })
 
       const m1 = graph.addNode({
         ...size,
@@ -184,7 +204,12 @@ export class Editor extends Primer {
         parent,
         x: 145,
         y: 360,
-        data: this.renderORGHTML('manager', avatarMale, 'Manager', 'Lenny Leonard'),
+        data: this.renderORGHTML(
+          'manager',
+          avatarMale,
+          'Manager',
+          'Lenny Leonard'
+        ),
       })
 
       const m2 = graph.addNode({
@@ -193,7 +218,12 @@ export class Editor extends Primer {
         parent,
         x: 145,
         y: 480,
-        data: this.renderORGHTML('manager', avatarMale, 'Manager', 'Carl Carlson'),
+        data: this.renderORGHTML(
+          'manager',
+          avatarMale,
+          'Manager',
+          'Carl Carlson'
+        ),
       })
 
       const m3 = graph.addNode({
@@ -202,7 +232,12 @@ export class Editor extends Primer {
         parent,
         x: 365,
         y: 360,
-        data: this.renderORGHTML('manager', avatarFemale, 'Manager', 'Maggie Simpson'),
+        data: this.renderORGHTML(
+          'manager',
+          avatarFemale,
+          'Manager',
+          'Maggie Simpson'
+        ),
       })
 
       graph.addEdge({

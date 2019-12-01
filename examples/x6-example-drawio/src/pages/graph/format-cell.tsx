@@ -238,7 +238,7 @@ export class FormatCell extends React.PureComponent<
             </Checkbox>
             {hasStroke && (
               <ColorPicker
-                value={this.state.strokeColor || '#000'}
+                color={this.state.strokeColor || '#000'}
                 onChange={this.onStrokeColorChanged}
                 style={{ flex: 1 }}
               />
@@ -838,7 +838,7 @@ export class FormatCell extends React.PureComponent<
             </Checkbox>
             {util.isValidColor(this.state.labelBackgroundColor) && (
               <ColorPicker
-                value={this.state.labelBackgroundColor!}
+                color={this.state.labelBackgroundColor!}
                 onChange={this.onLabelBgColorChange}
                 style={{ flex: 1 }}
               />
