@@ -5,11 +5,24 @@
   },
   "rules": {
     "semicolon": [true, "never"],
+    "quotemark": [true, "single", "jsx-double"],
+    "trailing-comma": [
+      true,
+      {
+        "singleline": "never",
+        "multiline": {
+          "objects": "always",
+          "arrays": "always",
+          "functions": "never",
+          "typeLiterals": "ignore"
+        },
+        "esSpecCompliant": true
+      }
+    ],
     "no-construct": true,
     "no-debugger": true,
     "no-reference": true,
     "jsx-no-multiline-js": false,
-    "jsx-no-lambda": false,
-    "quotemark": [true, "single", "jsx-double"]
+    "jsx-no-lambda": false
   }
 }
