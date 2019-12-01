@@ -25,7 +25,7 @@
     "lint:ts": "tslint -c tslint.json -p tsconfig.json --fix",
     "lint:style": "stylelint 'src/**/*.less' --syntax less --fix",
     "clean": "concurrently 'rimraf ./lib' 'rimraf ./es'",
-    "watch": "onchange -d 1000 -k ./src/**/* -- yarn build",
+    "watch": "watch 'yarn build' ./src",
     "build:es": "tsc --module es2015 --target es2015 --outDir ./es",
     "build:lib": "tsc --module commonjs --target es5 --outDir ./lib",
     "build:less": "node ./scripts/less.js",
@@ -83,7 +83,6 @@
     "eslint-plugin-import": "^2.18.2",
     "fs-extra": "^8.1.0",
     "lint-staged": "^9.5.0",
-    "onchange": "^6.1.0",
     "prettier": "^1.19.1",
     "pretty-quick": "^2.0.1",
     "react": "^16.12.0",
@@ -98,7 +97,8 @@
     "tslint": "^5.20.1",
     "tslint-eslint-rules": "^5.4.0",
     "tslint-react": "^4.1.0",
-    "typescript": "^3.7.2"
+    "typescript": "^3.7.2",
+    "watch": "^1.0.2"
   },
   "peerDependencies": {
     "antd": ">=3.19.5",

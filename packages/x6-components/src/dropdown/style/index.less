@@ -1,6 +1,4 @@
 @import '../../style/themes/index';
-@import '../../style/mixins/index';
-@import '../../menu/style/index';
 
 @dropdown-prefix-cls: ~'@{x6-prefix}-dropdown';
 
@@ -15,8 +13,23 @@
   border-radius: 3px;
   box-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);
 
+  &::before {
+    position: absolute;
+    top: -7px;
+    right: 0;
+    bottom: -7px;
+    left: -7px;
+    z-index: -9999;
+    opacity: 0.0001;
+    content: ' ';
+  }
+
   &-hidden {
     display: none;
+  }
+
+  &-overlay {
+    display: inline-block;
   }
 
   &.slide-down-enter.slide-down-enter-active&-placement-bottomLeft,
@@ -25,7 +38,7 @@
   &.slide-down-appear.slide-down-appear-active&-placement-bottomCenter,
   &.slide-down-enter.slide-down-enter-active&-placement-bottomRight,
   &.slide-down-appear.slide-down-appear-active&-placement-bottomRight {
-    animation-name: antSlideUpIn;
+    animation-name: x6SlideUpIn;
   }
 
   &.slide-up-enter.slide-up-enter-active&-placement-topLeft,
@@ -34,18 +47,74 @@
   &.slide-up-appear.slide-up-appear-active&-placement-topCenter,
   &.slide-up-enter.slide-up-enter-active&-placement-topRight,
   &.slide-up-appear.slide-up-appear-active&-placement-topRight {
-    animation-name: antSlideDownIn;
+    animation-name: x6SlideDownIn;
   }
 
   &.slide-down-leave.slide-down-leave-active&-placement-bottomLeft,
   &.slide-down-leave.slide-down-leave-active&-placement-bottomCenter,
   &.slide-down-leave.slide-down-leave-active&-placement-bottomRight {
-    animation-name: antSlideUpOut;
+    animation-name: x6SlideUpOut;
   }
 
   &.slide-up-leave.slide-up-leave-active&-placement-topLeft,
   &.slide-up-leave.slide-up-leave-active&-placement-topCenter,
   &.slide-up-leave.slide-up-leave-active&-placement-topRight {
-    animation-name: antSlideDownOut;
+    animation-name: x6SlideDownOut;
+  }
+}
+
+@keyframes x6SlideUpIn {
+  0% {
+    transform: scaleY(0.8);
+    transform-origin: 0% 0%;
+    opacity: 0;
+  }
+
+  100% {
+    transform: scaleY(1);
+    transform-origin: 0% 0%;
+    opacity: 1;
+  }
+}
+
+@keyframes x6SlideUpOut {
+  0% {
+    transform: scaleY(1);
+    transform-origin: 0% 0%;
+    opacity: 1;
+  }
+
+  100% {
+    transform: scaleY(0.8);
+    transform-origin: 0% 0%;
+    opacity: 0;
+  }
+}
+
+@keyframes x6SlideDownIn {
+  0% {
+    transform: scaleY(0.8);
+    transform-origin: 100% 100%;
+    opacity: 0;
+  }
+
+  100% {
+    transform: scaleY(1);
+    transform-origin: 100% 100%;
+    opacity: 1;
+  }
+}
+
+@keyframes x6SlideDownOut {
+  0% {
+    transform: scaleY(1);
+    transform-origin: 100% 100%;
+    opacity: 1;
+  }
+
+  100% {
+    transform: scaleY(0.8);
+    transform-origin: 100% 100%;
+    opacity: 0;
   }
 }
