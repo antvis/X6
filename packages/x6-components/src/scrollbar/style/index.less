@@ -1,0 +1,37 @@
+@import '../../style/themes/index';
+
+@scrollbar-prefix-cls: ~'@{x6-prefix}-scrollbar';
+
+@scrollbar-bg: #e9e9e9;
+@scrollbar-thumb-bg: #333;
+
+.@{scrollbar-prefix-cls} {
+  position: absolute;
+  overflow: hidden;
+  background-color: @scrollbar-bg;
+  outline: none;
+
+  &-thumb {
+    background-color: @scrollbar-thumb-bg;
+  }
+
+  &-vertical {
+    position: absolute;
+    top: 0;
+    right: 0;
+
+    .@{scrollbar-prefix-cls}-thumb {
+      width: 100%;
+    }
+  }
+
+  &-horizontal {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+
+    .@{scrollbar-prefix-cls}-thumb {
+      height: 100%;
+    }
+  }
+}
