@@ -32,7 +32,7 @@
     "build": "concurrently 'yarn build:lib' 'yarn build:es' && yarn build:less",
     "prettier": "prettier -c --write '**/*'",
     "pretty-quick": "pretty-quick",
-    "prepublish": "yarn build",
+    "prepare": "yarn build",
     "prebuild": "concurrently 'yarn lint' 'yarn clean'",
     "precommit": "lint-staged"
   },

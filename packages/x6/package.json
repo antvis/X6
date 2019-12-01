@@ -41,7 +41,7 @@
     "coveralls": "cat ./test/coverage/lcov.info | coveralls",
     "prettier": "prettier -c --write '**/*'",
     "pretty-quick": "pretty-quick",
-    "prepublish": "yarn test && yarn build",
+    "prepare": "yarn test && yarn build",
     "precommit": "lint-staged"
   },
   "lint-staged": {
