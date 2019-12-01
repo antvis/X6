@@ -6,6 +6,19 @@
   "rules": {
     "semicolon": [true, "never"],
     "quotemark": [true, "single", "jsx-double"],
+    "trailing-comma": [
+      true,
+      {
+        "singleline": "never",
+        "multiline": {
+          "objects": "always",
+          "arrays": "always",
+          "functions": "never",
+          "typeLiterals": "ignore"
+        },
+        "esSpecCompliant": true
+      }
+    ],
     "no-construct": true,
     "no-debugger": true,
     "no-reference": true,
