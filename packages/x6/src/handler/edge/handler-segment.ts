@@ -147,7 +147,7 @@ export class EdgeSegmentHandler extends EdgeElbowHandler {
         let y0 = view.getRoutingCenterY(source) / scale - tr.y
 
         // Use fixed connection point y-coordinate if one exists
-        const sc = this.graph.getConnectionConstraint(edge, source, true)
+        const sc = this.graph.getConnectionAnchor(edge, source, true)
 
         if (sc != null) {
           const pt = this.graph.view.getConnectionPoint(source, sc)
@@ -161,7 +161,7 @@ export class EdgeSegmentHandler extends EdgeElbowHandler {
         let ye = view.getRoutingCenterY(target) / scale - tr.y
 
         // Use fixed connection point y-coordinate if one exists
-        const tc = this.graph.getConnectionConstraint(edge, target, false)
+        const tc = this.graph.getConnectionAnchor(edge, target, false)
 
         if (tc) {
           const pt = this.graph.view.getConnectionPoint(target, tc)

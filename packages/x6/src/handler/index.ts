@@ -6,7 +6,7 @@ export * from './cell-editor'
 export * from './cell-highlight'
 export * from './cell-marker'
 export * from './cell-tracker'
-export * from './constraint/handler'
+export * from './anchor/handler'
 
 export * from './cursor/handler'
 export * from './tooltip/handler'

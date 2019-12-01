@@ -70,23 +70,22 @@ export function getAlignmentAsPoint(align: Align, valign: VAlign) {
 }
 
 /**
- * Returns an integer mask of the port constraints.
+ * Returns an integer mask of the port anchors.
  *
  * @param terminal `State` that represents the terminal.
  * @param edge `State` that represents the edge.
  * @param isSource Specifies if the terminal is the source terminal.
  * @param defaultValue Default value to be returned.
  */
-export function getPortConstraints(
+export function getPortAnchors(
   terminal: State,
   edge: State,
   isSource: boolean,
   defaultValue: DirectionMask
 ) {
   const value =
-    (isSource
-      ? edge.style.sourcePortConstraint
-      : edge.style.targetPortConstraint) || terminal.style.portConstraint
+    (isSource ? edge.style.sourcePortAnchor : edge.style.targetPortAnchor) ||
+    terminal.style.portAnchor
 
   if (value == null) {
     return defaultValue
@@ -94,10 +93,10 @@ export function getPortConstraints(
   {
     let returnValue = DirectionMask.none
     const directions = value.toString()
-    const constraintRotationEnabled = terminal.style.portConstraintRotation
+    const anchorRotationEnabled = terminal.style.portAnchorRotation
 
     let rotation = 0
-    if (constraintRotationEnabled) {
+    if (anchorRotationEnabled) {
       rotation = terminal.style.rotation || 0
     }
 
@@ -186,18 +185,13 @@ export function getPortConstraints(
   }
 }
 
-/**
- * Reverse the port constraint bitmask.
- *
- * For example, north | east becomes south | west
- */
-export function reversePortConstraints(constraint: DirectionMask) {
+export function reversePortAnchors(mask: DirectionMask) {
   let result = 0
 
-  result = (constraint & DirectionMask.west) << 3
-  result |= (constraint & DirectionMask.north) << 1
-  result |= (constraint & DirectionMask.south) >> 1
-  result |= (constraint & DirectionMask.east) >> 3
+  result = (mask & DirectionMask.west) << 3
+  result |= (mask & DirectionMask.north) << 1
+  result |= (mask & DirectionMask.south) >> 1
+  result |= (mask & DirectionMask.east) >> 3
 
   return result
 }

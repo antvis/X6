@@ -3,20 +3,20 @@ import { View } from '../../core/view'
 import { Graph, Model, State } from '../../core'
 import { Shape, ImageShape } from '../../shape'
 import { BaseHandler } from '../handler-base'
-import { Rectangle, Point, Constraint } from '../../struct'
+import { Rectangle, Point, Anchor } from '../../struct'
 import { DomEvent, MouseEventEx, Disposable } from '../../common'
-import { getConstraintOptions, createConstraintHighlightShape } from './option'
+import { getAnchorOptions, createAnchorHighlightShape } from './option'
 
-export class ConstraintHandler extends BaseHandler {
+export class AnchorHandler extends BaseHandler {
   currentState: State | null
   currentPoint: Point | null
   currentArea: Rectangle | null
-  currentConstraint: Constraint | null
+  currentAnchor: Anchor | null
 
   protected icons: ImageShape[] | null
   protected points: Point[] | null
   protected highlight: Shape | null
-  protected constraints: Constraint[] | null
+  protected anchors: Anchor[] | null
 
   private resetHandler: (() => void) | null
   private containerEventInstalled = false
@@ -48,13 +48,13 @@ export class ConstraintHandler extends BaseHandler {
     this.currentArea = null
     this.currentPoint = null
     this.currentState = null
-    this.currentConstraint = null
+    this.currentAnchor = null
   }
 
   redraw() {
     if (
       this.currentState != null &&
-      this.constraints != null &&
+      this.anchors != null &&
       this.icons != null &&
       this.points != null
     ) {
@@ -62,25 +62,25 @@ export class ConstraintHandler extends BaseHandler {
       this.currentState = state
       this.currentArea = state.bounds.clone()
 
-      for (let i = 0, ii = this.constraints.length; i < ii; i += 1) {
-        const c = this.constraints[i]
+      for (let i = 0, ii = this.anchors.length; i < ii; i += 1) {
+        const c = this.anchors[i]
         const p = this.graph.view.getConnectionPoint(state, c)!
 
-        this.redrawConstraint(state, c, p, this.icons[i])
+        this.redrawAmchor(state, c, p, this.icons[i])
         this.points[i] = p
         this.currentArea.add(this.icons[i].bounds)
       }
     }
   }
 
-  protected redrawConstraint(
+  protected redrawAmchor(
     state: State,
-    constraint: Constraint,
+    anchor: Anchor,
     point: Point,
     icon?: ImageShape
   ) {
-    const { image, cursor, className } = getConstraintOptions({
-      constraint,
+    const { image, cursor, className } = getAnchorOptions({
+      anchor,
       point,
       graph: this.graph,
       cell: state.cell,
@@ -105,7 +105,7 @@ export class ConstraintHandler extends BaseHandler {
       MouseEventEx.redirectMouseEvents(icon.elem, this.graph, getState)
     }
 
-    util.applyClassName(icon, this.graph.prefixCls, 'constraint', className)
+    util.applyClassName(icon, this.graph.prefixCls, 'anchor', className)
 
     icon.image = image.src
     icon.bounds = bounds
@@ -138,14 +138,14 @@ export class ConstraintHandler extends BaseHandler {
     return DomEvent.isShiftDown(e.getEvent())
   }
 
-  protected getConstraints(state: State, isSource: boolean) {
+  protected getAnchors(state: State, isSource: boolean) {
     if (
       this.isEnabled() &&
       state != null &&
       !this.isStateIgnored(state, isSource) &&
       this.graph.isCellConnectable(state.cell)
     ) {
-      return this.graph.getConstraints(state.cell, isSource)
+      return this.graph.getAnchors(state.cell, isSource)
     }
 
     return null
@@ -223,13 +223,13 @@ export class ConstraintHandler extends BaseHandler {
       }
 
       this.currentPoint = null
-      this.currentConstraint = null
+      this.currentAnchor = null
 
-      // highlight hovering constraint
+      // highlight hovering anchor
       if (
         this.icons != null &&
         this.points != null &&
-        this.constraints != null &&
+        this.anchors != null &&
         (state == null || this.currentState === state)
       ) {
         let bounds: Rectangle | null = null
@@ -255,7 +255,7 @@ export class ConstraintHandler extends BaseHandler {
             (minDist == null || dis < minDist)
           ) {
             this.currentPoint = this.points[i]
-            this.currentConstraint = this.constraints[i]
+            this.currentAnchor = this.anchors[i]
             minDist = dis
             bounds = this.icons[i].bounds.clone()
 
@@ -272,20 +272,20 @@ export class ConstraintHandler extends BaseHandler {
         }
       }
 
-      if (this.currentConstraint == null) {
+      if (this.currentAnchor == null) {
         this.destroyHighlight()
       }
     } else {
       this.currentState = null
       this.currentPoint = null
-      this.currentConstraint = null
+      this.currentAnchor = null
     }
   }
 
   focus(e: MouseEventEx, state: State, isSource: boolean) {
-    this.constraints = this.getConstraints(state, isSource)
+    this.anchors = this.getAnchors(state, isSource)
 
-    if (this.constraints != null) {
+    if (this.anchors != null) {
       this.currentState = state
       this.currentArea = state.bounds.clone()
 
@@ -294,10 +294,10 @@ export class ConstraintHandler extends BaseHandler {
       this.icons = []
       this.points = []
 
-      for (let i = 0, ii = this.constraints.length; i < ii; i += 1) {
-        const c = this.constraints[i]
+      for (let i = 0, ii = this.anchors.length; i < ii; i += 1) {
+        const c = this.anchors[i]
         const p = this.graph.view.getConnectionPoint(state, c)!
-        const icon = this.redrawConstraint(state, c, p)
+        const icon = this.redrawAmchor(state, c, p)
         this.icons.push(icon)
         this.points.push(p)
         this.currentArea.add(icon.bounds)
@@ -312,7 +312,7 @@ export class ConstraintHandler extends BaseHandler {
 
   protected createHighlightShape(state: State | null) {
     const s = (this.currentState || state)!
-    const shape = createConstraintHighlightShape({
+    const shape = createAnchorHighlightShape({
       graph: this.graph,
       cell: s.cell,
     })

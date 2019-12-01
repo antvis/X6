@@ -1,6 +1,6 @@
 {
   "name": "@antv/x6",
-  "version": "0.1.1",
+  "version": "0.1.0",
   "description": "JavaScript diagramming library",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -28,12 +28,12 @@
     "lint": "yarn lint:ts && yarn lint:es",
     "lint:es": "eslint --ext .js scripts --fix",
     "lint:ts": "tslint -c tslint.json -p tsconfig.json --fix",
+    "watch": "tsc -w",
     "build:lib": "tsc",
     "build:es": "tsc --module es2015 --target es2015 --outDir ./es",
     "build:less": "lessc ./src/index.less ./lib/index.css",
     "build:images": "node ./scripts/make-images.js",
     "build:version": "node ./scripts/make-version.js",
-    "build:watch": "tsc -w",
     "build": "concurrently 'yarn build:images' 'yarn build:version' 'yarn build:less' 'yarn build:lib' 'yarn build:es'",
     "prebuild": "concurrently 'yarn lint' 'yarn clean'",
     "test": "jest",
@@ -99,5 +99,8 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/antvis/x6.git"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

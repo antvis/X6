@@ -2,8 +2,8 @@ import * as util from '../../util'
 import { Disposable, MouseEventEx, DomEvent } from '../../common'
 import { ConnectionMarker } from './marker'
 import { ConnectionHandler } from './handler'
-import { ConstraintHandler } from '../constraint/handler'
-import { Point, Constraint } from '../../struct'
+import { AnchorHandler } from '../anchor/handler'
+import { Point, Anchor } from '../../struct'
 import { State } from '../../core'
 import { Polyline, Shape } from '../../shape'
 import { transparentMarker } from './util'
@@ -11,11 +11,11 @@ import { applyConnectionPreviewStyle } from './option'
 
 export class Preview extends Disposable {
   marker: ConnectionMarker
-  constraintHandler: ConstraintHandler
+  anchorHandler: AnchorHandler
 
   sourcePoint: Point | null
   sourceState: State | null
-  sourceConstraint: Constraint | null
+  sourceAnchor: Anchor | null
 
   currentPoint: Point | null
   targetPoint: Point | null
@@ -29,7 +29,7 @@ export class Preview extends Disposable {
   constructor(public master: ConnectionHandler) {
     super()
     this.marker = new ConnectionMarker(this.master)
-    this.constraintHandler = new ConstraintHandler(this.graph)
+    this.anchorHandler = new AnchorHandler(this.graph)
   }
 
   get graph() {
@@ -50,8 +50,8 @@ export class Preview extends Disposable {
 
   isStartEvent(e: MouseEventEx) {
     return (
-      (this.constraintHandler.currentState != null &&
-        this.constraintHandler.currentConstraint != null) ||
+      (this.anchorHandler.currentState != null &&
+        this.anchorHandler.currentAnchor != null) ||
       (this.sourceState != null &&
         this.error == null &&
         this.master.knobs.isStarted())
@@ -64,13 +64,13 @@ export class Preview extends Disposable {
 
   start(e: MouseEventEx) {
     if (
-      this.constraintHandler.currentConstraint != null &&
-      this.constraintHandler.currentState != null &&
-      this.constraintHandler.currentPoint != null
+      this.anchorHandler.currentAnchor != null &&
+      this.anchorHandler.currentState != null &&
+      this.anchorHandler.currentPoint != null
     ) {
-      this.sourceState = this.constraintHandler.currentState
-      this.sourcePoint = this.constraintHandler.currentPoint.clone()
-      this.sourceConstraint = this.constraintHandler.currentConstraint
+      this.sourceState = this.anchorHandler.currentState
+      this.sourcePoint = this.anchorHandler.currentPoint.clone()
+      this.sourceAnchor = this.anchorHandler.currentAnchor
     } else {
       this.sourcePoint = e.getGraphPos()
     }
@@ -110,7 +110,7 @@ export class Preview extends Disposable {
       DomEvent.consume(e.getEvent())
       e.consume()
     } else if (!this.isEnabled()) {
-      this.resetConstraint()
+      this.resetAnchor()
     } else if (this.shouldUpdateSourceState()) {
       // 开始连线前，更新 sourceState
       this.updateSourceState(e)
@@ -195,16 +195,16 @@ export class Preview extends Disposable {
   protected updateTerminalPoints(e: MouseEventEx, point: Point) {
     let sourcePoint = this.sourcePoint!
     let currentPoint = point
-    let currentConstraint = null
+    let currentAnchor = null
 
-    // Uses the fixed point from the constraint handler if available
+    // Uses the fixed point from the anchor handler if available
     if (
-      this.constraintHandler.currentConstraint != null &&
-      this.constraintHandler.currentState != null &&
-      this.constraintHandler.currentPoint != null
+      this.anchorHandler.currentAnchor != null &&
+      this.anchorHandler.currentState != null &&
+      this.anchorHandler.currentPoint != null
     ) {
-      currentPoint = this.constraintHandler.currentPoint.clone()
-      currentConstraint = this.constraintHandler.currentConstraint
+      currentPoint = this.anchorHandler.currentPoint.clone()
+      currentAnchor = this.anchorHandler.currentAnchor
     } else if (
       this.sourceState != null &&
       !this.graph.isConnectionIgnored(e.getEvent()) &&
@@ -222,13 +222,13 @@ export class Preview extends Disposable {
 
     // Update terminal points.
     if (this.edgeState != null) {
-      this.updateEdgeState(currentPoint, currentConstraint)
+      this.updateEdgeState(currentPoint, currentAnchor)
       const lastIndex = this.edgeState.absolutePoints.length - 1
       currentPoint = this.edgeState.absolutePoints[lastIndex]
       sourcePoint = this.edgeState.absolutePoints[0]
     } else {
       if (this.currentState != null) {
-        if (this.constraintHandler.currentConstraint == null) {
+        if (this.anchorHandler.currentAnchor == null) {
           const p = this.getTargetPerimeterPoint(this.currentState, e)
           if (p != null) {
             currentPoint = p
@@ -237,7 +237,7 @@ export class Preview extends Disposable {
       }
 
       // Computes the source perimeter point
-      if (this.sourceConstraint == null && this.sourceState != null) {
+      if (this.sourceAnchor == null && this.sourceState != null) {
         const next =
           this.waypoints != null && this.waypoints.length > 0
             ? this.waypoints[0]
@@ -252,22 +252,19 @@ export class Preview extends Disposable {
     return { sourcePoint, currentPoint }
   }
 
-  protected updateEdgeState(
-    currentPoint: Point,
-    currentConstraint: Constraint | null
-  ) {
+  protected updateEdgeState(currentPoint: Point, currentAnchor: Anchor | null) {
     if (this.edgeState == null) {
       return
     }
 
-    if (this.sourceConstraint != null && this.sourceConstraint.point != null) {
-      this.edgeState.style.exitX = this.sourceConstraint.point.x
-      this.edgeState.style.exitY = this.sourceConstraint.point.y
+    if (this.sourceAnchor != null && this.sourceAnchor.point != null) {
+      this.edgeState.style.exitX = this.sourceAnchor.point.x
+      this.edgeState.style.exitY = this.sourceAnchor.point.y
     }
 
-    if (currentConstraint != null && currentConstraint.point != null) {
-      this.edgeState.style.entryX = currentConstraint.point.x
-      this.edgeState.style.entryY = currentConstraint.point.y
+    if (currentAnchor != null && currentAnchor.point != null) {
+      this.edgeState.style.entryX = currentAnchor.point.x
+      this.edgeState.style.entryY = currentAnchor.point.y
     } else {
       delete this.edgeState.style.entryX
       delete this.edgeState.style.entryY
@@ -282,13 +279,13 @@ export class Preview extends Disposable {
       this.edgeState,
       this.sourceState!,
       true,
-      this.sourceConstraint!
+      this.sourceAnchor!
     )
 
     if (this.currentState != null) {
-      if (currentConstraint == null) {
+      if (currentAnchor == null) {
         // tslint:disable-next-line
-        currentConstraint = this.graph.getConnectionConstraint(
+        currentAnchor = this.graph.getConnectionAnchor(
           this.edgeState,
           this.sourceState,
           false
@@ -300,7 +297,7 @@ export class Preview extends Disposable {
         this.edgeState,
         this.currentState,
         false,
-        currentConstraint
+        currentAnchor
       )
     }
 
@@ -435,25 +432,25 @@ export class Preview extends Disposable {
         ? null
         : point
 
-    this.constraintHandler.update(e, isSource, existingEdge, currentPoint)
+    this.anchorHandler.update(e, isSource, existingEdge, currentPoint)
 
     if (
-      this.constraintHandler.currentState != null &&
-      this.constraintHandler.currentConstraint != null
+      this.anchorHandler.currentState != null &&
+      this.anchorHandler.currentAnchor != null
     ) {
-      transparentMarker(this.constraintHandler, this.marker)
+      transparentMarker(this.anchorHandler, this.marker)
 
       // Updates validation state.
       if (this.sourceState != null) {
         this.error = this.master.validateConnection(
           this.sourceState.cell,
-          this.constraintHandler.currentState.cell
+          this.anchorHandler.currentState.cell
         )
 
         if (this.error == null) {
-          this.currentState = this.constraintHandler.currentState
+          this.currentState = this.anchorHandler.currentState
         } else {
-          this.constraintHandler.reset()
+          this.anchorHandler.reset()
         }
       }
     } else {
@@ -477,7 +474,7 @@ export class Preview extends Disposable {
     if (
       this.error == null &&
       this.currentState != null &&
-      this.constraintHandler.currentConstraint == null
+      this.anchorHandler.currentAnchor == null
     ) {
       this.master.knobs.resetIcons(this.currentState)
       if (this.master.knobs.isEmpty() && this.master.cursor != null) {
@@ -502,16 +499,16 @@ export class Preview extends Disposable {
   // endregion
 
   execute(e: MouseEventEx) {
-    const c1 = this.sourceConstraint
-    const c2 = this.constraintHandler.currentConstraint
+    const c1 = this.sourceAnchor
+    const c2 = this.anchorHandler.currentAnchor
     const source = this.sourceState != null ? this.sourceState.cell : null
     let target = null
 
     if (
-      this.constraintHandler.currentConstraint != null &&
-      this.constraintHandler.currentState != null
+      this.anchorHandler.currentAnchor != null &&
+      this.anchorHandler.currentState != null
     ) {
-      target = this.constraintHandler.currentState.cell
+      target = this.anchorHandler.currentState.cell
     }
 
     if (target == null && this.currentState != null) {
@@ -523,7 +520,7 @@ export class Preview extends Disposable {
       (source == null ||
         target == null ||
         source !== target ||
-        this.checkConstraints(c1, c2))
+        this.checkAnchors(c1, c2))
     ) {
       this.master.connect(source!, target, e.getEvent(), e.getCell())
     } else {
@@ -545,7 +542,7 @@ export class Preview extends Disposable {
     }
   }
 
-  protected checkConstraints(c1: Constraint | null, c2: Constraint | null) {
+  protected checkAnchors(c1: Anchor | null, c2: Anchor | null) {
     return (
       c1 == null ||
       c2 == null ||
@@ -632,11 +629,11 @@ export class Preview extends Disposable {
     }
 
     this.marker.reset()
-    this.constraintHandler.reset()
+    this.anchorHandler.reset()
 
     this.sourceState = null
     this.sourcePoint = null
-    this.sourceConstraint = null
+    this.sourceAnchor = null
 
     this.targetPoint = null
     this.currentPoint = null
@@ -644,8 +641,8 @@ export class Preview extends Disposable {
     this.error = null
   }
 
-  resetConstraint() {
-    this.constraintHandler.reset()
+  resetAnchor() {
+    this.anchorHandler.reset()
   }
 
   @Disposable.aop()
@@ -660,9 +657,9 @@ export class Preview extends Disposable {
       delete this.marker
     }
 
-    if (this.constraintHandler != null) {
-      this.constraintHandler.dispose()
-      delete this.constraintHandler
+    if (this.anchorHandler != null) {
+      this.anchorHandler.dispose()
+      delete this.anchorHandler
     }
   }
 }

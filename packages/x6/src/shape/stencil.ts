@@ -1,7 +1,7 @@
 import * as util from '../util'
 import { Shape } from './shape'
 import { SvgCanvas2D } from '../canvas'
-import { Point, Constraint, NodeType } from '../struct'
+import { Point, Anchor, NodeType } from '../struct'
 import { Direction, Align, VAlign, LineCap, LineJoin } from '../types'
 import { preset } from '../option'
 
@@ -13,13 +13,13 @@ export class Stencil extends Shape {
   desc: Element
   bgNode: Element
   fgNode: Element
-  constraints: Constraint[]
+  anchors: Anchor[]
 
   constructor(desc: Element) {
     super()
     this.desc = desc
     this.parseDescription()
-    this.parseConstraints()
+    this.parseAnchors()
   }
 
   parseDescription() {
@@ -42,25 +42,25 @@ export class Stencil extends Shape {
     }
   }
 
-  parseConstraints() {
-    const elem = this.desc.getElementsByTagName('connections')[0]
+  parseAnchors() {
+    const elem = this.desc.getElementsByTagName('anchors')[0]
     if (elem != null && elem.childNodes && elem.childNodes.length) {
-      this.constraints = []
+      this.anchors = []
       elem.childNodes.forEach((child: Element) => {
         if (child.nodeType === NodeType.element) {
-          this.constraints.push(this.parseConstraint(child))
+          this.anchors.push(this.parseAnchor(child))
         }
       })
     }
   }
 
-  parseConstraint(node: Element) {
+  parseAnchor(node: Element) {
     const x = Number(node.getAttribute('x'))
     const y = Number(node.getAttribute('y'))
     const name = node.getAttribute('name') || ''
     const perimeter = node.getAttribute('perimeter') === '1'
 
-    return new Constraint({ name, perimeter, point: new Point(x, y) })
+    return new Anchor({ name, perimeter, point: new Point(x, y) })
   }
 
   evaluateAttribute(node: Element, name: string, shape: Shape) {

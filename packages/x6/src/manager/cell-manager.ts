@@ -3,7 +3,7 @@ import * as routers from '../route'
 import { BaseManager } from './manager-base'
 import { Graph, Cell, Geometry, State } from '../core'
 import { Style, Align, VAlign } from '../types'
-import { Point, Rectangle, Overlay, Image, Constraint } from '../struct'
+import { Point, Rectangle, Overlay, Image, Anchor } from '../struct'
 
 export class CellManager extends BaseManager {
   // #region :::::::::::: Creating
@@ -509,7 +509,7 @@ export class CellManager extends BaseManager {
             geo.setTerminalPoint(tp, true)
             model.setGeometry(cell, geo)
 
-            // Inverts constraints
+            // Inverts anchors
             const edgeState = this.view.getState(cell)
             const sourceState = this.view.getState(src)
             const targetState = this.view.getState(trg)
@@ -517,15 +517,15 @@ export class CellManager extends BaseManager {
             if (edgeState != null) {
               const sc =
                 sourceState != null
-                  ? this.getConnectionConstraint(edgeState, sourceState, true)
+                  ? this.getConnectionAnchor(edgeState, sourceState, true)
                   : null
               const tc =
                 targetState != null
-                  ? this.getConnectionConstraint(edgeState, targetState, false)
+                  ? this.getConnectionAnchor(edgeState, targetState, false)
                   : null
 
-              this.setConnectionConstraint(cell, src, true, tc)
-              this.setConnectionConstraint(cell, trg, false, sc)
+              this.setConnectionAnchor(cell, src, true, tc)
+              this.setConnectionAnchor(cell, trg, false, sc)
             }
 
             select.push(cell)
@@ -795,7 +795,7 @@ export class CellManager extends BaseManager {
     edge: Cell,
     terminal: Cell | null,
     isSource: boolean,
-    constraint?: Constraint
+    anchor?: Anchor
   ) {
     this.model.batchUpdate(() => {
       const previous = this.model.getTerminal(edge, isSource)
@@ -803,11 +803,11 @@ export class CellManager extends BaseManager {
         edge,
         terminal,
         isSource,
-        constraint,
+        anchor,
         previous,
       })
 
-      this.cellConnected(edge, terminal, isSource, constraint)
+      this.cellConnected(edge, terminal, isSource, anchor)
     })
     return edge
   }
@@ -816,14 +816,14 @@ export class CellManager extends BaseManager {
     edge: Cell,
     terminal: Cell | null,
     isSource: boolean,
-    constraint?: Constraint
+    anchor?: Anchor
   ) {
     if (edge != null) {
       this.model.batchUpdate(() => {
         const previous = this.model.getTerminal(edge, isSource)
 
-        // Updates the constraint
-        this.setConnectionConstraint(edge, terminal, isSource, constraint)
+        // Updates the anchor
+        this.setConnectionAnchor(edge, terminal, isSource, anchor)
 
         // Checks if the new terminal is a port, uses the ID of the port
         // in the style and the parent of the port as the actual terminal
@@ -854,13 +854,13 @@ export class CellManager extends BaseManager {
           terminal,
           isSource,
           previous,
-          constraint,
+          anchor,
         })
       })
     }
   }
 
-  getConnectionConstraint(
+  getConnectionAnchor(
     edgeState: State,
     terminalState?: State | null,
     isSource: boolean = false
@@ -893,18 +893,18 @@ export class CellManager extends BaseManager {
       dy = isFinite(dy) ? dy : 0
     }
 
-    return new Constraint({ point, perimeter, dx, dy })
+    return new Anchor({ point, perimeter, dx, dy })
   }
 
-  setConnectionConstraint(
+  setConnectionAnchor(
     edge: Cell,
     terminal: Cell | null,
     isSource: boolean,
-    constraint?: Constraint | null
+    anchor?: Anchor | null
   ) {
-    if (constraint != null) {
+    if (anchor != null) {
       this.model.batchUpdate(() => {
-        if (constraint == null || constraint.point == null) {
+        if (anchor == null || anchor.point == null) {
           this.updateCellsStyle(isSource ? 'exitX' : 'entryX', null, [edge])
           this.updateCellsStyle(isSource ? 'exitY' : 'entryY', null, [edge])
           this.updateCellsStyle(isSource ? 'exitDx' : 'entryDx', null, [edge])
@@ -914,30 +914,30 @@ export class CellManager extends BaseManager {
             null,
             [edge]
           )
-        } else if (constraint.point != null) {
+        } else if (anchor.point != null) {
           this.updateCellsStyle(
             isSource ? 'exitX' : 'entryX',
-            `${constraint.point.x}`,
+            `${anchor.point.x}`,
             [edge]
           )
           this.updateCellsStyle(
             isSource ? 'exitY' : 'entryY',
-            `${constraint.point.y}`,
+            `${anchor.point.y}`,
             [edge]
           )
           this.updateCellsStyle(
             isSource ? 'exitDx' : 'entryDx',
-            `${constraint.dx}`,
+            `${anchor.dx}`,
             [edge]
           )
           this.updateCellsStyle(
             isSource ? 'exitDy' : 'entryDy',
-            `${constraint.dy}`,
+            `${anchor.dy}`,
             [edge]
           )
 
           // Only writes `false` since `true` is default
-          if (!constraint.perimeter) {
+          if (!anchor.perimeter) {
             this.updateCellsStyle(
               isSource ? 'exitPerimeter' : 'entryPerimeter',
               false,

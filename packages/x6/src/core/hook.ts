@@ -6,7 +6,7 @@ import { Graph } from './graph'
 import { Renderer } from './renderer'
 import { Selection } from '../manager'
 import { Route } from '../route'
-import { Point, Constraint, Rectangle } from '../struct'
+import { Point, Anchor, Rectangle } from '../struct'
 import {
   KeyboardHandler,
   TooltipHandler,
@@ -301,7 +301,7 @@ export interface IHooks {
    * width or height set as appropriate.
    */
   getStartSize: CellHook<Rectangle>
-  getConstraints: CellIsSourceHook<Constraint[]>
+  getAnchors: CellIsSourceHook<Anchor[]>
 
   getHtml: CellHook<string | HTMLElement>
 

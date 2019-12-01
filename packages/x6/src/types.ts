@@ -137,10 +137,10 @@ interface EdgeStyle {
 
   sourcePort?: string
   targetPort?: string
-  portConstraint?: string
-  portConstraintRotation?: number
-  sourcePortConstraint?: string
-  targetPortConstraint?: string
+  portAnchor?: string
+  portAnchorRotation?: number
+  sourcePortAnchor?: string
+  targetPortAnchor?: string
 
   perimeterSpacing?: number
   sourcePerimeterSpacing?: number

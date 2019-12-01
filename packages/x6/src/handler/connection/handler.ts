@@ -84,7 +84,7 @@ export class ConnectionHandler extends MouseHandler {
     // Redraws the icons if the graph changes
     this.changeHandler = () => {
       if (this.knobs.refresh()) {
-        this.preview.resetConstraint()
+        this.preview.resetAnchor()
       } else if (
         this.preview.sourceState != null &&
         this.graph.view.getState(this.preview.sourceState.cell) == null
@@ -173,7 +173,7 @@ export class ConnectionHandler extends MouseHandler {
 
       this.preview.process(e)
     } else {
-      this.preview.resetConstraint()
+      this.preview.resetAnchor()
     }
   }
 
@@ -281,9 +281,8 @@ export class ConnectionHandler extends MouseHandler {
 
         const waypoints = this.preview.waypoints
         const edgeState = this.preview.edgeState
-        const sourceConstraint = this.preview.sourceConstraint
-        const currentConstraint = this.preview.constraintHandler
-          .currentConstraint
+        const sourceAnchor = this.preview.sourceAnchor
+        const currentAnchor = this.preview.anchorHandler.currentAnchor
 
         if (edgeState != null) {
           data = edgeState.cell.data
@@ -293,20 +292,10 @@ export class ConnectionHandler extends MouseHandler {
         edge = this.insertEdge(parent, null, data, source, target!, style)
 
         if (edge != null) {
-          // Updates the connection constraints
-          this.graph.setConnectionConstraint(
-            edge,
-            source,
-            true,
-            sourceConstraint
-          )
+          // Updates the connection anchors
+          this.graph.setConnectionAnchor(edge, source, true, sourceAnchor)
 
-          this.graph.setConnectionConstraint(
-            edge,
-            target,
-            false,
-            currentConstraint
-          )
+          this.graph.setConnectionAnchor(edge, target, false, currentAnchor)
 
           // Uses geometry of the preview edge state
           if (edgeState != null) {

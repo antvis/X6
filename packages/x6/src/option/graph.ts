@@ -22,10 +22,7 @@ import {
 import { SelectionPreviewOptions } from '../handler/node/option-selection'
 import { LabelHandleOptions } from '../handler/node/option-label'
 import { EdgeHandleOptions } from '../handler/edge/option'
-import {
-  ConstraintOptions,
-  ConstraintHighlightOptions,
-} from '../handler/constraint/option'
+import { AnchorOptions, AnchorHighlightOptions } from '../handler/anchor/option'
 import {
   ConnectionOptions,
   ConnectionIconOptions,
@@ -877,8 +874,8 @@ export interface FullOptions extends SimpleOptions, GlobalConfig {
   rotateHandle: RotateHandleOptions
   rotatePreview: RotatePreviewOptions
   labelHandle: LabelHandleOptions
-  constraint: ConstraintOptions
-  constraintHighlight: ConstraintHighlightOptions
+  anchor: AnchorOptions
+  anchorHighlight: AnchorHighlightOptions
   connection: ConnectionOptions
   connectionIcon: ConnectionIconOptions
   connectionPreview: ConnectionPreviewOptions
@@ -909,8 +906,8 @@ export interface GraphOptions
   rotateHandle?: Partial<RotateHandleOptions>
   rotatePreview?: Partial<RotatePreviewOptions>
   labelHandle?: Partial<LabelHandleOptions>
-  constraint?: Partial<ConstraintOptions>
-  constraintHighlight?: Partial<ConstraintHighlightOptions>
+  anchor?: Partial<AnchorOptions>
+  anchorHighlight?: Partial<AnchorHighlightOptions>
   connection?: Partial<ConnectionOptions> | boolean
   connectionIcon?: Partial<ConnectionIconOptions>
   connectionPreview?: Partial<ConnectionPreviewOptions>

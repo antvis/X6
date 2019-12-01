@@ -7,7 +7,7 @@ import { Route } from '../route'
 import { Perimeter } from '../perimeter'
 import { RectangleShape, ImageShape } from '../shape'
 import { UndoableEdit, CurrentRootChange } from '../change'
-import { Point, Rectangle, Constraint, Image } from '../struct'
+import { Point, Rectangle, Anchor, Image } from '../struct'
 import { detector, DomEvent, MouseEventEx, Primer, Disposable } from '../common'
 
 export class View extends Primer {
@@ -543,7 +543,7 @@ export class View extends Primer {
     ) {
       this.clear(state.cell, true)
     } else {
-      // Get fixed point from constraint point or manual specified point.
+      // Get fixed point from anchor point or manual specified point.
       this.updateFixedTerminalPoints(state, sourceState, targetState)
       this.updateRouterPoints(state, geo.points, sourceState, targetState)
       // Get float(intersection) point when there's no fixed point.
@@ -571,42 +571,32 @@ export class View extends Primer {
     sourceState: State,
     targetState: State
   ) {
-    const sourceConstraint = this.graph.getConnectionConstraint(
+    const sourceAnchor = this.graph.getConnectionAnchor(
       edgeState,
       sourceState,
       true
     )
-    this.updateFixedTerminalPoint(
-      edgeState,
-      sourceState,
-      true,
-      sourceConstraint
-    )
+    this.updateFixedTerminalPoint(edgeState, sourceState, true, sourceAnchor)
 
-    const targetConstraint = this.graph.getConnectionConstraint(
+    const targetAnchor = this.graph.getConnectionAnchor(
       edgeState,
       targetState,
       false
     )
-    this.updateFixedTerminalPoint(
-      edgeState,
-      targetState,
-      false,
-      targetConstraint
-    )
+    this.updateFixedTerminalPoint(edgeState, targetState, false, targetAnchor)
   }
 
   updateFixedTerminalPoint(
     edgeState: State,
     terminalState: State,
     isSource: boolean,
-    constraint: Constraint
+    anchor: Anchor
   ) {
     const point = this.getFixedTerminalPoint(
       edgeState,
       terminalState,
       isSource,
-      constraint
+      anchor
     )
     edgeState.setAbsoluteTerminalPoint(point!, isSource)
   }
@@ -618,14 +608,14 @@ export class View extends Primer {
     edgeState: State,
     terminalState: State,
     isSource: boolean,
-    constraint: Constraint
+    anchor: Anchor
   ) {
     let point: Point | null = null
 
-    if (constraint != null) {
+    if (anchor != null) {
       point = this.getConnectionPoint(
         terminalState,
-        constraint,
+        anchor,
         this.graph.cellManager.isOrthogonal(edgeState)
       )
     }
@@ -652,12 +642,12 @@ export class View extends Primer {
    */
   getConnectionPoint(
     terminalState: State,
-    constraint: Constraint,
+    anchor: Anchor,
     round: boolean = true
   ) {
     let result: Point | null = null
 
-    if (terminalState != null && constraint.point != null) {
+    if (terminalState != null && anchor.point != null) {
       const direction = terminalState.style.direction
       const bounds = this.getPerimeterBounds(terminalState)
       const cx = bounds.getCenter()
@@ -684,14 +674,14 @@ export class View extends Primer {
 
       const s = this.scale
       result = new Point(
-        bounds.x + constraint.point.x * bounds.width + constraint.dx * s,
-        bounds.y + constraint.point.y * bounds.height + constraint.dy * s
+        bounds.x + anchor.point.x * bounds.width + anchor.dx * s,
+        bounds.y + anchor.point.y * bounds.height + anchor.dy * s
       )
 
       // Rotation for direction before projection on perimeter
       let r2 = terminalState.style.rotation || 0
 
-      if (constraint.perimeter) {
+      if (anchor.perimeter) {
         if (r1 !== 0) {
           result = util.rotatePoint(result, r1, cx)
         }
@@ -1082,8 +1072,8 @@ export class View extends Primer {
     sourceState?: State | null,
     targetState?: State | null
   ) {
-    const sc = this.graph.getConnectionConstraint(edgeState, sourceState, true)
-    const tc = this.graph.getConnectionConstraint(edgeState, targetState, false)
+    const sc = this.graph.getConnectionAnchor(edgeState, sourceState, true)
+    const tc = this.graph.getConnectionAnchor(edgeState, targetState, false)
 
     if (
       (points == null || points.length < 2) &&
