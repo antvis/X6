@@ -7,7 +7,7 @@
     "ls": "lerna list",
     "changed": "lerna changed",
     "updated": "lerna updated",
-    "pub": "lerna publish --no-git-tag-version --no-push -m \"chore(release): publish %v\"",
+    "pub": "lerna publish --no-git-tag-version -m \"chore(release): publish %v\"",
     "clean": "lerna run clean",
     "build": "lerna run build",
     "lint": "lerna run lint",
