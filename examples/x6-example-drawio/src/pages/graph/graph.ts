@@ -5,7 +5,7 @@ import {
   Rectangle,
   Point,
   DomEvent,
-  Graph,
+  Graph
 } from '@antv/x6'
 import { GraphView } from './view'
 
@@ -23,7 +23,10 @@ export class EditorGraph extends Graph {
         let source = DomEvent.getSource(e)
         while (source != null) {
           if (source == this.container) {
-            this.cursorPosition = new Point(DomEvent.getClientX(e), DomEvent.getClientY(e))
+            this.cursorPosition = new Point(
+              DomEvent.getClientX(e),
+              DomEvent.getClientY(e)
+            )
             this.lazyZoom(up)
             DomEvent.consume(e)
             return false
@@ -58,7 +61,9 @@ export class EditorGraph extends Graph {
         // and to avoid rounding errors for zoom steps
         this.cumulativeZoomFactor *= this.scaleFactor
         this.cumulativeZoomFactor =
-          Math.round(this.view.scale * this.cumulativeZoomFactor * 20) / 20 / this.view.scale
+          Math.round(this.view.scale * this.cumulativeZoomFactor * 20) /
+          20 /
+          this.view.scale
       }
     } else {
       if (this.view.scale * this.cumulativeZoomFactor <= 0.15) {
@@ -68,13 +73,16 @@ export class EditorGraph extends Graph {
         // and to avoid rounding errors for zoom steps
         this.cumulativeZoomFactor /= this.scaleFactor
         this.cumulativeZoomFactor =
-          Math.round(this.view.scale * this.cumulativeZoomFactor * 20) / 20 / this.view.scale
+          Math.round(this.view.scale * this.cumulativeZoomFactor * 20) /
+          20 /
+          this.view.scale
       }
     }
 
     this.cumulativeZoomFactor = Math.max(
       0.01,
-      Math.min(this.view.scale * this.cumulativeZoomFactor, 160) / this.view.scale,
+      Math.min(this.view.scale * this.cumulativeZoomFactor, 160) /
+        this.view.scale
     )
     this.updateZoomTimeout = window.setTimeout(() => {
       var offset = util.getOffset(this.container)
@@ -211,10 +219,16 @@ export class EditorGraph extends Graph {
     const right = bgBounds.x + width
     const bottom = bgBounds.y + height
 
-    const bounds = new Rectangle(s * t.x, s * t.y, fmt.width * ps, fmt.height * ps)
+    const bounds = new Rectangle(
+      s * t.x,
+      s * t.y,
+      fmt.width * ps,
+      fmt.height * ps
+    )
 
     // tslint:disable-next-line
-    visible = visible && Math.min(bounds.width, bounds.height) > this.minPageBreakDist;
+    visible =
+      visible && Math.min(bounds.width, bounds.height) > this.minPageBreakDist
 
     const hCount = visible ? Math.ceil(height / bounds.height) - 1 : 0
     const vCount = visible ? Math.ceil(width / bounds.width) - 1 : 0
@@ -229,16 +243,23 @@ export class EditorGraph extends Graph {
 
     const drawPageBreaks = (breaks: shapes.Polyline[]) => {
       if (breaks != null) {
-        const count = breaks === this.viewport.horizontalPageBreaks ? hCount : vCount
+        const count =
+          breaks === this.viewport.horizontalPageBreaks ? hCount : vCount
 
         for (let i = 0; i <= count; i += 1) {
           let points: Point[]
           if (breaks === this.viewport.horizontalPageBreaks) {
             const y = Math.round(bgBounds.y + (i + 1) * bounds.height) - 1
-            points = [new Point(Math.round(bgBounds.x), y), new Point(Math.round(right), y)]
+            points = [
+              new Point(Math.round(bgBounds.x), y),
+              new Point(Math.round(right), y),
+            ]
           } else {
             const x = Math.round(bgBounds.x + (i + 1) * bounds.width) - 1
-            points = [new Point(x, Math.round(bgBounds.y)), new Point(x, Math.round(bottom))]
+            points = [
+              new Point(x, Math.round(bgBounds.y)),
+              new Point(x, Math.round(bottom)),
+            ]
           }
 
           if (breaks[i] != null) {
@@ -274,7 +295,10 @@ export class EditorGraph extends Graph {
     if (this.pageVisible && util.hasScrollbars(container)) {
       const padding = this.getPagePadding()
       container.scrollLeft = Math.floor(
-        Math.min(padding[0], (container.scrollWidth - container.clientWidth) / 2),
+        Math.min(
+          padding[0],
+          (container.scrollWidth - container.clientWidth) / 2
+        )
       )
       container.scrollTop = padding[1]
 
@@ -284,14 +308,14 @@ export class EditorGraph extends Graph {
         if (bounds.x > container.scrollLeft + container.clientWidth * 0.9) {
           container.scrollLeft = Math.min(
             bounds.x + bounds.width - container.clientWidth,
-            bounds.x - 10,
+            bounds.x - 10
           )
         }
 
         if (bounds.y > container.scrollTop + container.clientHeight * 0.9) {
           container.scrollTop = Math.min(
             bounds.y + bounds.height - container.clientHeight,
-            bounds.y - 10,
+            bounds.y - 10
           )
         }
       }

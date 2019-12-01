@@ -1,6 +1,6 @@
-import React from "react"
-import { message } from "antd"
-import { Menu } from "@antv/x6-components"
+import React from 'react'
+import { message } from 'antd'
+import { Menu } from '@antv/x6-components'
 
 const MenuItem = Menu.Item
 const SubMenu = Menu.SubMenu
@@ -12,13 +12,13 @@ export default class MenuExample extends React.PureComponent {
   }
 
   onMenuItemClick = () => {
-    this.onMenuClick("undo")
+    this.onMenuClick('undo')
   }
 
   render() {
     return (
-      <div style={{ height: "100%" }}>
-        <div style={{ display: "inline-block", marginRight: 32 }}>
+      <div style={{ height: '100%' }}>
+        <div style={{ display: 'inline-block', marginRight: 32 }}>
           <Menu onClick={this.onMenuClick}>
             <MenuItem onClick={this.onMenuItemClick} name="undo" hotkey="Cmd+Z">
               Undo
@@ -56,7 +56,7 @@ export default class MenuExample extends React.PureComponent {
             </SubMenu>
           </Menu>
         </div>
-        <div style={{ display: "inline-block", marginRight: 32 }}>
+        <div style={{ display: 'inline-block', marginRight: 32 }}>
           <Menu hasIcon={true} onClick={this.onMenuClick}>
             <MenuItem
               onClick={this.onMenuItemClick}

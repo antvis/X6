@@ -1,6 +1,6 @@
-import React from "react"
-import { message } from "antd"
-import { Toolbar, Menu } from "@antv/x6-components"
+import React from 'react'
+import { message } from 'antd'
+import { Toolbar, Menu } from '@antv/x6-components'
 
 const Item = Toolbar.Item
 const Group = Toolbar.Group
@@ -11,7 +11,7 @@ export default class ToolbarExample extends React.PureComponent {
   }
 
   onItemClick = () => {
-    this.onClick("undo")
+    this.onClick('undo')
   }
 
   renderZoomDropdown() {
@@ -42,9 +42,14 @@ export default class ToolbarExample extends React.PureComponent {
 
   render() {
     return (
-      <div style={{ height: "100%" }}>
-        <div style={{ background: "#f1f1f1" }}>
-          <Toolbar hoverEffect={true} size="big" onClick={this.onClick}>
+      <div style={{ height: '100%' }}>
+        <div style={{ background: '#f1f1f1', paddingRight: 16 }}>
+          <Toolbar
+            hoverEffect={true}
+            size="big"
+            onClick={this.onClick}
+            extra={<span>Extra Component</span>}
+          >
             <Group>
               <Item
                 name="zoom"
@@ -54,9 +59,9 @@ export default class ToolbarExample extends React.PureComponent {
               >
                 <span
                   style={{
-                    display: "inline-block",
+                    display: 'inline-block',
                     width: 40,
-                    textAlign: "right"
+                    textAlign: 'right',
                   }}
                 >
                   100%
@@ -100,8 +105,12 @@ export default class ToolbarExample extends React.PureComponent {
             </Group>
           </Toolbar>
         </div>
-        <div style={{ background: "#f1f1f1", marginTop: 24 }}>
-          <Toolbar size="big" onClick={this.onClick}>
+        <div style={{ background: '#f1f1f1', marginTop: 24, paddingRight: 16 }}>
+          <Toolbar
+            size="big"
+            onClick={this.onClick}
+            extra={<span>Extra Component</span>}
+          >
             <Group>
               <Item name="zoomIn" tooltip="Zoom In (Cmd +)" icon="zoom-in" />
               <Item name="zoomOut" tooltip="Zoom Out (Cmd -)" icon="zoom-out" />
@@ -139,8 +148,12 @@ export default class ToolbarExample extends React.PureComponent {
             </Group>
           </Toolbar>
         </div>
-        <div style={{ background: "#f1f1f1", marginTop: 24 }}>
-          <Toolbar hoverEffect={true} onClick={this.onClick}>
+        <div style={{ background: '#f1f1f1', marginTop: 24, paddingRight: 16 }}>
+          <Toolbar
+            hoverEffect={true}
+            onClick={this.onClick}
+            extra={<span>Extra Component</span>}
+          >
             <Group>
               <Item name="zoomIn" tooltip="Zoom In (Cmd +)" icon="zoom-in" />
               <Item name="zoomOut" tooltip="Zoom Out (Cmd -)" icon="zoom-out" />
@@ -178,8 +191,8 @@ export default class ToolbarExample extends React.PureComponent {
             </Group>
           </Toolbar>
         </div>
-        <div style={{ background: "#f1f1f1", marginTop: 24 }}>
-          <Toolbar>
+        <div style={{ background: '#f1f1f1', marginTop: 24, paddingRight: 16 }}>
+          <Toolbar extra={<span>Extra Component</span>}>
             <Group>
               <Item name="zoomIn" tooltip="Zoom In (Cmd +)" icon="zoom-in" />
               <Item name="zoomOut" tooltip="Zoom Out (Cmd -)" icon="zoom-out" />
@@ -217,8 +230,13 @@ export default class ToolbarExample extends React.PureComponent {
             </Group>
           </Toolbar>
         </div>
-        <div style={{ background: "#f1f1f1", marginTop: 24 }}>
-          <Toolbar hoverEffect={true} size="small" onClick={this.onClick}>
+        <div style={{ background: '#f1f1f1', marginTop: 24, paddingRight: 16 }}>
+          <Toolbar
+            hoverEffect={true}
+            size="small"
+            onClick={this.onClick}
+            extra={<span>Extra Component</span>}
+          >
             <Group>
               <Item name="zoomIn" tooltip="Zoom In (Cmd +)" icon="zoom-in" />
               <Item name="zoomOut" tooltip="Zoom Out (Cmd -)" icon="zoom-out" />
@@ -256,8 +274,12 @@ export default class ToolbarExample extends React.PureComponent {
             </Group>
           </Toolbar>
         </div>
-        <div style={{ background: "#f1f1f1", marginTop: 24 }}>
-          <Toolbar size="small" onClick={this.onClick}>
+        <div style={{ background: '#f1f1f1', marginTop: 24, paddingRight: 16 }}>
+          <Toolbar
+            size="small"
+            onClick={this.onClick}
+            extra={<span>Extra Component</span>}
+          >
             <Group>
               <Item name="zoomIn" tooltip="Zoom In (Cmd +)" icon="zoom-in" />
               <Item name="zoomOut" tooltip="Zoom Out (Cmd -)" icon="zoom-out" />
@@ -295,8 +317,13 @@ export default class ToolbarExample extends React.PureComponent {
             </Group>
           </Toolbar>
         </div>
-        <div style={{ background: "#f1f1f1", marginTop: 24 }}>
-          <Toolbar hoverEffect={true} size="big" onClick={this.onClick}>
+        <div style={{ background: '#f1f1f1', marginTop: 24, paddingRight: 16 }}>
+          <Toolbar
+            hoverEffect={true}
+            size="big"
+            onClick={this.onClick}
+            extra={<span>Extra Component</span>}
+          >
             <Group>
               <Item name="alignLeft" icon="align-left" text="Align Left" />
               <Item
@@ -308,8 +335,12 @@ export default class ToolbarExample extends React.PureComponent {
             </Group>
           </Toolbar>
         </div>
-        <div style={{ background: "#f1f1f1", marginTop: 24 }}>
-          <Toolbar size="big" onClick={this.onClick}>
+        <div style={{ background: '#f1f1f1', marginTop: 24, paddingRight: 16 }}>
+          <Toolbar
+            size="big"
+            onClick={this.onClick}
+            extra={<span>Extra Component</span>}
+          >
             <Group>
               <Item name="alignLeft" icon="align-left" text="Align Left" />
               <Item
@@ -317,12 +348,16 @@ export default class ToolbarExample extends React.PureComponent {
                 icon="align-center"
                 text="Align Center"
               />
-              <Item name="alignRight" icon="align-right" text="Align Right" />{" "}
+              <Item name="alignRight" icon="align-right" text="Align Right" />{' '}
             </Group>
           </Toolbar>
         </div>
-        <div style={{ background: "#f1f1f1", marginTop: 24 }}>
-          <Toolbar hoverEffect={true} onClick={this.onClick}>
+        <div style={{ background: '#f1f1f1', marginTop: 24, paddingRight: 16 }}>
+          <Toolbar
+            hoverEffect={true}
+            onClick={this.onClick}
+            extra={<span>Extra Component</span>}
+          >
             <Group>
               <Item name="alignLeft" icon="align-left" text="Align Left" />
               <Item
@@ -334,8 +369,8 @@ export default class ToolbarExample extends React.PureComponent {
             </Group>
           </Toolbar>
         </div>
-        <div style={{ background: "#f1f1f1", marginTop: 24 }}>
-          <Toolbar onClick={this.onClick}>
+        <div style={{ background: '#f1f1f1', marginTop: 24, paddingRight: 16 }}>
+          <Toolbar onClick={this.onClick} extra={<span>Extra Component</span>}>
             <Group>
               <Item name="alignLeft" icon="align-left" text="Align Left" />
               <Item
@@ -343,12 +378,17 @@ export default class ToolbarExample extends React.PureComponent {
                 icon="align-center"
                 text="Align Center"
               />
-              <Item name="alignRight" icon="align-right" text="Align Right" />{" "}
+              <Item name="alignRight" icon="align-right" text="Align Right" />{' '}
             </Group>
           </Toolbar>
         </div>
-        <div style={{ background: "#f1f1f1", marginTop: 24 }}>
-          <Toolbar hoverEffect={true} size="small" onClick={this.onClick}>
+        <div style={{ background: '#f1f1f1', marginTop: 24, paddingRight: 16 }}>
+          <Toolbar
+            hoverEffect={true}
+            size="small"
+            onClick={this.onClick}
+            extra={<span>Extra Component</span>}
+          >
             <Group>
               <Item name="alignLeft" icon="align-left" text="Align Left" />
               <Item
@@ -360,8 +400,12 @@ export default class ToolbarExample extends React.PureComponent {
             </Group>
           </Toolbar>
         </div>
-        <div style={{ background: "#f1f1f1", marginTop: 24 }}>
-          <Toolbar size="small" onClick={this.onClick}>
+        <div style={{ background: '#f1f1f1', marginTop: 24, paddingRight: 16 }}>
+          <Toolbar
+            size="small"
+            onClick={this.onClick}
+            extra={<span>Extra Component</span>}
+          >
             <Group>
               <Item name="alignLeft" icon="align-left" text="Align Left" />
               <Item
@@ -369,7 +413,7 @@ export default class ToolbarExample extends React.PureComponent {
                 icon="align-center"
                 text="Align Center"
               />
-              <Item name="alignRight" icon="align-right" text="Align Right" />{" "}
+              <Item name="alignRight" icon="align-right" text="Align Right" />{' '}
             </Group>
           </Toolbar>
         </div>

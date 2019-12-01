@@ -10,7 +10,7 @@ import {
   fitPage,
   fitTwoPages,
   fitPageWidth,
-  toggleFontStyle,
+  toggleFontStyle
 } from './util'
 
 export class Commands {
@@ -30,7 +30,7 @@ export class Commands {
   constructor(graph: Graph) {
     this.graph = graph
     this.undoManager = UndoManager.create(graph)
-    Commands.getCommandList().forEach((item) => {
+    Commands.getCommandList().forEach(item => {
       this.add(item)
     })
   }
@@ -59,7 +59,7 @@ export class Commands {
           .replace('Delete', 'backspace')
           .replace('Cmd', 'command')
           .toLowerCase(),
-        callback,
+        callback
       )
     }
 
@@ -248,27 +248,33 @@ export namespace Commands {
 
     {
       name: 'fillColor',
-      handler: (graph: Graph, color: string) => graph.updateCellsStyle('fill', color),
+      handler: (graph: Graph, color: string) =>
+        graph.updateCellsStyle('fill', color),
     },
     {
       name: 'gradientColor',
-      handler: (graph: Graph, color: string) => graph.updateCellsStyle('gradientColor', color),
+      handler: (graph: Graph, color: string) =>
+        graph.updateCellsStyle('gradientColor', color),
     },
     {
       name: 'lineColor',
-      handler: (graph: Graph, color: string) => graph.updateCellsStyle('stroke', color),
+      handler: (graph: Graph, color: string) =>
+        graph.updateCellsStyle('stroke', color),
     },
     {
       name: 'shadow',
-      handler: (graph: Graph, shadow: boolean = true) => graph.toggleCellsStyle('shadow', shadow),
+      handler: (graph: Graph, shadow: boolean = true) =>
+        graph.toggleCellsStyle('shadow', shadow),
     },
     {
       name: 'opacity',
-      handler: (graph: Graph, opacity?: number) => graph.updateCellsStyle('opacity', opacity),
+      handler: (graph: Graph, opacity?: number) =>
+        graph.updateCellsStyle('opacity', opacity),
     },
     {
       name: 'strokeColor',
-      handler: (graph: Graph, color?: string) => graph.updateCellsStyle('stroke', color),
+      handler: (graph: Graph, color?: string) =>
+        graph.updateCellsStyle('stroke', color),
     },
     {
       name: 'strokeWidth',
@@ -277,7 +283,8 @@ export namespace Commands {
     },
     {
       name: 'strokeDashed',
-      handler: (graph: Graph, dashed: boolean = true) => graph.toggleCellsStyle('dashed', dashed),
+      handler: (graph: Graph, dashed: boolean = true) =>
+        graph.toggleCellsStyle('dashed', dashed),
     },
     {
       name: 'autosize',
@@ -297,7 +304,7 @@ export namespace Commands {
       name: 'updateGeometry',
       handler: (graph: Graph, geom: Geometry) => {
         graph.batchUpdate(() => {
-          graph.getSelectedCells().forEach((cell) => {
+          graph.getSelectedCells().forEach(cell => {
             graph.model.setGeometry(cell, geom)
           })
         })
@@ -306,15 +313,18 @@ export namespace Commands {
 
     {
       name: 'rotate',
-      handler: (graph: Graph, rotate?: number) => graph.updateCellsStyle('rotation', rotate),
+      handler: (graph: Graph, rotate?: number) =>
+        graph.updateCellsStyle('rotation', rotate),
     },
     {
       name: 'flipH',
-      handler: (graph: Graph, v: boolean = true) => graph.toggleCellsStyle('flipH', v),
+      handler: (graph: Graph, v: boolean = true) =>
+        graph.toggleCellsStyle('flipH', v),
     },
     {
       name: 'flipV',
-      handler: (graph: Graph, v: boolean = true) => graph.toggleCellsStyle('flipV', v),
+      handler: (graph: Graph, v: boolean = true) =>
+        graph.toggleCellsStyle('flipV', v),
     },
 
     {
@@ -324,15 +334,18 @@ export namespace Commands {
     },
     {
       name: 'fontColor',
-      handler: (graph: Graph, fontColor?: string) => graph.updateCellsStyle('fontColor', fontColor),
+      handler: (graph: Graph, fontColor?: string) =>
+        graph.updateCellsStyle('fontColor', fontColor),
     },
     {
       name: 'fontSize',
-      handler: (graph: Graph, fontSize?: number) => graph.updateCellsStyle('fontSize', fontSize),
+      handler: (graph: Graph, fontSize?: number) =>
+        graph.updateCellsStyle('fontSize', fontSize),
     },
     {
       name: 'labelBorderColor',
-      handler: (graph: Graph, color?: string) => graph.updateCellsStyle('labelBorderColor', color),
+      handler: (graph: Graph, color?: string) =>
+        graph.updateCellsStyle('labelBorderColor', color),
     },
     {
       name: 'labelBackgroundColor',
@@ -341,11 +354,13 @@ export namespace Commands {
     },
     {
       name: 'align',
-      handler: (graph: Graph, align?: string) => graph.updateCellsStyle('align', align),
+      handler: (graph: Graph, align?: string) =>
+        graph.updateCellsStyle('align', align),
     },
     {
       name: 'valign',
-      handler: (graph: Graph, valign?: string) => graph.updateCellsStyle('verticalAlign', valign),
+      handler: (graph: Graph, valign?: string) =>
+        graph.updateCellsStyle('verticalAlign', valign),
     },
     {
       name: 'horizontal',
@@ -520,7 +535,7 @@ export namespace Commands {
   ]
 
   const map: { [name: string]: Command.Options } = {}
-  list.forEach((item) => (map[item.name] = item))
+  list.forEach(item => (map[item.name] = item))
 
   export function getCommandList() {
     return list

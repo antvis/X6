@@ -13,7 +13,8 @@ export interface DataItem {
   points?: Point[]
 }
 
-const lineTags = 'line lines connector connectors connection connections arrow arrows'
+const lineTags =
+  'line lines connector connectors connection connections arrow arrows'
 
 export const generals: DataItem[] = [
   {
@@ -410,10 +411,10 @@ export function getUMLPaletteItems() {
           htmlLabel: true,
         },
       },
-    ].map((data) => ({
+    ].map(data => ({
       data,
       render: getRenderer(data),
-    })),
+    }))
   )
 
   const field = new Cell('+ field: type', new Geometry(0, 0, 100, 20), {
@@ -470,7 +471,11 @@ export function getUMLPaletteItems() {
       },
     }
 
-    const cell = new Cell('Classname', new Geometry(0, 0, data.width, data.height), data.style)
+    const cell = new Cell(
+      'Classname',
+      new Geometry(0, 0, data.width, data.height),
+      data.style
+    )
 
     cell.asNode(true)
     // cell.insertChild(field.clone())
