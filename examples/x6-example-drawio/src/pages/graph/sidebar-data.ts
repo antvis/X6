@@ -426,7 +426,7 @@ export function getUMLPaletteItems() {
     spacingRight: 4,
     overflow: 'hidden',
     rotatable: false,
-    portConstraint: 'eastwest',
+    portAnchor: 'eastwest',
   })
   field.asNode(true)
 
@@ -441,7 +441,7 @@ export function getUMLPaletteItems() {
     spacingRight: 3,
     rotatable: false,
     labelPosition: 'right',
-    portConstraint: 'eastwest',
+    portAnchor: 'eastwest',
   })
   divider.asNode(true)
 

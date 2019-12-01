@@ -1,5 +1,5 @@
 import React from 'react'
-import { Graph, Point, Constraint } from '@antv/x6'
+import { Graph, Point, Anchor } from '@antv/x6'
 import styles from './index.less'
 
 export default class Example extends React.Component {
@@ -13,19 +13,19 @@ export default class Example extends React.Component {
       // connectionIcon: {
       //   image: images.share,
       // },
-      getConstraints(cell) {
+      getAnchors(cell) {
         if (cell != null && this.model.isNode(cell)) {
           return [
-            new Constraint({ point: new Point(0, 0) }),
-            new Constraint({ point: new Point(0.5, 0) }),
-            new Constraint({ point: new Point(1, 0) }),
+            new Anchor({ point: new Point(0, 0) }),
+            new Anchor({ point: new Point(0.5, 0) }),
+            new Anchor({ point: new Point(1, 0) }),
 
-            new Constraint({ point: new Point(0, 0.5) }),
-            new Constraint({ point: new Point(1, 0.5) }),
+            new Anchor({ point: new Point(0, 0.5) }),
+            new Anchor({ point: new Point(1, 0.5) }),
 
-            new Constraint({ point: new Point(0, 1) }),
-            new Constraint({ point: new Point(0.5, 1) }),
-            new Constraint({ point: new Point(1, 1) }),
+            new Anchor({ point: new Point(0, 1) }),
+            new Anchor({ point: new Point(0.5, 1) }),
+            new Anchor({ point: new Point(1, 1) }),
           ]
         }
         return null

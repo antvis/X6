@@ -1,9 +1,9 @@
 <shapes name="arrows">
   <shape name="Arrow Down" h="97.5" w="70" aspect="variable" strokewidth="inherit">
-    <connections>
-      <constraint x="0.5" y="0" perimeter="0" name="N"/>
-      <constraint x="0.5" y="1" perimeter="0" name="S"/>
-    </connections>
+    <anchors>
+      <anchor x="0.5" y="0" perimeter="0" name="N"/>
+      <anchor x="0.5" y="1" perimeter="0" name="S"/>
+    </anchors>
     <background>
       <path>
         <move x="20" y="0"/>
@@ -21,10 +21,10 @@
     </foreground>
   </shape>
   <shape name="Arrow Left" h="70" w="97.5" aspect="variable" strokewidth="inherit">
-    <connections>
-      <constraint x="0" y="0.5" perimeter="0" name="W"/>
-      <constraint x="1" y="0.5" perimeter="0" name="E"/>
-    </connections>
+    <anchors>
+      <anchor x="0" y="0.5" perimeter="0" name="W"/>
+      <anchor x="1" y="0.5" perimeter="0" name="E"/>
+    </anchors>
     <background>
       <path>
         <move x="97.5" y="20"/>
@@ -42,10 +42,10 @@
     </foreground>
   </shape>
   <shape name="Arrow Right" h="70" w="97.5" aspect="variable" strokewidth="inherit">
-    <connections>
-      <constraint x="0" y="0.5" perimeter="0" name="W"/>
-      <constraint x="1" y="0.5" perimeter="0" name="E"/>
-    </connections>
+    <anchors>
+      <anchor x="0" y="0.5" perimeter="0" name="W"/>
+      <anchor x="1" y="0.5" perimeter="0" name="E"/>
+    </anchors>
     <background>
       <path>
         <move x="0" y="20"/>
@@ -63,10 +63,10 @@
     </foreground>
   </shape>
   <shape name="Arrow Up" h="97.5" w="70" aspect="variable" strokewidth="inherit">
-    <connections>
-      <constraint x="0.5" y="0" perimeter="0" name="N"/>
-      <constraint x="0.5" y="1" perimeter="0" name="S"/>
-    </connections>
+    <anchors>
+      <anchor x="0.5" y="0" perimeter="0" name="N"/>
+      <anchor x="0.5" y="1" perimeter="0" name="S"/>
+    </anchors>
     <background>
       <path>
         <move x="20" y="97.5"/>
@@ -84,10 +84,10 @@
     </foreground>
   </shape>
   <shape name="Bent Left Arrow" h="97" w="97.01" aspect="variable" strokewidth="inherit">
-    <connections>
-      <constraint x="0.85" y="1" perimeter="0" name="S"/>
-      <constraint x="0" y="0.29" perimeter="0" name="W"/>
-    </connections>
+    <anchors>
+      <anchor x="0.85" y="1" perimeter="0" name="S"/>
+      <anchor x="0" y="0.29" perimeter="0" name="W"/>
+    </anchors>
     <background>
       <path>
         <move x="68" y="97"/>
@@ -109,10 +109,10 @@
     </foreground>
   </shape>
   <shape name="Bent Right Arrow" h="97" w="97.01" aspect="variable" strokewidth="inherit">
-    <connections>
-      <constraint x="0.15" y="1" perimeter="0" name="S"/>
-      <constraint x="1" y="0.29" perimeter="0" name="E"/>
-    </connections>
+    <anchors>
+      <anchor x="0.15" y="1" perimeter="0" name="S"/>
+      <anchor x="1" y="0.29" perimeter="0" name="E"/>
+    </anchors>
     <background>
       <path>
         <move x="29.01" y="97"/>
@@ -134,10 +134,10 @@
     </foreground>
   </shape>
   <shape name="Bent Up Arrow" h="83.5" w="97" aspect="variable" strokewidth="inherit">
-    <connections>
-      <constraint x="0.71" y="0" perimeter="0" name="N"/>
-      <constraint x="0" y="0.82" perimeter="0" name="W"/>
-    </connections>
+    <anchors>
+      <anchor x="0.71" y="0" perimeter="0" name="N"/>
+      <anchor x="0" y="0.82" perimeter="0" name="W"/>
+    </anchors>
     <background>
       <path>
         <move x="0" y="53.5"/>
@@ -157,10 +157,10 @@
     </foreground>
   </shape>
   <shape name="Callout Double Arrow" h="97.5" w="50" aspect="variable" strokewidth="inherit">
-    <connections>
-      <constraint x="0.5" y="0" perimeter="0" name="N"/>
-      <constraint x="0.5" y="1" perimeter="0" name="S"/>
-    </connections>
+    <anchors>
+      <anchor x="0.5" y="0" perimeter="0" name="N"/>
+      <anchor x="0.5" y="1" perimeter="0" name="S"/>
+    </anchors>
     <background>
       <path>
         <move x="15" y="24"/>
@@ -189,12 +189,12 @@
     </foreground>
   </shape>
   <shape name="Callout Quad Arrow" h="97" w="97" aspect="variable" strokewidth="inherit">
-    <connections>
-      <constraint x="0.5" y="0" perimeter="0" name="N"/>
-      <constraint x="0.5" y="1" perimeter="0" name="S"/>
-      <constraint x="0" y="0.5" perimeter="0" name="W"/>
-      <constraint x="1" y="0.5" perimeter="0" name="E"/>
-    </connections>
+    <anchors>
+      <anchor x="0.5" y="0" perimeter="0" name="N"/>
+      <anchor x="0.5" y="1" perimeter="0" name="S"/>
+      <anchor x="0" y="0.5" perimeter="0" name="W"/>
+      <anchor x="1" y="0.5" perimeter="0" name="E"/>
+    </anchors>
     <background>
       <path>
         <move x="38.5" y="23.5"/>
@@ -237,9 +237,9 @@
     </foreground>
   </shape>
   <shape name="Callout Up Arrow" h="98" w="60" aspect="variable" strokewidth="inherit">
-    <connections>
-      <constraint x="0.5" y="0" perimeter="0" name="N"/>
-    </connections>
+    <anchors>
+      <anchor x="0.5" y="0" perimeter="0" name="N"/>
+    </anchors>
     <background>
       <path>
         <move x="20" y="39"/>
@@ -261,10 +261,10 @@
     </foreground>
   </shape>
   <shape name="Chevron Arrow" h="60" w="96" aspect="variable" strokewidth="inherit">
-    <connections>
-      <constraint x="0.31" y="0.5" perimeter="0" name="W"/>
-      <constraint x="1" y="0.5" perimeter="0" name="E"/>
-    </connections>
+    <anchors>
+      <anchor x="0.31" y="0.5" perimeter="0" name="W"/>
+      <anchor x="1" y="0.5" perimeter="0" name="E"/>
+    </anchors>
     <background>
       <path>
         <move x="30" y="30"/>
@@ -281,10 +281,10 @@
     </foreground>
   </shape>
   <shape name="Circular Arrow" h="69.5" w="97" aspect="variable" strokewidth="inherit">
-    <connections>
-      <constraint x="0.12" y="0.64" perimeter="0" name="SW"/>
-      <constraint x="0.794" y="1" perimeter="0" name="SE"/>
-    </connections>
+    <anchors>
+      <anchor x="0.12" y="0.64" perimeter="0" name="SW"/>
+      <anchor x="0.794" y="1" perimeter="0" name="SE"/>
+    </anchors>
     <background>
       <path>
         <move x="0" y="44.5"/>
@@ -302,10 +302,10 @@
     </foreground>
   </shape>
   <shape name="Jump-in Arrow 1" h="99.41" w="96" aspect="variable" strokewidth="inherit">
-    <connections>
-      <constraint x="0" y="0.024" perimeter="0" name="NW"/>
-      <constraint x="0.657" y="1" perimeter="0" name="S"/>
-    </connections>
+    <anchors>
+      <anchor x="0" y="0.024" perimeter="0" name="NW"/>
+      <anchor x="0.657" y="1" perimeter="0" name="S"/>
+    </anchors>
     <background>
       <linejoin join="round"/>
       <path>
@@ -323,10 +323,10 @@
     </foreground>
   </shape>
   <shape name="Jump-in Arrow 2" h="99.41" w="96" aspect="variable" strokewidth="inherit">
-    <connections>
-      <constraint x="1" y="0.024" perimeter="0" name="NE"/>
-      <constraint x="0.343" y="1" perimeter="0" name="S"/>
-    </connections>
+    <anchors>
+      <anchor x="1" y="0.024" perimeter="0" name="NE"/>
+      <anchor x="0.343" y="1" perimeter="0" name="S"/>
+    </anchors>
     <background>
       <linejoin join="round"/>
       <path>
@@ -344,10 +344,10 @@
     </foreground>
   </shape>
   <shape name="Left and Up Arrow" h="96.5" w="96.5" aspect="variable" strokewidth="inherit">
-    <connections>
-      <constraint x="0" y="0.71" perimeter="0" name="W"/>
-      <constraint x="0.71" y="0" perimeter="0" name="N"/>
-    </connections>
+    <anchors>
+      <anchor x="0" y="0.71" perimeter="0" name="W"/>
+      <anchor x="0.71" y="0" perimeter="0" name="N"/>
+    </anchors>
     <background>
       <path>
         <move x="23.5" y="53.5"/>
@@ -370,10 +370,10 @@
     </foreground>
   </shape>
   <shape name="Left Sharp Edged Head Arrow" h="60" w="97.5" aspect="variable" strokewidth="inherit">
-    <connections>
-      <constraint x="0" y="0.5" perimeter="0" name="W"/>
-      <constraint x="1" y="0.5" perimeter="0" name="E"/>
-    </connections>
+    <anchors>
+      <anchor x="0" y="0.5" perimeter="0" name="W"/>
+      <anchor x="1" y="0.5" perimeter="0" name="E"/>
+    </anchors>
     <background>
       <path>
         <move x="97.5" y="20"/>
@@ -393,10 +393,10 @@
     </foreground>
   </shape>
   <shape name="Notched Signal-in Arrow" h="30" w="96.5" aspect="variable" strokewidth="inherit">
-    <connections>
-      <constraint x="0.13" y="0.5" perimeter="0" name="W"/>
-      <constraint x="1" y="0.5" perimeter="0" name="E"/>
-    </connections>
+    <anchors>
+      <anchor x="0.13" y="0.5" perimeter="0" name="W"/>
+      <anchor x="1" y="0.5" perimeter="0" name="E"/>
+    </anchors>
     <background>
       <path>
         <move x="0" y="0"/>
@@ -413,12 +413,12 @@
     </foreground>
   </shape>
   <shape name="Quad Arrow" h="97.5" w="97.5" aspect="variable" strokewidth="inherit">
-    <connections>
-      <constraint x="0.5" y="0" perimeter="0" name="N"/>
-      <constraint x="0.5" y="1" perimeter="0" name="S"/>
-      <constraint x="0" y="0.5" perimeter="0" name="W"/>
-      <constraint x="1" y="0.5" perimeter="0" name="E"/>
-    </connections>
+    <anchors>
+      <anchor x="0.5" y="0" perimeter="0" name="N"/>
+      <anchor x="0.5" y="1" perimeter="0" name="S"/>
+      <anchor x="0" y="0.5" perimeter="0" name="W"/>
+      <anchor x="1" y="0.5" perimeter="0" name="E"/>
+    </anchors>
     <background>
       <path>
         <move x="39" y="39"/>
@@ -453,10 +453,10 @@
     </foreground>
   </shape>
   <shape name="Right Notched Arrow" h="70" w="96.5" aspect="variable" strokewidth="inherit">
-    <connections>
-      <constraint x="0.13" y="0.5" perimeter="0" name="W"/>
-      <constraint x="1" y="0.5" perimeter="0" name="E"/>
-    </connections>
+    <anchors>
+      <anchor x="0.13" y="0.5" perimeter="0" name="W"/>
+      <anchor x="1" y="0.5" perimeter="0" name="E"/>
+    </anchors>
     <background>
       <path>
         <move x="0" y="20"/>
@@ -475,10 +475,10 @@
     </foreground>
   </shape>
   <shape name="Sharp Edged Arrow" h="60" w="97.5" aspect="variable" strokewidth="inherit">
-    <connections>
-      <constraint x="0" y="0.5" perimeter="0" name="W"/>
-      <constraint x="1" y="0.5" perimeter="0" name="E"/>
-    </connections>
+    <anchors>
+      <anchor x="0" y="0.5" perimeter="0" name="W"/>
+      <anchor x="1" y="0.5" perimeter="0" name="E"/>
+    </anchors>
     <background>
       <path>
         <move x="97.5" y="20"/>
@@ -498,10 +498,10 @@
     </foreground>
   </shape>
   <shape name="Signal-in Arrow" h="30" w="97.5" aspect="variable" strokewidth="inherit">
-    <connections>
-      <constraint x="0" y="0.5" perimeter="0" name="W"/>
-      <constraint x="1" y="0.5" perimeter="0" name="E"/>
-    </connections>
+    <anchors>
+      <anchor x="0" y="0.5" perimeter="0" name="W"/>
+      <anchor x="1" y="0.5" perimeter="0" name="E"/>
+    </anchors>
     <background>
       <path>
         <move x="0" y="0"/>
@@ -517,10 +517,10 @@
     </foreground>
   </shape>
   <shape name="Slender Left Arrow" h="60" w="97.5" aspect="variable" strokewidth="inherit">
-    <connections>
-      <constraint x="0" y="0.5" perimeter="0" name="W"/>
-      <constraint x="1" y="0.5" perimeter="0" name="E"/>
-    </connections>
+    <anchors>
+      <anchor x="0" y="0.5" perimeter="0" name="W"/>
+      <anchor x="1" y="0.5" perimeter="0" name="E"/>
+    </anchors>
     <background>
       <path>
         <move x="97.5" y="20"/>
@@ -538,10 +538,10 @@
     </foreground>
   </shape>
   <shape name="Slender Two Way Arrow" h="60" w="97.5" aspect="variable" strokewidth="inherit">
-    <connections>
-      <constraint x="0" y="0.5" perimeter="0" name="W"/>
-      <constraint x="1" y="0.5" perimeter="0" name="E"/>
-    </connections>
+    <anchors>
+      <anchor x="0" y="0.5" perimeter="0" name="W"/>
+      <anchor x="1" y="0.5" perimeter="0" name="E"/>
+    </anchors>
     <background>
       <path>
         <move x="78.5" y="20"/>
@@ -562,10 +562,10 @@
     </foreground>
   </shape>
   <shape name="Slender Wide Tailed Arrow" h="60" w="96.5" aspect="variable" strokewidth="inherit">
-    <connections>
-      <constraint x="0" y="0.5" perimeter="0" name="W"/>
-      <constraint x="0.8" y="0.5" perimeter="0" name="E"/>
-    </connections>
+    <anchors>
+      <anchor x="0" y="0.5" perimeter="0" name="W"/>
+      <anchor x="0.8" y="0.5" perimeter="0" name="E"/>
+    </anchors>
     <background>
       <path>
         <move x="58.5" y="20"/>
@@ -588,10 +588,10 @@
     </foreground>
   </shape>
   <shape name="Striped Arrow" h="70" w="97.5" aspect="variable" strokewidth="inherit">
-    <connections>
-      <constraint x="0" y="0.5" perimeter="0" name="W"/>
-      <constraint x="1" y="0.5" perimeter="0" name="E"/>
-    </connections>
+    <anchors>
+      <anchor x="0" y="0.5" perimeter="0" name="W"/>
+      <anchor x="1" y="0.5" perimeter="0" name="E"/>
+    </anchors>
     <background>
       <path>
         <move x="24" y="20"/>
@@ -613,10 +613,10 @@
     </foreground>
   </shape>
   <shape name="Stylised Notched Arrow" h="60" w="96.5" aspect="variable" strokewidth="inherit">
-    <connections>
-      <constraint x="0.13" y="0.5" perimeter="0" name="W"/>
-      <constraint x="1" y="0.5" perimeter="0" name="E"/>
-    </connections>
+    <anchors>
+      <anchor x="0.13" y="0.5" perimeter="0" name="W"/>
+      <anchor x="1" y="0.5" perimeter="0" name="E"/>
+    </anchors>
     <background>
       <miterlimit limit="8"/>
       <path>
@@ -636,11 +636,11 @@
     </foreground>
   </shape>
   <shape name="Triad Arrow" h="68" w="97.5" aspect="variable" strokewidth="inherit">
-    <connections>
-      <constraint x="0" y="0.72" perimeter="0" name="W"/>
-      <constraint x="1" y="0.72" perimeter="0" name="E"/>
-      <constraint x="0.5" y="0" perimeter="0" name="N"/>
-    </connections>
+    <anchors>
+      <anchor x="0" y="0.72" perimeter="0" name="W"/>
+      <anchor x="1" y="0.72" perimeter="0" name="E"/>
+      <anchor x="0.5" y="0" perimeter="0" name="N"/>
+    </anchors>
     <background>
       <path>
         <move x="39" y="39"/>
@@ -669,10 +669,10 @@
     </foreground>
   </shape>
   <shape name="Two Way Arrow Horizontal" h="60" w="96" aspect="variable" strokewidth="inherit">
-    <connections>
-      <constraint x="0" y="0.5" perimeter="0" name="W"/>
-      <constraint x="1" y="0.5" perimeter="0" name="E"/>
-    </connections>
+    <anchors>
+      <anchor x="0" y="0.5" perimeter="0" name="W"/>
+      <anchor x="1" y="0.5" perimeter="0" name="E"/>
+    </anchors>
     <background>
       <path>
         <move x="63" y="15"/>
@@ -693,10 +693,10 @@
     </foreground>
   </shape>
   <shape name="Two Way Arrow Vertical" h="96" w="60" aspect="variable" strokewidth="inherit">
-    <connections>
-      <constraint x="0.5" y="0" perimeter="0" name="N"/>
-      <constraint x="0.5" y="1" perimeter="0" name="S"/>
-    </connections>
+    <anchors>
+      <anchor x="0.5" y="0" perimeter="0" name="N"/>
+      <anchor x="0.5" y="1" perimeter="0" name="S"/>
+    </anchors>
     <background>
       <path>
         <move x="15" y="63"/>
@@ -717,10 +717,10 @@
     </foreground>
   </shape>
   <shape name="U Turn Arrow" h="98" w="97" aspect="variable" strokewidth="inherit">
-    <connections>
-      <constraint x="0.12" y="1" perimeter="0" name="SW"/>
-      <constraint x="0.792" y="0.71" perimeter="0" name="SE"/>
-    </connections>
+    <anchors>
+      <anchor x="0.12" y="1" perimeter="0" name="SW"/>
+      <anchor x="0.792" y="0.71" perimeter="0" name="SE"/>
+    </anchors>
     <background>
       <path>
         <move x="0" y="44.5"/>
@@ -740,10 +740,10 @@
     </foreground>
   </shape>
   <shape name="U Turn Down Arrow" h="62" w="97" aspect="variable" strokewidth="inherit">
-    <connections>
-      <constraint x="0.91" y="1" perimeter="0" name="SE"/>
-      <constraint x="0.237" y="1" perimeter="0" name="SW"/>
-    </connections>
+    <anchors>
+      <anchor x="0.91" y="1" perimeter="0" name="SE"/>
+      <anchor x="0.237" y="1" perimeter="0" name="SW"/>
+    </anchors>
     <background>
       <path>
         <move x="97" y="62"/>
@@ -766,10 +766,10 @@
     </foreground>
   </shape>
   <shape name="U Turn Left Arrow" h="97.07" w="62.23" aspect="variable" strokewidth="inherit">
-    <connections>
-      <constraint x="0" y="0.76" perimeter="0" name="SW"/>
-      <constraint x="0" y="0.1" perimeter="0" name="NW"/>
-    </connections>
+    <anchors>
+      <anchor x="0" y="0.76" perimeter="0" name="SW"/>
+      <anchor x="0" y="0.1" perimeter="0" name="NW"/>
+    </anchors>
     <background>
       <path>
         <move x="0" y="0.19"/>
@@ -792,10 +792,10 @@
     </foreground>
   </shape>
   <shape name="U Turn Right Arrow" h="97.07" w="62.23" aspect="variable" strokewidth="inherit">
-    <connections>
-      <constraint x="1" y="0.76" perimeter="0" name="SW"/>
-      <constraint x="1" y="0.1" perimeter="0" name="NW"/>
-    </connections>
+    <anchors>
+      <anchor x="1" y="0.76" perimeter="0" name="SW"/>
+      <anchor x="1" y="0.1" perimeter="0" name="NW"/>
+    </anchors>
     <background>
       <path>
         <move x="62.23" y="0.19"/>
@@ -818,10 +818,10 @@
     </foreground>
   </shape>
   <shape name="U Turn Up Arrow" h="62" w="97" aspect="variable" strokewidth="inherit">
-    <connections>
-      <constraint x="0.91" y="0" perimeter="0" name="NE"/>
-      <constraint x="0.237" y="0" perimeter="0" name="NW"/>
-    </connections>
+    <anchors>
+      <anchor x="0.91" y="0" perimeter="0" name="NE"/>
+      <anchor x="0.237" y="0" perimeter="0" name="NW"/>
+    </anchors>
     <background>
       <path>
         <move x="97" y="0"/>

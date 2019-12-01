@@ -1,15 +1,15 @@
 <shapes name="flowchart">
   <shape name="Annotation 1" h="98" w="50" aspect="variable" strokewidth="inherit">
-    <connections>
-      <constraint x="0.5" y="0" perimeter="0" name="N"/>
-      <constraint x="0.5" y="1" perimeter="0" name="S"/>
-      <constraint x="0" y="0.5" perimeter="0" name="W"/>
-      <constraint x="1" y="0.5" perimeter="0" name="E"/>
-      <constraint x="0" y="0" perimeter="0" name="NW"/>
-      <constraint x="0" y="1" perimeter="0" name="SW"/>
-      <constraint x="1" y="0" perimeter="0" name="NE"/>
-      <constraint x="1" y="1" perimeter="0" name="SE"/>
-    </connections>
+    <anchors>
+      <anchor x="0.5" y="0" perimeter="0" name="N"/>
+      <anchor x="0.5" y="1" perimeter="0" name="S"/>
+      <anchor x="0" y="0.5" perimeter="0" name="W"/>
+      <anchor x="1" y="0.5" perimeter="0" name="E"/>
+      <anchor x="0" y="0" perimeter="0" name="NW"/>
+      <anchor x="0" y="1" perimeter="0" name="SW"/>
+      <anchor x="1" y="0" perimeter="0" name="NE"/>
+      <anchor x="1" y="1" perimeter="0" name="SE"/>
+    </anchors>
     <background>
       <path>
         <move x="50" y="0"/>
@@ -23,14 +23,14 @@
     </foreground>
   </shape>
   <shape name="Annotation 2" h="98" w="100" aspect="variable" strokewidth="inherit">
-    <connections>
-      <constraint x="0.5" y="0" perimeter="0" name="N"/>
-      <constraint x="0.5" y="1" perimeter="0" name="S"/>
-      <constraint x="0" y="0.5" perimeter="0" name="W"/>
-      <constraint x="1" y="0.5" perimeter="0" name="E"/>
-      <constraint x="1" y="0" perimeter="0" name="NE"/>
-      <constraint x="1" y="1" perimeter="0" name="SE"/>
-    </connections>
+    <anchors>
+      <anchor x="0.5" y="0" perimeter="0" name="N"/>
+      <anchor x="0.5" y="1" perimeter="0" name="S"/>
+      <anchor x="0" y="0.5" perimeter="0" name="W"/>
+      <anchor x="1" y="0.5" perimeter="0" name="E"/>
+      <anchor x="1" y="0" perimeter="0" name="NE"/>
+      <anchor x="1" y="1" perimeter="0" name="SE"/>
+    </anchors>
     <background>
       <path>
         <move x="100" y="0"/>
@@ -49,16 +49,16 @@
     </foreground>
   </shape>
   <shape name="Card" h="60" w="98" aspect="variable" strokewidth="inherit">
-    <connections>
-      <constraint x="0.5" y="0" perimeter="0" name="N"/>
-      <constraint x="0.5" y="1" perimeter="0" name="S"/>
-      <constraint x="0" y="0.5" perimeter="0" name="W"/>
-      <constraint x="1" y="0.5" perimeter="0" name="E"/>
-      <constraint x="0.1" y="0.16" perimeter="0" name="NW"/>
-      <constraint x="0.015" y="0.98" perimeter="0" name="SW"/>
-      <constraint x="0.985" y="0.02" perimeter="0" name="NE"/>
-      <constraint x="0.985" y="0.98" perimeter="0" name="SE"/>
-    </connections>
+    <anchors>
+      <anchor x="0.5" y="0" perimeter="0" name="N"/>
+      <anchor x="0.5" y="1" perimeter="0" name="S"/>
+      <anchor x="0" y="0.5" perimeter="0" name="W"/>
+      <anchor x="1" y="0.5" perimeter="0" name="E"/>
+      <anchor x="0.1" y="0.16" perimeter="0" name="NW"/>
+      <anchor x="0.015" y="0.98" perimeter="0" name="SW"/>
+      <anchor x="0.985" y="0.02" perimeter="0" name="NE"/>
+      <anchor x="0.985" y="0.98" perimeter="0" name="SE"/>
+    </anchors>
     <background>
       <path>
         <move x="19" y="0"/>
@@ -78,14 +78,14 @@
     </foreground>
   </shape>
   <shape name="Collate" h="98" w="96.82" aspect="variable" strokewidth="inherit">
-    <connections>
-      <constraint x="0.5" y="0" perimeter="0" name="N"/>
-      <constraint x="0.5" y="1" perimeter="0" name="S"/>
-      <constraint x="0" y="0.02" perimeter="0" name="NW"/>
-      <constraint x="0" y="0.98" perimeter="0" name="SW"/>
-      <constraint x="1" y="0.02" perimeter="0" name="NE"/>
-      <constraint x="1" y="0.98" perimeter="0" name="SE"/>
-    </connections>
+    <anchors>
+      <anchor x="0.5" y="0" perimeter="0" name="N"/>
+      <anchor x="0.5" y="1" perimeter="0" name="S"/>
+      <anchor x="0" y="0.02" perimeter="0" name="NW"/>
+      <anchor x="0" y="0.98" perimeter="0" name="SW"/>
+      <anchor x="1" y="0.02" perimeter="0" name="NE"/>
+      <anchor x="1" y="0.98" perimeter="0" name="SE"/>
+    </anchors>
     <background>
       <path>
         <move x="92.41" y="0"/>
@@ -105,16 +105,16 @@
     </foreground>
   </shape>
   <shape name="Data" h="60.24" w="98.77" aspect="variable" strokewidth="inherit">
-    <connections>
-      <constraint x="0.5" y="0" perimeter="0" name="N"/>
-      <constraint x="0.5" y="1" perimeter="0" name="S"/>
-      <constraint x="0.095" y="0.5" perimeter="0" name="W"/>
-      <constraint x="0.905" y="0.5" perimeter="0" name="E"/>
-      <constraint x="0.23" y="0.02" perimeter="0" name="NW"/>
-      <constraint x="0.015" y="0.98" perimeter="0" name="SW"/>
-      <constraint x="0.985" y="0.02" perimeter="0" name="NE"/>
-      <constraint x="0.77" y="0.98" perimeter="0" name="SE"/>
-    </connections>
+    <anchors>
+      <anchor x="0.5" y="0" perimeter="0" name="N"/>
+      <anchor x="0.5" y="1" perimeter="0" name="S"/>
+      <anchor x="0.095" y="0.5" perimeter="0" name="W"/>
+      <anchor x="0.905" y="0.5" perimeter="0" name="E"/>
+      <anchor x="0.23" y="0.02" perimeter="0" name="NW"/>
+      <anchor x="0.015" y="0.98" perimeter="0" name="SW"/>
+      <anchor x="0.985" y="0.02" perimeter="0" name="NE"/>
+      <anchor x="0.77" y="0.98" perimeter="0" name="SE"/>
+    </anchors>
     <background>
       <path>
         <move x="19.37" y="5.12"/>
@@ -133,16 +133,16 @@
     </foreground>
   </shape>
   <shape name="Database" h="60" w="60" aspect="variable" strokewidth="inherit">
-    <connections>
-      <constraint x="0.5" y="0" perimeter="0" name="N"/>
-      <constraint x="0.5" y="1" perimeter="0" name="S"/>
-      <constraint x="0" y="0.5" perimeter="0" name="W"/>
-      <constraint x="1" y="0.5" perimeter="0" name="E"/>
-      <constraint x="0" y="0.15" perimeter="0" name="NW"/>
-      <constraint x="0" y="0.85" perimeter="0" name="SW"/>
-      <constraint x="1" y="0.15" perimeter="0" name="NE"/>
-      <constraint x="1" y="0.85" perimeter="0" name="SE"/>
-    </connections>
+    <anchors>
+      <anchor x="0.5" y="0" perimeter="0" name="N"/>
+      <anchor x="0.5" y="1" perimeter="0" name="S"/>
+      <anchor x="0" y="0.5" perimeter="0" name="W"/>
+      <anchor x="1" y="0.5" perimeter="0" name="E"/>
+      <anchor x="0" y="0.15" perimeter="0" name="NW"/>
+      <anchor x="0" y="0.85" perimeter="0" name="SW"/>
+      <anchor x="1" y="0.15" perimeter="0" name="NE"/>
+      <anchor x="1" y="0.85" perimeter="0" name="SE"/>
+    </anchors>
     <background>
       <path>
         <move x="0" y="50"/>
@@ -163,12 +163,12 @@
     </foreground>
   </shape>
   <shape name="Decision" aspect="variable" strokewidth="inherit">
-    <connections>
-      <constraint x="0.5" y="0" perimeter="0" name="N"/>
-      <constraint x="0.5" y="1" perimeter="0" name="S"/>
-      <constraint x="0" y="0.5" perimeter="0" name="W"/>
-      <constraint x="1" y="0.5" perimeter="0" name="E"/>
-    </connections>
+    <anchors>
+      <anchor x="0.5" y="0" perimeter="0" name="N"/>
+      <anchor x="0.5" y="1" perimeter="0" name="S"/>
+      <anchor x="0" y="0.5" perimeter="0" name="W"/>
+      <anchor x="1" y="0.5" perimeter="0" name="E"/>
+    </anchors>
     <background>
       <path>
         <move x="50" y="0"/>
@@ -183,16 +183,16 @@
     </foreground>
   </shape>
   <shape name="Delay" h="60" w="98.25" aspect="variable" strokewidth="inherit">
-    <connections>
-      <constraint x="0.5" y="0" perimeter="0" name="N"/>
-      <constraint x="0.5" y="1" perimeter="0" name="S"/>
-      <constraint x="0" y="0.5" perimeter="0" name="W"/>
-      <constraint x="1" y="0.5" perimeter="0" name="E"/>
-      <constraint x="0.02" y="0.015" perimeter="0" name="NW"/>
-      <constraint x="0.02" y="0.985" perimeter="0" name="SW"/>
-      <constraint x="0.81" y="0" perimeter="0" name="NE"/>
-      <constraint x="0.81" y="1" perimeter="0" name="SE"/>
-    </connections>
+    <anchors>
+      <anchor x="0.5" y="0" perimeter="0" name="N"/>
+      <anchor x="0.5" y="1" perimeter="0" name="S"/>
+      <anchor x="0" y="0.5" perimeter="0" name="W"/>
+      <anchor x="1" y="0.5" perimeter="0" name="E"/>
+      <anchor x="0.02" y="0.015" perimeter="0" name="NW"/>
+      <anchor x="0.02" y="0.985" perimeter="0" name="SW"/>
+      <anchor x="0.81" y="0" perimeter="0" name="NE"/>
+      <anchor x="0.81" y="1" perimeter="0" name="SE"/>
+    </anchors>
     <background>
       <path>
         <move x="0" y="5"/>
@@ -210,16 +210,16 @@
     </foreground>
   </shape>
   <shape name="Direct Data" h="60" w="98" aspect="variable" strokewidth="inherit">
-    <connections>
-      <constraint x="0.5" y="0" perimeter="0" name="N"/>
-      <constraint x="0.5" y="1" perimeter="0" name="S"/>
-      <constraint x="0" y="0.5" perimeter="0" name="W"/>
-      <constraint x="1" y="0.5" perimeter="0" name="E"/>
-      <constraint x="0.08" y="0" perimeter="0" name="NW"/>
-      <constraint x="0.08" y="1" perimeter="0" name="SW"/>
-      <constraint x="0.91" y="0" perimeter="0" name="NE"/>
-      <constraint x="0.91" y="1" perimeter="0" name="SE"/>
-    </connections>
+    <anchors>
+      <anchor x="0.5" y="0" perimeter="0" name="N"/>
+      <anchor x="0.5" y="1" perimeter="0" name="S"/>
+      <anchor x="0" y="0.5" perimeter="0" name="W"/>
+      <anchor x="1" y="0.5" perimeter="0" name="E"/>
+      <anchor x="0.08" y="0" perimeter="0" name="NW"/>
+      <anchor x="0.08" y="1" perimeter="0" name="SW"/>
+      <anchor x="0.91" y="0" perimeter="0" name="NE"/>
+      <anchor x="0.91" y="1" perimeter="0" name="SE"/>
+    </anchors>
     <background>
       <path>
         <move x="9" y="0"/>
@@ -240,16 +240,16 @@
     </foreground>
   </shape>
   <shape name="Display" h="60" w="98.25" aspect="variable" strokewidth="inherit">
-    <connections>
-      <constraint x="0.5" y="0" perimeter="0" name="N"/>
-      <constraint x="0.5" y="1" perimeter="0" name="S"/>
-      <constraint x="0" y="0.5" perimeter="0" name="W"/>
-      <constraint x="1" y="0.5" perimeter="0" name="E"/>
-      <constraint x="0.2" y="0.14" perimeter="0" name="NW"/>
-      <constraint x="0.2" y="0.86" perimeter="0" name="SW"/>
-      <constraint x="0.92" y="0.14" perimeter="0" name="NE"/>
-      <constraint x="0.92" y="0.86" perimeter="0" name="SE"/>
-    </connections>
+    <anchors>
+      <anchor x="0.5" y="0" perimeter="0" name="N"/>
+      <anchor x="0.5" y="1" perimeter="0" name="S"/>
+      <anchor x="0" y="0.5" perimeter="0" name="W"/>
+      <anchor x="1" y="0.5" perimeter="0" name="E"/>
+      <anchor x="0.2" y="0.14" perimeter="0" name="NW"/>
+      <anchor x="0.2" y="0.86" perimeter="0" name="SW"/>
+      <anchor x="0.92" y="0.14" perimeter="0" name="NE"/>
+      <anchor x="0.92" y="0.86" perimeter="0" name="SE"/>
+    </anchors>
     <background>
       <path>
         <move x="0" y="30"/>
@@ -266,16 +266,16 @@
     </foreground>
   </shape>
   <shape name="Document" h="60.9" w="98" aspect="variable" strokewidth="inherit">
-    <connections>
-      <constraint x="0.5" y="0" perimeter="0" name="N"/>
-      <constraint x="0.5" y="0.9" perimeter="0" name="S"/>
-      <constraint x="0" y="0.5" perimeter="0" name="W"/>
-      <constraint x="1" y="0.5" perimeter="0" name="E"/>
-      <constraint x="0.02" y="0.015" perimeter="0" name="NW"/>
-      <constraint x="0" y="0.9" perimeter="0" name="SW"/>
-      <constraint x="0.98" y="0.015" perimeter="0" name="NE"/>
-      <constraint x="1" y="0.9" perimeter="0" name="SE"/>
-    </connections>
+    <anchors>
+      <anchor x="0.5" y="0" perimeter="0" name="N"/>
+      <anchor x="0.5" y="0.9" perimeter="0" name="S"/>
+      <anchor x="0" y="0.5" perimeter="0" name="W"/>
+      <anchor x="1" y="0.5" perimeter="0" name="E"/>
+      <anchor x="0.02" y="0.015" perimeter="0" name="NW"/>
+      <anchor x="0" y="0.9" perimeter="0" name="SW"/>
+      <anchor x="0.98" y="0.015" perimeter="0" name="NE"/>
+      <anchor x="1" y="0.9" perimeter="0" name="SE"/>
+    </anchors>
     <background>
       <path>
         <move x="0" y="5"/>
@@ -293,14 +293,14 @@
     </foreground>
   </shape>
   <shape name="Extract or Measurement" h="61.03" w="95.34" aspect="variable" strokewidth="inherit">
-    <connections>
-      <constraint x="0.5" y="0" perimeter="0" name="N"/>
-      <constraint x="0.5" y="1" perimeter="0" name="S"/>
-      <constraint x="0.22" y="0.5" perimeter="0" name="W"/>
-      <constraint x="0.78" y="0.5" perimeter="0" name="E"/>
-      <constraint x="0.01" y="0.97" perimeter="0" name="SW"/>
-      <constraint x="0.99" y="0.97" perimeter="0" name="SE"/>
-    </connections>
+    <anchors>
+      <anchor x="0.5" y="0" perimeter="0" name="N"/>
+      <anchor x="0.5" y="1" perimeter="0" name="S"/>
+      <anchor x="0.22" y="0.5" perimeter="0" name="W"/>
+      <anchor x="0.78" y="0.5" perimeter="0" name="E"/>
+      <anchor x="0.01" y="0.97" perimeter="0" name="SW"/>
+      <anchor x="0.99" y="0.97" perimeter="0" name="SE"/>
+    </anchors>
     <background>
       <path>
         <move x="3.64" y="61.02"/>
@@ -318,16 +318,16 @@
     </foreground>
   </shape>
   <shape name="Internal Storage" h="70" w="70" aspect="variable" strokewidth="inherit">
-    <connections>
-      <constraint x="0.5" y="0" perimeter="0" name="N"/>
-      <constraint x="0.5" y="1" perimeter="0" name="S"/>
-      <constraint x="0" y="0.5" perimeter="0" name="W"/>
-      <constraint x="1" y="0.5" perimeter="0" name="E"/>
-      <constraint x="0.02" y="0.015" perimeter="0" name="NW"/>
-      <constraint x="0.02" y="0.985" perimeter="0" name="SW"/>
-      <constraint x="0.98" y="0.015" perimeter="0" name="NE"/>
-      <constraint x="0.98" y="0.985" perimeter="0" name="SE"/>
-    </connections>
+    <anchors>
+      <anchor x="0.5" y="0" perimeter="0" name="N"/>
+      <anchor x="0.5" y="1" perimeter="0" name="S"/>
+      <anchor x="0" y="0.5" perimeter="0" name="W"/>
+      <anchor x="1" y="0.5" perimeter="0" name="E"/>
+      <anchor x="0.02" y="0.015" perimeter="0" name="NW"/>
+      <anchor x="0.02" y="0.985" perimeter="0" name="SW"/>
+      <anchor x="0.98" y="0.015" perimeter="0" name="NE"/>
+      <anchor x="0.98" y="0.985" perimeter="0" name="SE"/>
+    </anchors>
     <background>
       <roundrect x="0" y="0" w="70" h="70" arcsize="7.142857142857142"/>
     </background>
@@ -346,16 +346,16 @@
     </foreground>
   </shape>
   <shape name="Loop Limit" h="60" w="98" aspect="variable" strokewidth="inherit">
-    <connections>
-      <constraint x="0.5" y="0" perimeter="0" name="N"/>
-      <constraint x="0.5" y="1" perimeter="0" name="S"/>
-      <constraint x="0" y="0.5" perimeter="0" name="W"/>
-      <constraint x="1" y="0.5" perimeter="0" name="E"/>
-      <constraint x="0.1" y="0.15" perimeter="0" name="NW"/>
-      <constraint x="0.02" y="0.985" perimeter="0" name="SW"/>
-      <constraint x="0.9" y="0.15" perimeter="0" name="NE"/>
-      <constraint x="0.98" y="0.985" perimeter="0" name="SE"/>
-    </connections>
+    <anchors>
+      <anchor x="0.5" y="0" perimeter="0" name="N"/>
+      <anchor x="0.5" y="1" perimeter="0" name="S"/>
+      <anchor x="0" y="0.5" perimeter="0" name="W"/>
+      <anchor x="1" y="0.5" perimeter="0" name="E"/>
+      <anchor x="0.1" y="0.15" perimeter="0" name="NW"/>
+      <anchor x="0.02" y="0.985" perimeter="0" name="SW"/>
+      <anchor x="0.9" y="0.15" perimeter="0" name="NE"/>
+      <anchor x="0.98" y="0.985" perimeter="0" name="SE"/>
+    </anchors>
     <background>
       <path>
         <move x="19" y="0"/>
@@ -375,15 +375,15 @@
     </foreground>
   </shape>
   <shape name="Manual Input" h="60" w="98.05" aspect="variable" strokewidth="inherit">
-    <connections>
-      <constraint x="0.5" y="0.195" perimeter="0" name="N"/>
-      <constraint x="0.5" y="1" perimeter="0" name="S"/>
-      <constraint x="0" y="0.5" perimeter="0" name="W"/>
-      <constraint x="1" y="0.5" perimeter="0" name="E"/>
-      <constraint x="0.02" y="0.985" perimeter="0" name="SW"/>
-      <constraint x="0.98" y="0.015" perimeter="0" name="NE"/>
-      <constraint x="0.98" y="0.985" perimeter="0" name="SE"/>
-    </connections>
+    <anchors>
+      <anchor x="0.5" y="0.195" perimeter="0" name="N"/>
+      <anchor x="0.5" y="1" perimeter="0" name="S"/>
+      <anchor x="0" y="0.5" perimeter="0" name="W"/>
+      <anchor x="1" y="0.5" perimeter="0" name="E"/>
+      <anchor x="0.02" y="0.985" perimeter="0" name="SW"/>
+      <anchor x="0.98" y="0.015" perimeter="0" name="NE"/>
+      <anchor x="0.98" y="0.985" perimeter="0" name="SE"/>
+    </anchors>
     <background>
       <path>
         <move x="0" y="25"/>
@@ -402,16 +402,16 @@
     </foreground>
   </shape>
   <shape name="Manual Operation" h="60.04" w="98.79" aspect="variable" strokewidth="inherit">
-    <connections>
-      <constraint x="0.5" y="0" perimeter="0" name="N"/>
-      <constraint x="0.5" y="1" perimeter="0" name="S"/>
-      <constraint x="0.1" y="0.5" perimeter="0" name="W"/>
-      <constraint x="0.9" y="0.5" perimeter="0" name="E"/>
-      <constraint x="0.02" y="0.015" perimeter="0" name="NW"/>
-      <constraint x="0.22" y="0.985" perimeter="0" name="SW"/>
-      <constraint x="0.98" y="0.015" perimeter="0" name="NE"/>
-      <constraint x="0.78" y="0.985" perimeter="0" name="SE"/>
-    </connections>
+    <anchors>
+      <anchor x="0.5" y="0" perimeter="0" name="N"/>
+      <anchor x="0.5" y="1" perimeter="0" name="S"/>
+      <anchor x="0.1" y="0.5" perimeter="0" name="W"/>
+      <anchor x="0.9" y="0.5" perimeter="0" name="E"/>
+      <anchor x="0.02" y="0.015" perimeter="0" name="NW"/>
+      <anchor x="0.22" y="0.985" perimeter="0" name="SW"/>
+      <anchor x="0.98" y="0.015" perimeter="0" name="NE"/>
+      <anchor x="0.78" y="0.985" perimeter="0" name="SE"/>
+    </anchors>
     <background>
       <path>
         <move x="0.39" y="5.04"/>
@@ -431,16 +431,16 @@
     </foreground>
   </shape>
   <shape name="Merge or Storage" h="61.03" w="95.34" aspect="variable" strokewidth="inherit">
-    <connections>
-      <constraint x="0.5" y="0" perimeter="0" name="N"/>
-      <constraint x="0.5" y="1" perimeter="0" name="S"/>
-      <constraint x="0" y="0.5" perimeter="0" name="W"/>
-      <constraint x="1" y="0.5" perimeter="0" name="E"/>
-      <constraint x="0" y="0" perimeter="0" name="NW"/>
-      <constraint x="0" y="1" perimeter="0" name="SW"/>
-      <constraint x="1" y="0" perimeter="0" name="NE"/>
-      <constraint x="1" y="1" perimeter="0" name="SE"/>
-    </connections>
+    <anchors>
+      <anchor x="0.5" y="0" perimeter="0" name="N"/>
+      <anchor x="0.5" y="1" perimeter="0" name="S"/>
+      <anchor x="0" y="0.5" perimeter="0" name="W"/>
+      <anchor x="1" y="0.5" perimeter="0" name="E"/>
+      <anchor x="0" y="0" perimeter="0" name="NW"/>
+      <anchor x="0" y="1" perimeter="0" name="SW"/>
+      <anchor x="1" y="0" perimeter="0" name="NE"/>
+      <anchor x="1" y="1" perimeter="0" name="SE"/>
+    </anchors>
     <background>
       <path>
         <move x="3.64" y="0.01"/>
@@ -458,16 +458,16 @@
     </foreground>
   </shape>
   <shape name="Multi-Document" h="60.28" w="88" aspect="variable" strokewidth="inherit">
-    <connections>
-      <constraint x="0.5" y="0" perimeter="0" name="N"/>
-      <constraint x="0.5" y="0.88" perimeter="0" name="S"/>
-      <constraint x="0" y="0.5" perimeter="0" name="W"/>
-      <constraint x="1" y="0.5" perimeter="0" name="E"/>
-      <constraint x="0.08" y="0.1" perimeter="0" name="NW"/>
-      <constraint x="0" y="0.91" perimeter="0" name="SW"/>
-      <constraint x="0.98" y="0.02" perimeter="0" name="NE"/>
-      <constraint x="0.885" y="0.91" perimeter="0" name="SE"/>
-    </connections>
+    <anchors>
+      <anchor x="0.5" y="0" perimeter="0" name="N"/>
+      <anchor x="0.5" y="0.88" perimeter="0" name="S"/>
+      <anchor x="0" y="0.5" perimeter="0" name="W"/>
+      <anchor x="1" y="0.5" perimeter="0" name="E"/>
+      <anchor x="0.08" y="0.1" perimeter="0" name="NW"/>
+      <anchor x="0" y="0.91" perimeter="0" name="SW"/>
+      <anchor x="0.98" y="0.02" perimeter="0" name="NE"/>
+      <anchor x="0.885" y="0.91" perimeter="0" name="SE"/>
+    </anchors>
     <background>
       <path>
         <move x="10" y="5"/>
@@ -507,14 +507,14 @@
     </foreground>
   </shape>
   <shape name="Off-page Reference" h="60" w="60" aspect="variable" strokewidth="inherit">
-    <connections>
-      <constraint x="0.5" y="0" perimeter="0" name="N"/>
-      <constraint x="0.5" y="1" perimeter="0" name="S"/>
-      <constraint x="0" y="0.5" perimeter="0" name="W"/>
-      <constraint x="1" y="0.5" perimeter="0" name="E"/>
-      <constraint x="0" y="0" perimeter="0" name="NW"/>
-      <constraint x="1" y="0" perimeter="0" name="NE"/>
-    </connections>
+    <anchors>
+      <anchor x="0.5" y="0" perimeter="0" name="N"/>
+      <anchor x="0.5" y="1" perimeter="0" name="S"/>
+      <anchor x="0" y="0.5" perimeter="0" name="W"/>
+      <anchor x="1" y="0.5" perimeter="0" name="E"/>
+      <anchor x="0" y="0" perimeter="0" name="NW"/>
+      <anchor x="1" y="0" perimeter="0" name="NE"/>
+    </anchors>
     <background>
       <path>
         <move x="0" y="0"/>
@@ -530,16 +530,16 @@
     </foreground>
   </shape>
   <shape name="On-page Reference" h="60" w="60" aspect="variable" strokewidth="inherit">
-    <connections>
-      <constraint x="0.5" y="0" perimeter="0" name="N"/>
-      <constraint x="0.5" y="1" perimeter="0" name="S"/>
-      <constraint x="0" y="0.5" perimeter="0" name="W"/>
-      <constraint x="1" y="0.5" perimeter="0" name="E"/>
-      <constraint x="0.145" y="0.145" perimeter="0" name="NW"/>
-      <constraint x="0.145" y="0.855" perimeter="0" name="SW"/>
-      <constraint x="0.855" y="0.145" perimeter="0" name="NE"/>
-      <constraint x="0.855" y="0.855" perimeter="0" name="SE"/>
-    </connections>
+    <anchors>
+      <anchor x="0.5" y="0" perimeter="0" name="N"/>
+      <anchor x="0.5" y="1" perimeter="0" name="S"/>
+      <anchor x="0" y="0.5" perimeter="0" name="W"/>
+      <anchor x="1" y="0.5" perimeter="0" name="E"/>
+      <anchor x="0.145" y="0.145" perimeter="0" name="NW"/>
+      <anchor x="0.145" y="0.855" perimeter="0" name="SW"/>
+      <anchor x="0.855" y="0.145" perimeter="0" name="NE"/>
+      <anchor x="0.855" y="0.855" perimeter="0" name="SE"/>
+    </anchors>
     <background>
       <ellipse x="0" y="0" w="60" h="60"/>
     </background>
@@ -548,16 +548,16 @@
     </foreground>
   </shape>
   <shape name="Or" h="70" w="70" aspect="variable" strokewidth="inherit">
-    <connections>
-      <constraint x="0.5" y="0" perimeter="0" name="N"/>
-      <constraint x="0.5" y="1" perimeter="0" name="S"/>
-      <constraint x="0" y="0.5" perimeter="0" name="W"/>
-      <constraint x="1" y="0.5" perimeter="0" name="E"/>
-      <constraint x="0.145" y="0.145" perimeter="0" name="NW"/>
-      <constraint x="0.145" y="0.855" perimeter="0" name="SW"/>
-      <constraint x="0.855" y="0.145" perimeter="0" name="NE"/>
-      <constraint x="0.855" y="0.855" perimeter="0" name="SE"/>
-    </connections>
+    <anchors>
+      <anchor x="0.5" y="0" perimeter="0" name="N"/>
+      <anchor x="0.5" y="1" perimeter="0" name="S"/>
+      <anchor x="0" y="0.5" perimeter="0" name="W"/>
+      <anchor x="1" y="0.5" perimeter="0" name="E"/>
+      <anchor x="0.145" y="0.145" perimeter="0" name="NW"/>
+      <anchor x="0.145" y="0.855" perimeter="0" name="SW"/>
+      <anchor x="0.855" y="0.145" perimeter="0" name="NE"/>
+      <anchor x="0.855" y="0.855" perimeter="0" name="SE"/>
+    </anchors>
     <background>
       <ellipse x="0" y="0" w="70" h="70"/>
     </background>
@@ -576,16 +576,16 @@
     </foreground>
   </shape>
   <shape name="Paper Tape" h="61.81" w="98" aspect="variable" strokewidth="inherit">
-    <connections>
-      <constraint x="0.5" y="0.09" perimeter="0" name="N"/>
-      <constraint x="0.5" y="0.91" perimeter="0" name="S"/>
-      <constraint x="0" y="0.5" perimeter="0" name="W"/>
-      <constraint x="1" y="0.5" perimeter="0" name="E"/>
-      <constraint x="0" y="0.09" perimeter="0" name="NW"/>
-      <constraint x="0" y="0.91" perimeter="0" name="SW"/>
-      <constraint x="1" y="0.09" perimeter="0" name="NE"/>
-      <constraint x="1" y="0.91" perimeter="0" name="SE"/>
-    </connections>
+    <anchors>
+      <anchor x="0.5" y="0.09" perimeter="0" name="N"/>
+      <anchor x="0.5" y="0.91" perimeter="0" name="S"/>
+      <anchor x="0" y="0.5" perimeter="0" name="W"/>
+      <anchor x="1" y="0.5" perimeter="0" name="E"/>
+      <anchor x="0" y="0.09" perimeter="0" name="NW"/>
+      <anchor x="0" y="0.91" perimeter="0" name="SW"/>
+      <anchor x="1" y="0.09" perimeter="0" name="NE"/>
+      <anchor x="1" y="0.91" perimeter="0" name="SE"/>
+    </anchors>
     <background>
       <path>
         <move x="0" y="5.9"/>
@@ -603,16 +603,16 @@
     </foreground>
   </shape>
   <shape name="Parallel Mode" h="40" w="94" aspect="variable" strokewidth="inherit">
-    <connections>
-      <constraint x="0.5" y="0" perimeter="0" name="N"/>
-      <constraint x="0.5" y="1" perimeter="0" name="S"/>
-      <constraint x="0" y="0.5" perimeter="0" name="W"/>
-      <constraint x="1" y="0.5" perimeter="0" name="E"/>
-      <constraint x="0" y="0" perimeter="0" name="NW"/>
-      <constraint x="0" y="1" perimeter="0" name="SW"/>
-      <constraint x="1" y="0" perimeter="0" name="NE"/>
-      <constraint x="1" y="1" perimeter="0" name="SE"/>
-    </connections>
+    <anchors>
+      <anchor x="0.5" y="0" perimeter="0" name="N"/>
+      <anchor x="0.5" y="1" perimeter="0" name="S"/>
+      <anchor x="0" y="0.5" perimeter="0" name="W"/>
+      <anchor x="1" y="0.5" perimeter="0" name="E"/>
+      <anchor x="0" y="0" perimeter="0" name="NW"/>
+      <anchor x="0" y="1" perimeter="0" name="SW"/>
+      <anchor x="1" y="0" perimeter="0" name="NE"/>
+      <anchor x="1" y="1" perimeter="0" name="SE"/>
+    </anchors>
     <background>
       <save/>
       <fillcolor color="#ffff00"/>
@@ -653,16 +653,16 @@
     </foreground>
   </shape>
   <shape name="Predefined Process" h="60" w="98" aspect="variable" strokewidth="inherit">
-    <connections>
-      <constraint x="0.5" y="0" perimeter="0" name="N"/>
-      <constraint x="0.5" y="1" perimeter="0" name="S"/>
-      <constraint x="0" y="0.5" perimeter="0" name="W"/>
-      <constraint x="1" y="0.5" perimeter="0" name="E"/>
-      <constraint x="0.02" y="0.015" perimeter="0" name="NW"/>
-      <constraint x="0.02" y="0.985" perimeter="0" name="SW"/>
-      <constraint x="0.98" y="0.015" perimeter="0" name="NE"/>
-      <constraint x="0.98" y="0.985" perimeter="0" name="SE"/>
-    </connections>
+    <anchors>
+      <anchor x="0.5" y="0" perimeter="0" name="N"/>
+      <anchor x="0.5" y="1" perimeter="0" name="S"/>
+      <anchor x="0" y="0.5" perimeter="0" name="W"/>
+      <anchor x="1" y="0.5" perimeter="0" name="E"/>
+      <anchor x="0.02" y="0.015" perimeter="0" name="NW"/>
+      <anchor x="0.02" y="0.985" perimeter="0" name="SW"/>
+      <anchor x="0.98" y="0.015" perimeter="0" name="NE"/>
+      <anchor x="0.98" y="0.985" perimeter="0" name="SE"/>
+    </anchors>
     <background>
       <roundrect x="0" y="0" w="98" h="60" arcsize="6.717687074829931"/>
     </background>
@@ -681,16 +681,16 @@
     </foreground>
   </shape>
   <shape name="Preparation" h="60" w="97.11" aspect="variable" strokewidth="inherit">
-    <connections>
-      <constraint x="0.5" y="0" perimeter="0" name="N"/>
-      <constraint x="0.5" y="1" perimeter="0" name="S"/>
-      <constraint x="0" y="0.5" perimeter="0" name="W"/>
-      <constraint x="1" y="0.5" perimeter="0" name="E"/>
-      <constraint x="0.26" y="0.02" perimeter="0" name="NW"/>
-      <constraint x="0.26" y="0.98" perimeter="0" name="SW"/>
-      <constraint x="0.74" y="0.02" perimeter="0" name="NE"/>
-      <constraint x="0.74" y="0.98" perimeter="0" name="SE"/>
-    </connections>
+    <anchors>
+      <anchor x="0.5" y="0" perimeter="0" name="N"/>
+      <anchor x="0.5" y="1" perimeter="0" name="S"/>
+      <anchor x="0" y="0.5" perimeter="0" name="W"/>
+      <anchor x="1" y="0.5" perimeter="0" name="E"/>
+      <anchor x="0.26" y="0.02" perimeter="0" name="NW"/>
+      <anchor x="0.26" y="0.98" perimeter="0" name="SW"/>
+      <anchor x="0.74" y="0.02" perimeter="0" name="NE"/>
+      <anchor x="0.74" y="0.98" perimeter="0" name="SE"/>
+    </anchors>
     <background>
       <path>
         <move x="20.56" y="5"/>
@@ -714,12 +714,12 @@
     </foreground>
   </shape>
   <shape name="Process" aspect="variable" strokewidth="inherit">
-    <connections>
-      <constraint x="0.5" y="0" perimeter="0" name="N"/>
-      <constraint x="0.5" y="1" perimeter="0" name="S"/>
-      <constraint x="0" y="0.5" perimeter="0" name="W"/>
-      <constraint x="1" y="0.5" perimeter="0" name="E"/>
-    </connections>
+    <anchors>
+      <anchor x="0.5" y="0" perimeter="0" name="N"/>
+      <anchor x="0.5" y="1" perimeter="0" name="S"/>
+      <anchor x="0" y="0.5" perimeter="0" name="W"/>
+      <anchor x="1" y="0.5" perimeter="0" name="E"/>
+    </anchors>
     <background>
       <roundrect x="0" y="0" w="100" h="100" arcsize="6"/>
     </background>
@@ -728,16 +728,16 @@
     </foreground>
   </shape>
   <shape name="Sequential Data" h="99" w="99" aspect="variable" strokewidth="inherit">
-    <connections>
-      <constraint x="0.5" y="0" perimeter="0" name="N"/>
-      <constraint x="0.5" y="1" perimeter="0" name="S"/>
-      <constraint x="0" y="0.5" perimeter="0" name="W"/>
-      <constraint x="1" y="0.5" perimeter="0" name="E"/>
-      <constraint x="0.145" y="0.145" perimeter="0" name="NW"/>
-      <constraint x="0.145" y="0.855" perimeter="0" name="SW"/>
-      <constraint x="0.855" y="0.145" perimeter="0" name="NE"/>
-      <constraint x="1" y="1" perimeter="0" name="SE"/>
-    </connections>
+    <anchors>
+      <anchor x="0.5" y="0" perimeter="0" name="N"/>
+      <anchor x="0.5" y="1" perimeter="0" name="S"/>
+      <anchor x="0" y="0.5" perimeter="0" name="W"/>
+      <anchor x="1" y="0.5" perimeter="0" name="E"/>
+      <anchor x="0.145" y="0.145" perimeter="0" name="NW"/>
+      <anchor x="0.145" y="0.855" perimeter="0" name="SW"/>
+      <anchor x="0.855" y="0.145" perimeter="0" name="NE"/>
+      <anchor x="1" y="1" perimeter="0" name="SE"/>
+    </anchors>
     <background>
       <ellipse x="0" y="0" w="99" h="99"/>
     </background>
@@ -751,12 +751,12 @@
     </foreground>
   </shape>
   <shape name="Sort" h="98" w="98" aspect="variable" strokewidth="inherit">
-    <connections>
-      <constraint x="0.5" y="0" perimeter="0" name="N"/>
-      <constraint x="0.5" y="1" perimeter="0" name="S"/>
-      <constraint x="0" y="0.5" perimeter="0" name="W"/>
-      <constraint x="1" y="0.5" perimeter="0" name="E"/>
-    </connections>
+    <anchors>
+      <anchor x="0.5" y="0" perimeter="0" name="N"/>
+      <anchor x="0.5" y="1" perimeter="0" name="S"/>
+      <anchor x="0" y="0.5" perimeter="0" name="W"/>
+      <anchor x="1" y="0.5" perimeter="0" name="E"/>
+    </anchors>
     <background>
       <path>
         <move x="51" y="1"/>
@@ -781,16 +781,16 @@
     </foreground>
   </shape>
   <shape name="Start 1" h="60" w="99" aspect="variable" strokewidth="inherit">
-    <connections>
-      <constraint x="0.5" y="0" perimeter="0" name="N"/>
-      <constraint x="0.5" y="1" perimeter="0" name="S"/>
-      <constraint x="0" y="0.5" perimeter="0" name="W"/>
-      <constraint x="1" y="0.5" perimeter="0" name="E"/>
-      <constraint x="0.145" y="0.145" perimeter="0" name="NW"/>
-      <constraint x="0.145" y="0.855" perimeter="0" name="SW"/>
-      <constraint x="0.855" y="0.145" perimeter="0" name="NE"/>
-      <constraint x="0.855" y="0.855" perimeter="0" name="SE"/>
-    </connections>
+    <anchors>
+      <anchor x="0.5" y="0" perimeter="0" name="N"/>
+      <anchor x="0.5" y="1" perimeter="0" name="S"/>
+      <anchor x="0" y="0.5" perimeter="0" name="W"/>
+      <anchor x="1" y="0.5" perimeter="0" name="E"/>
+      <anchor x="0.145" y="0.145" perimeter="0" name="NW"/>
+      <anchor x="0.145" y="0.855" perimeter="0" name="SW"/>
+      <anchor x="0.855" y="0.145" perimeter="0" name="NE"/>
+      <anchor x="0.855" y="0.855" perimeter="0" name="SE"/>
+    </anchors>
     <background>
       <ellipse x="0" y="0" w="99" h="60"/>
     </background>
@@ -799,16 +799,16 @@
     </foreground>
   </shape>
   <shape name="Start 2" h="99" w="99" aspect="variable" strokewidth="inherit">
-    <connections>
-      <constraint x="0.5" y="0" perimeter="0" name="N"/>
-      <constraint x="0.5" y="1" perimeter="0" name="S"/>
-      <constraint x="0" y="0.5" perimeter="0" name="W"/>
-      <constraint x="1" y="0.5" perimeter="0" name="E"/>
-      <constraint x="0.145" y="0.145" perimeter="0" name="NW"/>
-      <constraint x="0.145" y="0.855" perimeter="0" name="SW"/>
-      <constraint x="0.855" y="0.145" perimeter="0" name="NE"/>
-      <constraint x="0.855" y="0.855" perimeter="0" name="SE"/>
-    </connections>
+    <anchors>
+      <anchor x="0.5" y="0" perimeter="0" name="N"/>
+      <anchor x="0.5" y="1" perimeter="0" name="S"/>
+      <anchor x="0" y="0.5" perimeter="0" name="W"/>
+      <anchor x="1" y="0.5" perimeter="0" name="E"/>
+      <anchor x="0.145" y="0.145" perimeter="0" name="NW"/>
+      <anchor x="0.145" y="0.855" perimeter="0" name="SW"/>
+      <anchor x="0.855" y="0.145" perimeter="0" name="NE"/>
+      <anchor x="0.855" y="0.855" perimeter="0" name="SE"/>
+    </anchors>
     <background>
       <ellipse x="0" y="0" w="99" h="99"/>
     </background>
@@ -817,16 +817,16 @@
     </foreground>
   </shape>
   <shape name="Stored Data" h="60" w="96.51" aspect="variable" strokewidth="inherit">
-    <connections>
-      <constraint x="0.5" y="0" perimeter="0" name="N"/>
-      <constraint x="0.5" y="1" perimeter="0" name="S"/>
-      <constraint x="0" y="0.5" perimeter="0" name="W"/>
-      <constraint x="0.93" y="0.5" perimeter="0" name="E"/>
-      <constraint x="0.1" y="0" perimeter="0" name="NW"/>
-      <constraint x="0.1" y="1" perimeter="0" name="SW"/>
-      <constraint x="0.995" y="0.01" perimeter="0" name="NE"/>
-      <constraint x="0.995" y="0.99" perimeter="0" name="SE"/>
-    </connections>
+    <anchors>
+      <anchor x="0.5" y="0" perimeter="0" name="N"/>
+      <anchor x="0.5" y="1" perimeter="0" name="S"/>
+      <anchor x="0" y="0.5" perimeter="0" name="W"/>
+      <anchor x="0.93" y="0.5" perimeter="0" name="E"/>
+      <anchor x="0.1" y="0" perimeter="0" name="NW"/>
+      <anchor x="0.1" y="1" perimeter="0" name="SW"/>
+      <anchor x="0.995" y="0.01" perimeter="0" name="NE"/>
+      <anchor x="0.995" y="0.99" perimeter="0" name="SE"/>
+    </anchors>
     <background>
       <path>
         <move x="10" y="0"/>
@@ -844,16 +844,16 @@
     </foreground>
   </shape>
   <shape name="Summing Function" h="70" w="70" aspect="variable" strokewidth="inherit">
-    <connections>
-      <constraint x="0.5" y="0" perimeter="0" name="N"/>
-      <constraint x="0.5" y="1" perimeter="0" name="S"/>
-      <constraint x="0" y="0.5" perimeter="0" name="W"/>
-      <constraint x="1" y="0.5" perimeter="0" name="E"/>
-      <constraint x="0.145" y="0.145" perimeter="0" name="NW"/>
-      <constraint x="0.145" y="0.855" perimeter="0" name="SW"/>
-      <constraint x="0.855" y="0.145" perimeter="0" name="NE"/>
-      <constraint x="0.855" y="0.855" perimeter="0" name="SE"/>
-    </connections>
+    <anchors>
+      <anchor x="0.5" y="0" perimeter="0" name="N"/>
+      <anchor x="0.5" y="1" perimeter="0" name="S"/>
+      <anchor x="0" y="0.5" perimeter="0" name="W"/>
+      <anchor x="1" y="0.5" perimeter="0" name="E"/>
+      <anchor x="0.145" y="0.145" perimeter="0" name="NW"/>
+      <anchor x="0.145" y="0.855" perimeter="0" name="SW"/>
+      <anchor x="0.855" y="0.145" perimeter="0" name="NE"/>
+      <anchor x="0.855" y="0.855" perimeter="0" name="SE"/>
+    </anchors>
     <background>
       <ellipse x="0" y="0" w="70" h="70"/>
     </background>
@@ -872,16 +872,16 @@
     </foreground>
   </shape>
   <shape name="Terminator" h="60" w="98" aspect="variable" strokewidth="inherit">
-    <connections>
-      <constraint x="0.5" y="0" perimeter="0" name="N"/>
-      <constraint x="0.5" y="1" perimeter="0" name="S"/>
-      <constraint x="0" y="0.5" perimeter="0" name="W"/>
-      <constraint x="1" y="0.5" perimeter="0" name="E"/>
-      <constraint x="0.11" y="0.11" perimeter="0" name="NW"/>
-      <constraint x="0.11" y="0.89" perimeter="0" name="SW"/>
-      <constraint x="0.89" y="0.11" perimeter="0" name="NE"/>
-      <constraint x="0.89" y="0.89" perimeter="0" name="SE"/>
-    </connections>
+    <anchors>
+      <anchor x="0.5" y="0" perimeter="0" name="N"/>
+      <anchor x="0.5" y="1" perimeter="0" name="S"/>
+      <anchor x="0" y="0.5" perimeter="0" name="W"/>
+      <anchor x="1" y="0.5" perimeter="0" name="E"/>
+      <anchor x="0.11" y="0.11" perimeter="0" name="NW"/>
+      <anchor x="0.11" y="0.89" perimeter="0" name="SW"/>
+      <anchor x="0.89" y="0.11" perimeter="0" name="NE"/>
+      <anchor x="0.89" y="0.89" perimeter="0" name="SE"/>
+    </anchors>
     <background>
       <path>
         <move x="30" y="0"/>
@@ -897,10 +897,10 @@
     </foreground>
   </shape>
   <shape name="Transfer" h="70" w="97.5" aspect="variable" strokewidth="inherit">
-    <connections>
-      <constraint x="0" y="0.5" perimeter="0" name="W"/>
-      <constraint x="1" y="0.5" perimeter="0" name="E"/>
-    </connections>
+    <anchors>
+      <anchor x="0" y="0.5" perimeter="0" name="W"/>
+      <anchor x="1" y="0.5" perimeter="0" name="E"/>
+    </anchors>
     <background>
       <path>
         <move x="0" y="20"/>
