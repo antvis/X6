@@ -12,6 +12,7 @@
 - ContextMenu
 - ColorPicker
 - ScrollBox
+- SplitBox
 
 ## Installation
 
