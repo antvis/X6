@@ -13,7 +13,6 @@
     "lint": "lerna run lint",
     "test": "lerna run test",
     "coveralls": "lerna run coveralls",
-    "version": "lerna version",
     "clear": "rimraf yarn.lock && lerna clean && rimraf ./node_modules"
   },
   "husky": {
