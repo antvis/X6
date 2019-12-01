@@ -32,12 +32,19 @@ fs.readdir(dir, (err, files) => {
   })
 
   const code = prefix + lines.join('\n')
+  const file = 'src/assets/images.ts'
+  const old = fs.readFileSync(file, { encoding: 'utf8' })
+  const format = s => s.replace(/[\n\s]/g, '')
 
-  fs.writeFile('src/assets/images.ts', code, error => {
-    if (error) {
-      throw new Error(`Generate image assets filed: ${error}`)
-    }
+  if (format(code) !== format(old)) {
+    fs.writeFile(file, code, error => {
+      if (error) {
+        throw new Error(`Generate image assets filed: ${error}`)
+      }
 
-    console.log(`\nGenerate image assets.`)
-  })
+      console.log(`\nGenerate image assets.`)
+    })
+  } else {
+    console.log('\nImage assets not be changed, ignore.')
+  }
 })
