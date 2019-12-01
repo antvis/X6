@@ -1,7 +1,6 @@
 import React from 'react'
 import classNames from 'classnames'
 import RcDropdown from 'rc-dropdown'
-import { Menu } from '../menu'
 
 export class Dropdown extends React.Component<Dropdown.Props, any> {
   getTransitionName() {
@@ -16,10 +15,11 @@ export class Dropdown extends React.Component<Dropdown.Props, any> {
   }
 
   render() {
-    const { children, trigger, disabled, onMenuClick } = this.props
+    const { children, trigger, disabled } = this.props
 
     const prefixCls = `${this.props.prefixCls}-dropdown`
-    const dropdownTrigger = React.cloneElement(this.props.children as any, {
+    const child = React.Children.only(children) as React.ReactElement<any>
+    const dropdownTrigger = React.cloneElement(child, {
       className: classNames(
         (children as any).props.className,
         `${prefixCls}-trigger`
@@ -33,23 +33,13 @@ export class Dropdown extends React.Component<Dropdown.Props, any> {
       ? trigger
       : [trigger]
 
-    let alignPoint
+    let alignPoint = false
     if (triggers && triggers.indexOf('contextMenu') !== -1) {
       alignPoint = true
     }
 
     const overlay = React.Children.only(this.props.overlay) as any
-    let fixedOverlay = overlay
-    if (overlay != null && overlay.type === Menu && onMenuClick) {
-      const onClick = (name: string) => {
-        onMenuClick(name)
-        if (overlay.props.onClick) {
-          overlay.props.onClick(name)
-        }
-      }
-
-      fixedOverlay = React.cloneElement(overlay, { onClick })
-    }
+    const fixedOverlay = <div className={`${prefixCls}-overlay`}>{overlay}</div>
 
     return (
       <RcDropdown
@@ -79,6 +69,7 @@ export namespace Dropdown {
   export interface Props {
     prefixCls?: string
     className?: string
+    overlayStyle?: React.CSSProperties
     overlayClassName?: string
     openClassName?: string
     visible?: boolean
@@ -89,12 +80,13 @@ export namespace Dropdown {
     transitionName?: string
     placement?: Placement
     forceRender?: boolean
-    onMenuClick?: (name: string) => void
+    mouseEnterDelay?: number
+    mouseLeaveDelay?: number
     onVisibleChange?: (visible?: boolean) => void
     getPopupContainer?: (triggerNode: Element) => HTMLElement
   }
 
-  export const defaultProps = {
+  export const defaultProps: Props = {
     trigger: 'hover',
     prefixCls: 'x6',
     mouseEnterDelay: 0.15,
