@@ -1,10 +1,10 @@
 import { Point } from './point'
 
 /**
- * Defines an object that contains the constraints about how to
+ * Defines an object that contains the anchors about how to
  * connect one side of an edge to its terminal.
  */
-export class Constraint {
+export class Anchor {
   /**
    * The fixed location of the connection point.
    */
@@ -17,21 +17,21 @@ export class Constraint {
   public perimeter: boolean
 
   /**
-   * The name of the constraint.
+   * The name of the anchor.
    */
   public name: string | null
 
   /**
-   * The horizontal offset of the constraint.
+   * The horizontal offset of the anchor.
    */
   public dx: number
 
   /**
-   * The vertical offset of the constraint.
+   * The vertical offset of the anchor.
    */
   public dy: number
 
-  constructor(options: Constraint.Options = {}) {
+  constructor(options: Anchor.Options = {}) {
     this.name = options.name || null
     this.point = options.point || null
     this.perimeter = options.perimeter === false ? false : true
@@ -40,7 +40,7 @@ export class Constraint {
   }
 }
 
-export namespace Constraint {
+export namespace Anchor {
   export interface Options {
     /**
      * The fixed location of the connection point.
@@ -54,17 +54,17 @@ export namespace Constraint {
     perimeter?: boolean
 
     /**
-     * The name of the constraint.
+     * The name of the anchor.
      */
     name?: string
 
     /**
-     * The horizontal offset of the constraint.
+     * The horizontal offset of the anchor.
      */
     dx?: number
 
     /**
-     * The vertical offset of the constraint.
+     * The vertical offset of the anchor.
      */
     dy?: number
   }

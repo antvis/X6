@@ -1,29 +1,29 @@
 import { CellMarker } from '../cell-marker'
-import { ConstraintHandler } from '../constraint/handler'
+import { AnchorHandler } from '../anchor/handler'
 
 /**
- * Transparent cell hilight when constraint point is highlighted.
+ * Transparent cell hilight when anchor point is highlighted.
  */
 export function transparentMarker(
-  constraintHandler: ConstraintHandler,
+  anchorHandler: AnchorHandler,
   marker: CellMarker
 ) {
   if (
-    constraintHandler.currentState != null &&
-    constraintHandler.currentConstraint != null
+    anchorHandler.currentState != null &&
+    anchorHandler.currentAnchor != null
   ) {
     if (
       marker.highlight != null &&
       marker.highlight.shape != null &&
       marker.highlight.state != null &&
-      marker.highlight.state.cell === constraintHandler.currentState.cell
+      marker.highlight.state.cell === anchorHandler.currentState.cell
     ) {
       if (marker.highlight.shape.strokeColor !== 'transparent') {
         marker.highlight.shape.strokeColor = 'transparent'
         marker.highlight.repaint()
       }
     } else {
-      marker.markCell(constraintHandler.currentState.cell, 'transparent')
+      marker.markCell(anchorHandler.currentState.cell, 'transparent')
     }
   }
 }

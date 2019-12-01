@@ -46,17 +46,17 @@ export function er(
     sourceState.bounds.x = p0.x
     sourceState.bounds.y = p0.y
   } else if (sourceState != null) {
-    const constraint = util.getPortConstraints(
+    const anchor = util.getPortAnchors(
       sourceState,
       edgeState,
       true,
       DirectionMask.none
     )
     if (
-      constraint !== DirectionMask.none &&
-      constraint !== DirectionMask.west + DirectionMask.east
+      anchor !== DirectionMask.none &&
+      anchor !== DirectionMask.west + DirectionMask.east
     ) {
-      isSourceLeft = constraint === DirectionMask.west
+      isSourceLeft = anchor === DirectionMask.west
     } else {
       const sourceGeometry = graph.getCellGeometry(sourceState.cell)!
       if (sourceGeometry.relative) {
@@ -78,7 +78,7 @@ export function er(
     targetState.bounds.x = pe.x
     targetState.bounds.y = pe.y
   } else if (targetState != null) {
-    const constraint = util.getPortConstraints(
+    const anchor = util.getPortAnchors(
       targetState,
       edgeState,
       false,
@@ -86,10 +86,10 @@ export function er(
     )
 
     if (
-      constraint !== DirectionMask.none &&
-      constraint !== DirectionMask.west + DirectionMask.east
+      anchor !== DirectionMask.none &&
+      anchor !== DirectionMask.west + DirectionMask.east
     ) {
-      isTargetLeft = constraint === DirectionMask.west
+      isTargetLeft = anchor === DirectionMask.west
     } else {
       const targetGeometry = graph.getCellGeometry(targetState.cell)!
       if (targetGeometry.relative) {

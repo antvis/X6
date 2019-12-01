@@ -3,7 +3,7 @@ export * from './rectangle'
 export * from './image'
 export * from './overlay'
 export * from './cellpath'
-export * from './constraint'
+export * from './anchor'
 export * from './multiplicity'
 
 // enums

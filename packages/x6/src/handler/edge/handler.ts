@@ -1,11 +1,11 @@
 import * as util from '../../util'
 import * as routers from '../../route'
 import { Cell, State, Graph } from '../../core'
-import { Rectangle, Point, Constraint } from '../../struct'
+import { Rectangle, Point, Anchor } from '../../struct'
 import { Shape, RectangleShape } from '../../shape'
 import { MouseHandler } from '../handler-mouse'
 import { CellMarker } from '../cell-marker'
-import { ConstraintHandler } from '../constraint/handler'
+import { AnchorHandler } from '../anchor/handler'
 import { Handle } from '../handle'
 import { EdgeMarker } from './marker'
 import { transparentMarker } from '../connection/util'
@@ -38,7 +38,7 @@ export class EdgeHandler extends MouseHandler {
   preferHtml: boolean = false
 
   marker: CellMarker
-  constraintHandler: ConstraintHandler
+  anchorHandler: AnchorHandler
   previewShape: Shape | null
   parentHighlight: RectangleShape | null
   labelPos: Point | null
@@ -183,7 +183,7 @@ export class EdgeHandler extends MouseHandler {
 
   init() {
     this.marker = new EdgeMarker(this.graph, this)
-    this.constraintHandler = new ConstraintHandler(this.graph)
+    this.anchorHandler = new AnchorHandler(this.graph)
 
     // Clones the original points from the cell
     // and makes sure at least one point exists
@@ -699,11 +699,11 @@ export class EdgeHandler extends MouseHandler {
             : null
 
         if (
-          this.constraintHandler.currentConstraint != null &&
-          this.constraintHandler.currentState != null &&
-          this.constraintHandler.currentPoint != null
+          this.anchorHandler.currentAnchor != null &&
+          this.anchorHandler.currentState != null &&
+          this.anchorHandler.currentPoint != null
         ) {
-          this.currentPoint = this.constraintHandler.currentPoint.clone()
+          this.currentPoint = this.anchorHandler.currentPoint.clone()
         }
 
         if (
@@ -813,7 +813,7 @@ export class EdgeHandler extends MouseHandler {
       }
     }
 
-    // Uses the current point from the constraint handler if available
+    // Uses the current point from the anchor handler if available
     const evt = e.getEvent()
     const snapPoint = this.snapPoint
     if (
@@ -879,7 +879,7 @@ export class EdgeHandler extends MouseHandler {
           // Handes special case where removing waypoint affects tolerance (flickering)
           const src = this.state.getVisibleTerminalState(true)
           if (src != null) {
-            const c = this.graph.getConnectionConstraint(this.state, src, true)
+            const c = this.graph.getConnectionAnchor(this.state, src, true)
             // Checks if point is not fixed
             if (
               c == null ||
@@ -894,7 +894,7 @@ export class EdgeHandler extends MouseHandler {
 
           const trg = this.state.getVisibleTerminalState(false)
           if (trg != null) {
-            const c = this.graph.getConnectionConstraint(this.state, trg, false)
+            const c = this.graph.getConnectionAnchor(this.state, trg, false)
             // Checks if point is not fixed
             if (
               c == null ||
@@ -941,7 +941,7 @@ export class EdgeHandler extends MouseHandler {
   }
 
   protected getPreviewTerminalState(e: MouseEventEx) {
-    this.constraintHandler.update(
+    this.anchorHandler.update(
       e,
       this.isSourceHandle,
       true,
@@ -949,10 +949,10 @@ export class EdgeHandler extends MouseHandler {
     )
 
     if (
-      this.constraintHandler.currentState != null &&
-      this.constraintHandler.currentConstraint != null
+      this.anchorHandler.currentState != null &&
+      this.anchorHandler.currentAnchor != null
     ) {
-      transparentMarker(this.constraintHandler, this.marker)
+      transparentMarker(this.anchorHandler, this.marker)
 
       const model = this.graph.getModel()
       const other = this.graph.view.getTerminalPortState(
@@ -965,21 +965,21 @@ export class EdgeHandler extends MouseHandler {
       const otherCell = other != null ? other.cell : null
 
       const source = this.isSourceHandle
-        ? this.constraintHandler.currentState.cell
+        ? this.anchorHandler.currentState.cell
         : otherCell
 
       const target = this.isSourceHandle
         ? otherCell
-        : this.constraintHandler.currentState.cell
+        : this.anchorHandler.currentState.cell
 
       // Updates the error message of the handler
       this.error = this.validateConnection(source, target)
       let result = null
 
       if (this.error == null) {
-        result = this.constraintHandler.currentState
+        result = this.anchorHandler.currentState
       } else {
-        this.constraintHandler.reset()
+        this.anchorHandler.reset()
       }
 
       return result
@@ -1018,32 +1018,24 @@ export class EdgeHandler extends MouseHandler {
       ? terminalState
       : this.state.getVisibleTerminalState(false)
 
-    let sourceC = this.graph.getConnectionConstraint(
-      edgeState,
-      sourceState,
-      true
-    )
-    let targetC = this.graph.getConnectionConstraint(
-      edgeState,
-      targetState,
-      false
-    )
-    const constraint = this.constraintHandler.currentConstraint
+    let sourceC = this.graph.getConnectionAnchor(edgeState, sourceState, true)
+    let targetC = this.graph.getConnectionAnchor(edgeState, targetState, false)
+    const anchor = this.anchorHandler.currentAnchor
 
     if (this.isSourceHandle) {
-      sourceC = constraint!
+      sourceC = anchor!
     } else if (this.isTargetHandle) {
-      targetC = constraint!
+      targetC = anchor!
     }
 
     if (this.isSourceHandle || this.isTargetHandle) {
-      if (constraint != null && constraint.point != null) {
+      if (anchor != null && anchor.point != null) {
         if (this.isSourceHandle) {
-          edgeState.style.exitX = constraint.point.x
-          edgeState.style.exitY = constraint.point.y
+          edgeState.style.exitX = anchor.point.x
+          edgeState.style.exitY = anchor.point.y
         } else {
-          edgeState.style.entryX = constraint.point.x
-          edgeState.style.entryY = constraint.point.y
+          edgeState.style.entryX = anchor.point.x
+          edgeState.style.entryY = anchor.point.y
         }
       } else {
         if (this.isSourceHandle) {
@@ -1130,10 +1122,10 @@ export class EdgeHandler extends MouseHandler {
           let terminal: Cell | null = null
 
           if (
-            this.constraintHandler.currentConstraint != null &&
-            this.constraintHandler.currentState != null
+            this.anchorHandler.currentAnchor != null &&
+            this.anchorHandler.currentState != null
           ) {
-            terminal = this.constraintHandler.currentState.cell
+            terminal = this.anchorHandler.currentState.cell
           }
 
           if (
@@ -1246,8 +1238,8 @@ export class EdgeHandler extends MouseHandler {
       this.marker.reset()
     }
 
-    if (this.constraintHandler != null) {
-      this.constraintHandler.reset()
+    if (this.anchorHandler != null) {
+      this.anchorHandler.reset()
     }
 
     if (this.customHandles != null) {
@@ -1351,12 +1343,12 @@ export class EdgeHandler extends MouseHandler {
     e: MouseEventEx
   ) {
     this.graph.batchUpdate(() => {
-      let constraint = this.constraintHandler.currentConstraint
-      if (constraint == null) {
-        constraint = new Constraint()
+      let anchor = this.anchorHandler.currentAnchor
+      if (anchor == null) {
+        anchor = new Anchor()
       }
 
-      this.graph.connectCell(edge, terminal, isSource, constraint)
+      this.graph.connectCell(edge, terminal, isSource, anchor)
     })
 
     return edge
@@ -1387,7 +1379,7 @@ export class EdgeHandler extends MouseHandler {
         geo = geo.clone()
         geo.setTerminalPoint(point, isSource)
         model.setGeometry(edge, geo)
-        this.graph.connectCell(edge, null, isSource, new Constraint())
+        this.graph.connectCell(edge, null, isSource, new Anchor())
       }
     })
 
@@ -1690,7 +1682,7 @@ export class EdgeHandler extends MouseHandler {
     this.escapeHandler = null
 
     this.marker.dispose()
-    this.constraintHandler.dispose()
+    this.anchorHandler.dispose()
 
     if (this.previewShape != null) {
       this.previewShape.dispose()

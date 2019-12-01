@@ -308,12 +308,12 @@ export const preset: FullOptions = {
     offset: { x: 0, y: -8 },
   },
 
-  constraint: {
+  anchor: {
     image: images.cross,
     cursor: CURSOR_POINTER,
   },
 
-  constraintHighlight: {
+  anchorHighlight: {
     shape: 'ellipse',
     cursor: CURSOR_POINTER,
     opacity: 0.3,

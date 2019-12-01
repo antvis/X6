@@ -27,7 +27,7 @@ import {
 import {
   Rectangle,
   Point,
-  Constraint,
+  Anchor,
   Image,
   Overlay,
   Multiplicity,
@@ -1029,15 +1029,15 @@ export class Graph extends Disablable
    * @param edge - The edge will be updated.
    * @param terminal - The new terminal to be used.
    * @param isSource - Indicating if the new terminal is the source or target.
-   * @param constraint - Optional `Constraint` to be used for this connection.
+   * @param anchor - Optional `Anchor` to be used for this connection.
    */
   connectCell(
     edge: Cell,
     terminal: Cell | null,
     isSource: boolean,
-    constraint?: Constraint
+    anchor?: Anchor
   ) {
-    return this.cellManager.connectCell(edge, terminal, isSource, constraint)
+    return this.cellManager.connectCell(edge, terminal, isSource, anchor)
   }
 
   /**
@@ -1049,41 +1049,41 @@ export class Graph extends Disablable
   }
 
   @hook()
-  getConstraints(terminal: Cell, isSource: boolean) {
+  getAnchors(terminal: Cell, isSource: boolean) {
     const state = this.view.getState(terminal)
     if (state != null && state.shape != null && state.shape.stencil != null) {
-      return state.shape.stencil.constraints
+      return state.shape.stencil.anchors
     }
 
     return null
   }
 
   /**
-   * Returns an `Constraint` that describes the given connection point.
+   * Returns an `Anchor` that describes the given connection point.
    */
-  getConnectionConstraint(
+  getConnectionAnchor(
     edgeState: State,
     terminalState?: State | null,
     isSource: boolean = false
   ) {
-    return this.cellManager.getConnectionConstraint(
+    return this.cellManager.getConnectionAnchor(
       edgeState,
       terminalState,
       isSource
     )
   }
 
-  setConnectionConstraint(
+  setConnectionAnchor(
     edge: Cell,
     terminal: Cell | null,
     isSource: boolean,
-    constraint?: Constraint | null
+    anchor?: Anchor | null
   ) {
-    return this.cellManager.setConnectionConstraint(
+    return this.cellManager.setConnectionAnchor(
       edge,
       terminal,
       isSource,
-      constraint
+      anchor
     )
   }
 

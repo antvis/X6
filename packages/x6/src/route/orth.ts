@@ -202,12 +202,12 @@ export function orth(
 
   // Determine the side(s) of the source and target vertices
   // that the edge may connect to
-  // portConstraint [source, target]
-  const portConstraint = [DirectionMask.all, DirectionMask.all]
+  // portAnchor [source, target]
+  const portAnchor = [DirectionMask.all, DirectionMask.all]
   let rotation = 0
 
   if (sourceState != null) {
-    portConstraint[0] = util.getPortConstraints(
+    portAnchor[0] = util.getPortAnchors(
       sourceState,
       edgeState,
       true,
@@ -227,7 +227,7 @@ export function orth(
   }
 
   if (targetState != null) {
-    portConstraint[1] = util.getPortConstraints(
+    portAnchor[1] = util.getPortAnchors(
       targetState,
       edgeState,
       false,
@@ -260,7 +260,7 @@ export function orth(
   const dir = [0, 0]
 
   // Work out which faces of the vertices present against each other
-  // in a way that would allow a 3-segment connection if port constraints
+  // in a way that would allow a 3-segment connection if port anchors
   // permitted.
   // geo -> [source, target] [x, y, width, height]
   const geo = [
@@ -304,21 +304,21 @@ export function orth(
     }
   }
 
-  // Check for connection constraints
+  // Check for connection anchors
   let currentTerm = null
 
   if (sourceState != null) {
     currentTerm = p0
   }
 
-  const constraint = [
+  const anchor = [
     [0.5, 0.5],
     [0.5, 0.5],
   ]
 
   for (let i = 0; i < 2; i += 1) {
     if (currentTerm != null) {
-      constraint[i][0] = (currentTerm.x - geo[i][0]) / geo[i][2]
+      anchor[i][0] = (currentTerm.x - geo[i][0]) / geo[i][2]
 
       if (Math.abs(currentTerm.x - geo[i][0]) <= 1) {
         dir[i] = DirectionMask.west
@@ -326,7 +326,7 @@ export function orth(
         dir[i] = DirectionMask.east
       }
 
-      constraint[i][1] = (currentTerm.y - geo[i][1]) / geo[i][3]
+      anchor[i][1] = (currentTerm.y - geo[i][1]) / geo[i][3]
 
       if (Math.abs(currentTerm.y - geo[i][1]) <= 1) {
         dir[i] = DirectionMask.north
@@ -369,8 +369,8 @@ export function orth(
       ? DirectionMask.north
       : DirectionMask.south
 
-  horPref[1] = util.reversePortConstraints(horPref[0])
-  vertPref[1] = util.reversePortConstraints(vertPref[0])
+  horPref[1] = util.reversePortAnchors(horPref[0])
+  vertPref[1] = util.reversePortAnchors(vertPref[0])
 
   const preferredHorizDist =
     sourceLeftDist >= sourceRightDist ? sourceLeftDist : sourceRightDist
@@ -389,12 +389,12 @@ export function orth(
       continue
     }
 
-    if ((horPref[i] & portConstraint[i]) === 0) {
-      horPref[i] = util.reversePortConstraints(horPref[i])
+    if ((horPref[i] & portAnchor[i]) === 0) {
+      horPref[i] = util.reversePortAnchors(horPref[i])
     }
 
-    if ((vertPref[i] & portConstraint[i]) === 0) {
-      vertPref[i] = util.reversePortConstraints(vertPref[i])
+    if ((vertPref[i] & portAnchor[i]) === 0) {
+      vertPref[i] = util.reversePortAnchors(vertPref[i])
     }
 
     prefOrdering[i][0] = vertPref[i]
@@ -403,18 +403,15 @@ export function orth(
 
   if (preferredVertDist > 0 && preferredHorizDist > 0) {
     // Possibility of two segment edge connection
-    if (
-      (horPref[0] & portConstraint[0]) > 0 &&
-      (vertPref[1] & portConstraint[1]) > 0
-    ) {
+    if ((horPref[0] & portAnchor[0]) > 0 && (vertPref[1] & portAnchor[1]) > 0) {
       prefOrdering[0][0] = horPref[0]
       prefOrdering[0][1] = vertPref[0]
       prefOrdering[1][0] = vertPref[1]
       prefOrdering[1][1] = horPref[1]
       preferredOrderSet = true
     } else if (
-      (vertPref[0] & portConstraint[0]) > 0 &&
-      (horPref[1] & portConstraint[1]) > 0
+      (vertPref[0] & portAnchor[0]) > 0 &&
+      (horPref[1] & portAnchor[1]) > 0
     ) {
       prefOrdering[0][0] = vertPref[0]
       prefOrdering[0][1] = horPref[0]
@@ -449,14 +446,14 @@ export function orth(
       continue
     }
 
-    if ((prefOrdering[i][0] & portConstraint[i]) === 0) {
+    if ((prefOrdering[i][0] & portAnchor[i]) === 0) {
       prefOrdering[i][0] = prefOrdering[i][1]
     }
 
-    dirPref[i] = prefOrdering[i][0] & portConstraint[i]
-    dirPref[i] |= (prefOrdering[i][1] & portConstraint[i]) << 8
-    dirPref[i] |= (prefOrdering[1 - i][i] & portConstraint[i]) << 16
-    dirPref[i] |= (prefOrdering[1 - i][1 - i] & portConstraint[i]) << 24
+    dirPref[i] = prefOrdering[i][0] & portAnchor[i]
+    dirPref[i] |= (prefOrdering[i][1] & portAnchor[i]) << 8
+    dirPref[i] |= (prefOrdering[1 - i][i] & portAnchor[i]) << 16
+    dirPref[i] |= (prefOrdering[1 - i][1 - i] & portAnchor[i]) << 24
 
     if ((dirPref[i] & 0xf) === 0) {
       dirPref[i] = dirPref[i] << 8
@@ -473,12 +470,12 @@ export function orth(
     dir[i] = dirPref[i] & 0xf
 
     if (
-      portConstraint[i] === DirectionMask.west ||
-      portConstraint[i] === DirectionMask.north ||
-      portConstraint[i] === DirectionMask.east ||
-      portConstraint[i] === DirectionMask.south
+      portAnchor[i] === DirectionMask.west ||
+      portAnchor[i] === DirectionMask.north ||
+      portAnchor[i] === DirectionMask.east ||
+      portAnchor[i] === DirectionMask.south
     ) {
-      dir[i] = portConstraint[i]
+      dir[i] = portAnchor[i]
     }
   }
 
@@ -507,18 +504,18 @@ export function orth(
   switch (dir[0]) {
     case DirectionMask.west:
       wayPoints1[0][0] -= scaledSourceBuffer
-      wayPoints1[0][1] += constraint[0][1] * geo[0][3]
+      wayPoints1[0][1] += anchor[0][1] * geo[0][3]
       break
     case DirectionMask.south:
-      wayPoints1[0][0] += constraint[0][0] * geo[0][2]
+      wayPoints1[0][0] += anchor[0][0] * geo[0][2]
       wayPoints1[0][1] += geo[0][3] + scaledSourceBuffer
       break
     case DirectionMask.east:
       wayPoints1[0][0] += geo[0][2] + scaledSourceBuffer
-      wayPoints1[0][1] += constraint[0][1] * geo[0][3]
+      wayPoints1[0][1] += anchor[0][1] * geo[0][3]
       break
     case DirectionMask.north:
-      wayPoints1[0][0] += constraint[0][0] * geo[0][2]
+      wayPoints1[0][0] += anchor[0][0] * geo[0][2]
       wayPoints1[0][1] -= scaledSourceBuffer
       break
   }
@@ -578,9 +575,9 @@ export function orth(
       const souTar = sou ? 0 : 1
 
       if (center && currentOrientation === 0) {
-        limit = geo[souTar][0] + constraint[souTar][0] * geo[souTar][2]
+        limit = geo[souTar][0] + anchor[souTar][0] * geo[souTar][2]
       } else if (center) {
-        limit = geo[souTar][1] + constraint[souTar][1] * geo[souTar][3]
+        limit = geo[souTar][1] + anchor[souTar][1] * geo[souTar][3]
       } else {
         limit = limits[souTar][side]
       }
