@@ -1,6 +1,6 @@
 {
   "name": "@antv/x6-components",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "React components for building x6 editors",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -126,5 +126,6 @@
   },
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "gitHead": "5916f3e4b889c6900f5523bd698f6a6466f670be"
 }

@@ -1,0 +1,82 @@
+import React from 'react'
+import { MouseMoveTracker } from '../util/dom/MouseMoveTracker'
+
+export class Resizer extends React.PureComponent<Resizer.Props> {
+  private mouseMoveTracker: MouseMoveTracker
+
+  componentWillMount() {
+    this.mouseMoveTracker = new MouseMoveTracker({
+      onMouseMove: this.onMouseMove,
+      onMouseMoveEnd: this.onMouseMoveEnd,
+    })
+  }
+
+  componentWillUnmount() {
+    this.mouseMoveTracker.release()
+    delete this.mouseMoveTracker
+  }
+
+  onMouseDown = (e: React.MouseEvent) => {
+    this.mouseMoveTracker.capture(e)
+    this.props.onMouseDown(e)
+  }
+
+  onMouseMove = (
+    deltaX: number,
+    deltaY: number,
+    pos: MouseMoveTracker.ClientPosition
+  ) => {
+    if (this.props.onMouseMove != null) {
+      this.props.onMouseMove(deltaX, deltaY, pos)
+    }
+  }
+
+  onMouseMoveEnd = () => {
+    this.mouseMoveTracker.release()
+    if (this.props.onMouseMoveEnd != null) {
+      this.props.onMouseMoveEnd()
+    }
+  }
+
+  onClick = (e: React.MouseEvent) => {
+    if (this.props.onClick) {
+      this.props.onClick(e)
+    }
+  }
+
+  onDoubleClick = (e: React.MouseEvent) => {
+    if (this.props.onDoubleClick) {
+      this.props.onDoubleClick(e)
+    }
+  }
+
+  render() {
+    const { className, style } = this.props
+
+    return (
+      <div
+        style={style}
+        className={className}
+        onClick={this.onClick}
+        onDoubleClick={this.onDoubleClick}
+        onMouseDown={this.onMouseDown}
+      />
+    )
+  }
+}
+
+export namespace Resizer {
+  export interface Props {
+    className?: string
+    style?: React.CSSProperties
+    onClick?: (e: React.MouseEvent) => void
+    onDoubleClick?: (e: React.MouseEvent) => void
+    onMouseDown: (e: React.MouseEvent) => void
+    onMouseMove?: (
+      deltaX: number,
+      deltaY: number,
+      pos: MouseMoveTracker.ClientPosition
+    ) => void
+    onMouseMoveEnd?: () => void
+  }
+}
