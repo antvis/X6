@@ -8,6 +8,6 @@ export * from './multiplicity'
 // enums
 // ----
 export * from './direction'
-export * from './fontstyle'
-export * from './nodetype'
-export * from './pagesize'
+export * from './font-style'
+export * from './node-type'
+export * from './page-size'
