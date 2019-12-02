@@ -2,9 +2,12 @@
 
 > React components for building x6 editors
 
-[![MIT License](https://img.shields.io/badge/license-MIT_License-green.svg?style=flat-square)](https://github.com/antvis/x6/blob/master/LICENSE) [!language](https://img.shields.io/badge/language-typescript-blue.svg?style=flat-square)
+[![MIT License](https://img.shields.io/badge/license-MIT_License-green.svg?style=flat-square)](https://github.com/antvis/x6/blob/master/LICENSE) 
+[![Language](https://img.shields.io/badge/language-typescript-blue.svg?style=flat-square)](https://www.typescriptlang.org)
 
-[![NPM Package](https://img.shields.io/npm/v/@antv/x6-components.svg?style=flat-square)](https://www.npmjs.com/package/@antv/x6-components) [![NPM Downloads](http://img.shields.io/npm/dm/@antv/x6-components.svg?style=flat-square)](https://www.npmjs.com/package/@antv/x6-components) [![NPM Dependencies](https://img.shields.io/david/antvis/x6?path=packages%2Fx6-components&style=flat-square)](https://www.npmjs.com/package/@antv/x6-components)
+[![NPM Package](https://img.shields.io/npm/v/@antv/x6-components.svg?style=flat-square)](https://www.npmjs.com/package/@antv/x6-components) 
+[![NPM Downloads](http://img.shields.io/npm/dm/@antv/x6-components.svg?style=flat-square)](https://www.npmjs.com/package/@antv/x6-components) 
+[![NPM Dependencies](https://img.shields.io/david/antvis/x6?path=packages%2Fx6-components&style=flat-square)](https://www.npmjs.com/package/@antv/x6-components)
 
 ## Components
 
