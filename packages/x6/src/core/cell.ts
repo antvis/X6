@@ -25,10 +25,10 @@ export class Cell extends Disposable {
   private node?: boolean
   private edge?: boolean
 
-  constructor(data?: any, geometry?: Geometry, style: Style = {}) {
+  constructor(data?: any, geometry?: Geometry, style?: Style) {
     super()
     this.data = data || null
-    this.style = style
+    this.style = style || {}
     this.geometry = geometry || null
     this.visible = true
   }
@@ -406,8 +406,10 @@ export namespace Cell {
     elem: HTMLElement | SVGElement,
     cell: Cell
   ) => void
+}
 
-  interface CreationOptions {
+export namespace Cell {
+  export interface CreateCellOptions {
     id?: string | null
     data?: any
     style?: Style
@@ -416,7 +418,7 @@ export namespace Cell {
     render?: Renderer | null
   }
 
-  export interface CreateNodeOptions extends CreationOptions {
+  export interface CreateNodeOptions extends CreateCellOptions {
     /**
      * Specifies the x-coordinate of the node. For relative geometries, this
      * defines the percentage x-coordinate relative the parent width, which
@@ -424,6 +426,7 @@ export namespace Cell {
      * absolute x-coordinate in the graph.
      */
     x?: number
+
     /**
      * Specifies the y-coordinate of the node. For relative geometries, this
      * defines the percentage y-coordinate relative the parent height, which
@@ -431,14 +434,17 @@ export namespace Cell {
      * absolute y-coordinate in the graph.
      */
     y?: number
+
     width?: number
     height?: number
+
     /**
      * Specifies if the coordinates in the geometry are to be interpreted
      * as relative coordinates. If this is `true`, then the coordinates are
      * relative to the origin of the parent cell.
      */
     relative?: boolean
+
     /**
      * For relative geometries, this defines the absolute offset from the
      * point defined by the relative coordinates. For absolute geometries,
@@ -454,23 +460,26 @@ export namespace Cell {
     alternateBounds?: Rectangle | Rectangle.RectangleLike
   }
 
-  export interface CreateEdgeOptions extends CreationOptions {
+  export interface CreateEdgeOptions extends CreateCellOptions {
     /**
      * The source `Point` of the edge. This is used if the corresponding
      * edge does not have a source node. Otherwise it is ignored.
      */
     sourcePoint?: Point | Point.PointLike
+
     /**
      * The target `Point` of the edge. This is used if the corresponding
      * edge does not have a target node. Otherwise it is ignored.
      */
     targetPoint?: Point | Point.PointLike
+
     /**
      * Specifies the control points along the edge. These points are the
      * intermediate points on the edge, for the endpoints use `targetPoint`
      * and `sourcePoint` or set the terminals of the edge to a non-null value.
      */
     points?: (Point | Point.PointLike | Point.PointData)[]
+
     offset?: Point | Point.PointLike
   }
 
@@ -526,7 +535,7 @@ export namespace Cell {
 
   function applyCommonOptions(
     node: Cell,
-    options: CreationOptions,
+    options: CreateCellOptions,
     isNode: boolean
   ) {
     node.setId(options.id)
@@ -552,5 +561,125 @@ export namespace Cell {
     }
 
     return node
+  }
+}
+
+export namespace Cell {
+  const separator = '.'
+
+  export function getCellPath(cell: Cell) {
+    const idxs = []
+    if (cell != null) {
+      let child = cell
+      let parent = child.getParent()
+
+      while (parent != null) {
+        const index = parent.getChildIndex(child)
+        idxs.unshift(index)
+        child = parent
+        parent = child.getParent()
+      }
+    }
+
+    return idxs.join(separator)
+  }
+
+  export function getParentPath(path: string) {
+    if (path != null) {
+      const index = path.lastIndexOf(separator)
+      if (index >= 0) {
+        return path.substring(0, index)
+      }
+    }
+
+    return ''
+  }
+
+  function compare(p1: string[], p2: string[]) {
+    let comp = 0
+    const min = Math.min(p1.length, p2.length)
+
+    for (let i = 0; i < min; i += 1) {
+      const v1 = p1[i]
+      const v2 = p2[i]
+
+      if (v1 !== v2) {
+        if (v1.length === 0 || v2.length === 0) {
+          comp = v1 === v2 ? 0 : v1 > v2 ? 1 : -1
+        } else {
+          const t1 = parseInt(v1, 10)
+          const t2 = parseInt(v2, 10)
+          comp = t1 === t2 ? 0 : t1 > t2 ? 1 : -1
+        }
+
+        break
+      }
+    }
+
+    // Compares path length if both paths are equal to this point
+    if (comp === 0) {
+      const t1 = p1.length
+      const t2 = p2.length
+      if (t1 !== t2) {
+        comp = t1 > t2 ? 1 : -1
+      }
+    }
+
+    return comp
+  }
+
+  /**
+   * Sorts the given cells according to the order in the cell hierarchy.
+   */
+  export function sortCells(cells: Cell[], ascending: boolean = true) {
+    const dict = new WeakMap<Cell, string[]>()
+    const ensure = (c: Cell) => {
+      let p = dict.get(c)
+      if (p == null) {
+        p = getCellPath(c).split(separator)
+        dict.set(c, p)
+      }
+      return p
+    }
+
+    return cells.sort((c1, c2) => {
+      const p1 = ensure(c1)
+      const p2 = ensure(c2)
+      const comp = compare(p1, p2)
+      return comp === 0 ? 0 : comp > 0 === ascending ? 1 : -1
+    })
+  }
+
+  export function getNearestCommonAncestor(
+    cell1: Cell | null,
+    cell2: Cell | null
+  ): Cell | null {
+    if (cell1 != null && cell2 != null) {
+      let path2 = getCellPath(cell2)
+      if (path2 != null && path2.length > 0) {
+        let cell: Cell | null = cell1
+        let path1 = getCellPath(cell)
+
+        // exchange
+        if (path2.length < path1.length) {
+          cell = cell2
+          const tmp = path1
+          path1 = path2
+          path2 = tmp
+        }
+
+        while (cell != null) {
+          const parent: Cell | null = cell.getParent()
+          if (path2.indexOf(path1 + separator) === 0 && parent != null) {
+            return cell
+          }
+
+          path1 = getParentPath(path1)
+          cell = parent
+        }
+      }
+    }
+
+    return null
   }
 }
