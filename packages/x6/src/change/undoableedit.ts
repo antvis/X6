@@ -57,8 +57,6 @@ export class UndoableEdit extends Disposable {
       const change = this.changes[i]
       if (change.execute != null) {
         change.execute()
-      } else if (change.undo != null) {
-        change.undo()
       }
 
       this.model.trigger(Model.events.executed, change)
@@ -83,8 +81,6 @@ export class UndoableEdit extends Disposable {
     this.changes.forEach(change => {
       if (change.execute != null) {
         change.execute()
-      } else if (change.redo != null) {
-        change.redo()
       }
 
       this.model.trigger(Model.events.executed, change)
