@@ -10,9 +10,9 @@ export namespace DomEvent {
     handler: Handler
   ) {
     if ((elem as any)[LIST_KEY] == null) {
-      (elem as any)[LIST_KEY] = []
+      ;(elem as any)[LIST_KEY] = []
     }
-    (elem as any)[LIST_KEY].push({ name, handler })
+    ;(elem as any)[LIST_KEY].push({ name, handler })
   }
 
   export const addListener = window.addEventListener
@@ -29,7 +29,7 @@ export namespace DomEvent {
         name: string,
         handler: Handler
       ) => {
-        (elem as any).attachEvent(`on${name}`, handler)
+        ;(elem as any).attachEvent(`on${name}`, handler)
         addToList(elem, name, handler)
       }
 
@@ -68,7 +68,7 @@ export namespace DomEvent {
         name: string,
         handler: Handler
       ) => {
-        (elem as any).detachEvent(`on${name}`, handler)
+        ;(elem as any).detachEvent(`on${name}`, handler)
         removeFromList(elem, name, handler)
       }
 
@@ -412,7 +412,7 @@ export namespace DomEvent {
     }
 
     // Opera
-    (e as any).isConsumed = true
+    ;(e as any).isConsumed = true
 
     // Other browsers
     if (!e.preventDefault) {

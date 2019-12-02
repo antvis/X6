@@ -2,7 +2,7 @@ import { detector } from './detector'
 import { isAncestorNode } from '../util'
 import { Graph, State } from '../core'
 import { Shape } from '../shape'
-import { DomEvent } from './domevent'
+import { DomEvent } from './dom-event'
 import { Point } from '../struct'
 
 export class MouseEventEx {

@@ -8,9 +8,9 @@ import { Perimeter } from '../perimeter'
 import { RectangleShape, ImageShape } from '../shape'
 import { UndoableEdit, CurrentRootChange } from '../change'
 import { Point, Rectangle, Anchor, Image } from '../struct'
-import { detector, DomEvent, MouseEventEx, Primer, Disposable } from '../common'
+import { detector, DomEvent, MouseEventEx, Base, Disposable } from '../common'
 
-export class View extends Primer {
+export class View extends Base {
   graph: Graph
   scale: number
   translate: Point
