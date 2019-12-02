@@ -125,7 +125,7 @@
     "url": "https://github.com/antvis/x6.git"
   },
   "publishConfig": {
-    "access": "public"
-  },
-  "gitHead": "5916f3e4b889c6900f5523bd698f6a6466f670be"
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  }
 }

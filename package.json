@@ -7,13 +7,13 @@
     "ls": "lerna list",
     "changed": "lerna changed",
     "updated": "lerna updated",
-    "pub": "lerna publish --no-git-tag-version -m \"chore(release): publish %v\"",
+    "pub": "lerna publish -m \"chore(release): publish %v\"",
     "clean": "lerna run clean",
     "build": "lerna run build",
     "lint": "lerna run lint",
     "test": "lerna run test",
     "coveralls": "lerna run coveralls",
-    "clear": "rimraf yarn.lock && lerna clean && rimraf ./node_modules"
+    "clear": "rimraf yarn.lock && lerna run clean && lerna clean && rimraf ./node_modules"
   },
   "husky": {
     "hooks": {

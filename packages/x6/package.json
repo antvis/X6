@@ -100,6 +100,7 @@
     "url": "https://github.com/antvis/x6.git"
   },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
   }
 }
