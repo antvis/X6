@@ -77,15 +77,16 @@ export function getAlignmentAsPoint(align: Align, valign: VAlign) {
  * @param isSource Specifies if the terminal is the source terminal.
  * @param defaultValue Default value to be returned.
  */
-export function getPortAnchors(
+export function getPortConstraints(
   terminal: State,
   edge: State,
   isSource: boolean,
   defaultValue: DirectionMask
 ) {
   const value =
-    (isSource ? edge.style.sourcePortAnchor : edge.style.targetPortAnchor) ||
-    terminal.style.portAnchor
+    (isSource
+      ? edge.style.sourcePortConstraint
+      : edge.style.targetPortConstraint) || terminal.style.portConstraint
 
   if (value == null) {
     return defaultValue
@@ -93,7 +94,7 @@ export function getPortAnchors(
   {
     let returnValue = DirectionMask.none
     const directions = value.toString()
-    const anchorRotationEnabled = terminal.style.portAnchorRotation
+    const anchorRotationEnabled = terminal.style.portConstraintRotatable
 
     let rotation = 0
     if (anchorRotationEnabled) {
@@ -185,7 +186,7 @@ export function getPortAnchors(
   }
 }
 
-export function reversePortAnchors(mask: DirectionMask) {
+export function reversePortConstraints(mask: DirectionMask) {
   let result = 0
 
   result = (mask & DirectionMask.west) << 3
@@ -194,15 +195,6 @@ export function reversePortAnchors(mask: DirectionMask) {
   result |= (mask & DirectionMask.east) >> 3
 
   return result
-}
-
-export function hasHtmlLabel(state: State | null) {
-  return (
-    state != null &&
-    state.text != null &&
-    state.text.elem != null &&
-    state.text.elem.parentNode === state.view.graph.container
-  )
 }
 
 export function isValidLabel(label: string | HTMLElement | null) {
@@ -214,6 +206,15 @@ export function isValidLabel(label: string | HTMLElement | null) {
   }
 
   return false
+}
+
+export function hasHtmlLabel(state: State | null) {
+  return (
+    state != null &&
+    state.text != null &&
+    state.text.elem != null &&
+    state.text.elem.parentNode === state.view.graph.container
+  )
 }
 
 export function applyClassName(
