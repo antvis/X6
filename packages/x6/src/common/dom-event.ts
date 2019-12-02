@@ -9,10 +9,11 @@ export namespace DomEvent {
     name: string,
     handler: Handler
   ) {
-    if ((elem as any)[LIST_KEY] == null) {
-      ;(elem as any)[LIST_KEY] = []
+    const node = elem as any
+    if (node[LIST_KEY] == null) {
+      node[LIST_KEY] = []
     }
-    ;(elem as any)[LIST_KEY].push({ name, handler })
+    node[LIST_KEY].push({ name, handler })
   }
 
   export const addListener = window.addEventListener
