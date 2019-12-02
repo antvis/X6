@@ -408,6 +408,7 @@ export namespace Cell {
   ) => void
 }
 
+// Cell Creation
 export namespace Cell {
   export interface CreateCellOptions {
     id?: string | null
@@ -564,6 +565,7 @@ export namespace Cell {
   }
 }
 
+// Cell Path
 export namespace Cell {
   const separator = '.'
 
