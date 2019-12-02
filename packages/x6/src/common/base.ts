@@ -1,9 +1,9 @@
 import { detector } from './detector'
-import { IDisposable } from './disposable'
+import { DomEvent } from './dom-event'
 import { Events } from './events'
-import { DomEvent } from './domevent'
+import { IDisposable } from './disposable'
 
-export abstract class Primer extends Events implements IDisposable {
+export abstract class Base extends Events implements IDisposable {
   constructor() {
     super()
     if (detector.IS_IE) {

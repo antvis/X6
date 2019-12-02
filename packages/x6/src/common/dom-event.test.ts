@@ -1,5 +1,5 @@
 import sinon from 'sinon'
-import { DomEvent } from './domevent'
+import { DomEvent } from './dom-event'
 
 function simulate(component: HTMLElement, eventName: string, eventData: any) {
   const event = new MouseEvent(eventName, eventData)
