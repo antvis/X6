@@ -137,10 +137,26 @@ interface EdgeStyle {
 
   sourcePort?: string
   targetPort?: string
-  portAnchor?: string
-  portAnchorRotation?: number
-  sourcePortAnchor?: string
-  targetPortAnchor?: string
+
+  /**
+   * The direction(s) that edges are allowed to connect to cells in.
+   */
+  portConstraint?: string
+
+  /**
+   * Whether port constraint directions are rotated with node rotation.
+   */
+  portConstraintRotatable?: boolean
+
+  /**
+   * The direction(s) that edges are allowed to connect to sources in.
+   */
+  sourcePortConstraint?: string
+
+  /**
+   * The direction(s) that edges are allowed to connect to targets in.
+   */
+  targetPortConstraint?: string
 
   perimeterSpacing?: number
   sourcePerimeterSpacing?: number

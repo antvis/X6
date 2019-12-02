@@ -46,7 +46,7 @@ export function er(
     sourceState.bounds.x = p0.x
     sourceState.bounds.y = p0.y
   } else if (sourceState != null) {
-    const anchor = util.getPortAnchors(
+    const anchor = util.getPortConstraints(
       sourceState,
       edgeState,
       true,
@@ -78,7 +78,7 @@ export function er(
     targetState.bounds.x = pe.x
     targetState.bounds.y = pe.y
   } else if (targetState != null) {
-    const anchor = util.getPortAnchors(
+    const anchor = util.getPortConstraints(
       targetState,
       edgeState,
       false,

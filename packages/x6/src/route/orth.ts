@@ -207,7 +207,7 @@ export function orth(
   let rotation = 0
 
   if (sourceState != null) {
-    portAnchor[0] = util.getPortAnchors(
+    portAnchor[0] = util.getPortConstraints(
       sourceState,
       edgeState,
       true,
@@ -227,7 +227,7 @@ export function orth(
   }
 
   if (targetState != null) {
-    portAnchor[1] = util.getPortAnchors(
+    portAnchor[1] = util.getPortConstraints(
       targetState,
       edgeState,
       false,
@@ -369,8 +369,8 @@ export function orth(
       ? DirectionMask.north
       : DirectionMask.south
 
-  horPref[1] = util.reversePortAnchors(horPref[0])
-  vertPref[1] = util.reversePortAnchors(vertPref[0])
+  horPref[1] = util.reversePortConstraints(horPref[0])
+  vertPref[1] = util.reversePortConstraints(vertPref[0])
 
   const preferredHorizDist =
     sourceLeftDist >= sourceRightDist ? sourceLeftDist : sourceRightDist
@@ -390,11 +390,11 @@ export function orth(
     }
 
     if ((horPref[i] & portAnchor[i]) === 0) {
-      horPref[i] = util.reversePortAnchors(horPref[i])
+      horPref[i] = util.reversePortConstraints(horPref[i])
     }
 
     if ((vertPref[i] & portAnchor[i]) === 0) {
-      vertPref[i] = util.reversePortAnchors(vertPref[i])
+      vertPref[i] = util.reversePortConstraints(vertPref[i])
     }
 
     prefOrdering[i][0] = vertPref[i]
