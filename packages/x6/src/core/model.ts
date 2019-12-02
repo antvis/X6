@@ -3,7 +3,7 @@ import { Events } from '../common'
 import { Cell } from './cell'
 import { Style } from '../types'
 import { Geometry } from './geometry'
-import { Point, CellPath } from '../struct'
+import { Point } from '../struct'
 import {
   IChange,
   RootChange,
@@ -240,7 +240,7 @@ export class Model extends Events {
    * Returns the nearest common ancestor for the specified cells.
    */
   getNearestCommonAncestor(cell1: Cell | null, cell2: Cell | null) {
-    return CellPath.getNearestCommonAncestor(cell1, cell2)
+    return Cell.getNearestCommonAncestor(cell1, cell2)
   }
 
   add(parent: Cell | null, child: Cell | null, index?: number) {
@@ -824,13 +824,13 @@ export class Model extends Events {
         const cell = mapping[key]
         let terminal = this.getTerminal(cell, true)
         if (terminal != null) {
-          terminal = mapping[CellPath.getCellPath(terminal)]
+          terminal = mapping[Cell.getCellPath(terminal)]
           this.setTerminal(cell, terminal, true)
         }
 
         terminal = this.getTerminal(cell, false)
         if (terminal != null) {
-          terminal = mapping[CellPath.getCellPath(terminal)]
+          terminal = mapping[Cell.getCellPath(terminal)]
           this.setTerminal(cell, terminal, false)
         }
       }
@@ -865,7 +865,7 @@ export class Model extends Events {
           this.cellAdded(target)
         }
 
-        mapping[CellPath.getCellPath(cell)] = target!
+        mapping[Cell.getCellPath(cell)] = target!
 
         this.mergeChildrenImpl(cell, target, cloneAllEdges, mapping)
       })
