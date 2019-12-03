@@ -156,6 +156,7 @@ export class Renderer {
   }
 
   protected getShapeConstructor(state: State) {
+    console.log(state.style.shape)
     let ctor = Shape.getShape(state.style.shape)
     if (ctor == null) {
       ctor = state.cell.isEdge() ? this.defaultEdgeShape : this.defaultNodeShape

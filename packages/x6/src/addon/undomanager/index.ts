@@ -1,8 +1,8 @@
-import { Base, Disposable } from '../../common'
+import { Primer, Disposable } from '../../common'
 import { Graph, View, Model } from '../../core'
 import { UndoableEdit } from '../../change/undoableedit'
 
-export class UndoManager extends Base {
+export class UndoManager extends Primer {
   private size: number
   private cursor: number
   private history: UndoableEdit[]

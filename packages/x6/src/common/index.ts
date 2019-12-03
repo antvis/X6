@@ -1,6 +1,6 @@
 export * from './events'
 export * from './disposable'
-export * from './base'
+export * from './primer'
 export * from './disablable'
 export * from './detector'
 export * from './dom-event'
