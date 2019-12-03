@@ -15,12 +15,12 @@
     "coveralls": "lerna run coveralls",
     "clear": "rimraf yarn.lock && lerna run clean && lerna clean && rimraf ./node_modules",
     "prettier": "prettier --write '**/*.{js,jsx,tsx,ts,less,md,json}'",
-    "pretty-quick": "pretty-quick",
-    "precommit": "lint-staged && lerna run --concurrency 1 --stream precommit"
+    "pretty-quick": "pretty-quick"
   },
   "husky": {
     "hooks": {
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+      "pre-commit": "lint-staged && lerna run --concurrency 1 --stream precommit"
     }
   },
   "lint-staged": {
