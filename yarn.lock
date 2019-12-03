@@ -43,13 +43,6 @@
     react-resize-detector "^4.2.1"
     ua-parser-js "^0.7.20"
 
-"@antv/x6@^0.1.2":
-  version "0.1.2"
-  resolved "https://registry.npmjs.org/@antv/x6/-/x6-0.1.2.tgz#dd9e2db8707f066dbcdfba7ed802662398918a9d"
-  integrity sha512-53SGdJvT41irjQ5p8wF6UU+ULaia2b+PjEo5hM49yyHcq/aUWf5ZQgiOLJR+b8b1gMHzIr3p4hQcc/iHERYldw==
-  dependencies:
-    mousetrap "^1.6.3"
-
 "@babel/code-frame@7.0.0":
   version "7.0.0"
   resolved "https://registry.npm.taobao.org/@babel/code-frame/download/@babel/code-frame-7.0.0.tgz#06e2ab19bdb535385559aabb5ba59729482800f8"

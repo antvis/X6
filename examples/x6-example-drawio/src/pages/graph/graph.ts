@@ -1,6 +1,6 @@
 import {
   util,
-  shapes,
+  Shape,
   detector,
   Rectangle,
   Point,
@@ -241,7 +241,7 @@ export class EditorGraph extends Graph {
       this.viewport.verticalPageBreaks = []
     }
 
-    const drawPageBreaks = (breaks: shapes.Polyline[]) => {
+    const drawPageBreaks = (breaks: Shape.Polyline[]) => {
       if (breaks != null) {
         const count =
           breaks === this.viewport.horizontalPageBreaks ? hCount : vCount
@@ -266,7 +266,7 @@ export class EditorGraph extends Graph {
             breaks[i].points = points
             breaks[i].redraw()
           } else {
-            const pageBreak = new shapes.Polyline(points, this.pageBreakColor)
+            const pageBreak = new Shape.Polyline(points, this.pageBreakColor)
             pageBreak.dialect = this.dialect
             pageBreak.dashed = this.pageBreakDashed
             pageBreak.pointerEvents = false

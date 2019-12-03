@@ -1,4 +1,4 @@
-import { NodeType, shapes } from '@antv/x6'
+import { NodeType, Shape } from '@antv/x6'
 
 export namespace StencilRegistry {
   const packages: { [url: string]: XMLDocument } = {}
@@ -81,9 +81,9 @@ export namespace StencilRegistry {
           if (name != null) {
             const stencilName = name.replace(/ /g, '_')
             if (install) {
-              shapes.Stencil.addStencil(
+              Shape.Stencil.addStencil(
                 getShapeName(packageName, stencilName),
-                new shapes.Stencil(shape)
+                new Shape.Stencil(shape)
               )
             }
 

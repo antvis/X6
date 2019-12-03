@@ -1,4 +1,4 @@
-import { View, Rectangle, NodeType, util, shapes } from '@antv/x6'
+import { View, Rectangle, NodeType, util, Shape } from '@antv/x6'
 import { createGrid } from '@antv/x6/lib/addon/grid'
 import { EditorGraph } from './graph'
 
@@ -35,14 +35,21 @@ export class GraphView extends View {
           }
 
           if (firstChild != null) {
-            this.backgroundPageShape = new shapes.RectangleShape(bounds, '#ffffff', '#ffffff')
+            this.backgroundPageShape = new Shape.Rectangle(
+              bounds,
+              '#ffffff',
+              '#ffffff'
+            )
             this.backgroundPageShape.scale = 1
             this.backgroundPageShape.shadow = true
             this.backgroundPageShape.dialect = 'html'
             this.backgroundPageShape.className = 'x6-editor-background'
             this.backgroundPageShape.init(graph.container)
             firstChild.style.position = 'absolute'
-            graph.container.insertBefore(this.backgroundPageShape.elem!, firstChild)
+            graph.container.insertBefore(
+              this.backgroundPageShape.elem!,
+              firstChild
+            )
             this.backgroundPageShape.redraw()
             this.setupBackgroundPage()
           }
@@ -119,6 +126,11 @@ export class GraphView extends View {
     const rows = xe - x0
     const cols = ye - y0
 
-    return new Rectangle(s * (t.x + x0 * pw), s * (t.y + y0 * ph), s * rows * pw, s * cols * ph)
+    return new Rectangle(
+      s * (t.x + x0 * pw),
+      s * (t.y + y0 * ph),
+      s * rows * pw,
+      s * cols * ph
+    )
   }
 }
