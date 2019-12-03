@@ -1,24 +1,23 @@
 // #region shape
 
-import * as shapes from './shape'
-const registerShape = shapes.Shape.register
-registerShape('rectangle', shapes.RectangleShape, true)
-registerShape('ellipse', shapes.EllipseShape, true)
-registerShape('doubleEllipse', shapes.DoubleEllipse, true)
-registerShape('triangle', shapes.Triangle, true)
-registerShape('hexagon', shapes.Hexagon, true)
-registerShape('cylinder', shapes.Cylinder, true)
-registerShape('rhombus', shapes.Rhombus, true)
-registerShape('actor', shapes.Actor, true)
-registerShape('cloud', shapes.Cloud, true)
-registerShape('line', shapes.Line, true)
-registerShape('image', shapes.ImageShape, true)
-registerShape('label', shapes.Label, true)
-registerShape('swimlane', shapes.Swimlane, true)
-registerShape('connector', shapes.Connector, true)
-registerShape('arrow', shapes.Arrow, true)
-registerShape('arrowConnector', shapes.ArrowConnector, true)
-registerShape('html', shapes.HtmlShape, true)
+import { ShapeRegistry } from './shape'
+ShapeRegistry.register('rectangle', ShapeRegistry.Rectangle, true)
+ShapeRegistry.register('ellipse', ShapeRegistry.Ellipse, true)
+ShapeRegistry.register('doubleEllipse', ShapeRegistry.DoubleEllipse, true)
+ShapeRegistry.register('triangle', ShapeRegistry.Triangle, true)
+ShapeRegistry.register('hexagon', ShapeRegistry.Hexagon, true)
+ShapeRegistry.register('cylinder', ShapeRegistry.Cylinder, true)
+ShapeRegistry.register('rhombus', ShapeRegistry.Rhombus, true)
+ShapeRegistry.register('actor', ShapeRegistry.Actor, true)
+ShapeRegistry.register('cloud', ShapeRegistry.Cloud, true)
+ShapeRegistry.register('line', ShapeRegistry.Line, true)
+ShapeRegistry.register('image', ShapeRegistry.Image, true)
+ShapeRegistry.register('label', ShapeRegistry.Label, true)
+ShapeRegistry.register('swimlane', ShapeRegistry.Swimlane, true)
+ShapeRegistry.register('connector', ShapeRegistry.Connector, true)
+ShapeRegistry.register('arrow', ShapeRegistry.Arrow, true)
+ShapeRegistry.register('arrowConnector', ShapeRegistry.ArrowConnector, true)
+ShapeRegistry.register('html', ShapeRegistry.HTML, true)
 
 // #endregion
 
