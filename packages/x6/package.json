@@ -39,16 +39,10 @@
     "test": "jest",
     "pretest": "rimraf ./test/coverage",
     "coveralls": "cat ./test/coverage/lcov.info | coveralls",
-    "prettier": "prettier -c --write '**/*'",
-    "pretty-quick": "pretty-quick",
     "prepare": "yarn test && yarn build",
     "precommit": "lint-staged"
   },
   "lint-staged": {
-    "**/*": [
-      "pretty-quick — staged",
-      "git add"
-    ],
     "*.js": [
       "eslint --fix",
       "git add"
@@ -72,8 +66,6 @@
     "jest": "^24.8.0",
     "less": "^3.10.3",
     "lint-staged": "^9.2.1",
-    "prettier": "^1.19.1",
-    "pretty-quick": "^2.0.1",
     "rimraf": "^3.0.0",
     "sinon": "^7.5.0",
     "ts-jest": "^24.0.2",
