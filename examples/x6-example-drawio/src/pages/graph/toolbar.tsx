@@ -11,7 +11,10 @@ import './toolbar.less'
 const Item = Toolbar.Item
 const Group = Toolbar.Group
 
-export class GraphToolbar extends React.PureComponent<GraphToolbar.Props, GraphToolbar.State> {
+export class GraphToolbar extends React.PureComponent<
+  GraphToolbar.Props,
+  GraphToolbar.State
+> {
   state: GraphToolbar.State = {
     scale: 1,
     editor: null,
@@ -21,7 +24,7 @@ export class GraphToolbar extends React.PureComponent<GraphToolbar.Props, GraphT
   }
 
   componentDidMount() {
-    fetchEditor().then((editor) => {
+    fetchEditor().then(editor => {
       editor.graph.on(Graph.events.selectionChanged, () => {
         this.setState({ selectedCells: editor.graph.getSelectedCells() })
       })
@@ -41,7 +44,7 @@ export class GraphToolbar extends React.PureComponent<GraphToolbar.Props, GraphT
     })
   }
 
-  componentWillUnmount() { }
+  componentWillUnmount() {}
 
   handleClick = (name: string) => {
     const editor = this.state.editor!
@@ -132,7 +135,11 @@ export class GraphToolbar extends React.PureComponent<GraphToolbar.Props, GraphT
     }
   }
 
-  renderColorPicker(name: string, value: string, onChange: (value: ColorResult) => void) {
+  renderColorPicker(
+    name: string,
+    value: string,
+    onChange: (value: ColorResult) => void
+  ) {
     const MenuItem = Menu.Item
     return (
       <Menu hasIcon={false}>
@@ -237,7 +244,11 @@ export class GraphToolbar extends React.PureComponent<GraphToolbar.Props, GraphT
           <Item
             name="fill"
             tooltip="Fill Color..."
-            dropdown={this.renderColorPicker('fill-color', fillColor, this.setFillColor)}
+            dropdown={this.renderColorPicker(
+              'fill-color',
+              fillColor,
+              this.setFillColor
+            )}
             dropdownProps={{ overlayClassName: 'x6-color-picker-dropdown' }}
             disabled={!hasSelectedCell}
             icon={<Icon type={Icons.brush} svg={true} />}
@@ -245,7 +256,11 @@ export class GraphToolbar extends React.PureComponent<GraphToolbar.Props, GraphT
           <Item
             name="stroke"
             tooltip="Line Color..."
-            dropdown={this.renderColorPicker('line-color', lineColor, this.setLineColor)}
+            dropdown={this.renderColorPicker(
+              'line-color',
+              lineColor,
+              this.setLineColor
+            )}
             dropdownProps={{ overlayClassName: 'x6-color-picker-dropdown' }}
             disabled={!hasSelectedCell}
             icon={<Icon type={Icons.pen} svg={true} />}
@@ -263,7 +278,7 @@ export class GraphToolbar extends React.PureComponent<GraphToolbar.Props, GraphT
 }
 
 export namespace GraphToolbar {
-  export interface Props { }
+  export interface Props {}
   export interface State {
     scale: number
     editor: Editor | null

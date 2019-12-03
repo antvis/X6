@@ -19,19 +19,17 @@ const features = [
   { link: '/custom-render', title: 'Custom Render' },
 ]
 
-const BasicLayout: React.FC = (props) => {
+const BasicLayout: React.FC = props => {
   return (
     <div className={styles.wrap}>
       <div className={styles.nav}>
         <h2>Features</h2>
         <ul>
-          {
-            features.map((item) => (
-              <li key={item.link}>
-                <NavLink to={item.link}>{item.title}</NavLink>
-              </li>
-            ))
-          }
+          {features.map(item => (
+            <li key={item.link}>
+              <NavLink to={item.link}>{item.title}</NavLink>
+            </li>
+          ))}
         </ul>
         <h2>Charts</h2>
         <ul>

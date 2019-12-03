@@ -9,8 +9,20 @@ export default class Example extends React.Component {
     const graph = new Graph(this.container)
 
     graph.batchUpdate(() => {
-      const node1 = graph.addNode({ data: 'Hello', x: 60, y: 60, width: 80, height: 30 })
-      const node2 = graph.addNode({ data: 'World', x: 240, y: 240, width: 80, height: 30 })
+      const node1 = graph.addNode({
+        data: 'Hello',
+        x: 60,
+        y: 60,
+        width: 80,
+        height: 30,
+      })
+      const node2 = graph.addNode({
+        data: 'World',
+        x: 240,
+        y: 240,
+        width: 80,
+        height: 30,
+      })
       graph.addEdge({ data: 'Edge Label', source: node1, target: node2 })
     })
   }

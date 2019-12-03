@@ -11,7 +11,7 @@ export class Format extends React.PureComponent<Format.Props, Format.State> {
   }
 
   componentDidMount() {
-    fetchEditor().then((editor) => {
+    fetchEditor().then(editor => {
       editor.graph.on(Graph.events.selectionChanged, () => {
         this.setState({
           selectedCell: editor.graph.getSelectedCell(),
@@ -24,13 +24,13 @@ export class Format extends React.PureComponent<Format.Props, Format.State> {
     return this.state.selectedCell != null ? (
       <FormatCell cell={this.state.selectedCell!} />
     ) : (
-        <FormatDiagram />
-      )
+      <FormatDiagram />
+    )
   }
 }
 
 export namespace Format {
-  export interface Props { }
+  export interface Props {}
   export interface State {
     selectedCell: Cell | null
   }

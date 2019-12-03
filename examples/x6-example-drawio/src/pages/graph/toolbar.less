@@ -1,31 +1,31 @@
-  .x6-color-picker-dropdown {
-    overflow: hidden;
-    max-height: 320px;
+.x6-color-picker-dropdown {
+  overflow: hidden;
+  max-height: 320px;
 
-    .x6-menu {
-      min-width: auto;
-      min-height: auto;
+  .x6-menu {
+    min-width: auto;
+    min-height: auto;
+    padding: 0;
+
+    .x6-menu-button {
+      display: inline-block;
+      width: auto;
+      height: auto;
       padding: 0;
+    }
 
-      .x6-menu-button {
-        display: inline-block;
-        width: auto;
-        height: auto;
-        padding: 0;
-      }
+    .x6-menu-item-active > .x6-menu-button,
+    .x6-menu-item:hover > .x6-menu-button {
+      background: transparent;
+    }
 
-      .x6-menu-item-active > .x6-menu-button,
-      .x6-menu-item:hover > .x6-menu-button {
-        background: transparent;
-      }
+    .x6-menu-item-text {
+      display: inline-block;
+      padding: 0;
+    }
 
-      .x6-menu-item-text {
-        display: inline-block;
-        padding: 0;
-      }
-
-      .sketch-picker {
-        box-shadow: #e9e9e9 0 0 0 1px, rgba(0, 0, 0, 0.1) 0 8px 16px !important;
-      }
+    .sketch-picker {
+      box-shadow: #e9e9e9 0 0 0 1px, rgba(0, 0, 0, 0.1) 0 8px 16px !important;
     }
   }
+}

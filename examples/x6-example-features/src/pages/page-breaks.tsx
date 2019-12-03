@@ -29,8 +29,20 @@ export default class Example extends React.Component {
     })
 
     graph.batchUpdate(() => {
-      const n1 = graph.addNode({ data: 'Hello', x: 60, y: 60, width: 80, height: 30 })
-      const n2 = graph.addNode({ data: 'World', x: 240, y: 240, width: 80, height: 30 })
+      const n1 = graph.addNode({
+        data: 'Hello',
+        x: 60,
+        y: 60,
+        width: 80,
+        height: 30,
+      })
+      const n2 = graph.addNode({
+        data: 'World',
+        x: 240,
+        y: 240,
+        width: 80,
+        height: 30,
+      })
       graph.addEdge({ source: n1, target: n2 })
     })
 

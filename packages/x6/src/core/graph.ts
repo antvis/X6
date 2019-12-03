@@ -3074,8 +3074,6 @@ export class Graph extends Disablable
     if (this.view != null) {
       this.view.dispose()
     }
-
-    (this as any).container = null
   }
 
   // #endregion

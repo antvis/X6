@@ -10,7 +10,7 @@ import {
   fitPage,
   fitTwoPages,
   fitPageWidth,
-  toggleFontStyle
+  toggleFontStyle,
 } from './util'
 
 export class Commands {
@@ -152,7 +152,8 @@ export namespace Commands {
     {
       name: 'edit',
       shortcut: 'F2/Enter',
-      handler: (graph: Graph) => graph.isEnabled() && graph.startEditingAtCell(),
+      handler: (graph: Graph) =>
+        graph.isEnabled() && graph.startEditingAtCell(),
     },
     {
       name: 'turn',

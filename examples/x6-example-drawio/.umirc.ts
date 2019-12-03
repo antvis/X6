@@ -4,7 +4,10 @@ import lessToJs from 'less-vars-to-js'
 import { IConfig } from 'umi-types'
 
 const getVariables = (filename: string) => {
-  const content = fs.readFileSync(path.join(__dirname, `./src/style/${filename}`), 'utf8')
+  const content = fs.readFileSync(
+    path.join(__dirname, `./src/style/${filename}`),
+    'utf8'
+  )
   return lessToJs(content)
 }
 
@@ -34,14 +37,14 @@ const config: IConfig = {
   ],
   extraBabelPlugins: [
     [
-      "import",
+      'import',
       {
-        libraryName: "@antv/x6-components",
-        libraryDirectory: "es",
+        libraryName: '@antv/x6-components',
+        libraryDirectory: 'es',
         transformToDefaultImport: false,
-        style: true
-      }
-    ]
+        style: true,
+      },
+    ],
   ],
 }
 

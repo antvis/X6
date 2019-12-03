@@ -1610,7 +1610,8 @@ export class EdgeHandler extends MouseHandler {
             handle.redraw()
           } else {
             handle.dispose()
-            ;(this.handles as any)[i] = null
+            const handles = this.handles as any
+            handles[i] = null
           }
         }
       }

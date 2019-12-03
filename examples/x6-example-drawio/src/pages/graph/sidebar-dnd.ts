@@ -4,7 +4,7 @@ import { getEditor } from '../index'
 import { getDataItem } from './sidebar-util'
 
 export function initDnd(palette: HTMLDivElement) {
-  palette.childNodes.forEach((elem) => {
+  palette.childNodes.forEach(elem => {
     const instance = new Dnd({
       fully: true,
       element: elem as HTMLElement,

@@ -41,10 +41,11 @@ describe('disposable', () => {
     })
 
     it('should add `unload` listener for ie', () => {
-      ;(detector as any).IS_IE = true
+      const tmp = detector as any
+      tmp.IS_IE = true
       const obj = new Disposable()
       expect(obj.disposed).toBe(false)
-      ;(detector as any).IS_IE = false
+      tmp.IS_IE = false
     })
 
     it('shoule work with `aop`', () => {

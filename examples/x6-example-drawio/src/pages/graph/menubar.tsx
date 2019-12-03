@@ -66,7 +66,9 @@ export class GraphMenubar extends React.PureComponent {
               <Divider />
               <MenuItem>Rotation</MenuItem>
             </SubMenu>
-            <MenuItem hotkey="Cmd+R">Rotate shape only by 90° / Reverse</MenuItem>
+            <MenuItem hotkey="Cmd+R">
+              Rotate shape only by 90° / Reverse
+            </MenuItem>
             <Divider />
             <MenuItem>Align</MenuItem>
             <MenuItem>Distribute</MenuItem>
