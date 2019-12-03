@@ -1,7 +1,7 @@
-import { Base } from '../../common'
+import { Primer } from '../../common'
 import { addListeners, removeListeners } from './handler'
 
-export class Dnd extends Base {
+export class Dnd extends Primer {
   public readonly options: Dnd.Options
   public disabled: boolean
 

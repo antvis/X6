@@ -1,6 +1,6 @@
 import * as util from '../util'
 import { Graph } from '../core'
-import { Shape } from '../shape'
+import { Shape } from '../shape/shape'
 
 type DrillFn<T> = (...args: any[]) => T
 
