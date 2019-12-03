@@ -8,6 +8,7 @@
 .npmignore
 .prettierignore
 .editorconfig
+.eslintrc
 .eslintignore
 .stylelintrc.json
 .umi
