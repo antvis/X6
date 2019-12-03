@@ -128,10 +128,16 @@ export default class Layers extends React.Component {
       >
         <div ref={this.refContainer} className={styles.graph} />
         <div style={{ marginTop: 24, fontSize: 12, userSelect: 'none' }}>
-          <Checkbox checked={this.state.layer0Visible} onChange={this.onLayer0Changed}>
+          <Checkbox
+            checked={this.state.layer0Visible}
+            onChange={this.onLayer0Changed}
+          >
             Layer 0
           </Checkbox>
-          <Checkbox checked={this.state.layer1Visible} onChange={this.onLayer1Changed}>
+          <Checkbox
+            checked={this.state.layer1Visible}
+            onChange={this.onLayer1Changed}
+          >
             Layer 1
           </Checkbox>
         </div>

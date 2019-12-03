@@ -73,7 +73,8 @@ export class HtmlShape extends RectangleShape {
         const item = this.css[selector]
         div.querySelectorAll(selector).forEach((elem: HTMLElement) => {
           Object.keys(item).forEach(key => {
-            (elem.style as any)[key] = (item as any)[key]
+            const style = elem.style as any
+            style[key] = (item as any)[key]
           })
         })
       })

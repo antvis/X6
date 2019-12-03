@@ -153,7 +153,12 @@ export class Editor extends Primer {
         parent,
         x: 40,
         y: 220,
-        data: this.renderORGHTML('vp', avatarMale, 'Marketing', 'Homer Simpson'),
+        data: this.renderORGHTML(
+          'vp',
+          avatarMale,
+          'Marketing',
+          'Homer Simpson'
+        ),
       })
 
       const vp2 = graph.addNode({

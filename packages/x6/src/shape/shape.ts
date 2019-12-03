@@ -475,7 +475,8 @@ export class Shape extends Disposable {
   }
 
   protected setGradientRefConut(gradient: SVGGradientElement, count: number) {
-    (gradient as any).refCount = count
+    const elem = gradient as any
+    elem.refCount = count
   }
 
   draw(c: SvgCanvas2D, update?: boolean) {

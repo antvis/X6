@@ -1,4 +1,4 @@
-import { IConfig } from "umi-types";
+import { IConfig } from 'umi-types'
 
 // ref: https://umijs.org/config/
 const config: IConfig = {
@@ -10,29 +10,29 @@ const config: IConfig = {
   disableCSSModules: true,
   plugins: [
     [
-      "umi-plugin-react",
+      'umi-plugin-react',
       {
         antd: true,
         dva: false,
         dynamicImport: false,
-        title: "x6 Components",
+        title: 'x6 Components',
         dll: false,
         routes: {
-          exclude: [/components\//]
-        }
-      }
-    ]
+          exclude: [/components\//],
+        },
+      },
+    ],
   ],
   extraBabelPlugins: [
     [
-      "import",
+      'import',
       {
-        libraryName: "@antv/x6-components",
+        libraryName: '@antv/x6-components',
         transformToDefaultImport: false,
-        style: true
-      }
-    ]
-  ]
-};
+        style: true,
+      },
+    ],
+  ],
+}
 
-export default config;
+export default config

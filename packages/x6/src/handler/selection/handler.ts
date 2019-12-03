@@ -44,8 +44,9 @@ export class SelectionHandler extends MouseHandler {
             handler.dispose()
             handler = null
           } else if (!this.isHandlerActive(handler)) {
-            if ((handler as any).refresh != null) {
-              (handler as any).refresh()
+            const tmp = handler as any
+            if (tmp.refresh != null) {
+              tmp.refresh()
             }
             handler.redraw()
           }

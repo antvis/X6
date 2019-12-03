@@ -30,7 +30,8 @@ export namespace DomEvent {
         name: string,
         handler: Handler
       ) => {
-        ;(elem as any).attachEvent(`on${name}`, handler)
+        const node = elem as any
+        node.attachEvent(`on${name}`, handler)
         addToList(elem, name, handler)
       }
 
@@ -69,7 +70,8 @@ export namespace DomEvent {
         name: string,
         handler: Handler
       ) => {
-        ;(elem as any).detachEvent(`on${name}`, handler)
+        const node = elem as any
+        node.detachEvent(`on${name}`, handler)
         removeFromList(elem, name, handler)
       }
 
@@ -413,7 +415,8 @@ export namespace DomEvent {
     }
 
     // Opera
-    ;(e as any).isConsumed = true
+    const ee = e as any
+    ee.isConsumed = true
 
     // Other browsers
     if (!e.preventDefault) {

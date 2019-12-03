@@ -23,7 +23,7 @@ export default class Example extends React.Component {
         style: {
           shape: 'image',
           image:
-            "https://gw.alipayobjects.com/zos/basement_prod/3970a24b-4309-412d-8f08-89a8e0e24705.svg" // tslint:disable-line
+            'https://gw.alipayobjects.com/zos/basement_prod/3970a24b-4309-412d-8f08-89a8e0e24705.svg', // tslint:disable-line
         },
       })
 
@@ -35,7 +35,7 @@ export default class Example extends React.Component {
         imageAlign: 'center',
         imageVerticalAlign: 'top',
         image:
-          "https://gw.alipayobjects.com/zos/basement_prod/759f4922-517b-4e62-adea-5c431f049f47.svg", // tslint:disable-line
+          'https://gw.alipayobjects.com/zos/basement_prod/759f4922-517b-4e62-adea-5c431f049f47.svg', // tslint:disable-line
         imageWidth: 64,
         imageHeight: 64,
         spacing: 8,

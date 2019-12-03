@@ -5,7 +5,7 @@ import {
   Rectangle,
   Point,
   DomEvent,
-  Graph
+  Graph,
 } from '@antv/x6'
 import { GraphView } from './view'
 
@@ -213,8 +213,8 @@ export class EditorGraph extends Graph {
     const ps = s * this.pageScale
     const bgBounds = this.view.getBackgroundPageBounds()
 
-    width = bgBounds.width; // tslint:disable-line
-    height = bgBounds.height; // tslint:disable-line
+    width = bgBounds.width // tslint:disable-line
+    height = bgBounds.height // tslint:disable-line
 
     const right = bgBounds.x + width
     const bottom = bgBounds.y + height

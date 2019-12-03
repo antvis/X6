@@ -411,7 +411,8 @@ export class CellManager extends BaseManager {
               this.model.getTerminal(clones[i], false)
             )
           ) {
-            (clones as any)[i] = null
+            const tmp = clones as any
+            tmp[i] = null
           } else {
             const geom = this.model.getGeometry(clones[i]!)
             if (geom != null) {
@@ -2186,7 +2187,8 @@ export class CellManager extends BaseManager {
             if (value == null) {
               delete (style as any)[key]
             } else {
-              (style as any)[key] = value
+              const tmp = style as any
+              tmp[key] = value
             }
             this.model.setStyle(cell, style)
           }

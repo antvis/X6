@@ -947,7 +947,8 @@ export function applyOptions(graph: Graph) {
         val instanceof Image ||
         (typeof val !== 'function' && typeof val !== 'object')
       ) {
-        (graph as any)[key] = val
+        const tmp = graph as any
+        tmp[key] = val
       }
     }
   })

@@ -5,7 +5,6 @@ import { GuideOptions } from '@antv/x6/lib/handler/guide/option'
 import { RubberbandOptions } from '@antv/x6/lib/handler/rubberband/option'
 import { ColorPicker, ColorResult } from '@antv/x6-components'
 import { getEditor } from '../index'
-
 import './format.less'
 
 export class FormatDiagram extends React.PureComponent {
@@ -13,7 +12,7 @@ export class FormatDiagram extends React.PureComponent {
     gridEnabled: true,
     gridSize: 10,
     minGridSize: 4,
-    gridColor: '#ff0000',
+    gridColor: '#e0e0e0',
     gridStyle: 'line',
     guide: true,
     pageView: true,
@@ -128,6 +127,8 @@ export class FormatDiagram extends React.PureComponent {
   }
 
   render() {
+    console.log(this.state.gridColor)
+
     return (
       <div className="x6-editor-format-wrap">
         <div className="x6-editor-format-title">Diagram</div>
@@ -135,7 +136,10 @@ export class FormatDiagram extends React.PureComponent {
           <div className="x6-editor-format-section ">
             <div className="section-title">Grid</div>
             <div className="section-item">
-              <Checkbox checked={this.state.gridEnabled} onChange={this.onGridEnableChange}>
+              <Checkbox
+                checked={this.state.gridEnabled}
+                onChange={this.onGridEnableChange}
+              >
                 Enabled
               </Checkbox>
             </div>
@@ -154,7 +158,7 @@ export class FormatDiagram extends React.PureComponent {
               <span style={{ width: 80 }}>Grid Color</span>
               <ColorPicker
                 style={{ flex: 1 }}
-                value={this.state.gridColor}
+                color={this.state.gridColor}
                 onChange={this.onGridColorChange}
                 disabled={!this.state.gridEnabled}
               />
@@ -174,12 +178,18 @@ export class FormatDiagram extends React.PureComponent {
           <div className="x6-editor-format-section ">
             <div className="section-title">Options</div>
             <div className="section-item">
-              <Checkbox checked={this.state.guide} onChange={this.onGuideEnableChanged}>
+              <Checkbox
+                checked={this.state.guide}
+                onChange={this.onGuideEnableChanged}
+              >
                 Snap Lines
               </Checkbox>
             </div>
             <div className="section-item">
-              <Checkbox checked={this.state.rubberband} onChange={this.onRubberbandEnableChanged}>
+              <Checkbox
+                checked={this.state.rubberband}
+                onChange={this.onRubberbandEnableChanged}
+              >
                 Rubberband
               </Checkbox>
             </div>
@@ -192,8 +202,12 @@ export class FormatDiagram extends React.PureComponent {
                 value={this.state.pageSize}
                 onChange={this.onPageSizeChange}
               >
-                <Select.Option value="letter">US-Letter (8,5" x 11")</Select.Option>
-                <Select.Option value="legal">US-Legal (8,5" x 14")</Select.Option>
+                <Select.Option value="letter">
+                  US-Letter (8,5" x 11")
+                </Select.Option>
+                <Select.Option value="legal">
+                  US-Legal (8,5" x 14")
+                </Select.Option>
                 <Select.Option value="a0">A0 (841 mm x 1189 mm)</Select.Option>
                 <Select.Option value="a1">A1 (594 mm x 841 mm)</Select.Option>
                 <Select.Option value="a2">A2 (420 mm x 594 mm)</Select.Option>
@@ -212,7 +226,7 @@ export class FormatDiagram extends React.PureComponent {
 }
 
 export namespace FormatDiagram {
-  export interface Props { }
+  export interface Props {}
 
   export interface State {
     grid: boolean

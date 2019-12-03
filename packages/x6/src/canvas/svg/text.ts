@@ -167,9 +167,10 @@ export class SvgCanvas2DText extends SvgCanvas2DBase {
           : sizeDiv.offsetHeight
 
       if (this.cacheOffsetSize) {
-        (group as any).__CachedOffsetWidth__ = tmp
-        ;(group as any).__CachedFinalOffsetWidth__ = ow
-        ;(group as any).__CachedFinalOffsetHeight__ = oh
+        const tmp = group as any
+        tmp.__CachedOffsetWidth__ = tmp
+        tmp.__CachedFinalOffsetWidth__ = ow
+        tmp.__CachedFinalOffsetHeight__ = oh
       }
 
       ow += padX
@@ -412,7 +413,8 @@ export class SvgCanvas2DText extends SvgCanvas2DBase {
       }
 
       if (this.cacheOffsetSize) {
-        (group as any).__CachedOffsetWidth__ = tmp
+        const tmp = group as any
+        tmp.__CachedOffsetWidth__ = tmp
       }
 
       // Disables wrapping if text is not wrapped for given width
@@ -447,8 +449,9 @@ export class SvgCanvas2DText extends SvgCanvas2DBase {
       oh = sizeDiv.offsetHeight
 
       if (this.cacheOffsetSize) {
-        (group as any).__CachedFinalOffsetWidth__ = ow
-        ;(group as any).__CachedFinalOffsetHeight__ = oh
+        const tmp = group as any
+        tmp.__CachedFinalOffsetWidth__ = ow
+        tmp.__CachedFinalOffsetHeight__ = oh
       }
 
       oh -= padY

@@ -158,7 +158,8 @@ export function getConnectionHighlightOptions(
 
   const result = {}
   Object.keys(options).forEach((key: keyof ConnectionHighlightOptions) => {
-    (result as any)[key] = drill(options[key], args.graph, args)
+    const tmp = result as any
+    tmp[key] = drill(options[key], args.graph, args)
   })
 
   return result as ConnectionHighlightOptions

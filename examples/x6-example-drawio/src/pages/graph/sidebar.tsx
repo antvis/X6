@@ -17,14 +17,16 @@ export class Sidebar extends React.PureComponent {
       const container = this.containers[index]
       if (container != null) {
         const render = (items: PaletteItem[]) => {
-          items.forEach((item) => item.render(container, thumbWidth, thumbHeight, thumbBorder))
+          items.forEach(item =>
+            item.render(container, thumbWidth, thumbHeight, thumbBorder)
+          )
           initDnd(container)
         }
 
         if (palette.items) {
           render(palette.items)
         } else if (palette.load) {
-          palette.load.then((items) => {
+          palette.load.then(items => {
             render(items)
           })
         }
@@ -40,7 +42,7 @@ export class Sidebar extends React.PureComponent {
 
   render() {
     const palettes = getPalettes()
-    const expandKeys = palettes.filter((i) => i.expand).map((i) => i.title)
+    const expandKeys = palettes.filter(i => i.expand).map(i => i.title)
 
     return (
       <div className="x6-editor-sidebar-inner">
@@ -51,11 +53,16 @@ export class Sidebar extends React.PureComponent {
           <Collapse
             bordered={false}
             defaultActiveKey={expandKeys}
-            expandIcon={({ isActive }) => <Icon type="caret-right" rotate={isActive ? 90 : 0} />}
+            expandIcon={({ isActive }) => (
+              <Icon type="caret-right" rotate={isActive ? 90 : 0} />
+            )}
           >
             {palettes.map((palette, index) => (
               <Collapse.Panel header={palette.title} key={palette.title}>
-                <div className="x6-cell-thumb-list" ref={this.refContainer.bind(this, index)} />
+                <div
+                  className="x6-cell-thumb-list"
+                  ref={this.refContainer.bind(this, index)}
+                />
               </Collapse.Panel>
             ))}
           </Collapse>

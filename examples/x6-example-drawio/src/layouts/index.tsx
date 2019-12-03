@@ -4,7 +4,7 @@ import { Format } from '../pages/graph/format'
 import { GraphToolbar, GraphMenubar, Sidebar } from '../pages/graph'
 import './index.less'
 
-const Layout: React.FC = (props) => {
+const Layout: React.FC = props => {
   return (
     <div className="x6-editor">
       <div className="x6-editor-menubar">

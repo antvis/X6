@@ -8,7 +8,7 @@ export function getEditor() {
 }
 
 export function fetchEditor() {
-  return new Promise<Editor>((resolve) => {
+  return new Promise<Editor>(resolve => {
     const watch = () => {
       if (editor != null) {
         resolve(editor)

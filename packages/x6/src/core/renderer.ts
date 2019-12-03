@@ -156,7 +156,6 @@ export class Renderer {
   }
 
   protected getShapeConstructor(state: State) {
-    console.log(state.style.shape)
     let ctor = Shape.getShape(state.style.shape)
     if (ctor == null) {
       ctor = state.cell.isEdge() ? this.defaultEdgeShape : this.defaultNodeShape
@@ -239,13 +238,14 @@ export class Renderer {
    */
   protected resolveColor(state: State, field: string, key: string) {
     const graph = state.view.graph
-    const value = (state.shape as any)[field]
+    const shape = state.shape as any
+    const value = shape[field]
     let referenced = null
 
     if (value === 'inherit') {
       referenced = graph.model.getParent(state.cell)
     } else if (value === 'swimlane') {
-      (state.shape as any)[field] = key === 'stroke' ? '#000000' : '#ffffff'
+      shape[field] = key === 'stroke' ? '#000000' : '#ffffff'
 
       if (graph.model.getTerminal(state.cell, false) != null) {
         referenced = graph.model.getTerminal(state.cell, false)
@@ -257,18 +257,18 @@ export class Renderer {
       // tslint:disable-next-line
       key = graph.swimlaneIndicatorColorAttribute
     } else if (value === 'indicated') {
-      (state.shape as any)[field] = state.shape!.indicatorColor
+      shape[field] = state.shape!.indicatorColor
     }
 
     if (referenced != null) {
       const rstate = graph.view.getState(referenced)
-      ;(state.shape as any)[field] = null
+      shape[field] = null
 
       if (rstate != null) {
         if (rstate.shape != null && field !== 'indicatorColor') {
-          (state.shape as any)[field] = (rstate.shape as any)[field]
+          shape[field] = (rstate.shape as any)[field]
         } else {
-          (state.shape as any)[field] = (rstate.style as any)[key]
+          shape[field] = (rstate.style as any)[key]
         }
       }
     }

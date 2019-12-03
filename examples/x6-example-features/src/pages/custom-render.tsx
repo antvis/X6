@@ -21,12 +21,18 @@ export default class Example extends React.Component {
           rect.style.strokeWidth = '2'
         },
       })
-      const node2 = graph.addNode({ data: 'Render', x: 240, y: 240, width: 80, height: 30 })
+      const node2 = graph.addNode({
+        data: 'Render',
+        x: 240,
+        y: 240,
+        width: 80,
+        height: 30,
+      })
       graph.addEdge({
         data: 'Custom Render',
         source: node1,
         target: node2,
-        render(elem) { },
+        render(elem) {},
       })
     })
   }
