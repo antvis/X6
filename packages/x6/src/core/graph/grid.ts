@@ -56,13 +56,6 @@ export interface GridOptions {
    * Default is `#e0e0e0`.
    */
   color: string
-
-  /**
-   * The grid background color.
-   *
-   * Default is `#ffffff`.
-   */
-  bgColor: string | null
 }
 
 export class GraphGrid extends GraphBase {
@@ -238,21 +231,21 @@ export class GraphGrid extends GraphBase {
     this.setGridColor(color)
   }
 
-  getGridBackgroundColor() {
-    return this.options.grid.bgColor
+  getBackgroundColor() {
+    return this.options.backgroundColor
   }
 
-  setGridBackgroundColor(bgColor: string | null) {
-    this.options.grid.bgColor = bgColor
+  setBackgroundColor(color: string | null) {
+    this.options.backgroundColor = color
     this.view.validateBackgroundStyle()
     return this
   }
 
-  get gridBackgroundColor() {
-    return this.getGridBackgroundColor()
+  get backgroundColor() {
+    return this.getBackgroundColor()
   }
 
-  set gridBackgroundColor(bgColor: string | null) {
-    this.setGridBackgroundColor(bgColor)
+  set backgroundColor(color: string | null) {
+    this.setBackgroundColor(color)
   }
 }

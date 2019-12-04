@@ -1,6 +1,12 @@
-import { detector, DomEvent, Graph, FontStyle, Geometry } from '@antv/x6'
-import { UndoManager } from '@antv/x6/lib/addon/undomanager'
-import { Clipboard } from '@antv/x6/lib/addon/clipboard'
+import {
+  detector,
+  DomEvent,
+  Graph,
+  FontStyle,
+  Geometry,
+  UndoManager,
+  Clipboard,
+} from '@antv/x6'
 import { GuideOptions } from '@antv/x6/lib/handler/guide/option'
 import { Command } from './command'
 import {

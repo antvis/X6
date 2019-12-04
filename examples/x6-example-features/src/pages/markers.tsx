@@ -1,6 +1,5 @@
 import React from 'react'
 import { Graph, Style, Marker } from '@antv/x6'
-import '@antv/x6/lib/addon/marker'
 import styles from './index.less'
 
 export default class Example extends React.Component {

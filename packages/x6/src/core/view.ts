@@ -1587,7 +1587,7 @@ export class View extends Primer {
 
   validateBackgroundStyle() {
     const graph = this.graph
-    const bgColor = graph.getGridBackgroundColor() || ''
+    const bgColor = graph.getBackgroundColor() || ''
     let bgImage: string = ''
     let bgPosition: string = ''
 
