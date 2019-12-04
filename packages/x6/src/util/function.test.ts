@@ -1,7 +1,37 @@
 import sinon from 'sinon'
-import { call, apply, once, cacher } from './function'
+import { applyMixins, call, apply, once, cacher } from './function'
 
 describe('function', () => {
+  describe('#applyMixins', () => {
+    class Disposable {
+      isDisposed: boolean
+      dispose() {
+        this.isDisposed = true
+      }
+    }
+
+    class Activatable {
+      protected isActive: boolean
+      activate() {
+        this.isActive = true
+      }
+      deactivate() {
+        this.isActive = false
+      }
+    }
+
+    class SmartObject {}
+
+    interface SmartObject extends Disposable, Activatable {}
+    applyMixins(SmartObject, [Disposable, Activatable])
+
+    const instance = new SmartObject()
+
+    expect(instance.isDisposed).toBeFalsy()
+    instance.dispose()
+    expect(instance.isDisposed).toBeTruthy()
+  })
+
   describe('#call', () => {
     it('should invoke function with empty args', () => {
       const spy = sinon.spy()
