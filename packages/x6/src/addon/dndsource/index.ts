@@ -28,7 +28,7 @@ export class Dnd {
 
   constructor(public element: HTMLElement, public options: Dnd.Options) {
     DomEvent.addMouseListeners(this.element, e =>
-      this.mouseDown(e as MouseEvent)
+      this.mouseDown(e as MouseEvent),
     )
 
     // Prevents native drag and drop.
@@ -128,7 +128,7 @@ export class Dnd {
       document,
       null,
       this.mouseMoveHandler,
-      this.mouseUpHandler
+      this.mouseUpHandler,
     )
 
     if (detector.SUPPORT_TOUCH && !DomEvent.isMouseEvent(e)) {
@@ -137,7 +137,7 @@ export class Dnd {
         this.eventSource,
         null,
         this.mouseMoveHandler,
-        this.mouseUpHandler
+        this.mouseUpHandler,
       )
     }
   }
@@ -147,7 +147,7 @@ export class Dnd {
       document,
       null,
       this.mouseMoveHandler,
-      this.mouseUpHandler
+      this.mouseUpHandler,
     )
 
     if (this.eventSource != null) {
@@ -155,7 +155,7 @@ export class Dnd {
         this.eventSource,
         null,
         this.mouseMoveHandler,
-        this.mouseUpHandler
+        this.mouseUpHandler,
       )
       this.eventSource = null
     }
@@ -284,7 +284,7 @@ export class Dnd {
       if (graph.guideHandler.isGuideEnabledForEvent(e)) {
         this.currentGuide = createGuide(
           graph,
-          graph.guideHandler.getStatesForGuide()
+          graph.guideHandler.getStatesForGuide(),
         )
       }
     }
@@ -342,7 +342,7 @@ export class Dnd {
         this.previewElement.style.position = 'absolute'
       }
 
-      const gridEnabled = graph.gridEnabled
+      const gridEnabled = graph.isGridEnabled()
       let hideGuide = true
 
       // Grid and guides
@@ -380,7 +380,7 @@ export class Dnd {
     e: MouseEvent,
     target: Cell | null,
     x: number,
-    y: number
+    y: number,
   ) {
     if (this.options.onDrop != null) {
       this.options.onDrop.call(this, { graph, target, e, x, y })

@@ -9,6 +9,9 @@ import { ContextMenuOptions } from '../handler/contextmenu/option'
 import { KeyboardOptions } from '../handler/keyboard/option'
 import { RubberbandOptions } from '../handler/rubberband/option'
 import { GuideOptions } from '../handler/guide/option'
+import { GridOptions } from '../core/graph/grid'
+import { PageBreakOptions } from '../core/graph/pagebreak'
+import { FoldingOptions } from '../core/graph/folding'
 import {
   ResizeOption,
   ResizeHandleOptions,
@@ -35,86 +38,6 @@ import {
 } from '../handler/moving/option'
 
 export interface CompositeOptions {
-  /**
-   * Specifies if the grid is enabled.
-   */
-  gridEnabled: boolean
-
-  /**
-   * Specifies the grid size.
-   *
-   * Default is `10`.
-   */
-  gridSize: number
-
-  /**
-   * Specifies the grid size.
-   *
-   * Default is `4`.
-   */
-  gridMinSize: number
-
-  /**
-   * Specifies the grid type.
-   *
-   * Default is `line`.
-   */
-  gridType: GridType | null
-
-  /**
-   * Specifies the grid color.
-   *
-   * Default is `#e0e0e0`.
-   */
-  gridColor: string
-
-  /**
-   * Specifies the shade of grey. Only work with `line` grid.
-   *
-   * Default is `4`.
-   */
-  gridStep: number
-
-  gridBackgroundColor: string
-
-  /**
-   * Specifies if a dashed line should be drawn between multiple pages.
-   *
-   * Default is `false`.
-   */
-  pageBreakEnabled: boolean
-
-  /**
-   * Specifies the color for page breaks.
-   *
-   * Default is `'gray'`.
-   */
-  pageBreakColor: string
-
-  /**
-   * Specifies the page breaks should be dashed.
-   *
-   * Default is `true`.
-   */
-  pageBreakDashed: boolean
-
-  /**
-   * Specifies the minimum distance for page breaks to be visible.
-   *
-   * Default is `20` (in pixels).
-   */
-  minPageBreakDist: number
-
-  /**
-   * Specifies if folding (collapse and expand via an image icon
-   * in the graph should be enabled).
-   *
-   * Default is `true`.
-   */
-  cellsFoldable: boolean
-  collapsedImage: Image
-  expandedImage: Image
-
   /**
    * Specifies if the graph should allow resizing of cells.
    *
@@ -848,48 +771,6 @@ export interface SimpleOptions {
   maxCellCountForHandle: number
 }
 
-export type GridType = 'line' | 'dot'
-
-export interface GridOptions {
-  enabled: boolean
-  size: number
-  minSize: number
-  /**
-   * Specifies if the grid should be scaled.
-   */
-  scaled: boolean
-  step: number
-  type: GridType | null
-  color: string
-  backgroundColor: string
-}
-
-export interface PageBreakOptions {
-  enabled: boolean
-  /**
-   * Specifies the stroke color for page breaks.
-   */
-  stroke: string
-  /**
-   * Specifies the page breaks should be dashed.
-   */
-  dsahed: boolean
-  /**
-   * Specifies the minimum distance for page breaks to be visible.
-   */
-  minDist: number
-}
-
-export interface FoldingOptions {
-  /**
-   * Specifies if folding (collapse and expand via an image icon
-   * in the graph should be enabled).
-   */
-  enabled: boolean
-  collapsedImage: Image
-  expandedImage: Image
-}
-
 export interface FullOptions extends SimpleOptions, GlobalConfig {
   nodeStyle: Style
   edgeStyle: Style
@@ -969,7 +850,7 @@ export function getOptions(options: GraphOptions) {
     },
     ignoreNull: true,
     ignoreUndefined: true,
-  }) as GraphOptions
+  }) as FullOptions
 
   return result
 }
@@ -998,32 +879,7 @@ export function applyOptions(graph: Graph) {
 function expand(graph: Graph) {
   const options = graph.options
 
-  // grid
-  // ----
-  const grid = options.grid as GridOptions
-  graph.gridEnabled = grid.enabled
-  graph.gridSize = Math.max(grid.size, grid.minSize)
-  graph.gridMinSize = grid.minSize
-  graph.gridStep = grid.step
-  graph.gridType = grid.type
-  graph.gridColor = grid.color
-  graph.gridBackgroundColor = grid.backgroundColor
-
-  // pageBreak
-  // ----
-  graph.pageFormat = options.pageFormat!
-  const pageBreak = options.pageBreak as PageBreakOptions
-  graph.pageBreakEnabled = pageBreak.enabled
-  graph.pageBreakColor = pageBreak.stroke
-  graph.pageBreakDashed = pageBreak.dsahed
-  graph.minPageBreakDist = pageBreak.minDist
-
-  // folding
-  // ----
-  const folding = options.folding as FoldingOptions
-  graph.cellsFoldable = folding.enabled
-  graph.expandedImage = folding.expandedImage
-  graph.collapsedImage = folding.collapsedImage
+  graph.pageFormat = options.pageFormat
 
   // resize
   // ----

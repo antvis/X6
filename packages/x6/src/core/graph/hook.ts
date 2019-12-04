@@ -1,12 +1,12 @@
-import { Cell } from './cell'
-import { View } from './view'
-import { Model } from './model'
-import { State } from './state'
-import { Graph } from './graph'
-import { Renderer } from './renderer'
-import { Selection } from '../manager'
-import { Route } from '../route'
-import { Point, Anchor, Rectangle } from '../struct'
+import { Cell } from '../cell'
+import { View } from '../view'
+import { Model } from '../model'
+import { State } from '../state'
+import { Graph } from '.'
+import { Renderer } from '../renderer'
+import { Selection } from '../../manager'
+import { Route } from '../../route'
+import { Point, Anchor, Rectangle } from '../../struct'
 import {
   KeyboardHandler,
   TooltipHandler,
@@ -21,7 +21,7 @@ import {
   CursorHandler,
   GuideHandler,
   SelectHandler,
-} from '../handler'
+} from '../../handler'
 
 type Nilable<T> = T | null | undefined
 type BareHook<T> = (this: Graph) => Nilable<T>
@@ -31,7 +31,7 @@ type CellHook<T> = (this: Graph, cell: Cell) => Nilable<T>
 type CellIsSourceHook<T> = (
   this: Graph,
   cell: Cell,
-  isSource: boolean
+  isSource: boolean,
 ) => Nilable<T>
 
 export interface IHooks {
@@ -56,7 +56,7 @@ export interface IHooks {
   createEdgeHandler: (
     this: Graph,
     state: State,
-    edgeFn: Route.Router | null
+    edgeFn: Route.Router | null,
   ) => Nilable<EdgeHandler>
   createElbowEdgeHandler: StateHook<EdgeHandler>
   createEdgeSegmentHandler: StateHook<EdgeHandler>
@@ -148,7 +148,7 @@ export interface IHooks {
     this: Graph,
     cell: Cell,
     terminal: Cell,
-    isSource: boolean
+    isSource: boolean,
   ) => Nilable<boolean>
 
   /**
@@ -162,7 +162,7 @@ export interface IHooks {
   isCellFoldable: (
     this: Graph,
     cell: Cell,
-    nextCollapseState: boolean
+    nextCollapseState: boolean,
   ) => Nilable<boolean>
 
   /**
@@ -231,7 +231,7 @@ export interface IHooks {
   isValidConnection: (
     this: Graph,
     source: Cell | null,
-    target: Cell | null
+    target: Cell | null,
   ) => Nilable<boolean>
 
   /**
@@ -260,7 +260,7 @@ export interface IHooks {
     this: Graph,
     target: Cell,
     cells: Cell[],
-    e: MouseEvent
+    e: MouseEvent,
   ) => Nilable<boolean>
 
   /**
@@ -271,7 +271,7 @@ export interface IHooks {
     this: Graph,
     target: Cell,
     cells: Cell[],
-    e: MouseEvent
+    e: MouseEvent,
   ) => Nilable<boolean>
 
   validateCell: (this: Graph, cell: Cell, context: any) => Nilable<string>
@@ -280,7 +280,7 @@ export interface IHooks {
     this: Graph,
     edge: Cell | null,
     source: Cell | null,
-    target: Cell | null
+    target: Cell | null,
   ) => Nilable<string>
 
   /**
@@ -345,7 +345,7 @@ export interface IHooks {
    */
   getTranslateForCurrentRoot: (
     this: Graph,
-    currentRoot: Cell | null
+    currentRoot: Cell | null,
   ) => Nilable<Point>
 
   // #endregion
@@ -362,13 +362,13 @@ export interface IHooks {
   onCreateNode?: (
     this: Graph,
     newNode: Cell,
-    options: Cell.CreateNodeOptions
+    options: Cell.CreateNodeOptions,
   ) => Cell
 
   onCreateEdge?: (
     this: Graph,
     newEdge: Cell,
-    options: Cell.CreateEdgeOptions
+    options: Cell.CreateEdgeOptions,
   ) => Cell
 
   onCreateGroup?: (this: Graph, newGroup: Cell, cells: Cell[]) => Cell
