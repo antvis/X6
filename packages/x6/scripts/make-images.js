@@ -17,6 +17,7 @@ import { Image } from '../struct'
 
 `
 const lines = []
+const logs = []
 const dir = path.join(process.cwd(), './src/assets/images')
 
 fs.readdir(dir, (err, files) => {
@@ -25,7 +26,7 @@ fs.readdir(dir, (err, files) => {
     const filepath = path.join(dir, file)
     const size = sizeOf(filepath)
     const base64 = base64Img.base64Sync(filepath)
-    console.log(file)
+    logs.push(file)
     lines.push(
       `export const ${filename} = new Image('${base64}', ${size.width}, ${size.height})`
     )
@@ -37,6 +38,7 @@ fs.readdir(dir, (err, files) => {
   const format = s => s.replace(/[\n\s]/g, '')
 
   if (format(code) !== format(old)) {
+    console.log(logs.join('\n'))
     fs.writeFile(file, code, error => {
       if (error) {
         throw new Error(`Generate image assets filed: ${error}`)
@@ -45,6 +47,6 @@ fs.readdir(dir, (err, files) => {
       console.log(`\nGenerate image assets.`)
     })
   } else {
-    console.log('\nImage assets not be changed, ignore.')
+    console.log('\nImage assets not changed, ignore.')
   }
 })
