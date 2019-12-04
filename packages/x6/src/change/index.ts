@@ -11,3 +11,4 @@ export * from './currentroot-change'
 export * from './selection-change'
 
 export * from './undoableedit'
+export * from './undomanager'

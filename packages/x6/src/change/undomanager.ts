@@ -1,6 +1,6 @@
-import { Primer, Disposable } from '../../common'
-import { Graph, View, Model } from '../../core'
-import { UndoableEdit } from '../../change/undoableedit'
+import { Primer, Disposable } from '../common'
+import { Graph, View, Model } from '../core'
+import { UndoableEdit } from './undoableedit'
 
 export class UndoManager extends Primer {
   private size: number
@@ -73,7 +73,7 @@ export class UndoManager extends Primer {
     if (this.history.length > this.cursor) {
       const edits = this.history.splice(
         this.cursor,
-        this.history.length - this.cursor
+        this.history.length - this.cursor,
       )
 
       edits.forEach(edit => edit.dispose())

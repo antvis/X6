@@ -25,7 +25,6 @@ export class Dnd extends Primer {
 }
 
 export namespace Dnd {
-  export const version = '0.1.0'
   export const delay = 300
   export const events = {
     prepare: 'prepare',
