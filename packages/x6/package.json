@@ -28,13 +28,14 @@
     "lint": "yarn lint:ts && yarn lint:es",
     "lint:es": "eslint --ext .js scripts --fix",
     "lint:ts": "tslint -c tslint.json -p tsconfig.json --fix",
-    "watch": "tsc -w",
+    "watch": "watch 'yarn build:dev' ./src",
     "build:lib": "tsc",
     "build:es": "tsc --module es2015 --target es2015 --outDir ./es",
     "build:less": "lessc ./src/index.less ./lib/index.css",
     "build:images": "node ./scripts/make-images.js",
     "build:version": "node ./scripts/make-version.js",
-    "build": "concurrently 'yarn build:images' 'yarn build:version' 'yarn build:less' 'yarn build:lib' 'yarn build:es'",
+    "build:dev": "concurrently 'yarn build:images' 'yarn build:less' 'yarn build:lib' 'yarn build:es'",
+    "build": "concurrently 'yarn build:dev' 'yarn build:version'",
     "prebuild": "concurrently 'yarn lint' 'yarn clean'",
     "test": "jest",
     "pretest": "rimraf ./test/coverage",
@@ -72,7 +73,8 @@
     "tslint": "^5.18.0",
     "tslint-config-airbnb": "^5.11.2",
     "tslint-config-prettier": "^1.18.0",
-    "typescript": "^3.5.3"
+    "typescript": "^3.5.3",
+    "watch": "^1.0.2"
   },
   "dependencies": {
     "mousetrap": "^1.6.3"
