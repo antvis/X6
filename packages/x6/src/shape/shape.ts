@@ -355,7 +355,6 @@ export class Shape extends Disposable {
     }
 
     color = this.outline ? null : this.fillColor
-    console.log(color)
     if (util.isValidColor(color)) {
       node.style.backgroundColor = color!
       node.style.backgroundImage = 'none'
@@ -556,7 +555,7 @@ export class Shape extends Disposable {
     x: number,
     y: number,
     w: number,
-    h: number
+    h: number,
   ) {
     // TODO: Currently, scale is implemented in state and canvas. This will
     // move to canvas in a later version, so that the states are unscaled
@@ -567,7 +566,7 @@ export class Shape extends Disposable {
       this.flipH,
       this.flipV,
       x + w / 2,
-      y + h / 2
+      y + h / 2,
     )
   }
 
@@ -576,7 +575,7 @@ export class Shape extends Disposable {
     x: number,
     y: number,
     w: number,
-    h: number
+    h: number,
   ) {
     c.setOpacity(this.opacity)
     c.setFillOpacity(this.fillOpacity)
@@ -611,7 +610,7 @@ export class Shape extends Disposable {
         b.y,
         b.width,
         b.height,
-        this.gradientDirection!
+        this.gradientDirection!,
       )
     } else {
       c.setFillColor(this.fillColor)
@@ -659,7 +658,7 @@ export class Shape extends Disposable {
     x: number,
     y: number,
     w: number,
-    h: number
+    h: number,
   ) {
     this.drawBackground(c, x, y, w, h)
     if (!this.outline || this.style == null || !this.style.backgroundOutline) {
@@ -678,7 +677,7 @@ export class Shape extends Disposable {
     y: number,
     w: number,
     h: number,
-    arc: number
+    arc: number,
   ) {
     const sw = Math.ceil(this.strokeWidth / 2)
     const size = 0.4
@@ -713,7 +712,7 @@ export class Shape extends Disposable {
     arcSize: number,
     close: boolean,
     exclude?: number[],
-    initialMove: boolean = true
+    initialMove: boolean = true,
   ) {
     if (points != null && points.length > 0) {
       const pe = points[points.length - 1]
@@ -950,7 +949,7 @@ export class Shape extends Disposable {
     x: number,
     y: number,
     w: number,
-    h: number
+    h: number,
   ) {
     return new Rectangle(x, y, w, h)
   }
@@ -1137,7 +1136,7 @@ export namespace Shape {
   export function register(
     name: string,
     ctor: ShapeConstructor,
-    force: boolean = false
+    force: boolean = false,
   ) {
     registerEntity(shapes, name, ctor, force, () => {
       throw new Error(`Shape with name '${name}' already registered.`)
