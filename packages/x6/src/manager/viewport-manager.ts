@@ -701,14 +701,8 @@ export class ViewportManager extends BaseManager {
 
         // LATER: Use unscaled bounding boxes to fix rounding errors
         const s = this.view.scale
-        let w2 = bounds.width / s
-        let h2 = bounds.height / s
-
-        // Fits to the size of the background image if required
-        if (this.graph.backgroundImage != null) {
-          w2 = Math.max(w2, this.graph.backgroundImage.width - bounds.x / s)
-          h2 = Math.max(h2, this.graph.backgroundImage.height - bounds.y / s)
-        }
+        const w2 = bounds.width / s
+        const h2 = bounds.height / s
 
         const b = (keepOrigin ? border : 2 * border) + margin + 1
 

@@ -302,7 +302,6 @@ export interface SimpleOptions {
    */
   tapAndHoldDelay: number
 
-  backgroundImage: Image | null
   backgroundColor: string | null
 
   /**
