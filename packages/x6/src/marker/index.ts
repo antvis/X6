@@ -3,13 +3,34 @@ import { Point } from '../struct'
 import { SvgCanvas2D } from '../canvas'
 import { registerEntity } from '../util/biz/registry'
 
-export * from './classic'
-export * from './diamond'
-export * from './open'
-export * from './oval'
+import { ovalMarker } from './oval'
+import { diamondMarker } from './diamond'
+import { createOpenMarker as createOpenMarkerInner } from './open'
+import { createClassicMarker as createClassicMarkerinner } from './classic'
+import { circleMarker, circlePlusMarker, halfCircleMarker } from './circle'
+import { crossMarker } from './cross'
+import { dashMarker } from './dash'
+import {
+  asyncMarker,
+  createOpenAsyncMarker as createOpenAsyncMarkerInner,
+} from './async'
 
 export namespace Marker {
-  export interface DrawMarkerOptions {
+  export const oval = ovalMarker
+  export const diamond = diamondMarker
+  export const createOpenMarker = createOpenMarkerInner
+  export const createClassicMarker = createClassicMarkerinner
+  export const circle = circleMarker
+  export const circlePlus = circlePlusMarker
+  export const halfCircle = halfCircleMarker
+  export const cross = crossMarker
+  export const dash = dashMarker
+  export const async = asyncMarker
+  export const createOpenAsyncMarker = createOpenAsyncMarkerInner
+}
+
+export namespace Marker {
+  export interface CreateMarkerOptions {
     /**
      * The `SvgCanvas2D` instance used to draw the edge and marker.
      */
@@ -62,21 +83,21 @@ export namespace Marker {
     filled: boolean
   }
 
-  export type DrawMarker = (options: DrawMarkerOptions) => () => void
+  export type MarkerFactory = (options: CreateMarkerOptions) => () => void
 
-  const markers: { [name: string]: DrawMarker } = {}
+  const markers: { [name: string]: MarkerFactory } = {}
 
   export function register(
     name: string,
-    draw: DrawMarker,
-    force: boolean = false
+    draw: MarkerFactory,
+    force: boolean = false,
   ) {
     registerEntity(markers, name, draw, force, () => {
       throw new Error(`Marker with name '${name}' already registered.`)
     })
   }
 
-  export function createMarker(options: DrawMarkerOptions) {
+  export function createMarker(options: CreateMarkerOptions) {
     const fn = markers[options.name]
     return fn != null ? fn(options) : null
   }

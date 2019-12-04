@@ -1,6 +1,6 @@
-import { Marker } from '../../marker'
+import { Marker } from '.'
 
-function circleMarker({
+export function circleMarker({
   c,
   pe,
   unitX,
@@ -8,7 +8,7 @@ function circleMarker({
   size,
   sw,
   filled,
-}: Marker.DrawMarkerOptions) {
+}: Marker.CreateMarkerOptions) {
   const pt = pe.clone()
 
   size = size + sw // tslint:disable-line
@@ -30,10 +30,8 @@ function circleMarker({
   }
 }
 
-Marker.register('circle', circleMarker)
-Marker.register('circlePlus', options => {
+export function circlePlusMarker(options: Marker.CreateMarkerOptions) {
   const { c, pe, unitX, unitY, size, sw } = options
-
   const pt = pe.clone()
   const fn = circleMarker({ ...options, filled: false })
   const nx = unitX * (size + 2 * sw)
@@ -48,9 +46,16 @@ Marker.register('circlePlus', options => {
     c.lineTo(pt.x + ny - nx - unitY * sw, pt.y - ny - nx + unitX * sw)
     c.stroke()
   }
-})
+}
 
-Marker.register('halfCircle', ({ c, pe, unitX, unitY, size, sw }) => {
+export function halfCircleMarker({
+  c,
+  pe,
+  unitX,
+  unitY,
+  size,
+  sw,
+}: Marker.CreateMarkerOptions) {
   const offsetX = unitX * (size + sw + 1)
   const offsetY = unitY * (size + sw + 1)
 
@@ -66,4 +71,4 @@ Marker.register('halfCircle', ({ c, pe, unitX, unitY, size, sw }) => {
     c.quadTo(pe.x + offsetY, pe.y - offsetX, pt.x + offsetY, pt.y - offsetX)
     c.stroke()
   }
-})
+}

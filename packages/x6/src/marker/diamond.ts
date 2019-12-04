@@ -1,6 +1,6 @@
 import { Marker } from '.'
 
-export function diamond({
+export function diamondMarker({
   c,
   name,
   pe,
@@ -9,7 +9,7 @@ export function diamond({
   size,
   sw,
   filled,
-}: Marker.DrawMarkerOptions) {
+}: Marker.CreateMarkerOptions) {
   // The angle of the forward facing arrow sides against the x axis is
   // 45 degrees, 1/sin(45) = 1.4142 / 2 = 0.7071 ( / 2 allows for
   // only half the strokewidth is processed ). Or 0.9862 for thin diamond.
