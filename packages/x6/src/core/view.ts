@@ -7,7 +7,7 @@ import { Route } from '../route'
 import { Perimeter } from '../perimeter'
 import { RectangleShape, ImageShape } from '../shape'
 import { UndoableEdit, CurrentRootChange } from '../change'
-import { Point, Rectangle, Anchor, Image } from '../struct'
+import { Point, Rectangle, Anchor, Image, NodeType } from '../struct'
 import { detector, DomEvent, MouseEventEx, Primer, Disposable } from '../common'
 
 export class View extends Primer {
@@ -1507,6 +1507,7 @@ export class View extends Primer {
   validateBackground() {
     this.validateBackgroundImage()
     this.validateBackgroundPage()
+    this.validateBackgroundStyle()
   }
 
   protected validateBackgroundImage() {
@@ -1546,13 +1547,29 @@ export class View extends Primer {
     if (this.graph.pageVisible) {
       const bounds = this.getBackgroundPageBounds()
       if (this.backgroundPageShape == null) {
-        this.backgroundPageShape = new RectangleShape(bounds, 'white', 'black')
-        this.backgroundPageShape.scale = this.scale
-        this.backgroundPageShape.shadow = true
-        this.backgroundPageShape.dialect = this.graph.dialect
-        this.backgroundPageShape.init(this.backgroundPane)
-        this.backgroundPageShape.redraw()
-        this.setupBackgroundPage()
+        let firstChild = this.graph.container.firstChild as HTMLElement
+        while (firstChild && firstChild.nodeType !== NodeType.element) {
+          firstChild = firstChild.nextSibling as HTMLElement
+        }
+
+        if (firstChild != null) {
+          this.backgroundPageShape = new RectangleShape(
+            bounds,
+            'rgba(255,255,255,1)',
+            'rgba(255,255,255,0)'
+          )
+          this.backgroundPageShape.scale = this.scale
+          this.backgroundPageShape.dialect = 'html'
+          this.backgroundPageShape.className = 'x6-page-background'
+          this.backgroundPageShape.init(this.graph.container)
+          this.graph.container.insertBefore(
+            this.backgroundPageShape.elem!,
+            firstChild
+          )
+          firstChild.style.position = 'absolute'
+          this.backgroundPageShape.redraw()
+          this.setupBackgroundPage()
+        }
       } else {
         this.backgroundPageShape.scale = this.scale
         this.backgroundPageShape.bounds = bounds
@@ -1601,6 +1618,60 @@ export class View extends Primer {
           this.graph.fireMouseEvent(DomEvent.MOUSE_UP, new MouseEventEx(e))
         }
       )
+    }
+  }
+
+  protected validateBackgroundStyle() {
+    const graph = this.graph
+    const backgroundColor = graph.backgroundColor || ''
+    let backgroundImage: string = ''
+    let backgroundPosition: string = ''
+    if (
+      graph.gridEnabled &&
+      graph.gridType != null &&
+      graph.gridColor != null
+    ) {
+      backgroundImage = util.createGrid({
+        type: graph.gridType,
+        size: graph.gridSize * this.scale,
+        minSize: graph.gridMinSize,
+        color: graph.gridColor,
+        step: graph.gridStep,
+      })
+    }
+
+    let ox = 0
+    let oy = 0
+    const s = this.scale
+    const t = this.translate
+    const phase = graph.gridSize * s * graph.gridStep
+    if (this.backgroundPageShape != null) {
+      const bounds = this.getBackgroundPageBounds()
+      ox = 1 + bounds.x
+      oy = 1 + bounds.y
+    }
+
+    ox = -Math.round(phase - util.mod(t.x * s - ox, phase))
+    oy = -Math.round(phase - util.mod(t.y * s - oy, phase))
+    backgroundPosition = `${ox}px ${oy}px`
+
+    let canvas = this.getStage()
+    if ((canvas as SVGElement).ownerSVGElement != null) {
+      canvas = (canvas as SVGElement).ownerSVGElement!
+    }
+
+    if (this.backgroundPageShape != null) {
+      const page = this.backgroundPageShape.elem!
+      page.style.backgroundColor = backgroundColor
+      page.style.backgroundImage = backgroundImage
+      page.style.backgroundPosition = backgroundPosition
+      canvas.style.backgroundImage = ''
+      canvas.style.backgroundColor = ''
+      canvas.style.backgroundPosition = ''
+    } else {
+      canvas.style.backgroundImage = backgroundImage
+      canvas.style.backgroundColor = backgroundColor
+      canvas.style.backgroundPosition = backgroundPosition
     }
   }
 

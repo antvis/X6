@@ -13,6 +13,7 @@ import {
   SimpleOptions,
   CompositeOptions,
   GraphOptions,
+  GridType,
   getOptions,
   applyOptions,
   preset,
@@ -147,6 +148,7 @@ export class Graph extends Disablable
     }
   }
 
+  backgroundColor: null
   backgroundImage: Image
   getBackgroundImage() {
     return this.backgroundImage
@@ -392,6 +394,11 @@ export class Graph extends Disablable
   setGridSize(size: number) {
     this.gridSize = size
   }
+
+  gridMinSize: number
+  gridType: GridType | null
+  gridColor: string
+  gridStep: number
 
   tolerance: number = 4
   getTolerance() {

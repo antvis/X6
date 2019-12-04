@@ -67,6 +67,7 @@ export const preset: FullOptions = {
   preferPageSize: false,
   pageFormat: PageSize.A4_PORTRAIT,
   pageScale: 1,
+  backgroundColor: null,
   backgroundImage: null,
   autoScroll: true,
   ignoreScrollbars: false,
@@ -124,7 +125,11 @@ export const preset: FullOptions = {
   grid: {
     enabled: true,
     size: 10,
+    minSize: 4,
     scaled: false,
+    step: 4,
+    type: 'line',
+    color: '#e0e0e0',
   },
 
   tolerance: 4,

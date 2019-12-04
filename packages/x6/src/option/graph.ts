@@ -38,14 +38,42 @@ export interface CompositeOptions {
   /**
    * Specifies if the grid is enabled.
    */
-  gridEnabled?: boolean
+  gridEnabled: boolean
 
   /**
    * Specifies the grid size.
    *
    * Default is `10`.
    */
-  gridSize?: number
+  gridSize: number
+
+  /**
+   * Specifies the grid size.
+   *
+   * Default is `4`.
+   */
+  gridMinSize: number
+
+  /**
+   * Specifies the grid type.
+   *
+   * Default is `line`.
+   */
+  gridType: GridType | null
+
+  /**
+   * Specifies the grid color.
+   *
+   * Default is `#e0e0e0`.
+   */
+  gridColor: string
+
+  /**
+   * Specifies the shade of grey. Only work with `line` grid.
+   *
+   * Default is `4`.
+   */
+  gridStep: number
 
   /**
    * Specifies if a dashed line should be drawn between multiple pages.
@@ -275,6 +303,7 @@ export interface SimpleOptions {
   tapAndHoldDelay: number
 
   backgroundImage: Image | null
+  backgroundColor: string | null
 
   /**
    * Specifies if the background page should be visible.
@@ -818,13 +847,19 @@ export interface SimpleOptions {
   maxCellCountForHandle: number
 }
 
+export type GridType = 'line' | 'dot'
+
 export interface GridOptions {
   enabled: boolean
   size: number
+  minSize: number
   /**
    * Specifies if the grid should be scaled.
    */
   scaled: boolean
+  type: GridType | null
+  color: string
+  step: number
 }
 
 export interface PageBreakOptions {
@@ -964,8 +999,12 @@ function expand(graph: Graph) {
   // grid
   // ----
   const grid = options.grid as GridOptions
-  graph.gridSize = grid.size
   graph.gridEnabled = grid.enabled
+  graph.gridSize = Math.max(grid.size, grid.minSize)
+  graph.gridMinSize = grid.minSize
+  graph.gridStep = grid.step
+  graph.gridType = grid.type
+  graph.gridColor = grid.color
 
   // pageBreak
   // ----

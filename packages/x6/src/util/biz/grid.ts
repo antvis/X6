@@ -4,23 +4,23 @@ export interface CreateGridOptions {
   minSize: number
   color: string
   step: number
-  style: 'line' | 'dot'
+  type: 'line' | 'dot'
 }
 
 const defaults: CreateGridOptions = {
-  id: 'grid',
+  id: 'x6-graph-grid',
   size: 10,
   step: 4,
   minSize: 4,
   color: '#e0e0e0',
-  style: 'line',
+  type: 'line',
 }
 
 export function createGrid(options: Partial<CreateGridOptions> = {}) {
   const opts: CreateGridOptions = { ...defaults, ...options }
   fixSize(opts)
 
-  const svg = opts.style === 'line' ? createLineGrid(opts) : createDotGrid(opts)
+  const svg = opts.type === 'line' ? createLineGrid(opts) : createDotGrid(opts)
   return base64(svg)
 }
 
