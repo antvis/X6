@@ -1521,11 +1521,7 @@ export class View extends Primer {
         }
 
         if (firstChild != null) {
-          this.backgroundPageShape = new RectangleShape(
-            bounds,
-            'rgba(255,255,255,1)',
-            'rgba(255,255,255,0)'
-          )
+          this.backgroundPageShape = new RectangleShape(bounds, '#ffffff')
           this.backgroundPageShape.scale = this.scale
           this.backgroundPageShape.dialect = 'html'
           this.backgroundPageShape.className = 'x6-page-background'
@@ -1591,6 +1587,7 @@ export class View extends Primer {
 
   validateBackgroundStyle() {
     const graph = this.graph
+    const bgColor = graph.gridBackgroundColor || ''
     let bgImage: string = ''
     let bgPosition: string = ''
     if (
@@ -1629,12 +1626,15 @@ export class View extends Primer {
 
     if (this.backgroundPageShape != null) {
       const page = this.backgroundPageShape.elem!
+      page.style.backgroundColor = bgColor
       page.style.backgroundImage = bgImage
       page.style.backgroundPosition = bgPosition
       canvas.style.backgroundImage = ''
+      canvas.style.backgroundColor = ''
       canvas.style.backgroundPosition = ''
     } else {
       canvas.style.backgroundImage = bgImage
+      canvas.style.backgroundColor = bgColor
       canvas.style.backgroundPosition = bgPosition
     }
   }
