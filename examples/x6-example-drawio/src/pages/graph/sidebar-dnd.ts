@@ -1,5 +1,4 @@
-import { util } from '@antv/x6'
-import { Dnd } from '@antv/x6/lib/addon/dnd'
+import { util, Dnd } from '@antv/x6'
 import { getEditor } from '../index'
 import { getDataItem } from './sidebar-util'
 
