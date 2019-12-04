@@ -9,6 +9,7 @@ export * from './struct'
 export * from './types'
 export * from './change'
 export * from './core'
+export * from './addon'
 
 export { preset } from './option'
 export { Route } from './route'
