@@ -75,6 +75,8 @@ export interface CompositeOptions {
    */
   gridStep: number
 
+  gridBackgroundColor: string
+
   /**
    * Specifies if a dashed line should be drawn between multiple pages.
    *
@@ -301,6 +303,8 @@ export interface SimpleOptions {
    * Default is `500` ms.
    */
   tapAndHoldDelay: number
+
+  backgroundColor: string | null
 
   /**
    * Specifies if the background page should be visible.
@@ -854,9 +858,10 @@ export interface GridOptions {
    * Specifies if the grid should be scaled.
    */
   scaled: boolean
+  step: number
   type: GridType | null
   color: string
-  step: number
+  backgroundColor: string
 }
 
 export interface PageBreakOptions {
@@ -1002,6 +1007,7 @@ function expand(graph: Graph) {
   graph.gridStep = grid.step
   graph.gridType = grid.type
   graph.gridColor = grid.color
+  graph.gridBackgroundColor = grid.backgroundColor
 
   // pageBreak
   // ----

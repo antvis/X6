@@ -355,7 +355,7 @@ export class Shape extends Disposable {
     }
 
     color = this.outline ? null : this.fillColor
-
+    console.log(color)
     if (util.isValidColor(color)) {
       node.style.backgroundColor = color!
       node.style.backgroundImage = 'none'

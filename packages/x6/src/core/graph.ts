@@ -148,6 +148,8 @@ export class Graph extends Disablable
     }
   }
 
+  backgroundColor: null
+
   autoScroll: boolean = true
   ignoreScrollbars: boolean = false
   translateToScrollPosition: boolean = false
@@ -390,6 +392,7 @@ export class Graph extends Disablable
   gridType: GridType | null
   gridColor: string
   gridStep: number
+  gridBackgroundColor: string
 
   tolerance: number = 4
   getTolerance() {

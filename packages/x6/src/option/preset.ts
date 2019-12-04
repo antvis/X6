@@ -67,6 +67,7 @@ export const preset: FullOptions = {
   preferPageSize: false,
   pageFormat: PageSize.A4_PORTRAIT,
   pageScale: 1,
+  backgroundColor: '#ffffff',
   autoScroll: true,
   ignoreScrollbars: false,
   translateToScrollPosition: false,
@@ -128,6 +129,7 @@ export const preset: FullOptions = {
     step: 4,
     type: 'line',
     color: '#e0e0e0',
+    backgroundColor: '#ffffff',
   },
 
   tolerance: 4,
