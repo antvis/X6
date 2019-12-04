@@ -1,13 +1,13 @@
 import { Marker } from '.'
 
-export function oval({
+export function ovalMarker({
   c,
   pe,
   unitX,
   unitY,
   size,
   filled,
-}: Marker.DrawMarkerOptions) {
+}: Marker.CreateMarkerOptions) {
   const a = size / 2
   const pt = pe.clone()
   pe.x -= unitX * a

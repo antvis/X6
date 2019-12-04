@@ -10,7 +10,7 @@ export function createClassicMarker(widthFactor: number = 2) {
     size,
     sw,
     filled,
-  }: Marker.DrawMarkerOptions) {
+  }: Marker.CreateMarkerOptions) {
     // The angle of the forward facing arrow sides against the x axis is
     // 26.565 degrees, 1/sin(26.565) = 2.236 / 2 = 1.118 ( / 2 allows for
     // only half the strokewidth is processed ).
@@ -35,7 +35,7 @@ export function createClassicMarker(widthFactor: number = 2) {
       c.moveTo(pt.x, pt.y)
       c.lineTo(
         pt.x - unitX - unitY / widthFactor,
-        pt.y - unitY + unitX / widthFactor
+        pt.y - unitY + unitX / widthFactor,
       )
 
       if (name === 'classic' || name === 'classicThin') {
@@ -44,7 +44,7 @@ export function createClassicMarker(widthFactor: number = 2) {
 
       c.lineTo(
         pt.x + unitY / widthFactor - unitX,
-        pt.y - unitY - unitX / widthFactor
+        pt.y - unitY - unitX / widthFactor,
       )
 
       c.close()
