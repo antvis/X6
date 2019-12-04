@@ -8,15 +8,15 @@ import { getEditor } from '../index'
 import './format.less'
 
 export class FormatDiagram extends React.PureComponent {
-  state = {
+  state: FormatDiagram.State = {
     gridEnabled: true,
     gridSize: 10,
-    minGridSize: 4,
+    gridMinSize: 4,
     gridColor: '#e0e0e0',
-    gridStyle: 'line',
-    guide: true,
+    gridType: 'line',
     pageView: true,
     pageSize: 'a4',
+    guide: true,
     rubberband: true,
   }
 
@@ -35,8 +35,8 @@ export class FormatDiagram extends React.PureComponent {
     this.setState({
       gridEnabled: graph.gridEnabled,
       gridSize: graph.gridSize,
-      minGridSize: graph.view.minGridSize,
-      gridColor: graph.view.gridColor,
+      gridMinSize: graph.gridMinSize,
+      gridColor: graph.gridColor,
       guide: guideOptions.enabled,
       pageView: graph.pageVisible,
       rubberband: graph.rubberbandHandler.isEnabled(),
@@ -55,27 +55,24 @@ export class FormatDiagram extends React.PureComponent {
     })
   }
 
-  onGridColorChange = (value: ColorResult) => {
-    const graph = this.graph
-    graph.view.gridColor = value.hex
-    graph.view.validateBackgroundPage()
-    this.setState({
-      gridColor: value.hex,
-    })
-  }
-
   onGridSizeChange = (value: number) => {
     this.graph.gridSize = value
     this.graph.view.validate()
     this.setState({ gridSize: value })
   }
 
-  onGridStyleChange = (e: any) => {
-    const gridStyle = e.target.value
+  onGridColorChange = (value: ColorResult) => {
+    this.graph.gridColor = value.hex
+    this.graph.view.validateBackgroundStyle()
+    this.setState({ gridColor: value.hex })
+  }
+
+  onGridTypeChange = (e: any) => {
+    const gridType = e.target.value
     const graph = this.graph
-    graph.view.gridStyle = gridStyle
-    graph.view.validateBackgroundPage()
-    this.setState({ gridStyle })
+    graph.gridType = gridType
+    graph.view.validateBackgroundStyle()
+    this.setState({ gridType })
   }
 
   onGuideEnableChanged = (e: any) => {
@@ -86,9 +83,7 @@ export class FormatDiagram extends React.PureComponent {
     options.enabled = checked
     graph.guideHandler.setEnadled(checked)
 
-    this.setState({
-      guide: checked,
-    })
+    this.setState({ guide: checked })
   }
 
   onRubberbandEnableChanged = (e: any) => {
@@ -148,7 +143,7 @@ export class FormatDiagram extends React.PureComponent {
               <InputNumber
                 style={{ flex: 1 }}
                 className="x6-editor-format-number"
-                min={this.state.minGridSize}
+                min={this.state.gridMinSize}
                 value={this.state.gridSize}
                 disabled={!this.state.gridEnabled}
                 onChange={this.onGridSizeChange}
@@ -166,8 +161,8 @@ export class FormatDiagram extends React.PureComponent {
             <div className="section-item">
               <span style={{ width: 80 }}>Grid Style</span>
               <Radio.Group
-                value={this.state.gridStyle}
-                onChange={this.onGridStyleChange}
+                value={this.state.gridType}
+                onChange={this.onGridTypeChange}
                 disabled={!this.state.gridEnabled}
               >
                 <Radio value="line">Line</Radio>
@@ -229,12 +224,16 @@ export namespace FormatDiagram {
   export interface Props {}
 
   export interface State {
-    grid: boolean
+    gridEnabled: boolean
     gridSize: number
-    minGridSize: number
+    gridMinSize: number
     gridColor: string
-    guide: boolean
+    gridType: string
+
     pageView: boolean
     pageSize: string
+
+    guide: boolean
+    rubberband: boolean
   }
 }

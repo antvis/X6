@@ -1,5 +1,4 @@
-import { View, Rectangle, NodeType, util, Shape } from '@antv/x6'
-import { createGrid } from '@antv/x6/lib/addon/grid'
+import { View, Rectangle, util } from '@antv/x6'
 import { EditorGraph } from './graph'
 
 export class GraphView extends View {
@@ -17,88 +16,6 @@ export class GraphView extends View {
     }
 
     super.validate()
-  }
-
-  validateBackgroundPage() {
-    const graph = this.graph
-    if (graph.container) {
-      if (graph.pageVisible) {
-        const bounds = this.getBackgroundPageBounds()
-
-        bounds.x += 1
-        bounds.y += 1
-
-        if (this.backgroundPageShape == null) {
-          let firstChild = graph.container.firstChild as HTMLElement
-          while (firstChild && firstChild.nodeType != NodeType.element) {
-            firstChild = firstChild.nextSibling as HTMLElement
-          }
-
-          if (firstChild != null) {
-            this.backgroundPageShape = new Shape.Rectangle(
-              bounds,
-              '#ffffff',
-              '#ffffff'
-            )
-            this.backgroundPageShape.scale = 1
-            this.backgroundPageShape.shadow = true
-            this.backgroundPageShape.dialect = 'html'
-            this.backgroundPageShape.className = 'x6-editor-background'
-            this.backgroundPageShape.init(graph.container)
-            firstChild.style.position = 'absolute'
-            graph.container.insertBefore(
-              this.backgroundPageShape.elem!,
-              firstChild
-            )
-            this.backgroundPageShape.redraw()
-            this.setupBackgroundPage()
-          }
-        } else {
-          this.backgroundPageShape.scale = 1
-          this.backgroundPageShape.bounds = bounds
-          this.backgroundPageShape.redraw()
-        }
-      } else if (this.backgroundPageShape != null) {
-        this.backgroundPageShape.dispose()
-        this.backgroundPageShape = null
-      }
-
-      this.validateBackgroundStyles()
-    }
-  }
-
-  gridSteps: number = 4
-  minGridSize: number = 4
-  gridColor: string = '#e0e0e0'
-  gridStyle: 'line' | 'dot' = 'line'
-
-  validateBackgroundStyles() {
-    const graph = this.graph
-    if (graph.isGridEnabled() && this.backgroundPageShape != null) {
-      const s = this.scale
-      const t = this.translate
-      const b = this.getBackgroundPageBounds()
-      const x = 1 + b.x
-      const y = 1 + b.y
-
-      const phase = graph.gridSize * this.scale * this.gridSteps
-      const ox = -Math.round(phase - util.mod(t.x * s - x, phase))
-      const oy = -Math.round(phase - util.mod(t.y * s - y, phase))
-      const position = util.toPx(ox) + ' ' + util.toPx(oy)
-
-      const style = this.backgroundPageShape.elem!.style
-
-      style.backgroundColor = '#ffffff'
-      style.backgroundImage = createGrid({
-        size: this.graph.gridSize * this.scale,
-        minSize: this.minGridSize,
-        color: this.gridColor,
-        step: this.gridSteps,
-        style: this.gridStyle,
-      })
-
-      style.backgroundPosition = position
-    }
   }
 
   getBackgroundPageBounds() {
