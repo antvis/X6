@@ -6,13 +6,7 @@ export default class Example extends React.Component {
   private container: HTMLDivElement
 
   componentDidMount() {
-    const graph = new Graph(this.container, {
-      backgroundImage: new Image(
-        'https://gw.alipayobjects.com/mdn/rms_5cf9ec/afts/img/A*tgCPSLMZAr8AAAAAAAAAAABkARQnAQ',
-        852,
-        480
-      ),
-    })
+    const graph = new Graph(this.container)
 
     graph.batchUpdate(() => {
       graph.addNode({
