@@ -149,13 +149,6 @@ export class Graph extends Disablable
   }
 
   backgroundColor: null
-  backgroundImage: Image
-  getBackgroundImage() {
-    return this.backgroundImage
-  }
-  setBackgroundImage(image: Image) {
-    this.backgroundImage = image
-  }
 
   autoScroll: boolean = true
   ignoreScrollbars: boolean = false

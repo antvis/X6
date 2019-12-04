@@ -5,9 +5,9 @@ import { Graph } from './graph'
 import { Geometry } from './geometry'
 import { Route } from '../route'
 import { Perimeter } from '../perimeter'
-import { RectangleShape, ImageShape } from '../shape'
+import { RectangleShape } from '../shape'
 import { UndoableEdit, CurrentRootChange } from '../change'
-import { Point, Rectangle, Anchor, Image, NodeType } from '../struct'
+import { Point, Rectangle, Anchor, NodeType } from '../struct'
 import { detector, DomEvent, MouseEventEx, Primer, Disposable } from '../common'
 
 export class View extends Primer {
@@ -44,7 +44,6 @@ export class View extends Primer {
   protected overlayPane: HTMLElement | SVGGElement | null
 
   protected states: WeakMap<Cell, State>
-  protected backgroundImage: ImageShape | null
   protected backgroundPageShape: RectangleShape | null
   protected readonly invalidatings: WeakSet<Cell>
 
@@ -1510,38 +1509,7 @@ export class View extends Primer {
     this.validateBackgroundStyle()
   }
 
-  protected validateBackgroundImage() {
-    const bg = this.graph.getBackgroundImage()
-    if (bg != null) {
-      if (
-        this.backgroundImage == null ||
-        this.backgroundImage.image !== bg.src
-      ) {
-        if (this.backgroundImage != null) {
-          this.backgroundImage.dispose()
-        }
-
-        this.backgroundImage = new ImageShape(new Rectangle(), bg.src)
-        this.backgroundImage.dialect = this.graph.dialect
-        this.backgroundImage.init(this.backgroundPane)
-      }
-
-      this.redrawBackgroundImage(this.backgroundImage, bg)
-    } else if (this.backgroundImage != null) {
-      this.backgroundImage.dispose()
-      this.backgroundImage = null
-    }
-  }
-
-  protected redrawBackgroundImage(backgroundImage: ImageShape, bg: Image) {
-    backgroundImage.scale = this.scale
-    backgroundImage.bounds.x = this.scale * this.translate.x
-    backgroundImage.bounds.y = this.scale * this.translate.y
-    backgroundImage.bounds.width = this.scale * bg.width
-    backgroundImage.bounds.height = this.scale * bg.height
-
-    backgroundImage.redraw()
-  }
+  protected validateBackgroundImage() {}
 
   protected validateBackgroundPage() {
     if (this.graph.pageVisible) {
@@ -1623,15 +1591,15 @@ export class View extends Primer {
 
   protected validateBackgroundStyle() {
     const graph = this.graph
-    const backgroundColor = graph.backgroundColor || ''
-    let backgroundImage: string = ''
-    let backgroundPosition: string = ''
+    const bgColor = graph.backgroundColor || ''
+    let bgImage: string = ''
+    let bgPosition: string = ''
     if (
       graph.gridEnabled &&
       graph.gridType != null &&
       graph.gridColor != null
     ) {
-      backgroundImage = util.createGrid({
+      bgImage = util.createGrid({
         type: graph.gridType,
         size: graph.gridSize * this.scale,
         minSize: graph.gridMinSize,
@@ -1653,7 +1621,7 @@ export class View extends Primer {
 
     ox = -Math.round(phase - util.mod(t.x * s - ox, phase))
     oy = -Math.round(phase - util.mod(t.y * s - oy, phase))
-    backgroundPosition = `${ox}px ${oy}px`
+    bgPosition = `${ox}px ${oy}px`
 
     let canvas = this.getStage()
     if ((canvas as SVGElement).ownerSVGElement != null) {
@@ -1662,16 +1630,16 @@ export class View extends Primer {
 
     if (this.backgroundPageShape != null) {
       const page = this.backgroundPageShape.elem!
-      page.style.backgroundColor = backgroundColor
-      page.style.backgroundImage = backgroundImage
-      page.style.backgroundPosition = backgroundPosition
+      page.style.backgroundColor = bgColor
+      page.style.backgroundImage = bgImage
+      page.style.backgroundPosition = bgPosition
       canvas.style.backgroundImage = ''
       canvas.style.backgroundColor = ''
       canvas.style.backgroundPosition = ''
     } else {
-      canvas.style.backgroundImage = backgroundImage
-      canvas.style.backgroundColor = backgroundColor
-      canvas.style.backgroundPosition = backgroundPosition
+      canvas.style.backgroundImage = bgImage
+      canvas.style.backgroundColor = bgColor
+      canvas.style.backgroundPosition = bgPosition
     }
   }
 
