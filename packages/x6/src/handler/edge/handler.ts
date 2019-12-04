@@ -1,5 +1,5 @@
 import * as util from '../../util'
-import * as routers from '../../route'
+import { Route } from '../../route'
 import { Cell, State, Graph } from '../../core'
 import { Rectangle, Point, Anchor } from '../../struct'
 import { Shape, RectangleShape } from '../../shape'
@@ -394,7 +394,7 @@ export class EdgeHandler extends MouseHandler {
           )
         : null
 
-    return edgeFn !== routers.er
+    return edgeFn !== Route.er
   }
 
   protected isHandleEnabled(index: number) {

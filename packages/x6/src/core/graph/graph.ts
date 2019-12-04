@@ -1,6 +1,6 @@
 import * as util from '../../util'
 import * as images from '../../assets/images'
-import * as routers from '../../route'
+import { Route } from '../../route'
 import { Cell } from '../cell'
 import { View } from '../view'
 import { Model } from '../model'
@@ -122,7 +122,7 @@ export class Graph extends GraphBase
   resetEdgesOnResize: boolean = false
   resetEdgesOnMove: boolean = false
   resetEdgesOnConnect: boolean = true
-  defaultLoopRouter: routers.Route.Router = routers.loop
+  defaultLoopRouter: Route.Router = Route.loop
   swimlaneIndicatorColorAttribute: string = 'fill'
   minFitScale: number = 0.1
   maxFitScale: number = 8
@@ -674,17 +674,17 @@ export class Graph extends GraphBase
   }
 
   @hook()
-  createEdgeHandler(state: State, edgeFn: routers.Route.Router | null) {
+  createEdgeHandler(state: State, edgeFn: Route.Router | null) {
     let result = null
 
     if (
-      edgeFn === routers.loop ||
-      edgeFn === routers.elbow ||
-      edgeFn === routers.sideToSide ||
-      edgeFn === routers.topToBottom
+      edgeFn === Route.loop ||
+      edgeFn === Route.elbow ||
+      edgeFn === Route.sideToSide ||
+      edgeFn === Route.topToBottom
     ) {
       result = this.createElbowEdgeHandler(state)
-    } else if (edgeFn === routers.segment || edgeFn === routers.orth) {
+    } else if (edgeFn === Route.segment || edgeFn === Route.orth) {
       result = this.createEdgeSegmentHandler(state)
     } else {
       return (

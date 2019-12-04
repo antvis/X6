@@ -1,5 +1,5 @@
 import * as util from '../util'
-import * as routers from '../route'
+import { Route } from '../route'
 import { BaseManager } from './manager-base'
 import { Graph, Cell, Geometry, State } from '../core'
 import { Style, Align, VAlign } from '../types'
@@ -1043,12 +1043,12 @@ export class CellManager extends BaseManager {
 
     const route = this.view.getRoute(state)
     return (
-      route === routers.segment ||
-      route === routers.elbow ||
-      route === routers.sideToSide ||
-      route === routers.topToBottom ||
-      route === routers.er ||
-      route === routers.orth
+      route === Route.segment ||
+      route === Route.elbow ||
+      route === Route.sideToSide ||
+      route === Route.topToBottom ||
+      route === Route.er ||
+      route === Route.orth
     )
   }
 
