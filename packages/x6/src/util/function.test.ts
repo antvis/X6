@@ -3,8 +3,24 @@ import { applyMixins, call, apply, once, cacher } from './function'
 
 describe('function', () => {
   describe('#applyMixins', () => {
+    let count = 0
+    function hook() {
+      return (
+        target: any,
+        methodName: string,
+        descriptor: PropertyDescriptor,
+      ) => {
+        const raw = descriptor.value
+        descriptor.value = function(...args: any[]) {
+          count += 1
+          return raw.call(this, ...args)
+        }
+      }
+    }
+
     class Disposable {
       isDisposed: boolean
+      @hook()
       dispose() {
         this.isDisposed = true
       }
@@ -28,8 +44,13 @@ describe('function', () => {
     const instance = new SmartObject()
 
     expect(instance.isDisposed).toBeFalsy()
+    expect(count).toEqual(0)
     instance.dispose()
     expect(instance.isDisposed).toBeTruthy()
+    expect(count).toEqual(1)
+    instance.dispose()
+    expect(instance.isDisposed).toBeTruthy()
+    expect(count).toEqual(2)
   })
 
   describe('#call', () => {
