@@ -1591,7 +1591,6 @@ export class View extends Primer {
 
   validateBackgroundStyle() {
     const graph = this.graph
-    const bgColor = graph.backgroundColor || ''
     let bgImage: string = ''
     let bgPosition: string = ''
     if (
@@ -1630,15 +1629,12 @@ export class View extends Primer {
 
     if (this.backgroundPageShape != null) {
       const page = this.backgroundPageShape.elem!
-      page.style.backgroundColor = bgColor
       page.style.backgroundImage = bgImage
       page.style.backgroundPosition = bgPosition
       canvas.style.backgroundImage = ''
-      canvas.style.backgroundColor = ''
       canvas.style.backgroundPosition = ''
     } else {
       canvas.style.backgroundImage = bgImage
-      canvas.style.backgroundColor = bgColor
       canvas.style.backgroundPosition = bgPosition
     }
   }
