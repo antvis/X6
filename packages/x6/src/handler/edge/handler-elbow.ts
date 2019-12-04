@@ -1,4 +1,4 @@
-import * as routers from '../../route'
+import { Route } from '../../route'
 import { DomEvent } from '../../common'
 import { Rectangle, Point } from '../../struct'
 import { EdgeHandler } from './handler'
@@ -26,7 +26,7 @@ export class EdgeElbowHandler extends EdgeHandler {
           this.graph.flipEdge(this.state.cell)
           DomEvent.consume(evt)
         }
-      })
+      }),
     )
 
     this.points!.push(new Point(0, 0))
@@ -51,9 +51,9 @@ export class EdgeElbowHandler extends EdgeHandler {
 
   getCursorForBend() {
     const edge = this.state.style.edge as any
-    return edge === routers.topToBottom ||
+    return edge === Route.topToBottom ||
       edge === 'topToBottom' ||
-      ((edge === routers.elbow || edge === 'elbow') &&
+      ((edge === Route.elbow || edge === 'elbow') &&
         this.state.style.elbow === 'vertical')
       ? 'row-resize'
       : 'col-resize'
@@ -114,7 +114,7 @@ export class EdgeElbowHandler extends EdgeHandler {
       const trans = this.graph.view.translate
       pt = new Point(
         scale * (pt.x + trans.x + this.state.origin.x),
-        scale * (pt.y + trans.y + this.state.origin.y)
+        scale * (pt.y + trans.y + this.state.origin.y),
       )
     }
 
@@ -127,7 +127,7 @@ export class EdgeElbowHandler extends EdgeHandler {
       Math.round(pt.x - w / 2),
       Math.round(pt.y - h / 2),
       w,
-      h
+      h,
     )
 
     if (this.manageLabelHandle) {
@@ -143,7 +143,7 @@ export class EdgeElbowHandler extends EdgeHandler {
         Math.floor(pt.x - w / 2),
         Math.floor(pt.y - h / 2),
         w,
-        h
+        h,
       )
     }
 

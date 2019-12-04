@@ -45,24 +45,15 @@ Marker.register('oval', oval, true)
 
 // #region route
 
-import {
-  Route,
-  er,
-  loop,
-  orth,
-  segment,
-  elbow,
-  sideToSide,
-  topToBottom,
-} from './route'
+import { Route } from './route'
 
-Route.register('er', er, true)
-Route.register('loop', loop, true)
-Route.register('orth', orth, true)
-Route.register('segment', segment, true)
-Route.register('elbow', elbow, true)
-Route.register('sideToSide', sideToSide, true)
-Route.register('topToBottom', topToBottom, true)
+Route.register('er', Route.er, true)
+Route.register('loop', Route.loop, true)
+Route.register('orth', Route.orth, true)
+Route.register('segment', Route.segment, true)
+Route.register('elbow', Route.elbow, true)
+Route.register('sideToSide', Route.sideToSide, true)
+Route.register('topToBottom', Route.topToBottom, true)
 
 // #endregion
 

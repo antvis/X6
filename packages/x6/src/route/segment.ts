@@ -9,7 +9,7 @@ export function segment(
   sourceState: State,
   targetState: State,
   hints: Point[],
-  result: Point[]
+  result: Point[],
 ) {
   // Creates array of all way- and terminalpoints
   const pts = edgeState.absolutePoints
@@ -40,7 +40,7 @@ export function segment(
   if (pt == null && sourceState != null) {
     pt = new Point(
       edgeState.view.getRoutingCenterX(sourceState),
-      edgeState.view.getRoutingCenterY(sourceState)
+      edgeState.view.getRoutingCenterY(sourceState),
     )
   } else if (pt != null) {
     pt = pt.clone()
@@ -229,7 +229,7 @@ export function segment(
   if (pt == null && targetState != null) {
     pt = new Point(
       edgeState.view.getRoutingCenterX(targetState),
-      edgeState.view.getRoutingCenterY(targetState)
+      edgeState.view.getRoutingCenterY(targetState),
     )
   }
 
