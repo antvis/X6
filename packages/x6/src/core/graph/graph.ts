@@ -1,30 +1,23 @@
-import * as util from '../util'
-import * as images from '../assets/images'
-import * as routers from '../route'
-import { Cell } from './cell'
-import { View } from './view'
-import { Model } from './model'
-import { State } from './state'
-import { Geometry } from './geometry'
-import { Renderer } from './renderer'
+import * as util from '../../util'
+import * as images from '../../assets/images'
+import * as routers from '../../route'
+import { Cell } from '../cell'
+import { View } from '../view'
+import { Model } from '../model'
+import { State } from '../state'
+import { Geometry } from '../geometry'
+import { Renderer } from '../renderer'
 import { IHooks } from './hook'
-import { Align, VAlign, Style, Dialect, Size } from '../types'
+import { Align, VAlign, Style, Dialect, Size } from '../../types'
+import { detector, DomEvent, MouseEventEx } from '../../common'
 import {
   SimpleOptions,
   CompositeOptions,
   GraphOptions,
-  GridType,
   getOptions,
   applyOptions,
   preset,
-} from '../option'
-import {
-  detector,
-  DomEvent,
-  MouseEventEx,
-  Disablable,
-  Disposable,
-} from '../common'
+} from '../../option'
 import {
   Rectangle,
   Point,
@@ -32,7 +25,7 @@ import {
   Image,
   Overlay,
   Multiplicity,
-} from '../struct'
+} from '../../struct'
 import {
   CellEditor,
   IMouseHandler,
@@ -51,7 +44,7 @@ import {
   EdgeHandler,
   EdgeElbowHandler,
   EdgeSegmentHandler,
-} from '../handler'
+} from '../../handler'
 import {
   ChangeManager,
   EventLoop,
@@ -60,38 +53,15 @@ import {
   ValidationManager,
   ViewportManager,
   CellManager,
-} from '../manager'
+} from '../../manager'
+import { hook, afterCreate } from './decorator'
+import { GraphBase } from './base'
+import { GraphGrid } from './grid'
+import { GraphFolding } from './folding'
+import { GraphPageBreak } from './pagebreak'
 
-export class Graph extends Disablable
+export class Graph extends GraphBase
   implements IHooks, SimpleOptions, CompositeOptions {
-  public readonly options: Graph.Options
-  public readonly container: HTMLElement
-  public readonly model: Model
-  public readonly view: View
-  public readonly renderer: Renderer
-
-  public readonly cellEditor: CellEditor
-  public readonly changeManager: ChangeManager
-  public readonly eventloop: EventLoop
-  public readonly selection: Selection
-  public readonly selectionManager: SelectionManager
-  public readonly validator: ValidationManager
-  public readonly viewport: ViewportManager
-  public readonly cellManager: CellManager
-
-  public readonly keyboardHandler: KeyboardHandler
-  public readonly tooltipHandler: TooltipHandler
-  public readonly cursorHandler: CursorHandler
-  public readonly contextMenuHandler: ContextMenuHandler
-  public readonly guideHandler: GuideHandler
-  public readonly selectionHandler: SelectionHandler
-  public readonly connectionHandler: ConnectionHandler
-  public readonly panningHandler: PanningHandler
-  public readonly movingHandler: MovingHandler
-  public readonly selectHandler: SelectHandler
-  public readonly rubberbandHandler: RubberbandHandler
-  panningManager: any
-
   public panDx: number = 0
   public panDy: number = 0
 
@@ -113,20 +83,6 @@ export class Graph extends Disablable
   doubleTapTolerance: number = 25
   tapAndHoldEnabled: boolean = true
   tapAndHoldDelay: number = 500
-
-  pageBreakEnabled: boolean = false
-  pageBreakColor = 'gray'
-  pageBreakDashed: boolean = true
-  minPageBreakDist: number = 20
-  togglePageBreak() {
-    this.pageBreakEnabled = !this.pageBreakEnabled
-  }
-  enablePageBreak() {
-    this.pageBreakEnabled = true
-  }
-  disablePageBreak() {
-    this.pageBreakEnabled = false
-  }
 
   /**
    * Specifies if the background page should be visible.
@@ -272,33 +228,6 @@ export class Graph extends Disablable
     this.cellsDisconnectable = value
   }
 
-  cellsFoldable: boolean = true
-  isFoldable() {
-    return this.cellsFoldable
-  }
-  enableFolding() {
-    this.cellsFoldable = true
-  }
-  disableFolding() {
-    this.cellsFoldable = false
-  }
-
-  collapsedImage: Image = images.collapsed
-  getCollapsedImage() {
-    return this.collapsedImage
-  }
-  setCollapsedImage(image: Image) {
-    this.collapsedImage = image
-  }
-
-  expandedImage: Image = images.expanded
-  getExpandedImage() {
-    return this.expandedImage
-  }
-  setExpandedImage(image: Image) {
-    this.expandedImage = image
-  }
-
   htmlLabels: boolean = false
   isHtmlLabels() {
     return this.htmlLabels
@@ -365,34 +294,6 @@ export class Graph extends Disablable
   setPortsEnabled(value: boolean) {
     this.portsEnabled = value
   }
-
-  gridEnabled: boolean = false
-  isGridEnabled() {
-    return this.gridEnabled
-  }
-  enableGrid() {
-    this.gridEnabled = true
-  }
-  disableGrid() {
-    this.gridEnabled = false
-  }
-  toggleGrid() {
-    this.gridEnabled = !this.gridEnabled
-  }
-
-  gridSize: number
-  getGridSize() {
-    return this.gridSize
-  }
-  setGridSize(size: number) {
-    this.gridSize = size
-  }
-
-  gridMinSize: number
-  gridType: GridType | null
-  gridColor: string
-  gridStep: number
-  gridBackgroundColor: string
 
   tolerance: number = 4
   getTolerance() {
@@ -756,7 +657,7 @@ export class Graph extends Disablable
           state,
           geo != null ? geo.points : null,
           sourceState!,
-          targetState!
+          targetState!,
         )
         return this.createEdgeHandler(state, edgeFn)
       }
@@ -824,7 +725,7 @@ export class Graph extends Disablable
   addNode(
     node?: Cell | Graph.AddNodeOptions,
     parent?: Cell,
-    index?: number
+    index?: number,
   ): Cell {
     if (node instanceof Cell) {
       return this.addNodes([node], parent, index)[0]
@@ -845,14 +746,14 @@ export class Graph extends Disablable
     parent?: Cell,
     source?: Cell,
     target?: Cell,
-    index?: number
+    index?: number,
   ): Cell
   addEdge(
     edge?: Cell | Graph.AddEdgeOptions,
     parent?: Cell,
     source?: Cell,
     target?: Cell,
-    index?: number
+    index?: number,
   ) {
     if (edge instanceof Cell) {
       return this.addCell(edge, parent, index, source, target)
@@ -865,7 +766,7 @@ export class Graph extends Disablable
       options.parent,
       options.index,
       options.source,
-      options.target
+      options.target,
     )
 
     if (this.resetEdgesOnConnect && options.points != null) {
@@ -891,7 +792,7 @@ export class Graph extends Disablable
     parent?: Cell,
     index?: number,
     source?: Cell,
-    target?: Cell
+    target?: Cell,
   ) {
     return this.addCells([cell], parent, index, source, target)[0]
   }
@@ -912,14 +813,14 @@ export class Graph extends Disablable
     parent: Cell = this.getDefaultParent()!,
     index: number = this.model.getChildCount(parent),
     source?: Cell,
-    target?: Cell
+    target?: Cell,
   ) {
     return this.cellManager.addCells(cells, parent, index, source, target)
   }
 
   duplicateCells(
     cells: Cell[] = this.getSelectedCells(),
-    append: boolean = true
+    append: boolean = true,
   ) {
     return this.cellManager.duplicateCells(cells, append)
   }
@@ -931,12 +832,12 @@ export class Graph extends Disablable
   deleteCells(
     cells: Cell[] = this.getDeletableCells(this.getSelectedCells()),
     includeEdges: boolean = true,
-    selectParentAfterDelete: boolean = true
+    selectParentAfterDelete: boolean = true,
   ) {
     return this.cellManager.deleteCells(
       cells,
       includeEdges,
-      selectParentAfterDelete
+      selectParentAfterDelete,
     )
   }
 
@@ -946,7 +847,7 @@ export class Graph extends Disablable
    */
   removeCells(
     cells: Cell[] = this.getDeletableCells(this.getSelectedCells()),
-    includeEdges: boolean = true
+    includeEdges: boolean = true,
   ) {
     return this.cellManager.removeCells(cells, includeEdges)
   }
@@ -967,7 +868,7 @@ export class Graph extends Disablable
     cells: Cell[],
     newEdge: Cell | null,
     dx: number = 0,
-    dy: number = 0
+    dy: number = 0,
   ) {
     return this.cellManager.splitEdge(edge, cells, newEdge, dx, dy)
   }
@@ -987,7 +888,7 @@ export class Graph extends Disablable
     cell: Cell,
     allowInvalidEdges: boolean = true,
     mapping: WeakMap<Cell, Cell> = new WeakMap<Cell, Cell>(),
-    keepPosition: boolean = false
+    keepPosition: boolean = false,
   ) {
     return this.cloneCells([cell], allowInvalidEdges, mapping, keepPosition)[0]
   }
@@ -1009,13 +910,13 @@ export class Graph extends Disablable
     cells: Cell[],
     allowInvalidEdges: boolean = true,
     mapping: WeakMap<Cell, Cell> = new WeakMap<Cell, Cell>(),
-    keepPosition: boolean = false
+    keepPosition: boolean = false,
   ) {
     return this.cellManager.cloneCells(
       cells,
       allowInvalidEdges,
       mapping,
-      keepPosition
+      keepPosition,
     )
   }
 
@@ -1035,7 +936,7 @@ export class Graph extends Disablable
     edge: Cell,
     terminal: Cell | null,
     isSource: boolean,
-    anchor?: Anchor
+    anchor?: Anchor,
   ) {
     return this.cellManager.connectCell(edge, terminal, isSource, anchor)
   }
@@ -1064,12 +965,12 @@ export class Graph extends Disablable
   getConnectionAnchor(
     edgeState: State,
     terminalState?: State | null,
-    isSource: boolean = false
+    isSource: boolean = false,
   ) {
     return this.cellManager.getConnectionAnchor(
       edgeState,
       terminalState,
-      isSource
+      isSource,
     )
   }
 
@@ -1077,13 +978,13 @@ export class Graph extends Disablable
     edge: Cell,
     terminal: Cell | null,
     isSource: boolean,
-    anchor?: Anchor | null
+    anchor?: Anchor | null,
   ) {
     return this.cellManager.setConnectionAnchor(
       edge,
       terminal,
       isSource,
-      anchor
+      anchor,
     )
   }
 
@@ -1098,7 +999,7 @@ export class Graph extends Disablable
     clone: boolean = false,
     target?: Cell | null,
     e?: MouseEvent,
-    cache?: WeakMap<Cell, Cell>
+    cache?: WeakMap<Cell, Cell>,
   ) {
     return this.moveCells([cell], dx, dy, clone, target, e, cache)
   }
@@ -1122,7 +1023,7 @@ export class Graph extends Disablable
     clone: boolean = false,
     target?: Cell | null,
     e?: MouseEvent,
-    cache?: WeakMap<Cell, Cell>
+    cache?: WeakMap<Cell, Cell>,
   ) {
     return this.cellManager.moveCells(cells, dx, dy, clone, target, e, cache)
   }
@@ -1143,7 +1044,7 @@ export class Graph extends Disablable
     dy: number,
     target?: Cell,
     e?: MouseEvent,
-    cache?: WeakMap<Cell, Cell>
+    cache?: WeakMap<Cell, Cell>,
   ) {
     return this.moveCells(cells, dx, dy, true, target, e, cache)
   }
@@ -1212,7 +1113,7 @@ export class Graph extends Disablable
   toggleCellStyle(
     key: string,
     defaultValue: boolean = false,
-    cell: Cell = this.getSelectedCell()
+    cell: Cell = this.getSelectedCell(),
   ) {
     return this.toggleCellsStyle(key, defaultValue, [cell])
   }
@@ -1225,7 +1126,7 @@ export class Graph extends Disablable
   toggleCellsStyle(
     key: string,
     defaultValue: boolean = false,
-    cells: Cell[] = this.getSelectedCells()
+    cells: Cell[] = this.getSelectedCells(),
   ) {
     return this.cellManager.toggleCellsStyle(key, defaultValue, cells)
   }
@@ -1235,17 +1136,17 @@ export class Graph extends Disablable
   updateStyle(
     key: string,
     value?: string | number | boolean | null,
-    cell?: Cell
+    cell?: Cell,
   ): void
   updateStyle(
     key: string,
     value?: string | number | boolean | null,
-    cells?: Cell[]
+    cells?: Cell[],
   ): void
   updateStyle(
     key: string | Style,
     value?: (string | number | boolean | null) | Cell | Cell[],
-    cells?: Cell | Cell[]
+    cells?: Cell | Cell[],
   ) {
     const style: Style = typeof key === 'string' ? { [key]: value } : key
     let targets = (typeof key === 'string' ? cells : value) as Cell | Cell[]
@@ -1263,7 +1164,7 @@ export class Graph extends Disablable
   updateCellStyle(
     key: string,
     value?: string | number | boolean | null,
-    cell: Cell = this.getSelectedCell()
+    cell: Cell = this.getSelectedCell(),
   ) {
     this.updateCellsStyle(key, value, [cell])
   }
@@ -1278,7 +1179,7 @@ export class Graph extends Disablable
   updateCellsStyle(
     key: string,
     value?: string | number | boolean | null,
-    cells: Cell[] = this.getSelectedCells()
+    cells: Cell[] = this.getSelectedCells(),
   ) {
     this.cellManager.updateCellsStyle(key, value, cells)
   }
@@ -1290,7 +1191,7 @@ export class Graph extends Disablable
   toggleCellsStyleFlag(
     key: string,
     flag: number,
-    cells: Cell[] = this.getSelectedCells()
+    cells: Cell[] = this.getSelectedCells(),
   ) {
     this.setCellsStyleFlag(key, flag, null, cells)
   }
@@ -1303,7 +1204,7 @@ export class Graph extends Disablable
     key: string,
     flag: number,
     value: boolean | null,
-    cells: Cell[] = this.getSelectedCells()
+    cells: Cell[] = this.getSelectedCells(),
   ) {
     this.cellManager.setCellsStyleFlag(key, flag, value, cells)
   }
@@ -1319,7 +1220,7 @@ export class Graph extends Disablable
   toggleCells(
     show: boolean,
     cells: Cell[] = this.getSelectedCells(),
-    includeEdges: boolean = true
+    includeEdges: boolean = true,
   ) {
     return this.cellManager.toggleCells(show, cells, includeEdges)
   }
@@ -1348,7 +1249,7 @@ export class Graph extends Disablable
   groupCells(
     group: Cell | null = null,
     border: number = 0,
-    cells: Cell[] = Cell.sortCells(this.getSelectedCells(), true)
+    cells: Cell[] = Cell.sortCells(this.getSelectedCells(), true),
   ) {
     return this.cellManager.groupCells(group!, border, cells)
   }
@@ -1396,7 +1297,7 @@ export class Graph extends Disablable
     topBorder: number = 0,
     rightBorder: number = 0,
     bottomBorder: number = 0,
-    leftBorder: number = 0
+    leftBorder: number = 0,
   ) {
     return this.cellManager.updateGroupBounds(
       cells,
@@ -1405,7 +1306,7 @@ export class Graph extends Disablable
       topBorder,
       rightBorder,
       bottomBorder,
-      leftBorder
+      leftBorder,
     )
   }
 
@@ -1446,7 +1347,7 @@ export class Graph extends Disablable
   resizeCells(
     cells: Cell[],
     bounds: Rectangle[],
-    recurse: boolean = this.isRecursiveResize()
+    recurse: boolean = this.isRecursiveResize(),
   ) {
     return this.cellManager.resizeCells(cells, bounds, recurse)
   }
@@ -1536,14 +1437,14 @@ export class Graph extends Disablable
     cell: Cell,
     warning?: string | null,
     img: Image = this.warningImage,
-    selectOnClick: boolean = false
+    selectOnClick: boolean = false,
   ) {
     if (warning != null && warning.length > 0) {
       return this.cellManager.addWarningOverlay(
         cell,
         warning,
         img,
-        selectOnClick
+        selectOnClick,
       )
     }
 
@@ -1561,7 +1462,7 @@ export class Graph extends Disablable
 
   startEditingAtCell(
     cell: Cell | null = this.getSelectedCell(),
-    e?: MouseEvent
+    e?: MouseEvent,
   ) {
     if (e == null || !DomEvent.isMultiTouchEvent(e)) {
       if (cell != null && this.isCellEditable(cell)) {
@@ -1612,7 +1513,7 @@ export class Graph extends Disablable
   alignCells(
     align: Align | VAlign,
     cells: Cell[] = this.getSelectedCells(),
-    param?: number
+    param?: number,
   ) {
     return this.cellManager.alignCells(align, cells, param)
   }
@@ -1641,7 +1542,7 @@ export class Graph extends Disablable
     collapse: boolean,
     recurse: boolean = false,
     cells: Cell[] = this.getFoldableCells(this.getSelectedCells(), collapse),
-    checkFoldable: boolean = false
+    checkFoldable: boolean = false,
   ) {
     return this.cellManager.foldCells(collapse, recurse, cells, checkFoldable)
   }
@@ -1651,7 +1552,7 @@ export class Graph extends Disablable
    */
   orderCells(
     toBack: boolean = false,
-    cells: Cell[] = Cell.sortCells(this.getSelectedCells(), true)
+    cells: Cell[] = Cell.sortCells(this.getSelectedCells(), true),
   ) {
     return this.cellManager.orderCells(toBack, cells)
   }
@@ -1743,7 +1644,7 @@ export class Graph extends Disablable
   getSwimlaneAt(
     x: number,
     y: number,
-    parent: Cell = this.getDefaultParent()
+    parent: Cell = this.getDefaultParent(),
   ): Cell | null {
     return this.cellManager.getSwimlaneAt(x, y, parent)
   }
@@ -1769,7 +1670,7 @@ export class Graph extends Disablable
     parent?: Cell | null,
     includeNodes: boolean = true,
     includeEdges: boolean = true,
-    ignoreFn?: (state: State, x?: number, y?: number) => boolean
+    ignoreFn?: (state: State, x?: number, y?: number) => boolean,
   ): Cell | null {
     return this.cellManager.getCellAt(
       x,
@@ -1777,7 +1678,7 @@ export class Graph extends Disablable
       parent,
       includeNodes,
       includeEdges,
-      ignoreFn
+      ignoreFn,
     )
   }
 
@@ -1801,7 +1702,7 @@ export class Graph extends Disablable
   getChildren(
     parent: Cell = this.getDefaultParent(),
     includeNodes: boolean = false,
-    includeEdges: boolean = false
+    includeEdges: boolean = false,
   ) {
     const cells = this.model.getChildren(parent, includeNodes, includeEdges)
     return cells.filter(cell => this.isCellVisible(cell))
@@ -1860,7 +1761,7 @@ export class Graph extends Disablable
     incoming: boolean = true,
     outgoing: boolean = true,
     includeLoops: boolean = true,
-    recurse: boolean = false
+    recurse: boolean = false,
   ) {
     return this.cellManager.getEdges(
       node,
@@ -1868,7 +1769,7 @@ export class Graph extends Disablable
       incoming,
       outgoing,
       includeLoops,
-      recurse
+      recurse,
     )
   }
 
@@ -1888,13 +1789,13 @@ export class Graph extends Disablable
     edges: Cell[],
     terminal: Cell,
     includeSources: boolean = true,
-    includeTargets: boolean = true
+    includeTargets: boolean = true,
   ) {
     return this.cellManager.getOppositeNodes(
       edges,
       terminal,
       includeSources,
-      includeTargets
+      includeTargets,
     )
   }
 
@@ -1925,7 +1826,7 @@ export class Graph extends Disablable
     w: number,
     h: number,
     parent: Cell = this.getCurrentRoot() || this.model.getRoot(),
-    result: Cell[] = []
+    result: Cell[] = [],
   ) {
     return this.cellManager.getCellsInRegion(x, y, w, h, parent, result)
   }
@@ -1948,7 +1849,7 @@ export class Graph extends Disablable
     y: number,
     parent: Cell = this.getDefaultParent(),
     isRight: boolean = false,
-    isBottom: boolean = false
+    isBottom: boolean = false,
   ) {
     return this.cellManager.getCellsBeyond(x, y, parent, isRight, isBottom)
   }
@@ -1970,7 +1871,7 @@ export class Graph extends Disablable
   findTreeRoots(
     parent: Cell | null,
     isolate: boolean = false,
-    invert: boolean = false
+    invert: boolean = false,
   ) {
     return this.cellManager.findTreeRoots(parent, isolate, invert)
   }
@@ -2000,7 +1901,7 @@ export class Graph extends Disablable
     func: (node: Cell, edge: Cell | null) => any,
     edge?: Cell,
     visited: WeakMap<Cell, boolean> = new WeakMap<Cell, boolean>(),
-    inverse: boolean = false
+    inverse: boolean = false,
   ) {
     this.cellManager.traverse(node, directed, func, edge, visited, inverse)
   }
@@ -2025,7 +1926,7 @@ export class Graph extends Disablable
    */
   validateGraph(
     cell: Cell = this.model.getRoot(),
-    context: any = {}
+    context: any = {},
   ): string | null {
     return this.validator.validateGraph(cell, context)
   }
@@ -2125,7 +2026,7 @@ export class Graph extends Disablable
    */
   selectCellsInRegion(
     rect: Rectangle | Rectangle.RectangleLike,
-    e: MouseEvent
+    e: MouseEvent,
   ) {
     return this.selectionManager.selectCellsInRegion(rect, e)
   }
@@ -2156,7 +2057,7 @@ export class Graph extends Disablable
    */
   selectAll(
     parent: Cell = this.getDefaultParent()!,
-    includeDescendants: boolean = false
+    includeDescendants: boolean = false,
   ) {
     this.selectionManager.selectAll(parent, includeDescendants)
   }
@@ -2259,7 +2160,7 @@ export class Graph extends Disablable
   getCellBounds(
     cell: Cell,
     includeEdges: boolean = false,
-    includeDescendants: boolean = false
+    includeDescendants: boolean = false,
   ) {
     return this.viewport.getCellBounds(cell, includeEdges, includeDescendants)
   }
@@ -2299,8 +2200,9 @@ export class Graph extends Disablable
    * Snaps the given numeric value to the grid.
    */
   snap(value: number) {
-    if (this.gridEnabled) {
-      return Math.round(value / this.gridSize) * this.gridSize
+    if (this.isGridEnabled()) {
+      const gridSize = this.getGridSize()
+      return Math.round(value / gridSize) * gridSize
     }
     return value
   }
@@ -2369,7 +2271,7 @@ export class Graph extends Disablable
     horizontal: boolean = true,
     vertical: boolean = true,
     cx: number = 0.5,
-    cy: number = 0.5
+    cy: number = 0.5,
   ) {
     this.viewport.center(horizontal, vertical, cx, cy)
   }
@@ -2396,7 +2298,7 @@ export class Graph extends Disablable
     enabled: boolean = true,
     ignoreWidth: boolean = false,
     ignoreHeight: boolean = false,
-    maxHeight?: number
+    maxHeight?: number,
   ) {
     return this.viewport.fit(
       border,
@@ -2405,7 +2307,7 @@ export class Graph extends Disablable
       enabled,
       ignoreWidth,
       ignoreHeight,
-      maxHeight
+      maxHeight,
     )
   }
 
@@ -2444,7 +2346,7 @@ export class Graph extends Disablable
     x: number,
     y: number,
     extend: boolean = false,
-    border: number = 20
+    border: number = 20,
   ) {
     this.viewport.scrollPointToVisible(x, y, extend, border)
   }
@@ -2606,7 +2508,7 @@ export class Graph extends Disablable
    */
   getFoldableCells(cells: Cell[], collapse: boolean) {
     return this.model.filterCells(cells, cell =>
-      this.isCellFoldable(cell, collapse)
+      this.isCellFoldable(cell, collapse),
     )
   }
 
@@ -2946,7 +2848,7 @@ export class Graph extends Disablable
     cells: Cell[],
     e: MouseEvent,
     cell: Cell | null,
-    clone?: boolean
+    clone?: boolean,
   ) {
     if (!this.isSwimlaneNesting()) {
       for (let i = 0; i < cells.length; i += 1) {
@@ -2959,7 +2861,7 @@ export class Graph extends Disablable
     const p = util.clientToGraph(
       this.container,
       DomEvent.getClientX(e),
-      DomEvent.getClientY(e)
+      DomEvent.getClientY(e),
     )
     p.x -= this.panDx
     p.y -= this.panDy
@@ -3019,7 +2921,7 @@ export class Graph extends Disablable
   bindKey(
     keys: string | string[],
     handler: KeyboardHandler.Handler,
-    action?: KeyboardHandler.Action
+    action?: KeyboardHandler.Action,
   ) {
     this.keyboardHandler.bind(keys, handler, action)
   }
@@ -3041,92 +2943,11 @@ export class Graph extends Disablable
   }
 
   // #endregion
-
-  // #region :::::::::::: Dispose
-
-  protected disposeManagers() {
-    this.changeManager.dispose()
-    this.eventloop.dispose()
-    this.selection.dispose()
-    this.selectionManager.dispose()
-    this.validator.dispose()
-    this.viewport.dispose()
-    this.cellManager.dispose()
-  }
-
-  protected disposeHandlers() {
-    this.tooltipHandler.dispose()
-    this.panningHandler.dispose()
-    this.contextMenuHandler.dispose()
-    this.selectionHandler.dispose()
-    this.movingHandler.dispose()
-    this.connectionHandler.dispose()
-  }
-
-  @Disposable.aop()
-  dispose() {
-    this.disposeManagers()
-    this.disposeHandlers()
-
-    if (this.cellEditor != null) {
-      this.cellEditor.dispose()
-    }
-
-    if (this.view != null) {
-      this.view.dispose()
-    }
-  }
-
-  // #endregion
 }
 
-function hook(hookName?: string | null, ignoreNullResult: boolean = false) {
-  return (
-    target: Graph,
-    methodName: string,
-    descriptor: PropertyDescriptor
-  ) => {
-    const raw = descriptor.value
-    const name = hookName || methodName
+export interface Graph extends GraphGrid, GraphPageBreak, GraphFolding {}
 
-    descriptor.value = function(this: Graph, ...args: any[]) {
-      const hook = (this.options as any)[name]
-      if (hook != null) {
-        this.getNativeValue = raw.bind(this, ...args)
-        const ret = util.call(hook, this, ...args)
-        delete this.getNativeValue
-
-        if (ret != null || ignoreNullResult) {
-          return ret
-        }
-      }
-
-      return raw.call(this, ...args)
-    }
-  }
-}
-
-function afterCreate(aopName?: string | null) {
-  return (
-    target: Graph,
-    methodName: string,
-    descriptor: PropertyDescriptor
-  ) => {
-    const raw = descriptor.value
-    const name = aopName || `on${util.ucFirst(methodName)}`
-
-    descriptor.value = function(this: Graph, ...args: any[]) {
-      const instance = raw.call(this, ...args)
-      const aop = (this.options as any)[name]
-      if (aop != null) {
-        args.unshift(instance)
-        return util.apply(aop, this, args)
-      }
-
-      return instance
-    }
-  }
-}
+util.applyMixins(Graph, [GraphGrid, GraphPageBreak, GraphFolding])
 
 export namespace Graph {
   export interface Options extends Partial<IHooks>, GraphOptions {

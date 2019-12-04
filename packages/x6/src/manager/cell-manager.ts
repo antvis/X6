@@ -13,7 +13,7 @@ export class CellManager extends BaseManager {
     parent: Cell,
     index: number,
     sourceNode?: Cell,
-    targetNode?: Cell
+    targetNode?: Cell,
   ) {
     this.model.batchUpdate(() => {
       this.graph.trigger(Graph.events.addCells, {
@@ -38,7 +38,7 @@ export class CellManager extends BaseManager {
     targetNode?: Cell | null,
     absolute?: boolean,
     constrain?: boolean,
-    extend?: boolean
+    extend?: boolean,
   ) {
     if (cells != null && parent != null && index != null) {
       this.model.batchUpdate(() => {
@@ -133,7 +133,7 @@ export class CellManager extends BaseManager {
 
   duplicateCells(cells: Cell[], append: boolean) {
     const model = this.model
-    const diff = this.graph.gridSize
+    const diff = this.graph.getGridSize()
     const sources = model.getTopmostCells(cells)
     const select: Cell[] = []
 
@@ -161,7 +161,7 @@ export class CellManager extends BaseManager {
   deleteCells(
     cells: Cell[],
     includeEdges: boolean,
-    selectParentAfterDelete: boolean
+    selectParentAfterDelete: boolean,
   ) {
     if (cells != null && cells.length > 0) {
       const graph = this.graph
@@ -177,7 +177,7 @@ export class CellManager extends BaseManager {
         const select = parents.filter(
           cell =>
             graph.model.contains(cell) &&
-            (graph.model.isNode(cell) || graph.model.isEdge(cell))
+            (graph.model.isNode(cell) || graph.model.isEdge(cell)),
         )
 
         graph.selectCells(select)
@@ -294,9 +294,9 @@ export class CellManager extends BaseManager {
           geo.setTerminalPoint(
             new Point(
               pts[n].x / scale - trans.x - state.origin.x,
-              pts[n].y / scale - trans.y - state.origin.y
+              pts[n].y / scale - trans.y - state.origin.y,
             ),
-            isSource
+            isSource,
           )
         } else {
           // fallback
@@ -305,9 +305,9 @@ export class CellManager extends BaseManager {
             geo.setTerminalPoint(
               new Point(
                 state.bounds.getCenterX() / scale - trans.x,
-                state.bounds.getCenterY() / scale - trans.y
+                state.bounds.getCenterY() / scale - trans.y,
               ),
-              isSource
+              isSource,
             )
           }
         }
@@ -323,7 +323,7 @@ export class CellManager extends BaseManager {
     cells: Cell[],
     newEdge: Cell | null,
     dx: number,
-    dy: number
+    dy: number,
   ) {
     this.model.batchUpdate(() => {
       const parent = this.model.getParent(edge)
@@ -342,7 +342,7 @@ export class CellManager extends BaseManager {
           const idx = util.findNearestSegment(
             state,
             (dx + t.x) * s,
-            (dy + t.y) * s
+            (dy + t.y) * s,
           )
 
           geo.points = geo.points.slice(0, idx)
@@ -382,7 +382,7 @@ export class CellManager extends BaseManager {
     cells: Cell[],
     allowInvalidEdges: boolean = true,
     mapping: WeakMap<Cell, Cell> = new WeakMap<Cell, Cell>(),
-    keepPosition: boolean = false
+    keepPosition: boolean = false,
   ) {
     let clones: Cell[] = []
     if (cells != null) {
@@ -408,7 +408,7 @@ export class CellManager extends BaseManager {
             !this.graph.isEdgeValid(
               clones[i],
               this.model.getTerminal(clones[i], true),
-              this.model.getTerminal(clones[i], false)
+              this.model.getTerminal(clones[i], false),
             )
           ) {
             const tmp = clones as any
@@ -436,9 +436,9 @@ export class CellManager extends BaseManager {
                       geom.setTerminalPoint(
                         new Point(
                           pts[0]!.x / scale - trans.x,
-                          pts[0]!.y / scale - trans.y
+                          pts[0]!.y / scale - trans.y,
                         ),
-                        true
+                        true,
                       )
                     }
 
@@ -454,9 +454,9 @@ export class CellManager extends BaseManager {
                       geom.setTerminalPoint(
                         new Point(
                           pts[n]!.x / scale - trans.x,
-                          pts[n]!.y / scale - trans.y
+                          pts[n]!.y / scale - trans.y,
                         ),
-                        false
+                        false,
                       )
                     }
 
@@ -609,7 +609,7 @@ export class CellManager extends BaseManager {
             null,
             false,
             false,
-            false
+            false,
           )
 
           // Adds the children into the group and moves
@@ -732,7 +732,7 @@ export class CellManager extends BaseManager {
     topBorder: number = 0,
     rightBorder: number = 0,
     bottomBorder: number = 0,
-    leftBorder: number = 0
+    leftBorder: number = 0,
   ) {
     this.model.batchUpdate(() => {
       for (let i = cells.length - 1; i >= 0; i -= 1) {
@@ -756,20 +756,20 @@ export class CellManager extends BaseManager {
 
               if (moveGroup) {
                 geo.bounds.x = Math.round(
-                  geo.bounds.x + bounds.x - border - left - leftBorder
+                  geo.bounds.x + bounds.x - border - left - leftBorder,
                 )
 
                 geo.bounds.y = Math.round(
-                  geo.bounds.y + bounds.y - border - top - topBorder
+                  geo.bounds.y + bounds.y - border - top - topBorder,
                 )
               }
 
               geo.bounds.width = Math.round(
-                bounds.width + 2 * border + left + leftBorder + rightBorder
+                bounds.width + 2 * border + left + leftBorder + rightBorder,
               )
 
               geo.bounds.height = Math.round(
-                bounds.height + 2 * border + top + topBorder + bottomBorder
+                bounds.height + 2 * border + top + topBorder + bottomBorder,
               )
 
               this.model.setGeometry(cells[i], geo)
@@ -777,7 +777,7 @@ export class CellManager extends BaseManager {
               this.moveCells(
                 children,
                 border + left - bounds.x + leftBorder,
-                border + top - bounds.y + topBorder
+                border + top - bounds.y + topBorder,
               )
             }
           }
@@ -796,7 +796,7 @@ export class CellManager extends BaseManager {
     edge: Cell,
     terminal: Cell | null,
     isSource: boolean,
-    anchor?: Anchor
+    anchor?: Anchor,
   ) {
     this.model.batchUpdate(() => {
       const previous = this.model.getTerminal(edge, isSource)
@@ -817,7 +817,7 @@ export class CellManager extends BaseManager {
     edge: Cell,
     terminal: Cell | null,
     isSource: boolean,
-    anchor?: Anchor
+    anchor?: Anchor,
   ) {
     if (edge != null) {
       this.model.batchUpdate(() => {
@@ -864,7 +864,7 @@ export class CellManager extends BaseManager {
   getConnectionAnchor(
     edgeState: State,
     terminalState?: State | null,
-    isSource: boolean = false
+    isSource: boolean = false,
   ) {
     let point: Point | null = null
     const style = edgeState.style
@@ -901,7 +901,7 @@ export class CellManager extends BaseManager {
     edge: Cell,
     terminal: Cell | null,
     isSource: boolean,
-    anchor?: Anchor | null
+    anchor?: Anchor | null,
   ) {
     if (anchor != null) {
       this.model.batchUpdate(() => {
@@ -913,28 +913,28 @@ export class CellManager extends BaseManager {
           this.updateCellsStyle(
             isSource ? 'exitPerimeter' : 'entryPerimeter',
             null,
-            [edge]
+            [edge],
           )
         } else if (anchor.point != null) {
           this.updateCellsStyle(
             isSource ? 'exitX' : 'entryX',
             `${anchor.point.x}`,
-            [edge]
+            [edge],
           )
           this.updateCellsStyle(
             isSource ? 'exitY' : 'entryY',
             `${anchor.point.y}`,
-            [edge]
+            [edge],
           )
           this.updateCellsStyle(
             isSource ? 'exitDx' : 'entryDx',
             `${anchor.dx}`,
-            [edge]
+            [edge],
           )
           this.updateCellsStyle(
             isSource ? 'exitDy' : 'entryDy',
             `${anchor.dy}`,
-            [edge]
+            [edge],
           )
 
           // Only writes `false` since `true` is default
@@ -942,13 +942,13 @@ export class CellManager extends BaseManager {
             this.updateCellsStyle(
               isSource ? 'exitPerimeter' : 'entryPerimeter',
               false,
-              [edge]
+              [edge],
             )
           } else {
             this.updateCellsStyle(
               isSource ? 'exitPerimeter' : 'entryPerimeter',
               null,
-              [edge]
+              [edge],
             )
           }
         }
@@ -992,9 +992,9 @@ export class CellManager extends BaseManager {
                     geo.setTerminalPoint(
                       new Point(
                         pts[0]!.x / s - t.x + dx,
-                        pts[0]!.y / s - t.y + dy
+                        pts[0]!.y / s - t.y + dy,
                       ),
-                      true
+                      true,
                     )
                     this.model.setTerminal(edge, null, true)
                   }
@@ -1014,9 +1014,9 @@ export class CellManager extends BaseManager {
                     geo.setTerminalPoint(
                       new Point(
                         pts[n]!.x / s - t.x + dx,
-                        pts[n]!.y / s - t.y + dy
+                        pts[n]!.y / s - t.y + dy,
                       ),
-                      false
+                      false,
                     )
                     this.model.setTerminal(edge, null, false)
                   }
@@ -1200,14 +1200,14 @@ export class CellManager extends BaseManager {
           width = tmp
         }
 
-        if (this.graph.gridEnabled) {
-          width = this.graph.snap(width + this.graph.gridSize / 2)
-          height = this.graph.snap(height + this.graph.gridSize / 2)
+        if (this.graph.isGridEnabled()) {
+          width = this.graph.snap(width + this.graph.getGridSize() / 2)
+          height = this.graph.snap(height + this.graph.getGridSize() / 2)
         }
 
         result = new Rectangle(0, 0, width, height)
       } else {
-        const gs2 = 4 * this.graph.gridSize
+        const gs2 = 4 * this.graph.getGridSize()
         result = new Rectangle(0, 0, gs2, gs2)
       }
     }
@@ -1226,7 +1226,7 @@ export class CellManager extends BaseManager {
   protected cellsResized(
     cells: Cell[],
     bounds: Rectangle[],
-    recurse: boolean = false
+    recurse: boolean = false,
   ) {
     if (cells != null && bounds != null && cells.length === bounds.length) {
       this.model.batchUpdate(() => {
@@ -1253,7 +1253,7 @@ export class CellManager extends BaseManager {
     cell: Cell,
     bounds: Rectangle,
     ignoreRelative: boolean,
-    recurse: boolean
+    recurse: boolean,
   ) {
     let geo = this.model.getGeometry(cell)
     if (
@@ -1370,12 +1370,12 @@ export class CellManager extends BaseManager {
 
           pgeo.bounds.width = Math.max(
             pgeo.bounds.width,
-            geo.bounds.x + geo.bounds.width
+            geo.bounds.x + geo.bounds.width,
           )
 
           pgeo.bounds.height = Math.max(
             pgeo.bounds.height,
-            geo.bounds.y + geo.bounds.height
+            geo.bounds.y + geo.bounds.height,
           )
 
           this.cellsResized([parent], [pgeo.bounds], false)
@@ -1595,7 +1595,7 @@ export class CellManager extends BaseManager {
     clone: boolean = false,
     target?: Cell | null,
     e?: MouseEvent,
-    cache?: WeakMap<Cell, Cell>
+    cache?: WeakMap<Cell, Cell>,
   ) {
     if (cells != null && (dx !== 0 || dy !== 0 || clone || target != null)) {
       // Removes descendants with ancestors in cells to avoid multiple moving
@@ -1644,7 +1644,7 @@ export class CellManager extends BaseManager {
           cells = this.cloneCells(
             cells,
             this.graph.isInvalidEdgesClonable(),
-            cache
+            cache,
           )!
 
           if (target == null) {
@@ -1676,7 +1676,7 @@ export class CellManager extends BaseManager {
             this.graph.isDisconnectOnMove() &&
             this.graph.isDanglingEdgesEnabled(),
           target == null,
-          this.graph.isExtendParentsOnMove() && target == null
+          this.graph.isExtendParentsOnMove() && target == null,
         )
 
         this.graph.setAllowNegativeCoordinates(previous)
@@ -1697,7 +1697,7 @@ export class CellManager extends BaseManager {
     dy: number,
     disconnect: boolean,
     constrain: boolean,
-    extend: boolean = false
+    extend: boolean = false,
   ) {
     if (cells != null && (dx !== 0 || dy !== 0)) {
       this.model.batchUpdate(() => {
@@ -1950,7 +1950,7 @@ export class CellManager extends BaseManager {
     collapse: boolean,
     recurse: boolean,
     cells: Cell[],
-    checkFoldable: boolean
+    checkFoldable: boolean,
   ) {
     this.graph.stopEditing(false)
     this.model.batchUpdate(() => {
@@ -1964,7 +1964,7 @@ export class CellManager extends BaseManager {
     cells: Cell[],
     collapse: boolean,
     recurse: boolean,
-    checkFoldable: boolean = false
+    checkFoldable: boolean = false,
   ) {
     if (cells != null && cells.length > 0) {
       this.model.batchUpdate(() => {
@@ -2016,7 +2016,7 @@ export class CellManager extends BaseManager {
   protected updateAlternateBounds(
     cell: Cell,
     geo: Geometry,
-    willCollapse: boolean
+    willCollapse: boolean,
   ) {
     if (cell != null && geo != null) {
       const style = this.graph.getStyle(cell)
@@ -2126,7 +2126,7 @@ export class CellManager extends BaseManager {
     cell: Cell,
     warning: string | null,
     image: Image,
-    selectOnClick: boolean
+    selectOnClick: boolean,
   ) {
     const overlay = new Overlay({
       image,
@@ -2176,7 +2176,7 @@ export class CellManager extends BaseManager {
   updateCellsStyle(
     key: string,
     value?: string | number | boolean | null,
-    cells?: Cell[]
+    cells?: Cell[],
   ) {
     if (cells != null && cells.length > 0) {
       this.model.batchUpdate(() => {
@@ -2220,7 +2220,7 @@ export class CellManager extends BaseManager {
     key: string,
     flag: number,
     add: boolean | null,
-    cells: Cell[]
+    cells: Cell[],
   ) {
     if (cells != null && cells.length > 0) {
       if (add == null) {
@@ -2390,7 +2390,7 @@ export class CellManager extends BaseManager {
     parent?: Cell | null,
     includeNodes: boolean = true,
     includeEdges: boolean = true,
-    ignoreFn?: (state: State, x?: number, y?: number) => boolean
+    ignoreFn?: (state: State, x?: number, y?: number) => boolean,
   ): Cell | null {
     if (parent == null) {
       // tslint:disable-next-line
@@ -2407,7 +2407,7 @@ export class CellManager extends BaseManager {
           cell,
           includeNodes,
           includeEdges,
-          ignoreFn
+          ignoreFn,
         )
 
         if (result != null) {
@@ -2499,7 +2499,7 @@ export class CellManager extends BaseManager {
     incoming: boolean = true,
     outgoing: boolean = true,
     includeLoops: boolean = true,
-    recurse: boolean = false
+    recurse: boolean = false,
   ) {
     const result: Cell[] = []
     const edges: Cell[] = []
@@ -2564,7 +2564,7 @@ export class CellManager extends BaseManager {
     edges: Cell[],
     terminal: Cell,
     includeSources: boolean = true,
-    includeTargets: boolean = true
+    includeTargets: boolean = true,
   ) {
     const result: Cell[] = []
     const map = new WeakMap<Cell, boolean>()
@@ -2623,7 +2623,7 @@ export class CellManager extends BaseManager {
     width: number,
     height: number,
     parent: Cell,
-    result: Cell[] = []
+    result: Cell[] = [],
   ) {
     if (width > 0 || height > 0) {
       const rect = new Rectangle(x, y, width, height)
@@ -2656,7 +2656,7 @@ export class CellManager extends BaseManager {
     y: number,
     parent: Cell,
     isRight: boolean = false,
-    isBottom: boolean = false
+    isBottom: boolean = false,
   ) {
     const result: Cell[] = []
 
@@ -2681,7 +2681,7 @@ export class CellManager extends BaseManager {
   findTreeRoots(
     parent: Cell | null,
     isolate: boolean = false,
-    invert: boolean = false
+    invert: boolean = false,
   ) {
     const roots: Cell[] = []
 
@@ -2733,7 +2733,7 @@ export class CellManager extends BaseManager {
     func: (node: Cell, edge: Cell | null) => any,
     edge?: Cell,
     visited: WeakMap<Cell, boolean> = new WeakMap<Cell, boolean>(),
-    inverse: boolean = false
+    inverse: boolean = false,
   ) {
     if (func != null && node != null) {
       if (!visited.get(node)) {

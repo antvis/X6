@@ -6,7 +6,7 @@ export function loop(
   sourceState: State,
   targetState: State,
   points: Point[],
-  result: Point[]
+  result: Point[],
 ) {
   const pts = edgeState.absolutePoints
   const p0 = pts[0]
@@ -39,7 +39,7 @@ export function loop(
     let dx = 0
     let dy = 0
 
-    const seg = (edgeState.style.segment || graph.gridSize) * view.scale
+    const seg = (edgeState.style.segment || graph.getGridSize()) * view.scale
     const dir = edgeState.style.direction || 'west'
 
     if (dir === 'north' || dir === 'south') {

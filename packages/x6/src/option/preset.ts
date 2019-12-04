@@ -58,7 +58,7 @@ export const preset: FullOptions = {
 
   pageBreak: {
     enabled: false,
-    stroke: 'gray',
+    stroke: '#808080',
     dsahed: true,
     minDist: 20,
   },
@@ -123,13 +123,14 @@ export const preset: FullOptions = {
 
   grid: {
     enabled: true,
+    visible: true,
     size: 10,
     minSize: 4,
     scaled: false,
     step: 4,
     type: 'line',
     color: '#e0e0e0',
-    backgroundColor: '#ffffff',
+    bgColor: '#ffffff',
   },
 
   tolerance: 4,
