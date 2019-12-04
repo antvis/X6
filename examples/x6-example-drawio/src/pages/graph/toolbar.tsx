@@ -1,7 +1,6 @@
 import React from 'react'
 import { SketchPicker, ColorResult } from 'react-color'
-import { Graph, Cell } from '@antv/x6'
-import { UndoManager } from '@antv/x6/lib/addon/undomanager'
+import { Graph, Cell, UndoManager } from '@antv/x6'
 import { Toolbar, Icon, Menu } from '@antv/x6-components'
 import { fetchEditor } from '../'
 import { Editor } from '../editor'
