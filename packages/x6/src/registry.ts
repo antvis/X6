@@ -1,6 +1,7 @@
 // #region shape
 
 import { ShapeRegistry } from './shape'
+
 ShapeRegistry.register('rectangle', ShapeRegistry.Rectangle, true)
 ShapeRegistry.register('ellipse', ShapeRegistry.Ellipse, true)
 ShapeRegistry.register('doubleEllipse', ShapeRegistry.DoubleEllipse, true)
@@ -59,19 +60,12 @@ Route.register('topToBottom', Route.topToBottom, true)
 
 // #region perimeter
 
-import {
-  Perimeter,
-  rectanglePerimeter,
-  ellipsePerimeter,
-  trianglePerimeter,
-  hexagonPerimeter,
-  rhombusPerimeter,
-} from './perimeter'
+import { Perimeter } from './perimeter'
 
-Perimeter.register('ellipse', ellipsePerimeter, true)
-Perimeter.register('rectangle', rectanglePerimeter, true)
-Perimeter.register('rhombus', rhombusPerimeter, true)
-Perimeter.register('triangle', trianglePerimeter, true)
-Perimeter.register('hexagon', hexagonPerimeter, true)
+Perimeter.register('ellipse', Perimeter.ellipse, true)
+Perimeter.register('rectangle', Perimeter.rectangle, true)
+Perimeter.register('rhombus', Perimeter.rhombus, true)
+Perimeter.register('triangle', Perimeter.triangle, true)
+Perimeter.register('hexagon', Perimeter.hexagon, true)
 
 // #endregion
