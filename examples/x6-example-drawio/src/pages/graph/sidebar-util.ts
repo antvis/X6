@@ -86,6 +86,7 @@ function createTempGraph() {
     connection: false,
     autoScroll: false,
     resetViewOnRootChange: false,
+    backgroundColor: null,
   })
 
   graph.renderer.antialiased = true

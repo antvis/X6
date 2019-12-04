@@ -848,12 +848,15 @@ export function getOptions(options: GraphOptions) {
 
       return s
     },
-    ignoreNull: true,
+    ignoreNull: false,
     ignoreUndefined: true,
   }) as FullOptions
 
   return result
 }
+
+// TODO: 重构完成之后删除
+const reservedKeys = ['backgroundColor']
 
 export function applyOptions(graph: Graph) {
   const options = graph.options
@@ -863,7 +866,9 @@ export function applyOptions(graph: Graph) {
     if (val != null) {
       if (
         val instanceof Image ||
-        (typeof val !== 'function' && typeof val !== 'object')
+        (typeof val !== 'function' &&
+          typeof val !== 'object' &&
+          !reservedKeys.includes(key))
       ) {
         const tmp = graph as any
         tmp[key] = val

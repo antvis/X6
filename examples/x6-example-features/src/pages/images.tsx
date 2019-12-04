@@ -33,7 +33,6 @@ export default class Example extends React.Component {
         imageWidth: 64,
         imageHeight: 64,
         spacing: 8,
-        fontColor: '#fff',
         fill: 'none',
       }
 

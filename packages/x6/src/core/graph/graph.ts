@@ -104,8 +104,6 @@ export class Graph extends GraphBase
     }
   }
 
-  backgroundColor: null
-
   autoScroll: boolean = true
   ignoreScrollbars: boolean = false
   translateToScrollPosition: boolean = false
