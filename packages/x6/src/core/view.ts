@@ -1509,9 +1509,9 @@ export class View extends Primer {
     this.validateBackgroundStyle()
   }
 
-  protected validateBackgroundImage() {}
+  validateBackgroundImage() {}
 
-  protected validateBackgroundPage() {
+  validateBackgroundPage() {
     if (this.graph.pageVisible) {
       const bounds = this.getBackgroundPageBounds()
       if (this.backgroundPageShape == null) {
@@ -1589,7 +1589,7 @@ export class View extends Primer {
     }
   }
 
-  protected validateBackgroundStyle() {
+  validateBackgroundStyle() {
     const graph = this.graph
     const bgColor = graph.backgroundColor || ''
     let bgImage: string = ''
