@@ -228,7 +228,7 @@ export class EditorGraph extends Graph {
 
     // tslint:disable-next-line
     visible =
-      visible && Math.min(bounds.width, bounds.height) > this.minPageBreakDist
+      visible && Math.min(bounds.width, bounds.height) > this.pageBreakMinDist
 
     const hCount = visible ? Math.ceil(height / bounds.height) - 1 : 0
     const vCount = visible ? Math.ceil(width / bounds.width) - 1 : 0

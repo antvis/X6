@@ -1,5 +1,5 @@
 import React from 'react'
-import { Graph, Image, Style } from '@antv/x6'
+import { Graph, Style } from '@antv/x6'
 import styles from './index.less'
 
 export default class Example extends React.Component {
