@@ -302,8 +302,6 @@ export interface SimpleOptions {
    */
   tapAndHoldDelay: number
 
-  backgroundColor: string | null
-
   /**
    * Specifies if the background page should be visible.
    *

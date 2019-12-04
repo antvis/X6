@@ -148,8 +148,6 @@ export class Graph extends Disablable
     }
   }
 
-  backgroundColor: null
-
   autoScroll: boolean = true
   ignoreScrollbars: boolean = false
   translateToScrollPosition: boolean = false

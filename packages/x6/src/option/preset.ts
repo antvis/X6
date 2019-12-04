@@ -67,7 +67,6 @@ export const preset: FullOptions = {
   preferPageSize: false,
   pageFormat: PageSize.A4_PORTRAIT,
   pageScale: 1,
-  backgroundColor: null,
   autoScroll: true,
   ignoreScrollbars: false,
   translateToScrollPosition: false,
