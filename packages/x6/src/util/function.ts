@@ -1,9 +1,21 @@
 import { isFunction } from './lang'
 
+export function applyMixins(derivedCtor: any, baseCtors: any[]) {
+  baseCtors.forEach(baseCtor => {
+    Object.getOwnPropertyNames(baseCtor.prototype).forEach(name => {
+      Object.defineProperty(
+        derivedCtor.prototype,
+        name,
+        Object.getOwnPropertyDescriptor(baseCtor.prototype, name)!,
+      )
+    })
+  })
+}
+
 export function invoke<T>(
   func: ((...args: any[]) => T) | null | undefined,
   args: any[],
-  ctx: any
+  ctx: any,
 ): T {
   let ret
 
@@ -36,7 +48,7 @@ export function invoke<T>(
 export function apply<T>(
   func: ((...args: any[]) => T) | null | undefined,
   ctx: any,
-  args: any[] = []
+  args: any[] = [],
 ): T {
   return invoke(func, args, ctx)
 }
@@ -60,7 +72,7 @@ function repush<T>(array: T[], item: T) {
 export function cacher<T extends Function>(
   fn: T,
   ctx?: any,
-  postProcessor?: (v: any, hasCache?: boolean) => any
+  postProcessor?: (v: any, hasCache?: boolean) => any,
 ): T {
   const keys: string[] = []
   const cache: { [kry: string]: any } = {}
