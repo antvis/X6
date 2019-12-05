@@ -2,7 +2,7 @@ import * as util from '../util'
 import { RectangleShape } from './rectangle'
 import { SvgCanvas2D } from '../canvas'
 import { Rectangle, Overlay } from '../struct'
-import { State } from '../core'
+import { State } from '../core/state'
 
 export class ImageShape extends RectangleShape {
   image: string
@@ -14,7 +14,7 @@ export class ImageShape extends RectangleShape {
     image: string,
     fillColor?: string | null,
     strokeColor?: string | null,
-    strokewidth?: number | null
+    strokewidth?: number | null,
   ) {
     super(bounds, fillColor, strokeColor, strokewidth)
     this.image = image
@@ -125,7 +125,7 @@ export class ImageShape extends RectangleShape {
         util.setPrefixedStyle(
           img.style,
           'transform',
-          `rotate(${this.rotation}deg)`
+          `rotate(${this.rotation}deg)`,
         )
       } else {
         util.setPrefixedStyle(img.style, 'transform', '')

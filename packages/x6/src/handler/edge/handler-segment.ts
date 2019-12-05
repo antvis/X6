@@ -1,4 +1,5 @@
-import { Cell, State } from '../../core'
+import { Cell } from '../../core/cell'
+import { State } from '../../core/state'
 import { Rectangle, Point } from '../../struct'
 import { MouseEventEx } from '../../common'
 import { EdgeElbowHandler } from './handler-elbow'
@@ -91,7 +92,7 @@ export class EdgeSegmentHandler extends EdgeElbowHandler {
     edge: State,
     point: Point,
     terminalState: State | null,
-    e: MouseEventEx
+    e: MouseEventEx,
   ) {
     super.updatePreviewState(edge, point, terminalState, e)
 
@@ -189,7 +190,7 @@ export class EdgeSegmentHandler extends EdgeElbowHandler {
     terminal: Cell,
     isSource: boolean,
     clone: boolean,
-    e: MouseEventEx
+    e: MouseEventEx,
   ) {
     const model = this.graph.getModel()
     const geo = model.getGeometry(edge)
@@ -325,14 +326,14 @@ export class EdgeSegmentHandler extends EdgeElbowHandler {
             const pe = pts[i + 1]
             const pt = new Point(
               p0.x + (pe.x - p0.x) / 2,
-              p0.y + (pe.y - p0.y) / 2
+              p0.y + (pe.y - p0.y) / 2,
             )
             const b = bend.bounds
             bend.bounds = new Rectangle(
               Math.floor(pt.x - b.width / 2),
               Math.floor(pt.y - b.height / 2),
               b.width,
-              b.height
+              b.height,
             )
             bend.redraw()
 

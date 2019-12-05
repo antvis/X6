@@ -1,5 +1,5 @@
 import { Disposable, Events } from '../common'
-import { Model } from '../core'
+import { Model } from '../core/model'
 import { IChange } from './change'
 
 export class UndoableEdit extends Disposable {

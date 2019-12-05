@@ -1,13 +1,14 @@
+import { Cell } from '../core/cell'
+import { Graph } from '../graph'
+import { MouseEventEx, Disposable } from '../common'
 import { CellMarker } from './cell-marker'
 import { IMouseHandler } from './handler-mouse'
-import { Graph, Cell } from '../core'
-import { MouseEventEx, Disposable } from '../common'
 
 export class CellTracker extends CellMarker implements IMouseHandler {
   constructor(
     graph: Graph,
     color: string,
-    getCell?: (e: MouseEventEx) => Cell
+    getCell?: (e: MouseEventEx) => Cell,
   ) {
     super(graph, { validColor: color })
 

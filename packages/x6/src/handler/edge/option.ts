@@ -1,11 +1,12 @@
-import { Graph, Cell } from '../../core'
-import { Shape, ImageShape } from '../../shape'
+import { Cell } from '../../core/cell'
+import { Graph } from '../../graph'
 import { Rectangle } from '../../struct'
+import { Shape, ImageShape } from '../../shape'
 import { HandleOptions, createHandleShape } from '../node/option-knob'
 import {
+  drill,
   BaseStyle,
   OptionItem,
-  drill,
   applyBaseStyle,
   applyClassName,
   applyManualStyle,

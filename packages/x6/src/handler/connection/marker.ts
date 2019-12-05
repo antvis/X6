@@ -1,4 +1,4 @@
-import { State } from '../../core'
+import { State } from '../../core/state'
 import { MouseEventEx } from '../../common'
 import { CellMarker } from '../cell-marker'
 import { ConnectionHandler } from './handler'
@@ -52,7 +52,7 @@ export class ConnectionMarker extends CellMarker {
         this.graph.cellManager.hitsSwimlaneContent(
           cell,
           currentPoint.x,
-          currentPoint.y
+          currentPoint.y,
         )
       ) {
         cell = null
@@ -64,7 +64,7 @@ export class ConnectionMarker extends CellMarker {
         if (this.preview.sourceState != null) {
           this.preview.error = this.master.validateConnection(
             this.preview.sourceState.cell,
-            cell
+            cell,
           )
 
           if (this.preview.error != null && this.preview.error.length >= 0) {

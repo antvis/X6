@@ -1,5 +1,5 @@
 import * as util from '../util'
-import { Graph } from '.'
+import { Graph } from '../graph'
 import { Disposable } from '../common'
 import { Geometry } from './geometry'
 import { Style } from '../types'
@@ -82,7 +82,7 @@ export class Cell extends Disposable {
 
   eachEdge(
     iterator: (edge: Cell, index: number, edges: Cell[]) => void,
-    context?: any
+    context?: any,
   ) {
     return util.forEach(this.edges, iterator, context)
   }
@@ -279,7 +279,7 @@ export class Cell extends Disposable {
 
   eachChild(
     iterator: (child: Cell, index: number, children: Cell[]) => void,
-    context?: any
+    context?: any,
   ) {
     return util.forEach(this.children, iterator, context)
   }
@@ -404,7 +404,7 @@ export namespace Cell {
   export type Renderer = (
     this: Graph,
     elem: HTMLElement | SVGElement,
-    cell: Cell
+    cell: Cell,
   ) => void
 }
 
@@ -489,7 +489,7 @@ export namespace Cell {
       options.x,
       options.y,
       options.width,
-      options.height
+      options.height,
     )
 
     geo.relative = options.relative != null ? options.relative : false
@@ -537,7 +537,7 @@ export namespace Cell {
   function applyCommonOptions(
     node: Cell,
     options: CreateCellOptions,
-    isNode: boolean
+    isNode: boolean,
   ) {
     node.setId(options.id)
 
@@ -654,7 +654,7 @@ export namespace Cell {
 
   export function getNearestCommonAncestor(
     cell1: Cell | null,
-    cell2: Cell | null
+    cell2: Cell | null,
   ): Cell | null {
     if (cell1 != null && cell2 != null) {
       let path2 = getCellPath(cell2)

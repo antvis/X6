@@ -1,5 +1,6 @@
+import { Cell } from '../core/cell'
+import { State } from '../core/state'
 import { Point } from '../struct'
-import { State, Cell } from '../core'
 
 /**
  * Uses either `sideToSide` or `topToBottom` depending on the horizontal

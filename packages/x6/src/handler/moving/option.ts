@@ -1,11 +1,12 @@
-import { Graph, Cell } from '../../core'
+import { Cell } from '../../core/cell'
+import { Graph } from '../../graph'
 import { CellHighlight } from '../cell-highlight'
 import {
+  drill,
   BaseArgs,
   BaseStyle,
   OptionItem,
   StrokeStyle,
-  drill,
   applyBaseStyle,
   applyClassName,
   applyCursorStyle,
@@ -70,7 +71,7 @@ export interface DropTargetHighlightOptions
 }
 
 export function applyDropTargetHighlightStyle(
-  args: ApplyDropTargetHighlightStyleArgs
+  args: ApplyDropTargetHighlightStyleArgs,
 ) {
   const { graph, highlight } = args
   const opts = graph.options.dropTargetHighlight as DropTargetHighlightOptions

@@ -1,4 +1,4 @@
-import { State } from '../core'
+import { State } from '../core/state'
 import { Point } from '../struct'
 
 export function loop(

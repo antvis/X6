@@ -1,10 +1,11 @@
 import * as util from '../../util'
+import { Cell } from '../../core/cell'
+import { State } from '../../core/state'
 import { Handle } from '../handle'
+import { NodeHandler } from './handler'
 import { Disposable, MouseEventEx, DomEvent } from '../../common'
-import { State, Cell } from '../../core'
 import { Rectangle, Point } from '../../struct'
 import { RectangleShape } from '../../shape'
-import { NodeHandler } from './handler'
 import { EdgeHandler } from '../edge/handler'
 import { ResizeOption, applyResizePreviewStyle } from './option-resize'
 import { RotateOptions, applyRotatePreviewStyle } from './option-rotation'
@@ -98,7 +99,7 @@ export class Preview extends Disposable {
     MouseEventEx.redirectMouseEvents(
       this.selectionShape.elem,
       this.graph,
-      this.state
+      this.state,
     )
 
     if (this.graph.isCellMovable(this.state.cell)) {
@@ -210,7 +211,7 @@ export class Preview extends Disposable {
     this.state.bounds.update(this.bounds)
     this.state.origin = new Point(
       this.state.bounds.x / s - t.x,
-      this.state.bounds.y / s - t.y
+      this.state.bounds.y / s - t.y,
     )
 
     // Needed to force update of text bounds
@@ -278,7 +279,7 @@ export class Preview extends Disposable {
     scale: number,
     tr: Point,
     constrained: boolean,
-    centered: boolean
+    centered: boolean,
   ) {
     if (this.master.knobs.singleResizeHandle) {
       let x = bounds.x + bounds.width + dx
@@ -384,7 +385,7 @@ export class Preview extends Disposable {
       left + tr.x * scale,
       top + tr.y * scale,
       width,
-      height
+      height,
     )
 
     if (this.minBounds != null) {
@@ -392,14 +393,14 @@ export class Preview extends Disposable {
         result.width,
         this.minBounds.x * scale +
           this.minBounds.width * scale +
-          Math.max(0, this.x0 * scale - result.x)
+          Math.max(0, this.x0 * scale - result.x),
       )
 
       result.height = Math.max(
         result.height,
         this.minBounds.y * scale +
           this.minBounds.height * scale +
-          Math.max(0, this.y0 * scale - result.y)
+          Math.max(0, this.y0 * scale - result.y),
       )
     }
 
@@ -485,7 +486,7 @@ export class Preview extends Disposable {
       const edges = this.graph.getEdges(this.state.cell)
       for (let i = 0, ii = edges.length; i < ii; i += 1) {
         const handler = (this.graph.selectionHandler.getHandler(
-          edges[i]
+          edges[i],
         ) as any) as EdgeHandler
         if (handler != null) {
           this.edgeHandlers.push(handler)
@@ -511,11 +512,11 @@ export class Preview extends Disposable {
       if (this.previewShape.elem!.parentNode === this.graph.container) {
         this.previewShape.bounds.width = Math.max(
           0,
-          this.previewShape.bounds.width - 1
+          this.previewShape.bounds.width - 1,
         )
         this.previewShape.bounds.height = Math.max(
           0,
-          this.previewShape.bounds.height - 1
+          this.previewShape.bounds.height - 1,
         )
       }
 
@@ -565,7 +566,7 @@ export class Preview extends Disposable {
       const dist = Math.abs(Math.sqrt(dx * dx + dy * dy) - 20) * 3
       const raster = Math.max(
         1,
-        5 * Math.min(3, Math.max(0, Math.round(80 / Math.abs(dist))))
+        5 * Math.min(3, Math.max(0, Math.round(80 / Math.abs(dist)))),
       )
 
       this.currentDeg = Math.round(this.currentDeg / raster) * raster
@@ -607,7 +608,7 @@ export class Preview extends Disposable {
       1,
       new Point(0, 0),
       this.master.isConstrained(e),
-      this.isCentered(this.state.cell, e)
+      this.isCentered(this.state.cell, e),
     )
 
     // Keeps node within maximum graph or parent bounds
@@ -685,7 +686,7 @@ export class Preview extends Disposable {
       (this.parentState != null ? this.parentState.bounds.y : t.y * s) +
         this.unscaledBounds.y * s,
       this.unscaledBounds.width * s,
-      this.unscaledBounds.height * s
+      this.unscaledBounds.height * s,
     )
 
     if (geo.relative && this.parentState != null) {

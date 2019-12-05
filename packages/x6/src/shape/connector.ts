@@ -2,7 +2,7 @@ import { SvgCanvas2D } from '../canvas'
 import { Rectangle, Point } from '../struct'
 import { Marker } from '../marker'
 import { Polyline } from './polyline'
-import { preset } from '../option'
+import { globals } from '../option'
 
 export class Connector extends Polyline {
   constructor(points: Point[], strokeColor: string, strokewidth: number = 1) {
@@ -67,7 +67,7 @@ export class Connector extends Polyline {
 
       const size =
         (isSource ? this.style.startSize : this.style.endSize) ||
-        preset.defaultMarkerSize
+        globals.defaultMarkerSize
 
       // Allow for stroke width in the end point used and the
       // orthogonal vectors describing the direction of the marker
@@ -99,11 +99,11 @@ export class Connector extends Polyline {
     let size = 0
 
     if ((this.style.startArrow || 'none') !== 'none') {
-      size = (this.style.startSize || preset.defaultMarkerSize) + 1
+      size = (this.style.startSize || globals.defaultMarkerSize) + 1
     }
 
     if ((this.style.endArrow || 'none') !== 'none') {
-      size = Math.max(size, this.style.endSize || preset.defaultMarkerSize) + 1
+      size = Math.max(size, this.style.endSize || globals.defaultMarkerSize) + 1
     }
 
     bbox.grow(size * this.scale)

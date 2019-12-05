@@ -1,5 +1,5 @@
 import * as util from '../util'
-import { State } from '../core'
+import { State } from '../core/state'
 import { Rectangle, Point } from '../struct'
 
 import { rectanglePerimeter } from './rectangle'

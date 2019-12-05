@@ -1,4 +1,4 @@
-import * as util from '../../util'
+import * as util from '../util'
 import { Graph } from './graph'
 
 export function hook(

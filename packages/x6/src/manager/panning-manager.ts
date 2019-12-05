@@ -1,10 +1,10 @@
 import * as util from '../util'
-import { Graph } from '../core'
+import { Graph } from '../graph'
 import { MouseEventEx, DomEvent } from '../common'
 import { IMouseHandler } from '../handler'
-import { BaseManager } from './manager-base'
+import { ManagerBase } from './base'
 
-export class PanningManager extends BaseManager {
+export class PanningManager extends ManagerBase {
   /**
    * Damper value for the panning.
    *
@@ -133,7 +133,7 @@ export class PanningManager extends BaseManager {
           this.graph.pan(0, 0)
           this.graph.view.setTranslate(
             this.t0x + px / this.graph.view.scale,
-            this.t0y + py / this.graph.view.scale
+            this.t0y + py / this.graph.view.scale,
           )
         }
       } else {

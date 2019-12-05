@@ -1,12 +1,12 @@
-import { Cell } from '../cell'
-import { View } from '../view'
-import { Model } from '../model'
-import { State } from '../state'
+import { Cell } from '../core/cell'
+import { View } from '../core/view'
+import { Model } from '../core/model'
+import { State } from '../core/state'
 import { Graph } from '.'
-import { Renderer } from '../renderer'
-import { Selection } from '../../manager'
-import { Route } from '../../route'
-import { Point, Anchor, Rectangle } from '../../struct'
+import { Renderer } from '../core/renderer'
+import { Selection } from '../manager'
+import { Route } from '../route'
+import { Point, Anchor, Rectangle } from '../struct'
 import {
   KeyboardHandler,
   TooltipHandler,
@@ -21,7 +21,7 @@ import {
   CursorHandler,
   GuideHandler,
   SelectHandler,
-} from '../../handler'
+} from '../handler'
 
 type Nilable<T> = T | null | undefined
 type BareHook<T> = (this: Graph) => Nilable<T>

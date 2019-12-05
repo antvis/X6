@@ -1,10 +1,12 @@
 import * as util from '../util'
-import { Graph, State, Model } from '../core'
 import { View } from '../core/view'
-import { MouseEventEx, Disposable } from '../common'
+import { Model } from '../core/model'
+import { State } from '../core/state'
+import { Graph } from '../graph'
 import { Shape } from '../shape'
+import { MouseEventEx, Disposable } from '../common'
 import { BaseHandler } from './handler-base'
-import { COLOR_VALID } from '../option/preset'
+import { globals } from '../option/global'
 
 export class CellHighlight extends BaseHandler {
   state: State | null
@@ -24,7 +26,7 @@ export class CellHighlight extends BaseHandler {
   constructor(graph: Graph, options: CellHighlight.Options = {}) {
     super(graph)
 
-    this.highlightColor = options.highlightColor || COLOR_VALID
+    this.highlightColor = options.highlightColor || globals.defaultValidColor
     this.strokeWidth = options.strokeWidth || 3
     this.opacity = options.opacity || 1
     this.dashed = options.dashed != null ? options.dashed : false

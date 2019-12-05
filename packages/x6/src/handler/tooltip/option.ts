@@ -1,4 +1,5 @@
-import { Graph, Cell } from '../../core'
+import { Cell } from '../../core/cell'
+import { Graph } from '../../graph'
 
 export interface TooltipOptions {
   /**

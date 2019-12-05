@@ -1,11 +1,11 @@
-import { State } from '../core'
+import { State } from '../core/state'
 import { Rectangle, Point } from '../struct'
 
 export function rectanglePerimeter(
   bounds: Rectangle,
   state: State,
   next: Point = new Point(),
-  orthogonal: boolean = false
+  orthogonal: boolean = false,
 ) {
   const cx = bounds.getCenterX()
   const cy = bounds.getCenterY()

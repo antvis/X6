@@ -1,11 +1,14 @@
 import * as util from '../util'
 import { Route } from '../route'
-import { BaseManager } from './manager-base'
-import { Graph, Cell, Geometry, State } from '../core'
+import { Graph } from '../graph'
+import { Cell } from '../core/cell'
+import { State } from '../core/state'
+import { Geometry } from '../core/geometry'
 import { Style, Align, VAlign } from '../types'
 import { Point, Rectangle, Overlay, Image, Anchor } from '../struct'
+import { ManagerBase } from './base'
 
-export class CellManager extends BaseManager {
+export class CellManager extends ManagerBase {
   // #region :::::::::::: Creating
 
   addCells(
@@ -69,7 +72,7 @@ export class CellManager extends BaseManager {
 
               if (
                 !geo.relative &&
-                !this.graph.isAllowNegativeCoordinates() &&
+                !this.graph.isNegativeCoordinatesAllowed() &&
                 this.model.isNode(cells[i])
               ) {
                 geo.bounds.x = Math.max(0, geo.bounds.x)
@@ -1283,7 +1286,7 @@ export class CellManager extends BaseManager {
       if (
         !geo.relative &&
         this.model.isNode(cell) &&
-        !this.graph.isAllowNegativeCoordinates()
+        !this.graph.isNegativeCoordinatesAllowed()
       ) {
         geo.bounds.x = Math.max(0, geo.bounds.x)
         geo.bounds.y = Math.max(0, geo.bounds.y)
@@ -1653,10 +1656,10 @@ export class CellManager extends BaseManager {
           }
         }
 
-        const previous = this.graph.isAllowNegativeCoordinates()
+        const previous = this.graph.isNegativeCoordinatesAllowed()
 
         if (target != null) {
-          this.graph.setAllowNegativeCoordinates(true)
+          this.graph.setNegativeCoordinatesAllowed(true)
         }
 
         this.graph.trigger(Graph.events.moveCells, {
@@ -1679,7 +1682,7 @@ export class CellManager extends BaseManager {
           this.graph.isExtendParentsOnMove() && target == null,
         )
 
-        this.graph.setAllowNegativeCoordinates(previous)
+        this.graph.setNegativeCoordinatesAllowed(previous)
 
         if (target != null) {
           const index = this.model.getChildCount(target)
@@ -1737,7 +1740,7 @@ export class CellManager extends BaseManager {
       if (
         !geo.relative &&
         this.model.isNode(cell) &&
-        !this.graph.isAllowNegativeCoordinates()
+        !this.graph.isNegativeCoordinatesAllowed()
       ) {
         geo.bounds.x = Math.max(0, geo.bounds.x)
         geo.bounds.y = Math.max(0, geo.bounds.y)
@@ -2271,7 +2274,7 @@ export class CellManager extends BaseManager {
       this.model.batchUpdate(() => {
         const style = this.model.getStyle(edge)
         if (style == null) {
-          this.model.setStyle(edge, this.graph.alternateEdgeStyle)
+          this.model.setStyle(edge, this.graph.alternateEdgeStyle!)
         } else {
           this.model.setStyle(edge, {})
         }

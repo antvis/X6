@@ -1,5 +1,7 @@
 import { Primer, Disposable } from '../common'
-import { Graph, View, Model } from '../core'
+import { Graph } from '../graph'
+import { View } from '../core/view'
+import { Model } from '../core/model'
 import { UndoableEdit } from './undoableedit'
 
 export class UndoManager extends Primer {

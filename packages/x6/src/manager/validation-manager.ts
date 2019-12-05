@@ -1,8 +1,9 @@
+import { Cell } from '../core/cell'
+import { Graph } from '../graph'
 import { isHtmlElem } from '../util'
-import { Graph, Cell } from '../core'
-import { BaseManager } from './manager-base'
+import { ManagerBase } from './base'
 
-export class ValidationManager extends BaseManager {
+export class ValidationManager extends ManagerBase {
   constructor(graph: Graph) {
     super(graph)
   }
@@ -39,7 +40,7 @@ export class ValidationManager extends BaseManager {
         this.getEdgeValidationError(
           cell,
           this.model.getTerminal(cell, true),
-          this.model.getTerminal(cell, false)
+          this.model.getTerminal(cell, false),
         ) || ''
     } else {
       warning += this.getCellValidationError(cell) || ''
@@ -74,7 +75,7 @@ export class ValidationManager extends BaseManager {
   getEdgeValidationError(
     edge: Cell | null,
     source: Cell | null,
-    target: Cell | null
+    target: Cell | null,
   ) {
     // dangling edge
     if (
@@ -108,7 +109,7 @@ export class ValidationManager extends BaseManager {
 
       // Checks if the cells are already connected
       // and adds an error message if required
-      if (!this.graph.multigraph) {
+      if (!this.graph.multigraphSupported) {
         const tmp = this.model.getEdgesBetween(source, target, true)
 
         // Checks if the source and target are not connected by another edge
@@ -132,7 +133,7 @@ export class ValidationManager extends BaseManager {
             source,
             target,
             sourceOut,
-            targetIn
+            targetIn,
           )
           if (err != null) {
             error += err

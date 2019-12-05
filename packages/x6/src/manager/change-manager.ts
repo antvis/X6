@@ -1,5 +1,7 @@
-import { Graph, Model, Cell } from '../core'
-import { BaseManager } from './manager-base'
+import { Cell } from '../core/cell'
+import { Model } from '../core/model'
+import { Graph } from '../graph'
+import { ManagerBase } from './base'
 import { Disposable } from '../common'
 import {
   IChange,
@@ -11,7 +13,7 @@ import {
   GeometryChange,
 } from '../change'
 
-export class ChangeManager extends BaseManager {
+export class ChangeManager extends ManagerBase {
   constructor(graph: Graph) {
     super(graph)
     this.model.on(Model.events.change, this.onModelChanged, this)

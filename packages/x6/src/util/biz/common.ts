@@ -1,4 +1,4 @@
-import { State } from '../../core'
+import { State } from '../../core/state'
 import { Shape } from '../../shape'
 import { getOffset, getScrollOrigin } from '../dom'
 import { MouseEventEx, DomEvent } from '../../common'
@@ -11,12 +11,12 @@ export function clientToGraph(container: HTMLElement, e: MouseEventEx): Point
 export function clientToGraph(
   container: HTMLElement,
   x: number,
-  y: number
+  y: number,
 ): Point
 export function clientToGraph(
   container: HTMLElement,
   x: number | MouseEvent | TouchEvent | MouseEventEx,
-  y?: number
+  y?: number,
 ) {
   const origin = getScrollOrigin(container, false)
   const offset = getOffset(container)
@@ -81,7 +81,7 @@ export function getPortConstraints(
   terminal: State,
   edge: State,
   isSource: boolean,
-  defaultValue: DirectionMask
+  defaultValue: DirectionMask,
 ) {
   const value =
     (isSource
@@ -221,7 +221,7 @@ export function applyClassName(
   shape: Shape | HTMLElement,
   prefix: string,
   native?: string,
-  manual?: string
+  manual?: string,
 ) {
   let className = ''
   if (native) {

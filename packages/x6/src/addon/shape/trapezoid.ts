@@ -1,11 +1,11 @@
 import * as util from '../../util'
 import { getFactor } from './util'
-import { State } from '../../core'
 import { Style } from '../../types'
+import { State } from '../../core/state'
 import { Perimeter } from '../../perimeter'
 import { SvgCanvas2D } from '../../canvas'
-import { Point, Rectangle } from '../../struct'
 import { Shape, Actor } from '../../shape'
+import { Point, Rectangle } from '../../struct'
 
 export class TrapezoidShape extends Actor {
   factor: number = 0.2
@@ -28,7 +28,7 @@ export class TrapezoidShape extends Actor {
       ],
       this.rounded,
       arcSize,
-      true
+      true,
     )
   }
 }
@@ -37,7 +37,7 @@ export function trapezoidPerimeter(
   bounds: Rectangle,
   state: State,
   next: Point,
-  orthogonal: boolean
+  orthogonal: boolean,
 ) {
   const defaultFactor = TrapezoidShape.prototype.factor
   const style: Style = state ? state.style : {}

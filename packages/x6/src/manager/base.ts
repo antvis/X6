@@ -1,7 +1,7 @@
-import { Graph } from '../core'
+import { Graph } from '../graph/graph'
 import { Disposable } from '../common'
 
-export class BaseManager extends Disposable {
+export class ManagerBase extends Disposable {
   graph: Graph
 
   constructor(graph: Graph) {

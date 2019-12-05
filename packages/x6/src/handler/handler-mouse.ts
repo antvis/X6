@@ -1,5 +1,5 @@
 import * as util from '../util'
-import { Graph } from '../core'
+import { Graph } from '../graph'
 import { DomEvent, MouseEventEx } from '../common'
 import { BaseHandler } from './handler-base'
 

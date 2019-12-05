@@ -1,5 +1,5 @@
-import { State } from '../core'
 import { Point } from '../struct'
+import { State } from '../core/state'
 
 /**
  * Orthogonal edge style.

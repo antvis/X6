@@ -1,9 +1,10 @@
 import { detector } from './detector'
-import { isAncestorNode } from '../util'
-import { Graph, State } from '../core'
-import { Shape } from '../shape'
 import { DomEvent } from './dom-event'
+import { Graph } from '../graph'
+import { State } from '../core/state'
+import { Shape } from '../shape'
 import { Point } from '../struct'
+import { isAncestorNode } from '../util'
 
 export class MouseEventEx {
   e: MouseEvent
@@ -112,7 +113,7 @@ export namespace MouseEventEx {
     onMouseDown?: ((e: MouseEvent) => any) | null,
     onMouseMove?: ((e: MouseEvent) => any) | null,
     onMouseUp?: ((e: MouseEvent) => any) | null,
-    onDblClick?: ((e: MouseEvent) => any) | null
+    onDblClick?: ((e: MouseEvent) => any) | null,
   ) {
     if (elem == null) {
       return
@@ -130,7 +131,7 @@ export namespace MouseEventEx {
         } else if (!DomEvent.isConsumed(e)) {
           graph.fireMouseEvent(
             DomEvent.MOUSE_DOWN,
-            new MouseEventEx(e, getState(e))
+            new MouseEventEx(e, getState(e)),
           )
         }
       },
@@ -140,7 +141,7 @@ export namespace MouseEventEx {
         } else if (!DomEvent.isConsumed(e)) {
           graph.fireMouseEvent(
             DomEvent.MOUSE_MOVE,
-            new MouseEventEx(e, getState(e))
+            new MouseEventEx(e, getState(e)),
           )
         }
       },
@@ -150,10 +151,10 @@ export namespace MouseEventEx {
         } else if (!DomEvent.isConsumed(e)) {
           graph.fireMouseEvent(
             DomEvent.MOUSE_UP,
-            new MouseEventEx(e, getState(e))
+            new MouseEventEx(e, getState(e)),
           )
         }
-      }
+      },
     )
 
     DomEvent.addListener(elem, 'dblclick', (e: MouseEvent) => {

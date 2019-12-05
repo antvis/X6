@@ -1,6 +1,6 @@
 import * as util from '../../util'
+import { Graph } from '../../graph'
 import { MouseHandler } from '../handler-mouse'
-import { Graph } from '../../core'
 import { MouseEventEx, DomEvent, Disposable } from '../../common'
 
 export class PanningHandler extends MouseHandler {

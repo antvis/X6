@@ -1,10 +1,12 @@
+import { Cell } from '../../core/cell'
+import { State } from '../../core/state'
+import { Graph } from '../../graph'
 import { Point } from '../../struct'
+import { Handle } from '../handle'
 import { Knobs } from './knobs'
 import { Preview } from './preview'
 import { MouseHandler } from '../handler-mouse'
-import { Cell, State, Graph } from '../../core'
 import { DomEvent, MouseEventEx, Disposable } from '../../common'
-import { Handle } from '../handle'
 
 export class NodeHandler extends MouseHandler {
   graph: Graph
@@ -146,7 +148,7 @@ export class NodeHandler extends MouseHandler {
             geo = geo.clone()
             geo.rotate(
               angle,
-              new Point(pgeo.bounds.width / 2, pgeo.bounds.height / 2)
+              new Point(pgeo.bounds.width / 2, pgeo.bounds.height / 2),
             )
             model.setGeometry(cell, geo)
           }
@@ -194,7 +196,7 @@ export class NodeHandler extends MouseHandler {
           this.moveChildren(
             cell,
             Math.round(childOffsetX / scale),
-            Math.round(childOffsetY / scale)
+            Math.round(childOffsetY / scale),
           )
         }
 

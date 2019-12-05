@@ -1,12 +1,13 @@
-import { Image, Point } from '../../struct'
-import { Graph, Cell } from '../../core'
+import { Cell } from '../../core/cell'
+import { Graph } from '../../graph'
 import { Shape } from '../../shape'
 import { Style } from '../../types'
-import { CellHighlight } from '../../handler'
+import { Image, Point } from '../../struct'
+import { CellHighlight } from '../cell-highlight'
 import {
+  drill,
   OptionItem,
   BaseStyle,
-  drill,
   applyClassName,
   applyBaseStyle,
   applyManualStyle,
@@ -19,7 +20,7 @@ export interface ConnectionOptions {
    */
   createEdge?: (
     this: Graph,
-    e: { source: Cell; target: Cell; style: Style }
+    e: { source: Cell; target: Cell; style: Style },
   ) => Cell
 
   /**
@@ -151,7 +152,7 @@ export interface GetConnectionHighlightOptionsArgs {
 }
 
 export function getConnectionHighlightOptions(
-  args: GetConnectionHighlightOptionsArgs
+  args: GetConnectionHighlightOptionsArgs,
 ) {
   const options = args.graph.options
     .connectionHighlight as ConnectionHighlightOptions
@@ -173,14 +174,14 @@ export interface ApplyConnectionHighlightStyleArgs {
 }
 
 export function applyConnectionHighlightStyle(
-  args: ApplyConnectionHighlightStyleArgs
+  args: ApplyConnectionHighlightStyleArgs,
 ) {
   const { graph, valid, highlight } = args
   const opts = graph.options.connectionHighlight as ConnectionHighlightOptions
   highlight.highlightColor = drill(
     valid ? opts.validColor : opts.invalidColor,
     graph,
-    args
+    args,
   )
   highlight.strokeWidth = drill(opts.strokeWidth, graph, args)
   highlight.dashed = drill(opts.dashed, graph, args)
@@ -261,7 +262,7 @@ export interface ApplyConnectionPreviewStyleArgs {
 }
 
 export function applyConnectionPreviewStyle(
-  args: ApplyConnectionPreviewStyleArgs
+  args: ApplyConnectionPreviewStyleArgs,
 ) {
   const { graph } = args
   const options = graph.options.connectionPreview as ConnectionPreviewOptions

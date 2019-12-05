@@ -1,5 +1,3 @@
-// #region shape
-
 import { ShapeRegistry } from './shape'
 
 ShapeRegistry.register('rectangle', ShapeRegistry.Rectangle, true)
@@ -20,10 +18,6 @@ ShapeRegistry.register('arrow', ShapeRegistry.Arrow, true)
 ShapeRegistry.register('arrowConnector', ShapeRegistry.ArrowConnector, true)
 ShapeRegistry.register('html', ShapeRegistry.HTML, true)
 
-// #endregion
-
-// #region marker
-
 import { Marker } from './marker'
 
 Marker.register('classic', Marker.createClassicMarker(2), true)
@@ -43,10 +37,6 @@ Marker.register('circle', Marker.circle, true)
 Marker.register('circlePlus', Marker.circlePlus, true)
 Marker.register('halfCircle', Marker.halfCircle, true)
 
-// #endregion
-
-// #region route
-
 import { Route } from './route'
 
 Route.register('er', Route.er, true)
@@ -57,10 +47,6 @@ Route.register('elbow', Route.elbow, true)
 Route.register('sideToSide', Route.sideToSide, true)
 Route.register('topToBottom', Route.topToBottom, true)
 
-// #endregion
-
-// #region perimeter
-
 import { Perimeter } from './perimeter'
 
 Perimeter.register('ellipse', Perimeter.ellipse, true)
@@ -68,5 +54,3 @@ Perimeter.register('rectangle', Perimeter.rectangle, true)
 Perimeter.register('rhombus', Perimeter.rhombus, true)
 Perimeter.register('triangle', Perimeter.triangle, true)
 Perimeter.register('hexagon', Perimeter.hexagon, true)
-
-// #endregion

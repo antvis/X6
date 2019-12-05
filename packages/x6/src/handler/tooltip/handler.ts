@@ -1,8 +1,10 @@
 import * as util from '../../util'
+import { Cell } from '../../core/cell'
+import { State } from '../../core/state'
+import { Graph } from '../../graph'
 import { MouseHandler } from '../handler-mouse'
-import { Graph, State, Cell } from '../../core'
-import { DomEvent, MouseEventEx, Disposable } from '../../common'
 import { TooltipOptions, ShowTooltipArgs } from './option'
+import { DomEvent, MouseEventEx, Disposable } from '../../common'
 
 export class TooltipHandler extends MouseHandler {
   /**
@@ -91,7 +93,7 @@ export class TooltipHandler extends MouseHandler {
     elem: HTMLElement,
     tip: string | HTMLElement | null,
     x: number,
-    y: number
+    y: number,
   ) {
     if (this.canShow(tip)) {
       this.showing = true
@@ -121,7 +123,7 @@ export class TooltipHandler extends MouseHandler {
   protected reset(
     e: MouseEventEx,
     restart: boolean = false,
-    state: State | null = null
+    state: State | null = null,
   ) {
     if (!this.ignoreTouchEvents || DomEvent.isMouseEvent(e.getEvent())) {
       this.clearTimer()

@@ -1,5 +1,5 @@
 import * as util from '../util'
-import { preset } from '../option'
+import { globals } from '../option'
 import { Shape } from './shape'
 import { SvgCanvas2D } from '../canvas'
 import { Rectangle } from '../struct'
@@ -12,7 +12,7 @@ export class Swimlane extends Shape {
     bounds: Rectangle,
     fillColor: string,
     strokeColor: string,
-    strokewidth: number = 1
+    strokewidth: number = 1,
   ) {
     super()
     this.bounds = bounds
@@ -30,11 +30,11 @@ export class Swimlane extends Shape {
   }
 
   getTitleSize() {
-    return Math.max(0, this.style.startSize || preset.defaultStartSize)
+    return Math.max(0, this.style.startSize || globals.defaultStartSize)
   }
 
   getArcSize(w: number, h: number, start: number) {
-    const f = (this.style.arcSize || preset.rectangleRoundFactor * 100) / 100
+    const f = (this.style.arcSize || globals.rectangleRoundFactor * 100) / 100
     return start * f * 3
   }
 
@@ -81,7 +81,7 @@ export class Swimlane extends Shape {
     x: number,
     y: number,
     w: number,
-    h: number
+    h: number,
   ) {
     let start = this.getTitleSize()
 
@@ -130,7 +130,7 @@ export class Swimlane extends Shape {
         this.image,
         false,
         false,
-        false
+        false,
       )
     }
 
@@ -148,7 +148,7 @@ export class Swimlane extends Shape {
     h: number,
     start: number,
     fillColor: string,
-    swimlaneLine: boolean
+    swimlaneLine: boolean,
   ) {
     c.begin()
 
@@ -200,7 +200,7 @@ export class Swimlane extends Shape {
     start: number,
     r: number,
     fillColor: string,
-    swimlaneLine: boolean
+    swimlaneLine: boolean,
   ) {
     c.begin()
 
@@ -261,7 +261,7 @@ export class Swimlane extends Shape {
     w: number,
     h: number,
     start: number,
-    shadow?: boolean
+    shadow?: boolean,
   ) {
     if (!shadow) {
       c.setShadow(false)
@@ -290,7 +290,7 @@ export class Swimlane extends Shape {
     w: number,
     h: number,
     start: number,
-    color?: string
+    color?: string,
   ) {
     if (util.isValidColor(color)) {
       c.setStrokeColor(color)
@@ -316,7 +316,7 @@ export class Swimlane extends Shape {
         x + w - this.imageSize,
         y,
         this.imageSize,
-        this.imageSize
+        this.imageSize,
       )
     }
 

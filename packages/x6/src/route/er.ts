@@ -1,6 +1,7 @@
 import * as util from '../util'
-import { preset } from '../option'
-import { State, Cell } from '../core'
+import { Cell } from '../core/cell'
+import { State } from '../core/state'
+import { globals } from '../option'
 import { Point, DirectionMask } from '../struct'
 
 /**
@@ -32,7 +33,7 @@ export function er(
   const view = edgeState.view
   const graph = view.graph
   const segment =
-    edgeState.style.segment || preset.defaultSegmentLength * view.scale
+    edgeState.style.segment || globals.defaultSegmentLength * view.scale
 
   const pts = edgeState.absolutePoints
   const p0 = pts[0]

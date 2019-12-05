@@ -1,4 +1,4 @@
-import { Graph } from '../../core'
+import { Graph } from '../../graph'
 import { OptionItem, drill } from '../../option'
 
 export interface RubberbandOptions {

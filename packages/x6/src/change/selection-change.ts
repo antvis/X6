@@ -1,5 +1,5 @@
 import { IChange } from './change'
-import { Graph } from '../core/graph'
+import { Graph } from '../graph'
 import { Cell } from '../core/cell'
 import { Selection } from '../manager'
 
@@ -11,7 +11,7 @@ export class SelectionChange implements IChange {
   constructor(
     selection: Selection,
     added: Cell[] | null,
-    removed: Cell[] | null
+    removed: Cell[] | null,
   ) {
     this.selection = selection
     this.added = added != null ? added.slice() : null

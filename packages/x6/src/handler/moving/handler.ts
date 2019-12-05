@@ -1,9 +1,11 @@
 import * as util from '../../util'
 import * as movment from './util'
-import { Graph, Cell, Model } from '../../core'
-import { MouseEventEx, DomEvent, Disposable } from '../../common'
-import { MouseHandler } from '../handler-mouse'
+import { Cell } from '../../core/cell'
+import { Model } from '../../core/model'
+import { Graph } from '../../graph'
 import { Preview } from './preview'
+import { MouseHandler } from '../handler-mouse'
+import { MouseEventEx, DomEvent, Disposable } from '../../common'
 
 export class MovingHandler extends MouseHandler {
   protected preview: Preview
@@ -111,7 +113,7 @@ export class MovingHandler extends MouseHandler {
   protected shouldRemoveCellsFromParent(
     parent: Cell | null,
     cells: Cell[],
-    e: MouseEvent
+    e: MouseEvent,
   ) {
     if (this.graph.model.isNode(parent)) {
       const pState = this.graph.view.getState(parent)
@@ -155,7 +157,7 @@ export class MovingHandler extends MouseHandler {
     dy: number,
     clone: boolean,
     target: Cell | null,
-    evt: MouseEvent
+    evt: MouseEvent,
   ) {
     if (clone) {
       // tslint:disable-next-line
@@ -205,7 +207,7 @@ export class MovingHandler extends MouseHandler {
         dy - this.graph.panDy / this.graph.view.scale,
         clone,
         target,
-        evt
+        evt,
       )
 
       // Removes parent if all child cells are removed

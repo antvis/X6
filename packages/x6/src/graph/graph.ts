@@ -1,31 +1,17 @@
-import * as util from '../../util'
-import * as images from '../../assets/images'
-import { Route } from '../../route'
-import { Cell } from '../cell'
-import { View } from '../view'
-import { Model } from '../model'
-import { State } from '../state'
-import { Geometry } from '../geometry'
-import { Renderer } from '../renderer'
+import * as util from '../util'
+import * as images from '../assets/images'
+import { Route } from '../route'
+import { Cell } from '../core/cell'
+import { View } from '../core/view'
+import { Model } from '../core/model'
+import { State } from '../core/state'
+import { Geometry } from '../core/geometry'
+import { Renderer } from '../core/renderer'
 import { IHooks } from './hook'
-import { Align, VAlign, Style, Dialect, Size } from '../../types'
-import { detector, DomEvent, MouseEventEx } from '../../common'
-import {
-  SimpleOptions,
-  CompositeOptions,
-  GraphOptions,
-  getOptions,
-  applyOptions,
-  preset,
-} from '../../option'
-import {
-  Rectangle,
-  Point,
-  Anchor,
-  Image,
-  Overlay,
-  Multiplicity,
-} from '../../struct'
+import { Align, VAlign, Style, Size } from '../types'
+import { detector, DomEvent, MouseEventEx } from '../common'
+import { GraphOptions, getOptions, globals } from '../option'
+import { Rectangle, Point, Anchor, Image, Overlay } from '../struct'
 import {
   CellEditor,
   IMouseHandler,
@@ -44,7 +30,7 @@ import {
   EdgeHandler,
   EdgeElbowHandler,
   EdgeSegmentHandler,
-} from '../../handler'
+} from '../handler'
 import {
   ChangeManager,
   EventLoop,
@@ -53,15 +39,15 @@ import {
   ValidationManager,
   ViewportManager,
   CellManager,
-} from '../../manager'
-import { hook, afterCreate } from './decorator'
-import { GraphBase } from './base'
-import { GraphGrid } from './grid'
-import { GraphFolding } from './folding'
-import { GraphPageBreak } from './pagebreak'
+} from '../manager'
+import { hook, afterCreate } from './util'
+// import { GraphBase } from './property/base'
+// import { GraphGrid } from './property/grid'
+// import { GraphFolding } from './property/folding'
+// import { GraphPageBreak } from './property/pagebreak'
+import { GraphProperty } from './property'
 
-export class Graph extends GraphBase
-  implements IHooks, SimpleOptions, CompositeOptions {
+export class Graph extends GraphProperty implements IHooks {
   public panDx: number = 0
   public panDy: number = 0
 
@@ -69,440 +55,6 @@ export class Graph extends GraphBase
    * Get the native value of hooked method.
    */
   public getNativeValue: <T>() => T | null
-
-  // #region :::::::::::: Properties
-
-  prefixCls: string
-  dialect: Dialect
-  antialiased: boolean
-  multiplicities: Multiplicity[] = []
-  alternateEdgeStyle: Style
-  nativeDblClickEnabled: boolean = true
-  doubleTapEnabled: boolean = true
-  doubleTapTimeout: number = 500
-  doubleTapTolerance: number = 25
-  tapAndHoldEnabled: boolean = true
-  tapAndHoldDelay: number = 500
-
-  /**
-   * Specifies if the background page should be visible.
-   *
-   * Default is `false`.
-   */
-  pageVisible: boolean = false
-
-  preferPageSize: boolean = false
-  pageFormat: Size
-  pageScale: number = 1
-  updatePageScale(scale: number) {
-    if (this.pageScale !== scale) {
-      this.pageScale = scale
-      if (this.pageVisible) {
-        this.sizeDidChange()
-        this.view.validateBackground()
-      }
-    }
-  }
-
-  autoScroll: boolean = true
-  ignoreScrollbars: boolean = false
-  translateToScrollPosition: boolean = false
-  timerAutoScroll: boolean = false
-  allowAutoPanning: boolean = false
-  autoExtend: boolean = true
-  maxGraphBounds: Rectangle | null
-  minGraphSize: Size | null
-  minContainerSize: Size | null
-  maxContainerSize: Size | null
-  keepEdgesInForeground: boolean = false
-  keepEdgesInBackground: boolean = false
-  resetViewOnRootChange: boolean = true
-  resetEdgesOnResize: boolean = false
-  resetEdgesOnMove: boolean = false
-  resetEdgesOnConnect: boolean = true
-  defaultLoopRouter: Route.Router = Route.loop
-  swimlaneIndicatorColorAttribute: string = 'fill'
-  minFitScale: number = 0.1
-  maxFitScale: number = 8
-  useScrollbarsForPanning: boolean = true
-  keepSelectionVisibleOnZoom: boolean = false
-  centerZoom: boolean = true
-  scaleFactor: number = 1.5
-  minScale: number = 0.01
-  maxScale: number = 16
-  cellsLocked: boolean = false
-  isCellsLocked() {
-    return this.cellsLocked
-  }
-  setCellsLocked(value: boolean) {
-    this.cellsLocked = value
-  }
-
-  cellsCloneable: boolean = true
-  isCellsCloneable() {
-    return this.cellsCloneable
-  }
-  setCellsCloneable(value: boolean) {
-    this.cellsCloneable = value
-  }
-
-  cellsSelectable: boolean = true
-  isCellsSelectable() {
-    return this.cellsSelectable
-  }
-  setCellsSelectable(value: boolean) {
-    this.cellsSelectable = value
-  }
-
-  cellsDeletable: boolean = true
-  isCellsDeletable() {
-    return this.cellsDeletable
-  }
-  setCellsDeletable(value: boolean) {
-    this.cellsDeletable = value
-  }
-
-  nodeLabelsMovable: boolean = false
-  isNodeLabelsMovable() {
-    return this.nodeLabelsMovable
-  }
-  setNodeLabelsMovable(value: boolean) {
-    this.nodeLabelsMovable = value
-  }
-
-  edgeLabelsMovable: boolean = true
-  isEdgeLabelsMovable() {
-    return this.edgeLabelsMovable
-  }
-  setEdgeLabelsMovable(value: boolean) {
-    this.edgeLabelsMovable = value
-  }
-
-  cellsMovable: boolean = true
-  isCellsMovable() {
-    return this.cellsMovable
-  }
-  setCellsMovable(value: boolean) {
-    this.cellsMovable = value
-  }
-
-  cellsResizable: boolean = true
-  isCellsResizable() {
-    return this.cellsResizable
-  }
-  setCellsResizable(value: boolean) {
-    this.cellsResizable = value
-  }
-
-  cellsRotatable: boolean = false
-  isCellsRotatable() {
-    return this.cellsRotatable
-  }
-  setCellsRotatable(value: boolean) {
-    this.cellsRotatable = value
-  }
-
-  cellsBendable: boolean = true
-  isCellsBendable() {
-    return this.cellsBendable
-  }
-  setCellsBendable(value: boolean) {
-    this.cellsBendable = value
-  }
-
-  cellsEditable: boolean = true
-  isCellsEditable() {
-    return this.cellsEditable
-  }
-  setCellsEditable(value: boolean) {
-    this.cellsEditable = value
-  }
-
-  cellsDisconnectable: boolean = true
-  isCellsDisconnectable() {
-    return this.cellsDisconnectable
-  }
-  setCellsDisconnectable(value: boolean) {
-    this.cellsDisconnectable = value
-  }
-
-  htmlLabels: boolean = false
-  isHtmlLabels() {
-    return this.htmlLabels
-  }
-  setHtmlLabels(value: boolean) {
-    this.htmlLabels = value
-  }
-
-  labelsVisible: boolean = true
-
-  border: number = 0
-  getBorder() {
-    return this.border
-  }
-  setBorder(value: number) {
-    this.border = value
-  }
-
-  autoResizeContainer: boolean = false
-  shouldResizeContainer() {
-    return this.autoResizeContainer
-  }
-  enableAutoResizeContainer() {
-    this.autoResizeContainer = true
-  }
-  disableAutoResizeContainer() {
-    this.autoResizeContainer = false
-  }
-
-  escapeEnabled: boolean = true
-  isEscapeEnabled() {
-    return this.escapeEnabled
-  }
-  enableEscape() {
-    this.escapeEnabled = true
-  }
-  disableEscape() {
-    this.escapeEnabled = false
-  }
-
-  invokesStopCellEditing: boolean = true
-  isInvokesStopCellEditing() {
-    return this.invokesStopCellEditing
-  }
-  setInvokesStopCellEditing(value: boolean) {
-    this.invokesStopCellEditing = value
-  }
-
-  stopEditingOnPressEnter: boolean = false
-  shouldStopEditingOnEnter() {
-    return this.stopEditingOnPressEnter
-  }
-  setEnterStopsCellEditing(value: boolean) {
-    this.stopEditingOnPressEnter = value
-  }
-
-  exportEnabled: boolean = true
-  importEnabled: boolean = true
-
-  portsEnabled: boolean = true
-  isPortsEnabled() {
-    return this.portsEnabled
-  }
-  setPortsEnabled(value: boolean) {
-    this.portsEnabled = value
-  }
-
-  tolerance: number = 4
-  getTolerance() {
-    return this.tolerance
-  }
-  setTolerance(value: number) {
-    this.tolerance = value
-  }
-
-  swimlaneNesting: boolean = true
-  isSwimlaneNesting() {
-    return this.swimlaneNesting
-  }
-  setSwimlaneNesting(value: boolean) {
-    this.swimlaneNesting = value
-  }
-
-  swimlaneSelectionEnabled: boolean = true
-  isSwimlaneSelectionEnabled() {
-    return this.swimlaneSelectionEnabled
-  }
-  setSwimlaneSelectionEnabled(value: boolean) {
-    this.swimlaneSelectionEnabled = value
-  }
-
-  multigraph: boolean = true
-  isMultigraph() {
-    return this.multigraph
-  }
-  enableMultigraph() {
-    this.multigraph = true
-  }
-  disableMultigraph() {
-    this.multigraph = true
-  }
-
-  allowLoops: boolean = false
-  isAllowLoops() {
-    return this.allowLoops
-  }
-  enableLoops() {
-    this.allowLoops = true
-  }
-  disableLoops() {
-    this.allowLoops = true
-  }
-
-  allowDanglingEdges: boolean = true
-  isDanglingEdgesEnabled() {
-    return this.allowDanglingEdges
-  }
-  enableDanglingEdges() {
-    this.allowDanglingEdges = true
-  }
-  disableDanglingEdges() {
-    this.allowDanglingEdges = false
-  }
-
-  edgesConnectable: boolean = false
-  setEdgesConnectable(value: boolean) {
-    this.edgesConnectable = value
-  }
-  isEdgesConnectable() {
-    return this.edgesConnectable
-  }
-
-  invalidEdgesClonable: boolean = false
-  enableCloneInvalidEdges() {
-    this.invalidEdgesClonable = true
-  }
-  disableCloneInvalidEdges() {
-    this.invalidEdgesClonable = false
-  }
-  isInvalidEdgesClonable() {
-    return this.invalidEdgesClonable
-  }
-
-  disconnectOnMove: boolean = true
-  isDisconnectOnMove() {
-    return this.disconnectOnMove
-  }
-  setDisconnectOnMove(value: boolean) {
-    this.disconnectOnMove = value
-  }
-
-  connectOnDrop: boolean = false
-  isConnectOnDrop() {
-    return this.connectOnDrop
-  }
-  setConnectOnDrop(value: boolean) {
-    this.connectOnDrop = value
-  }
-
-  dropEnabled: boolean = false
-  isDropEnabled() {
-    return this.dropEnabled
-  }
-  setDropEnabled(value: boolean) {
-    this.dropEnabled = value
-  }
-
-  autoUpdateCursor: boolean = true
-  isAutoUpdateCursor() {
-    return this.autoUpdateCursor
-  }
-  setAutoUpdateCursor(value: boolean) {
-    this.autoUpdateCursor = value
-  }
-
-  allowRemoveCellsFromParent: boolean
-  isRemoveCellsFromParentAllowed() {
-    return this.allowRemoveCellsFromParent
-  }
-  setRemoveCellsFromParentAllowed(allowed: boolean) {
-    this.allowRemoveCellsFromParent = allowed
-  }
-
-  autoRemoveEmptyParent: boolean
-  isAutoRemoveEmptyParent() {
-    return this.autoRemoveEmptyParent
-  }
-  setAutoRemoveEmptyParent(value: boolean) {
-    this.autoRemoveEmptyParent = value
-  }
-
-  scrollOnMove: boolean
-  isScrollOnMove() {
-    return this.scrollOnMove
-  }
-  setScrollOnMove(value: boolean) {
-    this.scrollOnMove = value
-  }
-
-  splitEnabled: boolean = true
-  isSplitEnabled() {
-    return this.splitEnabled
-  }
-  setSplitEnabled(value: boolean) {
-    this.splitEnabled = value
-  }
-
-  autoSizeOnAdded: boolean = false
-
-  autoSizeOnEdited: boolean = false
-  isAutoSizeCells() {
-    return this.autoSizeOnEdited
-  }
-  setAutoSizeCells(value: boolean) {
-    this.autoSizeOnEdited = value
-  }
-
-  extendParents: boolean = true
-  isExtendParents() {
-    return this.extendParents
-  }
-  setExtendParents(value: boolean) {
-    this.extendParents = value
-  }
-
-  extendParentsOnAdd: boolean = true
-  isExtendParentsOnAdd() {
-    return this.extendParentsOnAdd
-  }
-  setExtendParentsOnAdd(value: boolean) {
-    this.extendParentsOnAdd = value
-  }
-
-  extendParentsOnMove: boolean = false
-  isExtendParentsOnMove() {
-    return this.extendParentsOnMove
-  }
-  setExtendParentsOnMove(value: boolean) {
-    this.extendParentsOnMove = value
-  }
-
-  recursiveResize: boolean = false
-  isRecursiveResize() {
-    return this.recursiveResize
-  }
-  setRecursiveResize(value: boolean) {
-    this.recursiveResize = value
-  }
-
-  constrainChildren: boolean = true
-  isConstrainChildren() {
-    return this.constrainChildren
-  }
-  setConstrainChildren(value: boolean) {
-    this.constrainChildren = value
-  }
-
-  constrainRelativeChildren: boolean = false
-  isConstrainRelativeChildren() {
-    return this.constrainRelativeChildren
-  }
-  setConstrainRelativeChildren(value: boolean) {
-    this.constrainRelativeChildren = value
-  }
-
-  allowNegativeCoordinates = true
-  isAllowNegativeCoordinates() {
-    return this.allowNegativeCoordinates
-  }
-  setAllowNegativeCoordinates(value: boolean) {
-    this.allowNegativeCoordinates = value
-  }
-
-  defaultOverlap: number = 0.5
-  maxCellCountForHandle: number
-
-  // #endregion
 
   constructor(container: HTMLElement, options: Graph.Options = {}) {
     super()
@@ -535,8 +87,6 @@ export class Graph extends GraphBase
     this.rubberbandHandler = this.createRubberbandHandler()
     this.keyboardHandler = this.createKeyboardHandler()
 
-    applyOptions(this)
-
     if (container != null) {
       this.init(container)
     }
@@ -558,14 +108,6 @@ export class Graph extends GraphBase
         )
       })
     }
-  }
-
-  getModel() {
-    return this.model
-  }
-
-  getView() {
-    return this.view
   }
 
   @hook()
@@ -2629,7 +2171,7 @@ export class Graph extends GraphBase
     const result = new Rectangle()
     const style = this.getStyle(swimlane)
     if (style != null) {
-      const size = style.startSize || preset.defaultStartSize
+      const size = style.startSize || globals.defaultStartSize
       if (style.horizontal !== false) {
         result.height = size
       } else {
@@ -2714,7 +2256,7 @@ export class Graph extends GraphBase
   }
 
   canExportCell(cell: Cell) {
-    return this.exportEnabled
+    return this.isCellsExportable()
   }
 
   getImportableCells(cells: Cell[]) {
@@ -2727,7 +2269,7 @@ export class Graph extends GraphBase
    * Default is `true`.
    */
   canImportCell(cell: Cell) {
-    return this.importEnabled
+    return this.isCellsImportable()
   }
 
   @hook()
@@ -2765,7 +2307,7 @@ export class Graph extends GraphBase
   @hook()
   isAutoSizeCell(cell: Cell) {
     const style = this.getStyle(cell)
-    return this.isAutoSizeCells() || style.autosize === true
+    return this.isAutoSizeOnEdited() || style.autosize === true
   }
 
   @hook()
@@ -2906,7 +2448,7 @@ export class Graph extends GraphBase
 
   // #endregion
 
-  // #region :::::::::::: Keyboard
+  // #region Keyboard
 
   enableKeyboard() {
     this.keyboardHandler.enable()
@@ -2943,12 +2485,8 @@ export class Graph extends GraphBase
   // #endregion
 }
 
-export interface Graph extends GraphGrid, GraphPageBreak, GraphFolding {}
-
-util.applyMixins(Graph, [GraphGrid, GraphPageBreak, GraphFolding])
-
 export namespace Graph {
-  export interface Options extends Partial<IHooks>, GraphOptions {
+  export interface Options extends GraphOptions {
     model?: Model
   }
 

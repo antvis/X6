@@ -1,10 +1,11 @@
 import * as util from '../../util'
-import { DomEvent, detector, MouseEventEx } from '../../common'
-import { Graph, Cell } from '../../core'
-import { Point, Rectangle } from '../../struct'
-import { CellHighlight } from '../../handler'
+import { Cell } from '../../core/cell'
+import { Graph } from '../../graph'
 import { Guide } from '../../handler/guide/guide'
 import { createGuide } from '../../handler/guide/option'
+import { CellHighlight } from '../../handler'
+import { Point, Rectangle } from '../../struct'
+import { DomEvent, detector, MouseEventEx } from '../../common'
 
 export class Dnd {
   currentGraph: Graph | null = null
