@@ -17,6 +17,9 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
+    - run: |
+        npm install -g yarn
+        npm install -g lerna
     - name: yarn bootstrap
       run: |
         yarn bootstrap
