@@ -39,10 +39,8 @@ export default class Example extends React.Component {
         y: 20,
         width: 80,
         height: 60,
-        style: {
-          shape: 'triangle',
-          perimeter: 'triangle',
-        },
+        shape: 'triangle',
+        perimeter: 'triangle',
       })
 
       const n2 = graph.addNode({
@@ -59,10 +57,8 @@ export default class Example extends React.Component {
         y: 150,
         width: 80,
         height: 60,
-        style: {
-          shape: 'ellipse',
-          perimeter: 'ellipse',
-        },
+        shape: 'ellipse',
+        perimeter: 'ellipse',
       })
 
       graph.addEdge({

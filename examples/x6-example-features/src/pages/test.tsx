@@ -52,13 +52,11 @@ export default class Example extends React.Component {
         y: 240,
         width: 120,
         height: 60,
-        style: {
-          shape: 'html',
-          noLabel: true,
-          css: {
-            '.outer': { width: '100%', height: '100%' },
-            '.outer .inner': { textAlign: 'center', fontSize: '12px' },
-          },
+        shape: 'html',
+        noLabel: true,
+        css: {
+          '.outer': { width: '100%', height: '100%' },
+          '.outer .inner': { textAlign: 'center', fontSize: '12px' },
         },
       })
     })
