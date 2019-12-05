@@ -18,7 +18,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - name: install global yarn and lerna 
-    - run: |
+      run: |
         npm install -g yarn
         npm install -g lerna
     - name: yarn bootstrap
