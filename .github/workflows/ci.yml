@@ -1,4 +1,4 @@
-name: CI
+name: ci
 
 on: [push, pull_request]
 
@@ -17,6 +17,7 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
+    - name: install global yarn and lerna 
     - run: |
         npm install -g yarn
         npm install -g lerna
