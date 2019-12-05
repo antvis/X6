@@ -1,5 +1,4 @@
 import * as util from '../util'
-import * as images from '../assets/images'
 import { Route } from '../route'
 import { Cell } from '../core/cell'
 import { View } from '../core/view'
@@ -40,10 +39,10 @@ import {
   CellManager,
 } from '../manager'
 import { IHooks } from './hook'
-import { hook, afterCreate } from './util'
-import { GraphProperty } from './property'
+import { GraphProp } from './prop'
+import { hook, afterCreate } from './decorator'
 
-export class Graph extends GraphProperty implements IHooks {
+export class Graph extends GraphProp implements IHooks {
   public panDx: number = 0
   public panDy: number = 0
 
@@ -104,6 +103,8 @@ export class Graph extends GraphProperty implements IHooks {
         )
       })
     }
+
+    return this
   }
 
   @hook()
@@ -594,16 +595,13 @@ export class Graph extends GraphProperty implements IHooks {
     this.cellManager.translateCell(cell, dx, dy)
   }
 
-  getMaximumGraphBounds() {
-    return this.maxGraphBounds
-  }
-
   /**
    * Resets the control points of the edges that are connected to the given
    * cells if not both ends of the edge are in the given cells array.
    */
   resetOtherEdges(cells: Cell[]) {
     this.cellManager.resetOtherEdges(cells)
+    return this
   }
 
   /**
@@ -611,6 +609,7 @@ export class Graph extends GraphProperty implements IHooks {
    */
   resetEdge(edge: Cell) {
     this.cellManager.resetEdge(edge)
+    return this
   }
 
   // #endregion
@@ -639,6 +638,7 @@ export class Graph extends GraphProperty implements IHooks {
    */
   setCellStyle(style: Style, cells: Cell[] = this.getSelectedCells()) {
     this.cellManager.setCellStyle(style, cells)
+    return this
   }
 
   /**
@@ -668,18 +668,18 @@ export class Graph extends GraphProperty implements IHooks {
     return this.cellManager.toggleCellsStyle(key, defaultValue, cells)
   }
 
-  updateStyle(style: Style, cell?: Cell): void
-  updateStyle(style: Style, cells?: Cell[]): void
+  updateStyle(style: Style, cell?: Cell): this
+  updateStyle(style: Style, cells?: Cell[]): this
   updateStyle(
     key: string,
     value?: string | number | boolean | null,
     cell?: Cell,
-  ): void
+  ): this
   updateStyle(
     key: string,
     value?: string | number | boolean | null,
     cells?: Cell[],
-  ): void
+  ): this
   updateStyle(
     key: string | Style,
     value?: (string | number | boolean | null) | Cell | Cell[],
@@ -697,13 +697,17 @@ export class Graph extends GraphProperty implements IHooks {
     Object.keys(style).forEach(name => {
       this.updateCellsStyle(name, (style as any)[name], targets as Cell[])
     })
+
+    return this
   }
+
   updateCellStyle(
     key: string,
     value?: string | number | boolean | null,
     cell: Cell = this.getSelectedCell(),
   ) {
     this.updateCellsStyle(key, value, [cell])
+    return this
   }
 
   /**
@@ -719,6 +723,7 @@ export class Graph extends GraphProperty implements IHooks {
     cells: Cell[] = this.getSelectedCells(),
   ) {
     this.cellManager.updateCellsStyle(key, value, cells)
+    return this
   }
 
   /**
@@ -731,6 +736,7 @@ export class Graph extends GraphProperty implements IHooks {
     cells: Cell[] = this.getSelectedCells(),
   ) {
     this.setCellsStyleFlag(key, flag, null, cells)
+    return this
   }
 
   /**
@@ -744,10 +750,12 @@ export class Graph extends GraphProperty implements IHooks {
     cells: Cell[] = this.getSelectedCells(),
   ) {
     this.cellManager.setCellsStyleFlag(key, flag, value, cells)
+    return this
   }
 
   toggleCellsLocked(cells: Cell[] = this.getSelectedCells()) {
     this.cellManager.toggleCellsLocked(cells)
+    return this
   }
 
   // #endregion
@@ -868,7 +876,7 @@ export class Graph extends GraphProperty implements IHooks {
    * should be autosized. Default is `true`.
    */
   autoSizeCell(cell: Cell, recurse: boolean = true) {
-    this.cellManager.autoSizeCell(cell, recurse)
+    return this.cellManager.autoSizeCell(cell, recurse)
   }
 
   /**
@@ -898,6 +906,7 @@ export class Graph extends GraphProperty implements IHooks {
     const dx = newGeo.bounds.width / geo.bounds.width
     const dy = newGeo.bounds.height / geo.bounds.height
     cell.eachChild(child => this.scaleCell(child, dx, dy, true))
+    return cell
   }
 
   /**
@@ -910,7 +919,7 @@ export class Graph extends GraphProperty implements IHooks {
    * @param recurse - Boolean indicating if the child cells should be scaled.
    */
   scaleCell(cell: Cell, sx: number, sy: number, recurse: boolean) {
-    this.cellManager.scaleCell(cell, sx, sy, recurse)
+    return this.cellManager.scaleCell(cell, sx, sy, recurse)
   }
 
   /**
@@ -959,9 +968,8 @@ export class Graph extends GraphProperty implements IHooks {
   clearOverlays(cell: Cell = this.model.getRoot()) {
     this.removeOverlays(cell)
     cell.eachChild(child => this.clearOverlays(child))
+    return cell
   }
-
-  warningImage: Image = images.warning
 
   /**
    * Creates an overlay for the given cell using the `warning` string and
@@ -995,6 +1003,7 @@ export class Graph extends GraphProperty implements IHooks {
 
   startEditing(e?: MouseEvent) {
     this.startEditingAtCell(null, e)
+    return this
   }
 
   startEditingAtCell(
@@ -1008,6 +1017,7 @@ export class Graph extends GraphProperty implements IHooks {
         this.trigger(Graph.events.editingStarted, { cell, e })
       }
     }
+    return this
   }
 
   @hook()
@@ -1018,6 +1028,7 @@ export class Graph extends GraphProperty implements IHooks {
   stopEditing(cancel: boolean = false) {
     this.cellEditor.stopEditing(cancel)
     this.trigger(Graph.events.editingStopped, { cancel })
+    return this
   }
 
   updateLabel(cell: Cell, label: string, e?: Event) {
@@ -1123,6 +1134,7 @@ export class Graph extends GraphProperty implements IHooks {
    */
   enterGroup(cell: Cell = this.getSelectedCell()) {
     this.cellManager.enterGroup(cell)
+    return this
   }
 
   /**
@@ -1130,6 +1142,7 @@ export class Graph extends GraphProperty implements IHooks {
    */
   exitGroup() {
     this.cellManager.exitGroup()
+    return this
   }
 
   /**
@@ -1138,6 +1151,7 @@ export class Graph extends GraphProperty implements IHooks {
    */
   home() {
     this.cellManager.home()
+    return this
   }
 
   @hook()
@@ -1153,10 +1167,6 @@ export class Graph extends GraphProperty implements IHooks {
     return this.view.currentRoot
   }
 
-  getDefaultParent(): Cell {
-    return this.cellManager.getDefaultParent()
-  }
-
   /**
    * Specifies the default parent to be used to insert new cells.
    */
@@ -1164,6 +1174,11 @@ export class Graph extends GraphProperty implements IHooks {
 
   setDefaultParent(cell: Cell | null) {
     this.defaultParent = cell
+    return this
+  }
+
+  getDefaultParent(): Cell {
+    return this.cellManager.getDefaultParent()
   }
 
   /**
@@ -1513,6 +1528,7 @@ export class Graph extends GraphProperty implements IHooks {
    */
   setSelectedCell(cell: Cell | null) {
     this.selection.setCell(cell)
+    return this
   }
 
   /**
@@ -1520,6 +1536,7 @@ export class Graph extends GraphProperty implements IHooks {
    */
   setSelectedCells(cells: Cell[]) {
     this.selection.setCells(cells)
+    return this
   }
 
   /**
@@ -1527,6 +1544,7 @@ export class Graph extends GraphProperty implements IHooks {
    */
   selectCell(cell: Cell | null) {
     this.selection.addCell(cell)
+    return this
   }
 
   /**
@@ -1534,6 +1552,7 @@ export class Graph extends GraphProperty implements IHooks {
    */
   selectCells(cells: Cell[]) {
     this.selection.addCells(cells)
+    return this
   }
 
   /**
@@ -1541,6 +1560,7 @@ export class Graph extends GraphProperty implements IHooks {
    */
   unSelectCell(cell: Cell | null) {
     this.selection.removeCell(cell)
+    return this
   }
 
   /**
@@ -1548,6 +1568,7 @@ export class Graph extends GraphProperty implements IHooks {
    */
   unSelectCells(cells: Cell[]) {
     this.selection.removeCells(cells)
+    return this
   }
 
   /**
@@ -1555,6 +1576,7 @@ export class Graph extends GraphProperty implements IHooks {
    */
   updateSelection() {
     this.selectionManager.updateSelection()
+    return this
   }
 
   /**
@@ -1570,18 +1592,22 @@ export class Graph extends GraphProperty implements IHooks {
 
   selectNextCell() {
     this.selectionManager.selectCell(true)
+    return this
   }
 
   selectPreviousCell() {
     this.selectionManager.selectCell()
+    return this
   }
 
   selectParentCell() {
     this.selectionManager.selectCell(false, true)
+    return this
   }
 
   selectChildCell() {
     this.selectionManager.selectCell(false, false, true)
+    return this
   }
 
   /**
@@ -1597,6 +1623,7 @@ export class Graph extends GraphProperty implements IHooks {
     includeDescendants: boolean = false,
   ) {
     this.selectionManager.selectAll(parent, includeDescendants)
+    return this
   }
 
   /**
@@ -1604,6 +1631,7 @@ export class Graph extends GraphProperty implements IHooks {
    */
   selectNodes(parent: Cell = this.getDefaultParent()!) {
     this.selectionManager.selectCells(true, false, parent)
+    return this
   }
 
   /**
@@ -1611,6 +1639,7 @@ export class Graph extends GraphProperty implements IHooks {
    */
   selectEdges(parent: Cell = this.getDefaultParent()!) {
     this.selectionManager.selectCells(false, true, parent)
+    return this
   }
 
   // #endregion
@@ -1623,10 +1652,12 @@ export class Graph extends GraphProperty implements IHooks {
    */
   addMouseListener(handler: IMouseHandler) {
     this.eventloop.addMouseListener(handler)
+    return this
   }
 
   removeMouseListener(handler: IMouseHandler) {
     this.eventloop.removeMouseListener(handler)
+    return this
   }
 
   getPointForEvent(e: MouseEvent, addOffset: boolean = true) {
@@ -1638,10 +1669,12 @@ export class Graph extends GraphProperty implements IHooks {
    */
   fireMouseEvent(eventName: string, e: MouseEventEx, sender: any = this) {
     this.eventloop.fireMouseEvent(eventName, e, sender)
+    return this
   }
 
   fireGestureEvent(e: MouseEvent, cell?: Cell) {
     this.eventloop.fireGestureEvent(e, cell)
+    return this
   }
 
   @hook()
@@ -1719,14 +1752,17 @@ export class Graph extends GraphProperty implements IHooks {
     this.view.validate()
     this.sizeDidChange()
     this.trigger(Graph.events.refresh)
+    return this
   }
 
   sizeDidChange() {
     this.viewport.sizeDidChange()
+    return this
   }
 
   updatePageBreaks(visible: boolean, width: number, height: number) {
     this.viewport.updatePageBreaks(visible, width, height)
+    return this
   }
 
   getPreferredPageSize(bounds: Rectangle, width: number, height: number): Size {
@@ -1748,22 +1784,27 @@ export class Graph extends GraphProperty implements IHooks {
     const tx = relative ? this.panDx + x : x
     const ty = relative ? this.panDy + y : y
     this.viewport.pan(tx, ty)
+    return this
   }
 
   panTo(x: number, y: number) {
     this.pan(x, y, false)
+    return this
   }
 
   panBy(x: number, y: number) {
     this.pan(x, y, true)
+    return this
   }
 
   zoomIn() {
     this.zoom(this.scaleFactor)
+    return this
   }
 
   zoomOut() {
     this.zoom(1 / this.scaleFactor)
+    return this
   }
 
   /**
@@ -1778,10 +1819,12 @@ export class Graph extends GraphProperty implements IHooks {
 
       this.view.setScale(1)
     }
+    return this
   }
 
   zoomTo(scale: number, center?: boolean) {
     this.zoom(scale / this.view.scale, center)
+    return this
   }
 
   /**
@@ -1790,6 +1833,7 @@ export class Graph extends GraphProperty implements IHooks {
    */
   zoom(factor: number, center: boolean = this.centerZoom) {
     this.viewport.zoom(factor, center)
+    return this
   }
 
   /**
@@ -1811,6 +1855,7 @@ export class Graph extends GraphProperty implements IHooks {
     cy: number = 0.5,
   ) {
     this.viewport.center(horizontal, vertical, cx, cy)
+    return this
   }
 
   /**
@@ -1858,6 +1903,7 @@ export class Graph extends GraphProperty implements IHooks {
    */
   zoomToRect(rect: Rectangle) {
     this.viewport.zoomToRect(rect)
+    return this
   }
 
   /**
@@ -1866,6 +1912,7 @@ export class Graph extends GraphProperty implements IHooks {
    */
   scrollCellToVisible(cell: Cell, center: boolean = false) {
     this.viewport.scrollCellToVisible(cell, center)
+    return this
   }
 
   /**
@@ -1886,6 +1933,7 @@ export class Graph extends GraphProperty implements IHooks {
     border: number = 20,
   ) {
     this.viewport.scrollPointToVisible(x, y, extend, border)
+    return this
   }
 
   // #endregion
@@ -1894,6 +1942,7 @@ export class Graph extends GraphProperty implements IHooks {
 
   batchUpdate(update: () => void) {
     this.model.batchUpdate(update)
+    return this
   }
 
   /**
@@ -2195,56 +2244,6 @@ export class Graph extends GraphProperty implements IHooks {
 
   // #region :::::::::::: Graph Behaviour
 
-  hideTooltip() {
-    if (this.tooltipHandler) {
-      this.tooltipHandler.hide()
-    }
-  }
-
-  enableTooltip() {
-    this.tooltipHandler.enable()
-  }
-
-  disableTooltips() {
-    this.tooltipHandler.disable()
-  }
-
-  setConnectable(connectable: boolean) {
-    if (connectable) {
-      this.connectionHandler.enable()
-    } else {
-      this.connectionHandler.disable()
-    }
-  }
-
-  enableConnection() {
-    this.connectionHandler.enable()
-  }
-
-  disableConnection() {
-    this.connectionHandler.disable()
-  }
-
-  isConnectable() {
-    return this.connectionHandler.isEnabled()
-  }
-
-  enablePanning() {
-    this.panningHandler.enablePanning()
-  }
-
-  disablePanning() {
-    this.panningHandler.disablePanning()
-  }
-
-  enablePinch() {
-    this.panningHandler.enablePinch()
-  }
-
-  disablePinch() {
-    this.panningHandler.disablePinch()
-  }
-
   /**
    * Returns the cells which may be exported in the given array of cells.
    */
@@ -2441,42 +2440,6 @@ export class Graph extends GraphProperty implements IHooks {
     }
 
     return !this.model.isLayer(cell) && parent == null ? cell : null
-  }
-
-  // #endregion
-
-  // #region Keyboard
-
-  enableKeyboard() {
-    this.keyboardHandler.enable()
-  }
-
-  disableKeyboard() {
-    this.keyboardHandler.disable()
-  }
-
-  bindKey(
-    keys: string | string[],
-    handler: KeyboardHandler.Handler,
-    action?: KeyboardHandler.Action,
-  ) {
-    this.keyboardHandler.bind(keys, handler, action)
-  }
-
-  unbindKey(keys: string | string[], action?: KeyboardHandler.Action) {
-    this.keyboardHandler.unbind(keys, action)
-  }
-
-  onKeyPress(keys: string | string[], handler: KeyboardHandler.Handler) {
-    this.bindKey(keys, handler, 'keypress')
-  }
-
-  onKeyDown(keys: string | string[], handler: KeyboardHandler.Handler) {
-    this.bindKey(keys, handler, 'keydown')
-  }
-
-  onKeyUp(keys: string | string[], handler: KeyboardHandler.Handler) {
-    this.bindKey(keys, handler, 'keyup')
   }
 
   // #endregion

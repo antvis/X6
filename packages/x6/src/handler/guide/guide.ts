@@ -2,8 +2,8 @@ import * as util from '../../util'
 import { Cell } from '../../core/cell'
 import { State } from '../../core/state'
 import { Graph } from '../../graph'
-import { Disposable } from '../../common'
 import { Polyline } from '../../shape'
+import { Disposable } from '../../common'
 import { Rectangle, Point } from '../../struct'
 
 export class Guide extends Disposable {

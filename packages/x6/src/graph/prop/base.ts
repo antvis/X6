@@ -1,11 +1,11 @@
+import { Route } from '../../route'
 import { Model } from '../../core/model'
 import { View } from '../../core/view'
 import { Renderer } from '../../core/renderer'
 import { FullOptions } from '../../option'
 import { Disablable, Disposable } from '../../common'
 import { Dialect, Style, Size } from '../../types'
-import { Rectangle, Multiplicity } from '../../struct'
-import { Route } from '../../route'
+import { Rectangle, Multiplicity, Image } from '../../struct'
 import {
   CellEditor,
   TooltipHandler,
@@ -173,6 +173,28 @@ export class GraphBase extends Disablable
 
   set border(border: number) {
     this.setBorder(border)
+  }
+
+  getWarningImage() {
+    return this.options.warningImage
+  }
+
+  setWarningImage(image: Image, refresh: boolean = true) {
+    if (this.getWarningImage() !== image) {
+      this.options.warningImage = image
+      if (refresh) {
+        this.view.validate()
+      }
+    }
+    return this
+  }
+
+  get warningImage() {
+    return this.getWarningImage()
+  }
+
+  set warningImage(image: Image) {
+    this.setWarningImage(image)
   }
 
   getAlternateEdgeStyle() {
@@ -2169,6 +2191,8 @@ export interface GraphProperties {
    * Default is `0`.
    */
   border: number
+
+  warningImage: Image
 
   /**
    * Specifies the alternate edge style to be used if the main control

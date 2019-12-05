@@ -1077,6 +1077,7 @@ export class CellManager extends ManagerBase {
     if (this.model.isNode(cell) && this.graph.isAutoSizeCell(cell)) {
       this.updateCellSize(cell)
     }
+    return cell
   }
 
   updateCellSize(cell: Cell, ignoreChildren: boolean = false) {
@@ -1345,6 +1346,7 @@ export class CellManager extends ManagerBase {
         this.model.setGeometry(cell, geo)
       }
     }
+    return cell
   }
 
   /**
@@ -1403,7 +1405,7 @@ export class CellManager extends ManagerBase {
       ) {
         const parent = this.model.getParent(cell)!
         // const pgeo = this.getCellGeometry(parent)
-        let max = this.graph.getMaximumGraphBounds()
+        let max = this.graph.getMaxGraphBounds()
         // Finds parent offset
         if (max != null) {
           const off = this.graph.getBoundingBoxFromGeometry([parent], false)

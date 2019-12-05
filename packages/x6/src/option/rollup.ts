@@ -1,13 +1,13 @@
 import * as util from '../util'
 import { Style } from '../types'
+import { GridOptions } from '../graph/prop/grid'
+import { PageBreakOptions } from '../graph/prop/pagebreak'
+import { FoldingOptions } from '../graph/prop/folding'
 import { TooltipOptions } from '../handler/tooltip/option'
 import { ContextMenuOptions } from '../handler/contextmenu/option'
 import { KeyboardOptions } from '../handler/keyboard/option'
 import { RubberbandOptions } from '../handler/rubberband/option'
 import { GuideOptions } from '../handler/guide/option'
-import { GridOptions } from '../graph/property/grid'
-import { PageBreakOptions } from '../graph/property/pagebreak'
-import { FoldingOptions } from '../graph/property/folding'
 import {
   ResizeOption,
   ResizeHandleOptions,
@@ -19,8 +19,8 @@ import {
   RotatePreviewOptions,
 } from '../handler/node/option-rotation'
 import { SelectionPreviewOptions } from '../handler/node/option-selection'
-import { LabelHandleOptions } from '../handler/node/option-label'
 import { EdgeHandleOptions } from '../handler/edge/option'
+import { LabelHandleOptions } from '../handler/node/option-label'
 import { AnchorOptions, AnchorHighlightOptions } from '../handler/anchor/option'
 import {
   ConnectionOptions,
@@ -35,7 +35,7 @@ import {
 import { preset } from './preset'
 import { IHooks } from '../graph/hook'
 import { GlobalConfig } from './global'
-import { GraphProperties } from '../graph/property/base'
+import { GraphProperties } from '../graph/prop/base'
 
 export interface FullOptions
   extends GlobalConfig,

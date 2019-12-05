@@ -3,7 +3,7 @@ import { Graph } from '../../graph'
 import { MouseHandler } from '../handler-mouse'
 import { Rectangle, Point } from '../../struct'
 import { MouseEventEx, DomEvent, detector, Disposable } from '../../common'
-import { RubberbandOptions, getRubberbandStyle } from './option'
+import { getRubberbandStyle } from './option'
 
 export class RubberbandHandler extends MouseHandler {
   /**
@@ -59,10 +59,20 @@ export class RubberbandHandler extends MouseHandler {
   }
 
   config() {
-    const options = this.graph.options.rubberband as RubberbandOptions
+    const options = this.graph.options.rubberband
 
     this.setEnadled(options.enabled)
     this.fadeOut = options.fadeOut
+  }
+
+  enable() {
+    this.graph.options.rubberband.enabled = true
+    super.enable()
+  }
+
+  disable() {
+    this.graph.options.rubberband.enabled = false
+    super.disable()
   }
 
   /**

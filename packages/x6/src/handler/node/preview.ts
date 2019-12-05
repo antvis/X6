@@ -613,7 +613,7 @@ export class Preview extends Disposable {
 
     // Keeps node within maximum graph or parent bounds
     if (!geo.relative) {
-      let max = this.graph.getMaximumGraphBounds()
+      let max = this.graph.getMaxGraphBounds()
 
       // Handles child cells
       if (max != null && this.parentState != null) {
