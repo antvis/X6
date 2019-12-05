@@ -1,4 +1,4 @@
-import { Graph } from '../core'
+import { Graph } from '../graph'
 import { Disablable } from '../common'
 
 export abstract class BaseHandler extends Disablable {

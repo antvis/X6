@@ -44,34 +44,27 @@ export class FormatDiagram extends React.PureComponent {
   }
 
   onGridEnableChange = (e: any) => {
-    const graph = this.graph
     const checked = e.target.checked
-
-    graph.gridEnabled = checked
-    graph.view.validate()
-
+    this.graph.setGridEnabled(checked)
     this.setState({
       gridEnabled: checked,
     })
   }
 
-  onGridSizeChange = (value: number) => {
-    this.graph.gridSize = value
-    this.graph.view.validate()
-    this.setState({ gridSize: value })
+  onGridSizeChange = (gridSize: number) => {
+    this.graph.setGridSize(gridSize)
+    this.setState({ gridSize })
   }
 
   onGridColorChange = (value: ColorResult) => {
-    this.graph.gridColor = value.hex
-    this.graph.view.validateBackgroundStyle()
-    this.setState({ gridColor: value.hex })
+    const gridColor = value.hex
+    this.graph.setGridColor(gridColor)
+    this.setState({ gridColor })
   }
 
   onGridTypeChange = (e: any) => {
     const gridType = e.target.value
-    const graph = this.graph
-    graph.gridType = gridType
-    graph.view.validateBackgroundStyle()
+    this.graph.setGridType(gridType)
     this.setState({ gridType })
   }
 
@@ -116,14 +109,11 @@ export class FormatDiagram extends React.PureComponent {
     const size = (sizes as any)[value]
     if (size) {
       this.setState({ pageSize: value })
-      this.graph.pageFormat = { width: size.width, height: size.height }
-      this.graph.view.validate()
+      this.graph.setPageFormat({ width: size.width, height: size.height })
     }
   }
 
   render() {
-    console.log(this.state.gridColor)
-
     return (
       <div className="x6-editor-format-wrap">
         <div className="x6-editor-format-title">Diagram</div>

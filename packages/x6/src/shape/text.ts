@@ -1,8 +1,8 @@
 import * as util from '../util'
-import { preset } from '../option'
+import { globals } from '../option'
 import { Shape } from './shape'
 import { SvgCanvas2D } from '../canvas'
-import { State } from '../core'
+import { State } from '../core/state'
 import { Rectangle, Point, FontStyle } from '../struct'
 import { Align, VAlign, WritingDirection } from '../types'
 
@@ -57,17 +57,18 @@ export class Text extends Shape {
       overflow,
       labelPadding,
       textDirection,
-    }: Text.Options
+    }: Text.Options,
   ) {
     super()
     this.value = value
     this.bounds = bounds
-    this.fontColor = color != null ? color : preset.defaultFontColor
+    this.fontColor = color != null ? color : globals.defaultFontColor
     this.align = align != null ? align : 'center'
     this.verticalAlign = valign != null ? valign : 'middle'
-    this.fontFamily = fontFamily != null ? fontFamily : preset.defaultFontFamily
-    this.fontSize = fontSize != null ? fontSize : preset.defaultFontSize
-    this.fontStyle = fontStyle != null ? fontStyle : preset.defaultFontStyle
+    this.fontFamily =
+      fontFamily != null ? fontFamily : globals.defaultFontFamily
+    this.fontSize = fontSize != null ? fontSize : globals.defaultFontSize
+    this.fontStyle = fontStyle != null ? fontStyle : globals.defaultFontStyle
     this.spacing = parseInt((spacing as any) || 2, 10)
     this.spacingTop = this.spacing + parseInt((spacingTop as any) || 0, 10)
     this.spacingRight = this.spacing + parseInt((spacingRight as any) || 0, 10)
@@ -218,7 +219,7 @@ export class Text extends Shape {
         this.wrap,
         this.overflow,
         this.clipped,
-        this.getTextRotation()
+        this.getTextRotation(),
       )
     } else {
       // Checks if text contains HTML markup
@@ -258,7 +259,7 @@ export class Text extends Shape {
         this.overflow,
         this.clipped,
         this.getTextRotation(),
-        dir
+        dir,
       )
     }
 
@@ -367,7 +368,7 @@ export class Text extends Shape {
     // Looks for strong (directional) characters
     // tslint:disable-next-line
     const tmp = /[A-Za-z\u05d0-\u065f\u066a-\u06ef\u06fa-\u07ff\ufb1d-\ufdff\ufe70-\ufefc]/.exec(
-      this.value as string
+      this.value as string,
     )
 
     // Returns the direction defined by the character
@@ -456,10 +457,10 @@ export class Text extends Shape {
             this.margin.x * this.boundingBox.width,
             this.margin.y * this.boundingBox.height,
             this.boundingBox.width,
-            this.boundingBox.height
+            this.boundingBox.height,
           ),
           rot,
-          new Point(0, 0)
+          new Point(0, 0),
         )
 
         this.unrotatedBoundingBox = this.boundingBox.clone()
@@ -534,7 +535,7 @@ export class Text extends Shape {
       util.setPrefixedStyle(
         style,
         'transformOrigin',
-        `${-dx * 100}% ${-dy * 100}%`
+        `${-dx * 100}% ${-dy * 100}%`,
       )
 
       util.setPrefixedStyle(
@@ -542,27 +543,27 @@ export class Text extends Shape {
         'transform',
         `translate(${dx * 100}%, ${dy * 100}%)` +
           `scale(${this.scale}) ` +
-          `rotate(${theta}deg)`
+          `rotate(${theta}deg)`,
       )
     } else {
       util.setPrefixedStyle(style, 'transformOrigin', '0% 0%')
       util.setPrefixedStyle(
         style,
         'transform',
-        `scale(${this.scale}) ` + `translate(${dx * 100}%, ${dy * 100}%)`
+        `scale(${this.scale}) ` + `translate(${dx * 100}%, ${dy * 100}%)`,
       )
     }
 
     const left = Math.round(
       this.bounds.x -
         Math.ceil(
-          dx * (this.overflow !== 'fill' && this.overflow !== 'width' ? 3 : 1)
-        )
+          dx * (this.overflow !== 'fill' && this.overflow !== 'width' ? 3 : 1),
+        ),
     )
 
     style.left = `${left}px`
     style.top = `${Math.round(
-      this.bounds.y - dy * (this.overflow !== 'fill' ? 3 : 1)
+      this.bounds.y - dy * (this.overflow !== 'fill' ? 3 : 1),
     )}px`
 
     if (this.opacity < 1) {
@@ -628,7 +629,7 @@ export class Text extends Shape {
           css += `border:1px solid ${bd}; `
         }
 
-        const lh = `${this.fontSize * preset.defaultLineHeight}px`
+        const lh = `${this.fontSize * globals.defaultLineHeight}px`
 
         val = `<div
         style="zoom:1; ${css} display: inline-block; _display:inline;
@@ -658,7 +659,7 @@ export class Text extends Shape {
   updateFont(elem: HTMLElement) {
     const style = elem.style
 
-    style.lineHeight = `${this.fontSize * preset.defaultLineHeight}px`
+    style.lineHeight = `${this.fontSize * globals.defaultLineHeight}px`
     style.fontSize = `${this.fontSize}px`
     style.fontFamily = this.fontFamily
     style.verticalAlign = 'top'

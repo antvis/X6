@@ -1,8 +1,9 @@
-import { Graph, Cell } from '../core'
+import { Cell } from '../core/cell'
+import { Graph } from '../graph/graph'
+import { ManagerBase } from './base'
 import { SelectionChange, UndoableEdit } from '../change'
-import { BaseManager } from './manager-base'
 
-export class Selection extends BaseManager {
+export class Selection extends ManagerBase {
   cells: Cell[]
   private single: boolean
 
@@ -66,7 +67,7 @@ export class Selection extends BaseManager {
       }
 
       const added = candidate.filter(
-        cell => !this.isSelected(cell) && this.graph.isCellSelectable(cell)
+        cell => !this.isSelected(cell) && this.graph.isCellSelectable(cell),
       )
 
       this.changeSelection(added, removed)
@@ -100,7 +101,7 @@ export class Selection extends BaseManager {
 
   private changeSelection(
     added: Cell[] | null = null,
-    removed: Cell[] | null = null
+    removed: Cell[] | null = null,
   ) {
     if (
       (added != null && added.length > 0 && added[0] != null) ||

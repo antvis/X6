@@ -1,6 +1,8 @@
-import { Cell, Graph, State } from '../../core'
+import { Cell } from '../../core/cell'
+import { Graph } from '../../graph'
+import { State } from '../../core/state'
 import { Guide } from './guide'
-import { StrokeStyle, OptionItem, drill } from '../../option'
+import { drill, StrokeStyle, OptionItem } from '../../option'
 
 export interface GuideSubOptions extends StrokeStyle<GetGuideStyleArgs> {
   /**

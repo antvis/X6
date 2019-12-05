@@ -1,7 +1,7 @@
 import * as util from '../util'
-import { preset } from '../option'
+import { globals } from '../option'
 import { Shape } from './shape'
-import { State } from '../core'
+import { State } from '../core/state'
 import { SvgCanvas2D } from '../canvas'
 import { Rectangle, Point } from '../struct'
 
@@ -15,10 +15,10 @@ export class ArrowConnector extends Shape {
     fill: string = 'none',
     stroke: string = 'none',
     strokewidth: number = 1,
-    arrowWidth: number = preset.defaultArrowWidth,
-    spacing: number = preset.defaultArrowSpacing,
-    startSize: number = preset.defaultArrowSize / 5,
-    endSize: number = preset.defaultArrowSize / 5
+    arrowWidth: number = globals.defaultArrowWidth,
+    spacing: number = globals.defaultArrowSpacing,
+    startSize: number = globals.defaultArrowSize / 5,
+    endSize: number = globals.defaultArrowSize / 5,
   ) {
     super()
 
@@ -34,15 +34,16 @@ export class ArrowConnector extends Shape {
 
   resetStyle() {
     super.resetStyle()
-    this.arrowSpacing = preset.defaultArrowSpacing
+    this.arrowSpacing = globals.defaultArrowSpacing
   }
 
   apply(state: State) {
     super.apply(state)
 
     if (this.style != null) {
-      this.startSize = (this.style.startSize || preset.defaultArrowSize / 5) * 3
-      this.endSize = (this.style.endSize || preset.defaultArrowSize / 5) * 3
+      this.startSize =
+        (this.style.startSize || globals.defaultArrowSize / 5) * 3
+      this.endSize = (this.style.endSize || globals.defaultArrowSize / 5) * 3
     }
   }
 
@@ -139,7 +140,7 @@ export class ArrowConnector extends Shape {
         startWidth,
         edgeWidth,
         spacing,
-        true
+        true,
       )
     } else {
       const outStartX = pts[0].x + orthx / 2 + spacing * nx
@@ -171,7 +172,7 @@ export class ArrowConnector extends Shape {
         pts[i + 1].x,
         pts[i + 1].y,
         pts[i + 2].x,
-        pts[i + 2].y
+        pts[i + 2].y,
       )
 
       dx1 = pts[i + 2].x - pts[i + 1].x
@@ -201,7 +202,7 @@ export class ArrowConnector extends Shape {
           // bend, 0.35 covers all but the most extreme cases
           const strokeWidthFactor = Math.max(
             tmp,
-            Math.min(this.strokeWidth / 200 + 0.04, 0.35)
+            Math.min(this.strokeWidth / 200 + 0.04, 0.35),
           )
 
           const angleFactor =
@@ -273,12 +274,12 @@ export class ArrowConnector extends Shape {
         endWidth,
         edgeWidth,
         spacing,
-        false
+        false,
       )
     } else {
       c.lineTo(
         pe.x - spacing * nx1 + orthx / 2,
-        pe.y - spacing * ny1 + orthy / 2
+        pe.y - spacing * ny1 + orthy / 2,
       )
 
       const inStartX = pe.x - spacing * nx1 - orthx / 2
@@ -333,7 +334,7 @@ export class ArrowConnector extends Shape {
           startWidth,
           edgeWidth,
           spacing,
-          true
+          true,
         )
         c.stroke()
         c.end()
@@ -351,7 +352,7 @@ export class ArrowConnector extends Shape {
           endWidth,
           edgeWidth,
           spacing,
-          true
+          true,
         )
         c.stroke()
         c.end()
@@ -369,7 +370,7 @@ export class ArrowConnector extends Shape {
     arrowWidth: number,
     edgeWidth: number,
     spacing: number,
-    initialMove: boolean
+    initialMove: boolean,
   ) {
     const widthArrowRatio = edgeWidth / arrowWidth
     const orthx = (edgeWidth * ny) / 2
@@ -386,12 +387,12 @@ export class ArrowConnector extends Shape {
 
     c.lineTo(
       ptX - orthx / widthArrowRatio + spaceX,
-      ptY - orthy / widthArrowRatio + spaceY
+      ptY - orthy / widthArrowRatio + spaceY,
     )
     c.lineTo(ptX + spacing * nx, ptY + spacing * ny)
     c.lineTo(
       ptX + orthx / widthArrowRatio + spaceX,
-      ptY + orthy / widthArrowRatio + spaceY
+      ptY + orthy / widthArrowRatio + spaceY,
     )
     c.lineTo(ptX + orthx + spaceX, ptY + orthy + spaceY)
   }
@@ -401,15 +402,15 @@ export class ArrowConnector extends Shape {
   }
 
   getEdgeWidth() {
-    return preset.defaultArrowSize / 3
+    return globals.defaultArrowSize / 3
   }
 
   getStartArrowWidth() {
-    return preset.defaultArrowSize
+    return globals.defaultArrowSize
   }
 
   getEndArrowWidth() {
-    return preset.defaultArrowSize
+    return globals.defaultArrowSize
   }
 
   isOpenEnded() {

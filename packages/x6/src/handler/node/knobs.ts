@@ -1,6 +1,6 @@
 import * as util from '../../util'
-import { Handle } from '../handle'
 import { Shape } from '../../shape'
+import { Handle } from '../handle'
 import { NodeHandler } from './handler'
 import { Rectangle, Point } from '../../struct'
 import { Disposable, DomEvent, MouseEventEx } from '../../common'
@@ -215,7 +215,7 @@ export class Knobs extends Disposable {
             e.getGraphX() - tol,
             e.getGraphY() - tol,
             2 * tol,
-            2 * tol
+            2 * tol,
           )
         : null
 
@@ -441,7 +441,7 @@ export class Knobs extends Disposable {
       this.moveHandleTo(
         this.labelShape,
         cx + this.state.absoluteOffset.x + offset.x,
-        cy + this.state.absoluteOffset.y + offset.y
+        cy + this.state.absoluteOffset.y + offset.y,
       )
     }
 
@@ -526,14 +526,14 @@ export class Knobs extends Disposable {
 
     return new Point(
       this.bounds.x + this.bounds.width / 2 + offset.x,
-      this.bounds.y + offset.y
+      this.bounds.y + offset.y,
     )
   }
 
   protected setHandlesVisible(visible: boolean) {
     this.handles &&
       this.handles.forEach(handle =>
-        visible ? util.showElement(handle.elem) : util.hideElement(handle.elem)
+        visible ? util.showElement(handle.elem) : util.hideElement(handle.elem),
       )
 
     this.customHandles &&

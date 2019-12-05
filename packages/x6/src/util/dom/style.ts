@@ -1,6 +1,6 @@
 import { Point } from '../../struct'
 import { detector } from '../../common'
-import { preset } from '../../option'
+import { globals } from '../../option'
 import { ucFirst } from '../string/common'
 import { getDocumentMode } from './attr'
 
@@ -102,7 +102,7 @@ export function getDocumentScrollOrigin(doc: Document) {
 export function getScrollOrigin(
   node: HTMLElement | null,
   includeAncestors: boolean = false,
-  includeDocument: boolean = true
+  includeDocument: boolean = true,
 ) {
   const doc = node != null ? node.ownerDocument! : document
   const b = doc.body
@@ -176,15 +176,15 @@ export function getOffset(container: Element, scrollOffset: boolean = false) {
 
 export function getSizeForString(
   text: string,
-  fontSize: number = preset.defaultFontSize,
-  fontFamily: string = preset.defaultFontFamily,
-  textWidth?: number
+  fontSize: number = globals.defaultFontSize,
+  fontFamily: string = globals.defaultFontFamily,
+  textWidth?: number,
 ) {
   const div = document.createElement('div')
 
   div.style.fontFamily = fontFamily
   div.style.fontSize = `${Math.round(fontSize)}px`
-  div.style.lineHeight = `${Math.round(fontSize * preset.defaultLineHeight)}`
+  div.style.lineHeight = `${Math.round(fontSize * globals.defaultLineHeight)}`
 
   // Disables block layout and outside wrapping and hides the div
   div.style.position = 'absolute'

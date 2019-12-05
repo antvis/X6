@@ -1,12 +1,13 @@
-import { Graph, Cell } from '../../core'
-import { Shape, ImageShape } from '../../shape'
+import { Cell } from '../../core/cell'
+import { Graph } from '../../graph'
 import { Rectangle } from '../../struct'
 import { MouseEventEx } from '../../common'
+import { Shape, ImageShape } from '../../shape'
 import { HandleOptions, createHandleShape } from './option-knob'
 import {
+  drill,
   BaseStyle,
   OptionItem,
-  drill,
   applyBaseStyle,
   applyClassName,
   applyManualStyle,
@@ -98,7 +99,7 @@ export function createResizeHandle(args: CreateResizeHandleShapeArgs) {
 }
 
 export function updateResizeHandleCalssName(
-  args: ApplyResizeHandleClassNameArgs
+  args: ApplyResizeHandleClassNameArgs,
 ) {
   const { graph, cursor } = args
   const options = graph.options.resizeHandle as ResizeHandleOptions

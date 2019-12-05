@@ -2,25 +2,25 @@ import { GraphBase } from './base'
 
 export interface PageBreakOptions {
   /**
-   * If a dashed line should be drawn between multiple pages.
+   * Specifies if a dashed line should be drawn between multiple pages.
    *
    * Default is `false`.
    */
   enabled: boolean
   /**
-   * The stroke color for page breaks.
+   * Specifies the stroke color for page breaks.
    *
    * Default is `#808080`.
    */
   stroke: string
   /**
-   * The page breaks should be dashed.
+   * Specifies the page breaks should be dashed.
    *
    * Default is `true`.
    */
   dsahed: boolean
   /**
-   * The minimum distance for page breaks to be visible.
+   * Specifies the minimum distance for page breaks to be visible.
    *
    * Default is `20`.
    */
@@ -42,12 +42,16 @@ export class GraphPageBreak extends GraphBase {
   }
 
   enablePageBreak() {
-    this.options.pageBreak.enabled = true
+    if (!this.isPageBreakEnabled()) {
+      this.options.pageBreak.enabled = true
+    }
     return this
   }
 
   disablePageBreak() {
-    this.options.pageBreak.enabled = false
+    if (this.isPageBreakEnabled()) {
+      this.options.pageBreak.enabled = false
+    }
     return this
   }
 
@@ -68,7 +72,9 @@ export class GraphPageBreak extends GraphBase {
   }
 
   setPageBreakColor(color: string) {
-    this.options.pageBreak.stroke = color
+    if (this.getPageBreakColor() !== color) {
+      this.options.pageBreak.stroke = color
+    }
     return this
   }
 
@@ -85,7 +91,9 @@ export class GraphPageBreak extends GraphBase {
   }
 
   setPageBreakDashed(dsahed: boolean) {
-    this.options.pageBreak.dsahed = dsahed
+    if (dsahed !== this.isPageBreakDashed()) {
+      this.options.pageBreak.dsahed = dsahed
+    }
     return this
   }
 
@@ -102,7 +110,9 @@ export class GraphPageBreak extends GraphBase {
   }
 
   setPageBreakMinDist(minDist: number) {
-    this.options.pageBreak.minDist = minDist
+    if (minDist !== this.getPageBreakMinDist()) {
+      this.options.pageBreak.minDist = minDist
+    }
     return this
   }
 

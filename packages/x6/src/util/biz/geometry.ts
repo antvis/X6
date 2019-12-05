@@ -1,7 +1,7 @@
 /* tslint:disable:no-parameter-reassignment */
 
 import { getValue } from '../object'
-import { State } from '../../core'
+import { State } from '../../core/state'
 import { Direction } from '../../types'
 import { Point, Rectangle } from '../../struct'
 
@@ -16,7 +16,7 @@ export function toDeg(rad: number) {
 export function rotatePoint(
   point: Point | Point.PointLike,
   degree: number,
-  center: Point | Point.PointLike = new Point()
+  center: Point | Point.PointLike = new Point(),
 ) {
   let sin = 0
   let cos = 1
@@ -41,7 +41,7 @@ export function rotatePointEx(
   point: Point | Point.PointLike,
   cos: number,
   sin: number,
-  center: Point | Point.PointLike = new Point()
+  center: Point | Point.PointLike = new Point(),
 ) {
   const dx = point.x - center.x
   const dy = point.y - center.y
@@ -92,7 +92,7 @@ export function arcToCurves(
   largeArcFlag: number,
   sweepFlag: number,
   x: number,
-  y: number
+  y: number,
 ) {
   if (r1 === 0 || r2 === 0) {
     return []
@@ -132,7 +132,7 @@ export function arcToCurves(
     sds =
       seif *
       Math.sqrt(
-        (r1x * r2y - r1x * rydd - r2y * rxdd) / (r1x * rydd + r2y * rxdd)
+        (r1x * r2y - r1x * rydd - r2y * rxdd) / (r1x * rydd + r2y * rxdd),
       )
   }
 
@@ -208,7 +208,7 @@ export function getDirectedBounds(
   m: Rectangle,
   style: any,
   flipH?: boolean,
-  flipV?: boolean
+  flipV?: boolean,
 ) {
   const d = getValue(style, 'direction', 'east') as Direction
   // tslint:disable-next-line:no-parameter-reassignment
@@ -261,7 +261,7 @@ export function getDirectedBounds(
     rect.x + m2.x,
     rect.y + m2.y,
     rect.width - m2.width - m2.x,
-    rect.height - m2.height - m2.y
+    rect.height - m2.height - m2.y,
   )
 }
 
@@ -278,7 +278,7 @@ export function getLinesIntersection(
   x3: number,
   y3: number,
   x4: number,
-  y4: number // second line
+  y4: number, // second line
 ) {
   const a = (x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)
   const b = (x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3)
@@ -309,7 +309,7 @@ export function isInHotspot(
   y: number,
   hotspot: number = 1,
   min: number = 0,
-  max: number = 0
+  max: number = 0,
 ) {
   if (hotspot > 0) {
     let cx = state.bounds.getCenterX()
@@ -369,7 +369,7 @@ export function ptSegmentDist(
   x2: number,
   y2: number,
   px: number,
-  py: number
+  py: number,
 ) {
   x2 -= x1
   y2 -= y1
@@ -420,7 +420,7 @@ export function ptLineDist(
   x2: number,
   y2: number,
   px: number,
-  py: number
+  py: number,
 ) {
   return (
     Math.abs((y2 - y1) * px - (x2 - x1) * py + x2 * y1 - y2 * x1) /
@@ -445,7 +445,7 @@ export function relativeCcw(
   x2: number,
   y2: number,
   px: number,
-  py: number
+  py: number,
 ) {
   x2 -= x1
   y2 -= y1
@@ -505,7 +505,7 @@ export function getPerimeterPoint(pts: Point[], center: Point, point: Point) {
       center.x,
       center.y,
       point.x,
-      point.y
+      point.y,
     )
 
     if (pt != null) {

@@ -1,4 +1,4 @@
-import { Graph } from '../../core'
+import { Graph } from '../../graph'
 import { Rectangle, Image } from '../../struct'
 import { drill, OptionItem } from '../../option'
 import { Shape, ImageShape, EllipseShape } from '../../shape'
@@ -18,7 +18,7 @@ export interface CreateHandleShapeArgs {
 
 export function createHandleShape<T extends CreateHandleShapeArgs>(
   args: T,
-  options: HandleOptions<T, T>
+  options: HandleOptions<T, T>,
 ) {
   const { graph } = args
   const image = drill(options.image, graph, args)

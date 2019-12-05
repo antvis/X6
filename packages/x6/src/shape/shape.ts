@@ -1,7 +1,7 @@
 import * as util from '../util'
 import * as images from '../assets/images'
-import { preset } from '../option'
-import { State } from '../core'
+import { globals } from '../option'
+import { State } from '../core/state'
 import { Stencil } from './stencil'
 import { SvgCanvas2D } from '../canvas'
 import { DomEvent, Disposable } from '../common'
@@ -144,10 +144,10 @@ export class Shape extends Disposable {
   rounded: boolean = false
 
   shadow: boolean = false
-  shadowColor: string = preset.defaultShadowColor
-  shadowOpacity: number = preset.defaultShadowOpacity
-  shadowOffsetX: number = preset.defaultShadowOffsetX
-  shadowOffsetY: number = preset.defaultShadowOffsetY
+  shadowColor: string = globals.defaultShadowColor
+  shadowOpacity: number = globals.defaultShadowOpacity
+  shadowOffsetX: number = globals.defaultShadowOffsetX
+  shadowOffsetY: number = globals.defaultShadowOffsetY
 
   constructor(stencil?: Stencil) {
     super()
@@ -1103,7 +1103,7 @@ export class Shape extends Disposable {
     if (absoluteArcSize) {
       size = Math.min(w / 2, Math.min(h / 2, this.getLineArcSize()))
     } else {
-      const f = (this.style.arcSize || preset.rectangleRoundFactor * 100) / 100
+      const f = (this.style.arcSize || globals.rectangleRoundFactor * 100) / 100
       size = Math.min(w * f, h * f)
     }
 
@@ -1111,7 +1111,7 @@ export class Shape extends Disposable {
   }
 
   getLineArcSize() {
-    return (this.style.arcSize || preset.defaultLineArcSize) / 2
+    return (this.style.arcSize || globals.defaultLineArcSize) / 2
   }
 
   @Disposable.aop()

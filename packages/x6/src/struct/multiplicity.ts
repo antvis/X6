@@ -1,5 +1,6 @@
+import { Cell } from '../core/cell'
+import { Graph } from '../graph'
 import { isHtmlElem } from '../util'
-import { Graph, Cell } from '../core'
 
 export class Multiplicity {
   constructor(options: Multiplicity.Options) {
@@ -75,7 +76,7 @@ export class Multiplicity {
     source: Cell | null,
     target: Cell | null,
     sourceOut: number,
-    targetIn: number
+    targetIn: number,
   ) {
     let error = ''
 
@@ -113,7 +114,7 @@ export class Multiplicity {
     graph: Graph,
     edge: Cell | null,
     source: Cell | null,
-    target: Cell | null
+    target: Cell | null,
   ) {
     const sourceData = graph.model.getData(source)
     const targetData = graph.model.getData(target)
@@ -142,7 +143,7 @@ export class Multiplicity {
   protected checkTerminal(
     graph: Graph,
     terminal: Cell | null,
-    edge: Cell | null
+    edge: Cell | null,
   ) {
     const data = graph.model.getData(terminal)
     return this.checkType(
@@ -150,7 +151,7 @@ export class Multiplicity {
       data,
       this.nodeName,
       this.attrName,
-      this.attrValue
+      this.attrValue,
     )
   }
 
@@ -162,7 +163,7 @@ export class Multiplicity {
     data: any,
     nodeName?: string,
     attrName?: string,
-    attrValue?: string
+    attrValue?: string,
   ) {
     if (data != null) {
       if (!isNaN(data.nodeType)) {

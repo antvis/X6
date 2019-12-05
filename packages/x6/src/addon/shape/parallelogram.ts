@@ -1,5 +1,5 @@
 import * as util from '../../util'
-import { State } from '../../core'
+import { State } from '../../core/state'
 import { SvgCanvas2D } from '../../canvas'
 import { Shape, Actor } from '../../shape'
 import { Perimeter } from '../../perimeter'
@@ -27,7 +27,7 @@ export class ParallelogramShape extends Actor {
       ],
       this.rounded,
       arcSize,
-      true
+      true,
     )
   }
 }
@@ -36,7 +36,7 @@ export function parallelogramPerimeter(
   bounds: Rectangle,
   state: State,
   next: Point = new Point(),
-  orthogonal: boolean = false
+  orthogonal: boolean = false,
 ) {
   const style = state ? state.style : {}
   const defaultFactor = ParallelogramShape.prototype.factor

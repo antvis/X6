@@ -1,11 +1,11 @@
 import * as util from '../../util'
 import * as movment from './util'
-import { Disposable, MouseEventEx } from '../../common'
+import { Cell } from '../../core/cell'
 import { MovingHandler } from './handler'
 import { CellHighlight } from '../cell-highlight'
 import { RectangleShape } from '../../shape'
 import { Rectangle, Point } from '../../struct'
-import { Cell } from '../../core'
+import { Disposable, MouseEventEx } from '../../common'
 import { applyConnectionHighlightStyle } from '../connection/option'
 import {
   MovingPreviewOptions,
@@ -76,7 +76,7 @@ export class Preview extends Disposable {
     this.previewBounds = movment.getPreviewBounds(
       this.graph,
       this.minimumSize,
-      this.cells
+      this.cells,
     )
   }
 
@@ -172,7 +172,7 @@ export class Preview extends Disposable {
         Math.round(this.previewBounds.x + this.dx - this.graph.panDx),
         Math.round(this.previewBounds.y + this.dy - this.graph.panDy),
         this.previewBounds.width,
-        this.previewBounds.height
+        this.previewBounds.height,
       ))
 
       applyMovingPreviewStyle({
@@ -249,7 +249,7 @@ export class Preview extends Disposable {
           const error = graph.validator.getEdgeValidationError(
             null,
             this.cell,
-            cell
+            cell,
           )
           applyConnectionHighlightStyle({
             graph,

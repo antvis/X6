@@ -1,7 +1,7 @@
 import * as util from '../util'
 import { Cell } from './cell'
 import { State } from './state'
-import { Graph } from './graph'
+import { Graph } from '../graph'
 import { Geometry } from './geometry'
 import { Route } from '../route'
 import { Perimeter } from '../perimeter'

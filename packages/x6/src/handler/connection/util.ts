@@ -6,7 +6,7 @@ import { AnchorHandler } from '../anchor/handler'
  */
 export function transparentMarker(
   anchorHandler: AnchorHandler,
-  marker: CellMarker
+  marker: CellMarker,
 ) {
   if (
     anchorHandler.currentState != null &&

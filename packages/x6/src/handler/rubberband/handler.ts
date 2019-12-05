@@ -1,6 +1,6 @@
 import * as util from '../../util'
-import { Graph } from '../../core'
-import { MouseHandler } from '../../handler'
+import { Graph } from '../../graph'
+import { MouseHandler } from '../handler-mouse'
 import { Rectangle, Point } from '../../struct'
 import { MouseEventEx, DomEvent, detector, Disposable } from '../../common'
 import { RubberbandOptions, getRubberbandStyle } from './option'
@@ -128,7 +128,7 @@ export class RubberbandHandler extends MouseHandler {
         document,
         null,
         this.onMouseMove,
-        this.onMouseUp
+        this.onMouseUp,
       )
     }
   }
@@ -199,7 +199,7 @@ export class RubberbandHandler extends MouseHandler {
         this.div,
         this.graph.prefixCls,
         'rubberband',
-        style.className
+        style.className,
       )
 
       this.div.style.opacity = `${style.opacity || ''}`
@@ -252,7 +252,7 @@ export class RubberbandHandler extends MouseHandler {
       document,
       null,
       this.onMouseMove,
-      this.onMouseUp
+      this.onMouseUp,
     )
 
     this.onMouseMove = null

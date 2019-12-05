@@ -1,5 +1,5 @@
 import * as util from '../../util'
-import { preset } from '../../option'
+import { globals } from '../../option'
 import { Direction } from '../../types'
 import { Canvas2D } from '../canvas2d'
 import { SvgCanvas2D } from './index'
@@ -94,10 +94,10 @@ export abstract class SvgCanvas2DBase extends Canvas2D {
       style,
       'svg {' +
         '  fill: none; ' +
-        `  font-size: ${preset.defaultFontSize}; ` +
-        `  font-family: ${preset.defaultFontFamily}; ` +
+        `  font-size: ${globals.defaultFontSize}; ` +
+        `  font-family: ${globals.defaultFontFamily}; ` +
         '  stroke-miterlimit: 10;' +
-        '}'
+        '}',
     )
 
     return style
@@ -105,7 +105,7 @@ export abstract class SvgCanvas2DBase extends Canvas2D {
 
   protected createElement<T extends SVGElement>(
     tagName: string,
-    namespace?: string
+    namespace?: string,
   ) {
     const doc = this.root.ownerDocument!
     if (doc.createElementNS != null) {
@@ -204,7 +204,7 @@ export abstract class SvgCanvas2DBase extends Canvas2D {
           state.gradientColor,
           state.gradientFillOpacity,
           state.gradientOpacity,
-          state.gradientDirection
+          state.gradientDirection,
         )
         util.setAttributeWithAnchor(elem, 'fill', id)
       } else {
@@ -216,7 +216,7 @@ export abstract class SvgCanvas2DBase extends Canvas2D {
   protected getStrokeWidth() {
     return Math.max(
       this.minStrokeWidth,
-      Math.max(0.01, this.format(this.state.strokeWidth * this.state.scale))
+      Math.max(0.01, this.format(this.state.strokeWidth * this.state.scale)),
     )
   }
 
@@ -229,7 +229,7 @@ export abstract class SvgCanvas2DBase extends Canvas2D {
     if (state.opacity < 1 || state.strokeOpacity < 1) {
       elem.setAttribute(
         'stroke-opacity',
-        `${state.opacity * state.strokeOpacity}`
+        `${state.opacity * state.strokeOpacity}`,
       )
     }
 
@@ -246,8 +246,8 @@ export abstract class SvgCanvas2DBase extends Canvas2D {
       elem.setAttribute(
         'stroke-dasharray',
         this.createDashPattern(
-          (state.fixDash ? 1 : state.strokeWidth) * state.scale
-        )
+          (state.fixDash ? 1 : state.strokeWidth) * state.scale,
+        ),
       )
     }
   }
@@ -305,7 +305,7 @@ export abstract class SvgCanvas2DBase extends Canvas2D {
 
     shadow.setAttribute(
       'transform',
-      `translate(${tx},${ty})${state.transform || ''}`
+      `translate(${tx},${ty})${state.transform || ''}`,
     )
 
     shadow.setAttribute('opacity', `${state.shadowOpacity}`)
@@ -333,7 +333,7 @@ export abstract class SvgCanvas2DBase extends Canvas2D {
     stopColor: string,
     opacity1: number,
     opacity2: number,
-    direction: Direction
+    direction: Direction,
   ): SVGGradientElement {
     const gradient = this.createElement('linearGradient') as SVGGradientElement
     gradient.setAttribute('x1', '0%')
@@ -371,7 +371,7 @@ export abstract class SvgCanvas2DBase extends Canvas2D {
     stopColor: string,
     opacity1: number,
     opacity2: number,
-    direction: Direction
+    direction: Direction,
   ) {
     const formatColor = (color: string) => {
       let ret = color
@@ -409,14 +409,14 @@ export abstract class SvgCanvas2DBase extends Canvas2D {
     stopColor: string,
     opacity1: number,
     opacity2: number,
-    direction: Direction
+    direction: Direction,
   ): string {
     const id = this.createGradientId(
       startColor,
       stopColor,
       opacity1,
       opacity2,
-      direction
+      direction,
     )
 
     let gradient = this.gradients[id]
@@ -445,7 +445,7 @@ export abstract class SvgCanvas2DBase extends Canvas2D {
           stopColor,
           opacity1,
           opacity2,
-          direction
+          direction,
         )
         gradient.setAttribute('id', tmpId)
 

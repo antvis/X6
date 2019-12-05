@@ -1,8 +1,11 @@
-import { Graph, Model, Cell, State } from '../../core'
+import { Cell } from '../../core/cell'
 import { View } from '../../core/view'
-import { MouseHandler } from '../handler-mouse'
+import { State } from '../../core/state'
+import { Model } from '../../core/model'
+import { Graph } from '../../graph'
 import { NodeHandler } from '../node/handler'
 import { EdgeHandler } from '../edge/handler'
+import { MouseHandler } from '../handler-mouse'
 import { MouseEventEx, Dictionary, Disposable } from '../../common'
 
 export class SelectionHandler extends MouseHandler {

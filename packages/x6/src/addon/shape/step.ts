@@ -1,7 +1,7 @@
 import * as util from '../../util'
 import { getFactor } from './util'
-import { State } from '../../core'
 import { Style } from '../../types'
+import { State } from '../../core/state'
 import { SvgCanvas2D } from '../../canvas'
 import { Perimeter } from '../../perimeter'
 import { Point, Rectangle } from '../../struct'
@@ -30,7 +30,7 @@ export class StepShape extends Actor {
       ],
       this.rounded,
       arcSize,
-      true
+      true,
     )
 
     c.end()
@@ -41,7 +41,7 @@ export function stepPerimeter(
   bounds: Rectangle,
   state: State,
   next: Point,
-  orthogonal: boolean
+  orthogonal: boolean,
 ) {
   const defaultFactor = StepShape.prototype.factor
   const style: Style = state ? state.style : {}

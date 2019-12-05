@@ -1,7 +1,8 @@
 import * as util from '../util'
-import { Graph, State } from '../core'
+import { State } from '../core/state'
+import { Graph } from '../graph'
 import { MouseEventEx } from '../common'
-import { COLOR_PRIMARY } from '../option/preset'
+import { globals } from '../option/global'
 import { Rectangle, Point, Image } from '../struct'
 import { Shape, ImageShape, EllipseShape } from '../shape'
 
@@ -30,10 +31,10 @@ export class Handle {
     this.image = options.image || null
     this.shapeName = options.shape || 'ellipse'
     this.size = options.size || 8
-    this.stroke = options.stroke || COLOR_PRIMARY
+    this.stroke = options.stroke || globals.defaultPrimaryColor
     this.strokeWidth = options.strokeWidth != null ? options.strokeWidth : 1
     this.dashed = options.dashed === true || false
-    this.fill = options.fill || COLOR_PRIMARY
+    this.fill = options.fill || globals.defaultPrimaryColor
     this.opacity = options.opacity != null ? options.opacity : 1
     this.cursor = options.cursor || null
 
@@ -45,7 +46,7 @@ export class Handle {
     if (this.image != null) {
       const shape = new ImageShape(
         new Rectangle(0, 0, this.image.width, this.image.height),
-        this.image.src
+        this.image.src,
       )
       shape.preserveImageAspect = false
       this.shape = shape
@@ -115,10 +116,10 @@ export class Handle {
       this.rotatePoint(
         this.snapPoint(
           this.rotatePoint(p, alpha1),
-          this.ignoreGrid || !this.graph.isGridEnabledForEvent(e.getEvent())
+          this.ignoreGrid || !this.graph.isGridEnabledForEvent(e.getEvent()),
         ),
-        alpha2
-      )
+        alpha2,
+      ),
     )
 
     this.setPosition(this.state.getPaintBounds(), p, e)

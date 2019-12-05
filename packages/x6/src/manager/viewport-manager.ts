@@ -1,12 +1,13 @@
 import * as util from '../util'
 import { Size } from '../types'
-import { Graph, Cell } from '../core'
+import { Cell } from '../core/cell'
+import { Graph } from '../graph'
 import { detector } from '../common'
 import { Polyline } from '../shape'
 import { Rectangle, Point } from '../struct'
-import { BaseManager } from './manager-base'
+import { ManagerBase } from './base'
 
-export class ViewportManager extends BaseManager {
+export class ViewportManager extends ManagerBase {
   constructor(graph: Graph) {
     super(graph)
   }
@@ -786,7 +787,7 @@ export class ViewportManager extends BaseManager {
         height = Math.max(height, this.graph.minContainerSize.height)
       }
 
-      if (this.graph.shouldResizeContainer()) {
+      if (this.graph.isAutoResizeContainer()) {
         this.resizeContainer(width, height)
       }
 

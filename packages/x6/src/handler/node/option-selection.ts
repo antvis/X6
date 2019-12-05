@@ -1,9 +1,9 @@
-import { Cell } from '../../core'
+import { Cell } from '../../core/cell'
 import {
+  drill,
   BaseArgs,
   BaseStyle,
   OptionItem,
-  drill,
   applyBaseStyle,
   applyClassName,
   applyManualStyle,
@@ -19,7 +19,7 @@ export interface ApplySelectionPreviewStyleArgs extends BaseArgs {
 }
 
 export function applySelectionPreviewStyle(
-  args: ApplySelectionPreviewStyleArgs
+  args: ApplySelectionPreviewStyleArgs,
 ) {
   const { shape, graph } = args
   const options = graph.options.selectionPreview as SelectionPreviewOptions

@@ -1,6 +1,6 @@
 import * as util from '../../util'
 import * as movment from '../moving/util'
-import { Cell } from '../../core'
+import { Cell } from '../../core/cell'
 import { Guide } from './guide'
 import { Rectangle, Point } from '../../struct'
 import { MouseHandler } from '../handler-mouse'
@@ -21,7 +21,7 @@ export class GuideHandler extends MouseHandler {
       this.origin = util.clientToGraph(this.graph.container, e)
       this.cell = this.getCell(e)!
       this.bounds = this.graph.view.getBounds(
-        movment.getCells(this, this.cell, e)
+        movment.getCells(this, this.cell, e),
       )
     }
   }
@@ -113,7 +113,7 @@ export class GuideHandler extends MouseHandler {
         this.graph.model.isNode(cell) &&
         cell.geometry != null &&
         !cell.geometry.relative,
-      parent
+      parent,
     )
 
     return this.graph.view.getCellStates(cells)

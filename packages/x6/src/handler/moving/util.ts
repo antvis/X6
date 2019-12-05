@@ -1,5 +1,6 @@
 import * as util from '../../util'
-import { Cell, Graph } from '../../core'
+import { Cell } from '../../core/cell'
+import { Graph } from '../../graph'
 import { MouseEventEx } from '../../common'
 import { Point, Rectangle } from '../../struct'
 import { MouseHandler } from '../handler-mouse'
@@ -57,7 +58,7 @@ export function roundLength(len: number) {
 export function getDelta(
   handler: MouseHandler,
   origin: Point,
-  e: MouseEventEx
+  e: MouseEventEx,
 ) {
   const graph = handler.graph
   const s = graph.view.scale
@@ -65,14 +66,14 @@ export function getDelta(
 
   return new Point(
     roundLength((p.x - origin.x) / s) * s,
-    roundLength((p.y - origin.y) / s) * s
+    roundLength((p.y - origin.y) / s) * s,
   )
 }
 
 export function getPreviewBounds(
   graph: Graph,
   minimumSize: number,
-  cells: Cell[]
+  cells: Cell[],
 ) {
   const bounds = getBoundingBox(graph, cells)
   if (bounds != null) {

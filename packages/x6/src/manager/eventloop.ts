@@ -1,12 +1,14 @@
 import * as util from '../util'
-import { Graph, Cell, State } from '../core'
+import { Graph } from '../graph'
+import { Cell } from '../core/cell'
+import { State } from '../core/state'
+import { Point } from '../struct'
+import { RectangleShape } from '../shape'
 import { DomEvent, MouseEventEx, detector } from '../common'
 import { IMouseHandler, ConnectionHandler } from '../handler'
-import { RectangleShape } from '../shape'
-import { BaseManager } from './manager-base'
-import { Point } from '../struct'
+import { ManagerBase } from './base'
 
-export class EventLoop extends BaseManager {
+export class EventLoop extends ManagerBase {
   protected mouseListeners: IMouseHandler[]
 
   protected lastMouseX: number

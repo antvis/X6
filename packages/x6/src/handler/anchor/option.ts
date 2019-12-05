@@ -1,4 +1,5 @@
-import { Graph, Cell } from '../../core'
+import { Cell } from '../../core/cell'
+import { Graph } from '../../graph/graph'
 import { Shape, EllipseShape } from '../../shape'
 import { Image, Anchor, Point } from '../../struct'
 import {
@@ -54,7 +55,7 @@ export interface ApplyAnchorHighlightShapeStyleArgs
 }
 
 export function createAnchorHighlightShape(
-  args: CreateAnchorHighlightShapeArgs
+  args: CreateAnchorHighlightShapeArgs,
 ) {
   const { graph } = args
   const opts = graph.options.anchorHighlight as AnchorHighlightOptions

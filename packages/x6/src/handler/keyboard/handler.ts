@@ -1,9 +1,9 @@
 import * as util from '../../util'
-import { Graph } from '../../core'
-import { DomEvent, Disposable } from '../../common'
-import { BaseHandler } from '../../handler'
+import { Graph } from '../../graph'
 import { Mousetrap } from './mousetrap'
 import { KeyboardOptions } from './option'
+import { BaseHandler } from '../handler-base'
+import { DomEvent, Disposable } from '../../common'
 
 export class KeyboardHandler extends BaseHandler {
   public readonly target: HTMLElement | Document
@@ -27,7 +27,7 @@ export class KeyboardHandler extends BaseHandler {
   bind(
     keys: string | string[],
     callback: KeyboardHandler.Handler,
-    action?: KeyboardHandler.Action
+    action?: KeyboardHandler.Action,
   ) {
     this.mousetrap.bind(this.getKeys(keys), callback, action)
   }

@@ -1,5 +1,5 @@
 import * as util from '../util'
-import { State } from '../core'
+import { State } from '../core/state'
 import { Point } from '../struct'
 
 import * as elbowRouters from './elbow'
@@ -17,6 +17,12 @@ export namespace Route {
   export const sideToSide = elbowRouters.sideToSide
   export const topToBottom = elbowRouters.topToBottom
 }
+
+// export * from './er'
+// export * from './elbow'
+// export * from './loop'
+// export * from './orth'
+// export * from './segment'
 
 export namespace Route {
   export type Router = (

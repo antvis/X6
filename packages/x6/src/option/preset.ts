@@ -1,10 +1,11 @@
 import * as images from '../assets/images'
+import { loop } from '../route/loop'
 import { Style } from '../types'
 import { detector } from '../common'
 import { PageSize } from '../struct'
-import { FullOptions } from './graph'
-import { loop } from '../route/loop'
-import { rectanglePerimeter } from '../perimeter/rectangle'
+import { Perimeter } from '../perimeter'
+import { FullOptions } from './rollup'
+import { globals } from './global'
 
 const commonStyle: Style = {
   align: 'center',
@@ -12,38 +13,8 @@ const commonStyle: Style = {
   fontColor: 'rgba(0, 0, 0, 1)',
 }
 
-export const COLOR_PRIMARY = '#1890ff'
-export const COLOR_VALID = '#2ddb73'
-export const COLOR_INVALID = '#f5222d'
-export const CURSOR_MOVE = 'move'
-export const CURSOR_CROSS = 'crosshair'
-export const CURSOR_POINTER = 'pointer'
-
 export const preset: FullOptions = {
-  // global config
-  trackable: true,
-  trackInfo: {},
-  defaultShadowColor: '#808080',
-  defaultShadowOffsetX: 2,
-  defaultShadowOffsetY: 3,
-  defaultShadowOpacity: 1,
-  defaultFontSize: 12,
-  defaultFontStyle: 0,
-  defaultFontColor: '#000000',
-  defaultFontFamily: 'Arial,Helvetica',
-  defaultLineHeight: 1.2,
-  defaultAbsoluteLineHeight: false,
-  defaultStartSize: 40,
-  defaultMarkerSize: 6,
-  defaultImageSize: 24,
-  defaultSegmentLength: 30,
-  rectangleRoundFactor: 0.15,
-  defaultLineArcSize: 20,
-  defaultArrowSpacing: 0,
-  defaultArrowSize: 30,
-  defaultArrowWidth: 30,
-
-  //
+  ...globals,
   prefixCls: 'x6',
   dialect: 'svg',
   antialiased: true,
@@ -115,9 +86,9 @@ export const preset: FullOptions = {
   border: 0,
   autoResizeContainer: false,
   invokesStopCellEditing: true,
-  stopEditingOnPressEnter: false,
-  exportEnabled: true,
-  importEnabled: true,
+  stopEditingOnEnter: false,
+  cellsExportable: true,
+  cellsImportable: true,
   portsEnabled: true,
 
   grid: {
@@ -135,7 +106,7 @@ export const preset: FullOptions = {
   tolerance: 4,
   swimlaneNesting: true,
   swimlaneSelectionEnabled: true,
-  multigraph: true,
+  multigraphSupported: true,
   allowLoops: false,
   allowDanglingEdges: true,
   edgesConnectable: false,
@@ -163,7 +134,7 @@ export const preset: FullOptions = {
   nodeStyle: {
     ...commonStyle,
     shape: 'rectangle',
-    perimeter: rectanglePerimeter,
+    perimeter: Perimeter.rectangle,
     fill: '#fff',
     stroke: '#000',
   },
@@ -179,7 +150,7 @@ export const preset: FullOptions = {
     enabled: false,
     rounded: false,
     dashed: true,
-    stroke: COLOR_PRIMARY,
+    stroke: globals.defaultPrimaryColor,
     strokeWidth: 1,
     horizontal: {
       enabled: true,
@@ -235,16 +206,17 @@ export const preset: FullOptions = {
     stroke: '#000',
     strokeWidth: 1,
     fill: 'none',
-    cursor: CURSOR_MOVE,
+    cursor: globals.defaultCursorMove,
   },
 
   selectionPreview: {
     opacity: 1,
-    stroke: COLOR_PRIMARY,
+    stroke: globals.defaultPrimaryColor,
     strokeWidth: 1,
     dashed: true,
     fill: 'none',
-    cursor: ({ cell }) => (cell.isNode() || cell.isEdge() ? CURSOR_MOVE : ''),
+    cursor: ({ cell }) =>
+      cell.isNode() || cell.isEdge() ? globals.defaultCursorMove : '',
   },
 
   resize: {
@@ -261,7 +233,7 @@ export const preset: FullOptions = {
     shape: 'ellipse',
     size: 8,
     opacity: 1,
-    fill: COLOR_PRIMARY,
+    fill: globals.defaultPrimaryColor,
     stroke: '#fff',
     strokeWidth: 1,
     dashed: false,
@@ -269,7 +241,7 @@ export const preset: FullOptions = {
 
   resizePreview: {
     opacity: 1,
-    stroke: COLOR_PRIMARY,
+    stroke: globals.defaultPrimaryColor,
     strokeWidth: 1,
     dashed: true,
     fill: 'rgba(24, 144, 255, 0.05)',
@@ -285,17 +257,17 @@ export const preset: FullOptions = {
     shape: 'ellipse',
     size: 10,
     opacity: 1,
-    fill: COLOR_PRIMARY,
+    fill: globals.defaultPrimaryColor,
     stroke: '#fff',
     strokeWidth: 1,
     dashed: false,
-    cursor: CURSOR_CROSS,
+    cursor: globals.defaultCursorCross,
     offset: { x: 0, y: -20 },
   },
 
   rotatePreview: {
     opacity: 1,
-    stroke: COLOR_PRIMARY,
+    stroke: globals.defaultPrimaryColor,
     strokeWidth: 1,
     dashed: true,
     fill: 'rgba(24, 144, 255, 0.05)',
@@ -305,25 +277,25 @@ export const preset: FullOptions = {
     shape: 'ellipse',
     size: 10,
     opacity: 1,
-    fill: COLOR_PRIMARY,
+    fill: globals.defaultPrimaryColor,
     stroke: '#fff',
     strokeWidth: 1,
     dashed: false,
-    cursor: CURSOR_MOVE,
+    cursor: globals.defaultCursorMove,
     offset: { x: 0, y: -8 },
   },
 
   anchor: {
     image: images.cross,
-    cursor: CURSOR_POINTER,
+    cursor: globals.defaultCursorPointer,
   },
 
   anchorHighlight: {
     shape: 'ellipse',
-    cursor: CURSOR_POINTER,
+    cursor: globals.defaultCursorPointer,
     opacity: 0.3,
     fill: 'none',
-    stroke: COLOR_VALID,
+    stroke: globals.defaultValidColor,
     strokeWidth: 10,
     dashed: false,
   },
@@ -337,7 +309,7 @@ export const preset: FullOptions = {
     outlineConnect: false,
     livePreview: false,
     insertBeforeSource: false,
-    cursor: CURSOR_POINTER,
+    cursor: globals.defaultCursorPointer,
   },
 
   connectionIcon: {
@@ -345,13 +317,13 @@ export const preset: FullOptions = {
     toFront: false,
     toBack: false,
     centerTarget: false,
-    cursor: CURSOR_POINTER,
+    cursor: globals.defaultCursorPointer,
     offset: { x: 0, y: 16 },
   },
 
   connectionHighlight: {
-    validColor: COLOR_VALID,
-    invalidColor: COLOR_INVALID,
+    validColor: globals.defaultValidColor,
+    invalidColor: globals.defaultInvalidColor,
     strokeWidth: 3,
     dashed: false,
     spacing: 2,
@@ -369,7 +341,8 @@ export const preset: FullOptions = {
     fill: 'none',
     dashed: true,
     strokeWidth: 2,
-    stroke: ({ valid }) => (valid ? COLOR_VALID : COLOR_INVALID),
+    stroke: ({ valid }) =>
+      valid ? globals.defaultValidColor : globals.defaultInvalidColor,
   },
 
   edgeHandle: {
@@ -384,12 +357,14 @@ export const preset: FullOptions = {
     // handle style
     shape: 'ellipse',
     size: 8,
-    fill: COLOR_PRIMARY,
+    fill: globals.defaultPrimaryColor,
     stroke: '#fff',
     strokeWidth: 1,
     dashed: false,
     opacity: ({ visual }) => (visual ? 0.2 : 1),
     cursor: ({ isSource, isTarget, visual }) =>
-      (isSource || isTarget) && visual !== true ? CURSOR_POINTER : CURSOR_CROSS,
+      (isSource || isTarget) && visual !== true
+        ? globals.defaultCursorPointer
+        : globals.defaultCursorCross,
   },
 }

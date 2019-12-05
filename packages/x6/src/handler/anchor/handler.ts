@@ -1,6 +1,8 @@
 import * as util from '../../util'
+import { Graph } from '../../graph'
 import { View } from '../../core/view'
-import { Graph, Model, State } from '../../core'
+import { Model } from '../../core/model'
+import { State } from '../../core/state'
 import { Shape, ImageShape } from '../../shape'
 import { BaseHandler } from '../handler-base'
 import { Rectangle, Point, Anchor } from '../../struct'
@@ -77,7 +79,7 @@ export class AnchorHandler extends BaseHandler {
     state: State,
     anchor: Anchor,
     point: Point,
-    icon?: ImageShape
+    icon?: ImageShape,
   ) {
     const { image, cursor, className } = getAnchorOptions({
       anchor,
@@ -90,7 +92,7 @@ export class AnchorHandler extends BaseHandler {
       Math.round(point.x - image.width / 2),
       Math.round(point.y - image.height / 2),
       image.width,
-      image.height
+      image.height,
     )
 
     if (icon == null) {
@@ -117,7 +119,7 @@ export class AnchorHandler extends BaseHandler {
   }
 
   protected getTolerance(e: MouseEventEx) {
-    return this.graph.getTolerance()
+    return this.graph.tolerance
   }
 
   protected isEventIgnored(e: MouseEventEx) {
@@ -182,14 +184,14 @@ export class AnchorHandler extends BaseHandler {
     e: MouseEventEx,
     isSource: boolean,
     existingEdge: boolean,
-    currentPoint: Point | null
+    currentPoint: Point | null,
   ) {
     if (this.isEnabled() && !this.isEventIgnored(e)) {
       if (!this.containerEventInstalled && this.graph.container) {
         DomEvent.addListener(
           this.graph.container,
           'mouseleave',
-          this.resetHandler!
+          this.resetHandler!,
         )
       }
 
@@ -201,7 +203,7 @@ export class AnchorHandler extends BaseHandler {
         e.getGraphX() - tol,
         e.getGraphY() - tol,
         2 * tol,
-        2 * tol
+        2 * tol,
       )
 
       const state = this.graph.view.getState(this.getCell(e, currentPoint))
@@ -250,7 +252,7 @@ export class AnchorHandler extends BaseHandler {
                   this.icons[i],
                   grid,
                   isSource,
-                  existingEdge
+                  existingEdge,
                 ))) &&
             (minDist == null || dis < minDist)
           ) {
@@ -328,7 +330,7 @@ export class AnchorHandler extends BaseHandler {
     icon: ImageShape,
     mouse: Rectangle,
     isSource: boolean,
-    existingEdge: boolean
+    existingEdge: boolean,
   ) {
     return icon.bounds.isIntersectWith(mouse)
   }
@@ -361,7 +363,7 @@ export class AnchorHandler extends BaseHandler {
         DomEvent.removeListener(
           this.graph.container,
           'mouseleave',
-          this.resetHandler
+          this.resetHandler,
         )
       }
 
