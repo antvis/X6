@@ -16,6 +16,16 @@ export class GuideHandler extends MouseHandler {
   guide: Guide | null = null
   active: boolean = false
 
+  enable() {
+    this.graph.options.guide.enabled = true
+    super.enable()
+  }
+
+  disable() {
+    this.graph.options.guide.enabled = false
+    super.disable()
+  }
+
   mouseDown(e: MouseEventEx) {
     if (movment.isValid(this, e) && movment.canMove(this, e)) {
       this.origin = util.clientToGraph(this.graph.container, e)

@@ -18,6 +18,9 @@ export const preset: FullOptions = {
   prefixCls: 'x6',
   dialect: 'svg',
   antialiased: true,
+  border: 0,
+  backgroundColor: '#ffffff',
+  warningImage: images.warning,
   multiplicities: [],
   alternateEdgeStyle: null,
   nativeDblClickEnabled: true,
@@ -83,7 +86,6 @@ export const preset: FullOptions = {
 
   htmlLabels: false,
   labelsVisible: true,
-  border: 0,
   autoResizeContainer: false,
   invokesStopCellEditing: true,
   stopEditingOnEnter: false,
@@ -101,7 +103,6 @@ export const preset: FullOptions = {
     type: 'line',
     color: '#e0e0e0',
   },
-  backgroundColor: '#ffffff',
 
   tolerance: 4,
   swimlaneNesting: true,

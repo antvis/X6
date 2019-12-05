@@ -1,8 +1,6 @@
 import React from 'react'
 import { Checkbox, InputNumber, Select, Radio } from 'antd'
 import { PageSize } from '@antv/x6'
-import { GuideOptions } from '@antv/x6/lib/handler/guide/option'
-import { RubberbandOptions } from '@antv/x6/lib/handler/rubberband/option'
 import { ColorPicker, ColorResult } from '@antv/x6-components'
 import { getEditor } from '../index'
 import './format.less'
@@ -30,16 +28,14 @@ export class FormatDiagram extends React.PureComponent {
 
   componentDidMount() {
     const graph = this.graph
-    const guideOptions = graph.options.guide as GuideOptions
-
     this.setState({
       gridEnabled: graph.gridEnabled,
       gridSize: graph.gridSize,
       gridMinSize: graph.gridMinSize,
       gridColor: graph.gridColor,
-      guide: guideOptions.enabled,
+      guide: graph.isGuideEnabled(),
       pageView: graph.pageVisible,
-      rubberband: graph.rubberbandHandler.isEnabled(),
+      rubberband: graph.isRubberbandEnabled(),
     })
   }
 
@@ -69,24 +65,14 @@ export class FormatDiagram extends React.PureComponent {
   }
 
   onGuideEnableChanged = (e: any) => {
-    const graph = this.graph
-    const options = graph.options.guide as GuideOptions
     const checked = e.target.checked
-
-    options.enabled = checked
-    graph.guideHandler.setEnadled(checked)
-
+    this.graph.setGuideEnabled(checked)
     this.setState({ guide: checked })
   }
 
   onRubberbandEnableChanged = (e: any) => {
-    const graph = this.graph
-    const options = graph.options.rubberband as RubberbandOptions
     const checked = e.target.checked
-
-    options.enabled = checked
-    graph.rubberbandHandler.setEnadled(checked)
-
+    this.graph.setRubberbandEnabled(checked)
     this.setState({
       rubberband: checked,
     })
