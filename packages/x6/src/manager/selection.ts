@@ -1,5 +1,5 @@
 import { Cell } from '../core/cell'
-import { Graph } from '../graph/graph'
+import { Graph } from '../graph'
 import { ManagerBase } from './base'
 import { SelectionChange, UndoableEdit } from '../change'
 

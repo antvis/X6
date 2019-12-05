@@ -1,5 +1,5 @@
 import { Cell } from '../../core/cell'
-import { Graph } from '../../graph/graph'
+import { Graph } from '../../graph'
 import { Shape, EllipseShape } from '../../shape'
 import { Image, Anchor, Point } from '../../struct'
 import {

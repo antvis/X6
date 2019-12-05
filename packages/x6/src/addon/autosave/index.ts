@@ -1,6 +1,6 @@
 import { IChange } from '../../change'
 import { Model } from '../../core/model'
-import { Graph } from '../../graph/graph'
+import { Graph } from '../../graph'
 import { Disablable, Disposable } from '../../common'
 
 export class AutoSave extends Disablable {

@@ -1,5 +1,5 @@
 import * as util from '../../util'
-import { Graph } from '../../graph/graph'
+import { Graph } from '../../graph'
 import { MouseHandler } from '../handler-mouse'
 import { MouseEventEx, DomEvent, Disposable } from '../../common'
 import { ContextMenuOptions, ShowContextMenuArgs } from './option'

@@ -1,4 +1,4 @@
-import { Graph } from '../graph/graph'
+import { Graph } from '../graph'
 import { Disposable } from '../common'
 
 export class ManagerBase extends Disposable {
