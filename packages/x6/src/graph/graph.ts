@@ -7,7 +7,6 @@ import { Model } from '../core/model'
 import { State } from '../core/state'
 import { Geometry } from '../core/geometry'
 import { Renderer } from '../core/renderer'
-import { IHooks } from './hook'
 import { Align, VAlign, Style, Size } from '../types'
 import { detector, DomEvent, MouseEventEx } from '../common'
 import { GraphOptions, getOptions, globals } from '../option'
@@ -40,11 +39,8 @@ import {
   ViewportManager,
   CellManager,
 } from '../manager'
+import { IHooks } from './hook'
 import { hook, afterCreate } from './util'
-// import { GraphBase } from './property/base'
-// import { GraphGrid } from './property/grid'
-// import { GraphFolding } from './property/folding'
-// import { GraphPageBreak } from './property/pagebreak'
 import { GraphProperty } from './property'
 
 export class Graph extends GraphProperty implements IHooks {
@@ -272,8 +268,9 @@ export class Graph extends GraphProperty implements IHooks {
     }
 
     const options = node != null ? node : {}
-    const cell = this.createNode(options)
-    return this.addNodes([cell], options.parent, options.index)[0]
+    const { parent: p, index: i, ...others } = options
+    const cell = this.createNode(others)
+    return this.addNodes([cell], p, i)[0]
   }
 
   addNodes(nodes: Cell[], parent?: Cell, index?: number): Cell[] {

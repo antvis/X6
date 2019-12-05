@@ -413,13 +413,16 @@ export namespace Cell {
   export interface CreateCellOptions {
     id?: string | null
     data?: any
-    style?: Style
     visible?: boolean
     overlays?: Overlay[]
     render?: Renderer | null
   }
 
-  export interface CreateNodeOptions extends CreateCellOptions {
+  export interface NestedStyle extends Style {
+    style?: Style
+  }
+
+  export interface CreateNodeOptions extends CreateCellOptions, NestedStyle {
     /**
      * Specifies the x-coordinate of the node. For relative geometries, this
      * defines the percentage x-coordinate relative the parent width, which
@@ -461,7 +464,7 @@ export namespace Cell {
     alternateBounds?: Rectangle | Rectangle.RectangleLike
   }
 
-  export interface CreateEdgeOptions extends CreateCellOptions {
+  export interface CreateEdgeOptions extends CreateCellOptions, NestedStyle {
     /**
      * The source `Point` of the edge. This is used if the corresponding
      * edge does not have a source node. Otherwise it is ignored.
@@ -485,52 +488,81 @@ export namespace Cell {
   }
 
   export function createNode(options: CreateNodeOptions = {}): Cell {
-    const geo = new Geometry(
-      options.x,
-      options.y,
-      options.width,
-      options.height,
-    )
+    const {
+      id,
+      data,
+      visible,
+      overlays,
+      render,
+      x,
+      y,
+      width,
+      height,
+      relative,
+      offset,
+      collapsed,
+      alternateBounds,
+      style,
+      ...otherStyle
+    } = options
 
-    geo.relative = options.relative != null ? options.relative : false
+    const geo = new Geometry(x, y, width, height)
 
-    if (options.offset != null) {
-      geo.offset = Point.clone(options.offset)
+    geo.relative = relative != null ? relative : false
+
+    if (offset != null) {
+      geo.offset = Point.clone(offset)
     }
 
-    if (options.alternateBounds != null) {
-      geo.alternateBounds = Rectangle.clone(options.alternateBounds)
+    if (alternateBounds != null) {
+      geo.alternateBounds = Rectangle.clone(alternateBounds)
     }
 
-    const node = new Cell(options.data, geo, options.style)
-    if (options.collapsed != null) {
-      node.setCollapsed(options.collapsed)
+    const finalStyle = { ...otherStyle, ...style }
+    const node = new Cell(data, geo, finalStyle)
+    if (collapsed != null) {
+      node.setCollapsed(collapsed)
     }
 
     return applyCommonOptions(node, options, true)
   }
 
   export function createEdge(options: CreateEdgeOptions): Cell {
+    const {
+      id,
+      data,
+      visible,
+      overlays,
+      render,
+      sourcePoint,
+      targetPoint,
+      points,
+      offset,
+      style,
+      ...otherStyle
+    } = options
+
     const geom = new Geometry()
     geom.relative = true
 
-    if (options.sourcePoint != null) {
-      geom.sourcePoint = Point.clone(options.sourcePoint)
+    if (sourcePoint != null) {
+      geom.sourcePoint = Point.clone(sourcePoint)
     }
 
-    if (options.targetPoint != null) {
-      geom.targetPoint = Point.clone(options.targetPoint)
+    if (targetPoint != null) {
+      geom.targetPoint = Point.clone(targetPoint)
     }
 
-    if (options.offset != null) {
-      geom.offset = Point.clone(options.offset)
+    if (offset != null) {
+      geom.offset = Point.clone(offset)
     }
 
-    if (options.points != null) {
-      options.points.forEach(p => geom.addPoint(p))
+    if (points != null) {
+      points.forEach(p => geom.addPoint(p))
     }
 
-    const edge = new Cell(options.data, geom, options.style)
+    const finalStyle = { ...otherStyle, ...style }
+    const edge = new Cell(data, geom, finalStyle)
     return applyCommonOptions(edge, options, false)
   }
 
