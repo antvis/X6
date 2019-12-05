@@ -28,6 +28,8 @@ jobs:
       run: |
         yarn build
         yarn test
-    - name: yarn coveralls
-      run: |
-        yarn coveralls
+    - name: coveralls
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        path-to-lcov: ./packages/x6/test/coverage/lcov.info
