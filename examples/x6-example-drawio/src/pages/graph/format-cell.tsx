@@ -48,8 +48,6 @@ export class FormatCell extends React.PureComponent<
       h: geom.bounds.height,
       constrained: false,
       rotation: style.rotation,
-      flipH: style.flipH,
-      flipV: style.flipV,
 
       fontSize: style.fontSize,
       fontFamily: style.fontFamily,
@@ -294,7 +292,7 @@ export class FormatCell extends React.PureComponent<
                 value={util.clamp(
                   +(this.state.opacity! * 100).toFixed(0),
                   0,
-                  100
+                  100,
                 )}
                 className="x6-editor-format-number right"
                 formatter={value => `${value!}%`}
@@ -348,7 +346,7 @@ export class FormatCell extends React.PureComponent<
       this.setState({ x })
       this.executeCommand(
         'updateGeometry',
-        new Geometry(x, this.state.y, this.state.w, this.state.h)
+        new Geometry(x, this.state.y, this.state.w, this.state.h),
       )
     }
   }
@@ -358,7 +356,7 @@ export class FormatCell extends React.PureComponent<
       this.setState({ y })
       this.executeCommand(
         'updateGeometry',
-        new Geometry(this.state.x, y, this.state.w, this.state.h)
+        new Geometry(this.state.x, y, this.state.w, this.state.h),
       )
     }
   }
@@ -911,9 +909,11 @@ export class FormatCell extends React.PureComponent<
 
 export namespace FormatCell {
   export type TabName = 'style' | 'text' | 'arrange'
+
   export interface Props {
     cell: Cell
   }
+
   export interface State {
     activeTab: TabName
     fill?: string
@@ -930,8 +930,6 @@ export namespace FormatCell {
     h: number
     constrained: boolean
     rotation?: number
-    flipH?: boolean
-    flipV?: boolean
 
     fontSize?: number
     fontFamily?: string
