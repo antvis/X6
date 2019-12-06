@@ -99,10 +99,8 @@ export class ContextMenuHandler extends MouseHandler {
           !this.graph.isCellSelected(cell)
         ) {
           this.graph.setSelectedCell(cell)
-        }
-
-        if (cell == null && this.clearSelectionOnBackground) {
-          this.clearSelectionOnBackground
+        } else if (cell == null && this.clearSelectionOnBackground) {
+          this.graph.clearSelection()
         }
       }
 

@@ -47,7 +47,7 @@ export class GraphView extends View {
       s * (t.x + x0 * pw),
       s * (t.y + y0 * ph),
       s * rows * pw,
-      s * cols * ph
+      s * cols * ph,
     )
   }
 }

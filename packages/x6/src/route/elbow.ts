@@ -8,8 +8,8 @@ import { Point } from '../struct'
  */
 export function elbow(
   edgeState: State,
-  sourceState: State,
-  targetState: State,
+  sourceState: State | null,
+  targetState: State | null,
   points: Point[],
   result: Point[],
 ) {
@@ -68,8 +68,8 @@ export function elbow(
  */
 export function sideToSide(
   edgeState: State,
-  sourceState: State,
-  targetState: State,
+  sourceState: State | null,
+  targetState: State | null,
   points: Point[],
   result: Point[],
 ) {
@@ -164,8 +164,8 @@ export function sideToSide(
  */
 export function topToBottom(
   edgeState: State,
-  sourceState: State,
-  targetState: State,
+  sourceState: State | null,
+  targetState: State | null,
   points: Point[],
   result: Point[],
 ) {

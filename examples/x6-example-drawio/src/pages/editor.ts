@@ -157,7 +157,7 @@ export class Editor extends Primer {
           'vp',
           avatarMale,
           'Marketing',
-          'Homer Simpson'
+          'Homer Simpson',
         ),
       })
 
@@ -180,7 +180,7 @@ export class Editor extends Primer {
           'vp',
           avatarFemale,
           'Production',
-          'Lisa Simpson'
+          'Lisa Simpson',
         ),
       })
 
@@ -213,7 +213,7 @@ export class Editor extends Primer {
           'manager',
           avatarMale,
           'Manager',
-          'Lenny Leonard'
+          'Lenny Leonard',
         ),
       })
 
@@ -227,7 +227,7 @@ export class Editor extends Primer {
           'manager',
           avatarMale,
           'Manager',
-          'Carl Carlson'
+          'Carl Carlson',
         ),
       })
 
@@ -241,7 +241,7 @@ export class Editor extends Primer {
           'manager',
           avatarFemale,
           'Manager',
-          'Maggie Simpson'
+          'Maggie Simpson',
         ),
       })
 

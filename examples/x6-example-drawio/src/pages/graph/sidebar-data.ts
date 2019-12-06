@@ -414,7 +414,7 @@ export function getUMLPaletteItems() {
     ].map(data => ({
       data,
       render: getRenderer(data),
-    }))
+    })),
   )
 
   const field = new Cell('+ field: type', new Geometry(0, 0, 100, 20), {
@@ -474,7 +474,7 @@ export function getUMLPaletteItems() {
     const cell = new Cell(
       'Classname',
       new Geometry(0, 0, data.width, data.height),
-      data.style
+      data.style,
     )
 
     cell.asNode(true)

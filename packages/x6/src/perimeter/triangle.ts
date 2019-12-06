@@ -36,8 +36,8 @@ export function trianglePerimeter(
     end = new Point(x + w, y + h)
   }
 
-  let dx = next.x - cx
-  let dy = next.y - cy
+  const dx = next.x - cx
+  const dy = next.y - cy
 
   const alpha = vertical ? Math.atan2(dx, dy) : Math.atan2(dy, dx)
   const t = vertical ? Math.atan2(w, h) : Math.atan2(h, w)
@@ -85,10 +85,6 @@ export function trianglePerimeter(
         pt.x = next.x
         pt.y = !vertical ? cy : direction === 'north' ? y + h : y
       }
-
-      // Compute angle
-      dx = next.x - pt.x
-      dy = next.y - pt.y
 
       cx = pt.x
       cy = pt.y

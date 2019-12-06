@@ -6,8 +6,8 @@ import { State } from '../core/state'
  */
 export function segment(
   edgeState: State,
-  sourceState: State,
-  targetState: State,
+  sourceState: State | null,
+  targetState: State | null,
   hints: Point[],
   result: Point[],
 ) {

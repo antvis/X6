@@ -12,7 +12,7 @@ export namespace StencilRegistry {
   export function loadStencilSet(
     url: string,
     force: boolean = false,
-    callback: ParseStencilCallback | null = null
+    callback: ParseStencilCallback | null = null,
   ) {
     var xmlDoc = packages[url]
     if (force || xmlDoc == null) {
@@ -25,7 +25,7 @@ export namespace StencilRegistry {
         })
       }
 
-      if (xmlDoc != null && xmlDoc.documentElement != null) {
+      if (xmlDoc && xmlDoc.documentElement) {
         parseStencilSet(xmlDoc.documentElement, install, callback)
       }
     }
@@ -46,7 +46,7 @@ export namespace StencilRegistry {
     stencilName: string,
     name: string,
     w: number,
-    h: number
+    h: number,
   ) => void
 
   export function getShapeName(packageName: string, stencilName: string) {
@@ -56,7 +56,7 @@ export namespace StencilRegistry {
   export function parseStencilSet(
     root: Element,
     install: boolean = true,
-    callback: ParseStencilCallback | null = null
+    callback: ParseStencilCallback | null = null,
   ) {
     if (root.nodeName == 'stencils') {
       let shapes = root.firstChild as Element
@@ -83,7 +83,7 @@ export namespace StencilRegistry {
             if (install) {
               Shape.Stencil.addStencil(
                 getShapeName(packageName, stencilName),
-                new Shape.Stencil(shape)
+                new Shape.Stencil(shape),
               )
             }
 

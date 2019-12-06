@@ -583,7 +583,6 @@ export class CellEditor extends Disposable {
       let dir = state.style.textDirection || ''
       if (dir === 'auto') {
         if (
-          state != null &&
           state.text != null &&
           state.text.dialect !== 'html' &&
           !util.isHtmlElem(state.text.value)

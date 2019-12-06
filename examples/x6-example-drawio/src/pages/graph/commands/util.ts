@@ -95,7 +95,7 @@ export function fitPage(graph: Graph, padding: Point = new Point()) {
     graph.container.scrollLeft =
       Math.min(
         padding.x * graph.view.scale,
-        (graph.container.scrollWidth - graph.container.clientWidth) / 2
+        (graph.container.scrollWidth - graph.container.clientWidth) / 2,
       ) - 1
   }
 }
@@ -118,12 +118,12 @@ export function fitTwoPages(graph: Graph, padding: Point = new Point()) {
   if (util.hasScrollbars(graph.container)) {
     graph.container.scrollTop = Math.min(
       padding.y,
-      (graph.container.scrollHeight - graph.container.clientHeight) / 2
+      (graph.container.scrollHeight - graph.container.clientHeight) / 2,
     )
 
     graph.container.scrollLeft = Math.min(
       padding.x,
-      (graph.container.scrollWidth - graph.container.clientWidth) / 2
+      (graph.container.scrollWidth - graph.container.clientWidth) / 2,
     )
   }
 }
@@ -143,7 +143,7 @@ export function fitPageWidth(graph: Graph, padding: Point = new Point()) {
   if (util.hasScrollbars(graph.container)) {
     graph.container.scrollLeft = Math.min(
       padding.x * graph.view.scale,
-      (graph.container.scrollWidth - graph.container.clientWidth) / 2
+      (graph.container.scrollWidth - graph.container.clientWidth) / 2,
     )
   }
 }

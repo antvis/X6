@@ -25,7 +25,7 @@ export class EditorGraph extends Graph {
           if (source == this.container) {
             this.cursorPosition = new Point(
               DomEvent.getClientX(e),
-              DomEvent.getClientY(e)
+              DomEvent.getClientY(e),
             )
             this.lazyZoom(up)
             DomEvent.consume(e)
@@ -82,7 +82,7 @@ export class EditorGraph extends Graph {
     this.cumulativeZoomFactor = Math.max(
       0.01,
       Math.min(this.view.scale * this.cumulativeZoomFactor, 160) /
-        this.view.scale
+        this.view.scale,
     )
     this.updateZoomTimeout = window.setTimeout(() => {
       var offset = util.getOffset(this.container)
@@ -223,7 +223,7 @@ export class EditorGraph extends Graph {
       s * t.x,
       s * t.y,
       fmt.width * ps,
-      fmt.height * ps
+      fmt.height * ps,
     )
 
     // tslint:disable-next-line
@@ -297,8 +297,8 @@ export class EditorGraph extends Graph {
       container.scrollLeft = Math.floor(
         Math.min(
           padding[0],
-          (container.scrollWidth - container.clientWidth) / 2
-        )
+          (container.scrollWidth - container.clientWidth) / 2,
+        ),
       )
       container.scrollTop = padding[1]
 
@@ -308,14 +308,14 @@ export class EditorGraph extends Graph {
         if (bounds.x > container.scrollLeft + container.clientWidth * 0.9) {
           container.scrollLeft = Math.min(
             bounds.x + bounds.width - container.clientWidth,
-            bounds.x - 10
+            bounds.x - 10,
           )
         }
 
         if (bounds.y > container.scrollTop + container.clientHeight * 0.9) {
           container.scrollTop = Math.min(
             bounds.y + bounds.height - container.clientHeight,
-            bounds.y - 10
+            bounds.y - 10,
           )
         }
       }

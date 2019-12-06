@@ -432,8 +432,8 @@ export class Stencil extends Shape {
         disableShadow &&
         (name === 'fillstroke' || name === 'fill' || name === 'stroke')
       ) {
-        // tslint:disable-next-line
-        disableShadow = false
+        // no used in the following code,
+        // disableShadow = false
         canvas.setShadow(false)
       }
     }

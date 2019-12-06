@@ -91,8 +91,8 @@ const TARGET_MASK = 2048
 
 function getJettySize(
   edgeState: State,
-  sourceState: State,
-  targetState: State,
+  sourceState: State | null,
+  targetState: State | null,
   points: Point[],
   isSource?: boolean,
 ) {
@@ -434,7 +434,8 @@ export function orth(
     prefOrdering[0][1] = vertPref[0]
     prefOrdering[1][0] = horPref[1]
     prefOrdering[1][1] = vertPref[1]
-    preferredOrderSet = true
+    // preferredOrderSet not used any more
+    // preferredOrderSet = true
   }
 
   // The source and target prefs are now an ordered list of

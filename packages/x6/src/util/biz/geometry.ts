@@ -497,7 +497,7 @@ export function getPerimeterPoint(pts: Point[], center: Point, point: Point) {
   let min = null
 
   for (let i = 0, ii = pts.length - 1; i < ii; i += 1) {
-    const pt = getLinesIntersection(
+    const p = getLinesIntersection(
       pts[i].x,
       pts[i].y,
       pts[i + 1].x,
@@ -508,13 +508,13 @@ export function getPerimeterPoint(pts: Point[], center: Point, point: Point) {
       point.y,
     )
 
-    if (pt != null) {
-      const dx = point.x - pt.x
-      const dy = point.y - pt.y
-      const ip = { p: pt, distSq: dy * dy + dx * dx }
+    if (p != null) {
+      const dx = point.x - p.x
+      const dy = point.y - p.y
+      const tmp = { p, len: dy * dy + dx * dx }
 
-      if (ip != null && (min == null || min.distSq > ip.distSq)) {
-        min = ip
+      if (tmp && (min == null || min.len > tmp.len)) {
+        min = tmp
       }
     }
   }

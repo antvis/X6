@@ -28,7 +28,7 @@ export function hexagonPerimeter(
 
   let a = new Point()
   let b = new Point()
-  let result: null | Point = new Point(cx, cy)
+  let result: null | Point
 
   // Only consider corrects quadrants for the orthogonal case.
   if (

@@ -12,7 +12,6 @@ export class FormatDiagram extends React.PureComponent {
     gridMinSize: 4,
     gridColor: '#e0e0e0',
     gridType: 'line',
-    pageView: true,
     pageSize: 'a4',
     guide: true,
     rubberband: true,
@@ -34,7 +33,6 @@ export class FormatDiagram extends React.PureComponent {
       gridMinSize: graph.gridMinSize,
       gridColor: graph.gridColor,
       guide: graph.isGuideEnabled(),
-      pageView: graph.pageVisible,
       rubberband: graph.isRubberbandEnabled(),
     })
   }
@@ -206,7 +204,6 @@ export namespace FormatDiagram {
     gridColor: string
     gridType: string
 
-    pageView: boolean
     pageSize: string
 
     guide: boolean

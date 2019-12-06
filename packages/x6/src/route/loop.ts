@@ -3,8 +3,8 @@ import { Point } from '../struct'
 
 export function loop(
   edgeState: State,
-  sourceState: State,
-  targetState: State,
+  sourceState: State | null,
+  targetState: State | null,
   points: Point[],
   result: Point[],
 ) {
