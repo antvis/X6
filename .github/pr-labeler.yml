@@ -2,6 +2,7 @@
 
 pr(fix): ['fix/*', 'bug/*']
 pr(chore): chore/*
+pr(test): ['testing/*', 'test/*']
 pr(feature): ['feature/*', 'feat/*']
 pr(breaking): ['breaking/*', 'break/*']
 pr(internal): ['internal/*', 'inter/*']
@@ -9,4 +10,3 @@ pr(documentation): ['documentation/*', 'document/*', 'doc/*']
 pr(enhancement): ['enhancement/*', 'enhance/*']
 pr(dependency): ['dependency/*', 'dep/*']
 pr(refactor): ['refactoring/*', 'refactor/*']
-pr(test): ['testing/*', 'test/*']
