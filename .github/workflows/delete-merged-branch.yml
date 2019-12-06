@@ -1,4 +1,4 @@
-name: Delete merged branch
+name: Delete Merged Branch
 on: pull_request
 jobs:
   triage:
