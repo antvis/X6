@@ -7,5 +7,16 @@
       "ignoreChanges": ["*.md", "**/*.test.ts", "**/*.spec.ts"],
       "message": "chore(release): publish %v"
     }
+  },
+  "changelog": {
+    "labels": {
+      "pr(internal)": ":house: Internal",
+      "pr(breaking)": ":boom: Breaking Change",
+      "pr(chore)": ":turtle: Chore",
+      "pr(dependency)": ":shamrock: Dependency",
+      "pr(documentation)": ":book: Documentation",
+      "pr(bug)": ":bug: Bug Fix",
+      "pr(enhancement)": ":rocket: Enhancement"
+    }
   }
 }
