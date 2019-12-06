@@ -30,10 +30,11 @@
     "watch": "watch 'yarn build' ./src",
     "build:es": "tsc --module es2015 --target es2015 --outDir ./es",
     "build:lib": "tsc --module commonjs --target es5 --outDir ./lib",
+    "build:ts":"run-p build:lib build:es",
     "build:less": "node ./scripts/less.js",
-    "build": "run-p build:lib build:es build:less",
+    "build": "run-s build:ts build:less",
     "prepare": "yarn build",
-    "prebuild": "run-s lint yarn clean",
+    "prebuild": "run-s lint clean",
     "precommit": "lint-staged"
   },
   "keywords": [
