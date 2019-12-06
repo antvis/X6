@@ -1,0 +1,3 @@
+delete_closed_pr: true
+exclude: 
+    - reserve/*
