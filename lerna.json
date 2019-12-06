@@ -10,13 +10,16 @@
   },
   "changelog": {
     "labels": {
-      "pr(internal)": ":house: Internal",
-      "pr(breaking)": ":boom: Breaking Change",
+      "pr(fix)": ":bug: Bug Fix",
       "pr(chore)": ":turtle: Chore",
+      "pr(feature)": ":tada: New feature",
+      "pr(breaking)": ":boom: Breaking Change",
+      "pr(internal)": ":house: Internal",
       "pr(dependency)": ":shamrock: Dependency",
       "pr(documentation)": ":book: Documentation",
-      "pr(bug)": ":bug: Bug Fix",
-      "pr(enhancement)": ":rocket: Enhancement"
+      "pr(enhancement)": ":rocket: Enhancement",
+      "pr(refactor)": ":100: Refactoring",
+      "pr(test)": ":white_check_mark: Test Case"
     }
   }
 }
