@@ -528,11 +528,10 @@ export class FormatCell extends React.PureComponent<
   toggleBold = () => {
     this.executeCommand('bold')
     const current = (this.state.fontStyle as number) || 0
-    this.setState({
-      fontStyle: FontStyle.isBold(this.state.fontStyle)
-        ? current - FontStyle.bold
-        : current + FontStyle.bold,
-    })
+    const fontStyle = FontStyle.isBold(this.state.fontStyle)
+      ? current - FontStyle.bold
+      : current + FontStyle.bold
+    this.setState({ fontStyle })
   }
 
   toggleItalic = () => {

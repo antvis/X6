@@ -57,7 +57,7 @@ class ToolbarItemInner extends React.PureComponent<ToolbarItemInner.Props> {
           [`${baseCls}-disabled`]: disabled,
           [`${baseCls}-dropdown`]: dropdown,
         },
-        className
+        className,
       ),
     }
 
@@ -106,10 +106,10 @@ class ToolbarItemInner extends React.PureComponent<ToolbarItemInner.Props> {
     const { dropdown, dropdownProps, disabled } = this.props
     const content = this.renderButton()
 
-    if (dropdown && !disabled) {
+    if (dropdown != null && !disabled) {
       const overlay = (
         <div>
-          {dropdown && dropdown.type === Menu
+          {dropdown.type === Menu
             ? React.cloneElement(dropdown, {
                 onClick: this.handleDropdownItemClick,
               })

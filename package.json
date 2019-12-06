@@ -13,9 +13,11 @@
     "lint": "lerna run lint",
     "test": "lerna run test",
     "coveralls": "lerna run coveralls",
-    "clear": "rimraf yarn.lock && lerna run clean && lerna clean && rimraf ./node_modules",
     "prettier": "prettier --write '**/*.{js,jsx,tsx,ts,less,md,json}'",
-    "pretty-quick": "pretty-quick"
+    "pretty-quick": "pretty-quick",
+    "contributor": "git-contributor",
+    "changelog": "conventional-changelog -i CHANGELOG.md -a -s",
+    "clear": "rimraf yarn.lock && lerna run clean && lerna clean && rimraf ./node_modules"
   },
   "husky": {
     "hooks": {
@@ -32,6 +34,8 @@
   "devDependencies": {
     "@commitlint/cli": "^8.2.0",
     "@commitlint/config-conventional": "^8.2.0",
+    "conventional-changelog-cli": "^2.0.28",
+    "git-contributor": "^1.0.10",
     "husky": "^3.1.0",
     "lerna": "^3.19.0",
     "lint-staged": "^9.2.1",
