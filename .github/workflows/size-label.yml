@@ -1,4 +1,4 @@
-name: Assign size label
+name: Label(File Size)
 on: pull_request
 jobs:
   size-label:
