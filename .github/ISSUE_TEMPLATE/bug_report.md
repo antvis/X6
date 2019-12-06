@@ -8,20 +8,20 @@ assignees: ''
 
 <!--- Provide a general summary of the issue in the Title above. -->
 
-## Expected Behavior
+### Expected Behavior
 
 <!--- What should happen. -->
 
-## Current Behavior
+### Current Behavior
 
 <!--- What happens instead. -->
 
-## Possible Solution
+### Possible Solution
 
 <!--- Suggest a fix/reason for the bug. -->
 <!--- Any solutions you've considered. -->
 
-## Steps To Reproduce
+### Steps To Reproduce
 
 <!--- Provide a link to a live example, or an unambiguous -->
 <!--- set of steps to reproduce this bug. Include code to -->
@@ -39,7 +39,7 @@ assignees: ''
 
 </p></details>
 
-## Additional Context
+### Additional Context
 
 <!--- How has this issue affected you? -->
 <!--- What are you trying to accomplish? -->
@@ -48,7 +48,7 @@ assignees: ''
 <!--- Providing context helps us come up with a -->
 <!--- solution that is most useful in the real world. -->
 
-## Your Environment
+### Your Environment
 
 <!--- Include as many relevant details about the -->
 <!--- environment you experienced the bug in. -->
