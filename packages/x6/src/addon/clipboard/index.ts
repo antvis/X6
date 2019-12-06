@@ -72,7 +72,7 @@ export namespace Clipboard {
           let includeEdges = true
 
           for (let i = 0, ii = cells.length; i < ii && includeEdges; i += 1) {
-            includeEdges = includeEdges && graph.model.isEdge(cells[i])
+            includeEdges = graph.model.isEdge(cells[i])
           }
 
           const t = graph.view.translate

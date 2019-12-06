@@ -194,10 +194,8 @@ export class Shape extends Disposable {
     if (container != null) {
       if (this.elem == null) {
         this.elem = this.create(container)
-        if (container != null) {
-          container.appendChild(this.elem)
-        }
       }
+      container.appendChild(this.elem)
     }
   }
 
