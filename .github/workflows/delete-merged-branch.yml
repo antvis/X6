@@ -1,0 +1,9 @@
+name: Delete merged branch
+on: pull_request
+jobs:
+  triage:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: SvanBoxel/delete-merged-branch@v1.3.3
+      with:
+        repo-token: "${{ secrets.GITHUB_TOKEN }}"
