@@ -18,7 +18,7 @@ export class Sidebar extends React.PureComponent {
       if (container != null) {
         const render = (items: PaletteItem[]) => {
           items.forEach(item =>
-            item.render(container, thumbWidth, thumbHeight, thumbBorder)
+            item.render(container, thumbWidth, thumbHeight, thumbBorder),
           )
           initDnd(container)
         }

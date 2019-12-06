@@ -16,7 +16,7 @@ export default class Example extends React.Component {
             image: new Image(
               'https://gw.alipayobjects.com/mdn/rms_5cf9ec/afts/img/A*U7bEQLQ7lb4AAAAAAAAAAABkARQnAQ',
               16,
-              16
+              16,
             ),
             tooltip: 'Overlay tooltip',
           })

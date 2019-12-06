@@ -65,7 +65,7 @@ export class Commands {
           .replace('Delete', 'backspace')
           .replace('Cmd', 'command')
           .toLowerCase(),
-        callback
+        callback,
       )
     }
 

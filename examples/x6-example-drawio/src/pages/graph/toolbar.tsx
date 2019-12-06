@@ -66,7 +66,8 @@ export class GraphToolbar extends React.PureComponent<
         name === 'fitTwoPages' ||
         name === 'fitPageWidth'
       ) {
-        this.setState({ scale: graph.view.scale })
+        const scale = graph.view.scale
+        this.setState({ scale })
       }
     } else if (
       name === '25' ||
@@ -137,7 +138,7 @@ export class GraphToolbar extends React.PureComponent<
   renderColorPicker(
     name: string,
     value: string,
-    onChange: (value: ColorResult) => void
+    onChange: (value: ColorResult) => void,
   ) {
     const MenuItem = Menu.Item
     return (
@@ -246,7 +247,7 @@ export class GraphToolbar extends React.PureComponent<
             dropdown={this.renderColorPicker(
               'fill-color',
               fillColor,
-              this.setFillColor
+              this.setFillColor,
             )}
             dropdownProps={{ overlayClassName: 'x6-color-picker-dropdown' }}
             disabled={!hasSelectedCell}
@@ -258,7 +259,7 @@ export class GraphToolbar extends React.PureComponent<
             dropdown={this.renderColorPicker(
               'line-color',
               lineColor,
-              this.setLineColor
+              this.setLineColor,
             )}
             dropdownProps={{ overlayClassName: 'x6-color-picker-dropdown' }}
             disabled={!hasSelectedCell}

@@ -25,8 +25,8 @@ import { Point, DirectionMask } from '../struct'
  */
 export function er(
   edgeState: State,
-  sourceState: State,
-  targetState: State,
+  sourceState: State | null,
+  targetState: State | null,
   points: Point[],
   result: Point[],
 ) {
