@@ -8,15 +8,15 @@ assignees: ''
 
 <!--- Provide a general summary of the feature in the Title above. -->
 
-## Expected Behavior
+### Expected Behavior
 
 <!--- What should happen. -->
 
-## Possible Solution
+### Possible Solution
 
 <!--- Any solutions you've considered. -->
 
-## Additional Context
+### Additional Context
 
 <!--- How has this issue affected you? -->
 <!--- What are you trying to accomplish? -->
