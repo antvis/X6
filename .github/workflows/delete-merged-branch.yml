@@ -3,7 +3,7 @@ on:
   pull_request:
     types: [closed]
 jobs:
-  triage:
+  deleting:
     runs-on: ubuntu-latest
     steps:
     - uses: SvanBoxel/delete-merged-branch@v1.3.3
