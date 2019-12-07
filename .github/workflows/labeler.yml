@@ -1,7 +1,7 @@
 name: Label(File Paths)
 on: pull_request
 jobs:
-  triage:
+  label:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/labeler@v2
