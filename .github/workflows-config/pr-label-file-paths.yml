@@ -1,0 +1,6 @@
+# https://github.com/actions/labeler
+
+pkg:x6:
+    - packages/x6/**/*
+pkg:x6-components:
+    - packages/x6-components/**/*
