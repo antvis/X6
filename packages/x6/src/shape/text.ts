@@ -1,6 +1,6 @@
 import * as util from '../util'
 import { globals } from '../option'
-import { Shape } from './shape'
+import { Shape } from './shape-base'
 import { SvgCanvas2D } from '../canvas'
 import { State } from '../core/state'
 import { Rectangle, Point, FontStyle } from '../struct'

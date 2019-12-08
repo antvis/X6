@@ -1,4 +1,4 @@
-import { Shape } from './shape'
+import { Shape } from './shape-base'
 import { Point } from '../struct'
 import { SvgCanvas2D } from '../canvas'
 
@@ -6,7 +6,7 @@ export class Polyline extends Shape {
   constructor(
     points: Point[] = [],
     strokeColor: string | null = null,
-    strokewidth: number = 1
+    strokewidth: number = 1,
   ) {
     super()
     this.points = points
