@@ -1,14 +1,14 @@
 import * as util from '../util'
 import { Rectangle } from '../struct'
 import { SvgCanvas2D } from '../canvas'
-import { Shape } from './shape'
+import { Shape } from './shape-base'
 
 export class RectangleShape extends Shape {
   constructor(
     bounds: Rectangle,
     fillColor?: string | null,
     strokeColor?: string | null,
-    strokewidth?: number | null
+    strokewidth?: number | null,
   ) {
     super()
     this.bounds = bounds
@@ -52,7 +52,7 @@ export class RectangleShape extends Shape {
         y,
         w,
         h,
-        this.getArcSize(w + this.strokeWidth, h + this.strokeWidth)
+        this.getArcSize(w + this.strokeWidth, h + this.strokeWidth),
       )
     }
   }

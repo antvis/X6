@@ -1,4 +1,4 @@
-import { Shape } from './shape'
+import { Shape } from './shape-base'
 import { Rectangle, Point } from '../struct'
 import { SvgCanvas2D } from '../canvas'
 
@@ -7,7 +7,7 @@ export class Rhombus extends Shape {
     bounds: Rectangle,
     fillColor: string,
     strokeColor: string,
-    strokewidth: number = 1
+    strokewidth: number = 1,
   ) {
     super()
     this.bounds = bounds
@@ -36,7 +36,7 @@ export class Rhombus extends Shape {
       ],
       this.rounded,
       arcSize,
-      true
+      true,
     )
 
     c.fillAndStroke()
