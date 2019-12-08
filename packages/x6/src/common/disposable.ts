@@ -1,5 +1,5 @@
 import { detector } from './detector'
-import { DomEvent } from './dom-event'
+import { addListener } from './dom-event/listener'
 
 /**
  * An object which implements the disposable pattern.
@@ -30,7 +30,7 @@ export interface IDisposable {
 export class Disposable implements IDisposable {
   constructor() {
     if (detector.IS_IE) {
-      DomEvent.addListener(window, 'unload', () => {
+      addListener(window, 'unload', () => {
         this.dispose()
       })
     }
@@ -52,7 +52,7 @@ export namespace Disposable {
     return (
       target: any,
       methodName: string,
-      descriptor: PropertyDescriptor
+      descriptor: PropertyDescriptor,
     ) => {
       const raw = descriptor.value
       const proto = target.__proto__ as IDisposable
