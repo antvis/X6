@@ -69,7 +69,8 @@ export function loop(
           x = sourceState.bounds.x + sourceState.bounds.width + 2 * dy
         }
       }
-    } else if (pt != null) {
+    } else {
+      // pt is not null
       x = view.getRoutingCenterX(sourceState)
       dx = Math.max(Math.abs(x - pt.x), dy)
       y = pt.y
