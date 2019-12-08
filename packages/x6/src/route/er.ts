@@ -95,14 +95,14 @@ export function er(
       const targetGeometry = graph.getCellGeometry(targetState.cell)!
       if (targetGeometry.relative) {
         isTargetLeft = targetGeometry.bounds.x <= 0.5
-      } else if (sourceState != null) {
+      } else {
         isTargetLeft =
           sourceState.bounds.x + sourceState.bounds.width < targetState.bounds.x
       }
     }
   }
 
-  if (sourceState != null && targetState != null) {
+  if (sourceState && targetState) {
     const x0 = isSourceLeft
       ? sourceState.bounds.x
       : sourceState.bounds.x + sourceState.bounds.width
