@@ -3,7 +3,7 @@ import { getUrlWithoutHash } from '../bom'
 
 export function setAttributes(
   elem: Element | null,
-  attrs: { [key: string]: any }
+  attrs: { [key: string]: any },
 ) {
   if (elem != null) {
     Object.keys(attrs).forEach(name => elem.setAttribute(name, attrs[name]))
@@ -13,7 +13,7 @@ export function setAttributes(
 export function setAttributeWithAnchor(
   elem: SVGElement,
   attrName: string,
-  id: string
+  id: string,
 ) {
   if (
     !detector.IS_IE &&
@@ -22,7 +22,7 @@ export function setAttributeWithAnchor(
     !detector.IS_CHROME_APP &&
     elem.ownerDocument === document
   ) {
-    const base = getUrlWithoutHash().replace(/([\(\)])/g, '\\$1')
+    const base = getUrlWithoutHash().replace(/([()])/g, '\\$1')
     elem.setAttribute(attrName, `url(${base}#${id})`)
   } else {
     elem.setAttribute(attrName, `url(#${id})`)
