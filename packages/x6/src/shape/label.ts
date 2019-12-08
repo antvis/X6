@@ -1,5 +1,5 @@
 import { globals } from '../option'
-import { Shape } from './shape'
+import { Shape } from './shape-base'
 import { RectangleShape } from './rectangle'
 import { SvgCanvas2D } from '../canvas'
 import { Rectangle } from '../struct'
