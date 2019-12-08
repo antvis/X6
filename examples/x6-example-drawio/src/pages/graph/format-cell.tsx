@@ -296,7 +296,7 @@ export class FormatCell extends React.PureComponent<
                 )}
                 className="x6-editor-format-number right"
                 formatter={value => `${value!}%`}
-                parser={value => value!.replace('%', '')}
+                parser={value => value!.replace(/%$/g, '')}
                 style={{ flex: 1 }}
               />
             )}
@@ -535,21 +535,19 @@ export class FormatCell extends React.PureComponent<
   toggleItalic = () => {
     this.executeCommand('italic')
     const current = (this.state.fontStyle as number) || 0
-    this.setState({
-      fontStyle: FontStyle.isItalic(this.state.fontStyle)
-        ? current - FontStyle.italic
-        : current + FontStyle.italic,
-    })
+    const fontStyle = FontStyle.isItalic(this.state.fontStyle)
+      ? current - FontStyle.italic
+      : current + FontStyle.italic
+    this.setState({ fontStyle })
   }
 
   toggleUnderline = () => {
     this.executeCommand('underline')
     const current = (this.state.fontStyle as number) || 0
-    this.setState({
-      fontStyle: FontStyle.isUnderlined(this.state.fontStyle)
-        ? current - FontStyle.underlined
-        : current + FontStyle.underlined,
-    })
+    const fontStyle = FontStyle.isUnderlined(this.state.fontStyle)
+      ? current - FontStyle.underlined
+      : current + FontStyle.underlined
+    this.setState({ fontStyle })
   }
 
   onFontSizeChanged = (fontSize?: number) => {
