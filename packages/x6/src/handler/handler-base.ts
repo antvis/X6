@@ -2,7 +2,11 @@ import { Graph } from '../graph'
 import { Disablable } from '../common'
 
 export abstract class BaseHandler extends Disablable {
-  graph: Graph
+  public readonly graph: Graph
+
+  get view() {
+    return this.graph.view
+  }
 
   constructor(graph: Graph) {
     super()

@@ -295,7 +295,7 @@ export class Dnd {
     }
 
     // Consumes all events in the current graph before they are fired
-    graph.on(DomEvent.FIRE_MOUSE_EVENT, this.eventConsumer)
+    graph.on(Graph.events.fireMouseEvent, this.eventConsumer)
   }
 
   protected dragExit(graph: Graph) {
@@ -303,7 +303,7 @@ export class Dnd {
     this.currentDropTarget = null
 
     graph.eventloop.isMouseDown = false
-    graph.off(DomEvent.FIRE_MOUSE_EVENT, this.eventConsumer)
+    graph.off(Graph.events.fireMouseEvent, this.eventConsumer)
 
     this.removePreviewElement()
 
