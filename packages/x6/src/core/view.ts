@@ -289,18 +289,11 @@ export class View extends Primer {
 
   validate(cell?: Cell) {
     this.resetValidationState()
-
-    const start =
-      cell ||
-      (this.currentRoot != null ? this.currentRoot : this.graph.model.getRoot())
-
-    const boundingBox = this.getBoundingBox(
-      this.validateCellState(this.validateCell(start)),
-    )
-
-    this.setGraphBounds(boundingBox || this.getEmptyBounds())
+    const root = cell || this.currentRoot || this.graph.model.getRoot()
+    const state = this.validateCellState(this.validateCell(root))
+    const bounds = this.getBoundingBox(state)
+    this.setGraphBounds(bounds || this.getEmptyBounds())
     this.validateBackground()
-
     this.resetValidationState()
   }
 

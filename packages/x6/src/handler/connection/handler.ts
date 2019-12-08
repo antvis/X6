@@ -6,7 +6,7 @@ import { View } from '../../core/view'
 import { Model } from '../../core/model'
 import { Geometry } from '../../core/geometry'
 import { MouseHandler } from '../handler-mouse'
-import { DomEvent, MouseEventEx, Disposable } from '../../common'
+import { MouseEventEx, Disposable } from '../../common'
 import { Knobs } from './knobs'
 import { Preview } from './preview'
 import { ConnectionOptions } from './option'
@@ -104,7 +104,7 @@ export class ConnectionHandler extends MouseHandler {
     // Removes the icon if we step into/up or start editing
     this.resetHandler = () => this.reset()
     this.graph.on(Graph.events.escape, this.resetHandler)
-    this.graph.on(DomEvent.START_EDITING, this.resetHandler)
+    this.graph.on(Graph.events.startEditing, this.resetHandler)
     this.graph.view.on(View.events.down, this.resetHandler)
     this.graph.view.on(View.events.up, this.resetHandler)
   }
