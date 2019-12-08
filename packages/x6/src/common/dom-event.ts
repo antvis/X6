@@ -7,7 +7,7 @@ export namespace DomEvent {
   function addToList(
     elem: HTMLElement | SVGElement | Document | Window,
     name: string,
-    handler: Handler
+    handler: Handler,
   ) {
     const node = elem as any
     if (node[LIST_KEY] == null) {
@@ -20,7 +20,7 @@ export namespace DomEvent {
     ? (
         elem: HTMLElement | SVGElement | Document | Window,
         name: string,
-        handler: Handler
+        handler: Handler,
       ) => {
         elem.addEventListener(name, handler, false)
         addToList(elem, name, handler)
@@ -28,7 +28,7 @@ export namespace DomEvent {
     : (
         elem: HTMLElement | SVGElement | Document | Window,
         name: string,
-        handler: Handler
+        handler: Handler,
       ) => {
         const node = elem as any
         node.attachEvent(`on${name}`, handler)
@@ -38,7 +38,7 @@ export namespace DomEvent {
   function removeFromList(
     elem: HTMLElement | SVGElement | Document | Window,
     name: string,
-    handler: Handler
+    handler: Handler,
   ) {
     const list = (elem as any)[LIST_KEY]
     if (list != null) {
@@ -60,7 +60,7 @@ export namespace DomEvent {
     ? (
         elem: HTMLElement | SVGElement | Document | Window,
         name: string,
-        handler: Handler
+        handler: Handler,
       ) => {
         elem.removeEventListener(name, handler, false)
         removeFromList(elem, name, handler)
@@ -68,7 +68,7 @@ export namespace DomEvent {
     : (
         elem: HTMLElement | SVGElement | Document | Window,
         name: string,
-        handler: Handler
+        handler: Handler,
       ) => {
         const node = elem as any
         node.detachEvent(`on${name}`, handler)
@@ -89,13 +89,13 @@ export namespace DomEvent {
     elem: HTMLElement | SVGElement | Document | Window,
     startListener?: Handler | null,
     moveListener?: Handler | null,
-    endListener?: Handler | null
+    endListener?: Handler | null,
   ) {
     if (startListener != null) {
       addListener(
         elem,
         detector.SUPPORT_POINTER ? 'pointerdown' : 'mousedown',
-        startListener
+        startListener,
       )
     }
 
@@ -103,7 +103,7 @@ export namespace DomEvent {
       addListener(
         elem,
         detector.SUPPORT_POINTER ? 'pointermove' : 'mousemove',
-        moveListener
+        moveListener,
       )
     }
 
@@ -111,7 +111,7 @@ export namespace DomEvent {
       addListener(
         elem,
         detector.SUPPORT_POINTER ? 'pointerup' : 'mouseup',
-        endListener
+        endListener,
       )
     }
 
@@ -134,13 +134,13 @@ export namespace DomEvent {
     elem: HTMLElement | SVGElement | Document | Window,
     startListener: Handler | null,
     moveListener: Handler | null,
-    endListener: Handler | null
+    endListener: Handler | null,
   ) {
     if (startListener != null) {
       removeListener(
         elem,
         detector.SUPPORT_POINTER ? 'pointerdown' : 'mousedown',
-        startListener
+        startListener,
       )
     }
 
@@ -148,7 +148,7 @@ export namespace DomEvent {
       removeListener(
         elem,
         detector.SUPPORT_POINTER ? 'pointermove' : 'mousemove',
-        moveListener
+        moveListener,
       )
     }
 
@@ -156,7 +156,7 @@ export namespace DomEvent {
       removeListener(
         elem,
         detector.SUPPORT_POINTER ? 'pointerup' : 'mouseup',
-        endListener
+        endListener,
       )
     }
 
@@ -190,17 +190,17 @@ export namespace DomEvent {
   }
 
   export function addMouseWheelListener(
-    func: (e: MouseWheelEvent, direction: boolean) => any,
-    target?: HTMLElement
+    func: (e: WheelEvent, direction: boolean) => any,
+    target?: HTMLElement,
   ) {
     if (func != null) {
-      const wheelHandler = function(e: MouseWheelEvent) {
+      const wheelHandler = function(e: WheelEvent) {
         // IE does not give an event object but the
         // global event object is the mousewheel event
         // at this point in time.
         if (e == null) {
           // tslint:disable-next-line
-          e = window.event as MouseWheelEvent
+          e = window.event as WheelEvent
         }
 
         let delta = 0
@@ -400,7 +400,7 @@ export namespace DomEvent {
   export function consume(
     e: Event,
     preventDefault: boolean = true,
-    stopPropagation: boolean = true
+    stopPropagation: boolean = true,
   ) {
     if (preventDefault) {
       if (e.preventDefault) {
