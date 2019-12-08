@@ -369,7 +369,7 @@ export class EventLoop extends ManagerBase {
     // Updates the event state via getEventState
     e.state = this.getEventState(e.getState())
 
-    this.graph.trigger(DomEvent.FIRE_MOUSE_EVENT, { eventName, e, sender })
+    this.graph.trigger(Graph.events.fireMouseEvent, { eventName, e, sender })
 
     if (
       detector.IS_OPERA ||

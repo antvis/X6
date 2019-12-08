@@ -239,7 +239,7 @@ export class NodeHandler extends MouseHandler {
   @Disposable.aop()
   dispose() {
     if (this.escapeHandler != null) {
-      this.state.view.graph.off(DomEvent.ESCAPE, this.escapeHandler)
+      this.state.view.graph.off(Graph.events.escape, this.escapeHandler)
       this.escapeHandler = null
     }
 
