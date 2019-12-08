@@ -1,5 +1,11 @@
 import sinon from 'sinon'
-import { DomEvent } from './dom-event'
+import {
+  addListener,
+  removeListener,
+  removeAllListeners,
+  addMouseListeners,
+  removeMouseListeners,
+} from './listener'
 
 function simulate(component: HTMLElement, eventName: string, eventData: any) {
   const event = new MouseEvent(eventName, eventData)
@@ -13,8 +19,8 @@ describe('DomEvent', () => {
       const spy2 = sinon.spy()
       const container = document.createElement('div')
       document.body.appendChild(container)
-      DomEvent.addListener(container, DomEvent.CLICK, spy1)
-      DomEvent.addListener(container, DomEvent.CLICK, spy2)
+      addListener(container, 'click', spy1)
+      addListener(container, 'click', spy2)
       container.click()
 
       expect(spy1.calledOnce).toBeTruthy()
@@ -33,12 +39,12 @@ describe('DomEvent', () => {
       const spy = sinon.spy()
       const container = document.createElement('div')
       document.body.appendChild(container)
-      DomEvent.addListener(container, DomEvent.CLICK, spy)
+      addListener(container, 'click', spy)
       container.click()
       expect(spy.calledOnce).toBeTruthy()
       expect(spy.args[0][0]).toBeInstanceOf(Event)
 
-      DomEvent.removeListener(container, DomEvent.CLICK, spy)
+      removeListener(container, 'click', spy)
 
       container.click()
       expect(spy.calledOnce).toBeTruthy()
@@ -52,15 +58,15 @@ describe('DomEvent', () => {
       const spy2 = sinon.spy()
       const container = document.createElement('div')
       document.body.appendChild(container)
-      DomEvent.addListener(container, DomEvent.CLICK, spy1)
-      DomEvent.addListener(container, DomEvent.CLICK, spy2)
+      addListener(container, 'click', spy1)
+      addListener(container, 'click', spy2)
       container.click()
 
       expect(spy1.calledOnce).toBeTruthy()
       expect(spy2.calledOnce).toBeTruthy()
       expect(spy1.args[0][0]).toBeInstanceOf(Event)
 
-      DomEvent.removeAllListeners(container)
+      removeAllListeners(container)
 
       container.click()
 
@@ -76,7 +82,7 @@ describe('DomEvent', () => {
       const spy3 = sinon.spy()
       const container = document.createElement('div')
       document.body.appendChild(container)
-      DomEvent.addMouseListeners(container, spy1, spy2, spy3)
+      addMouseListeners(container, spy1, spy2, spy3)
       simulate(container, 'mousedown', { clientX: 10, clientY: 10 })
       expect(spy1.calledOnce).toBeTruthy()
       expect(spy2.called).toBeFalsy()
@@ -92,7 +98,7 @@ describe('DomEvent', () => {
       expect(spy2.calledOnce).toBeTruthy()
       expect(spy3.calledOnce).toBeTruthy()
 
-      DomEvent.removeMouseListeners(container, spy1, spy2, spy3)
+      removeMouseListeners(container, spy1, spy2, spy3)
       simulate(container, 'mousedown', { clientX: 10, clientY: 10 })
       simulate(container, 'mousemove', { clientX: 10, clientY: 10 })
       simulate(container, 'mouseup', { clientX: 10, clientY: 10 })

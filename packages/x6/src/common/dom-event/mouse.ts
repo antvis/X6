@@ -1,10 +1,10 @@
-import { detector } from './detector'
-import { DomEvent } from './dom-event'
-import { Graph } from '../graph'
-import { State } from '../core/state'
-import { Shape } from '../shape'
-import { Point } from '../struct'
-import { isAncestorNode } from '../util'
+import { Graph } from '../../graph'
+import { State } from '../../core/state'
+import { Shape } from '../../shape'
+import { Point } from '../../struct'
+import { isAncestorNode } from '../../util'
+import { detector } from '../detector'
+import * as DomEvent from './index.rollup'
 
 export class MouseEventEx {
   e: MouseEvent
