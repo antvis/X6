@@ -1,0 +1,16 @@
+# https://github.com/marketplace/actions/issue-labeler
+
+name: "Set Issue Label"
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: Naturalclar/issue-action@v1.0.0
+        with:
+          keywords: '["help wanted"]'
+          labels: '["help wanted"]'
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
