@@ -1,0 +1,18 @@
+import { Marker } from '../marker'
+
+Marker.register('classic', Marker.createClassicMarker(2), true)
+Marker.register('classicThin', Marker.createClassicMarker(3), true)
+Marker.register('block', Marker.createClassicMarker(2), true)
+Marker.register('blockThin', Marker.createClassicMarker(3), true)
+Marker.register('open', Marker.createOpenMarker(2), true)
+Marker.register('openThin', Marker.createOpenMarker(3), true)
+Marker.register('diamond', Marker.diamond, true)
+Marker.register('diamondThin', Marker.diamond, true)
+Marker.register('oval', Marker.oval, true)
+Marker.register('dash', Marker.dash, true)
+Marker.register('cross', Marker.cross, true)
+Marker.register('async', Marker.async, true)
+Marker.register('openAsync', Marker.createOpenAsyncMarker(2), true)
+Marker.register('circle', Marker.circle, true)
+Marker.register('circlePlus', Marker.circlePlus, true)
+Marker.register('halfCircle', Marker.halfCircle, true)
