@@ -109,15 +109,59 @@ export class TooltipHandler extends MouseHandler {
   }
 
   protected canShow(tip: string | HTMLElement | null) {
-    return !this.disposed && this.enabled && this.validateTip(tip)
+    return !this.disposed && this.enabled && this.validateTooltip(tip)
   }
 
-  protected validateTip(tip: string | HTMLElement | null) {
+  protected validateTooltip(tip: string | HTMLElement | null) {
     return (
       tip != null &&
       ((util.isString(tip) && (tip as string).length > 0) ||
         util.isHtmlElem(tip))
     )
+  }
+
+  protected getTooltip(
+    state: State | null,
+    trigger: HTMLElement,
+    x: number,
+    y: number,
+  ) {
+    let tooltip: string | null = null
+    if (state != null) {
+      // Checks if the mouse is over the folding icon
+      if (
+        state.control != null &&
+        (trigger === state.control.elem ||
+          trigger.parentNode === state.control.elem)
+      ) {
+        tooltip = 'Collapse/Expand'
+      }
+
+      if (tooltip == null && state.overlays != null) {
+        state.overlays.each(shape => {
+          if (
+            tooltip == null &&
+            (trigger === shape.elem || trigger.parentNode === shape.elem)
+          ) {
+            tooltip = shape.overlay!.toString()
+          }
+        })
+      }
+
+      if (tooltip == null) {
+        const handler = this.graph.selectionHandler.getHandler(state.cell)
+        const getTooltipForNode = handler && (handler as any).getTooltipForNode
+        if (getTooltipForNode && typeof getTooltipForNode === 'function') {
+          tooltip = getTooltipForNode(trigger)
+        }
+      }
+
+      if (tooltip == null) {
+        tooltip = this.graph.getTooltip(state.cell)
+      }
+    }
+
+    return tooltip
   }
 
   protected reset(
@@ -138,7 +182,7 @@ export class TooltipHandler extends MouseHandler {
 
           this.timer = window.setTimeout(() => {
             if (this.willShow()) {
-              const tip = this.graph.cellManager.getTooltip(state!, elem, x, y)
+              const tip = this.getTooltip(state!, elem, x, y)
               this.show(state!.cell, elem, tip, x, y)
               this.state = state!
               this.sourceElem = elem

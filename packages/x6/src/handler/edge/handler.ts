@@ -286,7 +286,7 @@ export class EdgeHandler extends MouseHandler {
   }
 
   validateConnection(source: Cell | null, target: Cell | null) {
-    return this.graph.validator.getEdgeValidationError(
+    return this.graph.validationManager.getEdgeValidationError(
       this.state.cell,
       source,
       target,
@@ -1110,7 +1110,7 @@ export class EdgeHandler extends MouseHandler {
         // if there is an error message with non-zero length
         if (this.error != null) {
           if (this.error.length > 0) {
-            this.graph.validationWarn(this.error)
+            this.graph.validationManager.warning(this.error)
           }
         } else if (Handle.isCustomHandle(index)) {
           if (this.customHandles != null) {

@@ -1,6 +1,6 @@
 import { isFunction } from './lang'
 
-export function applyMixins(derivedCtor: any, baseCtors: any[]) {
+export function applyMixins(derivedCtor: any, ...baseCtors: any[]) {
   baseCtors.forEach(baseCtor => {
     Object.getOwnPropertyNames(baseCtor.prototype).forEach(name => {
       Object.defineProperty(

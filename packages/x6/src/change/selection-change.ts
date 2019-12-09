@@ -1,7 +1,7 @@
-import { IChange } from './change'
-import { Graph } from '../graph'
 import { Cell } from '../core/cell'
-import { Selection } from '../manager'
+import { Graph } from '../graph/graph'
+import { Selection } from '../graph/selection'
+import { IChange } from './change'
 
 export class SelectionChange implements IChange {
   public added: Cell[] | null

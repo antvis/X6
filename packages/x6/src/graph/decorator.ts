@@ -1,19 +1,19 @@
 import * as util from '../util'
-import { Graph } from './graph'
+import { BaseGraph } from './base-graph'
 
 export function hook(
   hookName?: string | null,
   ignoreNullResult: boolean = false,
 ) {
   return (
-    target: Graph,
+    target: BaseGraph,
     methodName: string,
     descriptor: PropertyDescriptor,
   ) => {
     const raw = descriptor.value
     const name = hookName || methodName
 
-    descriptor.value = function(this: Graph, ...args: any[]) {
+    descriptor.value = function(this: BaseGraph, ...args: any[]) {
       const hook = (this.options as any)[name]
       if (hook != null) {
         this.getNativeValue = raw.bind(this, ...args)
@@ -32,14 +32,14 @@ export function hook(
 
 export function afterCreate(aopName?: string | null) {
   return (
-    target: Graph,
+    target: BaseGraph,
     methodName: string,
     descriptor: PropertyDescriptor,
   ) => {
     const raw = descriptor.value
     const name = aopName || `on${util.ucFirst(methodName)}`
 
-    descriptor.value = function(this: Graph, ...args: any[]) {
+    descriptor.value = function(this: BaseGraph, ...args: any[]) {
       const instance = raw.call(this, ...args)
       const aop = (this.options as any)[name]
       if (aop != null) {

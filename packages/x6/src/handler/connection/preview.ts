@@ -537,7 +537,7 @@ export class Preview extends Disposable {
       }
 
       if (this.error != null && this.error.length > 0) {
-        this.graph.validationWarn(this.error)
+        this.graph.validationManager.warning(this.error)
       }
     }
   }

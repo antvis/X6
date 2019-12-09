@@ -130,7 +130,11 @@ export class ConnectionHandler extends MouseHandler {
       return ''
     }
 
-    return this.graph.validator.getEdgeValidationError(null, source, target)
+    return this.graph.validationManager.getEdgeValidationError(
+      null,
+      source,
+      target,
+    )
   }
 
   protected isInsertBefore(

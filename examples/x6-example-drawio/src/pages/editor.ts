@@ -41,7 +41,7 @@ export class Editor extends Primer {
         global: true,
         escape: true,
       },
-      preferPageSize: true,
+      preferPageSize: false,
       rubberband: true,
       createView() {
         return new GraphView(this)

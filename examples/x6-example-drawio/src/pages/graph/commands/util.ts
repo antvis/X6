@@ -24,7 +24,7 @@ export function autosize(graph: Graph) {
               state.text.boundingBox!.height / graph.view.scale
             graph.model.setGeometry(cell, geo)
           } else {
-            graph.cellManager.updateCellSize(cell)
+            graph.sizeManager.updateCellSize(cell)
           }
         }
       })

@@ -1,8 +1,8 @@
 import * as util from '../util'
 import { Style } from '../types'
-import { GridOptions } from '../graph/prop/grid'
-import { PageBreakOptions } from '../graph/prop/pagebreak'
-import { FoldingOptions } from '../graph/prop/folding'
+import { GridOptions } from '../graph/grid-accessor'
+import { PageBreakOptions } from '../graph/pagebreak-accessor'
+import { FoldingOptions } from '../graph/collapse-accessor'
 import { TooltipOptions } from '../handler/tooltip/option'
 import { ContextMenuOptions } from '../handler/contextmenu/option'
 import { KeyboardOptions } from '../handler/keyboard/option'
@@ -35,7 +35,7 @@ import {
 import { preset } from './preset'
 import { IHooks } from '../graph/hook'
 import { GlobalConfig } from './global'
-import { GraphProperties } from '../graph/prop/base'
+import { GraphProperties } from '../graph/base-graph'
 
 export interface FullOptions
   extends GlobalConfig,
