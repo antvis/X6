@@ -275,8 +275,8 @@ export class Dnd {
   }
 
   protected dragEnter(graph: Graph, e: MouseEvent) {
-    graph.eventloop.isMouseDown = true
-    graph.eventloop.isMouseTrigger = DomEvent.isMouseEvent(e)
+    graph.eventloopManager.isMouseDown = true
+    graph.eventloopManager.isMouseTrigger = DomEvent.isMouseEvent(e)
 
     this.previewElement = this.createPreviewElement(graph)
 
@@ -302,7 +302,7 @@ export class Dnd {
     this.currentPoint = null
     this.currentDropTarget = null
 
-    graph.eventloop.isMouseDown = false
+    graph.eventloopManager.isMouseDown = false
     graph.off(Graph.events.fireMouseEvent, this.eventConsumer)
 
     this.removePreviewElement()

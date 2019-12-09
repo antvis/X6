@@ -31,7 +31,7 @@ export abstract class MouseHandler extends BaseHandler
   }
 
   isMouseDown() {
-    return this.graph.eventloop.isMouseDown
+    return this.graph.eventloopManager.isMouseDown
   }
 
   isConsumed(e: MouseEventEx) {

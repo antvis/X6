@@ -97,7 +97,7 @@ export namespace Clipboard {
             const y = Math.round(graph.snap(triggerY / s - t.y))
             const dx = x - p.x
             const dy = y - p.y
-            graph.cellManager.cellsMoved(cells, dx, dy, false, false)
+            graph.movingManager.cellsMoved(cells, dx, dy, false, false)
           }
         }
       })

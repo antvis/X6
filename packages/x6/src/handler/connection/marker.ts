@@ -49,7 +49,7 @@ export class ConnectionMarker extends CellMarker {
       if (
         currentPoint != null &&
         this.graph.isSwimlane(cell) &&
-        this.graph.cellManager.hitsSwimlaneContent(
+        this.graph.retrievalManager.hitsSwimlaneContent(
           cell,
           currentPoint.x,
           currentPoint.y,

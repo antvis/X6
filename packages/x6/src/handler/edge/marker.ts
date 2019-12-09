@@ -52,7 +52,7 @@ export class EdgeMarker extends CellMarker {
     if (
       (this.graph.isSwimlane(cell) &&
         this.currentPoint != null &&
-        this.graph.cellManager.hitsSwimlaneContent(
+        this.graph.retrievalManager.hitsSwimlaneContent(
           cell,
           this.currentPoint.x,
           this.currentPoint.y,

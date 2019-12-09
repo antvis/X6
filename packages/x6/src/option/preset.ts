@@ -17,6 +17,7 @@ export const preset: FullOptions = {
   ...globals,
   prefixCls: 'x6',
   dialect: 'svg',
+  infinite: false,
   antialiased: true,
   border: 0,
   backgroundColor: '#ffffff',

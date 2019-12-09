@@ -4,7 +4,7 @@ import { Model } from '../core/model'
 import { State } from '../core/state'
 import { Graph } from '.'
 import { Renderer } from '../core/renderer'
-import { Selection } from '../manager'
+import { Selection } from './selection'
 import { Route } from '../route'
 import { Point, Anchor, Rectangle } from '../struct'
 import {
@@ -327,7 +327,7 @@ export interface IHooks {
   /**
    * Returns the textual representation for the given cell.
    */
-  convertDataToString: CellHook<string>
+  dataToString: CellHook<string>
 
   /**
    * Returns the terminal to be used for a given port.

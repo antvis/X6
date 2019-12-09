@@ -623,7 +623,7 @@ export class Preview extends Disposable {
       }
 
       if (this.graph.isConstrainChild(this.state.cell)) {
-        let tmp = this.graph.cellManager.getCellContainmentArea(this.state.cell)
+        let tmp = this.graph.sizeManager.getCellContainmentArea(this.state.cell)
         if (tmp != null) {
           const overlap = this.graph.getOverlap(this.state.cell)
 
