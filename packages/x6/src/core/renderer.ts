@@ -181,9 +181,7 @@ export class Renderer {
 
   protected createIndicatorShape(state: State) {
     if (state != null && state.shape != null) {
-      state.shape.indicatorShape = Shape.getShape(
-        state.view.graph.cellManager.getIndicatorShape(state),
-      )
+      state.shape.indicatorShape = Shape.getShape(state.style.indicatorShape)
     }
   }
 
@@ -197,20 +195,14 @@ export class Renderer {
 
   protected configureShape(state: State) {
     if (state != null && state.shape != null) {
-      const graph = state.view.graph
+      const style = state.style
       state.shape.apply(state)
-      state.shape.image = graph.cellManager.getImage(state)
-      state.shape.indicatorImage = graph.cellManager.getIndicatorImage(state)
-      state.shape.indicatorColor = graph.cellManager.getIndicatorColor(state)
-      state.shape.indicatorDirection = graph.cellManager.getIndicatorDirection(
-        state,
-      )
-      state.shape.indicatorStrokeColor = graph.cellManager.getIndicatorStrokeColor(
-        state,
-      )
-      state.shape.indicatorGradientColor = graph.cellManager.getIndicatorGradientColor(
-        state,
-      )
+      state.shape.image = style.image || null
+      state.shape.indicatorImage = style.indicatorImage || null
+      state.shape.indicatorColor = style.indicatorColor || null
+      state.shape.indicatorDirection = style.indicatorDirection || null
+      state.shape.indicatorStrokeColor = style.indicatorStrokeColor || null
+      state.shape.indicatorGradientColor = style.indicatorGradientColor || null
 
       this.postConfigureShape(state)
     }
@@ -424,7 +416,7 @@ export class Renderer {
     if (graph.nativeDblClickEnabled) {
       DomEvent.addListener(elem, 'dblclick', (e: MouseEvent) => {
         if (this.isShapeEvent(state, e)) {
-          graph.eventloop.dblClick(e, state.cell)
+          graph.eventloopManager.dblClick(e, state.cell)
           DomEvent.consume(e)
         }
       })
@@ -599,7 +591,7 @@ export class Renderer {
         state.text.apply(state)
 
         // Special case where value is obtained via hook in graph
-        state.text.verticalAlign = graph.cellManager.getVerticalAlign(state)
+        state.text.verticalAlign = state.style.verticalAlign || 'middle'
       }
 
       const bounds = this.getLabelBounds(state)
@@ -657,8 +649,8 @@ export class Renderer {
         (value != null && util.isHtmlElem(value))
 
       state.text = new this.defaultTextShape(value, new Rectangle(), {
-        align: graph.cellManager.getAlign(state),
-        valign: graph.cellManager.getVerticalAlign(state),
+        align: state.style.align || 'center',
+        valign: state.style.verticalAlign || 'middle',
         color: state.style.fontColor,
         family: state.style.fontFamily,
         size: state.style.fontSize,
@@ -746,7 +738,7 @@ export class Renderer {
       if (graph.nativeDblClickEnabled) {
         DomEvent.addListener(state.text.elem!, 'dblclick', (e: MouseEvent) => {
           if (this.isLabelEvent(state, e)) {
-            graph.eventloop.dblClick(e, state.cell)
+            graph.eventloopManager.dblClick(e, state.cell)
             DomEvent.consume(e)
           }
         })

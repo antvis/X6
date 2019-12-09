@@ -608,7 +608,7 @@ export class View extends Primer {
       point = this.getConnectionPoint(
         terminalState,
         anchor,
-        this.graph.cellManager.isOrthogonal(edgeState),
+        this.graph.connectionManager.isOrthogonal(edgeState),
       )
     }
 
@@ -897,7 +897,7 @@ export class View extends Primer {
     relateState = this.getTerminalPortState(edgeState, relateState, isSource)
 
     const rot = util.getRotation(relateState)
-    const orth = this.graph.cellManager.isOrthogonal(edgeState)
+    const orth = this.graph.connectionManager.isOrthogonal(edgeState)
     const center = relateState.bounds.getCenter()
 
     let nextPoint = this.getNextPoint(edgeState, opposeState, isSource)
@@ -1546,7 +1546,7 @@ export class View extends Primer {
           this.backgroundPageShape.elem!,
           'dblclick',
           (e: MouseEvent) => {
-            this.graph.eventloop.dblClick(e)
+            this.graph.eventloopManager.dblClick(e)
           },
         )
       }
@@ -1567,7 +1567,10 @@ export class View extends Primer {
             this.graph.hideTooltip()
           }
 
-          if (this.graph.eventloop.isMouseDown && !DomEvent.isConsumed(e)) {
+          if (
+            this.graph.eventloopManager.isMouseDown &&
+            !DomEvent.isConsumed(e)
+          ) {
             this.graph.fireMouseEvent(DomEvent.MOUSE_MOVE, new MouseEventEx(e))
           }
         },
@@ -1856,7 +1859,7 @@ export class View extends Primer {
     // background does not change during the double click
     DomEvent.addListener(container, 'dblclick', (e: MouseEvent) => {
       if (this.isContainerEvent(e)) {
-        graph.eventloop.dblClick(e)
+        graph.eventloopManager.dblClick(e)
       }
     })
 
@@ -1918,7 +1921,7 @@ export class View extends Primer {
   protected shouldHandleDocumentEvent(e: MouseEvent) {
     return (
       this.captureDocumentGesture &&
-      this.graph.eventloop.isMouseDown &&
+      this.graph.eventloopManager.isMouseDown &&
       this.isContainerVisible() &&
       !this.isContainerEvent(e)
     )
@@ -2116,7 +2119,7 @@ export class View extends Primer {
       const edit = new UndoableEdit(this.graph.getModel())
       edit.add(change)
       this.trigger(View.events.undo, edit)
-      this.graph.viewport.sizeDidChange()
+      this.graph.sizeDidChange()
     }
 
     return root

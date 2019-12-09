@@ -246,7 +246,7 @@ export class Preview extends Disposable {
       ) {
         state = graph.view.getState(cell)
         if (state != null) {
-          const error = graph.validator.getEdgeValidationError(
+          const error = graph.validationManager.getEdgeValidationError(
             null,
             this.cell,
             cell,

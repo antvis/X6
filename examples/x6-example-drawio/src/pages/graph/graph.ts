@@ -13,12 +13,12 @@ export class EditorGraph extends Graph {
   view: GraphView
   autoTranslate: boolean
   cursorPosition: Point
-  lazyZoomDelay: number = 10
-  updateZoomTimeout: number | null
+  wheelZoomDelay: number = 10
+  wheelZoomTimer: number | null
   cumulativeZoomFactor: number = 1
 
   initMouseWheel() {
-    DomEvent.addMouseWheelListener((e, up) => {
+    DomEvent.addWheelListener((e, up) => {
       if (this.isZoomWheelEvent(e)) {
         let source = DomEvent.getSource(e)
         while (source != null) {
@@ -47,8 +47,8 @@ export class EditorGraph extends Graph {
   }
 
   lazyZoom(zoomIn: boolean) {
-    if (this.updateZoomTimeout != null) {
-      window.clearTimeout(this.updateZoomTimeout)
+    if (this.wheelZoomTimer != null) {
+      window.clearTimeout(this.wheelZoomTimer)
     }
 
     // Switches to 1% zoom steps below 15%
@@ -84,7 +84,8 @@ export class EditorGraph extends Graph {
       Math.min(this.view.scale * this.cumulativeZoomFactor, 160) /
         this.view.scale,
     )
-    this.updateZoomTimeout = window.setTimeout(() => {
+
+    this.wheelZoomTimer = window.setTimeout(() => {
       var offset = util.getOffset(this.container)
       var dx = 0
       var dy = 0
@@ -111,8 +112,8 @@ export class EditorGraph extends Graph {
       }
 
       this.cumulativeZoomFactor = 1
-      this.updateZoomTimeout = null
-    }, this.lazyZoomDelay)
+      this.wheelZoomTimer = null
+    }, this.wheelZoomDelay)
   }
 
   sizeDidChange() {
@@ -157,6 +158,22 @@ export class EditorGraph extends Graph {
     }
   }
 
+  getPageSize() {
+    return {
+      width: this.pageFormat.width * this.pageScale,
+      height: this.pageFormat.height * this.pageScale,
+    }
+  }
+
+  getPagePadding() {
+    const scale = this.view.scale
+    const container = this.container
+    return [
+      Math.max(0, Math.round((container.offsetWidth - 32) / scale)),
+      Math.max(0, Math.round((container.offsetHeight - 32) / scale)),
+    ]
+  }
+
   getPreferredPageSize() {
     const size = this.getPageSize()
     const pages = this.getPageLayout()
@@ -164,13 +181,6 @@ export class EditorGraph extends Graph {
     return {
       width: pages.width * size.width,
       height: pages.height * size.height,
-    }
-  }
-
-  getPageSize() {
-    return {
-      width: this.pageFormat.width * this.pageScale,
-      height: this.pageFormat.height * this.pageScale,
     }
   }
 
@@ -195,15 +205,6 @@ export class EditorGraph extends Graph {
 
       return new Rectangle(x0, y0, w0, h0)
     }
-  }
-
-  getPagePadding() {
-    const scale = this.view.scale
-    const container = this.container
-    return [
-      Math.max(0, Math.round((container.offsetWidth - 32) / scale)),
-      Math.max(0, Math.round((container.offsetHeight - 32) / scale)),
-    ]
   }
 
   updatePageBreaks(visible: boolean, width: number, height: number) {

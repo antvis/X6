@@ -162,7 +162,7 @@ export namespace MouseEventEx {
         onDblClick(e)
       } else if (!DomEvent.isConsumed(e)) {
         const state = getState(e)
-        graph.eventloop.dblClick(e, state ? state.cell : null)
+        graph.eventloopManager.dblClick(e, state ? state.cell : null)
       }
     })
   }
