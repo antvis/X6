@@ -159,7 +159,7 @@ export interface IHooks {
   /**
    * Returns`true`if the given cell is foldable.
    */
-  isCellFoldable: (
+  isCellCollapsable: (
     this: Graph,
     cell: Cell,
     nextCollapseState: boolean,

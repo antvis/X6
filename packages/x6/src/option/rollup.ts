@@ -2,7 +2,7 @@ import * as util from '../util'
 import { Style } from '../types'
 import { GridOptions } from '../graph/grid-accessor'
 import { PageBreakOptions } from '../graph/pagebreak-accessor'
-import { FoldingOptions } from '../graph/collapse-accessor'
+import { CollapseOptions } from '../graph/collapse-accessor'
 import { TooltipOptions } from '../handler/tooltip/option'
 import { ContextMenuOptions } from '../handler/contextmenu/option'
 import { KeyboardOptions } from '../handler/keyboard/option'
@@ -46,7 +46,7 @@ export interface FullOptions
   grid: GridOptions
   guide: GuideOptions
   tooltip: TooltipOptions
-  folding: FoldingOptions
+  folding: CollapseOptions
   keyboard: KeyboardOptions
   rubberband: RubberbandOptions
   pageBreak: PageBreakOptions
@@ -79,7 +79,7 @@ export interface GraphOptions
   grid?: Partial<GridOptions> | boolean
   guide?: Partial<GuideOptions> | boolean
   tooltip?: Partial<TooltipOptions> | boolean
-  folding?: Partial<FoldingOptions> | boolean
+  folding?: Partial<CollapseOptions> | boolean
   keyboard?: Partial<KeyboardOptions> | boolean
   rubberband?: Partial<RubberbandOptions> | boolean
   pageBreak?: Partial<PageBreakOptions> | boolean
