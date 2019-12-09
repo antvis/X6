@@ -425,9 +425,9 @@ export class Renderer {
 
   protected createFoldingButton(state: State) {
     const graph = state.view.graph
-    const image = graph.getFoldingImage(state)
+    const image = graph.collapseManager.getFoldingImage(state)
 
-    if (graph.cellsFoldable && image != null) {
+    if (graph.cellsCollapsable && image != null) {
       if (state.control == null) {
         const bounds = new Rectangle(0, 0, image.width, image.height)
         state.control = new ImageShape(bounds, image.src)
@@ -452,7 +452,7 @@ export class Renderer {
     return (e: MouseEvent) => {
       if (this.forceControlClickHandler || graph.isEnabled()) {
         const collapsed = !graph.isCellCollapsed(state.cell)
-        graph.foldCells(collapsed, false, [state.cell], false)
+        graph.toggleCollapse(collapsed, false, [state.cell], false)
         DomEvent.consume(e)
       }
     }
@@ -1036,7 +1036,7 @@ export class Renderer {
   }
 
   protected redrawControl(state: State, forced?: boolean) {
-    const image = state.view.graph.getFoldingImage(state)
+    const image = state.view.graph.collapseManager.getFoldingImage(state)
 
     if (state.control != null && image != null) {
       const bounds = this.getControlBounds(state, image.width, image.height)

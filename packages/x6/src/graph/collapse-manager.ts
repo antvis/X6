@@ -1,26 +1,46 @@
 import * as util from '../util'
 import { Cell } from '../core/cell'
+import { State } from '../core/state'
 import { Geometry } from '../core/geometry'
 import { Rectangle } from '../struct'
 import { Graph } from './graph'
 import { BaseManager } from './base-manager'
 
 export class CollapseManager extends BaseManager {
-  foldCells(
-    collapse: boolean,
+  getFoldingImage(state: State) {
+    if (
+      state != null &&
+      this.graph.cellsCollapsable &&
+      !this.model.isEdge(state.cell)
+    ) {
+      const collapsed = this.graph.isCellCollapsed(state.cell)
+      if (this.graph.isCellCollapsable(state.cell, !collapsed)) {
+        return collapsed ? this.graph.collapsedImage : this.graph.expandedImage
+      }
+    }
+
+    return null
+  }
+
+  toggleCollapse(
+    collapsed: boolean,
     recurse: boolean,
     cells: Cell[],
-    checkFoldable: boolean,
+    checkCollapsable: boolean,
   ) {
     this.graph.stopEditing(false)
     this.model.batchUpdate(() => {
-      this.graph.trigger(Graph.events.foldCells, { collapse, recurse, cells })
-      this.cellsFolded(cells, collapse, recurse, checkFoldable)
+      this.graph.trigger(Graph.events.foldCells, {
+        collapsed,
+        recurse,
+        cells,
+      })
+      this.cellsCollapsed(cells, collapsed, recurse, checkCollapsable)
     })
     return cells
   }
 
-  cellsFolded(
+  cellsCollapsed(
     cells: Cell[],
     collapse: boolean,
     recurse: boolean,
@@ -30,7 +50,7 @@ export class CollapseManager extends BaseManager {
       this.model.batchUpdate(() => {
         cells.forEach(cell => {
           if (
-            (!checkFoldable || this.graph.isCellFoldable(cell, collapse)) &&
+            (!checkFoldable || this.graph.isCellCollapsable(cell, collapse)) &&
             collapse !== this.graph.isCellCollapsed(cell)
           ) {
             this.model.setCollapsed(cell, collapse)
@@ -42,7 +62,7 @@ export class CollapseManager extends BaseManager {
 
             if (recurse) {
               const children = this.model.getChildren(cell)
-              this.cellsFolded(children, collapse, recurse)
+              this.cellsCollapsed(children, collapse, recurse)
             }
 
             this.graph.sizeManager.constrainChild(cell)
