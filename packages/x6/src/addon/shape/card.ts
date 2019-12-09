@@ -26,7 +26,7 @@ export class CardShape extends Actor {
       ],
       this.rounded,
       arcSize,
-      true
+      true,
     )
 
     c.end()

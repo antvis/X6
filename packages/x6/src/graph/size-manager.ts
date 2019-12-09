@@ -117,7 +117,7 @@ export class SizeManager extends BaseManager {
       dy += style.spacingBottom || 0
 
       // Add spacing for collapse/expand icon
-      const image = this.graph.getFoldingImage(state)
+      const image = this.graph.collapseManager.getFoldingImage(state)
       if (image != null) {
         dx += image.width + 8
       }

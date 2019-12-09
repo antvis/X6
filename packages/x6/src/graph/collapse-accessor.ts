@@ -1,16 +1,15 @@
 import { Cell } from '../core/cell'
-import { State } from '../core/state'
 import { Image } from '../struct'
 import { hook } from './decorator'
 import { BaseGraph } from './base-graph'
 
 export class CollapseAccessor extends BaseGraph {
-  isCellsFoldable() {
+  isCellsCollapsable() {
     return this.options.folding.enabled
   }
 
-  enableCellsFolding(refresh: boolean = true) {
-    if (!this.isCellsFoldable()) {
+  enableCellsCollapse(refresh: boolean = true) {
+    if (!this.isCellsCollapsable()) {
       this.options.folding.enabled = true
       if (refresh) {
         this.view.validate()
@@ -19,8 +18,8 @@ export class CollapseAccessor extends BaseGraph {
     return this
   }
 
-  disableCellsFolding(refresh: boolean = true) {
-    if (this.isCellsFoldable()) {
+  disableCellsCollapse(refresh: boolean = true) {
+    if (this.isCellsCollapsable()) {
       this.options.folding.enabled = false
       if (refresh) {
         this.view.validate()
@@ -29,29 +28,29 @@ export class CollapseAccessor extends BaseGraph {
     return this
   }
 
-  setCellsFoldable(foldable: boolean, refresh: boolean = true) {
+  setCellsCollapsable(foldable: boolean, refresh: boolean = true) {
     if (foldable) {
-      this.enableCellsFolding(refresh)
+      this.enableCellsCollapse(refresh)
     } else {
-      this.disableCellsFolding(refresh)
+      this.disableCellsCollapse(refresh)
     }
   }
 
-  toggleFolding(refresh: boolean = true) {
-    if (this.isCellsFoldable()) {
-      this.disableCellsFolding(refresh)
+  toggleCellsCollapsable(refresh: boolean = true) {
+    if (this.isCellsCollapsable()) {
+      this.disableCellsCollapse(refresh)
     } else {
-      this.enableCellsFolding(refresh)
+      this.enableCellsCollapse(refresh)
     }
     return this
   }
 
-  get cellsFoldable() {
-    return this.isCellsFoldable()
+  get cellsCollapsable() {
+    return this.isCellsCollapsable()
   }
 
-  set cellsFoldable(foldable: boolean) {
-    this.setCellsFoldable(foldable)
+  set cellsCollapsable(foldable: boolean) {
+    this.setCellsCollapsable(foldable)
   }
 
   getExpandedImage() {
@@ -104,7 +103,7 @@ export class CollapseAccessor extends BaseGraph {
   }
 
   @hook()
-  isCellFoldable(cell: Cell, nextCollapseState: boolean) {
+  isCellCollapsable(cell: Cell, nextCollapseState: boolean) {
     const style = this.getStyle(cell)
     return this.model.getChildCount(cell) > 0 && style.foldable !== false
   }
@@ -112,43 +111,31 @@ export class CollapseAccessor extends BaseGraph {
   /**
    * Returns the cells which are movable in the given array of cells.
    */
-  getFoldableCells(cells: Cell[], collapse: boolean) {
+  getCollapsableCells(cells: Cell[], collapse: boolean) {
     return this.model.filterCells(cells, cell =>
-      this.isCellFoldable(cell, collapse),
+      this.isCellCollapsable(cell, collapse),
     )
   }
 
-  getFoldingImage(state: State) {
-    if (
-      state != null &&
-      this.cellsFoldable &&
-      !this.getModel().isEdge(state.cell)
-    ) {
-      const collapsed = this.isCellCollapsed(state.cell)
-      if (this.isCellFoldable(state.cell, !collapsed)) {
-        return collapsed ? this.collapsedImage : this.expandedImage
-      }
-    }
-
-    return null
-  }
-
-  foldCells(
-    collapse: boolean,
+  toggleCollapse(
+    collapsed: boolean,
     recurse: boolean = false,
-    cells: Cell[] = this.getFoldableCells(this.getSelectedCells(), collapse),
-    checkFoldable: boolean = false,
+    cells: Cell[] = this.getCollapsableCells(
+      this.getSelectedCells(),
+      collapsed,
+    ),
+    checkCollapsable: boolean = false,
   ) {
-    return this.collapseManager.foldCells(
-      collapse,
+    return this.collapseManager.toggleCollapse(
+      collapsed,
       recurse,
       cells,
-      checkFoldable,
+      checkCollapsable,
     )
   }
 }
 
-export interface FoldingOptions {
+export interface CollapseOptions {
   /**
    * Specifies if folding (collapse and expand) via an image icon
    * in the graph should be enabled.
@@ -156,6 +143,6 @@ export interface FoldingOptions {
    * Default is `true`.
    */
   enabled: boolean
-  collapsedImage: Image
   expandedImage: Image
+  collapsedImage: Image
 }
