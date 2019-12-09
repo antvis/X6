@@ -39,7 +39,7 @@ describe('function', () => {
     class SmartObject {}
 
     interface SmartObject extends Disposable, Activatable {}
-    applyMixins(SmartObject, [Disposable, Activatable])
+    applyMixins(SmartObject, Disposable, Activatable)
 
     const instance = new SmartObject()
 
