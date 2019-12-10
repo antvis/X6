@@ -300,6 +300,7 @@ export class ViewportManager extends BaseManager {
       if (this.graph.dialect === 'svg') {
         const svg = (this.view.getDrawPane() as SVGGElement).ownerSVGElement
         if (svg != null) {
+          svg.style.position = 'relative'
           svg.style.minWidth = `${Math.max(1, width)}px`
           svg.style.minHeight = `${Math.max(1, height)}px`
           svg.style.width = '100%'
@@ -307,6 +308,7 @@ export class ViewportManager extends BaseManager {
         }
       } else {
         const stage = this.view.getStage()!
+        stage.style.position = 'relative'
         stage.style.minWidth = `${Math.max(1, width)}px`
         stage.style.minHeight = `${Math.max(1, height)}px`
       }
