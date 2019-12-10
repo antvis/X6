@@ -20,8 +20,13 @@ export const addListener = window.addEventListener
       elem: HTMLElement | SVGElement | Document | Window,
       name: string,
       handler: Handler,
+      passive: boolean = false,
     ) => {
-      elem.addEventListener(name, handler, false)
+      if (detector.SUPPORT_PASSIVE) {
+        elem.addEventListener(name, handler, { passive, capture: false })
+      } else {
+        elem.addEventListener(name, handler, false)
+      }
       addToList(elem, name, handler)
     }
   : (

@@ -76,10 +76,10 @@ export function addWheelListener(handler: WheelHandler, target?: HTMLElement) {
     if (isSpecialWheel()) {
       const name = getWheelEventName()
       const elem = getWheelEventTarget()
-      addListener(elem, name, callback)
+      addListener(elem, name, callback, false)
       cacheWheelCallback(elem, callback, handler)
     } else {
-      addListener(document, 'mousewheel', callback)
+      addListener(document, 'mousewheel', callback, false)
       cacheWheelCallback(document, callback, handler)
     }
   }
