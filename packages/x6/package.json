@@ -80,7 +80,8 @@
     "watch": "^1.0.2"
   },
   "dependencies": {
-    "mousetrap": "^1.6.3"
+    "mousetrap": "^1.6.3",
+    "size-sensor": "^0.2.5"
   },
   "author": {
     "name": "bubkoo",

@@ -2,7 +2,6 @@ import * as util from '../util'
 import { View } from '../core/view'
 import { Model } from '../core/model'
 import { Renderer } from '../core/renderer'
-import { detector, DomEvent } from '../common'
 import { GraphOptions, getOptions } from '../option'
 import { hook } from './decorator'
 import { IHooks } from './hook'
@@ -49,35 +48,17 @@ export class Graph extends BaseGraph implements IHooks {
 
     super.createManagers()
     super.createHandlers()
-
-    if (container != null) {
-      this.init(container)
-    }
-
+    this.init(container)
     this.view.revalidate()
   }
 
   protected init(container: HTMLElement) {
-    if (this.infinite) {
-      container.style.overflow = 'auto'
-    }
-
+    this.viewportManager.init()
     this.view.init()
     this.sizeDidChange()
-
-    if (detector.IS_IE) {
-      DomEvent.addListener(container, 'selectstart', (e: MouseEvent) => {
-        return (
-          this.isEditing() ||
-          (!this.eventloopManager.isMouseDown && !DomEvent.isShiftDown(e))
-        )
-      })
-    }
-
     if (this.infinite) {
       this.resetScrollbar()
     }
-
     return this
   }
 
