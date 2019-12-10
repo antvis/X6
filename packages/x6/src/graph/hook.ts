@@ -9,6 +9,7 @@ import { Route } from '../route'
 import { Point, Anchor, Rectangle } from '../struct'
 import {
   KeyboardHandler,
+  MouseWheelHandler,
   TooltipHandler,
   ContextMenuHandler,
   PanningHandler,
@@ -43,6 +44,7 @@ export interface IHooks {
   createCursorHandler: BareHook<CursorHandler>
   createGuideHandler: BareHook<GuideHandler>
   createKeyboardHandler: BareHook<KeyboardHandler>
+  creatMouseWheelHandler: BareHook<MouseWheelHandler>
   createTooltipHandler: BareHook<TooltipHandler>
   createConnectionHandler: BareHook<ConnectionHandler>
   createSelectionHandler: BareHook<SelectionHandler>

@@ -1,6 +1,7 @@
 import * as util from '../../util'
+import { Graph } from '../../graph'
 import { Point } from '../../struct'
-import { DomEvent, detector } from '../../common'
+import { DomEvent, Disposable } from '../../common'
 import { BaseHandler } from '../handler-base'
 
 export class MouseWheelHandler extends BaseHandler {
@@ -8,6 +9,7 @@ export class MouseWheelHandler extends BaseHandler {
   private wheelZoomDelay: number = 10
   private wheelZoomTimer: number | null
   private cumulativeZoomFactor: number = 1
+
   private handler = (e: WheelEvent, up: boolean) => {
     if (this.isZoomWheelEvent(e)) {
       let source = DomEvent.getSource(e)
@@ -27,6 +29,11 @@ export class MouseWheelHandler extends BaseHandler {
     }
   }
 
+  constructor(graph: Graph) {
+    super(graph)
+    this.setEnadled(this.graph.options.wheel.enabled)
+  }
+
   enable() {
     DomEvent.addWheelListener(this.handler, this.graph.container)
     super.enable()
@@ -38,10 +45,15 @@ export class MouseWheelHandler extends BaseHandler {
   }
 
   isZoomWheelEvent(e: MouseEvent) {
+    const modifiers = this.graph.options.wheel.modifiers
+    if (modifiers == null) {
+      return true
+    }
+
     return (
-      DomEvent.isAltDown(e) ||
-      (detector.IS_MAC && DomEvent.isMetaDown(e)) ||
-      (!detector.IS_MAC && DomEvent.isControlDown(e))
+      (modifiers.includes('alt') && DomEvent.isAltDown(e)) ||
+      (modifiers.includes('meta') && DomEvent.isMetaDown(e)) ||
+      (modifiers.includes('ctrl') && DomEvent.isControlDown(e))
     )
   }
 
@@ -112,5 +124,10 @@ export class MouseWheelHandler extends BaseHandler {
       this.cumulativeZoomFactor = 1
       this.wheelZoomTimer = null
     }, this.wheelZoomDelay)
+  }
+
+  @Disposable.aop()
+  dispose() {
+    this.disable()
   }
 }

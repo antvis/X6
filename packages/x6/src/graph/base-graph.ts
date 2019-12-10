@@ -22,6 +22,7 @@ import {
   ContextMenuHandler,
   RubberbandHandler,
   KeyboardHandler,
+  MouseWheelHandler,
   NodeHandler,
   EdgeHandler,
   EdgeElbowHandler,
@@ -93,6 +94,7 @@ export class BaseGraph extends Disablable
   public contextMenuHandler: ContextMenuHandler
   public rubberbandHandler: RubberbandHandler
   public keyboardHandler: KeyboardHandler
+  public mouseWheelHandler: MouseWheelHandler
 
   /**
    * Get the native value of hooked method.
@@ -142,11 +144,17 @@ export class BaseGraph extends Disablable
     this.contextMenuHandler = this.createContextMenuHandler()
     this.rubberbandHandler = this.createRubberbandHandler()
     this.keyboardHandler = this.createKeyboardHandler()
+    this.mouseWheelHandler = this.creatMouseWheelHandler()
   }
 
   @hook()
   createKeyboardHandler() {
     return new KeyboardHandler(this as any)
+  }
+
+  @hook()
+  creatMouseWheelHandler() {
+    return new MouseWheelHandler(this as any)
   }
 
   @hook()
@@ -297,6 +305,7 @@ export class BaseGraph extends Disablable
     this.contextMenuHandler.dispose()
     this.rubberbandHandler.dispose()
     this.keyboardHandler.dispose()
+    this.mouseWheelHandler.dispose()
   }
 
   @Disposable.aop()
