@@ -6,6 +6,9 @@
     "publish": {
       "ignoreChanges": ["*.md", "**/*.test.ts", "**/*.spec.ts"],
       "message": "chore(release): publish %v"
+    },
+    "bootstrap": {
+      "npmClientArgs": ["--no-package-lock", "--no-ci"]
     }
   },
   "changelog": {
