@@ -21,7 +21,7 @@
     "pretty-quick": "pretty-quick",
     "contributor": "git-contributor",
     "changelog": "lerna-changelog",
-    "clear": "rimraf yarn.lock && lerna run clean && lerna clean && rimraf ./node_modules",
+    "clear": "rimraf yarn.lock && lerna run clean && lerna clean -y && rimraf ./node_modules",
     "reinstall":"run-s clear bootstrap"
   },
   "husky": {
