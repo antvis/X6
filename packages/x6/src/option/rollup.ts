@@ -32,6 +32,7 @@ import {
   MovingPreviewOptions,
   DropTargetHighlightOptions,
 } from '../handler/moving/option'
+import { MouseWheelOptions } from '../handler/mousewheel/option'
 import { preset } from './preset'
 import { IHooks } from '../graph/hook'
 import { GlobalConfig } from './global'
@@ -48,6 +49,7 @@ export interface FullOptions
   tooltip: TooltipOptions
   folding: CollapseOptions
   keyboard: KeyboardOptions
+  wheel: MouseWheelOptions
   rubberband: RubberbandOptions
   pageBreak: PageBreakOptions
   contextMenu: ContextMenuOptions
@@ -81,6 +83,7 @@ export interface GraphOptions
   tooltip?: Partial<TooltipOptions> | boolean
   folding?: Partial<CollapseOptions> | boolean
   keyboard?: Partial<KeyboardOptions> | boolean
+  wheel?: Partial<MouseWheelOptions> | boolean
   rubberband?: Partial<RubberbandOptions> | boolean
   pageBreak?: Partial<PageBreakOptions> | boolean
   contextMenu?: Partial<ContextMenuOptions> | boolean
