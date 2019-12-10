@@ -11,5 +11,8 @@ export abstract class BaseHandler extends Disablable {
   constructor(graph: Graph) {
     super()
     this.graph = graph
+    this.init()
   }
+
+  protected init() {}
 }
