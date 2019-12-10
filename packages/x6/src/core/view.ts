@@ -288,6 +288,7 @@ export class View extends Primer {
   }
 
   validate(cell?: Cell) {
+    this.updateTranslate()
     this.resetValidationState()
     const root = cell || this.currentRoot || this.graph.model.getRoot()
     const state = this.validateCellState(this.validateCell(root))
@@ -1604,17 +1605,20 @@ export class View extends Primer {
 
     let ox = 0
     let oy = 0
-    const s = this.scale
-    const t = this.translate
-    const phase = graph.getGridSize() * s * graph.getGridStep()
-    if (this.backgroundPageShape != null) {
-      const bounds = this.getBackgroundPageBounds()
-      ox = 1 + bounds.x
-      oy = 1 + bounds.y
+
+    if (graph.getGridType() === 'line') {
+      const s = this.scale
+      const t = this.translate
+      const phase = graph.getGridSize() * s * graph.getGridStep()
+      if (this.backgroundPageShape != null) {
+        const bounds = this.getBackgroundPageBounds()
+        ox = 1 + bounds.x
+        oy = 1 + bounds.y
+      }
+      ox = -Math.round(phase - util.mod(t.x * s - ox, phase))
+      oy = -Math.round(phase - util.mod(t.y * s - oy, phase))
     }
 
-    ox = -Math.round(phase - util.mod(t.x * s - ox, phase))
-    oy = -Math.round(phase - util.mod(t.y * s - oy, phase))
     bgPosition = `${ox}px ${oy}px`
 
     let canvas = this.getStage()
@@ -1638,6 +1642,46 @@ export class View extends Primer {
   }
 
   getBackgroundPageBounds() {
+    return this.graph.infinite
+      ? this.getBackgroundPageBoundsInfinite()
+      : this.getBackgroundPageBoundsNormal()
+  }
+
+  x0: number
+  y0: number
+  protected getBackgroundPageBoundsInfinite() {
+    const s = this.scale
+    const t = this.translate
+    const gb = this.getGraphBounds()
+
+    // Computes unscaled, untranslated graph bounds
+    const x = gb.width > 0 ? gb.x / s - t.x : 0
+    const y = gb.height > 0 ? gb.y / s - t.y : 0
+    const w = gb.width / s
+    const h = gb.height / s
+
+    const ps = this.graph.pageScale
+    const fmt = this.graph.pageFormat
+    const pw = fmt.width * ps
+    const ph = fmt.height * ps
+
+    const x0 = Math.floor(Math.min(0, x) / pw)
+    const y0 = Math.floor(Math.min(0, y) / ph)
+    const xe = Math.ceil(Math.max(1, x + w) / pw)
+    const ye = Math.ceil(Math.max(1, y + h) / ph)
+
+    const rows = xe - x0
+    const cols = ye - y0
+
+    return new Rectangle(
+      s * (t.x + x0 * pw),
+      s * (t.y + y0 * ph),
+      s * rows * pw,
+      s * cols * ph,
+    )
+  }
+
+  protected getBackgroundPageBoundsNormal() {
     const pageFormat = this.graph.pageFormat
     const pageScale = this.scale * this.graph.pageScale
     const bounds = new Rectangle(
@@ -1648,6 +1692,19 @@ export class View extends Primer {
     )
 
     return bounds
+  }
+
+  protected updateTranslate() {
+    if (
+      this.graph.infinite &&
+      this.graph.container &&
+      util.hasScrollbars(this.graph.container)
+    ) {
+      const size = this.graph.viewportManager.getPageSize()
+      const padding = this.graph.viewportManager.getPagePadding()
+      this.translate.x = padding[0] - (this.x0 || 0) * size.width
+      this.translate.y = padding[1] - (this.y0 || 0) * size.height
+    }
   }
 
   // #endregion
