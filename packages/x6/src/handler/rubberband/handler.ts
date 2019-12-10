@@ -44,9 +44,7 @@ export class RubberbandHandler extends MouseHandler {
 
     this.graph.on(Graph.events.fireMouseEvent, this.onMouseEvent)
 
-    this.onPan = () => {
-      this.repaint()
-    }
+    this.onPan = () => this.repaint()
     this.graph.on(Graph.events.pan, this.onPan)
 
     this.onGesture = () => {
@@ -54,13 +52,11 @@ export class RubberbandHandler extends MouseHandler {
         this.reset()
       }
     }
-
     this.graph.on(Graph.events.gesture, this.onGesture)
   }
 
   config() {
     const options = this.graph.options.rubberband
-
     this.setEnadled(options.enabled)
     this.fadeOut = options.fadeOut
   }
