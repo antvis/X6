@@ -1,10 +1,11 @@
+import * as sizeSensor from 'size-sensor'
 import * as util from '../util'
 import { Cell } from '../core/cell'
-import { Rectangle, Point } from '../struct'
-import { BaseManager } from './base-manager'
 import { Size } from '../types'
-import { detector } from '../common'
+import { Rectangle, Point } from '../struct'
+import { detector, Disposable, DomEvent } from '../common'
 import { events } from './events'
+import { BaseManager } from './base-manager'
 
 export class ViewportManager extends BaseManager {
   getPageSize() {
@@ -322,21 +323,6 @@ export class ViewportManager extends BaseManager {
     return this
   }
 
-  resizeContainer(width: number, height: number) {
-    const w =
-      this.graph.maxContainerSize != null
-        ? Math.min(this.graph.maxContainerSize.width, width)
-        : width
-
-    const h =
-      this.graph.maxContainerSize != null
-        ? Math.min(this.graph.maxContainerSize.height, height)
-        : height
-
-    this.container.style.width = util.toPx(Math.ceil(w))
-    this.container.style.height = util.toPx(Math.ceil(h))
-  }
-
   resetScrollbar() {
     const container = this.container
 
@@ -367,6 +353,47 @@ export class ViewportManager extends BaseManager {
           )
         }
       }
+    }
+  }
+
+  resizeContainer(width: number, height: number) {
+    const w =
+      this.graph.maxContainerSize != null
+        ? Math.min(this.graph.maxContainerSize.width, width)
+        : width
+
+    const h =
+      this.graph.maxContainerSize != null
+        ? Math.min(this.graph.maxContainerSize.height, height)
+        : height
+
+    this.container.style.width = util.toPx(Math.ceil(w))
+    this.container.style.height = util.toPx(Math.ceil(h))
+  }
+
+  private unbindSizeDetector: () => void
+  init() {
+    if (this.graph.infinite) {
+      this.container.style.overflow = 'auto'
+      this.unbindSizeDetector = sizeSensor.bind(this.container, () => {
+        this.sizeDidChange()
+      })
+    }
+
+    if (detector.IS_IE) {
+      DomEvent.addListener(this.container, 'selectstart', (e: MouseEvent) => {
+        return (
+          this.graph.isEditing() ||
+          (!this.graph.eventloopManager.isMouseDown && !DomEvent.isShiftDown(e))
+        )
+      })
+    }
+  }
+
+  @Disposable.aop()
+  dispose() {
+    if (this.unbindSizeDetector != null) {
+      this.unbindSizeDetector()
     }
   }
 }

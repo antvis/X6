@@ -16090,6 +16090,11 @@ sisteransi@^1.0.3:
   resolved "https://registry.npm.taobao.org/sisteransi/download/sisteransi-1.0.4.tgz#386713f1ef688c7c0304dc4c0632898941cad2e3"
   integrity sha1-OGcT8e9ojHwDBNxMBjKJiUHK0uM=
 
+size-sensor@^0.2.5:
+  version "0.2.5"
+  resolved "https://registry.npm.taobao.org/size-sensor/download/size-sensor-0.2.5.tgz#e8ffb7cc5258893472bfda4f5734d66583247757"
+  integrity sha1-6P+3zFJYiTRyv9pPVzTWZYMkd1c=
+
 slash2@2.0.0:
   version "2.0.0"
   resolved "https://registry.npm.taobao.org/slash2/download/slash2-2.0.0.tgz#f4e0a11708b8545b912695981cf7096f52c63487"
