@@ -212,27 +212,20 @@ export class EditorGraph extends Graph {
     const t = this.view.translate
     const fmt = this.pageFormat
     const ps = s * this.pageScale
-    const bgBounds = this.view.getBackgroundPageBounds()
+    const bounds = this.view.getBackgroundPageBounds()
 
-    width = bgBounds.width // tslint:disable-line
-    height = bgBounds.height // tslint:disable-line
+    width = bounds.width // tslint:disable-line
+    height = bounds.height // tslint:disable-line
 
-    const right = bgBounds.x + width
-    const bottom = bgBounds.y + height
+    const right = bounds.x + width
+    const bottom = bounds.y + height
 
-    const bounds = new Rectangle(
-      s * t.x,
-      s * t.y,
-      fmt.width * ps,
-      fmt.height * ps,
-    )
-
+    const pb = new Rectangle(s * t.x, s * t.y, fmt.width * ps, fmt.height * ps)
     // tslint:disable-next-line
-    visible =
-      visible && Math.min(bounds.width, bounds.height) > this.pageBreakMinDist
+    visible = visible && Math.min(pb.width, pb.height) > this.pageBreakMinDist
 
-    const hCount = visible ? Math.ceil(height / bounds.height) - 1 : 0
-    const vCount = visible ? Math.ceil(width / bounds.width) - 1 : 0
+    const hCount = visible ? Math.ceil(height / pb.height) - 1 : 0
+    const vCount = visible ? Math.ceil(width / pb.width) - 1 : 0
 
     if (this.viewport.horizontalPageBreaks == null && hCount > 0) {
       this.viewport.horizontalPageBreaks = []
@@ -250,15 +243,15 @@ export class EditorGraph extends Graph {
         for (let i = 0; i <= count; i += 1) {
           let points: Point[]
           if (breaks === this.viewport.horizontalPageBreaks) {
-            const y = Math.round(bgBounds.y + (i + 1) * bounds.height) - 1
+            const y = Math.round(bounds.y + (i + 1) * pb.height) - 1
             points = [
-              new Point(Math.round(bgBounds.x), y),
+              new Point(Math.round(bounds.x), y),
               new Point(Math.round(right), y),
             ]
           } else {
-            const x = Math.round(bgBounds.x + (i + 1) * bounds.width) - 1
+            const x = Math.round(bounds.x + (i + 1) * pb.width) - 1
             points = [
-              new Point(x, Math.round(bgBounds.y)),
+              new Point(x, Math.round(bounds.y)),
               new Point(x, Math.round(bottom)),
             ]
           }

@@ -1,18 +1,19 @@
 import { Primer, Style, Anchor, Point, FontStyle } from '@antv/x6'
-import { EditorGraph, GraphView } from './graph'
+// import { EditorGraph, GraphView } from './graph'
+import { Graph } from '@antv/x6'
 import { Commands } from './graph/commands'
 import avatarMale from './images/male.png'
 import avatarFemale from './images/female.png'
 import './editor.less'
 
 export class Editor extends Primer {
-  graph: EditorGraph
+  graph: Graph
   commands: Commands
 
   constructor(container: HTMLElement) {
     super()
 
-    this.graph = new EditorGraph(container, {
+    this.graph = new Graph(container, {
       guide: {
         enabled: true,
         dashed: true,
@@ -20,6 +21,7 @@ export class Editor extends Primer {
       grid: {
         enabled: true,
       },
+      infinite: true,
       pageVisible: true,
       pageBreak: {
         enabled: true,
@@ -41,11 +43,12 @@ export class Editor extends Primer {
         global: true,
         escape: true,
       },
+      wheel: true,
       preferPageSize: false,
       rubberband: true,
-      createView() {
-        return new GraphView(this)
-      },
+      // createView() {
+      //   return new GraphView(this)
+      // },
       getAnchors(cell) {
         if (cell != null && this.model.isNode(cell)) {
           return [
@@ -66,7 +69,7 @@ export class Editor extends Primer {
     })
 
     this.commands = new Commands(this.graph)
-    this.graph.initMouseWheel()
+    // this.graph.initMouseWheel()
     this.start()
   }
 
@@ -290,7 +293,7 @@ export class Editor extends Primer {
   start() {
     this.renderHelloWorld()
     this.renderORG()
-    this.graph.resetScrollbars()
-    this.trigger('resetGraphView')
+    // this.graph.resetScrollbars()
+    // this.trigger('resetGraphView')
   }
 }
