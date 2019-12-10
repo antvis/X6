@@ -183,6 +183,11 @@ export const preset: FullOptions = {
     escape: true,
   },
 
+  wheel: {
+    enabled: false,
+    modifiers: ['alt', 'ctrl', 'meta'],
+  },
+
   rubberband: {
     enabled: false,
     fadeOut: false,
