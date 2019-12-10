@@ -1,6 +1,6 @@
-import '@antv/x6/lib/addon/shape'
 import { Style, Point, Cell, Geometry } from '@antv/x6'
 import { PaletteItem, getRenderer, getRendererForCells } from './sidebar-util'
+import './shape'
 
 export interface DataItem {
   title: string
