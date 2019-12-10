@@ -1,0 +1,14 @@
+name: Auto Close Issue
+on: 
+  pull_request:
+    types: [closed]
+    
+jobs:
+  build:
+    name: Close
+    runs-on: ubuntu-16.04
+    steps:
+    - uses: Logerfo/close-action@0.0.1
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }} # The `GITHUB_TOKEN` secret.
+        comment: true # If `true`, will comment on the closing issue(s).
