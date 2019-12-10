@@ -3,8 +3,8 @@ import { events } from './events'
 import { BaseGraph } from './base-graph'
 
 export class PanningAccessor extends BaseGraph {
-  public panDx: number = 0
-  public panDy: number = 0
+  public panDx: number
+  public panDy: number
   protected shiftPreview1: HTMLElement | null
   protected shiftPreview2: HTMLElement | null
 

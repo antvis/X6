@@ -321,12 +321,16 @@ export class BaseGraph extends Disablable
     return this.options.dialect
   }
 
-  get infinite() {
+  get antialiased() {
+    return this.options.antialiased
+  }
+
+  isInfinite() {
     return this.options.infinite
   }
 
-  get antialiased() {
-    return this.options.antialiased
+  get infinite() {
+    return this.isInfinite()
   }
 
   getTolerance() {
@@ -1111,6 +1115,7 @@ export class BaseGraph extends Disablable
   setPageVisible(visible: boolean) {
     if (this.isPageVisible() !== visible) {
       this.options.pageVisible = visible
+      this.view.validateBackground()
     }
     return this
   }

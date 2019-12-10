@@ -43,6 +43,9 @@ export class Graph extends BaseGraph implements IHooks {
     this.renderer = this.createRenderer()
     this.selection = this.createSelection()
 
+    this.panDx = 0
+    this.panDy = 0
+
     super.createManagers()
     super.createHandlers()
 
@@ -54,6 +57,10 @@ export class Graph extends BaseGraph implements IHooks {
   }
 
   protected init(container: HTMLElement) {
+    if (this.infinite) {
+      container.style.overflow = 'auto'
+    }
+
     this.view.init()
     this.sizeDidChange()
 
@@ -64,6 +71,10 @@ export class Graph extends BaseGraph implements IHooks {
           (!this.eventloopManager.isMouseDown && !DomEvent.isShiftDown(e))
         )
       })
+    }
+
+    if (this.infinite) {
+      this.resetScrollbar()
     }
 
     return this

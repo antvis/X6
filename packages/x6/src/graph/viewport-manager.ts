@@ -203,6 +203,57 @@ export class ViewportManager extends BaseManager {
   }
 
   sizeDidChange() {
+    if (this.graph.infinite) {
+      this.sizeDidChangeInfinite()
+    } else {
+      this.sizeDidChangeNormal()
+    }
+  }
+
+  private autoTranslate: boolean
+  sizeDidChangeInfinite() {
+    if (this.container && util.hasScrollbars(this.container)) {
+      const size = this.getPageSize()
+      const pages = this.getPageLayout()
+      const padding = this.getPagePadding()
+
+      const minw = Math.ceil(2 * padding[0] + pages.width * size.width)
+      const minh = Math.ceil(2 * padding[1] + pages.height * size.height)
+
+      const min = this.graph.minGraphSize
+      if (min == null || min.width !== minw || min.height !== minh) {
+        this.graph.minGraphSize = { width: minw, height: minh }
+      }
+
+      const dx = padding[0] - pages.x * size.width
+      const dy = padding[1] - pages.y * size.height
+
+      const s = this.view.scale
+      const t = this.view.translate
+      const tx = t.x
+      const ty = t.y
+
+      if (!this.autoTranslate && (tx !== dx || ty !== dy)) {
+        this.autoTranslate = true
+
+        this.view.x0 = pages.x
+        this.view.y0 = pages.y
+
+        this.view.setTranslate(dx, dy)
+
+        this.container.scrollLeft += Math.round((dx - tx) * s)
+        this.container.scrollTop += Math.round((dy - ty) * s)
+
+        this.autoTranslate = false
+
+        return
+      }
+
+      this.sizeDidChangeNormal()
+    }
+  }
+
+  sizeDidChangeNormal() {
     const bounds = this.getGraphBounds()
 
     if (this.container != null) {
