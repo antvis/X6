@@ -4,7 +4,7 @@ export abstract class Disablable extends Primer {
   private disabled: boolean = false
 
   get enabled() {
-    return !this.disabled
+    return this.isEnabled()
   }
 
   enable() {
@@ -20,10 +20,18 @@ export abstract class Disablable extends Primer {
   }
 
   setEnadled(enabled: boolean) {
-    this.disabled = !enabled
+    if (enabled) {
+      this.enable()
+    } else {
+      this.disable()
+    }
   }
 
   toggleEnadled() {
-    this.disabled = !this.disabled
+    if (this.isEnabled()) {
+      this.disable()
+    } else {
+      this.enable()
+    }
   }
 }

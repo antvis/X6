@@ -113,6 +113,18 @@ export namespace detector {
    */
   export const SUPPORT_POINTER = (window as any).PointerEvent != null && !IS_MAC
 
+  export let SUPPORT_PASSIVE = false
+
+  try {
+    const options = Object.defineProperty({}, 'passive', {
+      get() {
+        SUPPORT_PASSIVE = true
+      },
+    })
+    const div = document.createElement('div')
+    div.addEventListener('click', () => {}, options)
+  } catch (err) {}
+
   /**
    * A flag indicating whether foreignObject support is not available. This
    * is the case for Opera, older SVG-based browsers and all versions of IE.
@@ -121,7 +133,7 @@ export namespace detector {
     !document.createElementNS ||
     `${document.createElementNS(
       'http://www.w3.org/2000/svg',
-      'foreignObject'
+      'foreignObject',
     )}` !== '[object SVGForeignObjectElement]' ||
     ua.indexOf('Opera/') >= 0
 
