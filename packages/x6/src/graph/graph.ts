@@ -15,6 +15,7 @@ import { TooltipAccessor } from './tooltip-accessor'
 import { RubberbandAccessor } from './rubberband-accessor'
 import { CollapseAccessor } from './collapse-accessor'
 import { KeyboardAccessor } from './keyboard-accessor'
+import { MouseWheelAccessor } from './mousewheel-accessor'
 import { GuideAccessor } from './guide-accessor'
 import { GridAccessor } from './grid-accessor'
 import { PageBreakAccessor } from './pagebreak-accessor'
@@ -130,6 +131,7 @@ export interface Graph
     RetrievalAccessor,
     ConnectionAccessor,
     ValidationAccessor,
+    MouseWheelAccessor,
     RubberbandAccessor {}
 
 util.applyMixins(
@@ -157,4 +159,5 @@ util.applyMixins(
   ConnectionAccessor,
   ValidationAccessor,
   RubberbandAccessor,
+  MouseWheelAccessor,
 )

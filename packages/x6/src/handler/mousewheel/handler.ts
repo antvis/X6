@@ -35,11 +35,13 @@ export class MouseWheelHandler extends BaseHandler {
   }
 
   enable() {
+    this.graph.options.wheel.enabled = true
     DomEvent.addWheelListener(this.handler, this.graph.container)
     super.enable()
   }
 
   disable() {
+    this.graph.options.wheel.enabled = false
     DomEvent.removeWheelListener(this.handler, this.graph.container)
     super.disable()
   }
