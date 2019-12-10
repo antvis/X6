@@ -1,5 +1,4 @@
-import { EditorGraph } from './graph'
-import { util, Point, Style, Cell } from '@antv/x6'
+import { util, Point, Style, Cell, Graph } from '@antv/x6'
 import arrowUrl from './stencil/arrows.xml'
 import flowchartUrl from './/stencil/flowchart.xml'
 import { StencilRegistry } from './stencil-registry'
@@ -67,7 +66,7 @@ export function getDataItem(elem: HTMLElement) {
   return dataCache.get(elem)
 }
 
-let graph: EditorGraph
+let graph: Graph
 
 function createTempGraph() {
   const container = util.createElement('div')
@@ -79,7 +78,7 @@ function createTempGraph() {
 
   document.body.appendChild(container)
 
-  const graph = new EditorGraph(container, {
+  const graph = new Graph(container, {
     grid: false,
     tooltip: false,
     folding: false,
@@ -159,7 +158,7 @@ export function getRendererForCells(cells: Cell[]) {
 }
 
 function renderThumb(
-  graph: EditorGraph,
+  graph: Graph,
   container: HTMLDivElement,
   thumbWidth: number,
   thumbHeight: number,
