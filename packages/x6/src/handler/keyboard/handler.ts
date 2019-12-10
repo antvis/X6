@@ -1,7 +1,6 @@
 import * as util from '../../util'
 import { Graph } from '../../graph'
 import { Mousetrap } from './mousetrap'
-import { KeyboardOptions } from './option'
 import { BaseHandler } from '../handler-base'
 import { DomEvent, Disposable } from '../../common'
 
@@ -12,13 +11,8 @@ export class KeyboardHandler extends BaseHandler {
 
   constructor(graph: Graph) {
     super(graph)
-    const options = this.graph.options.keyboard as KeyboardOptions
-    if (options.enabled) {
-      this.enable()
-    } else {
-      this.disable()
-    }
-
+    const options = this.graph.options.keyboard
+    this.setEnadled(options.enabled)
     this.target = options.global ? document : this.graph.container
     this.formatkey = options.formatkey || ((key: string) => key)
     this.mousetrap = new Mousetrap(this.target as Element, this)
