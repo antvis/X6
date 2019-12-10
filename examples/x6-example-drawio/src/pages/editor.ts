@@ -1,6 +1,4 @@
-import { Primer, Style, Anchor, Point, FontStyle } from '@antv/x6'
-// import { EditorGraph, GraphView } from './graph'
-import { Graph } from '@antv/x6'
+import { Graph, Primer, Style, Anchor, Point, FontStyle } from '@antv/x6'
 import { Commands } from './graph/commands'
 import avatarMale from './images/male.png'
 import avatarFemale from './images/female.png'
@@ -46,9 +44,6 @@ export class Editor extends Primer {
       wheel: true,
       preferPageSize: false,
       rubberband: true,
-      // createView() {
-      //   return new GraphView(this)
-      // },
       getAnchors(cell) {
         if (cell != null && this.model.isNode(cell)) {
           return [
@@ -69,7 +64,6 @@ export class Editor extends Primer {
     })
 
     this.commands = new Commands(this.graph)
-    // this.graph.initMouseWheel()
     this.start()
   }
 
@@ -293,7 +287,5 @@ export class Editor extends Primer {
   start() {
     this.renderHelloWorld()
     this.renderORG()
-    // this.graph.resetScrollbars()
-    // this.trigger('resetGraphView')
   }
 }
