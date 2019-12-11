@@ -1,7 +1,7 @@
 import React from 'react'
 import { Checkbox } from 'antd'
 import { Graph } from '@antv/x6'
-import styles from './index.less'
+import './index.less'
 import { CheckboxChangeEvent } from 'antd/lib/checkbox'
 
 export default class Example extends React.Component {
@@ -69,7 +69,7 @@ export default class Example extends React.Component {
         </div>
         <div
           ref={this.refContainer}
-          className={styles.graph}
+          className="graph"
           style={{ backgroundColor: '#f8f9fa' }}
         />
       </div>
