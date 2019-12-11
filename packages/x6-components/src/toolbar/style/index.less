@@ -1,4 +1,5 @@
 @import '../../style/themes/index';
+@import '../../dropdown/style/index';
 
 @toolbar-prefix-cls: ~'@{x6-prefix}-toolbar';
 
@@ -216,6 +217,12 @@
 
     .@{toolbar-prefix-cls}-item.@{toolbar-prefix-cls}-item-active {
       margin: 4px 2px 4px 0;
+    }
+  }
+
+  &&-align-right {
+    .@{toolbar-prefix-cls}-content {
+      flex-direction: row-reverse;
     }
   }
 }

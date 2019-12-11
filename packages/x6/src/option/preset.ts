@@ -183,7 +183,7 @@ export const preset: FullOptions = {
     escape: true,
   },
 
-  wheel: {
+  mouseWheel: {
     enabled: false,
     modifiers: ['alt', 'ctrl', 'meta'],
   },

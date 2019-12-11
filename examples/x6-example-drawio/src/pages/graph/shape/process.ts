@@ -1,11 +1,7 @@
-import * as util from '../../util'
 import { getFactor } from './util'
-import { SvgCanvas2D } from '../../canvas'
-import { Rectangle } from '../../struct'
-import { Direction } from '../../types'
-import { Shape, RectangleShape } from '../../shape'
+import { util, Shape, SvgCanvas2D, Direction, Rectangle } from '@antv/x6'
 
-export class ProcessShape extends RectangleShape {
+export class ProcessShape extends Shape.Rectangle {
   factor: number = 0.1
   direction: Direction
 

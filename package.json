@@ -6,7 +6,7 @@
     "packages/*"
   ],
   "scripts": {
-    "bootstrap": "lerna bootstrap",
+    "bootstrap": "lerna bootstrap && yarn build:core",
     "lk": "lerna link",
     "ls": "lerna list",
     "pub": "lerna publish",
@@ -14,6 +14,7 @@
     "updated": "lerna updated",
     "clean": "lerna run clean",
     "build": "lerna run build",
+    "build:core": "lerna run build --ignore @antv/x6-example-* --parallel",
     "lint": "lerna run lint",
     "test": "lerna run test",
     "coveralls": "lerna run coveralls",

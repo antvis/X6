@@ -54,11 +54,11 @@ const edge = graph.addEdge({ data: 'x6', source: node1, target: node2 })
 ## Development
 
 ```shell
-# install global yarn and lerna
+# install yarn and lerna
 $ npm install yarn -g
 $ npm install lerna -g
 
-# install dependencies
+# install deps and build
 $ yarn bootstrap
 
 # run tests

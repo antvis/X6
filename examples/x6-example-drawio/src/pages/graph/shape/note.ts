@@ -1,8 +1,6 @@
-import * as util from '../../util'
-import { SvgCanvas2D } from '../../canvas'
-import { Shape, Cylinder } from '../../shape'
+import { util, Shape, SvgCanvas2D } from '@antv/x6'
 
-export class NoteShape extends Cylinder {
+export class NoteShape extends Shape.Cylinder {
   factor: number = 30
   darkOpacity: number = 0
 
@@ -11,7 +9,7 @@ export class NoteShape extends Cylinder {
     const darkOpacity = util.getNumber(
       this.style,
       'darkOpacity',
-      this.darkOpacity
+      this.darkOpacity,
     )
     const s = Math.max(0, Math.min(w, Math.min(h, factor)))
     const op = Math.max(-1, Math.min(1, darkOpacity))

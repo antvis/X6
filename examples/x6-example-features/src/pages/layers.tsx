@@ -1,7 +1,7 @@
 import React from 'react'
 import { Checkbox } from 'antd'
 import { Graph, Cell } from '@antv/x6'
-import styles from './index.less'
+import './index.less'
 
 export default class Layers extends React.Component {
   private container: HTMLDivElement
@@ -126,7 +126,7 @@ export default class Layers extends React.Component {
           height: '100%',
         }}
       >
-        <div ref={this.refContainer} className={styles.graph} />
+        <div ref={this.refContainer} className="graph" />
         <div style={{ marginTop: 24, fontSize: 12, userSelect: 'none' }}>
           <Checkbox
             checked={this.state.layer0Visible}

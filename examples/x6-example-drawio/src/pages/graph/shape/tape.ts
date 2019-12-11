@@ -1,10 +1,7 @@
-import * as util from '../../util'
 import { getFactor } from './util'
-import { Rectangle } from '../../struct'
-import { SvgCanvas2D } from '../../canvas'
-import { Shape, Actor } from '../../shape'
+import { util, Shape, SvgCanvas2D, Rectangle } from '@antv/x6'
 
-export class TapeShape extends Actor {
+export class TapeShape extends Shape.Actor {
   factor: number = 0.4
 
   getLabelMargins(rect: Rectangle) {

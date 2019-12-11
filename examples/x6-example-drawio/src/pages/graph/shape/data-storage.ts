@@ -1,8 +1,7 @@
 import { getFactor } from './util'
-import { SvgCanvas2D } from '../../canvas'
-import { Shape, Actor } from '../../shape'
+import { Shape, SvgCanvas2D } from '@antv/x6'
 
-export class DataStorageShape extends Actor {
+export class DataStorageShape extends Shape.Actor {
   factor: number = 0.1
 
   redrawPath(c: SvgCanvas2D, x: number, y: number, w: number, h: number) {
