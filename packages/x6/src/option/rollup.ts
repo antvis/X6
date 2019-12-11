@@ -49,7 +49,7 @@ export interface FullOptions
   tooltip: TooltipOptions
   folding: CollapseOptions
   keyboard: KeyboardOptions
-  wheel: MouseWheelOptions
+  mouseWheel: MouseWheelOptions
   rubberband: RubberbandOptions
   pageBreak: PageBreakOptions
   contextMenu: ContextMenuOptions
@@ -83,7 +83,7 @@ export interface GraphOptions
   tooltip?: Partial<TooltipOptions> | boolean
   folding?: Partial<CollapseOptions> | boolean
   keyboard?: Partial<KeyboardOptions> | boolean
-  wheel?: Partial<MouseWheelOptions> | boolean
+  mouseWheel?: Partial<MouseWheelOptions> | boolean
   rubberband?: Partial<RubberbandOptions> | boolean
   pageBreak?: Partial<PageBreakOptions> | boolean
   contextMenu?: Partial<ContextMenuOptions> | boolean
