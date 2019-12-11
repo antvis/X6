@@ -9,7 +9,7 @@
     "bootstrap": "lerna bootstrap && yarn build:core",
     "lk": "lerna link",
     "ls": "lerna list",
-    "pub": "lerna publish",
+    "pub": "lerna publish --no-git-tag-version",
     "changed": "lerna changed",
     "updated": "lerna updated",
     "clean": "lerna run clean",
