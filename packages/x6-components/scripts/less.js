@@ -11,6 +11,10 @@ const es = path.join(cwd, 'es')
 const lib = path.join(cwd, 'lib')
 const src = path.join(cwd, 'src')
 
+console.log(es)
+console.log(lib)
+console.log(src)
+
 // Build components in one file: lib/style/components.less
 console.log('Build "style/components.less"')
 let content = ''
