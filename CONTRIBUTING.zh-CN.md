@@ -1,11 +1,11 @@
 # 代码贡献规范
 
-有任何疑问，欢迎提交 [issue](https://github.com/antvis/x6/issues)，或者直接修改提交 [PR](https://github.com/antvis/x6/pulls)!
+有任何疑问，欢迎提交 [issue](https://github.com/antvis/x6/issues) 或 [PR](https://github.com/antvis/x6/pulls)!
 
 ## 提交 issue
 
-- 请确定 issue 的类型。
-- 请避免提交重复的 issue，在提交之前搜索现有的 issue。
+- 确定 issue 的类型。
+- 避免提交重复的 issue，在提交之前搜索现有的 issue。
 - 在标签、标题或内容中体现明确的意图。
 
 随后 AntV 负责人会确认 issue 意图，更新合适的标签，关联 milestone，指派开发者。
