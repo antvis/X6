@@ -376,6 +376,8 @@ export class ViewportManager extends BaseManager {
   private unbindSizeDetector: () => void
   init() {
     if (this.graph.infinite) {
+      this.container.style.zIndex = '1'
+      this.container.style.position = 'relative'
       this.container.style.overflow = 'auto'
       this.unbindSizeDetector = sizeSensor.bind(this.container, () => {
         this.sizeDidChange()
