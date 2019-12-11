@@ -56,9 +56,7 @@ export class Graph extends BaseGraph implements IHooks {
     this.viewportManager.init()
     this.view.init()
     this.sizeDidChange()
-    if (this.infinite) {
-      this.resetScrollbar()
-    }
+    this.resetScrollbar()
     return this
   }
 

@@ -327,16 +327,17 @@ export class ViewportManager extends BaseManager {
 
   resetScrollbar() {
     const container = this.container
-
-    if (this.graph.pageVisible && util.hasScrollbars(container)) {
-      const padding = this.getPagePadding()
-      container.scrollLeft = Math.floor(
-        Math.min(
-          padding[0],
-          (container.scrollWidth - container.clientWidth) / 2,
-        ),
-      )
-      container.scrollTop = padding[1]
+    if (this.graph.infinite && util.hasScrollbars(container)) {
+      if (this.graph.pageVisible) {
+        const padding = this.getPagePadding()
+        container.scrollLeft = Math.floor(
+          Math.min(
+            padding[0],
+            (container.scrollWidth - container.clientWidth) / 2,
+          ),
+        )
+        container.scrollTop = padding[1]
+      }
 
       // Scrolls graph to visible area
       const bounds = this.getGraphBounds()
