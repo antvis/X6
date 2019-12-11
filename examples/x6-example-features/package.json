@@ -1,18 +1,17 @@
 {
   "private": true,
   "name": "@antv/x6-example-features",
-  "version": "0.1.1",
+  "version": "0.1.3",
   "scripts": {
     "start": "umi dev",
     "build": "umi build",
     "lint": "yarn lint:ts",
-    "lint:es": "eslint --ext .js src mock tests",
     "lint:ts": "tslint -c tslint.json -p tsconfig.json --fix",
     "precommit": "lint-staged"
   },
   "dependencies": {
-    "@antv/x6": "^0.1.2",
-    "@antv/x6-components": "^0.1.3",
+    "@antv/x6": "^0.1.3",
+    "@antv/x6-components": "^0.1.4",
     "antd": "^3.19.5",
     "classnames": "^2.2.6",
     "react-dom": "^16.8.6"

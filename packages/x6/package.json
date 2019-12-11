@@ -1,6 +1,6 @@
 {
   "name": "@antv/x6",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "JavaScript diagramming library",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -43,7 +43,7 @@
     "test": "jest",
     "pretest": "run-p clean:coverage",
     "coveralls": "cat ./test/coverage/lcov.info | coveralls",
-    "prepare": "run-s test build",
+    "prepare": "run-s build:version test build",
     "precommit": "lint-staged"
   },
   "lint-staged": {
@@ -100,5 +100,6 @@
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org"
-  }
+  },
+  "gitHead": "561bffe55b451f63a87ec045fdd5abb31fb5c23b"
 }
