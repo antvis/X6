@@ -1,13 +1,15 @@
-import * as util from '../../util'
 import { getFactor } from './util'
-import { State } from '../../core/state'
-import { Shape, Actor } from '../../shape'
-import { SvgCanvas2D } from '../../canvas'
-import { Perimeter } from '../../perimeter'
-import { Point, Rectangle } from '../../struct'
-import { rectanglePerimeter } from '../../perimeter/rectangle'
+import {
+  util,
+  State,
+  Shape,
+  Perimeter,
+  Point,
+  Rectangle,
+  SvgCanvas2D,
+} from '@antv/x6'
 
-export class CalloutShape extends Actor {
+export class CalloutShape extends Shape.Actor {
   base = 20
   factor = 30
   position1 = 0.5
@@ -65,7 +67,7 @@ export function calloutPerimeter(
   )
   const rect = new Rectangle(0, 0, 0, factor * state.view.scale)
   const directedBounds = util.getDirectedBounds(bounds, rect, state.style)
-  return rectanglePerimeter(directedBounds, state, next, orthogonal)
+  return Perimeter.rectangle(directedBounds, state, next, orthogonal)
 }
 
 Shape.register('callout', CalloutShape)

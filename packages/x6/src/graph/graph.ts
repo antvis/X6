@@ -7,6 +7,7 @@ import { hook } from './decorator'
 import { IHooks } from './hook'
 import { Selection } from './selection'
 import { BaseGraph } from './base-graph'
+import { ChangeAccessor } from './change-accessor'
 import { RetrievalAccessor } from './retrieval-accessor'
 import { OverlayAccessor } from './overlay-accessor'
 import { ConnectionAccessor } from './connection-accessor'
@@ -56,9 +57,7 @@ export class Graph extends BaseGraph implements IHooks {
     this.viewportManager.init()
     this.view.init()
     this.sizeDidChange()
-    if (this.infinite) {
-      this.resetScrollbar()
-    }
+    this.resetScrollbar()
     return this
   }
 
@@ -97,6 +96,7 @@ export interface Graph
     GuideAccessor,
     GroupAccessor,
     StyleAccessor,
+    ChangeAccessor,
     MovingAccessor,
     PanningAccessor,
     EditingAccessor,
@@ -124,6 +124,7 @@ util.applyMixins(
   GuideAccessor,
   GroupAccessor,
   StyleAccessor,
+  ChangeAccessor,
   MovingAccessor,
   PanningAccessor,
   EditingAccessor,

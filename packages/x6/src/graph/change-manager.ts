@@ -81,9 +81,13 @@ export class ChangeManager extends BaseManager {
         this.view.invalidate(change.cell)
       }
     } else if (change instanceof DataChange) {
-      // Handles special case where only the shape, but no
-      // descendants need to be recreated.
-      this.view.invalidate(change.cell, false, false)
+      if (this.graph.shouldRedrawOnDataChange(change)) {
+        this.removeCellState(change.cell)
+      } else {
+        // Handles special case where only the shape, but no
+        // descendants need to be recreated.
+        this.view.invalidate(change.cell, false, false)
+      }
     } else if (change instanceof StyleChange) {
       // Requires a new Shape in JavaScript.
       this.view.invalidate(change.cell, true, true)

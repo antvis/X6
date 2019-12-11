@@ -1,7 +1,6 @@
-import { SvgCanvas2D } from '../../canvas'
-import { Shape, Actor } from '../../shape'
+import { Shape, SvgCanvas2D } from '@antv/x6'
 
-export class OrShape extends Actor {
+export class OrShape extends Shape.Actor {
   redrawPath(c: SvgCanvas2D, x: number, y: number, w: number, h: number) {
     c.moveTo(0, 0)
     c.quadTo(w, 0, w, h / 2)
@@ -11,7 +10,7 @@ export class OrShape extends Actor {
   }
 }
 
-export class XorShape extends Actor {
+export class XorShape extends Shape.Actor {
   redrawPath(c: SvgCanvas2D, x: number, y: number, w: number, h: number) {
     c.moveTo(0, 0)
     c.quadTo(w, 0, w, h / 2)

@@ -1,7 +1,6 @@
-import * as util from '../../util'
-import { Shape, ArrowConnector } from '../../shape'
+import { util, Shape } from '@antv/x6'
 
-export class LinkShape extends ArrowConnector {
+export class LinkShape extends Shape.ArrowConnector {
   defaultWidth = 4
 
   constructor() {

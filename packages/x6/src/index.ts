@@ -9,6 +9,7 @@ export * from './common'
 export * from './struct'
 export * from './types'
 
+export * from './canvas'
 export * from './core'
 export * from './graph'
 export * from './change'

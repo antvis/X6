@@ -300,6 +300,7 @@ export class ViewportManager extends BaseManager {
       if (this.graph.dialect === 'svg') {
         const svg = (this.view.getDrawPane() as SVGGElement).ownerSVGElement
         if (svg != null) {
+          svg.style.position = 'relative'
           svg.style.minWidth = `${Math.max(1, width)}px`
           svg.style.minHeight = `${Math.max(1, height)}px`
           svg.style.width = '100%'
@@ -307,6 +308,7 @@ export class ViewportManager extends BaseManager {
         }
       } else {
         const stage = this.view.getStage()!
+        stage.style.position = 'relative'
         stage.style.minWidth = `${Math.max(1, width)}px`
         stage.style.minHeight = `${Math.max(1, height)}px`
       }
@@ -325,16 +327,17 @@ export class ViewportManager extends BaseManager {
 
   resetScrollbar() {
     const container = this.container
-
-    if (this.graph.pageVisible && util.hasScrollbars(container)) {
-      const padding = this.getPagePadding()
-      container.scrollLeft = Math.floor(
-        Math.min(
-          padding[0],
-          (container.scrollWidth - container.clientWidth) / 2,
-        ),
-      )
-      container.scrollTop = padding[1]
+    if (this.graph.infinite && util.hasScrollbars(container)) {
+      if (this.graph.pageVisible) {
+        const padding = this.getPagePadding()
+        container.scrollLeft = Math.floor(
+          Math.min(
+            padding[0],
+            (container.scrollWidth - container.clientWidth) / 2,
+          ),
+        )
+        container.scrollTop = padding[1]
+      }
 
       // Scrolls graph to visible area
       const bounds = this.getGraphBounds()
@@ -374,6 +377,8 @@ export class ViewportManager extends BaseManager {
   private unbindSizeDetector: () => void
   init() {
     if (this.graph.infinite) {
+      this.container.style.zIndex = '1'
+      this.container.style.position = 'relative'
       this.container.style.overflow = 'auto'
       this.unbindSizeDetector = sizeSensor.bind(this.container, () => {
         this.sizeDidChange()

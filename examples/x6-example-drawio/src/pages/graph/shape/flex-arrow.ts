@@ -1,7 +1,6 @@
-import * as util from '../../util'
-import { Shape, ArrowConnector } from '../../shape'
+import { util, Shape } from '@antv/x6'
 
-export class FlexArrowShape extends ArrowConnector {
+export class FlexArrowShape extends Shape.ArrowConnector {
   defaultWidth = 10
   defaultArrowWidth = 20
 

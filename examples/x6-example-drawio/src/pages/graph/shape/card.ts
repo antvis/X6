@@ -1,9 +1,6 @@
-import * as util from '../../util'
-import { Point } from '../../struct'
-import { SvgCanvas2D } from '../../canvas'
-import { Shape, Actor } from '../../shape'
+import { util, Shape, SvgCanvas2D, Point } from '@antv/x6'
 
-export class CardShape extends Actor {
+export class CardShape extends Shape.Actor {
   factor: number = 30
 
   isRoundable() {

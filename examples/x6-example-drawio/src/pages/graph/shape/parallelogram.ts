@@ -1,12 +1,15 @@
-import * as util from '../../util'
-import { State } from '../../core/state'
-import { SvgCanvas2D } from '../../canvas'
-import { Shape, Actor } from '../../shape'
-import { Perimeter } from '../../perimeter'
-import { Point, Rectangle } from '../../struct'
 import { getFactor } from './util'
+import {
+  util,
+  State,
+  Shape,
+  Perimeter,
+  SvgCanvas2D,
+  Point,
+  Rectangle,
+} from '@antv/x6'
 
-export class ParallelogramShape extends Actor {
+export class ParallelogramShape extends Shape.Actor {
   factor = 0.2
 
   isRoundable() {

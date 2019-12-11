@@ -1,6 +1,6 @@
 import React from 'react'
 import { Graph } from '@antv/x6'
-import styles from './index.less'
+import './index.less'
 
 export default class Example extends React.Component {
   private container: HTMLDivElement
@@ -84,6 +84,6 @@ export default class Example extends React.Component {
   }
 
   render() {
-    return <div ref={this.refContainer} className={styles.graph} />
+    return <div ref={this.refContainer} className="graph" />
   }
 }

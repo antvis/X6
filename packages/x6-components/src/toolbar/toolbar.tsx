@@ -18,6 +18,7 @@ export class Toolbar extends React.PureComponent<Toolbar.Props> {
       children,
       extra,
       size,
+      align,
       hoverEffect,
     } = this.props
 
@@ -26,6 +27,7 @@ export class Toolbar extends React.PureComponent<Toolbar.Props> {
       <div
         className={classNames(baseCls, className, {
           [`${baseCls}-${size}`]: size,
+          [`${baseCls}-align-right`]: align === 'right',
           [`${baseCls}-hover-effect`]: hoverEffect,
         })}
       >
@@ -57,6 +59,7 @@ export namespace Toolbar {
     extra?: React.ReactNode
     size?: 'small' | 'big'
     hoverEffect?: boolean
+    align?: 'left' | 'right'
     onClick?: (name: string, value?: any) => void
   }
 

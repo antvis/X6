@@ -1,5 +1,4 @@
-import { Shape } from '../../shape'
-import { SvgCanvas2D } from '../../canvas'
+import { Shape, SvgCanvas2D } from '@antv/x6'
 
 export class UmlActorShape extends Shape {
   drawBackground(c: SvgCanvas2D, x: number, y: number, w: number, h: number) {

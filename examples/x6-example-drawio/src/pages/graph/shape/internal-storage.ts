@@ -1,8 +1,6 @@
-import * as util from '../../util'
-import { SvgCanvas2D } from '../../canvas'
-import { Shape, RectangleShape } from '../../shape'
+import { util, Shape, SvgCanvas2D } from '@antv/x6'
 
-export class InternalStorageShape extends RectangleShape {
+export class InternalStorageShape extends Shape.Rectangle {
   dx: number = 20
   dy: number = 20
 
