@@ -41,7 +41,7 @@ export class Editor extends Primer {
         global: true,
         escape: true,
       },
-      wheel: true,
+      mouseWheel: true,
       preferPageSize: false,
       rubberband: true,
       getAnchors(cell) {
