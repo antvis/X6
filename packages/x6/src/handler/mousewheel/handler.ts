@@ -31,23 +31,23 @@ export class MouseWheelHandler extends BaseHandler {
 
   constructor(graph: Graph) {
     super(graph)
-    this.setEnadled(this.graph.options.wheel.enabled)
+    this.setEnadled(this.graph.options.mouseWheel.enabled)
   }
 
   enable() {
-    this.graph.options.wheel.enabled = true
+    this.graph.options.mouseWheel.enabled = true
     DomEvent.addWheelListener(this.handler, this.graph.container)
     super.enable()
   }
 
   disable() {
-    this.graph.options.wheel.enabled = false
+    this.graph.options.mouseWheel.enabled = false
     DomEvent.removeWheelListener(this.handler, this.graph.container)
     super.disable()
   }
 
   isZoomWheelEvent(e: MouseEvent) {
-    const modifiers = this.graph.options.wheel.modifiers
+    const modifiers = this.graph.options.mouseWheel.modifiers
     if (modifiers == null) {
       return true
     }
