@@ -1,7 +1,7 @@
 import React from 'react'
 import { Graph } from '@antv/x6'
 import { Button, Checkbox } from 'antd'
-import styles from './index.less'
+import './index.less'
 
 export default class Example extends React.Component {
   private container: HTMLDivElement
@@ -98,7 +98,7 @@ export default class Example extends React.Component {
             Reset
           </Button>
         </div>
-        <div ref={this.refContainer} tabIndex={-1} className={styles.graph} />
+        <div ref={this.refContainer} tabIndex={-1} className="graph" />
       </div>
     )
   }

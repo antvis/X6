@@ -1,6 +1,6 @@
 import React from 'react'
 import { Graph } from '@antv/x6'
-import styles from './index.less'
+import './index.less'
 
 export default class Transform extends React.Component {
   private container: HTMLDivElement
@@ -158,7 +158,7 @@ export default class Transform extends React.Component {
             </button>
           </div>
         </div>
-        <div ref={this.refContainer} style={style} className={styles.graph} />
+        <div ref={this.refContainer} style={style} className="graph" />
       </div>
     )
   }

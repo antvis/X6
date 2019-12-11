@@ -3,6 +3,7 @@ import { IConfig } from 'umi-types'
 // ref: https://umijs.org/config/
 const config: IConfig = {
   treeShaking: true,
+  disableCSSModules: true,
   plugins: [
     // ref: https://umijs.org/plugin/umi-plugin-react.html
     [
@@ -17,6 +18,17 @@ const config: IConfig = {
         routes: {
           exclude: [/components\//],
         },
+      },
+    ],
+  ],
+  extraBabelPlugins: [
+    [
+      'import',
+      {
+        libraryName: '@antv/x6-components',
+        libraryDirectory: 'es',
+        transformToDefaultImport: false,
+        style: true,
       },
     ],
   ],

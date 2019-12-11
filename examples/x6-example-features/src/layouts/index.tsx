@@ -1,6 +1,6 @@
 import React from 'react'
 import NavLink from 'umi/navlink'
-import styles from './index.less'
+import './index.less'
 
 const features = [
   { link: '/helloworld', title: 'Hello World' },
@@ -20,10 +20,17 @@ const features = [
   { link: '/infinite', title: 'Infinite Canvas' },
 ]
 
+const charts = [{ link: '/flowchart', title: 'FlowChart' }]
+
 const BasicLayout: React.FC = props => {
+  const pathname = props.location.pathname
+  if (charts.some(item => item.link === pathname)) {
+    return props.children as React.ReactElement
+  }
+
   return (
-    <div className={styles.wrap}>
-      <div className={styles.nav}>
+    <div className="wrap">
+      <div className="nav">
         <h2>Features</h2>
         <ul>
           {features.map(item => (
@@ -34,12 +41,14 @@ const BasicLayout: React.FC = props => {
         </ul>
         <h2>Charts</h2>
         <ul>
-          <li>
-            <NavLink to="/flowchart">FlowChart</NavLink>
-          </li>
+          {charts.map(item => (
+            <li key={item.link}>
+              <NavLink to={item.link}>{item.title}</NavLink>
+            </li>
+          ))}
         </ul>
       </div>
-      <div className={styles.content}>{props.children}</div>
+      <div className="content">{props.children}</div>
     </div>
   )
 }
