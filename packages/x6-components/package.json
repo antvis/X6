@@ -33,7 +33,7 @@
     "build:ts": "run-p build:lib build:es",
     "build:less": "node ./scripts/less.js",
     "build": "run-s build:ts build:less",
-    "prepare": "run-s build:lib build:es build:less",
+    "prepare": "yarn build",
     "prebuild": "run-s lint clean",
     "precommit": "lint-staged"
   },
