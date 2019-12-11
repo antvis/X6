@@ -23,6 +23,7 @@ import {
   GuideHandler,
   SelectHandler,
 } from '../handler'
+import { DataChange } from '../change'
 
 type Nilable<T> = T | null | undefined
 type BareHook<T> = (this: Graph) => Nilable<T>
@@ -349,6 +350,8 @@ export interface IHooks {
     this: Graph,
     currentRoot: Cell | null,
   ) => Nilable<Point>
+
+  shouldRedrawOnDataChange: (this: Graph, change: DataChange) => boolean
 
   // #endregion
 
