@@ -5,7 +5,7 @@ import { BaseGraph } from './base-graph'
 export class GroupAccessor extends BaseGraph {
   @afterCreate()
   createGroup(cells: Cell[]) {
-    const group = new Cell({ connectable: false })
+    const group = new Cell(null, null, { connectable: false })
     group.asNode(true)
     return group
   }

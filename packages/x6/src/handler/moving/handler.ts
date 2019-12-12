@@ -43,7 +43,7 @@ export class MovingHandler extends MouseHandler {
 
   mouseMove(e: MouseEventEx) {
     if (!this.isConsumed(e) && this.isMouseDown() && this.preview.isStarted()) {
-      // Stops moving if a multi touch event is received
+      // Stop moving if a multi touch event is received
       if (this.isMultiTouchEvent(e)) {
         this.reset()
         return
@@ -52,7 +52,7 @@ export class MovingHandler extends MouseHandler {
       this.preview.process(e)
       this.consume(e, DomEvent.MOUSE_MOVE)
 
-      // Cancels the bubbling of events to the container so
+      // Cancel the bubbling of event to the container so
       // that the droptarget is not reset due to an mouseMove
       // fired on the container with no associated state.
       DomEvent.consume(e.getEvent())
@@ -110,47 +110,6 @@ export class MovingHandler extends MouseHandler {
     )
   }
 
-  protected shouldRemoveCellsFromParent(
-    parent: Cell | null,
-    cells: Cell[],
-    e: MouseEvent,
-  ) {
-    if (this.graph.model.isNode(parent)) {
-      const pState = this.graph.view.getState(parent)
-      if (pState != null) {
-        let pos = util.clientToGraph(this.graph.container, e)
-        const rot = util.getRotation(pState)
-        if (rot !== 0) {
-          const cx = pState.bounds.getCenter()
-          pos = util.rotatePoint(pos, -rot, cx)
-        }
-
-        return !pState.bounds.containsPoint(pos)
-      }
-    }
-
-    return false
-  }
-
-  protected shouldRemoveParent(parent: Cell) {
-    const state = this.graph.view.getState(parent)
-    if (
-      state != null &&
-      (this.graph.model.isEdge(state.cell) ||
-        this.graph.model.isNode(state.cell)) &&
-      this.graph.isCellDeletable(state.cell) &&
-      this.graph.model.getChildCount(state.cell) === 0
-    ) {
-      const NONE = 'none'
-      const stroke = state.style.stroke || NONE
-      const fill = state.style.fill || NONE
-
-      return stroke === NONE && fill === NONE
-    }
-
-    return false
-  }
-
   protected moveCells(
     cells: Cell[],
     dx: number,
@@ -164,7 +123,7 @@ export class MovingHandler extends MouseHandler {
       cells = this.graph.getCloneableCells(cells)
     }
 
-    // Removes cells from parent
+    // Remove cells from parent
     const parent = this.graph.model.getParent(this.preview.cell)
 
     if (
@@ -223,6 +182,46 @@ export class MovingHandler extends MouseHandler {
     if (this.graph.isCellsSelectable() && this.graph.isScrollOnMove()) {
       this.graph.scrollCellToVisible(cells[0])
     }
+  }
+
+  protected shouldRemoveCellsFromParent(
+    parent: Cell | null,
+    cells: Cell[],
+    e: MouseEvent,
+  ) {
+    if (this.graph.model.isNode(parent)) {
+      const pState = this.graph.view.getState(parent)
+      if (pState != null) {
+        let pos = util.clientToGraph(this.graph.container, e)
+        const rot = util.getRotation(pState)
+        if (rot !== 0) {
+          const cx = pState.bounds.getCenter()
+          pos = util.rotatePoint(pos, -rot, cx)
+        }
+
+        return !pState.bounds.containsPoint(pos)
+      }
+    }
+
+    return false
+  }
+
+  protected shouldRemoveParent(parent: Cell) {
+    const state = this.graph.view.getState(parent)
+    if (
+      state != null &&
+      (this.graph.model.isEdge(state.cell) ||
+        this.graph.model.isNode(state.cell)) &&
+      this.graph.isCellDeletable(state.cell) &&
+      this.graph.model.getChildCount(state.cell) === 0
+    ) {
+      const NONE = 'none'
+      const stroke = state.style.stroke || NONE
+      const fill = state.style.fill || NONE
+      return stroke === NONE && fill === NONE
+    }
+
+    return false
   }
 
   protected reset() {

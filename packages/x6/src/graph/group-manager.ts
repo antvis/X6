@@ -26,7 +26,7 @@ export class GroupManager extends BaseManager {
             this.model.setGeometry(group, new Geometry())
           }
 
-          // Adds the group into the parent
+          // Add the group into the parent
           let index = this.model.getChildCount(parent!)
           this.graph.creationManager.cellsAdded(
             [group],
@@ -39,7 +39,7 @@ export class GroupManager extends BaseManager {
             false,
           )
 
-          // Adds the children into the group and moves
+          // Add the children into the group and moves
           index = this.model.getChildCount(group)
 
           this.graph.creationManager.cellsAdded(
@@ -62,9 +62,8 @@ export class GroupManager extends BaseManager {
             false,
           )
 
-          // Resizes the group
+          // Resize the group
           this.graph.sizeManager.cellsResized([group], [bounds], false)
-
           this.graph.trigger(events.groupCells, { group, cells, border })
         })
       }
@@ -103,19 +102,14 @@ export class GroupManager extends BaseManager {
     if (result != null) {
       if (this.graph.isSwimlane(group)) {
         const size = this.graph.getStartSize(group)
-
         result.x -= size.width
         result.y -= size.height
         result.width += size.width
         result.height += size.height
       }
 
-      // Adds the border
       if (border != null) {
-        result.x -= border
-        result.y -= border
-        result.width += 2 * border
-        result.height += 2 * border
+        result.grow(border)
       }
     }
 
