@@ -21,8 +21,8 @@ export class ViewportAccessor extends BaseGraph {
     return this
   }
 
-  resetScrollbar() {
-    this.viewportManager.resetScrollbar()
+  scrollToCenter() {
+    this.viewportManager.scrollToCenter()
     return this
   }
 
