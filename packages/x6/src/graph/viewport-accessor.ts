@@ -21,11 +21,6 @@ export class ViewportAccessor extends BaseGraph {
     return this
   }
 
-  scrollToCenter() {
-    this.viewportManager.scrollToCenter()
-    return this
-  }
-
   /**
    * Get the bounds of the visible graph.
    */
