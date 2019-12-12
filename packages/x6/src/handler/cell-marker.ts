@@ -1,4 +1,5 @@
 import * as util from '../util'
+import { globals } from '../option/global'
 import { Graph } from '../graph'
 import { Cell } from '../core/cell'
 import { State } from '../core/state'
@@ -16,20 +17,25 @@ export class CellMarker extends BaseHandler {
   currentColor: string | null = null
 
   hotspotable: boolean
-  hotspot: number
+  hotspotRate: number
   minHotspotSize: number
   maxHotspotSize: number
 
   constructor(graph: Graph, options: CellMarker.Options) {
     super(graph)
-    this.validColor = options.validColor ? options.validColor : '#00FF00'
-    this.invalidColor = options.invalidColor ? options.invalidColor : '#FF0000'
-    this.hotspot = options.hotspot != null ? options.hotspot : 0.3
-    this.hotspotable = options.hotspotable != null ? options.hotspotable : false
-    this.minHotspotSize =
-      options.minHotspotSize != null ? options.minHotspotSize : 8
-    this.maxHotspotSize =
-      options.maxHotspotSize != null ? options.maxHotspotSize : 0
+    this.validColor = util.ensureValue(
+      options.validColor,
+      globals.defaultValidColor,
+    )
+    this.invalidColor = util.ensureValue(
+      options.invalidColor,
+      globals.defaultInvalidColor,
+    )
+
+    this.hotspotRate = util.ensureValue(options.hotspotRate, 0.3)
+    this.hotspotable = util.ensureValue(options.hotspotable, false)
+    this.minHotspotSize = util.ensureValue(options.minHotspotSize, 8)
+    this.maxHotspotSize = util.ensureValue(options.maxHotspotSize, 0)
 
     this.highlight = new CellHighlight(graph, options)
   }
@@ -49,9 +55,18 @@ export class CellMarker extends BaseHandler {
   reset() {
     this.validState = null
     if (this.markedState != null) {
-      this.markedState = null
       this.unmark()
     }
+  }
+
+  mark() {
+    this.highlight.setHighlightColor(this.currentColor)
+    this.highlight.highlight(this.markedState)
+  }
+
+  unmark() {
+    this.markedState = null
+    this.mark()
   }
 
   protected setCurrentState(
@@ -79,16 +94,6 @@ export class CellMarker extends BaseHandler {
         this.unmark()
       }
     }
-  }
-
-  mark() {
-    this.highlight.setHighlightColor(this.currentColor)
-    this.highlight.highlight(this.markedState)
-  }
-
-  protected unmark() {
-    this.markedState = null
-    this.mark()
   }
 
   protected isValidState(state: State) {
@@ -148,7 +153,7 @@ export class CellMarker extends BaseHandler {
         state,
         e.getGraphX(),
         e.getGraphY(),
-        this.hotspot,
+        this.hotspotRate,
         this.minHotspotSize,
         this.maxHotspotSize,
       )
@@ -164,11 +169,14 @@ export class CellMarker extends BaseHandler {
 }
 
 export namespace CellMarker {
-  export interface Options extends CellHighlight.Options {
+  export interface Options extends CellHighlight.Options, HotspotOptions {
     validColor?: string
     invalidColor?: string
-    hotspot?: number
+  }
+
+  export interface HotspotOptions {
     hotspotable?: boolean
+    hotspotRate?: number
     minHotspotSize?: number
     maxHotspotSize?: number
   }

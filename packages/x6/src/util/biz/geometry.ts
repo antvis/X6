@@ -307,11 +307,11 @@ export function isInHotspot(
   state: State,
   x: number,
   y: number,
-  hotspot: number = 1,
-  min: number = 0,
-  max: number = 0,
+  hotspotRate: number = 1,
+  minHotspotSize: number = 0,
+  maxHotspotSize: number = 0,
 ) {
-  if (hotspot > 0) {
+  if (hotspotRate > 0) {
     let cx = state.bounds.getCenterX()
     let cy = state.bounds.getCenterY()
     let w = state.bounds.width
@@ -328,12 +328,14 @@ export function isInHotspot(
       }
     }
 
-    w = Math.max(min, w * hotspot)
-    h = Math.max(min, h * hotspot)
+    if (minHotspotSize >= 0) {
+      w = Math.max(minHotspotSize, w * hotspotRate)
+      h = Math.max(minHotspotSize, h * hotspotRate)
+    }
 
-    if (max > 0) {
-      w = Math.min(w, max)
-      h = Math.min(h, max)
+    if (maxHotspotSize > 0) {
+      w = Math.min(w, maxHotspotSize)
+      h = Math.min(h, maxHotspotSize)
     }
 
     const rect = new Rectangle(cx - w / 2, cy - h / 2, w, h)
