@@ -25,7 +25,7 @@ export class Cell extends Disposable {
   private node?: boolean
   private edge?: boolean
 
-  constructor(data?: any, geometry?: Geometry, style?: Style) {
+  constructor(data?: any, geometry?: Geometry | null, style?: Style) {
     super()
     this.data = data || null
     this.style = style || {}
