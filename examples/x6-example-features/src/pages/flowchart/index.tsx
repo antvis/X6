@@ -15,6 +15,7 @@ export default class FlowChart extends React.Component {
     DomEvent.disableContextMenu(this.container)
     this.graph = createGraph(this.container)
     demo(this.graph)
+    this.graph.center()
     this.setState({ inited: true })
   }
 
@@ -50,7 +51,7 @@ export default class FlowChart extends React.Component {
                 {this.graph && <GraphToolbar graph={this.graph} />}
               </div>
               <div className="flowchart-graph">
-                <div className="graph" ref={this.refContainer} />
+                <div className="graph" ref={this.refContainer} tabIndex={-1} />
               </div>
             </div>
             {this.graph && <Setting graph={this.graph} />}

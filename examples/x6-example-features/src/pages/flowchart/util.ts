@@ -43,7 +43,7 @@ export function createGraph(container: HTMLDivElement) {
     keyboard: {
       enabled: true,
       global: false,
-      escape: false,
+      escape: true,
     },
     selectionPreview: {
       dashed: false,
@@ -60,6 +60,16 @@ export function createGraph(container: HTMLDivElement) {
       elbow: 'vertical',
       labelBackgroundColor: '#f8f9fa',
       movable: false,
+    },
+    dropEnabled: true,
+    dropTargetHighlight: {
+      stroke: '#87d068',
+      opacity: 1,
+    },
+    isValidDropTarget(target) {
+      if (target && target.data) {
+        return isGroup(target.data.type)
+      }
     },
     isLabelMovable() {
       return false
