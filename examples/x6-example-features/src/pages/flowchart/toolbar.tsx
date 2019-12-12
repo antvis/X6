@@ -1,7 +1,7 @@
 import React from 'react'
 import { Radio } from 'antd'
 import { Toolbar, Menu } from '@antv/x6-components'
-import { Graph, UndoManager, View } from '@antv/x6'
+import { Graph, UndoManager, View, Model } from '@antv/x6'
 
 export class GraphToolbar extends React.Component<
   GraphToolbar.Props,
@@ -21,7 +21,7 @@ export class GraphToolbar extends React.Component<
         {
           name: 'zoomIn',
           icon: 'zoom-in',
-          tooltip: 'Zoom In',
+          tooltip: '放大',
           handler: () => {
             let scale = this.graph.view.scale
             if (scale >= 8) {
@@ -49,7 +49,7 @@ export class GraphToolbar extends React.Component<
         {
           name: 'zoomOut',
           icon: 'zoom-out',
-          tooltip: 'Zoom Out',
+          tooltip: '缩小',
           handler: () => {
             let scale = this.graph.view.scale
             if (scale <= 0.15) {
@@ -79,14 +79,14 @@ export class GraphToolbar extends React.Component<
         {
           name: 'undo',
           icon: 'undo',
-          tooltip: 'Undo',
+          tooltip: '撤销',
           shortcut: 'Cmd + Z',
           handler: () => this.undoManager.undo(),
         },
         {
           name: 'redo',
           icon: 'redo',
-          tooltip: 'Redo',
+          tooltip: '重做',
           shortcut: 'Cmd + Shift + Z',
           handler: () => this.undoManager.redo(),
         },
@@ -95,7 +95,7 @@ export class GraphToolbar extends React.Component<
         {
           name: 'delete',
           icon: 'delete',
-          tooltip: 'Delete',
+          tooltip: '删除',
           shortcut: 'Delete',
           handler: () => this.graph.deleteCells(),
         },
@@ -105,11 +105,7 @@ export class GraphToolbar extends React.Component<
     this.commands.forEach(items =>
       items.forEach(item => {
         if (item.shortcut) {
-          const shortcut = item.shortcut
-            .replace('Delete', 'backspace')
-            .replace('Cmd', 'command')
-            .toLowerCase()
-          this.graph.bindKey(shortcut, item.handler)
+          this.graph.bindKey(item.shortcut, item.handler)
         }
       }),
     )
@@ -117,6 +113,7 @@ export class GraphToolbar extends React.Component<
     this.graph.on(Graph.events.selectionChanged, this.updateState)
     this.graph.view.on(View.events.scale, this.updateState)
     this.graph.view.on(View.events.scaleAndTranslate, this.updateState)
+    this.graph.model.on(Model.events.change, this.updateState)
     this.undoManager.on(UndoManager.events.undo, this.updateState)
     this.undoManager.on(UndoManager.events.redo, this.updateState)
 
@@ -146,6 +143,10 @@ export class GraphToolbar extends React.Component<
   onClick = (name: string) => {
     if (name === 'resetView') {
       this.graph.zoomTo(1)
+      this.graph.center()
+    } else if (name === 'fitWindow') {
+      this.graph.fit(8)
+      // this.graph.center()
     } else if (
       name === '25' ||
       name === '50' ||
@@ -163,17 +164,8 @@ export class GraphToolbar extends React.Component<
 
   renderZoomDropdown() {
     const MenuItem = Menu.Item
-    const Divider = Menu.Divider
-
     return (
       <Menu hasIcon={false}>
-        <MenuItem name="resetView" hotkey="Cmd+H">
-          重置视口
-        </MenuItem>
-        <MenuItem name="fitWindow" hotkey="Cmd+Shift+H">
-          适应窗口
-        </MenuItem>
-        <Divider />
         <MenuItem name="25">25%</MenuItem>
         <MenuItem name="50">50%</MenuItem>
         <MenuItem name="75">75%</MenuItem>
@@ -187,6 +179,9 @@ export class GraphToolbar extends React.Component<
   }
 
   render() {
+    const Item = Toolbar.Item
+    const Group = Toolbar.Group
+
     return (
       <Toolbar
         onClick={this.onClick}
@@ -199,13 +194,17 @@ export class GraphToolbar extends React.Component<
           </Radio.Group>
         }
       >
-        <Toolbar.Item dropdown={this.renderZoomDropdown()}>
+        <Item dropdown={this.renderZoomDropdown()}>
           {(this.graph.view.scale * 100).toFixed(0)}%
-        </Toolbar.Item>
+        </Item>
+        <Group>
+          <Item name="resetView" tooltip="重置视口" icon="retweet" />
+          <Item name="fitWindow" tooltip="适应窗口" icon="fullscreen" />
+        </Group>
         {this.commands.map(items => (
-          <Toolbar.Group key={items.map(i => i.name).join('-')}>
+          <Group key={items.map(i => i.name).join('-')}>
             {items.map(item => (
-              <Toolbar.Item
+              <Item
                 key={item.name}
                 name={item.name}
                 icon={item.icon}
@@ -218,7 +217,7 @@ export class GraphToolbar extends React.Component<
                 onClick={item.handler}
               />
             ))}
-          </Toolbar.Group>
+          </Group>
         ))}
       </Toolbar>
     )

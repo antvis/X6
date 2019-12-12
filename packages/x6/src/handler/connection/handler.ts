@@ -245,7 +245,7 @@ export class ConnectionHandler extends MouseHandler {
 
           if (target != null) {
             // tslint:disable-next-line
-            dropTarget = this.graph.getDropTarget([target], evt, dropTarget)!
+            dropTarget = this.graph.getDropTarget(evt, [target], dropTarget)!
 
             // Disables edges as drop targets if the target cell was created
             if (
