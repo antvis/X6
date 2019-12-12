@@ -46,7 +46,7 @@ export class Rectangle {
       Math.round(this.x),
       Math.round(this.y),
       Math.round(this.width),
-      Math.round(this.height)
+      Math.round(this.height),
     )
   }
 
@@ -56,7 +56,7 @@ export class Rectangle {
     x: number | Rectangle | Rectangle.RectangleLike,
     y?: number,
     w?: number,
-    h?: number
+    h?: number,
   ): void {
     const b = typeof x === 'number' ? { x, y: y!, width: w!, height: h! } : x
 
@@ -66,77 +66,17 @@ export class Rectangle {
     this.height = b.height
   }
 
-  containsPoint(x: number, y: number): boolean
-  containsPoint(point: Point | Point.PointLike): boolean
-  containsPoint(x: number | Point | Point.PointLike, y?: number): boolean {
-    const point = typeof x === 'number' ? { x, y: y! } : x
-    return (
-      point != null &&
-      point.x >= this.x &&
-      point.x <= this.x + this.width &&
-      point.y >= this.y &&
-      point.y <= this.y + this.height
-    )
-  }
+  grow(amount: number): this
+  grow(width: number, height: number): this
+  grow(width: number, height?: number) {
+    const w = width
+    const h = height != null ? height : width
+    this.x -= w
+    this.y -= h
+    this.width += 2 * w
+    this.height += 2 * h
 
-  containsRect(x: number, y: number, w: number, h: number): boolean
-  containsRect(rect: Rectangle | Rectangle.RectangleLike): boolean
-  containsRect(
-    x: number | Rectangle | Rectangle.RectangleLike,
-    y?: number,
-    w?: number,
-    h?: number
-  ) {
-    const b = typeof x === 'number' ? { x, y: y!, width: w!, height: h! } : x
-
-    const x1 = this.x
-    const y1 = this.y
-    const w1 = this.width
-    const h1 = this.height
-
-    const x2 = b.x
-    const y2 = b.y
-    const w2 = b.width
-    const h2 = b.height
-
-    return x2 >= x1 && y2 >= y1 && x2 + w2 <= x1 + w1 && y2 + h2 <= y1 + h1
-  }
-
-  isIntersectWith(x: number, y: number, w: number, h: number): boolean
-  isIntersectWith(rect: Rectangle | Rectangle.RectangleLike): boolean
-  isIntersectWith(
-    x: number | Rectangle | Rectangle.RectangleLike,
-    y?: number,
-    w?: number,
-    h?: number
-  ) {
-    const b = typeof x === 'number' ? { x, y: y!, width: w!, height: h! } : x
-
-    let w1 = this.width
-    let h1 = this.height
-    let w2 = b.width
-    let h2 = b.height
-
-    if (w2 <= 0 || h2 <= 0 || w1 <= 0 || h1 <= 0) {
-      return false
-    }
-
-    const x1 = this.x
-    const y1 = this.y
-    const x2 = b.x
-    const y2 = b.y
-
-    w2 += x2
-    h2 += y2
-    w1 += x1
-    h1 += y1
-
-    return (
-      (w2 < x2 || w2 > x1) &&
-      (h2 < y2 || h2 > y1) &&
-      (w1 < x1 || w1 > x2) &&
-      (h1 < y1 || h1 > y2)
-    )
+    return this
   }
 
   add(rect: Rectangle | Rectangle.RectangleLike) {
@@ -172,15 +112,6 @@ export class Rectangle {
     return this
   }
 
-  grow(amount: number) {
-    this.x -= amount
-    this.y -= amount
-    this.width += 2 * amount
-    this.height += 2 * amount
-
-    return this
-  }
-
   rotate90() {
     const t = (this.width - this.height) / 2
     this.x += t
@@ -190,6 +121,79 @@ export class Rectangle {
     this.height = tmp
 
     return this
+  }
+
+  containsPoint(x: number, y: number): boolean
+  containsPoint(point: Point | Point.PointLike): boolean
+  containsPoint(x: number | Point | Point.PointLike, y?: number): boolean {
+    const point = typeof x === 'number' ? { x, y: y! } : x
+    return (
+      point != null &&
+      point.x >= this.x &&
+      point.x <= this.x + this.width &&
+      point.y >= this.y &&
+      point.y <= this.y + this.height
+    )
+  }
+
+  containsRect(x: number, y: number, w: number, h: number): boolean
+  containsRect(rect: Rectangle | Rectangle.RectangleLike): boolean
+  containsRect(
+    x: number | Rectangle | Rectangle.RectangleLike,
+    y?: number,
+    w?: number,
+    h?: number,
+  ) {
+    const b = typeof x === 'number' ? { x, y: y!, width: w!, height: h! } : x
+
+    const x1 = this.x
+    const y1 = this.y
+    const w1 = this.width
+    const h1 = this.height
+
+    const x2 = b.x
+    const y2 = b.y
+    const w2 = b.width
+    const h2 = b.height
+
+    return x2 >= x1 && y2 >= y1 && x2 + w2 <= x1 + w1 && y2 + h2 <= y1 + h1
+  }
+
+  isIntersectWith(x: number, y: number, w: number, h: number): boolean
+  isIntersectWith(rect: Rectangle | Rectangle.RectangleLike): boolean
+  isIntersectWith(
+    x: number | Rectangle | Rectangle.RectangleLike,
+    y?: number,
+    w?: number,
+    h?: number,
+  ) {
+    const b = typeof x === 'number' ? { x, y: y!, width: w!, height: h! } : x
+
+    let w1 = this.width
+    let h1 = this.height
+    let w2 = b.width
+    let h2 = b.height
+
+    if (w2 <= 0 || h2 <= 0 || w1 <= 0 || h1 <= 0) {
+      return false
+    }
+
+    const x1 = this.x
+    const y1 = this.y
+    const x2 = b.x
+    const y2 = b.y
+
+    w2 += x2
+    h2 += y2
+    w1 += x1
+    h1 += y1
+
+    return (
+      (w2 < x2 || w2 > x1) &&
+      (h2 < y2 || h2 > y1) &&
+      (w1 < x1 || w1 > x2) &&
+      (h1 < y1 || h1 > y2)
+    )
   }
 
   equals(rect: Rectangle | Rectangle.RectangleLike) {
