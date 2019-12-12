@@ -63,8 +63,8 @@ export function getByPath(
   return ret
 }
 
-export function ensureValue(value: any, defaultValue: any) {
-  return value != null ? value : defaultValue
+export function ensureValue<T>(value: T | null | undefined, defaultValue: T) {
+  return value != null ? value : defaultValue!
 }
 
 export function getValue(obj: any, key: string, defaultValue?: any) {

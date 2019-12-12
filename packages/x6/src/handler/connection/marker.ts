@@ -6,11 +6,16 @@ import { getConnectionIcon, getConnectionHighlightOptions } from './option'
 
 export class ConnectionMarker extends CellMarker {
   master: ConnectionHandler
+  hotspotable: boolean
 
-  constructor(master: ConnectionHandler) {
-    const options = getConnectionHighlightOptions({ graph: master.graph })
-    super(master.graph, options)
+  constructor(master: ConnectionHandler, options: ConnectionMarker.Options) {
+    super(master.graph, {
+      ...options,
+      ...getConnectionHighlightOptions({ graph: master.graph }),
+    })
+
     this.master = master
+    this.hotspotable = options.hotspotable === true
   }
 
   get preview() {
@@ -95,29 +100,34 @@ export class ConnectionMarker extends CellMarker {
     return super.isValidState(state)
   }
 
-  private hasConnectIcon(state: State | null) {
-    if (state != null) {
-      return (
-        getConnectionIcon({
-          graph: this.graph,
-          cell: state.cell,
-        }) != null
-      )
+  intersects(state: State, e: MouseEventEx) {
+    if (this.hasConnectIcon(state) || this.preview.isConnecting()) {
+      return true
+    }
+
+    if (this.hotspotable) {
+      return super.intersects(state, e)
     }
 
     return false
   }
 
   getMarkerColor(evt: Event, state: State, isValid: boolean) {
-    return !this.hasConnectIcon(state) || this.preview.isConnecting()
-      ? super.getMarkerColor(evt, state, isValid)
-      : null
+    if (!this.hasConnectIcon(state) || this.preview.isConnecting()) {
+      return super.getMarkerColor(evt, state, isValid)
+    }
+    return null
   }
 
-  intersects(state: State, e: MouseEventEx) {
-    if (this.hasConnectIcon(state) || this.preview.isConnecting()) {
-      return true
+  private hasConnectIcon(state: State | null) {
+    if (state != null) {
+      return getConnectionIcon({ graph: this.graph, cell: state.cell }) != null
     }
-    return super.intersects(state, e)
+
+    return false
   }
+}
+
+export namespace ConnectionMarker {
+  export interface Options extends CellMarker.HotspotOptions {}
 }
