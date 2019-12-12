@@ -8,7 +8,6 @@ import { Rectangle, Point } from '../../struct'
 import { Disposable, MouseEventEx } from '../../common'
 import { applyConnectionHighlightStyle } from '../connection/option'
 import {
-  MovingPreviewOptions,
   applyMovingPreviewStyle,
   applyDropTargetHighlightStyle,
 } from './option'
@@ -55,7 +54,7 @@ export class Preview extends Disposable {
   constructor(public master: MovingHandler) {
     super()
 
-    const options = this.graph.options.movingPreview as MovingPreviewOptions
+    const options = this.graph.options.movingPreview
     this.htmlPreview = options.html
     this.minimumSize = options.minimumSize
   }
@@ -216,7 +215,7 @@ export class Preview extends Disposable {
 
     if (graph.isDropEnabled()) {
       // Call getCellAt to find the cell under the mouse
-      target = graph.getDropTarget(this.cells, e.getEvent(), cell, clone)
+      target = graph.getDropTarget(e.getEvent(), this.cells, cell, clone)
     }
 
     let state = graph.view.getState(target)
