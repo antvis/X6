@@ -1,10 +1,8 @@
-import * as util from '../util'
 import { globals } from '../option'
 import { Cell } from '../core/cell'
 import { Rectangle, Point } from '../struct'
 import { hook } from './decorator'
 import { BaseGraph } from './base-graph'
-import { DomEvent } from '../common'
 
 export class CommonAccessor extends BaseGraph {
   batchUpdate(update: () => void) {
@@ -99,19 +97,6 @@ export class CommonAccessor extends BaseGraph {
   isLabelClipped(cell: Cell) {
     const style = this.getStyle(cell)
     return style != null ? style.overflow === 'hidden' : false
-  }
-
-  @hook()
-  isSwimlane(cell: Cell | null) {
-    if (cell != null) {
-      if (this.model.getParent(cell) !== this.model.getRoot()) {
-        const style = this.getStyle(cell)
-        if (style != null && !this.model.isEdge(cell)) {
-          return style.shape === 'swimlane'
-        }
-      }
-    }
-    return false
   }
 
   @hook()
@@ -238,113 +223,5 @@ export class CommonAccessor extends BaseGraph {
    */
   isAllowOverlapParent(cell: Cell) {
     return false
-  }
-
-  @hook()
-  isValidDropTarget(target: Cell, cells: Cell[], e: MouseEvent) {
-    return (
-      target != null &&
-      ((this.isSplitEnabled() && this.isSplitTarget(target, cells, e)) ||
-        (!this.model.isEdge(target) &&
-          (this.isSwimlane(target) ||
-            (this.model.getChildCount(target) > 0 &&
-              !this.isCellCollapsed(target)))))
-    )
-  }
-
-  @hook()
-  isSplitTarget(target: Cell, cells: Cell[], e: MouseEvent) {
-    if (
-      this.model.isEdge(target) &&
-      cells != null &&
-      cells.length === 1 &&
-      this.isCellConnectable(cells[0]) &&
-      this.validationManager.isEdgeValid(
-        target,
-        this.model.getTerminal(target, true),
-        cells[0],
-      )
-    ) {
-      const src = this.model.getTerminal(target, true)!
-      const trg = this.model.getTerminal(target, false)!
-
-      return (
-        !this.model.isAncestor(cells[0], src) &&
-        !this.model.isAncestor(cells[0], trg)
-      )
-    }
-
-    return false
-  }
-
-  /**
-   * Returns the given cell if it is a drop target for the given cells or the
-   * nearest ancestor that may be used as a drop target for the given cells.
-   *
-   * @param cells Array of `Cell`s which are to be dropped onto the target.
-   * @param e Mouseevent for the drag and drop.
-   * @param cell `Cell` that is under the mousepointer.
-   * @param clone Optional boolean to indicate of cells will be cloned.
-   */
-  getDropTarget(
-    cells: Cell[],
-    e: MouseEvent,
-    cell: Cell | null,
-    clone?: boolean,
-  ) {
-    if (!this.isSwimlaneNesting()) {
-      for (let i = 0; i < cells.length; i += 1) {
-        if (this.isSwimlane(cells[i])) {
-          return null
-        }
-      }
-    }
-
-    const p = util.clientToGraph(
-      this.container,
-      DomEvent.getClientX(e),
-      DomEvent.getClientY(e),
-    )
-    p.x -= this.panDx
-    p.y -= this.panDy
-    const swimlane = this.retrievalManager.getSwimlaneAt(p.x, p.y)
-
-    if (cell == null) {
-      // tslint:disable-next-line
-      cell = swimlane!
-    } else if (swimlane != null) {
-      // Checks if the cell is an ancestor of the swimlane
-      // under the mouse and uses the swimlane in that case
-      let tmp = this.model.getParent(swimlane)
-
-      while (tmp != null && this.isSwimlane(tmp) && tmp !== cell) {
-        tmp = this.model.getParent(tmp)
-      }
-
-      if (tmp === cell) {
-        // tslint:disable-next-line
-        cell = swimlane
-      }
-    }
-
-    while (
-      cell != null &&
-      !this.isValidDropTarget(cell, cells, e) &&
-      !this.model.isLayer(cell)
-    ) {
-      // tslint:disable-next-line
-      cell = this.model.getParent(cell)!
-    }
-
-    // Checks if parent is dropped into child if not cloning
-    if (clone == null || !clone) {
-      let parent = cell
-
-      while (parent != null && util.indexOf(cells, parent) < 0) {
-        parent = this.model.getParent(parent)!
-      }
-    }
-
-    return !this.model.isLayer(cell) && parent == null ? cell : null
   }
 }
