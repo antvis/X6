@@ -49,15 +49,15 @@ export class Graph extends BaseGraph implements IHooks {
 
     super.createManagers()
     super.createHandlers()
-    this.init(container)
+    this.init()
     this.view.revalidate()
   }
 
-  protected init(container: HTMLElement) {
+  protected init() {
     this.viewportManager.init()
     this.view.init()
     this.sizeDidChange()
-    this.resetScrollbar()
+    this.viewportManager.resetScrollbar()
     return this
   }
 
