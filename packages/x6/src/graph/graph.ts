@@ -51,6 +51,7 @@ export class Graph extends BaseGraph implements IHooks {
     super.createHandlers()
     this.init()
     this.view.revalidate()
+    this.container.focus()
   }
 
   protected init() {
