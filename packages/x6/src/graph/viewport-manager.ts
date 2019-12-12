@@ -359,18 +359,6 @@ export class ViewportManager extends BaseManager {
     }
   }
 
-  scrollToCenter() {
-    const container = this.container
-    if (util.hasScrollbars(container)) {
-      const bounds = this.getGraphBounds()
-      const center = bounds.getCenter()
-      const cw = container.clientWidth
-      const ch = container.clientHeight
-      container.scrollLeft = center.x - cw / 2
-      container.scrollTop = center.y - ch / 2
-    }
-  }
-
   resizeContainer(width: number, height: number) {
     const w =
       this.graph.maxContainerSize != null
