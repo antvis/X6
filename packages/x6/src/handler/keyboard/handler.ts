@@ -18,6 +18,16 @@ export class KeyboardHandler extends BaseHandler {
     this.mousetrap = new Mousetrap(this.target as Element, this)
   }
 
+  enable() {
+    this.graph.options.keyboard.enabled = true
+    super.enable()
+  }
+
+  disable() {
+    this.graph.options.keyboard.enabled = false
+    super.disable()
+  }
+
   bind(
     keys: string | string[],
     callback: KeyboardHandler.Handler,
@@ -31,7 +41,15 @@ export class KeyboardHandler extends BaseHandler {
   }
 
   private getKeys(keys: string | string[]) {
-    return (Array.isArray(keys) ? keys : [keys]).map(this.formatkey)
+    return (Array.isArray(keys) ? keys : [keys])
+      .map(key =>
+        key
+          .toLowerCase()
+          .replace(/\s/g, '')
+          .replace('delete', 'backspace')
+          .replace('cmd', 'command'),
+      )
+      .map(this.formatkey)
   }
 
   protected isGraphEvent(e: KeyboardEvent) {
