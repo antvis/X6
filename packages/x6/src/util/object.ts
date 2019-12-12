@@ -63,12 +63,13 @@ export function getByPath(
   return ret
 }
 
+export function ensureValue(value: any, defaultValue: any) {
+  return value != null ? value : defaultValue
+}
+
 export function getValue(obj: any, key: string, defaultValue?: any) {
-  let value = obj != null ? obj[key] : null
-  if (value == null) {
-    value = defaultValue
-  }
-  return value
+  const value = obj != null ? obj[key] : null
+  return ensureValue(value, defaultValue)
 }
 
 export function getNumber(obj: any, key: string, defaultValue: number) {
