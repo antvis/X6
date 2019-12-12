@@ -10,37 +10,24 @@ export class ZoomManager extends BaseManager {
     const cw = this.container.clientWidth
     const ch = this.container.clientHeight
 
-    const t = this.view.translate
-    const s = this.view.scale
-
-    let dx = horizontal ? cw - bounds.width : 0
-    let dy = vertical ? ch - bounds.height : 0
-
     if (!hasScrollbars) {
+      const s = this.view.scale
+      const t = this.view.translate
+      const dx = horizontal ? cw - bounds.width : 0
+      const dy = vertical ? ch - bounds.height : 0
       const tx = horizontal
         ? Math.floor(t.x - bounds.x * s + (dx * cx) / s)
         : t.x
       const ty = vertical ? Math.floor(t.y - bounds.y * s + (dy * cy) / s) : t.y
       this.view.setTranslate(tx, ty)
     } else {
-      const sw = this.container.scrollWidth
-      const sh = this.container.scrollHeight
-
-      if (sw > cw) {
-        dx = 0
+      const center = bounds.getCenter()
+      if (horizontal) {
+        this.container.scrollLeft = (center.x - cw / 2) * 2 * cx
       }
-
-      if (sh > ch) {
-        dy = 0
+      if (vertical) {
+        this.container.scrollTop = (center.y - ch / 2) * 2 * cy
       }
-
-      this.view.setTranslate(
-        Math.floor(dx / 2 - (bounds.x - t.x)),
-        Math.floor(dy / 2 - (bounds.y - t.y)),
-      )
-
-      this.container.scrollLeft = (sw - cw) / 2
-      this.container.scrollTop = (sh - ch) / 2
     }
   }
 
@@ -48,21 +35,21 @@ export class ZoomManager extends BaseManager {
     border: number,
     keepOrigin: boolean,
     margin: number,
-    enabled: boolean,
+    applyScale: boolean,
     ignoreWidth: boolean,
     ignoreHeight: boolean,
     maxHeight?: number,
   ) {
-    if (this.container != null) {
-      // Adds spacing and border from css
+    const container = this.container
+    if (container != null) {
       const cssBorder = this.getBorderSizes()
-      let w1 = this.container.offsetWidth - cssBorder.x - cssBorder.width - 1
-      let h1 =
-        maxHeight != null
-          ? maxHeight
-          : this.container.offsetHeight - cssBorder.y - cssBorder.height - 1
-      let bounds = this.view.getGraphBounds()
+      let w1 = container.offsetWidth - cssBorder.x - cssBorder.width - 1
+      let h1 = util.ensureValue(
+        maxHeight,
+        container.offsetHeight - cssBorder.y - cssBorder.height - 1,
+      )
 
+      let bounds = this.view.getGraphBounds()
       if (bounds.width > 0 && bounds.height > 0) {
         if (keepOrigin && bounds.x != null && bounds.y != null) {
           bounds = bounds.clone()
@@ -72,37 +59,37 @@ export class ZoomManager extends BaseManager {
           bounds.y = 0
         }
 
-        const s = this.view.scale
-        const w2 = bounds.width / s
-        const h2 = bounds.height / s
-        const b = (keepOrigin ? border : 2 * border) + margin + 1
+        const scale = this.view.scale
+        const w2 = bounds.width / scale
+        const h2 = bounds.height / scale
+        const space = (keepOrigin ? border : 2 * border) + margin + 1
 
-        w1 -= b
-        h1 -= b
+        w1 -= space
+        h1 -= space
 
-        let s2 = ignoreWidth
+        let newScale = ignoreWidth
           ? h1 / h2
           : ignoreHeight
           ? w1 / w2
           : Math.min(w1 / w2, h1 / h2)
 
         if (this.graph.minFitScale != null) {
-          s2 = Math.max(s2, this.graph.minFitScale)
+          newScale = Math.max(newScale, this.graph.minFitScale)
         }
 
         if (this.graph.maxFitScale != null) {
-          s2 = Math.min(s2, this.graph.maxFitScale)
+          newScale = Math.min(newScale, this.graph.maxFitScale)
         }
 
-        if (enabled) {
+        if (applyScale) {
           if (!keepOrigin) {
             if (!util.hasScrollbars(this.container)) {
               const x0 =
                 bounds.x != null
                   ? Math.floor(
                       this.view.translate.x -
-                        bounds.x / s +
-                        border / s2 +
+                        bounds.x / scale +
+                        border / newScale +
                         margin / 2,
                     )
                   : border
@@ -111,30 +98,29 @@ export class ZoomManager extends BaseManager {
                 bounds.y != null
                   ? Math.floor(
                       this.view.translate.y -
-                        bounds.y / s +
-                        border / s2 +
+                        bounds.y / scale +
+                        border / newScale +
                         margin / 2,
                     )
                   : border
 
-              this.view.scaleAndTranslate(s2, x0, y0)
+              this.view.scaleAndTranslate(newScale, x0, y0)
             } else {
-              this.view.setScale(s2)
-              const b2 = this.graph.getGraphBounds()
-
-              if (b2.x != null) {
-                this.container.scrollLeft = b2.x
+              this.view.setScale(newScale)
+              const newBounds = this.graph.getGraphBounds()
+              const center = newBounds.getCenter()
+              if (newBounds.x != null) {
+                container.scrollLeft = center.x - container.clientWidth / 2
               }
-
-              if (b2.y != null) {
-                this.container.scrollTop = b2.y
+              if (newBounds.y != null) {
+                container.scrollTop = center.y - container.clientHeight / 2
               }
             }
-          } else if (this.view.scale !== s2) {
-            this.view.setScale(s2)
+          } else if (this.view.scale !== newScale) {
+            this.view.setScale(newScale)
           }
         } else {
-          return s2
+          return newScale
         }
       }
     }
