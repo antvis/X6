@@ -345,10 +345,10 @@ export const preset: FullOptions = {
   connectionPreview: {
     opacity: 1,
     fill: 'none',
-    dashed: true,
-    strokeWidth: 2,
+    dashed: ({ livePreview }) => (livePreview ? false : true),
+    strokeWidth: ({ livePreview }) => (livePreview ? 1 : 2),
     stroke: ({ valid }) =>
-      valid ? globals.defaultValidColor : globals.defaultInvalidColor,
+      valid ? globals.defaultPrimaryColor : globals.defaultInvalidColor,
   },
 
   edgeHandle: {

@@ -3,6 +3,7 @@ import { Style } from '../../types'
 import { Graph } from '../../graph'
 import { Cell } from '../../core/cell'
 import { View } from '../../core/view'
+import { State } from '../../core/state'
 import { Model } from '../../core/model'
 import { Geometry } from '../../core/geometry'
 import { MouseHandler } from '../handler-mouse'
@@ -14,7 +15,8 @@ export class ConnectionHandler extends MouseHandler {
   knobs: Knobs
   preview: Preview
 
-  factoryMethod?: (e: { source: Cell; target: Cell; style: Style }) => Cell
+  createEdgeManual?: (e: { source: Cell; target: Cell; style: Style }) => Cell
+  createEdgeState?: (e: MouseEventEx | null) => State | null
 
   autoSelect: boolean = true
   autoCreateTarget: boolean = false
@@ -70,7 +72,7 @@ export class ConnectionHandler extends MouseHandler {
     const options = this.graph.options.connection
 
     this.cursor = options.cursor
-    this.factoryMethod = options.createEdge
+    this.createEdgeManual = options.createEdge
     this.livePreview = options.livePreview
     this.autoSelect = options.autoSelect
     this.autoCreateTarget = options.autoCreateTarget
@@ -299,7 +301,7 @@ export class ConnectionHandler extends MouseHandler {
 
         if (edgeState != null) {
           data = edgeState.cell.data
-          style = edgeState.cell.style
+          style = edgeState.style // use mutated style
         }
 
         edge = this.insertEdge(parent, null, data, source, target!, style)
@@ -396,7 +398,7 @@ export class ConnectionHandler extends MouseHandler {
     target: Cell,
     style: Style,
   ) {
-    if (this.factoryMethod == null) {
+    if (this.createEdgeManual == null) {
       return this.graph.addEdge({ parent, id, data, source, target, style })
     }
 
@@ -409,9 +411,8 @@ export class ConnectionHandler extends MouseHandler {
   protected createEdge(data: any, source: Cell, target: Cell, style: Style) {
     let edge = null
 
-    // Creates a new edge using the factoryMethod
-    if (this.factoryMethod != null) {
-      edge = this.factoryMethod({ source, target, style })
+    if (this.createEdgeManual != null) {
+      edge = this.createEdgeManual.call(this.graph, { source, target, style })
     }
 
     if (edge == null) {

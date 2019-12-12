@@ -15,12 +15,13 @@ import {
 
 export interface ConnectionOptions {
   enabled: boolean
+
   /**
    * Function that is used for creating new edges.
    */
   createEdge?: (
     this: Graph,
-    e: { source: Cell; target: Cell; style: Style },
+    args: { source: Cell; target: Cell; style: Style },
   ) => Cell
 
   /**
@@ -256,7 +257,7 @@ export function applyConnectionPreviewStyle(
   args: ApplyConnectionPreviewStyleArgs,
 ) {
   const { graph } = args
-  const options = graph.options.connectionPreview as ConnectionPreviewOptions
+  const options = graph.options.connectionPreview
 
   applyBaseStyle(args, options)
   applyClassName(args, options, 'connection-preview')
