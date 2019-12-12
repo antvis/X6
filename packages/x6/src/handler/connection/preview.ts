@@ -26,9 +26,9 @@ export class Preview extends Disposable {
 
   private previewShape: Shape | null
 
-  constructor(public master: ConnectionHandler) {
+  constructor(public master: ConnectionHandler, options: Preview.Options) {
     super()
-    this.marker = new ConnectionMarker(this.master)
+    this.marker = new ConnectionMarker(this.master, options)
     this.anchorHandler = new AnchorHandler(this.graph)
   }
 
@@ -415,12 +415,11 @@ export class Preview extends Disposable {
 
   protected shouldUpdateCurrentState(e: MouseEventEx) {
     return (
-      (this.isStarted() ||
-        (this.master.isEnabled() && this.graph.isEnabled())) &&
+      (this.isStarted() || this.isEnabled()) &&
       (this.sourcePoint == null ||
+        this.previewShape != null ||
         Math.abs(e.getGraphX() - this.sourcePoint.x) > this.graph.tolerance ||
-        Math.abs(e.getGraphY() - this.sourcePoint.y) > this.graph.tolerance ||
-        this.previewShape != null)
+        Math.abs(e.getGraphY() - this.sourcePoint.y) > this.graph.tolerance)
     )
   }
 
@@ -662,4 +661,8 @@ export class Preview extends Disposable {
       delete this.anchorHandler
     }
   }
+}
+
+export namespace Preview {
+  export interface Options extends ConnectionMarker.Options {}
 }

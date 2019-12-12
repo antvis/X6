@@ -37,7 +37,7 @@ export class Shape extends Disposable {
    */
   style: Style
 
-  className?: string
+  className?: string | null
 
   /**
    * The scale in which the shape is being painted.

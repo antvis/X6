@@ -9,7 +9,6 @@ import { MouseHandler } from '../handler-mouse'
 import { MouseEventEx, Disposable } from '../../common'
 import { Knobs } from './knobs'
 import { Preview } from './preview'
-import { ConnectionOptions } from './option'
 
 export class ConnectionHandler extends MouseHandler {
   knobs: Knobs
@@ -68,21 +67,29 @@ export class ConnectionHandler extends MouseHandler {
   }
 
   protected config() {
-    const options = this.graph.options.connection as ConnectionOptions
+    const options = this.graph.options.connection
+
     this.cursor = options.cursor
     this.factoryMethod = options.createEdge
+    this.livePreview = options.livePreview
     this.autoSelect = options.autoSelect
     this.autoCreateTarget = options.autoCreateTarget
-    this.waypointsEnabled = options.waypointsEnabled
     this.ignoreMouseDown = options.ignoreMouseDown
-    this.livePreview = options.livePreview
+    this.waypointsEnabled = options.waypointsEnabled
     this.insertBeforeSource = options.insertBeforeSource
+
     this.setEnadled(options.enabled)
   }
 
   protected init() {
+    const options = this.graph.options.connection
     this.knobs = new Knobs(this)
-    this.preview = new Preview(this)
+    this.preview = new Preview(this, {
+      hotspotable: options.hotspotable,
+      hotspotRate: options.hotspotRate,
+      minHotspotSize: options.minHotspotSize,
+      maxHotspotSize: options.maxHotspotSize,
+    })
 
     // Redraws the icons if the graph changes
     this.changeHandler = () => {
@@ -177,7 +184,6 @@ export class ConnectionHandler extends MouseHandler {
         this.knobs.destroyIcons()
         this.preview.currentState = null
       }
-
       this.preview.process(e)
     } else {
       this.preview.resetAnchor()
