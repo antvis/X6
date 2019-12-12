@@ -86,13 +86,38 @@ export interface ConnectionOptions {
   insertBeforeSource: boolean
 
   /**
-   * Specifies if connections to the outline of a highlighted target should
-   * be enabled. This will allow to place the connection point along the
-   * outline of the highlighted target.
+   * Specifies if the hotspot is enabled.
    *
    * Default is `false`.
    */
-  outlineConnect: boolean
+  hotspotable: boolean
+
+  /**
+   * Specifies the portion of the width and height that should trigger
+   * a highlight. The area around the center of the cell to be marked
+   * is used as the hotspot.
+   *
+   * Default is `0.3`.
+   *
+   * Possible values are between 0 and 1.
+   */
+  hotspotRate: number
+
+  /**
+   * Defines the minimum size in pixels of the portion of the cell which is
+   * to be used as a connectable region.
+   *
+   * Default is `8`.
+   */
+  minHotspotSize: number
+
+  /**
+   * Defines the maximum size in pixels of the portion of the cell which is
+   * to be used as a connectable region.
+   *
+   * Use `0` for no maximum. Default is `0`.
+   */
+  maxHotspotSize: number
 }
 
 export interface ConnectionHighlightOptions {
@@ -110,40 +135,6 @@ export interface ConnectionHighlightOptions {
    * Default is `false`.
    */
   keepOnTop: boolean
-
-  /**
-   * Specifies if the hotspot is enabled.
-   *
-   * Default is `false`.
-   */
-  hotspotable: boolean
-
-  /**
-   * Specifies the portion of the width and height that should trigger
-   * a highlight. The area around the center of the cell to be marked
-   * is used as the hotspot.
-   *
-   * Default is `0.3`.
-   *
-   * Possible values are between 0 and 1.
-   */
-  hotspot: number
-
-  /**
-   * Defines the minimum size in pixels of the portion of the cell which is
-   * to be used as a connectable region.
-   *
-   * Default is `8`.
-   */
-  minHotspotSize?: number
-
-  /**
-   * Defines the maximum size in pixels of the portion of the cell which is
-   * to be used as a connectable region.
-   *
-   * Use `0` for no maximum. Default is `0`.
-   */
-  maxHotspotSize?: number
 }
 
 export interface GetConnectionHighlightOptionsArgs {

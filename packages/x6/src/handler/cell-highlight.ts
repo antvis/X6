@@ -1,4 +1,5 @@
 import * as util from '../util'
+import { globals } from '../option/global'
 import { View } from '../core/view'
 import { Model } from '../core/model'
 import { State } from '../core/state'
@@ -6,19 +7,18 @@ import { Graph } from '../graph'
 import { Shape } from '../shape'
 import { MouseEventEx, Disposable } from '../common'
 import { BaseHandler } from './handler-base'
-import { globals } from '../option/global'
 
 export class CellHighlight extends BaseHandler {
   state: State | null
   shape: Shape | null
+  className: string | null
+  cellClassName: string | null
   opacity: number
   highlightColor: string | null
   strokeWidth: number
   dashed: boolean
   spacing: number
   topMost: boolean
-  className: string | null
-  cellClassName: string | null
 
   private resetHandler: () => void
   private repaintHandler: () => void
@@ -26,14 +26,17 @@ export class CellHighlight extends BaseHandler {
   constructor(graph: Graph, options: CellHighlight.Options = {}) {
     super(graph)
 
-    this.highlightColor = options.highlightColor || globals.defaultValidColor
-    this.strokeWidth = options.strokeWidth || 3
-    this.opacity = options.opacity || 1
-    this.dashed = options.dashed != null ? options.dashed : false
-    this.topMost = options.keepOnTop != null ? options.keepOnTop : false
-    this.spacing = options.spacing || 2
-    this.className = options.className || null
-    this.cellClassName = options.cellClassName || null
+    this.className = util.ensureValue(options.className, null)
+    this.cellClassName = util.ensureValue(options.cellClassName, null)
+    this.highlightColor = util.ensureValue(
+      options.highlightColor,
+      globals.defaultValidColor,
+    )
+    this.strokeWidth = util.ensureValue(options.strokeWidth, 3)
+    this.opacity = util.ensureValue(options.opacity, 1)
+    this.dashed = util.ensureValue(options.dashed, false)
+    this.topMost = util.ensureValue(options.keepOnTop, false)
+    this.spacing = util.ensureValue(options.spacing, 2)
 
     this.repaintHandler = () => {
       if (this.state != null) {
@@ -65,15 +68,6 @@ export class CellHighlight extends BaseHandler {
     }
   }
 
-  drawHighlight() {
-    this.shape = this.createShape()
-    this.repaint()
-
-    if (!this.topMost && this.shape) {
-      util.toBack(this.shape.elem)
-    }
-  }
-
   protected createShape() {
     if (this.state) {
       const shape = this.graph.renderer.createShape(this.state)!
@@ -83,6 +77,7 @@ export class CellHighlight extends BaseHandler {
       shape.strokeColor = this.highlightColor
       shape.opacity = this.opacity
       shape.dashed = this.dashed
+      shape.className = this.className
       shape.shadow = false
       shape.dialect = 'svg'
       shape.svgPointerEvents = 'stroke'
@@ -94,6 +89,15 @@ export class CellHighlight extends BaseHandler {
     }
 
     return null
+  }
+
+  draw() {
+    this.shape = this.createShape()
+    this.repaint()
+
+    if (!this.topMost && this.shape) {
+      util.toBack(this.shape.elem)
+    }
   }
 
   repaint() {
@@ -110,8 +114,11 @@ export class CellHighlight extends BaseHandler {
         this.shape.outline = true
       }
 
-      if (this.state.shape) {
+      if (this.state.shape != null) {
         this.shape.setCursor(this.state.shape.getCursor())
+        if (this.cellClassName != null) {
+          this.state.shape.addClass(this.cellClassName)
+        }
       }
 
       this.shape.redraw()
@@ -133,9 +140,14 @@ export class CellHighlight extends BaseHandler {
       this.state = state
 
       if (this.state != null) {
-        this.drawHighlight()
-      } else if (prev != null && this.cellClassName != null) {
+        this.draw()
+      } else if (
+        prev != null &&
+        prev.shape != null &&
+        this.cellClassName != null
+      ) {
         // remove target cell class name
+        prev.shape.removeClass(this.cellClassName)
       }
     }
   }
@@ -173,6 +185,14 @@ export class CellHighlight extends BaseHandler {
 
 export namespace CellHighlight {
   export interface Options {
+    /**
+     * The class name of the highlight shape
+     */
+    className?: string
+    /**
+     * The class name added to cell when cell was highlighted
+     */
+    cellClassName?: string
     highlightColor?: string
     strokeWidth?: number
     opacity?: number
@@ -185,7 +205,5 @@ export namespace CellHighlight {
      * Default is `false`.
      */
     keepOnTop?: boolean
-    className?: string
-    cellClassName?: string
   }
 }

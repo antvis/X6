@@ -17,8 +17,8 @@ export class AnchorHandler extends BaseHandler {
 
   protected icons: ImageShape[] | null
   protected points: Point[] | null
-  protected highlight: Shape | null
   protected anchors: Anchor[] | null
+  protected highlight: Shape | null
 
   private resetHandler: (() => void) | null
   private containerEventInstalled = false
@@ -65,17 +65,17 @@ export class AnchorHandler extends BaseHandler {
       this.currentArea = state.bounds.clone()
 
       for (let i = 0, ii = this.anchors.length; i < ii; i += 1) {
-        const c = this.anchors[i]
-        const p = this.graph.view.getConnectionPoint(state, c)!
+        const anchor = this.anchors[i]
+        const point = this.graph.view.getConnectionPoint(state, anchor)!
 
-        this.redrawAmchor(state, c, p, this.icons[i])
-        this.points[i] = p
+        this.redrawAnchor(state, anchor, point, this.icons[i])
+        this.points[i] = point
         this.currentArea.add(this.icons[i].bounds)
       }
     }
   }
 
-  protected redrawAmchor(
+  protected redrawAnchor(
     state: State,
     anchor: Anchor,
     point: Point,
@@ -299,7 +299,7 @@ export class AnchorHandler extends BaseHandler {
       for (let i = 0, ii = this.anchors.length; i < ii; i += 1) {
         const c = this.anchors[i]
         const p = this.graph.view.getConnectionPoint(state, c)!
-        const icon = this.redrawAmchor(state, c, p)
+        const icon = this.redrawAnchor(state, c, p)
         this.icons.push(icon)
         this.points.push(p)
         this.currentArea.add(icon.bounds)

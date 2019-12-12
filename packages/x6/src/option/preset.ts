@@ -313,10 +313,14 @@ export const preset: FullOptions = {
     autoCreateTarget: false,
     waypointsEnabled: false,
     ignoreMouseDown: false,
-    outlineConnect: false,
     livePreview: false,
     insertBeforeSource: false,
     cursor: globals.defaultCursorPointer,
+
+    hotspotable: true,
+    hotspotRate: 0.3,
+    minHotspotSize: 8,
+    maxHotspotSize: 0,
   },
 
   connectionIcon: {
@@ -336,11 +340,6 @@ export const preset: FullOptions = {
     spacing: 2,
     opacity: 0.3,
     keepOnTop: false,
-
-    hotspotable: true,
-    hotspot: 0.3,
-    maxHotspotSize: 0,
-    minHotspotSize: 8,
   },
 
   connectionPreview: {
