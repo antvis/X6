@@ -545,6 +545,7 @@ export class Preview extends Disposable {
     return (
       c1 == null ||
       c2 == null ||
+      c1 !== c2 ||
       c1.point == null ||
       c2.point == null ||
       !c1.point.equals(c2.point) ||
@@ -585,7 +586,10 @@ export class Preview extends Disposable {
   }
 
   createEdgeState(e: MouseEventEx | null): State | null {
-    return null
+    const style = this.graph.options.edgeStyle
+    const edge = this.graph.createEdge({ ...style })
+    const state = new State(this.graph.view, edge, style)
+    return state
   }
 
   protected createPreview() {

@@ -1,14 +1,12 @@
-import { Cell, Graph, Anchor, Point } from '@antv/x6'
+import { Cell, Graph, Anchor, Point, Style } from '@antv/x6'
 import { DataItem, isCircle, isGroup, data } from './data'
 
 export function createGraph(container: HTMLDivElement) {
   return new Graph(container, {
-    guide: true,
     rotate: false,
     resize: true,
     folding: false,
-    infinite: true,
-    minScale: 0.1,
+    infinite: true, // 无限大画布
     // pageVisible: true,
     // pageBreak: {
     //   enabled: true,
@@ -21,20 +19,27 @@ export function createGraph(container: HTMLDivElement) {
     // },
     // mouseWheel: true,
     rubberband: true,
-    connection: {
-      enabled: true,
-      ignoreMouseDown: true,
-    },
-    connectionHighlight: {
-      hotspotable: true,
-      hotspot: 0,
-      minHotspotSize: 0,
-    },
     backgroundColor: '#f8f9fa',
     grid: {
       type: 'dot',
-      color: '#ccc',
+      color: '#bcbcbc',
     },
+    guide: {
+      enabled: true,
+      dashed: true,
+      stroke: '#ff5500',
+    },
+    connection: {
+      enabled: true,
+      hotspotable: false,
+      livePreview: true,
+      createEdge(this, options) {
+        const style = options.style
+        fixEdgeStyle(style, style)
+        return this.createEdge(options)
+      },
+    },
+    connectionHighlight: {},
     keyboard: {
       enabled: true,
       global: false,
@@ -45,7 +50,7 @@ export function createGraph(container: HTMLDivElement) {
       strokeWidth: 2,
     },
     nodeStyle: {
-      fill: 'rgba(0,0,0,0)',
+      fill: 'rgba(0, 0, 0, 0)',
       stroke: 'none',
       noLabel: true,
       editable: false,
@@ -119,6 +124,18 @@ export function addNode(
   })
 }
 
+function fixEdgeStyle(raw: Style, result: Style) {
+  if (raw.entryX === 1 || raw.entryX === 0) {
+    result.elbow = 'horizontal'
+  }
+}
+
+export function addEdge(graph: Graph, options: any) {
+  const style: Style = {}
+  fixEdgeStyle(options, style)
+  graph.addEdge({ ...options, style })
+}
+
 export function demo(graph: Graph) {
   graph.batchUpdate(() => {
     const start = addNode(graph, data.map['start'], 372, 32)
@@ -169,52 +186,44 @@ export function demo(graph: Graph) {
       batch,
     )
 
-    graph.addEdge({
+    addEdge(graph, {
       source: start,
       target: process1,
-      style: {
-        exitX: 0.5,
-        exitY: 1,
-        entryX: 0.5,
-        entryY: 0,
-      },
+      exitX: 0.5,
+      exitY: 1,
+      entryX: 0.5,
+      entryY: 0,
     })
 
-    graph.addEdge({
+    addEdge(graph, {
       data: '同意',
       source: process1,
       target: process2,
-      style: {
-        exitX: 0.5,
-        exitY: 1,
-        entryX: 0.5,
-        entryY: 0,
-      },
+      exitX: 0.5,
+      exitY: 1,
+      entryX: 0.5,
+      entryY: 0,
     })
 
-    graph.addEdge({
+    addEdge(graph, {
       source: process2,
       target: process3,
-      style: {
-        exitX: 0.5,
-        exitY: 1,
-        entryX: 0.5,
-        entryY: 0,
-      },
+      exitX: 0.5,
+      exitY: 1,
+      entryX: 0.5,
+      entryY: 0,
     })
 
-    graph.addEdge({
+    addEdge(graph, {
       source: process3,
       target: end,
-      style: {
-        exitX: 0.5,
-        exitY: 1,
-        entryX: 0.5,
-        entryY: 0,
-      },
+      exitX: 0.5,
+      exitY: 1,
+      entryX: 0.5,
+      entryY: 0,
     })
 
-    graph.addEdge({
+    addEdge(graph, {
       data: '驳回',
       source: process1,
       target: end,
@@ -222,13 +231,10 @@ export function demo(graph: Graph) {
         { x: 700, y: 144 },
         { x: 700, y: 508 },
       ],
-      style: {
-        edge: 'orthogonal',
-        exitX: 1,
-        exitY: 0.5,
-        entryX: 1,
-        entryY: 0.5,
-      },
+      exitX: 1,
+      exitY: 0.5,
+      entryX: 1,
+      entryY: 0.5,
     })
   })
 }
