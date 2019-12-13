@@ -8,24 +8,26 @@ import { Align, VAlign, WritingDirection } from '../types'
 
 export class Text extends Shape {
   value: HTMLElement | string
-  fontColor: string
   align: Align
   verticalAlign: VAlign
+  fontColor: string
+  borderColor?: string
+  backgroundColor?: string
+
   fontFamily: string
   fontSize: number
   fontStyle: number
+
   spacing: number
   spacingTop: number
   spacingRight: number
   spacingBottom: number
   spacingLeft: number
   horizontal: boolean
-  background?: string
-  borderColor?: string
+
   wrap: boolean
   clipped: boolean
   overflow: string
-  labelPadding: number
   textDirection: WritingDirection
   margin: Point
 
@@ -35,85 +37,63 @@ export class Text extends Shape {
   private unrotatedBoundingBox: Rectangle | null
 
   constructor(
-    value: HTMLElement | string,
+    txt: HTMLElement | string,
     bounds: Rectangle,
     {
       align,
       valign,
-      color,
-      family: fontFamily,
-      size: fontSize,
+      fontColor,
+      borderColor,
+      backgroundColor,
+      fontFamily,
+      fontSize,
       fontStyle,
+      textDirection,
+
       spacing,
       spacingTop,
       spacingRight,
       spacingBottom,
       spacingLeft,
-      horizontal,
-      background,
-      border,
+
       wrap,
       clipped,
       overflow,
-      labelPadding,
-      textDirection,
+      horizontal,
     }: Text.Options,
   ) {
     super()
-    this.value = value
+    this.value = txt
     this.bounds = bounds
-    this.fontColor = color != null ? color : globals.defaultFontColor
+
     this.align = align != null ? align : 'center'
     this.verticalAlign = valign != null ? valign : 'middle'
+
+    this.fontColor = fontColor != null ? fontColor : globals.defaultFontColor
+    this.borderColor = borderColor
+    this.backgroundColor = backgroundColor
+
     this.fontFamily =
       fontFamily != null ? fontFamily : globals.defaultFontFamily
     this.fontSize = fontSize != null ? fontSize : globals.defaultFontSize
     this.fontStyle = fontStyle != null ? fontStyle : globals.defaultFontStyle
+    this.textDirection = textDirection
+
     this.spacing = parseInt((spacing as any) || 2, 10)
     this.spacingTop = this.spacing + parseInt((spacingTop as any) || 0, 10)
     this.spacingRight = this.spacing + parseInt((spacingRight as any) || 0, 10)
     this.spacingBottom =
       this.spacing + parseInt((spacingBottom as any) || 0, 10)
     this.spacingLeft = this.spacing + parseInt((spacingLeft as any) || 0, 10)
-    this.horizontal = horizontal != null ? horizontal : true
-    this.background = background
-    this.borderColor = border
+
     this.wrap = wrap != null ? wrap : false
     this.clipped = clipped != null ? clipped : false
     this.overflow = overflow != null ? overflow : 'visible'
-    this.labelPadding = labelPadding != null ? labelPadding : 0
-    this.textDirection = textDirection
+    this.horizontal = horizontal != null ? horizontal : true
+
     this.rotation = 0
     this.updateMargin()
   }
-
-  /**
-   * Specifies the spacing to be added to the top spacing.
-   *
-   * Default is `0`.
-   */
-  baseSpacingTop: number = 0
-
-  /**
-   * Specifies the spacing to be added to the bottom spacing.
-   *
-   * Default is `0`.
-   */
-  baseSpacingBottom: number = 0
-
-  /**
-   * Specifies the spacing to be added to the left spacing.
-   *
-   * Default is `0`.
-   */
-  baseSpacingLeft: number = 0
-
-  /**
-   * Specifies the spacing to be added to the right spacing.
-   *
-   * Default is `0`.
-   */
-  baseSpacingRight: number = 0
 
   /**
    * Specifies if linefeeds in HTML labels should be replaced with BR tags.
@@ -318,7 +298,7 @@ export class Text extends Shape {
     this.spacingBottom = 2
     this.spacingLeft = 2
     this.horizontal = true
-    delete this.background
+    delete this.backgroundColor
     delete this.borderColor
     this.textDirection = ''
     delete this.margin
@@ -337,8 +317,8 @@ export class Text extends Shape {
       this.fontColor = this.style.fontColor || this.fontColor
       this.align = this.style.align || this.align
       this.verticalAlign = this.style.verticalAlign || this.verticalAlign
-      this.spacing = this.style.spacing || this.spacing
 
+      this.spacing = this.style.spacing || this.spacing
       this.spacingTop =
         (this.style.spacingTop || this.spacingTop - spacing) + this.spacing
       this.spacingRight =
@@ -350,7 +330,8 @@ export class Text extends Shape {
         (this.style.spacingLeft || this.spacingLeft - spacing) + this.spacing
 
       this.horizontal = this.style.horizontal || this.horizontal
-      this.background = this.style.labelBackgroundColor || this.background
+      this.backgroundColor =
+        this.style.labelBackgroundColor || this.backgroundColor
       this.borderColor = this.style.labelBorderColor || this.borderColor
       this.textDirection = this.style.textDirection || ''
 
@@ -499,7 +480,7 @@ export class Text extends Shape {
     super.configureCanvas(c, x, y, w, h)
 
     c.setFontColor(this.fontColor)
-    c.setFontBackgroundColor(this.background!)
+    c.setFontBackgroundColor(this.backgroundColor!)
     c.setFontBorderColor(this.borderColor!)
     c.setFontFamily(this.fontFamily)
     c.setFontSize(this.fontSize)
@@ -606,7 +587,9 @@ export class Text extends Shape {
       val = util.replaceTrailingNewlines(val as string, '<div><br></div>')
       val = this.replaceLinefeeds ? val.replace(/\n/g, '<br/>') : val
 
-      const bg = util.isValidColor(this.background) ? this.background : null
+      const bg = util.isValidColor(this.backgroundColor)
+        ? this.backgroundColor
+        : null
 
       const bd = util.isValidColor(this.borderColor) ? this.borderColor : null
 
@@ -765,17 +748,17 @@ export class Text extends Shape {
     if (this.align === 'center') {
       dx = (this.spacingLeft - this.spacingRight) / 2
     } else if (this.align === 'right') {
-      dx = -this.spacingRight - this.baseSpacingRight
+      dx = -this.spacingRight
     } else {
-      dx = this.spacingLeft + this.baseSpacingLeft
+      dx = this.spacingLeft
     }
 
     if (this.verticalAlign === 'middle') {
       dy = (this.spacingTop - this.spacingBottom) / 2
     } else if (this.verticalAlign === 'bottom') {
-      dy = -this.spacingBottom - this.baseSpacingBottom
+      dy = -this.spacingBottom
     } else {
-      dy = this.spacingTop + this.baseSpacingTop
+      dy = this.spacingTop
     }
 
     return new Point(dx, dy)
@@ -786,22 +769,23 @@ export namespace Text {
   export interface Options {
     align?: Align
     valign?: VAlign
-    color?: string
-    family?: string
-    size?: number
+    fontColor?: string
+    borderColor?: string
+    backgroundColor?: string
+    fontSize?: number
     fontStyle?: number
+    fontFamily?: string
+    textDirection: WritingDirection
+
     spacing?: number
     spacingTop?: number
     spacingRight?: number
     spacingBottom?: number
     spacingLeft?: number
-    horizontal?: boolean
-    background?: string
-    border?: string
+
     wrap?: boolean
     clipped?: boolean
     overflow?: string
-    labelPadding?: number
-    textDirection: WritingDirection
+    horizontal?: boolean
   }
 }

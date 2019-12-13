@@ -589,9 +589,6 @@ export class Renderer {
 
         state.text.resetStyle()
         state.text.apply(state)
-
-        // Special case where value is obtained via hook in graph
-        state.text.verticalAlign = state.style.verticalAlign || 'middle'
       }
 
       const bounds = this.getLabelBounds(state)
@@ -607,7 +604,7 @@ export class Renderer {
         state.text.dialect !== dialect ||
         !state.text.bounds.equals(bounds)
       ) {
-        // Forces an update of the text bounding box
+        // Force an update of the text bounding box
         if (
           state.text.bounds.width !== 0 &&
           state.unscaledWidth != null &&
@@ -627,10 +624,10 @@ export class Renderer {
         state.text.clipped = clipping
         state.text.overflow = overflow
 
-        // Preserves visible state
-        const vis = state.text!.elem!.style.visibility
+        // Preserve visible state
+        const vis = state.text.elem!.style.visibility
         this.redrawLabelShape(state)
-        state.text!.elem!.style.visibility = vis
+        state.text.elem!.style.visibility = vis
       }
     }
   }
@@ -651,26 +648,27 @@ export class Renderer {
       state.text = new this.defaultTextShape(value, new Rectangle(), {
         align: state.style.align || 'center',
         valign: state.style.verticalAlign || 'middle',
-        color: state.style.fontColor,
-        family: state.style.fontFamily,
-        size: state.style.fontSize,
+        fontColor: state.style.fontColor,
+        borderColor: state.style.labelBorderColor,
+        backgroundColor: state.style.labelBackgroundColor,
+        fontSize: state.style.fontSize,
         fontStyle: state.style.fontStyle,
+        fontFamily: state.style.fontFamily,
+        textDirection: state.style.textDirection || '',
+
         spacing: state.style.spacing,
         spacingTop: state.style.spacingTop,
         spacingRight: state.style.spacingRight,
         spacingBottom: state.style.spacingBottom,
         spacingLeft: state.style.spacingLeft,
-        horizontal: state.style.horizontal,
-        background: state.style.labelBackgroundColor,
-        border: state.style.labelBorderColor,
+
         wrap: graph.isWrapping(state.cell) && graph.isHtmlLabel(state.cell),
         clipped: graph.isLabelClipped(state.cell),
         overflow: state.style.overflow,
-        labelPadding: state.style.labelPadding,
-        textDirection: state.style.textDirection || '',
+        horizontal: state.style.horizontal,
       })
 
-      state.text.opacity = state.style.textOpacity || 100
+      state.text.opacity = state.style.textOpacity || 1
       state.text.dialect = isForceHtml ? 'html' : state.view.graph.dialect
 
       state.text.style = state.style
@@ -701,7 +699,6 @@ export class Renderer {
         return result
       }
 
-      // TODO: Add handling for special touch device gestures
       DomEvent.addMouseListeners(
         state.text.elem!,
         (e: MouseEvent) => {
@@ -766,11 +763,11 @@ export class Renderer {
       bounds.y += spacing.y * scale
 
       const geo = graph.getCellGeometry(state.cell)
-
       if (geo != null) {
         bounds.width = Math.max(0, geo.bounds.width * scale)
         bounds.height = Math.max(0, geo.bounds.height * scale)
       }
+      console.log(spacing, bounds, state.text!.value)
     } else {
       // Inverts label position
       if (state.text!.drawBoundsInverted()) {
