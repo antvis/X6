@@ -108,7 +108,13 @@ export class ConnectionManager extends BaseManager {
       dy = isFinite(dy) ? dy : 0
     }
 
-    return new Anchor({ point, perimeter, dx, dy })
+    return new Anchor({
+      dx,
+      dy,
+      perimeter,
+      x: point != null ? point.x : null,
+      y: point != null ? point.y : null,
+    })
   }
 
   setConnectionAnchor(
@@ -119,7 +125,7 @@ export class ConnectionManager extends BaseManager {
   ) {
     if (anchor != null) {
       this.model.batchUpdate(() => {
-        if (anchor == null || anchor.point == null) {
+        if (anchor == null || anchor.position == null) {
           this.graph.updateCellsStyle(isSource ? 'exitX' : 'entryX', null, [
             edge,
           ])
@@ -137,15 +143,15 @@ export class ConnectionManager extends BaseManager {
             null,
             [edge],
           )
-        } else if (anchor.point != null) {
+        } else if (anchor.position != null) {
           this.graph.updateCellsStyle(
             isSource ? 'exitX' : 'entryX',
-            `${anchor.point.x}`,
+            `${anchor.position.x}`,
             [edge],
           )
           this.graph.updateCellsStyle(
             isSource ? 'exitY' : 'entryY',
-            `${anchor.point.y}`,
+            `${anchor.position.y}`,
             [edge],
           )
           this.graph.updateCellsStyle(

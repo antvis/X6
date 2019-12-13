@@ -104,7 +104,10 @@ export class ConnectionAccessor extends BaseGraph {
   }
 
   @hook()
-  getAnchors(terminal: Cell, isSource: boolean) {
+  getAnchors(
+    terminal: Cell,
+    isSource: boolean,
+  ): (Anchor | Anchor.Data)[] | null {
     const state = this.view.getState(terminal)
     if (state != null && state.shape != null && state.shape.stencil != null) {
       return state.shape.stencil.anchors

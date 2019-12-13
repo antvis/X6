@@ -640,7 +640,7 @@ export class View extends Primer {
   ) {
     let result: Point | null = null
 
-    if (terminalState != null && anchor.point != null) {
+    if (terminalState != null && anchor.position != null) {
       const direction = terminalState.style.direction
       const bounds = this.getPerimeterBounds(terminalState)
       const cx = bounds.getCenter()
@@ -667,8 +667,8 @@ export class View extends Primer {
 
       const s = this.scale
       result = new Point(
-        bounds.x + anchor.point.x * bounds.width + anchor.dx * s,
-        bounds.y + anchor.point.y * bounds.height + anchor.dy * s,
+        bounds.x + anchor.position.x * bounds.width + anchor.dx * s,
+        bounds.y + anchor.position.y * bounds.height + anchor.dy * s,
       )
 
       // Rotation for direction before projection on perimeter
@@ -1071,7 +1071,8 @@ export class View extends Primer {
     if (
       (points == null || points.length < 2) &&
       (!edgeState.style.orthogonalLoop ||
-        ((sc == null || sc.point == null) && (tc == null || tc.point == null)))
+        ((sc == null || sc.position == null) &&
+          (tc == null || tc.position == null)))
     ) {
       return sourceState != null && sourceState === targetState
     }

@@ -1,14 +1,10 @@
 import { Point } from './point'
 
-/**
- * Defines an object that contains the anchors about how to
- * connect one side of an edge to its terminal.
- */
 export class Anchor {
   /**
    * The fixed location of the connection point.
    */
-  public point: Point | null
+  public position: Point | null
 
   /**
    * Specifies if the point should be projected onto the
@@ -31,41 +27,55 @@ export class Anchor {
    */
   public dy: number
 
-  constructor(options: Anchor.Options = {}) {
-    this.name = options.name || null
-    this.point = options.point || null
-    this.perimeter = options.perimeter === false ? false : true
-    this.dx = options.dx != null ? options.dx : 0
-    this.dy = options.dy != null ? options.dy : 0
+  constructor(options: Anchor.AnchorLike | Anchor.Data = {}) {
+    if (Array.isArray(options)) {
+      this.name = null
+      this.dx = options[2] != null ? options[2] : 0
+      this.dy = options[3] != null ? options[3] : 0
+      this.position = new Point(options[0], options[1])
+      this.perimeter = true
+    } else {
+      this.name = options.name || null
+      this.dx = options.dx != null ? options.dx : 0
+      this.dy = options.dy != null ? options.dy : 0
+      this.perimeter = options.perimeter === false ? false : true
+
+      if (options.x != null || options.y != null) {
+        this.position = new Point(
+          options.x != null ? options.x : 0,
+          options.y != null ? options.y : 0,
+        )
+      } else {
+        this.position = null
+      }
+    }
   }
 }
 
 export namespace Anchor {
-  export interface Options {
+  export interface AnchorLike {
+    name?: string | null
+
+    x?: number | null
+
+    y?: number | null
+
     /**
-     * The fixed location of the connection point.
+     * The horizontal offset of the anchor.
      */
-    point?: Point | null
+    dx?: number | null
+
+    /**
+     * The vertical offset of the anchor.
+     */
+    dy?: number | null
 
     /**
      * Specifies if the point should be projected onto the
      * perimeter of the terminal.
      */
-    perimeter?: boolean
-
-    /**
-     * The name of the anchor.
-     */
-    name?: string
-
-    /**
-     * The horizontal offset of the anchor.
-     */
-    dx?: number
-
-    /**
-     * The vertical offset of the anchor.
-     */
-    dy?: number
+    perimeter?: boolean | null
   }
+
+  export type Data = [number, number, (number | null)?, (number | null)?]
 }
