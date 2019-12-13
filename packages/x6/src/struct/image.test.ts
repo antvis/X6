@@ -18,7 +18,6 @@ describe('Image.fromSvg', () => {
     expect(clone.src).toBe(img.src)
     expect(clone.width).toBe(img.width)
     expect(clone.height).toBe(img.height)
-    console.log(img.src)
   })
 
   it('should use specified width and height', () => {
