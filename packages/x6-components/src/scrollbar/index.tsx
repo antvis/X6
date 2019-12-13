@@ -13,7 +13,7 @@ export class Scrollbar extends React.PureComponent<Scrollbar.Props> {
   private scale: number
   private thumbSize: number
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.wheelHandler = new WheelHandler({
       onWheel: this.isHorizontal() ? this.onWheelX : this.onWheelY,
       shouldHandleScrollX: true,
@@ -248,7 +248,7 @@ export class Scrollbar extends React.PureComponent<Scrollbar.Props> {
             [`${baseCls}-vertical`]: !horizontal,
             [`${baseCls}-horizontal`]: horizontal,
           },
-          className
+          className,
         )}
         style={trackStyle}
         tabIndex={0}
