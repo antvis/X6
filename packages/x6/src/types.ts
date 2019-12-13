@@ -84,7 +84,7 @@ interface LabelStyle {
   labelBorderColor?: string
   labelClassName?: string
   labelWidth?: number
-  labelPadding?: number
+
   spacing?: number
   spacingTop?: number
   spacingRight?: number
