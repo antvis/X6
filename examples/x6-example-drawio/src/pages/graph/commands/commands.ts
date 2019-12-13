@@ -60,13 +60,14 @@ export class Commands {
         }
       }
 
-      this.graph.keyboardHandler.bind(
-        result.shortcut
-          .replace('Delete', 'backspace')
-          .replace('Cmd', 'command')
-          .toLowerCase(),
-        callback,
-      )
+      if (result.shortcut === 'Delete') {
+        this.graph.keyboardHandler.bind(['del', 'backspace'], callback)
+      } else {
+        this.graph.keyboardHandler.bind(
+          result.shortcut.replace('Cmd', 'command').toLowerCase(),
+          callback,
+        )
+      }
     }
 
     this.commands[result.name] = result
