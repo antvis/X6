@@ -70,6 +70,12 @@ export function createGraph(container: HTMLDivElement) {
       stroke: '#87d068',
       opacity: 1,
     },
+    anchor: {
+      inductiveSize: 24,
+    },
+    anchorHighlight: {
+      strokeWidth: 16,
+    },
     isValidDropTarget(target) {
       if (target && target.data) {
         return isGroup(target.data.type)
