@@ -154,7 +154,6 @@ export class Preview extends Disposable {
   protected onConnecting(e: MouseEventEx, point: Point) {
     // Update icon position when mouse-moving.
     this.master.knobs.updateIcon(e)
-
     const { sourcePoint, currentPoint } = this.updateTerminalPoints(e, point)
     this.updateTargetPoint(sourcePoint, currentPoint)
 
@@ -194,7 +193,7 @@ export class Preview extends Disposable {
 
   protected updateTerminalPoints(e: MouseEventEx, point: Point) {
     let sourcePoint = this.sourcePoint!
-    let currentPoint = point
+    let currentPoint = point.clone()
     let currentAnchor = null
 
     // Uses the fixed point from the anchor handler if available
@@ -224,8 +223,8 @@ export class Preview extends Disposable {
     if (this.edgeState != null) {
       this.updateEdgeState(currentPoint, currentAnchor)
       const lastIndex = this.edgeState.absolutePoints.length - 1
-      currentPoint = this.edgeState.absolutePoints[lastIndex]
       sourcePoint = this.edgeState.absolutePoints[0]
+      currentPoint = this.edgeState.absolutePoints[lastIndex]
     } else {
       if (this.currentState != null) {
         if (this.anchorHandler.currentAnchor == null) {

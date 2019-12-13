@@ -332,6 +332,15 @@ export const preset: FullOptions = {
     offset: { x: 0, y: 16 },
   },
 
+  connectionPreview: {
+    opacity: 1,
+    fill: 'none',
+    dashed: ({ livePreview }) => (livePreview ? false : true),
+    strokeWidth: ({ livePreview }) => (livePreview ? 1 : 2),
+    stroke: ({ valid }) =>
+      valid ? globals.defaultPrimaryColor : globals.defaultInvalidColor,
+  },
+
   connectionHighlight: {
     validColor: globals.defaultValidColor,
     invalidColor: globals.defaultInvalidColor,
@@ -340,15 +349,6 @@ export const preset: FullOptions = {
     spacing: 2,
     opacity: 0.3,
     keepOnTop: false,
-  },
-
-  connectionPreview: {
-    opacity: 1,
-    fill: 'none',
-    dashed: ({ livePreview }) => (livePreview ? false : true),
-    strokeWidth: ({ livePreview }) => (livePreview ? 1 : 2),
-    stroke: ({ valid }) =>
-      valid ? globals.defaultPrimaryColor : globals.defaultInvalidColor,
   },
 
   edgeHandle: {

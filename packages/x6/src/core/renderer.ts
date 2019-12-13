@@ -767,7 +767,6 @@ export class Renderer {
         bounds.width = Math.max(0, geo.bounds.width * scale)
         bounds.height = Math.max(0, geo.bounds.height * scale)
       }
-      console.log(spacing, bounds, state.text!.value)
     } else {
       // Inverts label position
       if (state.text!.drawBoundsInverted()) {
