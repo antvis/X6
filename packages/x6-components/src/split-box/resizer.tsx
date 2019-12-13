@@ -4,7 +4,7 @@ import { MouseMoveTracker } from '../util/dom/MouseMoveTracker'
 export class Resizer extends React.PureComponent<Resizer.Props> {
   private mouseMoveTracker: MouseMoveTracker
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.mouseMoveTracker = new MouseMoveTracker({
       onMouseMove: this.onMouseMove,
       onMouseMoveEnd: this.onMouseMoveEnd,
