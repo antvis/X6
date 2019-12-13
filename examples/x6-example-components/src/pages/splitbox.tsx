@@ -49,9 +49,53 @@ export default class Example extends React.PureComponent {
                 style={{
                   width: '100%',
                   height: '100%',
-                  background: '#f6ffed',
                 }}
-              />
+              >
+                <SplitBox
+                  split="vertical"
+                  minSize={40}
+                  maxSize={-80}
+                  defaultSize={'40%'}
+                  primary="second"
+                >
+                  <div
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                    }}
+                  >
+                    <SplitBox
+                      split="horizontal"
+                      minSize={40}
+                      maxSize={-40}
+                      defaultSize={80}
+                      primary="first"
+                    >
+                      <div
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          background: '#e6f7ff',
+                        }}
+                      />
+                      <div
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          background: '#e6fffb',
+                        }}
+                      />
+                    </SplitBox>
+                  </div>
+                  <div
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      background: '#f6ffed',
+                    }}
+                  />
+                </SplitBox>
+              </div>
             </SplitBox>
           </SplitBox>
         </div>
