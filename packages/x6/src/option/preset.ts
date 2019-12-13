@@ -295,6 +295,7 @@ export const preset: FullOptions = {
   anchor: {
     image: images.cross,
     cursor: globals.defaultCursorPointer,
+    inductionSize: 20,
   },
 
   anchorHighlight: {
