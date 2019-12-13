@@ -88,13 +88,6 @@ export class AnchorHandler extends BaseHandler {
     point: Point,
     icon?: Shape,
   ) {
-    // const { image, cursor, className } = getAnchorOptions({
-    //   anchor,
-    //   point,
-    //   graph: this.graph,
-    //   cell: state.cell,
-    // })
-
     if (icon == null) {
       // tslint:disable-next-line
       icon = createAnchorShape({
@@ -103,9 +96,6 @@ export class AnchorHandler extends BaseHandler {
         graph: this.graph,
         cell: state.cell,
       })
-      // const img = new ImageShape(bounds, image.src)
-      // img.dialect = 'svg'
-      // img.preserveImageAspect = false
       icon.init(this.graph.view.getDecoratorPane())
       util.toBack(icon.elem)
 
