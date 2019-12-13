@@ -33,7 +33,7 @@ export function createGraph(container: HTMLDivElement) {
       enabled: true,
       hotspotable: false,
       livePreview: true,
-      createEdge(this, options) {
+      createEdge(options) {
         const style = options.style
         fixEdgeStyle(style, style)
         return this.createEdge(options)
