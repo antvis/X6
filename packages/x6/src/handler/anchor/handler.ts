@@ -3,11 +3,11 @@ import { Graph } from '../../graph'
 import { View } from '../../core/view'
 import { Model } from '../../core/model'
 import { State } from '../../core/state'
-import { Shape, ImageShape } from '../../shape'
+import { Shape } from '../../shape'
 import { BaseHandler } from '../handler-base'
 import { Rectangle, Point, Anchor } from '../../struct'
 import { DomEvent, MouseEventEx, Disposable } from '../../common'
-import { getAnchorOptions, createAnchorHighlightShape } from './option'
+import { createAnchorShape, createAnchorHighlightShape } from './option'
 
 export class AnchorHandler extends BaseHandler {
   inductiveSize: number
@@ -88,38 +88,33 @@ export class AnchorHandler extends BaseHandler {
     point: Point,
     icon?: Shape,
   ) {
-    const { image, cursor, className } = getAnchorOptions({
-      anchor,
-      point,
-      graph: this.graph,
-      cell: state.cell,
-    })
-
-    const bounds = new Rectangle(
-      Math.round(point.x - image.width / 2),
-      Math.round(point.y - image.height / 2),
-      image.width,
-      image.height,
-    )
+    // const { image, cursor, className } = getAnchorOptions({
+    //   anchor,
+    //   point,
+    //   graph: this.graph,
+    //   cell: state.cell,
+    // })
 
     if (icon == null) {
-      const img = new ImageShape(bounds, image.src)
-      img.dialect = 'svg'
-      img.preserveImageAspect = false
-      img.init(this.graph.view.getDecoratorPane())
-      util.toBack(img.elem)
+      // tslint:disable-next-line
+      icon = createAnchorShape({
+        anchor,
+        point,
+        graph: this.graph,
+        cell: state.cell,
+      })
+      // const img = new ImageShape(bounds, image.src)
+      // img.dialect = 'svg'
+      // img.preserveImageAspect = false
+      icon.init(this.graph.view.getDecoratorPane())
+      util.toBack(icon.elem)
 
-      icon = img // tslint:disable-line
       const getState = () => this.currentState || state
       MouseEventEx.redirectMouseEvents(icon.elem, this.graph, getState)
     }
 
-    util.applyClassName(icon, this.graph.prefixCls, 'anchor', className)
-
-    icon.image = image.src
-    icon.bounds = bounds
-    icon.cursor = cursor
-
+    icon.bounds.x = point.x - icon.bounds.width / 2
+    icon.bounds.y = point.y - icon.bounds.height / 2
     icon.redraw()
 
     return icon
