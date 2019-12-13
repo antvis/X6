@@ -20,7 +20,7 @@ export class ScrollBox extends React.PureComponent<
   private mounted: boolean
   private triggerScrollStop: () => void
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.triggerScrollStop = debounce(this.triggerScrollStopSync, 200, this)
     this.wheelHandler = new WheelHandler({
       onWheel: this.onScroll,
@@ -54,7 +54,7 @@ export class ScrollBox extends React.PureComponent<
     this.setState(this.calculateState())
   }
 
-  componentWillReceiveProps(nextProps: ScrollBox.Props) {
+  UNSAFE_componentWillReceiveProps(nextProps: ScrollBox.Props) {
     this.setState(this.calculateState(nextProps))
   }
 
@@ -208,7 +208,7 @@ export class ScrollBox extends React.PureComponent<
     const scrollTop = clamp(
       relative ? this.state.scrollTop! + scrollY : scrollY,
       0,
-      this.state.maxScrollTop
+      this.state.maxScrollTop,
     )
 
     if (this.props.onVerticalScroll) {
@@ -222,7 +222,7 @@ export class ScrollBox extends React.PureComponent<
     const scrollLeft = clamp(
       relative ? this.state.scrollLeft! + scrollX : scrollX,
       0,
-      this.state.maxScrollLeft
+      this.state.maxScrollLeft,
     )
 
     if (this.props.onHorizontalScroll) {
@@ -420,7 +420,7 @@ export class ScrollBox extends React.PureComponent<
           {
             [`${baseCls}-auto-hide`]: scrollbarAutoHide,
           },
-          this.props.containerClassName
+          this.props.containerClassName,
         )}
       >
         <div
@@ -431,7 +431,7 @@ export class ScrollBox extends React.PureComponent<
           ref={this.refContent}
           className={classNames(
             `${baseCls}-content`,
-            this.props.contentClassName
+            this.props.contentClassName,
           )}
         >
           {this.props.children}

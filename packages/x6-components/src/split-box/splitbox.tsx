@@ -25,7 +25,7 @@ export class SplitBox extends React.PureComponent<
     this.state = this.getNextState(props)
   }
 
-  componentWillReceiveProps(nextProps: SplitBox.Props) {
+  UNSAFE_componentWillReceiveProps(nextProps: SplitBox.Props) {
     const nextState = this.getNextState(nextProps)
     this.setState(nextState)
   }
