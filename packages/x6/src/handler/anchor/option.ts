@@ -1,7 +1,7 @@
 import { Cell } from '../../core/cell'
 import { Graph } from '../../graph'
-import { Shape, EllipseShape } from '../../shape'
-import { Image, Anchor, Point } from '../../struct'
+import { Shape, EllipseShape, ImageShape } from '../../shape'
+import { Image, Anchor, Point, Rectangle } from '../../struct'
 import {
   drill,
   BaseStyle,
@@ -12,7 +12,7 @@ import {
   applyManualStyle,
 } from '../../option'
 
-export interface AnchorOptions {
+export interface AnchorOptions extends BaseStyle<ApplyAnchortyleArgs> {
   /**
    * Specifies the inductive area size.
    *
@@ -25,12 +25,22 @@ export interface AnchorOptions {
    * Default is `true`.
    */
   adsorbNearestTarget: boolean
-  /**
-   * The image for fixed connection points.
-   */
-  image: OptionItem<GetAnchorOptionsArgs, Image>
-  cursor: OptionItem<GetAnchorOptionsArgs, string>
-  className?: OptionItem<GetAnchorOptionsArgs, string>
+
+  image?: OptionItem<CreateAnchorShapeArgs, Image>
+  shape: OptionItem<CreateAnchorShapeArgs, string>
+  size: OptionItem<CreateAnchorShapeArgs, number>
+  cursor: OptionItem<ApplyAnchortyleArgs, string>
+}
+
+export interface CreateAnchorShapeArgs {
+  graph: Graph
+  cell: Cell
+  anchor: Anchor
+  point: Point
+}
+
+export interface ApplyAnchortyleArgs extends CreateAnchorShapeArgs {
+  shape: Shape
 }
 
 export interface GetAnchorOptionsArgs {
@@ -49,6 +59,38 @@ export function getAnchorOptions(args: GetAnchorOptionsArgs) {
     className: drill(options.className, args.graph, args),
   }
 }
+
+export function createAnchorShape(args: CreateAnchorShapeArgs) {
+  const { graph } = args
+  const options = graph.options.anchor
+  const image = drill(options.image, args.graph, args)
+
+  let shape: Shape
+  if (image) {
+    const bounds = new Rectangle(0, 0, image.width, image.height)
+    const img = new ImageShape(bounds, image.src)
+    img.preserveImageAspect = false
+    shape = img
+  } else {
+    const shapeName = drill(options.shape, graph, args)
+    const size = drill(options.size, graph, args)
+    const ctor = Shape.getShape(shapeName) || EllipseShape
+
+    shape = new ctor() as Shape
+    shape.bounds = new Rectangle(0, 0, size, size)
+    applyBaseStyle({ ...args, shape }, options)
+  }
+
+  const newArgs = { ...args, shape }
+  applyClassName(newArgs, options, 'anchor')
+  applyCursorStyle(newArgs, options)
+  applyManualStyle(newArgs, options)
+
+  return shape
+}
+
+// anchor highlight
+// ----
 
 export interface AnchorHighlightOptions
   extends BaseStyle<ApplyAnchorHighlightShapeStyleArgs> {
