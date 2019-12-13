@@ -25,7 +25,17 @@ export class HtmlShape extends RectangleShape {
   }
 
   renderHtml() {
-    const bounds = this.bounds
+    const bounds = this.bounds.clone()
+
+    /**
+     * fix: anchors not align with the center of html border
+     * see: https://stackoverflow.com/a/7273346
+     */
+
+    bounds.width += 1
+    bounds.height += 1
+    bounds.x -= 1
+    bounds.y -= 1
 
     let transform = `translate(${bounds.x},${bounds.y})`
     const deg = this.getShapeRotation()
