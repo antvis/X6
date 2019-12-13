@@ -10,7 +10,8 @@ import { DomEvent, MouseEventEx, Disposable } from '../../common'
 import { getAnchorOptions, createAnchorHighlightShape } from './option'
 
 export class AnchorHandler extends BaseHandler {
-  inductionSize: number
+  inductiveSize: number
+  adsorbNearestTarget: boolean
   currentState: State | null
   currentPoint: Point | null
   currentArea: Rectangle | null
@@ -27,7 +28,9 @@ export class AnchorHandler extends BaseHandler {
   constructor(graph: Graph) {
     super(graph)
 
-    this.inductionSize = graph.options.anchor.inductionSize
+    const options = graph.options.anchor
+    this.inductiveSize = options.inductiveSize
+    this.adsorbNearestTarget = options.adsorbNearestTarget
 
     this.resetHandler = () => {
       if (
@@ -242,19 +245,21 @@ export class AnchorHandler extends BaseHandler {
         this.anchors != null &&
         (state == null || this.currentState === state)
       ) {
-        // console.log('highlight hovering anchor')
         let bounds: Rectangle | null = null
         let minDist: number | null = null
 
         for (let i = 0, ii = this.knobs.length; i < ii; i += 1) {
           const dx = graphX - this.knobs[i].bounds.getCenterX()
           const dy = graphY - this.knobs[i].bounds.getCenterY()
-          const dis = dx * dx + dy * dy
-          // console.log(dx, dy, dis)
+          const dis = Math.sqrt(dx * dx + dy * dy)
+
           if (
-            (Math.sqrt(dis) < this.inductionSize ||
-              this.intersects(this.knobs[i], mouse) ||
-              (currentPoint != null && this.intersects(this.knobs[i], grid))) &&
+            ((this.adsorbNearestTarget && !isSource) || // 进行目标链接桩查找时
+              // 在感应区域内时
+              (this.inductiveSize > 0 && dis < this.inductiveSize) ||
+              this.isIntersected(this.knobs[i], mouse) ||
+              (currentPoint != null &&
+                this.isIntersected(this.knobs[i], grid))) &&
             (minDist == null || dis < minDist)
           ) {
             this.currentPoint = this.points[i]
@@ -326,7 +331,7 @@ export class AnchorHandler extends BaseHandler {
     return shape
   }
 
-  protected intersects(icon: Shape, mouse: Rectangle) {
+  protected isIntersected(icon: Shape, mouse: Rectangle) {
     return icon.bounds.isIntersectWith(mouse)
   }
 
