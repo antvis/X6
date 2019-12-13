@@ -13,7 +13,18 @@ import {
 } from '../../option'
 
 export interface AnchorOptions {
-  inductionSize: number
+  /**
+   * Specifies the inductive area size.
+   *
+   * Default is `20`.
+   */
+  inductiveSize: number
+  /**
+   * Specifies if adsorb the nearest anchor on finding a edge's target anchor.
+   *
+   * Default is `true`.
+   */
+  adsorbNearestTarget: boolean
   /**
    * The image for fixed connection points.
    */
