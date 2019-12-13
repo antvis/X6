@@ -147,7 +147,15 @@ export class AnchorHandler extends BaseHandler {
       !this.isStateIgnored(state, isSource) &&
       this.graph.isCellConnectable(state.cell)
     ) {
-      return this.graph.getAnchors(state.cell, isSource)
+      const items = this.graph.getAnchors(state.cell, isSource)
+      if (items != null) {
+        return items.map(item => {
+          if (item instanceof Anchor) {
+            return item
+          }
+          return new Anchor(item)
+        })
+      }
     }
 
     return null

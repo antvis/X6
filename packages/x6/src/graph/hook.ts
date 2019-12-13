@@ -304,7 +304,7 @@ export interface IHooks {
    * width or height set as appropriate.
    */
   getStartSize: CellHook<Rectangle>
-  getAnchors: CellIsSourceHook<Anchor[]>
+  getAnchors: CellIsSourceHook<(Anchor | Anchor.Data)[]>
 
   getHtml: CellHook<string | HTMLElement>
 

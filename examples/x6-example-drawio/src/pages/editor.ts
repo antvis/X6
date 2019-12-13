@@ -1,4 +1,4 @@
-import { Graph, Primer, Style, Anchor, Point, FontStyle } from '@antv/x6'
+import { Graph, Primer, Style, FontStyle } from '@antv/x6'
 import { Commands } from './graph/commands'
 import avatarMale from './images/male.png'
 import avatarFemale from './images/female.png'
@@ -47,16 +47,16 @@ export class Editor extends Primer {
       getAnchors(cell) {
         if (cell != null && this.model.isNode(cell)) {
           return [
-            new Anchor({ point: new Point(0, 0) }),
-            new Anchor({ point: new Point(0.5, 0) }),
-            new Anchor({ point: new Point(1, 0) }),
+            [0, 0],
+            [0.5, 0],
+            [1, 0],
 
-            new Anchor({ point: new Point(0, 0.5) }),
-            new Anchor({ point: new Point(1, 0.5) }),
+            [0, 0.5],
+            [1, 0.5],
 
-            new Anchor({ point: new Point(0, 1) }),
-            new Anchor({ point: new Point(0.5, 1) }),
-            new Anchor({ point: new Point(1, 1) }),
+            [0, 1],
+            [0.5, 1],
+            [1, 1],
           ]
         }
         return null

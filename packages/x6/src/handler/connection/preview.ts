@@ -257,14 +257,14 @@ export class Preview extends Disposable {
       return
     }
 
-    if (this.sourceAnchor != null && this.sourceAnchor.point != null) {
-      this.edgeState.style.exitX = this.sourceAnchor.point.x
-      this.edgeState.style.exitY = this.sourceAnchor.point.y
+    if (this.sourceAnchor != null && this.sourceAnchor.position != null) {
+      this.edgeState.style.exitX = this.sourceAnchor.position.x
+      this.edgeState.style.exitY = this.sourceAnchor.position.y
     }
 
-    if (currentAnchor != null && currentAnchor.point != null) {
-      this.edgeState.style.entryX = currentAnchor.point.x
-      this.edgeState.style.entryY = currentAnchor.point.y
+    if (currentAnchor != null && currentAnchor.position != null) {
+      this.edgeState.style.entryX = currentAnchor.position.x
+      this.edgeState.style.entryY = currentAnchor.position.y
     } else {
       delete this.edgeState.style.entryX
       delete this.edgeState.style.entryY
@@ -546,9 +546,9 @@ export class Preview extends Disposable {
       c1 == null ||
       c2 == null ||
       c1 !== c2 ||
-      c1.point == null ||
-      c2.point == null ||
-      !c1.point.equals(c2.point) ||
+      c1.position == null ||
+      c2.position == null ||
+      !c1.position.equals(c2.position) ||
       c1.dx !== c2.dx ||
       c1.dy !== c2.dy ||
       c1.perimeter !== c2.perimeter

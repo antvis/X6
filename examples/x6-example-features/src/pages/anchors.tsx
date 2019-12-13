@@ -16,16 +16,16 @@ export default class Example extends React.Component {
       getAnchors(cell) {
         if (cell != null && this.model.isNode(cell)) {
           return [
-            new Anchor({ point: new Point(0, 0) }),
-            new Anchor({ point: new Point(0.5, 0) }),
-            new Anchor({ point: new Point(1, 0) }),
+            [0, 0],
+            [0.5, 0],
+            [1, 0],
 
-            new Anchor({ point: new Point(0, 0.5) }),
-            new Anchor({ point: new Point(1, 0.5) }),
+            [0, 0.5],
+            [1, 0.5],
 
-            new Anchor({ point: new Point(0, 1) }),
-            new Anchor({ point: new Point(0.5, 1) }),
-            new Anchor({ point: new Point(1, 1) }),
+            [0, 1],
+            [0.5, 1],
+            [, 1],
           ]
         }
         return null
