@@ -293,9 +293,16 @@ export const preset: FullOptions = {
   },
 
   anchor: {
-    image: images.cross,
+    // image: images.cross,
+    shape: 'ellipse',
+    size: 6,
+    opacity: 0.8,
+    fill: '#fff',
+    stroke: globals.defaultPrimaryColor,
+    strokeWidth: 2,
+    dashed: false,
     cursor: globals.defaultCursorPointer,
-    inductiveSize: 20,
+    inductiveSize: 24,
     adsorbNearestTarget: true,
   },
 
@@ -305,7 +312,7 @@ export const preset: FullOptions = {
     opacity: 0.3,
     fill: 'none',
     stroke: globals.defaultValidColor,
-    strokeWidth: 10,
+    strokeWidth: 16,
     dashed: false,
   },
 
