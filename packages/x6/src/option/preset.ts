@@ -302,7 +302,7 @@ export const preset: FullOptions = {
     strokeWidth: 2,
     dashed: false,
     cursor: globals.defaultCursorPointer,
-    inductiveSize: 24,
+    inductiveSize: 20,
     adsorbNearestTarget: true,
   },
 
@@ -312,7 +312,7 @@ export const preset: FullOptions = {
     opacity: 0.3,
     fill: 'none',
     stroke: globals.defaultValidColor,
-    strokeWidth: 16,
+    strokeWidth: 8,
     dashed: false,
   },
 
