@@ -10,12 +10,13 @@ import { DomEvent, MouseEventEx, Disposable } from '../../common'
 import { getAnchorOptions, createAnchorHighlightShape } from './option'
 
 export class AnchorHandler extends BaseHandler {
+  inductionSize: number
   currentState: State | null
   currentPoint: Point | null
   currentArea: Rectangle | null
   currentAnchor: Anchor | null
 
-  protected icons: Shape[] | null
+  protected knobs: Shape[] | null
   protected points: Point[] | null
   protected anchors: Anchor[] | null
   protected highlight: Shape | null
@@ -25,6 +26,9 @@ export class AnchorHandler extends BaseHandler {
 
   constructor(graph: Graph) {
     super(graph)
+
+    this.inductionSize = graph.options.anchor.inductionSize
+
     this.resetHandler = () => {
       if (
         this.currentState != null &&
@@ -57,7 +61,7 @@ export class AnchorHandler extends BaseHandler {
     if (
       this.currentState != null &&
       this.anchors != null &&
-      this.icons != null &&
+      this.knobs != null &&
       this.points != null
     ) {
       const state = this.graph.view.getState(this.currentState.cell)!
@@ -68,9 +72,9 @@ export class AnchorHandler extends BaseHandler {
         const anchor = this.anchors[i]
         const point = this.graph.view.getConnectionPoint(state, anchor)!
 
-        this.redrawAnchor(state, anchor, point, this.icons[i])
+        this.redrawAnchor(state, anchor, point, this.knobs[i])
         this.points[i] = point
-        this.currentArea.add(this.icons[i].bounds)
+        this.currentArea.add(this.knobs[i].bounds)
       }
     }
   }
@@ -203,17 +207,13 @@ export class AnchorHandler extends BaseHandler {
         )
       }
 
+      const graphX = e.getGraphX()
+      const graphY = e.getGraphY()
       const tol = this.getTolerance(e)
-      const x = currentPoint != null ? currentPoint.x : e.getGraphX()
-      const y = currentPoint != null ? currentPoint.y : e.getGraphY()
+      const x = currentPoint != null ? currentPoint.x : graphX
+      const y = currentPoint != null ? currentPoint.y : graphY
       const grid = new Rectangle(x - tol, y - tol, 2 * tol, 2 * tol)
-      const mouse = new Rectangle(
-        e.getGraphX() - tol,
-        e.getGraphY() - tol,
-        2 * tol,
-        2 * tol,
-      )
-
+      const mouse = new Rectangle(graphX - tol, graphY - tol, 2 * tol, 2 * tol)
       const state = this.graph.view.getState(this.getCell(e, currentPoint))
 
       // Keeps focus icons visible while over node bounds and
@@ -237,40 +237,32 @@ export class AnchorHandler extends BaseHandler {
 
       // highlight hovering anchor
       if (
-        this.icons != null &&
+        this.knobs != null &&
         this.points != null &&
         this.anchors != null &&
         (state == null || this.currentState === state)
       ) {
+        // console.log('highlight hovering anchor')
         let bounds: Rectangle | null = null
         let minDist: number | null = null
 
-        const cx = mouse.getCenterX()
-        const cy = mouse.getCenterY()
-
-        for (let i = 0, ii = this.icons.length; i < ii; i += 1) {
-          const dx = cx - this.icons[i].bounds.getCenterX()
-          const dy = cy - this.icons[i].bounds.getCenterY()
+        for (let i = 0, ii = this.knobs.length; i < ii; i += 1) {
+          const dx = graphX - this.knobs[i].bounds.getCenterX()
+          const dy = graphY - this.knobs[i].bounds.getCenterY()
           const dis = dx * dx + dy * dy
-
+          // console.log(dx, dy, dis)
           if (
-            (this.intersects(this.icons[i], mouse, isSource, existingEdge) ||
-              (currentPoint != null &&
-                this.intersects(
-                  this.icons[i],
-                  grid,
-                  isSource,
-                  existingEdge,
-                ))) &&
+            (Math.sqrt(dis) < this.inductionSize ||
+              this.intersects(this.knobs[i], mouse) ||
+              (currentPoint != null && this.intersects(this.knobs[i], grid))) &&
             (minDist == null || dis < minDist)
           ) {
             this.currentPoint = this.points[i]
             this.currentAnchor = this.anchors[i]
             minDist = dis
-            bounds = this.icons[i].bounds.clone()
+            bounds = this.knobs[i].bounds.clone()
 
             if (this.highlight == null) {
-              // lazy
               this.highlight = this.createHighlightShape(state)
             }
           }
@@ -301,14 +293,14 @@ export class AnchorHandler extends BaseHandler {
 
       this.destroyIcons()
 
-      this.icons = []
+      this.knobs = []
       this.points = []
 
       for (let i = 0, ii = this.anchors.length; i < ii; i += 1) {
         const c = this.anchors[i]
         const p = this.graph.view.getConnectionPoint(state, c)!
         const icon = this.redrawAnchor(state, c, p)
-        this.icons.push(icon)
+        this.knobs.push(icon)
         this.points.push(p)
         this.currentArea.add(icon.bounds)
       }
@@ -334,19 +326,14 @@ export class AnchorHandler extends BaseHandler {
     return shape
   }
 
-  protected intersects(
-    icon: Shape,
-    mouse: Rectangle,
-    isSource: boolean,
-    existingEdge: boolean,
-  ) {
+  protected intersects(icon: Shape, mouse: Rectangle) {
     return icon.bounds.isIntersectWith(mouse)
   }
 
   protected destroyIcons() {
-    if (this.icons != null) {
-      this.icons.forEach(i => i.dispose())
-      this.icons = null
+    if (this.knobs != null) {
+      this.knobs.forEach(i => i.dispose())
+      this.knobs = null
       this.points = null
     }
   }

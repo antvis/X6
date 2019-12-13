@@ -13,6 +13,7 @@ import {
 } from '../../option'
 
 export interface AnchorOptions {
+  inductionSize: number
   /**
    * The image for fixed connection points.
    */
@@ -30,7 +31,7 @@ export interface GetAnchorOptionsArgs {
 
 export function getAnchorOptions(args: GetAnchorOptionsArgs) {
   const { graph } = args
-  const options = graph.options.anchor as AnchorOptions
+  const options = graph.options.anchor
   return {
     image: drill(options.image, args.graph, args),
     cursor: drill(options.cursor, args.graph, args),
@@ -58,7 +59,7 @@ export function createAnchorHighlightShape(
   args: CreateAnchorHighlightShapeArgs,
 ) {
   const { graph } = args
-  const opts = graph.options.anchorHighlight as AnchorHighlightOptions
+  const opts = graph.options.anchorHighlight
   const raw = drill(opts.shape, graph, args)
   const ctor = Shape.getShape(raw) || EllipseShape
   const shape = new ctor() as Shape
