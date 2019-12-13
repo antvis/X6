@@ -599,7 +599,7 @@ export class Preview extends Disposable {
 
     shape.scale = this.graph.view.scale
     shape.pointerEvents = false
-    shape.init(this.graph.view.getOverlayPane())
+    shape.init(this.graph.view.getDecoratorPane())
 
     MouseEventEx.redirectMouseEvents(shape.elem, this.graph, null)
 
