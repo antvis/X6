@@ -60,7 +60,7 @@ export class Stencil extends Shape {
     const name = node.getAttribute('name') || ''
     const perimeter = node.getAttribute('perimeter') === '1'
 
-    return new Anchor({ name, perimeter, point: new Point(x, y) })
+    return new Anchor({ x, y, name, perimeter })
   }
 
   evaluateAttribute(node: Element, name: string, shape: Shape) {

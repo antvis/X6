@@ -1,4 +1,4 @@
-import { Cell, Graph, Anchor, Point, Style } from '@antv/x6'
+import { Cell, Graph, Style } from '@antv/x6'
 import { DataItem, isCircle, isGroup, data } from './data'
 
 export function createGraph(container: HTMLDivElement) {
@@ -81,14 +81,35 @@ export function createGraph(container: HTMLDivElement) {
       if (cell != null && this.model.isNode(cell)) {
         const type = cell.data.type
         if (type === 'start') {
-          return [new Anchor({ point: new Point(0.5, 1) })]
+          return [[0.5, 1]]
+        }
+
+        if (isGroup(type)) {
+          return [
+            [0.25, 0],
+            [0.5, 0],
+            [0.75, 0],
+
+            [0, 0.25],
+            [0, 0.5],
+            [0, 0.75],
+
+            [1, 0.25],
+            [1, 0.5],
+            [1, 0.75],
+
+            [0.25, 1],
+            [0.5, 1],
+            [0.75, 1],
+          ]
         }
 
         return [
-          new Anchor({ point: new Point(0.5, 0) }),
-          new Anchor({ point: new Point(0, 0.5) }),
-          new Anchor({ point: new Point(1, 0.5) }),
-          new Anchor({ point: new Point(0.5, 1) }),
+          [0.5, 0],
+          [0, 0.5],
+
+          [1, 0.5],
+          [0.5, 1],
         ]
       }
       return null
