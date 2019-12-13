@@ -1031,13 +1031,13 @@ export class EdgeHandler extends MouseHandler {
     }
 
     if (this.isSourceHandle || this.isTargetHandle) {
-      if (anchor != null && anchor.point != null) {
+      if (anchor != null && anchor.position != null) {
         if (this.isSourceHandle) {
-          edgeState.style.exitX = anchor.point.x
-          edgeState.style.exitY = anchor.point.y
+          edgeState.style.exitX = anchor.position.x
+          edgeState.style.exitY = anchor.position.y
         } else {
-          edgeState.style.entryX = anchor.point.x
-          edgeState.style.entryY = anchor.point.y
+          edgeState.style.entryX = anchor.position.x
+          edgeState.style.entryY = anchor.position.y
         }
       } else {
         if (this.isSourceHandle) {
