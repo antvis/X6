@@ -39,7 +39,11 @@ export function createGraph(container: HTMLDivElement) {
         return this.createEdge(options)
       },
     },
+    connectionPreview: {
+      stroke: '#1890ff',
+    },
     connectionHighlight: {},
+    allowDanglingEdges: false,
     keyboard: {
       enabled: true,
       global: false,
@@ -171,6 +175,38 @@ export function demo(graph: Graph) {
   graph.batchUpdate(() => {
     const start = addNode(graph, data.map['start'], 372, 32)
     const end = addNode(graph, data.map['end'], 372, 480)
+
+    // const g1 = graph.addNode({
+    //   x: -80,
+    //   y: 200,
+    //   width: 200,
+    //   height: 200,
+    //   data: { type: '' },
+    //   fill: '#f5f5f5',
+    //   stroke: 'red',
+    // })
+
+    // graph.addNode({
+    //   x: 32,
+    //   y: 32,
+    //   width: 120,
+    //   height: 40,
+    //   parent: g1,
+    //   data: { type: '' },
+    //   fill: '#fff',
+    //   stroke: '#00ff00',
+    // })
+
+    // graph.addNode({
+    //   x: 32,
+    //   y: 100,
+    //   width: 120,
+    //   height: 40,
+    //   parent: g1,
+    //   data: { type: '' },
+    //   fill: '#fff',
+    //   stroke: '#0000ff',
+    // })
 
     const container = addNode(graph, data.map['combine'], 200, 200, 400, 240)
 
