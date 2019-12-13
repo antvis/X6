@@ -12,6 +12,7 @@ export class SplitBox extends React.PureComponent<
   private box1Elem: HTMLDivElement
   private box2Elem: HTMLDivElement
   private maskElem: HTMLDivElement
+  private resizerElem: HTMLDivElement
 
   private minSize: number
   private maxSize: number
@@ -32,11 +33,7 @@ export class SplitBox extends React.PureComponent<
   getNextState(props: SplitBox.Props): SplitBox.State {
     const { size, defaultSize, primary } = props
     const initialSize =
-      size !== undefined
-        ? size
-        : defaultSize !== undefined
-        ? defaultSize
-        : undefined
+      size != null ? size : defaultSize != null ? defaultSize : '25%'
 
     return {
       box1Size: primary === 'first' ? initialSize : undefined,
@@ -111,11 +108,31 @@ export class SplitBox extends React.PureComponent<
   }
 
   setPrimarySize(size: number) {
-    const styleName = this.isVertical() ? 'width' : 'height'
-    const primaryBox = this.isPrimaryFirst() ? this.box1Elem : this.box2Elem
+    const isFirstPrimary = this.isPrimaryFirst()
+    const primaryBox = isFirstPrimary ? this.box1Elem : this.box2Elem
+    const secondBox = isFirstPrimary ? this.box2Elem : this.box1Elem
+    const resizerElem = this.resizerElem
 
-    primaryBox.style.flex = 'none'
-    primaryBox.style[styleName] = `${size}px`
+    const value = `${size}px`
+    if (this.isVertical()) {
+      primaryBox.style.width = value
+      if (isFirstPrimary) {
+        secondBox.style.left = value
+        resizerElem.style.left = value
+      } else {
+        secondBox.style.right = value
+        resizerElem.style.right = value
+      }
+    } else {
+      primaryBox.style.height = value
+      if (isFirstPrimary) {
+        secondBox.style.top = value
+        resizerElem.style.top = value
+      } else {
+        secondBox.style.bottom = value
+        resizerElem.style.bottom = value
+      }
+    }
   }
 
   updateCursor(size: number, minSize: number, maxSize: number) {
@@ -218,10 +235,15 @@ export class SplitBox extends React.PureComponent<
     this.container = container
   }
 
+  refResizer = (elem: HTMLDivElement) => {
+    this.resizerElem = elem
+  }
+
   renderBox(baseCls: string, index: 1 | 2) {
     const primary = index === 1 ? 'first' : 'second'
     const isPrimary = this.props.primary === primary
-    const size = index === 1 ? this.state.box1Size : this.state.box2Size
+    const currentSize = index === 1 ? this.state.box1Size : this.state.box2Size
+    const oppositeSize = index === 1 ? this.state.box2Size : this.state.box1Size
     const style = {
       ...this.props.boxStyle,
       ...(isPrimary ? this.props.primaryBoxStyle : this.props.secondBoxStyle),
@@ -229,7 +251,7 @@ export class SplitBox extends React.PureComponent<
 
     const classes = classNames(
       `${baseCls}-item`,
-      isPrimary ? `${baseCls}-item-primary` : `${baseCls}-item-second`
+      isPrimary ? `${baseCls}-item-primary` : `${baseCls}-item-second`,
     )
 
     const ref = (elem: HTMLDivElement) => {
@@ -246,10 +268,13 @@ export class SplitBox extends React.PureComponent<
       <Box
         key={`box${index}`}
         refIt={ref}
-        size={size}
         style={style}
+        index={index}
         className={classes}
-        split={this.props.split}
+        currentSize={currentSize}
+        oppositeSize={oppositeSize}
+        vertical={this.isVertical()}
+        isPrimary={isPrimary}
       >
         {children[index - 1]}
       </Box>
@@ -257,40 +282,65 @@ export class SplitBox extends React.PureComponent<
   }
 
   renderResizer(baseCls: string) {
+    const style: React.CSSProperties = {
+      ...this.props.resizerStyle,
+    }
+
+    style.position = 'absolute'
+    style.zIndex = 2
+    if (this.isVertical()) {
+      style.top = 0
+      style.bottom = 0
+
+      if (this.props.resizable === true) {
+        style.cursor = 'col-resize'
+      }
+
+      if (this.isPrimaryFirst()) {
+        style.left = this.state.box1Size
+      } else {
+        style.right = this.state.box2Size
+      }
+    } else {
+      style.left = 0
+      style.right = 0
+
+      if (this.props.resizable === true) {
+        style.cursor = 'row-resize'
+      }
+
+      if (this.isPrimaryFirst()) {
+        style.top = this.state.box1Size
+      } else {
+        style.bottom = this.state.box2Size
+      }
+    }
+
     return (
       <Resizer
         key="resizer"
+        style={style}
         className={`${baseCls}-resizer`}
-        style={this.props.resizerStyle}
+        refIt={this.refResizer}
         onClick={this.props.onResizerClick}
-        onDoubleClick={this.props.onResizerDoubleClick}
         onMouseDown={this.onMouseDown}
         onMouseMove={this.onMouseMove}
         onMouseMoveEnd={this.onMouseMoveEnd}
+        onDoubleClick={this.props.onResizerDoubleClick}
       />
     )
   }
 
   render() {
     const style: React.CSSProperties = {
-      flex: 1,
-      flexShrink: 0,
-      display: 'flex',
+      ...this.props.style,
       overflow: 'hidden',
       position: 'relative',
       width: '100%',
       height: '100%',
-      ...this.props.style,
-    }
-
-    if (this.props.split === 'vertical') {
-      style.flexDirection = 'row'
-    } else {
-      style.flexDirection = 'column'
     }
 
     const baseCls = `${this.props.prefixCls}-split-box`
-
     const classes = classNames(baseCls, `${baseCls}-${this.props.split}`, {
       [`${baseCls}-disabled`]: !this.props.resizable,
     })
@@ -332,11 +382,12 @@ export namespace SplitBox {
     onResizerDoubleClick?: () => void
   }
 
-  export const defaultProps = {
+  export const defaultProps: Props = {
     resizable: true,
     split: 'vertical',
     primary: 'first',
     prefixCls: 'x6',
+    defaultSize: '25%',
   }
 
   export interface State {
