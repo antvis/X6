@@ -22,7 +22,7 @@ export function setAttributeWithAnchor(
     !detector.IS_CHROME_APP &&
     elem.ownerDocument === document
   ) {
-    const base = getUrlWithoutHash().replace(/([()])/g, '\\$1')
+    const base = getUrlWithoutHash().replace(/([\\()])/g, '\\$1')
     elem.setAttribute(attrName, `url(${base}#${id})`)
   } else {
     elem.setAttribute(attrName, `url(#${id})`)
