@@ -24,7 +24,7 @@ export class Resizer extends React.PureComponent<Resizer.Props> {
   onMouseMove = (
     deltaX: number,
     deltaY: number,
-    pos: MouseMoveTracker.ClientPosition
+    pos: MouseMoveTracker.ClientPosition,
   ) => {
     if (this.props.onMouseMove != null) {
       this.props.onMouseMove(deltaX, deltaY, pos)
@@ -58,6 +58,7 @@ export class Resizer extends React.PureComponent<Resizer.Props> {
         style={style}
         className={className}
         onClick={this.onClick}
+        ref={this.props.refIt}
         onDoubleClick={this.onDoubleClick}
         onMouseDown={this.onMouseDown}
       />
@@ -69,13 +70,14 @@ export namespace Resizer {
   export interface Props {
     className?: string
     style?: React.CSSProperties
+    refIt: React.LegacyRef<HTMLDivElement>
     onClick?: (e: React.MouseEvent) => void
     onDoubleClick?: (e: React.MouseEvent) => void
     onMouseDown: (e: React.MouseEvent) => void
     onMouseMove?: (
       deltaX: number,
       deltaY: number,
-      pos: MouseMoveTracker.ClientPosition
+      pos: MouseMoveTracker.ClientPosition,
     ) => void
     onMouseMoveEnd?: () => void
   }
