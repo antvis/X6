@@ -1549,7 +1549,6 @@ export class EdgeHandler extends MouseHandler {
       this.previewShape.apply(this.state)
       this.previewShape.points = this.absolutePoints
       this.previewShape.scale = this.state.view.scale
-      this.previewShape.shadow = false
 
       const args = {
         graph: this.graph,
@@ -1558,10 +1557,8 @@ export class EdgeHandler extends MouseHandler {
       }
 
       applySelectionPreviewStyle(args)
-      this.previewShape.outline = true
-      this.previewShape.shadow = false
       this.previewShape.cursor = getSelectionPreviewCursor(args)
-
+      this.previewShape.shadow = false
       this.previewShape.redraw()
     }
 
