@@ -3,9 +3,9 @@ import { Graph } from '../../graph'
 import { Shape, EllipseShape } from '../../shape'
 import { Image, Anchor, Point } from '../../struct'
 import {
+  drill,
   BaseStyle,
   OptionItem,
-  drill,
   applyBaseStyle,
   applyClassName,
   applyCursorStyle,

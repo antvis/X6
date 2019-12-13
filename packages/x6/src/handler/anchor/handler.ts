@@ -15,7 +15,7 @@ export class AnchorHandler extends BaseHandler {
   currentArea: Rectangle | null
   currentAnchor: Anchor | null
 
-  protected icons: ImageShape[] | null
+  protected icons: Shape[] | null
   protected points: Point[] | null
   protected anchors: Anchor[] | null
   protected highlight: Shape | null
@@ -79,7 +79,7 @@ export class AnchorHandler extends BaseHandler {
     state: State,
     anchor: Anchor,
     point: Point,
-    icon?: ImageShape,
+    icon?: Shape,
   ) {
     const { image, cursor, className } = getAnchorOptions({
       anchor,
@@ -96,13 +96,13 @@ export class AnchorHandler extends BaseHandler {
     )
 
     if (icon == null) {
-      // tslint:disable-next-line
-      icon = new ImageShape(bounds, image.src)
-      icon.dialect = 'svg'
-      icon.preserveImageAspect = false
-      icon.init(this.graph.view.getDecoratorPane())
-      util.toBack(icon.elem)
+      const img = new ImageShape(bounds, image.src)
+      img.dialect = 'svg'
+      img.preserveImageAspect = false
+      img.init(this.graph.view.getDecoratorPane())
+      util.toBack(img.elem)
 
+      icon = img // tslint:disable-line
       const getState = () => this.currentState || state
       MouseEventEx.redirectMouseEvents(icon.elem, this.graph, getState)
     }
@@ -227,8 +227,8 @@ export class AnchorHandler extends BaseHandler {
           !this.currentArea.isIntersectWith(mouse)) &&
         state !== this.currentState
       ) {
-        this.currentState = null
         this.currentArea = null
+        this.currentState = null
         this.focus(e, state!, isSource)
       }
 
@@ -335,7 +335,7 @@ export class AnchorHandler extends BaseHandler {
   }
 
   protected intersects(
-    icon: ImageShape,
+    icon: Shape,
     mouse: Rectangle,
     isSource: boolean,
     existingEdge: boolean,
