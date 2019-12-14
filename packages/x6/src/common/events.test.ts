@@ -18,10 +18,13 @@ describe('events', () => {
     const spy2 = sinon.spy()
 
     obj.on('a', spy1)
-    obj.on('*', spy2)
+    obj.on('b', spy2)
+
+    const data = { a: 1 }
     obj.trigger('a', 1, 2, 3)
+    obj.trigger('b', data)
     expect(spy1.calledWith(1, 2, 3)).toBeTruthy()
-    expect(spy2.calledWith('a', 1, 2, 3)).toBeTruthy()
+    expect(spy2.calledWith(data)).toBeTruthy()
   })
 
   it('should trigger event multi times', () => {
@@ -38,26 +41,6 @@ describe('events', () => {
     expect(spy.callCount).toBe(3)
   })
 
-  it('should trigger all for each event', () => {
-    const obj = new Events()
-    const spy = sinon.spy()
-    const spy2 = sinon.spy()
-
-    obj.on('*', spy)
-    obj.on('c', spy2)
-
-    obj.trigger('a b')
-    expect(spy.callCount).toBe(2)
-    expect(spy.calledWith('a'))
-    expect(spy.calledWith('b'))
-    spy.resetHistory()
-
-    obj.trigger('c')
-    expect(spy.callCount).toBe(1)
-    expect(spy2.callCount).toBe(1)
-    expect(spy2.calledBefore(spy))
-  })
-
   it('should trigger once', () => {
     const spy1 = sinon.spy()
     const spy2 = sinon.spy()
@@ -65,15 +48,17 @@ describe('events', () => {
     const context = {}
 
     obj.once('a', spy1, context)
-    obj.once('*', spy2, context)
+    obj.once('b', spy2, context)
 
+    obj.trigger('a', 1)
+    obj.trigger('b', 1, 2)
+    obj.trigger('a', 1)
     obj.trigger('b', 1)
-    obj.trigger('a', 1)
-    obj.trigger('a', 1)
+    obj.trigger('c')
 
     expect(spy1.withArgs(1).calledOnce).toBeTruthy()
     expect(spy1.calledOn(context)).toBeTruthy()
-    expect(spy2.withArgs('b', 1).calledOnce).toBeTruthy()
+    expect(spy2.withArgs(1, 2).calledOnce).toBeTruthy()
     expect(spy2.calledOn(context)).toBeTruthy()
   })
 
@@ -81,47 +66,22 @@ describe('events', () => {
     const obj = new Events()
     const stub1 = sinon.stub()
     const stub2 = sinon.stub()
-    const stub3 = sinon.stub()
 
     obj.on('a', stub1)
     obj.on('a', stub2)
-    obj.on('*', stub3)
 
     stub1.returns(false)
     stub2.returns(true)
-    stub3.returns('')
 
     expect(obj.trigger('a')).toBe(false)
 
     stub1.returns(undefined)
     stub2.returns(null)
-    stub3.returns('')
-    expect(obj.trigger('a')).not.toBe(false)
+    expect(obj.trigger('a')).toBe(true)
 
     stub1.returns(true)
     stub2.returns(true)
-    stub3.returns(false)
-    expect(obj.trigger('a')).toBe(false)
-  })
-
-  it('should bind and trigger multiple events', () => {
-    const obj = new Events()
-    const spy = sinon.spy()
-
-    obj.on('a b c', spy)
-
-    obj.trigger('a')
-    expect(spy.callCount).toBe(1)
-
-    obj.trigger('a b')
-    expect(spy.callCount).toBe(3)
-
-    obj.trigger('c')
-    expect(spy.callCount).toBe(4)
-
-    obj.off('a c')
-    obj.trigger('a b c')
-    expect(spy.callCount).toBe(5)
+    expect(obj.trigger('a')).toBe(true)
   })
 
   it('should not bind invalid callbacks', () => {
@@ -154,6 +114,7 @@ describe('events', () => {
     expect(spy.callCount).toBe(1)
 
     obj.off('a')
+    obj.off('b')
     obj.trigger('a')
     expect(spy.callCount).toBe(1)
   })
@@ -194,18 +155,20 @@ describe('events', () => {
 
   it('should remove all events', () => {
     const obj = new Events()
-    const spyA = sinon.spy()
-    const spyB = sinon.spy()
+    const spy1 = sinon.spy()
+    const spy2 = sinon.spy()
 
-    obj.on('x y *', spyA)
-    obj.on('x y *', spyB)
+    obj.on('x', spy1)
+    obj.on('y', spy2)
 
-    obj.trigger('x y')
+    obj.trigger('x')
+    obj.trigger('y')
     obj.off()
-    obj.trigger('x y')
+    obj.trigger('x')
+    obj.trigger('y')
 
-    expect(spyA.callCount).toBe(4)
-    expect(spyB.callCount).toBe(4)
+    expect(spy1.callCount).toBe(1)
+    expect(spy2.callCount).toBe(1)
   })
 
   it('should remove all events for a specific event', () => {
@@ -213,11 +176,14 @@ describe('events', () => {
     const spyA = sinon.spy()
     const spyB = sinon.spy()
 
-    obj.on('x y', spyA)
-    obj.on('x y', spyB)
+    obj.on('x', spyA)
+    obj.on('y', spyA)
+    obj.on('x', spyB)
+    obj.on('y', spyB)
 
     obj.trigger('x')
-    obj.off('x y z')
+    obj.off('x')
+    obj.off('y')
     obj.trigger('x')
 
     expect(spyA.callCount).toBe(1)
@@ -230,13 +196,16 @@ describe('events', () => {
     const spyB = sinon.spy()
     const context = {}
 
-    obj.on('x y *', spyA)
-    obj.on('x y *', spyB, context)
+    obj.on('x', spyA)
+    obj.on('y', spyA)
+    obj.on('x', spyB, context)
+    obj.on('y', spyB, context)
 
     obj.off(null, null, context)
-    obj.trigger('x y')
+    obj.trigger('x')
+    obj.trigger('y')
 
-    expect(spyA.callCount).toBe(4)
+    expect(spyA.callCount).toBe(2)
     expect(spyB.callCount).toBe(0)
   })
 
@@ -245,12 +214,15 @@ describe('events', () => {
     const success = sinon.spy()
     const fail = sinon.spy()
 
-    obj.on('x y *', success)
-    obj.on('x y *', fail)
+    obj.on('x', success)
+    obj.on('y', success)
+    obj.on('x', fail)
+    obj.on('y', fail)
     obj.off(null, fail)
-    obj.trigger('x y')
+    obj.trigger('x')
+    obj.trigger('y')
 
-    expect(success.callCount).toBe(4)
+    expect(success.callCount).toBe(2)
     expect(fail.callCount).toBe(0)
   })
 })
