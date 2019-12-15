@@ -1,3 +1,9 @@
+import {
+  RequiredKeys,
+  OptionalKeys,
+  PickByValue,
+  OmitByValue,
+} from 'utility-types'
 import { invoke } from '../util/function'
 
 export class Events<M extends Events.EventArgMap = any> {
@@ -122,38 +128,6 @@ export namespace Events {
 
   export type OtherKeys<M extends EventArgMap> = EventKeys<
     PickByValue<M, undefined>
-  >
-
-  /**
-   * Get union type of keys that are required in object type `T`
-   */
-  type RequiredKeys<T> = {
-    [K in keyof T]-?: {} extends Pick<T, K> ? never : K
-  }[keyof T]
-
-  /**
-   * Get union type of keys that are optional in object type `T`
-   */
-  type OptionalKeys<T> = {
-    [K in keyof T]-?: {} extends Pick<T, K> ? K : never
-  }[keyof T]
-
-  /**
-   * From `T` pick a set of properties by value matching `ValueType`.
-   *
-   * @see https://github.com/piotrwitek/utility-types/blob/master/src/mapped-types.ts#L197
-   */
-  type PickByValue<T, ValueType> = Pick<
-    T,
-    { [Key in keyof T]-?: T[Key] extends ValueType ? Key : never }[keyof T]
-  >
-
-  /**
-   * From `T` remove a set of properties by value matching `ValueType`.
-   */
-  type OmitByValue<T, ValueType> = Pick<
-    T,
-    { [Key in keyof T]-?: T[Key] extends ValueType ? never : Key }[keyof T]
   >
 }
 
