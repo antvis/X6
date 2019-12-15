@@ -82,7 +82,8 @@
   },
   "dependencies": {
     "mousetrap": "^1.6.3",
-    "size-sensor": "^0.2.5"
+    "size-sensor": "^0.2.5",
+    "utility-types": "^3.10.0"
   },
   "author": {
     "name": "bubkoo",
