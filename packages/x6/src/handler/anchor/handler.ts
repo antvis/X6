@@ -238,13 +238,16 @@ export class AnchorHandler extends BaseHandler {
           const dy = graphY - this.knobs[i].bounds.getCenterY()
           const dis = Math.sqrt(dx * dx + dy * dy)
 
+          // prettier-ignore
           if (
-            ((this.adsorbNearestTarget && !isSource) || // 进行目标链接桩查找时
+            (
+              // 进行目标链接桩查找时
+              (this.adsorbNearestTarget && !isSource) ||
               // 在感应区域内时
               (this.inductiveSize > 0 && dis < this.inductiveSize) ||
               this.isIntersected(this.knobs[i], mouse) ||
-              (currentPoint != null &&
-                this.isIntersected(this.knobs[i], grid))) &&
+              (currentPoint != null && this.isIntersected(this.knobs[i], grid))
+            ) &&
             (minDist == null || dis < minDist)
           ) {
             this.currentPoint = this.points[i]
