@@ -6,7 +6,13 @@ export class PageBreakManager extends BaseManager {
   protected verticalPageBreaks: Polyline[]
   protected horizontalPageBreaks: Polyline[]
 
-  updatePageBreaks(visible: boolean, width: number, height: number) {}
+  updatePageBreaks(visible: boolean, width: number, height: number) {
+    if (this.graph.infinite) {
+      this.updatePageBreaksInfinite(visible, width, height)
+    } else {
+      this.updatePageBreaksNormal(visible, width, height)
+    }
+  }
 
   updatePageBreaksNormal(visible: boolean, width: number, height: number) {
     const s = this.view.scale
@@ -38,7 +44,7 @@ export class PageBreakManager extends BaseManager {
     this.drawPageBreaks(false, vCount, pb, right, bottom, false)
   }
 
-  updatePageBreaksInfinite(visible: boolean) {
+  updatePageBreaksInfinite(visible: boolean, width: number, height: number) {
     const ps = this.view.scale * this.graph.pageScale
     const fmt = this.graph.pageFormat
     const gb = this.view.getBackgroundPageBounds()
@@ -67,11 +73,11 @@ export class PageBreakManager extends BaseManager {
     infinite: boolean,
   ) {
     if (horizontal) {
-      if (this.horizontalPageBreaks == null && count > 0) {
+      if (this.horizontalPageBreaks == null) {
         this.horizontalPageBreaks = []
       }
     } else {
-      if (this.verticalPageBreaks == null && count > 0) {
+      if (this.verticalPageBreaks == null) {
         this.verticalPageBreaks = []
       }
     }

@@ -17,6 +17,7 @@ export class PageBreakAccessor extends BaseGraph {
   enablePageBreak() {
     if (!this.isPageBreakEnabled()) {
       this.options.pageBreak.enabled = true
+      this.sizeDidChange()
     }
     return this
   }
@@ -24,6 +25,7 @@ export class PageBreakAccessor extends BaseGraph {
   disablePageBreak() {
     if (this.isPageBreakEnabled()) {
       this.options.pageBreak.enabled = false
+      this.sizeDidChange()
     }
     return this
   }
@@ -47,6 +49,7 @@ export class PageBreakAccessor extends BaseGraph {
   setPageBreakColor(color: string) {
     if (this.getPageBreakColor() !== color) {
       this.options.pageBreak.stroke = color
+      this.sizeDidChange()
     }
     return this
   }
@@ -66,6 +69,7 @@ export class PageBreakAccessor extends BaseGraph {
   setPageBreakDashed(dsahed: boolean) {
     if (dsahed !== this.isPageBreakDashed()) {
       this.options.pageBreak.dsahed = dsahed
+      this.sizeDidChange()
     }
     return this
   }
@@ -85,6 +89,7 @@ export class PageBreakAccessor extends BaseGraph {
   setPageBreakMinDist(minDist: number) {
     if (minDist !== this.getPageBreakMinDist()) {
       this.options.pageBreak.minDist = minDist
+      this.sizeDidChange()
     }
     return this
   }
