@@ -45,7 +45,7 @@ export class RubberbandHandler extends MouseHandler {
     this.graph.on(Graph.events.fireMouseEvent, this.onMouseEvent)
 
     this.onPan = () => this.repaint()
-    this.graph.on(Graph.events.pan, this.onPan)
+    this.graph.on('pan', this.onPan)
 
     this.onGesture = () => {
       if (this.origin != null) {
@@ -185,8 +185,8 @@ export class RubberbandHandler extends MouseHandler {
 
   protected repaint() {
     if (this.div && this.origin) {
-      const x = this.currentX - this.graph.panDx
-      const y = this.currentY - this.graph.panDy
+      const x = this.currentX - this.graph.panX
+      const y = this.currentY - this.graph.panY
 
       this.x = Math.min(this.origin.x, x)
       this.y = Math.min(this.origin.y, y)
@@ -273,7 +273,7 @@ export class RubberbandHandler extends MouseHandler {
   @Disposable.aop()
   dispose() {
     this.graph.removeMouseListener(this)
-    this.graph.off(Graph.events.pan, this.onPan)
+    this.graph.off('pan', this.onPan)
     this.graph.off(Graph.events.gesture, this.onGesture)
     this.graph.off(Graph.events.fireMouseEvent, this.onMouseEvent)
 

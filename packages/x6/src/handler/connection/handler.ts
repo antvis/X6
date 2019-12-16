@@ -364,8 +364,8 @@ export class ConnectionHandler extends MouseHandler {
               targetPoint.y / s - t.y,
             )
 
-            p.x -= this.graph.panDx / s
-            p.y -= this.graph.panDy / s
+            p.x -= this.graph.panX / s
+            p.y -= this.graph.panY / s
 
             geo.setTerminalPoint(p, false)
           }
@@ -439,10 +439,10 @@ export class ConnectionHandler extends MouseHandler {
         this.preview.currentPoint!.y / s - t.y,
       )
       geo.bounds.x = Math.round(
-        p.x - geo.bounds.width / 2 - this.graph.panDx / s,
+        p.x - geo.bounds.width / 2 - this.graph.panX / s,
       )
       geo.bounds.y = Math.round(
-        p.y - geo.bounds.height / 2 - this.graph.panDy / s,
+        p.y - geo.bounds.height / 2 - this.graph.panY / s,
       )
 
       // Aligns with source if within certain tolerance

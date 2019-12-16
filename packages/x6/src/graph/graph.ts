@@ -44,8 +44,8 @@ export class Graph extends BaseGraph implements IHooks {
     this.renderer = this.createRenderer()
     this.selection = this.createSelection()
 
-    this.panDx = 0
-    this.panDy = 0
+    this.panX = 0
+    this.panY = 0
 
     super.createManagers()
     super.createHandlers()
