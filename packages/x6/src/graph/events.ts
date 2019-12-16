@@ -38,8 +38,16 @@ export const events = {
   tapAndHold: 'tapAndHold',
   escape: 'escape',
 
-  pan: 'pan',
   gesture: 'gesture',
   fireMouseEvent: 'fireMouseEvent',
   selectionChanged: 'selectionChanged',
+}
+
+export interface EventArgs {
+  pan: {
+    panX: number
+    panY: number
+  }
+
+  [key: string]: any
 }
