@@ -30,7 +30,8 @@
   "husky": {
     "hooks": {
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
-      "pre-commit": "lint-staged && lerna run --concurrency 1 --stream precommit"
+      "pre-commit": "lint-staged && lerna run --concurrency 1 --stream precommit",
+      "prepush": "./scripts/pre-push-check.sh"
     }
   },
   "lint-staged": {
