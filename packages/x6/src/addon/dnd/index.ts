@@ -20,6 +20,7 @@ export class Dnd<T> extends Disablable<Dnd.EventArgMap<T>> {
   currentDropTarget: Cell | null = null
   dragElement: HTMLElement | null
   previewElement: HTMLElement | null
+  data?: T
 
   private rateX: number = 0
   private rateY: number = 0
@@ -38,13 +39,10 @@ export class Dnd<T> extends Disablable<Dnd.EventArgMap<T>> {
     }
   }
 
-  constructor(
-    public element: HTMLElement,
-    public options: Dnd.Options<T>,
-    public data?: T,
-  ) {
+  constructor(public element: HTMLElement, public options: Dnd.Options<T>) {
     super()
 
+    this.data = this.options.data
     DomEvent.addMouseListeners(this.element, e =>
       this.onMouseDown(e as MouseEvent),
     )
@@ -478,6 +476,7 @@ export class Dnd<T> extends Disablable<Dnd.EventArgMap<T>> {
 
 export namespace Dnd {
   export interface Options<T> {
+    data?: T
     getGraph: (this: Dnd<T>, args: { e: MouseEvent }) => Graph | null
     getTargetCell?: (
       this: Dnd<T>,
@@ -490,7 +489,10 @@ export namespace Dnd {
         CommonData<T>
       >,
     ) => Cell | null
-    createDragElement?: (this: Dnd<T>, args: CommonData<T>) => HTMLElement
+    createDragElement?: (
+      this: Dnd<T>,
+      args: CommonData<T>,
+    ) => HTMLElement | null
     createPreviewElement: (
       this: Dnd<T>,
       args: {
