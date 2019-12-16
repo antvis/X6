@@ -100,48 +100,26 @@ export class CommonAccessor extends BaseGraph {
   }
 
   @hook()
-  dataToString(cell: Cell): string {
-    const data = this.model.getData(cell)
-    if (data != null) {
-      if (typeof data.toString === 'function') {
-        return data.toString()
-      }
-    }
-
-    return ''
-  }
-
-  @hook()
   getHtml(cell: Cell): HTMLElement | string | null {
-    let result = ''
+    let result = null
     if (cell != null) {
-      result = this.dataToString(cell)
+      result = cell.style.html
     }
-    return result
+    return result || null
   }
 
   @hook()
   getLabel(cell: Cell): HTMLElement | string | null {
-    let result = ''
+    let result = null
 
     if (this.labelsVisible && cell != null) {
       const style = this.getStyle(cell)
-      if (!style.noLabel) {
-        result = this.dataToString(cell)
+      if (style.label !== false && style.label != null) {
+        result = style.label
       }
     }
 
     return result
-  }
-
-  @hook()
-  putLabel(cell: Cell, label: string) {
-    const data = cell.getData()
-    if (typeof data === 'object') {
-      throw new Error('Method not implemented.')
-    }
-
-    return label
   }
 
   @hook()

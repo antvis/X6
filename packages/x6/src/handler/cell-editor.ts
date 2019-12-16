@@ -339,7 +339,8 @@ export class CellEditor extends Disposable {
   }
 
   protected getInitialValue(state: State, trigger?: Event) {
-    let result = util.escape(this.graph.getEditingContent(state.cell, trigger))
+    const content = this.graph.getEditingContent(state.cell, trigger) || ''
+    let result = util.escape(content)
 
     // Workaround for trailing line breaks being ignored in the editor
     if (

@@ -3067,7 +3067,6 @@ export interface IPreDependencies {
   getSelectedCells(): Cell[]
   getDeletableCells(cells: Cell[]): Cell[]
   getCollapsableCells(cells: Cell[], collapse: boolean): Cell[]
-  dataToString(cell: Cell): string
-  putLabel(cell: Cell, label: string): string
   getStyle(cell: Cell | null): Style
+  getLabel(cell: Cell): HTMLElement | string | null
 }

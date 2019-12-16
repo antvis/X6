@@ -314,8 +314,6 @@ export interface IHooks {
    */
   getLabel: CellHook<string | HTMLElement>
 
-  putLabel: (this: Graph, cell: Cell, label: string) => any | null
-
   /**
    * Returns the initial value for in-place editing.
    */
@@ -326,11 +324,6 @@ export interface IHooks {
    * the given cell.
    */
   getTooltip: CellHook<string | HTMLElement | null>
-
-  /**
-   * Returns the textual representation for the given cell.
-   */
-  dataToString: CellHook<string>
 
   /**
    * Returns the terminal to be used for a given port.

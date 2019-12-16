@@ -17,7 +17,15 @@ export class EditingAccessor extends BaseGraph {
 
   @hook()
   getEditingContent(cell: Cell, e?: Event) {
-    return this.dataToString(cell)
+    const content = this.getLabel(cell)
+    if (content != null) {
+      if (typeof content === 'string') {
+        return content
+      }
+      return content.outerHTML
+    }
+
+    return null
   }
 
   startEditing(e?: MouseEvent) {
