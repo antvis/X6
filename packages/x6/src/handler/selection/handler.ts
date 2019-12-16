@@ -1,7 +1,5 @@
 import { Cell } from '../../core/cell'
-import { View } from '../../core/view'
 import { State } from '../../core/state'
-import { Model } from '../../core/model'
 import { Graph } from '../../graph'
 import { NodeHandler } from '../node/handler'
 import { EdgeHandler } from '../edge/handler'
@@ -24,13 +22,13 @@ export class SelectionHandler extends MouseHandler {
       }
     }
 
-    this.graph.on(Graph.events.selectionChanged, this.refreshHandler)
-    this.graph.view.on(View.events.scale, this.refreshHandler)
-    this.graph.view.on(View.events.translate, this.refreshHandler)
-    this.graph.view.on(View.events.scaleAndTranslate, this.refreshHandler)
-    this.graph.view.on(View.events.down, this.refreshHandler)
-    this.graph.view.on(View.events.up, this.refreshHandler)
-    this.graph.model.on(Model.events.change, this.refreshHandler)
+    this.graph.on('selectionChanged', this.refreshHandler)
+    this.graph.view.on('scale', this.refreshHandler)
+    this.graph.view.on('translate', this.refreshHandler)
+    this.graph.view.on('scaleAndTranslate', this.refreshHandler)
+    this.graph.view.on('up', this.refreshHandler)
+    this.graph.view.on('down', this.refreshHandler)
+    this.graph.model.on('change', this.refreshHandler)
   }
 
   refresh() {

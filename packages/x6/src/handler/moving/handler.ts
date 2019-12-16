@@ -1,7 +1,6 @@
 import * as util from '../../util'
 import * as movment from './util'
 import { Cell } from '../../core/cell'
-import { Model } from '../../core/model'
 import { Graph } from '../../graph'
 import { Preview } from './preview'
 import { MouseHandler } from '../handler-mouse'
@@ -21,10 +20,10 @@ export class MovingHandler extends MouseHandler {
     this.graph.on('pan', this.onPan)
 
     this.onEscape = () => this.reset()
-    this.graph.on(Graph.events.escape, this.onEscape)
+    this.graph.on('escape', this.onEscape)
 
     this.onRefresh = () => this.preview.refresh()
-    this.graph.model.on(Model.events.change, this.onRefresh)
+    this.graph.model.on('change', this.onRefresh)
   }
 
   mouseDown(e: MouseEventEx) {
@@ -236,10 +235,10 @@ export class MovingHandler extends MouseHandler {
     this.graph.off('pan', this.onPan)
     this.onPan = null
 
-    this.graph.off(Graph.events.escape, this.onEscape)
+    this.graph.off('escape', this.onEscape)
     this.onEscape = null
 
-    this.graph.model.off(Model.events.change, this.onRefresh)
+    this.graph.model.off('change', this.onRefresh)
     this.onRefresh = null
 
     this.preview.dispose()

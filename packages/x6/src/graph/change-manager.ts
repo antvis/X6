@@ -1,5 +1,4 @@
 import { Cell } from '../core/cell'
-import { Model } from '../core/model'
 import { Graph } from '../graph'
 import { Disposable } from '../common'
 import { BaseManager } from './base-manager'
@@ -16,7 +15,7 @@ import {
 export class ChangeManager extends BaseManager {
   constructor(graph: Graph) {
     super(graph)
-    this.model.on(Model.events.change, this.onModelChanged, this)
+    this.model.on('change', this.onModelChanged, this)
   }
 
   protected onModelChanged(changes: IChange[]) {
@@ -38,6 +37,7 @@ export class ChangeManager extends BaseManager {
         this.view.translate.x = 0
         this.view.translate.y = 0
       }
+      this.graph.trigger('root')
     } else if (change instanceof ChildChange) {
       const newParent = this.model.getParent(change.child)!
       this.view.invalidate(change.child, true, true)
@@ -156,6 +156,6 @@ export class ChangeManager extends BaseManager {
 
   @Disposable.aop()
   dispose() {
-    this.model.off(Model.events.change, this.onModelChanged)
+    this.model.off('change', this.onModelChanged)
   }
 }

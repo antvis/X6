@@ -1,7 +1,6 @@
 import { Cell } from '../core/cell'
 import { DomEvent } from '../common'
 import { hook } from './decorator'
-import { events } from './events'
 import { BaseGraph } from './base-graph'
 
 export class EditingAccessor extends BaseGraph {
@@ -35,7 +34,7 @@ export class EditingAccessor extends BaseGraph {
 
   stopEditing(cancel: boolean = false) {
     this.cellEditor.stopEditing(cancel)
-    this.trigger(events.editingStopped, { cancel })
+    this.trigger('editingStopped', { cancel })
     return this
   }
 
@@ -45,9 +44,9 @@ export class EditingAccessor extends BaseGraph {
   ) {
     if (e == null || !DomEvent.isMultiTouchEvent(e)) {
       if (cell != null && this.isCellEditable(cell)) {
-        this.trigger(events.startEditing, { cell, e })
+        this.trigger('startEditing', { cell, e })
         this.cellEditor.startEditing(cell, e)
-        this.trigger(events.editingStarted, { cell, e })
+        this.trigger('editingStarted', { cell, e })
       }
     }
     return this

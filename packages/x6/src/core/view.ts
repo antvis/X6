@@ -10,7 +10,7 @@ import { UndoableEdit, CurrentRootChange } from '../change'
 import { Point, Rectangle, Anchor, NodeType } from '../struct'
 import { detector, DomEvent, MouseEventEx, Primer, Disposable } from '../common'
 
-export class View extends Primer {
+export class View extends Primer<View.EventArgs> {
   graph: Graph
   scale: number
   translate: Point
@@ -2176,7 +2176,7 @@ export class View extends Primer {
       change.execute()
       const edit = new UndoableEdit(this.graph.getModel())
       edit.add(change)
-      this.trigger(View.events.undo, edit)
+      this.model.trigger('afterUndo', edit)
       this.graph.sizeDidChange()
     }
 
@@ -2220,12 +2220,28 @@ export class View extends Primer {
 }
 
 export namespace View {
-  export const events = {
-    up: 'up',
-    down: 'down',
-    undo: 'undo',
-    scale: 'scale',
-    translate: 'translate',
-    scaleAndTranslate: 'scaleAndTranslate',
+  export interface EventArgs {
+    up: {
+      previous: Cell | null
+      currentRoot: Cell | null
+    }
+    down: {
+      previous: Cell | null
+      currentRoot: Cell | null
+    }
+    scale: {
+      scale: number
+      previousScale: number
+    }
+    translate: {
+      translate: Point
+      previousTranslate: Point
+    }
+    scaleAndTranslate: {
+      scale: number
+      previousScale: number
+      translate: Point
+      previousTranslate: Point
+    }
   }
 }

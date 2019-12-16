@@ -1,9 +1,7 @@
 import * as util from '../util'
 import { Graph } from '../graph'
 import { Cell } from '../core/cell'
-import { View } from '../core/view'
 import { State } from '../core/state'
-import { Model } from '../core/model'
 import { Align } from '../types'
 import { globals } from '../option'
 import { detector, DomEvent, Disposable } from '../common'
@@ -30,8 +28,8 @@ export class CellEditor extends Disposable {
       }
     }
 
-    this.graph.view.on(View.events.scale, this.zoomHandler)
-    this.graph.view.on(View.events.scaleAndTranslate, this.zoomHandler)
+    this.graph.view.on('scale', this.zoomHandler)
+    this.graph.view.on('scaleAndTranslate', this.zoomHandler)
 
     // Adds handling of deleted cells while editing
     this.changeHandler = () => {
@@ -43,7 +41,7 @@ export class CellEditor extends Disposable {
       }
     }
 
-    this.graph.model.on(Model.events.change, this.changeHandler)
+    this.graph.model.on('change', this.changeHandler)
   }
 
   /**

@@ -4,8 +4,7 @@ import { State } from '../core/state'
 import { Point } from '../struct'
 import { RectangleShape } from '../shape'
 import { detector, DomEvent, MouseEventEx } from '../common'
-import { IMouseHandler, ConnectionHandler } from '../handler'
-import { events } from './events'
+import { IMouseHandler } from '../handler'
 import { BaseManager } from './base-manager'
 
 export class EventLoopManager extends BaseManager {
@@ -364,7 +363,7 @@ export class EventLoopManager extends BaseManager {
     // Updates the event state via getEventState
     e.state = this.getEventState(e.getState())
 
-    this.graph.trigger(events.fireMouseEvent, { eventName, e, sender })
+    this.graph.trigger('fireMouseEvent', { eventName, e, sender })
 
     if (
       detector.IS_OPERA ||
@@ -466,11 +465,11 @@ export class EventLoopManager extends BaseManager {
   fireGestureEvent(e: MouseEvent, cell?: Cell) {
     // Resets double tap event handling when gestures take place
     this.lastTouchTime = 0
-    this.graph.trigger(events.gesture, { e, cell })
+    this.graph.trigger('gesture', { e, cell })
   }
 
   escape(e: KeyboardEvent) {
-    this.graph.trigger(events.escape, { e })
+    this.graph.trigger('escape', { e })
   }
 
   click(e: MouseEventEx) {
@@ -478,7 +477,7 @@ export class EventLoopManager extends BaseManager {
     const consumed = e.isConsumed()
     let cell = e.getCell()
 
-    this.graph.trigger(events.click, { cell, e: evt })
+    this.graph.trigger('click', { cell, e: evt })
 
     // Handles the event if it has not been consumed
     if (this.graph.isEnabled() && !DomEvent.isConsumed(evt) && !consumed) {
@@ -526,7 +525,7 @@ export class EventLoopManager extends BaseManager {
   }
 
   dblClick(e: MouseEvent, cell?: Cell | null) {
-    this.graph.trigger(events.dblclick, { e, cell })
+    this.graph.trigger('dblclick', { e, cell })
 
     // Handles the event if it has not been consumed
     if (
@@ -543,7 +542,7 @@ export class EventLoopManager extends BaseManager {
 
   tapAndHold(e: MouseEventEx) {
     const evt = e.getEvent()
-    this.graph.trigger(events.tapAndHold, { e })
+    this.graph.trigger('tapAndHold', { e: evt })
 
     if (DomEvent.isConsumed(evt)) {
       // Resets the state of the panning handler
@@ -570,8 +569,8 @@ export class EventLoopManager extends BaseManager {
         )
         connHandler.preview.edgeState = connHandler.preview.createEdgeState(e)
         connHandler.preview.sourceState = state
-        connHandler.trigger(ConnectionHandler.events.start, {
-          previous: connHandler.preview.sourceState,
+        connHandler.trigger('start', {
+          state: connHandler.preview.sourceState,
         })
       }
     }

@@ -4,7 +4,6 @@ import { Cell } from '../core/cell'
 import { Size } from '../types'
 import { Rectangle, Point } from '../struct'
 import { detector, Disposable, DomEvent } from '../common'
-import { events } from './events'
 import { BaseManager } from './base-manager'
 
 export class ViewportManager extends BaseManager {
@@ -320,7 +319,7 @@ export class ViewportManager extends BaseManager {
       )
     }
 
-    this.graph.trigger(events.size, bounds)
+    this.graph.trigger('size', bounds)
 
     return this
   }

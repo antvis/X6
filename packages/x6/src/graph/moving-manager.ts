@@ -1,7 +1,6 @@
 import * as util from '../util'
 import { Cell } from '../core/cell'
 import { Point } from '../struct'
-import { events } from './events'
 import { BaseManager } from './base-manager'
 import { Align, VAlign } from '../types'
 
@@ -77,7 +76,7 @@ export class MovingManager extends BaseManager {
           this.graph.setNegativeCoordinatesAllowed(true)
         }
 
-        this.graph.trigger(events.moveCells, {
+        this.graph.trigger('moveCells', {
           cells,
           dx,
           dy,
@@ -143,7 +142,7 @@ export class MovingManager extends BaseManager {
           this.resetOtherEdges(cells)
         }
 
-        this.graph.trigger(events.cellsMoved, {
+        this.graph.trigger('cellsMoved', {
           cells,
           dx,
           dy,
@@ -302,7 +301,7 @@ export class MovingManager extends BaseManager {
         })
       })
 
-      this.graph.trigger(events.alignCells, { align, cells })
+      this.graph.trigger('alignCells', { align, cells })
     }
 
     return cells
@@ -310,7 +309,7 @@ export class MovingManager extends BaseManager {
 
   orderCells(toBack: boolean, cells: Cell[]) {
     this.model.batchUpdate(() => {
-      this.graph.trigger(events.orderCells, { cells, toBack })
+      this.graph.trigger('orderCells', { cells, toBack })
       this.cellsOrdered(cells, toBack)
     })
     return cells
@@ -329,7 +328,7 @@ export class MovingManager extends BaseManager {
           }
         })
 
-        this.graph.trigger(events.cellsOrdered, { cells, toBack })
+        this.graph.trigger('cellsOrdered', { cells, toBack })
       })
     }
   }
