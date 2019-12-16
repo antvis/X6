@@ -30,7 +30,7 @@ export default class Layers extends React.Component {
     graph.batchUpdate(() => {
       const hello1 = graph.addNode({
         parent: layer1,
-        data: 'Hello,',
+        label: 'Hello,',
         x: 20,
         y: 20,
         width: 80,
@@ -42,7 +42,7 @@ export default class Layers extends React.Component {
 
       const hello2 = graph.addNode({
         parent: layer1,
-        data: 'Hello,',
+        label: 'Hello,',
         x: 200,
         y: 20,
         width: 80,
@@ -54,7 +54,7 @@ export default class Layers extends React.Component {
 
       const world = graph.addNode({
         parent: layer0,
-        data: 'World!',
+        label: 'World!',
         x: 110,
         y: 150,
         width: 80,

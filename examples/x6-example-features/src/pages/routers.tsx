@@ -13,7 +13,7 @@ export default class Example extends React.Component {
       labelBackgroundColor: '#fff',
     }
     graph.addEdge({
-      data: 'straight line',
+      label: 'straight line',
       sourcePoint: { x: 40, y: 32 * 2 },
       targetPoint: { x: 240, y: 32 * 2 },
       style: {
@@ -22,7 +22,7 @@ export default class Example extends React.Component {
     })
 
     graph.addEdge({
-      data: 'curved line',
+      label: 'curved line',
       sourcePoint: { x: 320, y: 32 * 2 },
       targetPoint: { x: 520, y: 32 * 2 },
       points: [[420, 32 * 3]],
@@ -33,7 +33,7 @@ export default class Example extends React.Component {
     })
 
     graph.addEdge({
-      data: 'horizontal elbow',
+      label: 'horizontal elbow',
       sourcePoint: { x: 40, y: 32 * 4 },
       targetPoint: { x: 240, y: 32 * 6 },
       style: {
@@ -43,7 +43,7 @@ export default class Example extends React.Component {
     })
 
     graph.addEdge({
-      data: 'vertical elbow',
+      label: 'vertical elbow',
       sourcePoint: { x: 320, y: 32 * 4 },
       targetPoint: { x: 520, y: 32 * 6 },
       style: {
@@ -54,7 +54,7 @@ export default class Example extends React.Component {
     })
 
     graph.addEdge({
-      data: 'entity relation',
+      label: 'entity relation',
       sourcePoint: { x: 40, y: 32 * 8 },
       targetPoint: { x: 240, y: 32 * 10 },
       style: {
@@ -64,7 +64,7 @@ export default class Example extends React.Component {
     })
 
     graph.addEdge({
-      data: 'orth',
+      label: 'orth',
       sourcePoint: { x: 320, y: 32 * 8 },
       targetPoint: { x: 520, y: 32 * 10 },
       style: {
@@ -74,7 +74,7 @@ export default class Example extends React.Component {
     })
 
     graph.addEdge({
-      data: 'segment',
+      label: 'segment',
       sourcePoint: { x: 40, y: 32 * 12 },
       targetPoint: { x: 240, y: 32 * 14 },
       points: [[140, 32 * 13]],
@@ -85,7 +85,7 @@ export default class Example extends React.Component {
     })
 
     const node1 = graph.addNode({
-      data: 'Loop',
+      label: 'Loop',
       x: 320,
       y: 32 * 13 - 15,
       width: 80,
@@ -93,7 +93,7 @@ export default class Example extends React.Component {
     })
 
     const node2 = graph.addNode({
-      data: 'Loop',
+      label: 'Loop',
       x: 440,
       y: 32 * 13 - 15,
       width: 80,

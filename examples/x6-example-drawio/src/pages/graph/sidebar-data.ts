@@ -3,6 +3,7 @@ import { PaletteItem, getRenderer, getRendererForCells } from './sidebar-util'
 import './shape'
 
 export interface DataItem {
+  label?: string
   title: string
   tags: string
   data?: any
@@ -38,11 +39,11 @@ export const generals: DataItem[] = [
   },
   {
     title: 'Text',
-    data: 'Text',
     tags: 'text textbox textarea label',
     width: 40,
     height: 20,
     style: {
+      label: 'Text',
       shape: 'rectangle',
       stroke: 'none',
       fill: 'none',
@@ -55,12 +56,12 @@ export const generals: DataItem[] = [
   },
   {
     title: 'Textbox',
-    data:
-      '<h1>Heading</h1><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>',
     tags: 'text textbox textarea',
     width: 190,
     height: 120,
     style: {
+      label:
+        '<h1>Heading</h1><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>',
       shape: 'rectangle',
       stroke: 'none',
       fill: 'none',
@@ -392,7 +393,7 @@ export function getUMLPaletteItems() {
     ...[
       {
         title: 'Object',
-        data: 'Object',
+        label: 'Object',
         tags: `${umlTags} object instance`,
         width: 110,
         height: 50,
@@ -402,7 +403,7 @@ export function getUMLPaletteItems() {
       },
       {
         title: 'Interface',
-        data: '&laquo;interface&raquo;<br><b>Name</b>',
+        label: '&laquo;interface&raquo;<br><b>Name</b>',
         tags: `${umlTags} interface object instance annotated annotation`,
         width: 110,
         height: 50,

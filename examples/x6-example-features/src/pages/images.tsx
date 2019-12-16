@@ -37,20 +37,20 @@ export default class Example extends React.Component {
       }
 
       graph.addNode({
-        data: 'Top\nTop',
         x: 60,
         y: 80,
         width: 128,
         height: 128,
+        label: 'Top\nTop',
         style: { ...style },
       })
 
       graph.addNode({
-        data: 'Bottom\nBottom',
         x: 60,
         y: 240,
         width: 128,
         height: 128,
+        label: 'Bottom\nBottom',
         style: {
           ...style,
           imageVerticalAlign: 'bottom',
@@ -59,11 +59,11 @@ export default class Example extends React.Component {
       })
 
       graph.addNode({
-        data: 'Left\nLeft',
         x: 240,
         y: 80,
         width: 128,
         height: 128,
+        label: 'Left\nLeft',
         style: {
           ...style,
           align: 'right',
@@ -74,11 +74,11 @@ export default class Example extends React.Component {
       })
 
       graph.addNode({
-        data: 'Right\nRight',
         x: 240,
         y: 240,
         width: 128,
         height: 128,
+        label: 'Right\nRight',
         style: {
           ...style,
           align: 'left',

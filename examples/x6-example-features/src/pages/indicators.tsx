@@ -29,16 +29,16 @@ export default class Example extends React.Component {
         y: 60,
         width: 96,
         height: 96,
-        data: 'Bottom Label',
+        label: 'Bottom Label',
         style: { ...style },
       })
 
       graph.addNode({
-        data: 'Top Label',
         x: 240,
         y: 60,
         width: 96,
         height: 96,
+        label: 'Top Label',
         style: {
           ...style,
           indicatorShape: 'actor',

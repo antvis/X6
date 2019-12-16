@@ -1,5 +1,5 @@
 import React from 'react'
-import { Graph, Point, Anchor } from '@antv/x6'
+import { Graph } from '@antv/x6'
 import './index.less'
 
 export default class Example extends React.Component {
@@ -34,29 +34,29 @@ export default class Example extends React.Component {
 
     graph.batchUpdate(() => {
       const n1 = graph.addNode({
-        data: 'Triangle',
         x: 20,
         y: 20,
         width: 80,
         height: 60,
+        label: 'Triangle',
         shape: 'triangle',
         perimeter: 'triangle',
       })
 
       const n2 = graph.addNode({
-        data: 'Rectangle',
         x: 200,
         y: 20,
         width: 80,
         height: 30,
+        label: 'Rectangle',
       })
 
       const n3 = graph.addNode({
-        data: 'Ellipse',
         x: 200,
         y: 150,
         width: 80,
         height: 60,
+        label: 'Ellipse',
         shape: 'ellipse',
         perimeter: 'ellipse',
       })
@@ -64,7 +64,7 @@ export default class Example extends React.Component {
       graph.addEdge({
         source: n1,
         target: n3,
-        data: 'label',
+        label: 'label',
         style: {
           edge: 'elbow',
           elbow: 'horizontal',
