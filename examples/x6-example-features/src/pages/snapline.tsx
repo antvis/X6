@@ -19,8 +19,8 @@ export default class Example extends React.Component {
     })
 
     graph.batchUpdate(() => {
-      graph.addNode({ data: 'Hello', x: 60, y: 60, width: 80, height: 70 })
-      graph.addNode({ data: 'World', x: 240, y: 240, width: 80, height: 40 })
+      graph.addNode({ label: 'Hello', x: 60, y: 60, width: 80, height: 70 })
+      graph.addNode({ label: 'World', x: 240, y: 240, width: 80, height: 40 })
     })
   }
 

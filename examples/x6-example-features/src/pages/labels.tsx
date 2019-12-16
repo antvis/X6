@@ -14,67 +14,67 @@ export default class Example extends React.Component {
 
     graph.batchUpdate(() => {
       const node1 = graph.addNode({
-        data: 'NodeLabelsMovable',
         x: 60,
         y: 60,
         width: 80,
         height: 30,
+        label: 'NodeLabelsMovable',
       })
 
       graph.addNode({
-        parent: node1,
-        data: 'Label 1',
         x: 0.5,
         y: 1,
         width: 0,
         height: 0,
         relative: true,
+        parent: node1,
+        label: 'Label 1',
       })
 
       graph.addNode({
-        parent: node1,
-        data: 'Label 2',
         x: 0.5,
         y: 0,
         width: 0,
         height: 0,
+        parent: node1,
         relative: true,
+        label: 'Label 2',
       })
 
       const node2 = graph.addNode({
-        data:
-          'Wrapping and clipping is enabled only if the cell is collapsed, otherwise the label is truncated if there is no manual offset.', // tslint:disable-line
         x: 240,
         y: 240,
         width: 80,
         height: 30,
+        label:
+          'Wrapping and clipping is enabled only if the cell is collapsed, otherwise the label is truncated if there is no manual offset.', // tslint:disable-line
         alternateBounds: { x: 0, y: 0, width: 80, height: 30 },
       })
 
       graph.addNode({
-        parent: node2,
-        data: 'Label 1',
         x: 0.5,
         y: 1,
         width: 0,
         height: 0,
         relative: true,
+        parent: node2,
+        label: 'Label 1',
       })
 
       graph.addNode({
-        parent: node2,
-        data: 'Label 2',
         x: 0.5,
         y: 0,
         width: 0,
         height: 0,
         relative: true,
+        parent: node2,
+        label: 'Label 2',
       })
 
       graph.addEdge({
-        data: 'edgeLabelsMovable',
         source: node1,
         target: node2,
+        label: 'edgeLabelsMovable',
       })
     })
   }

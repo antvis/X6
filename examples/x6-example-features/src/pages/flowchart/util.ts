@@ -56,7 +56,7 @@ export function createGraph(container: HTMLDivElement) {
     nodeStyle: {
       fill: 'rgba(0, 0, 0, 0)',
       stroke: 'none',
-      noLabel: true,
+      label: false,
       editable: false,
     },
     edgeStyle: {
@@ -270,7 +270,7 @@ export function demo(graph: Graph) {
     })
 
     addEdge(graph, {
-      data: '同意',
+      label: '同意',
       source: process1,
       target: process2,
       exitX: 0.5,
@@ -298,7 +298,7 @@ export function demo(graph: Graph) {
     })
 
     addEdge(graph, {
-      data: '驳回',
+      label: '驳回',
       source: process1,
       target: end,
       points: [

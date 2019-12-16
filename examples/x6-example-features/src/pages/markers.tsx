@@ -11,7 +11,7 @@ export default class Example extends React.Component {
     graph.batchUpdate(() => {
       Marker.getMakerNames().forEach((name, i) => {
         graph.addEdge({
-          data: name,
+          label: name,
           sourcePoint: { x: 24, y: 32 * (i + 1) },
           targetPoint: { x: 240, y: 32 * (i + 1) },
           style: { ...style, startArrow: name, endArrow: name },

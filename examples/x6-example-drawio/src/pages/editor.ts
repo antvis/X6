@@ -77,8 +77,8 @@ export class Editor extends Primer {
     const graph = this.graph
     graph.batchUpdate(() => {
       const size = { width: 80, height: 30 }
-      const n1 = graph.addNode({ ...size, data: 'Hello', x: 240, y: 60 })
-      const n2 = graph.addNode({ ...size, data: 'World', x: 400, y: 200 })
+      const n1 = graph.addNode({ ...size, label: 'Hello', x: 240, y: 60 })
+      const n2 = graph.addNode({ ...size, label: 'World', x: 400, y: 200 })
       graph.addEdge({ source: n1, target: n2 })
     })
   }
@@ -101,7 +101,7 @@ export class Editor extends Primer {
       const size = { width: 180, height: 70 }
       const style: Style = {
         shape: 'html',
-        noLabel: true,
+        label: false,
         stroke: 'rgba(0,0,0,0)',
         strokeWidth: 0,
         strokeOpacity: 0,
@@ -120,7 +120,7 @@ export class Editor extends Primer {
       }
 
       const parent = graph.addNode({
-        data: '组织关系图',
+        label: '组织关系图',
         x: 50,
         y: 300,
         width: 700,
@@ -147,7 +147,7 @@ export class Editor extends Primer {
         parent,
         x: 260,
         y: 40,
-        data: this.renderORGHTML('ceo', avatarMale, 'CEO', 'Bart Simpson'),
+        html: this.renderORGHTML('ceo', avatarMale, 'CEO', 'Bart Simpson'),
       })
 
       const vp1 = graph.addNode({
@@ -156,7 +156,7 @@ export class Editor extends Primer {
         parent,
         x: 40,
         y: 220,
-        data: this.renderORGHTML(
+        html: this.renderORGHTML(
           'vp',
           avatarMale,
           'Marketing',
@@ -170,7 +170,7 @@ export class Editor extends Primer {
         parent,
         x: 260,
         y: 220,
-        data: this.renderORGHTML('vp', avatarFemale, 'Sales', 'Marge Simpson'),
+        html: this.renderORGHTML('vp', avatarFemale, 'Sales', 'Marge Simpson'),
       })
 
       const vp3 = graph.addNode({
@@ -179,7 +179,7 @@ export class Editor extends Primer {
         parent,
         x: 480,
         y: 220,
-        data: this.renderORGHTML(
+        html: this.renderORGHTML(
           'vp',
           avatarFemale,
           'Production',
@@ -212,7 +212,7 @@ export class Editor extends Primer {
         parent,
         x: 145,
         y: 360,
-        data: this.renderORGHTML(
+        html: this.renderORGHTML(
           'manager',
           avatarMale,
           'Manager',
@@ -226,7 +226,7 @@ export class Editor extends Primer {
         parent,
         x: 145,
         y: 480,
-        data: this.renderORGHTML(
+        html: this.renderORGHTML(
           'manager',
           avatarMale,
           'Manager',
@@ -240,7 +240,7 @@ export class Editor extends Primer {
         parent,
         x: 365,
         y: 360,
-        data: this.renderORGHTML(
+        html: this.renderORGHTML(
           'manager',
           avatarFemale,
           'Manager',
