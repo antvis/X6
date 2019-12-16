@@ -123,7 +123,7 @@ export class SizeManager extends BaseManager {
       }
 
       // Adds space for label
-      let value = this.renderer.getLabelValue(state)
+      let value = this.renderer.getLabel(state)
       if (value != null && typeof value === 'string' && value.length > 0) {
         if (!this.graph.isHtmlLabel(state.cell)) {
           value = util.escape(value)

@@ -31,7 +31,6 @@ export const events = {
   startEditing: 'startEditing',
   editingStarted: 'editingStarted',
   editingStopped: 'editingStopped',
-  labelChanged: 'labelChanged',
   size: 'size',
 
   click: 'click',

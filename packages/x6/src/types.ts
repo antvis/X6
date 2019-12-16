@@ -64,10 +64,7 @@ interface ShapeStyle {
 }
 
 interface LabelStyle {
-  /**
-   * If this is true then no label is visible for a given cell.
-   */
-  noLabel?: boolean
+  label?: false | string | HTMLElement
   htmlLabel?: boolean
   horizontal?: boolean
   fontSize?: number
@@ -277,14 +274,15 @@ interface IndicatorStyle {
   indicatorDirection?: Direction
 }
 
-interface CustomStyle {
-  [key: string]: any
-}
-
-interface CustomCSS {
+interface HTMLShapeStyle {
+  html?: string | HTMLElement
   css?: {
     [selector: string]: Partial<CSSStyleDeclaration>
   }
+}
+
+interface CustomStyle {
+  [key: string]: any
 }
 
 export interface Style
@@ -293,8 +291,8 @@ export interface Style
     EdgeStyle,
     ImageStyle,
     IndicatorStyle,
-    CustomStyle,
-    CustomCSS {
+    HTMLShapeStyle,
+    CustomStyle {
   direction?: Direction
 
   /**

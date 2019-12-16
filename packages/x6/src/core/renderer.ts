@@ -538,7 +538,7 @@ export class Renderer {
 
   protected redrawLabel(state: State, forced?: boolean) {
     const graph = state.view.graph
-    const txt = this.getLabelValue(state)
+    const txt = this.getLabel(state)
     const wrapping = graph.isWrapping(state.cell)
     const clipping = graph.isLabelClipped(state.cell)
 
@@ -632,7 +632,7 @@ export class Renderer {
     }
   }
 
-  getLabelValue(state: State) {
+  getLabel(state: State) {
     return state.view.graph.getLabel(state.cell)
   }
 
