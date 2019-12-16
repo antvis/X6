@@ -91,7 +91,7 @@ export class PanningHandler extends MouseHandler<PanningHandler.EventArgs> {
       }
     }
 
-    this.graph.on(Graph.events.fireMouseEvent, this.forcePanningHandler)
+    this.graph.on('fireMouseEvent', this.forcePanningHandler)
 
     // Handles pinch gestures
     this.gestureHandler = ({ e }) => {
@@ -128,7 +128,7 @@ export class PanningHandler extends MouseHandler<PanningHandler.EventArgs> {
       }
     }
 
-    this.graph.on(Graph.events.gesture, this.gestureHandler)
+    this.graph.on('gesture', this.gestureHandler)
 
     this.mouseUpListener = () => {
       if (this.active) {
@@ -277,8 +277,8 @@ export class PanningHandler extends MouseHandler<PanningHandler.EventArgs> {
   @Disposable.aop()
   dispose() {
     this.graph.removeMouseListener(this)
-    this.graph.off(Graph.events.fireMouseEvent, this.forcePanningHandler)
-    this.graph.off(Graph.events.gesture, this.gestureHandler)
+    this.graph.off('fireMouseEvent', this.forcePanningHandler)
+    this.graph.off('gesture', this.gestureHandler)
     DomEvent.removeListener(document, 'mouseup', this.mouseUpListener)
   }
 }

@@ -1,6 +1,5 @@
 import { Cell } from '../core/cell'
 import { Geometry } from '../core/geometry'
-import { events } from './events'
 import { BaseManager } from './base-manager'
 
 export class GroupManager extends BaseManager {
@@ -64,7 +63,7 @@ export class GroupManager extends BaseManager {
 
           // Resize the group
           this.graph.sizeManager.cellsResized([group], [bounds], false)
-          this.graph.trigger(events.groupCells, { group, cells, border })
+          this.graph.trigger('groupCells', { group, cells, border })
         })
       }
     }
@@ -148,7 +147,7 @@ export class GroupManager extends BaseManager {
         })
 
         this.removeGroupsAfterUngroup(cells!)
-        this.graph.trigger(events.ungroupCells, { cells })
+        this.graph.trigger('ungroupCells', { cells: cells! })
       })
     }
 
@@ -276,7 +275,7 @@ export class GroupManager extends BaseManager {
         true,
       )
 
-      this.graph.trigger(events.removeCellsFromParent, { cells })
+      this.graph.trigger('removeCellsFromParent', { cells })
     })
 
     return cells

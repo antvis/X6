@@ -1,10 +1,8 @@
 import { Primer, Disposable } from '../common'
 import { Graph } from '../graph'
-import { View } from '../core/view'
-import { Model } from '../core/model'
 import { UndoableEdit } from './undoableedit'
 
-export class UndoManager extends Primer {
+export class UndoManager extends Primer<UndoManager.EventArgs> {
   private size: number
   private cursor: number
   private history: UndoableEdit[]
@@ -18,7 +16,7 @@ export class UndoManager extends Primer {
   clear() {
     this.cursor = 0
     this.history = []
-    this.trigger(UndoManager.events.clear)
+    this.trigger('clear')
   }
 
   isEmpty() {
@@ -40,7 +38,7 @@ export class UndoManager extends Primer {
       edit.undo()
 
       if (edit.isSignificant()) {
-        this.trigger(UndoManager.events.undo, edit)
+        this.trigger('undo', edit)
         break
       }
     }
@@ -53,7 +51,7 @@ export class UndoManager extends Primer {
       this.cursor += 1
       edit.redo()
       if (edit.isSignificant()) {
-        this.trigger(UndoManager.events.redo, edit)
+        this.trigger('redo', edit)
         break
       }
     }
@@ -68,7 +66,7 @@ export class UndoManager extends Primer {
 
     this.history.push(edit)
     this.cursor = this.history.length
-    this.trigger(UndoManager.events.add, edit)
+    this.trigger('add', edit)
   }
 
   trim() {
@@ -94,8 +92,7 @@ export namespace UndoManager {
     const undoListener = (edit: UndoableEdit) => {
       undoManager.add(edit)
     }
-    graph.view.on(View.events.undo, undoListener)
-    graph.model.on(Model.events.afterUndo, undoListener)
+    graph.model.on('afterUndo', undoListener)
 
     const undoHandler = (edit: UndoableEdit) => {
       const cells = graph.changeManager
@@ -105,16 +102,16 @@ export namespace UndoManager {
       graph.setSelectedCells(cells)
     }
 
-    undoManager.on(UndoManager.events.undo, undoHandler)
-    undoManager.on(UndoManager.events.redo, undoHandler)
+    undoManager.on('undo', undoHandler)
+    undoManager.on('redo', undoHandler)
 
     return undoManager
   }
 
-  export const events = {
-    add: 'add',
-    undo: 'undo',
-    redo: 'redo',
-    clear: 'clear',
+  export interface EventArgs {
+    add: UndoableEdit
+    undo: UndoableEdit
+    redo: UndoableEdit
+    clear?: null
   }
 }

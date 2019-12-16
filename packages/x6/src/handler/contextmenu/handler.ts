@@ -42,7 +42,7 @@ export class ContextMenuHandler extends MouseHandler {
     this.gestureHandler = () => {
       this.inTolerance = false
     }
-    this.graph.on(Graph.events.gesture, this.gestureHandler)
+    this.graph.on('gesture', this.gestureHandler)
   }
 
   protected config() {
@@ -137,6 +137,6 @@ export class ContextMenuHandler extends MouseHandler {
   @Disposable.aop()
   dispose() {
     this.graph.removeMouseListener(this)
-    this.graph.off(Graph.events.gesture, this.gestureHandler)
+    this.graph.off('gesture', this.gestureHandler)
   }
 }

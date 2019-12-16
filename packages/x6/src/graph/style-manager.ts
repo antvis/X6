@@ -1,7 +1,6 @@
 import { Cell } from '../core/cell'
 import { Style } from '../types'
 import { BaseManager } from './base-manager'
-import { events } from './events'
 
 export class StyleManager extends BaseManager {
   getCellStyle(cell: Cell | null): Style {
@@ -128,7 +127,7 @@ export class StyleManager extends BaseManager {
 
         // Removes all control points
         this.graph.resetEdge(edge)
-        this.graph.trigger(events.flipEdge, { edge })
+        this.graph.trigger('flipEdge', { edge })
       })
     }
 
@@ -141,7 +140,7 @@ export class StyleManager extends BaseManager {
       : cells
 
     this.model.batchUpdate(() => {
-      this.graph.trigger(events.toggleCells, {
+      this.graph.trigger('toggleCells', {
         show,
         includeEdges,
         cells: arr,

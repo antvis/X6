@@ -2,7 +2,6 @@ import { Cell } from '../core/cell'
 import { State } from '../core/state'
 import { Route } from '../route'
 import { Point, Anchor } from '../struct'
-import { Graph } from './graph'
 import { BaseManager } from './base-manager'
 
 export class ConnectionManager extends BaseManager {
@@ -14,7 +13,7 @@ export class ConnectionManager extends BaseManager {
   ) {
     this.model.batchUpdate(() => {
       const previous = this.model.getTerminal(edge, isSource)
-      this.graph.trigger(Graph.events.connectCell, {
+      this.graph.trigger('connectCell', {
         edge,
         terminal,
         isSource,
@@ -64,7 +63,7 @@ export class ConnectionManager extends BaseManager {
           this.graph.resetEdge(edge)
         }
 
-        this.graph.trigger(Graph.events.cellConnected, {
+        this.graph.trigger('cellConnected', {
           edge,
           terminal,
           isSource,
