@@ -26,6 +26,6 @@ export class TooltipAccessor extends BaseGraph {
 
   @hook()
   getTooltip(cell: Cell) {
-    return this.dataToString(cell)
+    return cell.style.tooltip
   }
 }
