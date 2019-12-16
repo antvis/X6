@@ -63,6 +63,7 @@ export function createGraph(container: HTMLDivElement) {
       edge: 'elbow',
       elbow: 'vertical',
       labelBackgroundColor: '#f8f9fa',
+      rounded: true,
       movable: false,
     },
     dropEnabled: true,
