@@ -1,6 +1,5 @@
 import { Cell } from '../core/cell'
 import { Overlay, Image } from '../struct'
-import { events } from './events'
 import { BaseManager } from './base-manager'
 
 export class OverlayManager extends BaseManager {
@@ -17,7 +16,7 @@ export class OverlayManager extends BaseManager {
       this.renderer.redraw(state)
     }
 
-    this.graph.trigger(events.addOverlay, { cell, overlay })
+    this.graph.trigger('addOverlay', { cell, overlay })
 
     return overlay
   }
@@ -39,7 +38,7 @@ export class OverlayManager extends BaseManager {
         this.renderer.redraw(state)
       }
 
-      this.graph.trigger(events.removeOverlay, { cell, overlay })
+      this.graph.trigger('removeOverlay', { cell, overlay })
 
       return overlay
     }
@@ -56,7 +55,7 @@ export class OverlayManager extends BaseManager {
         this.renderer.redraw(state)
       }
 
-      this.graph.trigger(events.removeOverlays, { cell, overlays })
+      this.graph.trigger('removeOverlays', { cell, overlays })
     }
 
     return overlays

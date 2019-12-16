@@ -165,7 +165,7 @@ export class EdgeHandler extends MouseHandler {
       }
     }
 
-    this.state.view.graph.on(Graph.events.escape, this.escapeHandler)
+    this.state.view.graph.on('escape', this.escapeHandler)
   }
 
   config() {
@@ -1678,7 +1678,7 @@ export class EdgeHandler extends MouseHandler {
 
   @Disposable.aop()
   dispose() {
-    this.state.view.graph.off(Graph.events.escape, this.escapeHandler)
+    this.state.view.graph.off('escape', this.escapeHandler)
     this.escapeHandler = null
 
     this.marker.dispose()

@@ -1,7 +1,6 @@
 import * as util from '../util'
 import { Cell } from '../core/cell'
 import { Point, Rectangle } from '../struct'
-import { events } from './events'
 import { BaseManager } from './base-manager'
 
 export class SizeManager extends BaseManager {
@@ -19,7 +18,7 @@ export class SizeManager extends BaseManager {
 
   updateCellSize(cell: Cell, ignoreChildren: boolean = false) {
     this.model.batchUpdate(() => {
-      this.graph.trigger(events.updateCellSize, { cell, ignoreChildren })
+      this.graph.trigger('updateCellSize', { cell, ignoreChildren })
       this.cellSizeUpdated(cell, ignoreChildren)
     })
 
@@ -159,7 +158,7 @@ export class SizeManager extends BaseManager {
 
   resizeCells(cells: Cell[], bounds: Rectangle[], recurse: boolean) {
     this.model.batchUpdate(() => {
-      this.graph.trigger(events.resizeCells, { cells, bounds })
+      this.graph.trigger('resizeCells', { cells, bounds })
       this.cellsResized(cells, bounds, recurse)
     })
 
@@ -184,7 +183,7 @@ export class SizeManager extends BaseManager {
         }
       })
 
-      this.graph.trigger(events.cellsResized, { cells, bounds })
+      this.graph.trigger('cellsResized', { cells, bounds })
     }
   }
 

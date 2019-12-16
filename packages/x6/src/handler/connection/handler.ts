@@ -2,16 +2,16 @@ import { Point } from '../../struct'
 import { Style } from '../../types'
 import { Graph } from '../../graph'
 import { Cell } from '../../core/cell'
-import { View } from '../../core/view'
 import { State } from '../../core/state'
-import { Model } from '../../core/model'
 import { Geometry } from '../../core/geometry'
 import { MouseHandler } from '../handler-mouse'
 import { MouseEventEx, Disposable } from '../../common'
 import { Knobs } from './knobs'
 import { Preview } from './preview'
 
-export class ConnectionHandler extends MouseHandler {
+export class ConnectionHandler extends MouseHandler<
+  ConnectionHandler.EventArgs
+> {
   knobs: Knobs
   preview: Preview
 
@@ -105,17 +105,17 @@ export class ConnectionHandler extends MouseHandler {
       }
     }
 
-    this.graph.view.on(View.events.scale, this.changeHandler)
-    this.graph.view.on(View.events.translate, this.changeHandler)
-    this.graph.view.on(View.events.scaleAndTranslate, this.changeHandler)
-    this.graph.model.on(Model.events.change, this.changeHandler)
+    this.graph.view.on('scale', this.changeHandler)
+    this.graph.view.on('translate', this.changeHandler)
+    this.graph.view.on('scaleAndTranslate', this.changeHandler)
+    this.graph.model.on('change', this.changeHandler)
 
     // Removes the icon if we step into/up or start editing
     this.resetHandler = () => this.reset()
-    this.graph.on(Graph.events.escape, this.resetHandler)
-    this.graph.on(Graph.events.startEditing, this.resetHandler)
-    this.graph.view.on(View.events.down, this.resetHandler)
-    this.graph.view.on(View.events.up, this.resetHandler)
+    this.graph.on('escape', this.resetHandler)
+    this.graph.on('startEditing', this.resetHandler)
+    this.graph.view.on('up', this.resetHandler)
+    this.graph.view.on('down', this.resetHandler)
   }
 
   isCreateTarget(e: MouseEvent) {
@@ -167,8 +167,8 @@ export class ConnectionHandler extends MouseHandler {
       this.mouseDownCounter = 1
       this.preview.start(e)
       this.setGlobalCursor(this.cursor)
-      this.trigger(ConnectionHandler.events.start, {
-        state: this.preview.sourceState,
+      this.trigger('start', {
+        state: this.preview.sourceState!,
       })
       e.consume()
     }
@@ -370,12 +370,12 @@ export class ConnectionHandler extends MouseHandler {
             geo.setTerminalPoint(p, false)
           }
 
-          this.trigger(ConnectionHandler.events.connect, {
+          this.trigger('connect', {
             terminalInserted,
             edge,
             terminal: target,
             target: dropTarget,
-            event: evt,
+            e: evt,
           })
         }
       })
@@ -500,8 +500,14 @@ export class ConnectionHandler extends MouseHandler {
 }
 
 export namespace ConnectionHandler {
-  export const events = {
-    start: 'start',
-    connect: 'connect',
+  export interface EventArgs {
+    start: { state: State }
+    connect: {
+      edge: Cell
+      terminal?: Cell | null
+      target?: Cell | null
+      e: MouseEvent
+      terminalInserted: boolean
+    }
   }
 }

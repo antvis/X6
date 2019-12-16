@@ -1,5 +1,4 @@
 import { Disposable, Events } from '../common'
-import { Model } from '../core/model'
 import { IChange } from './change'
 
 export class UndoableEdit extends Disposable {
@@ -50,7 +49,7 @@ export class UndoableEdit extends Disposable {
       return
     }
 
-    this.model.trigger(Model.events.startEdit)
+    this.model.trigger('startEdit')
     const count = this.changes.length
 
     for (let i = count - 1; i >= 0; i -= 1) {
@@ -59,12 +58,12 @@ export class UndoableEdit extends Disposable {
         change.execute()
       }
 
-      this.model.trigger(Model.events.executed, change)
+      this.model.trigger('executed', change)
     }
 
     this.undone = true
     this.redone = false
-    this.model.trigger(Model.events.endEdit)
+    this.model.trigger('endEdit')
 
     this.notify()
   }
@@ -77,17 +76,17 @@ export class UndoableEdit extends Disposable {
       return
     }
 
-    this.model.trigger(Model.events.startEdit)
+    this.model.trigger('startEdit')
     this.changes.forEach(change => {
       if (change.execute != null) {
         change.execute()
       }
 
-      this.model.trigger(Model.events.executed, change)
+      this.model.trigger('executed', change)
     })
     this.undone = false
     this.redone = true
-    this.model.trigger(Model.events.endEdit)
+    this.model.trigger('endEdit')
 
     this.notify()
   }

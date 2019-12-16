@@ -1,6 +1,5 @@
 import { Cell } from '../core/cell'
 import { Rectangle } from '../struct'
-import { events } from './events'
 import { BaseGraph } from './base-graph'
 
 export class ViewportAccessor extends BaseGraph {
@@ -12,7 +11,7 @@ export class ViewportAccessor extends BaseGraph {
     this.view.clear(cell, cell == null)
     this.view.validate()
     this.sizeDidChange()
-    this.trigger(events.refresh)
+    this.trigger('refresh')
     return this
   }
 

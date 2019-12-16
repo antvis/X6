@@ -24,7 +24,7 @@ export class GraphToolbar extends React.PureComponent<
 
   componentDidMount() {
     fetchEditor().then(editor => {
-      editor.graph.on(Graph.events.selectionChanged, () => {
+      editor.graph.on('selectionChanged', () => {
         this.setState({ selectedCells: editor.graph.getSelectedCells() })
       })
 
@@ -35,8 +35,8 @@ export class GraphToolbar extends React.PureComponent<
         })
       }
 
-      editor.commands.undoManager.on(UndoManager.events.undo, updateUndoState)
-      editor.commands.undoManager.on(UndoManager.events.redo, updateUndoState)
+      editor.commands.undoManager.on('undo', updateUndoState)
+      editor.commands.undoManager.on('redo', updateUndoState)
 
       updateUndoState()
       this.setState({ editor })

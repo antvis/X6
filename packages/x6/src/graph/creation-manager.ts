@@ -1,7 +1,6 @@
 import * as util from '../util'
 import { Cell } from '../core/cell'
 import { Point } from '../struct'
-import { Graph } from './graph'
 import { BaseManager } from './base-manager'
 
 export class CreationManager extends BaseManager {
@@ -13,7 +12,7 @@ export class CreationManager extends BaseManager {
     targetNode?: Cell,
   ) {
     this.model.batchUpdate(() => {
-      this.graph.trigger(Graph.events.addCells, {
+      this.graph.trigger('addCells', {
         cells,
         parent,
         index,
@@ -124,13 +123,13 @@ export class CreationManager extends BaseManager {
           }
         }
 
-        this.graph.trigger(Graph.events.cellsAdded, {
+        this.graph.trigger('cellsAdded', {
           cells,
           parent,
           index,
           sourceNode,
           targetNode,
-          absolute,
+          absolute: absolute === true,
         })
       })
     }
@@ -219,7 +218,7 @@ export class CreationManager extends BaseManager {
     }
 
     this.model.batchUpdate(() => {
-      this.graph.trigger(Graph.events.removeCells, {
+      this.graph.trigger('removeCells', {
         includeEdges,
         cells: removing,
       })
@@ -269,7 +268,7 @@ export class CreationManager extends BaseManager {
           this.model.remove(cell)
         })
 
-        this.graph.trigger(Graph.events.cellsRemoved, { cells })
+        this.graph.trigger('cellsRemoved', { cells })
       })
     }
   }
@@ -377,7 +376,7 @@ export class CreationManager extends BaseManager {
       this.cellsAdded([newEdge], parent!, index, source, cells[0], false)
       this.graph.connectionManager.cellConnected(edge, cells[0], true)
 
-      this.graph.trigger(Graph.events.splitEdge, {
+      this.graph.trigger('splitEdge', {
         edge,
         cells,
         newEdge,

@@ -1,7 +1,7 @@
 import { Primer } from '../primer'
 import { addListeners, removeListeners } from './handler'
 
-export class Dnd extends Primer {
+export class Dnd extends Primer<Dnd.EventArgs> {
   public readonly options: Dnd.Options
   public disabled: boolean
 
@@ -26,15 +26,15 @@ export class Dnd extends Primer {
 
 export namespace Dnd {
   export const delay = 300
-  export const events = {
-    prepare: 'prepare',
-    dragStart: 'dragStart',
-    dragging: 'dragging',
-    dragEnter: 'dragEnter',
-    dragOver: 'dragOver',
-    dragLeave: 'dragLeave',
-    dragEnd: 'dragEnd',
-    drop: 'drop',
+  export interface EventArgs {
+    prepare: State
+    dragStart: State
+    dragging: State
+    dragEnter: State
+    dragOver: State
+    dragLeave: State
+    dragEnd: State
+    drop: State | null
   }
 
   export type HTMLElementOrFunc =

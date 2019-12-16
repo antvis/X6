@@ -350,7 +350,7 @@ export class Dnd<T> extends Disablable<Dnd.EventArgMap<T>> {
     }
 
     // Consume all events in the current graph before they are fired
-    graph.on(Graph.events.fireMouseEvent, this.eventConsumer)
+    graph.on('fireMouseEvent', this.eventConsumer)
 
     this.trigger('dragEnter', {
       graph,
@@ -364,7 +364,7 @@ export class Dnd<T> extends Disablable<Dnd.EventArgMap<T>> {
     this.currentDropTarget = null
 
     graph.eventloopManager.isMouseDown = false
-    graph.off(Graph.events.fireMouseEvent, this.eventConsumer)
+    graph.off('fireMouseEvent', this.eventConsumer)
 
     this.removePreviewElement()
 

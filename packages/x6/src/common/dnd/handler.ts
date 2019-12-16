@@ -77,7 +77,7 @@ function process(e: MouseEvent) {
       onDrop()
     } else if (state.isPreparing) {
       state.isPreparing = false
-      state.instance.trigger(Dnd.events.dragEnd, state)
+      state.instance.trigger('dragEnd', state)
       clear()
     }
   }
@@ -133,7 +133,7 @@ function prepare(e: MouseEvent | TouchEvent) {
   updatePosition(e)
 
   // 将代理元素插入文档，设置样式等
-  data.instance.trigger(Dnd.events.prepare, data)
+  data.instance.trigger('prepare', data)
 
   const offset = getOffset(data.element)
   const width = outerWidth(data.element)
@@ -181,7 +181,7 @@ function onDragStart() {
   regionWidth = outerWidth(state.region)
   regionHeight = outerHeight(state.region)
 
-  state.instance.trigger(Dnd.events.dragStart, state)
+  state.instance.trigger('dragStart', state)
 }
 
 function onDragging() {
@@ -228,7 +228,7 @@ function onDragging() {
     style.top = `${getTop()}px`
   }
 
-  state.instance.trigger(Dnd.events.dragging, state)
+  state.instance.trigger('dragging', state)
 }
 
 function onDragEnterLeaveOver() {
@@ -242,17 +242,17 @@ function onDragEnterLeaveOver() {
 
   if (state.activeContainer) {
     if (!isContained(state.activeContainer, state.preview, fully)) {
-      state.instance.trigger(Dnd.events.dragLeave, state)
+      state.instance.trigger('dragLeave', state)
       state.activeContainer = null
     } else {
-      state.instance.trigger(Dnd.events.dragOver, state)
+      state.instance.trigger('dragOver', state)
     }
   } else {
     for (let i = 0, ii = containers.length; i < ii; i += 1) {
       const container = containers[i]
       if (isContained(container, state.preview, fully)) {
         state.activeContainer = container
-        state.instance.trigger(Dnd.events.dragEnter, state)
+        state.instance.trigger('dragEnter', state)
         break
       }
     }
@@ -260,7 +260,7 @@ function onDragEnterLeaveOver() {
 }
 
 function onDrop() {
-  data!.instance.trigger(Dnd.events.drop, data)
+  data!.instance.trigger('drop', data)
   clear()
 }
 

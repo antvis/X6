@@ -3,7 +3,6 @@ import { Cell } from '../core/cell'
 import { State } from '../core/state'
 import { Geometry } from '../core/geometry'
 import { Rectangle } from '../struct'
-import { Graph } from './graph'
 import { BaseManager } from './base-manager'
 
 export class CollapseManager extends BaseManager {
@@ -30,7 +29,7 @@ export class CollapseManager extends BaseManager {
   ) {
     this.graph.stopEditing(false)
     this.model.batchUpdate(() => {
-      this.graph.trigger(Graph.events.foldCells, {
+      this.graph.trigger('collapseCells', {
         collapsed,
         recurse,
         cells,
@@ -42,7 +41,7 @@ export class CollapseManager extends BaseManager {
 
   cellsCollapsed(
     cells: Cell[],
-    collapse: boolean,
+    collapsed: boolean,
     recurse: boolean,
     checkFoldable: boolean = false,
   ) {
@@ -50,11 +49,11 @@ export class CollapseManager extends BaseManager {
       this.model.batchUpdate(() => {
         cells.forEach(cell => {
           if (
-            (!checkFoldable || this.graph.isCellCollapsable(cell, collapse)) &&
-            collapse !== this.graph.isCellCollapsed(cell)
+            (!checkFoldable || this.graph.isCellCollapsable(cell, collapsed)) &&
+            collapsed !== this.graph.isCellCollapsed(cell)
           ) {
-            this.model.setCollapsed(cell, collapse)
-            this.swapBounds(cell, collapse)
+            this.model.setCollapsed(cell, collapsed)
+            this.swapBounds(cell, collapsed)
 
             if (this.graph.isExtendParent(cell)) {
               this.graph.sizeManager.extendParent(cell)
@@ -62,14 +61,14 @@ export class CollapseManager extends BaseManager {
 
             if (recurse) {
               const children = this.model.getChildren(cell)
-              this.cellsCollapsed(children, collapse, recurse)
+              this.cellsCollapsed(children, collapsed, recurse)
             }
 
             this.graph.sizeManager.constrainChild(cell)
           }
         })
       })
-      this.graph.trigger(Graph.events.cellsFolded, { cells, collapse, recurse })
+      this.graph.trigger('cellsCollapsed', { cells, collapsed, recurse })
     }
   }
 

@@ -17,7 +17,7 @@ import {
   UndoableEdit,
 } from '../change'
 
-export class Model extends Events {
+export class Model extends Events<Model.EventArgs> {
   private root: Cell
   private cells: { [id: string]: Cell }
   private currentEdit: UndoableEdit
@@ -752,9 +752,9 @@ export class Model extends Events {
   private endingUpdate: boolean = false
 
   execute(change: IChange) {
-    this.trigger(Model.events.execute, change)
+    this.trigger('execute', change)
     change.execute()
-    this.trigger(Model.events.executed, change)
+    this.trigger('executed', change)
 
     this.beginUpdate()
     this.currentEdit.add(change)
@@ -763,29 +763,29 @@ export class Model extends Events {
 
   beginUpdate() {
     this.updateLevel += 1
-    this.trigger(Model.events.beginUpdate)
+    this.trigger('beginUpdate')
     if (this.updateLevel === 1) {
-      this.trigger(Model.events.startEdit)
+      this.trigger('startEdit')
     }
   }
 
   endUpdate() {
     this.updateLevel -= 1
     if (this.updateLevel === 0) {
-      this.trigger(Model.events.endEdit)
+      this.trigger('endEdit')
     }
 
     if (!this.endingUpdate) {
       this.endingUpdate = this.updateLevel === 0
       const edit = this.currentEdit
-      this.trigger(Model.events.endUpdate, edit)
+      this.trigger('endUpdate', edit)
 
       try {
         if (this.endingUpdate && !edit.isEmpty()) {
-          this.trigger(Model.events.beforeUndo, edit)
+          this.trigger('beforeUndo', edit)
           this.currentEdit = this.createUndoableEdit()
           edit.notify()
-          this.trigger(Model.events.afterUndo, edit)
+          this.trigger('afterUndo', edit)
         }
       } finally {
         this.endingUpdate = false
@@ -806,7 +806,7 @@ export class Model extends Events {
     return new UndoableEdit(this, {
       significant,
       onChange: (edit: UndoableEdit) => {
-        this.trigger(Model.events.change, edit.changes)
+        this.trigger('change', edit.changes)
       },
     })
   }
@@ -964,15 +964,15 @@ export class Model extends Events {
 }
 
 export namespace Model {
-  export const events = {
-    change: 'change',
-    execute: 'execute',
-    executed: 'executed',
-    beginUpdate: 'beginUpdate',
-    endUpdate: 'endUpdate',
-    startEdit: 'startEdit',
-    endEdit: 'endEdit',
-    beforeUndo: 'beforeUndo',
-    afterUndo: 'afterUndo',
+  export interface EventArgs {
+    change: [IChange[]]
+    execute: IChange
+    executed: IChange
+    beginUpdate?: null
+    endUpdate: UndoableEdit
+    startEdit?: null
+    endEdit?: null
+    beforeUndo: UndoableEdit
+    afterUndo: UndoableEdit
   }
 }

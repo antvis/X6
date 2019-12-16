@@ -1,5 +1,4 @@
 import { Cell } from '../core/cell'
-import { Graph } from '../graph/graph'
 import { Selection } from '../graph/selection'
 import { IChange } from './change'
 
@@ -31,7 +30,7 @@ export class SelectionChange implements IChange {
     this.added = this.removed
     this.removed = tmp
 
-    this.selection.graph.trigger(Graph.events.selectionChanged, {
+    this.selection.graph.trigger('selectionChanged', {
       added: this.added,
       removed: this.removed,
     })

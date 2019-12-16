@@ -1,7 +1,5 @@
 import * as util from '../../util'
 import { Graph } from '../../graph'
-import { View } from '../../core/view'
-import { Model } from '../../core/model'
 import { State } from '../../core/state'
 import { Shape } from '../../shape'
 import { BaseHandler } from '../handler-base'
@@ -43,11 +41,11 @@ export class AnchorHandler extends BaseHandler {
       }
     }
 
-    this.graph.on(Graph.events.root, this.resetHandler)
-    this.graph.model.on(Model.events.change, this.resetHandler)
-    this.graph.view.on(View.events.scale, this.resetHandler)
-    this.graph.view.on(View.events.translate, this.resetHandler)
-    this.graph.view.on(View.events.scaleAndTranslate, this.resetHandler)
+    this.graph.on('root', this.resetHandler)
+    this.graph.model.on('change', this.resetHandler)
+    this.graph.view.on('scale', this.resetHandler)
+    this.graph.view.on('translate', this.resetHandler)
+    this.graph.view.on('scaleAndTranslate', this.resetHandler)
   }
 
   reset() {

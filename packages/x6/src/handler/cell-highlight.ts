@@ -1,7 +1,5 @@
 import * as util from '../util'
 import { globals } from '../option/global'
-import { View } from '../core/view'
-import { Model } from '../core/model'
 import { State } from '../core/state'
 import { Graph } from '../graph'
 import { Shape } from '../shape'
@@ -50,15 +48,15 @@ export class CellHighlight extends BaseHandler {
       }
     }
 
-    this.graph.view.on(View.events.scale, this.repaintHandler)
-    this.graph.view.on(View.events.translate, this.repaintHandler)
-    this.graph.view.on(View.events.scaleAndTranslate, this.repaintHandler)
-    this.graph.model.on(Model.events.change, this.repaintHandler)
+    this.graph.view.on('scale', this.repaintHandler)
+    this.graph.view.on('translate', this.repaintHandler)
+    this.graph.view.on('scaleAndTranslate', this.repaintHandler)
+    this.graph.model.on('change', this.repaintHandler)
 
     // Hides the marker if the current root changes
     this.resetHandler = () => this.hide()
-    this.graph.view.on(View.events.up, this.resetHandler)
-    this.graph.view.on(View.events.down, this.resetHandler)
+    this.graph.view.on('up', this.resetHandler)
+    this.graph.view.on('down', this.resetHandler)
   }
 
   setHighlightColor(color: string | null) {

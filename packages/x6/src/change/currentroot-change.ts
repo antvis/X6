@@ -46,11 +46,11 @@ export class CurrentRootChange implements IChange {
       this.view.refresh()
     }
 
-    const name = this.isUp ? View.events.up : View.events.down
-    this.view.trigger(name, {
+    this.view.trigger(this.isUp ? 'up' : 'down', {
       previous: this.previous,
       currentRoot: this.view.currentRoot,
     })
+
     this.isUp = !this.isUp
   }
 }

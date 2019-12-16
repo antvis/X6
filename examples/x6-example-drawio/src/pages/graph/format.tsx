@@ -1,5 +1,5 @@
 import React from 'react'
-import { Graph, Cell } from '@antv/x6'
+import { Cell } from '@antv/x6'
 import { FormatCell } from './format-cell'
 import { FormatDiagram } from './fromat-diagram'
 import { fetchEditor } from '../'
@@ -12,7 +12,7 @@ export class Format extends React.PureComponent<Format.Props, Format.State> {
 
   componentDidMount() {
     fetchEditor().then(editor => {
-      editor.graph.on(Graph.events.selectionChanged, () => {
+      editor.graph.on('selectionChanged', () => {
         this.setState({
           selectedCell: editor.graph.getSelectedCell(),
         })

@@ -1,9 +1,8 @@
 import { IChange } from '../../change'
-import { Model } from '../../core/model'
 import { Graph } from '../../graph'
 import { Disablable, Disposable } from '../../common'
 
-export class AutoSave extends Disablable {
+export class AutoSave extends Disablable<AutoSave.EventArgs> {
   graph: Graph
 
   /**
@@ -32,7 +31,7 @@ export class AutoSave extends Disablable {
 
   setGraph(graph: Graph | null) {
     if (this.graph != null) {
-      this.graph.model.off(Model.events.change, this.onModelChanged, this)
+      this.graph.model.off('change', this.onModelChanged, this)
     }
 
     if (graph != null) {
@@ -42,7 +41,7 @@ export class AutoSave extends Disablable {
     }
 
     if (this.graph != null) {
-      this.graph.model.on(Model.events.change, this.onModelChanged, this)
+      this.graph.model.on('change', this.onModelChanged, this)
     }
   }
 
@@ -66,7 +65,7 @@ export class AutoSave extends Disablable {
   }
 
   private save() {
-    this.trigger(AutoSave.events.save)
+    this.trigger('save')
   }
 
   reset() {
@@ -81,7 +80,7 @@ export class AutoSave extends Disablable {
 }
 
 export namespace AutoSave {
-  export const events = {
-    save: 'save',
+  export interface EventArgs {
+    save?: null
   }
 }

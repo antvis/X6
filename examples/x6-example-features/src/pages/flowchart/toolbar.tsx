@@ -114,12 +114,12 @@ export class GraphToolbar extends React.Component<
       }),
     )
 
-    this.graph.on(Graph.events.selectionChanged, this.updateState)
-    this.graph.view.on(View.events.scale, this.updateState)
-    this.graph.view.on(View.events.scaleAndTranslate, this.updateState)
-    this.graph.model.on(Model.events.change, this.updateState)
-    this.undoManager.on(UndoManager.events.undo, this.updateState)
-    this.undoManager.on(UndoManager.events.redo, this.updateState)
+    this.graph.on('selectionChanged', this.updateState)
+    this.graph.view.on('scale', this.updateState)
+    this.graph.view.on('scaleAndTranslate', this.updateState)
+    this.graph.model.on('change', this.updateState)
+    this.undoManager.on('undo', this.updateState)
+    this.undoManager.on('redo', this.updateState)
 
     this.state = this.getNextState()
   }
