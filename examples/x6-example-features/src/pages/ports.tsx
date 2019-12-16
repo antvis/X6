@@ -26,11 +26,11 @@ export default class Example extends React.Component {
 
     graph.batchUpdate(() => {
       const n1 = graph.addNode({
-        data: 'Hello',
         x: 20,
         y: 80,
         width: 80,
         height: 30,
+        label: 'Hello',
         style: {
           connectable: false,
         },
@@ -57,18 +57,18 @@ export default class Example extends React.Component {
       n12.geometry!.relative = true
 
       const n2 = graph.addNode({
-        data: 'Port 1',
         x: 200,
         y: 20,
         width: 80,
         height: 30,
+        label: 'Port 1',
       })
       const n3 = graph.addNode({
-        data: 'Port 2',
         x: 200,
         y: 150,
         width: 80,
         height: 30,
+        label: 'Port 2',
       })
 
       graph.addEdge({ source: n11, target: n2 })

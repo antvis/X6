@@ -15,11 +15,11 @@ export default class Example extends React.Component {
           'https://gw.alipayobjects.com/zos/basement_prod/759f4922-517b-4e62-adea-5c431f049f47.svg', // tslint:disable-line
       }
       graph.addNode({
-        data: 'Bottom',
         x: 60,
         y: 40,
         width: 80,
         height: 80,
+        label: 'Bottom',
         style: {
           ...style,
           labelVerticalPosition: 'bottom',
@@ -28,11 +28,11 @@ export default class Example extends React.Component {
       })
 
       graph.addNode({
-        data: 'Top',
         x: 240,
         y: 40,
         width: 80,
         height: 80,
+        label: 'Top',
         style: {
           ...style,
           labelVerticalPosition: 'top',
@@ -41,11 +41,11 @@ export default class Example extends React.Component {
       })
 
       graph.addNode({
-        data: 'Left',
         x: 60,
         y: 160,
         width: 80,
         height: 80,
+        label: 'Left',
         style: {
           ...style,
           labelPosition: 'left',
@@ -54,11 +54,11 @@ export default class Example extends React.Component {
       })
 
       graph.addNode({
-        data: 'Right',
         x: 240,
         y: 160,
         width: 80,
         height: 80,
+        label: 'Right',
         style: {
           ...style,
           labelPosition: 'right',
