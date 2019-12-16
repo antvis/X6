@@ -17,41 +17,38 @@ export class Sidebar extends React.Component<Sidebar.Props> {
       const type = elem.getAttribute('data-type') || ''
       const itemData = data.map[type]
 
-      const dnd = new Dnd<DataItem>(
-        elem,
-        {
-          getGraph: () => this.props.graph,
-          getTargetCell: ({ graph, graphX, graphY }) => {
-            const cell = graph.getCellAt(graphX, graphY)
-            if (cell != null && cell.data != null && isGroup(cell.data.type)) {
-              return cell
-            }
-            return null
-          },
-          createDragElement: ({ element }) => {
-            const elem = document.createElement('div') as HTMLDivElement
-            const w = element.offsetWidth
-            const h = element.offsetHeight
-            elem.style.width = `${w}px`
-            elem.style.height = `${h}px`
-            elem.style.border = '1px dashed #000'
-            elem.style.cursor = 'move'
-            return elem
-          },
-          createPreviewElement: ({ graph, element }) => {
-            const elem = document.createElement('div') as HTMLDivElement
-            const w = element.offsetWidth
-            const h = element.offsetHeight
-            const s = graph.view.scale
-            elem.style.width = `${w * s}px`
-            elem.style.height = `${h * s}px`
-            elem.style.border = '1px dashed #000'
-            elem.style.cursor = 'move'
-            return elem
-          },
+      const dnd = new Dnd<DataItem>(elem, {
+        data: itemData,
+        getGraph: () => this.props.graph,
+        getTargetCell: ({ graph, graphX, graphY }) => {
+          const cell = graph.getCellAt(graphX, graphY)
+          if (cell != null && cell.data != null && isGroup(cell.data.type)) {
+            return cell
+          }
+          return null
         },
-        itemData,
-      )
+        createDragElement: ({ element }) => {
+          const elem = document.createElement('div') as HTMLDivElement
+          const w = element.offsetWidth
+          const h = element.offsetHeight
+          elem.style.width = `${w}px`
+          elem.style.height = `${h}px`
+          elem.style.border = '1px dashed #000'
+          elem.style.cursor = 'move'
+          return elem
+        },
+        createPreviewElement: ({ graph, element }) => {
+          const elem = document.createElement('div') as HTMLDivElement
+          const w = element.offsetWidth
+          const h = element.offsetHeight
+          const s = graph.view.scale
+          elem.style.width = `${w * s}px`
+          elem.style.height = `${h * s}px`
+          elem.style.border = '1px dashed #000'
+          elem.style.cursor = 'move'
+          return elem
+        },
+      })
 
       dnd.on('dragPrepare', ({ dragElement }) => {
         dragElement.style.margin = '0'
