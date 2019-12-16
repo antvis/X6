@@ -29,7 +29,7 @@ import {
   EdgeSegmentHandler,
 } from '../handler'
 import { hook } from './decorator'
-import { events as eventNames } from './events'
+import { events as eventNames, EventArgs } from './events'
 import { Selection } from './selection'
 import { SelectionManager } from './selection-manager'
 import { ChangeManager } from './change-manager'
@@ -48,8 +48,9 @@ import { SizeManager } from './size-manager'
 import { EditingManager } from './editing-manager'
 import { MovingManager } from './moving-manager'
 import { ZoomManager } from './zoom-manager'
+import { PanningManager } from './panning-manager'
 
-export class BaseGraph extends Disablable
+export class BaseGraph extends Disablable<EventArgs>
   implements GraphProperties, CompositeOptions {
   /**
    * Custom event names
@@ -81,7 +82,7 @@ export class BaseGraph extends Disablable
   public sizeManager: SizeManager
   public editingManager: EditingManager
   public movingManager: MovingManager
-  public panningManager: any
+  public panningManager: PanningManager
 
   public tooltipHandler: TooltipHandler
   public cursorHandler: CursorHandler
@@ -127,6 +128,7 @@ export class BaseGraph extends Disablable
     this.sizeManager = new SizeManager(this as any)
     this.editingManager = new EditingManager(this as any)
     this.movingManager = new MovingManager(this as any)
+    this.panningManager = new PanningManager(this as any)
   }
 
   protected createHandlers() {
@@ -140,7 +142,6 @@ export class BaseGraph extends Disablable
     this.selectHandler = this.createSelectHandler()
     this.movingHandler = this.createMovingHandler()
     this.panningHandler = this.createPanningHandler()
-    this.panningHandler.disablePanning()
     this.contextMenuHandler = this.createContextMenuHandler()
     this.rubberbandHandler = this.createRubberbandHandler()
     this.keyboardHandler = this.createKeyboardHandler()
@@ -2489,10 +2490,9 @@ export interface GraphProperties {
    *
    * Default is `true`.
    *
-   * If you need this to work without scrollbars then set
-   * `ignoreScrollbars` to true. Please consult the
-   * `ignoreScrollbars` for details. In general, with no
-   * scrollbars, the use of `allowAutoPanning` is recommended.
+   * If you need this to work without scrollbars then set `ignoreScrollbars`
+   * to true. In general, with no scrollbars, the use of `allowAutoPanning`
+   * is recommended.
    */
   autoScroll: boolean
 
@@ -2514,37 +2514,40 @@ export interface GraphProperties {
   translateToScrollPosition: boolean
 
   /**
-   * Specifies if autoscrolling should be carried out via mxPanningManager even
-   * if the container has scrollbars. This disables <scrollPointToVisible> and
-   * uses <mxPanningManager> instead. If this is true then <autoExtend> is
+   * Specifies if autoscrolling should be carried out via `PanningManager`
+   * even if the container has scrollbars. This disables `scrollPointToVisible`
+   * and uses `PanningManager` instead. If this is true then `autoExtend` is
    * disabled. It should only be used with a scroll buffer or when scollbars
-   * are visible and scrollable in all directions. Default is false.
+   * are visible and scrollable in all directions.
+   *
+   * Default is `false`.
    */
   timerAutoScroll: boolean
 
   /**
-   * Specifies if panning via <panGraph> should be allowed to implement autoscroll
-   * if no scrollbars are available in <scrollPointToVisible>. To enable panning
-   * inside the container, near the edge, set <mxPanningManager.border> to a
-   * positive value. Default is false.
+   * Specifies if panning via `panGraph` should be allowed to implement
+   * autoscroll if no scrollbars are available in `scrollPointToVisible`.
+   * To enable panning inside the container, near the edge,
+   * set `PanningManager.border` to a positive value.
+   *
+   * Default is `false`.
    */
   allowAutoPanning: boolean
 
   /**
-   * Specifies if scrollbars should be used for panning if
-   * any scrollbars are available. If scrollbars are enabled
-   * in CSS, but no scrollbars appear because the graph is
-   * smaller than the container size, then no panning occurs
-   * if this is true.
+   * Specifies if scrollbars should be used for panning if any scrollbars
+   * are available. If scrollbars are enabled in CSS, but no scrollbars
+   * appear because the graph is smaller than the container size, then no
+   * panning occurs if this is true.
    *
    * Default is `true`.
    */
   useScrollbarsForPanning: boolean
 
   /**
-   * Specifies if the size of the graph should be automatically extended if the
-   * mouse goes near the container edge while dragging. This is only taken into
-   * account if the container has scrollbars.
+   * Specifies if the size of the graph should be automatically extended
+   * if the mouse goes near the container edge while dragging. This is only
+   * taken into account if the container has scrollbars.
    *
    * Default is `true`.
    */
@@ -3053,8 +3056,8 @@ export interface CompositeOptions {
 export interface BaseGraph extends IPreDependencies {}
 
 export interface IPreDependencies {
-  panDx: number
-  panDy: number
+  panningX: number
+  panningY: number
 
   snap(value: number): number
   getGridSize(): number

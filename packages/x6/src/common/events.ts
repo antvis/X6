@@ -6,7 +6,7 @@ import {
 } from 'utility-types'
 import { invoke } from '../util/function'
 
-export class Events<M extends Events.EventArgMap = any> {
+export class Events<M extends Events.EventArgs = any> {
   private listeners: { [name: string]: any[] } = {}
 
   on<N extends Events.EventKeys<M>>(
@@ -106,27 +106,27 @@ export namespace Events {
     ? (...args: A) => any
     : (args: A) => any
 
-  export type EventArgMap = { [key: string]: any }
-  export type EventKeys<M extends EventArgMap> = Extract<keyof M, string>
+  export type EventArgs = { [key: string]: any }
+  export type EventKeys<M extends EventArgs> = Extract<keyof M, string>
 
   /**
    * Get union type of keys from `M` that value matching `any[]`.
    */
-  export type KeysWithArrayValue<M extends EventArgMap> = RequiredKeys<
+  export type KeysWithArrayValue<M extends EventArgs> = RequiredKeys<
     PickByValue<M, any[]>
   >
 
-  export type NotArrayValueMap<M extends EventArgMap> = OmitByValue<M, any[]>
+  export type NotArrayValueMap<M extends EventArgs> = OmitByValue<M, any[]>
 
-  export type OptionalNormalKeys<M extends EventArgMap> = OptionalKeys<
+  export type OptionalNormalKeys<M extends EventArgs> = OptionalKeys<
     NotArrayValueMap<M>
   >
 
-  export type RequiredNormalKeys<M extends EventArgMap> = RequiredKeys<
+  export type RequiredNormalKeys<M extends EventArgs> = RequiredKeys<
     NotArrayValueMap<M>
   >
 
-  export type OtherKeys<M extends EventArgMap> = EventKeys<
+  export type OtherKeys<M extends EventArgs> = EventKeys<
     PickByValue<M, undefined>
   >
 }

@@ -1,6 +1,6 @@
 import { Primer } from './primer'
 
-export abstract class Disablable<M = any> extends Primer<M> {
+export abstract class Disablable<EventArgs = any> extends Primer<EventArgs> {
   private disabled: boolean = false
 
   get enabled() {

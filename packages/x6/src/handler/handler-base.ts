@@ -1,7 +1,9 @@
 import { Graph } from '../graph'
 import { Disablable } from '../common'
 
-export abstract class BaseHandler extends Disablable {
+export abstract class BaseHandler<EventArgs = any> extends Disablable<
+  EventArgs
+> {
   public readonly graph: Graph
 
   get view() {
