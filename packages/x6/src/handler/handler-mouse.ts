@@ -3,7 +3,8 @@ import { Graph } from '../graph'
 import { DomEvent, MouseEventEx } from '../common'
 import { BaseHandler } from './handler-base'
 
-export abstract class MouseHandler extends BaseHandler
+export abstract class MouseHandler<EventArgs = any>
+  extends BaseHandler<EventArgs>
   implements IMouseHandler {
   constructor(graph: Graph) {
     super(graph)

@@ -3,7 +3,8 @@ import { DomEvent } from './dom-event'
 import { Events } from './events'
 import { IDisposable } from './disposable'
 
-export abstract class Primer<M = any> extends Events<M> implements IDisposable {
+export abstract class Primer<EventArgs = any> extends Events<EventArgs>
+  implements IDisposable {
   constructor() {
     super()
     if (detector.IS_IE) {
