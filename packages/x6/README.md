@@ -35,20 +35,20 @@ import { Graph } from '@antv/x6'
 const container = document.getElementById('container')
 const graph = new Graph(container)
 const node1 = graph.addNode({
-  data: 'Hello',
+  label: 'Hello',
   x: 60,
   y: 60,
   width: 80,
   height: 30,
 })
 const node2 = graph.addNode({
-  data: 'World',
+  label: 'World',
   x: 240,
   y: 240,
   width: 80,
   height: 30,
 })
-const edge = graph.addEdge({ data: 'x6', source: node1, target: node2 })
+const edge = graph.addEdge({ label: 'x6', source: node1, target: node2 })
 ```
 
 ## Development
