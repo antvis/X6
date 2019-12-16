@@ -15,7 +15,7 @@ export class HtmlShape extends RectangleShape {
 
   drawBackground(c: SvgCanvas2D, x: number, y: number, w: number, h: number) {
     super.drawBackground(c, x, y, w, h)
-    // HTML 节点踩了一个大坑：之前忘记下面这行判断，导致连线时连不到 Group 中的节点。
+    // HTML 节点踩了一个坑：之前忘记下面这行判断，导致连线时连不到 Group 中的节点。
     // 因为连线时首先触发了 Group 的连线判断，发现这个 Group 可以被连线，然后就自动
     // 创建一个 CellHighlight 组件来高亮了该 Group，就是因为忘记下面这行代码，导致
     // 所有的鼠标交互都被这个 CellHighlight 中的 foreignObject 捕获了。
@@ -27,11 +27,8 @@ export class HtmlShape extends RectangleShape {
   renderHtml() {
     const bounds = this.bounds.clone()
 
-    /**
-     * fix: anchors not align with the center of html border
-     * see: https://stackoverflow.com/a/7273346
-     */
-
+    // fix: anchors not align with the center of html border
+    // see: https://stackoverflow.com/a/7273346
     bounds.width += 1
     bounds.height += 1
     bounds.x -= 1
