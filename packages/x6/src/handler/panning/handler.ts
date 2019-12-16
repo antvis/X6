@@ -3,7 +3,7 @@ import { Graph } from '../../graph'
 import { MouseHandler } from '../handler-mouse'
 import { MouseEventEx, DomEvent, Disposable } from '../../common'
 
-export class PanningHandler extends MouseHandler {
+export class PanningHandler extends MouseHandler<PanningHandler.EventArgs> {
   /**
    * Specifies if panning should be active for the left mouse button.
    *
@@ -36,13 +36,6 @@ export class PanningHandler extends MouseHandler {
   useGrid: boolean = false
 
   /**
-   * Specifies if panning should be enabled.
-   *
-   * Default is `true`.
-   */
-  panningEnabled: boolean = true
-
-  /**
    * Specifies if pinch gestures should be handled as zoom.
    *
    * Default is `true`.
@@ -63,33 +56,37 @@ export class PanningHandler extends MouseHandler {
    */
   minScale: number = 0.01
 
-  private mouseUpListener: () => void
-  private forcePanningHandler: (arg: {
+  private readonly mouseUpListener: () => void
+  private readonly forcePanningHandler: (arg: {
     eventName: string
     e: MouseEventEx
   }) => void
-  private gestureHandler: (arg: { e: MouseEvent }) => void
+  private readonly gestureHandler: (arg: { e: MouseEvent }) => void
 
   protected dx: number | null = null
   protected dy: number | null = null
   protected startX: number = 0
   protected startY: number = 0
+  protected scrollLeft: number
+  protected scrollTop: number
   protected active: boolean = false
   protected initialScale: number | null = null
   protected mouseDownEvent: MouseEventEx | null
-  protected dx0: number
-  protected dy0: number
+
   panningTrigger: boolean
 
   constructor(graph: Graph) {
     super(graph)
+
+    // Disable by default
+    this.disable()
 
     // Handles force panning event
     this.forcePanningHandler = ({ eventName, e }) => {
       if (eventName === DomEvent.MOUSE_DOWN && this.isForcePanningEvent(e)) {
         this.start(e)
         this.active = true
-        this.trigger(PanningHandler.events.panStart, { e })
+        this.trigger('panStart', { e })
         e.consume()
       }
     }
@@ -102,7 +99,7 @@ export class PanningHandler extends MouseHandler {
         if (!DomEvent.isConsumed(e) && e.type === 'gesturestart') {
           this.initialScale = this.graph.view.scale
 
-          // Forces start of panning when pinch gesture starts
+          // Force start of panning when pinch gesture starts
           if (!this.active && this.mouseDownEvent != null) {
             this.start(this.mouseDownEvent)
             this.mouseDownEvent = null
@@ -142,18 +139,6 @@ export class PanningHandler extends MouseHandler {
     DomEvent.addListener(document, 'mouseup', this.mouseUpListener)
   }
 
-  disablePanning() {
-    this.panningEnabled = false
-  }
-
-  enablePanning() {
-    this.panningEnabled = true
-  }
-
-  togglePanning() {
-    this.panningEnabled = !this.panningEnabled
-  }
-
   disablePinch() {
     this.pinchEnabled = false
   }
@@ -167,33 +152,49 @@ export class PanningHandler extends MouseHandler {
   }
 
   /**
-   * Returns true if the given event should start panning.
+   * Return true if the given event should start panning.
    */
   protected isForcePanningEvent(e: MouseEventEx) {
     return this.ignoreCell || DomEvent.isMultiTouchEvent(e.getEvent())
   }
 
   /**
-   * Returns true if the given event is a panning trigger for the
-   * optional given cell.
+   * Return true if the given event is a panning trigger
    */
   protected isPanningTrigger(e: MouseEventEx) {
     const evt = e.getEvent()
+    if (
+      e.getState() == null &&
+      this.useLeftButtonForPanning &&
+      DomEvent.isLeftMouseButton(evt)
+    ) {
+      return true
+    }
 
-    return (
-      (e.getState() == null &&
-        this.useLeftButtonForPanning &&
-        DomEvent.isLeftMouseButton(evt)) ||
-      (DomEvent.isControlDown(evt) && DomEvent.isShiftDown(evt)) ||
-      (this.usePopupTrigger && DomEvent.isPopupTrigger(evt))
-    )
+    if (this.usePopupTrigger && DomEvent.isPopupTrigger(evt)) {
+      return true
+    }
+
+    if (DomEvent.isControlDown(evt) && DomEvent.isShiftDown(evt)) {
+      return true
+    }
+
+    return false
   }
 
-  /**
-   * Returns true if the handler is currently active.
-   */
   isActive() {
     return this.active || this.initialScale != null
+  }
+
+  protected start(e: MouseEventEx) {
+    this.dx = null
+    this.dy = null
+    this.startX = e.getClientX()
+    this.startY = e.getClientY()
+    this.scrollLeft = this.graph.container.scrollLeft
+    this.scrollTop = this.graph.container.scrollTop
+
+    this.panningTrigger = true
   }
 
   mouseDown(e: MouseEventEx) {
@@ -210,23 +211,6 @@ export class PanningHandler extends MouseHandler {
     }
   }
 
-  /**
-   * Starts panning at the given event.
-   */
-  protected start(e: MouseEventEx) {
-    this.startX = e.getClientX()
-    this.startY = e.getClientY()
-    this.dx = null
-    this.dy = null
-    this.dx0 = -this.graph.container.scrollLeft
-    this.dy0 = -this.graph.container.scrollTop
-
-    this.panningTrigger = true
-  }
-
-  /**
-   * Handles the event by updating the panning on the graph.
-   */
   mouseMove(e: MouseEventEx) {
     this.dx = e.getClientX() - this.startX
     this.dy = e.getClientY() - this.startY
@@ -238,10 +222,10 @@ export class PanningHandler extends MouseHandler {
           this.dy = this.graph.snap(this.dy)
         }
 
-        this.graph.pan(this.dx + this.dx0, this.dy + this.dy0)
+        this.graph.pan(this.dx - this.scrollLeft, this.dy - this.scrollTop)
       }
 
-      this.trigger(PanningHandler.events.pan, { e })
+      this.trigger('pan', { e })
     } else if (this.panningTrigger) {
       const tmp = this.active
       // Panning is activated only if the mouse is moved
@@ -251,7 +235,7 @@ export class PanningHandler extends MouseHandler {
         Math.abs(this.dy) > this.graph.tolerance
 
       if (!tmp && this.active) {
-        this.trigger(PanningHandler.events.panStart, { e })
+        this.trigger('panStart', { e })
       }
     }
 
@@ -260,10 +244,6 @@ export class PanningHandler extends MouseHandler {
     }
   }
 
-  /**
-   * Handles the event by setting the translation on the view or
-   * showing the contextmenu.
-   */
   mouseUp(e: MouseEventEx) {
     if (this.active) {
       if (this.dx != null && this.dy != null) {
@@ -272,15 +252,15 @@ export class PanningHandler extends MouseHandler {
           !this.graph.useScrollbarsForPanning ||
           !util.hasScrollbars(this.graph.container)
         ) {
-          const scale = this.graph.view.scale
-          const trans = this.graph.view.translate
+          const s = this.graph.view.scale
+          const t = this.graph.view.translate
           this.graph.pan(0, 0)
-          this.panGraph(trans.x + this.dx / scale, trans.y + this.dy / scale)
+          this.graph.view.setTranslate(t.x + this.dx / s, t.y + this.dy / s)
         }
 
         e.consume()
       }
-      this.trigger(PanningHandler.events.panEnd, { e })
+      this.trigger('panEnd', { e })
     }
 
     this.reset()
@@ -294,24 +274,19 @@ export class PanningHandler extends MouseHandler {
     this.mouseDownEvent = null
   }
 
-  protected panGraph(dx: number, dy: number) {
-    this.graph.view.setTranslate(dx, dy)
-  }
-
   @Disposable.aop()
   dispose() {
     this.graph.removeMouseListener(this)
     this.graph.off(Graph.events.fireMouseEvent, this.forcePanningHandler)
     this.graph.off(Graph.events.gesture, this.gestureHandler)
-
     DomEvent.removeListener(document, 'mouseup', this.mouseUpListener)
   }
 }
 
 export namespace PanningHandler {
-  export const events = {
-    pan: 'pan',
-    panStart: 'panStart',
-    panEnd: 'panEnd',
+  export interface EventArgs {
+    pan: { e: MouseEventEx }
+    panStart: { e: MouseEventEx }
+    panEnd: { e: MouseEventEx }
   }
 }

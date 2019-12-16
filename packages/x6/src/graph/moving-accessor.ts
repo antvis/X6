@@ -202,8 +202,8 @@ export class MovingAccessor extends BaseGraph {
       DomEvent.getClientX(e),
       DomEvent.getClientY(e),
     )
-    p.x -= this.panDx
-    p.y -= this.panDy
+    p.x -= this.panX
+    p.y -= this.panY
     const swimlane = this.retrievalManager.getSwimlaneAt(p.x, p.y)
 
     let target = cell

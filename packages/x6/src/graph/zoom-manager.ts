@@ -378,28 +378,28 @@ export class ZoomManager extends BaseManager {
   }
 
   scrollPointToVisible(x: number, y: number, extend: boolean, border: number) {
+    const container = this.container
+
     if (
       !this.graph.timerAutoScroll &&
-      (this.graph.ignoreScrollbars || util.hasScrollbars(this.container))
+      (this.graph.ignoreScrollbars || util.hasScrollbars(container))
     ) {
-      const c = this.container
-
       if (
-        x >= c.scrollLeft &&
-        y >= c.scrollTop &&
-        x <= c.scrollLeft + c.clientWidth &&
-        y <= c.scrollTop + c.clientHeight
+        x >= container.scrollLeft &&
+        y >= container.scrollTop &&
+        x <= container.scrollLeft + container.clientWidth &&
+        y <= container.scrollTop + container.clientHeight
       ) {
-        let dx = c.scrollLeft + c.clientWidth - x
+        let dx = container.scrollLeft + container.clientWidth - x
 
         if (dx < border) {
-          const old = c.scrollLeft
-          c.scrollLeft += border - dx
+          const old = container.scrollLeft
+          container.scrollLeft += border - dx
 
           // Automatically extends the canvas size to the bottom, right
           // if the event is outside of the canvas and the edge of the
           // canvas has been reached. Notes: Needs fix for IE.
-          if (extend && old === c.scrollLeft) {
+          if (extend && old === container.scrollLeft) {
             if (this.graph.dialect === 'svg') {
               const root = (this.view.getDrawPane() as SVGElement)
                 .ownerSVGElement!
@@ -409,28 +409,31 @@ export class ZoomManager extends BaseManager {
               // operation that should not be executed too often.
               root.style.width = util.toPx(width)
             } else {
-              const width = Math.max(c.clientWidth, c.scrollWidth) + border - dx
+              const width =
+                Math.max(container.clientWidth, container.scrollWidth) +
+                border -
+                dx
               const stage = this.view.getStage()!
               stage.style.width = util.toPx(width)
             }
 
-            c.scrollLeft += border - dx
+            container.scrollLeft += border - dx
           }
         } else {
-          dx = x - c.scrollLeft
+          dx = x - container.scrollLeft
 
           if (dx < border) {
-            c.scrollLeft -= border - dx
+            container.scrollLeft -= border - dx
           }
         }
 
-        let dy = c.scrollTop + c.clientHeight - y
+        let dy = container.scrollTop + container.clientHeight - y
 
         if (dy < border) {
-          const old = c.scrollTop
-          c.scrollTop += border - dy
+          const old = container.scrollTop
+          container.scrollTop += border - dy
 
-          if (old === c.scrollTop && extend) {
+          if (old === container.scrollTop && extend) {
             if (this.graph.dialect === 'svg') {
               const root = (this.view.getDrawPane() as SVGElement)
                 .ownerSVGElement!
@@ -441,18 +444,20 @@ export class ZoomManager extends BaseManager {
               root.style.height = util.toPx(height)
             } else {
               const height =
-                Math.max(c.clientHeight, c.scrollHeight) + border - dy
+                Math.max(container.clientHeight, container.scrollHeight) +
+                border -
+                dy
               const canvas = this.view.getStage()!
               canvas.style.height = util.toPx(height)
             }
 
-            c.scrollTop += border - dy
+            container.scrollTop += border - dy
           }
         } else {
-          dy = y - c.scrollTop
+          dy = y - container.scrollTop
 
           if (dy < border) {
-            c.scrollTop -= border - dy
+            container.scrollTop -= border - dy
           }
         }
       }
@@ -460,20 +465,11 @@ export class ZoomManager extends BaseManager {
       this.graph.allowAutoPanning &&
       !this.graph.panningHandler.isActive()
     ) {
-      if (this.graph.panningManager == null) {
-        this.graph.panningManager = this.createPanningManager()
-      }
-
-      this.graph.panningManager.panTo(
-        x + this.graph.panDx,
-        y + this.graph.panDy,
+      this.graph.panningManager.panRectToVisible(
+        x + this.graph.panX,
+        y + this.graph.panY,
       )
     }
-  }
-
-  createPanningManager() {
-    // TODO: xx
-    // return new PanningManager(this)
   }
 
   /**
