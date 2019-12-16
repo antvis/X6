@@ -76,12 +76,14 @@
     "tslint": "^5.18.0",
     "tslint-config-airbnb": "^5.11.2",
     "tslint-config-prettier": "^1.18.0",
+    "tslint-eslint-rules": "^5.4.0",
     "typescript": "^3.5.3",
     "watch": "^1.0.2"
   },
   "dependencies": {
     "mousetrap": "^1.6.3",
-    "size-sensor": "^0.2.5"
+    "size-sensor": "^0.2.5",
+    "utility-types": "^3.10.0"
   },
   "author": {
     "name": "bubkoo",

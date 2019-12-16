@@ -1,4 +1,4 @@
-import { Dnd } from '.'
+import { Dnd } from './dnd'
 
 export function getParents(elem: HTMLElement) {
   let parent = elem
@@ -14,7 +14,7 @@ export function getDndElement(
   instance: Dnd,
   trigger: HTMLElement,
   elem: Dnd.HTMLElementOrFunc | undefined,
-  fallback: HTMLElement | (() => HTMLElement)
+  fallback: HTMLElement | (() => HTMLElement),
 ): HTMLElement {
   if (elem != null) {
     if (typeof elem === 'function') {
@@ -59,7 +59,7 @@ export function outerHeight(elem: HTMLElement) {
 export function isContained(
   container: HTMLElement,
   target: HTMLElement,
-  fully?: boolean
+  fully?: boolean,
 ) {
   const offset1 = getOffset(container)
   const offset2 = getOffset(target)

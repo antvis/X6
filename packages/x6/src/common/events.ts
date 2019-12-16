@@ -1,59 +1,68 @@
-import { split } from '../util/string'
+import {
+  RequiredKeys,
+  OptionalKeys,
+  PickByValue,
+  OmitByValue,
+} from 'utility-types'
 import { invoke } from '../util/function'
 
-export class Events {
-  private eventListeners: { [name: string]: any[] } = {}
+export class Events<M extends Events.EventArgMap = any> {
+  private listeners: { [name: string]: any[] } = {}
 
-  on(eventName: string, handler: Events.Handler, context?: any) {
+  on<N extends Events.EventKeys<M>>(
+    name: N,
+    handler: Events.Handler<M[N]>,
+    context?: any,
+  ) {
     if (handler == null) {
       return this
     }
 
-    split(eventName).forEach(name => {
-      if (!this.eventListeners[name]) {
-        this.eventListeners[name] = []
-      }
-      const cache = this.eventListeners[name]
-      cache.push(handler, context)
-    })
+    if (!this.listeners[name]) {
+      this.listeners[name] = []
+    }
+    const cache = this.listeners[name]
+    cache.push(handler, context)
 
     return this
   }
 
-  once(eventName: string, handler: Events.Handler, context?: any) {
-    const cb = (...args: any[]) => {
-      this.off(eventName, cb)
-      Events.trigger([handler, context], args)
+  once<N extends Events.EventKeys<M>>(
+    name: N,
+    handler: Events.Handler<M[N]>,
+    context?: any,
+  ) {
+    const cb = (...args: any) => {
+      this.off(name, cb as any)
+      return Private.call([handler, context], args)
     }
 
-    return this.on(eventName, cb, this)
+    return this.on(name, cb as any, this)
   }
 
-  off(
-    eventName?: string | null,
-    handler?: Events.Handler | null,
-    context?: any
+  off<N extends Events.EventKeys<M>>(
+    name?: N | null,
+    handler?: Events.Handler<M[N]> | null,
+    context?: any,
   ) {
-    // removing *all* events.
-    if (!(eventName || handler || context)) {
-      this.eventListeners = {}
+    // remove all events.
+    if (!(name || handler || context)) {
+      this.listeners = {}
       return this
     }
 
-    const eventListeners = this.eventListeners
-    const eventNames = eventName
-      ? split(eventName)
-      : Object.keys(eventListeners)
+    const listeners = this.listeners
+    const names = name ? [name] : Object.keys(listeners)
 
-    eventNames.forEach(name => {
-      const cache = eventListeners[name]
+    names.forEach(n => {
+      const cache = listeners[n]
       if (!cache) {
         return
       }
 
-      // remove all event.
+      // remove all events with specified name.
       if (!(handler || context)) {
-        delete eventListeners[name]
+        delete listeners[n]
         return
       }
 
@@ -72,36 +81,65 @@ export class Events {
     return this
   }
 
-  trigger(eventName: string, ...args: any[]) {
-    let pass = true
-    const any = this.eventListeners['*']
-    split(eventName).forEach(name => {
-      let callbacks
+  trigger<N extends Events.OptionalNormalKeys<M>>(name: N): boolean
+  trigger<N extends Events.RequiredNormalKeys<M>>(name: N, args: M[N]): boolean
+  trigger<N extends Events.KeysWithArrayValue<M>>(
+    name: N,
+    ...args: M[N]
+  ): boolean
+  trigger<N extends Events.OtherKeys<M>>(name: N, args?: M[N]): boolean
+  trigger<N extends Events.OtherKeys<M>>(name: N, ...args: M[N]): boolean
+  trigger<N extends Events.EventKeys<M>>(name: N, ...args: M[N]) {
+    const cache = this.listeners[name]
+    if (cache != null) {
+      return Private.call(cache, args)
+    }
 
-      if (name !== '*') {
-        callbacks = this.eventListeners[name]
-        if (callbacks) {
-          pass = Events.trigger(callbacks, args) && pass
-        }
-      }
-
-      if (any) {
-        pass = Events.trigger(any, [name].concat(args)) && pass
-      }
-    })
-
-    return pass
+    return true
   }
 }
 
 export namespace Events {
-  export type Handler = (...args: any[]) => void
+  export type Handler<A> = A extends null | undefined
+    ? () => any
+    : A extends any[]
+    ? (...args: A) => any
+    : (args: A) => any
 
-  export function trigger(list: any[], args: any[]) {
+  export type EventArgMap = { [key: string]: any }
+  export type EventKeys<M extends EventArgMap> = Extract<keyof M, string>
+
+  /**
+   * Get union type of keys from `M` that value matching `any[]`.
+   */
+  export type KeysWithArrayValue<M extends EventArgMap> = RequiredKeys<
+    PickByValue<M, any[]>
+  >
+
+  export type NotArrayValueMap<M extends EventArgMap> = OmitByValue<M, any[]>
+
+  export type OptionalNormalKeys<M extends EventArgMap> = OptionalKeys<
+    NotArrayValueMap<M>
+  >
+
+  export type RequiredNormalKeys<M extends EventArgMap> = RequiredKeys<
+    NotArrayValueMap<M>
+  >
+
+  export type OtherKeys<M extends EventArgMap> = EventKeys<
+    PickByValue<M, undefined>
+  >
+}
+
+namespace Private {
+  export function call<A>(list: any[], args?: A) {
     let pass = true
 
     for (let i = 0, l = list.length; i < l; i += 2) {
-      pass = invoke(list[i], args, list[i + 1]) !== false && pass
+      const handler = list[i]
+      const context = list[i + 1]
+      const params = Array.isArray(args) ? args : [args]
+      pass = invoke(handler, params, context) !== false && pass
     }
 
     return pass

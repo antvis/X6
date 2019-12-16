@@ -1,8 +1,8 @@
 import React from 'react'
 import classNames from 'classnames'
 import { Icon } from '@antv/x6-components'
-import { util, Dnd, Graph } from '@antv/x6'
-import { data, isGroup } from './data'
+import { Dnd, Graph } from '@antv/x6'
+import { data, DataItem, isGroup } from './data'
 import { addNode } from './util'
 
 export class Sidebar extends React.Component<Sidebar.Props> {
@@ -13,61 +13,75 @@ export class Sidebar extends React.Component<Sidebar.Props> {
   }
 
   componentDidMount() {
-    this.container.childNodes.forEach(elem => {
-      const instance = new Dnd({
-        fully: true,
-        element: elem as HTMLElement,
-        preview: () => document.createElement('div'),
-        containers: () => [this.props.graph.container],
+    this.container.childNodes.forEach((elem: HTMLElement) => {
+      const type = elem.getAttribute('data-type') || ''
+      const itemData = data.map[type]
+
+      const dnd = new Dnd<DataItem>(elem, {
+        data: itemData,
+        getGraph: () => this.props.graph,
+        getTargetCell: ({ graph, graphX, graphY }) => {
+          const cell = graph.getCellAt(graphX, graphY)
+          if (cell != null && cell.data != null && isGroup(cell.data.type)) {
+            return cell
+          }
+          return null
+        },
+        createDragElement: ({ element }) => {
+          const elem = document.createElement('div') as HTMLDivElement
+          const w = element.offsetWidth
+          const h = element.offsetHeight
+          elem.style.width = `${w}px`
+          elem.style.height = `${h}px`
+          elem.style.border = '1px dashed #000'
+          elem.style.cursor = 'move'
+          return elem
+        },
+        createPreviewElement: ({ graph, element }) => {
+          const elem = document.createElement('div') as HTMLDivElement
+          const w = element.offsetWidth
+          const h = element.offsetHeight
+          const s = graph.view.scale
+          elem.style.width = `${w * s}px`
+          elem.style.height = `${h * s}px`
+          elem.style.border = '1px dashed #000'
+          elem.style.cursor = 'move'
+          return elem
+        },
       })
 
-      instance.on(Dnd.events.prepare, this.onPrepare)
-      instance.on(Dnd.events.dragEnd, this.onDragEnd)
-      instance.on(Dnd.events.drop, this.onDrop)
+      dnd.on('dragPrepare', ({ dragElement }) => {
+        dragElement.style.margin = '0'
+      })
+
+      dnd.on('drop', ({ data, graph, targetCell, targetPosition }) => {
+        if (data != null) {
+          const group = isGroup(data.data.type)
+          const parent = targetCell || undefined
+          let x = targetPosition.x
+          let y = targetPosition.y
+          // relative parent position
+          if (parent != null) {
+            const geom = parent.getGeometry()!
+            x -= geom.bounds.x
+            y -= geom.bounds.y
+          }
+
+          const cell = addNode(
+            graph,
+            data,
+            x,
+            y,
+            group ? 200 : null,
+            group ? 160 : null,
+            null,
+            parent,
+          )
+
+          graph.selectCell(cell)
+        }
+      })
     })
-  }
-
-  onPrepare = (state: Dnd.State) => {
-    const type = state.element.getAttribute('data-type') || ''
-    const itemData = data.map[type]
-    if (itemData) {
-      state.data = itemData
-
-      const preview = state.preview
-      preview.style.position = 'absolute'
-      preview.style.zIndex = '9999'
-      preview.style.border = '1px dashed #000'
-      preview.style.width = `${itemData.width}px`
-      preview.style.height = `${itemData.height}px`
-      preview.style.cursor = 'move'
-
-      document.body.appendChild(preview)
-    }
-  }
-
-  onDragEnd = (state: Dnd.State) => {
-    if (state.preview.parentNode) {
-      state.preview.parentNode.removeChild(state.preview)
-    }
-  }
-
-  onDrop = (state: Dnd.State) => {
-    this.onDragEnd(state)
-    const graph = this.props.graph
-    if (state.activeContainer === graph.container && state.data != null) {
-      const pos = util.clientToGraph(graph.container, state.pageX, state.pageY)
-      const translate = graph.view.translate
-      const group = isGroup(state.data.data.type)
-      // console.log(state, group, pos, translate)
-      addNode(
-        this.props.graph,
-        state.data,
-        pos.x - translate.x - state.diffX,
-        pos.y - translate.y - state.diffY,
-        group ? 200 : null,
-        group ? 160 : null,
-      )
-    }
   }
 
   render() {
