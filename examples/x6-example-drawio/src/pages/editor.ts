@@ -1,4 +1,4 @@
-import { Graph, Primer, Style, FontStyle } from '@antv/x6'
+import { Graph, Primer, Style, FontStyle, Image } from '@antv/x6'
 import { Commands } from './graph/commands'
 import avatarMale from './images/male.png'
 import avatarFemale from './images/female.png'
@@ -44,6 +44,12 @@ export class Editor extends Primer {
       mouseWheel: true,
       preferPageSize: false,
       rubberband: true,
+      anchor: {
+        image: Image.fromSvg(
+          '<svg xmlns="http://www.w3.org/2000/svg" width="5" height="5"><path fill="#1890FF" fill-rule="nonzero" d="M5 .577L4.423 0 2.5 1.923.577 0 0 .577 1.923 2.5 0 4.423.577 5 2.5 3.077 4.423 5 5 4.423 3.077 2.5z"/></svg>',
+        ),
+        inductiveSize: 0,
+      },
       getAnchors(cell) {
         if (cell != null && this.model.isNode(cell)) {
           return [

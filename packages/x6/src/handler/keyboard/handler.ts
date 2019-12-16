@@ -46,7 +46,7 @@ export class KeyboardHandler extends BaseHandler {
         key
           .toLowerCase()
           .replace(/\s/g, '')
-          .replace('delete', 'backspace')
+          .replace('delete', 'del')
           .replace('cmd', 'command'),
       )
       .map(this.formatkey)

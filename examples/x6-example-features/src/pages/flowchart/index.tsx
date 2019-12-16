@@ -36,7 +36,9 @@ export default class FlowChart extends React.Component {
           <div className="flowchart-sidebar">
             <div className="flowchart-sidebar-title">流程节点</div>
             <div className="flowchart-sidebar-content">
-              {this.graph && <Sidebar graph={this.graph} />}
+              {this.graph && this.state.inited && (
+                <Sidebar graph={this.graph} />
+              )}
             </div>
           </div>
           <SplitBox
@@ -54,7 +56,7 @@ export default class FlowChart extends React.Component {
                 <div className="graph" ref={this.refContainer} tabIndex={-1} />
               </div>
             </div>
-            {this.graph && <Setting graph={this.graph} />}
+            {this.graph && this.state.inited && <Setting graph={this.graph} />}
           </SplitBox>
         </SplitBox>
       </div>

@@ -105,7 +105,11 @@ export class GraphToolbar extends React.Component<
     this.commands.forEach(items =>
       items.forEach(item => {
         if (item.shortcut) {
-          this.graph.bindKey(item.shortcut, item.handler)
+          if (item.shortcut === 'Delete') {
+            this.graph.bindKey(['del', 'backspace'], item.handler)
+          } else {
+            this.graph.bindKey(item.shortcut, item.handler)
+          }
         }
       }),
     )
