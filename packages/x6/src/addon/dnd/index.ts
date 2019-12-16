@@ -388,8 +388,8 @@ export class Dnd<T> extends Disablable<Dnd.EventArgMap<T>> {
   protected onDragOver(graph: Graph, e: MouseEvent) {
     const offset = util.getOffset(graph.container)
     const origin = util.getScrollOrigin(graph.container)
-    let x = DomEvent.getClientX(e) - offset.x + origin.x - graph.panDx
-    let y = DomEvent.getClientY(e) - offset.y + origin.y - graph.panDy
+    let x = DomEvent.getClientX(e) - offset.x + origin.x - graph.panX
+    let y = DomEvent.getClientY(e) - offset.y + origin.y - graph.panY
 
     if (this.options.autoScroll === true) {
       graph.scrollPointToVisible(x, y, graph.autoExtend)

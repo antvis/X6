@@ -1,6 +1,6 @@
 import * as util from '../util'
 import { Graph } from '../graph'
-import { MouseEventEx, DomEvent } from '../common'
+import { MouseEventEx, DomEvent, Disposable } from '../common'
 import { IMouseHandler } from '../handler'
 import { BaseManager } from './base-manager'
 
@@ -33,14 +33,14 @@ export class PanningManager extends BaseManager {
    */
   protected border: number = 0
 
-  private mouseListener: IMouseHandler
-  private mouseUpListener: () => void
+  private readonly mouseListener: IMouseHandler
+  private readonly mouseUpHandler: () => void
   protected active: boolean = false
   protected timer: number | null = null
-  protected tdx: number = 0
-  protected tdy: number = 0
-  protected t0x: number = 0
-  protected t0y: number = 0
+  protected pannedX: number = 0
+  protected pannedY: number = 0
+  protected translateX: number = 0
+  protected translateY: number = 0
   protected dx: number = 0
   protected dy: number = 0
   protected scrollbars: boolean = false
@@ -53,35 +53,79 @@ export class PanningManager extends BaseManager {
     this.mouseListener = {
       mouseDown(e: MouseEventEx, sender: any) {},
       mouseMove(e: MouseEventEx, sender: any) {},
-      mouseUp: (e: MouseEventEx, sender: any) => {
-        if (this.active) {
-          this.stop()
-        }
-      },
+      mouseUp: (e: MouseEventEx, sender: any) => this.mouseUpHandler(),
     }
 
-    graph.addMouseListener(this.mouseListener)
-
-    this.mouseUpListener = () => {
+    this.mouseUpHandler = () => {
       if (this.active) {
         this.stop()
       }
     }
-
-    // Stops scrolling on every mouseup anywhere in the document
-    DomEvent.addListener(document, 'mouseup', this.mouseUpListener)
   }
 
-  isActive() {
-    return this.active
+  protected addListeners() {
+    this.graph.addMouseListener(this.mouseListener)
+    DomEvent.addListener(document, 'mouseup', this.mouseUpHandler)
   }
 
-  getDx() {
-    return Math.round(this.tdx)
+  protected removeListeners() {
+    this.graph.removeMouseListener(this.mouseListener)
+    DomEvent.removeListener(document, 'mouseup', this.mouseUpHandler)
   }
 
-  getDy() {
-    return Math.round(this.tdy)
+  protected triggerPanning() {
+    this.graph.trigger('pan', {
+      panX: this.graph.panX,
+      panY: this.graph.panY,
+    })
+  }
+
+  protected getPannedX() {
+    return Math.round(this.pannedX)
+  }
+
+  protected getPannedY() {
+    return Math.round(this.pannedY)
+  }
+
+  protected start() {
+    const t = this.graph.view.translate
+    this.translateX = t.x
+    this.translateY = t.y
+
+    this.active = true
+    this.addListeners()
+  }
+
+  protected stop() {
+    if (this.active) {
+      this.active = false
+      this.removeListeners()
+
+      if (this.timer != null) {
+        window.clearTimeout(this.timer)
+        this.timer = null
+      }
+
+      this.pannedX = 0
+      this.pannedY = 0
+
+      if (this.scrollbars) {
+        this.graph.panX = 0
+        this.graph.panY = 0
+        this.triggerPanning()
+      } else {
+        const px = this.graph.panX
+        const py = this.graph.panY
+        if (px !== 0 || py !== 0) {
+          this.pan(0, 0)
+          this.graph.view.setTranslate(
+            this.translateX + px / this.graph.view.scale,
+            this.translateY + py / this.graph.view.scale,
+          )
+        }
+      }
+    }
   }
 
   private createTimer() {
@@ -90,69 +134,36 @@ export class PanningManager extends BaseManager {
     this.scrollLeft = container.scrollLeft
     this.scrollTop = container.scrollTop
 
-    return window.setInterval(() => {
-      this.tdx -= this.dx
-      this.tdy -= this.dy
+    const cb = () => {
+      this.pannedX -= this.dx
+      this.pannedY -= this.dy
 
       if (this.scrollbars) {
-        const left = -this.graph.container.scrollLeft - Math.ceil(this.dx)
-        const top = -this.graph.container.scrollTop - Math.ceil(this.dy)
-        this.graph.pan(left, top)
-        this.graph.panDx = this.scrollLeft - this.graph.container.scrollLeft
-        this.graph.panDy = this.scrollTop - this.graph.container.scrollTop
-        this.graph.trigger(Graph.events.pan)
+        const container = this.graph.container
+        const left = -container.scrollLeft - Math.ceil(this.dx)
+        const top = -container.scrollTop - Math.ceil(this.dy)
+        this.pan(left, top)
+        this.graph.panX = this.scrollLeft - container.scrollLeft
+        this.graph.panY = this.scrollTop - container.scrollTop
+        this.triggerPanning()
       } else {
-        this.graph.pan(this.getDx(), this.getDy())
+        this.pan(this.getPannedX(), this.getPannedY())
       }
-    }, this.delay)
-  }
-
-  start() {
-    this.t0x = this.graph.view.translate.x
-    this.t0y = this.graph.view.translate.y
-    this.active = true
-  }
-
-  stop() {
-    if (this.active) {
-      this.active = false
-
-      if (this.timer != null) {
-        window.clearInterval(this.timer)
-        this.timer = null
-      }
-
-      this.tdx = 0
-      this.tdy = 0
-
-      if (!this.scrollbars) {
-        const px = this.graph.panDx
-        const py = this.graph.panDy
-
-        if (px !== 0 || py !== 0) {
-          this.graph.pan(0, 0)
-          this.graph.view.setTranslate(
-            this.t0x + px / this.graph.view.scale,
-            this.t0y + py / this.graph.view.scale,
-          )
-        }
-      } else {
-        this.graph.panDx = 0
-        this.graph.panDy = 0
-        this.graph.trigger(Graph.events.pan)
-      }
+      this.timer = window.setTimeout(cb, this.delay)
     }
+
+    cb()
   }
 
-  panTo(x: number, y: number, w: number = 0, h: number = 0) {
+  panRectToVisible(x: number, y: number, w: number = 0, h: number = 0) {
     if (!this.active) {
       this.start()
     }
 
-    this.scrollLeft = this.graph.container.scrollLeft
-    this.scrollTop = this.graph.container.scrollTop
-
     const container = this.graph.container
+
+    this.scrollLeft = container.scrollLeft
+    this.scrollTop = container.scrollTop
     this.dx = x + w - container.scrollLeft - container.clientWidth
 
     if (this.dx < 0 && Math.abs(this.dx) < this.border) {
@@ -202,22 +213,120 @@ export class PanningManager extends BaseManager {
       this.dy *= this.damper
 
       if (this.timer == null) {
-        this.timer = this.createTimer()
+        this.createTimer()
       }
     } else if (this.timer != null) {
-      window.clearInterval(this.timer)
+      window.clearTimeout(this.timer)
       this.timer = null
     }
   }
 
-  dispose() {
-    if (this.disposed) {
-      return
+  protected shiftPreview1: HTMLElement | null
+  protected shiftPreview2: HTMLElement | null
+
+  pan(x: number, y: number, relative: boolean = false) {
+    const px = relative ? this.graph.panX + x : x
+    const py = relative ? this.graph.panY + y : y
+
+    if (
+      this.graph.useScrollbarsForPanning &&
+      util.hasScrollbars(this.container)
+    ) {
+      const container = this.container
+      const maxScrollLeft = container.scrollWidth - container.clientWidth
+      const maxScrollTop = container.scrollHeight - container.clientHeight
+      const scrollLeft = util.clamp(px, 0, maxScrollLeft)
+      const scrollTop = util.clamp(py, 0, maxScrollTop)
+      container.scrollLeft = scrollLeft
+      container.scrollTop = scrollTop
+    } else {
+      const stage = this.view.getStage()!
+      if (this.graph.dialect === 'svg') {
+        // Puts everything inside the container in a DIV so that it
+        // can be moved without changing the state of the container
+        if (px === 0 && py === 0) {
+          stage.removeAttribute('transform')
+
+          if (this.shiftPreview1 != null && this.shiftPreview2 != null) {
+            let child = this.shiftPreview1.firstChild
+            while (child != null) {
+              const next = child.nextSibling
+              this.container.appendChild(child)
+              child = next
+            }
+
+            util.removeElement(this.shiftPreview1)
+            this.shiftPreview1 = null
+
+            this.container.appendChild(stage.parentNode!)
+
+            child = this.shiftPreview2.firstChild
+            while (child != null) {
+              const next = child.nextSibling
+              this.container.appendChild(child)
+              child = next
+            }
+
+            util.removeElement(this.shiftPreview2)
+            this.shiftPreview2 = null
+          }
+        } else {
+          stage.setAttribute('transform', `translate(${px},${py})`)
+
+          if (this.shiftPreview1 == null) {
+            // Needs two divs for stuff before and after the SVG element
+            this.shiftPreview1 = document.createElement('div')
+            this.shiftPreview1.style.position = 'absolute'
+            this.shiftPreview1.style.overflow = 'visible'
+
+            this.shiftPreview2 = document.createElement('div')
+            this.shiftPreview2.style.position = 'absolute'
+            this.shiftPreview2.style.overflow = 'visible'
+
+            let current = this.shiftPreview1
+            let child = this.container.firstChild as HTMLElement
+
+            while (child != null) {
+              const next = child.nextSibling as HTMLElement
+              // SVG element is moved via transform attribute
+              if (child !== stage.parentNode) {
+                current.appendChild(child)
+              } else {
+                current = this.shiftPreview2
+              }
+
+              child = next
+            }
+
+            // Inserts elements only if not empty
+            if (this.shiftPreview1.firstChild != null) {
+              this.container.insertBefore(this.shiftPreview1, stage.parentNode)
+            }
+
+            if (this.shiftPreview2.firstChild != null) {
+              this.container.appendChild(this.shiftPreview2)
+            }
+          }
+
+          this.shiftPreview1.style.left = `${px}px`
+          this.shiftPreview1.style.top = `${py}px`
+          this.shiftPreview2!.style.left = util.toPx(px)
+          this.shiftPreview2!.style.top = util.toPx(py)
+        }
+      } else {
+        stage.style.left = util.toPx(px)
+        stage.style.top = util.toPx(py)
+      }
+
+      this.graph.panX = px
+      this.graph.panY = py
     }
 
-    this.graph.removeMouseListener(this.mouseListener)
-    DomEvent.removeListener(document, 'mouseup', this.mouseUpListener)
+    this.triggerPanning()
+  }
 
-    super.dispose()
+  @Disposable.aop()
+  dispose() {
+    this.removeListeners()
   }
 }

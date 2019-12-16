@@ -3056,8 +3056,8 @@ export interface CompositeOptions {
 export interface BaseGraph extends IPreDependencies {}
 
 export interface IPreDependencies {
-  panningX: number
-  panningY: number
+  panX: number
+  panY: number
 
   snap(value: number): number
   getGridSize(): number

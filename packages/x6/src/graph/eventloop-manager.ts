@@ -75,8 +75,8 @@ export class EventLoopManager extends BaseManager {
     if (e.graphX == null || e.graphY == null) {
       const p = util.clientToGraph(this.graph.container, e)
 
-      e.graphX = p.x - this.graph.panDx
-      e.graphY = p.y - this.graph.panDy
+      e.graphX = p.x - this.graph.panX
+      e.graphY = p.y - this.graph.panY
 
       if (
         this.isMouseDown &&
