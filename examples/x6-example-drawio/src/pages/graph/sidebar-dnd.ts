@@ -1,59 +1,50 @@
-import { util, Dnd } from '@antv/x6'
+import { Dnd } from '@antv/x6'
 import { getEditor } from '../index'
 import { getDataItem } from './sidebar-util'
+import { DataItem } from './sidebar-data'
 
 export function initDnd(palette: HTMLDivElement) {
-  palette.childNodes.forEach(elem => {
-    const instance = new Dnd({
-      fully: true,
-      element: elem as HTMLElement,
-      preview: () => document.createElement('div'),
-      containers: () => [getEditor().graph.container],
+  palette.childNodes.forEach((elem: HTMLElement) => {
+    const data = getDataItem(elem)
+    const instance = new Dnd<DataItem>(elem, {
+      data,
+      getGraph: () => getEditor().graph,
+      getTargetCell: () => null,
+      createDragElement: ({ data }) => {
+        const elem = document.createElement('div') as HTMLDivElement
+        if (data != null) {
+          elem.style.width = `${data.width}px`
+          elem.style.height = `${data.height}px`
+        }
+        elem.style.border = '1px dashed #000'
+        elem.style.cursor = 'move'
+        return elem
+      },
+      createPreviewElement: ({ graph, data }) => {
+        const elem = document.createElement('div') as HTMLDivElement
+        if (data != null) {
+          const s = graph.view.scale
+          elem.style.width = `${data.width * s}px`
+          elem.style.height = `${data.height * s}px`
+        }
+
+        elem.style.border = '1px dashed #000'
+        elem.style.cursor = 'move'
+        return elem
+      },
     })
 
-    instance.on(Dnd.events.prepare, onPrepare)
-    instance.on(Dnd.events.dragEnd, onDragEnd)
-    instance.on(Dnd.events.drop, onDrop)
+    instance.on('drop', ({ data, graph, targetPosition }) => {
+      if (data != null) {
+        const cell = graph.addNode({
+          x: targetPosition.x,
+          y: targetPosition.y,
+          width: data.width,
+          height: data.height,
+          style: data.style,
+        })
+        graph.selectCell(cell)
+      }
+    })
   })
-}
-
-function onPrepare(state: Dnd.State) {
-  const data = getDataItem(state.element)
-  const proxy = state.preview
-
-  proxy.className = 'x6-cell-thumb-proxy'
-  if (data) {
-    state.data = data
-    proxy.style.width = `${data.width}px`
-    proxy.style.height = `${data.height}px`
-  }
-
-  document.body.appendChild(proxy)
-}
-
-function onDragEnd(state: Dnd.State) {
-  const parent = state.preview.parentNode
-  if (parent != null) {
-    parent.removeChild(state.preview)
-  }
-}
-
-function onDrop(state: Dnd.State) {
-  onDragEnd(state)
-
-  const graph = getEditor().graph
-  if (state.activeContainer === graph.container && state.data != null) {
-    const shape = graph.view.getBackgroundPageShape()!
-    const offset = util.getOffset(shape.elem as HTMLElement)
-    const x = state.pageX - offset.x - state.diffX
-    const y = state.pageY - offset.y - state.diffY
-
-    graph.addNode({
-      x,
-      y,
-      width: state.data.width,
-      height: state.data.height,
-      style: state.data.style,
-    })
-  }
 }

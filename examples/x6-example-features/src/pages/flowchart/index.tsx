@@ -7,7 +7,7 @@ import { createGraph, demo } from './util'
 import { Setting } from './setting'
 import './index.less'
 
-export default class FlowChart extends React.Component {
+export default class FlowChart extends React.Component<{}, FlowChart.State> {
   private graph: Graph
   private container: HTMLDivElement
 
@@ -61,5 +61,11 @@ export default class FlowChart extends React.Component {
         </SplitBox>
       </div>
     )
+  }
+}
+
+export namespace FlowChart {
+  export interface State {
+    inited: boolean
   }
 }
