@@ -59,7 +59,7 @@ export class NodeHandler extends MouseHandler {
     const ret = this.knobs.getHandle(e)
     if (ret != null) {
       this.start(e.getGraphX(), e.getGraphY(), ret.index)
-      this.addOverlay(ret.cursor)
+      this.addMask(ret.cursor)
       e.consume()
     }
   }
@@ -117,7 +117,7 @@ export class NodeHandler extends MouseHandler {
 
       e.consume()
 
-      this.removeOverlay()
+      this.removeMask()
       this.reset()
     }
   }
