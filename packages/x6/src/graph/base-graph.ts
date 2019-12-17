@@ -16,7 +16,7 @@ import {
   SelectionHandler,
   ConnectionHandler,
   GuideHandler,
-  SelectHandler,
+  SelectCellHandler,
   MovingHandler,
   PanningHandler,
   ContextMenuHandler,
@@ -84,7 +84,7 @@ export class BaseGraph extends Disablable<EventArgs>
   public selectionHandler: SelectionHandler
   public connectionHandler: ConnectionHandler
   public guideHandler: GuideHandler
-  public selectHandler: SelectHandler
+  public selectHandler: SelectCellHandler
   public movingHandler: MovingHandler
   public panningHandler: PanningHandler
   public contextMenuHandler: ContextMenuHandler
@@ -170,7 +170,7 @@ export class BaseGraph extends Disablable<EventArgs>
 
   @hook()
   createSelectHandler() {
-    return new SelectHandler(this as any)
+    return new SelectCellHandler(this as any)
   }
 
   @hook()

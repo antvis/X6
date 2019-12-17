@@ -1,7 +1,7 @@
 import { MouseHandler } from '../handler-mouse'
 import { MouseEventEx } from '../../common'
 
-export class SelectHandler extends MouseHandler {
+export class SelectCellHandler extends MouseHandler {
   mouseDown(e: MouseEventEx, sender: any) {
     if (this.canHandle(e)) {
       const cell = this.getCell(e)
@@ -13,12 +13,6 @@ export class SelectHandler extends MouseHandler {
   }
 
   protected canHandle(e: MouseEventEx) {
-    return (
-      this.graph.isEnabled() &&
-      this.isEnabled() &&
-      this.isOnCell(e) &&
-      !this.isConsumed(e) &&
-      !this.isMultiTouchEvent(e)
-    )
+    return this.isValid(e) && this.isOnCell(e) && !this.isMultiTouchEvent(e)
   }
 }

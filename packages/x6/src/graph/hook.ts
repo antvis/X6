@@ -21,7 +21,7 @@ import {
   RubberbandHandler,
   CursorHandler,
   GuideHandler,
-  SelectHandler,
+  SelectCellHandler,
 } from '../handler'
 import { DataChange } from '../change'
 
@@ -49,7 +49,7 @@ export interface IHooks {
   createTooltipHandler: BareHook<TooltipHandler>
   createConnectionHandler: BareHook<ConnectionHandler>
   createSelectionHandler: BareHook<SelectionHandler>
-  createSelectHandler: BareHook<SelectHandler>
+  createSelectHandler: BareHook<SelectCellHandler>
   createMovingHandler: BareHook<MovingHandler>
   createPanningHandler: BareHook<PanningHandler>
   createContextMenuHandler: BareHook<ContextMenuHandler>
