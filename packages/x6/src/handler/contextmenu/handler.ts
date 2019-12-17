@@ -2,7 +2,7 @@ import * as util from '../../util'
 import { Graph } from '../../graph'
 import { MouseHandler } from '../handler-mouse'
 import { MouseEventEx, DomEvent, Disposable } from '../../common'
-import { ContextMenuOptions, ShowContextMenuArgs } from './option'
+import { ShowContextMenuArgs } from './option'
 
 export class ContextMenuHandler extends MouseHandler {
   /**
@@ -46,7 +46,7 @@ export class ContextMenuHandler extends MouseHandler {
   }
 
   protected config() {
-    const options = this.graph.options.contextMenu as ContextMenuOptions
+    const options = this.graph.options.contextMenu
 
     this.isLeftButton = options.isLeftButton
     this.selectOnPopup = options.selectCellsOnContextMenu
@@ -57,7 +57,17 @@ export class ContextMenuHandler extends MouseHandler {
     this.setEnadled(options.enabled)
   }
 
-  isPopupTrigger(e: MouseEventEx) {
+  enable() {
+    this.graph.options.contextMenu.enabled = true
+    super.enable()
+  }
+
+  disable() {
+    this.graph.options.contextMenu.enabled = false
+    super.disable()
+  }
+
+  isValidTrigger(e: MouseEventEx) {
     return (
       e.isPopupTrigger() ||
       (this.isLeftButton && DomEvent.isLeftMouseButton(e.getEvent()))
@@ -68,12 +78,12 @@ export class ContextMenuHandler extends MouseHandler {
     const evt = e.getEvent()
     if (this.isEnabled() && !DomEvent.isMultiTouchEvent(evt)) {
       const me = DomEvent.getMainEvent(evt) as MouseEvent
-      this.triggerX = e.getGraphX()
-      this.triggerY = e.getGraphY()
       this.startX = me.screenX
       this.startY = me.screenY
-      this.validTrigger = this.isPopupTrigger(e)
+      this.triggerX = e.getGraphX()
+      this.triggerY = e.getGraphY()
       this.inTolerance = true
+      this.validTrigger = this.isValidTrigger(e)
     }
   }
 
@@ -125,7 +135,7 @@ export class ContextMenuHandler extends MouseHandler {
     this.inTolerance = false
   }
 
-  hideMenu() {
+  hide() {
     this.showing = false
     this.doHide && this.doHide()
   }

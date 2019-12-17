@@ -13,6 +13,7 @@ import { RetrievalAccessor } from './retrieval-accessor'
 import { OverlayAccessor } from './overlay-accessor'
 import { ConnectionAccessor } from './connection-accessor'
 import { TooltipAccessor } from './tooltip-accessor'
+import { ContextMenuAccessor } from './contextmenu-accessor'
 import { RubberbandAccessor } from './rubberband-accessor'
 import { CollapseAccessor } from './collapse-accessor'
 import { KeyboardAccessor } from './keyboard-accessor'
@@ -116,7 +117,8 @@ export interface Graph
     ConnectionAccessor,
     ValidationAccessor,
     MouseWheelAccessor,
-    RubberbandAccessor {}
+    RubberbandAccessor,
+    ContextMenuAccessor {}
 
 util.applyMixins(
   Graph,
@@ -146,4 +148,5 @@ util.applyMixins(
   ValidationAccessor,
   RubberbandAccessor,
   MouseWheelAccessor,
+  ContextMenuAccessor,
 )
