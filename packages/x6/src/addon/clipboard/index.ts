@@ -58,7 +58,7 @@ export namespace Clipboard {
       cells = graph.importCells(cells, delta, delta, parent)
       // Increments the counter and selects the inserted cells
       insertCount += 1
-      graph.setSelectedCells(cells)
+      graph.setCellsSelected(cells)
     }
 
     return cells

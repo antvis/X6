@@ -108,7 +108,7 @@ export class ContextMenuHandler extends MouseHandler {
           this.selectOnPopup &&
           !this.graph.isCellSelected(cell)
         ) {
-          this.graph.setSelectedCell(cell)
+          this.graph.setCellSelected(cell)
         } else if (cell == null && this.clearSelectionOnBackground) {
           this.graph.clearSelection()
         }

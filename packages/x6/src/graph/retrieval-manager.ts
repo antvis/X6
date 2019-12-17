@@ -33,7 +33,7 @@ export class RetrievalManager extends BaseManager {
       this.view.setCurrentRoot(null)
       const state = this.view.getState(current)
       if (state != null) {
-        this.graph.setSelectedCell(current)
+        this.graph.setCellSelected(current)
       }
     }
   }

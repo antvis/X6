@@ -175,7 +175,7 @@ export class MovingHandler extends MouseHandler {
 
     // Selects the new cells if cells have been cloned
     if (clone) {
-      this.graph.setSelectedCells(cells)
+      this.graph.setCellsSelected(cells)
     }
 
     if (this.graph.isCellsSelectable() && this.graph.isScrollOnMove()) {

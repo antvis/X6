@@ -1210,7 +1210,7 @@ export class EdgeHandler extends MouseHandler {
 
         // Updates the selection if the edge has been cloned
         if (edge !== this.state.cell) {
-          this.graph.setSelectedCell(edge)
+          this.graph.setCellSelected(edge)
         }
       }
 

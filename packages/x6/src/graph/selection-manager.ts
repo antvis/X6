@@ -9,11 +9,11 @@ export class SelectionManager extends BaseManager {
   }
 
   private setSelectedCell(cell: Cell | null) {
-    this.graph.setSelectedCell(cell)
+    this.graph.setCellSelected(cell)
   }
 
   private setSelectedCells(cells: Cell[]) {
-    this.graph.setSelectedCells(cells)
+    this.graph.setCellsSelected(cells)
   }
 
   updateSelection() {
@@ -189,7 +189,7 @@ export class SelectionManager extends BaseManager {
     if (this.graph.isToggleEvent(e)) {
       this.graph.selectCells(cells)
     } else {
-      this.graph.setSelectedCells(cells)
+      this.graph.setCellsSelected(cells)
     }
   }
 }
