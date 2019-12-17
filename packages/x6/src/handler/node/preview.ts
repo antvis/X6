@@ -748,7 +748,7 @@ export class Preview extends Disposable {
 
   protected updateOverlayCursor(e: MouseEventEx) {
     if (this.overlayCursor == null) {
-      this.overlayCursor = this.master.getOverlayCursor()
+      this.overlayCursor = this.master.getMaskCursor()
     }
 
     const oldBounds = this.getStateBounds()
@@ -833,7 +833,7 @@ export class Preview extends Disposable {
       }
     }
 
-    this.master.setOverlayCursor(cursor)
+    this.master.setMaskCursor(cursor)
   }
 
   hasRotated() {

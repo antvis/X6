@@ -43,40 +43,40 @@ export abstract class MouseHandler<EventArgs = any>
     e.consume()
   }
 
-  private overlay: HTMLDivElement | null
-  addOverlay(cursor?: string | null) {
-    const overlay = util.createElement('div') as HTMLDivElement
-    overlay.style.position = 'absolute'
-    overlay.style.zIndex = '99999'
-    overlay.style.left = '0'
-    overlay.style.top = '0'
-    overlay.style.right = '0'
-    overlay.style.bottom = '0'
-    overlay.style.border = '0'
-    overlay.style.background = 'rgba(255, 255, 255, 0)'
-    this.overlay = overlay
-    this.setOverlayCursor(cursor)
-    document.body.appendChild(overlay)
+  private mask: HTMLDivElement | null
+  addMask(cursor?: string | null) {
+    const mask = util.createElement('div') as HTMLDivElement
+    mask.style.position = 'absolute'
+    mask.style.zIndex = '9999'
+    mask.style.left = '0'
+    mask.style.top = '0'
+    mask.style.right = '0'
+    mask.style.bottom = '0'
+    mask.style.border = '0'
+    mask.style.background = 'rgba(255, 255, 255, 0)'
+    this.mask = mask
+    this.setMaskCursor(cursor)
+    document.body.appendChild(mask)
   }
 
-  removeOverlay() {
-    util.removeElement(this.overlay)
-    this.overlay = null
+  removeMask() {
+    util.removeElement(this.mask)
+    this.mask = null
   }
 
-  getOverlayCursor() {
-    return this.overlay ? this.overlay.style.cursor : null
+  getMaskCursor() {
+    return this.mask ? this.mask.style.cursor : null
   }
 
-  setOverlayCursor(cursor?: string | null) {
-    if (this.overlay) {
-      this.overlay.style.cursor = cursor == null ? '' : cursor
+  setMaskCursor(cursor?: string | null) {
+    if (this.mask) {
+      this.mask.style.cursor = cursor == null ? '' : cursor
     }
   }
 
   private savedBodyCursor: string
   private savedContainerCursor: string
-  setGlobalCursor(cursor: string | null | undefined) {
+  setGlobalCursor(cursor?: string | null) {
     this.savedBodyCursor = document.body.style.cursor
     this.savedContainerCursor = this.graph.container.style.cursor
     document.body.style.cursor = cursor || ''
