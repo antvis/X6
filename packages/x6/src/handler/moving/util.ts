@@ -19,15 +19,18 @@ export function canMove(handler: MouseHandler, e: MouseEventEx) {
     const model = graph.model
     const geo = cell.getGeometry()
 
+    // prettier-ignore
     if (
       graph.isCellMovable(cell) &&
-      (graph.isDanglingEdgesEnabled() ||
+      (
         !cell.isEdge() ||
+        graph.isDanglingEdgesEnabled() ||
         graph.getSelecedCellCount() > 1 ||
         (geo && geo.points && geo.points.length > 0) ||
         model.getTerminal(cell, true) == null ||
         model.getTerminal(cell, false) == null ||
-        (graph.isCloneEvent(e.getEvent()) && graph.isCellsCloneable()))
+        (graph.isCloneEvent(e.getEvent()) && graph.isCellsCloneable())
+      )
     ) {
       return true
     }

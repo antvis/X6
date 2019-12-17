@@ -50,7 +50,7 @@ export interface ApplyMovingPreviewStyleArgs extends BaseArgs {
 }
 
 export function applyMovingPreviewStyle(args: ApplyMovingPreviewStyleArgs) {
-  const options = args.graph.options.movingPreview as MovingPreviewOptions
+  const options = args.graph.options.movingPreview
 
   applyBaseStyle(args, options)
   applyClassName(args, options, 'moving-preview')
@@ -74,7 +74,7 @@ export function applyDropTargetHighlightStyle(
   args: ApplyDropTargetHighlightStyleArgs,
 ) {
   const { graph, highlight } = args
-  const opts = graph.options.dropTargetHighlight as DropTargetHighlightOptions
+  const opts = graph.options.dropTargetHighlight
   highlight.highlightColor = drill(opts.stroke, graph, args)
   highlight.strokeWidth = drill(opts.strokeWidth, graph, args)
   highlight.dashed = drill(opts.dashed, graph, args)

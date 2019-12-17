@@ -7,14 +7,15 @@ import { MouseHandler } from '../handler-mouse'
 import { MouseEventEx, DomEvent, Disposable } from '../../common'
 
 export class MovingHandler extends MouseHandler {
-  protected preview: Preview
   protected onPan: (() => void) | null
   protected onEscape: (() => void) | null
   protected onRefresh: (() => void) | null
+  protected preview: Preview
   protected shouldConsumeMouseUp: boolean
 
   constructor(graph: Graph) {
     super(graph)
+
     this.preview = new Preview(this)
     this.onPan = () => this.preview.updatePreview()
     this.graph.on('pan', this.onPan)
@@ -61,9 +62,9 @@ export class MovingHandler extends MouseHandler {
   mouseUp(e: MouseEventEx) {
     if (!this.isConsumed(e)) {
       if (this.preview.isStarted() && this.preview.isMoved()) {
-        const graph = this.graph
         const cell = e.getCell()
         const evt = e.getEvent()
+        const graph = this.graph
         const target = this.preview.target
         const sourceCell = this.preview.cell!
 
@@ -77,14 +78,14 @@ export class MovingHandler extends MouseHandler {
         ) {
           graph.connectionHandler.connect(sourceCell, cell, evt, null)
         } else {
-          const clone = this.isClone(e)
-          const scale = graph.view.scale
-          const dx = movment.roundLength(this.preview.dx! / scale)
-          const dy = movment.roundLength(this.preview.dy! / scale)
+          const s = graph.view.scale
+          const dx = movment.roundLength(this.preview.dx! / s)
+          const dy = movment.roundLength(this.preview.dy! / s)
           const cells = this.preview.cells!
+          const clone = this.isClone(e)
 
           if (
-            target &&
+            target != null &&
             graph.isSplitEnabled() &&
             graph.isSplitTarget(target, cells, evt)
           ) {
@@ -233,12 +234,11 @@ export class MovingHandler extends MouseHandler {
     this.graph.removeMouseListener(this)
 
     this.graph.off('pan', this.onPan)
-    this.onPan = null
-
     this.graph.off('escape', this.onEscape)
-    this.onEscape = null
-
     this.graph.model.off('change', this.onRefresh)
+
+    this.onPan = null
+    this.onEscape = null
     this.onRefresh = null
 
     this.preview.dispose()
