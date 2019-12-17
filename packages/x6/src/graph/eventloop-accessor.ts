@@ -26,7 +26,11 @@ export class EventLoopAccessor extends BaseGraph {
   /**
    * Dispatches the given event to the graph event dispatch loop.
    */
-  fireMouseEvent(eventName: string, e: MouseEventEx, sender: any = this) {
+  fireMouseEvent(
+    eventName: 'mouseDown' | 'mouseMove' | 'mouseUp',
+    e: MouseEventEx,
+    sender: any = this,
+  ) {
     this.eventloopManager.fireMouseEvent(eventName, e, sender)
     return this
   }
