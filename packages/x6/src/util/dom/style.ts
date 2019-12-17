@@ -1,34 +1,14 @@
 import { Point } from '../../struct'
-import { detector } from '../../common'
 import { globals } from '../../option'
-import { ucFirst } from '../string/common'
-import { getDocumentMode } from './attr'
+import { getVendorPrefixedName } from './prefix'
 
-export const setPrefixedStyle = (function() {
-  let prefix: string | null = null
-
-  if (detector.IS_OT) {
-    prefix = 'O'
-  } else if (detector.IS_SAFARI || detector.IS_CHROME) {
-    prefix = 'Webkit'
-  } else if (detector.IS_MT) {
-    prefix = 'Moz'
-  } else if (
-    detector.IS_IE &&
-    getDocumentMode() >= 9 &&
-    getDocumentMode() < 10
-  ) {
-    prefix = 'ms'
+export function setPrefixedStyle(style: any, name: string, value: string) {
+  const vendor = getVendorPrefixedName(name)
+  if (vendor != null) {
+    style[vendor] = value
   }
-
-  return function(style: any, name: string, value: string) {
-    style[name] = value
-    if (prefix != null && name.length > 0) {
-      const prefixedName = prefix + ucFirst(name)
-      style[prefixedName] = value
-    }
-  }
-})()
+  style[name] = value
+}
 
 export function toPx(px: number) {
   return `${px}px`
