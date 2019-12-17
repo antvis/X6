@@ -14,17 +14,17 @@ import {
 
 export class Preview extends Disposable {
   /**
-   * Specifies the minimum number of pixels for the width and height of a
-   * selection bounds.
+   * Specifies the minimum number of pixels for the width and height
+   * of a selection bounds.
    *
    * Default is `6`.
    */
   minimumSize: number = 6
 
   /**
-   * Specifies if draw a html preview. If this is used then drop target
-   * detection relies entirely on `graph.getCellAt` because the HTML
-   * preview does not "let events through".
+   * Specifies if draw a html preview. If this is true then drop
+   * target detection relies entirely on `graph.getCellAt` because
+   * the HTML preview does not "let events through".
    *
    * Default is `false`.
    */
@@ -106,8 +106,8 @@ export class Preview extends Disposable {
         dx = graph.guideHandler.dx!
         dy = graph.guideHandler.dy!
       } else if (graph.isGridEnabledForEvent(e.getEvent())) {
-        const t = graph.view.translate
         const s = graph.view.scale
+        const t = graph.view.translate
         const x = (graph.snap(bounds.x / s - t.x) + t.x) * s
         const y = (graph.snap(bounds.y / s - t.y) + t.y) * s
 
@@ -194,7 +194,7 @@ export class Preview extends Disposable {
     }
   }
 
-  protected destoryShapes() {
+  protected destory() {
     if (this.previewShape != null) {
       this.previewShape.dispose()
       this.previewShape = null
@@ -214,14 +214,16 @@ export class Preview extends Disposable {
     let target = null
 
     if (graph.isDropEnabled()) {
-      // Call getCellAt to find the cell under the mouse
       target = graph.getDropTarget(e.getEvent(), this.cells, cell, clone)
     }
 
     let state = graph.view.getState(target)
     let active = false
 
-    if (state && (graph.model.getParent(this.cell) !== target || clone)) {
+    if (
+      state != null &&
+      (graph.model.getParent(this.cell) !== target || clone)
+    ) {
       if (this.target !== target) {
         this.target = target
         applyDropTargetHighlightStyle({
@@ -237,8 +239,8 @@ export class Preview extends Disposable {
 
       // Drag a cell onto another cell, then drop it to trigger a connection.
       if (
-        this.graph.isConnectOnDrop() &&
-        cell &&
+        graph.isConnectOnDrop() &&
+        cell != null &&
         cell.isNode() &&
         this.cells.length === 1 &&
         graph.isCellConnectable(cell)
@@ -256,6 +258,7 @@ export class Preview extends Disposable {
             valid: error == null,
             highlight: this.highlight!,
           })
+
           active = true
         }
       }
@@ -271,11 +274,12 @@ export class Preview extends Disposable {
   }
 
   reset() {
-    this.destoryShapes()
+    this.destory()
     this.dx = null
     this.dy = null
-    this.origin = null
     this.cell = null
+    this.cells = []
+    this.origin = null
     this.target = null
   }
 
