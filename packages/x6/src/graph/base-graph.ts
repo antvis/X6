@@ -29,7 +29,7 @@ import {
   EdgeSegmentHandler,
 } from '../handler'
 import { hook } from './decorator'
-import { events as eventNames, EventArgs } from './events'
+import { EventArgs } from './events'
 import { Selection } from './selection'
 import { SelectionManager } from './selection-manager'
 import { ChangeManager } from './change-manager'
@@ -52,11 +52,6 @@ import { PanningManager } from './panning-manager'
 
 export class BaseGraph extends Disablable<EventArgs>
   implements GraphProperties, CompositeOptions {
-  /**
-   * Custom event names
-   */
-  public static events = eventNames
-
   public options: FullOptions
   public container: HTMLElement
   public model: Model

@@ -3,44 +3,6 @@ import { Rectangle, Overlay, Anchor } from '../struct'
 import { MouseEventEx } from '../common'
 import { Align, VAlign } from '../types'
 
-export const events = {
-  refresh: 'refresh',
-  root: 'root',
-
-  addCells: 'addCells',
-  removeCells: 'removeCells',
-  cellsRemoved: 'cellsRemoved',
-  removeCellsFromParent: 'removeCellsFromParent',
-  connectCell: 'connectCell',
-  cellConnected: 'cellConnected',
-  groupCells: 'groupCells',
-  ungroupCells: 'ungroupCells',
-  splitEdge: 'splitEdge',
-  updateCellSize: 'updateCellSize',
-  resizeCells: 'resizeCells',
-  cellsResized: 'cellsResized',
-  addOverlay: 'addOverlay',
-  removeOverlay: 'removeOverlay',
-  removeOverlays: 'removeOverlays',
-  foldCells: 'foldCells',
-  cellsFolded: 'cellsFolded',
-  orderCells: 'orderCells',
-  cellsOrdered: 'cellsOrdered',
-  toggleCells: 'toggleCells',
-  flipEdge: 'flipEdge',
-  alignCells: 'alignCells',
-  moveCells: 'moveCells',
-  cellsMoved: 'cellsMoved',
-
-  click: 'click',
-  dblclick: 'dblclick',
-  tapAndHold: 'tapAndHold',
-  escape: 'escape',
-
-  gesture: 'gesture',
-  fireMouseEvent: 'fireMouseEvent',
-}
-
 export interface EventArgs {
   refresh?: null
   root?: null
@@ -188,8 +150,8 @@ export interface EventArgs {
   }
 
   fireMouseEvent: {
-    eventName: string
     e: MouseEventEx
+    eventName: 'mouseDown' | 'mouseMove' | 'mouseUp'
     sender: any
   }
 
