@@ -1906,7 +1906,7 @@ export class View extends Primer<View.EventArgs> {
     // events in Firefox and Chrome
     graph.addMouseListener({
       mouseDown() {
-        graph.contextMenuHandler.hideMenu()
+        graph.hideContextMenu()
       },
       mouseMove() {},
       mouseUp() {},
