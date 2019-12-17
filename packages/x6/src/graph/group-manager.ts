@@ -256,7 +256,7 @@ export class GroupManager extends BaseManager {
       // Selects the previous root in the graph
       const state = this.view.getState(current)
       if (state != null) {
-        this.graph.setSelectedCell(current)
+        this.graph.setCellSelected(current)
       }
     }
   }

@@ -3,12 +3,35 @@ import { Rectangle } from '../struct'
 import { BaseGraph } from './base-graph'
 
 export class SelectionAccessor extends BaseGraph {
+  isSingleSelection() {
+    return this.selection.isSingleSelection()
+  }
+
+  setSingleSelection(single: boolean) {
+    this.selection.setSingleSelection(single)
+    return this
+  }
+
   isCellSelected(cell: Cell | null) {
     return this.selection.isSelected(cell)
   }
 
+  setCellSelected(cell: Cell | null) {
+    this.selection.setCell(cell)
+    return this
+  }
+
+  setCellsSelected(cells: Cell[]) {
+    this.selection.setCells(cells)
+    return this
+  }
+
   isSelectionEmpty() {
     return this.selection.isEmpty()
+  }
+
+  hasSelectedCell() {
+    return this.selection.cells.length > 0
   }
 
   clearSelection() {
@@ -25,26 +48,6 @@ export class SelectionAccessor extends BaseGraph {
 
   getSelectedCells() {
     return this.selection.cells.slice()
-  }
-
-  hasSelectedCell() {
-    return this.selection.cells.length > 0
-  }
-
-  /**
-   * Replace selection cells with the given cell
-   */
-  setSelectedCell(cell: Cell | null) {
-    this.selection.setCell(cell)
-    return this
-  }
-
-  /**
-   * Replace selection cells with the given cells
-   */
-  setSelectedCells(cells: Cell[]) {
-    this.selection.setCells(cells)
-    return this
   }
 
   /**
