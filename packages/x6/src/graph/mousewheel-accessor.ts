@@ -5,13 +5,26 @@ export class MouseWheelAccessor extends BaseGraph {
     return this.mouseWheelHandler.isEnabled()
   }
 
+  setMouseWheelEnabled(enabled: boolean) {
+    if (enabled) {
+      this.enableMouseWheel()
+    } else {
+      this.disableMouseWheel()
+    }
+    return this
+  }
+
   enableMouseWheel() {
-    this.mouseWheelHandler.enable()
+    if (!this.isMouseWheelEnabled()) {
+      this.mouseWheelHandler.enable()
+    }
     return this
   }
 
   disableMouseWheel() {
-    this.mouseWheelHandler.disable()
+    if (this.isMouseWheelEnabled()) {
+      this.mouseWheelHandler.disable()
+    }
     return this
   }
 
