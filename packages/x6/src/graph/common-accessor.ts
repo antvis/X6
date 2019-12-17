@@ -5,15 +5,6 @@ import { hook } from './decorator'
 import { BaseGraph } from './base-graph'
 
 export class CommonAccessor extends BaseGraph {
-  batchUpdate(update: () => void) {
-    this.model.batchUpdate(update)
-    return this
-  }
-
-  getCellGeometry(cell: Cell) {
-    return this.model.getGeometry(cell)
-  }
-
   @hook()
   getChildOffset(cell: Cell): Point | null {
     return null
