@@ -344,7 +344,7 @@ export class Guide extends Disposable {
 
 export namespace Guide {
   export interface Options {
-    getStrockStyle: (o: {
+    getStrockStyle: (args: {
       cell: Cell
       horizontal: boolean
     }) => {
