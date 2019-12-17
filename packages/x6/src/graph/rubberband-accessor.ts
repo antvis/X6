@@ -5,15 +5,6 @@ export class RubberbandAccessor extends BaseGraph {
     return this.rubberbandHandler.isEnabled()
   }
 
-  setRubberbandEnabled(enabled: boolean) {
-    if (enabled) {
-      this.enabledRubberband()
-    } else {
-      this.disableRubberband()
-    }
-    return this
-  }
-
   toggleRubberband() {
     if (this.isRubberbandEnabled()) {
       this.disableRubberband()

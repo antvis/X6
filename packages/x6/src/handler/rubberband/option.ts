@@ -20,13 +20,13 @@ export interface GetRubberbandStyleArgs {
 
 export function getRubberbandStyle(e: GetRubberbandStyleArgs) {
   const graph = e.graph
-  const options = graph.options.rubberband as RubberbandOptions
+  const options = graph.options.rubberband
   const { opacity, border, background, className } = options
 
   return {
     className: drill(className, graph, e),
-    opacity: drill(opacity, graph, e),
     border: drill(border, graph, e),
+    opacity: drill(opacity, graph, e),
     background: drill(background, graph, e),
   }
 }
