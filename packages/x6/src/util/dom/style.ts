@@ -34,23 +34,6 @@ export function toPx(px: number) {
   return `${px}px`
 }
 
-export function parseCssNumber(value: string) {
-  if (value === 'thin') {
-    return 2
-  }
-
-  if (value === 'medium') {
-    return 4
-  }
-
-  if (value === 'thick') {
-    return 6
-  }
-
-  const ret = parseFloat(value)
-  return isNaN(ret) ? 0 : ret
-}
-
 export function getComputedStyle(elem: Element, name?: string) {
   // IE9+
   const computed =

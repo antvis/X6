@@ -474,28 +474,45 @@ export class ZoomManager extends BaseManager {
 
   /**
    * Returns the size of the border and padding on all four sides of the
-   * container. The left, top, right and bottom borders are stored in the x, y,
-   * width and height of the returned <Rect>, respectively.
+   * container. The left, top, right and bottom borders are stored in the
+   * x, y, width and height of the returned `Rectangle`, respectively.
    */
   getBorderSizes() {
     const css = util.getComputedStyle(this.container)
     return new Rectangle(
-      util.parseCssNumber(css.paddingLeft) +
+      this.parseCssNumber(css.paddingLeft) +
         (css.borderLeftStyle !== 'none'
-          ? util.parseCssNumber(css.borderLeftWidth)
+          ? this.parseCssNumber(css.borderLeftWidth)
           : 0),
-      util.parseCssNumber(css.paddingTop) +
+      this.parseCssNumber(css.paddingTop) +
         (css.borderTopStyle !== 'none'
-          ? util.parseCssNumber(css.borderTopWidth)
+          ? this.parseCssNumber(css.borderTopWidth)
           : 0),
-      util.parseCssNumber(css.paddingRight) +
+      this.parseCssNumber(css.paddingRight) +
         (css.borderRightStyle !== 'none'
-          ? util.parseCssNumber(css.borderRightWidth)
+          ? this.parseCssNumber(css.borderRightWidth)
           : 0),
-      util.parseCssNumber(css.paddingBottom) +
+      this.parseCssNumber(css.paddingBottom) +
         (css.borderBottomStyle !== 'none'
-          ? util.parseCssNumber(css.borderBottomWidth)
+          ? this.parseCssNumber(css.borderBottomWidth)
           : 0),
     )
+  }
+
+  protected parseCssNumber(value: string) {
+    if (value === 'thin') {
+      return 2
+    }
+
+    if (value === 'medium') {
+      return 4
+    }
+
+    if (value === 'thick') {
+      return 6
+    }
+
+    const ret = parseFloat(value)
+    return isNaN(ret) ? 0 : ret
   }
 }
