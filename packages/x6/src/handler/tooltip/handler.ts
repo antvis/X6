@@ -110,7 +110,7 @@ export class TooltipHandler extends MouseHandler {
       !this.disposed &&
       !this.isMouseDown() &&
       !this.graph.isEditing() &&
-      !this.graph.isContextMenuActive()
+      !this.graph.isContextMenuShowing()
     )
   }
 

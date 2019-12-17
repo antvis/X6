@@ -24,7 +24,7 @@ export class ContextMenuAccessor extends BaseGraph {
     return this
   }
 
-  isContextMenuActive() {
+  isContextMenuShowing() {
     return this.contextMenuHandler.isShowing()
   }
 }
