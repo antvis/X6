@@ -28,8 +28,8 @@ export class GuideHandler extends MouseHandler {
 
   mouseDown(e: MouseEventEx) {
     if (movment.isValid(this, e) && movment.canMove(this, e)) {
-      this.origin = util.clientToGraph(this.graph.container, e)
       this.cell = this.getCell(e)!
+      this.origin = util.clientToGraph(this.graph.container, e)
       this.bounds = this.graph.view.getBounds(
         movment.getCells(this, this.cell, e),
       )
@@ -135,5 +135,3 @@ export class GuideHandler extends MouseHandler {
     this.reset()
   }
 }
-
-export namespace GuideHandler {}
