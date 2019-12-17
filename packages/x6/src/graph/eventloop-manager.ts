@@ -273,7 +273,11 @@ export class EventLoopManager extends BaseManager {
     }
   }
 
-  fireMouseEvent(eventName: string, e: MouseEventEx, sender: any) {
+  fireMouseEvent(
+    eventName: 'mouseDown' | 'mouseMove' | 'mouseUp',
+    e: MouseEventEx,
+    sender: any,
+  ) {
     // Ignore left click on some form-input elements.
     if (this.isEventIgnoredBySource(eventName, e)) {
       this.graph.hideTooltip()
