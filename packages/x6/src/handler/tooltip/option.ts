@@ -30,14 +30,15 @@ export interface TooltipOptions {
    * Default is `true`.
    */
   ignoreTouchEvents: boolean
+
   show?: (this: Graph, args: ShowTooltipArgs) => void
   hide?: (this: Graph) => void
 }
 
 export interface ShowTooltipArgs {
-  cell: Cell
-  elem: HTMLElement | SVGElement
-  tip: HTMLElement | string | null
   x: number
   y: number
+  cell: Cell
+  tip: HTMLElement | string | null
+  elem: HTMLElement | SVGElement
 }

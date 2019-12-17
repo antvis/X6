@@ -6,7 +6,7 @@ import { Graph } from '.'
 import { Renderer } from '../core/renderer'
 import { Selection } from './selection'
 import { Route } from '../route'
-import { Point, Anchor, Rectangle } from '../struct'
+import { Point, Anchor, Rectangle, Overlay } from '../struct'
 import {
   KeyboardHandler,
   MouseWheelHandler,
@@ -324,6 +324,14 @@ export interface IHooks {
    * the given cell.
    */
   getTooltip: CellHook<string | HTMLElement | null>
+
+  getCollapseTooltip: CellHook<string | HTMLElement | null>
+
+  getOverlayTooltip: (
+    this: Graph,
+    cell: Cell,
+    overlay: Overlay,
+  ) => Nilable<string | HTMLElement>
 
   /**
    * Returns the terminal to be used for a given port.

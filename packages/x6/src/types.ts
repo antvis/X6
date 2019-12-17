@@ -293,6 +293,7 @@ export interface Style
     IndicatorStyle,
     HTMLShapeStyle,
     CustomStyle {
+  tooltip?: string | HTMLElement | null
   direction?: Direction
 
   /**

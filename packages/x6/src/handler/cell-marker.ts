@@ -23,6 +23,7 @@ export class CellMarker extends BaseHandler {
 
   constructor(graph: Graph, options: CellMarker.Options) {
     super(graph)
+
     this.validColor = util.ensureValue(
       options.validColor,
       globals.defaultValidColor,
