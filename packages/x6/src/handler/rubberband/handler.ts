@@ -2,7 +2,7 @@ import * as util from '../../util'
 import { Graph } from '../../graph'
 import { MouseHandler } from '../handler-mouse'
 import { Rectangle, Point } from '../../struct'
-import { MouseEventEx, DomEvent, detector, Disposable } from '../../common'
+import { Disposable, MouseEventEx, DomEvent, detector } from '../../common'
 import { getRubberbandStyle } from './option'
 
 export class RubberbandHandler extends MouseHandler {
@@ -37,7 +37,7 @@ export class RubberbandHandler extends MouseHandler {
 
     // Handles force rubberband event
     this.onMouseEvent = ({ eventName, e }) => {
-      if (eventName === DomEvent.MOUSE_DOWN && this.isForceRubberbandEvent(e)) {
+      if (eventName === 'mouseDown' && this.isForceRubberbandEvent(e)) {
         this.prepare(e)
       }
     }
