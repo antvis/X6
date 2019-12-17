@@ -16,23 +16,9 @@ export namespace detector {
    */
   export const IS_IOS = ua.match(/(iPad|iPhone|iPod)/g) ? true : false
 
-  /**
-   * A flag indicating whether the platform is Chrome OS.
-   */
-  export const IS_CHROMEOS = /\bCrOS\b/.test(ua)
-
   export const IS_IE = ua.indexOf('MSIE') >= 0
-  export const IS_IE6 = ua.indexOf('MSIE 6') >= 0
   export const IS_IE11 = !!ua.match(/Trident\/7\./)
   export const IS_EDGE = !!ua.match(/Edge\//)
-
-  /**
-   * A flag indicating whether the browser is IE11 in enterprise
-   * mode (IE8 standards mode).
-   */
-  export const IS_EM =
-    'spellcheck' in document.createElement('textarea') &&
-    (document as any).documentMode === 8
 
   /**
    * A flag indicating whether the browser is Netscape (including Firefox).
@@ -136,12 +122,4 @@ export namespace detector {
       'foreignObject',
     )}` !== '[object SVGForeignObjectElement]' ||
     ua.indexOf('Opera/') >= 0
-
-  const href = document.location.href
-  /**
-   * A flag indicating whether the documents location does not start
-   * with `http://` or `https://`.
-   */
-  export const IS_LOCAL =
-    href.indexOf('http://') < 0 && href.indexOf('https://') < 0
 }
