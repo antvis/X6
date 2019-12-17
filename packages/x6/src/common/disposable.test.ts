@@ -46,6 +46,8 @@ describe('disposable', () => {
       const obj = new Disposable()
       expect(obj.disposed).toBe(false)
       tmp.IS_IE = false
+      window.dispatchEvent(new Event('unload'))
+      expect(obj.disposed).toBe(true)
     })
 
     it('shoule work with `aop`', () => {
