@@ -7,6 +7,7 @@ import { hook } from './decorator'
 import { IHooks } from './hook'
 import { Selection } from './selection'
 import { BaseGraph } from './base-graph'
+import { SpeedyAccessor } from './speedy-accessor'
 import { ChangeAccessor } from './change-accessor'
 import { RetrievalAccessor } from './retrieval-accessor'
 import { OverlayAccessor } from './overlay-accessor'
@@ -90,7 +91,8 @@ export namespace Graph {
 }
 
 export interface Graph
-  extends CommonAccessor,
+  extends SpeedyAccessor,
+    CommonAccessor,
     SizeAccessor,
     ZoomAccessor,
     GridAccessor,
@@ -118,6 +120,7 @@ export interface Graph
 
 util.applyMixins(
   Graph,
+  SpeedyAccessor,
   CommonAccessor,
   SizeAccessor,
   ZoomAccessor,
