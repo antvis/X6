@@ -12,10 +12,10 @@ export class KeyboardHandler extends BaseHandler {
   constructor(graph: Graph) {
     super(graph)
     const options = this.graph.options.keyboard
-    this.setEnadled(options.enabled)
     this.target = options.global ? document : this.graph.container
     this.formatkey = options.formatkey || ((key: string) => key)
     this.mousetrap = new Mousetrap(this.target as Element, this)
+    this.setEnadled(options.enabled)
   }
 
   enable() {
@@ -38,6 +38,12 @@ export class KeyboardHandler extends BaseHandler {
 
   unbind(keys: string | string[], action?: KeyboardHandler.Action) {
     this.mousetrap.unbind(this.getKeys(keys), action)
+  }
+
+  escape(e: KeyboardEvent) {
+    if (this.graph.isEscapeEnabled()) {
+      this.graph.eventloopManager.escape(e)
+    }
   }
 
   private getKeys(keys: string | string[]) {
@@ -81,12 +87,6 @@ export class KeyboardHandler extends BaseHandler {
 
   isEventIgnored(e: KeyboardEvent) {
     return this.graph.isEditing()
-  }
-
-  escape(e: KeyboardEvent) {
-    if (this.graph.isEscapeEnabled()) {
-      this.graph.eventloopManager.escape(e)
-    }
   }
 
   @Disposable.aop()
