@@ -7,10 +7,10 @@ import { MouseHandler } from '../handler-mouse'
 import { MouseEventEx, Dictionary, Disposable } from '../../common'
 
 export class SelectionHandler extends MouseHandler {
-  private refreshHandler: (() => void) | null
-  protected handlers: Dictionary<Cell, NodeHandler | EdgeHandler>
-  protected delayedSelection: boolean
   protected cell: Cell | null
+  protected handlers: Dictionary<Cell, NodeHandler | EdgeHandler>
+  protected refreshHandler: (() => void) | null
+  // protected delayedSelection: boolean
 
   constructor(graph: Graph) {
     super(graph)
@@ -111,9 +111,6 @@ export class SelectionHandler extends MouseHandler {
     this.handlers.each(h => h.reset())
   }
 
-  /**
-   * Returns true if the given handler is active and should not be redrawn.
-   */
   protected isHandlerActive(handler: NodeHandler | EdgeHandler) {
     return handler.index != null
   }
@@ -153,7 +150,6 @@ export class SelectionHandler extends MouseHandler {
   @Disposable.aop()
   dispose() {
     this.graph.removeMouseListener(this)
-
     this.graph.off(null, this.refreshHandler)
     this.graph.view.off(null, this.refreshHandler)
     this.graph.model.off(null, this.refreshHandler)

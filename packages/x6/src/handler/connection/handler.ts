@@ -387,7 +387,7 @@ export class ConnectionHandler extends MouseHandler<
   }
 
   protected selectCells(edge: Cell, target: Cell | null) {
-    this.graph.setSelectedCell(edge)
+    this.graph.setCellSelected(edge)
   }
 
   protected insertEdge(

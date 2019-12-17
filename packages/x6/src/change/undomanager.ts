@@ -99,7 +99,7 @@ export namespace UndoManager {
         .getSelectionCellsForChanges(edit.changes)
         .filter(cell => graph.view.getState(cell) != null)
 
-      graph.setSelectedCells(cells)
+      graph.setCellsSelected(cells)
     }
 
     undoManager.on('undo', undoHandler)
