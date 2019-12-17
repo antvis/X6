@@ -39,6 +39,10 @@ export class TooltipHandler extends MouseHandler {
     this.setEnadled(options.enabled)
   }
 
+  isHidden() {
+    return !this.showing
+  }
+
   mouseDown(e: MouseEventEx) {
     this.reset(e, false)
     this.hideTooltip()
@@ -205,10 +209,6 @@ export class TooltipHandler extends MouseHandler {
   protected hideTooltip() {
     this.showing = false
     this.doHide && this.doHide.call(this.graph)
-  }
-
-  protected isHidden() {
-    return !this.showing
   }
 
   @Disposable.aop()
