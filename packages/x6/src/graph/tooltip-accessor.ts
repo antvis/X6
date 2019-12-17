@@ -4,6 +4,15 @@ import { BaseGraph } from './base-graph'
 import { Overlay } from '../struct'
 
 export class TooltipAccessor extends BaseGraph {
+  hideTooltip() {
+    this.tooltipHandler.hide()
+    return this
+  }
+
+  isTooltipEnabled() {
+    return this.tooltipHandler.isEnabled()
+  }
+
   enableTooltip() {
     this.tooltipHandler.enable()
     return this
@@ -14,13 +23,8 @@ export class TooltipAccessor extends BaseGraph {
     return this
   }
 
-  isTooltipEnabled() {
-    return this.tooltipHandler.isEnabled()
-  }
-
-  hideTooltip() {
-    this.tooltipHandler.hide()
-    return this
+  isTooltipShowing() {
+    return !this.tooltipHandler.isHidden()
   }
 
   @hook()
