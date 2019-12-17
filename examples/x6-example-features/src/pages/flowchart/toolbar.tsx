@@ -1,7 +1,7 @@
 import React from 'react'
 import { Radio } from 'antd'
 import { Toolbar, Menu } from '@antv/x6-components'
-import { Graph, UndoManager, View, Model } from '@antv/x6'
+import { Graph, UndoManager } from '@antv/x6'
 
 export class GraphToolbar extends React.Component<
   GraphToolbar.Props,

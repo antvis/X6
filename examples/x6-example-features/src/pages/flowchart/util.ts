@@ -19,6 +19,7 @@ export function createGraph(container: HTMLDivElement) {
     // },
     // mouseWheel: true,
     rubberband: true,
+    allowLoops: true,
     backgroundColor: '#f8f9fa',
     grid: {
       type: 'dot',
