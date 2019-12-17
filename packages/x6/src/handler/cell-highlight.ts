@@ -1,8 +1,8 @@
 import * as util from '../util'
 import { globals } from '../option/global'
-import { State } from '../core/state'
-import { Graph } from '../graph'
 import { Shape } from '../shape'
+import { Graph } from '../graph'
+import { State } from '../core/state'
 import { MouseEventEx, Disposable } from '../common'
 import { BaseHandler } from './handler-base'
 
@@ -30,11 +30,11 @@ export class CellHighlight extends BaseHandler {
       options.highlightColor,
       globals.defaultValidColor,
     )
+    this.dashed = util.ensureValue(options.dashed, false)
     this.strokeWidth = util.ensureValue(options.strokeWidth, 3)
     this.opacity = util.ensureValue(options.opacity, 1)
-    this.dashed = util.ensureValue(options.dashed, false)
-    this.topMost = util.ensureValue(options.keepOnTop, false)
     this.spacing = util.ensureValue(options.spacing, 2)
+    this.topMost = util.ensureValue(options.keepOnTop, false)
 
     this.repaintHandler = () => {
       if (this.state != null) {
@@ -93,7 +93,7 @@ export class CellHighlight extends BaseHandler {
     this.shape = this.createShape()
     this.repaint()
 
-    if (!this.topMost && this.shape) {
+    if (!this.topMost && this.shape != null) {
       util.toBack(this.shape.elem)
     }
   }
@@ -154,14 +154,14 @@ export class CellHighlight extends BaseHandler {
     let hit = false
 
     if (this.shape != null && document.elementFromPoint != null) {
-      let elt = document.elementFromPoint(x, y) as Element
+      let elem = document.elementFromPoint(x, y) as Element
 
-      while (elt != null) {
-        if (elt === this.shape.elem) {
+      while (elem != null) {
+        if (elem === this.shape.elem) {
           hit = true
           break
         }
-        elt = elt.parentNode as Element
+        elem = elem.parentNode as Element
       }
     }
 
@@ -193,8 +193,8 @@ export namespace CellHighlight {
     cellClassName?: string
     highlightColor?: string
     strokeWidth?: number
-    opacity?: number
     dashed?: boolean
+    opacity?: number
     spacing?: number
     /**
      * Specifies if the highlights should appear on top of everything
