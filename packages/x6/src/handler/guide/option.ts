@@ -38,9 +38,9 @@ export interface IsGuideEnabledArgs {
   e: MouseEvent
 }
 
-export function isGuideEnabled(o: IsGuideEnabledArgs) {
-  const guide = o.graph.options.guide as GuideOptions
-  return drill(guide.enabled, o.graph, o)
+export function isGuideEnabled(args: IsGuideEnabledArgs) {
+  const guide = args.graph.options.guide
+  return drill(guide.enabled, args.graph, args)
 }
 
 export interface GetGuideStyleArgs {
@@ -49,10 +49,10 @@ export interface GetGuideStyleArgs {
   horizontal: boolean
 }
 
-function getGuideStrockStyle(o: GetGuideStyleArgs) {
-  const graph = o.graph
-  const options = o.graph.options.guide as GuideOptions
-  const sub = (o.horizontal
+function getGuideStrockStyle(args: GetGuideStyleArgs) {
+  const graph = args.graph
+  const options = graph.options.guide
+  const sub = (args.horizontal
     ? options.horizontal
     : options.vertical) as GuideSubOptions
 
@@ -63,10 +63,10 @@ function getGuideStrockStyle(o: GetGuideStyleArgs) {
   const className = sub.className != null ? sub.className : options.className
 
   return {
-    dashed: drill(dashed, graph, o),
-    stroke: drill(stroke, graph, o),
-    strokeWidth: drill(strokeWidth, graph, o),
-    className: drill(className, graph, o),
+    dashed: drill(dashed, graph, args),
+    stroke: drill(stroke, graph, args),
+    strokeWidth: drill(strokeWidth, graph, args),
+    className: drill(className, graph, args),
   }
 }
 
@@ -80,12 +80,10 @@ export function createGuide(graph: Graph, states: State[]) {
   })
 
   guide.rounded = options.rounded
-
   guide.horizontal =
-    horizontal && horizontal.enabled != null ? horizontal.enabled : true
-
+    horizontal != null && horizontal.enabled != null ? horizontal.enabled : true
   guide.vertical =
-    vertical && vertical.enabled != null ? vertical.enabled : true
+    vertical != null && vertical.enabled != null ? vertical.enabled : true
 
   return guide
 }
