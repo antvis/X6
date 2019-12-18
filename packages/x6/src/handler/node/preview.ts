@@ -7,8 +7,8 @@ import { Disposable, MouseEventEx, DomEvent } from '../../common'
 import { Rectangle, Point } from '../../struct'
 import { RectangleShape } from '../../shape'
 import { EdgeHandler } from '../edge/handler'
-import { ResizeOption, applyResizePreviewStyle } from './option-resize'
-import { RotateOptions, applyRotatePreviewStyle } from './option-rotation'
+import { applyResizePreviewStyle } from './option-resize'
+import { applyRotatePreviewStyle } from './option-rotation'
 import {
   getSelectionPreviewCursor,
   applySelectionPreviewStyle,
@@ -20,14 +20,14 @@ export class Preview extends Disposable {
    *
    * Default is `false`.
    */
-  parentHighlightable: boolean = false
+  parentHighlightable: boolean
 
   /**
    * Specifies if the size of groups should be constrained by the children.
    *
-   * Default is `false`.
+   * Default is `true`.
    */
-  constrainGroupByChildren: boolean = false
+  constrainGroupByChildren: boolean
 
   /**
    * Specifies if rotation steps should be "rasterized" depening on the
@@ -35,7 +35,7 @@ export class Preview extends Disposable {
    *
    * Default is `true`.
    */
-  rotationRaster: boolean = true
+  rotationRaster: boolean
 
   resizeLivePreview: boolean
 
@@ -57,7 +57,7 @@ export class Preview extends Disposable {
   protected childOffsetX: number
   protected childOffsetY: number
   protected parentState: State | null
-  private overlayCursor: string | null
+  protected overlayCursor: string | null
 
   constructor(public master: NodeHandler) {
     super()
@@ -75,11 +75,10 @@ export class Preview extends Disposable {
 
   protected config() {
     const options = this.graph.options
-    const resize = options.resize as ResizeOption
-    this.resizeLivePreview = resize.livePreview
-
-    const rotate = options.rotate as RotateOptions
-    this.rotationRaster = rotate.rasterized
+    this.rotationRaster = options.rotate.rasterized
+    this.resizeLivePreview = options.resize.livePreview
+    this.parentHighlightable = options.selectionPreview.highlightParent
+    this.constrainGroupByChildren = options.resize.constrainByChildren
   }
 
   protected init() {
@@ -259,7 +258,7 @@ export class Preview extends Disposable {
   }
 
   protected isCentered(cell: Cell, e: MouseEventEx) {
-    const options = this.graph.options.resize as ResizeOption
+    const options = this.graph.options.resize
     if (typeof options.centered === 'function') {
       return options.centered.call(this.graph, cell, e)
     }

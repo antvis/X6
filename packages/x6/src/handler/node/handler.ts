@@ -9,7 +9,6 @@ import { MouseHandler } from '../handler-mouse'
 import { DomEvent, MouseEventEx, Disposable } from '../../common'
 
 export class NodeHandler extends MouseHandler {
-  graph: Graph
   state: State
   knobs: Knobs
   preview: Preview

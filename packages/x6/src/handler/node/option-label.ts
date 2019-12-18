@@ -32,8 +32,9 @@ export interface ApplyLabelHandleStyleArgs extends CreateLabelHandleShapeArgs {
 
 export function createLabelHandle(args: CreateLabelHandleShapeArgs) {
   const { graph } = args
-  const options = graph.options.labelHandle as LabelHandleOptions
+  const options = graph.options.labelHandle
   const shape = createHandleShape(args, options)
+
   const newArgs = { ...args, shape }
   if (!(shape instanceof ImageShape)) {
     const size = drill(options.size, graph, newArgs)
@@ -50,11 +51,11 @@ export function createLabelHandle(args: CreateLabelHandleShapeArgs) {
 }
 
 export function getLabelHandleOffset(args: ApplyLabelHandleStyleArgs) {
-  const options = args.graph.options.labelHandle as LabelHandleOptions
+  const options = args.graph.options.labelHandle
   return drill(options.offset, args.graph, args)
 }
 
 export function getLabelHandleCursor(args: ApplyLabelHandleStyleArgs) {
-  const options = args.graph.options.labelHandle as LabelHandleOptions
+  const options = args.graph.options.labelHandle
   return drill(options.cursor, args.graph, args)
 }

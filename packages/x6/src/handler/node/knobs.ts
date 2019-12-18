@@ -10,7 +10,6 @@ import {
   getLabelHandleOffset,
 } from './option-label'
 import {
-  ResizeHandleOptions,
   createResizeHandle,
   isResizeHandleVisible,
   updateResizeHandleCalssName,
@@ -22,9 +21,9 @@ import {
 } from './option-rotation'
 
 export class Knobs extends Disposable {
-  singleResizeHandle: boolean
-  manageHandles: boolean
   tolerance: number
+  manageHandles: boolean
+  singleResizeHandle: boolean
 
   protected handles: Shape[] | null
   protected labelShape: Shape | null
@@ -51,7 +50,7 @@ export class Knobs extends Disposable {
 
   protected config() {
     const options = this.graph.options
-    const resizeHandle = options.resizeHandle as ResizeHandleOptions
+    const resizeHandle = options.resizeHandle
     this.tolerance = resizeHandle.tolerance
     this.manageHandles = resizeHandle.adaptive
     this.singleResizeHandle = resizeHandle.single
@@ -113,9 +112,15 @@ export class Knobs extends Disposable {
       this.graph.isLabelMovable(this.state.cell) &&
       !this.graph.isSwimlane(this.state.cell)
     ) {
-      const geo = this.state.cell.getGeometry()
-      if (geo && !geo.relative) {
-        return true
+      const label = this.graph.getLabel(this.state.cell)
+      if (
+        label != null &&
+        (util.isHtmlElem(label) || (label as string).length > 0)
+      ) {
+        const geo = this.state.cell.getGeometry()
+        if (geo && !geo.relative) {
+          return true
+        }
       }
     }
 
@@ -144,7 +149,7 @@ export class Knobs extends Disposable {
   }
 
   protected createHandle(index: number) {
-    let handle
+    let handle: Shape
     let cursor: string | null = null
     const args = {
       graph: this.graph,
@@ -220,12 +225,17 @@ export class Knobs extends Disposable {
         : null
 
     const checkShape = (shape: Shape | null) => {
+      // prettier-ignore
       return (
         shape != null &&
-        (e.isSource(shape) ||
-          (hit != null &&
+        (
+          e.isSource(shape) ||
+          (
+            hit != null &&
             shape.bounds.isIntersectWith(hit) &&
-            util.isVisible(shape.elem)))
+            util.isVisible(shape.elem)
+          )
+        )
       )
     }
 
@@ -556,12 +566,25 @@ export class Knobs extends Disposable {
 
   @Disposable.aop()
   dispose() {
-    this.handles && this.handles.forEach(h => h.dispose())
+    if (this.handles != null) {
+      this.handles.forEach(h => h.dispose())
+    }
+
+    if (this.labelShape != null) {
+      this.labelShape.dispose()
+    }
+
+    if (this.rotationShape != null) {
+      this.rotationShape.dispose()
+    }
+
+    if (this.customHandles != null) {
+      this.customHandles.forEach(h => h.dispose())
+    }
+
     this.handles = null
     this.labelShape = null
     this.rotationShape = null
-
-    this.customHandles && this.customHandles.forEach(h => h.dispose())
     this.customHandles = null
   }
 }
