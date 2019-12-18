@@ -49,12 +49,17 @@ export class Preview extends Disposable {
   }
 
   isStartEvent(e: MouseEventEx) {
+    // prettier-ignore
     return (
-      (this.anchorHandler.currentState != null &&
-        this.anchorHandler.currentAnchor != null) ||
-      (this.sourceState != null &&
+      (
+        this.anchorHandler.currentState != null &&
+        this.anchorHandler.currentAnchor != null
+      ) ||
+      (
         this.error == null &&
-        this.master.knobs.isStarted())
+        this.sourceState != null &&
+        this.master.knobs.isStarted()
+      )
     )
   }
 
