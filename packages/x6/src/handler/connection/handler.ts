@@ -503,10 +503,10 @@ export namespace ConnectionHandler {
   export interface EventArgs {
     start: { state: State }
     connect: {
+      e: MouseEvent
       edge: Cell
       terminal?: Cell | null
       target?: Cell | null
-      e: MouseEvent
       terminalInserted: boolean
     }
   }

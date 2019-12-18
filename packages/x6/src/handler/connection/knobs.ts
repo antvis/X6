@@ -204,8 +204,8 @@ export class Knobs extends Disposable {
   destroyIcons() {
     if (this.icons != null) {
       this.icons.forEach(i => i.dispose())
-      this.icons = null
       this.icon = null
+      this.icons = null
       this.activeIcon = null
       this.iconState = null
     }

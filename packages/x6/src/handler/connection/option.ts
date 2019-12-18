@@ -146,8 +146,7 @@ export interface GetConnectionHighlightOptionsArgs {
 export function getConnectionHighlightOptions(
   args: GetConnectionHighlightOptionsArgs,
 ) {
-  const options = args.graph.options
-    .connectionHighlight as ConnectionHighlightOptions
+  const options = args.graph.options.connectionHighlight
 
   const result = {}
   Object.keys(options).forEach((key: keyof ConnectionHighlightOptions) => {
@@ -169,7 +168,7 @@ export function applyConnectionHighlightStyle(
   args: ApplyConnectionHighlightStyleArgs,
 ) {
   const { graph, valid, highlight } = args
-  const opts = graph.options.connectionHighlight as ConnectionHighlightOptions
+  const opts = graph.options.connectionHighlight
   highlight.highlightColor = drill(
     valid ? opts.validColor : opts.invalidColor,
     graph,
@@ -227,7 +226,7 @@ export interface GetConnectionIconOptionsArgs {
 }
 
 export function getConnectionIconOptions(args: GetConnectionIconOptionsArgs) {
-  const options = args.graph.options.connectionIcon as ConnectionIconOptions
+  const options = args.graph.options.connectionIcon
   return {
     image: drill(options.image, args.graph, args),
     toFront: drill(options.toFront, args.graph, args),
@@ -239,7 +238,7 @@ export function getConnectionIconOptions(args: GetConnectionIconOptionsArgs) {
 }
 
 export function getConnectionIcon(args: GetConnectionIconOptionsArgs) {
-  const options = args.graph.options.connectionIcon as ConnectionIconOptions
+  const options = args.graph.options.connectionIcon
   return drill(options.image, args.graph, args)
 }
 
