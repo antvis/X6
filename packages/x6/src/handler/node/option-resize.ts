@@ -29,6 +29,8 @@ export interface ResizeOption {
   centered: boolean | ((this: Graph, cell: Cell, e: MouseEventEx) => boolean)
 
   livePreview: boolean
+
+  constrainByChildren: boolean
 }
 
 export interface ResizeHandleOptions
@@ -80,7 +82,7 @@ export interface ApplyResizeHandleClassNameArgs
 
 export function createResizeHandle(args: CreateResizeHandleShapeArgs) {
   const { graph } = args
-  const options = graph.options.resizeHandle as ResizeHandleOptions
+  const options = graph.options.resizeHandle
   const shape = createHandleShape(args, options)
   const newArgs = { ...args, shape }
 
@@ -92,7 +94,6 @@ export function createResizeHandle(args: CreateResizeHandleShapeArgs) {
     applyBaseStyle(newArgs, options)
   }
 
-  // applyClassName(newArgs, options, cursor)
   applyManualStyle(newArgs, options)
 
   return shape
@@ -102,7 +103,7 @@ export function updateResizeHandleCalssName(
   args: ApplyResizeHandleClassNameArgs,
 ) {
   const { graph, cursor } = args
-  const options = graph.options.resizeHandle as ResizeHandleOptions
+  const options = graph.options.resizeHandle
   applyClassName(args, options, `cursor-${cursor}`)
 }
 
@@ -114,7 +115,7 @@ export interface IsResizeHandleVisibleArgs {
 
 export function isResizeHandleVisible(args: IsResizeHandleVisibleArgs) {
   const { graph } = args
-  const options = graph.options.resizeHandle as ResizeHandleOptions
+  const options = graph.options.resizeHandle
   return drill(options.visible, graph, args)
 }
 
@@ -128,7 +129,7 @@ export interface ApplyResizePreviewStyleArgs {
 }
 
 export function applyResizePreviewStyle(args: ApplyResizePreviewStyleArgs) {
-  const options = args.graph.options.resizePreview as ResizePreviewOptions
+  const options = args.graph.options.resizePreview
   applyBaseStyle(args, options)
   applyClassName(args, options, 'resize-preview')
   applyManualStyle(args, options)

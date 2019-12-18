@@ -19,7 +19,7 @@ export interface CreateHandleShapeArgs {
 export function createHandleShape<T extends CreateHandleShapeArgs>(
   args: T,
   options: HandleOptions<T, T>,
-) {
+): Shape {
   const { graph } = args
   const image = drill(options.image, graph, args)
   if (image) {

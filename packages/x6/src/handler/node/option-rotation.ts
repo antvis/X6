@@ -47,7 +47,7 @@ export interface ApplyRotateHandleStyleArgs
 
 export function createRotationHandle(args: CreateRotateHandleShapeArgs) {
   const { graph } = args
-  const options = graph.options.rotateHandle as RotateHandleOptions
+  const options = graph.options.rotateHandle
   const shape = createHandleShape(args, options)
   const newArgs = { ...args, shape }
 
@@ -65,12 +65,12 @@ export function createRotationHandle(args: CreateRotateHandleShapeArgs) {
 }
 
 export function getRotationHandleOffset(args: ApplyRotateHandleStyleArgs) {
-  const options = args.graph.options.rotateHandle as RotateHandleOptions
+  const options = args.graph.options.rotateHandle
   return drill(options.offset, args.graph, args)
 }
 
 export function getRotationHandleCursor(args: ApplyRotateHandleStyleArgs) {
-  const options = args.graph.options.rotateHandle as RotateHandleOptions
+  const options = args.graph.options.rotateHandle
   return drill(options.cursor, args.graph, args)
 }
 
