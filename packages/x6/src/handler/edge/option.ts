@@ -89,7 +89,7 @@ export interface GetEdgeHandleOptionsArgs {
 
 export function getEdgeHandleOptions(args: GetEdgeHandleOptionsArgs) {
   const { graph } = args
-  const options = graph.options.edgeHandle as EdgeHandleOptions
+  const options = graph.options.edgeHandle
   return {
     cloneable: drill(options.cloneable, graph, args),
     addable: drill(options.addable, graph, args),
@@ -115,7 +115,7 @@ export interface ApplyEdgeHandleStyleArgs extends CreateEdgeHandleShapeArgs {
 
 export function createEdgeHandle(args: CreateEdgeHandleShapeArgs) {
   const { graph } = args
-  const options = graph.options.edgeHandle as EdgeHandleOptions
+  const options = graph.options.edgeHandle
   const shape = createHandleShape(args, options)
   const newArgs = { ...args, shape }
 
@@ -145,7 +145,7 @@ export interface GetEdgeHandleCursorArgs {
 
 export function getEdgeHandleCursor(args: GetEdgeHandleCursorArgs) {
   const { graph } = args
-  const options = graph.options.edgeHandle as EdgeHandleOptions
+  const options = graph.options.edgeHandle
   return drill(options.cursor, graph, args)
 }
 
