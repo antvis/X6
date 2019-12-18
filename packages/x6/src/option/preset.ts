@@ -224,12 +224,14 @@ export const preset: FullOptions = {
     fill: 'none',
     cursor: ({ cell }) =>
       cell.isNode() || cell.isEdge() ? globals.defaultCursorMove : '',
+    highlightParent: false,
   },
 
   resize: {
     enabled: true,
     centered: false,
     livePreview: false,
+    constrainByChildren: true,
   },
 
   resizeHandle: {

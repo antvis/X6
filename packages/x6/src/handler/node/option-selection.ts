@@ -11,6 +11,7 @@ import {
 
 export interface SelectionPreviewOptions
   extends BaseStyle<ApplySelectionPreviewStyleArgs> {
+  highlightParent: boolean
   cursor: OptionItem<GetSelectionPreviewCursorArgs, string>
 }
 
@@ -22,7 +23,7 @@ export function applySelectionPreviewStyle(
   args: ApplySelectionPreviewStyleArgs,
 ) {
   const { shape, graph } = args
-  const options = graph.options.selectionPreview as SelectionPreviewOptions
+  const options = graph.options.selectionPreview
 
   applyBaseStyle(args, options)
   applyClassName(args, options, 'selection-preview')
@@ -36,6 +37,6 @@ export interface GetSelectionPreviewCursorArgs
 
 export function getSelectionPreviewCursor(args: GetSelectionPreviewCursorArgs) {
   const { graph } = args
-  const options = graph.options.selectionPreview as SelectionPreviewOptions
+  const options = graph.options.selectionPreview
   return drill(options.cursor, graph, args)
 }
