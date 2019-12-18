@@ -9,6 +9,7 @@ const features = [
   { link: '/ports', title: 'Ports' },
   { link: '/anchors', title: 'Anchors' },
   { link: '/layers', title: 'Layers' },
+  { link: '/group', title: 'Group' },
   { link: '/images', title: 'Images' },
   { link: '/indicators', title: 'Indicators' },
   { link: '/overlays', title: 'Overlays' },
