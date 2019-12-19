@@ -1096,8 +1096,6 @@ export class View extends Primer<View.EventArgs> {
       targetState,
     )
       ? edgeState.style.loopStyle || this.graph.defaultLoopRouter
-      : edgeState.style.noEdgeStyle
-      ? null
       : edgeState.style.edge
 
     // Converts string values to objects
