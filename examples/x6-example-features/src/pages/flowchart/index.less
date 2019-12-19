@@ -148,3 +148,23 @@ body {
     background: #cccccc;
   }
 }
+
+.ping {
+  animation: ping 0.8s ease-in-out infinite both;
+  transform-origin: 50% 50%;
+}
+
+@keyframes ping {
+  0% {
+    transform: scale(0.2);
+    opacity: 0.8;
+  }
+  80% {
+    transform: scale(1.2);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+}

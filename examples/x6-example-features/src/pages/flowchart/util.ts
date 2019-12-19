@@ -75,6 +75,11 @@ export function createGraph(container: HTMLDivElement) {
     anchor: {
       inductiveSize: 24,
     },
+    // anchorTip: {
+    //   enabled: true,
+    //   opacity: 1,
+    //   className: 'ping',
+    // },
     anchorHighlight: {
       strokeWidth: 16,
     },
