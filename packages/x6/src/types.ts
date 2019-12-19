@@ -136,11 +136,6 @@ interface EdgeStyle {
   portConstraint?: string
 
   /**
-   * Whether port constraint directions are rotated with node rotation.
-   */
-  portConstraintRotatable?: boolean
-
-  /**
    * The direction(s) that edges are allowed to connect to sources in.
    */
   sourcePortConstraint?: string
@@ -149,6 +144,11 @@ interface EdgeStyle {
    * The direction(s) that edges are allowed to connect to targets in.
    */
   targetPortConstraint?: string
+
+  /**
+   * Whether port constraint directions are rotated with node rotation.
+   */
+  portConstraintRotatable?: boolean
 
   perimeterSpacing?: number
   sourcePerimeterSpacing?: number

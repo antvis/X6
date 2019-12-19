@@ -203,11 +203,11 @@ export function orth(
   // Determine the side(s) of the source and target vertices
   // that the edge may connect to
   // portAnchor [source, target]
-  const portAnchor = [DirectionMask.all, DirectionMask.all]
+  const portDir = [DirectionMask.all, DirectionMask.all]
   let rotation = 0
 
   if (sourceState != null) {
-    portAnchor[0] = util.getPortConstraints(
+    portDir[0] = util.getPortConstraints(
       sourceState,
       edgeState,
       true,
@@ -227,7 +227,7 @@ export function orth(
   }
 
   if (targetState != null) {
-    portAnchor[1] = util.getPortConstraints(
+    portDir[1] = util.getPortConstraints(
       targetState,
       edgeState,
       false,
@@ -389,11 +389,11 @@ export function orth(
       continue
     }
 
-    if ((horPref[i] & portAnchor[i]) === 0) {
+    if ((horPref[i] & portDir[i]) === 0) {
       horPref[i] = util.reversePortConstraints(horPref[i])
     }
 
-    if ((vertPref[i] & portAnchor[i]) === 0) {
+    if ((vertPref[i] & portDir[i]) === 0) {
       vertPref[i] = util.reversePortConstraints(vertPref[i])
     }
 
@@ -403,15 +403,15 @@ export function orth(
 
   if (preferredVertDist > 0 && preferredHorizDist > 0) {
     // Possibility of two segment edge connection
-    if ((horPref[0] & portAnchor[0]) > 0 && (vertPref[1] & portAnchor[1]) > 0) {
+    if ((horPref[0] & portDir[0]) > 0 && (vertPref[1] & portDir[1]) > 0) {
       prefOrdering[0][0] = horPref[0]
       prefOrdering[0][1] = vertPref[0]
       prefOrdering[1][0] = vertPref[1]
       prefOrdering[1][1] = horPref[1]
       preferredOrderSet = true
     } else if (
-      (vertPref[0] & portAnchor[0]) > 0 &&
-      (horPref[1] & portAnchor[1]) > 0
+      (vertPref[0] & portDir[0]) > 0 &&
+      (horPref[1] & portDir[1]) > 0
     ) {
       prefOrdering[0][0] = vertPref[0]
       prefOrdering[0][1] = horPref[0]
@@ -447,14 +447,14 @@ export function orth(
       continue
     }
 
-    if ((prefOrdering[i][0] & portAnchor[i]) === 0) {
+    if ((prefOrdering[i][0] & portDir[i]) === 0) {
       prefOrdering[i][0] = prefOrdering[i][1]
     }
 
-    dirPref[i] = prefOrdering[i][0] & portAnchor[i]
-    dirPref[i] |= (prefOrdering[i][1] & portAnchor[i]) << 8
-    dirPref[i] |= (prefOrdering[1 - i][i] & portAnchor[i]) << 16
-    dirPref[i] |= (prefOrdering[1 - i][1 - i] & portAnchor[i]) << 24
+    dirPref[i] = prefOrdering[i][0] & portDir[i]
+    dirPref[i] |= (prefOrdering[i][1] & portDir[i]) << 8
+    dirPref[i] |= (prefOrdering[1 - i][i] & portDir[i]) << 16
+    dirPref[i] |= (prefOrdering[1 - i][1 - i] & portDir[i]) << 24
 
     if ((dirPref[i] & 0xf) === 0) {
       dirPref[i] = dirPref[i] << 8
@@ -471,12 +471,12 @@ export function orth(
     dir[i] = dirPref[i] & 0xf
 
     if (
-      portAnchor[i] === DirectionMask.west ||
-      portAnchor[i] === DirectionMask.north ||
-      portAnchor[i] === DirectionMask.east ||
-      portAnchor[i] === DirectionMask.south
+      portDir[i] === DirectionMask.west ||
+      portDir[i] === DirectionMask.north ||
+      portDir[i] === DirectionMask.east ||
+      portDir[i] === DirectionMask.south
     ) {
-      dir[i] = portAnchor[i]
+      dir[i] = portDir[i]
     }
   }
 
