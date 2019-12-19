@@ -346,10 +346,8 @@ export class EdgeHandler extends MouseHandler {
   protected isVirtualHandlesEnabled() {
     return (
       this.virtualHandlesEnabled &&
-      (this.state.style.edge == null ||
-        this.state.style.edge === 'none' ||
-        this.state.style.noEdgeStyle === true) &&
-      this.state.style.shape !== 'arrow'
+      this.state.style.shape !== 'arrow' &&
+      (this.state.style.edge == null || this.state.style.edge === 'none')
     )
   }
 

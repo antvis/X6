@@ -1,5 +1,5 @@
-import { FontStyle } from './struct'
 import { Route } from './route'
+import { FontStyle } from './struct'
 import { Perimeter } from './perimeter'
 
 export type Dialect = 'svg' | 'html'
@@ -64,7 +64,7 @@ interface ShapeStyle {
 }
 
 interface LabelStyle {
-  label?: false | string | HTMLElement
+  label?: false | string | HTMLElement | null
   htmlLabel?: boolean
   horizontal?: boolean
   fontSize?: number
@@ -77,10 +77,10 @@ interface LabelStyle {
   verticalAlign?: VAlign
   overflow?: 'fill' | 'width' | 'visible' | 'hidden'
   whiteSpace?: 'nowrap' | 'wrap'
-  labelBackgroundColor?: string
-  labelBorderColor?: string
-  labelClassName?: string
   labelWidth?: number
+  labelClassName?: string
+  labelBorderColor?: string
+  labelBackgroundColor?: string
 
   spacing?: number
   spacingTop?: number
@@ -126,11 +126,6 @@ interface LabelStyle {
 interface EdgeStyle {
   edge?: string | Route.Router | null
   perimeter?: string | Perimeter.PerimeterFunction | null
-
-  /**
-   * If this is true then no edge style is applied for a given edge.
-   */
-  noEdgeStyle?: boolean
 
   sourcePort?: string
   targetPort?: string
