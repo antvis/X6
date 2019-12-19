@@ -150,57 +150,53 @@ interface EdgeStyle {
    */
   portConstraintRotatable?: boolean
 
-  perimeterSpacing?: number
-  sourcePerimeterSpacing?: number
-  targetPerimeterSpacing?: number
-
   /**
    * The horizontal relative coordinate connection point of an edge with
    * its source terminal.
    */
-  exitX?: number
+  sourceAnchorX?: number
 
   /**
    * The vertical relative coordinate connection point of an edge with
    * its source terminal.
    */
-  exitY?: number
+  sourceAnchorY?: number
 
   /**
    * The horizontal offset of the connection point of an edge with its
    * source terminal.
    */
-  exitDx?: number
+  sourceAnchorDx?: number
 
   /**
    * The vertical offset of the connection point of an edge with its
    * source terminal.
    */
-  exitDy?: number
+  sourceAnchorDy?: number
 
   /**
    * The horizontal relative coordinate connection point of an edge with
    * its target terminal.
    */
-  entryX?: number
+  targetAnchorX?: number
 
   /**
    * The vertical relative coordinate connection point of an edge with
    * its target terminal.
    */
-  entryY?: number
+  targetAnchorY?: number
 
   /**
    * The horizontal offset of the connection point of an edge with its
    * target terminal.
    */
-  entryDx?: number
+  targetAnchorDx?: number
 
   /**
    * The vertical offset of the connection point of an edge with its
    * target terminal.
    */
-  entryDy?: number
+  targetAnchorDy?: number
 
   /**
    * Defines if the perimeter should be used to find the exact entry point
@@ -208,7 +204,7 @@ interface EdgeStyle {
    *
    * Default is `true`.
    */
-  exitPerimeter?: boolean
+  sourcePerimeter?: boolean
 
   /**
    * Defines if the perimeter should be used to find the exact entry point
@@ -216,7 +212,17 @@ interface EdgeStyle {
    *
    * Default is `true`.
    */
-  entryPerimeter?: boolean
+  targetPerimeter?: boolean
+
+  perimeterSpacing?: number
+  sourcePerimeterSpacing?: number
+  targetPerimeterSpacing?: number
+
+  /**
+   * This style defines if the direction style should be taken into
+   * account when computing the fixed point location for connected edges.
+   */
+  anchorWithDirection?: boolean
 
   /**
    * Defines if the connection points on either end of the edge should be
@@ -245,15 +251,12 @@ interface ImageStyle {
   image?: string
   imageWidth?: number
   imageHeight?: number
-  imageBackgroundColor?: string
   imageBorderColor?: string
+  imageBackgroundColor?: string
   imageAlign?: Align
   imageVerticalAlign?: VAlign
   imageFlipH?: boolean
   imageFlipV?: boolean
-  /**
-   * Specify whether keep image aspect or not.
-   */
   imageAspect?: boolean
 }
 
@@ -270,15 +273,15 @@ interface IndicatorStyle {
 }
 
 interface HTMLShapeStyle {
-  html?: string | HTMLElement
+  html?: string | HTMLElement | null
   css?: {
     [selector: string]: Partial<CSSStyleDeclaration>
   }
 }
 
-interface CustomStyle {
-  [key: string]: any
-}
+// interface CustomStyle {
+//   [key: string]: any
+// }
 
 export interface Style
   extends ShapeStyle,
@@ -286,84 +289,25 @@ export interface Style
     EdgeStyle,
     ImageStyle,
     IndicatorStyle,
-    HTMLShapeStyle,
-    CustomStyle {
+    HTMLShapeStyle {
   tooltip?: string | HTMLElement | null
   direction?: Direction
 
-  /**
-   * This style specifies whether the line between the title
-   * regio of a swimlane should be visible.
-   */
-  swimlaneLine?: boolean
-  swimlaneFillColor?: string
-  separatorColor?: string
-  margin?: number
-
-  rounded?: boolean
-  curved?: boolean
-  arcSize?: number
-  absoluteArcSize?: boolean
-
-  /**
-   * This style defines if the direction style should be taken into
-   * account when computing the fixed point location for connected edges.
-   */
-  anchorPointDirection?: boolean
-
-  locked?: boolean
+  movable?: boolean
+  foldable?: boolean
+  editable?: boolean
+  bendable?: boolean
+  resizable?: boolean
+  deletable?: boolean
+  rotatable?: boolean
+  cloneable?: boolean
+  connectable?: boolean
 
   /**
    * This specifies if a cell should be resized automatically if
    * the value has changed.
    */
   autosize?: boolean
-
-  /**
-   * This style specifies if a cell is foldable using a folding icon.
-   */
-  foldable?: boolean
-
-  /**
-   * This style specifies if the value of a cell can be edited
-   * using the in-place editor.
-   */
-  editable?: boolean
-
-  /**
-   * This style specifies if the control points of an edge can be moved.
-   */
-  bendable?: boolean
-
-  /**
-   * This style specifies if a cell can be moved.
-   */
-  movable?: boolean
-
-  /**
-   * This style specifies if a cell can be rotated.
-   */
-  rotatable?: boolean
-
-  /**
-   * This style specifies if a cell can be cloned.
-   */
-  cloneable?: boolean
-
-  /**
-   * This style specifies if a cell can be connected.
-   */
-  connectable?: boolean
-
-  /**
-   * This style specifies if a cell can be deleted.
-   */
-  deletable?: boolean
-
-  /**
-   * This style specifies if a cell can be resized.
-   */
-  resizable?: boolean
 
   /**
    * This style specifies if a cell's width is resized if the parent is
@@ -382,12 +326,29 @@ export interface Style
   resizeHeight?: boolean
 
   /**
+   * This style specifies whether the line between the title
+   * regio of a swimlane should be visible.
+   */
+  swimlaneLine?: boolean
+  swimlaneFillColor?: string
+  separatorColor?: string
+  margin?: number
+
+  curved?: boolean
+  locked?: boolean
+  rounded?: boolean
+
+  arcSize?: number
+  absoluteArcSize?: boolean
+
+  /**
    * Jetty size is the minimum length of the orthogonal segment
    * before it attaches to a shape.
    */
   jettySize?: number | 'auto'
   sourceJettySize?: number | 'auto'
   targetJettySize?: number | 'auto'
+
   loopStyle?: string
   orthogonalLoop?: boolean
   routingCenterX?: number

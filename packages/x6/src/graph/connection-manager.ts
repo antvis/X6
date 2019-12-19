@@ -83,9 +83,9 @@ export class ConnectionManager extends BaseManager {
     const style = edgeState.style
 
     // connection point specified in style
-    const x = isSource ? style.exitX : style.entryX
+    const x = isSource ? style.sourceAnchorX : style.targetAnchorX
     if (x != null) {
-      const y = isSource ? style.exitY : style.entryY
+      const y = isSource ? style.sourceAnchorY : style.targetAnchorY
       if (y != null) {
         point = new Point(x, y)
       }
@@ -97,11 +97,11 @@ export class ConnectionManager extends BaseManager {
 
     if (point != null) {
       perimeter =
-        (isSource ? style.exitPerimeter : style.entryPerimeter) !== false
+        (isSource ? style.sourcePerimeter : style.targetPerimeter) !== false
 
       // Add entry/exit offset
-      dx = (isSource ? style.exitDx : style.entryDx) as number
-      dy = (isSource ? style.exitDy : style.entryDy) as number
+      dx = (isSource ? style.sourceAnchorDx : style.targetAnchorDx) as number
+      dy = (isSource ? style.sourceAnchorDy : style.targetAnchorDy) as number
 
       dx = isFinite(dx) ? dx : 0
       dy = isFinite(dy) ? dy : 0
@@ -125,41 +125,49 @@ export class ConnectionManager extends BaseManager {
     if (anchor != null) {
       this.model.batchUpdate(() => {
         if (anchor == null || anchor.position == null) {
-          this.graph.updateCellsStyle(isSource ? 'exitX' : 'entryX', null, [
-            edge,
-          ])
-          this.graph.updateCellsStyle(isSource ? 'exitY' : 'entryY', null, [
-            edge,
-          ])
-          this.graph.updateCellsStyle(isSource ? 'exitDx' : 'entryDx', null, [
-            edge,
-          ])
-          this.graph.updateCellsStyle(isSource ? 'exitDy' : 'entryDy', null, [
-            edge,
-          ])
           this.graph.updateCellsStyle(
-            isSource ? 'exitPerimeter' : 'entryPerimeter',
+            isSource ? 'sourceAnchorX' : 'targetAnchorX',
+            null,
+            [edge],
+          )
+          this.graph.updateCellsStyle(
+            isSource ? 'sourceAnchorY' : 'targetAnchorY',
+            null,
+            [edge],
+          )
+          this.graph.updateCellsStyle(
+            isSource ? 'sourceAnchorDx' : 'targetAnchorDx',
+            null,
+            [edge],
+          )
+          this.graph.updateCellsStyle(
+            isSource ? 'sourceAnchorDx' : 'targetAnchorDy',
+            null,
+            [edge],
+          )
+          this.graph.updateCellsStyle(
+            isSource ? 'sourcePerimeter' : 'targetPerimeter',
             null,
             [edge],
           )
         } else if (anchor.position != null) {
           this.graph.updateCellsStyle(
-            isSource ? 'exitX' : 'entryX',
+            isSource ? 'sourceAnchorX' : 'targetAnchorX',
             `${anchor.position.x}`,
             [edge],
           )
           this.graph.updateCellsStyle(
-            isSource ? 'exitY' : 'entryY',
+            isSource ? 'sourceAnchorY' : 'targetAnchorY',
             `${anchor.position.y}`,
             [edge],
           )
           this.graph.updateCellsStyle(
-            isSource ? 'exitDx' : 'entryDx',
+            isSource ? 'sourceAnchorDx' : 'targetAnchorDx',
             `${anchor.dx}`,
             [edge],
           )
           this.graph.updateCellsStyle(
-            isSource ? 'exitDy' : 'entryDy',
+            isSource ? 'sourceAnchorDx' : 'targetAnchorDy',
             `${anchor.dy}`,
             [edge],
           )
@@ -167,13 +175,13 @@ export class ConnectionManager extends BaseManager {
           // Only writes `false` since `true` is default
           if (!anchor.perimeter) {
             this.graph.updateCellsStyle(
-              isSource ? 'exitPerimeter' : 'entryPerimeter',
+              isSource ? 'sourcePerimeter' : 'targetPerimeter',
               false,
               [edge],
             )
           } else {
             this.graph.updateCellsStyle(
-              isSource ? 'exitPerimeter' : 'entryPerimeter',
+              isSource ? 'sourcePerimeter' : 'targetPerimeter',
               null,
               [edge],
             )

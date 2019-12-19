@@ -269,16 +269,16 @@ export class Preview extends Disposable {
     }
 
     if (this.sourceAnchor != null && this.sourceAnchor.position != null) {
-      this.edgeState.style.exitX = this.sourceAnchor.position.x
-      this.edgeState.style.exitY = this.sourceAnchor.position.y
+      this.edgeState.style.sourceAnchorX = this.sourceAnchor.position.x
+      this.edgeState.style.sourceAnchorY = this.sourceAnchor.position.y
     }
 
     if (currentAnchor != null && currentAnchor.position != null) {
-      this.edgeState.style.entryX = currentAnchor.position.x
-      this.edgeState.style.entryY = currentAnchor.position.y
+      this.edgeState.style.targetAnchorX = currentAnchor.position.x
+      this.edgeState.style.targetAnchorY = currentAnchor.position.y
     } else {
-      delete this.edgeState.style.entryX
-      delete this.edgeState.style.entryY
+      delete this.edgeState.style.targetAnchorX
+      delete this.edgeState.style.targetAnchorY
     }
 
     this.edgeState.absolutePoints = [

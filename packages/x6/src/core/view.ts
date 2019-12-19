@@ -649,7 +649,7 @@ export class View extends Primer<View.EventArgs> {
 
       if (
         direction != null &&
-        terminalState.style.anchorPointDirection !== false
+        terminalState.style.anchorWithDirection !== false
       ) {
         if (direction === 'north') {
           r1 += 270
