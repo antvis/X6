@@ -1031,19 +1031,19 @@ export class EdgeHandler extends MouseHandler {
     if (this.isSourceHandle || this.isTargetHandle) {
       if (anchor != null && anchor.position != null) {
         if (this.isSourceHandle) {
-          edgeState.style.exitX = anchor.position.x
-          edgeState.style.exitY = anchor.position.y
+          edgeState.style.sourceAnchorX = anchor.position.x
+          edgeState.style.sourceAnchorY = anchor.position.y
         } else {
-          edgeState.style.entryX = anchor.position.x
-          edgeState.style.entryY = anchor.position.y
+          edgeState.style.targetAnchorX = anchor.position.x
+          edgeState.style.targetAnchorY = anchor.position.y
         }
       } else {
         if (this.isSourceHandle) {
-          delete edgeState.style.exitX
-          delete edgeState.style.exitY
+          delete edgeState.style.sourceAnchorX
+          delete edgeState.style.sourceAnchorY
         } else {
-          delete edgeState.style.entryX
-          delete edgeState.style.entryY
+          delete edgeState.style.targetAnchorX
+          delete edgeState.style.targetAnchorY
         }
       }
     }
