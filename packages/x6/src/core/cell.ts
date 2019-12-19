@@ -6,7 +6,7 @@ import { Style } from '../types'
 import { Overlay, Point, Rectangle } from '../struct'
 
 export class Cell extends Disposable {
-  public id?: string | null
+  public id?: string | number | null
   public data: any
   public style: Style
   public visible: boolean
@@ -322,7 +322,7 @@ export class Cell extends Disposable {
     return this.id
   }
 
-  setId(id?: string | null) {
+  setId(id?: string | number | null) {
     this.id = id
   }
 
@@ -411,7 +411,7 @@ export namespace Cell {
 // Cell Creation
 export namespace Cell {
   export interface CreateCellOptions {
-    id?: string | null
+    id?: string | number | null
     data?: any
     visible?: boolean
     overlays?: Overlay[]

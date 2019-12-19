@@ -115,7 +115,7 @@ export class Model extends Events<Model.EventArgs> {
 
   // #endregion
 
-  getCell(id: string) {
+  getCell(id: string | number) {
     return this.cells != null ? this.cells[id] : null
   }
 
