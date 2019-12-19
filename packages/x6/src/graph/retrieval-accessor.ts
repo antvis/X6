@@ -92,27 +92,43 @@ export class RetrievalAccessor extends BaseGraph {
   /**
    * Returns the visible child nodes of the given parent.
    */
-  getChildNodes(parent: Cell) {
-    return this.getChildren(parent, true, false)
+  getVisibleChildNodes(parent: Cell) {
+    return this.getVisibleChildren(parent, true, false)
   }
 
   /**
    * Returns the visible child edges of the given parent.
    */
-  getChildEdges(parent: Cell) {
-    return this.getChildren(parent, false, true)
+  getVisibleChildEdges(parent: Cell) {
+    return this.getVisibleChildren(parent, false, true)
   }
 
   /**
    * Returns the visible child nodes or edges of the given parent.
    */
-  getChildren(
+  getVisibleChildren(
     parent: Cell = this.getDefaultParent(),
     includeNodes: boolean = false,
     includeEdges: boolean = false,
   ) {
     const cells = this.model.getChildren(parent, includeNodes, includeEdges)
     return cells.filter(cell => this.isCellVisible(cell))
+  }
+
+  getChildNodes(parent: Cell) {
+    return this.getChildren(parent, true, false)
+  }
+
+  getChildEdges(parent: Cell) {
+    return this.getChildren(parent, false, true)
+  }
+
+  getChildren(
+    parent: Cell = this.getDefaultParent(),
+    includeNodes: boolean = false,
+    includeEdges: boolean = false,
+  ) {
+    return this.model.getChildren(parent, includeNodes, includeEdges)
   }
 
   /**
