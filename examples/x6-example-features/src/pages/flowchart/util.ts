@@ -173,7 +173,7 @@ export function addNode(
 }
 
 function fixEdgeStyle(raw: Style, result: Style) {
-  if (raw.entryX === 1 || raw.entryX === 0) {
+  if (raw.targetAnchorX === 1 || raw.targetAnchorX === 0) {
     result.elbow = 'horizontal'
   }
 }
@@ -269,38 +269,38 @@ export function demo(graph: Graph) {
     addEdge(graph, {
       source: start,
       target: process1,
-      exitX: 0.5,
-      exitY: 1,
-      entryX: 0.5,
-      entryY: 0,
+      sourceAnchorX: 0.5,
+      sourceAnchorY: 1,
+      targetAnchorX: 0.5,
+      targetAnchorY: 0,
     })
 
     addEdge(graph, {
       label: '同意',
       source: process1,
       target: process2,
-      exitX: 0.5,
-      exitY: 1,
-      entryX: 0.5,
-      entryY: 0,
+      sourceAnchorX: 0.5,
+      sourceAnchorY: 1,
+      targetAnchorX: 0.5,
+      targetAnchorY: 0,
     })
 
     addEdge(graph, {
       source: process2,
       target: process3,
-      exitX: 0.5,
-      exitY: 1,
-      entryX: 0.5,
-      entryY: 0,
+      sourceAnchorX: 0.5,
+      sourceAnchorY: 1,
+      targetAnchorX: 0.5,
+      targetAnchorY: 0,
     })
 
     addEdge(graph, {
       source: process3,
       target: end,
-      exitX: 0.5,
-      exitY: 1,
-      entryX: 0.5,
-      entryY: 0,
+      sourceAnchorX: 0.5,
+      sourceAnchorY: 1,
+      targetAnchorX: 0.5,
+      targetAnchorY: 0,
     })
 
     addEdge(graph, {
@@ -311,10 +311,10 @@ export function demo(graph: Graph) {
         { x: 700, y: 144 },
         { x: 700, y: 508 },
       ],
-      exitX: 1,
-      exitY: 0.5,
-      entryX: 1,
-      entryY: 0.5,
+      sourceAnchorX: 1,
+      sourceAnchorY: 0.5,
+      targetAnchorX: 1,
+      targetAnchorY: 0.5,
     })
   })
 }

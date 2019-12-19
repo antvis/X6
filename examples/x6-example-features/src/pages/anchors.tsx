@@ -68,12 +68,12 @@ export default class Example extends React.Component {
         style: {
           edge: 'elbow',
           elbow: 'horizontal',
-          exitX: 0.5,
-          exitY: 1,
-          entryX: 0,
-          entryY: 0,
-          exitPerimeter: true,
-          entryPerimeter: true,
+          sourceAnchorX: 0.5,
+          sourceAnchorY: 1,
+          targetAnchorX: 0,
+          targetAnchorY: 0,
+          sourcePerimeter: true,
+          targetPerimeter: true,
         },
       })
 
@@ -84,9 +84,9 @@ export default class Example extends React.Component {
           edge: 'elbow',
           elbow: 'horizontal',
           orthogonal: false,
-          entryX: 0,
-          entryY: 0,
-          entryPerimeter: true,
+          targetAnchorX: 0,
+          targetAnchorY: 0,
+          targetPerimeter: true,
         },
       })
     })
