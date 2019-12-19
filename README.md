@@ -34,21 +34,35 @@ import { Graph } from '@antv/x6'
 
 const container = document.getElementById('container')
 const graph = new Graph(container)
-const node1 = graph.addNode({
-  label: 'Hello',
-  x: 60,
-  y: 60,
-  width: 80,
-  height: 30,
+
+graph.render({
+  nodes: [
+    {
+      id: 'node-0',
+      x: 60,
+      y: 60,
+      width: 80,
+      height: 30,
+      label: 'Hello',
+    },
+    {
+      id: 'node-1',
+      x: 240,
+      y: 240,
+      width: 80,
+      height: 30,
+      label: 'World',
+    },
+  ],
+  edges: [
+    {
+      id: 'edge-0',
+      source: 'node-0',
+      target: 'node-1',
+      label: 'Edge Label',
+    },
+  ],
 })
-const node2 = graph.addNode({
-  label: 'World',
-  x: 240,
-  y: 240,
-  width: 80,
-  height: 30,
-})
-const edge = graph.addEdge({ label: 'x6', source: node1, target: node2 })
 ```
 
 ## Development
