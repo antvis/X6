@@ -12,7 +12,7 @@ import {
   applyManualStyle,
 } from '../../option'
 
-export interface AnchorOptions extends BaseStyle<ApplyAnchortyleArgs> {
+export interface AnchorOptions extends BaseStyle<ApplyAnchorStyleArgs> {
   /**
    * Specifies the inductive area size.
    *
@@ -29,7 +29,7 @@ export interface AnchorOptions extends BaseStyle<ApplyAnchortyleArgs> {
   image?: OptionItem<CreateAnchorShapeArgs, Image>
   shape: OptionItem<CreateAnchorShapeArgs, string>
   size: OptionItem<CreateAnchorShapeArgs, number>
-  cursor: OptionItem<ApplyAnchortyleArgs, string>
+  cursor: OptionItem<ApplyAnchorStyleArgs, string>
 }
 
 export interface CreateAnchorShapeArgs {
@@ -39,7 +39,7 @@ export interface CreateAnchorShapeArgs {
   point: Point
 }
 
-export interface ApplyAnchortyleArgs extends CreateAnchorShapeArgs {
+export interface ApplyAnchorStyleArgs extends CreateAnchorShapeArgs {
   shape: Shape
 }
 
@@ -84,6 +84,54 @@ export function createAnchorShape(args: CreateAnchorShapeArgs) {
   const newArgs = { ...args, shape }
   applyClassName(newArgs, options, 'anchor')
   applyCursorStyle(newArgs, options)
+  applyManualStyle(newArgs, options)
+
+  return shape
+}
+
+// anchor tip
+// ----
+export interface AnchorTipOptions extends BaseStyle<ApplyAnchorTipStyleArgs> {
+  enabled: boolean
+  image?: OptionItem<CreateAnchorTipShapeArgs, Image>
+  shape: OptionItem<CreateAnchorTipShapeArgs, string>
+  size: OptionItem<CreateAnchorTipShapeArgs, number>
+}
+
+export interface CreateAnchorTipShapeArgs {
+  graph: Graph
+  cell: Cell
+  anchor: Anchor
+  point: Point
+}
+
+export interface ApplyAnchorTipStyleArgs extends CreateAnchorTipShapeArgs {
+  shape: Shape
+}
+
+export function createAnchorTipShape(args: CreateAnchorTipShapeArgs) {
+  const { graph } = args
+  const options = graph.options.anchorTip
+  const image = drill(options.image, args.graph, args)
+
+  let shape: Shape
+  if (image) {
+    const bounds = new Rectangle(0, 0, image.width, image.height)
+    const img = new ImageShape(bounds, image.src)
+    img.preserveImageAspect = false
+    shape = img
+  } else {
+    const shapeName = drill(options.shape, graph, args)
+    const size = drill(options.size, graph, args)
+    const ctor = Shape.getShape(shapeName) || EllipseShape
+
+    shape = new ctor() as Shape
+    shape.bounds = new Rectangle(0, 0, size, size)
+    applyBaseStyle({ ...args, shape }, options)
+  }
+
+  const newArgs = { ...args, shape }
+  applyClassName(newArgs, options, 'anchor-tip')
   applyManualStyle(newArgs, options)
 
   return shape

@@ -308,6 +308,17 @@ export const preset: FullOptions = {
     adsorbNearestTarget: true,
   },
 
+  anchorTip: {
+    enabled: false,
+    shape: 'ellipse',
+    size: 12,
+    opacity: 0.3,
+    fill: 'none',
+    stroke: globals.defaultPrimaryColor,
+    strokeWidth: 6,
+    dashed: false,
+  },
+
   anchorHighlight: {
     shape: 'ellipse',
     cursor: globals.defaultCursorPointer,
