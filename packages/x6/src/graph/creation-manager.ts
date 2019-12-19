@@ -1,9 +1,99 @@
 import * as util from '../util'
+import { Style } from '../types'
 import { Cell } from '../core/cell'
-import { Point } from '../struct'
+import { Point, Rectangle } from '../struct'
 import { BaseManager } from './base-manager'
 
 export class CreationManager extends BaseManager {
+  render(data: Data) {
+    const { nodes, edges } = data
+    const nodeDataMap: { [key: string]: NodeData } = {}
+    const groupIds: [string | number, string | number][] = []
+
+    if (nodes != null) {
+      nodes.forEach(n => {
+        nodeDataMap[n.id] = n
+        if (n.parent != null) {
+          groupIds.push([n.parent, 0])
+        }
+      })
+    }
+
+    if (edges != null) {
+      edges.forEach(n => {
+        if (n.parent != null) {
+          groupIds.push([n.parent, 0])
+        }
+      })
+    }
+
+    groupIds.forEach(arr => {
+      const groupId = arr[0]
+      const groupData = nodeDataMap[groupId]
+      if (groupData != null && groupData.parent != null) {
+        arr[1] = groupData.parent
+      }
+    })
+
+    const nodeMap: { [key: string]: Cell } = {}
+    const edgeMap: { [key: string]: Cell } = {}
+
+    const renderGroups = (parentGroupId: string | number) => {
+      const ids: (string | number)[] = []
+      for (let i = groupIds.length - 1; i >= 0; i -= 1) {
+        const sec = groupIds[i]
+        if (sec[1] === parentGroupId) {
+          ids.push(sec[0])
+          groupIds.splice(i, 1)
+        }
+      }
+
+      const parentGroup = nodeMap[parentGroupId] || null
+      ids.forEach(i => {
+        const { parent, id, ...dataItem } = nodeDataMap[i]
+        nodeMap[i] = this.graph.addNode({
+          ...dataItem,
+          data: { ...nodeDataMap[i] },
+          parent: parentGroup,
+        })
+      })
+
+      ids.forEach(i => renderGroups(i))
+    }
+
+    this.graph.batchUpdate(() => {
+      renderGroups(0)
+
+      if (nodes != null) {
+        nodes.forEach(item => {
+          const { id, parent, ...dataItem } = item
+          if (nodeMap[id] == null) {
+            nodeMap[id] = this.graph.addNode({
+              ...dataItem,
+              data: { ...item },
+              parent: parent ? nodeMap[parent] : undefined,
+            })
+          }
+        })
+      }
+
+      if (edges != null) {
+        edges.forEach(item => {
+          const { id, parent, source, target, ...dataItem } = item
+          if (edgeMap[id] == null) {
+            edgeMap[id] = this.graph.addEdge({
+              ...dataItem,
+              data: { ...item },
+              parent: parent != null ? nodeMap[parent] : undefined,
+              source: source != null ? nodeMap[source] : undefined,
+              target: target != null ? nodeMap[target] : undefined,
+            })
+          }
+        })
+      }
+    })
+  }
+
   addCells(
     cells: Cell[],
     parent: Cell,
@@ -586,4 +676,38 @@ export class CreationManager extends BaseManager {
 
     return select
   }
+}
+
+export interface CellData {
+  id: string | number
+  visible?: boolean
+  offset?: Point.PointLike
+  parent?: string | number
+}
+
+export interface NestedStyle extends Style {
+  style?: Style
+}
+
+export interface NodeData extends CellData, NestedStyle {
+  x: number
+  y: number
+  width: number
+  height: number
+  relative?: boolean
+  collapsed?: boolean
+  alternateBounds?: Rectangle.RectangleLike
+}
+
+export interface EdgeData extends CellData, NestedStyle {
+  source: string | number
+  target: string | number
+  sourcePoint?: Point.PointLike
+  targetPoint?: Point.PointLike
+  points?: (Point.PointLike | Point.PointData)[]
+}
+
+export interface Data {
+  nodes: NodeData[]
+  edges?: EdgeData[]
 }
