@@ -255,10 +255,10 @@ export class Editor extends Primer {
         style: {
           ...edgeStyle,
           edge: 'orth',
-          exitX: 0.5,
-          exitY: 1,
-          entryX: 0,
-          entryY: 0.5,
+          sourceAnchorX: 0.5,
+          sourceAnchorY: 1,
+          targetAnchorX: 0,
+          targetAnchorY: 0.5,
         },
       })
       graph.addEdge({
@@ -268,10 +268,10 @@ export class Editor extends Primer {
         style: {
           ...edgeStyle,
           edge: 'orth',
-          exitX: 0.5,
-          exitY: 1,
-          entryX: 0,
-          entryY: 0.5,
+          sourceAnchorX: 0.5,
+          sourceAnchorY: 1,
+          targetAnchorX: 0,
+          targetAnchorY: 0.5,
         },
       })
       graph.addEdge({
@@ -281,10 +281,10 @@ export class Editor extends Primer {
         style: {
           ...edgeStyle,
           edge: 'orth',
-          exitX: 0.5,
-          exitY: 1,
-          entryX: 0,
-          entryY: 0.5,
+          sourceAnchorX: 0.5,
+          sourceAnchorY: 1,
+          targetAnchorX: 0,
+          targetAnchorY: 0.5,
         },
       })
     })
