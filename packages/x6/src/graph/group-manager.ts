@@ -173,7 +173,7 @@ export class GroupManager extends BaseManager {
       for (let i = cells.length - 1; i >= 0; i -= 1) {
         let geo = this.graph.getCellGeometry(cells[i])
         if (geo != null) {
-          const children = this.graph.getChildren(cells[i])
+          const children = this.graph.getVisibleChildren(cells[i])
           if (children != null && children.length > 0) {
             const bounds = this.graph.getBoundingBoxFromGeometry(children, true)
             if (bounds != null && bounds.width > 0 && bounds.height > 0) {
