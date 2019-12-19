@@ -142,6 +142,7 @@ export interface IHooks {
    * Returns`true`if the given cell is connectable in this graph.
    */
   isCellConnectable: CellHook<boolean>
+  isAnchorConnectable(cell: Cell, anchor: Anchor): boolean
 
   /**
    * Returns`true`if the given cell is disconnectable from the

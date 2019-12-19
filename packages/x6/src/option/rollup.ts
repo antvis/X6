@@ -21,7 +21,11 @@ import {
 import { SelectionPreviewOptions } from '../handler/node/option-selection'
 import { EdgeHandleOptions } from '../handler/edge/option'
 import { LabelHandleOptions } from '../handler/node/option-label'
-import { AnchorOptions, AnchorHighlightOptions } from '../handler/anchor/option'
+import {
+  AnchorOptions,
+  AnchorTipOptions,
+  AnchorHighlightOptions,
+} from '../handler/anchor/option'
 import {
   ConnectionOptions,
   ConnectionIconOptions,
@@ -64,6 +68,7 @@ export interface FullOptions
   rotatePreview: RotatePreviewOptions
   labelHandle: LabelHandleOptions
   anchor: AnchorOptions
+  anchorTip: AnchorTipOptions
   anchorHighlight: AnchorHighlightOptions
   connection: ConnectionOptions
   connectionIcon: ConnectionIconOptions
@@ -98,6 +103,7 @@ export interface GraphOptions
   rotatePreview?: Partial<RotatePreviewOptions>
   labelHandle?: Partial<LabelHandleOptions>
   anchor?: Partial<AnchorOptions>
+  anchorTip?: Partial<AnchorTipOptions> | boolean
   anchorHighlight?: Partial<AnchorHighlightOptions>
   connection?: Partial<ConnectionOptions> | boolean
   connectionIcon?: Partial<ConnectionIconOptions>

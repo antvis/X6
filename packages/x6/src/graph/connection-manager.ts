@@ -288,4 +288,15 @@ export class ConnectionManager extends BaseManager {
 
     return src != null && src === trg
   }
+
+  getConnectableAnchors(cell: Cell, isSource: boolean = false) {
+    const items = this.graph.getAnchors(cell, isSource)
+    if (items != null) {
+      return items
+        .map(item => (item instanceof Anchor ? item : new Anchor(item)))
+        .filter(anchor => this.graph.isAnchorConnectable(cell, anchor))
+    }
+
+    return null
+  }
 }

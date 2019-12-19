@@ -137,15 +137,10 @@ export class AnchorHandler extends BaseHandler {
       !this.isStateIgnored(state, isSource) &&
       this.graph.isCellConnectable(state.cell)
     ) {
-      const items = this.graph.getAnchors(state.cell, isSource)
-      if (items != null) {
-        return items.map(item => {
-          if (item instanceof Anchor) {
-            return item
-          }
-          return new Anchor(item)
-        })
-      }
+      return this.graph.connectionManager.getConnectableAnchors(
+        state.cell,
+        isSource,
+      )
     }
 
     return null
@@ -277,7 +272,6 @@ export class AnchorHandler extends BaseHandler {
 
   focus(e: MouseEventEx, state: State, isSource: boolean) {
     this.anchors = this.getAnchors(state, isSource)
-
     if (this.anchors != null) {
       this.currentState = state
       this.currentArea = state.bounds.clone()

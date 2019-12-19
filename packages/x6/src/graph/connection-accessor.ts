@@ -115,4 +115,9 @@ export class ConnectionAccessor extends BaseGraph {
 
     return null
   }
+
+  @hook()
+  isAnchorConnectable(cell: Cell, anchor: Anchor): boolean {
+    return this.isCellConnectable(cell)
+  }
 }

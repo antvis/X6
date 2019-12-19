@@ -4,6 +4,7 @@ import { Point, Anchor } from '../../struct'
 import { Polyline, Shape } from '../../shape'
 import { Disposable, MouseEventEx, DomEvent } from '../../common'
 import { AnchorHandler } from '../anchor/handler'
+import { AnchorTipHandler } from '../anchor/tip'
 import { ConnectionMarker } from './marker'
 import { ConnectionHandler } from './handler'
 import { transparentMarker } from './util'
@@ -11,6 +12,7 @@ import { applyConnectionPreviewStyle } from './option'
 
 export class Preview extends Disposable {
   marker: ConnectionMarker
+  anchorTip: AnchorTipHandler
   anchorHandler: AnchorHandler
 
   sourcePoint: Point | null
@@ -30,6 +32,7 @@ export class Preview extends Disposable {
     super()
     this.marker = new ConnectionMarker(this.master, options)
     this.anchorHandler = new AnchorHandler(this.graph)
+    this.anchorTip = new AnchorTipHandler(this)
   }
 
   get graph() {
@@ -159,7 +162,9 @@ export class Preview extends Disposable {
   protected onConnecting(e: MouseEventEx, point: Point) {
     // Update icon position when mouse-moving.
     this.master.knobs.updateIcon(e)
+
     const { sourcePoint, currentPoint } = this.updateTerminalPoints(e, point)
+
     this.updateTargetPoint(sourcePoint, currentPoint)
 
     // Creates the preview shape (lazy)
@@ -194,6 +199,8 @@ export class Preview extends Disposable {
 
       this.drawPreview()
     }
+
+    this.anchorTip.process()
   }
 
   protected updateTerminalPoints(e: MouseEventEx, point: Point) {
@@ -502,6 +509,8 @@ export class Preview extends Disposable {
   // endregion
 
   execute(e: MouseEventEx) {
+    this.anchorTip.hide()
+
     const c1 = this.sourceAnchor
     const c2 = this.anchorHandler.currentAnchor
     const source = this.sourceState != null ? this.sourceState.cell : null
