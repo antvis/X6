@@ -1,8 +1,14 @@
 import { Cell } from '../core/cell'
 import { afterCreate, hook } from './decorator'
+import { Data } from './creation-manager'
 import { BaseGraph } from './base-graph'
 
 export class CreationAccessor extends BaseGraph {
+  render(data: Data) {
+    this.creationManager.render(data)
+    return this
+  }
+
   @afterCreate()
   createNode(options: Cell.CreateNodeOptions = {}): Cell {
     return Cell.createNode(options)
