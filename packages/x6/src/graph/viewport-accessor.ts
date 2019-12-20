@@ -7,7 +7,7 @@ export class ViewportAccessor extends BaseGraph {
    * Clears all cell states or the states for the hierarchy starting
    * at the given cell and validates the graph.
    */
-  refresh(cell: Cell) {
+  refresh(cell?: Cell) {
     this.view.clear(cell, cell == null)
     this.view.validate()
     this.sizeDidChange()
