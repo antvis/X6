@@ -1,11 +1,12 @@
 import React from 'react'
 import { Checkbox } from 'antd'
-import { Graph } from '@antv/x6'
+import { Graph, MiniMap } from '@antv/x6'
 import './index.less'
 import { CheckboxChangeEvent } from 'antd/lib/checkbox'
 
 export default class Example extends React.Component {
   private container: HTMLDivElement
+  private minimapContainer: HTMLDivElement
   private graph: Graph
 
   state = { pageVisible: true, infinite: true }
@@ -19,6 +20,10 @@ export default class Example extends React.Component {
         height: 960,
       },
     }))
+
+    new MiniMap(graph, {
+      container: this.minimapContainer,
+    })
 
     graph.batchUpdate(() => {
       const node1 = graph.addNode({
@@ -49,10 +54,15 @@ export default class Example extends React.Component {
     this.container = container
   }
 
+  refMiniMap = (container: HTMLDivElement) => {
+    this.minimapContainer = container
+  }
+
   render() {
     return (
       <div
         style={{
+          position: 'relative',
           display: 'flex',
           flexDirection: 'column',
           width: '100%',
@@ -71,6 +81,20 @@ export default class Example extends React.Component {
           ref={this.refContainer}
           className="graph"
           style={{ backgroundColor: '#f8f9fa' }}
+        />
+        <div
+          ref={this.refMiniMap}
+          style={{
+            width: 300,
+            height: 200,
+            position: 'absolute',
+            top: 24,
+            right: 24,
+            border: '1px solid #e9e9e9',
+            zIndex: 999,
+            background: '#ccc',
+            boxShadow: '0 0 2px 1px #e9e9e9',
+          }}
         />
       </div>
     )
