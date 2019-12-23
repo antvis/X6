@@ -379,6 +379,8 @@ export class ViewportManager extends BaseManager {
       this.container.style.zIndex = '1'
       this.container.style.position = 'relative'
       this.container.style.overflow = 'auto'
+      this.container.style.width = '100%'
+      this.container.style.height = '100%'
       this.unbindSizeDetector = sizeSensor.bind(this.container, () => {
         this.sizeDidChange()
       })
