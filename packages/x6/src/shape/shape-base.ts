@@ -262,12 +262,14 @@ export class Shape extends Disposable {
   }
 
   protected updateHtmlBounds(elem: HTMLElement) {
-    let sw =
-      util.getDocumentMode() >= 9 ? 0 : Math.ceil(this.strokeWidth * this.scale)
+    let sw = 0
+    if (util.isValidColor(this.strokeColor) && this.strokeWidth > 0) {
+      sw = Math.ceil(this.strokeWidth * this.scale)
+    }
 
     elem.style.overflow = 'hidden'
     elem.style.boxSizing = 'content-box'
-    elem.style.borderWidth = `${Math.max(1, sw)}px`
+    elem.style.borderWidth = `${sw}px`
     elem.style.left = `${Math.round(this.bounds.x - sw)}px`
     elem.style.top = `${Math.round(this.bounds.y - sw)}px`
 
