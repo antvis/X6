@@ -1,6 +1,6 @@
 {
   "name": "@antv/x6",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "JavaScript diagramming library",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -102,5 +102,6 @@
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org"
-  }
+  },
+  "gitHead": "4c6bec826bb6bdea5bcf36f918d82b8bfa76c912"
 }
