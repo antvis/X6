@@ -24,7 +24,7 @@ export class GraphToolbar extends React.PureComponent<
 
   componentDidMount() {
     fetchEditor().then(editor => {
-      editor.graph.on('selectionChanged', () => {
+      editor.graph.on('selection:changed', () => {
         this.setState({ selectedCells: editor.graph.getSelectedCells() })
       })
 

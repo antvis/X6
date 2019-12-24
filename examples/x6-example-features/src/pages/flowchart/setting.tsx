@@ -8,7 +8,7 @@ export class Setting extends React.Component<Setting.Props, Setting.State> {
     super(props)
     this.state = this.getNextState(props)
 
-    props.graph.on('selectionChanged', () => {
+    props.graph.on('selection:changed', () => {
       this.setState(this.getNextState())
     })
   }

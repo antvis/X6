@@ -12,7 +12,7 @@ export class Format extends React.PureComponent<Format.Props, Format.State> {
 
   componentDidMount() {
     fetchEditor().then(editor => {
-      editor.graph.on('selectionChanged', () => {
+      editor.graph.on('selection:changed', () => {
         this.setState({
           selectedCell: editor.graph.getSelectedCell(),
         })
