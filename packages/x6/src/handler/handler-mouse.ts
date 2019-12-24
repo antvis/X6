@@ -8,7 +8,7 @@ export abstract class MouseHandler<EventArgs = any>
   implements IMouseHandler {
   constructor(graph: Graph) {
     super(graph)
-    this.graph.addMouseListener(this)
+    this.graph.addHandler(this)
   }
 
   getState(e: MouseEventEx) {

@@ -483,7 +483,7 @@ export class ConnectionHandler extends MouseHandler<
   dispose() {
     this.preview.dispose()
     this.knobs.dispose()
-    this.graph.removeMouseListener(this)
+    this.graph.removeHandler(this)
 
     if (this.changeHandler != null) {
       this.graph.model.off(null, this.changeHandler)

@@ -4,9 +4,9 @@ import { MouseEventEx } from '../common'
 import { Align, VAlign } from '../types'
 
 export interface EventArgs {
-  refresh?: null
   root?: null
   size: Rectangle
+  refresh?: null
   selectionChanged: {
     added?: Cell[] | null
     removed?: Cell[] | null
@@ -149,7 +149,7 @@ export interface EventArgs {
     panY: number
   }
 
-  fireMouseEvent: {
+  mouseEvent: {
     e: MouseEventEx
     eventName: 'mouseDown' | 'mouseMove' | 'mouseUp'
     sender: any
@@ -160,10 +160,6 @@ export interface EventArgs {
     cell?: Cell | null
   }
 
-  escape: {
-    e: KeyboardEvent
-  }
-
   click: {
     e: MouseEvent
     cell?: Cell | null
@@ -172,6 +168,10 @@ export interface EventArgs {
   dblclick: {
     e: MouseEvent
     cell?: Cell | null
+  }
+
+  escape: {
+    e: KeyboardEvent
   }
 
   tapAndHold: {

@@ -131,7 +131,7 @@ export class GuideHandler extends MouseHandler {
 
   @Disposable.aop()
   dispose() {
-    this.graph.removeMouseListener(this)
+    this.graph.removeHandler(this)
     this.reset()
   }
 }

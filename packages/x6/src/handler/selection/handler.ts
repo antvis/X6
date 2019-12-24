@@ -149,7 +149,7 @@ export class SelectionHandler extends MouseHandler {
 
   @Disposable.aop()
   dispose() {
-    this.graph.removeMouseListener(this)
+    this.graph.removeHandler(this)
     this.graph.off(null, this.refreshHandler)
     this.graph.view.off(null, this.refreshHandler)
     this.graph.model.off(null, this.refreshHandler)

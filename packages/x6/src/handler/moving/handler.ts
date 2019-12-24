@@ -231,7 +231,7 @@ export class MovingHandler extends MouseHandler {
 
   @Disposable.aop()
   dispose() {
-    this.graph.removeMouseListener(this)
+    this.graph.removeHandler(this)
 
     this.graph.off('pan', this.onPan)
     this.graph.off('escape', this.onEscape)

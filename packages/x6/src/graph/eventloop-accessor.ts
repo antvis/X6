@@ -1,7 +1,6 @@
-import { Cell } from '../core/cell'
+import { hook } from './decorator'
 import { IMouseHandler } from '../handler'
 import { DomEvent, MouseEventEx, detector } from '../common'
-import { hook } from './decorator'
 import { BaseGraph } from './base-graph'
 
 export class EventLoopAccessor extends BaseGraph {
@@ -9,34 +8,25 @@ export class EventLoopAccessor extends BaseGraph {
    * Adds a listener to the graph event dispatch loop. The listener
    * must implement the mouseDown, mouseMove and mouseUp
    */
-  addMouseListener(handler: IMouseHandler) {
-    this.eventloopManager.addMouseListener(handler)
+  addHandler(handler: IMouseHandler) {
+    this.eventloopManager.addHandler(handler)
     return this
   }
 
-  removeMouseListener(handler: IMouseHandler) {
-    this.eventloopManager.removeMouseListener(handler)
+  removeHandler(handler: IMouseHandler) {
+    this.eventloopManager.removeHandler(handler)
     return this
-  }
-
-  getPointForEvent(e: MouseEvent, addOffset: boolean = true) {
-    return this.eventloopManager.getPointForEvent(e, addOffset)
   }
 
   /**
    * Dispatches the given event to the graph event dispatch loop.
    */
-  fireMouseEvent(
+  dispatchMouseEvent(
     eventName: 'mouseDown' | 'mouseMove' | 'mouseUp',
     e: MouseEventEx,
     sender: any = this,
   ) {
-    this.eventloopManager.fireMouseEvent(eventName, e, sender)
-    return this
-  }
-
-  fireGestureEvent(e: MouseEvent, cell?: Cell) {
-    this.eventloopManager.fireGestureEvent(e, cell)
+    this.eventloopManager.dispatchMouseEvent(eventName, e, sender)
     return this
   }
 

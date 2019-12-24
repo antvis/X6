@@ -213,6 +213,6 @@ export class TooltipHandler extends MouseHandler {
 
   @Disposable.aop()
   dispose() {
-    this.graph.removeMouseListener(this)
+    this.graph.removeHandler(this)
   }
 }
