@@ -761,7 +761,7 @@ export class Model extends Events<Model.EventArgs> {
     this.endUpdate()
   }
 
-  beginUpdate() {
+  protected beginUpdate() {
     this.updateLevel += 1
     this.trigger('beginUpdate')
     if (this.updateLevel === 1) {
@@ -769,7 +769,7 @@ export class Model extends Events<Model.EventArgs> {
     }
   }
 
-  endUpdate() {
+  protected endUpdate() {
     this.updateLevel -= 1
     if (this.updateLevel === 0) {
       this.trigger('endEdit')

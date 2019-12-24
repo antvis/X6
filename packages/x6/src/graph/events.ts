@@ -1,7 +1,9 @@
 import { Cell } from '../core/cell'
+import { View } from '../core/view'
 import { Rectangle, Overlay, Anchor } from '../struct'
 import { MouseEventEx } from '../common'
 import { Align, VAlign } from '../types'
+import { IChange } from '../change'
 
 export interface EventArgs {
   refresh?: null
@@ -9,7 +11,12 @@ export interface EventArgs {
     panX: number
     panY: number
   }
+  scale: View.ScaleArgs
+  translate: View.TranslateArgs
+  scaleAndTranslate: View.ScaleAndTranslateArgs
 
+  'model:changing': [IChange[]]
+  'model:changed': [IChange[]]
   'root:changed'?: null
 
   'selection:changed': {

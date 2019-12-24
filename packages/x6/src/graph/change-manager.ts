@@ -19,10 +19,12 @@ export class ChangeManager extends BaseManager {
   }
 
   protected onModelChanged(changes: IChange[]) {
+    this.graph.trigger('model:changing', changes)
     changes.forEach(change => this.processChange(change))
     this.graph.updateSelection()
     this.view.validate()
     this.graph.sizeDidChange()
+    this.graph.trigger('model:changed', changes)
   }
 
   protected processChange(change: IChange) {

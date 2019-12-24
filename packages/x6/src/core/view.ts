@@ -189,7 +189,9 @@ export class View extends Primer<View.EventArgs> {
     if (this.scale !== scale) {
       this.scale = scale
       this.scaledOrTranslated()
-      this.trigger('scale', { scale, previousScale })
+      const args = { scale, previousScale }
+      this.trigger('scale', args)
+      this.graph.trigger('scale', args)
     }
   }
 
@@ -205,10 +207,13 @@ export class View extends Primer<View.EventArgs> {
       this.translate.y = ty
 
       this.scaledOrTranslated()
-      this.trigger('translate', {
+
+      const args = {
         previousTranslate,
         translate: this.translate,
-      })
+      }
+      this.trigger('translate', args)
+      this.graph.trigger('translate', args)
     }
   }
 
@@ -226,12 +231,14 @@ export class View extends Primer<View.EventArgs> {
       this.translate.y = ty
 
       this.scaledOrTranslated()
-      this.trigger('scaleAndTranslate', {
+      const args = {
+        scale,
         previousScale,
         previousTranslate,
-        scale,
         translate: this.translate,
-      })
+      }
+      this.trigger('scaleAndTranslate', args)
+      this.graph.trigger('scaleAndTranslate', args)
     }
   }
 
@@ -2224,6 +2231,18 @@ export class View extends Primer<View.EventArgs> {
 }
 
 export namespace View {
+  export interface ScaleArgs {
+    scale: number
+    previousScale: number
+  }
+
+  export interface TranslateArgs {
+    translate: Point
+    previousTranslate: Point
+  }
+
+  export interface ScaleAndTranslateArgs extends ScaleArgs, TranslateArgs {}
+
   export interface EventArgs {
     up: {
       previous: Cell | null
@@ -2233,19 +2252,8 @@ export namespace View {
       previous: Cell | null
       currentRoot: Cell | null
     }
-    scale: {
-      scale: number
-      previousScale: number
-    }
-    translate: {
-      translate: Point
-      previousTranslate: Point
-    }
-    scaleAndTranslate: {
-      scale: number
-      previousScale: number
-      translate: Point
-      previousTranslate: Point
-    }
+    scale: ScaleArgs
+    translate: TranslateArgs
+    scaleAndTranslate: ScaleAndTranslateArgs
   }
 }
