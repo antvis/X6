@@ -42,6 +42,8 @@ export default class Example extends React.Component {
       })
       graph.addEdge({ label: 'Edge Label', source: node1, target: node2 })
     })
+
+    graph.zoomTo(2)
   }
 
   onPageViewChanged = (e: CheckboxChangeEvent) => {
@@ -85,14 +87,13 @@ export default class Example extends React.Component {
         <div
           ref={this.refMiniMap}
           style={{
-            width: 300,
+            width: 240,
             height: 200,
             position: 'absolute',
             top: 24,
             right: 24,
             border: '1px solid #e9e9e9',
             zIndex: 999,
-            background: '#ccc',
             boxShadow: '0 0 2px 1px #e9e9e9',
           }}
         />
