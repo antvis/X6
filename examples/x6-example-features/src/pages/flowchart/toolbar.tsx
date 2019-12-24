@@ -114,7 +114,7 @@ export class GraphToolbar extends React.Component<
       }),
     )
 
-    this.graph.on('selectionChanged', this.updateState)
+    this.graph.on('selection:changed', this.updateState)
     this.graph.view.on('scale', this.updateState)
     this.graph.view.on('scaleAndTranslate', this.updateState)
     this.graph.model.on('change', this.updateState)
