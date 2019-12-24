@@ -129,7 +129,7 @@ export namespace MouseEventEx {
         if (onMouseDown) {
           onMouseDown(e)
         } else if (!DomEvent.isConsumed(e)) {
-          graph.fireMouseEvent(
+          graph.dispatchMouseEvent(
             DomEvent.MOUSE_DOWN,
             new MouseEventEx(e, getState(e)),
           )
@@ -139,7 +139,7 @@ export namespace MouseEventEx {
         if (onMouseMove) {
           onMouseMove(e)
         } else if (!DomEvent.isConsumed(e)) {
-          graph.fireMouseEvent(
+          graph.dispatchMouseEvent(
             DomEvent.MOUSE_MOVE,
             new MouseEventEx(e, getState(e)),
           )
@@ -149,7 +149,7 @@ export namespace MouseEventEx {
         if (onMouseUp) {
           onMouseUp(e)
         } else if (!DomEvent.isConsumed(e)) {
-          graph.fireMouseEvent(
+          graph.dispatchMouseEvent(
             DomEvent.MOUSE_UP,
             new MouseEventEx(e, getState(e)),
           )

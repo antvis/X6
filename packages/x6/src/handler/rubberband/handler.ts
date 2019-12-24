@@ -42,7 +42,7 @@ export class RubberbandHandler extends MouseHandler {
       }
     }
 
-    this.graph.on('fireMouseEvent', this.onMouseEvent)
+    this.graph.on('mouseEvent', this.onMouseEvent)
 
     this.onPan = () => this.repaint()
     this.graph.on('pan', this.onPan)
@@ -272,10 +272,10 @@ export class RubberbandHandler extends MouseHandler {
 
   @Disposable.aop()
   dispose() {
-    this.graph.removeMouseListener(this)
+    this.graph.removeHandler(this)
     this.graph.off('pan', this.onPan)
     this.graph.off('gesture', this.onGesture)
-    this.graph.off('fireMouseEvent', this.onMouseEvent)
+    this.graph.off('mouseEvent', this.onMouseEvent)
 
     this.reset()
 

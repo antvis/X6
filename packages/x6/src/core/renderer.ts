@@ -349,7 +349,10 @@ export class Renderer {
         DomEvent.consume(e)
       },
       (e: MouseEvent) => {
-        graph.fireMouseEvent(DomEvent.MOUSE_MOVE, new MouseEventEx(e, state))
+        graph.dispatchMouseEvent(
+          DomEvent.MOUSE_MOVE,
+          new MouseEventEx(e, state),
+        )
       },
     )
 
@@ -391,12 +394,15 @@ export class Renderer {
       elem,
       (e: MouseEvent) => {
         if (this.isShapeEvent(state, e)) {
-          graph.fireMouseEvent(DomEvent.MOUSE_DOWN, new MouseEventEx(e, state))
+          graph.dispatchMouseEvent(
+            DomEvent.MOUSE_DOWN,
+            new MouseEventEx(e, state),
+          )
         }
       },
       (e: MouseEvent) => {
         if (this.isShapeEvent(state, e)) {
-          graph.fireMouseEvent(
+          graph.dispatchMouseEvent(
             DomEvent.MOUSE_MOVE,
             new MouseEventEx(e, getState(e)),
           )
@@ -404,7 +410,7 @@ export class Renderer {
       },
       (e: MouseEvent) => {
         if (this.isShapeEvent(state, e)) {
-          graph.fireMouseEvent(
+          graph.dispatchMouseEvent(
             DomEvent.MOUSE_UP,
             new MouseEventEx(e, getState(e)),
           )
@@ -500,14 +506,23 @@ export class Renderer {
         elem,
         (e: MouseEvent) => {
           first = new Point(DomEvent.getClientX(e), DomEvent.getClientY(e))
-          graph.fireMouseEvent(DomEvent.MOUSE_DOWN, new MouseEventEx(e, state))
+          graph.dispatchMouseEvent(
+            DomEvent.MOUSE_DOWN,
+            new MouseEventEx(e, state),
+          )
           DomEvent.consume(e)
         },
         (e: MouseEvent) => {
-          graph.fireMouseEvent(DomEvent.MOUSE_MOVE, new MouseEventEx(e, state))
+          graph.dispatchMouseEvent(
+            DomEvent.MOUSE_MOVE,
+            new MouseEventEx(e, state),
+          )
         },
         (e: MouseEvent) => {
-          graph.fireMouseEvent(DomEvent.MOUSE_UP, new MouseEventEx(e, state))
+          graph.dispatchMouseEvent(
+            DomEvent.MOUSE_UP,
+            new MouseEventEx(e, state),
+          )
           DomEvent.consume(e)
         },
       )
@@ -703,7 +718,7 @@ export class Renderer {
         state.text.elem!,
         (e: MouseEvent) => {
           if (this.isLabelEvent(state, e)) {
-            graph.fireMouseEvent(
+            graph.dispatchMouseEvent(
               DomEvent.MOUSE_DOWN,
               new MouseEventEx(e, state),
             )
@@ -714,7 +729,7 @@ export class Renderer {
         },
         (e: MouseEvent) => {
           if (this.isLabelEvent(state, e)) {
-            graph.fireMouseEvent(
+            graph.dispatchMouseEvent(
               DomEvent.MOUSE_MOVE,
               new MouseEventEx(e, getState(e)),
             )
@@ -722,7 +737,7 @@ export class Renderer {
         },
         (e: MouseEvent) => {
           if (this.isLabelEvent(state, e)) {
-            graph.fireMouseEvent(
+            graph.dispatchMouseEvent(
               DomEvent.MOUSE_UP,
               new MouseEventEx(e, getState(e)),
             )

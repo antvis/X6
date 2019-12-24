@@ -1556,7 +1556,10 @@ export class View extends Primer<View.EventArgs> {
       DomEvent.addMouseListeners(
         this.backgroundPageShape.elem!,
         (e: MouseEvent) => {
-          this.graph.fireMouseEvent(DomEvent.MOUSE_DOWN, new MouseEventEx(e))
+          this.graph.dispatchMouseEvent(
+            DomEvent.MOUSE_DOWN,
+            new MouseEventEx(e),
+          )
         },
         (e: MouseEvent) => {
           // Hides the tooltip if mouse is outside container
@@ -1571,11 +1574,14 @@ export class View extends Primer<View.EventArgs> {
             this.graph.eventloopManager.isMouseDown &&
             !DomEvent.isConsumed(e)
           ) {
-            this.graph.fireMouseEvent(DomEvent.MOUSE_MOVE, new MouseEventEx(e))
+            this.graph.dispatchMouseEvent(
+              DomEvent.MOUSE_MOVE,
+              new MouseEventEx(e),
+            )
           }
         },
         (e: MouseEvent) => {
-          this.graph.fireMouseEvent(DomEvent.MOUSE_UP, new MouseEventEx(e))
+          this.graph.dispatchMouseEvent(DomEvent.MOUSE_UP, new MouseEventEx(e))
         },
       )
     }
@@ -1854,17 +1860,17 @@ export class View extends Primer<View.EventArgs> {
     // Support for touch device gestures (eg. pinch to zoom)
     if (detector.SUPPORT_TOUCH) {
       DomEvent.addListener(container, 'gesturestart', (e: MouseEvent) => {
-        graph.fireGestureEvent(e)
+        graph.eventloopManager.gesture(e)
         DomEvent.consume(e)
       })
 
       DomEvent.addListener(container, 'gesturechange', (e: MouseEvent) => {
-        graph.fireGestureEvent(e)
+        graph.eventloopManager.gesture(e)
         DomEvent.consume(e)
       })
 
       DomEvent.addListener(container, 'gestureend', (e: MouseEvent) => {
-        graph.fireGestureEvent(e)
+        graph.eventloopManager.gesture(e)
         DomEvent.consume(e)
       })
     }
@@ -1883,17 +1889,17 @@ export class View extends Primer<View.EventArgs> {
             !detector.IS_SAFARI) ||
             !this.isScrollEvent(e))
         ) {
-          graph.fireMouseEvent(DomEvent.MOUSE_DOWN, new MouseEventEx(e))
+          graph.dispatchMouseEvent(DomEvent.MOUSE_DOWN, new MouseEventEx(e))
         }
       },
       (e: MouseEvent) => {
         if (this.isContainerEvent(e)) {
-          graph.fireMouseEvent(DomEvent.MOUSE_MOVE, new MouseEventEx(e))
+          graph.dispatchMouseEvent(DomEvent.MOUSE_MOVE, new MouseEventEx(e))
         }
       },
       (e: MouseEvent) => {
         if (this.isContainerEvent(e)) {
-          graph.fireMouseEvent(DomEvent.MOUSE_UP, new MouseEventEx(e))
+          graph.dispatchMouseEvent(DomEvent.MOUSE_UP, new MouseEventEx(e))
         }
       },
     )
@@ -1902,7 +1908,7 @@ export class View extends Primer<View.EventArgs> {
     // the container and finishing the handling of a single gesture
     // Implemented via graph event dispatch loop to avoid duplicate
     // events in Firefox and Chrome
-    graph.addMouseListener({
+    graph.addHandler({
       mouseDown() {
         graph.hideContextMenu()
       },
@@ -1953,7 +1959,7 @@ export class View extends Primer<View.EventArgs> {
       }
 
       if (this.shouldHandleDocumentEvent(e) && !DomEvent.isConsumed(e)) {
-        this.graph.fireMouseEvent(
+        this.graph.dispatchMouseEvent(
           DomEvent.MOUSE_MOVE,
           new MouseEventEx(e, getState(e)),
         )
@@ -1962,7 +1968,7 @@ export class View extends Primer<View.EventArgs> {
 
     this.mouseUpHandler = (e: MouseEvent) => {
       if (this.shouldHandleDocumentEvent(e)) {
-        this.graph.fireMouseEvent(DomEvent.MOUSE_UP, new MouseEventEx(e))
+        this.graph.dispatchMouseEvent(DomEvent.MOUSE_UP, new MouseEventEx(e))
       }
     }
 

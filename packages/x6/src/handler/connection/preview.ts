@@ -96,7 +96,7 @@ export class Preview extends Disposable {
 
     // Stores the starting point in the geometry of the preview
     if (this.sourceState == null && this.edgeState != null) {
-      const p = this.graph.getPointForEvent(e.getEvent())
+      const p = this.graph.eventloopManager.getPointForEvent(e.getEvent())
       this.edgeState.cell.geometry!.setTerminalPoint(p, true)
     }
   }

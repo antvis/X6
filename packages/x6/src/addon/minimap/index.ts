@@ -91,7 +91,7 @@ export class MiniMap extends Disablable implements IMouseHandler {
     DomEvent.addListener(this.source.container, 'scroll', this.updateHandler)
 
     this.outline.disable()
-    this.outline.addMouseListener(this)
+    this.outline.addHandler(this)
 
     this.bounds = new Rectangle(0, 0, 0, 0)
     this.viewport = this.createViewport()
@@ -100,17 +100,17 @@ export class MiniMap extends Disablable implements IMouseHandler {
     const handle = (e: MouseEvent) => {
       const target = DomEvent.getSource(e) as HTMLElement
       const move = (e: MouseEvent) => {
-        this.outline.fireMouseEvent('mouseMove', new MouseEventEx(e))
+        this.outline.dispatchMouseEvent('mouseMove', new MouseEventEx(e))
       }
       const up = (e: MouseEvent) => {
         DomEvent.removeMouseListeners(target, null, move, up)
         DomEvent.removeMouseListeners(document, null, move, up)
-        this.outline.fireMouseEvent('mouseUp', new MouseEventEx(e))
+        this.outline.dispatchMouseEvent('mouseUp', new MouseEventEx(e))
       }
 
       DomEvent.addMouseListeners(target, null, move, up)
       DomEvent.addMouseListeners(document, null, move, up)
-      this.outline.fireMouseEvent('mouseDown', new MouseEventEx(e))
+      this.outline.dispatchMouseEvent('mouseDown', new MouseEventEx(e))
     }
 
     DomEvent.addMouseListeners(this.sizer.elem!, handle)
@@ -541,7 +541,7 @@ export class MiniMap extends Disablable implements IMouseHandler {
     }
 
     if (this.outline != null) {
-      this.outline.removeMouseListener(this)
+      this.outline.removeHandler(this)
       this.outline.dispose()
       delete this.outline
     }
