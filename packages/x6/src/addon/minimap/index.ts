@@ -4,7 +4,7 @@ import { IMouseHandler } from '../../handler'
 import { Rectangle, Point } from '../../struct'
 import { Disablable, DomEvent, Disposable, MouseEventEx } from '../../common'
 import { Shape, EllipseShape, RectangleShape, ImageShape } from '../../shape'
-import { Options, FullOptions, getOptions } from './util'
+import { PartialOptions, FullOptions, getOptions } from './option'
 
 export class MiniMap extends Disablable implements IMouseHandler {
   public source: Graph
@@ -22,72 +22,63 @@ export class MiniMap extends Disablable implements IMouseHandler {
   private startY: number
   private scrollLeft: number
   private scrollTop: number
+  private minX: number
+  private minY: number
+  private maxX: number
+  private maxY: number
 
-  private panHandler: () => void
-  private updateHandler: () => void
-  private refreshHandler: () => void
+  private panHandler = () => {
+    if (this.options.updateOnPan) {
+      this.update()
+    }
+  }
 
-  constructor(source: Graph, options: Options) {
+  private updateHandler = () => {
+    if (!this.suspended && !this.active) {
+      this.update()
+    }
+  }
+
+  private refreshHandler = () => {
+    this.outline.refresh()
+  }
+
+  constructor(source: Graph, options: MiniMap.Options) {
     super()
-
     this.source = source
     this.options = getOptions(options)
-
-    this.panHandler = () => {
-      if (this.options.updateOnPan) {
-        this.update()
-      }
-    }
-
-    this.updateHandler = () => {
-      if (!this.suspended && !this.active) {
-        this.update()
-      }
-    }
-
-    this.refreshHandler = () => {
-      this.outline.refresh()
-    }
-
     if (options.container != null) {
       this.init(options.container)
     }
   }
 
-  enableZoom() {}
-
-  disableZoom() {}
-
-  refresh() {
-    this.update(true)
-  }
-
   init(container: HTMLElement) {
+    const showEdge = this.options.showEdge
     this.outline = new Graph(container, {
       model: this.source.getModel(),
+      grid: false,
       folding: false,
       autoScroll: false,
-      grid: false,
       pageScale: this.source.pageScale,
       pageFormat: this.source.pageFormat,
       pageVisible: this.source.pageVisible,
-      backgroundColor: this.source.backgroundColor,
-
       labelsVisible: this.options.showLabel,
+      backgroundColor:
+        this.options.backgroundColor || this.source.backgroundColor,
       nodeStyle: { ...this.options.nodeStyle },
       edgeStyle: { ...this.options.edgeStyle },
+      isCellVisible(cell) {
+        if (cell != null && cell.isEdge()) {
+          return showEdge ? this.getNativeValue() : false
+        }
+      },
     })
 
+    container.style.overflow = 'hidden'
     container.style.backgroundColor = util.getComputedStyle(
       this.source.container,
       'backgroundColor',
     )
-
-    if (this.outline.dialect === 'svg') {
-      const svg = this.outline.view.getStage()!.parentNode as SVGSVGElement
-      svg.setAttribute('shape-rendering', 'optimizeSpeed')
-      svg.setAttribute('image-rendering', 'optimizeSpeed')
-    }
 
     this.source.on('pan', this.panHandler)
     this.source.on('refresh', this.refreshHandler)
@@ -113,10 +104,12 @@ export class MiniMap extends Disablable implements IMouseHandler {
       }
       const up = (e: MouseEvent) => {
         DomEvent.removeMouseListeners(target, null, move, up)
+        DomEvent.removeMouseListeners(document, null, move, up)
         this.outline.fireMouseEvent('mouseUp', new MouseEventEx(e))
       }
 
       DomEvent.addMouseListeners(target, null, move, up)
+      DomEvent.addMouseListeners(document, null, move, up)
       this.outline.fireMouseEvent('mouseDown', new MouseEventEx(e))
     }
 
@@ -216,61 +209,112 @@ export class MiniMap extends Disablable implements IMouseHandler {
     return null
   }
 
+  protected updateConstraint() {
+    const sView = this.source.view
+    const oView = this.outline.view
+    const factor = oView.scale / sView.scale
+    const sContainer = this.source.container
+
+    this.minX =
+      (oView.translate.x - sView.translate.x - this.source.panX) * oView.scale
+    this.minY =
+      (oView.translate.y - sView.translate.y - this.source.panY) * oView.scale
+
+    this.maxX =
+      this.minX + (sContainer.scrollWidth - sContainer.clientWidth) * factor
+    this.maxY =
+      this.minY + (sContainer.scrollHeight - sContainer.clientHeight) * factor
+
+    if (this.viewport.dialect === 'svg') {
+      const adjust = this.options.viewport.strokeWidth / 2
+      this.minX += adjust
+      this.maxX -= adjust
+      this.minY += adjust
+      this.maxY -= adjust
+    }
+  }
+
   protected updateBounds() {
     const sView = this.source.view
     const oView = this.outline.view
-    const sizeFactor = sView.scale / oView.scale
-    const scaleFactor = 1.0 / oView.scale
+    const factor = oView.scale / sView.scale
 
-    this.bounds = new Rectangle(
-      (oView.translate.x - sView.translate.x - this.source.panX) / scaleFactor,
-      (oView.translate.y - sView.translate.y - this.source.panY) / scaleFactor,
-      this.source.container.clientWidth / sizeFactor,
-      this.source.container.clientHeight / sizeFactor,
+    this.bounds.x = 0
+    this.bounds.y = 0
+    const pos = this.getPosition(
+      (oView.translate.x - sView.translate.x - this.source.panX) * oView.scale +
+        this.source.container.scrollLeft * factor,
+      (oView.translate.y - sView.translate.y - this.source.panY) * oView.scale +
+        this.source.container.scrollTop * factor,
     )
 
-    this.bounds.x += this.source.container.scrollLeft / scaleFactor
-    this.bounds.y += this.source.container.scrollTop / scaleFactor
+    this.bounds = new Rectangle(
+      pos.x,
+      pos.y,
+      this.source.container.clientWidth * factor,
+      this.source.container.clientHeight * factor,
+    )
+  }
+
+  protected getPosition(dx: number, dy: number) {
+    let x = this.bounds.x + dx
+    let y = this.bounds.y + dy
+    if (this.options.constrained) {
+      x = util.clamp(x, this.minX, this.maxX)
+      y = util.clamp(y, this.minY, this.maxY)
+    }
+
+    return { x, y }
+  }
+
+  protected updateViewport(bounds: Rectangle = this.bounds) {
+    if (!this.viewport.bounds.equals(bounds)) {
+      this.viewport.bounds = bounds
+      this.viewport.redraw()
+    }
   }
 
   protected updateSizer(bounds: Rectangle = this.bounds) {
-    const prev = this.sizer.bounds
+    const old = this.sizer.bounds
     const next = new Rectangle(
-      bounds.x + bounds.width - prev.width / 2,
-      bounds.y + bounds.height - prev.height / 2,
-      prev.width,
-      prev.height,
+      bounds.x + bounds.width - old.width / 2,
+      bounds.y + bounds.height - old.height / 2,
+      old.width,
+      old.height,
     )
 
-    if (
-      prev.x !== next.x ||
-      prev.y !== next.y ||
-      prev.width !== next.width ||
-      prev.height !== next.height
-    ) {
+    if (!old.equals(next)) {
       this.sizer.bounds = next
       this.sizer.redraw()
     }
   }
 
-  protected updateViewport() {
-    const b = this.viewport.bounds
-    if (
-      b.x !== this.bounds.x ||
-      b.y !== this.bounds.y ||
-      b.width !== this.bounds.width ||
-      b.height !== this.bounds.height
-    ) {
-      this.viewport.bounds = this.bounds
-      this.viewport.redraw()
+  protected getDelta(e: MouseEventEx) {
+    return {
+      dx: e.getClientX() - this.startX,
+      dy: e.getClientY() - this.startY,
     }
+  }
+
+  enableZoom() {
+    this.options.sizer.visible = true
+    this.sizer.elem!.style.display = ''
+  }
+
+  disableZoom() {
+    this.options.sizer.visible = false
+    this.sizer.elem!.style.display = 'none'
+  }
+
+  refresh() {
+    this.update(true)
   }
 
   update(revalidate: boolean = false) {
     if (
       this.source != null &&
-      this.source.container != null &&
       this.outline != null &&
+      this.source.container != null &&
       this.outline.container != null
     ) {
       const sView = this.source.view
@@ -297,27 +341,24 @@ export class MiniMap extends Disablable implements IMouseHandler {
       const union = unscaledGraphBounds.clone()
       union.add(unscaledFinderBounds)
 
-      // Zooms to the scrollable area if that is bigger than the graph
       const size = this.getSourceContainerSize()
       const completeWidth = Math.max(size.width / sourceScale, union.width)
       const completeHeight = Math.max(size.height / sourceScale, union.height)
+      const availableWidth = Math.max(0, oContainer.clientWidth)
+      const availableHeight = Math.max(0, oContainer.clientHeight)
 
-      const border = this.options.border
-      const availableWidth = Math.max(0, oContainer.clientWidth - border)
-      const availableHeight = Math.max(0, oContainer.clientHeight - border)
-
-      const outlineScale = Math.min(
+      let outlineScale = Math.min(
         availableWidth / completeWidth,
         availableHeight / completeHeight,
       )
 
-      const scale = isNaN(outlineScale)
+      outlineScale = isNaN(outlineScale)
         ? this.options.minScale
         : Math.max(this.options.minScale, outlineScale)
 
-      if (scale > 0) {
-        if (this.outline.view.scale !== scale) {
-          this.outline.view.scale = scale
+      if (outlineScale > 0) {
+        if (this.outline.view.scale !== outlineScale) {
+          this.outline.view.scale = outlineScale
           revalidate = true // tslint:disable-line
         }
 
@@ -329,10 +370,10 @@ export class MiniMap extends Disablable implements IMouseHandler {
         let tx = t.x + this.source.panX
         let ty = t.y + this.source.panY
 
-        const off = this.getOutlineOffset(scale)
-        if (off != null) {
-          tx += off.x
-          ty += off.y
+        const offset = this.getOutlineOffset(outlineScale)
+        if (offset != null) {
+          tx += offset.x
+          ty += offset.y
         }
 
         if (unscaledGraphBounds.x < 0) {
@@ -348,6 +389,7 @@ export class MiniMap extends Disablable implements IMouseHandler {
           revalidate = true // tslint:disable-line
         }
 
+        this.updateConstraint()
         this.updateBounds()
         this.updateViewport()
         this.updateSizer()
@@ -364,6 +406,7 @@ export class MiniMap extends Disablable implements IMouseHandler {
       const tol = !DomEvent.isMouseEvent(e.getEvent())
         ? this.source.tolerance
         : 0
+
       const hit =
         tol > 0
           ? new Rectangle(
@@ -396,92 +439,89 @@ export class MiniMap extends Disablable implements IMouseHandler {
     e.consume()
   }
 
-  getDelta(e: MouseEventEx) {
-    return new Point(e.getClientX() - this.startX, e.getClientY() - this.startY)
-  }
-
   mouseMove(e: MouseEventEx) {
-    if (this.active) {
-      if (!this.options.viewport.visible) {
-        this.viewport.elem!.style.display = 'none'
-      }
-
-      if (!this.options.viewport.visible || !this.options.sizer.visible) {
-        this.sizer.elem!.style.display = 'none'
-      }
-
-      const delta = this.getDelta(e)
-      let dx = delta.x
-      let dy = delta.y
-      let bounds = null
-
-      if (!this.zooming) {
-        bounds = new Rectangle(
-          this.bounds.x + dx,
-          this.bounds.y + dy,
-          this.bounds.width,
-          this.bounds.height,
-        )
-        this.viewport.bounds = bounds
-        this.viewport.redraw()
-        dx /= this.outline.view.scale
-        dx *= this.source.view.scale
-        dy /= this.outline.view.scale
-        dy *= this.source.view.scale
-        this.source.pan(-dx - this.scrollLeft, -dy - this.scrollTop)
-      } else {
-        const container = this.source.container
-        const viewRatio = container.clientWidth / container.clientHeight
-        dy = dx / viewRatio
-        bounds = new Rectangle(
-          this.bounds.x,
-          this.bounds.y,
-          Math.max(1, this.bounds.width + dx),
-          Math.max(1, this.bounds.height + dy),
-        )
-        this.viewport.bounds = bounds
-        this.viewport.redraw()
-      }
-
-      this.updateSizer(bounds)
-
-      e.consume()
+    if (!this.active) {
+      return
     }
+
+    if (!this.options.viewport.visible) {
+      this.viewport.elem!.style.display = 'none'
+    }
+
+    if (!this.options.viewport.visible || !this.options.sizer.visible) {
+      this.sizer.elem!.style.display = 'none'
+    }
+
+    const delta = this.getDelta(e)
+    let dx = delta.dx
+    let dy = delta.dy
+    let bounds = null
+
+    if (this.zooming) {
+      const container = this.source.container
+      const viewRatio = container.clientWidth / container.clientHeight
+      dy = dx / viewRatio
+      bounds = new Rectangle(
+        this.bounds.x,
+        this.bounds.y,
+        Math.max(1, this.bounds.width + dx),
+        Math.max(1, this.bounds.height + dy),
+      )
+    } else {
+      const pos = this.getPosition(dx, dy)
+      bounds = new Rectangle(
+        pos.x,
+        pos.y,
+        this.bounds.width,
+        this.bounds.height,
+      )
+      const factor = this.source.view.scale / this.outline.view.scale
+      dx *= factor
+      dy *= factor
+      this.source.pan(this.scrollLeft + dx, this.scrollTop + dy)
+    }
+
+    this.updateViewport(bounds)
+    this.updateSizer(bounds)
+
+    e.consume()
   }
 
   mouseUp(e: MouseEventEx) {
-    if (this.active) {
-      const delta = this.getDelta(e)
-      let dx = delta.x
-      let dy = delta.y
+    if (!this.active) {
+      return
+    }
 
-      if (Math.abs(dx) > 0 || Math.abs(dy) > 0) {
-        if (!this.zooming) {
-          if (
-            !this.source.useScrollbarsForPanning ||
-            !util.hasScrollbars(this.source.container)
-          ) {
-            this.source.pan(0, 0)
-            dx /= this.outline.view.scale
-            dy /= this.outline.view.scale
-            const t = this.source.view.translate
-            this.source.view.setTranslate(t.x - dx, t.y - dy)
-          }
-        } else {
-          const width = this.viewport.bounds.width
-          const scale = this.source.view.scale
-          this.source.zoomTo(
-            Math.max(this.options.minScale, scale - (dx * scale) / width),
-            false,
-          )
+    const delta = this.getDelta(e)
+    let dx = delta.dx
+    let dy = delta.dy
+
+    if (Math.abs(dx) > 0 || Math.abs(dy) > 0) {
+      if (this.zooming) {
+        const scale = this.source.view.scale
+        const width = this.viewport.bounds.width
+        this.source.zoomTo(
+          Math.max(this.options.minScale, scale - (dx * scale) / width),
+          false,
+        )
+      } else {
+        if (
+          !this.source.useScrollbarsForPanning ||
+          !util.hasScrollbars(this.source.container)
+        ) {
+          this.source.pan(0, 0)
+          dx /= this.outline.view.scale
+          dy /= this.outline.view.scale
+          const t = this.source.view.translate
+          this.source.view.setTranslate(t.x - dx, t.y - dy)
         }
-
-        this.update()
-        e.consume()
       }
 
-      this.active = false
+      this.update()
+      e.consume()
     }
+
+    this.active = false
   }
 
   @Disposable.aop()
@@ -518,4 +558,6 @@ export class MiniMap extends Disablable implements IMouseHandler {
   }
 }
 
-export namespace MiniMap {}
+export namespace MiniMap {
+  export interface Options extends PartialOptions {}
+}
