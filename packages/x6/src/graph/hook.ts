@@ -370,15 +370,19 @@ export interface IHooks {
     this: Graph,
     newNode: Cell,
     options: Cell.CreateNodeOptions,
-  ) => Cell
+  ) => Cell | null | undefined | void
 
   onCreateEdge?: (
     this: Graph,
     newEdge: Cell,
     options: Cell.CreateEdgeOptions,
-  ) => Cell
+  ) => Cell | null | undefined | void
 
-  onCreateGroup?: (this: Graph, newGroup: Cell, cells: Cell[]) => Cell
+  onCreateGroup?: (
+    this: Graph,
+    newGroup: Cell,
+    cells: Cell[],
+  ) => Cell | null | undefined | void
 
   // #endregion
 }

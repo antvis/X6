@@ -44,7 +44,10 @@ export function afterCreate(aopName?: string | null) {
       const aop = (this.options as any)[name]
       if (aop != null) {
         args.unshift(instance)
-        return util.apply(aop, this, args)
+        const restult = util.apply(aop, this, args)
+        if (restult != null) {
+          return restult
+        }
       }
 
       return instance
