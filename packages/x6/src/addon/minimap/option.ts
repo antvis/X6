@@ -33,12 +33,10 @@ export interface SizerOptions {
 
 interface BaseOptions {
   container?: HTMLElement
-  /**
-   * Border to be added at the bottom and right.
-   *
-   * Default is `10`.
-   */
-  border: number
+
+  backgroundColor?: string
+
+  constrained: boolean
 
   /**
    * Minimum scale to be used.
@@ -66,7 +64,7 @@ export interface FullOptions extends BaseOptions {
   edgeStyle: Partial<Style>
 }
 
-export interface Options extends Partial<BaseOptions> {
+export interface PartialOptions extends Partial<BaseOptions> {
   sizer?: Partial<SizerOptions>
   viewport?: Partial<ViewportOptions>
   nodeStyle?: Partial<Style>
@@ -74,11 +72,11 @@ export interface Options extends Partial<BaseOptions> {
 }
 
 const preset: FullOptions = {
-  border: 10,
   minScale: 0.0001,
-  updateOnPan: false,
-  showEdge: true,
+  showEdge: false,
   showLabel: false,
+  updateOnPan: false,
+  constrained: true,
   sizer: {
     visible: true,
     size: 10,
@@ -102,10 +100,13 @@ const preset: FullOptions = {
     fill: '#1890ff',
     stroke: '#1890ff',
   },
-  edgeStyle: {},
+  edgeStyle: {
+    fill: '#1890ff',
+    stroke: '#1890ff',
+  },
 }
 
-export function getOptions(options: Options): FullOptions {
+export function getOptions(options: PartialOptions): FullOptions {
   return {
     ...preset,
     ...options,
