@@ -13,6 +13,6 @@ export namespace x6 {
    * @param enabled Specifies if seed client information to AntV server.
    */
   export function track(enabled: boolean) {
-    globals.trackable = false
+    globals.trackable = enabled
   }
 }
