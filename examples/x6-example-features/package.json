@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@antv/x6-example-features",
-  "version": "0.1.19",
+  "version": "0.1.21",
   "scripts": {
     "start": "umi dev",
     "build": "umi build",
@@ -10,7 +10,7 @@
     "precommit": "lint-staged"
   },
   "dependencies": {
-    "@antv/x6": "^0.2.1",
+    "@antv/x6": "^0.2.2",
     "@antv/x6-components": "^0.2.0",
     "antd": "^3.19.5",
     "classnames": "^2.2.6",
