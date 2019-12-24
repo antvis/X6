@@ -4,98 +4,79 @@ import { MouseEventEx } from '../common'
 import { Align, VAlign } from '../types'
 
 export interface EventArgs {
-  root?: null
-  size: Rectangle
   refresh?: null
-  selectionChanged: {
-    added?: Cell[] | null
-    removed?: Cell[] | null
+  pan: {
+    panX: number
+    panY: number
   }
 
-  addCells: {
-    cells: Cell[]
-    parent: Cell
-    index: number
-    sourceNode?: Cell | null
-    targetNode?: Cell | null
+  'root:changed'?: null
+
+  'selection:changed': {
+    added?: Cell[] | null
+    removed?: Cell[] | null
+    selected: Cell[]
   }
-  cellsAdded: {
+
+  'cells:adding': {
     cells: Cell[]
     parent: Cell
     index: number
-    sourceNode?: Cell | null
-    targetNode?: Cell | null
+    source?: Cell | null
+    target?: Cell | null
+  }
+
+  'cells:added': {
+    cells: Cell[]
+    parent: Cell
+    index: number
+    source?: Cell | null
+    target?: Cell | null
     absolute: boolean
   }
-  removeCells: {
+
+  'cells:removing': {
     cells: Cell[]
     includeEdges: boolean
   }
-  cellsRemoved: {
+
+  'cells:removed': {
     cells: Cell[]
   }
-  connectCell: {
-    edge: Cell
-    terminal?: Cell | null
-    isSource: boolean
-    previous?: Cell | null
-    anchor?: Anchor | null
-  }
-  cellConnected: {
-    edge: Cell
-    terminal?: Cell | null
-    isSource: boolean
-    previous?: Cell | null
-    anchor?: Anchor | null
-  }
-  collapseCells: {
+
+  'cells:collapsing': {
     cells: Cell[]
     collapsed: boolean
     recurse: boolean
   }
-  cellsCollapsed: {
+
+  'cells:collapsed': {
     cells: Cell[]
     collapsed: boolean
     recurse: boolean
   }
-  splitEdge: {
-    edge: Cell
-    newEdge: Cell
-    cells: Cell[]
-    dx: number
-    dy: number
-  }
-  flipEdge: { edge: Cell }
-  toggleCells: {
-    show: boolean
-    includeEdges: boolean
-    cells: Cell[]
-  }
-  resizeCells: {
+
+  'cells:resizing': {
     cells: Cell[]
     bounds: Rectangle[]
   }
-  cellsResized: {
+
+  'cells:resized': {
     cells: Cell[]
     bounds: Rectangle[]
   }
-  updateCellSize: {
-    cell: Cell
-    ignoreChildren: boolean
+
+  'cells:showing': {
+    cells: Cell[]
+    visbile: boolean
   }
-  addOverlay: {
-    cell: Cell
-    overlay: Overlay
+
+  'cells:showed': {
+    cells: Cell[]
+    visbile: boolean
   }
-  removeOverlay: {
-    cell: Cell
-    overlay: Overlay
-  }
-  removeOverlays: {
-    cell: Cell
-    overlays: Overlay[]
-  }
-  moveCells: {
+
+  'cells:moving': {
     cells: Cell[]
     dx: number
     dy: number
@@ -103,50 +84,116 @@ export interface EventArgs {
     target?: Cell | null
     e?: MouseEvent | null
   }
-  cellsMoved: {
+
+  'cells:moved': {
     cells: Cell[]
     dx: number
     dy: number
     disconnect: boolean
   }
-  alignCells: {
+
+  'cells:ordering': {
+    cells: Cell[]
+    toBack: boolean
+  }
+
+  'cells:ordered': {
+    cells: Cell[]
+    toBack: boolean
+  }
+
+  'cells:aligning': {
     cells: Cell[]
     align: Align | VAlign
   }
-  orderCells: {
+
+  'cells:aligned': {
     cells: Cell[]
-    toBack: boolean
+    align: Align | VAlign
   }
-  cellsOrdered: {
-    cells: Cell[]
-    toBack: boolean
-  }
-  groupCells: {
+
+  'cells:grouping': {
     cells: Cell[]
     group: Cell
     border: number
   }
-  ungroupCells: {
+
+  'cells:grouped': {
+    cells: Cell[]
+    group: Cell
+    border: number
+  }
+
+  'cells:ungrouping': {
     cells: Cell[]
   }
-  removeCellsFromParent: {
+
+  'cells:ungrouped': {
     cells: Cell[]
   }
-  startEditing: {
+
+  'cells:removedFromParent': {
+    cells: Cell[]
+  }
+
+  'cell:editing': {
     cell: Cell
     e?: MouseEvent | null
   }
-  editingStarted: {
-    cell: Cell
-    e?: MouseEvent | null
-  }
-  editingStopped: {
+
+  'cell:edited': {
     cancel: boolean
   }
 
-  pan: {
-    panX: number
-    panY: number
+  'cell:connecting': {
+    edge: Cell
+    terminal?: Cell | null
+    isSource: boolean
+    previous?: Cell | null
+    anchor?: Anchor | null
+  }
+
+  'cell:connected': {
+    edge: Cell
+    terminal?: Cell | null
+    isSource: boolean
+    previous?: Cell | null
+    anchor?: Anchor | null
+  }
+
+  'edge:splitting': {
+    edge: Cell
+    newEdge: Cell
+    cells: Cell[]
+    dx: number
+    dy: number
+  }
+
+  'edge:splitted': {
+    edge: Cell
+    newEdge: Cell
+    cells: Cell[]
+    dx: number
+    dy: number
+  }
+
+  'edge:flipping': { edge: Cell }
+
+  'edge:flipped': { edge: Cell }
+
+  'overlay:added': {
+    cell: Cell
+    overlay: Overlay
+  }
+
+  'overlay:removed': {
+    cell: Cell
+    overlay: Overlay
+  }
+
+  'overlays:removed': {
+    cell: Cell
+    overlays: Overlay[]
   }
 
   mouseEvent: {

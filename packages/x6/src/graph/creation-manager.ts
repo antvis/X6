@@ -98,19 +98,19 @@ export class CreationManager extends BaseManager {
     cells: Cell[],
     parent: Cell,
     index: number,
-    sourceNode?: Cell,
-    targetNode?: Cell,
+    source?: Cell,
+    target?: Cell,
   ) {
     this.model.batchUpdate(() => {
-      this.graph.trigger('addCells', {
+      this.graph.trigger('cells:adding', {
         cells,
         parent,
         index,
-        sourceNode,
-        targetNode,
+        source,
+        target,
       })
 
-      this.cellsAdded(cells, parent, index, sourceNode, targetNode, false, true)
+      this.cellsAdded(cells, parent, index, source, target, false, true)
     })
 
     return cells
@@ -213,12 +213,12 @@ export class CreationManager extends BaseManager {
           }
         }
 
-        this.graph.trigger('cellsAdded', {
+        this.graph.trigger('cells:added', {
           cells,
           parent,
           index,
-          sourceNode,
-          targetNode,
+          source: sourceNode,
+          target: targetNode,
           absolute: absolute === true,
         })
       })
@@ -308,7 +308,7 @@ export class CreationManager extends BaseManager {
     }
 
     this.model.batchUpdate(() => {
-      this.graph.trigger('removeCells', {
+      this.graph.trigger('cells:removing', {
         includeEdges,
         cells: removing,
       })
@@ -358,7 +358,7 @@ export class CreationManager extends BaseManager {
           this.model.remove(cell)
         })
 
-        this.graph.trigger('cellsRemoved', { cells })
+        this.graph.trigger('cells:removed', { cells })
       })
     }
   }
@@ -457,6 +457,8 @@ export class CreationManager extends BaseManager {
         }
       }
 
+      this.graph.trigger('edge:splitting', { edge, cells, newEdge, dx, dy })
+
       this.graph.movingManager.cellsMoved(cells, dx, dy, false, false)
 
       let index = this.model.getChildCount(parent)
@@ -466,13 +468,7 @@ export class CreationManager extends BaseManager {
       this.cellsAdded([newEdge], parent!, index, source, cells[0], false)
       this.graph.connectionManager.cellConnected(edge, cells[0], true)
 
-      this.graph.trigger('splitEdge', {
-        edge,
-        cells,
-        newEdge,
-        dx,
-        dy,
-      })
+      this.graph.trigger('edge:splitted', { edge, cells, newEdge, dx, dy })
     })
 
     return newEdge

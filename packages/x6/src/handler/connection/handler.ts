@@ -113,7 +113,7 @@ export class ConnectionHandler extends MouseHandler<
     // Removes the icon if we step into/up or start editing
     this.resetHandler = () => this.reset()
     this.graph.on('escape', this.resetHandler)
-    this.graph.on('startEditing', this.resetHandler)
+    this.graph.on('cell:editing', this.resetHandler)
     this.graph.view.on('up', this.resetHandler)
     this.graph.view.on('down', this.resetHandler)
   }

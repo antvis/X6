@@ -319,8 +319,6 @@ export class ViewportManager extends BaseManager {
       )
     }
 
-    this.graph.trigger('size', bounds)
-
     return this
   }
 

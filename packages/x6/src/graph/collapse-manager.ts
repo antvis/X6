@@ -29,7 +29,7 @@ export class CollapseManager extends BaseManager {
   ) {
     this.graph.stopEditing(false)
     this.model.batchUpdate(() => {
-      this.graph.trigger('collapseCells', {
+      this.graph.trigger('cells:collapsing', {
         collapsed,
         recurse,
         cells,
@@ -68,7 +68,7 @@ export class CollapseManager extends BaseManager {
           }
         })
       })
-      this.graph.trigger('cellsCollapsed', { cells, collapsed, recurse })
+      this.graph.trigger('cells:collapsed', { cells, collapsed, recurse })
     }
   }
 

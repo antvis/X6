@@ -30,9 +30,10 @@ export class SelectionChange implements IChange {
     this.added = this.removed
     this.removed = tmp
 
-    this.selection.graph.trigger('selectionChanged', {
+    this.selection.graph.trigger('selection:changed', {
       added: this.added,
       removed: this.removed,
+      selected: this.selection.cells.slice(),
     })
   }
 }

@@ -41,7 +41,7 @@ export class AnchorHandler extends BaseHandler {
       }
     }
 
-    this.graph.on('root', this.resetHandler)
+    this.graph.on('root:changed', this.resetHandler)
     this.graph.model.on('change', this.resetHandler)
     this.graph.view.on('scale', this.resetHandler)
     this.graph.view.on('translate', this.resetHandler)

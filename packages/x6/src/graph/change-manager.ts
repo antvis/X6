@@ -37,7 +37,7 @@ export class ChangeManager extends BaseManager {
         this.view.translate.x = 0
         this.view.translate.y = 0
       }
-      this.graph.trigger('root')
+      this.graph.trigger('root:changed')
     } else if (change instanceof ChildChange) {
       const newParent = this.model.getParent(change.child)!
       this.view.invalidate(change.child, true, true)

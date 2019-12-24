@@ -13,7 +13,7 @@ export class ConnectionManager extends BaseManager {
   ) {
     this.model.batchUpdate(() => {
       const previous = this.model.getTerminal(edge, isSource)
-      this.graph.trigger('connectCell', {
+      this.graph.trigger('cell:connecting', {
         edge,
         terminal,
         isSource,
@@ -63,7 +63,7 @@ export class ConnectionManager extends BaseManager {
           this.graph.resetEdge(edge)
         }
 
-        this.graph.trigger('cellConnected', {
+        this.graph.trigger('cell:connected', {
           edge,
           terminal,
           isSource,

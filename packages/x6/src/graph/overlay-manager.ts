@@ -16,7 +16,7 @@ export class OverlayManager extends BaseManager {
       this.renderer.redraw(state)
     }
 
-    this.graph.trigger('addOverlay', { cell, overlay })
+    this.graph.trigger('overlay:added', { cell, overlay })
 
     return overlay
   }
@@ -38,7 +38,7 @@ export class OverlayManager extends BaseManager {
         this.renderer.redraw(state)
       }
 
-      this.graph.trigger('removeOverlay', { cell, overlay })
+      this.graph.trigger('overlay:removed', { cell, overlay })
 
       return overlay
     }
@@ -55,7 +55,7 @@ export class OverlayManager extends BaseManager {
         this.renderer.redraw(state)
       }
 
-      this.graph.trigger('removeOverlays', { cell, overlays })
+      this.graph.trigger('overlays:removed', { cell, overlays })
     }
 
     return overlays

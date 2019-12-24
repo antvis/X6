@@ -117,6 +117,8 @@ export class StyleManager extends BaseManager {
 
   flipEdge(edge: Cell) {
     if (edge != null && this.graph.alternateEdgeStyle != null) {
+      this.graph.trigger('edge:flipping', { edge })
+
       this.model.batchUpdate(() => {
         const style = this.model.getStyle(edge)
         if (style == null) {
@@ -127,35 +129,26 @@ export class StyleManager extends BaseManager {
 
         // Removes all control points
         this.graph.resetEdge(edge)
-        this.graph.trigger('flipEdge', { edge })
       })
+
+      this.graph.trigger('edge:flipped', { edge })
     }
 
     return edge
   }
 
-  toggleCells(show: boolean, cells: Cell[], includeEdges: boolean) {
-    const arr = includeEdges
-      ? this.graph.creationManager.addAllEdges(cells)
-      : cells
+  toggleCells(visbile: boolean, cells: Cell[], includeEdges: boolean) {
+    // tslint:disable-next-line
+    cells = includeEdges ? this.graph.creationManager.addAllEdges(cells) : cells
 
-    this.model.batchUpdate(() => {
-      this.graph.trigger('toggleCells', {
-        show,
-        includeEdges,
-        cells: arr,
-      })
-      this.setCellsVisibleImpl(arr, show)
-    })
-
-    return arr
-  }
-
-  protected setCellsVisibleImpl(cells: Cell[], show: boolean) {
     if (cells != null && cells.length > 0) {
+      this.graph.trigger('cells:showing', { visbile, cells })
       this.model.batchUpdate(() => {
-        cells.forEach(cell => this.model.setVisible(cell, show))
+        cells.forEach(cell => this.model.setVisible(cell, visbile))
       })
+      this.graph.trigger('cells:showed', { visbile, cells })
     }
+
+    return cells
   }
 }

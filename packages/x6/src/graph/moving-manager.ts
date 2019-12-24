@@ -76,7 +76,7 @@ export class MovingManager extends BaseManager {
           this.graph.setNegativeCoordinatesAllowed(true)
         }
 
-        this.graph.trigger('moveCells', {
+        this.graph.trigger('cells:moving', {
           cells,
           dx,
           dy,
@@ -141,13 +141,13 @@ export class MovingManager extends BaseManager {
         if (this.graph.resetEdgesOnMove) {
           this.resetOtherEdges(cells)
         }
+      })
 
-        this.graph.trigger('cellsMoved', {
-          cells,
-          dx,
-          dy,
-          disconnect,
-        })
+      this.graph.trigger('cells:moved', {
+        cells,
+        dx,
+        dy,
+        disconnect,
       })
     }
   }
@@ -234,6 +234,8 @@ export class MovingManager extends BaseManager {
 
   alignCells(align: Align | VAlign, cells: Cell[], param?: number) {
     if (cells != null && cells.length > 1) {
+      this.graph.trigger('cells:aligning', { align, cells })
+
       let coord = param
 
       // Finds the required coordinate for the alignment
@@ -301,35 +303,33 @@ export class MovingManager extends BaseManager {
         })
       })
 
-      this.graph.trigger('alignCells', { align, cells })
+      this.graph.trigger('cells:aligned', { align, cells })
     }
 
     return cells
   }
 
   orderCells(toBack: boolean, cells: Cell[]) {
+    this.graph.trigger('cells:ordering', { cells, toBack })
     this.model.batchUpdate(() => {
-      this.graph.trigger('orderCells', { cells, toBack })
       this.cellsOrdered(cells, toBack)
     })
     return cells
   }
 
   cellsOrdered(cells: Cell[], toBack: boolean) {
-    if (cells != null) {
-      this.model.batchUpdate(() => {
-        cells.forEach((cell, i) => {
-          const parent = this.model.getParent(cell)!
+    this.model.batchUpdate(() => {
+      cells.forEach((cell, i) => {
+        const parent = this.model.getParent(cell)!
 
-          if (toBack) {
-            this.model.add(parent, cell, i)
-          } else {
-            this.model.add(parent, cell, this.model.getChildCount(parent) - 1)
-          }
-        })
-
-        this.graph.trigger('cellsOrdered', { cells, toBack })
+        if (toBack) {
+          this.model.add(parent, cell, i)
+        } else {
+          this.model.add(parent, cell, this.model.getChildCount(parent) - 1)
+        }
       })
-    }
+    })
+
+    this.graph.trigger('cells:ordered', { cells, toBack })
   }
 }
