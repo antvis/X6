@@ -64,12 +64,12 @@ export class PanningManager extends BaseManager {
   }
 
   protected addListeners() {
-    this.graph.addMouseListener(this.mouseListener)
+    this.graph.addHandler(this.mouseListener)
     DomEvent.addListener(document, 'mouseup', this.mouseUpHandler)
   }
 
   protected removeListeners() {
-    this.graph.removeMouseListener(this.mouseListener)
+    this.graph.removeHandler(this.mouseListener)
     DomEvent.removeListener(document, 'mouseup', this.mouseUpHandler)
   }
 

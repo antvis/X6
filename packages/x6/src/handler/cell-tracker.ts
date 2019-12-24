@@ -16,7 +16,7 @@ export class CellTracker extends CellMarker implements IMouseHandler {
       this.getCell = getCell
     }
 
-    this.graph.addMouseListener(this)
+    this.graph.addHandler(this)
   }
 
   mouseDown(e: MouseEventEx, sender: any) {}
@@ -31,6 +31,6 @@ export class CellTracker extends CellMarker implements IMouseHandler {
 
   @Disposable.aop()
   dispose() {
-    this.graph.removeMouseListener(this)
+    this.graph.removeHandler(this)
   }
 }

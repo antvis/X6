@@ -37,13 +37,13 @@ export class EventLoopManager extends BaseManager {
   protected initialTouchX: number = 0
   protected initialTouchY: number = 0
 
-  addMouseListener(handler: IMouseHandler) {
+  addHandler(handler: IMouseHandler) {
     if (!this.mouseListeners.includes(handler)) {
       this.mouseListeners.push(handler)
     }
   }
 
-  removeMouseListener(handler: IMouseHandler) {
+  removeHandler(handler: IMouseHandler) {
     if (this.mouseListeners != null) {
       for (let i = 0, ii = this.mouseListeners.length; i < ii; i += 1) {
         if (this.mouseListeners[i] === handler) {
@@ -145,14 +145,14 @@ export class EventLoopManager extends BaseManager {
     ) {
       this.eventSource = eventSource
       this.mouseMoveRedirect = (e: MouseEvent) => {
-        this.fireMouseEvent(
+        this.dispatchMouseEvent(
           DomEvent.MOUSE_MOVE,
           new MouseEventEx(e, this.getStateForTouchEvent(e as any)),
           sender,
         )
       }
       this.mouseUpRedirect = (e: MouseEvent) => {
-        this.fireMouseEvent(
+        this.dispatchMouseEvent(
           DomEvent.MOUSE_UP,
           new MouseEventEx(e, this.getStateForTouchEvent(e as any)),
           sender,
@@ -273,7 +273,7 @@ export class EventLoopManager extends BaseManager {
     }
   }
 
-  fireMouseEvent(
+  dispatchMouseEvent(
     eventName: 'mouseDown' | 'mouseMove' | 'mouseUp',
     e: MouseEventEx,
     sender: any,
@@ -367,7 +367,7 @@ export class EventLoopManager extends BaseManager {
     // Updates the event state via getEventState
     e.state = this.getEventState(e.getState())
 
-    this.graph.trigger('fireMouseEvent', { eventName, e, sender })
+    this.graph.trigger('mouseEvent', { eventName, e, sender })
 
     if (
       detector.IS_OPERA ||
@@ -466,7 +466,7 @@ export class EventLoopManager extends BaseManager {
     this.consumeMouseEvent(eventName, e)
   }
 
-  fireGestureEvent(e: MouseEvent, cell?: Cell) {
+  gesture(e: MouseEvent, cell?: Cell) {
     // Resets double tap event handling when gestures take place
     this.lastTouchTime = 0
     this.graph.trigger('gesture', { e, cell })

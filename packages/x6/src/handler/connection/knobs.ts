@@ -76,7 +76,7 @@ export class Knobs extends Disposable {
         // Updates the local icon before firing the mouse down event.
         if (!DomEvent.isConsumed(evt)) {
           this.icon = icon
-          this.graph.fireMouseEvent(
+          this.graph.dispatchMouseEvent(
             DomEvent.MOUSE_DOWN,
             new MouseEventEx(evt, getState()),
           )

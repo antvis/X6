@@ -146,7 +146,7 @@ export class ContextMenuHandler extends MouseHandler {
 
   @Disposable.aop()
   dispose() {
-    this.graph.removeMouseListener(this)
+    this.graph.removeHandler(this)
     this.graph.off('gesture', this.gestureHandler)
   }
 }
