@@ -10,6 +10,8 @@ export class GroupManager extends BaseManager {
       group = this.graph.createGroup(cells) // tslint:disable-line
     }
 
+    this.graph.trigger('cells:grouping', { group, cells, border })
+
     if (cells.length > 0) {
       const bounds = this.getBoundsForGroup(group, cells, border)
       if (bounds != null) {
@@ -63,7 +65,7 @@ export class GroupManager extends BaseManager {
 
           // Resize the group
           this.graph.sizeManager.cellsResized([group], [bounds], false)
-          this.graph.trigger('groupCells', { group, cells, border })
+          this.graph.trigger('cells:grouped', { group, cells, border })
         })
       }
     }
@@ -126,6 +128,8 @@ export class GroupManager extends BaseManager {
     }
 
     if (cells != null && cells.length > 0) {
+      this.graph.trigger('cells:ungrouping', { cells })
+
       this.model.batchUpdate(() => {
         cells!.forEach(cell => {
           let children = this.model.getChildren(cell)
@@ -145,10 +149,10 @@ export class GroupManager extends BaseManager {
             result = result.concat(children)
           }
         })
-
         this.removeGroupsAfterUngroup(cells!)
-        this.graph.trigger('ungroupCells', { cells: cells! })
       })
+
+      this.graph.trigger('cells:ungrouped', { cells })
     }
 
     return result
@@ -274,10 +278,8 @@ export class GroupManager extends BaseManager {
         null,
         true,
       )
-
-      this.graph.trigger('removeCellsFromParent', { cells })
     })
-
+    this.graph.trigger('cells:removedFromParent', { cells })
     return cells
   }
 }
