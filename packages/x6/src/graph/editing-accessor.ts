@@ -34,7 +34,7 @@ export class EditingAccessor extends BaseGraph {
 
   stopEditing(cancel: boolean = false) {
     this.cellEditor.stopEditing(cancel)
-    this.trigger('editingStopped', { cancel })
+    this.trigger('cell:edited', { cancel })
     return this
   }
 
@@ -44,9 +44,8 @@ export class EditingAccessor extends BaseGraph {
   ) {
     if (e == null || !DomEvent.isMultiTouchEvent(e)) {
       if (cell != null && this.isCellEditable(cell)) {
-        this.trigger('startEditing', { cell, e })
         this.cellEditor.startEditing(cell, e)
-        this.trigger('editingStarted', { cell, e })
+        this.trigger('cell:editing', { cell, e })
       }
     }
     return this

@@ -18,7 +18,6 @@ export class SizeManager extends BaseManager {
 
   updateCellSize(cell: Cell, ignoreChildren: boolean = false) {
     this.model.batchUpdate(() => {
-      this.graph.trigger('updateCellSize', { cell, ignoreChildren })
       this.cellSizeUpdated(cell, ignoreChildren)
     })
 
@@ -158,7 +157,7 @@ export class SizeManager extends BaseManager {
 
   resizeCells(cells: Cell[], bounds: Rectangle[], recurse: boolean) {
     this.model.batchUpdate(() => {
-      this.graph.trigger('resizeCells', { cells, bounds })
+      this.graph.trigger('cells:resizing', { cells, bounds })
       this.cellsResized(cells, bounds, recurse)
     })
 
@@ -183,7 +182,7 @@ export class SizeManager extends BaseManager {
         }
       })
 
-      this.graph.trigger('cellsResized', { cells, bounds })
+      this.graph.trigger('cells:resized', { cells, bounds })
     }
   }
 

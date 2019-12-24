@@ -22,7 +22,7 @@ export class SelectionHandler extends MouseHandler {
       }
     }
 
-    this.graph.on('selectionChanged', this.refreshHandler)
+    this.graph.on('selection:changed', this.refreshHandler)
     this.graph.view.on('scale', this.refreshHandler)
     this.graph.view.on('translate', this.refreshHandler)
     this.graph.view.on('scaleAndTranslate', this.refreshHandler)
