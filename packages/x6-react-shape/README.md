@@ -15,13 +15,11 @@ $ yarn add @antv/x6-react-shape
 ## Usage
 
 ```
-import { register } from '@antv/x6-react-shape'
+import { Graph, Shape } from '@antv/x6'
+import { ReactShape } from '@antv/x6-react-shape'
  
-register(); // register shape with default name "shape"
-
-// or
-
-register('react-shape'); // register shape with specified name "react-shape"
+// register shape with name "react"
+Shape.register('react', ReactShape, true) 
 
 // render
 graph.addNode({
