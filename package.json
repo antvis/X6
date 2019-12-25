@@ -6,7 +6,7 @@
     "packages/*"
   ],
   "scripts": {
-    "bootstrap": "lerna bootstrap && yarn build:core",
+    "bootstrap": "lerna bootstrap && yarn build:dev",
     "lk": "lerna link",
     "ls": "lerna list",
     "version": "lerna version --no-git-tag-version",
@@ -16,7 +16,9 @@
     "updated": "lerna updated",
     "clean": "lerna run clean",
     "build": "lerna run build",
-    "build:core": "lerna run build --ignore @antv/x6-example-* --parallel",
+    "build:pre": "lerna run build --scope @antv/x6",
+    "build:sub": "lerna run build --ignore @antv/x6-example-* --scope @antv/x6-* --parallel",
+    "build:dev": "run-s build:pre build:sub",
     "lint": "lerna run lint",
     "test": "lerna run test",
     "coveralls": "lerna run coveralls",
@@ -25,7 +27,7 @@
     "contributor": "git-contributor",
     "changelog": "lerna-changelog",
     "clear": "rimraf yarn.lock && lerna run clean && lerna clean -y && rimraf ./node_modules",
-    "reinstall":"run-s clear bootstrap"
+    "reboot":"run-s clear bootstrap"
   },
   "husky": {
     "hooks": {
