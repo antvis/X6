@@ -1,9 +1,9 @@
 import React from 'react'
-import { Graph } from '@antv/x6'
-import { register } from '@antv/x6-react-shape'
+import { Graph, Shape } from '@antv/x6'
+import { ReactShape } from '@antv/x6-react-shape'
 import './index.less'
 
-register()
+Shape.register('react', ReactShape, true)
 
 export default class Example extends React.Component {
   private container: HTMLDivElement
