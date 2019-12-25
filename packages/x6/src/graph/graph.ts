@@ -25,6 +25,7 @@ import { PanningAccessor } from './panning-accessor'
 import { SelectionAccessor } from './selection-accessor'
 import { CreationAccessor } from './creation-accessor'
 import { GroupAccessor } from './group-accessor'
+import { LayerAccessor } from './layer-accessor'
 import { ValidationAccessor } from './validation-accessor'
 import { StyleAccessor } from './style-accessor'
 import { EventLoopAccessor } from './eventloop-accessor'
@@ -99,6 +100,7 @@ export interface Graph
     GridAccessor,
     GuideAccessor,
     GroupAccessor,
+    LayerAccessor,
     StyleAccessor,
     ChangeAccessor,
     MovingAccessor,
@@ -129,6 +131,7 @@ util.applyMixins(
   GridAccessor,
   GuideAccessor,
   GroupAccessor,
+  LayerAccessor,
   StyleAccessor,
   ChangeAccessor,
   MovingAccessor,

@@ -49,6 +49,7 @@ import { EditingManager } from './editing-manager'
 import { MovingManager } from './moving-manager'
 import { ZoomManager } from './zoom-manager'
 import { PanningManager } from './panning-manager'
+import { LayerManager } from './layer-manager'
 
 export class BaseGraph extends Disablable<EventArgs>
   implements GraphProperties, CompositeOptions {
@@ -78,6 +79,7 @@ export class BaseGraph extends Disablable<EventArgs>
   public editingManager: EditingManager
   public movingManager: MovingManager
   public panningManager: PanningManager
+  public layerManager: LayerManager
 
   public tooltipHandler: TooltipHandler
   public cursorHandler: CursorHandler
@@ -124,6 +126,7 @@ export class BaseGraph extends Disablable<EventArgs>
     this.editingManager = new EditingManager(this as any)
     this.movingManager = new MovingManager(this as any)
     this.panningManager = new PanningManager(this as any)
+    this.layerManager = new LayerManager(this as any)
   }
 
   protected createHandlers() {
