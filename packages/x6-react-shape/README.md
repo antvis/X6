@@ -14,7 +14,7 @@ $ yarn add @antv/x6-react-shape
 
 ## Usage
 
-```
+```ts
 import { Graph, Shape } from '@antv/x6'
 import { ReactShape } from '@antv/x6-react-shape'
  
