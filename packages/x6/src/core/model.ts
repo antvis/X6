@@ -793,13 +793,15 @@ export class Model extends Events<Model.EventArgs> {
     }
   }
 
-  batchUpdate(update: () => void) {
+  batchUpdate<T>(update: () => T) {
     this.beginUpdate()
+    let result
     try {
-      update()
+      result = update()
     } finally {
       this.endUpdate()
     }
+    return result
   }
 
   createUndoableEdit(significant: boolean = true) {

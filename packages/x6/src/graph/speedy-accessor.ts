@@ -14,8 +14,7 @@ export class SpeedyAccessor extends BaseGraph {
     return this.model.getGeometry(cell)
   }
 
-  batchUpdate(update: () => void) {
-    this.model.batchUpdate(update)
-    return this
+  batchUpdate<T>(update: () => T) {
+    return this.model.batchUpdate(update)
   }
 }
