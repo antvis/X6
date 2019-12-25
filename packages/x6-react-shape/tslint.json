@@ -1,0 +1,11 @@
+{
+  "extends": [
+    "tslint-config-airbnb",
+    "tslint-eslint-rules",
+    "tslint-config-prettier"
+  ],
+  "rules": {
+    "import-name": false,
+    "semicolon": [true, "never"]
+  }
+}
