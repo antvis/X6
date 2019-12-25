@@ -38,14 +38,14 @@ import {
 } from '../handler/moving/option'
 import { MouseWheelOptions } from '../handler/mousewheel/option'
 import { preset } from './preset'
-import { IHooks } from '../graph/hook'
+import { IHook } from '../graph/hook'
 import { GlobalConfig } from './global'
 import { GraphProperties } from '../graph/base-graph'
 
 export interface FullOptions
   extends GlobalConfig,
     GraphProperties,
-    Partial<IHooks> {
+    Partial<IHook> {
   nodeStyle: Style
   edgeStyle: Style
   grid: GridOptions
@@ -80,7 +80,7 @@ export interface FullOptions
 export interface GraphOptions
   extends Partial<GlobalConfig>,
     Partial<GraphProperties>,
-    Partial<IHooks> {
+    Partial<IHook> {
   nodeStyle?: Style
   edgeStyle?: Style
   grid?: Partial<GridOptions> | boolean
