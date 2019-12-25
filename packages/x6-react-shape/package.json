@@ -1,7 +1,7 @@
 {
-  "name": "x6-react-shape",
+  "name": "@antv/x6-react-shape",
   "version": "0.1.0",
-  "description": "x6 shape rendering react components",
+  "description": "x6 shape for rendering react components",
   "main": "lib/index.js",
   "module": "es/index.js",
   "types": "lib/index.d.ts",
@@ -34,7 +34,7 @@
   },
   "lint-staged": {
     "src/**/*.ts": [
-      "tslint -c tslint.json -p ./tsconfig.lint.json --fix",
+      "tslint -c tslint.json -p ./tsconfig.json --fix",
       "git add"
     ]
   },

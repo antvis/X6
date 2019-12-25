@@ -1,11 +1,9 @@
-# `x6-react-shape`
+# @antv/x6-react-shape
 
-> TODO: description
+> x6 shape for rendering react components
 
 ## Usage
 
 ```
 const x6ReactShape = require('x6-react-shape');
-
-// TODO: DEMONSTRATE API
 ```
