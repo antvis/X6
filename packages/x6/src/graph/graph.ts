@@ -4,7 +4,7 @@ import { Model } from '../core/model'
 import { Renderer } from '../core/renderer'
 import { GraphOptions, getOptions } from '../option'
 import { hook } from './decorator'
-import { IHooks } from './hook'
+import { IHook } from './hook'
 import { Selection } from './selection'
 import { BaseGraph } from './base-graph'
 import { SpeedyAccessor } from './speedy-accessor'
@@ -35,7 +35,7 @@ import { EditingAccessor } from './editing-accessor'
 import { CommonAccessor } from './common-accessor'
 import { MovingAccessor } from './moving-accessor'
 
-export class Graph extends BaseGraph implements IHooks {
+export class Graph extends BaseGraph implements IHook {
   constructor(container: HTMLElement, options: Graph.Options = {}) {
     super()
 
