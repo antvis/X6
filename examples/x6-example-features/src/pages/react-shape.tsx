@@ -31,7 +31,7 @@ export default class Example extends React.Component {
               lineHeight: '40px',
             }}
           >
-            This is a react element
+            This is a react component
           </div>
         ),
       })
@@ -75,6 +75,7 @@ export default class Example extends React.Component {
         source: node1,
         target: node2,
         label: 'Render With React Shape',
+        htmlLabel: true,
       })
     })
   }

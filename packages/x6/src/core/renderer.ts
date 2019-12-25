@@ -603,7 +603,6 @@ export class Renderer {
           state.text.lastValue != null &&
           this.isTextShapeInvalid(state, state.text)
         ) {
-          // Forces a full repaint
           state.text.lastValue = null
         }
 
@@ -660,7 +659,6 @@ export class Renderer {
     const graph = state.view.graph
 
     if (state.style.fontSize == null || state.style.fontSize > 0) {
-      // Avoids using DOM node for empty labels
       const isForceHtml =
         graph.isHtmlLabel(state.cell) ||
         (value != null && util.isHtmlElem(value))
@@ -852,9 +850,11 @@ export class Renderer {
   }
 
   protected redrawLabelShape(state: State) {
-    const shape = state.text!
-    shape.className = this.getLabelClassName(state)
-    shape.redraw()
+    const shape = state.text
+    if (shape != null) {
+      shape.className = this.getLabelClassName(state)
+      shape.redraw()
+    }
   }
 
   /**
