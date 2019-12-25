@@ -1,6 +1,6 @@
 import ReactDOM from 'react-dom'
 import { util, Shape, Rectangle, SvgCanvas2D } from '@antv/x6'
-import { Component } from './hack'
+import { Component } from './extend'
 
 export class ReactShape extends Shape.Rectangle {
   container: HTMLElement | null
