@@ -36,7 +36,7 @@ type CellIsSourceHook<T> = (
   isSource: boolean,
 ) => Nilable<T>
 
-export interface IHooks {
+export interface IHook {
   createModel: BareHook<Model>
   createView: BareHook<View>
   createRenderer: BareHook<Renderer>
