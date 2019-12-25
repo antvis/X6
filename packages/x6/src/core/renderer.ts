@@ -110,25 +110,7 @@ export class Renderer {
       // points are defined as the bounds are updated for the given
       // points inside the shape
       if (force || this.isShapeInvalid(state, state.shape)) {
-        if (state.absolutePoints != null) {
-          state.shape.points = state.absolutePoints.slice()
-          delete state.shape.bounds
-        } else {
-          delete state.shape.points
-          state.shape.bounds = state.bounds.clone()
-        }
-
-        // htmlShape
-        if (state.shape instanceof HtmlShape) {
-          state.shape.markup = state.view.graph.getHtml(state.cell)
-          if (state.style.css != null) {
-            state.shape.css = state.style.css
-          }
-        }
-
-        state.shape.className = this.getCellClassName(state)
-        state.shape.scale = state.view.scale
-
+        this.configShape(state)
         if (rendering == null || rendering) {
           state.shape.redraw()
         } else {
@@ -140,6 +122,29 @@ export class Renderer {
     }
 
     return shapeChanged
+  }
+
+  configShape(state: State) {
+    if (state.shape != null) {
+      if (state.absolutePoints != null) {
+        state.shape.points = state.absolutePoints.slice()
+        delete state.shape.bounds
+      } else {
+        delete state.shape.points
+        state.shape.bounds = state.bounds.clone()
+      }
+
+      state.shape.className = this.getCellClassName(state)
+      state.shape.scale = state.view.scale
+    }
+
+    // htmlShape
+    if (state.shape instanceof HtmlShape) {
+      state.shape.markup = state.view.graph.getHtml(state.cell)
+      if (state.style.css != null) {
+        state.shape.css = state.style.css
+      }
+    }
   }
 
   /**
