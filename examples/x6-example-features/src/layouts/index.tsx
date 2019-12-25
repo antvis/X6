@@ -18,6 +18,7 @@ const features = [
   { link: '/page-breaks', title: 'Page Breaks' },
   { link: '/snapline', title: 'SnapLine' },
   { link: '/custom-render', title: 'Custom Render' },
+  { link: '/react-shape', title: 'React Shape' },
   { link: '/infinite', title: 'Infinite Canvas' },
 ]
 
