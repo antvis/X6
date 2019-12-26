@@ -1,5 +1,6 @@
 import { Cell } from '../core/cell'
 import { Style } from '../types'
+import { hook } from './decorator'
 import { BaseGraph } from './base-graph'
 
 export class StyleAccessor extends BaseGraph {
@@ -8,13 +9,7 @@ export class StyleAccessor extends BaseGraph {
     return state != null ? state.style : this.getCellStyle(cell)
   }
 
-  /**
-   * Returns a key-value pair object representing the cell style for
-   * the given cell.
-   *
-   * Note: You should try to use the cached style in the state before
-   * using this method.
-   */
+  @hook()
   getCellStyle(cell: Cell | null) {
     return this.styleManager.getCellStyle(cell)
   }
