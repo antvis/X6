@@ -4,10 +4,10 @@ import { Model } from '../core/model'
 
 export class RootChange implements IChange {
   public readonly model: Model
-  public root: Cell | null
-  public previous: Cell | null
+  public root?: Cell | null
+  public previous?: Cell | null
 
-  constructor(model: Model, root: Cell | null) {
+  constructor(model: Model, root?: Cell | null) {
     this.model = model
     this.root = root
     this.previous = root
