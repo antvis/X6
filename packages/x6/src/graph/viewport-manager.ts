@@ -19,9 +19,16 @@ export class ViewportManager extends BaseManager {
   getPagePadding() {
     const scale = this.view.scale
     const container = this.container
+    if (this.graph.pageVisible) {
+      return [
+        Math.max(0, Math.round((container.offsetWidth - 40) / scale)),
+        Math.max(0, Math.round((container.offsetHeight - 40) / scale)),
+      ]
+    }
+
     return [
-      Math.max(0, Math.round((container.offsetWidth - 32) / scale)),
-      Math.max(0, Math.round((container.offsetHeight - 32) / scale)),
+      Math.max(0, Math.round(container.offsetWidth / 2 / scale)),
+      Math.max(0, Math.round(container.offsetHeight / 2 / scale)),
     ]
   }
 
