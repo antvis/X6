@@ -412,14 +412,14 @@ export class Shape extends Disposable {
     return canvas
   }
 
-  protected getSvgScreenOffset(): number {
-    let sw =
-      this.stencil && this.stencil.strokeWidth !== -1
-        ? this.stencil.strokeWidth
-        : this.strokeWidth
-    sw = Math.max(1, Math.round(sw * this.scale))
-    return util.mod(sw, 2) === 1 ? 0.5 : 0
-  }
+  // protected getSvgScreenOffset(): number {
+  //   let sw =
+  //     this.stencil && this.stencil.strokeWidth !== -1
+  //       ? this.stencil.strokeWidth
+  //       : this.strokeWidth
+  //   sw = Math.max(1, Math.round(sw * this.scale))
+  //   return util.mod(sw, 2) === 1 ? 0.5 : 0
+  // }
 
   protected createSvgCanvas() {
     const elem = this.elem as SVGElement
@@ -429,12 +429,12 @@ export class Shape extends Disposable {
     canvas.pointerEvents = this.pointerEvents
     canvas.pointerEventsValue = this.svgPointerEvents
 
-    const offset = this.getSvgScreenOffset()
-    if (offset !== 0) {
-      elem.setAttribute('transform', `translate(${offset},${offset})`)
-    } else {
-      elem.removeAttribute('transform')
-    }
+    // const offset = this.getSvgScreenOffset()
+    // if (offset !== 0) {
+    //   elem.setAttribute('transform', `translate(${offset},${offset})`)
+    // } else {
+    //   elem.removeAttribute('transform')
+    // }
 
     if (!this.antialiased) {
       canvas.format = (val: any) => Math.round(parseFloat(val))
