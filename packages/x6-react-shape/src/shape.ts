@@ -23,7 +23,7 @@ export class ReactShape extends Shape.Rectangle {
 
   drawBackground(c: SvgCanvas2D, x: number, y: number, w: number, h: number) {
     super.drawBackground(c, x, y, w, h)
-    if (!this.outline) {
+    if (!this.outline && !this.facade) {
       this.renderReactComponent()
     }
   }

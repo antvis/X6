@@ -5,6 +5,7 @@ import { Rectangle, Point } from '../../struct'
 import { Disablable, DomEvent, Disposable, MouseEventEx } from '../../common'
 import { Shape, EllipseShape, RectangleShape, ImageShape } from '../../shape'
 import { PartialOptions, FullOptions, getOptions } from './option'
+import { MiniMapRenderder } from './renderer'
 
 export class MiniMap extends Disablable implements IMouseHandler {
   public source: Graph
@@ -54,6 +55,9 @@ export class MiniMap extends Disablable implements IMouseHandler {
 
   init(container: HTMLElement) {
     const showEdge = this.options.showEdge
+    const nodeStyle = this.options.nodeStyle
+    const edgeStyle = this.options.edgeStyle
+
     this.outline = new Graph(container, {
       model: this.source.getModel(),
       grid: false,
@@ -65,8 +69,22 @@ export class MiniMap extends Disablable implements IMouseHandler {
       labelsVisible: this.options.showLabel,
       backgroundColor:
         this.options.backgroundColor || this.source.backgroundColor,
-      nodeStyle: { ...this.options.nodeStyle },
-      edgeStyle: { ...this.options.edgeStyle },
+
+      createRenderer: () => new MiniMapRenderder(),
+
+      getCellStyle(cell) {
+        if (cell != null) {
+          const preset = this.model.isEdge(cell) ? edgeStyle : nodeStyle
+          const style = this.model.getStyle(cell) || {}
+          return {
+            ...style,
+            ...preset,
+          }
+        }
+
+        return {}
+      },
+
       isCellVisible(cell) {
         if (cell != null && cell.isEdge()) {
           return showEdge ? this.getNativeValue() : false

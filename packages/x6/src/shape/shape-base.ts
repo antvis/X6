@@ -73,6 +73,11 @@ export class Shape extends Disposable {
   outline: boolean = false
 
   /**
+   * Render facede for minimap
+   */
+  facade: boolean = false
+
+  /**
    * Specifies if pointer events should be handled.
    */
   pointerEvents: boolean = true

@@ -24,6 +24,7 @@ import {
   SelectCellHandler,
 } from '../handler'
 import { DataChange } from '../change'
+import { Style } from '../types'
 
 type Nilable<T> = T | null | undefined
 type BareHook<T> = (this: Graph) => Nilable<T>
@@ -286,6 +287,8 @@ export interface IHook {
     source: Cell | null,
     target: Cell | null,
   ) => Nilable<string>
+
+  getCellStyle: CellHook<Style>
 
   /**
    * Returns the string to be used as the link for the given cell.
