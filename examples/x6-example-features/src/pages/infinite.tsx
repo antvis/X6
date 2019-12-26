@@ -1,8 +1,9 @@
 import React from 'react'
 import { Checkbox } from 'antd'
 import { Graph, MiniMap } from '@antv/x6'
-import './index.less'
 import { CheckboxChangeEvent } from 'antd/lib/checkbox'
+import { randomColor, invertColor } from '../util'
+import './index.less'
 
 export default class Example extends React.Component {
   private container: HTMLDivElement
@@ -43,7 +44,23 @@ export default class Example extends React.Component {
       graph.addEdge({ label: 'Edge Label', source: node1, target: node2 })
     })
 
-    graph.zoomTo(2)
+    graph.batchUpdate(() => {
+      for (let i = 0; i < 30; i += 1) {
+        for (let j = 0; j < 30; j += 1) {
+          const bg = randomColor()
+          graph.addNode({
+            x: 400 + 120 * i,
+            y: 48 + 56 * j,
+            width: 80,
+            height: 30,
+            label: bg,
+            stroke: bg,
+            fill: bg,
+            fontColor: invertColor(bg, true),
+          })
+        }
+      }
+    })
   }
 
   onPageViewChanged = (e: CheckboxChangeEvent) => {
