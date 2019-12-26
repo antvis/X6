@@ -9,11 +9,6 @@ export class RetrievalAccessor extends BaseGraph {
     return cell != null
   }
 
-  @hook()
-  isCellVisible(cell: Cell | null) {
-    return cell != null ? this.model.isVisible(cell) : false
-  }
-
   getCurrentRoot() {
     return this.view.currentRoot
   }
@@ -87,48 +82,6 @@ export class RetrievalAccessor extends BaseGraph {
       includeEdges,
       ignoreFn,
     )
-  }
-
-  /**
-   * Returns the visible child nodes of the given parent.
-   */
-  getVisibleChildNodes(parent: Cell) {
-    return this.getVisibleChildren(parent, true, false)
-  }
-
-  /**
-   * Returns the visible child edges of the given parent.
-   */
-  getVisibleChildEdges(parent: Cell) {
-    return this.getVisibleChildren(parent, false, true)
-  }
-
-  /**
-   * Returns the visible child nodes or edges of the given parent.
-   */
-  getVisibleChildren(
-    parent: Cell = this.getDefaultParent(),
-    includeNodes: boolean = false,
-    includeEdges: boolean = false,
-  ) {
-    const cells = this.model.getChildren(parent, includeNodes, includeEdges)
-    return cells.filter(cell => this.isCellVisible(cell))
-  }
-
-  getChildNodes(parent: Cell) {
-    return this.getChildren(parent, true, false)
-  }
-
-  getChildEdges(parent: Cell) {
-    return this.getChildren(parent, false, true)
-  }
-
-  getChildren(
-    parent: Cell = this.getDefaultParent(),
-    includeNodes: boolean = false,
-    includeEdges: boolean = false,
-  ) {
-    return this.model.getChildren(parent, includeNodes, includeEdges)
   }
 
   /**

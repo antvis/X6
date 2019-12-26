@@ -108,7 +108,7 @@ export class ChangeManager extends BaseManager {
    *
    * This is called when a cell was removed from the model.
    */
-  protected removeCellState(cell: Cell | null) {
+  protected removeCellState(cell?: Cell | null) {
     if (cell) {
       cell.eachChild(child => this.removeCellState(child))
       this.view.invalidate(cell, false, true)

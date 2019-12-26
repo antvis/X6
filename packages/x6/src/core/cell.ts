@@ -178,7 +178,7 @@ export class Cell extends Disposable {
     return this.parent == null
   }
 
-  isAncestor(descendant: Cell | null) {
+  isAncestor(descendant?: Cell | null) {
     if (descendant == null) {
       return false
     }
