@@ -4,6 +4,7 @@ import * as util from './util'
 
 export { util }
 
+export * from './x6'
 export * from './version'
 export * from './common'
 export * from './struct'
