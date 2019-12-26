@@ -1,8 +1,33 @@
+import { Cell } from '../core/cell'
 import { BaseGraph } from './base-graph'
 
 export class LayerAccessor extends BaseGraph {
+  clear() {
+    this.model.clear()
+  }
+
+  isRoot(cell?: Cell | null) {
+    return this.model.isRoot(cell)
+  }
+
+  getRoot(cell?: Cell | null) {
+    return this.model.getRoot(cell)
+  }
+
+  setRoot(root?: Cell | null) {
+    this.model.setRoot(root)
+  }
+
+  isLayer(cell?: Cell | null): boolean {
+    return this.model.isLayer(cell)
+  }
+
+  getLayers(): Cell[] {
+    return this.model.getRoot().children || []
+  }
+
   getLayerCount() {
-    return this.layerManager.getLayerCount()
+    return this.getLayers().length
   }
 
   addLayer(data?: any) {

@@ -60,11 +60,11 @@ export class Model extends Events<Model.EventArgs> {
     return root
   }
 
-  isRoot(cell: Cell | null) {
+  isRoot(cell?: Cell | null) {
     return cell != null && this.root === cell
   }
 
-  getRoot(cell?: Cell) {
+  getRoot(cell?: Cell | null) {
     let root: Cell = this.root
     let curr = cell
 
@@ -76,7 +76,7 @@ export class Model extends Events<Model.EventArgs> {
     return root
   }
 
-  setRoot(root: Cell | null) {
+  setRoot(root?: Cell | null) {
     this.execute(new RootChange(this, root))
   }
 
@@ -97,7 +97,7 @@ export class Model extends Events<Model.EventArgs> {
     return new Cell()
   }
 
-  isLayer(cell: Cell | null): boolean {
+  isLayer(cell?: Cell | null): boolean {
     const parent = this.getParent(cell)
     return parent != null ? this.isRoot(parent) : false
   }
@@ -131,11 +131,11 @@ export class Model extends Events<Model.EventArgs> {
     return this.getRoot().getChildAt(0)
   }
 
-  isOrphan(cell: Cell | null): boolean {
+  isOrphan(cell?: Cell | null): boolean {
     return cell != null ? cell.isOrphan() : true
   }
 
-  isAncestor(ancestor: Cell, descendant: Cell | null): boolean {
+  isAncestor(ancestor: Cell, descendant?: Cell | null): boolean {
     return ancestor.isAncestor(descendant)
   }
 
@@ -149,7 +149,7 @@ export class Model extends Events<Model.EventArgs> {
     return this.isAncestor(ancestor, descendant)
   }
 
-  getAncestors(descendant: Cell | null): Cell[] {
+  getAncestors(descendant?: Cell | null): Cell[] {
     return descendant != null ? descendant.getAncestors() : []
   }
 
@@ -176,7 +176,7 @@ export class Model extends Events<Model.EventArgs> {
     return result
   }
 
-  getParent(cell: Cell | null) {
+  getParent(cell?: Cell | null) {
     return cell != null ? cell.getParent() : null
   }
 
@@ -236,9 +236,6 @@ export class Model extends Events<Model.EventArgs> {
     return util.filter(cells, filter, thisArg)
   }
 
-  /**
-   * Returns the nearest common ancestor for the specified cells.
-   */
   getNearestCommonAncestor(cell1: Cell | null, cell2: Cell | null) {
     return Cell.getNearestCommonAncestor(cell1, cell2)
   }
@@ -446,7 +443,7 @@ export class Model extends Events<Model.EventArgs> {
     return [this.getTerminal(edge, true), this.getTerminal(edge, false)]
   }
 
-  setTerminals(edge: Cell, source: Cell, target: Cell) {
+  setTerminals(edge: Cell, source: Cell | null, target: Cell | null) {
     this.beginUpdate()
     this.setTerminal(edge, source, true)
     this.setTerminal(edge, target, false)
