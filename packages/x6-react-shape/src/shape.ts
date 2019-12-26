@@ -30,11 +30,6 @@ export class ReactShape extends Shape.Rectangle {
 
   renderReactComponent() {
     const bounds = this.bounds.clone()
-    bounds.width += 1
-    bounds.height += 1
-    bounds.x -= 1
-    bounds.y -= 1
-
     let transform = `translate(${bounds.x},${bounds.y})`
     const deg = this.getShapeRotation()
     if (deg !== 0) {

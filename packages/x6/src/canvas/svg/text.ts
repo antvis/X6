@@ -852,9 +852,9 @@ export class SvgCanvas2DText extends SvgCanvas2DBase {
             : 0
         n.setAttribute('stroke-width', `${sw}`)
 
-        if (this.root.ownerDocument === document && util.mod(sw, 2) === 1) {
-          n.setAttribute('transform', 'translate(0.5, 0.5)')
-        }
+        // if (this.root.ownerDocument === document && util.mod(sw, 2) === 1) {
+        //   n.setAttribute('transform', 'translate(0.5, 0.5)')
+        // }
 
         node.insertBefore(n, node.firstChild)
       }
