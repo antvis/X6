@@ -30,12 +30,10 @@ $ yarn add @antv/x6
 ```
 
 ```ts
-import { Graph } from '@antv/x6'
+import { x6 } from '@antv/x6'
 
 const container = document.getElementById('container')
-const graph = new Graph(container)
-
-graph.render({
+const graph = x6.render(container, {
   nodes: [
     {
       id: 'node-0',
