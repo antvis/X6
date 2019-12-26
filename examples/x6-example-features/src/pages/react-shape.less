@@ -1,0 +1,54 @@
+.simple-component {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.complex-component {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  border-radius: 2px;
+  flex-direction: column;
+
+  .header {
+    height: 32px;
+    color: #fff;
+    background: #597ef7;
+    border-radius: 2px 2px 0 0;
+    line-height: 32px;
+    padding: 0 8px;
+  }
+
+  .list {
+    border: 1px solid #ccc;
+    flex: 1;
+    border-radius: 0 0 2px 2px;
+    position: relative;
+
+    > div {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+    }
+
+    ul,
+    li {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    li {
+      display: block;
+      height: 32px;
+      line-height: 32px;
+      padding: 0 8px;
+    }
+  }
+}
