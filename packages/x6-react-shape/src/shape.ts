@@ -9,18 +9,6 @@ export class ReactShape extends Shape.Rectangle {
     super(new Rectangle())
   }
 
-  protected clean() {
-    this.unmount()
-    super.clean()
-  }
-
-  protected unmount() {
-    if (this.container) {
-      ReactDOM.unmountComponentAtNode(this.container)
-      this.container = null
-    }
-  }
-
   drawBackground(c: SvgCanvas2D, x: number, y: number, w: number, h: number) {
     super.drawBackground(c, x, y, w, h)
     if (!this.outline && !this.facade) {
@@ -50,20 +38,21 @@ export class ReactShape extends Shape.Rectangle {
     g.appendChild(fo)
     fo.appendChild(div)
 
-    const container = util.createElement('div')
+    if (this.container == null) {
+      this.container = util.createElement('div')
+      if (this.component != null) {
+        ReactDOM.render(this.component, this.container)
+      }
+    }
+
+    const container = this.container
     container.style.overflow = 'hidden'
     container.style.width = util.toPx(Math.round(bounds.width / this.scale))
     container.style.height = util.toPx(Math.round(bounds.height / this.scale))
     container.style.transform = `scale(${this.scale})`
     container.style.transformOrigin = '0 0'
-    div.appendChild(container)
 
-    if (this.component != null) {
-      this.container = container
-      ReactDOM.render(this.component, container)
-    } else {
-      this.container = null
-    }
+    div.appendChild(this.container)
 
     if (this.elem) {
       this.elem.appendChild(g)
@@ -75,7 +64,11 @@ export class ReactShape extends Shape.Rectangle {
       return
     }
 
-    this.unmount()
+    if (this.container) {
+      ReactDOM.unmountComponentAtNode(this.container)
+      this.container = null
+    }
+
     super.dispose()
   }
 }
