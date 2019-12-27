@@ -51,7 +51,16 @@ export default class Example extends React.Component {
         strokeColor: '#31d0c6',
       },
       sizer: {
+        visible: false,
         strokeColor: '#31d0c6',
+      },
+      getCellStyle: cell => {
+        if (cell != null && cell.isNode()) {
+          const data = cell.getData()
+          if (data != null && data.bg != null) {
+            return { fill: data.bg, stroke: data.bg }
+          }
+        }
       },
     })
 
@@ -145,6 +154,7 @@ export default class Example extends React.Component {
             stroke: bg,
             shape: 'react',
             resizable: false,
+            data: { bg },
             component: <SimpleComponent text={bg} bg={bg} />,
           })
         }
@@ -166,6 +176,7 @@ export default class Example extends React.Component {
             stroke: 'none',
             shape: 'react',
             resizable: false,
+            data: { bg },
             component: <ComplexComponent text={bg} bg={bg} />,
           })
         }
