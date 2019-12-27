@@ -1,5 +1,7 @@
 import { Image } from '../../struct'
 import { Style } from '../../types'
+import { Cell } from '../../core/cell'
+import { Graph } from '../../graph/graph'
 
 export interface ViewportOptions {
   /**
@@ -55,6 +57,8 @@ interface BaseOptions {
   showLabel: boolean
 
   showEdge: boolean
+
+  getCellStyle?: (this: Graph, cell: Cell) => Style | null | undefined
 }
 
 export interface FullOptions extends BaseOptions {

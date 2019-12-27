@@ -57,6 +57,7 @@ export class MiniMap extends Disablable implements IMouseHandler {
     const showEdge = this.options.showEdge
     const nodeStyle = this.options.nodeStyle
     const edgeStyle = this.options.edgeStyle
+    const getCellStyle = this.options.getCellStyle
 
     this.outline = new Graph(container, {
       model: this.source.getModel(),
@@ -74,11 +75,13 @@ export class MiniMap extends Disablable implements IMouseHandler {
 
       getCellStyle(cell) {
         if (cell != null) {
+          const raw = this.model.getStyle(cell)
           const preset = this.model.isEdge(cell) ? edgeStyle : nodeStyle
-          const style = this.model.getStyle(cell) || {}
+          const fix = getCellStyle ? getCellStyle.call(this, cell) : null
           return {
-            ...style,
+            ...raw,
             ...preset,
+            ...fix,
           }
         }
 
