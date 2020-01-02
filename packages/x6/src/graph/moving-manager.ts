@@ -1,4 +1,4 @@
-import * as util from '../util'
+import { rotatePoint } from '../util'
 import { Cell } from '../core/cell'
 import { Point } from '../struct'
 import { BaseManager } from './base-manager'
@@ -177,7 +177,7 @@ export class MovingManager extends BaseManager {
         }
 
         if (rot !== 0) {
-          const pt = util.rotatePoint(new Point(dx, dy), -rot, new Point(0, 0))
+          const pt = rotatePoint(new Point(dx, dy), -rot, new Point(0, 0))
           dx = pt.x // tslint:disable-line
           dy = pt.y // tslint:disable-line
         }

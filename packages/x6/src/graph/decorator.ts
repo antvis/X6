@@ -1,4 +1,4 @@
-import * as util from '../util'
+import { util } from '@antv/x6-util'
 import { BaseGraph } from './base-graph'
 
 export function hook(

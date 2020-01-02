@@ -1,9 +1,9 @@
-import * as util from '../util'
 import { globals } from '../option'
 import { Shape } from './shape-base'
 import { State } from '../core/state'
 import { SvgCanvas2D } from '../canvas'
 import { Rectangle, Point } from '../struct'
+import { relativeCcw } from '../util'
 
 export class ArrowConnector extends Shape {
   arrowWidth: number
@@ -166,7 +166,7 @@ export class ArrowConnector extends Shape {
 
     for (let i = 0; i < pts.length - 2; i += 1) {
       // Work out in which direction the line is bending
-      const pos = util.relativeCcw(
+      const pos = relativeCcw(
         pts[i].x,
         pts[i].y,
         pts[i + 1].x,

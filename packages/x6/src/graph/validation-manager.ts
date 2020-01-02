@@ -1,5 +1,5 @@
 import { Cell } from '../core/cell'
-import { isHtmlElem } from '../util'
+import { isHtmlElem } from '@antv/x6-util'
 import { BaseManager } from './base-manager'
 
 export class ValidationManager extends BaseManager {

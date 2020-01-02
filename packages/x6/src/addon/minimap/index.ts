@@ -1,11 +1,14 @@
-import * as util from '../../util'
+import { DomEvent } from '@antv/x6-dom-event'
+import { Disposable } from '@antv/x6-disposable'
+import { util } from '@antv/x6-util'
 import { Graph } from '../../graph'
-import { IMouseHandler } from '../../handler'
+import { IMouseHandler, MouseEventEx } from '../../handler'
 import { Rectangle, Point } from '../../struct'
-import { Disablable, DomEvent, Disposable, MouseEventEx } from '../../common'
+import { Disablable } from '../../common'
 import { Shape, EllipseShape, RectangleShape, ImageShape } from '../../shape'
 import { PartialOptions, FullOptions, getOptions } from './option'
 import { MiniMapRenderder } from './renderer'
+import { applyClassName } from '../../util'
 
 export class MiniMap extends Disablable implements IMouseHandler {
   public source: Graph
@@ -142,7 +145,7 @@ export class MiniMap extends Disablable implements IMouseHandler {
     const viewport = new RectangleShape(this.bounds)
     viewport.dialect = this.outline.dialect
     viewport.init(this.outline.view.getOverlayPane())
-    util.applyClassName(
+    applyClassName(
       viewport,
       this.source.prefixCls,
       'minimap-viewport',
@@ -192,7 +195,7 @@ export class MiniMap extends Disablable implements IMouseHandler {
 
     sizer.dialect = this.outline.dialect
     sizer.init(this.outline.view.getOverlayPane())
-    util.applyClassName(
+    applyClassName(
       sizer,
       this.source.prefixCls,
       'minimap-sizer',

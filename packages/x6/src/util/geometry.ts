@@ -1,9 +1,9 @@
 /* tslint:disable:no-parameter-reassignment */
 
-import { getValue } from '../object'
-import { State } from '../../core/state'
-import { Direction } from '../../types'
-import { Point, Rectangle } from '../../struct'
+import { getValue } from '@antv/x6-util'
+import { State } from '../core/state'
+import { Direction } from '../types'
+import { Point, Rectangle } from '../struct'
 
 export function toRad(deg: number) {
   return (Math.PI * deg) / 180

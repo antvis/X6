@@ -1,9 +1,12 @@
+import { DomEvent } from '@antv/x6-dom-event'
+import { Disposable } from '@antv/x6-disposable'
+import { hideElement, showElement } from '@antv/x6-util'
 import * as util from '../../util'
 import { Cell } from '../../core/cell'
 import { State } from '../../core/state'
 import { Handle } from '../handle'
 import { NodeHandler } from './handler'
-import { Disposable, MouseEventEx, DomEvent } from '../../common'
+import { MouseEventEx } from '../mouse-event'
 import { Rectangle, Point } from '../../struct'
 import { RectangleShape } from '../../shape'
 import { EdgeHandler } from '../edge/handler'
@@ -171,11 +174,11 @@ export class Preview extends Disposable {
   }
 
   protected hideSelectionShape() {
-    util.hideElement(this.selectionShape!.elem)
+    hideElement(this.selectionShape!.elem)
   }
 
   protected showSelectionShape() {
-    util.showElement(this.selectionShape!.elem)
+    showElement(this.selectionShape!.elem)
   }
 
   protected updateMinBounds() {

@@ -1,9 +1,10 @@
-import { State } from '../../core/state'
-import { Shape } from '../../shape'
-import { getOffset, getScrollOrigin } from '../dom'
-import { MouseEventEx, DomEvent } from '../../common'
-import { Point, DirectionMask } from '../../struct'
-import { Align, VAlign } from '../../types'
+import { DomEvent } from '@antv/x6-dom-event'
+import { State } from '../core/state'
+import { Shape } from '../shape'
+import { getOffset, getScrollOrigin } from '@antv/x6-util'
+import { MouseEventEx } from '../handler'
+import { Point, DirectionMask } from '../struct'
+import { Align, VAlign } from '../types'
 
 export function clientToGraph(container: HTMLElement, e: TouchEvent): Point
 export function clientToGraph(container: HTMLElement, e: MouseEvent): Point

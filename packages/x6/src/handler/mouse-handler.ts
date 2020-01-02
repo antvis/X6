@@ -1,7 +1,8 @@
-import * as util from '../util'
+import { util } from '@antv/x6-util'
+import { DomEvent } from '@antv/x6-dom-event'
 import { Graph } from '../graph'
-import { DomEvent, MouseEventEx } from '../common'
-import { BaseHandler } from './handler-base'
+import { MouseEventEx } from './mouse-event'
+import { BaseHandler } from './base-handler'
 
 export abstract class MouseHandler<EventArgs = any>
   extends BaseHandler<EventArgs>

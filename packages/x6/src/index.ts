@@ -1,8 +1,5 @@
 import './track'
 import './registry'
-import * as util from './util'
-
-export { util }
 
 export * from './version'
 export * from './common'

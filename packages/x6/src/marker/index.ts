@@ -1,7 +1,7 @@
 import { Shape } from '../shape'
 import { Point } from '../struct'
 import { SvgCanvas2D } from '../canvas'
-import { registerEntity } from '../util/biz/registry'
+import { registerEntity } from '../util/registry'
 
 import { ovalMarker } from './oval'
 import { diamondMarker } from './diamond'

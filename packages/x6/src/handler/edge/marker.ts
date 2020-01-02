@@ -1,6 +1,6 @@
 import { Graph } from '../../graph'
 import { State } from '../../core/state'
-import { MouseEventEx } from '../../common'
+import { MouseEventEx } from '../mouse-event'
 import { CellMarker } from '../cell-marker'
 import { EdgeHandler } from './handler'
 import { getConnectionHighlightOptions } from '../connection/option'

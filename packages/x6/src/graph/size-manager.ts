@@ -1,7 +1,8 @@
-import * as util from '../util'
+import { util } from '@antv/x6-util'
 import { Cell } from '../core/cell'
 import { Point, Rectangle } from '../struct'
 import { BaseManager } from './base-manager'
+import { globals } from '../option'
 
 export class SizeManager extends BaseManager {
   autoSizeCell(cell: Cell, recurse: boolean) {
@@ -129,7 +130,7 @@ export class SizeManager extends BaseManager {
 
         value = value.replace(/\n/g, '<br>')
 
-        const size = util.getSizeForString(value, fontSize, style.fontFamily)
+        const size = this.getSizeForString(value, fontSize, style.fontFamily)
         let width = size.width + dx
         let height = size.height + dy
 
@@ -153,6 +154,44 @@ export class SizeManager extends BaseManager {
     }
 
     return result
+  }
+
+  getSizeForString(
+    text: string,
+    fontSize: number = globals.defaultFontSize,
+    fontFamily: string = globals.defaultFontFamily,
+    textWidth?: number,
+  ) {
+    const div = document.createElement('div')
+
+    div.style.fontFamily = fontFamily
+    div.style.fontSize = `${Math.round(fontSize)}px`
+    div.style.lineHeight = `${Math.round(fontSize * globals.defaultLineHeight)}`
+
+    // Disables block layout and outside wrapping and hides the div
+    div.style.position = 'absolute'
+    div.style.visibility = 'hidden'
+    div.style.display = 'inline-block'
+    div.style.zoom = '1'
+
+    if (textWidth != null) {
+      div.style.width = `${textWidth}px`
+      div.style.whiteSpace = 'normal'
+    } else {
+      div.style.whiteSpace = 'nowrap'
+    }
+
+    div.innerHTML = text
+    document.body.appendChild(div)
+
+    const size = {
+      width: div.offsetWidth,
+      height: div.offsetHeight,
+    }
+
+    document.body.removeChild(div)
+
+    return size
   }
 
   resizeCells(cells: Cell[], bounds: Rectangle[], recurse: boolean) {

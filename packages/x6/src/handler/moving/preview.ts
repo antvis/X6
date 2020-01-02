@@ -1,16 +1,17 @@
-import * as util from '../../util'
+import { Disposable } from '@antv/x6-disposable'
 import * as movment from './util'
 import { Cell } from '../../core/cell'
 import { MovingHandler } from './handler'
 import { CellHighlight } from '../cell-highlight'
 import { RectangleShape } from '../../shape'
 import { Rectangle, Point } from '../../struct'
-import { Disposable, MouseEventEx } from '../../common'
+import { MouseEventEx } from '../mouse-event'
 import { applyConnectionHighlightStyle } from '../connection/option'
 import {
   applyMovingPreviewStyle,
   applyDropTargetHighlightStyle,
 } from './option'
+import { clientToGraph } from '../../util'
 
 export class Preview extends Disposable {
   /**
@@ -66,7 +67,7 @@ export class Preview extends Disposable {
   start(e: MouseEventEx) {
     this.cell = this.master.getCell(e)!
     this.cells = movment.getCells(this.master, this.cell, e)
-    this.origin = util.clientToGraph(this.graph.container, e)
+    this.origin = clientToGraph(this.graph.container, e)
     this.updateBounds()
   }
 

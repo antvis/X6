@@ -1,5 +1,5 @@
+import { DomEvent } from '@antv/x6-dom-event'
 import { Route } from '../../route'
-import { DomEvent } from '../../common'
 import { Rectangle, Point } from '../../struct'
 import { EdgeHandler } from './handler'
 
