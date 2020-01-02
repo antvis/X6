@@ -40,7 +40,7 @@
     "build:dev": "run-p build:images build:less build:lib build:es",
     "build": "run-s build:version build:dev",
     "prebuild": "run-s lint clean",
-    "test": "jest",
+    "test": "jest --passWithNoTests",
     "pretest": "run-p clean:coverage",
     "coveralls": "cat ./test/coverage/lcov.info | coveralls",
     "prepare": "run-s build:version test build",
@@ -81,9 +81,15 @@
     "watch": "^1.0.2"
   },
   "dependencies": {
+    "@antv/x6-detector": "^1.0.0",
+    "@antv/x6-disposable": "^1.0.0",
+    "@antv/x6-dom-event": "^1.0.0",
+    "@antv/x6-events": "^1.0.0",
+    "@antv/x6-struct": "^1.0.0",
+    "@antv/x6-types": "^1.0.0",
+    "@antv/x6-util": "^1.0.0",
     "mousetrap": "^1.6.3",
-    "size-sensor": "^0.2.5",
-    "utility-types": "^3.10.0"
+    "size-sensor": "^0.2.5"
   },
   "author": {
     "name": "bubkoo",
