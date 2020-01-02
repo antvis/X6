@@ -1,4 +1,3 @@
-// import { globals } from '../../option'
 import { getVendorPrefixedName } from './prefix'
 
 export function setPrefixedStyle(style: any, name: string, value: string) {
@@ -135,41 +134,3 @@ export function getOffset(container: Element, scrollOffset: boolean = false) {
 
   return { x: offsetLeft, y: offsetTop }
 }
-
-// export function getSizeForString(
-//   text: string,
-//   fontSize: number = globals.defaultFontSize,
-//   fontFamily: string = globals.defaultFontFamily,
-//   textWidth?: number,
-// ) {
-//   const div = document.createElement('div')
-
-//   div.style.fontFamily = fontFamily
-//   div.style.fontSize = `${Math.round(fontSize)}px`
-//   div.style.lineHeight = `${Math.round(fontSize * globals.defaultLineHeight)}`
-
-//   // Disables block layout and outside wrapping and hides the div
-//   div.style.position = 'absolute'
-//   div.style.visibility = 'hidden'
-//   div.style.display = 'inline-block'
-//   div.style.zoom = '1'
-
-//   if (textWidth != null) {
-//     div.style.width = `${textWidth}px`
-//     div.style.whiteSpace = 'normal'
-//   } else {
-//     div.style.whiteSpace = 'nowrap'
-//   }
-
-//   div.innerHTML = text
-//   document.body.appendChild(div)
-
-//   const size = {
-//     width: div.offsetWidth,
-//     height: div.offsetHeight,
-//   }
-
-//   document.body.removeChild(div)
-
-//   return size
-// }
