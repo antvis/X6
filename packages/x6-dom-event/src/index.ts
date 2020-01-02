@@ -1,3 +1,4 @@
-export * from './listener'
-export * from './wheel'
-export * from './utility'
+import * as DomEvent from './index-rollup'
+
+export * from './index-rollup'
+export { DomEvent }
