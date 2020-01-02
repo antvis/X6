@@ -1,3 +1,5 @@
+import { DomEvent } from '@antv/x6-dom-event'
+import { Disposable } from '@antv/x6-disposable'
 import { Cell } from '../../core/cell'
 import { State } from '../../core/state'
 import { Graph } from '../../graph'
@@ -5,8 +7,8 @@ import { Point } from '../../struct'
 import { Handle } from '../handle'
 import { Knobs } from './knobs'
 import { Preview } from './preview'
-import { MouseHandler } from '../handler-mouse'
-import { DomEvent, MouseEventEx, Disposable } from '../../common'
+import { MouseHandler } from '../mouse-handler'
+import { MouseEventEx } from '../mouse-event'
 
 export class NodeHandler extends MouseHandler {
   state: State

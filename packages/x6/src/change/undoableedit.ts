@@ -1,4 +1,5 @@
-import { Disposable, Events } from '../common'
+import { Events } from '@antv/x6-events'
+import { Disposable } from '@antv/x6-disposable'
 import { IChange } from './change'
 
 export class UndoableEdit extends Disposable {

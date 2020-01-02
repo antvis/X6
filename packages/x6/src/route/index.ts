@@ -1,12 +1,11 @@
-import * as util from '../util'
 import { State } from '../core/state'
 import { Point } from '../struct'
-
 import * as elbowRouters from './elbow'
 import { loop as loopRouter } from './loop'
 import { er as entityRelationRouter } from './er'
 import { orth as orthRouter } from './orth'
 import { segment as segmentRouter } from './segment'
+import { getEntityFromRegistry, registerEntity } from '../util'
 
 export namespace Route {
   export const er = entityRelationRouter
@@ -40,13 +39,13 @@ export namespace Route {
     router: Router,
     force: boolean = false,
   ) {
-    util.registerEntity(routers, name, router, force, () => {
+    registerEntity(routers, name, router, force, () => {
       throw new Error(`Router with name '${name}' already registered.`)
     })
   }
 
   export function getRouter(name: string, allowEval: boolean = false) {
-    return util.getEntityFromRegistry(routers, name, allowEval)
+    return getEntityFromRegistry(routers, name, allowEval)
   }
 
   export function getRouterNames() {

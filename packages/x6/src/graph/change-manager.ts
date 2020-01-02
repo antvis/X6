@@ -1,6 +1,6 @@
+import { Disposable } from '@antv/x6-disposable'
 import { Cell } from '../core/cell'
 import { Graph } from '../graph'
-import { Disposable } from '../common'
 import { BaseManager } from './base-manager'
 import {
   IChange,

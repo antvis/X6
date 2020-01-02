@@ -1,6 +1,6 @@
 /* tslint:disable:no-parameter-reassignment */
 
-import * as util from '../../util'
+import { util } from '@antv/x6-util'
 import { globals } from '../../option'
 import { Align, VAlign } from '../../types'
 import { Rectangle, FontStyle } from '../../struct'

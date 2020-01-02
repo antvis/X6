@@ -1,7 +1,7 @@
-import * as util from '../util'
 import { Rectangle } from '../struct'
 import { SvgCanvas2D } from '../canvas'
 import { Shape } from './shape-base'
+import { isValidColor } from '../util'
 
 export class RectangleShape extends Shape {
   constructor(
@@ -26,10 +26,10 @@ export class RectangleShape extends Shape {
 
     if (
       events ||
-      util.isValidColor(this.fillColor) ||
-      util.isValidColor(this.strokeColor)
+      isValidColor(this.fillColor) ||
+      isValidColor(this.strokeColor)
     ) {
-      if (!events && !util.isValidColor(this.fillColor)) {
+      if (!events && !isValidColor(this.fillColor)) {
         c.pointerEvents = false
       }
 
@@ -45,7 +45,7 @@ export class RectangleShape extends Shape {
   }
 
   drawForeground(c: SvgCanvas2D, x: number, y: number, w: number, h: number) {
-    if (this.glass && !this.outline && util.isValidColor(this.fillColor)) {
+    if (this.glass && !this.outline && isValidColor(this.fillColor)) {
       this.drawGlassEffect(
         c,
         x,

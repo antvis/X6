@@ -1,4 +1,3 @@
-import * as util from '../util'
 import { State } from '../core/state'
 import { Rectangle, Point } from '../struct'
 
@@ -7,6 +6,7 @@ import { ellipsePerimeter } from './ellipse'
 import { trianglePerimeter } from './triangle'
 import { hexagonPerimeter } from './hexagon'
 import { rhombusPerimeter } from './rhombus'
+import { getEntityFromRegistry, registerEntity } from '../util'
 
 export namespace Perimeter {
   export const rectangle = rectanglePerimeter
@@ -31,17 +31,13 @@ export namespace Perimeter {
     permeter: PerimeterFunction,
     force: boolean = false,
   ) {
-    util.registerEntity(perimeters, name, permeter, force, () => {
+    registerEntity(perimeters, name, permeter, force, () => {
       throw new Error(`Perimeter with name '${name}' already registered.`)
     })
   }
 
   export function getPerimeter(name: string, allowEval: boolean = false) {
-    return util.getEntityFromRegistry<PerimeterFunction>(
-      perimeters,
-      name,
-      allowEval,
-    )
+    return getEntityFromRegistry<PerimeterFunction>(perimeters, name, allowEval)
   }
 
   export function getPerimeterNames() {

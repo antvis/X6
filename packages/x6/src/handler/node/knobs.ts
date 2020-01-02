@@ -1,9 +1,12 @@
-import * as util from '../../util'
+import { util } from '@antv/x6-util'
+import { DomEvent } from '@antv/x6-dom-event'
+import { Disposable } from '@antv/x6-disposable'
+import * as utilBiz from '../../util'
 import { Shape } from '../../shape'
 import { Handle } from '../handle'
 import { NodeHandler } from './handler'
 import { Rectangle, Point } from '../../struct'
-import { Disposable, DomEvent, MouseEventEx } from '../../common'
+import { MouseEventEx } from '../mouse-event'
 import {
   createLabelHandle,
   getLabelHandleCursor,
@@ -167,7 +170,7 @@ export class Knobs extends Disposable {
       handle.visible = this.isResizeHandleVisible(index)
     }
 
-    if (handle.isHtmlAllowed() && util.hasHtmlLabel(this.state)) {
+    if (handle.isHtmlAllowed() && utilBiz.hasHtmlLabel(this.state)) {
       handle.bounds.width -= 1
       handle.bounds.height -= 1
       handle.dialect = 'html'
@@ -381,7 +384,7 @@ export class Knobs extends Disposable {
       const ct = bounds.getCenter()
       const right = bounds.x + bounds.width
       const bottom = bounds.y + bounds.height
-      const alpha = util.toRad(util.getRotation(this.state))
+      const alpha = utilBiz.toRad(utilBiz.getRotation(this.state))
       const cos = Math.cos(alpha)
       const sin = Math.sin(alpha)
       let pt = new Point()
@@ -389,7 +392,7 @@ export class Knobs extends Disposable {
       const draw = (index: number, handle?: Shape) => {
         const cursor = this.getCurosr(index)
         const shape = handle || this.handles![index]
-        pt = util.rotatePointEx(pt, cos, sin, ct)
+        pt = utilBiz.rotatePointEx(pt, cos, sin, ct)
         this.moveHandleTo(shape, pt.x, pt.y)
         if (this.graph.isEnabled()) {
           shape.setCursor(cursor)
@@ -458,7 +461,7 @@ export class Knobs extends Disposable {
     if (this.rotationShape != null) {
       const rot = this.master.preview.getRotationForRedraw()
       const ct = this.state.bounds.getCenter()
-      const pt = util.rotatePoint(this.getRotationHandlePosition(), rot, ct)
+      const pt = utilBiz.rotatePoint(this.getRotationHandlePosition(), rot, ct)
       const elem = this.rotationShape.elem
       if (elem != null) {
         this.moveHandleTo(this.rotationShape, pt.x, pt.y)
@@ -502,7 +505,7 @@ export class Knobs extends Disposable {
       7: 4,
     }
 
-    const alpha = util.toRad(util.getRotation(this.state))
+    const alpha = utilBiz.toRad(utilBiz.getRotation(this.state))
     const da = Math.round((alpha * 4) / Math.PI)
     return cursors[util.mod(indexMap[index] + da, cursors.length)]
   }

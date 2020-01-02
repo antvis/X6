@@ -1,10 +1,10 @@
-import * as util from '../../util'
+import { Disposable } from '@antv/x6-disposable'
 import { Cell } from '../../core/cell'
 import { State } from '../../core/state'
 import { Graph } from '../../graph'
 import { Polyline } from '../../shape'
-import { Disposable } from '../../common'
 import { Rectangle, Point } from '../../struct'
+import { applyClassName } from '../../util'
 
 export class Guide extends Disposable {
   graph: Graph
@@ -75,7 +75,7 @@ export class Guide extends Disposable {
       guide.dashed = style.dashed
       guide.elem!.style.visibility = ''
 
-      util.applyClassName(
+      applyClassName(
         guide,
         this.graph.prefixCls,
         `guide ${horizontal ? 'horizontal' : 'vertical'}`,

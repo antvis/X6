@@ -1,10 +1,12 @@
+import { DomEvent } from '@antv/x6-dom-event'
+import { Disposable } from '@antv/x6-disposable'
 import * as util from '../../util'
 import * as movment from './util'
 import { Cell } from '../../core/cell'
 import { Graph } from '../../graph'
 import { Preview } from './preview'
-import { MouseHandler } from '../handler-mouse'
-import { MouseEventEx, DomEvent, Disposable } from '../../common'
+import { MouseHandler } from '../mouse-handler'
+import { MouseEventEx } from '../mouse-event'
 
 export class MovingHandler extends MouseHandler {
   protected onPan: (() => void) | null
@@ -36,7 +38,7 @@ export class MovingHandler extends MouseHandler {
       const cell = this.getCell(e)
       if (cell && this.graph.isCellsMovable()) {
         this.shouldConsumeMouseUp = true
-        this.consume(e, DomEvent.MOUSE_DOWN)
+        this.consume(e, 'mouseDown')
       }
     }
   }
@@ -50,7 +52,7 @@ export class MovingHandler extends MouseHandler {
       }
 
       this.preview.process(e)
-      this.consume(e, DomEvent.MOUSE_MOVE)
+      this.consume(e, 'mouseMove')
 
       // Cancel the bubbling of event to the container so
       // that the droptarget is not reset due to an mouseMove
@@ -98,7 +100,7 @@ export class MovingHandler extends MouseHandler {
     }
 
     if (this.shouldConsumeMouseUp) {
-      this.consume(e, DomEvent.MOUSE_UP)
+      this.consume(e, 'mouseUp')
     }
 
     this.reset()

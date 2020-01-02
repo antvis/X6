@@ -1,10 +1,10 @@
-import { Graph } from '../../graph'
-import { State } from '../../core/state'
-import { Shape } from '../../shape'
-import { Point } from '../../struct'
-import { isAncestorNode } from '../../util'
-import { detector } from '../detector'
-import * as DomEvent from './index.rollup'
+import { detector } from '@antv/x6-detector'
+import { isAncestorNode } from '@antv/x6-util'
+import { DomEvent } from '@antv/x6-dom-event'
+import { Graph } from '../graph/graph'
+import { State } from '../core/state'
+import { Shape } from '../shape'
+import { Point } from '../struct'
 
 export class MouseEventEx {
   e: MouseEvent
@@ -130,7 +130,7 @@ export namespace MouseEventEx {
           onMouseDown(e)
         } else if (!DomEvent.isConsumed(e)) {
           graph.dispatchMouseEvent(
-            DomEvent.MOUSE_DOWN,
+            'mouseDown',
             new MouseEventEx(e, getState(e)),
           )
         }
@@ -140,7 +140,7 @@ export namespace MouseEventEx {
           onMouseMove(e)
         } else if (!DomEvent.isConsumed(e)) {
           graph.dispatchMouseEvent(
-            DomEvent.MOUSE_MOVE,
+            'mouseMove',
             new MouseEventEx(e, getState(e)),
           )
         }
@@ -149,10 +149,7 @@ export namespace MouseEventEx {
         if (onMouseUp) {
           onMouseUp(e)
         } else if (!DomEvent.isConsumed(e)) {
-          graph.dispatchMouseEvent(
-            DomEvent.MOUSE_UP,
-            new MouseEventEx(e, getState(e)),
-          )
+          graph.dispatchMouseEvent('mouseUp', new MouseEventEx(e, getState(e)))
         }
       },
     )

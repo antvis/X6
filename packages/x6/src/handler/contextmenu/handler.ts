@@ -1,7 +1,9 @@
-import * as util from '../../util'
+import { util } from '@antv/x6-util'
+import { DomEvent } from '@antv/x6-dom-event'
+import { Disposable } from '@antv/x6-disposable'
 import { Graph } from '../../graph'
-import { MouseHandler } from '../handler-mouse'
-import { MouseEventEx, DomEvent, Disposable } from '../../common'
+import { MouseHandler } from '../mouse-handler'
+import { MouseEventEx } from '../mouse-event'
 import { ShowContextMenuArgs } from './option'
 
 export class ContextMenuHandler extends MouseHandler {

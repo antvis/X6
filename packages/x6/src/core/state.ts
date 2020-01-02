@@ -1,7 +1,9 @@
+import { Dictionary } from '@antv/x6-struct'
+import { Disposable } from '@antv/x6-disposable'
 import { Cell } from './cell'
 import { View } from './view'
 import { Style } from '../types'
-import { Dictionary, Disablable, Disposable } from '../common'
+import { Disablable } from '../common'
 import { Shape, ImageShape, Text } from '../shape'
 import { Point, Rectangle, Overlay } from '../struct'
 
@@ -114,7 +116,7 @@ export class State extends Disablable {
   constructor(
     public view: View,
     public cell: Cell = new Cell(),
-    public style: Style = {}
+    public style: Style = {},
   ) {
     super()
     this.origin = new Point()
@@ -130,7 +132,7 @@ export class State extends Disablable {
    */
   getPerimeterBounds(
     border: number = 0,
-    bounds: Rectangle = Rectangle.clone(this.bounds)
+    bounds: Rectangle = Rectangle.clone(this.bounds),
   ) {
     if (
       this.shape != null &&
@@ -142,7 +144,7 @@ export class State extends Disablable {
         bounds.x,
         bounds.y,
         bounds.width,
-        bounds.height
+        bounds.height,
       )
 
       bounds.x = aspect.x
@@ -227,7 +229,7 @@ export class State extends Disablable {
       this.bounds.x / s - t.x,
       this.bounds.y / s - t.y,
       this.bounds.width / s,
-      this.bounds.height / s
+      this.bounds.height / s,
     )
 
     this.paintBounds = this.cellBounds.clone()

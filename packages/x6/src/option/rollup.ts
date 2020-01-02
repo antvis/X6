@@ -1,4 +1,4 @@
-import * as util from '../util'
+import { util } from '@antv/x6-util'
 import { Style } from '../types'
 import { GridOptions } from '../graph/grid-accessor'
 import { PageBreakOptions } from '../graph/pagebreak-accessor'

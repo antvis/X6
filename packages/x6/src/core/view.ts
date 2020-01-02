@@ -1,4 +1,7 @@
-import * as util from '../util'
+import { detector } from '@antv/x6-detector'
+import { DomEvent } from '@antv/x6-dom-event'
+import { Disposable } from '@antv/x6-disposable'
+import { util } from '@antv/x6-util'
 import { Cell } from './cell'
 import { State } from './state'
 import { Graph } from '../graph'
@@ -8,7 +11,9 @@ import { Perimeter } from '../perimeter'
 import { RectangleShape } from '../shape'
 import { UndoableEdit, CurrentRootChange } from '../change'
 import { Point, Rectangle, Anchor, NodeType } from '../struct'
-import { detector, DomEvent, MouseEventEx, Primer, Disposable } from '../common'
+import { Primer } from '../common'
+import { MouseEventEx } from '../handler'
+import * as utilBiz from '../util'
 
 export class View extends Primer<View.EventArgs> {
   graph: Graph
@@ -471,11 +476,11 @@ export class View extends Primer<View.EventArgs> {
 
     // Apply ratation when relative and parent is node.
     if (geo.relative && pState != null && !this.model.isEdge(parent)) {
-      const rot = util.getRotation(pState)
+      const rot = utilBiz.getRotation(pState)
       if (rot !== 0) {
         const nodeCenter = state.bounds.getCenter()
         const parentCenter = pState.bounds.getCenter()
-        const pt = util.rotatePoint(nodeCenter, rot, parentCenter)
+        const pt = utilBiz.rotatePoint(nodeCenter, rot, parentCenter)
         state.bounds.x = pt.x - state.bounds.width / 2
         state.bounds.y = pt.y - state.bounds.height / 2
       }
@@ -683,7 +688,7 @@ export class View extends Primer<View.EventArgs> {
 
       if (anchor.perimeter) {
         if (r1 !== 0) {
-          result = util.rotatePoint(result, r1, cx)
+          result = utilBiz.rotatePoint(result, r1, cx)
         }
 
         result = this.getPerimeterPoint(terminalState, result, false)
@@ -691,8 +696,8 @@ export class View extends Primer<View.EventArgs> {
         r2 += r1
 
         if (this.model.isNode(terminalState.cell)) {
-          const flipH = util.isFlipH(terminalState)
-          const flipV = util.isFlipV(terminalState)
+          const flipH = utilBiz.isFlipH(terminalState)
+          const flipV = utilBiz.isFlipV(terminalState)
 
           if (flipH) {
             result.x = 2 * bounds.getCenterX() - result.x
@@ -706,7 +711,7 @@ export class View extends Primer<View.EventArgs> {
 
       // Generic rotation after projection on perimeter
       if (r2 !== 0 && result != null) {
-        result = util.rotatePoint(result, r2, cx)
+        result = utilBiz.rotatePoint(result, r2, cx)
       }
     }
 
@@ -904,14 +909,14 @@ export class View extends Primer<View.EventArgs> {
     // tslint:disable-next-line:no-parameter-reassignment
     relateState = this.getTerminalPortState(edgeState, relateState, isSource)
 
-    const rot = util.getRotation(relateState)
+    const rot = utilBiz.getRotation(relateState)
     const orth = this.graph.connectionManager.isOrthogonal(edgeState)
     const center = relateState.bounds.getCenter()
 
     let nextPoint = this.getNextPoint(edgeState, opposeState, isSource)
     if (rot !== 0) {
       // rotate with related cell
-      nextPoint = util.rotatePoint(nextPoint!, -rot, center)
+      nextPoint = utilBiz.rotatePoint(nextPoint!, -rot, center)
     }
 
     let border = edgeState.style.perimeterSpacing || 0
@@ -930,7 +935,7 @@ export class View extends Primer<View.EventArgs> {
     )
 
     if (rot !== 0) {
-      p = util.rotatePoint(p!, rot, center)
+      p = utilBiz.rotatePoint(p!, rot, center)
     }
 
     return p
@@ -991,8 +996,8 @@ export class View extends Primer<View.EventArgs> {
           let flipV = false
 
           if (this.graph.model.isNode(terminalState.cell)) {
-            flipH = util.isFlipH(terminalState)
-            flipV = util.isFlipV(terminalState)
+            flipH = utilBiz.isFlipH(terminalState)
+            flipV = utilBiz.isFlipV(terminalState)
 
             if (flipH) {
               result.x = 2 * bounds.getCenterX() - result.x
@@ -1345,7 +1350,7 @@ export class View extends Primer<View.EventArgs> {
         // Works which line segment the point of the label is closest to
         let p0 = edgeState.absolutePoints[0]!
         let pe = edgeState.absolutePoints[1]!
-        let minDist = util.ptSegmentDist(p0.x, p0.y, pe.x, pe.y, x, y)
+        let minDist = utilBiz.ptSegmentDist(p0.x, p0.y, pe.x, pe.y, x, y)
 
         let tmp = 0
         let index = 0
@@ -1354,7 +1359,7 @@ export class View extends Primer<View.EventArgs> {
         for (let i = 2; i < pointCount; i += 1) {
           tmp += segments[i - 2]
           pe = edgeState.absolutePoints[i]!
-          const dist = util.ptSegmentDist(p0.x, p0.y, pe.x, pe.y, x, y)
+          const dist = utilBiz.ptSegmentDist(p0.x, p0.y, pe.x, pe.y, x, y)
 
           if (dist <= minDist) {
             minDist = dist
@@ -1403,9 +1408,9 @@ export class View extends Primer<View.EventArgs> {
         }
 
         let yDistance = Math.sqrt(
-          util.ptSegmentDist(p0.x, p0.y, pe.x, pe.y, x, y),
+          utilBiz.ptSegmentDist(p0.x, p0.y, pe.x, pe.y, x, y),
         )
-        const direction = util.relativeCcw(p0.x, p0.y, pe.x, pe.y, x, y)
+        const direction = utilBiz.relativeCcw(p0.x, p0.y, pe.x, pe.y, x, y)
         if (direction === -1) {
           yDistance = -yDistance
         }
@@ -1606,7 +1611,7 @@ export class View extends Primer<View.EventArgs> {
       graph.getGridType() != null &&
       graph.getGridColor() != null
     ) {
-      bgImage = util.createGrid({
+      bgImage = utilBiz.createGrid({
         type: graph.getGridType(),
         size: graph.getGridSize() * this.scale,
         minSize: graph.getGridMinSize(),
@@ -1952,7 +1957,7 @@ export class View extends Primer<View.EventArgs> {
 
         // Dispatches the drop event to the graph which
         // consumes and executes the source function
-        const p = util.clientToGraph(container, x, y)
+        const p = utilBiz.clientToGraph(container, x, y)
         state = graph.view.getState(graph.getCellAt(p.x, p.y))
       }
 

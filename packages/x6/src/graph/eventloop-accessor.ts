@@ -1,6 +1,7 @@
+import { detector } from '@antv/x6-detector'
+import { DomEvent } from '@antv/x6-dom-event'
 import { hook } from './decorator'
-import { IMouseHandler } from '../handler'
-import { DomEvent, MouseEventEx, detector } from '../common'
+import { IMouseHandler, MouseEventEx } from '../handler'
 import { BaseGraph } from './base-graph'
 
 export class EventLoopAccessor extends BaseGraph {

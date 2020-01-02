@@ -1,3 +1,7 @@
+import { isVisible, toFront } from '@antv/x6-util'
+import { detector } from '@antv/x6-detector'
+import { DomEvent } from '@antv/x6-dom-event'
+import { IDisposable, Disposable } from '@antv/x6-disposable'
 import * as util from '../../util'
 import { Route } from '../../route'
 import { Graph } from '../../graph'
@@ -5,19 +9,13 @@ import { Cell } from '../../core/cell'
 import { State } from '../../core/state'
 import { Rectangle, Point, Anchor } from '../../struct'
 import { Shape, RectangleShape } from '../../shape'
-import { MouseHandler } from '../handler-mouse'
+import { MouseHandler } from '../mouse-handler'
 import { CellMarker } from '../cell-marker'
 import { AnchorHandler } from '../anchor/handler'
 import { Handle } from '../handle'
 import { EdgeMarker } from './marker'
 import { transparentMarker } from '../connection/util'
-import {
-  detector,
-  DomEvent,
-  MouseEventEx,
-  IDisposable,
-  Disposable,
-} from '../../common'
+import { MouseEventEx } from '../mouse-event'
 import {
   createEdgeHandle,
   getEdgeHandleCursor,
@@ -497,7 +495,7 @@ export class EdgeHandler extends MouseHandler {
     function checkShape(shape: Shape | null) {
       if (
         shape &&
-        util.isVisible(shape.elem) &&
+        isVisible(shape.elem) &&
         (e.isSource(shape) || (hit && shape.bounds.isIntersectWith(hit)))
       ) {
         const dx = e.getGraphX() - shape.bounds.getCenterX()
@@ -1439,7 +1437,7 @@ export class EdgeHandler extends MouseHandler {
     }
 
     if (this.labelHandleShape) {
-      util.toFront(this.labelHandleShape.elem)
+      toFront(this.labelHandleShape.elem)
     }
   }
 

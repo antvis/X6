@@ -1,6 +1,6 @@
 /* tslint:disable:no-parameter-reassignment */
 
-import * as util from '../../util'
+import { util } from '@antv/x6-util'
 import { SvgCanvas2DText } from './text'
 
 export class SvgCanvas2D extends SvgCanvas2DText {
@@ -26,7 +26,7 @@ export class SvgCanvas2D extends SvgCanvas2DText {
     w: number,
     h: number,
     dx: number,
-    dy: number
+    dy: number,
   ) {
     this.rect(x, y, w, h)
 
@@ -77,7 +77,7 @@ export class SvgCanvas2D extends SvgCanvas2DText {
     src: string,
     aspect: boolean = true,
     flipH: boolean = false,
-    flipV: boolean = false
+    flipV: boolean = false,
   ) {
     const state = this.state
 
@@ -176,7 +176,7 @@ export class SvgCanvas2D extends SvgCanvas2DText {
 
       if (deg !== 0) {
         state.transform += `rotate(${this.format(deg)},${this.format(
-          cx
+          cx,
         )},${this.format(cy)})`
       }
 

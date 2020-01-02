@@ -1,10 +1,12 @@
-import * as util from '../../util'
+import { util } from '@antv/x6-util'
+import { DomEvent } from '@antv/x6-dom-event'
+import { Disposable } from '@antv/x6-disposable'
 import { Cell } from '../../core/cell'
 import { State } from '../../core/state'
 import { Graph } from '../../graph'
-import { MouseHandler } from '../handler-mouse'
+import { MouseHandler } from '../mouse-handler'
 import { ShowTooltipArgs } from './option'
-import { DomEvent, MouseEventEx, Disposable } from '../../common'
+import { MouseEventEx } from '../mouse-event'
 
 export class TooltipHandler extends MouseHandler {
   ignoreTouchEvents: boolean = true

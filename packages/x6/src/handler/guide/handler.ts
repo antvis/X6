@@ -1,11 +1,12 @@
-import * as util from '../../util'
+import { Disposable } from '@antv/x6-disposable'
 import * as movment from '../moving/util'
 import { Cell } from '../../core/cell'
 import { Guide } from './guide'
 import { Rectangle, Point } from '../../struct'
-import { MouseHandler } from '../handler-mouse'
-import { MouseEventEx, Disposable } from '../../common'
+import { MouseHandler } from '../mouse-handler'
+import { MouseEventEx } from '../mouse-event'
 import { createGuide, isGuideEnabled } from './option'
+import { clientToGraph } from '../../util'
 
 export class GuideHandler extends MouseHandler {
   dx: number | null
@@ -29,7 +30,7 @@ export class GuideHandler extends MouseHandler {
   mouseDown(e: MouseEventEx) {
     if (movment.isValid(this, e) && movment.canMove(this, e)) {
       this.cell = this.getCell(e)!
-      this.origin = util.clientToGraph(this.graph.container, e)
+      this.origin = clientToGraph(this.graph.container, e)
       this.bounds = this.graph.view.getBounds(
         movment.getCells(this, this.cell, e),
       )

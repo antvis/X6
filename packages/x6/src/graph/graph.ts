@@ -1,4 +1,4 @@
-import * as util from '../util'
+import { applyMixins } from '@antv/x6-util'
 import { View } from '../core/view'
 import { Model } from '../core/model'
 import { Renderer } from '../core/renderer'
@@ -122,7 +122,7 @@ export interface Graph
     RubberbandAccessor,
     ContextMenuAccessor {}
 
-util.applyMixins(
+applyMixins(
   Graph,
   RollupAccessor,
   CommonAccessor,

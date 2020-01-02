@@ -1,7 +1,2 @@
-export * from './detector'
-export * from './events'
-export * from './disposable'
 export * from './primer'
 export * from './disablable'
-export * from './dictionary'
-export * from './dom-event'

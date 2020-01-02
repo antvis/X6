@@ -1,4 +1,5 @@
-import { Primer, Disposable } from '../common'
+import { Disposable } from '@antv/x6-disposable'
+import { Primer } from '../common'
 import { Graph } from '../graph'
 import { UndoableEdit } from './undoableedit'
 
