@@ -1,4 +1,4 @@
-import * as util from '../../util'
+import { util } from '@antv/x6-util'
 import { globals } from '../../option'
 import { Direction } from '../../types'
 import { Canvas2D } from '../canvas2d'

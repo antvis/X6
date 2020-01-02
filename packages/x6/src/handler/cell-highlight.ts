@@ -1,10 +1,12 @@
-import * as util from '../util'
+import { util } from '@antv/x6-util'
+import { Disposable } from '@antv/x6-disposable'
 import { globals } from '../option/global'
 import { Shape } from '../shape'
 import { Graph } from '../graph'
 import { State } from '../core/state'
-import { MouseEventEx, Disposable } from '../common'
-import { BaseHandler } from './handler-base'
+import { MouseEventEx } from './mouse-event'
+import { BaseHandler } from './base-handler'
+import { getRotation } from '../util'
 
 export class CellHighlight extends BaseHandler {
   state: State | null
@@ -107,7 +109,7 @@ export class CellHighlight extends BaseHandler {
         this.shape.outline = false
       } else {
         this.shape.bounds = this.state.bounds.clone().grow(this.spacing)
-        this.shape.rotation = util.getRotation(this.state)
+        this.shape.rotation = getRotation(this.state)
         this.shape.strokeWidth = this.strokeWidth / this.state.view.scale
         this.shape.outline = true
       }

@@ -1,9 +1,9 @@
-import * as util from '../util'
+import { DomEvent } from '@antv/x6-dom-event'
 import { Cell } from '../core/cell'
-import { DomEvent } from '../common'
 import { Align, VAlign } from '../types'
 import { hook } from './decorator'
 import { BaseGraph } from './base-graph'
+import { clientToGraph } from '../util'
 
 export class MovingAccessor extends BaseGraph {
   @hook()
@@ -197,7 +197,7 @@ export class MovingAccessor extends BaseGraph {
       }
     }
 
-    const p = util.clientToGraph(
+    const p = clientToGraph(
       this.container,
       DomEvent.getClientX(e),
       DomEvent.getClientY(e),
@@ -235,7 +235,7 @@ export class MovingAccessor extends BaseGraph {
     let parent = null
     if (clone == null || !clone) {
       parent = target
-      while (parent != null && util.indexOf(cells, parent) < 0) {
+      while (parent != null && cells.indexOf(parent) < 0) {
         parent = this.model.getParent(parent)!
       }
     }

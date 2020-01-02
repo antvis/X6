@@ -1,14 +1,14 @@
-import { detector } from './detector'
-import { DomEvent } from './dom-event'
-import { Events } from './events'
-import { IDisposable } from './disposable'
+import { Events } from '@antv/x6-events'
+import { IDisposable } from '@antv/x6-disposable'
+import { detector } from '@antv/x6-detector'
+import { addListener } from '@antv/x6-dom-event'
 
 export abstract class Primer<EventArgs = any> extends Events<EventArgs>
   implements IDisposable {
   constructor() {
     super()
     if (detector.IS_IE) {
-      DomEvent.addListener(window, 'unload', () => {
+      addListener(window, 'unload', () => {
         this.dispose()
       })
     }

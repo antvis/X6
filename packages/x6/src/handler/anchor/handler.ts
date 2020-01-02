@@ -1,10 +1,12 @@
-import * as util from '../../util'
+import { DomEvent } from '@antv/x6-dom-event'
+import { Disposable } from '@antv/x6-disposable'
+import { util } from '@antv/x6-util'
 import { Graph } from '../../graph'
 import { State } from '../../core/state'
 import { Shape } from '../../shape'
-import { BaseHandler } from '../handler-base'
+import { BaseHandler } from '../base-handler'
+import { MouseEventEx } from '../mouse-event'
 import { Rectangle, Point, Anchor } from '../../struct'
-import { DomEvent, MouseEventEx, Disposable } from '../../common'
 import { createAnchorShape, createAnchorHighlightShape } from './option'
 
 export class AnchorHandler extends BaseHandler {

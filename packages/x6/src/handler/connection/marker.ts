@@ -1,6 +1,6 @@
 import { State } from '../../core/state'
-import { MouseEventEx } from '../../common'
 import { CellMarker } from '../cell-marker'
+import { MouseEventEx } from '../mouse-event'
 import { ConnectionHandler } from './handler'
 import { getConnectionIcon, getConnectionHighlightOptions } from './option'
 

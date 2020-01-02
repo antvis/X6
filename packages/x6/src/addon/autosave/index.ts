@@ -1,6 +1,7 @@
-import { IChange } from '../../change'
+import { Disposable } from '@antv/x6-disposable'
 import { Graph } from '../../graph'
-import { Disablable, Disposable } from '../../common'
+import { IChange } from '../../change'
+import { Disablable } from '../../common'
 
 export class AutoSave extends Disablable<AutoSave.EventArgs> {
   graph: Graph

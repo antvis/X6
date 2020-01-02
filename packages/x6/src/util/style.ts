@@ -1,4 +1,4 @@
-import { State } from '../../core/state'
+import { State } from '../core/state'
 
 export function isValidColor(color?: string | null) {
   return color != null && color !== 'none'

@@ -1,8 +1,9 @@
+import { Disposable } from '@antv/x6-disposable'
 import { Cell } from '../core/cell'
 import { Graph } from '../graph'
-import { MouseEventEx, Disposable } from '../common'
 import { CellMarker } from './cell-marker'
-import { IMouseHandler } from './handler-mouse'
+import { MouseEventEx } from './mouse-event'
+import { IMouseHandler } from './mouse-handler'
 
 export class CellTracker extends CellMarker implements IMouseHandler {
   constructor(

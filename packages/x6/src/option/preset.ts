@@ -1,7 +1,7 @@
+import { detector } from '@antv/x6-detector'
 import * as images from '../assets/images'
 import { loop } from '../route/loop'
 import { Style } from '../types'
-import { detector } from '../common'
 import { PageSize } from '../struct'
 import { Perimeter } from '../perimeter'
 import { FullOptions } from './rollup'

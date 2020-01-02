@@ -1,6 +1,6 @@
+import { Events } from '@antv/x6-events'
 import { Point, Rectangle, Image } from '../struct'
 import { State } from '../core/state'
-import { Events } from '../common'
 import { Align, VAlign } from '../types'
 
 export class Overlay extends Events {
@@ -74,7 +74,7 @@ export class Overlay extends Events {
       Math.round(pt!.x - (w * this.defaultOverlap - this.offset.x) * s),
       Math.round(pt!.y - (h * this.defaultOverlap - this.offset.y) * s),
       w * s,
-      h * s
+      h * s,
     )
   }
 }

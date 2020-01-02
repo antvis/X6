@@ -1,5 +1,5 @@
-import { MouseHandler } from '../handler-mouse'
-import { MouseEventEx } from '../../common'
+import { MouseHandler } from '../mouse-handler'
+import { MouseEventEx } from '../mouse-event'
 
 export class SelectCellHandler extends MouseHandler {
   mouseDown(e: MouseEventEx, sender: any) {

@@ -1,4 +1,4 @@
-import * as util from '../util'
+import { util } from '@antv/x6-util'
 import { RectangleShape } from './rectangle'
 import { SvgCanvas2D } from '../canvas'
 import { Rectangle, Overlay } from '../struct'

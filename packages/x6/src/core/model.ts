@@ -1,5 +1,5 @@
-import * as util from '../util'
-import { Events } from '../common'
+import { Events } from '@antv/x6-events'
+import { util } from '@antv/x6-util'
 import { Cell } from './cell'
 import { Style } from '../types'
 import { Geometry } from './geometry'

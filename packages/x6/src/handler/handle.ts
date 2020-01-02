@@ -1,7 +1,7 @@
 import * as util from '../util'
 import { State } from '../core/state'
 import { Graph } from '../graph'
-import { MouseEventEx } from '../common'
+import { MouseEventEx } from './mouse-event'
 import { globals } from '../option/global'
 import { Rectangle, Point, Image } from '../struct'
 import { Shape, ImageShape, EllipseShape } from '../shape'

@@ -1,4 +1,4 @@
-import * as util from '../util'
+import { util } from '@antv/x6-util'
 import { Cell } from '../core/cell'
 import { Rectangle, Point } from '../struct'
 import { BaseManager } from './base-manager'

@@ -1,9 +1,13 @@
-import * as util from '../util'
+import { detector } from '@antv/x6-detector'
+import { DomEvent } from '@antv/x6-dom-event'
+import { Dictionary } from '@antv/x6-struct'
+import { util } from '@antv/x6-util'
+import * as utilBiz from '../util'
 import { State } from './state'
 import { Dialect } from '../types'
 import { globals } from '../option'
 import { Rectangle, Point, Overlay } from '../struct'
-import { detector, Dictionary, DomEvent, MouseEventEx } from '../common'
+import { MouseEventEx } from '../handler'
 import {
   Shape,
   Stencil,
@@ -388,7 +392,7 @@ export class Renderer {
 
         // Dispatches the drop event to the graph which
         // consumes and executes the source function
-        const pt = util.clientToGraph(graph.container, x, y)
+        const pt = utilBiz.clientToGraph(graph.container, x, y)
         result = graph.view.getState(graph.getCellAt(pt.x, pt.y))!
       }
 
@@ -710,7 +714,7 @@ export class Renderer {
 
           // Dispatches the drop event to the graph which
           // consumes and executes the source function
-          const pt = util.clientToGraph(graph.container, x, y)
+          const pt = utilBiz.clientToGraph(graph.container, x, y)
           result = graph.view.getState(graph.getCellAt(pt.x, pt.y))!
         }
 
@@ -954,7 +958,7 @@ export class Renderer {
       const cx = state.bounds.getCenterX()
       const cy = state.bounds.getCenterY()
       if (bounds.x !== cx || bounds.y !== cy) {
-        const pt = util.rotatePoint(
+        const pt = utilBiz.rotatePoint(
           new Point(bounds.x, bounds.y),
           theta,
           new Point(cx, cy),
@@ -1010,8 +1014,8 @@ export class Renderer {
   protected redrawOverlays(state: State, forced?: boolean) {
     this.createOverlays(state)
     if (state.overlays != null) {
-      const rot = util.mod(util.getRotation(state), 90)
-      const rad = util.toRad(rot)
+      const rot = util.mod(utilBiz.getRotation(state), 90)
+      const rad = utilBiz.toRad(rot)
       const cos = Math.cos(rad)
       const sin = Math.sin(rad)
 
@@ -1023,7 +1027,7 @@ export class Renderer {
             let cx = bounds.getCenterX()
             let cy = bounds.getCenterY()
 
-            const point = util.rotatePointEx(
+            const point = utilBiz.rotatePointEx(
               new Point(cx, cy),
               cos,
               sin,
@@ -1101,7 +1105,7 @@ export class Renderer {
           }
 
           if (rot !== 0) {
-            const p = util.rotatePoint(
+            const p = utilBiz.rotatePoint(
               new Point(cx, cy),
               rot,
               state.bounds.getCenter(),

@@ -1,6 +1,6 @@
 import { Cell } from '../core/cell'
 import { Graph } from '../graph'
-import { isHtmlElem } from '../util'
+import { isHtmlElem } from '@antv/x6-util'
 
 export class Multiplicity {
   constructor(options: Multiplicity.Options) {

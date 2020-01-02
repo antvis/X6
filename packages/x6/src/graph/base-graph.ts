@@ -1,4 +1,5 @@
-import * as util from '../util'
+import { Disposable } from '@antv/x6-disposable'
+import { call } from '@antv/x6-util'
 import { Route } from '../route'
 import { Model } from '../core/model'
 import { Cell } from '../core/cell'
@@ -6,7 +7,7 @@ import { View } from '../core/view'
 import { State } from '../core/state'
 import { Renderer } from '../core/renderer'
 import { FullOptions } from '../option'
-import { Disablable, Disposable } from '../common'
+import { Disablable } from '../common'
 import { Dialect, Style, Size } from '../types'
 import { Rectangle, Multiplicity, Image } from '../struct'
 import {
@@ -248,7 +249,7 @@ export class BaseGraph extends Disablable<EventArgs>
       result = this.createEdgeSegmentHandler(state)
     } else {
       return (
-        util.call(this.options.createEdgeHandler, this, this, state) ||
+        call(this.options.createEdgeHandler, this, this, state) ||
         new EdgeHandler(this as any, state)
       )
     }

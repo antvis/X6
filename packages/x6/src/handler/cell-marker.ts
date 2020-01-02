@@ -1,11 +1,13 @@
-import * as util from '../util'
+import { util } from '@antv/x6-util'
+import { Disposable } from '@antv/x6-disposable'
 import { globals } from '../option/global'
 import { Graph } from '../graph'
 import { Cell } from '../core/cell'
 import { State } from '../core/state'
-import { MouseEventEx, Disposable } from '../common'
-import { BaseHandler } from './handler-base'
+import { MouseEventEx } from './mouse-event'
+import { BaseHandler } from './base-handler'
 import { CellHighlight } from './cell-highlight'
+import { isInHotspot } from '../util'
 
 export class CellMarker extends BaseHandler {
   highlight: CellHighlight
@@ -150,7 +152,7 @@ export class CellMarker extends BaseHandler {
     // 在中心区域按下鼠标触发连线
     // 在边缘区域按下鼠标触发移动
     if (this.hotspotable) {
-      return util.isInHotspot(
+      return isInHotspot(
         state,
         e.getGraphX(),
         e.getGraphY(),

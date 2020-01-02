@@ -1,10 +1,11 @@
-import * as util from '../util'
+import { util } from '@antv/x6-util'
 import { globals } from '../option'
 import { Shape } from './shape-base'
 import { SvgCanvas2D } from '../canvas'
 import { State } from '../core/state'
 import { Rectangle, Point, FontStyle } from '../struct'
 import { Align, VAlign, WritingDirection } from '../types'
+import { getAlignmentAsPoint, isValidColor, rotateRectangle } from '../util'
 
 export class Text extends Shape {
   value: HTMLElement | string
@@ -433,7 +434,7 @@ export class Text extends Shape {
     if (this.boundingBox != null) {
       if (rot !== 0) {
         // Accounts for pre-rotated x and y
-        const bbox = util.rotateRectangle(
+        const bbox = rotateRectangle(
           new Rectangle(
             this.margin.x * this.boundingBox.width,
             this.margin.y * this.boundingBox.height,
@@ -587,11 +588,11 @@ export class Text extends Shape {
       val = util.replaceTrailingNewlines(val as string, '<div><br></div>')
       val = this.replaceLinefeeds ? val.replace(/\n/g, '<br/>') : val
 
-      const bg = util.isValidColor(this.backgroundColor)
+      const bg = isValidColor(this.backgroundColor)
         ? this.backgroundColor
         : null
 
-      const bd = util.isValidColor(this.borderColor) ? this.borderColor : null
+      const bd = isValidColor(this.borderColor) ? this.borderColor : null
 
       if (this.overflow === 'fill' || this.overflow === 'width') {
         if (bg != null) {
@@ -738,7 +739,7 @@ export class Text extends Shape {
   }
 
   updateMargin() {
-    this.margin = util.getAlignmentAsPoint(this.align, this.verticalAlign)
+    this.margin = getAlignmentAsPoint(this.align, this.verticalAlign)
   }
 
   getSpacing() {

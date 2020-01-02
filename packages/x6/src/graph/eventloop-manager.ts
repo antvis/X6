@@ -1,10 +1,11 @@
+import { detector } from '@antv/x6-detector'
 import * as util from '../util'
 import { Cell } from '../core/cell'
 import { State } from '../core/state'
 import { Point } from '../struct'
 import { RectangleShape } from '../shape'
-import { detector, DomEvent, MouseEventEx } from '../common'
-import { IMouseHandler } from '../handler'
+import { DomEvent } from '@antv/x6-dom-event'
+import { MouseEventEx, IMouseHandler } from '../handler'
 import { BaseManager } from './base-manager'
 
 export class EventLoopManager extends BaseManager {

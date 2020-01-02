@@ -1,9 +1,11 @@
+import { util } from '@antv/x6-util'
+import { detector } from '@antv/x6-detector'
+import { DomEvent } from '@antv/x6-dom-event'
+import { Disposable } from '@antv/x6-disposable'
 import * as sizeSensor from 'size-sensor'
-import * as util from '../util'
 import { Cell } from '../core/cell'
 import { Size } from '../types'
 import { Rectangle, Point } from '../struct'
-import { detector, Disposable, DomEvent } from '../common'
 import { BaseManager } from './base-manager'
 
 export class ViewportManager extends BaseManager {

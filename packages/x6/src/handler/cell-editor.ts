@@ -1,11 +1,14 @@
-import * as util from '../util'
+import { util } from '@antv/x6-util'
+import { detector } from '@antv/x6-detector'
+import { DomEvent } from '@antv/x6-dom-event'
+import { Disposable } from '@antv/x6-disposable'
 import { Graph } from '../graph'
 import { Cell } from '../core/cell'
 import { State } from '../core/state'
 import { Align } from '../types'
 import { globals } from '../option'
-import { detector, DomEvent, Disposable } from '../common'
 import { Rectangle, FontStyle } from '../struct'
+import { getAlignmentAsPoint } from '../util'
 
 export class CellEditor extends Disposable {
   readonly graph: Graph
@@ -410,7 +413,7 @@ export class CellEditor extends Disposable {
         m = state.text && this.align ? state.text.margin : null
 
         if (m == null) {
-          m = util.getAlignmentAsPoint(
+          m = getAlignmentAsPoint(
             this.align || state.style.align || 'center',
             state.style.verticalAlign || 'middle',
           )

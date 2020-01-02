@@ -1,13 +1,19 @@
-import * as util from '../util'
+import { util } from '@antv/x6-util'
+import { DomEvent } from '@antv/x6-dom-event'
+import { Disposable } from '@antv/x6-disposable'
 import * as images from '../assets/images'
 import { globals } from '../option'
 import { State } from '../core/state'
 import { Stencil } from './stencil'
 import { SvgCanvas2D } from '../canvas'
-import { DomEvent, Disposable } from '../common'
 import { Rectangle, Point } from '../struct'
 import { Style, Direction, Dialect } from '../types'
-import { registerEntity } from '../util/biz/registry'
+import {
+  registerEntity,
+  rotateRectangle,
+  isValidColor,
+  getDirectedBounds,
+} from '../util'
 
 export class Shape extends Disposable {
   state: State
@@ -268,7 +274,7 @@ export class Shape extends Disposable {
 
   protected updateHtmlBounds(elem: HTMLElement) {
     let sw = 0
-    if (util.isValidColor(this.strokeColor) && this.strokeWidth > 0) {
+    if (isValidColor(this.strokeColor) && this.strokeWidth > 0) {
       sw = Math.ceil(this.strokeWidth * this.scale)
     }
 
@@ -304,10 +310,7 @@ export class Shape extends Disposable {
         `Color='${this.shadowColor}')`
     }
 
-    if (
-      util.isValidColor(this.fillColor) &&
-      util.isValidColor(this.gradientColor)
-    ) {
+    if (isValidColor(this.fillColor) && isValidColor(this.gradientColor)) {
       let start = this.fillColor
       let end = this.gradientColor
       let type = '0'
@@ -344,7 +347,7 @@ export class Shape extends Disposable {
   protected updateHtmlColors(node: HTMLElement) {
     let color = this.strokeColor
 
-    if (util.isValidColor(color)) {
+    if (isValidColor(color)) {
       node.style.borderColor = color!
 
       if (this.dashed) {
@@ -360,7 +363,7 @@ export class Shape extends Disposable {
     }
 
     color = this.outline ? null : this.fillColor
-    if (util.isValidColor(color)) {
+    if (isValidColor(color)) {
       node.style.backgroundColor = color!
       node.style.backgroundImage = 'none'
     } else if (this.pointerEvents) {
@@ -603,10 +606,7 @@ export class Shape extends Disposable {
       c.setDashPattern(dash)
     }
 
-    if (
-      util.isValidColor(this.fillColor) &&
-      util.isValidColor(this.gradientColor)
-    ) {
+    if (isValidColor(this.fillColor) && isValidColor(this.gradientColor)) {
       const b = this.getGradientBounds(c, x, y, w, h)
       c.setGradient(
         this.fillColor!,
@@ -849,7 +849,7 @@ export class Shape extends Disposable {
         flipV = tmp2
       }
 
-      return util.getDirectedBounds(rect, margin, this.style, flipH, flipV)
+      return getDirectedBounds(rect, margin, this.style, flipH, flipV)
     }
 
     return rect
@@ -885,7 +885,7 @@ export class Shape extends Disposable {
         this.augmentBoundingBox(bbox)
         const rot = this.getShapeRotation()
         if (rot !== 0) {
-          bbox = util.rotateRectangle(bbox, rot)
+          bbox = rotateRectangle(bbox, rot)
         }
       }
 

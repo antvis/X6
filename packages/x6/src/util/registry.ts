@@ -1,4 +1,4 @@
-import { exec } from '../string'
+import { exec } from '@antv/x6-util'
 
 function getHMRStatus() {
   const mod = module as any
@@ -17,7 +17,7 @@ export function registerEntity<T>(
   name: string,
   entity: T,
   force: boolean,
-  onError: () => void
+  onError: () => void,
 ) {
   if (registry[name] && !force && !isApplyingHMR()) {
     onError()
@@ -28,7 +28,7 @@ export function registerEntity<T>(
 export function getEntityFromRegistry<T>(
   registry: { [name: string]: T },
   name: string,
-  allowEval: boolean = false
+  allowEval: boolean = false,
 ): T | null {
   let ret = registry[name]
   if (ret == null && allowEval) {

@@ -1,7 +1,7 @@
 import { Cell } from '../core/cell'
 import { View } from '../core/view'
 import { Rectangle, Overlay, Anchor } from '../struct'
-import { MouseEventEx } from '../common'
+import { MouseEventEx } from '../handler'
 import { Align, VAlign } from '../types'
 import { IChange } from '../change'
 

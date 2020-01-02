@@ -1,6 +1,7 @@
+export * from './mouse-event'
 export * from './handle'
-export * from './handler-base'
-export * from './handler-mouse'
+export * from './base-handler'
+export * from './mouse-handler'
 
 export * from './cell-editor'
 export * from './cell-highlight'

@@ -1,6 +1,6 @@
-import * as util from '../util'
+import { Disposable } from '@antv/x6-disposable'
+import { util } from '@antv/x6-util'
 import { Graph } from '../graph'
-import { Disposable } from '../common'
 import { Geometry } from './geometry'
 import { Style } from '../types'
 import { Overlay, Point, Rectangle } from '../struct'
