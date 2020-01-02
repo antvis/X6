@@ -1,9 +1,4 @@
-export * from './lang'
-export * from './array'
-export * from './object'
-export * from './string'
-export * from './number'
-export * from './function'
-export * from './url'
-export * from './selection'
-export * from './dom'
+import * as util from './index-rollup'
+
+export * from './index-rollup'
+export { util }
