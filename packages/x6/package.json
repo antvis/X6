@@ -52,7 +52,7 @@
       "git add"
     ],
     "src/**/*.ts": [
-      "tslint -c tslint.json -p ./tsconfig.lint.json --fix",
+      "tslint -c tslint.json -p ./tsconfig.json --fix",
       "git add"
     ]
   },
@@ -95,13 +95,9 @@
   "bugs": {
     "url": "https://github.com/antvis/x6/issues"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/antvis/x6.git"
-  },
+  "repository": "https://github.com/antvis/x6/tree/master/packages/x6",
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org"
-  },
-  "gitHead": "4c6bec826bb6bdea5bcf36f918d82b8bfa76c912"
+  }
 }
