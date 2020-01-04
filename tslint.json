@@ -1,6 +1,6 @@
 {
   "extends": [
-    "tslint-react",
+    "tslint-config-airbnb",
     "tslint-eslint-rules",
     "tslint-config-prettier"
   ],
@@ -8,8 +8,7 @@
     "no-construct": true,
     "no-debugger": true,
     "no-reference": true,
-    "jsx-no-multiline-js": false,
-    "jsx-no-lambda": false,
+    "import-name": false,
     "semicolon": [true, "never"]
   }
 }
