@@ -1,20 +1,3 @@
 {
-  "compilerOptions": {
-    "sourceMap": true,
-    "declaration": true,
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "noImplicitAny": true,
-    "noEmitOnError": true,
-    "noUnusedLocals": true,
-    "strictNullChecks": true,
-    "resolveJsonModule": true,
-    "experimentalDecorators": true,
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "target": "es5",
-    "outDir": "./lib",
-    "lib": ["es5", "dom", "es2015"]
-  },
-  "include": ["./src/**/*.ts", "./src/**/*.d.ts"]
+  "extends": "../../tsconfig.json",
 }

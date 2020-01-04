@@ -1,11 +1,7 @@
 'use strict'
 
 module.exports = {
-  globals: {
-    'ts-jest': {
-      tsConfig: './tsconfig.test.json',
-    },
-  },
+  verbose: true,
   transform: {
     '^.+\\.ts$': 'ts-jest',
   },
