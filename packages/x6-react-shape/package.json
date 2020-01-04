@@ -14,10 +14,11 @@
     "src": "src/"
   },
   "keywords": [
-    "x6",
     "shape",
     "react",
-    "render"
+    "render",
+    "x6",
+    "antv"
   ],
   "scripts": {
     "clean:es": "rimraf ./es",

@@ -14,11 +14,12 @@
     "src": "src/"
   },
   "keywords": [
-    "x6",
     "events",
     "eventEmitter",
     "eventDispatcher",
-    "listeners"
+    "listeners",
+    "x6",
+    "antv"
   ],
   "scripts": {
     "clean:es": "rimraf ./es",

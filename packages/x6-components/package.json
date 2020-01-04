@@ -38,13 +38,14 @@
     "precommit": "lint-staged"
   },
   "keywords": [
+    "component",
+    "components",
+    "react-components",
     "x6",
     "x6-editor",
     "editor",
     "ui",
-    "component",
-    "components",
-    "react-components"
+    "antv"
   ],
   "lint-staged": {
     "src/**/*.ts": [
