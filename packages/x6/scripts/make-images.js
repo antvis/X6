@@ -27,9 +27,8 @@ fs.readdir(dir, (err, files) => {
     const size = sizeOf(filepath)
     const base64 = base64Img.base64Sync(filepath)
     logs.push(file)
-    lines.push(
-      `export const ${filename} = new Image('${base64}', ${size.width}, ${size.height})`
-    )
+    const line = `export const ${filename} = new Image('${base64}', ${size.width}, ${size.height})`
+    lines.push(line)
   })
 
   const code = prefix + lines.join('\n')
