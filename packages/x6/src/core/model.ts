@@ -1,4 +1,4 @@
-import { Events } from '@antv/x6-events'
+import { EventEmitter } from '@antv/x6-eventemitter'
 import { util } from '@antv/x6-util'
 import { Cell } from './cell'
 import { Style } from '../types'
@@ -17,7 +17,7 @@ import {
   UndoableEdit,
 } from '../change'
 
-export class Model extends Events<Model.EventArgs> {
+export class Model extends EventEmitter<Model.EventArgs> {
   private root: Cell
   private cells: { [id: string]: Cell }
   private currentEdit: UndoableEdit

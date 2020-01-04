@@ -1,5 +1,5 @@
 {
-  "name": "@antv/x6-events",
+  "name": "@antv/x6-eventemitter",
   "version": "1.0.0",
   "description": "Event emitter",
   "main": "lib/index.js",
@@ -14,10 +14,12 @@
     "src": "src/"
   },
   "keywords": [
+    "eventemitter",
+    "event",
     "events",
-    "eventEmitter",
-    "eventDispatcher",
     "listeners",
+    "pub/sub",
+    "emitter",
     "x6",
     "antv"
   ],
