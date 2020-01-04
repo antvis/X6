@@ -76,7 +76,7 @@
   "dependencies": {
     "@antv/x6-detector": "^1.0.0",
     "@antv/x6-dom-event": "^1.0.0",
-    "@antv/x6-events": "^1.0.0",
+    "@antv/x6-eventemitter": "^1.0.0",
     "@antv/x6-types": "^1.0.0",
     "@antv/x6-util": "^1.0.0",
     "mousetrap": "^1.6.3",
