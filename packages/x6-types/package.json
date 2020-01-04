@@ -14,13 +14,14 @@
     "src": "src/"
   },
   "keywords": [
-    "x6",
     "types",
     "typescript",
     "utility-types",
     "utilities",
     "static-typing",
-    "mapped-types"
+    "mapped-types",
+    "x6",
+    "antv"
   ],
   "scripts": {
     "clean:es": "rimraf ./es",

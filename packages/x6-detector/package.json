@@ -14,12 +14,13 @@
     "src": "src/"
   },
   "keywords": [
-    "x6",
     "detector",
     "environment",
     "ua",
     "user-agent",
-    "platform"
+    "platform",
+    "x6",
+    "antv"
   ],
   "scripts": {
     "clean:es": "rimraf ./es",

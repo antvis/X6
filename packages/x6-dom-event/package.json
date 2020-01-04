@@ -14,8 +14,11 @@
     "src": "src/"
   },
   "keywords": [
+    "dom",
+    "event",
+    "listener",
     "x6",
-    "geometry"
+    "antv"
   ],
   "scripts": {
     "clean:es": "rimraf ./es",

@@ -1,7 +1,7 @@
 {
-  "name": "@antv/x6",
-  "version": "0.2.4",
-  "description": "JavaScript diagramming library",
+  "name": "@antv/x6-dom-util",
+  "version": "1.0.0",
+  "description": "Common DOM util functions",
   "main": "lib/index.js",
   "module": "es/index.js",
   "types": "lib/index.d.ts",
@@ -14,14 +14,10 @@
     "src": "src/"
   },
   "keywords": [
+    "dom",
+    "util",
+    "utils",
     "x6",
-    "diagram",
-    "flowchart",
-    "uml",
-    "graph",
-    "x6-editor",
-    "editor",
-    "svg",
     "antv"
   ],
   "scripts": {
@@ -29,28 +25,18 @@
     "clean:lib": "rimraf ./lib",
     "clean:coverage": "rimraf ./test/coverage",
     "clean": "run-p clean:es clean:lib clean:coverage",
-    "lint": "run-s lint:ts lint:es",
-    "lint:es": "eslint --ext .js scripts --fix",
-    "lint:ts": "tslint -c tslint.json -p tsconfig.json --fix",
-    "watch": "watch 'yarn build:dev' ./src",
+    "lint": "tslint -c tslint.json -p tsconfig.json --fix",
+    "watch": "watch 'yarn build' ./src",
     "build:lib": "tsc --module commonjs --target es5 --outDir ./lib",
     "build:es": "tsc --module es2015 --target es2015 --outDir ./es",
-    "build:less": "lessc ./src/index.less ./lib/index.css",
-    "build:images": "node ./scripts/make-images.js",
-    "build:version": "node ./scripts/make-version.js",
-    "build:dev": "run-p build:images build:less build:lib build:es",
-    "build": "run-s build:version build:dev",
+    "build": "run-p build:lib build:es",
     "prebuild": "run-s lint clean",
-    "test": "jest",
+    "test": "jest --passWithNoTests",
     "pretest": "run-p clean:coverage",
-    "prepare": "run-s build:version test build",
+    "prepare": "run-s test build",
     "precommit": "lint-staged"
   },
   "lint-staged": {
-    "*.js": [
-      "eslint --fix",
-      "git add"
-    ],
     "src/**/*.ts": [
       "tslint -c tslint.json -p ./tsconfig.json --fix",
       "git add"
@@ -59,11 +45,7 @@
   "devDependencies": {
     "@types/jest": "^24.0.17",
     "@types/sinon": "^7.5.0",
-    "base64-img": "^1.0.4",
-    "eslint": "^6.1.0",
-    "image-size": "^0.7.4",
     "jest": "^24.8.0",
-    "less": "^3.10.3",
     "lint-staged": "^9.2.1",
     "npm-run-all": "^4.1.5",
     "rimraf": "^3.0.0",
@@ -72,15 +54,6 @@
     "tslint": "^5.18.0",
     "typescript": "^3.5.3",
     "watch": "^1.0.2"
-  },
-  "dependencies": {
-    "@antv/x6-detector": "^1.0.0",
-    "@antv/x6-dom-event": "^1.0.0",
-    "@antv/x6-events": "^1.0.0",
-    "@antv/x6-types": "^1.0.0",
-    "@antv/x6-util": "^1.0.0",
-    "mousetrap": "^1.6.3",
-    "size-sensor": "^0.2.5"
   },
   "author": {
     "name": "bubkoo",
@@ -92,9 +65,13 @@
   "bugs": {
     "url": "https://github.com/antvis/x6/issues"
   },
-  "repository": "https://github.com/antvis/x6/tree/master/packages/x6",
+  "repository": "https://github.com/antvis/x6/tree/master/packages/x6-detector",
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org"
+  },
+  "dependencies": {
+    "@antv/x6-detector": "^1.0.0",
+    "@antv/x6-util": "^1.0.0"
   }
 }
