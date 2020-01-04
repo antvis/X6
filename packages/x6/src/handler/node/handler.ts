@@ -1,5 +1,4 @@
 import { DomEvent } from '@antv/x6-dom-event'
-import { Disposable } from '@antv/x6-disposable'
 import { Cell } from '../../core/cell'
 import { State } from '../../core/state'
 import { Graph } from '../../graph'
@@ -237,7 +236,7 @@ export class NodeHandler extends MouseHandler {
     this.preview.refresh()
   }
 
-  @Disposable.aop()
+  @MouseHandler.dispose()
   dispose() {
     if (this.escapeHandler != null) {
       this.state.view.graph.off('escape', this.escapeHandler)

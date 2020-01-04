@@ -1,6 +1,5 @@
 import { util } from '@antv/x6-util'
 import { DomEvent } from '@antv/x6-dom-event'
-import { Disposable } from '@antv/x6-disposable'
 import { Graph } from '../graph'
 import { IMouseHandler, MouseEventEx } from '../handler'
 import { BaseManager } from './base-manager'
@@ -326,7 +325,7 @@ export class PanningManager extends BaseManager {
     this.triggerPanning()
   }
 
-  @Disposable.aop()
+  @BaseManager.dispose()
   dispose() {
     this.removeListeners()
   }

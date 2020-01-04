@@ -1,6 +1,7 @@
 import { globals } from '../option'
 import { State } from '../core/state'
-import { Point, Rectangle, DirectionMask } from '../struct'
+import { DirectionMask } from '../enum'
+import { Point, Rectangle } from '../struct'
 import { segment } from './segment'
 import {
   reversePortConstraints,

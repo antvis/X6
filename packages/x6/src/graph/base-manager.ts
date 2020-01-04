@@ -1,4 +1,4 @@
-import { Disposable } from '@antv/x6-disposable'
+import { Disposable } from '../entity'
 import { Graph } from './graph'
 
 export class BaseManager extends Disposable {

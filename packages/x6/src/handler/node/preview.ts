@@ -1,6 +1,6 @@
 import { DomEvent } from '@antv/x6-dom-event'
-import { Disposable } from '@antv/x6-disposable'
 import { hideElement, showElement } from '@antv/x6-util'
+import { Disposable } from '../../entity'
 import * as util from '../../util'
 import { Cell } from '../../core/cell'
 import { State } from '../../core/state'
@@ -888,7 +888,7 @@ export class Preview extends Disposable {
     this.overlayCursor = null
   }
 
-  @Disposable.aop()
+  @Disposable.dispose()
   dispose() {
     if (this.selectionShape != null) {
       this.selectionShape.dispose()

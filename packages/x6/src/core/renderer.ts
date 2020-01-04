@@ -1,12 +1,11 @@
 import { detector } from '@antv/x6-detector'
 import { DomEvent } from '@antv/x6-dom-event'
-import { Dictionary } from '@antv/x6-struct'
 import { util } from '@antv/x6-util'
 import * as utilBiz from '../util'
 import { State } from './state'
 import { Dialect } from '../types'
 import { globals } from '../option'
-import { Rectangle, Point, Overlay } from '../struct'
+import { Rectangle, Point, Overlay, Dictionary } from '../struct'
 import { MouseEventEx } from '../handler'
 import {
   Shape,

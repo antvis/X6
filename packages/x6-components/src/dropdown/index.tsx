@@ -22,7 +22,7 @@ export class Dropdown extends React.Component<Dropdown.Props, any> {
     const dropdownTrigger = React.cloneElement(child, {
       className: classNames(
         (children as any).props.className,
-        `${prefixCls}-trigger`
+        `${prefixCls}-trigger`,
       ),
       disabled,
     })

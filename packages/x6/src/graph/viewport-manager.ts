@@ -1,7 +1,6 @@
 import { util } from '@antv/x6-util'
 import { detector } from '@antv/x6-detector'
 import { DomEvent } from '@antv/x6-dom-event'
-import { Disposable } from '@antv/x6-disposable'
 import * as sizeSensor from 'size-sensor'
 import { Cell } from '../core/cell'
 import { Size } from '../types'
@@ -403,7 +402,7 @@ export class ViewportManager extends BaseManager {
     }
   }
 
-  @Disposable.aop()
+  @BaseManager.dispose()
   dispose() {
     if (this.unbindSizeDetector != null) {
       this.unbindSizeDetector()

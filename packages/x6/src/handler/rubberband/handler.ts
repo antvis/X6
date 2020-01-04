@@ -1,7 +1,6 @@
 import { util } from '@antv/x6-util'
 import { detector } from '@antv/x6-detector'
 import { DomEvent } from '@antv/x6-dom-event'
-import { Disposable } from '@antv/x6-disposable'
 import { Graph } from '../../graph'
 import { MouseHandler } from '../mouse-handler'
 import { Rectangle, Point } from '../../struct'
@@ -274,7 +273,7 @@ export class RubberbandHandler extends MouseHandler {
     this.div = null
   }
 
-  @Disposable.aop()
+  @MouseHandler.dispose()
   dispose() {
     this.graph.removeHandler(this)
     this.graph.off('pan', this.onPan)

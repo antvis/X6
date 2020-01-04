@@ -1,10 +1,9 @@
 import { DomEvent } from '@antv/x6-dom-event'
-import { Disposable } from '@antv/x6-disposable'
 import { util } from '@antv/x6-util'
+import { Disablable } from '../../entity'
 import { Graph } from '../../graph'
-import { IMouseHandler, MouseEventEx } from '../../handler'
 import { Rectangle, Point } from '../../struct'
-import { Disablable } from '../../common'
+import { IMouseHandler, MouseEventEx } from '../../handler'
 import { Shape, EllipseShape, RectangleShape, ImageShape } from '../../shape'
 import { PartialOptions, FullOptions, getOptions } from './option'
 import { MiniMapRenderder } from './renderer'
@@ -548,7 +547,7 @@ export class MiniMap extends Disablable implements IMouseHandler {
     this.active = false
   }
 
-  @Disposable.aop()
+  @Disablable.dispose()
   dispose() {
     if (this.source != null) {
       this.source.off(null, this.panHandler)

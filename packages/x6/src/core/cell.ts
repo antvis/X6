@@ -1,5 +1,5 @@
-import { Disposable } from '@antv/x6-disposable'
 import { util } from '@antv/x6-util'
+import { Disposable } from '../entity'
 import { Graph } from '../graph'
 import { Geometry } from './geometry'
 import { Style } from '../types'
@@ -377,7 +377,7 @@ export class Cell extends Disposable {
     return data
   }
 
-  @Disposable.aop()
+  @Disposable.dispose()
   dispose() {
     // node
     this.eachChild(child => child.dispose())

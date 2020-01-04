@@ -1,8 +1,7 @@
-import { Disposable } from '@antv/x6-disposable'
-import { Dictionary } from '@antv/x6-struct'
 import { Cell } from '../../core/cell'
 import { State } from '../../core/state'
 import { Graph } from '../../graph'
+import { Dictionary } from '../../struct'
 import { NodeHandler } from '../node/handler'
 import { EdgeHandler } from '../edge/handler'
 import { MouseHandler } from '../mouse-handler'
@@ -149,7 +148,7 @@ export class SelectionHandler extends MouseHandler {
     }
   }
 
-  @Disposable.aop()
+  @MouseHandler.dispose()
   dispose() {
     this.graph.removeHandler(this)
     this.graph.off(null, this.refreshHandler)

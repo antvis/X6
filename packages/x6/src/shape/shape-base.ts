@@ -1,6 +1,6 @@
 import { util } from '@antv/x6-util'
 import { DomEvent } from '@antv/x6-dom-event'
-import { Disposable } from '@antv/x6-disposable'
+import { Disposable } from '../entity'
 import * as images from '../assets/images'
 import { globals } from '../option'
 import { State } from '../core/state'
@@ -1119,7 +1119,7 @@ export class Shape extends Disposable {
     return (this.style.arcSize || globals.defaultLineArcSize) / 2
   }
 
-  @Disposable.aop()
+  @Disposable.dispose()
   dispose() {
     if (this.elem != null) {
       DomEvent.release(this.elem as HTMLElement)

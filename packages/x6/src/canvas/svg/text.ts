@@ -2,8 +2,9 @@
 
 import { util } from '@antv/x6-util'
 import { globals } from '../../option'
+import { FontStyle } from '../../enum'
 import { Align, VAlign } from '../../types'
-import { Rectangle, FontStyle } from '../../struct'
+import { Rectangle } from '../../struct'
 import { SvgCanvas2DBase } from './base'
 import { SvgCanvas2D } from './index'
 

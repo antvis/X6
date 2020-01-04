@@ -1,4 +1,3 @@
-import { Disposable } from '@antv/x6-disposable'
 import * as movment from '../moving/util'
 import { Cell } from '../../core/cell'
 import { Guide } from './guide'
@@ -130,7 +129,7 @@ export class GuideHandler extends MouseHandler {
     return this.graph.view.getCellStates(cells)
   }
 
-  @Disposable.aop()
+  @MouseHandler.dispose()
   dispose() {
     this.graph.removeHandler(this)
     this.reset()

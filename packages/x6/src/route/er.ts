@@ -1,7 +1,8 @@
 import { Cell } from '../core/cell'
 import { State } from '../core/state'
 import { globals } from '../option'
-import { Point, DirectionMask } from '../struct'
+import { Point } from '../struct'
+import { DirectionMask } from '../enum'
 import { getPortConstraints } from '../util'
 
 /**

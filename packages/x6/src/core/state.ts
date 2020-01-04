@@ -1,11 +1,9 @@
-import { Dictionary } from '@antv/x6-struct'
-import { Disposable } from '@antv/x6-disposable'
+import { Disablable } from '../entity'
 import { Cell } from './cell'
 import { View } from './view'
 import { Style } from '../types'
-import { Disablable } from '../common'
 import { Shape, ImageShape, Text } from '../shape'
-import { Point, Rectangle, Overlay } from '../struct'
+import { Point, Rectangle, Overlay, Dictionary } from '../struct'
 
 export class State extends Disablable {
   /**
@@ -297,7 +295,7 @@ export class State extends Disablable {
     return cloned
   }
 
-  @Disposable.aop()
+  @Disablable.dispose()
   dispose() {
     if (this.shape != null) {
       if (this.text != null) {

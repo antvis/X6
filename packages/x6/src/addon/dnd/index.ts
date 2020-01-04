@@ -1,15 +1,14 @@
 import { util } from '@antv/x6-util'
 import { Assign } from '@antv/x6-types'
 import { detector } from '@antv/x6-detector'
-import { Disposable } from '@antv/x6-disposable'
 import { DomEvent } from '@antv/x6-dom-event'
+import { Disablable } from '../../entity'
 import { Cell } from '../../core/cell'
 import { Graph } from '../../graph'
 import { Guide } from '../../handler/guide/guide'
 import { createGuide } from '../../handler/guide/option'
 import { CellHighlight, MouseEventEx } from '../../handler'
 import { Point, Rectangle } from '../../struct'
-import { Disablable } from '../../common'
 
 export class Dnd<T> extends Disablable<Dnd.EventArgMap<T>> {
   currentGraph: Graph | null = null
@@ -63,7 +62,7 @@ export class Dnd<T> extends Disablable<Dnd.EventArgMap<T>> {
     this.stopDrag(null)
   }
 
-  @Disposable.aop()
+  @Disablable.dispose()
   dispose() {
     this.reset()
   }

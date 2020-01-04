@@ -1,6 +1,6 @@
 import { util } from '@antv/x6-util'
 import { DomEvent } from '@antv/x6-dom-event'
-import { Disposable } from '@antv/x6-disposable'
+import { Disposable } from '../../entity'
 import * as utilBiz from '../../util'
 import { Shape } from '../../shape'
 import { Handle } from '../handle'
@@ -567,7 +567,7 @@ export class Knobs extends Disposable {
     }
   }
 
-  @Disposable.aop()
+  @Disposable.dispose()
   dispose() {
     if (this.handles != null) {
       this.handles.forEach(h => h.dispose())

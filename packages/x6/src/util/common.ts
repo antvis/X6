@@ -3,7 +3,8 @@ import { State } from '../core/state'
 import { Shape } from '../shape'
 import { getOffset, getScrollOrigin } from '@antv/x6-util'
 import { MouseEventEx } from '../handler'
-import { Point, DirectionMask } from '../struct'
+import { DirectionMask } from '../enum'
+import { Point } from '../struct'
 import { Align, VAlign } from '../types'
 
 export function clientToGraph(container: HTMLElement, e: TouchEvent): Point

@@ -1,7 +1,7 @@
 import { isVisible, toFront } from '@antv/x6-util'
 import { detector } from '@antv/x6-detector'
 import { DomEvent } from '@antv/x6-dom-event'
-import { IDisposable, Disposable } from '@antv/x6-disposable'
+import { IDisposable } from '../../entity'
 import * as util from '../../util'
 import { Route } from '../../route'
 import { Graph } from '../../graph'
@@ -1672,7 +1672,7 @@ export class EdgeHandler extends MouseHandler {
     handles && handles.forEach(h => h && h.dispose())
   }
 
-  @Disposable.aop()
+  @MouseHandler.dispose()
   dispose() {
     this.state.view.graph.off('escape', this.escapeHandler)
     this.escapeHandler = null

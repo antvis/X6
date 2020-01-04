@@ -1,5 +1,5 @@
 import { Events } from '@antv/x6-events'
-import { Disposable } from '@antv/x6-disposable'
+import { Disposable } from '../entity'
 import { IChange } from './change'
 
 export class UndoableEdit extends Disposable {
@@ -98,7 +98,7 @@ export class UndoableEdit extends Disposable {
     }
   }
 
-  @Disposable.aop()
+  @Disposable.dispose()
   dispose(): void {
     if (this.onDispose) {
       this.onDispose(this)

@@ -1,21 +1,21 @@
 import { detector } from '@antv/x6-detector'
 import { DomEvent } from '@antv/x6-dom-event'
-import { Disposable } from '@antv/x6-disposable'
 import { util } from '@antv/x6-util'
+import { Basecoat } from '../entity'
 import { Cell } from './cell'
 import { State } from './state'
 import { Graph } from '../graph'
-import { Geometry } from './geometry'
 import { Route } from '../route'
+import { NodeType } from '../enum'
+import { Geometry } from './geometry'
 import { Perimeter } from '../perimeter'
 import { RectangleShape } from '../shape'
 import { UndoableEdit, CurrentRootChange } from '../change'
-import { Point, Rectangle, Anchor, NodeType } from '../struct'
-import { Primer } from '../common'
+import { Point, Rectangle, Anchor } from '../struct'
 import { MouseEventEx } from '../handler'
 import * as utilBiz from '../util'
 
-export class View extends Primer<View.EventArgs> {
+export class View extends Basecoat<View.EventArgs> {
   graph: Graph
   scale: number
   translate: Point
@@ -2199,7 +2199,7 @@ export class View extends Primer<View.EventArgs> {
     return root
   }
 
-  @Disposable.aop()
+  @Basecoat.dispose()
   dispose() {
     let stage: SVGSVGElement | HTMLDivElement | null =
       this.stage != null ? (this.stage as SVGElement).ownerSVGElement : null

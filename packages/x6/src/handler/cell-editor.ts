@@ -1,13 +1,14 @@
 import { util } from '@antv/x6-util'
 import { detector } from '@antv/x6-detector'
 import { DomEvent } from '@antv/x6-dom-event'
-import { Disposable } from '@antv/x6-disposable'
+import { Disposable } from '../entity'
 import { Graph } from '../graph'
 import { Cell } from '../core/cell'
 import { State } from '../core/state'
 import { Align } from '../types'
 import { globals } from '../option'
-import { Rectangle, FontStyle } from '../struct'
+import { FontStyle } from '../enum'
+import { Rectangle } from '../struct'
 import { getAlignmentAsPoint } from '../util'
 
 export class CellEditor extends Disposable {
@@ -855,7 +856,7 @@ export class CellEditor extends Disposable {
     return this.editingCell
   }
 
-  @Disposable.aop()
+  @Disposable.dispose()
   dispose() {
     if (this.textarea != null) {
       DomEvent.release(this.textarea)

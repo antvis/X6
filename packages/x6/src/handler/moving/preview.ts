@@ -1,5 +1,5 @@
-import { Disposable } from '@antv/x6-disposable'
 import * as movment from './util'
+import { Disposable } from '../../entity'
 import { Cell } from '../../core/cell'
 import { MovingHandler } from './handler'
 import { CellHighlight } from '../cell-highlight'
@@ -284,7 +284,7 @@ export class Preview extends Disposable {
     this.target = null
   }
 
-  @Disposable.aop()
+  @Disposable.dispose()
   dispose() {
     this.reset()
   }
