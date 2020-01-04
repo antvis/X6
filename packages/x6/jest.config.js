@@ -6,7 +6,7 @@ module.exports = {
     '^.+\\.ts$': 'ts-jest',
   },
   testMatch: ['**/src/**/*.test.ts', '**/src/**/*.spec.ts'],
-  moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx'],
+  moduleFileExtensions: ['js', 'ts'],
   collectCoverage: true,
   coverageDirectory: './test/coverage',
   coverageReporters: ['lcov'],
