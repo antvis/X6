@@ -3,7 +3,6 @@ import './registry'
 
 export * from './x6'
 export * from './version'
-export * from './common'
 export * from './struct'
 export * from './types'
 
@@ -13,6 +12,7 @@ export * from './graph'
 export * from './change'
 export * from './addon'
 
+export { globals } from './option'
 export { Route } from './route'
 export { Marker } from './marker'
 export { Perimeter } from './perimeter'
