@@ -3,7 +3,7 @@ import { getUrlWithoutHash } from '../url'
 
 export function setAttributes(
   elem: Element | null,
-  attrs: { [key: string]: any },
+  attrs: { [key: string]: string },
 ) {
   if (elem != null) {
     Object.keys(attrs).forEach(name => elem.setAttribute(name, attrs[name]))
@@ -27,10 +27,6 @@ export function setAttributeWithAnchor(
   } else {
     elem.setAttribute(attrName, `url(#${id})`)
   }
-}
-
-export function getDocumentMode() {
-  return (document as any).documentMode as number
 }
 
 export function getNodeName(node: Element, lowercase: boolean = true) {
