@@ -279,13 +279,8 @@ export class CellEditor extends Disposable {
     DomEvent.addListener(elem, keydown, resizeHandler)
     DomEvent.addListener(window, 'resize', resizeHandler)
 
-    if (util.getDocumentMode() >= 9) {
-      DomEvent.addListener(elem, 'DOMNodeRemoved', resizeHandler)
-      DomEvent.addListener(elem, 'DOMNodeInserted', resizeHandler)
-    } else {
-      DomEvent.addListener(elem, 'cut', resizeHandler)
-      DomEvent.addListener(elem, 'paste', resizeHandler)
-    }
+    DomEvent.addListener(elem, 'cut', resizeHandler)
+    DomEvent.addListener(elem, 'paste', resizeHandler)
   }
 
   protected isCancelEditingKeyEvent(e: KeyboardEvent) {
@@ -344,14 +339,7 @@ export class CellEditor extends Disposable {
     const content = this.graph.getEditingContent(state.cell, trigger) || ''
     let result = util.escape(content)
 
-    // Workaround for trailing line breaks being ignored in the editor
-    if (
-      util.getDocumentMode() !== 8 &&
-      util.getDocumentMode() !== 9 &&
-      util.getDocumentMode() !== 10
-    ) {
-      result = util.replaceTrailingNewlines(result, '<div><br></div>')
-    }
+    result = util.replaceTrailingNewlines(result, '<div><br></div>')
 
     return result.replace(/\n/g, '<br>')
   }
@@ -507,13 +495,6 @@ export class CellEditor extends Disposable {
           // KNOWN: Trailing cursor in IE9 quirks mode is not visible
           this.textarea.style.whiteSpace = 'nowrap'
           this.textarea.style.width = ''
-        }
-
-        // LATER: Keep in visible area, add fine tuning for pixel precision
-        // Workaround for wrong measuring in IE8 standards
-        if (util.getDocumentMode() === 8) {
-          this.textarea.style.zoom = '1'
-          this.textarea.style.height = 'auto'
         }
 
         this.textarea.style.left = util.toPx(
