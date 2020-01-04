@@ -1,6 +1,6 @@
 {
   "name": "@antv/x6-geometry",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Useful geometry operations for x6",
   "main": "lib/index.js",
   "module": "es/index.js",
