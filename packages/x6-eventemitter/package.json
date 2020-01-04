@@ -46,8 +46,8 @@
     ]
   },
   "dependencies": {
-    "@antv/x6-types": "^1.0.0",
-    "@antv/x6-util": "^1.0.0"
+    "@antv/x6-util": "^1.0.0",
+    "utility-types": "^3.10.0"
   },
   "devDependencies": {
     "@types/jest": "^24.0.17",
