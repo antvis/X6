@@ -1,6 +1,5 @@
 import { util } from '@antv/x6-util'
 import { DomEvent } from '@antv/x6-dom-event'
-import { Disposable } from '@antv/x6-disposable'
 import { Graph } from '../../graph'
 import { Point } from '../../struct'
 import { BaseHandler } from '../base-handler'
@@ -129,7 +128,7 @@ export class MouseWheelHandler extends BaseHandler {
     }, this.wheelZoomDelay)
   }
 
-  @Disposable.aop()
+  @BaseHandler.dispose()
   dispose() {
     this.disable()
   }

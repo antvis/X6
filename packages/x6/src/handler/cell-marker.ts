@@ -1,5 +1,4 @@
 import { util } from '@antv/x6-util'
-import { Disposable } from '@antv/x6-disposable'
 import { globals } from '../option/global'
 import { Graph } from '../graph'
 import { Cell } from '../core/cell'
@@ -165,7 +164,7 @@ export class CellMarker extends BaseHandler {
     return true
   }
 
-  @Disposable.aop()
+  @BaseHandler.dispose()
   dispose() {
     this.highlight.dispose()
   }

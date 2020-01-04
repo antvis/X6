@@ -1,5 +1,4 @@
 import { DomEvent } from '@antv/x6-dom-event'
-import { Disposable } from '@antv/x6-disposable'
 import { util } from '@antv/x6-util'
 import { Graph } from '../../graph'
 import { State } from '../../core/state'
@@ -332,7 +331,7 @@ export class AnchorHandler extends BaseHandler {
     }
   }
 
-  @Disposable.aop()
+  @BaseHandler.dispose()
   dispose() {
     this.reset()
 

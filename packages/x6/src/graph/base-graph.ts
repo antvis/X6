@@ -1,4 +1,4 @@
-import { Disposable } from '@antv/x6-disposable'
+import { Disablable } from '../entity'
 import { call } from '@antv/x6-util'
 import { Route } from '../route'
 import { Model } from '../core/model'
@@ -7,7 +7,6 @@ import { View } from '../core/view'
 import { State } from '../core/state'
 import { Renderer } from '../core/renderer'
 import { FullOptions } from '../option'
-import { Disablable } from '../common'
 import { Dialect, Style, Size } from '../types'
 import { Rectangle, Multiplicity, Image } from '../struct'
 import {
@@ -308,7 +307,7 @@ export class BaseGraph extends Disablable<EventArgs>
     this.mouseWheelHandler.dispose()
   }
 
-  @Disposable.aop()
+  @Disablable.dispose()
   dispose() {
     this.disposeManagers()
     this.disposeHandlers()

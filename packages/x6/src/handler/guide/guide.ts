@@ -1,4 +1,4 @@
-import { Disposable } from '@antv/x6-disposable'
+import { Disposable } from '../../entity'
 import { Cell } from '../../core/cell'
 import { State } from '../../core/state'
 import { Graph } from '../../graph'
@@ -328,7 +328,7 @@ export class Guide extends Disposable {
     }
   }
 
-  @Disposable.aop()
+  @Disposable.dispose()
   dispose() {
     if (this.guideX) {
       this.guideX.dispose()

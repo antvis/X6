@@ -1,4 +1,3 @@
-import { Disposable } from '@antv/x6-disposable'
 import { Cell } from '../core/cell'
 import { Graph } from '../graph'
 import { CellMarker } from './cell-marker'
@@ -30,7 +29,7 @@ export class CellTracker extends CellMarker implements IMouseHandler {
 
   mouseUp(e: MouseEventEx, sender: any) {}
 
-  @Disposable.aop()
+  @CellMarker.dispose()
   dispose() {
     this.graph.removeHandler(this)
   }

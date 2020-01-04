@@ -1,7 +1,7 @@
+import { Basecoat } from '../../entity'
 import { Graph } from '../../graph'
-import { Primer } from '../../common'
 
-export class Command extends Primer {
+export class Command extends Basecoat {
   name: string
   text?: string
   icon?: string
