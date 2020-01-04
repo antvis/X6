@@ -1,0 +1,13 @@
+{
+  "extends": ["airbnb-base/legacy", "prettier"],
+  "env": {
+    "es6": true,
+    "node": true,
+    "browser": true
+  },
+  "rules": {
+    "semi": "off",
+    "no-console": "off",
+    "no-multi-spaces": "off"
+  }
+}
