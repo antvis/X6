@@ -14,8 +14,9 @@
     "src": "src/"
   },
   "keywords": [
+    "geometry",
     "x6",
-    "geometry"
+    "antv"
   ],
   "scripts": {
     "clean:es": "rimraf ./es",

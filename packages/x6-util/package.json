@@ -14,10 +14,11 @@
     "src": "src/"
   },
   "keywords": [
-    "x6",
     "util",
     "utils",
-    "utility"
+    "utility",
+    "x6",
+    "antv"
   ],
   "scripts": {
     "clean:es": "rimraf ./es",

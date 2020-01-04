@@ -21,7 +21,8 @@
     "graph",
     "x6-editor",
     "editor",
-    "svg"
+    "svg",
+    "antv"
   ],
   "scripts": {
     "clean:es": "rimraf ./es",
