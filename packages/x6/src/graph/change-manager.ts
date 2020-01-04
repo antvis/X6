@@ -1,4 +1,3 @@
-import { Disposable } from '@antv/x6-disposable'
 import { Cell } from '../core/cell'
 import { Graph } from '../graph'
 import { BaseManager } from './base-manager'
@@ -156,7 +155,7 @@ export class ChangeManager extends BaseManager {
     return cells
   }
 
-  @Disposable.aop()
+  @BaseManager.dispose()
   dispose() {
     this.model.off('change', this.onModelChanged)
   }

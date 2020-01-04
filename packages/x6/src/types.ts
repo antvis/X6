@@ -1,5 +1,5 @@
 import { Route } from './route'
-import { FontStyle } from './struct'
+import { FontStyle } from './enum'
 import { Perimeter } from './perimeter'
 
 export type Dialect = 'svg' | 'html'

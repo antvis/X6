@@ -1,5 +1,5 @@
+import { Disablable } from '../entity'
 import { Graph } from '../graph'
-import { Disablable } from '../common'
 
 export class BaseHandler<EventArgs = any> extends Disablable<EventArgs> {
   constructor(graph: Graph) {

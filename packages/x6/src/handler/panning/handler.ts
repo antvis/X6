@@ -1,5 +1,4 @@
 import { DomEvent } from '@antv/x6-dom-event'
-import { Disposable } from '@antv/x6-disposable'
 import { hasScrollbars } from '@antv/x6-util'
 import { Graph } from '../../graph'
 import { MouseHandler } from '../mouse-handler'
@@ -276,7 +275,7 @@ export class PanningHandler extends MouseHandler<PanningHandler.EventArgs> {
     this.mouseDownEvent = null
   }
 
-  @Disposable.aop()
+  @MouseHandler.dispose()
   dispose() {
     this.graph.removeHandler(this)
     this.graph.off('mouseEvent', this.forcePanningHandler)

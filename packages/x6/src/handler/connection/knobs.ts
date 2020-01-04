@@ -1,6 +1,6 @@
 import { util } from '@antv/x6-util'
 import { DomEvent } from '@antv/x6-dom-event'
-import { Disposable } from '@antv/x6-disposable'
+import { Disposable } from '../../entity'
 import { State } from '../../core/state'
 import { ImageShape } from '../../shape'
 import { Rectangle, Point } from '../../struct'
@@ -214,7 +214,7 @@ export class Knobs extends Disposable {
     }
   }
 
-  @Disposable.aop()
+  @Disposable.dispose()
   dispose() {
     this.destroyIcons()
   }

@@ -1,5 +1,4 @@
 import { DomEvent } from '@antv/x6-dom-event'
-import { Disposable } from '@antv/x6-disposable'
 import * as util from '../../util'
 import * as movment from './util'
 import { Cell } from '../../core/cell'
@@ -231,7 +230,7 @@ export class MovingHandler extends MouseHandler {
     this.shouldConsumeMouseUp = false
   }
 
-  @Disposable.aop()
+  @MouseHandler.dispose()
   dispose() {
     this.graph.removeHandler(this)
 

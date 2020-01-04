@@ -1,5 +1,4 @@
 import { util } from '@antv/x6-util'
-import { Disposable } from '@antv/x6-disposable'
 import { globals } from '../option/global'
 import { Shape } from '../shape'
 import { Graph } from '../graph'
@@ -170,7 +169,7 @@ export class CellHighlight extends BaseHandler {
     return hit
   }
 
-  @Disposable.aop()
+  @BaseHandler.dispose()
   dispose() {
     this.graph.view.off(null, this.resetHandler)
     this.graph.view.off(null, this.repaintHandler)

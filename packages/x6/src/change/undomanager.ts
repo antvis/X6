@@ -1,9 +1,8 @@
-import { Disposable } from '@antv/x6-disposable'
-import { Primer } from '../common'
 import { Graph } from '../graph'
+import { Basecoat } from '../entity'
 import { UndoableEdit } from './undoableedit'
 
-export class UndoManager extends Primer<UndoManager.EventArgs> {
+export class UndoManager extends Basecoat<UndoManager.EventArgs> {
   private size: number
   private cursor: number
   private history: UndoableEdit[]
@@ -81,7 +80,7 @@ export class UndoManager extends Primer<UndoManager.EventArgs> {
     }
   }
 
-  @Disposable.aop()
+  @Basecoat.dispose()
   dispose() {
     this.clear()
   }

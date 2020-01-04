@@ -1,7 +1,6 @@
-import { Disposable } from '@antv/x6-disposable'
+import { Disablable } from '../../entity'
 import { Graph } from '../../graph'
 import { IChange } from '../../change'
-import { Disablable } from '../../common'
 
 export class AutoSave extends Disablable<AutoSave.EventArgs> {
   graph: Graph
@@ -74,7 +73,7 @@ export class AutoSave extends Disablable<AutoSave.EventArgs> {
     this.timestamp = new Date().getTime()
   }
 
-  @Disposable.aop()
+  @Disablable.dispose()
   dispose() {
     this.setGraph(null)
   }

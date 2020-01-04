@@ -1,7 +1,8 @@
 import { util } from '@antv/x6-util'
 import { Shape } from './shape-base'
 import { SvgCanvas2D } from '../canvas'
-import { Point, Anchor, NodeType } from '../struct'
+import { NodeType } from '../enum'
+import { Point, Anchor } from '../struct'
 import { Direction, Align, VAlign, LineCap, LineJoin } from '../types'
 import { globals } from '../option'
 

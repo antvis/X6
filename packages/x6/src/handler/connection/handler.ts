@@ -1,4 +1,3 @@
-import { Disposable } from '@antv/x6-disposable'
 import { Point } from '../../struct'
 import { Style } from '../../types'
 import { Graph } from '../../graph'
@@ -480,7 +479,7 @@ export class ConnectionHandler extends MouseHandler<
     this.mouseDownCounter = 0
   }
 
-  @Disposable.aop()
+  @MouseHandler.dispose()
   dispose() {
     this.preview.dispose()
     this.knobs.dispose()

@@ -1,6 +1,5 @@
 import { util } from '@antv/x6-util'
 import { DomEvent } from '@antv/x6-dom-event'
-import { Disposable } from '@antv/x6-disposable'
 import { Graph } from '../../graph'
 import { MouseHandler } from '../mouse-handler'
 import { MouseEventEx } from '../mouse-event'
@@ -146,7 +145,7 @@ export class ContextMenuHandler extends MouseHandler {
     return this.showing
   }
 
-  @Disposable.aop()
+  @MouseHandler.dispose()
   dispose() {
     this.graph.removeHandler(this)
     this.graph.off('gesture', this.gestureHandler)

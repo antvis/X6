@@ -25,14 +25,13 @@
     "clean:coverage": "rimraf ./test/coverage",
     "clean": "run-p clean:es clean:lib clean:coverage",
     "lint": "tslint -c tslint.json -p tsconfig.json --fix",
-    "build:lib": "tsc",
+    "build:lib": "tsc --module commonjs --target es5 --outDir ./lib",
     "build:es": "tsc --module es2015 --target es2015 --outDir ./es",
     "build": "run-p build:lib build:es",
     "watch": "watch 'yarn build' ./src",
     "prebuild": "run-s lint clean",
     "test": "jest",
     "pretest": "run-p clean:coverage",
-    "coveralls": "cat ./test/coverage/lcov.info | coveralls",
     "prepare": "run-s test build",
     "precommit": "lint-staged"
   },
@@ -48,7 +47,6 @@
   "devDependencies": {
     "@types/jest": "^24.0.17",
     "@types/sinon": "^7.5.0",
-    "coveralls": "^3.0.6",
     "jest": "^24.8.0",
     "lint-staged": "^9.2.1",
     "npm-run-all": "^4.1.5",
@@ -56,9 +54,6 @@
     "sinon": "^7.5.0",
     "ts-jest": "^24.0.2",
     "tslint": "^5.18.0",
-    "tslint-config-airbnb": "^5.11.2",
-    "tslint-config-prettier": "^1.18.0",
-    "tslint-eslint-rules": "^5.4.0",
     "typescript": "^3.5.3",
     "watch": "^1.0.2"
   },

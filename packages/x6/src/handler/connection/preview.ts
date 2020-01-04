@@ -1,5 +1,5 @@
 import { DomEvent } from '@antv/x6-dom-event'
-import { Disposable } from '@antv/x6-disposable'
+import { Disposable } from '../../entity'
 import * as util from '../../util'
 import { State } from '../../core/state'
 import { Point, Anchor } from '../../struct'
@@ -663,7 +663,7 @@ export class Preview extends Disposable {
     this.anchorHandler.reset()
   }
 
-  @Disposable.aop()
+  @Disposable.dispose()
   dispose() {
     if (this.previewShape != null) {
       this.previewShape.dispose()
