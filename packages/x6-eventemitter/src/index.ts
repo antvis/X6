@@ -4,7 +4,7 @@ import {
   OptionalKeys,
   PickByValue,
   OmitByValue,
-} from '@antv/x6-types'
+} from 'utility-types'
 
 export class EventEmitter<M extends EventEmitter.EventArgs = any> {
   private listeners: { [name: string]: any[] } = {}

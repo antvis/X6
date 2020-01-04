@@ -1,7 +1,7 @@
 import { util } from '@antv/x6-util'
-import { Assign } from '@antv/x6-types'
 import { detector } from '@antv/x6-detector'
 import { DomEvent } from '@antv/x6-dom-event'
+import { Assign } from 'utility-types'
 import { Disablable } from '../../entity'
 import { Cell } from '../../core/cell'
 import { Graph } from '../../graph'
