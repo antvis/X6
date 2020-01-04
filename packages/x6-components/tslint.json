@@ -1,5 +1,9 @@
 {
-  "extends": ["tslint-react", "tslint-eslint-rules", "tslint-config-prettier"],
+  "extends": [
+    "tslint-react",
+    "tslint-eslint-rules",
+    "tslint-config-prettier"
+  ],
   "rules": {
     "no-construct": true,
     "no-debugger": true,
