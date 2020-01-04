@@ -11,6 +11,6 @@ module.exports = {
   ],
   moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx'],
   collectCoverage: true,
-  coverageDirectory: './test/coverage',
   coverageReporters: ['lcov'],
+  coverageDirectory: './test/coverage',
 }
