@@ -10,12 +10,23 @@ export class Line {
   public start: Point
   public end: Point
 
+  get center() {
+    return new Point(
+      (this.start.x + this.end.x) / 2,
+      (this.start.y + this.end.y) / 2,
+    )
+  }
+
   constructor(
     p1: Point | Point.PointLike | Point.PointData,
     p2: Point | Point.PointLike | Point.PointData,
   ) {
     this.start = Point.create(p1)
     this.end = Point.create(p2)
+  }
+
+  getCenter() {
+    return this.center
   }
 
   round(precision: number) {
@@ -44,13 +55,6 @@ export class Line {
     this.start.scale(sx, sy, origin)
     this.end.scale(sx, sy, origin)
     return this
-  }
-
-  center() {
-    return new Point(
-      (this.start.x + this.end.x) / 2,
-      (this.start.y + this.end.y) / 2,
-    )
   }
 
   length() {

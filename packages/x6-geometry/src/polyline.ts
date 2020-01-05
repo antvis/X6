@@ -5,14 +5,6 @@ import { Line } from './line'
 export class Polyline {
   points: Point[]
 
-  constructor(points?: (Point | Point.PointLike | Point.PointData)[]) {
-    if (points != null) {
-      this.points = points.map(p => Point.normalize(p))
-    } else {
-      this.points = []
-    }
-  }
-
   get start() {
     if (this.points.length === 0) {
       return null
@@ -25,6 +17,14 @@ export class Polyline {
       return null
     }
     return this.points[this.points.length - 1]
+  }
+
+  constructor(points?: (Point | Point.PointLike | Point.PointData)[]) {
+    if (points != null) {
+      this.points = points.map(p => Point.normalize(p))
+    } else {
+      this.points = []
+    }
   }
 
   scale(
