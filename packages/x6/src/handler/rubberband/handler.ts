@@ -2,11 +2,11 @@ import { Platform } from '@antv/x6-util'
 import { DomUtil } from '@antv/x6-dom-util'
 import { DomEvent } from '@antv/x6-dom-event'
 import { Graph } from '../../graph'
+import { Shape } from '../../shape'
 import { MouseHandler } from '../mouse-handler'
 import { Rectangle, Point } from '../../struct'
 import { MouseEventEx } from '../mouse-event'
 import { getRubberbandStyle } from './option'
-import { applyClassName, clientToGraph } from '../../util'
 
 export class RubberbandHandler extends MouseHandler {
   /**
@@ -112,11 +112,9 @@ export class RubberbandHandler extends MouseHandler {
 
   protected start(x: number, y: number) {
     this.origin = new Point(x, y)
-
-    const container = this.graph.container
     const createEvent = (e: MouseEvent) => {
       const me = new MouseEventEx(e)
-      const pt = clientToGraph(container, me)
+      const pt = this.graph.clientToGraph(me)
       me.graphX = pt.x
       me.graphY = pt.y
       return me
@@ -204,7 +202,7 @@ export class RubberbandHandler extends MouseHandler {
         height: this.height,
       })
 
-      applyClassName(
+      Shape.applyClassName(
         this.div,
         this.graph.prefixCls,
         'rubberband',

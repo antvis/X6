@@ -1,4 +1,3 @@
-import * as util from '../util'
 import { Graph } from '../graph'
 import { Shape } from '../shape'
 
@@ -81,7 +80,7 @@ export function applyClassName<T extends BaseArgs>(
   native?: string,
 ) {
   const manual = drill(style.className, args.graph, args)
-  util.applyClassName(args.shape, args.graph.prefixCls, native, manual)
+  Shape.applyClassName(args.shape, args.graph.prefixCls, native, manual)
 }
 
 export function applyCursorStyle<T extends BaseArgs>(

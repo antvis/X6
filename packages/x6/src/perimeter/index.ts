@@ -1,12 +1,11 @@
 import { State } from '../core/state'
 import { Rectangle, Point } from '../struct'
-
 import { rectanglePerimeter } from './rectangle'
 import { ellipsePerimeter } from './ellipse'
 import { trianglePerimeter } from './triangle'
 import { hexagonPerimeter } from './hexagon'
 import { rhombusPerimeter } from './rhombus'
-import { getEntityFromRegistry, registerEntity } from '../util'
+import { registerEntity, getEntityFromRegistry } from '../registry/util'
 
 export namespace Perimeter {
   export const rectangle = rectanglePerimeter

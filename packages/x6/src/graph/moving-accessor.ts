@@ -1,9 +1,11 @@
+import { DomUtil } from '@antv/x6-dom-util'
 import { DomEvent } from '@antv/x6-dom-event'
 import { Cell } from '../core/cell'
 import { Align, VAlign } from '../types'
+import { Point } from '../struct'
 import { hook } from './decorator'
 import { BaseGraph } from './base-graph'
-import { clientToGraph } from '../util'
+import { MouseEventEx } from '../handler'
 
 export class MovingAccessor extends BaseGraph {
   @hook()
@@ -197,11 +199,7 @@ export class MovingAccessor extends BaseGraph {
       }
     }
 
-    const p = clientToGraph(
-      this.container,
-      DomEvent.getClientX(e),
-      DomEvent.getClientY(e),
-    )
+    const p = this.clientToGraph(e)
     p.x -= this.panX
     p.y -= this.panY
     const swimlane = this.retrievalManager.getSwimlaneAt(p.x, p.y)
@@ -241,5 +239,37 @@ export class MovingAccessor extends BaseGraph {
     }
 
     return !this.model.isLayer(target) && parent == null ? target : null
+  }
+
+  clientToGraph(e: TouchEvent): Point
+  clientToGraph(e: MouseEvent): Point
+  clientToGraph(e: MouseEventEx): Point
+  clientToGraph(x: number, y: number): Point
+  clientToGraph(
+    x: number | MouseEvent | TouchEvent | MouseEventEx,
+    y?: number,
+  ) {
+    const container = this.container
+    const origin = DomUtil.getScrollOrigin(container, false)
+    const offset = DomUtil.getOffset(container)
+
+    offset.x -= origin.x
+    offset.y -= origin.y
+
+    let clientX
+    let clisntY
+
+    if (x instanceof MouseEventEx) {
+      clientX = x.getClientX()
+      clisntY = x.getClientY()
+    } else if (x instanceof Event) {
+      clientX = DomEvent.getClientX(x)
+      clisntY = DomEvent.getClientY(x)
+    } else {
+      clientX = x
+      clisntY = y!
+    }
+
+    return new Point(clientX - offset.x, clisntY - offset.y)
   }
 }

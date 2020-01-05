@@ -2,6 +2,7 @@ import { Disablable } from '../entity'
 import { Cell } from './cell'
 import { View } from './view'
 import { Style } from '../types'
+import { DirectionMask } from '../enum'
 import { Shape, ImageShape, Text } from '../shape'
 import { Point, Rectangle, Overlay, Dictionary } from '../struct'
 
@@ -315,5 +316,156 @@ export class State extends Disablable {
       this.shape.dispose()
       this.shape = null
     }
+  }
+}
+
+export namespace State {
+  export function hasHtmlLabel(state: State | null) {
+    return (
+      state != null &&
+      state.text != null &&
+      state.text.elem != null &&
+      state.text.elem.parentNode === state.view.graph.container
+    )
+  }
+
+  export function getRotation(state: State | null, defaultValue: number = 0) {
+    return (state && state.style && state.style.rotation) || defaultValue
+  }
+
+  export function isFlipH(state: State | null) {
+    return state != null && state.style != null && state.style.flipH === true
+  }
+
+  export function isFlipV(state: State | null) {
+    return state != null && state.style != null && state.style.flipV === true
+  }
+
+  /**
+   * Returns an integer mask of the port anchors.
+   *
+   * @param terminal `State` that represents the terminal.
+   * @param edge `State` that represents the edge.
+   * @param isSource Specifies if the terminal is the source terminal.
+   * @param defaultValue Default value to be returned.
+   */
+  export function getPortConstraints(
+    terminal: State,
+    edge: State,
+    isSource: boolean,
+    defaultValue: DirectionMask,
+  ) {
+    const value =
+      (isSource
+        ? edge.style.sourcePortConstraint
+        : edge.style.targetPortConstraint) || terminal.style.portConstraint
+
+    if (value == null) {
+      return defaultValue
+    }
+    {
+      let returnValue = DirectionMask.none
+      const directions = value.toString()
+      const anchorRotationEnabled = terminal.style.portConstraintRotatable
+
+      let rotation = 0
+      if (anchorRotationEnabled) {
+        rotation = terminal.style.rotation || 0
+      }
+
+      let quad = 0
+      if (rotation > 45) {
+        quad = 1
+
+        if (rotation >= 135) {
+          quad = 2
+        }
+      } else if (rotation < -45) {
+        quad = 3
+
+        if (rotation <= -135) {
+          quad = 2
+        }
+      }
+
+      if (directions.indexOf('north') >= 0) {
+        switch (quad) {
+          case 0:
+            returnValue |= DirectionMask.north
+            break
+          case 1:
+            returnValue |= DirectionMask.east
+            break
+          case 2:
+            returnValue |= DirectionMask.south
+            break
+          case 3:
+            returnValue |= DirectionMask.west
+            break
+        }
+      }
+
+      if (directions.indexOf('west') >= 0) {
+        switch (quad) {
+          case 0:
+            returnValue |= DirectionMask.west
+            break
+          case 1:
+            returnValue |= DirectionMask.north
+            break
+          case 2:
+            returnValue |= DirectionMask.east
+            break
+          case 3:
+            returnValue |= DirectionMask.south
+            break
+        }
+      }
+      if (directions.indexOf('south') >= 0) {
+        switch (quad) {
+          case 0:
+            returnValue |= DirectionMask.south
+            break
+          case 1:
+            returnValue |= DirectionMask.west
+            break
+          case 2:
+            returnValue |= DirectionMask.north
+            break
+          case 3:
+            returnValue |= DirectionMask.east
+            break
+        }
+      }
+      if (directions.indexOf('east') >= 0) {
+        switch (quad) {
+          case 0:
+            returnValue |= DirectionMask.east
+            break
+          case 1:
+            returnValue |= DirectionMask.south
+            break
+          case 2:
+            returnValue |= DirectionMask.west
+            break
+          case 3:
+            returnValue |= DirectionMask.north
+            break
+        }
+      }
+
+      return returnValue
+    }
+  }
+
+  export function reversePortConstraints(mask: DirectionMask) {
+    let result = 0
+
+    result = (mask & DirectionMask.west) << 3
+    result |= (mask & DirectionMask.north) << 1
+    result |= (mask & DirectionMask.south) >> 1
+    result |= (mask & DirectionMask.east) >> 3
+
+    return result
   }
 }

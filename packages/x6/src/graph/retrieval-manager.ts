@@ -137,7 +137,7 @@ export class RetrievalManager extends BaseManager {
           pt = next
         }
       } else {
-        const rot = util.getRotation(state)
+        const rot = State.getRotation(state)
         if (rot !== 0) {
           const cx = state.bounds.getCenter()
           const pt = util.rotatePoint(new Point(x, y), -rot, cx)
@@ -319,7 +319,7 @@ export class RetrievalManager extends BaseManager {
         parent.eachChild(cell => {
           const state = this.view.getState(cell)
           if (state != null && this.graph.isCellVisible(cell)) {
-            const rot = util.getRotation(state)
+            const rot = State.getRotation(state)
             const bounds =
               rot === 0 ? state.bounds : util.rotateRectangle(state.bounds, rot)
 

@@ -252,13 +252,13 @@ export class EdgeHandler extends MouseHandler {
   }
 
   protected isPreferHtml() {
-    let preferHtml = util.hasHtmlLabel(this.state)
+    let preferHtml = State.hasHtmlLabel(this.state)
     if (!preferHtml) {
-      preferHtml = util.hasHtmlLabel(this.state.getVisibleTerminalState(true))
+      preferHtml = State.hasHtmlLabel(this.state.getVisibleTerminalState(true))
     }
 
     if (!preferHtml) {
-      preferHtml = util.hasHtmlLabel(this.state.getVisibleTerminalState(false))
+      preferHtml = State.hasHtmlLabel(this.state.getVisibleTerminalState(false))
     }
 
     return preferHtml
@@ -272,7 +272,7 @@ export class EdgeHandler extends MouseHandler {
         if (pstate != null) {
           this.parentHighlight = this.createParentHighlightShape(pstate.bounds)
           this.parentHighlight.pointerEvents = false
-          this.parentHighlight.rotation = util.getRotation(pstate)
+          this.parentHighlight.rotation = State.getRotation(pstate)
           this.parentHighlight.init(this.graph.view.getOverlayPane())
         }
       }
@@ -578,12 +578,12 @@ export class EdgeHandler extends MouseHandler {
   /**
    * Adds a control point for the given state and event.
    */
-  protected addPoint(state: State, evt: MouseEvent) {
-    const p = util.clientToGraph(this.graph.container, evt)
-    const gridEnabled = this.graph.isGridEnabledForEvent(evt)
+  protected addPoint(state: State, e: MouseEvent) {
+    const p = this.graph.clientToGraph(e)
+    const gridEnabled = this.graph.isGridEnabledForEvent(e)
     this.normalizePoint(p, gridEnabled)
     this.addPointAt(state, p.x, p.y)
-    DomEvent.consume(evt)
+    DomEvent.consume(e)
   }
 
   protected addPointAt(state: State, x: number, y: number) {
@@ -1485,7 +1485,7 @@ export class EdgeHandler extends MouseHandler {
 
       // Shows or hides the label handle depending on the label
       this.labelHandleShape.visible =
-        util.isValidLabel(this.graph.getLabel(cell)) &&
+        this.isValidLabel(this.graph.getLabel(cell)) &&
         this.graph.isLabelMovable(cell)
     }
 
@@ -1625,6 +1625,17 @@ export class EdgeHandler extends MouseHandler {
         b.height,
       )
     }
+  }
+
+  protected isValidLabel(label: string | HTMLElement | null) {
+    if (label != null) {
+      if (typeof label === 'string') {
+        return label.length > 0
+      }
+      return true
+    }
+
+    return false
   }
 
   /**
