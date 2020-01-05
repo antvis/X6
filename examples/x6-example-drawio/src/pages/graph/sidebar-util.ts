@@ -1,4 +1,5 @@
-import { util, Point, Style, Cell, Graph } from '@antv/x6'
+import { Point, Style, Cell, Graph } from '@antv/x6'
+import { DomUtil } from '@antv/x6-dom-util'
 import arrowUrl from './stencil/arrows.xml'
 import flowchartUrl from './/stencil/flowchart.xml'
 import { StencilRegistry } from './stencil-registry'
@@ -69,7 +70,7 @@ export function getDataItem(elem: HTMLElement) {
 let graph: Graph
 
 function createTempGraph() {
-  const container = util.createElement('div')
+  const container = DomUtil.createElement('div')
   container.style.visibility = 'hidden'
   container.style.position = 'absolute'
   container.style.overflow = 'hidden'
@@ -179,7 +180,7 @@ function renderThumb(
     Math.floor((thumbHeight - bounds.height * scale) / 2 / scale - bounds.y),
   )
 
-  let node = util.createElement('div')
+  let node = DomUtil.createElement('div')
   if (graph.dialect === 'svg') {
     const stage = graph.view.getStage() as SVGGElement
     const svg = stage.ownerSVGElement!.cloneNode(true) as SVGElement
@@ -187,8 +188,8 @@ function renderThumb(
     svg.style.overflow = 'hidden'
     svg.style.left = ''
     svg.style.top = ''
-    svg.style.width = util.toPx(thumbWidth)
-    svg.style.height = util.toPx(thumbHeight)
+    svg.style.width = DomUtil.toPx(thumbWidth)
+    svg.style.height = DomUtil.toPx(thumbHeight)
 
     node.appendChild(svg)
   } else {

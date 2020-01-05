@@ -2,7 +2,8 @@ import React from 'react'
 import classnames from 'classnames'
 import { Checkbox, InputNumber, Select, Button } from 'antd'
 import { ColorPicker, ColorResult } from '@antv/x6-components'
-import { Cell, util, Geometry, FontStyle, VAlign, Align } from '@antv/x6'
+import { Color, NumberExt } from '@antv/x6-util'
+import { Cell, Geometry, FontStyle, VAlign, Align } from '@antv/x6'
 import { getEditor } from '../index'
 
 export class FormatCell extends React.PureComponent<
@@ -187,7 +188,7 @@ export class FormatCell extends React.PureComponent<
   renderStyleTab() {
     const hasStroke =
       (this.state.strokeWidth != null && this.state.strokeWidth > 0) ||
-      util.isValidColor(this.state.strokeColor)
+      Color.isValid(this.state.strokeColor)
 
     return (
       <div className="x6-editor-format-content">
@@ -196,11 +197,11 @@ export class FormatCell extends React.PureComponent<
             <Checkbox
               style={{ width: 136, fontWeight: 600 }}
               onChange={this.onFillCheckedChange}
-              checked={util.isValidColor(this.state.fill)}
+              checked={Color.isValid(this.state.fill)}
             >
               Fill
             </Checkbox>
-            {util.isValidColor(this.state.fill) && (
+            {Color.isValid(this.state.fill) && (
               <ColorPicker
                 color={this.state.fill!}
                 onChange={this.onFillChange}
@@ -212,11 +213,11 @@ export class FormatCell extends React.PureComponent<
             <Checkbox
               style={{ width: 136, fontWeight: 600 }}
               onChange={this.onGradientCheckedChange}
-              checked={util.isValidColor(this.state.gradient)}
+              checked={Color.isValid(this.state.gradient)}
             >
               Gradient
             </Checkbox>
-            {util.isValidColor(this.state.gradient) && (
+            {Color.isValid(this.state.gradient) && (
               <ColorPicker
                 onChange={this.onGradientChange}
                 color={this.state.gradient!}
@@ -289,7 +290,7 @@ export class FormatCell extends React.PureComponent<
                 max={100}
                 step={1}
                 onChange={this.onOpacityChange}
-                value={util.clamp(
+                value={NumberExt.clamp(
                   +(this.state.opacity! * 100).toFixed(0),
                   0,
                   100,
@@ -795,11 +796,11 @@ export class FormatCell extends React.PureComponent<
             <Checkbox
               style={{ width: 144, fontWeight: 600 }}
               onChange={this.onFontColorCheckedChange}
-              checked={util.isValidColor(this.state.fontColor)}
+              checked={Color.isValid(this.state.fontColor)}
             >
               Font Color
             </Checkbox>
-            {util.isValidColor(this.state.fontColor) && (
+            {Color.isValid(this.state.fontColor) && (
               <ColorPicker
                 color={this.state.fontColor!}
                 onChange={this.onFontColorChange}
@@ -811,11 +812,11 @@ export class FormatCell extends React.PureComponent<
             <Checkbox
               style={{ width: 144, fontWeight: 600 }}
               onChange={this.onLabelBorderColorCheckedChange}
-              checked={util.isValidColor(this.state.labelBorderColor)}
+              checked={Color.isValid(this.state.labelBorderColor)}
             >
               Border Color
             </Checkbox>
-            {util.isValidColor(this.state.labelBorderColor) && (
+            {Color.isValid(this.state.labelBorderColor) && (
               <ColorPicker
                 color={this.state.labelBorderColor!}
                 onChange={this.onLabelBorderColorChange}
@@ -827,11 +828,11 @@ export class FormatCell extends React.PureComponent<
             <Checkbox
               style={{ width: 144, fontWeight: 600 }}
               onChange={this.onLabelBgColorCheckedChange}
-              checked={util.isValidColor(this.state.labelBackgroundColor)}
+              checked={Color.isValid(this.state.labelBackgroundColor)}
             >
               Background Color
             </Checkbox>
-            {util.isValidColor(this.state.labelBackgroundColor) && (
+            {Color.isValid(this.state.labelBackgroundColor) && (
               <ColorPicker
                 color={this.state.labelBackgroundColor!}
                 onChange={this.onLabelBgColorChange}

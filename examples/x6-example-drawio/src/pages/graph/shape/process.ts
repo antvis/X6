@@ -1,5 +1,6 @@
+import { NumberExt } from '@antv/x6-util'
 import { getFactor } from './util'
-import { util, Shape, SvgCanvas2D, Direction, Rectangle } from '@antv/x6'
+import { Shape, SvgCanvas2D, Direction, Rectangle } from '@antv/x6'
 
 export class ProcessShape extends Shape.Rectangle {
   factor: number = 0.1
@@ -14,7 +15,7 @@ export class ProcessShape extends Shape.Rectangle {
 
     if (this.rounded) {
       const f = (this.style.arcSize || 0.15 * 100) / 100
-      inset = util.clamp(f * width, f * height, inset)
+      inset = NumberExt.clamp(f * width, f * height, inset)
     }
 
     if (round) {

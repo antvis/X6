@@ -1,6 +1,7 @@
 import React from 'react'
 import { SplitBox } from '@antv/x6-components'
-import { Graph, DomEvent } from '@antv/x6'
+import { DomEvent } from '@antv/x6-dom-event'
+import { Graph } from '@antv/x6'
 import { Sidebar } from './sidebar'
 import { GraphToolbar } from './toolbar'
 import { createGraph, demo } from './util'
