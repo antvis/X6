@@ -1,12 +1,15 @@
-import { detector } from '@antv/x6-detector'
-import { getUrlWithoutHash } from '@antv/x6-util'
+import { Platform, Url } from '@antv/x6-util'
 
 export function setAttributes(
   elem: Element | null,
-  attrs: { [key: string]: string },
+  attrs: { [key: string]: string | number },
 ) {
   if (elem != null) {
-    Object.keys(attrs).forEach(name => elem.setAttribute(name, attrs[name]))
+    Object.keys(attrs).forEach(name => {
+      const value = attrs[name]
+      const attr = typeof value === 'string' ? value : `${value}`
+      elem.setAttribute(name, attr)
+    })
   }
 }
 
@@ -16,13 +19,13 @@ export function setAttributeWithAnchor(
   id: string,
 ) {
   if (
-    !detector.IS_IE &&
-    !detector.IS_IE11 &&
-    !detector.IS_EDGE &&
-    !detector.IS_CHROME_APP &&
+    !Platform.IS_IE &&
+    !Platform.IS_IE11 &&
+    !Platform.IS_EDGE &&
+    !Platform.IS_CHROME_APP &&
     elem.ownerDocument === document
   ) {
-    const base = getUrlWithoutHash().replace(/([\\()])/g, '\\$1')
+    const base = Url.getUrlWithoutHash().replace(/([\\()])/g, '\\$1')
     elem.setAttribute(attrName, `url(${base}#${id})`)
   } else {
     elem.setAttribute(attrName, `url(#${id})`)
@@ -45,14 +48,14 @@ export function getOwnerSVG(elem: SVGElement) {
   return null
 }
 
-export function getTextContent(elem: HTMLElement) {
+export function getTextContent(elem: HTMLElement): string {
   if (elem != null) {
     // Only IE10-
-    if (detector.IS_IE && elem.innerText !== undefined) {
+    if (Platform.IS_IE && elem.innerText !== undefined) {
       return elem.innerText
     }
 
-    return elem.textContent || (elem as any).text
+    return elem.textContent || (elem as any).text || ''
   }
 
   return ''
