@@ -6,7 +6,7 @@ import {
   endWith,
   split,
   sanitizeText,
-} from './common'
+} from './format'
 
 describe('string', () => {
   describe('#toString', () => {

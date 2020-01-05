@@ -1,4 +1,9 @@
-import * as util from './index-rollup'
-
-export * from './index-rollup'
-export { util }
+export * from './lang'
+export * from './array'
+export * from './object'
+export * from './string'
+export * from './number'
+export * from './function'
+export * from './color'
+export * from './platform'
+export * from './url'
