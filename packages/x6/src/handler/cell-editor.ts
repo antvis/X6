@@ -9,7 +9,6 @@ import { Align } from '../types'
 import { globals } from '../option'
 import { FontStyle } from '../enum'
 import { Rectangle } from '../struct'
-import { getAlignmentAsPoint } from '../util'
 
 export class CellEditor extends Disposable {
   readonly graph: Graph
@@ -402,7 +401,7 @@ export class CellEditor extends Disposable {
         m = state.text && this.align ? state.text.margin : null
 
         if (m == null) {
-          m = getAlignmentAsPoint(
+          m = Align.getAlignmentAsPoint(
             this.align || state.style.align || 'center',
             state.style.verticalAlign || 'middle',
           )

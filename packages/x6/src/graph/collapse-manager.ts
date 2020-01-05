@@ -1,4 +1,4 @@
-import * as util from '../util'
+import { Angle } from '@antv/x6-geometry'
 import { Cell } from '../core/cell'
 import { State } from '../core/state'
 import { Geometry } from '../core/geometry'
@@ -125,13 +125,13 @@ export class CollapseManager extends BaseManager {
         geo.alternateBounds.x = geo.bounds.x
         geo.alternateBounds.y = geo.bounds.y
 
-        const alpha = util.toRad(style.rotation || 0)
-        if (alpha !== 0) {
+        const rad = Angle.toRad(style.rotation || 0)
+        if (rad !== 0) {
           const dx = geo.alternateBounds.getCenterX() - geo.bounds.getCenterX()
           const dy = geo.alternateBounds.getCenterY() - geo.bounds.getCenterY()
 
-          const cos = Math.cos(alpha)
-          const sin = Math.sin(alpha)
+          const cos = Math.cos(rad)
+          const sin = Math.sin(rad)
 
           const dx2 = cos * dx - sin * dy
           const dy2 = sin * dx + cos * dy

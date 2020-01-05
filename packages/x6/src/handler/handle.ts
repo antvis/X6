@@ -1,3 +1,4 @@
+import { Angle } from '@antv/x6-geometry'
 import * as util from '../util'
 import { State } from '../core/state'
 import { Graph } from '../graph'
@@ -110,15 +111,15 @@ export class Handle {
 
     // Snaps to grid for the rotated position then applies the
     // rotation for the direction after that
-    const alpha1 = -util.toRad(this.getRotation())
-    const alpha2 = -util.toRad(this.getTotalRotation()) - alpha1
+    const rad1 = -Angle.toRad(this.getRotation())
+    const rad2 = -Angle.toRad(this.getTotalRotation()) - rad1
     p = this.flipPoint(
       this.rotatePoint(
         this.snapPoint(
-          this.rotatePoint(p, alpha1),
+          this.rotatePoint(p, rad1),
           this.ignoreGrid || !this.graph.isGridEnabledForEvent(e.getEvent()),
         ),
-        alpha2,
+        rad2,
       ),
     )
 
@@ -169,8 +170,8 @@ export class Handle {
     if (this.shape != null && this.state.shape != null) {
       let p = this.getPosition(this.state.getPaintBounds())
       if (p != null) {
-        const alpha = util.toRad(this.getTotalRotation())
-        p = this.rotatePoint(this.flipPoint(p), alpha)
+        const rad = Angle.toRad(this.getTotalRotation())
+        p = this.rotatePoint(this.flipPoint(p), rad)
 
         const s = this.graph.view.scale
         const t = this.graph.view.translate
@@ -188,7 +189,7 @@ export class Handle {
    * true if the text node is in the graph container.
    */
   protected isHtmlRequired() {
-    return util.hasHtmlLabel(this.state)
+    return State.hasHtmlLabel(this.state)
   }
 
   /**

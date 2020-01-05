@@ -6,7 +6,6 @@ import { Graph } from '../graph'
 import { State } from '../core/state'
 import { MouseEventEx } from './mouse-event'
 import { BaseHandler } from './base-handler'
-import { getRotation } from '../util'
 
 export class CellHighlight extends BaseHandler {
   state: State | null
@@ -109,7 +108,7 @@ export class CellHighlight extends BaseHandler {
         this.shape.outline = false
       } else {
         this.shape.bounds = this.state.bounds.clone().grow(this.spacing)
-        this.shape.rotation = getRotation(this.state)
+        this.shape.rotation = State.getRotation(this.state)
         this.shape.strokeWidth = this.strokeWidth / this.state.view.scale
         this.shape.outline = true
       }

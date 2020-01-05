@@ -2,6 +2,7 @@ import { DomEvent } from '@antv/x6-dom-event'
 import * as util from '../../util'
 import * as movment from './util'
 import { Cell } from '../../core/cell'
+import { State } from '../../core/state'
 import { Graph } from '../../graph'
 import { Preview } from './preview'
 import { MouseHandler } from '../mouse-handler'
@@ -193,8 +194,8 @@ export class MovingHandler extends MouseHandler {
     if (this.graph.model.isNode(parent)) {
       const pState = this.graph.view.getState(parent)
       if (pState != null) {
-        let pos = util.clientToGraph(this.graph.container, e)
-        const rot = util.getRotation(pState)
+        let pos = this.graph.clientToGraph(e)
+        const rot = State.getRotation(pState)
         if (rot !== 0) {
           const cx = pState.bounds.getCenter()
           pos = util.rotatePoint(pos, -rot, cx)

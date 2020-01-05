@@ -1,3 +1,4 @@
+import { Point } from '@antv/x6-geometry'
 import { ObjectExt } from '@antv/x6-util'
 import { globals } from '../option/global'
 import { Graph } from '../graph'
@@ -6,7 +7,7 @@ import { State } from '../core/state'
 import { MouseEventEx } from './mouse-event'
 import { BaseHandler } from './base-handler'
 import { CellHighlight } from './cell-highlight'
-import { isInHotspot } from '../util'
+import { Rectangle } from '../struct'
 
 export class CellMarker extends BaseHandler {
   highlight: CellHighlight
@@ -151,7 +152,7 @@ export class CellMarker extends BaseHandler {
     // 在中心区域按下鼠标触发连线
     // 在边缘区域按下鼠标触发移动
     if (this.hotspotable) {
-      return isInHotspot(
+      return CellMarker.isInHotspot(
         state,
         e.getGraphX(),
         e.getGraphY(),
@@ -181,5 +182,56 @@ export namespace CellMarker {
     hotspotRate?: number
     minHotspotSize?: number
     maxHotspotSize?: number
+  }
+}
+
+export namespace CellMarker {
+  export function isInHotspot(
+    state: State,
+    x: number,
+    y: number,
+    hotspotRate: number = 1,
+    minHotspotSize: number = 0,
+    maxHotspotSize: number = 0,
+  ) {
+    if (hotspotRate > 0) {
+      let cx = state.bounds.getCenterX()
+      let cy = state.bounds.getCenterY()
+      let w = state.bounds.width
+      let h = state.bounds.height
+
+      const start = (state.style.startSize || 0) * state.view.scale
+      if (start > 0) {
+        if (state.style.horizontal !== false) {
+          cy = state.bounds.y + start / 2
+          h = start
+        } else {
+          cx = state.bounds.x + start / 2
+          w = start
+        }
+      }
+
+      if (minHotspotSize >= 0) {
+        w = Math.max(minHotspotSize, w * hotspotRate)
+        h = Math.max(minHotspotSize, h * hotspotRate)
+      }
+
+      if (maxHotspotSize > 0) {
+        w = Math.min(w, maxHotspotSize)
+        h = Math.min(h, maxHotspotSize)
+      }
+
+      const rect = new Rectangle(cx - w / 2, cy - h / 2, w, h)
+      const rot = state.style.rotation || 0
+      if (rot !== 0) {
+        const cx = state.bounds.getCenter()
+        const pt = new Point(x, y).rotate(-rot, cx)
+        return rect.containsPoint(pt)
+      }
+
+      return rect.containsPoint({ x, y })
+    }
+
+    return true
   }
 }

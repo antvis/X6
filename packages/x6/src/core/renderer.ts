@@ -1,4 +1,5 @@
 import { Platform, ObjectExt, NumberExt } from '@antv/x6-util'
+import { Angle } from '@antv/x6-geometry'
 import { DomUtil } from '@antv/x6-dom-util'
 import { DomEvent } from '@antv/x6-dom-event'
 import * as utilBiz from '../util'
@@ -386,12 +387,9 @@ export class Renderer {
           DomUtil.getNodeName(DomEvent.getSource(e)) === 'img') ||
         Platform.SUPPORT_TOUCH
       ) {
-        const x = DomEvent.getClientX(e)
-        const y = DomEvent.getClientY(e)
-
         // Dispatches the drop event to the graph which
         // consumes and executes the source function
-        const pt = utilBiz.clientToGraph(graph.container, x, y)
+        const pt = graph.clientToGraph(e)
         result = graph.view.getState(graph.getCellAt(pt.x, pt.y))!
       }
 
@@ -708,12 +706,9 @@ export class Renderer {
         let result: State = state
 
         if (Platform.SUPPORT_TOUCH || forceGetCell) {
-          const x = DomEvent.getClientX(e)
-          const y = DomEvent.getClientY(e)
-
           // Dispatches the drop event to the graph which
           // consumes and executes the source function
-          const pt = utilBiz.clientToGraph(graph.container, x, y)
+          const pt = graph.clientToGraph(e)
           result = graph.view.getState(graph.getCellAt(pt.x, pt.y))!
         }
 
@@ -1013,8 +1008,8 @@ export class Renderer {
   protected redrawOverlays(state: State, forced?: boolean) {
     this.createOverlays(state)
     if (state.overlays != null) {
-      const rot = NumberExt.mod(utilBiz.getRotation(state), 90)
-      const rad = utilBiz.toRad(rot)
+      const rot = NumberExt.mod(State.getRotation(state), 90)
+      const rad = Angle.toRad(rot)
       const cos = Math.cos(rad)
       const sin = Math.sin(rad)
 

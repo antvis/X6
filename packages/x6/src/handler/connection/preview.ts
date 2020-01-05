@@ -373,7 +373,7 @@ export class Preview extends Disposable {
     const perimeterFn = view.getPerimeterFunction(state)
 
     if (perimeterFn != null) {
-      const rot = util.getRotation(state)
+      const rot = State.getRotation(state)
       if (rot !== 0) {
         // tslint:disable-next-line
         next = util.rotatePoint(next, -rot, center)
@@ -571,7 +571,7 @@ export class Preview extends Disposable {
   }
 
   addWaypoint(e: MouseEventEx, mouseDownCounter: number) {
-    const point = util.clientToGraph(this.graph.container, e)
+    const point = this.graph.clientToGraph(e)
     const dx = Math.abs(point.x - this.sourcePoint!.x)
     const dy = Math.abs(point.y - this.sourcePoint!.y)
     const addPoint =

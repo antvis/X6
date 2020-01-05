@@ -4,7 +4,6 @@ import { State } from '../../core/state'
 import { Graph } from '../../graph'
 import { Polyline } from '../../shape'
 import { Rectangle, Point } from '../../struct'
-import { applyClassName } from '../../util'
 
 export class Guide extends Disposable {
   graph: Graph
@@ -75,7 +74,7 @@ export class Guide extends Disposable {
       guide.dashed = style.dashed
       guide.elem!.style.visibility = ''
 
-      applyClassName(
+      Polyline.applyClassName(
         guide,
         this.graph.prefixCls,
         `guide ${horizontal ? 'horizontal' : 'vertical'}`,

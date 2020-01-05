@@ -1,4 +1,3 @@
-import { clientToGraph } from '../../util'
 import { Cell } from '../../core/cell'
 import { Graph } from '../../graph'
 import { MouseEventEx } from '../mouse-event'
@@ -65,7 +64,7 @@ export function getDelta(
 ) {
   const graph = handler.graph
   const s = graph.view.scale
-  const p = clientToGraph(graph.container, e)
+  const p = graph.clientToGraph(e)
 
   return new Point(
     roundLength((p.x - origin.x) / s) * s,

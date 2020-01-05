@@ -5,7 +5,6 @@ import { Rectangle, Point } from '../../struct'
 import { MouseHandler } from '../mouse-handler'
 import { MouseEventEx } from '../mouse-event'
 import { createGuide, isGuideEnabled } from './option'
-import { clientToGraph } from '../../util'
 
 export class GuideHandler extends MouseHandler {
   dx: number | null
@@ -29,7 +28,7 @@ export class GuideHandler extends MouseHandler {
   mouseDown(e: MouseEventEx) {
     if (movment.isValid(this, e) && movment.canMove(this, e)) {
       this.cell = this.getCell(e)!
-      this.origin = clientToGraph(this.graph.container, e)
+      this.origin = this.graph.clientToGraph(e)
       this.bounds = this.graph.view.getBounds(
         movment.getCells(this, this.cell, e),
       )

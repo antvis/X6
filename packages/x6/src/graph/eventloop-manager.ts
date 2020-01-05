@@ -1,10 +1,9 @@
 import { Platform, Color } from '@antv/x6-util'
-import * as util from '../util'
+import { DomEvent } from '@antv/x6-dom-event'
 import { Cell } from '../core/cell'
 import { State } from '../core/state'
 import { Point } from '../struct'
 import { RectangleShape } from '../shape'
-import { DomEvent } from '@antv/x6-dom-event'
 import { MouseEventEx, IMouseHandler } from '../handler'
 import { BaseManager } from './base-manager'
 
@@ -63,7 +62,7 @@ export class EventLoopManager extends BaseManager {
     const s = this.view.scale
     const t = this.view.translate
     const o = addOffset ? this.graph.getGridSize() / 2 : 0
-    const p = util.clientToGraph(this.graph.container, e)
+    const p = this.graph.clientToGraph(e)
 
     p.x = this.graph.snap(p.x / s - t.x - o)
     p.y = this.graph.snap(p.y / s - t.y - o)
@@ -73,7 +72,7 @@ export class EventLoopManager extends BaseManager {
 
   protected updateMouseEvent(e: MouseEventEx, eventName: string) {
     if (e.graphX == null || e.graphY == null) {
-      const p = util.clientToGraph(this.graph.container, e)
+      const p = this.graph.clientToGraph(e)
 
       e.graphX = p.x - this.graph.panX
       e.graphY = p.y - this.graph.panY
@@ -100,7 +99,7 @@ export class EventLoopManager extends BaseManager {
   }
 
   protected getStateForTouchEvent(e: TouchEvent) {
-    const p = util.clientToGraph(this.graph.container, e)
+    const p = this.graph.clientToGraph(e)
     return this.graph.view.getState(this.graph.getCellAt(p.x, p.y))
   }
 

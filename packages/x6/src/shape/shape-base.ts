@@ -9,7 +9,8 @@ import { Stencil } from './stencil'
 import { SvgCanvas2D } from '../canvas'
 import { Rectangle, Point } from '../struct'
 import { Style, Direction, Dialect } from '../types'
-import { registerEntity, rotateRectangle, getDirectedBounds } from '../util'
+import { rotateRectangle, getDirectedBounds } from '../util'
+import { registerEntity } from '../registry/util'
 
 export class Shape extends Disposable {
   state: State
@@ -1150,5 +1151,29 @@ export namespace Shape {
 
   export function getShapeNames() {
     return Object.keys(shapes)
+  }
+}
+
+export namespace Shape {
+  export function applyClassName(
+    shape: Shape | HTMLElement,
+    prefix: string,
+    native?: string,
+    manual?: string,
+  ) {
+    let className = ''
+    if (native) {
+      className += `${prefix}-${native}`
+    }
+    if (manual) {
+      className += ` ${manual}`
+    }
+
+    if (className.length > 0) {
+      shape.className = className
+      if (shape instanceof Shape && shape.elem) {
+        shape.elem.setAttribute('class', className)
+      }
+    }
   }
 }

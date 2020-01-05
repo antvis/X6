@@ -1,8 +1,10 @@
+import { Angle } from '@antv/x6-geometry'
 import { NumberExt } from '@antv/x6-util'
 import { DomUtil } from '@antv/x6-dom-util'
 import { DomEvent } from '@antv/x6-dom-event'
 import { Disposable } from '../../entity'
 import * as utilBiz from '../../util'
+import { State } from '../../core'
 import { Shape } from '../../shape'
 import { Handle } from '../handle'
 import { NodeHandler } from './handler'
@@ -171,7 +173,7 @@ export class Knobs extends Disposable {
       handle.visible = this.isResizeHandleVisible(index)
     }
 
-    if (handle.isHtmlAllowed() && utilBiz.hasHtmlLabel(this.state)) {
+    if (handle.isHtmlAllowed() && State.hasHtmlLabel(this.state)) {
       handle.bounds.width -= 1
       handle.bounds.height -= 1
       handle.dialect = 'html'
@@ -385,9 +387,9 @@ export class Knobs extends Disposable {
       const ct = bounds.getCenter()
       const right = bounds.x + bounds.width
       const bottom = bounds.y + bounds.height
-      const alpha = utilBiz.toRad(utilBiz.getRotation(this.state))
-      const cos = Math.cos(alpha)
-      const sin = Math.sin(alpha)
+      const rad = Angle.toRad(State.getRotation(this.state))
+      const cos = Math.cos(rad)
+      const sin = Math.sin(rad)
       let pt = new Point()
 
       const draw = (index: number, handle?: Shape) => {
@@ -506,8 +508,8 @@ export class Knobs extends Disposable {
       7: 4,
     }
 
-    const alpha = utilBiz.toRad(utilBiz.getRotation(this.state))
-    const da = Math.round((alpha * 4) / Math.PI)
+    const rad = Angle.toRad(State.getRotation(this.state))
+    const da = Math.round((rad * 4) / Math.PI)
     return cursors[NumberExt.mod(indexMap[index] + da, cursors.length)]
   }
 

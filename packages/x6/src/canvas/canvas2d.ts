@@ -287,7 +287,7 @@ export abstract class Canvas2D {
     x: number,
     y: number,
   ) {
-    const curves = util.arcToCurves(
+    const curves = Canvas2D.arcToCurves(
       this.lastX,
       this.lastY,
       rx,
@@ -377,5 +377,126 @@ export namespace Canvas2D {
 
   export function getColor(color?: string | null) {
     return color === 'none' || color == null ? null : color
+  }
+}
+
+export namespace Canvas2D {
+  /**
+   * Converts the given arc to a series of curves.
+   */
+  export function arcToCurves(
+    x0: number,
+    y0: number,
+    r1: number,
+    r2: number,
+    angle: number,
+    largeArcFlag: number,
+    sweepFlag: number,
+    x: number,
+    y: number,
+  ) {
+    if (r1 === 0 || r2 === 0) {
+      return []
+    }
+
+    x -= x0 // tslint:disable-line
+    y -= y0 // tslint:disable-line
+    r1 = Math.abs(r1) // tslint:disable-line
+    r2 = Math.abs(r2) // tslint:disable-line
+
+    const fS = sweepFlag
+    const psai = angle
+    const ctx = -x / 2
+    const cty = -y / 2
+    const cpsi = Math.cos((psai * Math.PI) / 180)
+    const spsi = Math.sin((psai * Math.PI) / 180)
+    const rxd = cpsi * ctx + spsi * cty
+    const ryd = -1 * spsi * ctx + cpsi * cty
+    const rxdd = rxd * rxd
+    const rydd = ryd * ryd
+    const r1x = r1 * r1
+    const r2y = r2 * r2
+    const lamda = rxdd / r1x + rydd / r2y
+
+    let sds
+
+    if (lamda > 1) {
+      r1 = Math.sqrt(lamda) * r1 // tslint:disable-line
+      r2 = Math.sqrt(lamda) * r2 // tslint:disable-line
+      sds = 0
+    } else {
+      let seif = 1
+      if (largeArcFlag === fS) {
+        seif = -1
+      }
+
+      sds =
+        seif *
+        Math.sqrt(
+          (r1x * r2y - r1x * rydd - r2y * rxdd) / (r1x * rydd + r2y * rxdd),
+        )
+    }
+
+    const txd = (sds * r1 * ryd) / r2
+    const tyd = (-1 * sds * r2 * rxd) / r1
+    const tx = cpsi * txd - spsi * tyd + x / 2
+    const ty = spsi * txd + cpsi * tyd + y / 2
+
+    let rad = Math.atan2((ryd - tyd) / r2, (rxd - txd) / r1) - Math.atan2(0, 1)
+    let s1 = rad >= 0 ? rad : 2 * Math.PI + rad
+    rad =
+      Math.atan2((-ryd - tyd) / r2, (-rxd - txd) / r1) -
+      Math.atan2((ryd - tyd) / r2, (rxd - txd) / r1)
+    let dr = rad >= 0 ? rad : 2 * Math.PI + rad
+
+    if (fS === 0 && dr > 0) {
+      dr -= 2 * Math.PI
+    } else if (fS !== 0 && dr < 0) {
+      dr += 2 * Math.PI
+    }
+
+    const sse = (dr * 2) / Math.PI
+    const seg = Math.ceil(sse < 0 ? -1 * sse : sse)
+    const segr = dr / seg
+    const t =
+      ((8 / 3) * Math.sin(segr / 4) * Math.sin(segr / 4)) / Math.sin(segr / 2)
+    const cpsir1 = cpsi * r1
+    const cpsir2 = cpsi * r2
+    const spsir1 = spsi * r1
+    const spsir2 = spsi * r2
+
+    let mc = Math.cos(s1)
+    let ms = Math.sin(s1)
+    let x2 = -t * (cpsir1 * ms + spsir2 * mc)
+    let y2 = -t * (spsir1 * ms - cpsir2 * mc)
+    let x3 = 0
+    let y3 = 0
+
+    const result = []
+
+    for (let n = 0; n < seg; n += 1) {
+      s1 += segr
+      mc = Math.cos(s1)
+      ms = Math.sin(s1)
+
+      x3 = cpsir1 * mc - spsir2 * ms + tx
+      y3 = spsir1 * mc + cpsir2 * ms + ty
+      const dx = -t * (cpsir1 * ms + spsir2 * mc)
+      const dy = -t * (spsir1 * ms - cpsir2 * mc)
+
+      // CurveTo updates x0, y0 so need to restore it
+      const index = n * 6
+      result[index] = Number(x2 + x0)
+      result[index + 1] = Number(y2 + y0)
+      result[index + 2] = Number(x3 - dx + x0)
+      result[index + 3] = Number(y3 - dy + y0)
+      result[index + 4] = Number(x3 + x0)
+      result[index + 5] = Number(y3 + y0)
+
+      x2 = x3 + dx
+      y2 = y3 + dy
+    }
+
+    return result
   }
 }

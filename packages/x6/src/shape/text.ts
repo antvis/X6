@@ -7,7 +7,7 @@ import { State } from '../core/state'
 import { FontStyle } from '../enum'
 import { Rectangle, Point } from '../struct'
 import { Align, VAlign, WritingDirection } from '../types'
-import { getAlignmentAsPoint, rotateRectangle } from '../util'
+import { rotateRectangle } from '../util'
 
 export class Text extends Shape {
   value: HTMLElement | string
@@ -32,7 +32,7 @@ export class Text extends Shape {
   clipped: boolean
   overflow: string
   textDirection: WritingDirection
-  margin: Point
+  margin: { x: number; y: number }
 
   private lastUnscaledWidth: number
   private offsetWidth: number | null
@@ -744,7 +744,7 @@ export class Text extends Shape {
   }
 
   updateMargin() {
-    this.margin = getAlignmentAsPoint(this.align, this.verticalAlign)
+    this.margin = Align.getAlignmentAsPoint(this.align, this.verticalAlign)
   }
 
   getSpacing() {

@@ -5,7 +5,7 @@ import { loop as loopRouter } from './loop'
 import { er as entityRelationRouter } from './er'
 import { orth as orthRouter } from './orth'
 import { segment as segmentRouter } from './segment'
-import { getEntityFromRegistry, registerEntity } from '../util'
+import { getEntityFromRegistry, registerEntity } from '../registry/util'
 
 export namespace Route {
   export const er = entityRelationRouter
