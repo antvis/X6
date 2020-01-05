@@ -8,6 +8,10 @@ export class Ellipse {
   a: number
   b: number
 
+  get center() {
+    return new Point(this.x, this.y)
+  }
+
   constructor(x?: number, y?: number, a?: number, b?: number) {
     this.x = x == null ? 0 : x
     this.y = y == null ? 0 : y
@@ -25,8 +29,8 @@ export class Ellipse {
   /**
    * Returns a point that is the center of the ellipse.
    */
-  center() {
-    return new Point(this.x, this.y)
+  getCenter() {
+    return this.center
   }
 
   inflate(amount: number): this
@@ -132,7 +136,7 @@ export class Ellipse {
     const ref = Point.normalize(p)
 
     if (angle) {
-      ref.rotate(angle, this.center())
+      ref.rotate(angle, this.getCenter())
     }
 
     const dx = ref.x - this.x
@@ -142,7 +146,7 @@ export class Ellipse {
     if (dx === 0) {
       result = this.bbox().pointNearestToPoint(p)
       if (angle) {
-        return result.rotate(-angle, this.center())
+        return result.rotate(-angle, this.getCenter())
       }
       return result
     }
@@ -158,7 +162,7 @@ export class Ellipse {
     const y = m * x
     result = new Point(this.x + x, this.y + y)
 
-    if (angle) return result.rotate(-angle, this.center())
+    if (angle) return result.rotate(-angle, this.getCenter())
     return result
   }
 
@@ -168,7 +172,7 @@ export class Ellipse {
     const y0 = ref.y
     const a = this.a
     const b = this.b
-    const center = this.bbox().center()
+    const center = this.bbox().center
     const cx = center.x
     const cy = center.y
     const refPointDelta = 30
@@ -269,7 +273,7 @@ export namespace Ellipse {
   }
 
   export function fromRect(rect: Rectangle) {
-    const center = rect.center()
+    const center = rect.center
     return new Ellipse(center.x, center.y, rect.width / 2, rect.height / 2)
   }
 }
