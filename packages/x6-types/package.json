@@ -1,7 +1,7 @@
 {
-  "name": "@antv/x6-eventemitter",
+  "name": "@antv/x6-types",
   "version": "1.0.0",
-  "description": "Event emitter",
+  "description": "Collection of utility types",
   "main": "lib/index.js",
   "module": "es/index.js",
   "types": "lib/index.d.ts",
@@ -14,12 +14,12 @@
     "src": "src/"
   },
   "keywords": [
-    "eventemitter",
-    "event",
-    "events",
-    "listeners",
-    "pub/sub",
-    "emitter",
+    "types",
+    "typescript",
+    "utility-types",
+    "utilities",
+    "static-typing",
+    "mapped-types",
     "x6",
     "antv"
   ],
@@ -34,7 +34,7 @@
     "build:es": "tsc --module es2015 --target es2015 --outDir ./es",
     "build": "run-p build:lib build:es",
     "prebuild": "run-s lint clean",
-    "test": "jest",
+    "test": "jest --passWithNoTests",
     "pretest": "run-p clean:coverage",
     "prepare": "run-s test build",
     "precommit": "lint-staged"
@@ -44,10 +44,6 @@
       "tslint -c tslint.json -p ./tsconfig.json --fix",
       "git add"
     ]
-  },
-  "dependencies": {
-    "@antv/x6-types": "^1.0.0",
-    "@antv/x6-util": "^1.0.0"
   },
   "devDependencies": {
     "@types/jest": "^24.0.17",
@@ -72,9 +68,12 @@
   "bugs": {
     "url": "https://github.com/antvis/x6/issues"
   },
-  "repository": "https://github.com/antvis/x6/tree/master/packages/x6-events",
+  "repository": "https://github.com/antvis/x6/tree/master/packages/x6-types",
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org"
+  },
+  "dependencies": {
+    "utility-types": "^3.10.0"
   }
 }
