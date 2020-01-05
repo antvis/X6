@@ -1,3 +1,7 @@
+import { Lang } from '../lang'
+
+export const isString = Lang.isString
+
 export const toString = (str: any) => `${str}`
 
 export function ucFirst(str: string) {
