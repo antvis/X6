@@ -476,7 +476,7 @@ export class View extends Basecoat<View.EventArgs> {
 
     // Apply ratation when relative and parent is node.
     if (geo.relative && pState != null && !this.model.isEdge(parent)) {
-      const rot = utilBiz.getRotation(pState)
+      const rot = State.getRotation(pState)
       if (rot !== 0) {
         const nodeCenter = state.bounds.getCenter()
         const parentCenter = pState.bounds.getCenter()
@@ -696,8 +696,8 @@ export class View extends Basecoat<View.EventArgs> {
         r2 += r1
 
         if (this.model.isNode(terminalState.cell)) {
-          const flipH = utilBiz.isFlipH(terminalState)
-          const flipV = utilBiz.isFlipV(terminalState)
+          const flipH = State.isFlipH(terminalState)
+          const flipV = State.isFlipV(terminalState)
 
           if (flipH) {
             result.x = 2 * bounds.getCenterX() - result.x
@@ -909,7 +909,7 @@ export class View extends Basecoat<View.EventArgs> {
     // tslint:disable-next-line:no-parameter-reassignment
     relateState = this.getTerminalPortState(edgeState, relateState, isSource)
 
-    const rot = utilBiz.getRotation(relateState)
+    const rot = State.getRotation(relateState)
     const orth = this.graph.connectionManager.isOrthogonal(edgeState)
     const center = relateState.bounds.getCenter()
 
@@ -996,8 +996,8 @@ export class View extends Basecoat<View.EventArgs> {
           let flipV = false
 
           if (this.graph.model.isNode(terminalState.cell)) {
-            flipH = utilBiz.isFlipH(terminalState)
-            flipV = utilBiz.isFlipV(terminalState)
+            flipH = State.isFlipH(terminalState)
+            flipV = State.isFlipV(terminalState)
 
             if (flipH) {
               result.x = 2 * bounds.getCenterX() - result.x
@@ -1602,7 +1602,7 @@ export class View extends Basecoat<View.EventArgs> {
   validateBackgroundStyle() {
     const graph = this.graph
     const bgColor = graph.getBackgroundColor() || ''
-    let bgImage: string = ''
+    let bgGridImage: string = ''
     let bgPosition: string = ''
 
     if (
@@ -1611,7 +1611,7 @@ export class View extends Basecoat<View.EventArgs> {
       graph.getGridType() != null &&
       graph.getGridColor() != null
     ) {
-      bgImage = utilBiz.createGrid({
+      bgGridImage = View.createGrid({
         type: graph.getGridType(),
         size: graph.getGridSize() * this.scale,
         minSize: graph.getGridMinSize(),
@@ -1646,13 +1646,13 @@ export class View extends Basecoat<View.EventArgs> {
     if (this.backgroundPageShape != null) {
       const page = this.backgroundPageShape.elem!
       page.style.backgroundColor = bgColor
-      page.style.backgroundImage = bgImage
+      page.style.backgroundImage = bgGridImage
       page.style.backgroundPosition = bgPosition
       canvas.style.backgroundImage = ''
       canvas.style.backgroundColor = ''
       canvas.style.backgroundPosition = ''
     } else {
-      canvas.style.backgroundImage = bgImage
+      canvas.style.backgroundImage = bgGridImage
       canvas.style.backgroundColor = bgColor
       canvas.style.backgroundPosition = bgPosition
     }
@@ -1952,12 +1952,9 @@ export class View extends Basecoat<View.EventArgs> {
       // on top of the container, in which case the cells under the
       // mouse for the move and up events are not detected.
       if (Platform.SUPPORT_TOUCH) {
-        const x = DomEvent.getClientX(e)
-        const y = DomEvent.getClientY(e)
-
         // Dispatches the drop event to the graph which
         // consumes and executes the source function
-        const p = utilBiz.clientToGraph(container, x, y)
+        const p = graph.clientToGraph(e)
         state = graph.view.getState(graph.getCellAt(p.x, p.y))
       }
 
@@ -2260,5 +2257,107 @@ export namespace View {
     scale: ScaleArgs
     translate: TranslateArgs
     scaleAndTranslate: ScaleAndTranslateArgs
+  }
+}
+
+export namespace View {
+  export type GridType = 'line' | 'dot'
+
+  export interface CreateGridOptions {
+    id: string
+    size: number
+    minSize: number
+    color: string
+    step: number
+    type: GridType
+  }
+
+  const defaults: CreateGridOptions = {
+    id: 'x6-graph-grid',
+    size: 10,
+    step: 4,
+    minSize: 4,
+    color: '#e0e0e0',
+    type: 'line',
+  }
+
+  export function createGrid(options: Partial<CreateGridOptions> = {}) {
+    const opts: CreateGridOptions = { ...defaults, ...options }
+    fixSize(opts)
+
+    const svg =
+      opts.type === 'line' ? createLineGrid(opts) : createDotGrid(opts)
+    return base64(svg)
+  }
+
+  function createLineGrid(options: CreateGridOptions) {
+    const gridSize = options.size
+    const blockSize = options.size * options.step
+    const d = []
+    for (let i = 1, ii = options.step; i < ii; i += 1) {
+      const tmp = i * gridSize
+      d.push(
+        `M 0 ${tmp} L ${blockSize} ${tmp} M ${tmp} 0 L ${tmp} ${blockSize}`,
+      )
+    }
+
+    const content = `
+      <path
+        d="${d.join(' ')}"
+        fill="none"
+        opacity="0.2"
+        stroke="${options.color}"
+        stroke-width="1"
+      />
+      <path
+        d="M ${blockSize} 0 L 0 0 0 ${blockSize}"
+        fill="none"
+        stroke="${options.color}"
+        stroke-width="1"
+      />
+    `
+
+    return wrap(options.id, blockSize, content)
+  }
+
+  function createDotGrid(options: CreateGridOptions) {
+    const content = `<rect width="1" height="1" fill="${options.color}"/>`
+    return wrap(options.id, options.size, content)
+  }
+
+  function fixSize(options: CreateGridOptions) {
+    let size = options.size
+    while (size < options.minSize) {
+      size *= 2
+    }
+    options.size = size
+    return size
+  }
+
+  function wrap(id: string, size: number, content: string) {
+    return `<svg
+        width="${size}"
+        height="${size}"
+        version="1.1"
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+      >
+        <defs>
+          <pattern
+            id="${id}"
+            width="${size}"
+            height="${size}"
+            patternUnits="userSpaceOnUse"
+          >
+            ${content}
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#${id})"/>
+      </svg>`
+  }
+
+  function base64(svg: string) {
+    const img = unescape(encodeURIComponent(svg))
+    return `url(data:image/svg+xml;base64,${window.btoa(img)})`
   }
 }

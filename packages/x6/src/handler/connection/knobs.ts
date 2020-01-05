@@ -7,7 +7,7 @@ import { Rectangle, Point } from '../../struct'
 import { ConnectionHandler } from './handler'
 import { getConnectionIconOptions } from './option'
 import { MouseEventEx } from '../mouse-event'
-import { hasHtmlLabel, getRotation, rotatePoint } from '../../util'
+import { rotatePoint } from '../../util'
 
 export class Knobs extends Disposable {
   private icon: ImageShape | null
@@ -63,7 +63,7 @@ export class Knobs extends Disposable {
       icon.preserveImageAspect = false
       icon.cursor = options.cursor
 
-      if (hasHtmlLabel(state) || options.toFront) {
+      if (State.hasHtmlLabel(state) || options.toFront) {
         icon.dialect = 'html'
         icon.init(this.graph.container)
       } else {
@@ -192,7 +192,7 @@ export class Knobs extends Disposable {
       cx = size.width !== 0 ? state.bounds.x + (size.width * s) / 2 : cx
       cy = size.height !== 0 ? state.bounds.y + (size.height * s) / 2 : cy
 
-      const rot = getRotation(state)
+      const rot = State.getRotation(state)
       if (rot !== 0) {
         const ct = state.bounds.getCenter()
         const pt = rotatePoint(new Point(cx, cy), rot, ct)

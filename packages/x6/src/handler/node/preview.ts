@@ -1,8 +1,8 @@
 import { Color } from '@antv/x6-util'
+import { Angle } from '@antv/x6-geometry'
 import { DomUtil } from '@antv/x6-dom-util'
 import { DomEvent } from '@antv/x6-dom-event'
 import { Disposable } from '../../entity'
-import * as util from '../../util'
 import { Cell } from '../../core/cell'
 import { State } from '../../core/state'
 import { Handle } from '../handle'
@@ -96,7 +96,7 @@ export class Preview extends Disposable {
     this.updateBounds()
     this.selectionShape = this.createSelectionShape(this.bounds)
     this.selectionShape.pointerEvents = false
-    this.selectionShape.rotation = util.getRotation(this.state)
+    this.selectionShape.rotation = State.getRotation(this.state)
     this.selectionShape.init(this.graph.view.getOverlayPane())
 
     MouseEventEx.redirectMouseEvents(
@@ -166,7 +166,7 @@ export class Preview extends Disposable {
             this.parentHighlight = this.createParentHighlight(pstate.bounds)
             this.parentHighlight.dialect = 'svg'
             this.parentHighlight.pointerEvents = false
-            this.parentHighlight.rotation = util.getRotation(pstate)
+            this.parentHighlight.rotation = State.getRotation(pstate)
             this.parentHighlight.init(this.graph.view.getOverlayPane())
           }
         }
@@ -471,7 +471,7 @@ export class Preview extends Disposable {
     }
 
     if (this.previewShape) {
-      if (util.hasHtmlLabel(this.state)) {
+      if (State.hasHtmlLabel(this.state)) {
         this.previewShape.dialect = 'html'
         this.previewShape.init(this.graph.container)
       } else {
@@ -540,7 +540,7 @@ export class Preview extends Disposable {
 
   refresh() {
     if (this.selectionShape != null) {
-      this.selectionShape.rotation = util.getRotation(this.state)
+      this.selectionShape.rotation = State.getRotation(this.state)
     }
 
     if (this.edgeHandlers != null) {
@@ -590,10 +590,10 @@ export class Preview extends Disposable {
     const p = e.getGraphPos()
     const c = this.state.bounds.getCenter()
     const geo = this.graph.getCellGeometry(this.state.cell)!
-    const rot = util.toRad(util.getRotation(this.state))
+    const rad = Angle.toRad(State.getRotation(this.state))
 
-    let cos = Math.cos(-rot)
-    let sin = Math.sin(-rot)
+    let cos = Math.cos(-rad)
+    let sin = Math.sin(-rad)
 
     let dx = p.x - this.startX
     let dy = p.y - this.startY
@@ -697,8 +697,8 @@ export class Preview extends Disposable {
       this.bounds.y += this.state.bounds.y - this.parentState.bounds.y
     }
 
-    cos = Math.cos(rot)
-    sin = Math.sin(rot)
+    cos = Math.cos(rad)
+    sin = Math.sin(rad)
 
     const c2 = this.bounds.getCenter()
 
@@ -845,13 +845,13 @@ export class Preview extends Disposable {
 
   getRotationForRedraw() {
     return this.currentDeg == null
-      ? util.getRotation(this.state)
+      ? State.getRotation(this.state)
       : this.currentDeg
   }
 
   getRotation() {
     if (this.currentDeg != null) {
-      return this.currentDeg - util.getRotation(this.state)
+      return this.currentDeg - State.getRotation(this.state)
     }
     return 0
   }

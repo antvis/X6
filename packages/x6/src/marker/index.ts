@@ -1,8 +1,6 @@
 import { Shape } from '../shape'
 import { Point } from '../struct'
 import { SvgCanvas2D } from '../canvas'
-import { registerEntity } from '../util/registry'
-
 import { ovalMarker } from './oval'
 import { diamondMarker } from './diamond'
 import { createOpenMarker as createOpenMarkerInner } from './open'
@@ -14,6 +12,7 @@ import {
   asyncMarker,
   createOpenAsyncMarker as createOpenAsyncMarkerInner,
 } from './async'
+import { registerEntity } from '../registry/util'
 
 export namespace Marker {
   export const oval = ovalMarker

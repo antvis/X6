@@ -8,7 +8,6 @@ import { IMouseHandler, MouseEventEx } from '../../handler'
 import { Shape, EllipseShape, RectangleShape, ImageShape } from '../../shape'
 import { PartialOptions, FullOptions, getOptions } from './option'
 import { MiniMapRenderder } from './renderer'
-import { applyClassName } from '../../util'
 
 export class MiniMap extends Disablable implements IMouseHandler {
   public source: Graph
@@ -145,7 +144,7 @@ export class MiniMap extends Disablable implements IMouseHandler {
     const viewport = new RectangleShape(this.bounds)
     viewport.dialect = this.outline.dialect
     viewport.init(this.outline.view.getOverlayPane())
-    applyClassName(
+    Shape.applyClassName(
       viewport,
       this.source.prefixCls,
       'minimap-viewport',
@@ -195,7 +194,7 @@ export class MiniMap extends Disablable implements IMouseHandler {
 
     sizer.dialect = this.outline.dialect
     sizer.init(this.outline.view.getOverlayPane())
-    applyClassName(
+    Shape.applyClassName(
       sizer,
       this.source.prefixCls,
       'minimap-sizer',
