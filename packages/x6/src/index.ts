@@ -18,3 +18,6 @@ export { Route } from './route'
 export { Marker } from './marker'
 export { Perimeter } from './perimeter'
 export { Shape } from './shape/shape'
+
+import * as util from './util'
+export { util }
