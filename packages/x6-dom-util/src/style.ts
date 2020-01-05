@@ -1,15 +1,15 @@
 import { getVendorPrefixedName } from './prefix'
 
+export function toPx(px: number) {
+  return `${px}px`
+}
+
 export function setPrefixedStyle(style: any, name: string, value: string) {
   const vendor = getVendorPrefixedName(name)
   if (vendor != null) {
     style[vendor] = value
   }
   style[name] = value
-}
-
-export function toPx(px: number) {
-  return `${px}px`
 }
 
 export function getComputedStyle(elem: Element, name?: string) {

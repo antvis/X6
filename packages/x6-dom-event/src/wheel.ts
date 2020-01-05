@@ -1,4 +1,4 @@
-import { detector } from '@antv/x6-detector'
+import { Platform } from '@antv/x6-util'
 import { addListener, removeListener } from './listener'
 
 type Callback = (e: WheelEvent) => void
@@ -32,17 +32,17 @@ function deleteWheelCallback(target: any, handler: WheelHandler) {
 }
 
 function isSpecialWheel() {
-  return detector.IS_NETSCAPE && (document as any).documentMode == null
+  return Platform.IS_NETSCAPE && (document as any).documentMode == null
 }
 
 function getWheelEventName() {
-  return detector.IS_SAFARI || detector.IS_CHROME
+  return Platform.IS_SAFARI || Platform.IS_CHROME
     ? 'mousewheel'
     : 'DOMMouseScroll'
 }
 
 function getWheelEventTarget(target?: HTMLElement) {
-  return detector.IS_CHROME && target != null ? target : window
+  return Platform.IS_CHROME && target != null ? target : window
 }
 
 export type WheelHandler = (e: WheelEvent, direction: boolean) => any
@@ -60,7 +60,7 @@ export function addWheelListener(handler: WheelHandler, target?: HTMLElement) {
 
       let delta = 0
 
-      if (detector.IS_FIREFOX) {
+      if (Platform.IS_FIREFOX) {
         delta = -e.detail / 2
       } else {
         delta = (e as any).wheelDelta / 120

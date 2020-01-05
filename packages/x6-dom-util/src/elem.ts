@@ -8,18 +8,36 @@ export function createSvgElement(tagName: string, doc: Document = document) {
     : createElement(tagName, doc)) as SVGElement
 }
 
-export function removeElement(elem: Element | null) {
+export function getChildren(node: HTMLElement, nodeType: number = 1) {
+  const children = []
+  let tmp = node.firstChild
+  while (tmp != null) {
+    if (tmp.nodeType === nodeType) {
+      children.push(tmp)
+    }
+
+    tmp = tmp.nextSibling
+  }
+
+  return children
+}
+
+export function remove(elem: Element | null) {
   if (elem && elem.parentNode) {
     elem.parentNode.removeChild(elem)
   }
 }
 
-export function emptyElement(elem: Element | null) {
+export function empty(elem: Element | null) {
   if (elem != null) {
     while (elem.firstChild) {
       elem.removeChild(elem.firstChild)
     }
   }
+}
+
+export function append(parent: Element, child: Element) {
+  parent.append(child)
 }
 
 export function prepend(parent: Element, child: Element) {
@@ -52,23 +70,11 @@ export function toFront(elem: Element | null) {
   }
 }
 
-export function isHiddenElement(elem: HTMLElement | SVGElement | null) {
+export function isHidden(elem: HTMLElement | SVGElement | null) {
   if (elem) {
-    return elem.style.display === 'none'
+    return elem.style.display === 'none' || elem.style.visibility === 'hidden'
   }
   return false
-}
-
-export function hideElement(elem: HTMLElement | SVGElement | null) {
-  if (elem) {
-    elem.style.display = 'none'
-  }
-}
-
-export function showElement(elem: HTMLElement | SVGElement | null) {
-  if (elem) {
-    elem.style.display = ''
-  }
 }
 
 export function isVisible(elem: HTMLElement | SVGElement | null) {
@@ -77,6 +83,18 @@ export function isVisible(elem: HTMLElement | SVGElement | null) {
     elem.style.display !== 'none' &&
     elem.style.visibility !== 'hidden'
   )
+}
+
+export function show(elem: HTMLElement | SVGElement | null) {
+  if (elem) {
+    elem.style.display = ''
+  }
+}
+
+export function hide(elem: HTMLElement | SVGElement | null) {
+  if (elem) {
+    elem.style.display = 'none'
+  }
 }
 
 /**
@@ -88,12 +106,12 @@ export function isVisible(elem: HTMLElement | SVGElement | null) {
  * @param attributeName Optional attribute name to check.
  * @param attributeValue Optional attribute value to check.
  */
-export function isHtmlElem(
+export function isHtmlElement(
   elem: any,
   nodeName?: string,
   attributeName?: string,
   attributeValue?: string,
-) {
+): elem is HTMLElement {
   if (
     elem != null &&
     !isNaN(elem.nodeType) &&
@@ -108,11 +126,11 @@ export function isHtmlElem(
   return false
 }
 
-export function isSvgElem(elem: any) {
+export function isSvgElement(elem: any): elem is SVGElement {
   return elem != null && (elem as SVGElement).ownerSVGElement != null
 }
 
-export function isAncestorNode(ancestor: Element, child: Element) {
+export function isAncestor(ancestor: Element, child: Element) {
   let parent = child
   while (parent != null) {
     if (parent === ancestor) {
@@ -122,18 +140,4 @@ export function isAncestorNode(ancestor: Element, child: Element) {
   }
 
   return false
-}
-
-export function getChildNodes(node: HTMLElement, nodeType: number = 1) {
-  const children = []
-  let tmp = node.firstChild
-  while (tmp != null) {
-    if (tmp.nodeType === nodeType) {
-      children.push(tmp)
-    }
-
-    tmp = tmp.nextSibling
-  }
-
-  return children
 }

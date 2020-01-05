@@ -1,4 +1,4 @@
-import { detector } from '@antv/x6-detector'
+import { Platform } from '@antv/x6-util'
 
 type Handler = (e: Event) => any
 const LIST_KEY = 'x6-listener-list'
@@ -22,7 +22,7 @@ export const addListener = window.addEventListener
       handler: Handler,
       passive: boolean = false,
     ) => {
-      if (detector.SUPPORT_PASSIVE) {
+      if (Platform.SUPPORT_PASSIVE) {
         elem.addEventListener(name, handler, { passive, capture: false })
       } else {
         elem.addEventListener(name, handler, false)
@@ -98,7 +98,7 @@ export function addMouseListeners(
   if (startListener != null) {
     addListener(
       elem,
-      detector.SUPPORT_POINTER ? 'pointerdown' : 'mousedown',
+      Platform.SUPPORT_POINTER ? 'pointerdown' : 'mousedown',
       startListener,
     )
   }
@@ -106,7 +106,7 @@ export function addMouseListeners(
   if (moveListener != null) {
     addListener(
       elem,
-      detector.SUPPORT_POINTER ? 'pointermove' : 'mousemove',
+      Platform.SUPPORT_POINTER ? 'pointermove' : 'mousemove',
       moveListener,
     )
   }
@@ -114,12 +114,12 @@ export function addMouseListeners(
   if (endListener != null) {
     addListener(
       elem,
-      detector.SUPPORT_POINTER ? 'pointerup' : 'mouseup',
+      Platform.SUPPORT_POINTER ? 'pointerup' : 'mouseup',
       endListener,
     )
   }
 
-  if (!detector.SUPPORT_POINTER && detector.SUPPORT_TOUCH) {
+  if (!Platform.SUPPORT_POINTER && Platform.SUPPORT_TOUCH) {
     if (startListener != null) {
       addListener(elem, 'touchstart', startListener)
     }
@@ -143,7 +143,7 @@ export function removeMouseListeners(
   if (startListener != null) {
     removeListener(
       elem,
-      detector.SUPPORT_POINTER ? 'pointerdown' : 'mousedown',
+      Platform.SUPPORT_POINTER ? 'pointerdown' : 'mousedown',
       startListener,
     )
   }
@@ -151,7 +151,7 @@ export function removeMouseListeners(
   if (moveListener != null) {
     removeListener(
       elem,
-      detector.SUPPORT_POINTER ? 'pointermove' : 'mousemove',
+      Platform.SUPPORT_POINTER ? 'pointermove' : 'mousemove',
       moveListener,
     )
   }
@@ -159,12 +159,12 @@ export function removeMouseListeners(
   if (endListener != null) {
     removeListener(
       elem,
-      detector.SUPPORT_POINTER ? 'pointerup' : 'mouseup',
+      Platform.SUPPORT_POINTER ? 'pointerup' : 'mouseup',
       endListener,
     )
   }
 
-  if (!detector.SUPPORT_POINTER && detector.SUPPORT_TOUCH) {
+  if (!Platform.SUPPORT_POINTER && Platform.SUPPORT_TOUCH) {
     if (startListener != null) {
       removeListener(elem, 'touchstart', startListener)
     }
