@@ -1,12 +1,13 @@
-import { util, Shape, SvgCanvas2D } from '@antv/x6'
+import { ObjectExt } from '@antv/x6-util'
+import { Shape, SvgCanvas2D } from '@antv/x6'
 
 export class NoteShape extends Shape.Cylinder {
   factor: number = 30
   darkOpacity: number = 0
 
   drawNodeShape(c: SvgCanvas2D, x: number, y: number, w: number, h: number) {
-    const factor = util.getNumber(this.style, 'factor', this.factor)
-    const darkOpacity = util.getNumber(
+    const factor = ObjectExt.getNumber(this.style, 'factor', this.factor)
+    const darkOpacity = ObjectExt.getNumber(
       this.style,
       'darkOpacity',
       this.darkOpacity,

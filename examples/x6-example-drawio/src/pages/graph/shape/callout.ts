@@ -1,6 +1,6 @@
+import { ObjectExt } from '@antv/x6-util'
 import { getFactor } from './util'
 import {
-  util,
   State,
   Shape,
   Perimeter,
@@ -24,7 +24,7 @@ export class CalloutShape extends Shape.Actor {
       0,
       0,
       0,
-      util.getNumber(this.style, 'factor', this.factor) * this.scale,
+      ObjectExt.getNumber(this.style, 'factor', this.factor) * this.scale,
     )
   }
 

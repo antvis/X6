@@ -1,4 +1,5 @@
-import { util, Shape, SvgCanvas2D, Point } from '@antv/x6'
+import { ObjectExt } from '@antv/x6-util'
+import { Shape, SvgCanvas2D, Point } from '@antv/x6'
 
 export class CardShape extends Shape.Actor {
   factor: number = 30
@@ -9,7 +10,7 @@ export class CardShape extends Shape.Actor {
 
   redrawPath(c: SvgCanvas2D, x: number, y: number, w: number, h: number) {
     const arcSize = this.getLineArcSize()
-    const factor = util.getNumber(this.style, 'factor', this.factor)
+    const factor = ObjectExt.getNumber(this.style, 'factor', this.factor)
     const s = Math.max(0, Math.min(w, Math.min(h, factor)))
 
     this.drawPoints(

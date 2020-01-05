@@ -1,4 +1,5 @@
-import { util, Shape, SvgCanvas2D, Rectangle } from '@antv/x6'
+import { ObjectExt } from '@antv/x6-util'
+import { Shape, SvgCanvas2D, Rectangle } from '@antv/x6'
 
 export class CubeShape extends Shape.Cylinder {
   factor: number = 20
@@ -10,8 +11,9 @@ export class CubeShape extends Shape.Cylinder {
   }
 
   getLabelMargins(rect: Rectangle) {
-    if (util.getBoolean(this.style, 'boundedLbl', false)) {
-      const s = util.getNumber(this.style, 'factor', this.factor) * this.scale
+    if (ObjectExt.getBoolean(this.style, 'boundedLbl', false)) {
+      const s =
+        ObjectExt.getNumber(this.style, 'factor', this.factor) * this.scale
       return new Rectangle(s, s, 0, 0)
     }
 
@@ -19,13 +21,13 @@ export class CubeShape extends Shape.Cylinder {
   }
 
   drawNodeShape(c: SvgCanvas2D, x: number, y: number, w: number, h: number) {
-    const factor = util.getNumber(this.style, 'factor', this.factor)
-    const darkOpacity = util.getNumber(
+    const factor = ObjectExt.getNumber(this.style, 'factor', this.factor)
+    const darkOpacity = ObjectExt.getNumber(
       this.style,
       'darkOpacity',
       this.darkOpacity,
     )
-    const darkOpacity2 = util.getNumber(
+    const darkOpacity2 = ObjectExt.getNumber(
       this.style,
       'darkOpacity2',
       this.darkOpacity2,
