@@ -1,4 +1,4 @@
-import { detector } from '@antv/x6-detector'
+import { Platform } from '@antv/x6-util'
 import { addListener } from '@antv/x6-dom-event'
 
 /**
@@ -29,7 +29,7 @@ export interface IDisposable {
 
 export class Disposable implements IDisposable {
   constructor() {
-    if (detector.IS_IE) {
+    if (Platform.IS_IE) {
       addListener(window, 'unload', () => {
         this.dispose()
       })

@@ -1,6 +1,6 @@
-import { EventEmitter } from '@antv/x6-eventemitter'
+import { ObjectExt } from '@antv/x6-util'
+import { EventEmitter } from '@antv/x6-event-emitter'
 import { Disposable } from './disposable'
-import { applyMixins } from './util'
 
 export class Basecoat<EventArgs = any> extends EventEmitter<EventArgs> {}
 
@@ -10,4 +10,4 @@ export namespace Basecoat {
   export const dispose = Disposable.dispose
 }
 
-applyMixins(Basecoat, Disposable)
+ObjectExt.applyMixins(Basecoat, Disposable)

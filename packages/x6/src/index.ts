@@ -3,6 +3,7 @@ import './registry'
 
 export * from './x6'
 export * from './version'
+export * from './enum'
 export * from './struct'
 export * from './types'
 

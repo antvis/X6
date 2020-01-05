@@ -1,4 +1,4 @@
-import { util } from '@antv/x6-util'
+import { DomUtil } from '@antv/x6-dom-util'
 import { DomEvent } from '@antv/x6-dom-event'
 import { Disposable } from '../../entity'
 import { State } from '../../core/state'
@@ -70,7 +70,7 @@ export class Knobs extends Disposable {
         icon.dialect = 'svg'
         icon.init(this.graph.view.getOverlayPane())
         if (options.toBack) {
-          util.toBack(icon.elem)
+          DomUtil.toBack(icon.elem)
         }
       }
 

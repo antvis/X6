@@ -1,4 +1,4 @@
-import { util } from '@antv/x6-util'
+import { ArrayExt, FunctionExt, ObjectExt } from '@antv/x6-util'
 import { Disposable } from '../entity'
 import { Graph } from '../graph'
 import { Geometry } from './geometry'
@@ -84,7 +84,7 @@ export class Cell extends Disposable {
     iterator: (edge: Cell, index: number, edges: Cell[]) => void,
     context?: any,
   ) {
-    return util.forEach(this.edges, iterator, context)
+    return ArrayExt.forEach(this.edges, iterator, context)
   }
 
   getEdgeCount() {
@@ -92,7 +92,7 @@ export class Cell extends Disposable {
   }
 
   getEdgeIndex(edge: Cell) {
-    return util.indexOf(this.edges, edge)
+    return ArrayExt.indexOf(this.edges, edge)
   }
 
   getEdgeAt(index: number) {
@@ -107,7 +107,7 @@ export class Cell extends Disposable {
       if (
         this.edges == null ||
         edge.getTerminal(!isOutgoing) !== this ||
-        util.indexOf(this.edges, edge) < 0
+        ArrayExt.indexOf(this.edges, edge) < 0
       ) {
         if (this.edges == null) {
           this.edges = []
@@ -227,7 +227,7 @@ export class Cell extends Disposable {
   }
 
   getChildIndex(child: Cell) {
-    return util.indexOf(this.children, child)
+    return ArrayExt.indexOf(this.children, child)
   }
 
   getChildAt(index: number) {
@@ -281,7 +281,7 @@ export class Cell extends Disposable {
     iterator: (child: Cell, index: number, children: Cell[]) => void,
     context?: any,
   ) {
-    return util.forEach(this.children, iterator, context)
+    return ArrayExt.forEach(this.children, iterator, context)
   }
 
   // #endregion
@@ -359,7 +359,7 @@ export class Cell extends Disposable {
   }
 
   clone() {
-    const clone = util.clone<Cell>(this, Cell.ignoredKeysWhenClone)!
+    const clone = ObjectExt.clone<Cell>(this, Cell.ignoredKeysWhenClone)!
     clone.setData(this.cloneData())
     return clone
   }
@@ -367,7 +367,7 @@ export class Cell extends Disposable {
   protected cloneData() {
     let data = this.getData()
     if (data != null) {
-      if (util.isFunction(data.clone)) {
+      if (FunctionExt.isFunction(data.clone)) {
         data = data.clone()
       } else if (!isNaN(data.nodeType)) {
         data = data.cloneNode(true)

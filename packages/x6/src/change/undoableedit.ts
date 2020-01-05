@@ -1,4 +1,4 @@
-import { EventEmitter } from '@antv/x6-eventemitter'
+import { EventEmitter } from '@antv/x6-event-emitter'
 import { Disposable } from '../entity'
 import { IChange } from './change'
 

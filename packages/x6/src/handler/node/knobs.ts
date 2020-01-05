@@ -1,4 +1,5 @@
-import { util } from '@antv/x6-util'
+import { NumberExt } from '@antv/x6-util'
+import { DomUtil } from '@antv/x6-dom-util'
 import { DomEvent } from '@antv/x6-dom-event'
 import { Disposable } from '../../entity'
 import * as utilBiz from '../../util'
@@ -118,7 +119,7 @@ export class Knobs extends Disposable {
       const label = this.graph.getLabel(this.state.cell)
       if (
         label != null &&
-        (util.isHtmlElem(label) || (label as string).length > 0)
+        (DomUtil.isHtmlElement(label) || (label as string).length > 0)
       ) {
         const geo = this.state.cell.getGeometry()
         if (geo && !geo.relative) {
@@ -193,7 +194,7 @@ export class Knobs extends Disposable {
     if (handle != null) {
       handle.bounds.x = Math.floor(x - handle.bounds.width / 2)
       handle.bounds.y = Math.floor(y - handle.bounds.height / 2)
-      if (util.isVisible(handle.elem)) {
+      if (DomUtil.isVisible(handle.elem)) {
         handle.redraw()
       }
     }
@@ -236,7 +237,7 @@ export class Knobs extends Disposable {
           (
             hit != null &&
             shape.bounds.isIntersectWith(hit) &&
-            util.isVisible(shape.elem)
+            DomUtil.isVisible(shape.elem)
           )
         )
       )
@@ -327,12 +328,12 @@ export class Knobs extends Disposable {
     if (this.handles != null) {
       const index = this.master.index
       const handle = index != null ? this.handles[index] : null
-      if (handle != null && util.isHiddenElement(handle.elem)) {
-        util.showElement(handle.elem)
+      if (handle != null && DomUtil.isHidden(handle.elem)) {
+        DomUtil.show(handle.elem)
       }
 
       if (this.master.preview.isLivePreview()) {
-        this.handles.forEach(h => h && util.showElement(h.elem))
+        this.handles.forEach(h => h && DomUtil.show(h.elem))
       }
     }
 
@@ -375,9 +376,9 @@ export class Knobs extends Disposable {
           bounds.width < 2 * this.handles[0].bounds.width + 2 * tol ||
           bounds.height < 2 * this.handles[0].bounds.height + 2 * tol
         ) {
-          idxs.forEach(i => util.hideElement(this.handles![i].elem))
+          idxs.forEach(i => DomUtil.hide(this.handles![i].elem))
         } else {
-          idxs.forEach(i => util.showElement(this.handles![i].elem))
+          idxs.forEach(i => DomUtil.show(this.handles![i].elem))
         }
       }
 
@@ -507,7 +508,7 @@ export class Knobs extends Disposable {
 
     const alpha = utilBiz.toRad(utilBiz.getRotation(this.state))
     const da = Math.round((alpha * 4) / Math.PI)
-    return cursors[util.mod(indexMap[index] + da, cursors.length)]
+    return cursors[NumberExt.mod(indexMap[index] + da, cursors.length)]
   }
 
   protected getHandlePadding() {
@@ -546,7 +547,7 @@ export class Knobs extends Disposable {
   protected setHandlesVisible(visible: boolean) {
     this.handles &&
       this.handles.forEach(handle =>
-        visible ? util.showElement(handle.elem) : util.hideElement(handle.elem),
+        visible ? DomUtil.show(handle.elem) : DomUtil.hide(handle.elem),
       )
 
     this.customHandles &&
@@ -557,11 +558,11 @@ export class Knobs extends Disposable {
     this.setHandlesVisible(false)
 
     if (Handle.isRotationHandle(index) && this.rotationShape != null) {
-      util.showElement(this.rotationShape.elem)
+      DomUtil.show(this.rotationShape.elem)
     } else if (Handle.isLabelHandle(index) && this.labelShape != null) {
-      util.showElement(this.labelShape.elem)
+      DomUtil.show(this.labelShape.elem)
     } else if (this.handles != null && this.handles[index] != null) {
-      util.showElement(this.handles[index].elem)
+      DomUtil.show(this.handles[index].elem)
     } else if (Handle.isCustomHandle(index) && this.customHandles != null) {
       this.customHandles[Handle.getCustomHandle(index)].setVisible(true)
     }

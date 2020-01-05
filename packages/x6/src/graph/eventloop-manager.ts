@@ -1,4 +1,4 @@
-import { detector } from '@antv/x6-detector'
+import { Platform, Color } from '@antv/x6-util'
 import * as util from '../util'
 import { Cell } from '../core/cell'
 import { State } from '../core/state'
@@ -88,7 +88,7 @@ export class EventLoopManager extends BaseManager {
           state.shape.drawBackground !==
             RectangleShape.prototype.drawBackground ||
           state.style.pointerEvents !== false ||
-          util.isValidColor(state.shape.fillColor)
+          Color.isValid(state.shape.fillColor)
 
         e.state = this.graph.view.getState(
           this.graph.getCellAt(p.x, p.y, null, false, false, ignoreFn),
@@ -133,14 +133,14 @@ export class EventLoopManager extends BaseManager {
       this.mouseUpRedirect = null
       this.mouseMoveRedirect = null
     } else if (
-      !detector.IS_CHROME &&
+      !Platform.IS_CHROME &&
       this.eventSource != null &&
       this.eventSource !== eventSource
     ) {
       result = true
     } else if (
       eventName === DomEvent.MOUSE_DOWN &&
-      detector.SUPPORT_TOUCH &&
+      Platform.SUPPORT_TOUCH &&
       !isMouseEvent &&
       !DomEvent.isPenEvent(evt)
     ) {
@@ -191,7 +191,7 @@ export class EventLoopManager extends BaseManager {
       this.isMouseTrigger = isMouseEvent
     } else if (
       !result &&
-      (((!detector.IS_FIREFOX || eventName !== DomEvent.MOUSE_MOVE) &&
+      (((!Platform.IS_FIREFOX || eventName !== DomEvent.MOUSE_MOVE) &&
         this.isMouseDown &&
         this.isMouseTrigger !== isMouseEvent) ||
         (eventName === DomEvent.MOUSE_DOWN && this.isMouseDown) ||
@@ -228,7 +228,7 @@ export class EventLoopManager extends BaseManager {
       this.ignoreMouseEvents = eventName !== DomEvent.MOUSE_UP
       result = true
     } else if (
-      detector.IS_FIREFOX &&
+      Platform.IS_FIREFOX &&
       !isMouseEvent &&
       eventName === DomEvent.MOUSE_UP
     ) {
@@ -298,7 +298,7 @@ export class EventLoopManager extends BaseManager {
     if (
       (!this.graph.nativeDblClickEnabled && !DomEvent.isPopupTrigger(evt)) ||
       (this.graph.doubleTapEnabled &&
-        detector.SUPPORT_TOUCH &&
+        Platform.SUPPORT_TOUCH &&
         (DomEvent.isTouchEvent(evt) || DomEvent.isPenEvent(evt)))
     ) {
       const currentTime = new Date().getTime()
@@ -345,7 +345,7 @@ export class EventLoopManager extends BaseManager {
         const valid =
           lastTouchCell != null ||
           ((DomEvent.isTouchEvent(evt) || DomEvent.isPenEvent(evt)) &&
-            (detector.IS_CHROME || detector.IS_SAFARI))
+            (Platform.IS_CHROME || Platform.IS_SAFARI))
 
         if (
           valid &&
@@ -371,11 +371,11 @@ export class EventLoopManager extends BaseManager {
     this.graph.trigger('mouseEvent', { eventName, e, sender })
 
     if (
-      detector.IS_OPERA ||
-      detector.IS_SAFARI ||
-      detector.IS_CHROME ||
-      detector.IS_IE11 ||
-      detector.IS_IE ||
+      Platform.IS_OPERA ||
+      Platform.IS_SAFARI ||
+      Platform.IS_CHROME ||
+      Platform.IS_IE11 ||
+      Platform.IS_IE ||
       evt.target !== this.graph.container
     ) {
       if (

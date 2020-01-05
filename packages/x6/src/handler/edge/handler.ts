@@ -1,5 +1,5 @@
-import { isVisible, toFront } from '@antv/x6-util'
-import { detector } from '@antv/x6-detector'
+import { isVisible, toFront } from '@antv/x6-dom-util'
+import { Platform } from '@antv/x6-util'
 import { DomEvent } from '@antv/x6-dom-event'
 import { IDisposable } from '../../entity'
 import * as util from '../../util'
@@ -480,7 +480,7 @@ export class EdgeHandler extends MouseHandler {
   protected getHandleForEvent(e: MouseEventEx) {
     const tol = DomEvent.isMouseEvent(e.getEvent()) ? 1 : this.tolerance
     const hit =
-      this.checkHandleBounds && (detector.IS_IE || tol > 0)
+      this.checkHandleBounds && (Platform.IS_IE || tol > 0)
         ? new Rectangle(
             e.getGraphX() - tol,
             e.getGraphY() - tol,

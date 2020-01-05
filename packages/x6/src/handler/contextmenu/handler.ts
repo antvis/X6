@@ -1,4 +1,4 @@
-import { util } from '@antv/x6-util'
+import { DomUtil } from '@antv/x6-dom-util'
 import { DomEvent } from '@antv/x6-dom-event'
 import { Graph } from '../../graph'
 import { MouseHandler } from '../mouse-handler'
@@ -119,7 +119,7 @@ export class ContextMenuHandler extends MouseHandler {
       this.graph.hideTooltip()
 
       if (this.doShow) {
-        const origin = util.getScrollOrigin(document.body)
+        const origin = DomUtil.getScrollOrigin(document.body)
         this.doShow.call(this.graph, {
           cell,
           e: e.getEvent(),

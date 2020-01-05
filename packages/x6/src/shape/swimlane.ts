@@ -1,8 +1,8 @@
+import { Color } from '@antv/x6-util'
 import { globals } from '../option'
 import { Shape } from './shape-base'
 import { SvgCanvas2D } from '../canvas'
 import { Rectangle } from '../struct'
-import { isValidColor } from '../util'
 
 export class Swimlane extends Shape {
   image: string | null
@@ -247,7 +247,7 @@ export class Swimlane extends Shape {
     }
 
     if (swimlaneLine) {
-      this.drawDivider(c, x, y, w, h, start, !isValidColor(fillColor))
+      this.drawDivider(c, x, y, w, h, start, !Color.isValid(fillColor))
     }
   }
 
@@ -292,7 +292,7 @@ export class Swimlane extends Shape {
     start: number,
     color?: string,
   ) {
-    if (isValidColor(color)) {
+    if (Color.isValid(color)) {
       c.setStrokeColor(color)
       c.setDashed(true)
       c.begin()
@@ -324,7 +324,7 @@ export class Swimlane extends Shape {
   }
 
   private scopedDraw(c: SvgCanvas2D, fillColor: string, fn: () => void) {
-    const valid = isValidColor(fillColor)
+    const valid = Color.isValid(fillColor)
     if (valid) {
       c.setFillColor(fillColor)
     } else {

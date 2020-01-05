@@ -1,5 +1,5 @@
 import { DomEvent } from '@antv/x6-dom-event'
-import { hasScrollbars } from '@antv/x6-util'
+import { hasScrollbars } from '@antv/x6-dom-util'
 import { Graph } from '../../graph'
 import { MouseHandler } from '../mouse-handler'
 import { MouseEventEx } from '../mouse-event'

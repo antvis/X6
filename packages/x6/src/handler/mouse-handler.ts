@@ -1,4 +1,4 @@
-import { util } from '@antv/x6-util'
+import { DomUtil } from '@antv/x6-dom-util'
 import { DomEvent } from '@antv/x6-dom-event'
 import { Graph } from '../graph'
 import { MouseEventEx } from './mouse-event'
@@ -46,7 +46,7 @@ export abstract class MouseHandler<EventArgs = any>
 
   private mask: HTMLDivElement | null
   addMask(cursor?: string | null) {
-    const mask = util.createElement('div') as HTMLDivElement
+    const mask = DomUtil.createElement('div') as HTMLDivElement
     mask.style.position = 'absolute'
     mask.style.zIndex = '9999'
     mask.style.left = '0'
@@ -61,7 +61,7 @@ export abstract class MouseHandler<EventArgs = any>
   }
 
   removeMask() {
-    util.removeElement(this.mask)
+    DomUtil.remove(this.mask)
     this.mask = null
   }
 

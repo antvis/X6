@@ -1,6 +1,7 @@
 /* tslint:disable:no-parameter-reassignment */
 
-import { util } from '@antv/x6-util'
+import { StringExt } from '@antv/x6-util'
+import { DomUtil } from '@antv/x6-dom-util'
 import { globals } from '../../option'
 import { FontStyle } from '../../enum'
 import { Align, VAlign } from '../../types'
@@ -136,7 +137,7 @@ export class SvgCanvas2DText extends SvgCanvas2DBase {
       let sizeDiv: HTMLDivElement = div
       if (
         sizeDiv.firstChild != null &&
-        util.getNodeName(sizeDiv.firstChild as HTMLElement) === 'div'
+        DomUtil.getNodeName(sizeDiv.firstChild as HTMLElement) === 'div'
       ) {
         sizeDiv = sizeDiv.firstChild as HTMLDivElement
       }
@@ -394,7 +395,7 @@ export class SvgCanvas2DText extends SvgCanvas2DBase {
 
       if (
         sizeDiv.firstChild != null &&
-        util.getNodeName(sizeDiv.firstChild as HTMLElement) === 'div'
+        DomUtil.getNodeName(sizeDiv.firstChild as HTMLElement) === 'div'
       ) {
         sizeDiv = sizeDiv.firstChild as HTMLDivElement
 
@@ -601,11 +602,11 @@ export class SvgCanvas2DText extends SvgCanvas2DBase {
     for (let i = 0; i < lines.length; i += 1) {
       if (lines[i].length > 0 && lines[i].trim().length > 0) {
         const text = this.createElement('text')
-        util.setAttributes(text, {
+        DomUtil.setAttributes(text, {
           x: this.format(x * state.scale) + this.textOffset,
           y: this.format(cy * state.scale) + this.textOffset,
         })
-        util.appendText(text, lines[i])
+        DomUtil.appendText(text, lines[i])
         node.appendChild(text)
       }
       cy += lineHeight
@@ -670,7 +671,7 @@ export class SvgCanvas2DText extends SvgCanvas2DBase {
       }
 
       const id = clip.getAttribute('id')!
-      util.setAttributeWithAnchor(node, 'clip-path', id)
+      DomUtil.setAttributeWithAnchor(node, 'clip-path', id)
     }
   }
 
@@ -693,7 +694,7 @@ export class SvgCanvas2DText extends SvgCanvas2DBase {
     clip.setAttribute('id', tmp)
 
     const rect = this.createElement('rect')
-    util.setAttributes(rect, { x, y, w, h })
+    DomUtil.setAttributes(rect, { x, y, w, h })
     clip.appendChild(rect)
     return clip
   }
@@ -808,13 +809,13 @@ export class SvgCanvas2DText extends SvgCanvas2DBase {
           div.style.fontStyle = 'italic'
         }
 
-        str = util.escape(str)
+        str = StringExt.escape(str)
         div.innerHTML = str.replace(/\n/g, '<br/>')
 
         document.body.appendChild(div)
         const w = div.offsetWidth
         const h = div.offsetHeight
-        util.removeElement(div)
+        DomUtil.remove(div)
 
         if (align === 'center') {
           x -= w / 2
@@ -838,7 +839,7 @@ export class SvgCanvas2DText extends SvgCanvas2DBase {
 
       if (bbox != null) {
         const n = this.createElement('rect')
-        util.setAttributes(n, {
+        DomUtil.setAttributes(n, {
           fill: state.fontBackgroundColor || 'none',
           stroke: state.fontBorderColor || 'none',
           x: Math.floor(bbox.x - 1),
@@ -908,17 +909,17 @@ export class SvgCanvas2DText extends SvgCanvas2DBase {
 
     let bg = ''
     if (state.fontBackgroundColor != null) {
-      bg += ` background-color: ${util.escape(state.fontBackgroundColor)};`
+      bg += ` background-color: ${StringExt.escape(state.fontBackgroundColor)};`
     }
 
     if (state.fontBorderColor != null) {
-      bg += ` border: 1px solid ${util.escape(state.fontBorderColor)};`
+      bg += ` border: 1px solid ${StringExt.escape(state.fontBorderColor)};`
     }
 
     let content = str
 
-    if (!util.isHtmlElem(content)) {
-      content = util.toXHTML(content, this.useDomParser)
+    if (!DomUtil.isHtmlElement(content)) {
+      content = DomUtil.toXHTML(content, this.useDomParser)
 
       if (overflow !== 'fill' && overflow !== 'width') {
         if (whiteSpace != null) {
@@ -941,7 +942,7 @@ export class SvgCanvas2DText extends SvgCanvas2DBase {
       const div = document.createElementNS(SvgCanvas2D.NS_XHTML, 'div')
       div.setAttribute('style', stl)
 
-      if (util.isHtmlElem(content)) {
+      if (DomUtil.isHtmlElement(content)) {
         const n = (content as any) as HTMLElement
         if (this.root.ownerDocument !== document) {
           // creates a copy for export
@@ -957,11 +958,15 @@ export class SvgCanvas2DText extends SvgCanvas2DBase {
     }
 
     // Serializes for export
-    if (util.isHtmlElem(content) && this.root.ownerDocument !== document) {
+    if (
+      DomUtil.isHtmlElement(content) &&
+      this.root.ownerDocument !== document
+    ) {
       content = ((content as any) as HTMLElement).outerHTML
     }
 
-    return util.parseXml(`<div style="${stl}">${content}</div>`).documentElement
+    return DomUtil.parseXml(`<div style="${stl}">${content}</div>`)
+      .documentElement
   }
 
   private createAlternateContent(
@@ -974,7 +979,7 @@ export class SvgCanvas2DText extends SvgCanvas2DBase {
     if (this.foAltText != null) {
       const state = this.state
       const alt = this.createElement('text')
-      util.setAttributes(alt, {
+      DomUtil.setAttributes(alt, {
         x: Math.round(w / 2),
         y: Math.round((h + state.fontSize) / 2),
         fill: state.fontColor || '#000000',
@@ -984,7 +989,7 @@ export class SvgCanvas2DText extends SvgCanvas2DBase {
       })
 
       this.applyFontStyle(alt, state.fontStyle)
-      util.appendText(alt, this.foAltText)
+      DomUtil.appendText(alt, this.foAltText)
 
       return alt
     }

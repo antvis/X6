@@ -1,4 +1,4 @@
-import { util } from '@antv/x6-util'
+import { DomUtil } from '@antv/x6-dom-util'
 import { DomEvent } from '@antv/x6-dom-event'
 import { Graph } from '../../graph'
 import { Mousetrap } from './mousetrap'
@@ -73,7 +73,7 @@ export class KeyboardHandler extends BaseHandler {
     }
 
     // Accepts events from inside the container
-    return util.isAncestorNode(this.graph.container, source)
+    return DomUtil.isAncestor(this.graph.container, source)
   }
 
   isEnabledForEvent(e: KeyboardEvent) {

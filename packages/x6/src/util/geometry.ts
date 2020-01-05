@@ -1,6 +1,6 @@
 /* tslint:disable:no-parameter-reassignment */
 
-import { getValue } from '@antv/x6-util'
+import { ObjectExt } from '@antv/x6-util'
 import { State } from '../core/state'
 import { Direction } from '../types'
 import { Point, Rectangle } from '../struct'
@@ -210,11 +210,11 @@ export function getDirectedBounds(
   flipH?: boolean,
   flipV?: boolean,
 ) {
-  const d = getValue(style, 'direction', 'east') as Direction
+  const d = ObjectExt.getValue<Direction>(style, 'direction', 'east')
   // tslint:disable-next-line:no-parameter-reassignment
-  flipH = flipH != null ? flipH : (getValue(style, 'flipH', false) as boolean)
+  flipH = flipH != null ? flipH : ObjectExt.getBoolean(style, 'flipH', false)
   // tslint:disable-next-line:no-parameter-reassignment
-  flipV = flipV != null ? flipV : (getValue(style, 'flipV', false) as boolean)
+  flipV = flipV != null ? flipV : ObjectExt.getBoolean(style, 'flipV', false)
 
   m.x = Math.round(Math.max(0, Math.min(rect.width, m.x)))
   m.y = Math.round(Math.max(0, Math.min(rect.height, m.y)))

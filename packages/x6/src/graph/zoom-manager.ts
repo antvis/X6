@@ -1,11 +1,12 @@
-import { util } from '@antv/x6-util'
+import { ObjectExt, NumberExt } from '@antv/x6-util'
+import { DomUtil } from '@antv/x6-dom-util'
 import { Cell } from '../core/cell'
 import { Rectangle, Point } from '../struct'
 import { BaseManager } from './base-manager'
 
 export class ZoomManager extends BaseManager {
   center(horizontal: boolean, vertical: boolean, cx: number, cy: number) {
-    const hasScrollbars = util.hasScrollbars(this.container)
+    const hasScrollbars = DomUtil.hasScrollbars(this.container)
     const bounds = this.graph.getGraphBounds()
     const cw = this.container.clientWidth
     const ch = this.container.clientHeight
@@ -44,7 +45,7 @@ export class ZoomManager extends BaseManager {
     if (container != null) {
       const cssBorder = this.getBorderSizes()
       let w1 = container.offsetWidth - cssBorder.x - cssBorder.width - 1
-      let h1 = util.ensureValue(
+      let h1 = ObjectExt.ensure(
         maxHeight,
         container.offsetHeight - cssBorder.y - cssBorder.height - 1,
       )
@@ -83,7 +84,7 @@ export class ZoomManager extends BaseManager {
 
         if (applyScale) {
           if (!keepOrigin) {
-            if (!util.hasScrollbars(this.container)) {
+            if (!DomUtil.hasScrollbars(this.container)) {
               const x0 =
                 bounds.x != null
                   ? Math.floor(
@@ -130,7 +131,7 @@ export class ZoomManager extends BaseManager {
 
   zoom(factor: number, center: boolean) {
     let scale = Math.round(this.view.scale * factor * 100) / 100
-    scale = util.clamp(scale, this.graph.minScale, this.graph.maxScale)
+    scale = NumberExt.clamp(scale, this.graph.minScale, this.graph.maxScale)
     factor = scale / this.view.scale // tslint:disable-line
 
     const state = this.view.getState(this.graph.getSelectedCell())
@@ -150,7 +151,7 @@ export class ZoomManager extends BaseManager {
         this.view.setScale(scale)
       }
     } else {
-      const hasScrollbars = util.hasScrollbars(this.container)
+      const hasScrollbars = DomUtil.hasScrollbars(this.container)
       if (center && !hasScrollbars) {
         let dx = this.container.offsetWidth
         let dy = this.container.offsetHeight
@@ -249,7 +250,7 @@ export class ZoomManager extends BaseManager {
     const scale = container.clientWidth / rect.width
     const newScale = this.view.scale * scale
 
-    if (!util.hasScrollbars(container)) {
+    if (!DomUtil.hasScrollbars(container)) {
       this.view.scaleAndTranslate(
         newScale,
         this.view.translate.x - rect.x / this.view.scale,
@@ -307,7 +308,7 @@ export class ZoomManager extends BaseManager {
       const widthLimit = Math.min(w, rect.width)
       const heightLimit = Math.min(h, rect.height)
 
-      if (util.hasScrollbars(this.container)) {
+      if (DomUtil.hasScrollbars(this.container)) {
         const c = this.container
         rect.x += this.view.translate.x
         rect.y += this.view.translate.y
@@ -382,7 +383,7 @@ export class ZoomManager extends BaseManager {
 
     if (
       !this.graph.timerAutoScroll &&
-      (this.graph.ignoreScrollbars || util.hasScrollbars(container))
+      (this.graph.ignoreScrollbars || DomUtil.hasScrollbars(container))
     ) {
       if (
         x >= container.scrollLeft &&
@@ -407,14 +408,14 @@ export class ZoomManager extends BaseManager {
 
               // Updates the clipping region. This is an expensive
               // operation that should not be executed too often.
-              root.style.width = util.toPx(width)
+              root.style.width = DomUtil.toPx(width)
             } else {
               const width =
                 Math.max(container.clientWidth, container.scrollWidth) +
                 border -
                 dx
               const stage = this.view.getStage()!
-              stage.style.width = util.toPx(width)
+              stage.style.width = DomUtil.toPx(width)
             }
 
             container.scrollLeft += border - dx
@@ -441,14 +442,14 @@ export class ZoomManager extends BaseManager {
 
               // Updates the clipping region. This is an expensive
               // operation that should not be executed too often.
-              root.style.height = util.toPx(height)
+              root.style.height = DomUtil.toPx(height)
             } else {
               const height =
                 Math.max(container.clientHeight, container.scrollHeight) +
                 border -
                 dy
               const canvas = this.view.getStage()!
-              canvas.style.height = util.toPx(height)
+              canvas.style.height = DomUtil.toPx(height)
             }
 
             container.scrollTop += border - dy
@@ -478,7 +479,7 @@ export class ZoomManager extends BaseManager {
    * x, y, width and height of the returned `Rectangle`, respectively.
    */
   getBorderSizes() {
-    const css = util.getComputedStyle(this.container)
+    const css = DomUtil.getComputedStyle(this.container)
     return new Rectangle(
       this.parseCssNumber(css.paddingLeft) +
         (css.borderLeftStyle !== 'none'

@@ -1,6 +1,6 @@
-import { detector } from '@antv/x6-detector'
+import { Platform, ObjectExt, NumberExt } from '@antv/x6-util'
+import { DomUtil } from '@antv/x6-dom-util'
 import { DomEvent } from '@antv/x6-dom-event'
-import { util } from '@antv/x6-util'
 import * as utilBiz from '../util'
 import { State } from './state'
 import { Dialect } from '../types'
@@ -93,7 +93,7 @@ export class Renderer {
       // update shape for style changed
       !force &&
       state.shape != null &&
-      (!util.equalEntries(state.shape.style, state.style) ||
+      (!ObjectExt.equals(state.shape.style, state.style) ||
         this.hasPlaceholderStyles(state))
     ) {
       state.shape.resetStyle()
@@ -364,7 +364,7 @@ export class Renderer {
       },
     )
 
-    if (detector.SUPPORT_TOUCH) {
+    if (Platform.SUPPORT_TOUCH) {
       DomEvent.addListener(elem, 'touchend', evt => {
         overlay.trigger('click', { cell: state.cell })
       })
@@ -383,8 +383,8 @@ export class Renderer {
 
       if (
         (graph.dialect !== 'svg' &&
-          util.getNodeName(DomEvent.getSource(e)) === 'img') ||
-        detector.SUPPORT_TOUCH
+          DomUtil.getNodeName(DomEvent.getSource(e)) === 'img') ||
+        Platform.SUPPORT_TOUCH
       ) {
         const x = DomEvent.getClientX(e)
         const y = DomEvent.getClientY(e)
@@ -485,7 +485,7 @@ export class Renderer {
     // it is obscured by the HTML label that overlaps the cell.
     const isForceHtml =
       graph.isHtmlLabel(state.cell) &&
-      detector.NO_FOREIGNOBJECT &&
+      Platform.NO_FOREIGNOBJECT &&
       graph.dialect === 'svg'
 
     if (isForceHtml) {
@@ -499,7 +499,7 @@ export class Renderer {
     const elem = control.elem!
 
     // Workaround for missing click event on iOS is to check tolerance below
-    if (clickHandler != null && !detector.IS_IOS) {
+    if (clickHandler != null && !Platform.IS_IOS) {
       if (graph.isEnabled()) {
         elem.style.cursor = 'pointer'
       }
@@ -536,7 +536,7 @@ export class Renderer {
       )
 
       // Uses capture phase for event interception to stop bubble phase
-      if (clickHandler != null && detector.IS_IOS) {
+      if (clickHandler != null && Platform.IS_IOS) {
         DomEvent.addListener(elem, 'touchend', (e: TouchEvent) => {
           if (first != null) {
             const tol = graph.tolerance
@@ -567,7 +567,7 @@ export class Renderer {
 
     const isForceHtml =
       state.view.graph.isHtmlLabel(state.cell) ||
-      (txt != null && util.isHtmlElem(txt))
+      (txt != null && DomUtil.isHtmlElement(txt))
 
     const dialect: Dialect = isForceHtml ? 'html' : state.view.graph.dialect
     const overflow = state.style.overflow || 'visible'
@@ -586,7 +586,7 @@ export class Renderer {
     if (
       state.text == null &&
       txt != null &&
-      (util.isHtmlElem(txt) || (txt as string).length > 0)
+      (DomUtil.isHtmlElement(txt) || (txt as string).length > 0)
     ) {
       this.createLabel(state, txt)
     } else if (
@@ -664,7 +664,7 @@ export class Renderer {
     if (state.style.fontSize == null || state.style.fontSize > 0) {
       const isForceHtml =
         graph.isHtmlLabel(state.cell) ||
-        (value != null && util.isHtmlElem(value))
+        (value != null && DomUtil.isHtmlElement(value))
 
       state.text = new this.defaultTextShape(value, new Rectangle(), {
         align: state.style.align || 'center',
@@ -707,7 +707,7 @@ export class Renderer {
       const getState = (e: MouseEvent) => {
         let result: State = state
 
-        if (detector.SUPPORT_TOUCH || forceGetCell) {
+        if (Platform.SUPPORT_TOUCH || forceGetCell) {
           const x = DomEvent.getClientX(e)
           const y = DomEvent.getClientY(e)
 
@@ -730,7 +730,7 @@ export class Renderer {
             )
             forceGetCell =
               graph.dialect !== 'svg' &&
-              util.getNodeName(DomEvent.getSource(e)) === 'img'
+              DomUtil.getNodeName(DomEvent.getSource(e)) === 'img'
           }
         },
         (e: MouseEvent) => {
@@ -765,7 +765,7 @@ export class Renderer {
   }
 
   protected initializeLabel(state: State, shape: Shape) {
-    if (detector.NO_FOREIGNOBJECT && shape.dialect !== 'svg') {
+    if (Platform.NO_FOREIGNOBJECT && shape.dialect !== 'svg') {
       shape.init(state.view.graph.container)
     } else {
       shape.init(state.view.getDrawPane())
@@ -1013,7 +1013,7 @@ export class Renderer {
   protected redrawOverlays(state: State, forced?: boolean) {
     this.createOverlays(state)
     if (state.overlays != null) {
-      const rot = util.mod(utilBiz.getRotation(state), 90)
+      const rot = NumberExt.mod(utilBiz.getRotation(state), 90)
       const rad = utilBiz.toRad(rot)
       const cos = Math.cos(rad)
       const sin = Math.sin(rad)

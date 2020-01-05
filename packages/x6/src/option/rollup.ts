@@ -1,4 +1,4 @@
-import { util } from '@antv/x6-util'
+import { ObjectExt } from '@antv/x6-util'
 import { Style } from '../types'
 import { GridOptions } from '../graph/grid-accessor'
 import { PageBreakOptions } from '../graph/pagebreak-accessor'
@@ -113,8 +113,8 @@ export interface GraphOptions
 }
 
 export function getOptions(options: GraphOptions) {
-  const defaults = util.merge({}, preset)
-  const result = util.mergec(defaults, options, {
+  const defaults = ObjectExt.merge({}, preset)
+  const result = ObjectExt.mergec(defaults, options, {
     decorator: (target, source, key) => {
       const t = target[key]
       const s = source[key]
