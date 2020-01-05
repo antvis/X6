@@ -1,4 +1,3 @@
-// import { Renderer as ReactRenderer } from 'react-dom'
 import { Graph, Renderer, State, Cell } from '@antv/x6'
 import { ReactShape } from './shape'
 

@@ -39,6 +39,14 @@
       "git add"
     ]
   },
+  "dependencies": {
+    "@antv/x6-dom-util": "^1.0.0"
+  },
+  "peerDependencies": {
+    "@antv/x6": "*",
+    "react": ">=16.8.6",
+    "react-dom": ">=16.8.6"
+  },
   "devDependencies": {
     "@types/react": "^16.9.13",
     "lint-staged": "^9.2.1",
@@ -52,11 +60,7 @@
     "typescript": "^3.5.3",
     "watch": "^1.0.2"
   },
-  "peerDependencies": {
-    "@antv/x6": "*",
-    "react": ">=16.8.6",
-    "react-dom": ">=16.8.6"
-  },
+
   "author": {
     "name": "bubkoo",
     "email": "bubkoo.wy@gmail.com"
@@ -71,8 +75,5 @@
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org"
-  },
-  "dependencies": {
-    "@antv/x6-util": "^1.0.0"
   }
 }
