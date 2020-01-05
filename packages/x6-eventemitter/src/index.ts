@@ -1,10 +1,10 @@
-import { invoke } from '@antv/x6-util'
 import {
   RequiredKeys,
   OptionalKeys,
   PickByValue,
   OmitByValue,
-} from 'utility-types'
+} from '@antv/x6-types'
+import { invoke } from '@antv/x6-util'
 
 export class EventEmitter<M extends EventEmitter.EventArgs = any> {
   private listeners: { [name: string]: any[] } = {}
