@@ -11,6 +11,66 @@ export class Rectangle {
   width: number
   height: number
 
+  get origin() {
+    return new Point(this.x, this.y)
+  }
+
+  get topLeft() {
+    return new Point(this.x, this.y)
+  }
+
+  get topCenter() {
+    return new Point(this.x + this.width / 2, this.y)
+  }
+
+  get topRight() {
+    return new Point(this.x + this.width, this.y)
+  }
+
+  get center() {
+    return new Point(this.x + this.width / 2, this.y + this.height / 2)
+  }
+
+  get bottomLeft() {
+    return new Point(this.x, this.y + this.height)
+  }
+
+  get bottomCenter() {
+    return new Point(this.x + this.width / 2, this.y + this.height)
+  }
+
+  get bottomRight() {
+    return new Point(this.x + this.width, this.y + this.height)
+  }
+
+  get corner() {
+    return new Point(this.x + this.width, this.y + this.height)
+  }
+
+  get rightMiddle() {
+    return new Point(this.x + this.width, this.y + this.height / 2)
+  }
+
+  get leftMiddle() {
+    return new Point(this.x, this.y + this.height / 2)
+  }
+
+  get topLine() {
+    return new Line(this.topLeft, this.topRight)
+  }
+
+  get rightLine() {
+    return new Line(this.topRight, this.bottomRight)
+  }
+
+  get bottomLine() {
+    return new Line(this.bottomLeft, this.bottomRight)
+  }
+
+  get leftLine() {
+    return new Line(this.topLeft, this.bottomLeft)
+  }
+
   constructor(x?: number, y?: number, width?: number, height?: number) {
     this.x = x == null ? 0 : x
     this.y = y == null ? 0 : y
@@ -18,64 +78,64 @@ export class Rectangle {
     this.height = height == null ? 0 : height
   }
 
-  origin() {
-    return new Point(this.x, this.y)
+  getOrigin() {
+    return this.origin
   }
 
-  topLeft() {
-    return new Point(this.x, this.y)
+  getTopLeft() {
+    return this.topLeft
   }
 
-  topCenter() {
-    return new Point(this.x + this.width / 2, this.y)
+  getTopCenter() {
+    return this.topCenter
   }
 
-  topRight() {
-    return new Point(this.x + this.width, this.y)
+  getTopRight() {
+    return this.topRight
   }
 
-  center() {
-    return new Point(this.x + this.width / 2, this.y + this.height / 2)
+  getCenter() {
+    return this.center
   }
 
-  bottomLeft() {
-    return new Point(this.x, this.y + this.height)
+  getBottomLeft() {
+    return this.bottomLeft
   }
 
-  bottomCenter() {
-    return new Point(this.x + this.width / 2, this.y + this.height)
+  getBottomCenter() {
+    return this.bottomCenter
   }
 
-  bottomRight() {
-    return new Point(this.x + this.width, this.y + this.height)
+  getBottomRight() {
+    return this.bottomRight
   }
 
-  corner() {
-    return new Point(this.x + this.width, this.y + this.height)
+  getCorner() {
+    return this.corner
   }
 
-  rightMiddle() {
-    return new Point(this.x + this.width, this.y + this.height / 2)
+  getRightMiddle() {
+    return this.rightMiddle
   }
 
-  leftMiddle() {
-    return new Point(this.x, this.y + this.height / 2)
+  getLeftMiddle() {
+    return this.leftMiddle
   }
 
-  topLine() {
-    return new Line(this.topLeft(), this.topRight())
+  getTopLine() {
+    return this.topLine
   }
 
-  rightLine() {
-    return new Line(this.topRight(), this.bottomRight())
+  getRightLine() {
+    return this.rightLine
   }
 
-  bottomLine() {
-    return new Line(this.bottomLeft(), this.bottomRight())
+  getBottomLine() {
+    return this.bottomLine
   }
 
-  leftLine() {
-    return new Line(this.topLeft(), this.bottomLeft())
+  getLeftLine() {
+    return this.leftLine
   }
 
   /**
@@ -186,8 +246,8 @@ export class Rectangle {
   snapToGrid(gx: number, gy: number): this
   snapToGrid(gx: number, gy?: number): this
   snapToGrid(gx: number, gy?: number): this {
-    const origin = this.origin().snapToGrid(gx, gy)
-    const corner = this.corner().snapToGrid(gx, gy)
+    const origin = this.origin.snapToGrid(gx, gy)
+    const corner = this.corner.snapToGrid(gx, gy)
     this.x = origin.x
     this.y = origin.y
     this.width = corner.x - origin.x
@@ -233,7 +293,7 @@ export class Rectangle {
     sy: number,
     origin: Point | Point.PointLike | Point.PointData = new Point(),
   ) {
-    const pos = this.origin().scale(sx, sy, origin)
+    const pos = this.origin.scale(sx, sy, origin)
     this.x = pos.x
     this.y = pos.y
     this.width *= sx
@@ -257,7 +317,7 @@ export class Rectangle {
       | Rectangle
       | Rectangle.RectangleLike
       | Rectangle.RectangleData,
-    origin: Point = this.center(),
+    origin: Point = this.center,
   ) {
     const rect = Rectangle.normalize(limitRectangle)
     const ox = origin.x
@@ -278,7 +338,7 @@ export class Rectangle {
     sx1 = sx2 = sx3 = sx4 = sy1 = sy2 = sy3 = sy4 = Infinity
 
     // Top Left
-    const p1 = rect.topLeft()
+    const p1 = rect.topLeft
     if (p1.x < ox) {
       sx1 = (this.x - ox) / (p1.x - ox)
     }
@@ -287,7 +347,7 @@ export class Rectangle {
     }
 
     // Bottom Right
-    const p2 = rect.bottomRight()
+    const p2 = rect.bottomRight
     if (p2.x > ox) {
       sx2 = (this.x + this.width - ox) / (p2.x - ox)
     }
@@ -296,7 +356,7 @@ export class Rectangle {
     }
 
     // Top Right
-    const p3 = rect.topRight()
+    const p3 = rect.topRight
     if (p3.x > ox) {
       sx3 = (this.x + this.width - ox) / (p3.x - ox)
     }
@@ -305,7 +365,7 @@ export class Rectangle {
     }
 
     // Bottom Left
-    const p4 = rect.bottomLeft()
+    const p4 = rect.bottomLeft
     if (p4.x < ox) {
       sx4 = (this.x - ox) / (p4.x - ox)
     }
@@ -324,7 +384,7 @@ export class Rectangle {
       | Rectangle
       | Rectangle.RectangleLike
       | Rectangle.RectangleData,
-    origin: Point = this.center(),
+    origin: Point = this.center,
   ) {
     const scale = this.maxRectScaleToFit(limitRectangle, origin)
     return Math.min(scale.sx, scale.sy)
@@ -364,11 +424,7 @@ export class Rectangle {
     w?: number,
     h?: number,
   ) {
-    const b =
-      typeof x === 'number'
-        ? { x, y: y!, width: w!, height: h! }
-        : Rectangle.normalize(x)
-
+    const b = this.parse(x, y, w, h)
     const x1 = this.x
     const y1 = this.y
     const w1 = this.width
@@ -384,10 +440,10 @@ export class Rectangle {
 
   intersectionWithLine(line: Line) {
     const rectLines = [
-      this.topLine(),
-      this.rightLine(),
-      this.bottomLine(),
-      this.leftLine(),
+      this.topLine,
+      this.rightLine,
+      this.bottomLine,
+      this.leftLine,
     ]
     const points: Point[] = []
     const dedupeArr: string[] = []
@@ -415,19 +471,14 @@ export class Rectangle {
     angle?: number,
   ) {
     const ref = Point.normalize(p)
-    const center = this.center()
+    const center = this.center
     let result
 
     if (angle) {
       ref.rotate(angle, center)
     }
 
-    const sides = [
-      this.topLine(),
-      this.rightLine(),
-      this.bottomLine(),
-      this.leftLine(),
-    ]
+    const sides = [this.topLine, this.rightLine, this.bottomLine, this.leftLine]
     const connector = new Line(center, p)
 
     for (let i = sides.length - 1; i >= 0; i -= 1) {
@@ -472,38 +523,69 @@ export class Rectangle {
   }
 
   /**
-   * Returns a rectangle object that is a subtraction of the two rectangles
+   * Returns a rectangle that is a subtraction of the two rectangles
    * if such an object exists (the two rectangles intersect).
+   *
    * Returns `null` otherwise.
    */
+  intersect(x: number, y: number, w: number, h: number): Rectangle | null
   intersect(
     rect: Rectangle | Rectangle.RectangleLike | Rectangle.RectangleData,
+  ): Rectangle | null
+  intersect(
+    x: number | Rectangle | Rectangle.RectangleLike | Rectangle.RectangleData,
+    y?: number,
+    w?: number,
+    h?: number,
   ) {
-    const ref = Rectangle.normalize(rect)
-    const myOrigin = this.origin()
-    const myCorner = this.corner()
-    const rOrigin = ref.origin()
-    const rCorner = ref.corner()
+    const ref = this.parse(x, y, w, h)
 
     // no intersection
+    if (!this.isIntersectWith(ref)) {
+      return null
+    }
+
+    const myOrigin = this.origin
+    const myCorner = this.corner
+    const rOrigin = ref.origin
+    const rCorner = ref.corner
+
+    const xx = Math.max(myOrigin.x, rOrigin.x)
+    const yy = Math.max(myOrigin.y, rOrigin.y)
+
+    return new Rectangle(
+      xx,
+      yy,
+      Math.min(myCorner.x, rCorner.x) - xx,
+      Math.min(myCorner.y, rCorner.y) - yy,
+    )
+  }
+
+  isIntersectWith(x: number, y: number, w: number, h: number): boolean
+  isIntersectWith(
+    rect: Rectangle | Rectangle.RectangleLike | Rectangle.RectangleData,
+  ): boolean
+  isIntersectWith(
+    x: number | Rectangle | Rectangle.RectangleLike | Rectangle.RectangleData,
+    y?: number,
+    w?: number,
+    h?: number,
+  ) {
+    const ref = this.parse(x, y, w, h)
+    const myOrigin = this.origin
+    const myCorner = this.corner
+    const rOrigin = ref.origin
+    const rCorner = ref.corner
+
     if (
       rCorner.x <= myOrigin.x ||
       rCorner.y <= myOrigin.y ||
       rOrigin.x >= myCorner.x ||
       rOrigin.y >= myCorner.y
     ) {
-      return null
+      return false
     }
-
-    const x = Math.max(myOrigin.x, rOrigin.x)
-    const y = Math.max(myOrigin.y, rOrigin.y)
-
-    return new Rectangle(
-      x,
-      y,
-      Math.min(myCorner.x, rCorner.x) - x,
-      Math.min(myCorner.y, rCorner.y) - y,
-    )
+    return true
   }
 
   /**
@@ -511,10 +593,10 @@ export class Rectangle {
    */
   union(rect: Rectangle | Rectangle.RectangleLike | Rectangle.RectangleData) {
     const ref = Rectangle.normalize(rect)
-    const myOrigin = this.origin()
-    const myCorner = this.corner()
-    const rOrigin = ref.origin()
-    const rCorner = ref.corner()
+    const myOrigin = this.origin
+    const myCorner = this.corner
+    const rOrigin = ref.origin
+    const rCorner = ref.corner
 
     const originX = Math.min(myOrigin.x, rOrigin.x)
     const originY = Math.min(myOrigin.y, rOrigin.y)
@@ -593,6 +675,17 @@ export class Rectangle {
 
   toString() {
     return `${this.x} ${this.y} ${this.width} ${this.height}`
+  }
+
+  private parse(
+    x: number | Rectangle | Rectangle.RectangleLike | Rectangle.RectangleData,
+    y?: number,
+    w?: number,
+    h?: number,
+  ) {
+    return typeof x === 'number'
+      ? new Rectangle(x, y, w, h)
+      : Rectangle.normalize(x)
   }
 }
 
