@@ -1,4 +1,4 @@
-import { util } from '@antv/x6-util'
+import { DomUtil } from '@antv/x6-dom-util'
 import { DomEvent } from '@antv/x6-dom-event'
 import { Graph } from '../../graph'
 import { Point } from '../../struct'
@@ -98,7 +98,7 @@ export class MouseWheelHandler extends BaseHandler {
     )
 
     this.wheelZoomTimer = window.setTimeout(() => {
-      const offset = util.getOffset(container)
+      const offset = DomUtil.getOffset(container)
       let dx = 0
       let dy = 0
 
@@ -117,7 +117,7 @@ export class MouseWheelHandler extends BaseHandler {
         //     dy * (this.cumulativeZoomFactor - 1))
         // }
 
-        if (util.hasScrollbars(container) && (dx !== 0 || dy !== 0)) {
+        if (DomUtil.hasScrollbars(container) && (dx !== 0 || dy !== 0)) {
           container.scrollLeft -= dx * (this.cumulativeZoomFactor - 1)
           container.scrollTop -= dy * (this.cumulativeZoomFactor - 1)
         }

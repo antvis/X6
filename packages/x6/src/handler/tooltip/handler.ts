@@ -1,4 +1,4 @@
-import { util } from '@antv/x6-util'
+import { DomUtil } from '@antv/x6-dom-util'
 import { DomEvent } from '@antv/x6-dom-event'
 import { Cell } from '../../core/cell'
 import { State } from '../../core/state'
@@ -122,7 +122,8 @@ export class TooltipHandler extends MouseHandler {
   protected validateTooltip(tip?: string | HTMLElement | null) {
     return (
       tip != null &&
-      ((typeof tip === 'string' && tip.length > 0) || util.isHtmlElem(tip))
+      ((typeof tip === 'string' && tip.length > 0) ||
+        DomUtil.isHtmlElement(tip))
     )
   }
 

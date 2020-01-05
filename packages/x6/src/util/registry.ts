@@ -1,4 +1,4 @@
-import { exec } from '@antv/x6-util'
+import { StringExt } from '@antv/x6-util'
 
 function getHMRStatus() {
   const mod = module as any
@@ -32,7 +32,7 @@ export function getEntityFromRegistry<T>(
 ): T | null {
   let ret = registry[name]
   if (ret == null && allowEval) {
-    ret = exec(name) as T
+    ret = StringExt.eval(name) as T
   }
   return typeof ret === 'function' ? ret : null
 }

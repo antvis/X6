@@ -1,4 +1,4 @@
-import { detector } from '@antv/x6-detector'
+import { Platform } from '@antv/x6-util'
 import { DomEvent } from '@antv/x6-dom-event'
 import { hook } from './decorator'
 import { IMouseHandler, MouseEventEx } from '../handler'
@@ -38,7 +38,7 @@ export class EventLoopAccessor extends BaseGraph {
 
   @hook()
   isToggleEvent(e: MouseEvent) {
-    return detector.IS_MAC ? DomEvent.isMetaDown(e) : DomEvent.isControlDown(e)
+    return Platform.IS_MAC ? DomEvent.isMetaDown(e) : DomEvent.isControlDown(e)
   }
 
   @hook()

@@ -1,6 +1,6 @@
+import { isHtmlElement } from '@antv/x6-dom-util'
 import { Cell } from '../core/cell'
 import { Graph } from '../graph'
-import { isHtmlElem } from '@antv/x6-util'
 
 export class Multiplicity {
   constructor(options: Multiplicity.Options) {
@@ -167,7 +167,7 @@ export class Multiplicity {
   ) {
     if (data != null) {
       if (!isNaN(data.nodeType)) {
-        return isHtmlElem(data, nodeName, attrName, attrValue)
+        return isHtmlElement(data, nodeName, attrName, attrValue)
       }
 
       return data === nodeName

@@ -1,5 +1,5 @@
+import { DomUtil } from '@antv/x6-dom-util'
 import { DomEvent } from '@antv/x6-dom-event'
-import { util } from '@antv/x6-util'
 import { Graph } from '../../graph'
 import { State } from '../../core/state'
 import { Shape } from '../../shape'
@@ -96,7 +96,7 @@ export class AnchorHandler extends BaseHandler {
         cell: state.cell,
       })
       icon.init(this.graph.view.getDecoratorPane())
-      util.toBack(icon.elem)
+      DomUtil.toBack(icon.elem)
 
       const getState = () => this.currentState || state
       MouseEventEx.redirectMouseEvents(icon.elem, this.graph, getState)

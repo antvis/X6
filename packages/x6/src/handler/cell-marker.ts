@@ -1,4 +1,4 @@
-import { util } from '@antv/x6-util'
+import { ObjectExt } from '@antv/x6-util'
 import { globals } from '../option/global'
 import { Graph } from '../graph'
 import { Cell } from '../core/cell'
@@ -25,19 +25,19 @@ export class CellMarker extends BaseHandler {
   constructor(graph: Graph, options: CellMarker.Options) {
     super(graph)
 
-    this.validColor = util.ensureValue(
+    this.validColor = ObjectExt.ensure(
       options.validColor,
       globals.defaultValidColor,
     )
-    this.invalidColor = util.ensureValue(
+    this.invalidColor = ObjectExt.ensure(
       options.invalidColor,
       globals.defaultInvalidColor,
     )
 
-    this.hotspotRate = util.ensureValue(options.hotspotRate, 0.3)
-    this.hotspotable = util.ensureValue(options.hotspotable, false)
-    this.minHotspotSize = util.ensureValue(options.minHotspotSize, 8)
-    this.maxHotspotSize = util.ensureValue(options.maxHotspotSize, 0)
+    this.hotspotRate = ObjectExt.ensure(options.hotspotRate, 0.3)
+    this.hotspotable = ObjectExt.ensure(options.hotspotable, false)
+    this.minHotspotSize = ObjectExt.ensure(options.minHotspotSize, 8)
+    this.maxHotspotSize = ObjectExt.ensure(options.maxHotspotSize, 0)
 
     this.highlight = new CellHighlight(graph, options)
   }

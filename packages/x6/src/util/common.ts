@@ -1,7 +1,7 @@
 import { DomEvent } from '@antv/x6-dom-event'
+import { getOffset, getScrollOrigin } from '@antv/x6-dom-util'
 import { State } from '../core/state'
 import { Shape } from '../shape'
-import { getOffset, getScrollOrigin } from '@antv/x6-util'
 import { MouseEventEx } from '../handler'
 import { DirectionMask } from '../enum'
 import { Point } from '../struct'

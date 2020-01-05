@@ -1,6 +1,6 @@
-import { util } from '@antv/x6-util'
-import { detector } from '@antv/x6-detector'
+import { DomUtil } from '@antv/x6-dom-util'
 import { DomEvent } from '@antv/x6-dom-event'
+import { Platform, StringExt } from '@antv/x6-util'
 import { Disposable } from '../entity'
 import { Graph } from '../graph'
 import { Cell } from '../core/cell'
@@ -125,7 +125,7 @@ export class CellEditor extends Disposable {
    * empty labels. The value is only displayed before the first keystroke
    * and is never used as the actual editing value.
    */
-  placeholder: string = detector.IS_FIREFOX ? '<br>' : ''
+  placeholder: string = Platform.IS_FIREFOX ? '<br>' : ''
 
   /**
    * Specifies the zIndex for the textarea.
@@ -144,7 +144,7 @@ export class CellEditor extends Disposable {
    *
    * Default is `2` in quirks, `0` in IE11 and `1` in other browsers and modes.
    */
-  wordWrapPadding = !detector.IS_IE11 ? 1 : 0
+  wordWrapPadding = !Platform.IS_IE11 ? 1 : 0
 
   init() {
     this.textarea = document.createElement('div')
@@ -154,7 +154,7 @@ export class CellEditor extends Disposable {
     this.textarea.className = `${prefixCls}-cell-editor`
 
     // Workaround for selection outside of DIV if height is 0
-    if (detector.IS_CHROME) {
+    if (Platform.IS_CHROME) {
       this.textarea.style.minHeight = '1em'
     }
 
@@ -178,7 +178,7 @@ export class CellEditor extends Disposable {
       const drawPane = this.graph.view.getDrawPane() as SVGElement
       const root = drawPane.ownerSVGElement
       if (root != null) {
-        absoluteRoot = util.getComputedStyle(root).position === 'absolute'
+        absoluteRoot = DomUtil.getComputedStyle(root).position === 'absolute'
       }
     }
 
@@ -220,7 +220,7 @@ export class CellEditor extends Disposable {
         if (
           this.clearOnChange &&
           elem.innerHTML === this.getEmptyLabelText(this.editingCell) &&
-          (!detector.IS_FIREFOX || (e.keyCode !== 8 && e.keyCode !== 46))
+          (!Platform.IS_FIREFOX || (e.keyCode !== 8 && e.keyCode !== 46))
         ) {
           this.clearOnChange = false
           elem.innerHTML = ''
@@ -252,7 +252,7 @@ export class CellEditor extends Disposable {
       }
     }
 
-    const keyup = !detector.IS_IE11 && !detector.IS_IE ? 'input' : 'keyup'
+    const keyup = !Platform.IS_IE11 && !Platform.IS_IE ? 'input' : 'keyup'
     DomEvent.addListener(elem, keyup, keyupHandler)
     DomEvent.addListener(elem, 'cut', keyupHandler)
     DomEvent.addListener(elem, 'paste', keyupHandler)
@@ -275,7 +275,7 @@ export class CellEditor extends Disposable {
       }
     }
 
-    const keydown = !detector.IS_IE11 && !detector.IS_IE ? 'input' : 'keydown'
+    const keydown = !Platform.IS_IE11 && !Platform.IS_IE ? 'input' : 'keydown'
     DomEvent.addListener(elem, keydown, resizeHandler)
     DomEvent.addListener(window, 'resize', resizeHandler)
 
@@ -311,7 +311,7 @@ export class CellEditor extends Disposable {
   }
 
   protected clearSelection() {
-    util.clearSelection()
+    DomUtil.clearSelection()
   }
 
   /**
@@ -337,15 +337,15 @@ export class CellEditor extends Disposable {
 
   protected getInitialValue(state: State, trigger?: Event) {
     const content = this.graph.getEditingContent(state.cell, trigger) || ''
-    let result = util.escape(content)
+    let result = StringExt.escape(content)
 
-    result = util.replaceTrailingNewlines(result, '<div><br></div>')
+    result = DomUtil.replaceTrailingNewlines(result, '<div><br></div>')
 
     return result.replace(/\n/g, '<br>')
   }
 
   protected getCurrentValue(state: State) {
-    return util.extractTextWithWhitespace(this.textarea!.childNodes as any)
+    return DomUtil.extractTextWithWhitespace(this.textarea!.childNodes as any)
   }
 
   isEventSource(e: Event) {
@@ -364,16 +364,16 @@ export class CellEditor extends Disposable {
       if (!this.autoSize || state.style.overflow === 'fill') {
         // Specifies the bounds of the editor box
         this.bounds = this.getEditorBounds(state)
-        this.textarea.style.width = util.toPx(
+        this.textarea.style.width = DomUtil.toPx(
           Math.round(this.bounds.width / scale),
         )
-        this.textarea.style.height = util.toPx(
+        this.textarea.style.height = DomUtil.toPx(
           Math.round(this.bounds.height / scale),
         )
-        this.textarea.style.left = util.toPx(
+        this.textarea.style.left = DomUtil.toPx(
           Math.max(0, Math.round(this.bounds.x + 1)),
         )
-        this.textarea.style.top = util.toPx(
+        this.textarea.style.top = DomUtil.toPx(
           Math.max(0, Math.round(this.bounds.y + 1)),
         )
 
@@ -387,7 +387,7 @@ export class CellEditor extends Disposable {
           this.textarea.style.whiteSpace = 'normal'
 
           if (state.style.overflow !== 'fill') {
-            this.textarea.style.width = util.toPx(
+            this.textarea.style.width = DomUtil.toPx(
               Math.round(this.bounds.width / scale) + this.wordWrapPadding,
             )
           }
@@ -483,13 +483,15 @@ export class CellEditor extends Disposable {
           const tmp =
             Math.round(this.bounds.width / scale) + this.wordWrapPadding
           if (this.textarea.style.position !== 'relative') {
-            this.textarea.style.width = util.toPx(tmp)
+            this.textarea.style.width = DomUtil.toPx(tmp)
 
             if (this.textarea.scrollWidth > tmp) {
-              this.textarea.style.width = util.toPx(this.textarea.scrollWidth)
+              this.textarea.style.width = DomUtil.toPx(
+                this.textarea.scrollWidth,
+              )
             }
           } else {
-            this.textarea.style.maxWidth = util.toPx(tmp)
+            this.textarea.style.maxWidth = DomUtil.toPx(tmp)
           }
         } else {
           // KNOWN: Trailing cursor in IE9 quirks mode is not visible
@@ -497,13 +499,13 @@ export class CellEditor extends Disposable {
           this.textarea.style.width = ''
         }
 
-        this.textarea.style.left = util.toPx(
+        this.textarea.style.left = DomUtil.toPx(
           Math.max(
             0,
             Math.round(this.bounds.x - m.x * (this.bounds.width - 2)) + 1,
           ),
         ) // tslint:disable-line
-        this.textarea.style.top = util.toPx(
+        this.textarea.style.top = DomUtil.toPx(
           Math.max(
             0,
             Math.round(
@@ -515,13 +517,17 @@ export class CellEditor extends Disposable {
         ) // tslint:disable-line
       }
 
-      util.setPrefixedStyle(this.textarea.style, 'transformOrigin', '0px 0px')
+      DomUtil.setPrefixedStyle(
+        this.textarea.style,
+        'transformOrigin',
+        '0px 0px',
+      )
 
       let transform = `scale(${scale},${scale})`
       if (m != null) {
         transform += ` translate(${m.x * 100}%,${m.y * 100}%)`
       }
-      util.setPrefixedStyle(this.textarea.style, 'transform', transform)
+      DomUtil.setPrefixedStyle(this.textarea.style, 'transform', transform)
     }
   }
 
@@ -557,7 +563,7 @@ export class CellEditor extends Disposable {
       style.textDecoration = uline ? 'underline' : ''
       style.fontWeight = bold ? 'bold' : 'normal'
       style.fontStyle = italic ? 'italic' : ''
-      style.fontSize = util.toPx(Math.round(size))
+      style.fontSize = DomUtil.toPx(Math.round(size))
       style.zIndex = `${this.zIndex}`
       style.fontFamily = family
       style.textAlign = align
@@ -569,7 +575,7 @@ export class CellEditor extends Disposable {
         if (
           state.text != null &&
           state.text.dialect !== 'html' &&
-          !util.isHtmlElem(state.text.value)
+          !DomUtil.isHtmlElement(state.text.value)
         ) {
           dir = state.text.getAutoDirection()
         }
@@ -664,7 +670,7 @@ export class CellEditor extends Disposable {
       if (this.textarea != null) {
         this.textarea.blur()
         this.clearSelection()
-        util.removeElement(this.textarea)
+        DomUtil.remove(this.textarea)
 
         if (
           this.clearOnChange &&
@@ -841,7 +847,7 @@ export class CellEditor extends Disposable {
   dispose() {
     if (this.textarea != null) {
       DomEvent.release(this.textarea)
-      util.removeElement(this.textarea)
+      DomUtil.remove(this.textarea)
       this.textarea = null
     }
 

@@ -1,4 +1,4 @@
-import { util } from '@antv/x6-util'
+import { StringExt } from '@antv/x6-util'
 import { Cell } from '../core/cell'
 import { Point, Rectangle } from '../struct'
 import { BaseManager } from './base-manager'
@@ -125,7 +125,7 @@ export class SizeManager extends BaseManager {
       let value = this.renderer.getLabel(state)
       if (value != null && typeof value === 'string' && value.length > 0) {
         if (!this.graph.isHtmlLabel(state.cell)) {
-          value = util.escape(value)
+          value = StringExt.escape(value)
         }
 
         value = value.replace(/\n/g, '<br>')

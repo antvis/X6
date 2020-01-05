@@ -1,4 +1,4 @@
-import { util } from '@antv/x6-util'
+import { ArrayExt } from '@antv/x6-util'
 import { Style } from '../types'
 import { Cell } from '../core/cell'
 import { Point, Rectangle } from '../struct'
@@ -325,7 +325,7 @@ export class CreationManager extends BaseManager {
    */
   addAllEdges(cells: Cell[]) {
     const merged = [...cells, ...this.getAllEdges(cells)]
-    return util.uniq<Cell>(merged)
+    return ArrayExt.uniq<Cell>(merged)
   }
 
   getAllEdges(cells: Cell[]) {

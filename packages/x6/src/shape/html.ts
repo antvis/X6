@@ -1,4 +1,4 @@
-import { util } from '@antv/x6-util'
+import { DomUtil } from '@antv/x6-dom-util'
 import { SvgCanvas2D } from '../canvas'
 import { RectangleShape } from './rectangle'
 import { Rectangle } from '../struct'
@@ -40,15 +40,15 @@ export class HtmlShape extends RectangleShape {
       transform += ` rotate(${deg},${bounds.width / 2},${bounds.height / 2})`
     }
 
-    const g = util.createSvgElement('g')
+    const g = DomUtil.createSvgElement('g')
     g.setAttribute('transform', transform)
 
-    const fo = util.createSvgElement('foreignObject')
-    util.setAttributes(fo, { width: bounds.width, height: bounds.height })
+    const fo = DomUtil.createSvgElement('foreignObject')
+    DomUtil.setAttributes(fo, { width: bounds.width, height: bounds.height })
 
-    const div = util.createElement('div')
-    div.style.width = util.toPx(bounds.width)
-    div.style.height = util.toPx(bounds.height)
+    const div = DomUtil.createElement('div')
+    div.style.width = DomUtil.toPx(bounds.width)
+    div.style.height = DomUtil.toPx(bounds.height)
     div.style.overflow = 'hidden'
 
     g.appendChild(fo)
@@ -56,10 +56,10 @@ export class HtmlShape extends RectangleShape {
 
     let wrap = div
     if (this.scale !== 1) {
-      wrap = util.createElement('div')
+      wrap = DomUtil.createElement('div')
       wrap.style.overflow = 'hidden'
-      wrap.style.width = util.toPx(Math.round(bounds.width / this.scale))
-      wrap.style.height = util.toPx(Math.round(bounds.height / this.scale))
+      wrap.style.width = DomUtil.toPx(Math.round(bounds.width / this.scale))
+      wrap.style.height = DomUtil.toPx(Math.round(bounds.height / this.scale))
       wrap.style.transform = `scale(${this.scale})`
       wrap.style.transformOrigin = '0 0'
       div.appendChild(wrap)

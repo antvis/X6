@@ -1,4 +1,4 @@
-import { EventEmitter } from '@antv/x6-eventemitter'
+import { EventEmitter } from '@antv/x6-event-emitter'
 import { Point, Rectangle, Image } from '../struct'
 import { State } from '../core/state'
 import { Align, VAlign } from '../types'

@@ -1,5 +1,6 @@
+import { Color } from '@antv/x6-util'
+import { DomUtil } from '@antv/x6-dom-util'
 import { DomEvent } from '@antv/x6-dom-event'
-import { hideElement, showElement } from '@antv/x6-util'
 import { Disposable } from '../../entity'
 import * as util from '../../util'
 import { Cell } from '../../core/cell'
@@ -174,11 +175,11 @@ export class Preview extends Disposable {
   }
 
   protected hideSelectionShape() {
-    hideElement(this.selectionShape!.elem)
+    DomUtil.hide(this.selectionShape!.elem)
   }
 
   protected showSelectionShape() {
-    showElement(this.selectionShape!.elem)
+    DomUtil.show(this.selectionShape!.elem)
   }
 
   protected updateMinBounds() {
@@ -255,8 +256,8 @@ export class Preview extends Disposable {
     return (
       // returns true if the shape is transparent.
       this.state.shape != null &&
-      !util.isValidColor(this.state.shape.fillColor) &&
-      !util.isValidColor(this.state.shape.strokeColor)
+      !Color.isValid(this.state.shape.fillColor) &&
+      !Color.isValid(this.state.shape.strokeColor)
     )
   }
 

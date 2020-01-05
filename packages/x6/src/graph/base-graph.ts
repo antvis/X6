@@ -1,5 +1,5 @@
+import { FunctionExt } from '@antv/x6-util'
 import { Disablable } from '../entity'
-import { call } from '@antv/x6-util'
 import { Route } from '../route'
 import { Model } from '../core/model'
 import { Cell } from '../core/cell'
@@ -248,7 +248,7 @@ export class BaseGraph extends Disablable<EventArgs>
       result = this.createEdgeSegmentHandler(state)
     } else {
       return (
-        call(this.options.createEdgeHandler, this, this, state) ||
+        FunctionExt.call(this.options.createEdgeHandler, this, this, state) ||
         new EdgeHandler(this as any, state)
       )
     }

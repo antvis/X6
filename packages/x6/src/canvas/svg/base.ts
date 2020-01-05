@@ -1,4 +1,4 @@
-import { util } from '@antv/x6-util'
+import { DomUtil } from '@antv/x6-dom-util'
 import { globals } from '../../option'
 import { Direction } from '../../types'
 import { Canvas2D } from '../canvas2d'
@@ -61,7 +61,8 @@ export abstract class SvgCanvas2DBase extends Canvas2D {
     this.gradients = {}
     this.styleEnabled = styleEnabled
 
-    const svg = root.ownerDocument === document ? null : util.getOwnerSVG(root)
+    const svg =
+      root.ownerDocument === document ? null : DomUtil.getOwnerSVG(root)
 
     if (svg != null) {
       // try to get defs in current svg
@@ -73,7 +74,7 @@ export abstract class SvgCanvas2DBase extends Canvas2D {
       // create defs
       if (this.defs == null) {
         this.defs = this.createElement('defs') as SVGDefsElement
-        util.prepend(svg, this.defs)
+        DomUtil.prepend(svg, this.defs)
       }
 
       // add stylesheet
@@ -90,7 +91,7 @@ export abstract class SvgCanvas2DBase extends Canvas2D {
   protected createStylesheet() {
     const style = this.createElement('style')
     style.setAttribute('type', 'text/css')
-    util.appendText(
+    DomUtil.appendText(
       style,
       'svg {' +
         '  fill: none; ' +
@@ -206,7 +207,7 @@ export abstract class SvgCanvas2DBase extends Canvas2D {
           state.gradientOpacity,
           state.gradientDirection,
         )
-        util.setAttributeWithAnchor(elem, 'fill', id)
+        DomUtil.setAttributeWithAnchor(elem, 'fill', id)
       } else {
         elem.setAttribute('fill', state.fillColor)
       }

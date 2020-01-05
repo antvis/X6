@@ -1,4 +1,4 @@
-import { util } from '@antv/x6-util'
+import { FunctionExt, StringExt } from '@antv/x6-util'
 import { BaseGraph } from './base-graph'
 
 export function hook(
@@ -17,7 +17,7 @@ export function hook(
       const hook = (this.options as any)[name]
       if (hook != null) {
         this.getNativeValue = raw.bind(this, ...args)
-        const ret = util.call(hook, this, ...args)
+        const ret = FunctionExt.call(hook, this, ...args)
         delete this.getNativeValue
 
         if (ret != null || ignoreNullResult) {
@@ -37,14 +37,14 @@ export function afterCreate(aopName?: string | null) {
     descriptor: PropertyDescriptor,
   ) => {
     const raw = descriptor.value
-    const name = aopName || `on${util.ucFirst(methodName)}`
+    const name = aopName || `on${StringExt.ucFirst(methodName)}`
 
     descriptor.value = function(this: BaseGraph, ...args: any[]) {
       const instance = raw.call(this, ...args)
       const aop = (this.options as any)[name]
       if (aop != null) {
         args.unshift(instance)
-        const restult = util.apply(aop, this, args)
+        const restult = FunctionExt.apply(aop, this, args)
         if (restult != null) {
           return restult
         }

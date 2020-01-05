@@ -1,5 +1,5 @@
-import { util } from '@antv/x6-util'
-import { detector } from '@antv/x6-detector'
+import { Platform } from '@antv/x6-util'
+import { DomUtil } from '@antv/x6-dom-util'
 import { DomEvent } from '@antv/x6-dom-event'
 import { Graph } from '../../graph'
 import { MouseHandler } from '../mouse-handler'
@@ -82,8 +82,8 @@ export class RubberbandHandler extends MouseHandler {
   }
 
   protected getPosition(e: MouseEventEx) {
-    const origin = util.getScrollOrigin(this.graph.container)
-    const offset = util.getOffset(this.graph.container)
+    const origin = DomUtil.getScrollOrigin(this.graph.container)
+    const offset = DomUtil.getOffset(this.graph.container)
 
     origin.x -= offset.x
     origin.y -= offset.y
@@ -132,7 +132,7 @@ export class RubberbandHandler extends MouseHandler {
 
     // Workaround for rubberband stopping if the
     // mouse leaves the container in Firefox
-    if (detector.IS_FIREFOX) {
+    if (Platform.IS_FIREFOX) {
       DomEvent.addMouseListeners(
         document,
         null,
@@ -155,7 +155,7 @@ export class RubberbandHandler extends MouseHandler {
         }
 
         // Clears selection while rubberbanding.
-        util.clearSelection()
+        DomUtil.clearSelection()
 
         this.update(x, y)
         e.consume()
@@ -216,10 +216,10 @@ export class RubberbandHandler extends MouseHandler {
       this.div.style.background = style.background
 
       this.div.style.position = 'absolute'
-      this.div.style.left = util.toPx(this.x)
-      this.div.style.top = util.toPx(this.y)
-      this.div.style.width = util.toPx(Math.max(1, this.width))
-      this.div.style.height = util.toPx(Math.max(1, this.height))
+      this.div.style.left = DomUtil.toPx(this.x)
+      this.div.style.top = DomUtil.toPx(this.y)
+      this.div.style.width = DomUtil.toPx(Math.max(1, this.width))
+      this.div.style.height = DomUtil.toPx(Math.max(1, this.height))
     }
   }
 
@@ -245,15 +245,15 @@ export class RubberbandHandler extends MouseHandler {
     if (this.div != null) {
       if (this.fadeOut) {
         const temp = this.div
-        util.setPrefixedStyle(temp.style, 'transition', 'all 0.2s linear')
+        DomUtil.setPrefixedStyle(temp.style, 'transition', 'all 0.2s linear')
         temp.style.pointerEvents = 'none'
         temp.style.opacity = '0'
 
         window.setTimeout(() => {
-          util.removeElement(temp)
+          DomUtil.remove(temp)
         }, 200)
       } else {
-        util.removeElement(this.div)
+        DomUtil.remove(this.div)
       }
     }
 

@@ -1,4 +1,5 @@
-import { util } from '@antv/x6-util'
+import { ObjectExt } from '@antv/x6-util'
+import { DomUtil } from '@antv/x6-dom-util'
 import { globals } from '../option/global'
 import { Shape } from '../shape'
 import { Graph } from '../graph'
@@ -25,17 +26,17 @@ export class CellHighlight extends BaseHandler {
   constructor(graph: Graph, options: CellHighlight.Options = {}) {
     super(graph)
 
-    this.className = util.ensureValue(options.className, null)
-    this.cellClassName = util.ensureValue(options.cellClassName, null)
-    this.highlightColor = util.ensureValue(
+    this.className = ObjectExt.ensure(options.className, null)
+    this.cellClassName = ObjectExt.ensure(options.cellClassName, null)
+    this.highlightColor = ObjectExt.ensure(
       options.highlightColor,
       globals.defaultValidColor,
     )
-    this.dashed = util.ensureValue(options.dashed, false)
-    this.strokeWidth = util.ensureValue(options.strokeWidth, 3)
-    this.opacity = util.ensureValue(options.opacity, 1)
-    this.spacing = util.ensureValue(options.spacing, 2)
-    this.topMost = util.ensureValue(options.keepOnTop, false)
+    this.dashed = ObjectExt.ensure(options.dashed, false)
+    this.strokeWidth = ObjectExt.ensure(options.strokeWidth, 3)
+    this.opacity = ObjectExt.ensure(options.opacity, 1)
+    this.spacing = ObjectExt.ensure(options.spacing, 2)
+    this.topMost = ObjectExt.ensure(options.keepOnTop, false)
 
     this.repaintHandler = () => {
       if (this.state != null) {
@@ -95,7 +96,7 @@ export class CellHighlight extends BaseHandler {
     this.repaint()
 
     if (!this.topMost && this.shape != null) {
-      util.toBack(this.shape.elem)
+      DomUtil.toBack(this.shape.elem)
     }
   }
 
