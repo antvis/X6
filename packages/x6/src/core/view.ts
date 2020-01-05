@@ -1,7 +1,8 @@
-import { detector } from '@antv/x6-detector'
+import { Platform, NumberExt } from '@antv/x6-util'
+import { DomUtil } from '@antv/x6-dom-util'
 import { DomEvent } from '@antv/x6-dom-event'
-import { util } from '@antv/x6-util'
 import { Basecoat } from '../entity'
+import * as utilBiz from '../util'
 import { Cell } from './cell'
 import { State } from './state'
 import { Graph } from '../graph'
@@ -13,7 +14,6 @@ import { RectangleShape } from '../shape'
 import { UndoableEdit, CurrentRootChange } from '../change'
 import { Point, Rectangle, Anchor } from '../struct'
 import { MouseEventEx } from '../handler'
-import * as utilBiz from '../util'
 
 export class View extends Basecoat<View.EventArgs> {
   graph: Graph
@@ -1632,8 +1632,8 @@ export class View extends Basecoat<View.EventArgs> {
         ox = 1 + bounds.x
         oy = 1 + bounds.y
       }
-      ox = -Math.round(phase - util.mod(t.x * s - ox, phase))
-      oy = -Math.round(phase - util.mod(t.y * s - oy, phase))
+      ox = -Math.round(phase - NumberExt.mod(t.x * s - ox, phase))
+      oy = -Math.round(phase - NumberExt.mod(t.y * s - oy, phase))
     }
 
     bgPosition = `${ox}px ${oy}px`
@@ -1715,7 +1715,7 @@ export class View extends Basecoat<View.EventArgs> {
     if (
       this.graph.infinite &&
       this.graph.container &&
-      util.hasScrollbars(this.graph.container)
+      DomUtil.hasScrollbars(this.graph.container)
     ) {
       const size = this.graph.viewportManager.getPageSize()
       const padding = this.graph.viewportManager.getPagePadding()
@@ -1870,7 +1870,7 @@ export class View extends Basecoat<View.EventArgs> {
     }
 
     // Support for touch device gestures (eg. pinch to zoom)
-    if (detector.SUPPORT_TOUCH) {
+    if (Platform.SUPPORT_TOUCH) {
       DomEvent.addListener(container, 'gesturestart', (e: MouseEvent) => {
         graph.eventloopManager.gesture(e)
         DomEvent.consume(e)
@@ -1894,11 +1894,11 @@ export class View extends Basecoat<View.EventArgs> {
         if (
           this.isContainerEvent(e) &&
           // Avoid scrollbar events starting a rubberband selection
-          ((!detector.IS_IE &&
-            !detector.IS_IE11 &&
-            !detector.IS_CHROME &&
-            !detector.IS_OPERA &&
-            !detector.IS_SAFARI) ||
+          ((!Platform.IS_IE &&
+            !Platform.IS_IE11 &&
+            !Platform.IS_CHROME &&
+            !Platform.IS_OPERA &&
+            !Platform.IS_SAFARI) ||
             !this.isScrollEvent(e))
         ) {
           graph.dispatchMouseEvent(DomEvent.MOUSE_DOWN, new MouseEventEx(e))
@@ -1951,7 +1951,7 @@ export class View extends Basecoat<View.EventArgs> {
       // Workaround for touch events which started on some DOM node
       // on top of the container, in which case the cells under the
       // mouse for the move and up events are not detected.
-      if (detector.SUPPORT_TOUCH) {
+      if (Platform.SUPPORT_TOUCH) {
         const x = DomEvent.getClientX(e)
         const y = DomEvent.getClientY(e)
 
@@ -2002,7 +2002,7 @@ export class View extends Basecoat<View.EventArgs> {
   }
 
   protected isContainerVisible() {
-    return util.isVisible(this.graph.container)
+    return DomUtil.isVisible(this.graph.container)
   }
 
   /**
@@ -2030,7 +2030,7 @@ export class View extends Basecoat<View.EventArgs> {
    * of the container in IE. Such events are ignored.
    */
   protected isScrollEvent(e: MouseEvent) {
-    const offset = util.getOffset(this.graph.container)
+    const offset = DomUtil.getOffset(this.graph.container)
     const pt = new Point(e.clientX - offset.x, e.clientY - offset.y)
 
     const outWidth = this.graph.container.offsetWidth
@@ -2075,7 +2075,7 @@ export class View extends Basecoat<View.EventArgs> {
   }
 
   protected createHtmlPane(width?: string, height?: string) {
-    const div = util.createElement('div')
+    const div = DomUtil.createElement('div')
     if (width != null && height != null) {
       div.style.position = 'absolute'
       div.style.left = '0px'
@@ -2122,7 +2122,7 @@ export class View extends Basecoat<View.EventArgs> {
     this.stage.appendChild(this.overlayPane)
     this.stage.appendChild(this.decoratorPane)
 
-    const root = util.createSvgElement('svg')
+    const root = DomUtil.createSvgElement('svg')
     root.style.left = '0px'
     root.style.top = '0px'
     root.style.width = '100%'
@@ -2130,7 +2130,7 @@ export class View extends Basecoat<View.EventArgs> {
     root.style.display = 'block'
     root.appendChild(this.stage)
 
-    if (detector.IS_IE || detector.IS_IE11) {
+    if (Platform.IS_IE || Platform.IS_IE11) {
       root.style.overflow = 'hidden'
     }
 
@@ -2141,17 +2141,17 @@ export class View extends Basecoat<View.EventArgs> {
   }
 
   protected createSvgPane() {
-    return util.createSvgElement('g') as SVGGElement
+    return DomUtil.createSvgElement('g') as SVGGElement
   }
 
   protected updateContainerStyle(container: HTMLElement) {
-    const position = util.getComputedStyle(container, 'position')
+    const position = DomUtil.getComputedStyle(container, 'position')
     if (position === 'static') {
       container.style.position = 'relative'
     }
 
     // Disables built-in pan and zoom in IE10 and later
-    if (detector.SUPPORT_POINTER) {
+    if (Platform.SUPPORT_POINTER) {
       container.style.touchAction = 'none'
     }
   }
@@ -2219,7 +2219,7 @@ export class View extends Basecoat<View.EventArgs> {
       )
 
       DomEvent.release(this.graph.container)
-      util.removeElement(stage)
+      DomUtil.remove(stage)
 
       this.mouseMoveHandler = null
       this.mouseUpHandler = null

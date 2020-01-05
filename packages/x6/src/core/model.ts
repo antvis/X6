@@ -1,5 +1,5 @@
-import { EventEmitter } from '@antv/x6-eventemitter'
-import { util } from '@antv/x6-util'
+import { EventEmitter } from '@antv/x6-event-emitter'
+import { ArrayExt, NumberExt } from '@antv/x6-util'
 import { Cell } from './cell'
 import { Style } from '../types'
 import { Geometry } from './geometry'
@@ -110,7 +110,7 @@ export class Model extends EventEmitter<Model.EventArgs> {
     iterator: (layer: Cell, index: number, layers: Cell[]) => void,
     context?: any,
   ) {
-    util.forEach(this.getLayers(), iterator, context)
+    ArrayExt.forEach(this.getLayers(), iterator, context)
   }
 
   // #endregion
@@ -233,7 +233,7 @@ export class Model extends EventEmitter<Model.EventArgs> {
     filter: (cell: Cell, index: number, arr: Cell[]) => boolean,
     thisArg?: any,
   ): Cell[] {
-    return util.filter(cells, filter, thisArg)
+    return ArrayExt.filter(cells, filter, thisArg)
   }
 
   getNearestCommonAncestor(cell1: Cell | null, cell2: Cell | null) {
@@ -285,7 +285,7 @@ export class Model extends EventEmitter<Model.EventArgs> {
       }
 
       const id = cell.getId()
-      if (id != null && util.isNumeric(id)) {
+      if (id != null && NumberExt.isNumeric(id)) {
         this.nextCellId = Math.max(this.nextCellId, +id)
       }
 

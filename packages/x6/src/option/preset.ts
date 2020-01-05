@@ -1,4 +1,4 @@
-import { detector } from '@antv/x6-detector'
+import { Platform } from '@antv/x6-util'
 import * as images from '../assets/images'
 import { loop } from '../route/loop'
 import { Style } from '../types'
@@ -131,7 +131,7 @@ export const preset: FullOptions = {
   constrainRelativeChildren: false,
   allowNegativeCoordinates: true,
   defaultOverlap: 0.5,
-  maxCellCountForHandle: detector.IS_IE ? 20 : 50,
+  maxCellCountForHandle: Platform.IS_IE ? 20 : 50,
 
   nodeStyle: {
     ...commonStyle,

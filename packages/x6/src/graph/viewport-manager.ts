@@ -1,5 +1,5 @@
-import { util } from '@antv/x6-util'
-import { detector } from '@antv/x6-detector'
+import { DomUtil } from '@antv/x6-dom-util'
+import { Platform } from '@antv/x6-util'
 import { DomEvent } from '@antv/x6-dom-event'
 import * as sizeSensor from 'size-sensor'
 import { Cell } from '../core/cell'
@@ -220,7 +220,7 @@ export class ViewportManager extends BaseManager {
 
   private autoTranslate: boolean
   sizeDidChangeInfinite() {
-    if (this.container && util.hasScrollbars(this.container)) {
+    if (this.container && DomUtil.hasScrollbars(this.container)) {
       const size = this.getPageSize()
       const pages = this.getPageLayout()
       const padding = this.getPagePadding()
@@ -282,7 +282,7 @@ export class ViewportManager extends BaseManager {
 
       if (
         this.graph.preferPageSize ||
-        (!detector.IS_IE && this.graph.pageVisible)
+        (!Platform.IS_IE && this.graph.pageVisible)
       ) {
         const size = this.getPreferredPageSize(
           bounds,
@@ -332,7 +332,7 @@ export class ViewportManager extends BaseManager {
 
   resetScrollbar() {
     const container = this.container
-    if (this.graph.infinite && util.hasScrollbars(container)) {
+    if (this.graph.infinite && DomUtil.hasScrollbars(container)) {
       if (this.graph.pageVisible) {
         const padding = this.getPagePadding()
         container.scrollLeft = Math.floor(
@@ -375,8 +375,8 @@ export class ViewportManager extends BaseManager {
         ? Math.min(this.graph.maxContainerSize.height, height)
         : height
 
-    this.container.style.width = util.toPx(Math.ceil(w))
-    this.container.style.height = util.toPx(Math.ceil(h))
+    this.container.style.width = DomUtil.toPx(Math.ceil(w))
+    this.container.style.height = DomUtil.toPx(Math.ceil(h))
   }
 
   private unbindSizeDetector: () => void
@@ -392,7 +392,7 @@ export class ViewportManager extends BaseManager {
       })
     }
 
-    if (detector.IS_IE) {
+    if (Platform.IS_IE) {
       DomEvent.addListener(this.container, 'selectstart', (e: MouseEvent) => {
         return (
           this.graph.isEditing() ||

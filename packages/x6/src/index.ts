@@ -2,6 +2,7 @@ import './track'
 import './registry'
 
 export * from './version'
+export * from './enum'
 export * from './struct'
 export * from './types'
 

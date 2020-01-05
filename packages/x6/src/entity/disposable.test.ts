@@ -1,10 +1,10 @@
+import { Platform } from '@antv/x6-util'
 import {
   Disposable,
   IDisposable,
   DisposableSet,
   DisposableDelegate,
 } from './disposable'
-import { detector } from '@antv/x6-detector'
 
 class TestDisposable implements IDisposable {
   count = 0
@@ -41,7 +41,7 @@ describe('disposable', () => {
     })
 
     it('should add `unload` listener for ie', () => {
-      const tmp = detector as any
+      const tmp = Platform as any
       tmp.IS_IE = true
       const obj = new Disposable()
       expect(obj.disposed).toBe(false)

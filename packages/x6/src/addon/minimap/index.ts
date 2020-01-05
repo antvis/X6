@@ -1,5 +1,6 @@
+import { NumberExt } from '@antv/x6-util'
+import { DomUtil } from '@antv/x6-dom-util'
 import { DomEvent } from '@antv/x6-dom-event'
-import { util } from '@antv/x6-util'
 import { Disablable } from '../../entity'
 import { Graph } from '../../graph'
 import { Rectangle, Point } from '../../struct'
@@ -95,7 +96,7 @@ export class MiniMap extends Disablable implements IMouseHandler {
     })
 
     container.style.overflow = 'hidden'
-    container.style.backgroundColor = util.getComputedStyle(
+    container.style.backgroundColor = DomUtil.getComputedStyle(
       this.source.container,
       'backgroundColor',
     )
@@ -280,8 +281,8 @@ export class MiniMap extends Disablable implements IMouseHandler {
     let x = this.bounds.x + dx
     let y = this.bounds.y + dy
     if (this.options.constrained) {
-      x = util.clamp(x, this.minX, this.maxX)
-      y = util.clamp(y, this.minY, this.maxY)
+      x = NumberExt.clamp(x, this.minX, this.maxX)
+      y = NumberExt.clamp(y, this.minY, this.maxY)
     }
 
     return { x, y }
@@ -446,7 +447,7 @@ export class MiniMap extends Disablable implements IMouseHandler {
 
       if (
         this.source.useScrollbarsForPanning &&
-        util.hasScrollbars(this.source.container)
+        DomUtil.hasScrollbars(this.source.container)
       ) {
         this.scrollLeft = this.source.container.scrollLeft
         this.scrollTop = this.source.container.scrollTop
@@ -527,7 +528,7 @@ export class MiniMap extends Disablable implements IMouseHandler {
       } else {
         if (
           !this.source.useScrollbarsForPanning ||
-          !util.hasScrollbars(this.source.container)
+          !DomUtil.hasScrollbars(this.source.container)
         ) {
           this.source.pan(0, 0)
           dx /= this.outline.view.scale

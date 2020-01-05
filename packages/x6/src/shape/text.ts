@@ -1,4 +1,5 @@
-import { util } from '@antv/x6-util'
+import { StringExt, Color } from '@antv/x6-util'
+import { DomUtil } from '@antv/x6-dom-util'
 import { globals } from '../option'
 import { Shape } from './shape-base'
 import { SvgCanvas2D } from '../canvas'
@@ -6,7 +7,7 @@ import { State } from '../core/state'
 import { FontStyle } from '../enum'
 import { Rectangle, Point } from '../struct'
 import { Align, VAlign, WritingDirection } from '../types'
-import { getAlignmentAsPoint, isValidColor, rotateRectangle } from '../util'
+import { getAlignmentAsPoint, rotateRectangle } from '../util'
 
 export class Text extends Shape {
   value: HTMLElement | string
@@ -205,17 +206,20 @@ export class Text extends Shape {
       )
     } else {
       // Checks if text contains HTML markup
-      const realHtml = util.isHtmlElem(this.value) || this.dialect === 'html'
+      const realHtml =
+        DomUtil.isHtmlElement(this.value) || this.dialect === 'html'
       const fmt = realHtml ? 'html' : ''
       let val = this.value
 
-      if (fmt === 'html' && !util.isHtmlElem(this.value)) {
-        val = util.replaceTrailingNewlines(val as string, '<div><br></div>')
+      if (fmt === 'html' && !DomUtil.isHtmlElement(this.value)) {
+        val = DomUtil.replaceTrailingNewlines(val as string, '<div><br></div>')
       }
 
       // Handles trailing newlines to make sure they are visible in rendering output
       val =
-        !util.isHtmlElem(this.value) && this.replaceLinefeeds && fmt === 'html'
+        !DomUtil.isHtmlElement(this.value) &&
+        this.replaceLinefeeds &&
+        fmt === 'html'
           ? (val as string).replace(/\n/g, '<br/>')
           : val
 
@@ -255,9 +259,9 @@ export class Text extends Shape {
       this.isValidBounds() &&
       this.cacheEnabled &&
       this.lastValue === this.value &&
-      (util.isHtmlElem(this.value) || this.dialect === 'html')
+      (DomUtil.isHtmlElement(this.value) || this.dialect === 'html')
     ) {
-      if (util.getNodeName(this.elem!) === 'div' && this.isHtmlAllowed()) {
+      if (DomUtil.getNodeName(this.elem!) === 'div' && this.isHtmlAllowed()) {
         this.updateSize(this.elem as HTMLElement, this.state == null)
         this.updateHtmlTransform()
         this.updateBoundingBox()
@@ -277,7 +281,7 @@ export class Text extends Shape {
       }
     } else {
       super.redraw()
-      if (util.isHtmlElem(this.value) || this.dialect === 'html') {
+      if (DomUtil.isHtmlElement(this.value) || this.dialect === 'html') {
         this.lastValue = this.value
       } else {
         this.lastValue = null
@@ -414,7 +418,7 @@ export class Text extends Shape {
           let sizeDiv = elem as HTMLDivElement
           if (
             sizeDiv.firstChild != null &&
-            util.getNodeName(sizeDiv.firstChild as HTMLElement) === 'div'
+            DomUtil.getNodeName(sizeDiv.firstChild as HTMLElement) === 'div'
           ) {
             sizeDiv = sizeDiv.firstChild as HTMLDivElement
           }
@@ -515,13 +519,13 @@ export class Text extends Shape {
     const dy = this.margin.y
 
     if (theta !== 0) {
-      util.setPrefixedStyle(
+      DomUtil.setPrefixedStyle(
         style,
         'transformOrigin',
         `${-dx * 100}% ${-dy * 100}%`,
       )
 
-      util.setPrefixedStyle(
+      DomUtil.setPrefixedStyle(
         style,
         'transform',
         `translate(${dx * 100}%, ${dy * 100}%)` +
@@ -529,8 +533,8 @@ export class Text extends Shape {
           `rotate(${theta}deg)`,
       )
     } else {
-      util.setPrefixedStyle(style, 'transformOrigin', '0% 0%')
-      util.setPrefixedStyle(
+      DomUtil.setPrefixedStyle(style, 'transformOrigin', '0% 0%')
+      DomUtil.setPrefixedStyle(
         style,
         'transform',
         `scale(${this.scale}) ` + `translate(${dx * 100}%, ${dy * 100}%)`,
@@ -557,16 +561,16 @@ export class Text extends Shape {
   }
 
   updateInnerHtml(elt: HTMLElement) {
-    if (util.isHtmlElem(this.value)) {
+    if (DomUtil.isHtmlElement(this.value)) {
       elt.innerHTML = ((this.value as any) as HTMLElement).outerHTML
     } else {
       let val = this.value
       if (this.dialect !== 'html') {
-        val = util.escape(val as string)
+        val = StringExt.escape(val as string)
       }
 
       // Handles trailing newlines to make sure they are visible in rendering output
-      val = util.replaceTrailingNewlines(val as string, '<div>&nbsp;</div>')
+      val = DomUtil.replaceTrailingNewlines(val as string, '<div>&nbsp;</div>')
       val = this.replaceLinefeeds ? val.replace(/\n/g, '<br/>') : val
       val = `<div style="display:inline-block;_display:inline;">${val}</div>`
 
@@ -575,25 +579,25 @@ export class Text extends Shape {
   }
 
   updateValue() {
-    if (util.isHtmlElem(this.value)) {
+    if (DomUtil.isHtmlElement(this.value)) {
       this.elem!.innerHTML = ''
       this.elem!.appendChild((this.value as any) as HTMLElement)
     } else {
       let val = this.value
 
       if (this.dialect !== 'html') {
-        val = util.escape(val as string)
+        val = StringExt.escape(val as string)
       }
 
       // Handles trailing newlines to make sure they are visible in rendering output
-      val = util.replaceTrailingNewlines(val as string, '<div><br></div>')
+      val = DomUtil.replaceTrailingNewlines(val as string, '<div><br></div>')
       val = this.replaceLinefeeds ? val.replace(/\n/g, '<br/>') : val
 
-      const bg = isValidColor(this.backgroundColor)
+      const bg = Color.isValid(this.backgroundColor)
         ? this.backgroundColor
         : null
 
-      const bd = isValidColor(this.borderColor) ? this.borderColor : null
+      const bd = Color.isValid(this.borderColor) ? this.borderColor : null
 
       if (this.overflow === 'fill' || this.overflow === 'width') {
         if (bg != null) {
@@ -707,7 +711,7 @@ export class Text extends Shape {
 
         if (
           sizeDiv.firstChild != null &&
-          util.getNodeName(sizeDiv.firstChild as HTMLElement) === 'div'
+          DomUtil.getNodeName(sizeDiv.firstChild as HTMLElement) === 'div'
         ) {
           sizeDiv = sizeDiv.firstChild as HTMLElement
           if (node.style.wordWrap === 'break-word') {

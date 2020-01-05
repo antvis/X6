@@ -1,6 +1,7 @@
 /* tslint:disable:no-parameter-reassignment */
 
-import { util } from '@antv/x6-util'
+import { Url } from '@antv/x6-util'
+import { DomUtil } from '@antv/x6-dom-util'
 import { SvgCanvas2DText } from './text'
 
 export class SvgCanvas2D extends SvgCanvas2DText {
@@ -12,7 +13,7 @@ export class SvgCanvas2D extends SvgCanvas2DText {
   rect(x: number, y: number, w: number, h: number) {
     const state = this.state
     this.elem = this.createElement('rect')
-    util.setAttributes(this.elem, {
+    DomUtil.setAttributes(this.elem, {
       x: this.format((x + state.tx) * state.scale),
       y: this.format((y + state.ty) * state.scale),
       width: this.format(w * state.scale),
@@ -42,7 +43,7 @@ export class SvgCanvas2D extends SvgCanvas2DText {
   ellipse(x: number, y: number, w: number, h: number) {
     const state = this.state
     this.elem = this.createElement('ellipse')
-    util.setAttributes(this.elem, {
+    DomUtil.setAttributes(this.elem, {
       cx: this.format((x + w / 2 + state.tx) * state.scale),
       cy: this.format((y + h / 2 + state.ty) * state.scale),
       rx: (w / 2) * state.scale,
@@ -81,12 +82,12 @@ export class SvgCanvas2D extends SvgCanvas2DText {
   ) {
     const state = this.state
 
-    src = util.toAbsoluteUrl(src)
+    src = Url.toAbsolute(src)
     x += state.tx
     y += state.ty
 
     const img = this.createElement('image')
-    util.setAttributes(img, {
+    DomUtil.setAttributes(img, {
       x: this.format(x * state.scale) + this.imageOffset,
       y: this.format(y * state.scale) + this.imageOffset,
       width: this.format(w * state.scale),

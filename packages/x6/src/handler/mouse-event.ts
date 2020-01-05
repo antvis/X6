@@ -1,5 +1,5 @@
-import { detector } from '@antv/x6-detector'
-import { isAncestorNode } from '@antv/x6-util'
+import { Platform } from '@antv/x6-util'
+import { DomUtil } from '@antv/x6-dom-util'
 import { DomEvent } from '@antv/x6-dom-event'
 import { Graph } from '../graph/graph'
 import { State } from '../core/state'
@@ -36,7 +36,7 @@ export class MouseEventEx {
 
   isSource(shape: Shape | null) {
     if (shape != null) {
-      return isAncestorNode(shape.elem as HTMLElement, this.getSource())
+      return DomUtil.isAncestor(shape.elem as HTMLElement, this.getSource())
     }
 
     return false
@@ -93,7 +93,7 @@ export class MouseEventEx {
 
     // Workaround for images being dragged in IE
     // Does not change returnValue in Opera
-    if (detector.IS_IE) {
+    if (Platform.IS_IE) {
       this.e.returnValue = true
     }
 
