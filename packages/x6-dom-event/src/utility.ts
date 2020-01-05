@@ -1,4 +1,4 @@
-import { detector } from '@antv/x6-detector'
+import { Platform } from '@antv/x6-util'
 import { addListener } from './listener'
 
 export function disableContextMenu(elem: HTMLElement) {
@@ -108,7 +108,7 @@ export function isRightMouseButton(e: any) {
 export function isPopupTrigger(e: MouseEvent) {
   return (
     isRightMouseButton(e) ||
-    (detector.IS_MAC &&
+    (Platform.IS_MAC &&
       isControlDown(e) &&
       !isShiftDown(e) &&
       !isMetaDown(e) &&
