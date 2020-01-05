@@ -1,4 +1,5 @@
-import { util, Shape } from '@antv/x6'
+import { ObjectExt } from '@antv/x6-util'
+import { Shape } from '@antv/x6'
 
 export class FlexArrowShape extends Shape.ArrowConnector {
   defaultWidth = 10
@@ -12,20 +13,20 @@ export class FlexArrowShape extends Shape.ArrowConnector {
   getStartArrowWidth() {
     return (
       this.getEdgeWidth() +
-      util.getNumber(this.style, 'startWidth', this.defaultArrowWidth)
+      ObjectExt.getNumber(this.style, 'startWidth', this.defaultArrowWidth)
     )
   }
 
   getEndArrowWidth() {
     return (
       this.getEdgeWidth() +
-      util.getNumber(this.style, 'endWidth', this.defaultArrowWidth)
+      ObjectExt.getNumber(this.style, 'endWidth', this.defaultArrowWidth)
     )
   }
 
   getEdgeWidth() {
     return (
-      util.getNumber(this.style, 'width', this.defaultWidth) +
+      ObjectExt.getNumber(this.style, 'width', this.defaultWidth) +
       Math.max(0, this.strokeWidth - 1)
     )
   }

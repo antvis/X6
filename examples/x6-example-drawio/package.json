@@ -11,6 +11,8 @@
   "dependencies": {
     "@antv/x6": "^0.2.4",
     "@antv/x6-components": "^0.2.0",
+    "@antv/x6-dom-util": "^1.0.0",
+    "@antv/x6-util": "^1.0.0",
     "antd": "^3.19.5",
     "classnames": "^2.2.6",
     "react": "^16.8.6"

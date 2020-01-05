@@ -1,11 +1,12 @@
+import { ObjectExt } from '@antv/x6-util'
 import { getFactor } from './util'
-import { util, Shape, SvgCanvas2D, Rectangle } from '@antv/x6'
+import { Shape, SvgCanvas2D, Rectangle } from '@antv/x6'
 
 export class TapeShape extends Shape.Actor {
   factor: number = 0.4
 
   getLabelMargins(rect: Rectangle) {
-    if (util.getBoolean(this.style, 'boundedLbl', false)) {
+    if (ObjectExt.getBoolean(this.style, 'boundedLbl', false)) {
       const w = rect.width
       const h = rect.height
 

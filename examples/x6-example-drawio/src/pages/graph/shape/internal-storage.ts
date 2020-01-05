@@ -1,4 +1,5 @@
-import { util, Shape, SvgCanvas2D } from '@antv/x6'
+import { ObjectExt, NumberExt } from '@antv/x6-util'
+import { Shape, SvgCanvas2D } from '@antv/x6'
 
 export class InternalStorageShape extends Shape.Rectangle {
   dx: number = 20
@@ -17,8 +18,16 @@ export class InternalStorageShape extends Shape.Rectangle {
       inset = Math.max(inset, Math.min(w * f, h * f))
     }
 
-    const dx = util.clamp(util.getNumber(this.style, 'dx', this.dx), inset, w)
-    const dy = util.clamp(util.getNumber(this.style, 'dy', this.dy), inset, h)
+    const dx = NumberExt.clamp(
+      ObjectExt.getNumber(this.style, 'dx', this.dx),
+      inset,
+      w,
+    )
+    const dy = NumberExt.clamp(
+      ObjectExt.getNumber(this.style, 'dy', this.dy),
+      inset,
+      h,
+    )
 
     c.begin()
     c.moveTo(x, y + dy)
