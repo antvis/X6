@@ -1,4 +1,9 @@
 {
+  "exclude": [
+      "node_modules",
+      "**/es",
+      "**/lib"
+  ],
   "compilerOptions": {
     "sourceMap": true,
     "declaration": true,
