@@ -414,7 +414,7 @@ export namespace Point {
     )
   }
 
-  export function equals(p1: Point[], p2: Point[]) {
+  export function equalPoints(p1: Point[], p2: Point[]) {
     if (
       (p1 == null && p2 != null) ||
       (p1 != null && p2 == null) ||
