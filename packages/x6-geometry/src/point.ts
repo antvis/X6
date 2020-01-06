@@ -12,7 +12,7 @@ export class Point {
     this.y = y == null ? 0 : y
   }
 
-  round(precision: number) {
+  round(precision: number = 0) {
     this.x = util.round(this.x, precision)
     this.y = util.round(this.y, precision)
     return this
