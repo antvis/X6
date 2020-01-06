@@ -215,12 +215,12 @@ export namespace Commands {
     {
       name: 'collapse',
       shortcut: `${ctrlKey}+Home`,
-      handler: (graph: Graph) => graph.foldCells(true),
+      handler: (graph: Graph) => graph.toggleCollapse(true),
     },
     {
       name: 'expand',
       shortcut: `${ctrlKey}+End`,
-      handler: (graph: Graph) => graph.foldCells(false),
+      handler: (graph: Graph) => graph.toggleCollapse(false),
     },
 
     // #endregion
@@ -491,7 +491,7 @@ export namespace Commands {
       name: 'pageScale',
       handler: (graph: Graph, val: number) => {
         if (!isNaN(val) && val > 0) {
-          graph.updatePageScale(val / 100)
+          graph.setPageScale(val / 100)
         }
       },
     },
