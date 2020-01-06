@@ -14,14 +14,14 @@
     "src": "src/"
   },
   "keywords": [
-    "x6",
+    "graph",
     "diagram",
     "flowchart",
     "uml",
-    "graph",
     "x6-editor",
     "editor",
     "svg",
+    "x6",
     "antv"
   ],
   "scripts": {
@@ -74,11 +74,6 @@
     "watch": "^1.0.2"
   },
   "dependencies": {
-    "@antv/x6-dom-event": "^1.0.0",
-    "@antv/x6-dom-util": "^1.0.0",
-    "@antv/x6-event-emitter": "^1.0.0",
-    "@antv/x6-geometry": "^1.0.0",
-    "@antv/x6-util": "^1.0.0",
     "mousetrap": "^1.6.3",
     "size-sensor": "^0.2.5",
     "utility-types": "^3.10.0"
