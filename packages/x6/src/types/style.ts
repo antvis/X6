@@ -278,9 +278,9 @@ interface HTMLShapeStyle {
   }
 }
 
-// interface CustomStyle {
-//   [key: string]: any
-// }
+interface CustomStyle {
+  [key: string]: any
+}
 
 export interface Style
   extends ShapeStyle,
@@ -288,7 +288,10 @@ export interface Style
     EdgeStyle,
     ImageStyle,
     IndicatorStyle,
-    HTMLShapeStyle {
+    HTMLShapeStyle,
+    CustomStyle {}
+
+export interface Style {
   tooltip?: string | HTMLElement | null
   direction?: Direction
 
