@@ -116,7 +116,6 @@ export function getRenderer(item: DataItem) {
     graph.view.scaleAndTranslate(1, 0, 0)
     if (item.isEdge) {
       graph.addEdge({
-        label: item.data,
         style: { ...item.style, stroke: '#000' },
         points: item.points ? [...item.points] : [],
         sourcePoint: new Point(0, height),

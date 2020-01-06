@@ -1,4 +1,11 @@
-import { util, Graph, Point, FontStyle } from '@antv/x6'
+import {
+  ObjectExt,
+  StringExt,
+  DomUtil,
+  Graph,
+  Point,
+  FontStyle,
+} from '@antv/x6'
 
 export function autosize(graph: Graph) {
   const cells = graph.getSelectedCells()
@@ -53,17 +60,19 @@ export function formattedText(graph: Graph) {
           let label = graph.getLabel(state.cell)
           if (typeof label === 'string') {
             if (graph.isHtmlLabel(cell)) {
-              if (util.getBoolean(state.style, 'nl2Br', true)) {
+              if (ObjectExt.getBoolean(state.style, 'nl2Br', true)) {
                 label = label.replace(/\n/g, '').replace(/<br\s*.?>/g, '\n')
                 // Removes HTML tags
                 const temp = document.createElement('div')
                 temp.innerHTML = label
-                label = util.extractTextWithWhitespace(temp.childNodes as any)
+                label = DomUtil.extractTextWithWhitespace(
+                  temp.childNodes as any,
+                )
               }
             } else {
               // Converts HTML tags to text
-              label = util.escape(label)
-              if (util.getBoolean(state.style, 'nl2Br', true)) {
+              label = StringExt.escape(label)
+              if (ObjectExt.getBoolean(state.style, 'nl2Br', true)) {
                 // Converts newlines in plain text to breaks in HTML
                 // to match the plain text output
                 label = label.replace(/\n/g, '<br/>')
@@ -90,7 +99,7 @@ export function fitPage(graph: Graph, padding: Point = new Point()) {
     Math.floor(20 * Math.min(cw / fmt.width / ps, ch / fmt.height / ps)) / 20
   graph.zoomTo(scale)
 
-  if (util.hasScrollbars(graph.container)) {
+  if (DomUtil.hasScrollbars(graph.container)) {
     graph.container.scrollTop = padding.y * graph.view.scale - 1
     graph.container.scrollLeft =
       Math.min(
@@ -115,7 +124,7 @@ export function fitTwoPages(graph: Graph, padding: Point = new Point()) {
     20
   graph.zoomTo(scale)
 
-  if (util.hasScrollbars(graph.container)) {
+  if (DomUtil.hasScrollbars(graph.container)) {
     graph.container.scrollTop = Math.min(
       padding.y,
       (graph.container.scrollHeight - graph.container.clientHeight) / 2,
@@ -140,7 +149,7 @@ export function fitPageWidth(graph: Graph, padding: Point = new Point()) {
   const scale = Math.floor((20 * cw) / fmt.width / ps) / 20
   graph.zoomTo(scale)
 
-  if (util.hasScrollbars(graph.container)) {
+  if (DomUtil.hasScrollbars(graph.container)) {
     graph.container.scrollLeft = Math.min(
       padding.x * graph.view.scale,
       (graph.container.scrollWidth - graph.container.clientWidth) / 2,
