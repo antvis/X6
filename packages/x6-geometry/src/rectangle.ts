@@ -98,6 +98,14 @@ export class Rectangle {
     return this.center
   }
 
+  getCenterX() {
+    return this.x + this.width / 2
+  }
+
+  getCenterY() {
+    return this.y + this.height / 2
+  }
+
   getBottomLeft() {
     return this.bottomLeft
   }
@@ -162,7 +170,7 @@ export class Rectangle {
     )
   }
 
-  round(precision: number) {
+  round(precision: number = 0) {
     this.x = util.round(this.x, precision)
     this.y = util.round(this.y, precision)
     this.width = util.round(this.width, precision)

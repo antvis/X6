@@ -29,7 +29,7 @@ export class Line {
     return this.center
   }
 
-  round(precision: number) {
+  round(precision: number = 0) {
     this.start.round(precision)
     this.end.round(precision)
     return this
