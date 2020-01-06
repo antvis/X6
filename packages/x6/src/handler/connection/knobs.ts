@@ -1,13 +1,11 @@
-import { DomUtil } from '@antv/x6-dom-util'
-import { DomEvent } from '@antv/x6-dom-event'
+import { Point, Rectangle } from '../../geometry'
+import { DomUtil, DomEvent } from '../../dom'
 import { Disposable } from '../../entity'
 import { State } from '../../core/state'
 import { ImageShape } from '../../shape'
-import { Rectangle, Point } from '../../struct'
 import { ConnectionHandler } from './handler'
 import { getConnectionIconOptions } from './option'
 import { MouseEventEx } from '../mouse-event'
-import { rotatePoint } from '../../util'
 
 export class Knobs extends Disposable {
   private icon: ImageShape | null
@@ -195,7 +193,7 @@ export class Knobs extends Disposable {
       const rot = State.getRotation(state)
       if (rot !== 0) {
         const ct = state.bounds.getCenter()
-        const pt = rotatePoint(new Point(cx, cy), rot, ct)
+        const pt = new Point(cx, cy).rotate(rot, ct)
         cx = pt.x
         cy = pt.y
       }

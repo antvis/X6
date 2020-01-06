@@ -1,6 +1,5 @@
-import { rotatePoint } from '../util'
+import { Point } from '../geometry'
 import { Cell } from '../core/cell'
-import { Point } from '../struct'
 import { BaseManager } from './base-manager'
 import { Align, VAlign } from '../types'
 
@@ -177,7 +176,7 @@ export class MovingManager extends BaseManager {
         }
 
         if (rot !== 0) {
-          const pt = rotatePoint(new Point(dx, dy), -rot, new Point(0, 0))
+          const pt = new Point(dx, dy).rotate(-rot, new Point(0, 0))
           dx = pt.x // tslint:disable-line
           dy = pt.y // tslint:disable-line
         }

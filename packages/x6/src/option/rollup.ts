@@ -1,4 +1,4 @@
-import { ObjectExt } from '@antv/x6-util'
+import { ObjectExt } from '../util'
 import { Style } from '../types'
 import { GridOptions } from '../graph/grid-accessor'
 import { PageBreakOptions } from '../graph/pagebreak-accessor'

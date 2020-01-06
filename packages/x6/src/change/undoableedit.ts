@@ -1,17 +1,16 @@
-import { EventEmitter } from '@antv/x6-event-emitter'
-import { Disposable } from '../entity'
+import { Events, Disposable } from '../entity'
 import { IChange } from './change'
 
 export class UndoableEdit extends Disposable {
   public undone: boolean
   public redone: boolean
-  public readonly model: EventEmitter
+  public readonly model: Events
   public readonly changes: IChange[]
   private readonly significant: boolean
   private readonly onChange?: (edit?: UndoableEdit) => void
   private readonly onDispose?: (edit?: UndoableEdit) => void
 
-  constructor(model: EventEmitter, options: UndoableEdit.Options = {}) {
+  constructor(model: Events, options: UndoableEdit.Options = {}) {
     super()
     this.model = model
     this.changes = []

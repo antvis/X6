@@ -1,9 +1,9 @@
-import { ArrayExt } from '@antv/x6-util'
-import { Style } from '../types'
+import { ArrayExt } from '../util'
+import { Point, Rectangle } from '../geometry'
 import { Cell } from '../core/cell'
-import { Point, Rectangle } from '../struct'
+import { State } from '../core/state'
+import { Style } from '../types'
 import { BaseManager } from './base-manager'
-import { findNearestSegment } from '../util'
 
 export class CreationManager extends BaseManager {
   render(data: Data) {
@@ -440,7 +440,11 @@ export class CreationManager extends BaseManager {
         if (geo != null && geo.points != null && state != null) {
           const t = this.view.translate
           const s = this.view.scale
-          const idx = findNearestSegment(state, (dx + t.x) * s, (dy + t.y) * s)
+          const idx = State.getNearestSegment(
+            state,
+            (dx + t.x) * s,
+            (dy + t.y) * s,
+          )
 
           geo.points = geo.points.slice(0, idx)
 

@@ -1,8 +1,8 @@
-import { DomEvent } from '@antv/x6-dom-event'
+import { Point } from '../../geometry'
+import { DomEvent } from '../../dom'
 import { Disposable } from '../../entity'
-import * as util from '../../util'
 import { State } from '../../core/state'
-import { Point, Anchor } from '../../struct'
+import { Anchor } from '../../struct'
 import { Polyline, Shape } from '../../shape'
 import { MouseEventEx } from '../mouse-event'
 import { AnchorHandler } from '../anchor/handler'
@@ -376,14 +376,19 @@ export class Preview extends Disposable {
       const rot = State.getRotation(state)
       if (rot !== 0) {
         // tslint:disable-next-line
-        next = util.rotatePoint(next, -rot, center)
+        next = Point.rotate(next, -rot, center)
       }
 
-      let tmp = perimeterFn(view.getPerimeterBounds(state), state, next, false)
+      const tmp = perimeterFn(
+        view.getPerimeterBounds(state),
+        state,
+        next,
+        false,
+      )
 
       if (tmp != null) {
         if (rot !== 0) {
-          tmp = util.rotatePoint(tmp, rot, center)
+          tmp.rotate(rot, center)
         }
 
         result = tmp

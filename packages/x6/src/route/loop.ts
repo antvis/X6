@@ -1,5 +1,5 @@
+import { Point } from '../geometry'
 import { State } from '../core/state'
-import { Point } from '../struct'
 
 export function loop(
   edgeState: State,

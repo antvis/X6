@@ -1,6 +1,6 @@
+import { Point } from '../geometry'
 import { Cell } from '../core/cell'
 import { State } from '../core/state'
-import { Point } from '../struct'
 
 /**
  * Uses either `sideToSide` or `topToBottom` depending on the horizontal

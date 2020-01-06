@@ -1,7 +1,7 @@
+import { Point, Rectangle } from '../../geometry'
 import { Cell } from '../../core/cell'
 import { Graph } from '../../graph'
 import { Shape, ImageShape } from '../../shape'
-import { Point, Rectangle } from '../../struct'
 import { HandleOptions, createHandleShape } from './option-knob'
 import {
   drill,

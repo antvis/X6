@@ -1,11 +1,11 @@
 /* tslint:disable:no-parameter-reassignment */
 
-import { StringExt } from '@antv/x6-util'
-import { DomUtil } from '@antv/x6-dom-util'
+import { DomUtil } from '../../dom'
+import { StringExt } from '../../util'
+import { Rectangle } from '../../geometry'
 import { globals } from '../../option'
 import { FontStyle } from '../../enum'
 import { Align, VAlign } from '../../types'
-import { Rectangle } from '../../struct'
 import { SvgCanvas2DBase } from './base'
 import { SvgCanvas2D } from './index'
 

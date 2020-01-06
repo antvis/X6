@@ -1,5 +1,5 @@
-import { Platform } from '@antv/x6-util'
-import { addListener } from '@antv/x6-dom-event'
+import { Platform } from '../util'
+import { DomEvent } from '../dom'
 
 /**
  * An object which implements the disposable pattern.
@@ -30,7 +30,7 @@ export interface IDisposable {
 export class Disposable implements IDisposable {
   constructor() {
     if (Platform.IS_IE) {
-      addListener(window, 'unload', () => {
+      DomEvent.addListener(window, 'unload', () => {
         this.dispose()
       })
     }

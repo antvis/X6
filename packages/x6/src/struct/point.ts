@@ -1,4 +1,4 @@
-import { rotatePoint } from '../util'
+// import { rotatePoint } from '../util'
 
 export class Point {
   x: number
@@ -32,9 +32,9 @@ export class Point {
   }
 
   rotate(angle: number, center: Point = new Point()) {
-    const p = rotatePoint(this, angle, center)
-    this.x = p.x
-    this.y = p.y
+    // const p = rotatePoint(this, angle, center)
+    // this.x = p.x
+    // this.y = p.y
   }
 
   scalePoint(sx: number, sy: number = sx) {

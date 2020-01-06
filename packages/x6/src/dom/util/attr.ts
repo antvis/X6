@@ -1,4 +1,4 @@
-import { Platform, Url } from '@antv/x6-util'
+import { Platform, Url } from '../../util'
 
 export function setAttributes(
   elem: Element | null,

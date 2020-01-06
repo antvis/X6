@@ -1,8 +1,7 @@
-import { Angle } from '@antv/x6-geometry'
+import { Angle, Rectangle } from '../geometry'
 import { Cell } from '../core/cell'
 import { State } from '../core/state'
 import { Geometry } from '../core/geometry'
-import { Rectangle } from '../struct'
 import { BaseManager } from './base-manager'
 
 export class CollapseManager extends BaseManager {

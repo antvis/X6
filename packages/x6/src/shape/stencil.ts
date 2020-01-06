@@ -1,9 +1,10 @@
-import { StringExt } from '@antv/x6-util'
-import { DomUtil } from '@antv/x6-dom-util'
+import { Point } from '../geometry'
+import { StringExt } from '../util'
+import { DomUtil } from '../dom'
 import { Shape } from './shape-base'
 import { SvgCanvas2D } from '../canvas'
 import { NodeType } from '../enum'
-import { Point, Anchor } from '../struct'
+import { Anchor } from '../struct'
 import { Direction, Align, VAlign, LineCap, LineJoin } from '../types'
 import { globals } from '../option'
 

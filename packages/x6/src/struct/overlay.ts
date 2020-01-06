@@ -1,9 +1,10 @@
-import { EventEmitter } from '@antv/x6-event-emitter'
-import { Point, Rectangle, Image } from '../struct'
+import { Point, Rectangle } from '../geometry'
+import { Events } from '../entity'
+import { Image } from '../struct'
 import { State } from '../core/state'
 import { Align, VAlign } from '../types'
 
-export class Overlay extends EventEmitter {
+export class Overlay extends Events {
   image: Image
   tooltip: string | null
   align: Align

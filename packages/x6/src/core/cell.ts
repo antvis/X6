@@ -1,9 +1,10 @@
-import { ArrayExt, FunctionExt, ObjectExt } from '@antv/x6-util'
+import { Point, Rectangle } from '../geometry'
+import { ArrayExt, FunctionExt, ObjectExt } from '../util'
 import { Disposable } from '../entity'
 import { Graph } from '../graph'
 import { Geometry } from './geometry'
 import { Style } from '../types'
-import { Overlay, Point, Rectangle } from '../struct'
+import { Overlay } from '../struct'
 
 export class Cell extends Disposable {
   public id?: string | number | null
@@ -511,11 +512,11 @@ export namespace Cell {
     geo.relative = relative != null ? relative : false
 
     if (offset != null) {
-      geo.offset = Point.clone(offset)
+      geo.offset = Point.create(offset)
     }
 
     if (alternateBounds != null) {
-      geo.alternateBounds = Rectangle.clone(alternateBounds)
+      geo.alternateBounds = Rectangle.create(alternateBounds)
     }
 
     const finalStyle = { ...otherStyle, ...style }
@@ -546,15 +547,15 @@ export namespace Cell {
     geom.relative = true
 
     if (sourcePoint != null) {
-      geom.sourcePoint = Point.clone(sourcePoint)
+      geom.sourcePoint = Point.create(sourcePoint)
     }
 
     if (targetPoint != null) {
-      geom.targetPoint = Point.clone(targetPoint)
+      geom.targetPoint = Point.create(targetPoint)
     }
 
     if (offset != null) {
-      geom.offset = Point.clone(offset)
+      geom.offset = Point.create(offset)
     }
 
     if (points != null) {

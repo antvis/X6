@@ -1,5 +1,5 @@
-import { Platform } from '@antv/x6-util'
-import { DomEvent } from '@antv/x6-dom-event'
+import { Platform } from '../util'
+import { DomEvent } from '../dom'
 import { hook } from './decorator'
 import { IMouseHandler, MouseEventEx } from '../handler'
 import { BaseGraph } from './base-graph'

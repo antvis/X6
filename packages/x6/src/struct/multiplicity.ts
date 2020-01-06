@@ -1,4 +1,4 @@
-import { isHtmlElement } from '@antv/x6-dom-util'
+import { DomUtil } from '../dom'
 import { Cell } from '../core/cell'
 import { Graph } from '../graph'
 
@@ -167,7 +167,7 @@ export class Multiplicity {
   ) {
     if (data != null) {
       if (!isNaN(data.nodeType)) {
-        return isHtmlElement(data, nodeName, attrName, attrValue)
+        return DomUtil.isHtmlElement(data, nodeName, attrName, attrValue)
       }
 
       return data === nodeName

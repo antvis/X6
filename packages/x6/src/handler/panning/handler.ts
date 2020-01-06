@@ -1,5 +1,4 @@
-import { DomEvent } from '@antv/x6-dom-event'
-import { hasScrollbars } from '@antv/x6-dom-util'
+import { DomUtil, DomEvent } from '../../dom'
 import { Graph } from '../../graph'
 import { MouseHandler } from '../mouse-handler'
 import { MouseEventEx } from '../mouse-event'
@@ -251,7 +250,7 @@ export class PanningHandler extends MouseHandler<PanningHandler.EventArgs> {
         // Ignores if scrollbars have been used for panning
         if (
           !this.graph.useScrollbarsForPanning ||
-          !hasScrollbars(this.graph.container)
+          !DomUtil.hasScrollbars(this.graph.container)
         ) {
           const s = this.graph.view.scale
           const t = this.graph.view.translate

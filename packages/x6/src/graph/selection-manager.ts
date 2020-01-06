@@ -1,6 +1,6 @@
+import { Rectangle } from '../geometry'
 import { Cell } from '../core/cell'
 import { Graph } from '../graph'
-import { Rectangle } from '../struct'
 import { BaseManager } from './base-manager'
 
 export class SelectionManager extends BaseManager {

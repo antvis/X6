@@ -1,8 +1,8 @@
-import { Color } from '@antv/x6-util'
+import { Color } from '../util'
+import { Rectangle } from '../geometry'
 import { globals } from '../option'
 import { Shape } from './shape-base'
 import { SvgCanvas2D } from '../canvas'
-import { Rectangle } from '../struct'
 
 export class Swimlane extends Shape {
   image: string | null

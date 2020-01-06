@@ -1,6 +1,6 @@
+import { Point } from '../geometry'
 import { IChange } from './change'
 import { Cell } from '../core/cell'
-import { Point } from '../struct'
 import { View } from '../core/view'
 
 export class CurrentRootChange implements IChange {

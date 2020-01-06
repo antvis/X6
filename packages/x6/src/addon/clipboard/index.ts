@@ -1,4 +1,4 @@
-import { Rectangle } from '../../struct'
+import { Rectangle } from '../../geometry'
 import { Cell } from '../../core/cell'
 import { Graph } from '../../graph'
 

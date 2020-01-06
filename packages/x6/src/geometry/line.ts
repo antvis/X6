@@ -17,12 +17,24 @@ export class Line {
     )
   }
 
+  constructor(x1: number, y1: number, x2: number, y2: number)
   constructor(
     p1: Point | Point.PointLike | Point.PointData,
     p2: Point | Point.PointLike | Point.PointData,
+  )
+  constructor(
+    x1: number | Point | Point.PointLike | Point.PointData,
+    y1: number | Point | Point.PointLike | Point.PointData,
+    x2?: number,
+    y2?: number,
   ) {
-    this.start = Point.create(p1)
-    this.end = Point.create(p2)
+    if (typeof x1 === 'number' && typeof y1 === 'number') {
+      this.start = new Point(x1, y1)
+      this.end = new Point(x2, y2)
+    } else {
+      this.start = Point.create(x1)
+      this.end = Point.create(y1)
+    }
   }
 
   getCenter() {
@@ -353,6 +365,32 @@ export class Line {
   }
 
   /**
+   * Returns the squared distance between the line and the point.
+   */
+  pointSquaredDistance(x: number, y: number): number
+  pointSquaredDistance(p: Point | Point.PointLike | Point.PointData): number
+  pointSquaredDistance(
+    x: number | Point | Point.PointLike | Point.PointData,
+    y?: number,
+  ) {
+    const p = typeof x === 'number' ? { x, y: y! } : Point.normalize(x)
+    return this.closestPoint(p).squaredDistance(p)
+  }
+
+  /**
+   * Returns the distance between the line and the point.
+   */
+  pointDistance(x: number, y: number): number
+  pointDistance(p: Point | Point.PointLike | Point.PointData): number
+  pointDistance(
+    x: number | Point | Point.PointLike | Point.PointData,
+    y?: number,
+  ) {
+    const p = typeof x === 'number' ? { x, y: y! } : Point.normalize(x)
+    return this.closestPoint(p).distance(p)
+  }
+
+  /**
    * Returns a line tangent to the line at point that lies `rate`
    * (normalized length) away from the beginning of the line.
    */
@@ -388,6 +426,44 @@ export class Line {
     tangentLine.translate(tangentStart.x - start.x, tangentStart.y - start.y)
 
     return tangentLine
+  }
+
+  /**
+   * Returns which direction the line would have to rotate in order to
+   * direct itself at a point.
+   *
+   * Returns 1 if the given point on the right side of the segment, 0 if its
+   * on the segment, and -1 if the point is on the left side of the segment.
+   *
+   * @see https://softwareengineering.stackexchange.com/questions/165776/what-do-ptlinedist-and-relativeccw-do
+   */
+  relativeCcw(x: number, y: number): -1 | 0 | 1
+  relativeCcw(p: Point | Point.PointLike | Point.PointData): -1 | 0 | 1
+  relativeCcw(
+    x: number | Point | Point.PointLike | Point.PointData,
+    y?: number,
+  ) {
+    const ref = typeof x === 'number' ? new Point(x, y) : Point.normalize(x)
+
+    let dx1 = ref.x - this.start.x
+    let dy1 = ref.y - this.start.y
+    const dx2 = this.end.x - this.start.x
+    const dy2 = this.end.y - this.start.y
+
+    let ccw = dx1 * dy2 - dy1 * dx2
+    if (ccw === 0) {
+      ccw = dx1 * dx2 + dy1 * dy2
+      if (ccw > 0.0) {
+        dx1 -= dx2
+        dy1 -= dy2
+        ccw = dx1 * dx2 + dy1 * dy2
+        if (ccw < 0.0) {
+          ccw = 0.0
+        }
+      }
+    }
+
+    return ccw < 0.0 ? -1 : ccw > 0.0 ? 1 : 0
   }
 
   equals(l: Line) {

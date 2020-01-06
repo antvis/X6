@@ -1,7 +1,8 @@
+import { Point, Rectangle } from '../../geometry'
 import { Cell } from '../../core/cell'
 import { Graph } from '../../graph'
 import { Shape, EllipseShape, ImageShape } from '../../shape'
-import { Image, Anchor, Point, Rectangle } from '../../struct'
+import { Image, Anchor } from '../../struct'
 import {
   drill,
   BaseStyle,

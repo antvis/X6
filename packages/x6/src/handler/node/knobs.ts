@@ -1,14 +1,11 @@
-import { Angle } from '@antv/x6-geometry'
-import { NumberExt } from '@antv/x6-util'
-import { DomUtil } from '@antv/x6-dom-util'
-import { DomEvent } from '@antv/x6-dom-event'
+import { NumberExt } from '../../util'
+import { DomUtil, DomEvent } from '../../dom'
+import { Angle, Point, Rectangle } from '../../geometry'
 import { Disposable } from '../../entity'
-import * as utilBiz from '../../util'
 import { State } from '../../core'
 import { Shape } from '../../shape'
 import { Handle } from '../handle'
 import { NodeHandler } from './handler'
-import { Rectangle, Point } from '../../struct'
 import { MouseEventEx } from '../mouse-event'
 import {
   createLabelHandle,
@@ -395,7 +392,7 @@ export class Knobs extends Disposable {
       const draw = (index: number, handle?: Shape) => {
         const cursor = this.getCurosr(index)
         const shape = handle || this.handles![index]
-        pt = utilBiz.rotatePointEx(pt, cos, sin, ct)
+        pt = Point.rotateEx(pt, cos, sin, ct)
         this.moveHandleTo(shape, pt.x, pt.y)
         if (this.graph.isEnabled()) {
           shape.setCursor(cursor)
@@ -464,7 +461,7 @@ export class Knobs extends Disposable {
     if (this.rotationShape != null) {
       const rot = this.master.preview.getRotationForRedraw()
       const ct = this.state.bounds.getCenter()
-      const pt = utilBiz.rotatePoint(this.getRotationHandlePosition(), rot, ct)
+      const pt = Point.rotate(this.getRotationHandlePosition(), rot, ct)
       const elem = this.rotationShape.elem
       if (elem != null) {
         this.moveHandleTo(this.rotationShape, pt.x, pt.y)

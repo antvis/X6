@@ -1,5 +1,4 @@
-import { DomUtil } from '@antv/x6-dom-util'
-import { DomEvent } from '@antv/x6-dom-event'
+import { DomUtil, DomEvent } from '../dom'
 import { Graph } from '../graph'
 import { MouseEventEx } from './mouse-event'
 import { BaseHandler } from './base-handler'

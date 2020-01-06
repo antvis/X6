@@ -1,5 +1,4 @@
-import * as util from '../util'
-import { Point, Rectangle } from '../struct'
+import { Angle, Point, Rectangle } from '../geometry'
 
 export class Geometry {
   /**
@@ -98,7 +97,7 @@ export class Geometry {
       this.points = []
     }
 
-    const p = typeof x === 'number' ? new Point(x, y!) : Point.clone(x)
+    const p = Point.create(x, y)
 
     this.points.push(p)
   }
@@ -128,13 +127,13 @@ export class Geometry {
    * @param center Specifies the center of the rotation.
    */
   rotate(degree: number, center: Point) {
-    const rad = util.toRad(degree)
+    const rad = Angle.toRad(degree)
     const cos = Math.cos(rad)
     const sin = Math.sin(rad)
 
     if (!this.relative) {
       const ct = this.bounds.getCenter()
-      const pt = util.rotatePointEx(ct, cos, sin, center)
+      const pt = Point.rotateEx(ct, cos, sin, center)
 
       this.bounds.x = Math.round(pt.x - this.bounds.width / 2)
       this.bounds.y = Math.round(pt.y - this.bounds.height / 2)
@@ -249,7 +248,7 @@ namespace Private {
     center: Point,
   ) {
     if (point != null) {
-      const p = util.rotatePointEx(point, cos, sin, center)
+      const p = Point.rotateEx(point, cos, sin, center)
       point.x = Math.round(p.x)
       point.y = Math.round(p.y)
     }

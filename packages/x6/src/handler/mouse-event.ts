@@ -1,10 +1,9 @@
-import { Platform } from '@antv/x6-util'
-import { DomUtil } from '@antv/x6-dom-util'
-import { DomEvent } from '@antv/x6-dom-event'
+import { Point } from '../geometry'
+import { Platform } from '../util'
+import { DomUtil, DomEvent } from '../dom'
 import { Graph } from '../graph/graph'
 import { State } from '../core/state'
 import { Shape } from '../shape'
-import { Point } from '../struct'
 
 export class MouseEventEx {
   e: MouseEvent

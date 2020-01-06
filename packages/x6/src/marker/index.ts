@@ -1,5 +1,5 @@
+import { Point } from '../geometry'
 import { Shape } from '../shape'
-import { Point } from '../struct'
 import { SvgCanvas2D } from '../canvas'
 import { ovalMarker } from './oval'
 import { diamondMarker } from './diamond'

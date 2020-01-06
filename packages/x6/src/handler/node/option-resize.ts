@@ -1,6 +1,6 @@
+import { Rectangle } from '../../geometry'
 import { Cell } from '../../core/cell'
 import { Graph } from '../../graph'
-import { Rectangle } from '../../struct'
 import { MouseEventEx } from '../mouse-event'
 import { Shape, ImageShape } from '../../shape'
 import { HandleOptions, createHandleShape } from './option-knob'

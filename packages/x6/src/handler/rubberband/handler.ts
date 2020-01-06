@@ -1,10 +1,9 @@
-import { Platform } from '@antv/x6-util'
-import { DomUtil } from '@antv/x6-dom-util'
-import { DomEvent } from '@antv/x6-dom-event'
+import { Platform } from '../../util'
+import { DomUtil, DomEvent } from '../../dom'
+import { Point, Rectangle } from '../../geometry'
 import { Graph } from '../../graph'
 import { Shape } from '../../shape'
 import { MouseHandler } from '../mouse-handler'
-import { Rectangle, Point } from '../../struct'
 import { MouseEventEx } from '../mouse-event'
 import { getRubberbandStyle } from './option'
 

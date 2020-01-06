@@ -1,7 +1,7 @@
-import { ObjectExt, NumberExt } from '@antv/x6-util'
-import { DomUtil } from '@antv/x6-dom-util'
+import { DomUtil } from '../dom'
+import { Point, Rectangle } from '../geometry'
+import { ObjectExt, NumberExt } from '../util'
 import { Cell } from '../core/cell'
-import { Rectangle, Point } from '../struct'
 import { BaseManager } from './base-manager'
 
 export class ZoomManager extends BaseManager {

@@ -1,14 +1,13 @@
 import { Assign } from 'utility-types'
-import { Platform, ObjectExt } from '@antv/x6-util'
-import { DomUtil } from '@antv/x6-dom-util'
-import { DomEvent } from '@antv/x6-dom-event'
+import { Point, Rectangle } from '../../geometry'
+import { Platform, ObjectExt } from '../../util'
+import { DomUtil, DomEvent } from '../../dom'
 import { Disablable } from '../../entity'
 import { Cell } from '../../core/cell'
 import { Graph } from '../../graph'
 import { Guide } from '../../handler/guide/guide'
 import { createGuide } from '../../handler/guide/option'
 import { CellHighlight, MouseEventEx } from '../../handler'
-import { Point, Rectangle } from '../../struct'
 
 export class Dnd<T> extends Disablable<Dnd.EventArgMap<T>> {
   currentGraph: Graph | null = null

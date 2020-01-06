@@ -1,9 +1,8 @@
+import { Point, Rectangle, Line } from '../geometry'
 import { globals } from '../option'
 import { Shape } from './shape-base'
 import { State } from '../core/state'
 import { SvgCanvas2D } from '../canvas'
-import { Rectangle, Point } from '../struct'
-import { relativeCcw } from '../util'
 
 export class ArrowConnector extends Shape {
   arrowWidth: number
@@ -60,7 +59,7 @@ export class ArrowConnector extends Shape {
       w = Math.max(w, this.getEndArrowWidth())
     }
 
-    bbox.grow((w / 2 + this.strokeWidth) * this.scale)
+    bbox.inflate((w / 2 + this.strokeWidth) * this.scale)
   }
 
   drawEdgeShape(c: SvgCanvas2D, pts: Point[]) {
@@ -166,14 +165,8 @@ export class ArrowConnector extends Shape {
 
     for (let i = 0; i < pts.length - 2; i += 1) {
       // Work out in which direction the line is bending
-      const pos = relativeCcw(
-        pts[i].x,
-        pts[i].y,
-        pts[i + 1].x,
-        pts[i + 1].y,
-        pts[i + 2].x,
-        pts[i + 2].y,
-      )
+      const line = new Line(pts[i], pts[i + 1])
+      const pos = line.relativeCcw(pts[i + 2])
 
       dx1 = pts[i + 2].x - pts[i + 1].x
       dy1 = pts[i + 2].y - pts[i + 1].y

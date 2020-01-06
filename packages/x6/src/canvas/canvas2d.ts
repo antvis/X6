@@ -1,4 +1,4 @@
-import * as util from '../util'
+import { Point } from '../geometry'
 import { Direction, LineCap, LineJoin } from '../types'
 import { globals } from '../option'
 
@@ -210,7 +210,7 @@ export abstract class Canvas2D {
   }
 
   rotatePoint(x: number, y: number, deg: number, cx: number, cy: number) {
-    return util.rotatePoint({ x, y }, deg, { x: cx, y: cy })
+    return Point.rotate({ x, y }, deg, { x: cx, y: cy })
   }
 
   scale(s: number) {

@@ -1,4 +1,4 @@
-import { DomUtil } from '@antv/x6-dom-util'
+import { DomUtil } from '../../dom'
 import { globals } from '../../option'
 import { Direction } from '../../types'
 import { Canvas2D } from '../canvas2d'

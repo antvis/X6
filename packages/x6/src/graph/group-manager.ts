@@ -110,7 +110,7 @@ export class GroupManager extends BaseManager {
       }
 
       if (border != null) {
-        result.grow(border)
+        result.inflate(border)
       }
     }
 

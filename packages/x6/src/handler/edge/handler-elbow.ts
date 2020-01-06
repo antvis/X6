@@ -1,6 +1,6 @@
-import { DomEvent } from '@antv/x6-dom-event'
 import { Route } from '../../route'
-import { Rectangle, Point } from '../../struct'
+import { DomEvent } from '../../dom'
+import { Point, Rectangle } from '../../geometry'
 import { EdgeHandler } from './handler'
 
 export class EdgeElbowHandler extends EdgeHandler {

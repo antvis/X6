@@ -1,6 +1,6 @@
+import { Point, Rectangle } from '../geometry'
 import { globals } from '../option'
 import { Shape } from './shape-base'
-import { Rectangle, Point } from '../struct'
 import { SvgCanvas2D } from '../canvas'
 
 export class Arrow extends Shape {
@@ -29,7 +29,7 @@ export class Arrow extends Shape {
   augmentBoundingBox(bbox: Rectangle) {
     super.augmentBoundingBox(bbox)
     const w = Math.max(this.arrowWidth, this.endSize as number)
-    bbox.grow((w / 2 + this.strokeWidth) * this.scale)
+    bbox.inflate((w / 2 + this.strokeWidth) * this.scale)
   }
 
   drawEdgeShape(c: SvgCanvas2D, points: Point[]) {

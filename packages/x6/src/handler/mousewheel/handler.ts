@@ -1,7 +1,6 @@
-import { DomUtil } from '@antv/x6-dom-util'
-import { DomEvent } from '@antv/x6-dom-event'
+import { Point } from '../../geometry'
+import { DomUtil, DomEvent } from '../../dom'
 import { Graph } from '../../graph'
-import { Point } from '../../struct'
 import { BaseHandler } from '../base-handler'
 
 export class MouseWheelHandler extends BaseHandler {

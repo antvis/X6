@@ -1,3 +1,4 @@
+import { Point, Rectangle } from '../geometry'
 import { Cell } from '../core/cell'
 import { View } from '../core/view'
 import { Model } from '../core/model'
@@ -6,7 +7,7 @@ import { Graph } from '.'
 import { Renderer } from '../core/renderer'
 import { Selection } from './selection'
 import { Route } from '../route'
-import { Point, Anchor, Rectangle, Overlay } from '../struct'
+import { Anchor, Overlay } from '../struct'
 import {
   KeyboardHandler,
   MouseWheelHandler,

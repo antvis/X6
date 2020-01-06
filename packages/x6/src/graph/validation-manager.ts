@@ -1,4 +1,4 @@
-import { isHtmlElement } from '@antv/x6-dom-util'
+import { DomUtil } from '../dom'
 import { Cell } from '../core/cell'
 import { BaseManager } from './base-manager'
 
@@ -164,13 +164,23 @@ export class ValidationManager extends BaseManager {
       this.graph.multiplicities.forEach(rule => {
         if (
           rule.isSource &&
-          isHtmlElement(data, rule.nodeName, rule.attrName, rule.attrValue) &&
+          DomUtil.isHtmlElement(
+            data,
+            rule.nodeName,
+            rule.attrName,
+            rule.attrValue,
+          ) &&
           ((rule.max > 0 && outCount > rule.max) || outCount < rule.min)
         ) {
           error += `${rule.countError}\n`
         } else if (
           !rule.isSource &&
-          isHtmlElement(data, rule.nodeName, rule.attrName, rule.attrValue) &&
+          DomUtil.isHtmlElement(
+            data,
+            rule.nodeName,
+            rule.attrName,
+            rule.attrValue,
+          ) &&
           ((rule.max > 0 && inCount > rule.max) || inCount < rule.min)
         ) {
           error += `${rule.countError}\n`

@@ -1,7 +1,8 @@
-import { setPrefixedStyle } from '@antv/x6-dom-util'
+import { Rectangle } from '../geometry'
+import { DomUtil } from '../dom'
 import { RectangleShape } from './rectangle'
 import { SvgCanvas2D } from '../canvas'
-import { Rectangle, Overlay } from '../struct'
+import { Overlay } from '../struct'
 import { State } from '../core/state'
 
 export class ImageShape extends RectangleShape {
@@ -122,9 +123,13 @@ export class ImageShape extends RectangleShape {
       }
 
       if (this.rotation !== 0) {
-        setPrefixedStyle(img.style, 'transform', `rotate(${this.rotation}deg)`)
+        DomUtil.setPrefixedStyle(
+          img.style,
+          'transform',
+          `rotate(${this.rotation}deg)`,
+        )
       } else {
-        setPrefixedStyle(img.style, 'transform', '')
+        DomUtil.setPrefixedStyle(img.style, 'transform', '')
       }
 
       img.style.width = elem.style.width

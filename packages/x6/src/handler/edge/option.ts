@@ -1,6 +1,6 @@
+import { Rectangle } from '../../geometry'
 import { Cell } from '../../core/cell'
 import { Graph } from '../../graph'
-import { Rectangle } from '../../struct'
 import { Shape, ImageShape } from '../../shape'
 import { HandleOptions, createHandleShape } from '../node/option-knob'
 import {

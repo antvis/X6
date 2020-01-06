@@ -1,5 +1,5 @@
+import { Point, Rectangle } from '../geometry'
 import { State } from '../core/state'
-import { Rectangle, Point } from '../struct'
 import { rectanglePerimeter } from './rectangle'
 import { ellipsePerimeter } from './ellipse'
 import { trianglePerimeter } from './triangle'

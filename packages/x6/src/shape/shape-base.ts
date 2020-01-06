@@ -1,15 +1,13 @@
-import { NumberExt, Color } from '@antv/x6-util'
-import { DomUtil } from '@antv/x6-dom-util'
-import { DomEvent } from '@antv/x6-dom-event'
+import { NumberExt, Color } from '../util'
+import { DomUtil, DomEvent } from '../dom'
+import { Point, Rectangle } from '../geometry'
 import { Disposable } from '../entity'
 import * as images from '../assets/images'
 import { globals } from '../option'
 import { State } from '../core/state'
 import { Stencil } from './stencil'
 import { SvgCanvas2D } from '../canvas'
-import { Rectangle, Point } from '../struct'
-import { Style, Direction, Dialect } from '../types'
-import { rotateRectangle, getDirectedBounds } from '../util'
+import { Style, Direction, Dialect, Margin } from '../types'
 import { registerEntity } from '../registry/util'
 
 export class Shape extends Disposable {
@@ -826,8 +824,8 @@ export class Shape extends Disposable {
     // Normalizes argument for getLabelMargins hook
     const margin = this.getLabelMargins(bounds)
     if (margin != null) {
-      let flipH = !!this.style.flipH
-      let flipV = !!this.style.flipV
+      let flipH = State.isFlipH(this.style)
+      let flipV = State.isFlipV(this.style)
 
       // Handles special case for vertical labels
       if (
@@ -835,18 +833,18 @@ export class Shape extends Disposable {
         this.state.text != null &&
         this.state.text.drawBoundsInverted()
       ) {
-        const tmp1 = margin.x
-        margin.x = margin.height
-        margin.height = margin.width
-        margin.width = margin.y
-        margin.y = tmp1
+        const m = margin.left
+        margin.left = margin.bottom
+        margin.bottom = margin.right
+        margin.right = margin.top
+        margin.top = m
 
-        const tmp2 = flipH
+        const f = flipH
         flipH = flipV
-        flipV = tmp2
+        flipV = f
       }
 
-      return getDirectedBounds(rect, margin, this.style, flipH, flipV)
+      return State.getDirectedBounds(this.state, rect, margin, flipH, flipV)
     }
 
     return rect
@@ -856,7 +854,7 @@ export class Shape extends Disposable {
    * Returns the scaled top, left, bottom and right margin
    * to be used for computing the label bounds.
    */
-  getLabelMargins(rect: Rectangle): Rectangle | null {
+  getLabelMargins(rect: Rectangle): Margin | null {
     return null
   }
 
@@ -870,7 +868,7 @@ export class Shape extends Disposable {
         const b = (this.elem as SVGGraphicsElement).getBBox()
         if (b.width > 0 && b.height > 0) {
           this.boundingBox = new Rectangle(b.x, b.y, b.width, b.height)
-          this.boundingBox.grow((this.strokeWidth * this.scale) / 2)
+          this.boundingBox.inflate((this.strokeWidth * this.scale) / 2)
           return
         }
       } catch (e) {}
@@ -882,7 +880,7 @@ export class Shape extends Disposable {
         this.augmentBoundingBox(bbox)
         const rot = this.getShapeRotation()
         if (rot !== 0) {
-          bbox = rotateRectangle(bbox, rot)
+          bbox = bbox.rotate(rot)
         }
       }
 
@@ -943,7 +941,7 @@ export class Shape extends Disposable {
       bbox.height += Math.ceil(this.shadowOffsetY * this.scale)
     }
 
-    bbox.grow((this.strokeWidth * this.scale) / 2)
+    bbox.inflate((this.strokeWidth * this.scale) / 2)
   }
 
   protected getGradientBounds(
