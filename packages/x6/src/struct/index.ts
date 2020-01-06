@@ -1,5 +1,5 @@
-export * from './point'
-export * from './rectangle'
+// export * from './point'
+// export * from './rectangle'
 export * from './image'
 export * from './overlay'
 export * from './anchor'

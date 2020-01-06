@@ -1,4 +1,4 @@
-import { ObjectExt } from '@antv/x6-util'
+import { ObjectExt } from '../util'
 import { View } from '../core/view'
 import { Model } from '../core/model'
 import { Renderer } from '../core/renderer'

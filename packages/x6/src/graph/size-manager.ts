@@ -1,6 +1,6 @@
-import { StringExt } from '@antv/x6-util'
+import { StringExt } from '../util'
+import { Point, Rectangle } from '../geometry'
 import { Cell } from '../core/cell'
-import { Point, Rectangle } from '../struct'
 import { BaseManager } from './base-manager'
 import { globals } from '../option'
 
@@ -394,7 +394,7 @@ export class SizeManager extends BaseManager {
             const overlap = this.graph.getOverlap(cell)
 
             if (overlap > 0) {
-              area = Rectangle.clone(area)
+              area = area.clone()
 
               area.x -= area.width * overlap
               area.y -= area.height * overlap
@@ -406,8 +406,7 @@ export class SizeManager extends BaseManager {
             if (max == null) {
               max = area
             } else {
-              max = Rectangle.clone(max)
-              max.intersect(area)
+              max = max.intersect(area)
             }
           }
         }
@@ -550,7 +549,7 @@ export class SizeManager extends BaseManager {
         const bbox = this.view.getBoundingBox(this.view.getState(cell), true)
         if (bbox != null) {
           if (result == null) {
-            result = Rectangle.clone(bbox)
+            result = bbox.clone()
           } else {
             result.add(bbox)
           }

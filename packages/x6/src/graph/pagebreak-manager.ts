@@ -1,5 +1,5 @@
+import { Point, Rectangle } from '../geometry'
 import { Polyline } from '../shape'
-import { Rectangle, Point } from '../struct'
 import { BaseManager } from './base-manager'
 
 export class PageBreakManager extends BaseManager {

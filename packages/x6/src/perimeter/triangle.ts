@@ -1,6 +1,5 @@
+import { Point, Rectangle, Line } from '../geometry'
 import { State } from '../core/state'
-import { Rectangle, Point } from '../struct'
-import { getLinesIntersection } from '../util'
 
 export function trianglePerimeter(
   bounds: Rectangle,
@@ -90,32 +89,19 @@ export function trianglePerimeter(
       cy = pt.y
     }
 
+    const line1 = new Line(next.x, next.y, cx, cy)
+    let line2
+
     if (
       (vertical && next.x <= x + w / 2) ||
       (!vertical && next.y <= y + h / 2)
     ) {
-      result = getLinesIntersection(
-        next.x,
-        next.y,
-        cx,
-        cy,
-        start.x,
-        start.y,
-        corner.x,
-        corner.y,
-      )
+      line2 = new Line(start, corner)
     } else {
-      result = getLinesIntersection(
-        next.x,
-        next.y,
-        cx,
-        cy,
-        corner.x,
-        corner.y,
-        end.x,
-        end.y,
-      )
+      line2 = new Line(corner, end)
     }
+
+    result = line1.intersectionWithLine(line2)
   }
 
   if (result == null) {

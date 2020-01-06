@@ -6,18 +6,19 @@ export * from './version'
 export * from './enum'
 export * from './struct'
 export * from './types'
+export * from './entity'
+export * from './dom'
+export * from './util'
 
 export * from './canvas'
 export * from './core'
 export * from './graph'
 export * from './change'
 export * from './addon'
+export * from './geometry'
 
 export { globals } from './option'
+export { Shape } from './shape/shape'
 export { Route } from './route'
 export { Marker } from './marker'
 export { Perimeter } from './perimeter'
-export { Shape } from './shape/shape'
-
-import * as util from './util'
-export { util }

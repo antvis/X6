@@ -1,7 +1,8 @@
+import { Point } from '../geometry'
 import { Cell } from '../core/cell'
 import { State } from '../core/state'
 import { Route } from '../route'
-import { Point, Anchor } from '../struct'
+import { Anchor } from '../struct'
 import { BaseManager } from './base-manager'
 
 export class ConnectionManager extends BaseManager {

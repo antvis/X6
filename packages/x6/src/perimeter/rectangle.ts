@@ -1,5 +1,5 @@
+import { Point, Rectangle } from '../geometry'
 import { State } from '../core/state'
-import { Rectangle, Point } from '../struct'
 
 export function rectanglePerimeter(
   bounds: Rectangle,

@@ -1,5 +1,5 @@
+import { Point, Rectangle } from '../geometry'
 import { SvgCanvas2D } from '../canvas'
-import { Rectangle, Point } from '../struct'
 import { Marker } from '../marker'
 import { Polyline } from './polyline'
 import { globals } from '../option'
@@ -106,6 +106,6 @@ export class Connector extends Polyline {
       size = Math.max(size, this.style.endSize || globals.defaultMarkerSize) + 1
     }
 
-    bbox.grow(size * this.scale)
+    bbox.inflate(size * this.scale)
   }
 }

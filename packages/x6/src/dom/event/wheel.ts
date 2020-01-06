@@ -1,4 +1,4 @@
-import { Platform } from '@antv/x6-util'
+import { Platform } from '../../util'
 import { addListener, removeListener } from './listener'
 
 type Callback = (e: WheelEvent) => void

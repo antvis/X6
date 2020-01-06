@@ -1,4 +1,4 @@
-import { Platform } from '@antv/x6-util'
+import { Platform } from '../util'
 import * as images from '../assets/images'
 import { loop } from '../route/loop'
 import { Style } from '../types'

@@ -1,10 +1,9 @@
-import { DomUtil } from '@antv/x6-dom-util'
-import { Platform } from '@antv/x6-util'
-import { DomEvent } from '@antv/x6-dom-event'
+import { Platform } from '../util'
+import { DomUtil, DomEvent } from '../dom'
+import { Point, Rectangle } from '../geometry'
 import * as sizeSensor from 'size-sensor'
 import { Cell } from '../core/cell'
 import { Size } from '../types'
-import { Rectangle, Point } from '../struct'
 import { BaseManager } from './base-manager'
 
 export class ViewportManager extends BaseManager {
@@ -179,7 +178,7 @@ export class ViewportManager extends BaseManager {
                   }
                 }
               } else {
-                bbox = Rectangle.clone(geo.bounds)
+                bbox = geo.bounds.clone()
                 if (this.model.isNode(parent) && cells.includes(parent)) {
                   const tmp = this.getBoundingBox([parent], false)
                   if (tmp != null) {

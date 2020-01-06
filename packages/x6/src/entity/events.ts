@@ -4,14 +4,14 @@ import {
   PickByValue,
   OmitByValue,
 } from 'utility-types'
-import { FunctionExt } from '@antv/x6-util'
+import { FunctionExt } from '../util'
 
-export class EventEmitter<M extends EventEmitter.EventArgs = any> {
+export class Events<M extends Events.EventArgs = any> {
   private listeners: { [name: string]: any[] } = {}
 
-  on<N extends EventEmitter.EventKeys<M>>(
+  on<N extends Events.EventKeys<M>>(
     name: N,
-    handler: EventEmitter.Handler<M[N]>,
+    handler: Events.Handler<M[N]>,
     context?: any,
   ) {
     if (handler == null) {
@@ -27,9 +27,9 @@ export class EventEmitter<M extends EventEmitter.EventArgs = any> {
     return this
   }
 
-  once<N extends EventEmitter.EventKeys<M>>(
+  once<N extends Events.EventKeys<M>>(
     name: N,
-    handler: EventEmitter.Handler<M[N]>,
+    handler: Events.Handler<M[N]>,
     context?: any,
   ) {
     const cb = (...args: any) => {
@@ -40,9 +40,9 @@ export class EventEmitter<M extends EventEmitter.EventArgs = any> {
     return this.on(name, cb as any, this)
   }
 
-  off<N extends EventEmitter.EventKeys<M>>(
+  off<N extends Events.EventKeys<M>>(
     name?: N | null,
-    handler?: EventEmitter.Handler<M[N]> | null,
+    handler?: Events.Handler<M[N]> | null,
     context?: any,
   ) {
     // remove all events.
@@ -81,18 +81,15 @@ export class EventEmitter<M extends EventEmitter.EventArgs = any> {
     return this
   }
 
-  trigger<N extends EventEmitter.OptionalNormalKeys<M>>(name: N): boolean
-  trigger<N extends EventEmitter.RequiredNormalKeys<M>>(
-    name: N,
-    args: M[N],
-  ): boolean
-  trigger<N extends EventEmitter.KeysWithArrayValue<M>>(
+  trigger<N extends Events.OptionalNormalKeys<M>>(name: N): boolean
+  trigger<N extends Events.RequiredNormalKeys<M>>(name: N, args: M[N]): boolean
+  trigger<N extends Events.KeysWithArrayValue<M>>(
     name: N,
     ...args: M[N]
   ): boolean
-  trigger<N extends EventEmitter.OtherKeys<M>>(name: N, args?: M[N]): boolean
-  trigger<N extends EventEmitter.OtherKeys<M>>(name: N, ...args: M[N]): boolean
-  trigger<N extends EventEmitter.EventKeys<M>>(name: N, ...args: M[N]) {
+  trigger<N extends Events.OtherKeys<M>>(name: N, args?: M[N]): boolean
+  trigger<N extends Events.OtherKeys<M>>(name: N, ...args: M[N]): boolean
+  trigger<N extends Events.EventKeys<M>>(name: N, ...args: M[N]) {
     const cache = this.listeners[name]
     if (cache != null) {
       return Private.call(cache, args)
@@ -102,7 +99,7 @@ export class EventEmitter<M extends EventEmitter.EventArgs = any> {
   }
 }
 
-export namespace EventEmitter {
+export namespace Events {
   export type Handler<A> = A extends null | undefined
     ? () => any
     : A extends any[]

@@ -1,6 +1,5 @@
+import { Point, Rectangle, Line } from '../geometry'
 import { State } from '../core/state'
-import { Rectangle, Point } from '../struct'
-import { getLinesIntersection } from '../util'
 
 export function hexagonPerimeter(
   bounds: Rectangle,
@@ -204,7 +203,9 @@ export function hexagonPerimeter(
       }
     }
 
-    result = getLinesIntersection(tx, ty, next.x, next.y, a.x, a.y, b.x, b.y)!
+    const line1 = new Line(a, b)
+    const line2 = new Line({ x: tx, y: ty }, next)
+    result = line1.intersectionWithLine(line2)
   } else {
     if (vertical) {
       const beta = Math.atan2(h / 4, w / 2)
@@ -305,7 +306,9 @@ export function hexagonPerimeter(
       }
     }
 
-    result = getLinesIntersection(cx, cy, next.x, next.y, a.x, a.y, b.x, b.y)
+    const line1 = new Line(a, b)
+    const line2 = new Line({ x: cx, y: cy }, next)
+    result = line1.intersectionWithLine(line2)
   }
 
   if (result == null) {

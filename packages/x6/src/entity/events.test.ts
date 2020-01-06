@@ -1,9 +1,9 @@
 import sinon from 'sinon'
-import { EventEmitter } from './index'
+import { Events } from './index'
 
 describe('events', () => {
   it('should trigger with context', () => {
-    const obj = new EventEmitter()
+    const obj = new Events()
     const spy = sinon.spy()
     const ctx = {}
     obj.on('a', spy, ctx)
@@ -13,7 +13,7 @@ describe('events', () => {
   })
 
   it('should trigger with arguments', () => {
-    const obj = new EventEmitter()
+    const obj = new Events()
     const spy1 = sinon.spy()
     const spy2 = sinon.spy()
 
@@ -28,7 +28,7 @@ describe('events', () => {
   })
 
   it('should trigger event multi times', () => {
-    const obj = new EventEmitter()
+    const obj = new Events()
     const spy = sinon.spy()
 
     obj.on('a', spy)
@@ -44,7 +44,7 @@ describe('events', () => {
   it('should trigger once', () => {
     const spy1 = sinon.spy()
     const spy2 = sinon.spy()
-    const obj = new EventEmitter()
+    const obj = new Events()
     const context = {}
 
     obj.once('a', spy1, context)
@@ -63,7 +63,7 @@ describe('events', () => {
   })
 
   it('should returns callback status', () => {
-    const obj = new EventEmitter()
+    const obj = new Events()
     const stub1 = sinon.stub()
     const stub2 = sinon.stub()
 
@@ -85,7 +85,7 @@ describe('events', () => {
   })
 
   it('should not bind invalid callbacks', () => {
-    const obj = new EventEmitter()
+    const obj = new Events()
     const spy = sinon.spy()
 
     obj.on('a', null as any)
@@ -95,7 +95,7 @@ describe('events', () => {
   })
 
   it('should bind a callback with a specific context', () => {
-    const obj = new EventEmitter()
+    const obj = new Events()
     const context = {}
     const spy = sinon.spy()
 
@@ -106,7 +106,7 @@ describe('events', () => {
   })
 
   it('should unbind event', () => {
-    const obj = new EventEmitter()
+    const obj = new Events()
     const spy = sinon.spy()
 
     obj.on('a', spy)
@@ -120,7 +120,7 @@ describe('events', () => {
   })
 
   it('should unbind specified event callback', () => {
-    const obj = new EventEmitter()
+    const obj = new Events()
     const spyA = sinon.spy()
     const spyB = sinon.spy()
 
@@ -138,7 +138,7 @@ describe('events', () => {
   })
 
   it('should unbind a callback in the midst of it trigger', () => {
-    const obj = new EventEmitter()
+    const obj = new Events()
     const spy = sinon.spy()
 
     function callback() {
@@ -154,7 +154,7 @@ describe('events', () => {
   })
 
   it('should remove all events', () => {
-    const obj = new EventEmitter()
+    const obj = new Events()
     const spy1 = sinon.spy()
     const spy2 = sinon.spy()
 
@@ -172,7 +172,7 @@ describe('events', () => {
   })
 
   it('should remove all events for a specific event', () => {
-    const obj = new EventEmitter()
+    const obj = new Events()
     const spyA = sinon.spy()
     const spyB = sinon.spy()
 
@@ -191,7 +191,7 @@ describe('events', () => {
   })
 
   it('should remove all events for a specific context', () => {
-    const obj = new EventEmitter()
+    const obj = new Events()
     const spyA = sinon.spy()
     const spyB = sinon.spy()
     const context = {}
@@ -210,7 +210,7 @@ describe('events', () => {
   })
 
   it('should remove all events for a specific callback', () => {
-    const obj = new EventEmitter()
+    const obj = new Events()
     const success = sinon.spy()
     const fail = sinon.spy()
 

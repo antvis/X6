@@ -1,5 +1,5 @@
+import { Rectangle } from '../geometry'
 import { Cell } from '../core/cell'
-import { Rectangle } from '../struct'
 import { BaseGraph } from './base-graph'
 
 export class SelectionAccessor extends BaseGraph {

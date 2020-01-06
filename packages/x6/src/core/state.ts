@@ -1,10 +1,12 @@
+import { NumberExt } from '../util'
+import { Point, Line, Rectangle } from '../geometry'
 import { Disablable } from '../entity'
 import { Cell } from './cell'
 import { View } from './view'
-import { Style } from '../types'
 import { DirectionMask } from '../enum'
+import { Style, Margin } from '../types'
 import { Shape, ImageShape, Text } from '../shape'
-import { Point, Rectangle, Overlay, Dictionary } from '../struct'
+import { Overlay, Dictionary } from '../struct'
 
 export class State extends Disablable {
   /**
@@ -131,7 +133,7 @@ export class State extends Disablable {
    */
   getPerimeterBounds(
     border: number = 0,
-    bounds: Rectangle = Rectangle.clone(this.bounds),
+    bounds: Rectangle = this.bounds.clone(),
   ) {
     if (
       this.shape != null &&
@@ -153,7 +155,7 @@ export class State extends Disablable {
     }
 
     if (border !== 0) {
-      bounds.grow(border)
+      bounds.inflate(border)
     }
 
     return bounds
@@ -329,16 +331,25 @@ export namespace State {
     )
   }
 
-  export function getRotation(state: State | null, defaultValue: number = 0) {
-    return (state && state.style && state.style.rotation) || defaultValue
+  export function getRotation(
+    state: State | Style | null,
+    defaultValue: number = 0,
+  ) {
+    const style = state instanceof State ? state.style : state
+    if (style != null && style.rotation != null) {
+      return style.rotation
+    }
+    return defaultValue
   }
 
-  export function isFlipH(state: State | null) {
-    return state != null && state.style != null && state.style.flipH === true
+  export function isFlipH(state: State | Style | null) {
+    const style = state instanceof State ? state.style : state
+    return style != null && style.flipH === true
   }
 
-  export function isFlipV(state: State | null) {
-    return state != null && state.style != null && state.style.flipV === true
+  export function isFlipV(state: State | Style | null) {
+    const style = state instanceof State ? state.style : state
+    return style != null && style.flipV === true
   }
 
   /**
@@ -467,5 +478,91 @@ export namespace State {
     result |= (mask & DirectionMask.east) >> 3
 
     return result
+  }
+
+  /**
+   * Adds the given margins to the given rectangle and rotates and flips the
+   * rectangle according to the respective styles in style.
+   */
+  export function getDirectedBounds(
+    state: State,
+    rect: Rectangle,
+    margin: Margin,
+    flipH: boolean = isFlipH(state),
+    flipV: boolean = isFlipV(state),
+  ) {
+    const direction = state.style.direction || 'east'
+    const margin1: Margin = {
+      left: NumberExt.clamp(margin.left, 0, rect.width),
+      top: NumberExt.clamp(margin.top, 0, rect.height),
+      right: NumberExt.clamp(margin.right, 0, rect.width),
+      bottom: NumberExt.clamp(margin.bottom, 0, rect.height),
+    }
+
+    if (
+      (flipV && (direction === 'south' || direction === 'north')) ||
+      (flipH && (direction === 'east' || direction === 'west'))
+    ) {
+      const tmp = margin1.left
+      margin1.left = margin1.right
+      margin1.right = tmp
+    }
+
+    if (
+      (flipH && (direction === 'south' || direction === 'north')) ||
+      (flipV && (direction === 'east' || direction === 'west'))
+    ) {
+      const tmp = margin1.top
+      margin1.top = margin1.bottom
+      margin1.bottom = tmp
+    }
+
+    const margin2 = { ...margin1 }
+    if (direction === 'south') {
+      margin2.left = margin1.bottom
+      margin2.top = margin1.left
+      margin2.right = margin1.top
+      margin2.bottom = margin1.right
+    } else if (direction === 'west') {
+      margin2.left = margin.right
+      margin2.top = margin.bottom
+      margin2.right = margin.left
+      margin2.bottom = margin.top
+    } else if (direction === 'north') {
+      margin2.left = margin.top
+      margin2.top = margin.right
+      margin2.right = margin.bottom
+      margin2.bottom = margin.left
+    }
+
+    return new Rectangle(
+      rect.x + margin2.left,
+      rect.y + margin2.top,
+      rect.width - margin2.right - margin2.left,
+      rect.height - margin2.bottom - margin2.top,
+    )
+  }
+
+  export function getNearestSegment(state: State, x: number, y: number) {
+    const len = state.absolutePoints.length
+    let index = -1
+    if (len > 0) {
+      let last = state.absolutePoints[0]!
+      let min = null
+
+      for (let i = 1; i < len; i += 1) {
+        const point = state.absolutePoints[i]
+        const line = new Line(last, point)
+        const dist = line.pointSquaredDistance(x, y)
+        if (min == null || dist < min) {
+          min = dist
+          index = i - 1
+        }
+
+        last = point
+      }
+    }
+
+    return index
   }
 }

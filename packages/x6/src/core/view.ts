@@ -1,8 +1,7 @@
-import { Platform, NumberExt } from '@antv/x6-util'
-import { DomUtil } from '@antv/x6-dom-util'
-import { DomEvent } from '@antv/x6-dom-event'
+import { Point, Line, Rectangle } from '../geometry'
+import { Platform, NumberExt } from '../util'
+import { DomEvent, DomUtil } from '../dom'
 import { Basecoat } from '../entity'
-import * as utilBiz from '../util'
 import { Cell } from './cell'
 import { State } from './state'
 import { Graph } from '../graph'
@@ -12,7 +11,7 @@ import { Geometry } from './geometry'
 import { Perimeter } from '../perimeter'
 import { RectangleShape } from '../shape'
 import { UndoableEdit, CurrentRootChange } from '../change'
-import { Point, Rectangle, Anchor } from '../struct'
+import { Anchor } from '../struct'
 import { MouseEventEx } from '../handler'
 
 export class View extends Basecoat<View.EventArgs> {
@@ -480,7 +479,7 @@ export class View extends Basecoat<View.EventArgs> {
       if (rot !== 0) {
         const nodeCenter = state.bounds.getCenter()
         const parentCenter = pState.bounds.getCenter()
-        const pt = utilBiz.rotatePoint(nodeCenter, rot, parentCenter)
+        const pt = Point.rotate(nodeCenter, rot, parentCenter)
         state.bounds.x = pt.x - state.bounds.width / 2
         state.bounds.y = pt.y - state.bounds.height / 2
       }
@@ -688,7 +687,7 @@ export class View extends Basecoat<View.EventArgs> {
 
       if (anchor.perimeter) {
         if (r1 !== 0) {
-          result = utilBiz.rotatePoint(result, r1, cx)
+          result.rotate(r1, cx)
         }
 
         result = this.getPerimeterPoint(terminalState, result, false)
@@ -711,7 +710,7 @@ export class View extends Basecoat<View.EventArgs> {
 
       // Generic rotation after projection on perimeter
       if (r2 !== 0 && result != null) {
-        result = utilBiz.rotatePoint(result, r2, cx)
+        result.rotate(r2, cx)
       }
     }
 
@@ -828,7 +827,7 @@ export class View extends Basecoat<View.EventArgs> {
       state.shape.stencil != null &&
       state.shape.stencil.aspect === 'fixed'
     ) {
-      previous = Rectangle.clone(state.bounds)
+      previous = state.bounds.clone()
       const asp = state.shape.stencil.computeAspect(
         state.shape,
         state.bounds.x,
@@ -913,10 +912,10 @@ export class View extends Basecoat<View.EventArgs> {
     const orth = this.graph.connectionManager.isOrthogonal(edgeState)
     const center = relateState.bounds.getCenter()
 
-    let nextPoint = this.getNextPoint(edgeState, opposeState, isSource)
-    if (rot !== 0) {
+    const nextPoint = this.getNextPoint(edgeState, opposeState, isSource)
+    if (rot !== 0 && nextPoint != null) {
       // rotate with related cell
-      nextPoint = utilBiz.rotatePoint(nextPoint!, -rot, center)
+      nextPoint.rotate(-rot, center)
     }
 
     let border = edgeState.style.perimeterSpacing || 0
@@ -927,15 +926,15 @@ export class View extends Basecoat<View.EventArgs> {
 
     border = isNaN(border) || !isFinite(border) ? 0 : border
 
-    let p = this.getPerimeterPoint(
+    const p = this.getPerimeterPoint(
       relateState,
       nextPoint!,
       rot === 0 && orth,
       border,
     )
 
-    if (rot !== 0) {
-      p = utilBiz.rotatePoint(p!, rot, center)
+    if (rot !== 0 && p != null) {
+      p.rotate(rot, center)
     }
 
     return p
@@ -1350,7 +1349,7 @@ export class View extends Basecoat<View.EventArgs> {
         // Works which line segment the point of the label is closest to
         let p0 = edgeState.absolutePoints[0]!
         let pe = edgeState.absolutePoints[1]!
-        let minDist = utilBiz.ptSegmentDist(p0.x, p0.y, pe.x, pe.y, x, y)
+        let minDist = new Line(p0, pe).pointSquaredDistance(x, y)
 
         let tmp = 0
         let index = 0
@@ -1359,7 +1358,7 @@ export class View extends Basecoat<View.EventArgs> {
         for (let i = 2; i < pointCount; i += 1) {
           tmp += segments[i - 2]
           pe = edgeState.absolutePoints[i]!
-          const dist = utilBiz.ptSegmentDist(p0.x, p0.y, pe.x, pe.y, x, y)
+          const dist = new Line(p0, pe).pointSquaredDistance(x, y)
 
           if (dist <= minDist) {
             minDist = dist
@@ -1407,10 +1406,9 @@ export class View extends Basecoat<View.EventArgs> {
           projlen = seg
         }
 
-        let yDistance = Math.sqrt(
-          utilBiz.ptSegmentDist(p0.x, p0.y, pe.x, pe.y, x, y),
-        )
-        const direction = utilBiz.relativeCcw(p0.x, p0.y, pe.x, pe.y, x, y)
+        const line = new Line(p0, pe)
+        let yDistance = line.pointDistance(x, y)
+        const direction = line.relativeCcw(x, y)
         if (direction === -1) {
           yDistance = -yDistance
         }

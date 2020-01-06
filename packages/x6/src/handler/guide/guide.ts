@@ -1,9 +1,9 @@
+import { Point, Rectangle } from '../../geometry'
 import { Disposable } from '../../entity'
 import { Cell } from '../../core/cell'
 import { State } from '../../core/state'
 import { Graph } from '../../graph'
 import { Polyline } from '../../shape'
-import { Rectangle, Point } from '../../struct'
 
 export class Guide extends Disposable {
   graph: Graph

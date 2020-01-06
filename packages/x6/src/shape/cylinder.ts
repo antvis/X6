@@ -1,5 +1,5 @@
+import { Rectangle } from '../geometry'
 import { Shape } from './shape-base'
-import { Rectangle } from '../struct'
 import { SvgCanvas2D } from '../canvas'
 
 export class Cylinder extends Shape {

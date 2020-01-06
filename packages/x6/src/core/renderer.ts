@@ -1,12 +1,10 @@
-import { Platform, ObjectExt, NumberExt } from '@antv/x6-util'
-import { Angle } from '@antv/x6-geometry'
-import { DomUtil } from '@antv/x6-dom-util'
-import { DomEvent } from '@antv/x6-dom-event'
-import * as utilBiz from '../util'
+import { DomUtil, DomEvent } from '../dom'
+import { Angle, Point, Rectangle } from '../geometry'
+import { Platform, ObjectExt, NumberExt } from '../util'
 import { State } from './state'
 import { Dialect } from '../types'
 import { globals } from '../option'
-import { Rectangle, Point, Overlay, Dictionary } from '../struct'
+import { Overlay, Dictionary } from '../struct'
 import { MouseEventEx } from '../handler'
 import {
   Shape,
@@ -952,12 +950,10 @@ export class Renderer {
       const cx = state.bounds.getCenterX()
       const cy = state.bounds.getCenterY()
       if (bounds.x !== cx || bounds.y !== cy) {
-        const pt = utilBiz.rotatePoint(
-          new Point(bounds.x, bounds.y),
+        const pt = new Point(bounds.x, bounds.y).rotate(
           theta,
           new Point(cx, cy),
         )
-
         bounds.x = pt.x
         bounds.y = pt.y
       }
@@ -1021,7 +1017,7 @@ export class Renderer {
             let cx = bounds.getCenterX()
             let cy = bounds.getCenterY()
 
-            const point = utilBiz.rotatePointEx(
+            const point = Point.rotateEx(
               new Point(cx, cy),
               cos,
               sin,
@@ -1099,11 +1095,7 @@ export class Renderer {
           }
 
           if (rot !== 0) {
-            const p = utilBiz.rotatePoint(
-              new Point(cx, cy),
-              rot,
-              state.bounds.getCenter(),
-            )
+            const p = new Point(cx, cy).rotate(rot, state.bounds.getCenter())
             cx = p.x
             cy = p.y
           }

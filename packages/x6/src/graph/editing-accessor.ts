@@ -1,5 +1,5 @@
+import { DomEvent } from '../dom'
 import { Cell } from '../core/cell'
-import { DomEvent } from '@antv/x6-dom-event'
 import { hook } from './decorator'
 import { BaseGraph } from './base-graph'
 

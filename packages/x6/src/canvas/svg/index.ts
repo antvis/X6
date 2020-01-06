@@ -1,7 +1,7 @@
 /* tslint:disable:no-parameter-reassignment */
 
-import { Url } from '@antv/x6-util'
-import { DomUtil } from '@antv/x6-dom-util'
+import { Url } from '../../util'
+import { DomUtil } from '../../dom'
 import { SvgCanvas2DText } from './text'
 
 export class SvgCanvas2D extends SvgCanvas2DText {

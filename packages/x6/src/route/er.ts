@@ -1,7 +1,7 @@
+import { Point } from '../geometry'
 import { Cell } from '../core/cell'
 import { State } from '../core/state'
 import { globals } from '../option'
-import { Point } from '../struct'
 import { DirectionMask } from '../enum'
 
 /**

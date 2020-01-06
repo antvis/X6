@@ -1,6 +1,6 @@
+import { Rectangle } from '../geometry'
 import { Cell } from '../core/cell'
 import { Geometry } from '../core/geometry'
-import { Rectangle } from '../struct'
 import { hook } from './decorator'
 import { BaseGraph } from './base-graph'
 

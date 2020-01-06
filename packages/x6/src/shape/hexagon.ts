@@ -1,5 +1,5 @@
+import { Point, Rectangle } from '../geometry'
 import { Actor } from './actor'
-import { Rectangle, Point } from '../struct'
 import { SvgCanvas2D } from '../canvas'
 
 export class Hexagon extends Actor {
@@ -7,7 +7,7 @@ export class Hexagon extends Actor {
     bounds: Rectangle,
     fillColor: string,
     strokeColor: string,
-    strokewidth: number = 1
+    strokewidth: number = 1,
   ) {
     super(bounds, fillColor, strokeColor, strokewidth)
   }
@@ -26,7 +26,7 @@ export class Hexagon extends Actor {
       ],
       this.rounded,
       arcSize,
-      true
+      true,
     )
   }
 }

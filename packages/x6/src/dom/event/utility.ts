@@ -1,4 +1,4 @@
-import { Platform } from '@antv/x6-util'
+import { Platform } from '../../util'
 import { addListener } from './listener'
 
 export function disableContextMenu(elem: HTMLElement) {

@@ -1,4 +1,4 @@
-import { Platform } from '@antv/x6-util'
+import { Platform } from '../../util'
 
 type Handler = (e: Event) => any
 const LIST_KEY = 'x6-listener-list'

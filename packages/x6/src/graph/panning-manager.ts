@@ -1,6 +1,5 @@
-import { NumberExt } from '@antv/x6-util'
-import { DomUtil } from '@antv/x6-dom-util'
-import { DomEvent } from '@antv/x6-dom-event'
+import { NumberExt } from '../util'
+import { DomUtil, DomEvent } from '../dom'
 import { Graph } from '../graph'
 import { IMouseHandler, MouseEventEx } from '../handler'
 import { BaseManager } from './base-manager'

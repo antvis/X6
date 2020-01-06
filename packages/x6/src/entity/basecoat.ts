@@ -1,8 +1,8 @@
-import { ObjectExt } from '@antv/x6-util'
-import { EventEmitter } from '@antv/x6-event-emitter'
+import { ObjectExt } from '../util'
+import { Events } from './events'
 import { Disposable } from './disposable'
 
-export class Basecoat<EventArgs = any> extends EventEmitter<EventArgs> {}
+export class Basecoat<EventArgs = any> extends Events<EventArgs> {}
 
 export interface Basecoat extends Disposable {}
 

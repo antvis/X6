@@ -1,11 +1,11 @@
-import { DomUtil } from '@antv/x6-dom-util'
-import { DomEvent } from '@antv/x6-dom-event'
+import { DomUtil, DomEvent } from '../../dom'
+import { Point, Rectangle } from '../../geometry'
 import { Graph } from '../../graph'
 import { State } from '../../core/state'
 import { Shape } from '../../shape'
 import { BaseHandler } from '../base-handler'
 import { MouseEventEx } from '../mouse-event'
-import { Rectangle, Point, Anchor } from '../../struct'
+import { Anchor } from '../../struct'
 import { createAnchorShape, createAnchorHighlightShape } from './option'
 
 export class AnchorHandler extends BaseHandler {
@@ -291,7 +291,7 @@ export class AnchorHandler extends BaseHandler {
         this.currentArea.add(icon.bounds)
       }
 
-      this.currentArea.grow(this.getTolerance(e))
+      this.currentArea.inflate(this.getTolerance(e))
     } else {
       this.destroyIcons()
       this.destroyHighlight()

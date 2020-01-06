@@ -1,5 +1,6 @@
+import { Rectangle } from '../../geometry'
 import { Graph } from '../../graph'
-import { Rectangle, Image } from '../../struct'
+import { Image } from '../../struct'
 import { drill, OptionItem } from '../../option'
 import { Shape, ImageShape, EllipseShape } from '../../shape'
 
