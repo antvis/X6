@@ -1,4 +1,4 @@
-import { Point } from './point'
+import { Point } from '../geometry'
 
 export class Anchor {
   /**
