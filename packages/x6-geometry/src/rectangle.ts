@@ -309,6 +309,35 @@ export class Rectangle {
     return this
   }
 
+  rotate(
+    degree: number,
+    center: Point | Point.PointLike | Point.PointData = this.getCenter(),
+  ) {
+    if (degree !== 0) {
+      const rad = Angle.toRad(degree)
+      const cos = Math.cos(rad)
+      const sin = Math.sin(rad)
+
+      let p1 = this.getOrigin()
+      let p2 = this.getTopRight()
+      let p3 = this.getBottomRight()
+      let p4 = this.getBottomLeft()
+
+      p1 = Point.rotateEx(p1, cos, sin, center)
+      p2 = Point.rotateEx(p2, cos, sin, center)
+      p3 = Point.rotateEx(p3, cos, sin, center)
+      p4 = Point.rotateEx(p4, cos, sin, center)
+
+      const rect = new Rectangle(p1.x, p1.y, 0, 0)
+      rect.add(p2.x, p2.y, 0, 0)
+      rect.add(p3.x, p3.y, 0, 0)
+      rect.add(p4.x, p4.y, 0, 0)
+
+      this.update(rect)
+    }
+    return this
+  }
+
   rotate90() {
     const t = (this.width - this.height) / 2
     this.x += t
