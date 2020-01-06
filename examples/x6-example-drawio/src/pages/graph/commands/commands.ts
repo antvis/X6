@@ -1,5 +1,5 @@
 import {
-  detector,
+  Platform,
   DomEvent,
   Graph,
   FontStyle,
@@ -8,7 +8,6 @@ import {
   Clipboard,
 } from '@antv/x6'
 import { GuideOptions } from '@antv/x6/lib/handler/guide/option'
-import { Command } from './command'
 import {
   autosize,
   wordWrap,
@@ -18,11 +17,12 @@ import {
   fitPageWidth,
   toggleFontStyle,
 } from './util'
+import { Command } from './command'
 
 export class Commands {
   public readonly graph: Graph
   public readonly undoManager: UndoManager
-  public readonly ctrlKey = detector.IS_MAC ? 'Cmd' : 'Ctrl'
+  public readonly ctrlKey = Platform.IS_MAC ? 'Cmd' : 'Ctrl'
   public readonly commands: { [name: string]: Command } = {}
 
   get model() {
@@ -81,7 +81,7 @@ export class Commands {
 }
 
 export namespace Commands {
-  export const ctrlKey = detector.IS_MAC ? 'Cmd' : 'Ctrl'
+  export const ctrlKey = Platform.IS_MAC ? 'Cmd' : 'Ctrl'
 
   const deleteCells = (graph: Graph, includeEdges: boolean = true) => {
     graph.deleteCells(undefined, includeEdges)

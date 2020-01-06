@@ -1,6 +1,6 @@
-import { Graph, Primer } from '@antv/x6'
+import { Graph, Basecoat } from '@antv/x6'
 
-export class Command extends Primer {
+export class Command extends Basecoat {
   name: string
   handler: (graph: Graph, arg?: any) => void
   visible: boolean
