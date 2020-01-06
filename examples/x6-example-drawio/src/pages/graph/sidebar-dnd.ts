@@ -1,4 +1,4 @@
-import { Dnd } from '@antv/x6'
+import { Dnd, Point } from '@antv/x6'
 import { getEditor } from '../index'
 import { getDataItem } from './sidebar-util'
 import { DataItem } from './sidebar-data'
@@ -36,13 +36,27 @@ export function initDnd(palette: HTMLDivElement) {
 
     instance.on('drop', ({ data, graph, targetPosition }) => {
       if (data != null) {
-        const cell = graph.addNode({
-          x: targetPosition.x,
-          y: targetPosition.y,
-          width: data.width,
-          height: data.height,
-          style: data.style,
-        })
+        const x = targetPosition.x
+        const y = targetPosition.y
+        const width = data.width
+        const height = data.height
+
+        const cell = data.isEdge
+          ? graph.addEdge({
+              style: { ...data.style, stroke: '#000' },
+              points: data.points
+                ? data.points.map(p => new Point(x + p.x, y + p.y))
+                : [],
+              sourcePoint: new Point(x, height + y),
+              targetPoint: new Point(x + width, y),
+            })
+          : graph.addNode({
+              x,
+              y,
+              width,
+              height,
+              style: data.style,
+            })
         graph.selectCell(cell)
       }
     })
