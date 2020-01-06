@@ -1,5 +1,4 @@
-import { ObjectExt, NumberExt } from '@antv/x6-util'
-import { Shape, SvgCanvas2D } from '@antv/x6'
+import { Shape, SvgCanvas2D, ObjectExt, NumberExt } from '@antv/x6'
 
 export class InternalStorageShape extends Shape.Rectangle {
   dx: number = 20

@@ -1,6 +1,5 @@
-import { getFactor } from './util'
+import { getFactor, getPerimeterPoint } from './util'
 import {
-  util,
   State,
   Shape,
   Perimeter,
@@ -106,17 +105,17 @@ export function stepPerimeter(
     ]
   }
 
-  const p1 = new Point(cx, cy)
+  const center = new Point(cx, cy)
 
   if (orthogonal) {
     if (next.x < x || next.x > x + w) {
-      p1.y = next.y
+      center.y = next.y
     } else {
-      p1.x = next.x
+      center.x = next.x
     }
   }
 
-  return util.getPerimeterPoint(points, p1, next) as Point
+  return getPerimeterPoint(points, center, next) as Point
 }
 
 Shape.register('step', StepShape)

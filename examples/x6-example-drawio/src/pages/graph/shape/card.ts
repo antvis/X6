@@ -1,5 +1,4 @@
-import { ObjectExt } from '@antv/x6-util'
-import { Shape, SvgCanvas2D, Point } from '@antv/x6'
+import { Shape, SvgCanvas2D, Point, ObjectExt } from '@antv/x6'
 
 export class CardShape extends Shape.Actor {
   factor: number = 30

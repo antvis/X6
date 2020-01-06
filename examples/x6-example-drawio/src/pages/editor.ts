@@ -1,10 +1,10 @@
-import { Graph, Primer, Style, FontStyle, Image } from '@antv/x6'
+import { Graph, Basecoat, Style, FontStyle, Image } from '@antv/x6'
 import { Commands } from './graph/commands'
 import avatarMale from './images/male.png'
 import avatarFemale from './images/female.png'
 import './editor.less'
 
-export class Editor extends Primer {
+export class Editor extends Basecoat {
   graph: Graph
   commands: Commands
 

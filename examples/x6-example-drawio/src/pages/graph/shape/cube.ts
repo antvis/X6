@@ -1,5 +1,4 @@
-import { ObjectExt } from '@antv/x6-util'
-import { Shape, SvgCanvas2D, Rectangle } from '@antv/x6'
+import { Shape, SvgCanvas2D, Rectangle, ObjectExt } from '@antv/x6'
 
 export class CubeShape extends Shape.Cylinder {
   factor: number = 20
