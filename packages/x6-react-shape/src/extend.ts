@@ -3,7 +3,7 @@ import { ReactShape } from './shape'
 
 export type Component = React.ReactElement
 
-declare module '@antv/x6/lib/types' {
+declare module '@antv/x6/lib/types/style' {
   interface Style {
     component?: Component | null
   }
