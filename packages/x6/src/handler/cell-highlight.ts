@@ -1,5 +1,5 @@
-import { ObjectExt } from '@antv/x6-util'
-import { DomUtil } from '@antv/x6-dom-util'
+import { ObjectExt } from '../util'
+import { DomUtil } from '../dom'
 import { globals } from '../option/global'
 import { Shape } from '../shape'
 import { Graph } from '../graph'
@@ -107,7 +107,7 @@ export class CellHighlight extends BaseHandler {
         this.shape.points = this.state.absolutePoints
         this.shape.outline = false
       } else {
-        this.shape.bounds = this.state.bounds.clone().grow(this.spacing)
+        this.shape.bounds = this.state.bounds.clone().inflate(this.spacing)
         this.shape.rotation = State.getRotation(this.state)
         this.shape.strokeWidth = this.strokeWidth / this.state.view.scale
         this.shape.outline = true

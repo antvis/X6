@@ -1,13 +1,12 @@
-import { isVisible, toFront } from '@antv/x6-dom-util'
-import { Platform } from '@antv/x6-util'
-import { DomEvent } from '@antv/x6-dom-event'
+import { Platform } from '../../util'
+import { Point, Rectangle, Line } from '../../geometry'
+import { DomEvent, DomUtil } from '../../dom'
 import { IDisposable } from '../../entity'
-import * as util from '../../util'
 import { Route } from '../../route'
 import { Graph } from '../../graph'
 import { Cell } from '../../core/cell'
 import { State } from '../../core/state'
-import { Rectangle, Point, Anchor } from '../../struct'
+import { Anchor } from '../../struct'
 import { Shape, RectangleShape } from '../../shape'
 import { MouseHandler } from '../mouse-handler'
 import { CellMarker } from '../cell-marker'
@@ -495,7 +494,7 @@ export class EdgeHandler extends MouseHandler {
     function checkShape(shape: Shape | null) {
       if (
         shape &&
-        isVisible(shape.elem) &&
+        DomUtil.isVisible(shape.elem) &&
         (e.isSource(shape) || (hit && shape.bounds.isIntersectWith(hit)))
       ) {
         const dx = e.getGraphX() - shape.bounds.getCenterX()
@@ -606,7 +605,7 @@ export class EdgeHandler extends MouseHandler {
       if (geo.points == null) {
         geo.points = [p]
       } else {
-        const index = util.findNearestSegment(
+        const index = State.getNearestSegment(
           state,
           p.x * s + offset.x,
           p.y * s + offset.y,
@@ -906,20 +905,12 @@ export class EdgeHandler extends MouseHandler {
           }
 
           const checkRemove = (idx: number, p: Point) => {
-            if (
-              idx > 0 &&
-              idx < abs.length - 1 &&
-              util.ptSegmentDist(
-                abs[idx - 1].x,
-                abs[idx - 1].y,
-                abs[idx + 1].x,
-                abs[idx + 1].y,
-                p.x,
-                p.y,
-              ) < tol
-            ) {
-              points!.splice(idx - 1, 1)
-              result = points
+            if (idx > 0 && idx < abs.length - 1) {
+              const line = new Line(abs[idx - 1], abs[idx + 1])
+              if (line.pointSquaredDistance(p) < tol) {
+                points!.splice(idx - 1, 1)
+                result = points
+              }
             }
           }
 
@@ -1437,7 +1428,7 @@ export class EdgeHandler extends MouseHandler {
     }
 
     if (this.labelHandleShape) {
-      toFront(this.labelHandleShape.elem)
+      DomUtil.toFront(this.labelHandleShape.elem)
     }
   }
 

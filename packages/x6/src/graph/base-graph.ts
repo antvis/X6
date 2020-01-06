@@ -1,4 +1,5 @@
-import { FunctionExt } from '@antv/x6-util'
+import { Rectangle } from '../geometry'
+import { FunctionExt } from '../util'
 import { Disablable } from '../entity'
 import { Route } from '../route'
 import { Model } from '../core/model'
@@ -8,7 +9,7 @@ import { State } from '../core/state'
 import { Renderer } from '../core/renderer'
 import { FullOptions } from '../option'
 import { Dialect, Style, Size } from '../types'
-import { Rectangle, Multiplicity, Image } from '../struct'
+import { Multiplicity, Image } from '../struct'
 import {
   CellEditor,
   TooltipHandler,

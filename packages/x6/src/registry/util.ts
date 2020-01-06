@@ -1,4 +1,4 @@
-import { StringExt } from '@antv/x6-util'
+import { StringExt } from '../util'
 
 function getHMRStatus() {
   const mod = module as any

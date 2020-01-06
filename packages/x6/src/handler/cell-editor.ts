@@ -1,6 +1,6 @@
-import { DomUtil } from '@antv/x6-dom-util'
-import { DomEvent } from '@antv/x6-dom-event'
-import { Platform, StringExt } from '@antv/x6-util'
+import { Rectangle } from '../geometry'
+import { Platform, StringExt } from '../util'
+import { DomUtil, DomEvent } from '../dom'
 import { Disposable } from '../entity'
 import { Graph } from '../graph'
 import { Cell } from '../core/cell'
@@ -8,7 +8,6 @@ import { State } from '../core/state'
 import { Align } from '../types'
 import { globals } from '../option'
 import { FontStyle } from '../enum'
-import { Rectangle } from '../struct'
 
 export class CellEditor extends Disposable {
   readonly graph: Graph

@@ -1,7 +1,6 @@
-import * as util from '../util'
+import { Point, Rectangle, Line } from '../geometry'
 import { Cell } from '../core/cell'
 import { State } from '../core/state'
-import { Rectangle, Point } from '../struct'
 import { BaseManager } from './base-manager'
 
 export class RetrievalManager extends BaseManager {
@@ -129,7 +128,7 @@ export class RetrievalManager extends BaseManager {
         let pt = points[0]!
         for (let i = 1, ii = points.length; i < ii; i += 1) {
           const next = points[i]!
-          const dist = util.ptSegmentDist(pt.x, pt.y, next.x, next.y, x, y)
+          const dist = new Line(pt, next).pointSquaredDistance(x, y)
           if (dist <= hotspot) {
             return true
           }
@@ -140,7 +139,7 @@ export class RetrievalManager extends BaseManager {
         const rot = State.getRotation(state)
         if (rot !== 0) {
           const cx = state.bounds.getCenter()
-          const pt = util.rotatePoint(new Point(x, y), -rot, cx)
+          const pt = new Point(x, y).rotate(-rot, cx)
           if (state.bounds.containsPoint(pt)) {
             return true
           }
@@ -320,8 +319,7 @@ export class RetrievalManager extends BaseManager {
           const state = this.view.getState(cell)
           if (state != null && this.graph.isCellVisible(cell)) {
             const rot = State.getRotation(state)
-            const bounds =
-              rot === 0 ? state.bounds : util.rotateRectangle(state.bounds, rot)
+            const bounds = rot === 0 ? state.bounds : state.bounds.rotate(rot)
 
             if (
               (this.model.isEdge(cell) || this.model.isNode(cell)) &&

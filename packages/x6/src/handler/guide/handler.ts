@@ -1,7 +1,7 @@
+import { Point, Rectangle } from '../../geometry'
 import * as movment from '../moving/util'
 import { Cell } from '../../core/cell'
 import { Guide } from './guide'
-import { Rectangle, Point } from '../../struct'
 import { MouseHandler } from '../mouse-handler'
 import { MouseEventEx } from '../mouse-event'
 import { createGuide, isGuideEnabled } from './option'

@@ -1,4 +1,4 @@
-import { Point } from '../../struct'
+import { Point } from '../../geometry'
 import { Style } from '../../types'
 import { Graph } from '../../graph'
 import { Cell } from '../../core/cell'

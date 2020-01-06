@@ -1,7 +1,7 @@
-import { DomUtil } from '@antv/x6-dom-util'
+import { DomUtil } from '../dom'
+import { Rectangle } from '../geometry'
 import { SvgCanvas2D } from '../canvas'
 import { RectangleShape } from './rectangle'
-import { Rectangle } from '../struct'
 
 export class HtmlShape extends RectangleShape {
   constructor(

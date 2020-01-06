@@ -1,6 +1,5 @@
+import { Point, Rectangle, Line } from '../geometry'
 import { State } from '../core/state'
-import { Rectangle, Point } from '../struct'
-import { getLinesIntersection } from '../util'
 
 export function rhombusPerimeter(
   bounds: Rectangle,
@@ -27,6 +26,7 @@ export function rhombusPerimeter(
 
     return new Point(cx, y + h) // bottom
   }
+
   if (cy === py) {
     if (cx > px) {
       return new Point(x, cy) // left
@@ -46,19 +46,21 @@ export function rhombusPerimeter(
     }
   }
 
+  const line = new Line(px, py, tx, ty)
+
   // In which quadrant will the intersection be?
   // set the slope and offset of the border line accordingly
   if (px < cx) {
     if (py < cy) {
-      return getLinesIntersection(px, py, tx, ty, cx, y, x, cy)!
+      return line.intersectionWithLine(new Line(cx, y, x, cy))!
     }
 
-    return getLinesIntersection(px, py, tx, ty, cx, y + h, x, cy)!
+    return line.intersectionWithLine(new Line(cx, y + h, x, cy))!
   }
 
   if (py < cy) {
-    return getLinesIntersection(px, py, tx, ty, cx, y, x + w, cy)!
+    return line.intersectionWithLine(new Line(cx, y, x + w, cy))!
   }
 
-  return getLinesIntersection(px, py, tx, ty, cx, y + h, x + w, cy)!
+  return line.intersectionWithLine(new Line(cx, y + h, x + w, cy))!
 }

@@ -1,8 +1,8 @@
+import { Rectangle } from '../geometry'
 import { globals } from '../option'
 import { Shape } from './shape-base'
 import { RectangleShape } from './rectangle'
 import { SvgCanvas2D } from '../canvas'
-import { Rectangle } from '../struct'
 import { Direction } from '../types'
 
 export class Label extends RectangleShape {

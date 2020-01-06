@@ -1,5 +1,4 @@
-import { DomUtil } from '@antv/x6-dom-util'
-import { DomEvent } from '@antv/x6-dom-event'
+import { DomUtil, DomEvent } from '../../dom'
 import { Cell } from '../../core/cell'
 import { State } from '../../core/state'
 import { Graph } from '../../graph'

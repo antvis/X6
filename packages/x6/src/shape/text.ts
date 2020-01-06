@@ -1,13 +1,12 @@
-import { StringExt, Color } from '@antv/x6-util'
-import { DomUtil } from '@antv/x6-dom-util'
-import { globals } from '../option'
-import { Shape } from './shape-base'
+import { DomUtil } from '../dom'
+import { StringExt, Color } from '../util'
+import { Point, Rectangle } from '../geometry'
+import { Align, VAlign, WritingDirection } from '../types'
 import { SvgCanvas2D } from '../canvas'
+import { Shape } from './shape-base'
 import { State } from '../core/state'
 import { FontStyle } from '../enum'
-import { Rectangle, Point } from '../struct'
-import { Align, VAlign, WritingDirection } from '../types'
-import { rotateRectangle } from '../util'
+import { globals } from '../option'
 
 export class Text extends Shape {
   value: HTMLElement | string
@@ -439,16 +438,14 @@ export class Text extends Shape {
     if (this.boundingBox != null) {
       if (rot !== 0) {
         // Accounts for pre-rotated x and y
-        const bbox = rotateRectangle(
-          new Rectangle(
-            this.margin.x * this.boundingBox.width,
-            this.margin.y * this.boundingBox.height,
-            this.boundingBox.width,
-            this.boundingBox.height,
-          ),
-          rot,
-          new Point(0, 0),
+        const bbox = new Rectangle(
+          this.margin.x * this.boundingBox.width,
+          this.margin.y * this.boundingBox.height,
+          this.boundingBox.width,
+          this.boundingBox.height,
         )
+
+        bbox.rotate(rot, new Point(0, 0))
 
         this.unrotatedBoundingBox = this.boundingBox.clone()
         this.unrotatedBoundingBox.x +=

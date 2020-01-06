@@ -1,10 +1,9 @@
-import { Angle } from '@antv/x6-geometry'
-import * as util from '../util'
+import { Angle, Point, Rectangle } from '../geometry'
 import { State } from '../core/state'
 import { Graph } from '../graph'
 import { MouseEventEx } from './mouse-event'
 import { globals } from '../option/global'
-import { Rectangle, Point, Image } from '../struct'
+import { Image } from '../struct'
 import { Shape, ImageShape, EllipseShape } from '../shape'
 
 export class Handle {
@@ -198,7 +197,7 @@ export class Handle {
   protected rotatePoint(pt: Point, deg: number) {
     const bounds = this.state.getCellBounds()
     const cx = bounds.getCenter()
-    return util.rotatePoint(pt, deg, cx)
+    return Point.rotate(pt, deg, cx)
   }
 
   /**

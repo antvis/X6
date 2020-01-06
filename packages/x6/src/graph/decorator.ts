@@ -1,4 +1,4 @@
-import { FunctionExt, StringExt } from '@antv/x6-util'
+import { FunctionExt, StringExt } from '../util'
 import { BaseGraph } from './base-graph'
 
 export function hook(

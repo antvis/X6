@@ -1,7 +1,7 @@
+import { Point, Rectangle } from '../../geometry'
 import { Cell } from '../../core/cell'
 import { Graph } from '../../graph'
 import { MouseEventEx } from '../mouse-event'
-import { Point, Rectangle } from '../../struct'
 import { MouseHandler } from '../mouse-handler'
 
 export function isValid(handler: MouseHandler, e: MouseEventEx) {

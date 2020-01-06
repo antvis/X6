@@ -1,5 +1,5 @@
+import { Rectangle } from '../geometry'
 import { Actor } from './actor'
-import { Rectangle } from '../struct'
 import { SvgCanvas2D } from '../canvas'
 
 export class Cloud extends Actor {
@@ -7,7 +7,7 @@ export class Cloud extends Actor {
     bounds: Rectangle,
     fillColor: string,
     strokeColor: string,
-    strokewidth: number = 1
+    strokewidth: number = 1,
   ) {
     super(bounds, fillColor, strokeColor, strokewidth)
   }

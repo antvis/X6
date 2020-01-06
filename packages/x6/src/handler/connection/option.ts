@@ -1,8 +1,9 @@
+import { Point } from '../../geometry'
 import { Cell } from '../../core/cell'
 import { Graph } from '../../graph'
 import { Shape } from '../../shape'
 import { Style } from '../../types'
-import { Image, Point } from '../../struct'
+import { Image } from '../../struct'
 import { CellHighlight } from '../cell-highlight'
 import {
   drill,

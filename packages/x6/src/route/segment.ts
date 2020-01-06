@@ -1,4 +1,4 @@
-import { Point } from '../struct'
+import { Point } from '../geometry'
 import { State } from '../core/state'
 
 /**

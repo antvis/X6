@@ -1,5 +1,5 @@
-import { Color } from '@antv/x6-util'
-import { Rectangle } from '../struct'
+import { Color } from '../util'
+import { Rectangle } from '../geometry'
 import { SvgCanvas2D } from '../canvas'
 import { Shape } from './shape-base'
 

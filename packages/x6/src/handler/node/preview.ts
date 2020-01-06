@@ -1,14 +1,12 @@
-import { Color } from '@antv/x6-util'
-import { Angle } from '@antv/x6-geometry'
-import { DomUtil } from '@antv/x6-dom-util'
-import { DomEvent } from '@antv/x6-dom-event'
+import { Color } from '../../util'
+import { DomUtil, DomEvent } from '../../dom'
+import { Angle, Point, Rectangle } from '../../geometry'
 import { Disposable } from '../../entity'
 import { Cell } from '../../core/cell'
 import { State } from '../../core/state'
 import { Handle } from '../handle'
 import { NodeHandler } from './handler'
 import { MouseEventEx } from '../mouse-event'
-import { Rectangle, Point } from '../../struct'
 import { RectangleShape } from '../../shape'
 import { EdgeHandler } from '../edge/handler'
 import { applyResizePreviewStyle } from './option-resize'
@@ -642,8 +640,7 @@ export class Preview extends Disposable {
           if (max == null) {
             max = tmp
           } else {
-            max = max.clone()
-            max.intersect(tmp)
+            max = max.intersect(tmp)
           }
         }
       }

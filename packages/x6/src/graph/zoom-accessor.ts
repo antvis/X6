@@ -1,6 +1,6 @@
+import { Rectangle } from '../geometry'
 import { Cell } from '../core/cell'
 import { BaseGraph } from './base-graph'
-import { Rectangle } from '../struct'
 
 export class ZoomAccessor extends BaseGraph {
   zoomIn() {

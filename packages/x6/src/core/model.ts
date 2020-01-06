@@ -1,9 +1,9 @@
-import { EventEmitter } from '@antv/x6-event-emitter'
-import { ArrayExt, NumberExt } from '@antv/x6-util'
+import { Point } from '../geometry'
+import { Events } from '../entity'
+import { ArrayExt, NumberExt } from '../util'
 import { Cell } from './cell'
 import { Style } from '../types'
 import { Geometry } from './geometry'
-import { Point } from '../struct'
 import {
   IChange,
   RootChange,
@@ -17,7 +17,7 @@ import {
   UndoableEdit,
 } from '../change'
 
-export class Model extends EventEmitter<Model.EventArgs> {
+export class Model extends Events<Model.EventArgs> {
   private root: Cell
   private cells: { [id: string]: Cell }
   private currentEdit: UndoableEdit

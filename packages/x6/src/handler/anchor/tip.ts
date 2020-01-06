@@ -1,6 +1,7 @@
+import { Point } from '../../geometry'
 import { State } from '../../core/state'
 import { Shape } from '../../shape'
-import { Anchor, Point } from '../../struct'
+import { Anchor } from '../../struct'
 import { BaseHandler } from '../base-handler'
 import { createAnchorTipShape } from './option'
 import { Preview } from '../connection/preview'

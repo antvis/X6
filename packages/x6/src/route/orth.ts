@@ -1,9 +1,8 @@
+import { Point, Rectangle } from '../geometry'
 import { globals } from '../option'
 import { State } from '../core/state'
 import { DirectionMask } from '../enum'
-import { Point, Rectangle } from '../struct'
 import { segment } from './segment'
-import { rotateRectangle } from '../util'
 
 const orthBuffer = 10
 const orthPointsFallback = true
@@ -216,10 +215,8 @@ export function orth(
     )
     rotation = sourceState.style.rotation || 0
     if (rotation !== 0) {
-      const newRect = rotateRectangle(
-        new Rectangle(sourceX, sourceY, sourceWidth, sourceHeight),
-        rotation,
-      )
+      const newRect = new Rectangle(sourceX, sourceY, sourceWidth, sourceHeight)
+      newRect.rotate(rotation)
       sourceX = newRect.x
       sourceY = newRect.y
       sourceWidth = newRect.width
@@ -236,10 +233,8 @@ export function orth(
     )
     rotation = targetState.style.rotation || 0
     if (rotation !== 0) {
-      const newRect = rotateRectangle(
-        new Rectangle(targetX, targetY, targetWidth, targetHeight),
-        rotation,
-      )
+      const newRect = new Rectangle(targetX, targetY, targetWidth, targetHeight)
+      newRect.rotate(rotation)
       targetX = newRect.x
       targetY = newRect.y
       targetWidth = newRect.width

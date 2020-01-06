@@ -1,5 +1,5 @@
+import { Point } from '../geometry'
 import { State } from '../core/state'
-import { Point } from '../struct'
 import * as elbowRouters from './elbow'
 import { loop as loopRouter } from './loop'
 import { er as entityRelationRouter } from './er'

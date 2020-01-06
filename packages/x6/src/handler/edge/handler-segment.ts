@@ -1,6 +1,6 @@
+import { Point, Rectangle } from '../../geometry'
 import { Cell } from '../../core/cell'
 import { State } from '../../core/state'
-import { Rectangle, Point } from '../../struct'
 import { MouseEventEx } from '../mouse-event'
 import { EdgeElbowHandler } from './handler-elbow'
 

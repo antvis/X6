@@ -1,5 +1,5 @@
-import { Point } from '@antv/x6-geometry'
-import { ObjectExt } from '@antv/x6-util'
+import { ObjectExt } from '../util'
+import { Point, Rectangle } from '../geometry'
 import { globals } from '../option/global'
 import { Graph } from '../graph'
 import { Cell } from '../core/cell'
@@ -7,7 +7,6 @@ import { State } from '../core/state'
 import { MouseEventEx } from './mouse-event'
 import { BaseHandler } from './base-handler'
 import { CellHighlight } from './cell-highlight'
-import { Rectangle } from '../struct'
 
 export class CellMarker extends BaseHandler {
   highlight: CellHighlight
