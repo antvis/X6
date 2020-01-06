@@ -45,6 +45,10 @@ export default class Example extends React.Component {
       },
     }))
 
+    graph.on('cell:connected', args => {
+      console.log(args)
+    })
+
     new MiniMap(graph, {
       container: this.minimapContainer,
       viewport: {
