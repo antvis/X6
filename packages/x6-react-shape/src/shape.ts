@@ -1,6 +1,5 @@
 import ReactDOM from 'react-dom'
-import { DomUtil } from '@antv/x6-dom-util'
-import { Shape, Rectangle, SvgCanvas2D } from '@antv/x6'
+import { DomUtil, Shape, Rectangle, SvgCanvas2D } from '@antv/x6'
 import { Component } from './extend'
 
 export class ReactShape extends Shape.Rectangle {
@@ -62,16 +61,11 @@ export class ReactShape extends Shape.Rectangle {
     }
   }
 
+  @Shape.Rectangle.dispose()
   dispose() {
-    if (this.disposed) {
-      return
-    }
-
     if (this.container) {
       ReactDOM.unmountComponentAtNode(this.container)
       this.container = null
     }
-
-    super.dispose()
   }
 }
