@@ -7,7 +7,4 @@ module.exports = {
   },
   testMatch: ['**/src/**/*.test.ts', '**/src/**/*.spec.ts'],
   moduleFileExtensions: ['js', 'ts'],
-  collectCoverage: true,
-  coverageDirectory: './test/coverage',
-  coverageReporters: ['lcov'],
 }
