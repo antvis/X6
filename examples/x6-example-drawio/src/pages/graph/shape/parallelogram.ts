@@ -1,6 +1,5 @@
-import { getFactor } from './util'
+import { getFactor, getPerimeterPoint } from './util'
 import {
-  util,
   State,
   Shape,
   Perimeter,
@@ -83,7 +82,7 @@ export function parallelogramPerimeter(
     }
   }
 
-  return util.getPerimeterPoint(points, center, next) as Point
+  return getPerimeterPoint(points, center, next) as Point
 }
 
 Shape.register('parallelogram', ParallelogramShape)

@@ -1,6 +1,5 @@
-import { NumberExt } from '@antv/x6-util'
 import { getFactor } from './util'
-import { Shape, SvgCanvas2D, Direction, Rectangle } from '@antv/x6'
+import { Shape, SvgCanvas2D, Direction, Rectangle, NumberExt } from '@antv/x6'
 
 export class ProcessShape extends Shape.Rectangle {
   factor: number = 0.1

@@ -1,5 +1,4 @@
-import { ObjectExt } from '@antv/x6-util'
-import { Shape, SvgCanvas2D } from '@antv/x6'
+import { Shape, SvgCanvas2D, ObjectExt } from '@antv/x6'
 
 export class NoteShape extends Shape.Cylinder {
   factor: number = 30

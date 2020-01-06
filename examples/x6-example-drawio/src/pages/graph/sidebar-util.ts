@@ -1,5 +1,4 @@
-import { Point, Style, Cell, Graph } from '@antv/x6'
-import { DomUtil } from '@antv/x6-dom-util'
+import { Point, Style, Cell, Graph, DomUtil } from '@antv/x6'
 import arrowUrl from './stencil/arrows.xml'
 import flowchartUrl from './/stencil/flowchart.xml'
 import { StencilRegistry } from './stencil-registry'
