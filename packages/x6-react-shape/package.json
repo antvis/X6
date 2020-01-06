@@ -39,9 +39,6 @@
       "git add"
     ]
   },
-  "dependencies": {
-    "@antv/x6-dom-util": "^1.0.0"
-  },
   "peerDependencies": {
     "@antv/x6": "*",
     "react": ">=16.8.6",
