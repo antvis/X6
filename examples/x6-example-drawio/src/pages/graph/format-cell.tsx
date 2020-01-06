@@ -2,8 +2,15 @@ import React from 'react'
 import classnames from 'classnames'
 import { Checkbox, InputNumber, Select, Button } from 'antd'
 import { ColorPicker, ColorResult } from '@antv/x6-components'
-import { Color, NumberExt } from '@antv/x6-util'
-import { Cell, Geometry, FontStyle, VAlign, Align } from '@antv/x6'
+import {
+  Cell,
+  Geometry,
+  FontStyle,
+  VAlign,
+  Align,
+  Color,
+  NumberExt,
+} from '@antv/x6'
 import { getEditor } from '../index'
 
 export class FormatCell extends React.PureComponent<

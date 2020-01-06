@@ -1,6 +1,5 @@
-import { ObjectExt } from '@antv/x6-util'
 import { getFactor } from './util'
-import { Shape, SvgCanvas2D, Rectangle } from '@antv/x6'
+import { Shape, SvgCanvas2D, Rectangle, ObjectExt } from '@antv/x6'
 
 export class DocumentShape extends Shape.Actor {
   factor: number = 0.3

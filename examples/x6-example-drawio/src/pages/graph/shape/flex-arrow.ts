@@ -1,5 +1,4 @@
-import { ObjectExt } from '@antv/x6-util'
-import { Shape } from '@antv/x6'
+import { Shape, ObjectExt } from '@antv/x6'
 
 export class FlexArrowShape extends Shape.ArrowConnector {
   defaultWidth = 10

@@ -1,7 +1,7 @@
 import React from 'react'
 import classNames from 'classnames'
 import { Icon } from '@antv/x6-components'
-import { Dnd, Graph } from '@antv/x6'
+import { Graph, Dnd } from '@antv/x6'
 import { data, DataItem, isGroup } from './data'
 import { addNode } from './util'
 
