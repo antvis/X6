@@ -75,15 +75,16 @@ export class Point {
    * Chooses the point closest to this point from among `points`.
    * If `points` is an empty array, `null` is returned.
    */
-  closest(points: Point[]) {
-    if (points.length === 1) {
-      return points[0]
+  closest(points: (Point | Point.PointLike | Point.PointData)[]) {
+    const pts = points.map(p => Point.parse(p))
+    if (pts.length === 1) {
+      return pts[0]
     }
 
     let ret = null
     let min = Infinity
-    for (let i = 0, ii = points.length; i < ii; i += 1) {
-      const point = points[i].clone()
+    for (let i = 0, ii = pts.length; i < ii; i += 1) {
+      const point = pts[i]
       const dist = this.squaredDistance(point)
       if (dist < min) {
         ret = point
@@ -91,7 +92,7 @@ export class Point {
       }
     }
 
-    return ret
+    return ret!
   }
 
   distance(p: Point | Point.PointLike | Point.PointData) {
@@ -119,9 +120,7 @@ export class Point {
   }
 
   /**
-   * Compute the angle between me and `p` and the x axis.
-   * @param p The point the compute with.
-   * @return The angle in degrees.
+   * Returns the angle between vector from me to `p` and the x axis.
    */
   theta(p: Point | Point.PointLike | Point.PointData = new Point()): number {
     const ref = Point.parse(p)
@@ -138,7 +137,7 @@ export class Point {
   }
 
   /**
-   * Computes the angle between vector from me to `p1` and the
+   * Returns the angle between vector from me to `p1` and the
    * vector from me to `p2`.
    *
    * Ordering of points `p1` and `p2` is important!
@@ -160,7 +159,7 @@ export class Point {
   }
 
   /**
-   * Computes the angle between the vector from `0,0` to me and the
+   * Returns the angle between the vector from `0,0` to me and the
    * vector from `0,0` to `p`. Returns `NaN` if `p` is at `0,0`.
    *
    * @returns the angle in degrees. `NaN` if `p` is at `0,0`.
@@ -217,8 +216,8 @@ export class Point {
   }
 
   /**
-   * Returns the cross product of the vector from the point passing
-   * through `p1` and the vector from the point passing through `p2`.
+   * Returns the cross product of the vector from me to `p1`
+   * and the vector from me to `p2`.
    *
    * The left-hand rule is used because the coordinate system is left-handed.
    */
