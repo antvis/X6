@@ -1,6 +1,6 @@
+import { ArrayExt, NumberExt } from '../util'
 import { Point } from '../geometry'
 import { Events } from '../entity'
-import { ArrayExt, NumberExt } from '../util'
 import { Cell } from './cell'
 import { Style } from '../types'
 import { Geometry } from './geometry'
@@ -136,7 +136,7 @@ export class Model extends Events<Model.EventArgs> {
   }
 
   isAncestor(ancestor: Cell, descendant?: Cell | null): boolean {
-    return ancestor.isAncestor(descendant)
+    return ancestor.isAncestorOf(descendant)
   }
 
   contains(cell: Cell | null): boolean
