@@ -6,11 +6,12 @@ import { Geometry } from './geometry'
 import { Style } from '../types'
 import { Overlay } from '../struct'
 
-export class Cell extends Disposable {
+export class Cell<T = any> extends Disposable {
   public id?: string | number | null
-  public data: any
+  public data: T | null
   public style: Style
   public visible: boolean
+  public collapsed: boolean
   public render: Cell.Renderer | null
   public geometry: Geometry | null
   public overlays: Overlay[] | null
@@ -18,15 +19,14 @@ export class Cell extends Disposable {
   public parent: Cell | null
   public children: Cell[] | null
   public edges: Cell[] | null
-  public collapsed: boolean
 
   public source: Cell | null
   public target: Cell | null
 
-  private node?: boolean
-  private edge?: boolean
+  private _isNode?: boolean // tslint:disable-line
+  private _isEdge?: boolean // tslint:disable-line
 
-  constructor(data?: any, geometry?: Geometry | null, style?: Style) {
+  constructor(data?: T, geometry?: Geometry | null, style?: Style) {
     super()
     this.data = data || null
     this.style = style || {}
@@ -37,11 +37,11 @@ export class Cell extends Disposable {
   // #region edge
 
   isEdge() {
-    return this.edge === true
+    return this._isEdge === true
   }
 
   asEdge(v: boolean = true) {
-    this.edge = v
+    this._isEdge = v
   }
 
   getTerminal(isSource?: boolean) {
@@ -70,11 +70,11 @@ export class Cell extends Disposable {
   // #region node
 
   isNode() {
-    return this.node != null
+    return this._isNode != null
   }
 
   asNode(v: boolean = true) {
-    this.node = v
+    this._isNode = v
   }
 
   getEdges() {
@@ -144,16 +144,16 @@ export class Cell extends Disposable {
     this.collapsed = collapsed
   }
 
+  toggleCollapsed() {
+    return this.collapsed ? this.expand() : this.collapse()
+  }
+
   collapse() {
     return this.setCollapsed(true)
   }
 
   expand() {
     return this.setCollapsed(false)
-  }
-
-  toggleCollapse() {
-    return this.collapsed ? this.expand() : this.collapse()
   }
 
   // #endregion
@@ -179,7 +179,7 @@ export class Cell extends Disposable {
     return this.parent == null
   }
 
-  isAncestor(descendant?: Cell | null) {
+  isAncestorOf(descendant?: Cell | null) {
     if (descendant == null) {
       return false
     }
@@ -297,16 +297,16 @@ export class Cell extends Disposable {
     this.visible = visible
   }
 
+  toggleVisible() {
+    return this.isVisible() ? this.hide() : this.show()
+  }
+
   show() {
     return this.setVisible(true)
   }
 
   hide() {
     return this.setVisible(false)
-  }
-
-  toggleVisible() {
-    return this.isVisible() ? this.hide() : this.show()
   }
 
   // #endregion
@@ -331,7 +331,7 @@ export class Cell extends Disposable {
     return this.data
   }
 
-  setData(data: any) {
+  setData(data: T) {
     this.data = data
   }
 
@@ -368,10 +368,10 @@ export class Cell extends Disposable {
   protected cloneData() {
     let data = this.getData()
     if (data != null) {
-      if (FunctionExt.isFunction(data.clone)) {
-        data = data.clone()
-      } else if (!isNaN(data.nodeType)) {
-        data = data.cloneNode(true)
+      if (FunctionExt.isFunction((data as any).clone)) {
+        data = (data as any).clone()
+      } else if (!isNaN((data as any).nodeType)) {
+        data = (((data as any) as HTMLElement).cloneNode(true) as any) as T
       }
     }
 
@@ -401,16 +401,16 @@ export namespace Cell {
     'children',
     'edges',
   ]
+}
 
+// Cell Creation
+export namespace Cell {
   export type Renderer = (
     this: Graph,
     elem: HTMLElement | SVGElement,
     cell: Cell,
   ) => void
-}
 
-// Cell Creation
-export namespace Cell {
   export interface CreateCellOptions {
     id?: string | number | null
     data?: any
@@ -455,14 +455,17 @@ export namespace Cell {
      * point defined by the relative coordinates. For absolute geometries,
      * this defines the offset for the label.
      */
-    offset?: Point | Point.PointLike
+    offset?: Point | Point.PointLike | Point.PointData
 
     collapsed?: boolean
 
     /**
      * Stores alternate values for x, y, width and height in a rectangle.
      */
-    alternateBounds?: Rectangle | Rectangle.RectangleLike
+    alternateBounds?:
+      | Rectangle
+      | Rectangle.RectangleLike
+      | Rectangle.RectangleData
   }
 
   export interface CreateEdgeOptions extends CreateCellOptions, NestedStyle {
@@ -470,13 +473,13 @@ export namespace Cell {
      * The source `Point` of the edge. This is used if the corresponding
      * edge does not have a source node. Otherwise it is ignored.
      */
-    sourcePoint?: Point | Point.PointLike
+    sourcePoint?: Point | Point.PointLike | Point.PointData
 
     /**
      * The target `Point` of the edge. This is used if the corresponding
      * edge does not have a target node. Otherwise it is ignored.
      */
-    targetPoint?: Point | Point.PointLike
+    targetPoint?: Point | Point.PointLike | Point.PointData
 
     /**
      * Specifies the control points along the edge. These points are the
@@ -485,7 +488,7 @@ export namespace Cell {
      */
     points?: (Point | Point.PointLike | Point.PointData)[]
 
-    offset?: Point | Point.PointLike
+    offset?: Point | Point.PointLike | Point.PointData
   }
 
   export function createNode(options: CreateNodeOptions = {}): Cell {
