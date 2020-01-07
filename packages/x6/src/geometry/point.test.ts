@@ -22,7 +22,50 @@ describe('point', () => {
 
   describe('#update', () => {
     it('should update the values of x and y', () => {
-      expect(new Point(4, 17).update(16, 24)).toEqual(new Point(16, 24))
+      const source = new Point(4, 17)
+      const target = new Point(16, 24)
+      expect(source.clone().update(16, 24)).toEqual(target)
+      expect(source.clone().update([16, 24])).toEqual(target)
+      expect(source.clone().update({ x: 16, y: 24 })).toEqual(target)
+      expect(source.clone().update(target)).toEqual(target)
+    })
+  })
+
+  describe('#add', () => {
+    it('should add x and y width the given amount', () => {
+      const source = new Point(4, 17)
+      const target = new Point(20, 20)
+
+      expect(source.clone().add(16, 3)).toEqual(target)
+      expect(source.clone().add([16, 3])).toEqual(target)
+      expect(source.clone().add({ x: 16, y: 3 })).toEqual(target)
+    })
+  })
+
+  describe('#distance', () => {
+    it('should return the distance between me and the given point', () => {
+      const source = new Point(1, 2)
+      const target = new Point(4, 6)
+
+      expect(source.distance(target)).toEqual(5)
+    })
+  })
+
+  describe('#squaredDistance', () => {
+    it('should return the squared distance between me and the given point', () => {
+      const source = new Point(1, 2)
+      const target = new Point(4, 6)
+
+      expect(source.squaredDistance(target)).toEqual(25)
+    })
+  })
+
+  describe('#manhattanDistance', () => {
+    it('should return the manhattan distance between me and the given point', () => {
+      const source = new Point(1, 2)
+      const target = new Point(4, 6)
+
+      expect(source.manhattanDistance(target)).toEqual(7)
     })
   })
 
