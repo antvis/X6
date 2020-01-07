@@ -354,7 +354,7 @@ export class Line {
    * `0` if the point lies on the line.
    */
   pointOffset(p: Point | Point.PointLike | Point.PointData) {
-    const ref = Point.normalize(p)
+    const ref = Point.parse(p)
     const start = this.start
     const end = this.end
     const determinant =
@@ -373,7 +373,7 @@ export class Line {
     x: number | Point | Point.PointLike | Point.PointData,
     y?: number,
   ) {
-    const p = typeof x === 'number' ? { x, y: y! } : Point.normalize(x)
+    const p = Point.create(x, y)
     return this.closestPoint(p).squaredDistance(p)
   }
 
@@ -386,7 +386,7 @@ export class Line {
     x: number | Point | Point.PointLike | Point.PointData,
     y?: number,
   ) {
-    const p = typeof x === 'number' ? { x, y: y! } : Point.normalize(x)
+    const p = Point.create(x, y)
     return this.closestPoint(p).distance(p)
   }
 
@@ -443,7 +443,7 @@ export class Line {
     x: number | Point | Point.PointLike | Point.PointData,
     y?: number,
   ) {
-    const ref = typeof x === 'number' ? new Point(x, y) : Point.normalize(x)
+    const ref = Point.create(x, y)
 
     let dx1 = ref.x - this.start.x
     let dy1 = ref.y - this.start.y

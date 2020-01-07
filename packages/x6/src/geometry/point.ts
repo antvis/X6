@@ -21,14 +21,9 @@ export class Point {
   add(x: number, y: number): this
   add(p: Point | Point.PointLike | Point.PointData): this
   add(x: number | Point | Point.PointLike | Point.PointData, y?: number): this {
-    if (typeof x === 'number') {
-      this.x += x
-      this.y += y!
-    } else {
-      const p = Point.normalize(x)
-      this.x += p.x
-      this.y += p.y
-    }
+    const p = Point.create(x, y)
+    this.x += p.x
+    this.y += p.y
 
     return this
   }
@@ -39,15 +34,9 @@ export class Point {
     x: number | Point | Point.PointLike | Point.PointData,
     y?: number,
   ): this {
-    if (typeof x === 'number') {
-      this.x = x
-      this.y = y!
-    } else {
-      const p = Point.normalize(x)
-      this.x = p.x
-      this.y = p.y
-    }
-
+    const p = Point.create(x, y)
+    this.x = p.x
+    this.y = p.y
     return this
   }
 
@@ -56,25 +45,18 @@ export class Point {
   translate(
     dx: number | Point | Point.PointLike | Point.PointData,
     dy?: number,
-  ): this
-  translate(
-    dx: number | Point | Point.PointLike | Point.PointData,
-    dy?: number,
   ): this {
-    if (typeof dx === 'number') {
-      this.x += dx
-      this.y += dy!
-    } else {
-      const p = Point.normalize(dx)
-      this.x += p.x
-      this.y += p.y
-    }
+    const t = Point.create(dx, dy)
+    this.x += t.x
+    this.y += t.y
 
     return this
   }
 
   rotate(angle: number, center?: Point | Point.PointLike | Point.PointData) {
-    this.update(Point.rotate(this, angle, center))
+    const p = Point.rotate(this, angle, center)
+    this.x = p.x
+    this.y = p.y
     return this
   }
 
@@ -83,7 +65,7 @@ export class Point {
     sy: number,
     origin: Point | Point.PointLike | Point.PointData = new Point(),
   ) {
-    const ref = Point.normalize(origin)
+    const ref = Point.create(origin)
     this.x = ref.x + sx * (this.x - ref.x)
     this.y = ref.y + sy * (this.y - ref.y)
     return this
@@ -113,17 +95,17 @@ export class Point {
   }
 
   distance(p: Point | Point.PointLike | Point.PointData) {
-    const ref = Point.normalize(p)
+    const ref = Point.parse(p)
     return new Line(this, ref).length()
   }
 
   squaredDistance(p: Point | Point.PointLike | Point.PointData) {
-    const ref = Point.normalize(p)
+    const ref = Point.parse(p)
     return new Line(this, ref).squaredLength()
   }
 
   manhattanDistance(p: Point | Point.PointLike | Point.PointData) {
-    const ref = Point.normalize(p)
+    const ref = Point.parse(p)
     return Math.abs(ref.x - this.x) + Math.abs(ref.y - this.y)
   }
 
@@ -142,7 +124,7 @@ export class Point {
    * @return The angle in degrees.
    */
   theta(p: Point | Point.PointLike | Point.PointData = new Point()): number {
-    const ref = Point.normalize(p)
+    const ref = Point.parse(p)
     const y = -(ref.y - this.y) // invert the y-axis.
     const x = ref.x - this.x
     let rad = Math.atan2(y, x)
@@ -230,7 +212,7 @@ export class Point {
    * Returns the bearing between me and the given point.
    */
   bearing(p: Point | Point.PointLike | Point.PointData) {
-    const ref = Point.normalize(p)
+    const ref = Point.parse(p)
     return new Line(this, ref).bearing()
   }
 
@@ -245,8 +227,8 @@ export class Point {
     p2: Point | Point.PointLike | Point.PointData,
   ) {
     if (p1 != null && p2 != null) {
-      const a = Point.normalize(p1)
-      const b = Point.normalize(p2)
+      const a = Point.parse(p1)
+      const b = Point.parse(p2)
       return (b.x - this.x) * (a.y - this.y) - (b.y - this.y) * (a.x - this.x)
     }
 
@@ -257,7 +239,7 @@ export class Point {
    * Returns the dot product of this point with given other point.
    */
   dot(p: Point | Point.PointLike | Point.PointData) {
-    const ref = Point.normalize(p)
+    const ref = Point.parse(p)
     return this.x * ref.x + this.y * ref.y
   }
 
@@ -271,7 +253,7 @@ export class Point {
       return new Point(this.x - dx, this.y - dy!)
     }
 
-    const p = Point.normalize(dx)
+    const p = Point.parse(dx)
     return new Point(this.x - p.x, this.y - p.y)
   }
 
@@ -282,7 +264,7 @@ export class Point {
   lerp(p: Point | Point.PointLike | Point.PointData, t: number) {
     const x = this.x
     const y = this.y
-    const ref = Point.normalize(p)
+    const ref = Point.parse(p)
     return new Point((1 - t) * x + t * ref.x, (1 - t) * y + t * ref.y)
   }
 
@@ -292,13 +274,13 @@ export class Point {
   }
 
   move(ref: Point | Point.PointLike | Point.PointData, distance: number) {
-    const p = Point.normalize(ref)
+    const p = Point.parse(ref)
     const rad = Angle.toRad(p.theta(this))
     return this.translate(Math.cos(rad) * distance, -Math.sin(rad) * distance)
   }
 
   reflection(ref: Point | Point.PointLike | Point.PointData) {
-    const p = Point.normalize(ref)
+    const p = Point.parse(ref)
     return p.move(this, this.distance(p))
   }
 
@@ -312,7 +294,7 @@ export class Point {
   }
 
   equals(p: Point | Point.PointLike | Point.PointData) {
-    const ref = Point.normalize(p)
+    const ref = Point.parse(p)
     return ref != null && ref.x === this.x && ref.y === this.y
   }
 
@@ -359,19 +341,19 @@ export namespace Point {
       return new Point(x, y)
     }
 
-    if (Array.isArray(x)) {
-      return new Point(x[0], x[1])
-    }
-
-    if (x instanceof Point) {
-      return x.clone()
-    }
-
-    return new Point(x.x, x.y)
+    return parse(x)
   }
 
-  export function normalize(p: Point | PointLike | PointData) {
-    return p instanceof Point ? p : create(p)
+  export function parse(p: Point | PointLike | PointData) {
+    if (p instanceof Point) {
+      return p.clone()
+    }
+
+    if (Array.isArray(p)) {
+      return new Point(p[0], p[1])
+    }
+
+    return new Point(p.x, p.y)
   }
 
   /**
@@ -385,7 +367,7 @@ export namespace Point {
   ) {
     let x = Math.abs(r * Math.cos(rad))
     let y = Math.abs(r * Math.sin(rad))
-    const org = normalize(origin)
+    const org = parse(origin)
     const deg = Angle.normalize(Angle.toDeg(rad))
 
     if (deg < 90) {
@@ -404,8 +386,8 @@ export namespace Point {
     point: Point | PointLike | PointData,
     origin: Point | PointLike | PointData = new Point(),
   ) {
-    const p = normalize(point)
-    const o = normalize(origin)
+    const p = parse(point)
+    const o = parse(origin)
     const dx = p.x - o.x
     const dy = p.y - o.y
     return new Point(
@@ -439,7 +421,7 @@ export namespace Point {
    * the range `[x1, x2]` and `[y1, y2]`.
    */
   export function random(x1: number, x2: number, y1: number, y2: number) {
-    new Point(util.random(x1, x2), util.random(y1, y2))
+    return new Point(util.random(x1, x2), util.random(y1, y2))
   }
 
   export function rotate(
@@ -472,8 +454,8 @@ export namespace Point {
     sin: number,
     center: Point | PointLike | PointData = new Point(),
   ) {
-    const source = normalize(point)
-    const origin = normalize(center)
+    const source = parse(point)
+    const origin = parse(center)
     const dx = source.x - origin.x
     const dy = source.y - origin.y
     const x1 = dx * cos - dy * sin
