@@ -2,7 +2,6 @@ import { ArrayExt } from '../util'
 import { Point, Rectangle } from '../geometry'
 import { Cell } from '../core/cell'
 import { State } from '../core/state'
-import { Style } from '../types'
 import { BaseManager } from './base-manager'
 
 export class CreationManager extends BaseManager {
@@ -682,11 +681,7 @@ export interface CellData {
   parent?: string | number
 }
 
-export interface NestedStyle extends Style {
-  style?: Style
-}
-
-export interface NodeData extends CellData, NestedStyle {
+export interface NodeData extends CellData, Cell.NestedStyle {
   x: number
   y: number
   width: number
@@ -696,7 +691,7 @@ export interface NodeData extends CellData, NestedStyle {
   alternateBounds?: Rectangle.RectangleLike
 }
 
-export interface EdgeData extends CellData, NestedStyle {
+export interface EdgeData extends CellData, Cell.NestedStyle {
   source: string | number
   target: string | number
   sourcePoint?: Point.PointLike
