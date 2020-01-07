@@ -21,7 +21,7 @@ export class Polyline {
 
   constructor(points?: (Point | Point.PointLike | Point.PointData)[]) {
     if (points != null) {
-      this.points = points.map(p => Point.normalize(p))
+      this.points = points.map(p => Point.parse(p))
     } else {
       this.points = []
     }
@@ -42,7 +42,8 @@ export class Polyline {
     dx: number | Point | Point.PointLike | Point.PointData,
     dy?: number,
   ): this {
-    this.points.forEach(p => p.translate(dx, dy))
+    const t = Point.create(dx, dy)
+    this.points.forEach(p => p.translate(t.x, t.y))
     return this
   }
 
@@ -128,7 +129,7 @@ export class Polyline {
       return false
     }
 
-    const ref = Point.normalize(p)
+    const ref = Point.parse(p)
     const x = ref.x
     const y = ref.y
     const points = this.points
@@ -556,10 +557,6 @@ export class Polyline {
     return null
   }
 
-  serialize() {
-    return this.points.map(p => `${p.x}, ${p.y}`).join(' ')
-  }
-
   equals(p: Polyline) {
     if (p == null) {
       return false
@@ -576,10 +573,14 @@ export class Polyline {
     return new Polyline(this.points.map(p => p.clone()))
   }
 
-  toString() {}
-}
+  serialize() {
+    return this.points.map(p => `${p.x}, ${p.y}`).join(' ')
+  }
 
-export namespace Polyline {}
+  toString() {
+    return this.serialize()
+  }
+}
 
 export namespace Polyline {
   export function parse(svgString: string) {

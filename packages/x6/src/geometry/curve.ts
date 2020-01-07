@@ -785,7 +785,7 @@ export namespace Curve {
   function getCurveControlPoints(
     points: (Point | Point.PointLike | Point.PointData)[],
   ) {
-    const knots = points.map(p => Point.normalize(p))
+    const knots = points.map(p => Point.parse(p))
     const firstControlPoints = []
     const secondControlPoints = []
     const n = knots.length - 1

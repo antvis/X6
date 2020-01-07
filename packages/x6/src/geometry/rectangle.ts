@@ -183,25 +183,14 @@ export class Rectangle {
   add(
     x: number | Rectangle | Rectangle.RectangleLike | Rectangle.RectangleData,
     y?: number,
-    w?: number,
-    h?: number,
+    width?: number,
+    height?: number,
   ): this {
-    let minX: number
-    let minY: number
-    let maxX: number
-    let maxY: number
-    if (typeof x === 'number') {
-      minX = Math.min(this.x, x)
-      minY = Math.min(this.y, y!)
-      maxX = Math.max(this.x + this.width, x + w!)
-      maxY = Math.max(this.y + this.height, y! + h!)
-    } else {
-      const rect = Rectangle.normalize(x)
-      minX = Math.min(this.x, rect.x)
-      minY = Math.min(this.y, rect.y)
-      maxX = Math.max(this.x + this.width, rect.x + rect.width)
-      maxY = Math.max(this.y + this.height, rect.y + rect.height)
-    }
+    const rect = Rectangle.create(x, y, width, height)
+    const minX = Math.min(this.x, rect.x)
+    const minY = Math.min(this.y, rect.y)
+    const maxX = Math.max(this.x + this.width, rect.x + rect.width)
+    const maxY = Math.max(this.y + this.height, rect.y + rect.height)
 
     this.x = minX
     this.y = minY
@@ -218,22 +207,14 @@ export class Rectangle {
   update(
     x: number | Rectangle | Rectangle.RectangleLike | Rectangle.RectangleData,
     y?: number,
-    w?: number,
-    h?: number,
+    width?: number,
+    height?: number,
   ): this {
-    if (typeof x === 'number') {
-      this.x = x
-      this.y = y!
-      this.width = w!
-      this.height = h!
-    } else {
-      const rect = Rectangle.normalize(x)
-      this.x = rect.x
-      this.y = rect.y
-      this.width = rect.width
-      this.height = rect.height
-    }
-
+    const rect = Rectangle.create(x, y, width, height)
+    this.x = rect.x
+    this.y = rect.y
+    this.width = rect.width
+    this.height = rect.height
     return this
   }
 
@@ -269,15 +250,9 @@ export class Rectangle {
     dx: number | Point | Point.PointLike | Point.PointData,
     dy?: number,
   ): this {
-    if (typeof dx === 'number') {
-      this.x += dx
-      this.y += dy!
-    } else {
-      const p = Point.normalize(dx)
-      this.x += p.x
-      this.y += p.y
-    }
-
+    const p = Point.create(dx, dy)
+    this.x += p.x
+    this.y += p.y
     return this
   }
 
@@ -288,7 +263,7 @@ export class Rectangle {
   moveAndExpand(
     rect: Rectangle | Rectangle.RectangleLike | Rectangle.RectangleData,
   ) {
-    const ref = Rectangle.normalize(rect)
+    const ref = Rectangle.parse(rect)
     this.x += ref.x || 0
     this.y += ref.y || 0
     this.width += ref.width || 0
@@ -356,7 +331,7 @@ export class Rectangle {
       | Rectangle.RectangleData,
     origin: Point = this.center,
   ) {
-    const rect = Rectangle.normalize(limitRectangle)
+    const rect = Rectangle.parse(limitRectangle)
     const ox = origin.x
     const oy = origin.y
 
@@ -437,7 +412,7 @@ export class Rectangle {
     x: number | Point | Point.PointLike | Point.PointData,
     y?: number,
   ): boolean {
-    const point = typeof x === 'number' ? { x, y: y! } : Point.normalize(x)
+    const point = Point.create(x, y)
     return (
       point != null &&
       point.x >= this.x &&
@@ -458,10 +433,10 @@ export class Rectangle {
   containsRect(
     x: number | Rectangle | Rectangle.RectangleLike | Rectangle.RectangleData,
     y?: number,
-    w?: number,
-    h?: number,
+    width?: number,
+    height?: number,
   ) {
-    const b = this.parse(x, y, w, h)
+    const b = Rectangle.create(x, y, width, height)
     const x1 = this.x
     const y1 = this.y
     const w1 = this.width
@@ -507,7 +482,7 @@ export class Rectangle {
     p: Point | Point.PointLike | Point.PointData,
     angle?: number,
   ) {
-    const ref = Point.normalize(p)
+    const ref = Point.parse(p)
     const center = this.center
     let result
 
@@ -572,10 +547,10 @@ export class Rectangle {
   intersect(
     x: number | Rectangle | Rectangle.RectangleLike | Rectangle.RectangleData,
     y?: number,
-    w?: number,
-    h?: number,
+    width?: number,
+    height?: number,
   ) {
-    const ref = this.parse(x, y, w, h)
+    const ref = Rectangle.create(x, y, width, height)
 
     // no intersection
     if (!this.isIntersectWith(ref)) {
@@ -605,10 +580,10 @@ export class Rectangle {
   isIntersectWith(
     x: number | Rectangle | Rectangle.RectangleLike | Rectangle.RectangleData,
     y?: number,
-    w?: number,
-    h?: number,
+    width?: number,
+    height?: number,
   ) {
-    const ref = this.parse(x, y, w, h)
+    const ref = Rectangle.create(x, y, width, height)
     const myOrigin = this.origin
     const myCorner = this.corner
     const rOrigin = ref.origin
@@ -629,7 +604,7 @@ export class Rectangle {
    * Returns a rectangle that is a union of this rectangle and rectangle `rect`.
    */
   union(rect: Rectangle | Rectangle.RectangleLike | Rectangle.RectangleData) {
-    const ref = Rectangle.normalize(rect)
+    const ref = Rectangle.parse(rect)
     const myOrigin = this.origin
     const myCorner = this.corner
     const rOrigin = ref.origin
@@ -644,7 +619,7 @@ export class Rectangle {
   }
 
   sideNearestToPoint(p: Point | Point.PointLike | Point.PointData): Side {
-    const ref = Point.normalize(p)
+    const ref = Point.parse(p)
     const distLeft = ref.x - this.x
     const distRight = this.x + this.width - ref.x
     const distTop = ref.y - this.y
@@ -670,7 +645,7 @@ export class Rectangle {
   }
 
   pointNearestToPoint(p: Point | Point.PointLike | Point.PointData) {
-    const ref = Point.normalize(p)
+    const ref = Point.parse(p)
     if (this.containsPoint(ref)) {
       const side = this.sideNearestToPoint(ref)
       switch (side) {
@@ -712,17 +687,6 @@ export class Rectangle {
 
   toString() {
     return `${this.x} ${this.y} ${this.width} ${this.height}`
-  }
-
-  private parse(
-    x: number | Rectangle | Rectangle.RectangleLike | Rectangle.RectangleData,
-    y?: number,
-    w?: number,
-    h?: number,
-  ) {
-    return typeof x === 'number'
-      ? new Rectangle(x, y, w, h)
-      : Rectangle.normalize(x)
   }
 }
 
@@ -767,19 +731,19 @@ export namespace Rectangle {
       return new Rectangle(x, y, width, height)
     }
 
-    if (Array.isArray(x)) {
-      return new Rectangle(x[0], x[1], x[2], x[3])
-    }
-
-    if (x instanceof Rectangle) {
-      return x.clone()
-    }
-
-    return new Rectangle(x.x, x.y, x.width, x.height)
+    return parse(x)
   }
 
-  export function normalize(rect: Rectangle | RectangleLike | RectangleData) {
-    return rect instanceof Rectangle ? rect : create(rect)
+  export function parse(rect: Rectangle | RectangleLike | RectangleData) {
+    if (rect instanceof Rectangle) {
+      return rect.clone()
+    }
+
+    if (Array.isArray(rect)) {
+      return new Rectangle(rect[0], rect[1], rect[2], rect[3])
+    }
+
+    return new Rectangle(rect.x, rect.y, rect.width, rect.height)
   }
 
   export function fromEllipse(ellipse: Ellipse) {
