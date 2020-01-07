@@ -58,7 +58,7 @@ export class Ellipse {
    * lying on the ellipse boundary and `n > 1` for points outside the ellipse.
    */
   normalizedDistance(p: Point | Point.PointLike | Point.PointData) {
-    const ref = Point.normalize(p)
+    const ref = Point.parse(p)
     const dx = ref.x - this.x
     const dy = ref.y - this.y
     const a = this.a
@@ -133,7 +133,7 @@ export class Ellipse {
     p: Point | Point.PointLike | Point.PointData,
     angle: number = 0,
   ) {
-    const ref = Point.normalize(p)
+    const ref = Point.parse(p)
 
     if (angle) {
       ref.rotate(angle, this.getCenter())
@@ -167,7 +167,7 @@ export class Ellipse {
   }
 
   tangentTheta(p: Point | Point.PointLike | Point.PointData) {
-    const ref = Point.normalize(p)
+    const ref = Point.parse(p)
     const x0 = ref.x
     const y0 = ref.y
     const a = this.a
@@ -261,15 +261,19 @@ export namespace Ellipse {
       return new Ellipse(x, y, a, b)
     }
 
-    if (Array.isArray(x)) {
-      return new Ellipse(x[0], x[1], x[2], x[3])
+    return parse(x)
+  }
+
+  export function parse(e: Ellipse | EllipseLike | EllipseData) {
+    if (e instanceof Ellipse) {
+      return e.clone()
     }
 
-    if (x instanceof Ellipse) {
-      return x.clone()
+    if (Array.isArray(e)) {
+      return new Ellipse(e[0], e[1], e[2], e[3])
     }
 
-    return new Ellipse(x.x, x.y, x.a, x.b)
+    return new Ellipse(e.x, e.y, e.a, e.b)
   }
 
   export function fromRect(rect: Rectangle) {
