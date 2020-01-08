@@ -73,7 +73,7 @@ export const preset: FullOptions = {
   cellsSelectable: true,
   cellsDeletable: true,
   nodeLabelsMovable: false,
-  edgeLabelsMovable: true,
+  edgeLabelsMovable: false,
   cellsMovable: true,
   cellsBendable: true,
   cellsEditable: true,
