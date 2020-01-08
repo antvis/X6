@@ -8,6 +8,9 @@ export namespace Angle {
     return (d * Math.PI) / 180
   }
 
+  /**
+   * Returns the angle in degrees and clamps its value between `0` and `360`.
+   */
   export function normalize(angle: number) {
     return (angle % 360) + (angle < 0 ? 360 : 0)
   }

@@ -5,7 +5,7 @@ import { Line } from './line'
 import { Ellipse } from './ellipse'
 import { Side } from './types'
 
-export class Rectangle {
+export class Rectangle implements Rectangle.RectangleLike {
   x: number
   y: number
   width: number
@@ -691,7 +691,7 @@ export class Rectangle {
 }
 
 export namespace Rectangle {
-  export interface RectangleLike {
+  export interface RectangleLike extends Point.PointLike {
     x: number
     y: number
     width: number

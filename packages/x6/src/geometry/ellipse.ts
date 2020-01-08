@@ -2,7 +2,7 @@ import { Point } from './point'
 import { Line } from './line'
 import { Rectangle } from './rectangle'
 
-export class Ellipse {
+export class Ellipse implements Ellipse.EllipseLike {
   x: number
   y: number
   a: number
@@ -228,7 +228,7 @@ export class Ellipse {
 }
 
 export namespace Ellipse {
-  export interface EllipseLike {
+  export interface EllipseLike extends Point.PointLike {
     x: number
     y: number
     a: number
