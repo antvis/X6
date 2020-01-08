@@ -3,7 +3,7 @@ import { Angle } from './angle'
 import { Line } from './line'
 import { Rectangle } from './rectangle'
 
-export class Point {
+export class Point implements Point.PointLike {
   public x: number
   public y: number
 
