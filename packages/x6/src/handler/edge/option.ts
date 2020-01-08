@@ -20,6 +20,11 @@ export interface EdgeHandleOptions
   cursor: OptionItem<GetEdgeHandleCursorArgs, string>
 
   /**
+   * Specifies if change the terminal is enabled.
+   */
+  changable: OptionItem<GetEdgeHandleOptionsArgs, boolean>
+
+  /**
    * Specifies if cloning by control-drag is enabled.
    *
    * Default is `false`.
@@ -91,6 +96,7 @@ export function getEdgeHandleOptions(args: GetEdgeHandleOptionsArgs) {
   const { graph } = args
   const options = graph.options.edgeHandle
   return {
+    changable: drill(options.changable, graph, args),
     cloneable: drill(options.cloneable, graph, args),
     addable: drill(options.addable, graph, args),
     removable: drill(options.removable, graph, args),
