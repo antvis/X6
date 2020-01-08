@@ -15,9 +15,10 @@ export class EdgeElbowHandler extends EdgeHandler {
     const handles = []
 
     // Source
-    let handle = this.createHandleShape(0)
-    this.initHandle(handle)
-    handles.push(handle)
+    const sourceHandle = this.createHandleShape(0)
+    this.initHandle(sourceHandle)
+    this.setTerminalHandle(sourceHandle)
+    handles.push(sourceHandle)
 
     // Virtual
     handles.push(
@@ -32,9 +33,10 @@ export class EdgeElbowHandler extends EdgeHandler {
     this.points!.push(new Point(0, 0))
 
     // Target
-    handle = this.createHandleShape(2)
-    this.initHandle(handle)
-    handles.push(handle)
+    const targetHandle = this.createHandleShape(2)
+    this.initHandle(targetHandle)
+    this.setTerminalHandle(targetHandle)
+    handles.push(targetHandle)
 
     return handles
   }
@@ -118,9 +120,18 @@ export class EdgeElbowHandler extends EdgeHandler {
       )
     }
 
+    if (this.handles == null) {
+      return
+    }
+
+    const handle = this.handles[1]
+    if (handle == null) {
+      return
+    }
+
     // Makes handle slightly bigger if the yellow  label handle
     // exists and intersects this green handle
-    const b = this.handles![1]!.bounds
+    const b = handle.bounds
     let w = b.width
     let h = b.height
     let bounds = new Rectangle(
@@ -147,11 +158,11 @@ export class EdgeElbowHandler extends EdgeHandler {
       )
     }
 
-    this.handles![1]!.bounds = bounds
-    this.handles![1]!.redraw()
+    handle.bounds = bounds
+    handle.redraw()
 
     if (this.manageLabelHandle) {
-      this.checkLabelHandle(this.handles![1]!.bounds)
+      this.checkLabelHandle(handle.bounds)
     }
   }
 }
