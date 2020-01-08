@@ -60,7 +60,7 @@ export class CommonAccessor extends BaseGraph {
     return (
       this.isCellsBendable() &&
       !this.isCellLocked(cell) &&
-      style.bendable !== false
+      style.bendable === true
     )
   }
 
