@@ -41,7 +41,7 @@ export class CommonAccessor extends BaseGraph {
     return (
       this.isCellsRotatable() &&
       !this.isCellLocked(cell) &&
-      style.rotatable !== false
+      style.rotatable === true
     )
   }
 
