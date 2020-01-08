@@ -374,6 +374,7 @@ export const preset: FullOptions = {
   },
 
   edgeHandle: {
+    changable: false,
     cloneable: false,
     addable: false,
     removable: false,

@@ -256,6 +256,7 @@ export class EdgeSegmentHandler extends EdgeElbowHandler {
     // Source
     let handle = this.createHandleShape(0)
     this.initHandle(handle)
+    this.setTerminalHandle(handle)
     handles.push(handle)
 
     const pts = this.getCurrentPoints()
@@ -284,6 +285,7 @@ export class EdgeSegmentHandler extends EdgeElbowHandler {
     // Target
     handle = this.createHandleShape(pts.length)
     this.initHandle(handle)
+    this.setTerminalHandle(handle)
     handles.push(handle)
 
     return handles

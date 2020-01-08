@@ -45,6 +45,11 @@ export class EdgeHandler extends MouseHandler {
   error: string | null = null
 
   /**
+   * Specifies if change the terminal is enabled.
+   */
+  changable: boolean = false
+
+  /**
    * Specifies if cloning by control-drag is enabled.
    *
    * Default is `false`.
@@ -170,6 +175,7 @@ export class EdgeHandler extends MouseHandler {
       graph: this.graph,
       cell: this.state.cell,
     })
+    this.changable = options.changable
     this.cloneable = options.cloneable
     this.addable = options.addable
     this.removable = options.removable
@@ -311,6 +317,9 @@ export class EdgeHandler extends MouseHandler {
           })(i)
 
           this.initHandle(handle, dblClick)
+          if (isTerminal) {
+            this.setTerminalHandle(handle)
+          }
 
           if (this.isHandleEnabled(i)) {
             const cursor = getEdgeHandleCursor({
@@ -338,6 +347,14 @@ export class EdgeHandler extends MouseHandler {
     }
 
     return handles
+  }
+
+  protected setTerminalHandle(handle: Shape) {
+    if (this.changable) {
+      DomUtil.show(handle.elem)
+    } else {
+      DomUtil.hide(handle.elem)
+    }
   }
 
   protected isVirtualHandlesEnabled() {
