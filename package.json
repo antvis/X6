@@ -21,7 +21,7 @@
     "build": "lerna run build",
     "build:dev": "sh ./scripts/build-dev.sh",
     "lint": "lerna run lint",
-    "test": "jest",
+    "test": "jest --coverage",
     "pretest": "run-p clean:coverage",
     "coveralls": "cat ./test/coverage/lcov.info | coveralls",
     "prettier": "prettier --write '**/*.{js,jsx,tsx,ts,less,md,json}'",
