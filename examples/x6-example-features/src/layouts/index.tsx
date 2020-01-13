@@ -25,7 +25,7 @@ const features = [
 const charts = [{ link: '/flowchart', title: 'FlowChart' }]
 
 const BasicLayout: React.FC = props => {
-  const pathname = props.location.pathname
+  const pathname = (props as any).location.pathname
   if (charts.some(item => item.link === pathname)) {
     return props.children as React.ReactElement
   }
