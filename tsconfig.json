@@ -5,6 +5,8 @@
       "**/lib"
   ],
   "compilerOptions": {
+    "module": "commonjs",
+    "moduleResolution": "node",
     "sourceMap": true,
     "declaration": true,
     "skipLibCheck": true,
@@ -15,10 +17,8 @@
     "strictNullChecks": true,
     "resolveJsonModule": true,
     "experimentalDecorators": true,
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "target": "es5",
     "jsx": "react",
-    "lib": ["es5", "dom", "es2015"]
+    "target": "es5",
+    "lib": ["dom", "es2015"]
   }
 }
