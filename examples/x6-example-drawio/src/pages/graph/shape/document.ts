@@ -7,7 +7,7 @@ export class DocumentShape extends Shape.Actor {
   getLabelMargins(rect: Rectangle) {
     if (ObjectExt.getBoolean(this.style, 'boundedLbl', false)) {
       const dy = getFactor(this.style, this.factor, rect.height)
-      return new Rectangle(0, 0, 0, dy)
+      return { left: 0, top: 0, right: 0, bottom: dy }
     }
 
     return null

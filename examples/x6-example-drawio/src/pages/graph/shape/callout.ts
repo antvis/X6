@@ -21,12 +21,13 @@ export class CalloutShape extends Shape.Actor {
   }
 
   getLabelMargins() {
-    return new Rectangle(
-      0,
-      0,
-      0,
-      ObjectExt.getNumber(this.style, 'factor', this.factor) * this.scale,
-    )
+    return {
+      left: 0,
+      top: 0,
+      right: 0,
+      bottom:
+        ObjectExt.getNumber(this.style, 'factor', this.factor) * this.scale,
+    }
   }
 
   redrawPath(c: SvgCanvas2D, x: number, y: number, w: number, h: number) {
