@@ -15,12 +15,12 @@ export class TapeShape extends Shape.Actor {
         this.direction === 'west'
       ) {
         const dy = getFactor(this.style, this.factor, h)
-        return new Rectangle(rect.x, rect.y + dy, w, h - 2 * dy)
+        return { left: rect.x, top: rect.y + dy, right: w, bottom: h - 2 * dy }
       }
 
       const dx = getFactor(this.style, this.factor, w)
 
-      return new Rectangle(rect.x + dx, rect.y, w - 2 * dx, h)
+      return { left: rect.x + dx, top: rect.y, right: w - 2 * dx, bottom: h }
     }
 
     return null

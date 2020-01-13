@@ -6,7 +6,7 @@ export default class ColorPickerExample extends React.PureComponent {
     return (
       <div style={{ height: '100%' }}>
         <div style={{ width: 120 }}>
-          <ColorPicker value="#333333" />
+          <ColorPicker color="#333333" />
         </div>
       </div>
     )

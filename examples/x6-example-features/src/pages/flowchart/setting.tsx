@@ -19,7 +19,8 @@ export class Setting extends React.Component<Setting.Props, Setting.State> {
     }
   }
 
-  onTitleChange = ({ target: { value } }) => {
+  onTitleChange = (e: any) => {
+    const value = e.target.value
     if (value && value.trim()) {
       const cell = this.state.selectedCells[0]
       const data = cell.data
