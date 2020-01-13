@@ -79,9 +79,7 @@ export class V {
       return V.transform(this.node)
     }
 
-    if (matrix != null) {
-      V.transform(this.node, matrix, options)
-    }
+    V.transform(this.node, matrix, options)
 
     return this
   }
@@ -1417,7 +1415,7 @@ export namespace V {
         let points = getPointsFromSvgElement(elem)
         return new Polyline(points)
 
-      case 'polyline':
+      case 'polygon':
         points = getPointsFromSvgElement(elem)
         if (points.length > 1) {
           points.push(points[0])
@@ -1616,7 +1614,8 @@ export namespace V {
     elem.appendChild(animate)
 
     try {
-      (animate as any).beginElement()
+      const ani = animate as any
+      ani.beginElement()
     } catch (e) {
       // Fallback for IE 9.
       // Run the animation programmatically
@@ -1693,7 +1692,10 @@ export namespace V {
             item = ret[i] = { t: t[i], attrs: annotation.attrs }
           }
           if (opt.includeAnnotationIndices) {
-            (item.annotations || (item.annotations = [])).push(j)
+            if (item.annotations == null) {
+              item.annotations = []
+            }
+            item.annotations.push(j)
           }
         }
       }
@@ -2463,8 +2465,10 @@ export namespace V {
   export function createSVGMatrix(matrix?: DOMMatrix | MatrixLike) {
     const svgMatrix = svgDocument.createSVGMatrix()
     if (matrix != null) {
-      for (const component in matrix) {
-        (svgMatrix as any)[component] = (matrix as any)[component]
+      const source = matrix as any
+      const target = svgMatrix as any
+      for (const key in source) {
+        target[key] = source[key]
       }
     }
     return svgMatrix
