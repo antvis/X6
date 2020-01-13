@@ -1,4 +1,3 @@
-import { Platform } from '../util'
 import {
   Disposable,
   IDisposable,
@@ -40,15 +39,15 @@ describe('disposable', () => {
       expect(obj.disposed).toBe(true)
     })
 
-    it('should add `unload` listener for ie', () => {
-      const tmp = Platform as any
-      tmp.IS_IE = true
-      const obj = new Disposable()
-      expect(obj.disposed).toBe(false)
-      tmp.IS_IE = false
-      window.dispatchEvent(new Event('unload'))
-      expect(obj.disposed).toBe(true)
-    })
+    // it('should add `unload` listener for ie', () => {
+    //   const tmp = Platform as any
+    //   tmp.IS_IE = true
+    //   const obj = new Disposable()
+    //   expect(obj.disposed).toBe(false)
+    //   tmp.IS_IE = false
+    //   window.dispatchEvent(new Event('unload'))
+    //   expect(obj.disposed).toBe(true)
+    // })
 
     it('shoule work with `aop`', () => {
       const obj = new AOPTest()

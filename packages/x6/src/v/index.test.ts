@@ -74,10 +74,6 @@ beforeAll(async done => {
   done()
 })
 
-afterAll(() => {
-  V.remove(fixture)
-})
-
 describe('#convertToPathData', () => {
   function roundPathData(pathData: string | null) {
     return pathData != null
@@ -154,14 +150,14 @@ describe('#convertToPathData', () => {
     )
   })
 
-  it.skip('should convert SVGPolygonElement', () => {
+  it('should convert SVGPolygonElement', () => {
     const polygon = V.create('polygon', {
       points: '200,10 250,190 160,210',
     })
     expect(polygon.convertToPathData()).toEqual('M 200 10 L250 190 L160 210 Z')
   })
 
-  it.skip('should convert SVGPolylineElement', () => {
+  it('should convert SVGPolylineElement', () => {
     const polyline = V.create('polyline', {
       points: '100,10 200,10 150,110',
     })
@@ -199,17 +195,17 @@ describe('#transformStringToMatrix', () => {
   ]
 
   arr.forEach(transformString => {
-    it.skip(`should convert "${transformString}" to matrix`, () => {
+    it(`should convert "${transformString}" to matrix`, () => {
       svgTestGroup.attr('transform', transformString)
       expect(V.transformStringToMatrix(transformString)).toEqual(
-        (svgTestGroup.node as SVGGraphicsElement).getCTM(),
+        (svgTestGroup.node as SVGGraphicsElement).getCTM() as any,
       )
     })
   })
 })
 
 describe('#matrixToTransformString', () => {
-  it.skip('should return correct transformation string', () => {
+  it('should return correct transformation string', () => {
     expect(V.matrixToTransformString()).toEqual('matrix(1,0,0,1,0,0)')
     expect(V.matrixToTransformString({ a: 2, d: 2 })).toEqual(
       'matrix(2,0,0,2,0,0)',
@@ -240,7 +236,7 @@ describe('#matrixTo[Transformation]', () => {
     return obj
   }
 
-  it.skip('should convert matrix to rotation metadata', () => {
+  it('should convert matrix to rotation metadata', () => {
     let angle
     angle = V.matrixToRotate(V.createSVGMatrix().rotate(45))
     expect(roundObject(angle)).toEqual({ angle: 45 })
@@ -268,7 +264,7 @@ describe('#matrixTo[Transformation]', () => {
     expect(roundObject(angle)).toEqual({ angle: 120 })
   })
 
-  it.skip('should convert matrix to translation medata', () => {
+  it('should convert matrix to translation medata', () => {
     let translate
     translate = V.matrixToTranslate(V.createSVGMatrix().translate(10, 20))
     expect(roundObject(translate)).toEqual({ tx: 10, ty: 20 })
@@ -289,7 +285,7 @@ describe('#matrixTo[Transformation]', () => {
     expect(roundObject(translate)).toEqual({ tx: 40, ty: 60 })
   })
 
-  it.skip('should convert matrix to scaling metadata', () => {
+  it('should convert matrix to scaling metadata', () => {
     let scale
     scale = V.matrixToScale(V.createSVGMatrix().scale(2))
     expect(roundObject(scale)).toEqual({ sx: 2, sy: 2 })
