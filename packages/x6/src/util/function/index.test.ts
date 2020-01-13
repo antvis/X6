@@ -153,14 +153,16 @@ describe('function', () => {
   })
 
   describe('#once', () => {
-    const spy = sinon.spy()
-    const ctx = {}
-    const fn = FunctionExt.once(spy, ctx)
-    fn()
-    expect(spy.calledOn(ctx)).toBeTruthy()
-    expect(spy.calledOnce).toBeTruthy()
-    fn()
-    expect(spy.calledOnce).toBeTruthy()
+    it('should only be called once', () => {
+      const spy = sinon.spy()
+      const ctx = {}
+      const fn = FunctionExt.once(spy, ctx)
+      fn()
+      expect(spy.calledOn(ctx)).toBeTruthy()
+      expect(spy.calledOnce).toBeTruthy()
+      fn()
+      expect(spy.calledOnce).toBeTruthy()
+    })
   })
 
   describe('#cacher', () => {
