@@ -96,6 +96,8 @@ describe('string', () => {
   })
 
   describe('#sanitizeText', () => {
-    expect(sanitizeText('hell o')).toBe('hell\u00A0o')
+    it('should sanitize text', () => {
+      expect(sanitizeText('hell o')).toBe('hell\u00A0o')
+    })
   })
 })
