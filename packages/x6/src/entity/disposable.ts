@@ -1,5 +1,5 @@
-import { Platform } from '../util'
-import { DomEvent } from '../dom'
+// import { Platform } from '../util'
+// import { DomEvent } from '../dom'
 
 /**
  * An object which implements the disposable pattern.
@@ -28,13 +28,13 @@ export interface IDisposable {
 }
 
 export class Disposable implements IDisposable {
-  constructor() {
-    if (Platform.IS_IE) {
-      DomEvent.addListener(window, 'unload', () => {
-        this.dispose()
-      })
-    }
-  }
+  // constructor() {
+  //   if (Platform.IS_IE) {
+  //     DomEvent.addListener(window, 'unload', () => {
+  //       this.dispose()
+  //     })
+  //   }
+  // }
 
   private isDisposed: boolean = false
 
