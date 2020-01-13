@@ -13,7 +13,7 @@ export class CubeShape extends Shape.Cylinder {
     if (ObjectExt.getBoolean(this.style, 'boundedLbl', false)) {
       const s =
         ObjectExt.getNumber(this.style, 'factor', this.factor) * this.scale
-      return new Rectangle(s, s, 0, 0)
+      return { left: s, top: s, right: 0, bottom: 0 }
     }
 
     return null

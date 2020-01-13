@@ -14,7 +14,7 @@ export default class Example extends React.Component {
         const geo = this.getCellGeometry(cell)
         return geo != null ? geo.relative : false
       },
-      isCellFoldable() {
+      isCellCollapsable() {
         return false
       },
       edgeStyle: {
