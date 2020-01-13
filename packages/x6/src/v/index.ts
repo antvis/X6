@@ -450,7 +450,7 @@ export namespace V {
   }
 }
 
-// detect
+// instance
 export namespace V {
   export function create(
     elem: V | SVGElement | string,
@@ -1913,7 +1913,7 @@ export namespace V {
   }
 }
 
-// convert to path element
+// to path element
 export namespace V {
   export const KAPPA = 0.551784
 
@@ -2315,8 +2315,8 @@ export namespace V {
 
   export interface Rotate {
     angle: number
-    cx: number
-    cy: number
+    cx?: number
+    cy?: number
   }
 
   export interface Scale {
