@@ -187,9 +187,9 @@ export class Vectorizer {
     }
 
     if (typeof name === 'object') {
-      Static.setAttributes(this.node, name)
+      Static.attr(this.node, name)
     } else {
-      Static.setAttribute(this.node, name, value)
+      Static.attr(this.node, name, value!)
     }
 
     return this
@@ -277,13 +277,13 @@ export class Vectorizer {
   }
 
   findOne(selector: string) {
-    const found = this.node.querySelector(selector)
+    const found = Static.findOne(this.node, selector)
     return found ? Static.create(found as SVGElement) : undefined
   }
 
   find(selector: string) {
     const vels: Vectorizer[] = []
-    const nodes = this.node.querySelectorAll(selector)
+    const nodes = Static.find(this.node, selector)
     if (nodes) {
       for (let i = 0, ii = nodes.length; i < ii; i += 1) {
         vels.push(Static.create(nodes[i] as SVGElement))
@@ -327,7 +327,7 @@ export class Vectorizer {
     return this
   }
 
-  removeClass(className: string) {
+  removeClass(className?: string) {
     Static.removeClass(this.node, className)
     return this
   }
