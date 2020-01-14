@@ -20,7 +20,7 @@
     "build": "lerna run build",
     "build:dev": "sh ./scripts/build-dev.sh",
     "lint": "lerna run lint",
-    "test": "lerna run test",
+    "test": "lerna run test --stream",
     "prettier": "prettier --write '**/*.{js,jsx,tsx,ts,less,md,json}'",
     "pretty-quick": "pretty-quick",
     "clear": "rimraf yarn.lock && lerna run clean && lerna clean -y && rimraf ./node_modules",
