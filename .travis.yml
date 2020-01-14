@@ -1,6 +1,8 @@
 language: node_js
 os:
   - linux
+  - osx
+  - windows
 node_js:
   - 8
   - 10
@@ -14,6 +16,8 @@ cache:
   directories:
     - node_modules
 install:
+  - export DISPLAY=':99.0'
+  - Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
   - npm install -g yarn
   - npm install -g lerna
   - yarn bootstrap
