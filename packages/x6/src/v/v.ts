@@ -18,6 +18,7 @@ v.prototype = Vectorizer.prototype
 
 export namespace v {
   // attr
+  // ----
   export const qualifyAttr = Static.qualifyAttr
   export const styleToObject = Static.styleToObject
   export const mergeAttrs = Static.mergeAttrs
@@ -27,6 +28,7 @@ export namespace v {
   export const attr = Static.attr
 
   // class
+  // ----
   export const getClass = Static.getClass
   export const hasClass = Static.hasClass
   export const addClass = Static.addClass
@@ -34,14 +36,19 @@ export namespace v {
   export const toggleClass = Static.toggleClass
 
   // ctor
+  // ----
   export const create = Static.create
   export const createBatch = Static.createBatch
   export const isVectorizer = Static.isVectorizer
+  /**
+   * Returns `true` if object is an instance of `SVGGraphicsElement`.
+   */
   export const isSVGGraphicsElement = Static.isSVGGraphicsElement
   export const toNode = Static.toNode
   export const ensureId = Static.ensureId
 
   // elem
+  // ----
   export const createElement = Static.createElement
   export const createSvgElement = Static.createSvgElement
   export const createSvgDocument = Static.createSvgDocument
@@ -60,29 +67,90 @@ export namespace v {
   export const contains = Static.contains
 
   // matrix
+  // ----
+
+  /**
+   * Returns a SVG point object initialized with the `x` and `y` coordinates.
+   * @see https://developer.mozilla.org/en/docs/Web/API/SVGPoint
+   */
   export const createSVGPoint = Static.createSVGPoint
+
+  /**
+   * Returns the SVG transformation matrix initialized with the given matrix.
+   *
+   * The given matrix is an object of the form:
+   * {
+   *   a: number
+   *   b: number
+   *   c: number
+   *   d: number
+   *   e: number
+   *   f: number
+   * }
+   *
+   * @see https://developer.mozilla.org/en/docs/Web/API/SVGMatrix
+   */
   export const createSVGMatrix = Static.createSVGMatrix
+
+  /**
+   * Returns a SVG transform object.
+   * @see https://developer.mozilla.org/en/docs/Web/API/SVGTransform
+   */
   export const createSVGTransform = Static.createSVGTransform
+
   export const parseTransformString = Static.parseTransformString
+
+  /**
+   * Returns the SVG transformation matrix built from the `transformString`.
+   *
+   * E.g. 'translate(10,10) scale(2,2)' will result in matrix:
+   * `{ a: 2, b: 0, c: 0, d: 2, e: 10, f: 10}`
+   */
   export const transformStringToMatrix = Static.transformStringToMatrix
   export const matrixToTransformString = Static.matrixToTransformString
   export const deltaTransformPoint = Static.deltaTransformPoint
+  /**
+   * Decomposes the SVG transformation matrix into separate transformations.
+   *
+   * Returns an object of the form:
+   * {
+   *   translateX: number
+   *   translateY: number
+   *   scaleX: number
+   *   scaleY: number
+   *   skewX: number
+   *   skewY: number
+   *   rotation: number
+   * }
+   *
+   * @see https://developer.mozilla.org/en/docs/Web/API/SVGMatrix
+   */
   export const decomposeMatrix = Static.decomposeMatrix
   export const matrixToScale = Static.matrixToScale
   export const matrixToRotate = Static.matrixToRotate
   export const matrixToTranslate = Static.matrixToTranslate
+
+  /**
+   * Transforms point `p` by an SVG transformation represented by `matrix`.
+   */
   export const transformPoint = Static.transformPoint
   export const transformLine = Static.transformLine
+  /**
+   * Transform as polyline (or an array of points) by an SVG transformation
+   * represented by `matrix`.
+   */
   export const transformPolyline = Static.transformPolyline
   export const transformRect = Static.transformRect
 
   // transform
+  // ----
   export const transform = Static.transform
   export const translate = Static.translate
   export const rotate = Static.rotate
   export const scale = Static.scale
 
   // path
+  // ----
   export const sample = Static.sample
   export const getPointsFromSvgElement = Static.getPointsFromSvgElement
   export const convertLineToPathData = Static.convertLineToPathData
@@ -97,17 +165,51 @@ export namespace v {
   export const normalizePathData = Static.normalizePathData
 
   // text
+  // ----
   export const text = Static.text
   export const sanitizeText = Static.sanitizeText
   export const annotateString = Static.annotateString
 
   // geometry
+  // ----
   export const bbox = Static.bbox
   export const getBBox = Static.getBBox
+  /**
+   * Returns an DOMMatrix that specifies the transformation necessary
+   * to convert `elem` coordinate system into `target` coordinate system.
+   */
   export const getTransformToElement = Static.getTransformToElement
+  /**
+   * Convert a global point with coordinates `x` and `y` into the
+   * coordinate space of the element.
+   */
   export const toLocalPoint = Static.toLocalPoint
+  /**
+   * Convert the SVGElement to an equivalent geometric shape. The element's
+   * transformations are not taken into account.
+   *
+   * SVGRectElement      => Rectangle
+   *
+   * SVGLineElement      => Line
+   *
+   * SVGCircleElement    => Ellipse
+   *
+   * SVGEllipseElement   => Ellipse
+   *
+   * SVGPolygonElement   => Polyline
+   *
+   * SVGPolylineElement  => Polyline
+   *
+   * SVGPathElement      => Path
+   *
+   * others              => Rectangle
+   */
   export const toGeometryShape = Static.toGeometryShape
   export const findIntersection = Static.findIntersection
   export const translateAndAutoOrient = Static.translateAndAutoOrient
+  /**
+   * Animate the element along the path SVG element (or Vectorizer object).
+   * `attrs` contain Animation Timing attributes describing the animation.
+   */
   export const animateAlongPath = Static.animateAlongPath
 }

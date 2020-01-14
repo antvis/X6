@@ -118,10 +118,6 @@ export function getBBox(
   }
 }
 
-/**
- * Returns an DOMMatrix that specifies the transformation necessary
- * to convert `elem` coordinate system into `target` coordinate system.
- */
 export function getTransformToElement(elem: SVGElement, target: SVGElement) {
   if (isSVGGraphicsElement(target) && isSVGGraphicsElement(elem)) {
     const targetCTM = target.getScreenCTM()
