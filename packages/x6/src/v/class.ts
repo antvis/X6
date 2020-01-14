@@ -52,7 +52,7 @@ export function addClass(
 
 export function removeClass(
   elem: Element | null,
-  selector: ((cls: string) => string) | string | null,
+  selector?: ((cls: string) => string) | string | null,
 ): void {
   if (elem == null) {
     return

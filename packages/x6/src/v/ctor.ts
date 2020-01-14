@@ -32,7 +32,7 @@ export function create(
   return new Vectorizer(elem, attrs, children)
 }
 
-export function createBatch(markup: string) {
+export function batch(markup: string) {
   if (markup[0] === '<') {
     const svgDoc = createSvgDocument(markup)
     const vels: Vectorizer[] = []
