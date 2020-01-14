@@ -3,17 +3,17 @@ node_js:
   - 8
   - 10
   - 12
-addons:
-  apt:
-    packages:
-      - xvfb
+# addons:
+#   apt:
+#     packages:
+#       - xvfb
 cache:
   yarn: true
   directories:
     - node_modules
 install:
-  - export DISPLAY=':99.0'
-  - Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+  # - export DISPLAY=':99.0'
+  # - Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
   - npm install -g yarn
   - npm install -g lerna
   - yarn bootstrap
