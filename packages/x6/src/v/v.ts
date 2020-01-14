@@ -40,7 +40,7 @@ export namespace v {
 // ----
 export namespace v {
   export const create = Static.create
-  export const createBatch = Static.createBatch
+  export const batch = Static.batch
   export const isVectorizer = Static.isVectorizer
   /**
    * Returns `true` if object is an instance of `SVGGraphicsElement`.

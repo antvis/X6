@@ -119,17 +119,17 @@ export function attr(elem: SVGElement | HTMLElement): { [attr: string]: string }
 export function attr(elem: SVGElement | HTMLElement, name: string): string
 export function attr(
   elem: SVGElement | HTMLElement,
-  attrs: { [attr: string]: string | null },
+  attrs: { [attr: string]: string | number | null },
 ): void
 export function attr(
   elem: SVGElement | HTMLElement,
   name: string,
-  value: string | null,
+  value: string | number | null,
 ): void
 export function attr(
   elem: SVGElement | HTMLElement,
-  name?: string | { [attr: string]: string | null },
-  value?: string | null,
+  name?: string | { [attr: string]: string | number | null },
+  value?: string | number | null,
 ) {
   if (name == null) {
     const attributes = elem.attributes
@@ -147,6 +147,6 @@ export function attr(
   if (typeof name === 'object') {
     setAttributes(elem, name)
   } else {
-    setAttribute(elem, name, value)
+    setAttribute(elem, name as string, value)
   }
 }

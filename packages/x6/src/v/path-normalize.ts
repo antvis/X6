@@ -106,11 +106,21 @@ function a2c(
     f1 = x1 < cx ? Math.PI - f1 : f1
     f2 = x2 < cx ? Math.PI - f2 : f2
 
-    if (f1 < 0) f1 = Math.PI * 2 + f1
-    if (f2 < 0) f2 = Math.PI * 2 + f2
+    if (f1 < 0) {
+      f1 = Math.PI * 2 + f1
+    }
 
-    if (sweepFlag && f1 > f2) f1 = f1 - Math.PI * 2
-    if (!sweepFlag && f2 > f1) f2 = f2 - Math.PI * 2
+    if (f2 < 0) {
+      f2 = Math.PI * 2 + f2
+    }
+
+    if (sweepFlag && f1 > f2) {
+      f1 = f1 - Math.PI * 2
+    }
+
+    if (!sweepFlag && f2 > f1) {
+      f2 = f2 - Math.PI * 2
+    }
   } else {
     f1 = recursive[0]
     f2 = recursive[1]
