@@ -142,7 +142,7 @@ export function prepend(
     | (SVGElement | Vectorizer | HTMLElement)[],
 ) {
   const child = elem.firstChild
-  return child ? before(elem, elems) : append(elem, elems)
+  return child ? before(child as HTMLElement, elems) : append(elem, elems)
 }
 
 export function before(

@@ -45,7 +45,7 @@ describe('v', () => {
 
     document.body.appendChild(fixture)
     fixture.appendChild(
-      v('svg', { id: 'svg-container' }, v.createBatch(svgContent)).node,
+      v('svg', { id: 'svg-container' }, v.batch(svgContent)).node,
     )
 
     svgContainer = byId<SVGSVGElement>('svg-container')

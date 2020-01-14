@@ -42,9 +42,9 @@ describe('v', () => {
     })
   })
 
-  describe('#createBatch', () => {
+  describe('#batch', () => {
     it('should return an array of vectorizers', () => {
-      const vels = v.createBatch(
+      const vels = v.batch(
         '<path id="svg-path" d="M10 10"/>' +
           '<!-- comment -->' +
           '<g id="svg-group">' +
@@ -73,7 +73,7 @@ describe('v', () => {
     })
 
     it('should fall back to create a vectorizer', () => {
-      expect(v.createBatch('rect').length).toEqual(1)
+      expect(v.batch('rect').length).toEqual(1)
     })
   })
 

@@ -1,7 +1,15 @@
 import { v } from './v'
+import { Vectorizer } from './vectorizer'
 
 describe('v', () => {
   const byId = <T>(id: string) => (document.getElementById(id) as any) as T
+  const childrenTagNames = (vel: Vectorizer) => {
+    const tagNames: string[] = []
+    vel.node.childNodes.forEach(childNode => {
+      tagNames.push((childNode as HTMLElement).tagName.toLowerCase())
+    })
+    return tagNames
+  }
 
   const fixture = document.createElement('div')
   fixture.id = 'test-fixture'
@@ -28,7 +36,7 @@ describe('v', () => {
     '<linearGradient id= "svg-linear-gradient"><stop/></linearGradient>'
 
   fixture.appendChild(
-    v('svg', { id: 'svg-container' }, v.createBatch(svgContent)).node,
+    v('svg', { id: 'svg-container' }, v.batch(svgContent)).node,
   )
 
   const svgContainer = byId<SVGSVGElement>('svg-container')
@@ -86,6 +94,180 @@ describe('v', () => {
       expect(v(svgPath2).tagName()).toEqual('path')
       expect(v(svgPath3).tagName()).toEqual('path')
       expect(v(svgLinearGradient).tagName()).toEqual('lineargradient')
+    })
+
+    it('should return uppercase tagName when specified', () => {
+      expect(v.tagName(svgContainer, false)).toEqual('SVG')
+    })
+  })
+
+  describe('#find', () => {
+    it('should return an array of vectorizers', () => {
+      const container = v(svgContainer)
+      const found = container.find('circle')
+      expect(found).toBeInstanceOf(Array)
+      expect(found.length > 0).toBeTruthy()
+      expect(found.every(f => f instanceof Vectorizer)).toBe(true)
+    })
+  })
+
+  describe('#findOne', () => {
+    it('should return the first found vectorizer', () => {
+      const container = v(svgContainer)
+      const found = container.findOne('circle')
+      expect(found).toBeInstanceOf(Vectorizer)
+      expect(found!.id).toEqual('svg-circle')
+    })
+  })
+
+  describe('#findParentByClass', () => {
+    it('should return parent vectorizer if exists', () => {
+      const found = v(svgGroup3).findParentByClass('group-1')
+      expect(found != null && found.node === svgGroup1).toBe(true)
+    })
+
+    it('should return null if none parent matched', () => {
+      const found = v(svgGroup3).findParentByClass('not-a-parent')
+      expect(found == null).toBe(true)
+    })
+
+    it('should stopped early', () => {
+      const found1 = v(svgGroup3).findParentByClass('group-1', svgGroup2)
+      expect(found1 == null).toBe(true)
+
+      const found2 = v(svgGroup3).findParentByClass('group-1', svgCircle)
+      expect(found2 != null && found2.node === svgGroup1).toBe(true)
+    })
+  })
+
+  describe('#contains', () => {
+    it('...', () => {
+      expect(v(svgContainer).contains(svgGroup1)).toBe(true)
+      expect(v(svgGroup1).contains(svgGroup2)).toBe(true)
+      expect(v(svgGroup1).contains(svgGroup3)).toBe(true)
+
+      expect(v(svgGroup3).contains(svgGroup1)).toBe(false)
+      expect(v(svgGroup2).contains(svgGroup1)).toBe(false)
+      expect(v(svgGroup1).contains(svgGroup1)).toBe(false)
+      expect(v(svgGroup1).contains(document as any)).toBe(false)
+    })
+  })
+
+  describe('#empty', () => {
+    const vel = v('g')
+    beforeEach(() => v(svgContainer).append(vel))
+    afterEach(() => vel.remove())
+
+    it('should remove all child nodes', () => {
+      vel.append([v('rect'), v('polygon'), v('circle')])
+      expect(vel.node.childNodes.length).toEqual(3)
+      vel.empty()
+      expect(vel.node.childNodes.length).toEqual(0)
+    })
+  })
+
+  describe('append', () => {
+    const groupElement = v(v.createElement('g') as any)
+
+    beforeEach(() => groupElement.empty())
+
+    it('should append single element', () => {
+      groupElement.append(v('<rect/>'))
+      expect(groupElement.node.childNodes.length).toEqual(1)
+      expect(childrenTagNames(groupElement)).toEqual(['rect'])
+    })
+
+    it('should append multiple elements', () => {
+      groupElement.append(v.batch('<rect/><circle/>'))
+      expect(groupElement.node.childNodes.length).toEqual(2)
+      expect(childrenTagNames(groupElement)).toEqual(['rect', 'circle'])
+
+      groupElement.append(v.batch('<line/><polygon/>'))
+      expect(groupElement.node.childNodes.length).toEqual(4)
+      expect(childrenTagNames(groupElement)).toEqual([
+        'rect',
+        'circle',
+        'line',
+        'polygon',
+      ])
+    })
+  })
+
+  describe('prepend', () => {
+    let group: Vectorizer
+
+    beforeEach(() => {
+      group = v(svgGroup)
+        .clone()
+        .empty()
+        .appendTo(svgContainer)
+    })
+    afterAll(() => group.remove())
+
+    it('should prepend single element', () => {
+      group.prepend(v('<rect/>'))
+      expect(group.node.childNodes.length).toEqual(1)
+      expect(childrenTagNames(group)).toEqual(['rect'])
+    })
+
+    it('should prepend multiple elements', () => {
+      group.prepend(v.batch('<rect/><circle/>'))
+      expect(group.node.childNodes.length).toEqual(2)
+      expect(childrenTagNames(group)).toEqual(['rect', 'circle'])
+
+      group.prepend(v.batch('<line/><polygon/>'))
+      expect(group.node.childNodes.length).toEqual(4)
+      expect(childrenTagNames(group)).toEqual([
+        'line',
+        'polygon',
+        'rect',
+        'circle',
+      ])
+    })
+  })
+
+  describe('before', () => {
+    let groupElement: Vectorizer
+    let rectElement: Vectorizer
+
+    beforeEach(() => {
+      groupElement = v(svgGroup)
+        .clone()
+        .empty()
+      rectElement = v(svgRectangle)
+        .clone()
+        .empty()
+      groupElement.append(rectElement)
+    })
+
+    it('should add single element', () => {
+      rectElement.before(v('<circle/>'))
+      expect(groupElement.node.childNodes.length).toEqual(2)
+      expect(childrenTagNames(groupElement)).toEqual(['circle', 'rect'])
+
+      rectElement.before(v('<line/>'))
+      expect(groupElement.node.childNodes.length).toEqual(3)
+      expect(childrenTagNames(groupElement)).toEqual(['circle', 'line', 'rect'])
+    })
+
+    it('should add multiple elements', () => {
+      rectElement.before(v.batch('<ellipse/><circle/>'))
+      expect(groupElement.node.childNodes.length).toEqual(3)
+      expect(childrenTagNames(groupElement)).toEqual([
+        'ellipse',
+        'circle',
+        'rect',
+      ])
+
+      rectElement.before(v.batch('<line/><polygon/>'))
+      expect(groupElement.node.childNodes.length).toEqual(5)
+      expect(childrenTagNames(groupElement)).toEqual([
+        'ellipse',
+        'circle',
+        'line',
+        'polygon',
+        'rect',
+      ])
     })
   })
 })
