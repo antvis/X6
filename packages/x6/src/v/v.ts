@@ -2,6 +2,8 @@ import * as Static from './rollup'
 import { Attributes } from './attr'
 import { Vectorizer } from './vectorizer'
 
+export namespace v {}
+
 export function v( // tslint:disable-line
   elem: Vectorizer | SVGElement | string,
   attrs?: Attributes,
@@ -16,9 +18,9 @@ export function v( // tslint:disable-line
 
 v.prototype = Vectorizer.prototype
 
+// attr
+// ----
 export namespace v {
-  // attr
-  // ----
   export const qualifyAttr = Static.qualifyAttr
   export const styleToObject = Static.styleToObject
   export const mergeAttrs = Static.mergeAttrs
@@ -26,17 +28,21 @@ export namespace v {
   export const setAttribute = Static.setAttribute
   export const setAttributes = Static.setAttributes
   export const attr = Static.attr
+}
 
-  // class
-  // ----
+// class
+// ----
+export namespace v {
   export const getClass = Static.getClass
   export const hasClass = Static.hasClass
   export const addClass = Static.addClass
   export const removeClass = Static.removeClass
   export const toggleClass = Static.toggleClass
+}
 
-  // ctor
-  // ----
+// ctor
+// ----
+export namespace v {
   export const create = Static.create
   export const createBatch = Static.createBatch
   export const isVectorizer = Static.isVectorizer
@@ -46,9 +52,11 @@ export namespace v {
   export const isSVGGraphicsElement = Static.isSVGGraphicsElement
   export const toNode = Static.toNode
   export const ensureId = Static.ensureId
+}
 
-  // elem
-  // ----
+// elem
+// ----
+export namespace v {
   export const createElement = Static.createElement
   export const createSvgElement = Static.createSvgElement
   export const createSvgDocument = Static.createSvgDocument
@@ -65,10 +73,11 @@ export namespace v {
   export const before = Static.before
   export const appendTo = Static.appendTo
   export const contains = Static.contains
+}
 
-  // matrix
-  // ----
-
+// matrix
+// ----
+export namespace v {
   /**
    * Returns a SVG point object initialized with the `x` and `y` coordinates.
    * @see https://developer.mozilla.org/en/docs/Web/API/SVGPoint
@@ -141,16 +150,20 @@ export namespace v {
    */
   export const transformPolyline = Static.transformPolyline
   export const transformRect = Static.transformRect
+}
 
-  // transform
-  // ----
+// transform
+// ----
+export namespace v {
   export const transform = Static.transform
   export const translate = Static.translate
   export const rotate = Static.rotate
   export const scale = Static.scale
+}
 
-  // path
-  // ----
+// path
+// ----
+export namespace v {
   export const sample = Static.sample
   export const getPointsFromSvgElement = Static.getPointsFromSvgElement
   export const convertLineToPathData = Static.convertLineToPathData
@@ -163,15 +176,19 @@ export namespace v {
   export const convertToPath = Static.convertToPath
   export const convertToPathData = Static.convertToPathData
   export const normalizePathData = Static.normalizePathData
+}
 
-  // text
-  // ----
+// text
+// ----
+export namespace v {
   export const text = Static.text
   export const sanitizeText = Static.sanitizeText
   export const annotateString = Static.annotateString
+}
 
-  // geometry
-  // ----
+// geometry
+// ----
+export namespace v {
   export const bbox = Static.bbox
   export const getBBox = Static.getBBox
   /**
