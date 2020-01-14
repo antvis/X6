@@ -2,8 +2,6 @@ import * as Static from './rollup'
 import { Attributes } from './attr'
 import { Vectorizer } from './vectorizer'
 
-export namespace v {}
-
 export function v( // tslint:disable-line
   elem: Vectorizer | SVGElement | string,
   attrs?: Attributes,
@@ -15,8 +13,6 @@ export function v( // tslint:disable-line
 ) {
   return new Vectorizer(elem, attrs, children)
 }
-
-v.prototype = Vectorizer.prototype
 
 // attr
 // ----
@@ -230,3 +226,5 @@ export namespace v {
    */
   export const animateAlongPath = Static.animateAlongPath
 }
+
+v.prototype = Vectorizer.prototype
