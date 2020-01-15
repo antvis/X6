@@ -48,8 +48,10 @@ export function bbox(
 
 export function getBBox(
   elem: SVGElement,
-  target?: SVGElement,
-  recursive?: boolean,
+  options: {
+    target?: SVGElement | null
+    recursive?: boolean
+  } = {},
 ): Rectangle {
   let outputBBox
   const ownerSVGElement = elem.ownerSVGElement
@@ -61,6 +63,9 @@ export function getBBox(
   if (!ownerSVGElement || !isSVGGraphicsElement(elem)) {
     return new Rectangle(0, 0, 0, 0)
   }
+
+  let target = options.target
+  const recursive = options.recursive
 
   if (!recursive) {
     try {
@@ -89,7 +94,7 @@ export function getBBox(
     const n = children.length
 
     if (n === 0) {
-      return getBBox(elem, target)
+      return getBBox(elem, { target })
     }
 
     if (!target) {
@@ -101,10 +106,10 @@ export function getBBox(
       let childBBox
 
       if (child.children().length === 0) {
-        childBBox = getBBox(child.node, target)
+        childBBox = getBBox(child.node, { target })
       } else {
         // if child is a group element, enter it with a recursive call
-        childBBox = getBBox(child.node, target, true)
+        childBBox = getBBox(child.node, { target, recursive: true })
       }
 
       if (!outputBBox) {
@@ -301,7 +306,7 @@ export function translateAndAutoOrient(
   // is that the element is scaled by the factor 2, not 8.
   const s = scale(elem)
   this.attr('transform', '')
-  const bbox = getBBox(elem, target).scale(s.sx, s.sy)
+  const bbox = getBBox(elem, { target }).scale(s.sx, s.sy)
 
   // 1. Translate to origin.
   const translateToOrigin = createSVGTransform()

@@ -43,6 +43,7 @@
     "build": "run-s build:version build:dev",
     "prebuild": "run-s lint clean",
     "test": "jest --coverage",
+    "test1": "karma start",
     "test:watch": "jest --watch --coverage",
     "test:debug": "DEBUG_MODE=1 jest",
     "coveralls": "cat ./test/coverage/lcov.info | coveralls",

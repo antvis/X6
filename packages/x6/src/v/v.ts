@@ -185,18 +185,35 @@ export namespace v {
 // geometry
 // ----
 export namespace v {
+  /**
+   * Returns the bounding box of the element after transformations are
+   * applied. If `withoutTransformations` is `true`, transformations of
+   * the element will not be considered when computing the bounding box.
+   * If `target` is specified, bounding box will be computed relatively
+   * to the `target` element.
+   */
   export const bbox = Static.bbox
+
+  /**
+   * Returns the bounding box of the element after transformations are
+   * applied. Unlike `bbox()`, this function fixes a browser implementation
+   * bug to return the correct bounding box if this elemenent is a group of
+   * svg elements (if `options.recursive` is specified).
+   */
   export const getBBox = Static.getBBox
+
   /**
    * Returns an DOMMatrix that specifies the transformation necessary
    * to convert `elem` coordinate system into `target` coordinate system.
    */
   export const getTransformToElement = Static.getTransformToElement
+
   /**
    * Convert a global point with coordinates `x` and `y` into the
    * coordinate space of the element.
    */
   export const toLocalPoint = Static.toLocalPoint
+
   /**
    * Convert the SVGElement to an equivalent geometric shape. The element's
    * transformations are not taken into account.
@@ -218,8 +235,11 @@ export namespace v {
    * others              => Rectangle
    */
   export const toGeometryShape = Static.toGeometryShape
+
   export const findIntersection = Static.findIntersection
+
   export const translateAndAutoOrient = Static.translateAndAutoOrient
+
   /**
    * Animate the element along the path SVG element (or Vectorizer object).
    * `attrs` contain Animation Timing attributes describing the animation.
