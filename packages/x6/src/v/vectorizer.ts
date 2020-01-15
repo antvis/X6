@@ -346,7 +346,7 @@ export class Vectorizer {
   }
 
   translateCenterToPoint(p: Point | Point.PointLike) {
-    const bbox = this.getBBox(this.svg())
+    const bbox = this.getBBox({ target: this.svg() })
     const center = bbox.getCenter()
     this.translate(p.x - center.x, p.y - center.y)
     return this
@@ -388,8 +388,16 @@ export class Vectorizer {
     return Static.bbox(this.node, withoutTransformations, target)
   }
 
-  getBBox(target?: SVGElement | Vectorizer, recursive?: boolean) {
-    return Static.getBBox(this.node, Static.toNode(target), recursive)
+  getBBox(
+    options: {
+      target?: SVGElement | Vectorizer | null
+      recursive?: boolean
+    } = {},
+  ) {
+    return Static.getBBox(this.node, {
+      recursive: options.recursive,
+      target: Static.toNode(options.target),
+    })
   }
 
   /**

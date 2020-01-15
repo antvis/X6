@@ -9,15 +9,18 @@ export function uniqueId() {
 }
 
 export function ensureId(elem: SVGElement | Vectorizer) {
-  const node = toNode(elem)
+  const node = toNode(elem)!
   return node.id || (node.id = uniqueId())
 }
 
 export function toNode(elem: any) {
-  if (isVectorizer(elem)) {
-    return elem.node
+  if (elem != null) {
+    if (isVectorizer(elem)) {
+      return elem.node
+    }
+    return ((elem.nodeName && elem) || elem[0]) as SVGElement
   }
-  return ((elem.nodeName && elem) || elem[0]) as SVGElement
+  return null
 }
 
 export function create(
