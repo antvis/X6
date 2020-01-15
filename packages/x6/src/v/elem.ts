@@ -130,7 +130,12 @@ export function append(
     | (SVGElement | Vectorizer | HTMLElement)[],
 ) {
   const arr = Array.isArray(elems) ? elems : [elems]
-  arr.forEach(node => elem.appendChild(toNode(node)))
+  arr.forEach(node => {
+    const el = toNode(node)
+    if (el != null) {
+      elem.appendChild(el)
+    }
+  })
 }
 
 export function prepend(
@@ -156,7 +161,12 @@ export function before(
   const parent = elem.parentNode
   if (parent) {
     const arr = Array.isArray(elems) ? elems : [elems]
-    arr.forEach(node => parent.insertBefore(toNode(node), elem))
+    arr.forEach(node => {
+      const el = toNode(node)
+      if (el != null) {
+        parent.insertBefore(el, elem)
+      }
+    })
   }
 }
 
@@ -164,5 +174,8 @@ export function appendTo(
   elem: SVGElement | HTMLElement,
   target: SVGElement | HTMLElement | Vectorizer,
 ) {
-  toNode(target).appendChild(elem)
+  const ref = toNode(target)
+  if (ref != null) {
+    ref.appendChild(elem)
+  }
 }

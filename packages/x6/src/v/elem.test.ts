@@ -1,8 +1,57 @@
 import { v } from './v'
 import { Vectorizer } from './vectorizer'
 
-describe('v', () => {
+const wrap = document.createElement('div')
+const svgContent =
+  '<path id="svg-path" d="M10 10"/>' +
+  '<!-- comment -->' +
+  '<g id="svg-group">' +
+  '  <ellipse id="svg-ellipse" x="10" y="10" rx="30" ry="30"/>' +
+  '  <circle id="svg-circle" cx="10" cy="10" r="2" fill="red"/>' +
+  '</g>' +
+  '<polygon id="svg-polygon" points="200,10 250,190 160,210"/>' +
+  '<text id="svg-text" x="0" y="15" fill="red">Test</text>' +
+  '<rect id="svg-rectangle" x="100" y="100" width="50" height="100"/>' +
+  '<g id="svg-group-1" class="group-1">' +
+  '  <g id="svg-group-2" class="group-2">' +
+  '    <g id="svg-group-3" class="group3">' +
+  '      <path id="svg-path-2" d="M 100 100 C 100 100 0 150 100 200 Z"/>' +
+  '    </g>' +
+  '  </g>' +
+  '</g>' +
+  '<path id="svg-path-3"/>' +
+  '<linearGradient id= "svg-linear-gradient"><stop/></linearGradient>'
+
+v('svg', { id: 'svg-container' }, v.batch(svgContent)).appendTo(wrap)
+
+export function setupTest() {
+  document.body.appendChild(wrap)
   const byId = <T>(id: string) => (document.getElementById(id) as any) as T
+  return {
+    wrap,
+    svgContainer: byId<SVGSVGElement>('svg-container'),
+    svgDefs: byId<SVGPathElement>('svg-defs'),
+    svgPath: byId<SVGPathElement>('svg-path'),
+    svgGroup: byId<SVGGElement>('svg-group'),
+    svgCircle: byId<SVGCircleElement>('svg-circle'),
+    svgEllipse: byId<SVGEllipseElement>('svg-ellipse'),
+    svgPolygon: byId<SVGPolygonElement>('svg-polygon'),
+    svgText: byId<SVGTextElement>('svg-text'),
+    svgRectangle: byId<SVGRectElement>('svg-rectangle'),
+    svgGroup1: byId<SVGGElement>('svg-group-1'),
+    svgGroup2: byId<SVGGElement>('svg-group-2'),
+    svgGroup3: byId<SVGGElement>('svg-group-3'),
+    svgPath2: byId<SVGPathElement>('svg-path-2'),
+    svgPath3: byId<SVGPathElement>('svg-path-3'),
+    svgLinearGradient: byId<SVGLinearGradientElement>('svg-linear-gradient'),
+  }
+}
+
+export function clearnTest() {
+  v.remove(wrap)
+}
+
+describe('v', () => {
   const childrenTagNames = (vel: Vectorizer) => {
     const tagNames: string[] = []
     vel.node.childNodes.forEach(childNode => {
@@ -11,54 +60,24 @@ describe('v', () => {
     return tagNames
   }
 
-  const fixture = document.createElement('div')
-  fixture.id = 'test-fixture'
-  document.body.appendChild(fixture)
+  const {
+    svgContainer,
+    svgPath,
+    svgGroup,
+    svgCircle,
+    svgEllipse,
+    svgPolygon,
+    svgText,
+    svgRectangle,
+    svgGroup1,
+    svgGroup2,
+    svgGroup3,
+    svgPath2,
+    svgPath3,
+    svgLinearGradient,
+  } = setupTest()
 
-  const svgContent =
-    '<path id="svg-path" d="M10 10"/>' +
-    '<!-- comment -->' +
-    '<g id="svg-group">' +
-    '  <ellipse id="svg-ellipse" x="10" y="10" rx="30" ry="30"/>' +
-    '  <circle id="svg-circle" cx="10" cy="10" r="2" fill="red"/>' +
-    '</g>' +
-    '<polygon id="svg-polygon" points="200,10 250,190 160,210"/>' +
-    '<text id="svg-text" x="0" y="15" fill="red">Test</text>' +
-    '<rect id="svg-rectangle" x="100" y="100" width="50" height="100"/>' +
-    '<g id="svg-group-1" class="group-1">' +
-    '  <g id="svg-group-2" class="group-2">' +
-    '    <g id="svg-group-3" class="group3">' +
-    '      <path id="svg-path-2" d="M 100 100 C 100 100 0 150 100 200 Z"/>' +
-    '    </g>' +
-    '  </g>' +
-    '</g>' +
-    '<path id="svg-path-3"/>' +
-    '<linearGradient id= "svg-linear-gradient"><stop/></linearGradient>'
-
-  fixture.appendChild(
-    v('svg', { id: 'svg-container' }, v.batch(svgContent)).node,
-  )
-
-  const svgContainer = byId<SVGSVGElement>('svg-container')
-  const svgPath = byId<SVGPathElement>('svg-path')
-  const svgGroup = byId<SVGGElement>('svg-group')
-  const svgCircle = byId<SVGCircleElement>('svg-circle')
-  const svgEllipse = byId<SVGEllipseElement>('svg-ellipse')
-  const svgPolygon = byId<SVGPolygonElement>('svg-polygon')
-  const svgText = byId<SVGTextElement>('svg-text')
-  const svgRectangle = byId<SVGRectElement>('svg-rectangle')
-  const svgGroup1 = byId<SVGGElement>('svg-group-1')
-  const svgGroup2 = byId<SVGGElement>('svg-group-2')
-  const svgGroup3 = byId<SVGGElement>('svg-group-3')
-  const svgPath2 = byId<SVGPathElement>('svg-path-2')
-  const svgPath3 = byId<SVGPathElement>('svg-path-3')
-  const svgLinearGradient = byId<SVGLinearGradientElement>(
-    'svg-linear-gradient',
-  )
-
-  afterAll(() => {
-    fixture.parentNode?.removeChild(fixture)
-  })
+  afterAll(() => clearnTest())
 
   describe('#index', () => {
     it('should return 0 for the first child', () => {
@@ -166,25 +185,25 @@ describe('v', () => {
     })
   })
 
-  describe('append', () => {
-    const groupElement = v(v.createElement('g') as any)
+  describe('#append', () => {
+    const group = v(v.createElement('g') as any)
 
-    beforeEach(() => groupElement.empty())
+    beforeEach(() => group.empty())
 
     it('should append single element', () => {
-      groupElement.append(v('<rect/>'))
-      expect(groupElement.node.childNodes.length).toEqual(1)
-      expect(childrenTagNames(groupElement)).toEqual(['rect'])
+      group.append(v('<rect/>'))
+      expect(group.node.childNodes.length).toEqual(1)
+      expect(childrenTagNames(group)).toEqual(['rect'])
     })
 
     it('should append multiple elements', () => {
-      groupElement.append(v.batch('<rect/><circle/>'))
-      expect(groupElement.node.childNodes.length).toEqual(2)
-      expect(childrenTagNames(groupElement)).toEqual(['rect', 'circle'])
+      group.append(v.batch('<rect/><circle/>'))
+      expect(group.node.childNodes.length).toEqual(2)
+      expect(childrenTagNames(group)).toEqual(['rect', 'circle'])
 
-      groupElement.append(v.batch('<line/><polygon/>'))
-      expect(groupElement.node.childNodes.length).toEqual(4)
-      expect(childrenTagNames(groupElement)).toEqual([
+      group.append(v.batch('<line/><polygon/>'))
+      expect(group.node.childNodes.length).toEqual(4)
+      expect(childrenTagNames(group)).toEqual([
         'rect',
         'circle',
         'line',
@@ -193,7 +212,7 @@ describe('v', () => {
     })
   })
 
-  describe('prepend', () => {
+  describe('#prepend', () => {
     let group: Vectorizer
 
     beforeEach(() => {
@@ -202,6 +221,7 @@ describe('v', () => {
         .empty()
         .appendTo(svgContainer)
     })
+
     afterAll(() => group.remove())
 
     it('should prepend single element', () => {
@@ -226,48 +246,54 @@ describe('v', () => {
     })
   })
 
-  describe('before', () => {
-    let groupElement: Vectorizer
-    let rectElement: Vectorizer
+  describe('#before', () => {
+    let group: Vectorizer
+    let rect: Vectorizer
 
     beforeEach(() => {
-      groupElement = v(svgGroup)
+      group = v(svgGroup)
         .clone()
         .empty()
-      rectElement = v(svgRectangle)
+      rect = v(svgRectangle)
         .clone()
         .empty()
-      groupElement.append(rectElement)
+      group.append(rect)
     })
 
-    it('should add single element', () => {
-      rectElement.before(v('<circle/>'))
-      expect(groupElement.node.childNodes.length).toEqual(2)
-      expect(childrenTagNames(groupElement)).toEqual(['circle', 'rect'])
+    afterAll(() => group.remove())
 
-      rectElement.before(v('<line/>'))
-      expect(groupElement.node.childNodes.length).toEqual(3)
-      expect(childrenTagNames(groupElement)).toEqual(['circle', 'line', 'rect'])
+    it('should add single element', () => {
+      rect.before(v('<circle/>'))
+      expect(group.node.childNodes.length).toEqual(2)
+      expect(childrenTagNames(group)).toEqual(['circle', 'rect'])
+
+      rect.before(v('<line/>'))
+      expect(group.node.childNodes.length).toEqual(3)
+      expect(childrenTagNames(group)).toEqual(['circle', 'line', 'rect'])
     })
 
     it('should add multiple elements', () => {
-      rectElement.before(v.batch('<ellipse/><circle/>'))
-      expect(groupElement.node.childNodes.length).toEqual(3)
-      expect(childrenTagNames(groupElement)).toEqual([
-        'ellipse',
-        'circle',
-        'rect',
-      ])
+      rect.before(v.batch('<ellipse/><circle/>'))
+      expect(group.node.childNodes.length).toEqual(3)
+      expect(childrenTagNames(group)).toEqual(['ellipse', 'circle', 'rect'])
 
-      rectElement.before(v.batch('<line/><polygon/>'))
-      expect(groupElement.node.childNodes.length).toEqual(5)
-      expect(childrenTagNames(groupElement)).toEqual([
+      rect.before(v.batch('<line/><polygon/>'))
+      expect(group.node.childNodes.length).toEqual(5)
+      expect(childrenTagNames(group)).toEqual([
         'ellipse',
         'circle',
         'line',
         'polygon',
         'rect',
       ])
+    })
+  })
+
+  describe('#children', () => {
+    it('should return a array for vectorizers', () => {
+      const children = v(svgGroup).children()
+      expect(children).toBeInstanceOf(Array)
+      expect(children.every(c => c instanceof Vectorizer)).toEqual(true)
     })
   })
 })
