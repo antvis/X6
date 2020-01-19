@@ -324,14 +324,6 @@ export namespace Point {
 }
 
 export namespace Point {
-  export function create(): Point
-  export function create(x: number): Point
-  export function create(x: number, y: number): Point
-  export function create(p: Point | PointLike | PointData): Point
-  export function create(
-    x?: number | Point | PointLike | PointData,
-    y?: number,
-  ): Point
   export function create(
     x?: number | Point | PointLike | PointData,
     y?: number,
