@@ -702,25 +702,6 @@ export namespace Rectangle {
 }
 
 export namespace Rectangle {
-  export function create(): Rectangle
-  export function create(x: number): Rectangle
-  export function create(x: number, y: number): Rectangle
-  export function create(x: number, y: number, width: number): Rectangle
-  export function create(
-    x: number,
-    y: number,
-    width: number,
-    height: number,
-  ): Rectangle
-  export function create(
-    rect: Rectangle | RectangleLike | RectangleData,
-  ): Rectangle
-  export function create(
-    x?: number | Rectangle | RectangleLike | RectangleData,
-    y?: number,
-    width?: number,
-    height?: number,
-  ): Rectangle
   export function create(
     x?: number | Rectangle | RectangleLike | RectangleData,
     y?: number,
