@@ -12,14 +12,26 @@ export const ns = {
 
 export const svgVersion = '1.1'
 
-export function createElement(tagName: string, doc: Document = document) {
-  return doc.createElement(tagName)
+export function createElement<T extends Element>(
+  tagName: string,
+  doc: Document = document,
+): T {
+  return (doc.createElement(tagName) as any) as T
 }
 
-export function createSvgElement(tagName: string, doc: Document = document) {
-  return (doc.createElementNS
-    ? doc.createElementNS(ns.svg, tagName)
-    : createElement(tagName, doc)) as SVGElement
+export function createElementNS<T extends Element>(
+  tagName: string,
+  namespaceURI: string = ns.xhtml,
+  doc: Document = document,
+): T {
+  return (doc.createElementNS(namespaceURI, tagName) as any) as T
+}
+
+export function createSvgElement<T extends SVGElement>(
+  tagName: string,
+  doc: Document = document,
+): T {
+  return createElementNS<SVGElement>(tagName, ns.svg, doc) as T
 }
 
 export function createSvgDocument(content?: string) {
@@ -109,25 +121,25 @@ export function contains(elem: Element, child: Element | Vectorizer) {
   )
 }
 
-export function remove(elem: SVGElement | HTMLElement) {
+export function remove(elem: Element) {
   if (elem.parentNode) {
     elem.parentNode.removeChild(elem)
   }
 }
 
-export function empty(elem: SVGElement | HTMLElement) {
+export function empty(elem: Element) {
   while (elem.firstChild) {
     elem.removeChild(elem.firstChild)
   }
 }
 
 export function append(
-  elem: SVGElement | HTMLElement,
+  elem: Element,
   elems:
-    | SVGElement
-    | HTMLElement
+    | Element
+    | DocumentFragment
     | Vectorizer
-    | (SVGElement | Vectorizer | HTMLElement)[],
+    | (Element | DocumentFragment | Vectorizer)[],
 ) {
   const arr = Array.isArray(elems) ? elems : [elems]
   arr.forEach(node => {
@@ -139,24 +151,16 @@ export function append(
 }
 
 export function prepend(
-  elem: SVGElement | HTMLElement,
-  elems:
-    | SVGElement
-    | HTMLElement
-    | Vectorizer
-    | (SVGElement | Vectorizer | HTMLElement)[],
+  elem: Element,
+  elems: Element | Vectorizer | (Element | Vectorizer)[],
 ) {
   const child = elem.firstChild
   return child ? before(child as HTMLElement, elems) : append(elem, elems)
 }
 
 export function before(
-  elem: SVGElement | HTMLElement,
-  elems:
-    | SVGElement
-    | HTMLElement
-    | Vectorizer
-    | (SVGElement | Vectorizer | HTMLElement)[],
+  elem: Element,
+  elems: Element | Vectorizer | (Element | Vectorizer)[],
 ) {
   const parent = elem.parentNode
   if (parent) {
@@ -170,10 +174,7 @@ export function before(
   }
 }
 
-export function appendTo(
-  elem: SVGElement | HTMLElement,
-  target: SVGElement | HTMLElement | Vectorizer,
-) {
+export function appendTo(elem: Element, target: Element | Vectorizer) {
   const ref = toNode(target)
   if (ref != null) {
     ref.appendChild(elem)
