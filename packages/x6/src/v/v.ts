@@ -17,6 +17,7 @@ export function v( // tslint:disable-line
 // attr
 // ----
 export namespace v {
+  export const ns = Static.ns
   export const qualifyAttr = Static.qualifyAttr
   export const styleToObject = Static.styleToObject
   export const mergeAttrs = Static.mergeAttrs
@@ -54,6 +55,7 @@ export namespace v {
 // ----
 export namespace v {
   export const createElement = Static.createElement
+  export const createElementNS = Static.createElementNS
   export const createSvgElement = Static.createSvgElement
   export const createSvgDocument = Static.createSvgDocument
   export const index = Static.index

@@ -3,6 +3,85 @@ import { isObject, isString, isUndefined } from './util'
 
 export type Attributes = { [key: string]: string | number }
 
+export function getAttribute(elem: Element, name: string) {
+  return elem.getAttribute(name)
+}
+
+export function removeAttribute(elem: Element, name: string) {
+  const qualified = qualifyAttr(name)
+  if (qualified.ns) {
+    if (elem.hasAttributeNS(qualified.ns, qualified.local)) {
+      elem.removeAttributeNS(qualified.ns, qualified.local)
+    }
+  } else if (elem.hasAttribute(name)) {
+    elem.removeAttribute(name)
+  }
+}
+
+export function setAttribute(
+  elem: Element,
+  name: string,
+  value?: string | number | null,
+) {
+  if (value == null) {
+    return removeAttribute(elem, name)
+  }
+
+  const qualified = qualifyAttr(name)
+  if (qualified.ns && isString(value)) {
+    elem.setAttributeNS(qualified.ns, name, value)
+  } else if (name === 'id') {
+    elem.id = `${value}`
+  } else {
+    elem.setAttribute(name, `${value}`)
+  }
+}
+
+export function setAttributes(
+  elem: Element,
+  attrs: { [attr: string]: string | number | null },
+) {
+  Object.keys(attrs).forEach(name => {
+    setAttribute(elem, name, attrs[name])
+  })
+}
+
+export function attr(elem: Element): { [attr: string]: string }
+export function attr(elem: Element, name: string): string
+export function attr(
+  elem: Element,
+  attrs: { [attr: string]: string | number | null },
+): void
+export function attr(
+  elem: Element,
+  name: string,
+  value: string | number | null,
+): void
+export function attr(
+  elem: Element,
+  name?: string | { [attr: string]: string | number | null },
+  value?: string | number | null,
+) {
+  if (name == null) {
+    const attributes = elem.attributes
+    const attrs: { [name: string]: string } = {}
+    for (let i = 0; i < attributes.length; i += 1) {
+      attrs[attributes[i].name] = attributes[i].value
+    }
+    return attrs
+  }
+
+  if (isString(name) && isUndefined(value)) {
+    return elem.getAttribute(name)
+  }
+
+  if (typeof name === 'object') {
+    setAttributes(elem, name)
+  } else {
+    setAttribute(elem, name as string, value)
+  }
+}
+
 export function qualifyAttr(name: string) {
   if (name.indexOf(':') !== -1) {
     const combinedKey = name.split(':')
@@ -70,83 +149,4 @@ export function mergeAttrs(
   })
 
   return target
-}
-
-export function getAttribute(elem: SVGElement | HTMLElement, name: string) {
-  return elem.getAttribute(name)
-}
-
-export function removeAttribute(elem: SVGElement | HTMLElement, name: string) {
-  const qualified = qualifyAttr(name)
-  if (qualified.ns) {
-    if (elem.hasAttributeNS(qualified.ns, qualified.local)) {
-      elem.removeAttributeNS(qualified.ns, qualified.local)
-    }
-  } else if (elem.hasAttribute(name)) {
-    elem.removeAttribute(name)
-  }
-}
-
-export function setAttribute(
-  elem: SVGElement | HTMLElement,
-  name: string,
-  value?: string | number | null,
-) {
-  if (value == null) {
-    return removeAttribute(elem, name)
-  }
-
-  const qualified = qualifyAttr(name)
-  if (qualified.ns && isString(value)) {
-    elem.setAttributeNS(qualified.ns, name, value)
-  } else if (name === 'id') {
-    elem.id = `${value}`
-  } else {
-    elem.setAttribute(name, `${value}`)
-  }
-}
-
-export function setAttributes(
-  elem: SVGElement | HTMLElement,
-  attrs: { [attr: string]: string | number | null },
-) {
-  Object.keys(attrs).forEach(name => {
-    setAttribute(elem, name, attrs[name])
-  })
-}
-
-export function attr(elem: SVGElement | HTMLElement): { [attr: string]: string }
-export function attr(elem: SVGElement | HTMLElement, name: string): string
-export function attr(
-  elem: SVGElement | HTMLElement,
-  attrs: { [attr: string]: string | number | null },
-): void
-export function attr(
-  elem: SVGElement | HTMLElement,
-  name: string,
-  value: string | number | null,
-): void
-export function attr(
-  elem: SVGElement | HTMLElement,
-  name?: string | { [attr: string]: string | number | null },
-  value?: string | number | null,
-) {
-  if (name == null) {
-    const attributes = elem.attributes
-    const attrs: { [name: string]: string } = {}
-    for (let i = 0; i < attributes.length; i += 1) {
-      attrs[attributes[i].name] = attributes[i].value
-    }
-    return attrs
-  }
-
-  if (isString(name) && isUndefined(value)) {
-    return elem.getAttribute(name)
-  }
-
-  if (typeof name === 'object') {
-    setAttributes(elem, name)
-  } else {
-    setAttribute(elem, name as string, value)
-  }
 }
