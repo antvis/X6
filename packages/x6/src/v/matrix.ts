@@ -38,7 +38,7 @@ export function createSVGPoint(x: number, y: number) {
   return p
 }
 
-export function createSVGMatrix(matrix?: DOMMatrix | MatrixLike) {
+export function createSVGMatrix(matrix?: DOMMatrix | MatrixLike | null) {
   const ret = svgDocument.createSVGMatrix()
   if (matrix != null) {
     const source = matrix as any
