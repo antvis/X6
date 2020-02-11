@@ -53,7 +53,10 @@ export class Point implements Point.PointLike {
     return this
   }
 
-  rotate(angle: number, center?: Point | Point.PointLike | Point.PointData) {
+  rotate(
+    angle: number,
+    center?: Point | Point.PointLike | Point.PointData,
+  ): this {
     const p = Point.rotate(this, angle, center)
     this.x = p.x
     this.y = p.y
