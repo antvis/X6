@@ -6,7 +6,14 @@ export default class Example extends React.Component {
   private container: HTMLDivElement
 
   componentDidMount() {
-    const graph = new Graph(this.container)
+    const graph = new Graph(this.container, {
+      edgeStyle: {
+        bendable: true,
+      },
+      edgeHandle: {
+        changable: true,
+      },
+    })
     const style: Style = {
       startArrow: 'classic',
       endArrow: 'classic',
