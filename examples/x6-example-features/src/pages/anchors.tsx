@@ -10,9 +10,6 @@ export default class Example extends React.Component {
       connection: {
         enabled: true,
       },
-      // connectionIcon: {
-      //   image: images.share,
-      // },
       getAnchors(cell) {
         if (cell != null && this.model.isNode(cell)) {
           return [
@@ -33,7 +30,7 @@ export default class Example extends React.Component {
     })
 
     graph.batchUpdate(() => {
-      const n1 = graph.addNode({
+      const triangle = graph.addNode({
         x: 20,
         y: 20,
         width: 80,
@@ -43,7 +40,7 @@ export default class Example extends React.Component {
         perimeter: 'triangle',
       })
 
-      const n2 = graph.addNode({
+      const rect = graph.addNode({
         x: 200,
         y: 20,
         width: 80,
@@ -51,7 +48,7 @@ export default class Example extends React.Component {
         label: 'Rectangle',
       })
 
-      const n3 = graph.addNode({
+      const ellipse = graph.addNode({
         x: 200,
         y: 150,
         width: 80,
@@ -62,32 +59,27 @@ export default class Example extends React.Component {
       })
 
       graph.addEdge({
-        source: n1,
-        target: n3,
-        label: 'label',
-        style: {
-          edge: 'elbow',
-          elbow: 'horizontal',
-          sourceAnchorX: 0.5,
-          sourceAnchorY: 1,
-          targetAnchorX: 0,
-          targetAnchorY: 0,
-          sourcePerimeter: true,
-          targetPerimeter: true,
-        },
+        source: triangle,
+        target: ellipse,
+        edge: 'elbow',
+        elbow: 'horizontal',
+        sourceAnchorX: 0.5,
+        sourceAnchorY: 1,
+        targetAnchorX: 0,
+        targetAnchorY: 0,
+        // sourcePerimeter: true,
+        // targetPerimeter: true,
       })
 
       graph.addEdge({
-        source: n2,
-        target: n3,
-        style: {
-          edge: 'elbow',
-          elbow: 'horizontal',
-          orthogonal: false,
-          targetAnchorX: 0,
-          targetAnchorY: 0,
-          targetPerimeter: true,
-        },
+        source: rect,
+        target: ellipse,
+        edge: 'elbow',
+        elbow: 'horizontal',
+        targetAnchorX: 0.5,
+        targetAnchorY: 0,
+        // orthogonal: false,
+        // targetPerimeter: true,
       })
     })
   }

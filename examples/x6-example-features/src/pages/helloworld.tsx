@@ -6,7 +6,11 @@ export default class Example extends React.Component {
   private container: HTMLDivElement
 
   componentDidMount() {
-    const graph = new Graph(this.container)
+    const graph = new Graph(this.container, {
+      rubberband: {
+        enabled: true,
+      },
+    })
 
     graph.render({
       nodes: [
@@ -32,10 +36,18 @@ export default class Example extends React.Component {
           id: 'edge-0',
           source: 'node-0',
           target: 'node-1',
-          label: 'Edge Label',
+          label: 'Label',
         },
       ],
     })
+
+    graph.on('selection:changed', ({ selected, added, removed }) => {})
+
+    console.log(
+      graph.model.eachChild(graph.model.getDefaultParent(), cell => {
+        console.log(cell)
+      }),
+    )
   }
 
   refContainer = (container: HTMLDivElement) => {

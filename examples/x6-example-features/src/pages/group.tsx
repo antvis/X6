@@ -7,23 +7,25 @@ export default class Example extends React.Component {
 
   componentDidMount() {
     const graph = new Graph(this.container, {
-      resize: {
-        enabled: true,
-        // centered: true,
-        // livePreview: true,
-      },
-      rotate: { enabled: true },
-      nodeLabelsMovable: true,
-      edgeLabelsMovable: true,
-      dropEnabled: true,
+      // resize: {
+      //   enabled: true,
+      //   // centered: true,
+      //   // livePreview: true,
+      // },
+      // rotate: { enabled: true },
+      // nodeLabelsMovable: true,
+      // edgeLabelsMovable: true,
+      // dropEnabled: true,
+      folding: { enabled: true },
     })
 
     graph.batchUpdate(() => {
       const node1 = graph.addNode({
         x: 40,
         y: 40,
-        width: 400,
-        height: 300,
+        width: 160,
+        height: 120,
+        alternateBounds: { x: 0, y: 0, width: 100, height: 40 },
       })
 
       graph.addNode({
@@ -32,7 +34,7 @@ export default class Example extends React.Component {
         width: 80,
         height: 30,
         parent: node1,
-        label: 'Inner',
+        label: 'Child',
       })
     })
   }

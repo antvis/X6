@@ -76,8 +76,13 @@ export default class Example extends React.Component {
     graph.addEdge({
       label: 'segment',
       sourcePoint: { x: 40, y: 32 * 12 },
-      targetPoint: { x: 240, y: 32 * 14 },
-      points: [[140, 32 * 13]],
+      targetPoint: { x: 240, y: 32 * 16 },
+      points: [
+        [80, 32 * 12],
+        [120, 32 * 13],
+        [160, 32 * 14],
+        [200, 32 * 15],
+      ],
       style: {
         ...style,
         edge: 'segment',
