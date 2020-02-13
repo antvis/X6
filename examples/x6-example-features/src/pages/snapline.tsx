@@ -14,6 +14,9 @@ export default class Example extends React.Component {
           dashed: false,
           stroke: '#ff0000',
         },
+        vertical: {
+          stroke: '#00ff00',
+        },
       },
       rubberband: true,
     })
