@@ -92,7 +92,7 @@ export class Renderer {
       // update shape for style changed
       !force &&
       state.shape != null &&
-      (!ObjectExt.equals(state.shape.style, state.style) ||
+      (!ObjectExt.isEqual(state.shape.style, state.style) ||
         this.hasPlaceholderStyles(state))
     ) {
       state.shape.resetStyle()

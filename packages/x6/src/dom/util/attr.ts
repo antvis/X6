@@ -1,4 +1,4 @@
-import { Platform, Url } from '../../util'
+import { Platform, UrlExt } from '../../util'
 
 export function setAttributes(
   elem: Element | null,
@@ -25,7 +25,7 @@ export function setAttributeWithAnchor(
     !Platform.IS_CHROME_APP &&
     elem.ownerDocument === document
   ) {
-    const base = Url.getUrlWithoutHash().replace(/([\\()])/g, '\\$1')
+    const base = UrlExt.getUrlWithoutHash().replace(/([\\()])/g, '\\$1')
     elem.setAttribute(attrName, `url(${base}#${id})`)
   } else {
     elem.setAttribute(attrName, `url(#${id})`)
