@@ -1,2 +1,2 @@
-import * as StringExt from './index-rollup'
+import * as StringExt from './string'
 export { StringExt }

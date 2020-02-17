@@ -37,7 +37,7 @@ export function afterCreate(aopName?: string | null) {
     descriptor: PropertyDescriptor,
   ) => {
     const raw = descriptor.value
-    const name = aopName || `on${StringExt.ucFirst(methodName)}`
+    const name = aopName || `on${StringExt.upperFirst(methodName)}`
 
     descriptor.value = function(this: BaseGraph, ...args: any[]) {
       const instance = raw.call(this, ...args)
