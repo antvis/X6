@@ -239,7 +239,7 @@ export class Graph extends BaseView {
   constructor(options: Graph.Options) {
     super()
     this.container = options.container
-    const { selectors, fragment } = Graph.parseDOMJSON(Graph.markup, {
+    const { selectors, fragment } = Graph.parseJsonMarkup(Graph.markup, {
       bare: true,
     })
     this.backgroundElem = selectors.background as HTMLDivElement
@@ -250,6 +250,7 @@ export class Graph extends BaseView {
     this.drawPane = selectors.drawPane as SVGGElement
     this.container.appendChild(fragment)
     this.model = new Model()
+    this.resetUpdates()
     this.startListening()
   }
 
@@ -285,7 +286,7 @@ export class Graph extends BaseView {
 
   protected resetUpdates() {
     return (this.updates = {
-      id: null,
+      id: null, // animation frame id
       priorities: [{}, {}, {}],
 
       mounted: {},
@@ -309,6 +310,7 @@ export class Graph extends BaseView {
       console.log('cell added')
       this.onCellAdded(cell as any, options)
     })
+
     // collection.on('remove', this.onCellRemoved, this)
     // collection.on('reset', this.onGraphReset, this)
     collection.on('sort', () => this.onGraphSort)
@@ -361,7 +363,10 @@ export class Graph extends BaseView {
   // }
 
   onGraphSort() {
-    if (this.model.hasActiveBatch(this.SORT_DELAYING_BATCHES)) return
+    if (this.model.hasActiveBatch(this.SORT_DELAYING_BATCHES)) {
+      return
+    }
+
     this.sortViews()
   }
 
@@ -371,13 +376,13 @@ export class Graph extends BaseView {
     }
 
     const name = data && data.batchName
-    const graph = this.model
+    const model = this.model
     if (!this.isAsync()) {
       // UPDATE_DELAYING_BATCHES: ['translate'],
       const updateDelayingBatches = this.UPDATE_DELAYING_BATCHES
       if (
         updateDelayingBatches.includes(name) &&
-        !graph.hasActiveBatch(updateDelayingBatches)
+        !model.hasActiveBatch(updateDelayingBatches)
       ) {
         this.updateViews(data)
       }
@@ -387,7 +392,7 @@ export class Graph extends BaseView {
     const sortDelayingBatches = this.SORT_DELAYING_BATCHES
     if (
       sortDelayingBatches.includes(name) &&
-      !graph.hasActiveBatch(sortDelayingBatches)
+      !model.hasActiveBatch(sortDelayingBatches)
     ) {
       this.sortViews()
     }
@@ -448,8 +453,8 @@ export class Graph extends BaseView {
       return false
     }
 
-    const model = view.cell
-    if (model.isNode()) {
+    const cell = view.cell
+    if (cell.isNode()) {
       return false
     }
 
@@ -538,19 +543,6 @@ export class Graph extends BaseView {
     }
   }
 
-  dumpViewUpdate(view: CellView) {
-    if (view == null) {
-      return 0
-    }
-
-    const id = view.cid
-    const updates = this.updates
-    const priorityUpdates = updates.priorities[view.UPDATE_PRIORITY]
-    const flag = this.registerMountedView(view) | priorityUpdates[id]
-    delete priorityUpdates[id]
-    return flag
-  }
-
   updateView(view: CellView, flag: number, opt: any = {}) {
     if (view == null) {
       return 0
@@ -561,6 +553,7 @@ export class Graph extends BaseView {
         this.removeView(view.cell as any)
         return 0
       }
+
       if (flag & FLAG_INSERT) {
         this.insertView(view)
         flag ^= FLAG_INSERT // tslint:disable-line
@@ -574,12 +567,36 @@ export class Graph extends BaseView {
     return view.confirmUpdate(flag, opt || {})
   }
 
+  dumpViewUpdate(view: CellView) {
+    if (view == null) {
+      return 0
+    }
+
+    const cid = view.cid
+    const updates = this.updates
+    const priorityUpdates = updates.priorities[view.UPDATE_PRIORITY]
+    const flag = this.registerMountedView(view) | priorityUpdates[cid]
+    delete priorityUpdates[cid]
+    return flag
+  }
+
+  /**
+   * Adds view into the DOM and update it.
+   */
   dumpView(view: CellView, opt: any = {}) {
     const flag = this.dumpViewUpdate(view)
     if (!flag) {
       return 0
     }
     return this.updateView(view, flag, opt)
+  }
+
+  /**
+   * Adds all views into the DOM and update them.
+   */
+  dumpViews(opt: any = {}) {
+    this.checkViewport(opt)
+    this.updateViews(opt)
   }
 
   /**
@@ -592,53 +609,6 @@ export class Graph extends BaseView {
     }
     this.dumpView(view, opt)
     return view
-  }
-
-  registerMountedView(view: CellView) {
-    const cid = view.cid
-    const updates = this.updates
-    if (cid in updates.mounted) {
-      return 0
-    }
-
-    updates.mounted[cid] = true
-    updates.mountedCids.push(cid)
-    const flag = updates.unmounted[cid] || 0
-    delete updates.unmounted[cid]
-    return flag
-  }
-
-  registerUnmountedView(view: CellView) {
-    const cid = view.cid
-    const updates = this.updates
-    if (cid in updates.unmounted) {
-      return 0
-    }
-
-    updates.unmounted[cid] |= FLAG_INSERT
-
-    const flag = updates.unmounted[cid]
-    updates.unmountedCids.push(cid)
-    delete updates.mounted[cid]
-    return flag
-  }
-
-  isViewMounted(view: CellView) {
-    if (view == null) {
-      return false
-    }
-    const cid = view.cid
-    const updates = this.updates
-    return cid in updates.mounted
-  }
-
-  /**
-   * Adds all views into the DOM and update them to make sure that the views
-   * reflect the cells.
-   */
-  dumpViews(opt: any = {}) {
-    this.checkViewport(opt)
-    this.updateViews(opt)
   }
 
   /**
@@ -657,7 +627,11 @@ export class Graph extends BaseView {
       priority = Math.min(stats.priority, priority)
     } while (!stats.empty)
 
-    return { priority, updated: updateCount, batches: batchCount }
+    return {
+      priority,
+      updated: updateCount,
+      batches: batchCount,
+    }
   }
 
   updateViewsAsync(
@@ -682,13 +656,12 @@ export class Graph extends BaseView {
       }
 
       const stats = this.updateViewsBatch(opt)
-      const passingOpt = {
+      const checkStats = this.checkViewport({
         mountBatchSize: MOUNT_BATCH_SIZE - stats.mounted,
         unmountBatchSize: MOUNT_BATCH_SIZE - stats.unmounted,
         ...opt,
-      }
+      })
 
-      const checkStats = this.checkViewport(passingOpt)
       const unmountCount = checkStats.unmounted
       const mountCount = checkStats.mounted
       let processed = data.processed
@@ -709,13 +682,17 @@ export class Graph extends BaseView {
           data.processed = processed
         }
       }
+
       // Progress callback
       const progressFn = opt.progress
       if (total && typeof progressFn === 'function') {
         progressFn.call(this, stats.empty, processed, total, stats, this)
       }
+
       // The current frame could have been canceled in a callback
-      if (updates.id !== id) return
+      if (updates.id !== id) {
+        return
+      }
     }
 
     updates.id = DomUtil.requestAnimationFrame(() => {
@@ -750,7 +727,7 @@ export class Graph extends BaseView {
       const cache = priorities[p]
       for (const cid in cache) {
         if (updateCount >= batchSize) {
-          empty = false
+          empty = false // 还未渲染完成
           break main
         }
 
@@ -799,7 +776,10 @@ export class Graph extends BaseView {
           }
         }
 
-        if (maxPriority > p) maxPriority = p
+        if (maxPriority > p) {
+          maxPriority = p
+        }
+
         updateCount += 1
         delete cache[cid]
       }
@@ -813,6 +793,45 @@ export class Graph extends BaseView {
       unmounted: unmountCount,
       mounted: mountCount,
     }
+  }
+
+  registerMountedView(view: CellView) {
+    const cid = view.cid
+    const updates = this.updates
+    if (cid in updates.mounted) {
+      return 0
+    }
+
+    updates.mounted[cid] = true
+    updates.mountedCids.push(cid)
+    const flag = updates.unmounted[cid] || 0
+    delete updates.unmounted[cid]
+    return flag
+  }
+
+  registerUnmountedView(view: CellView) {
+    const cid = view.cid
+    const updates = this.updates
+    if (cid in updates.unmounted) {
+      return 0
+    }
+
+    updates.unmounted[cid] |= FLAG_INSERT
+
+    const flag = updates.unmounted[cid]
+    updates.unmountedCids.push(cid)
+    delete updates.mounted[cid]
+    return flag
+  }
+
+  isViewMounted(view: CellView) {
+    if (view == null) {
+      return false
+    }
+
+    const cid = view.cid
+    const updates = this.updates
+    return cid in updates.mounted
   }
 
   getUnmountedViews() {
@@ -840,6 +859,7 @@ export class Graph extends BaseView {
       if (!(cid in unmounted)) {
         continue
       }
+
       const view = CellView.views[cid]
       if (view == null) {
         continue
@@ -900,6 +920,7 @@ export class Graph extends BaseView {
         view.unmount()
       }
     }
+
     // Get rid of views, that have been unmounted
     mountedCids.splice(0, size)
     return unmountCount
@@ -911,16 +932,19 @@ export class Graph extends BaseView {
       unmountBatchSize: Infinity,
       ...options,
     }
+
     const viewportFn = opts.viewport || this.options.viewport
     const unmountedCount = this.checkMountedViews(viewportFn, opts)
     if (unmountedCount > 0) {
-      // Do not check views, that have been just unmounted and pushed at the end of the cids array
+      // Do not check views, that have been just unmounted
+      // and pushed at the end of the cids array
       const unmountedCids = this.updates.unmountedCids
       opts.mountBatchSize = Math.min(
         unmountedCids.length - unmountedCount,
         opts.mountBatchSize,
       )
     }
+
     const mountedCount = this.checkUnmountedViews(viewportFn, opts)
     return {
       mounted: mountedCount,
@@ -1032,7 +1056,7 @@ export class Graph extends BaseView {
     //   interactive: this.options.interactive,
     // })
 
-    return new NodeView()
+    return new NodeView(cell as any)
   }
 
   removeView(cell: Cell) {
@@ -1046,6 +1070,16 @@ export class Graph extends BaseView {
       delete unmounted[cid]
     }
     return view
+  }
+
+  removeViews() {
+    Object.keys(this.views).forEach(id => {
+      const view = this.views[id]
+      if (view) {
+        view.remove()
+      }
+    })
+    this.views = {}
   }
 
   renderView(cell: Cell, options: any = {}) {
@@ -1075,16 +1109,6 @@ export class Graph extends BaseView {
     }
     this.unfreeze({ key: 'reset' })
     this.sortViews()
-  }
-
-  removeViews() {
-    Object.keys(this.views).forEach(id => {
-      const view = this.views[id]
-      if (view) {
-        view.remove()
-      }
-    })
-    this.views = {}
   }
 
   sortViews() {
@@ -1663,7 +1687,7 @@ export namespace Graph {
   }
 }
 export namespace Graph {
-  export const markup: BaseView.JSONElement[] = [
+  export const markup: BaseView.JsonMarkup[] = [
     {
       ns: v.ns.xhtml,
       tagName: 'div',

@@ -1,7 +1,8 @@
 import { Assign } from 'utility-types'
+import merge from 'lodash/merge'
 import { Basecoat } from '../../entity'
 import { KeyValue } from '../../types'
-import { JSONObject, JSONExt } from '../../util'
+import { JSONObject, JSONExt, ObjectExt, JSONValue } from '../../util'
 
 export class Store<
   D extends JSONObject = JSONObject,
@@ -93,6 +94,8 @@ export class Store<
     this.pending = false
     this.changing = false
     this.pendingOptions = null
+
+    return this
   }
 
   get<T>(key: K) {
@@ -100,16 +103,17 @@ export class Store<
     return ret == null ? null : ((ret as any) as T)
   }
 
-  getPrevious(key: K) {
+  getPrevious<T>(key: K) {
     if (this.previous) {
-      return this.previous[key]
+      const ret = this.previous[key]
+      return ret == null ? null : ((ret as any) as T)
     }
 
     return null
   }
 
   set(key: K, value: D[K], options?: Store.SetOptions): this
-  set(subset: Partial<D>, options?: Store.SetOptions): this
+  set(data: D, options?: Store.SetOptions): this
   set(
     key: K | Partial<D>,
     value?: D[K] | Store.SetOptions,
@@ -146,7 +150,81 @@ export class Store<
       opts = key
     }
 
-    return this.mutate(subset, { ...opts, unset: true })
+    this.mutate(subset, { ...opts, unset: true })
+    return this
+  }
+
+  getByPath<T>(path: string | string[]) {
+    return ObjectExt.getByPath(this.data, path, '/') as T
+  }
+
+  setByPath(
+    path: string | string[],
+    value: any,
+    options: Store.SetByPathOptions = {},
+  ) {
+    const delim = '/'
+    const pathArray = Array.isArray(path) ? path : path.split(delim)
+    const pathString = Array.isArray(path) ? path.join(delim) : path
+
+    const property = pathArray[0] as K
+    const pathArrayLength = pathArray.length
+
+    options.propertyPath = pathString
+    options.propertyValue = value
+    options.propertyPathArray = pathArray
+
+    if (pathArrayLength === 1) {
+      this.set(property, value, options)
+    } else {
+      const update: KeyValue = {}
+      let diver = update
+      let nextKey: string = property
+
+      // Initialize the nested object. Subobjects are either arrays or objects.
+      // An empty array is created if the sub-key is an integer. Otherwise, an
+      // empty object is created.
+      for (let i = 1; i < pathArrayLength; i += 1) {
+        const key = pathArray[i]
+        const isArrayIndex = Number.isFinite(Number(key))
+        diver = diver[nextKey] = isArrayIndex ? [] : {}
+        nextKey = key
+      }
+
+      // Fills update with the `value` on `path`.
+      ObjectExt.setByPath(update, pathArray, value, delim)
+
+      const data = JSONExt.deepCopy(this.data)
+
+      // If rewrite mode enabled, we replace value referenced by path with the
+      // new one (we don't merge).
+      if (options.rewrite) {
+        ObjectExt.unsetByPath(data, path, delim)
+      }
+
+      const merged = merge(data, update)
+      this.set(property, merged[property], options)
+    }
+
+    return this
+  }
+
+  removeByPath(path: string | string[], options?: Store.SetOptions) {
+    const keys = Array.isArray(path) ? path : path.split('/')
+    const key = keys[0] as K
+    if (keys.length === 1) {
+      this.remove(key, options)
+    } else {
+      const paths = keys.slice(1)
+      const prop = JSONExt.deepCopy(this.get<JSONValue>(key))
+      if (prop) {
+        ObjectExt.unsetByPath(prop, paths)
+      }
+
+      this.set(key, prop as D[K], options)
+    }
+
+    return this
   }
 
   hasChanged(key?: K | null) {
@@ -208,6 +286,10 @@ export class Store<
 export namespace Store {
   export interface SetOptions extends KeyValue {
     silent?: boolean
+  }
+
+  export interface SetByPathOptions extends SetOptions {
+    rewrite?: boolean
   }
 
   export interface MutateOptions extends SetOptions {

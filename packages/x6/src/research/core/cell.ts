@@ -1,19 +1,19 @@
 /* tslint:disable:variable-name */
 
 import { JSONObject, JSONExt, ArrayExt, StringExt } from '../../util'
-import { KeyValue } from '../../types'
 import { Basecoat } from '../../entity'
 import { Rectangle } from '../../geometry'
 import { Store } from './store'
 import { Model } from './model'
 import { Node } from './node'
+import { Attribute } from '../attr'
+import { KeyValue } from '../../types'
 
 export class Cell extends Basecoat {
   public readonly id: string
   public readonly store: Store<Cell.StoreData>
 
   public model: Model | null
-
   private _parent: Cell | null
   private _children: Cell[] | null
 
@@ -26,6 +26,7 @@ export class Cell extends Basecoat {
       id: this.id,
     })
     this.startListening()
+    this.init()
   }
 
   protected startListening() {
@@ -43,6 +44,8 @@ export class Cell extends Basecoat {
     })
   }
 
+  protected init() {}
+
   isNode(): this is Node {
     return false
   }
@@ -51,9 +54,33 @@ export class Cell extends Basecoat {
     return false
   }
 
-  toJSON() {}
+  // #region
 
-  clone() {}
+  getPropByPath<T>(path: string | string[]) {
+    return this.store.getByPath<T>(path)
+  }
+
+  setPropByPath(
+    path: string | string[],
+    value: any,
+    options: Cell.SetPropByPathOptions = {},
+  ) {
+    this.store.setByPath(path, value, options)
+  }
+
+  removePropByPath(path: string | string[], options: Cell.SetOptions = {}) {
+    const paths = Array.isArray(path) ? path : path.split('/')
+    // Once a property is removed from the `attrs` the CellView will
+    // recognize a `dirty` flag and re-render itself in order to remove
+    // the attribute from SVGElement.
+    if (paths[0] === 'attrs') {
+      options.dirty = true
+    }
+    this.store.removeByPath(paths, options)
+    return this
+  }
+
+  // #endregion
 
   // #region zIndex
 
@@ -93,17 +120,48 @@ export class Cell extends Basecoat {
 
   // #region attrs
 
-  get arrts() {
-    const result = this.store.get<JSONObject>('attrs')
-    return result ? JSONExt.deepCopy(result) : result
+  get attrs() {
+    const result = this.store.get<Attribute.CellAttributes>('attrs')
+    return result ? JSONExt.deepCopy(result) : {}
   }
 
-  set attrs(value: JSONObject) {
+  set attrs(value: Attribute.CellAttributes) {
     this.setAttrs(value)
   }
 
-  setAttrs(attrs: JSONObject, options: Cell.SetOptions = {}) {
+  setAttrs(attrs: Attribute.CellAttributes, options: Cell.SetOptions = {}) {
     this.store.set('attrs', attrs, options)
+  }
+
+  getAttributeDefinition(attrName: string) {
+    return Attribute.definitions[attrName] || null
+  }
+
+  getAttrByPath(): Attribute.CellAttributes
+  getAttrByPath<T>(path: string | string[]): T
+  getAttrByPath<T>(path?: string | string[]) {
+    if (path == null || path === '') {
+      return this.attrs
+    }
+    return this.getPropByPath<T>(this.prependAttrsPath(path))
+  }
+
+  setAttrByPath(
+    path: string | string[],
+    value: Attribute.ComplexAttributeValue,
+    options: Cell.SetOptions = {},
+  ) {
+    this.setPropByPath(this.prependAttrsPath(path), value, options)
+    return this
+  }
+
+  removeAttrByPath(path: string | string[], options: Cell.SetOptions = {}) {
+    this.removePropByPath(this.prependAttrsPath(path), options)
+    return this
+  }
+
+  protected prependAttrsPath(path: string | string[]) {
+    return Array.isArray(path) ? ['attrs'].concat(path) : `attrs/${path}`
   }
 
   // #endregion
@@ -379,6 +437,10 @@ export class Cell extends Basecoat {
 
   // #endregion
 
+  toJSON() {}
+
+  clone() {}
+
   addTo() {}
 
   findView() {}
@@ -434,6 +496,8 @@ export class Cell extends Basecoat {
 
 export namespace Cell {
   export interface SetOptions extends Store.SetOptions {}
+
+  export interface SetPropByPathOptions extends Store.SetByPathOptions {}
 
   export interface CreateCellOptions extends JSONObject {
     id?: string
