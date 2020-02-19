@@ -4117,13 +4117,6 @@ babylon@^6.18.0:
   resolved "https://registry.npm.taobao.org/babylon/download/babylon-6.18.0.tgz#af2f3b88fa6f5c1e4c634d1a0f8eac4f55b395e3"
   integrity sha1-ry87iPpvXB5MY00aD46sT1WzleM=
 
-backbone@^1.4.0:
-  version "1.4.0"
-  resolved "https://registry.npm.taobao.org/backbone/download/backbone-1.4.0.tgz#54db4de9df7c3811c3f032f34749a4cd27f3bd12"
-  integrity sha1-VNtN6d98OBHD8DLzR0mkzSfzvRI=
-  dependencies:
-    underscore ">=1.8.3"
-
 bail@^1.0.0:
   version "1.0.4"
   resolved "https://registry.npm.taobao.org/bail/download/bail-1.0.4.tgz#7181b66d508aa3055d3f6c13f0a0c720641dde9b"
@@ -18358,11 +18351,6 @@ umi@^2.9.0:
     umi-utils "1.7.2"
     update-notifier "3.0.0"
     yargs-parser "13.1.1"
-
-underscore@>=1.8.3:
-  version "1.9.2"
-  resolved "https://registry.npm.taobao.org/underscore/download/underscore-1.9.2.tgz#0c8d6f536d6f378a5af264a72f7bec50feb7cf2f"
-  integrity sha1-DI1vU21vN4pa8mSnL3vsUP63zy8=
 
 unherit@^1.0.4:
   version "1.1.2"
