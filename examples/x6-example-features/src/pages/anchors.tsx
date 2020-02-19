@@ -82,6 +82,10 @@ export default class Example extends React.Component {
         // targetPerimeter: true,
       })
     })
+
+    graph.on('cell:connected', ({ edge }) => {
+      console.log(edge)
+    })
   }
 
   refContainer = (container: HTMLDivElement) => {

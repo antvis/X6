@@ -1,6 +1,6 @@
 import { hashcode } from './hashcode'
 
-describe('string', () => {
+describe('StringExt', () => {
   describe('#hashcode', () => {
     it('should return number when hashcode a string ', () => {
       expect(hashcode('')).toBe(2166136261)

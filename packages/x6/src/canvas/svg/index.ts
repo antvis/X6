@@ -1,6 +1,6 @@
 /* tslint:disable:no-parameter-reassignment */
 
-import { Url } from '../../util'
+import { UrlExt } from '../../util'
 import { DomUtil } from '../../dom'
 import { SvgCanvas2DText } from './text'
 
@@ -82,7 +82,7 @@ export class SvgCanvas2D extends SvgCanvas2DText {
   ) {
     const state = this.state
 
-    src = Url.toAbsolute(src)
+    src = UrlExt.toAbsolute(src)
     x += state.tx
     y += state.ty
 

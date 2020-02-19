@@ -1,10 +1,13 @@
 'use strict'
 
 module.exports = {
-  verbose: true,
-  transform: {
-    '^.+\\.ts$': 'ts-jest',
-  },
+  // verbose: true,
+  runner: 'jest-electron/runner',
+  testEnvironment: 'jest-electron/environment',
+  transform: { '^.+\\.ts$': 'ts-jest' },
   testMatch: ['**/src/**/*.test.ts', '**/src/**/*.spec.ts'],
-  moduleFileExtensions: ['js', 'ts'],
+  moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx'],
+  // collectCoverage: true,
+  coverageReporters: ['lcov', 'text-summary'],
+  coverageDirectory: './test/coverage',
 }

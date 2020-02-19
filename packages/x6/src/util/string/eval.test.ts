@@ -1,10 +1,10 @@
 import { exec } from './eval'
 
 describe('string', () => {
-  describe('#hashcode', () => {
+  describe('#eval', () => {
     it('should eval string expressions', () => {
-      expect(exec('1 + 1')).toBe(2)
-      expect(exec('"a" + "b"')).toBe('ab')
+      expect(exec<number>('1 + 1')).toBe(2)
+      expect(exec<string>('"a" + "b"')).toBe('ab')
     })
 
     it('should return null with invalid expression', () => {
