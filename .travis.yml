@@ -13,6 +13,6 @@ install:
   - yarn bootstrap
 script:
   - yarn build
-  - yarn test
-after_script:
-  - yarn coveralls
+#   - yarn test
+# after_script:
+#   - yarn coveralls

@@ -1,0 +1,299 @@
+import { attr } from './attr'
+import { createSvgElement } from './elem'
+
+export const KAPPA = 0.551784
+
+function getNumbericAttribute(
+  elem: SVGElement,
+  attr: string,
+  defaultValue: number = NaN,
+) {
+  const v = elem.getAttribute(attr)
+  if (v == null) {
+    return defaultValue
+  }
+  const n = parseFloat(v)
+  return isNaN(n) ? defaultValue : n
+}
+
+export function sample(elem: SVGPathElement, interval: number = 1) {
+  const length = elem.getTotalLength()
+  const samples = []
+  let distance = 0
+  let sample
+  while (distance < length) {
+    sample = elem.getPointAtLength(distance)
+    samples.push({ distance, x: sample.x, y: sample.y })
+    distance += interval
+  }
+  return samples
+}
+
+export function convertLineToPathData(line: SVGLineElement) {
+  return [
+    'M',
+    getNumbericAttribute(line, 'x1'),
+    getNumbericAttribute(line, 'y1'),
+    'L',
+    getNumbericAttribute(line, 'x2'),
+    getNumbericAttribute(line, 'y2'),
+  ].join(' ')
+}
+
+export function convertPolygonToPathData(polygon: SVGPolygonElement) {
+  const points = getPointsFromSvgElement(polygon)
+  if (points.length === 0) {
+    return null
+  }
+  return `${svgPointsToPath(points)} Z`
+}
+
+export function convertPolylineToPathData(polyline: SVGPolylineElement) {
+  const points = getPointsFromSvgElement(polyline)
+  if (points.length === 0) {
+    return null
+  }
+
+  return svgPointsToPath(points)
+}
+
+function svgPointsToPath(points: DOMPoint[]) {
+  const arr = points.map(p => `${p.x} ${p.y}`)
+  return `M ${arr.join(' L')}`
+}
+
+export function getPointsFromSvgElement(
+  elem: SVGPolygonElement | SVGPolylineElement,
+) {
+  const points = []
+  const nodePoints = elem.points
+  if (nodePoints) {
+    for (let i = 0, ii = nodePoints.numberOfItems; i < ii; i += 1) {
+      points.push(nodePoints.getItem(i))
+    }
+  }
+
+  return points
+}
+
+export function convertCircleToPathData(circle: SVGCircleElement) {
+  const cx = getNumbericAttribute(circle, 'cx', 0)
+  const cy = getNumbericAttribute(circle, 'cy', 0)
+  const r = getNumbericAttribute(circle, 'r')
+  const cd = r * KAPPA // Control distance.
+
+  return [
+    'M',
+    cx,
+    cy - r, // Move to the first point.
+    'C',
+    cx + cd,
+    cy - r,
+    cx + r,
+    cy - cd,
+    cx + r,
+    cy, // I. Quadrant.
+    'C',
+    cx + r,
+    cy + cd,
+    cx + cd,
+    cy + r,
+    cx,
+    cy + r, // II. Quadrant.
+    'C',
+    cx - cd,
+    cy + r,
+    cx - r,
+    cy + cd,
+    cx - r,
+    cy, // III. Quadrant.
+    'C',
+    cx - r,
+    cy - cd,
+    cx - cd,
+    cy - r,
+    cx,
+    cy - r, // IV. Quadrant.
+    'Z',
+  ].join(' ')
+}
+
+export function convertEllipseToPathData(ellipse: SVGEllipseElement) {
+  const cx = getNumbericAttribute(ellipse, 'cx', 0)
+  const cy = getNumbericAttribute(ellipse, 'cy', 0)
+  const rx = getNumbericAttribute(ellipse, 'rx')
+  const ry = getNumbericAttribute(ellipse, 'ry') || rx
+  const cdx = rx * KAPPA // Control distance x.
+  const cdy = ry * KAPPA // Control distance y.
+
+  const d = [
+    'M',
+    cx,
+    cy - ry, // Move to the first point.
+    'C',
+    cx + cdx,
+    cy - ry,
+    cx + rx,
+    cy - cdy,
+    cx + rx,
+    cy, // I. Quadrant.
+    'C',
+    cx + rx,
+    cy + cdy,
+    cx + cdx,
+    cy + ry,
+    cx,
+    cy + ry, // II. Quadrant.
+    'C',
+    cx - cdx,
+    cy + ry,
+    cx - rx,
+    cy + cdy,
+    cx - rx,
+    cy, // III. Quadrant.
+    'C',
+    cx - rx,
+    cy - cdy,
+    cx - cdx,
+    cy - ry,
+    cx,
+    cy - ry, // IV. Quadrant.
+    'Z',
+  ].join(' ')
+  return d
+}
+
+export function convertRectToPathData(rect: SVGRectElement) {
+  return rectToPath({
+    x: getNumbericAttribute(rect, 'x', 0),
+    y: getNumbericAttribute(rect, 'y', 0),
+    width: getNumbericAttribute(rect, 'width', 0),
+    height: getNumbericAttribute(rect, 'height', 0),
+    rx: getNumbericAttribute(rect, 'rx', 0),
+    ry: getNumbericAttribute(rect, 'ry', 0),
+  })
+}
+
+export function rectToPath(r: {
+  x: number
+  y: number
+  width: number
+  height: number
+  rx?: number
+  ry?: number
+  'top-rx'?: number
+  'bottom-rx'?: number
+  'top-ry'?: number
+  'bottom-ry'?: number
+}) {
+  let d
+  const x = r.x
+  const y = r.y
+  const width = r.width
+  const height = r.height
+  const topRx = Math.min(r.rx || r['top-rx'] || 0, width / 2)
+  const bottomRx = Math.min(r.rx || r['bottom-rx'] || 0, width / 2)
+  const topRy = Math.min(r.ry || r['top-ry'] || 0, height / 2)
+  const bottomRy = Math.min(r.ry || r['bottom-ry'] || 0, height / 2)
+
+  if (topRx || bottomRx || topRy || bottomRy) {
+    d = [
+      'M',
+      x,
+      y + topRy,
+      'v',
+      height - topRy - bottomRy,
+      'a',
+      bottomRx,
+      bottomRy,
+      0,
+      0,
+      0,
+      bottomRx,
+      bottomRy,
+      'h',
+      width - 2 * bottomRx,
+      'a',
+      bottomRx,
+      bottomRy,
+      0,
+      0,
+      0,
+      bottomRx,
+      -bottomRy,
+      'v',
+      -(height - bottomRy - topRy),
+      'a',
+      topRx,
+      topRy,
+      0,
+      0,
+      0,
+      -topRx,
+      -topRy,
+      'h',
+      -(width - 2 * topRx),
+      'a',
+      topRx,
+      topRy,
+      0,
+      0,
+      0,
+      -topRx,
+      topRy,
+      'Z',
+    ]
+  } else {
+    d = ['M', x, y, 'H', x + width, 'V', y + height, 'H', x, 'V', y, 'Z']
+  }
+
+  return d.join(' ')
+}
+
+export function convertToPath(
+  elem:
+    | SVGLineElement
+    | SVGPolygonElement
+    | SVGPolylineElement
+    | SVGEllipseElement
+    | SVGCircleElement
+    | SVGRectElement,
+) {
+  const path = createSvgElement('path') as SVGPathElement
+  attr(path, attr(elem))
+  const d = convertToPathData(elem)
+  if (d) {
+    path.setAttribute('d', d)
+  }
+  return path as SVGPathElement
+}
+
+export function convertToPathData(
+  elem:
+    | SVGLineElement
+    | SVGPolygonElement
+    | SVGPolylineElement
+    | SVGEllipseElement
+    | SVGCircleElement
+    | SVGRectElement,
+) {
+  const tagName = elem.tagName.toLowerCase()
+  switch (tagName) {
+    case 'path':
+      return elem.getAttribute('d')
+    case 'line':
+      return convertLineToPathData(elem as SVGLineElement)
+    case 'polygon':
+      return convertPolygonToPathData(elem as SVGPolygonElement)
+    case 'polyline':
+      return convertPolylineToPathData(elem as SVGPolylineElement)
+    case 'ellipse':
+      return convertEllipseToPathData(elem as SVGEllipseElement)
+    case 'circle':
+      return convertCircleToPathData(elem as SVGCircleElement)
+    case 'rect':
+      return convertRectToPathData(elem as SVGRectElement)
+  }
+
+  throw new Error(`"${tagName}" cannot be converted to svg path element.`)
+}

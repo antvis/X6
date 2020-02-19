@@ -1,7 +1,7 @@
 import sinon from 'sinon'
 import { FunctionExt } from '.'
 
-describe('function', () => {
+describe('FunctionExt', () => {
   describe('#call', () => {
     it('should invoke function with empty args', () => {
       const spy = sinon.spy()
@@ -150,17 +150,6 @@ describe('function', () => {
       expect(spy.calledOn(ctx)).toBeTruthy()
       expect(spy.calledWith(1, '2', true, obj, reg, arr, 'more')).toBeTruthy()
     })
-  })
-
-  describe('#once', () => {
-    const spy = sinon.spy()
-    const ctx = {}
-    const fn = FunctionExt.once(spy, ctx)
-    fn()
-    expect(spy.calledOn(ctx)).toBeTruthy()
-    expect(spy.calledOnce).toBeTruthy()
-    fn()
-    expect(spy.calledOnce).toBeTruthy()
   })
 
   describe('#cacher', () => {

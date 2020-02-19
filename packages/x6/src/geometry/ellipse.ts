@@ -239,18 +239,6 @@ export namespace Ellipse {
 }
 
 export namespace Ellipse {
-  export function create(): Ellipse
-  export function create(x: number): Ellipse
-  export function create(x: number, y: number): Ellipse
-  export function create(x: number, y: number, a: number): Ellipse
-  export function create(x: number, y: number, a: number, b: number): Ellipse
-  export function create(rect: Ellipse | EllipseLike | EllipseData): Ellipse
-  export function create(
-    x?: number | Ellipse | EllipseLike | EllipseData,
-    y?: number,
-    a?: number,
-    b?: number,
-  ): Ellipse
   export function create(
     x?: number | Ellipse | EllipseLike | EllipseData,
     y?: number,
