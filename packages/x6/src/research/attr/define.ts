@@ -298,7 +298,8 @@ export namespace Attribute {
           const firstChild = node.firstChild as Element
           if (firstChild && firstChild.tagName.toUpperCase() === 'TITLE') {
             // Update an existing title
-            (firstChild as SVGTitleElement).textContent = title
+            const titleElem = firstChild as SVGTitleElement
+            titleElem.textContent = title
           } else {
             // Create a new title
             const titleNode = document.createElementNS(
