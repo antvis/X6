@@ -1,12 +1,12 @@
-import { CellView } from './cell-view'
-import { BaseView } from './base-view'
-import { config } from './config'
-import { v } from '../../v'
 import { Node } from './node'
-import { Rectangle } from '../../geometry'
-import { Attribute } from '../attr'
-import { PortData } from './port-data'
+import { View } from './view'
+import { CellView } from './cell-view'
+import { globals } from './globals'
+import { v } from '../../v'
 import { ArrayExt } from '../../util'
+import { Attribute } from '../attr'
+import { Rectangle } from '../../geometry'
+import { PortData } from './port-data'
 
 export class NodeView extends CellView<Node> {
   protected readonly rotatableSelector: string = 'rotatable'
@@ -15,8 +15,8 @@ export class NodeView extends CellView<Node> {
   public rotatableNode: Element | null = null
 
   protected portsCache: { [id: string]: NodeView.PortCache } = {}
-  protected portContainerMarkup: BaseView.Markup = 'g'
-  protected portMarkup: BaseView.Markup = {
+  protected portContainerMarkup: View.Markup = 'g'
+  protected portMarkup: View.Markup = {
     tagName: 'circle',
     selector: 'circle',
     attrs: {
@@ -25,7 +25,7 @@ export class NodeView extends CellView<Node> {
       stroke: '#000000',
     },
   }
-  protected portLabelMarkup: BaseView.Markup = {
+  protected portLabelMarkup: View.Markup = {
     tagName: 'text',
     selector: 'text',
     attrs: {
@@ -77,7 +77,7 @@ export class NodeView extends CellView<Node> {
       if (this.hasFlag(sub, NodeView.Flag.update)) {
         this.update()
         sub = this.removeFlag(sub, NodeView.Flag.update)
-        if (config.useCSSSelector) {
+        if (globals.useCSSSelector) {
           // `update()` will render ports when useCSSSelectors are enabled
           sub = this.removeFlag(sub, NodeView.Flag.ports)
         }
@@ -111,8 +111,7 @@ export class NodeView extends CellView<Node> {
     this.cleanCache()
 
     // When CSS selector strings are used, make sure no rule matches port nodes.
-    const { useCSSSelector: useCSSSelectors } = config
-    if (useCSSSelectors) {
+    if (globals.useCSSSelector) {
       this.removePorts()
     }
 
@@ -127,7 +126,7 @@ export class NodeView extends CellView<Node> {
       rotatableNode: this.rotatableNode,
     })
 
-    if (useCSSSelectors) {
+    if (globals.useCSSSelector) {
       this.renderPorts()
     }
   }
@@ -146,9 +145,7 @@ export class NodeView extends CellView<Node> {
     throw new TypeError('invalid markup')
   }
 
-  protected renderJSONMarkup(
-    markup: BaseView.JSONMarkup | BaseView.JSONMarkup[],
-  ) {
+  protected renderJSONMarkup(markup: View.JSONMarkup | View.JSONMarkup[]) {
     const result = this.parseJSONMarkup(markup, this.container)
     const one = (elems: Element | Element[] | null) =>
       Array.isArray(elems) ? elems[0] : elems
@@ -187,7 +184,7 @@ export class NodeView extends CellView<Node> {
       this.updateTransform()
     }
 
-    if (!config.useCSSSelector) {
+    if (!globals.useCSSSelector) {
       // this._renderPorts()
     }
 
@@ -418,13 +415,13 @@ export class NodeView extends CellView<Node> {
   }
 
   protected createPortElement(port: PortData.Port) {
-    let renderResult = BaseView.renderMarkup(this.getPortContainerMarkup())
+    let renderResult = View.renderMarkup(this.getPortContainerMarkup())
     const portElement = renderResult.elem
     if (portElement == null) {
       throw new Error('Invalid port container markup.')
     }
 
-    renderResult = BaseView.renderMarkup(this.getPortMarkup(port))
+    renderResult = View.renderMarkup(this.getPortMarkup(port))
     const portContentElement = renderResult.elem
     const portContentSelectors = renderResult.selectors
 
@@ -440,7 +437,7 @@ export class NodeView extends CellView<Node> {
       portContentElement,
     )
 
-    renderResult = BaseView.renderMarkup(this.getPortLabelMarkup(port.label))
+    renderResult = View.renderMarkup(this.getPortLabelMarkup(port.label))
     const portLabelElement = renderResult.elem
     const portLabelSelectors = renderResult.selectors
 
@@ -448,7 +445,7 @@ export class NodeView extends CellView<Node> {
       throw new Error('Invalid port label markup.')
     }
 
-    let portSelectors: BaseView.Selectors | undefined
+    let portSelectors: View.Selectors | undefined
     if (portContentSelectors && portLabelSelectors) {
       for (const key in portLabelSelectors) {
         if (portContentSelectors[key] && key !== this.rootSelector) {
@@ -549,7 +546,7 @@ export class NodeView extends CellView<Node> {
 
   protected applyPortTransform(
     element: Element,
-    transformData: BaseView.TransformData,
+    transformData: View.TransformData,
     initialAngle: number = 0,
   ) {
     const matrix = v
@@ -579,10 +576,10 @@ export class NodeView extends CellView<Node> {
 export namespace NodeView {
   export interface PortCache {
     portElement: Element
-    portSelectors?: BaseView.Selectors | null
+    portSelectors?: View.Selectors | null
     portLabelElement: Element
-    portLabelSelectors?: BaseView.Selectors | null
+    portLabelSelectors?: View.Selectors | null
     portContentElement: Element
-    portContentSelectors?: BaseView.Selectors | null
+    portContentSelectors?: View.Selectors | null
   }
 }

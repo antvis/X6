@@ -1,27 +1,23 @@
-import kebabCase from 'lodash/kebabCase'
-import sortedIndex from 'lodash/sortedIndex'
-import isPlainObject from 'lodash/isPlainObject'
 import { Dictionary } from '../../struct'
 import { v } from '../../v'
-import { BaseView } from './base-view'
-import { config } from './config'
+import { View } from './view'
 import { Cell } from './cell'
 import { Attribute } from '../attr'
-import { JSONObject } from '../../util'
-import { Rectangle, Point, Ellipse, Polyline, Path, Line } from '../../geometry'
+import { StringExt, ArrayExt, ObjectExt, JSONObject } from '../../util'
+import { Point, Line, Rectangle, Ellipse, Polyline, Path } from '../../geometry'
 
-export abstract class CellView<C extends Cell = Cell> extends BaseView {
+export abstract class CellView<C extends Cell = Cell> extends View {
   protected readonly tagName: string
   protected readonly isSvgElement: boolean
   protected readonly rootSelector: string
   public readonly UPDATE_PRIORITY: number
   public readonly initFlag: string | string[]
   public readonly presentationAttributes: CellView.PresentationAttributes
-  protected readonly events: BaseView.Events | null
-  protected readonly documentEvents: BaseView.Events | null
+  protected readonly events: View.Events | null
+  protected readonly documentEvents: View.Events | null
   protected cache: Dictionary<Element, CellView.CacheItem>
 
-  protected selectors: BaseView.Selectors
+  protected selectors: View.Selectors
 
   public cell: C
   public graph: any
@@ -52,7 +48,6 @@ export abstract class CellView<C extends Cell = Cell> extends BaseView {
     this.initFlags()
     this.cleanCache()
     this.startListening()
-    this.init()
     this.$(this.container).data('view', this)
 
     CellView.views[this.cid] = this
@@ -61,7 +56,7 @@ export abstract class CellView<C extends Cell = Cell> extends BaseView {
   protected abstract configure(): CellView.Config
 
   protected ensureContainer() {
-    return BaseView.createElement(this.tagName, this.isSvgElement)
+    return View.createElement(this.tagName, this.isSvgElement)
   }
 
   protected setContainer(container: Element) {
@@ -73,101 +68,26 @@ export abstract class CellView<C extends Cell = Cell> extends BaseView {
     return this
   }
 
-  protected init() {}
-
   render() {
     return this
   }
 
-  empty() {
-    v.empty(this.container)
-    return this
-  }
-
-  unmount() {
-    v.remove(this.container)
-    return this
-  }
-
   remove() {
-    this.cleanEventListeners(document)
-    this.unmount()
+    super.remove()
     delete CellView.views[this.cid]
     return this
   }
 
-  protected renderChildren(children: BaseView.JSONMarkup[]) {
+  protected renderChildren(children: View.JSONMarkup[]) {
     if (children) {
       const isSVG = this.container instanceof SVGElement
       const ns = isSVG ? v.ns.svg : v.ns.xhtml
-      const doc = BaseView.parseJSONMarkup(children, { ns })
+      const doc = View.parseJSONMarkup(children, { ns })
       v.empty(this.container)
       v.append(this.container, doc.fragment)
       // this.childNodes = doc.selectors
     }
     return this
-  }
-
-  addClass(className: string | string[], elem: Element = this.container) {
-    this.$(elem).addClass(
-      Array.isArray(className) ? className.join(' ') : className,
-    )
-    return this
-  }
-
-  removeClass(className: string | string[], elem: Element = this.container) {
-    this.$(elem).removeClass(
-      Array.isArray(className) ? className.join(' ') : className,
-    )
-    return this
-  }
-
-  setStyle(
-    style: JQuery.PlainObject<string | number>,
-    elem: Element = this.container,
-  ) {
-    this.$(elem).css(style)
-    return this
-  }
-
-  setAttributes(
-    attrs?: Attribute.SimpleAttributes | null,
-    elem: Element = this.container,
-  ) {
-    if (attrs != null && elem != null) {
-      if (elem instanceof SVGElement) {
-        v.attr(elem, attrs)
-      } else {
-        this.$(elem).attr(attrs)
-      }
-    }
-    return this
-  }
-
-  /**
-   * Returns the value of the specified attribute of `node`.
-   *
-   * If the node does not set a value for attribute, start recursing up
-   * the DOM tree from node to lookup for attribute at the ancestors of
-   * node. If the recursion reaches CellView's root node and attribute
-   * is not found even there, return `null`.
-   */
-  protected findAttribute(name: string, node: Element) {
-    let current = node
-    while (current && current.nodeType === 1) {
-      const value = current.getAttribute(name)
-      if (value != null) {
-        return value
-      }
-
-      if (current === this.container) {
-        return null
-      }
-
-      current = current.parentNode as Element
-    }
-
-    return null
   }
 
   confirmUpdate(flag: number, options: any = {}) {
@@ -272,11 +192,11 @@ export abstract class CellView<C extends Cell = Cell> extends BaseView {
   }
 
   parseJSONMarkup(
-    markup: BaseView.JSONMarkup | BaseView.JSONMarkup[],
+    markup: View.JSONMarkup | View.JSONMarkup[],
     rootElem?: Element,
   ) {
-    const result = BaseView.parseJSONMarkup(markup)
-    if (rootElem) {
+    const result = View.parseJSONMarkup(markup)
+    if (rootElem && this.rootSelector) {
       const selectors = result.selectors
       const rootSelector = this.rootSelector
       if (selectors[rootSelector]) {
@@ -426,85 +346,14 @@ export abstract class CellView<C extends Cell = Cell> extends BaseView {
     return matrix
   }
 
-  find(
-    selector?: string,
-    rootElem: Element = this.container,
-    selectors: BaseView.Selectors = this.selectors,
-  ) {
-    // These are either descendants of `this.$el` of `this.$el` itself.
-    // `.` is a special selector used to select the wrapping `<g>` element.
-    if (!selector || selector === '.') {
-      return [rootElem]
-    }
-
-    if (selectors) {
-      const nodes = selectors[selector]
-      if (nodes) {
-        if (Array.isArray(nodes)) {
-          return nodes
-        }
-
-        return [nodes]
-      }
-    }
-
-    if (config.useCSSSelector) {
-      return this.$(rootElem)
-        .find(selector)
-        .toArray() as Element[]
-    }
-
-    return []
-  }
-
-  findOne(
-    selector?: string,
-    rootElem: Element = this.container,
-    selectors: BaseView.Selectors = this.selectors,
-  ) {
-    const nodes = this.find(selector, rootElem, selectors)
-    return nodes.length > 0 ? nodes[0] : null
-  }
-
   findMagnet(elem: Element = this.container) {
-    let node = elem
-    do {
-      const magnet = node.getAttribute('magnet')
-      if ((magnet != null || node === this.container) && magnet !== 'false') {
-        return node
-      }
-      node = node.parentNode as Element
-    } while (node)
-
     // If the overall cell has set `magnet === false`, then returns
     // `undefined` to announce there is no magnet found for this cell.
     // This is especially useful to set on cells that have 'ports'.
     // In this case, only the ports have set `magnet === true` and the
     // overall element has `magnet === false`.
-    return undefined
-  }
 
-  getSelector(elem: Element, prevSelector?: string): string | undefined {
-    let selector
-
-    if (elem === this.container) {
-      if (typeof prevSelector === 'string') {
-        selector = `> ${prevSelector}`
-      }
-      return selector
-    }
-
-    if (elem) {
-      const nth = v.index(elem) + 1
-      selector = `${elem.tagName}:nth-child(${nth})`
-      if (prevSelector) {
-        selector += ` > ${prevSelector}`
-      }
-
-      selector = this.getSelector(elem.parentNode as Element, selector)
-    }
-
-    return selector
+    return this.findByAttribute('magnet')
   }
 
   protected getAttributeDefinition(
@@ -547,7 +396,9 @@ export abstract class CellView<C extends Cell = Cell> extends BaseView {
         if (normal == null) {
           normal = {}
         }
-        normal[kebabCase(name)] = val as Attribute.SimpleAttributeValue
+        normal[
+          StringExt.kebabCase(name)
+        ] = val as Attribute.SimpleAttributeValue
       }
     })
 
@@ -620,7 +471,7 @@ export abstract class CellView<C extends Cell = Cell> extends BaseView {
     cellAttrs: Attribute.CellAttributes,
     rootNode: Element,
     selectorCache: { [selector: string]: Element[] },
-    selectors: BaseView.Selectors,
+    selectors: View.Selectors,
   ) {
     const merge: Element[] = []
     const result: Dictionary<
@@ -635,7 +486,7 @@ export abstract class CellView<C extends Cell = Cell> extends BaseView {
 
     Object.keys(cellAttrs).forEach(selector => {
       const attrs = cellAttrs[selector]
-      if (!isPlainObject(attrs)) {
+      if (!ObjectExt.isPlainObject(attrs)) {
         return
       }
 
@@ -662,7 +513,7 @@ export abstract class CellView<C extends Cell = Cell> extends BaseView {
             selectedLength.unshift(-1)
           } else {
             // node referenced by `groupSelector`
-            const sortIndex = sortedIndex(selectedLength, l)
+            const sortIndex = ArrayExt.sortedIndex(selectedLength, l)
             attributes.splice(sortIndex, 0, attrs)
             selectedLength.splice(sortIndex, 0, l)
           }
@@ -975,21 +826,6 @@ export abstract class CellView<C extends Cell = Cell> extends BaseView {
     })
   }
 
-  getEventTarget(
-    evt: JQuery.TriggeredEvent,
-    opt: { fromPoint?: boolean } = {},
-  ) {
-    // Touchmove/Touchend event's target is not reflecting the element under
-    // the coordinates as mousemove does.
-    // It holds the element when a touchstart triggered.
-    const { target, type, clientX = 0, clientY = 0 } = evt
-    if (opt.fromPoint || type === 'touchmove' || type === 'touchend') {
-      return document.elementFromPoint(clientX, clientY)
-    }
-
-    return target
-  }
-
   pointerdblclick(evt: JQuery.DoubleClickEvent, x: number, y: number) {
     this.trigger('cell:pointerdblclick', evt, x, y)
   }
@@ -1094,7 +930,7 @@ export namespace CellView {
 
   export interface UpdateDOMSubtreeAttributesOptions {
     rootBBox?: Rectangle
-    selectors?: BaseView.Selectors
+    selectors?: View.Selectors
     scalableNode?: Element | null
     rotatableNode?: Element | null
     /**
@@ -1114,8 +950,8 @@ export namespace CellView {
     UPDATE_PRIORITY?: number
     initFlag?: string | string[]
     presentationAttributes?: PresentationAttributes
-    events?: BaseView.Events
-    documentEvents?: BaseView.Events
+    events?: View.Events
+    documentEvents?: View.Events
   }
 
   export interface CacheItem {

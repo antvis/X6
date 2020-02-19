@@ -5,9 +5,10 @@ import { Basecoat } from '../../entity'
 import { Attribute } from '../attr'
 import { v } from '../../v'
 
-export abstract class BaseView extends Basecoat {
+export abstract class View extends Basecoat {
   public readonly cid: string
   public container: Element
+  protected selectors: View.Selectors
 
   constructor() {
     super()
@@ -16,14 +17,167 @@ export abstract class BaseView extends Basecoat {
 
   // tslint:disable-next-line
   $(elem: any) {
-    return BaseView.$(elem)
+    return View.$(elem)
   }
 
-  protected getEventNamespace() {
-    return `.${globals.prefixCls}-event-${this.cid}`
+  empty() {
+    v.empty(this.container)
+    return this
   }
 
-  protected delegateEvents(events: BaseView.Events) {
+  unmount() {
+    v.remove(this.container)
+    return this
+  }
+
+  remove() {
+    this.cleanEventListeners(document)
+    this.unmount()
+    return this
+  }
+
+  addClass(className: string | string[], elem: Element = this.container) {
+    this.$(elem).addClass(
+      Array.isArray(className) ? className.join(' ') : className,
+    )
+    return this
+  }
+
+  removeClass(className: string | string[], elem: Element = this.container) {
+    this.$(elem).removeClass(
+      Array.isArray(className) ? className.join(' ') : className,
+    )
+    return this
+  }
+
+  setStyle(
+    style: JQuery.PlainObject<string | number>,
+    elem: Element = this.container,
+  ) {
+    this.$(elem).css(style)
+    return this
+  }
+
+  setAttributes(
+    attrs?: Attribute.SimpleAttributes | null,
+    elem: Element = this.container,
+  ) {
+    if (attrs != null && elem != null) {
+      if (elem instanceof SVGElement) {
+        v.attr(elem, attrs)
+      } else {
+        this.$(elem).attr(attrs)
+      }
+    }
+    return this
+  }
+
+  /**
+   * Returns the value of the specified attribute of `node`.
+   *
+   * If the node does not set a value for attribute, start recursing up
+   * the DOM tree from node to lookup for attribute at the ancestors of
+   * node. If the recursion reaches CellView's root node and attribute
+   * is not found even there, return `null`.
+   */
+  findAttribute(attrName: string, elem: Element) {
+    let current = elem
+    while (current && current.nodeType === 1) {
+      const value = current.getAttribute(attrName)
+      if (value != null) {
+        return value
+      }
+
+      if (current === this.container) {
+        return null
+      }
+
+      current = current.parentNode as Element
+    }
+
+    return null
+  }
+
+  find(
+    selector?: string,
+    rootElem: Element = this.container,
+    selectors: View.Selectors = this.selectors,
+  ) {
+    if (!selector || selector === '.') {
+      return [rootElem]
+    }
+
+    if (selectors) {
+      const nodes = selectors[selector]
+      if (nodes) {
+        if (Array.isArray(nodes)) {
+          return nodes
+        }
+
+        return [nodes]
+      }
+    }
+
+    if (globals.useCSSSelector) {
+      return this.$(rootElem)
+        .find(selector)
+        .toArray() as Element[]
+    }
+
+    return []
+  }
+
+  findOne(
+    selector?: string,
+    rootElem: Element = this.container,
+    selectors: View.Selectors = this.selectors,
+  ) {
+    const nodes = this.find(selector, rootElem, selectors)
+    return nodes.length > 0 ? nodes[0] : null
+  }
+
+  findByAttribute(attribute: string, elem: Element = this.container) {
+    let node = elem
+    do {
+      const val = node.getAttribute(attribute)
+      if ((val != null || node === this.container) && val !== 'false') {
+        return node
+      }
+      node = node.parentNode as Element
+    } while (node)
+
+    // If the overall cell has set `magnet === false`, then returns
+    // `undefined` to announce there is no magnet found for this cell.
+    // This is especially useful to set on cells that have 'ports'.
+    // In this case, only the ports have set `magnet === true` and the
+    // overall element has `magnet === false`.
+    return undefined
+  }
+
+  getSelector(elem: Element, prevSelector?: string): string | undefined {
+    let selector
+
+    if (elem === this.container) {
+      if (typeof prevSelector === 'string') {
+        selector = `> ${prevSelector}`
+      }
+      return selector
+    }
+
+    if (elem) {
+      const nth = v.index(elem) + 1
+      selector = `${elem.tagName}:nth-child(${nth})`
+      if (prevSelector) {
+        selector += ` > ${prevSelector}`
+      }
+
+      selector = this.getSelector(elem.parentNode as Element, selector)
+    }
+
+    return selector
+  }
+
+  protected delegateEvents(events: View.Events) {
     if (events == null) {
       return this
     }
@@ -37,24 +191,12 @@ export abstract class BaseView extends Basecoat {
         return
       }
 
-      let method = events[key]
-      if (typeof method === 'string') {
-        method = (this as any)[method]
-        if (typeof method === 'function') {
-          method = (...args: any[]) => (method as Function)(...args)
-        }
-      }
-
+      const method = this.getEventHandler(events[key])
       if (typeof method === 'function') {
         this.delegateEvent(match[1], match[2], method)
       }
     })
 
-    return this
-  }
-
-  protected undelegateEvents() {
-    this.$(this.container).off(this.getEventNamespace())
     return this
   }
 
@@ -80,10 +222,15 @@ export abstract class BaseView extends Basecoat {
     return this
   }
 
+  protected undelegateEvents() {
+    this.$(this.container).off(this.getEventNamespace())
+    return this
+  }
+
   protected addEventListeners(
     elem: Element | Document | JQuery,
-    events: BaseView.Events,
-    data: KeyValue = {},
+    events: View.Events,
+    data?: KeyValue,
   ) {
     if (events == null) {
       return this
@@ -92,14 +239,7 @@ export abstract class BaseView extends Basecoat {
     const ns = this.getEventNamespace()
     const $elem = this.$(elem)
     Object.keys(events).forEach(eventName => {
-      let method = events[eventName]
-      if (typeof method === 'string') {
-        method = (this as any)[eventName]
-        if (typeof method === 'function') {
-          method = (...args: any) => (method as Function)(...args)
-        }
-      }
-
+      const method = this.getEventHandler(events[eventName])
       if (typeof method === 'function') {
         $elem.on(eventName + ns, data, method as any)
       }
@@ -115,21 +255,65 @@ export abstract class BaseView extends Basecoat {
     return this
   }
 
+  protected getEventNamespace() {
+    return `.${globals.prefixCls}-event-${this.cid}`
+  }
+
+  protected getEventHandler(handler: string | Function) {
+    let method: Function | undefined
+    if (typeof handler === 'string') {
+      const fn = (this as any)[handler]
+      if (typeof fn === 'function') {
+        method = (...args: any) => fn(...args)
+      }
+    } else {
+      method = handler
+    }
+
+    return method
+  }
+
+  protected getEventTarget(
+    e: JQuery.TriggeredEvent,
+    options: { fromPoint?: boolean } = {},
+  ) {
+    // Touchmove/Touchend event's target is not reflecting the element
+    // under the coordinates as mousemove does.
+    // It holds the element when a touchstart triggered.
+    const { target, type, clientX = 0, clientY = 0 } = e
+    if (options.fromPoint || type === 'touchmove' || type === 'touchend') {
+      return document.elementFromPoint(clientX, clientY)
+    }
+
+    return target
+  }
+
   protected stopPropagation(e: JQuery.TriggeredEvent) {
-    this.eventData(e, { propagationStopped: true })
+    this.addEventData(e, { propagationStopped: true })
     return this
   }
 
   protected isPropagationStopped(e: JQuery.TriggeredEvent) {
-    return !!this.eventData(e).propagationStopped
+    return this.getEventData(e).propagationStopped === true
   }
 
-  protected eventData(
+  protected getEventData<T extends KeyValue>(e: JQuery.TriggeredEvent): T {
+    return this.eventData<T>(e)
+  }
+
+  protected addEventData<T extends KeyValue>(
     e: JQuery.TriggeredEvent,
-    data?: { [key: string]: any },
-  ): { [key: string]: any } {
+    data: T,
+  ): T {
+    return this.eventData(e, data)
+  }
+
+  protected eventData<T extends KeyValue>(
+    e: JQuery.TriggeredEvent,
+    data?: T,
+  ): T {
     if (e == null) {
-      throw new TypeError('event object required')
+      throw new TypeError('Event object required')
     }
 
     let currentData = e.data
@@ -138,7 +322,7 @@ export abstract class BaseView extends Basecoat {
     // get
     if (data == null) {
       if (currentData == null) {
-        return {}
+        return {} as T
       }
       return currentData[key] || {}
     }
@@ -158,11 +342,11 @@ export abstract class BaseView extends Basecoat {
   }
 }
 
-export namespace BaseView {
+export namespace View {
   export type Events = KeyValue<string | Function>
 }
 
-export namespace BaseView {
+export namespace View {
   // tslint:disable-next-line
   export function $(elem: any) {
     return jQuery(elem)
@@ -175,7 +359,7 @@ export namespace BaseView {
   }
 }
 
-export namespace BaseView {
+export namespace View {
   export interface JSONMarkup {
     /**
      * The namespace URI of the element. It defaults to SVG namespace
@@ -203,7 +387,7 @@ export namespace BaseView {
 
     attrs?: Attribute.SimpleAttributes
 
-    style?: { [name: string]: string }
+    style?: JQuery.PlainObject<string | number>
 
     className?: string | string[]
 
