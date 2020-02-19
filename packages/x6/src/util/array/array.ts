@@ -5,6 +5,7 @@ export {
   uniq,
   sortedIndex,
   sortBy,
+  groupBy,
 } from 'lodash'
 
 const proto = Array.prototype
