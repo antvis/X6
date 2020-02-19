@@ -80,7 +80,6 @@ export function getBBox(
     }
 
     if (!target) {
-      // transform like this (that is, not at all)
       return Rectangle.create(outputBBox)
     }
 

@@ -63,12 +63,12 @@ export function attr(
   value?: string | number | null,
 ) {
   if (name == null) {
-    const attributes = elem.attributes
-    const attrs: { [name: string]: string } = {}
-    for (let i = 0; i < attributes.length; i += 1) {
-      attrs[attributes[i].name] = attributes[i].value
+    const attrs = elem.attributes
+    const ret: { [name: string]: string } = {}
+    for (let i = 0; i < attrs.length; i += 1) {
+      ret[attrs[i].name] = attrs[i].value
     }
-    return attrs
+    return ret
   }
 
   if (isString(name) && isUndefined(value)) {

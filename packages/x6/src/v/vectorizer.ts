@@ -1,5 +1,6 @@
-import { isString, isUndefined } from './util'
 import { Point } from '../geometry'
+import { Attributes } from './attr'
+import { isString, isUndefined } from './util'
 import * as Static from './rollup'
 
 export class Vectorizer {
@@ -15,12 +16,8 @@ export class Vectorizer {
 
   constructor(
     elem: Vectorizer | SVGElement | string,
-    attrs?: Static.Attributes,
-    children?:
-      | SVGElement
-      | HTMLElement
-      | Vectorizer
-      | (SVGElement | Vectorizer | HTMLElement)[],
+    attrs?: Attributes,
+    children?: Element | Vectorizer | (Element | Vectorizer)[],
   ) {
     if (!elem) {
       throw new TypeError('Invalid element to create vectorizer')
@@ -39,8 +36,6 @@ export class Vectorizer {
       } else {
         node = document.createElementNS(Static.ns.svg, elem) as SVGElement
       }
-
-      Static.ensureId(node)
     } else {
       node = elem
     }
@@ -238,40 +233,22 @@ export class Vectorizer {
     return this
   }
 
-  append(
-    elems:
-      | SVGElement
-      | HTMLElement
-      | Vectorizer
-      | (SVGElement | Vectorizer | HTMLElement)[],
-  ) {
+  append(elems: Element | Vectorizer | (Element | Vectorizer)[]) {
     Static.append(this.node, elems)
     return this
   }
 
-  prepend(
-    elems:
-      | SVGElement
-      | HTMLElement
-      | Vectorizer
-      | (SVGElement | Vectorizer | HTMLElement)[],
-  ) {
+  prepend(elems: Element | Vectorizer | (Element | Vectorizer)[]) {
     Static.prepend(this.node, elems)
     return this
   }
 
-  before(
-    elems:
-      | SVGElement
-      | HTMLElement
-      | Vectorizer
-      | (SVGElement | Vectorizer | HTMLElement)[],
-  ) {
+  before(elems: Element | Vectorizer | (Element | Vectorizer)[]) {
     Static.before(this.node, elems)
     return this
   }
 
-  appendTo(target: SVGElement | HTMLElement | Vectorizer) {
+  appendTo(target: Element | Vectorizer) {
     Static.appendTo(this.node, target)
     return this
   }
@@ -298,7 +275,7 @@ export class Vectorizer {
     return node ? Static.create(node as SVGElement) : null
   }
 
-  contains(child: SVGElement | HTMLElement | Vectorizer) {
+  contains(child: Element | Vectorizer) {
     return Static.contains(this.node, child)
   }
 
