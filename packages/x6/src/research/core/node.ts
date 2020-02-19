@@ -1,11 +1,15 @@
+import cloneDeep from 'lodash/cloneDeep'
 import { Cell } from './cell'
 import { Size } from '../../types'
 import { Point, Rectangle, Angle } from '../../geometry'
+import { PortData } from './port-data'
+import { StringExt, ObjectExt } from '../../util'
 
 export class Node extends Cell {
   protected collapsed: boolean
   protected collapsedSize: Size | null
   protected edges: Cell[] | null
+  public portData: PortData
 
   constructor(options: Node.CreateNodeOptions = {}) {
     super(options)
@@ -414,6 +418,243 @@ export class Node extends Cell {
 
   //   return this
   // }
+
+  // #region ports
+
+  get ports() {
+    return this.store.get<PortData.Metadata>('ports') || { items: [] }
+  }
+
+  get portMarkup() {
+    return this.store.get<string>('portMarkup')
+  }
+
+  get portLabelMarkup() {
+    return this.store.get<string>('portLabelMarkup')
+  }
+
+  getPorts() {
+    return cloneDeep(this.ports.items)
+  }
+
+  getPort(id: string) {
+    return cloneDeep(this.ports.items.find(port => port.id && port.id === id))
+  }
+
+  hasPorts() {
+    return this.ports.items.length > 0
+  }
+
+  hasPort(id: string) {
+    return this.getPortIndex(id) !== -1
+  }
+
+  getPortIndex(port: PortData.PortMetadata | string) {
+    const id = typeof port === 'string' ? port : port.id
+    return id != null ? this.ports.items.findIndex(item => item.id === id) : -1
+  }
+
+  getPortsPositions(groupName: string) {
+    const size = this.size
+    const layouts = this.portData.getPortsLayoutByGroup(
+      groupName,
+      new Rectangle(0, 0, size.width, size.height),
+    )
+
+    const positions: {
+      [id: string]: {
+        x: number
+        y: number
+        angle: number
+      }
+    } = {}
+
+    return layouts.reduce((memo, item) => {
+      const transformation = item.portLayout
+      memo[item.portId] = {
+        x: transformation.x,
+        y: transformation.y,
+        angle: transformation.angle,
+      }
+      return memo
+    }, positions)
+  }
+
+  addPort(port: PortData.PortMetadata, options?: Cell.SetPropByPathOptions) {
+    const ports = [...this.ports.items]
+    ports.push(port)
+    this.setPropByPath('ports/items', ports, options)
+    return this
+  }
+
+  addPorts(
+    ports: PortData.PortMetadata[],
+    options?: Cell.SetPropByPathOptions,
+  ) {
+    this.setPropByPath('ports/items', [...this.ports.items, ...ports], options)
+    return this
+  }
+
+  removePort(
+    port: PortData.PortMetadata | string,
+    options: Cell.SetPropByPathOptions = {},
+  ) {
+    const ports = [...this.ports.items]
+    const index = this.getPortIndex(port)
+
+    if (index !== -1) {
+      ports.splice(index, 1)
+      options.rewrite = true
+      this.setPropByPath('ports/items', ports, options)
+    }
+
+    return this
+  }
+
+  removePorts(options?: Cell.SetPropByPathOptions): this
+  removePorts(
+    portsForRemoval: (PortData.PortMetadata | string)[],
+    options?: Cell.SetPropByPathOptions,
+  ): this
+  removePorts(
+    portsForRemoval?:
+      | (PortData.PortMetadata | string)[]
+      | Cell.SetPropByPathOptions,
+    opt?: Cell.SetPropByPathOptions,
+  ) {
+    let options
+
+    if (Array.isArray(portsForRemoval)) {
+      options = opt || {}
+      if (portsForRemoval.length) {
+        options.rewrite = true
+        const currentPorts = [...this.ports.items]
+        const remainingPorts = currentPorts.filter(
+          cp =>
+            !portsForRemoval.some(p => {
+              const id = typeof p === 'string' ? p : p.id
+              return cp.id === id
+            }),
+        )
+        this.setPropByPath('ports/items', remainingPorts, options)
+      }
+    } else {
+      options = portsForRemoval || {}
+      options.rewrite = true
+      this.setPropByPath('ports/items', [], options)
+    }
+
+    return this
+  }
+
+  protected initializePorts() {
+    this.createPortData()
+    this.on('change:ports', () => {
+      this.processRemovedPort()
+      this.createPortData()
+    })
+  }
+
+  protected processRemovedPort() {
+    const current = this.ports
+    const currentItemsMap: { [id: string]: boolean } = {}
+
+    current.items.forEach(item => {
+      if (item.id) {
+        currentItemsMap[item.id] = true
+      }
+    })
+
+    const removed: { [id: string]: boolean } = {}
+    const previous = this.store.getPrevious<PortData.Metadata>('ports') || {
+      items: [],
+    }
+
+    previous.items.forEach(item => {
+      if (item.id && !currentItemsMap[item.id]) {
+        removed[item.id] = true
+      }
+    })
+
+    const model = this.model
+    if (model && !ObjectExt.isEmpty(removed)) {
+      // const inboundLinks = model.getConnectedLinks(this, { inbound: true })
+      // inboundLinks.forEach(link => {
+      //   if (removed[link.get('target').port]) {
+      //     link.remove()
+      //   }
+      // })
+      // const outboundLinks = model.getConnectedLinks(this, { outbound: true })
+      // outboundLinks.forEach(link => {
+      //   if (removed[link.get('source').port]) {
+      //     link.remove()
+      //   }
+      // })
+    }
+  }
+
+  protected validatePorts() {
+    const ids: { [id: string]: boolean } = {}
+    const errors: string[] = []
+    this.ports.items.forEach(p => {
+      if (typeof p !== 'object') {
+        errors.push('Invalid port ', p)
+      }
+
+      if (p.id == null) {
+        p.id = this.generatePortId()
+      }
+
+      if (ids[p.id]) {
+        errors.push('Duplicitied port id.')
+      }
+
+      ids[p.id] = true
+    })
+
+    return errors
+  }
+
+  protected generatePortId() {
+    return StringExt.uuid()
+  }
+
+  protected createPortData() {
+    const err = this.validatePorts()
+
+    if (err.length > 0) {
+      this.store.set('ports', this.store.getPrevious('ports'))
+      throw new Error(err.join(' '))
+    }
+
+    const prevPorts = this.portData ? this.portData.getPorts() : null
+    this.portData = new PortData(this.ports)
+    const curPorts = this.portData.getPorts()
+
+    if (prevPorts) {
+      const added = curPorts.filter(item => {
+        if (!prevPorts.find(prevPort => prevPort.id === item.id)) {
+          return item
+        }
+      })
+
+      const removed = prevPorts.filter(item => {
+        if (!curPorts.find(curPort => curPort.id === item.id)) {
+          return item
+        }
+      })
+
+      if (removed.length > 0) {
+        this.trigger('ports:remove', this, removed)
+      }
+
+      if (added.length > 0) {
+        this.trigger('ports:add', this, added)
+      }
+    }
+  }
+
+  // #endregion
 }
 
 Node.config({

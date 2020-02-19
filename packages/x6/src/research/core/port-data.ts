@@ -9,7 +9,7 @@ export class PortData {
   ports: PortData.Port[]
   groups: { [name: string]: PortData.Group }
 
-  constructor(data: PortData.Data) {
+  constructor(data: PortData.Metadata) {
     this.ports = []
     this.groups = {}
     this.init(JSONExt.deepCopy(data as any))
@@ -27,7 +27,7 @@ export class PortData {
     return this.ports.filter(port => port.group === groupName)
   }
 
-  getGroupPortsMetrics(groupName: string, elemBBox: Rectangle) {
+  getPortsLayoutByGroup(groupName: string, elemBBox: Rectangle) {
     const group = this.getGroup(groupName)
     const ports = this.getPortsByGroup(groupName)
 
@@ -48,18 +48,19 @@ export class PortData {
       groupArgs,
     )
 
-    const accumulator: PortData.Metadata = {
+    const accumulator: PortData.ParsedPorts = {
       ports,
-      result: [],
+      items: [],
     }
 
     results.reduce((memo, portLayout, index) => {
       const port = memo.ports[index]
-      memo.result.push({
+      memo.items.push({
         portLayout,
-        portId: port.id,
+        portId: port.id!,
         portSize: port.size,
         portAttrs: port.attrs,
+        labelSize: port.label.size,
         portLabelLayout: this.getPortLabelLayout(
           port,
           Point.create(portLayout),
@@ -69,10 +70,10 @@ export class PortData {
       return memo
     }, accumulator)
 
-    return accumulator.result
+    return accumulator.items
   }
 
-  protected init(data: PortData.Data) {
+  protected init(data: PortData.Metadata) {
     const { groups, items } = data
 
     if (groups != null) {
@@ -88,7 +89,7 @@ export class PortData {
     }
   }
 
-  protected evaluateGroup(group: PortData.GroupData) {
+  protected evaluateGroup(group: PortData.GroupMetadata) {
     return {
       ...group,
       label: this.getLabel(group, true),
@@ -96,7 +97,7 @@ export class PortData {
     } as PortData.Group
   }
 
-  protected evaluatePort(port: PortData.PortData) {
+  protected evaluatePort(port: PortData.PortMetadata) {
     const result = { ...port } as PortData.Port
     const group = this.getGroup(port.group)
 
@@ -110,7 +111,7 @@ export class PortData {
     return result
   }
 
-  protected getZIndex(group: PortData.Group, port: PortData.PortData) {
+  protected getZIndex(group: PortData.Group, port: PortData.PortMetadata) {
     if (typeof port.zIndex === 'number') {
       return port.zIndex
     }
@@ -122,7 +123,7 @@ export class PortData {
     return 'auto'
   }
 
-  protected createPosition(group: PortData.Group, port: PortData.PortData) {
+  protected createPosition(group: PortData.Group, port: PortData.PortMetadata) {
     return {
       name: 'left',
       ...group.position,
@@ -131,7 +132,7 @@ export class PortData {
   }
 
   protected getPortPosition(
-    position?: PortData.PortPositionData,
+    position?: PortData.PortPositionMetadata,
     setDefault: boolean = false,
   ): PortData.PortPosition {
     if (position == null) {
@@ -169,7 +170,7 @@ export class PortData {
   }
 
   protected getPortLabelPosition(
-    position?: PortData.PortLabelPositionData,
+    position?: PortData.PortLabelPositionMetadata,
     setDefault: boolean = false,
   ): PortData.PortLabelPosition {
     if (position == null) {
@@ -192,7 +193,10 @@ export class PortData {
     return { args: {} }
   }
 
-  protected getLabel(item: PortData.GroupData, setDefaults: boolean = false) {
+  protected getLabel(
+    item: PortData.GroupMetadata,
+    setDefaults: boolean = false,
+  ) {
     const label = item.label || {}
     label.position = this.getPortLabelPosition(label.position, setDefaults)
     return label as PortData.Label
@@ -213,9 +217,9 @@ export class PortData {
 }
 
 export namespace PortData {
-  export interface Data {
-    groups?: { [name: string]: GroupData }
-    items: PortData[]
+  export interface Metadata {
+    groups?: { [name: string]: GroupMetadata }
+    items: PortMetadata[]
   }
 
   export interface PortPosition<
@@ -225,7 +229,7 @@ export namespace PortData {
     args: PortLayout.LayoutArgs[T]
   }
 
-  export type PortPositionData =
+  export type PortPositionMetadata =
     | PortLayout.LayoutNames
     | Point.PointData // absolute layout
     | PortPosition
@@ -238,17 +242,19 @@ export namespace PortData {
     args: PortLabelLayout.LayoutArgs[T]
   }
 
-  export type PortLabelPositionData =
+  export type PortLabelPositionMetadata =
     | PortLabelLayout.LayoutNames
     | PortLabelPosition
 
-  export interface LabelData {
+  export interface LabelMetadata {
     markup?: string
-    position?: PortLabelPositionData
+    size?: Size
+    position?: PortLabelPositionMetadata
   }
 
   export interface Label {
     markup: string
+    size?: Size
     position: PortLabelPosition
   }
 
@@ -256,11 +262,10 @@ export namespace PortData {
     markup: string
     attrs: Attribute.CellAttributes
     zIndex: number | 'auto'
-    size: Size
+    size?: Size
   }
 
   interface PortBase {
-    id?: string
     group: string
     /**
      * Arguments for the port layout function.
@@ -268,9 +273,9 @@ export namespace PortData {
     args?: JSONObject
   }
 
-  export interface GroupData extends Partial<Common> {
-    label?: LabelData
-    position?: PortPositionData
+  export interface GroupMetadata extends Partial<Common> {
+    label?: LabelMetadata
+    position?: PortPositionMetadata
   }
 
   export interface Group extends Partial<Common> {
@@ -278,22 +283,26 @@ export namespace PortData {
     position: PortPosition
   }
 
-  export interface PortData extends Partial<Common>, PortBase {
-    label?: LabelData
+  export interface PortMetadata extends Partial<Common>, PortBase {
+    id?: string
+    label?: LabelMetadata
   }
 
-  export interface Port extends Group, PortBase {}
+  export interface Port extends Group, PortBase {
+    id: string
+  }
 
   export interface LayoutResult {
-    portId?: string
+    portId: string
     portAttrs?: Attribute.CellAttributes
     portSize?: Size
     portLayout: PortLayout.Result
     portLabelLayout: PortLabelLayout.Result | null
+    labelSize?: Size
   }
 
-  export interface Metadata {
+  export interface ParsedPorts {
     ports: Port[]
-    result: LayoutResult[]
+    items: LayoutResult[]
   }
 }

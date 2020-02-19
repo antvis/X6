@@ -2,7 +2,8 @@ import jQuery from 'jquery'
 import { KeyValue } from '../../types'
 import { globals } from './globals'
 import { Basecoat } from '../../entity'
-import { v, Attributes } from '../../v'
+import { v } from '../../v'
+import { Attribute } from '../attr'
 
 export abstract class BaseView extends Basecoat {
   public readonly cid: string
@@ -14,8 +15,8 @@ export abstract class BaseView extends Basecoat {
   }
 
   // tslint:disable-next-line
-  protected $(elem: Element | Document | JQuery) {
-    return jQuery(elem)
+  $(elem: any) {
+    return BaseView.$(elem)
   }
 
   protected getEventNamespace() {
@@ -162,7 +163,26 @@ export namespace BaseView {
 }
 
 export namespace BaseView {
-  export interface JSONElement {
+  // tslint:disable-next-line
+  export function $(elem: any) {
+    return jQuery(elem)
+  }
+
+  export function createElement(tagName?: string, isSvgElement?: boolean) {
+    return isSvgElement
+      ? v.createSvgElement(tagName || 'g')
+      : (v.createElementNS(tagName || 'div') as HTMLElement)
+  }
+}
+
+export namespace BaseView {
+  export interface JsonMarkup {
+    /**
+     * The namespace URI of the element. It defaults to SVG namespace
+     * `"http://www.w3.org/2000/svg"`.
+     */
+    ns?: string
+
     /**
      * The type of element to be created.
      */
@@ -181,31 +201,21 @@ export namespace BaseView {
      */
     groupSelector?: string | string[]
 
-    /**
-     * The namespace URI of the element. It defaults to SVG namespace
-     * `"http://www.w3.org/2000/svg"`.
-     */
-    ns?: string
-
-    attrs?: Attributes
+    attrs?: Attribute.SimpleAttributes
 
     style?: { [name: string]: string }
 
     className?: string | string[]
 
-    children?: JSONElement[]
+    children?: JsonMarkup[]
 
     textContent?: string
   }
 
-  export function createElement(tagName: string, isSvgElement: boolean) {
-    return isSvgElement
-      ? v.createSvgElement(tagName || 'g')
-      : (v.createElementNS(tagName || 'div') as HTMLElement)
-  }
+  export type Markup = string | JsonMarkup | JsonMarkup[]
 
-  export function parseDOMJSON(
-    json: JSONElement[],
+  export function parseJsonMarkup(
+    markup: JsonMarkup | JsonMarkup[],
     options: {
       ns?: string
       bare?: boolean
@@ -215,21 +225,31 @@ export namespace BaseView {
     },
   ) {
     const fragment = document.createDocumentFragment()
-    const selectors: { [key: string]: Element | Element[] } = {}
-    const groups: { [key: string]: Element[] } = {}
-    const queue = [json, fragment, options.ns]
+    const selectors: { [selector: string]: Element | Element[] } = {}
+    const groups: { [selector: string]: Element[] } = {}
+    const queue: {
+      markup: JsonMarkup[]
+      parentNode: Element | DocumentFragment
+      ns?: string
+    }[] = [
+      {
+        markup: Array.isArray(markup) ? markup : [markup],
+        parentNode: fragment,
+        ns: options.ns,
+      },
+    ]
 
     while (queue.length > 0) {
-      let ns = queue.pop() as string
-      const parentNode = (queue.pop() as any) as Element
-      const input = queue.pop() as JSONElement[]
-      const defines = Array.isArray(input) ? input : [input]
+      const item = queue.pop()!
+      let ns = item.ns
+      const defines = item.markup
+      const parentNode = item.parentNode
 
       defines.forEach(define => {
         // tagName
         const tagName = define.tagName
         if (!tagName) {
-          throw new Error('Invalid tagName')
+          throw new TypeError('Invalid tagName')
         }
 
         // ns
@@ -237,8 +257,10 @@ export namespace BaseView {
           ns = define.ns
         }
 
-        const node = v.createElementNS(tagName, ns)
         const svg = ns === v.ns.svg
+        const node = ns
+          ? v.createElementNS(tagName, ns)
+          : v.createElement(tagName)
 
         // attrs
         const attrs = define.attrs
@@ -246,7 +268,7 @@ export namespace BaseView {
           if (svg) {
             v.attr(node, attrs)
           } else {
-            jQuery(node).attr(attrs)
+            $(node).attr(attrs)
           }
         }
 
@@ -259,8 +281,10 @@ export namespace BaseView {
         // classname
         const className = define.className
         if (className != null) {
-          const cls = Array.isArray(className) ? className.join(' ') : className
-          node.setAttribute('class', cls)
+          node.setAttribute(
+            'class',
+            Array.isArray(className) ? className.join(' ') : className,
+          )
         }
 
         // textContent
@@ -309,7 +333,7 @@ export namespace BaseView {
         // children
         const children = define.children
         if (Array.isArray(children)) {
-          queue.push(children, node as any, ns)
+          queue.push({ ns, markup: children, parentNode: node })
         }
       })
     }
@@ -319,6 +343,10 @@ export namespace BaseView {
       selectors,
       groups,
     }
+  }
+
+  export function renderStringMarkup(container: Element, markup: string) {
+    return v.batch(markup)
   }
 }
 

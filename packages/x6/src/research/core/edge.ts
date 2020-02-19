@@ -33,12 +33,12 @@ export class Edge extends Cell {
   }
 
   disconnect(options: Cell.SetOptions) {
-    return this.store.set(
-      {
-        source: { x: 0, y: 0 },
-        target: { x: 0, y: 0 },
-      },
-      options,
-    )
+    // return this.store.set(
+    //   {
+    //     source: { x: 0, y: 0 },
+    //     target: { x: 0, y: 0 },
+    //   },
+    //   options,
+    // )
   }
 }
