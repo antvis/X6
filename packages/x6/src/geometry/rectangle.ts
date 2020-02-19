@@ -4,6 +4,7 @@ import { Point } from './point'
 import { Line } from './line'
 import { Ellipse } from './ellipse'
 import { Side } from './types'
+import { Size } from '../types'
 
 export class Rectangle implements Rectangle.RectangleLike {
   x: number
@@ -725,6 +726,10 @@ export namespace Rectangle {
     }
 
     return new Rectangle(rect.x, rect.y, rect.width, rect.height)
+  }
+
+  export function fromSize(size: Size) {
+    return new Rectangle(0, 0, size.width, size.height)
   }
 
   export function fromEllipse(ellipse: Ellipse) {
