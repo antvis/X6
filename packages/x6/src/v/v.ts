@@ -14,6 +14,20 @@ export function v( // tslint:disable-line
   return new Vectorizer(elem, attrs, children)
 }
 
+// ctor
+// ----
+export namespace v {
+  export const create = Static.create
+  export const batch = Static.batch
+  export const isVectorizer = Static.isVectorizer
+  /**
+   * Returns `true` if object is an instance of `SVGGraphicsElement`.
+   */
+  export const isSVGGraphicsElement = Static.isSVGGraphicsElement
+  export const toNode = Static.toNode
+  export const ensureId = Static.ensureId
+}
+
 // attr
 // ----
 export namespace v {
@@ -37,18 +51,9 @@ export namespace v {
   export const toggleClass = Static.toggleClass
 }
 
-// ctor
-// ----
 export namespace v {
-  export const create = Static.create
-  export const batch = Static.batch
-  export const isVectorizer = Static.isVectorizer
-  /**
-   * Returns `true` if object is an instance of `SVGGraphicsElement`.
-   */
-  export const isSVGGraphicsElement = Static.isSVGGraphicsElement
-  export const toNode = Static.toNode
-  export const ensureId = Static.ensureId
+  export const requestAnimationFrame = Static.requestAnimationFrame
+  export const cancelAnimationFrame = Static.cancelAnimationFrame
 }
 
 // elem

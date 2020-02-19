@@ -110,8 +110,8 @@ export function findParentByClass(
   return null
 }
 
-export function contains(elem: Element, child: Element | Vectorizer) {
-  const a = elem
+export function contains(parent: Element, child: Element | Vectorizer) {
+  const a = parent
   const b = toNode(child)
   const bup = b && b.parentNode
 

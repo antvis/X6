@@ -352,7 +352,7 @@ export function text(
       // No vertical anchor is defined
       dy = 0
       // Backwards compatibility - we change the `y` attribute instead of `dy`.
-      if (elem.getAttribute('y') === null) {
+      if (elem.getAttribute('y') == null) {
         elem.setAttribute('y', `${annotatedY || '0.8em'}`)
       }
     }

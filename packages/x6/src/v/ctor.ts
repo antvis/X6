@@ -8,9 +8,12 @@ export function uniqueId() {
   return `v${idCounter}`
 }
 
-export function ensureId(elem: SVGElement | Vectorizer) {
+export function ensureId(elem: Element | Vectorizer) {
   const node = toNode(elem)!
-  return node.id || (node.id = uniqueId())
+  if (node.id == null) {
+    node.id = uniqueId()
+  }
+  return node.id
 }
 
 export function toNode(elem: any) {
@@ -26,11 +29,7 @@ export function toNode(elem: any) {
 export function create(
   elem: Vectorizer | SVGElement | string,
   attrs?: Attributes,
-  children?:
-    | SVGElement
-    | HTMLElement
-    | Vectorizer
-    | (SVGElement | Vectorizer | HTMLElement)[],
+  children?: Element | Vectorizer | (Element | Vectorizer)[],
 ) {
   return new Vectorizer(elem, attrs, children)
 }
@@ -40,8 +39,8 @@ export function batch(markup: string) {
     const svgDoc = createSvgDocument(markup)
     const vels: Vectorizer[] = []
     for (let i = 0, ii = svgDoc.childNodes.length; i < ii; i += 1) {
-      const childNode = svgDoc.childNodes[i]
-      vels.push(create(document.importNode(childNode!, true) as SVGElement))
+      const childNode = svgDoc.childNodes[i]!
+      vels.push(create(document.importNode(childNode, true) as SVGElement))
     }
 
     return vels

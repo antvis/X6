@@ -50,9 +50,9 @@ export function createSVGMatrix(matrix?: DOMMatrix | MatrixLike | null) {
   return ret
 }
 
-export function transformStringToMatrix(transform: string) {
+export function transformStringToMatrix(transform?: string | null) {
   let transformationMatrix = createSVGMatrix()
-  const matches = transform && transform.match(transformRegex)
+  const matches = transform != null && transform.match(transformRegex)
   if (!matches) {
     return transformationMatrix
   }
@@ -193,7 +193,7 @@ export function parseTransformString(transform: string) {
   const sx = scale && scale[0] ? parseFloat(scale[0] as string) : 1
 
   return {
-    value: transform || '',
+    raw: transform || '',
     translate: {
       tx: translate && translate[0] ? parseInt(translate[0] as string, 10) : 0,
       ty: translate && translate[1] ? parseInt(translate[1] as string, 10) : 0,

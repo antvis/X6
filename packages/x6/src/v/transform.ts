@@ -57,7 +57,7 @@ export function translate(
     return transform.translate
   }
 
-  transformAttr = transform.value
+  transformAttr = transform.raw
   transformAttr = transformAttr.replace(/translate\([^)]*\)/g, '').trim()
 
   const newTx = options.absolute ? tx : transform.translate.tx + tx
@@ -91,7 +91,7 @@ export function rotate(
     return transform.rotate
   }
 
-  transformAttr = transform.value
+  transformAttr = transform.raw
   transformAttr = transformAttr.replace(/rotate\([^)]*\)/g, '').trim()
 
   angle %= 360 // tslint:disable-line
@@ -113,7 +113,7 @@ export function scale(elem: SVGElement, sx?: number, sy?: number) {
 
   sy = sy == null ? sx : sy //tslint:disable-line
 
-  transformAttr = transform.value
+  transformAttr = transform.raw
   transformAttr = transformAttr.replace(/scale\([^)]*\)/g, '').trim()
   const newScale = `scale(${sx},${sy})`
   elem.setAttribute('transform', `${transformAttr} ${newScale}`.trim())
