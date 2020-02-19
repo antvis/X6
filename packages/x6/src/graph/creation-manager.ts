@@ -53,6 +53,7 @@ export class CreationManager extends BaseManager {
         const { parent, id, ...dataItem } = nodeDataMap[i]
         nodeMap[i] = this.graph.addNode({
           ...dataItem,
+          id,
           data: { ...nodeDataMap[i] },
           parent: parentGroup,
         })
@@ -70,6 +71,7 @@ export class CreationManager extends BaseManager {
           if (nodeMap[id] == null) {
             nodeMap[id] = this.graph.addNode({
               ...dataItem,
+              id,
               data: { ...item },
               parent: parent ? nodeMap[parent] : undefined,
             })
@@ -83,6 +85,7 @@ export class CreationManager extends BaseManager {
           if (edgeMap[id] == null) {
             edgeMap[id] = this.graph.addEdge({
               ...dataItem,
+              id,
               data: { ...item },
               parent: parent != null ? nodeMap[parent] : undefined,
               source: source != null ? nodeMap[source] : undefined,
