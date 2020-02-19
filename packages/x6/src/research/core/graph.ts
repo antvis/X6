@@ -239,7 +239,7 @@ export class Graph extends BaseView {
   constructor(options: Graph.Options) {
     super()
     this.container = options.container
-    const { selectors, fragment } = Graph.parseJsonMarkup(Graph.markup, {
+    const { selectors, fragment } = Graph.parseJSONMarkup(Graph.markup, {
       bare: true,
     })
     this.backgroundElem = selectors.background as HTMLDivElement
@@ -1687,7 +1687,7 @@ export namespace Graph {
   }
 }
 export namespace Graph {
-  export const markup: BaseView.JsonMarkup[] = [
+  export const markup: BaseView.JSONMarkup[] = [
     {
       ns: v.ns.xhtml,
       tagName: 'div',

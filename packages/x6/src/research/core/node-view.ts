@@ -136,27 +136,30 @@ export class NodeView extends CellView<Node> {
     const cell = this.cell
     const markup = cell.markup
     if (markup) {
-      // if (Array.isArray(markup)) return this.renderJSONMarkup(markup)
       if (typeof markup === 'string') {
         return this.renderStringMarkup(markup)
       }
+
+      return this.renderJSONMarkup(markup)
     }
 
     throw new TypeError('invalid markup')
   }
 
-  // protected renderJSONMarkup(markup: CellView.JSONElement[]) {
-  //   const doc = this.parseDOMJSON(markup, this.elem)
-  //   this.selectors = doc.selectors
-  //   this.rotatableNode = this.selectors[this.rotatableSelector] || null
-  //   this.scalableNode = this.selectors[this.scalableSelector] || null
-  //   // Fragment
-  //   v.append(this.elem, doc.fragment)
-  // }
+  protected renderJSONMarkup(
+    markup: BaseView.JSONMarkup | BaseView.JSONMarkup[],
+  ) {
+    const result = this.parseJSONMarkup(markup, this.container)
+    const one = (elems: Element | Element[] | null) =>
+      Array.isArray(elems) ? elems[0] : elems
+    this.selectors = result.selectors
+    this.rotatableNode = one(this.selectors[this.rotatableSelector])
+    this.scalableNode = one(this.selectors[this.scalableSelector])
+    this.container.appendChild(result.fragment)
+  }
 
   protected renderStringMarkup(markup: string) {
     v.append(this.container, v.batch(markup))
-    // Cache transformation groups
     this.rotatableNode = v.findOne(this.container, '.rotatable')
     this.scalableNode = v.findOne(this.container, '.scalable')
     this.selectors = {}
@@ -325,14 +328,15 @@ export class NodeView extends CellView<Node> {
 
   // #region ports
 
+  // fineElemInPort
   findPortNode(portId: string, selector: string) {
     const cache = this.portsCache[portId]
     if (!cache) {
       return null
     }
-    const portRoot = cache.portContentElement.node
-    const portSelectors = cache.portContentSelectors
-    return this.find(selector, portRoot, portSelectors)[0]
+    const portRoot = cache.portContentElement
+    const portSelectors = cache.portContentSelectors || {}
+    return this.findOne(selector, portRoot, portSelectors)
   }
 
   protected initializePorts() {
@@ -349,13 +353,20 @@ export class NodeView extends CellView<Node> {
     this.portsCache = {}
   }
 
+  protected removePorts() {
+    Object.keys(this.portsCache).forEach(portId => {
+      const cached = this.portsCache[portId]
+      v.remove(cached.portElement)
+    })
+  }
+
   protected renderPorts() {
-    // references to rendered elements without z-index
-    const elementReferences: Element[] = []
     const container = this.getPortsContainer()
 
+    // references to rendered elements without z-index
+    const references: Element[] = []
     container.childNodes.forEach(child => {
-      elementReferences.push(child as Element)
+      references.push(child as Element)
     })
 
     const portsGropsByZ = ArrayExt.groupBy(
@@ -368,13 +379,13 @@ export class NodeView extends CellView<Node> {
     portsGropsByZ[autoZIndexKey].forEach(port => {
       const portElement = this.getPortElement(port)
       container.append(portElement)
-      elementReferences.push(portElement)
+      references.push(portElement)
     })
 
     Object.keys(portsGropsByZ).forEach(key => {
       if (key !== autoZIndexKey) {
-        const z = parseInt(key, 10)
-        this.appendPorts(portsGropsByZ[key], z, elementReferences)
+        const zIndex = parseInt(key, 10)
+        this.appendPorts(portsGropsByZ[key], zIndex, references)
       }
     })
 
@@ -390,29 +401,32 @@ export class NodeView extends CellView<Node> {
     zIndex: number,
     refs: Element[],
   ) {
-    const container = this.getPortsContainer()
-    const portElements = ports.map(p => this.getPortElement(p))
+    const elems = ports.map(p => this.getPortElement(p))
     if (refs[zIndex] || zIndex < 0) {
-      v(refs[Math.max(zIndex, 0)] as SVGElement).before(portElements)
+      v.before(refs[Math.max(zIndex, 0)], elems)
     } else {
-      portElements.forEach(elem => container.appendChild(elem))
+      v.append(this.getPortsContainer(), elems)
     }
   }
 
   protected getPortElement(port: PortData.Port) {
-    const cache = this.portsCache[port.id]
-    if (cache) {
-      return cache.portElement
+    const cached = this.portsCache[port.id]
+    if (cached) {
+      return cached.portElement
     }
     return this.createPortElement(port)
   }
 
   protected createPortElement(port: PortData.Port) {
-    const portElement = v(this.portContainerMarkup).addClass('x6-port').node
-    const portMarkup = this.getPortMarkup(port)
-    let rendered = this.renderPortMarkup(portMarkup)
-    const portContentElement = rendered.elem
-    const portContentSelectors = rendered.selectors
+    let renderResult = BaseView.renderMarkup(this.getPortContainerMarkup())
+    const portElement = renderResult.elem
+    if (portElement == null) {
+      throw new Error('Invalid port container markup.')
+    }
+
+    renderResult = BaseView.renderMarkup(this.getPortMarkup(port))
+    const portContentElement = renderResult.elem
+    const portContentSelectors = renderResult.selectors
 
     if (portContentElement == null) {
       throw new Error('Invalid port markup.')
@@ -426,16 +440,15 @@ export class NodeView extends CellView<Node> {
       portContentElement,
     )
 
-    const labelMarkup = this.getPortLabelMarkup(port.label)
-    rendered = this.renderPortMarkup(labelMarkup)
-    const portLabelElement = rendered.elem
-    const portLabelSelectors = rendered.selectors
+    renderResult = BaseView.renderMarkup(this.getPortLabelMarkup(port.label))
+    const portLabelElement = renderResult.elem
+    const portLabelSelectors = renderResult.selectors
 
     if (portLabelElement == null) {
       throw new Error('Invalid port label markup.')
     }
 
-    let portSelectors: CellView.Selectors | null
+    let portSelectors: BaseView.Selectors | undefined
     if (portContentSelectors && portLabelSelectors) {
       for (const key in portLabelSelectors) {
         if (portContentSelectors[key] && key !== this.rootSelector) {
@@ -450,15 +463,17 @@ export class NodeView extends CellView<Node> {
       portSelectors = portContentSelectors || portLabelSelectors
     }
 
-    portElement.append([
-      portContentElement.addClass('joint-port-body'),
-      portLabelElement.addClass('joint-port-label'),
-    ])
+    v.addClass(portElement, 'x6-port')
+    v.addClass(portContentElement, 'x6-port-body')
+    v.addClass(portLabelElement, 'x6-port-label')
+
+    portElement.appendChild(portContentElement)
+    portElement.appendChild(portLabelElement)
 
     this.portsCache[port.id] = {
       portElement,
-      portLabelElement,
       portSelectors,
+      portLabelElement,
       portLabelSelectors,
       portContentElement,
       portContentSelectors,
@@ -467,65 +482,20 @@ export class NodeView extends CellView<Node> {
     return portElement
   }
 
-  protected renderPortMarkup(markup: BaseView.Markup) {
-    let elem: Element | null = null
-    let selectors: CellView.Selectors | null = null
-
-    const createContainer = (child: Element) =>
-      child instanceof SVGElement
-        ? v.createSvgElement('g')
-        : v.createElement('div')
-
-    if (typeof markup === 'string') {
-      const nodes = v.batch(markup)
-      const count = nodes.length
-      if (count === 1) {
-        elem = nodes[0].node as Element
-      } else if (count > 1) {
-        elem = createContainer(nodes[0].node)
-        nodes.forEach(node => {
-          elem!.appendChild(node.node)
-        })
-      }
-
-      elem = null
-    } else {
-      const ret = this.parseDOMJSON(markup)
-      const fragment = ret.fragment
-      if (fragment.childNodes.length > 1) {
-        elem = createContainer(fragment.firstChild as Element)
-        elem.appendChild(fragment)
-      } else {
-        elem = fragment.firstChild as Element
-      }
-      selectors = ret.selectors
-    }
-
-    return { elem, selectors }
-  }
-
   protected updatePorts() {
     // layout ports without group
-    this.updatePortGroup(undefined)
+    this.updatePortGroup()
     // layout ports with explicit group
     Object.keys(this.cell.portData.groups).forEach(groupName =>
       this.updatePortGroup(groupName),
     )
   }
 
-  protected removePorts() {
-    Object.keys(this.portsCache).forEach(id => {
-      const item = this.portsCache[id]
-      v.remove(item.portElement)
-    })
-  }
-
   protected updatePortGroup(groupName?: string) {
-    const size = this.cell.size
-    const elementBBox = new Rectangle(0, 0, size.width, size.height)
+    const bbox = Rectangle.fromSize(this.cell.size)
     const portsMetrics = this.cell.portData.getPortsLayoutByGroup(
       groupName,
-      elementBBox,
+      bbox,
     )
 
     for (let i = 0, n = portsMetrics.length; i < n; i += 1) {
@@ -540,12 +510,7 @@ export class NodeView extends CellView<Node> {
         }
 
         if (metrics.portSize) {
-          options.rootBBox = new Rectangle(
-            0,
-            0,
-            metrics.portSize.width,
-            metrics.portSize.height,
-          )
+          options.rootBBox = Rectangle.fromSize(metrics.portSize)
         }
 
         this.updateDOMSubtreeAttributes(
@@ -569,12 +534,7 @@ export class NodeView extends CellView<Node> {
           }
 
           if (metrics.labelSize) {
-            options.rootBBox = new Rectangle(
-              0,
-              0,
-              metrics.labelSize.width,
-              metrics.labelSize.height,
-            )
+            options.rootBBox = Rectangle.fromSize(metrics.labelSize)
           }
 
           this.updateDOMSubtreeAttributes(
@@ -589,7 +549,7 @@ export class NodeView extends CellView<Node> {
 
   protected applyPortTransform(
     element: Element,
-    transformData,
+    transformData: BaseView.TransformData,
     initialAngle: number = 0,
   ) {
     const matrix = v
@@ -599,6 +559,10 @@ export class NodeView extends CellView<Node> {
       .rotate(transformData.angle || 0)
 
     v.transform(element as SVGElement, matrix, { absolute: true })
+  }
+
+  protected getPortContainerMarkup() {
+    return this.cell.portContainerMarkup || this.portContainerMarkup
   }
 
   protected getPortMarkup(port: PortData.Port) {
@@ -615,10 +579,10 @@ export class NodeView extends CellView<Node> {
 export namespace NodeView {
   export interface PortCache {
     portElement: Element
-    portSelectors: CellView.Selectors | null
+    portSelectors?: BaseView.Selectors | null
     portLabelElement: Element
-    portLabelSelectors: CellView.Selectors | null
+    portLabelSelectors?: BaseView.Selectors | null
     portContentElement: Element
-    portContentSelectors: CellView.Selectors | null
+    portContentSelectors?: BaseView.Selectors | null
   }
 }

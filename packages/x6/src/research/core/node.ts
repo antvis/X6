@@ -4,6 +4,7 @@ import { Size } from '../../types'
 import { Point, Rectangle, Angle } from '../../geometry'
 import { PortData } from './port-data'
 import { StringExt, ObjectExt } from '../../util'
+import { BaseView } from './base-view'
 
 export class Node extends Cell {
   protected collapsed: boolean
@@ -425,12 +426,16 @@ export class Node extends Cell {
     return this.store.get<PortData.Metadata>('ports') || { items: [] }
   }
 
+  get portContainerMarkup() {
+    return this.store.get<BaseView.Markup>('portContainerMarkup')
+  }
+
   get portMarkup() {
-    return this.store.get<string>('portMarkup')
+    return this.store.get<BaseView.Markup>('portMarkup')
   }
 
   get portLabelMarkup() {
-    return this.store.get<string>('portLabelMarkup')
+    return this.store.get<BaseView.Markup>('portLabelMarkup')
   }
 
   getPorts() {
