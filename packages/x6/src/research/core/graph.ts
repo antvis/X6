@@ -3,7 +3,7 @@ import { Point, Rectangle } from '../../geometry'
 import { DomUtil } from '../../dom'
 import { v, Attributes, MatrixLike } from '../../v'
 import { Model } from './model'
-import { BaseView } from './base-view'
+import { View } from './view'
 import { CellView } from './cell-view'
 import { Cell } from './cell'
 import { NodeView } from './node-view'
@@ -21,7 +21,7 @@ const MOUNT_BATCH_SIZE = 1000
 const UPDATE_BATCH_SIZE = Infinity
 const MIN_PRIORITY = 2
 
-export class Graph extends BaseView {
+export class Graph extends View {
   options = {
     width: 800,
     height: 600,
@@ -1687,7 +1687,7 @@ export namespace Graph {
   }
 }
 export namespace Graph {
-  export const markup: BaseView.JSONMarkup[] = [
+  export const markup: View.JSONMarkup[] = [
     {
       ns: v.ns.xhtml,
       tagName: 'div',

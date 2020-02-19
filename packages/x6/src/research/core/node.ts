@@ -1,10 +1,10 @@
 import cloneDeep from 'lodash/cloneDeep'
 import { Cell } from './cell'
+import { View } from './view'
 import { Size } from '../../types'
 import { Point, Rectangle, Angle } from '../../geometry'
 import { PortData } from './port-data'
 import { StringExt, ObjectExt } from '../../util'
-import { BaseView } from './base-view'
 
 export class Node extends Cell {
   protected collapsed: boolean
@@ -427,15 +427,15 @@ export class Node extends Cell {
   }
 
   get portContainerMarkup() {
-    return this.store.get<BaseView.Markup>('portContainerMarkup')
+    return this.store.get<View.Markup>('portContainerMarkup')
   }
 
   get portMarkup() {
-    return this.store.get<BaseView.Markup>('portMarkup')
+    return this.store.get<View.Markup>('portMarkup')
   }
 
   get portLabelMarkup() {
-    return this.store.get<BaseView.Markup>('portLabelMarkup')
+    return this.store.get<View.Markup>('portLabelMarkup')
   }
 
   getPorts() {
