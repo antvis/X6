@@ -2,8 +2,8 @@ import jQuery from 'jquery'
 import { KeyValue } from '../../types'
 import { globals } from './globals'
 import { Basecoat } from '../../entity'
-import { v } from '../../v'
 import { Attribute } from '../attr'
+import { v } from '../../v'
 
 export abstract class BaseView extends Basecoat {
   public readonly cid: string
@@ -176,7 +176,7 @@ export namespace BaseView {
 }
 
 export namespace BaseView {
-  export interface JsonMarkup {
+  export interface JSONMarkup {
     /**
      * The namespace URI of the element. It defaults to SVG namespace
      * `"http://www.w3.org/2000/svg"`.
@@ -207,15 +207,23 @@ export namespace BaseView {
 
     className?: string | string[]
 
-    children?: JsonMarkup[]
+    children?: JSONMarkup[]
 
     textContent?: string
   }
 
-  export type Markup = string | JsonMarkup | JsonMarkup[]
+  export type Markup = string | JSONMarkup | JSONMarkup[]
 
-  export function parseJsonMarkup(
-    markup: JsonMarkup | JsonMarkup[],
+  export type Selectors = { [selector: string]: Element | Element[] }
+
+  export interface TransformData {
+    x?: number
+    y?: number
+    angle?: number
+  }
+
+  export function parseJSONMarkup(
+    markup: JSONMarkup | JSONMarkup[],
     options: {
       ns?: string
       bare?: boolean
@@ -225,10 +233,10 @@ export namespace BaseView {
     },
   ) {
     const fragment = document.createDocumentFragment()
-    const selectors: { [selector: string]: Element | Element[] } = {}
+    const selectors: Selectors = {}
     const groups: { [selector: string]: Element[] } = {}
     const queue: {
-      markup: JsonMarkup[]
+      markup: JSONMarkup[]
       parentNode: Element | DocumentFragment
       ns?: string
     }[] = [
@@ -241,7 +249,7 @@ export namespace BaseView {
 
     while (queue.length > 0) {
       const item = queue.pop()!
-      let ns = item.ns
+      let ns = item.ns || v.ns.svg
       const defines = item.markup
       const parentNode = item.parentNode
 
@@ -345,8 +353,48 @@ export namespace BaseView {
     }
   }
 
-  export function renderStringMarkup(container: Element, markup: string) {
-    return v.batch(markup)
+  function createContainer(firstChild: Element) {
+    return firstChild instanceof SVGElement
+      ? v.createSvgElement('g')
+      : v.createElement('div')
+  }
+
+  export function renderMarkup(markup: Markup) {
+    if (typeof markup === 'string') {
+      const nodes = v.batch(markup)
+      const count = nodes.length
+
+      if (count === 1) {
+        return {
+          elem: nodes[0].node as Element,
+        }
+      }
+
+      if (count > 1) {
+        const elem = createContainer(nodes[0].node)
+        nodes.forEach(node => {
+          elem.appendChild(node.node)
+        })
+
+        return { elem }
+      }
+
+      return {}
+    }
+
+    {
+      const result = parseJSONMarkup(markup)
+      const fragment = result.fragment
+      let elem: Element | null = null
+      if (fragment.childNodes.length > 1) {
+        elem = createContainer(fragment.firstChild as Element)
+        elem.appendChild(fragment)
+      } else {
+        elem = fragment.firstChild as Element
+      }
+
+      return { elem, selectors: result.selectors }
+    }
   }
 }
 

@@ -21,7 +21,7 @@ export abstract class CellView<C extends Cell = Cell> extends BaseView {
   protected readonly documentEvents: BaseView.Events | null
   protected cache: Dictionary<Element, CellView.CacheItem>
 
-  protected selectors: CellView.Selectors
+  protected selectors: BaseView.Selectors
 
   public cell: C
   public graph: any
@@ -96,11 +96,11 @@ export abstract class CellView<C extends Cell = Cell> extends BaseView {
     return this
   }
 
-  protected renderChildren(children: BaseView.JsonMarkup[]) {
+  protected renderChildren(children: BaseView.JSONMarkup[]) {
     if (children) {
       const isSVG = this.container instanceof SVGElement
       const ns = isSVG ? v.ns.svg : v.ns.xhtml
-      const doc = BaseView.parseJsonMarkup(children, { ns })
+      const doc = BaseView.parseJSONMarkup(children, { ns })
       v.empty(this.container)
       v.append(this.container, doc.fragment)
       // this.childNodes = doc.selectors
@@ -271,22 +271,20 @@ export abstract class CellView<C extends Cell = Cell> extends BaseView {
     }
   }
 
-  parseDOMJSON(
-    markup: BaseView.JsonMarkup | BaseView.JsonMarkup[],
+  parseJSONMarkup(
+    markup: BaseView.JSONMarkup | BaseView.JSONMarkup[],
     rootElem?: Element,
   ) {
-    const doc = BaseView.parseJsonMarkup(markup)
-    const selectors = doc.selectors
-
+    const result = BaseView.parseJSONMarkup(markup)
     if (rootElem) {
+      const selectors = result.selectors
       const rootSelector = this.rootSelector
       if (selectors[rootSelector]) {
         throw new Error('Invalid root selector')
       }
       selectors[rootSelector] = rootElem
     }
-
-    return { selectors, fragment: doc.fragment }
+    return result
   }
 
   can(feature: string): boolean {
@@ -431,7 +429,7 @@ export abstract class CellView<C extends Cell = Cell> extends BaseView {
   find(
     selector?: string,
     rootElem: Element = this.container,
-    selectors: CellView.Selectors = this.selectors,
+    selectors: BaseView.Selectors = this.selectors,
   ) {
     // These are either descendants of `this.$el` of `this.$el` itself.
     // `.` is a special selector used to select the wrapping `<g>` element.
@@ -462,7 +460,7 @@ export abstract class CellView<C extends Cell = Cell> extends BaseView {
   findOne(
     selector?: string,
     rootElem: Element = this.container,
-    selectors: CellView.Selectors = this.selectors,
+    selectors: BaseView.Selectors = this.selectors,
   ) {
     const nodes = this.find(selector, rootElem, selectors)
     return nodes.length > 0 ? nodes[0] : null
@@ -622,7 +620,7 @@ export abstract class CellView<C extends Cell = Cell> extends BaseView {
     cellAttrs: Attribute.CellAttributes,
     rootNode: Element,
     selectorCache: { [selector: string]: Element[] },
-    selectors: CellView.Selectors,
+    selectors: BaseView.Selectors,
   ) {
     const merge: Element[] = []
     const result: Dictionary<
@@ -1076,8 +1074,6 @@ export abstract class CellView<C extends Cell = Cell> extends BaseView {
 }
 
 export namespace CellView {
-  export type Selectors = { [selector: string]: Element | Element[] }
-
   export enum Flag {
     render = 'render',
     update = 'update',
@@ -1098,7 +1094,7 @@ export namespace CellView {
 
   export interface UpdateDOMSubtreeAttributesOptions {
     rootBBox?: Rectangle
-    selectors?: CellView.Selectors
+    selectors?: BaseView.Selectors
     scalableNode?: Element | null
     rotatableNode?: Element | null
     /**

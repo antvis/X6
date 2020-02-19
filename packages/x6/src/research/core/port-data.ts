@@ -20,19 +20,22 @@ export class PortData {
   }
 
   getGroup(groupName: string): PortData.Group {
-    return this.groups[groupName] || {}
+    return this.groups[groupName]
   }
 
-  getPortsByGroup(groupName: string): PortData.Port[] {
-    return this.ports.filter(port => port.group === groupName)
+  getPortsByGroup(groupName?: string): PortData.Port[] {
+    return this.ports.filter(
+      port =>
+        port.group === groupName || (port.group == null && port.group == null),
+    )
   }
 
-  getPortsLayoutByGroup(groupName: string, elemBBox: Rectangle) {
-    const group = this.getGroup(groupName)
+  getPortsLayoutByGroup(groupName: string | undefined, elemBBox: Rectangle) {
     const ports = this.getPortsByGroup(groupName)
+    const group = groupName ? this.getGroup(groupName) : null
 
-    const groupPosition = group.position
-    const groupPositionName = groupPosition.name
+    const groupPosition = group ? group.position : null
+    const groupPositionName = groupPosition ? groupPosition.name : null
 
     const layoutFn =
       (groupPositionName && (PortLayout as any)[groupPositionName]) ||
@@ -41,7 +44,7 @@ export class PortData {
     const portsArgs = ports.map(
       port => (port && port.position && port.position.args) || {},
     )
-    const groupArgs = groupPosition.args || {}
+    const groupArgs = (groupPosition && groupPosition.args) || {}
     const results: PortLayout.Result[] = layoutFn(
       portsArgs,
       elemBBox,
