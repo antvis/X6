@@ -1,7 +1,7 @@
 import { Node } from './node'
 import { View } from './view'
 import { CellView } from './cell-view'
-import { globals } from './globals'
+import { Globals } from './globals'
 import { v } from '../../v'
 import { ArrayExt } from '../../util'
 import { Attribute } from '../attr'
@@ -25,6 +25,7 @@ export class NodeView extends CellView<Node> {
       stroke: '#000000',
     },
   }
+
   protected portLabelMarkup: View.Markup = {
     tagName: 'text',
     selector: 'text',
@@ -77,7 +78,7 @@ export class NodeView extends CellView<Node> {
       if (this.hasFlag(sub, NodeView.Flag.update)) {
         this.update()
         sub = this.removeFlag(sub, NodeView.Flag.update)
-        if (globals.useCSSSelector) {
+        if (Globals.useCSSSelector) {
           // `update()` will render ports when useCSSSelectors are enabled
           sub = this.removeFlag(sub, NodeView.Flag.ports)
         }
@@ -111,7 +112,7 @@ export class NodeView extends CellView<Node> {
     this.cleanCache()
 
     // When CSS selector strings are used, make sure no rule matches port nodes.
-    if (globals.useCSSSelector) {
+    if (Globals.useCSSSelector) {
       this.removePorts()
     }
 
@@ -126,7 +127,7 @@ export class NodeView extends CellView<Node> {
       rotatableNode: this.rotatableNode,
     })
 
-    if (globals.useCSSSelector) {
+    if (Globals.useCSSSelector) {
       this.renderPorts()
     }
   }
@@ -184,7 +185,7 @@ export class NodeView extends CellView<Node> {
       this.updateTransform()
     }
 
-    if (!globals.useCSSSelector) {
+    if (!Globals.useCSSSelector) {
       // this._renderPorts()
     }
 

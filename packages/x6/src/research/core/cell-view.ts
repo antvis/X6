@@ -56,6 +56,9 @@ export abstract class CellView<C extends Cell = Cell> extends View {
   protected abstract configure(): CellView.Config
 
   protected ensureContainer() {
+    // className
+    // style
+    // attribute
     return View.createElement(this.tagName, this.isSvgElement)
   }
 
