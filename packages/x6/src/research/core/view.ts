@@ -1,6 +1,6 @@
 import jQuery from 'jquery'
 import { KeyValue } from '../../types'
-import { globals } from './globals'
+import { Globals } from './globals'
 import { Basecoat } from '../../entity'
 import { Attribute } from '../attr'
 import { v } from '../../v'
@@ -30,11 +30,16 @@ export abstract class View extends Basecoat {
     return this
   }
 
+  protected onUnmount() {}
+
   remove() {
-    this.cleanEventListeners(document)
+    this.onRemove()
+    this.removeEventListeners(document)
     this.unmount()
     return this
   }
+
+  protected onRemove() {}
 
   addClass(className: string | string[], elem: Element = this.container) {
     this.$(elem).addClass(
@@ -118,7 +123,7 @@ export abstract class View extends Basecoat {
       }
     }
 
-    if (globals.useCSSSelector) {
+    if (Globals.useCSSSelector) {
       return this.$(rootElem)
         .find(selector)
         .toArray() as Element[]
@@ -248,15 +253,23 @@ export abstract class View extends Basecoat {
     return this
   }
 
-  protected cleanEventListeners(elem: Element | Document | JQuery) {
+  protected removeEventListeners(elem: Element | Document | JQuery) {
     if (elem != null) {
       $(elem).off(this.getEventNamespace())
     }
     return this
   }
 
+  protected addDocumentEventListeners(events: View.Events, data?: KeyValue) {
+    this.addEventListeners(document, events, data)
+  }
+
+  protected removeDocumentEventListeners() {
+    this.removeEventListeners(document)
+  }
+
   protected getEventNamespace() {
-    return `.${globals.prefixCls}-event-${this.cid}`
+    return `.${Globals.prefixCls}-event-${this.cid}`
   }
 
   protected getEventHandler(handler: string | Function) {
