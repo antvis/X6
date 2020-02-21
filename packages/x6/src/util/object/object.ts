@@ -6,6 +6,7 @@ export {
   isEqual,
   cloneDeep,
   merge,
+  pick,
   defaultsDeep,
   forIn,
   extend,
