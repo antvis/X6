@@ -2,7 +2,7 @@ import jQuery from 'jquery'
 import { KeyValue } from '../../types'
 import { Globals } from './globals'
 import { Basecoat } from '../../entity'
-import { Attribute } from '../attr'
+import { Attr } from '../attr'
 import { v } from '../../v'
 
 export abstract class View extends Basecoat {
@@ -63,10 +63,7 @@ export abstract class View extends Basecoat {
     return this
   }
 
-  setAttributes(
-    attrs?: Attribute.SimpleAttributes | null,
-    elem: Element = this.container,
-  ) {
+  setAttrs(attrs?: Attr.SimpleAttrs | null, elem: Element = this.container) {
     if (attrs != null && elem != null) {
       if (elem instanceof SVGElement) {
         v.attr(elem, attrs)
@@ -85,7 +82,7 @@ export abstract class View extends Basecoat {
    * node. If the recursion reaches CellView's root node and attribute
    * is not found even there, return `null`.
    */
-  findAttribute(attrName: string, elem: Element) {
+  findAttr(attrName: string, elem: Element) {
     let current = elem
     while (current && current.nodeType === 1) {
       const value = current.getAttribute(attrName)
@@ -141,10 +138,10 @@ export abstract class View extends Basecoat {
     return nodes.length > 0 ? nodes[0] : null
   }
 
-  findByAttribute(attribute: string, elem: Element = this.container) {
+  findByAttr(attrName: string, elem: Element = this.container) {
     let node = elem
     do {
-      const val = node.getAttribute(attribute)
+      const val = node.getAttribute(attrName)
       if ((val != null || node === this.container) && val !== 'false') {
         return node
       }
@@ -398,7 +395,7 @@ export namespace View {
      */
     groupSelector?: string | string[]
 
-    attrs?: Attribute.SimpleAttributes
+    attrs?: Attr.SimpleAttrs
 
     style?: JQuery.PlainObject<string | number>
 
@@ -430,16 +427,17 @@ export namespace View {
     },
   ) {
     const fragment = document.createDocumentFragment()
-    const selectors: Selectors = {}
     const groups: { [selector: string]: Element[] } = {}
+    const selectors: Selectors = {}
+
     const queue: {
       markup: JSONMarkup[]
-      parentNode: Element | DocumentFragment
+      parent: Element | DocumentFragment
       ns?: string
     }[] = [
       {
         markup: Array.isArray(markup) ? markup : [markup],
-        parentNode: fragment,
+        parent: fragment,
         ns: options.ns,
       },
     ]
@@ -448,7 +446,7 @@ export namespace View {
       const item = queue.pop()!
       let ns = item.ns || v.ns.svg
       const defines = item.markup
-      const parentNode = item.parentNode
+      const parentNode = item.parent
 
       defines.forEach(define => {
         // tagName
@@ -538,7 +536,7 @@ export namespace View {
         // children
         const children = define.children
         if (Array.isArray(children)) {
-          queue.push({ ns, markup: children, parentNode: node })
+          queue.push({ ns, markup: children, parent: node })
         }
       })
     }
@@ -556,7 +554,12 @@ export namespace View {
       : v.createElement('div')
   }
 
-  export function renderMarkup(markup: Markup) {
+  export function renderMarkup(
+    markup: Markup,
+  ): {
+    elem?: Element
+    selectors?: Selectors
+  } {
     if (typeof markup === 'string') {
       const nodes = v.batch(markup)
       const count = nodes.length

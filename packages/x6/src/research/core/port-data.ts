@@ -1,5 +1,5 @@
 import { Size } from '../../types'
-import { Attribute } from '../attr'
+import { Attr } from '../attr'
 import { JSONObject, JSONExt } from '../../util'
 import { Point, Rectangle } from '../../geometry'
 import { PortLayout } from './port-layout'
@@ -263,7 +263,7 @@ export namespace PortData {
 
   interface Common {
     markup: string
-    attrs: Attribute.CellAttributes
+    attrs: Attr.CellAttrs
     zIndex: number | 'auto'
     size?: Size
   }
@@ -297,7 +297,7 @@ export namespace PortData {
 
   export interface LayoutResult {
     portId: string
-    portAttrs?: Attribute.CellAttributes
+    portAttrs?: Attr.CellAttrs
     portSize?: Size
     portLayout: PortLayout.Result
     portLabelLayout: PortLabelLayout.Result | null

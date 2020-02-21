@@ -1,9 +1,9 @@
-import { Attribute } from '../attr'
+import { Attr } from '../attr'
 import { Size } from '../../types'
 
 export interface RegisterNodeOptions {
   size?: Size
-  attrs?: Attribute.CellAttributes
+  attrs?: Attr.CellAttrs
   markup?: string
   init?: () => void
 }

@@ -6,7 +6,7 @@ import { Rectangle } from '../../geometry'
 import { Store } from './store'
 import { Model } from './model'
 import { Node } from './node'
-import { Attribute } from '../attr'
+import { Attr } from '../attr'
 import { KeyValue } from '../../types'
 
 export class Cell extends Basecoat {
@@ -121,23 +121,23 @@ export class Cell extends Basecoat {
   // #region attrs
 
   get attrs() {
-    const result = this.store.get<Attribute.CellAttributes>('attrs')
+    const result = this.store.get<Attr.CellAttrs>('attrs')
     return result ? JSONExt.deepCopy(result) : {}
   }
 
-  set attrs(value: Attribute.CellAttributes) {
+  set attrs(value: Attr.CellAttrs) {
     this.setAttrs(value)
   }
 
-  setAttrs(attrs: Attribute.CellAttributes, options: Cell.SetOptions = {}) {
+  setAttrs(attrs: Attr.CellAttrs, options: Cell.SetOptions = {}) {
     this.store.set('attrs', attrs, options)
   }
 
   getAttributeDefinition(attrName: string) {
-    return Attribute.definitions[attrName] || null
+    return Attr.definitions[attrName] || null
   }
 
-  getAttrByPath(): Attribute.CellAttributes
+  getAttrByPath(): Attr.CellAttrs
   getAttrByPath<T>(path: string | string[]): T
   getAttrByPath<T>(path?: string | string[]) {
     if (path == null || path === '') {
@@ -148,7 +148,7 @@ export class Cell extends Basecoat {
 
   setAttrByPath(
     path: string | string[],
-    value: Attribute.ComplexAttributeValue,
+    value: Attr.ComplexAttrValue,
     options: Cell.SetOptions = {},
   ) {
     this.setPropByPath(this.prependAttrsPath(path), value, options)
@@ -449,22 +449,6 @@ export class Cell extends Basecoat {
 
   getBBox(options: { deep?: boolean } = {}) {
     return new Rectangle(0, 0, 0, 0)
-  }
-
-  getChangeFlag(flags: { [attr: string]: number }) {
-    let flag = 0
-
-    if (!flags) {
-      return flag
-    }
-
-    Object.keys(flags).forEach(attr => {
-      if (this.store.hasChanged(attr)) {
-        flag |= flags[attr]
-      }
-    })
-
-    return flag
   }
 
   protected startBatch(name: string, data: KeyValue = {}) {

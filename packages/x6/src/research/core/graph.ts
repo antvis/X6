@@ -343,7 +343,7 @@ export class Graph extends View {
   // onCellRemoved(cell, _, opt) {
   //   const view = this.findViewByModel(cell)
   //   if (view) {
-  //     this.requestViewUpdate(view, FLAG_REMOVE, view.UPDATE_PRIORITY, opt)
+  //     this.requestViewUpdate(view, FLAG_REMOVE, view.updatePriority, opt)
   //   }
   // }
 
@@ -352,7 +352,7 @@ export class Graph extends View {
   //   if (cell.hasChanged('z') && this.options.sorting === sortingTypes.APPROX) {
   //     const view = this.findViewByModel(cell)
   //     if (view) {
-  //       this.requestViewUpdate(view, FLAG_INSERT, view.UPDATE_PRIORITY, opt)
+  //       this.requestViewUpdate(view, FLAG_INSERT, view.updatePriority, opt)
   //     }
   //   }
   // }
@@ -441,7 +441,7 @@ export class Graph extends View {
     //     this.scheduleViewUpdate(
     //       linkView,
     //       linkView.getFlag(flagLabels),
-    //       linkView.UPDATE_PRIORITY,
+    //       linkView.updatePriority,
     //       opt,
     //     )
     //   }
@@ -574,7 +574,7 @@ export class Graph extends View {
 
     const cid = view.cid
     const updates = this.updates
-    const priorityUpdates = updates.priorities[view.UPDATE_PRIORITY]
+    const priorityUpdates = updates.priorities[view.priority]
     const flag = this.registerMountedView(view) | priorityUpdates[cid]
     delete priorityUpdates[cid]
     return flag
@@ -874,7 +874,7 @@ export class Graph extends View {
       mountCount += 1
       const flag = this.registerMountedView(view)
       if (flag) {
-        this.scheduleViewUpdate(view, flag, view.UPDATE_PRIORITY, {
+        this.scheduleViewUpdate(view, flag, view.priority, {
           mounting: true,
         })
       }
@@ -1093,9 +1093,9 @@ export class Graph extends View {
     } else {
       view = views[cell.id] = this.createViewForModel(cell)
       view.paper = this
-      flag = this.registerUnmountedView(view) | view.getFlag(view.initFlag)
+      flag = this.registerUnmountedView(view) | view.getBootstrapFlag()
     }
-    this.requestViewUpdate(view, flag, view.UPDATE_PRIORITY, options)
+    this.requestViewUpdate(view, flag, view.updatePriority, options)
     return view
   }
 

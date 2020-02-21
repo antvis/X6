@@ -16,6 +16,10 @@ export class Node extends Cell {
     super(options)
   }
 
+  init() {
+    this.initPorts()
+  }
+
   isNode() {
     return true
   }
@@ -552,7 +556,7 @@ export class Node extends Cell {
     return this
   }
 
-  protected initializePorts() {
+  protected initPorts() {
     this.createPortData()
     this.on('change:ports', () => {
       this.processRemovedPort()
