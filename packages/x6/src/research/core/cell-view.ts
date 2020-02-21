@@ -1,73 +1,181 @@
+import { Nullable, KeyValue } from '../../types'
 import { Dictionary } from '../../struct'
 import { v } from '../../v'
 import { View } from './view'
 import { Cell } from './cell'
-import { Attribute } from '../attr'
-import { StringExt, ArrayExt, ObjectExt, JSONObject } from '../../util'
-import { Point, Line, Rectangle, Ellipse, Polyline, Path } from '../../geometry'
+// import { Graph } from './graph'
+import { Attr } from '../attr'
+import { ArrayExt, JSONObject } from '../../util'
+import { Line, Rectangle, Ellipse, Polyline, Path } from '../../geometry'
+import { CellViewFlag } from './cell-view-flag'
+import { CellViewAttr } from './cell-view-attr'
+import { CellViewCache } from './cell-view-cache'
 
 export abstract class CellView<C extends Cell = Cell> extends View {
-  protected readonly tagName: string
-  protected readonly isSvgElement: boolean
-  protected readonly rootSelector: string
-  public readonly UPDATE_PRIORITY: number
-  public readonly initFlag: string | string[]
-  public readonly presentationAttributes: CellView.PresentationAttributes
-  protected readonly events: View.Events | null
-  protected readonly documentEvents: View.Events | null
+  protected static defaults: CellView.Options = {
+    isSvgElement: true,
+    rootSelector: 'root',
+    priority: 0,
+    bootstrap: [],
+    actions: {},
+    events: null,
+    documentEvents: null,
+  }
+
+  static getDefaults(): CellView.Options {
+    return this.defaults as CellView.Options
+  }
+
+  static setDefaults(options: Partial<CellView.Options>) {
+    this.defaults = this.getOptions(options)
+  }
+
+  static getOptions(options: Partial<CellView.Options>): CellView.Options {
+    const defaults = { ...this.getDefaults() }
+    if (options.isSvgElement != null) {
+      defaults.isSvgElement = options.isSvgElement
+    }
+
+    if (options.rootSelector != null) {
+      defaults.rootSelector = options.rootSelector
+    }
+
+    if (options.priority != null) {
+      defaults.priority = options.priority
+    }
+
+    if (options.bootstrap != null) {
+      defaults.bootstrap = ArrayExt.uniq([
+        ...(Array.isArray(defaults.bootstrap)
+          ? defaults.bootstrap
+          : [defaults.bootstrap]),
+        ...(Array.isArray(options.bootstrap)
+          ? options.bootstrap
+          : [options.bootstrap]),
+      ])
+    }
+
+    defaults.actions = {
+      ...defaults.actions,
+      ...options.actions,
+    }
+
+    if (options.events) {
+      defaults.events = {
+        ...defaults.events,
+        ...options.events,
+      }
+    }
+
+    if (options.documentEvents) {
+      defaults.documentEvents = {
+        ...defaults.documentEvents,
+        ...options.documentEvents,
+      }
+    }
+
+    return defaults
+  }
+
+  public graph: any
+  public cell: C
+  protected selectors: View.Selectors
+  protected readonly options: CellView.Options
+  protected readonly attrManager: CellViewAttr
+  protected readonly flagManager: CellViewFlag
+  protected readonly cacheManager: CellViewCache
   protected cache: Dictionary<Element, CellView.CacheItem>
 
-  protected selectors: View.Selectors
-
-  public cell: C
-  public graph: any
   public scalableNode: Element | null
   public rotatableNode: Element | null
 
-  protected flags: { [label: string]: number }
-  protected _presentationAttributes: { [name: string]: number } // tslint:disable-line
-  protected options: any
-
-  constructor(cell: C) {
+  constructor(cell: C, options: Partial<CellView.Options> = {}) {
     super()
 
     this.cell = cell
-
-    const config = this.configure()
-    this.tagName = config.tagName || 'g'
-    this.isSvgElement = config.isSvgElement !== false
-    this.rootSelector = config.rootSelector || 'root'
-    this.UPDATE_PRIORITY =
-      config.UPDATE_PRIORITY != null ? config.UPDATE_PRIORITY : 2
-    this.initFlag = config.initFlag || []
-    this.presentationAttributes = config.presentationAttributes || {}
-    this.events = config.events || null
-    this.documentEvents = config.documentEvents || null
+    this.options = this.ensureOptions(options)
+    this.attrManager = new CellViewAttr(this)
+    this.flagManager = new CellViewFlag(
+      this,
+      this.options.actions,
+      this.options.bootstrap,
+    )
+    this.cacheManager = new CellViewCache(this)
 
     this.setContainer(this.ensureContainer())
-    this.initFlags()
-    this.cleanCache()
     this.startListening()
     this.$(this.container).data('view', this)
 
     CellView.views[this.cid] = this
   }
 
-  protected abstract configure(): CellView.Config
+  public get priority() {
+    return this.options.priority
+  }
+
+  protected get rootSelector() {
+    return this.options.rootSelector
+  }
+
+  protected ensureOptions(options: Partial<CellView.Options>) {
+    return this.getConstructor().getOptions(options)
+  }
+
+  protected getConstructor<T extends typeof CellView>() {
+    return (this.constructor as any) as T
+  }
+
+  protected getContainerTagName(): string {
+    return this.options.isSvgElement ? 'g' : 'div'
+  }
+
+  protected getContainerStyle(): Nullable<
+    JQuery.PlainObject<string | number>
+  > {}
+
+  protected getContainerAttrs(): Nullable<Attr.SimpleAttrs> {}
+
+  attributes() {
+    const cell = this.cell
+    return {
+      'model-id': cell.id,
+      'data-type': cell.attrs!.type,
+    }
+  }
+
+  protected getContainerClassName(): Nullable<string | string[]> {}
 
   protected ensureContainer() {
-    // className
-    // style
-    // attribute
-    return View.createElement(this.tagName, this.isSvgElement)
+    return View.createElement(
+      this.getContainerTagName(),
+      this.options.isSvgElement,
+    )
   }
 
   protected setContainer(container: Element) {
-    this.undelegateEvents()
-    this.container = container
-    if (this.events != null) {
-      this.delegateEvents(this.events)
+    if (this.container !== container) {
+      this.undelegateEvents()
+      this.container = container
+      if (this.options.events != null) {
+        this.delegateEvents(this.options.events)
+      }
+
+      const attrs = this.getContainerAttrs()
+      if (attrs != null) {
+        this.setAttrs(attrs, container)
+      }
+
+      const style = this.getContainerStyle()
+      if (style != null) {
+        this.setStyle(style, container)
+      }
+
+      const className = this.getContainerClassName()
+      if (className != null) {
+        this.addClass(className, container)
+      }
     }
+
     return this
   }
 
@@ -97,90 +205,55 @@ export abstract class CellView<C extends Cell = Cell> extends View {
     return 0
   }
 
-  initFlags() {
-    const flags: { [key: string]: number } = {}
-    const attrs: { [key: string]: number } = {}
+  getFlag(actions: CellViewFlag.Actions) {
+    return this.flagManager.getFlag(actions)
+  }
 
-    let shift = 0
-    Object.keys(this.presentationAttributes).forEach(name => {
-      let labels = this.presentationAttributes[name]
-      if (!Array.isArray(labels)) {
-        labels = [labels]
-      }
+  getBootstrapFlag() {
+    return this.flagManager.getBootstrapFlag()
+  }
 
-      labels.forEach(label => {
-        let flag = flags[label]
-        if (!flag) {
-          shift += 1
-          flag = flags[label] = 1 << shift
+  hasAction(flag: number, actions: CellViewFlag.Actions) {
+    return this.flagManager.hasFlag(flag, actions)
+  }
+
+  removeAction(flag: number, actions: CellViewFlag.Actions) {
+    return this.flagManager.removeFlag(flag, actions)
+  }
+
+  handleAction(
+    flag: number,
+    action: CellViewFlag.Action,
+    handle: () => void,
+    additionalRemovedActions?: CellViewFlag.Actions | null,
+  ) {
+    if (this.hasAction(flag, action)) {
+      handle()
+      const removedFlags = [action]
+      if (additionalRemovedActions) {
+        if (typeof additionalRemovedActions === 'string') {
+          removedFlags.push(additionalRemovedActions)
+        } else {
+          removedFlags.push(...additionalRemovedActions)
         }
-        attrs[name] |= flag
-      })
-    })
-
-    let initFlag = this.initFlag
-    if (!Array.isArray(initFlag)) {
-      initFlag = [initFlag]
-    }
-
-    initFlag.forEach(label => {
-      if (!flags[label]) {
-        shift += 1
-        flags[label] = 1 << shift
       }
-    })
-
-    // 26 - 30 are reserved for paper flags
-    // 31+ overflows maximal number
-    if (shift > 25) {
-      throw new Error('Maximum number of flags exceeded.')
+      return this.removeAction(flag, removedFlags)
     }
-
-    this.flags = flags
-    this._presentationAttributes = attrs
+    return flag
   }
 
-  hasFlag(flag: number, label: string | string[]) {
-    return flag & this.getFlag(label)
+  protected startListening() {
+    this.cell.on('change', this.onAttrsChange, this)
   }
 
-  removeFlag(flag: number, label: string | string[]) {
-    return flag ^ (flag & this.getFlag(label))
-  }
-
-  getFlag(label: string | string[]) {
-    const flags = this.flags
-    if (flags == null) {
-      return 0
-    }
-
-    if (Array.isArray(label)) {
-      return label.reduce((memo, key) => memo | flags[key], 0)
-    }
-
-    return flags[label] | 0
-  }
-
-  attributes() {
-    const cell = this.cell
-    return {
-      'model-id': cell.id,
-      'data-type': cell.attrs!.type,
-    }
-  }
-
-  startListening() {
-    this.cell.on('change', this.onAttributesChange, this)
-  }
-
-  onAttributesChange(cell: C, options: any) {
-    let flag = cell.getChangeFlag(this._presentationAttributes)
+  protected onAttrsChange(cell: C, options: any) {
+    let flag = this.flagManager.getChangeFlag()
     if (options.updated || !flag) {
       return
     }
 
-    if (options.dirty && this.hasFlag(flag, CellView.Flag.update)) {
-      flag |= this.getFlag(CellView.Flag.render)
+    if (options.dirty && this.hasAction(flag, 'update')) {
+      flag |= this.getFlag('render')
     }
 
     // TODO: tool changes does not need to be sync
@@ -190,7 +263,7 @@ export abstract class CellView<C extends Cell = Cell> extends View {
     }
 
     if (this.graph != null) {
-      this.graph.requestViewUpdate(this, flag, this.UPDATE_PRIORITY, options)
+      this.graph.requestViewUpdate(this, flag, this.priority, options)
     }
   }
 
@@ -199,9 +272,9 @@ export abstract class CellView<C extends Cell = Cell> extends View {
     rootElem?: Element,
   ) {
     const result = View.parseJSONMarkup(markup)
-    if (rootElem && this.rootSelector) {
-      const selectors = result.selectors
-      const rootSelector = this.rootSelector
+    const selectors = result.selectors
+    const rootSelector = this.options.rootSelector
+    if (rootElem && rootSelector) {
       if (selectors[rootSelector]) {
         throw new Error('Invalid root selector')
       }
@@ -211,7 +284,7 @@ export abstract class CellView<C extends Cell = Cell> extends View {
   }
 
   can(feature: string): boolean {
-    let interactive = this.options.interactive
+    let interactive = (this.options as any).interactive
     interactive =
       typeof interactive === 'function' ? interactive(this) : interactive
 
@@ -229,58 +302,33 @@ export abstract class CellView<C extends Cell = Cell> extends View {
   }
 
   setInteractivity(value: any) {
-    this.options.interactive = value
+    (this.options as any).interactive = value
   }
 
   notify(eventName: string, ...args: any[]) {}
 
-  protected cleanCache() {
-    if (this.cache) {
-      this.cache.dispose()
-    }
-    this.cache = new Dictionary()
+  cleanCache() {
+    this.cacheManager.clean()
   }
 
-  protected getCache(elem: Element) {
-    const cache = this.cache
-    if (!cache.has(elem)) {
-      this.cache.set(elem, {})
-    }
-    return this.cache.get(elem)!
+  getCache(elem: Element) {
+    return this.cacheManager.get(elem)
   }
 
   getNodeData(elem: Element) {
-    const meta = this.getCache(elem)
-    if (!meta.data) {
-      meta.data = {}
-    }
-    return meta.data
+    return this.cacheManager.getData(elem)
   }
 
   getNodeBoundingRect(elem: Element) {
-    const meta = this.getCache(elem)
-    if (meta.boundingRect == null) {
-      meta.boundingRect = v.getBBox(elem as SVGElement)
-    }
-    return meta.boundingRect.clone()
+    return this.cacheManager.getBoundingRect(elem)
   }
 
   getNodeMatrix(elem: Element) {
-    const meta = this.getCache(elem)
-    if (meta.matrix == null) {
-      const target = this.rotatableNode || this.container
-      meta.matrix = v.getTransformToElement(elem as any, target as SVGElement)
-    }
-
-    return v.createSVGMatrix(meta.matrix)
+    return this.cacheManager.getMatrix(elem)
   }
 
   getNodeShape(elem: SVGElement) {
-    const meta = this.getCache(elem)
-    if (meta.shape == null) {
-      meta.shape = v.toGeometryShape(elem)
-    }
-    return meta.shape.clone()
+    return this.cacheManager.getShape(elem)
   }
 
   getNodeScale(node: Element, scalableNode?: SVGElement) {
@@ -355,333 +403,13 @@ export abstract class CellView<C extends Cell = Cell> extends View {
     // This is especially useful to set on cells that have 'ports'.
     // In this case, only the ports have set `magnet === true` and the
     // overall element has `magnet === false`.
-
-    return this.findByAttribute('magnet')
+    return this.findByAttr('magnet', elem)
   }
 
-  protected getAttributeDefinition(
-    attrName: string,
-  ): Attribute.Definition | null {
-    return this.cell.getAttributeDefinition(attrName)
-  }
-
-  protected processNodeAttributes(
-    node: Element,
-    raw: Attribute.ComplexAttributes,
-  ): CellView.ProcessedAttributes {
-    let normal: Attribute.SimpleAttributes | undefined
-    let set: Attribute.ComplexAttributes | undefined
-    let offset: Attribute.ComplexAttributes | undefined
-    let position: Attribute.ComplexAttributes | undefined
-
-    const specials: { name: string; definition: Attribute.Definition }[] = []
-
-    // divide the attributes between normal and special
-    Object.keys(raw).forEach(name => {
-      const val = raw[name]
-      const definition = this.getAttributeDefinition(name)
-      const isValid = Attribute.isValidDefinition(definition, val, {
-        node,
-        attrs: raw,
-        view: this,
-      })
-
-      if (definition && isValid) {
-        if (typeof definition === 'string') {
-          if (normal == null) {
-            normal = {}
-          }
-          normal[definition] = val as Attribute.SimpleAttributeValue
-        } else if (val !== null) {
-          specials.push({ name, definition })
-        }
-      } else {
-        if (normal == null) {
-          normal = {}
-        }
-        normal[
-          StringExt.kebabCase(name)
-        ] = val as Attribute.SimpleAttributeValue
-      }
-    })
-
-    specials.forEach(({ name, definition }) => {
-      const val = raw[name]
-
-      const setDefine = definition as Attribute.SetDefinition
-      if (typeof setDefine.set === 'function') {
-        if (set == null) {
-          set = {}
-        }
-        set[name] = val
-      }
-
-      const offsetDefine = definition as Attribute.OffsetDefinition
-      if (typeof offsetDefine.offset === 'function') {
-        if (offset == null) {
-          offset = {}
-        }
-        offset[name] = val
-      }
-
-      const positionDefine = definition as Attribute.PositionDefinition
-      if (typeof positionDefine.position === 'function') {
-        if (position == null) {
-          position = {}
-        }
-        position[name] = val
-      }
-    })
-
-    return {
-      raw,
-      normal,
-      set,
-      offset,
-      position,
-    }
-  }
-
-  protected mergeProcessedAttributes(
-    allProcessedAttrs: CellView.ProcessedAttributes,
-    roProcessedAttrs: CellView.ProcessedAttributes,
-  ) {
-    allProcessedAttrs.set = {
-      ...allProcessedAttrs.set,
-      ...roProcessedAttrs.set,
-    }
-
-    allProcessedAttrs.position = {
-      ...allProcessedAttrs.position,
-      ...roProcessedAttrs.position,
-    }
-
-    allProcessedAttrs.offset = {
-      ...allProcessedAttrs.offset,
-      ...roProcessedAttrs.offset,
-    }
-
-    // Handle also the special transform property.
-    const transform =
-      allProcessedAttrs.normal && allProcessedAttrs.normal.transform
-    if (transform != null && roProcessedAttrs.normal) {
-      roProcessedAttrs.normal.transform = transform
-    }
-    allProcessedAttrs.normal = roProcessedAttrs.normal
-  }
-
-  protected findNodesAttributes(
-    cellAttrs: Attribute.CellAttributes,
+  updateAttrs(
     rootNode: Element,
-    selectorCache: { [selector: string]: Element[] },
-    selectors: View.Selectors,
-  ) {
-    const merge: Element[] = []
-    const result: Dictionary<
-      Element,
-      {
-        node: Element
-        array: boolean
-        length: number | number[]
-        attrs: Attribute.ComplexAttributes | Attribute.ComplexAttributes[]
-      }
-    > = new Dictionary()
-
-    Object.keys(cellAttrs).forEach(selector => {
-      const attrs = cellAttrs[selector]
-      if (!ObjectExt.isPlainObject(attrs)) {
-        return
-      }
-
-      selectorCache[selector] = this.find(selector, rootNode, selectors)
-
-      const nodes = selectorCache[selector]
-      for (let i = 0, l = nodes.length; i < l; i += 1) {
-        const node = nodes[i]
-        const unique = selectors && selectors[selector] === node
-        const prev = result.get(node)
-        if (prev) {
-          if (!prev.array) {
-            merge.push(node)
-            prev.array = true
-            prev.attrs = [prev.attrs as Attribute.ComplexAttributes]
-            prev.length = [prev.length as number]
-          }
-
-          const attributes = prev.attrs as Attribute.ComplexAttributes[]
-          const selectedLength = prev.length as number[]
-          if (unique) {
-            // node referenced by `selector`
-            attributes.unshift(attrs)
-            selectedLength.unshift(-1)
-          } else {
-            // node referenced by `groupSelector`
-            const sortIndex = ArrayExt.sortedIndex(selectedLength, l)
-            attributes.splice(sortIndex, 0, attrs)
-            selectedLength.splice(sortIndex, 0, l)
-          }
-        } else {
-          result.set(node, {
-            node,
-            attrs,
-            length: unique ? -1 : l,
-            array: false,
-          })
-        }
-      }
-    })
-
-    merge.forEach(node => {
-      const item = result.get(node)!
-      const arr = item.attrs as Attribute.ComplexAttributes[]
-      item.attrs = arr.reduceRight(
-        (memo, attrs) => ({
-          ...memo,
-          ...attrs,
-        }),
-        {},
-      )
-    })
-
-    return result as Dictionary<
-      Element,
-      {
-        node: Element
-        array: boolean
-        length: number | number[]
-        attrs: Attribute.ComplexAttributes
-      }
-    >
-  }
-
-  protected updateRelativeAttributes(
-    node: Element,
-    processedAttrs: CellView.ProcessedAttributes,
-    refBBox: Rectangle,
-    options: CellView.UpdateDOMSubtreeAttributesOptions = {},
-  ) {
-    const rawAttrs = processedAttrs.raw || {}
-    let nodeAttrs = processedAttrs.normal || {}
-    const setAttrs = processedAttrs.set
-    const positionAttrs = processedAttrs.position
-    const offsetAttrs = processedAttrs.offset
-    const getOptions = () => ({
-      node,
-      view: this,
-      attrs: rawAttrs,
-      refBBox: refBBox.clone(),
-    })
-
-    if (setAttrs != null) {
-      Object.keys(setAttrs).forEach(name => {
-        const val = setAttrs[name]
-        const def = this.getAttributeDefinition(name)
-        if (def != null) {
-          const ret = (def as Attribute.SetDefinition).set(val, getOptions())
-          if (typeof ret === 'object') {
-            nodeAttrs = {
-              ...nodeAttrs,
-              ...ret,
-            }
-          } else if (ret != null) {
-            nodeAttrs[name] = ret
-          }
-        }
-      })
-    }
-
-    if (node instanceof HTMLElement) {
-      // TODO: setting the `transform` attribute on HTMLElements
-      // via `node.style.transform = 'matrix(...)';` would introduce
-      // a breaking change (e.g. basic.TextBlock).
-      this.setAttributes(nodeAttrs, node)
-      return
-    }
-
-    // The final translation of the subelement.
-    const nodeTransform = nodeAttrs.transform
-    const transform = nodeTransform ? `${nodeTransform}` : null
-    const nodeMatrix = v.transformStringToMatrix(transform)
-    const nodePosition = new Point(nodeMatrix.e, nodeMatrix.f)
-    if (nodeTransform) {
-      delete nodeAttrs.transform
-      nodeMatrix.e = 0
-      nodeMatrix.f = 0
-    }
-
-    // Calculates node scale determined by the scalable group.
-    let sx = 1
-    let sy = 1
-    if (positionAttrs || offsetAttrs) {
-      const scale = this.getNodeScale(node, options.scalableNode as SVGElement)
-      sx = scale.sx
-      sy = scale.sy
-    }
-
-    let positioned = false
-    if (positionAttrs != null) {
-      Object.keys(positionAttrs).forEach(name => {
-        const val = positionAttrs[name]
-        const def = this.getAttributeDefinition(name)
-        if (def != null) {
-          const ts = (def as Attribute.PositionDefinition).position(
-            val,
-            getOptions(),
-          )
-
-          if (ts != null) {
-            positioned = true
-            nodePosition.translate(Point.create(ts).scale(sx, sy))
-          }
-        }
-      })
-    }
-
-    // The node bounding box could depend on the `size`
-    // set from the previous loop.
-    this.setAttributes(nodeAttrs, node)
-
-    let offseted = false
-    if (offsetAttrs != null) {
-      // Check if the node is visible
-      const nodeBoundingRect = this.getNodeBoundingRect(node)
-      if (nodeBoundingRect.width > 0 && nodeBoundingRect.height > 0) {
-        const nodeBBox = v
-          .transformRect(nodeBoundingRect, nodeMatrix)
-          .scale(1 / sx, 1 / sy)
-
-        Object.keys(offsetAttrs).forEach(name => {
-          const val = offsetAttrs[name]
-          const def = this.getAttributeDefinition(name)
-          if (def != null) {
-            const ts = (def as Attribute.OffsetDefinition).offset(val, {
-              node,
-              view: this,
-              attrs: rawAttrs,
-              refBBox: nodeBBox,
-            })
-
-            if (ts != null) {
-              offseted = true
-              nodePosition.translate(Point.create(ts).scale(sx, sy))
-            }
-          }
-        })
-      }
-    }
-
-    if (nodeTransform != null || positioned || offseted) {
-      nodePosition.round(1)
-      nodeMatrix.e = nodePosition.x
-      nodeMatrix.f = nodePosition.y
-      node.setAttribute('transform', v.matrixToTransformString(nodeMatrix))
-    }
-  }
-
-  protected updateDOMSubtreeAttributes(
-    rootNode: Element,
-    attrs: Attribute.CellAttributes,
-    options: CellView.UpdateDOMSubtreeAttributesOptions = {},
+    attrs: Attr.CellAttrs,
+    options: CellView.UpdateAttrsOptions = {},
   ) {
     if (options.rootBBox == null) {
       options.rootBBox = new Rectangle()
@@ -691,142 +419,11 @@ export abstract class CellView<C extends Cell = Cell> extends View {
       options.selectors = this.selectors
     }
 
-    const selectorCache: { [selector: string]: Element[] } = {}
-    const nodesAttrs = this.findNodesAttributes(
-      options.attrs || attrs,
+    this.attrManager.updateAttrs(
       rootNode,
-      selectorCache,
-      options.selectors,
+      attrs,
+      options as CellViewAttr.UpdateAttrsOptions,
     )
-
-    // `nodesAttrs` are different from all attributes, when
-    // rendering only attributes sent to this method.
-    const nodesAllAttrs = options.attrs
-      ? this.findNodesAttributes(
-          attrs,
-          rootNode,
-          selectorCache,
-          options.selectors,
-        )
-      : nodesAttrs
-
-    const specialItems: {
-      node: Element
-      refNode: Element | null
-      attributes: Attribute.ComplexAttributes | null
-      processedAttributes: CellView.ProcessedAttributes
-    }[] = []
-
-    nodesAttrs.each(data => {
-      const node = data.node
-      const nodeAttrs = data.attrs
-      const processed = this.processNodeAttributes(node, nodeAttrs)
-      if (
-        processed.set == null &&
-        processed.position == null &&
-        processed.offset == null
-      ) {
-        this.setAttributes(processed.normal, node)
-      } else {
-        const data = nodesAllAttrs.get(node)
-        const nodeAllAttrs = data ? data.attrs : null
-        const refSelector =
-          nodeAllAttrs && nodeAttrs.ref == null
-            ? nodeAllAttrs.ref
-            : nodeAttrs.ref
-
-        let refNode: Element | null
-        if (refSelector) {
-          refNode = (selectorCache[refSelector as string] ||
-            this.find(refSelector as string, rootNode, options.selectors))[0]
-          if (!refNode) {
-            throw new Error(`"${refSelector}" reference does not exist.`)
-          }
-        } else {
-          refNode = null
-        }
-
-        const item = {
-          node,
-          refNode,
-          attributes: nodeAllAttrs,
-          processedAttributes: processed,
-        }
-
-        // If an element in the list is positioned relative to this one, then
-        // we want to insert this one before it in the list.
-        const index = specialItems.findIndex(item => item.refNode === node)
-        if (index > -1) {
-          specialItems.splice(index, 0, item)
-        } else {
-          specialItems.push(item)
-        }
-      }
-    })
-
-    const bboxCache: Dictionary<Element, Rectangle> = new Dictionary()
-    let rotatableMatrix: DOMMatrix
-    specialItems.forEach(item => {
-      const node = item.node
-      const refNode = item.refNode
-
-      let unrotatedRefBBox: Rectangle | undefined
-      const isRefNodeRotatable =
-        refNode != null &&
-        options.rotatableNode != null &&
-        v.contains(options.rotatableNode, refNode)
-
-      // Find the reference element bounding box. If no reference was
-      // provided, we use the optional bounding box.
-      if (refNode) {
-        unrotatedRefBBox = bboxCache.get(refNode)
-      }
-
-      if (!unrotatedRefBBox) {
-        const target = (isRefNodeRotatable
-          ? options.rotatableNode!
-          : rootNode) as SVGElement
-
-        unrotatedRefBBox = refNode
-          ? v.getBBox(refNode as SVGElement, { target })
-          : options.rootBBox
-
-        if (refNode) {
-          bboxCache.set(refNode, unrotatedRefBBox!)
-        }
-      }
-
-      let processedAttrs
-      if (options.attrs && item.attributes) {
-        // If there was a special attribute affecting the position amongst
-        // passed-in attributes we have to merge it with the rest of the
-        // element's attributes as they are necessary to update the position
-        // relatively (i.e `ref-x` && 'ref-dx').
-        processedAttrs = this.processNodeAttributes(node, item.attributes)
-        this.mergeProcessedAttributes(processedAttrs, item.processedAttributes)
-      } else {
-        processedAttrs = item.processedAttributes
-      }
-
-      let refBBox = unrotatedRefBBox!
-      if (
-        isRefNodeRotatable &&
-        options.rotatableNode != null &&
-        !options.rotatableNode.contains(node)
-      ) {
-        // If the referenced node is inside the rotatable group while the
-        // updated node is outside, we need to take the rotatable node
-        // transformation into account.
-        if (!rotatableMatrix) {
-          rotatableMatrix = v.transformStringToMatrix(
-            v.attr(options.rotatableNode, 'transform'),
-          )
-        }
-        refBBox = v.transformRect(unrotatedRefBBox!, rotatableMatrix)
-      }
-
-      this.updateRelativeAttributes(node, processedAttrs, refBBox, options)
-    })
   }
 
   pointerdblclick(evt: JQuery.DoubleClickEvent, x: number, y: number) {
@@ -896,7 +493,7 @@ export abstract class CellView<C extends Cell = Cell> extends View {
   magnetcontextmenu() {}
 
   checkMouseleave(evt: JQuery.MouseLeaveEvent) {
-    const paper = this.graph
+    const paper = this.graph as any
     if (paper.isAsync()) {
       // Do the updates of the current view synchronously now
       paper.dumpView(this)
@@ -913,49 +510,17 @@ export abstract class CellView<C extends Cell = Cell> extends View {
 }
 
 export namespace CellView {
-  export enum Flag {
-    render = 'render',
-    update = 'update',
-    resize = 'resize',
-    rotate = 'rotate',
-    translate = 'translate',
-    ports = 'ports',
-    tools = 'tools',
+  export interface Options {
+    priority: number
+    isSvgElement: boolean
+    rootSelector: string
+    bootstrap: CellViewFlag.Actions
+    actions: KeyValue<CellViewFlag.Actions>
+    events: View.Events | null
+    documentEvents: View.Events | null
   }
 
-  export interface ProcessedAttributes {
-    raw: Attribute.ComplexAttributes
-    normal?: Attribute.SimpleAttributes | undefined
-    set?: Attribute.ComplexAttributes | undefined
-    offset?: Attribute.ComplexAttributes | undefined
-    position?: Attribute.ComplexAttributes | undefined
-  }
-
-  export interface UpdateDOMSubtreeAttributesOptions {
-    rootBBox?: Rectangle
-    selectors?: View.Selectors
-    scalableNode?: Element | null
-    rotatableNode?: Element | null
-    /**
-     * Rendering only attributes.
-     */
-    attrs?: Attribute.CellAttributes | null
-  }
-
-  export interface PresentationAttributes {
-    [attributeName: string]: string | string[]
-  }
-
-  export interface Config {
-    tagName?: string
-    isSvgElement?: boolean
-    rootSelector?: string
-    UPDATE_PRIORITY?: number
-    initFlag?: string | string[]
-    presentationAttributes?: PresentationAttributes
-    events?: View.Events
-    documentEvents?: View.Events
-  }
+  export type UpdateAttrsOptions = Partial<CellViewAttr.UpdateAttrsOptions>
 
   export interface CacheItem {
     data?: JSONObject

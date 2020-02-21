@@ -35,6 +35,15 @@ export default class Example extends React.Component {
     graph.model.addCell(rect)
 
     console.log(graph)
+
+    // class NodeView1 extends joint.CellView {}
+    // NodeView1.setDefaults({ tagName: 'ss' })
+
+    // class NodeView2 extends joint.CellView {}
+    // NodeView2.setDefaults({ tagName: 'dd' })
+
+    // console.log(NodeView1.getDefaults())
+    // console.log(NodeView2.getDefaults())
   }
 
   refContainer = (container: HTMLDivElement) => {

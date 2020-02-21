@@ -1,13 +1,13 @@
 import defaultsDeep from 'lodash/defaultsDeep'
 import { Point, Rectangle } from '../../geometry'
-import { Attribute } from '../attr'
+import { Attr } from '../attr'
 
 export namespace PortLabelLayout {
   export interface Result {
     x?: number
     y?: number
     angle?: number
-    attrs?: Attribute.CellAttributes
+    attrs?: Attr.CellAttrs
   }
 
   export interface ManualArgs extends Result {}
