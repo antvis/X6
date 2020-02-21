@@ -4,7 +4,7 @@ import { CellView } from './cell-view'
 import { Globals } from './globals'
 import { v } from '../../v'
 import { ArrayExt } from '../../util'
-import { Attribute } from '../attr'
+import { Attr } from '../attr'
 import { Rectangle } from '../../geometry'
 import { PortData } from './port-data'
 
@@ -34,81 +34,54 @@ export class NodeView extends CellView<Node> {
     },
   }
 
-  configure() {
-    return {
-      UPDATE_PRIORITY: 0,
-      initFlag: [NodeView.Flag.render],
-      presentationAttributes: {
-        markup: [NodeView.Flag.render],
-        attrs: [NodeView.Flag.update],
-        ports: [NodeView.Flag.ports],
-        size: [NodeView.Flag.resize, NodeView.Flag.ports, NodeView.Flag.tools],
-        rotation: [NodeView.Flag.rotate, NodeView.Flag.tools],
-        position: [NodeView.Flag.translate, NodeView.Flag.tools],
-      },
-    }
-  }
-
   confirmUpdate(flag: number, options: any = {}) {
-    let sub = flag
-    if (this.hasFlag(sub, NodeView.Flag.ports)) {
+    let ref = flag
+    if (this.hasAction(ref, 'ports')) {
       this.removePorts()
       this.cleanPortsCache()
     }
 
-    if (this.hasFlag(sub, NodeView.Flag.render)) {
+    if (this.hasAction(ref, 'render')) {
       this.render()
       // this.updateTools(opt)
-      sub = this.removeFlag(sub, [
-        NodeView.Flag.render,
-        NodeView.Flag.update,
-        NodeView.Flag.resize,
-        NodeView.Flag.translate,
-        NodeView.Flag.rotate,
-        NodeView.Flag.ports,
+      ref = this.removeAction(ref, [
+        'render',
+        'update',
+        'resize',
+        'translate',
+        'rotate',
+        'ports',
       ])
     } else {
-      // Skip this branch if render is required
-      if (this.hasFlag(sub, NodeView.Flag.resize)) {
-        this.resize(options)
-        // Resize method is calling `update()` internally
-        sub = this.removeFlag(sub, [NodeView.Flag.resize, NodeView.Flag.update])
-      }
+      ref = this.handleAction(
+        ref,
+        'resize',
+        () => this.resize(options),
+        'update', // Resize method is calling `update()` internally
+      )
 
-      if (this.hasFlag(sub, NodeView.Flag.update)) {
-        this.update()
-        sub = this.removeFlag(sub, NodeView.Flag.update)
-        if (Globals.useCSSSelector) {
-          // `update()` will render ports when useCSSSelectors are enabled
-          sub = this.removeFlag(sub, NodeView.Flag.ports)
-        }
-      }
+      ref = this.handleAction(
+        ref,
+        'update',
+        () => this.update(),
+        // `update()` will render ports when useCSSSelectors are enabled
+        Globals.useCSSSelector ? 'ports' : null,
+      )
 
-      if (this.hasFlag(sub, NodeView.Flag.translate)) {
-        this.translate()
-        sub = this.removeFlag(sub, NodeView.Flag.translate)
-      }
-
-      if (this.hasFlag(sub, NodeView.Flag.rotate)) {
-        this.rotate()
-        sub = this.removeFlag(sub, NodeView.Flag.rotate)
-      }
-
-      if (this.hasFlag(sub, NodeView.Flag.ports)) {
-        this.renderPorts()
-        sub = this.removeFlag(sub, NodeView.Flag.ports)
-      }
+      ref = this.handleAction(ref, 'translate', () => this.translate())
+      ref = this.handleAction(ref, 'rotate', () => this.rotate())
+      ref = this.handleAction(ref, 'ports', () => this.renderPorts())
     }
 
-    if (this.hasFlag(sub, NodeView.Flag.tools)) {
+    if (this.hasAction(ref, 'tools')) {
       // this.updateTools(options)
-      sub = this.removeFlag(sub, NodeView.Flag.tools)
+      ref = this.removeAction(ref, 'tools')
     }
 
-    return sub
+    return ref
   }
 
-  update(partialAttrs?: Attribute.CellAttributes) {
+  update(partialAttrs?: Attr.CellAttrs) {
     this.cleanCache()
 
     // When CSS selector strings are used, make sure no rule matches port nodes.
@@ -119,7 +92,7 @@ export class NodeView extends CellView<Node> {
     const node = this.cell
     const size = node.size
     const attrs = node.attrs
-    this.updateDOMSubtreeAttributes(this.container, attrs, {
+    this.updateAttrs(this.container, attrs, {
       attrs: partialAttrs === attrs ? null : partialAttrs,
       rootBBox: new Rectangle(0, 0, size.width, size.height),
       selectors: this.selectors,
@@ -158,10 +131,12 @@ export class NodeView extends CellView<Node> {
 
   protected renderStringMarkup(markup: string) {
     v.append(this.container, v.batch(markup))
-    this.rotatableNode = v.findOne(this.container, '.rotatable')
-    this.scalableNode = v.findOne(this.container, '.scalable')
+    this.rotatableNode = v.findOne(this.container, `.${this.rotatableSelector}`)
+    this.scalableNode = v.findOne(this.container, `.${this.scalableSelector}`)
     this.selectors = {}
-    this.selectors[this.rootSelector] = this.container
+    if (this.rootSelector) {
+      this.selectors[this.rootSelector] = this.container
+    }
   }
 
   render() {
@@ -186,7 +161,7 @@ export class NodeView extends CellView<Node> {
     }
 
     if (!Globals.useCSSSelector) {
-      // this._renderPorts()
+      this.renderPorts()
     }
 
     return this
@@ -194,7 +169,7 @@ export class NodeView extends CellView<Node> {
 
   resize(opt: any = {}) {
     if (this.scalableNode) {
-      return this.resizeScalableNode(opt)
+      return this.updateSize(opt)
     }
 
     if (this.cell.rotation) {
@@ -206,7 +181,7 @@ export class NodeView extends CellView<Node> {
 
   translate() {
     if (this.rotatableNode) {
-      return this.rgTranslate()
+      return this.updateTranslation()
     }
 
     this.updateTransform()
@@ -214,7 +189,7 @@ export class NodeView extends CellView<Node> {
 
   rotate() {
     if (this.rotatableNode) {
-      this.rotateRotatableNode()
+      this.updateRotation()
       // It's necessary to call the update for the nodes outside
       // the rotatable group referencing nodes inside the group
       this.update()
@@ -224,21 +199,12 @@ export class NodeView extends CellView<Node> {
     this.updateTransform()
   }
 
-  updateTransform() {
-    let transform = this.getTranslateString()
-    const rot = this.getRotateString()
-    if (rot) {
-      transform += ` ${rot}`
-    }
-    this.container.setAttribute('transform', transform)
-  }
-
-  getTranslateString() {
+  protected getTranslationString() {
     const position = this.cell.position
     return `translate(${position.x},${position.y})`
   }
 
-  getRotateString() {
+  protected getRotationString() {
     const rotation = this.cell.rotation
     if (rotation) {
       const size = this.cell.size
@@ -246,9 +212,18 @@ export class NodeView extends CellView<Node> {
     }
   }
 
-  rotateRotatableNode() {
+  protected updateTransform() {
+    let transform = this.getTranslationString()
+    const rot = this.getRotationString()
+    if (rot) {
+      transform += ` ${rot}`
+    }
+    this.container.setAttribute('transform', transform)
+  }
+
+  protected updateRotation() {
     if (this.rotatableNode != null) {
-      const transform = this.getRotateString()
+      const transform = this.getRotationString()
       if (transform != null) {
         this.rotatableNode.setAttribute('transform', transform)
       } else {
@@ -257,11 +232,11 @@ export class NodeView extends CellView<Node> {
     }
   }
 
-  rgTranslate() {
-    this.container.setAttribute('transform', this.getTranslateString())
+  protected updateTranslation() {
+    this.container.setAttribute('transform', this.getTranslationString())
   }
 
-  resizeScalableNode(opt: any = {}) {
+  protected updateSize(opt: any = {}) {
     const cell = this.cell
     const size = cell.size
     const angle = cell.rotation
@@ -374,11 +349,13 @@ export class NodeView extends CellView<Node> {
 
     const autoZIndexKey = 'auto'
     // render non-z first
-    portsGropsByZ[autoZIndexKey].forEach(port => {
-      const portElement = this.getPortElement(port)
-      container.append(portElement)
-      references.push(portElement)
-    })
+    if (portsGropsByZ[autoZIndexKey]) {
+      portsGropsByZ[autoZIndexKey].forEach(port => {
+        const portElement = this.getPortElement(port)
+        container.append(portElement)
+        references.push(portElement)
+      })
+    }
 
     Object.keys(portsGropsByZ).forEach(key => {
       if (key !== autoZIndexKey) {
@@ -430,7 +407,7 @@ export class NodeView extends CellView<Node> {
       throw new Error('Invalid port markup.')
     }
 
-    this.setAttributes(
+    this.setAttrs(
       {
         port: port.id,
         'port-group': port.group,
@@ -503,7 +480,7 @@ export class NodeView extends CellView<Node> {
       const portLayout = metrics.portLayout
       this.applyPortTransform(cached.portElement, portLayout)
       if (metrics.portAttrs != null) {
-        const options: CellView.UpdateDOMSubtreeAttributesOptions = {
+        const options: CellView.UpdateAttrsOptions = {
           selectors: cached.portSelectors || {},
         }
 
@@ -511,11 +488,7 @@ export class NodeView extends CellView<Node> {
           options.rootBBox = Rectangle.fromSize(metrics.portSize)
         }
 
-        this.updateDOMSubtreeAttributes(
-          cached.portElement,
-          metrics.portAttrs,
-          options,
-        )
+        this.updateAttrs(cached.portElement, metrics.portAttrs, options)
       }
 
       const portLabelLayout = metrics.portLabelLayout
@@ -527,7 +500,7 @@ export class NodeView extends CellView<Node> {
         )
 
         if (portLabelLayout.attrs) {
-          const options: CellView.UpdateDOMSubtreeAttributesOptions = {
+          const options: CellView.UpdateAttrsOptions = {
             selectors: cached.portLabelSelectors || {},
           }
 
@@ -535,7 +508,7 @@ export class NodeView extends CellView<Node> {
             options.rootBBox = Rectangle.fromSize(metrics.labelSize)
           }
 
-          this.updateDOMSubtreeAttributes(
+          this.updateAttrs(
             cached.portLabelElement,
             portLabelLayout.attrs,
             options,
@@ -584,3 +557,21 @@ export namespace NodeView {
     portContentSelectors?: View.Selectors | null
   }
 }
+
+export namespace NodeView {
+  export interface Options extends CellView.Options {}
+}
+
+NodeView.setDefaults({
+  isSvgElement: true,
+  priority: 0,
+  bootstrap: ['render'],
+  actions: {
+    markup: ['render'],
+    attrs: ['update'],
+    size: ['resize', 'ports', 'tools'],
+    rotation: ['rotate', 'tools'],
+    position: ['translate', 'tools'],
+    ports: ['ports'],
+  },
+})

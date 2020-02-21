@@ -1,13 +1,13 @@
-import { Attribute } from './define'
-import { NumberExt } from '../../util'
-import { Point, Path, Rectangle, Polyline } from '../../geometry'
 import { v } from '../../v'
+import { Attr } from './define'
+import { NumberExt } from '../../util'
 import { CellView } from '../core/cell-view'
+import { Point, Path, Rectangle, Polyline } from '../../geometry'
 
 export function setWrapper(
   attrName: string,
   dimension: 'width' | 'height',
-): Attribute.SetFunction {
+): Attr.SetFunction {
   return function(val, { refBBox }) {
     let value = parseFloat(val as string)
     const percentage = NumberExt.isPercentage(val)
@@ -15,7 +15,7 @@ export function setWrapper(
       value /= 100
     }
 
-    const attrs: Attribute.SimpleAttributes = {}
+    const attrs: Attr.SimpleAttrs = {}
 
     if (isFinite(value)) {
       const attrValue =
@@ -33,7 +33,7 @@ export function positionWrapper(
   axis: 'x' | 'y',
   dimension: 'width' | 'height',
   origin: 'origin' | 'corner',
-): Attribute.PositionFunction {
+): Attr.PositionFunction {
   return (val, { refBBox }) => {
     let value = parseFloat(val as string)
     const percentage = NumberExt.isPercentage(val)
@@ -61,7 +61,7 @@ export function offsetWrapper(
   axis: 'x' | 'y',
   dimension: 'width' | 'height',
   corner: 'right' | 'bottom',
-): Attribute.OffsetFunction {
+): Attr.OffsetFunction {
   return (value, { refBBox }) => {
     const point = new Point()
     let delta
@@ -82,14 +82,14 @@ export function offsetWrapper(
 }
 
 function shapeWrapper(
-  shapeConstructor: (value: Attribute.ComplexAttributeValue) => any,
+  shapeConstructor: (value: Attr.ComplexAttrValue) => any,
   options: { resetOffset: boolean },
 ) {
   const cacheName = 'x6-shape'
   const resetOffset = options && options.resetOffset
 
   return function(
-    value: Attribute.ComplexAttributeValue,
+    value: Attr.ComplexAttrValue,
     view: CellView,
     refBBox: Rectangle,
     node: Element,
@@ -130,9 +130,7 @@ function shapeWrapper(
 }
 
 // `d` attribute for SVGPaths
-export function dWrapper(options: {
-  resetOffset: boolean
-}): Attribute.SetFunction {
+export function dWrapper(options: { resetOffset: boolean }): Attr.SetFunction {
   function pathConstructor(value: string) {
     return Path.parse(v.normalizePathData(value))
   }
@@ -143,14 +141,14 @@ export function dWrapper(options: {
     const path = shape(value, view, refBBox, node)
     return {
       d: path.serialize(),
-    } as Attribute.SimpleAttributes
+    } as Attr.SimpleAttrs
   }
 }
 
 // `points` attribute for SVGPolylines and SVGPolygons
 export function pointsWrapper(options: {
   resetOffset: boolean
-}): Attribute.SetFunction {
+}): Attr.SetFunction {
   const shape = shapeWrapper(points => new Polyline(points as any), options)
   return (value, { view, refBBox, node }) => {
     const polyline = shape(value, view, refBBox, node)
@@ -163,7 +161,7 @@ export function pointsWrapper(options: {
 export function atConnectionWrapper(
   method: 'getTangentAtLength' | 'getTangentAtRatio',
   options: { rotate: boolean },
-): Attribute.SetFunction {
+): Attr.SetFunction {
   const zeroVector = new Point(1, 0)
   return (value, { view }) => {
     let p
@@ -187,16 +185,16 @@ export function atConnectionWrapper(
   }
 }
 
-export const isTextInUse: Attribute.QualifyFucntion = (val, { attrs }) => {
+export const isTextInUse: Attr.QualifyFucntion = (val, { attrs }) => {
   return attrs.text !== undefined
 }
 
-export const isLinkView: Attribute.QualifyFucntion = (val, { view }) => {
+export const isLinkView: Attr.QualifyFucntion = (val, { view }) => {
   return view.cell.isEdge()
 }
 
-export function contextMarker(context: Attribute.ComplexAttributes) {
-  const marker: Attribute.SimpleAttributes = {}
+export function contextMarker(context: Attr.ComplexAttrs) {
+  const marker: Attr.SimpleAttrs = {}
 
   // The context 'fill' is disregared here. The usual case is to use the
   // marker with a connection(for which 'fill' attribute is set to 'none').

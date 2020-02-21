@@ -1,28 +1,26 @@
-import pick from 'lodash/pick'
-import isPlainObject from 'lodash/isPlainObject'
 import * as util from './util'
-import { NumberExt, JSONObject, StringExt } from '../../util'
+import { v } from '../../v'
 import { CellView } from '../core/cell-view'
 import { Rectangle, Point } from '../../geometry'
-import { v } from '../../v'
+import { NumberExt, JSONObject, StringExt, ObjectExt } from '../../util'
 
-export namespace Attribute {
-  export type SimpleAttributeValue = string | number
-  export type SimpleAttributes = { [name: string]: SimpleAttributeValue }
-  export type ComplexAttributeValue = string | number | JSONObject
-  export type ComplexAttributes = { [name: string]: ComplexAttributeValue }
-  export type CellAttributes = { [selector: string]: ComplexAttributes }
+export namespace Attr {
+  export type SimpleAttrValue = string | number
+  export type SimpleAttrs = { [name: string]: SimpleAttrValue }
+  export type ComplexAttrValue = string | number | JSONObject
+  export type ComplexAttrs = { [name: string]: ComplexAttrValue }
+  export type CellAttrs = { [selector: string]: ComplexAttrs }
 }
 
-export namespace Attribute {
+export namespace Attr {
   export interface QualifyOptions {
     view: CellView
     node: Element
-    attrs: ComplexAttributes
+    attrs: ComplexAttrs
   }
 
   export type QualifyFucntion = (
-    val: ComplexAttributeValue,
+    val: ComplexAttrValue,
     options: QualifyOptions,
   ) => boolean
 
@@ -35,16 +33,16 @@ export namespace Attribute {
   }
 
   export type SetFunction = (
-    val: ComplexAttributeValue,
+    val: ComplexAttrValue,
     options: Options,
-  ) => SimpleAttributeValue | SimpleAttributes | void
+  ) => SimpleAttrValue | SimpleAttrs | void
 
   export interface SetDefinition extends Qualify {
     set: SetFunction
   }
 
   export type OffsetFunction = (
-    val: ComplexAttributeValue,
+    val: ComplexAttrValue,
     options: Options,
   ) => Point | Point.PointLike
 
@@ -53,7 +51,7 @@ export namespace Attribute {
   }
 
   export type PositionFunction = (
-    val: ComplexAttributeValue,
+    val: ComplexAttrValue,
     options: Options,
   ) => Point | Point.PointLike
 
@@ -76,10 +74,10 @@ export namespace Attribute {
   export type GetDefinition = (name: string) => Definition | null | undefined
 }
 
-export namespace Attribute {
+export namespace Attr {
   export function isValidDefinition(
     def: Definition | undefined | null,
-    val: ComplexAttributeValue,
+    val: ComplexAttrValue,
     options: QualifyOptions,
   ): def is Definition {
     if (def != null) {
@@ -96,7 +94,7 @@ export namespace Attribute {
   }
 }
 
-export namespace Attribute {
+export namespace Attr {
   export const definitions: Definitions = {
     xlinkHref: 'xlink:href',
     xlinkShow: 'xlink:show',
@@ -115,28 +113,28 @@ export namespace Attribute {
     externalResourcesRequired: 'externalResourceRequired',
 
     filter: {
-      qualify: isPlainObject,
+      qualify: ObjectExt.isPlainObject,
       set(filter, { view }) {
         return `url(#${view.graph.defineFilter(filter)})`
       },
     },
 
     fill: {
-      qualify: isPlainObject,
+      qualify: ObjectExt.isPlainObject,
       set(fill, { view }) {
         return `url(#${view.graph.defineGradient(fill)})`
       },
     },
 
     stroke: {
-      qualify: isPlainObject,
+      qualify: ObjectExt.isPlainObject,
       set(stroke, { view }) {
         return `url(#${view.graph.defineGradient(stroke)})`
       },
     },
 
     sourceMarker: {
-      qualify: isPlainObject,
+      qualify: ObjectExt.isPlainObject,
       set(marker, { view, attrs }) {
         const options = {
           ...util.contextMarker(attrs),
@@ -147,7 +145,7 @@ export namespace Attribute {
     },
 
     targetMarker: {
-      qualify: isPlainObject,
+      qualify: ObjectExt.isPlainObject,
       set(marker, { view, attrs }) {
         const options = {
           ...util.contextMarker(attrs),
@@ -160,7 +158,7 @@ export namespace Attribute {
     },
 
     vertexMarker: {
-      qualify: isPlainObject,
+      qualify: ObjectExt.isPlainObject,
       set(marker, { view, attrs }) {
         const options = {
           ...util.contextMarker(attrs),
@@ -172,13 +170,15 @@ export namespace Attribute {
 
     text: {
       qualify(text, { attrs }) {
-        return attrs.textWrap == null || !isPlainObject(attrs.textWrap)
+        return (
+          attrs.textWrap == null || !ObjectExt.isPlainObject(attrs.textWrap)
+        )
       },
       set(text, { view, node, attrs }) {
         const cacheName = 'x6-text'
         const $node = view.$(node)
         const cache = $node.data(cacheName)
-        const textAttrs = pick(
+        const textAttrs = ObjectExt.pick(
           attrs,
           'lineHeight',
           'annotations',
@@ -225,7 +225,7 @@ export namespace Attribute {
     },
 
     textWrap: {
-      qualify: isPlainObject,
+      qualify: ObjectExt.isPlainObject,
       set(val, { view, node, attrs, refBBox }) {
         const info = val as JSONObject
 
@@ -348,9 +348,9 @@ export namespace Attribute {
     },
 
     style: {
-      qualify: isPlainObject,
+      qualify: ObjectExt.isPlainObject,
       set(styles, { view, node }) {
-        view.$(node).css(styles as SimpleAttributes)
+        view.$(node).css(styles as SimpleAttrs)
       },
     },
 
@@ -442,7 +442,7 @@ export namespace Attribute {
           }
         }
 
-        return { r: rValue } as SimpleAttributes
+        return { r: rValue } as SimpleAttrs
       },
     },
 
