@@ -55,7 +55,7 @@ export class Collection extends Basecoat<EventArgs> {
       const existing = this.get(cell)
       if (existing) {
         if (opts.merge && cell.store !== existing.store) {
-          existing.store.set(cell.store.data, options) // merge
+          existing.store.set(cell.store.get(), options) // merge
           merged.push(existing)
           if (sortable && !sort) {
             sort = existing.store.hasChanged(sortAttr as any)
