@@ -14,7 +14,7 @@ export class CellViewAttr {
   }
 
   getAttrDefinition(attrName: string): Attr.Definition | null {
-    return this.cell.getAttributeDefinition(attrName)
+    return this.cell.getAttrDefinition(attrName)
   }
 
   processAttrs(
