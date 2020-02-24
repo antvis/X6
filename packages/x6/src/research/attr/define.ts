@@ -5,9 +5,9 @@ import { Rectangle, Point } from '../../geometry'
 import { NumberExt, JSONObject, StringExt, ObjectExt } from '../../util'
 
 export namespace Attr {
-  export type SimpleAttrValue = string | number
+  export type SimpleAttrValue = string | number | null | undefined
   export type SimpleAttrs = { [name: string]: SimpleAttrValue }
-  export type ComplexAttrValue = string | number | JSONObject
+  export type ComplexAttrValue = string | number | JSONObject | null | undefined
   export type ComplexAttrs = { [name: string]: ComplexAttrValue }
   export type CellAttrs = { [selector: string]: ComplexAttrs }
 }
@@ -204,7 +204,7 @@ export namespace Attr {
 
           // Text Along Path Selector
           const textPath = textAttrs.textPath
-          if (typeof textPath === 'object') {
+          if (textPath != null && typeof textPath === 'object') {
             const selector = textPath.selector
             if (typeof selector === 'string') {
               const pathNode = view.find(selector)[0]
@@ -340,7 +340,7 @@ export namespace Attr {
     // `port` attribute contains the `id` of the port that the underlying magnet represents.
     port: {
       set(port) {
-        if (typeof port === 'object' && port.id) {
+        if (port != null && typeof port === 'object' && port.id) {
           return port.id as string
         }
         return port as string
@@ -350,7 +350,7 @@ export namespace Attr {
     style: {
       qualify: ObjectExt.isPlainObject,
       set(styles, { view, node }) {
-        view.$(node).css(styles as SimpleAttrs)
+        view.$(node).css(styles as JQuery.PlainObject<string | number>)
       },
     },
 
