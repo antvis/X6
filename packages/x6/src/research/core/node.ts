@@ -1,18 +1,38 @@
 import cloneDeep from 'lodash/cloneDeep'
-import { Cell } from './cell'
-import { View } from './view'
-import { Size } from '../../types'
-import { Point, Rectangle, Angle } from '../../geometry'
-import { PortData } from './port-data'
 import { StringExt, ObjectExt } from '../../util'
+import { Point, Rectangle, Angle } from '../../geometry'
+import { Cell } from './cell'
+import { Size } from '../../types'
+import { PortData } from './port-data'
+import { View } from './view'
 
-export class Node extends Cell {
-  protected collapsed: boolean
-  protected collapsedSize: Size | null
-  protected edges: Cell[] | null
-  public portData: PortData
+export class Node<D extends Node.Data = Node.Data> extends Cell<D> {
+  // #region static
 
-  constructor(options: Node.CreateNodeOptions = {}) {
+  protected static defaults: Node.Defaults = {
+    rotation: 0,
+    position: { x: 0, y: 0 },
+    size: { width: 1, height: 1 },
+  }
+
+  public static setDefaults<T extends Node.Defaults = Node.Defaults>(
+    presets: T,
+  ) {
+    return super.setDefaults<T>(presets)
+  }
+
+  public static getDefaults<T extends Node.Defaults = Node.Defaults>(): T {
+    return super.getDefaults<T>()
+  }
+
+  // #endregion
+
+  // protected collapsed: boolean
+  // protected collapsedSize: Size | null
+  // protected edges: Cell[] | null
+  portData: PortData
+
+  constructor(options: Node.Options = {}) {
     super(options)
   }
 
@@ -25,7 +45,7 @@ export class Node extends Cell {
   }
 
   get size() {
-    return { ...this.store.get<Size>('size')! }
+    return { ...this.store.get('size', { width: 1, height: 1 }) }
   }
 
   set size(size: Size) {
@@ -177,7 +197,7 @@ export class Node extends Cell {
   }
 
   get position() {
-    return { ...this.store.get<Point.PointLike>('position')! }
+    return { ...this.store.get('position', { x: 0, y: 0 }) }
   }
 
   set position(pos: Point | Point.PointLike) {
@@ -318,7 +338,7 @@ export class Node extends Cell {
   }
 
   get rotation() {
-    return this.store.get<number>('rotation') || 0
+    return this.store.get('rotation', 0)
   }
 
   rotate(
@@ -427,19 +447,19 @@ export class Node extends Cell {
   // #region ports
 
   get ports() {
-    return this.store.get<PortData.Metadata>('ports') || { items: [] }
+    return this.store.get('ports', { items: [] })
   }
 
   get portContainerMarkup() {
-    return this.store.get<View.Markup>('portContainerMarkup')
+    return this.store.get('portContainerMarkup', '')
   }
 
   get portMarkup() {
-    return this.store.get<View.Markup>('portMarkup')
+    return this.store.get('portMarkup', '')
   }
 
   get portLabelMarkup() {
-    return this.store.get<View.Markup>('portLabelMarkup')
+    return this.store.get('portLabelMarkup', '')
   }
 
   getPorts() {
@@ -489,24 +509,21 @@ export class Node extends Cell {
     }, positions)
   }
 
-  addPort(port: PortData.PortMetadata, options?: Cell.SetPropByPathOptions) {
+  addPort(port: PortData.PortMetadata, options?: Cell.SetByPathOptions) {
     const ports = [...this.ports.items]
     ports.push(port)
-    this.setPropByPath('ports/items', ports, options)
+    this.setByPath('ports/items', ports, options)
     return this
   }
 
-  addPorts(
-    ports: PortData.PortMetadata[],
-    options?: Cell.SetPropByPathOptions,
-  ) {
-    this.setPropByPath('ports/items', [...this.ports.items, ...ports], options)
+  addPorts(ports: PortData.PortMetadata[], options?: Cell.SetByPathOptions) {
+    this.setByPath('ports/items', [...this.ports.items, ...ports], options)
     return this
   }
 
   removePort(
     port: PortData.PortMetadata | string,
-    options: Cell.SetPropByPathOptions = {},
+    options: Cell.SetByPathOptions = {},
   ) {
     const ports = [...this.ports.items]
     const index = this.getPortIndex(port)
@@ -514,22 +531,22 @@ export class Node extends Cell {
     if (index !== -1) {
       ports.splice(index, 1)
       options.rewrite = true
-      this.setPropByPath('ports/items', ports, options)
+      this.setByPath('ports/items', ports, options)
     }
 
     return this
   }
 
-  removePorts(options?: Cell.SetPropByPathOptions): this
+  removePorts(options?: Cell.SetByPathOptions): this
   removePorts(
     portsForRemoval: (PortData.PortMetadata | string)[],
-    options?: Cell.SetPropByPathOptions,
+    options?: Cell.SetByPathOptions,
   ): this
   removePorts(
     portsForRemoval?:
       | (PortData.PortMetadata | string)[]
-      | Cell.SetPropByPathOptions,
-    opt?: Cell.SetPropByPathOptions,
+      | Cell.SetByPathOptions,
+    opt?: Cell.SetByPathOptions,
   ) {
     let options
 
@@ -545,12 +562,12 @@ export class Node extends Cell {
               return cp.id === id
             }),
         )
-        this.setPropByPath('ports/items', remainingPorts, options)
+        this.setByPath('ports/items', remainingPorts, options)
       }
     } else {
       options = portsForRemoval || {}
       options.rewrite = true
-      this.setPropByPath('ports/items', [], options)
+      this.setByPath('ports/items', [], options)
     }
 
     return this
@@ -632,7 +649,10 @@ export class Node extends Cell {
     const err = this.validatePorts()
 
     if (err.length > 0) {
-      this.store.set('ports', this.store.getPrevious('ports'))
+      this.store.set(
+        'ports',
+        this.store.getPrevious<PortData.Metadata>('ports'),
+      )
       throw new Error(err.join(' '))
     }
 
@@ -666,20 +686,20 @@ export class Node extends Cell {
   // #endregion
 }
 
-Node.config({
-  position: { x: 0, y: 0 },
-  size: { width: 1, height: 1 },
-  rotation: 0,
-})
-
 export namespace Node {
-  export interface CreateNodeOptions extends Cell.CreateCellOptions {
+  interface Common extends Cell.Common {
     size?: { width: number; height: number }
     position?: { x: number; y: number }
     rotation?: number
+    ports?: PortData.Metadata
+    portContainerMarkup?: View.Markup
+    portMarkup?: View.Markup
+    portLabelMarkup?: View.Markup
   }
 
-  export interface Data extends Cell.StoreData, CreateNodeOptions {}
+  export interface Defaults extends Common, Cell.Defaults {}
+  export interface Options extends Common, Cell.Options {}
+  export interface Data extends Cell.Data, Options {}
 
   export interface PositionOptions extends Cell.SetOptions {
     deep?: boolean

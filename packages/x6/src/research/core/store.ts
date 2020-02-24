@@ -1,29 +1,27 @@
-import { Assign } from 'utility-types'
-import merge from 'lodash/merge'
-import { Basecoat } from '../../entity'
+import { Assign, NonUndefined } from 'utility-types'
 import { KeyValue } from '../../types'
-import { JSONObject, JSONExt, ObjectExt, JSONValue } from '../../util'
+import { Basecoat } from '../../entity'
+import { ObjectExt } from '../../util'
 
-export class Store<
-  D extends JSONObject = JSONObject,
-  K extends Extract<keyof D, string> = Extract<keyof D, string>
-> extends Basecoat<Store.EventArgs<D>> {
-  public data: D
-  public previous: D
-  public changed: Partial<D>
-
-  private pending: boolean = false
-  private changing: boolean = false
-  private pendingOptions: Store.MutateOptions | null
+export class Store<D> extends Basecoat<Store.EventArgs<D>> {
+  protected data: D
+  protected previous: D
+  protected changed: Partial<D>
+  protected pending: boolean = false
+  protected changing: boolean = false
+  protected pendingOptions: Store.MutateOptions | null
 
   constructor(data: Partial<D> = {}) {
     super()
     this.data = {} as D
-    this.mutate(JSONExt.deepCopy(data))
+    this.mutate(ObjectExt.cloneDeep(data))
     this.changed = {}
   }
 
-  protected mutate(data: Partial<D>, options: Store.MutateOptions = {}) {
+  protected mutate<K extends keyof D>(
+    data: Partial<D>,
+    options: Store.MutateOptions = {},
+  ) {
     const unset = options.unset === true
     const silent = options.silent === true
     const changes: K[] = []
@@ -32,7 +30,7 @@ export class Store<
     this.changing = true
 
     if (!changing) {
-      this.previous = JSONExt.deepCopy(this.data)
+      this.previous = ObjectExt.cloneDeep(this.data)
       this.changed = {}
     }
 
@@ -43,11 +41,11 @@ export class Store<
     Object.keys(data).forEach(k => {
       const key = k as K
       const newValue = data[key]
-      if (!JSONExt.deepEqual(current[key], newValue)) {
+      if (!ObjectExt.isEqual(current[key], newValue)) {
         changes.push(key)
       }
 
-      if (!JSONExt.deepEqual(previous[key], newValue)) {
+      if (!ObjectExt.isEqual(previous[key], newValue)) {
         changed[key] = newValue
       } else {
         delete changed[key]
@@ -98,23 +96,30 @@ export class Store<
     return this
   }
 
-  get<T>(key: K) {
-    const ret = this.data[key]
-    return ret == null ? null : ((ret as any) as T)
-  }
-
-  getPrevious<T>(key: K) {
-    if (this.previous) {
-      const ret = this.previous[key]
-      return ret == null ? null : ((ret as any) as T)
+  get(): D
+  get<K extends keyof D>(key: K): D[K]
+  get<K extends keyof D>(key: K, defaultValue: D[K]): NonUndefined<D[K]>
+  get<K extends keyof D>(key?: K, defaultValue?: D[K]): D | D[K] | undefined {
+    if (key == null) {
+      return this.data
     }
 
-    return null
+    const ret = this.data[key]
+    return ret == null ? defaultValue : ret
   }
 
-  set(key: K, value: D[K], options?: Store.SetOptions): this
+  getPrevious<T>(key: keyof D) {
+    if (this.previous) {
+      const ret = this.previous[key]
+      return ret == null ? undefined : ((ret as any) as T)
+    }
+
+    return undefined
+  }
+
+  set<K extends keyof D>(key: K, value: D[K], options?: Store.SetOptions): this
   set(data: D, options?: Store.SetOptions): this
-  set(
+  set<K extends keyof D>(
     key: K | Partial<D>,
     value?: D[K] | Store.SetOptions,
     options?: Store.SetOptions,
@@ -130,12 +135,15 @@ export class Store<
     return this
   }
 
-  remove(key: K | K[], options?: Store.SetOptions): this
+  remove<K extends keyof D>(key: K | K[], options?: Store.SetOptions): this
   remove(options?: Store.SetOptions): this
-  remove(key?: K | K[] | Store.SetOptions, options?: Store.SetOptions) {
+  remove<K extends keyof D>(
+    key: K | K[] | Store.SetOptions,
+    options?: Store.SetOptions,
+  ) {
     const empty = void 0
     const subset: Partial<D> = {}
-    let opts
+    let opts: Store.SetOptions | undefined
 
     if (typeof key === 'string') {
       subset[key] = empty
@@ -147,7 +155,7 @@ export class Store<
       for (const key in this.data) {
         subset[key] = empty
       }
-      opts = key
+      opts = key as Store.SetOptions
     }
 
     this.mutate(subset, { ...opts, unset: true })
@@ -158,7 +166,7 @@ export class Store<
     return ObjectExt.getByPath(this.data, path, '/') as T
   }
 
-  setByPath(
+  setByPath<K extends keyof D>(
     path: string | string[],
     value: any,
     options: Store.SetByPathOptions = {},
@@ -179,7 +187,7 @@ export class Store<
     } else {
       const update: KeyValue = {}
       let diver = update
-      let nextKey: string = property
+      let nextKey = property as string
 
       // Initialize the nested object. Subobjects are either arrays or objects.
       // An empty array is created if the sub-key is an integer. Otherwise, an
@@ -194,7 +202,7 @@ export class Store<
       // Fills update with the `value` on `path`.
       ObjectExt.setByPath(update, pathArray, value, delim)
 
-      const data = JSONExt.deepCopy(this.data)
+      const data = ObjectExt.cloneDeep(this.data)
 
       // If rewrite mode enabled, we replace value referenced by path with the
       // new one (we don't merge).
@@ -202,21 +210,24 @@ export class Store<
         ObjectExt.unsetByPath(data, path, delim)
       }
 
-      const merged = merge(data, update)
+      const merged = ObjectExt.merge(data, update)
       this.set(property, merged[property], options)
     }
 
     return this
   }
 
-  removeByPath(path: string | string[], options?: Store.SetOptions) {
+  removeByPath<K extends keyof D>(
+    path: string | string[],
+    options?: Store.SetOptions,
+  ) {
     const keys = Array.isArray(path) ? path : path.split('/')
     const key = keys[0] as K
     if (keys.length === 1) {
       this.remove(key, options)
     } else {
       const paths = keys.slice(1)
-      const prop = JSONExt.deepCopy(this.get<JSONValue>(key))
+      const prop = ObjectExt.cloneDeep(this.get(key))
       if (prop) {
         ObjectExt.unsetByPath(prop, paths)
       }
@@ -227,7 +238,7 @@ export class Store<
     return this
   }
 
-  hasChanged(key?: K | null) {
+  hasChanged<K extends keyof D>(key?: K | null) {
     if (key == null) {
       return Object.keys(this.changed).length > 0
     }
@@ -242,7 +253,7 @@ export class Store<
    */
   getChanges(diff?: Partial<D>) {
     if (diff == null) {
-      return this.hasChanged() ? JSONExt.deepCopy(this.changed) : null
+      return this.hasChanged() ? ObjectExt.cloneDeep(this.changed) : null
     }
 
     const old = this.changing ? this.previous : this.data
@@ -250,22 +261,22 @@ export class Store<
     let hasChanged
     for (const key in diff) {
       const val = diff[key]
-      if (!JSONExt.deepEqual(old[key], val)) {
+      if (!ObjectExt.isEqual(old[key], val)) {
         changed[key] = val
         hasChanged = true
       }
     }
-    return hasChanged ? JSONExt.deepCopy(changed) : null
+    return hasChanged ? ObjectExt.cloneDeep(changed) : null
   }
 
   /**
    * Returns a copy of the store's `data` object.
    */
   toJSON() {
-    return JSONExt.deepCopy(this.data)
+    return ObjectExt.cloneDeep(this.data)
   }
 
-  clone<T extends Store<D>>() {
+  clone<T extends typeof Store>() {
     const constructor = this.constructor as any
     return new constructor(this.data) as T
   }
@@ -288,20 +299,17 @@ export namespace Store {
     silent?: boolean
   }
 
-  export interface SetByPathOptions extends SetOptions {
-    rewrite?: boolean
-  }
-
   export interface MutateOptions extends SetOptions {
     unset?: boolean
   }
 
-  type CommonArgs<D extends JSONObject> = { store: Store<D> }
+  export interface SetByPathOptions extends SetOptions {
+    rewrite?: boolean
+  }
 
-  export interface EventArgs<
-    D extends JSONObject,
-    K extends Extract<keyof D, string> = Extract<keyof D, string>
-  > {
+  type CommonArgs<D> = { store: Store<D> }
+
+  export interface EventArgs<D, K extends keyof D = keyof D> {
     mutated: Assign<
       {
         key: K

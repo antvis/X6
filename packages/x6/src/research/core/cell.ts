@@ -1,50 +1,76 @@
 /* tslint:disable:variable-name */
-
-import { JSONObject, JSONExt, ArrayExt, StringExt } from '../../util'
+import { ArrayExt, StringExt, ObjectExt } from '../../util'
+import { KeyValue } from '../../types'
 import { Basecoat } from '../../entity'
 import { Rectangle } from '../../geometry'
 import { Store } from './store'
 import { Model } from './model'
 import { Node } from './node'
+import { View } from './view'
 import { Attr } from '../attr'
-import { KeyValue } from '../../types'
 
-export class Cell extends Basecoat {
+export class Cell<D extends Cell.Data = Cell.Data> extends Basecoat {
+  // #region static
+
+  protected static defaults: Cell.Defaults = {}
+
+  public static setDefaults<T extends Cell.Defaults = Cell.Defaults>(
+    presets: T,
+  ) {
+    this.defaults = ObjectExt.merge({}, this.defaults, presets)
+  }
+
+  public static getDefaults<T extends Cell.Defaults = Cell.Defaults>(): T {
+    return ObjectExt.cloneDeep(this.defaults) as T
+  }
+
+  // #endregion
+
   public readonly id: string
-  public readonly store: Store<Cell.StoreData>
+  public readonly store: Store<D>
 
   public model: Model | null
-  private _parent: Cell | null
-  private _children: Cell[] | null
+  protected _parent: Cell | null
+  protected _children: Cell[] | null
 
-  constructor(options: Cell.CreateCellOptions = {}) {
+  constructor(options: Cell.Options = {}) {
     super()
     this.id = options.id || StringExt.uuid()
-    this.store = new Store<Cell.StoreData>({
-      ...(this.constructor as any).presets,
-      ...JSONExt.deepCopy(options),
-      id: this.id,
-    })
+    const data = ObjectExt.merge(this.getDefaults(), options) as Partial<D>
+    this.store = new Store<D>(data)
     this.startListening()
     this.init()
+  }
+
+  protected init() {}
+
+  protected getDefaults(): Cell.Defaults {
+    return (this.constructor as any).getDefaults()
   }
 
   protected startListening() {
     this.store.on('mutated', ({ key, current, previous }) => {
       if (key === 'zIndex') {
-        this.trigger('change:zIndex', {
-          current: current as number,
-          previous: previous == null ? undefined : (previous as number),
-        })
+        this.trigger(
+          'change:zIndex',
+          this.getChangeArgs<number>(current, previous),
+        )
       }
     })
 
-    this.store.on('changed', () => {
-      this.trigger('changed')
-    })
+    this.store.on('changed', () => this.trigger('changed', { cell: this }))
   }
 
-  protected init() {}
+  protected getChangeArgs<T>(
+    current: any,
+    previous: any,
+  ): { cell: Cell; current: T; previous?: T } {
+    return {
+      cell: this,
+      current: current as T,
+      previous: previous == null ? undefined : (previous as T),
+    }
+  }
 
   isNode(): this is Node {
     return false
@@ -56,19 +82,19 @@ export class Cell extends Basecoat {
 
   // #region
 
-  getPropByPath<T>(path: string | string[]) {
+  getByPath<T>(path: string | string[]) {
     return this.store.getByPath<T>(path)
   }
 
-  setPropByPath(
+  setByPath(
     path: string | string[],
     value: any,
-    options: Cell.SetPropByPathOptions = {},
+    options: Cell.SetByPathOptions = {},
   ) {
     this.store.setByPath(path, value, options)
   }
 
-  removePropByPath(path: string | string[], options: Cell.SetOptions = {}) {
+  removeByPath(path: string | string[], options: Cell.SetOptions = {}) {
     const paths = Array.isArray(path) ? path : path.split('/')
     // Once a property is removed from the `attrs` the CellView will
     // recognize a `dirty` flag and re-render itself in order to remove
@@ -85,7 +111,7 @@ export class Cell extends Basecoat {
   // #region zIndex
 
   get zIndex() {
-    return this.store.get<number>('zIndex') || 0
+    return this.store.get('zIndex', 0)
   }
 
   set zIndex(z: number) {
@@ -105,14 +131,14 @@ export class Cell extends Basecoat {
   // #region markup
 
   get markup() {
-    return this.store.get<string>('markup')!
+    return this.store.get('markup', '')
   }
 
-  set markup(value: string) {
+  set markup(value: View.Markup) {
     this.setMarkup(value)
   }
 
-  setMarkup(markup: string, options: Cell.SetOptions = {}) {
+  setMarkup(markup: View.Markup, options: Cell.SetOptions = {}) {
     this.store.set('markup', markup, options)
   }
 
@@ -121,8 +147,8 @@ export class Cell extends Basecoat {
   // #region attrs
 
   get attrs() {
-    const result = this.store.get<Attr.CellAttrs>('attrs')
-    return result ? JSONExt.deepCopy(result) : {}
+    const result = this.store.get('attrs') as Attr.CellAttrs
+    return result ? ObjectExt.cloneDeep(result) : {}
   }
 
   set attrs(value: Attr.CellAttrs) {
@@ -133,7 +159,7 @@ export class Cell extends Basecoat {
     this.store.set('attrs', attrs, options)
   }
 
-  getAttributeDefinition(attrName: string) {
+  getAttrDefinition(attrName: string) {
     return Attr.definitions[attrName] || null
   }
 
@@ -143,7 +169,7 @@ export class Cell extends Basecoat {
     if (path == null || path === '') {
       return this.attrs
     }
-    return this.getPropByPath<T>(this.prependAttrsPath(path))
+    return this.getByPath<T>(this.prepareAttrPath(path))
   }
 
   setAttrByPath(
@@ -151,16 +177,16 @@ export class Cell extends Basecoat {
     value: Attr.ComplexAttrValue,
     options: Cell.SetOptions = {},
   ) {
-    this.setPropByPath(this.prependAttrsPath(path), value, options)
+    this.setByPath(this.prepareAttrPath(path), value, options)
     return this
   }
 
   removeAttrByPath(path: string | string[], options: Cell.SetOptions = {}) {
-    this.removePropByPath(this.prependAttrsPath(path), options)
+    this.removeByPath(this.prepareAttrPath(path), options)
     return this
   }
 
-  protected prependAttrsPath(path: string | string[]) {
+  protected prepareAttrPath(path: string | string[]) {
     return Array.isArray(path) ? ['attrs'].concat(path) : `attrs/${path}`
   }
 
@@ -169,7 +195,7 @@ export class Cell extends Basecoat {
   // #region visible
 
   get visible() {
-    return this.store.get<boolean>('visible') !== false
+    return this.store.get('visible') !== false
   }
 
   set visible(value: boolean) {
@@ -479,37 +505,65 @@ export class Cell extends Basecoat {
 }
 
 export namespace Cell {
-  export interface SetOptions extends Store.SetOptions {}
-
-  export interface SetPropByPathOptions extends Store.SetByPathOptions {}
-
-  export interface CreateCellOptions extends JSONObject {
-    id?: string
-    markup?: string
-    attrs?: JSONObject
+  export interface Common {
+    attrs?: Attr.CellAttrs
     visible?: boolean
     zIndex?: number
   }
 
-  export interface StoreData extends CreateCellOptions {
-    parent: string
-    children: string[]
+  export interface Defaults extends Common {
+    markup?: View.Markup
+  }
+
+  export interface Options extends Common {
+    id?: string
+  }
+
+  export interface Data extends Defaults, Options {
+    parent?: string
+    children?: string[]
   }
 }
+
+export namespace Cell {
+  export interface SetOptions extends Store.SetOptions {}
+  export interface SetByPathOptions extends Store.SetByPathOptions {}
+}
+
+// export namespace Cell {
+//   interface CommonArgs {
+//     cell: Cell
+//   }
+
+//   type ChangeAttrArgs<T> = Assign<
+//     {
+//       current: T
+//       previous?: T
+//     },
+//     CommonArgs
+//   >
+
+//   export interface EventArgs {
+//     'change:zIndex': ChangeAttrArgs<number>
+//     changed: CommonArgs
+//     disposed: CommonArgs
+//   }
+// }
 
 export namespace Cell {
   export function getCellsBBox(
     cells: Cell[],
     options: { deep?: boolean } = {},
   ) {
-    const bbox = new Rectangle(0, 0, 0, 0)
+    const bbox = new Rectangle()
+
     cells.forEach(cell => {
       let rect = cell.getBBox(options)
       if (rect) {
         if (cell.isNode()) {
-          const rotation = cell.rotation
-          if (rotation != null) {
-            rect = rect.bbox(rotation)
+          const angle = cell.rotation
+          if (angle != null) {
+            rect = rect.bbox(angle)
           }
         }
         bbox.union(rect)
@@ -517,15 +571,5 @@ export namespace Cell {
     })
 
     return bbox
-  }
-}
-
-export namespace Cell {
-  export const presets = {}
-  export function config(presets?: JSONObject) {
-    this.presets = {
-      ...JSONExt.deepCopy(this.presets),
-      ...JSONExt.deepCopy(presets),
-    }
   }
 }
