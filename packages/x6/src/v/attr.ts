@@ -39,7 +39,7 @@ export function setAttribute(
 
 export function setAttributes(
   elem: Element,
-  attrs: { [attr: string]: string | number | null },
+  attrs: { [attr: string]: string | number | null | undefined },
 ) {
   Object.keys(attrs).forEach(name => {
     setAttribute(elem, name, attrs[name])
@@ -50,17 +50,17 @@ export function attr(elem: Element): { [attr: string]: string }
 export function attr(elem: Element, name: string): string
 export function attr(
   elem: Element,
-  attrs: { [attr: string]: string | number | null },
+  attrs: { [attr: string]: string | number | null | undefined },
 ): void
 export function attr(
   elem: Element,
   name: string,
-  value: string | number | null,
+  value: string | number | null | undefined,
 ): void
 export function attr(
   elem: Element,
-  name?: string | { [attr: string]: string | number | null },
-  value?: string | number | null,
+  name?: string | { [attr: string]: string | number | null | undefined },
+  value?: string | number | null | undefined,
 ) {
   if (name == null) {
     const attrs = elem.attributes
