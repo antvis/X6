@@ -5,19 +5,16 @@ export {
   unescape,
   startsWith,
   endsWith,
-  upperFirst,
-  lowerFirst,
   split,
+  repeat,
   pad,
   padEnd,
   padStart,
-  repeat,
   truncate,
-  camelCase,
-  kebabCase,
 } from 'lodash'
 
-export { exec as eval } from './eval'
+export * from './case'
 export * from './hashcode'
 export * from './uuid'
 export * from './text'
+export { exec as eval } from './eval'
