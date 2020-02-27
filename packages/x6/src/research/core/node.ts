@@ -5,6 +5,7 @@ import { Cell } from './cell'
 import { Size } from '../../types'
 import { PortData } from './port-data'
 import { View } from './view'
+import { NodeView } from './node-view'
 
 export class Node<D extends Node.Data = Node.Data> extends Cell<D> {
   // #region static
@@ -18,11 +19,17 @@ export class Node<D extends Node.Data = Node.Data> extends Cell<D> {
   public static setDefaults<T extends Node.Defaults = Node.Defaults>(
     presets: T,
   ) {
-    return super.setDefaults<T>(presets)
+    // view should not be cloned
+    const { view, ...others } = presets
+    super.setDefaults<T>(others as T)
+    this.defaults.view = view
   }
 
   public static getDefaults<T extends Node.Defaults = Node.Defaults>(): T {
-    return super.getDefaults<T>()
+    const { view, ...others } = this.defaults
+    const defaults = ObjectExt.cloneDeep(others) as T
+    defaults.view = view
+    return defaults
   }
 
   // #endregion
@@ -695,6 +702,7 @@ export namespace Node {
     portContainerMarkup?: View.Markup
     portMarkup?: View.Markup
     portLabelMarkup?: View.Markup
+    view?: NodeView
   }
 
   export interface Defaults extends Common, Cell.Defaults {}
