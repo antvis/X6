@@ -1,5 +1,12 @@
 import React from 'react'
 import { joint } from '@antv/x6'
+import {
+  Rect,
+  Rect1,
+  Circle,
+  Ellipse,
+  Rhombus,
+} from '@antv/x6/lib/research/shape/basic'
 import './index.less'
 
 export default class Example extends React.Component {
@@ -7,32 +14,53 @@ export default class Example extends React.Component {
 
   componentDidMount() {
     const graph = new joint.Graph({ container: this.container })
-    const rect = new joint.Node({
-      markup: '<g class="rotatable"><g class="scalable"><rect/></g><text/></g>',
+    const rect = new Rect({
       size: { width: 100, height: 40 },
       position: { x: 32, y: 40 },
       attrs: {
-        '.': { fill: '#ffffff', stroke: 'none' },
-        rect: {
-          fill: '#ffffff',
-          stroke: '#000000',
-          width: 100,
-          height: 60,
-        },
-        text: {
-          fill: '#000000',
-          text: 'rect',
-          fontSize: 14,
-          textAnchor: 'middle',
-          fontFamily: 'Arial, helvetica, sans-serif',
-          refX: 0.5,
-          refY: 0.5,
-          yAlignment: 'middle',
-        },
+        text: { text: 'rect' },
+      },
+    })
+
+    const circle = new Circle({
+      position: { x: 160, y: 40 },
+      attrs: {
+        text: { text: 'circle' },
+      },
+    })
+
+    const ellipse = new Ellipse({
+      position: { x: 240, y: 40 },
+      attrs: {
+        text: { text: 'ellipse' },
+      },
+    })
+
+    const rhombus = new Rhombus({
+      position: { x: 320, y: 40 },
+      attrs: {
+        text: { text: 'rhombus' },
       },
     })
 
     graph.model.addCell(rect)
+    graph.model.addCell(circle)
+    graph.model.addCell(ellipse)
+    graph.model.addCell(rhombus)
+
+    const rect1 = new Rect1({
+      size: { width: 100, height: 40 },
+      position: { x: 32, y: 120 },
+      attrs: {
+        text: { text: 'rect' },
+      },
+    })
+
+    graph.model.addCell(rect1)
+
+    rect.setAttrByPath('rect/fill', 'red')
+
+    console.log(rect1)
 
     console.log(graph)
 

@@ -404,7 +404,18 @@ export namespace Commands {
     {
       name: 'resetView',
       shortcut: `${ctrlKey}+H`,
-      handler: (graph: Graph) => graph.zoomTo(1),
+      handler: (graph: Graph) => {
+        graph.zoomTo(1)
+        graph.center()
+        // const rootNode = graph.model.getDefaultParent()
+        // if (rootNode) {
+        //   const rect = graph.getCellBounds(rootNode, true, true)
+        //   if (rect) {
+        //     console.log(rect)
+        //     graph.scrollRectToVisible(rect)
+        //   }
+        // }
+      },
     },
     {
       name: 'zoomIn',
