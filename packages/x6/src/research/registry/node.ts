@@ -1,17 +1,18 @@
-import { Node as NodeRaw } from '../core/node'
+import { Node } from '../core/node'
+import { StringExt } from '../../util'
 import { registerEntity } from './util'
 
-export interface Options extends NodeRaw.Defaults {
+export interface Options extends Node.Defaults {
   init?: () => void
 }
 
-export type NodeClass = typeof NodeRaw
+export type NodeClass = new (...args: any[]) => Node
 
 const nodes: { [name: string]: NodeClass } = {}
 
 function register(name: string, node: NodeClass, force: boolean) {
   registerEntity(nodes, name, node, force, () => {
-    throw new Error(`Shape with name '${name}' already registered.`)
+    throw new Error(`Node with name '${name}' already registered.`)
   })
 
   return node
@@ -37,16 +38,23 @@ export function registerNode(
   }
 
   const { init, ...defaults } = options
-  // tslint:disable-next-line
-  class Node extends NodeRaw {
+  const className = StringExt.pascalCase(name)
+
+  class Shape extends Node {
     init() {
+      super.init()
       if (typeof init === 'function') {
         init.call(this)
       }
     }
   }
 
-  Node.setDefaults(defaults)
+  Shape.setDefaults(defaults)
 
-  return register(name, Node as any, force)
+  Object.defineProperty(Shape, 'name', {
+    writable: true,
+    value: className,
+  })
+
+  return register(name, Shape, force)
 }

@@ -30,3 +30,32 @@ export function getEntityFromRegistry<T>(
   const ret = registry[name]
   return typeof ret === 'function' ? ret : null
 }
+
+function extendStatics(d: any, b: any) {
+  const extendStaticsInner =
+    Object.setPrototypeOf ||
+    ({ __proto__: [] } instanceof Array &&
+      function(d, b) {
+        d.__proto__ = b
+      }) ||
+    function(d, b) {
+      for (const p in b) {
+        if (b.hasOwnProperty(p)) {
+          d[p] = (b as any)[p]
+        }
+      }
+    }
+  return extendStaticsInner(d, b)
+}
+
+export function extend(d: any, b: any) {
+  extendStatics(d, b)
+  // tslint:disable-next-line
+  function C() {
+    this.constructor = d
+  }
+  d.prototype =
+    b === null
+      ? Object.create(b)
+      : ((C.prototype = b.prototype), new (C as any)())
+}
