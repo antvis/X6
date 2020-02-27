@@ -128,6 +128,8 @@ export default class Example extends React.Component {
       style: {
         ...style,
         edge: 'loop',
+        direction: 'north',
+        segment: 20,
       },
     })
   }
