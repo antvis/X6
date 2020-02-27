@@ -243,10 +243,10 @@ export abstract class CellView<C extends Cell = Cell> extends View {
   }
 
   protected startListening() {
-    this.cell.on('change', this.onAttrsChange, this)
+    this.cell.on('changed', ({ options }: any) => this.onAttrsChange(options))
   }
 
-  protected onAttrsChange(cell: C, options: any) {
+  protected onAttrsChange(options: any) {
     let flag = this.flagManager.getChangeFlag()
     if (options.updated || !flag) {
       return

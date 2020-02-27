@@ -84,7 +84,7 @@ export class Store<D> extends Basecoat<Store.EventArgs<D>> {
           current,
           previous,
           store: this,
-          options: this.pendingOptions,
+          options: this.pendingOptions!,
         })
       }
     }
@@ -315,7 +315,7 @@ export namespace Store {
         key: K
         current: D[K]
         previous: D[K]
-        options: MutateOptions | null
+        options: MutateOptions
       },
       CommonArgs<D>
     >
@@ -323,7 +323,7 @@ export namespace Store {
       {
         current: D
         previous: D
-        options: MutateOptions | null
+        options: MutateOptions
       },
       CommonArgs<D>
     >
