@@ -1,10 +1,12 @@
 import { Node } from '../core/node'
 import { StringExt } from '../../util'
-import { registerEntity } from './util'
+import { registerEntity, getEntity, createClass } from './util'
 
-export interface Options extends Node.Defaults {
+interface CellMethods {
   init?: () => void
 }
+
+export interface Options extends Node.Defaults, CellMethods {}
 
 export type NodeClass = new (...args: any[]) => Node
 
@@ -39,22 +41,19 @@ export function registerNode(
 
   const { init, ...defaults } = options
   const className = StringExt.pascalCase(name)
+  const shape = createClass<typeof Node>(className, Node)
+  shape.setDefaults(defaults)
 
-  class Shape extends Node {
-    init() {
-      super.init()
-      if (typeof init === 'function') {
-        init.call(this)
-      }
+  if (typeof init === 'function') {
+    shape.prototype.init = function() {
+      Node.prototype.init.call(this)
+      init.call(this)
     }
   }
 
-  Shape.setDefaults(defaults)
+  return register(name, shape, force)
+}
 
-  Object.defineProperty(Shape, 'name', {
-    writable: true,
-    value: className,
-  })
-
-  return register(name, Shape, force)
+export function getNode(name: string) {
+  return getEntity(nodes, name)
 }
