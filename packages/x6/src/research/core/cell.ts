@@ -58,7 +58,9 @@ export class Cell<D extends Cell.Data = Cell.Data> extends Basecoat {
       }
     })
 
-    this.store.on('changed', () => this.trigger('changed', { cell: this }))
+    this.store.on('changed', ({ options }) =>
+      this.trigger('changed', { options, cell: this }),
+    )
   }
 
   protected getChangeArgs<T>(

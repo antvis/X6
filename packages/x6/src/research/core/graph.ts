@@ -343,7 +343,7 @@ export class Graph extends View {
   // onCellRemoved(cell, _, opt) {
   //   const view = this.findViewByModel(cell)
   //   if (view) {
-  //     this.requestViewUpdate(view, FLAG_REMOVE, view.updatePriority, opt)
+  //     this.requestViewUpdate(view, FLAG_REMOVE, view.priority, opt)
   //   }
   // }
 
@@ -352,7 +352,7 @@ export class Graph extends View {
   //   if (cell.hasChanged('z') && this.options.sorting === sortingTypes.APPROX) {
   //     const view = this.findViewByModel(cell)
   //     if (view) {
-  //       this.requestViewUpdate(view, FLAG_INSERT, view.updatePriority, opt)
+  //       this.requestViewUpdate(view, FLAG_INSERT, view.priority, opt)
   //     }
   //   }
   // }
@@ -441,7 +441,7 @@ export class Graph extends View {
     //     this.scheduleViewUpdate(
     //       linkView,
     //       linkView.getFlag(flagLabels),
-    //       linkView.updatePriority,
+    //       linkView.priority,
     //       opt,
     //     )
     //   }
@@ -1093,9 +1093,10 @@ export class Graph extends View {
     } else {
       view = views[cell.id] = this.createViewForModel(cell)
       view.paper = this
+      view.graph = this
       flag = this.registerUnmountedView(view) | view.getBootstrapFlag()
     }
-    this.requestViewUpdate(view, flag, view.updatePriority, options)
+    this.requestViewUpdate(view, flag, view.priority, options)
     return view
   }
 
