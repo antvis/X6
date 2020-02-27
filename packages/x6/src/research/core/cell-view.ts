@@ -302,7 +302,8 @@ export abstract class CellView<C extends Cell = Cell> extends View {
   }
 
   setInteractivity(value: any) {
-    (this.options as any).interactive = value
+    const options = this.options as any
+    options.interactive = value
   }
 
   notify(eventName: string, ...args: any[]) {}
