@@ -1,5 +1,5 @@
 import { Node } from '../core/node'
-import { registerNode } from '../registry/node'
+import { NodeRegistry } from '../registry/node'
 
 function getMarkup(tagName: string) {
   return `<g class="rotatable"><g class="scalable"><${tagName}/></g><text/></g>`
@@ -26,7 +26,7 @@ const shapeAttr = {
 }
 
 // tslint:disable-next-line
-export const Rect1 = registerNode('rect', {
+export const Rect1 = NodeRegistry.register('basic.rect', {
   markup: getMarkup('rect'),
   attrs: {
     ...commonAttr,
