@@ -12,22 +12,9 @@ export {
   extend,
 } from 'lodash'
 
-import { has, isPlainObject } from 'lodash'
+export * from './inherit'
 
-/**
- * @see https://www.typescriptlang.org/docs/handbook/mixins.html
- */
-export function applyMixins(derivedCtor: any, ...baseCtors: any[]) {
-  baseCtors.forEach(baseCtor => {
-    Object.getOwnPropertyNames(baseCtor.prototype).forEach(name => {
-      Object.defineProperty(
-        derivedCtor.prototype,
-        name,
-        Object.getOwnPropertyDescriptor(baseCtor.prototype, name)!,
-      )
-    })
-  })
-}
+import { has, isPlainObject } from 'lodash'
 
 export function ensure<T>(value: T | null | undefined, defaultValue: T) {
   return value != null ? value : defaultValue!
