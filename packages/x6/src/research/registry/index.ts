@@ -1,1 +1,1 @@
-export { registerNode } from './node'
+export { NodeRegistry } from './node'
