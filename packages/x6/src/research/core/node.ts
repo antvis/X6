@@ -1,4 +1,3 @@
-import cloneDeep from 'lodash/cloneDeep'
 import { StringExt, ObjectExt } from '../../util'
 import { Point, Rectangle, Angle } from '../../geometry'
 import { Cell } from './cell'
@@ -16,19 +15,22 @@ export class Node<D extends Node.Data = Node.Data> extends Cell<D> {
     size: { width: 1, height: 1 },
   }
 
-  public static setDefaults<T extends Node.Defaults = Node.Defaults>(
-    presets: T,
-  ) {
-    // view should not be cloned
-    const { view, ...others } = presets
-    super.setDefaults<T>(others as T)
-    this.defaults.view = view
-  }
+  public static mergeDefaults<T extends Node.Defaults = Node.Defaults>(
+    target: T,
+    source?: T,
+  ): T {
+    const { view: viewTarget, ...targetBase } = target
+    if (source == null) {
+      const defaults = super.mergeDefaults<T>(targetBase as T)
+      defaults.view = viewTarget
+      return defaults
+    }
 
-  public static getDefaults<T extends Node.Defaults = Node.Defaults>(): T {
-    const { view, ...others } = this.defaults
-    const defaults = ObjectExt.cloneDeep(others) as T
-    defaults.view = view
+    const { view: viewSource, ...sourceBase } = source
+    const defaults = super.mergeDefaults<T>(targetBase as T, sourceBase as T)
+    if (viewSource || viewTarget) {
+      defaults.view = viewSource || viewTarget
+    }
     return defaults
   }
 
@@ -470,11 +472,13 @@ export class Node<D extends Node.Data = Node.Data> extends Cell<D> {
   }
 
   getPorts() {
-    return cloneDeep(this.ports.items)
+    return ObjectExt.cloneDeep(this.ports.items)
   }
 
   getPort(id: string) {
-    return cloneDeep(this.ports.items.find(port => port.id && port.id === id))
+    return ObjectExt.cloneDeep(
+      this.ports.items.find(port => port.id && port.id === id),
+    )
   }
 
   hasPorts() {
