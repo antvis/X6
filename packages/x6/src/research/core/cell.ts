@@ -14,14 +14,26 @@ export class Cell<D extends Cell.Data = Cell.Data> extends Basecoat {
 
   protected static defaults: Cell.Defaults = {}
 
+  public static mergeDefaults<T extends Cell.Defaults = Cell.Defaults>(
+    target: T,
+    source?: T,
+  ): T {
+    if (source == null) {
+      return ObjectExt.cloneDeep(target)
+    }
+    return ObjectExt.merge({}, target, source)
+  }
+
   public static setDefaults<T extends Cell.Defaults = Cell.Defaults>(
     presets: T,
   ) {
-    this.defaults = ObjectExt.merge({}, this.defaults, presets)
+    this.defaults = this.mergeDefaults(this.defaults, presets)
   }
 
-  public static getDefaults<T extends Cell.Defaults = Cell.Defaults>(): T {
-    return ObjectExt.cloneDeep(this.defaults) as T
+  public static getDefaults<T extends Cell.Defaults = Cell.Defaults>(
+    raw: boolean = false,
+  ): T {
+    return (raw ? this.defaults : this.mergeDefaults(this.defaults)) as T
   }
 
   // #endregion
@@ -36,7 +48,7 @@ export class Cell<D extends Cell.Data = Cell.Data> extends Basecoat {
   constructor(options: Cell.Options = {}) {
     super()
     this.id = options.id || StringExt.uuid()
-    const data = ObjectExt.merge(this.getDefaults(), options) as Partial<D>
+    const data = this.getDefaults(options) as Partial<D>
     this.store = new Store<D>(data)
     this.startListening()
     this.init()
@@ -44,8 +56,9 @@ export class Cell<D extends Cell.Data = Cell.Data> extends Basecoat {
 
   protected init() {}
 
-  protected getDefaults(): Cell.Defaults {
-    return (this.constructor as any).getDefaults()
+  protected getDefaults(options: Cell.Options): Cell.Defaults {
+    const ctor = this.constructor as typeof Cell
+    return ctor.mergeDefaults(ctor.getDefaults(true), options)
   }
 
   protected startListening() {
