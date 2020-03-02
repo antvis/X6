@@ -1,5 +1,6 @@
 import React from 'react'
-import { Graph, Shape, MiniMap } from '@antv/x6'
+import ReactDom from 'react-dom'
+import { Graph, Shape, MiniMap, Cell } from '@antv/x6'
 import { ReactShape } from '@antv/x6-react-shape'
 import { randomColor, invertColor } from '../util'
 import './index.less'
@@ -78,23 +79,46 @@ export default class Example extends React.Component {
         label: false, // no label
         stroke: 'none',
         shape: 'react',
-        component: (
-          <div
-            style={{
-              color: invertColor(bg1, true),
-              width: '100%',
-              height: '100%',
-              background: bg1,
-              textAlign: 'center',
-              lineHeight: '40px',
-            }}
-            onClick={() => {
-              console.log('React Component Clicked')
-            }}
-          >
-            React Component
-          </div>
-        ),
+        data: {
+          x: 1,
+          y: 2,
+        },
+        component: (cell: Cell) => {
+          return (
+            <div
+              style={{
+                color: invertColor(bg1, true),
+                width: '100%',
+                height: '100%',
+                background: bg1,
+                textAlign: 'center',
+                lineHeight: '40px',
+              }}
+              onClick={() => {
+                console.log('cell.data:', cell.data)
+              }}
+            >
+              React Component
+            </div>
+          )
+        },
+        // component: (
+        //   <div
+        //     style={{
+        //       color: invertColor(bg1, true),
+        //       width: '100%',
+        //       height: '100%',
+        //       background: bg1,
+        //       textAlign: 'center',
+        //       lineHeight: '40px',
+        //     }}
+        //     onClick={() => {
+        //       console.log('React Component Clicked')
+        //     }}
+        //   >
+        //     React Component
+        //   </div>
+        // ),
       })
 
       const bg2 = randomColor()
@@ -133,11 +157,40 @@ export default class Example extends React.Component {
         fontColor: invertColor(bg3, true),
       })
 
+      const customRenderEdge = (cell: Cell) => {
+        const divContainer = document.createElement('div')
+        divContainer.style.width = '160px'
+        divContainer.style.height = '20px'
+        divContainer.style.background = '#00ff00'
+        ReactDom.render(
+          <div
+            onClick={() => {
+              console.log('cell', cell)
+            }}
+          >
+            Custom Edge Component
+          </div>,
+          divContainer,
+        )
+        return divContainer
+      }
       graph.addEdge({
         source: node1,
         target: node2,
-        label: 'Label',
+        curved: true,
+        rounded: true,
+        data: {
+          x: 1,
+          y: 2,
+        },
+        label: (cell: Cell) => customRenderEdge(cell),
       })
+
+      // graph.addEdge({
+      //   source: node1,
+      //   target: node2,
+      //   label: 'Label',
+      // })
     })
 
     // this.renderSimpleReactShape()
