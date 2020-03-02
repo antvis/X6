@@ -152,7 +152,11 @@ export function append(
 
 export function prepend(
   elem: Element,
-  elems: Element | Vectorizer | (Element | Vectorizer)[],
+  elems:
+    | Element
+    | DocumentFragment
+    | Vectorizer
+    | (Element | DocumentFragment | Vectorizer)[],
 ) {
   const child = elem.firstChild
   return child ? before(child as HTMLElement, elems) : append(elem, elems)
@@ -160,7 +164,11 @@ export function prepend(
 
 export function before(
   elem: Element,
-  elems: Element | Vectorizer | (Element | Vectorizer)[],
+  elems:
+    | Element
+    | DocumentFragment
+    | Vectorizer
+    | (Element | DocumentFragment | Vectorizer)[],
 ) {
   const parent = elem.parentNode
   if (parent) {
