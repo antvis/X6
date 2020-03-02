@@ -1154,10 +1154,20 @@ export namespace Path {
   ): Segment
   export function createSegment(
     type: 'C',
-    ...args: GetConstructorArgs<typeof CurveTo>
+    x0: number,
+    y0: number,
+    x1: number,
+    y1: number,
+    x2: number,
+    y2: number,
+  ): Segment
+  export function createSegment(
+    type: 'C',
+    p1: Point | Point.PointLike | Point.PointData,
+    p2: Point | Point.PointLike | Point.PointData,
+    p3: Point | Point.PointLike | Point.PointData,
   ): Segment
   export function createSegment(type: 'Z' | 'z'): Segment
-
   export function createSegment(
     type: 'L' | 'M' | 'C' | 'Z' | 'z',
     ...args: any[]
