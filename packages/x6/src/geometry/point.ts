@@ -350,6 +350,18 @@ export namespace Point {
     return new Point(p.x, p.y)
   }
 
+  export function toJSON(p: Point | PointLike | PointData) {
+    if (p instanceof Point) {
+      return { x: p.x, y: p.y }
+    }
+
+    if (Array.isArray(p)) {
+      return { x: p[0], y: p[1] }
+    }
+
+    return { x: p.x, y: p.y }
+  }
+
   /**
    * Returns a new Point object from the given polar coordinates.
    * @see http://en.wikipedia.org/wiki/Polar_coordinate_system
