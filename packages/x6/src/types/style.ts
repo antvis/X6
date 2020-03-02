@@ -2,6 +2,8 @@ import { Route } from '../route'
 import { FontStyle } from '../enum'
 import { Perimeter } from '../perimeter'
 import { Align, VAlign } from './align'
+import { Graph } from '../graph'
+import { Cell } from '../core'
 
 export type Dialect = 'svg' | 'html'
 export type LabelPosition = 'left' | 'center' | 'right'
@@ -63,7 +65,12 @@ interface ShapeStyle {
 }
 
 interface LabelStyle {
-  label?: false | string | HTMLElement | null
+  label?:
+    | false
+    | string
+    | HTMLElement
+    | null
+    | ((this: Graph, cell: Cell) => HTMLElement | null | undefined)
   htmlLabel?: boolean
   horizontal?: boolean
   fontSize?: number

@@ -5,7 +5,10 @@ export type Component = React.ReactElement
 
 declare module '@antv/x6/lib/types/style' {
   interface Style {
-    component?: Component | null
+    component?:
+      | ((this: Graph, cell: Cell) => Component | null | undefined)
+      | Component
+      | null
   }
 }
 
@@ -29,7 +32,11 @@ Graph.prototype.getReactComponent = function(this: Graph, cell: Cell) {
     }
   }
   const style = this.getStyle(cell)
-  return style != null ? style.component : null
+  const ret = style != null ? style.component : null
+  if (typeof ret === 'function') {
+    return ret.call(this, cell)
+  }
+  return ret
 }
 
 const old = Renderer.prototype.configShape
