@@ -107,6 +107,9 @@ export class CommonAccessor extends BaseGraph {
       const style = this.getStyle(cell)
       if (style.label !== false && style.label != null) {
         result = style.label
+        if (typeof result === 'function') {
+          result = result.call(this, cell)
+        }
       }
     }
 
