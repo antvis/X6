@@ -233,17 +233,35 @@ export class Vectorizer {
     return this
   }
 
-  append(elems: Element | Vectorizer | (Element | Vectorizer)[]) {
+  append(
+    elems:
+      | Element
+      | DocumentFragment
+      | Vectorizer
+      | (Element | DocumentFragment | Vectorizer)[],
+  ) {
     Static.append(this.node, elems)
     return this
   }
 
-  prepend(elems: Element | Vectorizer | (Element | Vectorizer)[]) {
+  prepend(
+    elems:
+      | Element
+      | DocumentFragment
+      | Vectorizer
+      | (Element | DocumentFragment | Vectorizer)[],
+  ) {
     Static.prepend(this.node, elems)
     return this
   }
 
-  before(elems: Element | Vectorizer | (Element | Vectorizer)[]) {
+  before(
+    elems:
+      | Element
+      | DocumentFragment
+      | Vectorizer
+      | (Element | DocumentFragment | Vectorizer)[],
+  ) {
     Static.before(this.node, elems)
     return this
   }
