@@ -49,7 +49,7 @@ export class Polyline {
 
   bbox() {
     if (this.points.length === 0) {
-      return null
+      return new Rectangle()
     }
 
     let x1 = Infinity
