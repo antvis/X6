@@ -1,1 +1,2 @@
-export { NodeRegistry } from './node'
+export * from './node'
+export * from './anchor'
