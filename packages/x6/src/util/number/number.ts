@@ -28,6 +28,39 @@ export function isPercentage(val: any): val is string {
   return typeof val === 'string' && val.slice(-1) === '%'
 }
 
+export function normalizePercentage(
+  num: number | string | null | undefined,
+  ref: number,
+) {
+  if (num == null) {
+    return 0
+  }
+
+  let raw: number
+
+  if (typeof num === 'string') {
+    raw = parseFloat(num)
+    if (isPercentage(num)) {
+      raw /= 100
+      if (isFinite(raw)) {
+        return raw * ref
+      }
+    }
+  } else {
+    raw = num
+  }
+
+  if (!isFinite(raw)) {
+    return 0
+  }
+
+  if (raw > 0 && raw < 1) {
+    return raw * ref
+  }
+
+  return raw
+}
+
 export function parseCssNumeric(val: string, units?: string | string[]) {
   function getUnit(regexp: string) {
     const matches = new RegExp(`(?:\\d+(?:\\.\\d+)*)(${regexp})$`).exec(val)
