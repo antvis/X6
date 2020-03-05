@@ -11,6 +11,7 @@ export {
   padEnd,
   padStart,
   truncate,
+  template,
 } from 'lodash'
 
 export * from './case'
