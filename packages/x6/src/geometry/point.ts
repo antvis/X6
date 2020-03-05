@@ -324,6 +324,25 @@ export namespace Point {
   }
 
   export type PointData = [number, number]
+
+  export function isPointLike(o: any): o is PointLike {
+    return (
+      o != null &&
+      typeof o === 'object' &&
+      typeof o.x === 'number' &&
+      typeof o.y === 'number'
+    )
+  }
+
+  export function isPointData(o: any): o is PointData {
+    return (
+      o != null &&
+      Array.isArray(o) &&
+      o.length === 2 &&
+      typeof o[0] === 'number' &&
+      typeof o[1] === 'number'
+    )
+  }
 }
 
 export namespace Point {
