@@ -368,7 +368,7 @@ export class Path {
     return lastVisibleIndex
   }
 
-  protected getSegmentSubdivisions(options: Path.Options = {}): Segment[][] {
+  getSegmentSubdivisions(options: Path.Options = {}): Segment[][] {
     const precision = this.getPrecision(options)
     const segmentSubdivisions = []
     for (let i = 0, ii = this.segments.length; i < ii; i += 1) {
@@ -1088,8 +1088,8 @@ export class Path {
 
 export namespace Path {
   export interface Options {
-    precision?: number
-    segmentSubdivisions?: Segment[][]
+    precision?: number | null
+    segmentSubdivisions?: Segment[][] | null
   }
 }
 export namespace Path {
