@@ -732,6 +732,13 @@ export namespace Rectangle {
     return new Rectangle(0, 0, size.width, size.height)
   }
 
+  export function fromPositionAndSize(
+    pos: Point | Point.PointLike,
+    size: Size,
+  ) {
+    return new Rectangle(pos.x, pos.y, size.width, size.height)
+  }
+
   export function fromEllipse(ellipse: Ellipse) {
     return new Rectangle(
       ellipse.x - ellipse.a,
