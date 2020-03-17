@@ -1,19 +1,28 @@
-import { Point } from '../../geometry'
+import { Router } from './index'
+
+export interface OneSideOptions {
+  side?: 'left' | 'top' | 'right' | 'bottom'
+  padding?: number
+}
 
 /**
  * Routes the link always to/from a certain side
  */
-export function oneSide(vertices: Point[], options: Options, linkView) {
+export const oneSide: Router.Definition<OneSideOptions> = (
+  vertices,
+  options,
+  edgeView,
+) => {
   const side = options.side || 'bottom'
   const pd = options.padding || 40
   const padding = { left: pd, top: pd, right: pd, bottom: pd }
-  const sourceBBox = linkView.sourceBBox
-  const targetBBox = linkView.targetBBox
-  const sourcePoint = sourceBBox.center()
-  const targetPoint = targetBBox.center()
+  const sourceBBox = edgeView.sourceBBox
+  const targetBBox = edgeView.targetBBox
+  const sourcePoint = sourceBBox.getCenter()
+  const targetPoint = targetBBox.getCenter()
 
-  let coordinate
-  let dimension
+  let coordinate: 'x' | 'y'
+  let dimension: 'width' | 'height'
   let direction
 
   switch (side) {
@@ -53,10 +62,5 @@ export function oneSide(vertices: Point[], options: Options, linkView) {
     sourcePoint[coordinate] = targetPoint[coordinate]
   }
 
-  return [sourcePoint].concat(vertices, targetPoint)
-}
-
-export interface Options {
-  side?: 'left' | 'top' | 'right' | 'bottom'
-  padding?: number
+  return [sourcePoint.toJSON(), ...vertices, targetPoint.toJSON()]
 }
