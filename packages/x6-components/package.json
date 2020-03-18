@@ -3,29 +3,30 @@
   "version": "0.2.0",
   "description": "React components for building x6 editors",
   "main": "lib/index.js",
-  "module": "es/index.js",
+  "module": "esm/index.js",
+  "unpkg": "dist/x6-components.min.js",
   "browser": "dist/x6-components.min.js",
   "types": "lib/index.d.ts",
   "files": [
     "dist",
-    "lib",
-    "es"
+    "esm",
+    "lib"
   ],
   "sideEffects": [
-    "es/**/style/*",
+    "esm/**/style/*",
     "lib/**/style/*",
     "*.less"
   ],
   "scripts": {
-    "clean": "rimraf dist es lib",
+    "clean": "rimraf dist esm lib",
     "lint": "run-s lint:ts lint:es lint:style",
     "lint:es": "eslint --ext .js scripts --fix",
     "lint:ts": "tslint -c tslint.json -p tsconfig.json --fix",
     "lint:style": "stylelint 'src/**/*.less' --syntax less --fix",
-    "build:es": "tsc --module es2015 --target es2015 --outDir ./es",
-    "build:lib": "tsc --module commonjs --target es5 --outDir ./lib",
+    "build:esm": "tsc --module ESNext --target es5 --outDir ./esm",
+    "build:cjs": "tsc --module commonjs --target es5 --outDir ./lib",
     "build:umd": "webpack --config webpack.config.ts --mode production",
-    "build:ts": "run-p build:lib build:es",
+    "build:ts": "run-p build:cjs build:esm",
     "build:less": "node ./scripts/less.js",
     "build": "run-s build:ts build:less",
     "prebuild": "run-s lint clean",
