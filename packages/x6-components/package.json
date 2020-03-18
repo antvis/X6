@@ -3,27 +3,27 @@
   "version": "0.2.0",
   "description": "React components for building x6 editors",
   "main": "lib/index.js",
-  "module": "esm/index.js",
+  "module": "es/index.js",
   "unpkg": "dist/x6-components.min.js",
   "browser": "dist/x6-components.min.js",
   "types": "lib/index.d.ts",
   "files": [
     "dist",
-    "esm",
+    "es",
     "lib"
   ],
   "sideEffects": [
-    "esm/**/style/*",
+    "es/**/style/*",
     "lib/**/style/*",
     "*.less"
   ],
   "scripts": {
-    "clean": "rimraf dist esm lib",
+    "clean": "rimraf dist es lib",
     "lint": "run-s lint:ts lint:es lint:style",
     "lint:es": "eslint --ext .js scripts --fix",
     "lint:ts": "tslint -c tslint.json -p tsconfig.json --fix",
     "lint:style": "stylelint 'src/**/*.less' --syntax less --fix",
-    "build:esm": "tsc --module ESNext --target es5 --outDir ./esm",
+    "build:esm": "tsc --module ESNext --target es5 --outDir ./es",
     "build:cjs": "tsc --module commonjs --target es5 --outDir ./lib",
     "build:umd": "webpack --config webpack.config.ts --mode production",
     "build:ts": "run-p build:cjs build:esm",
