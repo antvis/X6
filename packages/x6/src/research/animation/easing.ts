@@ -1,7 +1,7 @@
 import { FunctionKeys } from 'utility-types'
 
 export namespace Easing {
-  export type Func = (t: number) => number
+  export type Definition = (t: number) => number
   export type Names = FunctionKeys<typeof Easing>
 }
 
