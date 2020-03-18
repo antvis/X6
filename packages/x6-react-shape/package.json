@@ -1,6 +1,6 @@
 {
   "name": "@antv/x6-react-shape",
-  "version": "0.2.0",
+  "version": "0.2.2",
   "description": "x6 shape for rendering react components",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -24,7 +24,7 @@
     "watch": "watch 'yarn build' ./src",
     "build:esm": "tsc --module esnext --target es2015 --outDir ./es",
     "build:cjs": "tsc --module commonjs --target es5 --outDir ./lib",
-    "build:umd": "webpack --config webpack.config.ts --mode production",
+    "build:umd": "webpack --config webpack.config.ts ",
     "build": "run-p build:cjs build:esm build:umd",
     "prebuild": "run-s lint clean",
     "prepare": "yarn build",
