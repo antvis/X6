@@ -5,7 +5,7 @@
       "**/lib"
   ],
   "compilerOptions": {
-    "module": "commonjs",
+    "module": "CommonJS",
     "moduleResolution": "node",
     "sourceMap": true,
     "declaration": true,
