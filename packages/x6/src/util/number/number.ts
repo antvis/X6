@@ -103,3 +103,44 @@ export function parseCssNumeric(val: string, units?: string | string[]) {
     value: number,
   }
 }
+
+export type SideOptions =
+  | number
+  | {
+      vertical?: number
+      horizontal?: number
+      left?: number
+      top?: number
+      right?: number
+      bottom?: number
+    }
+
+export function normalizeSides(box: SideOptions) {
+  if (typeof box === 'object') {
+    let left = 0
+    let top = 0
+    let right = 0
+    let bottom = 0
+
+    if (box.vertical != null && isFinite(box.vertical)) {
+      top = bottom = box.vertical
+    }
+    if (box.horizontal != null && isFinite(box.horizontal)) {
+      right = left = box.horizontal
+    }
+
+    if (box.left != null && isFinite(box.left)) left = box.left
+    if (box.top != null && isFinite(box.top)) top = box.top
+    if (box.right != null && isFinite(box.right)) right = box.right
+    if (box.bottom != null && isFinite(box.bottom)) bottom = box.bottom
+
+    return { top, right, bottom, left }
+  }
+
+  let val = 0
+  if (box != null && isFinite(box)) {
+    val = box
+  }
+
+  return { top: val, right: val, bottom: val, left: val }
+}
