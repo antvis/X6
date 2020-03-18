@@ -1,15 +1,16 @@
 {
   "name": "@antv/x6-react-shape",
-  "version": "0.1.3",
+  "version": "0.2.0",
   "description": "x6 shape for rendering react components",
   "main": "lib/index.js",
-  "module": "es/index.js",
+  "module": "esm/index.js",
+  "unpkg": "dist/x6-react-shape.min.js",
   "browser": "dist/x6-react-shape.min.js",
   "types": "lib/index.d.ts",
   "files": [
     "dist",
-    "lib",
-    "es"
+    "esm",
+    "lib"
   ],
   "keywords": [
     "shape",
@@ -19,13 +20,13 @@
     "antv"
   ],
   "scripts": {
-    "clean": "rimraf dist es lib",
+    "clean": "rimraf dist esm lib",
     "lint": "tslint -c tslint.json -p tsconfig.json --fix",
     "watch": "watch 'yarn build' ./src",
-    "build:es": "tsc --module es2015 --target es2015 --outDir ./es",
-    "build:lib": "tsc --module commonjs --target es5 --outDir ./lib",
+    "build:esm": "tsc --module ESNext --target es5 --outDir ./esm",
+    "build:cjs": "tsc --module commonjs --target es5 --outDir ./lib",
     "build:umd": "webpack --config webpack.config.ts --mode production",
-    "build": "run-p build:lib build:es build:umd",
+    "build": "run-p build:cjs build:esm build:umd",
     "prebuild": "run-s lint clean",
     "prepare": "yarn build",
     "precommit": "lint-staged"
@@ -44,8 +45,8 @@
   "devDependencies": {
     "@babel/core": "^7.8.7",
     "@babel/preset-env": "^7.8.7",
-    "@types/react": "^16.9.13",
     "@types/node": "^13.9.1",
+    "@types/react": "^16.9.13",
     "@types/webpack": "^4.41.7",
     "babel-loader": "^8.0.6",
     "lint-staged": "^9.2.1",
@@ -54,8 +55,8 @@
     "react-dom": "^16.12.0",
     "rimraf": "^3.0.0",
     "sinon": "^7.5.0",
-    "ts-node": "^8.6.2",
     "ts-jest": "^24.0.2",
+    "ts-node": "^8.6.2",
     "tslint": "^5.18.0",
     "typescript": "^3.5.3",
     "watch": "^1.0.2",
