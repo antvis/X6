@@ -6,5 +6,5 @@ lerna-debug.log
 node_modules
 coverage
 lib
-esm
+es
 dist
