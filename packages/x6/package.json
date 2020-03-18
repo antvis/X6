@@ -3,13 +3,13 @@
   "version": "0.3.0",
   "description": "JavaScript diagramming library",
   "main": "lib/index.js",
-  "module": "esm/index.js",
+  "module": "es/index.js",
   "unpkg": "dist/x6.min.js",
   "browser": "dist/x6.min.js",
   "types": "lib/index.d.ts",
   "files": [
     "dist",
-    "esm",
+    "es",
     "lib"
   ],
   "keywords": [
@@ -24,14 +24,14 @@
     "antv"
   ],
   "scripts": {
-    "clean:build": "rimraf dist esm lib",
+    "clean:build": "rimraf dist es lib",
     "clean:coverage": "rimraf ./test/coverage",
     "clean": "run-p clean:build clean:coverage",
     "lint": "run-s lint:ts lint:es lint:style",
     "lint:es": "eslint --ext .js scripts --fix",
     "lint:ts": "tslint -c tslint.json -p tsconfig.json --fix",
     "lint:style": "stylelint 'src/**/*.less' --syntax less --fix",
-    "build:esm": "tsc --module ESNext --target es5 --outDir ./esm",
+    "build:esm": "tsc --module ESNext --target es5 --outDir ./es",
     "build:cjs": "tsc --module commonjs --target es5 --outDir ./lib",
     "build:umd": "webpack --config webpack.config.ts --mode production",
     "build:less": "lessc ./src/index.less ./lib/index.css",
