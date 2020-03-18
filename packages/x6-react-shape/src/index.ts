@@ -1,5 +1,2 @@
 import './extend'
-import { ReactShape } from './shape'
-
-export { ReactShape }
-export default ReactShape
+export * from './shape'
