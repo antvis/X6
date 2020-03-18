@@ -7,7 +7,7 @@ const path = require('path')
 const fse = require('fs-extra')
 
 const cwd = process.cwd()
-const es = path.join(cwd, 'es')
+const es = path.join(cwd, 'esm')
 const lib = path.join(cwd, 'lib')
 const src = path.join(cwd, 'src')
 
