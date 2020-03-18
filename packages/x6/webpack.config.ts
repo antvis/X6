@@ -4,7 +4,7 @@ import baseConfig from '../../webpack.config.base'
 const config: webpack.Configuration = {
   ...baseConfig,
   entry: {
-    x6: './src/index.ts',
+    x6: './src/umd.ts',
   },
   output: {
     ...baseConfig.output,
