@@ -3,13 +3,13 @@
   "version": "0.2.0",
   "description": "x6 shape for rendering react components",
   "main": "lib/index.js",
-  "module": "esm/index.js",
+  "module": "es/index.js",
   "unpkg": "dist/x6-react-shape.min.js",
   "browser": "dist/x6-react-shape.min.js",
   "types": "lib/index.d.ts",
   "files": [
     "dist",
-    "esm",
+    "es",
     "lib"
   ],
   "keywords": [
@@ -20,10 +20,10 @@
     "antv"
   ],
   "scripts": {
-    "clean": "rimraf dist esm lib",
+    "clean": "rimraf dist es lib",
     "lint": "tslint -c tslint.json -p tsconfig.json --fix",
     "watch": "watch 'yarn build' ./src",
-    "build:esm": "tsc --module ESNext --target es5 --outDir ./esm",
+    "build:esm": "tsc --module ESNext --target es5 --outDir ./es",
     "build:cjs": "tsc --module commonjs --target es5 --outDir ./lib",
     "build:umd": "webpack --config webpack.config.ts --mode production",
     "build": "run-p build:cjs build:esm build:umd",
