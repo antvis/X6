@@ -4,15 +4,13 @@
   "description": "x6 shape for rendering react components",
   "main": "lib/index.js",
   "module": "es/index.js",
+  "browser": "dist/x6-react-shape.min.js",
   "types": "lib/index.d.ts",
   "files": [
+    "dist",
     "lib",
     "es"
   ],
-  "directories": {
-    "lib": "lib/",
-    "src": "src/"
-  },
   "keywords": [
     "shape",
     "react",
@@ -21,14 +19,13 @@
     "antv"
   ],
   "scripts": {
-    "clean:es": "rimraf ./es",
-    "clean:lib": "rimraf ./lib",
-    "clean": "run-p clean:es clean:lib",
+    "clean": "rimraf dist es lib",
     "lint": "tslint -c tslint.json -p tsconfig.json --fix",
     "watch": "watch 'yarn build' ./src",
-    "build:lib": "tsc --module commonjs --target es5 --outDir ./lib",
     "build:es": "tsc --module es2015 --target es2015 --outDir ./es",
-    "build": "run-p build:lib build:es",
+    "build:lib": "tsc --module commonjs --target es5 --outDir ./lib",
+    "build:umd": "webpack --config webpack.config.ts --mode production",
+    "build": "run-p build:lib build:es build:umd",
     "prebuild": "run-s lint clean",
     "prepare": "yarn build",
     "precommit": "lint-staged"
@@ -45,17 +42,25 @@
     "react-dom": ">=16.8.6"
   },
   "devDependencies": {
+    "@babel/core": "^7.8.7",
+    "@babel/preset-env": "^7.8.7",
     "@types/react": "^16.9.13",
+    "@types/node": "^13.9.1",
+    "@types/webpack": "^4.41.7",
+    "babel-loader": "^8.0.6",
     "lint-staged": "^9.2.1",
     "npm-run-all": "^4.1.5",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "rimraf": "^3.0.0",
     "sinon": "^7.5.0",
+    "ts-node": "^8.6.2",
     "ts-jest": "^24.0.2",
     "tslint": "^5.18.0",
     "typescript": "^3.5.3",
-    "watch": "^1.0.2"
+    "watch": "^1.0.2",
+    "webpack": "^4.42.0",
+    "webpack-cli": "^3.3.11"
   },
   "author": {
     "name": "bubkoo",
