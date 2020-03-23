@@ -27,13 +27,13 @@ export namespace ConnectorRegistry {
     })
   }
 
-  export function getConnector<T extends Connector.NativeNames>(
+  export function get<T extends Connector.NativeNames>(
     name: T,
   ): Connector.Definition<Connector.OptionsMap[T]>
-  export function getConnector<T extends KeyValue = KeyValue>(
+  export function get<T extends KeyValue = KeyValue>(
     name: string,
   ): Connector.Definition<T> | null
-  export function getConnector(name: string) {
+  export function get(name: string) {
     return getEntity(connectors, name)
   }
 

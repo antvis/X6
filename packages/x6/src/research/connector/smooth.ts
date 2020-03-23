@@ -1,11 +1,11 @@
-import { Point, Curve, Path } from '../../geometry'
-import { ConnectorOptions } from './util'
+import { Curve, Path } from '../../geometry'
+import { Connector } from './index'
 
-export function smooth(
-  sourcePoint: Point,
-  targetPoint: Point,
-  routePoints: Point[],
-  options: ConnectorOptions = {},
+export const smooth: Connector.Definition = function(
+  sourcePoint,
+  targetPoint,
+  routePoints,
+  options = {},
 ) {
   let path
 

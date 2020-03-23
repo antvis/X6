@@ -25,17 +25,17 @@ export namespace RouterRegistry {
     })
   }
 
-  export function getRouter<T extends Router.NativeNames>(
+  export function get<T extends Router.NativeNames>(
     name: T,
   ): Router.Definition<Router.OptionsMap[T]>
-  export function getRouter<T extends KeyValue = KeyValue>(
+  export function get<T extends KeyValue = KeyValue>(
     name: string,
   ): Router.Definition<T> | null
-  export function getRouter(name: string) {
+  export function get(name: string) {
     return getEntity(routers, name)
   }
 
-  export function getRouterNames() {
+  export function getNames() {
     return Object.keys(routers)
   }
 }

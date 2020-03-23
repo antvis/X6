@@ -117,11 +117,15 @@ export class Store<D> extends Basecoat<Store.EventArgs<D>> {
     return undefined
   }
 
-  set<K extends keyof D>(key: K, value: D[K], options?: Store.SetOptions): this
+  set<K extends keyof D>(
+    key: K,
+    value: D[K] | null | undefined | void,
+    options?: Store.SetOptions,
+  ): this
   set(data: D, options?: Store.SetOptions): this
   set<K extends keyof D>(
     key: K | Partial<D>,
-    value?: D[K] | Store.SetOptions,
+    value?: D[K] | null | undefined | void | Store.SetOptions,
     options?: Store.SetOptions,
   ): this {
     if (key != null) {

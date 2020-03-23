@@ -1,15 +1,15 @@
 import { Point, Path } from '../../geometry'
-import { ConnectorOptions } from './util'
+import { Connector } from './index'
 
-export interface RoundedConnectorOptions extends ConnectorOptions {
+export interface RoundedConnectorOptions extends Connector.BaseOptions {
   radius?: number
 }
 
-export function rounded(
-  sourcePoint: Point,
-  targetPoint: Point,
-  routePoints: Point[],
-  options: RoundedConnectorOptions = {},
+export const rounded: Connector.Definition<RoundedConnectorOptions> = function(
+  sourcePoint,
+  targetPoint,
+  routePoints,
+  options = {},
 ) {
   const path = new Path()
 

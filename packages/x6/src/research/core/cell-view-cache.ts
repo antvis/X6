@@ -2,28 +2,41 @@ import { v } from '../../v'
 import { JSONObject } from '../../util'
 import { Dictionary } from '../../struct'
 import { CellView } from './cell-view'
-import { Line, Rectangle, Ellipse, Polyline, Path } from '../../geometry'
+import {
+  Line,
+  Rectangle,
+  Ellipse,
+  Polyline,
+  Path,
+  Segment,
+} from '../../geometry'
 
 export class CellViewCache {
-  protected cache: Dictionary<Element, CellView.CacheItem>
+  protected elemCache: Dictionary<Element, CellViewCache.CacheItem>
+  public pathCache: {
+    data?: string
+    length?: number
+    segmentSubdivisions?: Segment[][]
+  }
 
   constructor(protected view: CellView) {
     this.clean()
   }
 
   clean() {
-    if (this.cache) {
-      this.cache.dispose()
+    if (this.elemCache) {
+      this.elemCache.dispose()
     }
-    this.cache = new Dictionary()
+    this.elemCache = new Dictionary()
+    this.pathCache = {}
   }
 
   get(elem: Element) {
-    const cache = this.cache
+    const cache = this.elemCache
     if (!cache.has(elem)) {
-      this.cache.set(elem, {})
+      this.elemCache.set(elem, {})
     }
-    return this.cache.get(elem)!
+    return this.elemCache.get(elem)!
   }
 
   getData(elem: Element) {

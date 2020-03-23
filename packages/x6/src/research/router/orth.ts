@@ -268,11 +268,11 @@ export interface OrthOptions {
   padding?: NumberExt.SideOptions
 }
 
-export const orth: Router.Definition<OrthOptions> = (
+export const orth: Router.Definition<OrthOptions> = function(
   vertices,
   options,
   linkView,
-) => {
+) {
   let sourceBBox = getSourceBBox(linkView, options)
   let targetBBox = getTargetBBox(linkView, options)
   const sourceAnchor = getSourceAnchor(linkView, options)

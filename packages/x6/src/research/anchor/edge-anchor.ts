@@ -1,10 +1,11 @@
+import { FunctionKeys } from 'utility-types'
+import { KeyValue } from '../../types'
 import { Point, Line } from '../../geometry'
 import { EdgeView } from '../core/edge-view'
 import { ResolveOptions, resolve, getPointAtLink } from './util'
-import { KeyValue } from '../../types'
 
 export namespace EdgeAnchor {
-  export type AnchorFunction<T> = (
+  export type Definition<T> = (
     this: EdgeView,
     view: EdgeView,
     magnet: SVGElement,
@@ -12,7 +13,7 @@ export namespace EdgeAnchor {
     options: T,
   ) => Point
 
-  export type ResolvedAnchorFunction<T> = (
+  export type ResolvedDefinition<T> = (
     this: EdgeView,
     view: EdgeView,
     magnet: SVGElement,
@@ -31,10 +32,12 @@ export namespace EdgeAnchor {
   export interface OrthAnchorOptions extends ResolveOptions {
     fallbackAt?: number | string
   }
+
+  export interface ClosestAnchorOptions extends ResolveOptions {}
 }
 
 export namespace EdgeAnchor {
-  export const ratio: AnchorFunction<RatioAnchorOptions> = function(
+  export const ratio: Definition<RatioAnchorOptions> = function(
     view,
     magnet,
     ref,
@@ -44,7 +47,7 @@ export namespace EdgeAnchor {
     return view.getPointAtRatio(ratio)!
   }
 
-  export const length: AnchorFunction<LengthAnchorOptions> = function(
+  export const length: Definition<LengthAnchorOptions> = function(
     view,
     magnet,
     ref,
@@ -54,7 +57,7 @@ export namespace EdgeAnchor {
     return view.getPointAtLength(length)!
   }
 
-  const orthogonal: ResolvedAnchorFunction<OrthAnchorOptions> = function(
+  const orthogonal: ResolvedDefinition<OrthAnchorOptions> = function(
     view,
     magnet,
     refPoint,
@@ -99,7 +102,7 @@ export namespace EdgeAnchor {
     return closestPoint.call(this, view, magnet, refPoint, options)
   }
 
-  const closestPoint: ResolvedAnchorFunction<ResolveOptions> = function(
+  const closestPoint: ResolvedDefinition<ClosestAnchorOptions> = function(
     view,
     magnet,
     refPoint,
@@ -110,32 +113,31 @@ export namespace EdgeAnchor {
   }
 
   export const orth = resolve<
-    ResolvedAnchorFunction<OrthAnchorOptions>,
-    AnchorFunction<OrthAnchorOptions>
+    ResolvedDefinition<OrthAnchorOptions>,
+    Definition<OrthAnchorOptions>
   >(orthogonal)
 
   export const closest = resolve<
-    ResolvedAnchorFunction<ResolveOptions>,
-    AnchorFunction<ResolveOptions>
+    ResolvedDefinition<ResolveOptions>,
+    Definition<ClosestAnchorOptions>
   >(closestPoint)
 }
 
 export namespace EdgeAnchor {
-  export interface NativeAnchorOptionsMap {
-    ratio: RatioAnchorOptions
-    length: LengthAnchorOptions
-    orth: OrthAnchorOptions
-    closest: ResolveOptions
+  type ModuleType = typeof EdgeAnchor
+
+  export type OptionsMap = {
+    [K in FunctionKeys<ModuleType>]: Parameters<ModuleType[K]>[3]
   }
 
-  export type NativeAnchorNames = keyof NativeAnchorOptionsMap
+  export type NativeNames = keyof OptionsMap
 
-  export interface NativeDefine<T extends NativeAnchorNames> {
+  export interface NativeItem<T extends NativeNames = NativeNames> {
     name: T
-    args?: NativeAnchorOptionsMap[T]
+    args?: OptionsMap[T]
   }
 
-  export interface CommonDefine {
+  export interface ManaualItem {
     name: string
     args?: KeyValue
   }
