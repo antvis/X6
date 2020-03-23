@@ -21,7 +21,7 @@ export class Polyline {
 
   constructor(points?: (Point | Point.PointLike | Point.PointData)[]) {
     if (points != null) {
-      this.points = points.map(p => Point.parse(p))
+      this.points = points.map(p => Point.clone(p))
     } else {
       this.points = []
     }
@@ -129,7 +129,7 @@ export class Polyline {
       return false
     }
 
-    const ref = Point.parse(p)
+    const ref = Point.clone(p)
     const x = ref.x
     const y = ref.y
     const points = this.points
