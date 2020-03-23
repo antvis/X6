@@ -79,7 +79,7 @@ export class Point implements Point.PointLike {
    * If `points` is an empty array, `null` is returned.
    */
   closest(points: (Point | Point.PointLike | Point.PointData)[]) {
-    const pts = points.map(p => Point.parse(p))
+    const pts = points.map(p => Point.clone(p))
     if (pts.length === 1) {
       return pts[0]
     }
@@ -99,17 +99,17 @@ export class Point implements Point.PointLike {
   }
 
   distance(p: Point | Point.PointLike | Point.PointData) {
-    const ref = Point.parse(p)
+    const ref = Point.clone(p)
     return new Line(this, ref).length()
   }
 
   squaredDistance(p: Point | Point.PointLike | Point.PointData) {
-    const ref = Point.parse(p)
+    const ref = Point.clone(p)
     return new Line(this, ref).squaredLength()
   }
 
   manhattanDistance(p: Point | Point.PointLike | Point.PointData) {
-    const ref = Point.parse(p)
+    const ref = Point.clone(p)
     return Math.abs(ref.x - this.x) + Math.abs(ref.y - this.y)
   }
 
@@ -126,7 +126,7 @@ export class Point implements Point.PointLike {
    * Returns the angle between vector from me to `p` and the x axis.
    */
   theta(p: Point | Point.PointLike | Point.PointData = new Point()): number {
-    const ref = Point.parse(p)
+    const ref = Point.clone(p)
     const y = -(ref.y - this.y) // invert the y-axis.
     const x = ref.x - this.x
     let rad = Math.atan2(y, x)
@@ -214,7 +214,7 @@ export class Point implements Point.PointLike {
    * Returns the bearing between me and the given point.
    */
   bearing(p: Point | Point.PointLike | Point.PointData) {
-    const ref = Point.parse(p)
+    const ref = Point.clone(p)
     return new Line(this, ref).bearing()
   }
 
@@ -229,8 +229,8 @@ export class Point implements Point.PointLike {
     p2: Point | Point.PointLike | Point.PointData,
   ) {
     if (p1 != null && p2 != null) {
-      const a = Point.parse(p1)
-      const b = Point.parse(p2)
+      const a = Point.clone(p1)
+      const b = Point.clone(p2)
       return (b.x - this.x) * (a.y - this.y) - (b.y - this.y) * (a.x - this.x)
     }
 
@@ -241,7 +241,7 @@ export class Point implements Point.PointLike {
    * Returns the dot product of this point with given other point.
    */
   dot(p: Point | Point.PointLike | Point.PointData) {
-    const ref = Point.parse(p)
+    const ref = Point.clone(p)
     return this.x * ref.x + this.y * ref.y
   }
 
@@ -255,7 +255,7 @@ export class Point implements Point.PointLike {
       return new Point(this.x - dx, this.y - dy!)
     }
 
-    const p = Point.parse(dx)
+    const p = Point.clone(dx)
     return new Point(this.x - p.x, this.y - p.y)
   }
 
@@ -266,7 +266,7 @@ export class Point implements Point.PointLike {
   lerp(p: Point | Point.PointLike | Point.PointData, t: number) {
     const x = this.x
     const y = this.y
-    const ref = Point.parse(p)
+    const ref = Point.clone(p)
     return new Point((1 - t) * x + t * ref.x, (1 - t) * y + t * ref.y)
   }
 
@@ -276,13 +276,13 @@ export class Point implements Point.PointLike {
   }
 
   move(ref: Point | Point.PointLike | Point.PointData, distance: number) {
-    const p = Point.parse(ref)
+    const p = Point.clone(ref)
     const rad = Angle.toRad(p.theta(this))
     return this.translate(Math.cos(rad) * distance, -Math.sin(rad) * distance)
   }
 
   reflection(ref: Point | Point.PointLike | Point.PointData) {
-    const p = Point.parse(ref)
+    const p = Point.clone(ref)
     return p.move(this, this.distance(p))
   }
 
@@ -296,16 +296,16 @@ export class Point implements Point.PointLike {
   }
 
   equals(p: Point | Point.PointLike | Point.PointData) {
-    const ref = Point.parse(p)
+    const ref = Point.clone(p)
     return ref != null && ref.x === this.x && ref.y === this.y
   }
 
   clone() {
-    return new Point(this.x, this.y)
+    return Point.clone(this)
   }
 
   toJSON() {
-    return { x: this.x, y: this.y }
+    return Point.toJSON(this)
   }
 
   valueOf() {
@@ -354,12 +354,12 @@ export namespace Point {
       return new Point(x, y)
     }
 
-    return parse(x)
+    return clone(x)
   }
 
-  export function parse(p: Point | PointLike | PointData) {
+  export function clone(p: Point | PointLike | PointData) {
     if (p instanceof Point) {
-      return p.clone()
+      return new Point(p.x, p.y)
     }
 
     if (Array.isArray(p)) {
@@ -392,7 +392,7 @@ export namespace Point {
   ) {
     let x = Math.abs(r * Math.cos(rad))
     let y = Math.abs(r * Math.sin(rad))
-    const org = parse(origin)
+    const org = clone(origin)
     const deg = Angle.normalize(Angle.toDeg(rad))
 
     if (deg < 90) {
@@ -411,8 +411,8 @@ export namespace Point {
     point: Point | PointLike | PointData,
     origin: Point | PointLike | PointData = new Point(),
   ) {
-    const p = parse(point)
-    const o = parse(origin)
+    const p = clone(point)
+    const o = clone(origin)
     const dx = p.x - o.x
     const dy = p.y - o.y
     return new Point(
@@ -491,8 +491,8 @@ export namespace Point {
     sin: number,
     center: Point | PointLike | PointData = new Point(),
   ) {
-    const source = parse(point)
-    const origin = parse(center)
+    const source = clone(point)
+    const origin = clone(center)
     const dx = source.x - origin.x
     const dy = source.y - origin.y
     const x1 = dx * cos - dy * sin
