@@ -2,7 +2,7 @@ import { KeyValue } from '../../types'
 import { NodeAnchor, EdgeAnchor } from '../anchor'
 import { registerEntity, getEntity } from './util'
 
-export namespace AnchorRegistry {
+export namespace NodeAnchorRegistry {
   const anchors: { [name: string]: NodeAnchor.Definition<any> } = {}
 
   export function register<T extends NodeAnchor.NativeNames>(
@@ -25,17 +25,17 @@ export namespace AnchorRegistry {
     })
   }
 
-  export function getAnchor<T extends NodeAnchor.NativeNames>(
+  export function get<T extends NodeAnchor.NativeNames>(
     name: T,
   ): NodeAnchor.Definition<NodeAnchor.OptionsMap[T]>
-  export function getAnchor<T extends KeyValue = KeyValue>(
+  export function get<T extends KeyValue = KeyValue>(
     name: string,
   ): NodeAnchor.Definition<T> | null
-  export function getAnchor(name: string) {
+  export function get(name: string) {
     return getEntity(anchors, name)
   }
 
-  export function getAnchorNames() {
+  export function getNames() {
     return Object.keys(anchors)
   }
 }
@@ -44,7 +44,7 @@ Object.keys(NodeAnchor).forEach(key => {
   const name = key as NodeAnchor.NativeNames
   const fn = NodeAnchor[name]
   if (typeof fn === 'function') {
-    AnchorRegistry.register(name, fn, true)
+    NodeAnchorRegistry.register(name, fn, true)
   }
 })
 
@@ -71,17 +71,17 @@ export namespace EdgeAnchorRegistry {
     })
   }
 
-  export function getAnchor<T extends EdgeAnchor.NativeNames>(
+  export function get<T extends EdgeAnchor.NativeNames>(
     name: T,
   ): EdgeAnchor.Definition<EdgeAnchor.OptionsMap[T]>
-  export function getAnchor<T extends KeyValue = KeyValue>(
+  export function get<T extends KeyValue = KeyValue>(
     name: string,
   ): EdgeAnchor.Definition<T>
-  export function getAnchor(name: string) {
+  export function get(name: string) {
     return getEntity(anchors, name)
   }
 
-  export function getAnchorNames() {
+  export function getNames() {
     return Object.keys(anchors)
   }
 }

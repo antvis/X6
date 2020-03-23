@@ -1,12 +1,15 @@
+import { DomUtil } from '../../dom'
 import { StringExt } from '../../util'
 import { Point, Rectangle } from '../../geometry'
-import { DomUtil } from '../../dom'
 import { v, Attributes, MatrixLike } from '../../v'
-import { Model } from './model'
 import { View } from './view'
-import { CellView } from './cell-view'
 import { Cell } from './cell'
+import { Model } from './model'
+import { CellView } from './cell-view'
 import { NodeView } from './node-view'
+import { Markup } from './markup'
+import { Collection } from './collection'
+import { KeyValue } from '../../types'
 
 const sortingTypes = {
   NONE: 'sorting-none',
@@ -239,7 +242,7 @@ export class Graph extends View {
   constructor(options: Graph.Options) {
     super()
     this.container = options.container
-    const { selectors, fragment } = Graph.parseJSONMarkup(Graph.markup, {
+    const { selectors, fragment } = Markup.parseJSONMarkup(Graph.markup, {
       bare: true,
     })
     this.backgroundElem = selectors.background as HTMLDivElement
@@ -286,7 +289,10 @@ export class Graph extends View {
 
   protected resetUpdates() {
     return (this.updates = {
-      id: null, // animation frame id
+      /**
+       * The animation frame id.
+       */
+      id: null,
       priorities: [{}, {}, {}],
 
       mounted: {},
@@ -302,67 +308,25 @@ export class Graph extends View {
     })
   }
 
-  startListening() {
+  protected startListening() {
     const model = this.model
-    const collection = model.cells
-
-    collection.on('add', ({ cell, options }) => {
-      console.log('cell added')
-      this.onCellAdded(cell as any, options)
-    })
-
-    // collection.on('remove', this.onCellRemoved, this)
-    // collection.on('reset', this.onGraphReset, this)
-    collection.on('sort', () => this.onGraphSort)
-
-    model.on('batch:stop', this.onGraphBatchStop, this)
-
-    // this.listenTo(model, 'add', this.onCellAdded)
-    //   .listenTo(model, 'remove', this.onCellRemoved)
-    //   .listenTo(model, 'change', this.onCellChange)
-    //   .listenTo(model, 'reset', this.onGraphReset)
-    //   .listenTo(model, 'sort', this.onGraphSort)
-    //   .listenTo(model, 'batch:stop', this.onGraphBatchStop)
+    model.on('sort', () => this.onSortModel)
+    model.on('reset', ({ options }) => this.onResetModel(options))
+    model.on('cell:added', ({ cell, options }) => this.onAddCell(cell, options))
+    model.on('cell:removed', ({ cell, options }) =>
+      this.onRemoveCell(cell, options),
+    )
+    model.on('cell:changed', ({ cell, options }) =>
+      this.onCellChanged(cell, options),
+    )
+    model.on('batch:stop', ({ name, data }) => this.onBatchStop(name, data))
 
     // this.on('cell:highlight', this.onCellHighlight)
     //   .on('cell:unhighlight', this.onCellUnhighlight)
     //   .on('scale translate', this.update)
   }
 
-  onCellAdded(cell: Cell, opt: any) {
-    const position = opt.position
-    if (this.isAsync() || typeof position !== 'number') {
-      this.renderView(cell, opt)
-    } else {
-      if (opt.maxPosition === position) this.freeze({ key: 'addCells' })
-      this.renderView(cell, opt)
-      if (position === 0) this.unfreeze({ key: 'addCells' })
-    }
-  }
-
-  // onCellRemoved(cell, _, opt) {
-  //   const view = this.findViewByModel(cell)
-  //   if (view) {
-  //     this.requestViewUpdate(view, FLAG_REMOVE, view.priority, opt)
-  //   }
-  // }
-
-  // onCellChange(cell, opt) {
-  //   if (cell === this.model.attributes.cells) return
-  //   if (cell.hasChanged('z') && this.options.sorting === sortingTypes.APPROX) {
-  //     const view = this.findViewByModel(cell)
-  //     if (view) {
-  //       this.requestViewUpdate(view, FLAG_INSERT, view.priority, opt)
-  //     }
-  //   }
-  // }
-
-  // onGraphReset(collection, opt) {
-  //   this.removeZPivots()
-  //   this.resetViews(collection.models, opt)
-  // }
-
-  onGraphSort() {
+  protected onSortModel() {
     if (this.model.hasActiveBatch(this.SORT_DELAYING_BATCHES)) {
       return
     }
@@ -370,12 +334,50 @@ export class Graph extends View {
     this.sortViews()
   }
 
-  onGraphBatchStop(data: any) {
+  protected onResetModel(options: Collection.SetOptions) {
+    this.removeZPivots()
+    this.resetViews(this.model.getCells(), options)
+  }
+
+  protected onAddCell(cell: Cell, options: Collection.AddOptions) {
+    const position = options.position
+    if (this.isAsync() || typeof position !== 'number') {
+      this.renderView(cell, options)
+    } else {
+      if (options.maxPosition === position) {
+        this.freeze({ key: 'addCells' })
+      }
+      this.renderView(cell, options)
+      if (position === 0) {
+        this.unfreeze({ key: 'addCells' })
+      }
+    }
+  }
+
+  protected onRemoveCell(cell: Cell, options: Collection.RemoveOptions) {
+    const view = this.findViewByModel(cell)
+    if (view) {
+      this.requestViewUpdate(view, FLAG_REMOVE, view.priority, options)
+    }
+  }
+
+  protected onCellChanged(cell: Cell, options: Cell.MutateOptions) {
+    if (
+      cell.store.hasChanged('zIndex') &&
+      this.options.sorting === sortingTypes.APPROX
+    ) {
+      const view = this.findViewByModel(cell)
+      if (view) {
+        this.requestViewUpdate(view, FLAG_INSERT, view.priority, options)
+      }
+    }
+  }
+
+  protected onBatchStop(name: string, data: KeyValue) {
     if (this.isFrozen()) {
       return
     }
 
-    const name = data && data.batchName
     const model = this.model
     if (!this.isAsync()) {
       // UPDATE_DELAYING_BATCHES: ['translate'],
@@ -830,13 +832,11 @@ export class Graph extends View {
     }
 
     const cid = view.cid
-    const updates = this.updates
-    return cid in updates.mounted
+    return cid in this.updates.mounted
   }
 
   getUnmountedViews() {
-    const updates = this.updates
-    return Object.keys(updates.unmounted).map(id => CellView.views[id])
+    return Object.keys(this.updates.unmounted).map(id => CellView.views[id])
   }
 
   getMountedViews() {
@@ -1688,7 +1688,7 @@ export namespace Graph {
   }
 }
 export namespace Graph {
-  export const markup: View.JSONMarkup[] = [
+  export const markup: Markup.JSONMarkup[] = [
     {
       ns: v.ns.xhtml,
       tagName: 'div',

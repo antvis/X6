@@ -26,7 +26,7 @@ export class ToolView extends View {
     this.parentView = toolsView
     this.simulateRelatedView(this.container)
     // Delegate events in case the ToolView was removed from the DOM and reused.
-    this.delegateEvents()
+    // this.delegateEvents()
     return this
   }
 
@@ -55,9 +55,10 @@ export class ToolView extends View {
   }
 
   focus() {
-    const opacity = this.options.focusOpacity
+    // const opacity = this.options.focusOpacity
+    const opacity = 1
     if (isFinite(opacity)) {
-      this.container.style.opacity = opacity
+      this.container.style.opacity = `${opacity}`
     }
     this.parentView.focusTool(this)
   }
@@ -69,7 +70,7 @@ export class ToolView extends View {
 
   update() {}
 
-  guard(evt) {
+  guard(evt: any) {
     if (this.graph == null || this.cellView == null) {
       return true
     }

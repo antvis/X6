@@ -1,3 +1,4 @@
+import { FunctionKeys } from 'utility-types'
 import { NumberExt } from '../../util'
 import { Point, Angle } from '../../geometry'
 import { Edge } from '../core/edge'
@@ -7,17 +8,17 @@ import { ResolveOptions, resolve } from './util'
 import { KeyValue } from '../../types'
 
 export namespace NodeAnchor {
-  export type AnchorFunction<T> = (
+  export type Definition<T> = (
     this: EdgeView,
     /**
      * The NodeView to which we are connecting.
      */
-    terminalView: NodeView,
+    nodeView: NodeView,
     /**
      * The SVGElement in our graph that contains the magnet
      * (element/subelement/port) to which we are connecting.
      */
-    terminalMagnet: SVGElement,
+    magnet: SVGElement,
     /**
      * A reference to another component of the edge path that may be
      * necessary to find this anchor point. If we are calling this method
@@ -31,7 +32,7 @@ export namespace NodeAnchor {
     endType: Edge.TerminalType,
   ) => Point
 
-  export type ResolvedAnchorFunction<T> = (
+  export type ResolvedDefinition<T> = (
     this: EdgeView,
     view: NodeView,
     magnet: SVGElement,
@@ -43,7 +44,7 @@ export namespace NodeAnchor {
     dx?: number | string
     dy?: number | string
     /**
-     * Should the anchor bbox rotate with the end view.
+     * Should the anchor bbox rotate with the terminal view.
      *
      * Default is `false`, meaning that the unrotated bbox is used.
      */
@@ -87,7 +88,7 @@ export namespace NodeAnchor {
       | 'topRight'
       | 'bottomLeft'
       | 'bottomRight',
-  ): NodeAnchor.AnchorFunction<NodeAnchor.BBoxAnchorOptions> {
+  ): NodeAnchor.Definition<NodeAnchor.BBoxAnchorOptions> {
     return function(
       view,
       magnet,
@@ -104,7 +105,7 @@ export namespace NodeAnchor {
 
       const cell = view.cell
       return options.rotated
-        ? anchor.rotate(-cell.rotation, cell.getBBox().getCenter())
+        ? anchor.rotate(-cell.getRotation(), cell.getBBox().getCenter())
         : anchor
     }
   }
@@ -112,19 +113,21 @@ export namespace NodeAnchor {
   /**
    * Places the anchor of the edge at center of the node bbox.
    */
-  export const nodeCenter: AnchorFunction<NodeCenterAnchorOptions> = function(
+  export const nodeCenter: Definition<NodeCenterAnchorOptions> = function(
     view,
     magnet,
     ref,
     options,
     endType,
   ) {
-    return view.cell
-      .getPointFromConnectedLink(this.cell, endType)
-      .translate(options.dx, options.dy)
+    const p = view.cell.getConnectionPoint(this.cell, endType)
+    if (options.dx || options.dy) {
+      p.translate(options.dx || 0, options.dy || 0)
+    }
+    return p
   }
 
-  const orthogonal: ResolvedAnchorFunction<OrthAnchorOptions> = function(
+  const orthogonal: ResolvedDefinition<OrthAnchorOptions> = function(
     view,
     magnet,
     refPoint,
@@ -164,7 +167,7 @@ export namespace NodeAnchor {
     return anchor
   }
 
-  const middleSide: ResolvedAnchorFunction<MiddleSideAnchorOptions> = function(
+  const middleSide: ResolvedDefinition<MiddleSideAnchorOptions> = function(
     view,
     magnet,
     refPoint,
@@ -214,15 +217,15 @@ export namespace NodeAnchor {
 
   /**
    * Tries to place the anchor of the edge inside the view bbox so that the
-   * link is made orthogonal. The anchor is placed along two line segments
+   * edge is made orthogonal. The anchor is placed along two line segments
    * inside the view bbox (between the centers of the top and bottom side and
    * between the centers of the left and right sides). If it is not possible
    * to place the anchor so that the edge would be orthogonal, the anchor is
    * placed at the center of the view bbox instead.
    */
   export const orth = resolve<
-    ResolvedAnchorFunction<OrthAnchorOptions>,
-    AnchorFunction<OrthAnchorOptions>
+    ResolvedDefinition<OrthAnchorOptions>,
+    Definition<OrthAnchorOptions>
   >(orthogonal)
 
   /**
@@ -230,35 +233,26 @@ export namespace NodeAnchor {
    * closest to the other endpoint.
    */
   export const midSide = resolve<
-    ResolvedAnchorFunction<ResolveOptions>,
-    AnchorFunction<ResolveOptions>
+    ResolvedDefinition<ResolveOptions>,
+    Definition<ResolveOptions>
   >(middleSide)
 }
 
 export namespace NodeAnchor {
-  export interface NativeAnchorOptionsMap {
-    center: BBoxAnchorOptions
-    left: BBoxAnchorOptions
-    top: BBoxAnchorOptions
-    right: BBoxAnchorOptions
-    bottom: BBoxAnchorOptions
-    topLeft: BBoxAnchorOptions
-    topRight: BBoxAnchorOptions
-    bottomLeft: BBoxAnchorOptions
-    bottomRight: BBoxAnchorOptions
-    nodeCenter: NodeCenterAnchorOptions
-    orth: OrthAnchorOptions
-    midSide: ResolveOptions
+  type ModuleType = typeof NodeAnchor
+
+  export type OptionsMap = {
+    [K in FunctionKeys<ModuleType>]: Parameters<ModuleType[K]>[3]
   }
 
-  export type NativeAnchorNames = keyof NativeAnchorOptionsMap
+  export type NativeNames = keyof OptionsMap
 
-  export interface NativeDefine<T extends NativeAnchorNames> {
+  export interface NativeItem<T extends NativeNames = NativeNames> {
     name: T
-    args?: NativeAnchorOptionsMap[T]
+    args?: OptionsMap[T]
   }
 
-  export interface CommonDefine {
+  export interface ManaualItem {
     name: string
     args?: KeyValue
   }

@@ -36,11 +36,11 @@ export class ToolsView extends View {
     return this.options.name
   }
 
-  update(options: { tool?: string } = {}) {
+  update(options: ToolsView.UpdateOptions = {}) {
     const tools = this.tools
     if (tools) {
       tools.forEach(tool => {
-        if (options.tool !== tool.cid && tool.isVisible()) {
+        if (options.toolId !== tool.cid && tool.isVisible()) {
           tool.update()
         }
       })
@@ -110,9 +110,13 @@ export class ToolsView extends View {
 
 export namespace ToolsView {
   export interface Options {
-    name: string
-    tools: ToolView[]
     cellView: CellView
+    name?: string
+    tools?: ToolView[]
     local?: boolean
+  }
+
+  export interface UpdateOptions {
+    toolId?: string
   }
 }

@@ -1,5 +1,5 @@
-import { CellView } from './cell-view'
 import { KeyValue } from '../../types'
+import { CellView } from './cell-view'
 
 export class CellViewFlag {
   protected flags: { [name: string]: number }
@@ -71,11 +71,11 @@ export class CellViewFlag {
     return flags[label] | 0
   }
 
-  hasFlag(flag: number, label: CellViewFlag.Actions) {
+  hasAction(flag: number, label: CellViewFlag.Actions) {
     return flag & this.getFlag(label)
   }
 
-  removeFlag(flag: number, label: CellViewFlag.Actions) {
+  removeAction(flag: number, label: CellViewFlag.Actions) {
     return flag ^ (flag & this.getFlag(label))
   }
 
@@ -83,7 +83,7 @@ export class CellViewFlag {
     return this.getFlag(this.bootstrap)
   }
 
-  getChangeFlag() {
+  getChangedFlag() {
     let flag = 0
 
     if (!this.attrs) {
@@ -109,6 +109,10 @@ export namespace CellViewFlag {
     | 'translate'
     | 'ports'
     | 'tools'
+    | 'source'
+    | 'target'
+    | 'vertices'
+    | 'labels'
 
   export type Actions = Action | Action[]
 }

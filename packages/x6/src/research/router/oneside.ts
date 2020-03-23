@@ -8,11 +8,11 @@ export interface OneSideOptions {
 /**
  * Routes the link always to/from a certain side
  */
-export const oneSide: Router.Definition<OneSideOptions> = (
+export const oneSide: Router.Definition<OneSideOptions> = function(
   vertices,
   options,
   edgeView,
-) => {
+) {
   const side = options.side || 'bottom'
   const pd = options.padding || 40
   const padding = { left: pd, top: pd, right: pd, bottom: pd }

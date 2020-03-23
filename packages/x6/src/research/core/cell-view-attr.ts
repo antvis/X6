@@ -1,7 +1,7 @@
 import { v } from '../../v'
 import { Attr } from '../attr'
 import { Dictionary } from '../../struct'
-import { View } from './view'
+import { Markup } from './markup'
 import { CellView } from './cell-view'
 import { Rectangle, Point } from '../../geometry'
 import { StringExt, ObjectExt, ArrayExt } from '../../util'
@@ -124,7 +124,7 @@ export class CellViewAttr {
     cellAttrs: Attr.CellAttrs,
     rootNode: Element,
     selectorCache: { [selector: string]: Element[] },
-    selectors: View.Selectors,
+    selectors: Markup.Selectors,
   ) {
     const merge: Element[] = []
     const result: Dictionary<
@@ -477,7 +477,7 @@ export class CellViewAttr {
 export namespace CellViewAttr {
   export interface UpdateAttrsOptions {
     rootBBox: Rectangle
-    selectors: View.Selectors
+    selectors: Markup.Selectors
     scalableNode?: Element | null
     rotatableNode?: Element | null
     /**

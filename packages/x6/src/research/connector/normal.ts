@@ -1,11 +1,11 @@
-import { Point, Polyline, Path } from '../../geometry'
-import { ConnectorOptions } from './util'
+import { Polyline, Path } from '../../geometry'
+import { Connector } from './index'
 
-export function normal(
-  sourcePoint: Point,
-  targetPoint: Point,
-  routePoints: Point[],
-  options: ConnectorOptions = {},
+export const normal: Connector.Definition = function(
+  sourcePoint,
+  targetPoint,
+  routePoints,
+  options = {},
 ) {
   const points = [sourcePoint, ...routePoints, targetPoint]
   const polyline = new Polyline(points)
