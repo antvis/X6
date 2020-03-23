@@ -421,6 +421,18 @@ export namespace Point {
     )
   }
 
+  export function equals(p1?: Point.PointLike, p2?: Point.PointLike) {
+    if (p1 === p2) {
+      return true
+    }
+
+    if (p1 != null && p2 != null) {
+      return p1.x === p2.x && p1.y === p2.y
+    }
+
+    return false
+  }
+
   export function equalPoints(p1: Point[], p2: Point[]) {
     if (
       (p1 == null && p2 != null) ||
