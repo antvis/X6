@@ -25,16 +25,16 @@ export class NodeView<
   protected portsCache: { [id: string]: NodeView.PortCache } = {}
 
   confirmUpdate(flag: number, options: any = {}) {
-    let ref = flag
-    if (this.hasAction(ref, 'ports')) {
+    let ret = flag
+    if (this.hasAction(ret, 'ports')) {
       this.removePorts()
       this.cleanPortsCache()
     }
 
-    if (this.hasAction(ref, 'render')) {
+    if (this.hasAction(ret, 'render')) {
       this.render()
       // this.updateTools(opt)
-      ref = this.removeAction(ref, [
+      ret = this.removeAction(ret, [
         'render',
         'update',
         'resize',
@@ -43,32 +43,32 @@ export class NodeView<
         'ports',
       ])
     } else {
-      ref = this.handleAction(
-        ref,
+      ret = this.handleAction(
+        ret,
         'resize',
         () => this.resize(options),
         'update', // Resize method is calling `update()` internally
       )
 
-      ref = this.handleAction(
-        ref,
+      ret = this.handleAction(
+        ret,
         'update',
         () => this.update(),
         // `update()` will render ports when useCSSSelectors are enabled
         Globals.useCSSSelector ? 'ports' : null,
       )
 
-      ref = this.handleAction(ref, 'translate', () => this.translate())
-      ref = this.handleAction(ref, 'rotate', () => this.rotate())
-      ref = this.handleAction(ref, 'ports', () => this.renderPorts())
+      ret = this.handleAction(ret, 'translate', () => this.translate())
+      ret = this.handleAction(ret, 'rotate', () => this.rotate())
+      ret = this.handleAction(ret, 'ports', () => this.renderPorts())
     }
 
-    if (this.hasAction(ref, 'tools')) {
+    if (this.hasAction(ret, 'tools')) {
       // this.updateTools(options)
-      ref = this.removeAction(ref, 'tools')
+      ret = this.removeAction(ret, 'tools')
     }
 
-    return ref
+    return ret
   }
 
   update(partialAttrs?: Attr.CellAttrs) {
@@ -549,11 +549,12 @@ export namespace NodeView {
   }
 }
 
-NodeView.setDefaults({
+NodeView.config({
   isSvgElement: true,
   priority: 0,
   bootstrap: ['render'],
   actions: {
+    view: ['render'],
     markup: ['render'],
     attrs: ['update'],
     size: ['resize', 'ports', 'tools'],

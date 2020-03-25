@@ -33,27 +33,36 @@ export function registerEntity<T>(
   registry[name] = entity
 }
 
-export class Registry<T extends Function> {
+export class Registry<T, Options extends Registry.Options = Registry.Options> {
   protected readonly registry: KeyValue<T> = {}
+  protected readonly options: Options
 
-  protected onError() {
-    return this
+  constructor(options?: Options) {
+    this.options = options || ({} as Options)
+  }
+
+  get names() {
+    return Object.keys(this.registry)
   }
 
   register(name: string, entity: T, force: boolean = false) {
     if (this.registry[name] && !force && !isApplyingHMR()) {
-      return this.onError()
+      if (this.options.onError) {
+        this.options.onError(name)
+      }
+    } else {
+      this.registry[name] = entity
     }
-    this.registry[name] = entity
-    return this
+    return entity
   }
 
-  get(name: string) {
-    const ret = this.registry[name]
-    return typeof ret === 'function' ? ret : null
+  get(name: string): T | null {
+    return name ? this.registry[name] : null
   }
+}
 
-  getNames() {
-    return Object.keys(this.registry)
+export namespace Registry {
+  export interface Options {
+    onError?: (name: string) => void
   }
 }

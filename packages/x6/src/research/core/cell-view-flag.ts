@@ -105,6 +105,7 @@ export namespace CellViewFlag {
     | 'render'
     | 'update'
     | 'resize'
+    | 'scale'
     | 'rotate'
     | 'translate'
     | 'ports'

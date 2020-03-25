@@ -14,7 +14,7 @@ import { CellViewAttr } from './cell-view-attr'
 import { CellViewCache } from './cell-view-cache'
 import { ToolsView } from './tools-view'
 
-export abstract class CellView<
+export class CellView<
   C extends Cell = Cell,
   Options extends CellView.Options = CellView.Options
 > extends View {
@@ -32,7 +32,7 @@ export abstract class CellView<
     return this.defaults
   }
 
-  static setDefaults<T extends CellView.Options = CellView.Options>(
+  static config<T extends CellView.Options = CellView.Options>(
     options: Partial<T>,
   ) {
     this.defaults = this.getOptions(options)
@@ -41,18 +41,33 @@ export abstract class CellView<
   static getOptions<T extends CellView.Options = CellView.Options>(
     options: Partial<T>,
   ): T {
+    const mergeActions = <T>(arr1: T | T[], arr2?: T | T[]) => {
+      if (arr2 != null) {
+        return ArrayExt.uniq([
+          ...(Array.isArray(arr1) ? arr1 : [arr1]),
+          ...(Array.isArray(arr2) ? arr2 : [arr2]),
+        ])
+      }
+      return Array.isArray(arr1) ? [...arr1] : [arr1]
+    }
+
     const ret = ObjectExt.cloneDeep(this.getDefaults())
     const { bootstrap, actions, events, documentEvents, ...others } = options
 
     if (bootstrap) {
-      ret.bootstrap = ArrayExt.uniq([
-        ...(Array.isArray(ret.bootstrap) ? ret.bootstrap : [ret.bootstrap]),
-        ...(Array.isArray(bootstrap) ? bootstrap : [bootstrap]),
-      ])
+      ret.bootstrap = mergeActions(ret.bootstrap, bootstrap)
     }
 
     if (actions) {
-      ret.actions = { ...ret.actions, ...actions }
+      Object.keys(actions).forEach(key => {
+        const val = actions[key]
+        const raw = ret.actions[key]
+        if (val && raw) {
+          ret.actions[key] = mergeActions(raw, val)
+        } else if (val) {
+          ret.actions[key] = mergeActions(val)
+        }
+      })
     }
 
     if (events) {
@@ -92,7 +107,7 @@ export abstract class CellView<
     this.cacheManager = new CellViewCache(this)
 
     this.setContainer(this.ensureContainer())
-    this.startListening()
+    this.setup()
     this.$(this.container).data('view', this)
 
     CellView.views[this.cid] = this
@@ -233,7 +248,7 @@ export abstract class CellView<
     return flag
   }
 
-  protected startListening() {
+  protected setup() {
     this.cell.on('changed', ({ options }: any) => this.onAttrsChange(options))
   }
 

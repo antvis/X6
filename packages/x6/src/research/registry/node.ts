@@ -1,65 +1,53 @@
 import { Node } from '../core/node'
-import { StringExt, ObjectExt } from '../../util'
-import { registerEntity, getEntity } from './util'
+import { Registry } from './util'
+
+class NodeRegistryClass extends Registry<Node.Defintion> {
+  register(
+    name: string,
+    options: NodeRegistry.DefintionOptions,
+    force?: boolean,
+  ): Node.Defintion
+  register(name: string, def: Node.Defintion, force?: boolean): Node.Defintion
+  register(
+    name: string,
+    options: NodeRegistry.DefintionOptions | Node.Defintion,
+    force: boolean = false,
+  ): Node.Defintion {
+    let def
+    if (typeof options === 'function') {
+      def = options
+    } else {
+      let parent = Node
+      const { inherit, ...others } = options
+      if (inherit) {
+        const base = this.get(inherit)
+        if (base == null) {
+          throw new Error(`Unkonwn base type: "${inherit}"`)
+        } else {
+          parent = base
+        }
+      }
+
+      if (others.name == null) {
+        others.name = name
+      }
+
+      def = parent.define.call(parent, others)
+    }
+
+    return super.register(name, def, force)
+  }
+}
+
+// tslint:disable-next-line
+export const NodeRegistry = new NodeRegistryClass({
+  onError(name) {
+    throw new Error(`Node with name '${name}' already registered.`)
+  },
+})
 
 export namespace NodeRegistry {
-  export interface CellMethods {
-    init?: () => void
-  }
-
-  export interface Options extends Node.Defaults, CellMethods {}
-
-  export type NodeClass = new (...args: any[]) => Node
-
-  const nodes: { [name: string]: NodeClass } = {}
-
-  function registerNode(name: string, node: NodeClass, force: boolean) {
-    registerEntity(nodes, name, node, force, () => {
-      throw new Error(`Node with name '${name}' already registered.`)
-    })
-
-    return node
-  }
-
-  export function register(
-    name: string,
-    shape: NodeClass,
-    force?: boolean,
-  ): NodeClass
-  export function register(
-    name: string,
-    options: Options,
-    force?: boolean,
-  ): NodeClass
-  export function register(
-    name: string,
-    options: Options | NodeClass,
-    force: boolean = false,
-  ): NodeClass {
-    if (typeof options === 'function') {
-      return registerNode(name, options, force)
-    }
-
-    const { init, ...defaults } = options
-    const className = StringExt.pascalCase(name)
-    const shape = ObjectExt.createClass<typeof Node>(className, Node)
-    shape.setDefaults(defaults)
-
-    if (typeof init === 'function') {
-      shape.prototype.init = function() {
-        Node.prototype.init.call(this)
-        init.call(this)
-      }
-    }
-
-    return registerNode(name, shape, force)
-  }
-
-  export function getNode(name: string) {
-    return getEntity(nodes, name)
-  }
-
-  export function getNodeNames() {
-    return Object.keys(nodes)
+  export interface DefintionOptions extends Node.DefintionOptions {
+    inherit?: string
   }
 }

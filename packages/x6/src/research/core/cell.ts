@@ -3,13 +3,14 @@ import { Basecoat } from '../../entity'
 import { KeyValue, Size } from '../../types'
 import { Rectangle, Point } from '../../geometry'
 import { ArrayExt, StringExt, ObjectExt } from '../../util'
-import { Attr } from '../attr'
 import { Easing, Interpolation } from '../animation'
-import { Markup } from './markup'
-import { Store } from './store'
+import { Attr } from '../attr'
 import { Node } from './node'
 import { Edge } from './edge'
+import { Layer } from './layer'
+import { Store } from './store'
 import { Model } from './model'
+import { Markup } from './markup'
 import { PortData } from './port-data'
 import { CellView } from './cell-view'
 
@@ -17,6 +18,17 @@ export class Cell extends Basecoat<Cell.EventArgs> {
   // #region static
 
   protected static defaults: Cell.Defaults = {}
+  protected static attrDefinitions: Attr.Definitions = {}
+
+  public static config<T extends Cell.Defaults = Cell.Defaults>(
+    presets: T,
+    attrDefinitions?: Attr.Definitions,
+  ) {
+    this.defaults = this.mergeDefaults(this.defaults, presets)
+    if (attrDefinitions) {
+      this.attrDefinitions = { ...this.attrDefinitions, ...attrDefinitions }
+    }
+  }
 
   public static mergeDefaults<T extends Cell.Defaults = Cell.Defaults>(
     target: T,
@@ -39,16 +51,14 @@ export class Cell extends Basecoat<Cell.EventArgs> {
     return defaults
   }
 
-  public static setDefaults<T extends Cell.Defaults = Cell.Defaults>(
-    presets: T,
-  ) {
-    this.defaults = this.mergeDefaults(this.defaults, presets)
-  }
-
   public static getDefaults<T extends Cell.Defaults = Cell.Defaults>(
     raw: boolean = false,
   ): T {
     return (raw ? this.defaults : ObjectExt.cloneDeep(this.defaults)) as T
+  }
+
+  public static getAttrDefinition() {
+    return this.attrDefinitions
   }
 
   // #endregion
@@ -62,36 +72,48 @@ export class Cell extends Basecoat<Cell.EventArgs> {
   constructor(options: Cell.Options = {}) {
     super()
     this.id = options.id || StringExt.uuid()
-    const data = this.getDefaults(options) as Partial<Cell.Properties>
+    const data = this.getData(options) as Partial<Cell.Properties>
     this.store = new Store(data)
-    this.startListening()
+    this.setup()
     this.init()
   }
 
   init() {}
 
-  protected getDefaults(options: Cell.Options): Cell.Defaults {
+  protected getData(options: Cell.Options): Cell.Defaults {
     const ctor = this.constructor as typeof Cell
     return ctor.mergeDefaults(ctor.getDefaults(true), options)
   }
 
-  protected startListening() {
+  protected setup() {
     this.store.on('mutated', metadata => {
       const key = metadata.key
+
       if (key === 'zIndex') {
-        this.trigger('change:zIndex', this.getChangeArgs<number>(metadata))
+        this.trigger('change:zIndex', this.getChangeEventArgs<number>(metadata))
       } else if (key === 'parent') {
-        this.trigger('change:parent', this.getChangeArgs<string>(metadata))
+        this.trigger('change:parent', this.getChangeEventArgs<string>(metadata))
       } else if (key === 'children') {
-        this.trigger('change:children', this.getChangeArgs<string[]>(metadata))
+        this.trigger(
+          'change:children',
+          this.getChangeEventArgs<string[]>(metadata),
+        )
       } else if (key === 'visible') {
-        this.trigger('change:visible', this.getChangeArgs<boolean>(metadata))
+        this.trigger(
+          'change:visible',
+          this.getChangeEventArgs<boolean>(metadata),
+        )
       } else if (key === 'markup') {
-        this.trigger('change:markup', this.getChangeArgs<Markup>(metadata))
+        this.trigger('change:markup', this.getChangeEventArgs<Markup>(metadata))
+      } else if (key === 'view') {
+        this.trigger(
+          'change:view',
+          this.getChangeEventArgs<Cell.ViewType>(metadata),
+        )
       } else if (key === 'attrs') {
         this.trigger(
           'change:attrs',
-          this.getChangeArgs<Attr.CellAttrs>(metadata),
+          this.getChangeEventArgs<Attr.CellAttrs>(metadata),
         )
       }
     })
@@ -101,7 +123,7 @@ export class Cell extends Basecoat<Cell.EventArgs> {
     )
   }
 
-  protected getChangeArgs<T>(
+  protected getChangeEventArgs<T>(
     metadata: Store.EventArgs<any>['mutated'],
   ): Cell.ChangeArgs<T> {
     const { current, previous, options } = metadata
@@ -119,6 +141,14 @@ export class Cell extends Basecoat<Cell.EventArgs> {
 
   isEdge(): this is Edge {
     return false
+  }
+
+  isLayer(): this is Layer {
+    return false
+  }
+
+  get view() {
+    return this.store.get('view')
   }
 
   // #region get/set by path
@@ -232,8 +262,11 @@ export class Cell extends Basecoat<Cell.EventArgs> {
     return result ? { ...result } : {}
   }
 
-  setAttrs(attrs: Attr.CellAttrs, options: Cell.SetOptions = {}) {
-    this.store.set('attrs', attrs, options)
+  setAttrs(attrs: Attr.CellAttrs, options: Cell.SetAttrOptions = {}) {
+    const attributes = options.overwrite
+      ? attrs
+      : ObjectExt.merge({}, this.getAttrs(), attrs)
+    this.store.set('attrs', attributes, options)
     return this
   }
 
@@ -243,7 +276,9 @@ export class Cell extends Basecoat<Cell.EventArgs> {
   }
 
   getAttrDefinition(attrName: string) {
-    return Attr.definitions[attrName] || null
+    const ctor = this.constructor as typeof Cell
+    const definitions = ctor.getAttrDefinition() || {}
+    return definitions[attrName] || Attr.definitions[attrName] || null
   }
 
   getAttrByPath(): Attr.CellAttrs
@@ -694,6 +729,8 @@ export class Cell extends Basecoat<Cell.EventArgs> {
 
   // #endregion
 
+  // #region transform
+
   translate(tx: number, ty: number, options: Cell.TranslateOptions) {
     return this
   }
@@ -706,6 +743,8 @@ export class Cell extends Basecoat<Cell.EventArgs> {
   ) {
     return this
   }
+
+  // #endregion
 
   getBBox(options?: { deep?: boolean }) {
     return new Rectangle()
@@ -723,7 +762,7 @@ export class Cell extends Basecoat<Cell.EventArgs> {
 
   findView() {}
 
-  processPorts() {}
+  // #region batch
 
   protected startBatch(name: string, data: KeyValue = {}) {
     if (this.model) {
@@ -748,6 +787,8 @@ export class Cell extends Basecoat<Cell.EventArgs> {
     return result
   }
 
+  // #endregion
+
   @Basecoat.dispose()
   dispose() {
     this.removeFromParent()
@@ -757,8 +798,10 @@ export class Cell extends Basecoat<Cell.EventArgs> {
 }
 
 export namespace Cell {
+  export type ViewType = string | typeof CellView
+
   export interface Common {
-    view?: typeof CellView
+    view?: ViewType
     attrs?: Attr.CellAttrs
     zIndex?: number
     visible?: boolean
@@ -787,6 +830,10 @@ export namespace Cell {
     deep?: boolean
   }
 
+  export interface SetAttrOptions extends SetOptions {
+    overwrite?: boolean
+  }
+
   export interface SetByPathOptions extends Store.SetByPathOptions {}
 
   export interface TranslateOptions extends SetOptions {
@@ -811,6 +858,7 @@ export namespace Cell {
     'change:visible': ChangeArgs<boolean>
     'change:parent': ChangeArgs<string>
     'change:children': ChangeArgs<string[]>
+    'change:view': ChangeArgs<ViewType>
     'transition:begin': TransitionArgs
     'transition:end': TransitionArgs
 
@@ -931,5 +979,17 @@ export namespace Cell {
     }
 
     return null
+  }
+}
+
+export namespace Cell {
+  export type Defintion = typeof Cell
+
+  export interface DefintionOptions extends Defaults {
+    /**
+     * The class name.
+     */
+    name?: string
+    attrDefinitions?: Attr.Definitions
   }
 }
