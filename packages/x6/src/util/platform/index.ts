@@ -68,4 +68,6 @@ export namespace Platform {
       'foreignObject',
     )}` !== '[object SVGForeignObjectElement]' ||
     ua.indexOf('Opera/') >= 0
+
+  export const SUPPORT_FOREIGNOBJECT = !NO_FOREIGNOBJECT
 }

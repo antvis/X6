@@ -7,6 +7,7 @@ export {
   cloneDeep,
   merge,
   pick,
+  defaults,
   defaultsDeep,
   forIn,
   extend,
