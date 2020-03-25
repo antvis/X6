@@ -47,7 +47,7 @@ export function sanitizeHTML(html: string, options: { raw?: boolean } = {}) {
     return nodes
   }
 
-  return $('div')
+  return $('<div/>')
     .append(nodes)
     .html()
 }
