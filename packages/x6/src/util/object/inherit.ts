@@ -73,11 +73,19 @@ function cacheClass(c: Function) {
  * Extends class with specified class name.
  */
 export function createClass<T>(className: string, base: Function): T {
-  const fn = cacheClass(base)
+  const baseName = cacheClass(base)
+  const isNativeClass = /^\s*class\s+/.test(`${base}`)
+
   // tslint:disable-next-line
-  const cls = new Function(
-    `return function ${className}() { return ${fn}.apply(this, arguments) }`,
-  )()
-  inherit(cls, base)
+  const cls = new Function(`
+    return ${isNativeClass}
+      ? class ${className} extends ${baseName} { }
+      : function ${className}() { return ${baseName}.apply(this, arguments) }
+  `)()
+
+  if (!isNativeClass) {
+    inherit(cls, base)
+  }
+
   return cls as T
 }
