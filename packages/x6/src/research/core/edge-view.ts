@@ -2452,11 +2452,12 @@ export namespace EdgeView {
   }
 }
 
-EdgeView.setDefaults<EdgeView.Options>({
+EdgeView.config<EdgeView.Options>({
   isSvgElement: true,
   priority: 1,
   bootstrap: ['render', 'source', 'target'],
   actions: {
+    view: ['render'],
     markup: ['render'],
     attrs: ['update'],
     router: ['update'],

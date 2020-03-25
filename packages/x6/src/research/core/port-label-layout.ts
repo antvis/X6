@@ -1,4 +1,4 @@
-import defaultsDeep from 'lodash/defaultsDeep'
+import { ObjectExt } from '../../util'
 import { Point, Rectangle } from '../../geometry'
 import { Attr } from '../attr'
 
@@ -141,7 +141,7 @@ export namespace PortLabelLayout {
   }
 
   function labelAttributes(preset: Result, args?: Result): Result {
-    return defaultsDeep({}, args, preset, {
+    return ObjectExt.defaultsDeep({}, args, preset, {
       x: 0,
       y: 0,
       angle: 0,

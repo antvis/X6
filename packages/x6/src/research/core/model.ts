@@ -26,10 +26,10 @@ export class Model extends Basecoat<Model.EventArgs> {
       },
     })
 
-    this.startListening()
+    this.setup()
   }
 
-  protected startListening() {
+  protected setup() {
     const collection = this.collection
     collection.on('sort', () => this.trigger('sort'))
     collection.on('update', args => this.trigger('change', args))

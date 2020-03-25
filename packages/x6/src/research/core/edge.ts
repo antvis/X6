@@ -1,4 +1,4 @@
-import { ObjectExt } from '../../util'
+import { ObjectExt, StringExt } from '../../util'
 import { Size, KeyValue } from '../../types'
 import { Point, Polyline } from '../../geometry'
 import { EdgeAnchor, NodeAnchor } from '../anchor'
@@ -25,61 +25,67 @@ export class Edge extends Cell {
     super(options)
   }
 
-  protected startListening() {
-    super.startListening()
+  protected setup() {
+    super.setup()
     this.store.on('mutated', metadata => {
       const key = metadata.key
       if (key === 'source') {
         this.trigger(
           'change:source',
-          this.getChangeArgs<Edge.TerminalData>(metadata),
+          this.getChangeEventArgs<Edge.TerminalData>(metadata),
         )
       } else if (key === 'target') {
         this.trigger(
           'change:target',
-          this.getChangeArgs<Edge.TerminalData>(metadata),
+          this.getChangeEventArgs<Edge.TerminalData>(metadata),
         )
       } else if (key === 'router') {
         this.trigger(
           'change:router',
-          this.getChangeArgs<Edge.RouterData>(metadata),
+          this.getChangeEventArgs<Edge.RouterData>(metadata),
         )
       } else if (key === 'connector') {
         this.trigger(
           'change:connector',
-          this.getChangeArgs<Edge.ConnectorData>(metadata),
+          this.getChangeEventArgs<Edge.ConnectorData>(metadata),
         )
       } else if (key === 'vertices') {
-        const args = this.getChangeArgs<Point.PointLike[]>(metadata)
+        const args = this.getChangeEventArgs<Point.PointLike[]>(metadata)
         this.trigger('change:vertices', args)
         this.onVertexsChanged(args)
       } else if (key === 'labels') {
-        const args = this.getChangeArgs<Edge.Label[]>(metadata)
+        const args = this.getChangeEventArgs<Edge.Label[]>(metadata)
         this.trigger('change:labels', args)
         this.onLabelsChanged(args)
       } else if (key === 'defaultLabel') {
         this.trigger(
           'change:defaultLabel',
-          this.getChangeArgs<Edge.Label>(metadata),
+          this.getChangeEventArgs<Edge.Label>(metadata),
         )
       } else if (key === 'labelMarkup') {
-        this.trigger('change:labelMarkup', this.getChangeArgs<Markup>(metadata))
+        this.trigger(
+          'change:labelMarkup',
+          this.getChangeEventArgs<Markup>(metadata),
+        )
       } else if (key === 'toolMarkup') {
-        this.trigger('change:toolMarkup', this.getChangeArgs<Markup>(metadata))
+        this.trigger(
+          'change:toolMarkup',
+          this.getChangeEventArgs<Markup>(metadata),
+        )
       } else if (key === 'doubleToolMarkup') {
         this.trigger(
           'change:doubleToolMarkup',
-          this.getChangeArgs<Markup>(metadata),
+          this.getChangeEventArgs<Markup>(metadata),
         )
       } else if (key === 'vertexMarkup') {
         this.trigger(
           'change:vertexMarkup',
-          this.getChangeArgs<Markup>(metadata),
+          this.getChangeEventArgs<Markup>(metadata),
         )
       } else if (key === 'arrowheadMarkup') {
         this.trigger(
           'change:arrowheadMarkup',
-          this.getChangeArgs<Markup>(metadata),
+          this.getChangeEventArgs<Markup>(metadata),
         )
       }
     })
@@ -984,5 +990,31 @@ export namespace Edge {
     position: {
       distance: 0.5,
     },
+  }
+}
+
+export namespace Edge {
+  export type Defintion = Function & typeof Edge
+
+  export interface DefintionOptions extends Defaults, Cell.DefintionOptions {}
+
+  let counter = 0
+  function getClassName(name?: string) {
+    if (name) {
+      return StringExt.pascalCase(name)
+    }
+    counter += 1
+    return `CustomEdge${counter}`
+  }
+
+  export function define(options: DefintionOptions) {
+    const { name, attrDefinitions, ...defaults } = options
+    const className = getClassName(name)
+    const base = this as Defintion
+    const shape = ObjectExt.createClass<Defintion>(className, base)
+
+    shape.config(defaults, attrDefinitions)
+
+    return shape
   }
 }

@@ -1,6 +1,6 @@
 import { StringExt, ObjectExt } from '../../util'
 import { Point, Rectangle, Angle } from '../../geometry'
-import { Size } from '../../types'
+import { Size, KeyValue } from '../../types'
 import { Cell } from './cell'
 import { PortData } from './port-data'
 import { Markup } from './markup'
@@ -26,35 +26,41 @@ export class Node extends Cell {
     this.initPorts()
   }
 
-  protected startListening() {
-    super.startListening()
+  protected setup() {
+    super.setup()
     this.store.on('mutated', metadata => {
       const key = metadata.key
       if (key === 'size') {
-        this.trigger('change:size', this.getChangeArgs<Size>(metadata))
+        this.trigger('change:size', this.getChangeEventArgs<Size>(metadata))
       } else if (key === 'position') {
         this.trigger(
           'change:position',
-          this.getChangeArgs<Point.PointLike>(metadata),
+          this.getChangeEventArgs<Point.PointLike>(metadata),
         )
       } else if (key === 'rotation') {
-        this.trigger('change:rotation', this.getChangeArgs<number>(metadata))
+        this.trigger(
+          'change:rotation',
+          this.getChangeEventArgs<number>(metadata),
+        )
       } else if (key === 'ports') {
         this.trigger(
           'change:ports',
-          this.getChangeArgs<PortData.Port[]>(metadata),
+          this.getChangeEventArgs<PortData.Port[]>(metadata),
         )
       } else if (key === 'portMarkup') {
-        this.trigger('change:portMarkup', this.getChangeArgs<Markup>(metadata))
+        this.trigger(
+          'change:portMarkup',
+          this.getChangeEventArgs<Markup>(metadata),
+        )
       } else if (key === 'portLabelMarkup') {
         this.trigger(
           'change:portLabelMarkup',
-          this.getChangeArgs<Markup>(metadata),
+          this.getChangeEventArgs<Markup>(metadata),
         )
       } else if (key === 'portContainerMarkup') {
         this.trigger(
           'change:portContainerMarkup',
-          this.getChangeArgs<Markup>(metadata),
+          this.getChangeEventArgs<Markup>(metadata),
         )
       }
     })
@@ -809,9 +815,16 @@ export namespace Node {
     portLabelMarkup?: Markup
   }
 
-  export interface Defaults extends Common, Cell.Defaults {}
   export interface Options extends Common, Cell.Options {}
+  export interface Defaults extends Common, Cell.Defaults {}
   export interface Properties extends Cell.Properties, Options {}
+
+  /**
+   * The metadata used creating a node instance.
+   */
+  export interface Metadata extends Options, KeyValue {
+    type?: string
+  }
 }
 
 export namespace Node {
@@ -833,12 +846,38 @@ export namespace Node {
     absolute?: boolean
     direction?:
       | 'left'
-      | 'right'
       | 'top'
+      | 'right'
+      | 'bottom'
       | 'topLeft'
       | 'topRight'
-      | 'bottom'
       | 'bottomLeft'
       | 'bottomRight'
+  }
+}
+
+export namespace Node {
+  export type Defintion = typeof Node
+
+  export interface DefintionOptions extends Defaults, Cell.DefintionOptions {}
+
+  let counter = 0
+  function getClassName(name?: string) {
+    if (name) {
+      return StringExt.pascalCase(name)
+    }
+    counter += 1
+    return `CustomNode${counter}`
+  }
+
+  export function define(options: DefintionOptions) {
+    const { name, attrDefinitions, ...defaults } = options
+    const className = getClassName(name)
+    const base = this as Defintion
+    const shape = ObjectExt.createClass<Defintion>(className, base)
+
+    shape.config(defaults, attrDefinitions)
+
+    return shape
   }
 }

@@ -10,6 +10,9 @@ import { NodeView } from './node-view'
 import { Markup } from './markup'
 import { Collection } from './collection'
 import { KeyValue } from '../../types'
+import { Node } from './node'
+import { NodeRegistry, ViewRegistry } from '../registry'
+import { EdgeView } from './edge-view'
 
 const sortingTypes = {
   NONE: 'sorting-none',
@@ -233,7 +236,7 @@ export class Graph extends View {
   // _highlights: any
   zPivots: any
   updates: any
-  views: { [cellId: string]: any } = {}
+  views: { [cellId: string]: CellView } = {}
 
   SORT_DELAYING_BATCHES = ['add', 'to-front', 'to-back']
   UPDATE_DELAYING_BATCHES = ['translate']
@@ -254,7 +257,7 @@ export class Graph extends View {
     this.container.appendChild(fragment)
     this.model = new Model()
     this.resetUpdates()
-    this.startListening()
+    this.setup()
   }
 
   init() {
@@ -308,7 +311,7 @@ export class Graph extends View {
     })
   }
 
-  protected startListening() {
+  protected setup() {
     const model = this.model
     model.on('sort', () => this.onSortModel)
     model.on('reset', ({ options }) => this.onResetModel(options))
@@ -400,6 +403,28 @@ export class Graph extends View {
     }
   }
 
+  addNode(options: Node.Metadata): Node
+  addNode(node: Node): Node
+  addNode(node: Node | Node.Metadata): Node {
+    let result: Node
+    if (node instanceof Node) {
+      result = node
+    } else {
+      const { type, ...options } = node
+      const name = type || 'basic.rect'
+      const defintion = NodeRegistry.get(name)
+      if (defintion) {
+        result = new defintion(options)
+      } else {
+        throw new Error(`Unknow node type: "${name}"`)
+      }
+    }
+
+    this.model.addCell(result)
+
+    return result
+  }
+
   // render() {
   //   this.renderChildren(this.children)
   //   const { childNodes, options } = this
@@ -487,22 +512,22 @@ export class Graph extends View {
     view: CellView,
     flag: number,
     priority: number,
-    opt: any = {},
+    options: any = {},
   ) {
-    this.scheduleViewUpdate(view, flag, priority, opt)
+    this.scheduleViewUpdate(view, flag, priority, options)
 
-    const isAsync = this.isAsync()
-    if (this.isFrozen() || (isAsync && opt.async !== false)) {
+    const async = this.isAsync()
+    if (
+      this.isFrozen() ||
+      (async && options.async !== false) ||
+      this.model.hasActiveBatch(this.UPDATE_DELAYING_BATCHES)
+    ) {
       return
     }
 
-    if (this.model.hasActiveBatch(this.UPDATE_DELAYING_BATCHES)) {
-      return
-    }
-
-    const stats = this.updateViews(opt)
-    if (isAsync) {
-      this.trigger('render:done', stats, opt)
+    const stats = this.updateViews(options)
+    if (async) {
+      this.trigger('render:done', stats, options)
     }
   }
 
@@ -510,16 +535,15 @@ export class Graph extends View {
     view: CellView,
     flag: number,
     priority: number,
-    opt: any = {},
+    options: any = {},
   ) {
     const updates = this.updates
-    let cache = updates.priorities[priority]
-    if (!cache) {
-      cache = updates.priorities[priority] = {}
+    let dic = updates.priorities[priority]
+    if (!dic) {
+      dic = updates.priorities[priority] = {}
     }
 
-    const currentFlag = cache[view.cid] || 0
-    // prevent cycling
+    const currentFlag = dic[view.cid] || 0
     if ((currentFlag & flag) === flag) {
       return
     }
@@ -531,17 +555,17 @@ export class Graph extends View {
     if (flag & FLAG_REMOVE && currentFlag & FLAG_INSERT) {
       // When a view is removed we need to remove the insert flag
       // as this is a reinsert.
-      cache[view.cid] ^= FLAG_INSERT
+      dic[view.cid] ^= FLAG_INSERT
     } else if (flag & FLAG_INSERT && currentFlag & FLAG_REMOVE) {
       // When a view is added we need to remove the remove flag as
       // this is view was previously removed.
-      cache[view.cid] ^= FLAG_REMOVE
+      dic[view.cid] ^= FLAG_REMOVE
     }
-    cache[view.cid] |= flag
+    dic[view.cid] |= flag
 
     const viewUpdateFn = this.options.onViewUpdate
     if (typeof viewUpdateFn === 'function') {
-      viewUpdateFn.call(this, view, flag, opt || {}, this)
+      viewUpdateFn.call(this, view, flag, options, this)
     }
   }
 
@@ -576,21 +600,21 @@ export class Graph extends View {
 
     const cid = view.cid
     const updates = this.updates
-    const priorityUpdates = updates.priorities[view.priority]
-    const flag = this.registerMountedView(view) | priorityUpdates[cid]
-    delete priorityUpdates[cid]
+    const cache = updates.priorities[view.priority]
+    const flag = this.registerMountedView(view) | cache[cid]
+    delete cache[cid]
     return flag
   }
 
   /**
    * Adds view into the DOM and update it.
    */
-  dumpView(view: CellView, opt: any = {}) {
+  dumpView(view: CellView, options: any = {}) {
     const flag = this.dumpViewUpdate(view)
     if (!flag) {
       return 0
     }
-    return this.updateView(view, flag, opt)
+    return this.updateView(view, flag, options)
   }
 
   /**
@@ -613,18 +637,14 @@ export class Graph extends View {
     return view
   }
 
-  /**
-   * Updates views in a frozen async graph to make sure that the views reflect
-   * the cells and keep the graph frozen.
-   */
-  updateViews(opt: any = {}) {
+  updateViews(options: any = {}) {
     let stats
-    let updateCount = 0
     let batchCount = 0
+    let updateCount = 0
     let priority = MIN_PRIORITY
     do {
+      stats = this.updateViewsBatch(options)
       batchCount += 1
-      stats = this.updateViewsBatch(opt)
       updateCount += stats.updated
       priority = Math.min(stats.priority, priority)
     } while (!stats.empty)
@@ -702,20 +722,19 @@ export class Graph extends View {
     })
   }
 
-  updateViewsBatch(opt: any = {}) {
-    const options = this.options
-    const batchSize = opt.batchSize || UPDATE_BATCH_SIZE
+  updateViewsBatch(options: any = {}) {
+    const batchSize = options.batchSize || UPDATE_BATCH_SIZE
     const updates = this.updates
     const priorities = updates.priorities
 
+    let empty = true
+    let mountCount = 0
+    let unmountCount = 0
     let updateCount = 0
     let postponeCount = 0
-    let unmountCount = 0
-    let mountCount = 0
     let maxPriority = MIN_PRIORITY
-    let empty = true
-    let viewportFn = opt.viewport || options.viewport
 
+    let viewportFn = options.viewport || this.options.viewport
     if (typeof viewportFn !== 'function') {
       viewportFn = null
     }
@@ -735,17 +754,16 @@ export class Graph extends View {
 
         const view = CellView.views[cid]
         if (!view) {
-          // This should not occur
           delete cache[cid]
           continue
         }
 
         let currentFlag = cache[cid]
+        // Do not check a view for viewport if we are about to remove the view.
         if ((currentFlag & FLAG_REMOVE) === 0) {
-          // We should never check a view for viewport if we are about to remove the view
           const isDetached = cid in updates.unmounted
           if (viewportFn && !viewportFn.call(this, view, isDetached, this)) {
-            // Unmount View
+            // Unmount view
             if (!isDetached) {
               this.registerUnmountedView(view)
               view.unmount()
@@ -755,7 +773,8 @@ export class Graph extends View {
             unmountCount += 1
             continue
           }
-          // Mount View
+
+          // Mount view
           if (isDetached) {
             currentFlag |= FLAG_INSERT
             mountCount += 1
@@ -763,7 +782,7 @@ export class Graph extends View {
           currentFlag |= this.registerMountedView(view)
         }
 
-        const leftoverFlag = this.updateView(view, currentFlag, opt)
+        const leftoverFlag = this.updateView(view, currentFlag, options)
         if (leftoverFlag > 0) {
           // View update has not finished completely
           cache[cid] = leftoverFlag
@@ -835,54 +854,12 @@ export class Graph extends View {
     return cid in this.updates.mounted
   }
 
+  getMountedViews() {
+    return Object.keys(this.updates.mounted).map(id => CellView.views[id])
+  }
+
   getUnmountedViews() {
     return Object.keys(this.updates.unmounted).map(id => CellView.views[id])
-  }
-
-  getMountedViews() {
-    const updates = this.updates
-    return Object.keys(updates.mounted).map(id => CellView.views[id])
-  }
-
-  protected checkUnmountedViews(viewportFn: any, options: any = {}) {
-    let mountCount = 0
-    if (typeof viewportFn !== 'function') {
-      viewportFn = null // tslint:disable-line
-    }
-    const batchSize = options.mountBatchSize || Infinity
-    const updates = this.updates
-    const unmounted = updates.unmounted
-    const unmountedCids = updates.unmountedCids
-    const size = Math.min(unmountedCids.length, batchSize)
-    for (let i = 0; i < size; i += 1) {
-      const cid = unmountedCids[i]
-      if (!(cid in unmounted)) {
-        continue
-      }
-
-      const view = CellView.views[cid]
-      if (view == null) {
-        continue
-      }
-
-      if (viewportFn && !viewportFn.call(this, view, false, this)) {
-        // Push at the end of all unmounted ids, so this can be check later again
-        unmountedCids.push(cid)
-        continue
-      }
-
-      mountCount += 1
-      const flag = this.registerMountedView(view)
-      if (flag) {
-        this.scheduleViewUpdate(view, flag, view.priority, {
-          mounting: true,
-        })
-      }
-    }
-
-    // Get rid of views, that have been mounted
-    unmountedCids.splice(0, size)
-    return mountCount
   }
 
   protected checkMountedViews(viewportFn: any, options: any = {}) {
@@ -924,6 +901,47 @@ export class Graph extends View {
     // Get rid of views, that have been unmounted
     mountedCids.splice(0, size)
     return unmountCount
+  }
+
+  protected checkUnmountedViews(viewportFn: any, options: any = {}) {
+    let mountCount = 0
+    if (typeof viewportFn !== 'function') {
+      viewportFn = null // tslint:disable-line
+    }
+    const batchSize = options.mountBatchSize || Infinity
+    const updates = this.updates
+    const unmounted = updates.unmounted
+    const unmountedCids = updates.unmountedCids
+    const size = Math.min(unmountedCids.length, batchSize)
+    for (let i = 0; i < size; i += 1) {
+      const cid = unmountedCids[i]
+      if (!(cid in unmounted)) {
+        continue
+      }
+
+      const view = CellView.views[cid]
+      if (view == null) {
+        continue
+      }
+
+      if (viewportFn && !viewportFn.call(this, view, false, this)) {
+        // Push at the end of all unmounted ids, so this can be check later again
+        unmountedCids.push(cid)
+        continue
+      }
+
+      mountCount += 1
+      const flag = this.registerMountedView(view)
+      if (flag) {
+        this.scheduleViewUpdate(view, flag, view.priority, {
+          mounting: true,
+        })
+      }
+    }
+
+    // Get rid of views, that have been mounted
+    unmountedCids.splice(0, size)
+    return mountCount
   }
 
   checkViewport(options: any = {}) {
@@ -1001,6 +1019,7 @@ export class Graph extends View {
     }
 
     this.options.frozen = updates.keyFrozen = false
+
     if (updates.sort) {
       this.sortViews()
       updates.sort = false
@@ -1017,11 +1036,10 @@ export class Graph extends View {
 
   onRemove() {
     this.freeze()
-    // clean up all DOM elements/views to prevent memory leaks
     this.removeViews()
   }
 
-  createViewForModel(cell: Cell) {
+  createCellView(cell: Cell) {
     // A class taken from the paper options.
     // let optionalViewClass
     // // A default basic class (either dia.ElementView or dia.LinkView)
@@ -1056,7 +1074,30 @@ export class Graph extends View {
     //   interactive: this.options.interactive,
     // })
 
-    return new NodeView(cell as any)
+    const view = cell.view
+    if (view) {
+      if (typeof view === 'string') {
+        const def = ViewRegistry.get(view)
+        if (def) {
+          return new def(cell)
+        }
+        throw new Error(
+          `Unknown ${cell.isNode() ? 'node' : 'edge'} view: "${view}"`,
+        )
+      }
+
+      return new view(cell)
+    }
+
+    if (cell.isNode()) {
+      return new NodeView(cell)
+    }
+
+    if (cell.isEdge()) {
+      return new EdgeView(cell)
+    }
+
+    return null
   }
 
   removeView(cell: Cell) {
@@ -1085,18 +1126,24 @@ export class Graph extends View {
   renderView(cell: Cell, options: any = {}) {
     const id = cell.id
     const views = this.views
-    let view: any
-    let flag
-    if (id in views) {
-      view = views[id]
+    let flag = 0
+    let view = views[id]
+
+    if (view) {
       flag = FLAG_INSERT
     } else {
-      view = views[cell.id] = this.createViewForModel(cell)
-      view.paper = this
-      view.graph = this
-      flag = this.registerUnmountedView(view) | view.getBootstrapFlag()
+      const tmp = this.createCellView(cell)
+      if (tmp) {
+        view = views[cell.id] = tmp
+        view.graph = this
+        flag = this.registerUnmountedView(view) | view.getBootstrapFlag()
+      }
     }
-    this.requestViewUpdate(view, flag, view.priority, options)
+
+    if (view) {
+      this.requestViewUpdate(view, flag, view.priority, options)
+    }
+
     return view
   }
 
@@ -1687,6 +1734,7 @@ export namespace Graph {
     name: string
   }
 }
+
 export namespace Graph {
   export const markup: Markup.JSONMarkup[] = [
     {

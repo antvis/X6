@@ -1,10 +1,10 @@
+import { ObjectExt, ArrayExt } from '../../util'
 import { v } from '../../v'
-import { Attr } from '../attr'
 import { Dictionary } from '../../struct'
+import { Rectangle, Point } from '../../geometry'
 import { Markup } from './markup'
 import { CellView } from './cell-view'
-import { Rectangle, Point } from '../../geometry'
-import { StringExt, ObjectExt, ArrayExt } from '../../util'
+import { Attr } from '../attr'
 
 export class CellViewAttr {
   constructor(protected view: CellView) {}
@@ -27,6 +27,7 @@ export class CellViewAttr {
     let position: Attr.ComplexAttrs | undefined
 
     const specials: { name: string; definition: Attr.Definition }[] = []
+    const kebabCase = (s: string) => s.replace(/[A-Z]/g, '-$&').toLowerCase()
 
     // divide the attributes between normal and special
     Object.keys(raw).forEach(name => {
@@ -51,7 +52,7 @@ export class CellViewAttr {
         if (normal == null) {
           normal = {}
         }
-        normal[StringExt.kebabCase(name)] = val as Attr.SimpleAttrValue
+        normal[kebabCase(name)] = val as Attr.SimpleAttrValue
       }
     })
 
