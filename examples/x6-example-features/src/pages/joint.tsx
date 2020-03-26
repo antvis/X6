@@ -1,5 +1,5 @@
 import React from 'react'
-import { joint } from '@antv/x6'
+import { v, joint } from '@antv/x6'
 import './index.less'
 
 export default class Example extends React.Component {
@@ -7,19 +7,18 @@ export default class Example extends React.Component {
 
   componentDidMount() {
     const graph = new joint.Graph({ container: this.container })
-    const rect = graph.addNode({
+
+    graph.addNode({
       size: { width: 100, height: 40 },
-      position: { x: 32, y: 40 },
+      position: { x: 40, y: 40 },
       attrs: {
         text: { text: 'rect' },
       },
     })
 
-    rect.setAttrByPath('rect/fill', 'red')
-
     graph.addNode({
       type: 'basic.circle',
-      position: { x: 160, y: 40 },
+      position: { x: 160, y: 30 },
       attrs: {
         text: { text: 'circle' },
       },
@@ -34,17 +33,8 @@ export default class Example extends React.Component {
     })
 
     graph.addNode({
-      type: 'basic.text',
-      position: { x: 170, y: 120 },
-      size: { width: 60, height: 30 },
-      attrs: {
-        text: { text: 'text' },
-      },
-    })
-
-    graph.addNode({
       type: 'basic.rhombus',
-      position: { x: 320, y: 40 },
+      position: { x: 320, y: 30 },
       attrs: {
         text: { text: 'rhombus', fontSize: 10 },
       },
@@ -53,7 +43,7 @@ export default class Example extends React.Component {
     graph.addNode({
       type: 'basic.image',
       size: { width: 40, height: 40 },
-      position: { x: 450, y: 50 },
+      position: { x: 400, y: 30 },
       attrs: {
         text: { text: 'image' },
         image: {
@@ -66,7 +56,7 @@ export default class Example extends React.Component {
 
     graph.addNode({
       type: 'basic.path',
-      position: { x: 50, y: 120 },
+      position: { x: 450, y: 20 },
       size: { width: 40, height: 40 },
       attrs: {
         path: {
@@ -78,16 +68,163 @@ export default class Example extends React.Component {
     })
 
     graph.addNode({
+      type: 'basic.text',
+      position: { x: 520, y: 40 },
+      size: { width: 60, height: 30 },
+      attrs: {
+        text: { text: 'text' },
+      },
+    })
+
+    const DecoratedRect = joint.Node.define({
+      markup:
+        '<g class="rotatable"><g class="scalable"><rect/></g><image/><text/></g>',
+      size: { width: 100, height: 60 },
+      attrs: {
+        rect: { fill: '#FFFFFF', stroke: 'black', width: 100, height: 60 },
+        text: {
+          fontSize: 14,
+          text: '',
+          refX: 0.5,
+          refY: 0.5,
+          ref: 'rect',
+          yAlignment: 'middle',
+          xAlignment: 'middle',
+          fill: 'black',
+        },
+        image: {
+          ref: 'rect',
+          refX: 2,
+          refY: 2,
+          width: 16,
+          height: 16,
+        },
+      },
+    })
+
+    graph.addNode(
+      new DecoratedRect({
+        position: { x: 40, y: 140 },
+        size: { width: 180, height: 80 },
+        attrs: {
+          text: { text: 'Decorated with image' },
+          image: { 'xlink:href': 'http://placehold.it/16x16' },
+        },
+      }),
+    )
+
+    graph.addNode({
       type: 'basic.text-block',
-      position: { x: 400, y: 150 },
-      size: { width: 180, height: 100 },
+      position: { x: 280, y: 140 },
+      size: { width: 220, height: 80 },
       content:
         'Lorem ipsum dolor sit amet,\n consectetur adipiscing elit. Nulla vel porttitor est.',
     })
+
+    const MyElementWithPorts = joint.Node.define({
+      markup: [
+        '<g class="rotatable">',
+        '<g class="scalable">',
+        '<rect/>',
+        '</g>',
+        '<g class="inPorts">',
+        '<g class="port1"><circle/><text/></g>',
+        '<g class="port2"><circle/><text/></g>',
+        '</g>',
+        '<g class="outPorts">',
+        '<g class="port3"><circle/><text/></g>',
+        '<g class="port4"><circle/><text/></g>',
+        '</g>',
+        '</g>',
+      ].join(''),
+      attrs: {
+        '.': {
+          fill: '#ffffff',
+          stroke: 'none',
+          magnet: false,
+        },
+        rect: {
+          width: 150,
+          height: 250,
+          stroke: 'black',
+        },
+        circle: {
+          r: 5,
+          magnet: true,
+          stroke: 'black',
+        },
+        text: {
+          fill: 'black',
+          'pointer-events': 'none',
+        },
+        '.label': { text: 'Model', dx: 5, dy: 5 },
+        '.inPorts text': { dx: -15, 'text-anchor': 'end' },
+        '.outPorts text': { dx: 15 },
+        '.inPorts circle': { fill: 'PaleGreen' },
+        '.outPorts circle': { fill: 'Tomato' },
+      },
+    })
+
+    graph.addNode(
+      new MyElementWithPorts({
+        position: { x: 90, y: 300 },
+        size: { width: 80, height: 80 },
+        attrs: {
+          '.port1 text': { text: 'port1' },
+          '.port2 text': { text: 'port2' },
+          '.port3 text': { text: 'port3' },
+          '.port4 text': { text: 'port4' },
+          '.port1': { ref: 'rect', refY: 0.2 },
+          '.port2': { ref: 'rect', refY: 0.4 },
+          '.port3': { ref: 'rect', refY: 0.2, refDx: 0 },
+          '.port4': { ref: 'rect', refY: 0.4, refDx: 0 },
+        },
+      }),
+    )
+
+    const cylinder = graph.addNode({
+      type: 'basic.cylinder',
+      position: { x: 305, y: 220 },
+      size: { width: 180, height: 150 },
+      attrs: {
+        text: { text: 'cylinder' },
+      },
+    })
+
+    const cylinderView = graph.findViewByCell(cylinder)
+    if (cylinderView) {
+      const cylinderPath = cylinderView.findOne('path')
+      const cylinderScalable = cylinderView.findOne('.scalable')
+      if (cylinderPath && cylinderScalable) {
+        var ctm = cylinderScalable.getCTM().inverse()
+        const token = v.create('circle', { r: 8, fill: 'red' })
+        console.log(cylinderPath)
+        token.animateAlongPath(
+          {
+            dur: '4s',
+            repeatCount: 'indefinite',
+          },
+          cylinderPath,
+        )
+
+        token.scale(ctm.a, ctm.d)
+        token.appendTo(cylinderScalable)
+      }
+    }
   }
 
   refContainer = (container: HTMLDivElement) => {
     this.container = container
+  }
+
+  renderTest() {
+    return (
+      <svg>
+        <g stroke="#fff">
+          <rect />
+        </g>
+      </svg>
+    )
   }
 
   render() {

@@ -8,7 +8,7 @@ export const Image = NodeRegistry.register(getName('image'), {
     text: {
       ...textAttr,
       refX: 0.5,
-      refDy: 20,
+      refDy: 16,
     },
   },
 })

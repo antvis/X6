@@ -13,7 +13,7 @@ export const Path = NodeRegistry.register(getName('path'), {
       ...textAttr,
       ref: 'path',
       refX: 0.5,
-      refDy: 10,
+      refDy: 16,
     },
   },
 })
