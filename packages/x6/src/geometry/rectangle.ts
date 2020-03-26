@@ -264,7 +264,7 @@ export class Rectangle implements Rectangle.RectangleLike {
   moveAndExpand(
     rect: Rectangle | Rectangle.RectangleLike | Rectangle.RectangleData,
   ) {
-    const ref = Rectangle.parse(rect)
+    const ref = Rectangle.clone(rect)
     this.x += ref.x || 0
     this.y += ref.y || 0
     this.width += ref.width || 0
@@ -332,7 +332,7 @@ export class Rectangle implements Rectangle.RectangleLike {
       | Rectangle.RectangleData,
     origin: Point = this.center,
   ) {
-    const rect = Rectangle.parse(limitRectangle)
+    const rect = Rectangle.clone(limitRectangle)
     const ox = origin.x
     const oy = origin.y
 
@@ -483,7 +483,7 @@ export class Rectangle implements Rectangle.RectangleLike {
     p: Point | Point.PointLike | Point.PointData,
     angle?: number,
   ) {
-    const ref = Point.parse(p)
+    const ref = Point.clone(p)
     const center = this.center
     let result
 
@@ -605,7 +605,7 @@ export class Rectangle implements Rectangle.RectangleLike {
    * Returns a rectangle that is a union of this rectangle and rectangle `rect`.
    */
   union(rect: Rectangle | Rectangle.RectangleLike | Rectangle.RectangleData) {
-    const ref = Rectangle.parse(rect)
+    const ref = Rectangle.clone(rect)
     const myOrigin = this.origin
     const myCorner = this.corner
     const rOrigin = ref.origin
@@ -620,7 +620,7 @@ export class Rectangle implements Rectangle.RectangleLike {
   }
 
   sideNearestToPoint(p: Point | Point.PointLike | Point.PointData): Side {
-    const ref = Point.parse(p)
+    const ref = Point.clone(p)
     const distLeft = ref.x - this.x
     const distRight = this.x + this.width - ref.x
     const distTop = ref.y - this.y
@@ -646,7 +646,7 @@ export class Rectangle implements Rectangle.RectangleLike {
   }
 
   pointNearestToPoint(p: Point | Point.PointLike | Point.PointData) {
-    const ref = Point.parse(p)
+    const ref = Point.clone(p)
     if (this.containsPoint(ref)) {
       const side = this.sideNearestToPoint(ref)
       switch (side) {
@@ -700,6 +700,19 @@ export namespace Rectangle {
   }
 
   export type RectangleData = [number, number, number, number]
+
+  export type KeyPoint =
+    | 'center'
+    | 'origin'
+    | 'corner'
+    | 'topLeft'
+    | 'topCenter'
+    | 'topRight'
+    | 'bottomLeft'
+    | 'bottomCenter'
+    | 'bottomRight'
+    | 'rightMiddle'
+    | 'leftMiddle'
 }
 
 export namespace Rectangle {
@@ -713,10 +726,10 @@ export namespace Rectangle {
       return new Rectangle(x, y, width, height)
     }
 
-    return parse(x)
+    return clone(x)
   }
 
-  export function parse(rect: Rectangle | RectangleLike | RectangleData) {
+  export function clone(rect: Rectangle | RectangleLike | RectangleData) {
     if (rect instanceof Rectangle) {
       return rect.clone()
     }
@@ -730,6 +743,13 @@ export namespace Rectangle {
 
   export function fromSize(size: Size) {
     return new Rectangle(0, 0, size.width, size.height)
+  }
+
+  export function fromPositionAndSize(
+    pos: Point | Point.PointLike,
+    size: Size,
+  ) {
+    return new Rectangle(pos.x, pos.y, size.width, size.height)
   }
 
   export function fromEllipse(ellipse: Ellipse) {

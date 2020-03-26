@@ -1,60 +1,53 @@
 import { Node } from '../core/node'
-import { StringExt } from '../../util'
-import { registerEntity } from './util'
+import { Registry } from './util'
 
-export interface Options extends Node.Defaults {
-  init?: () => void
-}
-
-export type NodeClass = new (...args: any[]) => Node
-
-const nodes: { [name: string]: NodeClass } = {}
-
-function register(name: string, node: NodeClass, force: boolean) {
-  registerEntity(nodes, name, node, force, () => {
-    throw new Error(`Node with name '${name}' already registered.`)
-  })
-
-  return node
-}
-
-export function registerNode(
-  name: string,
-  shape: NodeClass,
-  force?: boolean,
-): NodeClass
-export function registerNode(
-  name: string,
-  options: Options,
-  force?: boolean,
-): NodeClass
-export function registerNode(
-  name: string,
-  options: Options | NodeClass,
-  force: boolean = false,
-): NodeClass {
-  if (typeof options === 'function') {
-    return register(name, options, force)
-  }
-
-  const { init, ...defaults } = options
-  const className = StringExt.pascalCase(name)
-
-  class Shape extends Node {
-    init() {
-      super.init()
-      if (typeof init === 'function') {
-        init.call(this)
+class NodeRegistryClass extends Registry<Node.Defintion> {
+  register(
+    name: string,
+    options: NodeRegistry.DefintionOptions,
+    force?: boolean,
+  ): Node.Defintion
+  register(name: string, def: Node.Defintion, force?: boolean): Node.Defintion
+  register(
+    name: string,
+    options: NodeRegistry.DefintionOptions | Node.Defintion,
+    force: boolean = false,
+  ): Node.Defintion {
+    let def
+    if (typeof options === 'function') {
+      def = options
+    } else {
+      let parent = Node
+      const { inherit, ...others } = options
+      if (inherit) {
+        const base = this.get(inherit)
+        if (base == null) {
+          throw new Error(`Unkonwn base type: "${inherit}"`)
+        } else {
+          parent = base
+        }
       }
+
+      if (others.name == null) {
+        others.name = name
+      }
+
+      def = parent.define.call(parent, others)
     }
+
+    return super.register(name, def, force)
   }
+}
 
-  Shape.setDefaults(defaults)
+// tslint:disable-next-line
+export const NodeRegistry = new NodeRegistryClass({
+  onError(name) {
+    throw new Error(`Node with name '${name}' already registered.`)
+  },
+})
 
-  Object.defineProperty(Shape, 'name', {
-    writable: true,
-    value: className,
-  })
-
-  return register(name, Shape, force)
+export namespace NodeRegistry {
+  export interface DefintionOptions extends Node.DefintionOptions {
+    inherit?: string
+  }
 }

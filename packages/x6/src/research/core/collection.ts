@@ -1,9 +1,9 @@
-import sortBy from 'lodash/sortBy'
+import { ArrayExt } from '../../util'
 import { Basecoat } from '../../entity'
 import { Cell } from './cell'
-import { KeyValue } from '../../types'
+import { Edge } from './edge'
 
-export class Collection extends Basecoat<EventArgs> {
+export class Collection extends Basecoat<Collection.EventArgs> {
   public length: number = 0
   private cells: Cell[]
   private map: { [id: string]: Cell }
@@ -22,29 +22,38 @@ export class Collection extends Basecoat<EventArgs> {
     return this.cells.map(cell => cell.toJSON())
   }
 
-  add(cells: Cell | Cell[], options?: AddOptions): this
-  add(cells: Cell | Cell[], index: number, options?: AddOptions): this
-  add(cells: Cell | Cell[], index?: number | AddOptions, options?: AddOptions) {
-    let at: number
-    let opts: AddOptions
+  add(cells: Cell | Cell[], options?: Collection.AddOptions): this
+  add(
+    cells: Cell | Cell[],
+    index: number,
+    options?: Collection.AddOptions,
+  ): this
+  add(
+    cells: Cell | Cell[],
+    index?: number | Collection.AddOptions,
+    options?: Collection.AddOptions,
+  ) {
+    let localIndex: number
+    let localOptions: Collection.AddOptions
 
     if (typeof index === 'number') {
-      at = index
-      opts = { merge: false, ...options }
+      localIndex = index
+      localOptions = { merge: false, ...options }
     } else {
-      at = this.length
-      opts = { merge: false, ...index }
+      localIndex = this.length
+      localOptions = { merge: false, ...index }
     }
 
-    if (at > this.length) {
-      at = this.length
+    if (localIndex > this.length) {
+      localIndex = this.length
     }
-    if (at < 0) {
-      at += this.length + 1
+    if (localIndex < 0) {
+      localIndex += this.length + 1
     }
 
     const entities = Array.isArray(cells) ? cells : [cells]
-    const sortable = this.comparator && index == null && opts.sort !== false
+    const sortable =
+      this.comparator && index == null && localOptions.sort !== false
     const sortAttr = this.comparator || null
 
     let sort = false
@@ -54,7 +63,7 @@ export class Collection extends Basecoat<EventArgs> {
     entities.forEach(cell => {
       const existing = this.get(cell)
       if (existing) {
-        if (opts.merge && cell.store !== existing.store) {
+        if (localOptions.merge && cell.store !== existing.store) {
           existing.store.set(cell.store.get(), options) // merge
           merged.push(existing)
           if (sortable && !sort) {
@@ -71,7 +80,7 @@ export class Collection extends Basecoat<EventArgs> {
       if (sortable) {
         sort = true
       }
-      this.cells.splice(at, 0, ...added)
+      this.cells.splice(localIndex, 0, ...added)
       this.length = this.cells.length
     }
 
@@ -79,9 +88,13 @@ export class Collection extends Basecoat<EventArgs> {
       this.sort({ silent: true })
     }
 
-    if (!opts.silent) {
+    if (!localOptions.silent) {
       added.forEach((cell, i) => {
-        this.trigger('add', { cell, index: at + i, options: opts })
+        this.trigger('add', {
+          cell,
+          index: localIndex + i,
+          options: localOptions,
+        })
       })
 
       if (sort) {
@@ -93,7 +106,7 @@ export class Collection extends Basecoat<EventArgs> {
           added,
           merged,
           removed: [],
-          options: opts,
+          options: localOptions,
         })
       }
     }
@@ -101,9 +114,9 @@ export class Collection extends Basecoat<EventArgs> {
     return this
   }
 
-  remove(cell: Cell, options?: Options): Cell
-  remove(cells: Cell[], options?: Options): Cell[]
-  remove(cells: Cell | Cell[], options: Options = {}) {
+  remove(cell: Cell, options?: Collection.RemoveOptions): Cell
+  remove(cells: Cell[], options?: Collection.RemoveOptions): Cell[]
+  remove(cells: Cell | Cell[], options: Collection.RemoveOptions = {}) {
     const entities = Array.isArray(cells) ? cells : [cells]
     const removed = this.removeCells(entities, options)
     if (!options.silent && removed.length > 0) {
@@ -117,7 +130,30 @@ export class Collection extends Basecoat<EventArgs> {
     return Array.isArray(cells) ? removed : removed[0]
   }
 
-  reset(cells: Cell | Cell[], options: Options = {}) {
+  protected removeCells(cells: Cell[], options: Collection.RemoveOptions) {
+    const removed = []
+
+    for (let i = 0; i < cells.length; i += 1) {
+      const cell = this.get(cells[i])
+      if (cell == null) {
+        continue
+      }
+
+      const index = this.cells.indexOf(cell)
+      this.cells.splice(index, 1)
+      this.length -= 1
+      delete this.map[cell.id]
+      removed.push(cell)
+      this.unreference(cell)
+      if (!options.silent) {
+        this.trigger('remove', { cell, index, options })
+      }
+    }
+
+    return removed
+  }
+
+  reset(cells: Cell | Cell[], options: Collection.SetOptions = {}) {
     const previous = this.cells.slice()
     previous.forEach(cell => this.unreference(cell))
     this.clean()
@@ -133,20 +169,20 @@ export class Collection extends Basecoat<EventArgs> {
     return this
   }
 
-  push(cell: Cell, options?: Options) {
+  push(cell: Cell, options?: Collection.SetOptions) {
     return this.add(cell, this.length, options)
   }
 
-  pop(options?: Options) {
+  pop(options?: Collection.SetOptions) {
     const cell = this.at(this.length - 1)!
     return this.remove(cell, options)
   }
 
-  unshift(cell: Cell, options?: Options) {
+  unshift(cell: Cell, options?: Collection.SetOptions) {
     return this.add(cell, 0, options)
   }
 
-  shift(options?: Options) {
+  shift(options?: Collection.SetOptions) {
     const cell = this.at(0)!
     return this.remove(cell, options)
   }
@@ -187,12 +223,12 @@ export class Collection extends Basecoat<EventArgs> {
     return this.cells.slice()
   }
 
-  sort(options: Options = {}) {
+  sort(options: Collection.SetOptions = {}) {
     if (this.comparator != null) {
       if (typeof this.comparator === 'function') {
         this.cells.sort(this.comparator)
       } else {
-        this.cells = sortBy(this.cells, this.comparator)
+        this.cells = ArrayExt.sortBy(this.cells, this.comparator)
       }
 
       if (!options.silent) {
@@ -210,44 +246,54 @@ export class Collection extends Basecoat<EventArgs> {
     }) as Collection
   }
 
-  protected removeCells(cells: Cell[], options: Options) {
-    const removed = []
-
-    for (let i = 0; i < cells.length; i += 1) {
-      const cell = this.get(cells[i])
-      if (cell == null) {
-        continue
-      }
-
-      const index = this.cells.indexOf(cell)
-      this.cells.splice(index, 1)
-      this.length -= 1
-
-      delete this.map[cell.id]
-
-      if (!options.silent) {
-        cell.trigger('remove', {
-          cell,
-          index,
-          options,
-        })
-      }
-
-      this.unreference(cell)
-      removed.push(cell)
-    }
-
-    return removed
-  }
-
   protected reference(cell: Cell) {
     this.map[cell.id] = cell
-    cell.on('dispose', this.onCellDisposed, this)
+    cell.on('changed', this.onCellChanged, this)
+    cell.on('disposed', this.onCellDisposed, this)
+    cell.on('change:zIndex', this.onCellZIndexChanged, this)
+    if (cell.isEdge()) {
+      cell.on('change:source', this.onEdgeSourceChanged, this)
+      cell.on('change:target', this.onEdgeTargetChanged, this)
+    }
   }
 
   protected unreference(cell: Cell) {
-    cell.off('dispose', this.onCellDisposed, this)
+    cell.off('changed', this.onCellChanged, this)
+    cell.off('disposed', this.onCellDisposed, this)
+    cell.off('change:zIndex', this.onCellZIndexChanged, this)
+    if (cell.isEdge()) {
+      cell.off('change:source', this.onEdgeSourceChanged, this)
+      cell.off('change:target', this.onEdgeTargetChanged, this)
+    }
     delete this.map[cell.id]
+  }
+
+  protected onCellChanged(args: Cell.EventArgs['changed']) {
+    this.trigger('change', args)
+  }
+
+  protected onEdgeSourceChanged(args: Cell.ChangeArgs<Edge.TerminalData>) {
+    this.onEdgeTerminalChanged('source', args)
+  }
+
+  protected onEdgeTargetChanged(args: Cell.ChangeArgs<Edge.TerminalData>) {
+    this.onEdgeTerminalChanged('target', args)
+  }
+
+  protected onEdgeTerminalChanged(
+    type: Edge.TerminalType,
+    args: Cell.ChangeArgs<Edge.TerminalData>,
+  ) {
+    this.trigger('change:terminal', {
+      type,
+      edge: args.cell as Edge,
+      current: args.current,
+      previous: args.previous,
+    })
+  }
+
+  protected onCellZIndexChanged(args: Cell.EventArgs['change:zIndex']) {
+    this.sort(args.options)
   }
 
   protected onCellDisposed({ cell }: { cell: Cell }) {
@@ -263,44 +309,61 @@ export class Collection extends Basecoat<EventArgs> {
   }
 }
 
-interface Options extends KeyValue {
-  silent?: boolean
-}
-
-interface AddOptions extends Options {
-  sort?: boolean
-  merge?: boolean
-}
-
-interface EventArgs {
-  sort?: null
-  add: {
-    cell: Cell
-    index: number
-    options: Options
-  }
-  remove: {
-    cell: Cell
-    index: number
-    options: Options
-  }
-  update: {
-    added: Cell[]
-    merged: Cell[]
-    removed: Cell[]
-    options: Options
-  }
-  reset: {
-    current: Cell[]
-    previous: Cell[]
-    options: Options
-  }
-}
-
 export namespace Collection {
   export type Comparator = string | string[] | ((a: Cell, b: Cell) => number)
 
   export interface Options {
     comparator?: Comparator
+  }
+
+  export interface SetOptions extends Cell.SetOptions {}
+
+  export interface RemoveOptions extends Cell.SetOptions {
+    /**
+     * The default is to remove all the associated links.
+     * Set `disconnectEdges` option to `true` to disconnect edges
+     * when a cell is removed.
+     */
+    disconnectEdges?: boolean
+  }
+
+  export interface AddOptions extends SetOptions {
+    sort?: boolean
+    merge?: boolean
+  }
+
+  export interface EventArgs {
+    add: {
+      cell: Cell
+      index: number
+      options: AddOptions
+    }
+    remove: {
+      cell: Cell
+      index: number
+      options: RemoveOptions
+    }
+    change: {
+      cell: Cell
+      options: Cell.MutateOptions
+    }
+    sort?: null
+    reset: {
+      current: Cell[]
+      previous: Cell[]
+      options: SetOptions
+    }
+    update: {
+      added: Cell[]
+      merged: Cell[]
+      removed: Cell[]
+      options: SetOptions
+    }
+    'change:terminal': {
+      edge: Edge
+      type: Edge.TerminalType
+      current?: Edge.TerminalData
+      previous?: Edge.TerminalData
+    }
   }
 }

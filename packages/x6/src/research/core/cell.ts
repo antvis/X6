@@ -1,59 +1,119 @@
-/* tslint:disable:variable-name */
-import { ArrayExt, StringExt, ObjectExt } from '../../util'
-import { KeyValue } from '../../types'
+import { v } from '../../v'
 import { Basecoat } from '../../entity'
-import { Rectangle } from '../../geometry'
+import { KeyValue, Size } from '../../types'
+import { Rectangle, Point } from '../../geometry'
+import { ArrayExt, StringExt, ObjectExt } from '../../util'
+import { Easing, Interpolation } from '../animation'
+import { Attr } from '../attr'
+import { Node } from './node'
+import { Edge } from './edge'
+import { Layer } from './layer'
 import { Store } from './store'
 import { Model } from './model'
-import { Node } from './node'
-import { View } from './view'
-import { Attr } from '../attr'
+import { Markup } from './markup'
+import { PortData } from './port-data'
+import { CellView } from './cell-view'
 
-export class Cell<D extends Cell.Data = Cell.Data> extends Basecoat {
+export class Cell extends Basecoat<Cell.EventArgs> {
   // #region static
 
   protected static defaults: Cell.Defaults = {}
+  protected static attrDefinitions: Attr.Definitions = {}
 
-  public static setDefaults<T extends Cell.Defaults = Cell.Defaults>(
+  public static config<T extends Cell.Defaults = Cell.Defaults>(
     presets: T,
+    attrDefinitions?: Attr.Definitions,
   ) {
-    this.defaults = ObjectExt.merge({}, this.defaults, presets)
+    this.defaults = this.mergeDefaults(this.defaults, presets)
+    if (attrDefinitions) {
+      this.attrDefinitions = { ...this.attrDefinitions, ...attrDefinitions }
+    }
   }
 
-  public static getDefaults<T extends Cell.Defaults = Cell.Defaults>(): T {
-    return ObjectExt.cloneDeep(this.defaults) as T
+  public static mergeDefaults<T extends Cell.Defaults = Cell.Defaults>(
+    target: T,
+    source?: T,
+  ): T {
+    const { view: targetView, ...targetBase } = target
+    if (source == null) {
+      const defaults = ObjectExt.cloneDeep(targetBase as T)
+      if (targetView) {
+        defaults.view = targetView
+      }
+      return defaults
+    }
+
+    const { view: sourceView, ...sourceBase } = source
+    const defaults = ObjectExt.merge({} as T, targetBase as T, sourceBase as T)
+    if (sourceView || targetView) {
+      defaults.view = sourceView || targetView
+    }
+    return defaults
+  }
+
+  public static getDefaults<T extends Cell.Defaults = Cell.Defaults>(
+    raw: boolean = false,
+  ): T {
+    return (raw ? this.defaults : ObjectExt.cloneDeep(this.defaults)) as T
+  }
+
+  public static getAttrDefinition() {
+    return this.attrDefinitions
   }
 
   // #endregion
 
-  public readonly id: string
-  public readonly store: Store<D>
-
   public model: Model | null
-  protected _parent: Cell | null
-  protected _children: Cell[] | null
+  public readonly id: string
+  public readonly store: Store<Cell.Properties>
+  protected _parent: Cell | null // tslint:disable-line
+  protected _children: Cell[] | null // tslint:disable-line
 
   constructor(options: Cell.Options = {}) {
     super()
     this.id = options.id || StringExt.uuid()
-    const data = ObjectExt.merge(this.getDefaults(), options) as Partial<D>
-    this.store = new Store<D>(data)
-    this.startListening()
+    const data = this.getData(options) as Partial<Cell.Properties>
+    this.store = new Store(data)
+    this.setup()
     this.init()
   }
 
-  protected init() {}
+  init() {}
 
-  protected getDefaults(): Cell.Defaults {
-    return (this.constructor as any).getDefaults()
+  protected getData(options: Cell.Options): Cell.Defaults {
+    const ctor = this.constructor as typeof Cell
+    return ctor.mergeDefaults(ctor.getDefaults(true), options)
   }
 
-  protected startListening() {
-    this.store.on('mutated', ({ key, current, previous }) => {
+  protected setup() {
+    this.store.on('mutated', metadata => {
+      const key = metadata.key
+
       if (key === 'zIndex') {
+        this.trigger('change:zIndex', this.getChangeEventArgs<number>(metadata))
+      } else if (key === 'parent') {
+        this.trigger('change:parent', this.getChangeEventArgs<string>(metadata))
+      } else if (key === 'children') {
         this.trigger(
-          'change:zIndex',
-          this.getChangeArgs<number>(current, previous),
+          'change:children',
+          this.getChangeEventArgs<string[]>(metadata),
+        )
+      } else if (key === 'visible') {
+        this.trigger(
+          'change:visible',
+          this.getChangeEventArgs<boolean>(metadata),
+        )
+      } else if (key === 'markup') {
+        this.trigger('change:markup', this.getChangeEventArgs<Markup>(metadata))
+      } else if (key === 'view') {
+        this.trigger(
+          'change:view',
+          this.getChangeEventArgs<Cell.ViewType>(metadata),
+        )
+      } else if (key === 'attrs') {
+        this.trigger(
+          'change:attrs',
+          this.getChangeEventArgs<Attr.CellAttrs>(metadata),
         )
       }
     })
@@ -63,13 +123,14 @@ export class Cell<D extends Cell.Data = Cell.Data> extends Basecoat {
     )
   }
 
-  protected getChangeArgs<T>(
-    current: any,
-    previous: any,
-  ): { cell: Cell; current: T; previous?: T } {
+  protected getChangeEventArgs<T>(
+    metadata: Store.EventArgs<any>['mutated'],
+  ): Cell.ChangeArgs<T> {
+    const { current, previous, options } = metadata
     return {
+      options,
       cell: this,
-      current: current as T,
+      current: current == null ? undefined : (current as T),
       previous: previous == null ? undefined : (previous as T),
     }
   }
@@ -78,11 +139,19 @@ export class Cell<D extends Cell.Data = Cell.Data> extends Basecoat {
     return false
   }
 
-  isEdge() {
+  isEdge(): this is Edge {
     return false
   }
 
-  // #region
+  isLayer(): this is Layer {
+    return false
+  }
+
+  get view() {
+    return this.store.get('view')
+  }
+
+  // #region get/set by path
 
   getByPath<T>(path: string | string[]) {
     return this.store.getByPath<T>(path)
@@ -113,15 +182,29 @@ export class Cell<D extends Cell.Data = Cell.Data> extends Basecoat {
   // #region zIndex
 
   get zIndex() {
-    return this.store.get('zIndex', 0)
+    return this.getZIndex()
   }
 
-  set zIndex(z: number) {
-    this.setZIndex(z)
+  set zIndex(z: number | undefined | null) {
+    if (z == null) {
+      this.removeZIndex()
+    } else {
+      this.setZIndex(z)
+    }
+  }
+
+  getZIndex() {
+    return this.store.get('zIndex')
   }
 
   setZIndex(z: number, options: Cell.SetOptions = {}) {
     this.store.set('zIndex', z, options)
+    return this
+  }
+
+  removeZIndex(options: Cell.SetOptions = {}) {
+    this.store.remove('zIndex', options)
+    return this
   }
 
   toFront() {}
@@ -133,15 +216,29 @@ export class Cell<D extends Cell.Data = Cell.Data> extends Basecoat {
   // #region markup
 
   get markup() {
+    return this.getMarkup()
+  }
+
+  set markup(value: Markup | undefined | null) {
+    if (value == null) {
+      this.removeMarkup()
+    } else {
+      this.setMarkup(value)
+    }
+  }
+
+  getMarkup() {
     return this.store.get('markup', '')
   }
 
-  set markup(value: View.Markup) {
-    this.setMarkup(value)
+  setMarkup(markup: Markup, options: Cell.SetOptions = {}) {
+    this.store.set('markup', markup, options)
+    return this
   }
 
-  setMarkup(markup: View.Markup, options: Cell.SetOptions = {}) {
-    this.store.set('markup', markup, options)
+  removeMarkup(options: Cell.SetOptions = {}) {
+    this.store.remove('markup', options)
+    return this
   }
 
   // #endregion
@@ -149,29 +246,48 @@ export class Cell<D extends Cell.Data = Cell.Data> extends Basecoat {
   // #region attrs
 
   get attrs() {
+    return this.getAttrs()
+  }
+
+  set attrs(value: Attr.CellAttrs | null | undefined) {
+    if (value == null) {
+      this.removeAttrs()
+    } else {
+      this.setAttrs(value)
+    }
+  }
+
+  getAttrs() {
     const result = this.store.get('attrs') as Attr.CellAttrs
-    return result ? ObjectExt.cloneDeep(result) : {}
+    return result ? { ...result } : {}
   }
 
-  set attrs(value: Attr.CellAttrs) {
-    this.setAttrs(value)
+  setAttrs(attrs: Attr.CellAttrs, options: Cell.SetAttrOptions = {}) {
+    const attributes = options.overwrite
+      ? attrs
+      : ObjectExt.merge({}, this.getAttrs(), attrs)
+    this.store.set('attrs', attributes, options)
+    return this
   }
 
-  setAttrs(attrs: Attr.CellAttrs, options: Cell.SetOptions = {}) {
-    this.store.set('attrs', attrs, options)
+  removeAttrs(options: Cell.SetOptions = {}) {
+    this.store.remove('attrs', options)
+    return this
   }
 
   getAttrDefinition(attrName: string) {
-    return Attr.definitions[attrName] || null
+    const ctor = this.constructor as typeof Cell
+    const definitions = ctor.getAttrDefinition() || {}
+    return definitions[attrName] || Attr.definitions[attrName] || null
   }
 
   getAttrByPath(): Attr.CellAttrs
   getAttrByPath<T>(path: string | string[]): T
   getAttrByPath<T>(path?: string | string[]) {
     if (path == null || path === '') {
-      return this.attrs
+      return this.getAttrs()
     }
-    return this.getByPath<T>(this.prepareAttrPath(path))
+    return this.getByPath<T>(this.prefixAttrPath(path))
   }
 
   setAttrByPath(
@@ -179,16 +295,16 @@ export class Cell<D extends Cell.Data = Cell.Data> extends Basecoat {
     value: Attr.ComplexAttrValue,
     options: Cell.SetOptions = {},
   ) {
-    this.setByPath(this.prepareAttrPath(path), value, options)
+    this.setByPath(this.prefixAttrPath(path), value, options)
     return this
   }
 
   removeAttrByPath(path: string | string[], options: Cell.SetOptions = {}) {
-    this.removeByPath(this.prepareAttrPath(path), options)
+    this.removeByPath(this.prefixAttrPath(path), options)
     return this
   }
 
-  protected prepareAttrPath(path: string | string[]) {
+  protected prefixAttrPath(path: string | string[]) {
     return Array.isArray(path) ? ['attrs'].concat(path) : `attrs/${path}`
   }
 
@@ -197,7 +313,7 @@ export class Cell<D extends Cell.Data = Cell.Data> extends Basecoat {
   // #region visible
 
   get visible() {
-    return this.store.get('visible') !== false
+    return this.isVisible()
   }
 
   set visible(value: boolean) {
@@ -209,23 +325,23 @@ export class Cell<D extends Cell.Data = Cell.Data> extends Basecoat {
   }
 
   isVisible() {
-    return this.visible
+    return this.store.get('visible') !== false
   }
 
   show(options: Cell.SetOptions = {}) {
-    if (!this.visible) {
+    if (!this.isVisible()) {
       this.setVisible(true, options)
     }
   }
 
   hide(options: Cell.SetOptions = {}) {
-    if (this.visible) {
+    if (this.isVisible()) {
       this.setVisible(false, options)
     }
   }
 
   toggleVisible(options: Cell.SetOptions = {}) {
-    if (this.visible) {
+    if (this.isVisible()) {
       this.hide(options)
     } else {
       this.show(options)
@@ -237,19 +353,19 @@ export class Cell<D extends Cell.Data = Cell.Data> extends Basecoat {
   // #region parent children
 
   get parent() {
-    return this._parent
+    return this.getParent()
   }
 
   get children() {
-    return this._children ? [...this._children] : null
+    return this.getChildren()
   }
 
   getParent() {
-    return this.parent
+    return this._parent
   }
 
   getChildren() {
-    return this.children
+    return this._children ? [...this._children] : null
   }
 
   hasParent() {
@@ -308,7 +424,7 @@ export class Cell<D extends Cell.Data = Cell.Data> extends Basecoat {
     } = {},
   ): Cell[] {
     if (options.deep !== false) {
-      // breadthFirst algorithm
+      // breadth first algorithm
       if (options.breadthFirst) {
         const cells = []
         const queue = this.getDescendants()
@@ -321,7 +437,7 @@ export class Cell<D extends Cell.Data = Cell.Data> extends Basecoat {
         return cells
       }
 
-      // depthFirst algorithm
+      // depth first algorithm
       {
         const cells = this.getDescendants()
         cells.forEach(cell => {
@@ -372,6 +488,10 @@ export class Cell<D extends Cell.Data = Cell.Data> extends Basecoat {
     return this.isAncestorOf(cell)
   }
 
+  getCommonAncestor(...cells: (Cell | null | undefined)[]) {
+    return Cell.getCommonAncestor(this, ...cells)
+  }
+
   protected setParent(parent: Cell | null, options: Cell.SetOptions = {}) {
     this._parent = parent
     if (parent) {
@@ -407,18 +527,29 @@ export class Cell<D extends Cell.Data = Cell.Data> extends Basecoat {
     options: Cell.SetOptions = {},
   ): this {
     if (child != null && child !== this) {
+      const oldParent = child.getParent()
+      const changed = this !== oldParent
+
       let pos = index
       if (pos == null) {
         pos = this.getChildCount()
-        if (child.getParent() === this) {
+        if (!changed) {
           pos -= 1
         }
       }
 
-      const changed = this !== child.getParent()
-
-      child.removeFromParent(options)
-      this.setParent(this, options)
+      // remove from old parent
+      if (oldParent) {
+        const children = oldParent.getChildren()
+        if (children) {
+          const index = children.indexOf(child)
+          if (index >= 0) {
+            child.setParent(null, options)
+            children.splice(index, 1)
+            oldParent.setChildren(children, options)
+          }
+        }
+      }
 
       let children = this.children
       if (children == null) {
@@ -428,42 +559,200 @@ export class Cell<D extends Cell.Data = Cell.Data> extends Basecoat {
         children.splice(pos, 0, child)
       }
 
+      child.setParent(this, options)
       this.setChildren(children, options)
 
       if (changed) {
+        // TODO: updateEdgeParents
         // this.updateEdgeParents(child)
+      }
+
+      if (this.model) {
+        this.model.collection.add(child)
       }
     }
 
     return this
   }
 
-  removeFromParent(options: Cell.SetOptions = {}) {
-    if (this.parent != null) {
-      const index = this.parent.getChildIndex(this)
-      this.parent.removeChildAt(index, options)
+  removeFromParent(options: Cell.RemoveOptions = {}) {
+    const parent = this.getParent()
+    if (parent != null) {
+      const index = parent.getChildIndex(this)
+      parent.removeChildAt(index, options)
     }
   }
 
-  removeChild(child: Cell, options: Cell.SetOptions = {}) {
+  removeChild(child: Cell, options: Cell.RemoveOptions = {}) {
     const index = this.getChildIndex(child)
     return this.removeChildAt(index, options)
   }
 
-  removeChildAt(index: number, options: Cell.SetOptions = {}) {
+  removeChildAt(index: number, options: Cell.RemoveOptions = {}) {
     const child = this.getChildAt(index)
     const children = this.children
 
     if (children != null && child != null) {
       children.splice(index, 1)
-      child.setParent(null)
-      this.setChildren(children)
+      child.setParent(null, options)
+      this.setChildren(children, options)
+      child.remove(options)
     }
 
     return child
   }
 
+  remove(options: Cell.RemoveOptions = {}) {
+    const parent = this.getParent()
+    if (parent) {
+      parent.removeChild(this, options)
+    } else {
+      this.executeBatch('remove', () => {
+        if (options.deep !== false) {
+          this.eachChild(child => child.remove())
+        }
+        this.trigger('removed', { options, cell: this })
+        if (this.model) {
+          this.model.collection.remove(this, options)
+        }
+      })
+    }
+  }
+
   // #endregion
+
+  // #region transition
+
+  protected readonly transitionIds: { [path: string]: number } = {}
+
+  transition<T extends string | number | KeyValue<number>>(
+    path: string | string[],
+    target: T,
+    options: Cell.TransitionOptions = {},
+    delim: string = '/',
+  ) {
+    const opts: Cell.TransitionOptions = {
+      delay: 10,
+      duration: 100,
+      easing: 'linear',
+      ...options,
+    }
+
+    let easing = Easing.linear
+    if (opts.easing != null) {
+      if (typeof opts.easing === 'string') {
+        easing = Easing[opts.easing]
+      } else {
+        easing = opts.easing
+      }
+    }
+
+    const current = this.getByPath<T>(path)
+
+    let interpolate: any
+    if (typeof target === 'object') {
+      interpolate = Interpolation.object(
+        current as KeyValue<number>,
+        target as KeyValue<number>,
+      )
+    } else if (typeof target === 'number') {
+      interpolate = Interpolation.number(current as number, target)
+    } else if (typeof target === 'string') {
+      if (target[0] === '#') {
+        interpolate = Interpolation.color(current as string, target)
+      } else {
+        interpolate = Interpolation.unit(current as string, target)
+      }
+    }
+
+    let startTime = 0
+
+    const pathStr = Array.isArray(path) ? path.join(delim) : path
+    const setter = () => {
+      let id
+      let val
+
+      const now = new Date().getTime()
+      if (startTime === 0) {
+        startTime = now
+      }
+
+      const elaspe = now - startTime
+      let progress = elaspe / opts.duration!
+      if (progress < 1) {
+        this.transitionIds[pathStr] = id = v.requestAnimationFrame(setter)
+      } else {
+        progress = 1
+        delete this.transitionIds[pathStr]
+      }
+
+      val = interpolate(easing(progress))
+      options.transitionId = id
+
+      this.setByPath(Array.isArray(path) ? path : path.split(delim), val)
+
+      if (id == null) {
+        this.trigger('transition:end', { cell: this, path: pathStr })
+      }
+    }
+
+    const initiator = (transition: FrameRequestCallback) => {
+      this.stopTransitions(path, delim)
+      this.transitionIds[pathStr] = v.requestAnimationFrame(transition)
+      this.trigger('transition:begin', { cell: this, path: pathStr })
+    }
+
+    return setTimeout(() => {
+      initiator(setter)
+    }, options.delay)
+  }
+
+  getTransitions() {
+    return Object.keys(this.transitionIds)
+  }
+
+  stopTransitions(path: string | string[], delim: string = '/') {
+    const paths = Array.isArray(path) ? path : path.split(delim)
+
+    Object.keys(this.transitionIds)
+      .filter(key =>
+        ObjectExt.isEqual(paths, key.split(delim).slice(0, paths.length)),
+      )
+      .forEach(key => {
+        v.cancelAnimationFrame(this.transitionIds[key])
+        delete this.transitionIds[key]
+        this.trigger('transition:end', { cell: this, path: key })
+      })
+
+    return this
+  }
+
+  // #endregion
+
+  // #region transform
+
+  translate(tx: number, ty: number, options: Cell.TranslateOptions) {
+    return this
+  }
+
+  scale(
+    sx: number,
+    sy: number,
+    origin?: Point | Point.PointLike,
+    options?: Node.SetOptions,
+  ) {
+    return this
+  }
+
+  // #endregion
+
+  getBBox(options?: { deep?: boolean }) {
+    return new Rectangle()
+  }
+
+  getConnectionPoint(edge: Edge, type: Edge.TerminalType) {
+    return new Point()
+  }
 
   toJSON() {}
 
@@ -473,11 +762,7 @@ export class Cell<D extends Cell.Data = Cell.Data> extends Basecoat {
 
   findView() {}
 
-  processPorts() {}
-
-  getBBox(options: { deep?: boolean } = {}) {
-    return new Rectangle(0, 0, 0, 0)
-  }
+  // #region batch
 
   protected startBatch(name: string, data: KeyValue = {}) {
     if (this.model) {
@@ -491,12 +776,18 @@ export class Cell<D extends Cell.Data = Cell.Data> extends Basecoat {
     }
   }
 
-  protected batchUpdate<T>(name: string, update: () => T, data?: KeyValue): T {
+  protected executeBatch<T>(
+    name: string,
+    execute: () => T,
+    data?: KeyValue,
+  ): T {
     this.startBatch(name, data)
-    const result = update()
+    const result = execute()
     this.stopBatch(name, data)
     return result
   }
+
+  // #endregion
 
   @Basecoat.dispose()
   dispose() {
@@ -507,21 +798,24 @@ export class Cell<D extends Cell.Data = Cell.Data> extends Basecoat {
 }
 
 export namespace Cell {
+  export type ViewType = string | typeof CellView
+
   export interface Common {
+    view?: ViewType
     attrs?: Attr.CellAttrs
-    visible?: boolean
     zIndex?: number
+    visible?: boolean
   }
 
   export interface Defaults extends Common {
-    markup?: View.Markup
+    markup?: Markup
   }
 
   export interface Options extends Common {
     id?: string
   }
 
-  export interface Data extends Defaults, Options {
+  export interface Properties extends Defaults, Options {
     parent?: string
     children?: string[]
   }
@@ -529,49 +823,173 @@ export namespace Cell {
 
 export namespace Cell {
   export interface SetOptions extends Store.SetOptions {}
+
+  export interface MutateOptions extends Store.MutateOptions {}
+
+  export interface RemoveOptions extends SetOptions {
+    deep?: boolean
+  }
+
+  export interface SetAttrOptions extends SetOptions {
+    overwrite?: boolean
+  }
+
   export interface SetByPathOptions extends Store.SetByPathOptions {}
+
+  export interface TranslateOptions extends SetOptions {
+    tx?: number
+    ty?: number
+    translateBy?: string | number
+  }
+
+  export interface TransitionOptions extends KeyValue {
+    delay?: number
+    duration?: number
+    easing?: Easing.Names | Easing.Definition
+  }
 }
 
-// export namespace Cell {
-//   interface CommonArgs {
-//     cell: Cell
-//   }
+export namespace Cell {
+  export interface EventArgs {
+    // common
+    'change:attrs': ChangeArgs<Attr.CellAttrs>
+    'change:zIndex': ChangeArgs<number>
+    'change:markup': ChangeArgs<Markup>
+    'change:visible': ChangeArgs<boolean>
+    'change:parent': ChangeArgs<string>
+    'change:children': ChangeArgs<string[]>
+    'change:view': ChangeArgs<ViewType>
+    'transition:begin': TransitionArgs
+    'transition:end': TransitionArgs
 
-//   type ChangeAttrArgs<T> = Assign<
-//     {
-//       current: T
-//       previous?: T
-//     },
-//     CommonArgs
-//   >
+    // node
+    'change:size': ChangeArgs<Size>
+    'change:position': ChangeArgs<Point.PointLike>
+    'change:rotation': ChangeArgs<number>
+    'change:ports': ChangeArgs<PortData.Port[]>
+    'change:portMarkup': ChangeArgs<Markup>
+    'change:portLabelMarkup': ChangeArgs<Markup>
+    'change:portContainerMarkup': ChangeArgs<Markup>
+    'ports:removed': {
+      node: Node
+      removed: PortData.Port[]
+    }
+    'ports:added': {
+      node: Node
+      added: PortData.Port[]
+    }
 
-//   export interface EventArgs {
-//     'change:zIndex': ChangeAttrArgs<number>
-//     changed: CommonArgs
-//     disposed: CommonArgs
-//   }
-// }
+    // edge
+    'change:source': ChangeArgs<Edge.TerminalData>
+    'change:target': ChangeArgs<Edge.TerminalData>
+    'change:router': ChangeArgs<Edge.RouterData>
+    'change:connector': ChangeArgs<Edge.ConnectorData>
+    'change:vertices': ChangeArgs<Point.PointLike[]>
+    'change:labels': ChangeArgs<Edge.Label[]>
+    'change:defaultLabel': ChangeArgs<Edge.Label>
+    'change:labelMarkup': ChangeArgs<Markup>
+    'change:toolMarkup': ChangeArgs<Markup>
+    'change:doubleToolMarkup': ChangeArgs<Markup>
+    'change:vertexMarkup': ChangeArgs<Markup>
+    'change:arrowheadMarkup': ChangeArgs<Markup>
+    'vertexs:added': {
+      edge: Edge
+      added: Point.PointLike[]
+    }
+    'vertexs:removed': {
+      edge: Edge
+      removed: Point.PointLike[]
+    }
+    'labels:added': {
+      edge: Edge
+      added: Edge.Label[]
+    }
+    'labels:removed': {
+      edge: Edge
+      removed: Edge.Label[]
+    }
+
+    removed: {
+      cell: Cell
+      options: Cell.SetOptions
+    }
+
+    changed: {
+      cell: Cell
+      options: MutateOptions
+    }
+
+    disposed: {
+      cell: Cell
+    }
+  }
+
+  export interface ChangeArgs<T> {
+    cell: Cell
+    current?: T
+    previous?: T
+    options: MutateOptions
+  }
+
+  export interface TransitionArgs {
+    cell: Cell
+    path: string
+  }
+}
 
 export namespace Cell {
+  export function getCommonAncestor(...cells: (Cell | null | undefined)[]) {
+    const ancestors = cells
+      .filter(cell => cell != null)
+      .map(cell => cell!.getAncestors())
+      .sort((a, b) => {
+        return a.length - b.length
+      })
+
+    return ancestors
+      .shift()!
+      .find(cell => ancestors.every(item => item.includes(cell)))
+  }
+
+  export interface GetCellsBBoxOptions {
+    deep?: boolean
+  }
+
   export function getCellsBBox(
     cells: Cell[],
-    options: { deep?: boolean } = {},
+    options: GetCellsBBoxOptions = {},
   ) {
-    const bbox = new Rectangle()
+    if (cells.length) {
+      const bbox = new Rectangle()
 
-    cells.forEach(cell => {
-      let rect = cell.getBBox(options)
-      if (rect) {
-        if (cell.isNode()) {
-          const angle = cell.rotation
-          if (angle != null) {
-            rect = rect.bbox(angle)
+      cells.forEach(cell => {
+        let rect = cell.getBBox(options)
+        if (rect) {
+          if (cell.isNode()) {
+            const angle = cell.rotation
+            if (angle != null) {
+              rect = rect.bbox(angle)
+            }
           }
+          bbox.union(rect)
         }
-        bbox.union(rect)
-      }
-    })
+      })
 
-    return bbox
+      return bbox
+    }
+
+    return null
+  }
+}
+
+export namespace Cell {
+  export type Defintion = typeof Cell
+
+  export interface DefintionOptions extends Defaults {
+    /**
+     * The class name.
+     */
+    name?: string
+    attrDefinitions?: Attr.Definitions
   }
 }

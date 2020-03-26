@@ -6,6 +6,7 @@ export {
   sortedIndex,
   sortBy,
   groupBy,
+  difference,
 } from 'lodash'
 
 const proto = Array.prototype
