@@ -358,7 +358,7 @@ export class Graph extends View {
   }
 
   protected onRemoveCell(cell: Cell, options: Collection.RemoveOptions) {
-    const view = this.findViewByModel(cell)
+    const view = this.findViewByCell(cell)
     if (view) {
       this.requestViewUpdate(view, FLAG_REMOVE, view.priority, options)
     }
@@ -369,7 +369,7 @@ export class Graph extends View {
       cell.store.hasChanged('zIndex') &&
       this.options.sorting === sortingTypes.APPROX
     ) {
-      const view = this.findViewByModel(cell)
+      const view = this.findViewByCell(cell)
       if (view) {
         this.requestViewUpdate(view, FLAG_INSERT, view.priority, options)
       }
@@ -629,7 +629,7 @@ export class Graph extends View {
    * Ensure the view associated with the cell is attached to the DOM and updated.
    */
   requireView(cell: Cell, opt: any = {}) {
-    const view = this.findViewByModel(cell)
+    const view = this.findViewByCell(cell)
     if (view == null) {
       return null
     }
@@ -1323,9 +1323,9 @@ export class Graph extends View {
   //   return undefined
   // }
 
-  findViewByModel(cellId: string | number): CellView | null
-  findViewByModel(cell: Cell): CellView | null
-  findViewByModel(cell: Cell | string | number) {
+  findViewByCell(cellId: string | number): CellView | null
+  findViewByCell(cell: Cell): CellView | null
+  findViewByCell(cell: Cell | string | number) {
     if (cell == null) {
       return null
     }
