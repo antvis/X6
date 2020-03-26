@@ -1,50 +1,40 @@
-import { Node } from './node'
+import { ArrayExt } from '../../util'
+import { Rectangle } from '../../geometry'
+import { v } from '../../v'
+import { Attr } from '../attr'
 import { View } from './view'
+import { Node } from './node'
 import { CellView } from './cell-view'
 import { Globals } from './globals'
-import { v } from '../../v'
-import { ArrayExt } from '../../util'
-import { Attr } from '../attr'
-import { Rectangle } from '../../geometry'
 import { PortData } from './port-data'
+import { Markup } from './markup'
+import { CellViewAttr } from './cell-view-attr'
 
-export class NodeView extends CellView<Node> {
+export class NodeView<
+  C extends Node = Node,
+  Options extends NodeView.Options = NodeView.Options
+> extends CellView<C, Options> {
+  protected readonly portMarkup = Markup.portMarkup
+  protected readonly portLabelMarkup = Markup.portLabelMarkup
+  protected readonly portContainerMarkup = Markup.portContainerMarkup
   protected readonly rotatableSelector: string = 'rotatable'
   protected readonly scalableSelector: string = 'scalable'
   public scalableNode: Element | null = null
   public rotatableNode: Element | null = null
 
   protected portsCache: { [id: string]: NodeView.PortCache } = {}
-  protected portContainerMarkup: View.Markup = 'g'
-  protected portMarkup: View.Markup = {
-    tagName: 'circle',
-    selector: 'circle',
-    attrs: {
-      r: 10,
-      fill: '#FFFFFF',
-      stroke: '#000000',
-    },
-  }
-
-  protected portLabelMarkup: View.Markup = {
-    tagName: 'text',
-    selector: 'text',
-    attrs: {
-      fill: '#000000',
-    },
-  }
 
   confirmUpdate(flag: number, options: any = {}) {
-    let ref = flag
-    if (this.hasAction(ref, 'ports')) {
+    let ret = flag
+    if (this.hasAction(ret, 'ports')) {
       this.removePorts()
       this.cleanPortsCache()
     }
 
-    if (this.hasAction(ref, 'render')) {
+    if (this.hasAction(ret, 'render')) {
       this.render()
       // this.updateTools(opt)
-      ref = this.removeAction(ref, [
+      ret = this.removeAction(ret, [
         'render',
         'update',
         'resize',
@@ -53,32 +43,32 @@ export class NodeView extends CellView<Node> {
         'ports',
       ])
     } else {
-      ref = this.handleAction(
-        ref,
+      ret = this.handleAction(
+        ret,
         'resize',
         () => this.resize(options),
         'update', // Resize method is calling `update()` internally
       )
 
-      ref = this.handleAction(
-        ref,
+      ret = this.handleAction(
+        ret,
         'update',
         () => this.update(),
         // `update()` will render ports when useCSSSelectors are enabled
         Globals.useCSSSelector ? 'ports' : null,
       )
 
-      ref = this.handleAction(ref, 'translate', () => this.translate())
-      ref = this.handleAction(ref, 'rotate', () => this.rotate())
-      ref = this.handleAction(ref, 'ports', () => this.renderPorts())
+      ret = this.handleAction(ret, 'translate', () => this.translate())
+      ret = this.handleAction(ret, 'rotate', () => this.rotate())
+      ret = this.handleAction(ret, 'ports', () => this.renderPorts())
     }
 
-    if (this.hasAction(ref, 'tools')) {
+    if (this.hasAction(ret, 'tools')) {
       // this.updateTools(options)
-      ref = this.removeAction(ref, 'tools')
+      ret = this.removeAction(ret, 'tools')
     }
 
-    return ref
+    return ret
   }
 
   update(partialAttrs?: Attr.CellAttrs) {
@@ -91,7 +81,7 @@ export class NodeView extends CellView<Node> {
 
     const node = this.cell
     const size = node.size
-    const attrs = node.attrs
+    const attrs = node.attrs || {}
     this.updateAttrs(this.container, attrs, {
       attrs: partialAttrs === attrs ? null : partialAttrs,
       rootBBox: new Rectangle(0, 0, size.width, size.height),
@@ -106,8 +96,7 @@ export class NodeView extends CellView<Node> {
   }
 
   protected renderMarkup() {
-    const cell = this.cell
-    const markup = cell.markup
+    const markup = this.cell.markup
     if (markup) {
       if (typeof markup === 'string') {
         return this.renderStringMarkup(markup)
@@ -116,17 +105,17 @@ export class NodeView extends CellView<Node> {
       return this.renderJSONMarkup(markup)
     }
 
-    throw new TypeError('invalid markup')
+    throw new TypeError('Invalid node markup.')
   }
 
-  protected renderJSONMarkup(markup: View.JSONMarkup | View.JSONMarkup[]) {
-    const result = this.parseJSONMarkup(markup, this.container)
+  protected renderJSONMarkup(markup: Markup.JSONMarkup | Markup.JSONMarkup[]) {
+    const ret = this.parseJSONMarkup(markup, this.container)
     const one = (elems: Element | Element[] | null) =>
       Array.isArray(elems) ? elems[0] : elems
-    this.selectors = result.selectors
+    this.selectors = ret.selectors
     this.rotatableNode = one(this.selectors[this.rotatableSelector])
     this.scalableNode = one(this.selectors[this.scalableSelector])
-    this.container.appendChild(result.fragment)
+    this.container.appendChild(ret.fragment)
   }
 
   protected renderStringMarkup(markup: string) {
@@ -302,7 +291,7 @@ export class NodeView extends CellView<Node> {
   // #region ports
 
   // fineElemInPort
-  findPortNode(portId: string, selector: string) {
+  findPortNode(portId: string, selector?: string) {
     const cache = this.portsCache[portId]
     if (!cache) {
       return null
@@ -393,13 +382,13 @@ export class NodeView extends CellView<Node> {
   }
 
   protected createPortElement(port: PortData.Port) {
-    let renderResult = View.renderMarkup(this.getPortContainerMarkup())
+    let renderResult = Markup.renderMarkup(this.getPortContainerMarkup())
     const portElement = renderResult.elem
     if (portElement == null) {
       throw new Error('Invalid port container markup.')
     }
 
-    renderResult = View.renderMarkup(this.getPortMarkup(port))
+    renderResult = Markup.renderMarkup(this.getPortMarkup(port))
     const portContentElement = renderResult.elem
     const portContentSelectors = renderResult.selectors
 
@@ -415,7 +404,7 @@ export class NodeView extends CellView<Node> {
       portContentElement,
     )
 
-    renderResult = View.renderMarkup(this.getPortLabelMarkup(port.label))
+    renderResult = Markup.renderMarkup(this.getPortLabelMarkup(port.label))
     const portLabelElement = renderResult.elem
     const portLabelSelectors = renderResult.selectors
 
@@ -423,7 +412,7 @@ export class NodeView extends CellView<Node> {
       throw new Error('Invalid port label markup.')
     }
 
-    let portSelectors: View.Selectors | undefined
+    let portSelectors: Markup.Selectors | undefined
     if (portContentSelectors && portLabelSelectors) {
       for (const key in portLabelSelectors) {
         if (portContentSelectors[key] && key !== this.rootSelector) {
@@ -480,7 +469,7 @@ export class NodeView extends CellView<Node> {
       const portLayout = metrics.portLayout
       this.applyPortTransform(cached.portElement, portLayout)
       if (metrics.portAttrs != null) {
-        const options: CellView.UpdateAttrsOptions = {
+        const options: Partial<CellViewAttr.UpdateAttrsOptions> = {
           selectors: cached.portSelectors || {},
         }
 
@@ -500,7 +489,7 @@ export class NodeView extends CellView<Node> {
         )
 
         if (portLabelLayout.attrs) {
-          const options: CellView.UpdateAttrsOptions = {
+          const options: Partial<CellViewAttr.UpdateAttrsOptions> = {
             selectors: cached.portLabelSelectors || {},
           }
 
@@ -548,25 +537,24 @@ export class NodeView extends CellView<Node> {
 }
 
 export namespace NodeView {
+  export interface Options extends CellView.Options {}
+
   export interface PortCache {
     portElement: Element
-    portSelectors?: View.Selectors | null
+    portSelectors?: Markup.Selectors | null
     portLabelElement: Element
-    portLabelSelectors?: View.Selectors | null
+    portLabelSelectors?: Markup.Selectors | null
     portContentElement: Element
-    portContentSelectors?: View.Selectors | null
+    portContentSelectors?: Markup.Selectors | null
   }
 }
 
-export namespace NodeView {
-  export interface Options extends CellView.Options {}
-}
-
-NodeView.setDefaults({
+NodeView.config({
   isSvgElement: true,
   priority: 0,
   bootstrap: ['render'],
   actions: {
+    view: ['render'],
     markup: ['render'],
     attrs: ['update'],
     size: ['resize', 'ports', 'tools'],

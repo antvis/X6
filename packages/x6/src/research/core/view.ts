@@ -1,14 +1,15 @@
 import jQuery from 'jquery'
+import { v } from '../../v'
 import { KeyValue } from '../../types'
-import { Globals } from './globals'
 import { Basecoat } from '../../entity'
 import { Attr } from '../attr'
-import { v } from '../../v'
+import { Markup } from './markup'
+import { Globals } from './globals'
 
 export abstract class View extends Basecoat {
   public readonly cid: string
   public container: Element
-  protected selectors: View.Selectors
+  protected selectors: Markup.Selectors
 
   constructor() {
     super()
@@ -20,26 +21,23 @@ export abstract class View extends Basecoat {
     return View.$(elem)
   }
 
-  empty() {
-    v.empty(this.container)
+  empty(elem: Element = this.container) {
+    this.$(elem).empty()
     return this
   }
 
-  unmount() {
-    v.remove(this.container)
+  unmount(elem: Element = this.container) {
+    this.$(elem).remove()
     return this
   }
 
-  protected onUnmount() {}
-
-  remove() {
-    this.onRemove()
-    this.removeEventListeners(document)
-    this.unmount()
+  remove(elem: Element = this.container) {
+    if (elem === this.container) {
+      this.removeEventListeners(document)
+    }
+    this.unmount(elem)
     return this
   }
-
-  protected onRemove() {}
 
   addClass(className: string | string[], elem: Element = this.container) {
     this.$(elem).addClass(
@@ -103,7 +101,7 @@ export abstract class View extends Basecoat {
   find(
     selector?: string,
     rootElem: Element = this.container,
-    selectors: View.Selectors = this.selectors,
+    selectors: Markup.Selectors = this.selectors,
   ) {
     if (!selector || selector === '.') {
       return [rootElem]
@@ -132,7 +130,7 @@ export abstract class View extends Basecoat {
   findOne(
     selector?: string,
     rootElem: Element = this.container,
-    selectors: View.Selectors = this.selectors,
+    selectors: Markup.Selectors = this.selectors,
   ) {
     const nodes = this.find(selector, rootElem, selectors)
     return nodes.length > 0 ? nodes[0] : null
@@ -299,7 +297,7 @@ export abstract class View extends Basecoat {
   }
 
   protected stopPropagation(e: JQuery.TriggeredEvent) {
-    this.addEventData(e, { propagationStopped: true })
+    this.setEventData(e, { propagationStopped: true })
     return this
   }
 
@@ -311,7 +309,7 @@ export abstract class View extends Basecoat {
     return this.eventData<T>(e)
   }
 
-  protected addEventData<T extends KeyValue>(
+  protected setEventData<T extends KeyValue>(
     e: JQuery.TriggeredEvent,
     data: T,
   ): T {
@@ -370,231 +368,10 @@ export namespace View {
 }
 
 export namespace View {
-  export interface JSONMarkup {
-    /**
-     * The namespace URI of the element. It defaults to SVG namespace
-     * `"http://www.w3.org/2000/svg"`.
-     */
-    ns?: string
-
-    /**
-     * The type of element to be created.
-     */
-    tagName: string
-
-    /**
-     * A unique selector for targeting the element within the `attr`
-     * cell attribute.
-     */
-    selector?: string
-
-    /**
-     * A selector for targeting multiple elements within the `attr`
-     * cell attribute. The group selector name must not be the same
-     * as an existing selector name.
-     */
-    groupSelector?: string | string[]
-
-    attrs?: Attr.SimpleAttrs
-
-    style?: JQuery.PlainObject<string | number>
-
-    className?: string | string[]
-
-    children?: JSONMarkup[]
-
-    textContent?: string
-  }
-
-  export type Markup = string | JSONMarkup | JSONMarkup[]
-
-  export type Selectors = { [selector: string]: Element | Element[] }
-
   export interface TransformData {
     x?: number
     y?: number
     angle?: number
-  }
-
-  export function parseJSONMarkup(
-    markup: JSONMarkup | JSONMarkup[],
-    options: {
-      ns?: string
-      bare?: boolean
-    } = {
-      ns: v.ns.svg,
-      bare: false,
-    },
-  ) {
-    const fragment = document.createDocumentFragment()
-    const groups: { [selector: string]: Element[] } = {}
-    const selectors: Selectors = {}
-
-    const queue: {
-      markup: JSONMarkup[]
-      parent: Element | DocumentFragment
-      ns?: string
-    }[] = [
-      {
-        markup: Array.isArray(markup) ? markup : [markup],
-        parent: fragment,
-        ns: options.ns,
-      },
-    ]
-
-    while (queue.length > 0) {
-      const item = queue.pop()!
-      let ns = item.ns || v.ns.svg
-      const defines = item.markup
-      const parentNode = item.parent
-
-      defines.forEach(define => {
-        // tagName
-        const tagName = define.tagName
-        if (!tagName) {
-          throw new TypeError('Invalid tagName')
-        }
-
-        // ns
-        if (define.ns) {
-          ns = define.ns
-        }
-
-        const svg = ns === v.ns.svg
-        const node = ns
-          ? v.createElementNS(tagName, ns)
-          : v.createElement(tagName)
-
-        // attrs
-        const attrs = define.attrs
-        if (attrs) {
-          if (svg) {
-            v.attr(node, attrs)
-          } else {
-            $(node).attr(attrs)
-          }
-        }
-
-        // style
-        const style = define.style
-        if (style) {
-          $(node).css(style)
-        }
-
-        // classname
-        const className = define.className
-        if (className != null) {
-          node.setAttribute(
-            'class',
-            Array.isArray(className) ? className.join(' ') : className,
-          )
-        }
-
-        // textContent
-        if (define.textContent) {
-          node.textContent = define.textContent
-        }
-
-        // selector
-        const selector = define.selector
-        if (selector != null) {
-          if (selectors[selector]) {
-            throw new TypeError('Selector must be unique')
-          }
-
-          selectors[selector] = node
-
-          if (!options.bare) {
-            node.setAttribute('x6-selector', selector)
-          }
-        }
-
-        // group
-        if (define.groupSelector) {
-          let nodeGroups = define.groupSelector
-          if (!Array.isArray(nodeGroups)) {
-            nodeGroups = [nodeGroups]
-          }
-
-          nodeGroups.forEach(name => {
-            if (!groups[name]) {
-              groups[name] = []
-            }
-            groups[name].push(node)
-          })
-        }
-
-        for (const group in groups) {
-          if (selectors[group]) {
-            throw new Error('Invalid group selector')
-          }
-          selectors[group] = groups[group]
-        }
-
-        parentNode.appendChild(node)
-
-        // children
-        const children = define.children
-        if (Array.isArray(children)) {
-          queue.push({ ns, markup: children, parent: node })
-        }
-      })
-    }
-
-    return {
-      fragment,
-      selectors,
-      groups,
-    }
-  }
-
-  function createContainer(firstChild: Element) {
-    return firstChild instanceof SVGElement
-      ? v.createSvgElement('g')
-      : v.createElement('div')
-  }
-
-  export function renderMarkup(
-    markup: Markup,
-  ): {
-    elem?: Element
-    selectors?: Selectors
-  } {
-    if (typeof markup === 'string') {
-      const nodes = v.batch(markup)
-      const count = nodes.length
-
-      if (count === 1) {
-        return {
-          elem: nodes[0].node as Element,
-        }
-      }
-
-      if (count > 1) {
-        const elem = createContainer(nodes[0].node)
-        nodes.forEach(node => {
-          elem.appendChild(node.node)
-        })
-
-        return { elem }
-      }
-
-      return {}
-    }
-
-    {
-      const result = parseJSONMarkup(markup)
-      const fragment = result.fragment
-      let elem: Element | null = null
-      if (fragment.childNodes.length > 1) {
-        elem = createContainer(fragment.firstChild as Element)
-        elem.appendChild(fragment)
-      } else {
-        elem = fragment.firstChild as Element
-      }
-
-      return { elem, selectors: result.selectors }
-    }
   }
 }
 

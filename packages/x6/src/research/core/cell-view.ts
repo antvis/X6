@@ -1,17 +1,23 @@
-import { Nullable, KeyValue } from '../../types'
-import { Dictionary } from '../../struct'
 import { v } from '../../v'
-import { View } from './view'
+import { Rectangle, Point } from '../../geometry'
+import { Dictionary } from '../../struct'
+import { Nullable, KeyValue } from '../../types'
+import { ArrayExt, ObjectExt } from '../../util'
 import { Cell } from './cell'
+import { Edge } from './edge'
+import { View } from './view'
+import { Markup } from './markup'
 // import { Graph } from './graph'
 import { Attr } from '../attr'
-import { ArrayExt, JSONObject } from '../../util'
-import { Line, Rectangle, Ellipse, Polyline, Path } from '../../geometry'
 import { CellViewFlag } from './cell-view-flag'
 import { CellViewAttr } from './cell-view-attr'
 import { CellViewCache } from './cell-view-cache'
+import { ToolsView } from './tools-view'
 
-export abstract class CellView<C extends Cell = Cell> extends View {
+export class CellView<
+  C extends Cell = Cell,
+  Options extends CellView.Options = CellView.Options
+> extends View {
   protected static defaults: CellView.Options = {
     isSvgElement: true,
     rootSelector: 'root',
@@ -22,74 +28,72 @@ export abstract class CellView<C extends Cell = Cell> extends View {
     documentEvents: null,
   }
 
-  static getDefaults(): CellView.Options {
-    return this.defaults as CellView.Options
+  static getDefaults() {
+    return this.defaults
   }
 
-  static setDefaults(options: Partial<CellView.Options>) {
+  static config<T extends CellView.Options = CellView.Options>(
+    options: Partial<T>,
+  ) {
     this.defaults = this.getOptions(options)
   }
 
-  static getOptions(options: Partial<CellView.Options>): CellView.Options {
-    const defaults = { ...this.getDefaults() }
-    if (options.isSvgElement != null) {
-      defaults.isSvgElement = options.isSvgElement
-    }
-
-    if (options.rootSelector != null) {
-      defaults.rootSelector = options.rootSelector
-    }
-
-    if (options.priority != null) {
-      defaults.priority = options.priority
-    }
-
-    if (options.bootstrap != null) {
-      defaults.bootstrap = ArrayExt.uniq([
-        ...(Array.isArray(defaults.bootstrap)
-          ? defaults.bootstrap
-          : [defaults.bootstrap]),
-        ...(Array.isArray(options.bootstrap)
-          ? options.bootstrap
-          : [options.bootstrap]),
-      ])
-    }
-
-    defaults.actions = {
-      ...defaults.actions,
-      ...options.actions,
-    }
-
-    if (options.events) {
-      defaults.events = {
-        ...defaults.events,
-        ...options.events,
+  static getOptions<T extends CellView.Options = CellView.Options>(
+    options: Partial<T>,
+  ): T {
+    const mergeActions = <T>(arr1: T | T[], arr2?: T | T[]) => {
+      if (arr2 != null) {
+        return ArrayExt.uniq([
+          ...(Array.isArray(arr1) ? arr1 : [arr1]),
+          ...(Array.isArray(arr2) ? arr2 : [arr2]),
+        ])
       }
+      return Array.isArray(arr1) ? [...arr1] : [arr1]
+    }
+
+    const ret = ObjectExt.cloneDeep(this.getDefaults())
+    const { bootstrap, actions, events, documentEvents, ...others } = options
+
+    if (bootstrap) {
+      ret.bootstrap = mergeActions(ret.bootstrap, bootstrap)
+    }
+
+    if (actions) {
+      Object.keys(actions).forEach(key => {
+        const val = actions[key]
+        const raw = ret.actions[key]
+        if (val && raw) {
+          ret.actions[key] = mergeActions(raw, val)
+        } else if (val) {
+          ret.actions[key] = mergeActions(val)
+        }
+      })
+    }
+
+    if (events) {
+      ret.events = { ...ret.events, ...events }
     }
 
     if (options.documentEvents) {
-      defaults.documentEvents = {
-        ...defaults.documentEvents,
-        ...options.documentEvents,
-      }
+      ret.documentEvents = { ...ret.documentEvents, ...documentEvents }
     }
 
-    return defaults
+    return ObjectExt.merge(ret, others) as T
   }
 
   public graph: any
   public cell: C
-  protected selectors: View.Selectors
-  protected readonly options: CellView.Options
+  protected selectors: Markup.Selectors
+  protected readonly options: Options
   protected readonly attrManager: CellViewAttr
   protected readonly flagManager: CellViewFlag
   protected readonly cacheManager: CellViewCache
-  protected cache: Dictionary<Element, CellView.CacheItem>
+  protected cache: Dictionary<Element, CellViewCache.CacheItem>
 
   public scalableNode: Element | null
   public rotatableNode: Element | null
 
-  constructor(cell: C, options: Partial<CellView.Options> = {}) {
+  constructor(cell: C, options: Partial<Options> = {}) {
     super()
 
     this.cell = cell
@@ -103,7 +107,7 @@ export abstract class CellView<C extends Cell = Cell> extends View {
     this.cacheManager = new CellViewCache(this)
 
     this.setContainer(this.ensureContainer())
-    this.startListening()
+    this.setup()
     this.$(this.container).data('view', this)
 
     CellView.views[this.cid] = this
@@ -117,12 +121,12 @@ export abstract class CellView<C extends Cell = Cell> extends View {
     return this.options.rootSelector
   }
 
-  protected ensureOptions(options: Partial<CellView.Options>) {
-    return this.getConstructor().getOptions(options)
-  }
-
   protected getConstructor<T extends typeof CellView>() {
     return (this.constructor as any) as T
+  }
+
+  protected ensureOptions(options: Partial<Options>) {
+    return this.getConstructor().getOptions(options) as Options
   }
 
   protected getContainerTagName(): string {
@@ -135,6 +139,8 @@ export abstract class CellView<C extends Cell = Cell> extends View {
 
   protected getContainerAttrs(): Nullable<Attr.SimpleAttrs> {}
 
+  protected getContainerClassName(): Nullable<string | string[]> {}
+
   attributes() {
     const cell = this.cell
     return {
@@ -142,8 +148,6 @@ export abstract class CellView<C extends Cell = Cell> extends View {
       'data-type': cell.attrs!.type,
     }
   }
-
-  protected getContainerClassName(): Nullable<string | string[]> {}
 
   protected ensureContainer() {
     return View.createElement(
@@ -183,19 +187,21 @@ export abstract class CellView<C extends Cell = Cell> extends View {
     return this
   }
 
-  remove() {
-    super.remove()
-    delete CellView.views[this.cid]
+  remove(elem: Element = this.container) {
+    super.remove(elem)
+    if (elem === this.container) {
+      delete CellView.views[this.cid]
+    }
     return this
   }
 
-  protected renderChildren(children: View.JSONMarkup[]) {
+  protected renderChildren(children: Markup.JSONMarkup[]) {
     if (children) {
       const isSVG = this.container instanceof SVGElement
       const ns = isSVG ? v.ns.svg : v.ns.xhtml
-      const doc = View.parseJSONMarkup(children, { ns })
+      const ret = Markup.parseJSONMarkup(children, { ns })
       v.empty(this.container)
-      v.append(this.container, doc.fragment)
+      v.append(this.container, ret.fragment)
       // this.childNodes = doc.selectors
     }
     return this
@@ -205,20 +211,20 @@ export abstract class CellView<C extends Cell = Cell> extends View {
     return 0
   }
 
-  getFlag(actions: CellViewFlag.Actions) {
-    return this.flagManager.getFlag(actions)
-  }
-
   getBootstrapFlag() {
     return this.flagManager.getBootstrapFlag()
   }
 
+  getFlag(actions: CellViewFlag.Actions) {
+    return this.flagManager.getFlag(actions)
+  }
+
   hasAction(flag: number, actions: CellViewFlag.Actions) {
-    return this.flagManager.hasFlag(flag, actions)
+    return this.flagManager.hasAction(flag, actions)
   }
 
   removeAction(flag: number, actions: CellViewFlag.Actions) {
-    return this.flagManager.removeFlag(flag, actions)
+    return this.flagManager.removeAction(flag, actions)
   }
 
   handleAction(
@@ -242,12 +248,12 @@ export abstract class CellView<C extends Cell = Cell> extends View {
     return flag
   }
 
-  protected startListening() {
+  protected setup() {
     this.cell.on('changed', ({ options }: any) => this.onAttrsChange(options))
   }
 
   protected onAttrsChange(options: any) {
-    let flag = this.flagManager.getChangeFlag()
+    let flag = this.flagManager.getChangedFlag()
     if (options.updated || !flag) {
       return
     }
@@ -268,12 +274,12 @@ export abstract class CellView<C extends Cell = Cell> extends View {
   }
 
   parseJSONMarkup(
-    markup: View.JSONMarkup | View.JSONMarkup[],
+    markup: Markup.JSONMarkup | Markup.JSONMarkup[],
     rootElem?: Element,
   ) {
-    const result = View.parseJSONMarkup(markup)
+    const result = Markup.parseJSONMarkup(markup)
     const selectors = result.selectors
-    const rootSelector = this.options.rootSelector
+    const rootSelector = this.rootSelector
     if (rootElem && rootSelector) {
       if (selectors[rootSelector]) {
         throw new Error('Invalid root selector')
@@ -310,6 +316,7 @@ export abstract class CellView<C extends Cell = Cell> extends View {
 
   cleanCache() {
     this.cacheManager.clean()
+    return this
   }
 
   getCache(elem: Element) {
@@ -347,23 +354,11 @@ export abstract class CellView<C extends Cell = Cell> extends View {
     return { sx, sy }
   }
 
-  getBBox(options: { useModelGeometry?: boolean } = {}) {
-    let bbox
-    if (options.useModelGeometry) {
-      const cell = this.cell
-      bbox = cell.getBBox().bbox((cell as any).rotation || 0)
-    } else {
-      bbox = this.getNodeBBox(this.container)
-    }
-
-    return this.graph.localToPaperRect(bbox)
-  }
-
   getNodeBBox(elem: Element) {
     const rect = this.getNodeBoundingRect(elem)
     const matrix = this.getNodeMatrix(elem)
-    const translateMatrix = this.getRootTranslateMatrix()
     const rotateMatrix = this.getRootRotateMatrix()
+    const translateMatrix = this.getRootTranslateMatrix()
     return v.transformRect(
       rect,
       translateMatrix.multiply(rotateMatrix).multiply(matrix),
@@ -375,6 +370,18 @@ export abstract class CellView<C extends Cell = Cell> extends View {
     const matrix = this.getNodeMatrix(elem)
     const translateMatrix = this.getRootTranslateMatrix()
     return v.transformRect(rect, translateMatrix.multiply(matrix))
+  }
+
+  getBBox(options: { fromCell?: boolean } = {}) {
+    let bbox
+    if (options.fromCell) {
+      const cell = this.cell
+      bbox = cell.getBBox().bbox((cell as any).rotation || 0)
+    } else {
+      bbox = this.getNodeBBox(this.container)
+    }
+
+    return this.graph.localToPaperRect(bbox)
   }
 
   getRootTranslateMatrix() {
@@ -410,7 +417,7 @@ export abstract class CellView<C extends Cell = Cell> extends View {
   updateAttrs(
     rootNode: Element,
     attrs: Attr.CellAttrs,
-    options: CellView.UpdateAttrsOptions = {},
+    options: Partial<CellViewAttr.UpdateAttrsOptions> = {},
   ) {
     if (options.rootBBox == null) {
       options.rootBBox = new Rectangle()
@@ -427,19 +434,203 @@ export abstract class CellView<C extends Cell = Cell> extends View {
     )
   }
 
-  pointerdblclick(evt: JQuery.DoubleClickEvent, x: number, y: number) {
+  isEdgeElement(magnet?: Element | null) {
+    return this.cell.isEdge() && (magnet == null || magnet === this.container)
+  }
+
+  highlight(
+    elem: Element = this.container,
+    options: CellView.HighlightOptions = {},
+  ) {
+    const target = this.$(elem)[0] || this.container
+    options.partial = target === this.container
+    this.notify('cell:highlight', target, options)
+  }
+
+  unhighlight(
+    elem: Element = this.container,
+    options: CellView.HighlightOptions = {},
+  ) {
+    const target = this.$(elem)[0] || this.container
+    options.partial = target === this.container
+    this.notify('cell:unhighlight', target, options)
+  }
+
+  getLinkEnd(
+    trigger: Element,
+    x: number,
+    y: number,
+    link: Edge,
+    endType: Edge.TerminalType,
+  ) {
+    const cell = this.cell
+    const port = this.findByAttr('port', trigger)
+    const selector = trigger.getAttribute('joint-selector')
+    const end: Edge.TerminalCellData = { cellId: cell.id }
+
+    if (selector != null) {
+      end.magnet = selector
+    }
+
+    if (port != null) {
+      // end.port = port
+      // if (!cell.hasPort(port) && !selector) {
+      //   // port created via the `port` attribute (not API)
+      //   end.selector = this.getSelector(trigger)
+      // }
+    } else if (selector == null && this.container !== trigger) {
+      end.selector = this.getSelector(trigger)
+    }
+
+    return this.customizeLinkEnd(end, trigger, x, y, link, endType)
+  }
+
+  customizeLinkEnd(
+    end: Edge.TerminalCellData,
+    magnet: Element,
+    x: number,
+    y: number,
+    link: Edge,
+    endType: Edge.TerminalType,
+  ) {
+    const graph = this.graph
+    const connectionStrategy = graph.options.connectionStrategy
+    if (typeof connectionStrategy === 'function') {
+      const strategy = connectionStrategy.call(
+        graph,
+        end,
+        this,
+        magnet,
+        new Point(x, y),
+        link,
+        endType,
+        graph,
+      )
+      if (strategy) {
+        return strategy
+      }
+    }
+    return end
+  }
+
+  getMagnetFromLinkEnd(terminal: Edge.TerminalData) {
+    const cell = this.cell
+    const root = this.container
+    const portId = (terminal as Edge.TerminalCellData).portId
+    let selector = terminal.magnet
+    let magnet
+    if (portId != null && cell.isNode() && cell.hasPort(portId)) {
+      magnet = (this as any).findPortNode(portId, selector) || root
+    } else {
+      if (!selector) {
+        selector = terminal.selector
+      }
+      if (!selector && portId != null) {
+        selector = `[port="${portId}"]`
+      }
+      magnet = this.findOne(selector, root, this.selectors)
+    }
+
+    return magnet
+  }
+
+  // #region tools
+  protected toolsView: ToolsView | null
+  protected readonly toolsEventHandler = (event: string) => {
+    this.onToolEvent(event)
+  }
+
+  hasTools(name?: string) {
+    const toolsView = this.toolsView
+    if (toolsView == null) {
+      return false
+    }
+    if (name == null) {
+      return true
+    }
+    return toolsView.getName() === name
+  }
+
+  addTools(toolsView: ToolsView) {
+    this.removeTools()
+    if (toolsView) {
+      this.toolsView = toolsView
+      this.graph.on('tools:event', this.toolsEventHandler)
+      toolsView.configure({ cellView: this })
+      toolsView.mount()
+    }
+    return this
+  }
+
+  updateTools(options: ToolsView.UpdateOptions = {}) {
+    const toolsView = this.toolsView
+    if (toolsView) {
+      toolsView.update(options)
+    }
+    return this
+  }
+
+  removeTools() {
+    const toolsView = this.toolsView
+    if (toolsView) {
+      toolsView.remove()
+      this.graph.off('tools:event', this.toolsEventHandler)
+      this.toolsView = null
+    }
+    return this
+  }
+
+  hideTools() {
+    const toolsView = this.toolsView
+    if (toolsView) {
+      toolsView.hide()
+    }
+    return this
+  }
+
+  showTools() {
+    const toolsView = this.toolsView
+    if (toolsView) {
+      toolsView.show()
+    }
+    return this
+  }
+
+  protected onToolEvent(event: string) {
+    switch (event) {
+      case 'remove':
+        this.removeTools()
+        break
+      case 'hide':
+        this.hideTools()
+        break
+      case 'show':
+        this.showTools()
+        break
+    }
+  }
+
+  // #endregion
+
+  // #region events
+
+  protected pointerdblclick(
+    evt: JQuery.DoubleClickEvent,
+    x: number,
+    y: number,
+  ) {
     this.trigger('cell:pointerdblclick', evt, x, y)
   }
 
-  pointerclick(evt: JQuery.ClickEvent, x: number, y: number) {
+  protected pointerclick(evt: JQuery.ClickEvent, x: number, y: number) {
     this.trigger('cell:pointerclick', evt, x, y)
   }
 
-  contextmenu(evt: JQuery.ContextMenuEvent, x: number, y: number) {
+  protected contextmenu(evt: JQuery.ContextMenuEvent, x: number, y: number) {
     this.trigger('cell:contextmenu', evt, x, y)
   }
 
-  pointerdown(evt: JQuery.MouseDownEvent, x: number, y: number) {
+  protected pointerdown(evt: JQuery.MouseDownEvent, x: number, y: number) {
     // if (this.model.graph) {
     //   this.model.startBatch('pointer')
     //   this._graph = this.model.graph
@@ -448,11 +639,11 @@ export abstract class CellView<C extends Cell = Cell> extends View {
     this.trigger('cell:pointerdown', evt, x, y)
   }
 
-  pointermove(evt: JQuery.MouseMoveEvent, x: number, y: number) {
+  protected pointermove(evt: JQuery.MouseMoveEvent, x: number, y: number) {
     this.trigger('cell:pointermove', evt, x, y)
   }
 
-  pointerup(evt: JQuery.MouseUpEvent, x: number, y: number) {
+  protected pointerup(evt: JQuery.MouseUpEvent, x: number, y: number) {
     this.trigger('cell:pointerup', evt, x, y)
 
     // if (this._graph) {
@@ -463,37 +654,47 @@ export abstract class CellView<C extends Cell = Cell> extends View {
     // }
   }
 
-  mouseover(evt: JQuery.MouseOverEvent) {
+  protected mouseover(evt: JQuery.MouseOverEvent) {
     this.trigger('cell:mouseover', evt)
   }
 
-  mouseout(evt: JQuery.MouseOutEvent) {
+  protected mouseout(evt: JQuery.MouseOutEvent) {
     this.trigger('cell:mouseout', evt)
   }
 
-  mouseenter(evt: JQuery.MouseEnterEvent) {
+  protected mouseenter(evt: JQuery.MouseEnterEvent) {
     this.trigger('cell:mouseenter', evt)
   }
 
-  mouseleave(evt: JQuery.MouseLeaveEvent) {
+  protected mouseleave(evt: JQuery.MouseLeaveEvent) {
     this.trigger('cell:mouseleave', evt)
   }
 
-  mousewheel(evt: JQuery.TriggeredEvent, x: number, y: number, delta: number) {
+  protected mousewheel(
+    evt: JQuery.TriggeredEvent,
+    x: number,
+    y: number,
+    delta: number,
+  ) {
     this.trigger('cell:mousewheel', evt, x, y, delta)
   }
 
-  onevent(evt: JQuery.TriggeredEvent, eventName: string, x: number, y: number) {
+  protected onevent(
+    evt: JQuery.TriggeredEvent,
+    eventName: string,
+    x: number,
+    y: number,
+  ) {
     this.trigger(eventName, evt, x, y)
   }
 
-  onmagnet() {}
+  protected onmagnet() {}
 
-  magnetpointerdblclick() {}
+  protected magnetpointerdblclick() {}
 
-  magnetcontextmenu() {}
+  protected magnetcontextmenu() {}
 
-  checkMouseleave(evt: JQuery.MouseLeaveEvent) {
+  protected checkMouseleave(evt: JQuery.TriggeredEvent) {
     const paper = this.graph as any
     if (paper.isAsync()) {
       // Do the updates of the current view synchronously now
@@ -503,11 +704,13 @@ export abstract class CellView<C extends Cell = Cell> extends View {
     const view = paper.findView(target)
     if (view === this) return
     // Leaving the current view
-    this.mouseleave(evt)
+    this.mouseleave(evt as JQuery.MouseLeaveEvent)
     if (!view) return
     // Entering another view
     view.mouseenter(evt)
   }
+
+  // #endregion
 }
 
 export namespace CellView {
@@ -521,13 +724,8 @@ export namespace CellView {
     documentEvents: View.Events | null
   }
 
-  export type UpdateAttrsOptions = Partial<CellViewAttr.UpdateAttrsOptions>
-
-  export interface CacheItem {
-    data?: JSONObject
-    matrix?: DOMMatrix
-    boundingRect?: Rectangle
-    shape?: Rectangle | Ellipse | Polyline | Path | Line
+  export interface HighlightOptions extends KeyValue {
+    partial?: boolean
   }
 }
 

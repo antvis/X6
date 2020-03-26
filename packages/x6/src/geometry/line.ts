@@ -354,7 +354,7 @@ export class Line {
    * `0` if the point lies on the line.
    */
   pointOffset(p: Point | Point.PointLike | Point.PointData) {
-    const ref = Point.parse(p)
+    const ref = Point.clone(p)
     const start = this.start
     const end = this.end
     const determinant =

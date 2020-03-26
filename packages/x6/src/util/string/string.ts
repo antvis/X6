@@ -11,10 +11,12 @@ export {
   padEnd,
   padStart,
   truncate,
+  template,
 } from 'lodash'
 
 export * from './case'
 export * from './hashcode'
 export * from './uuid'
 export * from './text'
+export * from './html'
 export { exec as eval } from './eval'

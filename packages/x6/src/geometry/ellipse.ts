@@ -58,7 +58,7 @@ export class Ellipse implements Ellipse.EllipseLike {
    * lying on the ellipse boundary and `n > 1` for points outside the ellipse.
    */
   normalizedDistance(p: Point | Point.PointLike | Point.PointData) {
-    const ref = Point.parse(p)
+    const ref = Point.clone(p)
     const dx = ref.x - this.x
     const dy = ref.y - this.y
     const a = this.a
@@ -133,7 +133,7 @@ export class Ellipse implements Ellipse.EllipseLike {
     p: Point | Point.PointLike | Point.PointData,
     angle: number = 0,
   ) {
-    const ref = Point.parse(p)
+    const ref = Point.clone(p)
 
     if (angle) {
       ref.rotate(angle, this.getCenter())
@@ -167,7 +167,7 @@ export class Ellipse implements Ellipse.EllipseLike {
   }
 
   tangentTheta(p: Point | Point.PointLike | Point.PointData) {
-    const ref = Point.parse(p)
+    const ref = Point.clone(p)
     const x0 = ref.x
     const y0 = ref.y
     const a = this.a

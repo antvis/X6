@@ -1,51 +1,79 @@
-import cloneDeep from 'lodash/cloneDeep'
 import { StringExt, ObjectExt } from '../../util'
 import { Point, Rectangle, Angle } from '../../geometry'
+import { Size, KeyValue } from '../../types'
 import { Cell } from './cell'
-import { Size } from '../../types'
 import { PortData } from './port-data'
-import { View } from './view'
+import { Markup } from './markup'
+import { Edge } from './edge'
+import { Store } from './store'
 
-export class Node<D extends Node.Data = Node.Data> extends Cell<D> {
-  // #region static
-
+export class Node extends Cell {
   protected static defaults: Node.Defaults = {
     rotation: 0,
     position: { x: 0, y: 0 },
     size: { width: 1, height: 1 },
   }
+  // Define the store type
+  public readonly store: Store<Node.Properties>
+  protected readonly defaultPortMarkup = Markup.portMarkup
+  protected readonly defaultPortLabelMarkup = Markup.portLabelMarkup
+  protected readonly defaultPortContainerMarkup = Markup.portContainerMarkup
 
-  public static setDefaults<T extends Node.Defaults = Node.Defaults>(
-    presets: T,
-  ) {
-    return super.setDefaults<T>(presets)
-  }
-
-  public static getDefaults<T extends Node.Defaults = Node.Defaults>(): T {
-    return super.getDefaults<T>()
-  }
-
-  // #endregion
-
-  // protected collapsed: boolean
-  // protected collapsedSize: Size | null
-  // protected edges: Cell[] | null
-  portData: PortData
+  public portData: PortData
 
   constructor(options: Node.Options = {}) {
     super(options)
-  }
-
-  init() {
     this.initPorts()
   }
 
-  isNode() {
+  protected setup() {
+    super.setup()
+    this.store.on('mutated', metadata => {
+      const key = metadata.key
+      if (key === 'size') {
+        this.trigger('change:size', this.getChangeEventArgs<Size>(metadata))
+      } else if (key === 'position') {
+        this.trigger(
+          'change:position',
+          this.getChangeEventArgs<Point.PointLike>(metadata),
+        )
+      } else if (key === 'rotation') {
+        this.trigger(
+          'change:rotation',
+          this.getChangeEventArgs<number>(metadata),
+        )
+      } else if (key === 'ports') {
+        this.trigger(
+          'change:ports',
+          this.getChangeEventArgs<PortData.Port[]>(metadata),
+        )
+      } else if (key === 'portMarkup') {
+        this.trigger(
+          'change:portMarkup',
+          this.getChangeEventArgs<Markup>(metadata),
+        )
+      } else if (key === 'portLabelMarkup') {
+        this.trigger(
+          'change:portLabelMarkup',
+          this.getChangeEventArgs<Markup>(metadata),
+        )
+      } else if (key === 'portContainerMarkup') {
+        this.trigger(
+          'change:portContainerMarkup',
+          this.getChangeEventArgs<Markup>(metadata),
+        )
+      }
+    })
+  }
+
+  isNode(): this is Node {
     return true
   }
 
+  // #region size
+
   get size() {
-    return { ...this.store.get('size', { width: 1, height: 1 }) }
+    return this.getSize()
   }
 
   set size(size: Size) {
@@ -53,7 +81,8 @@ export class Node<D extends Node.Data = Node.Data> extends Cell<D> {
   }
 
   getSize() {
-    return this.size
+    const size = this.store.get('size')
+    return size ? { ...size } : { width: 1, height: 1 }
   }
 
   setSize(size: Size, options?: Node.ResizeOptions): this
@@ -63,21 +92,12 @@ export class Node<D extends Node.Data = Node.Data> extends Cell<D> {
     height?: number | Node.ResizeOptions,
     options?: Node.ResizeOptions,
   ) {
-    let w: number
-    let h: number
-    let opts: Node.ResizeOptions
-
     if (typeof width === 'object') {
-      w = width.width
-      h = width.height
-      opts = height as Node.ResizeOptions
+      this.resize(width.width, width.height, height as Node.ResizeOptions)
     } else {
-      w = width
-      h = height as number
-      opts = options as Node.ResizeOptions
+      this.resize(width, height as number, options)
     }
 
-    this.resize(w, h, opts)
     return this
   }
 
@@ -100,39 +120,39 @@ export class Node<D extends Node.Data = Node.Data> extends Cell<D> {
           break
       }
 
-      const angle = Angle.normalize(this.rotation || 0)
-
       let quadrant = {
-        'top-right': 0,
+        topRight: 0,
         right: 0,
-        'top-left': 1,
+        topLeft: 1,
         top: 1,
-        'bottom-left': 2,
+        bottomLeft: 2,
         left: 2,
-        'bottom-right': 3,
+        bottomRight: 3,
         bottom: 3,
       }[options.direction]
 
+      const angle = Angle.normalize(this.rotation || 0)
+
       if (options.absolute) {
-        // We are taking the element's rotation into account
+        // We are taking the node's rotation into account
         quadrant += Math.floor((angle + 45) / 90)
         quadrant %= 4
       }
 
-      // This is a rectangle in size of the un-rotated element.
+      // This is a rectangle in size of the un-rotated node.
       const bbox = this.getBBox()
 
-      // Pick the corner point on the element, which meant to stay on its
+      // Pick the corner point on the node, which meant to stay on its
       // place before and after the rotation.
       let fixedPoint: Point
       if (quadrant === 0) {
-        fixedPoint = bbox.bottomLeft
+        fixedPoint = bbox.getBottomLeft()
       } else if (quadrant === 1) {
-        fixedPoint = bbox.corner
+        fixedPoint = bbox.getCorner()
       } else if (quadrant === 2) {
-        fixedPoint = bbox.topRight
+        fixedPoint = bbox.getTopRight()
       } else {
-        fixedPoint = bbox.origin
+        fixedPoint = bbox.getOrigin()
       }
 
       // Find an image of the previous indent point. This is the position,
@@ -196,17 +216,35 @@ export class Node<D extends Node.Data = Node.Data> extends Cell<D> {
     return this
   }
 
+  scale(
+    sx: number,
+    sy: number,
+    origin?: Point | Point.PointLike,
+    options: Node.SetOptions = {},
+  ) {
+    const scaledBBox = this.getBBox().scale(sx, sy, origin)
+    this.startBatch('scale', options)
+    this.setPosition(scaledBBox.x, scaledBBox.y, options)
+    this.resize(scaledBBox.width, scaledBBox.height, options)
+    this.stopBatch('scale')
+    return this
+  }
+
+  // #endregion
+
+  // #region position
+
   get position() {
-    return { ...this.store.get('position', { x: 0, y: 0 }) }
+    return this.getPosition()
   }
 
   set position(pos: Point | Point.PointLike) {
     this.setPosition(pos.x, pos.y)
   }
 
-  getPosition(options: { relative?: boolean } = {}) {
+  getPosition(options: { relative?: boolean } = {}): Point.PointLike {
     if (options.relative) {
-      const parent = this.getParent() as Node
+      const parent = this.getParent()
       if (parent != null && parent.isNode()) {
         const currentPosition = this.position
         const parentPosition = parent.position
@@ -218,24 +256,48 @@ export class Node<D extends Node.Data = Node.Data> extends Cell<D> {
       }
     }
 
-    return this.position
+    const pos = this.store.get('position')
+    return pos ? { ...pos } : { x: 0, y: 0 }
   }
 
-  setPosition(x: number, y: number, options: Node.PositionOptions = {}) {
-    if (options.relative) {
+  setPosition(
+    p: Point | Point.PointLike,
+    options?: Node.SetPositionOptions,
+  ): this
+  setPosition(x: number, y: number, options?: Node.SetPositionOptions): this
+  setPosition(
+    x: number | Point | Point.PointLike,
+    y?: number | Node.SetPositionOptions,
+    options: Node.SetPositionOptions = {},
+  ) {
+    let xx: number
+    let yy: number
+    let opts: Node.SetPositionOptions
+
+    if (typeof x === 'object') {
+      xx = x.x
+      yy = x.y
+      opts = (y as Node.SetPositionOptions) || {}
+    } else {
+      xx = x
+      yy = y as number
+      opts = options || {}
+    }
+
+    if (opts.relative) {
       const parent = this.getParent() as Node
       if (parent != null && parent.isNode()) {
         const parentPosition = parent.position
-        x += parentPosition.x // tslint:disable-line
-        y += parentPosition.y // tslint:disable-line
+        xx += parentPosition.x
+        yy += parentPosition.y
       }
     }
 
-    if (options.deep) {
+    if (opts.deep) {
       const currentPosition = this.position
-      this.translate(x - currentPosition.x, y - currentPosition.y, options)
+      this.translate(xx - currentPosition.x, yy - currentPosition.y, opts)
     } else {
-      this.store.set('position', { x, y }, options)
+      this.store.set('position', { x: xx, y: yy }, opts)
     }
 
     return this
@@ -323,21 +385,19 @@ export class Node<D extends Node.Data = Node.Data> extends Cell<D> {
     return this
   }
 
-  scale(
-    sx: number,
-    sy: number,
-    origin?: Point | Point.PointLike,
-    options: any = {},
-  ) {
-    const scaledBBox = this.getBBox().scale(sx, sy, origin)
-    this.startBatch('scale', options)
-    this.setPosition(scaledBBox.x, scaledBBox.y, options)
-    this.resize(scaledBBox.width, scaledBBox.height, options)
-    this.stopBatch('scale')
-    return this
-  }
+  // #endregion
+
+  // #region rotation
 
   get rotation() {
+    return this.getRotation()
+  }
+
+  set rotation(angle: number) {
+    this.rotate(angle, true)
+  }
+
+  getRotation() {
     return this.store.get('rotation', 0)
   }
 
@@ -345,27 +405,24 @@ export class Node<D extends Node.Data = Node.Data> extends Cell<D> {
     angle: number,
     absolute: boolean,
     origin?: Point | Point.PointLike,
-    options: any = {},
+    options: Node.RotateOptions = {},
   ) {
+    const currentAngle = this.getRotation()
     if (origin) {
+      const size = this.getSize()
+      const position = this.getPosition()
       const center = this.getBBox().getCenter()
-      const size = this.size
-      const position = this.position
-      center.rotate(this.rotation - angle, origin)
+      center.rotate(currentAngle - angle, origin)
       const dx = center.x - size.width / 2 - position.x
       const dy = center.y - size.height / 2 - position.y
-      this.startBatch('rotate', {
-        angle,
-        absolute,
-        origin,
-      })
+      this.startBatch('rotate', { angle, absolute, origin })
       this.setPosition(position.x + dx, position.y + dy, options)
       this.rotate(angle, absolute, undefined, options)
       this.stopBatch('rotate')
     } else {
       this.store.set(
         'rotation',
-        absolute ? angle : (this.rotation + angle) % 360,
+        absolute ? angle : (currentAngle + angle) % 360,
         options,
       )
     }
@@ -373,34 +430,48 @@ export class Node<D extends Node.Data = Node.Data> extends Cell<D> {
     return this
   }
 
+  // #endregion
+
   getBBox(options: { deep?: boolean } = {}) {
     if (options.deep) {
       const cells = this.getDescendants({ deep: true, breadthFirst: true })
       cells.push(this)
-      return Cell.getCellsBBox(cells)
+      return Cell.getCellsBBox(cells)!
     }
 
-    const size = this.size
-    const position = this.position
-    return new Rectangle(position.x, position.y, size.width, size.height)
+    return Rectangle.fromPositionAndSize(this.getPosition(), this.getSize())
   }
 
-  // getPointFromConnectedLink(link, endType) {
-  //   // Center of the model
-  //   const bbox = this.getBBox()
-  //   const center = bbox.center()
-  //   // Center of a port
-  //   const endDef = link.get(endType)
-  //   if (!endDef) return center
-  //   const portId = endDef.port
-  //   if (!portId || !this.hasPort(portId)) return center
-  //   const portGroup = this.portProp(portId, ['group'])
-  //   const portsPositions = this.getPortsPositions(portGroup)
-  //   const portCenter = new Point(portsPositions[portId]).offset(bbox.origin())
-  //   const angle = this.angle()
-  //   if (angle) portCenter.rotate(center, -angle)
-  //   return portCenter
-  // }
+  getConnectionPoint(edge: Edge, type: Edge.TerminalType) {
+    const bbox = this.getBBox()
+    const center = bbox.getCenter()
+    const terminal = edge.getTerminal(type) as Edge.TerminalCellData
+    if (terminal == null) {
+      return center
+    }
+
+    const portId = terminal.portId
+    if (!portId || !this.hasPort(portId)) {
+      return center
+    }
+
+    const port = this.getPort(portId)
+    if (!port || !port.group) {
+      return center
+    }
+
+    const portsPositions = this.getPortsPosition(port.group)
+    const portCenter = Point.create(portsPositions[portId]).translate(
+      bbox.getOrigin(),
+    )
+
+    const angle = this.getRotation()
+    if (angle) {
+      portCenter.rotate(-angle, center)
+    }
+
+    return portCenter
+  }
 
   // fitEmbeds(options = {}) {
   //   // Getting the children's size and position requires the collection.
@@ -446,44 +517,89 @@ export class Node<D extends Node.Data = Node.Data> extends Cell<D> {
 
   // #region ports
 
+  get portContainerMarkup() {
+    return this.getPortContainerMarkup()
+  }
+
+  set portContainerMarkup(markup: Markup) {
+    this.setPortContainerMarkup(markup)
+  }
+
+  getPortContainerMarkup() {
+    return (
+      this.store.get('portContainerMarkup') || this.defaultPortContainerMarkup
+    )
+  }
+
+  setPortContainerMarkup(markup?: Markup, options: Node.SetOptions = {}) {
+    this.store.set('portContainerMarkup', Markup.clone(markup), options)
+    return this
+  }
+
+  get portMarkup() {
+    return this.getPortMarkup()
+  }
+
+  set portMarkup(markup: Markup) {
+    this.setPortMarkup(markup)
+  }
+
+  getPortMarkup() {
+    return this.store.get('portMarkup') || this.defaultPortMarkup
+  }
+
+  setPortMarkup(markup?: Markup, options: Node.SetOptions = {}) {
+    this.store.set('portMarkup', Markup.clone(markup), options)
+    return this
+  }
+
+  get portLabelMarkup() {
+    return this.getPortLabelMarkup()
+  }
+
+  set portLabelMarkup(markup: Markup) {
+    this.setPortLabelMarkup(markup)
+  }
+
+  getPortLabelMarkup() {
+    return this.store.get('portLabelMarkup') || this.defaultPortLabelMarkup
+  }
+
+  setPortLabelMarkup(markup?: Markup, options: Node.SetOptions = {}) {
+    this.store.set('portLabelMarkup', Markup.clone(markup), options)
+    return this
+  }
+
   get ports() {
     return this.store.get('ports', { items: [] })
   }
 
-  get portContainerMarkup() {
-    return this.store.get('portContainerMarkup', '')
-  }
-
-  get portMarkup() {
-    return this.store.get('portMarkup', '')
-  }
-
-  get portLabelMarkup() {
-    return this.store.get('portLabelMarkup', '')
-  }
-
   getPorts() {
-    return cloneDeep(this.ports.items)
+    return ObjectExt.cloneDeep(this.ports.items)
   }
 
-  getPort(id: string) {
-    return cloneDeep(this.ports.items.find(port => port.id && port.id === id))
+  getPort(portId: string) {
+    return ObjectExt.cloneDeep(
+      this.ports.items.find(port => port.id && port.id === portId),
+    )
   }
 
   hasPorts() {
     return this.ports.items.length > 0
   }
 
-  hasPort(id: string) {
-    return this.getPortIndex(id) !== -1
+  hasPort(portId: string) {
+    return this.getPortIndex(portId) !== -1
   }
 
   getPortIndex(port: PortData.PortMetadata | string) {
-    const id = typeof port === 'string' ? port : port.id
-    return id != null ? this.ports.items.findIndex(item => item.id === id) : -1
+    const portId = typeof port === 'string' ? port : port.id
+    return portId != null
+      ? this.ports.items.findIndex(item => item.id === portId)
+      : -1
   }
 
-  getPortsPositions(groupName: string) {
+  getPortsPosition(groupName: string) {
     const size = this.size
     const layouts = this.portData.getPortsLayoutByGroup(
       groupName,
@@ -624,7 +740,7 @@ export class Node<D extends Node.Data = Node.Data> extends Cell<D> {
     const errors: string[] = []
     this.ports.items.forEach(p => {
       if (typeof p !== 'object') {
-        errors.push('Invalid port ', p)
+        errors.push(`Invalid port ${p}.`)
       }
 
       if (p.id == null) {
@@ -660,26 +776,28 @@ export class Node<D extends Node.Data = Node.Data> extends Cell<D> {
     this.portData = new PortData(this.ports)
     const curPorts = this.portData.getPorts()
 
-    if (prevPorts) {
-      const added = curPorts.filter(item => {
-        if (!prevPorts.find(prevPort => prevPort.id === item.id)) {
-          return item
-        }
-      })
+    const added = prevPorts
+      ? curPorts.filter(item => {
+          if (!prevPorts.find(prevPort => prevPort.id === item.id)) {
+            return item
+          }
+        })
+      : [...curPorts]
 
-      const removed = prevPorts.filter(item => {
-        if (!curPorts.find(curPort => curPort.id === item.id)) {
-          return item
-        }
-      })
+    const removed = prevPorts
+      ? prevPorts.filter(item => {
+          if (!curPorts.find(curPort => curPort.id === item.id)) {
+            return item
+          }
+        })
+      : []
 
-      if (removed.length > 0) {
-        this.trigger('ports:remove', this, removed)
-      }
+    if (added.length > 0) {
+      this.trigger('ports:added', { added, node: this })
+    }
 
-      if (added.length > 0) {
-        this.trigger('ports:add', this, added)
-      }
+    if (removed.length > 0) {
+      this.trigger('ports:removed', { removed, node: this })
     }
   }
 
@@ -692,35 +810,74 @@ export namespace Node {
     position?: { x: number; y: number }
     rotation?: number
     ports?: PortData.Metadata
-    portContainerMarkup?: View.Markup
-    portMarkup?: View.Markup
-    portLabelMarkup?: View.Markup
+    portContainerMarkup?: Markup
+    portMarkup?: Markup
+    portLabelMarkup?: Markup
   }
 
-  export interface Defaults extends Common, Cell.Defaults {}
   export interface Options extends Common, Cell.Options {}
-  export interface Data extends Cell.Data, Options {}
+  export interface Defaults extends Common, Cell.Defaults {}
+  export interface Properties extends Cell.Properties, Options {}
 
-  export interface PositionOptions extends Cell.SetOptions {
+  /**
+   * The metadata used creating a node instance.
+   */
+  export interface Metadata extends Options, KeyValue {
+    type?: string
+  }
+}
+
+export namespace Node {
+  export interface SetOptions extends Cell.SetOptions {}
+
+  export interface SetPositionOptions extends SetOptions {
     deep?: boolean
     relative?: boolean
   }
 
-  export interface TranslateOptions extends Cell.SetOptions {
-    translateBy?: string | number
+  export interface TranslateOptions extends Cell.TranslateOptions {
     transition?: boolean
     restrictedArea?: Rectangle.RectangleLike
   }
 
-  export interface ResizeOptions extends Cell.SetOptions {
+  export interface RotateOptions extends SetOptions {}
+
+  export interface ResizeOptions extends SetOptions {
+    absolute?: boolean
     direction?:
       | 'left'
-      | 'right'
       | 'top'
-      | 'top-left'
-      | 'top-right'
+      | 'right'
       | 'bottom'
-      | 'bottom-left'
-      | 'bottom-right'
+      | 'topLeft'
+      | 'topRight'
+      | 'bottomLeft'
+      | 'bottomRight'
+  }
+}
+
+export namespace Node {
+  export type Defintion = typeof Node
+
+  export interface DefintionOptions extends Defaults, Cell.DefintionOptions {}
+
+  let counter = 0
+  function getClassName(name?: string) {
+    if (name) {
+      return StringExt.pascalCase(name)
+    }
+    counter += 1
+    return `CustomNode${counter}`
+  }
+
+  export function define(options: DefintionOptions) {
+    const { name, attrDefinitions, ...defaults } = options
+    const className = getClassName(name)
+    const base = this as Defintion
+    const shape = ObjectExt.createClass<Defintion>(className, base)
+
+    shape.config(defaults, attrDefinitions)
+
+    return shape
   }
 }

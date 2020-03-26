@@ -7,8 +7,17 @@ import { NumberExt, JSONObject, StringExt, ObjectExt } from '../../util'
 export namespace Attr {
   export type SimpleAttrValue = string | number | null | undefined
   export type SimpleAttrs = { [name: string]: SimpleAttrValue }
-  export type ComplexAttrValue = string | number | JSONObject | null | undefined
+
+  export type ComplexAttrValue =
+    | string
+    | number
+    | boolean
+    | JSONObject
+    | null
+    | undefined
+
   export type ComplexAttrs = { [name: string]: ComplexAttrValue }
+
   export type CellAttrs = { [selector: string]: ComplexAttrs }
 }
 
@@ -53,7 +62,7 @@ export namespace Attr {
   export type PositionFunction = (
     val: ComplexAttrValue,
     options: Options,
-  ) => Point | Point.PointLike
+  ) => Point | Point.PointLike | undefined
 
   export interface PositionDefinition extends Qualify {
     /**
@@ -356,7 +365,10 @@ export namespace Attr {
 
     html: {
       set(html, { view, node }) {
-        view.$(node).html(`${html}`)
+        view
+          .$(view.container)
+          .find(node)
+          .html(`${html}`)
       },
     },
 
