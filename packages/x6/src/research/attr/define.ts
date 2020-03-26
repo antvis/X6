@@ -62,7 +62,7 @@ export namespace Attr {
   export type PositionFunction = (
     val: ComplexAttrValue,
     options: Options,
-  ) => Point | Point.PointLike | undefined
+  ) => Point | Point.PointLike | undefined | null
 
   export interface PositionDefinition extends Qualify {
     /**
