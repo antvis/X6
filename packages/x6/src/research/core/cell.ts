@@ -13,6 +13,7 @@ import { Model } from './model'
 import { Markup } from './markup'
 import { PortData } from './port-data'
 import { CellView } from './cell-view'
+import { Graph } from './graph'
 
 export class Cell extends Basecoat<Cell.EventArgs> {
   // #region static
@@ -278,7 +279,13 @@ export class Cell extends Basecoat<Cell.EventArgs> {
   getAttrDefinition(attrName: string) {
     const ctor = this.constructor as typeof Cell
     const definitions = ctor.getAttrDefinition() || {}
-    return definitions[attrName] || Attr.definitions[attrName] || null
+    let def = definitions[attrName] || Attr.definitions[attrName]
+    if (!def) {
+      const name = StringExt.camelCase(attrName)
+      def = definitions[name] || Attr.definitions[name]
+    }
+
+    return def || null
   }
 
   getAttrByPath(): Attr.CellAttrs
@@ -760,7 +767,9 @@ export class Cell extends Basecoat<Cell.EventArgs> {
 
   addTo() {}
 
-  findView() {}
+  findView(graph: Graph) {
+    return graph.findViewByCell(this)
+  }
 
   // #region batch
 
