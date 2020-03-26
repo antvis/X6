@@ -35,6 +35,10 @@ export function positionWrapper(
   origin: 'origin' | 'corner',
 ): Attr.PositionFunction {
   return (val, { refBBox }) => {
+    if (val == null) {
+      return null
+    }
+
     let value = parseFloat(val as string)
     const percentage = NumberExt.isPercentage(val)
     if (percentage) {
