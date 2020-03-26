@@ -12,7 +12,7 @@ export const Polygon = NodeRegistry.register(getName('polygon'), {
     text: {
       ...textAttr,
       refX: 0.5,
-      refDy: 20,
+      refDy: 16,
     },
   },
 })

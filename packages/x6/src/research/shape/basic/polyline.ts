@@ -12,7 +12,7 @@ export const Polyline = NodeRegistry.register(getName('polyline'), {
     text: {
       ...textAttr,
       refX: 0.5,
-      refDy: 20,
+      refDy: 16,
     },
   },
 })
