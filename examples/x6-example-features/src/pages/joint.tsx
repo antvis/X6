@@ -1,6 +1,7 @@
 import React from 'react'
 import { v, joint } from '@antv/x6'
 import './index.less'
+import './joint.less'
 
 export default class Example extends React.Component {
   private container: HTMLDivElement
@@ -198,7 +199,6 @@ export default class Example extends React.Component {
       if (cylinderPath && cylinderScalable) {
         var ctm = cylinderScalable.getCTM().inverse()
         const token = v.create('circle', { r: 8, fill: 'red' })
-        console.log(cylinderPath)
         token.animateAlongPath(
           {
             dur: '4s',
@@ -228,6 +228,16 @@ export default class Example extends React.Component {
   }
 
   render() {
-    return <div ref={this.refContainer} className="graph" />
+    return (
+      <div
+        style={{
+          width: '100%',
+          height: '100%',
+          backgroundColor: '#ffffff',
+        }}
+      >
+        <div ref={this.refContainer} className="x6-graph" />
+      </div>
+    )
   }
 }
