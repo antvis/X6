@@ -4,6 +4,7 @@ import { Dictionary } from '../../struct'
 import { Nullable, KeyValue } from '../../types'
 import { ArrayExt, ObjectExt } from '../../util'
 import { Cell } from './cell'
+import { Model } from './model'
 import { Edge } from './edge'
 import { View } from './view'
 import { Markup } from './markup'
@@ -13,6 +14,7 @@ import { CellViewFlag } from './cell-view-flag'
 import { CellViewAttr } from './cell-view-attr'
 import { CellViewCache } from './cell-view-cache'
 import { ToolsView } from './tools-view'
+import { Graph } from './graph'
 
 export class CellView<
   C extends Cell = Cell,
@@ -81,7 +83,7 @@ export class CellView<
     return ObjectExt.merge(ret, others) as T
   }
 
-  public graph: any
+  public graph: Graph
   public cell: C
   protected selectors: Markup.Selectors
   protected readonly options: Options
@@ -308,8 +310,6 @@ export class CellView<
     options.interactive = value
   }
 
-  notify(eventName: string, ...args: any[]) {}
-
   cleanCache() {
     this.cacheManager.clean()
     return this
@@ -434,22 +434,16 @@ export class CellView<
     return this.cell.isEdge() && (magnet == null || magnet === this.container)
   }
 
-  highlight(
-    elem: Element = this.container,
-    options: CellView.HighlightOptions = {},
-  ) {
-    const target = this.$(elem)[0] || this.container
+  highlight(elem?: Element | null, options: CellView.HighlightOptions = {}) {
+    const target = (elem && this.$(elem)[0]) || this.container
     options.partial = target === this.container
-    this.notify('cell:highlight', target, options)
+    this.notify('cell:highlight', { target, options })
   }
 
-  unhighlight(
-    elem: Element = this.container,
-    options: CellView.HighlightOptions = {},
-  ) {
-    const target = this.$(elem)[0] || this.container
+  unhighlight(elem?: Element | null, options: CellView.HighlightOptions = {}) {
+    const target = (elem && this.$(elem)[0]) || this.container
     options.partial = target === this.container
-    this.notify('cell:unhighlight', target, options)
+    this.notify('cell:unhighlight', { target, options })
   }
 
   getLinkEnd(
@@ -490,7 +484,7 @@ export class CellView<
     endType: Edge.TerminalType,
   ) {
     const graph = this.graph
-    const connectionStrategy = graph.options.connectionStrategy
+    const connectionStrategy = graph.options.connectionStrategy as any
     if (typeof connectionStrategy === 'function') {
       const strategy = connectionStrategy.call(
         graph,
@@ -610,108 +604,120 @@ export class CellView<
 
   // #region events
 
+  protected notify(name: string, args: any) {
+    this.trigger(name, args)
+    this.graph.trigger(name, args)
+  }
+
   onClick(e: JQuery.ClickEvent, x: number, y: number) {
-    this.trigger('cell:click', e, x, y)
+    this.notify('cell:click', { e, x, y, view: this, cell: this.cell })
   }
 
   onDblClick(e: JQuery.DoubleClickEvent, x: number, y: number) {
-    this.trigger('cell:dblclick', e, x, y)
+    this.notify('cell:dblclick', { e, x, y, view: this, cell: this.cell })
   }
 
   onContextMenu(e: JQuery.ContextMenuEvent, x: number, y: number) {
-    this.trigger('cell:contextmenu', e, x, y)
+    this.notify('cell:contextmenu', { e, x, y, view: this, cell: this.cell })
   }
 
+  protected cachedModelForMouseEvent: Model
   onMouseDown(e: JQuery.MouseDownEvent, x: number, y: number) {
-    // if (this.model.graph) {
-    //   this.model.startBatch('pointer')
-    //   this._graph = this.model.graph
-    // }
+    if (this.cell.model) {
+      this.cachedModelForMouseEvent = this.cell.model
+      this.cachedModelForMouseEvent.startBatch('mouse')
+    }
 
-    this.trigger('cell:mousedown', e, x, y)
-  }
-
-  onMouseMove(e: JQuery.MouseMoveEvent, x: number, y: number) {
-    this.trigger('cell:mousemove', e, x, y)
+    this.notify('cell:mousedown', { e, x, y, view: this, cell: this.cell })
   }
 
   onMouseUp(e: JQuery.MouseUpEvent, x: number, y: number) {
-    this.trigger('cell:mouseup', e, x, y)
+    this.notify('cell:mouseup', { e, x, y, view: this, cell: this.cell })
 
-    // if (this._graph) {
-    //   // we don't want to trigger event on model as model doesn't
-    //   // need to be member of collection anymore (remove)
-    //   this._graph.stopBatch('pointer', { cell: this.model })
-    //   delete this._graph
-    // }
+    if (this.cachedModelForMouseEvent) {
+      this.cachedModelForMouseEvent.stopBatch('mouse', { cell: this.cell })
+      delete this.cachedModelForMouseEvent
+    }
+  }
+
+  onMouseMove(e: JQuery.MouseMoveEvent, x: number, y: number) {
+    this.notify('cell:mousemove', { e, x, y, view: this, cell: this.cell })
   }
 
   onMouseOver(e: JQuery.MouseOverEvent) {
-    this.trigger('cell:mouseover', e)
+    this.notify('cell:mouseover', { e, view: this, cell: this.cell })
   }
 
   onMouseOut(e: JQuery.MouseOutEvent) {
-    this.trigger('cell:mouseout', e)
+    this.notify('cell:mouseout', { e, view: this, cell: this.cell })
   }
 
   onMouseEnter(e: JQuery.MouseEnterEvent) {
-    this.trigger('cell:mouseenter', e)
+    this.notify('cell:mouseenter', { e, view: this, cell: this.cell })
   }
 
   onMouseLeave(e: JQuery.MouseLeaveEvent) {
-    this.trigger('cell:mouseleave', e)
+    this.notify('cell:mouseleave', { e, view: this, cell: this.cell })
   }
 
-  onMouseWheel(
-    evt: JQuery.TriggeredEvent,
-    x: number,
-    y: number,
-    delta: number,
-  ) {
-    this.trigger('cell:mousewheel', evt, x, y, delta)
+  onMouseWheel(e: JQuery.TriggeredEvent, x: number, y: number, delta: number) {
+    this.notify('cell:mousewheel', {
+      e,
+      x,
+      y,
+      delta,
+      view: this,
+      cell: this.cell,
+    })
   }
 
-  onEvent(evt: JQuery.MouseDownEvent, eventName: string, x: number, y: number) {
-    this.trigger(eventName, evt, x, y)
+  onEvent(e: JQuery.MouseDownEvent, eventName: string, x: number, y: number) {
+    this.notify(eventName, { e, x, y })
   }
 
   onMagnetMouseDown(
-    evt: JQuery.MouseDownEvent,
+    e: JQuery.MouseDownEvent,
     magnet: Element,
     x: number,
     y: number,
   ) {}
 
   onMagnetDblClick(
-    evt: JQuery.DoubleClickEvent,
+    e: JQuery.DoubleClickEvent,
     magnet: Element,
     x: number,
     y: number,
   ) {}
 
   onMagnetContextMenu(
-    evt: JQuery.ContextMenuEvent,
+    e: JQuery.ContextMenuEvent,
     magnet: Element,
     x: number,
     y: number,
   ) {}
 
-  onLabelMouseDown(evt: JQuery.MouseDownEvent, x: number, y: number) {}
+  onLabelMouseDown(e: JQuery.MouseDownEvent, x: number, y: number) {}
 
-  protected checkMouseleave(evt: JQuery.TriggeredEvent) {
-    const paper = this.graph as any
-    if (paper.isAsync()) {
+  protected checkMouseleave(e: JQuery.TriggeredEvent) {
+    const graph = this.graph
+    if (graph.isAsync()) {
       // Do the updates of the current view synchronously now
-      paper.dumpView(this)
+      graph.dumpView(this)
     }
-    const target = this.getEventTarget(evt, { fromPoint: true })
-    const view = paper.findView(target)
-    if (view === this) return
+    const target = this.getEventTarget(e, { fromPoint: true })
+    const view = graph.findView(target)
+    if (view === this) {
+      return
+    }
+
     // Leaving the current view
-    this.onMouseLeave(evt as JQuery.MouseLeaveEvent)
-    if (!view) return
+    this.onMouseLeave(e as JQuery.MouseLeaveEvent)
+    if (!view) {
+      return
+    }
+
     // Entering another view
-    view.mouseenter(evt)
+    view.onMouseEnter(e as JQuery.MouseEnterEvent)
   }
 
   // #endregion
@@ -726,6 +732,7 @@ export namespace CellView {
     actions: KeyValue<CellViewFlag.Actions>
     events: View.Events | null
     documentEvents: View.Events | null
+    interactive?: KeyValue<boolean> | ((cellView: CellView) => boolean)
   }
 
   export interface HighlightOptions extends KeyValue {

@@ -726,7 +726,7 @@ export class EdgeView<
 
     let routePoints
     if (typeof router === 'function') {
-      routePoints = router.call(this, vertices, {}, this)
+      routePoints = (router as any).call(this, vertices, {}, this)
     } else {
       const name = router.name
       const args = router.args || {}
@@ -812,7 +812,7 @@ export class EdgeView<
     endType: Edge.TerminalType,
   ) {
     const anchor = line.end
-    const graphOptions = this.graph.options
+    const graphOptions = this.graph.options as any
 
     // Backwards compatibility
     if (typeof graphOptions.linkConnectionPoint === 'function') {
@@ -1088,7 +1088,7 @@ export class EdgeView<
       return true
     }
 
-    const terminalCell = graph.getModelById(terminalId)
+    const terminalCell = graph.getCellById(terminalId)
     if (!terminalCell) {
       throw new Error(`Invalid ${endType} cell.`)
     }
@@ -1128,7 +1128,7 @@ export class EdgeView<
         sourceArrow as SVGElement,
         this.sourcePoint,
         route[0] || this.targetPoint,
-        this.graph.cells,
+        this.graph.drawPane,
       )
     }
 
@@ -1137,7 +1137,7 @@ export class EdgeView<
         targetArrow as SVGElement,
         this.targetPoint,
         route[route.length - 1] || this.sourcePoint,
-        this.graph.cells,
+        this.graph.drawPane,
       )
     }
   }
@@ -1338,7 +1338,7 @@ export class EdgeView<
     }
 
     const vToken = v.create(token)
-    vToken.appendTo(this.graph.cells).animateAlongPath(props, path)
+    vToken.appendTo(this.graph.drawPane).animateAlongPath(props, path)
 
     setTimeout(() => {
       vToken.remove()
@@ -1658,61 +1658,60 @@ export class EdgeView<
     return index
   }
 
-  // Interaction. The controller part.
-  // ---------------------------------
+  // #region  events
 
-  notifyPointerdown(evt: JQuery.MouseDownEvent, x: number, y: number) {
-    super.onMouseDown(evt, x, y)
-    this.notify('edge:pointerdown', evt, x, y)
+  notifyMouseDown(e: JQuery.MouseDownEvent, x: number, y: number) {
+    super.onMouseDown(e, x, y)
+    this.notify('edge:mousedown', { e, x, y, view: this, edge: this.cell })
   }
 
-  notifyPointermove(evt: JQuery.MouseMoveEvent, x: number, y: number) {
-    super.onMouseMove(evt, x, y)
-    this.notify('edge:pointermove', evt, x, y)
+  notifyMouseMove(e: JQuery.MouseMoveEvent, x: number, y: number) {
+    super.onMouseMove(e, x, y)
+    this.notify('edge:mousemove', { e, x, y, view: this, edge: this.cell })
   }
 
-  notifyPointerup(evt: JQuery.MouseUpEvent, x: number, y: number) {
-    this.notify('edge:pointerup', evt, x, y)
-    super.onMouseUp(evt, x, y)
+  notifyMouseUp(e: JQuery.MouseUpEvent, x: number, y: number) {
+    super.onMouseUp(e, x, y)
+    this.notify('edge:mouseup', { e, x, y, view: this, edge: this.cell })
   }
 
-  onDblClick(evt: JQuery.DoubleClickEvent, x: number, y: number) {
-    super.onDblClick(evt, x, y)
-    this.notify('edge:pointerdblclick', evt, x, y)
+  onClick(e: JQuery.ClickEvent, x: number, y: number) {
+    super.onClick(e, x, y)
+    this.notify('edge:click', { e, x, y, view: this, edge: this.cell })
   }
 
-  onClick(evt: JQuery.ClickEvent, x: number, y: number) {
-    super.onClick(evt, x, y)
-    this.notify('edge:pointerclick', evt, x, y)
+  onDblClick(e: JQuery.DoubleClickEvent, x: number, y: number) {
+    super.onDblClick(e, x, y)
+    this.notify('edge:dblclick', { e, x, y, view: this, edge: this.cell })
   }
 
-  onContextMenu(evt: JQuery.ContextMenuEvent, x: number, y: number) {
-    super.onContextMenu(evt, x, y)
-    this.notify('edge:contextmenu', evt, x, y)
+  onContextMenu(e: JQuery.ContextMenuEvent, x: number, y: number) {
+    super.onContextMenu(e, x, y)
+    this.notify('edge:contextmenu', { e, x, y, view: this, edge: this.cell })
   }
 
-  onMouseDown(evt: JQuery.MouseDownEvent, x: number, y: number) {
-    this.notifyPointerdown(evt, x, y)
+  onMouseDown(e: JQuery.MouseDownEvent, x: number, y: number) {
+    this.notifyMouseDown(e, x, y)
 
     // Backwards compatibility for the default markup
-    const className = evt.target.getAttribute('class')
+    const className = e.target.getAttribute('class')
     switch (className) {
       case 'marker-vertex':
-        this.dragVertexStart(evt, x, y)
+        this.dragVertexStart(e, x, y)
         return
 
       case 'marker-vertex-remove':
       case 'marker-vertex-remove-area':
-        this.dragVertexRemoveStart(evt, x, y)
+        this.dragVertexRemoveStart(e, x, y)
         return
 
       case 'marker-arrowhead':
-        this.dragArrowheadStart(evt, x, y)
+        this.dragArrowheadStart(e, x, y)
         return
 
       case 'connection':
       case 'connection-wrap':
-        this.dragConnectionStart(evt, x, y)
+        this.dragConnectionStart(e, x, y)
         return
 
       case 'marker-source':
@@ -1720,114 +1719,112 @@ export class EdgeView<
         return
     }
 
-    this.dragStart(evt, x, y)
+    this.dragStart(e, x, y)
   }
 
   protected dragData: any
-  onMouseMove(evt: JQuery.MouseMoveEvent, x: number, y: number) {
+  onMouseMove(e: JQuery.MouseMoveEvent, x: number, y: number) {
     // Backwards compatibility
     const dragData = this.dragData
     if (dragData) {
-      this.setEventData(evt, dragData)
+      this.setEventData(e, dragData)
     }
 
-    const data = this.getEventData(evt)
+    const data = this.getEventData(e)
     switch (data.action) {
       case 'vertex-move':
-        this.dragVertex(evt, x, y)
+        this.dragVertex(e, x, y)
         break
 
       case 'label-move':
-        this.dragLabel(evt, x, y)
+        this.dragLabel(e, x, y)
         break
 
       case 'arrowhead-move':
-        this.dragArrowhead(evt, x, y)
+        this.dragArrowhead(e, x, y)
         break
 
       case 'move':
-        this.drag(evt, x, y)
+        this.drag(e, x, y)
         break
     }
 
     // Backwards compatibility
     if (dragData) {
-      Object.assign(dragData, this.eventData(evt))
+      Object.assign(dragData, this.eventData(e))
     }
 
-    this.notifyPointermove(evt, x, y)
+    this.notifyMouseMove(e, x, y)
   }
 
-  onMouseUp(evt: JQuery.MouseUpEvent, x: number, y: number) {
+  onMouseUp(e: JQuery.MouseUpEvent, x: number, y: number) {
     // Backwards compatibility
     const dragData = this.dragData
     if (dragData) {
-      this.setEventData(evt, dragData)
+      this.setEventData(e, dragData)
       this.dragData = null
     }
 
-    const data = this.getEventData(evt)
+    const data = this.getEventData(e)
     switch (data.action) {
       case 'vertex-move':
-        this.dragVertexEnd(evt, x, y)
+        this.dragVertexEnd(e, x, y)
         break
 
       case 'label-move':
-        this.dragLabelEnd(evt, x, y)
+        this.dragLabelEnd(e, x, y)
         break
 
       case 'arrowhead-move':
-        this.dragArrowheadEnd(evt, x, y)
+        this.dragArrowheadEnd(e, x, y)
         break
 
       case 'move':
-        this.dragEnd(evt, x, y)
+        this.dragEnd(e, x, y)
     }
 
-    this.notifyPointerup(evt, x, y)
-    this.checkMouseleave(evt)
+    this.notifyMouseUp(e, x, y)
+    this.checkMouseleave(e)
   }
 
-  onMouseOver(evt: JQuery.MouseOverEvent) {
-    super.onMouseOver(evt)
-    this.notify('edge:mouseover', evt)
+  onMouseOver(e: JQuery.MouseOverEvent) {
+    super.onMouseOver(e)
+    this.notify('edge:mouseover', { e, view: this, edge: this.cell })
   }
 
-  onMouseOut(evt: JQuery.MouseOutEvent) {
-    super.onMouseOut(evt)
-    this.notify('edge:mouseout', evt)
+  onMouseOut(e: JQuery.MouseOutEvent) {
+    super.onMouseOut(e)
+    this.notify('edge:mouseout', { e, view: this, edge: this.cell })
   }
 
-  onMouseEnter(evt: JQuery.MouseEnterEvent) {
-    super.onMouseEnter(evt)
-    this.notify('edge:mouseenter', evt)
+  onMouseEnter(e: JQuery.MouseEnterEvent) {
+    super.onMouseEnter(e)
+    this.notify('edge:mouseenter', { e, view: this, edge: this.cell })
   }
 
-  onMouseLeave(evt: JQuery.MouseLeaveEvent) {
-    super.onMouseLeave(evt)
-    this.notify('edge:mouseleave', evt)
+  onMouseLeave(e: JQuery.MouseLeaveEvent) {
+    super.onMouseLeave(e)
+    this.notify('edge:mouseleave', { e, view: this, edge: this.cell })
   }
 
-  onMouseWheel(
-    evt: JQuery.TriggeredEvent,
-    x: number,
-    y: number,
-    delta: number,
-  ) {
-    super.onMouseWheel(evt, x, y, delta)
-    this.notify('edge:mousewheel', evt, x, y, delta)
+  onMouseWheel(e: JQuery.TriggeredEvent, x: number, y: number, delta: number) {
+    super.onMouseWheel(e, x, y, delta)
+    this.notify('edge:mousewheel', {
+      e,
+      x,
+      y,
+      delta,
+      view: this,
+      edge: this.cell,
+    })
   }
 
-  onEvent(evt: JQuery.MouseDownEvent, eventName: string, x: number, y: number) {
+  onEvent(e: JQuery.MouseDownEvent, eventName: string, x: number, y: number) {
     // Backwards compatibility
-    const linkTool = v.findParentByClass(
-      evt.target,
-      'link-tool',
-      this.container,
-    )
+    const linkTool = v.findParentByClass(e.target, 'link-tool', this.container)
     if (linkTool) {
       // No further action to be executed
-      evt.stopPropagation()
+      e.stopPropagation()
 
       // Allow `interactive.useLinkTools=false`
       if (this.can('useLinkTools')) {
@@ -1838,28 +1835,28 @@ export class EdgeView<
           return
         }
         // edge:options and other custom events inside the link tools
-        this.notify(eventName, evt, x, y)
+        this.notify(eventName, { e, x, y })
       }
 
-      this.notifyPointerdown(evt as JQuery.MouseDownEvent, x, y)
+      this.notifyMouseDown(e as JQuery.MouseDownEvent, x, y)
     } else {
-      super.onEvent(evt, eventName, x, y)
+      super.onEvent(e, eventName, x, y)
     }
   }
 
-  onLabelMouseDown(evt: JQuery.MouseDownEvent, x: number, y: number) {
-    this.notifyPointerdown(evt, x, y)
-    this.dragLabelStart(evt, x, y)
+  onLabelMouseDown(e: JQuery.MouseDownEvent, x: number, y: number) {
+    this.notifyMouseDown(e, x, y)
+    this.dragLabelStart(e, x, y)
 
-    const stopPropagation = this.getEventData(evt).stopPropagation
+    const stopPropagation = this.getEventData(e).stopPropagation
     if (stopPropagation) {
-      evt.stopPropagation()
+      e.stopPropagation()
     }
   }
 
   // Drag Start Handlers
 
-  dragConnectionStart(evt: JQuery.MouseDownEvent, x: number, y: number) {
+  dragConnectionStart(e: JQuery.MouseDownEvent, x: number, y: number) {
     if (!this.can('vertexAdd')) {
       return
     }
@@ -1867,15 +1864,15 @@ export class EdgeView<
     // Store the index at which the new vertex has just been placed.
     // We'll be update the very same vertex position in `pointermove()`.
     const vertexIdx = this.addVertex({ x, y }, { ui: true })
-    this.setEventData(evt, {
+    this.setEventData(e, {
       vertexIdx,
       action: 'vertex-move',
     })
   }
 
-  dragLabelStart(evt: JQuery.MouseDownEvent, x: number, y: number) {
+  dragLabelStart(e: JQuery.MouseDownEvent, x: number, y: number) {
     if (this.can('labelMove')) {
-      const labelNode = evt.currentTarget
+      const labelNode = e.currentTarget
       const labelIndex = parseInt(labelNode.getAttribute('data-index'), 10)
       const positionAngle = this.getLabelPositionAngle(labelIndex)
       const labelPositionArgs = this.getLabelPositionArgs(labelIndex)
@@ -1885,7 +1882,7 @@ export class EdgeView<
         defaultLabelPositionArgs,
       )
 
-      this.setEventData(evt, {
+      this.setEventData(e, {
         labelIndex,
         positionAngle,
         positionArgs,
@@ -1895,55 +1892,55 @@ export class EdgeView<
     } else {
       // Backwards compatibility:
       // If labels can't be dragged no default action is triggered.
-      this.setEventData(evt, { stopPropagation: true })
+      this.setEventData(e, { stopPropagation: true })
     }
 
-    this.graph.delegateDragEvents(this, evt.data)
+    this.graph.delegateDragEvents(e, this)
   }
 
-  dragVertexStart(evt: JQuery.MouseDownEvent, x: number, y: number) {
+  dragVertexStart(e: JQuery.MouseDownEvent, x: number, y: number) {
     if (!this.can('vertexMove')) {
       return
     }
 
-    const vertexNode = evt.target
+    const vertexNode = e.target
     const vertexIndex = parseInt(vertexNode.getAttribute('idx'), 10)
-    this.setEventData(evt, {
+    this.setEventData(e, {
       vertexIndex,
       action: 'vertex-move',
     })
   }
 
-  dragVertexRemoveStart(evt: JQuery.MouseDownEvent, x: number, y: number) {
+  dragVertexRemoveStart(e: JQuery.MouseDownEvent, x: number, y: number) {
     if (!this.can('vertexRemove')) {
       return
     }
 
-    const removeNode = evt.target
+    const removeNode = e.target
     const vertexIndex = parseInt(removeNode.getAttribute('idx'), 10)
     this.cell.removeVertexAt(vertexIndex)
   }
 
-  dragArrowheadStart(evt: JQuery.MouseDownEvent, x: number, y: number) {
+  dragArrowheadStart(e: JQuery.MouseDownEvent, x: number, y: number) {
     if (!this.can('arrowheadMove')) {
       return
     }
 
-    const arrowheadNode = evt.target
+    const arrowheadNode = e.target
     const arrowheadType = arrowheadNode.getAttribute('end') as Edge.TerminalType
     const data = this.startArrowheadMove(arrowheadType, {
       ignoreBackwardsCompatibility: true,
     })
 
-    this.setEventData(evt, data)
+    this.setEventData(e, data)
   }
 
-  dragStart(evt: JQuery.MouseDownEvent, x: number, y: number) {
+  dragStart(e: JQuery.MouseDownEvent, x: number, y: number) {
     if (!this.can('linkMove')) {
       return
     }
 
-    this.setEventData(evt, {
+    this.setEventData(e, {
       action: 'move',
       dx: x,
       dy: y,
@@ -1951,8 +1948,8 @@ export class EdgeView<
   }
 
   // Drag Handlers
-  dragLabel(evt: JQuery.MouseMoveEvent, x: number, y: number) {
-    const data = this.getEventData(evt)
+  dragLabel(e: JQuery.MouseMoveEvent, x: number, y: number) {
+    const data = this.getEventData(e)
     const label = {
       position: this.getLabelPosition(
         x,
@@ -1964,24 +1961,24 @@ export class EdgeView<
     this.cell.setLabelAt(data.labelIndex, label)
   }
 
-  dragVertex(evt: JQuery.MouseMoveEvent, x: number, y: number) {
-    const data = this.getEventData(evt)
+  dragVertex(e: JQuery.MouseMoveEvent, x: number, y: number) {
+    const data = this.getEventData(e)
     this.cell.setVertexAt(data.vertexIndex, { x, y }, { ui: true })
   }
 
-  dragArrowhead(evt: JQuery.MouseMoveEvent, x: number, y: number) {
-    const data = this.getEventData(evt)
+  dragArrowhead(e: JQuery.MouseMoveEvent, x: number, y: number) {
+    const data = this.getEventData(e)
     if (this.graph.options.snapLinks) {
       this.snapArrowhead(x, y, data)
     } else {
-      this.connectArrowhead(this.getEventTarget(evt), x, y, data)
+      this.connectArrowhead(this.getEventTarget(e), x, y, data)
     }
   }
 
-  drag(evt: JQuery.MouseMoveEvent, x: number, y: number) {
-    const data = this.getEventData(evt)
+  drag(e: JQuery.MouseMoveEvent, x: number, y: number) {
+    const data = this.getEventData(e)
     this.cell.translate(x - data.dx, y - data.dy, { ui: true })
-    this.setEventData(evt, {
+    this.setEventData(e, {
       dx: x,
       dy: y,
     })
@@ -1989,12 +1986,12 @@ export class EdgeView<
 
   // Drag End Handlers
 
-  dragLabelEnd(evt: JQuery.MouseUpEvent, x: number, y: number) {}
+  dragLabelEnd(e: JQuery.MouseUpEvent, x: number, y: number) {}
 
-  dragVertexEnd(evt: JQuery.MouseUpEvent, x: number, y: number) {}
+  dragVertexEnd(e: JQuery.MouseUpEvent, x: number, y: number) {}
 
-  dragArrowheadEnd(evt: JQuery.MouseUpEvent, x: number, y: number) {
-    const data = this.getEventData(evt)
+  dragArrowheadEnd(e: JQuery.MouseUpEvent, x: number, y: number) {
+    const data = this.getEventData(e)
     const graph = this.graph
 
     if (graph.options.snapLinks) {
@@ -2008,13 +2005,13 @@ export class EdgeView<
       this.disallow(data)
     } else {
       this.finishEmbedding(data)
-      this.notifyConnectEvent(data, evt)
+      this.notifyConnectEvent(data, e)
     }
 
     this.afterArrowheadMove(data)
   }
 
-  dragEnd(evt: JQuery.MouseUpEvent, x: number, y: number) {}
+  dragEnd(e: JQuery.MouseUpEvent, x: number, y: number) {}
 
   protected disallow(data: KeyValue<any>) {
     switch (data.whenNotAllowed) {
@@ -2189,7 +2186,7 @@ export class EdgeView<
 
         if (
           data.magnetUnderPointer &&
-          this.graph.options.validateConnection.apply(
+          (this.graph.options as any).validateConnection.apply(
             this.graph,
             data.validateConnectionArgs(
               data.viewUnderPointer,
@@ -2285,9 +2282,14 @@ export class EdgeView<
     const end = this.cell[oppositeArrowhead]
     const cellId = (end as Edge.TerminalCellData).cellId
     if (cellId) {
-      const view = (args[i] = this.graph.findViewByModel(cellId))
-      let magnet = view.getMagnetFromLinkEnd(end)
-      if (magnet === view.el) magnet = undefined
+      let magnet
+      const view = (args[i] = this.graph.findViewByCell(cellId))
+      if (view) {
+        magnet = view.getMagnetFromLinkEnd(end)
+        if (magnet === view.container) {
+          magnet = undefined
+        }
+      }
       args[i + 1] = magnet
     }
 
@@ -2300,9 +2302,9 @@ export class EdgeView<
 
   protected markAvailableMagnets(data: KeyValue<any>) {
     function isMagnetAvailable(view: CellView, magnet: Element) {
-      const paper = view.graph
-      const validate = paper.options.validateConnection
-      return validate.apply(paper, this.validateConnectionArgs(view, magnet))
+      const graph = view.graph
+      const validate = (graph.options as any).validateConnection
+      return validate.apply(graph, this.validateConnectionArgs(view, magnet))
     }
 
     const paper = this.graph
@@ -2317,11 +2319,11 @@ export class EdgeView<
       }
 
       const magnets = Array.prototype.slice.call(
-        view.el.querySelectorAll('[magnet]'),
+        view.container.querySelectorAll('[magnet]'),
       )
-      if (view.el.getAttribute('magnet') !== 'false') {
+      if (view.container.getAttribute('magnet') !== 'false') {
         // Element wrapping group is also a magnet
-        magnets.push(view.el)
+        magnets.push(view.container)
       }
 
       const availableMagnets = magnets.filter(
@@ -2336,7 +2338,7 @@ export class EdgeView<
         // highlight the entire view
         view.highlight(null, { elementAvailability: true })
 
-        data.marked[view.model.id] = availableMagnets
+        data.marked[view.cell.id] = availableMagnets
       }
     }
   }
@@ -2350,7 +2352,7 @@ export class EdgeView<
       id = markedKeys[i]
       markedMagnets = data.marked[id]
 
-      const view = this.graph.findViewByModel(id)
+      const view = this.graph.findViewByCell(id)
       if (view) {
         for (let j = 0, m = markedMagnets.length; j < m; j += 1) {
           view.unhighlight(markedMagnets[j], { magnetAvailability: true })
@@ -2362,7 +2364,7 @@ export class EdgeView<
     data.marked = null
   }
 
-  protected startArrowheadMove(
+  startArrowheadMove(
     end: Edge.TerminalType,
     options: {
       whenNotAllowed?: string
@@ -2391,6 +2393,8 @@ export class EdgeView<
 
     return data
   }
+
+  // #endregion
 
   get sourceBBox() {
     const sourceView = this.sourceView

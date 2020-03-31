@@ -9,25 +9,25 @@ const F13 = 1 / 3
 const F23 = 2 / 3
 
 function setupUpdating(view: EdgeView) {
-  let updateList = view.graph._jumpOverUpdateList
+  let updateList = (view.graph as any)._jumpOverUpdateList
 
   // first time setup for this paper
   if (updateList == null) {
-    updateList = view.graph._jumpOverUpdateList = []
+    updateList = (view.graph as any)._jumpOverUpdateList = []
 
     /**
      * Handler for a batch:stop event to force
      * update of all registered links with jump over connector
      */
     view.graph.on('cell:pointerup', () => {
-      const list = view.graph._jumpOverUpdateList
+      const list = (view.graph as any)._jumpOverUpdateList
       for (const i = 0; i < list.length; i + 1) {
         list[i].update()
       }
     })
 
     view.graph.model.on('reset', () => {
-      updateList = view.graph._jumpOverUpdateList = []
+      updateList = (view.graph as any)._jumpOverUpdateList = []
     })
   }
 
@@ -304,7 +304,7 @@ export const jumpover: Connector.Definition<JumpoverConnectorOptions> = function
 
   const graph = this.graph
   const model = graph.model
-  const allLinks = model.getLinks() as Edge[]
+  const allLinks = model.getEdges() as Edge[]
 
   // there is just one link, draw it directly
   if (allLinks.length === 1) {
@@ -322,7 +322,7 @@ export const jumpover: Connector.Definition<JumpoverConnectorOptions> = function
 
   // not all links are meant to be jumped over.
   const edges = allLinks.filter((link, idx) => {
-    const connector = link.getConnector() || defaultConnector
+    const connector = link.getConnector() || (defaultConnector as any)
 
     // avoid jumping over links with connector type listed in `ignored connectors`.
     if (ignoreConnectors.includes(connector.name)) {
@@ -337,8 +337,8 @@ export const jumpover: Connector.Definition<JumpoverConnectorOptions> = function
   })
 
   // find views for all links
-  const linkViews = edges.map(link => {
-    return graph.findViewByModel(link)
+  const linkViews = edges.map(edge => {
+    return graph.findViewByCell(edge) as EdgeView
   })
 
   // create lines for this link
@@ -355,7 +355,7 @@ export const jumpover: Connector.Definition<JumpoverConnectorOptions> = function
     return createLines(
       linkView.sourcePoint,
       linkView.targetPoint,
-      linkView.route,
+      linkView.routePoints,
     )
   })
 
