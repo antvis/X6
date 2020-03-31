@@ -1,7 +1,8 @@
+import JQuery from 'jquery'
 import { DomUtil } from '../../dom'
-import { StringExt } from '../../util'
+import { StringExt, NumberExt } from '../../util'
 import { Point, Rectangle } from '../../geometry'
-import { v, Attributes, MatrixLike } from '../../v'
+import { v, MatrixLike } from '../../v'
 import { View } from './view'
 import { Cell } from './cell'
 import { Model } from './model'
@@ -11,8 +12,17 @@ import { Markup } from './markup'
 import { Collection } from './collection'
 import { KeyValue } from '../../types'
 import { Node } from './node'
-import { NodeRegistry, ViewRegistry } from '../registry'
 import { EdgeView } from './edge-view'
+import { Attr } from '../attr'
+import { CellViewFlag } from './cell-view-flag'
+import { Highlighter } from '../highlighter'
+import { Grid } from '../grid'
+import {
+  NodeRegistry,
+  ViewRegistry,
+  HighlighterRegistry,
+  GridRegistry,
+} from '../registry'
 
 const sortingTypes = {
   NONE: 'sorting-none',
@@ -32,11 +42,11 @@ export class Graph extends View {
     width: 800,
     height: 600,
     origin: { x: 0, y: 0 },
-    gridSize: 1,
+    gridSize: 10,
 
     // Whether or not to draw the grid lines on the paper's DOM element.
     // e.g drawGrid: true, drawGrid: { color: 'red', thickness: 2 }
-    drawGrid: false,
+    drawGrid: true,
 
     // Whether or not to draw the background on the paper's DOM element.
     // e.g. background: { color: 'lightblue', image: '/paper-background.png', repeat: 'flip-xy' }
@@ -50,9 +60,7 @@ export class Graph extends View {
     // When set to FALSE, an element may not have more than 1 link with the same source and target element.
     multiLinks: true,
 
-    // For adding custom guard logic.
-    guard() {
-      // FALSE means the event isn't guarded.
+    guard(evt: JQuery.TriggeredEvent, view?: CellView | null) {
       return false
     },
 
@@ -66,13 +74,13 @@ export class Graph extends View {
       magnetAvailability: {
         name: 'addClass',
         options: {
-          className: 'available-magnet',
+          className: 'x6-available-magnet',
         },
       },
       elementAvailability: {
         name: 'addClass',
         options: {
-          className: 'available-cell',
+          className: 'x6-available-cell',
         },
       },
     },
@@ -191,7 +199,7 @@ export class Graph extends View {
       if (flag & FLAG_INSERT || opt.mounting) {
         return
       }
-      // graph.requestConnectedLinksUpdate(view, opt)
+      graph.requestConnectedEdgesUpdate(view, opt)
     },
 
     onViewPostponed(view: CellView, flag: number) {
@@ -233,10 +241,10 @@ export class Graph extends View {
   protected viewportMatrix: DOMMatrix | null
   protected viewportTransformString: string | null
 
-  // _highlights: any
-  zPivots: any
-  updates: any
-  views: { [cellId: string]: CellView } = {}
+  protected highlights: KeyValue<Private.HighlightCacheItem> = {}
+  protected zPivots: KeyValue<Comment> = {}
+  protected views: KeyValue<CellView> = {}
+  protected updates: Graph.Updates
 
   SORT_DELAYING_BATCHES = ['add', 'to-front', 'to-back']
   UPDATE_DELAYING_BATCHES = ['translate']
@@ -244,10 +252,9 @@ export class Graph extends View {
 
   constructor(options: Graph.Options) {
     super()
+
     this.container = options.container
-    const { selectors, fragment } = Markup.parseJSONMarkup(Graph.markup, {
-      bare: true,
-    })
+    const { selectors, fragment } = Markup.parseJSONMarkup(Graph.markup)
     this.backgroundElem = selectors.background as HTMLDivElement
     this.gridElem = selectors.grid as HTMLDivElement
     this.svgElem = selectors.svg as SVGSVGElement
@@ -255,9 +262,21 @@ export class Graph extends View {
     this.viewportElem = selectors.viewport as SVGGElement
     this.drawPane = selectors.drawPane as SVGGElement
     this.container.appendChild(fragment)
+
     this.model = new Model()
+
+    this.setGrid(this.options.drawGrid)
+    this.drawGrid()
     this.resetUpdates()
     this.setup()
+
+    // Renders the existing cells in the model.
+    this.resetViews(this.model.getCells())
+
+    // Starts the rendering loop.
+    if (!this.isFrozen() && this.isAsync()) {
+      this.updateViewsAsync()
+    }
   }
 
   init() {
@@ -291,11 +310,7 @@ export class Graph extends View {
   }
 
   protected resetUpdates() {
-    return (this.updates = {
-      /**
-       * The animation frame id.
-       */
-      id: null,
+    this.updates = {
       priorities: [{}, {}, {}],
 
       mounted: {},
@@ -305,10 +320,12 @@ export class Graph extends View {
       unmountedCids: [],
 
       count: 0,
-      keyFrozen: false,
-      freezeKey: null,
       sort: false,
-    })
+      frozen: false,
+      freezeKey: null,
+
+      animationId: null,
+    }
   }
 
   protected setup() {
@@ -412,9 +429,9 @@ export class Graph extends View {
     } else {
       const { type, ...options } = node
       const name = type || 'basic.rect'
-      const defintion = NodeRegistry.get(name)
-      if (defintion) {
-        result = new defintion(options)
+      const define = NodeRegistry.get(name)
+      if (define) {
+        result = new define(options)
       } else {
         throw new Error(`Unknow node type: "${name}"`)
       }
@@ -454,25 +471,33 @@ export class Graph extends View {
   //   return this
   // }
 
-  requestConnectedLinksUpdate(view: CellView, opt: any = {}) {
-    // if (view instanceof CellView) {
-    //   const model = view.model
-    //   const links = this.model.getConnectedLinks(model)
-    //   for (let j = 0, n = links.length; j < n; j += 1) {
-    //     const link = links[j]
-    //     const linkView = this.findViewByModel(link)
-    //     if (!linkView) continue
-    //     const flagLabels = ['UPDATE']
-    //     if (link.getTargetCell() === model) flagLabels.push('TARGET')
-    //     if (link.getSourceCell() === model) flagLabels.push('SOURCE')
-    //     this.scheduleViewUpdate(
-    //       linkView,
-    //       linkView.getFlag(flagLabels),
-    //       linkView.priority,
-    //       opt,
-    //     )
-    //   }
-    // }
+  requestConnectedEdgesUpdate(view: CellView, options: any = {}) {
+    if (view instanceof CellView) {
+      const cell = view.cell
+      const edges = this.model.getConnectedEdges(cell)
+      for (let j = 0, n = edges.length; j < n; j += 1) {
+        const edge = edges[j]
+        const edgeView = this.findViewByCell(edge)
+        if (!edgeView) {
+          continue
+        }
+
+        const flagLabels: CellViewFlag.Action[] = ['update']
+        if (edge.getTargetCell() === cell) {
+          flagLabels.push('target')
+        }
+        if (edge.getSourceCell() === cell) {
+          flagLabels.push('source')
+        }
+
+        this.scheduleViewUpdate(
+          edgeView,
+          edgeView.getFlag(flagLabels),
+          edgeView.priority,
+          options,
+        )
+      }
+    }
   }
 
   forcePostponedViewUpdate(view: CellView, flag: number) {
@@ -485,65 +510,48 @@ export class Graph extends View {
       return false
     }
 
-    // if ((flag & view.getFlag(['SOURCE', 'TARGET'])) === 0) {
-    //   // LinkView is waiting for the target or the source cellView to be rendered
-    //   // This can happen when the cells are not in the viewport.
-    //   let sourceFlag = 0
-    //   const sourceView = this.findViewByModel(model.getSourceCell())
-    //   if (sourceView && !this.isViewMounted(sourceView)) {
-    //     sourceFlag = this.dumpView(sourceView)
-    //     view.updateEndMagnet('source')
-    //   }
-    //   let targetFlag = 0
-    //   const targetView = this.findViewByModel(model.getTargetCell())
-    //   if (targetView && !this.isViewMounted(targetView)) {
-    //     targetFlag = this.dumpView(targetView)
-    //     view.updateEndMagnet('target')
-    //   }
-    //   if (sourceFlag === 0 && targetFlag === 0) {
-    //     // If leftover flag is 0, all view updates were done.
-    //     return !this.dumpView(view)
-    //   }
-    // }
+    const edgeView = view as EdgeView
+
+    if (cell.isEdge() && (flag & view.getFlag(['source', 'target'])) === 0) {
+      // EdgeView is waiting for the source/target cellView to be rendered.
+      // This can happen when the cells are not in the viewport.
+      let sourceFlag = 0
+      const sourceView = this.findViewByCell(cell.getSourceCell())
+      if (sourceView && !this.isViewMounted(sourceView)) {
+        sourceFlag = this.dumpView(sourceView)
+        edgeView.updateTerminalMagnet('source')
+      }
+      let targetFlag = 0
+      const targetView = this.findViewByCell(cell.getTargetCell())
+      if (targetView && !this.isViewMounted(targetView)) {
+        targetFlag = this.dumpView(targetView)
+        edgeView.updateTerminalMagnet('target')
+      }
+
+      if (sourceFlag === 0 && targetFlag === 0) {
+        // If leftover flag is 0, all view updates were done.
+        return !this.dumpView(edgeView)
+      }
+    }
+
     return false
   }
 
-  requestViewUpdate(
-    view: CellView,
-    flag: number,
-    priority: number,
-    options: any = {},
-  ) {
-    this.scheduleViewUpdate(view, flag, priority, options)
-
-    const async = this.isAsync()
-    if (
-      this.isFrozen() ||
-      (async && options.async !== false) ||
-      this.model.hasActiveBatch(this.UPDATE_DELAYING_BATCHES)
-    ) {
-      return
-    }
-
-    const stats = this.updateViews(options)
-    if (async) {
-      this.trigger('render:done', stats, options)
-    }
-  }
-
+  // prepareViewUpdate
   scheduleViewUpdate(
     view: CellView,
     flag: number,
     priority: number,
     options: any = {},
   ) {
+    const cid = view.cid
     const updates = this.updates
-    let dic = updates.priorities[priority]
-    if (!dic) {
-      dic = updates.priorities[priority] = {}
+    let cache = updates.priorities[priority]
+    if (!cache) {
+      cache = updates.priorities[priority] = {}
     }
 
-    const currentFlag = dic[view.cid] || 0
+    const currentFlag = cache[cid] || 0
     if ((currentFlag & flag) === flag) {
       return
     }
@@ -553,47 +561,51 @@ export class Graph extends View {
     }
 
     if (flag & FLAG_REMOVE && currentFlag & FLAG_INSERT) {
-      // When a view is removed we need to remove the insert flag
-      // as this is a reinsert.
-      dic[view.cid] ^= FLAG_INSERT
+      // When a view is removed we need to remove the
+      // insert flag as this is a reinsert.
+      cache[cid] ^= FLAG_INSERT
     } else if (flag & FLAG_INSERT && currentFlag & FLAG_REMOVE) {
-      // When a view is added we need to remove the remove flag as
-      // this is view was previously removed.
-      dic[view.cid] ^= FLAG_REMOVE
+      // When a view is added we need to remove the remove
+      // flag as this is view was previously removed.
+      cache[cid] ^= FLAG_REMOVE
     }
-    dic[view.cid] |= flag
 
-    const viewUpdateFn = this.options.onViewUpdate
-    if (typeof viewUpdateFn === 'function') {
-      viewUpdateFn.call(this, view, flag, options, this)
+    cache[cid] |= flag
+
+    const onViewUpdate = this.options.onViewUpdate
+    if (typeof onViewUpdate === 'function') {
+      onViewUpdate.call(this, view, flag, options, this)
     }
   }
 
-  updateView(view: CellView, flag: number, opt: any = {}) {
-    if (view == null) {
-      return 0
+  requestViewUpdate(
+    view: CellView,
+    flag: number,
+    priority: number,
+    options: Graph.RequestViewUpdateOptions = {},
+  ) {
+    this.scheduleViewUpdate(view, flag, priority, options)
+
+    const isAsync = this.isAsync()
+    if (
+      this.isFrozen() ||
+      (isAsync && options.async !== false) ||
+      // UPDATE_DELAYING_BATCHES = ['translate']
+      this.model.hasActiveBatch(this.UPDATE_DELAYING_BATCHES)
+    ) {
+      return
     }
 
-    if (view instanceof CellView) {
-      if (flag & FLAG_REMOVE) {
-        this.removeView(view.cell as any)
-        return 0
-      }
-
-      if (flag & FLAG_INSERT) {
-        this.insertView(view)
-        flag ^= FLAG_INSERT // tslint:disable-line
-      }
+    const stats = this.updateViews(options)
+    if (isAsync) {
+      this.trigger('render:done', stats, options)
     }
-
-    if (!flag) {
-      return 0
-    }
-
-    return view.confirmUpdate(flag, opt || {})
   }
 
-  dumpViewUpdate(view: CellView) {
+  /**
+   * Adds view into the DOM and update it.
+   */
+  dumpView(view: CellView, options: any = {}) {
     if (view == null) {
       return 0
     }
@@ -603,136 +615,88 @@ export class Graph extends View {
     const cache = updates.priorities[view.priority]
     const flag = this.registerMountedView(view) | cache[cid]
     delete cache[cid]
-    return flag
-  }
 
-  /**
-   * Adds view into the DOM and update it.
-   */
-  dumpView(view: CellView, options: any = {}) {
-    const flag = this.dumpViewUpdate(view)
     if (!flag) {
       return 0
     }
+
     return this.updateView(view, flag, options)
   }
 
   /**
    * Adds all views into the DOM and update them.
    */
-  dumpViews(opt: any = {}) {
-    this.checkViewport(opt)
-    this.updateViews(opt)
+  dumpViews(options: Graph.UpdateViewOptions = {}) {
+    this.checkViewport(options)
+    this.updateViews(options)
   }
 
   /**
-   * Ensure the view associated with the cell is attached to the DOM and updated.
+   * Ensure the view associated with the cell is attached
+   * to the DOM and updated.
    */
-  requireView(cell: Cell, opt: any = {}) {
+  requireView(cell: Cell, options: any = {}) {
     const view = this.findViewByCell(cell)
     if (view == null) {
       return null
     }
-    this.dumpView(view, opt)
+    this.dumpView(view, options)
     return view
   }
 
-  updateViews(options: any = {}) {
-    let stats
+  updateView(view: CellView, flag: number, options: any = {}) {
+    if (view == null) {
+      return 0
+    }
+
+    if (flag & FLAG_REMOVE) {
+      this.removeView(view.cell as any)
+      return 0
+    }
+
+    if (flag & FLAG_INSERT) {
+      this.insertView(view)
+      flag ^= FLAG_INSERT // tslint:disable-line
+    }
+
+    if (!flag) {
+      return 0
+    }
+
+    return view.confirmUpdate(flag, options)
+  }
+
+  updateViews(options: Graph.UpdateViewOptions = {}) {
+    let result: ReturnType<typeof Graph.prototype.updateViewsBatch>
     let batchCount = 0
-    let updateCount = 0
+    let updatedCount = 0
     let priority = MIN_PRIORITY
+
     do {
-      stats = this.updateViewsBatch(options)
+      result = this.updateViewsBatch(options)
       batchCount += 1
-      updateCount += stats.updated
-      priority = Math.min(stats.priority, priority)
-    } while (!stats.empty)
+      updatedCount += result.updatedCount
+      priority = Math.min(result.priority, priority)
+    } while (!result.empty)
 
     return {
       priority,
-      updated: updateCount,
-      batches: batchCount,
+      batchCount,
+      updatedCount,
     }
   }
 
-  updateViewsAsync(
-    opt: any = {},
-    data: {
-      processed: number
-      priority: number
-    } = {
-      processed: 0,
-      priority: MIN_PRIORITY,
-    },
-  ) {
-    const updates = this.updates
-    const id = updates.id
-    if (id) {
-      DomUtil.cancelAnimationFrame(id)
-      if (data.processed === 0) {
-        const beforeFn = opt.before
-        if (typeof beforeFn === 'function') {
-          beforeFn.call(this, this)
-        }
-      }
-
-      const stats = this.updateViewsBatch(opt)
-      const checkStats = this.checkViewport({
-        mountBatchSize: MOUNT_BATCH_SIZE - stats.mounted,
-        unmountBatchSize: MOUNT_BATCH_SIZE - stats.unmounted,
-        ...opt,
-      })
-
-      const unmountCount = checkStats.unmounted
-      const mountCount = checkStats.mounted
-      let processed = data.processed
-      const total = updates.count
-      if (stats.updated > 0) {
-        // Some updates have been just processed
-        processed += stats.updated + stats.unmounted
-        ;(stats as any).processed = processed
-        data.priority = Math.min(stats.priority, data.priority)
-        if (stats.empty && mountCount === 0) {
-          stats.unmounted += unmountCount
-          stats.mounted += mountCount
-          stats.priority = data.priority
-          this.trigger('render:done', stats, opt)
-          data.processed = 0
-          updates.count = 0
-        } else {
-          data.processed = processed
-        }
-      }
-
-      // Progress callback
-      const progressFn = opt.progress
-      if (total && typeof progressFn === 'function') {
-        progressFn.call(this, stats.empty, processed, total, stats, this)
-      }
-
-      // The current frame could have been canceled in a callback
-      if (updates.id !== id) {
-        return
-      }
-    }
-
-    updates.id = DomUtil.requestAnimationFrame(() => {
-      this.updateViewsAsync(opt, data)
-    })
-  }
-
-  updateViewsBatch(options: any = {}) {
-    const batchSize = options.batchSize || UPDATE_BATCH_SIZE
+  protected updateViewsBatch(options: Graph.UpdateViewOptions = {}) {
     const updates = this.updates
     const priorities = updates.priorities
+    const batchSize = options.batchSize || UPDATE_BATCH_SIZE
 
     let empty = true
-    let mountCount = 0
-    let unmountCount = 0
-    let updateCount = 0
-    let postponeCount = 0
-    let maxPriority = MIN_PRIORITY
+    let priority = MIN_PRIORITY
+    let mountedCount = 0
+    let unmountedCount = 0
+    let updatedCount = 0
+    let postponedCount = 0
 
     let viewportFn = options.viewport || this.options.viewport
     if (typeof viewportFn !== 'function') {
@@ -747,8 +711,8 @@ export class Graph extends View {
     main: for (let p = 0, n = priorities.length; p < n; p += 1) {
       const cache = priorities[p]
       for (const cid in cache) {
-        if (updateCount >= batchSize) {
-          empty = false // 还未渲染完成
+        if (updatedCount >= batchSize) {
+          empty = false // goto next batch
           break main
         }
 
@@ -761,64 +725,132 @@ export class Graph extends View {
         let currentFlag = cache[cid]
         // Do not check a view for viewport if we are about to remove the view.
         if ((currentFlag & FLAG_REMOVE) === 0) {
-          const isDetached = cid in updates.unmounted
-          if (viewportFn && !viewportFn.call(this, view, isDetached, this)) {
+          const isUnmounted = cid in updates.unmounted
+          if (viewportFn && !viewportFn.call(this, view, isUnmounted, this)) {
             // Unmount view
-            if (!isDetached) {
+            if (!isUnmounted) {
               this.registerUnmountedView(view)
               view.unmount()
             }
+
             updates.unmounted[cid] |= currentFlag
             delete cache[cid]
-            unmountCount += 1
+            unmountedCount += 1
             continue
           }
 
           // Mount view
-          if (isDetached) {
+          if (isUnmounted) {
             currentFlag |= FLAG_INSERT
-            mountCount += 1
+            mountedCount += 1
           }
           currentFlag |= this.registerMountedView(view)
         }
 
         const leftoverFlag = this.updateView(view, currentFlag, options)
         if (leftoverFlag > 0) {
-          // View update has not finished completely
+          // update has not finished
           cache[cid] = leftoverFlag
           if (
             !postponeViewFn ||
             !postponeViewFn.call(this, view, leftoverFlag, this) ||
             cache[cid]
           ) {
-            postponeCount += 1
+            postponedCount += 1
             empty = false
             continue
           }
         }
 
-        if (maxPriority > p) {
-          maxPriority = p
+        if (priority > p) {
+          priority = p
         }
 
-        updateCount += 1
+        updatedCount += 1
         delete cache[cid]
       }
     }
 
     return {
       empty,
-      priority: maxPriority,
-      updated: updateCount,
-      postponed: postponeCount,
-      unmounted: unmountCount,
-      mounted: mountCount,
+      priority,
+      mountedCount,
+      unmountedCount,
+      updatedCount,
+      postponedCount,
     }
   }
 
-  registerMountedView(view: CellView) {
+  protected updateViewsAsync(
+    options: Graph.UpdateViewsAsyncOptions = {},
+    data: {
+      processed: number
+      priority: number
+    } = {
+      processed: 0,
+      priority: MIN_PRIORITY,
+    },
+  ) {
+    const updates = this.updates
+    const animationId = updates.animationId
+    if (animationId) {
+      DomUtil.cancelAnimationFrame(animationId)
+      if (data.processed === 0) {
+        const beforeFn = options.before
+        if (typeof beforeFn === 'function') {
+          beforeFn.call(this, this)
+        }
+      }
+
+      const stats = this.updateViewsBatch(options)
+      const checkout = this.checkViewportImpl({
+        viewport: options.viewport,
+        mountedBatchSize: MOUNT_BATCH_SIZE - stats.mountedCount,
+        unmountedBatchSize: MOUNT_BATCH_SIZE - stats.unmountedCount,
+      })
+
+      let processed = data.processed
+      const total = updates.count
+      const mountedCount = checkout.mountedCount
+      const unmountedCount = checkout.unmountedCount
+
+      if (stats.updatedCount > 0) {
+        // Some updates have been just processed
+        processed += stats.updatedCount + stats.unmountedCount
+        data.priority = Math.min(stats.priority, data.priority)
+        if (stats.empty && mountedCount === 0) {
+          stats.priority = data.priority
+          stats.mountedCount += mountedCount
+          stats.unmountedCount += unmountedCount
+          this.trigger('render:done', stats, options)
+          data.processed = 0
+          updates.count = 0
+        } else {
+          data.processed = processed
+        }
+      }
+
+      // Progress callback
+      const progressFn = options.progress
+      if (total && typeof progressFn === 'function') {
+        progressFn.call(this, stats.empty, processed, total, stats, this)
+      }
+
+      // The current frame could have been canceled in a callback
+      if (updates.animationId !== animationId) {
+        return
+      }
+    }
+
+    updates.animationId = DomUtil.requestAnimationFrame(() => {
+      this.updateViewsAsync(options, data)
+    })
+  }
+
+  protected registerMountedView(view: CellView) {
     const cid = view.cid
     const updates = this.updates
+
     if (cid in updates.mounted) {
       return 0
     }
@@ -830,9 +862,10 @@ export class Graph extends View {
     return flag
   }
 
-  registerUnmountedView(view: CellView) {
+  protected registerUnmountedView(view: CellView) {
     const cid = view.cid
     const updates = this.updates
+
     if (cid in updates.unmounted) {
       return 0
     }
@@ -855,24 +888,29 @@ export class Graph extends View {
   }
 
   getMountedViews() {
-    return Object.keys(this.updates.mounted).map(id => CellView.views[id])
+    return Object.keys(this.updates.mounted).map(cid => CellView.views[cid])
   }
 
   getUnmountedViews() {
-    return Object.keys(this.updates.unmounted).map(id => CellView.views[id])
+    return Object.keys(this.updates.unmounted).map(cid => CellView.views[cid])
   }
 
-  protected checkMountedViews(viewportFn: any, options: any = {}) {
+  protected checkMountedViews(
+    viewportFn?: Graph.CheckViewportFn | null,
+    batchSize?: number,
+  ) {
     let unmountCount = 0
     if (typeof viewportFn !== 'function') {
       return unmountCount
     }
 
-    const batchSize = options.unmountBatchSize || Infinity
     const updates = this.updates
     const mounted = updates.mounted
     const mountedCids = updates.mountedCids
-    const size = Math.min(mountedCids.length, batchSize)
+    const size =
+      batchSize == null
+        ? mountedCids.length
+        : Math.min(mountedCids.length, batchSize)
 
     for (let i = 0; i < size; i += 1) {
       const cid = mountedCids[i]
@@ -886,7 +924,7 @@ export class Graph extends View {
       }
 
       if (viewportFn.call(this, view, true, this)) {
-        // Push at the end of all mounted ids, so this can be check later again
+        // Push at the end of all mounted ids
         mountedCids.push(cid)
         continue
       }
@@ -903,16 +941,23 @@ export class Graph extends View {
     return unmountCount
   }
 
-  protected checkUnmountedViews(viewportFn: any, options: any = {}) {
+  protected checkUnmountedViews(
+    viewportFn?: Graph.CheckViewportFn | null,
+    batchSize?: number,
+  ) {
     let mountCount = 0
     if (typeof viewportFn !== 'function') {
       viewportFn = null // tslint:disable-line
     }
-    const batchSize = options.mountBatchSize || Infinity
+
     const updates = this.updates
     const unmounted = updates.unmounted
     const unmountedCids = updates.unmountedCids
-    const size = Math.min(unmountedCids.length, batchSize)
+    const size =
+      batchSize == null
+        ? unmountedCids.length
+        : Math.min(unmountedCids.length, batchSize)
+
     for (let i = 0; i < size; i += 1) {
       const cid = unmountedCids[i]
       if (!(cid in unmounted)) {
@@ -925,7 +970,6 @@ export class Graph extends View {
       }
 
       if (viewportFn && !viewportFn.call(this, view, false, this)) {
-        // Push at the end of all unmounted ids, so this can be check later again
         unmountedCids.push(cid)
         continue
       }
@@ -941,73 +985,91 @@ export class Graph extends View {
 
     // Get rid of views, that have been mounted
     unmountedCids.splice(0, size)
+
     return mountCount
   }
 
-  checkViewport(options: any = {}) {
-    const opts = {
-      mountBatchSize: Infinity,
-      unmountBatchSize: Infinity,
-      ...options,
-    }
+  protected checkViewportImpl(
+    options: Graph.CheckViewportOptions & {
+      mountedBatchSize?: number
+      unmountedBatchSize?: number
+    } = {
+      mountedBatchSize: Number.MAX_SAFE_INTEGER,
+      unmountedBatchSize: Number.MAX_SAFE_INTEGER,
+    },
+  ) {
+    const viewportFn = options.viewport || this.options.viewport
+    const unmountedCount = this.checkMountedViews(
+      viewportFn,
+      options.unmountedBatchSize,
+    )
 
-    const viewportFn = opts.viewport || this.options.viewport
-    const unmountedCount = this.checkMountedViews(viewportFn, opts)
-    if (unmountedCount > 0) {
+    const mountedCount = this.checkUnmountedViews(
+      viewportFn,
       // Do not check views, that have been just unmounted
       // and pushed at the end of the cids array
-      const unmountedCids = this.updates.unmountedCids
-      opts.mountBatchSize = Math.min(
-        unmountedCids.length - unmountedCount,
-        opts.mountBatchSize,
-      )
-    }
+      unmountedCount > 0
+        ? Math.min(
+            this.updates.unmountedCids.length - unmountedCount,
+            options.mountedBatchSize as number,
+          )
+        : options.mountedBatchSize,
+    )
 
-    const mountedCount = this.checkUnmountedViews(viewportFn, opts)
-    return {
-      mounted: mountedCount,
-      unmounted: unmountedCount,
-    }
+    return { mountedCount, unmountedCount }
+  }
+
+  /**
+   * Determine every view in the graph should be attached/detached.
+   */
+  checkViewport(options: Graph.CheckViewportOptions = {}) {
+    return this.checkViewportImpl(options)
   }
 
   isFrozen() {
     return !!this.options.frozen
   }
 
-  freeze(options: any = {}) {
+  /**
+   * Freeze the graph then the graph does not automatically re-render upon
+   * changes in the graph. This is useful when adding large numbers of cells.
+   */
+  freeze(options: Graph.FreezeOptions = {}) {
     const key = options.key
     const updates = this.updates
-    const isFrozen = this.options.frozen
+    const frozen = this.options.frozen
     const freezeKey = updates.freezeKey
+
     if (key && key !== freezeKey) {
-      // key passed, but the paper is already freezed with another key
-      if (isFrozen && freezeKey) {
+      if (frozen && freezeKey) {
+        // key passed, but the graph is already freezed with another key
         return
       }
+      updates.frozen = frozen
       updates.freezeKey = key
-      updates.keyFrozen = isFrozen
     }
 
     this.options.frozen = true
-    const id = updates.id
-    updates.id = null
-    if (this.isAsync() && id != null) {
-      DomUtil.cancelAnimationFrame(id)
+
+    const animationId = updates.animationId
+    updates.animationId = null
+    if (this.isAsync() && animationId != null) {
+      DomUtil.cancelAnimationFrame(animationId)
     }
   }
 
-  unfreeze(options: any = {}) {
+  unfreeze(options: Graph.UnfreezeOptions = {}) {
     const key = options.key
     const updates = this.updates
     const freezeKey = updates.freezeKey
-    // key passed, but the paper is already freezed with another key
+    // key passed, but the graph is already freezed with another key
     if (key && freezeKey && key !== freezeKey) {
       return
     }
 
     updates.freezeKey = null
-    // key passed, but the paper is already freezed
-    if (key && key === freezeKey && updates.keyFrozen) {
+    // key passed, but the graph is already freezed
+    if (key && key === freezeKey && updates.frozen) {
       return
     }
 
@@ -1018,7 +1080,7 @@ export class Graph extends View {
       this.updateViews(options)
     }
 
-    this.options.frozen = updates.keyFrozen = false
+    this.options.frozen = updates.frozen = false
 
     if (updates.sort) {
       this.sortViews()
@@ -1030,16 +1092,23 @@ export class Graph extends View {
     return !!this.options.async
   }
 
-  isExactSorting() {
-    return this.options.sorting === sortingTypes.EXACT
-  }
-
   onRemove() {
     this.freeze()
     this.removeViews()
   }
 
-  createCellView(cell: Cell) {
+  protected resetViews(cells: Cell[] = [], options: any = {}) {
+    this.resetUpdates()
+    this.removeViews()
+    this.freeze({ key: 'reset' })
+    for (let i = 0, n = cells.length; i < n; i += 1) {
+      this.renderView(cells[i], options)
+    }
+    this.unfreeze({ key: 'reset' })
+    this.sortViews()
+  }
+
+  protected createView(cell: Cell) {
     // A class taken from the paper options.
     // let optionalViewClass
     // // A default basic class (either dia.ElementView or dia.LinkView)
@@ -1100,11 +1169,13 @@ export class Graph extends View {
     return null
   }
 
-  removeView(cell: Cell) {
+  protected removeView(cell: Cell) {
     const view = this.views[cell.id]
     if (view) {
-      const { cid } = view
-      const { mounted, unmounted } = this.updates
+      const cid = view.cid
+      const updates = this.updates
+      const mounted = updates.mounted
+      const unmounted = updates.unmounted
       view.remove()
       delete this.views[cell.id]
       delete mounted[cid]
@@ -1113,17 +1184,17 @@ export class Graph extends View {
     return view
   }
 
-  removeViews() {
+  protected removeViews() {
     Object.keys(this.views).forEach(id => {
       const view = this.views[id]
       if (view) {
-        view.remove()
+        this.removeView(view.cell)
       }
     })
     this.views = {}
   }
 
-  renderView(cell: Cell, options: any = {}) {
+  protected renderView(cell: Cell, options: any = {}) {
     const id = cell.id
     const views = this.views
     let flag = 0
@@ -1132,7 +1203,7 @@ export class Graph extends View {
     if (view) {
       flag = FLAG_INSERT
     } else {
-      const tmp = this.createCellView(cell)
+      const tmp = this.createView(cell)
       if (tmp) {
         view = views[cell.id] = tmp
         view.graph = this
@@ -1147,28 +1218,21 @@ export class Graph extends View {
     return view
   }
 
-  resetViews(cells: Cell[] = [], opt: any = {}) {
-    this.resetUpdates()
-    // clearing views removes any event listeners
-    this.removeViews()
-    this.freeze({ key: 'reset' })
-    for (let i = 0, n = cells.length; i < n; i += 1) {
-      this.renderView(cells[i], opt)
-    }
-    this.unfreeze({ key: 'reset' })
-    this.sortViews()
+  isExactSorting() {
+    return this.options.sorting === sortingTypes.EXACT
   }
 
   sortViews() {
     if (!this.isExactSorting()) {
-      // noop
       return
     }
+
     if (this.isFrozen()) {
       // sort views once unfrozen
       this.updates.sort = true
       return
     }
+
     this.sortViewsExact()
   }
 
@@ -1186,13 +1250,52 @@ export class Graph extends View {
     // })
   }
 
+  protected addZPivot(zIndex: number = 0) {
+    const pivots = this.zPivots
+    let pivot = pivots[zIndex]
+    if (pivot) {
+      return pivot
+    }
+
+    pivot = pivots[zIndex] = document.createComment(`z-index:${zIndex + 1}`)
+    let neighborZ = -Infinity
+    for (const key in pivots) {
+      const currentZ = +key
+      if (currentZ < zIndex && currentZ > neighborZ) {
+        neighborZ = currentZ
+        if (neighborZ === zIndex - 1) {
+          continue
+        }
+      }
+    }
+
+    const layer = this.drawPane
+    if (neighborZ !== -Infinity) {
+      const neighborPivot = pivots[neighborZ]
+      layer.insertBefore(pivot, neighborPivot.nextSibling)
+    } else {
+      layer.insertBefore(pivot, layer.firstChild)
+    }
+    return pivot
+  }
+
+  protected removeZPivots() {
+    Object.keys(this.zPivots).forEach(z => {
+      const elem = this.zPivots[z]
+      if (elem && elem.parentNode) {
+        elem.parentNode.removeChild(elem)
+      }
+    })
+    this.zPivots = {}
+  }
+
   insertView(view: CellView) {
     const drawPane = this.drawPane
     switch (this.options.sorting) {
       case sortingTypes.APPROX:
-        // const z = view.model.get('z')
-        // const pivot = this.addZPivot(z)
-        // drawPane.insertBefore(view.container, pivot)
+        const zIndex = view.cell.getZIndex()
+        const pivot = this.addZPivot(zIndex)
+        drawPane.insertBefore(view.container, pivot)
         break
       case sortingTypes.EXACT:
       default:
@@ -1201,41 +1304,43 @@ export class Graph extends View {
     }
   }
 
-  addZPivot(z: number = 0) {
-    const pivots = this.zPivots
-    let pivot = pivots[z]
-    if (pivot) {
-      return pivot
+  // #region transformation
+
+  resize(width: number, height: number) {
+    const options = this.options
+    let w = width === undefined ? options.width : width
+    let h = height === undefined ? options.height : height
+
+    this.options.width = w
+    this.options.height = h
+
+    if (typeof w === 'number') {
+      w = Math.round(w)
+    }
+    if (typeof h === 'number') {
+      h = Math.round(h)
     }
 
-    pivot = pivots[z] = document.createComment(`z-index:${z + 1}`)
-    let neighborZ = -Infinity
-    for (const currentZ in pivots) {
-      const zz = +currentZ
-      if (zz < z && zz > neighborZ) {
-        neighborZ = zz
-        if (neighborZ === z - 1) {
-          continue
-        }
-      }
-    }
-    const layer = this.drawPane
-    if (neighborZ !== -Infinity) {
-      const neighborPivot = pivots[neighborZ]
-      // Insert After
-      layer.insertBefore(pivot, neighborPivot.nextSibling)
-    } else {
-      // First Child
-      layer.insertBefore(pivot, layer.firstChild)
-    }
-    return pivot
+    this.$(this.container).css({
+      width: w === null ? '' : w,
+      height: h === null ? '' : h,
+    })
+
+    const size = this.getComputedSize()
+    this.trigger('resize', size)
   }
 
-  removeZPivots() {
-    for (const z in this.zPivots) {
-      this.viewportElem.removeChild(this.zPivots[z])
+  getComputedSize() {
+    const options = this.options
+    let w = options.width
+    let h = options.height
+    if (!NumberExt.isNumber(w)) {
+      w = this.container.clientWidth
     }
-    this.zPivots = {}
+    if (!NumberExt.isNumber(h)) {
+      h = this.container.clientHeight
+    }
+    return { width: w, height: h }
   }
 
   getScale() {
@@ -1243,7 +1348,7 @@ export class Graph extends View {
   }
 
   scale(sx: number, sy: number = sx, ox: number = 0, oy: number = 0) {
-    const translate = this.getTranslate()
+    const translate = this.getTranslation()
 
     if (ox || oy || translate.tx || translate.ty) {
       const tx = translate.tx - ox * (sx - 1)
@@ -1270,22 +1375,22 @@ export class Graph extends View {
   }
 
   rotate(angle: number, cx?: number, cy?: number) {
-    // if (cx == null || cy == null) {
-    //   const bbox = this.drawPane.getBBox() as Rectangle
-    //   cx = bbox.width / 2 // tslint:disable-line
-    //   cy = bbox.height / 2 // tslint:disable-line
-    // }
+    if (cx == null || cy == null) {
+      const bbox = v.getBBox(this.drawPane)
+      cx = bbox.width / 2 // tslint:disable-line
+      cy = bbox.height / 2 // tslint:disable-line
+    }
 
-    // const ctm = this.getMatrix()
-    //   .translate(cx, cy)
-    //   .rotate(angle)
-    //   .translate(-cx, -cy)
-    // this.setMatrix(ctm)
+    const ctm = this.getMatrix()
+      .translate(cx, cy)
+      .rotate(angle)
+      .translate(-cx, -cy)
+    this.setMatrix(ctm)
 
     return this
   }
 
-  getTranslate() {
+  getTranslation() {
     return v.matrixToTranslate(this.getMatrix())
   }
 
@@ -1296,7 +1401,7 @@ export class Graph extends View {
 
     this.setMatrix(matrix)
 
-    const ret = this.getTranslate()
+    const ret = this.getTranslation()
     const origin = this.options.origin
     origin.x = ret.tx
     origin.y = ret.ty
@@ -1310,22 +1415,218 @@ export class Graph extends View {
     return this
   }
 
-  // findView($el) {
-  //   const el = isString($el)
-  //     ? this.cells.querySelector($el)
-  //     : $el instanceof $
-  //     ? $el[0]
-  //     : $el
+  setOrigin(ox?: number, oy?: number) {
+    return this.translate(ox || 0, oy || 0)
+  }
 
-  //   const id = this.findAttribute('model-id', el)
-  //   if (id) return this._views[id]
+  fitToContent(
+    gridWidth?: number,
+    gridHeight?: number,
+    padding?: NumberExt.SideOptions,
+    options?: Private.FitToContentOptions,
+  ): Rectangle
+  fitToContent(options?: Private.FitToContentFullOptions): Rectangle
+  fitToContent(
+    gridWidth?: number | Private.FitToContentFullOptions,
+    gridHeight?: number,
+    padding?: NumberExt.SideOptions,
+    options?: Private.FitToContentOptions,
+  ) {
+    if (typeof gridWidth === 'object') {
+      const opts = gridWidth
+      gridWidth = opts.gridWidth || 1 // tslint:disable-line
+      gridHeight = opts.gridHeight || 1 // tslint:disable-line
+      padding = opts.padding || 0 // tslint:disable-line
+      options = opts // tslint:disable-line
+    } else {
+      gridWidth = gridWidth || 1 // tslint:disable-line
+      gridHeight = gridHeight || 1 // tslint:disable-line
+      padding = padding || 0 // tslint:disable-line
+      if (options == null) {
+        options = {} // tslint:disable-line
+      }
+    }
 
-  //   return undefined
-  // }
+    const paddingValues = NumberExt.normalizeSides(padding)
+
+    const area = options.contentArea
+      ? Rectangle.create(options.contentArea)
+      : this.getContentArea(options)
+
+    const scale = this.getScale()
+    const translate = this.getTranslation()
+    const sx = scale.sx
+    const sy = scale.sy
+
+    area.x *= sx
+    area.y *= sy
+    area.width *= sx
+    area.height *= sy
+
+    let width =
+      Math.max(Math.ceil((area.width + area.x) / gridWidth), 1) * gridWidth
+    let height =
+      Math.max(Math.ceil((area.height + area.y) / gridHeight), 1) * gridHeight
+
+    let tx = 0
+    let ty = 0
+
+    if (
+      (options.allowNewOrigin === 'negative' && area.x < 0) ||
+      (options.allowNewOrigin === 'positive' && area.x >= 0) ||
+      options.allowNewOrigin === 'any'
+    ) {
+      tx = Math.ceil(-area.x / gridWidth) * gridWidth
+      tx += paddingValues.left
+      width += tx
+    }
+
+    if (
+      (options.allowNewOrigin === 'negative' && area.y < 0) ||
+      (options.allowNewOrigin === 'positive' && area.y >= 0) ||
+      options.allowNewOrigin === 'any'
+    ) {
+      ty = Math.ceil(-area.y / gridHeight) * gridHeight
+      ty += paddingValues.top
+      height += ty
+    }
+
+    width += paddingValues.right
+    height += paddingValues.bottom
+
+    // Make sure the resulting width and height are greater than minimum.
+    width = Math.max(width, options.minWidth || 0)
+    height = Math.max(height, options.minHeight || 0)
+
+    // Make sure the resulting width and height are lesser than maximum.
+    width = Math.min(width, options.maxWidth || Number.MAX_SAFE_INTEGER)
+    height = Math.min(height, options.maxHeight || Number.MAX_SAFE_INTEGER)
+
+    const size = this.getComputedSize()
+    const sizeChanged = width !== size.width || height !== size.height
+    const originChanged = tx !== translate.tx || ty !== translate.ty
+
+    // Change the dimensions only if there is a size discrepency or an origin change
+    if (originChanged) {
+      this.translate(tx, ty)
+    }
+
+    if (sizeChanged) {
+      this.resize(width, height)
+    }
+
+    return new Rectangle(-tx / sx, -ty / sy, width / sx, height / sy)
+  }
+
+  scaleContentToFit(options: Private.ScaleContentToFitOptions = {}) {
+    let contentBBox
+    let contentLocalOrigin
+    if (options.contentArea) {
+      const contentArea = options.contentArea
+      contentBBox = this.localToPaperRect(contentArea)
+      contentLocalOrigin = Point.create(contentArea)
+    } else {
+      contentBBox = this.getContentBBox(options)
+      contentLocalOrigin = this.paperToLocalPoint(contentBBox)
+    }
+
+    if (!contentBBox.width || !contentBBox.height) {
+      return
+    }
+
+    const padding = options.padding || 0
+    const minScale = options.minScale || 0
+    const maxScale = options.maxScale || Number.MAX_SAFE_INTEGER
+    const minScaleX = options.minScaleX || minScale
+    const maxScaleX = options.maxScaleX || maxScale
+    const minScaleY = options.minScaleY || minScale
+    const maxScaleY = options.maxScaleY || maxScale
+
+    let fittingBBox
+    if (options.fittingBBox) {
+      fittingBBox = options.fittingBBox
+    } else {
+      const computedSize = this.getComputedSize()
+      const currentTranslate = this.getTranslation()
+      fittingBBox = {
+        x: currentTranslate.tx,
+        y: currentTranslate.ty,
+        width: computedSize.width,
+        height: computedSize.height,
+      }
+    }
+
+    fittingBBox = Rectangle.create(fittingBBox).inflate(-padding)
+
+    const currentScale = this.getScale()
+
+    let newSx = (fittingBBox.width / contentBBox.width) * currentScale.sx
+    let newSy = (fittingBBox.height / contentBBox.height) * currentScale.sy
+
+    if (options.preserveAspectRatio !== false) {
+      newSx = newSy = Math.min(newSx, newSy)
+    }
+
+    // snap scale to a grid
+    if (options.gridSize) {
+      const gridSize = options.gridSize
+
+      newSx = gridSize * Math.floor(newSx / gridSize)
+      newSy = gridSize * Math.floor(newSy / gridSize)
+    }
+
+    // scale min/max boundaries
+    newSx = Math.min(maxScaleX, Math.max(minScaleX, newSx))
+    newSy = Math.min(maxScaleY, Math.max(minScaleY, newSy))
+
+    const origin = this.options.origin
+    const newOX = fittingBBox.x - contentLocalOrigin.x * newSx - origin.x
+    const newOY = fittingBBox.y - contentLocalOrigin.y * newSy - origin.y
+
+    this.scale(newSx, newSy)
+    this.translate(newOX, newOY)
+  }
+
+  getContentArea(options: Private.GetContentAreaOptions = {}) {
+    if (options.useModelGeometry) {
+      return this.model.getBBox() || new Rectangle()
+    }
+
+    return v.getBBox(this.drawPane)
+  }
+
+  getContentBBox(options: Private.GetContentAreaOptions = {}) {
+    return this.localToPaperRect(this.getContentArea(options))
+  }
+
+  getArea() {
+    const rect = Rectangle.fromSize(this.getComputedSize())
+    return this.paperToLocalRect(rect)
+  }
+
+  getRestrictedArea() {
+    const restrictTranslate = this.options.restrictTranslate as any
+    let restrictedArea
+
+    if (typeof restrictTranslate === 'function') {
+      // A method returning a bounding box
+      restrictedArea = restrictTranslate.apply(this, arguments)
+    } else if (restrictTranslate === true) {
+      // The paper area
+      restrictedArea = this.getArea()
+    } else {
+      // Either false or a bounding box
+      restrictedArea = restrictTranslate || null
+    }
+
+    return restrictedArea
+  }
+
+  // #endregion
 
   findViewByCell(cellId: string | number): CellView | null
-  findViewByCell(cell: Cell): CellView | null
-  findViewByCell(cell: Cell | string | number) {
+  findViewByCell(cell: Cell | null): CellView | null
+  findViewByCell(cell: Cell | string | number | null | undefined) {
     if (cell == null) {
       return null
     }
@@ -1335,28 +1636,67 @@ export class Graph extends View {
     return this.views[id]
   }
 
-  // findViewsFromPoint(p: Point | Point.PointLike) {
-  //   const ref = Point.create(p)
+  findView($el: string | JQuery | Element | undefined | null) {
+    if ($el == null) {
+      return null
+    }
 
-  //   const views = this.model.cells.toArray().map(this.findViewByModel, this)
-  //   return views.filter(view => {
-  //     if (view != null) {
-  //       return view.vel.getBBox({ target: this.cells }).containsPoint(ref)
-  //     }
-  //   }, this)
-  // }
+    const el =
+      typeof $el === 'string'
+        ? this.drawPane.querySelector($el)
+        : $el instanceof Element
+        ? $el
+        : $el[0]
 
-  // findViewsInArea(rect, opt) {
-  //   opt = defaults(opt || {}, { strict: false })
-  //   rect = new Rect(rect)
+    if (el) {
+      const id = this.findAttr('data-id', el)
+      if (id) {
+        return this.views[id]
+      }
+    }
 
-  //   const views = this.model.getElements().map(this.findViewByModel, this)
-  //   const method = opt.strict ? 'containsRect' : 'intersect'
+    return null
+  }
 
-  //   return views.filter(function(view) {
-  //     return view && rect[method](view.vel.getBBox({ target: this.cells }))
-  //   }, this)
-  // }
+  findViewsFromPoint(p: Point.PointLike) {
+    const ref = { x: p.x, y: p.y }
+    return this.model
+      .getCells()
+      .map(cell => this.findViewByCell(cell))
+      .filter(view => {
+        if (view != null) {
+          return v
+            .getBBox(view.container as SVGElement, { target: this.drawPane })
+            .containsPoint(ref)
+        }
+      })
+  }
+
+  findViewsInArea(
+    rect: Rectangle | Rectangle.RectangleLike,
+    options: { strict?: boolean } = {},
+  ) {
+    const area = Rectangle.create(rect)
+    return this.model
+      .getNodes()
+      .map(node => this.findViewByCell(node))
+      .filter(view => {
+        if (view) {
+          const bbox = v.getBBox(view.container as SVGElement, {
+            target: this.drawPane,
+          })
+          return options.strict
+            ? area.containsRect(bbox)
+            : area.isIntersectWith(area)
+        }
+      })
+  }
+
+  // #region coord
+
+  snapToGrid(x: number, y: number) {
+    return this.clientToLocalPoint(x, y).snapToGrid(this.options.gridSize)
+  }
 
   /**
    * Returns the current transformation matrix of the graph.
@@ -1566,36 +1906,12 @@ export class Graph extends View {
     return this.paperToLocalRect(paperRect)
   }
 
-  // Guard the specified event. If the event is not interesting, guard returns `true`.
-  // Otherwise, it returns `false`.
-  guard(evt: JQuery.TriggeredEvent, view: CellView) {
-    if (evt.type === 'mousedown' && evt.button === 2) {
-      // handled as `contextmenu` type
-      return true
-    }
+  // #endregion
 
-    // if (this.options.guard && this.options.guard(evt, view)) {
-    //   return true
-    // }
+  // #region grid
 
-    if (evt.data && evt.data.guarded !== undefined) {
-      return evt.data.guarded
-    }
-
-    // if (view && view.model && view.model instanceof Cell) {
-    //   return false
-    // }
-
-    // if (
-    //   this.svg === evt.target ||
-    //   this.el === evt.target ||
-    //   $.contains(this.svg, evt.target)
-    // ) {
-    //   return false
-    // }
-
-    return true
-  }
+  protected grid: Grid | null
+  protected gridSettings: Grid.Definition[] = []
 
   setGridSize(gridSize: number) {
     this.options.gridSize = gridSize
@@ -1612,11 +1928,155 @@ export class Graph extends View {
     return this
   }
 
-  drawGrid() {}
+  protected getGridCache() {
+    if (!this.grid) {
+      this.grid = new Grid()
+    }
+
+    return this.grid
+  }
+
+  protected resolveGrid(
+    patterns?:
+      | boolean
+      | string
+      | Grid.Options
+      | Grid.Options[]
+      | Grid.NativeItem
+      | Grid.ManaualItem,
+  ): Grid.Definition[] {
+    if (!patterns) {
+      return []
+    }
+
+    if (typeof patterns === 'string') {
+      const items = GridRegistry.get(patterns)
+      if (items) {
+        return Array.isArray(items)
+          ? items.map(item => ({ ...item }))
+          : [{ ...items }]
+      }
+
+      throw new Error(`Unknown grid "${patterns}"`)
+    }
+
+    if (patterns === true) {
+      return [{ ...Grid.dot }]
+    }
+
+    const name = (patterns as Grid.NativeItem).name
+    if (name == null) {
+      const options = (Array.isArray(patterns)
+        ? patterns[0]
+        : patterns) as Grid.Options
+      return [
+        {
+          ...Grid.dot,
+          ...options,
+        },
+      ]
+    }
+
+    const items = GridRegistry.get(name)
+    if (items) {
+      const args = (patterns as Grid.NativeItem).args || []
+      const params = Array.isArray(args) ? args : args ? [args] : []
+      return Array.isArray(items)
+        ? items.map((item, index) => ({ ...item, ...params[index] }))
+        : [{ ...items, ...params[0] }]
+    }
+
+    throw new Error(`Unknown grid "${name}"`)
+  }
+
+  setGrid(
+    patterns?:
+      | boolean
+      | string
+      | Grid.Options
+      | Grid.Options[]
+      | Grid.NativeItem
+      | Grid.ManaualItem,
+  ) {
+    this.clearGrid()
+    this.grid = null
+    this.gridSettings = this.resolveGrid(patterns)
+    return this
+  }
+
+  drawGrid(options: Partial<Grid.Options> | Partial<Grid.Options>[] = {}) {
+    const gridSize = this.options.gridSize
+    if (gridSize <= 1) {
+      return this.clearGrid()
+    }
+
+    const ctm = this.getMatrix()
+    const grid = this.getGridCache()
+    const optionItems = Array.isArray(options) ? options : [options]
+
+    this.gridSettings.forEach((settings, index) => {
+      const id = `pattern_${index}`
+      const sx = ctm.a || 1
+      const sy = ctm.d || 1
+
+      const { update, markup, ...others } = settings
+      const options = {
+        ...others,
+        ...optionItems[index],
+        sx,
+        sy,
+        ox: ctm.e || 0,
+        oy: ctm.f || 0,
+        width: gridSize * sx,
+        height: gridSize * sy,
+      }
+
+      if (!grid.has(id)) {
+        grid.add(
+          id,
+          v.create(
+            'pattern',
+            { id, patternUnits: 'userSpaceOnUse' },
+            v.create(markup),
+          ).node,
+        )
+      }
+
+      const patternElem = grid.get(id)
+
+      if (typeof update === 'function') {
+        update(patternElem.childNodes[0] as Element, options)
+      }
+
+      let x = options.ox % options.width
+      if (x < 0) {
+        x += options.width
+      }
+
+      let y = options.oy % options.height
+      if (y < 0) {
+        y += options.height
+      }
+
+      v.attr(patternElem, {
+        x,
+        y,
+        width: options.width,
+        height: options.height,
+      })
+    })
+
+    const base64 = new XMLSerializer().serializeToString(grid.root)
+    const url = `url(data:image/svg+xml;base64,${btoa(base64)})`
+    this.gridElem.style.backgroundImage = url
+    return this
+  }
+
+  // #endregion
 
   // #region defs
 
-  isDefined(defId: string) {
+  protected isDefined(defId: string) {
     return this.svgElem.getElementById(defId) != null
   }
 
@@ -1679,7 +2139,7 @@ export class Graph extends View {
     return id
   }
 
-  defineMarker(marker: Graph.CreateMarkerOptions & Attributes) {
+  defineMarker(marker: Graph.CreateMarkerOptions & Attr.SimpleAttrs) {
     let markerId = marker.id
     if (!markerId) {
       markerId = `m-${StringExt.hashcode(JSON.stringify(marker))}`
@@ -1695,13 +2155,544 @@ export class Graph extends View {
           overflow: 'visible',
           markerUnits: markerUnits || 'userSpaceOnUse',
         },
-        [v.create(type || 'path', attrs)],
+        [v.create(type || 'path', attrs as any)],
       )
 
       this.defsElem.appendChild(pathMarker.node)
     }
 
     return markerId
+  }
+
+  // #endregion
+
+  // linkAllowed(linkView: EdgeView) {
+  //   const edge = linkView.cell
+  //   const model = this.model
+  //   const paperOptions = this.options
+  //   const ns = model.constructor.validations
+
+  //   if (!paperOptions.multiLinks) {
+  //     if (!ns.multiLinks.call(this, model, edge)) return false
+  //   }
+
+  //   if (!paperOptions.linkPinning) {
+  //     // Link pinning is not allowed and the link is not connected to the target.
+  //     if (!ns.linkPinning.call(this, model, edge)) return false
+  //   }
+
+  //   if (typeof paperOptions.allowLink === 'function') {
+  //     if (!paperOptions.allowLink.call(this, linkView, this)) return false
+  //   }
+
+  //   return true
+  // }
+
+  // getDefaultLink(cellView, magnet) {
+  //   return isFunction(this.options.defaultLink)
+  //     ? // default link is a function producing link model
+  //       this.options.defaultLink.call(this, cellView, magnet)
+  //     : // default link is the Backbone model
+  //       this.options.defaultLink.clone()
+  // }
+
+  // #region highlighting
+
+  protected resolveHighlighter(options: Private.HighlightOptions) {
+    let highlighterDef = options.highlighter
+    const graphOptions = this.options
+    if (highlighterDef === undefined) {
+      // check for built-in types
+      const type = [
+        'embedding',
+        'connecting',
+        'magnetAvailability',
+        'elementAvailability',
+      ].find(type => !!(options as any)[type])
+
+      highlighterDef =
+        (type && (graphOptions.highlighting as any)[type]) ||
+        graphOptions.highlighting['default']
+    }
+
+    // Do nothing if opt.highlighter is falsey.
+    // This allows the case to not highlight cell(s) in certain cases.
+    // For example, if you want to NOT highlight when embedding elements.
+    if (highlighterDef == null) {
+      return false
+    }
+
+    const def: Highlighter.ManaualItem =
+      typeof highlighterDef === 'string'
+        ? {
+            name: highlighterDef,
+          }
+        : highlighterDef
+
+    const name = def.name
+    const highlighter = HighlighterRegistry.get(name)
+    if (highlighter == null) {
+      throw new Error(`Unknown highlighter "${name}"`)
+    }
+
+    if (typeof highlighter.highlight !== 'function') {
+      throw new Error(
+        `Highlighter "${name}" is missing required highlight() method`,
+      )
+    }
+
+    if (typeof highlighter.unhighlight !== 'function') {
+      throw new Error(
+        `Highlighter "${name}" is missing required unhighlight() method`,
+      )
+    }
+
+    return {
+      name,
+      highlighter,
+      args: def.args || {},
+    }
+  }
+
+  onCellHighlight(
+    cellView: CellView,
+    magnet: Element,
+    options: Private.HighlightOptions = {},
+  ) {
+    const resolved = this.resolveHighlighter(options)
+    if (!resolved) {
+      return
+    }
+
+    v.ensureId(magnet)
+    const key = resolved.name + magnet.id + JSON.stringify(resolved.args)
+    if (!this.highlights[key]) {
+      const highlighter = resolved.highlighter
+      highlighter.highlight(cellView, magnet, { ...resolved.args })
+
+      this.highlights[key] = {
+        cellView,
+        magnet,
+        highlighter,
+        args: resolved.args,
+      }
+    }
+  }
+
+  onCellUnhighlight(
+    cellView: CellView,
+    magnet: Element,
+    options: Private.HighlightOptions = {},
+  ) {
+    const resolved = this.resolveHighlighter(options)
+    if (!resolved) {
+      return
+    }
+
+    v.ensureId(magnet)
+    const key = resolved.name + magnet.id + JSON.stringify(resolved.args)
+    const highlight = this.highlights[key]
+    if (highlight) {
+      // Use the cellView and magnetEl that were used by the highlighter.highlight() method.
+      highlight.highlighter.unhighlight(
+        highlight.cellView,
+        highlight.magnet,
+        highlight.args,
+      )
+
+      delete this.highlights[key]
+    }
+  }
+
+  // #endregion
+
+  // #region tools
+
+  removeTools() {
+    this.trigger('tools:remove')
+    return this
+  }
+
+  hideTools() {
+    this.trigger('tools:hide')
+    return this
+  }
+
+  showTools() {
+    this.trigger('tools:show')
+    return this
+  }
+
+  // #endregion
+
+  // #region events
+
+  /**
+   * Guard the specified event. If the event is not interesting, it
+   * returns `true`, otherwise returns `false`.
+   */
+  protected guard(evt: JQuery.TriggeredEvent, view?: CellView | null) {
+    // handled as `contextmenu` type
+    if (evt.type === 'mousedown' && evt.button === 2) {
+      return true
+    }
+
+    if (this.options.guard && this.options.guard(evt, view)) {
+      return true
+    }
+
+    if (evt.data && evt.data.guarded !== undefined) {
+      return evt.data.guarded
+    }
+
+    if (view && view.cell && view.cell instanceof Cell) {
+      return false
+    }
+
+    if (
+      this.svgElem === evt.target ||
+      this.container === evt.target ||
+      JQuery.contains(this.svgElem, evt.target)
+    ) {
+      return false
+    }
+
+    return true
+  }
+
+  protected onDblClick(evt: JQuery.DoubleClickEvent) {
+    evt.preventDefault()
+    evt = this.normalizeEvent(evt) // tslint:disable-line
+
+    const view = this.findView(evt.target)
+    if (this.guard(evt, view)) {
+      return
+    }
+
+    const localPoint = this.snapToGrid(evt.clientX, evt.clientY)
+
+    if (view) {
+      view.onDblClick(evt, localPoint.x, localPoint.y)
+    } else {
+      this.trigger('blank:dblclick', evt, localPoint.x, localPoint.y)
+    }
+  }
+
+  protected onClick(evt: JQuery.ClickEvent) {
+    const data = this.getEventData(evt)
+    if (data.mouseMoveCount <= this.options.clickThreshold) {
+      evt = this.normalizeEvent(evt) // tslint:disable-line
+
+      const view = this.findView(evt.target)
+      if (this.guard(evt, view)) {
+        return
+      }
+
+      const localPoint = this.snapToGrid(evt.clientX, evt.clientY)
+      if (view) {
+        view.onClick(evt, localPoint.x, localPoint.y)
+      } else {
+        this.trigger('blank:click', evt, localPoint.x, localPoint.y)
+      }
+    }
+  }
+
+  protected onContextMenu(evt: JQuery.ContextMenuEvent) {
+    if (this.options.preventContextMenu) {
+      evt.preventDefault()
+    }
+
+    evt = this.normalizeEvent(evt) // tslint:disable-line
+    const view = this.findView(evt.target)
+    if (this.guard(evt, view)) {
+      return
+    }
+
+    const localPoint = this.snapToGrid(evt.clientX, evt.clientY)
+
+    if (view) {
+      view.onContextMenu(evt, localPoint.x, localPoint.y)
+    } else {
+      this.trigger('blank:contextmenu', evt, localPoint.x, localPoint.y)
+    }
+  }
+
+  protected delegateDragEvents(
+    evt: JQuery.MouseDownEvent,
+    view: CellView | null,
+  ) {
+    const data = evt.data || {}
+    this.setEventData(evt, { sourceView: view || null, mouseMoveCount: 0 })
+    const ctor = this.constructor as typeof Graph
+    this.addDocumentEventListeners(ctor.documentEvents, data)
+    this.undelegateEvents()
+  }
+
+  protected onMouseDown(evt: JQuery.MouseDownEvent) {
+    evt = this.normalizeEvent(evt) // tslint:disable-line
+    const view = this.findView(evt.target)
+    if (this.guard(evt, view)) {
+      return
+    }
+
+    const localPoint = this.snapToGrid(evt.clientX, evt.clientY)
+
+    if (view) {
+      evt.preventDefault()
+      view.onMouseDown(evt, localPoint.x, localPoint.y)
+    } else {
+      if (this.options.preventDefaultBlankAction) {
+        evt.preventDefault()
+      }
+
+      this.trigger('blank:mousedown', evt, localPoint.x, localPoint.y)
+    }
+
+    this.delegateDragEvents(evt, view)
+  }
+
+  protected onMouseMove(evt: JQuery.MouseMoveEvent) {
+    const data = this.getEventData(evt)
+    if (data.mouseMoveCount == null) {
+      data.mouseMoveCount = 0
+    }
+    data.mouseMoveCount += 1
+    const mouseMoveCount = data.mouseMoveCount
+    if (mouseMoveCount <= this.options.moveThreshold) {
+      return
+    }
+
+    evt = this.normalizeEvent(evt) // tslint:disable-line
+    const localPoint = this.snapToGrid(evt.clientX, evt.clientY)
+
+    const view = data.sourceView as CellView
+    if (view) {
+      view.onMouseMove(evt, localPoint.x, localPoint.y)
+    } else {
+      this.trigger('blank:mousemove', evt, localPoint.x, localPoint.y)
+    }
+
+    this.setEventData(evt, data)
+  }
+
+  protected onMouseUp(evt: JQuery.MouseUpEvent) {
+    this.removeDocumentEventListeners()
+
+    const normalized = this.normalizeEvent(evt)
+    const localPoint = this.snapToGrid(normalized.clientX, normalized.clientY)
+    const data = this.getEventData(evt)
+    const view = data.sourceView as CellView
+
+    if (view) {
+      view.onMouseUp(normalized, localPoint.x, localPoint.y)
+    } else {
+      this.trigger('blank:mouseup', normalized, localPoint.x, localPoint.y)
+    }
+
+    if (!evt.isPropagationStopped()) {
+      this.onClick(
+        $.Event(evt as any, {
+          type: 'click',
+          data: evt.data,
+        }) as JQuery.ClickEvent,
+      )
+    }
+
+    evt.stopImmediatePropagation()
+
+    const ctor = this.constructor as typeof Graph
+    this.delegateEvents(ctor.events)
+  }
+
+  protected onMouseOver(evt: JQuery.MouseOverEvent) {
+    evt = this.normalizeEvent(evt) // tslint:disable-line
+    const view = this.findView(evt.target)
+    if (this.guard(evt, view)) {
+      return
+    }
+
+    if (view) {
+      view.onMouseOver(evt)
+    } else {
+      // prevent border of paper from triggering this
+      if (this.container === evt.target) {
+        return
+      }
+      this.trigger('blank:mouseover', evt)
+    }
+  }
+
+  protected onMouseOut(evt: JQuery.MouseOutEvent) {
+    evt = this.normalizeEvent(evt) // tslint:disable-line
+    const view = this.findView(evt.target)
+    if (this.guard(evt, view)) {
+      return
+    }
+
+    if (view) {
+      view.onMouseOut(evt)
+    } else {
+      if (this.container === evt.target) {
+        return
+      }
+      this.trigger('blank:mouseout', evt)
+    }
+  }
+
+  protected onMouseEnter(evt: JQuery.MouseEnterEvent) {
+    evt = this.normalizeEvent(evt) // tslint:disable-line
+    const view = this.findView(evt.target)
+    if (this.guard(evt, view)) {
+      return
+    }
+
+    const relatedView = this.findView(evt.relatedTarget as Element)
+    if (view) {
+      // mouse moved from tool over view?
+      if (relatedView === view) {
+        return
+      }
+      view.onMouseEnter(evt)
+    } else {
+      if (relatedView) return
+      this.trigger('graph:mouseenter', evt)
+    }
+  }
+
+  protected onMouseLeave(evt: JQuery.MouseLeaveEvent) {
+    evt = this.normalizeEvent(evt) // tslint:disable-line
+    const view = this.findView(evt.target)
+    if (this.guard(evt, view)) {
+      return
+    }
+    const relatedView = this.findView(evt.relatedTarget as Element)
+    if (view) {
+      // mouse moved from view over tool?
+      if (relatedView === view) {
+        return
+      }
+      view.onMouseLeave(evt)
+    } else {
+      if (relatedView) {
+        return
+      }
+      this.trigger('graph:mouseleave', evt)
+    }
+  }
+
+  protected onMouseWheel(evt: JQuery.TriggeredEvent) {
+    evt = this.normalizeEvent(evt) // tslint:disable-line
+    const view = this.findView(evt.target)
+    if (this.guard(evt, view)) {
+      return
+    }
+
+    const originalEvent = evt.originalEvent as MouseWheelEvent
+    const localPoint = this.snapToGrid(
+      originalEvent.clientX,
+      originalEvent.clientY,
+    )
+    const delta = Math.max(
+      -1,
+      Math.min(1, (originalEvent as any).wheelDelta || -originalEvent.detail),
+    )
+
+    if (view) {
+      view.onMouseWheel(evt, localPoint.x, localPoint.y, delta)
+    } else {
+      this.trigger('blank:mousewheel', evt, localPoint.x, localPoint.y, delta)
+    }
+  }
+
+  protected onEvent(evt: JQuery.MouseDownEvent) {
+    const eventNode = evt.currentTarget
+    const eventName = eventNode.getAttribute('event')
+    if (eventName) {
+      const view = this.findView(eventNode)
+      if (view) {
+        evt = this.normalizeEvent(evt) // tslint:disable-line
+        if (this.guard(evt, view)) {
+          return
+        }
+
+        const localPoint = this.snapToGrid(
+          evt.clientX as number,
+          evt.clientY as number,
+        )
+        view.onEvent(evt, eventName, localPoint.x, localPoint.y)
+      }
+    }
+  }
+
+  protected handleMagnetEvent<T extends JQuery.TriggeredEvent>(
+    evt: T,
+    handler: (
+      this: Graph,
+      view: CellView,
+      evt: T,
+      magnet: Element,
+      x: number,
+      y: number,
+    ) => void,
+  ) {
+    const magnetElem = evt.currentTarget
+    const magnetValue = magnetElem.getAttribute('magnet')
+    if (magnetValue) {
+      const view = this.findView(magnetElem)
+      if (view) {
+        evt = this.normalizeEvent(evt) // tslint:disable-line
+        if (this.guard(evt, view)) {
+          return
+        }
+        const localPoint = this.snapToGrid(
+          evt.clientX as number,
+          evt.clientY as number,
+        )
+        handler.call(this, view, evt, magnetElem, localPoint.x, localPoint.y)
+      }
+    }
+  }
+
+  protected onMagnetMouseDown(evt: JQuery.MouseDownEvent) {
+    this.handleMagnetEvent(evt, (view, evt, magnet, x, y) => {
+      view.onMagnetMouseDown(evt, magnet, x, y)
+    })
+  }
+
+  protected onMagnetDblClick(evt: JQuery.DoubleClickEvent) {
+    this.handleMagnetEvent(evt, (view, evt, magnet, x, y) => {
+      view.onMagnetDblClick(evt, magnet, x, y)
+    })
+  }
+
+  protected onMagnetContextMenu(evt: JQuery.ContextMenuEvent) {
+    if (this.options.preventContextMenu) {
+      evt.preventDefault()
+    }
+    this.handleMagnetEvent(evt, (view, evt, magnet, x, y) => {
+      view.onMagnetContextMenu(evt, magnet, x, y)
+    })
+  }
+
+  protected onLabelMouseDown(evt: JQuery.MouseDownEvent) {
+    const labelNode = evt.currentTarget
+    const view = this.findView(labelNode)
+    if (view) {
+      evt = this.normalizeEvent(evt) // tslint:disable-line
+      if (this.guard(evt, view)) {
+        return
+      }
+
+      const localPoint = this.snapToGrid(evt.clientX, evt.clientY)
+      view.onLabelMouseDown(evt, localPoint.x, localPoint.y)
+    }
+  }
+
+  protected onImageDragStart() {
+    // This is the only way to prevent image dragging in Firefox that works.
+    // Setting -moz-user-select: none, draggable="false" attribute or
+    // user-drag: none didn't help.
+    return false
   }
 
   // #endregion
@@ -1726,13 +2717,86 @@ export namespace Graph {
       color: string
       opacity?: number
     }[]
-    attrs?: Attributes
+    attrs?: Attr.SimpleAttrs
   }
 
   export interface CreateFilterOptions {
     id?: string
     name: string
   }
+}
+
+export namespace Graph {
+  export interface Updates {
+    priorities: KeyValue<number>[]
+    mounted: KeyValue<boolean>
+    unmounted: KeyValue<number>
+    mountedCids: string[]
+    unmountedCids: string[]
+    animationId: number | null
+    count: number
+    sort: boolean
+
+    /**
+     * The last frozen state of graph.
+     */
+    frozen: boolean
+    /**
+     * The current freeze key of graph.
+     */
+    freezeKey: string | null
+  }
+
+  export type CheckViewportFn = (
+    this: Graph,
+    view: CellView,
+    isDetached: boolean,
+    graph: Graph,
+  ) => boolean
+
+  export interface CheckViewportOptions {
+    /**
+     * Callback function to determine whether a given view
+     * should be added to the DOM.
+     */
+    viewport?: CheckViewportFn
+  }
+
+  export interface UpdateViewOptions extends CheckViewportOptions {
+    /**
+     * For async graph, how many views should there be per
+     * one asynchronous process?
+     */
+    batchSize?: number
+  }
+
+  export interface RequestViewUpdateOptions
+    extends UpdateViewOptions,
+      Cell.SetOptions {
+    async?: boolean
+  }
+
+  export interface UpdateViewsAsyncOptions extends UpdateViewOptions {
+    before?: (this: Graph, graph: Graph) => void
+    /**
+     * Callback function that is called whenever a batch is
+     * finished processing.
+     */
+    progress?: (
+      this: Graph,
+      done: boolean,
+      processed: number,
+      total: number,
+    ) => void
+  }
+
+  export interface FreezeOptions {
+    key?: string
+  }
+
+  export interface UnfreezeOptions
+    extends FreezeOptions,
+      UpdateViewsAsyncOptions {}
 }
 
 export namespace Graph {
@@ -1796,36 +2860,92 @@ export namespace Graph {
 
 export namespace Graph {
   export const events = {
-    dblclick: 'pointerdblclick',
-    contextmenu: 'contextmenu',
-    mousedown: 'pointerdown',
-    touchstart: 'pointerdown',
-    mouseover: 'mouseover',
-    mouseout: 'mouseout',
-    mouseenter: 'mouseenter',
-    mouseleave: 'mouseleave',
-    mousewheel: 'mousewheel',
-    DOMMouseScroll: 'mousewheel',
-    'mouseenter .joint-cell': 'mouseenter',
-    'mouseleave .joint-cell': 'mouseleave',
-    'mouseenter .joint-tools': 'mouseenter',
-    'mouseleave .joint-tools': 'mouseleave',
-    'mousedown .joint-cell [event]': 'onevent',
-    'touchstart .joint-cell [event]': 'onevent',
-    'mousedown .joint-cell [magnet]': 'onmagnet',
-    'touchstart .joint-cell [magnet]': 'onmagnet',
-    'dblclick .joint-cell [magnet]': 'magnetpointerdblclick',
-    'contextmenu .joint-cell [magnet]': 'magnetcontextmenu',
-    'mousedown .joint-link .label': 'onlabel',
-    'touchstart .joint-link .label': 'onlabel',
-    'dragstart .joint-cell image': 'onImageDragStart',
+    dblclick: 'onDblClick',
+    contextmenu: 'onContextMenu',
+    mousedown: 'onMouseDown',
+    touchstart: 'onMouseDown',
+    mouseover: 'onMouseOver',
+    mouseout: 'onMouseOut',
+    mouseenter: 'onMouseEnter',
+    mouseleave: 'onMouseLeave',
+    mousewheel: 'onMouseWheel',
+    DOMMouseScroll: 'onMouseWheel',
+    'mouseenter .x6-cell': 'onMouseEnter',
+    'mouseleave .x6-cell': 'onMouseLeave',
+    'mouseenter .x6-tools': 'onMouseEnter',
+    'mouseleave .x6-tools': 'onMouseLeave',
+    'mousedown .x6-cell [event]': 'onEvent',
+    'touchstart .x6-cell [event]': 'onEvent',
+    'mousedown .x6-cell [magnet]': 'onMagnetMouseDown',
+    'touchstart .x6-cell [magnet]': 'onMagnetMouseDown',
+    'dblclick .x6-cell [magnet]': 'onMagnetDblClick',
+    'contextmenu .x6-cell [magnet]': 'onMagnetContextMenu',
+    'mousedown .x6-edge .label': 'onLabelMouseDown',
+    'touchstart .x6-edge .label': 'onLabelMouseDown',
+    'dragstart .x6-cell image': 'onImageDragStart',
   }
 
   export const documentEvents = {
-    mousemove: 'pointermove',
-    touchmove: 'pointermove',
-    mouseup: 'pointerup',
-    touchend: 'pointerup',
-    touchcancel: 'pointerup',
+    mousemove: 'onMouseMove',
+    touchmove: 'onMouseMove',
+    mouseup: 'onMouseUp',
+    touchend: 'onMouseUp',
+    touchcancel: 'onMouseUp',
+  }
+}
+
+namespace Private {
+  export interface GetContentAreaOptions {
+    useModelGeometry?: boolean
+  }
+
+  export interface FitToContentOptions extends GetContentAreaOptions {
+    minWidth?: number
+    minHeight?: number
+    maxWidth?: number
+    maxHeight?: number
+    contentArea?: Rectangle | Rectangle.RectangleLike
+    allowNewOrigin?: 'negative' | 'positive' | 'any'
+  }
+
+  export interface FitToContentFullOptions extends FitToContentOptions {
+    gridWidth?: number
+    gridHeight?: number
+    padding?: NumberExt.SideOptions
+  }
+
+  export interface ScaleContentToFitOptions extends GetContentAreaOptions {
+    contentArea?: Rectangle | Rectangle.RectangleLike
+    padding?: number
+    minScale?: number
+    maxScale?: number
+    minScaleX?: number
+    minScaleY?: number
+    maxScaleX?: number
+    maxScaleY?: number
+    fittingBBox?: Rectangle | Rectangle.RectangleLike
+    preserveAspectRatio?: boolean
+    gridSize?: number
+  }
+
+  export interface HighlightOptions {
+    highlighter?:
+      | string
+      | {
+          name: string
+          args: KeyValue
+        }
+
+    embedding?: boolean
+    connecting?: boolean
+    magnetAvailability?: boolean
+    elementAvailability?: boolean
+  }
+
+  export interface HighlightCacheItem {
+    highlighter: Highlighter.Definition<KeyValue>
+    cellView: CellView
+    magnet: Element
+    args: KeyValue
   }
 }

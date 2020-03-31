@@ -137,17 +137,13 @@ export class CellView<
     JQuery.PlainObject<string | number>
   > {}
 
-  protected getContainerAttrs(): Nullable<Attr.SimpleAttrs> {}
-
-  protected getContainerClassName(): Nullable<string | string[]> {}
-
-  attributes() {
-    const cell = this.cell
+  protected getContainerAttrs(): Nullable<Attr.SimpleAttrs> {
     return {
-      'model-id': cell.id,
-      'data-type': cell.attrs!.type,
+      'data-id': this.cell.id,
     }
   }
+
+  protected getContainerClassName(): Nullable<string | string[]> {}
 
   protected ensureContainer() {
     return View.createElement(
@@ -614,37 +610,33 @@ export class CellView<
 
   // #region events
 
-  protected pointerdblclick(
-    evt: JQuery.DoubleClickEvent,
-    x: number,
-    y: number,
-  ) {
-    this.trigger('cell:pointerdblclick', evt, x, y)
+  onClick(e: JQuery.ClickEvent, x: number, y: number) {
+    this.trigger('cell:click', e, x, y)
   }
 
-  protected pointerclick(evt: JQuery.ClickEvent, x: number, y: number) {
-    this.trigger('cell:pointerclick', evt, x, y)
+  onDblClick(e: JQuery.DoubleClickEvent, x: number, y: number) {
+    this.trigger('cell:dblclick', e, x, y)
   }
 
-  protected contextmenu(evt: JQuery.ContextMenuEvent, x: number, y: number) {
-    this.trigger('cell:contextmenu', evt, x, y)
+  onContextMenu(e: JQuery.ContextMenuEvent, x: number, y: number) {
+    this.trigger('cell:contextmenu', e, x, y)
   }
 
-  protected pointerdown(evt: JQuery.MouseDownEvent, x: number, y: number) {
+  onMouseDown(e: JQuery.MouseDownEvent, x: number, y: number) {
     // if (this.model.graph) {
     //   this.model.startBatch('pointer')
     //   this._graph = this.model.graph
     // }
 
-    this.trigger('cell:pointerdown', evt, x, y)
+    this.trigger('cell:mousedown', e, x, y)
   }
 
-  protected pointermove(evt: JQuery.MouseMoveEvent, x: number, y: number) {
-    this.trigger('cell:pointermove', evt, x, y)
+  onMouseMove(e: JQuery.MouseMoveEvent, x: number, y: number) {
+    this.trigger('cell:mousemove', e, x, y)
   }
 
-  protected pointerup(evt: JQuery.MouseUpEvent, x: number, y: number) {
-    this.trigger('cell:pointerup', evt, x, y)
+  onMouseUp(e: JQuery.MouseUpEvent, x: number, y: number) {
+    this.trigger('cell:mouseup', e, x, y)
 
     // if (this._graph) {
     //   // we don't want to trigger event on model as model doesn't
@@ -654,23 +646,23 @@ export class CellView<
     // }
   }
 
-  protected mouseover(evt: JQuery.MouseOverEvent) {
-    this.trigger('cell:mouseover', evt)
+  onMouseOver(e: JQuery.MouseOverEvent) {
+    this.trigger('cell:mouseover', e)
   }
 
-  protected mouseout(evt: JQuery.MouseOutEvent) {
-    this.trigger('cell:mouseout', evt)
+  onMouseOut(e: JQuery.MouseOutEvent) {
+    this.trigger('cell:mouseout', e)
   }
 
-  protected mouseenter(evt: JQuery.MouseEnterEvent) {
-    this.trigger('cell:mouseenter', evt)
+  onMouseEnter(e: JQuery.MouseEnterEvent) {
+    this.trigger('cell:mouseenter', e)
   }
 
-  protected mouseleave(evt: JQuery.MouseLeaveEvent) {
-    this.trigger('cell:mouseleave', evt)
+  onMouseLeave(e: JQuery.MouseLeaveEvent) {
+    this.trigger('cell:mouseleave', e)
   }
 
-  protected mousewheel(
+  onMouseWheel(
     evt: JQuery.TriggeredEvent,
     x: number,
     y: number,
@@ -679,20 +671,32 @@ export class CellView<
     this.trigger('cell:mousewheel', evt, x, y, delta)
   }
 
-  protected onevent(
-    evt: JQuery.TriggeredEvent,
-    eventName: string,
-    x: number,
-    y: number,
-  ) {
+  onEvent(evt: JQuery.MouseDownEvent, eventName: string, x: number, y: number) {
     this.trigger(eventName, evt, x, y)
   }
 
-  protected onmagnet() {}
+  onMagnetMouseDown(
+    evt: JQuery.MouseDownEvent,
+    magnet: Element,
+    x: number,
+    y: number,
+  ) {}
 
-  protected magnetpointerdblclick() {}
+  onMagnetDblClick(
+    evt: JQuery.DoubleClickEvent,
+    magnet: Element,
+    x: number,
+    y: number,
+  ) {}
 
-  protected magnetcontextmenu() {}
+  onMagnetContextMenu(
+    evt: JQuery.ContextMenuEvent,
+    magnet: Element,
+    x: number,
+    y: number,
+  ) {}
+
+  onLabelMouseDown(evt: JQuery.MouseDownEvent, x: number, y: number) {}
 
   protected checkMouseleave(evt: JQuery.TriggeredEvent) {
     const paper = this.graph as any
@@ -704,7 +708,7 @@ export class CellView<
     const view = paper.findView(target)
     if (view === this) return
     // Leaving the current view
-    this.mouseleave(evt as JQuery.MouseLeaveEvent)
+    this.onMouseLeave(evt as JQuery.MouseLeaveEvent)
     if (!view) return
     // Entering another view
     view.mouseenter(evt)
