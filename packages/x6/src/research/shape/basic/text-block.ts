@@ -117,7 +117,7 @@ export class TextBlockView extends NodeView<TextBlock> {
         node.getSize(),
         textAttrs,
         {
-          svgDocument: this.graph.svg,
+          svgDocument: this.graph.svgElem,
         },
       )
 

@@ -250,7 +250,7 @@ export abstract class View extends Basecoat {
 
   protected removeEventListeners(elem: Element | Document | JQuery) {
     if (elem != null) {
-      $(elem).off(this.getEventNamespace())
+      this.$(elem).off(this.getEventNamespace())
     }
     return this
   }
@@ -272,16 +272,16 @@ export abstract class View extends Basecoat {
     if (typeof handler === 'string') {
       const fn = (this as any)[handler]
       if (typeof fn === 'function') {
-        method = (...args: any) => fn(...args)
+        method = (...args: any) => fn.call(this, ...args)
       }
     } else {
-      method = handler
+      method = (...args: any) => handler.call(this, ...args)
     }
 
     return method
   }
 
-  protected getEventTarget(
+  getEventTarget(
     e: JQuery.TriggeredEvent,
     options: { fromPoint?: boolean } = {},
   ) {
@@ -296,23 +296,20 @@ export abstract class View extends Basecoat {
     return target
   }
 
-  protected stopPropagation(e: JQuery.TriggeredEvent) {
+  stopPropagation(e: JQuery.TriggeredEvent) {
     this.setEventData(e, { propagationStopped: true })
     return this
   }
 
-  protected isPropagationStopped(e: JQuery.TriggeredEvent) {
+  isPropagationStopped(e: JQuery.TriggeredEvent) {
     return this.getEventData(e).propagationStopped === true
   }
 
-  protected getEventData<T extends KeyValue>(e: JQuery.TriggeredEvent): T {
+  getEventData<T extends KeyValue>(e: JQuery.TriggeredEvent): T {
     return this.eventData<T>(e)
   }
 
-  protected setEventData<T extends KeyValue>(
-    e: JQuery.TriggeredEvent,
-    data: T,
-  ): T {
+  setEventData<T extends KeyValue>(e: JQuery.TriggeredEvent, data: T): T {
     return this.eventData(e, data)
   }
 
@@ -349,7 +346,7 @@ export abstract class View extends Basecoat {
     return currentData[key]
   }
 
-  protected normalizeEvent<T extends JQuery.TriggeredEvent>(evt: T) {
+  normalizeEvent<T extends JQuery.TriggeredEvent>(evt: T) {
     let normalizedEvent = evt
     const originalEvent = evt.originalEvent as TouchEvent
     const touchEvt: any =

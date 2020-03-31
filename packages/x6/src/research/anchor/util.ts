@@ -18,11 +18,11 @@ export function resolve<S extends Function, T>(fn: S): T {
       const refView = this.graph.findView(ref)
       let refPoint
       if (refView) {
-        if (refView.isNodeConnection(ref)) {
+        if (refView.isEdgeElement(ref)) {
           const distance = options.fixedAt != null ? options.fixedAt : '50%'
-          refPoint = getPointAtLink(refView, distance)
+          refPoint = getPointAtLink(refView as EdgeView, distance)
         } else {
-          refPoint = refView.getNodeBBox(ref).center()
+          refPoint = refView.getNodeBBox(ref).getCenter()
         }
       } else {
         refPoint = new Point()

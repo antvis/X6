@@ -208,9 +208,9 @@ export class Cell extends Basecoat<Cell.EventArgs> {
     return this
   }
 
-  toFront() {}
+  toFront(options: Cell.SetOptions = {}) {}
 
-  toBack() {}
+  toBack(options: Cell.SetOptions = {}) {}
 
   // #endregion
 
@@ -765,7 +765,9 @@ export class Cell extends Basecoat<Cell.EventArgs> {
 
   clone() {}
 
-  addTo() {}
+  addTo(mode: Model, options: Cell.SetOptions = {}) {
+    mode.addCell(this, options)
+  }
 
   findView(graph: Graph) {
     return graph.findViewByCell(this)

@@ -1,5 +1,5 @@
 import { ArrayExt } from '../../util'
-import { Rectangle } from '../../geometry'
+import { Rectangle, Point } from '../../geometry'
 import { v } from '../../v'
 import { Attr } from '../attr'
 import { View } from './view'
@@ -9,6 +9,11 @@ import { Globals } from './globals'
 import { PortData } from './port-data'
 import { Markup } from './markup'
 import { CellViewAttr } from './cell-view-attr'
+import { EdgeView } from './edge-view'
+import { snapToGrid } from '../../geometry/util'
+import { KeyValue } from '../../types'
+import { Graph } from './graph'
+import { Cell } from './cell'
 
 export class NodeView<
   C extends Node = Node,
@@ -534,6 +539,465 @@ export class NodeView<
   }
 
   // #endregion
+
+  // #region events
+
+  notifyMouseDown(e: JQuery.MouseDownEvent, x: number, y: number) {
+    super.onMouseDown(e, x, y)
+    this.notify('node:mousedown', { e, x, y, view: this, node: this.cell })
+  }
+
+  notifyMouseMove(e: JQuery.MouseMoveEvent, x: number, y: number) {
+    super.onMouseMove(e, x, y)
+    this.notify('node:mousemove', { e, x, y, view: this, node: this.cell })
+  }
+
+  notifyMouseUp(e: JQuery.MouseUpEvent, x: number, y: number) {
+    super.onMouseUp(e, x, y)
+    this.notify('node:mouseup', { e, x, y, view: this, node: this.cell })
+  }
+
+  onClick(e: JQuery.ClickEvent, x: number, y: number) {
+    super.onClick(e, x, y)
+    this.notify('node:click', { e, x, y, view: this, node: this.cell })
+  }
+
+  onDblClick(e: JQuery.DoubleClickEvent, x: number, y: number) {
+    super.onDblClick(e, x, y)
+    this.notify('node:dblclick', { e, x, y, view: this, node: this.cell })
+  }
+
+  onContextMenu(e: JQuery.ContextMenuEvent, x: number, y: number) {
+    super.onContextMenu(e, x, y)
+    this.notify('node:contextmenu', { e, x, y, view: this, node: this.cell })
+  }
+
+  onMouseDown(e: JQuery.MouseDownEvent, x: number, y: number) {
+    if (this.isPropagationStopped(e)) {
+      return
+    }
+    this.notifyMouseDown(e, x, y)
+    this.startDrag(e, x, y)
+  }
+
+  onMouseMove(e: JQuery.MouseMoveEvent, x: number, y: number) {
+    const data = this.getEventData(e)
+    const action = data.action
+    if (action === 'magnet') {
+      this.draggingMagnet(e, x, y)
+    } else {
+      this.notifyMouseMove(e, x, y)
+      if (action === 'move') {
+        const view = (data.delegatedView || this) as NodeView
+        view.dragging(e, x, y)
+      }
+    }
+
+    // Make sure the node view data is passed along.
+    // It could have been wiped out in the handlers above.
+    this.setEventData(e, data)
+  }
+
+  onMouseUp(e: JQuery.MouseUpEvent, x: number, y: number) {
+    const data = this.getEventData(e)
+    const action = data.action
+    if (action === 'magnet') {
+      this.stopDragMagnet(e, x, y)
+    } else {
+      this.notifyMouseUp(e, x, y)
+      if (action === 'move') {
+        const view = (data.delegatedView || this) as NodeView
+        view.stopDrag(e, x, y)
+      }
+    }
+
+    const magnet = data.targetMagnet
+    if (magnet) {
+      this.onMagnetClick(e, magnet, x, y)
+    }
+
+    this.checkMouseleave(e)
+  }
+
+  onMouseOver(e: JQuery.MouseOverEvent) {
+    super.onMouseOver(e)
+    this.notify('node:mouseover', { e, view: this, node: this.cell })
+  }
+
+  onMouseOut(e: JQuery.MouseOutEvent) {
+    super.onMouseOut(e)
+    this.notify('node:mouseout', { e, view: this, node: this.cell })
+  }
+
+  onMouseEnter(e: JQuery.MouseEnterEvent) {
+    super.onMouseEnter(e)
+    this.notify('node:mouseenter', { e, view: this, node: this.cell })
+  }
+
+  onMouseLeave(e: JQuery.MouseLeaveEvent) {
+    super.onMouseLeave(e)
+    this.notify('node:mouseleave', { e, view: this, node: this.cell })
+  }
+
+  onMouseWheel(e: JQuery.TriggeredEvent, x: number, y: number, delta: number) {
+    super.onMouseWheel(e, x, y, delta)
+    this.notify('node:mousewheel', {
+      e,
+      x,
+      y,
+      delta,
+      view: this,
+      cell: this.cell,
+    })
+  }
+
+  onMagnetClick(e: JQuery.MouseUpEvent, magnet: Element, x: number, y: number) {
+    const data = this.getEventData(e)
+    const options = this.graph.options
+    if (data.mouseMoveCount > options.clickThreshold) {
+      return
+    }
+    this.notify('node:magnet:click', { e, magnet, x, y })
+  }
+
+  onMagnetMouseDown(
+    e: JQuery.MouseDownEvent,
+    magnet: Element,
+    x: number,
+    y: number,
+  ) {
+    this.startDragMagnet(e, x, y)
+  }
+
+  onMagnetDblClick(
+    e: JQuery.DoubleClickEvent,
+    magnet: Element,
+    x: number,
+    y: number,
+  ) {
+    this.notify('node:magnet:dblclick', {
+      e,
+      x,
+      y,
+      magnet,
+      view: this,
+      node: this.cell,
+    })
+  }
+
+  onMagnetContextMenu(
+    e: JQuery.ContextMenuEvent,
+    magnet: Element,
+    x: number,
+    y: number,
+  ) {
+    this.notify('node:magnet:contextmenu', {
+      e,
+      x,
+      y,
+      magnet,
+      view: this,
+      node: this.cell,
+    })
+  }
+
+  protected prepareEmbedding(data: KeyValue = {}) {
+    const cell = (data.cell || this.cell) as Node
+    const graph = (data.graph || this.graph) as Graph
+    const model = graph.model
+
+    model.startBatch('to-front')
+
+    // Bring the model to the front with all his embeds.
+    cell.toFront({ deep: true, ui: true })
+
+    const maxZ = model
+      .getNodes()
+      .reduce((max, cell) => Math.max(max, cell.getZIndex() || 0), 0)
+
+    const connectedEdges = model.getConnectedEdges(cell, {
+      deep: true,
+      enclosed: true,
+    })
+
+    connectedEdges.forEach(edge => {
+      const zIndex = edge.getZIndex() || 0
+      if (zIndex <= maxZ) {
+        edge.setZIndex(maxZ + 1, { ui: true })
+      }
+    })
+
+    model.stopBatch('to-front')
+
+    // Before we start looking for suitable parent we remove the current one.
+    const parent = cell.getParent()
+    if (parent) {
+      parent.removeChild(cell, { ui: true })
+    }
+  }
+
+  protected processEmbedding(data: KeyValue = {}) {
+    const cell = (data.cell || this.cell) as Node
+    const graph = (data.graph || this.graph) as Graph
+    const graphOptions = graph.options
+    const findParentBy = graphOptions.findParentBy as any
+
+    let candidates = []
+    if (typeof findParentBy === 'function') {
+      const parents = findParentBy.call(graph.model, this) as Cell[]
+      candidates = parents.filter(cell => {
+        return (
+          cell instanceof Cell &&
+          this.cell.id !== cell.id &&
+          !cell.isDescendantOf(this.cell)
+        )
+      })
+    } else {
+      candidates = graph.model.getNodesUnderNode(cell, {
+        by: graphOptions.findParentBy as Rectangle.KeyPoint,
+      })
+    }
+
+    if (graphOptions.frontParentOnly) {
+      // pick the element with the highest `z` index
+      candidates = candidates.slice(-1)
+    }
+
+    let newCandidateView = null
+    const prevCandidateView = data.candidateEmbedView as NodeView
+    const validateEmbedding = (graphOptions as any).validateEmbedding
+
+    // iterate over all candidates starting from the last one (has the highest z-index).
+    for (let i = candidates.length - 1; i >= 0; i -= 1) {
+      const candidate = candidates[i]
+
+      if (prevCandidateView && prevCandidateView.cell.id === candidate.id) {
+        // candidate remains the same
+        newCandidateView = prevCandidateView
+        break
+      } else {
+        const view = candidate.findView(graph)
+        if (validateEmbedding.call(graph, this, view)) {
+          // flip to the new candidate
+          newCandidateView = view
+          break
+        }
+      }
+    }
+
+    if (newCandidateView && newCandidateView !== prevCandidateView) {
+      // A new candidate view found. Highlight the new one.
+      this.clearEmbedding(data)
+      data.candidateEmbedView = newCandidateView.highlight(null, {
+        embedding: true,
+      })
+    }
+
+    if (!newCandidateView && prevCandidateView) {
+      // No candidate view found. Unhighlight the previous candidate.
+      this.clearEmbedding(data)
+    }
+  }
+
+  protected clearEmbedding(data: KeyValue = {}) {
+    const candidateView = data.candidateEmbedView
+    if (candidateView) {
+      // No candidate view found. Unhighlight the previous candidate.
+      candidateView.unhighlight(null, { embedding: true })
+      data.candidateEmbedView = null
+    }
+  }
+
+  protected finalizeEmbedding(data: KeyValue = {}) {
+    const candidateView = data.candidateEmbedView as NodeView
+    const cell = (data.cell || this.cell) as Node
+    const graph = (data.graph || this.graph) as Graph
+
+    if (candidateView) {
+      // We finished embedding. Candidate view is chosen to become the parent of the model.
+      candidateView.cell.insertChild(cell, undefined, { ui: true })
+      candidateView.unhighlight(null, { embedding: true })
+      data.candidateEmbedView = null
+    }
+
+    graph.model.getConnectedEdges(cell, { deep: true }).forEach(edge => {
+      edge.updateParent({ ui: true })
+    })
+  }
+
+  protected getDelegatedView() {
+    const graph = this.graph
+    let cell = this.cell
+    let view: NodeView = this // tslint:disable-line
+
+    while (view) {
+      if (cell.isEdge()) {
+        break
+      }
+      if (!cell.hasParent() || view.can('stopDelegation')) {
+        return view
+      }
+      cell = cell.getParent() as C
+      view = graph.findViewByCell(cell) as NodeView
+    }
+
+    return null
+  }
+
+  protected startDrag(e: JQuery.MouseDownEvent, x: number, y: number) {
+    const view = this.getDelegatedView()
+    if (view == null || !view.can('elementMove')) {
+      return
+    }
+
+    this.setEventData(e, {
+      action: 'move',
+      delegatedView: view,
+    })
+
+    const pos = Point.create(view.cell.getPosition())
+    view.setEventData(e, {
+      offset: pos.diff(x, y),
+      restrictedArea: this.graph.getRestrictedArea(view),
+    })
+  }
+
+  protected startDragMagnet(e: JQuery.MouseDownEvent, x: number, y: number) {
+    if (!this.can('addLinkFromMagnet')) {
+      return
+    }
+
+    const magnet = e.currentTarget
+    const graph = this.graph
+
+    this.setEventData(e, { targetMagnet: magnet })
+
+    e.stopPropagation()
+
+    if (graph.options.validateMagnet(this, magnet, e)) {
+      if (graph.options.magnetThreshold <= 0) {
+        this.dragLinkStart(e, magnet, x, y)
+      }
+
+      this.setEventData(e, { action: 'magnet' })
+      this.stopPropagation(e)
+    } else {
+      this.onMouseDown(e, x, y)
+    }
+
+    graph.delegateDragEvents(e, this)
+  }
+
+  protected dragLinkStart(
+    e: JQuery.MouseDownEvent,
+    magnet: Element,
+    x: number,
+    y: number,
+  ) {
+    this.graph.model.startBatch('add-link')
+
+    const edgeView = this.addEdgeFromMagnet(magnet, x, y)
+
+    // backwards compatibility events
+    edgeView.notifyMouseDown(e, x, y)
+
+    edgeView.setEventData(
+      e,
+      edgeView.startArrowheadMove('target', { whenNotAllowed: 'remove' }),
+    )
+    this.setEventData(e, { edgeView })
+  }
+
+  protected addEdgeFromMagnet(magnet: Element, x: number, y: number) {
+    const graph = this.graph
+    const model = graph.model
+    const edge = graph.getDefaultLink(this, magnet)
+
+    edge.setSource(this.getLinkEnd(magnet, x, y, edge, 'source'))
+    edge.setTarget({ x, y })
+    edge.addTo(model, {
+      async: false,
+      ui: true,
+    })
+
+    return edge.findView(graph) as EdgeView
+  }
+
+  protected dragging(e: JQuery.MouseMoveEvent, x: number, y: number) {
+    const node = this.cell
+    const graph = this.graph
+    const gridSize = graph.options.gridSize
+    const data = this.getEventData(e)
+    const offset = data.offset as Point.PointLike
+    const restrictedArea = data.restrictedArea as Rectangle.RectangleLike
+    let embedding = data.embedding
+
+    const nextX = snapToGrid(x + offset.x, gridSize)
+    const nextY = snapToGrid(y + offset.y, gridSize)
+    node.setPosition(nextX, nextY, { restrictedArea, deep: true, ui: true })
+
+    if (graph.options.embeddingMode) {
+      if (!embedding) {
+        // Prepare the element for embedding only if the pointer moves.
+        // We don't want to do unnecessary action with the element
+        // if an user only clicks/dblclicks on it.
+        this.prepareEmbedding(data)
+        embedding = true
+      }
+      this.processEmbedding(data)
+    }
+
+    this.setEventData(e, { embedding })
+  }
+
+  protected draggingMagnet(e: JQuery.MouseMoveEvent, x: number, y: number) {
+    const data = this.getEventData(e)
+    const edgeView = data.edgeView as EdgeView
+    if (edgeView) {
+      edgeView.onMouseMove(e, x, y)
+    } else {
+      const graph = this.graph
+      const magnetThreshold = graph.options.magnetThreshold as any
+      const currentTarget = this.getEventTarget(e)
+      const targetMagnet = data.targetMagnet
+      if (magnetThreshold === 'onleave') {
+        // magnetThreshold when the pointer leaves the magnet
+        if (
+          targetMagnet === currentTarget ||
+          v(targetMagnet).contains(currentTarget)
+        ) {
+          return
+        }
+      } else {
+        // magnetThreshold defined as a number of movements
+        const data = graph.getEventData(e)
+        if (data.mousemoved <= magnetThreshold) {
+          return
+        }
+      }
+      this.dragLinkStart(e as any, targetMagnet, x, y)
+    }
+  }
+
+  protected stopDrag(e: JQuery.MouseUpEvent, x: number, y: number) {
+    const data = this.getEventData(e)
+    if (data.embedding) {
+      this.finalizeEmbedding(data)
+    }
+  }
+
+  protected stopDragMagnet(e: JQuery.MouseUpEvent, x: number, y: number) {
+    const data = this.eventData(e)
+    const edgeView = data.edgeView as EdgeView
+    if (!edgeView) {
+      return
+    }
+
+    edgeView.onMouseUp(e, x, y)
+    this.graph.model.stopBatch('add-link')
+  }
+
+  // #ednregion
 }
 
 export namespace NodeView {

@@ -25,6 +25,7 @@ import {
   HighlighterRegistry,
 } from '../registry'
 import { Background } from '../background'
+import { Edge } from '../shape/standard'
 
 const sortingTypes = {
   NONE: 'sorting-none',
@@ -103,9 +104,9 @@ export class Graph extends View {
     // restrictTranslate: { x: 10, y: 10, width: 790, height: 590 }
     restrictTranslate: false,
 
-    // Marks all available magnets with 'available-magnet' class name and all available cells with
-    // 'available-cell' class name. Marks them when dragging a link is started and unmark
-    // when the dragging is stopped.
+    // Marks all available magnets with 'available-magnet' class name and
+    // all available cells with 'available-cell' class name. Marks them
+    // when dragging a link is started and unmark when the dragging is stopped.
     markAvailable: false,
 
     // Defines what link model is added to the graph after an user clicks on an active magnet.
@@ -116,15 +117,11 @@ export class Graph extends View {
     // A connector that is used by links with no connector defined on the model.
     // e.g. { name: 'rounded', args: { radius: 5 }} or a function
     defaultConnector: { name: 'normal' },
-
     // A router that is used by links with no router defined on the model.
     // e.g. { name: 'oneSide', args: { padding: 10 }} or a function
     defaultRouter: { name: 'normal' },
-
     defaultAnchor: { name: 'center' },
-
     defaultLinkAnchor: { name: 'connectionRatio' },
-
     defaultConnectionPoint: { name: 'bbox' },
 
     /* CONNECTING */
@@ -132,9 +129,13 @@ export class Graph extends View {
     connectionStrategy: null,
 
     // Check whether to add a new link to the graph when user clicks on an a magnet.
-    // validateMagnet(_cellView, magnet, _evt) {
-    //   return magnet.getAttribute('magnet') !== 'passive'
-    // },
+    validateMagnet(
+      cellView: CellView,
+      magnet: Element,
+      e: JQuery.MouseDownEvent,
+    ) {
+      return magnet.getAttribute('magnet') !== 'passive'
+    },
 
     // Check whether to allow or disallow the link connection while an arrowhead end (source/target)
     // being changed.
@@ -261,6 +262,9 @@ export class Graph extends View {
     this.viewportElem = selectors.viewport as SVGGElement
     this.drawPane = selectors.drawPane as SVGGElement
     this.container.appendChild(fragment)
+
+    const ctor = this.constructor as typeof Graph
+    this.delegateEvents(ctor.events)
 
     this.model = new Model()
 
@@ -422,6 +426,10 @@ export class Graph extends View {
     ) {
       this.sortViews()
     }
+  }
+
+  getCellById(id: string) {
+    return this.model.getCell(id)
   }
 
   addNode(options: Node.Metadata): Node
@@ -1148,26 +1156,27 @@ export class Graph extends View {
     // })
 
     const view = cell.view
+    const options = { interactive: this.options.interactive }
     if (view) {
       if (typeof view === 'string') {
         const def = ViewRegistry.get(view)
         if (def) {
-          return new def(cell)
+          return new def(cell, options)
         }
         throw new Error(
           `Unknown ${cell.isNode() ? 'node' : 'edge'} view: "${view}"`,
         )
       }
 
-      return new view(cell)
+      return new view(cell, options)
     }
 
     if (cell.isNode()) {
-      return new NodeView(cell)
+      return new NodeView(cell, options)
     }
 
     if (cell.isEdge()) {
-      return new EdgeView(cell)
+      return new EdgeView(cell, options)
     }
 
     return null
@@ -1608,7 +1617,7 @@ export class Graph extends View {
     return this.paperToLocalRect(rect)
   }
 
-  getRestrictedArea() {
+  getRestrictedArea(view: NodeView) {
     const restrictTranslate = this.options.restrictTranslate as any
     let restrictedArea
 
@@ -2204,38 +2213,38 @@ export class Graph extends View {
     return this.svgElem.getElementById(defId) != null
   }
 
-  // defineFilter(filter) {
-  //   let filterId = filter.id
-  //   const name = filter.name
-  //   if (!filterId) {
-  //     filterId =
-  //       name + this.svgElem.id + StringExt.hashcode(JSON.stringify(filter))
-  //   }
+  defineFilter(filter: any) {
+    let filterId = filter.id
+    const name = filter.name
+    if (!filterId) {
+      filterId =
+        name + this.svgElem.id + StringExt.hashcode(JSON.stringify(filter))
+    }
 
-  //   if (!this.isDefined(filterId)) {
-  //     const namespace = _filter
-  //     const markup = namespace[name] && namespace[name](filter.args || {})
-  //     if (!markup) {
-  //       throw new Error('Non-existing filter ' + name)
-  //     }
+    // if (!this.isDefined(filterId)) {
+    //   const namespace = _filter
+    //   const markup = namespace[name] && namespace[name](filter.args || {})
+    //   if (!markup) {
+    //     throw new Error('Non-existing filter ' + name)
+    //   }
 
-  //     // Set the filter area to be 3x the bounding box of the cell
-  //     // and center the filter around the cell.
-  //     const filterAttrs = {
-  //       x: -1,
-  //       y: -1,
-  //       width: 3,
-  //       height: 3,
-  //       filterUnits: 'objectBoundingBox',
-  //       ...filter.attrs,
-  //       id: filterId,
-  //     }
+    //   // Set the filter area to be 3x the bounding box of the cell
+    //   // and center the filter around the cell.
+    //   const filterAttrs = {
+    //     x: -1,
+    //     y: -1,
+    //     width: 3,
+    //     height: 3,
+    //     filterUnits: 'objectBoundingBox',
+    //     ...filter.attrs,
+    //     id: filterId,
+    //   }
 
-  //     v.create(markup, filterAttrs).appendTo(this.defsElem)
-  //   }
+    //   v.create(markup, filterAttrs).appendTo(this.defsElem)
+    // }
 
-  //   return filterId
-  // }
+    return filterId
+  }
 
   defineGradient(gradient: Graph.CreateGradientOptions) {
     let id = gradient.id
@@ -2290,35 +2299,36 @@ export class Graph extends View {
 
   // #endregion
 
-  // linkAllowed(linkView: EdgeView) {
-  //   const edge = linkView.cell
-  //   const model = this.model
-  //   const paperOptions = this.options
-  //   const ns = model.constructor.validations
+  linkAllowed(linkView: EdgeView) {
+    // const edge = linkView.cell
+    // const model = this.model
+    // const paperOptions = this.options
+    // const ns = model.constructor.validations
 
-  //   if (!paperOptions.multiLinks) {
-  //     if (!ns.multiLinks.call(this, model, edge)) return false
-  //   }
+    // if (!paperOptions.multiLinks) {
+    //   if (!ns.multiLinks.call(this, model, edge)) return false
+    // }
 
-  //   if (!paperOptions.linkPinning) {
-  //     // Link pinning is not allowed and the link is not connected to the target.
-  //     if (!ns.linkPinning.call(this, model, edge)) return false
-  //   }
+    // if (!paperOptions.linkPinning) {
+    //   // Link pinning is not allowed and the link is not connected to the target.
+    //   if (!ns.linkPinning.call(this, model, edge)) return false
+    // }
 
-  //   if (typeof paperOptions.allowLink === 'function') {
-  //     if (!paperOptions.allowLink.call(this, linkView, this)) return false
-  //   }
+    // if (typeof paperOptions.allowLink === 'function') {
+    //   if (!paperOptions.allowLink.call(this, linkView, this)) return false
+    // }
 
-  //   return true
-  // }
+    return true
+  }
 
-  // getDefaultLink(cellView, magnet) {
-  //   return isFunction(this.options.defaultLink)
-  //     ? // default link is a function producing link model
-  //       this.options.defaultLink.call(this, cellView, magnet)
-  //     : // default link is the Backbone model
-  //       this.options.defaultLink.clone()
-  // }
+  getDefaultLink(cellView: CellView, magnet: Element) {
+    return new Edge()
+    // return isFunction(this.options.defaultLink)
+    //   ? // default link is a function producing link model
+    //     this.options.defaultLink.call(this, cellView, magnet)
+    //   : // default link is the Backbone model
+    //     this.options.defaultLink.clone()
+  }
 
   // #region highlighting
 
@@ -2455,18 +2465,18 @@ export class Graph extends View {
    * Guard the specified event. If the event is not interesting, it
    * returns `true`, otherwise returns `false`.
    */
-  protected guard(evt: JQuery.TriggeredEvent, view?: CellView | null) {
+  guard(e: JQuery.TriggeredEvent, view?: CellView | null) {
     // handled as `contextmenu` type
-    if (evt.type === 'mousedown' && evt.button === 2) {
+    if (e.type === 'mousedown' && e.button === 2) {
       return true
     }
 
-    if (this.options.guard && this.options.guard(evt, view)) {
+    if (this.options.guard && this.options.guard(e, view)) {
       return true
     }
 
-    if (evt.data && evt.data.guarded !== undefined) {
-      return evt.data.guarded
+    if (e.data && e.data.guarded !== undefined) {
+      return e.data.guarded
     }
 
     if (view && view.cell && view.cell instanceof Cell) {
@@ -2474,9 +2484,9 @@ export class Graph extends View {
     }
 
     if (
-      this.svgElem === evt.target ||
-      this.container === evt.target ||
-      JQuery.contains(this.svgElem, evt.target)
+      this.svgElem === e.target ||
+      this.container === e.target ||
+      JQuery.contains(this.svgElem, e.target)
     ) {
       return false
     }
@@ -2484,99 +2494,96 @@ export class Graph extends View {
     return true
   }
 
-  protected onDblClick(evt: JQuery.DoubleClickEvent) {
-    evt.preventDefault()
-    evt = this.normalizeEvent(evt) // tslint:disable-line
+  protected onDblClick(e: JQuery.DoubleClickEvent) {
+    e.preventDefault()
+    e = this.normalizeEvent(e) // tslint:disable-line
 
-    const view = this.findView(evt.target)
-    if (this.guard(evt, view)) {
+    const view = this.findView(e.target)
+    if (this.guard(e, view)) {
       return
     }
 
-    const localPoint = this.snapToGrid(evt.clientX, evt.clientY)
+    const localPoint = this.snapToGrid(e.clientX, e.clientY)
 
     if (view) {
-      view.onDblClick(evt, localPoint.x, localPoint.y)
+      view.onDblClick(e, localPoint.x, localPoint.y)
     } else {
-      this.trigger('blank:dblclick', evt, localPoint.x, localPoint.y)
+      this.trigger('blank:dblclick', e, localPoint.x, localPoint.y)
     }
   }
 
-  protected onClick(evt: JQuery.ClickEvent) {
-    const data = this.getEventData(evt)
+  protected onClick(e: JQuery.ClickEvent) {
+    const data = this.getEventData(e)
     if (data.mouseMoveCount <= this.options.clickThreshold) {
-      evt = this.normalizeEvent(evt) // tslint:disable-line
+      e = this.normalizeEvent(e) // tslint:disable-line
 
-      const view = this.findView(evt.target)
-      if (this.guard(evt, view)) {
+      const view = this.findView(e.target)
+      if (this.guard(e, view)) {
         return
       }
 
-      const localPoint = this.snapToGrid(evt.clientX, evt.clientY)
+      const localPoint = this.snapToGrid(e.clientX, e.clientY)
       if (view) {
-        view.onClick(evt, localPoint.x, localPoint.y)
+        view.onClick(e, localPoint.x, localPoint.y)
       } else {
-        this.trigger('blank:click', evt, localPoint.x, localPoint.y)
+        this.trigger('blank:click', e, localPoint.x, localPoint.y)
       }
     }
   }
 
-  protected onContextMenu(evt: JQuery.ContextMenuEvent) {
+  protected onContextMenu(e: JQuery.ContextMenuEvent) {
     if (this.options.preventContextMenu) {
-      evt.preventDefault()
+      e.preventDefault()
     }
 
-    evt = this.normalizeEvent(evt) // tslint:disable-line
-    const view = this.findView(evt.target)
-    if (this.guard(evt, view)) {
+    e = this.normalizeEvent(e) // tslint:disable-line
+    const view = this.findView(e.target)
+    if (this.guard(e, view)) {
       return
     }
 
-    const localPoint = this.snapToGrid(evt.clientX, evt.clientY)
+    const localPoint = this.snapToGrid(e.clientX, e.clientY)
 
     if (view) {
-      view.onContextMenu(evt, localPoint.x, localPoint.y)
+      view.onContextMenu(e, localPoint.x, localPoint.y)
     } else {
-      this.trigger('blank:contextmenu', evt, localPoint.x, localPoint.y)
+      this.trigger('blank:contextmenu', e, localPoint.x, localPoint.y)
     }
   }
 
-  protected delegateDragEvents(
-    evt: JQuery.MouseDownEvent,
-    view: CellView | null,
-  ) {
-    const data = evt.data || {}
-    this.setEventData(evt, { sourceView: view || null, mouseMoveCount: 0 })
+  delegateDragEvents(e: JQuery.MouseDownEvent, view: CellView | null) {
+    const data = e.data || {}
+    this.setEventData(e, { sourceView: view || null, mouseMoveCount: 0 })
     const ctor = this.constructor as typeof Graph
     this.addDocumentEventListeners(ctor.documentEvents, data)
     this.undelegateEvents()
   }
 
-  protected onMouseDown(evt: JQuery.MouseDownEvent) {
-    evt = this.normalizeEvent(evt) // tslint:disable-line
-    const view = this.findView(evt.target)
-    if (this.guard(evt, view)) {
+  protected onMouseDown(e: JQuery.MouseDownEvent) {
+    e = this.normalizeEvent(e) // tslint:disable-line
+    const view = this.findView(e.target)
+    if (this.guard(e, view)) {
       return
     }
 
-    const localPoint = this.snapToGrid(evt.clientX, evt.clientY)
+    const localPoint = this.snapToGrid(e.clientX, e.clientY)
 
     if (view) {
-      evt.preventDefault()
-      view.onMouseDown(evt, localPoint.x, localPoint.y)
+      e.preventDefault()
+      view.onMouseDown(e, localPoint.x, localPoint.y)
     } else {
       if (this.options.preventDefaultBlankAction) {
-        evt.preventDefault()
+        e.preventDefault()
       }
 
-      this.trigger('blank:mousedown', evt, localPoint.x, localPoint.y)
+      this.trigger('blank:mousedown', e, localPoint.x, localPoint.y)
     }
 
-    this.delegateDragEvents(evt, view)
+    this.delegateDragEvents(e, view)
   }
 
-  protected onMouseMove(evt: JQuery.MouseMoveEvent) {
-    const data = this.getEventData(evt)
+  protected onMouseMove(e: JQuery.MouseMoveEvent) {
+    const data = this.getEventData(e)
     if (data.mouseMoveCount == null) {
       data.mouseMoveCount = 0
     }
@@ -2586,25 +2593,25 @@ export class Graph extends View {
       return
     }
 
-    evt = this.normalizeEvent(evt) // tslint:disable-line
-    const localPoint = this.snapToGrid(evt.clientX, evt.clientY)
+    e = this.normalizeEvent(e) // tslint:disable-line
+    const localPoint = this.snapToGrid(e.clientX, e.clientY)
 
     const view = data.sourceView as CellView
     if (view) {
-      view.onMouseMove(evt, localPoint.x, localPoint.y)
+      view.onMouseMove(e, localPoint.x, localPoint.y)
     } else {
-      this.trigger('blank:mousemove', evt, localPoint.x, localPoint.y)
+      this.trigger('blank:mousemove', e, localPoint.x, localPoint.y)
     }
 
-    this.setEventData(evt, data)
+    this.setEventData(e, data)
   }
 
-  protected onMouseUp(evt: JQuery.MouseUpEvent) {
+  protected onMouseUp(e: JQuery.MouseUpEvent) {
     this.removeDocumentEventListeners()
 
-    const normalized = this.normalizeEvent(evt)
+    const normalized = this.normalizeEvent(e)
     const localPoint = this.snapToGrid(normalized.clientX, normalized.clientY)
-    const data = this.getEventData(evt)
+    const data = this.getEventData(e)
     const view = data.sourceView as CellView
 
     if (view) {
@@ -2613,105 +2620,105 @@ export class Graph extends View {
       this.trigger('blank:mouseup', normalized, localPoint.x, localPoint.y)
     }
 
-    if (!evt.isPropagationStopped()) {
+    if (!e.isPropagationStopped()) {
       this.onClick(
-        $.Event(evt as any, {
+        JQuery.Event(e as any, {
           type: 'click',
-          data: evt.data,
+          data: e.data,
         }) as JQuery.ClickEvent,
       )
     }
 
-    evt.stopImmediatePropagation()
+    e.stopImmediatePropagation()
 
     const ctor = this.constructor as typeof Graph
     this.delegateEvents(ctor.events)
   }
 
-  protected onMouseOver(evt: JQuery.MouseOverEvent) {
-    evt = this.normalizeEvent(evt) // tslint:disable-line
-    const view = this.findView(evt.target)
-    if (this.guard(evt, view)) {
+  protected onMouseOver(e: JQuery.MouseOverEvent) {
+    e = this.normalizeEvent(e) // tslint:disable-line
+    const view = this.findView(e.target)
+    if (this.guard(e, view)) {
       return
     }
 
     if (view) {
-      view.onMouseOver(evt)
+      view.onMouseOver(e)
     } else {
       // prevent border of paper from triggering this
-      if (this.container === evt.target) {
+      if (this.container === e.target) {
         return
       }
-      this.trigger('blank:mouseover', evt)
+      this.trigger('blank:mouseover', e)
     }
   }
 
-  protected onMouseOut(evt: JQuery.MouseOutEvent) {
-    evt = this.normalizeEvent(evt) // tslint:disable-line
-    const view = this.findView(evt.target)
-    if (this.guard(evt, view)) {
+  protected onMouseOut(e: JQuery.MouseOutEvent) {
+    e = this.normalizeEvent(e) // tslint:disable-line
+    const view = this.findView(e.target)
+    if (this.guard(e, view)) {
       return
     }
 
     if (view) {
-      view.onMouseOut(evt)
+      view.onMouseOut(e)
     } else {
-      if (this.container === evt.target) {
+      if (this.container === e.target) {
         return
       }
-      this.trigger('blank:mouseout', evt)
+      this.trigger('blank:mouseout', e)
     }
   }
 
-  protected onMouseEnter(evt: JQuery.MouseEnterEvent) {
-    evt = this.normalizeEvent(evt) // tslint:disable-line
-    const view = this.findView(evt.target)
-    if (this.guard(evt, view)) {
+  protected onMouseEnter(e: JQuery.MouseEnterEvent) {
+    e = this.normalizeEvent(e) // tslint:disable-line
+    const view = this.findView(e.target)
+    if (this.guard(e, view)) {
       return
     }
 
-    const relatedView = this.findView(evt.relatedTarget as Element)
+    const relatedView = this.findView(e.relatedTarget as Element)
     if (view) {
       // mouse moved from tool over view?
       if (relatedView === view) {
         return
       }
-      view.onMouseEnter(evt)
+      view.onMouseEnter(e)
     } else {
       if (relatedView) return
-      this.trigger('graph:mouseenter', evt)
+      this.trigger('graph:mouseenter', e)
     }
   }
 
-  protected onMouseLeave(evt: JQuery.MouseLeaveEvent) {
-    evt = this.normalizeEvent(evt) // tslint:disable-line
-    const view = this.findView(evt.target)
-    if (this.guard(evt, view)) {
+  protected onMouseLeave(e: JQuery.MouseLeaveEvent) {
+    e = this.normalizeEvent(e) // tslint:disable-line
+    const view = this.findView(e.target)
+    if (this.guard(e, view)) {
       return
     }
-    const relatedView = this.findView(evt.relatedTarget as Element)
+    const relatedView = this.findView(e.relatedTarget as Element)
     if (view) {
       // mouse moved from view over tool?
       if (relatedView === view) {
         return
       }
-      view.onMouseLeave(evt)
+      view.onMouseLeave(e)
     } else {
       if (relatedView) {
         return
       }
-      this.trigger('graph:mouseleave', evt)
+      this.trigger('graph:mouseleave', e)
     }
   }
 
-  protected onMouseWheel(evt: JQuery.TriggeredEvent) {
-    evt = this.normalizeEvent(evt) // tslint:disable-line
-    const view = this.findView(evt.target)
-    if (this.guard(evt, view)) {
+  protected onMouseWheel(e: JQuery.TriggeredEvent) {
+    e = this.normalizeEvent(e) // tslint:disable-line
+    const view = this.findView(e.target)
+    if (this.guard(e, view)) {
       return
     }
 
-    const originalEvent = evt.originalEvent as MouseWheelEvent
+    const originalEvent = e.originalEvent as MouseWheelEvent
     const localPoint = this.snapToGrid(
       originalEvent.clientX,
       originalEvent.clientY,
@@ -2722,28 +2729,28 @@ export class Graph extends View {
     )
 
     if (view) {
-      view.onMouseWheel(evt, localPoint.x, localPoint.y, delta)
+      view.onMouseWheel(e, localPoint.x, localPoint.y, delta)
     } else {
-      this.trigger('blank:mousewheel', evt, localPoint.x, localPoint.y, delta)
+      this.trigger('blank:mousewheel', e, localPoint.x, localPoint.y, delta)
     }
   }
 
-  protected onEvent(evt: JQuery.MouseDownEvent) {
-    const eventNode = evt.currentTarget
+  protected onEvent(e: JQuery.MouseDownEvent) {
+    const eventNode = e.currentTarget
     const eventName = eventNode.getAttribute('event')
     if (eventName) {
       const view = this.findView(eventNode)
       if (view) {
-        evt = this.normalizeEvent(evt) // tslint:disable-line
-        if (this.guard(evt, view)) {
+        e = this.normalizeEvent(e) // tslint:disable-line
+        if (this.guard(e, view)) {
           return
         }
 
         const localPoint = this.snapToGrid(
-          evt.clientX as number,
-          evt.clientY as number,
+          e.clientX as number,
+          e.clientY as number,
         )
-        view.onEvent(evt, eventName, localPoint.x, localPoint.y)
+        view.onEvent(e, eventName, localPoint.x, localPoint.y)
       }
     }
   }
