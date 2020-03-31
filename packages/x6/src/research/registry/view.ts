@@ -1,9 +1,8 @@
 import { Registry } from './util'
+import { CellView } from '../core'
 import { NodeView } from '../core/node-view'
 import { EdgeView } from '../core/edge-view'
-import { CellView } from '../core'
 
-// tslint:disable-next-line
 export const ViewRegistry = new Registry<ViewRegistry.ViewClass>({
   onError(name) {
     throw new Error(`View with name "${name}" already registered.`)

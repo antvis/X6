@@ -2,7 +2,6 @@ import { KeyValue } from '../../types'
 import { Router } from '../router'
 import { Registry } from './util'
 
-// tslint:disable-next-line
 export const RouterRegistry = new Registry<Router.Definition<KeyValue>>({
   onError(name) {
     throw new Error(`Router with name '${name}' already registered.`)
