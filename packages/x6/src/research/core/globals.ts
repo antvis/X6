@@ -20,3 +20,7 @@ export const Globals: GlobalConfig = {
     node: `${prefixCls}-node`,
   },
 }
+
+export function addClassNamePrefix(className: string) {
+  return `${Globals.prefixCls}-${className}`
+}

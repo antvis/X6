@@ -10,13 +10,10 @@ import { NodeAnchor } from '../anchor'
 import { Router } from '../router'
 import { Connector } from '../connector'
 import { ConnectionPoint } from '../connection-point'
-import {
-  EdgeAnchorRegistry,
-  NodeAnchorRegistry,
-  RouterRegistry,
-  ConnectionPointRegistry,
-  ConnectorRegistry,
-} from '../registry'
+import { NodeAnchorRegistry, EdgeAnchorRegistry } from '../registry/anchor'
+import { RouterRegistry } from '../registry/router'
+import { ConnectorRegistry } from '../registry/connector'
+import { ConnectionPointRegistry } from '../registry/connection-point'
 
 export class EdgeView<
   C extends Edge = Edge,
@@ -1106,7 +1103,7 @@ export class EdgeView<
     return true
   }
 
-  protected updateTerminalMagnet(endType: Edge.TerminalType) {
+  updateTerminalMagnet(endType: Edge.TerminalType) {
     const propName = `${endType}Magnet` as 'sourceMagnet' | 'targetMagnet'
     const terminalView = this.getTerminalView(endType)
     if (terminalView) {
@@ -1665,36 +1662,36 @@ export class EdgeView<
   // ---------------------------------
 
   notifyPointerdown(evt: JQuery.MouseDownEvent, x: number, y: number) {
-    super.pointerdown(evt, x, y)
+    super.onMouseDown(evt, x, y)
     this.notify('edge:pointerdown', evt, x, y)
   }
 
   notifyPointermove(evt: JQuery.MouseMoveEvent, x: number, y: number) {
-    super.pointermove(evt, x, y)
+    super.onMouseMove(evt, x, y)
     this.notify('edge:pointermove', evt, x, y)
   }
 
   notifyPointerup(evt: JQuery.MouseUpEvent, x: number, y: number) {
     this.notify('edge:pointerup', evt, x, y)
-    super.pointerup(evt, x, y)
+    super.onMouseUp(evt, x, y)
   }
 
-  pointerdblclick(evt: JQuery.DoubleClickEvent, x: number, y: number) {
-    super.pointerdblclick(evt, x, y)
+  onDblClick(evt: JQuery.DoubleClickEvent, x: number, y: number) {
+    super.onDblClick(evt, x, y)
     this.notify('edge:pointerdblclick', evt, x, y)
   }
 
-  pointerclick(evt: JQuery.ClickEvent, x: number, y: number) {
-    super.pointerclick(evt, x, y)
+  onClick(evt: JQuery.ClickEvent, x: number, y: number) {
+    super.onClick(evt, x, y)
     this.notify('edge:pointerclick', evt, x, y)
   }
 
-  contextmenu(evt: JQuery.ContextMenuEvent, x: number, y: number) {
-    super.contextmenu(evt, x, y)
+  onContextMenu(evt: JQuery.ContextMenuEvent, x: number, y: number) {
+    super.onContextMenu(evt, x, y)
     this.notify('edge:contextmenu', evt, x, y)
   }
 
-  pointerdown(evt: JQuery.MouseDownEvent, x: number, y: number) {
+  onMouseDown(evt: JQuery.MouseDownEvent, x: number, y: number) {
     this.notifyPointerdown(evt, x, y)
 
     // Backwards compatibility for the default markup
@@ -1727,7 +1724,7 @@ export class EdgeView<
   }
 
   protected dragData: any
-  protected pointermove(evt: JQuery.MouseMoveEvent, x: number, y: number) {
+  onMouseMove(evt: JQuery.MouseMoveEvent, x: number, y: number) {
     // Backwards compatibility
     const dragData = this.dragData
     if (dragData) {
@@ -1761,7 +1758,7 @@ export class EdgeView<
     this.notifyPointermove(evt, x, y)
   }
 
-  protected pointerup(evt: JQuery.MouseUpEvent, x: number, y: number) {
+  onMouseUp(evt: JQuery.MouseUpEvent, x: number, y: number) {
     // Backwards compatibility
     const dragData = this.dragData
     if (dragData) {
@@ -1791,42 +1788,37 @@ export class EdgeView<
     this.checkMouseleave(evt)
   }
 
-  protected mouseover(evt: JQuery.MouseOverEvent) {
-    super.mouseover(evt)
+  onMouseOver(evt: JQuery.MouseOverEvent) {
+    super.onMouseOver(evt)
     this.notify('edge:mouseover', evt)
   }
 
-  protected mouseout(evt: JQuery.MouseOutEvent) {
-    super.mouseout(evt)
+  onMouseOut(evt: JQuery.MouseOutEvent) {
+    super.onMouseOut(evt)
     this.notify('edge:mouseout', evt)
   }
 
-  protected mouseenter(evt: JQuery.MouseEnterEvent) {
-    super.mouseenter(evt)
+  onMouseEnter(evt: JQuery.MouseEnterEvent) {
+    super.onMouseEnter(evt)
     this.notify('edge:mouseenter', evt)
   }
 
-  protected mouseleave(evt: JQuery.MouseLeaveEvent) {
-    super.mouseleave(evt)
+  onMouseLeave(evt: JQuery.MouseLeaveEvent) {
+    super.onMouseLeave(evt)
     this.notify('edge:mouseleave', evt)
   }
 
-  protected mousewheel(
+  onMouseWheel(
     evt: JQuery.TriggeredEvent,
     x: number,
     y: number,
     delta: number,
   ) {
-    super.mousewheel(evt, x, y, delta)
+    super.onMouseWheel(evt, x, y, delta)
     this.notify('edge:mousewheel', evt, x, y, delta)
   }
 
-  protected onevent(
-    evt: JQuery.TriggeredEvent,
-    eventName: string,
-    x: number,
-    y: number,
-  ) {
+  onEvent(evt: JQuery.MouseDownEvent, eventName: string, x: number, y: number) {
     // Backwards compatibility
     const linkTool = v.findParentByClass(
       evt.target,
@@ -1851,11 +1843,11 @@ export class EdgeView<
 
       this.notifyPointerdown(evt as JQuery.MouseDownEvent, x, y)
     } else {
-      super.onevent(evt, eventName, x, y)
+      super.onEvent(evt, eventName, x, y)
     }
   }
 
-  onlabel(evt: JQuery.MouseDownEvent, x: number, y: number) {
+  onLabelMouseDown(evt: JQuery.MouseDownEvent, x: number, y: number) {
     this.notifyPointerdown(evt, x, y)
     this.dragLabelStart(evt, x, y)
 

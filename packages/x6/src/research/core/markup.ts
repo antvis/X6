@@ -82,13 +82,7 @@ export namespace Markup {
 
   export function parseJSONMarkup(
     markup: JSONMarkup | JSONMarkup[],
-    options: {
-      ns?: string
-      bare?: boolean
-    } = {
-      ns: v.ns.svg,
-      bare: false,
-    },
+    options: { ns?: string } = { ns: v.ns.svg },
   ): ParseResult {
     const fragment = document.createDocumentFragment()
     const groups: KeyValue<Element[]> = {}
@@ -167,10 +161,6 @@ export namespace Markup {
           }
 
           selectors[selector] = node
-
-          if (!options.bare) {
-            node.setAttribute('x6-selector', selector)
-          }
         }
 
         // group

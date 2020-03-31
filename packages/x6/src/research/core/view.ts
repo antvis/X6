@@ -1,4 +1,4 @@
-import jQuery from 'jquery'
+import JQuery from 'jquery'
 import { v } from '../../v'
 import { KeyValue } from '../../types'
 import { Basecoat } from '../../entity'
@@ -348,6 +348,37 @@ export abstract class View extends Basecoat {
 
     return currentData[key]
   }
+
+  protected normalizeEvent<T extends JQuery.TriggeredEvent>(evt: T) {
+    let normalizedEvent = evt
+    const originalEvent = evt.originalEvent as TouchEvent
+    const touchEvt: any =
+      originalEvent &&
+      originalEvent.changedTouches &&
+      originalEvent.changedTouches[0]
+
+    if (touchEvt) {
+      for (const key in evt) {
+        // copy all the properties from the input event that are not
+        // defined on the touch event (functions included).
+        if (touchEvt[key] === undefined) {
+          touchEvt[key] = (evt as any)[key]
+        }
+      }
+      normalizedEvent = touchEvt
+    }
+
+    // IE: evt.target could be set to SVGElementInstance for SVGUseElement
+    const target = normalizedEvent.target
+    if (target) {
+      const useElement = target.correspondingUseElement
+      if (useElement) {
+        normalizedEvent.target = useElement
+      }
+    }
+
+    return normalizedEvent
+  }
 }
 
 export namespace View {
@@ -357,7 +388,7 @@ export namespace View {
 export namespace View {
   // tslint:disable-next-line
   export function $(elem: any) {
-    return jQuery(elem)
+    return JQuery(elem)
   }
 
   export function createElement(tagName?: string, isSvgElement?: boolean) {

@@ -32,7 +32,9 @@ export class Model extends Basecoat<Model.EventArgs> {
   protected setup() {
     const collection = this.collection
     collection.on('sort', () => this.trigger('sort'))
-    collection.on('update', args => this.trigger('change', args))
+    collection.on('update', args => this.trigger('update', args))
+    collection.on('change', args => this.trigger('cell:changed', args))
+
     collection.on('reset', args => {
       this.onReset(args.current)
       this.trigger('reset', args)
@@ -42,18 +44,18 @@ export class Model extends Basecoat<Model.EventArgs> {
       this.onCellAdded(args.cell)
       this.trigger('cell:added', args)
     })
+
     collection.on('remove', args => {
       this.onCellRemoved(args.cell, args.options)
       this.trigger('cell:removed', args)
     })
-    collection.on('change', args => this.trigger('cell:changed', args))
 
-    collection.on('change:terminal', this.onEdgeTerminalChanged, this)
+    collection.on('change:terminal', args => this.onEdgeTerminalChanged(args))
   }
 
   protected onReset(cells: Cell[]) {
-    this.out = {}
     this.in = {}
+    this.out = {}
     this.nodes = {}
     this.edges = {}
     cells.forEach(cell => this.onCellAdded(cell))
@@ -111,6 +113,8 @@ export class Model extends Basecoat<Model.EventArgs> {
     } else {
       delete this.nodes[cellId]
     }
+
+    this.postprocessCell(cell, options)
   }
 
   protected postprocessCell(cell: Cell, options: Collection.RemoveOptions) {
@@ -1064,7 +1068,7 @@ export namespace Model {
       previous: Cell[]
       options: Collection.SetOptions
     }
-    change: {
+    update: {
       added: Cell[]
       merged: Cell[]
       removed: Cell[]
