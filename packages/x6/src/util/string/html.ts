@@ -56,5 +56,8 @@ export function sanitizeHTML(html: string, options: { raw?: boolean } = {}) {
  * Removes blank space in markup to prevent create empty text node.
  */
 export function sanitizeMarkup(markup: string) {
-  return `${markup}`.trim().replace(/\/\>\s+\</g, '/><')
+  return `${markup}`
+    .trim()
+    .replace(/[\r|\n]/g, ' ')
+    .replace(/>\s+</g, '><')
 }
