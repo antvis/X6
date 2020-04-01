@@ -120,7 +120,7 @@ export class MoveTo extends Segment {
   }
 
   clone() {
-    return (new MoveTo(this.end) as any) as Segment
+    return new MoveTo(this.end)
   }
 
   equals(c: Segment) {
