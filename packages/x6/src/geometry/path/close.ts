@@ -20,33 +20,36 @@ export class Close extends Segment {
     return 'Z'
   }
 
+  get line() {
+    return new Line(this.start, this.end)
+  }
+
   bbox() {
-    return Line.prototype.bbox.call(this)
+    return this.line.bbox()
   }
 
   closestPoint(p: Point | Point.PointLike | Point.PointData) {
-    return Line.prototype.closestPoint.call(this, p)
+    return this.line.closestPoint(p)
   }
 
   closestPointLength(p: Point | Point.PointLike | Point.PointData) {
-    return Line.prototype.closestPointLength.call(this, p)
+    return this.line.closestPointLength(p)
   }
 
   closestPointNormalizedLength(p: Point | Point.PointLike | Point.PointData) {
-    return Line.prototype.closestPointNormalizedLength.call(this, p)
+    return this.line.closestPointNormalizedLength(p)
   }
 
   closestPointTangent(p: Point | Point.PointLike | Point.PointData) {
-    return Line.prototype.closestPointTangent.call(this, p)
+    return this.line.closestPointTangent(p)
   }
 
   length() {
-    return Line.prototype.length.call(this)
+    return this.line.length()
   }
 
   divideAt(ratio: number): [Segment, Segment] {
-    const line = new Line(this.start, this.end)
-    const divided = line.divideAt(ratio)
+    const divided = this.line.divideAt(ratio)
     return [
       // do not actually cut into the segment, first divided part can stay as Z
       divided[1].isDifferentiable() ? new LineTo(divided[0]) : this.clone(),
@@ -55,8 +58,7 @@ export class Close extends Segment {
   }
 
   divideAtLength(length: number): [Segment, Segment] {
-    const line = new Line(this.start, this.end)
-    const divided = line.divideAtLength(length)
+    const divided = this.line.divideAtLength(length)
     return [
       divided[1].isDifferentiable() ? new LineTo(divided[0]) : this.clone(),
       new LineTo(divided[1]),
@@ -68,19 +70,19 @@ export class Close extends Segment {
   }
 
   pointAt(ratio: number) {
-    return Line.prototype.pointAt.call(this, ratio)
+    return this.line.pointAt(ratio)
   }
 
   pointAtLength(length: number) {
-    return Line.prototype.pointAtLength.call(this, length)
+    return this.line.pointAtLength(length)
   }
 
   tangentAt(ratio: number) {
-    return Line.prototype.tangentAt.call(this, ratio)
+    return this.line.tangentAt(ratio)
   }
 
   tangentAtLength(length: number) {
-    return Line.prototype.tangentAtLength.call(this, length)
+    return this.line.tangentAtLength(length)
   }
 
   isDifferentiable() {
@@ -100,7 +102,7 @@ export class Close extends Segment {
   }
 
   equals(s: Segment) {
-    return Line.prototype.equals.call(this, s)
+    return this.start.equals(s.start) && this.end.equals(s.end)
   }
 
   clone() {

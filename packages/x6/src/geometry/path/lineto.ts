@@ -23,39 +23,41 @@ export class LineTo extends Segment {
     return 'L'
   }
 
+  get line() {
+    return new Line(this.start, this.end)
+  }
+
   bbox() {
-    return Line.prototype.bbox.call(this)
+    return this.line.bbox()
   }
 
   closestPoint(p: Point | Point.PointLike | Point.PointData) {
-    return Line.prototype.closestPoint.call(this, p)
+    return this.line.closestPoint(p)
   }
 
   closestPointLength(p: Point | Point.PointLike | Point.PointData) {
-    return Line.prototype.closestPointLength.call(this, p)
+    return this.line.closestPointLength(p)
   }
 
   closestPointNormalizedLength(p: Point | Point.PointLike | Point.PointData) {
-    return Line.prototype.closestPointNormalizedLength.call(this, p)
+    return this.line.closestPointNormalizedLength(p)
   }
 
   closestPointTangent(p: Point | Point.PointLike | Point.PointData) {
-    return Line.prototype.closestPointTangent.call(this, p)
+    return this.line.closestPointTangent(p)
   }
 
   length() {
-    return Line.prototype.length.call(this)
+    return this.line.length()
   }
 
   divideAt(ratio: number): [Segment, Segment] {
-    const line = new Line(this.start, this.end)
-    const divided = line.divideAt(ratio)
+    const divided = this.line.divideAt(ratio)
     return [new LineTo(divided[0]), new LineTo(divided[1])]
   }
 
   divideAtLength(length: number): [Segment, Segment] {
-    const line = new Line(this.start, this.end)
-    const divided = line.divideAtLength(length)
+    const divided = this.line.divideAtLength(length)
     return [new LineTo(divided[0]), new LineTo(divided[1])]
   }
 
@@ -64,19 +66,19 @@ export class LineTo extends Segment {
   }
 
   pointAt(ratio: number) {
-    return Line.prototype.pointAt.call(this, ratio)
+    return this.line.pointAt(ratio)
   }
 
   pointAtLength(length: number) {
-    return Line.prototype.pointAtLength.call(this, length)
+    return this.line.pointAtLength(length)
   }
 
   tangentAt(ratio: number) {
-    return Line.prototype.tangentAt.call(this, ratio)
+    return this.line.tangentAt(ratio)
   }
 
   tangentAtLength(length: number) {
-    return Line.prototype.tangentAtLength.call(this, length)
+    return this.line.tangentAtLength(length)
   }
 
   isDifferentiable() {
@@ -88,11 +90,11 @@ export class LineTo extends Segment {
   }
 
   equals(s: Segment) {
-    return Line.prototype.equals.call(this, s)
+    return this.start.equals(s.start) && this.end.equals(s.end)
   }
 
   clone() {
-    return (new LineTo(this.end) as any) as Segment
+    return new LineTo(this.end)
   }
 
   scale(
