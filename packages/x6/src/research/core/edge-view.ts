@@ -572,7 +572,6 @@ export class EdgeView<
       default:
         throw new Error('Type parameter required.')
     }
-    return null
   }
 
   updateConnection(options: any = {}) {
