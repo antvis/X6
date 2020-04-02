@@ -592,15 +592,15 @@ export class EdgeView<
     } else {
       const vertices = edge.getVertices()
 
-      // 1. Find Anchors
+      // 1. find anchor points
       const anchors = this.findAnchorPoints(vertices)
       this.sourceAnchor = anchors.source
       this.targetAnchor = anchors.target
 
-      // 2. Find Route
+      // 2. find route points
       this.routePoints = this.findRoutePoints(vertices)
 
-      // 3. Find Connection Points
+      // 3. find connection points
       const connectionPoints = this.findConnectionPoints(
         this.routePoints,
         this.sourceAnchor,
@@ -616,7 +616,7 @@ export class EdgeView<
         this.targetPoint,
       )
 
-      // 4. Find Connection
+      // 4. make path
       this.path = this.findPath(
         this.routePoints,
         markerPoints.source || this.sourcePoint,
@@ -654,8 +654,6 @@ export class EdgeView<
   ) {
     let firstAnchor: Point
     let secondAnchor: Point
-    let firstAnchorRef
-    let secondAnchorRef
 
     const edge = this.cell
     const firstTerminal = edge[firstType]
@@ -666,15 +664,15 @@ export class EdgeView<
     const secondMagnet = this.getTerminalMagnet(secondType)
 
     if (firstView) {
+      let firstAnchorRef
       if (firstPoint) {
         firstAnchorRef = Point.create(firstPoint)
       } else if (secondView) {
         firstAnchorRef = secondMagnet
       } else {
-        firstAnchorRef = Point.isPointLike(secondTerminal)
-          ? Point.create(secondTerminal)
-          : new Point()
+        firstAnchorRef = Point.create(secondTerminal as Edge.TerminalPointData)
       }
+
       firstAnchor = this.getAnchor(
         (firstTerminal as Edge.SetCellTerminalArgs).anchor,
         firstView,
@@ -683,13 +681,11 @@ export class EdgeView<
         firstType,
       )
     } else {
-      firstAnchor = Point.isPointLike(firstTerminal)
-        ? Point.create(firstTerminal)
-        : new Point()
+      firstAnchor = Point.create(firstTerminal as Edge.TerminalPointData)
     }
 
     if (secondView) {
-      secondAnchorRef = Point.create(secondPoint || firstAnchor)
+      const secondAnchorRef = Point.create(secondPoint || firstAnchor)
       secondAnchor = this.getAnchor(
         (secondTerminal as Edge.SetCellTerminalArgs).anchor,
         secondView,
@@ -710,7 +706,7 @@ export class EdgeView<
   }
 
   protected getAnchor(
-    anchor: NodeAnchor.ManaualItem | undefined,
+    anchorDef: NodeAnchor.ManaualItem | undefined,
     cellView: CellView,
     magnet: Element | null,
     ref: Point | Element | null,
@@ -718,9 +714,9 @@ export class EdgeView<
   ) {
     const isEdge = cellView.isEdgeElement(magnet)
     const options = this.graph.options
-    if (!anchor) {
+    if (!anchorDef) {
       if (isEdge) {
-        anchor = options.defaultLinkAnchor // tslint:disable-line
+        anchorDef = options.defaultLinkAnchor // tslint:disable-line
       } else {
         // Backwards compatibility
         // If `perpendicularLinks` flag is set on the paper and there are
@@ -728,47 +724,48 @@ export class EdgeView<
         // makes the link perpendicular even though the link won't point
         // to the center of the targeted object.
         if (options.perpendicularLinks || this.options.perpendicular) {
-          anchor = { name: 'orth' } // tslint:disable-line
+          anchorDef = { name: 'orth' } // tslint:disable-line
         } else {
-          anchor = options.defaultAnchor // tslint:disable-line
+          anchorDef = options.defaultAnchor // tslint:disable-line
         }
       }
     }
 
-    if (!anchor) {
+    if (!anchorDef) {
       throw new Error('Anchor required.')
     }
 
     let anchorFn
-    if (typeof anchor === 'function') {
-      anchorFn = anchor
+    if (typeof anchorDef === 'function') {
+      anchorFn = anchorDef
     } else {
-      const anchorName = anchor.name
+      const name = anchorDef.name
       anchorFn = isEdge
-        ? EdgeAnchorRegistry.get(anchorName)
-        : NodeAnchorRegistry.get(anchorName)
+        ? EdgeAnchorRegistry.get(name)
+        : NodeAnchorRegistry.get(name)
       if (typeof anchorFn !== 'function') {
-        throw new Error(`Invalid anchor: "${anchorName}"`)
+        throw new Error(`Invalid anchor: "${name}"`)
       }
     }
-    const anchorPoint = anchorFn.call(
+
+    const anchor = anchorFn.call(
       this,
       cellView,
       magnet,
       ref,
-      anchor.args || {},
+      anchorDef.args || {},
       endType,
       this,
     )
 
-    return anchorPoint ? anchorPoint.round(this.decimalsRounding) : new Point()
+    return anchor ? anchor.round(this.decimalsRounding) : new Point()
   }
 
   protected findRoutePoints(vertices: Point.PointLike[] = []) {
-    const router: Edge.RouterData =
-      this.cell.getRouter() || this.graph.options.defaultRouter || Router.normal
-
+    const defaultRouter = this.graph.options.defaultRouter || Router.normal
+    const router: Edge.RouterData = this.cell.getRouter() || defaultRouter
     let routePoints
+
     if (typeof router === 'function') {
       routePoints = (router as any).call(this, vertices, {}, this)
     } else {
@@ -783,11 +780,9 @@ export class EdgeView<
       routePoints = fn.call(this, vertices, args, this)
     }
 
-    if (routePoints == null) {
-      return vertices.map(p => Point.create(p))
-    }
-
-    return routePoints
+    return routePoints == null
+      ? vertices.map(p => Point.create(p))
+      : routePoints
   }
 
   protected findConnectionPoints(
@@ -796,24 +791,24 @@ export class EdgeView<
     targetAnchor: Point,
   ) {
     const edge = this.cell
+    const graphOptions = this.graph.options
     const sourceTerminal = edge.getSource()
     const targetTerminal = edge.getTarget()
     const sourceView = this.sourceView
     const targetView = this.targetView
     const firstRoutePoint = routePoints[0]
     const lastRoutePoint = routePoints[routePoints.length - 1]
-    const graphOptions = this.graph.options
 
     // source
     let sourcePoint
     if (sourceView && !sourceView.isEdgeElement(this.sourceMagnet)) {
       const sourceMagnet = this.sourceMagnet || sourceView.container
-      const sourceConnectionPointDef =
-        sourceTerminal.connectionPoint || graphOptions.defaultConnectionPoint
       const sourcePointRef = firstRoutePoint || targetAnchor
       const sourceLine = new Line(sourcePointRef, sourceAnchor)
+      const connectionPointDef =
+        sourceTerminal.connectionPoint || graphOptions.defaultConnectionPoint
       sourcePoint = this.getConnectionPoint(
-        sourceConnectionPointDef,
+        connectionPointDef,
         sourceView,
         sourceMagnet,
         sourceLine,
@@ -860,12 +855,11 @@ export class EdgeView<
 
     // Backwards compatibility
     if (typeof graphOptions.linkConnectionPoint === 'function') {
-      const linkConnectionMagnet =
-        magnet === view.container ? undefined : magnet
+      const elem = magnet === view.container ? undefined : magnet
       const connectionPoint = graphOptions.linkConnectionPoint.call(
         this,
         view,
-        linkConnectionMagnet,
+        elem,
         line.start,
         endType,
       )

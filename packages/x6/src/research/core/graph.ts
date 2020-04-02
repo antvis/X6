@@ -123,7 +123,7 @@ export class Graph extends View {
     defaultRouter: { name: 'normal' },
     defaultAnchor: { name: 'center' },
     defaultLinkAnchor: { name: 'connectionRatio' },
-    defaultConnectionPoint: { name: 'bbox' },
+    defaultConnectionPoint: { name: 'boundary' },
 
     /* CONNECTING */
 

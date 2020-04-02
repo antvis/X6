@@ -250,10 +250,10 @@ export class CellView<
   }
 
   protected setup() {
-    this.cell.on('changed', ({ options }: any) => this.onAttrsChange(options))
+    this.cell.on('changed', ({ options }) => this.onAttrsChange(options))
   }
 
-  protected onAttrsChange(options: any) {
+  protected onAttrsChange(options: Cell.MutateOptions) {
     let flag = this.flagManager.getChangedFlag()
     if (options.updated || !flag) {
       return
