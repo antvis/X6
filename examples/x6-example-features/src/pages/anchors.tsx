@@ -67,6 +67,7 @@ export default class Example extends React.Component {
         sourceAnchorY: 1,
         targetAnchorX: 0,
         targetAnchorY: 0,
+        perimeterSpacing: -10,
         // sourcePerimeter: true,
         // targetPerimeter: true,
       })
