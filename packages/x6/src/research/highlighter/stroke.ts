@@ -110,7 +110,7 @@ export const stroke: Highlighter.Definition<StrokeHighlighterOptions> = {
   },
 
   unhighlight(cellView, magnet, opt) {
-    this.removeHighlighter(this.getHighlighterId(magnet, opt))
+    Private.removeHighlighter(Private.getHighlighterId(magnet, opt))
   },
 }
 

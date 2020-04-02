@@ -145,7 +145,9 @@ export class CellView<
     }
   }
 
-  protected getContainerClassName(): Nullable<string | string[]> {}
+  protected getContainerClassName(): Nullable<string | string[]> {
+    return this.prefixClassName('cell')
+  }
 
   protected ensureContainer() {
     return View.createElement(
@@ -158,6 +160,7 @@ export class CellView<
     if (this.container !== container) {
       this.undelegateEvents()
       this.container = container
+
       if (this.options.events != null) {
         this.delegateEvents(this.options.events)
       }
@@ -435,53 +438,55 @@ export class CellView<
   }
 
   highlight(elem?: Element | null, options: CellView.HighlightOptions = {}) {
-    const target = (elem && this.$(elem)[0]) || this.container
-    options.partial = target === this.container
-    this.notify('cell:highlight', { target, options })
+    const magnet = (elem && this.$(elem)[0]) || this.container
+    options.partial = magnet === this.container
+    this.notify('cell:highlight', { magnet, options, view: this })
   }
 
   unhighlight(elem?: Element | null, options: CellView.HighlightOptions = {}) {
-    const target = (elem && this.$(elem)[0]) || this.container
-    options.partial = target === this.container
-    this.notify('cell:unhighlight', { target, options })
+    const magnet = (elem && this.$(elem)[0]) || this.container
+    options.partial = magnet === this.container
+    this.notify('cell:unhighlight', { magnet, options, view: this })
   }
 
-  getLinkEnd(
-    trigger: Element,
+  getEdgeTerminal(
+    magnet: Element,
     x: number,
     y: number,
-    link: Edge,
-    endType: Edge.TerminalType,
+    edge: Edge,
+    type: Edge.TerminalType,
   ) {
     const cell = this.cell
-    const port = this.findByAttr('port', trigger)
-    const selector = trigger.getAttribute('joint-selector')
-    const end: Edge.TerminalCellData = { cellId: cell.id }
+    const portId = this.findAttr('port', magnet)
+    const selector = magnet.getAttribute('data-selector')
+    const terminal: Edge.TerminalCellData = { cellId: cell.id }
 
     if (selector != null) {
-      end.magnet = selector
+      terminal.magnet = selector
     }
 
-    if (port != null) {
-      // end.port = port
-      // if (!cell.hasPort(port) && !selector) {
-      //   // port created via the `port` attribute (not API)
-      //   end.selector = this.getSelector(trigger)
-      // }
-    } else if (selector == null && this.container !== trigger) {
-      end.selector = this.getSelector(trigger)
+    if (portId != null) {
+      terminal.portId = portId
+      if (cell.isNode()) {
+        if (!cell.hasPort(portId) && selector == null) {
+          // port created via the `port` attribute (not API)
+          terminal.selector = this.getSelector(magnet)
+        }
+      }
+    } else if (selector == null && this.container !== magnet) {
+      terminal.selector = this.getSelector(magnet)
     }
 
-    return this.customizeLinkEnd(end, trigger, x, y, link, endType)
+    return this.customizeEdgeTerminal(terminal, magnet, x, y, edge, type)
   }
 
-  customizeLinkEnd(
+  protected customizeEdgeTerminal(
     end: Edge.TerminalCellData,
     magnet: Element,
     x: number,
     y: number,
-    link: Edge,
-    endType: Edge.TerminalType,
+    edge: Edge,
+    type: Edge.TerminalType,
   ) {
     const graph = this.graph
     const connectionStrategy = graph.options.connectionStrategy as any
@@ -492,8 +497,8 @@ export class CellView<
         this,
         magnet,
         new Point(x, y),
-        link,
-        endType,
+        edge,
+        type,
         graph,
       )
       if (strategy) {
@@ -503,7 +508,7 @@ export class CellView<
     return end
   }
 
-  getMagnetFromLinkEnd(terminal: Edge.TerminalData) {
+  getMagnetFromEdgeTerminal(terminal: Edge.TerminalData) {
     const cell = this.cell
     const root = this.container
     const portId = (terminal as Edge.TerminalCellData).portId
@@ -671,7 +676,12 @@ export class CellView<
     })
   }
 
-  onEvent(e: JQuery.MouseDownEvent, eventName: string, x: number, y: number) {
+  onCustomEvent(
+    e: JQuery.MouseDownEvent,
+    eventName: string,
+    x: number,
+    y: number,
+  ) {
     this.notify(eventName, { e, x, y })
   }
 
@@ -735,7 +745,21 @@ export namespace CellView {
     interactive?: KeyValue<boolean> | ((cellView: CellView) => boolean)
   }
 
-  export interface HighlightOptions extends KeyValue {
+  export interface HighlightOptions {
+    highlighter?:
+      | string
+      | {
+          name: string
+          args: KeyValue
+        }
+
+    type?:
+      | 'snapping'
+      | 'embedding'
+      | 'connecting'
+      | 'nodeAvailability'
+      | 'magnetAvailability'
+
     partial?: boolean
   }
 }
@@ -745,5 +769,21 @@ export namespace CellView {
 
   export function getView(cid: string) {
     return views[cid] || null
+  }
+}
+
+// decorators
+// ----
+export namespace CellView {
+  export function priority(value: number) {
+    return function(ctor: typeof CellView) {
+      ctor.config({ priority: value })
+    }
+  }
+
+  export function bootstrap(actions: CellViewFlag.Actions) {
+    return function(ctor: typeof CellView) {
+      ctor.config({ bootstrap: actions })
+    }
   }
 }

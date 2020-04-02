@@ -1,22 +1,25 @@
 import JQuery from 'jquery'
 import { DomUtil } from '../../dom'
-import { StringExt, NumberExt } from '../../util'
-import { Point, Rectangle } from '../../geometry'
+import { KeyValue } from '../../types'
 import { v, MatrixLike } from '../../v'
+import { Point, Rectangle } from '../../geometry'
+import { StringExt, NumberExt, ObjectExt } from '../../util'
 import { View } from './view'
 import { Cell } from './cell'
+import { Node } from './node'
+import { Edge } from './edge'
 import { Model } from './model'
 import { CellView } from './cell-view'
 import { NodeView } from './node-view'
 import { Markup } from './markup'
+import { Globals } from './globals'
 import { Collection } from './collection'
-import { KeyValue } from '../../types'
-import { Node } from './node'
 import { EdgeView } from './edge-view'
 import { Attr } from '../attr'
-import { CellViewFlag } from './cell-view-flag'
-import { Highlighter } from '../highlighter'
 import { Grid } from '../grid'
+import { Background } from '../background'
+import { Highlighter } from '../highlighter'
+import { CellViewFlag } from './cell-view-flag'
 import {
   NodeRegistry,
   ViewRegistry,
@@ -24,8 +27,6 @@ import {
   BackgroundRegistry,
   HighlighterRegistry,
 } from '../registry'
-import { Background } from '../background'
-import { Edge } from '../shape/standard'
 
 const sortingTypes = {
   NONE: 'sorting-none',
@@ -60,7 +61,7 @@ export class Graph extends View {
     // When set to FALSE, an element may not have more than 1 link with the same source and target element.
     multiLinks: true,
 
-    guard(evt: JQuery.TriggeredEvent, view?: CellView | null) {
+    guard(e: JQuery.TriggeredEvent, view?: CellView | null) {
       return false
     },
 
@@ -71,16 +72,16 @@ export class Graph extends View {
           padding: 3,
         },
       },
+      nodeAvailability: {
+        name: 'addClass',
+        options: {
+          className: 'x6-available-node',
+        },
+      },
       magnetAvailability: {
         name: 'addClass',
         options: {
           className: 'x6-available-magnet',
-        },
-      },
-      elementAvailability: {
-        name: 'addClass',
-        options: {
-          className: 'x6-available-cell',
         },
       },
     },
@@ -128,7 +129,7 @@ export class Graph extends View {
 
     connectionStrategy: null,
 
-    // Check whether to add a new link to the graph when user clicks on an a magnet.
+    // Check whether to add a new edge to the graph when user clicks on an a magnet.
     validateMagnet(
       cellView: CellView,
       magnet: Element,
@@ -139,9 +140,18 @@ export class Graph extends View {
 
     // Check whether to allow or disallow the link connection while an arrowhead end (source/target)
     // being changed.
-    // validateConnection(cellViewS, magnetS, cellViewT, magnetT, end, linkView) {
-    //   return (end === 'target' ? cellViewT : cellViewS) instanceof ElementView
-    // },
+    validateConnection(
+      this: Graph,
+      sourceView: CellView,
+      sourceMagnet: Element,
+      targetView: CellView,
+      targetMagnet: Element,
+      terminalType: Edge.TerminalType,
+      edgeView: EdgeView,
+    ) {
+      const view = terminalType === 'target' ? targetView : sourceView
+      return view instanceof NodeView
+    },
 
     /* EMBEDDING */
 
@@ -150,10 +160,10 @@ export class Graph extends View {
     embeddingMode: false,
 
     // Check whether to allow or disallow the element embedding while an element being translated.
-    // validateEmbedding(childView, parentView) {
-    //   // by default all elements can be in relation child-parent
-    //   return true
-    // },
+    validateEmbedding(this: Graph, childView: CellView, parentView: CellView) {
+      // by default all elements can be in relation child-parent
+      return true
+    },
 
     // Determines the way how a cell finds a suitable parent when it's dragged over the paper.
     // The cell with the highest z-index (visually on the top) will be chosen.
@@ -184,8 +194,11 @@ export class Graph extends View {
     // Number of required mousemove events before the first pointermove event will be triggered.
     moveThreshold: 0,
 
-    // Number of required mousemove events before the a link is created out of the magnet.
-    // Or string `onleave` so the link is created when the pointer leaves the magnet
+    /**
+     * Number of required mousemove events before the a edge is created
+     * out of the magnet. Or string `onleave` so the edge is created when
+     * the mouse leaves the magnet.
+     */
     magnetThreshold: 0,
 
     // Rendering Options
@@ -216,14 +229,10 @@ export class Graph extends View {
 
     // Default namespaces
 
-    cellViewNamespace: null,
-
+    // cellViewNamespace: null,
     // highlighterNamespace: highlighters,
-
     // anchorNamespace: anchors,
-
     // linkAnchorNamespace: linkAnchors,
-
     // connectionPointNamespace: connectionPoints,
   }
 
@@ -241,7 +250,7 @@ export class Graph extends View {
   protected viewportMatrix: DOMMatrix | null
   protected viewportTransformString: string | null
 
-  protected highlights: KeyValue<Private.HighlightCacheItem> = {}
+  protected highlights: KeyValue<Types.HighlightCacheItem> = {}
   protected zPivots: KeyValue<Comment> = {}
   protected views: KeyValue<CellView> = {}
   protected updates: Graph.Updates
@@ -271,9 +280,7 @@ export class Graph extends View {
     this.resize()
     this.setGrid(this.options.drawGrid)
     this.drawGrid()
-    if (this.options.background) {
-      this.drawBackground(this.options.background)
-    }
+    this.drawBackground()
 
     this.resetUpdates()
     this.setup()
@@ -349,9 +356,40 @@ export class Graph extends View {
     )
     model.on('batch:stop', ({ name, data }) => this.onBatchStop(name, data))
 
-    // this.on('cell:highlight', this.onCellHighlight)
-    //   .on('cell:unhighlight', this.onCellUnhighlight)
-    //   .on('scale translate', this.update)
+    this.on(
+      'cell:highlight',
+      ({
+        view,
+        magnet,
+        options,
+      }: {
+        view: CellView
+        magnet: Element
+        options: CellView.HighlightOptions
+      }) => this.onCellHighlight(view, magnet, options),
+    )
+    this.on(
+      'cell:unhighlight',
+      ({
+        view,
+        magnet,
+        options,
+      }: {
+        view: CellView
+        magnet: Element
+        options: CellView.HighlightOptions
+      }) => this.onCellUnhighlight(view, magnet, options),
+    )
+
+    const update = () => {
+      this.drawGrid()
+      if (this.backgroundOptions) {
+        this.updateBackgroundImage(this.backgroundOptions)
+      }
+    }
+
+    this.on('scale', update)
+    this.on('translate', update)
   }
 
   protected onSortModel() {
@@ -1418,13 +1456,7 @@ export class Graph extends View {
     const origin = this.options.origin
     origin.x = ret.tx
     origin.y = ret.ty
-
-    this.trigger('translate', ret.tx, ret.ty)
-
-    // if (this.options.drawGrid) {
-    //   this.drawGrid()
-    // }
-
+    this.trigger('translate', { origin })
     return this
   }
 
@@ -1436,14 +1468,14 @@ export class Graph extends View {
     gridWidth?: number,
     gridHeight?: number,
     padding?: NumberExt.SideOptions,
-    options?: Private.FitToContentOptions,
+    options?: Types.FitToContentOptions,
   ): Rectangle
-  fitToContent(options?: Private.FitToContentFullOptions): Rectangle
+  fitToContent(options?: Types.FitToContentFullOptions): Rectangle
   fitToContent(
-    gridWidth?: number | Private.FitToContentFullOptions,
+    gridWidth?: number | Types.FitToContentFullOptions,
     gridHeight?: number,
     padding?: NumberExt.SideOptions,
-    options?: Private.FitToContentOptions,
+    options?: Types.FitToContentOptions,
   ) {
     if (typeof gridWidth === 'object') {
       const opts = gridWidth
@@ -1531,7 +1563,7 @@ export class Graph extends View {
     return new Rectangle(-tx / sx, -ty / sy, width / sx, height / sy)
   }
 
-  scaleContentToFit(options: Private.ScaleContentToFitOptions = {}) {
+  scaleContentToFit(options: Types.ScaleContentToFitOptions = {}) {
     let contentBBox
     let contentLocalOrigin
     if (options.contentArea) {
@@ -1600,7 +1632,7 @@ export class Graph extends View {
     this.translate(newOX, newOY)
   }
 
-  getContentArea(options: Private.GetContentAreaOptions = {}) {
+  getContentArea(options: Types.GetContentAreaOptions = {}) {
     if (options.useModelGeometry) {
       return this.model.getBBox() || new Rectangle()
     }
@@ -1608,7 +1640,7 @@ export class Graph extends View {
     return v.getBBox(this.drawPane)
   }
 
-  getContentBBox(options: Private.GetContentAreaOptions = {}) {
+  getContentBBox(options: Types.GetContentAreaOptions = {}) {
     return this.localToPaperRect(this.getContentArea(options))
   }
 
@@ -1702,7 +1734,7 @@ export class Graph extends View {
             ? area.containsRect(bbox)
             : area.isIntersectWith(area)
         }
-      })
+      }) as CellView[]
   }
 
   // #region coord
@@ -1926,19 +1958,36 @@ export class Graph extends View {
   protected grid: Grid | null
   protected gridSettings: Grid.Definition[] = []
 
-  setGridSize(gridSize: number) {
-    this.options.gridSize = gridSize
-
-    if (this.options.drawGrid) {
-      this.drawGrid()
-    }
-
-    return this
-  }
-
   clearGrid() {
     this.gridElem.style.backgroundImage = ''
     return this
+  }
+
+  setGridSize(gridSize: number) {
+    this.options.gridSize = gridSize
+    this.drawGrid()
+    return this
+  }
+
+  setGrid(
+    patterns?:
+      | boolean
+      | string
+      | Grid.Options
+      | Grid.Options[]
+      | Grid.NativeItem
+      | Grid.ManaualItem,
+  ) {
+    this.clearGrid()
+    this.grid = null
+    this.gridSettings = this.resolveGrid(patterns)
+    return this
+  }
+
+  drawGrid() {
+    if (this.options.drawGrid) {
+      this.updateGrid()
+    }
   }
 
   protected getGridCache() {
@@ -2002,22 +2051,9 @@ export class Graph extends View {
     throw new Error(`Unknown grid "${name}"`)
   }
 
-  setGrid(
-    patterns?:
-      | boolean
-      | string
-      | Grid.Options
-      | Grid.Options[]
-      | Grid.NativeItem
-      | Grid.ManaualItem,
+  protected updateGrid(
+    options: Partial<Grid.Options> | Partial<Grid.Options>[] = {},
   ) {
-    this.clearGrid()
-    this.grid = null
-    this.gridSettings = this.resolveGrid(patterns)
-    return this
-  }
-
-  drawGrid(options: Partial<Grid.Options> | Partial<Grid.Options>[] = {}) {
     const gridSize = this.options.gridSize
     if (gridSize <= 1) {
       return this.clearGrid()
@@ -2089,6 +2125,7 @@ export class Graph extends View {
 
   // #region background
 
+  protected backgroundOptions: Graph.BackgroundOptions | null
   protected updateBackgroundImage(options: Graph.BackgroundOptions = {}) {
     let backgroundSize = options.size || 'auto auto'
     let backgroundPosition = options.position || 'center'
@@ -2190,7 +2227,7 @@ export class Graph extends View {
     this.$(this.container).css('backgroundColor', color || '')
   }
 
-  drawBackground(options: Graph.BackgroundOptions = {}) {
+  protected updateBackground(options: Graph.BackgroundOptions = {}) {
     this.updateBackgroundColor(options.color)
 
     if (options.image) {
@@ -2198,11 +2235,21 @@ export class Graph extends View {
       img.onload = () => this.drawBackgroundImage(img, options)
       img.setAttribute('crossorigin', 'anonymous')
       img.src = options.image
+      this.backgroundOptions = ObjectExt.clone(
+        options,
+      ) as Graph.BackgroundOptions
     } else {
       this.drawBackgroundImage(null)
+      this.backgroundOptions = null
     }
 
     return this
+  }
+
+  drawBackground() {
+    if (this.options.background) {
+      this.updateBackground(this.options.background)
+    }
   }
 
   // #endregion
@@ -2321,7 +2368,7 @@ export class Graph extends View {
     return true
   }
 
-  getDefaultLink(cellView: CellView, magnet: Element) {
+  getDefaultEdge(cellView: CellView, magnet: Element) {
     return new Edge()
     // return isFunction(this.options.defaultLink)
     //   ? // default link is a function producing link model
@@ -2332,28 +2379,25 @@ export class Graph extends View {
 
   // #region highlighting
 
-  protected resolveHighlighter(options: Private.HighlightOptions) {
+  protected resolveHighlighter(options: CellView.HighlightOptions) {
     let highlighterDef = options.highlighter
     const graphOptions = this.options
-    if (highlighterDef === undefined) {
+    if (highlighterDef == null) {
       // check for built-in types
       const type = [
         'embedding',
         'connecting',
+        'nodeAvailability',
         'magnetAvailability',
-        'elementAvailability',
       ].find(type => !!(options as any)[type])
 
       highlighterDef =
         (type && (graphOptions.highlighting as any)[type]) ||
-        graphOptions.highlighting['default']
+        graphOptions.highlighting.default
     }
 
-    // Do nothing if opt.highlighter is falsey.
-    // This allows the case to not highlight cell(s) in certain cases.
-    // For example, if you want to NOT highlight when embedding elements.
     if (highlighterDef == null) {
-      return false
+      return null
     }
 
     const def: Highlighter.ManaualItem =
@@ -2366,18 +2410,18 @@ export class Graph extends View {
     const name = def.name
     const highlighter = HighlighterRegistry.get(name)
     if (highlighter == null) {
-      throw new Error(`Unknown highlighter "${name}"`)
+      throw new Error(`Unknown highlighter: "${name}"`)
     }
 
     if (typeof highlighter.highlight !== 'function') {
       throw new Error(
-        `Highlighter "${name}" is missing required highlight() method`,
+        `Highlighter "${name}" is missing required \`highlight()\` method`,
       )
     }
 
     if (typeof highlighter.unhighlight !== 'function') {
       throw new Error(
-        `Highlighter "${name}" is missing required unhighlight() method`,
+        `Highlighter "${name}" is missing required \`unhighlight()\` method`,
       )
     }
 
@@ -2388,10 +2432,10 @@ export class Graph extends View {
     }
   }
 
-  onCellHighlight(
+  protected onCellHighlight(
     cellView: CellView,
     magnet: Element,
-    options: Private.HighlightOptions = {},
+    options: CellView.HighlightOptions = {},
   ) {
     const resolved = this.resolveHighlighter(options)
     if (!resolved) {
@@ -2413,10 +2457,10 @@ export class Graph extends View {
     }
   }
 
-  onCellUnhighlight(
+  protected onCellUnhighlight(
     cellView: CellView,
     magnet: Element,
-    options: Private.HighlightOptions = {},
+    options: CellView.HighlightOptions = {},
   ) {
     const resolved = this.resolveHighlighter(options)
     if (!resolved) {
@@ -2513,10 +2557,8 @@ export class Graph extends View {
   }
 
   protected onClick(e: JQuery.ClickEvent) {
-    const data = this.getEventData(e)
-    if (data.mouseMoveCount <= this.options.clickThreshold) {
+    if (this.getMouseMovedCount(e) <= this.options.clickThreshold) {
       e = this.normalizeEvent(e) // tslint:disable-line
-
       const view = this.findView(e.target)
       if (this.guard(e, view)) {
         return
@@ -2553,10 +2595,18 @@ export class Graph extends View {
 
   delegateDragEvents(e: JQuery.MouseDownEvent, view: CellView | null) {
     const data = e.data || {}
-    this.setEventData(e, { sourceView: view || null, mouseMoveCount: 0 })
+    this.setEventData<EventData.Moving>(e, {
+      currentView: view || null,
+      mouseMovedCount: 0,
+    })
     const ctor = this.constructor as typeof Graph
     this.addDocumentEventListeners(ctor.documentEvents, data)
     this.undelegateEvents()
+  }
+
+  getMouseMovedCount(e: JQuery.TriggeredEvent) {
+    const data = this.getEventData<EventData.Moving>(e)
+    return data.mouseMovedCount || 0
   }
 
   protected onMouseDown(e: JQuery.MouseDownEvent) {
@@ -2583,20 +2633,20 @@ export class Graph extends View {
   }
 
   protected onMouseMove(e: JQuery.MouseMoveEvent) {
-    const data = this.getEventData(e)
-    if (data.mouseMoveCount == null) {
-      data.mouseMoveCount = 0
+    const data = this.getEventData<EventData.Moving>(e)
+    if (data.mouseMovedCount == null) {
+      data.mouseMovedCount = 0
     }
-    data.mouseMoveCount += 1
-    const mouseMoveCount = data.mouseMoveCount
-    if (mouseMoveCount <= this.options.moveThreshold) {
+    data.mouseMovedCount += 1
+    const mouseMovedCount = data.mouseMovedCount
+    if (mouseMovedCount <= this.options.moveThreshold) {
       return
     }
 
     e = this.normalizeEvent(e) // tslint:disable-line
     const localPoint = this.snapToGrid(e.clientX, e.clientY)
 
-    const view = data.sourceView as CellView
+    const view = data.currentView
     if (view) {
       view.onMouseMove(e, localPoint.x, localPoint.y)
     } else {
@@ -2611,9 +2661,8 @@ export class Graph extends View {
 
     const normalized = this.normalizeEvent(e)
     const localPoint = this.snapToGrid(normalized.clientX, normalized.clientY)
-    const data = this.getEventData(e)
-    const view = data.sourceView as CellView
-
+    const data = this.getEventData<EventData.Moving>(e)
+    const view = data.currentView
     if (view) {
       view.onMouseUp(normalized, localPoint.x, localPoint.y)
     } else {
@@ -2685,7 +2734,9 @@ export class Graph extends View {
       }
       view.onMouseEnter(e)
     } else {
-      if (relatedView) return
+      if (relatedView) {
+        return
+      }
       this.trigger('graph:mouseenter', e)
     }
   }
@@ -2735,7 +2786,7 @@ export class Graph extends View {
     }
   }
 
-  protected onEvent(e: JQuery.MouseDownEvent) {
+  protected onCustomEvent(e: JQuery.MouseDownEvent) {
     const eventNode = e.currentTarget
     const eventName = eventNode.getAttribute('event')
     if (eventName) {
@@ -2750,72 +2801,72 @@ export class Graph extends View {
           e.clientX as number,
           e.clientY as number,
         )
-        view.onEvent(e, eventName, localPoint.x, localPoint.y)
+        view.onCustomEvent(e, eventName, localPoint.x, localPoint.y)
       }
     }
   }
 
   protected handleMagnetEvent<T extends JQuery.TriggeredEvent>(
-    evt: T,
+    e: T,
     handler: (
       this: Graph,
       view: CellView,
-      evt: T,
+      e: T,
       magnet: Element,
       x: number,
       y: number,
     ) => void,
   ) {
-    const magnetElem = evt.currentTarget
+    const magnetElem = e.currentTarget
     const magnetValue = magnetElem.getAttribute('magnet')
     if (magnetValue) {
       const view = this.findView(magnetElem)
       if (view) {
-        evt = this.normalizeEvent(evt) // tslint:disable-line
-        if (this.guard(evt, view)) {
+        e = this.normalizeEvent(e) // tslint:disable-line
+        if (this.guard(e, view)) {
           return
         }
         const localPoint = this.snapToGrid(
-          evt.clientX as number,
-          evt.clientY as number,
+          e.clientX as number,
+          e.clientY as number,
         )
-        handler.call(this, view, evt, magnetElem, localPoint.x, localPoint.y)
+        handler.call(this, view, e, magnetElem, localPoint.x, localPoint.y)
       }
     }
   }
 
-  protected onMagnetMouseDown(evt: JQuery.MouseDownEvent) {
-    this.handleMagnetEvent(evt, (view, evt, magnet, x, y) => {
-      view.onMagnetMouseDown(evt, magnet, x, y)
+  protected onMagnetMouseDown(e: JQuery.MouseDownEvent) {
+    this.handleMagnetEvent(e, (view, e, magnet, x, y) => {
+      view.onMagnetMouseDown(e, magnet, x, y)
     })
   }
 
-  protected onMagnetDblClick(evt: JQuery.DoubleClickEvent) {
-    this.handleMagnetEvent(evt, (view, evt, magnet, x, y) => {
-      view.onMagnetDblClick(evt, magnet, x, y)
+  protected onMagnetDblClick(e: JQuery.DoubleClickEvent) {
+    this.handleMagnetEvent(e, (view, e, magnet, x, y) => {
+      view.onMagnetDblClick(e, magnet, x, y)
     })
   }
 
-  protected onMagnetContextMenu(evt: JQuery.ContextMenuEvent) {
+  protected onMagnetContextMenu(e: JQuery.ContextMenuEvent) {
     if (this.options.preventContextMenu) {
-      evt.preventDefault()
+      e.preventDefault()
     }
-    this.handleMagnetEvent(evt, (view, evt, magnet, x, y) => {
-      view.onMagnetContextMenu(evt, magnet, x, y)
+    this.handleMagnetEvent(e, (view, e, magnet, x, y) => {
+      view.onMagnetContextMenu(e, magnet, x, y)
     })
   }
 
-  protected onLabelMouseDown(evt: JQuery.MouseDownEvent) {
-    const labelNode = evt.currentTarget
+  protected onLabelMouseDown(e: JQuery.MouseDownEvent) {
+    const labelNode = e.currentTarget
     const view = this.findView(labelNode)
     if (view) {
-      evt = this.normalizeEvent(evt) // tslint:disable-line
-      if (this.guard(evt, view)) {
+      e = this.normalizeEvent(e) // tslint:disable-line
+      if (this.guard(e, view)) {
         return
       }
 
-      const localPoint = this.snapToGrid(evt.clientX, evt.clientY)
-      view.onLabelMouseDown(evt, localPoint.x, localPoint.y)
+      const localPoint = this.snapToGrid(e.clientX, e.clientY)
+      view.onLabelMouseDown(e, localPoint.x, localPoint.y)
     }
   }
 
@@ -2995,30 +3046,31 @@ export namespace Graph {
 }
 
 export namespace Graph {
+  const prefixCls = Globals.prefixCls
   export const events = {
     dblclick: 'onDblClick',
     contextmenu: 'onContextMenu',
-    mousedown: 'onMouseDown',
     touchstart: 'onMouseDown',
+    mousedown: 'onMouseDown',
     mouseover: 'onMouseOver',
     mouseout: 'onMouseOut',
     mouseenter: 'onMouseEnter',
     mouseleave: 'onMouseLeave',
     mousewheel: 'onMouseWheel',
     DOMMouseScroll: 'onMouseWheel',
-    'mouseenter .x6-cell': 'onMouseEnter',
-    'mouseleave .x6-cell': 'onMouseLeave',
-    'mouseenter .x6-tools': 'onMouseEnter',
-    'mouseleave .x6-tools': 'onMouseLeave',
-    'mousedown .x6-cell [event]': 'onEvent',
-    'touchstart .x6-cell [event]': 'onEvent',
-    'mousedown .x6-cell [magnet]': 'onMagnetMouseDown',
-    'touchstart .x6-cell [magnet]': 'onMagnetMouseDown',
-    'dblclick .x6-cell [magnet]': 'onMagnetDblClick',
-    'contextmenu .x6-cell [magnet]': 'onMagnetContextMenu',
-    'mousedown .x6-edge .label': 'onLabelMouseDown',
-    'touchstart .x6-edge .label': 'onLabelMouseDown',
-    'dragstart .x6-cell image': 'onImageDragStart',
+    [`mouseenter  .${prefixCls}-tools`]: 'onMouseEnter',
+    [`mouseleave  .${prefixCls}-tools`]: 'onMouseLeave',
+    [`mouseenter  .${prefixCls}-cell`]: 'onMouseEnter',
+    [`mouseleave  .${prefixCls}-cell`]: 'onMouseLeave',
+    [`mousedown   .${prefixCls}-cell [event]`]: 'onCustomEvent',
+    [`touchstart  .${prefixCls}-cell [event]`]: 'onCustomEvent',
+    [`dblclick    .${prefixCls}-cell [magnet]`]: 'onMagnetDblClick',
+    [`contextmenu .${prefixCls}-cell [magnet]`]: 'onMagnetContextMenu',
+    [`mousedown   .${prefixCls}-cell [magnet]`]: 'onMagnetMouseDown',
+    [`touchstart  .${prefixCls}-cell [magnet]`]: 'onMagnetMouseDown',
+    [`dragstart   .${prefixCls}-cell image`]: 'onImageDragStart',
+    [`mousedown   .${prefixCls}-edge .label`]: 'onLabelMouseDown',
+    [`touchstart  .${prefixCls}-edge .label`]: 'onLabelMouseDown',
   }
 
   export const documentEvents = {
@@ -3030,7 +3082,7 @@ export namespace Graph {
   }
 }
 
-namespace Private {
+namespace Types {
   export interface GetContentAreaOptions {
     useModelGeometry?: boolean
   }
@@ -3064,24 +3116,17 @@ namespace Private {
     gridSize?: number
   }
 
-  export interface HighlightOptions {
-    highlighter?:
-      | string
-      | {
-          name: string
-          args: KeyValue
-        }
-
-    embedding?: boolean
-    connecting?: boolean
-    magnetAvailability?: boolean
-    elementAvailability?: boolean
-  }
-
   export interface HighlightCacheItem {
     highlighter: Highlighter.Definition<KeyValue>
     cellView: CellView
     magnet: Element
     args: KeyValue
+  }
+}
+
+namespace EventData {
+  export interface Moving {
+    mouseMovedCount?: number
+    currentView?: CellView | null
   }
 }

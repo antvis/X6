@@ -32,21 +32,59 @@ export class EdgeView<
   sourceMagnet: Element | null
   targetMagnet: Element | null
 
-  protected toolCache: any
-  protected tool2Cache: any
-  protected markerCache: any
+  protected readonly markerCache: {
+    sourcePoint?: Point
+    targetPoint?: Point
+    sourceBBox?: Rectangle
+    targetBBox?: Rectangle
+  } = {}
+
+  protected toolCache: Element
+  protected tool2Cache: Element
+
+  protected getContainerClassName() {
+    return [super.getContainerClassName(), this.prefixClassName('edge')].join(
+      ' ',
+    )
+  }
+
+  get sourceBBox() {
+    const sourceView = this.sourceView
+    if (!sourceView) {
+      const sourceDef = this.cell.getSource() as Edge.TerminalPointData
+      return new Rectangle(sourceDef.x, sourceDef.y)
+    }
+    const sourceMagnet = this.sourceMagnet
+    if (sourceView.isEdgeElement(sourceMagnet)) {
+      return new Rectangle(this.sourceAnchor.x, this.sourceAnchor.y)
+    }
+    return sourceView.getNodeBBox(sourceMagnet || sourceView.container)
+  }
+
+  get targetBBox() {
+    const targetView = this.targetView
+    if (!targetView) {
+      const targetDef = this.cell.getTarget() as Edge.TerminalPointData
+      return new Rectangle(targetDef.x, targetDef.y)
+    }
+    const targetMagnet = this.targetMagnet
+    if (targetView.isEdgeElement(targetMagnet)) {
+      return new Rectangle(this.targetAnchor.x, this.targetAnchor.y)
+    }
+    return targetView.getNodeBBox(targetMagnet || targetView.container)
+  }
 
   confirmUpdate(flag: number, options: any = {}) {
     let ref = flag
     if (this.hasAction(ref, 'source')) {
-      if (!this.updateEndProperties('source')) {
+      if (!this.updateTerminalProperties('source')) {
         return ref
       }
       ref = this.removeAction(ref, 'source')
     }
 
     if (this.hasAction(ref, 'target')) {
-      if (!this.updateEndProperties('target')) {
+      if (!this.updateTerminalProperties('target')) {
         return ref
       }
       ref = this.removeAction(ref, 'target')
@@ -339,8 +377,7 @@ export class EdgeView<
       const tool = v.create(template())
 
       $container.append(tool.node)
-
-      this.toolCache = tool
+      this.toolCache = tool.node
 
       // If `doubleLinkTools` is enabled, we render copy of the tools on the
       // other side of the edge as well but only if the edge is longer than
@@ -356,7 +393,7 @@ export class EdgeView<
         }
 
         $container.append(tool2.node)
-        this.tool2Cache = tool2
+        this.tool2Cache = tool2.node
       }
     }
 
@@ -511,18 +548,25 @@ export class EdgeView<
     }
   }
 
-  getTerminalMagnet(type: Edge.TerminalType) {
+  getTerminalMagnet(type: Edge.TerminalType, options: { raw?: boolean } = {}) {
     switch (type) {
       case 'source':
+        if (options.raw) {
+          return this.sourceMagnet
+        }
         const sourceView = this.sourceView
         if (!sourceView) {
-          break
+          return null
         }
         return this.sourceMagnet || sourceView.container
+
       case 'target':
+        if (options.raw) {
+          return this.targetMagnet
+        }
         const targetView = this.targetView
         if (!targetView) {
-          break
+          return null
         }
         return this.targetMagnet || targetView.container
       default:
@@ -950,8 +994,12 @@ export class EdgeView<
 
   protected translateConnectionPoints(tx: number, ty: number) {
     const cache = this.markerCache
-    cache.sourcePoint.translate(tx, ty)
-    cache.targetPoint.translate(tx, ty)
+    if (cache.sourcePoint) {
+      cache.sourcePoint.translate(tx, ty)
+    }
+    if (cache.targetPoint) {
+      cache.targetPoint.translate(tx, ty)
+    }
     this.sourcePoint.translate(tx, ty)
     this.targetPoint.translate(tx, ty)
     this.sourceAnchor.translate(tx, ty)
@@ -1022,7 +1070,8 @@ export class EdgeView<
 
       let pos = this.getPointAtLength(offset)
       if (pos != null) {
-        this.toolCache.attr(
+        v.attr(
+          this.toolCache,
           'transform',
           `translate(${pos.x},${pos.y}) ${scale}`,
         )
@@ -1037,14 +1086,15 @@ export class EdgeView<
 
         pos = this.getPointAtLength(connectionLength - doubleLinkToolsOffset)
         if (pos != null) {
-          this.tool2Cache.attr(
+          v.attr(
+            this.tool2Cache,
             'transform',
             `translate(${pos.x},${pos.y}) ${scale}`,
           )
         }
-        this.tool2Cache.attr('visibility', 'visible')
+        v.attr(this.tool2Cache, 'visibility', 'visible')
       } else if (this.options.doubleLinkTools) {
-        this.tool2Cache.attr('visibility', 'hidden')
+        v.attr(this.tool2Cache, 'visibility', 'hidden')
       }
     }
 
@@ -1074,23 +1124,23 @@ export class EdgeView<
     return this
   }
 
-  updateEndProperties(endType: Edge.TerminalType) {
+  updateTerminalProperties(type: Edge.TerminalType) {
     const edge = this.cell
     const graph = this.graph
-    const terminal = edge[endType]
-    const terminalId = terminal && (terminal as Edge.TerminalCellData).cellId
-    const endViewProperty = `${endType}View` as 'sourceView' | 'targetView'
+    const terminal = edge[type]
+    const nodeId = terminal && (terminal as Edge.TerminalCellData).cellId
+    const viewKey = `${type}View` as 'sourceView' | 'targetView'
 
     // terminal is a point
-    if (!terminalId) {
-      this[endViewProperty] = null
-      this.updateTerminalMagnet(endType)
+    if (!nodeId) {
+      this[viewKey] = null
+      this.updateTerminalMagnet(type)
       return true
     }
 
-    const terminalCell = graph.getCellById(terminalId)
+    const terminalCell = graph.getCellById(nodeId)
     if (!terminalCell) {
-      throw new Error(`Invalid ${endType} cell.`)
+      throw new Error(`Invalid ${type} cell.`)
     }
 
     const endView = terminalCell.findView(graph)
@@ -1098,16 +1148,16 @@ export class EdgeView<
       return false
     }
 
-    this[endViewProperty] = endView
-    this.updateTerminalMagnet(endType)
+    this[viewKey] = endView
+    this.updateTerminalMagnet(type)
     return true
   }
 
-  updateTerminalMagnet(endType: Edge.TerminalType) {
-    const propName = `${endType}Magnet` as 'sourceMagnet' | 'targetMagnet'
-    const terminalView = this.getTerminalView(endType)
+  updateTerminalMagnet(type: Edge.TerminalType) {
+    const propName = `${type}Magnet` as 'sourceMagnet' | 'targetMagnet'
+    const terminalView = this.getTerminalView(type)
     if (terminalView) {
-      let magnet = terminalView.getMagnetFromLinkEnd(this.cell[endType])
+      let magnet = terminalView.getMagnetFromEdgeTerminal(this.cell[type])
       if (magnet === terminalView.container) {
         magnet = null
       }
@@ -1658,7 +1708,7 @@ export class EdgeView<
     return index
   }
 
-  // #region  events
+  // #region events
 
   notifyMouseDown(e: JQuery.MouseDownEvent, x: number, y: number) {
     super.onMouseDown(e, x, y)
@@ -1692,95 +1742,74 @@ export class EdgeView<
 
   onMouseDown(e: JQuery.MouseDownEvent, x: number, y: number) {
     this.notifyMouseDown(e, x, y)
-
-    // Backwards compatibility for the default markup
     const className = e.target.getAttribute('class')
     switch (className) {
-      case 'marker-vertex':
-        this.dragVertexStart(e, x, y)
+      case 'vertex':
+        this.startVertexDragging(e, x, y)
         return
 
-      case 'marker-vertex-remove':
-      case 'marker-vertex-remove-area':
-        this.dragVertexRemoveStart(e, x, y)
-        return
-
-      case 'marker-arrowhead':
-        this.dragArrowheadStart(e, x, y)
+      case 'vertex-remove':
+      case 'vertex-remove-area':
+        this.handleVertexRemoving(e, x, y)
         return
 
       case 'connection':
       case 'connection-wrap':
-        this.dragConnectionStart(e, x, y)
+        this.handleVertexAdding(e, x, y)
         return
 
-      case 'marker-source':
-      case 'marker-target':
+      case 'arrowhead':
+        this.startArrowheadDragging(e, x, y)
+        return
+
+      case 'source-marker':
+      case 'target-marker':
         return
     }
 
-    this.dragStart(e, x, y)
+    this.startEdgeDragging(e, x, y)
   }
 
-  protected dragData: any
   onMouseMove(e: JQuery.MouseMoveEvent, x: number, y: number) {
-    // Backwards compatibility
-    const dragData = this.dragData
-    if (dragData) {
-      this.setEventData(e, dragData)
-    }
-
     const data = this.getEventData(e)
     switch (data.action) {
-      case 'vertex-move':
+      case 'drag-vertex':
         this.dragVertex(e, x, y)
         break
 
-      case 'label-move':
+      case 'drag-label':
         this.dragLabel(e, x, y)
         break
 
-      case 'arrowhead-move':
+      case 'drag-arrowhead':
         this.dragArrowhead(e, x, y)
         break
 
-      case 'move':
-        this.drag(e, x, y)
+      case 'drag-edge':
+        this.dragEdge(e, x, y)
         break
-    }
-
-    // Backwards compatibility
-    if (dragData) {
-      Object.assign(dragData, this.eventData(e))
     }
 
     this.notifyMouseMove(e, x, y)
   }
 
   onMouseUp(e: JQuery.MouseUpEvent, x: number, y: number) {
-    // Backwards compatibility
-    const dragData = this.dragData
-    if (dragData) {
-      this.setEventData(e, dragData)
-      this.dragData = null
-    }
-
     const data = this.getEventData(e)
     switch (data.action) {
-      case 'vertex-move':
-        this.dragVertexEnd(e, x, y)
+      case 'drag-vertex':
+        this.stopVertexDragging(e, x, y)
         break
 
-      case 'label-move':
-        this.dragLabelEnd(e, x, y)
+      case 'drag-label':
+        this.stopLabelDragging(e, x, y)
         break
 
-      case 'arrowhead-move':
-        this.dragArrowheadEnd(e, x, y)
+      case 'drag-arrowhead':
+        this.stopArrowheadDragging(e, x, y)
         break
 
-      case 'move':
-        this.dragEnd(e, x, y)
+      case 'drag-edge':
+        this.stopEdgeDragging(e, x, y)
     }
 
     this.notifyMouseUp(e, x, y)
@@ -1819,7 +1848,12 @@ export class EdgeView<
     })
   }
 
-  onEvent(e: JQuery.MouseDownEvent, eventName: string, x: number, y: number) {
+  onCustomEvent(
+    e: JQuery.MouseDownEvent,
+    eventName: string,
+    x: number,
+    y: number,
+  ) {
     // Backwards compatibility
     const linkTool = v.findParentByClass(e.target, 'link-tool', this.container)
     if (linkTool) {
@@ -1840,13 +1874,13 @@ export class EdgeView<
 
       this.notifyMouseDown(e as JQuery.MouseDownEvent, x, y)
     } else {
-      super.onEvent(e, eventName, x, y)
+      super.onCustomEvent(e, eventName, x, y)
     }
   }
 
   onLabelMouseDown(e: JQuery.MouseDownEvent, x: number, y: number) {
     this.notifyMouseDown(e, x, y)
-    this.dragLabelStart(e, x, y)
+    this.startLabelDragging(e, x, y)
 
     const stopPropagation = this.getEventData(e).stopPropagation
     if (stopPropagation) {
@@ -1854,438 +1888,78 @@ export class EdgeView<
     }
   }
 
-  // Drag Start Handlers
+  // #region drag edge
 
-  dragConnectionStart(e: JQuery.MouseDownEvent, x: number, y: number) {
-    if (!this.can('vertexAdd')) {
-      return
-    }
-
-    // Store the index at which the new vertex has just been placed.
-    // We'll be update the very same vertex position in `pointermove()`.
-    const vertexIdx = this.addVertex({ x, y }, { ui: true })
-    this.setEventData(e, {
-      vertexIdx,
-      action: 'vertex-move',
-    })
-  }
-
-  dragLabelStart(e: JQuery.MouseDownEvent, x: number, y: number) {
-    if (this.can('labelMove')) {
-      const labelNode = e.currentTarget
-      const labelIndex = parseInt(labelNode.getAttribute('data-index'), 10)
-      const positionAngle = this.getLabelPositionAngle(labelIndex)
-      const labelPositionArgs = this.getLabelPositionArgs(labelIndex)
-      const defaultLabelPositionArgs = this.getDefaultLabelPositionArgs()
-      const positionArgs = this.mergeLabelPositionArgs(
-        labelPositionArgs,
-        defaultLabelPositionArgs,
-      )
-
-      this.setEventData(e, {
-        labelIndex,
-        positionAngle,
-        positionArgs,
-        stopPropagation: true,
-        action: 'label-move',
-      })
-    } else {
-      // Backwards compatibility:
-      // If labels can't be dragged no default action is triggered.
-      this.setEventData(e, { stopPropagation: true })
-    }
-
-    this.graph.delegateDragEvents(e, this)
-  }
-
-  dragVertexStart(e: JQuery.MouseDownEvent, x: number, y: number) {
-    if (!this.can('vertexMove')) {
-      return
-    }
-
-    const vertexNode = e.target
-    const vertexIndex = parseInt(vertexNode.getAttribute('idx'), 10)
-    this.setEventData(e, {
-      vertexIndex,
-      action: 'vertex-move',
-    })
-  }
-
-  dragVertexRemoveStart(e: JQuery.MouseDownEvent, x: number, y: number) {
-    if (!this.can('vertexRemove')) {
-      return
-    }
-
-    const removeNode = e.target
-    const vertexIndex = parseInt(removeNode.getAttribute('idx'), 10)
-    this.cell.removeVertexAt(vertexIndex)
-  }
-
-  dragArrowheadStart(e: JQuery.MouseDownEvent, x: number, y: number) {
-    if (!this.can('arrowheadMove')) {
-      return
-    }
-
-    const arrowheadNode = e.target
-    const arrowheadType = arrowheadNode.getAttribute('end') as Edge.TerminalType
-    const data = this.startArrowheadMove(arrowheadType, {
-      ignoreBackwardsCompatibility: true,
-    })
-
-    this.setEventData(e, data)
-  }
-
-  dragStart(e: JQuery.MouseDownEvent, x: number, y: number) {
+  protected startEdgeDragging(e: JQuery.MouseDownEvent, x: number, y: number) {
     if (!this.can('linkMove')) {
       return
     }
 
-    this.setEventData(e, {
-      action: 'move',
-      dx: x,
-      dy: y,
+    this.setEventData<EventData.EdgeDragging>(e, {
+      x,
+      y,
+      action: 'drag-edge',
     })
   }
 
-  // Drag Handlers
-  dragLabel(e: JQuery.MouseMoveEvent, x: number, y: number) {
-    const data = this.getEventData(e)
-    const label = {
-      position: this.getLabelPosition(
-        x,
-        y,
-        data.positionAngle,
-        data.positionArgs,
-      ),
-    }
-    this.cell.setLabelAt(data.labelIndex, label)
+  protected dragEdge(e: JQuery.MouseMoveEvent, x: number, y: number) {
+    const data = this.getEventData<EventData.EdgeDragging>(e)
+    this.cell.translate(x - data.x, y - data.y, { ui: true })
+    this.setEventData<Partial<EventData.EdgeDragging>>(e, { x, y })
   }
 
-  dragVertex(e: JQuery.MouseMoveEvent, x: number, y: number) {
-    const data = this.getEventData(e)
-    this.cell.setVertexAt(data.vertexIndex, { x, y }, { ui: true })
-  }
+  protected stopEdgeDragging(e: JQuery.MouseUpEvent, x: number, y: number) {}
 
-  dragArrowhead(e: JQuery.MouseMoveEvent, x: number, y: number) {
-    const data = this.getEventData(e)
-    if (this.graph.options.snapLinks) {
-      this.snapArrowhead(x, y, data)
-    } else {
-      this.connectArrowhead(this.getEventTarget(e), x, y, data)
-    }
-  }
+  // #endregion
 
-  drag(e: JQuery.MouseMoveEvent, x: number, y: number) {
-    const data = this.getEventData(e)
-    this.cell.translate(x - data.dx, y - data.dy, { ui: true })
-    this.setEventData(e, {
-      dx: x,
-      dy: y,
-    })
-  }
+  // #region drag arrowhead
 
-  // Drag End Handlers
-
-  dragLabelEnd(e: JQuery.MouseUpEvent, x: number, y: number) {}
-
-  dragVertexEnd(e: JQuery.MouseUpEvent, x: number, y: number) {}
-
-  dragArrowheadEnd(e: JQuery.MouseUpEvent, x: number, y: number) {
-    const data = this.getEventData(e)
-    const graph = this.graph
-
-    if (graph.options.snapLinks) {
-      this.snapArrowheadEnd(data)
-    } else {
-      this.connectArrowheadEnd(data, x, y)
-    }
-
-    if (!graph.linkAllowed(this)) {
-      // If the changed link is not allowed, revert to its previous state.
-      this.disallow(data)
-    } else {
-      this.finishEmbedding(data)
-      this.notifyConnectEvent(data, e)
-    }
-
-    this.afterArrowheadMove(data)
-  }
-
-  dragEnd(e: JQuery.MouseUpEvent, x: number, y: number) {}
-
-  protected disallow(data: KeyValue<any>) {
-    switch (data.whenNotAllowed) {
-      case 'remove':
-        // this.model.remove({ ui: true })
-        break
-
-      case 'revert':
-      default:
-        // this.model.set(data.arrowhead, data.initialEnd, { ui: true })
-        break
-    }
-  }
-
-  protected finishEmbedding(data: KeyValue<any>) {
-    // Resets parent of the edge if embedding is enabled
-    if (this.graph.options.embeddingMode && this.cell.updateParent()) {
-      // Make sure we don't reverse to the original 'z' index (see afterArrowheadMove()).
-      data.z = null
-    }
-  }
-
-  protected notifyConnectEvent(data: KeyValue<any>, evt: JQuery.MouseUpEvent) {
-    // const arrowhead = data.arrowhead
-    // const initialEnd = data.initialEnd
-    // const currentEnd = this.cell.prop(arrowhead)
-    // const endChanged = currentEnd && !Link.endsEqual(initialEnd, currentEnd)
-    // if (endChanged) {
-    //   const paper = this.graph
-    //   if (initialEnd.id) {
-    //     this.notify(
-    //       'edge:disconnect',
-    //       evt,
-    //       paper.findViewByModel(initialEnd.id),
-    //       data.initialMagnet,
-    //       arrowhead,
-    //     )
-    //   }
-    //   if (currentEnd.id) {
-    //     this.notify(
-    //       'edge:connect',
-    //       evt,
-    //       paper.findViewByModel(currentEnd.id),
-    //       data.magnetUnderPointer,
-    //       arrowhead,
-    //     )
-    //   }
-    // }
-  }
-
-  protected snapArrowhead(x: number, y: number, data: KeyValue<any>) {
-    // checking view in close area of the pointer
-    // const r = this.graph.options.snapLinks.radius || 50
-    // const viewsInArea = this.graph.findViewsInArea({
-    //   x: x - r,
-    //   y: y - r,
-    //   width: 2 * r,
-    //   height: 2 * r,
-    // })
-    // const prevClosestView = data.closestView || null
-    // const prevClosestMagnet = data.closestMagnet || null
-    // data.closestView = data.closestMagnet = null
-    // let distance
-    // let minDistance = Number.MAX_VALUE
-    // const pointer = new Point(x, y)
-    // const paper = this.graph
-    // viewsInArea.forEach(view => {
-    //   // skip connecting to the element in case '.': { magnet: false } attribute present
-    //   if (view.el.getAttribute('magnet') !== 'false') {
-    //     // find distance from the center of the model to pointer coordinates
-    //     distance = view.model
-    //       .getBBox()
-    //       .center()
-    //       .distance(pointer)
-    //     // the connection is looked up in a circle area by `distance < r`
-    //     if (distance < r && distance < minDistance) {
-    //       if (
-    //         prevClosestMagnet === view.el ||
-    //         paper.options.validateConnection.apply(
-    //           paper,
-    //           data.validateConnectionArgs(view, null),
-    //         )
-    //       ) {
-    //         minDistance = distance
-    //         data.closestView = view
-    //         data.closestMagnet = view.el
-    //       }
-    //     }
-    //   }
-    //   view.$('[magnet]').each((index, magnet) => {
-    //     const bbox = view.getNodeBBox(magnet)
-    //     distance = pointer.distance({
-    //       x: bbox.x + bbox.width / 2,
-    //       y: bbox.y + bbox.height / 2,
-    //     })
-    //     if (distance < r && distance < minDistance) {
-    //       if (
-    //         prevClosestMagnet === magnet ||
-    //         paper.options.validateConnection.apply(
-    //           paper,
-    //           data.validateConnectionArgs(view, magnet),
-    //         )
-    //       ) {
-    //         minDistance = distance
-    //         data.closestView = view
-    //         data.closestMagnet = magnet
-    //       }
-    //     }
-    //   })
-    // }, this)
-    // let end
-    // const closestView = data.closestView
-    // const closestMagnet = data.closestMagnet
-    // const endType = data.arrowhead
-    // const newClosestMagnet = prevClosestMagnet !== closestMagnet
-    // if (prevClosestView && newClosestMagnet) {
-    //   prevClosestView.unhighlight(prevClosestMagnet, {
-    //     connecting: true,
-    //     snapping: true,
-    //   })
-    // }
-    // if (closestView) {
-    //   if (!newClosestMagnet) return
-    //   closestView.highlight(closestMagnet, {
-    //     connecting: true,
-    //     snapping: true,
-    //   })
-    //   end = closestView.getLinkEnd(closestMagnet, x, y, this.model, endType)
-    // } else {
-    //   end = { x, y }
-    // }
-    // this.model.set(endType, end || { x, y }, { ui: true })
-  }
-
-  protected snapArrowheadEnd(data: KeyValue<any>) {
-    // Finish off link snapping.
-    // Everything except view unhighlighting was already done on pointermove.
-    const closestView = data.closestView
-    const closestMagnet = data.closestMagnet
-    if (closestView && closestMagnet) {
-      closestView.unhighlight(closestMagnet, {
-        connecting: true,
-        snapping: true,
-      })
-      data.magnetUnderPointer = closestView.findMagnet(closestMagnet)
-    }
-
-    data.closestView = data.closestMagnet = null
-  }
-
-  protected connectArrowhead(
-    target: Element,
-    x: number,
-    y: number,
-    data: KeyValue<any>,
+  prepareArrowheadDragging(
+    type: Edge.TerminalType,
+    options: {
+      fallbackAction?: EventData.ArrowheadDragging['fallbackAction']
+    } = {},
   ) {
-    // checking views right under the pointer
-
-    if (data.eventTarget !== target) {
-      // Unhighlight the previous view under pointer if there was one.
-      if (data.magnetUnderPointer) {
-        data.viewUnderPointer.unhighlight(data.magnetUnderPointer, {
-          connecting: true,
-        })
-      }
-
-      data.viewUnderPointer = this.graph.findView(target)
-      if (data.viewUnderPointer) {
-        // If we found a view that is under the pointer, we need to find the closest
-        // magnet based on the real target element of the event.
-        data.magnetUnderPointer = data.viewUnderPointer.findMagnet(target)
-
-        if (
-          data.magnetUnderPointer &&
-          (this.graph.options as any).validateConnection.apply(
-            this.graph,
-            data.validateConnectionArgs(
-              data.viewUnderPointer,
-              data.magnetUnderPointer,
-            ),
-          )
-        ) {
-          // If there was no magnet found, do not highlight anything and assume there
-          // is no view under pointer we're interested in reconnecting to.
-          // This can only happen if the overall element has the attribute `'.': { magnet: false }`.
-          if (data.magnetUnderPointer) {
-            data.viewUnderPointer.highlight(data.magnetUnderPointer, {
-              connecting: true,
-            })
-          }
-        } else {
-          // This type of connection is not valid. Disregard this magnet.
-          data.magnetUnderPointer = null
-        }
-      } else {
-        // Make sure we'll unset previous magnet.
-        data.magnetUnderPointer = null
-      }
+    const magnet = this.getTerminalMagnet(type)
+    const data: EventData.ArrowheadDragging = {
+      action: 'drag-arrowhead',
+      terminalType: type,
+      initialMagnet: magnet,
+      initialTerminal: ObjectExt.clone(this.cell[type]) as Edge.TerminalData,
+      fallbackAction: options.fallbackAction || 'revert',
+      getValidateConnectionArgs: this.createValidateConnectionArgs(type),
     }
 
-    data.eventTarget = target
+    this.beforeArrowheadDragging(data)
 
-    this.cell.store.set(data.arrowhead, { x, y }, { ui: true })
+    return data
   }
 
-  protected connectArrowheadEnd(data: KeyValue<any>, x: number, y: number) {
-    const view = data.viewUnderPointer
-    const magnet = data.magnetUnderPointer
-    if (!magnet || !view) return
+  protected createValidateConnectionArgs(type: Edge.TerminalType) {
+    const args: EventData.ValidateConnectionArgs = [] as any
 
-    view.unhighlight(magnet, { connecting: true })
-
-    const endType = data.arrowhead
-    const end = view.getLinkEnd(magnet, x, y, this.cell, endType)
-    this.cell.store.set(endType, end, { ui: true })
-  }
-
-  protected beforeArrowheadMove(data: KeyValue<any>) {
-    data.z = this.cell.zIndex
-    this.cell.toFront()
-
-    // Let the pointer propagate through the link view elements so that
-    // the `evt.target` is another element under the pointer, not the link itself.
-    const style = (this.container as HTMLElement).style
-    data.pointerEvents = style.pointerEvents
-    style.pointerEvents = 'none'
-
-    if (this.graph.options.markAvailable) {
-      this.markAvailableMagnets(data)
-    }
-  }
-
-  protected afterArrowheadMove(data: KeyValue<any>) {
-    if (data.z !== null) {
-      this.cell.setZIndex(data.z, { ui: true })
-      data.z = null
-    }
-
-    const container = this.container as HTMLElement
-    // Put `pointer-events` back to its original value. See `_beforeArrowheadMove()` for explanation.
-    container.style.pointerEvents = data.pointerEvents
-
-    if (this.graph.options.markAvailable) {
-      this.unmarkAvailableMagnets(data)
-    }
-  }
-
-  protected createValidateConnectionArgs(arrowhead: Edge.TerminalType) {
-    // It makes sure the arguments for validateConnection have the following form:
-    // (source view, source magnet, target view, target magnet and link view)
-    const args: any[] = []
-
-    args[4] = arrowhead
+    args[4] = type
     args[5] = this
 
-    let oppositeArrowhead: Edge.TerminalType
+    let opposite: Edge.TerminalType
     let i = 0
     let j = 0
 
-    if (arrowhead === 'source') {
+    if (type === 'source') {
       i = 2
-      oppositeArrowhead = 'target'
+      opposite = 'target'
     } else {
       j = 2
-      oppositeArrowhead = 'source'
+      opposite = 'source'
     }
 
-    const end = this.cell[oppositeArrowhead]
-    const cellId = (end as Edge.TerminalCellData).cellId
+    const terminal = this.cell[opposite]
+    const cellId = (terminal as Edge.TerminalCellData).cellId
     if (cellId) {
       let magnet
       const view = (args[i] = this.graph.findViewByCell(cellId))
       if (view) {
-        magnet = view.getMagnetFromLinkEnd(end)
+        magnet = view.getMagnetFromEdgeTerminal(terminal)
         if (magnet === view.container) {
           magnet = undefined
         }
@@ -2300,127 +1974,473 @@ export class EdgeView<
     }
   }
 
-  protected markAvailableMagnets(data: KeyValue<any>) {
-    function isMagnetAvailable(view: CellView, magnet: Element) {
-      const graph = view.graph
-      const validate = (graph.options as any).validateConnection
-      return validate.apply(graph, this.validateConnectionArgs(view, magnet))
+  protected beforeArrowheadDragging(data: EventData.ArrowheadDragging) {
+    data.zIndex = this.cell.zIndex
+    this.cell.toFront()
+
+    const style = (this.container as HTMLElement).style
+    data.pointerEvents = style.pointerEvents
+    style.pointerEvents = 'none'
+
+    if (this.graph.options.markAvailable) {
+      this.markAvailableMagnets(data)
+    }
+  }
+
+  protected afterArrowheadDragging(data: EventData.ArrowheadDragging) {
+    if (data.zIndex != null) {
+      this.cell.setZIndex(data.zIndex, { ui: true })
+      data.zIndex = null
     }
 
-    const paper = this.graph
-    const elements = paper.model.getCells()
+    const container = this.container as HTMLElement
+    container.style.pointerEvents = data.pointerEvents || null
+
+    if (this.graph.options.markAvailable) {
+      this.unmarkAvailableMagnets(data)
+    }
+  }
+
+  protected arrowheadDragging(
+    target: Element,
+    x: number,
+    y: number,
+    data: EventData.ArrowheadDragging,
+  ) {
+    // Checking views right under the pointer
+    if (data.currentTarget !== target) {
+      // Unhighlight the previous view under pointer if there was one.
+      if (data.currentMagnet && data.currentView) {
+        data.currentView.unhighlight(data.currentMagnet, {
+          type: 'connecting',
+        })
+      }
+
+      data.currentView = this.graph.findView(target)
+      if (data.currentView) {
+        // If we found a view that is under the pointer, we need to find
+        // the closest magnet based on the real target element of the event.
+        data.currentMagnet = data.currentView.findMagnet(target)
+
+        if (
+          data.currentMagnet &&
+          this.graph.options.validateConnection.apply(
+            this.graph,
+            data.getValidateConnectionArgs(
+              data.currentView,
+              data.currentMagnet,
+            ),
+          )
+        ) {
+          data.currentView.highlight(data.currentMagnet, {
+            type: 'connecting',
+          })
+        } else {
+          // This type of connection is not valid. Disregard this magnet.
+          data.currentMagnet = null
+        }
+      } else {
+        // Make sure we'll unset previous magnet.
+        data.currentMagnet = null
+      }
+    }
+
+    data.currentTarget = target
+    this.cell.store.set(data.terminalType, { x, y }, { ui: true })
+  }
+
+  protected arrowheadDragged(
+    data: EventData.ArrowheadDragging,
+    x: number,
+    y: number,
+  ) {
+    const view = data.currentView
+    const magnet = data.currentMagnet
+    if (!magnet || !view) {
+      return
+    }
+
+    view.unhighlight(magnet, { type: 'connecting' })
+
+    const type = data.terminalType
+    const terminal = view.getEdgeTerminal(magnet, x, y, this.cell, type)
+    this.cell.store.set(type, terminal, { ui: true })
+  }
+
+  protected snapArrowhead(
+    x: number,
+    y: number,
+    data: EventData.ArrowheadDragging,
+  ) {
+    const graph = this.graph
+    const snapLinks = graph.options.snapLinks as any
+    const radius = (typeof snapLinks === 'object' && snapLinks.radius) || 50
+    const views = graph.findViewsInArea({
+      x: x - radius,
+      y: y - radius,
+      width: 2 * radius,
+      height: 2 * radius,
+    })
+
+    const prevView = data.closestView || null
+    const prevMagnet = data.closestMagnet || null
+
+    data.closestView = null
+    data.closestMagnet = null
+
+    let distance
+    let minDistance = Number.MAX_SAFE_INTEGER
+    const pos = new Point(x, y)
+
+    views.forEach(view => {
+      if (view.container.getAttribute('magnet') !== 'false') {
+        // Find distance from the center of the cell to pointer coordinates
+        distance = view.cell
+          .getBBox()
+          .getCenter()
+          .distance(pos)
+        // the connection is looked up in a circle area by `distance < r`
+        if (distance < radius && distance < minDistance) {
+          if (
+            prevMagnet === view.container ||
+            graph.options.validateConnection.apply(
+              graph,
+              data.getValidateConnectionArgs(view, null),
+            )
+          ) {
+            minDistance = distance
+            data.closestView = view
+            data.closestMagnet = view.container
+          }
+        }
+      }
+
+      view.$('[magnet]').each((index, elem) => {
+        const magnet = elem as Element
+        const bbox = view.getNodeBBox(magnet)
+        distance = pos.distance(bbox.getCenter())
+        if (distance < radius && distance < minDistance) {
+          if (
+            prevMagnet === magnet ||
+            graph.options.validateConnection.apply(
+              graph,
+              data.getValidateConnectionArgs(view, magnet),
+            )
+          ) {
+            minDistance = distance
+            data.closestView = view
+            data.closestMagnet = magnet
+          }
+        }
+      })
+    })
+
+    let terminal
+    const type = data.terminalType
+    const closestView = (data.closestView as any) as CellView
+    const closestMagnet = (data.closestMagnet as any) as Element
+    const changed = prevMagnet !== closestMagnet
+
+    if (prevView && changed) {
+      prevView.unhighlight(prevMagnet, {
+        type: 'connecting',
+      })
+    }
+
+    if (closestView) {
+      if (!changed) {
+        return
+      }
+      closestView.highlight(closestMagnet, {
+        type: 'connecting',
+      })
+      terminal = closestView.getEdgeTerminal(
+        closestMagnet,
+        x,
+        y,
+        this.cell,
+        type,
+      )
+    } else {
+      terminal = { x, y }
+    }
+
+    this.cell.store.set(type, terminal || { x, y }, { ui: true })
+  }
+
+  protected snapArrowheadEnd(data: EventData.ArrowheadDragging) {
+    // Finish off link snapping.
+    // Everything except view unhighlighting was already done on pointermove.
+    const closestView = data.closestView
+    const closestMagnet = data.closestMagnet
+    if (closestView && closestMagnet) {
+      closestView.unhighlight(closestMagnet, {
+        type: 'connecting',
+      })
+      data.currentMagnet = closestView.findMagnet(closestMagnet)
+    }
+
+    data.closestView = null
+    data.closestMagnet = null
+  }
+
+  protected finishEmbedding(data: EventData.ArrowheadDragging) {
+    // Resets parent of the edge if embedding is enabled
+    if (this.graph.options.embeddingMode && this.cell.updateParent()) {
+      // Make sure we don't reverse to the original 'z' index
+      data.zIndex = null
+    }
+  }
+
+  protected fallbackConnection(data: EventData.ArrowheadDragging) {
+    switch (data.fallbackAction) {
+      case 'remove':
+        this.cell.remove({ ui: true })
+        break
+      case 'revert':
+      default:
+        this.cell.store.set(data.terminalType, data.initialTerminal, {
+          ui: true,
+        })
+        break
+    }
+  }
+
+  protected notifyConnectionEvent(
+    data: EventData.ArrowheadDragging,
+    e: JQuery.MouseUpEvent,
+  ) {
+    const type = data.terminalType
+    const initialTerminal = data.initialTerminal
+    const currentTerminal = this.cell[type]
+    const changed =
+      currentTerminal && !Edge.equalTerminals(initialTerminal, currentTerminal)
+
+    if (changed) {
+      const graph = this.graph
+      const prevCellId = (initialTerminal as Edge.TerminalCellData).cellId
+      if (prevCellId) {
+        this.notify('edge:disconnect', {
+          e,
+          type,
+          view: graph.findViewByCell(prevCellId),
+          magnet: data.initialMagnet,
+        })
+      }
+
+      const currCellId = (currentTerminal as Edge.TerminalCellData).cellId
+      if (currCellId) {
+        this.notify('edge:connect', {
+          e,
+          type,
+          view: graph.findViewByCell(currCellId),
+          magnet: data.currentMagnet,
+        })
+      }
+    }
+  }
+
+  protected markAvailableMagnets(data: EventData.ArrowheadDragging) {
+    const graph = this.graph
+    const cells = graph.model.getCells()
     data.marked = {}
 
-    for (let i = 0, n = elements.length; i < n; i += 1) {
-      const view = elements[i].findView(paper)
+    for (let i = 0, ii = cells.length; i < ii; i += 1) {
+      const view = graph.findViewByCell(cells[i])
 
       if (!view) {
         continue
       }
 
-      const magnets = Array.prototype.slice.call(
+      const magnets: Element[] = Array.prototype.slice.call(
         view.container.querySelectorAll('[magnet]'),
       )
+
       if (view.container.getAttribute('magnet') !== 'false') {
-        // Element wrapping group is also a magnet
         magnets.push(view.container)
       }
 
-      const availableMagnets = magnets.filter(
-        isMagnetAvailable.bind(data, view),
+      const validate = graph.options.validateConnection
+      const availableMagnets = magnets.filter(magnet =>
+        validate.apply(graph, data.getValidateConnectionArgs(view, magnet)),
       )
 
       if (availableMagnets.length > 0) {
         // highlight all available magnets
-        for (let j = 0, m = availableMagnets.length; j < m; j += 1) {
-          view.highlight(availableMagnets[j], { magnetAvailability: true })
+        for (let j = 0, jj = availableMagnets.length; j < jj; j += 1) {
+          view.highlight(availableMagnets[j], { type: 'magnetAvailability' })
         }
-        // highlight the entire view
-        view.highlight(null, { elementAvailability: true })
 
+        // highlight the entire view
+        view.highlight(null, { type: 'nodeAvailability' })
         data.marked[view.cell.id] = availableMagnets
       }
     }
   }
 
-  protected unmarkAvailableMagnets(data: KeyValue<any>) {
-    const markedKeys = Object.keys(data.marked)
-    let id
-    let markedMagnets
-
-    for (let i = 0, n = markedKeys.length; i < n; i += 1) {
-      id = markedKeys[i]
-      markedMagnets = data.marked[id]
-
+  protected unmarkAvailableMagnets(data: EventData.ArrowheadDragging) {
+    const marked = data.marked || {}
+    Object.keys(marked).forEach(id => {
       const view = this.graph.findViewByCell(id)
-      if (view) {
-        for (let j = 0, m = markedMagnets.length; j < m; j += 1) {
-          view.unhighlight(markedMagnets[j], { magnetAvailability: true })
-        }
-        view.unhighlight(null, { elementAvailability: true })
-      }
-    }
 
+      if (view) {
+        const magnets = marked[id]
+        magnets.forEach(magnet => {
+          view.unhighlight(magnet, { type: 'magnetAvailability' })
+        })
+
+        view.unhighlight(null, { type: 'nodeAvailability' })
+      }
+    })
     data.marked = null
   }
 
-  startArrowheadMove(
-    end: Edge.TerminalType,
-    options: {
-      whenNotAllowed?: string
-      ignoreBackwardsCompatibility?: boolean
-    } = {},
+  protected startArrowheadDragging(
+    e: JQuery.MouseDownEvent,
+    x: number,
+    y: number,
   ) {
-    // Allow to delegate events from an another view to this linkView in order to trigger arrowhead
-    // move without need to click on the actual arrowhead dom element.
-    const endView = `${end}View` as 'sourceView' | 'targetView'
-    const endMagnet = `${end}Magnet` as 'sourceMagnet' | 'targetMagnet'
-    const data = {
-      action: 'arrowhead-move',
-      arrowhead: end,
-      whenNotAllowed: options.whenNotAllowed || 'revert',
-      initialMagnet:
-        this[endMagnet] || (this[endView] ? this[endView]?.container : null),
-      initialEnd: ObjectExt.clone(this.cell[end]),
-      validateConnectionArgs: this.createValidateConnectionArgs(end),
+    if (!this.can('arrowheadMove')) {
+      return
     }
 
-    this.beforeArrowheadMove(data)
+    const elem = e.target
+    const type = elem.getAttribute('end') as Edge.TerminalType
+    const data = this.prepareArrowheadDragging(type)
+    this.setEventData<EventData.ArrowheadDragging>(e, data)
+  }
 
-    if (options.ignoreBackwardsCompatibility !== true) {
-      this.dragData = data
+  protected dragArrowhead(e: JQuery.MouseMoveEvent, x: number, y: number) {
+    const data = this.getEventData<EventData.ArrowheadDragging>(e)
+    if (this.graph.options.snapLinks) {
+      this.snapArrowhead(x, y, data)
+    } else {
+      this.arrowheadDragging(this.getEventTarget(e), x, y, data)
+    }
+  }
+
+  protected stopArrowheadDragging(
+    e: JQuery.MouseUpEvent,
+    x: number,
+    y: number,
+  ) {
+    const graph = this.graph
+    const data = this.getEventData<EventData.ArrowheadDragging>(e)
+
+    if (graph.options.snapLinks) {
+      this.snapArrowheadEnd(data)
+    } else {
+      this.arrowheadDragged(data, x, y)
     }
 
-    return data
+    if (!graph.linkAllowed(this)) {
+      // If the changed link is not allowed, revert to its previous state.
+      this.fallbackConnection(data)
+    } else {
+      this.finishEmbedding(data)
+      this.notifyConnectionEvent(data, e)
+    }
+
+    this.afterArrowheadDragging(data)
   }
 
   // #endregion
 
-  get sourceBBox() {
-    const sourceView = this.sourceView
-    if (!sourceView) {
-      const sourceDef = this.cell.getSource() as Edge.TerminalPointData
-      return new Rectangle(sourceDef.x, sourceDef.y)
+  // #region drag lable
+
+  startLabelDragging(e: JQuery.MouseDownEvent, x: number, y: number) {
+    if (this.can('labelMove')) {
+      const target = e.currentTarget
+      const index = parseInt(target.getAttribute('data-index'), 10)
+      const positionAngle = this.getLabelPositionAngle(index)
+      const labelPositionArgs = this.getLabelPositionArgs(index)
+      const defaultLabelPositionArgs = this.getDefaultLabelPositionArgs()
+      const positionArgs = this.mergeLabelPositionArgs(
+        labelPositionArgs,
+        defaultLabelPositionArgs,
+      )
+
+      this.setEventData<EventData.LabelDragging>(e, {
+        index,
+        positionAngle,
+        positionArgs,
+        stopPropagation: true,
+        action: 'drag-label',
+      })
+    } else {
+      // If labels can't be dragged no default action is triggered.
+      this.setEventData(e, { stopPropagation: true })
     }
-    const sourceMagnet = this.sourceMagnet
-    if (sourceView.isEdgeElement(sourceMagnet)) {
-      return new Rectangle(this.sourceAnchor.x, this.sourceAnchor.y)
-    }
-    return sourceView.getNodeBBox(sourceMagnet || sourceView.container)
+
+    this.graph.delegateDragEvents(e, this)
   }
 
-  get targetBBox() {
-    const targetView = this.targetView
-    if (!targetView) {
-      const targetDef = this.cell.getTarget() as Edge.TerminalPointData
-      return new Rectangle(targetDef.x, targetDef.y)
+  dragLabel(e: JQuery.MouseMoveEvent, x: number, y: number) {
+    const data = this.getEventData<EventData.LabelDragging>(e)
+    const label = {
+      position: this.getLabelPosition(
+        x,
+        y,
+        data.positionAngle,
+        data.positionArgs,
+      ),
     }
-    const targetMagnet = this.targetMagnet
-    if (targetView.isEdgeElement(targetMagnet)) {
-      return new Rectangle(this.targetAnchor.x, this.targetAnchor.y)
-    }
-    return targetView.getNodeBBox(targetMagnet || targetView.container)
+    this.cell.setLabelAt(data.index, label)
   }
+
+  stopLabelDragging(e: JQuery.MouseUpEvent, x: number, y: number) {}
+
+  // #endregion
+
+  // #region drag vertex
+
+  handleVertexAdding(e: JQuery.MouseDownEvent, x: number, y: number) {
+    if (!this.can('vertexAdd')) {
+      return
+    }
+
+    // Store the index at which the new vertex has just been placed.
+    // We'll be update the very same vertex position in `pointermove()`.
+    const index = this.addVertex({ x, y }, { ui: true })
+    this.setEventData(e, {
+      index,
+      action: 'drag-vertex',
+    })
+  }
+
+  handleVertexRemoving(e: JQuery.MouseDownEvent, x: number, y: number) {
+    if (!this.can('vertexRemove')) {
+      return
+    }
+
+    const target = e.target
+    const index = parseInt(target.getAttribute('idx'), 10)
+    this.cell.removeVertexAt(index)
+  }
+
+  startVertexDragging(e: JQuery.MouseDownEvent, x: number, y: number) {
+    if (!this.can('vertexMove')) {
+      return
+    }
+
+    const target = e.target
+    const index = parseInt(target.getAttribute('idx'), 10)
+    this.setEventData<EventData.VertexDragging>(e, {
+      index,
+      action: 'drag-vertex',
+    })
+  }
+
+  dragVertex(e: JQuery.MouseMoveEvent, x: number, y: number) {
+    const data = this.getEventData<EventData.VertexDragging>(e)
+    this.cell.setVertexAt(data.index, { x, y }, { ui: true })
+  }
+
+  stopVertexDragging(e: JQuery.MouseUpEvent, x: number, y: number) {}
+
+  // #endregion
+
+  // #endregion
 }
 
 export namespace EdgeView {
@@ -2445,6 +2465,67 @@ export namespace EdgeView {
     sourceArrowhead?: Element
     targetArrowhead?: Element
     tools?: Element
+  }
+}
+
+namespace EventData {
+  export interface MousemoveEventData {}
+
+  export interface EdgeDragging {
+    action: 'drag-edge'
+    x: number
+    y: number
+  }
+
+  export type ValidateConnectionArgs = [
+    CellView | null | undefined, // source view
+    Element | null | undefined, // source magnet
+    CellView | null | undefined, // target view
+    Element | null | undefined, // target magnet
+    Edge.TerminalType,
+    EdgeView,
+  ]
+
+  export interface ArrowheadDragging {
+    action: 'drag-arrowhead'
+    terminalType: Edge.TerminalType
+    fallbackAction: 'remove' | 'revert'
+    initialMagnet: Element | null
+    initialTerminal: Edge.TerminalData
+    getValidateConnectionArgs: (
+      cellView: CellView,
+      magnet: Element | null,
+    ) => ValidateConnectionArgs
+    zIndex?: number | null
+    pointerEvents?: string | null
+    /**
+     * Current event target.
+     */
+    currentTarget?: Element
+    /**
+     * Current view under pointer.
+     */
+    currentView?: CellView | null
+    /**
+     * Current magnet under pointer.
+     */
+    currentMagnet?: Element | null
+    closestView?: CellView | null
+    closestMagnet?: Element | null
+    marked?: KeyValue<Element[]> | null
+  }
+
+  export interface LabelDragging {
+    action: 'drag-label'
+    index: number
+    positionAngle: number
+    positionArgs?: Edge.LabelPositionOptions | null
+    stopPropagation: true
+  }
+
+  export interface VertexDragging {
+    action: 'drag-vertex'
+    index: number
   }
 }
 
