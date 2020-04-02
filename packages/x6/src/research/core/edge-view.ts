@@ -1848,21 +1848,15 @@ export class EdgeView<
     x: number,
     y: number,
   ) {
-    // Backwards compatibility
-    const linkTool = v.findParentByClass(e.target, 'link-tool', this.container)
-    if (linkTool) {
-      // No further action to be executed
-      e.stopPropagation()
-
-      // Allow `interactive.useLinkTools=false`
+    // For default edge tool
+    const tool = v.findParentByClass(e.target, 'edge-tool', this.container)
+    if (tool) {
+      e.stopPropagation() // no further action to be executed
       if (this.can('useLinkTools')) {
-        if (eventName === 'remove') {
-          // Built-in remove event
-          // this.cell.remove({ ui: true })
-          // Do not trigger link pointerdown
+        if (eventName === 'edge:remove') {
+          this.cell.remove({ ui: true })
           return
         }
-        // edge:options and other custom events inside the link tools
         this.notify(eventName, { e, x, y })
       }
 
@@ -2299,7 +2293,7 @@ export class EdgeView<
     }
 
     const elem = e.target
-    const type = elem.getAttribute('end') as Edge.TerminalType
+    const type = elem.getAttribute('data-terminal') as Edge.TerminalType
     const data = this.prepareArrowheadDragging(type)
     this.setEventData<EventData.ArrowheadDragging>(e, data)
   }
