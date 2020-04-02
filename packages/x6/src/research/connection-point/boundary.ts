@@ -20,7 +20,7 @@ export interface BoundaryCache {
 
 /**
  * Places the connection point at the intersection between the
- * link path end segment and the actual shape of the end element.
+ * edge path end segment and the actual shape of the target magnet.
  */
 export const boundary: ConnectionPoint.Definition<BoundaryIntersectionOptions> = function(
   line,
@@ -88,13 +88,12 @@ export const boundary: ConnectionPoint.Definition<BoundaryIntersectionOptions> =
       segmentSubdivisions: data.segmentSubdivisions,
     }
 
-    localLine.intersect(localShape, pathOptions)
+    intersection = localLine.intersect(localShape, pathOptions)
   } else {
     intersection = localLine.intersect(localShape)
   }
 
   if (intersection) {
-    // More than one intersection
     if (Array.isArray(intersection)) {
       intersection = localRef.closest(intersection)
     }
@@ -113,7 +112,9 @@ export const boundary: ConnectionPoint.Definition<BoundaryIntersectionOptions> =
     ? v.transformPoint(intersection, targetMatrix)
     : anchor
   let cpOffset = options.offset || 0
-  if (options.stroked) cpOffset += getStrokeWidth(node) / 2
+  if (options.stroked) {
+    cpOffset += getStrokeWidth(node) / 2
+  }
 
   return offset(cp, line.start, cpOffset)
 }

@@ -5,8 +5,8 @@ export interface BBoxIntersectionOptions
   extends ConnectionPoint.StrokedOptions {}
 
 /**
- * Places the connection point at the intersection between the link
- * path end segment and the end element bbox.
+ * Places the connection point at the intersection between the edge
+ * path end segment and the target node bbox.
  */
 export const bbox: ConnectionPoint.Definition<BBoxIntersectionOptions> = function(
   line,
