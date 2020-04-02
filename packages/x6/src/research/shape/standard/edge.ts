@@ -1,6 +1,6 @@
 import { EdgeRegistry } from '../../registry'
 
-export const Edge = EdgeRegistry.register('link', {
+export const Edge = EdgeRegistry.register('edge', {
   markup: [
     {
       tagName: 'path',

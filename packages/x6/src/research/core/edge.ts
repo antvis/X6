@@ -619,6 +619,14 @@ export class Edge extends Cell {
 
   // #endregion
 
+  // #region markup
+
+  getMarkup() {
+    return super.getMarkup() || this.defaultMarkup
+  }
+
+  // #endregion
+
   // #region toolMarkup
 
   get toolMarkup() {
@@ -899,6 +907,15 @@ export namespace Edge {
   }
 
   export type TerminalData = TerminalPointData | TerminalCellData
+
+  export function equalTerminals(a: TerminalData, b: TerminalData) {
+    const a1 = a as TerminalCellData
+    const b1 = b as TerminalCellData
+    if (a1.cellId === b1.cellId) {
+      return a1.portId === b1.portId || (a1.portId == null && b1.portId == null)
+    }
+    return false
+  }
 }
 
 export namespace Edge {

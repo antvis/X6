@@ -138,13 +138,13 @@ export abstract class View extends Basecoat {
 
   findByAttr(attrName: string, elem: Element = this.container) {
     let node = elem
-    do {
+    while (node && node.getAttribute) {
       const val = node.getAttribute(attrName)
       if ((val != null || node === this.container) && val !== 'false') {
         return node
       }
       node = node.parentNode as Element
-    } while (node)
+    }
 
     // If the overall cell has set `magnet === false`, then returns
     // `undefined` to announce there is no magnet found for this cell.
@@ -175,6 +175,10 @@ export abstract class View extends Basecoat {
     }
 
     return selector
+  }
+
+  prefixClassName(className: string) {
+    return `${Globals.prefixCls}-${className}`
   }
 
   protected delegateEvents(events: View.Events) {
