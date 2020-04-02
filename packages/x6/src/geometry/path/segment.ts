@@ -3,9 +3,10 @@ import { Line } from '../line'
 import { Rectangle } from '../rectangle'
 
 export abstract class Segment {
+  isVisible = true
   isSegment = true
   isSubpathStart = false
-  isVisible = true
+
   nextSegment: Segment | null
   previousSegment: Segment | null
   subpathStartSegment: Segment | null

@@ -4,9 +4,6 @@ import { Point } from '../point'
 import { Segment } from './segment'
 
 export class MoveTo extends Segment {
-  isSubpathStart: true
-  isVisible: false
-
   constructor(line: Line)
   constructor(curve: Curve)
   constructor(x: number, y: number)
@@ -16,6 +13,9 @@ export class MoveTo extends Segment {
     y?: number,
   ) {
     super()
+
+    this.isVisible = false
+    this.isSubpathStart = true
 
     if (x instanceof Line || x instanceof Curve) {
       this.end = x.end.clone()
