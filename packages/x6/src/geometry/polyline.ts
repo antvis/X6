@@ -21,7 +21,7 @@ export class Polyline {
 
   constructor(points?: (Point | Point.PointLike | Point.PointData)[]) {
     if (points != null) {
-      this.points = points.map(p => Point.clone(p))
+      this.points = points.map(p => Point.create(p))
     } else {
       this.points = []
     }
