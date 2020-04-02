@@ -304,7 +304,7 @@ export function translateAndAutoOrient(
   // add up, consider: `this.scale(2).scale(2).scale(2)`. The result
   // is that the element is scaled by the factor 2, not 8.
   const s = scale(elem)
-  this.attr('transform', '')
+  elem.setAttribute('transform', '')
   const bbox = getBBox(elem, { target }).scale(s.sx, s.sy)
 
   // 1. Translate to origin.
