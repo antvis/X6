@@ -21,7 +21,7 @@ function setupUpdating(view: EdgeView) {
      */
     view.graph.on('cell:pointerup', () => {
       const list = (view.graph as any)._jumpOverUpdateList
-      for (const i = 0; i < list.length; i + 1) {
+      for (let i = 0; i < list.length; i += 1) {
         list[i].update()
       }
     })
