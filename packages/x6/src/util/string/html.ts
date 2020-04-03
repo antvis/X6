@@ -27,14 +27,20 @@ export function sanitizeHTML(html: string, options: { raw?: boolean } = {}) {
         for (let i = 0, ii = attrs.length; i < ii; i += 1) {
           const attr = attrs.item(i)
           if (attr) {
-            const val = attr.value
-            const name = attr.name
+            const val = attr.value.toLowerCase()
+            const name = attr.name.toLowerCase()
 
             // Removes attribute name starts with "on" (e.g. onload,
             // onerror...).
             // Removes attribute value starts with "javascript:" pseudo
             // protocol (e.g. `href="javascript:alert(1)"`).
-            if (name.indexOf('on') === 0 || val.indexOf('javascript:') === 0) {
+            if (
+              name.startsWith('on') ||
+              val.startsWith('javascript:') ||
+              // ref: https://lgtm.com/rules/1510852698359/
+              val.startsWith('data:') ||
+              val.startsWith('vbscript:')
+            ) {
               elem.removeAttribute(name)
             }
           }

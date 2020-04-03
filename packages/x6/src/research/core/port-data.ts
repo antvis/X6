@@ -26,7 +26,7 @@ export class PortData {
   getPortsByGroup(groupName?: string): PortData.Port[] {
     return this.ports.filter(
       port =>
-        port.group === groupName || (port.group == null && port.group == null),
+        port.group === groupName || (port.group == null && groupName == null),
     )
   }
 
