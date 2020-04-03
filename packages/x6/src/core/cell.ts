@@ -34,6 +34,36 @@ export class Cell<T = any> extends Disposable {
     this.visible = true
   }
 
+  toJSON(cell: Cell) {
+    const { id, data, style, visible, collapsed, geometry, parent } = cell
+
+    const { source, target, ...styleRest } = style
+    const bounds = geometry && geometry.bounds
+    // node、edge通用部分数据
+    const cellData: any = {
+      id,
+      data,
+      ...styleRest,
+      visible,
+      ...bounds,
+      ...geometry,
+    }
+    // 有群组的情况, parent是Node
+    if (parent?.isNode()) {
+      cellData['parent'] = parent && parent.id
+    }
+    // node独有数据
+    if (cell.isNode()) {
+      cellData['collapsed'] = collapsed
+    }
+    // edge独有数据
+    if (cell.isEdge()) {
+      cellData['source'] = cell.source && cell.source.id
+      cellData['target'] = cell.target && cell.target.id
+    }
+    return cellData
+  }
+
   // #region edge
 
   isEdge() {

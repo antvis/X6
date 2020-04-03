@@ -14,6 +14,10 @@ export class CreationAccessor extends BaseGraph {
     return Cell.createNode(options)
   }
 
+  toJSON() {
+    return this.model.toJSON()
+  }
+
   @afterCreate()
   createEdge(options: Cell.CreateEdgeOptions = {}): Cell {
     return Cell.createEdge(options)

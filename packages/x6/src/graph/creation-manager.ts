@@ -7,6 +7,7 @@ import { BaseManager } from './base-manager'
 export class CreationManager extends BaseManager {
   render(data: Data) {
     const { nodes, edges } = data
+
     const nodeDataMap: { [key: string]: NodeData } = {}
     const groupIds: [string | number, string | number][] = []
 
@@ -48,13 +49,13 @@ export class CreationManager extends BaseManager {
         }
       }
 
-      const parentGroup = nodeMap[parentGroupId] || null
+      const parentGroup = nodeMap[parentGroupId]
       ids.forEach(i => {
         const { parent, id, ...dataItem } = nodeDataMap[i]
         nodeMap[i] = this.graph.addNode({
           ...dataItem,
           id,
-          data: { ...nodeDataMap[i] },
+          // data: { ...nodeDataMap[i] },
           parent: parentGroup,
         })
       })
@@ -72,7 +73,7 @@ export class CreationManager extends BaseManager {
             nodeMap[id] = this.graph.addNode({
               ...dataItem,
               id,
-              data: { ...item },
+              // data: { ...item },
               parent: parent ? nodeMap[parent] : undefined,
             })
           }
@@ -86,7 +87,7 @@ export class CreationManager extends BaseManager {
             edgeMap[id] = this.graph.addEdge({
               ...dataItem,
               id,
-              data: { ...item },
+              // data: { ...item },
               parent: parent != null ? nodeMap[parent] : undefined,
               source: source != null ? nodeMap[source] : undefined,
               target: target != null ? nodeMap[target] : undefined,
