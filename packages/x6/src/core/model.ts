@@ -115,6 +115,26 @@ export class Model extends Events<Model.EventArgs> {
 
   // #endregion
 
+  toJSON() {
+    const nodesData: any = []
+    const edgesData: any = []
+
+    for (const key in this.cells) {
+      if (this.cells.hasOwnProperty(key)) {
+        const cell: Cell = this.cells[key]
+        if (cell.isNode()) {
+          nodesData.push(cell.toJSON(cell))
+        } else if (cell.isEdge()) {
+          edgesData.push(cell.toJSON(cell))
+        }
+      }
+    }
+    return {
+      nodes: nodesData,
+      edges: edgesData,
+    }
+  }
+
   getCell(id: string | number) {
     return this.cells != null ? this.cells[id] : null
   }
