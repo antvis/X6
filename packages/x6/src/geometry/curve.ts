@@ -8,7 +8,7 @@ export class Curve {
   end: Point
   controlPoint1: Point
   controlPoint2: Point
-  PRECISION: 3
+  PRECISION: number = 3
 
   constructor(
     start: Point | Point.PointLike | Point.PointData,
