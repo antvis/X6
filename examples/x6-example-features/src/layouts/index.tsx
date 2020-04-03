@@ -20,6 +20,7 @@ const features = [
   { link: '/custom-render', title: 'Custom Render' },
   { link: '/react-shape', title: 'React Shape' },
   { link: '/infinite', title: 'Infinite Canvas' },
+  { link: '/tojson-demo', title: 'ToJSon Demo' },
 ]
 
 const charts = [{ link: '/flowchart', title: 'FlowChart' }]
