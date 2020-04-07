@@ -97,10 +97,6 @@ export class ObstacleMap {
       return map
     }, this.map)
 
-    Object.keys(this.map).forEach(key =>
-      console.log(key, ' => ', this.map[key].toString()),
-    )
-
     return this
   }
 
