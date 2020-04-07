@@ -89,10 +89,6 @@ export class LineTo extends Segment {
     return !this.start.equals(this.end)
   }
 
-  equals(s: Segment) {
-    return this.start.equals(s.start) && this.end.equals(s.end)
-  }
-
   clone() {
     return new LineTo(this.end)
   }
@@ -106,17 +102,38 @@ export class LineTo extends Segment {
     return this
   }
 
-  translate(tx: number, ty: number) {
-    this.end.translate(tx, ty)
+  translate(tx: number, ty: number): this
+  translate(p: Point | Point.PointLike | Point.PointData): this
+  translate(
+    tx: number | Point | Point.PointLike | Point.PointData,
+    ty?: number,
+  ): this {
+    if (typeof tx === 'number') {
+      this.end.translate(tx, ty as number)
+    } else {
+      this.end.translate(tx)
+    }
     return this
+  }
+
+  equals(s: Segment) {
+    return (
+      this.type === s.type &&
+      this.start.equals(s.start) &&
+      this.end.equals(s.end)
+    )
+  }
+
+  toJSON() {
+    return {
+      type: this.type,
+      start: this.start.toJSON(),
+      end: this.end.toJSON(),
+    }
   }
 
   serialize() {
     const end = this.end
     return `${this.type} ${end.x} ${end.y}`
-  }
-
-  toString() {
-    return `${this.type} ${this.start.toString()} ${this.end.toString()}`
   }
 }

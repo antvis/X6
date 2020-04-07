@@ -102,15 +102,23 @@ export class Close extends Segment {
   }
 
   equals(s: Segment) {
-    return this.start.equals(s.start) && this.end.equals(s.end)
+    return (
+      this.type === s.type &&
+      this.start.equals(s.start) &&
+      this.end.equals(s.end)
+    )
   }
 
   clone() {
     return new Close()
   }
 
-  toString() {
-    return `${this.type} ${this.start.toString()} ${this.end.toString()}`
+  toJSON() {
+    return {
+      type: this.type,
+      start: this.start.toJSON(),
+      end: this.end.toJSON(),
+    }
   }
 
   serialize() {

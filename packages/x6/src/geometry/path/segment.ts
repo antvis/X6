@@ -1,8 +1,9 @@
 import { Point } from '../point'
 import { Line } from '../line'
 import { Rectangle } from '../rectangle'
+import { Geometry } from '../geometry'
 
-export abstract class Segment {
+export abstract class Segment extends Geometry {
   isVisible = true
   isSegment = true
   isSubpathStart = false
@@ -84,6 +85,7 @@ export abstract class Segment {
   abstract getSubdivisions(options?: Segment.Options): Segment[]
 
   abstract pointAt(ratio: number): Point
+
   abstract pointAtLength(length: number, options?: Segment.Options): Point
   pointAtT(t: number): Point {
     if (this.pointAt) {
@@ -94,10 +96,12 @@ export abstract class Segment {
   }
 
   abstract tangentAt(ratio: number): Line | null
+
   abstract tangentAtLength(
     length: number,
     options?: Segment.Options,
   ): Line | null
+
   tangentAtT(t: number): Line | null {
     if (this.tangentAt) {
       return this.tangentAt(t)
@@ -109,16 +113,8 @@ export abstract class Segment {
   }
 
   abstract isDifferentiable(): boolean
-  abstract scale(
-    sx: number,
-    sy: number,
-    origin?: Point | Point.PointLike | Point.PointData,
-  ): this
-  abstract translate(tx: number, ty: number): this
-  abstract equals(s: Segment): boolean
+
   abstract clone(): Segment
-  abstract toString(): string
-  abstract serialize(): string
 }
 
 export namespace Segment {

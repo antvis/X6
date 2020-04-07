@@ -114,8 +114,17 @@ export class MoveTo extends Segment {
     return this
   }
 
-  translate(tx: number, ty: number) {
-    this.end.translate(tx, ty)
+  translate(tx: number, ty: number): this
+  translate(p: Point | Point.PointLike | Point.PointData): this
+  translate(
+    tx: number | Point | Point.PointLike | Point.PointData,
+    ty?: number,
+  ) {
+    if (typeof tx === 'number') {
+      this.end.translate(tx, ty as number)
+    } else {
+      this.end.translate(tx)
+    }
     return this
   }
 
@@ -123,12 +132,15 @@ export class MoveTo extends Segment {
     return new MoveTo(this.end)
   }
 
-  equals(c: Segment) {
-    return this.end.equals(c.end)
+  equals(s: Segment) {
+    return this.type === s.type && this.end.equals(s.end)
   }
 
-  toString() {
-    return `${this.type} ${this.end.toString()}`
+  toJSON() {
+    return {
+      type: this.type,
+      end: this.end.toJSON(),
+    }
   }
 
   serialize() {

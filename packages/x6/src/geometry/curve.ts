@@ -1,9 +1,10 @@
 import { Point } from './point'
+import { Line } from './line'
 import { Rectangle } from './rectangle'
 import { Polyline } from './polyline'
-import { Line } from './line'
+import { Geometry } from './geometry'
 
-export class Curve {
+export class Curve extends Geometry {
   start: Point
   end: Point
   controlPoint1: Point
@@ -16,6 +17,7 @@ export class Curve {
     controlPoint2: Point | Point.PointLike | Point.PointData,
     end: Point | Point.PointLike | Point.PointData,
   ) {
+    super()
     this.start = Point.create(start)
     this.controlPoint1 = Point.create(controlPoint1)
     this.controlPoint2 = Point.create(controlPoint2)
@@ -702,11 +704,24 @@ export class Curve {
     return this
   }
 
-  translate(tx: number, ty: number) {
-    this.start.translate(tx, ty)
-    this.controlPoint1.translate(tx, ty)
-    this.controlPoint2.translate(tx, ty)
-    this.end.translate(tx, ty)
+  translate(tx: number, ty: number): this
+  translate(p: Point | Point.PointLike | Point.PointData): this
+  translate(
+    tx: number | Point | Point.PointLike | Point.PointData,
+    ty?: number,
+  ) {
+    if (typeof tx === 'number') {
+      this.start.translate(tx, ty as number)
+      this.controlPoint1.translate(tx, ty as number)
+      this.controlPoint2.translate(tx, ty as number)
+      this.end.translate(tx, ty as number)
+    } else {
+      this.start.translate(tx)
+      this.controlPoint1.translate(tx)
+      this.controlPoint2.translate(tx)
+      this.end.translate(tx)
+    }
+
     return this
   }
 
@@ -738,16 +753,12 @@ export class Curve {
     }
   }
 
-  valueOf() {
-    return this.toJSON()
-  }
-
-  toString() {
+  serialize() {
     return [
-      this.start.toString(),
-      this.controlPoint1.toString(),
-      this.controlPoint2.toString(),
-      this.end.toString(),
+      this.start.serialize(),
+      this.controlPoint1.serialize(),
+      this.controlPoint2.serialize(),
+      this.end.serialize(),
     ].join(' ')
   }
 }
