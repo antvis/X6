@@ -8,6 +8,8 @@ export namespace Router {
   export const orth = routers.orth
   export const normal = routers.normal
   export const oneSide = routers.oneSide
+  export const manhattan = routers.manhattan
+  export const metro = routers.metro
 }
 
 export namespace Router {

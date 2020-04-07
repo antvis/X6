@@ -1,6 +1,6 @@
 import { Router } from './index'
 
-export interface OneSideOptions {
+export interface OneSideRouterOptions {
   side?: 'left' | 'top' | 'right' | 'bottom'
   padding?: number
 }
@@ -8,7 +8,7 @@ export interface OneSideOptions {
 /**
  * Routes the link always to/from a certain side
  */
-export const oneSide: Router.Definition<OneSideOptions> = function(
+export const oneSide: Router.Definition<OneSideRouterOptions> = function(
   vertices,
   options,
   edgeView,
