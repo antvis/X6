@@ -1,7 +1,7 @@
-import { Router } from '../index'
 import { KeyValue } from '../../../types'
 import { Point, Rectangle } from '../../../geometry'
 import { EdgeView } from '../../core'
+import { Router } from '../index'
 import { SortedSet } from './sorted-set'
 import { ObstacleMap } from './obstacle-map'
 import * as util from './util'
@@ -119,7 +119,7 @@ function findRoute(
 
     // main route finding loop
     const sameStartEndPoints = Point.equalPoints(startPoints, endPoints)
-    let loopsRemaining = options.maximumLoops
+    let loopsRemaining = options.maxLoopCount
     while (!openSet.isEmpty() && loopsRemaining > 0) {
       // Get the closest item and mark it CLOSED
       const currentKey = openSet.pop()!
@@ -183,7 +183,7 @@ function findRoute(
         // Don't use the point changed rapidly.
         if (
           !(isPathBeginning && isStartPoint) &&
-          directionChange > options.maxAllowedDirectionChange
+          directionChange > options.maxDirectionChange
         ) {
           continue
         }
@@ -219,7 +219,7 @@ function findRoute(
               endDirectionAngle,
             )
 
-            if (endDirectionChange > options.maxAllowedDirectionChange) {
+            if (endDirectionChange > options.maxDirectionChange) {
               continue
             }
           }
