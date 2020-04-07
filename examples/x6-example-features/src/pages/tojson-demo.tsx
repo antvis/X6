@@ -217,6 +217,13 @@ export default class Example extends Component {
       },
     })
 
+    // 这段字符串是下面代码生成的内容stringify得到的
+    const string =
+      '{"nodes":[{"id":"node1","data":{"x":1,"y":2},"shape":"react","visible":true,"x":48,"y":48,"width":180,"height":40,"relative":false,"translateControlPoints":true,"bounds":{"x":48,"y":48,"width":180,"height":40}},{"id":"node2","data":{"xx":11,"yy":22},"shape":"react","label":false,"visible":true,"x":100,"y":200,"width":180,"height":40,"relative":false,"translateControlPoints":true,"bounds":{"x":100,"y":200,"width":180,"height":40}}],"edges":[{"id":"edge1","data":{"edge":"1111"},"curved":true,"rounded":true,"visible":true,"x":0,"y":0,"width":0,"height":0,"relative":true,"translateControlPoints":true,"bounds":{"x":0,"y":0,"width":0,"height":0},"source":"node1","target":"node2"},{"id":"cell-2","data":null,"align":"center","verticalAlign":"middle","fontColor":"rgba(0, 0, 0, 1)","shape":"connector","endArrow":"classic","stroke":"#888","sourceAnchorX":"1","sourceAnchorY":"0.5","targetAnchorX":"1","targetAnchorY":"0.5","sourceAnchorDx":"0","targetAnchorDx":"0","targetAnchorDy":"0","visible":true,"x":0,"y":0,"width":0,"height":0,"relative":true,"translateControlPoints":true,"bounds":{"x":0,"y":0,"width":0,"height":0},"source":"node1","target":"node2"}]}'
+    graph.render(JSON.parse(string))
+
+    return
+
     const node1 = graph.addNode({
       id: 'node1',
       x: 48,
@@ -309,7 +316,7 @@ export default class Example extends Component {
       console.log('看看画布JSON转换为string:', resultToString)
 
       graph.render(JSON.parse(resultToString))
-    }, 10000)
+    }, 8000)
   }
 
   // 有群组的情况
