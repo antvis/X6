@@ -65,7 +65,7 @@ function getPointBox(p: Point) {
   return new Rectangle(p.x, p.y, 0, 0)
 }
 
-function getPaddingBox(options: OrthOptions) {
+function getPaddingBox(options: OrthRouterOptions) {
   const sides = NumberExt.normalizeSides(options.padding || 20)
 
   return {
@@ -76,15 +76,15 @@ function getPaddingBox(options: OrthOptions) {
   }
 }
 
-function getSourceBBox(view: EdgeView, options: OrthOptions) {
+function getSourceBBox(view: EdgeView, options: OrthRouterOptions) {
   return view.sourceBBox.clone().moveAndExpand(getPaddingBox(options))
 }
 
-function getTargetBBox(view: EdgeView, options: OrthOptions) {
+function getTargetBBox(view: EdgeView, options: OrthRouterOptions) {
   return view.targetBBox.clone().moveAndExpand(getPaddingBox(options))
 }
 
-function getSourceAnchor(view: EdgeView, options: OrthOptions) {
+function getSourceAnchor(view: EdgeView, options: OrthRouterOptions) {
   if (view.sourceAnchor) {
     return view.sourceAnchor
   }
@@ -92,7 +92,7 @@ function getSourceAnchor(view: EdgeView, options: OrthOptions) {
   return bbox.getCenter()
 }
 
-function getTargetAnchor(view: EdgeView, options: OrthOptions) {
+function getTargetAnchor(view: EdgeView, options: OrthRouterOptions) {
   if (view.targetAnchor) {
     return view.targetAnchor
   }
@@ -264,11 +264,11 @@ function insideElement(
   }
 }
 
-export interface OrthOptions {
+export interface OrthRouterOptions {
   padding?: NumberExt.SideOptions
 }
 
-export const orth: Router.Definition<OrthOptions> = function(
+export const orth: Router.Definition<OrthRouterOptions> = function(
   vertices,
   options,
   linkView,
