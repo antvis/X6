@@ -8,9 +8,10 @@ import { CurveTo } from './curveto'
 import { Close } from './close'
 import { Segment } from './segment'
 import { Point } from '../point'
+import { Geometry } from '../geometry'
 import { clamp } from '../util'
 
-export class Path {
+export class Path extends Geometry {
   PRECISION: 3
   segments: Segment[]
 
@@ -25,6 +26,7 @@ export class Path {
   constructor(
     args?: Line | Curve | Polyline | Segment | Segment[] | Line[] | Curve[],
   ) {
+    super()
     this.segments = []
     if (Array.isArray(args)) {
       if (args[0] instanceof Line || args[0] instanceof Curve) {
@@ -1038,17 +1040,18 @@ export class Path {
     return this
   }
 
-  translate(tx: number, ty: number) {
-    this.segments.forEach(s => s.translate(tx, ty))
-    return this
-  }
-
-  serialize() {
-    if (!this.isValid()) {
-      throw new Error('Invalid path segments.')
+  translate(tx: number, ty: number): this
+  translate(p: Point | Point.PointLike | Point.PointData): this
+  translate(
+    tx: number | Point | Point.PointLike | Point.PointData,
+    ty?: number,
+  ) {
+    if (typeof tx === 'number') {
+      this.segments.forEach(s => s.translate(tx, ty as number))
+    } else {
+      this.segments.forEach(s => s.translate(tx))
     }
-
-    return this.toString()
+    return this
   }
 
   clone() {
@@ -1081,7 +1084,15 @@ export class Path {
     return true
   }
 
-  toString() {
+  toJSON() {
+    return this.segments.map(s => s.toJSON())
+  }
+
+  serialize() {
+    if (!this.isValid()) {
+      throw new Error('Invalid path segments.')
+    }
+
     return this.segments.map(s => s.serialize()).join(' ')
   }
 }

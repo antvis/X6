@@ -150,10 +150,22 @@ export class CurveTo extends Segment {
     return this
   }
 
-  translate(tx: number, ty: number) {
-    this.controlPoint1.translate(tx, ty)
-    this.controlPoint2.translate(tx, ty)
-    this.end.translate(tx, ty)
+  translate(tx: number, ty: number): this
+  translate(p: Point | Point.PointLike | Point.PointData): this
+  translate(
+    tx: number | Point | Point.PointLike | Point.PointData,
+    ty?: number,
+  ): this {
+    if (typeof tx === 'number') {
+      this.controlPoint1.translate(tx, ty as number)
+      this.controlPoint2.translate(tx, ty as number)
+      this.end.translate(tx, ty as number)
+    } else {
+      this.controlPoint1.translate(tx)
+      this.controlPoint2.translate(tx)
+      this.end.translate(tx)
+    }
+
     return this
   }
 
@@ -170,14 +182,14 @@ export class CurveTo extends Segment {
     return new CurveTo(this.controlPoint1, this.controlPoint2, this.end)
   }
 
-  toString() {
-    return [
-      this.type,
-      this.start.toString(),
-      this.controlPoint1.toString(),
-      this.controlPoint2.toString(),
-      this.end.toString(),
-    ].join(' ')
+  toJSON() {
+    return {
+      type: this.type,
+      start: this.start.toJSON(),
+      controlPoint1: this.controlPoint1.toJSON(),
+      controlPoint2: this.controlPoint2.toJSON(),
+      end: this.end.toJSON(),
+    }
   }
 
   serialize() {

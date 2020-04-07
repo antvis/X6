@@ -1,8 +1,9 @@
 import { Point } from './point'
 import { Line } from './line'
 import { Rectangle } from './rectangle'
+import { Geometry } from './geometry'
 
-export class Ellipse implements Ellipse.EllipseLike {
+export class Ellipse extends Geometry implements Ellipse.EllipseLike {
   x: number
   y: number
   a: number
@@ -13,6 +14,7 @@ export class Ellipse implements Ellipse.EllipseLike {
   }
 
   constructor(x?: number, y?: number, a?: number, b?: number) {
+    super()
     this.x = x == null ? 0 : x
     this.y = y == null ? 0 : y
     this.a = a == null ? 0 : a
@@ -200,6 +202,24 @@ export class Ellipse implements Ellipse.EllipseLike {
     return new Point(x, y).theta(ref)
   }
 
+  scale(sx: number, sy: number) {
+    this.a *= sx
+    this.b *= sy
+    return this
+  }
+
+  translate(dx: number, dy: number): this
+  translate(p: Point | Point.PointLike | Point.PointData): this
+  translate(
+    dx: number | Point | Point.PointLike | Point.PointData,
+    dy?: number,
+  ): this {
+    const p = Point.create(dx, dy)
+    this.x += p.x
+    this.y += p.y
+    return this
+  }
+
   equals(ellipse: Ellipse) {
     return (
       ellipse != null &&
@@ -218,11 +238,7 @@ export class Ellipse implements Ellipse.EllipseLike {
     return { x: this.x, y: this.y, a: this.a, b: this.b }
   }
 
-  valueOf() {
-    return this.toJSON()
-  }
-
-  toString() {
+  serialize() {
     return `${this.x} ${this.y} ${this.a} ${this.b}`
   }
 }

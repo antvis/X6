@@ -1,12 +1,13 @@
 import { Angle } from './angle'
 import { Point } from './point'
 import { Bearing } from './types'
-import { Rectangle } from './rectangle'
+import { Path } from './path'
 import { Ellipse } from './ellipse'
 import { Polyline } from './polyline'
-import { Path } from './path'
+import { Rectangle } from './rectangle'
+import { Geometry } from './geometry'
 
-export class Line {
+export class Line extends Geometry {
   public start: Point
   public end: Point
 
@@ -28,6 +29,7 @@ export class Line {
     x2?: number,
     y2?: number,
   ) {
+    super()
     if (typeof x1 === 'number' && typeof y1 === 'number') {
       this.start = new Point(x1, y1)
       this.end = new Point(x2, y2)
@@ -47,9 +49,20 @@ export class Line {
     return this
   }
 
-  translate(tx: number, ty: number) {
-    this.start.translate(tx, ty)
-    this.end.translate(tx, ty)
+  translate(tx: number, ty: number): this
+  translate(p: Point | Point.PointLike | Point.PointData): this
+  translate(
+    tx: number | Point | Point.PointLike | Point.PointData,
+    ty?: number,
+  ) {
+    if (typeof tx === 'number') {
+      this.start.translate(tx, ty as number)
+      this.end.translate(tx, ty as number)
+    } else {
+      this.start.translate(tx)
+      this.end.translate(tx)
+    }
+
     return this
   }
 
@@ -481,15 +494,11 @@ export class Line {
   }
 
   toJSON() {
-    return { start: this.start.toJSON, end: this.end.toJSON() }
+    return { start: this.start.toJSON(), end: this.end.toJSON() }
   }
 
-  valueOf() {
-    return this.toJSON()
-  }
-
-  toString() {
-    return `${this.start.toString()} ${this.end.toString()}`
+  serialize() {
+    return [this.start.serialize(), this.end.serialize()].join(' ')
   }
 }
 

@@ -1,8 +1,9 @@
 import { Point } from './point'
 import { Rectangle } from './rectangle'
 import { Line } from './line'
+import { Geometry } from './geometry'
 
-export class Polyline {
+export class Polyline extends Geometry {
   points: Point[]
 
   get start() {
@@ -20,6 +21,7 @@ export class Polyline {
   }
 
   constructor(points?: (Point | Point.PointLike | Point.PointData)[]) {
+    super()
     if (points != null) {
       this.points = points.map(p => Point.create(p))
     } else {
@@ -626,12 +628,12 @@ export class Polyline {
     return new Polyline(this.points.map(p => p.clone()))
   }
 
-  serialize() {
-    return this.points.map(p => `${p.x}, ${p.y}`).join(' ')
+  toJSON() {
+    return this.points.map(p => p.toJSON())
   }
 
-  toString() {
-    return this.serialize()
+  serialize() {
+    return this.points.map(p => `${p.x}, ${p.y}`).join(' ')
   }
 }
 
