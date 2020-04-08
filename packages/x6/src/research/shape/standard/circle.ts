@@ -6,8 +6,9 @@ export const Circle = NodeRegistry.register('circle', {
   attrs: {
     body: {
       ...bodyAttr,
-      refWidth: '100%',
-      refHeight: '100%',
+      refCx: '50%',
+      refCy: '50%',
+      refR: '50%',
     },
     label: {
       ...labelAttr,
