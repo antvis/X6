@@ -180,226 +180,6 @@ export class Polyline extends Geometry {
     return intersectionCount % 2 === 1
   }
 
-  // convexHull() {
-  //   let i
-  //   let n
-
-  //   const points = this.points
-  //   const count = points.length
-  //   if (count === 0) {
-  //     return new Polyline()
-  //   }
-
-  //   // step 1: find the starting point - point with the lowest y (if equality, highest x)
-  //   let startPoint: Point | null = null
-  //   for (i = 0; i < count; i += 1) {
-  //     if (startPoint == null) {
-  //       // if this is the first point we see, set it as start point
-  //       startPoint = points[i]
-  //     } else if (points[i].y < startPoint.y) {
-  //       // start point should have lowest y from all points
-  //       startPoint = points[i]
-  //     } else if (points[i].y === startPoint.y && points[i].x > startPoint.x) {
-  //       // if two points have the lowest y, choose the one that has highest x
-  //       // there are no points to the right of startPoint - no ambiguity about theta 0
-  //       // if there are several coincident start point candidates, first one is reported
-  //       startPoint = points[i]
-  //     }
-  //   }
-
-  //   // step 2: sort the list of points
-  //   // sorting by angle between line from startPoint to point and the x-axis (theta)
-
-  //   // step 2a: create the point records = [point, originalIndex, angle]
-  //   const sortedPointRecords = []
-  //   for (i = 0; i < count; i += 1) {
-  //     let angle = startPoint!.theta(points[i])
-  //     if (angle === 0) {
-  //       angle = 360 // give highest angle to start point
-  //       // the start point will end up at end of sorted list
-  //       // the start point will end up at beginning of hull points list
-  //     }
-
-  //     const entry = [points[i], i, angle]
-  //     sortedPointRecords.push(entry)
-  //   }
-
-  //   // step 2b: sort the list in place
-  //   sortedPointRecords.sort((record1, record2) => {
-  //     // returning a negative number here sorts record1 before record2
-  //     // if first angle is smaller than second, first angle should come before second
-
-  //     let sortOutput = record1[2] - record2[2] // negative if first angle smaller
-  //     if (sortOutput === 0) {
-  //       // if the two angles are equal, sort by originalIndex
-  //       sortOutput = record2[1] - record1[1] // negative if first index larger
-  //       // coincident points will be sorted in reverse-numerical order
-  //       // so the coincident points with lower original index will be considered first
-  //     }
-
-  //     return sortOutput
-  //   })
-
-  //   // step 2c: duplicate start record from the top of the stack to the bottom of the stack
-  //   if (sortedPointRecords.length > 2) {
-  //     const startPointRecord = sortedPointRecords[sortedPointRecords.length - 1]
-  //     sortedPointRecords.unshift(startPointRecord)
-  //   }
-
-  //   // step 3a: go through sorted points in order and find those with right turns
-  //   // we want to get our results in clockwise order
-  //   const insidePoints = {} // dictionary of points with left turns - cannot be on the hull
-  //   const hullPointRecords = [] // stack of records with right turns - hull point candidates
-
-  //   let currentPointRecord
-  //   let currentPoint
-  //   let lastHullPointRecord
-  //   let lastHullPoint
-  //   let secondLastHullPointRecord
-  //   let secondLastHullPoint
-  //   while (sortedPointRecords.length !== 0) {
-  //     currentPointRecord = sortedPointRecords.pop()
-  //     currentPoint = currentPointRecord[0]
-
-  //     // check if point has already been discarded
-  //     // keys for insidePoints are stored in the form 'point.x@point.y@@originalIndex'
-  //     if (
-  //       insidePoints.hasOwnProperty(
-  //         currentPointRecord[0] + '@@' + currentPointRecord[1],
-  //       )
-  //     ) {
-  //       // this point had an incorrect turn at some previous iteration of this loop
-  //       // this disqualifies it from possibly being on the hull
-  //       continue
-  //     }
-
-  //     let correctTurnFound = false
-  //     while (!correctTurnFound) {
-  //       if (hullPointRecords.length < 2) {
-  //         // not enough points for comparison, just add current point
-  //         hullPointRecords.push(currentPointRecord)
-  //         correctTurnFound = true
-  //       } else {
-  //         lastHullPointRecord = hullPointRecords.pop()
-  //         lastHullPoint = lastHullPointRecord[0]
-  //         secondLastHullPointRecord = hullPointRecords.pop()
-  //         secondLastHullPoint = secondLastHullPointRecord[0]
-
-  //         const crossProduct = secondLastHullPoint.cross(
-  //           lastHullPoint,
-  //           currentPoint,
-  //         )
-
-  //         if (crossProduct < 0) {
-  //           // found a right turn
-  //           hullPointRecords.push(secondLastHullPointRecord)
-  //           hullPointRecords.push(lastHullPointRecord)
-  //           hullPointRecords.push(currentPointRecord)
-  //           correctTurnFound = true
-  //         } else if (crossProduct === 0) {
-  //           // the three points are collinear
-  //           // three options:
-  //           // there may be a 180 or 0 degree angle at lastHullPoint
-  //           // or two of the three points are coincident
-  //           const THRESHOLD = 1e-10 // we have to take rounding errors into account
-  //           const angleBetween = lastHullPoint.angleBetween(
-  //             secondLastHullPoint,
-  //             currentPoint,
-  //           )
-  //           if (abs(angleBetween - 180) < THRESHOLD) {
-  //             // rouding around 180 to 180
-  //             // if the cross product is 0 because the angle is 180 degrees
-  //             // discard last hull point (add to insidePoints)
-  //             // insidePoints.unshift(lastHullPoint);
-  //             insidePoints[
-  //               lastHullPointRecord[0] + '@@' + lastHullPointRecord[1]
-  //             ] = lastHullPoint
-  //             // reenter second-to-last hull point (will be last at next iter)
-  //             hullPointRecords.push(secondLastHullPointRecord)
-  //             // do not do anything with current point
-  //             // correct turn not found
-  //           } else if (
-  //             lastHullPoint.equals(currentPoint) ||
-  //             secondLastHullPoint.equals(lastHullPoint)
-  //           ) {
-  //             // if the cross product is 0 because two points are the same
-  //             // discard last hull point (add to insidePoints)
-  //             // insidePoints.unshift(lastHullPoint);
-  //             insidePoints[
-  //               lastHullPointRecord[0] + '@@' + lastHullPointRecord[1]
-  //             ] = lastHullPoint
-  //             // reenter second-to-last hull point (will be last at next iter)
-  //             hullPointRecords.push(secondLastHullPointRecord)
-  //             // do not do anything with current point
-  //             // correct turn not found
-  //           } else if (abs(((angleBetween + 1) % 360) - 1) < THRESHOLD) {
-  //             // rounding around 0 and 360 to 0
-  //             // if the cross product is 0 because the angle is 0 degrees
-  //             // remove last hull point from hull BUT do not discard it
-  //             // reenter second-to-last hull point (will be last at next iter)
-  //             hullPointRecords.push(secondLastHullPointRecord)
-  //             // put last hull point back into the sorted point records list
-  //             sortedPointRecords.push(lastHullPointRecord)
-  //             // we are switching the order of the 0deg and 180deg points
-  //             // correct turn not found
-  //           }
-  //         } else {
-  //           // found a left turn
-  //           // discard last hull point (add to insidePoints)
-  //           // insidePoints.unshift(lastHullPoint);
-  //           insidePoints[
-  //             lastHullPointRecord[0] + '@@' + lastHullPointRecord[1]
-  //           ] = lastHullPoint
-  //           // reenter second-to-last hull point (will be last at next iter of loop)
-  //           hullPointRecords.push(secondLastHullPointRecord)
-  //           // do not do anything with current point
-  //           // correct turn not found
-  //         }
-  //       }
-  //     }
-  //   }
-  //   // at this point, hullPointRecords contains the output points in clockwise order
-  //   // the points start with lowest-y,highest-x startPoint, and end at the same point
-
-  //   // step 3b: remove duplicated startPointRecord from the end of the array
-  //   if (hullPointRecords.length > 2) {
-  //     hullPointRecords.pop()
-  //   }
-
-  //   // step 4: find the lowest originalIndex record and put it at the beginning of hull
-  //   let lowestHullIndex // the lowest originalIndex on the hull
-  //   let indexOfLowestHullIndexRecord = -1 // the index of the record with lowestHullIndex
-  //   n = hullPointRecords.length
-  //   for (i = 0; i < n; i += 1) {
-  //     const currentHullIndex = hullPointRecords[i][1]
-
-  //     if (lowestHullIndex === undefined || currentHullIndex < lowestHullIndex) {
-  //       lowestHullIndex = currentHullIndex
-  //       indexOfLowestHullIndexRecord = i
-  //     }
-  //   }
-
-  //   let hullPointRecordsReordered = []
-  //   if (indexOfLowestHullIndexRecord > 0) {
-  //     const newFirstChunk = hullPointRecords.slice(indexOfLowestHullIndexRecord)
-  //     const newSecondChunk = hullPointRecords.slice(
-  //       0,
-  //       indexOfLowestHullIndexRecord,
-  //     )
-  //     hullPointRecordsReordered = newFirstChunk.concat(newSecondChunk)
-  //   } else {
-  //     hullPointRecordsReordered = hullPointRecords
-  //   }
-
-  //   const hullPoints = []
-  //   n = hullPointRecordsReordered.length
-  //   for (i = 0; i < n; i += 1) {
-  //     hullPoints.push(hullPointRecordsReordered[i][0])
-  //   }
-
-  //   return new Polyline(hullPoints)
-  // }
-
   intersectionWithLine(line: Line) {
     const intersections = []
     for (let i = 0, n = this.points.length - 1; i < n; i += 1) {
@@ -612,6 +392,200 @@ export class Polyline extends Geometry {
     return this
   }
 
+  toHull() {
+    const points = this.points
+    const count = points.length
+    if (count === 0) {
+      return new Polyline()
+    }
+
+    // Step 1: find the starting point -- point with
+    // the lowest y (if equality, highest x).
+    let startPoint: Point = points[0]
+    for (let i = 1; i < count; i += 1) {
+      if (points[i].y < startPoint.y) {
+        startPoint = points[i]
+      } else if (points[i].y === startPoint.y && points[i].x > startPoint.x) {
+        startPoint = points[i]
+      }
+    }
+
+    // Step 2: sort the list of points by angle between line
+    // from start point to current point and the x-axis (theta).
+
+    // Step 2a: create the point records = [point, originalIndex, angle]
+    const sortedRecords: Types.HullRecord[] = []
+    for (let i = 0; i < count; i += 1) {
+      let angle = startPoint.theta(points[i])
+      if (angle === 0) {
+        // Give highest angle to start point.
+        // The start point will end up at end of sorted list.
+        // The start point will end up at beginning of hull points list.
+        angle = 360
+      }
+
+      sortedRecords.push([points[i], i, angle])
+    }
+
+    // Step 2b: sort the list in place
+    sortedRecords.sort((record1, record2) => {
+      let ret = record1[2] - record2[2]
+      if (ret === 0) {
+        ret = record2[1] - record1[1]
+      }
+
+      return ret
+    })
+
+    // Step 2c: duplicate start record from the top of
+    // the stack to the bottom of the stack.
+    if (sortedRecords.length > 2) {
+      const startPoint = sortedRecords[sortedRecords.length - 1]
+      sortedRecords.unshift(startPoint)
+    }
+
+    // Step 3
+    // ------
+
+    // Step 3a: go through sorted points in order and find those with
+    // right turns, and we want to get our results in clockwise order.
+
+    // Dictionary of points with left turns - cannot be on the hull.
+    const insidePoints: { [key: string]: Point } = {}
+    // Stack of records with right turns - hull point candidates.
+    const hullRecords: Types.HullRecord[] = []
+    const getKey = (record: Types.HullRecord) =>
+      `${record[0].toString()}@${record[1]}`
+
+    while (sortedRecords.length !== 0) {
+      const currentRecord = sortedRecords.pop()!
+      const currentPoint = currentRecord[0]
+
+      // Check if point has already been discarded.
+      if (insidePoints[getKey(currentRecord)]) {
+        continue
+      }
+
+      let correctTurnFound = false
+      while (!correctTurnFound) {
+        if (hullRecords.length < 2) {
+          // Not enough points for comparison, just add current point.
+          hullRecords.push(currentRecord)
+          correctTurnFound = true
+        } else {
+          const lastHullRecord = hullRecords.pop()!
+          const lastHullPoint = lastHullRecord[0]
+          const secondLastHullRecord = hullRecords.pop()!
+          const secondLastHullPoint = secondLastHullRecord[0]
+
+          const crossProduct = secondLastHullPoint.cross(
+            lastHullPoint,
+            currentPoint,
+          )
+
+          if (crossProduct < 0) {
+            // Found a right turn.
+            hullRecords.push(secondLastHullRecord)
+            hullRecords.push(lastHullRecord)
+            hullRecords.push(currentRecord)
+            correctTurnFound = true
+          } else if (crossProduct === 0) {
+            // the three points are collinear
+            // three options:
+            // there may be a 180 or 0 degree angle at lastHullPoint
+            // or two of the three points are coincident
+
+            // we have to take rounding errors into account
+            const THRESHOLD = 1e-10
+            const angleBetween = lastHullPoint.angleBetween(
+              secondLastHullPoint,
+              currentPoint,
+            )
+
+            if (Math.abs(angleBetween - 180) < THRESHOLD) {
+              // rouding around 180 to 180
+              // if the cross product is 0 because the angle is 180 degrees
+              // discard last hull point (add to insidePoints)
+              // insidePoints.unshift(lastHullPoint);
+              insidePoints[getKey(lastHullRecord)] = lastHullPoint
+              // reenter second-to-last hull point (will be last at next iter)
+              hullRecords.push(secondLastHullRecord)
+              // do not do anything with current point
+              // correct turn not found
+            } else if (
+              lastHullPoint.equals(currentPoint) ||
+              secondLastHullPoint.equals(lastHullPoint)
+            ) {
+              // if the cross product is 0 because two points are the same
+              // discard last hull point (add to insidePoints)
+              // insidePoints.unshift(lastHullPoint);
+              insidePoints[getKey(lastHullRecord)] = lastHullPoint
+              // reenter second-to-last hull point (will be last at next iter)
+              hullRecords.push(secondLastHullRecord)
+              // do not do anything with current point
+              // correct turn not found
+            } else if (Math.abs(((angleBetween + 1) % 360) - 1) < THRESHOLD) {
+              // rounding around 0 and 360 to 0
+              // if the cross product is 0 because the angle is 0 degrees
+              // remove last hull point from hull BUT do not discard it
+              // reenter second-to-last hull point (will be last at next iter)
+              hullRecords.push(secondLastHullRecord)
+              // put last hull point back into the sorted point records list
+              sortedRecords.push(lastHullRecord)
+              // we are switching the order of the 0deg and 180deg points
+              // correct turn not found
+            }
+          } else {
+            // found a left turn
+            // discard last hull point (add to insidePoints)
+            // insidePoints.unshift(lastHullPoint);
+            insidePoints[getKey(lastHullRecord)] = lastHullPoint
+            // reenter second-to-last hull point (will be last at next iter of loop)
+            hullRecords.push(secondLastHullRecord)
+            // do not do anything with current point
+            // correct turn not found
+          }
+        }
+      }
+    }
+
+    // At this point, hullPointRecords contains the output points in clockwise order
+    // the points start with lowest-y,highest-x startPoint, and end at the same point
+
+    // Step 3b: remove duplicated startPointRecord from the end of the array
+    if (hullRecords.length > 2) {
+      hullRecords.pop()
+    }
+
+    // Step 4: find the lowest originalIndex record and put it at the beginning of hull
+    let lowestHullIndex // the lowest originalIndex on the hull
+    let indexOfLowestHullIndexRecord = -1 // the index of the record with lowestHullIndex
+    for (let i = 0, n = hullRecords.length; i < n; i += 1) {
+      const currentHullIndex = hullRecords[i][1]
+
+      if (lowestHullIndex === undefined || currentHullIndex < lowestHullIndex) {
+        lowestHullIndex = currentHullIndex
+        indexOfLowestHullIndexRecord = i
+      }
+    }
+
+    let hullPointRecordsReordered = []
+    if (indexOfLowestHullIndexRecord > 0) {
+      const newFirstChunk = hullRecords.slice(indexOfLowestHullIndexRecord)
+      const newSecondChunk = hullRecords.slice(0, indexOfLowestHullIndexRecord)
+      hullPointRecordsReordered = newFirstChunk.concat(newSecondChunk)
+    } else {
+      hullPointRecordsReordered = hullRecords
+    }
+
+    const hullPoints = []
+    for (let i = 0, n = hullPointRecordsReordered.length; i < n; i += 1) {
+      hullPoints.push(hullPointRecordsReordered[i][0])
+    }
+
+    return new Polyline(hullPoints)
+  }
+
   equals(p: Polyline) {
     if (p == null) {
       return false
@@ -653,4 +627,8 @@ export namespace Polyline {
 
     return new Polyline(points)
   }
+}
+
+namespace Types {
+  export type HullRecord = [Point, number, number]
 }
