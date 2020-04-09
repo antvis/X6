@@ -91,7 +91,7 @@ export class CellViewFlag {
     }
 
     Object.keys(this.attrs).forEach(attr => {
-      if (this.cell.store.hasChanged(attr as any)) {
+      if (this.cell.hasChanged(attr)) {
         flag |= this.attrs[attr]
       }
     })

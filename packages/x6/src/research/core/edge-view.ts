@@ -212,7 +212,8 @@ export class EdgeView<
     children.forEach(child => {
       const className = child.attr('class')
       if (className) {
-        cache[StringExt.camelCase(className)] = child.node
+        cache[StringExt.camelCase(className) as keyof EdgeView.ContainerCache] =
+          child.node
       }
     })
 
@@ -347,7 +348,7 @@ export class EdgeView<
       elem.setAttribute('cursor', canLabelMove ? 'move' : 'default')
 
       const label = labels[i]
-      const attrs = ObjectExt.merge({}, label.attrs, defaultLabel.attrs)
+      const attrs = ObjectExt.merge({}, defaultLabel.attrs, label.attrs)
       this.updateAttrs(elem, attrs, {
         selectors,
         rootBBox: label.size ? Rectangle.fromSize(label.size) : undefined,
@@ -357,11 +358,40 @@ export class EdgeView<
     return this
   }
 
+  protected mergeLabelAttrs(
+    hasCustomMarkup: boolean,
+    labelAttrs?: Attr.CellAttrs | null,
+    defaultLabelAttrs?: Attr.CellAttrs | null,
+  ) {
+    if (labelAttrs === null) {
+      return null
+    }
+
+    if (labelAttrs === undefined) {
+      if (defaultLabelAttrs === null) {
+        return null
+      }
+      if (defaultLabelAttrs === undefined) {
+        return undefined
+      }
+
+      if (hasCustomMarkup) {
+        return defaultLabelAttrs
+      }
+
+      return ObjectExt.merge({}, defaultLabelAttrs)
+    }
+
+    if (hasCustomMarkup) {
+      return ObjectExt.merge({}, defaultLabelAttrs, labelAttrs)
+    }
+  }
+
   /**
-   * Tools are a group of clickable elements that manipulate the whole link.
-   * A good example of this is the remove tool that removes the whole link.
-   * Tools appear after hovering the link close to the `source` element/point
-   * of the link but are offset a bit so that they don't cover the `marker-arrowhead`.
+   * Tools are a group of clickable elements that manipulate the whole edge.
+   * A good example of this is the remove tool that removes the whole edge.
+   * Tools appear after hovering the edge close to the `source` element/point
+   * of the edge but are offset a bit so that they don't cover the `marker-arrowhead`.
    */
   renderTools() {
     const container = this.containers.tools
@@ -379,10 +409,10 @@ export class EdgeView<
       $container.append(tool.node)
       this.toolCache = tool.node
 
-      // If `doubleLinkTools` is enabled, we render copy of the tools on the
-      // other side of the edge as well but only if the edge is longer than
-      // `longLinkLength`.
-      if (this.options.doubleLinkTools) {
+      // If `doubleTools` is enabled, we render copy of the tools on the
+      // other side of the edge as well but only if the edge is longer
+      // than `longLength`.
+      if (this.options.doubleTools) {
         let tool2
         const doubleToolMarkup = this.cell.doubleToolMarkup
         if (Markup.isStringMarkup(doubleToolMarkup)) {
@@ -489,7 +519,7 @@ export class EdgeView<
       return 0
     }
 
-    // Sets simplified polyline points as link vertices.
+    // Sets simplified polyline points as edge vertices.
     // Removes first and last polyline points again (source/target anchors).
     edge.setVertices(simplifiedPoints.slice(1, simplifiedCount - 1), options)
     return rawCount - simplifiedCount
@@ -509,8 +539,8 @@ export class EdgeView<
 
     if (containers.sourceMarker && containers.targetMarker) {
       this.translateAndAutoOrientArrows(
-        containers.markerSource,
-        containers.markerTarget,
+        containers.sourceMarker,
+        containers.targetMarker,
       )
     }
   }
@@ -577,7 +607,7 @@ export class EdgeView<
   updateConnection(options: any = {}) {
     const edge = this.cell
 
-    // The link is being translated by an ancestor that will shift
+    // The edge is being translated by an ancestor that will shift
     // source, target and vertices by an equal distance.
     if (
       options.translateBy &&
@@ -1048,15 +1078,15 @@ export class EdgeView<
     // this up all the time would be slow.
 
     let scale = ''
-    let offset = this.options.linkToolsOffset
+    let offset = this.options.toolsOffset
     const connectionLength = this.getConnectionLength()
 
     // Firefox returns `connectionLength=NaN` in odd cases (for bezier curves).
     // In that case we won't update tools position at all.
     if (connectionLength != null) {
-      // If the link is too short, make the tools half the
+      // If the edge is too short, make the tools half the
       // size and the offset twice as low.
-      if (connectionLength < this.options.shortLinkLength) {
+      if (connectionLength < this.options.shortLength) {
         scale = 'scale(.5)'
         offset /= 2
       }
@@ -1071,13 +1101,12 @@ export class EdgeView<
       }
 
       if (
-        this.options.doubleLinkTools &&
-        connectionLength >= this.options.longLinkLength
+        this.options.doubleTools &&
+        connectionLength >= this.options.longLength
       ) {
-        const doubleLinkToolsOffset =
-          this.options.doubleLinkToolsOffset || offset
+        const doubleToolsOffset = this.options.doubleToolsOffset || offset
 
-        pos = this.getPointAtLength(connectionLength - doubleLinkToolsOffset)
+        pos = this.getPointAtLength(connectionLength - doubleToolsOffset)
         if (pos != null) {
           v.attr(
             this.tool2Cache,
@@ -1086,7 +1115,7 @@ export class EdgeView<
           )
         }
         v.attr(this.tool2Cache, 'visibility', 'visible')
-      } else if (this.options.doubleLinkTools) {
+      } else if (this.options.doubleTools) {
         v.attr(this.tool2Cache, 'visibility', 'hidden')
       }
     }
@@ -1108,7 +1137,7 @@ export class EdgeView<
     const targetArrowhead = this.containers.targetArrowhead
     if (sourceArrowhead && targetArrowhead) {
       const len = this.getConnectionLength() || 0
-      const sx = len < this.options.shortLinkLength ? 0.5 : 1
+      const sx = len < this.options.shortLength ? 0.5 : 1
       v.scale(sourceArrowhead as SVGElement, sx)
       v.scale(targetArrowhead as SVGElement, sx)
       this.translateAndAutoOrientArrows(sourceArrowhead, targetArrowhead)
@@ -2433,15 +2462,15 @@ export class EdgeView<
 export namespace EdgeView {
   export interface Options extends CellView.Options {
     perpendicular: boolean
-    doubleLinkTools: boolean
-    shortLinkLength: number
-    longLinkLength: number
-    linkToolsOffset: number
-    doubleLinkToolsOffset: number
+    doubleTools: boolean
+    shortLength: number
+    longLength: number
+    toolsOffset: number
+    doubleToolsOffset: number
     sampleInterval: number
   }
 
-  export interface ContainerCache extends KeyValue<Element | undefined> {
+  export interface ContainerCache {
     connection?: Element
     connectionWrap?: Element
     sourceMarker?: Element
@@ -2536,10 +2565,10 @@ EdgeView.config<EdgeView.Options>({
     vertexMarkup: ['vertices'],
     toolMarkup: ['tools'],
   },
-  shortLinkLength: 105,
-  longLinkLength: 155,
-  linkToolsOffset: 40,
-  doubleLinkTools: false,
-  doubleLinkToolsOffset: 65,
+  shortLength: 105,
+  longLength: 155,
+  toolsOffset: 40,
+  doubleTools: false,
+  doubleToolsOffset: 65,
   sampleInterval: 50,
 })

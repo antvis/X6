@@ -1,10 +1,11 @@
 import { version as v } from '../version'
-import { NodeRegistry } from './registry'
+import { NodeRegistry, EdgeRegistry } from './registry'
 import { Globals } from './core/globals'
 
 export namespace x6 {
   export const version = v
   export const registerNode = NodeRegistry.register
+  export const registerEdge = EdgeRegistry.register
 }
 
 export namespace x6 {

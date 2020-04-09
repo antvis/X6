@@ -22,6 +22,7 @@ import { Highlighter } from '../highlighter'
 import { CellViewFlag } from './cell-view-flag'
 import {
   NodeRegistry,
+  EdgeRegistry,
   ViewRegistry,
   GridRegistry,
   BackgroundRegistry,
@@ -48,14 +49,7 @@ export class Graph extends View {
     origin: { x: 0, y: 0 },
     gridSize: 10,
     drawGrid: true,
-    background: {
-      // color: '#f5f5f5',
-      image:
-        'https://cdn2.iconfinder.com/data/icons/social-media-2285/512/1_Slack_colored_svg-32.png',
-      pattern: 'watermark',
-      opacity: 0.1,
-    },
-
+    background: false,
     perpendicularLinks: false,
     snapLinks: false, // false, true, { radius: value }
     // When set to FALSE, an element may not have more than 1 link with the same source and target element.
@@ -259,9 +253,10 @@ export class Graph extends View {
   UPDATE_DELAYING_BATCHES = ['translate']
   MIN_SCALE = 1e-6
 
-  constructor(options: Graph.Options) {
+  constructor(options: any) {
     super()
 
+    this.options = ObjectExt.merge(this.options, options)
     this.container = options.container
     const { selectors, fragment } = Markup.parseJSONMarkup(Graph.markup)
     this.backgroundElem = selectors.background as HTMLDivElement
@@ -429,7 +424,7 @@ export class Graph extends View {
 
   protected onCellChanged(cell: Cell, options: Cell.MutateOptions) {
     if (
-      cell.store.hasChanged('zIndex') &&
+      cell.hasChanged('zIndex') &&
       this.options.sorting === sortingTypes.APPROX
     ) {
       const view = this.findViewByCell(cell)
@@ -489,6 +484,30 @@ export class Graph extends View {
 
     this.model.addCell(result)
 
+    return result
+  }
+
+  addEdge(edge: Edge.Metadata): Edge
+  addEdge(edge: Edge): Edge
+  addEdge(edge: Edge | Edge.Metadata): Edge {
+    if (edge instanceof Edge) {
+      this.model.addCell(edge)
+      return edge
+    }
+
+    const { type, ...options } = edge
+    let define
+    if (type) {
+      define = EdgeRegistry.get(type)
+      if (define == null) {
+        throw new Error(`Unknow edge type: "${type}"`)
+      }
+    } else {
+      define = Edge
+    }
+
+    const result = new define(options)
+    this.model.addCell(result)
     return result
   }
 
@@ -1287,18 +1306,53 @@ export class Graph extends View {
     this.sortViewsExact()
   }
 
+  // Highly inspired by the jquery.sortElements plugin by Padolsey.
+  // See http://james.padolsey.com/javascript/sorting-elements-with-jquery/.
+  protected sortElements(
+    elems: Element[],
+    comparator: (a: Element, b: Element) => number,
+  ) {
+    const placements = elems.map(elem => {
+      const parentNode = elem.parentNode!
+      // Since the element itself will change position, we have
+      // to have some way of storing it's original position in
+      // the DOM. The easiest way is to have a 'flag' node:
+      const nextSibling = parentNode.insertBefore(
+        document.createTextNode(''),
+        elem.nextSibling,
+      )
+
+      return (targetNode: Element) => {
+        if (parentNode === targetNode) {
+          throw new Error(
+            "You can't sort elements if any one is a descendant of another.",
+          )
+        }
+
+        // Insert before flag
+        parentNode.insertBefore(targetNode, nextSibling)
+        // Remove flag
+        parentNode.removeChild(nextSibling)
+      }
+    })
+
+    elems.sort(comparator).forEach((elem, index) => placements[index](elem))
+  }
+
   sortViewsExact() {
-    // Run insertion sort algorithm in order to efficiently sort DOM elements according to their
-    // associated model `z` attribute.
-    // const $cells = $(this.drawPane).children('[model-id]')
-    // const cells = this.model.get('cells')
-    // sortElements($cells, function(a, b) {
-    //   const cellA = cells.get(a.getAttribute('model-id'))
-    //   const cellB = cells.get(b.getAttribute('model-id'))
-    //   const zA = cellA.attributes.z || 0
-    //   const zB = cellB.attributes.z || 0
-    //   return zA === zB ? 0 : zA < zB ? -1 : 1
-    // })
+    // Run insertion sort algorithm in order to efficiently sort DOM
+    // elements according to their associated cell `zIndex` attribute.
+    const elems = this.$(this.drawPane)
+      .children('[data-id]')
+      .toArray() as Element[]
+    const model = this.model
+    this.sortElements(elems, (a, b) => {
+      const cellA = model.getCell(a.getAttribute('data-id') || '')
+      const cellB = model.getCell(b.getAttribute('data-id') || '')
+      const z1 = cellA.getZIndex() || 0
+      const z2 = cellB.getZIndex() || 0
+      return z1 === z2 ? 0 : z1 < z2 ? -1 : 1
+    })
   }
 
   protected addZPivot(zIndex: number = 0) {
@@ -1671,7 +1725,9 @@ export class Graph extends View {
 
   findViewByCell(cellId: string | number): CellView | null
   findViewByCell(cell: Cell | null): CellView | null
-  findViewByCell(cell: Cell | string | number | null | undefined) {
+  findViewByCell(
+    cell: Cell | string | number | null | undefined,
+  ): CellView | null {
     if (cell == null) {
       return null
     }
@@ -2248,7 +2304,7 @@ export class Graph extends View {
 
   drawBackground() {
     if (this.options.background) {
-      this.updateBackground(this.options.background)
+      this.updateBackground(this.options.background as any)
     }
   }
 

@@ -9,7 +9,9 @@ import { Node } from './node'
 import { Attr } from '../attr'
 import { Markup } from './markup'
 
-export class Edge extends Cell {
+export class Edge<
+  Properties extends Edge.Properties = Edge.Properties
+> extends Cell<Properties> {
   protected static defaults: Edge.Defaults = {}
   public readonly store: Store<Edge.Properties>
   protected readonly defaultMarkup = Markup.edgeMarkup
@@ -109,6 +111,14 @@ export class Edge extends Cell {
     return this.getTerminal('source')
   }
 
+  getSourceCellId() {
+    return (this.source as Edge.TerminalCellData).cellId
+  }
+
+  getSourcePortId() {
+    return (this.source as Edge.TerminalCellData).portId
+  }
+
   setSource(
     edge: Node,
     args?: Edge.SetCellTerminalArgs,
@@ -143,6 +153,14 @@ export class Edge extends Cell {
 
   getTarget() {
     return this.getTerminal('target')
+  }
+
+  getTargetCellId() {
+    return (this.target as Edge.TerminalCellData).cellId
+  }
+
+  getTargetPortId() {
+    return (this.target as Edge.TerminalCellData).portId
   }
 
   setTarget(
@@ -267,7 +285,7 @@ export class Edge extends Cell {
     return this.getTerminalNode('target')
   }
 
-  getTerminalNode(type: Edge.TerminalType) {
+  getTerminalNode(type: Edge.TerminalType): Cell | null {
     let cell: Cell | null = this // tslint:disable-line
     const visited: { [id: string]: boolean } = {}
 
@@ -875,10 +893,15 @@ export namespace Edge {
 
   export interface Properties extends Cell.Properties, Options {}
 
-  export interface SetOptions extends Cell.SetOptions {}
+  /**
+   * The metadata used creating an edge instance.
+   */
+  export interface Metadata extends Options {}
 }
 
 export namespace Edge {
+  export interface SetOptions extends Cell.SetOptions {}
+
   export type TerminalType = 'source' | 'target'
 
   export interface SetTerminalCommonArgs {
@@ -967,8 +990,13 @@ export namespace Edge {
 
   export interface LabelPositionObject {
     distance: number
-    offset?: number | { x: number; y: number }
     rotation?: number
+    offset?:
+      | number
+      | {
+          x?: number
+          y?: number
+        }
     options?: LabelPositionOptions
   }
 

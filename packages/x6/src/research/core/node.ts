@@ -1,13 +1,15 @@
 import { StringExt, ObjectExt } from '../../util'
 import { Point, Rectangle, Angle } from '../../geometry'
-import { Size, KeyValue } from '../../types'
+import { Size } from '../../types'
 import { Cell } from './cell'
 import { PortData } from './port-data'
 import { Markup } from './markup'
 import { Edge } from './edge'
 import { Store } from './store'
 
-export class Node extends Cell {
+export class Node<
+  Properties extends Node.Properties = Node.Properties
+> extends Cell<Properties> {
   protected static defaults: Node.Defaults = {
     rotation: 0,
     position: { x: 0, y: 0 },
@@ -628,12 +630,12 @@ export class Node extends Cell {
   addPort(port: PortData.PortMetadata, options?: Cell.SetByPathOptions) {
     const ports = [...this.ports.items]
     ports.push(port)
-    this.setByPath('ports/items', ports, options)
+    this.setPropByPath('ports/items', ports, options)
     return this
   }
 
   addPorts(ports: PortData.PortMetadata[], options?: Cell.SetByPathOptions) {
-    this.setByPath('ports/items', [...this.ports.items, ...ports], options)
+    this.setPropByPath('ports/items', [...this.ports.items, ...ports], options)
     return this
   }
 
@@ -647,7 +649,7 @@ export class Node extends Cell {
     if (index !== -1) {
       ports.splice(index, 1)
       options.rewrite = true
-      this.setByPath('ports/items', ports, options)
+      this.setPropByPath('ports/items', ports, options)
     }
 
     return this
@@ -678,12 +680,12 @@ export class Node extends Cell {
               return cp.id === id
             }),
         )
-        this.setByPath('ports/items', remainingPorts, options)
+        this.setPropByPath('ports/items', remainingPorts, options)
       }
     } else {
       options = portsForRemoval || {}
       options.rewrite = true
-      this.setByPath('ports/items', [], options)
+      this.setPropByPath('ports/items', [], options)
     }
 
     return this
@@ -822,9 +824,7 @@ export namespace Node {
   /**
    * The metadata used creating a node instance.
    */
-  export interface Metadata extends Options, KeyValue {
-    type?: string
-  }
+  export interface Metadata extends Options {}
 }
 
 export namespace Node {
@@ -881,3 +881,9 @@ export namespace Node {
     return shape
   }
 }
+
+const cell = new Cell()
+cell.getProp('attrs')
+
+const node = new Node()
+node.getProp('children')
