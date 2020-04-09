@@ -11,7 +11,9 @@ const contentAction = 'content' as any
 const contentSelector = '.text-block-content'
 const registryName = getName('text-block')
 
-export class TextBlock extends Node {
+export class TextBlock<
+  Properties extends TextBlock.Properties = TextBlock.Properties
+> extends Node<Properties> {
   public readonly store: Store<TextBlock.Properties>
 
   get content() {

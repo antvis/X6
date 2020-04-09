@@ -593,7 +593,7 @@ export class NodeView<
     } else {
       this.notifyMouseMove(e, x, y)
       if (action === 'move') {
-        const view = (data as EventData.Moving).delegatedView || this
+        const view = (data as EventData.Moving).targetView || this
         view.dragNode(e, x, y)
       }
     }
@@ -609,7 +609,7 @@ export class NodeView<
     } else {
       this.notifyMouseUp(e, x, y)
       if (action === 'move') {
-        const view = (data as EventData.Moving).delegatedView || this
+        const view = (data as EventData.Moving).targetView || this
         view.stopNodeDragging(e, x, y)
       }
     }
@@ -943,20 +943,20 @@ export class NodeView<
   }
 
   protected startNodeDragging(e: JQuery.MouseDownEvent, x: number, y: number) {
-    const delegatedView = this.getDelegatedView()
-    if (delegatedView == null || !delegatedView.can('elementMove')) {
+    const targetView = this.getDelegatedView()
+    if (targetView == null || !targetView.can('elementMove')) {
       return
     }
 
     this.setEventData<EventData.Moving>(e, {
-      delegatedView,
+      targetView,
       action: 'move',
     })
 
-    const pos = Point.create(delegatedView.cell.getPosition())
-    delegatedView.setEventData<EventData.MovingTargetNode>(e, {
-      offset: pos.diff(x, y),
-      restrictedArea: this.graph.getRestrictedArea(delegatedView),
+    const position = Point.create(targetView.cell.getPosition())
+    targetView.setEventData<EventData.MovingTargetNode>(e, {
+      offset: position.diff(x, y),
+      restrictedArea: this.graph.getRestrictedArea(targetView),
     })
   }
 
@@ -1023,7 +1023,7 @@ namespace EventData {
 
   export interface Moving {
     action: 'move'
-    delegatedView: NodeView
+    targetView: NodeView
   }
 
   export interface MovingTargetNode {

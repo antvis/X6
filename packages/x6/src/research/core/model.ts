@@ -34,17 +34,14 @@ export class Model extends Basecoat<Model.EventArgs> {
     collection.on('sort', () => this.trigger('sort'))
     collection.on('update', args => this.trigger('update', args))
     collection.on('change', args => this.trigger('cell:changed', args))
-
     collection.on('reset', args => {
       this.onReset(args.current)
       this.trigger('reset', args)
     })
-
     collection.on('add', args => {
       this.onCellAdded(args.cell)
       this.trigger('cell:added', args)
     })
-
     collection.on('remove', args => {
       this.onCellRemoved(args.cell, args.options)
       this.trigger('cell:removed', args)
@@ -318,7 +315,7 @@ export class Model extends Basecoat<Model.EventArgs> {
     [key: string]: boolean
   }) {
     return cache
-      ? Object.keys(this.edges)
+      ? Object.keys(cache)
           .map(id => this.getCell<T>(id))
           .filter(cell => cell != null)
       : []
@@ -621,7 +618,7 @@ export class Model extends Basecoat<Model.EventArgs> {
     })
   }
 
-  getSuccessors(cell: Cell, options: Model.GetDescendantsOptions) {
+  getSuccessors(cell: Cell, options: Cell.GetDescendantsOptions) {
     const descendants: Cell[] = []
     this.search(
       cell,
@@ -653,7 +650,7 @@ export class Model extends Basecoat<Model.EventArgs> {
     return result
   }
 
-  getPredecessors(cell: Cell, options: Model.GetDescendantsOptions) {
+  getPredecessors(cell: Cell, options: Cell.GetDescendantsOptions) {
     const ancestors: Cell[] = []
     this.search(
       cell,
@@ -1018,11 +1015,6 @@ export namespace Model {
     cell: Cell,
     distance: number,
   ) => any
-
-  export interface GetDescendantsOptions {
-    deep?: boolean
-    breadthFirst?: boolean
-  }
 
   export interface GetNeighborsOptions {
     deep?: boolean

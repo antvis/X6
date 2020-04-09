@@ -63,11 +63,17 @@ export class Collection extends Basecoat<Collection.EventArgs> {
     entities.forEach(cell => {
       const existing = this.get(cell)
       if (existing) {
-        if (localOptions.merge && cell.store !== existing.store) {
-          existing.store.set(cell.store.get(), options) // merge
+        if (localOptions.merge && !cell.isSameStore(existing)) {
+          existing.setProp(cell.getProp(), options) // merge
           merged.push(existing)
           if (sortable && !sort) {
-            sort = existing.store.hasChanged(sortAttr as any)
+            if (sortAttr == null || typeof sortAttr === 'function') {
+              sort = existing.hasChanged()
+            } else if (typeof sortAttr === 'string') {
+              sort = existing.hasChanged(sortAttr)
+            } else {
+              sort = sortAttr.some(key => existing.hasChanged(key))
+            }
           }
         }
       } else {
@@ -217,6 +223,10 @@ export class Collection extends Basecoat<Collection.EventArgs> {
 
   last() {
     return this.at(-1)
+  }
+
+  indexOf(cell: Cell) {
+    return this.cells.indexOf(cell)
   }
 
   toArray() {

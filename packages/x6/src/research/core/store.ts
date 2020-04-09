@@ -99,6 +99,8 @@ export class Store<D> extends Basecoat<Store.EventArgs<D>> {
   get(): D
   get<K extends keyof D>(key: K): D[K]
   get<K extends keyof D>(key: K, defaultValue: D[K]): NonUndefined<D[K]>
+  get<T>(key: string): T
+  get<T>(key: string, defaultValue: T): T
   get<K extends keyof D>(key?: K, defaultValue?: D[K]): D | D[K] | undefined {
     if (key == null) {
       return this.data
@@ -122,6 +124,7 @@ export class Store<D> extends Basecoat<Store.EventArgs<D>> {
     value: D[K] | null | undefined | void,
     options?: Store.SetOptions,
   ): this
+  set(key: string, value: any, options?: Store.SetOptions): this
   set(data: D, options?: Store.SetOptions): this
   set<K extends keyof D>(
     key: K | Partial<D>,
@@ -242,6 +245,9 @@ export class Store<D> extends Basecoat<Store.EventArgs<D>> {
     return this
   }
 
+  hasChanged(): boolean
+  hasChanged<K extends keyof D>(key: K | null): boolean
+  hasChanged(key: string | null): boolean
   hasChanged<K extends keyof D>(key?: K | null) {
     if (key == null) {
       return Object.keys(this.changed).length > 0
