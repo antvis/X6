@@ -1,17 +1,4 @@
-/**
- * @see https://www.typescriptlang.org/docs/handbook/mixins.html
- */
-export function applyMixins(derivedCtor: any, ...baseCtors: any[]) {
-  baseCtors.forEach(baseCtor => {
-    Object.getOwnPropertyNames(baseCtor.prototype).forEach(name => {
-      Object.defineProperty(
-        derivedCtor.prototype,
-        name,
-        Object.getOwnPropertyDescriptor(baseCtor.prototype, name)!,
-      )
-    })
-  })
-}
+const BLOBAL_KEY = '__X6_CLASS__'
 
 const extendStatics =
   Object.setPrototypeOf ||
@@ -42,7 +29,7 @@ export function inherit(cls: Function, base: Function) {
 }
 
 let seed = 0
-const classIdMap = new WeakMap<Function, string>()
+const classIdMap: WeakMap<Function, string> = new WeakMap()
 function getClassId(c: Function) {
   let id = classIdMap.get(c)
   if (id == null) {
@@ -53,12 +40,12 @@ function getClassId(c: Function) {
   return id
 }
 
+const win = window as any
+win[BLOBAL_KEY] = {}
 function cacheClass(c: Function) {
-  const win = window as any
-  const key = '__x6_class__'
-  let cache = win[key]
+  let cache = win[BLOBAL_KEY]
   if (cache == null) {
-    cache = win[key] = {}
+    cache = win[BLOBAL_KEY] = {}
   }
 
   const id = getClassId(c)
@@ -66,16 +53,25 @@ function cacheClass(c: Function) {
     cache[id] = c
   }
 
-  return `window['${key}']['${id}']`
+  return `window['${BLOBAL_KEY}']['${id}']`
 }
+
+// function isNativeClass(cls: Function) {
+//   const classStr = `${cls}`
+//   return (
+//     /^\s*class\s+/.test(classStr) ||
+//     classStr.indexOf(`window['${BLOBAL_KEY}']['`) > 0
+//   )
+// }
+
+class A {}
+const isNativeClass = /^\s*class\s+/.test(`${A}`)
 
 /**
  * Extends class with specified class name.
  */
 export function createClass<T>(className: string, base: Function): T {
   const baseName = cacheClass(base)
-  const isNativeClass = /^\s*class\s+/.test(`${base}`)
-
   // tslint:disable-next-line
   const cls = new Function(`
     return ${isNativeClass}
