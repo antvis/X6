@@ -1,13 +1,22 @@
 import React from 'react'
 import { v, joint } from '@antv/x6'
+import '../index.less'
 import './index.less'
-import './joint.less'
 
 export default class Example extends React.Component {
   private container: HTMLDivElement
 
   componentDidMount() {
-    const graph = new joint.Graph({ container: this.container })
+    const graph = new joint.Graph({
+      container: this.container,
+      background: {
+        // color: '#f5f5f5',
+        image:
+          'https://cdn2.iconfinder.com/data/icons/social-media-2285/512/1_Slack_colored_svg-32.png',
+        pattern: 'watermark',
+        opacity: 0.1,
+      },
+    })
 
     graph.addNode({
       size: { width: 100, height: 40 },
@@ -215,16 +224,6 @@ export default class Example extends React.Component {
 
   refContainer = (container: HTMLDivElement) => {
     this.container = container
-  }
-
-  renderTest() {
-    return (
-      <svg>
-        <g stroke="#fff">
-          <rect />
-        </g>
-      </svg>
-    )
   }
 
   render() {
