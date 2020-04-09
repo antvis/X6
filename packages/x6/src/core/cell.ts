@@ -36,17 +36,16 @@ export class Cell<T = any> extends Disposable {
 
   toJSON(cell: Cell) {
     const { id, data, style, visible, collapsed, geometry, parent } = cell
+    const { bounds, ...geometryRest } = geometry || {}
 
-    const { source, target, parent: p, ...styleRest } = style
-    const bounds = geometry && geometry.bounds
     // node、edge通用部分数据
     const cellData: any = {
       id,
       data,
-      ...styleRest,
+      ...style,
       visible,
       ...bounds,
-      ...geometry,
+      ...geometryRest,
     }
     // 有群组的情况, parent是Node
     if (parent?.isNode()) {
@@ -595,7 +594,9 @@ export namespace Cell {
       points.forEach(p => geom.addPoint(p))
     }
 
-    const finalStyle = { ...otherStyle, ...style }
+    const { source, target, parent, ...otherStyleRest } = otherStyle
+
+    const finalStyle = { ...otherStyleRest, ...style }
     const edge = new Cell(data, geom, finalStyle)
     return applyCommonOptions(edge, options, false)
   }

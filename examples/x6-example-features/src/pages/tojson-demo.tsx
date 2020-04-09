@@ -187,10 +187,10 @@ export default class Example extends Component {
       getLabel: cell => {
         if (cell.isEdge()) {
           const div = document.createElement('div')
-          ;(div.style.width = '160px'),
-            (div.style.height = '20px'),
-            (div.style.background = '#00ff00'),
-            ReactDom.render(<div>自定义连线钩子</div>, div)
+          div.style.width = '160px'
+          div.style.height = '20px'
+          div.style.background = '#00ff00'
+          ReactDom.render(<div>自定义连线钩子</div>, div)
           return div
         }
         return null
@@ -216,13 +216,6 @@ export default class Example extends Component {
         )
       },
     })
-
-    // 这段字符串是下面代码生成的内容stringify得到的
-    const string =
-      '{"nodes":[{"id":"node1","data":{"x":1,"y":2},"shape":"react","visible":true,"x":48,"y":48,"width":180,"height":40,"relative":false,"translateControlPoints":true,"bounds":{"x":48,"y":48,"width":180,"height":40}},{"id":"node2","data":{"xx":11,"yy":22},"shape":"react","label":false,"visible":true,"x":100,"y":200,"width":180,"height":40,"relative":false,"translateControlPoints":true,"bounds":{"x":100,"y":200,"width":180,"height":40}}],"edges":[{"id":"edge1","data":{"edge":"1111"},"curved":true,"rounded":true,"visible":true,"x":0,"y":0,"width":0,"height":0,"relative":true,"translateControlPoints":true,"bounds":{"x":0,"y":0,"width":0,"height":0},"source":"node1","target":"node2"},{"id":"cell-2","data":null,"align":"center","verticalAlign":"middle","fontColor":"rgba(0, 0, 0, 1)","shape":"connector","endArrow":"classic","stroke":"#888","sourceAnchorX":"1","sourceAnchorY":"0.5","targetAnchorX":"1","targetAnchorY":"0.5","sourceAnchorDx":"0","targetAnchorDx":"0","targetAnchorDy":"0","visible":true,"x":0,"y":0,"width":0,"height":0,"relative":true,"translateControlPoints":true,"bounds":{"x":0,"y":0,"width":0,"height":0},"source":"node1","target":"node2"}]}'
-    graph.render(JSON.parse(string))
-
-    return
 
     const node1 = graph.addNode({
       id: 'node1',
@@ -300,10 +293,9 @@ export default class Example extends Component {
       },
       label: (cell: Cell) => {
         const div = document.createElement('div')
-        ;(div.style.width = '160px'),
-          (div.style.height = '20px'),
-          (div.style.background = '#00ff00'),
-          ReactDom.render(<div>这里可以是一个react组件</div>, div)
+        div.style.width = '160px'
+        ;(div.style.height = '20px'), (div.style.background = '#00ff00')
+        ReactDom.render(<div>这里可以是一个react组件</div>, div)
         return div
       },
     })
@@ -315,8 +307,12 @@ export default class Example extends Component {
       const resultToString = JSON.stringify(result)
       console.log('看看画布JSON转换为string:', resultToString)
 
-      graph.render(JSON.parse(resultToString))
-    }, 8000)
+      // graph.render(JSON.parse(resultToString))
+
+      const string =
+        '{"nodes":[{"id":"node1","data":{"x":1,"y":2},"shape":"react","visible":true,"x":48,"y":48,"width":180,"height":40,"relative":false,"translateControlPoints":true},{"id":"node2","data":{"xx":11,"yy":22},"shape":"react","label":false,"visible":true,"x":100,"y":200,"width":180,"height":40,"relative":false,"translateControlPoints":true}],"edges":[{"id":"edge1","data":{"edge":"1111"},"curved":true,"rounded":true,"visible":true,"x":0,"y":0,"width":0,"height":0,"relative":true,"translateControlPoints":true,"source":"node1","target":"node2"},{"id":"cell-2","data":null,"align":"center","verticalAlign":"middle","fontColor":"rgba(0, 0, 0, 1)","shape":"connector","endArrow":"classic","stroke":"#888","sourceAnchorX":"0","sourceAnchorY":"0.5","targetAnchorX":"0","targetAnchorY":"0.5","sourceAnchorDx":"0","targetAnchorDx":"0","targetAnchorDy":"0","visible":true,"x":0,"y":0,"width":0,"height":0,"relative":true,"translateControlPoints":true,"source":"node1","target":"node2"}]}'
+      graph.render(JSON.parse(string))
+    }, 3000)
   }
 
   // 有群组的情况

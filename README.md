@@ -61,6 +61,11 @@ const graph = x6.render(container, {
     },
   ],
 })
+
+const graphData = graph.toJSON()
+const graphDataString = JSON.stringify(graphData)
+graph.render(JSON.parse(graphDataString))
+
 ```
 
 ## Development
