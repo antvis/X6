@@ -127,7 +127,7 @@ export default class Example extends Component {
       html: '<div>211</div>',
     })
 
-    const edge = graph.addEdge({
+    graph.addEdge({
       id: 'edge1',
       source: node1,
       target: node2,
@@ -282,7 +282,7 @@ export default class Example extends Component {
       },
     })
 
-    const edge = graph.addEdge({
+    graph.addEdge({
       id: 'edge1',
       source: node1,
       target: node2,
@@ -294,7 +294,8 @@ export default class Example extends Component {
       label: (cell: Cell) => {
         const div = document.createElement('div')
         div.style.width = '160px'
-        ;(div.style.height = '20px'), (div.style.background = '#00ff00')
+        div.style.height = '20px'
+        div.style.background = '#00ff00'
         ReactDom.render(<div>这里可以是一个react组件</div>, div)
         return div
       },
@@ -332,7 +333,7 @@ export default class Example extends Component {
       height: 120,
     })
 
-    const node2 = graph.addNode({
+    graph.addNode({
       id: 'node-2',
       x: 40,
       y: 40,
