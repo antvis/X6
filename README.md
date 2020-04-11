@@ -5,8 +5,8 @@
 [![MIT License](https://img.shields.io/badge/license-MIT_License-green.svg?style=flat-square)](https://github.com/antvis/x6/blob/master/LICENSE)
 [![Language](https://img.shields.io/badge/language-typescript-blue.svg?style=flat-square)](https://www.typescriptlang.org)
 
-[![build:?](https://img.shields.io/travis/antvis/x6.svg?style=flat-square)](https://travis-ci.org/antvis/x6)
-[![coverage:?](https://img.shields.io/coveralls/antvis/x6/master.svg?style=flat-square)](https://coveralls.io/github/antvis/x6)
+[![build](https://img.shields.io/travis/antvis/x6.svg?style=flat-square)](https://travis-ci.org/antvis/x6)
+[![coverage](https://img.shields.io/coveralls/antvis/x6/master.svg?style=flat-square)](https://coveralls.io/github/antvis/x6)
 [![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/antvis/x6.svg?logo=lgtm&style=flat-square)](https://lgtm.com/projects/g/antvis/x6/context:javascript)
 
 [![NPM Package](https://img.shields.io/npm/v/@antv/x6.svg?style=flat-square)](https://www.npmjs.com/package/@antv/x6)
