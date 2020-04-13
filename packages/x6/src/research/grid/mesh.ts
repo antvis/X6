@@ -4,7 +4,7 @@ import { Grid } from './index'
 export interface MeshOptions extends Grid.Options {}
 
 export const mesh: Grid.Definition<MeshOptions> = {
-  color: '#aaaaaa',
+  color: 'rgba(224,224,224,1)',
   thickness: 1,
   markup: 'path',
   update(elem, options) {

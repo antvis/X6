@@ -7,7 +7,7 @@ export interface DoubleMeshOptions extends Grid.Options {
 
 export const doubleMesh: Grid.Definition<DoubleMeshOptions>[] = [
   {
-    color: '#aaaaaa',
+    color: 'rgba(224,224,224,1)',
     thickness: 1,
     markup: 'path',
     update(elem, options) {
@@ -30,7 +30,7 @@ export const doubleMesh: Grid.Definition<DoubleMeshOptions>[] = [
     },
   },
   {
-    color: '#000000',
+    color: 'rgba(224,224,224,0.2)',
     thickness: 3,
     factor: 4,
     markup: 'path',
