@@ -81,21 +81,26 @@ export class Events<M extends Events.EventArgs = any> {
     return this
   }
 
-  trigger<N extends Events.OptionalNormalKeys<M>>(name: N): boolean
-  trigger<N extends Events.RequiredNormalKeys<M>>(name: N, args: M[N]): boolean
+  trigger<N extends Events.OptionalNormalKeys<M>>(name: N): Promise<boolean>
+  trigger<N extends Events.RequiredNormalKeys<M>>(
+    name: N,
+    args: M[N],
+  ): Promise<boolean>
   trigger<N extends Events.KeysWithArrayValue<M>>(
     name: N,
     ...args: M[N]
-  ): boolean
-  trigger<N extends Events.OtherKeys<M>>(name: N, args?: M[N]): boolean
-  trigger<N extends Events.OtherKeys<M>>(name: N, ...args: M[N]): boolean
+  ): Promise<boolean>
+  trigger<N extends Events.OtherKeys<M>>(name: N, args?: M[N]): Promise<boolean>
+  trigger<N extends Events.OtherKeys<M>>(
+    name: N,
+    ...args: M[N]
+  ): Promise<boolean>
   trigger<N extends Events.EventKeys<M>>(name: N, ...args: M[N]) {
     const cache = this.listeners[name]
     if (cache != null) {
       return Private.call(cache, args)
     }
-
-    return true
+    return Promise.resolve(true)
   }
 }
 
@@ -133,15 +138,17 @@ export namespace Events {
 
 namespace Private {
   export function call<A>(list: any[], args?: A) {
-    let pass = true
-
+    const deferres = []
     for (let i = 0, l = list.length; i < l; i += 2) {
       const handler = list[i]
       const context = list[i + 1]
       const params = Array.isArray(args) ? args : [args]
-      pass = FunctionExt.invoke(handler, params, context) !== false && pass
+      const ret = FunctionExt.invoke(handler, params, context)
+      const deferred = ret instanceof Promise ? ret : Promise.resolve(ret)
+      deferres.push(deferred)
     }
-
-    return pass
+    return Promise.all(deferres).then(arr => {
+      return arr.reduce((memo, item) => item !== false && memo, true)
+    })
   }
 }

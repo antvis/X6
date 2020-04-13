@@ -106,15 +106,20 @@ export class CreationManager extends BaseManager {
     target?: Cell,
   ) {
     this.model.batchUpdate(() => {
-      this.graph.trigger('cells:adding', {
+      const result = this.graph.trigger('cells:adding', {
         cells,
         parent,
         index,
         source,
         target,
       })
-
-      this.cellsAdded(cells, parent, index, source, target, false, true)
+      // user can control if the cells should be added
+      result &&
+        result.then(res => {
+          if (res) {
+            this.cellsAdded(cells, parent, index, source, target, false, true)
+          }
+        })
     })
 
     return cells
@@ -312,11 +317,17 @@ export class CreationManager extends BaseManager {
     }
 
     this.model.batchUpdate(() => {
-      this.graph.trigger('cells:removing', {
+      const result = this.graph.trigger('cells:removing', {
         includeEdges,
         cells: removing,
       })
-      this.cellsRemoved(removing)
+      // user can control if the cells should be removed
+      result &&
+        result.then(res => {
+          if (res) {
+            this.cellsRemoved(removing)
+          }
+        })
     })
 
     return removing
