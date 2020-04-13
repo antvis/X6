@@ -26,14 +26,14 @@ export class SelectionChange implements IChange {
       this.added.forEach(cell => this.selection.doAddCell(cell))
     }
 
-    const tmp = this.added
-    this.added = this.removed
-    this.removed = tmp
-
     this.selection.graph.trigger('selection:changed', {
       added: this.added,
       removed: this.removed,
       selected: this.selection.cells.slice(),
     })
+
+    const tmp = this.added
+    this.added = this.removed
+    this.removed = tmp
   }
 }
