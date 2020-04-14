@@ -1,29 +1,26 @@
 import React from 'react'
-import { v, joint, Point, Line, Polyline } from '@antv/x6'
-import { Rect } from '@antv/x6/lib/research/shape/standard'
+import { joint } from '@antv/x6'
+import { Rect } from '@antv/x6/es/research/shape/standard'
+import '../../index.less'
 import '../index.less'
-import './index.less'
 
-joint.NodeRegistry.register(
-  'embedding.child',
-  Rect.define({
-    attrs: {
-      body: { stroke: 'transparent', fill: 'green', rx: 5, ry: 5 },
-      label: { fontSize: 14, text: 'child1', fill: 'white' },
-    },
-  }),
-)
+const Parent = Rect.define({
+  customEmebedding: true,
+  attrs: {
+    body: { stroke: 'transparent', fill: 'black', rx: 5, ry: 5 },
+    label: { fontSize: 14, text: 'Parent', fill: 'white' },
+  },
+})
 
-joint.NodeRegistry.register(
-  'embedding.parent',
-  Rect.define({
-    customEmebedding: true,
-    attrs: {
-      body: { stroke: 'transparent', fill: 'black', rx: 5, ry: 5 },
-      label: { fontSize: 14, text: 'Parent', fill: 'white' },
-    },
-  }),
-)
+const Child = Rect.define({
+  attrs: {
+    body: { stroke: 'transparent', fill: 'green', rx: 5, ry: 5 },
+    label: { fontSize: 14, text: 'child1', fill: 'white' },
+  },
+})
+
+joint.NodeRegistry.register('embedding.parent', Parent)
+joint.NodeRegistry.register('embedding.child', Child)
 
 export default class Example extends React.Component {
   private container: HTMLDivElement
@@ -32,7 +29,7 @@ export default class Example extends React.Component {
     const EMBEDDING_OFFSET = 59
     const graph = new joint.Graph({
       container: this.container,
-      width: 800,
+      width: 880,
       height: 600,
       gridSize: 20,
       drawGrid: 'mesh',
@@ -85,6 +82,55 @@ export default class Example extends React.Component {
         label: { text: 'Try to move me\n above the \n "Parent" element' },
       },
     })
+
+    graph.addNode({
+      type: 'embedding.child',
+      size: { width: 160, height: 100 },
+      position: { x: 20, y: 360 },
+      attrs: {
+        body: { fill: 'blue' },
+        label: { text: 'Try to move me\n above the \n "Parent" element' },
+      },
+    })
+
+    var r = new Child({
+      attrs: {
+        body: { fill: 'red' },
+        label: { text: 'Embedded!' },
+      },
+    })
+      .setPosition(600, 120)
+      .setSize(160, 100)
+
+    var g = new Child({
+      attrs: {
+        body: { fill: 'green' },
+        label: { text: 'Embedded!' },
+      },
+    })
+      .setPosition(660, 240)
+      .setSize(160, 100)
+
+    var b = new Child({
+      attrs: {
+        body: { fill: 'blue' },
+        label: { text: 'Embedded!' },
+      },
+    })
+      .setPosition(600, 360)
+      .setSize(160, 100)
+
+    new Parent({
+      attrs: {
+        label: { text: 'Parent\n(try to move me)' },
+      },
+    })
+      .setPosition(640, 480)
+      .setSize(160, 100)
+      .addChild(r)
+      .addChild(g)
+      .addChild(b)
+      .addTo(graph.model)
   }
 
   refContainer = (container: HTMLDivElement) => {

@@ -1,6 +1,6 @@
 import React from 'react'
-import { v, joint } from '@antv/x6'
-import { Rect } from '@antv/x6/lib/research/shape/standard'
+import { joint } from '@antv/x6'
+import { Rect } from '@antv/x6/es/research/shape/standard'
 import '../index.less'
 import './index.less'
 
@@ -90,8 +90,7 @@ class TogglableRect extends Rect {
         }
 
         this.model.getConnectedEdges(this).forEach(edge => {
-          const ret = resolve(edge)
-
+          const ret = resolve(edge as any)
           if (
             ret &&
             (ret.current as joint.Edge.TerminalCellData).portId === portId &&
@@ -135,6 +134,11 @@ TogglableRect.config({
     },
   },
   attrs: {
+    body: {
+      refWidth: 1,
+      refHeight: 1,
+      fill: '#AAB2BD',
+    },
     label: {
       refX: '50%',
       refY: '50%',
@@ -143,11 +147,6 @@ TogglableRect.config({
       xAlignment: 'middle',
       yAlignment: 'middle',
       fill: '#F5F7FA',
-    },
-    body: {
-      refWidth: 1,
-      refHeight: 1,
-      fill: '#AAB2BD',
     },
   },
 })
@@ -165,7 +164,7 @@ export default class Example extends React.Component {
       magnetThreshold: 'onleave',
       clickThreshold: 5,
       validateMagnet: function(cellView: joint.CellView, magnet: Element) {
-        var cell = cellView.cell as TogglableRect
+        var cell = (cellView.cell as any) as TogglableRect
         var portId = magnet.getAttribute('port')
         return portId ? !cell.isPortCollapsed(portId) : true
       },
