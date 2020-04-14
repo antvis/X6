@@ -14,14 +14,15 @@ export class Edge<
 > extends Cell<Properties> {
   protected static defaults: Edge.Defaults = {}
   public readonly store: Store<Edge.Properties>
+  protected sourceCell: Cell | null
+  protected targetCell: Cell | null
+
   protected readonly defaultMarkup = Markup.edgeMarkup
   protected readonly defaultToolMarkup = Markup.edgeToolMarkup
   protected readonly defaultDoubleToolMarkup: Markup
   protected readonly defaultVertexMarkup = Markup.edgeVertexMarkup
   protected readonly defaultArrowheadMarkup = Markup.edgeArrowheadMarkup
   protected readonly defaultLabel = Edge.defaultLabel
-  protected sourceCell: Cell | null
-  protected targetCell: Cell | null
 
   constructor(options: Edge.Options = {}) {
     super(options)
@@ -32,60 +33,60 @@ export class Edge<
     this.store.on('mutated', metadata => {
       const key = metadata.key
       if (key === 'source') {
-        this.trigger(
+        this.notify(
           'change:source',
           this.getChangeEventArgs<Edge.TerminalData>(metadata),
         )
       } else if (key === 'target') {
-        this.trigger(
+        this.notify(
           'change:target',
           this.getChangeEventArgs<Edge.TerminalData>(metadata),
         )
       } else if (key === 'router') {
-        this.trigger(
+        this.notify(
           'change:router',
           this.getChangeEventArgs<Edge.RouterData>(metadata),
         )
       } else if (key === 'connector') {
-        this.trigger(
+        this.notify(
           'change:connector',
           this.getChangeEventArgs<Edge.ConnectorData>(metadata),
         )
       } else if (key === 'vertices') {
         const args = this.getChangeEventArgs<Point.PointLike[]>(metadata)
-        this.trigger('change:vertices', args)
+        this.notify('change:vertices', args)
         this.onVertexsChanged(args)
       } else if (key === 'labels') {
         const args = this.getChangeEventArgs<Edge.Label[]>(metadata)
-        this.trigger('change:labels', args)
+        this.notify('change:labels', args)
         this.onLabelsChanged(args)
       } else if (key === 'defaultLabel') {
-        this.trigger(
+        this.notify(
           'change:defaultLabel',
           this.getChangeEventArgs<Edge.Label>(metadata),
         )
       } else if (key === 'labelMarkup') {
-        this.trigger(
+        this.notify(
           'change:labelMarkup',
           this.getChangeEventArgs<Markup>(metadata),
         )
       } else if (key === 'toolMarkup') {
-        this.trigger(
+        this.notify(
           'change:toolMarkup',
           this.getChangeEventArgs<Markup>(metadata),
         )
       } else if (key === 'doubleToolMarkup') {
-        this.trigger(
+        this.notify(
           'change:doubleToolMarkup',
           this.getChangeEventArgs<Markup>(metadata),
         )
       } else if (key === 'vertexMarkup') {
-        this.trigger(
+        this.notify(
           'change:vertexMarkup',
           this.getChangeEventArgs<Markup>(metadata),
         )
       } else if (key === 'arrowheadMarkup') {
-        this.trigger(
+        this.notify(
           'change:arrowheadMarkup',
           this.getChangeEventArgs<Markup>(metadata),
         )
@@ -98,6 +99,17 @@ export class Edge<
   }
 
   // #region terminal
+
+  disconnect(options: Edge.SetOptions = {}) {
+    this.store.set(
+      {
+        source: { x: 0, y: 0 },
+        target: { x: 0, y: 0 },
+      },
+      options,
+    )
+    return this
+  }
 
   get source() {
     return this.getSource()
@@ -197,7 +209,7 @@ export class Edge<
     args?: Edge.SetTerminalCommonArgs | Edge.SetOptions,
     options: Edge.SetOptions = {},
   ): this {
-    const terminalCellKey = `${type}Cell` as 'sourceCell' | 'targetCell'
+    const key = `${type}Cell` as 'sourceCell' | 'targetCell'
     // `source` is a cell
     if (terminal instanceof Cell) {
       this.store.set(
@@ -205,7 +217,8 @@ export class Edge<
         ObjectExt.merge({}, args, { cellId: terminal.id }),
         options,
       )
-      this[terminalCellKey] = terminal
+      this[key] = terminal
+      this.reference(type, terminal)
       return this
     }
 
@@ -229,11 +242,26 @@ export class Edge<
 
     const cellId = (terminal as Edge.TerminalCellData).cellId
     if (cellId && this.model) {
-      this[terminalCellKey] = this.model.getCell(cellId)
+      this[key] = this.model.getCell(cellId)
+      this.reference(type, this[key])
     }
 
     return this
   }
+
+  protected reference(type: Edge.TerminalType, cell?: Cell | null) {
+    const prev = this.getTerminalCell(type)
+    if (cell) {
+      const key = type === 'source' ? 'outgoingEdges' : 'incomingEdges'
+      let ref = cell[key]
+      if (ref == null) {
+        ref = cell[key] = []
+      }
+      ref.push(this)
+    }
+  }
+
+  protected unreference(type: Edge.TerminalType) {}
 
   getSourcePoint() {
     return this.getTerminalPoint('source')
@@ -264,17 +292,8 @@ export class Edge<
   }
 
   getTerminalCell(type: Edge.TerminalType) {
-    const terminalCellKey = `${type}Cell` as 'sourceCell' | 'targetCell'
-    let cell = this[terminalCellKey]
-    if (cell == null && this.model) {
-      const terminal = this[type] as Edge.TerminalCellData
-      if (terminal.cellId) {
-        cell = this.model.getCell(terminal.cellId)
-        this[terminalCellKey] = cell
-      }
-    }
-
-    return cell
+    const key = `${type}Cell` as 'sourceCell' | 'targetCell'
+    return this[key]
   }
 
   getSourceNode() {
@@ -496,11 +515,11 @@ export class Edge<
         : []
 
     if (added.length > 0) {
-      this.trigger('labels:added', { added, edge: this })
+      this.notify('labels:added', { added, cell: this, edge: this })
     }
 
     if (removed.length > 0) {
-      this.trigger('labels:removed', { removed, edge: this })
+      this.notify('labels:removed', { removed, cell: this, edge: this })
     }
   }
 
@@ -627,17 +646,19 @@ export class Edge<
         : []
 
     if (added.length > 0) {
-      this.trigger('vertexs:added', { added, edge: this })
+      this.notify('vertexs:added', { added, cell: this, edge: this })
     }
 
     if (removed.length > 0) {
-      this.trigger('vertexs:removed', { removed, edge: this })
+      this.notify('vertexs:removed', { removed, cell: this, edge: this })
     }
   }
 
   // #endregion
 
   // #region markup
+
+  getDefaultMarkup() {}
 
   getMarkup() {
     return super.getMarkup() || this.defaultMarkup
@@ -704,6 +725,8 @@ export class Edge<
 
   // #endregion
 
+  // #region transform
+
   /**
    * Translate the edge vertices (and source and target if they are points)
    * by `tx` pixels in the x-axis and `ty` pixels in the y-axis.
@@ -767,23 +790,9 @@ export class Edge<
     return this
   }
 
-  disconnect(options: Edge.SetOptions = {}) {
-    this.store.set(
-      {
-        source: { x: 0, y: 0 },
-        target: { x: 0, y: 0 },
-      },
-      options,
-    )
-    return this
-  }
+  // #endregion
 
-  getPolyline() {
-    const points = [this.getSourcePoint(), this.getTargetPoint()]
-    const vertices = this.getVertices()
-    vertices.forEach(p => points.push(Point.create(p)))
-    return new Polyline(points)
-  }
+  // #region common
 
   getBBox() {
     return this.getPolyline().bbox()
@@ -791,6 +800,13 @@ export class Edge<
 
   getConnectionPoint() {
     return this.getPolyline().pointAt(0.5)!
+  }
+
+  getPolyline() {
+    const points = [this.getSourcePoint(), this.getTargetPoint()]
+    const vertices = this.getVertices()
+    vertices.forEach(p => points.push(Point.create(p)))
+    return new Polyline(points)
   }
 
   updateParent(options?: Edge.SetOptions) {
@@ -814,7 +830,7 @@ export class Edge<
       // Unembeds the edge if source and target has no common
       // ancestor or common ancestor changed
       if (prevParent && (!newParent || newParent.id !== prevParent.id)) {
-        this.removeFromParent(options)
+        prevParent.unembed(this, options)
       }
 
       if (newParent) {
@@ -869,6 +885,8 @@ export class Edge<
       !!ancestor && (ancestor.id === cell.id || ancestor.isDescendantOf(cell))
     )
   }
+
+  // #endregion
 }
 
 export namespace Edge {
@@ -893,10 +911,7 @@ export namespace Edge {
 
   export interface Properties extends Cell.Properties, Options {}
 
-  /**
-   * The metadata used creating an edge instance.
-   */
-  export interface Metadata extends Options {}
+  export interface Metadata extends Options, KeyValue {}
 }
 
 export namespace Edge {
@@ -1039,7 +1054,7 @@ export namespace Edge {
 }
 
 export namespace Edge {
-  export type Defintion = Function & typeof Edge
+  export type Defintion = typeof Edge & (new (...args: any[]) => Edge)
 
   export interface DefintionOptions extends Defaults, Cell.DefintionOptions {}
 
@@ -1057,9 +1072,7 @@ export namespace Edge {
     const className = getClassName(name)
     const base = this as Defintion
     const shape = ObjectExt.createClass<Defintion>(className, base)
-
     shape.config(defaults, attrDefinitions)
-
     return shape
   }
 }

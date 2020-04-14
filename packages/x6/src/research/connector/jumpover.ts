@@ -19,14 +19,14 @@ function setupUpdating(view: EdgeView) {
      * Handler for a batch:stop event to force
      * update of all registered links with jump over connector
      */
-    view.graph.on('cell:pointerup', () => {
+    view.graph.on('cell:mouseup', () => {
       const list = (view.graph as any)._jumpOverUpdateList
       for (let i = 0; i < list.length; i += 1) {
         list[i].update()
       }
     })
 
-    view.graph.model.on('reset', () => {
+    view.graph.on('model:reseted', () => {
       updateList = (view.graph as any)._jumpOverUpdateList = []
     })
   }

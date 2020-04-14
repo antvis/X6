@@ -1,11 +1,12 @@
 import { StringExt, ObjectExt } from '../../util'
 import { Point, Rectangle, Angle } from '../../geometry'
-import { Size } from '../../types'
+import { Size, KeyValue } from '../../types'
 import { Cell } from './cell'
 import { PortData } from './port-data'
 import { Markup } from './markup'
 import { Edge } from './edge'
 import { Store } from './store'
+import { DeepPartial } from 'utility-types'
 
 export class Node<
   Properties extends Node.Properties = Node.Properties
@@ -33,34 +34,34 @@ export class Node<
     this.store.on('mutated', metadata => {
       const key = metadata.key
       if (key === 'size') {
-        this.trigger('change:size', this.getChangeEventArgs<Size>(metadata))
+        this.notify('change:size', this.getChangeEventArgs<Size>(metadata))
       } else if (key === 'position') {
-        this.trigger(
+        this.notify(
           'change:position',
           this.getChangeEventArgs<Point.PointLike>(metadata),
         )
       } else if (key === 'rotation') {
-        this.trigger(
+        this.notify(
           'change:rotation',
           this.getChangeEventArgs<number>(metadata),
         )
       } else if (key === 'ports') {
-        this.trigger(
+        this.notify(
           'change:ports',
           this.getChangeEventArgs<PortData.Port[]>(metadata),
         )
       } else if (key === 'portMarkup') {
-        this.trigger(
+        this.notify(
           'change:portMarkup',
           this.getChangeEventArgs<Markup>(metadata),
         )
       } else if (key === 'portLabelMarkup') {
-        this.trigger(
+        this.notify(
           'change:portLabelMarkup',
           this.getChangeEventArgs<Markup>(metadata),
         )
       } else if (key === 'portContainerMarkup') {
-        this.trigger(
+        this.notify(
           'change:portContainerMarkup',
           this.getChangeEventArgs<Markup>(metadata),
         )
@@ -627,6 +628,117 @@ export class Node<
     }, positions)
   }
 
+  getPortProp(portId: string): PortData.PortMetadata
+  getPortProp<T>(portId: string, path: string | string[]): T
+  getPortProp<T>(portId: string, path?: string | string[]) {
+    return this.getPropByPath(this.prefixPortPath(portId, path))
+  }
+
+  setPortProp(
+    portId: string,
+    path: string | string[],
+    value: any,
+    options?: Node.SetOptions,
+  ): this
+  setPortProp(
+    portId: string,
+    value: DeepPartial<PortData.PortMetadata>,
+    options?: Node.SetOptions,
+  ): this
+  setPortProp(
+    portId: string,
+    arg1: string | string[] | DeepPartial<PortData.PortMetadata>,
+    arg2: any | Node.SetOptions,
+    arg3?: Node.SetOptions,
+  ) {
+    if (typeof arg1 === 'string' || Array.isArray(arg1)) {
+      const path = this.prefixPortPath(portId, arg1)
+      const value = arg2
+      return this.setPropByPath(path, value, arg3)
+    }
+
+    const path = this.prefixPortPath(portId)
+    const value = arg1 as DeepPartial<PortData.PortMetadata>
+    return this.setPropByPath(path, value, arg2 as Node.SetOptions)
+  }
+
+  removePortProp(portId: string, options?: Node.SetOptions): this
+  removePortProp(
+    portId: string,
+    path: string | string[],
+    options?: Node.SetOptions,
+  ): this
+  removePortProp(
+    portId: string,
+    path?: string | string[] | Node.SetOptions,
+    options?: Node.SetOptions,
+  ) {
+    if (typeof path === 'string' || Array.isArray(path)) {
+      return this.removePropByPath(this.prefixPortPath(portId, path), options)
+    }
+    return this.removePropByPath(this.prefixPortPath(portId), path)
+  }
+
+  portProp(portId: string): PortData.PortMetadata
+  portProp<T>(portId: string, path: string | string[]): T
+  portProp(
+    portId: string,
+    path: string | string[],
+    value: any,
+    options?: Node.SetOptions,
+  ): this
+  portProp(
+    portId: string,
+    value: DeepPartial<PortData.PortMetadata>,
+    options?: Node.SetOptions,
+  ): this
+  portProp(
+    portId: string,
+    path?: string | string[] | DeepPartial<PortData.PortMetadata>,
+    value?: any | Node.SetOptions,
+    options?: Node.SetOptions,
+  ) {
+    if (path == null) {
+      return this.getPortProp(portId)
+    }
+    if (typeof path === 'string' || Array.isArray(path)) {
+      if (arguments.length === 2) {
+        return this.getPortProp(portId, path)
+      }
+      if (value == null) {
+        return this.removePortProp(portId, path, options)
+      }
+      return this.setPortProp(
+        portId,
+        path,
+        value as DeepPartial<PortData.PortMetadata>,
+        options,
+      )
+    }
+    return this.setPortProp(
+      portId,
+      path as DeepPartial<PortData.PortMetadata>,
+      value as Node.SetOptions,
+    )
+  }
+
+  protected prefixPortPath(portId: string, path?: string | string[]) {
+    const index = this.getPortIndex(portId)
+    if (index === -1) {
+      throw new Error(`Unable to find port with id: "${portId}"`)
+    }
+
+    if (path == null || path === '') {
+      return ['ports', 'items', `${index}`]
+    }
+
+    if (Array.isArray(path)) {
+      return ['ports', 'items', `${index}`, ...path]
+    }
+
+    return `ports/items/${index}/${path}`
+  }
+
   addPort(port: PortData.PortMetadata, options?: Cell.SetByPathOptions) {
     const ports = [...this.ports.items]
     ports.push(port)
@@ -795,11 +907,11 @@ export class Node<
       : []
 
     if (added.length > 0) {
-      this.trigger('ports:added', { added, node: this })
+      this.notify('ports:added', { added, cell: this, node: this })
     }
 
     if (removed.length > 0) {
-      this.trigger('ports:removed', { removed, node: this })
+      this.notify('ports:removed', { removed, cell: this, node: this })
     }
   }
 
@@ -824,7 +936,12 @@ export namespace Node {
   /**
    * The metadata used creating a node instance.
    */
-  export interface Metadata extends Options {}
+  export interface Metadata extends Options, KeyValue {
+    x?: number
+    y?: number
+    width?: number
+    height?: number
+  }
 }
 
 export namespace Node {
@@ -857,7 +974,7 @@ export namespace Node {
 }
 
 export namespace Node {
-  export type Defintion = typeof Node
+  export type Defintion = typeof Node & (new (...args: any[]) => Node)
 
   export interface DefintionOptions extends Defaults, Cell.DefintionOptions {}
 
@@ -875,15 +992,7 @@ export namespace Node {
     const className = getClassName(name)
     const base = this as Defintion
     const shape = ObjectExt.createClass<Defintion>(className, base)
-
     shape.config(defaults, attrDefinitions)
-
     return shape
   }
 }
-
-const cell = new Cell()
-cell.getProp('attrs')
-
-const node = new Node()
-node.getProp('children')
