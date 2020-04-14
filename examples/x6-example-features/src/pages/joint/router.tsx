@@ -90,7 +90,8 @@ export default class Example extends React.Component<
       })
 
     const update = () => {
-      graph.findViewByCell(this.edge)?.update()
+      const edgeView = graph.findViewByCell(this.edge) as joint.EdgeView
+      edgeView.update()
     }
 
     obstacle.on('change:position', update)

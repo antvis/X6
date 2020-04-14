@@ -11,7 +11,6 @@ class CustomEdgeView extends joint.EdgeView {
   }
 
   onContextMenu(e: JQuery.ContextMenuEvent, x: number, y: number) {
-    console.log(e)
     if (this.cell.getProp('customLinkInteractions')) {
       this.addLabel(x, y, {
         reverseDistance: true,

@@ -112,16 +112,18 @@ export default class Example extends React.Component {
       },
     })
 
-    graph.addNode(
-      new DecoratedRect({
-        position: { x: 40, y: 140 },
-        size: { width: 180, height: 80 },
-        attrs: {
-          text: { text: 'Decorated with image' },
-          image: { 'xlink:href': 'http://placehold.it/16x16' },
-        },
-      }),
-    )
+    const decoratedRect = new DecoratedRect({
+      position: { x: 40, y: 140 },
+      size: { width: 180, height: 80 },
+      attrs: {
+        text: { text: 'Decorated with image' },
+        image: { 'xlink:href': 'http://placehold.it/16x16' },
+      },
+    })
+
+    console.log(decoratedRect)
+
+    graph.addNode(decoratedRect)
 
     graph.addNode({
       type: 'basic.text-block',
@@ -203,10 +205,10 @@ export default class Example extends React.Component {
 
     const cylinderView = graph.findViewByCell(cylinder)
     if (cylinderView) {
-      const cylinderPath = cylinderView.findOne('path')
-      const cylinderScalable = cylinderView.findOne('.scalable')
+      const cylinderPath = cylinderView.findOne('path') as SVGPathElement
+      const cylinderScalable = cylinderView.findOne('.scalable') as SVGGElement
       if (cylinderPath && cylinderScalable) {
-        var ctm = cylinderScalable.getCTM().inverse()
+        var ctm = cylinderScalable.getCTM()!.inverse()
         const token = v.create('circle', { r: 8, fill: 'red' })
         token.animateAlongPath(
           {
