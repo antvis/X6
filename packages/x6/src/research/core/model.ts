@@ -715,7 +715,7 @@ export class Model extends Basecoat<Model.EventArgs> {
    * outgoing edges if both the edge terminal (source/target) are in the
    * cells array.
    */
-  getSubgraph(cells: Cell[], options: Model.GetSubgraphOptions = {}) {
+  getSubGraph(cells: Cell[], options: Model.GetSubgraphOptions = {}) {
     const subgraph: Cell[] = []
     const cache: KeyValue<Cell> = {}
     const nodes: Node[] = []
@@ -785,12 +785,14 @@ export class Model extends Basecoat<Model.EventArgs> {
     return subgraph
   }
 
-  cloneSubgraph(cells: Cell[], options: Model.GetSubgraphOptions = {}) {
-    const subgraph = this.getSubgraph(cells, options)
+  cloneSubGraph(cells: Cell[], options: Model.GetSubgraphOptions = {}) {
+    const subgraph = this.getSubGraph(cells, options)
     return this.cloneCells(subgraph)
   }
 
-  cloneCells(cells: Cell[]) {}
+  cloneCells(cells: Cell[]) {
+    return Cell.cloneCells(cells)
+  }
 
   /**
    * Returns an array of nodes whose bounding box contains point.

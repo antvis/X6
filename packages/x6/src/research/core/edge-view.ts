@@ -232,21 +232,28 @@ export class EdgeView<
   }
 
   protected renderLabels() {
-    const container = this.containers.labels
-    if (container == null) {
-      return this
-    }
-
-    this.empty(container)
-
     const edge = this.cell
     const labels = edge.getLabels()
-    if (labels.length === 0) {
-      return this
-    }
+    const count = labels.length
+    let container = this.containers.labels
 
     this.labelCache = {}
     this.labelSelectors = {}
+
+    if (count <= 0) {
+      if (container && container.parentNode) {
+        container.parentNode.removeChild(container)
+      }
+      return this
+    }
+
+    if (container) {
+      this.empty(container)
+    } else {
+      container = v.createSvgElement('g')
+      this.addClass('labels', container)
+      this.containers.labels = container
+    }
 
     for (let i = 0, ii = labels.length; i < ii; i += 1) {
       const label = labels[i]
@@ -279,6 +286,10 @@ export class EdgeView<
 
       this.labelCache[i] = labelNode
       this.labelSelectors[i] = selectors
+    }
+
+    if (container.parentNode == null) {
+      this.container.appendChild(container)
     }
 
     this.updateLabels()

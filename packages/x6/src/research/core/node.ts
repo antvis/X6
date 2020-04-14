@@ -16,12 +16,8 @@ export class Node<
     position: { x: 0, y: 0 },
     size: { width: 1, height: 1 },
   }
-  // Define the store type
-  public readonly store: Store<Node.Properties>
-  protected readonly defaultPortMarkup = Markup.portMarkup
-  protected readonly defaultPortLabelMarkup = Markup.portLabelMarkup
-  protected readonly defaultPortContainerMarkup = Markup.portContainerMarkup
 
+  public readonly store: Store<Node.Properties>
   public portData: PortData
 
   constructor(options: Node.Options = {}) {
@@ -365,25 +361,23 @@ export class Node<
     options.tx = tx
     options.ty = ty
 
-    // if (options.transition) {
-    //   if (!isObject(options.transition)) options.transition = {}
-
-    //   this.transition(
-    //     'position',
-    //     translatedPosition,
-    //     assign({}, options.transition, {
-    //       valueFunction: interpolate.object,
-    //     }),
-    //   )
-
-    //   // Recursively call `translate()` on all the embeds cells.
-    //   this.eachChild(child => child.translate(tx, ty, options))
-    // } else {
-    this.startBatch('translate', options)
-    this.store.set('position', translatedPosition, options)
-    this.eachChild(child => (child as Node).translate(tx, ty, options))
-    this.stopBatch('translate', options)
-    // }
+    if (options.transition) {
+      //   if (!isObject(options.transition)) options.transition = {}
+      //   this.transition(
+      //     'position',
+      //     translatedPosition,
+      //     assign({}, options.transition, {
+      //       valueFunction: interpolate.object,
+      //     }),
+      //   )
+      //   // Recursively call `translate()` on all the embeds cells.
+      //   this.eachChild(child => child.translate(tx, ty, options))
+    } else {
+      this.startBatch('translate', options)
+      this.store.set('position', translatedPosition, options)
+      this.eachChild(child => child.translate(tx, ty, options))
+      this.stopBatch('translate', options)
+    }
 
     return this
   }
@@ -528,9 +522,14 @@ export class Node<
     this.setPortContainerMarkup(markup)
   }
 
+  getDefaultPortContainerMarkup() {
+    return this.store.get('defaultPortContainerMarkup') || Markup.portMarkup
+  }
+
   getPortContainerMarkup() {
     return (
-      this.store.get('portContainerMarkup') || this.defaultPortContainerMarkup
+      this.store.get('portContainerMarkup') ||
+      this.getDefaultPortContainerMarkup()
     )
   }
 
@@ -547,8 +546,12 @@ export class Node<
     this.setPortMarkup(markup)
   }
 
+  getDefaultPortMarkup() {
+    return this.store.get('defaultPortMarkup') || Markup.portMarkup
+  }
+
   getPortMarkup() {
-    return this.store.get('portMarkup') || this.defaultPortMarkup
+    return this.store.get('portMarkup') || this.getDefaultPortMarkup()
   }
 
   setPortMarkup(markup?: Markup, options: Node.SetOptions = {}) {
@@ -564,8 +567,12 @@ export class Node<
     this.setPortLabelMarkup(markup)
   }
 
+  getDefaultPortLabelMarkup() {
+    return this.store.get('defaultPortLabelMarkup') || Markup.portLabelMarkup
+  }
+
   getPortLabelMarkup() {
-    return this.store.get('portLabelMarkup') || this.defaultPortLabelMarkup
+    return this.store.get('portLabelMarkup') || this.getDefaultPortLabelMarkup()
   }
 
   setPortLabelMarkup(markup?: Markup, options: Node.SetOptions = {}) {
@@ -834,18 +841,20 @@ export class Node<
 
     const model = this.model
     if (model && !ObjectExt.isEmpty(removed)) {
-      // const inboundLinks = model.getConnectedLinks(this, { inbound: true })
-      // inboundLinks.forEach(link => {
-      //   if (removed[link.get('target').port]) {
-      //     link.remove()
-      //   }
-      // })
-      // const outboundLinks = model.getConnectedLinks(this, { outbound: true })
-      // outboundLinks.forEach(link => {
-      //   if (removed[link.get('source').port]) {
-      //     link.remove()
-      //   }
-      // })
+      const incomings = model.getConnectedEdges(this, { incoming: true })
+      incomings.forEach(edge => {
+        const portId = edge.getTargetPortId()
+        if (portId && removed[portId]) {
+          edge.remove()
+        }
+      })
+      const outgoings = model.getConnectedEdges(this, { outgoing: true })
+      outgoings.forEach(edge => {
+        const portId = edge.getSourcePortId()
+        if (portId && removed[portId]) {
+          edge.remove()
+        }
+      })
     }
   }
 
@@ -927,6 +936,10 @@ export namespace Node {
     portContainerMarkup?: Markup
     portMarkup?: Markup
     portLabelMarkup?: Markup
+
+    defaultPortMarkup?: Markup
+    defaultPortLabelMarkup?: Markup
+    defaultPortContainerMarkup?: Markup
   }
 
   export interface Options extends Common, Cell.Options {}

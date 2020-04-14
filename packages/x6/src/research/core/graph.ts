@@ -559,6 +559,7 @@ export class Graph extends View<Graph.EventArgs> {
     if (view instanceof CellView) {
       const cell = view.cell
       const edges = this.model.getConnectedEdges(cell)
+      console.log(edges)
       for (let j = 0, n = edges.length; j < n; j += 1) {
         const edge = edges[j]
         const edgeView = this.findViewByCell(edge)

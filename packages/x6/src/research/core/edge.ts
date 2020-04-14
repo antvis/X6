@@ -3,11 +3,12 @@ import { Size, KeyValue } from '../../types'
 import { Point, Polyline } from '../../geometry'
 import { EdgeAnchor, NodeAnchor } from '../anchor'
 import { ConnectionPoint } from '../connection-point'
+import { Attr } from '../attr'
+import { Markup } from './markup'
 import { Store } from './store'
 import { Cell } from './cell'
 import { Node } from './node'
-import { Attr } from '../attr'
-import { Markup } from './markup'
+import { Model } from './model'
 
 export class Edge<
   Properties extends Edge.Properties = Edge.Properties
@@ -17,15 +18,34 @@ export class Edge<
   protected sourceCell: Cell | null
   protected targetCell: Cell | null
 
-  protected readonly defaultMarkup = Markup.edgeMarkup
-  protected readonly defaultToolMarkup = Markup.edgeToolMarkup
-  protected readonly defaultDoubleToolMarkup: Markup
-  protected readonly defaultVertexMarkup = Markup.edgeVertexMarkup
-  protected readonly defaultArrowheadMarkup = Markup.edgeArrowheadMarkup
-  protected readonly defaultLabel = Edge.defaultLabel
+  // protected readonly defaultMarkup = Markup.edgeMarkup
+  // protected readonly defaultToolMarkup = Markup.edgeToolMarkup
+  // protected readonly defaultDoubleToolMarkup: Markup
+  // protected readonly defaultVertexMarkup = Markup.edgeVertexMarkup
+  // protected readonly defaultArrowheadMarkup = Markup.edgeArrowheadMarkup
+  // protected readonly defaultLabel = Edge.defaultLabel
 
   constructor(options: Edge.Options = {}) {
     super(options)
+  }
+
+  set model(model: Model | null) {
+    this.setModel(model)
+  }
+
+  protected setModel(model: Model | null) {
+    super.setModel(model)
+    if (model) {
+      const sourceCellId = this.getSourceCellId()
+      const targetCellId = this.getTargetCellId()
+      const sourceCell =
+        sourceCellId != null ? model.getCell(sourceCellId) : null
+      const targetCell =
+        targetCellId != null ? model.getCell(targetCellId) : null
+      this.reference('source', sourceCell)
+      this.reference('target', targetCell)
+      this.updateParent()
+    }
   }
 
   protected setup() {
@@ -108,6 +128,8 @@ export class Edge<
       },
       options,
     )
+    this.reference('source', null)
+    this.reference('target', null)
     return this
   }
 
@@ -209,7 +231,6 @@ export class Edge<
     args?: Edge.SetTerminalCommonArgs | Edge.SetOptions,
     options: Edge.SetOptions = {},
   ): this {
-    const key = `${type}Cell` as 'sourceCell' | 'targetCell'
     // `source` is a cell
     if (terminal instanceof Cell) {
       this.store.set(
@@ -217,7 +238,6 @@ export class Edge<
         ObjectExt.merge({}, args, { cellId: terminal.id }),
         options,
       )
-      this[key] = terminal
       this.reference(type, terminal)
       return this
     }
@@ -230,6 +250,7 @@ export class Edge<
         ObjectExt.merge({}, args, { x: p.x, y: p.y }),
         options,
       )
+      this.reference(type, null)
       return this
     }
 
@@ -241,24 +262,39 @@ export class Edge<
     )
 
     const cellId = (terminal as Edge.TerminalCellData).cellId
-    if (cellId && this.model) {
-      this[key] = this.model.getCell(cellId)
-      this.reference(type, this[key])
-    }
+    const cell = cellId && this.model ? this.model.getCell(cellId) : null
+    this.reference(type, cell)
 
     return this
   }
 
-  protected reference(type: Edge.TerminalType, cell?: Cell | null) {
-    const prev = this.getTerminalCell(type)
-    if (cell) {
-      const key = type === 'source' ? 'outgoingEdges' : 'incomingEdges'
-      let ref = cell[key]
-      if (ref == null) {
-        ref = cell[key] = []
+  protected reference(type: Edge.TerminalType, cell: Cell | null) {
+    const terminalCellKey = `${type}Cell` as 'sourceCell' | 'targetCell'
+    const prev = this[terminalCellKey]
+
+    if (prev !== cell) {
+      const edgesKey = type === 'source' ? 'outgoingEdges' : 'incomingEdges'
+
+      if (prev) {
+        const ref = prev[edgesKey]
+        if (ref) {
+          const index = ref.indexOf(this)
+          if (index >= 0) {
+            ref.splice(index, 1)
+          }
+        }
       }
-      ref.push(this)
+
+      if (cell) {
+        let ref = cell[edgesKey]
+        if (ref == null) {
+          ref = cell[edgesKey] = []
+        }
+        ref.push(this)
+      }
     }
+
+    this[terminalCellKey] = cell
   }
 
   protected unreference(type: Edge.TerminalType) {}
@@ -405,7 +441,8 @@ export class Edge<
   // #region labels
 
   getDefaultLabel() {
-    const defaults = this.store.get('defaultLabel') || this.defaultLabel || {}
+    const ctor = this.constructor as typeof Edge
+    const defaults = this.store.get('defaultLabel') || ctor.defaultLabel || {}
 
     const label: Edge.Label = {}
     label.markup = this.store.get('labelMarkup') || defaults.markup
@@ -535,8 +572,12 @@ export class Edge<
     this.setVertexMarkup(markup)
   }
 
+  getDefaultVertexMarkup() {
+    return this.store.get('defaultVertexMarkup') || Markup.edgeVertexMarkup
+  }
+
   getVertexMarkup() {
-    return this.store.get('vertexMarkup') || this.defaultVertexMarkup
+    return this.store.get('vertexMarkup') || this.getDefaultVertexMarkup()
   }
 
   setVertexMarkup(markup?: Markup, options: Edge.SetOptions = {}) {
@@ -658,10 +699,12 @@ export class Edge<
 
   // #region markup
 
-  getDefaultMarkup() {}
+  getDefaultMarkup() {
+    return this.store.get('defaultMarkup') || Markup.edgeMarkup
+  }
 
   getMarkup() {
-    return super.getMarkup() || this.defaultMarkup
+    return super.getMarkup() || this.getDefaultMarkup()
   }
 
   // #endregion
@@ -676,8 +719,12 @@ export class Edge<
     this.setToolMarkup(markup)
   }
 
+  getDefaultToolMarkup() {
+    return this.store.get('defaultToolMarkup') || Markup.edgeToolMarkup
+  }
+
   getToolMarkup() {
-    return this.store.get('toolMarkup') || this.defaultToolMarkup
+    return this.store.get('toolMarkup') || this.getDefaultToolMarkup()
   }
 
   setToolMarkup(markup?: Markup, options: Edge.SetOptions = {}) {
@@ -689,12 +736,18 @@ export class Edge<
     return this.getDoubleToolMarkup()
   }
 
-  set doubleToolMarkup(markup: Markup) {
+  set doubleToolMarkup(markup: Markup | undefined) {
     this.setDoubleToolMarkup(markup)
   }
 
+  getDefaultDoubleToolMarkup() {
+    return this.store.get('defaultDoubleToolMarkup')
+  }
+
   getDoubleToolMarkup() {
-    return this.store.get('doubleToolMarkup') || this.defaultDoubleToolMarkup
+    return (
+      this.store.get('doubleToolMarkup') || this.getDefaultDoubleToolMarkup()
+    )
   }
 
   setDoubleToolMarkup(markup?: Markup, options: Edge.SetOptions = {}) {
@@ -714,8 +767,14 @@ export class Edge<
     this.setArrowheadMarkup(markup)
   }
 
+  getDefaultArrowheadMarkup() {
+    return (
+      this.store.get('defaultArrowheadMarkup') || Markup.edgeArrowheadMarkup
+    )
+  }
+
   getArrowheadMarkup() {
-    return this.store.get('arrowheadMarkup') || this.defaultArrowheadMarkup
+    return this.store.get('arrowheadMarkup') || this.getDefaultArrowheadMarkup()
   }
 
   setArrowheadMarkup(markup?: Markup, options: Edge.SetOptions = {}) {
@@ -812,7 +871,7 @@ export class Edge<
   updateParent(options?: Edge.SetOptions) {
     let newParent
 
-    if (this.model) {
+    if (this._model) {
       const source = this.getSourceNode()
       const target = this.getTargetNode()
       const prevParent = this.getParent()
@@ -823,7 +882,7 @@ export class Edge<
         } else if (target.isDescendantOf(source)) {
           newParent = source
         } else {
-          newParent = this.model.getCommonAncestor(source, target)
+          newParent = this._model.getCommonAncestor(source, target)
         }
       }
 
@@ -834,7 +893,7 @@ export class Edge<
       }
 
       if (newParent) {
-        this.setParent(newParent, options)
+        newParent.embed(this, options)
       }
     }
 
@@ -903,6 +962,12 @@ export namespace Edge {
     doubleToolMarkup?: Markup
     vertexMarkup?: Markup
     arrowheadMarkup?: Markup
+
+    defaultMarkup?: Markup
+    defaultToolMarkup?: Markup
+    defaultDoubleToolMarkup?: Markup
+    defaultVertexMarkup?: Markup
+    defaultArrowheadMarkup?: Markup
   }
 
   export interface Options extends Common, Cell.Options {}

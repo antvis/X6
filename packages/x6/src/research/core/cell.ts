@@ -171,17 +171,25 @@ export class Cell<
     }
   }
 
-  get model() {
-    return this._model
-  }
-
-  set model(model: Model | null) {
+  protected setModel(model: Model | null) {
     if (this._model !== model) {
       this._model = model
       if (model) {
         model.addCell(this)
       }
     }
+  }
+
+  protected getModel() {
+    return this._model
+  }
+
+  get model() {
+    return this.getModel()
+  }
+
+  set model(model: Model | null) {
+    this.setModel(model)
   }
 
   isNode(): this is Node {
@@ -805,7 +813,7 @@ export class Cell<
     return this
   }
 
-  addTo(mode: Model, options?: Cell.SetOptions): this
+  addTo(model: Model, options?: Cell.SetOptions): this
   // addTo(graph: Graph, options: Cell.SetOptions): this
   addTo(parent: Cell, options?: Cell.SetOptions): this
   addTo(target: Model | Cell, options: Cell.SetOptions = {}) {
@@ -871,8 +879,12 @@ export class Cell<
       this.setChildren(children, options)
 
       if (changed) {
-        // TODO: updateEdgeParents
-        // this.updateEdgeParents(child)
+        if (this.incomingEdges) {
+          this.incomingEdges.forEach(edge => edge.updateParent(options))
+        }
+        if (this.outgoingEdges) {
+          this.outgoingEdges.forEach(edge => edge.updateParent(options))
+        }
       }
 
       if (this.model) {
@@ -1133,8 +1145,7 @@ export class Cell<
     }
 
     // Deep cloning. Clone the cell itself and all its children.
-    const cells = [this, ...this.getDescendants({ deep: true })]
-    const map = Cell.cloneCells(cells)
+    const map = Cell.deepClone(this)
     return map[this.id] as any
   }
 
@@ -1395,6 +1406,12 @@ export namespace Cell {
     }
 
     return bbox
+  }
+
+  export function deepClone(cell: Cell) {
+    const cells = [cell, ...cell.getDescendants({ deep: true })]
+    console.log(cells)
+    return Cell.cloneCells(cells)
   }
 
   export function cloneCells(cells: Cell[]) {
