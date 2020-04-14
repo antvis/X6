@@ -4,22 +4,6 @@ import { KeyValue } from '../../types'
 import { v, MatrixLike } from '../../v'
 import { Point, Rectangle } from '../../geometry'
 import { StringExt, NumberExt, ObjectExt } from '../../util'
-import { View } from './view'
-import { Cell } from './cell'
-import { Node } from './node'
-import { Edge } from './edge'
-import { Model } from './model'
-import { CellView } from './cell-view'
-import { NodeView } from './node-view'
-import { Markup } from './markup'
-import { Globals } from './globals'
-import { Collection } from './collection'
-import { EdgeView } from './edge-view'
-import { Attr } from '../attr'
-import { Grid } from '../grid'
-import { Background } from '../background'
-import { Highlighter } from '../highlighter'
-import { CellViewFlag } from './cell-view-flag'
 import {
   NodeRegistry,
   EdgeRegistry,
@@ -28,6 +12,22 @@ import {
   BackgroundRegistry,
   HighlighterRegistry,
 } from '../registry'
+import { Attr } from '../attr'
+import { Grid } from '../grid'
+import { Background } from '../background'
+import { Highlighter } from '../highlighter'
+import { Globals } from './globals'
+import { Cell } from './cell'
+import { Node } from './node'
+import { Edge } from './edge'
+import { View } from './view'
+import { Model } from './model'
+import { Markup } from './markup'
+import { CellView } from './cell-view'
+import { NodeView } from './node-view'
+import { EdgeView } from './edge-view'
+import { Collection } from './collection'
+import { CellViewFlag } from './cell-view-flag'
 
 const sortingTypes = {
   NONE: 'sorting-none',
@@ -42,7 +42,7 @@ const MOUNT_BATCH_SIZE = 1000
 const UPDATE_BATCH_SIZE = Infinity
 const MIN_PRIORITY = 2
 
-export class Graph extends View {
+export class Graph extends View<Graph.EventArgs> {
   options = {
     width: 800,
     height: 600,
@@ -340,8 +340,18 @@ export class Graph extends View {
 
   protected setup() {
     const model = this.model
-    model.on('sort', () => this.onSortModel)
-    model.on('reset', ({ options }) => this.onResetModel(options))
+    model.on('sorted', () => {
+      this.onSortModel()
+      this.trigger('model:sorted')
+    })
+
+    model.on('reseted', args => {
+      this.onResetModel(args.options)
+      this.trigger('model:reseted', args)
+    })
+
+    model.on('updated', args => this.trigger('model:updated', args))
+
     model.on('cell:added', ({ cell, options }) => this.onAddCell(cell, options))
     model.on('cell:removed', ({ cell, options }) =>
       this.onRemoveCell(cell, options),
@@ -350,7 +360,6 @@ export class Graph extends View {
       this.onCellChanged(cell, options),
     )
     model.on('batch:stop', ({ name, data }) => this.onBatchStop(name, data))
-
     this.on(
       'cell:highlight',
       ({
@@ -472,10 +481,16 @@ export class Graph extends View {
     if (node instanceof Node) {
       result = node
     } else {
-      const { type, ...options } = node
+      const { type, x, y, width, height, ...options } = node
       const name = type || 'basic.rect'
       const define = NodeRegistry.get(name)
       if (define) {
+        if (width != null && height != null) {
+          options.size = { ...options.size, width, height }
+        }
+        if (x != null && y != null) {
+          options.position = { ...options.position, x, y }
+        }
         result = new define(options)
       } else {
         throw new Error(`Unknow node type: "${name}"`)
@@ -667,7 +682,7 @@ export class Graph extends View {
 
     const stats = this.updateViews(options)
     if (isAsync) {
-      this.trigger('render:done', stats, options)
+      this.trigger('render:done', { stats, options })
     }
   }
 
@@ -891,7 +906,7 @@ export class Graph extends View {
           stats.priority = data.priority
           stats.mountedCount += mountedCount
           stats.unmountedCount += unmountedCount
-          this.trigger('render:done', stats, options)
+          this.trigger('render:done', { stats, options })
           data.processed = 0
           updates.count = 0
         } else {
@@ -1432,7 +1447,7 @@ export class Graph extends View {
     })
 
     const size = this.getComputedSize()
-    this.trigger('resize', size)
+    this.trigger('resize', { ...size })
   }
 
   getComputedSize() {
@@ -1470,7 +1485,7 @@ export class Graph extends View {
 
     this.setMatrix(matrix)
 
-    this.trigger('scale', sx, sy, ox, oy)
+    this.trigger('scale', { sx, sy, ox, oy })
 
     return this
   }
@@ -2608,7 +2623,7 @@ export class Graph extends View {
     if (view) {
       view.onDblClick(e, localPoint.x, localPoint.y)
     } else {
-      this.trigger('blank:dblclick', e, localPoint.x, localPoint.y)
+      this.trigger('blank:dblclick', { e, x: localPoint.x, y: localPoint.y })
     }
   }
 
@@ -2624,7 +2639,7 @@ export class Graph extends View {
       if (view) {
         view.onClick(e, localPoint.x, localPoint.y)
       } else {
-        this.trigger('blank:click', e, localPoint.x, localPoint.y)
+        this.trigger('blank:click', { e, x: localPoint.x, y: localPoint.y })
       }
     }
   }
@@ -2645,7 +2660,7 @@ export class Graph extends View {
     if (view) {
       view.onContextMenu(e, localPoint.x, localPoint.y)
     } else {
-      this.trigger('blank:contextmenu', e, localPoint.x, localPoint.y)
+      this.trigger('blank:contextmenu', { e, x: localPoint.x, y: localPoint.y })
     }
   }
 
@@ -2682,7 +2697,7 @@ export class Graph extends View {
         e.preventDefault()
       }
 
-      this.trigger('blank:mousedown', e, localPoint.x, localPoint.y)
+      this.trigger('blank:mousedown', { e, x: localPoint.x, y: localPoint.y })
     }
 
     this.delegateDragEvents(e, view)
@@ -2706,7 +2721,7 @@ export class Graph extends View {
     if (view) {
       view.onMouseMove(e, localPoint.x, localPoint.y)
     } else {
-      this.trigger('blank:mousemove', e, localPoint.x, localPoint.y)
+      this.trigger('blank:mousemove', { e, x: localPoint.x, y: localPoint.y })
     }
 
     this.setEventData(e, data)
@@ -2722,7 +2737,11 @@ export class Graph extends View {
     if (view) {
       view.onMouseUp(normalized, localPoint.x, localPoint.y)
     } else {
-      this.trigger('blank:mouseup', normalized, localPoint.x, localPoint.y)
+      this.trigger('blank:mouseup', {
+        e: normalized,
+        x: localPoint.x,
+        y: localPoint.y,
+      })
     }
 
     if (!e.isPropagationStopped()) {
@@ -2754,7 +2773,7 @@ export class Graph extends View {
       if (this.container === e.target) {
         return
       }
-      this.trigger('blank:mouseover', e)
+      this.trigger('blank:mouseover', { e })
     }
   }
 
@@ -2771,7 +2790,7 @@ export class Graph extends View {
       if (this.container === e.target) {
         return
       }
-      this.trigger('blank:mouseout', e)
+      this.trigger('blank:mouseout', { e })
     }
   }
 
@@ -2793,7 +2812,7 @@ export class Graph extends View {
       if (relatedView) {
         return
       }
-      this.trigger('graph:mouseenter', e)
+      this.trigger('graph:mouseenter', { e })
     }
   }
 
@@ -2814,7 +2833,7 @@ export class Graph extends View {
       if (relatedView) {
         return
       }
-      this.trigger('graph:mouseleave', e)
+      this.trigger('graph:mouseleave', { e })
     }
   }
 
@@ -2838,7 +2857,12 @@ export class Graph extends View {
     if (view) {
       view.onMouseWheel(e, localPoint.x, localPoint.y, delta)
     } else {
-      this.trigger('blank:mousewheel', e, localPoint.x, localPoint.y, delta)
+      this.trigger('blank:mousewheel', {
+        e,
+        delta,
+        x: localPoint.x,
+        y: localPoint.y,
+      })
     }
   }
 
@@ -3135,6 +3159,53 @@ export namespace Graph {
     mouseup: 'onMouseUp',
     touchend: 'onMouseUp',
     touchcancel: 'onMouseUp',
+  }
+}
+
+export namespace Graph {
+  interface CommonEventArgs<E> {
+    e: E
+  }
+
+  interface PositionEventArgs<E> extends CommonEventArgs<E> {
+    x: number
+    y: number
+  }
+
+  export interface EventArgs
+    extends Omit<Model.EventArgs, 'sorted' | 'updated' | 'reseted'>,
+      CellView.EventArgs {
+    'model:sorted'?: Model.EventArgs['sorted']
+    'model:updated': Model.EventArgs['updated']
+    'model:reseted': Model.EventArgs['reseted']
+
+    'blank:click': PositionEventArgs<JQuery.ClickEvent>
+    'blank:dblclick': PositionEventArgs<JQuery.DoubleClickEvent>
+    'blank:contextmenu': PositionEventArgs<JQuery.ContextMenuEvent>
+    'blank:mousedown': PositionEventArgs<JQuery.MouseDownEvent>
+    'blank:mousemove': PositionEventArgs<JQuery.MouseMoveEvent>
+    'blank:mouseup': PositionEventArgs<JQuery.MouseUpEvent>
+    'blank:mouseout': CommonEventArgs<JQuery.MouseOutEvent>
+    'blank:mouseover': CommonEventArgs<JQuery.MouseOverEvent>
+    'graph:mouseenter': CommonEventArgs<JQuery.MouseEnterEvent>
+    'graph:mouseleave': CommonEventArgs<JQuery.MouseLeaveEvent>
+    'blank:mousewheel': PositionEventArgs<JQuery.TriggeredEvent> & {
+      delta: number
+    }
+    'tools:event': { name: string }
+    'tools:remove'?: null
+    'tools:hide'?: null
+    'tools:show'?: null
+    'render:done': {
+      stats: {
+        priority: number
+        updatedCount: number
+      }
+      options: UpdateViewsAsyncOptions
+    }
+    translate: { origin: Point.PointLike }
+    scale: { sx: number; sy: number; ox: number; oy: number }
+    resize: { width: number; height: number }
   }
 }
 

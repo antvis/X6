@@ -1,5 +1,3 @@
-const BLOBAL_KEY = '__X6_CLASS__'
-
 const extendStatics =
   Object.setPrototypeOf ||
   ({ __proto__: [] } instanceof Array &&
@@ -28,42 +26,6 @@ export function inherit(cls: Function, base: Function) {
       : ((tmp.prototype = base.prototype), new (tmp as any)())
 }
 
-let seed = 0
-const classIdMap: WeakMap<Function, string> = new WeakMap()
-function getClassId(c: Function) {
-  let id = classIdMap.get(c)
-  if (id == null) {
-    id = `c${seed}`
-    seed += 1
-    classIdMap.set(c, id)
-  }
-  return id
-}
-
-const win = window as any
-win[BLOBAL_KEY] = {}
-function cacheClass(c: Function) {
-  let cache = win[BLOBAL_KEY]
-  if (cache == null) {
-    cache = win[BLOBAL_KEY] = {}
-  }
-
-  const id = getClassId(c)
-  if (cache[id] == null) {
-    cache[id] = c
-  }
-
-  return `window['${BLOBAL_KEY}']['${id}']`
-}
-
-// function isNativeClass(cls: Function) {
-//   const classStr = `${cls}`
-//   return (
-//     /^\s*class\s+/.test(classStr) ||
-//     classStr.indexOf(`window['${BLOBAL_KEY}']['`) > 0
-//   )
-// }
-
 class A {}
 const isNativeClass = /^\s*class\s+/.test(`${A}`)
 
@@ -71,13 +33,15 @@ const isNativeClass = /^\s*class\s+/.test(`${A}`)
  * Extends class with specified class name.
  */
 export function createClass<T>(className: string, base: Function): T {
-  const baseName = cacheClass(base)
   // tslint:disable-next-line
-  const cls = new Function(`
-    return ${isNativeClass}
-      ? class ${className} extends ${baseName} { }
-      : function ${className}() { return ${baseName}.apply(this, arguments) }
-  `)()
+  const cls = new Function(
+    'base',
+    `
+      return ${isNativeClass}
+        ? class ${className} extends base { }
+        : function ${className}() { return base.apply(this, arguments) }
+    `,
+  )(base)
 
   if (!isNativeClass) {
     inherit(cls, base)

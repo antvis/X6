@@ -1,8 +1,9 @@
 import * as util from './util'
 import { v } from '../../v'
-import { CellView } from '../core/cell-view'
 import { Rectangle, Point } from '../../geometry'
 import { NumberExt, JSONObject, StringExt, ObjectExt } from '../../util'
+import { CellView } from '../core/cell-view'
+import { EdgeView } from '../core/edge-view'
 
 export namespace Attr {
   export type SimpleAttrValue = string | number | null | undefined
@@ -524,7 +525,7 @@ export namespace Attr {
           }
         }
 
-        return { d: d || (view as any).getSerializedConnection() }
+        return { d: d || (view as EdgeView).getConnectionPathData() }
       },
     },
 

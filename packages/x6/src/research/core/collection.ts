@@ -96,7 +96,7 @@ export class Collection extends Basecoat<Collection.EventArgs> {
 
     if (!localOptions.silent) {
       added.forEach((cell, i) => {
-        this.trigger('add', {
+        this.trigger('added', {
           cell,
           index: localIndex + i,
           options: localOptions,
@@ -104,11 +104,11 @@ export class Collection extends Basecoat<Collection.EventArgs> {
       })
 
       if (sort) {
-        this.trigger('sort')
+        this.trigger('sorted')
       }
 
       if (added.length || merged.length) {
-        this.trigger('update', {
+        this.trigger('updated', {
           added,
           merged,
           removed: [],
@@ -126,7 +126,7 @@ export class Collection extends Basecoat<Collection.EventArgs> {
     const entities = Array.isArray(cells) ? cells : [cells]
     const removed = this.removeCells(entities, options)
     if (!options.silent && removed.length > 0) {
-      this.trigger('update', {
+      this.trigger('updated', {
         options,
         removed,
         added: [],
@@ -152,7 +152,7 @@ export class Collection extends Basecoat<Collection.EventArgs> {
       removed.push(cell)
       this.unreference(cell)
       if (!options.silent) {
-        this.trigger('remove', { cell, index, options })
+        this.trigger('removed', { cell, index, options })
       }
     }
 
@@ -165,7 +165,7 @@ export class Collection extends Basecoat<Collection.EventArgs> {
     this.clean()
     this.add(cells, { silent: true, ...options })
     if (!options.silent) {
-      this.trigger('reset', {
+      this.trigger('reseted', {
         options,
         previous,
         current: this.cells.slice(),
@@ -242,7 +242,7 @@ export class Collection extends Basecoat<Collection.EventArgs> {
       }
 
       if (!options.silent) {
-        this.trigger('sort')
+        this.trigger('sorted')
       }
     }
 
@@ -258,7 +258,6 @@ export class Collection extends Basecoat<Collection.EventArgs> {
 
   protected reference(cell: Cell) {
     this.map[cell.id] = cell
-    cell.on('changed', this.onCellChanged, this)
     cell.on('disposed', this.onCellDisposed, this)
     cell.on('change:zIndex', this.onCellZIndexChanged, this)
     if (cell.isEdge()) {
@@ -268,7 +267,6 @@ export class Collection extends Basecoat<Collection.EventArgs> {
   }
 
   protected unreference(cell: Cell) {
-    cell.off('changed', this.onCellChanged, this)
     cell.off('disposed', this.onCellDisposed, this)
     cell.off('change:zIndex', this.onCellZIndexChanged, this)
     if (cell.isEdge()) {
@@ -276,10 +274,6 @@ export class Collection extends Basecoat<Collection.EventArgs> {
       cell.off('change:target', this.onEdgeTargetChanged, this)
     }
     delete this.map[cell.id]
-  }
-
-  protected onCellChanged(args: Cell.EventArgs['changed']) {
-    this.trigger('change', args)
   }
 
   protected onEdgeSourceChanged(args: Cell.ChangeArgs<Edge.TerminalData>) {
@@ -343,31 +337,27 @@ export namespace Collection {
   }
 
   export interface EventArgs {
-    add: {
-      cell: Cell
-      index: number
-      options: AddOptions
-    }
-    remove: {
-      cell: Cell
-      index: number
-      options: RemoveOptions
-    }
-    change: {
-      cell: Cell
-      options: Cell.MutateOptions
-    }
-    sort?: null
-    reset: {
+    sorted?: null
+    reseted: {
       current: Cell[]
       previous: Cell[]
       options: SetOptions
     }
-    update: {
+    updated: {
       added: Cell[]
       merged: Cell[]
       removed: Cell[]
       options: SetOptions
+    }
+    added: {
+      cell: Cell
+      index: number
+      options: AddOptions
+    }
+    removed: {
+      cell: Cell
+      index: number
+      options: RemoveOptions
     }
     'change:terminal': {
       edge: Edge

@@ -66,11 +66,13 @@ export class Cell<
 
   // #endregion
 
-  public model: Model | null
   public readonly id: string
   protected readonly store: Store<Cell.Properties>
+  protected _model: Model | null // tslint:disable-line
   protected _parent: Cell | null // tslint:disable-line
   protected _children: Cell[] | null // tslint:disable-line
+  protected incomingEdges: Edge[] | null
+  protected outgoingEdges: Edge[] | null
 
   constructor(options: Cell.Options = {}) {
     super()
@@ -99,7 +101,7 @@ export class Cell<
     this.store.on('mutated', metadata => {
       const key = metadata.key
 
-      this.trigger('change:*', {
+      this.notify('change:*', {
         key,
         cell: this,
         options: metadata.options,
@@ -108,28 +110,28 @@ export class Cell<
       })
 
       if (key === 'zIndex') {
-        this.trigger('change:zIndex', this.getChangeEventArgs<number>(metadata))
+        this.notify('change:zIndex', this.getChangeEventArgs<number>(metadata))
       } else if (key === 'parent') {
-        this.trigger('change:parent', this.getChangeEventArgs<string>(metadata))
+        this.notify('change:parent', this.getChangeEventArgs<string>(metadata))
       } else if (key === 'children') {
-        this.trigger(
+        this.notify(
           'change:children',
           this.getChangeEventArgs<string[]>(metadata),
         )
       } else if (key === 'visible') {
-        this.trigger(
+        this.notify(
           'change:visible',
           this.getChangeEventArgs<boolean>(metadata),
         )
       } else if (key === 'markup') {
-        this.trigger('change:markup', this.getChangeEventArgs<Markup>(metadata))
+        this.notify('change:markup', this.getChangeEventArgs<Markup>(metadata))
       } else if (key === 'view') {
-        this.trigger(
+        this.notify(
           'change:view',
           this.getChangeEventArgs<Cell.ViewType>(metadata),
         )
       } else if (key === 'attrs') {
-        this.trigger(
+        this.notify(
           'change:attrs',
           this.getChangeEventArgs<Attr.CellAttrs>(metadata),
         )
@@ -137,7 +139,7 @@ export class Cell<
     })
 
     this.store.on('changed', ({ options }) =>
-      this.trigger('changed', { options, cell: this }),
+      this.notify('changed', { options, cell: this }),
     )
   }
 
@@ -158,15 +160,28 @@ export class Cell<
     args: Cell.EventArgs[Key],
   ) {
     this.trigger(name, args)
-    // const model = this.model
-    // if (model) {
-    //   model.trigger(`cell:${name}`, args)
-    //   if (this.isNode()) {
-    //     model.trigger(`node:${name}`, args)
-    //   } else if (this.isEdge()) {
-    //     model.trigger(`edge:${name}`, args)
-    //   }
-    // }
+    const model = this.model
+    if (model) {
+      model.notify(`cell:${name}` as any, args)
+      if (this.isNode()) {
+        model.notify(`node:${name}` as any, { ...args, node: this })
+      } else if (this.isEdge()) {
+        model.notify(`edge:${name}` as any, { ...args, edge: this })
+      }
+    }
+  }
+
+  get model() {
+    return this._model
+  }
+
+  set model(model: Model | null) {
+    if (this._model !== model) {
+      this._model = model
+      if (model) {
+        model.addCell(this)
+      }
+    }
   }
 
   isNode(): this is Node {
@@ -518,10 +533,10 @@ export class Cell<
   attr<T>(path: string | string[]): T
   attr(
     path: string | string[],
-    value: Attr.ComplexAttrValue,
-    options: Cell.SetOptions,
+    value: Attr.ComplexAttrValue | null,
+    options?: Cell.SetOptions,
   ): this
-  attr(attrs: Attr.CellAttrs, options: Cell.SetOptions): this
+  attr(attrs: Attr.CellAttrs, options?: Cell.SetOptions): this
   attr(
     path?: string | string[] | Attr.CellAttrs,
     value?: Attr.ComplexAttrValue | Cell.SetOptions,
@@ -627,7 +642,7 @@ export class Cell<
         this._children = children
       }
     }
-    return children
+    return children ? [...children] : null
   }
 
   hasParent() {
@@ -774,8 +789,44 @@ export class Cell<
     }
   }
 
+  unembed(child: Cell, options: Cell.SetOptions = {}) {
+    const children = this.children
+    if (children != null && child != null) {
+      const index = this.getChildIndex(child)
+      children.splice(index, 1)
+      child.setParent(null, options)
+      this.setChildren(children, options)
+    }
+    return this
+  }
+
+  embed(child: Cell, options: Cell.SetOptions = {}) {
+    child.addTo(this, options)
+    return this
+  }
+
+  addTo(mode: Model, options?: Cell.SetOptions): this
+  // addTo(graph: Graph, options: Cell.SetOptions): this
+  addTo(parent: Cell, options?: Cell.SetOptions): this
+  addTo(target: Model | Cell, options: Cell.SetOptions = {}) {
+    if (target instanceof Model) {
+      target.addCell(this, options)
+    }
+    // else if (target instanceof Graph) {
+    //   target.model.addCell(this, options)
+    // }
+    else if (target instanceof Cell) {
+      target.addChild(this, options)
+    }
+    return this
+  }
+
   insertTo(parent: Cell, index?: number, options: Cell.SetOptions = {}) {
     parent.insertChild(this, index, options)
+  }
+
+  addChild(child: Cell | null, options: Cell.SetOptions = {}) {
+    return this.insertChild(child, undefined, options)
   }
 
   insertChild(
@@ -850,9 +901,7 @@ export class Cell<
     const children = this.children
 
     if (children != null && child != null) {
-      children.splice(index, 1)
-      child.setParent(null, options)
-      this.setChildren(children, options)
+      this.unembed(child, options)
       child.remove(options)
     }
 
@@ -866,12 +915,12 @@ export class Cell<
     } else {
       this.executeBatch('remove', () => {
         if (options.deep !== false) {
-          this.eachChild(child => child.remove())
+          this.eachChild(child => child.remove(options))
         }
-        this.trigger('removed', { options, cell: this })
         if (this.model) {
           this.model.collection.remove(this, options)
         }
+        this.notify('removed', { options, cell: this })
       })
     }
   }
@@ -949,14 +998,14 @@ export class Cell<
       this.setPropByPath(Array.isArray(path) ? path : path.split(delim), val)
 
       if (id == null) {
-        this.trigger('transition:end', { cell: this, path: pathStr })
+        this.notify('transition:end', { cell: this, path: pathStr })
       }
     }
 
     const initiator = (transition: FrameRequestCallback) => {
       this.stopTransitions(path, delim)
       this.transitionIds[pathStr] = v.requestAnimationFrame(transition)
-      this.trigger('transition:begin', { cell: this, path: pathStr })
+      this.notify('transition:begin', { cell: this, path: pathStr })
     }
 
     return setTimeout(() => {
@@ -978,7 +1027,7 @@ export class Cell<
       .forEach(key => {
         v.cancelAnimationFrame(this.transitionIds[key])
         delete this.transitionIds[key]
-        this.trigger('transition:end', { cell: this, path: key })
+        this.notify('transition:end', { cell: this, path: key })
       })
 
     return this
@@ -1002,6 +1051,8 @@ export class Cell<
   }
 
   // #endregion
+
+  // #region common
 
   getBBox(options?: { deep?: boolean }) {
     return new Rectangle()
@@ -1087,13 +1138,11 @@ export class Cell<
     return map[this.id] as any
   }
 
-  addTo(mode: Model, options: Cell.SetOptions = {}) {
-    mode.addCell(this, options)
-  }
-
   findView(graph: Graph): CellView | null {
     return graph.findViewByCell(this)
   }
+
+  // #endregion
 
   // #region batch
 
@@ -1128,7 +1177,7 @@ export class Cell<
   dispose() {
     this.removeFromParent()
     this.store.dispose()
-    this.trigger('disposed', { cell: this })
+    this.notify('disposed', { cell: this })
   }
 
   // #endregion
@@ -1211,7 +1260,10 @@ export namespace Cell {
   }
 
   export interface EventArgs {
+    'transition:begin': TransitionArgs
+    'transition:end': TransitionArgs
     // common
+    'change:*': ChangeAnyKeyArgs
     'change:attrs': ChangeArgs<Attr.CellAttrs>
     'change:zIndex': ChangeArgs<number>
     'change:markup': ChangeArgs<Markup>
@@ -1219,8 +1271,6 @@ export namespace Cell {
     'change:parent': ChangeArgs<string>
     'change:children': ChangeArgs<string[]>
     'change:view': ChangeArgs<ViewType>
-    'transition:begin': TransitionArgs
-    'transition:end': TransitionArgs
 
     // node
     'change:size': ChangeArgs<Size>
@@ -1231,10 +1281,12 @@ export namespace Cell {
     'change:portLabelMarkup': ChangeArgs<Markup>
     'change:portContainerMarkup': ChangeArgs<Markup>
     'ports:removed': {
+      cell: Cell
       node: Node
       removed: PortData.Port[]
     }
     'ports:added': {
+      cell: Cell
       node: Node
       added: PortData.Port[]
     }
@@ -1253,23 +1305,25 @@ export namespace Cell {
     'change:vertexMarkup': ChangeArgs<Markup>
     'change:arrowheadMarkup': ChangeArgs<Markup>
     'vertexs:added': {
+      cell: Cell
       edge: Edge
       added: Point.PointLike[]
     }
     'vertexs:removed': {
+      cell: Cell
       edge: Edge
       removed: Point.PointLike[]
     }
     'labels:added': {
+      cell: Cell
       edge: Edge
       added: Edge.Label[]
     }
     'labels:removed': {
+      cell: Cell
       edge: Edge
       removed: Edge.Label[]
     }
-
-    'change:*': ChangeAnyKeyArgs
 
     changed: {
       cell: Cell
@@ -1404,7 +1458,7 @@ export namespace Cell {
 export namespace Cell {
   export type Defintion = typeof Cell
 
-  export interface DefintionOptions extends Defaults {
+  export interface DefintionOptions extends Defaults, KeyValue {
     /**
      * The class name.
      */

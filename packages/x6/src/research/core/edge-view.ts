@@ -3,17 +3,20 @@ import { Attr } from '../attr'
 import { KeyValue } from '../../types'
 import { StringExt, ObjectExt, NumberExt } from '../../util'
 import { Rectangle, Polyline, Point, Angle, Path, Line } from '../../geometry'
-import { CellView } from './cell-view'
-import { Edge } from './edge'
-import { Markup } from './markup'
-import { NodeAnchor } from '../anchor'
+import {
+  RouterRegistry,
+  NodeAnchorRegistry,
+  EdgeAnchorRegistry,
+  ConnectorRegistry,
+  ConnectionPointRegistry,
+} from '../registry'
 import { Router } from '../router'
+import { NodeAnchor } from '../anchor'
 import { Connector } from '../connector'
 import { ConnectionPoint } from '../connection-point'
-import { NodeAnchorRegistry, EdgeAnchorRegistry } from '../registry/anchor'
-import { RouterRegistry } from '../registry/router'
-import { ConnectorRegistry } from '../registry/connector'
-import { ConnectionPointRegistry } from '../registry/connection-point'
+import { Edge } from './edge'
+import { Markup } from './markup'
+import { CellView } from './cell-view'
 
 export class EdgeView<
   C extends Edge = Edge,
@@ -72,6 +75,10 @@ export class EdgeView<
       return new Rectangle(this.targetAnchor.x, this.targetAnchor.y)
     }
     return targetView.getNodeBBox(targetMagnet || targetView.container)
+  }
+
+  isEdgeView(): this is EdgeView {
+    return true
   }
 
   confirmUpdate(flag: number, options: any = {}) {
@@ -1732,34 +1739,50 @@ export class EdgeView<
 
   // #region events
 
+  protected getEventArgs<E>(e: E): EdgeView.MouseEventArgs<E>
+  protected getEventArgs<E>(
+    e: E,
+    x: number,
+    y: number,
+  ): EdgeView.PositionEventArgs<E>
+  protected getEventArgs<E>(e: E, x?: number, y?: number) {
+    const view = this // tslint:disable-line
+    const edge = view.cell
+    const cell = edge
+    if (x == null || y == null) {
+      return { e, view, edge, cell } as EdgeView.MouseEventArgs<E>
+    }
+    return { e, x, y, view, edge, cell } as EdgeView.PositionEventArgs<E>
+  }
+
   notifyMouseDown(e: JQuery.MouseDownEvent, x: number, y: number) {
     super.onMouseDown(e, x, y)
-    this.notify('edge:mousedown', { e, x, y, view: this, edge: this.cell })
+    this.notify('edge:mousedown', this.getEventArgs(e, x, y))
   }
 
   notifyMouseMove(e: JQuery.MouseMoveEvent, x: number, y: number) {
     super.onMouseMove(e, x, y)
-    this.notify('edge:mousemove', { e, x, y, view: this, edge: this.cell })
+    this.notify('edge:mousemove', this.getEventArgs(e, x, y))
   }
 
   notifyMouseUp(e: JQuery.MouseUpEvent, x: number, y: number) {
     super.onMouseUp(e, x, y)
-    this.notify('edge:mouseup', { e, x, y, view: this, edge: this.cell })
+    this.notify('edge:mouseup', this.getEventArgs(e, x, y))
   }
 
   onClick(e: JQuery.ClickEvent, x: number, y: number) {
     super.onClick(e, x, y)
-    this.notify('edge:click', { e, x, y, view: this, edge: this.cell })
+    this.notify('edge:click', this.getEventArgs(e, x, y))
   }
 
   onDblClick(e: JQuery.DoubleClickEvent, x: number, y: number) {
     super.onDblClick(e, x, y)
-    this.notify('edge:dblclick', { e, x, y, view: this, edge: this.cell })
+    this.notify('edge:dblclick', this.getEventArgs(e, x, y))
   }
 
   onContextMenu(e: JQuery.ContextMenuEvent, x: number, y: number) {
     super.onContextMenu(e, x, y)
-    this.notify('edge:contextmenu', { e, x, y, view: this, edge: this.cell })
+    this.notify('edge:contextmenu', this.getEventArgs(e, x, y))
   }
 
   onMouseDown(e: JQuery.MouseDownEvent, x: number, y: number) {
@@ -1840,57 +1863,48 @@ export class EdgeView<
 
   onMouseOver(e: JQuery.MouseOverEvent) {
     super.onMouseOver(e)
-    this.notify('edge:mouseover', { e, view: this, edge: this.cell })
+    this.notify('edge:mouseover', this.getEventArgs(e))
   }
 
   onMouseOut(e: JQuery.MouseOutEvent) {
     super.onMouseOut(e)
-    this.notify('edge:mouseout', { e, view: this, edge: this.cell })
+    this.notify('edge:mouseout', this.getEventArgs(e))
   }
 
   onMouseEnter(e: JQuery.MouseEnterEvent) {
     super.onMouseEnter(e)
-    this.notify('edge:mouseenter', { e, view: this, edge: this.cell })
+    this.notify('edge:mouseenter', this.getEventArgs(e))
   }
 
   onMouseLeave(e: JQuery.MouseLeaveEvent) {
     super.onMouseLeave(e)
-    this.notify('edge:mouseleave', { e, view: this, edge: this.cell })
+    this.notify('edge:mouseleave', this.getEventArgs(e))
   }
 
   onMouseWheel(e: JQuery.TriggeredEvent, x: number, y: number, delta: number) {
     super.onMouseWheel(e, x, y, delta)
     this.notify('edge:mousewheel', {
-      e,
-      x,
-      y,
       delta,
-      view: this,
-      edge: this.cell,
+      ...this.getEventArgs(e, x, y),
     })
   }
 
-  onCustomEvent(
-    e: JQuery.MouseDownEvent,
-    eventName: string,
-    x: number,
-    y: number,
-  ) {
+  onCustomEvent(e: JQuery.MouseDownEvent, name: string, x: number, y: number) {
     // For default edge tool
     const tool = v.findParentByClass(e.target, 'edge-tool', this.container)
     if (tool) {
       e.stopPropagation() // no further action to be executed
       if (this.can('useLinkTools')) {
-        if (eventName === 'edge:remove') {
+        if (name === 'edge:remove') {
           this.cell.remove({ ui: true })
           return
         }
-        this.notify(eventName, { e, x, y })
+        this.notify('edge:customevent', { name, ...this.getEventArgs(e, x, y) })
       }
 
       this.notifyMouseDown(e as JQuery.MouseDownEvent, x, y)
     } else {
-      super.onCustomEvent(e, eventName, x, y)
+      super.onCustomEvent(e, name, x, y)
     }
   }
 
@@ -2236,20 +2250,20 @@ export class EdgeView<
       const graph = this.graph
       const prevCellId = (initialTerminal as Edge.TerminalCellData).cellId
       if (prevCellId) {
-        this.notify('edge:disconnect', {
+        this.notify('edge:disconnected', {
           e,
           type,
-          view: graph.findViewByCell(prevCellId),
+          view: graph.findViewByCell(prevCellId) as CellView,
           magnet: data.initialMagnet,
         })
       }
 
       const currCellId = (currentTerminal as Edge.TerminalCellData).cellId
       if (currCellId) {
-        this.notify('edge:connect', {
+        this.notify('edge:connected', {
           e,
           type,
-          view: graph.findViewByCell(currCellId),
+          view: graph.findViewByCell(currCellId) as CellView,
           magnet: data.currentMagnet,
         })
       }
@@ -2481,6 +2495,55 @@ export namespace EdgeView {
     sourceArrowhead?: Element
     targetArrowhead?: Element
     tools?: Element
+  }
+}
+
+export namespace EdgeView {
+  export interface MouseEventArgs<E> {
+    e: E
+    edge: Edge
+    cell: Edge
+    view: EdgeView
+  }
+
+  export interface PositionEventArgs<E>
+    extends MouseEventArgs<E>,
+      CellView.PositionEventArgs {}
+
+  export interface EventArgs {
+    'edge:click': PositionEventArgs<JQuery.ClickEvent>
+    'edge:dblclick': PositionEventArgs<JQuery.DoubleClickEvent>
+    'edge:contextmenu': PositionEventArgs<JQuery.ContextMenuEvent>
+    'edge:mousedown': PositionEventArgs<JQuery.MouseDownEvent>
+    'edge:mousemove': PositionEventArgs<JQuery.MouseMoveEvent>
+    'edge:mouseup': PositionEventArgs<JQuery.MouseUpEvent>
+    'edge:mouseover': MouseEventArgs<JQuery.MouseOverEvent>
+    'edge:mouseout': MouseEventArgs<JQuery.MouseOutEvent>
+    'edge:mouseenter': MouseEventArgs<JQuery.MouseEnterEvent>
+    'edge:mouseleave': MouseEventArgs<JQuery.MouseLeaveEvent>
+    'edge:mousewheel': PositionEventArgs<JQuery.TriggeredEvent> &
+      CellView.MouseDeltaEventArgs
+
+    'edge:customevent': EdgeView.PositionEventArgs<JQuery.MouseDownEvent> & {
+      name: string
+    }
+
+    'edge:connected': {
+      e: JQuery.MouseUpEvent
+      type: Edge.TerminalType
+      view: CellView
+      magnet?: Element | null
+    }
+    'edge:disconnected': EventArgs['edge:connected']
+
+    'edge:highlight': {
+      magnet: Element
+      view: EdgeView
+      edge: Edge
+      cell: Edge
+      options: CellView.HighlightOptions
+    }
+    'edge:unhighlight': EventArgs['edge:highlight']
   }
 }
 

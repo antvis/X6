@@ -34,6 +34,10 @@ export class NodeView<
     )
   }
 
+  isNodeView(): this is NodeView {
+    return true
+  }
+
   confirmUpdate(flag: number, options: any = {}) {
     let ret = flag
     if (this.hasAction(ret, 'ports')) {
@@ -547,34 +551,50 @@ export class NodeView<
 
   // #region events
 
+  protected getEventArgs<E>(e: E): NodeView.MouseEventArgs<E>
+  protected getEventArgs<E>(
+    e: E,
+    x: number,
+    y: number,
+  ): NodeView.PositionEventArgs<E>
+  protected getEventArgs<E>(e: E, x?: number, y?: number) {
+    const view = this // tslint:disable-line
+    const edge = view.cell
+    const cell = edge
+    if (x == null || y == null) {
+      return { e, view, edge, cell } as NodeView.MouseEventArgs<E>
+    }
+    return { e, x, y, view, edge, cell } as NodeView.PositionEventArgs<E>
+  }
+
   notifyMouseDown(e: JQuery.MouseDownEvent, x: number, y: number) {
     super.onMouseDown(e, x, y)
-    this.notify('node:mousedown', { e, x, y, view: this, node: this.cell })
+    this.notify('node:mousedown', this.getEventArgs(e, x, y))
   }
 
   notifyMouseMove(e: JQuery.MouseMoveEvent, x: number, y: number) {
     super.onMouseMove(e, x, y)
-    this.notify('node:mousemove', { e, x, y, view: this, node: this.cell })
+    this.notify('node:mousemove', this.getEventArgs(e, x, y))
   }
 
   notifyMouseUp(e: JQuery.MouseUpEvent, x: number, y: number) {
     super.onMouseUp(e, x, y)
-    this.notify('node:mouseup', { e, x, y, view: this, node: this.cell })
+    this.notify('node:mouseup', this.getEventArgs(e, x, y))
   }
 
   onClick(e: JQuery.ClickEvent, x: number, y: number) {
     super.onClick(e, x, y)
-    this.notify('node:click', { e, x, y, view: this, node: this.cell })
+    this.notify('node:click', this.getEventArgs(e, x, y))
   }
 
   onDblClick(e: JQuery.DoubleClickEvent, x: number, y: number) {
     super.onDblClick(e, x, y)
-    this.notify('node:dblclick', { e, x, y, view: this, node: this.cell })
+    this.notify('node:dblclick', this.getEventArgs(e, x, y))
   }
 
   onContextMenu(e: JQuery.ContextMenuEvent, x: number, y: number) {
     super.onContextMenu(e, x, y)
-    this.notify('node:contextmenu', { e, x, y, view: this, node: this.cell })
+    this.notify('node:contextmenu', this.getEventArgs(e, x, y))
   }
 
   onMouseDown(e: JQuery.MouseDownEvent, x: number, y: number) {
@@ -624,33 +644,29 @@ export class NodeView<
 
   onMouseOver(e: JQuery.MouseOverEvent) {
     super.onMouseOver(e)
-    this.notify('node:mouseover', { e, view: this, node: this.cell })
+    this.notify('node:mouseover', this.getEventArgs(e))
   }
 
   onMouseOut(e: JQuery.MouseOutEvent) {
     super.onMouseOut(e)
-    this.notify('node:mouseout', { e, view: this, node: this.cell })
+    this.notify('node:mouseout', this.getEventArgs(e))
   }
 
   onMouseEnter(e: JQuery.MouseEnterEvent) {
     super.onMouseEnter(e)
-    this.notify('node:mouseenter', { e, view: this, node: this.cell })
+    this.notify('node:mouseenter', this.getEventArgs(e))
   }
 
   onMouseLeave(e: JQuery.MouseLeaveEvent) {
     super.onMouseLeave(e)
-    this.notify('node:mouseleave', { e, view: this, node: this.cell })
+    this.notify('node:mouseleave', this.getEventArgs(e))
   }
 
   onMouseWheel(e: JQuery.TriggeredEvent, x: number, y: number, delta: number) {
     super.onMouseWheel(e, x, y, delta)
     this.notify('node:mousewheel', {
-      e,
-      x,
-      y,
       delta,
-      view: this,
-      cell: this.cell,
+      ...this.getEventArgs(e, x, y),
     })
   }
 
@@ -658,7 +674,10 @@ export class NodeView<
     if (this.graph.getMouseMovedCount(e) > this.graph.options.clickThreshold) {
       return
     }
-    this.notify('node:magnet:click', { e, magnet, x, y })
+    this.notify('node:magnet:click', {
+      magnet,
+      ...this.getEventArgs(e, x, y),
+    })
   }
 
   onMagnetDblClick(
@@ -668,12 +687,8 @@ export class NodeView<
     y: number,
   ) {
     this.notify('node:magnet:dblclick', {
-      e,
-      x,
-      y,
       magnet,
-      view: this,
-      node: this.cell,
+      ...this.getEventArgs(e, x, y),
     })
   }
 
@@ -684,12 +699,8 @@ export class NodeView<
     y: number,
   ) {
     this.notify('node:magnet:contextmenu', {
-      e,
-      x,
-      y,
       magnet,
-      view: this,
-      node: this.cell,
+      ...this.getEventArgs(e, x, y),
     })
   }
 
@@ -700,6 +711,11 @@ export class NodeView<
     y: number,
   ) {
     this.startMagnetDragging(e, x, y)
+  }
+
+  onCustomEvent(e: JQuery.MouseDownEvent, name: string, x: number, y: number) {
+    this.notify('node:customevent', { name, ...this.getEventArgs(e, x, y) })
+    super.onCustomEvent(e, name, x, y)
   }
 
   protected prepareEmbedding(data: EventData.MovingTargetNode) {
@@ -733,7 +749,7 @@ export class NodeView<
     // Before we start looking for suitable parent we remove the current one.
     const parent = cell.getParent()
     if (parent) {
-      parent.removeChild(cell, { ui: true })
+      parent.unembed(cell, { ui: true })
     }
   }
 
@@ -1009,6 +1025,56 @@ export namespace NodeView {
     portLabelSelectors?: Markup.Selectors | null
     portContentElement: Element
     portContentSelectors?: Markup.Selectors | null
+  }
+}
+
+export namespace NodeView {
+  interface NodeMagnetEventArgs {
+    magnet: Element
+  }
+
+  export interface MouseEventArgs<E> {
+    e: E
+    edge: Node
+    cell: Node
+    view: NodeView
+  }
+
+  export interface PositionEventArgs<E>
+    extends MouseEventArgs<E>,
+      CellView.PositionEventArgs {}
+
+  export interface EventArgs {
+    'node:click': PositionEventArgs<JQuery.ClickEvent>
+    'node:dblclick': PositionEventArgs<JQuery.DoubleClickEvent>
+    'node:contextmenu': PositionEventArgs<JQuery.ContextMenuEvent>
+    'node:mousedown': PositionEventArgs<JQuery.MouseDownEvent>
+    'node:mousemove': PositionEventArgs<JQuery.MouseMoveEvent>
+    'node:mouseup': PositionEventArgs<JQuery.MouseUpEvent>
+    'node:mouseover': MouseEventArgs<JQuery.MouseOverEvent>
+    'node:mouseout': MouseEventArgs<JQuery.MouseOutEvent>
+    'node:mouseenter': MouseEventArgs<JQuery.MouseEnterEvent>
+    'node:mouseleave': MouseEventArgs<JQuery.MouseLeaveEvent>
+    'node:mousewheel': PositionEventArgs<JQuery.TriggeredEvent> &
+      CellView.MouseDeltaEventArgs
+    'node:customevent': PositionEventArgs<JQuery.MouseDownEvent> & {
+      name: string
+    }
+    'node:highlight': {
+      magnet: Element
+      view: NodeView
+      node: Node
+      cell: Node
+      options: CellView.HighlightOptions
+    }
+    'node:unhighlight': EventArgs['node:highlight']
+
+    'node:magnet:click': PositionEventArgs<JQuery.MouseUpEvent> &
+      NodeMagnetEventArgs
+    'node:magnet:dblclick': PositionEventArgs<JQuery.DoubleClickEvent> &
+      NodeMagnetEventArgs
+    'node:magnet:contextmenu': PositionEventArgs<JQuery.ContextMenuEvent> &
+      NodeMagnetEventArgs
   }
 }
 

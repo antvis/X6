@@ -3,31 +3,30 @@ import { Rectangle, Point } from '../../geometry'
 import { Dictionary } from '../../struct'
 import { Nullable, KeyValue } from '../../types'
 import { ArrayExt, ObjectExt } from '../../util'
+import { Attr } from '../attr'
 import { Cell } from './cell'
 import { Model } from './model'
 import { Edge } from './edge'
 import { View } from './view'
+import { Graph } from './graph'
 import { Markup } from './markup'
-// import { Graph } from './graph'
-import { Attr } from '../attr'
+import { EdgeView } from './edge-view'
+import { NodeView } from './node-view'
+import { ToolsView } from './tools-view'
 import { CellViewFlag } from './cell-view-flag'
 import { CellViewAttr } from './cell-view-attr'
 import { CellViewCache } from './cell-view-cache'
-import { ToolsView } from './tools-view'
-import { Graph } from './graph'
 
 export class CellView<
   C extends Cell = Cell,
   Options extends CellView.Options = CellView.Options
-> extends View {
+> extends View<CellView.EventArgs> {
   protected static defaults: CellView.Options = {
     isSvgElement: true,
     rootSelector: 'root',
     priority: 0,
     bootstrap: [],
     actions: {},
-    events: null,
-    documentEvents: null,
   }
 
   static getDefaults() {
@@ -182,6 +181,14 @@ export class CellView<
     }
 
     return this
+  }
+
+  isNodeView(): this is NodeView {
+    return false
+  }
+
+  isEdgeView(): this is EdgeView {
+    return false
   }
 
   render() {
@@ -437,17 +444,74 @@ export class CellView<
     return this.cell.isEdge() && (magnet == null || magnet === this.container)
   }
 
-  highlight(elem?: Element | null, options: CellView.HighlightOptions = {}) {
+  // #region highlight
+
+  protected prepareHighlight(
+    elem?: Element | null,
+    options: CellView.HighlightOptions = {},
+  ) {
     const magnet = (elem && this.$(elem)[0]) || this.container
     options.partial = magnet === this.container
-    this.notify('cell:highlight', { magnet, options, view: this })
+    return magnet
+  }
+
+  highlight(elem?: Element | null, options: CellView.HighlightOptions = {}) {
+    const magnet = this.prepareHighlight(elem, options)
+    this.notify('cell:highlight', {
+      magnet,
+      options,
+      view: this,
+      cell: this.cell,
+    })
+    if (this.isEdgeView()) {
+      this.notify('edge:highlight', {
+        magnet,
+        options,
+        view: this,
+        edge: this.cell,
+        cell: this.cell,
+      })
+    } else if (this.isNodeView()) {
+      this.notify('node:highlight', {
+        magnet,
+        options,
+        view: this,
+        node: this.cell,
+        cell: this.cell,
+      })
+    }
   }
 
   unhighlight(elem?: Element | null, options: CellView.HighlightOptions = {}) {
-    const magnet = (elem && this.$(elem)[0]) || this.container
-    options.partial = magnet === this.container
-    this.notify('cell:unhighlight', { magnet, options, view: this })
+    const magnet = this.prepareHighlight(elem, options)
+    this.notify('cell:unhighlight', {
+      magnet,
+      options,
+      view: this,
+      cell: this.cell,
+    })
+    if (this.isNodeView()) {
+      this.notify('node:unhighlight', {
+        magnet,
+        options,
+        view: this,
+        node: this.cell,
+        cell: this.cell,
+      })
+    } else if (this.isEdgeView()) {
+      this.notify('edge:unhighlight', {
+        magnet,
+        options,
+        view: this,
+        edge: this.cell,
+        cell: this.cell,
+      })
+    }
   }
+
+  notifyUnhighlight(magnet: Element, options: CellView.HighlightOptions) {}
+
+  // #endregion
 
   getEdgeTerminal(
     magnet: Element,
@@ -531,8 +595,8 @@ export class CellView<
 
   // #region tools
   protected toolsView: ToolsView | null
-  protected readonly toolsEventHandler = (event: string) => {
-    this.onToolEvent(event)
+  protected readonly toolsEventHandler = ({ name }: { name: string }) => {
+    this.onToolEvent(name)
   }
 
   hasTools(name?: string) {
@@ -550,7 +614,7 @@ export class CellView<
     this.removeTools()
     if (toolsView) {
       this.toolsView = toolsView
-      this.graph.on('tools:event', this.toolsEventHandler)
+      this.graph.on('tools:event', this.toolsEventHandler, this)
       toolsView.configure({ cellView: this })
       toolsView.mount()
     }
@@ -569,7 +633,7 @@ export class CellView<
     const toolsView = this.toolsView
     if (toolsView) {
       toolsView.remove()
-      this.graph.off('tools:event', this.toolsEventHandler)
+      this.graph.off('tools:event', this.toolsEventHandler, this)
       this.toolsView = null
     }
     return this
@@ -609,21 +673,39 @@ export class CellView<
 
   // #region events
 
-  protected notify(name: string, args: any) {
+  protected notify<Key extends keyof CellView.EventArgs>(
+    name: Key,
+    args: CellView.EventArgs[Key],
+  ) {
     this.trigger(name, args)
-    this.graph.trigger(name, args)
+    this.graph.trigger(name as any, args)
+  }
+
+  protected getEventArgs<E>(e: E): CellView.MouseEventArgs<E>
+  protected getEventArgs<E>(
+    e: E,
+    x: number,
+    y: number,
+  ): CellView.MousePositionEventArgs<E>
+  protected getEventArgs<E>(e: E, x?: number, y?: number) {
+    const view = this // tslint:disable-line
+    const cell = view.cell
+    if (x == null || y == null) {
+      return { e, view, cell } as CellView.MouseEventArgs<E>
+    }
+    return { e, x, y, view, cell } as CellView.MousePositionEventArgs<E>
   }
 
   onClick(e: JQuery.ClickEvent, x: number, y: number) {
-    this.notify('cell:click', { e, x, y, view: this, cell: this.cell })
+    this.notify('cell:click', this.getEventArgs(e, x, y))
   }
 
   onDblClick(e: JQuery.DoubleClickEvent, x: number, y: number) {
-    this.notify('cell:dblclick', { e, x, y, view: this, cell: this.cell })
+    this.notify('cell:dblclick', this.getEventArgs(e, x, y))
   }
 
   onContextMenu(e: JQuery.ContextMenuEvent, x: number, y: number) {
-    this.notify('cell:contextmenu', { e, x, y, view: this, cell: this.cell })
+    this.notify('cell:contextmenu', this.getEventArgs(e, x, y))
   }
 
   protected cachedModelForMouseEvent: Model
@@ -633,11 +715,11 @@ export class CellView<
       this.cachedModelForMouseEvent.startBatch('mouse')
     }
 
-    this.notify('cell:mousedown', { e, x, y, view: this, cell: this.cell })
+    this.notify('cell:mousedown', this.getEventArgs(e, x, y))
   }
 
   onMouseUp(e: JQuery.MouseUpEvent, x: number, y: number) {
-    this.notify('cell:mouseup', { e, x, y, view: this, cell: this.cell })
+    this.notify('cell:mouseup', this.getEventArgs(e, x, y))
 
     if (this.cachedModelForMouseEvent) {
       this.cachedModelForMouseEvent.stopBatch('mouse', { cell: this.cell })
@@ -646,43 +728,34 @@ export class CellView<
   }
 
   onMouseMove(e: JQuery.MouseMoveEvent, x: number, y: number) {
-    this.notify('cell:mousemove', { e, x, y, view: this, cell: this.cell })
+    this.notify('cell:mousemove', this.getEventArgs(e, x, y))
   }
 
   onMouseOver(e: JQuery.MouseOverEvent) {
-    this.notify('cell:mouseover', { e, view: this, cell: this.cell })
+    this.notify('cell:mouseover', this.getEventArgs(e))
   }
 
   onMouseOut(e: JQuery.MouseOutEvent) {
-    this.notify('cell:mouseout', { e, view: this, cell: this.cell })
+    this.notify('cell:mouseout', this.getEventArgs(e))
   }
 
   onMouseEnter(e: JQuery.MouseEnterEvent) {
-    this.notify('cell:mouseenter', { e, view: this, cell: this.cell })
+    this.notify('cell:mouseenter', this.getEventArgs(e))
   }
 
   onMouseLeave(e: JQuery.MouseLeaveEvent) {
-    this.notify('cell:mouseleave', { e, view: this, cell: this.cell })
+    this.notify('cell:mouseleave', this.getEventArgs(e))
   }
 
   onMouseWheel(e: JQuery.TriggeredEvent, x: number, y: number, delta: number) {
     this.notify('cell:mousewheel', {
-      e,
-      x,
-      y,
       delta,
-      view: this,
-      cell: this.cell,
+      ...this.getEventArgs(e, x, y),
     })
   }
 
-  onCustomEvent(
-    e: JQuery.MouseDownEvent,
-    eventName: string,
-    x: number,
-    y: number,
-  ) {
-    this.notify(eventName, { e, x, y })
+  onCustomEvent(e: JQuery.MouseDownEvent, name: string, x: number, y: number) {
+    this.notify('cell:customevent', { name, ...this.getEventArgs(e, x, y) })
   }
 
   onMagnetMouseDown(
@@ -740,8 +813,8 @@ export namespace CellView {
     rootSelector: string
     bootstrap: CellViewFlag.Actions
     actions: KeyValue<CellViewFlag.Actions>
-    events: View.Events | null
-    documentEvents: View.Events | null
+    events?: View.Events | null
+    documentEvents?: View.Events | null
     interactive?: KeyValue<boolean> | ((cellView: CellView) => boolean)
   }
 
@@ -769,6 +842,52 @@ export namespace CellView {
 
   export function getView(cid: string) {
     return views[cid] || null
+  }
+}
+
+export namespace CellView {
+  export interface PositionEventArgs {
+    x: number
+    y: number
+  }
+
+  export interface MouseDeltaEventArgs {
+    delta: number
+  }
+
+  export interface MouseEventArgs<E> {
+    e: E
+    view: CellView
+    cell: Cell
+  }
+
+  export interface MousePositionEventArgs<E>
+    extends MouseEventArgs<E>,
+      PositionEventArgs {}
+
+  export interface EventArgs extends NodeView.EventArgs, EdgeView.EventArgs {
+    'cell:click': MousePositionEventArgs<JQuery.ClickEvent>
+    'cell:dblclick': MousePositionEventArgs<JQuery.DoubleClickEvent>
+    'cell:contextmenu': MousePositionEventArgs<JQuery.ContextMenuEvent>
+    'cell:mousedown': MousePositionEventArgs<JQuery.MouseDownEvent>
+    'cell:mousemove': MousePositionEventArgs<JQuery.MouseMoveEvent>
+    'cell:mouseup': MousePositionEventArgs<JQuery.MouseUpEvent>
+    'cell:mouseover': MouseEventArgs<JQuery.MouseOverEvent>
+    'cell:mouseout': MouseEventArgs<JQuery.MouseOutEvent>
+    'cell:mouseenter': MouseEventArgs<JQuery.MouseEnterEvent>
+    'cell:mouseleave': MouseEventArgs<JQuery.MouseLeaveEvent>
+    'cell:mousewheel': MousePositionEventArgs<JQuery.TriggeredEvent> &
+      MouseDeltaEventArgs
+    'cell:customevent': MousePositionEventArgs<JQuery.MouseDownEvent> & {
+      name: string
+    }
+    'cell:highlight': {
+      magnet: Element
+      view: CellView
+      cell: Cell
+      options: CellView.HighlightOptions
+    }
+    'cell:unhighlight': EventArgs['cell:highlight']
   }
 }
 

@@ -102,7 +102,7 @@ export const stroke: Highlighter.Definition<StrokeHighlighterOptions> = {
 
     cell.on('removed', removeHandler)
     if (cell.model) {
-      cell.model.on('reset', removeHandler)
+      cell.model.on('reseted', removeHandler)
     }
 
     cellView.container.appendChild(path)

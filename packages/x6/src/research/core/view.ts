@@ -6,7 +6,7 @@ import { Attr } from '../attr'
 import { Markup } from './markup'
 import { Globals } from './globals'
 
-export abstract class View extends Basecoat {
+export abstract class View<EventArgs = any> extends Basecoat<EventArgs> {
   public readonly cid: string
   public container: Element
   protected selectors: Markup.Selectors
