@@ -4,7 +4,7 @@ export const Edge = EdgeRegistry.register('edge', {
   markup: [
     {
       tagName: 'path',
-      selector: 'wrapper',
+      selector: 'wrap',
       attrs: {
         fill: 'none',
         cursor: 'pointer',
@@ -22,6 +22,11 @@ export const Edge = EdgeRegistry.register('edge', {
     },
   ],
   attrs: {
+    wrap: {
+      connection: true,
+      strokeWidth: 10,
+      strokeLinejoin: 'round',
+    },
     line: {
       connection: true,
       stroke: '#333333',
@@ -31,11 +36,6 @@ export const Edge = EdgeRegistry.register('edge', {
         type: 'path',
         d: 'M 10 -5 0 0 10 5 z',
       },
-    },
-    wrapper: {
-      connection: true,
-      strokeWidth: 10,
-      strokeLinejoin: 'round',
     },
   },
 })
