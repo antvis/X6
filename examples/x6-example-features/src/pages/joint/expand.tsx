@@ -1,5 +1,5 @@
 import React from 'react'
-import { joint, Rectangle } from '@antv/x6'
+import { joint } from '@antv/x6'
 import { Rect } from '@antv/x6/es/research/shape/standard'
 import '../index.less'
 import './index.less'

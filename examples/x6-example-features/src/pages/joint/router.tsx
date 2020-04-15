@@ -1,6 +1,6 @@
 import React from 'react'
 import { Radio } from 'antd'
-import { v, joint } from '@antv/x6'
+import { joint } from '@antv/x6'
 import '../index.less'
 import './index.less'
 
