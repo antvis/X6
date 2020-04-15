@@ -1,5 +1,5 @@
 import { Grid } from '../grid'
-import { Registry } from './util'
+import { Registry } from './registry'
 
 export const GridRegistry = new Registry<
   Grid.Definition<Grid.Options> | Grid.Definition<Grid.Options>[]

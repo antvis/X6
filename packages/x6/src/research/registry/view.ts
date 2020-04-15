@@ -1,4 +1,4 @@
-import { Registry } from './util'
+import { Registry } from './registry'
 import { CellView } from '../core'
 import { NodeView } from '../core/node-view'
 import { EdgeView } from '../core/edge-view'

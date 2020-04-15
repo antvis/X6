@@ -36,7 +36,7 @@ export namespace Router {
   }
 
   export interface ManaualItem {
-    name: string
+    name: Exclude<string, NativeNames>
     args?: KeyValue
   }
 }
