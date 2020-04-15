@@ -37,6 +37,7 @@
     "build:images": "node ./scripts/make-images.js",
     "build:version": "node ./scripts/make-version.js",
     "build:dev": "run-p build:images build:less build:cjs build:esm",
+    "build:watch": "yarn build:esm --w",
     "build": "run-s build:version build:dev build:umd",
     "prebuild": "run-s lint clean",
     "watch": "watch 'yarn build:dev' ./src",
