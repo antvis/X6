@@ -75,8 +75,11 @@ export default class Example extends React.Component {
     aa.addChild(aaa)
     a.addChild(c)
 
+    console.log(aa)
+
     me('d', 620, 50, 50, 50, 'black')
-    ml('l1', 'aa', 'c') // auto embed to common ancestor `a`
+    const l1 = ml('l1', 'aa', 'c') // auto embed to common ancestor `a`
+    console.log(l1)
     ml('l3', 'c', 'd')
     aa.addChild(
       ml('l2', 'aa', 'aaa', [
