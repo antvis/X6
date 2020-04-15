@@ -153,7 +153,7 @@ export class Model extends Basecoat<Model.EventArgs> {
     const isSource = type === 'source'
     const cache = isSource ? this.out : this.in
     const terminal = isSource ? edge.getSourceCell() : edge.getTargetCell()
-    const previousData = edge.store.getPrevious(type) as Edge.TerminalCellData
+    const previousData = edge.previous(type) as Edge.TerminalCellData
     if (previousData.cellId) {
       const previousTerminal = this.getCell(previousData.cellId)
       if (previousTerminal && cache[previousTerminal.id]) {
