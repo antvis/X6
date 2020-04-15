@@ -1,46 +1,32 @@
 import { Edge } from '../core/edge'
-import { Registry } from './util'
+import { Registry } from './registry'
 
-class EdgeRegistryClass extends Registry<Edge.Defintion> {
-  register(
-    name: string,
-    options: EdgeRegistry.DefintionOptions,
-    force?: boolean,
-  ): Edge.Defintion
-  register(name: string, def: Edge.Defintion, force?: boolean): Edge.Defintion
-  register(
-    name: string,
-    options: EdgeRegistry.DefintionOptions | Edge.Defintion,
-    force: boolean = false,
-  ): Edge.Defintion {
-    let def
+export const EdgeRegistry = new Registry<
+  Edge.Defintion,
+  EdgeRegistry.DefintionOptions
+>({
+  process(name, options) {
     if (typeof options === 'function') {
-      def = options
-    } else {
-      let parent = Edge
-      const { inherit, ...others } = options
-      if (inherit) {
-        const base = this.get(inherit)
-        if (base == null) {
-          throw new Error(`Unkonwn base type: "${inherit}"`)
-        } else {
-          parent = base
-        }
-      }
-
-      if (others.name == null) {
-        others.name = name
-      }
-
-      def = parent.define.call(parent, others)
+      return options
     }
 
-    return super.register(name, def, force)
-  }
-}
+    let parent = Edge
+    const { inherit, ...others } = options
+    if (inherit) {
+      const base = this.get(inherit)
+      if (base == null) {
+        throw new Error(`Unkonwn base type: "${inherit}"`)
+      } else {
+        parent = base
+      }
+    }
 
-// tslint:disable-next-line
-export const EdgeRegistry = new EdgeRegistryClass({
+    if (others.name == null) {
+      others.name = name
+    }
+
+    return parent.define.call(parent, others)
+  },
   onError(name) {
     throw new Error(`Node with name '${name}' already registered.`)
   },

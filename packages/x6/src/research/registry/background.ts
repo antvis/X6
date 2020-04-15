@@ -1,5 +1,5 @@
 import { Background } from '../background'
-import { Registry } from './util'
+import { Registry } from './registry'
 
 export const BackgroundRegistry = new Registry<
   Background.Definition<Background.Options>
@@ -11,8 +11,6 @@ export const BackgroundRegistry = new Registry<
   },
 })
 
-// Regiter native routers
-// ----
 Object.keys(Background).forEach(key => {
   const name = key as Background.NativeNames
   const fn = Background[name]
