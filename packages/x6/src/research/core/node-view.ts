@@ -18,14 +18,13 @@ export class NodeView<
   C extends Node = Node,
   Options extends NodeView.Options = NodeView.Options
 > extends CellView<C, Options> {
-  protected readonly portMarkup = Markup.portMarkup
-  protected readonly portLabelMarkup = Markup.portLabelMarkup
-  protected readonly portContainerMarkup = Markup.portContainerMarkup
-  protected readonly rotatableSelector: string = 'rotatable'
-  protected readonly scalableSelector: string = 'scalable'
   public scalableNode: Element | null = null
   public rotatableNode: Element | null = null
-
+  protected readonly scalableSelector: string = 'scalable'
+  protected readonly rotatableSelector: string = 'rotatable'
+  protected readonly defaultPortMarkup = Markup.portMarkup
+  protected readonly defaultPortLabelMarkup = Markup.portLabelMarkup
+  protected readonly defaultPortContainerMarkup = Markup.portContainerMarkup
   protected portsCache: { [id: string]: NodeView.PortCache } = {}
 
   protected getContainerClassName() {
@@ -287,7 +286,7 @@ export class NodeView<
         })
 
         // Store new x, y and perform rotate() again against the new rotation origin.
-        cell.store.set(
+        cell.prop(
           'position',
           { x: rotatableBBox.x, y: rotatableBBox.y },
           { updated: true, ...opt },
@@ -339,7 +338,7 @@ export class NodeView<
   protected renderPorts() {
     const container = this.getPortsContainer()
 
-    // references to rendered elements without z-index
+    // References to rendered elements without z-index
     const references: Element[] = []
     container.childNodes.forEach(child => {
       references.push(child as Element)
@@ -461,9 +460,9 @@ export class NodeView<
   }
 
   protected updatePorts() {
-    // layout ports without group
+    // Layout ports without group
     this.updatePortGroup()
-    // layout ports with explicit group
+    // Layout ports with explicit group
     Object.keys(this.cell.portData.groups).forEach(groupName =>
       this.updatePortGroup(groupName),
     )
@@ -471,51 +470,44 @@ export class NodeView<
 
   protected updatePortGroup(groupName?: string) {
     const bbox = Rectangle.fromSize(this.cell.size)
-    const portsMetrics = this.cell.portData.getPortsLayoutByGroup(
-      groupName,
-      bbox,
-    )
+    const metrics = this.cell.portData.getPortsLayoutByGroup(groupName, bbox)
 
-    for (let i = 0, n = portsMetrics.length; i < n; i += 1) {
-      const metrics = portsMetrics[i]
-      const portId = metrics.portId
+    for (let i = 0, n = metrics.length; i < n; i += 1) {
+      const metric = metrics[i]
+      const portId = metric.portId
       const cached = this.portsCache[portId] || {}
-      const portLayout = metrics.portLayout
+      const portLayout = metric.portLayout
       this.applyPortTransform(cached.portElement, portLayout)
-      if (metrics.portAttrs != null) {
+      if (metric.portAttrs != null) {
         const options: Partial<CellViewAttr.UpdateAttrsOptions> = {
           selectors: cached.portSelectors || {},
         }
 
-        if (metrics.portSize) {
-          options.rootBBox = Rectangle.fromSize(metrics.portSize)
+        if (metric.portSize) {
+          options.rootBBox = Rectangle.fromSize(metric.portSize)
         }
 
-        this.updateAttrs(cached.portElement, metrics.portAttrs, options)
+        this.updateAttrs(cached.portElement, metric.portAttrs, options)
       }
 
-      const portLabelLayout = metrics.portLabelLayout
-      if (portLabelLayout) {
+      const labelLayout = metric.labelLayout
+      if (labelLayout) {
         this.applyPortTransform(
           cached.portLabelElement,
-          portLabelLayout,
+          labelLayout,
           -portLayout.angle || 0,
         )
 
-        if (portLabelLayout.attrs) {
+        if (labelLayout.attrs) {
           const options: Partial<CellViewAttr.UpdateAttrsOptions> = {
             selectors: cached.portLabelSelectors || {},
           }
 
-          if (metrics.labelSize) {
-            options.rootBBox = Rectangle.fromSize(metrics.labelSize)
+          if (metric.labelSize) {
+            options.rootBBox = Rectangle.fromSize(metric.labelSize)
           }
 
-          this.updateAttrs(
-            cached.portLabelElement,
-            portLabelLayout.attrs,
-            options,
-          )
+          this.updateAttrs(cached.portLabelElement, labelLayout.attrs, options)
         }
       }
     }
@@ -536,15 +528,17 @@ export class NodeView<
   }
 
   protected getPortContainerMarkup() {
-    return this.cell.portContainerMarkup || this.portContainerMarkup
+    return this.cell.getPortContainerMarkup() || this.defaultPortContainerMarkup
   }
 
   protected getPortMarkup(port: PortData.Port) {
-    return port.markup || this.cell.portMarkup || this.portMarkup
+    return port.markup || this.cell.portMarkup || this.defaultPortMarkup
   }
 
   protected getPortLabelMarkup(label: PortData.Label) {
-    return label.markup || this.cell.portLabelMarkup || this.portLabelMarkup
+    return (
+      label.markup || this.cell.portLabelMarkup || this.defaultPortLabelMarkup
+    )
   }
 
   // #endregion

@@ -481,16 +481,10 @@ export class Graph extends View<Graph.EventArgs> {
     if (node instanceof Node) {
       result = node
     } else {
-      const { type, x, y, width, height, ...options } = node
+      const { type, ...options } = node
       const name = type || 'basic.rect'
       const define = NodeRegistry.get(name)
       if (define) {
-        if (width != null && height != null) {
-          options.size = { ...options.size, width, height }
-        }
-        if (x != null && y != null) {
-          options.position = { ...options.position, x, y }
-        }
         result = new define(options)
       } else {
         throw new Error(`Unknow node type: "${name}"`)
@@ -559,7 +553,6 @@ export class Graph extends View<Graph.EventArgs> {
     if (view instanceof CellView) {
       const cell = view.cell
       const edges = this.model.getConnectedEdges(cell)
-      console.log(edges)
       for (let j = 0, n = edges.length; j < n; j += 1) {
         const edge = edges[j]
         const edgeView = this.findViewByCell(edge)

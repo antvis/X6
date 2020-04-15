@@ -144,7 +144,7 @@ export class EdgeView<
   }
 
   protected shouldRerenderLabels(options: any = {}) {
-    const previousLabels = this.cell.store.getPrevious<Edge.Label[]>('labels')
+    const previousLabels = this.cell.previous('labels')
     if (previousLabels == null) {
       return true
     }
@@ -2087,7 +2087,7 @@ export class EdgeView<
     }
 
     data.currentTarget = target
-    this.cell.store.set(data.terminalType, { x, y }, { ui: true })
+    this.cell.prop(data.terminalType, { x, y }, { ui: true })
   }
 
   protected arrowheadDragged(
@@ -2105,7 +2105,7 @@ export class EdgeView<
 
     const type = data.terminalType
     const terminal = view.getEdgeTerminal(magnet, x, y, this.cell, type)
-    this.cell.store.set(type, terminal, { ui: true })
+    this.cell.prop(type, terminal, { ui: true })
   }
 
   protected snapArrowhead(
@@ -2206,7 +2206,7 @@ export class EdgeView<
       terminal = { x, y }
     }
 
-    this.cell.store.set(type, terminal || { x, y }, { ui: true })
+    this.cell.prop(type, terminal || { x, y }, { ui: true })
   }
 
   protected snapArrowheadEnd(data: EventData.ArrowheadDragging) {
@@ -2240,7 +2240,7 @@ export class EdgeView<
         break
       case 'revert':
       default:
-        this.cell.store.set(data.terminalType, data.initialTerminal, {
+        this.cell.prop(data.terminalType, data.initialTerminal, {
           ui: true,
         })
         break

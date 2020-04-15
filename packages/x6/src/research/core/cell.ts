@@ -1,10 +1,8 @@
 import { NonUndefined } from 'utility-types'
-import { v } from '../../v'
 import { Basecoat } from '../../entity'
 import { KeyValue, Size } from '../../types'
 import { Rectangle, Point } from '../../geometry'
 import { ArrayExt, StringExt, ObjectExt } from '../../util'
-import { Easing, Interpolation } from '../animation'
 import { Attr } from '../attr'
 import { Store } from './store'
 import { Node } from './node'
@@ -14,6 +12,7 @@ import { Graph } from './graph'
 import { Markup } from './markup'
 import { PortData } from './port-data'
 import { CellView } from './cell-view'
+import { Transition } from './cell-transition'
 
 export class Cell<
   Properties extends Cell.Properties = Cell.Properties
@@ -68,17 +67,19 @@ export class Cell<
 
   public readonly id: string
   protected readonly store: Store<Cell.Properties>
+  protected readonly transition: Transition
   protected _model: Model | null // tslint:disable-line
   protected _parent: Cell | null // tslint:disable-line
   protected _children: Cell[] | null // tslint:disable-line
-  protected incomingEdges: Edge[] | null
-  protected outgoingEdges: Edge[] | null
+  protected incomings: Edge[] | null
+  protected outgoings: Edge[] | null
 
   constructor(options: Cell.Options = {}) {
     super()
     this.id = options.id || StringExt.uuid()
     const data = this.getBootstrapData(options) as Partial<Properties>
     this.store = new Store(data)
+    this.transition = new Transition(this)
     this.setup()
     this.init()
   }
@@ -155,7 +156,7 @@ export class Cell<
     }
   }
 
-  protected notify<Key extends keyof Cell.EventArgs>(
+  notify<Key extends keyof Cell.EventArgs>(
     name: Key,
     args: Cell.EventArgs[Key],
   ) {
@@ -212,10 +213,6 @@ export class Cell<
     return this.store.get('type')
   }
 
-  get props() {
-    return this.store.get()
-  }
-
   // #region get/set
 
   getProp(): Properties
@@ -228,7 +225,7 @@ export class Cell<
   getProp<T>(key: string, defaultValue: T): T
   getProp(key?: string, defaultValue?: any) {
     if (key == null) {
-      return this.props
+      return this.store.get()
     }
 
     return this.store.get(key, defaultValue)
@@ -249,7 +246,7 @@ export class Cell<
     if (typeof key === 'string') {
       this.store.set(key, value, options)
     } else {
-      this.store.set(ObjectExt.merge(this.props, key), value)
+      this.store.set(ObjectExt.merge(this.getProp(), key), value)
     }
     return this
   }
@@ -318,7 +315,7 @@ export class Cell<
     options?: Cell.SetOptions,
   ) {
     if (key == null) {
-      return this.props
+      return this.getProp()
     }
 
     if (typeof key === 'string' || Array.isArray(key)) {
@@ -337,6 +334,12 @@ export class Cell<
     }
 
     return this.setProp(key, value || {})
+  }
+
+  previous<K extends keyof Properties>(name: K): Properties[K] | undefined
+  previous<T>(name: string): T | undefined
+  previous(name: string) {
+    return this.store.getPrevious(name as keyof Cell.Properties)
   }
 
   // #endregion
@@ -879,11 +882,11 @@ export class Cell<
       this.setChildren(children, options)
 
       if (changed) {
-        if (this.incomingEdges) {
-          this.incomingEdges.forEach(edge => edge.updateParent(options))
+        if (this.incomings) {
+          this.incomings.forEach(edge => edge.updateParent(options))
         }
-        if (this.outgoingEdges) {
-          this.outgoingEdges.forEach(edge => edge.updateParent(options))
+        if (this.outgoings) {
+          this.outgoings.forEach(edge => edge.updateParent(options))
         }
       }
 
@@ -941,108 +944,23 @@ export class Cell<
 
   // #region transition
 
-  protected readonly transitionIds: { [path: string]: number } = {}
-
-  transition<T extends string | number | KeyValue<number>>(
+  startTransition<T extends string | number | KeyValue<number>>(
     path: string | string[],
     target: T,
-    options: Cell.TransitionOptions = {},
+    options: Transition.Options = {},
     delim: string = '/',
   ) {
-    const opts: Cell.TransitionOptions = {
-      delay: 10,
-      duration: 100,
-      easing: 'linear',
-      ...options,
-    }
+    this.transition.start(path, target, options, delim)
+    return this
+  }
 
-    let easing = Easing.linear
-    if (opts.easing != null) {
-      if (typeof opts.easing === 'string') {
-        easing = Easing[opts.easing]
-      } else {
-        easing = opts.easing
-      }
-    }
-
-    const current = this.getPropByPath<T>(path)
-
-    let interpolate: any
-    if (typeof target === 'object') {
-      interpolate = Interpolation.object(
-        current as KeyValue<number>,
-        target as KeyValue<number>,
-      )
-    } else if (typeof target === 'number') {
-      interpolate = Interpolation.number(current as number, target)
-    } else if (typeof target === 'string') {
-      if (target[0] === '#') {
-        interpolate = Interpolation.color(current as string, target)
-      } else {
-        interpolate = Interpolation.unit(current as string, target)
-      }
-    }
-
-    let startTime = 0
-
-    const pathStr = Array.isArray(path) ? path.join(delim) : path
-    const setter = () => {
-      let id
-      let val
-
-      const now = new Date().getTime()
-      if (startTime === 0) {
-        startTime = now
-      }
-
-      const elaspe = now - startTime
-      let progress = elaspe / opts.duration!
-      if (progress < 1) {
-        this.transitionIds[pathStr] = id = v.requestAnimationFrame(setter)
-      } else {
-        progress = 1
-        delete this.transitionIds[pathStr]
-      }
-
-      val = interpolate(easing(progress))
-      options.transitionId = id
-
-      this.setPropByPath(Array.isArray(path) ? path : path.split(delim), val)
-
-      if (id == null) {
-        this.notify('transition:end', { cell: this, path: pathStr })
-      }
-    }
-
-    const initiator = (transition: FrameRequestCallback) => {
-      this.stopTransitions(path, delim)
-      this.transitionIds[pathStr] = v.requestAnimationFrame(transition)
-      this.notify('transition:begin', { cell: this, path: pathStr })
-    }
-
-    return setTimeout(() => {
-      initiator(setter)
-    }, options.delay)
+  stopTransition(path: string | string[], delim: string = '/') {
+    this.transition.stop(path, delim)
+    return this
   }
 
   getTransitions() {
-    return Object.keys(this.transitionIds)
-  }
-
-  stopTransitions(path: string | string[], delim: string = '/') {
-    const paths = Array.isArray(path) ? path : path.split(delim)
-
-    Object.keys(this.transitionIds)
-      .filter(key =>
-        ObjectExt.isEqual(paths, key.split(delim).slice(0, paths.length)),
-      )
-      .forEach(key => {
-        v.cancelAnimationFrame(this.transitionIds[key])
-        delete this.transitionIds[key]
-        this.notify('transition:end', { cell: this, path: key })
-      })
-
-    return this
+    return this.transition.get()
   }
 
   // #endregion
@@ -1245,12 +1163,6 @@ export namespace Cell {
     translateBy?: string | number
   }
 
-  export interface TransitionOptions extends KeyValue {
-    delay?: number
-    duration?: number
-    easing?: Easing.Names | Easing.Definition
-  }
-
   export interface GetDescendantsOptions {
     deep?: boolean
     breadthFirst?: boolean
@@ -1410,7 +1322,6 @@ export namespace Cell {
 
   export function deepClone(cell: Cell) {
     const cells = [cell, ...cell.getDescendants({ deep: true })]
-    console.log(cells)
     return Cell.cloneCells(cells)
   }
 

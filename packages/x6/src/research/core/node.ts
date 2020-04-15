@@ -17,11 +17,27 @@ export class Node<
     size: { width: 1, height: 1 },
   }
 
-  public readonly store: Store<Node.Properties>
+  protected readonly store: Store<Node.Properties>
   public portData: PortData
 
   constructor(options: Node.Options = {}) {
-    super(options)
+    const { x, y, width, height, ...others } = options
+    if (x != null || y != null) {
+      others.position = {
+        ...others.position,
+        x: x != null ? x : 0,
+        y: y != null ? y : 0,
+      }
+    }
+    if (width != null || height != null) {
+      others.size = {
+        ...others.size,
+        width: width != null ? width : 0,
+        height: height != null ? height : 0,
+      }
+    }
+
+    super(others)
     this.initPorts()
   }
 
@@ -523,7 +539,9 @@ export class Node<
   }
 
   getDefaultPortContainerMarkup() {
-    return this.store.get('defaultPortContainerMarkup') || Markup.portMarkup
+    return (
+      this.store.get('defaultPortContainerMarkup') || Markup.portContainerMarkup
+    )
   }
 
   getPortContainerMarkup() {
@@ -942,19 +960,19 @@ export namespace Node {
     defaultPortContainerMarkup?: Markup
   }
 
-  export interface Options extends Common, Cell.Options {}
-  export interface Defaults extends Common, Cell.Defaults {}
-  export interface Properties extends Cell.Properties, Options {}
-
-  /**
-   * The metadata used creating a node instance.
-   */
-  export interface Metadata extends Options, KeyValue {
+  interface Boundary {
     x?: number
     y?: number
     width?: number
     height?: number
   }
+
+  interface BaseOptions extends Common, Cell.Options {}
+
+  export interface Options extends BaseOptions, Boundary {}
+  export interface Defaults extends Common, Cell.Defaults {}
+  export interface Properties extends BaseOptions, Cell.Properties {}
+  export interface Metadata extends Options, Boundary, KeyValue {}
 }
 
 export namespace Node {

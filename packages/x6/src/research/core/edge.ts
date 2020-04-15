@@ -14,16 +14,9 @@ export class Edge<
   Properties extends Edge.Properties = Edge.Properties
 > extends Cell<Properties> {
   protected static defaults: Edge.Defaults = {}
-  public readonly store: Store<Edge.Properties>
+  protected readonly store: Store<Edge.Properties>
   protected sourceCell: Cell | null
   protected targetCell: Cell | null
-
-  // protected readonly defaultMarkup = Markup.edgeMarkup
-  // protected readonly defaultToolMarkup = Markup.edgeToolMarkup
-  // protected readonly defaultDoubleToolMarkup: Markup
-  // protected readonly defaultVertexMarkup = Markup.edgeVertexMarkup
-  // protected readonly defaultArrowheadMarkup = Markup.edgeArrowheadMarkup
-  // protected readonly defaultLabel = Edge.defaultLabel
 
   constructor(options: Edge.Options = {}) {
     super(options)
@@ -273,7 +266,7 @@ export class Edge<
     const prev = this[terminalCellKey]
 
     if (prev !== cell) {
-      const edgesKey = type === 'source' ? 'outgoingEdges' : 'incomingEdges'
+      const edgesKey = type === 'source' ? 'outgoings' : 'incomings'
 
       if (prev) {
         const ref = prev[edgesKey]
