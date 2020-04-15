@@ -35,8 +35,10 @@ export default class Example extends React.Component<
     const child1 = graph
       .addNode({
         type: 'rect',
-        size: { width: 80, height: 30 },
-        position: { x: 70, y: 130 },
+        x: 70,
+        y: 130,
+        width: 80,
+        height: 30,
         attrs: {
           body: { fill: 'lightgreen', rx: 5, ry: 5 },
           label: { text: 'child', fill: 'white' },

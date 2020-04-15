@@ -1,5 +1,5 @@
 import React from 'react'
-import { joint } from '@antv/x6'
+import { joint, Rectangle } from '@antv/x6'
 import { Rect } from '@antv/x6/es/research/shape/standard'
 import '../index.less'
 import './index.less'
@@ -106,14 +106,20 @@ class TogglableRect extends Rect {
   }
 }
 
+// class TogglableEdge extends Edge {}
+
 TogglableRect.config({
+  size: {
+    width: 100,
+    height: 100,
+  },
   ports: {
     groups: {
       in: {
         attrs: {
           circle: {
-            stroke: BASE_COLOR,
             magnet: true,
+            stroke: BASE_COLOR,
             fill: EXPANDED_COLOR,
           },
         },
@@ -124,8 +130,8 @@ TogglableRect.config({
       out: {
         attrs: {
           circle: {
-            stroke: BASE_COLOR,
             magnet: true,
+            stroke: BASE_COLOR,
             fill: EXPANDED_COLOR,
           },
         },
@@ -172,6 +178,8 @@ export default class Example extends React.Component {
 
     const a = new TogglableRect({
       id: 'a',
+      x: 200,
+      y: 40,
       attrs: { label: { text: 'a' } },
       ports: {
         items: [
@@ -183,8 +191,88 @@ export default class Example extends React.Component {
       },
     })
 
-    a.setSize(100, 100).setPosition(200, 10)
-    graph.addNode(a)
+    a.addTo(graph.model)
+
+    const aa = new TogglableRect({
+      id: 'aa',
+      x: 400,
+      y: 40,
+      attrs: { label: { text: 'aa' } },
+      ports: {
+        items: [
+          { group: 'in', id: 'in1' },
+          { group: 'in', id: 'in2' },
+          { group: 'out', id: 'out1' },
+          { group: 'out', id: 'out2' },
+        ],
+      },
+    })
+
+    aa.addTo(graph.model)
+
+    const aaa = new TogglableRect({
+      id: 'aaa',
+      x: 550,
+      y: 120,
+      attrs: { label: { text: 'aaa' } },
+      ports: {
+        items: [
+          { group: 'in', id: 'in1' },
+          { group: 'out', id: 'out1' },
+        ],
+      },
+    })
+
+    aaa.addTo(graph.model)
+
+    const b = new TogglableRect({
+      id: 'b',
+      x: 200,
+      y: 200,
+      attrs: { label: { text: 'b' } },
+      ports: {
+        items: [
+          { group: 'in', id: 'in1' },
+          { group: 'in', id: 'in2' },
+          { group: 'out', id: 'out1' },
+          { group: 'out', id: 'out2' },
+        ],
+      },
+    })
+
+    b.addTo(graph.model)
+
+    b.clone()
+      .prop('id', 'bb')
+      .attr({ label: { text: 'bb' } })
+      .setPosition(400, 200)
+      .addTo(graph.model)
+
+    b.clone()
+      .prop('id', 'bbb')
+      .attr({ label: { text: 'bbb' } })
+      .setPosition(400, 350)
+      .addTo(graph.model)
+
+    const x = new TogglableRect({
+      id: 'x',
+      x: 60,
+      y: 400,
+      attrs: { label: { text: 'x' } },
+      ports: {
+        items: [
+          { group: 'out', id: 'out1' },
+          { group: 'out', id: 'out2' },
+        ],
+      },
+    })
+    x.addTo(graph.model)
+
+    x.clone()
+      .prop('id', 'y')
+      .attr({ label: { text: 'y' } })
+      .setPosition(30, 80)
+      .addTo(graph.model)
   }
 
   refContainer = (container: HTMLDivElement) => {
