@@ -1,4 +1,4 @@
-import { StringExt, ObjectExt } from '../../util'
+import { StringExt, ObjectExt, NumberExt } from '../../util'
 import { Point, Rectangle, Angle } from '../../geometry'
 import { Size, KeyValue } from '../../types'
 import { Cell } from './cell'
@@ -18,7 +18,7 @@ export class Node<
   }
 
   protected readonly store: Store<Node.Properties>
-  public portData: PortData
+  protected portData: PortData
 
   constructor(options: Node.Options = {}) {
     const { x, y, width, height, ...others } = options
@@ -87,12 +87,31 @@ export class Node<
 
   // #region size
 
-  get size() {
+  get sizes() {
     return this.getSize()
   }
 
-  set size(size: Size) {
+  set sizes(size: Size) {
     this.setSize(size)
+  }
+
+  size(): Size
+  size(size: Size, options?: Node.ResizeOptions): this
+  size(width: number, height: number, options?: Node.ResizeOptions): this
+  size(
+    width?: number | Size,
+    height?: number | Node.ResizeOptions,
+    options?: Node.ResizeOptions,
+  ) {
+    if (width === undefined) {
+      return this.getSize()
+    }
+
+    if (typeof width === 'number') {
+      return this.setSize(width, height as number, options)
+    }
+
+    return this.setSize(width, height as Node.ResizeOptions)
   }
 
   getSize() {
@@ -120,7 +139,7 @@ export class Node<
     this.startBatch('resize', options)
 
     if (options.direction) {
-      const currentSize = this.size
+      const currentSize = this.sizes
 
       switch (options.direction) {
         case 'left':
@@ -257,7 +276,20 @@ export class Node<
     this.setPosition(pos.x, pos.y)
   }
 
-  getPosition(options: { relative?: boolean } = {}): Point.PointLike {
+  pos(x: number, y: number, options?: Node.SetPositionOptions): this
+  pos(options?: Node.GetPositionOptions): Point.PointLike
+  pos(
+    arg0?: number | Node.GetPositionOptions,
+    arg1?: number,
+    arg2?: Node.SetPositionOptions,
+  ) {
+    if (typeof arg0 === 'number') {
+      return this.setPosition(arg0, arg1 as number, arg2)
+    }
+    return this.getPosition(arg0)
+  }
+
+  getPosition(options: Node.GetPositionOptions = {}): Point.PointLike {
     if (options.relative) {
       const parent = this.getParent()
       if (parent != null && parent.isNode()) {
@@ -281,38 +313,38 @@ export class Node<
   ): this
   setPosition(x: number, y: number, options?: Node.SetPositionOptions): this
   setPosition(
-    x: number | Point | Point.PointLike,
-    y?: number | Node.SetPositionOptions,
-    options: Node.SetPositionOptions = {},
+    arg0: number | Point | Point.PointLike,
+    arg1?: number | Node.SetPositionOptions,
+    arg2: Node.SetPositionOptions = {},
   ) {
-    let xx: number
-    let yy: number
-    let opts: Node.SetPositionOptions
+    let x: number
+    let y: number
+    let options: Node.SetPositionOptions
 
-    if (typeof x === 'object') {
-      xx = x.x
-      yy = x.y
-      opts = (y as Node.SetPositionOptions) || {}
+    if (typeof arg0 === 'object') {
+      x = arg0.x
+      y = arg0.y
+      options = (arg1 as Node.SetPositionOptions) || {}
     } else {
-      xx = x
-      yy = y as number
-      opts = options || {}
+      x = arg0
+      y = arg1 as number
+      options = arg2 || {}
     }
 
-    if (opts.relative) {
+    if (options.relative) {
       const parent = this.getParent() as Node
       if (parent != null && parent.isNode()) {
         const parentPosition = parent.position
-        xx += parentPosition.x
-        yy += parentPosition.y
+        x += parentPosition.x
+        y += parentPosition.y
       }
     }
 
-    if (opts.deep) {
+    if (options.deep) {
       const currentPosition = this.position
-      this.translate(xx - currentPosition.x, yy - currentPosition.y, opts)
+      this.translate(x - currentPosition.x, y - currentPosition.y, options)
     } else {
-      this.store.set('position', { x: xx, y: yy }, opts)
+      this.store.set('position', { x, y }, options)
     }
 
     return this
@@ -445,6 +477,8 @@ export class Node<
 
   // #endregion
 
+  // #region common
+
   getBBox(options: { deep?: boolean } = {}) {
     if (options.deep) {
       const cells = this.getDescendants({ deep: true, breadthFirst: true })
@@ -486,47 +520,44 @@ export class Node<
     return portCenter
   }
 
-  // fitEmbeds(options = {}) {
-  //   // Getting the children's size and position requires the collection.
-  //   // Cell.get('embeds') helds an array of cell ids only.
-  //   const { graph } = this
-  //   if (!graph) throw new Error('Element must be part of a graph.')
+  /**
+   * Sets cell's size and position based on the children bbox and given padding.
+   */
+  fit(options: Node.FitEmbedsOptions = {}) {
+    const children = this.getChildren() || []
+    const embeds = children.filter(cell => cell.isNode()) as Node[]
+    if (embeds.length === 0) {
+      return this
+    }
 
-  //   const embeddedCells = this.getChildren().filter(cell => cell.isNode())
-  //   if (embeddedCells.length === 0) {
-  //     return this
-  //   }
+    this.startBatch('fit-embeds', options)
 
-  //   this.startBatch('fit-embeds', options)
+    if (options.deep) {
+      embeds.forEach(cell => cell.fit(options))
+    }
 
-  //   if (options.deep) {
-  //     // Recursively apply fitEmbeds on all embeds first.
-  //     invoke(embeddedCells, 'fitEmbeds', options)
-  //   }
+    let { x, y, width, height } = Cell.getCellsBBox(embeds)!
+    const padding = NumberExt.normalizeSides(options.padding)
 
-  //   // Compute cell's size and position based on the children bbox
-  //   // and given padding.
-  //   const { left, right, top, bottom } = normalizeSides(options.padding)
-  //   let { x, y, width, height } = graph.getCellsBBox(embeddedCells)
-  //   // Apply padding computed above to the bbox.
-  //   x -= left
-  //   y -= top
-  //   width += left + right
-  //   height += bottom + top
+    x -= padding.left
+    y -= padding.top
+    width += padding.left + padding.right
+    height += padding.bottom + padding.top
 
-  //   // Set new element dimensions finally.
-  //   this.store.set(
-  //     {
-  //       position: { x, y },
-  //       size: { width, height },
-  //     },
-  //     options,
-  //   )
+    this.store.set(
+      {
+        position: { x, y },
+        size: { width, height },
+      },
+      options,
+    )
 
-  //   this.stopBatch('fit-embeds')
+    this.stopBatch('fit-embeds')
 
-  //   return this
-  // }
+    return this
+  }
+
+  // #endregion
 
   // #region ports
 
@@ -628,7 +659,7 @@ export class Node<
   }
 
   getPortsPosition(groupName: string) {
-    const size = this.size
+    const size = this.sizes
     const layouts = this.portData.getPortsLayoutByGroup(
       groupName,
       new Rectangle(0, 0, size.width, size.height),
@@ -828,11 +859,23 @@ export class Node<
     return this
   }
 
+  getParsedPorts() {
+    return this.portData.getPorts()
+  }
+
+  getParsedGroups() {
+    return this.portData.groups
+  }
+
+  getPortsLayoutByGroup(groupName: string | undefined, bbox: Rectangle) {
+    return this.portData.getPortsLayoutByGroup(groupName, bbox)
+  }
+
   protected initPorts() {
-    this.createPortData()
+    this.updatePortData()
     this.on('change:ports', () => {
       this.processRemovedPort()
-      this.createPortData()
+      this.updatePortData()
     })
   }
 
@@ -902,7 +945,7 @@ export class Node<
     return StringExt.uuid()
   }
 
-  protected createPortData() {
+  protected updatePortData() {
     const err = this.validatePorts()
 
     if (err.length > 0) {
@@ -978,6 +1021,10 @@ export namespace Node {
 export namespace Node {
   export interface SetOptions extends Cell.SetOptions {}
 
+  export interface GetPositionOptions {
+    relative?: boolean
+  }
+
   export interface SetPositionOptions extends SetOptions {
     deep?: boolean
     relative?: boolean
@@ -1001,6 +1048,11 @@ export namespace Node {
       | 'topRight'
       | 'bottomLeft'
       | 'bottomRight'
+  }
+
+  export interface FitEmbedsOptions extends SetOptions {
+    deep?: boolean
+    padding?: NumberExt.SideOptions
   }
 }
 
