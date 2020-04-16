@@ -99,9 +99,9 @@ export class PortData {
     const group = this.getGroup(port.group)
 
     result.markup = result.markup || group.markup
-    result.attrs = { ...group.attrs, ...result.attrs }
+    result.attrs = ObjectExt.merge({}, group.attrs, result.attrs)
     result.position = this.createPosition(group, result)
-    result.label = { ...group.label, ...this.getLabel(result) }
+    result.label = ObjectExt.merge({}, group.label, this.getLabel(result))
     result.zIndex = this.getZIndex(group, result)
     result.size = Object.assign({}, group.size, result.size)
 
