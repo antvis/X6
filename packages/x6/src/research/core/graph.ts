@@ -269,9 +269,7 @@ export class Graph extends View<Graph.EventArgs> {
 
     const ctor = this.constructor as typeof Graph
     this.delegateEvents(ctor.events)
-
-    this.model = new Model()
-
+    this.setModel()
     this.resize()
     this.setGrid(this.options.drawGrid)
     this.drawGrid()
@@ -287,6 +285,15 @@ export class Graph extends View<Graph.EventArgs> {
     if (!this.isFrozen() && this.isAsync()) {
       this.updateViewsAsync()
     }
+  }
+
+  createModel() {
+    return new Model()
+  }
+
+  setModel(model: Model = this.createModel()) {
+    this.model = model
+    this.model.pipe(this)
   }
 
   init() {
@@ -346,20 +353,30 @@ export class Graph extends View<Graph.EventArgs> {
     })
 
     model.on('reseted', args => {
-      this.onResetModel(args.options)
+      this.onModelReseted(args.options)
       this.trigger('model:reseted', args)
     })
 
     model.on('updated', args => this.trigger('model:updated', args))
 
-    model.on('cell:added', ({ cell, options }) => this.onAddCell(cell, options))
+    model.on('cell:added', ({ cell, options }) =>
+      this.onCellAdded(cell, options),
+    )
+
     model.on('cell:removed', ({ cell, options }) =>
-      this.onRemoveCell(cell, options),
+      this.onCellRemoved(cell, options),
     )
-    model.on('cell:changed', ({ cell, options }) =>
-      this.onCellChanged(cell, options),
+
+    model.on('cell:change:zIndex', ({ cell, options }) =>
+      this.onCellZIndexChanged(cell, options),
     )
+
+    model.on('cell:change:visible', ({ cell, current, options }) => {
+      this.onCellVisibleChanged(cell, current !== false, options)
+    })
+
     model.on('batch:stop', ({ name, data }) => this.onBatchStop(name, data))
+
     this.on(
       'cell:highlight',
       ({
@@ -404,12 +421,12 @@ export class Graph extends View<Graph.EventArgs> {
     this.sortViews()
   }
 
-  protected onResetModel(options: Collection.SetOptions) {
+  protected onModelReseted(options: Collection.SetOptions) {
     this.removeZPivots()
     this.resetViews(this.model.getCells(), options)
   }
 
-  protected onAddCell(cell: Cell, options: Collection.AddOptions) {
+  protected onCellAdded(cell: Cell, options: Collection.AddOptions) {
     const position = options.position
     if (this.isAsync() || typeof position !== 'number') {
       this.renderView(cell, options)
@@ -424,23 +441,66 @@ export class Graph extends View<Graph.EventArgs> {
     }
   }
 
-  protected onRemoveCell(cell: Cell, options: Collection.RemoveOptions) {
+  protected onCellRemoved(cell: Cell, options: Collection.RemoveOptions) {
     const view = this.findViewByCell(cell)
     if (view) {
       this.requestViewUpdate(view, FLAG_REMOVE, view.priority, options)
     }
   }
 
-  protected onCellChanged(cell: Cell, options: Cell.MutateOptions) {
-    if (
-      cell.hasChanged('zIndex') &&
-      this.options.sorting === sortingTypes.APPROX
-    ) {
+  protected onCellZIndexChanged(cell: Cell, options: Cell.MutateOptions) {
+    if (this.options.sorting === sortingTypes.APPROX) {
       const view = this.findViewByCell(cell)
       if (view) {
         this.requestViewUpdate(view, FLAG_INSERT, view.priority, options)
       }
     }
+  }
+
+  protected onCellVisibleChanged(
+    cell: Cell,
+    visible: boolean,
+    options: Cell.MutateOptions,
+  ) {
+    // Hide connected edges before cell
+    if (!visible) {
+      this.processEdgeOnTerminalVisibleChanged(cell, false)
+    }
+
+    const view = this.findViewByCell(cell)
+    if (!visible && view) {
+      this.removeView(cell)
+    } else if (visible && view == null) {
+      this.renderView(cell, options)
+    }
+
+    // Show connected edges after cell rendered
+    if (visible) {
+      this.processEdgeOnTerminalVisibleChanged(cell, true)
+    }
+  }
+
+  protected processEdgeOnTerminalVisibleChanged(node: Cell, visible: boolean) {
+    const getOppositeTerminal = (edge: Edge, currentTerminal: Cell) => {
+      const sourceId = edge.getSourceCellId()
+      if (sourceId !== currentTerminal.id) {
+        return edge.getSourceCell()
+      }
+
+      const targetId = edge.getTargetCellId()
+      if (targetId !== currentTerminal.id) {
+        return edge.getTargetCell()
+      }
+
+      return null
+    }
+
+    this.model.getConnectedEdges(node).forEach(edge => {
+      const oppositeCell = getOppositeTerminal(edge, node)
+      if (oppositeCell == null || oppositeCell.isVisible()) {
+        visible ? edge.show() : edge.hide()
+      }
+    })
   }
 
   protected onBatchStop(name: string, data: KeyValue) {
@@ -1272,6 +1332,8 @@ export class Graph extends View<Graph.EventArgs> {
     })
     this.views = {}
   }
+
+  protected checkCellVisible(ceil: Cell) {}
 
   protected renderView(cell: Cell, options: any = {}) {
     const id = cell.id

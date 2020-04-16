@@ -6,10 +6,14 @@ import { Edge } from './edge'
 import { Node } from './node'
 import { Collection } from './collection'
 import { Point, Rectangle } from '../../geometry'
+import { Graph } from './graph'
 
 export class Model extends Basecoat<Model.EventArgs> {
-  public readonly collection: Collection
+  protected readonly collection: Collection
   protected readonly batches: KeyValue<number> = {}
+  protected readonly addings: WeakMap<Cell, boolean> = new WeakMap()
+
+  protected graph: Graph | null
   protected nodes: KeyValue<boolean> = {}
   protected edges: KeyValue<boolean> = {}
   protected in: KeyValue<KeyValue<boolean>> = {}
@@ -29,14 +33,22 @@ export class Model extends Basecoat<Model.EventArgs> {
     this.setup()
   }
 
+  pipe(graph: Graph) {
+    this.graph = graph
+  }
+
   notify<Key extends keyof Model.EventArgs>(
     name: Key,
     args: Model.EventArgs[Key],
   ) {
     this.trigger(name, args)
-
-    if (name === 'sorted' || name === 'reseted' || name === 'updated') {
-    } else {
+    const graph = this.graph
+    if (graph) {
+      if (name === 'sorted' || name === 'reseted' || name === 'updated') {
+        graph.trigger(`model:${name}` as any, args)
+      } else {
+        graph.trigger(name as any, args)
+      }
     }
   }
 
@@ -215,8 +227,12 @@ export class Model extends Basecoat<Model.EventArgs> {
       return this.addCells(cell, options)
     }
 
-    this.collection.add(this.prepareCell(cell, options), options)
-    cell.eachChild(child => this.addCell(child, options))
+    if (!this.collection.has(cell) && !this.addings.has(cell)) {
+      this.addings.set(cell, true)
+      this.collection.add(this.prepareCell(cell, options), options)
+      cell.eachChild(child => this.addCell(child, options))
+      this.addings.delete(cell)
+    }
 
     return this
   }
@@ -244,18 +260,29 @@ export class Model extends Basecoat<Model.EventArgs> {
   }
 
   resetCells(cells: Cell[], options: Collection.SetOptions = {}) {
-    const preparedCells = cells.map(cell => {
-      return this.prepareCell(cell, options)
-    })
+    const preparedCells = cells.map(cell => this.prepareCell(cell, options))
     this.collection.reset(preparedCells, options)
+    return this
+  }
 
+  removeCell(cellId: string, options?: Cell.RemoveOptions): this
+  removeCell(cell: Cell, options?: Cell.RemoveOptions): this
+  removeCell(obj: Cell | string, options: Cell.RemoveOptions = {}) {
+    const cell = typeof obj === 'string' ? this.getCell(obj) : obj
+    if (cell) {
+      if (options.dryrun) {
+        this.collection.remove(cell, options)
+      } else {
+        cell.remove(cell)
+      }
+    }
     return this
   }
 
   removeCells(cells: Cell[], options: Cell.RemoveOptions = {}) {
     if (cells.length) {
       this.executeBatch('remove', () => {
-        cells.forEach(cell => cell.remove(options))
+        cells.forEach(cell => this.removeCell(cell, options))
       })
     }
     return this
@@ -281,6 +308,20 @@ export class Model extends Basecoat<Model.EventArgs> {
         edge.setTarget({ x: 0, y: 0 }, options)
       }
     })
+  }
+
+  has(id: string): boolean
+  has(cell: Cell): boolean
+  has(obj: string | Cell): boolean {
+    return this.collection.has(obj)
+  }
+
+  total() {
+    return this.collection.length
+  }
+
+  indexOf(cell: Cell) {
+    return this.collection.indexOf(cell)
   }
 
   /**
@@ -996,13 +1037,13 @@ export class Model extends Basecoat<Model.EventArgs> {
 
   startBatch(name: string, data: KeyValue = {}) {
     this.batches[name] = (this.batches[name] || 0) + 1
-    this.trigger('batch:start', { name, data })
+    this.notify('batch:start', { name, data })
     return this
   }
 
   stopBatch(name: string, data: KeyValue = {}) {
     this.batches[name] = (this.batches[name] || 0) - 1
-    this.trigger('batch:stop', { name, data })
+    this.notify('batch:stop', { name, data })
     return this
   }
 

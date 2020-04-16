@@ -76,26 +76,27 @@ export class Cell<
 
   constructor(options: Cell.Options = {}) {
     super()
+    const props = this.prepare(options)
     this.id = options.id || StringExt.uuid()
-    const data = this.getBootstrapData(options) as Partial<Properties>
-    this.store = new Store(data)
+    this.store = new Store(props)
     this.transition = new Transition(this)
     this.setup()
     this.init()
   }
 
-  init() {}
-
-  protected getBootstrapData(options: Cell.Options): Cell.Defaults {
+  protected prepare(options: Cell.Options): Properties {
+    const id = options.id
     const ctor = this.constructor as typeof Cell
-    return ctor.mergeDefaults(ctor.getDefaults(true), options)
-  }
+    const props = ctor.mergeDefaults<Properties>(
+      ctor.getDefaults(true),
+      options as Properties,
+    )
 
-  protected getDefaults<T extends Cell.Defaults = Cell.Defaults>(
-    raw?: boolean,
-  ) {
-    const ctor = this.constructor as typeof Cell
-    return ctor.getDefaults<T>(raw)
+    if (id == null) {
+      props.id = StringExt.uuid()
+    }
+
+    return props
   }
 
   protected setup() {
@@ -155,6 +156,8 @@ export class Cell<
       previous: previous == null ? undefined : (previous as T),
     }
   }
+
+  init() {}
 
   notify<Key extends keyof Cell.EventArgs>(
     name: Key,
@@ -386,8 +389,8 @@ export class Cell<
 
       z = z - cells.length + 1
 
-      const coll = model.collection
-      let changed = coll.indexOf(this) !== coll.length - cells.length
+      const count = model.total()
+      let changed = model.indexOf(this) !== count - cells.length
       if (!changed) {
         changed = cells.some((cell, index) => cell.getZIndex() !== z + index)
       }
@@ -418,8 +421,7 @@ export class Cell<
         cells = [this]
       }
 
-      const collection = model.collection
-      let changed = collection.indexOf(this) !== 0
+      let changed = model.indexOf(this) !== 0
       if (!changed) {
         changed = cells.some((cell, index) => cell.getZIndex() !== z + index)
       }
@@ -891,7 +893,7 @@ export class Cell<
       }
 
       if (this.model) {
-        this.model.collection.add(child)
+        this.model.addCell(child, options)
       }
     }
 
@@ -933,7 +935,7 @@ export class Cell<
           this.eachChild(child => child.remove(options))
         }
         if (this.model) {
-          this.model.collection.remove(this, options)
+          this.model.removeCell(this, { ...options, dryrun: true })
         }
         this.notify('removed', { options, cell: this })
       })
@@ -997,8 +999,9 @@ export class Cell<
     : this extends Edge
     ? Edge.Properties
     : Properties {
+    const ctor = this.constructor as typeof Cell
+    const defaults = ctor.getDefaults(true)
     const data = this.store.get()
-    const defaults = this.getDefaults(true)
     const attrs = data.attrs || {}
     const defaultAttrs = defaults.attrs || {}
     const finalAttrs: Attr.CellAttrs = {}
@@ -1125,7 +1128,6 @@ export namespace Cell {
   }
 
   export interface Defaults extends Common {}
-
   export interface Options extends Common {
     id?: string
   }
