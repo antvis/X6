@@ -93,7 +93,7 @@ export class NodeView<
     }
 
     const node = this.cell
-    const size = node.size
+    const size = node.sizes
     const attrs = node.attrs || {}
     this.updateAttrs(this.container, attrs, {
       attrs: partialAttrs === attrs ? null : partialAttrs,
@@ -209,7 +209,7 @@ export class NodeView<
   protected getRotationString() {
     const rotation = this.cell.rotation
     if (rotation) {
-      const size = this.cell.size
+      const size = this.cell.sizes
       return `rotate(${rotation},${size.width / 2},${size.height / 2})`
     }
   }
@@ -240,7 +240,7 @@ export class NodeView<
 
   protected updateSize(opt: any = {}) {
     const cell = this.cell
-    const size = cell.size
+    const size = cell.sizes
     const angle = cell.rotation
     const scalableNode = this.scalableNode!
 
@@ -344,12 +344,9 @@ export class NodeView<
       references.push(child as Element)
     })
 
-    const portsGropsByZ = ArrayExt.groupBy(
-      this.cell.portData.getPorts(),
-      'zIndex',
-    )
-
+    const portsGropsByZ = ArrayExt.groupBy(this.cell.getParsedPorts(), 'zIndex')
     const autoZIndexKey = 'auto'
+
     // render non-z first
     if (portsGropsByZ[autoZIndexKey]) {
       portsGropsByZ[autoZIndexKey].forEach(port => {
@@ -462,15 +459,15 @@ export class NodeView<
   protected updatePorts() {
     // Layout ports without group
     this.updatePortGroup()
+
     // Layout ports with explicit group
-    Object.keys(this.cell.portData.groups).forEach(groupName =>
-      this.updatePortGroup(groupName),
-    )
+    const groups = this.cell.getParsedGroups()
+    Object.keys(groups).forEach(groupName => this.updatePortGroup(groupName))
   }
 
   protected updatePortGroup(groupName?: string) {
-    const bbox = Rectangle.fromSize(this.cell.size)
-    const metrics = this.cell.portData.getPortsLayoutByGroup(groupName, bbox)
+    const bbox = Rectangle.fromSize(this.cell.sizes)
+    const metrics = this.cell.getPortsLayoutByGroup(groupName, bbox)
 
     for (let i = 0, n = metrics.length; i < n; i += 1) {
       const metric = metrics[i]
