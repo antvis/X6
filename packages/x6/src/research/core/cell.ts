@@ -26,7 +26,12 @@ export class Cell<
     presets: T,
     attrDefinitions?: Attr.Definitions,
   ) {
-    this.defaults = this.mergeDefaults(this.defaults, presets)
+    const { markup, ...others } = presets
+    this.defaults = this.mergeDefaults(this.defaults, others)
+    if (markup != null) {
+      this.defaults.markup = markup
+    }
+
     if (attrDefinitions) {
       this.attrDefinitions = { ...this.attrDefinitions, ...attrDefinitions }
     }
