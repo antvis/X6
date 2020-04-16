@@ -21,6 +21,11 @@ export class Node<
   protected portData: PortData
 
   constructor(options: Node.Options = {}) {
+    super(options)
+    this.initPorts()
+  }
+
+  protected prepare(options: Node.Options): Properties {
     const { x, y, width, height, ...others } = options
     if (x != null || y != null) {
       others.position = {
@@ -37,8 +42,7 @@ export class Node<
       }
     }
 
-    super(others)
-    this.initPorts()
+    return super.prepare(others)
   }
 
   protected setup() {
@@ -1011,11 +1015,10 @@ export namespace Node {
   }
 
   interface BaseOptions extends Common, Cell.Options {}
-
   export interface Options extends BaseOptions, Boundary {}
   export interface Defaults extends Common, Cell.Defaults {}
   export interface Properties extends BaseOptions, Cell.Properties {}
-  export interface Metadata extends Options, Boundary, KeyValue {}
+  export interface Metadata extends Options, KeyValue {}
 }
 
 export namespace Node {

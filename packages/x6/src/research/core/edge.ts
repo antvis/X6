@@ -22,12 +22,39 @@ export class Edge<
     super(options)
   }
 
-  set model(model: Model | null) {
-    this.setModel(model)
+  protected prepare(options: Edge.Options) {
+    const {
+      sourceCell,
+      sourcePort,
+      sourcePoint,
+      targetCell,
+      targetPort,
+      targetPoint,
+      ...others
+    } = options
+
+    if (sourceCell != null) {
+      others.source = {
+        cellId: typeof sourceCell === 'string' ? sourceCell : sourceCell.id,
+        portId: sourcePort != null ? sourcePort : undefined,
+      }
+    } else if (sourcePoint != null) {
+      others.source = Point.create(sourcePoint).toJSON()
+    }
+
+    if (targetCell != null) {
+      others.target = {
+        cellId: typeof targetCell === 'string' ? targetCell : targetCell.id,
+        portId: targetPort != null ? targetPort : undefined,
+      }
+    } else if (targetPoint != null) {
+      others.target = Point.create(targetPoint).toJSON()
+    }
+
+    return super.prepare(others)
   }
 
   protected setModel(model: Model | null) {
-    super.setModel(model)
     if (model) {
       const sourceCellId = this.getSourceCellId()
       const targetCellId = this.getTargetCellId()
@@ -39,6 +66,7 @@ export class Edge<
       this.reference('target', targetCell)
       this.updateParent()
     }
+    super.setModel(model)
   }
 
   protected setup() {
@@ -963,12 +991,19 @@ export namespace Edge {
     defaultArrowheadMarkup?: Markup
   }
 
-  export interface Options extends Common, Cell.Options {}
+  interface TerminalOptions {
+    sourceCell?: Cell | string
+    sourcePort?: string
+    sourcePoint?: Point | Point.PointLike | Point.PointData
+    targetCell?: Cell | string
+    targetPort?: string
+    targetPoint?: Point | Point.PointLike | Point.PointData
+  }
 
+  interface BaseOptions extends Common, Cell.Options {}
+  export interface Options extends BaseOptions, TerminalOptions {}
   export interface Defaults extends Common, Cell.Defaults {}
-
-  export interface Properties extends Cell.Properties, Options {}
-
+  export interface Properties extends Cell.Properties, BaseOptions {}
   export interface Metadata extends Options, KeyValue {}
 }
 

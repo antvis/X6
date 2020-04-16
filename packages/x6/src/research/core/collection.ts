@@ -193,21 +193,17 @@ export class Collection extends Basecoat<Collection.EventArgs> {
     return this.remove(cell, options)
   }
 
-  get(id: string): Cell | null
-  get(cell: Cell): Cell | null
-  get(obj: string | Cell): Cell | null {
-    if (obj == null) {
+  get(cell: string | Cell): Cell | null {
+    if (cell == null) {
       return null
     }
 
-    const id = typeof obj === 'string' ? obj : obj.id
+    const id = typeof cell === 'string' ? cell : cell.id
     return this.map[id] || null
   }
 
-  has(id: string): boolean
-  has(cell: Cell): boolean
-  has(obj: string | Cell): boolean {
-    return this.get(obj as any) != null
+  has(cell: string | Cell): boolean {
+    return this.get(cell as any) != null
   }
 
   at(index: number): Cell | null {
