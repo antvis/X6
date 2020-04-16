@@ -634,7 +634,11 @@ export class Node<
   }
 
   get ports() {
-    return this.store.get('ports', { items: [] })
+    const res = this.store.get('ports', { items: [] })
+    if (res.items == null) {
+      res.items = []
+    }
+    return res
   }
 
   getPorts() {
