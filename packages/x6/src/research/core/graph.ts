@@ -62,19 +62,19 @@ export class Graph extends View<Graph.EventArgs> {
     highlighting: {
       default: {
         name: 'stroke',
-        options: {
+        args: {
           padding: 3,
         },
       },
       nodeAvailability: {
-        name: 'addClass',
-        options: {
+        name: 'className',
+        args: {
           className: 'x6-available-node',
         },
       },
       magnetAvailability: {
-        name: 'addClass',
-        options: {
+        name: 'className',
+        args: {
           className: 'x6-available-magnet',
         },
       },
