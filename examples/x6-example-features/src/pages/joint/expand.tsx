@@ -176,6 +176,36 @@ export default class Example extends React.Component {
       },
     })
 
+    graph.on('node:click', ({ view }) => {
+      view.cell.hide()
+    })
+
+    graph.on('node:magnet:click', ({ e, view, magnet }) => {
+      e.stopPropagation()
+      var portId = magnet.getAttribute('port')
+      if (portId) {
+        const rect = (view.cell as any) as TogglableRect
+        rect.expandPort(portId)
+      }
+    })
+
+    graph.on('cell:change:visible', ({ cell, current }) => {
+      if (cell.isEdge()) {
+        const visible = current !== false
+        const sourceCell = cell.getSourceCell()
+        if (sourceCell) {
+          const rect = (sourceCell as any) as TogglableRect
+          rect.onConnectedEdgeVisibleChange(cell, 'source', visible)
+        }
+
+        const targetCell = cell.getTargetCell()
+        if (targetCell) {
+          const rect = (targetCell as any) as TogglableRect
+          rect.onConnectedEdgeVisibleChange(cell, 'target', visible)
+        }
+      }
+    })
+
     const a = new TogglableRect({
       id: 'a',
       x: 200,
@@ -207,7 +237,6 @@ export default class Example extends React.Component {
         ],
       },
     })
-
     aa.addTo(graph.model)
 
     const aaa = new TogglableRect({
@@ -222,7 +251,6 @@ export default class Example extends React.Component {
         ],
       },
     })
-
     aaa.addTo(graph.model)
 
     const b = new TogglableRect({
@@ -239,20 +267,21 @@ export default class Example extends React.Component {
         ],
       },
     })
-
     b.addTo(graph.model)
 
-    b.clone()
+    const bb = b
+      .clone()
       .prop('id', 'bb')
       .attr({ label: { text: 'bb' } })
       .setPosition(400, 200)
-      .addTo(graph.model)
+    bb.addTo(graph.model)
 
-    b.clone()
+    const bbb = b
+      .clone()
       .prop('id', 'bbb')
       .attr({ label: { text: 'bbb' } })
       .setPosition(400, 350)
-      .addTo(graph.model)
+    bbb.addTo(graph.model)
 
     const x = new TogglableRect({
       id: 'x',
@@ -268,11 +297,89 @@ export default class Example extends React.Component {
     })
     x.addTo(graph.model)
 
-    x.clone()
+    const y = x
+      .clone()
       .prop('id', 'y')
       .attr({ label: { text: 'y' } })
       .setPosition(30, 80)
-      .addTo(graph.model)
+    y.addTo(graph.model)
+
+    graph.addEdge({
+      type: 'edge',
+      source: { cellId: a.id, portId: 'out1' },
+      target: { cellId: aa.id, portId: 'in1' },
+    })
+
+    graph.addEdge({
+      type: 'edge',
+      sourceCell: aa,
+      targetCell: aaa,
+      sourcePort: 'out2',
+      targetPort: 'in1',
+    })
+
+    graph.addEdge({
+      type: 'edge',
+      sourceCell: b.id,
+      targetCell: bb.id,
+      sourcePort: 'out1',
+      targetPort: 'in1',
+    })
+
+    graph.addEdge({
+      type: 'edge',
+      sourceCell: b,
+      targetCell: bbb,
+      sourcePort: 'out2',
+      targetPort: 'in1',
+    })
+
+    graph.addEdge({
+      type: 'edge',
+      sourceCell: b,
+      targetCell: aaa,
+      sourcePort: 'out1',
+      targetPort: 'in1',
+    })
+
+    graph.addEdge({
+      type: 'edge',
+      sourceCell: aaa,
+      sourcePort: 'out1',
+      targetPoint: { x: 700, y: 100 },
+    })
+
+    graph.addEdge({
+      type: 'edge',
+      sourceCell: bbb,
+      targetCell: x,
+      sourcePort: 'in1',
+      targetPort: 'out2',
+    })
+
+    graph.addEdge({
+      type: 'edge',
+      sourceCell: b,
+      targetCell: x,
+      sourcePort: 'in2',
+      targetPort: 'out1',
+    })
+
+    graph.addEdge({
+      type: 'edge',
+      sourceCell: b,
+      targetCell: y,
+      sourcePort: 'in1',
+      targetPort: 'out2',
+    })
+
+    graph.addEdge({
+      type: 'edge',
+      sourceCell: a,
+      targetCell: y,
+      sourcePort: 'in1',
+      targetPort: 'out1',
+    })
   }
 
   refContainer = (container: HTMLDivElement) => {
