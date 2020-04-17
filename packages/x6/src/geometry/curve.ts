@@ -92,7 +92,8 @@ export class Curve extends Geometry {
     let j = tvalues.length
     const jlen = j
 
-    while ((j -= 1)) {
+    while (j) {
+      j -= 1
       t = tvalues[j]
       mt = 1 - t
 
@@ -108,8 +109,8 @@ export class Curve extends Geometry {
         3 * mt * mt * t * y1 +
         3 * mt * t * t * y2 +
         t * t * t * y3
-      bounds[1][j] = y
 
+      bounds[1][j] = y
       points[j] = { X: x, Y: y }
     }
 
