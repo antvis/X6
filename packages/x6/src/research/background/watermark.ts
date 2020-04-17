@@ -1,8 +1,8 @@
 import { Background } from './index'
 import { Angle } from '../../geometry'
 
-export interface WatermarkOptions extends Background.Options {
-  watermarkAngle?: number
+export interface WatermarkOptions extends Background.CommonOptions {
+  angle?: number
 }
 
 export const watermark: Background.Definition<WatermarkOptions> = function(
@@ -17,7 +17,7 @@ export const watermark: Background.Definition<WatermarkOptions> = function(
   canvas.height = height * 3
 
   const ctx = canvas.getContext('2d')!
-  const angle = options.watermarkAngle != null ? -options.watermarkAngle : -20
+  const angle = options.angle != null ? -options.angle : -20
   const radians = Angle.toRad(angle)
   const stepX = canvas.width / 4
   const stepY = canvas.height / 4
