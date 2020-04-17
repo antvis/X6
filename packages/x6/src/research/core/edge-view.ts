@@ -1021,16 +1021,16 @@ export class EdgeView<
     }
 
     const args = typeof def === 'function' ? {} : def.args || {}
-    const path = fn.call(
+    const path: Path | string = fn.call(
       this,
       sourcePoint,
       targetPoint,
       routePoints,
       { ...args, raw: true },
       this,
-    ) as Path
+    )
 
-    return path
+    return typeof path === 'string' ? Path.parse(path) : path
   }
 
   protected translateConnectionPoints(tx: number, ty: number) {
@@ -1168,7 +1168,7 @@ export class EdgeView<
     const edge = this.cell
     const graph = this.graph
     const terminal = edge[type]
-    const nodeId = terminal && (terminal as Edge.TerminalCellData).cellId
+    const nodeId = terminal && (terminal as Edge.TerminalCellData).cell
     const viewKey = `${type}View` as 'sourceView' | 'targetView'
 
     // terminal is a point
@@ -1915,6 +1915,7 @@ export class EdgeView<
 
       this.notifyMouseDown(e as JQuery.MouseDownEvent, x, y)
     } else {
+      this.notify('edge:customevent', { name, ...this.getEventArgs(e, x, y) })
       super.onCustomEvent(e, name, x, y)
     }
   }
@@ -1995,7 +1996,7 @@ export class EdgeView<
     }
 
     const terminal = this.cell[opposite]
-    const cellId = (terminal as Edge.TerminalCellData).cellId
+    const cellId = (terminal as Edge.TerminalCellData).cell
     if (cellId) {
       let magnet
       const view = (args[i] = this.graph.findViewByCell(cellId))
@@ -2259,7 +2260,7 @@ export class EdgeView<
 
     if (changed) {
       const graph = this.graph
-      const prevCellId = (initialTerminal as Edge.TerminalCellData).cellId
+      const prevCellId = (initialTerminal as Edge.TerminalCellData).cell
       if (prevCellId) {
         this.notify('edge:disconnected', {
           e,
@@ -2269,7 +2270,7 @@ export class EdgeView<
         })
       }
 
-      const currCellId = (currentTerminal as Edge.TerminalCellData).cellId
+      const currCellId = (currentTerminal as Edge.TerminalCellData).cell
       if (currCellId) {
         this.notify('edge:connected', {
           e,

@@ -36,7 +36,7 @@ export class ObstacleMap {
       (memo, type) => {
         const terminal = edge[type]
         if (terminal) {
-          const cell = model.getCell((terminal as Edge.TerminalCellData).cellId)
+          const cell = model.getCell((terminal as Edge.TerminalCellData).cell)
           if (cell) {
             memo.push(cell)
           }

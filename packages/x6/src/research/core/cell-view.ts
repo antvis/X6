@@ -523,14 +523,14 @@ export class CellView<
     const cell = this.cell
     const portId = this.findAttr('port', magnet)
     const selector = magnet.getAttribute('data-selector')
-    const terminal: Edge.TerminalCellData = { cellId: cell.id }
+    const terminal: Edge.TerminalCellData = { cell: cell.id }
 
     if (selector != null) {
       terminal.magnet = selector
     }
 
     if (portId != null) {
-      terminal.portId = portId
+      terminal.port = portId
       if (cell.isNode()) {
         if (!cell.hasPort(portId) && selector == null) {
           // port created via the `port` attribute (not API)
@@ -575,7 +575,7 @@ export class CellView<
   getMagnetFromEdgeTerminal(terminal: Edge.TerminalData) {
     const cell = this.cell
     const root = this.container
-    const portId = (terminal as Edge.TerminalCellData).portId
+    const portId = (terminal as Edge.TerminalCellData).port
     let selector = terminal.magnet
     let magnet
     if (portId != null && cell.isNode() && cell.hasPort(portId)) {

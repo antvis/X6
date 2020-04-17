@@ -63,9 +63,9 @@ export const TextBlock = NodeRegistry.register('text-block', {
   },
   attrDefinitions: {
     text: {
-      set(text: string, { refBBox, node, attrs }) {
-        if (node instanceof HTMLElement) {
-          node.textContent = text
+      set(text: string, { refBBox, elem, attrs }) {
+        if (elem instanceof HTMLElement) {
+          elem.textContent = text
         } else {
           // No foreign object
           const style = (attrs.style as Attr.SimpleAttrs) || {}
@@ -77,7 +77,7 @@ export const TextBlock = NodeRegistry.register('text-block', {
 
           const textWrap = Attr.definitions.textWrap as Attr.SetDefinition
           textWrap.set.call(this, wrapValue, {
-            node,
+            elem,
             refBBox,
             attrs: wrapAttrs,
           })
@@ -85,8 +85,8 @@ export const TextBlock = NodeRegistry.register('text-block', {
           return { fill: (style.color as string) || null }
         }
       },
-      position(text, { refBBox, node }) {
-        if (node instanceof SVGElement) {
+      position(text, { refBBox, elem }) {
+        if (elem instanceof SVGElement) {
           return refBBox.getCenter()
         }
       },

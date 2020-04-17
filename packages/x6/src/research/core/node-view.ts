@@ -550,12 +550,12 @@ export class NodeView<
   ): NodeView.PositionEventArgs<E>
   protected getEventArgs<E>(e: E, x?: number, y?: number) {
     const view = this // tslint:disable-line
-    const edge = view.cell
-    const cell = edge
+    const node = view.cell
+    const cell = node
     if (x == null || y == null) {
-      return { e, view, edge, cell } as NodeView.MouseEventArgs<E>
+      return { e, view, node, cell } as NodeView.MouseEventArgs<E>
     }
-    return { e, x, y, view, edge, cell } as NodeView.PositionEventArgs<E>
+    return { e, x, y, view, node, cell } as NodeView.PositionEventArgs<E>
   }
 
   notifyMouseDown(e: JQuery.MouseDownEvent, x: number, y: number) {
@@ -1020,13 +1020,13 @@ export namespace NodeView {
 }
 
 export namespace NodeView {
-  interface NodeMagnetEventArgs {
+  interface MagnetEventArgs {
     magnet: Element
   }
 
   export interface MouseEventArgs<E> {
     e: E
-    edge: Node
+    node: Node
     cell: Node
     view: NodeView
   }
@@ -1061,11 +1061,11 @@ export namespace NodeView {
     'node:unhighlight': EventArgs['node:highlight']
 
     'node:magnet:click': PositionEventArgs<JQuery.MouseUpEvent> &
-      NodeMagnetEventArgs
+      MagnetEventArgs
     'node:magnet:dblclick': PositionEventArgs<JQuery.DoubleClickEvent> &
-      NodeMagnetEventArgs
+      MagnetEventArgs
     'node:magnet:contextmenu': PositionEventArgs<JQuery.ContextMenuEvent> &
-      NodeMagnetEventArgs
+      MagnetEventArgs
   }
 }
 

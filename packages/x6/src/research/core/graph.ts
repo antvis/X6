@@ -536,35 +536,33 @@ export class Graph extends View<Graph.EventArgs> {
 
   addNode(options: Node.Metadata): Node
   addNode(node: Node): Node
-  addNode(node: Node | Node.Metadata): Node {
-    let result: Node
-    if (node instanceof Node) {
-      result = node
-    } else {
-      const { type, ...options } = node
-      const name = type || 'basic.rect'
-      const define = NodeRegistry.get(name)
-      if (define) {
-        result = new define(options)
-      } else {
-        throw new Error(`Unknow node type: "${name}"`)
-      }
+  addNode(metadata: Node | Node.Metadata): Node {
+    const node = metadata instanceof Node ? metadata : this.createNode(metadata)
+    this.model.addCell(node)
+    return node
+  }
+
+  createNode(metadata: Node.Metadata) {
+    const { type, ...options } = metadata
+    const name = type || 'basic.rect'
+    const define = NodeRegistry.get(name)
+    if (define) {
+      return new define(options)
     }
 
-    this.model.addCell(result)
-
-    return result
+    throw new Error(`Unknow node type: "${name}"`)
   }
 
   addEdge(edge: Edge.Metadata): Edge
   addEdge(edge: Edge): Edge
-  addEdge(edge: Edge | Edge.Metadata): Edge {
-    if (edge instanceof Edge) {
-      this.model.addCell(edge)
-      return edge
-    }
+  addEdge(metadata: Edge | Edge.Metadata): Edge {
+    const edge = metadata instanceof Edge ? metadata : this.createEdge(metadata)
+    this.model.addCell(edge)
+    return edge
+  }
 
-    const { type, ...options } = edge
+  createEdge(metadata: Edge.Metadata) {
+    const { type, ...options } = metadata
     let define
     if (type) {
       define = EdgeRegistry.get(type)
@@ -575,9 +573,7 @@ export class Graph extends View<Graph.EventArgs> {
       define = Edge
     }
 
-    const result = new define(options)
-    this.model.addCell(result)
-    return result
+    return new define(options)
   }
 
   // render() {

@@ -166,8 +166,8 @@ export class Model extends Basecoat<Model.EventArgs> {
     const cache = isSource ? this.out : this.in
     const terminal = isSource ? edge.getSourceCell() : edge.getTargetCell()
     const previousData = edge.previous(type) as Edge.TerminalCellData
-    if (previousData.cellId) {
-      const previousTerminal = this.getCell(previousData.cellId)
+    if (previousData.cell) {
+      const previousTerminal = this.getCell(previousData.cell)
       if (previousTerminal && cache[previousTerminal.id]) {
         delete cache[previousTerminal.id][edgeId]
       }
