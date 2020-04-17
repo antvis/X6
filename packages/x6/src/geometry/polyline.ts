@@ -20,9 +20,12 @@ export class Polyline extends Geometry {
     return this.points[this.points.length - 1]
   }
 
-  constructor(points?: (Point | Point.PointLike | Point.PointData)[]) {
+  constructor(points?: (Point | Point.PointLike | Point.PointData)[] | string) {
     super()
     if (points != null) {
+      if (typeof points === 'string') {
+        return Polyline.parse(points)
+      }
       this.points = points.map(p => Point.create(p))
     } else {
       this.points = []
