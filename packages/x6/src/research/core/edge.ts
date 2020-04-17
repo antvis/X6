@@ -1,5 +1,5 @@
-import { ObjectExt, StringExt } from '../../util'
 import { Size, KeyValue } from '../../types'
+import { ObjectExt, StringExt } from '../../util'
 import { Point, Polyline } from '../../geometry'
 import { EdgeAnchor, NodeAnchor } from '../anchor'
 import { ConnectionPoint } from '../connection-point'
@@ -24,34 +24,101 @@ export class Edge<
 
   protected prepare(options: Edge.Options) {
     const {
+      source,
       sourceCell,
       sourcePort,
       sourcePoint,
+      target,
       targetCell,
       targetPort,
       targetPoint,
       ...others
     } = options
 
-    if (sourceCell != null) {
-      others.source = {
-        cellId: typeof sourceCell === 'string' ? sourceCell : sourceCell.id,
-        portId: sourcePort != null ? sourcePort : undefined,
+    const data = others as Edge.BaseOptions
+
+    if (source != null) {
+      if (source instanceof Cell) {
+        data.source = { cell: source.id }
+      } else if (typeof source === 'string') {
+        data.source = { cell: source }
+      } else if (source instanceof Point) {
+        data.source = source.toJSON()
+      } else if (Array.isArray(source)) {
+        data.source = { x: source[0], y: source[1] }
+      } else {
+        const cell = (source as Edge.TerminalCellLooseData).cell
+        if (cell instanceof Cell) {
+          data.source = {
+            ...source,
+            cell: cell.id,
+          }
+        } else {
+          data.source = source as Edge.TerminalCellData
+        }
+      }
+    }
+
+    if (sourceCell != null || sourcePort != null) {
+      let terminal = data.source as Edge.TerminalCellData
+      if (sourceCell != null) {
+        const id = typeof sourceCell === 'string' ? sourceCell : sourceCell.id
+        if (terminal) {
+          terminal.cell = id
+        } else {
+          terminal = data.source = { cell: id }
+        }
+      }
+
+      if (sourcePort != null && terminal) {
+        terminal.port = sourcePort
       }
     } else if (sourcePoint != null) {
-      others.source = Point.create(sourcePoint).toJSON()
+      data.source = Point.create(sourcePoint).toJSON()
     }
 
-    if (targetCell != null) {
-      others.target = {
-        cellId: typeof targetCell === 'string' ? targetCell : targetCell.id,
-        portId: targetPort != null ? targetPort : undefined,
+    if (target != null) {
+      if (target instanceof Cell) {
+        data.target = { cell: target.id }
+      } else if (typeof target === 'string') {
+        data.target = { cell: target }
+      } else if (target instanceof Point) {
+        data.target = target.toJSON()
+      } else if (Array.isArray(target)) {
+        data.target = { x: target[0], y: target[1] }
+      } else {
+        const cell = (target as Edge.TerminalCellLooseData).cell
+        if (cell instanceof Cell) {
+          data.target = {
+            ...target,
+            cell: cell.id,
+          }
+        } else {
+          data.target = target as Edge.TerminalCellData
+        }
+      }
+    }
+
+    if (targetCell != null || targetPort != null) {
+      let terminal = data.target as Edge.TerminalCellData
+
+      if (targetCell != null) {
+        const id = typeof targetCell === 'string' ? targetCell : targetCell.id
+        if (terminal) {
+          terminal.cell = id
+        } else {
+          terminal = data.target = { cell: id }
+        }
+      }
+
+      if (targetPort != null && terminal) {
+        terminal.port = targetPort
       }
     } else if (targetPoint != null) {
-      others.target = Point.create(targetPoint).toJSON()
+      data.target = Point.create(targetPoint).toJSON()
     }
 
-    return super.prepare(others)
+    return super.prepare(data)
   }
 
   protected setModel(model: Model | null) {
@@ -167,11 +234,11 @@ export class Edge<
   }
 
   getSourceCellId() {
-    return (this.source as Edge.TerminalCellData).cellId
+    return (this.source as Edge.TerminalCellData).cell
   }
 
   getSourcePortId() {
-    return (this.source as Edge.TerminalCellData).portId
+    return (this.source as Edge.TerminalCellData).port
   }
 
   setSource(
@@ -211,11 +278,11 @@ export class Edge<
   }
 
   getTargetCellId() {
-    return (this.target as Edge.TerminalCellData).cellId
+    return (this.target as Edge.TerminalCellData).cell
   }
 
   getTargetPortId() {
-    return (this.target as Edge.TerminalCellData).portId
+    return (this.target as Edge.TerminalCellData).port
   }
 
   setTarget(
@@ -256,7 +323,7 @@ export class Edge<
     if (terminal instanceof Cell) {
       this.store.set(
         type,
-        ObjectExt.merge({}, args, { cellId: terminal.id }),
+        ObjectExt.merge({}, args, { id: terminal.id }),
         options,
       )
       this.reference(type, terminal)
@@ -282,7 +349,7 @@ export class Edge<
       options,
     )
 
-    const cellId = (terminal as Edge.TerminalCellData).cellId
+    const cellId = (terminal as Edge.TerminalCellData).cell
     const cell = cellId && this.model ? this.model.getCell(cellId) : null
     this.reference(type, cell)
 
@@ -924,8 +991,8 @@ export class Edge<
   hasLoop(options: { deep?: boolean } = {}) {
     const source = this.getSource() as Edge.TerminalCellData
     const target = this.getTarget() as Edge.TerminalCellData
-    const sourceId = source.cellId
-    const targetId = target.cellId
+    const sourceId = source.cell
+    const targetId = target.cell
 
     if (!sourceId || !targetId) {
       return false
@@ -1000,8 +1067,29 @@ export namespace Edge {
     targetPoint?: Point | Point.PointLike | Point.PointData
   }
 
-  interface BaseOptions extends Common, Cell.Options {}
-  export interface Options extends BaseOptions, TerminalOptions {}
+  export interface BaseOptions extends Common, Cell.Options {}
+
+  export interface Options
+    extends Omit<BaseOptions, 'source' | 'target'>,
+      TerminalOptions {
+    source?:
+      | string
+      | Cell
+      | Point
+      | Point.PointLike
+      | Point.PointData
+      | TerminalPointData
+      | TerminalCellLooseData
+    target?:
+      | string
+      | Cell
+      | Point
+      | Point.PointLike
+      | Point.PointData
+      | TerminalPointData
+      | TerminalCellLooseData
+  }
+
   export interface Defaults extends Common, Cell.Defaults {}
   export interface Properties extends Cell.Properties, BaseOptions {}
   export interface Metadata extends Options, KeyValue {}
@@ -1020,21 +1108,26 @@ export namespace Edge {
   }
 
   export interface SetCellTerminalArgs extends SetTerminalCommonArgs {
-    portId?: string
+    port?: string
     anchor?: NodeAnchor.ManaualItem
   }
 
   export interface SetEdgeTerminalArgs extends SetTerminalCommonArgs {
-    anchor?: EdgeAnchor.ManaualItem
+    anchor?: EdgeAnchor.ManaualItem | EdgeAnchor.NativeItem
   }
 
   export interface TerminalPointData
     extends SetTerminalCommonArgs,
       Point.PointLike {}
 
-  export interface TerminalCellData extends SetTerminalCommonArgs {
-    cellId: string
-    portId?: string
+  export interface TerminalCellData extends SetCellTerminalArgs {
+    cell: string
+    port?: string
+  }
+
+  export interface TerminalCellLooseData extends SetCellTerminalArgs {
+    cell: string | Cell
+    port?: string
   }
 
   export type TerminalData = TerminalPointData | TerminalCellData
@@ -1042,8 +1135,8 @@ export namespace Edge {
   export function equalTerminals(a: TerminalData, b: TerminalData) {
     const a1 = a as TerminalCellData
     const b1 = b as TerminalCellData
-    if (a1.cellId === b1.cellId) {
-      return a1.portId === b1.portId || (a1.portId == null && b1.portId == null)
+    if (a1.cell === b1.cell) {
+      return a1.port === b1.port || (a1.port == null && b1.port == null)
     }
     return false
   }

@@ -4,7 +4,7 @@ import { ObjectExt } from '../../util'
 import { Easing, Interpolation } from '../animation'
 import { Cell } from './cell'
 
-export class Transition {
+export class Animation {
   protected readonly ids: { [path: string]: number } = {}
 
   constructor(protected readonly cell: Cell) {}
@@ -16,10 +16,10 @@ export class Transition {
   start<T extends string | number | KeyValue<number>>(
     path: string | string[],
     target: T,
-    options: Transition.Options = {},
+    options: Animation.Options = {},
     delim: string = '/',
   ) {
-    const localOptions: Transition.Options = {
+    const localOptions: Animation.Options = {
       delay: 10,
       duration: 100,
       easing: 'linear',
@@ -115,7 +115,7 @@ export class Transition {
   }
 }
 
-export namespace Transition {
+export namespace Animation {
   export interface Options extends KeyValue {
     delay?: number
     duration?: number

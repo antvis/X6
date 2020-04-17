@@ -12,7 +12,7 @@ import { Graph } from './graph'
 import { Markup } from './markup'
 import { PortData } from './port-data'
 import { CellView } from './cell-view'
-import { Transition } from './cell-transition'
+import { Animation } from './cell-animation'
 
 export class Cell<
   Properties extends Cell.Properties = Cell.Properties
@@ -72,7 +72,7 @@ export class Cell<
 
   public readonly id: string
   protected readonly store: Store<Cell.Properties>
-  protected readonly transition: Transition
+  protected readonly animation: Animation
   protected _model: Model | null // tslint:disable-line
   protected _parent: Cell | null // tslint:disable-line
   protected _children: Cell[] | null // tslint:disable-line
@@ -84,7 +84,7 @@ export class Cell<
     const props = this.prepare(options)
     this.id = options.id || StringExt.uuid()
     this.store = new Store(props)
-    this.transition = new Transition(this)
+    this.animation = new Animation(this)
     this.setup()
     this.init()
   }
@@ -951,23 +951,23 @@ export class Cell<
 
   // #region transition
 
-  startTransition<T extends string | number | KeyValue<number>>(
+  transition<T extends string | number | KeyValue<number>>(
     path: string | string[],
     target: T,
-    options: Transition.Options = {},
+    options: Animation.Options = {},
     delim: string = '/',
   ) {
-    this.transition.start(path, target, options, delim)
+    this.animation.start(path, target, options, delim)
     return this
   }
 
   stopTransition(path: string | string[], delim: string = '/') {
-    this.transition.stop(path, delim)
+    this.animation.stop(path, delim)
     return this
   }
 
   getTransitions() {
-    return this.transition.get()
+    return this.animation.get()
   }
 
   // #endregion
@@ -1349,7 +1349,7 @@ export namespace Cell {
           // Then update the source of the cloned edge.
           clone.setSource({
             ...clone.getSource(),
-            cellId: cloneMap[sourceId].id,
+            cell: cloneMap[sourceId].id,
           })
         }
         if (targetId && cloneMap[targetId]) {
@@ -1357,7 +1357,7 @@ export namespace Cell {
           // Then update the target of the cloned edge.
           clone.setTarget({
             ...clone.getTarget(),
-            cellId: cloneMap[targetId].id,
+            cell: cloneMap[targetId].id,
           })
         }
       }

@@ -501,7 +501,7 @@ export class Node<
       return center
     }
 
-    const portId = terminal.portId
+    const portId = terminal.port
     if (!portId || !this.hasPort(portId)) {
       return center
     }

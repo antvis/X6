@@ -18,7 +18,7 @@ export class CellViewAttr {
   }
 
   processAttrs(
-    node: Element,
+    elem: Element,
     raw: Attr.ComplexAttrs,
   ): CellViewAttr.ProcessedAttrs {
     let normal: Attr.SimpleAttrs | undefined
@@ -33,9 +33,10 @@ export class CellViewAttr {
     Object.keys(raw).forEach(name => {
       const val = raw[name]
       const definition = this.getAttrDefinition(name)
-      const isValid = Attr.isValidDefinition(definition, val, {
-        node,
+      const isValid = Attr.isValidDefinition.call(this.view, definition, val, {
+        elem,
         attrs: raw,
+        cell: this.cell,
         view: this.view,
       })
 
@@ -206,7 +207,7 @@ export class CellViewAttr {
   }
 
   updateRelativeAttrs(
-    node: Element,
+    elem: Element,
     processedAttrs: CellViewAttr.ProcessedAttrs,
     refBBox: Rectangle,
     options: CellViewAttr.UpdateAttrsOptions,
@@ -217,7 +218,8 @@ export class CellViewAttr {
     const positionAttrs = processedAttrs.position
     const offsetAttrs = processedAttrs.offset
     const getOptions = () => ({
-      node,
+      elem,
+      cell: this.cell,
       view: this.view,
       attrs: rawAttrs,
       refBBox: refBBox.clone(),
@@ -228,7 +230,11 @@ export class CellViewAttr {
         const val = setAttrs[name]
         const def = this.getAttrDefinition(name)
         if (def != null) {
-          const ret = (def as Attr.SetDefinition).set(val, getOptions())
+          const ret = (def as Attr.SetDefinition).set.call(
+            this.view,
+            val,
+            getOptions(),
+          )
           if (typeof ret === 'object') {
             nodeAttrs = {
               ...nodeAttrs,
@@ -241,11 +247,11 @@ export class CellViewAttr {
       })
     }
 
-    if (node instanceof HTMLElement) {
+    if (elem instanceof HTMLElement) {
       // TODO: setting the `transform` attribute on HTMLElements
       // via `node.style.transform = 'matrix(...)';` would introduce
       // a breaking change (e.g. basic.TextBlock).
-      this.view.setAttrs(nodeAttrs, node)
+      this.view.setAttrs(nodeAttrs, elem)
       return
     }
 
@@ -265,7 +271,7 @@ export class CellViewAttr {
     let sy = 1
     if (positionAttrs || offsetAttrs) {
       const scale = this.view.getNodeScale(
-        node,
+        elem,
         options.scalableNode as SVGElement,
       )
       sx = scale.sx
@@ -293,12 +299,12 @@ export class CellViewAttr {
 
     // The node bounding box could depend on the `size`
     // set from the previous loop.
-    this.view.setAttrs(nodeAttrs, node)
+    this.view.setAttrs(nodeAttrs, elem)
 
     let offseted = false
     if (offsetAttrs != null) {
       // Check if the node is visible
-      const nodeBoundingRect = this.view.getNodeBoundingRect(node)
+      const nodeBoundingRect = this.view.getNodeBoundingRect(elem)
       if (nodeBoundingRect.width > 0 && nodeBoundingRect.height > 0) {
         const nodeBBox = v
           .transformRect(nodeBoundingRect, nodeMatrix)
@@ -308,12 +314,17 @@ export class CellViewAttr {
           const val = offsetAttrs[name]
           const def = this.getAttrDefinition(name)
           if (def != null) {
-            const ts = (def as Attr.OffsetDefinition).offset(val, {
-              node,
-              view: this.view,
-              attrs: rawAttrs,
-              refBBox: nodeBBox,
-            })
+            const ts = (def as Attr.OffsetDefinition).offset.call(
+              this.view,
+              val,
+              {
+                elem,
+                cell: this.cell,
+                view: this.view,
+                attrs: rawAttrs,
+                refBBox: nodeBBox,
+              },
+            )
 
             if (ts != null) {
               offseted = true
@@ -328,7 +339,7 @@ export class CellViewAttr {
       nodePosition.round(1)
       nodeMatrix.e = nodePosition.x
       nodeMatrix.f = nodePosition.y
-      node.setAttribute('transform', v.matrixToTransformString(nodeMatrix))
+      elem.setAttribute('transform', v.matrixToTransformString(nodeMatrix))
     }
   }
 
