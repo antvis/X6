@@ -14,15 +14,19 @@ export class ConnectionManager extends BaseManager {
   ) {
     this.model.batchUpdate(() => {
       const previous = this.model.getTerminal(edge, isSource)
-      this.graph.trigger('cell:connecting', {
+      const result = this.graph.trigger('cell:connecting', {
         edge,
         terminal,
         isSource,
         anchor,
         previous,
       })
-
-      this.cellConnected(edge, terminal, isSource, anchor)
+      result &&
+        result.then(res => {
+          if (res) {
+            this.cellConnected(edge, terminal, isSource, anchor)
+          }
+        })
     })
     return edge
   }
