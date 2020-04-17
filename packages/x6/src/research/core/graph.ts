@@ -273,7 +273,10 @@ export class Graph extends View<Graph.EventArgs> {
     this.resize()
     this.setGrid(this.options.drawGrid)
     this.drawGrid()
-    this.drawBackground()
+
+    if (this.options.background) {
+      this.drawBackground(this.options.background as any)
+    }
 
     this.resetUpdates()
     this.setup()
@@ -2289,15 +2292,12 @@ export class Graph extends View<Graph.EventArgs> {
 
     let uri
     const opacity = options.opacity || 1
-    const quality = options.quality || 1
     const backgroundSize = options.size
     let backgroundRepeat = options.repeat || 'no-repeat'
-    const patternName = (options as Background.ManaualItem).pattern
-    const pattern = patternName
-      ? BackgroundRegistry.get(StringExt.camelCase(patternName))
-      : null
 
+    const pattern = BackgroundRegistry.get(backgroundRepeat)
     if (typeof pattern === 'function') {
+      const quality = (options as Background.ManaualItem).quality || 1
       img.width *= quality
       img.height *= quality
       const canvas = pattern(img, options)
@@ -2350,7 +2350,7 @@ export class Graph extends View<Graph.EventArgs> {
     this.$(this.container).css('backgroundColor', color || '')
   }
 
-  protected updateBackground(options: Graph.BackgroundOptions = {}) {
+  protected drawBackground(options: Graph.BackgroundOptions = {}) {
     this.updateBackgroundColor(options.color)
 
     if (options.image) {
@@ -2367,12 +2367,6 @@ export class Graph extends View<Graph.EventArgs> {
     }
 
     return this
-  }
-
-  drawBackground() {
-    if (this.options.background) {
-      this.updateBackground(this.options.background as any)
-    }
   }
 
   // #endregion

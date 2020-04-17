@@ -1,4 +1,4 @@
-import { FunctionKeys } from 'utility-types'
+import { FunctionKeys, ValuesType } from 'utility-types'
 import * as CSS from 'csstype'
 import * as patterns from './index-rollup'
 import { KeyValue } from '../../types'
@@ -17,11 +17,13 @@ export namespace Background {
     }>
     repeat?: CSS.BackgroundRepeatProperty
     opacity?: number
-    quality?: number
-    watermarkAngle?: number
   }
 
-  export type Definition<T extends Options = Options> = (
+  export interface CommonOptions extends Omit<Options, 'repeat'> {
+    quality?: number
+  }
+
+  export type Definition<T extends CommonOptions = CommonOptions> = (
     img: HTMLImageElement,
     options: T,
   ) => HTMLCanvasElement
@@ -38,19 +40,17 @@ export namespace Background {
   type ModuleType = typeof Background
 
   export type OptionsMap = {
-    [K in FunctionKeys<ModuleType>]: Parameters<ModuleType[K]>[1]
+    [K in FunctionKeys<ModuleType>]: Parameters<ModuleType[K]>[1] & {
+      repeat: K
+    }
   }
 
   export type NativeNames = keyof OptionsMap
 
-  export type NativeItem<
-    T extends NativeNames = NativeNames
-  > = OptionsMap[T] & {
-    pattern: T
-  }
+  export type NativeItem = ValuesType<OptionsMap>
 
-  export type ManaualItem = Options &
+  export type ManaualItem = CommonOptions &
     KeyValue & {
-      pattern: Exclude<string, NativeNames>
+      repeat: string
     }
 }
