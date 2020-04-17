@@ -173,16 +173,18 @@ export function toGeometryShape(elem: SVGElement | SVGSVGElement) {
     case 'ellipse':
       return new Ellipse(attr('cx'), attr('cy'), attr('rx'), attr('ry'))
 
-    case 'polyline':
-      let points = getPointsFromSvgElement(elem as SVGPolylineElement)
+    case 'polyline': {
+      const points = getPointsFromSvgElement(elem as SVGPolylineElement)
       return new Polyline(points)
+    }
 
-    case 'polygon':
-      points = getPointsFromSvgElement(elem as SVGPolygonElement)
+    case 'polygon': {
+      const points = getPointsFromSvgElement(elem as SVGPolygonElement)
       if (points.length > 1) {
         points.push(points[0])
       }
       return new Polyline(points)
+    }
 
     case 'path':
       let d = elem.getAttribute('d') as string
