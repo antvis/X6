@@ -53,10 +53,10 @@ export default class Example extends React.Component {
     ) => {
       return graph.addEdge({
         id,
+        source,
+        target,
         type: 'edge',
         name: id,
-        source: { cellId: source },
-        target: { cellId: target },
         vertices: vertices,
         labels: [
           {

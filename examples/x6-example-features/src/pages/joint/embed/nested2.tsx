@@ -54,13 +54,13 @@ export default class Example extends React.Component<
     this.parent = parent
     this.edge1 = graph.addEdge({
       type: 'edge',
-      source: { cellId: parent.id },
-      target: { cellId: child1.id },
+      source: parent,
+      target: child1,
     })
     this.edge2 = graph.addEdge({
       type: 'edge',
-      source: { cellId: parent.id },
-      target: { cellId: child2.id },
+      source: parent,
+      target: child2,
       vertices: [
         { x: 210, y: 75 },
         { x: 190, y: 105 },

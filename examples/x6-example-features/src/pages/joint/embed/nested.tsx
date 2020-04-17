@@ -40,8 +40,8 @@ export default class Example extends React.Component {
 
     graph
       .addEdge({
-        source: { cellId: r11.id },
-        target: { cellId: r12.id },
+        source: r11,
+        target: r12,
       })
       .addTo(r1)
 

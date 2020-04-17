@@ -108,8 +108,8 @@ export default class Example extends React.Component {
     r2.translate(300)
 
     graph.addEdge({
-      source: { cellId: r1.id },
-      target: { cellId: r2.id },
+      source: r1,
+      target: r1,
     })
 
     // Custom link interactions.
@@ -127,8 +127,8 @@ export default class Example extends React.Component {
       type: 'customEdge',
       view: 'customEdgeView',
       customLinkInteractions: true,
-      source: { cellId: r3.id },
-      target: { cellId: r4.id },
+      source: r1,
+      target: r4,
       attrs: {
         '.source-marker': { d: marker },
         '.target-marker': { d: marker },
@@ -147,8 +147,8 @@ export default class Example extends React.Component {
     r6.translate(300)
 
     graph.addEdge({
-      source: { cellId: r5.id },
-      target: { cellId: r6.id },
+      source: r5,
+      target: r6,
       attrs: {
         '.source-marker': { d: marker },
         '.target-marker': { d: marker },
@@ -166,8 +166,8 @@ export default class Example extends React.Component {
     r8.translate(300)
 
     graph.addEdge({
-      source: { cellId: r7.id },
-      target: { cellId: r8.id, selector: 'text' },
+      source: { cell: r7.id },
+      target: { cell: r8.id, selector: 'text' },
       attrs: {
         '.source-marker': { d: marker },
         '.target-marker': { d: marker },
@@ -185,8 +185,8 @@ export default class Example extends React.Component {
     r10.translate(300)
 
     graph.addEdge({
-      source: { cellId: r9.id },
-      target: { cellId: r10.id },
+      source: r9,
+      target: r10,
       vertices: [
         { x: 370, y: 470 },
         { x: 670, y: 470 },
@@ -209,8 +209,8 @@ export default class Example extends React.Component {
     r12.translate(300)
 
     graph.addEdge({
-      source: { cellId: r11.id },
-      target: { cellId: r12.id },
+      source: r11,
+      target: r12,
       vertices: [
         { x: 370, y: 600 },
         { x: 520, y: 640 },
@@ -252,8 +252,8 @@ export default class Example extends React.Component {
     r14.translate(300)
 
     const edge7 = new CustomEdge({
-      source: { cellId: r13.id },
-      target: { cellId: r14.id },
+      source: r13,
+      target: r14,
       attrs: {
         '.source-marker': { d: marker },
         '.target-marker': { d: marker },
@@ -372,8 +372,8 @@ export default class Example extends React.Component {
     r16.translate(300)
 
     graph.addEdge({
-      source: { cellId: r15.id },
-      target: { cellId: r16.id },
+      source: r15,
+      target: r16,
       attrs: {
         '.source-marker': { d: marker },
         '.target-marker': { d: marker },
@@ -405,14 +405,14 @@ export default class Example extends React.Component {
     r18.translate(200, 80)
 
     graph.addEdge({
-      source: { cellId: r17.id },
-      target: { cellId: r18.id },
+      source: r17,
+      target: r18,
       vertices: [{ x: 700, y: 990 }],
       router: { name: 'metro' },
     })
     graph.addEdge({
-      source: { cellId: r17.id },
-      target: { cellId: r18.id },
+      source: r17,
+      target: r18,
       vertices: [{ x: 450, y: 1015 }],
       router: { name: 'manhattan' },
       connector: { name: 'rounded' },
@@ -440,8 +440,8 @@ export default class Example extends React.Component {
     defs.appendChild(diamondMarker.node)
 
     graph.addEdge({
-      source: { cellId: r19.id },
-      target: { cellId: r20.id },
+      source: r19,
+      target: r20,
       vertices: [
         { x: 400, y: 1080 },
         { x: 600, y: 1080 },
@@ -454,8 +454,8 @@ export default class Example extends React.Component {
     })
 
     graph.addEdge({
-      source: { cellId: r19.id },
-      target: { cellId: r20.id },
+      source: r19,
+      target: r20,
       vertices: [
         { x: 400, y: 1190 },
         { x: 600, y: 1190 },
@@ -477,8 +477,8 @@ export default class Example extends React.Component {
     graph.addNode(r22)
     r22.translate(200, 0)
     graph.addEdge({
-      source: { cellId: r21.id },
-      target: { cellId: r22.id },
+      source: r21,
+      target: r22,
       router: { name: 'oneSide', args: { side: 'bottom' } },
     })
   }
