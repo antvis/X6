@@ -205,16 +205,12 @@ export class CreationManager extends BaseManager {
 
           // Sets the source terminal
           if (sourceNode != null) {
-            this.graph.connectionManager.cellConnected(
-              cells[i],
-              sourceNode,
-              true,
-            )
+            this.graph.connectionManager.connectCell(cells[i], sourceNode, true)
           }
 
           // Sets the target terminal
           if (targetNode != null) {
-            this.graph.connectionManager.cellConnected(
+            this.graph.connectionManager.connectCell(
               cells[i],
               targetNode,
               false,
