@@ -18,7 +18,7 @@ class TogglableRect extends Rect {
     const portId = (terminal as joint.Edge.TerminalCellData).portId
     if (portId && this.isNode()) {
       var expand = visible
-      var collapsedMap: { [poerId: string]: number } =
+      var collapsedMap: { [portId: string]: number } =
         this.prop('collapsed') || {}
 
       if (expand) {
@@ -53,7 +53,7 @@ class TogglableRect extends Rect {
   }
 
   isPortCollapsed(portId: string) {
-    var collapsedMap: { [poerId: string]: number } =
+    var collapsedMap: { [portId: string]: number } =
       this.prop('collapsed') || {}
     return collapsedMap[portId] > 0
   }
@@ -68,7 +68,7 @@ class TogglableRect extends Rect {
 
           if (
             source &&
-            this.id !== (source as joint.Edge.TerminalCellData).cellId
+            this.id !== (source as joint.Edge.TerminalCellData).id
           ) {
             result = {
               opposite: source,
@@ -78,7 +78,7 @@ class TogglableRect extends Rect {
 
           if (
             target &&
-            this.id !== (target as joint.Edge.TerminalCellData).cellId
+            this.id !== (target as joint.Edge.TerminalCellData).id
           ) {
             result = {
               opposite: target,
@@ -93,10 +93,10 @@ class TogglableRect extends Rect {
           const ret = resolve(edge as any)
           if (
             ret &&
-            (ret.current as joint.Edge.TerminalCellData).portId === portId &&
-            (ret.opposite as joint.Edge.TerminalCellData).cellId
+            (ret.current as joint.Edge.TerminalCellData).port === portId &&
+            (ret.opposite as joint.Edge.TerminalCellData).id
           ) {
-            const cellId = (ret.opposite as joint.Edge.TerminalCellData).cellId
+            const cellId = (ret.opposite as joint.Edge.TerminalCellData).id
             const cell = this.model!.getCell(cellId)
             cell && cell.show()
           }
@@ -306,8 +306,8 @@ export default class Example extends React.Component {
 
     graph.addEdge({
       type: 'edge',
-      source: { cellId: a.id, portId: 'out1' },
-      target: { cellId: aa.id, portId: 'in1' },
+      source: { cell: a.id, port: 'out1' },
+      target: { cell: aa.id, port: 'in1' },
     })
 
     graph.addEdge({

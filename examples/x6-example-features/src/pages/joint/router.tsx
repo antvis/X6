@@ -60,8 +60,8 @@ export default class Example extends React.Component<
     graph.addNode(target)
 
     this.edge = graph.addEdge({
-      source: { cellId: source.id },
-      target: { cellId: target.id },
+      source,
+      target,
       router: { name: this.state.router },
       connector: { name: this.state.connector },
       attrs: {
