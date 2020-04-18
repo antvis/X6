@@ -1693,8 +1693,10 @@ export class EdgeHandler extends MouseHandler {
 
   @MouseHandler.dispose()
   dispose() {
-    this.state.view.graph.off('escape', this.escapeHandler)
-    this.escapeHandler = null
+    if (this.escapeHandler != null) {
+      this.state.view.graph.off('escape', this.escapeHandler)
+      this.escapeHandler = null
+    }
 
     this.marker.dispose()
     this.anchorHandler.dispose()
