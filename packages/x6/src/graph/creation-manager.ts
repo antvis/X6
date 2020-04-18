@@ -113,13 +113,22 @@ export class CreationManager extends BaseManager {
         source,
         target,
       })
+
+      const add = () =>
+        this.cellsAdded(cells, parent, index, source, target, false, true)
+
       // user can control if the cells should be added
-      result &&
+      if (typeof result === 'boolean') {
+        if (result) {
+          add()
+        }
+      } else {
         result.then(res => {
           if (res) {
-            this.cellsAdded(cells, parent, index, source, target, false, true)
+            add()
           }
         })
+      }
     })
 
     return cells
@@ -318,12 +327,18 @@ export class CreationManager extends BaseManager {
         cells: removing,
       })
       // user can control if the cells should be removed
-      result &&
+      const remove = () => this.cellsRemoved(removing)
+      if (typeof result === 'boolean') {
+        if (result) {
+          remove()
+        }
+      } else {
         result.then(res => {
           if (res) {
-            this.cellsRemoved(removing)
+            remove()
           }
         })
+      }
     })
 
     return removing

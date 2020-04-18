@@ -234,13 +234,20 @@ export class MovingHandler extends MouseHandler {
   dispose() {
     this.graph.removeHandler(this)
 
-    this.graph.off('pan', this.onPan)
-    this.graph.off('escape', this.onEscape)
-    this.graph.model.off('change', this.onRefresh)
+    if (this.onPan) {
+      this.graph.off('pan', this.onPan)
+      this.onPan = null
+    }
 
-    this.onPan = null
-    this.onEscape = null
-    this.onRefresh = null
+    if (this.onEscape) {
+      this.graph.off('escape', this.onEscape)
+      this.onEscape = null
+    }
+
+    if (this.onRefresh) {
+      this.graph.model.off('change', this.onRefresh)
+      this.onRefresh = null
+    }
 
     this.preview.dispose()
   }

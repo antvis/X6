@@ -151,9 +151,11 @@ export class SelectionHandler extends MouseHandler {
   @MouseHandler.dispose()
   dispose() {
     this.graph.removeHandler(this)
-    this.graph.off(null, this.refreshHandler)
-    this.graph.view.off(null, this.refreshHandler)
-    this.graph.model.off(null, this.refreshHandler)
-    this.refreshHandler = null
+    if (this.refreshHandler != null) {
+      this.graph.off(null, this.refreshHandler)
+      this.graph.view.off(null, this.refreshHandler)
+      this.graph.model.off(null, this.refreshHandler)
+      this.refreshHandler = null
+    }
   }
 }

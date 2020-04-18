@@ -21,13 +21,20 @@ export class ConnectionManager extends BaseManager {
         anchor,
         previous,
       })
-      result &&
+      const connect = () => this.cellConnected(edge, terminal, isSource, anchor)
+      if (typeof result === 'boolean') {
+        if (result) {
+          connect()
+        }
+      } else {
         result.then(res => {
           if (res) {
-            this.cellConnected(edge, terminal, isSource, anchor)
+            connect()
           }
         })
+      }
     })
+
     return edge
   }
 

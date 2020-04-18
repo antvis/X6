@@ -6,12 +6,22 @@ import {
 } from 'utility-types'
 import { FunctionExt } from '../util'
 
-export class Events<M extends Events.EventArgs = any> {
+export class Events<NameArgsMap extends Events.NameArgsMap = any> {
   private listeners: { [name: string]: any[] } = {}
 
-  on<N extends Events.EventKeys<M>>(
-    name: N,
-    handler: Events.Handler<M[N]>,
+  on<Name extends Events.EventNames<NameArgsMap>>(
+    name: Name,
+    handler: Events.Handler<NameArgsMap[Name]>,
+    context?: any,
+  ): this
+  on<Name extends Events.UnknownNames<NameArgsMap>>(
+    name: Name,
+    handler: Events.Handler<any>,
+    context?: any,
+  ): this
+  on<Name extends Events.EventNames<NameArgsMap>>(
+    name: Name,
+    handler: Events.Handler<NameArgsMap[Name]>,
     context?: any,
   ) {
     if (handler == null) {
@@ -27,9 +37,19 @@ export class Events<M extends Events.EventArgs = any> {
     return this
   }
 
-  once<N extends Events.EventKeys<M>>(
-    name: N,
-    handler: Events.Handler<M[N]>,
+  once<Name extends Events.EventNames<NameArgsMap>>(
+    name: Name,
+    handler: Events.Handler<NameArgsMap[Name]>,
+    context?: any,
+  ): this
+  once<Name extends Events.UnknownNames<NameArgsMap>>(
+    name: Name,
+    handler: Events.Handler<any>,
+    context?: any,
+  ): this
+  once<Name extends Events.EventNames<NameArgsMap>>(
+    name: Name,
+    handler: Events.Handler<NameArgsMap[Name]>,
     context?: any,
   ) {
     const cb = (...args: any) => {
@@ -40,9 +60,32 @@ export class Events<M extends Events.EventArgs = any> {
     return this.on(name, cb as any, this)
   }
 
-  off<N extends Events.EventKeys<M>>(
-    name?: N | null,
-    handler?: Events.Handler<M[N]> | null,
+  off(): this
+  off(name: null, handler: Events.Handler<any>): this
+  off(name: null, handler: null, context: any): this
+  off<Name extends Events.EventNames<NameArgsMap>>(name: Name): this
+  off<Name extends Events.EventNames<NameArgsMap>>(
+    name: Name,
+    handler: Events.Handler<NameArgsMap[Name]>,
+  ): this
+  off<Name extends Events.EventNames<NameArgsMap>>(
+    name: Name,
+    handler: Events.Handler<NameArgsMap[Name]>,
+    context: any,
+  ): this
+  off<Name extends Events.UnknownNames<NameArgsMap>>(name: Name): this
+  off<Name extends Events.UnknownNames<NameArgsMap>>(
+    name: Name,
+    handler: Events.Handler<any>,
+  ): this
+  off<Name extends Events.UnknownNames<NameArgsMap>>(
+    name: Name,
+    handler: Events.Handler<any>,
+    context: any,
+  ): this
+  off(
+    name?: string | null,
+    handler?: Events.Handler<any> | null,
     context?: any,
   ) {
     // remove all events.
@@ -81,21 +124,33 @@ export class Events<M extends Events.EventArgs = any> {
     return this
   }
 
-  trigger<N extends Events.OptionalNormalKeys<M>>(name: N): Promise<boolean>
-  trigger<N extends Events.RequiredNormalKeys<M>>(
-    name: N,
-    args: M[N],
-  ): Promise<boolean>
-  trigger<N extends Events.KeysWithArrayValue<M>>(
-    name: N,
-    ...args: M[N]
-  ): Promise<boolean>
-  trigger<N extends Events.OtherKeys<M>>(name: N, args?: M[N]): Promise<boolean>
-  trigger<N extends Events.OtherKeys<M>>(
-    name: N,
-    ...args: M[N]
-  ): Promise<boolean>
-  trigger<N extends Events.EventKeys<M>>(name: N, ...args: M[N]) {
+  trigger<Name extends Events.OptionalNormalNames<NameArgsMap>>(
+    name: Name,
+  ): Events.TriggerResult
+  trigger<Name extends Events.RequiredNormalNames<NameArgsMap>>(
+    name: Name,
+    args: NameArgsMap[Name],
+  ): Events.TriggerResult
+  trigger<Name extends Events.NamesWithArrayArgs<NameArgsMap>>(
+    name: Name,
+    ...args: NameArgsMap[Name]
+  ): Events.TriggerResult
+  trigger<Name extends Events.OtherNames<NameArgsMap>>(
+    name: Name,
+    args?: NameArgsMap[Name],
+  ): Events.TriggerResult
+  trigger<Name extends Events.OtherNames<NameArgsMap>>(
+    name: Name,
+    ...args: NameArgsMap[Name]
+  ): Events.TriggerResult
+  trigger<Name extends Events.UnknownNames<NameArgsMap>>(
+    name: Name,
+    ...args: any[]
+  ): Events.TriggerResult
+  trigger<Name extends Events.EventNames<NameArgsMap>>(
+    name: Name,
+    ...args: NameArgsMap[Name]
+  ) {
     const cache = this.listeners[name]
     if (cache != null) {
       return Private.call(cache, args)
@@ -105,50 +160,75 @@ export class Events<M extends Events.EventArgs = any> {
 }
 
 export namespace Events {
-  export type Handler<A> = A extends null | undefined
+  export type Handler<Args> = Args extends null | undefined
     ? () => any
-    : A extends any[]
-    ? (...args: A) => any
-    : (args: A) => any
+    : Args extends any[]
+    ? (...args: Args) => any
+    : (args: Args) => any
 
-  export type EventArgs = { [key: string]: any }
-  export type EventKeys<M extends EventArgs> = Extract<keyof M, string>
+  export type TriggerResult = boolean | Promise<boolean>
+
+  export type NameArgsMap = { [key: string]: any }
+
+  export type EventNames<M extends NameArgsMap> = Extract<keyof M, string>
 
   /**
    * Get union type of keys from `M` that value matching `any[]`.
    */
-  export type KeysWithArrayValue<M extends EventArgs> = RequiredKeys<
+  export type NamesWithArrayArgs<M extends NameArgsMap> = RequiredKeys<
     PickByValue<M, any[]>
   >
 
-  export type NotArrayValueMap<M extends EventArgs> = OmitByValue<M, any[]>
+  export type NotArrayValueMap<M extends NameArgsMap> = OmitByValue<M, any[]>
 
-  export type OptionalNormalKeys<M extends EventArgs> = OptionalKeys<
+  export type OptionalNormalNames<M extends NameArgsMap> = OptionalKeys<
     NotArrayValueMap<M>
   >
 
-  export type RequiredNormalKeys<M extends EventArgs> = RequiredKeys<
+  export type RequiredNormalNames<M extends NameArgsMap> = RequiredKeys<
     NotArrayValueMap<M>
   >
 
-  export type OtherKeys<M extends EventArgs> = EventKeys<
+  export type OtherNames<M extends NameArgsMap> = EventNames<
     PickByValue<M, undefined>
+  >
+
+  export type UnknownNames<M extends NameArgsMap> = Exclude<
+    string,
+    EventNames<M>
   >
 }
 
 namespace Private {
-  export function call<A>(list: any[], args?: A) {
-    const deferres = []
+  function isAsync(obj: any) {
+    return obj != null && (obj instanceof Promise || isAsyncLink(obj))
+  }
+
+  function isAsyncLink(obj: any) {
+    return typeof obj === 'object' && obj.then && typeof obj.then === 'function'
+  }
+
+  export function call<Args>(list: any[], args?: Args) {
+    const results: any[] = []
     for (let i = 0, l = list.length; i < l; i += 2) {
       const handler = list[i]
       const context = list[i + 1]
       const params = Array.isArray(args) ? args : [args]
-      const ret = FunctionExt.invoke(handler, params, context)
-      const deferred = ret instanceof Promise ? ret : Promise.resolve(ret)
-      deferres.push(deferred)
+      const ret = FunctionExt.invoke<any>(handler, params, context)
+      results.push(ret)
     }
-    return Promise.all(deferres).then(arr => {
-      return arr.reduce((memo, item) => item !== false && memo, true)
-    })
+
+    const hasAsync = results.some(res => isAsync(res))
+    if (hasAsync) {
+      const deferres = results.map(res =>
+        isAsync(res) ? res : Promise.resolve(res !== false),
+      )
+
+      return Promise.all(deferres).then(arr =>
+        arr.reduce<boolean>((memo, item) => item !== false && memo, true),
+      )
+    }
+
+    return results.every(res => res !== false)
   }
 }
