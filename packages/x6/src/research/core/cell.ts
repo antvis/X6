@@ -10,9 +10,9 @@ import { Edge } from './edge'
 import { Model } from './model'
 import { Graph } from './graph'
 import { Markup } from './markup'
-import { PortData } from './port-data'
+import { PortData } from './port'
 import { CellView } from './cell-view'
-import { Animation } from './cell-animation'
+import { Animation } from './animation'
 
 export class Cell<
   Properties extends Cell.Properties = Cell.Properties
