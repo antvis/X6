@@ -112,7 +112,10 @@ export class CellView<
     this.$(this.container).data('view', this)
 
     CellView.views[this.cid] = this
+    this.init()
   }
+
+  protected init() {}
 
   public get priority() {
     return this.options.priority

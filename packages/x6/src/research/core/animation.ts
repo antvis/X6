@@ -1,7 +1,7 @@
 import { v } from '../../v'
 import { KeyValue } from '../../types'
 import { ObjectExt } from '../../util'
-import { Easing, Interpolation } from '../animation'
+import { Timing, Interpolation } from '../animation'
 import { Cell } from './cell'
 
 export class Animation {
@@ -22,23 +22,27 @@ export class Animation {
     const localOptions: Animation.Options = {
       delay: 10,
       duration: 100,
-      easing: 'linear',
+      timing: 'linear',
       ...options,
     }
 
-    let easing = Easing.linear
-    if (localOptions.easing != null) {
-      if (typeof localOptions.easing === 'string') {
-        easing = Easing[localOptions.easing]
+    let timing = Timing.linear
+    if (localOptions.timing != null) {
+      if (typeof localOptions.timing === 'string') {
+        timing = Timing[localOptions.timing]
       } else {
-        easing = localOptions.easing
+        timing = localOptions.timing
       }
     }
 
     const current = this.cell.getPropByPath<T>(path)
+    const interpolation = localOptions.interpolation
 
     let interpolate: any
-    if (typeof target === 'object') {
+
+    if (interpolation) {
+      interpolate = interpolation(current, target)
+    } else if (typeof target === 'object') {
       interpolate = Interpolation.object(
         current as KeyValue<number>,
         target as KeyValue<number>,
@@ -74,7 +78,7 @@ export class Animation {
         delete this.ids[pathStr]
       }
 
-      val = interpolate(easing(progress))
+      val = interpolate(timing(progress))
       options.transitionId = id
 
       this.cell.setPropByPath(
@@ -119,6 +123,7 @@ export namespace Animation {
   export interface Options extends KeyValue {
     delay?: number
     duration?: number
-    easing?: Easing.Names | Easing.Definition
+    timing?: Timing.Names | Timing.Definition
+    interpolation?: <T>(from: T, to: T) => (time: number) => T
   }
 }

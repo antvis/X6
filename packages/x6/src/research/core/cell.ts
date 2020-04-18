@@ -919,8 +919,10 @@ export class Cell<
         }
         if (this.model) {
           this.model.removeCell(this, { ...options, dryrun: true })
+          // 'removed' event was triggered in collection
+        } else {
+          this.notify('removed', { options, cell: this })
         }
-        this.notify('removed', { options, cell: this })
       })
     }
   }
@@ -929,14 +931,25 @@ export class Cell<
 
   // #region transition
 
-  transition<T extends string | number | KeyValue<number>>(
+  transition<K extends keyof Properties>(
+    path: K,
+    target: Properties[K],
+    options?: Animation.Options,
+    delim?: string,
+  ): number
+  transition<T extends string | number | KeyValue>(
+    path: string | string[],
+    target: T,
+    options?: Animation.Options,
+    delim?: string,
+  ): number
+  transition<T extends string | number | KeyValue>(
     path: string | string[],
     target: T,
     options: Animation.Options = {},
     delim: string = '/',
   ) {
-    this.animation.start(path, target, options, delim)
-    return this
+    return this.animation.start(path, target, options, delim)
   }
 
   stopTransition(path: string | string[], delim: string = '/') {
@@ -1181,13 +1194,13 @@ export namespace Cell {
     'change:view': ChangeArgs<ViewType>
 
     // node
-    'change:size': ChangeArgs<Size>
-    'change:position': ChangeArgs<Point.PointLike>
-    'change:rotation': ChangeArgs<number>
-    'change:ports': ChangeArgs<PortData.Port[]>
-    'change:portMarkup': ChangeArgs<Markup>
-    'change:portLabelMarkup': ChangeArgs<Markup>
-    'change:portContainerMarkup': ChangeArgs<Markup>
+    'change:size': NodeChangeArgs<Size>
+    'change:position': NodeChangeArgs<Point.PointLike>
+    'change:rotation': NodeChangeArgs<number>
+    'change:ports': NodeChangeArgs<PortData.Port[]>
+    'change:portMarkup': NodeChangeArgs<Markup>
+    'change:portLabelMarkup': NodeChangeArgs<Markup>
+    'change:portContainerMarkup': NodeChangeArgs<Markup>
     'ports:removed': {
       cell: Cell
       node: Node
@@ -1200,18 +1213,18 @@ export namespace Cell {
     }
 
     // edge
-    'change:source': ChangeArgs<Edge.TerminalData>
-    'change:target': ChangeArgs<Edge.TerminalData>
-    'change:router': ChangeArgs<Edge.RouterData>
-    'change:connector': ChangeArgs<Edge.ConnectorData>
-    'change:vertices': ChangeArgs<Point.PointLike[]>
-    'change:labels': ChangeArgs<Edge.Label[]>
-    'change:defaultLabel': ChangeArgs<Edge.Label>
-    'change:labelMarkup': ChangeArgs<Markup>
-    'change:toolMarkup': ChangeArgs<Markup>
-    'change:doubleToolMarkup': ChangeArgs<Markup>
-    'change:vertexMarkup': ChangeArgs<Markup>
-    'change:arrowheadMarkup': ChangeArgs<Markup>
+    'change:source': EdgeChangeArgs<Edge.TerminalData>
+    'change:target': EdgeChangeArgs<Edge.TerminalData>
+    'change:router': EdgeChangeArgs<Edge.RouterData>
+    'change:connector': EdgeChangeArgs<Edge.ConnectorData>
+    'change:vertices': EdgeChangeArgs<Point.PointLike[]>
+    'change:labels': EdgeChangeArgs<Edge.Label[]>
+    'change:defaultLabel': EdgeChangeArgs<Edge.Label>
+    'change:labelMarkup': EdgeChangeArgs<Markup>
+    'change:toolMarkup': EdgeChangeArgs<Markup>
+    'change:doubleToolMarkup': EdgeChangeArgs<Markup>
+    'change:vertexMarkup': EdgeChangeArgs<Markup>
+    'change:arrowheadMarkup': EdgeChangeArgs<Markup>
     'vertexs:added': {
       cell: Cell
       edge: Edge
@@ -1253,6 +1266,14 @@ export namespace Cell {
     current?: T
     previous?: T
     options: MutateOptions
+  }
+
+  interface NodeChangeArgs<T> extends ChangeArgs<T> {
+    node: Node
+  }
+
+  interface EdgeChangeArgs<T> extends ChangeArgs<T> {
+    edge: Edge
   }
 
   export interface TransitionArgs {
