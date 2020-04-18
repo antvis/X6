@@ -10,7 +10,7 @@ import { CellView } from './cell-view'
 import { EdgeView } from './edge-view'
 import { Markup } from './markup'
 import { Globals } from './globals'
-import { PortData } from './port-data'
+import { PortData } from './port'
 import { CellViewAttr } from './cell-view-attr'
 import { snapToGrid } from '../../geometry/util'
 
