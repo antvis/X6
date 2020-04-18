@@ -3,10 +3,8 @@ import { CellView } from '../core'
 import { NodeView } from '../core/node-view'
 import { EdgeView } from '../core/edge-view'
 
-export const ViewRegistry = new Registry<ViewRegistry.ViewClass>({
-  onError(name) {
-    throw new Error(`View with name "${name}" already registered.`)
-  },
+export const ViewRegistry = Registry.create<ViewRegistry.ViewClass>({
+  type: 'view',
 })
 
 export namespace ViewRegistry {

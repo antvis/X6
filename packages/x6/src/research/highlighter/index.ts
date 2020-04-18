@@ -1,12 +1,9 @@
-import { RequiredKeys } from 'utility-types'
 import { KeyValue } from '../../types'
 import { CellView } from '../core'
 import * as highlighters from './index-rollup'
 
 export namespace Highlighter {
-  export const className = highlighters.className
-  export const opacity = highlighters.opacity
-  export const stroke = highlighters.stroke
+  export const presets = highlighters
 }
 
 export namespace Highlighter {
@@ -14,16 +11,37 @@ export namespace Highlighter {
     highlight: (cellView: CellView, magnet: Element, options: T) => void
     unhighlight: (cellView: CellView, magnet: Element, options: T) => void
   }
+
+  export type CommonDefinition = Highlighter.Definition<KeyValue>
 }
 
 export namespace Highlighter {
-  type ModuleType = typeof Highlighter
+  export function check(
+    name: string,
+    highlighter: Highlighter.CommonDefinition,
+  ) {
+    if (typeof highlighter.highlight !== 'function') {
+      throw new Error(
+        `Highlighter '${name}' is missing required \`highlight()\` method`,
+      )
+    }
+
+    if (typeof highlighter.unhighlight !== 'function') {
+      throw new Error(
+        `Highlighter '${name}' is missing required \`unhighlight()\` method`,
+      )
+    }
+  }
+}
+
+export namespace Highlighter {
+  export type Presets = typeof Highlighter['presets']
 
   export type OptionsMap = {
-    [K in RequiredKeys<ModuleType>]: Parameters<ModuleType[K]['highlight']>[2]
+    readonly [K in keyof Presets]-?: Parameters<Presets[K]['highlight']>[2]
   }
 
-  export type NativeNames = keyof OptionsMap
+  export type NativeNames = keyof Presets
 
   export interface NativeItem<T extends NativeNames = NativeNames> {
     name: T

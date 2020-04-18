@@ -791,7 +791,9 @@ export class EdgeView<
         ? EdgeAnchorRegistry.get(name)
         : NodeAnchorRegistry.get(name)
       if (typeof anchorFn !== 'function') {
-        throw new Error(`Invalid anchor: "${name}"`)
+        return isEdge
+          ? EdgeAnchorRegistry.notExistError(name)
+          : NodeAnchorRegistry.notExistError(name)
       }
     }
 
@@ -809,7 +811,8 @@ export class EdgeView<
   }
 
   protected findRoutePoints(vertices: Point.PointLike[] = []) {
-    const defaultRouter = this.graph.options.defaultRouter || Router.normal
+    const defaultRouter =
+      this.graph.options.defaultRouter || Router.presets.normal
     const router: Edge.RouterData = this.cell.getRouter() || defaultRouter
     let routePoints
 
@@ -819,9 +822,9 @@ export class EdgeView<
       const name = router.name
       const args = router.args || {}
 
-      const fn = name ? RouterRegistry.get(name) : Router.normal
+      const fn = name ? RouterRegistry.get(name) : Router.presets.normal
       if (typeof fn !== 'function') {
-        throw new Error(`Invalid router: "${name}"`)
+        return RouterRegistry.notExistError(name!)
       }
 
       routePoints = fn.call(this, vertices, args, this)
@@ -926,7 +929,7 @@ export class EdgeView<
       const name = connectionPointDef.name
       connectionPointFn = ConnectionPointRegistry.get(name)
       if (typeof connectionPointFn !== 'function') {
-        throw new Error(`Invalid connection point: ${name}`)
+        return ConnectionPointRegistry.notExistError(name)
       }
     }
 
@@ -1007,17 +1010,17 @@ export class EdgeView<
     const def: Edge.ConnectorData =
       this.cell.getConnector() ||
       this.graph.options.defaultConnector ||
-      Connector.normal
+      Connector.presets.normal
 
     const fn =
       typeof def === 'function'
         ? def
         : def.name
         ? ConnectorRegistry.get(def.name)
-        : Connector.normal
+        : Connector.presets.normal
 
     if (typeof fn !== 'function') {
-      throw new Error(`Invalid connector: "${def.name}"`)
+      return ConnectorRegistry.notExistError(def.name!)
     }
 
     const args = typeof def === 'function' ? {} : def.args || {}

@@ -114,8 +114,13 @@ export namespace Attr {
 }
 
 export namespace Attr {
-  export const definitions: Definitions = {
+  export const presets: Definitions = {
     ...raw,
     ...attrs,
   }
+}
+
+export namespace Attr {
+  export type Presets = typeof Attr['presets']
+  export type NativeNames = keyof Presets
 }

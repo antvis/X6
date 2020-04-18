@@ -33,5 +33,5 @@ export function highlight(args: HighlightArgs = {}) {
         <feGaussianBlur result="blured" in="composed" stdDeviation="${blur}"/>
         <feBlend in="SourceGraphic" in2="blured" mode="normal"/>
       </filter>
-    `.trim
+    `.trim()
 }

@@ -41,11 +41,11 @@ export class PortData {
     if (groupPositionName != null) {
       const fn = PortLayoutRegistry.get(groupPositionName)
       if (fn == null) {
-        throw new Error(`Unknown port layout: "${groupPositionName}"`)
+        return PortLayoutRegistry.notExistError(groupPositionName)
       }
       layoutFn = fn
     } else {
-      layoutFn = PortLayout.left
+      layoutFn = PortLayout.presets.left
     }
 
     const portsArgs = ports.map(
@@ -199,7 +199,8 @@ export class PortData {
   ) {
     const name = port.label.position.name || 'left'
     const args = port.label.position.args || {}
-    const layoutFn = PortLabelLayoutRegistry.get(name) || PortLabelLayout.left
+    const layoutFn =
+      PortLabelLayoutRegistry.get(name) || PortLabelLayout.presets.left
     if (layoutFn) {
       return layoutFn(portPosition, elemBBox, args)
     }

@@ -1,2 +1,2 @@
-export * from './node-anchor'
-export * from './edge-anchor'
+export * from './node'
+export * from './edge'

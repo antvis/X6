@@ -553,7 +553,7 @@ export class Graph extends View<Graph.EventArgs> {
       return new define(options)
     }
 
-    throw new Error(`Unknow node type: "${name}"`)
+    return NodeRegistry.notExistError(name)
   }
 
   addEdge(edge: Edge.Metadata): Edge
@@ -570,7 +570,7 @@ export class Graph extends View<Graph.EventArgs> {
     if (type) {
       define = EdgeRegistry.get(type)
       if (define == null) {
-        throw new Error(`Unknow edge type: "${type}"`)
+        return EdgeRegistry.notExistError(type)
       }
     } else {
       define = Edge
@@ -1288,9 +1288,10 @@ export class Graph extends View<Graph.EventArgs> {
         if (def) {
           return new def(cell, options)
         }
-        throw new Error(
-          `Unknown ${cell.isNode() ? 'node' : 'edge'} view: "${view}"`,
-        )
+
+        return cell.isNode()
+          ? NodeRegistry.notExistError(view)
+          : EdgeRegistry.notExistError(view)
       }
 
       return new view(cell, options)
@@ -2132,7 +2133,7 @@ export class Graph extends View<Graph.EventArgs> {
       | Grid.Options[]
       | Grid.NativeItem
       | Grid.ManaualItem,
-  ): Grid.Definition[] {
+  ): Grid.Definition[] | never {
     if (!patterns) {
       return []
     }
@@ -2145,11 +2146,11 @@ export class Graph extends View<Graph.EventArgs> {
           : [{ ...items }]
       }
 
-      throw new Error(`Unknown grid "${patterns}"`)
+      return GridRegistry.notExistError(patterns)
     }
 
     if (patterns === true) {
-      return [{ ...Grid.dot }]
+      return [{ ...Grid.presets.dot }]
     }
 
     const name = (patterns as Grid.NativeItem).name
@@ -2159,7 +2160,7 @@ export class Graph extends View<Graph.EventArgs> {
         : patterns) as Grid.Options
       return [
         {
-          ...Grid.dot,
+          ...Grid.presets.dot,
           ...options,
         },
       ]
@@ -2174,7 +2175,7 @@ export class Graph extends View<Graph.EventArgs> {
         : [{ ...items, ...params[0] }]
     }
 
-    throw new Error(`Unknown grid "${name}"`)
+    return GridRegistry.notExistError(name)
   }
 
   protected updateGrid(
@@ -2527,20 +2528,10 @@ export class Graph extends View<Graph.EventArgs> {
     const name = def.name
     const highlighter = HighlighterRegistry.get(name)
     if (highlighter == null) {
-      throw new Error(`Unknown highlighter: "${name}"`)
+      return HighlighterRegistry.notExistError(name)
     }
 
-    if (typeof highlighter.highlight !== 'function') {
-      throw new Error(
-        `Highlighter "${name}" is missing required \`highlight()\` method`,
-      )
-    }
-
-    if (typeof highlighter.unhighlight !== 'function') {
-      throw new Error(
-        `Highlighter "${name}" is missing required \`unhighlight()\` method`,
-      )
-    }
+    Highlighter.check(name, highlighter)
 
     return {
       name,

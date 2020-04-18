@@ -75,7 +75,7 @@ export const TextBlock = NodeRegistry.register('text-block', {
             style,
           )
 
-          const textWrap = Attr.definitions.textWrap as Attr.SetDefinition
+          const textWrap = Attr.presets.textWrap as Attr.SetDefinition
           textWrap.set.call(this, wrapValue, {
             elem,
             refBBox,

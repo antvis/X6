@@ -1,21 +1,11 @@
-import { KeyValue } from '../../types'
 import { ConnectionPoint } from '../connection-point'
 import { Registry } from './registry'
 
-export const ConnectionPointRegistry = new Registry<
-  ConnectionPoint.Definition<KeyValue>,
-  never,
-  typeof ConnectionPoint
+export const ConnectionPointRegistry = Registry.create<
+  ConnectionPoint.CommonDefinition,
+  ConnectionPoint.Presets
 >({
-  onError(name) {
-    throw new Error(`Connection point with name '${name}' already registered.`)
-  },
+  type: 'connection point',
 })
 
-Object.keys(ConnectionPoint).forEach(key => {
-  const name = key as ConnectionPoint.NativeNames
-  const fn = ConnectionPoint[name]
-  if (typeof fn === 'function') {
-    ConnectionPointRegistry.register(name, fn, true)
-  }
-})
+ConnectionPointRegistry.register(ConnectionPoint.presets, true)
