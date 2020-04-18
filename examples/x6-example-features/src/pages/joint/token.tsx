@@ -84,6 +84,8 @@ export default class Example extends React.Component {
         edges.forEach(edge => graph.trigger('signal', edge))
       }
     })
+
+    graph.trigger('signal', a)
   }
 
   refContainer = (container: HTMLDivElement) => {
