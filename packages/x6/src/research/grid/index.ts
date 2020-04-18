@@ -65,16 +65,18 @@ export namespace Grid {
   }
 
   export type Definition<T extends Options = Options> = T & BaseDefinition<T>
+  export type CommonDefinition =
+    | Definition<Grid.Options>
+    | Definition<Grid.Options>[]
 }
 
 export namespace Grid {
-  export const dot = patterns.dot
-  export const fixedDot = patterns.fixedDot
-  export const mesh = patterns.mesh
-  export const doubleMesh = patterns.doubleMesh
+  export const presets = patterns
 }
 
 export namespace Grid {
+  export type Presets = typeof Grid['presets']
+
   export type OptionsMap = {
     dot: patterns.DotOptions
     fixedDot: patterns.FixedDotOptions
@@ -82,7 +84,7 @@ export namespace Grid {
     doubleMesh: patterns.DoubleMeshOptions[]
   }
 
-  export type NativeNames = keyof OptionsMap
+  export type NativeNames = keyof Presets
 
   export interface NativeItem<T extends NativeNames = NativeNames> {
     name: T

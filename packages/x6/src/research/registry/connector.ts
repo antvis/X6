@@ -1,20 +1,11 @@
 import { Connector } from '../connector'
 import { Registry } from './registry'
 
-export const ConnectorRegistry = new Registry<
+export const ConnectorRegistry = Registry.create<
   Connector.Definition,
-  never,
-  typeof Connector
+  Connector.Presets
 >({
-  onError(name) {
-    throw new Error(`Connector with name '${name}' already registered.`)
-  },
+  type: 'connector',
 })
 
-Object.keys(Connector).forEach(key => {
-  const name = key as Connector.NativeNames
-  const entity = Connector[name]
-  if (typeof entity === 'function') {
-    ConnectorRegistry.register(name, entity, true)
-  }
-})
+ConnectorRegistry.register(Connector.presets, true)

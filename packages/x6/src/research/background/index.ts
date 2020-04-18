@@ -1,4 +1,4 @@
-import { FunctionKeys, ValuesType } from 'utility-types'
+import { ValuesType } from 'utility-types'
 import * as CSS from 'csstype'
 import * as patterns from './index-rollup'
 import { KeyValue } from '../../types'
@@ -30,22 +30,19 @@ export namespace Background {
 }
 
 export namespace Background {
-  export const flipX = patterns.flipX
-  export const flipY = patterns.flipY
-  export const flipXY = patterns.flipXY
-  export const watermark = patterns.watermark
+  export const presets = patterns
 }
 
 export namespace Background {
-  type ModuleType = typeof Background
+  export type Presets = typeof Background['presets']
 
   export type OptionsMap = {
-    [K in FunctionKeys<ModuleType>]: Parameters<ModuleType[K]>[1] & {
+    readonly [K in keyof Presets]-?: Parameters<Presets[K]>[1] & {
       repeat: K
     }
   }
 
-  export type NativeNames = keyof OptionsMap
+  export type NativeNames = keyof Presets
 
   export type NativeItem = ValuesType<OptionsMap>
 

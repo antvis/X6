@@ -17,5 +17,5 @@ export function saturate(args: SaturateArgs = {}) {
       <filter>
         <feColorMatrix type="saturate" values="${1 - amount}"/>
       </filter>
-    `.trim
+    `.trim()
 }

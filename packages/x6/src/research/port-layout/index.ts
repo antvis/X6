@@ -1,17 +1,9 @@
-import { FunctionKeys } from 'utility-types'
 import { KeyValue } from '../../types'
 import { Rectangle } from '../../geometry'
 import * as layouts from './index-rollup'
 
 export namespace PortLayout {
-  export const absolute = layouts.absolute
-  export const line = layouts.line
-  export const left = layouts.left
-  export const top = layouts.top
-  export const right = layouts.right
-  export const bottom = layouts.bottom
-  export const ellipse = layouts.ellipse
-  export const ellipseSpread = layouts.ellipseSpread
+  export const presets = layouts
 }
 
 export namespace PortLayout {
@@ -31,16 +23,18 @@ export namespace PortLayout {
     elemBBox: Rectangle,
     groupPositionArgs: T,
   ) => Result[]
+
+  export type CommonDefinition = Definition<KeyValue>
 }
 
 export namespace PortLayout {
-  type ModuleType = typeof PortLayout
+  export type Presets = typeof PortLayout['presets']
 
   export type OptionsMap = {
-    [K in FunctionKeys<ModuleType>]: Parameters<ModuleType[K]>[2]
+    readonly [K in keyof Presets]-?: Parameters<Presets[K]>[2]
   }
 
-  export type NativeNames = keyof OptionsMap
+  export type NativeNames = keyof Presets
 
   export interface NativeItem<T extends NativeNames = NativeNames> {
     name: T

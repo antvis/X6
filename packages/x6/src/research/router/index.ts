@@ -1,15 +1,10 @@
-import { FunctionKeys } from 'utility-types'
 import { KeyValue } from '../../types'
 import { Point } from '../../geometry'
 import { EdgeView } from '../core/edge-view'
 import * as routers from './index-rollup'
 
 export namespace Router {
-  export const orth = routers.orth
-  export const normal = routers.normal
-  export const oneSide = routers.oneSide
-  export const manhattan = routers.manhattan
-  export const metro = routers.metro
+  export const presets = routers
 }
 
 export namespace Router {
@@ -19,13 +14,14 @@ export namespace Router {
     options: T,
     edgeView: EdgeView,
   ) => Point.PointLike[]
+  export type CommonDefinition = Definition<KeyValue>
 }
 
 export namespace Router {
-  type ModuleType = typeof Router
+  export type Presets = typeof Router['presets']
 
   export type OptionsMap = {
-    [K in FunctionKeys<ModuleType>]: Parameters<ModuleType[K]>[1]
+    readonly [K in keyof Presets]-?: Parameters<Presets[K]>[1]
   }
 
   export type NativeNames = keyof OptionsMap

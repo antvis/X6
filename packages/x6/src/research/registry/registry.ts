@@ -1,42 +1,46 @@
 import { KeyValue } from '../../types'
+import { StringExt } from '../../util'
 
-function getHMRStatus() {
-  const mod = module as any
-  if (mod != null && mod.hot != null && mod.hot.status != null) {
-    return mod.hot.status()
-  }
-  return 'unkonwn'
-}
+export class Registry<
+  Entity,
+  Presets = KeyValue<Entity>,
+  OptionalType = never
+> {
+  protected readonly registry: KeyValue<Entity> = {}
+  protected readonly options: Registry.Options<Entity | OptionalType>
 
-function isApplyingHMR() {
-  return getHMRStatus() === 'apply'
-}
-
-export class Registry<T, S = never, M = KeyValue<T>> {
-  protected readonly registry: KeyValue<T> = {}
-  protected readonly options: Registry.Options<T | S>
-
-  constructor(options?: Registry.Options<T | S>) {
-    this.options = options || {}
+  constructor(options: Registry.Options<Entity | OptionalType>) {
+    this.options = options
   }
 
   get names() {
     return Object.keys(this.registry)
   }
 
-  register<K extends keyof M>(name: K, entity: M[K], force?: boolean): T
-  register(name: string, entity: T | S, force?: boolean): T
-  register(name: string, options: any, force: boolean = false) {
-    if (this.registry[name] && !force && !isApplyingHMR()) {
-      try {
-        // race
-        if (this.options.onError) {
-          this.options.onError(name)
-        }
-        throw new Error(`Entity with name '${name}' already registered.`)
-      } catch (err) {
-        throw err
-      }
+  register(
+    entities: { [name: string]: Entity | OptionalType },
+    force?: boolean,
+  ): void
+  register<K extends keyof Presets>(
+    name: K,
+    entity: Presets[K],
+    force?: boolean,
+  ): Entity
+  register(name: string, entity: Entity | OptionalType, force?: boolean): Entity
+  register(
+    name: string | { [name: string]: Entity | OptionalType },
+    options: any,
+    force: boolean = false,
+  ) {
+    if (typeof name === 'object') {
+      Object.keys(name).forEach(key => {
+        this.register(key, name[key], options)
+      })
+      return
+    }
+
+    if (this.registry[name] && !force && !Private.isApplyingHMR()) {
+      this.onConflict(name)
     }
 
     const entity = this.options.process
@@ -47,24 +51,97 @@ export class Registry<T, S = never, M = KeyValue<T>> {
     return entity
   }
 
-  unregister<K extends keyof M>(name: K): T | null
-  unregister(name: string): T | null
-  unregister(name: string): T | null {
+  unregister<K extends keyof Presets>(name: K): Entity | null
+  unregister(name: string): Entity | null
+  unregister(name: string): Entity | null {
     const entity = name ? this.registry[name] : null
     delete this.registry[name]
     return entity
   }
 
-  get<K extends keyof M>(name: K): T | null
-  get(name: string): T | null
-  get(name: string): T | null {
+  get<K extends keyof Presets>(name: K): Entity | null
+  get(name: string): Entity | null
+  get(name: string): Entity | null {
     return name ? this.registry[name] : null
+  }
+
+  getSpellingSuggestion(name: string, prefix?: string) {
+    const suggestion = this.getSpellingSuggestionForName(name)
+    const prefixed = prefix
+      ? `${prefix} ${StringExt.lowerFirst(this.options.type)}`
+      : this.options.type
+
+    return (
+      // tslint:disable-next-line
+      `${StringExt.upperFirst(prefixed)} with name '${name}' does not exist.` +
+      (suggestion ? ` Did you mean '${suggestion}'?` : '')
+    )
+  }
+
+  notExistError(name: string, prefix?: string): never {
+    throw new Error(this.getSpellingSuggestion(name, prefix))
+  }
+
+  protected getSpellingSuggestionForName(name: string) {
+    return StringExt.getSpellingSuggestion(
+      name,
+      Object.keys(this.registry),
+      candidate => candidate,
+    )
+  }
+
+  protected onConflict(name: string) {
+    try {
+      // race
+      if (this.options.onConflict) {
+        this.options.onConflict.call(this, name)
+      }
+      throw new Error(
+        `${StringExt.upperFirst(
+          this.options.type,
+        )} with name '${name}' already registered.`,
+      )
+    } catch (err) {
+      throw err
+    }
   }
 }
 
 export namespace Registry {
-  export interface Options<S> {
-    process?: <T>(name: string, entity: S) => T
-    onError?: (name: string) => void
+  export interface Options<Entity> {
+    type: string
+    process?: <T, Context extends Registry<any>>(
+      this: Context,
+      name: string,
+      entity: Entity,
+    ) => T
+    onConflict?: <Context extends Registry<any>>(
+      this: Context,
+      name: string,
+    ) => void
+  }
+}
+
+export namespace Registry {
+  export function create<
+    Entity,
+    Presets = KeyValue<Entity>,
+    OptionalType = never
+  >(options: Options<Entity | OptionalType>) {
+    return new Registry<Entity, Presets, OptionalType>(options)
+  }
+}
+
+namespace Private {
+  function getHMRStatus() {
+    const mod = module as any
+    if (mod != null && mod.hot != null && mod.hot.status != null) {
+      return mod.hot.status()
+    }
+    return 'unkonwn'
+  }
+
+  export function isApplyingHMR() {
+    return getHMRStatus() === 'apply'
   }
 }

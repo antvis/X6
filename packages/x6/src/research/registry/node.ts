@@ -1,10 +1,12 @@
 import { Node } from '../core/node'
 import { Registry } from './registry'
 
-export const NodeRegistry = new Registry<
+export const NodeRegistry = Registry.create<
   Node.Defintion,
+  never,
   NodeRegistry.DefintionOptions
 >({
+  type: 'node',
   process(name, options) {
     if (typeof options === 'function') {
       return options
@@ -15,7 +17,7 @@ export const NodeRegistry = new Registry<
     if (inherit) {
       const base = this.get(inherit)
       if (base == null) {
-        throw new Error(`Unkonwn base type: "${inherit}"`)
+        this.notExistError(inherit, 'inherited')
       } else {
         parent = base
       }
@@ -26,9 +28,6 @@ export const NodeRegistry = new Registry<
     }
 
     return parent.define.call(parent, others)
-  },
-  onError(name) {
-    throw new Error(`Node with name '${name}' already registered.`)
   },
 })
 

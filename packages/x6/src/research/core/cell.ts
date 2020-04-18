@@ -3,6 +3,7 @@ import { Basecoat } from '../../entity'
 import { KeyValue, Size } from '../../types'
 import { Rectangle, Point } from '../../geometry'
 import { ArrayExt, StringExt, ObjectExt } from '../../util'
+import { AttrRegistry } from '../registry'
 import { Attr } from '../attr'
 import { Store } from './store'
 import { Node } from './node'
@@ -509,12 +510,16 @@ export class Cell<
   }
 
   getAttrDefinition(attrName: string) {
+    if (!attrName) {
+      return null
+    }
+
     const ctor = this.constructor as typeof Cell
     const definitions = ctor.getAttrDefinition() || {}
-    let def = definitions[attrName] || Attr.definitions[attrName]
+    let def = definitions[attrName] || AttrRegistry.get(attrName)
     if (!def) {
       const name = StringExt.camelCase(attrName)
-      def = definitions[name] || Attr.definitions[name]
+      def = definitions[name] || AttrRegistry.get(name)
     }
 
     return def || null

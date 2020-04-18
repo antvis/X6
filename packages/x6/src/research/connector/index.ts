@@ -1,4 +1,3 @@
-import { FunctionKeys } from 'utility-types'
 import { KeyValue } from '../../types'
 import { Point, Path } from '../../geometry'
 import { EdgeView } from '../core/edge-view'
@@ -20,20 +19,17 @@ export namespace Connector {
 }
 
 export namespace Connector {
-  export const normal = connectors.normal
-  export const smooth = connectors.smooth
-  export const rounded = connectors.rounded
-  export const jumpover = connectors.jumpover
+  export const presets = connectors
 }
 
 export namespace Connector {
-  type ModuleType = typeof Connector
+  export type Presets = typeof Connector['presets']
 
   export type OptionsMap = {
-    [K in FunctionKeys<ModuleType>]: Parameters<ModuleType[K]>[3]
+    readonly [K in keyof Presets]-?: Parameters<Presets[K]>[3]
   }
 
-  export type NativeNames = keyof OptionsMap
+  export type NativeNames = keyof Presets
 
   export interface NativeItem<T extends NativeNames = NativeNames> {
     name: T

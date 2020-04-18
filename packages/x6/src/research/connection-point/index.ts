@@ -1,4 +1,3 @@
-import { FunctionKeys } from 'utility-types'
 import { KeyValue } from '../../types'
 import { Point, Line } from '../../geometry'
 import { NodeView } from '../core/node-view'
@@ -11,6 +10,8 @@ export namespace ConnectionPoint {
     magnet: SVGElement,
     options: T,
   ) => Point
+
+  export type CommonDefinition = Definition<KeyValue>
 
   export interface BaseOptions {
     /**
@@ -34,20 +35,17 @@ export namespace ConnectionPoint {
 }
 
 export namespace ConnectionPoint {
-  export const bbox = connectionPoints.bbox
-  export const anchor = connectionPoints.anchor
-  export const rect = connectionPoints.rect
-  export const boundary = connectionPoints.boundary
+  export const presets = connectionPoints
 }
 
 export namespace ConnectionPoint {
-  type ModuleType = typeof ConnectionPoint
+  export type Presets = typeof ConnectionPoint['presets']
 
   export type OptionsMap = {
-    [K in FunctionKeys<ModuleType>]: Parameters<ModuleType[K]>[3]
+    readonly [K in keyof Presets]-?: Parameters<Presets[K]>[3]
   }
 
-  export type NativeNames = keyof OptionsMap
+  export type NativeNames = keyof Presets
 
   export interface NativeItem<T extends NativeNames> {
     name: T

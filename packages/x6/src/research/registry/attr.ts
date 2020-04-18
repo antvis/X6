@@ -1,12 +1,8 @@
 import { Attr } from '../attr'
 import { Registry } from './registry'
 
-export const AttrRegistry = new Registry<Attr.Definition>({
-  onError(name) {
-    throw new Error(`Attr with name '${name}' already registered.`)
-  },
+export const AttrRegistry = Registry.create<Attr.Definition, Attr.Presets>({
+  type: 'attribute definition',
 })
 
-Object.keys(Attr.definitions).forEach(key => {
-  AttrRegistry.register(key, Attr.definitions[key], true)
-})
+AttrRegistry.register(Attr.presets, true)

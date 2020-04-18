@@ -1,15 +1,11 @@
 import { Grid } from '../grid'
 import { Registry } from './registry'
 
-export const GridRegistry = new Registry<
-  Grid.Definition<Grid.Options> | Grid.Definition<Grid.Options>[]
+export const GridRegistry = Registry.create<
+  Grid.CommonDefinition,
+  Grid.Presets
 >({
-  onError(name) {
-    throw new Error(`Grid with name '${name}' already registered.`)
-  },
+  type: 'grid',
 })
 
-GridRegistry.register('dot', Grid.dot, true)
-GridRegistry.register('fixedDot', Grid.fixedDot, true)
-GridRegistry.register('mesh', Grid.mesh, true)
-GridRegistry.register('doubleMesh', Grid.doubleMesh, true)
+GridRegistry.register(Grid.presets, true)
