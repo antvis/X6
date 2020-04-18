@@ -154,6 +154,7 @@ export class Collection extends Basecoat<Collection.EventArgs> {
       removed.push(cell)
       this.unreference(cell)
       if (!options.silent) {
+        cell.notify('removed', { cell, options })
         this.trigger('removed', { cell, index, options })
       }
     }

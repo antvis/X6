@@ -133,26 +133,26 @@ export class Model extends Basecoat<Model.EventArgs> {
       const target = cell.getTargetCell()
       if (source) {
         const id = source.id
-        const tmp = this.out[id]
-        if (tmp && tmp[cellId]) {
-          delete tmp[cellId]
+        const outgoings = this.out[id]
+        if (outgoings && outgoings[cellId]) {
+          delete outgoings[cellId]
         }
       }
       if (target) {
         const id = target.id
-        const tmp = this.in[id]
-        if (tmp && tmp[cellId]) {
-          delete tmp[cellId]
+        const incomings = this.in[id]
+        if (incomings && incomings[cellId]) {
+          delete incomings[cellId]
         }
       }
     } else {
       delete this.nodes[cellId]
     }
 
-    this.postprocessCell(cell, options)
+    this.afterCellRemoved(cell, options)
   }
 
-  protected postprocessCell(cell: Cell, options: Collection.RemoveOptions) {
+  protected afterCellRemoved(cell: Cell, options: Collection.RemoveOptions) {
     if (!options.clear) {
       if (options.disconnectEdges) {
         this.disconnectEdges(cell, options)
@@ -279,7 +279,7 @@ export class Model extends Basecoat<Model.EventArgs> {
       if (options.dryrun) {
         this.collection.remove(cell, options)
       } else {
-        cell.remove(cell)
+        cell.remove(options)
       }
     }
     return this
