@@ -47,6 +47,10 @@ export const doubleMesh: Grid.Definition<DoubleMeshOptions>[] = [
         d = 'M 0 0 0 0'
       }
 
+      // update wrapper size
+      options.width = width
+      options.height = height
+
       v.attr(elem, {
         d,
         stroke: options.color,
