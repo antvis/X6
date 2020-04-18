@@ -762,6 +762,7 @@ export class CellView<
 
   onCustomEvent(e: JQuery.MouseDownEvent, name: string, x: number, y: number) {
     this.notify('cell:customevent', { name, ...this.getEventArgs(e, x, y) })
+    this.notify(name, { ...this.getEventArgs(e, x, y) })
   }
 
   onMagnetMouseDown(
