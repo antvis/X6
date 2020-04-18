@@ -131,14 +131,14 @@ export namespace Attr {
     fill: {
       qualify: ObjectExt.isPlainObject,
       set(fill, { view }) {
-        return `url(#${view.graph.defineGradient(fill)})`
+        return `url(#${view.graph.defineGradient(fill as any)})`
       },
     },
 
     stroke: {
       qualify: ObjectExt.isPlainObject,
       set(stroke, { view }) {
-        return `url(#${view.graph.defineGradient(stroke)})`
+        return `url(#${view.graph.defineGradient(stroke as any)})`
       },
     },
 
@@ -149,7 +149,9 @@ export namespace Attr {
           ...util.contextMarker(attrs),
           ...(marker as JSONObject),
         }
-        return { 'marker-start': `url(#${view.graph.defineMarker(options)})` }
+        return {
+          'marker-start': `url(#${view.graph.defineMarker(options as any)})`,
+        }
       },
     },
 
@@ -173,7 +175,9 @@ export namespace Attr {
           ...util.contextMarker(attrs),
           ...(marker as JSONObject),
         }
-        return { 'marker-mid': `url(#${view.graph.defineMarker(options)})` }
+        return {
+          'marker-mid': `url(#${view.graph.defineMarker(options as any)})`,
+        }
       },
     },
 
@@ -276,7 +280,7 @@ export namespace Attr {
               lineHeight: attrs.lineHeight,
             },
             {
-              svgDocument: view.graph.svg as SVGSVGElement,
+              svgDocument: view.graph.svgElem as SVGSVGElement,
               ellipsis: info.ellipsis as string,
               hyphen: info.hyphen as string,
             },
@@ -365,10 +369,7 @@ export namespace Attr {
 
     html: {
       set(html, { view, node }) {
-        view
-          .$(view.container)
-          .find(node)
-          .html(`${html}`)
+        view.$(view.container).html(`${html}`)
       },
     },
 
