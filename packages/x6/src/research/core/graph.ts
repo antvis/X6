@@ -2702,13 +2702,15 @@ export class Graph extends View<Graph.EventArgs> {
   }
 
   delegateDragEvents(e: JQuery.MouseDownEvent, view: CellView | null) {
-    const data = e.data || {}
+    if (e.data == null) {
+      e.data = {}
+    }
     this.setEventData<EventData.Moving>(e, {
       currentView: view || null,
       mouseMovedCount: 0,
     })
     const ctor = this.constructor as typeof Graph
-    this.addDocumentEventListeners(ctor.documentEvents, data)
+    this.addDocumentEventListeners(ctor.documentEvents, e.data)
     this.undelegateEvents()
   }
 
