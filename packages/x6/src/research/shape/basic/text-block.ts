@@ -34,7 +34,7 @@ export class TextBlock<
 
   protected setup() {
     super.setup()
-    this.store.on('mutated', metadata => {
+    this.store.on('change:*', metadata => {
       const key = metadata.key
       if (key === 'content') {
         this.updateContent(this.getContent())

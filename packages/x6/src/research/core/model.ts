@@ -40,16 +40,22 @@ export class Model extends Basecoat<Model.EventArgs> {
   notify<Key extends keyof Model.EventArgs>(
     name: Key,
     args: Model.EventArgs[Key],
+  ): this
+  notify(name: Exclude<string, keyof Model.EventArgs>, args: any): this
+  notify<Key extends keyof Model.EventArgs>(
+    name: Key,
+    args: Model.EventArgs[Key],
   ) {
     this.trigger(name, args)
     const graph = this.graph
     if (graph) {
       if (name === 'sorted' || name === 'reseted' || name === 'updated') {
-        graph.trigger(`model:${name}` as any, args)
+        graph.trigger(`model:${name}`, args)
       } else {
-        graph.trigger(name as any, args)
+        graph.trigger(name, args)
       }
     }
+    return this
   }
 
   protected setup() {

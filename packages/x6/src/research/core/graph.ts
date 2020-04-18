@@ -2351,7 +2351,7 @@ export class Graph extends View<Graph.EventArgs> {
     this.$(this.container).css('backgroundColor', color || '')
   }
 
-  protected drawBackground(options: Graph.BackgroundOptions = {}) {
+  drawBackground(options: Graph.BackgroundOptions = {}) {
     this.updateBackgroundColor(options.color)
 
     if (options.image) {

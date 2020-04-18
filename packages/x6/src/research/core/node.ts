@@ -45,46 +45,6 @@ export class Node<
     return super.prepare(others)
   }
 
-  protected setup() {
-    super.setup()
-    this.store.on('mutated', metadata => {
-      const key = metadata.key
-      if (key === 'size') {
-        this.notify('change:size', this.getChangeEventArgs<Size>(metadata))
-      } else if (key === 'position') {
-        this.notify(
-          'change:position',
-          this.getChangeEventArgs<Point.PointLike>(metadata),
-        )
-      } else if (key === 'rotation') {
-        this.notify(
-          'change:rotation',
-          this.getChangeEventArgs<number>(metadata),
-        )
-      } else if (key === 'ports') {
-        this.notify(
-          'change:ports',
-          this.getChangeEventArgs<PortData.Port[]>(metadata),
-        )
-      } else if (key === 'portMarkup') {
-        this.notify(
-          'change:portMarkup',
-          this.getChangeEventArgs<Markup>(metadata),
-        )
-      } else if (key === 'portLabelMarkup') {
-        this.notify(
-          'change:portLabelMarkup',
-          this.getChangeEventArgs<Markup>(metadata),
-        )
-      } else if (key === 'portContainerMarkup') {
-        this.notify(
-          'change:portContainerMarkup',
-          this.getChangeEventArgs<Markup>(metadata),
-        )
-      }
-    })
-  }
-
   isNode(): this is Node {
     return true
   }

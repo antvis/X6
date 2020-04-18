@@ -106,44 +106,23 @@ export class Cell<
   }
 
   protected setup() {
-    this.store.on('mutated', metadata => {
-      const key = metadata.key
+    this.store.on('change:*', metadata => {
+      const { key, current, previous, options } = metadata
 
       this.notify('change:*', {
         key,
+        options,
+        current,
+        previous,
         cell: this,
-        options: metadata.options,
-        current: metadata.current,
-        previous: metadata.previous,
       })
 
-      if (key === 'zIndex') {
-        this.notify('change:zIndex', this.getChangeEventArgs<number>(metadata))
-      } else if (key === 'parent') {
-        this.notify('change:parent', this.getChangeEventArgs<string>(metadata))
-      } else if (key === 'children') {
-        this.notify(
-          'change:children',
-          this.getChangeEventArgs<string[]>(metadata),
-        )
-      } else if (key === 'visible') {
-        this.notify(
-          'change:visible',
-          this.getChangeEventArgs<boolean>(metadata),
-        )
-      } else if (key === 'markup') {
-        this.notify('change:markup', this.getChangeEventArgs<Markup>(metadata))
-      } else if (key === 'view') {
-        this.notify(
-          'change:view',
-          this.getChangeEventArgs<Cell.ViewType>(metadata),
-        )
-      } else if (key === 'attrs') {
-        this.notify(
-          'change:attrs',
-          this.getChangeEventArgs<Attr.CellAttrs>(metadata),
-        )
-      }
+      this.emit(`change:${key}` as keyof Cell.EventArgs, {
+        options,
+        current,
+        previous,
+        cell: this,
+      })
     })
 
     this.store.on('changed', ({ options }) =>
@@ -151,20 +130,13 @@ export class Cell<
     )
   }
 
-  protected getChangeEventArgs<T>(
-    metadata: Store.EventArgs<any>['mutated'],
-  ): Cell.ChangeArgs<T> {
-    const { current, previous, options } = metadata
-    return {
-      options,
-      cell: this,
-      current: current == null ? undefined : (current as T),
-      previous: previous == null ? undefined : (previous as T),
-    }
-  }
-
   init() {}
 
+  notify<Key extends keyof Cell.EventArgs>(
+    name: Key,
+    args: Cell.EventArgs[Key],
+  ): this
+  notify(name: Exclude<string, keyof Cell.EventArgs>, args: any): this
   notify<Key extends keyof Cell.EventArgs>(
     name: Key,
     args: Cell.EventArgs[Key],
@@ -172,13 +144,14 @@ export class Cell<
     this.trigger(name, args)
     const model = this.model
     if (model) {
-      model.notify(`cell:${name}` as any, args)
+      model.notify(`cell:${name}`, args)
       if (this.isNode()) {
-        model.notify(`node:${name}` as any, { ...args, node: this })
+        model.notify(`node:${name}`, { ...args, node: this })
       } else if (this.isEdge()) {
-        model.notify(`edge:${name}` as any, { ...args, edge: this })
+        model.notify(`edge:${name}`, { ...args, edge: this })
       }
     }
+    return this
   }
 
   protected setModel(model: Model | null) {

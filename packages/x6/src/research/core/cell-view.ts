@@ -673,12 +673,18 @@ export class CellView<
 
   // #region events
 
-  protected notify<Key extends keyof CellView.EventArgs>(
+  notify<Key extends keyof CellView.EventArgs>(
+    name: Key,
+    args: CellView.EventArgs[Key],
+  ): this
+  notify(name: Exclude<string, keyof CellView.EventArgs>, args: any): this
+  notify<Key extends keyof CellView.EventArgs>(
     name: Key,
     args: CellView.EventArgs[Key],
   ) {
     this.trigger(name, args)
-    this.graph.trigger(name as any, args)
+    this.graph.trigger(name, args)
+    return this
   }
 
   protected getEventArgs<E>(e: E): CellView.MouseEventArgs<E>

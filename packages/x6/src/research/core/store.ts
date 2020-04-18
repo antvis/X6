@@ -62,7 +62,7 @@ export class Store<D> extends Basecoat<Store.EventArgs<D>> {
       this.pending = true
       this.pendingOptions = options
       changes.forEach(key => {
-        this.trigger('mutated', {
+        this.emit('change:*', {
           key,
           options,
           store: this,
@@ -80,7 +80,7 @@ export class Store<D> extends Basecoat<Store.EventArgs<D>> {
       // Changes can be recursively nested within `"change"` events.
       while (this.pending) {
         this.pending = false
-        this.trigger('changed', {
+        this.emit('changed', {
           current,
           previous,
           store: this,
@@ -320,7 +320,7 @@ export namespace Store {
   type CommonArgs<D> = { store: Store<D> }
 
   export interface EventArgs<D, K extends keyof D = keyof D> {
-    mutated: Assign<
+    'change:*': Assign<
       {
         key: K
         current: D[K]

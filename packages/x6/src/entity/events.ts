@@ -157,6 +157,33 @@ export class Events<NameArgsMap extends Events.NameArgsMap = any> {
     }
     return Promise.resolve(true)
   }
+
+  /**
+   * Triggers event with specified event name. Unknown names
+   * will cause a typescript type error.
+   */
+  protected emit<Name extends Events.OptionalNormalNames<NameArgsMap>>(
+    name: Name,
+  ): Events.TriggerResult
+  protected emit<Name extends Events.RequiredNormalNames<NameArgsMap>>(
+    name: Name,
+    args: NameArgsMap[Name],
+  ): Events.TriggerResult
+  protected emit<Name extends Events.NamesWithArrayArgs<NameArgsMap>>(
+    name: Name,
+    ...args: NameArgsMap[Name]
+  ): Events.TriggerResult
+  protected emit<Name extends Events.OtherNames<NameArgsMap>>(
+    name: Name,
+    args?: NameArgsMap[Name],
+  ): Events.TriggerResult
+  protected emit<Name extends Events.OtherNames<NameArgsMap>>(
+    name: Name,
+    ...args: NameArgsMap[Name]
+  ): Events.TriggerResult
+  protected emit(name: any, ...args: any[]) {
+    return this.trigger(name, ...args)
+  }
 }
 
 export namespace Events {

@@ -138,68 +138,8 @@ export class Edge<
 
   protected setup() {
     super.setup()
-    this.store.on('mutated', metadata => {
-      const key = metadata.key
-      if (key === 'source') {
-        this.notify(
-          'change:source',
-          this.getChangeEventArgs<Edge.TerminalData>(metadata),
-        )
-      } else if (key === 'target') {
-        this.notify(
-          'change:target',
-          this.getChangeEventArgs<Edge.TerminalData>(metadata),
-        )
-      } else if (key === 'router') {
-        this.notify(
-          'change:router',
-          this.getChangeEventArgs<Edge.RouterData>(metadata),
-        )
-      } else if (key === 'connector') {
-        this.notify(
-          'change:connector',
-          this.getChangeEventArgs<Edge.ConnectorData>(metadata),
-        )
-      } else if (key === 'vertices') {
-        const args = this.getChangeEventArgs<Point.PointLike[]>(metadata)
-        this.notify('change:vertices', args)
-        this.onVertexsChanged(args)
-      } else if (key === 'labels') {
-        const args = this.getChangeEventArgs<Edge.Label[]>(metadata)
-        this.notify('change:labels', args)
-        this.onLabelsChanged(args)
-      } else if (key === 'defaultLabel') {
-        this.notify(
-          'change:defaultLabel',
-          this.getChangeEventArgs<Edge.Label>(metadata),
-        )
-      } else if (key === 'labelMarkup') {
-        this.notify(
-          'change:labelMarkup',
-          this.getChangeEventArgs<Markup>(metadata),
-        )
-      } else if (key === 'toolMarkup') {
-        this.notify(
-          'change:toolMarkup',
-          this.getChangeEventArgs<Markup>(metadata),
-        )
-      } else if (key === 'doubleToolMarkup') {
-        this.notify(
-          'change:doubleToolMarkup',
-          this.getChangeEventArgs<Markup>(metadata),
-        )
-      } else if (key === 'vertexMarkup') {
-        this.notify(
-          'change:vertexMarkup',
-          this.getChangeEventArgs<Markup>(metadata),
-        )
-      } else if (key === 'arrowheadMarkup') {
-        this.notify(
-          'change:arrowheadMarkup',
-          this.getChangeEventArgs<Markup>(metadata),
-        )
-      }
-    })
+    this.on('change:labels', args => this.onLabelsChanged(args))
+    this.on('change:vertices', args => this.onVertexsChanged(args))
   }
 
   isEdge(): this is Edge {
