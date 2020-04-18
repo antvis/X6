@@ -1,119 +1,125 @@
 :global {
-  .left-side {
-    position: fixed;
-    width: 336px;
-    left: 24px;
-    top: 0px;
-    bottom: 0;
-    padding: 0 8px;
-    overflow-x: visible;
-    overflow-y: auto;
-  }
+  .x6-example-wrap {
+    width: '100%';
+    height: '100%';
+    background-color: '#ffffff';
 
-  .right-side {
-    position: fixed;
-    right: 24px;
-    width: 336px;
-    padding: 0 8px;
-    top: 0px;
-    bottom: 0;
-    overflow-x: visible;
-    overflow-y: auto;
-  }
-
-  .ant-card {
-    box-shadow: 0 0 10px 1px #e9e9e9;
-    margin-top: 24px;
-  }
-
-  .ant-row-flex {
-    margin: 8px 0;
-  }
-
-  .slider-value {
-    background: #eee;
-    color: #333333;
-    padding: 3px 7px;
-    border-radius: 10px;
-    display: inline-block;
-    font-size: 12px;
-    margin-left: 8px;
-    line-height: 1.25;
-  }
-
-  .x6-graph {
-    margin-top: 24px;
-  }
-
-  .x6-node {
-    path {
-      fill: #6a6c8a;
-      stroke-width: 0px;
-      transition: fill 0.1s;
+    .left-side {
+      position: fixed;
+      width: 336px;
+      left: 24px;
+      top: 0px;
+      bottom: 0;
+      padding: 0 8px;
+      overflow-x: visible;
+      overflow-y: auto;
     }
 
-    text {
-      fill: #fff;
+    .right-side {
+      position: fixed;
+      right: 24px;
+      width: 336px;
+      padding: 0 8px;
+      top: 0px;
+      bottom: 0;
+      overflow-x: visible;
+      overflow-y: auto;
+    }
+
+    .ant-card {
+      box-shadow: 0 0 10px 1px #e9e9e9;
+      margin-top: 24px;
+    }
+
+    .ant-row-flex {
+      margin: 8px 0;
+    }
+
+    .slider-value {
+      background: #eee;
+      color: #333333;
+      padding: 3px 7px;
+      border-radius: 10px;
+      display: inline-block;
       font-size: 12px;
-      font-weight: lighter;
+      margin-left: 8px;
+      line-height: 1.25;
     }
 
-    &:hover path {
-      fill: #fec582;
+    .x6-graph {
+      margin-top: 24px;
     }
-  }
 
-  .x6-edge {
-    * {
+    .x6-node {
+      path {
+        fill: #6a6c8a;
+        stroke-width: 0px;
+        transition: fill 0.1s;
+      }
+
+      text {
+        fill: #fff;
+        font-size: 12px;
+        font-weight: lighter;
+      }
+
+      &:hover path {
+        fill: #fec582;
+      }
+    }
+
+    .x6-edge {
+      * {
+        pointer-events: none;
+      }
+
+      path.line {
+        stroke: #6a6c8a;
+        stroke-width: 2px;
+      }
+    }
+
+    .bbox {
+      stroke: #16a085;
+      stroke-width: 2;
+      stroke-opacity: 0;
+      fill: none;
+      transition-property: stroke-opacity;
+      transition-duration: 0.5s;
       pointer-events: none;
     }
 
-    path.line {
-      stroke: #6a6c8a;
-      stroke-width: 2px;
+    .axis {
+      stroke: #95a5a6;
+      stroke-dasharray: 2, 4;
+      stroke-width: 1;
+      pointer-events: none;
     }
-  }
 
-  .bbox {
-    stroke: #16a085;
-    stroke-width: 2;
-    stroke-opacity: 0;
-    fill: none;
-    transition-property: stroke-opacity;
-    transition-duration: 0.5s;
-    pointer-events: none;
-  }
+    .padding {
+      stroke: #1abc9c;
+      stroke-opacity: 0;
+      transition-property: stroke-opacity;
+      transition-duration: 1s;
+      pointer-events: none;
+    }
 
-  .axis {
-    stroke: #95a5a6;
-    stroke-dasharray: 2, 4;
-    stroke-width: 1;
-    pointer-events: none;
-  }
+    .grid {
+      stroke: #16a085;
+      stroke-width: 0.5;
+      stroke-opacity: 0;
+      transition-property: stroke-opacity;
+      transition-duration: 1s;
+      pointer-events: none;
+    }
 
-  .padding {
-    stroke: #1abc9c;
-    stroke-opacity: 0;
-    transition-property: stroke-opacity;
-    transition-duration: 1s;
-    pointer-events: none;
-  }
+    .active {
+      stroke-opacity: 0.5;
+    }
 
-  .grid {
-    stroke: #16a085;
-    stroke-width: 0.5;
-    stroke-opacity: 0;
-    transition-property: stroke-opacity;
-    transition-duration: 1s;
-    pointer-events: none;
-  }
-
-  .active {
-    stroke-opacity: 0.5;
-  }
-
-  .padding.active,
-  .bbox.active {
-    stroke-opacity: 0.2;
+    .padding.active,
+    .bbox.active {
+      stroke-opacity: 0.2;
+    }
   }
 }

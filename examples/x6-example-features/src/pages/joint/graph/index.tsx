@@ -47,15 +47,15 @@ export default class Example extends React.Component<
     this.updateContentBBox()
 
     const options = this.graph.options
-    this.setState({
+    this.setState(prevState => ({
       attrs: {
-        ...this.state.attrs,
+        ...prevState.attrs,
         width: options.width,
         height: options.height,
         originX: options.origin.x,
         originY: options.origin.y,
       },
-    })
+    }))
 
     let attrs = {}
     const getAttrs = (partial: Partial<Example.State['attrs']>) => {
@@ -151,13 +151,7 @@ export default class Example extends React.Component<
 
   render() {
     return (
-      <div
-        style={{
-          width: '100%',
-          height: '100%',
-          backgroundColor: '#ffffff',
-        }}
-      >
+      <div className="x6-example-wrap">
         <div className="left-side">
           <BackgroundCard onChange={this.onBackgroundChanged} />
           <GridCard

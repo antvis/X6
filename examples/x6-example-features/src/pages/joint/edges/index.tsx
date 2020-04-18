@@ -1,6 +1,5 @@
 import React from 'react'
 import { joint, v, Path } from '@antv/x6'
-import { Rect, Edge } from '@antv/x6/es/research/shape/standard'
 import '../../index.less'
 import '../index.less'
 

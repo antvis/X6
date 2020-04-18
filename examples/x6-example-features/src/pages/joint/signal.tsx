@@ -1,5 +1,5 @@
 import React from 'react'
-import { joint } from '@antv/x6'
+import { joint, v } from '@antv/x6'
 import '../index.less'
 import './index.less'
 
@@ -52,8 +52,37 @@ export default class Example extends React.Component {
       target: c,
     })
 
+    function flash(cell: joint.Cell) {
+      const cellView = graph.findViewByCell(cell)
+      if (cellView) {
+        cellView.highlight()
+        setTimeout(() => cellView.unhighlight(), 200)
+      }
+    }
+
     graph.on('node:mousedown', ({ cell }) => {
-      cell.trigger('signal', cell)
+      graph.trigger('signal', cell)
+    })
+
+    graph.on('signal', function(cell: joint.Cell) {
+      if (cell.isEdge()) {
+        const edgeView = graph.findViewByCell(cell) as joint.EdgeView
+        if (edgeView) {
+          const token = v.create('circle', { r: 7, fill: 'green' })
+          const targetCell = cell.getTargetCell()
+          edgeView.sendToken(token.node, 1000, function() {
+            if (targetCell) {
+              graph.trigger('signal', targetCell)
+            }
+          })
+        }
+      } else {
+        flash(cell)
+        const edges = graph.model.getConnectedEdges(cell, {
+          outgoing: true,
+        })
+        edges.forEach(edge => graph.trigger('signal', edge))
+      }
     })
   }
 
@@ -63,13 +92,7 @@ export default class Example extends React.Component {
 
   render() {
     return (
-      <div
-        style={{
-          width: '100%',
-          height: '100%',
-          backgroundColor: '#ffffff',
-        }}
-      >
+      <div className="x6-graph-wrap">
         <div ref={this.refContainer} className="x6-graph" />
       </div>
     )
