@@ -53,7 +53,9 @@ export class Collection extends Basecoat<Collection.EventArgs> {
 
     const entities = Array.isArray(cells) ? cells : [cells]
     const sortable =
-      this.comparator && index == null && localOptions.sort !== false
+      this.comparator &&
+      typeof index !== 'number' &&
+      localOptions.sort !== false
     const sortAttr = this.comparator || null
 
     let sort = false
