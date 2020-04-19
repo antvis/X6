@@ -13,7 +13,7 @@ export default class Example extends React.Component {
         // color: '#f5f5f5',
         image:
           'https://cdn2.iconfinder.com/data/icons/social-media-2285/512/1_Slack_colored_svg-32.png',
-        pattern: 'watermark',
+        repeat: 'watermark',
         opacity: 0.1,
       },
     })

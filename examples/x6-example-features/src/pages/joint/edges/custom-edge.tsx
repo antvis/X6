@@ -1,7 +1,7 @@
 import React from 'react'
 import { joint } from '@antv/x6'
 import { ShadowEdge } from '@antv/x6/es/research/shape/standard'
-import { Easing } from '@antv/x6/es/research/animation/easing'
+import { Timing } from '@antv/x6/es/research/animation/easing'
 import '../../index.less'
 import '../index.less'
 
@@ -24,7 +24,7 @@ export default class Example extends React.Component {
         var options = {
           delay: 100,
           duration: 1000,
-          timingFunction: Easing.easeInOutBack,
+          timing: Timing.easeInOutBack,
         }
         edge.transition('attrs/c1/atConnectionRatio', t, options)
         edge.transition('attrs/c2/atConnectionRatio', t, options)
