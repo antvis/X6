@@ -178,13 +178,6 @@ export namespace Markup {
           })
         }
 
-        for (const group in groups) {
-          if (selectors[group]) {
-            throw new Error('Invalid group selector')
-          }
-          selectors[group] = groups[group]
-        }
-
         parentNode.appendChild(node)
 
         // children
@@ -194,6 +187,13 @@ export namespace Markup {
         }
       })
     }
+
+    Object.keys(groups).forEach(groupName => {
+      if (selectors[groupName]) {
+        throw new Error('Ambiguous group selector')
+      }
+      selectors[groupName] = groups[groupName]
+    })
 
     return { fragment, selectors, groups }
   }
