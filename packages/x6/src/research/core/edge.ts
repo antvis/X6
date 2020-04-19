@@ -259,39 +259,41 @@ export class Edge<
     args?: Edge.SetTerminalCommonArgs | Edge.SetOptions,
     options: Edge.SetOptions = {},
   ): this {
-    // `source` is a cell
+    // `terminal` is a cell
     if (terminal instanceof Cell) {
+      this.reference(type, terminal)
       this.store.set(
         type,
         ObjectExt.merge({}, args, { id: terminal.id }),
         options,
       )
-      this.reference(type, terminal)
       return this
     }
 
-    // `source` is a point-like object
+    // `terminal` is a point-like object
     const p = terminal as Point.PointLike
     if (terminal instanceof Point || (p.x != null && p.y != null)) {
+      this.reference(type, null)
       this.store.set(
         type,
         ObjectExt.merge({}, args, { x: p.x, y: p.y }),
         options,
       )
-      this.reference(type, null)
       return this
     }
 
-    // `source` is an object
-    this.store.set(
-      type,
-      ObjectExt.cloneDeep(terminal as Edge.TerminalData),
-      options,
-    )
+    // `terminal` is an object
+    {
+      const cellId = (terminal as Edge.TerminalCellData).cell
+      const cell = cellId && this.model ? this.model.getCell(cellId) : null
+      this.reference(type, cell)
 
-    const cellId = (terminal as Edge.TerminalCellData).cell
-    const cell = cellId && this.model ? this.model.getCell(cellId) : null
-    this.reference(type, cell)
+      this.store.set(
+        type,
+        ObjectExt.cloneDeep(terminal as Edge.TerminalData),
+        options,
+      )
+    }
 
     return this
   }
