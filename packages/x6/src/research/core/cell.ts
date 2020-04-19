@@ -313,17 +313,19 @@ export class Cell<
 
     if (typeof key === 'string' || Array.isArray(key)) {
       if (arguments.length === 1) {
-        return Array.isArray(key) ? this.getPropByPath(key) : this.getProp(key)
+        return Array.isArray(key)
+          ? this.getPropByPath(key)
+          : this.getPropByPath(key)
       }
 
       if (value == null) {
         return Array.isArray(key)
           ? this.removePropByPath(key)
-          : this.removeProp(key, options || {})
+          : this.removeAttrByPath(key, options || {})
       }
       return Array.isArray(key)
         ? this.setPropByPath(key, value, options || {})
-        : this.setProp(key, value, options || {})
+        : this.setPropByPath(key, value, options || {})
     }
 
     return this.setProp(key, value || {})
