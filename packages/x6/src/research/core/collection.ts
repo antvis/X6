@@ -259,40 +259,13 @@ export class Collection extends Basecoat<Collection.EventArgs> {
     this.map[cell.id] = cell
     cell.on('disposed', this.onCellDisposed, this)
     cell.on('change:zIndex', this.onCellZIndexChanged, this)
-    if (cell.isEdge()) {
-      cell.on('change:source', this.onEdgeSourceChanged, this)
-      cell.on('change:target', this.onEdgeTargetChanged, this)
-    }
   }
 
   protected unreference(cell: Cell) {
     cell.off('disposed', this.onCellDisposed, this)
     cell.off('change:zIndex', this.onCellZIndexChanged, this)
-    if (cell.isEdge()) {
-      cell.off('change:source', this.onEdgeSourceChanged, this)
-      cell.off('change:target', this.onEdgeTargetChanged, this)
-    }
+
     delete this.map[cell.id]
-  }
-
-  protected onEdgeSourceChanged(args: Cell.ChangeArgs<Edge.TerminalData>) {
-    this.onEdgeTerminalChanged('source', args)
-  }
-
-  protected onEdgeTargetChanged(args: Cell.ChangeArgs<Edge.TerminalData>) {
-    this.onEdgeTerminalChanged('target', args)
-  }
-
-  protected onEdgeTerminalChanged(
-    type: Edge.TerminalType,
-    args: Cell.ChangeArgs<Edge.TerminalData>,
-  ) {
-    this.trigger('change:terminal', {
-      type,
-      edge: args.cell as Edge,
-      current: args.current,
-      previous: args.previous,
-    })
   }
 
   protected onCellZIndexChanged(args: Cell.EventArgs['change:zIndex']) {
@@ -357,12 +330,6 @@ export namespace Collection {
       cell: Cell
       index: number
       options: RemoveOptions
-    }
-    'change:terminal': {
-      edge: Edge
-      type: Edge.TerminalType
-      current?: Edge.TerminalData
-      previous?: Edge.TerminalData
     }
   }
 }

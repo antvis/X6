@@ -90,6 +90,8 @@ export class Cell<
     this.init()
   }
 
+  init() {}
+
   protected prepare(options: Cell.Options): Properties {
     const id = options.id
     const ctor = this.constructor as typeof Cell
@@ -117,20 +119,29 @@ export class Cell<
         cell: this,
       })
 
-      this.emit(`change:${key}` as keyof Cell.EventArgs, {
+      this.notify(`change:${key}` as keyof Cell.EventArgs, {
         options,
         current,
         previous,
         cell: this,
       })
+
+      const type = key as Edge.TerminalType
+      if (type === 'source' || type === 'target') {
+        this.notify(`change:${type}`, {
+          type,
+          current,
+          previous,
+          options,
+          cell: this,
+        })
+      }
     })
 
     this.store.on('changed', ({ options }) =>
       this.notify('changed', { options, cell: this }),
     )
   }
-
-  init() {}
 
   notify<Key extends keyof Cell.EventArgs>(
     name: Key,
@@ -929,6 +940,18 @@ export class Cell<
 
   // #endregion
 
+  // #region terminal
+
+  getOutgoingEdges() {
+    return this.outgoings
+  }
+
+  getIncomingEdges() {
+    return this.incomings
+  }
+
+  // #endregion
+
   // #region transition
 
   transition<K extends keyof Properties>(
@@ -1172,14 +1195,6 @@ export namespace Cell {
 }
 
 export namespace Cell {
-  interface ChangeAnyKeyArgs<T extends keyof Properties = keyof Properties> {
-    key: T
-    current: Properties[T]
-    previous: Properties[T]
-    options: MutateOptions
-    cell: Cell
-  }
-
   export interface EventArgs {
     'transition:begin': TransitionArgs
     'transition:end': TransitionArgs
@@ -1215,6 +1230,9 @@ export namespace Cell {
     // edge
     'change:source': EdgeChangeArgs<Edge.TerminalData>
     'change:target': EdgeChangeArgs<Edge.TerminalData>
+    'change:terminal': EdgeChangeArgs<Edge.TerminalData> & {
+      type: Edge.TerminalType
+    }
     'change:router': EdgeChangeArgs<Edge.RouterData>
     'change:connector': EdgeChangeArgs<Edge.ConnectorData>
     'change:vertices': EdgeChangeArgs<Point.PointLike[]>
@@ -1259,6 +1277,14 @@ export namespace Cell {
     disposed: {
       cell: Cell
     }
+  }
+
+  interface ChangeAnyKeyArgs<T extends keyof Properties = keyof Properties> {
+    key: T
+    current: Properties[T]
+    previous: Properties[T]
+    options: MutateOptions
+    cell: Cell
   }
 
   export interface ChangeArgs<T> {

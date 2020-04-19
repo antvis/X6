@@ -547,20 +547,20 @@ export class CellView<
     return this.customizeEdgeTerminal(terminal, magnet, x, y, edge, type)
   }
 
-  protected customizeEdgeTerminal(
-    end: Edge.TerminalCellData,
+  protected customizeEdgeTerminal<T extends Edge.TerminalCellData>(
+    terminal: T,
     magnet: Element,
     x: number,
     y: number,
     edge: Edge,
     type: Edge.TerminalType,
-  ) {
+  ): T {
     const graph = this.graph
     const connectionStrategy = graph.options.connectionStrategy as any
     if (typeof connectionStrategy === 'function') {
       const strategy = connectionStrategy.call(
         graph,
-        end,
+        terminal,
         this,
         magnet,
         new Point(x, y),
@@ -572,7 +572,7 @@ export class CellView<
         return strategy
       }
     }
-    return end
+    return terminal
   }
 
   getMagnetFromEdgeTerminal(terminal: Edge.TerminalData) {

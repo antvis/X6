@@ -1,4 +1,3 @@
-import { ObjectExt } from '../../util'
 import { KeyValue } from '../../types'
 import { Basecoat } from '../../entity'
 import { Cell } from './cell'
@@ -16,8 +15,6 @@ export class Model extends Basecoat<Model.EventArgs> {
   protected graph: Graph | null
   protected nodes: KeyValue<boolean> = {}
   protected edges: KeyValue<boolean> = {}
-  protected in: KeyValue<KeyValue<boolean>> = {}
-  protected out: KeyValue<KeyValue<boolean>> = {}
 
   constructor(cells: Cell[] = []) {
     super()
@@ -82,15 +79,9 @@ export class Model extends Basecoat<Model.EventArgs> {
     collection.on('removed', ({ cell, options }) =>
       this.onCellRemoved(cell, options),
     )
-
-    collection.on('change:terminal', ({ type, edge }) =>
-      this.onEdgeTerminalChanged(edge, type),
-    )
   }
 
   protected onReset(cells: Cell[]) {
-    this.in = {}
-    this.out = {}
     this.nodes = {}
     this.edges = {}
     cells.forEach(cell => this.onCellAdded(cell))
@@ -104,22 +95,6 @@ export class Model extends Basecoat<Model.EventArgs> {
     const cellId = cell.id
     if (cell.isEdge()) {
       this.edges[cellId] = true
-      const source = cell.getSourceCell()
-      const target = cell.getTargetCell()
-      if (source) {
-        const id = source.id
-        if (!this.out[id]) {
-          this.out[id] = {}
-        }
-        this.out[id][cellId] = true
-      }
-      if (target) {
-        const id = target.id
-        if (!this.in[id]) {
-          this.in[id] = {}
-        }
-        this.in[id][cellId] = true
-      }
     } else {
       this.nodes[cellId] = true
     }
@@ -129,22 +104,6 @@ export class Model extends Basecoat<Model.EventArgs> {
     const cellId = cell.id
     if (cell.isEdge()) {
       delete this.edges[cellId]
-      const source = cell.getSourceCell()
-      const target = cell.getTargetCell()
-      if (source) {
-        const id = source.id
-        const outgoings = this.out[id]
-        if (outgoings && outgoings[cellId]) {
-          delete outgoings[cellId]
-        }
-      }
-      if (target) {
-        const id = target.id
-        const incomings = this.in[id]
-        if (incomings && incomings[cellId]) {
-          delete incomings[cellId]
-        }
-      }
     } else {
       delete this.nodes[cellId]
     }
@@ -163,28 +122,6 @@ export class Model extends Basecoat<Model.EventArgs> {
 
     if (cell.model === this) {
       cell.model = null
-    }
-  }
-
-  protected onEdgeTerminalChanged(edge: Edge, type: Edge.TerminalType) {
-    const edgeId = edge.id
-    const isSource = type === 'source'
-    const cache = isSource ? this.out : this.in
-    const terminal = isSource ? edge.getSourceCell() : edge.getTargetCell()
-    const previousData = edge.previous(type) as Edge.TerminalCellData
-    if (previousData.cell) {
-      const previousTerminal = this.getCell(previousData.cell)
-      if (previousTerminal && cache[previousTerminal.id]) {
-        delete cache[previousTerminal.id][edgeId]
-      }
-    }
-
-    if (terminal) {
-      const id = terminal.id
-      if (!cache[id]) {
-        cache[id] = {}
-      }
-      cache[id][edgeId] = true
     }
   }
 
@@ -403,19 +340,17 @@ export class Model extends Basecoat<Model.EventArgs> {
   /**
    * Returns all outgoing edges for the node.
    */
-  getOutgoingEdges(node: Node | string) {
-    const nodeId = typeof node === 'string' ? node : node.id
-    const cache = this.out && this.out[nodeId]
-    return this.getCellsFromCache<Edge>(cache)
+  getOutgoingEdges(cell: Cell | string) {
+    const node = typeof cell === 'string' ? this.getCell(cell) : cell
+    return node.getOutgoingEdges()
   }
 
   /**
    * Returns all incoming edges for the node.
    */
-  getIncomingEdges(node: Node | string) {
-    const nodeId = typeof node === 'string' ? node : node.id
-    const cache = this.in && this.in[nodeId]
-    return this.getCellsFromCache<Edge>(cache)
+  getIncomingEdges(cell: Cell | string) {
+    const node = typeof cell === 'string' ? this.getCell(cell) : cell
+    return node.getIncomingEdges()
   }
 
   /**
@@ -444,24 +379,26 @@ export class Model extends Basecoat<Model.EventArgs> {
         ? this.getOutgoingEdges(cell.id)
         : this.getIncomingEdges(cell.id)
 
-      edges.forEach(edge => {
-        if (cache[edge.id]) {
-          return
-        }
-
-        result.push(edge)
-        cache[edge.id] = true
-
-        if (indirect) {
-          if (incoming) {
-            collect(edge, false)
+      if (edges != null) {
+        edges.forEach(edge => {
+          if (cache[edge.id]) {
+            return
           }
 
-          if (outgoing) {
-            collect(edge, true)
+          result.push(edge)
+          cache[edge.id] = true
+
+          if (indirect) {
+            if (incoming) {
+              collect(edge, false)
+            }
+
+            if (outgoing) {
+              collect(edge, true)
+            }
           }
-        }
-      })
+        })
+      }
 
       if (indirect && cell.isEdge()) {
         const terminal = isOutgoing
@@ -498,25 +435,27 @@ export class Model extends Basecoat<Model.EventArgs> {
           ? this.getOutgoingEdges(cell.id)
           : this.getIncomingEdges(cell.id)
 
-        edges.forEach(edge => {
-          if (!cache[edge.id]) {
-            const sourceCell = edge.getSourceCell()
-            const targetCell = edge.getTargetCell()
+        if (edges != null) {
+          edges.forEach(edge => {
+            if (!cache[edge.id]) {
+              const sourceCell = edge.getSourceCell()
+              const targetCell = edge.getTargetCell()
 
-            if (
-              !options.enclosed &&
-              sourceCell &&
-              embedsCache[sourceCell.id] &&
-              targetCell &&
-              embedsCache[targetCell.id]
-            ) {
-              return
+              if (
+                !options.enclosed &&
+                sourceCell &&
+                embedsCache[sourceCell.id] &&
+                targetCell &&
+                embedsCache[targetCell.id]
+              ) {
+                return
+              }
+
+              result.push(edge)
+              cache[edge.id] = true
             }
-
-            result.push(edge)
-            cache[edge.id] = true
-          }
-        })
+          })
+        }
       }
 
       descendants.forEach(cell => {
@@ -538,10 +477,9 @@ export class Model extends Basecoat<Model.EventArgs> {
   }
 
   protected isBoundary(cell: Cell | string, isOrigin: boolean) {
-    const id = typeof cell === 'string' ? cell : cell.id
-    const map = isOrigin ? this.in : this.out
-    const dic = map[id]
-    return dic == null || ObjectExt.isEmpty(dic)
+    const node = typeof cell === 'string' ? this.getCell(cell) : cell
+    const arr = isOrigin ? node.getIncomingEdges() : node.getOutgoingEdges()
+    return arr == null || arr.length === 0
   }
 
   protected getBoundaryNodes(isOrigin: boolean) {
