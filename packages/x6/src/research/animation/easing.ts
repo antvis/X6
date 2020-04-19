@@ -27,15 +27,14 @@ export namespace Timing {
     return Math.pow(2, 10 * (t - 1))
   }
 
-  export const bounce: Definition = t => {
+  export const bounce = ((t: number) => {
     for (let a = 0, b = 1; 1; a += b, b /= 2) {
       if (t >= (7 - 4 * a) / 11) {
         const q = (11 - 6 * a - 11 * t) / 4
         return -q * q + b * b
       }
     }
-    return t
-  }
+  }) as Definition
 }
 
 export namespace Timing {
