@@ -121,8 +121,6 @@ export default class Example extends React.Component {
       },
     })
 
-    console.log(decoratedRect)
-
     graph.addNode(decoratedRect)
 
     graph.addNode({

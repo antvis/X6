@@ -17,7 +17,6 @@ export default class Example extends React.Component {
     })
 
     graph.on('edge:customevent', ({ name, e, edge }) => {
-      console.log(name)
       if (name === 'click:circle') {
         e.stopPropagation()
         var t = edge.attr<number>('c1/atConnectionRatio') > 0.2 ? 0.2 : 0.9

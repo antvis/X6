@@ -29,7 +29,7 @@ const BasicLayout: React.FC = props => {
   const pathname = (props as any).location.pathname as string
   if (
     charts.some(item => item.link === pathname) ||
-    pathname.startsWith('/joint')
+    pathname.startsWith('/v1')
   ) {
     return props.children as React.ReactElement
   }

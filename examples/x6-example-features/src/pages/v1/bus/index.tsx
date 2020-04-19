@@ -99,8 +99,6 @@ export default class Example extends React.Component {
     ).addPort({ group: 'in' })
     var component7 = Component.create(100, 380, 150, 40, 'Sub-group 1')
 
-    console.log(component1)
-
     var fader1 = Fader.create(350, 110)
     var fader2 = Fader.create(350, 360)
     var aux1 = Aux.create(420, 220, 'Post-fade Aux')
