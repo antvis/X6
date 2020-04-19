@@ -9,9 +9,8 @@ export namespace PortLabelLayout {
 
 export namespace PortLabelLayout {
   export interface Result {
-    x: number
-    y: number
-    angle: number
+    position: Point.PointLike
+    rotation: number
     attrs: Attr.CellAttrs
   }
 

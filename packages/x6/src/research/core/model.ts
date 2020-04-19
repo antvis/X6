@@ -376,8 +376,8 @@ export class Model extends Basecoat<Model.EventArgs> {
 
     const collect = (cell: Cell, isOutgoing: boolean) => {
       const edges = isOutgoing
-        ? this.getOutgoingEdges(cell.id)
-        : this.getIncomingEdges(cell.id)
+        ? this.getOutgoingEdges(cell)
+        : this.getIncomingEdges(cell)
 
       if (edges != null) {
         edges.forEach(edge => {

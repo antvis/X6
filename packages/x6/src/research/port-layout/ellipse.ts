@@ -51,10 +51,10 @@ function ellipseLayout(
   const start = elemBBox.getTopCenter()
   const ratio = elemBBox.width / elemBBox.height
   const ellipse = Ellipse.fromRect(elemBBox)
-  const length = portsPositionArgs.length
+  const count = portsPositionArgs.length
 
   return portsPositionArgs.map((item, index) => {
-    const angle = startAngle + stepFn(index, length)
+    const angle = startAngle + stepFn(index, count)
     const p = start
       .clone()
       .rotate(-angle, center)

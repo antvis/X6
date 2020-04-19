@@ -79,9 +79,11 @@ function outsideLayout(
   }
 
   return toResult({
-    x: Math.round(tx),
-    y: Math.round(ty),
-    angle: orientAngle,
+    position: {
+      x: Math.round(tx),
+      y: Math.round(ty),
+    },
+    rotation: orientAngle,
     attrs: {
       '.': {
         y,
@@ -140,9 +142,11 @@ function insideLayout(
   }
 
   return toResult({
-    x: Math.round(tx),
-    y: Math.round(ty),
-    angle: orientAngle,
+    position: {
+      x: Math.round(tx),
+      y: Math.round(ty),
+    },
+    rotation: orientAngle,
     attrs: {
       '.': {
         y,

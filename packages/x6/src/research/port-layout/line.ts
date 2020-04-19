@@ -73,6 +73,7 @@ export const bottom: PortLayout.Definition<SideArgs> = (
 function lineLayout(portsPositionArgs: SideArgs[], p1: Point, p2: Point) {
   const line = new Line(p1, p2)
   const length = portsPositionArgs.length
+  console.log(portsPositionArgs)
   return portsPositionArgs.map((offset, index) => {
     const p = line.pointAt((index + 0.5) / length)
     if (offset.dx || offset.dy) {

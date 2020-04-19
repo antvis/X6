@@ -1,7 +1,6 @@
 import { ArrayExt } from '../../util'
 import { Basecoat } from '../../entity'
 import { Cell } from './cell'
-import { Edge } from './edge'
 
 export class Collection extends Basecoat<Collection.EventArgs> {
   public length: number = 0

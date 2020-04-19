@@ -2,7 +2,6 @@ import { ArrayExt } from '../../util'
 import { Rectangle, Point } from '../../geometry'
 import { v } from '../../v'
 import { Attr } from '../attr'
-import { View } from './view'
 import { Cell } from './cell'
 import { Node } from './node'
 import { Graph } from './graph'
@@ -13,6 +12,7 @@ import { Globals } from './globals'
 import { PortData } from './port'
 import { CellViewAttr } from './cell-view-attr'
 import { snapToGrid } from '../../geometry/util'
+import { PortLayout } from '../port-layout'
 
 export class NodeView<
   C extends Node = Node,
@@ -492,7 +492,7 @@ export class NodeView<
         this.applyPortTransform(
           cached.portLabelElement,
           labelLayout,
-          -portLayout.angle || 0,
+          -(portLayout.rotation || 0),
         )
 
         if (labelLayout.attrs) {
@@ -512,14 +512,16 @@ export class NodeView<
 
   protected applyPortTransform(
     element: Element,
-    transformData: View.TransformData,
+    layout: PortLayout.Result,
     initialAngle: number = 0,
   ) {
+    const position = layout.position
+    const rotation = layout.rotation
     const matrix = v
       .createSVGMatrix()
       .rotate(initialAngle)
-      .translate(transformData.x || 0, transformData.y || 0)
-      .rotate(transformData.angle || 0)
+      .translate(position.x || 0, position.y || 0)
+      .rotate(rotation || 0)
 
     v.transform(element as SVGElement, matrix, { absolute: true })
   }

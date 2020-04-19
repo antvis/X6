@@ -399,14 +399,6 @@ export namespace View {
   }
 }
 
-export namespace View {
-  export interface TransformData {
-    x?: number
-    y?: number
-    angle?: number
-  }
-}
-
 namespace Private {
   let counter = 0
   export function uniqueId() {

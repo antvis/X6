@@ -471,10 +471,9 @@ export class Node<
       return center
     }
 
-    const portsPositions = this.getPortsPosition(port.group)
-    const portCenter = Point.create(portsPositions[portId]).translate(
-      bbox.getOrigin(),
-    )
+    const layouts = this.getPortsPosition(port.group)
+    const position = layouts[portId].position
+    const portCenter = Point.create(position).translate(bbox.getOrigin())
 
     const angle = this.getRotation()
     if (angle) {
@@ -598,17 +597,25 @@ export class Node<
     if (res.items == null) {
       res.items = []
     }
-    return res
+    return res as PortData.Metadata
   }
 
   getPorts() {
     return ObjectExt.cloneDeep(this.ports.items)
   }
 
+  getPortsByGroup(groupName: string) {
+    return this.getPorts().filter(port => port.group === groupName)
+  }
+
   getPort(portId: string) {
     return ObjectExt.cloneDeep(
       this.ports.items.find(port => port.id && port.id === portId),
     )
+  }
+
+  getPortAt(index: number) {
+    return this.ports.items[index] || null
   }
 
   hasPorts() {
@@ -633,23 +640,19 @@ export class Node<
       new Rectangle(0, 0, size.width, size.height),
     )
 
-    const positions: {
-      [id: string]: {
-        x: number
-        y: number
-        angle: number
-      }
-    } = {}
-
-    return layouts.reduce((memo, item) => {
-      const transformation = item.portLayout
+    return layouts.reduce<
+      KeyValue<{
+        position: Point.PointLike
+        rotation: number
+      }>
+    >((memo, item) => {
+      const layout = item.portLayout
       memo[item.portId] = {
-        x: transformation.x,
-        y: transformation.y,
-        angle: transformation.angle,
+        position: { ...layout.position },
+        rotation: layout.rotation || 0,
       }
       return memo
-    }, positions)
+    }, {})
   }
 
   getPortProp(portId: string): PortData.PortMetadata
@@ -779,15 +782,16 @@ export class Node<
     port: PortData.PortMetadata | string,
     options: Cell.SetByPathOptions = {},
   ) {
-    const ports = [...this.ports.items]
-    const index = this.getPortIndex(port)
+    return this.removePortAt(this.getPortIndex(port), options)
+  }
 
-    if (index !== -1) {
+  removePortAt(index: number, options: Cell.SetByPathOptions = {}) {
+    if (index >= 0) {
+      const ports = [...this.ports.items]
       ports.splice(index, 1)
       options.rewrite = true
       this.setPropByPath('ports/items', ports, options)
     }
-
     return this
   }
 
@@ -961,11 +965,10 @@ export namespace Node {
     size?: { width: number; height: number }
     position?: { x: number; y: number }
     rotation?: number
-    ports?: PortData.Metadata
+    ports?: Partial<PortData.Metadata> // group and items are both optional
     portContainerMarkup?: Markup
     portMarkup?: Markup
     portLabelMarkup?: Markup
-
     defaultPortMarkup?: Markup
     defaultPortLabelMarkup?: Markup
     defaultPortContainerMarkup?: Markup

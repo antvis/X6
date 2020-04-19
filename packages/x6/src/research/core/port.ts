@@ -5,6 +5,7 @@ import { Attr } from '../attr'
 import { PortLayout } from '../port-layout'
 import { PortLabelLayout } from '../port-label-layout'
 import { PortLayoutRegistry, PortLabelLayoutRegistry } from '../registry'
+import { Markup } from './markup'
 
 export class PortData {
   ports: PortData.Port[]
@@ -20,8 +21,8 @@ export class PortData {
     return this.ports
   }
 
-  getGroup(groupName: string): PortData.Group {
-    return this.groups[groupName]
+  getGroup(groupName?: string | null) {
+    return groupName != null ? this.groups[groupName] : null
   }
 
   getPortsByGroup(groupName?: string): PortData.Port[] {
@@ -63,7 +64,7 @@ export class PortData {
         labelSize: port.label.size,
         labelLayout: this.getPortLabelLayout(
           port,
-          Point.create(portLayout),
+          Point.create(portLayout.position),
           elemBBox,
         ),
       }
@@ -96,7 +97,7 @@ export class PortData {
 
   protected parsePort(port: PortData.PortMetadata) {
     const result = { ...port } as PortData.Port
-    const group = this.getGroup(port.group)
+    const group = this.getGroup(port.group) || ({} as PortData.Group)
 
     result.markup = result.markup || group.markup
     result.attrs = ObjectExt.merge({}, group.attrs, result.attrs)
@@ -121,11 +122,14 @@ export class PortData {
   }
 
   protected createPosition(group: PortData.Group, port: PortData.PortMetadata) {
-    return {
-      name: 'left',
-      ...group.position,
-      args: port.args,
-    } as PortData.PortPosition
+    return ObjectExt.merge(
+      {
+        name: 'left',
+        args: {},
+      },
+      group.position,
+      { args: port.args },
+    ) as PortData.PortPosition
   }
 
   protected getPortPosition(
@@ -235,7 +239,7 @@ export namespace PortData {
     | PortLabelPosition
 
   export interface LabelMetadata {
-    markup?: string
+    markup?: Markup
     size?: Size
     position?: PortLabelPositionMetadata
   }
@@ -264,7 +268,7 @@ export namespace PortData {
   }
 
   interface PortBase {
-    group: string
+    group?: string
     /**
      * Arguments for the port layout function.
      */

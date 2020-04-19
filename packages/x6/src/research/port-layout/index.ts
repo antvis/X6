@@ -1,5 +1,5 @@
 import { KeyValue } from '../../types'
-import { Rectangle } from '../../geometry'
+import { Rectangle, Point } from '../../geometry'
 import * as layouts from './index-rollup'
 
 export namespace PortLayout {
@@ -7,10 +7,9 @@ export namespace PortLayout {
 }
 
 export namespace PortLayout {
-  export interface Result extends KeyValue {
-    x: number
-    y: number
-    angle: number
+  export interface Result {
+    position: Point.PointLike
+    rotation?: number
   }
 
   export interface CommonArgs {
