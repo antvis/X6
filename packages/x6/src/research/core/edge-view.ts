@@ -2109,7 +2109,8 @@ export class EdgeView<
 
     const type = data.terminalType
     const terminal = view.getEdgeTerminal(magnet, x, y, this.cell, type)
-    this.cell.prop(type, terminal, { ui: true })
+    this.cell.setTerminal(type, terminal, { ui: true })
+    // this.cell.prop(type, terminal, { ui: true })
   }
 
   protected snapArrowhead(
