@@ -464,21 +464,9 @@ export namespace Point {
     angle: number,
     center?: Point | PointLike | PointData,
   ) {
-    let sin = 0
-    let cos = 1
-
-    const degree = Angle.normalize(-angle)
-    if (degree === 90) {
-      sin = 1
-    } else if (degree === 180) {
-      cos = -1
-    } else if (degree === 270) {
-      sin = -1
-    } else {
-      const rad = Angle.toRad(degree)
-      sin = Math.sin(rad)
-      cos = Math.cos(rad)
-    }
+    const rad = Angle.toRad(Angle.normalize(-angle))
+    const sin = Math.sin(rad)
+    const cos = Math.cos(rad)
 
     return rotateEx(point, cos, sin, center)
   }
