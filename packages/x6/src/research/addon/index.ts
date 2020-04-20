@@ -1,1 +1,2 @@
-export * from './storage'
+export * from './localstorage'
+export * from './undomanager'
