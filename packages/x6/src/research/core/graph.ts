@@ -296,7 +296,6 @@ export class Graph extends View<Graph.EventArgs> {
 
   setModel(model: Model = this.createModel()) {
     this.model = model
-    this.model.pipe(this)
   }
 
   init() {
@@ -537,46 +536,29 @@ export class Graph extends View<Graph.EventArgs> {
     return this.model.getCell(id)
   }
 
-  addNode(options: Node.Metadata): Node
-  addNode(node: Node): Node
-  addNode(metadata: Node | Node.Metadata): Node {
-    const node = metadata instanceof Node ? metadata : this.createNode(metadata)
-    this.model.addCell(node)
-    return node
+  addNode(metadata: Node.Metadata, options?: Model.AddOptions): Node
+  addNode(node: Node, options: Model.AddOptions): Node
+  addNode(node: Node | Node.Metadata, options: Model.AddOptions = {}): Node {
+    return this.model.addNode(node)
   }
 
   createNode(metadata: Node.Metadata) {
-    const { type, ...options } = metadata
-    const name = type || 'basic.rect'
-    const define = NodeRegistry.get(name)
-    if (define) {
-      return new define(options)
-    }
-
-    return NodeRegistry.notExistError(name)
+    return this.model.createNode(metadata)
   }
 
-  addEdge(edge: Edge.Metadata): Edge
-  addEdge(edge: Edge): Edge
-  addEdge(metadata: Edge | Edge.Metadata): Edge {
-    const edge = metadata instanceof Edge ? metadata : this.createEdge(metadata)
-    this.model.addCell(edge)
-    return edge
+  addEdge(metadata: Edge.Metadata, options: Model.AddOptions): Edge
+  addEdge(edge: Edge, options: Model.AddOptions): Edge
+  addEdge(node: Edge | Edge.Metadata, options: Model.AddOptions = {}): Edge {
+    return this.model.addEdge(node)
   }
 
   createEdge(metadata: Edge.Metadata) {
-    const { type, ...options } = metadata
-    let define
-    if (type) {
-      define = EdgeRegistry.get(type)
-      if (define == null) {
-        return EdgeRegistry.notExistError(type)
-      }
-    } else {
-      define = Edge
-    }
+    return this.model.createEdge(metadata)
+  }
 
-    return new define(options)
+  addCell(cell: Cell | Cell[], options: Model.AddOptions = {}) {
+    this.model.addCell(cell, options)
+    return this
   }
 
   // render() {

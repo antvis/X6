@@ -7,6 +7,7 @@ import { Markup } from './markup'
 import { Edge } from './edge'
 import { Store } from './store'
 import { DeepPartial } from 'utility-types'
+import { NodeRegistry } from '../registry'
 
 export class Node<
   Properties extends Node.Properties = Node.Properties
@@ -1047,5 +1048,16 @@ export namespace Node {
     const shape = ObjectExt.createClass<Defintion>(className, base)
     shape.config(defaults, attrDefinitions)
     return shape
+  }
+
+  export function create(metadata: Metadata) {
+    const { type, ...options } = metadata
+    const name = type || 'basic.rect'
+    const define = NodeRegistry.get(name)
+    if (define) {
+      return new define(options)
+    }
+
+    return NodeRegistry.notExistError(name)
   }
 }

@@ -9,6 +9,7 @@ import { Store } from './store'
 import { Cell } from './cell'
 import { Node } from './node'
 import { Model } from './model'
+import { EdgeRegistry } from '../registry'
 
 export class Edge<
   Properties extends Edge.Properties = Edge.Properties
@@ -1202,5 +1203,19 @@ export namespace Edge {
     const shape = ObjectExt.createClass<Defintion>(className, base)
     shape.config(defaults, attrDefinitions)
     return shape
+  }
+
+  export function create(metadata: Edge | Edge.Metadata) {
+    const { type, ...options } = metadata
+    let define
+    if (type) {
+      define = EdgeRegistry.get(type)
+      if (define == null) {
+        return EdgeRegistry.notExistError(type)
+      }
+    } else {
+      define = Edge
+    }
+    return new define(options)
   }
 }

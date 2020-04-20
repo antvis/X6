@@ -1,11 +1,11 @@
 import { KeyValue } from '../../types'
 import { Basecoat } from '../../entity'
+import { Point, Rectangle } from '../../geometry'
 import { Cell } from './cell'
 import { Edge } from './edge'
 import { Node } from './node'
-import { Collection } from './collection'
-import { Point, Rectangle } from '../../geometry'
 import { Graph } from './graph'
+import { Collection } from './collection'
 
 export class Model extends Basecoat<Model.EventArgs> {
   protected readonly collection: Collection
@@ -28,10 +28,6 @@ export class Model extends Basecoat<Model.EventArgs> {
     })
 
     this.setup()
-  }
-
-  pipe(graph: Graph) {
-    this.graph = graph
   }
 
   notify<Key extends keyof Model.EventArgs>(
@@ -165,7 +161,27 @@ export class Model extends Basecoat<Model.EventArgs> {
     return cell
   }
 
-  addCell(cell: Cell | Cell[], options: Collection.AddOptions = {}) {
+  addNode(metadata: Node | Node.Metadata, options: Model.AddOptions = {}) {
+    const node = metadata instanceof Node ? metadata : this.createNode(metadata)
+    this.addCell(node, options)
+    return node
+  }
+
+  createNode(metadata: Node.Metadata) {
+    return Node.create(metadata)
+  }
+
+  addEdge(metadata: Edge.Metadata | Edge, options: Model.AddOptions = {}) {
+    const edge = metadata instanceof Edge ? metadata : this.createEdge(metadata)
+    this.addCell(edge, options)
+    return edge
+  }
+
+  createEdge(metadata: Edge.Metadata) {
+    return Edge.create(metadata)
+  }
+
+  addCell(cell: Cell | Cell[], options: Model.AddOptions = {}) {
     if (Array.isArray(cell)) {
       return this.addCells(cell, options)
     }
@@ -180,7 +196,7 @@ export class Model extends Basecoat<Model.EventArgs> {
     return this
   }
 
-  addCells(cells: Cell[], options: Collection.AddOptions = {}) {
+  addCells(cells: Cell[], options: Model.AddOptions = {}) {
     const count = cells.length
     if (count === 0) {
       return this
@@ -1007,6 +1023,8 @@ export class Model extends Basecoat<Model.EventArgs> {
 }
 
 export namespace Model {
+  export interface AddOptions extends Collection.AddOptions {}
+
   export interface GetCellsInAreaOptions {
     strict?: boolean
   }

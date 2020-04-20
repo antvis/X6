@@ -815,17 +815,13 @@ export class Cell<
   }
 
   addTo(model: Model, options?: Cell.SetOptions): this
-  // addTo(graph: Graph, options: Cell.SetOptions): this
+  addTo(graph: Graph, options: Cell.SetOptions): this
   addTo(parent: Cell, options?: Cell.SetOptions): this
-  addTo(target: Model | Cell, options: Cell.SetOptions = {}) {
-    if (target instanceof Model) {
-      target.addCell(this, options)
-    }
-    // else if (target instanceof Graph) {
-    //   target.model.addCell(this, options)
-    // }
-    else if (target instanceof Cell) {
+  addTo(target: Model | Graph | Cell, options: Cell.SetOptions = {}) {
+    if (target instanceof Cell) {
       target.addChild(this, options)
+    } else {
+      target.addCell(this, options)
     }
     return this
   }
