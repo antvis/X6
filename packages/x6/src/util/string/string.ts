@@ -12,6 +12,7 @@ export {
   padStart,
   truncate,
   template,
+  uniqueId,
 } from 'lodash'
 
 export * from './case'
