@@ -6,22 +6,22 @@ import {
 } from 'utility-types'
 import { FunctionExt } from '../util'
 
-export class Events<NameArgsMap extends Events.NameArgsMap = any> {
+export class Events<EventArgs extends Events.EventArgs = any> {
   private listeners: { [name: string]: any[] } = {}
 
-  on<Name extends Events.EventNames<NameArgsMap>>(
+  on<Name extends Events.EventNames<EventArgs>>(
     name: Name,
-    handler: Events.Handler<NameArgsMap[Name]>,
+    handler: Events.Handler<EventArgs[Name]>,
     context?: any,
   ): this
-  on<Name extends Events.UnknownNames<NameArgsMap>>(
+  on<Name extends Events.UnknownNames<EventArgs>>(
     name: Name,
     handler: Events.Handler<any>,
     context?: any,
   ): this
-  on<Name extends Events.EventNames<NameArgsMap>>(
+  on<Name extends Events.EventNames<EventArgs>>(
     name: Name,
-    handler: Events.Handler<NameArgsMap[Name]>,
+    handler: Events.Handler<EventArgs[Name]>,
     context?: any,
   ) {
     if (handler == null) {
@@ -37,19 +37,19 @@ export class Events<NameArgsMap extends Events.NameArgsMap = any> {
     return this
   }
 
-  once<Name extends Events.EventNames<NameArgsMap>>(
+  once<Name extends Events.EventNames<EventArgs>>(
     name: Name,
-    handler: Events.Handler<NameArgsMap[Name]>,
+    handler: Events.Handler<EventArgs[Name]>,
     context?: any,
   ): this
-  once<Name extends Events.UnknownNames<NameArgsMap>>(
+  once<Name extends Events.UnknownNames<EventArgs>>(
     name: Name,
     handler: Events.Handler<any>,
     context?: any,
   ): this
-  once<Name extends Events.EventNames<NameArgsMap>>(
+  once<Name extends Events.EventNames<EventArgs>>(
     name: Name,
-    handler: Events.Handler<NameArgsMap[Name]>,
+    handler: Events.Handler<EventArgs[Name]>,
     context?: any,
   ) {
     const cb = (...args: any) => {
@@ -63,22 +63,22 @@ export class Events<NameArgsMap extends Events.NameArgsMap = any> {
   off(): this
   off(name: null, handler: Events.Handler<any>): this
   off(name: null, handler: null, context: any): this
-  off<Name extends Events.EventNames<NameArgsMap>>(name: Name): this
-  off<Name extends Events.EventNames<NameArgsMap>>(
+  off<Name extends Events.EventNames<EventArgs>>(name: Name): this
+  off<Name extends Events.EventNames<EventArgs>>(
     name: Name,
-    handler: Events.Handler<NameArgsMap[Name]>,
+    handler: Events.Handler<EventArgs[Name]>,
   ): this
-  off<Name extends Events.EventNames<NameArgsMap>>(
+  off<Name extends Events.EventNames<EventArgs>>(
     name: Name,
-    handler: Events.Handler<NameArgsMap[Name]>,
+    handler: Events.Handler<EventArgs[Name]>,
     context: any,
   ): this
-  off<Name extends Events.UnknownNames<NameArgsMap>>(name: Name): this
-  off<Name extends Events.UnknownNames<NameArgsMap>>(
+  off<Name extends Events.UnknownNames<EventArgs>>(name: Name): this
+  off<Name extends Events.UnknownNames<EventArgs>>(
     name: Name,
     handler: Events.Handler<any>,
   ): this
-  off<Name extends Events.UnknownNames<NameArgsMap>>(
+  off<Name extends Events.UnknownNames<EventArgs>>(
     name: Name,
     handler: Events.Handler<any>,
     context: any,
@@ -124,62 +124,74 @@ export class Events<NameArgsMap extends Events.NameArgsMap = any> {
     return this
   }
 
-  trigger<Name extends Events.OptionalNormalNames<NameArgsMap>>(
+  trigger<Name extends Events.OptionalNormalNames<EventArgs>>(
     name: Name,
   ): Events.TriggerResult
-  trigger<Name extends Events.RequiredNormalNames<NameArgsMap>>(
+  trigger<Name extends Events.RequiredNormalNames<EventArgs>>(
     name: Name,
-    args: NameArgsMap[Name],
+    args: EventArgs[Name],
   ): Events.TriggerResult
-  trigger<Name extends Events.NamesWithArrayArgs<NameArgsMap>>(
+  trigger<Name extends Events.NamesWithArrayArgs<EventArgs>>(
     name: Name,
-    ...args: NameArgsMap[Name]
+    ...args: EventArgs[Name]
   ): Events.TriggerResult
-  trigger<Name extends Events.OtherNames<NameArgsMap>>(
+  trigger<Name extends Events.OtherNames<EventArgs>>(
     name: Name,
-    args?: NameArgsMap[Name],
+    args?: EventArgs[Name],
   ): Events.TriggerResult
-  trigger<Name extends Events.OtherNames<NameArgsMap>>(
+  trigger<Name extends Events.OtherNames<EventArgs>>(
     name: Name,
-    ...args: NameArgsMap[Name]
+    ...args: EventArgs[Name]
   ): Events.TriggerResult
-  trigger<Name extends Events.UnknownNames<NameArgsMap>>(
+  trigger<Name extends Events.UnknownNames<EventArgs>>(
     name: Name,
     ...args: any[]
   ): Events.TriggerResult
-  trigger<Name extends Events.EventNames<NameArgsMap>>(
+  trigger<Name extends Events.EventNames<EventArgs>>(
     name: Name,
-    ...args: NameArgsMap[Name]
+    ...args: any[]
   ) {
-    const cache = this.listeners[name]
-    if (cache != null) {
-      return Private.call(cache, args)
+    let returned: Events.TriggerResult = true
+    if (name !== '*') {
+      const list = this.listeners[name]
+      if (list != null) {
+        returned = Private.call(list, args)
+      }
     }
-    return Promise.resolve(true)
+
+    const list = this.listeners['*']
+    if (list != null) {
+      return Private.combindResult([
+        returned,
+        Private.call(list, [name, ...args]),
+      ])
+    }
+
+    return true
   }
 
   /**
    * Triggers event with specified event name. Unknown names
    * will cause a typescript type error.
    */
-  protected emit<Name extends Events.OptionalNormalNames<NameArgsMap>>(
+  protected emit<Name extends Events.OptionalNormalNames<EventArgs>>(
     name: Name,
   ): Events.TriggerResult
-  protected emit<Name extends Events.RequiredNormalNames<NameArgsMap>>(
+  protected emit<Name extends Events.RequiredNormalNames<EventArgs>>(
     name: Name,
-    args: NameArgsMap[Name],
+    args: EventArgs[Name],
   ): Events.TriggerResult
-  protected emit<Name extends Events.NamesWithArrayArgs<NameArgsMap>>(
+  protected emit<Name extends Events.NamesWithArrayArgs<EventArgs>>(
     name: Name,
-    ...args: NameArgsMap[Name]
+    ...args: EventArgs[Name]
   ): Events.TriggerResult
-  protected emit<Name extends Events.OtherNames<NameArgsMap>>(
+  protected emit<Name extends Events.OtherNames<EventArgs>>(
     name: Name,
-    args?: NameArgsMap[Name],
+    args?: EventArgs[Name],
   ): Events.TriggerResult
-  protected emit<Name extends Events.OtherNames<NameArgsMap>>(
+  protected emit<Name extends Events.OtherNames<EventArgs>>(
     name: Name,
-    ...args: NameArgsMap[Name]
+    ...args: EventArgs[Name]
   ): Events.TriggerResult
   protected emit(name: any, ...args: any[]) {
     return this.trigger(name, ...args)
@@ -195,35 +207,32 @@ export namespace Events {
 
   export type TriggerResult = boolean | Promise<boolean>
 
-  export type NameArgsMap = { [key: string]: any }
+  export type EventArgs = { [key: string]: any }
 
-  export type EventNames<M extends NameArgsMap> = Extract<keyof M, string>
+  export type EventNames<M extends EventArgs> = Extract<keyof M, string>
 
   /**
    * Get union type of keys from `M` that value matching `any[]`.
    */
-  export type NamesWithArrayArgs<M extends NameArgsMap> = RequiredKeys<
+  export type NamesWithArrayArgs<M extends EventArgs> = RequiredKeys<
     PickByValue<M, any[]>
   >
 
-  export type NotArrayValueMap<M extends NameArgsMap> = OmitByValue<M, any[]>
+  export type NotArrayValueMap<M extends EventArgs> = OmitByValue<M, any[]>
 
-  export type OptionalNormalNames<M extends NameArgsMap> = OptionalKeys<
+  export type OptionalNormalNames<M extends EventArgs> = OptionalKeys<
     NotArrayValueMap<M>
   >
 
-  export type RequiredNormalNames<M extends NameArgsMap> = RequiredKeys<
+  export type RequiredNormalNames<M extends EventArgs> = RequiredKeys<
     NotArrayValueMap<M>
   >
 
-  export type OtherNames<M extends NameArgsMap> = EventNames<
+  export type OtherNames<M extends EventArgs> = EventNames<
     PickByValue<M, undefined>
   >
 
-  export type UnknownNames<M extends NameArgsMap> = Exclude<
-    string,
-    EventNames<M>
-  >
+  export type UnknownNames<M extends EventArgs> = Exclude<string, EventNames<M>>
 }
 
 namespace Private {
@@ -235,16 +244,7 @@ namespace Private {
     return typeof obj === 'object' && obj.then && typeof obj.then === 'function'
   }
 
-  export function call<Args>(list: any[], args?: Args) {
-    const results: any[] = []
-    for (let i = 0, l = list.length; i < l; i += 2) {
-      const handler = list[i]
-      const context = list[i + 1]
-      const params = Array.isArray(args) ? args : [args]
-      const ret = FunctionExt.invoke<any>(handler, params, context)
-      results.push(ret)
-    }
-
+  export function combindResult(results: any[]) {
     const hasAsync = results.some(res => isAsync(res))
     if (hasAsync) {
       const deferres = results.map(res =>
@@ -257,5 +257,18 @@ namespace Private {
     }
 
     return results.every(res => res !== false)
+  }
+
+  export function call<Args>(list: any[], args?: Args) {
+    const results: any[] = []
+    for (let i = 0, l = list.length; i < l; i += 2) {
+      const handler = list[i]
+      const context = list[i + 1]
+      const params = Array.isArray(args) ? args : [args]
+      const ret = FunctionExt.invoke<any>(handler, params, context)
+      results.push(ret)
+    }
+
+    return combindResult(results)
   }
 }
