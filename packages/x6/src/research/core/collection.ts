@@ -10,7 +10,7 @@ export class Collection extends Basecoat<Collection.EventArgs> {
 
   constructor(cells: Cell | Cell[], options: Collection.Options = {}) {
     super()
-    this.comparator = options.comparator || null
+    this.comparator = options.comparator || 'zIndex'
     this.clean()
     if (cells) {
       this.reset(cells, { silent: true })
@@ -233,12 +233,7 @@ export class Collection extends Basecoat<Collection.EventArgs> {
 
   sort(options: Collection.SetOptions = {}) {
     if (this.comparator != null) {
-      if (typeof this.comparator === 'function') {
-        this.cells.sort(this.comparator)
-      } else {
-        this.cells = ArrayExt.sortBy(this.cells, this.comparator)
-      }
-
+      this.cells = ArrayExt.sortBy(this.cells, this.comparator)
       if (!options.silent) {
         this.trigger('sorted')
       }
@@ -285,7 +280,7 @@ export class Collection extends Basecoat<Collection.EventArgs> {
 }
 
 export namespace Collection {
-  export type Comparator = string | string[] | ((a: Cell, b: Cell) => number)
+  export type Comparator = string | string[] | ((cell: Cell) => number)
 
   export interface Options {
     comparator?: Comparator

@@ -226,7 +226,7 @@ export abstract class View<EventArgs = any> extends Basecoat<EventArgs> {
     return this
   }
 
-  protected undelegateEvents() {
+  undelegateEvents() {
     this.$(this.container).off(this.getEventNamespace())
     return this
   }

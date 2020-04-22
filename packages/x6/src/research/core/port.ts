@@ -42,7 +42,7 @@ export class PortData {
     if (groupPositionName != null) {
       const fn = PortLayoutRegistry.get(groupPositionName)
       if (fn == null) {
-        return PortLayoutRegistry.notExistError(groupPositionName)
+        return PortLayoutRegistry.onNotFound(groupPositionName)
       }
       layoutFn = fn
     } else {

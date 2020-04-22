@@ -792,8 +792,8 @@ export class EdgeView<
         : NodeAnchorRegistry.get(name)
       if (typeof anchorFn !== 'function') {
         return isEdge
-          ? EdgeAnchorRegistry.notExistError(name)
-          : NodeAnchorRegistry.notExistError(name)
+          ? EdgeAnchorRegistry.onNotFound(name)
+          : NodeAnchorRegistry.onNotFound(name)
       }
     }
 
@@ -824,7 +824,7 @@ export class EdgeView<
 
       const fn = name ? RouterRegistry.get(name) : Router.presets.normal
       if (typeof fn !== 'function') {
-        return RouterRegistry.notExistError(name!)
+        return RouterRegistry.onNotFound(name!)
       }
 
       routePoints = fn.call(this, vertices, args, this)
@@ -929,7 +929,7 @@ export class EdgeView<
       const name = connectionPointDef.name
       connectionPointFn = ConnectionPointRegistry.get(name)
       if (typeof connectionPointFn !== 'function') {
-        return ConnectionPointRegistry.notExistError(name)
+        return ConnectionPointRegistry.onNotFound(name)
       }
     }
 
@@ -1020,7 +1020,7 @@ export class EdgeView<
         : Connector.presets.normal
 
     if (typeof fn !== 'function') {
-      return ConnectorRegistry.notExistError(def.name!)
+      return ConnectorRegistry.onNotFound(def.name!)
     }
 
     const args = typeof def === 'function' ? {} : def.args || {}

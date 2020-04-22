@@ -5,8 +5,6 @@ import { v, MatrixLike } from '../../v'
 import { Point, Rectangle } from '../../geometry'
 import { StringExt, NumberExt, ObjectExt } from '../../util'
 import {
-  NodeRegistry,
-  EdgeRegistry,
   ViewRegistry,
   GridRegistry,
   BackgroundRegistry,
@@ -26,7 +24,6 @@ import { Markup } from './markup'
 import { CellView } from './cell-view'
 import { NodeView } from './node-view'
 import { EdgeView } from './edge-view'
-import { Collection } from './collection'
 import { CellViewFlag } from './cell-view-flag'
 
 const sortingTypes = {
@@ -267,8 +264,7 @@ export class Graph extends View<Graph.EventArgs> {
     this.drawPane = selectors.drawPane as SVGGElement
     this.container.appendChild(fragment)
 
-    const ctor = this.constructor as typeof Graph
-    this.delegateEvents(ctor.events)
+    this.delegateEvents()
     this.setModel()
     this.resize()
     this.setGrid(this.options.drawGrid)
@@ -288,6 +284,12 @@ export class Graph extends View<Graph.EventArgs> {
     if (!this.isFrozen() && this.isAsync()) {
       this.updateViewsAsync()
     }
+  }
+
+  delegateEvents() {
+    const ctor = this.constructor as typeof Graph
+    super.delegateEvents(ctor.events)
+    return this
   }
 
   createModel() {
@@ -423,12 +425,12 @@ export class Graph extends View<Graph.EventArgs> {
     this.sortViews()
   }
 
-  protected onModelReseted(options: Collection.SetOptions) {
+  protected onModelReseted(options: Model.SetOptions) {
     this.removeZPivots()
     this.resetViews(this.model.getCells(), options)
   }
 
-  protected onCellAdded(cell: Cell, options: Collection.AddOptions) {
+  protected onCellAdded(cell: Cell, options: Model.AddOptions) {
     const position = options.position
     if (this.isAsync() || typeof position !== 'number') {
       this.renderView(cell, options)
@@ -443,7 +445,7 @@ export class Graph extends View<Graph.EventArgs> {
     }
   }
 
-  protected onCellRemoved(cell: Cell, options: Collection.RemoveOptions) {
+  protected onCellRemoved(cell: Cell, options: Model.RemoveOptions) {
     const view = this.findViewByCell(cell)
     if (view) {
       this.requestViewUpdate(view, FLAG_REMOVE, view.priority, options)
@@ -1264,19 +1266,13 @@ export class Graph extends View<Graph.EventArgs> {
 
     const view = cell.view
     const options = { interactive: this.options.interactive }
-    if (view) {
-      if (typeof view === 'string') {
-        const def = ViewRegistry.get(view)
-        if (def) {
-          return new def(cell, options)
-        }
-
-        return cell.isNode()
-          ? NodeRegistry.notExistError(view)
-          : EdgeRegistry.notExistError(view)
+    if (view != null && typeof view === 'string') {
+      const def = ViewRegistry.get(view)
+      if (def) {
+        return new def(cell, options)
       }
 
-      return new view(cell, options)
+      return ViewRegistry.onNotFound(view)
     }
 
     if (cell.isNode()) {
@@ -1848,8 +1844,14 @@ export class Graph extends View<Graph.EventArgs> {
 
   // #region coord
 
-  snapToGrid(x: number, y: number) {
-    return this.clientToLocalPoint(x, y).snapToGrid(this.options.gridSize)
+  snapToGrid(p: Point | Point.PointLike): Point
+  snapToGrid(x: number, y: number): Point
+  snapToGrid(x: number | Point | Point.PointLike, y?: number) {
+    const p =
+      typeof x === 'number'
+        ? this.clientToLocalPoint(x, y as number)
+        : this.clientToLocalPoint(x.x, x.y)
+    return p.snapToGrid(this.options.gridSize)
   }
 
   /**
@@ -2128,7 +2130,7 @@ export class Graph extends View<Graph.EventArgs> {
           : [{ ...items }]
       }
 
-      return GridRegistry.notExistError(patterns)
+      return GridRegistry.onNotFound(patterns)
     }
 
     if (patterns === true) {
@@ -2157,7 +2159,7 @@ export class Graph extends View<Graph.EventArgs> {
         : [{ ...items, ...params[0] }]
     }
 
-    return GridRegistry.notExistError(name)
+    return GridRegistry.onNotFound(name)
   }
 
   protected updateGrid(
@@ -2510,7 +2512,7 @@ export class Graph extends View<Graph.EventArgs> {
     const name = def.name
     const highlighter = HighlighterRegistry.get(name)
     if (highlighter == null) {
-      return HighlighterRegistry.notExistError(name)
+      return HighlighterRegistry.onNotFound(name)
     }
 
     Highlighter.check(name, highlighter)
@@ -2776,8 +2778,7 @@ export class Graph extends View<Graph.EventArgs> {
 
     e.stopImmediatePropagation()
 
-    const ctor = this.constructor as typeof Graph
-    this.delegateEvents(ctor.events)
+    this.delegateEvents()
   }
 
   protected onMouseOver(e: JQuery.MouseOverEvent) {

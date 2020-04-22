@@ -105,8 +105,9 @@ export class Node<
 
     if (options.direction) {
       const currentSize = this.sizes
+      const direction = StringExt.camelCase(options.direction)
 
-      switch (options.direction) {
+      switch (direction) {
         case 'left':
         case 'right':
           // Don't change height when resizing horizontally.
@@ -119,22 +120,22 @@ export class Node<
           break
       }
 
-      let quadrant = {
-        topRight: 0,
+      const map: { [direction: string]: number } = {
         right: 0,
-        topLeft: 1,
+        topRight: 0,
         top: 1,
-        bottomLeft: 2,
+        topLeft: 1,
         left: 2,
-        bottomRight: 3,
+        bottomLeft: 2,
         bottom: 3,
-      }[options.direction]
+        bottomRight: 3,
+      }
 
-      const angle = Angle.normalize(this.rotation || 0)
-
+      let quadrant = map[direction]
+      const rotation = Angle.normalize(this.rotation || 0)
       if (options.absolute) {
         // We are taking the node's rotation into account
-        quadrant += Math.floor((angle + 45) / 90)
+        quadrant += Math.floor((rotation + 45) / 90)
         quadrant %= 4
       }
 
@@ -158,7 +159,7 @@ export class Node<
       // where is the point actually located on the screen.
       const imageFixedPoint = fixedPoint
         .clone()
-        .rotate(-angle, bbox.getCenter())
+        .rotate(-rotation, bbox.getCenter())
 
       // Every point on the element rotates around a circle with the centre of
       // rotation in the middle of the element while the whole element is being
@@ -192,7 +193,7 @@ export class Node<
 
       // Lastly we have to deduct the original angle the element was rotated
       // by and that's it.
-      alpha -= Angle.toRad(angle)
+      alpha -= Angle.toRad(rotation)
 
       // With this angle and distance we can easily calculate the centre of
       // the un-rotated element.
@@ -1016,9 +1017,12 @@ export namespace Node {
       | 'right'
       | 'bottom'
       | 'topLeft'
-      | 'topRight'
+      | 'top-left'
+      | 'top-right'
       | 'bottomLeft'
+      | 'bottom-left'
       | 'bottomRight'
+      | 'bottom-right'
   }
 
   export interface FitEmbedsOptions extends SetOptions {
@@ -1051,13 +1055,14 @@ export namespace Node {
   }
 
   export function create(metadata: Metadata) {
-    const { type, ...options } = metadata
-    const name = type || 'basic.rect'
-    const define = NodeRegistry.get(name)
-    if (define) {
-      return new define(options)
+    const type = metadata.type
+    if (type) {
+      const define = NodeRegistry.get(type)
+      if (define) {
+        return new define(metadata)
+      }
+      return NodeRegistry.onNotFound(type)
     }
-
-    return NodeRegistry.notExistError(name)
+    throw new Error('Node type is required for creating a node instance')
   }
 }

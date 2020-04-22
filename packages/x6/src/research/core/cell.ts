@@ -20,6 +20,7 @@ export class Cell<
 > extends Basecoat<Cell.EventArgs> {
   // #region static
 
+  protected static markup: Markup
   protected static defaults: Cell.Defaults = {}
   protected static attrDefinitions: Attr.Definitions = {}
 
@@ -28,9 +29,9 @@ export class Cell<
     attrDefinitions?: Attr.Definitions,
   ) {
     const { markup, ...others } = presets
-    this.defaults = this.mergeDefaults(this.defaults, others)
+    this.defaults = ObjectExt.merge({}, this.defaults, others)
     if (markup != null) {
-      this.defaults.markup = markup
+      this.markup = markup
     }
 
     if (attrDefinitions) {
@@ -38,25 +39,8 @@ export class Cell<
     }
   }
 
-  public static mergeDefaults<T extends Cell.Defaults = Cell.Defaults>(
-    target: T,
-    source?: T,
-  ): T {
-    const { view: targetView, ...targetBase } = target
-    if (source == null) {
-      const defaults = ObjectExt.cloneDeep(targetBase as T)
-      if (targetView) {
-        defaults.view = targetView
-      }
-      return defaults
-    }
-
-    const { view: sourceView, ...sourceBase } = source
-    const defaults = ObjectExt.merge({} as T, targetBase as T, sourceBase as T)
-    if (sourceView || targetView) {
-      defaults.view = sourceView || targetView
-    }
-    return defaults
+  public static getMarkup() {
+    return this.markup
   }
 
   public static getDefaults<T extends Cell.Defaults = Cell.Defaults>(
@@ -95,7 +79,8 @@ export class Cell<
   protected prepare(options: Cell.Options): Properties {
     const id = options.id
     const ctor = this.constructor as typeof Cell
-    const props = ctor.mergeDefaults<Properties>(
+    const props = ObjectExt.merge(
+      {},
       ctor.getDefaults(true),
       options as Properties,
     )
@@ -448,7 +433,12 @@ export class Cell<
   }
 
   getMarkup() {
-    return this.store.get('markup', '')
+    let markup = this.store.get('markup')
+    if (markup == null) {
+      const ctor = this.constructor as typeof Cell
+      markup = ctor.getMarkup()
+    }
+    return markup
   }
 
   setMarkup(markup: Markup, options: Cell.SetOptions = {}) {
@@ -986,7 +976,7 @@ export class Cell<
 
   // #region transform
 
-  translate(tx: number, ty: number, options: Cell.TranslateOptions) {
+  translate(tx: number, ty: number, options?: Cell.TranslateOptions) {
     return this
   }
 
@@ -1017,9 +1007,9 @@ export class Cell<
     ? Edge.Properties
     : Properties {
     const ctor = this.constructor as typeof Cell
+    const props = this.store.get()
+    const attrs = props.attrs || {}
     const defaults = ctor.getDefaults(true)
-    const data = this.store.get()
-    const attrs = data.attrs || {}
     const defaultAttrs = defaults.attrs || {}
     const finalAttrs: Attr.CellAttrs = {}
 
@@ -1031,7 +1021,11 @@ export class Cell<
         const value = attr[name] as KeyValue
         const defaultValue = defaultAttr ? defaultAttr[name] : null
 
-        if (typeof value === 'object' && !Array.isArray(value)) {
+        if (
+          value != null &&
+          typeof value === 'object' &&
+          !Array.isArray(value)
+        ) {
           Object.keys(value).forEach(subName => {
             const subValue = value[subName]
             if (
@@ -1065,7 +1059,7 @@ export class Cell<
     })
 
     return ObjectExt.cloneDeep({
-      ...data,
+      ...props,
       attrs: finalAttrs,
     }) as any
   }
@@ -1133,10 +1127,8 @@ export class Cell<
 }
 
 export namespace Cell {
-  export type ViewType = string | typeof CellView
-
   export interface Common {
-    view?: ViewType
+    view?: string
     type?: string
     markup?: Markup
     attrs?: Attr.CellAttrs
@@ -1204,7 +1196,7 @@ export namespace Cell {
     'change:visible': ChangeArgs<boolean>
     'change:parent': ChangeArgs<string>
     'change:children': ChangeArgs<string[]>
-    'change:view': ChangeArgs<ViewType>
+    'change:view': ChangeArgs<string>
 
     // node
     'change:size': NodeChangeArgs<Size>

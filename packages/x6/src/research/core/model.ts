@@ -1,11 +1,13 @@
 import { KeyValue } from '../../types'
 import { Basecoat } from '../../entity'
 import { Point, Rectangle } from '../../geometry'
+import { Dijkstra } from '../addon'
 import { Cell } from './cell'
 import { Edge } from './edge'
 import { Node } from './node'
 import { Graph } from './graph'
 import { Collection } from './collection'
+import { NodeRegistry, EdgeRegistry } from '../registry'
 
 export class Model extends Basecoat<Model.EventArgs> {
   protected readonly collection: Collection
@@ -18,15 +20,7 @@ export class Model extends Basecoat<Model.EventArgs> {
 
   constructor(cells: Cell[] = []) {
     super()
-
-    this.collection = new Collection(cells, {
-      comparator: (a, b) => {
-        const za = a.zIndex || 0
-        const zb = b.zIndex || 0
-        return za - zb
-      },
-    })
-
+    this.collection = new Collection(cells)
     this.setup()
   }
 
@@ -121,6 +115,26 @@ export class Model extends Basecoat<Model.EventArgs> {
     }
   }
 
+  protected prepareCell(cell: Cell, options: Collection.AddOptions) {
+    if (!cell.model && (!options || !options.dry)) {
+      // A cell can not be member of more than one graph.
+      // A cell stops being the member of the graph after it's removed.
+      cell.model = this
+    }
+
+    if (cell.zIndex == null) {
+      cell.zIndex = this.getMaxZIndex() + 1
+    }
+
+    return cell
+  }
+
+  resetCells(cells: Cell[], options: Collection.SetOptions = {}) {
+    const preparedCells = cells.map(cell => this.prepareCell(cell, options))
+    this.collection.reset(preparedCells, options)
+    return this
+  }
+
   clear(options: Cell.SetOptions = {}) {
     const raw = this.getCells()
     if (raw.length === 0) {
@@ -145,20 +159,6 @@ export class Model extends Basecoat<Model.EventArgs> {
     )
 
     return this
-  }
-
-  protected prepareCell(cell: Cell, options: Collection.AddOptions) {
-    if (!cell.model && (!options || !options.dry)) {
-      // A cell can not be member of more than one graph.
-      // A cell stops being the member of the graph after it's removed.
-      cell.model = this
-    }
-
-    if (cell.zIndex == null) {
-      cell.zIndex = this.getMaxZIndex() + 1
-    }
-
-    return cell
   }
 
   addNode(metadata: Node | Node.Metadata, options: Model.AddOptions = {}) {
@@ -215,12 +215,6 @@ export class Model extends Basecoat<Model.EventArgs> {
     })
     this.stopBatch('add', localOptions)
 
-    return this
-  }
-
-  resetCells(cells: Cell[], options: Collection.SetOptions = {}) {
-    const preparedCells = cells.map(cell => this.prepareCell(cell, options))
-    this.collection.reset(preparedCells, options)
     return this
   }
 
@@ -786,6 +780,13 @@ export class Model extends Basecoat<Model.EventArgs> {
     return subgraph
   }
 
+  /**
+   * Clones the whole subgraph (including all the connected links whose
+   * source/target is in the subgraph). If `options.deep` is `true`, also
+   * take into account all the embedded cells of all the subgraph cells.
+   *
+   * Returns a map of the form: { [original cell ID]: [clone] }.
+   */
   cloneSubGraph(cells: Cell[], options: Model.GetSubgraphOptions = {}) {
     const subgraph = this.getSubGraph(cells, options)
     return this.cloneCells(subgraph)
@@ -949,6 +950,86 @@ export class Model extends Basecoat<Model.EventArgs> {
 
   // #endregion
 
+  // #region make tree
+
+  makeTree(
+    parent: Model.TreeItem,
+    options: Model.MakeTreeOptions,
+    parentNode: Node,
+    collector: Cell[] = [],
+  ) {
+    const children =
+      typeof options.children === 'function'
+        ? options.children(parent)
+        : parent[options.children || 'children']
+
+    if (!parentNode) {
+      // tslint:disable-next-line
+      parentNode = options.createNode(parent)
+      collector.push(parentNode)
+    }
+
+    if (Array.isArray(children)) {
+      children.forEach((child: Model.TreeItem) => {
+        const node = options.createNode(child)
+        const edge = options.createEdge(parentNode, node)
+        collector.push(node, edge)
+        this.makeTree(child, options, node, collector)
+      })
+    }
+
+    return collector
+  }
+
+  // #endregion
+
+  // #region shortest path
+
+  /***
+   * Returns an array of IDs of nodes on the shortest
+   * path between source and target.
+   */
+  getShortestPath(
+    source: Cell | string,
+    target: Cell | string,
+    options: Model.GetShortestPathOptions = {},
+  ) {
+    const adjacencyList: Dijkstra.AdjacencyList = {}
+    this.getEdges().forEach(edge => {
+      const sourceId = edge.getSourceCellId()
+      const targetId = edge.getTargetCellId()
+      if (sourceId && targetId) {
+        if (!adjacencyList[sourceId]) {
+          adjacencyList[sourceId] = []
+        }
+        if (!adjacencyList[targetId]) {
+          adjacencyList[targetId] = []
+        }
+
+        adjacencyList[sourceId].push(targetId)
+        if (!options.directed) {
+          adjacencyList[targetId].push(sourceId)
+        }
+      }
+    })
+
+    const sourceId = typeof source === 'string' ? source : source.id
+    const previous = Dijkstra.run(adjacencyList, sourceId, options.weight)
+
+    const path = []
+    let targetId = typeof target === 'string' ? target : target.id
+    if (previous[targetId]) {
+      path.push(targetId)
+    }
+
+    while ((targetId = previous[targetId])) {
+      path.unshift(targetId)
+    }
+    return path
+  }
+
+  // #endregion
+
   // #region transform
 
   /**
@@ -987,7 +1068,9 @@ export class Model extends Basecoat<Model.EventArgs> {
 
   // #region serialize/deserialize
 
-  toJSON() {}
+  toJSON() {
+    return Model.toJSON(this.getCells())
+  }
 
   fromJSON() {}
 
@@ -1023,7 +1106,9 @@ export class Model extends Basecoat<Model.EventArgs> {
 }
 
 export namespace Model {
+  export interface SetOptions extends Collection.SetOptions {}
   export interface AddOptions extends Collection.AddOptions {}
+  export interface RemoveOptions extends Collection.RemoveOptions {}
 
   export interface GetCellsInAreaOptions {
     strict?: boolean
@@ -1052,6 +1137,21 @@ export namespace Model {
 
   export interface GetSubgraphOptions {
     deep?: boolean
+  }
+
+  export interface TreeItem extends KeyValue {
+    name: string
+  }
+
+  export interface MakeTreeOptions {
+    children?: string | ((parent: TreeItem) => TreeItem[])
+    createNode: (metadata: TreeItem) => Node
+    createEdge: (parent: Node, child: Node) => Edge
+  }
+
+  export interface GetShortestPathOptions {
+    directed?: boolean
+    weight?: Dijkstra.Weight
   }
 }
 
@@ -1218,5 +1318,60 @@ export namespace Model {
     'edge:vertexs:removed': EdgeEventArgs & Cell.EventArgs['vertexs:removed']
     'edge:labels:added': EdgeEventArgs & Cell.EventArgs['labels:added']
     'edge:labels:removed': EdgeEventArgs & Cell.EventArgs['labels:removed']
+  }
+}
+
+export namespace Model {
+  export function toJSON(cells: Cell[]) {
+    return {
+      cells: cells.map(cell => cell.toJSON()),
+    }
+  }
+
+  export function fromJSON(
+    data:
+      | (Node.Properties | Edge.Properties)[]
+      | (Partial<ReturnType<typeof toJSON>> & {
+          nodes?: Node.Properties[]
+          edges?: Edge.Properties[]
+        }),
+  ) {
+    const cells: Cell.Properties[] = []
+    if (Array.isArray(data)) {
+      cells.push(...data)
+    } else {
+      if (data.cells) {
+        cells.push(...data.cells)
+      }
+
+      if (data.nodes) {
+        data.nodes.forEach(node => {
+          if (node.type == null) {
+          }
+          cells.push(node)
+        })
+      }
+
+      if (data.edges) {
+        data.edges.forEach(edge => {
+          if (edge.type == null) {
+          }
+          cells.push(edge)
+        })
+      }
+    }
+
+    return cells.map(cell => {
+      const type = cell.type
+      if (type) {
+        if (NodeRegistry.exist(type)) {
+          return Node.create(cell)
+        }
+        if (EdgeRegistry.exist(type)) {
+          return Edge.create(cell)
+        }
+      }
+      throw new Error('Node/Edge type is required for creating a node instance')
+    })
   }
 }

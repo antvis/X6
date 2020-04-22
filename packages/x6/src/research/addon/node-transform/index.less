@@ -1,0 +1,136 @@
+@prefix: x6;
+
+.@{prefix}-node-transform {
+  position: absolute;
+  box-sizing: border-box;
+  border: 1px dashed #000;
+  border-radius: 5px;
+  user-select: none;
+  pointer-events: none;
+
+  & > div {
+    position: absolute;
+    box-sizing: border-box;
+    background-color: #fff;
+    border: 1px solid #000;
+    transition: background-color 0.2s;
+    pointer-events: auto;
+
+    &:hover {
+      background-color: #d3d3d3;
+    }
+  }
+
+  .resize {
+    width: 10px;
+    height: 10px;
+    border-radius: 6px;
+  }
+
+  .resize[data-position='top-left'] {
+    top: -6px;
+    left: -6px;
+  }
+  .resize[data-position='top-right'] {
+    top: -6px;
+    right: -6px;
+  }
+  .resize[data-position='bottom-left'] {
+    bottom: -6px;
+    left: -6px;
+  }
+  .resize[data-position='bottom-right'] {
+    right: -6px;
+    bottom: -6px;
+  }
+  .resize[data-position='top'] {
+    top: -6px;
+    left: 50%;
+    margin-left: -6px;
+  }
+  .resize[data-position='bottom'] {
+    bottom: -6px;
+    left: 50%;
+    margin-left: -6px;
+  }
+  .resize[data-position='left'] {
+    top: 50%;
+    left: -6px;
+    margin-top: -6px;
+  }
+  .resize[data-position='right'] {
+    top: 50%;
+    right: -6px;
+    margin-top: -6px;
+  }
+
+  &.prevent-aspect-ratio .resize[data-position='top'],
+  &.prevent-aspect-ratio .resize[data-position='bottom'],
+  &.prevent-aspect-ratio .resize[data-position='left'],
+  &.prevent-aspect-ratio .resize[data-position='right'] {
+    display: none;
+  }
+
+  .resize.n {
+    cursor: n-resize;
+  }
+
+  .resize.s {
+    cursor: s-resize;
+  }
+
+  .resize.e {
+    cursor: e-resize;
+  }
+
+  .resize.w {
+    cursor: w-resize;
+  }
+
+  .resize.ne {
+    cursor: ne-resize;
+  }
+
+  .resize.nw {
+    cursor: nw-resize;
+  }
+
+  .resize.se {
+    cursor: se-resize;
+  }
+
+  .resize.sw {
+    cursor: sw-resize;
+  }
+
+  .rotate {
+    top: -20px;
+    left: -20px;
+    width: 12px;
+    height: 12px;
+    border-radius: 6px;
+    cursor: move;
+  }
+
+  &.active {
+    > div {
+      display: none;
+    }
+
+    > div.active {
+      display: block;
+      background-color: #808080;
+    }
+  }
+
+  &.no-orth-resize .resize[data-position='bottom'],
+  &.no-orth-resize .resize[data-position='left'],
+  &.no-orth-resize .resize[data-position='right'],
+  &.no-orth-resize .resize[data-position='top'] {
+    display: none;
+  }
+
+  &.no-rotation .rotate {
+    display: none;
+  }
+}

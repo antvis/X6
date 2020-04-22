@@ -1205,17 +1205,15 @@ export namespace Edge {
     return shape
   }
 
-  export function create(metadata: Edge | Edge.Metadata) {
-    const { type, ...options } = metadata
-    let define
+  export function create(metadata: Edge.Metadata) {
+    const type = metadata.type
     if (type) {
-      define = EdgeRegistry.get(type)
-      if (define == null) {
-        return EdgeRegistry.notExistError(type)
+      const define = EdgeRegistry.get(type)
+      if (define) {
+        return new define(metadata)
       }
-    } else {
-      define = Edge
+      return EdgeRegistry.onNotFound(type)
     }
-    return new define(options)
+    return new Edge(metadata)
   }
 }
