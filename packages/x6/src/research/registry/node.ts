@@ -1,5 +1,6 @@
 import { Node } from '../core/node'
 import { Registry } from './registry'
+import { EdgeRegistry } from './edge'
 
 export const NodeRegistry = Registry.create<
   Node.Defintion,
@@ -8,6 +9,10 @@ export const NodeRegistry = Registry.create<
 >({
   type: 'node',
   process(name, options) {
+    if (EdgeRegistry.exist(name)) {
+      throw new Error(`Node with '${name}' was registered by anthor Edge`)
+    }
+
     if (typeof options === 'function') {
       return options
     }
@@ -17,7 +22,7 @@ export const NodeRegistry = Registry.create<
     if (inherit) {
       const base = this.get(inherit)
       if (base == null) {
-        this.notExistError(inherit, 'inherited')
+        this.onNotFound(inherit, 'inherited')
       } else {
         parent = base
       }

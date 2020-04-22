@@ -6,11 +6,12 @@ export class Registry<
   Presets = KeyValue<Entity>,
   OptionalType = never
 > {
-  protected readonly registry: KeyValue<Entity> = {}
+  protected readonly registry: KeyValue<Entity>
   protected readonly options: Registry.Options<Entity | OptionalType>
 
   constructor(options: Registry.Options<Entity | OptionalType>) {
-    this.options = options
+    this.registry = {}
+    this.options = { ...options }
   }
 
   get names() {
@@ -39,8 +40,8 @@ export class Registry<
       return
     }
 
-    if (this.registry[name] && !force && !Private.isApplyingHMR()) {
-      this.onConflict(name)
+    if (this.exist(name) && !force && !Private.isApplyingHMR()) {
+      this.onDuplicated(name)
     }
 
     const entity = this.options.process
@@ -65,32 +66,13 @@ export class Registry<
     return name ? this.registry[name] : null
   }
 
-  getSpellingSuggestion(name: string, prefix?: string) {
-    const suggestion = this.getSpellingSuggestionForName(name)
-    const prefixed = prefix
-      ? `${prefix} ${StringExt.lowerFirst(this.options.type)}`
-      : this.options.type
-
-    return (
-      // tslint:disable-next-line
-      `${StringExt.upperFirst(prefixed)} with name '${name}' does not exist.` +
-      (suggestion ? ` Did you mean '${suggestion}'?` : '')
-    )
+  exist<K extends keyof Presets>(name: K): boolean
+  exist(name: string): boolean
+  exist(name: string): boolean {
+    return name ? this.registry[name] != null : false
   }
 
-  notExistError(name: string, prefix?: string): never {
-    throw new Error(this.getSpellingSuggestion(name, prefix))
-  }
-
-  protected getSpellingSuggestionForName(name: string) {
-    return StringExt.getSpellingSuggestion(
-      name,
-      Object.keys(this.registry),
-      candidate => candidate,
-    )
-  }
-
-  protected onConflict(name: string) {
+  onDuplicated(name: string) {
     try {
       // race
       if (this.options.onConflict) {
@@ -104,6 +86,31 @@ export class Registry<
     } catch (err) {
       throw err
     }
+  }
+
+  onNotFound(name: string, prefix?: string): never {
+    throw new Error(this.getSpellingSuggestion(name, prefix))
+  }
+
+  getSpellingSuggestion(name: string, prefix?: string) {
+    const suggestion = this.getSpellingSuggestionForName(name)
+    const prefixed = prefix
+      ? `${prefix} ${StringExt.lowerFirst(this.options.type)}`
+      : this.options.type
+
+    return (
+      // tslint:disable-next-line
+      `${StringExt.upperFirst(prefixed)} with name '${name}' does not exist.` +
+      (suggestion ? ` Did you mean '${suggestion}'?` : '')
+    )
+  }
+
+  protected getSpellingSuggestionForName(name: string) {
+    return StringExt.getSpellingSuggestion(
+      name,
+      Object.keys(this.registry),
+      candidate => candidate,
+    )
   }
 }
 
