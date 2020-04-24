@@ -9,7 +9,7 @@ export {
   isArray,
   isArrayLike,
   isFunction,
-} from 'lodash'
+} from 'lodash-es'
 
 export const isWindow = (value: any): value is Window =>
   value && value === value.window
