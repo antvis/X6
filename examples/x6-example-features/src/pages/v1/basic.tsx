@@ -19,6 +19,7 @@ export default class Example extends React.Component {
     })
 
     graph.addNode({
+      type: 'basic.rect',
       size: { width: 100, height: 40 },
       position: { x: 40, y: 40 },
       attrs: {
@@ -220,6 +221,8 @@ export default class Example extends React.Component {
         token.appendTo(cylinderScalable)
       }
     }
+
+    console.log(graph.model.toJSON())
   }
 
   refContainer = (container: HTMLDivElement) => {
