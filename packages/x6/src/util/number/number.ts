@@ -11,7 +11,7 @@ export {
   toInteger,
   toSafeInteger,
   parseInt,
-} from 'lodash'
+} from 'lodash-es'
 
 export { isNumeric } from '../lang/lang'
 

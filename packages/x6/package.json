@@ -1,6 +1,6 @@
 {
   "name": "@antv/x6",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "JavaScript diagramming library",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -64,7 +64,7 @@
   },
   "dependencies": {
     "jquery": "^3.4.1",
-    "lodash": "^4.17.15",
+    "lodash-es": "^4.17.15",
     "mousetrap": "^1.6.3",
     "size-sensor": "^0.2.5",
     "utility-types": "^3.10.0"
@@ -75,7 +75,7 @@
     "@babel/preset-react": "^7.8.3",
     "@types/jest": "^24.0.17",
     "@types/jquery": "^3.3.31",
-    "@types/lodash": "^4.14.149",
+    "@types/lodash-es": "^4.17.3",
     "@types/node": "^13.9.1",
     "@types/sinon": "^7.5.0",
     "@types/webpack": "^4.41.7",

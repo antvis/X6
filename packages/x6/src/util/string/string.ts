@@ -12,7 +12,7 @@ export {
   padStart,
   truncate,
   template,
-} from 'lodash'
+} from 'lodash-es'
 
 export * from './case'
 export * from './hashcode'
