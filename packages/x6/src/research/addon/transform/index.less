@@ -1,6 +1,6 @@
 @prefix: x6;
 
-.@{prefix}-node-transform {
+.@{prefix}-widget-transform {
   position: absolute;
   box-sizing: border-box;
   border: 1px dashed #000;
@@ -15,6 +15,8 @@
     border: 1px solid #000;
     transition: background-color 0.2s;
     pointer-events: auto;
+    -webkit-user-drag: none;
+    user-drag: none; /* stylelint-disable-line */
 
     &:hover {
       background-color: #d3d3d3;
@@ -28,40 +30,40 @@
   }
 
   .resize[data-position='top-left'] {
-    top: -6px;
-    left: -6px;
+    top: -5px;
+    left: -5px;
   }
   .resize[data-position='top-right'] {
-    top: -6px;
-    right: -6px;
+    top: -5px;
+    right: -5px;
   }
   .resize[data-position='bottom-left'] {
-    bottom: -6px;
-    left: -6px;
+    bottom: -5px;
+    left: -5px;
   }
   .resize[data-position='bottom-right'] {
-    right: -6px;
-    bottom: -6px;
+    right: -5px;
+    bottom: -5px;
   }
   .resize[data-position='top'] {
-    top: -6px;
+    top: -5px;
     left: 50%;
-    margin-left: -6px;
+    margin-left: -5px;
   }
   .resize[data-position='bottom'] {
-    bottom: -6px;
+    bottom: -5px;
     left: 50%;
-    margin-left: -6px;
+    margin-left: -5px;
   }
   .resize[data-position='left'] {
     top: 50%;
-    left: -6px;
-    margin-top: -6px;
+    left: -5px;
+    margin-top: -5px;
   }
   .resize[data-position='right'] {
     top: 50%;
-    right: -6px;
-    margin-top: -6px;
+    right: -5px;
+    margin-top: -5px;
   }
 
   &.prevent-aspect-ratio .resize[data-position='top'],

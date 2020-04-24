@@ -1,3 +1,5 @@
 export * from './algorithm'
 export * from './localstorage'
 export * from './undomanager'
+export * from './snapline'
+export * from './transform'

@@ -1,14 +1,11 @@
 import { KeyValue } from '../../../types'
 import { Angle, Point, snapToGrid } from '../../../geometry'
-import { View } from '../../core/view'
 import { Node } from '../../core/node'
-import { Model } from '../../core/model'
-import { Graph } from '../../core/graph'
-import { NodeView } from '../../core/node-view'
+import { Widget } from '../common/widget'
 
-const BATCH_NAME = 'node-transform'
+const BATCH_NAME = 'transform'
 const DIRECTIONS = ['nw', 'n', 'ne', 'e', 'se', 's', 'sw', 'w']
-const POSITIONS = [
+const POSITIONS: Node.ResizeDirection[] = [
   'top-left',
   'top',
   'top-right',
@@ -19,61 +16,39 @@ const POSITIONS = [
   'left',
 ]
 
-export class NodeTransform extends View {
-  protected readonly options: NodeTransform.Options
-  protected readonly node: Node
-  protected readonly model: Model
-  protected readonly graph: Graph
-  protected readonly mouseMoveHandler: (e: JQuery.TriggeredEvent) => void
-  protected readonly mouseUpHandler: (e: JQuery.TriggeredEvent) => void
+export class Transform extends Widget<Transform.Options> {
+  protected mouseMoveHandler: (e: JQuery.TriggeredEvent) => void
+  protected mouseUpHandler: (e: JQuery.TriggeredEvent) => void
 
   protected handle: Element | null
   protected action: 'resize' | 'rotate' | null
-  protected data: NodeTransform.ResizeData | NodeTransform.RotateData | null
+  protected data: Transform.ResizeData | Transform.RotateData | null
   protected previousDirectionsShift: number
 
-  constructor(
-    options: NodeTransform.Options &
-      ({ view: NodeView } | { node: Node; graph: Graph }),
-  ) {
-    super()
+  protected get node() {
+    return this.cell as Node
+  }
 
-    const { view, node, graph, ...others } = options as any
-    if (view) {
-      this.node = view.cell
-      this.graph = view.graph
-      this.model = this.graph.model
-    } else if (node && graph) {
-      this.node = node
-      this.graph = graph
-      this.model = this.graph.model
-    }
-
+  protected init(options: Transform.Options) {
     this.options = {
-      padding: 2,
-      rotateAngleGrid: 15,
-      rotatable: true,
-      preserveAspectRatio: false,
       minWidth: 0,
       minHeight: 0,
       maxWidth: Infinity,
       maxHeight: Infinity,
-      allowOrthogonalResize: true,
-      clearOther: true,
+      padding: 2,
+      rotateGrid: 15,
+      rotatable: true,
+      preserveAspectRatio: false,
+      orthogonalResize: true,
       clearOnBlankMouseDown: true,
-      ...others,
-    }
-
-    if (this.options.clearOther) {
-      NodeTransform.clear(this.graph)
+      ...options,
     }
 
     this.mouseMoveHandler = this.onMouseMove.bind(this)
     this.mouseUpHandler = this.onMouseUp.bind(this)
 
-    this.container = document.createElement('div')
+    this.render()
     this.startListening()
-    NodeTransform.register(this, this.graph)
   }
 
   protected startListening() {
@@ -119,6 +94,7 @@ export class NodeTransform extends View {
   }
 
   protected renderHandles() {
+    this.container = document.createElement('div')
     const knob = this.$('<div/>').prop('draggable', false)
     const rotate = knob.clone().addClass('rotate')
     const resizes = POSITIONS.map(pos => {
@@ -134,10 +110,10 @@ export class NodeTransform extends View {
   render() {
     this.renderHandles()
     this.$(this.container)
-      .addClass(this.prefixClassName('node-transform'))
+      .addClass(this.prefixClassName('widget-transform'))
       .toggleClass(
         'no-orth-resize',
-        this.options.preserveAspectRatio || !this.options.allowOrthogonalResize,
+        this.options.preserveAspectRatio || !this.options.orthogonalResize,
       )
       .toggleClass('no-rotation', !this.options.rotatable)
 
@@ -147,15 +123,15 @@ export class NodeTransform extends View {
   }
 
   update() {
-    const viewportCTM = this.graph.getMatrix()
+    const ctm = this.graph.getMatrix()
     const bbox = this.node.getBBox()
 
-    bbox.x *= viewportCTM.a
-    bbox.x += viewportCTM.e
-    bbox.y *= viewportCTM.d
-    bbox.y += viewportCTM.f
-    bbox.width *= viewportCTM.a
-    bbox.height *= viewportCTM.d
+    bbox.x *= ctm.a
+    bbox.x += ctm.e
+    bbox.y *= ctm.d
+    bbox.y += ctm.f
+    bbox.width *= ctm.a
+    bbox.height *= ctm.d
 
     const padding = this.options.padding || 0
     const rotation = Angle.normalize(this.node.getRotation())
@@ -190,21 +166,14 @@ export class NodeTransform extends View {
     return this
   }
 
-  remove() {
-    this.stopListening()
-    super.remove()
-    NodeTransform.unregister(this, this.graph)
-    return this
-  }
-
-  protected calculateTrueDirection(direction: string) {
+  protected calculateTrueDirection(direction: Node.ResizeDirection) {
     const angle = Angle.normalize(this.node.getRotation())
-    let i = POSITIONS.indexOf(direction)
+    let index = POSITIONS.indexOf(direction)
 
-    i = i + Math.floor(angle * (POSITIONS.length / 360))
-    i = i % POSITIONS.length
+    index = index + Math.floor(angle * (POSITIONS.length / 360))
+    index = index % POSITIONS.length
 
-    return POSITIONS[i]
+    return POSITIONS[index]
   }
 
   protected toValidResizeDirection(dir: string) {
@@ -227,7 +196,9 @@ export class NodeTransform extends View {
     // defines the way how to resize an node. Whether to change the size on
     // x-axis, on y-axis or on both.
 
-    const relativeDirection = this.$(evt.target).attr('data-position')!
+    const relativeDirection = this.$(evt.target).attr(
+      'data-position',
+    ) as Node.ResizeDirection
     const trueDirection = this.calculateTrueDirection(relativeDirection)
     let rx = 0
     let ry = 0
@@ -279,25 +250,25 @@ export class NodeTransform extends View {
   protected onMouseMove(evt: JQuery.MouseMoveEvent) {
     if (this.action) {
       const e = this.normalizeEvent(evt)
-      const client = this.graph.snapToGrid(e.clientX, e.clientY)
+      const pos = this.graph.snapToGrid(e.clientX, e.clientY)
       const gridSize = this.graph.options.gridSize
       const node = this.node
       const options = this.options
 
       if (this.action === 'resize') {
-        const data = this.data as NodeTransform.ResizeData
-        const currentRect = node.getBBox()
-        const requestedSize = Point.create(client)
-          .rotate(data.angle, currentRect.getCenter())
-          .diff(currentRect[data.selector])
+        const data = this.data as Transform.ResizeData
+        const currentBBox = node.getBBox()
+        const requestedSize = Point.create(pos)
+          .rotate(data.angle, currentBBox.getCenter())
+          .diff(currentBBox[data.selector])
 
         let width = data.resizeX
           ? requestedSize.x * data.resizeX
-          : currentRect.width
+          : currentBBox.width
 
         let height = data.resizeY
           ? requestedSize.y * data.resizeY
-          : currentRect.height
+          : currentBBox.height
 
         width = snapToGrid(width, gridSize)
         height = snapToGrid(height, gridSize)
@@ -308,9 +279,9 @@ export class NodeTransform extends View {
 
         if (options.preserveAspectRatio) {
           const candidateWidth =
-            (currentRect.width * height) / currentRect.height
+            (currentBBox.width * height) / currentBBox.height
           const candidateHeight =
-            (currentRect.height * width) / currentRect.width
+            (currentBBox.height * width) / currentBBox.width
 
           if (width < candidateWidth) {
             height = candidateHeight
@@ -319,25 +290,26 @@ export class NodeTransform extends View {
           }
         }
 
-        if (currentRect.width !== width || currentRect.height !== height) {
-          node.resize(width, height, {
+        if (currentBBox.width !== width || currentBBox.height !== height) {
+          const resizeOptions: Transform.ResizeOptions = {
             ui: true,
             direction: data.direction as any,
             relativeDirection: data.relativeDirection,
             trueDirection: data.trueDirection,
-            minWidth: options.minWidth,
-            minHeight: options.minHeight,
-            maxWidth: options.maxWidth,
-            maxHeight: options.maxHeight,
-            preserveAspectRatio: options.preserveAspectRatio,
-          })
+            minWidth: options.minWidth!,
+            minHeight: options.minHeight!,
+            maxWidth: options.maxWidth!,
+            maxHeight: options.maxHeight!,
+            preserveAspectRatio: options.preserveAspectRatio === true,
+          }
+          node.resize(width, height, resizeOptions)
         }
       } else if (this.action === 'rotate') {
-        const data = this.data as NodeTransform.RotateData
-        const theta = data.start - Point.create(client).theta(data.center)
+        const data = this.data as Transform.RotateData
+        const theta = data.start - Point.create(pos).theta(data.center)
         let target = data.angle + theta
-        if (options.rotateAngleGrid) {
-          target = snapToGrid(target, options.rotateAngleGrid)
+        if (options.rotateGrid) {
+          target = snapToGrid(target, options.rotateGrid)
         }
         node.rotate(target, true)
       }
@@ -372,32 +344,31 @@ export class NodeTransform extends View {
   }
 }
 
-export namespace NodeTransform {
+export namespace Transform {
   export type Direction = 'nw' | 'n' | 'ne' | 'e' | 'se' | 's' | 'sw' | 'w'
 
-  export interface Options {
-    /**
-     * Set to `true` if you want the resizing to preserve the
-     * aspect ratio of the node. Default is `false`.
-     */
-    preserveAspectRatio?: boolean
+  export interface Options extends Widget.Options {
+    padding: number
     minWidth?: number
     maxWidth?: number
     minHeight?: number
     maxHeight?: number
-    rotateAngleGrid?: number
-    allowOrthogonalResize?: boolean
+    /**
+     * Set to `true` if you want the resizing to preserve the
+     * aspect ratio of the node. Default is `false`.
+     */
     rotatable?: boolean
-    clearOther?: boolean
+    rotateGrid?: number
+    orthogonalResize?: boolean
+    preserveAspectRatio?: boolean
     clearOnBlankMouseDown?: boolean
-    padding: number
   }
 
   export interface ResizeData {
     selector: 'bottomLeft' | 'bottomRight' | 'topRight' | 'topLeft'
-    direction: string
-    trueDirection: string
-    relativeDirection: string
+    direction: Node.ResizeDirection
+    trueDirection: Node.ResizeDirection
+    relativeDirection: Node.ResizeDirection
     resizeX: number
     resizeY: number
     angle: number
@@ -408,43 +379,17 @@ export namespace NodeTransform {
     angle: number
     start: number
   }
-}
 
-export namespace NodeTransform {
-  const dic: KeyValue<KeyValue<NodeTransform>> = {}
-
-  export function clear(graph: Graph) {
-    graph.trigger('freetransform:create')
-    removeInstances(graph)
-  }
-
-  export function removeInstances(graph: Graph) {
-    const cache = dic[graph.cid]
-    if (cache) {
-      Object.keys(cache).forEach(cid => {
-        const instance = cache[cid]
-        if (instance) {
-          instance.remove()
-        }
-      })
-    }
-  }
-
-  export function getInstances(graph: Graph) {
-    return dic[graph.cid] || {}
-  }
-
-  export function register(instance: NodeTransform, graph: Graph) {
-    let cache = dic[graph.cid]
-    if (cache == null) {
-      cache = dic[graph.cid] = {}
-    }
-    cache[instance.cid] = instance
-  }
-
-  export function unregister(instance: NodeTransform, graph: Graph) {
-    if (dic[graph.cid]) {
-      delete dic[graph.cid][instance.cid]
-    }
+  export interface ResizeOptions {
+    ui: true
+    direction: Node.ResizeDirection
+    relativeDirection: Node.ResizeDirection
+    trueDirection: Node.ResizeDirection
+    minWidth: number
+    minHeight: number
+    maxWidth: number
+    maxHeight: number
+    preserveAspectRatio: boolean
+    snapped?: boolean
   }
 }
