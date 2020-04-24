@@ -132,9 +132,9 @@ export class CellViewAttr {
     const result: Dictionary<
       Element,
       {
-        node: Element
+        elem: Element
         array: boolean
-        length: number | number[]
+        priority: number | number[]
         attrs: Attr.ComplexAttrs | Attr.ComplexAttrs[]
       }
     > = new Dictionary()
@@ -145,38 +145,45 @@ export class CellViewAttr {
         return
       }
 
-      selectorCache[selector] = this.view.find(selector, rootNode, selectors)
-
-      const nodes = selectorCache[selector]
-      for (let i = 0, l = nodes.length; i < l; i += 1) {
-        const node = nodes[i]
-        const unique = selectors && selectors[selector] === node
-        const prev = result.get(node)
+      const { isCSSSelector, elems } = CellView.find(
+        selector,
+        rootNode,
+        selectors,
+      )
+      selectorCache[selector] = elems
+      for (let i = 0, l = elems.length; i < l; i += 1) {
+        const elem = elems[i]
+        const unique = selectors && selectors[selector] === elem
+        const prev = result.get(elem)
         if (prev) {
           if (!prev.array) {
-            merge.push(node)
+            merge.push(elem)
             prev.array = true
             prev.attrs = [prev.attrs as Attr.ComplexAttrs]
-            prev.length = [prev.length as number]
+            prev.priority = [prev.priority as number]
           }
 
           const attributes = prev.attrs as Attr.ComplexAttrs[]
-          const selectedLength = prev.length as number[]
+          const selectedLength = prev.priority as number[]
           if (unique) {
             // node referenced by `selector`
             attributes.unshift(attrs)
             selectedLength.unshift(-1)
           } else {
-            // node referenced by `groupSelector`
-            const sortIndex = ArrayExt.sortedIndex(selectedLength, l)
+            // node referenced by `groupSelector` or CSSSelector
+            const sortIndex = ArrayExt.sortedIndex(
+              selectedLength,
+              isCSSSelector ? -1 : l,
+            )
+
             attributes.splice(sortIndex, 0, attrs)
             selectedLength.splice(sortIndex, 0, l)
           }
         } else {
-          result.set(node, {
-            node,
+          result.set(elem, {
+            elem,
             attrs,
-            length: unique ? -1 : l,
+            priority: unique ? -1 : l,
             array: false,
           })
         }
@@ -198,9 +205,9 @@ export class CellViewAttr {
     return result as Dictionary<
       Element,
       {
-        node: Element
+        elem: Element
         array: boolean
-        length: number | number[]
+        priority: number | number[]
         attrs: Attr.ComplexAttrs
       }
     >
@@ -370,7 +377,7 @@ export class CellViewAttr {
     }[] = []
 
     nodesAttrs.each(data => {
-      const node = data.node
+      const node = data.elem
       const nodeAttrs = data.attrs
       const processed = this.processAttrs(node, nodeAttrs)
       if (

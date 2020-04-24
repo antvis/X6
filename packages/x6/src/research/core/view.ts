@@ -43,11 +43,14 @@ export abstract class View<EventArgs = any> extends Basecoat<EventArgs> {
   remove(elem: Element = this.container) {
     if (elem === this.container) {
       this.removeEventListeners(document)
+      this.onRemove()
       delete View.views[this.cid]
     }
     this.unmount(elem)
     return this
   }
+
+  protected onRemove() {}
 
   addClass(className: string | string[], elem: Element = this.container) {
     this.$(elem).addClass(
@@ -113,28 +116,7 @@ export abstract class View<EventArgs = any> extends Basecoat<EventArgs> {
     rootElem: Element = this.container,
     selectors: Markup.Selectors = this.selectors,
   ) {
-    if (!selector || selector === '.') {
-      return [rootElem]
-    }
-
-    if (selectors) {
-      const nodes = selectors[selector]
-      if (nodes) {
-        if (Array.isArray(nodes)) {
-          return nodes
-        }
-
-        return [nodes]
-      }
-    }
-
-    if (Globals.useCSSSelector) {
-      return this.$(rootElem)
-        .find(selector)
-        .toArray() as Element[]
-    }
-
-    return []
+    return View.find(selector, rootElem, selectors).elems
   }
 
   findOne(
@@ -227,7 +209,11 @@ export abstract class View<EventArgs = any> extends Basecoat<EventArgs> {
     this.removeEventListeners(document)
   }
 
-  protected delegateEvent(eventName: string, selector: string, listener: any) {
+  protected delegateEvent(
+    eventName: string,
+    selector: string | object,
+    listener: any,
+  ) {
     this.$(this.container).on(
       eventName + this.getEventNamespace(),
       selector,
@@ -240,12 +226,22 @@ export abstract class View<EventArgs = any> extends Basecoat<EventArgs> {
     eventName: string,
     selector: string,
     listener: any,
+  ): this
+  protected undelegateEvent(eventName: string): this
+  protected undelegateEvent(eventName: string, listener: any): this
+  protected undelegateEvent(
+    eventName: string,
+    selector?: string | any,
+    listener?: any,
   ) {
-    this.$(this.container).off(
-      eventName + this.getEventNamespace(),
-      selector,
-      listener,
-    )
+    const name = eventName + this.getEventNamespace()
+    if (selector == null) {
+      this.$(this.container).off(name)
+    } else if (typeof selector === 'string') {
+      this.$(this.container).off(name, selector, listener)
+    } else {
+      this.$(this.container).off(name, selector)
+    }
     return this
   }
 
@@ -406,6 +402,34 @@ export namespace View {
     return isSvgElement
       ? v.createSvgElement(tagName || 'g')
       : (v.createElementNS(tagName || 'div') as HTMLElement)
+  }
+
+  export function find(
+    selector?: string,
+    rootElem: Element = this.container,
+    selectors: Markup.Selectors = this.selectors,
+  ): { isCSSSelector?: boolean; elems: Element[] } {
+    if (!selector || selector === '.') {
+      return { elems: [rootElem] }
+    }
+
+    if (selectors) {
+      const nodes = selectors[selector]
+      if (nodes) {
+        return { elems: Array.isArray(nodes) ? nodes : [nodes] }
+      }
+    }
+
+    if (Globals.useCSSSelector) {
+      return {
+        isCSSSelector: true,
+        elems: this.$(rootElem)
+          .find(selector)
+          .toArray() as Element[],
+      }
+    }
+
+    return { elems: [] }
   }
 }
 
