@@ -138,7 +138,7 @@ export class Graph extends View<Graph.EventArgs> {
       targetView: CellView,
       targetMagnet: Element,
       terminalType: Edge.TerminalType,
-      edgeView: EdgeView,
+      edgeView?: EdgeView,
     ) {
       const view = terminalType === 'target' ? targetView : sourceView
       return view instanceof NodeView
@@ -660,7 +660,7 @@ export class Graph extends View<Graph.EventArgs> {
 
   // prepareViewUpdate
   scheduleViewUpdate(
-    view: CellView,
+    view: View,
     flag: number,
     priority: number,
     options: any = {},
@@ -765,19 +765,21 @@ export class Graph extends View<Graph.EventArgs> {
     return view
   }
 
-  updateView(view: CellView, flag: number, options: any = {}) {
+  updateView(view: View, flag: number, options: any = {}) {
     if (view == null) {
       return 0
     }
 
-    if (flag & FLAG_REMOVE) {
-      this.removeView(view.cell as any)
-      return 0
-    }
+    if (view instanceof CellView) {
+      if (flag & FLAG_REMOVE) {
+        this.removeView(view.cell as any)
+        return 0
+      }
 
-    if (flag & FLAG_INSERT) {
-      this.insertView(view)
-      flag ^= FLAG_INSERT // tslint:disable-line
+      if (flag & FLAG_INSERT) {
+        this.insertView(view)
+        flag ^= FLAG_INSERT // tslint:disable-line
+      }
     }
 
     if (!flag) {
@@ -837,7 +839,7 @@ export class Graph extends View<Graph.EventArgs> {
           break main
         }
 
-        const view = CellView.views[cid]
+        const view = View.views[cid]
         if (!view) {
           delete cache[cid]
           continue
@@ -968,7 +970,7 @@ export class Graph extends View<Graph.EventArgs> {
     })
   }
 
-  protected registerMountedView(view: CellView) {
+  protected registerMountedView(view: View) {
     const cid = view.cid
     const updates = this.updates
 
@@ -983,7 +985,7 @@ export class Graph extends View<Graph.EventArgs> {
     return flag
   }
 
-  protected registerUnmountedView(view: CellView) {
+  protected registerUnmountedView(view: View) {
     const cid = view.cid
     const updates = this.updates
 
@@ -1229,7 +1231,7 @@ export class Graph extends View<Graph.EventArgs> {
     this.sortViews()
   }
 
-  protected createView(cell: Cell) {
+  createView(cell: Cell): CellView | null {
     // A class taken from the paper options.
     // let optionalViewClass
     // // A default basic class (either dia.ElementView or dia.LinkView)
@@ -1752,9 +1754,9 @@ export class Graph extends View<Graph.EventArgs> {
     return this.paperToLocalRect(rect)
   }
 
-  getRestrictedArea(view: NodeView) {
+  getRestrictedArea(view?: NodeView) {
     const restrictTranslate = this.options.restrictTranslate as any
-    let restrictedArea
+    let restrictedArea: Rectangle.RectangleLike | null
 
     if (typeof restrictTranslate === 'function') {
       // A method returning a bounding box
@@ -1837,7 +1839,7 @@ export class Graph extends View<Graph.EventArgs> {
           })
           return options.strict
             ? area.containsRect(bbox)
-            : area.isIntersectWith(area)
+            : area.isIntersectWith(bbox)
         }
       }) as CellView[]
   }
@@ -2694,7 +2696,7 @@ export class Graph extends View<Graph.EventArgs> {
       mouseMovedCount: 0,
     })
     const ctor = this.constructor as typeof Graph
-    this.addDocumentEventListeners(ctor.documentEvents, e.data)
+    this.delegateDocumentEvents(ctor.documentEvents, e.data)
     this.undelegateEvents()
   }
 
@@ -2751,7 +2753,7 @@ export class Graph extends View<Graph.EventArgs> {
   }
 
   protected onMouseUp(e: JQuery.MouseUpEvent) {
-    this.removeDocumentEventListeners()
+    this.undelegateDocumentEvents()
 
     const normalized = this.normalizeEvent(e)
     const localPoint = this.snapToGrid(normalized.clientX, normalized.clientY)

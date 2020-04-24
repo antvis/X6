@@ -111,7 +111,6 @@ export class CellView<
     this.setup()
     this.$(this.container).data('view', this)
 
-    CellView.views[this.cid] = this
     this.init()
   }
 
@@ -195,14 +194,6 @@ export class CellView<
   }
 
   render() {
-    return this
-  }
-
-  remove(elem: Element = this.container) {
-    super.remove(elem)
-    if (elem === this.container) {
-      delete CellView.views[this.cid]
-    }
     return this
   }
 
@@ -847,13 +838,7 @@ export namespace CellView {
   }
 }
 
-export namespace CellView {
-  export const views: { [cid: string]: CellView } = {}
-
-  export function getView(cid: string) {
-    return views[cid] || null
-  }
-}
+export namespace CellView {}
 
 export namespace CellView {
   export interface PositionEventArgs {

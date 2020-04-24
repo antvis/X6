@@ -11,9 +11,18 @@ export abstract class View<EventArgs = any> extends Basecoat<EventArgs> {
   public container: Element
   protected selectors: Markup.Selectors
 
+  public get priority() {
+    return 2
+  }
+
   constructor() {
     super()
     this.cid = Private.uniqueId()
+    View.views[this.cid] = this
+  }
+
+  confirmUpdate(flag: number, options: any): number {
+    return 0
   }
 
   // tslint:disable-next-line
@@ -34,6 +43,7 @@ export abstract class View<EventArgs = any> extends Basecoat<EventArgs> {
   remove(elem: Element = this.container) {
     if (elem === this.container) {
       this.removeEventListeners(document)
+      delete View.views[this.cid]
     }
     this.unmount(elem)
     return this
@@ -181,7 +191,7 @@ export abstract class View<EventArgs = any> extends Basecoat<EventArgs> {
     return `${Globals.prefixCls}-${className}`
   }
 
-  protected delegateEvents(events: View.Events) {
+  delegateEvents(events: View.Events) {
     if (events == null) {
       return this
     }
@@ -204,6 +214,19 @@ export abstract class View<EventArgs = any> extends Basecoat<EventArgs> {
     return this
   }
 
+  undelegateEvents() {
+    this.$(this.container).off(this.getEventNamespace())
+    return this
+  }
+
+  delegateDocumentEvents(events: View.Events, data?: KeyValue) {
+    this.addEventListeners(document, events, data)
+  }
+
+  undelegateDocumentEvents() {
+    this.removeEventListeners(document)
+  }
+
   protected delegateEvent(eventName: string, selector: string, listener: any) {
     this.$(this.container).on(
       eventName + this.getEventNamespace(),
@@ -223,11 +246,6 @@ export abstract class View<EventArgs = any> extends Basecoat<EventArgs> {
       selector,
       listener,
     )
-    return this
-  }
-
-  undelegateEvents() {
-    this.$(this.container).off(this.getEventNamespace())
     return this
   }
 
@@ -257,14 +275,6 @@ export abstract class View<EventArgs = any> extends Basecoat<EventArgs> {
       this.$(elem).off(this.getEventNamespace())
     }
     return this
-  }
-
-  protected addDocumentEventListeners(events: View.Events, data?: KeyValue) {
-    this.addEventListeners(document, events, data)
-  }
-
-  protected removeDocumentEventListeners() {
-    this.removeEventListeners(document)
   }
 
   protected getEventNamespace() {
@@ -396,6 +406,14 @@ export namespace View {
     return isSvgElement
       ? v.createSvgElement(tagName || 'g')
       : (v.createElementNS(tagName || 'div') as HTMLElement)
+  }
+}
+
+export namespace View {
+  export const views: { [cid: string]: View } = {}
+
+  export function getView(cid: string) {
+    return views[cid] || null
   }
 }
 

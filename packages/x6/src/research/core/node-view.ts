@@ -604,11 +604,11 @@ export class NodeView<
     if (action === 'magnet') {
       this.dragMagnet(e, x, y)
     } else {
-      this.notifyMouseMove(e, x, y)
       if (action === 'move') {
         const view = (data as EventData.Moving).targetView || this
         view.dragNode(e, x, y)
       }
+      this.notifyMouseMove(e, x, y)
     }
 
     this.setEventData<EventData.Mousemove>(e, data)
@@ -833,7 +833,7 @@ export class NodeView<
     })
   }
 
-  protected getDelegatedView() {
+  getDelegatedView() {
     let cell = this.cell
     let view: NodeView = this // tslint:disable-line
 
@@ -1087,7 +1087,7 @@ namespace EventData {
 
   export interface MovingTargetNode {
     offset: Point.PointLike
-    restrictedArea: Rectangle.RectangleLike
+    restrictedArea?: Rectangle.RectangleLike | null
     embedding?: boolean
     candidateEmbedView?: NodeView | null
     cell?: Node
