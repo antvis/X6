@@ -102,11 +102,10 @@ export class Node<
 
   resize(width: number, height: number, options: Node.ResizeOptions = {}) {
     this.startBatch('resize', options)
+    const direction = options.direction
 
-    if (options.direction) {
+    if (direction) {
       const currentSize = this.sizes
-      const direction = StringExt.camelCase(options.direction)
-
       switch (direction) {
         case 'left':
         case 'right':
@@ -122,13 +121,13 @@ export class Node<
 
       const map: { [direction: string]: number } = {
         right: 0,
-        topRight: 0,
+        'top-right': 0,
         top: 1,
-        topLeft: 1,
+        'top-left': 1,
         left: 2,
-        bottomLeft: 2,
+        'bottom-left': 2,
         bottom: 3,
-        bottomRight: 3,
+        'bottom-right': 3,
       }
 
       let quadrant = map[direction]
@@ -1004,25 +1003,24 @@ export namespace Node {
 
   export interface TranslateOptions extends Cell.TranslateOptions {
     transition?: boolean
-    restrictedArea?: Rectangle.RectangleLike
+    restrictedArea?: Rectangle.RectangleLike | null
   }
 
   export interface RotateOptions extends SetOptions {}
 
+  export type ResizeDirection =
+    | 'left'
+    | 'top'
+    | 'right'
+    | 'bottom'
+    | 'top-left'
+    | 'top-right'
+    | 'bottom-left'
+    | 'bottom-right'
+
   export interface ResizeOptions extends SetOptions {
     absolute?: boolean
-    direction?:
-      | 'left'
-      | 'top'
-      | 'right'
-      | 'bottom'
-      | 'topLeft'
-      | 'top-left'
-      | 'top-right'
-      | 'bottomLeft'
-      | 'bottom-left'
-      | 'bottomRight'
-      | 'bottom-right'
+    direction?: ResizeDirection
   }
 
   export interface FitEmbedsOptions extends SetOptions {

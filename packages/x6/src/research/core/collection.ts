@@ -1,12 +1,14 @@
 import { ArrayExt } from '../../util'
 import { Basecoat } from '../../entity'
 import { Cell } from './cell'
+import { Node } from './node'
+import { Edge } from './edge'
 
 export class Collection extends Basecoat<Collection.EventArgs> {
   public length: number = 0
+  public comparator: Collection.Comparator | null
   private cells: Cell[]
   private map: { [id: string]: Cell }
-  private readonly comparator: Collection.Comparator | null
 
   constructor(cells: Cell | Cell[], options: Collection.Options = {}) {
     super()
@@ -97,11 +99,13 @@ export class Collection extends Basecoat<Collection.EventArgs> {
 
     if (!localOptions.silent) {
       added.forEach((cell, i) => {
-        this.trigger('added', {
+        const args = {
           cell,
           index: localIndex + i,
           options: localOptions,
-        })
+        }
+        this.trigger('added', args)
+        cell.notify('added', { ...args })
       })
 
       if (sort) {
@@ -124,8 +128,8 @@ export class Collection extends Basecoat<Collection.EventArgs> {
   remove(cell: Cell, options?: Collection.RemoveOptions): Cell
   remove(cells: Cell[], options?: Collection.RemoveOptions): Cell[]
   remove(cells: Cell | Cell[], options: Collection.RemoveOptions = {}) {
-    const entities = Array.isArray(cells) ? cells : [cells]
-    const removed = this.removeCells(entities, options)
+    const arr = Array.isArray(cells) ? cells : [cells]
+    const removed = this.removeCells(arr, options)
     if (!options.silent && removed.length > 0) {
       this.trigger('updated', {
         options,
@@ -152,9 +156,12 @@ export class Collection extends Basecoat<Collection.EventArgs> {
       delete this.map[cell.id]
       removed.push(cell)
       this.unreference(cell)
+
+      cell.remove()
+
       if (!options.silent) {
-        cell.notify('removed', { cell, options })
         this.trigger('removed', { cell, index, options })
+        cell.notify('removed', { cell, index, options })
       }
     }
 
@@ -195,7 +202,7 @@ export class Collection extends Basecoat<Collection.EventArgs> {
     return this.remove(cell, options)
   }
 
-  get(cell: string | Cell): Cell | null {
+  get(cell?: string | Cell | null): Cell | null {
     if (cell == null) {
       return null
     }
@@ -251,25 +258,32 @@ export class Collection extends Basecoat<Collection.EventArgs> {
 
   protected reference(cell: Cell) {
     this.map[cell.id] = cell
-    cell.on('disposed', this.onCellDisposed, this)
+    cell.on('*', this.notifyCellEvent, this)
     cell.on('change:zIndex', this.onCellZIndexChanged, this)
   }
 
   protected unreference(cell: Cell) {
-    cell.off('disposed', this.onCellDisposed, this)
+    cell.off('*', this.notifyCellEvent, this)
     cell.off('change:zIndex', this.onCellZIndexChanged, this)
 
     delete this.map[cell.id]
   }
 
-  protected onCellZIndexChanged(args: Cell.EventArgs['change:zIndex']) {
-    this.sort(args.options)
+  protected notifyCellEvent<K extends keyof Cell.EventArgs>(
+    name: K,
+    args: Cell.EventArgs[K],
+  ) {
+    const cell = args.cell
+    this.trigger(`cell:${name}`, args)
+    if (cell.isNode()) {
+      this.trigger(`node:${name}`, { ...args, node: this })
+    } else if (cell.isEdge()) {
+      this.trigger(`edge:${name}`, { ...args, edge: this })
+    }
   }
 
-  protected onCellDisposed({ cell }: { cell: Cell }) {
-    if (cell) {
-      this.remove(cell)
-    }
+  protected onCellZIndexChanged(args: Cell.EventArgs['change:zIndex']) {
+    this.sort(args.options)
   }
 
   protected clean() {
@@ -301,8 +315,13 @@ export namespace Collection {
     sort?: boolean
     merge?: boolean
   }
+}
 
-  export interface EventArgs {
+export namespace Collection {
+  export interface EventArgs
+    extends CellEventArgs,
+      NodeEventArgs,
+      EdgeEventArgs {
     sorted?: null
     reseted: {
       current: Cell[]
@@ -325,5 +344,144 @@ export namespace Collection {
       index: number
       options: RemoveOptions
     }
+  }
+
+  interface NodeEventCommonArgs {
+    node: Node
+  }
+
+  interface EdgeEventCommonArgs {
+    edge: Edge
+  }
+
+  export interface CellEventArgs {
+    'cell:transition:begin': Cell.EventArgs['transition:begin']
+    'cell:transition:end': Cell.EventArgs['transition:end']
+
+    'cell:changed': Cell.EventArgs['changed']
+    'cell:added': Cell.EventArgs['added']
+    'cell:removed': Cell.EventArgs['removed']
+
+    'cell:change:*': Cell.EventArgs['change:*']
+    'cell:change:attrs': Cell.EventArgs['change:attrs']
+    'cell:change:zIndex': Cell.EventArgs['change:zIndex']
+    'cell:change:markup': Cell.EventArgs['change:markup']
+    'cell:change:visible': Cell.EventArgs['change:visible']
+    'cell:change:parent': Cell.EventArgs['change:parent']
+    'cell:change:children': Cell.EventArgs['change:children']
+    'cell:change:view': Cell.EventArgs['change:view']
+
+    'cell:change:size': Cell.EventArgs['change:size']
+    'cell:change:position': Cell.EventArgs['change:position']
+    'cell:change:rotation': Cell.EventArgs['change:rotation']
+    'cell:change:ports': Cell.EventArgs['change:ports']
+    'cell:change:portMarkup': Cell.EventArgs['change:portMarkup']
+    'cell:change:portLabelMarkup': Cell.EventArgs['change:portLabelMarkup']
+    'cell:change:portContainerMarkup': Cell.EventArgs['change:portContainerMarkup']
+    'cell:ports:added': Cell.EventArgs['ports:added']
+    'cell:ports:removed': Cell.EventArgs['ports:removed']
+
+    'cell:change:source': Cell.EventArgs['change:source']
+    'cell:change:target': Cell.EventArgs['change:target']
+    'cell:change:router': Cell.EventArgs['change:router']
+    'cell:change:connector': Cell.EventArgs['change:connector']
+    'cell:change:vertices': Cell.EventArgs['change:vertices']
+    'cell:change:labels': Cell.EventArgs['change:labels']
+    'cell:change:defaultLabel': Cell.EventArgs['change:defaultLabel']
+    'cell:change:labelMarkup': Cell.EventArgs['change:labelMarkup']
+    'cell:change:toolMarkup': Cell.EventArgs['change:toolMarkup']
+    'cell:change:doubleToolMarkup': Cell.EventArgs['change:doubleToolMarkup']
+    'cell:change:vertexMarkup': Cell.EventArgs['change:vertexMarkup']
+    'cell:change:arrowheadMarkup': Cell.EventArgs['change:arrowheadMarkup']
+    'cell:vertexs:added': Cell.EventArgs['vertexs:added']
+    'cell:vertexs:removed': Cell.EventArgs['vertexs:removed']
+    'cell:labels:added': Cell.EventArgs['labels:added']
+    'cell:labels:removed': Cell.EventArgs['labels:removed']
+  }
+
+  export interface NodeEventArgs {
+    'node:transition:begin': NodeEventCommonArgs &
+      Cell.EventArgs['transition:begin']
+    'node:transition:end': NodeEventCommonArgs &
+      Cell.EventArgs['transition:end']
+
+    'node:changed': NodeEventCommonArgs & CellEventArgs['cell:changed']
+    'node:added': NodeEventCommonArgs & CellEventArgs['cell:added']
+    'node:removed': NodeEventCommonArgs & CellEventArgs['cell:removed']
+
+    'node:change:*': NodeEventCommonArgs & Cell.EventArgs['change:*']
+    'node:change:attrs': NodeEventCommonArgs & Cell.EventArgs['change:attrs']
+    'node:change:zIndex': NodeEventCommonArgs & Cell.EventArgs['change:zIndex']
+    'node:change:markup': NodeEventCommonArgs & Cell.EventArgs['change:markup']
+    'node:change:visible': NodeEventCommonArgs &
+      Cell.EventArgs['change:visible']
+    'node:change:parent': NodeEventCommonArgs & Cell.EventArgs['change:parent']
+    'node:change:children': NodeEventCommonArgs &
+      Cell.EventArgs['change:children']
+    'node:change:view': NodeEventCommonArgs & Cell.EventArgs['change:view']
+
+    'node:change:size': NodeEventCommonArgs & Cell.EventArgs['change:size']
+    'node:change:position': NodeEventCommonArgs &
+      Cell.EventArgs['change:position']
+    'node:change:rotation': NodeEventCommonArgs &
+      Cell.EventArgs['change:rotation']
+    'node:change:ports': NodeEventCommonArgs & Cell.EventArgs['change:ports']
+    'node:change:portMarkup': NodeEventCommonArgs &
+      Cell.EventArgs['change:portMarkup']
+    'node:change:portLabelMarkup': NodeEventCommonArgs &
+      Cell.EventArgs['change:portLabelMarkup']
+    'node:change:portContainerMarkup': NodeEventCommonArgs &
+      Cell.EventArgs['change:portContainerMarkup']
+    'node:ports:added': NodeEventCommonArgs & Cell.EventArgs['ports:added']
+    'node:ports:removed': NodeEventCommonArgs & Cell.EventArgs['ports:removed']
+  }
+
+  export interface EdgeEventArgs {
+    'edge:transition:begin': EdgeEventCommonArgs &
+      Cell.EventArgs['transition:begin']
+    'edge:transition:end': EdgeEventCommonArgs &
+      Cell.EventArgs['transition:end']
+
+    'edge:changed': EdgeEventCommonArgs & CellEventArgs['cell:changed']
+    'edge:added': EdgeEventCommonArgs & CellEventArgs['cell:added']
+    'edge:removed': EdgeEventCommonArgs & CellEventArgs['cell:removed']
+
+    'edge:change:*': EdgeEventCommonArgs & Cell.EventArgs['change:*']
+    'edge:change:attrs': EdgeEventCommonArgs & Cell.EventArgs['change:attrs']
+    'edge:change:zIndex': EdgeEventCommonArgs & Cell.EventArgs['change:zIndex']
+    'edge:change:markup': EdgeEventCommonArgs & Cell.EventArgs['change:markup']
+    'edge:change:visible': EdgeEventCommonArgs &
+      Cell.EventArgs['change:visible']
+    'edge:change:parent': EdgeEventCommonArgs & Cell.EventArgs['change:parent']
+    'edge:change:children': EdgeEventCommonArgs &
+      Cell.EventArgs['change:children']
+    'edge:change:view': EdgeEventCommonArgs & Cell.EventArgs['change:view']
+
+    'edge:change:source': EdgeEventCommonArgs & Cell.EventArgs['change:source']
+    'edge:change:target': EdgeEventCommonArgs & Cell.EventArgs['change:target']
+    'edge:change:router': EdgeEventCommonArgs & Cell.EventArgs['change:router']
+    'edge:change:connector': EdgeEventCommonArgs &
+      Cell.EventArgs['change:connector']
+    'edge:change:vertices': EdgeEventCommonArgs &
+      Cell.EventArgs['change:vertices']
+    'edge:change:labels': EdgeEventCommonArgs & Cell.EventArgs['change:labels']
+    'edge:change:defaultLabel': EdgeEventCommonArgs &
+      Cell.EventArgs['change:defaultLabel']
+    'edge:change:labelMarkup': EdgeEventCommonArgs &
+      Cell.EventArgs['change:labelMarkup']
+    'edge:change:toolMarkup': EdgeEventCommonArgs &
+      Cell.EventArgs['change:toolMarkup']
+    'edge:change:doubleToolMarkup': EdgeEventCommonArgs &
+      Cell.EventArgs['change:doubleToolMarkup']
+    'edge:change:vertexMarkup': EdgeEventCommonArgs &
+      Cell.EventArgs['change:vertexMarkup']
+    'edge:change:arrowheadMarkup': EdgeEventCommonArgs &
+      Cell.EventArgs['change:arrowheadMarkup']
+    'edge:vertexs:added': EdgeEventCommonArgs & Cell.EventArgs['vertexs:added']
+    'edge:vertexs:removed': EdgeEventCommonArgs &
+      Cell.EventArgs['vertexs:removed']
+    'edge:labels:added': EdgeEventCommonArgs & Cell.EventArgs['labels:added']
+    'edge:labels:removed': EdgeEventCommonArgs &
+      Cell.EventArgs['labels:removed']
   }
 }

@@ -113,7 +113,7 @@ export class Cell<
 
       const type = key as Edge.TerminalType
       if (type === 'source' || type === 'target') {
-        this.notify(`change:${type}`, {
+        this.notify(`change:terminal`, {
           type,
           current,
           previous,
@@ -188,7 +188,7 @@ export class Cell<
   }
 
   get type() {
-    return this.store.get('type')
+    return this.store.get('type', '')
   }
 
   // #region get/set
@@ -917,10 +917,7 @@ export class Cell<
           this.eachChild(child => child.remove(options))
         }
         if (this.model) {
-          this.model.removeCell(this, { ...options, dryrun: true })
-          // 'removed' event was triggered in collection
-        } else {
-          this.notify('removed', { options, cell: this })
+          this.model.removeCell(this, options)
         }
       })
     }
@@ -1120,7 +1117,6 @@ export class Cell<
   dispose() {
     this.removeFromParent()
     this.store.dispose()
-    this.notify('disposed', { cell: this })
   }
 
   // #endregion
@@ -1188,6 +1184,7 @@ export namespace Cell {
   export interface EventArgs {
     'transition:begin': TransitionArgs
     'transition:end': TransitionArgs
+
     // common
     'change:*': ChangeAnyKeyArgs
     'change:attrs': ChangeArgs<Attr.CellAttrs>
@@ -1259,13 +1256,16 @@ export namespace Cell {
       options: MutateOptions
     }
 
-    removed: {
+    added: {
       cell: Cell
+      index: number
       options: Cell.SetOptions
     }
 
-    disposed: {
+    removed: {
       cell: Cell
+      index: number
+      options: Cell.RemoveOptions
     }
   }
 
