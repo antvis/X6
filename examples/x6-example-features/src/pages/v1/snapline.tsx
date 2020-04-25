@@ -1,11 +1,11 @@
 import React from 'react'
 import { joint } from '@antv/x6'
 import { Snapline } from '@antv/x6/es/research/addon/snapline'
-import { NodeTransform } from '@antv/x6/es/research/addon/node-transform'
+import { Transform } from '@antv/x6/es/research/addon/transform'
 import '../index.less'
 import './index.less'
 import '../../../../../packages/x6/src/research/addon/snapline/index.less'
-import '../../../../../packages/x6/src/research/addon/node-transform/index.less'
+import '../../../../../packages/x6/src/research/addon/transform/index.less'
 
 export default class Example extends React.Component {
   private container: HTMLDivElement
@@ -50,7 +50,7 @@ export default class Example extends React.Component {
     })
 
     graph.on('node:mouseup', ({ node }) => {
-      new NodeTransform({
+      new Transform({
         graph,
         node,
         padding: 5,
