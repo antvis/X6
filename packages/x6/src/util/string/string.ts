@@ -13,7 +13,7 @@ export {
   truncate,
   template,
   uniqueId,
-} from 'lodash'
+} from 'lodash-es'
 
 export * from './case'
 export * from './hashcode'

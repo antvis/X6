@@ -11,12 +11,12 @@ export {
   defaultsDeep,
   forIn,
   extend,
-} from 'lodash'
+} from 'lodash-es'
 
 export * from './mixins'
 export * from './inherit'
 
-import { has, isPlainObject } from 'lodash'
+import { has, isPlainObject } from 'lodash-es'
 
 export function ensure<T>(value: T | null | undefined, defaultValue: T) {
   return value != null ? value : defaultValue!

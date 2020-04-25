@@ -10,7 +10,7 @@ export {
   groupBy,
   difference,
   without,
-} from 'lodash'
+} from 'lodash-es'
 
 const proto = Array.prototype
 
