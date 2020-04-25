@@ -1,5 +1,4 @@
 import React from 'react'
-import { Button } from 'antd'
 import { joint } from '@antv/x6'
 import '../../index.less'
 import '../index.less'
