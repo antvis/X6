@@ -1,0 +1,20 @@
+@prefix: x6;
+
+.@{prefix}-graph-scroller {
+  position: relative;
+  box-sizing: border-box;
+  overflow: scroll;
+  cursor: move;
+  cursor: -moz-grabbing;
+  cursor: -webkit-grabbing;
+
+  .@{prefix}-graph {
+    position: relative;
+    display: inline-block;
+    margin: 0;
+
+    > svg {
+      display: block;
+    }
+  }
+}

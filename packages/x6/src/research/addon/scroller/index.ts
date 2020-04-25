@@ -798,8 +798,8 @@ export class Scroller extends View {
     })
 
     const container = this.graph.container
-    container.style.left = `${this.padding.left}`
-    container.style.top = `${this.padding.top}`
+    container.style.left = `${this.padding.left}px`
+    container.style.top = `${this.padding.top}px`
 
     return this
   }

@@ -76,15 +76,26 @@ export class Selection extends View<Selection.EventArgs> {
     graph.on('scale', this.onGraphTransformation, this)
     graph.on('translate', this.onGraphTransformation, this)
 
-    // collection.on('reseted', this.cancelSelection, this)
-    // collection.on('change', this.onGraphChange, this)
     collection.on('removed', this.onRemoveCellFromSelection, this)
     collection.on('reseted', this.onResetSelection, this)
     collection.on('added', this.onAddCellToSelection, this)
     collection.on('cell:change:*', this.onCellChanged, this)
   }
 
-  protected stopListening() {}
+  protected stopListening() {
+    const graph = this.graph
+    const collection = this.collection
+
+    this.undelegateEvents()
+
+    graph.off('scale', this.onGraphTransformation, this)
+    graph.off('translate', this.onGraphTransformation, this)
+
+    collection.off('removed', this.onRemoveCellFromSelection, this)
+    collection.off('reseted', this.onResetSelection, this)
+    collection.off('added', this.onAddCellToSelection, this)
+    collection.off('cell:change:*', this.onCellChanged, this)
+  }
 
   onGraphTransformation() {
     this.updateSelectionBoxes({ async: false })

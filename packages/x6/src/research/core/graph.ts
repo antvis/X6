@@ -241,7 +241,7 @@ export class Graph extends View<Graph.EventArgs> {
   protected viewportMatrix: DOMMatrix | null
   protected viewportTransformString: string | null
 
-  protected highlights: KeyValue<Types.HighlightCacheItem> = {}
+  protected highlights: KeyValue<Graph.HighlightCacheItem> = {}
   protected zPivots: KeyValue<Comment> = {}
   protected views: KeyValue<CellView> = {}
   protected updates: Graph.Updates
@@ -255,6 +255,7 @@ export class Graph extends View<Graph.EventArgs> {
 
     this.options = ObjectExt.merge(this.options, options)
     this.container = options.container
+    this.$(this.container).addClass(this.prefixClassName('graph'))
     const { selectors, fragment } = Markup.parseJSONMarkup(Graph.markup)
     this.backgroundElem = selectors.background as HTMLDivElement
     this.gridElem = selectors.grid as HTMLDivElement
@@ -1573,14 +1574,14 @@ export class Graph extends View<Graph.EventArgs> {
     gridWidth?: number,
     gridHeight?: number,
     padding?: NumberExt.SideOptions,
-    options?: Types.FitToContentOptions,
+    options?: Graph.FitToContentOptions,
   ): Rectangle
-  fitToContent(options?: Types.FitToContentFullOptions): Rectangle
+  fitToContent(options?: Graph.FitToContentFullOptions): Rectangle
   fitToContent(
-    gridWidth?: number | Types.FitToContentFullOptions,
+    gridWidth?: number | Graph.FitToContentFullOptions,
     gridHeight?: number,
     padding?: NumberExt.SideOptions,
-    options?: Types.FitToContentOptions,
+    options?: Graph.FitToContentOptions,
   ) {
     if (typeof gridWidth === 'object') {
       const opts = gridWidth
@@ -1668,7 +1669,7 @@ export class Graph extends View<Graph.EventArgs> {
     return new Rectangle(-tx / sx, -ty / sy, width / sx, height / sy)
   }
 
-  scaleContentToFit(options: Types.ScaleContentToFitOptions = {}) {
+  scaleContentToFit(options: Graph.ScaleContentToFitOptions = {}) {
     let contentBBox
     let contentLocalOrigin
     if (options.contentArea) {
@@ -1737,7 +1738,7 @@ export class Graph extends View<Graph.EventArgs> {
     this.translate(newOX, newOY)
   }
 
-  getContentArea(options: Types.GetContentAreaOptions = {}) {
+  getContentArea(options: Graph.GetContentAreaOptions = {}) {
     if (options.useModelGeometry) {
       return this.model.getBBox() || new Rectangle()
     }
@@ -1745,7 +1746,7 @@ export class Graph extends View<Graph.EventArgs> {
     return v.getBBox(this.drawPane)
   }
 
-  getContentBBox(options: Types.GetContentAreaOptions = {}) {
+  getContentBBox(options: Graph.GetContentAreaOptions = {}) {
     return this.localToPaperRect(this.getContentArea(options))
   }
 
@@ -3233,11 +3234,7 @@ export namespace Graph {
   }
 }
 
-namespace Types {
-  export interface GetContentAreaOptions {
-    useModelGeometry?: boolean
-  }
-
+export namespace Graph {
   export interface FitToContentOptions extends GetContentAreaOptions {
     minWidth?: number
     minHeight?: number
@@ -3265,6 +3262,10 @@ namespace Types {
     fittingBBox?: Rectangle | Rectangle.RectangleLike
     preserveAspectRatio?: boolean
     gridSize?: number
+  }
+
+  export interface GetContentAreaOptions {
+    useModelGeometry?: boolean
   }
 
   export interface HighlightCacheItem {
