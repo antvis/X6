@@ -38,8 +38,12 @@ export class Edge<
 
     const data = others as Edge.BaseOptions
 
+    let sourceCellFound: Cell | undefined
+    let targetCellFound: Cell | undefined
+
     if (source != null) {
       if (source instanceof Cell) {
+        sourceCellFound = source
         data.source = { cell: source.id }
       } else if (typeof source === 'string') {
         data.source = { cell: source }
@@ -50,6 +54,7 @@ export class Edge<
       } else {
         const cell = (source as Edge.TerminalCellLooseData).cell
         if (cell instanceof Cell) {
+          sourceCellFound = cell
           data.source = {
             ...source,
             cell: cell.id,
@@ -63,6 +68,9 @@ export class Edge<
     if (sourceCell != null || sourcePort != null) {
       let terminal = data.source as Edge.TerminalCellData
       if (sourceCell != null) {
+        if (typeof sourceCell !== 'string') {
+          sourceCellFound = sourceCell
+        }
         const id = typeof sourceCell === 'string' ? sourceCell : sourceCell.id
         if (terminal) {
           terminal.cell = id
@@ -80,6 +88,7 @@ export class Edge<
 
     if (target != null) {
       if (target instanceof Cell) {
+        targetCellFound = target
         data.target = { cell: target.id }
       } else if (typeof target === 'string') {
         data.target = { cell: target }
@@ -90,6 +99,7 @@ export class Edge<
       } else {
         const cell = (target as Edge.TerminalCellLooseData).cell
         if (cell instanceof Cell) {
+          targetCellFound = cell
           data.target = {
             ...target,
             cell: cell.id,
@@ -104,6 +114,9 @@ export class Edge<
       let terminal = data.target as Edge.TerminalCellData
 
       if (targetCell != null) {
+        if (typeof targetCell !== 'string') {
+          targetCellFound = targetCell
+        }
         const id = typeof targetCell === 'string' ? targetCell : targetCell.id
         if (terminal) {
           terminal.cell = id
@@ -119,28 +132,33 @@ export class Edge<
       data.target = Point.create(targetPoint).toJSON()
     }
 
-    return super.prepare(data)
-  }
+    const props = super.prepare(data)
 
-  protected setModel(model: Model | null) {
-    if (model) {
-      const sourceCellId = this.getSourceCellId()
-      const targetCellId = this.getTargetCellId()
-      const sourceCell =
-        sourceCellId != null ? model.getCell(sourceCellId) : null
-      const targetCell =
-        targetCellId != null ? model.getCell(targetCellId) : null
-      this.reference('source', sourceCell)
-      this.reference('target', targetCell)
-      this.updateParent()
+    if (sourceCellFound) {
+      this.reference('source', sourceCellFound)
     }
-    super.setModel(model)
+
+    if (targetCellFound) {
+      this.reference('target', targetCellFound)
+    }
+
+    return props
   }
 
   protected setup() {
     super.setup()
     this.on('change:labels', args => this.onLabelsChanged(args))
     this.on('change:vertices', args => this.onVertexsChanged(args))
+  }
+
+  set model(model: Model | null) {
+    if (this._model !== model) {
+      this._model = model
+      if (model) {
+        this.getSourceCell()
+        this.getTargetCell()
+      }
+    }
   }
 
   isEdge(): this is Edge {
@@ -265,7 +283,7 @@ export class Edge<
       this.reference(type, terminal)
       this.store.set(
         type,
-        ObjectExt.merge({}, args, { id: terminal.id }),
+        ObjectExt.merge({}, args, { cell: terminal.id }),
         options,
       )
       return this
@@ -286,7 +304,7 @@ export class Edge<
     // `terminal` is an object
     {
       const cellId = (terminal as Edge.TerminalCellData).cell
-      const cell = cellId && this.model ? this.model.getCell(cellId) : null
+      const cell = cellId && this._model ? this._model.getCell(cellId) : null
       this.reference(type, cell)
 
       this.store.set(
@@ -299,11 +317,11 @@ export class Edge<
     return this
   }
 
-  protected reference(type: Edge.TerminalType, cell: Cell | null) {
+  protected reference(type: Edge.TerminalType, terminalCell: Cell | null) {
     const terminalCellKey = `${type}Cell` as 'sourceCell' | 'targetCell'
     const prev = this[terminalCellKey]
 
-    if (prev !== cell) {
+    if (prev !== terminalCell) {
       const edgesKey = type === 'source' ? 'outgoings' : 'incomings'
 
       if (prev) {
@@ -316,19 +334,19 @@ export class Edge<
         }
       }
 
-      if (cell) {
-        let ref = cell[edgesKey]
+      if (terminalCell) {
+        let ref = terminalCell[edgesKey]
         if (ref == null) {
-          ref = cell[edgesKey] = []
+          ref = terminalCell[edgesKey] = []
         }
         ref.push(this)
       }
+
+      this.updateParent()
     }
 
-    this[terminalCellKey] = cell
+    this[terminalCellKey] = terminalCell
   }
-
-  protected unreference(type: Edge.TerminalType) {}
 
   getSourcePoint() {
     return this.getTerminalPoint('source')
@@ -338,14 +356,14 @@ export class Edge<
     return this.getTerminalPoint('target')
   }
 
-  getTerminalPoint(type: Edge.TerminalType) {
+  getTerminalPoint(type: Edge.TerminalType): Point {
     const terminal = this[type]
     if (Point.isPointLike(terminal)) {
       return Point.create(terminal)
     }
     const cell = this.getTerminalCell(type)
     if (cell) {
-      cell.getConnectionPoint(this, type)
+      return cell.getConnectionPoint(this, type)
     }
     return new Point()
   }
@@ -360,7 +378,22 @@ export class Edge<
 
   getTerminalCell(type: Edge.TerminalType) {
     const key = `${type}Cell` as 'sourceCell' | 'targetCell'
-    return this[key]
+    let cell = this[key]
+    if (cell == null && this._model) {
+      const cellId =
+        type === 'source'
+          ? this.getSourceCellId()
+          : type === 'target'
+          ? this.getTargetCellId()
+          : null
+      if (cellId) {
+        cell = this._model.getCell(cellId)
+        if (cell) {
+          this.reference(type, cell)
+        }
+      }
+    }
+    return cell
   }
 
   getSourceNode() {
@@ -900,32 +933,30 @@ export class Edge<
   }
 
   updateParent(options?: Edge.SetOptions) {
-    let newParent
+    let newParent: Cell | null = null
 
-    if (this._model) {
-      const source = this.getSourceNode()
-      const target = this.getTargetNode()
-      const prevParent = this.getParent()
+    const source = this.getSourceCell()
+    const target = this.getTargetCell()
+    const prevParent = this.getParent()
 
-      if (source && target) {
-        if (source === target || source.isDescendantOf(target)) {
-          newParent = target
-        } else if (target.isDescendantOf(source)) {
-          newParent = source
-        } else {
-          newParent = this._model.getCommonAncestor(source, target)
-        }
+    if (source && target) {
+      if (source === target || source.isDescendantOf(target)) {
+        newParent = target
+      } else if (target.isDescendantOf(source)) {
+        newParent = source
+      } else {
+        newParent = Cell.getCommonAncestor(source, target)
       }
+    }
 
-      // Unembeds the edge if source and target has no common
-      // ancestor or common ancestor changed
-      if (prevParent && (!newParent || newParent.id !== prevParent.id)) {
-        prevParent.unembed(this, options)
-      }
+    // Unembeds the edge if source and target has no common
+    // ancestor or common ancestor changed
+    if (prevParent && (!newParent || newParent.id !== prevParent.id)) {
+      prevParent.unembed(this, options)
+    }
 
-      if (newParent) {
-        newParent.embed(this, options)
-      }
+    if (newParent) {
+      newParent.embed(this, options)
     }
 
     return newParent
@@ -946,7 +977,7 @@ export class Edge<
     // Note that there in the deep mode a link can have a loop,
     // even if it connects only a parent and its embed.
     // A loop "target equals source" is valid in both shallow and deep mode.
-    if (!loop && options.deep && this.model) {
+    if (!loop && options.deep && this._model) {
       const sourceCell = this.getSourceCell()
       const targetCell = this.getTargetCell()
 

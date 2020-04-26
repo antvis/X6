@@ -1,9 +1,9 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
-import { PathDrawer } from '@antv/x6/es/research/addon/path'
+import { PathDrawer } from '@antv/x6/es/v1/addon/path'
 import '../../index.less'
 import '../index.less'
-import '../../../../../../packages/x6/src/research/addon/path/index.less'
+import '../../../../../../packages/x6/src/v1/addon/path/index.less'
 
 export default class Example extends React.Component {
   private container: SVGSVGElement

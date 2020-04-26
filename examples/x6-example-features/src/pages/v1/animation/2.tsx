@@ -1,7 +1,7 @@
 import React from 'react'
-import { joint, Point, Angle } from '@antv/x6'
-import { NodeView } from '@antv/x6/es/research/core/node-view'
-import { Interpolation } from '@antv/x6/es/research/animation'
+import { v1, Point, Angle } from '@antv/x6'
+import { NodeView } from '@antv/x6/es/v1/core/node-view'
+import { Interpolation } from '@antv/x6/es/v1/animation'
 import '../../index.less'
 import '../index.less'
 
@@ -9,7 +9,7 @@ class BallView extends NodeView {
   protected speed: number = 0
   protected angle: number = 0
   protected timerId: number = 0
-  protected edge: joint.Edge
+  protected edge: v1.Edge
 
   protected init() {
     this.timerId = this.cell.transition('attrs/label/opacity', 1, {
@@ -31,7 +31,7 @@ class BallView extends NodeView {
     })
 
     this.cell.on('change:position', ({ cell, current }) => {
-      const node = (cell as any) as joint.Node
+      const node = (cell as any) as v1.Node
       this.angle = Point.create(node.getPosition()).theta(
         node.previous('position'),
       )
@@ -126,7 +126,7 @@ class BallView extends NodeView {
     }) as any
     // Change the marker arrow color.
     this.edge.on('change:target', ({ cell }) => {
-      const edge = (cell as any) as joint.Edge
+      const edge = (cell as any) as v1.Edge
       const sourcePoint = edge.getSourcePoint()!
       const targetPoint = edge.getTargetPoint()!
       const dist = sourcePoint.distance(targetPoint)
@@ -166,9 +166,9 @@ class BallView extends NodeView {
   }
 }
 
-joint.ViewRegistry.register('ball', BallView as any)
+v1.ViewRegistry.register('ball', BallView as any)
 
-joint.NodeRegistry.register('ball', {
+v1.NodeRegistry.register('ball', {
   view: 'ball',
   markup: [
     {
@@ -206,7 +206,7 @@ export default class Example extends React.Component {
   private container: HTMLDivElement
 
   componentDidMount() {
-    const graph = new joint.Graph({
+    const graph = new v1.Graph({
       container: this.container,
       width: 650,
       height: 400,

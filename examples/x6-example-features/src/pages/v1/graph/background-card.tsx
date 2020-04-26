@@ -1,5 +1,5 @@
 import React from 'react'
-import { joint } from '@antv/x6'
+import { v1 } from '@antv/x6'
 import { Input, Checkbox, Select, Slider, Card, Row, Col } from 'antd'
 
 export class BackgroundCard extends React.Component<
@@ -214,7 +214,7 @@ export class BackgroundCard extends React.Component<
 
 export namespace BackgroundCard {
   export interface Props {
-    onChange: (res: joint.Graph.BackgroundOptions) => void
+    onChange: (res: v1.Graph.BackgroundOptions) => void
   }
 
   export interface State {

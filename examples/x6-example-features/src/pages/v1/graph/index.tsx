@@ -1,6 +1,6 @@
 import React from 'react'
-import { joint, Rectangle } from '@antv/x6'
-import { Grid } from '@antv/x6/es/research/grid'
+import { v1, Rectangle } from '@antv/x6'
+import { Grid } from '@antv/x6/es/v1/grid'
 import '../../index.less'
 import '../index.less'
 import './index.less'
@@ -18,7 +18,7 @@ export default class Example extends React.Component<
   Example.State
 > {
   private container: HTMLDivElement
-  private graph: joint.Graph
+  private graph: v1.Graph
   private effect: ReturnType<typeof createEffect>
 
   state = {
@@ -34,7 +34,7 @@ export default class Example extends React.Component<
   }
 
   componentDidMount() {
-    this.graph = new joint.Graph({
+    this.graph = new v1.Graph({
       container: this.container,
       width: 600,
       height: 400,
@@ -107,7 +107,7 @@ export default class Example extends React.Component<
     this.container = container
   }
 
-  onBackgroundChanged = (res: joint.Graph.BackgroundOptions) => {
+  onBackgroundChanged = (res: v1.Graph.BackgroundOptions) => {
     this.graph.drawBackground(res)
   }
 

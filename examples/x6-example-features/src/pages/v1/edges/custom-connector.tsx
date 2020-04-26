@@ -1,9 +1,9 @@
 import React from 'react'
-import { joint, Path, Point } from '@antv/x6'
+import { v1, Path, Point } from '@antv/x6'
 import '../../index.less'
 import '../index.less'
 
-joint.ConnectorRegistry.register(
+v1.ConnectorRegistry.register(
   'wobble',
   (sourcePoint, targetPoint, vertices, args) => {
     const spread = args.spread || 20
@@ -38,7 +38,7 @@ export default class Example extends React.Component {
   private container: HTMLDivElement
 
   componentDidMount() {
-    const graph = new joint.Graph({
+    const graph = new v1.Graph({
       container: this.container,
       width: 1000,
       height: 600,

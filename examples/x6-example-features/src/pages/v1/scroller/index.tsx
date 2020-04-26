@@ -1,13 +1,13 @@
 import React from 'react'
 import { Button } from 'antd'
-import { joint } from '@antv/x6'
-import { Scroller } from '@antv/x6/es/research/addon/scroller'
-import { MiniMap } from '@antv/x6/es/research/addon/minimap'
+import { v1 } from '@antv/x6'
+import { Scroller } from '@antv/x6/es/v1/addon/scroller'
+import { MiniMap } from '@antv/x6/es/v1/addon/minimap'
 import '../../index.less'
 import '../index.less'
 import './index.less'
-import '../../../../../../packages/x6/src/research/addon/scroller/index.less'
-import '../../../../../../packages/x6/src/research/addon/minimap/index.less'
+import '../../../../../../packages/x6/src/v1/addon/scroller/index.less'
+import '../../../../../../packages/x6/src/v1/addon/minimap/index.less'
 
 export default class Example extends React.Component {
   private graphContainer: HTMLDivElement
@@ -15,7 +15,7 @@ export default class Example extends React.Component {
   private scroller: Scroller
 
   componentDidMount() {
-    const graph = new joint.Graph({
+    const graph = new v1.Graph({
       container: this.graphContainer,
       width: 800,
       height: 800,
@@ -40,7 +40,7 @@ export default class Example extends React.Component {
 
     parentElem.appendChild(scroller.container)
 
-    graph.addNode({
+    const rect = graph.addNode({
       type: 'rect',
       x: 300,
       y: 300,
@@ -52,7 +52,7 @@ export default class Example extends React.Component {
       },
     })
 
-    graph.addNode({
+    const circle = graph.addNode({
       type: 'circle',
       x: 400,
       y: 400,
@@ -62,6 +62,12 @@ export default class Example extends React.Component {
         circle: { fill: '#FE854F', 'stroke-width': 2, stroke: '#4B4A67' },
         text: { text: 'circle', fill: 'white' },
       },
+    })
+
+    graph.addEdge({
+      type: 'edge',
+      source: rect,
+      target: circle,
     })
 
     scroller.center()

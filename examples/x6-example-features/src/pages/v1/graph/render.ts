@@ -1,9 +1,9 @@
-import { joint } from '@antv/x6'
+import { v1 } from '@antv/x6'
 
 const path1 = 'M 20 0 L 100 0 100 40 20 40 0 20 Z'
 const path2 = 'M 20 0 L 100 0 80 20 100 40 20 40 0 20 Z'
 
-export function render(graph: joint.Graph) {
+export function render(graph: v1.Graph) {
   const nodes = createNodes(graph)
   graph.model.resetCells(nodes)
 
@@ -35,7 +35,7 @@ export function render(graph: joint.Graph) {
   })
 }
 
-function createNodes(graph: joint.Graph) {
+function createNodes(graph: v1.Graph) {
   return [
     graph.createNode({
       type: 'path',

@@ -1,7 +1,7 @@
 import React from 'react'
 import { Button } from 'antd'
-import { joint } from '@antv/x6'
-import { UndoManager } from '@antv/x6/es/research/addon'
+import { v1 } from '@antv/x6'
+import { UndoManager } from '@antv/x6/es/v1/addon'
 import '../../index.less'
 import '../index.less'
 
@@ -18,7 +18,7 @@ export default class Example extends React.Component<
   }
 
   componentDidMount() {
-    const graph = new joint.Graph({
+    const graph = new v1.Graph({
       container: this.container,
       width: 800,
       height: 600,

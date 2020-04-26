@@ -1,6 +1,6 @@
 import React from 'react'
-import { joint } from '@antv/x6'
-import { Rect } from '@antv/x6/es/research/shape/standard'
+import { v1 } from '@antv/x6'
+import { Rect } from '@antv/x6/es/v1/shape/standard'
 import '../../index.less'
 import '../index.less'
 
@@ -19,24 +19,24 @@ const Child = Rect.define({
   },
 })
 
-joint.NodeRegistry.register('embedding.parent', Parent)
-joint.NodeRegistry.register('embedding.child', Child)
+v1.NodeRegistry.register('embedding.parent', Parent)
+v1.NodeRegistry.register('embedding.child', Child)
 
 export default class Example extends React.Component {
   private container: HTMLDivElement
 
   componentDidMount() {
     const EMBEDDING_OFFSET = 59
-    const graph = new joint.Graph({
+    const graph = new v1.Graph({
       container: this.container,
       width: 880,
       height: 600,
       gridSize: 20,
       drawGrid: 'mesh',
       embeddingMode: true,
-      findParentBy: function(this: joint.Model, node: joint.Node) {
+      findParentBy: function(this: v1.Model, node: v1.Node) {
         var bbox = node.getBBox()
-        return this.getNodes().filter((node: joint.Node) => {
+        return this.getNodes().filter((node: v1.Node) => {
           var currentBBox = node.getBBox()
           if (node.getProp('customEmebedding')) {
             var children = node.getChildren() || []

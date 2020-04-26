@@ -1,8 +1,8 @@
-import { joint, v, FunctionExt, Vectorizer, Rectangle } from '@antv/x6'
+import { v1, v, FunctionExt, Vectorizer, Rectangle } from '@antv/x6'
 import { FitToContentCard } from './fit-card'
 import { ScaleContentToFitCard } from './scale-card'
 
-export function createEffect(graph: joint.Graph) {
+export function createEffect(graph: v1.Graph) {
   const vSvg = v(graph.svgElem)
   const vVertical = v.create('path').attr('d', 'M -10000 -1 L 10000 -1')
   const vHorizontal = v.create('path').attr('d', 'M -1 -10000 L -1 10000')
@@ -36,7 +36,7 @@ export function createEffect(graph: joint.Graph) {
       hideBBox()
     },
 
-    afterFit(graph: joint.Graph, options: FitToContentCard.State) {
+    afterFit(graph: v1.Graph, options: FitToContentCard.State) {
       this.removeAll()
 
       const padding = options.padding
@@ -142,7 +142,7 @@ export function createEffect(graph: joint.Graph) {
       this.showAll()
     },
 
-    afterScaleToFit(graph: joint.Graph, options: ScaleContentToFitCard.State) {
+    afterScaleToFit(graph: v1.Graph, options: ScaleContentToFitCard.State) {
       this.removeAll()
 
       const padding = options.padding

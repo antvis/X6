@@ -1,6 +1,6 @@
 import React from 'react'
-import { joint } from '@antv/x6'
-import { Rect } from '@antv/x6/es/research/shape/standard'
+import { v1 } from '@antv/x6'
+import { Rect } from '@antv/x6/es/v1/shape/standard'
 import '../../index.less'
 import '../index.less'
 
@@ -15,7 +15,7 @@ class Shape extends Rect {
 
   getUsedInPorts() {
     const incomingEdges = this.getIncomingEdges() || []
-    return incomingEdges.map((edge: joint.Edge) => {
+    return incomingEdges.map((edge: v1.Edge) => {
       const portId = edge.getTargetPortId()
       return this.getPort(portId!)
     })
@@ -117,7 +117,7 @@ export default class Example extends React.Component {
   private container: HTMLDivElement
 
   componentDidMount() {
-    const graph = new joint.Graph({
+    const graph = new v1.Graph({
       container: this.container,
       width: 800,
       height: 600,
@@ -165,7 +165,7 @@ export default class Example extends React.Component {
     shape3.updateInPorts()
     graph.addNode(shape3)
 
-    function update(view: joint.CellView) {
+    function update(view: v1.CellView) {
       var cell = view.cell
       if (cell instanceof Shape) {
         cell.getInPorts().forEach(port => {

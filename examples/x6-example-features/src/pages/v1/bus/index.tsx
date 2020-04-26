@@ -1,5 +1,5 @@
 import React from 'react'
-import { joint } from '@antv/x6'
+import { v1 } from '@antv/x6'
 import { Bus, Connector, Component, Fader, Aux } from './shapes'
 import '../../index.less'
 import '../index.less'
@@ -9,7 +9,7 @@ export default class Example extends React.Component {
   private container: HTMLDivElement
 
   componentDidMount() {
-    const graph = new joint.Graph({
+    const graph = new v1.Graph({
       container: this.container,
       width: 1000,
       height: 800,
@@ -41,14 +41,14 @@ export default class Example extends React.Component {
       },
     })
 
-    function getCellOutbounds(cell: joint.Cell) {
+    function getCellOutbounds(cell: v1.Cell) {
       return [cell].concat(
         graph.model.getNeighbors(cell, { outgoing: true, indirect: true }),
         graph.model.getConnectedEdges(cell, { outgoing: true, indirect: true }),
       )
     }
 
-    function highlight(cell: joint.Cell) {
+    function highlight(cell: v1.Cell) {
       getCellOutbounds(cell).forEach(cell => {
         const view = graph.findViewByCell(cell)
         if (view) {
@@ -57,7 +57,7 @@ export default class Example extends React.Component {
       })
     }
 
-    function unhighlight(cell: joint.Cell) {
+    function unhighlight(cell: v1.Cell) {
       getCellOutbounds(cell).forEach(cell => {
         const view = graph.findViewByCell(cell)
         if (view) {

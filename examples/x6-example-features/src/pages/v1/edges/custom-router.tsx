@@ -1,9 +1,9 @@
 import React from 'react'
-import { joint, Point } from '@antv/x6'
+import { v1, Point } from '@antv/x6'
 import '../../index.less'
 import '../index.less'
 
-joint.RouterRegistry.register('random', (vertices, args, view) => {
+v1.RouterRegistry.register('random', (vertices, args, view) => {
   const BOUNCES = args.bounces || 20
   const points = vertices.map(p => Point.create(p))
 
@@ -26,7 +26,7 @@ export default class Example extends React.Component {
   private container: HTMLDivElement
 
   componentDidMount() {
-    const graph = new joint.Graph({
+    const graph = new v1.Graph({
       container: this.container,
       width: 1000,
       height: 600,

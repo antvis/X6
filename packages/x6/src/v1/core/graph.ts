@@ -266,7 +266,7 @@ export class Graph extends View<Graph.EventArgs> {
     this.container.appendChild(fragment)
 
     this.delegateEvents()
-    this.setModel()
+    this.setModel(options.model)
     this.resize()
     this.setGrid(this.options.drawGrid)
     this.drawGrid()
@@ -297,19 +297,17 @@ export class Graph extends View<Graph.EventArgs> {
     return new Model()
   }
 
-  setModel(model: Model = this.createModel()) {
-    this.model = model
+  setModel(model: Model) {
+    this.model = model == null ? this.createModel() : model
   }
 
   init() {
     // const { options, el } = this
     // if (!options.cellViewNamespace) {
-    //   /* global joint: true */
     //   options.cellViewNamespace =
     //     typeof joint !== 'undefined' && has(joint, 'shapes')
     //       ? joint.shapes
     //       : null
-    //   /* global joint: false */
     // }
     // const model = (this.model = new Model())
     // this.setGrid(options.drawGrid)
@@ -542,7 +540,7 @@ export class Graph extends View<Graph.EventArgs> {
   addNode(metadata: Node.Metadata, options?: Model.AddOptions): Node
   addNode(node: Node, options: Model.AddOptions): Node
   addNode(node: Node | Node.Metadata, options: Model.AddOptions = {}): Node {
-    return this.model.addNode(node)
+    return this.model.addNode(node, options)
   }
 
   createNode(metadata: Node.Metadata) {
@@ -551,8 +549,8 @@ export class Graph extends View<Graph.EventArgs> {
 
   addEdge(metadata: Edge.Metadata, options: Model.AddOptions): Edge
   addEdge(edge: Edge, options: Model.AddOptions): Edge
-  addEdge(node: Edge | Edge.Metadata, options: Model.AddOptions = {}): Edge {
-    return this.model.addEdge(node)
+  addEdge(edge: Edge | Edge.Metadata, options: Model.AddOptions = {}): Edge {
+    return this.model.addEdge(edge, options)
   }
 
   createEdge(metadata: Edge.Metadata) {

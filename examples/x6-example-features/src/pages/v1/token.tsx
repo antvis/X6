@@ -1,5 +1,5 @@
 import React from 'react'
-import { joint, v } from '@antv/x6'
+import { v1, v } from '@antv/x6'
 import '../index.less'
 import './index.less'
 
@@ -7,7 +7,7 @@ export default class Example extends React.Component {
   private container: HTMLDivElement
 
   componentDidMount() {
-    const graph = new joint.Graph({
+    const graph = new v1.Graph({
       container: this.container,
       width: 800,
       height: 600,
@@ -52,7 +52,7 @@ export default class Example extends React.Component {
       target: c,
     })
 
-    function flash(cell: joint.Cell) {
+    function flash(cell: v1.Cell) {
       const cellView = graph.findViewByCell(cell)
       if (cellView) {
         cellView.highlight()
@@ -64,9 +64,9 @@ export default class Example extends React.Component {
       graph.trigger('signal', cell)
     })
 
-    graph.on('signal', function(cell: joint.Cell) {
+    graph.on('signal', function(cell: v1.Cell) {
       if (cell.isEdge()) {
-        const edgeView = graph.findViewByCell(cell) as joint.EdgeView
+        const edgeView = graph.findViewByCell(cell) as v1.EdgeView
         if (edgeView) {
           const token = v.create('circle', { r: 7, fill: 'green' })
           const targetCell = cell.getTargetCell()

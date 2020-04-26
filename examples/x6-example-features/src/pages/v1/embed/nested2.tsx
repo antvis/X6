@@ -1,6 +1,6 @@
 import React from 'react'
 import { Checkbox } from 'antd'
-import { joint } from '@antv/x6'
+import { v1 } from '@antv/x6'
 import '../../index.less'
 import '../index.less'
 
@@ -9,14 +9,14 @@ export default class Example extends React.Component<
   Example.State
 > {
   private container: HTMLDivElement
-  private parent: joint.Node
-  private edge1: joint.Edge
-  private edge2: joint.Edge
+  private parent: v1.Node
+  private edge1: v1.Edge
+  private edge2: v1.Edge
 
   state = { embedEdges: false }
 
   componentDidMount() {
-    const graph = new joint.Graph({
+    const graph = new v1.Graph({
       container: this.container,
       width: 600,
       height: 200,

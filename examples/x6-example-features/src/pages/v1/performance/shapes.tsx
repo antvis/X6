@@ -1,5 +1,5 @@
 import React from 'react'
-import { joint } from '@antv/x6'
+import { v1 } from '@antv/x6'
 import '../../index.less'
 import '../index.less'
 
@@ -14,7 +14,7 @@ var COUNT = 500
 // true: does not block the UI
 var ASYNC = false
 
-const Node = joint.NodeRegistry.register('performance_node', {
+const Node = v1.NodeRegistry.register('performance_node', {
   size: {
     width: 100,
     height: 50,
@@ -63,7 +63,7 @@ const Node = joint.NodeRegistry.register('performance_node', {
   ],
 })
 
-const Edge = joint.EdgeRegistry.register('performance_edge', {
+const Edge = v1.EdgeRegistry.register('performance_edge', {
   zIndex: 1,
   attrs: {
     line: {
@@ -96,7 +96,7 @@ export default class Example extends React.Component {
   private container: HTMLDivElement
 
   componentDidMount() {
-    const graph = new joint.Graph({
+    const graph = new v1.Graph({
       container: this.container,
       width: (COUNT / 2) * 110,
       height: 500,
@@ -107,7 +107,7 @@ export default class Example extends React.Component {
     var node = new Node()
     var edge = new Edge()
 
-    var cells: joint.Cell[] = []
+    var cells: v1.Cell[] = []
 
     Array.from({ length: COUNT / 2 }).forEach((_, n) => {
       const a = node
@@ -141,7 +141,7 @@ export default class Example extends React.Component {
 
     // Prefer resetCells() over `addCells()` to add elements in bulk.
     // SVG as oppose to HTML does not know `z-index` attribute.
-    // The "z" coordinate is determined by the order of the sibling elements. The JointJS
+    // The "z" coordinate is determined by the order of the sibling elements. The
     // paper makes sure the DOM elements are sorted based on the "z" stored on each element model.
     graph.model.resetCells(cells)
 
@@ -159,7 +159,9 @@ export default class Example extends React.Component {
   render() {
     return (
       <div className="x6-graph-wrap">
-        <div id="result">#</div>
+        <div id="result" style={{ paddingLeft: 8, paddingBottom: 8 }}>
+          #
+        </div>
         <div ref={this.refContainer} className="x6-graph" />
       </div>
     )

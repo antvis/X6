@@ -1,5 +1,5 @@
 import React from 'react'
-import { joint } from '@antv/x6'
+import { v1 } from '@antv/x6'
 import '../../index.less'
 import '../index.less'
 
@@ -8,7 +8,7 @@ export default class Example extends React.Component {
   private container: HTMLDivElement
 
   componentDidMount() {
-    const graph = new joint.Graph({
+    const graph = new v1.Graph({
       container: this.container,
       width: 1000,
       height: 600,
@@ -90,10 +90,10 @@ export default class Example extends React.Component {
 
     const model = graph.model
     graph.on('cell:mouseleave', this.resetInfo)
-    graph.on('cell:mouseenter', ({ view }: { view: joint.CellView }) => {
+    graph.on('cell:mouseenter', ({ view }: { view: v1.CellView }) => {
       const cell = view.cell
       const i: { [key: string]: string } = {}
-      const toString = (cloned: { [key: string]: joint.Cell }) =>
+      const toString = (cloned: { [key: string]: v1.Cell }) =>
         Object.keys(cloned)
           .map(id => {
             const cell = cloned[id]
@@ -106,7 +106,7 @@ export default class Example extends React.Component {
       i[key] = toString(cloned)
 
       key = `Cell.deepClone(${cell.id})`
-      cloned = joint.Cell.deepClone(cell)
+      cloned = v1.Cell.deepClone(cell)
       i[key] = toString(cloned)
 
       key = `${cell.id}.clone({ deep: true })`

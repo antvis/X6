@@ -1,5 +1,5 @@
 import React from 'react'
-import { joint, v, Path } from '@antv/x6'
+import { v1, v, Path } from '@antv/x6'
 import '../../index.less'
 import '../index.less'
 
@@ -7,7 +7,7 @@ export default class Example extends React.Component {
   private container: HTMLDivElement
 
   componentDidMount() {
-    const graph = new joint.Graph({
+    const graph = new v1.Graph({
       container: this.container,
       width: 800,
       height: 600,

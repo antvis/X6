@@ -1,9 +1,9 @@
 import React from 'react'
-import { joint } from '@antv/x6'
+import { v1 } from '@antv/x6'
 import '../../index.less'
 import '../index.less'
 
-joint.PortLayoutRegistry.register('sin', (portsPositionArgs, elemBBox) => {
+v1.PortLayoutRegistry.register('sin', (portsPositionArgs, elemBBox) => {
   return portsPositionArgs.map((_, index) => {
     const step = -Math.PI / 8
     const y = Math.sin(index * step) * 50
@@ -21,7 +21,7 @@ export default class Example extends React.Component {
   private container: HTMLDivElement
 
   componentDidMount() {
-    const graph = new joint.Graph({
+    const graph = new v1.Graph({
       container: this.container,
       width: 800,
       height: 400,

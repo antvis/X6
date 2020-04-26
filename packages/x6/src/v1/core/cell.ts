@@ -76,6 +76,20 @@ export class Cell<
 
   init() {}
 
+  // #region model
+
+  get model() {
+    return this._model
+  }
+
+  set model(model: Model | null) {
+    if (this._model !== model) {
+      this._model = model
+    }
+  }
+
+  // #endregion
+
   protected prepare(options: Cell.Options): Properties {
     const id = options.id
     const ctor = this.constructor as typeof Cell
@@ -148,27 +162,6 @@ export class Cell<
       }
     }
     return this
-  }
-
-  protected setModel(model: Model | null) {
-    if (this._model !== model) {
-      this._model = model
-      if (model) {
-        model.addCell(this)
-      }
-    }
-  }
-
-  protected getModel() {
-    return this._model
-  }
-
-  get model() {
-    return this.getModel()
-  }
-
-  set model(model: Model | null) {
-    this.setModel(model)
   }
 
   isNode(): this is Node {

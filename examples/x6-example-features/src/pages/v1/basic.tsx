@@ -1,5 +1,5 @@
 import React from 'react'
-import { v, joint } from '@antv/x6'
+import { v, v1 } from '@antv/x6'
 import '../index.less'
 import './index.less'
 
@@ -7,7 +7,7 @@ export default class Example extends React.Component {
   private container: HTMLDivElement
 
   componentDidMount() {
-    const graph = new joint.Graph({
+    const graph = new v1.Graph({
       container: this.container,
       background: {
         // color: '#f5f5f5',
@@ -87,7 +87,7 @@ export default class Example extends React.Component {
       },
     })
 
-    const DecoratedRect = joint.Node.define({
+    const DecoratedRect = v1.Node.define({
       markup:
         '<g class="rotatable"><g class="scalable"><rect/></g><image/><text/></g>',
       size: { width: 100, height: 60 },
@@ -132,7 +132,7 @@ export default class Example extends React.Component {
         'Lorem ipsum dolor sit amet,\n consectetur adipiscing elit. Nulla vel porttitor est.',
     })
 
-    const MyElementWithPorts = joint.Node.define({
+    const MyElementWithPorts = v1.Node.define({
       markup: [
         '<g class="rotatable">',
         '<g class="scalable">',

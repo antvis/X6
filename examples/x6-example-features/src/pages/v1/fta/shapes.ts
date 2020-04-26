@@ -1,4 +1,4 @@
-import { Rect, Edge } from '@antv/x6/es/research/shape/standard'
+import { Rect, Edge } from '@antv/x6/es/v1/shape/standard'
 
 export class Event extends Rect {
   static create(label: string) {

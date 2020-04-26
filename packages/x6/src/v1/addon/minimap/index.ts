@@ -8,11 +8,11 @@ export class MiniMap extends View {
   public readonly options: MiniMap.Options
   public readonly container: HTMLDivElement
   public readonly $container: JQuery<HTMLElement>
+  protected readonly $viewport: JQuery<HTMLElement>
   protected readonly sourceGraph: Graph
   protected readonly targetGraph: Graph
   protected ratio: number
   protected cssGeometry: MiniMap.ViewGeometry
-  protected $viewport: JQuery<HTMLElement>
 
   protected get scroller() {
     return this.options.scroller
@@ -26,36 +26,16 @@ export class MiniMap extends View {
       ...options,
     } as MiniMap.Options
 
-    this.container = document.createElement('div')
-    this.$container = this.$(this.container).addClass(
-      this.prefixClassName('widget-minimap'),
-    )
-
     this.updateViewport = FunctionExt.debounce(
       this.updateViewport.bind(this),
       0,
     )
 
-    this.sourceGraph = this.scroller.graph
-    this.targetGraph = new this.options.graphConstructor({
-      ...this.options.graphOptions,
-      container: document.createElement('div'),
-      model: this.sourceGraph.model,
-      interactive: false,
-      frozen: true,
-      gridSize: 1,
-    })
+    this.container = document.createElement('div')
+    this.$container = this.$(this.container).addClass(
+      this.prefixClassName('widget-minimap'),
+    )
 
-    this.render()
-    this.startListening()
-    if (this.options.container) {
-      this.options.container.appendChild(this.container)
-    }
-  }
-
-  protected render() {
-    this.container.appendChild(this.targetGraph.container)
-    this.targetGraph.unfreeze()
     this.$viewport = this.$('<div>').addClass('viewport')
 
     if (this.options.zoom) {
@@ -70,12 +50,30 @@ export class MiniMap extends View {
       padding: this.options.padding,
     })
 
+    const graphContainer = document.createElement('div')
+    this.container.appendChild(graphContainer)
+    if (this.options.container) {
+      this.options.container.appendChild(this.container)
+    }
+
+    this.sourceGraph = this.scroller.graph
+    this.targetGraph = new this.options.graphConstructor({
+      ...this.options.graphOptions,
+      container: graphContainer,
+      model: this.sourceGraph.model,
+      interactive: false,
+      frozen: true,
+      gridSize: 1,
+    })
+
+    this.targetGraph.unfreeze()
+
     this.updatePaper(
       this.sourceGraph.options.width,
       this.sourceGraph.options.height,
     )
 
-    return this
+    this.startListening()
   }
 
   protected startListening() {

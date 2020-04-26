@@ -1,6 +1,6 @@
 import React from 'react'
-import { joint } from '@antv/x6'
-import { Rect } from '@antv/x6/es/research/shape/standard'
+import { v1 } from '@antv/x6'
+import { Rect } from '@antv/x6/es/v1/shape/standard'
 import '../index.less'
 import './index.less'
 
@@ -10,12 +10,12 @@ const BASE_COLOR = '#434A54'
 
 class TogglableRect extends Rect {
   onConnectedEdgeVisibleChange(
-    edge: joint.Edge,
-    type: joint.Edge.TerminalType,
+    edge: v1.Edge,
+    type: v1.Edge.TerminalType,
     visible: boolean,
   ) {
     const terminal = edge[type]
-    const portId = (terminal as joint.Edge.TerminalCellData).portId
+    const portId = (terminal as v1.Edge.TerminalCellData).portId
     if (portId && this.isNode()) {
       var expand = visible
       var collapsedMap: { [portId: string]: number } =
@@ -61,25 +61,19 @@ class TogglableRect extends Rect {
   expandPort(portId: string) {
     if (portId) {
       if (this.isPortCollapsed(portId) && this.model) {
-        const resolve = (edge: joint.Edge) => {
+        const resolve = (edge: v1.Edge) => {
           const source = edge.getSource()
           const target = edge.getTarget()
           let result
 
-          if (
-            source &&
-            this.id !== (source as joint.Edge.TerminalCellData).id
-          ) {
+          if (source && this.id !== (source as v1.Edge.TerminalCellData).id) {
             result = {
               opposite: source,
               current: target,
             }
           }
 
-          if (
-            target &&
-            this.id !== (target as joint.Edge.TerminalCellData).id
-          ) {
+          if (target && this.id !== (target as v1.Edge.TerminalCellData).id) {
             result = {
               opposite: target,
               current: source,
@@ -93,10 +87,10 @@ class TogglableRect extends Rect {
           const ret = resolve(edge as any)
           if (
             ret &&
-            (ret.current as joint.Edge.TerminalCellData).port === portId &&
-            (ret.opposite as joint.Edge.TerminalCellData).id
+            (ret.current as v1.Edge.TerminalCellData).port === portId &&
+            (ret.opposite as v1.Edge.TerminalCellData).id
           ) {
-            const cellId = (ret.opposite as joint.Edge.TerminalCellData).id
+            const cellId = (ret.opposite as v1.Edge.TerminalCellData).id
             const cell = this.model!.getCell(cellId)
             cell && cell.show()
           }
@@ -161,7 +155,7 @@ export default class Example extends React.Component {
   private container: HTMLDivElement
 
   componentDidMount() {
-    const graph = new joint.Graph({
+    const graph = new v1.Graph({
       container: this.container,
       width: 800,
       height: 600,
@@ -169,7 +163,7 @@ export default class Example extends React.Component {
       defaultConnectionPoint: { name: 'boundary' },
       magnetThreshold: 'onleave',
       clickThreshold: 5,
-      validateMagnet: function(cellView: joint.CellView, magnet: Element) {
+      validateMagnet: function(cellView: v1.CellView, magnet: Element) {
         var cell = (cellView.cell as any) as TogglableRect
         var portId = magnet.getAttribute('port')
         return portId ? !cell.isPortCollapsed(portId) : true

@@ -1,6 +1,6 @@
 import React from 'react'
-import { joint, Point } from '@antv/x6'
-import { Timing, Interpolation } from '@antv/x6/es/research/animation'
+import { v1, Point } from '@antv/x6'
+import { Timing, Interpolation } from '@antv/x6/es/v1/animation'
 import '../../index.less'
 import '../index.less'
 
@@ -8,7 +8,7 @@ export default class Example extends React.Component {
   private container: HTMLDivElement
 
   componentDidMount() {
-    const graph = new joint.Graph({
+    const graph = new v1.Graph({
       container: this.container,
       width: 650,
       height: 400,
@@ -93,7 +93,7 @@ export default class Example extends React.Component {
       },
     })
 
-    function fly(cell: joint.Cell) {
+    function fly(cell: v1.Cell) {
       cell.transition('position', 20, {
         delay: 0,
         duration: 5000,

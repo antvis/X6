@@ -23,4 +23,4 @@ export { Route } from './route'
 export { Marker } from './marker'
 export { Perimeter } from './perimeter'
 
-export * from './research'
+export * from './v1'

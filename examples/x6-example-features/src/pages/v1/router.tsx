@@ -1,6 +1,6 @@
 import React from 'react'
 import { Radio } from 'antd'
-import { joint } from '@antv/x6'
+import { v1 } from '@antv/x6'
 import '../index.less'
 import './index.less'
 
@@ -9,8 +9,8 @@ export default class Example extends React.Component<
   Example.State
 > {
   private container: HTMLDivElement
-  private graph: joint.Graph
-  private edge: joint.Edge
+  private graph: v1.Graph
+  private edge: v1.Edge
 
   state = {
     router: 'manhattan',
@@ -18,7 +18,7 @@ export default class Example extends React.Component<
   }
 
   componentDidMount() {
-    const graph = (this.graph = new joint.Graph({
+    const graph = (this.graph = new v1.Graph({
       container: this.container,
       width: 1000,
       height: 600,
@@ -90,7 +90,7 @@ export default class Example extends React.Component<
       })
 
     const update = () => {
-      const edgeView = graph.findViewByCell(this.edge) as joint.EdgeView
+      const edgeView = graph.findViewByCell(this.edge) as v1.EdgeView
       edgeView.update()
     }
 

@@ -1,9 +1,9 @@
 import React from 'react'
-import { joint } from '@antv/x6'
+import { v1 } from '@antv/x6'
 import '../../index.less'
 import '../index.less'
 
-joint.NodeRegistry.register('rectText', {
+v1.NodeRegistry.register('rectText', {
   inherit: 'rect',
   attrs: { body: { stroke: 'none' } },
 })
@@ -12,7 +12,7 @@ export default class Example extends React.Component {
   private container: HTMLDivElement
 
   componentDidMount() {
-    const graph = new joint.Graph({
+    const graph = new v1.Graph({
       container: this.container,
       width: 1000,
       height: 800,

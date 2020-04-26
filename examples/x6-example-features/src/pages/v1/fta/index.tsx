@@ -1,5 +1,5 @@
 import React from 'react'
-import { joint } from '@antv/x6'
+import { v1 } from '@antv/x6'
 import {
   Connector,
   IntermediateEvent,
@@ -15,7 +15,7 @@ export default class Example extends React.Component {
   private container: HTMLDivElement
 
   componentDidMount() {
-    const graph = new joint.Graph({
+    const graph = new v1.Graph({
       container: this.container,
       width: 1000,
       height: 800,
@@ -60,8 +60,8 @@ export default class Example extends React.Component {
     ]
 
     // function layout() {
-    //   const autoLayoutElements: joint.Node[] = []
-    //   const manualLayoutElements: joint.Node[] = []
+    //   const autoLayoutElements: v1.Node[] = []
+    //   const manualLayoutElements: v1.Node[] = []
     //   graph.model.getNodes().forEach(cell => {
     //     if (cell instanceof ConditioningEvent) {
     //       manualLayoutElements.push(cell)
@@ -71,7 +71,7 @@ export default class Example extends React.Component {
     //   })
 
     //   // Automatic Layout
-    //   joint.layout.DirectedGraph.layout(
+    //   v1.layout.DirectedGraph.layout(
     //     graph.model.getSubGraph(autoLayoutElements),
     //     {
     //       setVertices: true,

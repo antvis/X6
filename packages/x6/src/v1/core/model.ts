@@ -137,8 +137,8 @@ export class Model extends Basecoat<Model.EventArgs> {
   }
 
   resetCells(cells: Cell[], options: Collection.SetOptions = {}) {
-    const preparedCells = cells.map(cell => this.prepareCell(cell, options))
-    this.collection.reset(preparedCells, options)
+    const items = cells.map(cell => this.prepareCell(cell, options))
+    this.collection.reset(items, options)
     return this
   }
 

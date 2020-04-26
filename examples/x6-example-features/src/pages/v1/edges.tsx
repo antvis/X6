@@ -1,9 +1,9 @@
 import React from 'react'
-import { v, joint } from '@antv/x6'
+import { v, v1 } from '@antv/x6'
 import '../index.less'
 import './index.less'
 
-class CustomEdgeView extends joint.EdgeView {
+class CustomEdgeView extends v1.EdgeView {
   onDblClick(e: JQuery.DoubleClickEvent, x: number, y: number) {
     if (this.cell.getProp('customLinkInteractions')) {
       this.addVertex(x, y)
@@ -20,10 +20,10 @@ class CustomEdgeView extends joint.EdgeView {
   }
 }
 
-CustomEdgeView.config<joint.EdgeView.Options>({ doubleTools: true })
-joint.ViewRegistry.register('customEdgeView', CustomEdgeView)
+CustomEdgeView.config<v1.EdgeView.Options>({ doubleTools: true })
+v1.ViewRegistry.register('customEdgeView', CustomEdgeView)
 
-const CustomEdge = joint.Edge.define({
+const CustomEdge = v1.Edge.define({
   name: 'custom-edge',
   defaultLabel: {
     markup: [
@@ -67,19 +67,19 @@ const CustomEdge = joint.Edge.define({
   },
 })
 
-joint.EdgeRegistry.register('customEdge', CustomEdge)
+v1.EdgeRegistry.register('customEdge', CustomEdge)
 
 export default class Example extends React.Component {
   private container: HTMLDivElement
 
   componentDidMount() {
-    const graph = new joint.Graph({
+    const graph = new v1.Graph({
       container: this.container,
       width: 800,
       height: 1400,
       gridSize: 10,
       perpendicularLinks: false,
-      interactive: function(cellView: joint.CellView) {
+      interactive: function(cellView: v1.CellView) {
         if (cellView.cell.getProp('customLinkInteractions')) {
           return { vertexAdd: false }
         }

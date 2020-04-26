@@ -1,17 +1,17 @@
 import React from 'react'
-import { joint } from '@antv/x6'
-import { Snapline } from '@antv/x6/es/research/addon/snapline'
-import { Transform } from '@antv/x6/es/research/addon/transform'
+import { v1 } from '@antv/x6'
+import { Snapline } from '@antv/x6/es/v1/addon/snapline'
+import { Transform } from '@antv/x6/es/v1/addon/transform'
 import '../index.less'
 import './index.less'
-import '../../../../../packages/x6/src/research/addon/snapline/index.less'
-import '../../../../../packages/x6/src/research/addon/transform/index.less'
+import '../../../../../packages/x6/src/v1/addon/snapline/index.less'
+import '../../../../../packages/x6/src/v1/addon/transform/index.less'
 
 export default class Example extends React.Component {
   private container: HTMLDivElement
 
   componentDidMount() {
-    const graph = new joint.Graph({
+    const graph = new v1.Graph({
       container: this.container,
       width: 800,
       height: 600,

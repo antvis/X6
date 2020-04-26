@@ -1,16 +1,15 @@
 import React from 'react'
 import { Button } from 'antd'
-import { joint } from '@antv/x6'
+import { v1 } from '@antv/x6'
 import '../../index.less'
 import '../index.less'
 
 export default class Example extends React.Component {
   private container: HTMLDivElement
-  private graph: joint.Graph
-  private rect: joint.Node
+  private rect: v1.Node
 
   componentDidMount() {
-    const graph = new joint.Graph({
+    const graph = new v1.Graph({
       container: this.container,
       width: 800,
       height: 400,

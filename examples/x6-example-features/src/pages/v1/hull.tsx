@@ -1,6 +1,6 @@
 import React from 'react'
-import { v, joint, Point, Line, Polyline } from '@antv/x6'
-import { Connector } from '@antv/x6/lib/research/connector'
+import { v, v1, Point, Line, Polyline } from '@antv/x6'
+import { Connector } from '@antv/x6/lib/v1/connector'
 import '../index.less'
 import './index.less'
 
@@ -12,7 +12,7 @@ export default class Example extends React.Component {
   private container: HTMLDivElement
 
   componentDidMount() {
-    const graph = new joint.Graph({
+    const graph = new v1.Graph({
       container: this.container,
       width: 800,
       height: 600,
@@ -82,7 +82,7 @@ export default class Example extends React.Component {
       }, [])
     }
 
-    function getNodeCornerPoints(node: joint.Node, padding: number = 0) {
+    function getNodeCornerPoints(node: v1.Node, padding: number = 0) {
       var bbox = node.getBBox().inflate(padding)
       return [bbox.origin, bbox.bottomLeft, bbox.corner, bbox.topRight]
     }

@@ -1,5 +1,5 @@
-import { joint } from '@antv/x6'
-import { Rect, Edge } from '@antv/x6/es/research/shape/standard'
+import { v1 } from '@antv/x6'
+import { Rect, Edge } from '@antv/x6/es/v1/shape/standard'
 
 export class Bus extends Edge {
   static create(x: number, label: string, color: string) {
@@ -177,7 +177,7 @@ Component.config({
   },
 })
 
-export class Fader extends joint.Node {
+export class Fader extends v1.Node {
   static create(x: number, y: number) {
     return new Fader({ position: { x, y } })
   }
@@ -232,7 +232,7 @@ Fader.config({
   },
 })
 
-export class Aux extends joint.Node {
+export class Aux extends v1.Node {
   static create(x: number, y: number, label: string) {
     return new Aux({
       position: { x, y },

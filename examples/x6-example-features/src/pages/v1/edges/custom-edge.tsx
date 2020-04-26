@@ -1,7 +1,7 @@
 import React from 'react'
-import { joint } from '@antv/x6'
-import { ShadowEdge } from '@antv/x6/es/research/shape/standard'
-import { Timing } from '@antv/x6/es/research/animation/easing'
+import { v1 } from '@antv/x6'
+import { ShadowEdge } from '@antv/x6/es/v1/shape/standard'
+import { Timing } from '@antv/x6/es/v1/animation/easing'
 import '../../index.less'
 import '../index.less'
 
@@ -9,7 +9,7 @@ export default class Example extends React.Component {
   private container: HTMLDivElement
 
   componentDidMount() {
-    const graph = new joint.Graph({
+    const graph = new v1.Graph({
       container: this.container,
       width: 800,
       height: 600,
@@ -211,7 +211,7 @@ export default class Example extends React.Component {
       },
     })
 
-    joint.EdgeRegistry.register('arrow', {
+    v1.EdgeRegistry.register('arrow', {
       markup: [
         {
           tagName: 'path',

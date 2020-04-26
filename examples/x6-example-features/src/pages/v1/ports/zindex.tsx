@@ -1,5 +1,5 @@
 import React from 'react'
-import { joint } from '@antv/x6'
+import { v1 } from '@antv/x6'
 import '../../index.less'
 import '../index.less'
 
@@ -7,7 +7,7 @@ export default class Example extends React.Component {
   private container: HTMLDivElement
 
   componentDidMount() {
-    const graph = new joint.Graph({
+    const graph = new v1.Graph({
       container: this.container,
       width: 800,
       height: 400,
@@ -68,7 +68,7 @@ export default class Example extends React.Component {
     addPort(2)
     addPort(3)
 
-    function updateZIndex(node: joint.Node, portId: string, decrease: boolean) {
+    function updateZIndex(node: v1.Node, portId: string, decrease: boolean) {
       if (!node.hasPorts()) {
         return
       }
