@@ -1,6 +1,6 @@
 import { KeyValue } from '../../../types'
 import { ObjectExt } from '../../../util'
-import { Disablable } from '../disablable'
+import { Disablable } from '../../common'
 import { Cell } from '../../core/cell'
 import { Model } from '../../core/model'
 import { Graph } from '../../core/graph'

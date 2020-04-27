@@ -10,7 +10,7 @@ import { Transform } from '../transform'
 import { ArrayExt } from '../../../util'
 
 export class Snapline extends View {
-  protected readonly options: Snapline.Options
+  public readonly options: Snapline.Options
   protected filterTypes: { [type: string]: boolean }
   protected filterCells: { [id: string]: boolean }
   protected filterFunction: Snapline.filterFunction | null
@@ -94,11 +94,7 @@ export class Snapline extends View {
     }
   }
 
-  protected captureCursorOffset({
-    view,
-    x,
-    y,
-  }: Graph.EventArgs['node:mousedown']) {
+  captureCursorOffset({ view, x, y }: Graph.EventArgs['node:mousedown']) {
     const targetView = view.getDelegatedView()
     if (targetView && this.canElementMove(targetView)) {
       const pos = view.cell.getPosition()
@@ -364,12 +360,7 @@ export class Snapline extends View {
     }
   }
 
-  protected snapWhileMoving({
-    view,
-    e,
-    x,
-    y,
-  }: Graph.EventArgs['node:mousemove']) {
+  snapWhileMoving({ view, e, x, y }: Graph.EventArgs['node:mousemove']) {
     const targetView: NodeView = view.getEventData(e).delegatedView || view
     if (!this.canElementMove(targetView)) {
       return
@@ -556,7 +547,7 @@ export class Snapline extends View {
     this.$container.show()
   }
 
-  protected hide() {
+  hide() {
     this.$container.hide()
   }
 }
