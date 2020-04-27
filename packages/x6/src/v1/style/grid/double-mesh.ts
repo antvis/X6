@@ -1,4 +1,4 @@
-import { v } from '../../v'
+import { v } from '../../../v'
 import { Grid } from './index'
 
 export interface DoubleMeshOptions extends Grid.Options {

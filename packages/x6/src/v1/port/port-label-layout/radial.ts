@@ -1,4 +1,4 @@
-import { Point } from '../../geometry'
+import { Point } from '../../../geometry'
 import { PortLabelLayout } from './index'
 import { toResult } from './util'
 

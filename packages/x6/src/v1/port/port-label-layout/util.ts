@@ -1,4 +1,4 @@
-import { ObjectExt } from '../../util'
+import { ObjectExt } from '../../../util'
 import { PortLabelLayout } from './index'
 
 const defaults: PortLabelLayout.Result = {

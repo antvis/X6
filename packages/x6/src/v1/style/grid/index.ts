@@ -1,5 +1,5 @@
-import { v } from '../../v'
-import { KeyValue } from '../../types'
+import { v } from '../../../v'
+import { KeyValue } from '../../../types'
 import * as patterns from './index-rollup'
 
 export class Grid {

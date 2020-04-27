@@ -609,7 +609,7 @@ export class Cell<
 
   getParent() {
     let parent = this._parent
-    if (parent == null) {
+    if (parent == null && this.store) {
       const parentId = this.getParentId()
       if (parentId != null && this.model) {
         parent = this.model.getCell(parentId)

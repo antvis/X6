@@ -1,5 +1,5 @@
-import { NumberExt } from '../../util'
-import { Point, Rectangle } from '../../geometry'
+import { NumberExt } from '../../../util'
+import { Point, Rectangle } from '../../../geometry'
 import { PortLayout } from './index'
 
 export function normalizePoint(

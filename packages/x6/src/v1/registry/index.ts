@@ -1,3 +1,5 @@
+export { Registry } from './registry'
+
 export * from './node'
 export * from './edge'
 export * from './view'

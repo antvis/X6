@@ -1,4 +1,4 @@
-import { Filter } from '../filter'
+import { Filter } from '../style'
 import { Registry } from './registry'
 
 export const FilterRegistry = Registry.create<Filter.CommonDefinition>({

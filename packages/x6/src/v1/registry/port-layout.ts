@@ -1,4 +1,4 @@
-import { PortLayout } from '../port-layout'
+import { PortLayout } from '../port'
 import { Registry } from './registry'
 
 export const PortLayoutRegistry = Registry.create<

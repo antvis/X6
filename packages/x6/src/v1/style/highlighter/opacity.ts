@@ -1,5 +1,5 @@
-import { v } from '../../v'
-import { addClassNamePrefix } from '../core/globals'
+import { v } from '../../../v'
+import { addClassNamePrefix } from '../../core/globals'
 import { Highlighter } from './index'
 
 export interface OpacityHighlighterOptions {}

@@ -1,30 +1,33 @@
-import { KeyValue } from '../../types'
-import { Point, Rectangle } from '../../geometry'
-import { Attr } from '../attr'
+import { KeyValue } from '../../../types'
+import { Rectangle, Point } from '../../../geometry'
 import * as layouts from './index-rollup'
 
-export namespace PortLabelLayout {
+export namespace PortLayout {
   export const presets = layouts
 }
 
-export namespace PortLabelLayout {
+export namespace PortLayout {
   export interface Result {
     position: Point.PointLike
-    rotation: number
-    attrs: Attr.CellAttrs
+    rotation?: number
+  }
+
+  export interface CommonArgs {
+    dx?: number
+    dy?: number
   }
 
   export type Definition<T> = (
-    portPosition: Point,
+    portsPositionArgs: T[],
     elemBBox: Rectangle,
-    args: T,
-  ) => Result
+    groupPositionArgs: T,
+  ) => Result[]
 
   export type CommonDefinition = Definition<KeyValue>
 }
 
-export namespace PortLabelLayout {
-  export type Presets = typeof PortLabelLayout['presets']
+export namespace PortLayout {
+  export type Presets = typeof PortLayout['presets']
 
   export type OptionsMap = {
     readonly [K in keyof Presets]-?: Parameters<Presets[K]>[2]
@@ -39,6 +42,6 @@ export namespace PortLabelLayout {
 
   export interface ManaualItem {
     name: Exclude<string, NativeNames>
-    args?: KeyValue
+    args?: CommonArgs
   }
 }

@@ -1,5 +1,5 @@
 import { Background } from './index'
-import { Angle } from '../../geometry'
+import { Angle } from '../../../geometry'
 
 export interface WatermarkOptions extends Background.CommonOptions {
   angle?: number

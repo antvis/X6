@@ -12,7 +12,7 @@ import { Globals } from './globals'
 import { PortData } from './port'
 import { CellViewAttr } from './cell-view-attr'
 import { snapToGrid } from '../../geometry/util'
-import { PortLayout } from '../port-layout'
+import { PortLayout } from '../port/port-layout'
 
 export class NodeView<
   C extends Node = Node,
@@ -746,7 +746,7 @@ export class NodeView<
     }
   }
 
-  protected processEmbedding(data: EventData.MovingTargetNode) {
+  processEmbedding(data: EventData.MovingTargetNode) {
     const cell = data.cell || this.cell
     const graph = data.graph || this.graph
     const graphOptions = graph.options
@@ -808,7 +808,7 @@ export class NodeView<
     }
   }
 
-  protected clearEmbedding(data: EventData.MovingTargetNode) {
+  clearEmbedding(data: EventData.MovingTargetNode) {
     const candidateView = data.candidateEmbedView
     if (candidateView) {
       // No candidate view found. Unhighlight the previous candidate.
@@ -817,7 +817,7 @@ export class NodeView<
     }
   }
 
-  protected finalizeEmbedding(data: EventData.MovingTargetNode) {
+  finalizeEmbedding(data: EventData.MovingTargetNode) {
     const cell = data.cell || this.cell
     const graph = data.graph || this.graph
     const candidateView = data.candidateEmbedView

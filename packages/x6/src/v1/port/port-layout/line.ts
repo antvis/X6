@@ -1,4 +1,4 @@
-import { Point, Line } from '../../geometry'
+import { Point, Line } from '../../../geometry'
 import { PortLayout } from './index'
 import { normalizePoint, toResult } from './util'
 
