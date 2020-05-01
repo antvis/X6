@@ -2,50 +2,41 @@ import { KeyValue } from '../../../types'
 import { Angle, Point, snapToGrid } from '../../../geometry'
 import { Node } from '../../core/node'
 import { Widget } from '../common/widget'
-
-const BATCH_NAME = 'transform'
-const DIRECTIONS = ['nw', 'n', 'ne', 'e', 'se', 's', 'sw', 'w']
-const POSITIONS: Node.ResizeDirection[] = [
-  'top-left',
-  'top',
-  'top-right',
-  'right',
-  'bottom-right',
-  'bottom',
-  'bottom-left',
-  'left',
-]
+import {
+  EventData,
+  BATCH_NAME,
+  DIRECTIONS,
+  POSITIONS,
+  defaultOptions,
+  documentEvents,
+} from './constant'
 
 export class Transform extends Widget<Transform.Options> {
-  protected mouseMoveHandler: (e: JQuery.TriggeredEvent) => void
-  protected mouseUpHandler: (e: JQuery.TriggeredEvent) => void
-
   protected handle: Element | null
-  protected action: 'resize' | 'rotate' | null
-  protected data: Transform.ResizeData | Transform.RotateData | null
-  protected previousDirectionsShift: number
+  protected prevShift: number
+  protected $container: JQuery<HTMLElement>
 
   protected get node() {
     return this.cell as Node
   }
 
+  protected get containerClassName() {
+    return this.prefixClassName('widget-transform')
+  }
+
+  protected get resizeClassName() {
+    return `${this.containerClassName}-resize`
+  }
+
+  protected get rotateClassName() {
+    return `${this.containerClassName}-rotate`
+  }
+
   protected init(options: Transform.Options) {
     this.options = {
-      minWidth: 0,
-      minHeight: 0,
-      maxWidth: Infinity,
-      maxHeight: Infinity,
-      padding: 2,
-      rotateGrid: 15,
-      rotatable: true,
-      preserveAspectRatio: false,
-      orthogonalResize: true,
-      clearOnBlankMouseDown: true,
+      ...defaultOptions,
       ...options,
     }
-
-    this.mouseMoveHandler = this.onMouseMove.bind(this)
-    this.mouseUpHandler = this.onMouseUp.bind(this)
 
     this.render()
     this.startListening()
@@ -53,15 +44,11 @@ export class Transform extends Widget<Transform.Options> {
 
   protected startListening() {
     this.delegateEvents({
-      'mousedown .resize': 'startResizing',
-      'mousedown .rotate': 'startRotating',
-      'touchstart .resize': 'startResizing',
-      'touchstart .rotate': 'startRotating',
+      [`mousedown .${this.resizeClassName}`]: 'startResizing',
+      [`touchstart .${this.resizeClassName}`]: 'startResizing',
+      [`mousedown .${this.rotateClassName}`]: 'startRotating',
+      [`touchstart .${this.rotateClassName}`]: 'startRotating',
     })
-
-    // Register mouse events.
-    this.$(document.body).on('mousemove touchmove', this.mouseMoveHandler)
-    this.$(document).on('mouseup touchend', this.mouseUpHandler)
 
     this.model.on('*', this.update, this)
     this.model.on('reseted', this.remove, this)
@@ -70,16 +57,11 @@ export class Transform extends Widget<Transform.Options> {
     this.graph.on('scale', this.update, this)
     this.graph.on('translate', this.update, this)
 
-    if (this.options.clearOnBlankMouseDown) {
-      this.graph.on('blank:mousedown', this.remove, this)
-    }
+    super.startListening()
   }
 
   protected stopListening() {
     this.undelegateEvents()
-
-    this.$(document.body).off('mousemove touchmove', this.mouseMoveHandler)
-    this.$(document).off('mouseup touchend', this.mouseUpHandler)
 
     this.model.off('*', this.update, this)
     this.model.off('reseted', this.remove, this)
@@ -88,32 +70,37 @@ export class Transform extends Widget<Transform.Options> {
     this.graph.off('scale', this.update, this)
     this.graph.off('translate', this.update, this)
 
-    if (this.options.clearOnBlankMouseDown) {
-      this.graph.off('blank:mousedown', this.remove, this)
-    }
+    super.stopListening()
+  }
+
+  protected onRemove() {
+    this.stopListening()
   }
 
   protected renderHandles() {
     this.container = document.createElement('div')
-    const knob = this.$('<div/>').prop('draggable', false)
-    const rotate = knob.clone().addClass('rotate')
-    const resizes = POSITIONS.map(pos => {
-      return knob
+    this.$container = this.$(this.container)
+
+    const $knob = this.$('<div/>').prop('draggable', false)
+    const $rotate = $knob.clone().addClass(this.rotateClassName)
+
+    const $resizes = POSITIONS.map(pos => {
+      return $knob
         .clone()
-        .addClass('resize')
+        .addClass(this.resizeClassName)
         .attr('data-position', pos)
     })
     this.empty()
-    this.$(this.container).append(resizes, rotate)
+    this.$container.append($resizes, $rotate)
   }
 
   render() {
     this.renderHandles()
-    this.$(this.container)
-      .addClass(this.prefixClassName('widget-transform'))
+    this.$container
+      .addClass(this.containerClassName)
       .toggleClass(
         'no-orth-resize',
-        this.options.preserveAspectRatio || !this.options.orthogonalResize,
+        this.options.preserveAspectRatio || !this.options.orthogonalResizing,
       )
       .toggleClass('no-rotation', !this.options.rotatable)
 
@@ -133,42 +120,50 @@ export class Transform extends Widget<Transform.Options> {
     bbox.width *= ctm.a
     bbox.height *= ctm.d
 
-    const padding = this.options.padding || 0
     const rotation = Angle.normalize(this.node.getRotation())
     const transform = rotation !== 0 ? `rotate(${rotation}deg)` : ''
-    this.$(this.container).css({
+    this.$container.css({
       transform,
-      width: bbox.width + padding * 2 + 2,
-      height: bbox.height + padding * 2 + 2,
-      left: bbox.x - (padding + 1),
-      top: bbox.y - (padding + 1),
+      width: bbox.width,
+      height: bbox.height,
+      left: bbox.x,
+      top: bbox.y,
     })
 
-    // Update the directions on the halo divs while the element being rotated.
-    // The directions are represented by cardinal points (N,S,E,W). For example
-    // the div originally pointed to north needs to be changed to point to south
-    // if the node was rotated by 180 degrees.
-    const shift = Math.floor(rotation * (DIRECTIONS.length / 360))
-    if (shift !== this.previousDirectionsShift) {
-      // Create the current directions array based on the calculated shift.
-      const directions = DIRECTIONS.slice(shift).concat(
-        DIRECTIONS.slice(0, shift),
-      )
-      this.$(this.container)
-        .find('.resize')
-        .removeClass(DIRECTIONS.join(' '))
-        .each((index, elem) => {
-          this.$(elem).addClass(directions[index])
-        })
-      this.previousDirectionsShift = shift
-    }
+    this.updateResizerDirections()
 
     return this
   }
 
-  protected calculateTrueDirection(direction: Node.ResizeDirection) {
+  protected updateResizerDirections() {
+    // Update the directions on the resizer divs while the node being rotated.
+    // The directions are represented by cardinal points (N,S,E,W). For example
+    // the div originally pointed to north needs to be changed to point to south
+    // if the node was rotated by 180 degrees.
     const angle = Angle.normalize(this.node.getRotation())
-    let index = POSITIONS.indexOf(direction)
+    const shift = Math.floor(angle * (DIRECTIONS.length / 360))
+    if (shift !== this.prevShift) {
+      // Create the current directions array based on the calculated shift.
+      const directions = DIRECTIONS.slice(shift).concat(
+        DIRECTIONS.slice(0, shift),
+      )
+
+      const className = (dir: string) =>
+        `${this.containerClassName}-cursor-${dir}`
+
+      this.$container
+        .find(`.${this.resizeClassName}`)
+        .removeClass(DIRECTIONS.map(dir => className(dir)).join(' '))
+        .each((index, elem) => {
+          this.$(elem).addClass(className(directions[index]))
+        })
+      this.prevShift = shift
+    }
+  }
+
+  protected getTrueDirection(dir: Node.ResizeDirection) {
+    const angle = Angle.normalize(this.node.getRotation())
+    let index = POSITIONS.indexOf(dir)
 
     index = index + Math.floor(angle * (POSITIONS.length / 360))
     index = index % POSITIONS.length
@@ -176,7 +171,7 @@ export class Transform extends Widget<Transform.Options> {
     return POSITIONS[index]
   }
 
-  protected toValidResizeDirection(dir: string) {
+  protected toValidResizeDirection(dir: string): Node.ResizeDirection {
     return (
       ({
         top: 'top-left',
@@ -189,17 +184,19 @@ export class Transform extends Widget<Transform.Options> {
 
   protected startResizing(evt: JQuery.MouseDownEvent) {
     evt.stopPropagation()
-
     this.model.startBatch(BATCH_NAME, { cid: this.cid })
-
-    // Target's data attribute can contain one of 8 positions. Each position
-    // defines the way how to resize an node. Whether to change the size on
-    // x-axis, on y-axis or on both.
-
     const relativeDirection = this.$(evt.target).attr(
       'data-position',
     ) as Node.ResizeDirection
-    const trueDirection = this.calculateTrueDirection(relativeDirection)
+    this.prepareResizing(evt, relativeDirection)
+    this.startOp(evt)
+  }
+
+  protected prepareResizing(
+    evt: JQuery.TriggeredEvent,
+    relativeDirection: Node.ResizeDirection,
+  ) {
+    const trueDirection = this.getTrueDirection(relativeDirection)
     let rx = 0
     let ry = 0
     relativeDirection.split('-').forEach(direction => {
@@ -215,8 +212,7 @@ export class Transform extends Widget<Transform.Options> {
       'bottom-right': 'topLeft',
     } as KeyValue)[direction]
 
-    // Expose the initial setup, so `pointermove` method can access it.
-    this.data = {
+    this.setEventData<EventData.Resizing>(evt, {
       selector,
       direction,
       trueDirection,
@@ -224,10 +220,8 @@ export class Transform extends Widget<Transform.Options> {
       resizeX: rx,
       resizeY: ry,
       angle: Angle.normalize(this.node.getRotation()),
-    }
-
-    this.action = 'resize'
-    this.startOp(evt.target)
+      action: 'resizing',
+    })
   }
 
   protected startRotating(evt: JQuery.MouseDownEvent) {
@@ -237,26 +231,26 @@ export class Transform extends Widget<Transform.Options> {
 
     const center = this.node.getBBox().getCenter()
     const client = this.graph.snapToGrid(evt.clientX, evt.clientY)
-    this.data = {
+    this.setEventData<EventData.Rotating>(evt, {
       center,
+      action: 'rotating',
       angle: Angle.normalize(this.node.getRotation()),
       start: Point.create(client).theta(center),
-    }
-
-    this.action = 'rotate'
-    this.startOp(evt.target)
+    })
+    this.startOp(evt)
   }
 
   protected onMouseMove(evt: JQuery.MouseMoveEvent) {
-    if (this.action) {
+    let data = this.getEventData<EventData.Resizing | EventData.Rotating>(evt)
+    if (data.action) {
       const e = this.normalizeEvent(evt)
       const pos = this.graph.snapToGrid(e.clientX, e.clientY)
       const gridSize = this.graph.options.gridSize
       const node = this.node
       const options = this.options
 
-      if (this.action === 'resize') {
-        const data = this.data as Transform.ResizeData
+      if (data.action === 'resizing') {
+        data = data as EventData.Resizing
         const currentBBox = node.getBBox()
         const requestedSize = Point.create(pos)
           .rotate(data.angle, currentBBox.getCenter())
@@ -269,6 +263,9 @@ export class Transform extends Widget<Transform.Options> {
         let height = data.resizeY
           ? requestedSize.y * data.resizeY
           : currentBBox.height
+
+        const rawWidth = width
+        const rawHeight = height
 
         width = snapToGrid(width, gridSize)
         height = snapToGrid(height, gridSize)
@@ -290,10 +287,74 @@ export class Transform extends Widget<Transform.Options> {
           }
         }
 
+        const relativeDirection = data.relativeDirection
+        if (rawWidth <= -width || rawHeight <= -height) {
+          let reverted: Node.ResizeDirection
+
+          if (relativeDirection === 'left') {
+            if (rawWidth <= -width) {
+              reverted = 'right'
+            }
+          } else if (relativeDirection === 'right') {
+            if (rawWidth <= -width) {
+              reverted = 'left'
+            }
+          } else if (relativeDirection === 'top') {
+            if (rawHeight <= -height) {
+              reverted = 'bottom'
+            }
+          } else if (relativeDirection === 'bottom') {
+            if (rawHeight <= -height) {
+              reverted = 'top'
+            }
+          } else if (relativeDirection === 'top-left') {
+            if (rawWidth <= -width && rawHeight <= -height) {
+              reverted = 'bottom-right'
+            } else if (rawWidth <= -width) {
+              reverted = 'top-right'
+            } else if (rawHeight <= -height) {
+              reverted = 'bottom-left'
+            }
+          } else if (relativeDirection === 'top-right') {
+            if (rawWidth <= -width && rawHeight <= -height) {
+              reverted = 'bottom-left'
+            } else if (rawWidth <= -width) {
+              reverted = 'top-left'
+            } else if (rawHeight <= -height) {
+              reverted = 'bottom-right'
+            }
+          } else if (relativeDirection === 'bottom-left') {
+            if (rawWidth <= -width && rawHeight <= -height) {
+              reverted = 'top-right'
+            } else if (rawWidth <= -width) {
+              reverted = 'bottom-right'
+            } else if (rawHeight <= -height) {
+              reverted = 'top-left'
+            }
+          } else if (relativeDirection === 'bottom-right') {
+            if (rawWidth <= -width && rawHeight <= -height) {
+              reverted = 'top-left'
+            } else if (rawWidth <= -width) {
+              reverted = 'bottom-left'
+            } else if (rawHeight <= -height) {
+              reverted = 'top-right'
+            }
+          }
+
+          const revertedDir = reverted!
+          this.stopHandle()
+          const $handle = this.$container.find(
+            `.${this.resizeClassName}[data-position="${revertedDir}"]`,
+          )
+          this.startHandle($handle[0])
+          this.prepareResizing(evt, revertedDir)
+          this.onMouseMove(evt)
+        }
+
         if (currentBBox.width !== width || currentBBox.height !== height) {
-          const resizeOptions: Transform.ResizeOptions = {
+          const resizeOptions: Node.ResizeOptions = {
             ui: true,
-            direction: data.direction as any,
+            direction: data.direction,
             relativeDirection: data.relativeDirection,
             trueDirection: data.trueDirection,
             minWidth: options.minWidth!,
@@ -304,8 +365,8 @@ export class Transform extends Widget<Transform.Options> {
           }
           node.resize(width, height, resizeOptions)
         }
-      } else if (this.action === 'rotate') {
-        const data = this.data as Transform.RotateData
+      } else if (data.action === 'rotating') {
+        data = data as EventData.Rotating
         const theta = data.start - Point.create(pos).theta(data.center)
         let target = data.angle + theta
         if (options.rotateGrid) {
@@ -316,30 +377,56 @@ export class Transform extends Widget<Transform.Options> {
     }
   }
 
-  protected onMouseUp() {
-    if (this.action) {
+  protected onMouseUp(evt: JQuery.MouseUpEvent) {
+    const data = this.getEventData<EventData.Resizing | EventData.Rotating>(evt)
+    if (data.action) {
       this.stopOp()
       this.model.stopBatch(BATCH_NAME, { cid: this.cid })
-      this.action = null
-      this.data = null
     }
   }
 
-  protected startOp(elem: Element) {
-    if (elem) {
-      this.$(elem).addClass('active')
-      this.handle = elem
+  protected startHandle(handle: Element) {
+    this.handle = handle
+
+    this.$(handle).addClass(`${this.containerClassName}-active-handle`)
+    this.$container.addClass(`${this.containerClassName}-active`)
+
+    const pos = handle.getAttribute('data-position') as Node.ResizeDirection
+    if (pos) {
+      const dir = DIRECTIONS[POSITIONS.indexOf(pos)]
+      this.$container.addClass(`${this.containerClassName}-cursor-${dir}`)
     }
-    this.$(this.container).addClass('active')
+  }
+
+  protected stopHandle() {
+    if (this.handle) {
+      this.$(this.handle).removeClass(
+        `${this.containerClassName}-active-handle`,
+      )
+      this.$container.removeClass(`${this.containerClassName}-active`)
+
+      const pos = this.handle.getAttribute(
+        'data-position',
+      ) as Node.ResizeDirection
+      if (pos) {
+        const dir = DIRECTIONS[POSITIONS.indexOf(pos)]
+        this.$container.removeClass(`${this.containerClassName}-cursor-${dir}`)
+      }
+
+      this.handle = null
+    }
+  }
+
+  protected startOp(evt: JQuery.MouseDownEvent) {
+    const elem = evt.target
+    this.startHandle(elem)
     this.graph.undelegateEvents()
+    this.delegateDocumentEvents(documentEvents, evt.data)
   }
 
   protected stopOp() {
-    if (this.handle) {
-      this.$(this.handle).removeClass('active')
-      this.handle = null
-    }
-    this.$(this.container).removeClass('active')
+    this.stopHandle()
+    this.undelegateDocumentEvents()
     this.graph.delegateEvents()
   }
 }
@@ -348,48 +435,18 @@ export namespace Transform {
   export type Direction = 'nw' | 'n' | 'ne' | 'e' | 'se' | 's' | 'sw' | 'w'
 
   export interface Options extends Widget.Options {
-    padding: number
     minWidth?: number
     maxWidth?: number
     minHeight?: number
     maxHeight?: number
+
+    rotatable?: boolean
+    rotateGrid?: number
+    orthogonalResizing?: boolean
     /**
      * Set to `true` if you want the resizing to preserve the
      * aspect ratio of the node. Default is `false`.
      */
-    rotatable?: boolean
-    rotateGrid?: number
-    orthogonalResize?: boolean
     preserveAspectRatio?: boolean
-    clearOnBlankMouseDown?: boolean
-  }
-
-  export interface ResizeData {
-    selector: 'bottomLeft' | 'bottomRight' | 'topRight' | 'topLeft'
-    direction: Node.ResizeDirection
-    trueDirection: Node.ResizeDirection
-    relativeDirection: Node.ResizeDirection
-    resizeX: number
-    resizeY: number
-    angle: number
-  }
-
-  export interface RotateData {
-    center: Point
-    angle: number
-    start: number
-  }
-
-  export interface ResizeOptions {
-    ui: true
-    direction: Node.ResizeDirection
-    relativeDirection: Node.ResizeDirection
-    trueDirection: Node.ResizeDirection
-    minWidth: number
-    minHeight: number
-    maxWidth: number
-    maxHeight: number
-    preserveAspectRatio: boolean
-    snapped?: boolean
   }
 }
