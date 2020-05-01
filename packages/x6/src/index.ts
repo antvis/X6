@@ -22,5 +22,3 @@ export { Shape } from './shape/shape'
 export { Route } from './route'
 export { Marker } from './marker'
 export { Perimeter } from './perimeter'
-
-export * from './research'
