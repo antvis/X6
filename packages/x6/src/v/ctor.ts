@@ -10,7 +10,7 @@ export function uniqueId() {
 
 export function ensureId(elem: Element | Vectorizer) {
   const node = toNode(elem)!
-  if (node.id == null) {
+  if (node.id == null || node.id === '') {
     node.id = uniqueId()
   }
   return node.id

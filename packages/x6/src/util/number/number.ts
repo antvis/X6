@@ -115,7 +115,7 @@ export type SideOptions =
       bottom?: number
     }
 
-export function normalizeSides(box: SideOptions) {
+export function normalizeSides(box?: SideOptions) {
   if (typeof box === 'object') {
     let left = 0
     let top = 0

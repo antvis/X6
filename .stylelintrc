@@ -14,6 +14,7 @@
     "comment-empty-line-before": null,
     "no-invalid-double-slash-comments": null,
     "no-descending-specificity": null,
-    "declaration-empty-line-before": null
+    "declaration-empty-line-before": null,
+    "no-duplicate-selectors": null
   }
 }

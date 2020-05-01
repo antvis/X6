@@ -8,9 +8,10 @@ import { CurveTo } from './curveto'
 import { Close } from './close'
 import { Segment } from './segment'
 import { Point } from '../point'
+import { Geometry } from '../geometry'
 import { clamp } from '../util'
 
-export class Path {
+export class Path extends Geometry {
   PRECISION: 3
   segments: Segment[]
 
@@ -23,13 +24,14 @@ export class Path {
   constructor(lines: Line[])
   constructor(curves: Curve[])
   constructor(
-    arg?: Line | Curve | Polyline | Segment | Segment[] | Line[] | Curve[],
+    args?: Line | Curve | Polyline | Segment | Segment[] | Line[] | Curve[],
   ) {
+    super()
     this.segments = []
-    if (Array.isArray(arg)) {
-      if (arg[0] instanceof Line || arg[0] instanceof Curve) {
+    if (Array.isArray(args)) {
+      if (args[0] instanceof Line || args[0] instanceof Curve) {
         let previousObj: Line | Curve | null = null
-        const arr = arg as Line[] | Curve[]
+        const arr = args as Line[] | Curve[]
         arr.forEach((o: Line | Curve, i: number) => {
           if (i === 0) {
             this.appendSegment(Path.createSegment('M', o.start))
@@ -49,30 +51,30 @@ export class Path {
           previousObj = o
         })
       } else {
-        const arr = arg as Segment[]
+        const arr = args as Segment[]
         arr.forEach(s => {
           if (s.isSegment) {
             this.appendSegment(s)
           }
         })
       }
-    } else if (arg != null) {
-      if (arg instanceof Line) {
-        this.appendSegment(Path.createSegment('M', arg.start))
-        this.appendSegment(Path.createSegment('L', arg.end))
-      } else if (arg instanceof Curve) {
-        this.appendSegment(Path.createSegment('M', arg.start))
+    } else if (args != null) {
+      if (args instanceof Line) {
+        this.appendSegment(Path.createSegment('M', args.start))
+        this.appendSegment(Path.createSegment('L', args.end))
+      } else if (args instanceof Curve) {
+        this.appendSegment(Path.createSegment('M', args.start))
         this.appendSegment(
           Path.createSegment(
             'C',
-            arg.controlPoint1,
-            arg.controlPoint2,
-            arg.end,
+            args.controlPoint1,
+            args.controlPoint2,
+            args.end,
           ),
         )
-      } else if (arg instanceof Polyline) {
-        if (arg.points && arg.points.length) {
-          arg.points.forEach((point, index) => {
+      } else if (args instanceof Polyline) {
+        if (args.points && args.points.length) {
+          args.points.forEach((point, index) => {
             const segment =
               index === 0
                 ? Path.createSegment('M', point)
@@ -80,8 +82,8 @@ export class Path {
             this.appendSegment(segment)
           })
         }
-      } else if (arg.isSegment) {
-        this.appendSegment(arg)
+      } else if (args.isSegment) {
+        this.appendSegment(args)
       }
     }
   }
@@ -797,23 +799,23 @@ export class Path {
       return null
     }
 
-    let intersection: Point[] | null = null
+    let intersections: Point[] | null = null
     for (let i = 0, ii = polylines.length; i < ii; i += 1) {
       const polyline = polylines[i]
-      const polylineIntersection = line.intersect(polyline)
-      if (polylineIntersection) {
-        if (intersection == null) {
-          intersection = []
+      const intersection = line.intersect(polyline)
+      if (intersection) {
+        if (intersections == null) {
+          intersections = []
         }
-        if (Array.isArray(polylineIntersection)) {
-          intersection.push(...polylineIntersection)
+        if (Array.isArray(intersection)) {
+          intersections.push(...intersection)
         } else {
-          intersection.push(polylineIntersection)
+          intersections.push(intersection)
         }
       }
     }
 
-    return intersection
+    return intersections
   }
 
   isDifferentiable() {
@@ -1038,17 +1040,18 @@ export class Path {
     return this
   }
 
-  translate(tx: number, ty: number) {
-    this.segments.forEach(s => s.translate(tx, ty))
-    return this
-  }
-
-  serialize() {
-    if (!this.isValid()) {
-      throw new Error('Invalid path segments.')
+  translate(tx: number, ty: number): this
+  translate(p: Point | Point.PointLike | Point.PointData): this
+  translate(
+    tx: number | Point | Point.PointLike | Point.PointData,
+    ty?: number,
+  ) {
+    if (typeof tx === 'number') {
+      this.segments.forEach(s => s.translate(tx, ty as number))
+    } else {
+      this.segments.forEach(s => s.translate(tx))
     }
-
-    return this.toString()
+    return this
   }
 
   clone() {
@@ -1081,7 +1084,15 @@ export class Path {
     return true
   }
 
-  toString() {
+  toJSON() {
+    return this.segments.map(s => s.toJSON())
+  }
+
+  serialize() {
+    if (!this.isValid()) {
+      throw new Error('Invalid path segments.')
+    }
+
     return this.segments.map(s => s.serialize()).join(' ')
   }
 }
@@ -1092,18 +1103,9 @@ export namespace Path {
     segmentSubdivisions?: Segment[][] | null
   }
 }
-export namespace Path {
-  export const segmentTypes = {
-    L: LineTo,
-    M: MoveTo,
-    C: CurveTo,
-    Z: Close,
-    z: Close,
-  }
 
-  const regexSupportedData = new RegExp(
-    `^[\\s\\d${Object.keys(segmentTypes).join('')},.]*$`,
-  )
+export namespace Path {
+  const regexSupportedData = new RegExp(`^[\\s\\dLMCZz,.]*$`)
 
   export function isDataSupported(data: any) {
     if (typeof data !== 'string') {
@@ -1140,18 +1142,166 @@ export namespace Path {
     return path
   }
 
-  type GetConstructorArgs<T> = T extends new (...args: infer U) => any
-    ? U
-    : never
+  function createMoveToSegment(args: any[]) {
+    const len = args.length
+    const arg0 = args[0]
 
-  export function createSegment(
-    type: 'L',
-    ...args: GetConstructorArgs<typeof LineTo>
-  ): Segment
+    // line provided
+    if (arg0 instanceof Line) {
+      return new MoveTo(arg0)
+    }
+
+    // curve provided
+    if (arg0 instanceof Curve) {
+      return new MoveTo(arg0)
+    }
+
+    // points provided
+    if (Point.isPointLike(arg0)) {
+      if (len === 1) {
+        return new MoveTo(arg0)
+      }
+
+      // this is a moveto-with-subsequent-poly-line segment
+      const segments: Segment[] = []
+      // points come one by one
+      for (let i = 0; i < len; i += 1) {
+        if (i === 0) {
+          segments.push(new MoveTo(args[i]))
+        } else {
+          segments.push(new LineTo(args[i]))
+        }
+      }
+      return segments
+    }
+
+    // coordinates provided
+    if (len === 2) {
+      return new MoveTo(+args[0], +args[1])
+    }
+
+    // this is a moveto-with-subsequent-poly-line segment
+    const segments: Segment[] = []
+    for (let i = 0; i < len; i += 2) {
+      const x = +args[i]
+      const y = +args[i + 1]
+      if (i === 0) {
+        segments.push(new MoveTo(x, y))
+      } else {
+        segments.push(new LineTo(x, y))
+      }
+    }
+    return segments
+  }
+
+  function createLineToSegment(args: any[]) {
+    const len = args.length
+    const arg0 = args[0]
+
+    // line provided
+    if (arg0 instanceof Line) {
+      return new LineTo(arg0)
+    }
+
+    // points provided
+    if (Point.isPointLike(arg0)) {
+      if (len === 1) {
+        return new LineTo(arg0)
+      }
+
+      // poly-line segment
+      return args.map(arg => new LineTo(arg as Point.PointLike))
+    }
+
+    // coordinates provided
+    if (len === 2) {
+      return new LineTo(+args[0], +args[1])
+    }
+
+    // poly-line segment
+    const segments: Segment[] = []
+    for (let i = 0; i < len; i += 2) {
+      const x = +args[i]
+      const y = +args[i + 1]
+      segments.push(new LineTo(x, y))
+    }
+    return segments
+  }
+
+  function createCurveToSegment(args: any[]) {
+    const len = args.length
+    const arg0 = args[0]
+
+    // curve provided
+    if (arg0 instanceof Curve) {
+      return new CurveTo(arg0)
+    }
+
+    // points provided
+    if (Point.isPointLike(arg0)) {
+      if (len === 3) {
+        return new CurveTo(args[0], args[1], args[2])
+      }
+
+      // this is a poly-bezier segment
+      const segments: Segment[] = []
+      for (let i = 0; i < len; i += 3) {
+        segments.push(new CurveTo(args[i], args[i + 1], args[i + 2]))
+      }
+      return segments
+    }
+
+    // coordinates provided
+    if (len === 6) {
+      return new CurveTo(args[0], args[1], args[2], args[3], args[4], args[5])
+    }
+
+    // this is a poly-bezier segment
+    const segments: Segment[] = []
+    for (let i = 0; i < len; i += 6) {
+      segments.push(
+        new CurveTo(
+          args[i],
+          args[i + 1],
+          args[i + 2],
+          args[i + 3],
+          args[i + 4],
+          args[i + 5],
+        ),
+      )
+    }
+    return segments
+  }
+
+  export function createSegment(type: 'M', line: Line): Segment
+  export function createSegment(type: 'M', curve: Curve): Segment
+  export function createSegment(type: 'M', p: Point | Point.PointLike): Segment
+  export function createSegment(type: 'M', x: number, y: number): Segment
   export function createSegment(
     type: 'M',
-    ...args: GetConstructorArgs<typeof MoveTo>
-  ): Segment
+    p: Point | Point.PointLike,
+    ...points: (Point | Point.PointLike)[]
+  ): Segment[]
+  export function createSegment(
+    type: 'M',
+    x: number,
+    y: number,
+    ...coords: number[]
+  ): Segment[]
+  export function createSegment(type: 'L', line: Line): Segment
+  export function createSegment(type: 'L', p: Point | Point.PointLike): Segment
+  export function createSegment(type: 'L', x: number, y: number): Segment
+  export function createSegment(
+    type: 'L',
+    p: Point | Point.PointLike,
+    ...points: (Point | Point.PointLike)[]
+  ): Segment[]
+  export function createSegment(
+    type: 'L',
+    x: number,
+    y: number,
+    ...coords: number[]
+  ): Segment[]
   export function createSegment(
     type: 'C',
     x0: number,
@@ -1163,22 +1313,48 @@ export namespace Path {
   ): Segment
   export function createSegment(
     type: 'C',
+    x0: number,
+    y0: number,
+    x1: number,
+    y1: number,
+    x2: number,
+    y2: number,
+    ...coords: number[]
+  ): Segment[]
+  export function createSegment(
+    type: 'C',
     p1: Point | Point.PointLike | Point.PointData,
     p2: Point | Point.PointLike | Point.PointData,
     p3: Point | Point.PointLike | Point.PointData,
   ): Segment
+  export function createSegment(
+    type: 'C',
+    p1: Point | Point.PointLike | Point.PointData,
+    p2: Point | Point.PointLike | Point.PointData,
+    p3: Point | Point.PointLike | Point.PointData,
+    ...points: (Point | Point.PointLike)[]
+  ): Segment[]
   export function createSegment(type: 'Z' | 'z'): Segment
   export function createSegment(
     type: 'L' | 'M' | 'C' | 'Z' | 'z',
     ...args: any[]
-  ): Segment {
-    const constructor = segmentTypes[type]
-    if (constructor == null) {
-      throw new Error(`${type} is not a recognized path segment type.`)
+  ): Segment | Segment[] {
+    if (type === 'L') {
+      return createLineToSegment(args)
     }
 
-    args.unshift(null)
+    if (type === 'M') {
+      return createMoveToSegment(args)
+    }
 
-    return new (Function.prototype.bind.apply(constructor, args))()
+    if (type === 'C') {
+      return createCurveToSegment(args)
+    }
+
+    if (type === 'z' || type === 'Z') {
+      return new Close()
+    }
+
+    throw new Error(`"${type}" is not a recognized path segment type.`)
   }
 }

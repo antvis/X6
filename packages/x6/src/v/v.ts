@@ -179,6 +179,7 @@ export namespace v {
   export const convertToPath = Static.convertToPath
   export const convertToPathData = Static.convertToPathData
   export const normalizePathData = Static.normalizePathData
+  export const createSlicePathData = Static.createSlicePathData
 }
 
 // text

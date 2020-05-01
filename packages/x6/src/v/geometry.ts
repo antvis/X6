@@ -173,16 +173,18 @@ export function toGeometryShape(elem: SVGElement | SVGSVGElement) {
     case 'ellipse':
       return new Ellipse(attr('cx'), attr('cy'), attr('rx'), attr('ry'))
 
-    case 'polyline':
-      let points = getPointsFromSvgElement(elem as SVGPolylineElement)
+    case 'polyline': {
+      const points = getPointsFromSvgElement(elem as SVGPolylineElement)
       return new Polyline(points)
+    }
 
-    case 'polygon':
-      points = getPointsFromSvgElement(elem as SVGPolygonElement)
+    case 'polygon': {
+      const points = getPointsFromSvgElement(elem as SVGPolygonElement)
       if (points.length > 1) {
         points.push(points[0])
       }
       return new Polyline(points)
+    }
 
     case 'path':
       let d = elem.getAttribute('d') as string
@@ -304,7 +306,7 @@ export function translateAndAutoOrient(
   // add up, consider: `this.scale(2).scale(2).scale(2)`. The result
   // is that the element is scaled by the factor 2, not 8.
   const s = scale(elem)
-  this.attr('transform', '')
+  elem.setAttribute('transform', '')
   const bbox = getBBox(elem, { target }).scale(s.sx, s.sy)
 
   // 1. Translate to origin.

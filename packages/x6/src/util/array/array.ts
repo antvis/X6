@@ -3,10 +3,13 @@ export {
   isArrayLike,
   toArray,
   uniq,
+  union,
   sortedIndex,
+  sortedIndexBy,
   sortBy,
   groupBy,
   difference,
+  without,
 } from 'lodash-es'
 
 const proto = Array.prototype

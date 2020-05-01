@@ -49,39 +49,42 @@ export class CurveTo extends Segment {
     return 'C'
   }
 
-  bbox() {
-    return Curve.prototype.bbox.call(this)
-  }
-
-  closestPoint(p: Point | Point.PointLike | Point.PointData) {
-    return Curve.prototype.closestPoint.call(this, p)
-  }
-
-  closestPointLength(p: Point | Point.PointLike | Point.PointData) {
-    return Curve.prototype.closestPointLength.call(this, p)
-  }
-
-  closestPointNormalizedLength(p: Point | Point.PointLike | Point.PointData) {
-    return Curve.prototype.closestPointNormalizedLength.call(this, p)
-  }
-
-  closestPointTangent(p: Point | Point.PointLike | Point.PointData) {
-    return Curve.prototype.closestPointTangent.call(this, p)
-  }
-
-  length() {
-    return Curve.prototype.length.call(this)
-  }
-
-  divideAt(ratio: number, options: Segment.Options = {}): [Segment, Segment] {
-    const curve = new Curve(
+  get curve() {
+    return new Curve(
       this.start,
       this.controlPoint1,
       this.controlPoint2,
       this.end,
     )
+  }
+
+  bbox() {
+    return this.curve.bbox()
+  }
+
+  closestPoint(p: Point | Point.PointLike | Point.PointData) {
+    return this.curve.closestPoint(p)
+  }
+
+  closestPointLength(p: Point | Point.PointLike | Point.PointData) {
+    return this.curve.closestPointLength(p)
+  }
+
+  closestPointNormalizedLength(p: Point | Point.PointLike | Point.PointData) {
+    return this.curve.closestPointNormalizedLength(p)
+  }
+
+  closestPointTangent(p: Point | Point.PointLike | Point.PointData) {
+    return this.curve.closestPointTangent(p)
+  }
+
+  length() {
+    return this.curve.length()
+  }
+
+  divideAt(ratio: number, options: Segment.Options = {}): [Segment, Segment] {
     // TODO: fix options
-    const divided = curve.divideAt(ratio, options as any)
+    const divided = this.curve.divideAt(ratio, options as any)
     return [new CurveTo(divided[0]), new CurveTo(divided[1])]
   }
 
@@ -89,25 +92,13 @@ export class CurveTo extends Segment {
     length: number,
     options: Segment.Options = {},
   ): [Segment, Segment] {
-    const curve = new Curve(
-      this.start,
-      this.controlPoint1,
-      this.controlPoint2,
-      this.end,
-    )
     // TODO: fix options
-    const divided = curve.divideAtLength(length, options as any)
+    const divided = this.curve.divideAtLength(length, options as any)
     return [new CurveTo(divided[0]), new CurveTo(divided[1])]
   }
 
   divideAtT(t: number): [Segment, Segment] {
-    const curve = new Curve(
-      this.start,
-      this.controlPoint1,
-      this.controlPoint2,
-      this.end,
-    )
-    const divided = curve.divideAtT(t)
+    const divided = this.curve.divideAtT(t)
     return [new CurveTo(divided[0]), new CurveTo(divided[1])]
   }
 
@@ -116,19 +107,19 @@ export class CurveTo extends Segment {
   }
 
   pointAt(ratio: number) {
-    return Curve.prototype.pointAt.call(this, ratio)
+    return this.curve.pointAt(ratio)
   }
 
   pointAtLength(length: number) {
-    return Curve.prototype.pointAtLength.call(this, length)
+    return this.curve.pointAtLength(length)
   }
 
   tangentAt(ratio: number) {
-    return Curve.prototype.tangentAt.call(this, ratio)
+    return this.curve.tangentAt(ratio)
   }
 
   tangentAtLength(length: number) {
-    return Curve.prototype.tangentAtLength.call(this, length)
+    return this.curve.tangentAtLength(length)
   }
 
   isDifferentiable() {
@@ -159,33 +150,46 @@ export class CurveTo extends Segment {
     return this
   }
 
-  translate(tx: number, ty: number) {
-    this.controlPoint1.translate(tx, ty)
-    this.controlPoint2.translate(tx, ty)
-    this.end.translate(tx, ty)
+  translate(tx: number, ty: number): this
+  translate(p: Point | Point.PointLike | Point.PointData): this
+  translate(
+    tx: number | Point | Point.PointLike | Point.PointData,
+    ty?: number,
+  ): this {
+    if (typeof tx === 'number') {
+      this.controlPoint1.translate(tx, ty as number)
+      this.controlPoint2.translate(tx, ty as number)
+      this.end.translate(tx, ty as number)
+    } else {
+      this.controlPoint1.translate(tx)
+      this.controlPoint2.translate(tx)
+      this.end.translate(tx)
+    }
+
     return this
   }
 
   equals(s: Segment) {
-    return Curve.prototype.equals.call(this, s)
+    return (
+      this.start.equals(s.start) &&
+      this.end.equals(s.end) &&
+      this.controlPoint1.equals((s as any).controlPoint1) &&
+      this.controlPoint2.equals((s as any).controlPoint2)
+    )
   }
 
   clone() {
-    return (new CurveTo(
-      this.controlPoint1,
-      this.controlPoint2,
-      this.end,
-    ) as any) as Segment
+    return new CurveTo(this.controlPoint1, this.controlPoint2, this.end)
   }
 
-  toString() {
-    return [
-      this.type,
-      this.start.toString(),
-      this.controlPoint1.toString(),
-      this.controlPoint2.toString(),
-      this.end.toString(),
-    ].join(' ')
+  toJSON() {
+    return {
+      type: this.type,
+      start: this.start.toJSON(),
+      controlPoint1: this.controlPoint1.toJSON(),
+      controlPoint2: this.controlPoint2.toJSON(),
+      end: this.end.toJSON(),
+    }
   }
 
   serialize() {

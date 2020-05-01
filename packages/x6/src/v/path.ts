@@ -297,3 +297,126 @@ export function convertToPathData(
 
   throw new Error(`"${tagName}" cannot be converted to svg path element.`)
 }
+
+// Inspired by d3.js https://github.com/mbostock/d3/blob/master/src/svg/arc.js
+export function createSlicePathData(
+  innerRadius: number,
+  outerRadius: number,
+  startAngle: number,
+  endAngle: number,
+) {
+  const svgArcMax = 2 * Math.PI - 1e-6
+  const r0 = innerRadius
+  const r1 = outerRadius
+  let a0 = startAngle
+  let a1 = endAngle
+  if (a1 < a0) {
+    const tmp = a0
+    a0 = a1
+    a1 = tmp
+  }
+
+  const da = a1 - a0
+  const df = da < Math.PI ? '0' : '1'
+  const c0 = Math.cos(a0)
+  const s0 = Math.sin(a0)
+  const c1 = Math.cos(a1)
+  const s1 = Math.sin(a1)
+
+  return da >= svgArcMax
+    ? r0
+      ? // tslint:disable-next-line
+        'M0,' +
+        r1 +
+        'A' +
+        r1 +
+        ',' +
+        r1 +
+        ' 0 1,1 0,' +
+        -r1 +
+        'A' +
+        r1 +
+        ',' +
+        r1 +
+        ' 0 1,1 0,' +
+        r1 +
+        'M0,' +
+        r0 +
+        'A' +
+        r0 +
+        ',' +
+        r0 +
+        ' 0 1,0 0,' +
+        -r0 +
+        'A' +
+        r0 +
+        ',' +
+        r0 +
+        ' 0 1,0 0,' +
+        r0 +
+        'Z'
+      : // tslint:disable-next-line
+        'M0,' +
+        r1 +
+        'A' +
+        r1 +
+        ',' +
+        r1 +
+        ' 0 1,1 0,' +
+        -r1 +
+        'A' +
+        r1 +
+        ',' +
+        r1 +
+        ' 0 1,1 0,' +
+        r1 +
+        'Z'
+    : r0
+    ? // tslint:disable-next-line
+      'M' +
+      r1 * c0 +
+      ',' +
+      r1 * s0 +
+      'A' +
+      r1 +
+      ',' +
+      r1 +
+      ' 0 ' +
+      df +
+      ',1 ' +
+      r1 * c1 +
+      ',' +
+      r1 * s1 +
+      'L' +
+      r0 * c1 +
+      ',' +
+      r0 * s1 +
+      'A' +
+      r0 +
+      ',' +
+      r0 +
+      ' 0 ' +
+      df +
+      ',0 ' +
+      r0 * c0 +
+      ',' +
+      r0 * s0 +
+      'Z'
+    : // tslint:disable-next-line
+      'M' +
+      r1 * c0 +
+      ',' +
+      r1 * s0 +
+      'A' +
+      r1 +
+      ',' +
+      r1 +
+      ' 0 ' +
+      df +
+      ',1 ' +
+      r1 * c1 +
+      ',' +
+      r1 * s1 +
+      'L0,0' +
+      'Z'
+}

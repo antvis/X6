@@ -13,6 +13,7 @@ export {
   extend,
 } from 'lodash-es'
 
+export * from './mixins'
 export * from './inherit'
 
 import { has, isPlainObject } from 'lodash-es'

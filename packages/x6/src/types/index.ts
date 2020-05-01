@@ -6,3 +6,10 @@ export interface KeyValue<T extends any = any> {
 }
 
 export type Nullable<T> = T | null | undefined | void
+
+export interface Padding {
+  left: number
+  top: number
+  right: number
+  bottom: number
+}
