@@ -174,11 +174,31 @@ export class Collection extends Basecoat<Collection.EventArgs> {
     this.clean()
     this.add(cells, { silent: true, ...options })
     if (!options.silent) {
+      const current = this.cells.slice()
       this.trigger('reseted', {
         options,
         previous,
-        current: this.cells.slice(),
+        current,
       })
+
+      const added: Cell[] = []
+      const removed: Cell[] = []
+
+      current.forEach(a => {
+        const exist = previous.every(b => b.id === a.id)
+        if (!exist) {
+          added.push(a)
+        }
+      })
+
+      previous.forEach(a => {
+        const exist = current.some(b => b.id === a.id)
+        if (!exist) {
+          removed.push(a)
+        }
+      })
+
+      this.trigger('updated', { options, added, removed, merged: [] })
     }
 
     return this
