@@ -1,10 +1,8 @@
 import { StringExt, FunctionExt } from '../../../util'
+import { Globals } from '../../core/globals'
 
-/**
- *
- */
 export namespace LocalStorage {
-  export let prefix = 'x6.storage'
+  const prefix = `${Globals.prefixCls}.storage`
 
   export function insert<T>(collection: string, doc: T, cb: Callback) {
     const id = (doc as any).id || StringExt.uniqueId('doc-')
@@ -66,7 +64,6 @@ export namespace LocalStorage {
 
   // util
   // ----
-
   function callback<T>(cb: Callback, err: Error | null, ret?: T) {
     if (cb) {
       FunctionExt.defer(() => {

@@ -77,6 +77,7 @@ export class Widget<
 
   constructor(options: Options & (Types.ViewOptions | Types.CellOptions)) {
     super()
+
     const { view, cell, node, edge, graph, ...localOptions } = options as any
     if (view) {
       this.view = view
@@ -105,9 +106,17 @@ export class Widget<
     return this
   }
 
-  protected startListening() {}
+  protected startListening() {
+    if (this.options.clearOnBlankMouseDown !== false) {
+      this.graph.on('blank:mousedown', this.remove, this)
+    }
+  }
 
-  protected stopListening() {}
+  protected stopListening() {
+    if (this.options.clearOnBlankMouseDown !== false) {
+      this.graph.off('blank:mousedown', this.remove, this)
+    }
+  }
 
   remove() {
     this.stopListening()
@@ -133,6 +142,7 @@ export namespace Widget {
      * make sure to call `remove()` once you don't need a widget anymore)
      */
     clearAll?: boolean
+    clearOnBlankMouseDown?: boolean
   }
 }
 

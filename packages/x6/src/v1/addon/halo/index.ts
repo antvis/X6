@@ -404,16 +404,6 @@ export class Halo extends Widget<Halo.Options> {
     return this
   }
 
-  extendHandles(handles: Halo.Handle[]) {
-    handles.forEach(item => {
-      const handle = this.getHandle(item.name)
-      if (handle) {
-        ObjectExt.extend(handle, item)
-      }
-    })
-    return this
-  }
-
   removeHandle(name: string) {
     const index = this.getHandleIdx(name)
     const handle = this.handles[index]
@@ -651,7 +641,7 @@ export namespace Halo {
   export interface Options {
     type?: 'surrounding' | 'pie' | 'toolbar'
     className?: string
-    handles?: Handle[]
+    handles?: Handle[] | null
     /**
      * The preferred side for a self-loop edge created from Halo
      */

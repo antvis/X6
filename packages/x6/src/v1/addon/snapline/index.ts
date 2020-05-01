@@ -1,3 +1,4 @@
+import { ArrayExt } from '../../../util'
 import { Point, Rectangle, Angle } from '../../../geometry'
 import { View } from '../../core/view'
 import { Cell } from '../../core/cell'
@@ -6,27 +7,17 @@ import { Graph } from '../../core/graph'
 import { Model } from '../../core/model'
 import { CellView } from '../../core/cell-view'
 import { NodeView } from '../../core/node-view'
-import { Transform } from '../transform'
-import { ArrayExt } from '../../../util'
 
 export class Snapline extends View {
   public readonly options: Snapline.Options
   protected filterTypes: { [type: string]: boolean }
   protected filterCells: { [id: string]: boolean }
   protected filterFunction: Snapline.filterFunction | null
-  protected cursorOffset: Point.PointLike
+  protected offset: Point.PointLike
 
   protected $container: JQuery<HTMLElement>
   protected $horizontal: JQuery<HTMLElement>
   protected $vertical: JQuery<HTMLElement>
-
-  constructor(options: Snapline.Options) {
-    super()
-    this.options = { distance: 10, ...options }
-    this.render()
-    this.startListening()
-    this.prepareFilters()
-  }
 
   get graph() {
     return this.options.graph
@@ -36,16 +27,39 @@ export class Snapline extends View {
     return this.graph.model
   }
 
-  render() {
+  protected get containerClassName() {
+    return this.prefixClassName('widget-snapline')
+  }
+
+  protected get verticalClassName() {
+    return `${this.containerClassName}-vertical`
+  }
+
+  protected get horizontalClassName() {
+    return `${this.containerClassName}-horizontal`
+  }
+
+  constructor(options: Snapline.Options) {
+    super()
+    this.options = { distance: 10, ...options }
+    this.render()
+    this.startListening()
+    this.prepareFilters()
+  }
+
+  protected render() {
     this.container = document.createElement('div')
     this.$container = this.$(this.container)
     this.$horizontal = this.$(document.createElement('div')).addClass(
-      'horizontal',
+      this.horizontalClassName,
     )
-    this.$vertical = this.$(document.createElement('div')).addClass('vertical')
+    this.$vertical = this.$(document.createElement('div')).addClass(
+      this.verticalClassName,
+    )
+
     this.$container
       .hide()
-      .addClass(this.prefixClassName('snaplines'))
+      .addClass(this.containerClassName)
       .append([this.$horizontal, this.$vertical])
       .appendTo(this.graph.container)
   }
@@ -90,7 +104,7 @@ export class Snapline extends View {
 
   protected onBatchStop({ name, data }: Model.EventArgs['batch:stop']) {
     if ('resize' === name) {
-      this.snapWhileResizing(data.cell, data as Transform.ResizeOptions)
+      this.snapWhileResizing(data.cell, data as Node.ResizeOptions)
     }
   }
 
@@ -98,7 +112,7 @@ export class Snapline extends View {
     const targetView = view.getDelegatedView()
     if (targetView && this.canElementMove(targetView)) {
       const pos = view.cell.getPosition()
-      this.cursorOffset = {
+      this.offset = {
         x: x - pos.x,
         y: y - pos.y,
       }
@@ -109,7 +123,7 @@ export class Snapline extends View {
     return view && view.cell.isNode() && view.can('elementMove')
   }
 
-  protected snapWhileResizing(node: Node, options: Transform.ResizeOptions) {
+  protected snapWhileResizing(node: Node, options: Node.ResizeOptions) {
     if (
       this.options.snapOnResizing &&
       !options.snapped &&
@@ -370,8 +384,8 @@ export class Snapline extends View {
     const size = node.getSize()
     const position = node.getPosition()
     const cellBBox = new Rectangle(
-      x - this.cursorOffset.x,
-      y - this.cursorOffset.y,
+      x - this.offset.x,
+      y - this.offset.y,
       size.width,
       size.height,
     )

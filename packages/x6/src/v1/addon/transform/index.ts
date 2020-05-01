@@ -2,14 +2,6 @@ import { KeyValue } from '../../../types'
 import { Angle, Point, snapToGrid } from '../../../geometry'
 import { Node } from '../../core/node'
 import { Widget } from '../common/widget'
-import {
-  EventData,
-  BATCH_NAME,
-  DIRECTIONS,
-  POSITIONS,
-  defaultOptions,
-  documentEvents,
-} from './constant'
 
 export class Transform extends Widget<Transform.Options> {
   protected handle: Element | null
@@ -34,7 +26,7 @@ export class Transform extends Widget<Transform.Options> {
 
   protected init(options: Transform.Options) {
     this.options = {
-      ...defaultOptions,
+      ...Private.defaultOptions,
       ...options,
     }
 
@@ -84,7 +76,7 @@ export class Transform extends Widget<Transform.Options> {
     const $knob = this.$('<div/>').prop('draggable', false)
     const $rotate = $knob.clone().addClass(this.rotateClassName)
 
-    const $resizes = POSITIONS.map(pos => {
+    const $resizes = Private.POSITIONS.map(pos => {
       return $knob
         .clone()
         .addClass(this.resizeClassName)
@@ -141,11 +133,11 @@ export class Transform extends Widget<Transform.Options> {
     // the div originally pointed to north needs to be changed to point to south
     // if the node was rotated by 180 degrees.
     const angle = Angle.normalize(this.node.getRotation())
-    const shift = Math.floor(angle * (DIRECTIONS.length / 360))
+    const shift = Math.floor(angle * (Private.DIRECTIONS.length / 360))
     if (shift !== this.prevShift) {
       // Create the current directions array based on the calculated shift.
-      const directions = DIRECTIONS.slice(shift).concat(
-        DIRECTIONS.slice(0, shift),
+      const directions = Private.DIRECTIONS.slice(shift).concat(
+        Private.DIRECTIONS.slice(0, shift),
       )
 
       const className = (dir: string) =>
@@ -153,7 +145,7 @@ export class Transform extends Widget<Transform.Options> {
 
       this.$container
         .find(`.${this.resizeClassName}`)
-        .removeClass(DIRECTIONS.map(dir => className(dir)).join(' '))
+        .removeClass(Private.DIRECTIONS.map(dir => className(dir)).join(' '))
         .each((index, elem) => {
           this.$(elem).addClass(className(directions[index]))
         })
@@ -163,12 +155,12 @@ export class Transform extends Widget<Transform.Options> {
 
   protected getTrueDirection(dir: Node.ResizeDirection) {
     const angle = Angle.normalize(this.node.getRotation())
-    let index = POSITIONS.indexOf(dir)
+    let index = Private.POSITIONS.indexOf(dir)
 
-    index = index + Math.floor(angle * (POSITIONS.length / 360))
-    index = index % POSITIONS.length
+    index = index + Math.floor(angle * (Private.POSITIONS.length / 360))
+    index = index % Private.POSITIONS.length
 
-    return POSITIONS[index]
+    return Private.POSITIONS[index]
   }
 
   protected toValidResizeDirection(dir: string): Node.ResizeDirection {
@@ -184,7 +176,7 @@ export class Transform extends Widget<Transform.Options> {
 
   protected startResizing(evt: JQuery.MouseDownEvent) {
     evt.stopPropagation()
-    this.model.startBatch(BATCH_NAME, { cid: this.cid })
+    this.model.startBatch(Private.BATCH_NAME, { cid: this.cid })
     const relativeDirection = this.$(evt.target).attr(
       'data-position',
     ) as Node.ResizeDirection
@@ -227,7 +219,7 @@ export class Transform extends Widget<Transform.Options> {
   protected startRotating(evt: JQuery.MouseDownEvent) {
     evt.stopPropagation()
 
-    this.model.startBatch(BATCH_NAME, { cid: this.cid })
+    this.model.startBatch(Private.BATCH_NAME, { cid: this.cid })
 
     const center = this.node.getBBox().getCenter()
     const client = this.graph.snapToGrid(evt.clientX, evt.clientY)
@@ -381,7 +373,7 @@ export class Transform extends Widget<Transform.Options> {
     const data = this.getEventData<EventData.Resizing | EventData.Rotating>(evt)
     if (data.action) {
       this.stopOp()
-      this.model.stopBatch(BATCH_NAME, { cid: this.cid })
+      this.model.stopBatch(Private.BATCH_NAME, { cid: this.cid })
     }
   }
 
@@ -393,7 +385,7 @@ export class Transform extends Widget<Transform.Options> {
 
     const pos = handle.getAttribute('data-position') as Node.ResizeDirection
     if (pos) {
-      const dir = DIRECTIONS[POSITIONS.indexOf(pos)]
+      const dir = Private.DIRECTIONS[Private.POSITIONS.indexOf(pos)]
       this.$container.addClass(`${this.containerClassName}-cursor-${dir}`)
     }
   }
@@ -409,7 +401,7 @@ export class Transform extends Widget<Transform.Options> {
         'data-position',
       ) as Node.ResizeDirection
       if (pos) {
-        const dir = DIRECTIONS[POSITIONS.indexOf(pos)]
+        const dir = Private.DIRECTIONS[Private.POSITIONS.indexOf(pos)]
         this.$container.removeClass(`${this.containerClassName}-cursor-${dir}`)
       }
 
@@ -421,7 +413,7 @@ export class Transform extends Widget<Transform.Options> {
     const elem = evt.target
     this.startHandle(elem)
     this.graph.undelegateEvents()
-    this.delegateDocumentEvents(documentEvents, evt.data)
+    this.delegateDocumentEvents(Private.documentEvents, evt.data)
   }
 
   protected stopOp() {
@@ -448,5 +440,58 @@ export namespace Transform {
      * aspect ratio of the node. Default is `false`.
      */
     preserveAspectRatio?: boolean
+  }
+}
+
+namespace Private {
+  export const BATCH_NAME = 'transform'
+  export const DIRECTIONS = ['nw', 'n', 'ne', 'e', 'se', 's', 'sw', 'w']
+  export const POSITIONS: Node.ResizeDirection[] = [
+    'top-left',
+    'top',
+    'top-right',
+    'right',
+    'bottom-right',
+    'bottom',
+    'bottom-left',
+    'left',
+  ]
+
+  export const documentEvents = {
+    mousemove: 'onMouseMove',
+    touchmove: 'onMouseMove',
+    mouseup: 'onMouseUp',
+    touchend: 'onMouseUp',
+  }
+
+  export const defaultOptions: Transform.Options = {
+    minWidth: 0,
+    minHeight: 0,
+    maxWidth: Infinity,
+    maxHeight: Infinity,
+    rotateGrid: 15,
+    rotatable: true,
+    preserveAspectRatio: false,
+    orthogonalResizing: true,
+  }
+}
+
+namespace EventData {
+  export interface Resizing {
+    action: 'resizing'
+    selector: 'bottomLeft' | 'bottomRight' | 'topRight' | 'topLeft'
+    direction: Node.ResizeDirection
+    trueDirection: Node.ResizeDirection
+    relativeDirection: Node.ResizeDirection
+    resizeX: number
+    resizeY: number
+    angle: number
+  }
+
+  export interface Rotating {
+    action: 'rotating'
+    center: Point.PointLike
+    angle: number
+    start: number
   }
 }

@@ -1,40 +1,41 @@
-import { Halo } from '../halo'
+import { ObjectExt, StringExt } from '../../../util'
+import { Rectangle, Angle, snapToGrid, Point } from '../../../geometry'
 import { Cell } from '../../core/cell'
+import { Edge } from '../../core/edge'
 import { Node } from '../../core/node'
 import { View } from '../../core/view'
-import { CellView } from '../../core/cell-view'
 import { Model } from '../../core/model'
 import { Graph } from '../../core/graph'
+import { CellView } from '../../core/cell-view'
 import { Collection } from '../../core/collection'
-import { StringExt, ObjectExt } from '../../../util'
-import { Rectangle, Angle, snapToGrid } from '../../../geometry'
-import { KeyValue } from '../../../types'
+import { Handle } from '../common/handle'
 
 export class Selection extends View<Selection.EventArgs> {
   public readonly options: Selection.Options
   public readonly collection: Collection
 
-  protected readonly documentEvents = {
-    mousemove: 'adjustSelection',
-    touchmove: 'adjustSelection',
-    mouseup: 'onMouseUp',
-    touchend: 'onMouseUp',
-    touchcancel: 'onMouseUp',
-  }
-
   protected $container: JQuery<HTMLElement>
-  protected $selectionWrapper: JQuery<HTMLElement>
-  protected handles: Selection.Handle[]
+  protected $selectionContainer: JQuery<HTMLElement>
+  protected $selectionContent: JQuery<HTMLElement>
+
   protected boxCount: number
   protected boxesUpdated: boolean
 
-  protected get graph() {
+  public get graph() {
     return this.options.graph
+  }
+
+  protected get boxClassName() {
+    return this.prefixClassName(Private.classNames.box)
+  }
+
+  protected get selectionBoxes() {
+    return this.$container.children(`.${this.boxClassName}`)
   }
 
   constructor(options: Selection.Options) {
     super()
-    this.options = ObjectExt.merge({}, Selection.defaultOptions, options)
+    this.options = ObjectExt.merge({}, Private.defaultOptions, options)
 
     if (this.options.model) {
       this.options.collection = this.options.model.collection
@@ -44,21 +45,20 @@ export class Selection extends View<Selection.EventArgs> {
       this.collection = this.options.collection
     } else {
       this.collection = new Collection([], {
-        comparator: Selection.depthComparator,
+        comparator: Private.depthComparator,
       })
       this.options.collection = this.collection
     }
 
-    this.container = document.createElement('div')
-    this.$container = this.$(this.container).appendTo(this.graph.container)
-    this.$container.addClass(this.prefixClassName('widget-selection'))
-
     this.boxCount = 0
-    this.$selectionWrapper = this.createSelectionWrapper()
     this.handles = []
+
+    this.createContainer()
+
     if (this.options.handles) {
       this.options.handles.forEach(handle => this.addHandle(handle))
     }
+
     this.startListening()
   }
 
@@ -67,18 +67,19 @@ export class Selection extends View<Selection.EventArgs> {
     const collection = this.collection
 
     this.delegateEvents({
-      'mousedown .selection-box': 'onSelectionBoxMouseDown',
-      'touchstart .selection-box': 'onSelectionBoxMouseDown',
-      'mousedown .handle': 'onHandleMouseDown',
-      'touchstart .handle': 'onHandleMouseDown',
+      [`mousedown .${this.boxClassName}`]: 'onSelectionBoxMouseDown',
+      [`touchstart .${this.boxClassName}`]: 'onSelectionBoxMouseDown',
+      [`mousedown .${this.handleClassName}`]: 'onHandleMouseDown',
+      [`touchstart .${this.handleClassName}`]: 'onHandleMouseDown',
     })
 
-    graph.on('scale', this.onGraphTransformation, this)
-    graph.on('translate', this.onGraphTransformation, this)
+    graph.on('scale', this.onGraphTransformed, this)
+    graph.on('translate', this.onGraphTransformed, this)
 
-    collection.on('removed', this.onRemoveCellFromSelection, this)
-    collection.on('reseted', this.onResetSelection, this)
-    collection.on('added', this.onAddCellToSelection, this)
+    collection.on('added', this.onCellAdded, this)
+    collection.on('removed', this.onCellRemoved, this)
+    collection.on('reseted', this.onReseted, this)
+    collection.on('updated', this.onCollectionUpdated, this)
     collection.on('cell:change:*', this.onCellChanged, this)
   }
 
@@ -88,32 +89,73 @@ export class Selection extends View<Selection.EventArgs> {
 
     this.undelegateEvents()
 
-    graph.off('scale', this.onGraphTransformation, this)
-    graph.off('translate', this.onGraphTransformation, this)
+    graph.off('scale', this.onGraphTransformed, this)
+    graph.off('translate', this.onGraphTransformed, this)
 
-    collection.off('removed', this.onRemoveCellFromSelection, this)
-    collection.off('reseted', this.onResetSelection, this)
-    collection.off('added', this.onAddCellToSelection, this)
+    collection.off('removed', this.onCellRemoved, this)
+    collection.off('reseted', this.onReseted, this)
+    collection.off('added', this.onCellAdded, this)
     collection.off('cell:change:*', this.onCellChanged, this)
   }
 
-  onGraphTransformation() {
+  protected onRemove() {
+    this.stopListening()
+  }
+
+  protected onGraphTransformed() {
     this.updateSelectionBoxes({ async: false })
   }
 
-  onCellChanged() {
+  protected onCellChanged() {
     this.updateSelectionBoxes()
   }
 
-  cancelSelection() {
+  isEmpty() {
+    return this.getSelectedCellCount() <= 0
+  }
+
+  isCellSelected(cell: Cell | string) {
+    return this.collection.has(cell)
+  }
+
+  getSelectedCellCount() {
+    return this.collection.length
+  }
+
+  getSelectedCells() {
+    return this.collection.toArray()
+  }
+
+  selectCell(cell: Cell, options: Collection.AddOptions) {
+    this.collection.add(cell, options)
+    return this
+  }
+
+  selectCells(cells: Cell | Cell[], options: Collection.AddOptions) {
+    this.collection.add(cells, options)
+    return this
+  }
+
+  unselectCell(cell: Cell, options: Collection.RemoveOptions) {
+    this.collection.remove(cell, options)
+    return this
+  }
+
+  unselectCells(cells: Cell | Cell[], options: Collection.RemoveOptions) {
+    this.collection.remove(Array.isArray(cells) ? cells : [cells], options)
+    return this
+  }
+
+  clearSelection() {
     this.collection.reset([], { ui: true })
+    return this
   }
 
   startSelecting(evt: JQuery.MouseDownEvent) {
     // Flow: startSelecting => adjustSelection => stopSelecting
 
     evt = this.normalizeEvent(evt) // tslint:disable-line
-    this.cancelSelection()
+    this.clearSelection()
     let x
     let y
     const graphContainer = this.graph.container
@@ -131,12 +173,16 @@ export class Selection extends View<Selection.EventArgs> {
       x = evt.clientX - offset.left + window.pageXOffset + scrollLeft
       y = evt.clientY - offset.top + window.pageYOffset + scrollTop
     }
-    this.$container.css({
-      width: 1,
-      height: 1,
-      left: x,
-      top: y,
-    })
+
+    this.$container
+      .css({
+        width: 1,
+        height: 1,
+        left: x,
+        top: y,
+      })
+      .appendTo(this.graph.container)
+
     this.showLasso()
     this.setEventData<EventData.Selecting>(evt, {
       action: 'selecting',
@@ -145,7 +191,7 @@ export class Selection extends View<Selection.EventArgs> {
       offsetX: x,
       offsetY: y,
     })
-    this.delegateDocumentEvents(this.documentEvents, evt.data)
+    this.delegateDocumentEvents(Private.documentEvents, evt.data)
   }
 
   protected stopSelecting(evt: JQuery.MouseUpEvent) {
@@ -163,6 +209,7 @@ export class Selection extends View<Selection.EventArgs> {
         const rect = new Rectangle(origin.x, origin.y, width, height)
         let views = this.getNodesInArea(rect)
         const filter = this.options.filter
+
         if (Array.isArray(filter)) {
           views = views.filter(
             view =>
@@ -177,15 +224,17 @@ export class Selection extends View<Selection.EventArgs> {
         this.collection.reset(cells, { ui: true })
         break
       }
+
       case 'translating': {
         this.graph.model.stopBatch('selection-translate')
         const client = graph.snapToGrid(evt.clientX, evt.clientY)
         this.notifyBoxEvent('selection-box:mouseup', evt, client.x, client.y)
         break
       }
+
       default: {
         if (!action) {
-          this.cancelSelection()
+          this.clearSelection()
         }
       }
     }
@@ -203,7 +252,7 @@ export class Selection extends View<Selection.EventArgs> {
     this.setEventData<EventData.SelectionBox>(evt, { activeView })
     const client = this.graph.snapToGrid(evt.clientX, evt.clientY)
     this.notifyBoxEvent('selection-box:mousedown', evt, client.x, client.y)
-    this.delegateDocumentEvents(this.documentEvents, evt.data)
+    this.delegateDocumentEvents(Private.documentEvents, evt.data)
   }
 
   protected startTranslating(evt: JQuery.MouseDownEvent) {
@@ -275,13 +324,10 @@ export class Selection extends View<Selection.EventArgs> {
             }
           } else {
             const scale = this.graph.getScale()
-            this.$container
-              .children('.selection-box')
-              .add(this.$selectionWrapper)
-              .css({
-                left: `+=${dx * scale.sx}`,
-                top: `+=${dy * scale.sy}`,
-              })
+            this.selectionBoxes.add(this.$selectionContainer).css({
+              left: `+=${dx * scale.sx}`,
+              top: `+=${dy * scale.sy}`,
+            })
           }
           data.clientX = client.x
           data.clientY = client.y
@@ -326,105 +372,14 @@ export class Selection extends View<Selection.EventArgs> {
     const options = {
       strict: this.options.strict,
     }
-    return this.options.useModelGeometry
+
+    return this.options.useCellGeometry
       ? (graph.model
           .getNodesInArea(rect, options)
           .map(node => graph.findViewByCell(node))
           .filter(view => view != null) as CellView[])
       : graph.findViewsInArea(rect, options)
   }
-
-  // #region handle
-
-  hasHandle(name: string) {
-    return this.getHandleIdx(name) >= 0
-  }
-
-  getHandleIdx(name: string) {
-    return this.handles.findIndex(item => item.name === name)
-  }
-
-  getHandle(name: string) {
-    return this.handles.find(item => item.name === name)
-  }
-
-  addHandle(handle: Selection.Handle) {
-    this.handles.push(handle)
-    const $handle = this.$('<div/>')
-      .addClass(`handle ${handle.name} ${handle.position}`)
-      .attr('data-action', handle.name)
-
-    if (handle.icon) {
-      $handle.css('background-image', `url(${handle.icon})`)
-    }
-
-    if (handle.content) {
-      $handle.html(handle.content)
-    }
-
-    Halo.applyAttrs($handle, handle.attrs)
-    this.$selectionWrapper.append($handle)
-    const events = handle.events
-    if (events) {
-      Object.keys(events).forEach(action => {
-        const callback = events[action]
-        const name = `action:${handle.name}:${action}`
-        if (typeof callback === 'string') {
-          this.on(name, (this as any)[callback], this)
-        } else {
-          this.on(name, callback)
-        }
-      })
-    }
-
-    return this
-  }
-
-  addHandles(handles: Selection.Handle[]) {
-    handles.forEach(handle => this.addHandle(handle))
-    return this
-  }
-
-  removeHandles() {
-    while (this.handles.length) {
-      this.removeHandle(this.handles[0].name)
-    }
-    return this
-  }
-
-  removeHandle(name: string) {
-    const index = this.getHandleIdx(name)
-    const handle = this.handles[index]
-    if (handle) {
-      if (handle.events) {
-        Object.keys(handle.events).forEach(event => {
-          this.off(`action:${name}:${event}`)
-        })
-      }
-      this.getHandleElem(name).remove()
-      this.handles.splice(index, 1)
-    }
-    return this
-  }
-
-  changeHandle(name: string, newHandle: Partial<Selection.Handle>) {
-    const handle = this.getHandle(name)
-    if (handle) {
-      this.removeHandle(name)
-      this.addHandle({
-        name,
-        ...handle,
-        ...newHandle,
-      })
-    }
-    return this
-  }
-
-  protected getHandleElem(name: string) {
-    return this.$container.find(`.handle.${name}`)
-  }
-
-  // #endregion
 
   protected notifyBoxEvent<
     K extends keyof Selection.BoxEventArgs,
@@ -437,7 +392,7 @@ export class Selection extends View<Selection.EventArgs> {
 
   protected destroySelectionBox(cell: Cell) {
     this.$container.find(`[data-cell="${cell.id}"]`).remove()
-    if (this.$container.children('.selection-box').length === 0) {
+    if (this.selectionBoxes.length === 0) {
       this.hide()
     }
     this.boxCount = Math.max(0, this.boxCount - 1)
@@ -445,30 +400,103 @@ export class Selection extends View<Selection.EventArgs> {
 
   protected destroyAllSelectionBoxes() {
     this.hide()
-    this.$container.children('.selection-box').remove()
+    this.selectionBoxes.remove()
     this.boxCount = 0
   }
 
   hide() {
-    this.$container.removeClass('lasso selected')
-  }
-
-  protected showSelected() {
-    this.$container.addClass('selected')
+    this.$container
+      .removeClass(this.prefixClassName(Private.classNames.lasso))
+      .removeClass(this.prefixClassName(Private.classNames.selected))
   }
 
   protected showLasso() {
-    this.$container.addClass('lasso')
+    this.$container.addClass(this.prefixClassName(Private.classNames.lasso))
+  }
+
+  protected showSelected() {
+    this.$container.addClass(this.prefixClassName(Private.classNames.selected))
+  }
+
+  protected createContainer() {
+    this.container = document.createElement('div')
+    this.$container = this.$(this.container)
+    this.$container.addClass(this.prefixClassName(Private.classNames.root))
+    if (this.options.className) {
+      this.$container.addClass(this.options.className)
+    }
+
+    this.$selectionContainer = this.$('<div/>').addClass(
+      this.prefixClassName(Private.classNames.inner),
+    )
+
+    this.$selectionContent = this.$('<div/>').addClass(
+      this.prefixClassName(Private.classNames.content),
+    )
+
+    this.$selectionContainer.append(this.$selectionContent)
+    this.$selectionContainer.attr(
+      'data-selection-length',
+      this.collection.length,
+    )
+
+    this.$container.prepend(this.$selectionContainer)
+    this.$handleContainer = this.$selectionContainer
+  }
+
+  protected updateContainer() {
+    const origin = { x: Infinity, y: Infinity }
+    const corner = { x: 0, y: 0 }
+
+    this.collection.toArray().forEach(cell => {
+      const view = this.graph.findViewByCell(cell)
+      if (view) {
+        const bbox = view.getBBox({
+          fromCell: this.options.useCellGeometry,
+        })
+        origin.x = Math.min(origin.x, bbox.x)
+        origin.y = Math.min(origin.y, bbox.y)
+        corner.x = Math.max(corner.x, bbox.x + bbox.width)
+        corner.y = Math.max(corner.y, bbox.y + bbox.height)
+      }
+    })
+
+    this.$selectionContainer
+      .css({
+        left: origin.x,
+        top: origin.y,
+        width: corner.x - origin.x,
+        height: corner.y - origin.y,
+      })
+      .attr('data-selection-length', this.collection.length)
+
+    const boxContent = this.options.content
+    if (boxContent) {
+      if (typeof boxContent === 'function') {
+        const content = boxContent.call(this, this.$selectionContent[0])
+        if (content) {
+          this.$selectionContent.html(content)
+        }
+      } else {
+        this.$selectionContent.html(boxContent)
+      }
+    }
+
+    if (this.collection.length > 0 && !this.container.parentNode) {
+      this.$container.appendTo(this.graph.container)
+    } else if (this.collection.length <= 0 && this.container.parentNode) {
+      this.container.parentNode.removeChild(this.container)
+    }
   }
 
   protected createSelectionBox(cell: Cell) {
     const view = this.graph.findViewByCell(cell)
     if (view) {
       const bbox = view.getBBox({
-        fromCell: this.options.useModelGeometry,
+        fromCell: this.options.useCellGeometry,
       })
       this.$('<div/>')
-        .addClass('selection-box')
+        .addClass(this.boxClassName)
         .attr('data-cell', cell.id)
         .css({
           left: bbox.x,
@@ -482,56 +510,7 @@ export class Selection extends View<Selection.EventArgs> {
     }
   }
 
-  protected createSelectionWrapper() {
-    const $wrapper = this.$('<div/>').addClass('selection-wrapper')
-    const $box = this.$('<div/>').addClass('box')
-    $wrapper.append($box)
-    $wrapper.attr('data-selection-length', this.collection.length)
-    this.$container.prepend($wrapper)
-    return $wrapper
-  }
-
-  protected updateSelectionWrapper() {
-    const origin = { x: Infinity, y: Infinity }
-    const corner = { x: 0, y: 0 }
-
-    this.collection.toArray().forEach(cell => {
-      const view = this.graph.findViewByCell(cell)
-      if (view) {
-        const bbox = view.getBBox({
-          fromCell: this.options.useModelGeometry,
-        })
-        origin.x = Math.min(origin.x, bbox.x)
-        origin.y = Math.min(origin.y, bbox.y)
-        corner.x = Math.max(corner.x, bbox.x + bbox.width)
-        corner.y = Math.max(corner.y, bbox.y + bbox.height)
-      }
-    })
-
-    this.$selectionWrapper
-      .css({
-        left: origin.x,
-        top: origin.y,
-        width: corner.x - origin.x,
-        height: corner.y - origin.y,
-      })
-      .attr('data-selection-length', this.collection.length)
-
-    const boxContent = this.options.boxContent
-    if (boxContent) {
-      const $box = this.$container.find('.box')
-      if (typeof boxContent === 'function') {
-        const content = boxContent.call(this, $box[0])
-        if (content) {
-          $box.html(content)
-        }
-      } else {
-        $box.html(boxContent)
-      }
-    }
-  }
-
-  protected updateSelectionBoxes(options: KeyValue = {}) {
+  protected updateSelectionBoxes(options: Graph.RequestViewUpdateOptions = {}) {
     if (this.collection.length > 0) {
       this.boxesUpdated = true
       this.graph.requestViewUpdate(this as any, 1, 2, options)
@@ -541,7 +520,7 @@ export class Selection extends View<Selection.EventArgs> {
   confirmUpdate() {
     if (this.boxCount) {
       this.hide()
-      this.$container.children('.selection-box').each((_, elem) => {
+      this.selectionBoxes.each((_, elem) => {
         const cellId = this.$(elem)
           .remove()
           .attr('data-cell')
@@ -551,7 +530,7 @@ export class Selection extends View<Selection.EventArgs> {
         }
       })
 
-      this.updateSelectionWrapper()
+      this.updateContainer()
     }
     return 0
   }
@@ -581,7 +560,7 @@ export class Selection extends View<Selection.EventArgs> {
         startClientX: e.clientX,
         startClientY: e.clientY,
       })
-      this.delegateDocumentEvents(this.documentEvents, e.data)
+      this.delegateDocumentEvents(Private.documentEvents, e.data)
     }
   }
 
@@ -622,37 +601,74 @@ export class Selection extends View<Selection.EventArgs> {
     this.trigger(`action:${action}:${eventName}`, { e, ...args })
   }
 
-  protected onRemoveCellFromSelection({
-    cell,
-  }: Collection.EventArgs['removed']) {
+  protected onCellRemoved({ cell }: Collection.EventArgs['removed']) {
     this.destroySelectionBox(cell)
-    this.updateSelectionWrapper()
+    this.updateContainer()
   }
 
-  protected onResetSelection({ current }: Collection.EventArgs['reseted']) {
+  protected onReseted({ current }: Collection.EventArgs['reseted']) {
     this.destroyAllSelectionBoxes()
     current.forEach(cell => this.createSelectionBox(cell))
-    this.updateSelectionWrapper()
+    this.updateContainer()
   }
 
-  protected onAddCellToSelection({ cell }: Collection.EventArgs['added']) {
+  protected onCellAdded({ cell }: Collection.EventArgs['added']) {
     this.createSelectionBox(cell)
-    this.updateSelectionWrapper()
+    this.updateContainer()
+  }
+
+  protected onCollectionUpdated({
+    added,
+    removed,
+    options,
+  }: Collection.EventArgs['updated']) {
+    added.forEach(cell => {
+      this.trigger('cell:selected', { cell, options })
+      this.graph.trigger('cell:selected', { cell, options })
+      if (cell.isNode()) {
+        this.trigger('node:selected', { cell, options, node: cell })
+        this.graph.trigger('node:selected', { cell, options, node: cell })
+      } else if (cell.isEdge()) {
+        this.trigger('edge:selected', { cell, options, edge: cell })
+        this.graph.trigger('edge:selected', { cell, options, edge: cell })
+      }
+    })
+
+    removed.forEach(cell => {
+      this.trigger('cell:unselected', { cell, options })
+      this.graph.trigger('cell:unselected', { cell, options })
+      if (cell.isNode()) {
+        this.trigger('node:unselected', { cell, options, node: cell })
+        this.graph.trigger('node:unselected', { cell, options, node: cell })
+      } else if (cell.isEdge()) {
+        this.trigger('edge:unselected', { cell, options, edge: cell })
+        this.graph.trigger('edge:unselected', { cell, options, edge: cell })
+      }
+    })
+
+    const args = {
+      added,
+      removed,
+      options,
+      selected: this.getSelectedCells(),
+    }
+    this.trigger('selection:changed', args)
+    this.graph.trigger('selection:changed', args)
   }
 
   protected removeSelectedCells() {
     const cells = this.collection.toArray()
-    this.cancelSelection()
+    this.clearSelection()
     this.graph.model.removeCells(cells, {
       selection: this.cid,
     })
   }
 
-  protected startRotating({ e }: Halo.HandleEventArgs) {
+  protected startRotating({ e }: Handle.EventArgs) {
     const cells = this.collection.toArray()
     const center = Cell.getCellsBBox(cells)!.getCenter()
     const client = this.graph.snapToGrid(e.clientX!, e.clientY!)
-    const initialAngles = cells.reduce<{ [id: string]: number }>(
+    const angles = cells.reduce<{ [id: string]: number }>(
       (memo, cell: Node) => {
         memo[cell.id] = Angle.normalize(cell.getRotation())
         return memo
@@ -660,21 +676,21 @@ export class Selection extends View<Selection.EventArgs> {
       {},
     )
 
-    this.setEventData(e, {
+    this.setEventData<EventData.Rotation>(e, {
       center,
-      initialAngles,
-      clientAngle: client.theta(center),
+      angles,
+      start: client.theta(center),
     })
   }
 
-  protected doRotate({ e }: Halo.HandleEventArgs) {
-    const data = this.getEventData(e)
-    const grid = this.options.rotationGrid!
+  protected doRotate({ e }: Handle.EventArgs) {
+    const data = this.getEventData<EventData.Rotation>(e)
+    const grid = this.options.rotateGrid!
     const client = this.graph.snapToGrid(e.clientX!, e.clientY!)
-    const delta = data.clientAngle - client.theta(data.center)
+    const delta = data.start - client.theta(data.center)
     if (Math.abs(delta) > 0.001) {
       this.collection.toArray().forEach((node: Node) => {
-        const angle = snapToGrid(data.initialAngles[node.id] + delta, grid)
+        const angle = snapToGrid(data.angles[node.id] + delta, grid)
         node.rotate(angle, true, data.center, {
           selection: this.cid,
         })
@@ -683,7 +699,9 @@ export class Selection extends View<Selection.EventArgs> {
     }
   }
 
-  protected startResizing({ e }: Halo.HandleEventArgs) {
+  protected stopRotate() {}
+
+  protected startResizing({ e }: Handle.EventArgs) {
     const gridSize = this.graph.options.gridSize
     const cells = this.collection.toArray()
     const bbox = Cell.getCellsBBox(cells)!
@@ -694,7 +712,8 @@ export class Selection extends View<Selection.EventArgs> {
     const maxHeight = bboxes.reduce((maxHeight, bbox) => {
       return bbox.height < maxHeight ? bbox.height : maxHeight
     }, Infinity)
-    this.setEventData(e, {
+
+    this.setEventData<EventData.Resizing>(e, {
       bbox,
       cells: this.graph.model.getSubGraph(cells),
       minWidth: (gridSize * bbox.width) / maxWidth,
@@ -702,8 +721,8 @@ export class Selection extends View<Selection.EventArgs> {
     })
   }
 
-  protected doResize({ e, dx, dy }: Halo.HandleEventArgs) {
-    const data = this.eventData(e)
+  protected doResize({ e, dx, dy }: Handle.EventArgs) {
+    const data = this.eventData<EventData.Resizing>(e)
     const bbox = data.bbox
     const width = bbox.width
     const height = bbox.height
@@ -721,6 +740,8 @@ export class Selection extends View<Selection.EventArgs> {
       this.updateSelectionBoxes()
     }
   }
+
+  protected stopResize() {}
 }
 
 export namespace Selection {
@@ -728,41 +749,20 @@ export namespace Selection {
     graph: Graph
     model?: Model
     collection?: Collection
+    className?: string
     strict?: boolean
     movable?: boolean
-    useModelGeometry?: boolean
-    rotationGrid?: number
-    handles?: Handle[]
-    boxContent?:
+    useCellGeometry?: boolean
+    rotateGrid?: number
+    handles?: Handle.Options[] | null
+    content?:
       | false
       | string
-      | ((this: Selection, boxDOMElement: HTMLElement) => string)
+      | ((this: Selection, contentElement: HTMLElement) => string)
     filter?: (string | Cell)[] | filterFunction
   }
 
   export type filterFunction = (node: Node) => boolean
-
-  export interface Handle {
-    /**
-     * The name of the custom tool. This name will be also set as a
-     * CSS class to the handle DOM element making it easy to select
-     * it your CSS stylesheet.
-     */
-    name: string
-    position: Position
-    /**
-     * The icon url used to render the tool. This icons is set as a
-     * background image on the tool handle DOM element.
-     */
-    icon?: string | null
-    iconSelected?: string | null
-    content?: string
-    events?: { [event: string]: string }
-    attrs?: { [selector: string]: JQuery.PlainObject }
-  }
-
-  export type OrthPosition = 'e' | 'w' | 's' | 'n'
-  export type Position = OrthPosition | 'se' | 'sw' | 'ne' | 'nw'
 }
 
 export namespace Selection {
@@ -780,11 +780,56 @@ export namespace Selection {
     'selection-box:mouseup': SelectionBoxEventArgs<JQuery.MouseUpEvent>
   }
 
-  export interface EventArgs extends BoxEventArgs {}
+  export interface SelectionEventArgs {
+    'cell:selected': { cell: Cell; options: Model.SetOptions }
+    'node:selected': { cell: Cell; node: Node; options: Model.SetOptions }
+    'edge:selected': { cell: Cell; edge: Edge; options: Model.SetOptions }
+    'cell:unselected': { cell: Cell; options: Model.SetOptions }
+    'node:unselected': { cell: Cell; node: Node; options: Model.SetOptions }
+    'edge:unselected': { cell: Cell; edge: Edge; options: Model.SetOptions }
+    'selection:changed': {
+      added: Cell[]
+      removed: Cell[]
+      selected: Cell[]
+      options: Model.SetOptions
+    }
+  }
+
+  export interface EventArgs extends BoxEventArgs, SelectionEventArgs {}
 }
-export namespace Selection {
-  export const defaultOptions: Partial<Options> = {
-    boxContent() {
+
+export interface Selection extends Handle {}
+
+ObjectExt.applyMixins(Selection, Handle)
+
+// private
+// -------
+namespace Private {
+  const baseClassName = 'widget-selection'
+
+  export const classNames = {
+    root: baseClassName,
+    inner: `${baseClassName}-inner`,
+    box: `${baseClassName}-box`,
+    content: `${baseClassName}-content`,
+    lasso: `${baseClassName}-lasso`,
+    selected: `${baseClassName}-selected`,
+  }
+
+  export const documentEvents = {
+    mousemove: 'adjustSelection',
+    touchmove: 'adjustSelection',
+    mouseup: 'onMouseUp',
+    touchend: 'onMouseUp',
+    touchcancel: 'onMouseUp',
+  }
+
+  export const defaultOptions: Partial<Selection.Options> = {
+    movable: true,
+    strict: false,
+    useCellGeometry: false,
+    rotateGrid: 15,
+    content() {
       return StringExt.template(
         '<%= length %> node<%= length > 1 ? "s":"" %> selected.',
       )({
@@ -805,7 +850,7 @@ export namespace Selection {
         events: {
           mousedown: 'startRotating',
           mousemove: 'doRotate',
-          mouseup: 'stopBatch',
+          mouseup: 'stopRotate',
         },
       },
       {
@@ -814,14 +859,10 @@ export namespace Selection {
         events: {
           mousedown: 'startResizing',
           mousemove: 'doResize',
-          mouseup: 'stopBatch',
+          mouseup: 'stopResize',
         },
       },
     ],
-    strict: false,
-    useModelGeometry: false,
-    rotationGrid: 15,
-    movable: true,
   }
 
   export function depthComparator(cell: Cell) {
@@ -850,5 +891,18 @@ namespace EventData {
 
   export interface SelectionBox {
     activeView: CellView
+  }
+
+  export interface Rotation {
+    center: Point.PointLike
+    start: number
+    angles: { [id: string]: number }
+  }
+
+  export interface Resizing {
+    bbox: Rectangle
+    cells: Cell[]
+    minWidth: number
+    minHeight: number
   }
 }

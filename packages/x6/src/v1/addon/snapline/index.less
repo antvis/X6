@@ -1,6 +1,8 @@
-@prefix: x6;
+@import '../../less/index';
 
-.@{prefix}-snaplines {
+@snapline-prefix-cls: ~'@{x6-prefix}-widget-snapline';
+
+.@{snapline-prefix-cls} {
   position: absolute;
   top: 0;
   right: 0;
@@ -8,18 +10,18 @@
   left: 0;
   pointer-events: none;
 
-  .vertical,
-  .horizontal {
+  &-vertical,
+  &-horizontal {
     position: absolute;
     opacity: 1;
     pointer-events: none;
   }
 
-  .horizontal {
+  &-horizontal {
     border-bottom: 1px solid #2ecc71;
   }
 
-  .vertical {
+  &-vertical {
     border-right: 1px solid #2ecc71;
   }
 }

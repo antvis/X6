@@ -1,10 +1,10 @@
 import { ArrayExt } from '../../../util'
-import { Globals } from '../../core/globals'
 import { Cell } from '../../core/cell'
 import { Edge } from '../../core/edge'
 import { Node } from '../../core/node'
 import { Model } from '../../core/model'
 import { Graph } from '../../core/graph'
+import { Globals } from '../../core/globals'
 
 export class Clipboard {
   protected readonly LOCAL_STORAGE_KEY = `${Globals.prefixCls}.clipboard.cells`
