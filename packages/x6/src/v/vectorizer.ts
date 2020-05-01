@@ -67,7 +67,7 @@ export class Vectorizer {
   /**
    * Applies the provided transformation matrix to the Vectorizer element.
    */
-  transform(matrix: DOMMatrix, options: Static.TransformOptions): this
+  transform(matrix: DOMMatrix, options?: Static.TransformOptions): this
   transform(matrix?: DOMMatrix, options?: Static.TransformOptions) {
     if (matrix == null) {
       return Static.transform(this.node)

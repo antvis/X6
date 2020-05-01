@@ -1,4 +1,4 @@
-export { isFunction, once, noop } from 'lodash-es'
+export { isFunction, once, noop, debounce, defer } from 'lodash-es'
 
 export function invoke<T>(
   func: ((...args: any[]) => T) | null | undefined,

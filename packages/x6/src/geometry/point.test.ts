@@ -14,9 +14,9 @@ describe('point', () => {
     it('should round x and y properties to the given precision', () => {
       const point = new Point(17.231, 4.01)
       point.round(2)
-      expect(point.toString()).toEqual('17.23 4.01')
+      expect(point.serialize()).toEqual('17.23 4.01')
       point.round(0)
-      expect(point.toString()).toEqual('17 4')
+      expect(point.serialize()).toEqual('17 4')
     })
   })
 
@@ -93,8 +93,8 @@ describe('point', () => {
 
   describe('#normalize', () => {
     it('should scale x and y such that the distance between the point and the origin (0,0) is equal to the given length', () => {
-      expect(new Point(0, 10).normalize(20).toString()).toEqual('0 20')
-      expect(new Point(2, 0).normalize(4).toString()).toEqual('4 0')
+      expect(new Point(0, 10).normalize(20).serialize()).toEqual('0 20')
+      expect(new Point(2, 0).normalize(4).serialize()).toEqual('4 0')
     })
   })
 
@@ -114,7 +114,7 @@ describe('point', () => {
         .clone()
         .rotate(angle, center)
         .round(3)
-        .toString()
+        .serialize()
 
     it('should return a rotated version of self', () => {
       const point = new Point(5, 5)

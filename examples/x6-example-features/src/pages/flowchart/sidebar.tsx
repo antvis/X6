@@ -78,7 +78,7 @@ export class Sidebar extends React.Component<Sidebar.Props> {
             parent,
           )
 
-          graph.selectCell(cell)
+          graph.unSelectCells(graph.getSelectedCells()).selectCell(cell)
         }
       })
     })

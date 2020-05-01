@@ -1,18 +1,3 @@
-/**
- * @see https://www.typescriptlang.org/docs/handbook/mixins.html
- */
-export function applyMixins(derivedCtor: any, ...baseCtors: any[]) {
-  baseCtors.forEach(baseCtor => {
-    Object.getOwnPropertyNames(baseCtor.prototype).forEach(name => {
-      Object.defineProperty(
-        derivedCtor.prototype,
-        name,
-        Object.getOwnPropertyDescriptor(baseCtor.prototype, name)!,
-      )
-    })
-  })
-}
-
 const extendStatics =
   Object.setPrototypeOf ||
   ({ __proto__: [] } instanceof Array &&
@@ -41,47 +26,22 @@ export function inherit(cls: Function, base: Function) {
       : ((tmp.prototype = base.prototype), new (tmp as any)())
 }
 
-let seed = 0
-const classIdMap = new WeakMap<Function, string>()
-function getClassId(c: Function) {
-  let id = classIdMap.get(c)
-  if (id == null) {
-    id = `c${seed}`
-    seed += 1
-    classIdMap.set(c, id)
-  }
-  return id
-}
-
-function cacheClass(c: Function) {
-  const win = window as any
-  const key = '__x6_class__'
-  let cache = win[key]
-  if (cache == null) {
-    cache = win[key] = {}
-  }
-
-  const id = getClassId(c)
-  if (cache[id] == null) {
-    cache[id] = c
-  }
-
-  return `window['${key}']['${id}']`
-}
+class A {}
+const isNativeClass = /^\s*class\s+/.test(`${A}`)
 
 /**
  * Extends class with specified class name.
  */
 export function createClass<T>(className: string, base: Function): T {
-  const baseName = cacheClass(base)
-  const isNativeClass = /^\s*class\s+/.test(`${base}`)
-
   // tslint:disable-next-line
-  const cls = new Function(`
-    return ${isNativeClass}
-      ? class ${className} extends ${baseName} { }
-      : function ${className}() { return ${baseName}.apply(this, arguments) }
-  `)()
+  const cls = new Function(
+    'base',
+    `
+      return ${isNativeClass}
+        ? class ${className} extends base { }
+        : function ${className}() { return base.apply(this, arguments) }
+    `,
+  )(base)
 
   if (!isNativeClass) {
     inherit(cls, base)

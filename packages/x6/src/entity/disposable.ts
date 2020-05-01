@@ -36,14 +36,15 @@ export class Disposable implements IDisposable {
   //   }
   // }
 
-  private isDisposed: boolean = false
+  // tslint:disable-next-line
+  private _disposed?: boolean
 
   get disposed() {
-    return this.isDisposed
+    return this._disposed === true
   }
 
   public dispose() {
-    this.isDisposed = true
+    this._disposed = true
   }
 }
 

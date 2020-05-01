@@ -5,8 +5,9 @@ import { Line } from './line'
 import { Ellipse } from './ellipse'
 import { Side } from './types'
 import { Size } from '../types'
+import { Geometry } from './geometry'
 
-export class Rectangle implements Rectangle.RectangleLike {
+export class Rectangle extends Geometry implements Rectangle.RectangleLike {
   x: number
   y: number
   width: number
@@ -73,6 +74,7 @@ export class Rectangle implements Rectangle.RectangleLike {
   }
 
   constructor(x?: number, y?: number, width?: number, height?: number) {
+    super()
     this.x = x == null ? 0 : x
     this.y = y == null ? 0 : y
     this.width = width == null ? 0 : width
@@ -245,13 +247,13 @@ export class Rectangle implements Rectangle.RectangleLike {
     return this
   }
 
-  translate(dx: number, dy: number): this
+  translate(tx: number, ty: number): this
   translate(p: Point | Point.PointLike | Point.PointData): this
   translate(
-    dx: number | Point | Point.PointLike | Point.PointData,
-    dy?: number,
+    tx: number | Point | Point.PointLike | Point.PointData,
+    ty?: number,
   ): this {
-    const p = Point.create(dx, dy)
+    const p = Point.create(tx, ty)
     this.x += p.x
     this.y += p.y
     return this
@@ -461,10 +463,10 @@ export class Rectangle implements Rectangle.RectangleLike {
     const points: Point[] = []
     const dedupeArr: string[] = []
     rectLines.forEach(l => {
-      const pt = line.intersectionWithLine(l)
-      if (pt !== null && dedupeArr.indexOf(pt.toString()) < 0) {
-        points.push(pt)
-        dedupeArr.push(pt.toString())
+      const p = line.intersectionWithLine(l)
+      if (p !== null && dedupeArr.indexOf(p.toString()) < 0) {
+        points.push(p)
+        dedupeArr.push(p.toString())
       }
     })
 
@@ -682,11 +684,7 @@ export class Rectangle implements Rectangle.RectangleLike {
     return { x: this.x, y: this.y, width: this.width, height: this.height }
   }
 
-  valueOf() {
-    return this.toJSON()
-  }
-
-  toString() {
+  serialize() {
     return `${this.x} ${this.y} ${this.width} ${this.height}`
   }
 }
