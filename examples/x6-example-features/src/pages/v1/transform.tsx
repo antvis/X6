@@ -47,7 +47,6 @@ export default class Example extends React.Component {
       new Transform({
         graph,
         node,
-        padding: 5,
       })
     })
   }
