@@ -1,5 +1,0 @@
-export * from './image'
-export * from './overlay'
-export * from './anchor'
-export * from './multiplicity'
-export * from './dictionary'

@@ -1,52 +1,31 @@
-import { Disablable } from '../../entity'
-import { Graph } from '../../graph'
-import { IChange } from '../../change'
+import { Disablable } from '../../common'
+import { Graph } from '../../core/graph'
 
 export class AutoSave extends Disablable<AutoSave.EventArgs> {
-  graph: Graph
+  protected readonly options: AutoSave.Options
 
-  /**
-   * Minimum amount of seconds between two consecutive autosaves.
-   */
+  protected get graph() {
+    return this.options.graph
+  }
+
   delay: number = 10
-
-  /**
-   * Minimum amount of seconds and more than `threshold` changes
-   * between two consecutive autosaves.
-   */
   throttle: number = 2
-
-  /**
-   * Minimum amount of ignored changes before an autosave.
-   */
   threshold: number = 5
 
   private changeCount: number = 0
   private timestamp: number = 0
 
-  constructor(graph: Graph) {
+  constructor(options: AutoSave.Options) {
     super()
-    this.setGraph(graph)
+    this.options = {
+      ...AutoSave.defaultOptions,
+      ...options,
+    }
+    this.graph.model.on('cell:change:*', this.onModelChanged, this)
   }
 
-  setGraph(graph: Graph | null) {
-    if (this.graph != null) {
-      this.graph.model.off('change', this.onModelChanged, this)
-    }
-
-    if (graph != null) {
-      this.graph = graph
-    } else {
-      delete this.graph
-    }
-
-    if (this.graph != null) {
-      this.graph.model.on('change', this.onModelChanged, this)
-    }
-  }
-
-  private onModelChanged(changes: IChange[]) {
-    if (!this.isEnabled()) {
+  private onModelChanged() {
+    if (this.disabled) {
       return
     }
 
@@ -60,7 +39,7 @@ export class AutoSave extends Disablable<AutoSave.EventArgs> {
       this.save()
       this.reset()
     } else {
-      this.changeCount += changes.length
+      this.changeCount += 1
     }
   }
 
@@ -75,11 +54,34 @@ export class AutoSave extends Disablable<AutoSave.EventArgs> {
 
   @Disablable.dispose()
   dispose() {
-    this.setGraph(null)
+    this.graph.model.off('cell:change:*', this.onModelChanged, this)
   }
 }
 
 export namespace AutoSave {
+  export interface Options {
+    graph: Graph
+    /**
+     * Minimum amount of seconds between two consecutive autosaves.
+     */
+    delay?: number
+    /**
+     * Minimum amount of seconds and more than `threshold` changes
+     * between two consecutive autosaves.
+     */
+    throttle?: number
+    /**
+     * Minimum amount of ignored changes before an autosave.
+     */
+    threshold?: number
+  }
+
+  export const defaultOptions: Partial<Options> = {
+    delay: 10,
+    throttle: 2,
+    threshold: 5,
+  }
+
   export interface EventArgs {
     save?: null
   }
