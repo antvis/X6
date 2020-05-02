@@ -1,13 +1,13 @@
-import { globals } from './option'
+import { Globals } from './core/globals'
 import { version } from './version'
 
 const SERVER_URL = 'https://kcart.alipay.com/web/bi.do'
 
 setTimeout(() => {
-  if (globals.trackable) {
+  if (Globals.trackable) {
     const image = new Image()
     const trackInfo = {
-      ...globals.trackInfo,
+      ...Globals.trackInfo,
       version,
       pg: document.URL,
       r: new Date().getTime(),

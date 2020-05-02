@@ -1,134 +1,130 @@
-import { Rectangle } from '../../geometry'
+import { ArrayExt } from '../../util'
 import { Cell } from '../../core/cell'
-import { Graph } from '../../graph'
+import { Edge } from '../../core/edge'
+import { Node } from '../../core/node'
+import { Model } from '../../core/model'
+import { Graph } from '../../core/graph'
+import { Globals } from '../../core/globals'
 
-export namespace Clipboard {
-  /**
-   * Defines the step size to offset the cells after each paste operation.
-   *
-   * Default is `10`.
-   */
-  const STEPSIZE = 10
+export class Clipboard {
+  protected readonly LOCAL_STORAGE_KEY = `${Globals.prefixCls}.clipboard.cells`
+  protected readonly useLocalStorage: boolean
+  protected options: Clipboard.Options
+  protected cells: Cell[]
 
-  /**
-   * Counts the number of times the clipboard data has been inserted.
-   */
-  let insertCount = 1
+  copy(
+    cells: Cell[],
+    graph: Graph | Model,
+    options: Clipboard.CopyOptions = {},
+  ) {
+    this.options = { ...options }
+    const model = graph instanceof Graph ? graph.model : graph
+    const cloned = model.cloneSubGraph(cells, options)
 
-  /**
-   * Holds the array of `Cells` currently in the clipboard.
-   */
-  let cells: Cell[] | null = null
+    // sort asc by cell type
+    this.cells = ArrayExt.sortBy(
+      Object.keys(cloned).map(key => cloned[key]),
+      cell => (cell.isEdge() ? 2 : 1),
+    )
 
-  let copiedSize: Rectangle | null = null
-
-  export function setCells(v: Cell[]) {
-    cells = v
-  }
-
-  export function getCells() {
-    return cells
-  }
-
-  export function isEmpty() {
-    return cells == null || cells.length === 0
-  }
-
-  export function copy(graph: Graph, cells: Cell[] = graph.getSelectedCells()) {
-    const ret = graph.getExportableCells(graph.model.getTopmostCells(cells))
-    insertCount = 1
-    setCells(graph.cloneCells(ret))
-    return ret
-  }
-
-  export function cut(graph: Graph, cells: Cell[] = graph.getSelectedCells()) {
-    const ret = copy(graph, cells)
-    insertCount = 0
-    graph.removeCells(cells)
-    return ret
-  }
-
-  export function paste(graph: Graph) {
-    let cells = getCells()
-
-    if (!isEmpty()) {
-      cells = graph.getImportableCells(cells!)
-      const delta = insertCount * STEPSIZE
-      const parent = graph.getDefaultParent()
-      cells = graph.importCells(cells, delta, delta, parent)
-      // Increments the counter and selects the inserted cells
-      insertCount += 1
-      graph.setCellsSelected(cells)
-    }
-
-    return cells
-  }
-
-  export function pasteHere(graph: Graph) {
-    if (graph.isEnabled() && !graph.isCellLocked(graph.getDefaultParent())) {
-      graph.batchUpdate(() => {
-        const cells = paste(graph)
-        if (cells != null) {
-          let includeEdges = true
-
-          for (let i = 0, ii = cells.length; i < ii && includeEdges; i += 1) {
-            includeEdges = graph.model.isEdge(cells[i])
-          }
-
-          const t = graph.view.translate
-          const s = graph.view.scale
-          let p = null
-
-          if (cells.length === 1 && includeEdges) {
-            const geo = graph.getCellGeometry(cells[0])
-            if (geo != null) {
-              p = geo.getTerminalPoint(true)
-            }
-          }
-
-          if (p == null) {
-            p = graph.getBoundingBoxFromGeometry(cells, includeEdges)
-          }
-
-          if (p != null) {
-            const triggerX = graph.contextMenuHandler.triggerX
-            const triggerY = graph.contextMenuHandler.triggerY
-            const x = Math.round(graph.snap(triggerX / s - t.x))
-            const y = Math.round(graph.snap(triggerY / s - t.y))
-            const dx = x - p.x
-            const dy = y - p.y
-            graph.movingManager.cellsMoved(cells, dx, dy, false, false)
-          }
-        }
-      })
+    if (options.useLocalStorage !== false && window.localStorage) {
+      const data = this.cells.map(cell => cell.toJSON())
+      localStorage.setItem(this.LOCAL_STORAGE_KEY, JSON.stringify(data))
     }
   }
 
-  export function copySize(graph: Graph, cell: Cell = graph.getSelectedCell()) {
-    if (graph.isEnabled() && cell != null && graph.model.isNode(cell)) {
-      const geo = graph.getCellGeometry(cell)
-      if (geo != null) {
-        copiedSize = geo.bounds.clone()
+  cut(
+    cells: Cell[],
+    graph: Graph | Model,
+    options: Clipboard.CopyOptions = {},
+  ) {
+    this.copy(cells, graph, options)
+    const model = graph instanceof Graph ? graph.model : graph
+    model.executeBatch('cut', () => {
+      cells.forEach(cell => cell.remove())
+    })
+  }
+
+  paste(graph: Graph | Model, options: Clipboard.PasteOptions = {}) {
+    const localOptions = { ...options, ...this.options }
+    if (localOptions.useLocalStorage && window.localStorage) {
+      const raw = localStorage.getItem(this.LOCAL_STORAGE_KEY)
+      const cells = raw ? JSON.parse(raw) : []
+      if (cells) {
+        this.cells = Model.fromJSON(cells)
       }
     }
+
+    const { offset, edgeProps, nodeProps } = localOptions
+
+    let dx = 20
+    let dy = 20
+    if (offset) {
+      dx = typeof offset === 'number' ? offset : offset.dx
+      dy = typeof offset === 'number' ? offset : offset.dy
+    }
+
+    this.cells.map(cell => {
+      cell.model = null
+      cell.removeProp('zIndex')
+      if (dx || dy) {
+        cell.translate(dx, dy)
+      }
+
+      if (nodeProps && cell.isNode()) {
+        cell.prop(nodeProps)
+      }
+
+      if (edgeProps && cell.isEdge()) {
+        cell.prop(edgeProps)
+      }
+    })
+
+    const model = graph instanceof Graph ? graph.model : graph
+    model.executeBatch('paste', () => {
+      model.addCells(this.cells)
+    })
   }
 
-  export function pasteSize(graph: Graph) {
-    if (graph.isEnabled() && !graph.isSelectionEmpty() && copiedSize != null) {
-      graph.model.batchUpdate(() => {
-        const cells = graph.getSelectedCells()
-        for (let i = 0, ii = cells.length; i < ii; i += 1) {
-          if (graph.model.isNode(cells[i])) {
-            let geo = graph.getCellGeometry(cells[i])
-            if (geo != null) {
-              geo = geo.clone()
-              geo.bounds.width = copiedSize!.width
-              geo.bounds.height = copiedSize!.height
-              graph.model.setGeometry(cells[i], geo)
-            }
-          }
-        }
-      })
+  isEmpty() {
+    return this.cells.length <= 0
+  }
+
+  clean() {
+    this.options = {}
+    this.cells = []
+    if (window.localStorage) {
+      localStorage.removeItem(this.LOCAL_STORAGE_KEY)
     }
+  }
+}
+
+export namespace Clipboard {
+  export interface Options {
+    useLocalStorage?: boolean
+  }
+
+  export interface CopyOptions extends Options {
+    deep?: boolean
+  }
+
+  export interface PasteOptions extends Options {
+    /**
+     * Set of properties to be set on each copied node on every `paste()` call.
+     * It is defined as an object. e.g. `{ zIndex: 1 }`.
+     */
+    nodeProps?: Node.Properties
+    /**
+     * Set of properties to be set on each copied edge on every `paste()` call.
+     * It is defined as an object. e.g. `{ zIndex: 1 }`.
+     */
+    edgeProps?: Edge.Properties
+
+    /**
+     * An increment that is added to the pasted cells position on every
+     * `paste()` call. It can be either a number or an object with `dx`
+     * and `dy` attributes. It defaults to `{ dx: 20, dy: 20 }`.
+     */
+    offset?: number | { dx: number; dy: number }
   }
 }
