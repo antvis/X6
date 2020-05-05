@@ -7878,7 +7878,7 @@ eslint-visitor-keys@^1.0.0, eslint-visitor-keys@^1.1.0:
   resolved "https://registry.npm.taobao.org/eslint-visitor-keys/download/eslint-visitor-keys-1.1.0.tgz#e2a82cea84ff246ad6fb57f9bde5b46621459ec2"
   integrity sha1-4qgs6oT/JGrW+1f5veW0ZiFFnsI=
 
-eslint@5.16.0, eslint@5.x, eslint@^5.16.0, eslint@^5.4.0:
+eslint@5.16.0, eslint@5.x, eslint@^5.16.0:
   version "5.16.0"
   resolved "https://registry.npm.taobao.org/eslint/download/eslint-5.16.0.tgz#a1e3ac1aae4a3fbd8296fcf8f7ab7314cbb6abea"
   integrity sha1-oeOsGq5KP72Clvz496tzFMu2q+o=
@@ -7920,7 +7920,7 @@ eslint@5.16.0, eslint@5.x, eslint@^5.16.0, eslint@^5.4.0:
     table "^5.2.3"
     text-table "^0.2.0"
 
-eslint@^6.1.0:
+eslint@^6.1.0, eslint@^6.8.0:
   version "6.8.0"
   resolved "https://registry.npm.taobao.org/eslint/download/eslint-6.8.0.tgz#62262d6729739f9275723824302fb227c8c93ffb"
   integrity sha1-YiYtZylzn5J1cjgkMC+yJ8jJP/s=
