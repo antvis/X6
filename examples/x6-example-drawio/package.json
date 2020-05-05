@@ -23,7 +23,7 @@
     "@types/react-test-renderer": "^16.0.3",
     "babel-eslint": "^9.0.0",
     "babel-plugin-import": "^1.13.0",
-    "eslint": "^5.4.0",
+    "eslint": "^6.8.0",
     "eslint-config-umi": "^1.4.0",
     "eslint-plugin-flowtype": "^2.50.0",
     "eslint-plugin-import": "^2.14.0",
