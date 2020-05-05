@@ -17344,10 +17344,10 @@ sisteransi@^1.0.4:
   resolved "https://registry.npm.taobao.org/sisteransi/download/sisteransi-1.0.5.tgz#134d681297756437cc05ca01370d3a7a571075ed"
   integrity sha1-E01oEpd1ZDfMBcoBNw06elcQde0=
 
-size-sensor@^0.2.5:
-  version "0.2.6"
-  resolved "https://registry.npm.taobao.org/size-sensor/download/size-sensor-0.2.6.tgz#6fe43afd570786f097171834002a97fe0b19a3da"
-  integrity sha1-b+Q6/VcHhvCXFxg0ACqX/gsZo9o=
+size-sensor@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/size-sensor/-/size-sensor-1.0.0.tgz#d06de40ae3acf14cfb312dd348d4c92b221aacc2"
+  integrity sha512-UQa2EwTrQK4sgBZoZul1AjbiqzShxgGGD+8cHngMG99myPOuyyo8HCZZrtdeFykvxivuy9I3sjGpeJnV7YXfXA==
 
 slash2@2.0.0:
   version "2.0.0"
