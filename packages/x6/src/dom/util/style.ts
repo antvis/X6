@@ -28,11 +28,29 @@ export function getComputedStyle(elem: Element, name?: string) {
   return computed
 }
 
-export function hasScrollbars(container: HTMLElement) {
+interface Container extends HTMLElement {
+  cacheTime?: number
+  hasScrollbars?: boolean
+}
+
+export function hasScrollbars(
+  container: Container,
+  cache: boolean = true,
+): boolean {
+  const now = Date.now()
+  if (cache) {
+    const { hasScrollbars, cacheTime = 0 } = container
+    const queryGap = Date.now() - cacheTime
+    if ((hasScrollbars === false || hasScrollbars === true) && queryGap < 500) {
+      return hasScrollbars
+    }
+  }
   const style = getComputedStyle(container)
-  return (
+  const hasScrollbars =
     style != null && (style.overflow === 'scroll' || style.overflow === 'auto')
-  )
+  container.cacheTime = now
+  container.hasScrollbars = hasScrollbars
+  return hasScrollbars
 }
 
 /**
