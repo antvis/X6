@@ -1,7 +1,6 @@
+import { Path } from './path'
 import { Angle } from './angle'
 import { Point } from './point'
-import { Bearing } from './types'
-import { Path } from './path'
 import { Ellipse } from './ellipse'
 import { Polyline } from './polyline'
 import { Rectangle } from './rectangle'
@@ -141,7 +140,7 @@ export class Line extends Geometry {
    *
    * The function returns 'N' if the two endpoints of the line are coincident.
    */
-  bearing(): Bearing {
+  bearing(): Line.Bearing {
     const lat1 = Angle.toRad(this.start.y)
     const lat2 = Angle.toRad(this.end.y)
     const lon1 = this.start.x
@@ -159,7 +158,7 @@ export class Line extends Geometry {
     if (index < 0) index += 360
     index = index / 45
 
-    return bearings[index] as Bearing
+    return bearings[index] as Line.Bearing
   }
 
   /**
@@ -502,4 +501,6 @@ export class Line extends Geometry {
   }
 }
 
-export namespace Line {}
+export namespace Line {
+  export type Bearing = 'NE' | 'E' | 'SE' | 'S' | 'SW' | 'W' | 'NW' | 'N'
+}

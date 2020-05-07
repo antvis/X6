@@ -1,7 +1,6 @@
-import { ObjectExt, StringExt } from '../util'
-import { KeyValue, Nullable } from '../types'
-import { v } from '../v'
 import { Attr } from '../attr'
+import { KeyValue, Nullable } from '../types'
+import { ObjectExt, StringExt, Dom } from '../util'
 
 export type Markup = string | Markup.JSONMarkup | Markup.JSONMarkup[]
 
@@ -82,7 +81,7 @@ export namespace Markup {
 
   export function parseJSONMarkup(
     markup: JSONMarkup | JSONMarkup[],
-    options: { ns?: string } = { ns: v.ns.svg },
+    options: { ns?: string } = { ns: Dom.ns.svg },
   ): ParseResult {
     const fragment = document.createDocumentFragment()
     const groups: KeyValue<Element[]> = {}
@@ -102,7 +101,7 @@ export namespace Markup {
 
     while (queue.length > 0) {
       const item = queue.pop()!
-      let ns = item.ns || v.ns.svg
+      let ns = item.ns || Dom.ns.svg
       const defines = item.markup
       const parentNode = item.parent
 
@@ -118,16 +117,16 @@ export namespace Markup {
           ns = define.ns
         }
 
-        const svg = ns === v.ns.svg
+        const svg = ns === Dom.ns.svg
         const node = ns
-          ? v.createElementNS(tagName, ns)
-          : v.createElement(tagName)
+          ? Dom.createElementNS(tagName, ns)
+          : Dom.createElement(tagName)
 
         // attrs
         const attrs = define.attrs
         if (attrs) {
           if (svg) {
-            v.attr(node, attrs)
+            Dom.attr(node, attrs)
           } else {
             $(node).attr(attrs)
           }
@@ -200,8 +199,8 @@ export namespace Markup {
 
   function createContainer(firstChild: Element) {
     return firstChild instanceof SVGElement
-      ? v.createSvgElement('g')
-      : v.createElement('div')
+      ? Dom.createSvgElement('g')
+      : Dom.createElement('div')
   }
 
   export function renderMarkup(
@@ -211,7 +210,7 @@ export namespace Markup {
     selectors?: Selectors
   } {
     if (isStringMarkup(markup)) {
-      const nodes = v.batch(markup)
+      const nodes = Dom.createVectors(markup)
       const count = nodes.length
 
       if (count === 1) {
@@ -246,7 +245,7 @@ export namespace Markup {
   }
 
   export function parseLabelStringMarkup(markup: string) {
-    const children = v.batch(markup)
+    const children = Dom.createVectors(markup)
     const fragment = document.createDocumentFragment()
     for (let i = 0, n = children.length; i < n; i += 1) {
       const currentChild = children[i].node

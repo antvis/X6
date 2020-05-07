@@ -1,8 +1,8 @@
 import JQuery from 'jquery'
-import { v } from '../v'
+import { Dom } from '../util'
+import { Attr } from '../attr'
 import { KeyValue } from '../types'
 import { Basecoat } from '../common'
-import { Attr } from '../attr'
 import { Markup } from './markup'
 import { Globals } from './globals'
 
@@ -77,7 +77,7 @@ export abstract class View<EventArgs = any> extends Basecoat<EventArgs> {
   setAttrs(attrs?: Attr.SimpleAttrs | null, elem: Element = this.container) {
     if (attrs != null && elem != null) {
       if (elem instanceof SVGElement) {
-        v.attr(elem, attrs)
+        Dom.attr(elem, attrs)
       } else {
         this.$(elem).attr(attrs)
       }
@@ -157,7 +157,7 @@ export abstract class View<EventArgs = any> extends Basecoat<EventArgs> {
     }
 
     if (elem) {
-      const nth = v.index(elem) + 1
+      const nth = Dom.index(elem) + 1
       selector = `${elem.tagName}:nth-child(${nth})`
       if (prevSelector) {
         selector += ` > ${prevSelector}`
@@ -400,8 +400,8 @@ export namespace View {
 
   export function createElement(tagName?: string, isSvgElement?: boolean) {
     return isSvgElement
-      ? v.createSvgElement(tagName || 'g')
-      : (v.createElementNS(tagName || 'div') as HTMLElement)
+      ? Dom.createSvgElement(tagName || 'g')
+      : (Dom.createElementNS(tagName || 'div') as HTMLElement)
   }
 
   export function find(

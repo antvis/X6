@@ -1,4 +1,4 @@
-import { v } from '../../v'
+import { Dom } from '../../util'
 import { Grid } from './index'
 
 export interface MeshOptions extends Grid.Options {}
@@ -19,7 +19,7 @@ export const mesh: Grid.Definition<MeshOptions> = {
       d = 'M 0 0 0 0'
     }
 
-    v.attr(elem, {
+    Dom.attr(elem, {
       d,
       stroke: options.color,
       'stroke-width': options.thickness,

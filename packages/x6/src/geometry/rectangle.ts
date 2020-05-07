@@ -1,10 +1,9 @@
+import { Size } from '../types'
 import * as util from './util'
 import { Angle } from './angle'
 import { Point } from './point'
 import { Line } from './line'
 import { Ellipse } from './ellipse'
-import { Side } from './types'
-import { Size } from '../types'
 import { Geometry } from './geometry'
 
 export class Rectangle extends Geometry implements Rectangle.RectangleLike {
@@ -621,14 +620,16 @@ export class Rectangle extends Geometry implements Rectangle.RectangleLike {
     return new Rectangle(originX, originY, cornerX - originX, cornerY - originY)
   }
 
-  sideNearestToPoint(p: Point | Point.PointLike | Point.PointData): Side {
+  sideNearestToPoint(
+    p: Point | Point.PointLike | Point.PointData,
+  ): Rectangle.Side {
     const ref = Point.clone(p)
     const distLeft = ref.x - this.x
     const distRight = this.x + this.width - ref.x
     const distTop = ref.y - this.y
     const distBottom = this.y + this.height - ref.y
     let closest = distLeft
-    let side: Side = 'left'
+    let side: Rectangle.Side = 'left'
 
     if (distRight < closest) {
       closest = distRight
@@ -698,6 +699,8 @@ export namespace Rectangle {
   }
 
   export type RectangleData = [number, number, number, number]
+
+  export type Side = 'left' | 'right' | 'top' | 'bottom'
 
   export type KeyPoint =
     | 'center'

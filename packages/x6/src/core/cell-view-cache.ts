@@ -1,8 +1,7 @@
-import { v } from '../v'
-import { JSONObject } from '../util'
 import { Dictionary } from '../common'
-import { CellView } from './cell-view'
+import { JSONObject, Dom } from '../util'
 import { Line, Rectangle, Ellipse, Polyline, Path, Segment } from '../geometry'
+import { CellView } from './cell-view'
 
 export class CellViewCache {
   protected elemCache: Dictionary<Element, CellViewCache.CacheItem>
@@ -44,16 +43,16 @@ export class CellViewCache {
     const meta = this.get(elem)
     if (meta.matrix == null) {
       const target = this.view.rotatableNode || this.view.container
-      meta.matrix = v.getTransformToElement(elem as any, target as SVGElement)
+      meta.matrix = Dom.getTransformToElement(elem as any, target as SVGElement)
     }
 
-    return v.createSVGMatrix(meta.matrix)
+    return Dom.createSVGMatrix(meta.matrix)
   }
 
   getShape(elem: Element) {
     const meta = this.get(elem)
     if (meta.shape == null) {
-      meta.shape = v.toGeometryShape(elem as SVGElement)
+      meta.shape = Dom.toGeometryShape(elem as SVGElement)
     }
     return meta.shape.clone()
   }
@@ -61,7 +60,7 @@ export class CellViewCache {
   getBoundingRect(elem: Element) {
     const meta = this.get(elem)
     if (meta.boundingRect == null) {
-      meta.boundingRect = v.getBBox(elem as SVGElement)
+      meta.boundingRect = Dom.getBBox(elem as SVGElement)
     }
     return meta.boundingRect.clone()
   }

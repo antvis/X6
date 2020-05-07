@@ -1,6 +1,5 @@
-import { v } from '../../v'
 import { Point, Rectangle } from '../../geometry'
-import { Platform, NumberExt, ObjectExt } from '../../util'
+import { Platform, NumberExt, ObjectExt, Dom } from '../../util'
 import { Cell } from '../../core/cell'
 import { View } from '../../core/view'
 import { Graph } from '../../core/graph'
@@ -766,7 +765,7 @@ export class Scroller extends View {
     const p = typeof x === 'object' ? Point.create(x) : new Point(x, y)
     const ctm = this.graph.getMatrix()
     const padding = this.padding
-    return v.transformPoint(p, ctm).translate(padding.left, padding.top)
+    return Dom.transformPoint(p, ctm).translate(padding.left, padding.top)
   }
 
   getClientSize() {
@@ -825,7 +824,7 @@ export class Scroller extends View {
       width: size.width,
       height: size.height,
     }
-    const area = v.transformRect(box, ctm.inverse())
+    const area = Dom.transformRectangle(box, ctm.inverse())
     area.x -= (this.padding.left || 0) / this.sx
     area.y -= (this.padding.top || 0) / this.sy
     return area

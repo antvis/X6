@@ -1,7 +1,5 @@
-import { Point } from '../geometry'
-import { Attributes } from './attr'
-import { isString, isUndefined } from './util'
-import * as Static from './rollup'
+import * as Dom from './core'
+import { Point, Path } from '../../geometry'
 
 export class Vectorizer {
   node: SVGElement
@@ -16,7 +14,7 @@ export class Vectorizer {
 
   constructor(
     elem: Vectorizer | SVGElement | string,
-    attrs?: Attributes,
+    attrs?: Dom.Attributes,
     children?: Element | Vectorizer | (Element | Vectorizer)[],
   ) {
     if (!elem) {
@@ -24,17 +22,17 @@ export class Vectorizer {
     }
 
     let node: SVGElement
-    if (Static.isVectorizer(elem)) {
+    if (Vectorizer.isVector(elem)) {
       node = elem.node
     } else if (typeof elem === 'string') {
       if (elem.toLowerCase() === 'svg') {
-        node = Static.createSvgDocument()
+        node = Dom.createSvgDocument()
       } else if (elem[0] === '<') {
-        const svgDoc = Static.createSvgDocument(elem)
+        const svgDoc = Dom.createSvgDocument(elem)
         // only import the first child
         node = document.importNode(svgDoc.firstChild!, true) as SVGElement
       } else {
-        node = document.createElementNS(Static.ns.svg, elem) as SVGElement
+        node = document.createElementNS(Dom.ns.svg, elem) as SVGElement
       }
     } else {
       node = elem
@@ -56,8 +54,8 @@ export class Vectorizer {
    * to convert this coordinate system into `target` coordinate system.
    */
   getTransformToElement(target: SVGElement | Vectorizer) {
-    const ref = Static.toNode(target) as SVGGraphicsElement
-    return Static.getTransformToElement(this.node, ref)
+    const ref = Vectorizer.toHTMLElement(target) as SVGGraphicsElement
+    return Dom.getTransformToElement(this.node, ref)
   }
 
   /**
@@ -67,13 +65,13 @@ export class Vectorizer {
   /**
    * Applies the provided transformation matrix to the Vectorizer element.
    */
-  transform(matrix: DOMMatrix, options?: Static.TransformOptions): this
-  transform(matrix?: DOMMatrix, options?: Static.TransformOptions) {
+  transform(matrix: DOMMatrix, options?: Dom.TransformOptions): this
+  transform(matrix?: DOMMatrix, options?: Dom.TransformOptions) {
     if (matrix == null) {
-      return Static.transform(this.node)
+      return Dom.transform(this.node)
     }
 
-    Static.transform(this.node, matrix, options)
+    Dom.transform(this.node, matrix, options)
 
     return this
   }
@@ -81,30 +79,26 @@ export class Vectorizer {
   /**
    * Returns the current translate metadata of the Vectorizer element.
    */
-  translate(): Static.Translate
+  translate(): Dom.Translation
   /**
    * Translates the element by `tx` pixels in x axis and `ty` pixels
    * in y axis. `ty` is optional in which case the translation in y axis
    * is considered zero.
    */
-  translate(tx: number, ty?: number, options?: Static.TransformOptions): this
-  translate(
-    tx?: number,
-    ty: number = 0,
-    options: Static.TransformOptions = {},
-  ) {
+  translate(tx: number, ty?: number, options?: Dom.TransformOptions): this
+  translate(tx?: number, ty: number = 0, options: Dom.TransformOptions = {}) {
     if (tx == null) {
-      return Static.translate(this.node)
+      return Dom.translate(this.node)
     }
 
-    Static.translate(this.node, tx, ty, options)
+    Dom.translate(this.node, tx, ty, options)
     return this
   }
 
   /**
    * Returns the current rotate metadata of the Vectorizer element.
    */
-  rotate(): Static.Rotate
+  rotate(): Dom.Rotation
   /**
    * Rotates the element by `angle` degrees. If the optional `cx` and `cy`
    * coordinates are passed, they will be used as an origin for the rotation.
@@ -113,26 +107,26 @@ export class Vectorizer {
     angle: number,
     cx?: number,
     cy?: number,
-    options?: Static.TransformOptions,
+    options?: Dom.TransformOptions,
   ): this
   rotate(
     angle?: number,
     cx?: number,
     cy?: number,
-    options: Static.TransformOptions = {},
+    options: Dom.TransformOptions = {},
   ) {
     if (angle == null) {
-      return Static.rotate(this.node)
+      return Dom.rotate(this.node)
     }
 
-    Static.rotate(this.node, angle, cx, cy, options)
+    Dom.rotate(this.node, angle, cx, cy, options)
     return this
   }
 
   /**
    * Returns the current scale metadata of the Vectorizer element.
    */
-  scale(): Static.Scale
+  scale(): Dom.Scale
   /**
    * Scale the element by `sx` and `sy` factors. If `sy` is not specified,
    * it will be considered the same as `sx`.
@@ -140,28 +134,28 @@ export class Vectorizer {
   scale(sx: number, sy?: number): this
   scale(sx?: number, sy?: number) {
     if (sx == null) {
-      return Static.scale(this.node)
+      return Dom.scale(this.node)
     }
-    Static.scale(this.node, sx, sy)
+    Dom.scale(this.node, sx, sy)
     return this
   }
 
   removeAttribute(name: string) {
-    Static.removeAttribute(this.node, name)
+    Dom.removeAttribute(this.node, name)
     return this
   }
 
   getAttribute(name: string) {
-    return Static.getAttribute(this.node, name)
+    return Dom.getAttribute(this.node, name)
   }
 
   setAttribute(name: string, value?: string | number | null) {
-    Static.setAttribute(this.node, name, value)
+    Dom.setAttribute(this.node, name, value)
     return this
   }
 
   setAttributes(attrs: { [attr: string]: string | number | null }) {
-    Static.setAttributes(this.node, attrs)
+    Dom.setAttributes(this.node, attrs)
     return this
   }
 
@@ -174,17 +168,17 @@ export class Vectorizer {
     value?: string | number | null,
   ) {
     if (name == null) {
-      return Static.attr(this.node)
+      return Dom.attr(this.node)
     }
 
-    if (isString(name) && isUndefined(value)) {
-      return Static.attr(this.node, name)
+    if (typeof name === 'string' && value === undefined) {
+      return Dom.attr(this.node, name)
     }
 
     if (typeof name === 'object') {
-      Static.attr(this.node, name)
+      Dom.attr(this.node, name)
     } else {
-      Static.attr(this.node, name, value!)
+      Dom.attr(this.node, name, value!)
     }
 
     return this
@@ -193,43 +187,39 @@ export class Vectorizer {
   svg() {
     return this.node instanceof SVGSVGElement
       ? this
-      : Static.create(this.node.ownerSVGElement as SVGElement)
+      : Vectorizer.createVector(this.node.ownerSVGElement as SVGElement)
   }
 
   defs() {
     const context = this.svg() || this
     const defsNode = context.node.getElementsByTagName('defs')[0]
     if (defsNode) {
-      return Static.create(defsNode)
+      return Vectorizer.createVector(defsNode)
     }
 
-    return Static.create('defs').appendTo(context)
+    return Vectorizer.createVector('defs').appendTo(context)
   }
 
-  text(content: string, options: Static.TextOptions = {}) {
-    Static.text(this.node, content, options)
+  text(content: string, options: Dom.TextOptions = {}) {
+    Dom.text(this.node, content, options)
     return this
   }
 
   tagName() {
-    return Static.tagName(this.node)
+    return Dom.tagName(this.node)
   }
 
   clone() {
-    const clone = Static.create(
-      this.node.cloneNode(true /* deep */) as SVGElement,
-    )
-    clone.node.id = Static.uniqueId()
-    return clone
+    return Vectorizer.createVector(this.node.cloneNode(true) as SVGElement)
   }
 
   remove() {
-    Static.remove(this.node)
+    Dom.remove(this.node)
     return this
   }
 
   empty() {
-    Static.empty(this.node)
+    Dom.empty(this.node)
     return this
   }
 
@@ -240,7 +230,7 @@ export class Vectorizer {
       | Vectorizer
       | (Element | DocumentFragment | Vectorizer)[],
   ) {
-    Static.append(this.node, elems)
+    Dom.append(this.node, Vectorizer.toHTMLElements(elems))
     return this
   }
 
@@ -251,7 +241,7 @@ export class Vectorizer {
       | Vectorizer
       | (Element | DocumentFragment | Vectorizer)[],
   ) {
-    Static.prepend(this.node, elems)
+    Dom.prepend(this.node, Vectorizer.toHTMLElements(elems))
     return this
   }
 
@@ -262,26 +252,26 @@ export class Vectorizer {
       | Vectorizer
       | (Element | DocumentFragment | Vectorizer)[],
   ) {
-    Static.before(this.node, elems)
+    Dom.before(this.node, Vectorizer.toHTMLElements(elems))
     return this
   }
 
   appendTo(target: Element | Vectorizer) {
-    Static.appendTo(this.node, target)
+    Dom.appendTo(this.node, Vectorizer.toHTMLElement(target)!)
     return this
   }
 
   findOne(selector: string) {
-    const found = Static.findOne(this.node, selector)
-    return found ? Static.create(found as SVGElement) : undefined
+    const found = Dom.findOne(this.node, selector)
+    return found ? Vectorizer.createVector(found as SVGElement) : undefined
   }
 
   find(selector: string) {
     const vels: Vectorizer[] = []
-    const nodes = Static.find(this.node, selector)
+    const nodes = Dom.find(this.node, selector)
     if (nodes) {
       for (let i = 0, ii = nodes.length; i < ii; i += 1) {
-        vels.push(Static.create(nodes[i] as SVGElement))
+        vels.push(Vectorizer.createVector(nodes[i] as SVGElement))
       }
     }
 
@@ -289,12 +279,15 @@ export class Vectorizer {
   }
 
   findParentByClass(className: string, terminator?: SVGElement) {
-    const node = Static.findParentByClass(this.node, className, terminator)
-    return node ? Static.create(node as SVGElement) : null
+    const node = Dom.findParentByClass(this.node, className, terminator)
+    return node ? Vectorizer.createVector(node as SVGElement) : null
   }
 
   contains(child: Element | Vectorizer) {
-    return Static.contains(this.node, child)
+    return Dom.contains(
+      this.node,
+      child instanceof Vectorizer ? child.node : child,
+    )
   }
 
   children() {
@@ -303,41 +296,41 @@ export class Vectorizer {
     for (let i = 0; i < children.length; i += 1) {
       const currentChild = children[i]
       if (currentChild.nodeType === 1) {
-        vels.push(Static.create(children[i] as SVGElement))
+        vels.push(Vectorizer.createVector(children[i] as SVGElement))
       }
     }
     return vels
   }
 
   index() {
-    return Static.index(this.node)
+    return Dom.index(this.node)
   }
 
   hasClass(className: string) {
-    return Static.hasClass(this.node, className)
+    return Dom.hasClass(this.node, className)
   }
 
   addClass(className: string) {
-    Static.addClass(this.node, className)
+    Dom.addClass(this.node, className)
     return this
   }
 
   removeClass(className?: string) {
-    Static.removeClass(this.node, className)
+    Dom.removeClass(this.node, className)
     return this
   }
 
   toggleClass(className: string, stateVal?: boolean) {
-    Static.toggleClass(this.node, className, stateVal)
+    Dom.toggleClass(this.node, className, stateVal)
     return this
   }
 
   toLocalPoint(x: number, y: number) {
-    return Static.toLocalPoint(this.node, x, y)
+    return Dom.toLocalPoint(this.node, x, y)
   }
 
   toGeometryShape() {
-    return Static.toGeometryShape(this.node)
+    return Dom.toGeometryShape(this.node)
   }
 
   translateCenterToPoint(p: Point | Point.PointLike) {
@@ -352,12 +345,12 @@ export class Vectorizer {
     reference: Point | Point.PointLike | Point.PointData,
     target?: SVGElement,
   ) {
-    Static.translateAndAutoOrient(this.node, position, reference, target)
+    Dom.translateAndAutoOrient(this.node, position, reference, target)
     return this
   }
 
   animateAlongPath(attrs: { [name: string]: string }, path: SVGPathElement) {
-    Static.animateAlongPath(this.node, attrs, path)
+    Dom.animateAlongPath(this.node, attrs, path)
   }
 
   /**
@@ -367,7 +360,7 @@ export class Vectorizer {
   normalizePath() {
     const tagName = this.tagName()
     if (tagName === 'path') {
-      this.attr('d', Static.normalizePathData(this.attr('d')))
+      this.attr('d', Path.normalize(this.attr('d')))
     }
 
     return this
@@ -380,7 +373,7 @@ export class Vectorizer {
    * specified, bounding box will be computed relatively to the target element.
    */
   bbox(withoutTransformations?: boolean, target?: SVGElement) {
-    return Static.bbox(this.node, withoutTransformations, target)
+    return Dom.bbox(this.node, withoutTransformations, target)
   }
 
   getBBox(
@@ -389,9 +382,9 @@ export class Vectorizer {
       recursive?: boolean
     } = {},
   ) {
-    return Static.getBBox(this.node, {
+    return Dom.getBBox(this.node, {
       recursive: options.recursive,
-      target: Static.toNode(options.target),
+      target: Vectorizer.toHTMLElement(options.target),
     })
   }
 
@@ -411,16 +404,71 @@ export class Vectorizer {
    */
   sample(interval: number = 1) {
     if (this.node instanceof SVGPathElement) {
-      return Static.sample(this.node, interval)
+      return Dom.sample(this.node, interval)
     }
     return []
   }
 
   convertToPath() {
-    return Static.create(Static.convertToPath(this.node as any))
+    return Vectorizer.createVector(Dom.toPath(this.node as any))
   }
 
   convertToPathData() {
-    return Static.convertToPathData(this.node as any)
+    return Dom.toPathData(this.node as any)
+  }
+}
+
+export namespace Vectorizer {
+  export function isVector(o: any): o is Vectorizer {
+    return o instanceof Vectorizer
+  }
+
+  export function createVector(
+    elem: Vectorizer | SVGElement | string,
+    attrs?: Dom.Attributes,
+    children?: Element | Vectorizer | (Element | Vectorizer)[],
+  ) {
+    return new Vectorizer(elem, attrs, children)
+  }
+
+  export function createVectors(markup: string) {
+    if (markup[0] === '<') {
+      const svgDoc = Dom.createSvgDocument(markup)
+      const vels: Vectorizer[] = []
+      for (let i = 0, ii = svgDoc.childNodes.length; i < ii; i += 1) {
+        const childNode = svgDoc.childNodes[i]!
+        vels.push(
+          createVector(document.importNode(childNode, true) as SVGElement),
+        )
+      }
+
+      return vels
+    }
+
+    return [createVector(markup)]
+  }
+
+  export function toHTMLElement(elem: any) {
+    if (elem != null) {
+      if (isVector(elem)) {
+        return elem.node
+      }
+      return ((elem.nodeName && elem) || elem[0]) as SVGElement
+    }
+    return null
+  }
+
+  export function toHTMLElements(
+    elems:
+      | Element
+      | DocumentFragment
+      | Vectorizer
+      | (Element | DocumentFragment | Vectorizer)[],
+  ) {
+    if (Array.isArray(elems)) {
+      return elems.map(elem => toHTMLElement(elem)!)
+    }
+
+    return [toHTMLElement(elems)!]
   }
 }

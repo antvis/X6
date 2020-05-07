@@ -1,4 +1,4 @@
-import { v } from '../../v'
+import { Dom } from '../../util'
 import { KeyValue } from '../../types'
 import * as patterns from './main'
 
@@ -8,13 +8,13 @@ export class Grid {
 
   constructor() {
     this.patterns = {}
-    this.root = v.create(
-      v.createSvgDocument(),
+    this.root = Dom.createVector(
+      Dom.createSvgDocument(),
       {
         width: '100%',
         height: '100%',
       },
-      [v.createSvgElement('defs')],
+      [Dom.createSvgElement('defs')],
     ).node
   }
 
@@ -25,13 +25,12 @@ export class Grid {
     }
 
     this.patterns[id] = elem
-    this.root.append(
-      v.create('rect', {
-        width: '100%',
-        height: '100%',
-        fill: `url(#${id})`,
-      }).node,
-    )
+
+    Dom.createVector('rect', {
+      width: '100%',
+      height: '100%',
+      fill: `url(#${id})`,
+    }).appendTo(this.root)
   }
 
   get(id: string) {

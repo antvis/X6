@@ -125,3 +125,9 @@ export class Close extends Segment {
     return this.type
   }
 }
+
+export namespace Close {
+  export function create(): Close {
+    return new Close()
+  }
+}

@@ -1,7 +1,6 @@
-import { v } from '../v'
 import { Attr } from '../attr'
 import { KeyValue } from '../types'
-import { StringExt, ObjectExt, NumberExt } from '../util'
+import { StringExt, ObjectExt, NumberExt, Dom } from '../util'
 import { Rectangle, Polyline, Point, Angle, Path, Line } from '../geometry'
 import {
   RouterRegistry,
@@ -214,7 +213,7 @@ export class EdgeView<
 
   protected renderStringMarkup(markup: string) {
     const cache = this.containers
-    const children = v.batch(markup)
+    const children = Dom.createVectors(markup)
     // Cache children elements for quicker access.
     children.forEach(child => {
       const className = child.attr('class')
@@ -228,7 +227,10 @@ export class EdgeView<
     this.renderVertexMarkers()
     this.renderArrowheadMarkers()
 
-    v.append(this.container, children)
+    Dom.append(
+      this.container,
+      children.map(child => child.node),
+    )
   }
 
   protected renderLabels() {
@@ -250,7 +252,7 @@ export class EdgeView<
     if (container) {
       this.empty(container)
     } else {
-      container = v.createSvgElement('g')
+      container = Dom.createSvgElement('g')
       this.addClass('labels', container)
       this.containers.labels = container
     }
@@ -309,7 +311,7 @@ export class EdgeView<
   }
 
   protected parseLabelStringMarkup(labelMarkup: string) {
-    const children = v.batch(labelMarkup)
+    const children = Dom.createVectors(labelMarkup)
     const fragment = document.createDocumentFragment()
     for (let i = 0, n = children.length; i < n; i += 1) {
       const currentChild = children[i].node
@@ -339,9 +341,9 @@ export class EdgeView<
     if (childNodes.length > 1 || childNodes[0].nodeName.toUpperCase() !== 'G') {
       // default markup fragment is not wrapped in <g />
       // add a <g /> container
-      vel = v.create('g').append(fragment)
+      vel = Dom.createVector('g').append(fragment)
     } else {
-      vel = v.create(childNodes[0] as SVGElement)
+      vel = Dom.createVector(childNodes[0] as SVGElement)
     }
 
     vel.addClass('label')
@@ -422,7 +424,7 @@ export class EdgeView<
 
     if (Markup.isStringMarkup(markup)) {
       let template = StringExt.template(markup)
-      const tool = v.create(template())
+      const tool = Dom.createVector(template())
 
       $container.append(tool.node)
       this.toolCache = tool.node
@@ -435,7 +437,7 @@ export class EdgeView<
         const doubleToolMarkup = this.cell.doubleToolMarkup
         if (Markup.isStringMarkup(doubleToolMarkup)) {
           template = StringExt.template(doubleToolMarkup)
-          tool2 = v.create(template())
+          tool2 = Dom.createVector(template())
         } else {
           tool2 = tool.clone()
         }
@@ -459,7 +461,7 @@ export class EdgeView<
     if (Markup.isStringMarkup(markup)) {
       const template = StringExt.template(markup)
       this.cell.getVertices().forEach((vertex, index) => {
-        $container.append(v.create(template({ index, ...vertex })).node)
+        $container.append(Dom.createVector(template({ index, ...vertex })).node)
       })
     }
 
@@ -477,8 +479,8 @@ export class EdgeView<
 
     if (Markup.isStringMarkup(markup)) {
       const template = StringExt.template(markup)
-      const sourceArrowhead = v.create(template({ end: 'source' })).node
-      const targetArrowhead = v.create(template({ end: 'target' })).node
+      const sourceArrowhead = Dom.createVector(template({ end: 'source' })).node
+      const targetArrowhead = Dom.createVector(template({ end: 'target' })).node
 
       this.containers.sourceArrowhead = sourceArrowhead
       this.containers.targetArrowhead = targetArrowhead
@@ -969,8 +971,8 @@ export class EdgeView<
     // as all other transforms (translate/rotate) will be replaced
     // by the `translateAndAutoOrient()` function.
     if (sourceMarkerContainer) {
-      cache.sourceBBox = cache.sourceBBox || v.getBBox(sourceMarkerContainer)
-      const scale = v.scale(sourceMarkerContainer)
+      cache.sourceBBox = cache.sourceBBox || Dom.getBBox(sourceMarkerContainer)
+      const scale = Dom.scale(sourceMarkerContainer)
       sourceMarkerPoint = sourcePoint
         .clone()
         .move(
@@ -981,8 +983,8 @@ export class EdgeView<
     }
 
     if (targetMarkerContainer) {
-      cache.targetBBox = cache.targetBBox || v.getBBox(targetMarkerContainer)
-      const scale = v.scale(targetMarkerContainer)
+      cache.targetBBox = cache.targetBBox || Dom.getBBox(targetMarkerContainer)
+      const scale = Dom.scale(targetMarkerContainer)
       targetMarkerPoint = targetPoint
         .clone()
         .move(
@@ -1080,7 +1082,7 @@ export class EdgeView<
       const matrix = this.getLabelTransformationMatrix(pos)
       this.labelCache[i].setAttribute(
         'transform',
-        v.matrixToTransformString(matrix),
+        Dom.matrixToTransformString(matrix),
       )
     }
 
@@ -1114,7 +1116,7 @@ export class EdgeView<
 
       let pos = this.getPointAtLength(offset)
       if (pos != null) {
-        v.attr(
+        Dom.attr(
           this.toolCache,
           'transform',
           `translate(${pos.x},${pos.y}) ${scale}`,
@@ -1129,15 +1131,15 @@ export class EdgeView<
 
         pos = this.getPointAtLength(connectionLength - doubleToolsOffset)
         if (pos != null) {
-          v.attr(
+          Dom.attr(
             this.tool2Cache,
             'transform',
             `translate(${pos.x},${pos.y}) ${scale}`,
           )
         }
-        v.attr(this.tool2Cache, 'visibility', 'visible')
+        Dom.attr(this.tool2Cache, 'visibility', 'visible')
       } else if (this.options.doubleTools) {
-        v.attr(this.tool2Cache, 'visibility', 'hidden')
+        Dom.attr(this.tool2Cache, 'visibility', 'hidden')
       }
     }
 
@@ -1159,8 +1161,8 @@ export class EdgeView<
     if (sourceArrowhead && targetArrowhead) {
       const len = this.getConnectionLength() || 0
       const sx = len < this.options.shortLength ? 0.5 : 1
-      v.scale(sourceArrowhead as SVGElement, sx)
-      v.scale(targetArrowhead as SVGElement, sx)
+      Dom.scale(sourceArrowhead as SVGElement, sx)
+      Dom.scale(targetArrowhead as SVGElement, sx)
       this.translateAndAutoOrientArrows(sourceArrowhead, targetArrowhead)
     }
 
@@ -1217,7 +1219,7 @@ export class EdgeView<
   ) {
     const route = this.routePoints
     if (sourceArrow) {
-      v.translateAndAutoOrient(
+      Dom.translateAndAutoOrient(
         sourceArrow as SVGElement,
         this.sourcePoint,
         route[0] || this.targetPoint,
@@ -1226,7 +1228,7 @@ export class EdgeView<
     }
 
     if (targetArrow) {
-      v.translateAndAutoOrient(
+      Dom.translateAndAutoOrient(
         targetArrow as SVGElement,
         this.targetPoint,
         route[route.length - 1] || this.sourcePoint,
@@ -1430,7 +1432,7 @@ export class EdgeView<
       throw new Error('Token animation requires a valid connection path.')
     }
 
-    const vToken = v.create(token)
+    const vToken = Dom.createVector(token)
     vToken.appendTo(this.graph.drawPane).animateAlongPath(props, path)
 
     setTimeout(() => {
@@ -1720,8 +1722,7 @@ export class EdgeView<
       }
     }
 
-    return v
-      .createSVGMatrix()
+    return Dom.createSVGMatrix()
       .translate(translation.x, translation.y)
       .rotate(angle)
   }
@@ -1905,7 +1906,7 @@ export class EdgeView<
 
   onCustomEvent(e: JQuery.MouseDownEvent, name: string, x: number, y: number) {
     // For default edge tool
-    const tool = v.findParentByClass(e.target, 'edge-tool', this.container)
+    const tool = Dom.findParentByClass(e.target, 'edge-tool', this.container)
     if (tool) {
       e.stopPropagation() // no further action to be executed
       if (this.can('useLinkTools')) {

@@ -1,6 +1,5 @@
-import { v } from '../v'
-import { ObjectExt, JSONObject, NumberExt, StringExt } from '../util'
-import { Attr } from '.'
+import { ObjectExt, JSONObject, NumberExt, Dom } from '../util'
+import { Attr } from './index'
 
 export const text: Attr.Definition = {
   qualify(text, { attrs }) {
@@ -41,7 +40,7 @@ export const text: Attr.Definition = {
         if (typeof selector === 'string') {
           const pathNode = view.find(selector)[0]
           if (pathNode instanceof SVGPathElement) {
-            v.ensureId(pathNode)
+            Dom.ensureId(pathNode)
             textAttrs.textPath = {
               'xlink:href': `#${pathNode.id}`,
               ...textPath,
@@ -50,7 +49,7 @@ export const text: Attr.Definition = {
         }
       }
 
-      v.text(elem as SVGElement, `${text}`, textAttrs as any)
+      Dom.text(elem as SVGElement, `${text}`, textAttrs as any)
       $elem.data(cacheName, textHash)
     }
   },
@@ -89,7 +88,7 @@ export const textWrap: Attr.Definition = {
     }
 
     if (txt != null) {
-      wrappedText = StringExt.breakText(
+      wrappedText = Dom.breakText(
         `${txt}`,
         refBBox,
         {

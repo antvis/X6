@@ -15,10 +15,9 @@ export {
   uniqueId,
 } from 'lodash-es'
 
-export * from './case'
+export { exec as eval } from './eval'
+export * from './format'
 export * from './hashcode'
 export * from './uuid'
-export * from './text'
 export * from './html'
-export { exec as eval } from './eval'
 export * from './suggestion'

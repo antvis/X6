@@ -29,7 +29,7 @@ export function sample(elem: SVGPathElement, interval: number = 1) {
   return samples
 }
 
-export function convertLineToPathData(line: SVGLineElement) {
+export function lineToPathData(line: SVGLineElement) {
   return [
     'M',
     getNumbericAttribute(line, 'x1'),
@@ -40,7 +40,7 @@ export function convertLineToPathData(line: SVGLineElement) {
   ].join(' ')
 }
 
-export function convertPolygonToPathData(polygon: SVGPolygonElement) {
+export function polygonToPathData(polygon: SVGPolygonElement) {
   const points = getPointsFromSvgElement(polygon)
   if (points.length === 0) {
     return null
@@ -48,7 +48,7 @@ export function convertPolygonToPathData(polygon: SVGPolygonElement) {
   return `${svgPointsToPath(points)} Z`
 }
 
-export function convertPolylineToPathData(polyline: SVGPolylineElement) {
+export function polylineToPathData(polyline: SVGPolylineElement) {
   const points = getPointsFromSvgElement(polyline)
   if (points.length === 0) {
     return null
@@ -76,7 +76,7 @@ export function getPointsFromSvgElement(
   return points
 }
 
-export function convertCircleToPathData(circle: SVGCircleElement) {
+export function circleToPathData(circle: SVGCircleElement) {
   const cx = getNumbericAttribute(circle, 'cx', 0)
   const cy = getNumbericAttribute(circle, 'cy', 0)
   const r = getNumbericAttribute(circle, 'r')
@@ -118,7 +118,7 @@ export function convertCircleToPathData(circle: SVGCircleElement) {
   ].join(' ')
 }
 
-export function convertEllipseToPathData(ellipse: SVGEllipseElement) {
+export function ellipseToPathData(ellipse: SVGEllipseElement) {
   const cx = getNumbericAttribute(ellipse, 'cx', 0)
   const cy = getNumbericAttribute(ellipse, 'cy', 0)
   const rx = getNumbericAttribute(ellipse, 'rx')
@@ -163,8 +163,8 @@ export function convertEllipseToPathData(ellipse: SVGEllipseElement) {
   return d
 }
 
-export function convertRectToPathData(rect: SVGRectElement) {
-  return rectToPath({
+export function rectangleToPathData(rect: SVGRectElement) {
+  return rectToPathData({
     x: getNumbericAttribute(rect, 'x', 0),
     y: getNumbericAttribute(rect, 'y', 0),
     width: getNumbericAttribute(rect, 'width', 0),
@@ -174,7 +174,7 @@ export function convertRectToPathData(rect: SVGRectElement) {
   })
 }
 
-export function rectToPath(r: {
+export function rectToPathData(r: {
   x: number
   y: number
   width: number
@@ -250,7 +250,7 @@ export function rectToPath(r: {
   return d.join(' ')
 }
 
-export function convertToPath(
+export function toPath(
   elem:
     | SVGLineElement
     | SVGPolygonElement
@@ -261,14 +261,14 @@ export function convertToPath(
 ) {
   const path = createSvgElement('path') as SVGPathElement
   attr(path, attr(elem))
-  const d = convertToPathData(elem)
+  const d = toPathData(elem)
   if (d) {
     path.setAttribute('d', d)
   }
-  return path as SVGPathElement
+  return path
 }
 
-export function convertToPathData(
+export function toPathData(
   elem:
     | SVGLineElement
     | SVGPolygonElement
@@ -282,17 +282,17 @@ export function convertToPathData(
     case 'path':
       return elem.getAttribute('d')
     case 'line':
-      return convertLineToPathData(elem as SVGLineElement)
+      return lineToPathData(elem as SVGLineElement)
     case 'polygon':
-      return convertPolygonToPathData(elem as SVGPolygonElement)
+      return polygonToPathData(elem as SVGPolygonElement)
     case 'polyline':
-      return convertPolylineToPathData(elem as SVGPolylineElement)
+      return polylineToPathData(elem as SVGPolylineElement)
     case 'ellipse':
-      return convertEllipseToPathData(elem as SVGEllipseElement)
+      return ellipseToPathData(elem as SVGEllipseElement)
     case 'circle':
-      return convertCircleToPathData(elem as SVGCircleElement)
+      return circleToPathData(elem as SVGCircleElement)
     case 'rect':
-      return convertRectToPathData(elem as SVGRectElement)
+      return rectangleToPathData(elem as SVGRectElement)
   }
 
   throw new Error(`"${tagName}" cannot be converted to svg path element.`)

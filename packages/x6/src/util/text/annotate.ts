@@ -1,19 +1,5 @@
-import { isObject } from './util'
-import { Attributes, mergeAttrs } from './attr'
-
-/**
- * Replace all spaces with the Unicode No-break space. IE would
- * otherwise collapse all spaces into one.
- *
- * @see http://www.fileformat.info/info/unicode/char/a0/index.htm
- *
- * This is useful e.g. in tests when you want to compare the actual
- * DOM text content without having to add the unicode character in
- * the place of all spaces.
- */
-export function sanitizeText(text: string) {
-  return text.replace(/ /g, '\u00A0')
-}
+import { ObjectExt } from '../object'
+import { Attributes, mergeAttrs } from '../dom/attr'
 
 export interface Annotation {
   start: number
@@ -27,7 +13,7 @@ export interface AnnotatedItem {
   annotations?: number[]
 }
 
-export function annotateString(
+export function annotate(
   t: string,
   annotations: Annotation[],
   opt: { offset?: number; includeAnnotationIndices?: boolean } = {},
@@ -70,7 +56,7 @@ export function annotateString(
 
     if (!prev) {
       batch = curr
-    } else if (isObject(curr) && isObject(prev)) {
+    } else if (ObjectExt.isObject(curr) && ObjectExt.isObject(prev)) {
       batch = batch as AnnotatedItem
       // Both previous item and the current one are annotations.
       // If the attributes didn't change, merge the text.
@@ -80,12 +66,12 @@ export function annotateString(
         compacted.push(batch)
         batch = curr
       }
-    } else if (isObject(curr)) {
+    } else if (ObjectExt.isObject(curr)) {
       // Previous item was a string, current item is an annotation.
       batch = batch as string
       compacted.push(batch)
       batch = curr
-    } else if (isObject(prev)) {
+    } else if (ObjectExt.isObject(prev)) {
       // Previous item was an annotation, current item is a string.
       batch = batch as AnnotatedItem
       compacted.push(batch)

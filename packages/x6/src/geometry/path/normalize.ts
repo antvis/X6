@@ -234,7 +234,7 @@ function parsePathString(pathString: string) {
   return data
 }
 
-function pathToAbsolute(pathString: string) {
+function toAbsolute(pathString: string) {
   const pathArray = parsePathString(pathString)
 
   // if invalid string, return 'M 0 0'
@@ -333,7 +333,7 @@ function pathToAbsolute(pathString: string) {
 }
 
 function normalize(path: string) {
-  const pathArray = pathToAbsolute(path)
+  const pathArray = toAbsolute(path)
   const attrs = { x: 0, y: 0, bx: 0, by: 0, X: 0, Y: 0, qx: null, qy: null }
 
   function processPath(path: any[], d: any, pcom: string) {

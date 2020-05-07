@@ -1,6 +1,5 @@
-import { v } from '../../v'
-import { ObjectExt } from '../../util'
 import { Attr } from '../../attr'
+import { ObjectExt, Dom } from '../../util'
 import { EdgeView } from '../../core/edge-view'
 import { addClassNamePrefix } from '../../core/globals'
 import { Highlighter } from './index'
@@ -32,7 +31,7 @@ export const stroke: Highlighter.Definition<StrokeHighlighterOptions> = {
     // tslint:disable-next-line
     options = ObjectExt.defaultsDeep({}, options, defaultOptions)
 
-    const magnetVel = v.create(magnet as SVGElement)
+    const magnetVel = Dom.createVector(magnet as SVGElement)
     let pathData
     let magnetBBox
 
@@ -42,11 +41,11 @@ export const stroke: Highlighter.Definition<StrokeHighlighterOptions> = {
       // Failed to get path data from magnet element.
       // Draw a rectangle around the entire cell view instead.
       magnetBBox = magnetVel.bbox(true /* without transforms */)
-      pathData = v.rectToPathData({ ...options, ...magnetBBox })
+      pathData = Dom.rectToPathData({ ...options, ...magnetBBox })
     }
 
-    const path = v.createSvgElement('path')
-    v.attr(path, {
+    const path = Dom.createSvgElement('path')
+    Dom.attr(path, {
       d: pathData,
       'pointer-events': 'none',
       'vector-effect': 'non-scaling-stroke',
@@ -57,7 +56,7 @@ export const stroke: Highlighter.Definition<StrokeHighlighterOptions> = {
     // const highlightVel = v.create('path').attr()
 
     if (cellView.isEdgeElement(magnet)) {
-      v.attr(path, 'd', (cellView as EdgeView).getConnectionPathData())
+      Dom.attr(path, 'd', (cellView as EdgeView).getConnectionPathData())
     } else {
       let highlightMatrix = magnetVel.getTransformToElement(
         cellView.container as SVGElement,
@@ -73,14 +72,14 @@ export const stroke: Highlighter.Definition<StrokeHighlighterOptions> = {
         const cx = magnetBBox.x + magnetBBox.width / 2
         const cy = magnetBBox.y + magnetBBox.height / 2
 
-        magnetBBox = v.transformRect(magnetBBox, highlightMatrix)
+        magnetBBox = Dom.transformRectangle(magnetBBox, highlightMatrix)
 
         const width = Math.max(magnetBBox.width, 1)
         const height = Math.max(magnetBBox.height, 1)
         const sx = (width + padding) / width
         const sy = (height + padding) / height
 
-        const paddingMatrix = v.createSVGMatrix({
+        const paddingMatrix = Dom.createSVGMatrix({
           a: sx,
           b: 0,
           c: 0,
@@ -92,10 +91,10 @@ export const stroke: Highlighter.Definition<StrokeHighlighterOptions> = {
         highlightMatrix = highlightMatrix.multiply(paddingMatrix)
       }
 
-      v.transform(path, highlightMatrix)
+      Dom.transform(path, highlightMatrix)
     }
 
-    v.addClass(path, addClassNamePrefix('highlight-stroke'))
+    Dom.addClass(path, addClassNamePrefix('highlight-stroke'))
 
     const cell = cellView.cell
     const removeHandler = () => Private.removeHighlighter(id)
@@ -119,7 +118,7 @@ namespace Private {
     magnet: Element,
     options: StrokeHighlighterOptions,
   ) {
-    v.ensureId(magnet)
+    Dom.ensureId(magnet)
     return magnet.id + JSON.stringify(options)
   }
 
@@ -136,7 +135,7 @@ namespace Private {
   export function removeHighlighter(id: string) {
     const elem = cache[id]
     if (elem) {
-      v.remove(elem)
+      Dom.remove(elem)
       delete cache[id]
     }
   }
