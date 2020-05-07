@@ -1,6 +1,31 @@
-import { toNode } from './ctor'
 import { hasClass } from './class'
-import { Vectorizer } from './vectorizer'
+
+let idCounter = 0
+export function uniqueId() {
+  idCounter += 1
+  return `v${idCounter}`
+}
+
+export function ensureId(elem: Element) {
+  if (elem.id == null || elem.id === '') {
+    elem.id = uniqueId()
+  }
+  return elem.id
+}
+
+/**
+ * Returns true if object is an instance of SVGGraphicsElement.
+ * @see https://developer.mozilla.org/en-US/docs/Web/API/SVGGraphicsElement
+ */
+export function isSVGGraphicsElement(
+  elem?: any | null,
+): elem is SVGGraphicsElement {
+  if (elem == null) {
+    return false
+  }
+
+  return typeof elem.getScreenCTM === 'function' && elem instanceof SVGElement
+}
 
 export const ns = {
   svg: 'http://www.w3.org/2000/svg',
@@ -110,14 +135,11 @@ export function findParentByClass(
   return null
 }
 
-export function contains(parent: Element, child: Element | Vectorizer) {
-  const a = parent
-  const b = toNode(child)
-  const bup = b && b.parentNode
-
+export function contains(parent: Element, child: Element) {
+  const bup = child && child.parentNode
   return (
-    a === bup ||
-    !!(bup && bup.nodeType === 1 && a.compareDocumentPosition(bup) & 16)
+    parent === bup ||
+    !!(bup && bup.nodeType === 1 && parent.compareDocumentPosition(bup) & 16)
   )
 }
 
@@ -135,28 +157,19 @@ export function empty(elem: Element) {
 
 export function append(
   elem: Element,
-  elems:
-    | Element
-    | DocumentFragment
-    | Vectorizer
-    | (Element | DocumentFragment | Vectorizer)[],
+  elems: Element | DocumentFragment | (Element | DocumentFragment)[],
 ) {
   const arr = Array.isArray(elems) ? elems : [elems]
-  arr.forEach(node => {
-    const el = toNode(node)
-    if (el != null) {
-      elem.appendChild(el)
+  arr.forEach(child => {
+    if (child != null) {
+      elem.appendChild(child)
     }
   })
 }
 
 export function prepend(
   elem: Element,
-  elems:
-    | Element
-    | DocumentFragment
-    | Vectorizer
-    | (Element | DocumentFragment | Vectorizer)[],
+  elems: Element | DocumentFragment | (Element | DocumentFragment)[],
 ) {
   const child = elem.firstChild
   return child ? before(child as HTMLElement, elems) : append(elem, elems)
@@ -164,27 +177,21 @@ export function prepend(
 
 export function before(
   elem: Element,
-  elems:
-    | Element
-    | DocumentFragment
-    | Vectorizer
-    | (Element | DocumentFragment | Vectorizer)[],
+  elems: Element | DocumentFragment | (Element | DocumentFragment)[],
 ) {
   const parent = elem.parentNode
   if (parent) {
     const arr = Array.isArray(elems) ? elems : [elems]
-    arr.forEach(node => {
-      const el = toNode(node)
-      if (el != null) {
-        parent.insertBefore(el, elem)
+    arr.forEach(child => {
+      if (child != null) {
+        parent.insertBefore(child, elem)
       }
     })
   }
 }
 
-export function appendTo(elem: Element, target: Element | Vectorizer) {
-  const ref = toNode(target)
-  if (ref != null) {
-    ref.appendChild(elem)
+export function appendTo(elem: Element, target: Element) {
+  if (target != null) {
+    target.appendChild(elem)
   }
 }

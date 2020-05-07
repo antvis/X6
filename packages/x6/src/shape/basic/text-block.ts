@@ -1,4 +1,4 @@
-import { Platform, StringExt, ObjectExt } from '../../util'
+import { Platform, StringExt, ObjectExt, Dom } from '../../util'
 import { Size } from '../../types'
 import { Attr } from '../../attr'
 import { Node } from '../../core/node'
@@ -114,14 +114,9 @@ export class TextBlockView extends NodeView<TextBlock> {
 
       // Break the text to fit the node size taking into
       // account the attributes set on the node.
-      const text = StringExt.breakText(
-        node.getContent(),
-        node.getSize(),
-        textAttrs,
-        {
-          svgDocument: this.graph.svgElem,
-        },
-      )
+      const text = Dom.breakText(node.getContent(), node.getSize(), textAttrs, {
+        svgDocument: this.graph.svgElem,
+      })
 
       const attrs = {
         [contentSelector]: ObjectExt.merge({}, textAttrs, { text }),

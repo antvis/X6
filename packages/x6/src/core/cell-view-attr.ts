@@ -1,5 +1,4 @@
-import { ObjectExt, ArrayExt } from '../util'
-import { v } from '../v'
+import { ObjectExt, ArrayExt, Dom } from '../util'
 import { Dictionary } from '../common'
 import { Rectangle, Point } from '../geometry'
 import { Markup } from './markup'
@@ -265,7 +264,7 @@ export class CellViewAttr {
     // The final translation of the subelement.
     const nodeTransform = nodeAttrs.transform
     const transform = nodeTransform ? `${nodeTransform}` : null
-    const nodeMatrix = v.transformStringToMatrix(transform)
+    const nodeMatrix = Dom.transformStringToMatrix(transform)
     const nodePosition = new Point(nodeMatrix.e, nodeMatrix.f)
     if (nodeTransform) {
       delete nodeAttrs.transform
@@ -313,9 +312,10 @@ export class CellViewAttr {
       // Check if the node is visible
       const nodeBoundingRect = this.view.getNodeBoundingRect(elem)
       if (nodeBoundingRect.width > 0 && nodeBoundingRect.height > 0) {
-        const nodeBBox = v
-          .transformRect(nodeBoundingRect, nodeMatrix)
-          .scale(1 / sx, 1 / sy)
+        const nodeBBox = Dom.transformRectangle(
+          nodeBoundingRect,
+          nodeMatrix,
+        ).scale(1 / sx, 1 / sy)
 
         Object.keys(offsetAttrs).forEach(name => {
           const val = offsetAttrs[name]
@@ -346,7 +346,7 @@ export class CellViewAttr {
       nodePosition.round(1)
       nodeMatrix.e = nodePosition.x
       nodeMatrix.f = nodePosition.y
-      elem.setAttribute('transform', v.matrixToTransformString(nodeMatrix))
+      elem.setAttribute('transform', Dom.matrixToTransformString(nodeMatrix))
     }
   }
 
@@ -437,7 +437,7 @@ export class CellViewAttr {
       const isRefNodeRotatable =
         refNode != null &&
         options.rotatableNode != null &&
-        v.contains(options.rotatableNode, refNode)
+        Dom.contains(options.rotatableNode, refNode)
 
       // Find the reference element bounding box. If no reference was
       // provided, we use the optional bounding box.
@@ -451,7 +451,7 @@ export class CellViewAttr {
           : rootNode) as SVGElement
 
         unrotatedRefBBox = refNode
-          ? v.getBBox(refNode as SVGElement, { target })
+          ? Dom.getBBox(refNode as SVGElement, { target })
           : options.rootBBox
 
         if (refNode) {
@@ -481,11 +481,11 @@ export class CellViewAttr {
         // updated node is outside, we need to take the rotatable node
         // transformation into account.
         if (!rotatableMatrix) {
-          rotatableMatrix = v.transformStringToMatrix(
-            v.attr(options.rotatableNode, 'transform'),
+          rotatableMatrix = Dom.transformStringToMatrix(
+            Dom.attr(options.rotatableNode, 'transform'),
           )
         }
-        refBBox = v.transformRect(unrotatedRefBBox!, rotatableMatrix)
+        refBBox = Dom.transformRectangle(unrotatedRefBBox!, rotatableMatrix)
       }
 
       this.updateRelativeAttrs(node, processedAttrs, refBBox, options)

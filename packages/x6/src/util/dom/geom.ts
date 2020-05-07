@@ -1,17 +1,17 @@
-import { scale } from './transform'
-import { normalizePathData } from './path-normalize'
-import { create, ensureId, isSVGGraphicsElement } from './ctor'
-import { sample, convertToPath, getPointsFromSvgElement } from './path'
-import { Point, Line, Rectangle, Polyline, Ellipse, Path } from '../geometry'
-import {
-  transformRect,
-  createSVGPoint,
-  createSVGMatrix,
-  decomposeMatrix,
-  createSVGTransform,
-  matrixToTransformString,
-} from './matrix'
+import { Point, Line, Rectangle, Polyline, Ellipse, Path } from '../../geometry'
+import { attr } from './attr'
+import { getTransformToElement } from './transform'
+import { sample, toPath, getPointsFromSvgElement } from './path'
+import { ensureId, isSVGGraphicsElement, createSvgElement } from './elem'
+import { createSVGPoint, decomposeMatrix, transformRectangle } from './matrix'
 
+/**
+ * Returns the bounding box of the element after transformations are
+ * applied. If `withoutTransformations` is `true`, transformations of
+ * the element will not be considered when computing the bounding box.
+ * If `target` is specified, bounding box will be computed relatively
+ * to the `target` element.
+ */
 export function bbox(
   elem: SVGElement,
   withoutTransformations?: boolean,
@@ -43,9 +43,15 @@ export function bbox(
   }
 
   const matrix = getTransformToElement(elem, target || ownerSVGElement)
-  return transformRect(box, matrix)
+  return transformRectangle(box, matrix)
 }
 
+/**
+ * Returns the bounding box of the element after transformations are
+ * applied. Unlike `bbox()`, this function fixes a browser implementation
+ * bug to return the correct bounding box if this elemenent is a group of
+ * svg elements (if `options.recursive` is specified).
+ */
 export function getBBox(
   elem: SVGElement,
   options: {
@@ -85,11 +91,12 @@ export function getBBox(
 
     // transform like target
     const matrix = getTransformToElement(elem, target)
-    return transformRect(outputBBox, matrix)
+    return transformRectangle(outputBBox, matrix)
   }
 
+  // recursive
   {
-    const children = create(elem).children()
+    const children = elem.childNodes
     const n = children.length
 
     if (n === 0) {
@@ -101,14 +108,14 @@ export function getBBox(
     }
 
     for (let i = 0; i < n; i += 1) {
-      const child = children[i]
+      const child = children[i] as SVGElement
       let childBBox
 
-      if (child.children().length === 0) {
-        childBBox = getBBox(child.node, { target })
+      if (child.childNodes.length === 0) {
+        childBBox = getBBox(child, { target })
       } else {
         // if child is a group element, enter it with a recursive call
-        childBBox = getBBox(child.node, { target, recursive: true })
+        childBBox = getBBox(child, { target, recursive: true })
       }
 
       if (!outputBBox) {
@@ -122,33 +129,27 @@ export function getBBox(
   }
 }
 
-export function getTransformToElement(elem: SVGElement, target: SVGElement) {
-  if (isSVGGraphicsElement(target) && isSVGGraphicsElement(elem)) {
-    const targetCTM = target.getScreenCTM()
-    const nodeCTM = elem.getScreenCTM()
-    if (targetCTM && nodeCTM) {
-      return targetCTM.inverse().multiply(nodeCTM)
-    }
-  }
-
-  // Could not get actual transformation matrix
-  return createSVGMatrix()
-}
-
+/**
+ * Converts a global point with coordinates `x` and `y` into the
+ * coordinate space of the element.
+ */
 export function toLocalPoint(
   elem: SVGElement | SVGSVGElement,
   x: number,
   y: number,
 ) {
   const svg =
-    elem instanceof SVGSVGElement ? elem : (elem.ownerSVGElement as any)
+    elem instanceof SVGSVGElement
+      ? elem
+      : (elem.ownerSVGElement as SVGSVGElement)
 
   const p = svg.createSVGPoint()
   p.x = x
   p.y = y
 
   try {
-    const globalPoint = p.matrixTransform(svg.getScreenCTM().inverse())
+    const ctm = svg.getScreenCTM()!
+    const globalPoint = p.matrixTransform(ctm.inverse())
     const globalToLocalMatrix = getTransformToElement(elem, svg).inverse()
     return globalPoint.matrixTransform(globalToLocalMatrix)
   } catch (e) {
@@ -156,23 +157,40 @@ export function toLocalPoint(
   }
 }
 
-export function toGeometryShape(elem: SVGElement | SVGSVGElement) {
+/**
+ * Convert the SVGElement to an equivalent geometric shape. The element's
+ * transformations are not taken into account.
+ *
+ * SVGRectElement      => Rectangle
+ *
+ * SVGLineElement      => Line
+ *
+ * SVGCircleElement    => Ellipse
+ *
+ * SVGEllipseElement   => Ellipse
+ *
+ * SVGPolygonElement   => Polyline
+ *
+ * SVGPolylineElement  => Polyline
+ *
+ * SVGPathElement      => Path
+ *
+ * others              => Rectangle
+ */
+export function toGeometryShape(elem: SVGElement) {
   const attr = (name: string) => {
     const s = elem.getAttribute(name)
     const v = s ? parseFloat(s) : 0
     return isNaN(v) ? 0 : v
   }
 
-  switch (elem.nodeName.toLocaleLowerCase()) {
+  switch (elem instanceof SVGElement && elem.nodeName.toLowerCase()) {
     case 'rect':
       return new Rectangle(attr('x'), attr('y'), attr('width'), attr('height'))
-
     case 'circle':
       return new Ellipse(attr('cx'), attr('cy'), attr('r'), attr('r'))
-
     case 'ellipse':
       return new Ellipse(attr('cx'), attr('cy'), attr('rx'), attr('ry'))
-
     case 'polyline': {
       const points = getPointsFromSvgElement(elem as SVGPolylineElement)
       return new Polyline(points)
@@ -186,12 +204,13 @@ export function toGeometryShape(elem: SVGElement | SVGSVGElement) {
       return new Polyline(points)
     }
 
-    case 'path':
+    case 'path': {
       let d = elem.getAttribute('d') as string
-      if (!Path.isDataSupported(d)) {
-        d = normalizePathData(d)
+      if (!Path.isSupported(d)) {
+        d = Path.normalize(d)
       }
       return Path.parse(d)
+    }
 
     case 'line':
       return new Line(attr('x1'), attr('y1'), attr('x2'), attr('y2'))
@@ -201,7 +220,7 @@ export function toGeometryShape(elem: SVGElement | SVGSVGElement) {
   return getBBox(elem)
 }
 
-export function findIntersection(
+export function getIntersection(
   elem: SVGElement | SVGSVGElement,
   ref: Point | Point.PointLike | Point.PointData,
   target?: SVGElement,
@@ -235,7 +254,10 @@ export function findIntersection(
     // `intersectionWithLineFromCenterToPoint()`.
     const resetRotation = svg.createSVGTransform()
     resetRotation.setRotate(-rectMatrixComponents.rotation, center.x, center.y)
-    const rect = transformRect(gRect, resetRotation.matrix.multiply(rectMatrix))
+    const rect = transformRectangle(
+      gRect,
+      resetRotation.matrix.multiply(rectMatrix),
+    )
 
     spot = Rectangle.create(rect).intersectionWithLineFromCenterToPoint(
       ref,
@@ -248,7 +270,7 @@ export function findIntersection(
     tagName === 'circle' ||
     tagName === 'ellipse'
   ) {
-    const pathNode = tagName === 'path' ? elem : convertToPath(elem as any)
+    const pathNode = tagName === 'path' ? elem : toPath(elem as any)
     const samples = sample(pathNode as SVGPathElement)
     let minDistance = Infinity
     let closestSamples: any[] = []
@@ -286,74 +308,21 @@ export function findIntersection(
   return spot
 }
 
-export function translateAndAutoOrient(
-  elem: SVGElement,
-  position: Point | Point.PointLike | Point.PointData,
-  reference: Point | Point.PointLike | Point.PointData,
-  target?: SVGElement,
-) {
-  const pos = Point.create(position)
-  const ref = Point.create(reference)
-
-  if (!target) {
-    const svg = elem instanceof SVGSVGElement ? elem : elem.ownerSVGElement!
-    target = svg // tslint:disable-line
-  }
-
-  // Clean-up previously set transformations except the scale.
-  // If we didn't clean up the previous transformations then they'd
-  // add up with the old ones. Scale is an exception as it doesn't
-  // add up, consider: `this.scale(2).scale(2).scale(2)`. The result
-  // is that the element is scaled by the factor 2, not 8.
-  const s = scale(elem)
-  elem.setAttribute('transform', '')
-  const bbox = getBBox(elem, { target }).scale(s.sx, s.sy)
-
-  // 1. Translate to origin.
-  const translateToOrigin = createSVGTransform()
-  translateToOrigin.setTranslate(
-    -bbox.x - bbox.width / 2,
-    -bbox.y - bbox.height / 2,
-  )
-
-  // 2. Rotate around origin.
-  const rotateAroundOrigin = createSVGTransform()
-  const angle = pos.angleBetween(ref, pos.clone().translate(1, 0))
-  if (angle) rotateAroundOrigin.setRotate(angle, 0, 0)
-
-  // 3. Translate to the `position` + the offset (half my width)
-  //    towards the `reference` point.
-  const translateFromOrigin = createSVGTransform()
-  const finalPosition = pos.clone().move(ref, bbox.width / 2)
-  translateFromOrigin.setTranslate(
-    2 * pos.x - finalPosition.x,
-    2 * pos.y - finalPosition.y,
-  )
-
-  // 4. Get the current transformation matrix of this node
-  const ctm = getTransformToElement(elem, target)
-
-  // 5. Apply transformations and the scale
-  const transform = createSVGTransform()
-  transform.setMatrix(
-    translateFromOrigin.matrix.multiply(
-      rotateAroundOrigin.matrix.multiply(
-        translateToOrigin.matrix.multiply(ctm.scale(s.sx, s.sy)),
-      ),
-    ),
-  )
-
-  elem.setAttribute('transform', matrixToTransformString(transform.matrix))
-}
-
+/**
+ * Animate the element along the path SVG element (or Vectorizer object).
+ * `attrs` contain Animation Timing attributes describing the animation.
+ */
 export function animateAlongPath(
   elem: SVGElement,
   attrs: { [name: string]: string },
   path: SVGPathElement,
 ) {
   const id = ensureId(path)
-  const animate = create('animateMotion', attrs).node as SVGAnimationElement
-  const mpath = create('mpath', { 'xlink:href': `#${id}` }).node
+  const animate = createSvgElement<SVGAnimationElement>('animateMotion')
+  const mpath = createSvgElement('mpath')
+
+  attr(animate, attrs)
+  attr(mpath, { 'xlink:href': `#${id}` })
 
   animate.appendChild(mpath)
   elem.appendChild(animate)

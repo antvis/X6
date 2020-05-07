@@ -1,4 +1,4 @@
-import { v } from '../../v'
+import { Dom } from '../../util'
 import { Grid } from './index'
 
 export interface DoubleMeshOptions extends Grid.Options {
@@ -22,7 +22,7 @@ export const doubleMesh: Grid.Definition<DoubleMeshOptions>[] = [
         d = 'M 0 0 0 0'
       }
 
-      v.attr(elem, {
+      Dom.attr(elem, {
         d,
         stroke: options.color,
         'stroke-width': options.thickness,
@@ -51,7 +51,7 @@ export const doubleMesh: Grid.Definition<DoubleMeshOptions>[] = [
       options.width = width
       options.height = height
 
-      v.attr(elem, {
+      Dom.attr(elem, {
         d,
         stroke: options.color,
         'stroke-width': options.thickness,

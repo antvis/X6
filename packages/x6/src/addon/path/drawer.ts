@@ -1,7 +1,6 @@
-import { v } from '../../v'
+import { ObjectExt, Dom } from '../../util'
 import { Point } from '../../geometry'
 import { View } from '../../core/view'
-import { ObjectExt } from '../../util'
 
 // need: <meta http-equiv="x-ua-compatible" content="IE=Edge" />
 export class PathDrawer extends View {
@@ -15,7 +14,7 @@ export class PathDrawer extends View {
   protected readonly MOVEMENT_DETECTION_THRESHOLD = 150
 
   protected get vel() {
-    return v.create(this.container as SVGGElement)
+    return Dom.createVector(this.container as SVGGElement)
   }
 
   constructor(
@@ -35,18 +34,20 @@ export class PathDrawer extends View {
 
   protected render() {
     const options = this.options
-    this.container = v.createSvgElement<SVGGElement>('g')
-    v.addClass(this.container, this.prefixClassName('path-drawer'))
+    this.container = Dom.createSvgElement<SVGGElement>('g')
+    Dom.addClass(this.container, this.prefixClassName('path-drawer'))
 
-    this.pathTemplate = v.createSvgElement<SVGPathElement>('path')
-    v.attr(this.pathTemplate, options.pathAttributes)
+    this.pathTemplate = Dom.createSvgElement<SVGPathElement>('path')
+    Dom.attr(this.pathTemplate, options.pathAttributes)
 
-    this.startPointElement = v(options.startPointMarkup).addClass('start-point')
-      .node as SVGElement
-    this.controlElement = v('path').addClass('control-path')
-      .node as SVGPathElement
+    this.startPointElement = Dom.createVector(
+      options.startPointMarkup,
+    ).addClass('start-point').node as SVGElement
 
-    v('rect', {
+    this.controlElement = Dom.createSvgElement<SVGPathElement>('path')
+    Dom.addClass(this.controlElement, 'control-path')
+
+    Dom.createVector('rect', {
       x: 0,
       y: 0,
       width: '100%',
@@ -98,7 +99,7 @@ export class PathDrawer extends View {
     this.pathElement = this.pathTemplate.cloneNode(true) as SVGPathElement
 
     this.addMoveSegment(x, y)
-    v.translate(this.startPointElement, x, y, {
+    Dom.translate(this.startPointElement, x, y, {
       absolute: true,
     })
 
@@ -348,7 +349,7 @@ export class PathDrawer extends View {
         if (e.timeStamp - timeStamp < this.MOVEMENT_DETECTION_THRESHOLD) {
           switch (this.action) {
             case 'path-created': {
-              const translate = v(this.startPointElement).translate()
+              const translate = Dom.translate(this.startPointElement)
               this.adjustControlPath(
                 translate.tx,
                 translate.ty,
@@ -386,7 +387,7 @@ export class PathDrawer extends View {
               this.action = 'adjusting-curve-control-2'
               break
             case 'adjusting-curve-control-1': {
-              const translate = v(this.startPointElement).translate()
+              const translate = Dom.translate(this.startPointElement)
               this.adjustControlPath(
                 translate.tx,
                 translate.ty,

@@ -1,5 +1,4 @@
-import { v } from '../v'
-import { ObjectExt } from '../util'
+import { ObjectExt, Dom } from '../util'
 import { Path, Rectangle, Ellipse, Segment } from '../geometry'
 import { offset, getStrokeWidth, findShapeNode } from './util'
 import { ConnectionPoint } from './index'
@@ -41,8 +40,8 @@ export const boundary: ConnectionPoint.Definition<BoundaryIntersectionOptions> =
     node = findShapeNode(magnet)
   }
 
-  if (!v.isSVGGraphicsElement(node)) {
-    if (node === magnet || !v.isSVGGraphicsElement(magnet)) {
+  if (!Dom.isSVGGraphicsElement(node)) {
+    if (node === magnet || !Dom.isSVGGraphicsElement(magnet)) {
       return anchor
     }
     node = magnet
@@ -56,7 +55,7 @@ export const boundary: ConnectionPoint.Definition<BoundaryIntersectionOptions> =
     .multiply(rotateMatrix)
     .multiply(magnetMatrix)
   const localMatrix = targetMatrix.inverse()
-  const localLine = v.transformLine(line, localMatrix)
+  const localLine = Dom.transformLine(line, localMatrix)
   const localRef = localLine.start.clone()
   const data = view.getNodeData(node) as BoundaryCache
 
@@ -109,7 +108,7 @@ export const boundary: ConnectionPoint.Definition<BoundaryIntersectionOptions> =
   }
 
   const cp = intersection
-    ? v.transformPoint(intersection, targetMatrix)
+    ? Dom.transformPoint(intersection, targetMatrix)
     : anchor
   let cpOffset = options.offset || 0
   if (options.stroked) {

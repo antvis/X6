@@ -1,9 +1,9 @@
-import { v } from './v'
+import { annotate } from './annotate'
 
-describe('v', () => {
-  describe('#annotateString', () => {
+describe('Text', () => {
+  describe('#annotate', () => {
     it('should cut string into pieces and attributed according to the spans', () => {
-      const annotations = v.annotateString(
+      const annotations = annotate(
         'This is a text that goes on multiple lines.',
         [
           { start: 2, end: 5, attrs: { fill: 'red' } },
@@ -19,7 +19,7 @@ describe('v', () => {
     })
 
     it('should cut string into pieces and attributed according to the annotations including concatenated classes', () => {
-      const annotations = v.annotateString('abcdefgh', [
+      const annotations = annotate('abcdefgh', [
         { start: 1, end: 3, attrs: { class: 'one' } },
         { start: 2, end: 5, attrs: { class: 'two', fill: 'blue' } },
       ])
@@ -33,7 +33,7 @@ describe('v', () => {
     })
 
     it('should cut string into pieces and attributed according to the annotations including concatenated classes', () => {
-      const annotations = v.annotateString(
+      const annotations = annotate(
         'abcdefgh',
         [
           { start: 1, end: 3, attrs: { class: 'one' } },

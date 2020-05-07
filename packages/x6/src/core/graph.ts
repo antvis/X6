@@ -1,8 +1,7 @@
 import JQuery from 'jquery'
 import { KeyValue } from '../types'
-import { v, MatrixLike } from '../v'
 import { Point, Rectangle } from '../geometry'
-import { StringExt, NumberExt, ObjectExt } from '../util'
+import { StringExt, NumberExt, ObjectExt, Dom } from '../util'
 import {
   ViewRegistry,
   GridRegistry,
@@ -572,7 +571,7 @@ export class Graph extends View<Graph.EventArgs> {
   //   this.$background = $(background)
   //   this.$grid = $(grid)
 
-  //   v.ensureId(svg)
+  //   Dom.ensureId(svg)
 
   //   // backwards compatibility
   //   this.viewport = cells
@@ -913,7 +912,7 @@ export class Graph extends View<Graph.EventArgs> {
     const updates = this.updates
     const animationId = updates.animationId
     if (animationId) {
-      v.cancelAnimationFrame(animationId)
+      Dom.cancelAnimationFrame(animationId)
       if (data.processed === 0) {
         const beforeFn = options.before
         if (typeof beforeFn === 'function') {
@@ -961,7 +960,7 @@ export class Graph extends View<Graph.EventArgs> {
       }
     }
 
-    updates.animationId = v.requestAnimationFrame(() => {
+    updates.animationId = Dom.requestAnimationFrame(() => {
       this.updateViewsAsync(options, data)
     })
   }
@@ -1173,7 +1172,7 @@ export class Graph extends View<Graph.EventArgs> {
     const animationId = updates.animationId
     updates.animationId = null
     if (this.isAsync() && animationId != null) {
-      v.cancelAnimationFrame(animationId)
+      Dom.cancelAnimationFrame(animationId)
     }
   }
 
@@ -1496,7 +1495,7 @@ export class Graph extends View<Graph.EventArgs> {
   }
 
   getScale() {
-    return v.matrixToScale(this.getMatrix())
+    return Dom.matrixToScale(this.getMatrix())
   }
 
   scale(sx: number, sy: number = sx, ox: number = 0, oy: number = 0) {
@@ -1523,12 +1522,12 @@ export class Graph extends View<Graph.EventArgs> {
   }
 
   getRotation() {
-    return v.matrixToRotate(this.getMatrix())
+    return Dom.matrixToRotation(this.getMatrix())
   }
 
   rotate(angle: number, cx?: number, cy?: number) {
     if (cx == null || cy == null) {
-      const bbox = v.getBBox(this.drawPane)
+      const bbox = Dom.getBBox(this.drawPane)
       cx = bbox.width / 2 // tslint:disable-line
       cy = bbox.height / 2 // tslint:disable-line
     }
@@ -1543,7 +1542,7 @@ export class Graph extends View<Graph.EventArgs> {
   }
 
   getTranslation() {
-    return v.matrixToTranslate(this.getMatrix())
+    return Dom.matrixToTranslation(this.getMatrix())
   }
 
   translate(tx: number, ty: number) {
@@ -1738,7 +1737,7 @@ export class Graph extends View<Graph.EventArgs> {
       return this.model.getBBox() || new Rectangle()
     }
 
-    return v.getBBox(this.drawPane)
+    return Dom.getBBox(this.drawPane)
   }
 
   getContentBBox(options: Graph.GetContentAreaOptions = {}) {
@@ -1813,9 +1812,9 @@ export class Graph extends View<Graph.EventArgs> {
       .map(cell => this.findViewByCell(cell))
       .filter(view => {
         if (view != null) {
-          return v
-            .getBBox(view.container as SVGElement, { target: this.drawPane })
-            .containsPoint(ref)
+          return Dom.getBBox(view.container as SVGElement, {
+            target: this.drawPane,
+          }).containsPoint(ref)
         }
       })
   }
@@ -1830,7 +1829,7 @@ export class Graph extends View<Graph.EventArgs> {
       .map(node => this.findViewByCell(node))
       .filter(view => {
         if (view) {
-          const bbox = v.getBBox(view.container as SVGElement, {
+          const bbox = Dom.getBBox(view.container as SVGElement, {
             target: this.drawPane,
           })
           return options.strict
@@ -1866,22 +1865,22 @@ export class Graph extends View<Graph.EventArgs> {
 
     // Clone the cached current transformation matrix.
     // If no matrix previously stored the identity matrix is returned.
-    return v.createSVGMatrix(this.viewportMatrix)
+    return Dom.createSVGMatrix(this.viewportMatrix)
   }
 
   /**
    * Sets new transformation with the given `matrix`
    */
-  setMatrix(matrix: DOMMatrix | MatrixLike | null) {
-    const ctm = v.createSVGMatrix(matrix)
-    const transform = v.matrixToTransformString(ctm)
+  setMatrix(matrix: DOMMatrix | Dom.MatrixLike | null) {
+    const ctm = Dom.createSVGMatrix(matrix)
+    const transform = Dom.matrixToTransformString(ctm)
     this.viewportElem.setAttribute('transform', transform)
     this.viewportMatrix = ctm
     this.viewportTransformString = transform
   }
 
   getClientMatrix() {
-    return v.createSVGMatrix(this.drawPane.getScreenCTM())
+    return Dom.createSVGMatrix(this.drawPane.getScreenCTM())
   }
 
   /**
@@ -1909,14 +1908,14 @@ export class Graph extends View<Graph.EventArgs> {
   localToPaperPoint(x: number, y: number): Point
   localToPaperPoint(x: number | Point | Point.PointLike, y?: number) {
     const localPoint = Point.create(x, y)
-    return v.transformPoint(localPoint, this.getMatrix())
+    return Dom.transformPoint(localPoint, this.getMatrix())
   }
 
   localToClientPoint(p: Point | Point.PointLike): Point
   localToClientPoint(x: number, y: number): Point
   localToClientPoint(x: number | Point | Point.PointLike, y?: number) {
     const localPoint = Point.create(x, y)
-    return v.transformPoint(localPoint, this.getClientMatrix())
+    return Dom.transformPoint(localPoint, this.getClientMatrix())
   }
 
   localToPagePoint(p: Point | Point.PointLike): Point
@@ -1943,7 +1942,7 @@ export class Graph extends View<Graph.EventArgs> {
     height?: number,
   ) {
     const localRect = Rectangle.create(x, y, width, height)
-    return v.transformRect(localRect, this.getMatrix())
+    return Dom.transformRectangle(localRect, this.getMatrix())
   }
 
   localToClientRect(rect: Rectangle | Rectangle.RectangleLike): Rectangle
@@ -1960,7 +1959,7 @@ export class Graph extends View<Graph.EventArgs> {
     height?: number,
   ) {
     const localRect = Rectangle.create(x, y, width, height)
-    const clientRect = v.transformRect(localRect, this.getClientMatrix())
+    const clientRect = Dom.transformRectangle(localRect, this.getClientMatrix())
     return clientRect
   }
 
@@ -1988,14 +1987,14 @@ export class Graph extends View<Graph.EventArgs> {
   paperToLocalPoint(x: number, y: number): Point
   paperToLocalPoint(x: number | Point | Point.PointLike, y?: number) {
     const paperPoint = Point.create(x, y)
-    return v.transformPoint(paperPoint, this.getMatrix().inverse())
+    return Dom.transformPoint(paperPoint, this.getMatrix().inverse())
   }
 
   clientToLocalPoint(p: Point | Point.PointLike): Point
   clientToLocalPoint(x: number, y: number): Point
   clientToLocalPoint(x: number | Point | Point.PointLike, y?: number) {
     const clientPoint = Point.create(x, y)
-    return v.transformPoint(clientPoint, this.getClientMatrix().inverse())
+    return Dom.transformPoint(clientPoint, this.getClientMatrix().inverse())
   }
 
   pageToLocalPoint(p: Point | Point.PointLike): Point
@@ -2020,7 +2019,7 @@ export class Graph extends View<Graph.EventArgs> {
     height?: number,
   ) {
     const paperRect = Rectangle.create(x, y, width, height)
-    return v.transformRect(paperRect, this.getMatrix().inverse())
+    return Dom.transformRectangle(paperRect, this.getMatrix().inverse())
   }
 
   clientToLocalRect(rect: Rectangle | Rectangle.RectangleLike): Rectangle
@@ -2037,7 +2036,7 @@ export class Graph extends View<Graph.EventArgs> {
     height?: number,
   ) {
     const clientRect = Rectangle.create(x, y, width, height)
-    return v.transformRect(clientRect, this.getClientMatrix().inverse())
+    return Dom.transformRectangle(clientRect, this.getClientMatrix().inverse())
   }
 
   pageToLocalRect(rect: Rectangle | Rectangle.RectangleLike): Rectangle
@@ -2192,10 +2191,10 @@ export class Graph extends View<Graph.EventArgs> {
       if (!grid.has(id)) {
         grid.add(
           id,
-          v.create(
+          Dom.createVector(
             'pattern',
             { id, patternUnits: 'userSpaceOnUse' },
-            v.create(markup),
+            Dom.createVectors(markup),
           ).node,
         )
       }
@@ -2216,7 +2215,7 @@ export class Graph extends View<Graph.EventArgs> {
         y += options.height
       }
 
-      v.attr(patternElem, {
+      Dom.attr(patternElem, {
         x,
         y,
         width: options.width,
@@ -2387,7 +2386,7 @@ export class Graph extends View<Graph.EventArgs> {
     //     id: filterId,
     //   }
 
-    //   v.create(markup, filterAttrs).appendTo(this.defsElem)
+    //   Dom.create(markup, filterAttrs).appendTo(this.defsElem)
     // }
 
     return filterId
@@ -2413,7 +2412,7 @@ export class Graph extends View<Graph.EventArgs> {
 
       const markup = `<${type}>${arr.join('')}</${type}>`
       const attrs = { id, ...gradient.attrs }
-      v.create(markup, attrs).appendTo(this.defsElem)
+      Dom.createVector(markup, attrs).appendTo(this.defsElem)
     }
 
     return id
@@ -2427,7 +2426,7 @@ export class Graph extends View<Graph.EventArgs> {
 
     if (!this.isDefined(markerId)) {
       const { id, type, markerUnits, ...attrs } = marker
-      const pathMarker = v.create(
+      const pathMarker = Dom.createVector(
         'marker',
         {
           id: markerId,
@@ -2435,7 +2434,7 @@ export class Graph extends View<Graph.EventArgs> {
           overflow: 'visible',
           markerUnits: markerUnits || 'userSpaceOnUse',
         },
-        [v.create(type || 'path', attrs as any)],
+        [Dom.createVector(type || 'path', attrs as any)],
       )
 
       this.defsElem.appendChild(pathMarker.node)
@@ -2532,7 +2531,7 @@ export class Graph extends View<Graph.EventArgs> {
       return
     }
 
-    v.ensureId(magnet)
+    Dom.ensureId(magnet)
     const key = resolved.name + magnet.id + JSON.stringify(resolved.args)
     if (!this.highlights[key]) {
       const highlighter = resolved.highlighter
@@ -2557,7 +2556,7 @@ export class Graph extends View<Graph.EventArgs> {
       return
     }
 
-    v.ensureId(magnet)
+    Dom.ensureId(magnet)
     const key = resolved.name + magnet.id + JSON.stringify(resolved.args)
     const highlight = this.highlights[key]
     if (highlight) {
@@ -3089,26 +3088,26 @@ export namespace Graph {
 export namespace Graph {
   export const markup: Markup.JSONMarkup[] = [
     {
-      ns: v.ns.xhtml,
+      ns: Dom.ns.xhtml,
       tagName: 'div',
       className: 'x6-graph-background',
       selector: 'background',
     },
     {
-      ns: v.ns.xhtml,
+      ns: Dom.ns.xhtml,
       tagName: 'div',
       className: 'x6-graph-grid',
       selector: 'grid',
     },
     {
-      ns: v.ns.svg,
+      ns: Dom.ns.svg,
       tagName: 'svg',
       selector: 'svg',
       className: 'x6-graph-svg',
       attrs: {
         width: '100%',
         height: '100%',
-        'xmlns:xlink': v.ns.xlink,
+        'xmlns:xlink': Dom.ns.xlink,
       },
       children: [
         {

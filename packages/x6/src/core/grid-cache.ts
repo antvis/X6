@@ -1,4 +1,4 @@
-import { v } from '../v'
+import { Dom } from '../util'
 
 export class GridCache {
   root: Element
@@ -6,13 +6,13 @@ export class GridCache {
 
   constructor() {
     this.patterns = {}
-    this.root = v.create(
-      v.createSvgDocument(),
+    this.root = Dom.createVector(
+      Dom.createSvgDocument(),
       {
         width: '100%',
         height: '100%',
       },
-      [v.createSvgElement('defs')],
+      [Dom.createSvgElement('defs')],
     ).node
   }
 
@@ -24,7 +24,7 @@ export class GridCache {
 
     this.patterns[id] = elem
     this.root.append(
-      v.create('rect', {
+      Dom.createVector('rect', {
         width: '100%',
         height: '100%',
         fill: `url(#'${id}')`,

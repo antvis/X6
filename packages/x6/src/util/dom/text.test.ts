@@ -1,8 +1,7 @@
-import { v } from './v'
-import { Rectangle } from '../geometry'
-// import { setupTest, clearnTest } from './elem.test'
+import { Rectangle } from '../../geometry'
+import { createVector } from './vector'
 
-describe('v', () => {
+describe('Dom', () => {
   describe('#text', () => {
     function serializeNode(node: ChildNode) {
       return new XMLSerializer().serializeToString(node)
@@ -20,7 +19,7 @@ describe('v', () => {
     // afterEach(clearnTest)
 
     it('should create single line text', () => {
-      const t = v('text', { x: 250, dy: 100, fill: 'black' })
+      const t = createVector('text', { x: 250, dy: 100, fill: 'black' })
       t.text('abc')
 
       expect(t.node.childNodes.length).toEqual(1)
@@ -29,7 +28,7 @@ describe('v', () => {
     })
 
     it('should create multi-line text', () => {
-      const t = v('text', { x: 250, dy: 100, fill: 'black' })
+      const t = createVector('text', { x: 250, dy: 100, fill: 'black' })
       t.text('abc\ndef')
       expect(t.node.childNodes.length).toEqual(2)
 
@@ -59,7 +58,7 @@ describe('v', () => {
     })
 
     it('should append custom EOL', () => {
-      const t = v('text', { x: 250, dy: 100, fill: 'black' })
+      const t = createVector('text', { x: 250, dy: 100, fill: 'black' })
       t.text('abc\ndef', { eol: 'X' })
       expect(t.node.childNodes[0].textContent).toEqual('abcX')
       expect(t.node.childNodes[1].textContent).toEqual('def')
@@ -70,7 +69,7 @@ describe('v', () => {
     })
 
     it('should add annotations to tspan', () => {
-      const t = v('text', { x: 250, dy: 100, fill: 'black' })
+      const t = createVector('text', { x: 250, dy: 100, fill: 'black' })
 
       t.text('abcdefgh', {
         includeAnnotationIndices: true,
@@ -87,7 +86,7 @@ describe('v', () => {
     })
 
     it('visibility', () => {
-      const t = v('text', { x: 250, dy: 100, fill: 'black' })
+      const t = createVector('text', { x: 250, dy: 100, fill: 'black' })
 
       t.text('')
       expect(t.attr('display')).toEqual('none')
@@ -100,7 +99,7 @@ describe('v', () => {
       const n = texts.length
       const fontSize = 30
 
-      const t = v('text', { 'font-size': fontSize })
+      const t = createVector('text', { 'font-size': fontSize })
 
       for (let i = 0; i < n; i += 1) {
         const text = texts[i]

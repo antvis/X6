@@ -1,6 +1,5 @@
-import { v } from '../../v'
+import { ObjectExt, Dom } from '../../util'
 import { Rectangle, Point, Angle } from '../../geometry'
-import { ObjectExt } from '../../util'
 import { Cell } from '../../core/cell'
 import { Edge } from '../../core'
 import { View } from '../../core/view'
@@ -253,7 +252,9 @@ export class Halo extends Widget<Halo.Options> {
           if (contect && 'none' !== contect) {
             const $icons = $elem.find('.slice-text-icon')
             if ($icons.length) {
-              v.create($icons[0] as any).text(contect.replace(/['"]/g, ''))
+              Dom.createVector($icons[0] as any).text(
+                contect.replace(/['"]/g, ''),
+              )
             }
           }
 
@@ -264,7 +265,7 @@ export class Halo extends Widget<Halo.Options> {
               const href = matches[1]
               const $imgs = $elem.find('.slice-img-icon')
               if ($imgs.length > 0) {
-                v.create($imgs[0] as any).attr('xlink:href', href)
+                Dom.createVector($imgs[0] as any).attr('xlink:href', href)
               }
             }
           }
@@ -297,29 +298,26 @@ export class Halo extends Widget<Halo.Options> {
         const delta = Angle.toRad(options.pieSliceAngle!)
         const curRad = index * delta + Angle.toRad(options.pieStartAngleOffset!)
         const nextRad = curRad + delta
-        const pathData = v.createSlicePathData(
+        const pathData = Dom.createSlicePathData(
           innerRadius,
           outerRadius,
           curRad,
           nextRad,
         )
-        const vSvg = v.create('svg').addClass('slice-svg')
-        const vPath = v
-          .create('path')
+        const vSvg = Dom.createVector('svg').addClass('slice-svg')
+        const vPath = Dom.createVector('path')
           .addClass('slice')
           .attr('d', pathData)
           .translate(outerRadius, outerRadius)
         const pos = Point.fromPolar(offset, -curRad - delta / 2, ratio).toJSON()
         const iconSize = options.pieIconSize!
-        const vImg = v
-          .create('image')
+        const vImg = Dom.createVector('image')
           .attr(pos)
           .addClass('slice-img-icon')
         pos.y = pos.y + iconSize - 2
-        const vText = v
-          .create('text', {
-            'font-size': iconSize,
-          })
+        const vText = Dom.createVector('text', {
+          'font-size': iconSize,
+        })
           .attr(pos)
           .addClass('slice-text-icon')
 

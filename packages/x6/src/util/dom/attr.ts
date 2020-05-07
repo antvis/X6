@@ -1,5 +1,4 @@
 import { ns } from './elem'
-import { isObject, isString, isUndefined } from './util'
 
 export type Attributes = { [key: string]: string | number }
 
@@ -28,7 +27,7 @@ export function setAttribute(
   }
 
   const qualified = qualifyAttr(name)
-  if (qualified.ns && isString(value)) {
+  if (qualified.ns && typeof value === 'string') {
     elem.setAttributeNS(qualified.ns, name, value)
   } else if (name === 'id') {
     elem.id = `${value}`
@@ -71,7 +70,7 @@ export function attr(
     return ret
   }
 
-  if (isString(name) && isUndefined(value)) {
+  if (typeof name === 'string' && value === undefined) {
     return elem.getAttribute(name)
   }
 
@@ -122,8 +121,8 @@ export function mergeAttrs(
         ? `${target[attr]} ${source[attr]}`
         : source[attr]
     } else if (attr === 'style') {
-      const to = isObject(target[attr])
-      const so = isObject(source[attr])
+      const to = typeof target[attr] === 'object'
+      const so = typeof source[attr] === 'object'
 
       let tt
       let ss

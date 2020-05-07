@@ -1,7 +1,6 @@
-import { v } from '../v'
 import { NumberExt } from '../util'
 import { Point, Path, Polyline, Rectangle } from '../geometry'
-import { Attr } from '.'
+import { Attr } from './index'
 
 export const ref: Attr.Definition = {
   // We do not set `ref` attribute directly on an element.
@@ -230,7 +229,7 @@ function shapeWrapper(
 // `d` attribute for SVGPaths
 function dWrapper(options: { resetOffset: boolean }): Attr.SetFunction {
   function pathConstructor(value: string) {
-    return Path.parse(v.normalizePathData(value))
+    return Path.parse(Path.normalize(value))
   }
 
   const shape = shapeWrapper(pathConstructor, options)

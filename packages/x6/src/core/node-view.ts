@@ -1,6 +1,5 @@
-import { ArrayExt } from '../util'
+import { ArrayExt, Dom } from '../util'
 import { Rectangle, Point } from '../geometry'
-import { v } from '../v'
 import { Attr } from '../attr'
 import { Cell } from './cell'
 import { Node } from './node'
@@ -132,9 +131,12 @@ export class NodeView<
   }
 
   protected renderStringMarkup(markup: string) {
-    v.append(this.container, v.batch(markup))
-    this.rotatableNode = v.findOne(this.container, `.${this.rotatableSelector}`)
-    this.scalableNode = v.findOne(this.container, `.${this.scalableSelector}`)
+    Dom.append(this.container, Dom.toHTMLElements(Dom.createVectors(markup)))
+    this.rotatableNode = Dom.findOne(
+      this.container,
+      `.${this.rotatableSelector}`,
+    )
+    this.scalableNode = Dom.findOne(this.container, `.${this.scalableSelector}`)
     this.selectors = {}
     if (this.rootSelector) {
       this.selectors[this.rootSelector] = this.container
@@ -256,7 +258,7 @@ export class NodeView<
       // calculation works and so we can use the (faster) native function.
       recursive = true
     }
-    const scalableBBox = v.getBBox(scalableNode as SVGElement, { recursive })
+    const scalableBBox = Dom.getBBox(scalableNode as SVGElement, { recursive })
 
     // Make sure `scalableBbox.width` and `scalableBbox.height` are not zero
     // which can happen if the element does not have any content.
@@ -281,7 +283,7 @@ export class NodeView<
           'transform',
           `${transform} rotate(${-angle},${size.width / 2},${size.height / 2})`,
         )
-        const rotatableBBox = v.getBBox(scalableNode as SVGElement, {
+        const rotatableBBox = Dom.getBBox(scalableNode as SVGElement, {
           target: this.graph.drawPane,
         })
 
@@ -331,7 +333,7 @@ export class NodeView<
   protected removePorts() {
     Object.keys(this.portsCache).forEach(portId => {
       const cached = this.portsCache[portId]
-      v.remove(cached.portElement)
+      Dom.remove(cached.portElement)
     })
   }
 
@@ -377,9 +379,9 @@ export class NodeView<
   ) {
     const elems = ports.map(p => this.getPortElement(p))
     if (refs[zIndex] || zIndex < 0) {
-      v.before(refs[Math.max(zIndex, 0)], elems)
+      Dom.before(refs[Math.max(zIndex, 0)], elems)
     } else {
-      v.append(this.getPortsContainer(), elems)
+      Dom.append(this.getPortsContainer(), elems)
     }
   }
 
@@ -437,9 +439,9 @@ export class NodeView<
       portSelectors = portContentSelectors || portLabelSelectors
     }
 
-    v.addClass(portElement, 'x6-port')
-    v.addClass(portContentElement, 'x6-port-body')
-    v.addClass(portLabelElement, 'x6-port-label')
+    Dom.addClass(portElement, 'x6-port')
+    Dom.addClass(portContentElement, 'x6-port-body')
+    Dom.addClass(portLabelElement, 'x6-port-label')
 
     portElement.appendChild(portContentElement)
     portElement.appendChild(portLabelElement)
@@ -517,13 +519,12 @@ export class NodeView<
   ) {
     const position = layout.position
     const rotation = layout.rotation
-    const matrix = v
-      .createSVGMatrix()
+    const matrix = Dom.createSVGMatrix()
       .rotate(initialAngle)
       .translate(position.x || 0, position.y || 0)
       .rotate(rotation || 0)
 
-    v.transform(element as SVGElement, matrix, { absolute: true })
+    Dom.transform(element as SVGElement, matrix, { absolute: true })
   }
 
   protected getPortContainerMarkup() {

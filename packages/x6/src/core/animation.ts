@@ -1,6 +1,5 @@
-import { v } from '../v'
 import { KeyValue } from '../types'
-import { ObjectExt } from '../util'
+import { ObjectExt, Dom } from '../util'
 import { Timing, Interpolation } from '../animation'
 import { Cell } from './cell'
 
@@ -72,7 +71,7 @@ export class Animation {
       const elaspe = now - startTime
       let progress = elaspe / localOptions.duration!
       if (progress < 1) {
-        this.ids[pathStr] = id = v.requestAnimationFrame(setter)
+        this.ids[pathStr] = id = Dom.requestAnimationFrame(setter)
       } else {
         progress = 1
         delete this.ids[pathStr]
@@ -93,7 +92,7 @@ export class Animation {
 
     const initiator = (transition: FrameRequestCallback) => {
       this.stop(path, delim)
-      this.ids[pathStr] = v.requestAnimationFrame(transition)
+      this.ids[pathStr] = Dom.requestAnimationFrame(transition)
       this.cell.notify('transition:begin', { cell: this.cell, path: pathStr })
     }
 
@@ -110,7 +109,7 @@ export class Animation {
         ObjectExt.isEqual(paths, key.split(delim).slice(0, paths.length)),
       )
       .forEach(key => {
-        v.cancelAnimationFrame(this.ids[key])
+        Dom.cancelAnimationFrame(this.ids[key])
         delete this.ids[key]
         this.cell.notify('transition:end', { cell: this.cell, path: key })
       })

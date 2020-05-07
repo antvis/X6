@@ -1,4 +1,4 @@
-import { v } from '../../v'
+import { Dom } from '../../util'
 import { addClassNamePrefix } from '../../core/globals'
 import { Highlighter } from './index'
 
@@ -8,10 +8,10 @@ const className = addClassNamePrefix('highlight-opacity')
 
 export const opacity: Highlighter.Definition<OpacityHighlighterOptions> = {
   highlight(cellView, magnet) {
-    v.addClass(magnet, className)
+    Dom.addClass(magnet, className)
   },
 
   unhighlight(cellView, magnetEl) {
-    v.removeClass(magnetEl, className)
+    Dom.removeClass(magnetEl, className)
   },
 }

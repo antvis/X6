@@ -1,8 +1,7 @@
-import { v } from '../v'
-import { Rectangle, Point } from '../geometry'
 import { Dictionary } from '../common'
+import { Rectangle, Point } from '../geometry'
 import { Nullable, KeyValue } from '../types'
-import { ArrayExt, ObjectExt } from '../util'
+import { ArrayExt, ObjectExt, Dom } from '../util'
 import { Attr } from '../attr'
 import { Cell } from './cell'
 import { Model } from './model'
@@ -200,10 +199,10 @@ export class CellView<
   protected renderChildren(children: Markup.JSONMarkup[]) {
     if (children) {
       const isSVG = this.container instanceof SVGElement
-      const ns = isSVG ? v.ns.svg : v.ns.xhtml
+      const ns = isSVG ? Dom.ns.svg : Dom.ns.xhtml
       const ret = Markup.parseJSONMarkup(children, { ns })
-      v.empty(this.container)
-      v.append(this.container, ret.fragment)
+      Dom.empty(this.container)
+      Dom.append(this.container, ret.fragment)
       // this.childNodes = doc.selectors
     }
     return this
@@ -343,7 +342,7 @@ export class CellView<
     let sx
     let sy
     if (scalableNode && scalableNode.contains(node)) {
-      const scale = v.scale(scalableNode)
+      const scale = Dom.scale(scalableNode)
       sx = 1 / scale.sx
       sy = 1 / scale.sy
     } else {
@@ -359,7 +358,7 @@ export class CellView<
     const matrix = this.getNodeMatrix(elem)
     const rotateMatrix = this.getRootRotateMatrix()
     const translateMatrix = this.getRootTranslateMatrix()
-    return v.transformRect(
+    return Dom.transformRectangle(
       rect,
       translateMatrix.multiply(rotateMatrix).multiply(matrix),
     )
@@ -369,7 +368,7 @@ export class CellView<
     const rect = this.getNodeBoundingRect(elem)
     const matrix = this.getNodeMatrix(elem)
     const translateMatrix = this.getRootTranslateMatrix()
-    return v.transformRect(rect, translateMatrix.multiply(matrix))
+    return Dom.transformRectangle(rect, translateMatrix.multiply(matrix))
   }
 
   getBBox(options: { fromCell?: boolean } = {}) {
@@ -386,11 +385,11 @@ export class CellView<
 
   getRootTranslateMatrix() {
     const pos = (this.cell as any).position
-    return v.createSVGMatrix().translate(pos.x, pos.y)
+    return Dom.createSVGMatrix().translate(pos.x, pos.y)
   }
 
   getRootRotateMatrix() {
-    let matrix = v.createSVGMatrix()
+    let matrix = Dom.createSVGMatrix()
     const cell = this.cell
     const angle = (cell as any).rotation
     if (angle) {

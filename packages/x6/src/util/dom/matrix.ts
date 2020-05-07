@@ -1,5 +1,5 @@
+import { Angle, Point, Line, Rectangle, Polyline } from '../../geometry'
 import { createSvgElement } from './elem'
-import { Angle, Point, Line, Rectangle, Polyline } from '../geometry'
 
 const svgDocument = createSvgElement('svg') as SVGSVGElement
 const transformRegex = /(\w+)\(([^,)]+),?([^)]+)?\)/gi
@@ -15,12 +15,12 @@ export interface MatrixLike {
   f: number
 }
 
-export interface Translate {
+export interface Translation {
   tx: number
   ty: number
 }
 
-export interface Rotate {
+export interface Rotation {
   angle: number
   cx?: number
   cy?: number
@@ -31,6 +31,10 @@ export interface Scale {
   sy: number
 }
 
+/**
+ * Returns a SVG point object initialized with the `x` and `y` coordinates.
+ * @see https://developer.mozilla.org/en/docs/Web/API/SVGPoint
+ */
 export function createSVGPoint(x: number, y: number) {
   const p = svgDocument.createSVGPoint()
   p.x = x
@@ -38,23 +42,60 @@ export function createSVGPoint(x: number, y: number) {
   return p
 }
 
+/**
+ * Returns the SVG transformation matrix initialized with the given matrix.
+ *
+ * The given matrix is an object of the form:
+ * {
+ *   a: number
+ *   b: number
+ *   c: number
+ *   d: number
+ *   e: number
+ *   f: number
+ * }
+ *
+ * @see https://developer.mozilla.org/en/docs/Web/API/SVGMatrix
+ */
 export function createSVGMatrix(matrix?: DOMMatrix | MatrixLike | null) {
-  const ret = svgDocument.createSVGMatrix()
+  const mat = svgDocument.createSVGMatrix()
   if (matrix != null) {
     const source = matrix as any
-    const target = ret as any
+    const target = mat as any
     for (const key in source) {
       target[key] = source[key]
     }
   }
-  return ret
+  return mat
 }
 
+/**
+ * Returns a SVG transform object.
+ * @see https://developer.mozilla.org/en/docs/Web/API/SVGTransform
+ */
+export function createSVGTransform(matrix?: DOMMatrix | MatrixLike) {
+  if (matrix != null) {
+    if (!(matrix instanceof DOMMatrix)) {
+      matrix = createSVGMatrix(matrix) // tslint:disable-line
+    }
+
+    return svgDocument.createSVGTransformFromMatrix(matrix as DOMMatrix)
+  }
+
+  return svgDocument.createSVGTransform()
+}
+
+/**
+ * Returns the SVG transformation matrix built from the `transformString`.
+ *
+ * E.g. 'translate(10,10) scale(2,2)' will result in matrix:
+ * `{ a: 2, b: 0, c: 0, d: 2, e: 10, f: 10}`
+ */
 export function transformStringToMatrix(transform?: string | null) {
-  let transformationMatrix = createSVGMatrix()
+  let mat = createSVGMatrix()
   const matches = transform != null && transform.match(transformRegex)
   if (!matches) {
-    return transformationMatrix
+    return mat
   }
 
   for (let i = 0, n = matches.length; i < n; i += 1) {
@@ -116,36 +157,28 @@ export function transformStringToMatrix(transform?: string | null) {
           continue
       }
 
-      transformationMatrix = transformationMatrix.multiply(ctm)
+      mat = mat.multiply(ctm)
     }
   }
-  return transformationMatrix
+  return mat
 }
 
 export function matrixToTransformString(
   matrix?: DOMMatrix | Partial<MatrixLike>,
 ) {
   const m = matrix || ({} as DOMMatrix)
-  return (
-    'matrix(' +
-    (m.a !== undefined ? m.a : 1) +
-    ',' +
-    (m.b !== undefined ? m.b : 0) +
-    ',' +
-    (m.c !== undefined ? m.c : 0) +
-    ',' +
-    (m.d !== undefined ? m.d : 1) +
-    ',' +
-    (m.e !== undefined ? m.e : 0) +
-    ',' +
-    (m.f !== undefined ? m.f : 0) +
-    ')' // tslint:disable-line
-  )
+  const a = m.a != null ? m.a : 1
+  const b = m.b != null ? m.b : 0
+  const c = m.c != null ? m.c : 0
+  const d = m.d != null ? m.d : 1
+  const e = m.e != null ? m.e : 0
+  const f = m.f != null ? m.f : 0
+  return `matrix(${a},${b},${c},${d},${e},${f})`
 }
 
 export function parseTransformString(transform: string) {
-  let translate
-  let rotate
+  let translation
+  let rotation
   let scale
 
   if (transform) {
@@ -156,32 +189,32 @@ export function parseTransformString(transform: string) {
       const matrix = transformStringToMatrix(transform)
       const decomposedMatrix = decomposeMatrix(matrix)
 
-      translate = [decomposedMatrix.translateX, decomposedMatrix.translateY]
+      translation = [decomposedMatrix.translateX, decomposedMatrix.translateY]
+      rotation = [decomposedMatrix.rotation]
       scale = [decomposedMatrix.scaleX, decomposedMatrix.scaleY]
-      rotate = [decomposedMatrix.rotation]
 
       const transformations = []
-      if (translate[0] !== 0 || translate[1] !== 0) {
-        transformations.push(`translate(${translate.join(',')})`)
+      if (translation[0] !== 0 || translation[1] !== 0) {
+        transformations.push(`translate(${translation.join(',')})`)
       }
 
       if (scale[0] !== 1 || scale[1] !== 1) {
         transformations.push(`scale(${scale.join(',')})`)
       }
 
-      if (rotate[0] !== 0) {
-        transformations.push(`rotate(${rotate[0]})`)
+      if (rotation[0] !== 0) {
+        transformations.push(`rotate(${rotation[0]})`)
       }
 
       transform = transformations.join(' ') // tslint:disable-line
     } else {
       const translateMatch = transform.match(/translate\((.*?)\)/)
       if (translateMatch) {
-        translate = translateMatch[1].split(separator)
+        translation = translateMatch[1].split(separator)
       }
       const rotateMatch = transform.match(/rotate\((.*?)\)/)
       if (rotateMatch) {
-        rotate = rotateMatch[1].split(separator)
+        rotation = rotateMatch[1].split(separator)
       }
       const scaleMatch = transform.match(/scale\((.*?)\)/)
       if (scaleMatch) {
@@ -194,15 +227,27 @@ export function parseTransformString(transform: string) {
 
   return {
     raw: transform || '',
-    translate: {
-      tx: translate && translate[0] ? parseInt(translate[0] as string, 10) : 0,
-      ty: translate && translate[1] ? parseInt(translate[1] as string, 10) : 0,
-    } as Translate,
-    rotate: {
-      angle: rotate && rotate[0] ? parseInt(rotate[0] as string, 10) : 0,
-      cx: rotate && rotate[1] ? parseInt(rotate[1] as string, 10) : undefined,
-      cy: rotate && rotate[2] ? parseInt(rotate[2] as string, 10) : undefined,
-    } as Rotate,
+    translation: {
+      tx:
+        translation && translation[0]
+          ? parseInt(translation[0] as string, 10)
+          : 0,
+      ty:
+        translation && translation[1]
+          ? parseInt(translation[1] as string, 10)
+          : 0,
+    } as Translation,
+    rotation: {
+      angle: rotation && rotation[0] ? parseInt(rotation[0] as string, 10) : 0,
+      cx:
+        rotation && rotation[1]
+          ? parseInt(rotation[1] as string, 10)
+          : undefined,
+      cy:
+        rotation && rotation[2]
+          ? parseInt(rotation[2] as string, 10)
+          : undefined,
+    } as Rotation,
     scale: {
       sx,
       sy: scale && scale[1] ? parseFloat(scale[1] as string) : sx,
@@ -210,7 +255,7 @@ export function parseTransformString(transform: string) {
   }
 }
 
-export function deltaTransformPoint(
+function deltaTransformPoint(
   matrix: DOMMatrix | MatrixLike,
   point: Point | Point.PointLike,
 ) {
@@ -219,6 +264,22 @@ export function deltaTransformPoint(
   return { x: dx, y: dy }
 }
 
+/**
+ * Decomposes the SVG transformation matrix into separate transformations.
+ *
+ * Returns an object of the form:
+ * {
+ *   translateX: number
+ *   translateY: number
+ *   scaleX: number
+ *   scaleY: number
+ *   skewX: number
+ *   skewY: number
+ *   rotation: number
+ * }
+ *
+ * @see https://developer.mozilla.org/en/docs/Web/API/SVGMatrix
+ */
 export function decomposeMatrix(matrix: DOMMatrix | MatrixLike) {
   // @see https://gist.github.com/2052247
 
@@ -259,7 +320,7 @@ export function matrixToScale(matrix: DOMMatrix | MatrixLike): Scale {
   }
 }
 
-export function matrixToRotate(matrix: DOMMatrix | MatrixLike): Rotate {
+export function matrixToRotation(matrix: DOMMatrix | MatrixLike): Rotation {
   let p = { x: 0, y: 1 }
   if (matrix) {
     p = deltaTransformPoint(matrix, p)
@@ -270,39 +331,38 @@ export function matrixToRotate(matrix: DOMMatrix | MatrixLike): Rotate {
   }
 }
 
-export function matrixToTranslate(matrix: DOMMatrix | MatrixLike): Translate {
+export function matrixToTranslation(
+  matrix: DOMMatrix | MatrixLike,
+): Translation {
   return {
     tx: (matrix && matrix.e) || 0,
     ty: (matrix && matrix.f) || 0,
   }
 }
 
-export function createSVGTransform(matrix?: DOMMatrix | MatrixLike) {
-  if (matrix != null) {
-    if (!(matrix instanceof DOMMatrix)) {
-      matrix = createSVGMatrix(matrix) // tslint:disable-line
-    }
-
-    return svgDocument.createSVGTransformFromMatrix(matrix as DOMMatrix)
-  }
-
-  return svgDocument.createSVGTransform()
-}
-
-export function transformPoint(p: Point | Point.PointLike, matrix: DOMMatrix) {
-  const ret = createSVGPoint(p.x, p.y).matrixTransform(matrix)
+/**
+ * Transforms point by an SVG transformation represented by `matrix`.
+ */
+export function transformPoint(point: Point.PointLike, matrix: DOMMatrix) {
+  const ret = createSVGPoint(point.x, point.y).matrixTransform(matrix)
   return new Point(ret.x, ret.y)
 }
 
-export function transformLine(l: Line, matrix: DOMMatrix) {
+/**
+ * Transforms line by an SVG transformation represented by `matrix`.
+ */
+export function transformLine(line: Line, matrix: DOMMatrix) {
   return new Line(
-    transformPoint(l.start, matrix),
-    transformPoint(l.end, matrix),
+    transformPoint(line.start, matrix),
+    transformPoint(line.end, matrix),
   )
 }
 
-export function transformPolyline(p: Polyline, matrix: DOMMatrix) {
-  let points = p instanceof Polyline ? p.points : p
+/**
+ * Transforms polyline by an SVG transformation represented by `matrix`.
+ */
+export function transformPolyline(polyline: Polyline, matrix: DOMMatrix) {
+  let points = polyline instanceof Polyline ? polyline.points : polyline
   if (!Array.isArray(points)) {
     points = []
   }
@@ -310,8 +370,8 @@ export function transformPolyline(p: Polyline, matrix: DOMMatrix) {
   return new Polyline(points.map(p => transformPoint(p, matrix)))
 }
 
-export function transformRect(
-  rect: Rectangle | Rectangle.RectangleLike,
+export function transformRectangle(
+  rect: Rectangle.RectangleLike,
   matrix: DOMMatrix,
 ) {
   const p = svgDocument.createSVGPoint()
