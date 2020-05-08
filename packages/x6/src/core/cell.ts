@@ -22,21 +22,36 @@ export class Cell<
 
   protected static markup: Markup
   protected static defaults: Cell.Defaults = {}
-  protected static attrDefinitions: Attr.Definitions = {}
+  protected static attrHooks: Attr.Definitions = {}
+  protected static propHooks: Cell.PropHook[] = []
 
-  public static config<T extends Cell.Defaults = Cell.Defaults>(
-    presets: T,
-    attrDefinitions?: Attr.Definitions,
-  ) {
-    const { markup, ...others } = presets
-    this.defaults = ObjectExt.merge({}, this.defaults, others)
+  public static config<C extends Cell.Config = Cell.Config>(presets: C) {
+    const { markup, propHooks, attrHooks, ...others } = presets
+
     if (markup != null) {
       this.markup = markup
     }
 
-    if (attrDefinitions) {
-      this.attrDefinitions = { ...this.attrDefinitions, ...attrDefinitions }
+    if (propHooks) {
+      if (Array.isArray(propHooks)) {
+        this.propHooks.push(...propHooks)
+      } else if (typeof propHooks === 'function') {
+        this.propHooks.push(propHooks)
+      } else {
+        Object.keys(propHooks).forEach(name => {
+          const hook = propHooks[name]
+          if (typeof hook === 'function') {
+            this.propHooks.push(hook)
+          }
+        })
+      }
     }
+
+    if (attrHooks) {
+      this.attrHooks = { ...this.attrHooks, ...attrHooks }
+    }
+
+    this.defaults = ObjectExt.merge({}, this.defaults, others)
   }
 
   public static getMarkup() {
@@ -49,8 +64,17 @@ export class Cell<
     return (raw ? this.defaults : ObjectExt.cloneDeep(this.defaults)) as T
   }
 
-  public static getAttrDefinition() {
-    return this.attrDefinitions
+  public static getAttrHooks() {
+    return this.attrHooks
+  }
+
+  public static applyPropHooks(
+    cell: Cell,
+    metadata: Cell.Metadata,
+  ): Cell.Metadata {
+    return this.propHooks.reduce((memo, hook) => {
+      return hook ? hook.call(cell, memo) : memo
+    }, metadata)
   }
 
   // #endregion
@@ -64,10 +88,13 @@ export class Cell<
   protected incomings: Edge[] | null
   protected outgoings: Edge[] | null
 
-  constructor(options: Cell.Options = {}) {
+  constructor(metadata: Cell.Metadata = {}) {
     super()
-    const props = this.prepare(options)
-    this.id = options.id || StringExt.uuid()
+
+    const ctor = this.constructor as typeof Cell
+    const defaults = ctor.getDefaults(true)
+    const props = this.prepare(ObjectExt.merge({}, defaults, metadata))
+    this.id = metadata.id || StringExt.uuid()
     this.store = new Store(props)
     this.animation = new Animation(this)
     this.setup()
@@ -90,20 +117,16 @@ export class Cell<
 
   // #endregion
 
-  protected prepare(options: Cell.Options): Properties {
-    const id = options.id
+  protected prepare(metadata: Cell.Metadata): Properties {
+    const id = metadata.id
     const ctor = this.constructor as typeof Cell
-    const props = ObjectExt.merge(
-      {},
-      ctor.getDefaults(true),
-      options as Properties,
-    )
+    const props = ctor.applyPropHooks(this, metadata)
 
     if (id == null) {
       props.id = StringExt.uuid()
     }
 
-    return props
+    return props as Properties
   }
 
   protected setup() {
@@ -484,14 +507,14 @@ export class Cell<
     }
 
     const ctor = this.constructor as typeof Cell
-    const definitions = ctor.getAttrDefinition() || {}
-    let def = definitions[attrName] || AttrRegistry.get(attrName)
-    if (!def) {
+    const hooks = ctor.getAttrHooks() || {}
+    let definition = hooks[attrName] || AttrRegistry.get(attrName)
+    if (!definition) {
       const name = StringExt.camelCase(attrName)
-      def = definitions[name] || AttrRegistry.get(name)
+      definition = hooks[name] || AttrRegistry.get(name)
     }
 
-    return def || null
+    return definition || null
   }
 
   getAttrByPath(): Attr.CellAttrs
@@ -1126,11 +1149,10 @@ export namespace Cell {
   }
 
   export interface Defaults extends Common {}
-  export interface Options extends Common {
+  export interface Metadata extends Common, KeyValue {
     id?: string
   }
-
-  export interface Properties extends Defaults, Options {
+  export interface Properties extends Defaults, Metadata {
     parent?: string
     children?: string[]
   }
@@ -1401,11 +1423,24 @@ export namespace Cell {
 export namespace Cell {
   export type Defintion = typeof Cell
 
-  export interface DefintionOptions extends Defaults, KeyValue {
+  export type PropHook<M extends Metadata = Metadata, C extends Cell = Cell> = (
+    this: C,
+    metadata: M,
+  ) => M
+
+  export type PropHooks<M extends Metadata = Metadata, C extends Cell = Cell> =
+    | KeyValue<PropHook<M, C>>
+    | PropHook<M, C>
+    | PropHook<M, C>[]
+
+  export interface Config<M extends Metadata = Metadata, C extends Cell = Cell>
+    extends Defaults,
+      KeyValue {
     /**
      * The class name.
      */
     name?: string
-    attrDefinitions?: Attr.Definitions
+    propHooks?: PropHooks<M, C>
+    attrHooks?: Attr.Definitions
   }
 }

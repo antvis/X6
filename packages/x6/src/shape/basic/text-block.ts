@@ -5,7 +5,7 @@ import { Node } from '../../core/node'
 import { Store } from '../../core/store'
 import { NodeView } from '../../core/node-view'
 import { NodeRegistry, ViewRegistry } from '../../registry'
-import { getName, rootAttr } from './util'
+import { getName } from './util'
 
 const contentAction = 'content' as any
 const contentSelector = '.text-block-content'
@@ -146,7 +146,10 @@ TextBlock.config({
   ].join(''),
 
   attrs: {
-    ...rootAttr,
+    '.': {
+      fill: '#ffffff',
+      stroke: 'none',
+    },
     rect: {
       fill: '#ffffff',
       stroke: '#000000',

@@ -21,25 +21,29 @@ export class Node<
   protected readonly store: Store<Node.Properties>
   protected portData: PortData
 
-  constructor(options: Node.Options = {}) {
-    super(options)
+  constructor(metadata: Node.Metadata = {}) {
+    super(metadata)
     this.initPorts()
   }
 
-  protected prepare(options: Node.Options): Properties {
-    const { x, y, width, height, ...others } = options
+  protected prepare(metadata: Node.Metadata): Properties {
+    const { x, y, width, height, ...others } = metadata
+
     if (x != null || y != null) {
+      const position = others.position
       others.position = {
-        ...others.position,
-        x: x != null ? x : 0,
-        y: y != null ? y : 0,
+        ...position,
+        x: x != null ? x : position ? position.x : 0,
+        y: y != null ? y : position ? position.y : 0,
       }
     }
+
     if (width != null || height != null) {
+      const size = others.size
       others.size = {
-        ...others.size,
-        width: width != null ? width : 0,
-        height: height != null ? height : 0,
+        ...size,
+        width: width != null ? width : size ? size.width : 0,
+        height: height != null ? height : size ? size.height : 0,
       }
     }
 
@@ -981,12 +985,13 @@ export namespace Node {
     width?: number
     height?: number
   }
-
-  interface BaseOptions extends Common, Cell.Options {}
-  export interface Options extends BaseOptions, Boundary {}
   export interface Defaults extends Common, Cell.Defaults {}
-  export interface Properties extends BaseOptions, Cell.Properties {}
-  export interface Metadata extends Options, KeyValue {}
+  export interface Properties extends Common, Cell.Metadata, Cell.Properties {}
+  export interface Metadata extends Common, Cell.Metadata, Boundary {}
+  export interface Config
+    extends Defaults,
+      Boundary,
+      Cell.Config<Metadata, Node> {}
 }
 
 export namespace Node {
@@ -1032,8 +1037,6 @@ export namespace Node {
 export namespace Node {
   export type Defintion = typeof Node & (new (...args: any[]) => Node)
 
-  export interface DefintionOptions extends Defaults, Cell.DefintionOptions {}
-
   let counter = 0
   function getClassName(name?: string) {
     if (name) {
@@ -1043,21 +1046,22 @@ export namespace Node {
     return `CustomNode${counter}`
   }
 
-  export function define(options: DefintionOptions) {
-    const { name, attrDefinitions, ...defaults } = options
-    const className = getClassName(name)
-    const base = this as Defintion
-    const shape = ObjectExt.createClass<Defintion>(className, base)
-    shape.config(defaults, attrDefinitions)
+  export function define(config: Config) {
+    const { name, ...others } = config
+    const shape = ObjectExt.createClass<Defintion>(
+      getClassName(name),
+      this as Defintion,
+    )
+    shape.config(others)
     return shape
   }
 
-  export function create(metadata: Metadata) {
-    const type = metadata.type
+  export function create(options: Metadata) {
+    const type = options.type
     if (type) {
       const define = NodeRegistry.get(type)
       if (define) {
-        return new define(metadata)
+        return new define(options)
       }
       return NodeRegistry.onNotFound(type)
     }

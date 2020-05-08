@@ -294,7 +294,7 @@ export class UndoManager extends Disablable<UndoManager.EventArgs> {
         // serves as a flag so that we don't repeat this branche).
         cmd.event = event
         cmd.options = options
-        data.key = key
+        data.key = key as string
         if (data.prev == null) {
           data.prev = {}
         }

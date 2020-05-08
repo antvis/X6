@@ -1,20 +1,8 @@
 import { NodeView } from '../../core/node-view'
-import { NodeRegistry, ViewRegistry } from '../../registry'
-import { getMarkup, getName, rootAttr } from './util'
+import { ViewRegistry } from '../../registry'
+import { getName, createShape } from './util'
 
-const registryName = getName('text')
-
-export const Text = NodeRegistry.register(registryName, {
-  view: registryName,
-  markup: getMarkup('text', true),
-  attrs: {
-    ...rootAttr,
-    text: {
-      fontSize: 18,
-      fill: '#000000',
-    },
-  },
-})
+const viewName = getName('text')
 
 export class TextView extends NodeView {
   confirmUpdate(flag: number, options: any = {}) {
@@ -33,4 +21,19 @@ TextView.config({
   },
 })
 
-ViewRegistry.register(registryName, TextView)
+ViewRegistry.register(viewName, TextView)
+
+export const Text = createShape(
+  'text',
+  {
+    view: viewName,
+    attrs: {
+      text: {
+        fontSize: 18,
+        fill: '#000000',
+        stroke: null,
+      },
+    },
+  },
+  { noText: true },
+)

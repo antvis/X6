@@ -534,7 +534,7 @@ export class Graph extends View<Graph.EventArgs> {
   }
 
   addNode(metadata: Node.Metadata, options?: Model.AddOptions): Node
-  addNode(node: Node, options: Model.AddOptions): Node
+  addNode(node: Node, options?: Model.AddOptions): Node
   addNode(node: Node | Node.Metadata, options: Model.AddOptions = {}): Node {
     return this.model.addNode(node, options)
   }
@@ -543,8 +543,8 @@ export class Graph extends View<Graph.EventArgs> {
     return this.model.createNode(metadata)
   }
 
-  addEdge(metadata: Edge.Metadata, options: Model.AddOptions): Edge
-  addEdge(edge: Edge, options: Model.AddOptions): Edge
+  addEdge(metadata: Edge.Metadata, options?: Model.AddOptions): Edge
+  addEdge(edge: Edge, options?: Model.AddOptions): Edge
   addEdge(edge: Edge | Edge.Metadata, options: Model.AddOptions = {}): Edge {
     return this.model.addEdge(edge, options)
   }

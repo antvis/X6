@@ -1,9 +1,16 @@
 import React from 'react'
-import { v, v1 } from '@antv/x6'
-import '../index.less'
+import {
+  Graph,
+  Edge,
+  CellView,
+  EdgeView,
+  EdgeRegistry,
+  ViewRegistry,
+  Dom,
+} from '@antv/x6'
 import './index.less'
 
-class CustomEdgeView extends v1.EdgeView {
+class CustomEdgeView extends EdgeView {
   onDblClick(e: JQuery.DoubleClickEvent, x: number, y: number) {
     if (this.cell.getProp('customLinkInteractions')) {
       this.addVertex(x, y)
@@ -20,10 +27,10 @@ class CustomEdgeView extends v1.EdgeView {
   }
 }
 
-CustomEdgeView.config<v1.EdgeView.Options>({ doubleTools: true })
-v1.ViewRegistry.register('customEdgeView', CustomEdgeView)
+CustomEdgeView.config<EdgeView.Options>({ doubleTools: true })
+ViewRegistry.register('customEdgeView', CustomEdgeView)
 
-const CustomEdge = v1.Edge.define({
+const CustomEdge = Edge.define({
   name: 'custom-edge',
   defaultLabel: {
     markup: [
@@ -67,19 +74,19 @@ const CustomEdge = v1.Edge.define({
   },
 })
 
-v1.EdgeRegistry.register('customEdge', CustomEdge)
+EdgeRegistry.register('customEdge', CustomEdge)
 
 export default class Example extends React.Component {
   private container: HTMLDivElement
 
   componentDidMount() {
-    const graph = new v1.Graph({
+    const graph = new Graph({
       container: this.container,
       width: 800,
       height: 1400,
       gridSize: 10,
       perpendicularLinks: false,
-      interactive: function(cellView: v1.CellView) {
+      interactive: function(cellView: CellView) {
         if (cellView.cell.getProp('customLinkInteractions')) {
           return { vertexAdd: false }
         }
@@ -95,6 +102,7 @@ export default class Example extends React.Component {
     // -----------------------------------
 
     const r1 = graph.addNode({
+      type: 'basic.rect',
       size: { width: 70, height: 30 },
       position: { x: 335, y: 50 },
       attrs: {
@@ -109,7 +117,7 @@ export default class Example extends React.Component {
 
     graph.addEdge({
       source: r1,
-      target: r1,
+      target: r2,
     })
 
     // Custom link interactions.
@@ -127,7 +135,7 @@ export default class Example extends React.Component {
       type: 'customEdge',
       view: 'customEdgeView',
       customLinkInteractions: true,
-      source: r1,
+      source: r3,
       target: r4,
       attrs: {
         '.source-marker': { d: marker },
@@ -428,10 +436,10 @@ export default class Example extends React.Component {
     graph.addNode(r20)
     r20.translate(200, 0)
 
-    var circleMarker = v.create(
+    var circleMarker = Dom.createVector(
       '<marker id="circle-marker" markerUnits="userSpaceOnUse" viewBox = "0 0 12 12" refX = "6" refY = "6" markerWidth = "15" markerHeight = "15" stroke = "none" stroke-width = "0" fill = "red" orient = "auto"> <circle r = "5" cx="6" cy="6" fill="blue"/> </marker>',
     )
-    var diamondMarker = v.create(
+    var diamondMarker = Dom.createVector(
       '<marker id="diamond-marker" viewBox = "0 0 5 20" refX = "0" refY = "6" markerWidth = "30" markerHeight = "30" stroke = "none" stroke-width = "0" fill = "red" > <rect x="0" y="0" width = "10" height="10" transform="rotate(45)"  /> </marker>',
     )
 
