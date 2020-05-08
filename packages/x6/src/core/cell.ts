@@ -93,12 +93,15 @@ export class Cell<
 
     const ctor = this.constructor as typeof Cell
     const defaults = ctor.getDefaults(true)
-    const props = this.prepare(ObjectExt.merge({}, defaults, metadata))
+    const meta = ObjectExt.merge({}, defaults, metadata)
+    const props = this.preprocess(meta)
+
     this.id = metadata.id || StringExt.uuid()
     this.store = new Store(props)
     this.animation = new Animation(this)
     this.setup()
     this.init()
+    this.postprocess(meta)
   }
 
   init() {}
@@ -117,7 +120,7 @@ export class Cell<
 
   // #endregion
 
-  protected prepare(metadata: Cell.Metadata): Properties {
+  protected preprocess(metadata: Cell.Metadata): Properties {
     const id = metadata.id
     const ctor = this.constructor as typeof Cell
     const props = ctor.applyPropHooks(this, metadata)
@@ -128,6 +131,8 @@ export class Cell<
 
     return props as Properties
   }
+
+  protected postprocess(metadata: Cell.Metadata) {}
 
   protected setup() {
     this.store.on('change:*', (metadata) => {
@@ -932,6 +937,7 @@ export class Cell<
         if (options.deep !== false) {
           this.eachChild((child) => child.remove(options))
         }
+        console.log(this.model, this._model)
         if (this.model) {
           this.model.removeCell(this, options)
         }
