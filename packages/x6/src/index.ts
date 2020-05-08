@@ -5,6 +5,7 @@ export * from './geometry'
 export * from './core'
 export * from './shape'
 export * from './registry'
+export * from './animation'
 export * from './addon'
 
 export * from './version'

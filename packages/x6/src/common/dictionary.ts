@@ -1,4 +1,4 @@
-import { Disposable } from '.'
+import { Disposable } from './disposable'
 
 export class Dictionary<T extends Object, V> extends Disposable {
   private map: WeakMap<T, V>

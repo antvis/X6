@@ -1,9 +1,13 @@
 import { Point, Line, Rectangle, Polyline, Ellipse, Path } from '../../geometry'
 import { attr } from './attr'
-import { getTransformToElement } from './transform'
 import { sample, toPath, getPointsFromSvgElement } from './path'
 import { ensureId, isSVGGraphicsElement, createSvgElement } from './elem'
-import { createSVGPoint, decomposeMatrix, transformRectangle } from './matrix'
+import {
+  createSVGPoint,
+  createSVGMatrix,
+  decomposeMatrix,
+  transformRectangle,
+} from './matrix'
 
 /**
  * Returns the bounding box of the element after transformations are
@@ -127,6 +131,23 @@ export function getBBox(
 
     return outputBBox as Rectangle
   }
+}
+
+/**
+ * Returns an DOMMatrix that specifies the transformation necessary
+ * to convert `elem` coordinate system into `target` coordinate system.
+ */
+export function getTransformToElement(elem: SVGElement, target: SVGElement) {
+  if (isSVGGraphicsElement(target) && isSVGGraphicsElement(elem)) {
+    const targetCTM = target.getScreenCTM()
+    const nodeCTM = elem.getScreenCTM()
+    if (targetCTM && nodeCTM) {
+      return targetCTM.inverse().multiply(nodeCTM)
+    }
+  }
+
+  // Could not get actual transformation matrix
+  return createSVGMatrix()
 }
 
 /**

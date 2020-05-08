@@ -1,2 +1,2 @@
-import * as mod from './index'
-export default mod
+import * as X6 from './index'
+export default X6

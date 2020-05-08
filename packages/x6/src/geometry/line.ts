@@ -1,5 +1,4 @@
 import { Path } from './path'
-import { Angle } from './angle'
 import { Point } from './point'
 import { Ellipse } from './ellipse'
 import { Polyline } from './polyline'
@@ -140,25 +139,8 @@ export class Line extends Geometry {
    *
    * The function returns 'N' if the two endpoints of the line are coincident.
    */
-  bearing(): Line.Bearing {
-    const lat1 = Angle.toRad(this.start.y)
-    const lat2 = Angle.toRad(this.end.y)
-    const lon1 = this.start.x
-    const lon2 = this.end.x
-    const dLon = Angle.toRad(lon2 - lon1)
-    const y = Math.sin(dLon) * Math.cos(lat2)
-    const x =
-      Math.cos(lat1) * Math.sin(lat2) -
-      Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon)
-
-    const brng = Angle.toDeg(Math.atan2(y, x))
-    const bearings = ['NE', 'E', 'SE', 'S', 'SW', 'W', 'NW', 'N']
-
-    let index = brng - 22.5
-    if (index < 0) index += 360
-    index = index / 45
-
-    return bearings[index] as Line.Bearing
+  bearing() {
+    return this.start.bearing(this.end)
   }
 
   /**
@@ -499,8 +481,4 @@ export class Line extends Geometry {
   serialize() {
     return [this.start.serialize(), this.end.serialize()].join(' ')
   }
-}
-
-export namespace Line {
-  export type Bearing = 'NE' | 'E' | 'SE' | 'S' | 'SW' | 'W' | 'NW' | 'N'
 }

@@ -1,4 +1,4 @@
-import { Basecoat } from '../common'
+import { Basecoat } from './basecoat'
 
 export interface IDisablable {
   readonly disabled: boolean
