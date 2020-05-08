@@ -129,9 +129,9 @@ function vertexElement(
   bearing: Bearings,
 ) {
   const points = [new Point(from.x, to.y), new Point(to.x, from.y)]
-  const freePoints = points.filter(p => !toBBox.containsPoint(p))
+  const freePoints = points.filter((p) => !toBBox.containsPoint(p))
   const freeBearingPoints = freePoints.filter(
-    p => getBearing(p, from) !== bearing,
+    (p) => getBearing(p, from) !== bearing,
   )
 
   let p
@@ -139,7 +139,7 @@ function vertexElement(
   if (freeBearingPoints.length > 0) {
     // Try to pick a point which bears the same direction as the previous segment.
 
-    p = freeBearingPoints.filter(p => getBearing(from, p) === bearing).pop()
+    p = freeBearingPoints.filter((p) => getBearing(from, p) === bearing).pop()
     p = p || freeBearingPoints[0]
 
     return {
@@ -246,10 +246,7 @@ function insideElement(
       Angle.toRad(p1.theta(start)) + Math.PI / 2,
       end,
     )
-    p2 = boundary
-      .pointNearestToPoint(p2)
-      .move(end, 1)
-      .round()
+    p2 = boundary.pointNearestToPoint(p2).move(end, 1).round()
     p3 = freeJoin(p1, p2, boundary)
     points = reversed ? [p2, p3, p1] : [p1, p3, p2]
   } else {
@@ -268,7 +265,7 @@ export interface OrthRouterOptions {
   padding?: NumberExt.SideOptions
 }
 
-export const orth: Router.Definition<OrthRouterOptions> = function(
+export const orth: Router.Definition<OrthRouterOptions> = function (
   vertices,
   options,
   linkView,
@@ -282,7 +279,7 @@ export const orth: Router.Definition<OrthRouterOptions> = function(
   sourceBBox = sourceBBox.union(getPointBox(sourceAnchor))
   targetBBox = targetBBox.union(getPointBox(targetAnchor))
 
-  const points = vertices.map(p => Point.create(p))
+  const points = vertices.map((p) => Point.create(p))
   points.unshift(sourceAnchor)
   points.push(targetAnchor)
 

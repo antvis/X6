@@ -30,7 +30,7 @@ export class Halo extends Widget<Halo.Options> {
       clearAll: true,
       clearOnBlankPointerdown: true,
       useModelGeometry: false,
-      clone: cell => cell.clone().removeZIndex(),
+      clone: (cell) => cell.clone().removeZIndex(),
       pieInnerRadius: 20,
       pieOuterRadius: 50,
       pieSliceAngle: 45,
@@ -56,7 +56,7 @@ export class Halo extends Widget<Halo.Options> {
 
     this.handles = []
     if (this.options.handles) {
-      this.options.handles.forEach(handle => this.addHandle(handle))
+      this.options.handles.forEach((handle) => this.addHandle(handle))
     }
 
     this.render()
@@ -123,13 +123,13 @@ export class Halo extends Widget<Halo.Options> {
       .addClass('handles')
       .appendTo(this.container)
 
-    this.$box = this.$('<div/>')
-      .addClass('box')
-      .appendTo(this.container)
+    this.$box = this.$('<div/>').addClass('box').appendTo(this.container)
 
     this.$pieToggles = {}
 
-    this.$handles.append(this.handles.map(handle => this.renderHandle(handle)))
+    this.$handles.append(
+      this.handles.map((handle) => this.renderHandle(handle)),
+    )
 
     switch (options.type) {
       case 'toolbar':
@@ -140,7 +140,7 @@ export class Halo extends Widget<Halo.Options> {
         break
       case 'pie':
         if (this.options.pieToggles) {
-          this.options.pieToggles.forEach(item => {
+          this.options.pieToggles.forEach((item) => {
             const $elem = this.$('<div/>')
             $elem.addClass('pie-toggle').addClass(item.position || 'e')
             $elem.attr('data-name', item.name)
@@ -345,11 +345,11 @@ export class Halo extends Widget<Halo.Options> {
   }
 
   getHandleIdx(name: string) {
-    return this.handles.findIndex(item => item.name === name)
+    return this.handles.findIndex((item) => item.name === name)
   }
 
   getHandle(name: string) {
-    return this.handles.find(item => item.name === name)
+    return this.handles.find((item) => item.name === name)
   }
 
   addHandle(handle: Halo.Handle) {
@@ -358,7 +358,7 @@ export class Halo extends Widget<Halo.Options> {
 
       const events = handle.events
       if (events) {
-        Object.keys(events).forEach(action => {
+        Object.keys(events).forEach((action) => {
           const callback = events[action]
           const name = `action:${handle.name}:${action}`
           if (typeof callback === 'string') {
@@ -378,7 +378,7 @@ export class Halo extends Widget<Halo.Options> {
   }
 
   addHandles(handles: Halo.Handle[]) {
-    handles.forEach(handle => this.addHandle(handle))
+    handles.forEach((handle) => this.addHandle(handle))
     return this
   }
 
@@ -407,7 +407,7 @@ export class Halo extends Widget<Halo.Options> {
     const handle = this.handles[index]
     if (handle) {
       if (handle.events) {
-        Object.keys(handle.events).forEach(event => {
+        Object.keys(handle.events).forEach((event) => {
           this.off(`action:${name}:${event}`)
         })
       }
@@ -443,7 +443,7 @@ export class Halo extends Widget<Halo.Options> {
   }
 
   deselectAllHandles() {
-    this.handles.forEach(handle => this.deselectHandle(handle.name))
+    this.handles.forEach((handle) => this.deselectHandle(handle.name))
     return this
   }
 
@@ -490,7 +490,7 @@ export class Halo extends Widget<Halo.Options> {
   toggleState(name?: string) {
     if (this.isRendered()) {
       const $container = this.$container
-      Object.keys(this.$pieToggles).forEach(key => {
+      Object.keys(this.$pieToggles).forEach((key) => {
         const $toggle = this.$pieToggles[key]
         $toggle.removeClass('open')
       })
@@ -502,7 +502,7 @@ export class Halo extends Widget<Halo.Options> {
         if (name) {
           const toggle =
             this.options.pieToggles &&
-            this.options.pieToggles.find(i => i.name === name)
+            this.options.pieToggles.find((i) => i.name === name)
           if (toggle) {
             $container.attr({
               'data-pie-toggle-position': toggle.position,
@@ -530,9 +530,7 @@ export class Halo extends Widget<Halo.Options> {
 
   protected onPieTogglePointerDown(evt: JQuery.MouseDownEvent) {
     evt.stopPropagation()
-    const name = this.$(evt.target)
-      .closest('.pie-toggle')
-      .attr('data-name')
+    const name = this.$(evt.target).closest('.pie-toggle').attr('data-name')
     if (!this.isOpen(name)) {
       if (this.isOpen()) {
         this.toggleState()
@@ -542,9 +540,7 @@ export class Halo extends Widget<Halo.Options> {
   }
 
   protected onHandlePointerDown(evt: JQuery.MouseDownEvent) {
-    this.action = this.$(evt.target)
-      .closest('.handle')
-      .attr('data-action')
+    this.action = this.$(evt.target).closest('.handle').attr('data-action')
 
     if (this.action) {
       evt.preventDefault()
@@ -763,11 +759,8 @@ export namespace Halo {
   ) {
     if (attrs) {
       const $elem = View.$(elem)
-      Object.keys(attrs).forEach(selector => {
-        const $element = $elem
-          .find(selector)
-          .addBack()
-          .filter(selector)
+      Object.keys(attrs).forEach((selector) => {
+        const $element = $elem.find(selector).addBack().filter(selector)
         const { class: cls, ...attr } = attrs[selector]
         if (cls) {
           $element.addClass(cls)

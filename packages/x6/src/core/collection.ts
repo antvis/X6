@@ -20,7 +20,7 @@ export class Collection extends Basecoat<Collection.EventArgs> {
   }
 
   toJSON() {
-    return this.cells.map(cell => cell.toJSON())
+    return this.cells.map((cell) => cell.toJSON())
   }
 
   add(cells: Cell | Cell[], options?: Collection.AddOptions): this
@@ -63,7 +63,7 @@ export class Collection extends Basecoat<Collection.EventArgs> {
     const added: Cell[] = []
     const merged: Cell[] = []
 
-    entities.forEach(cell => {
+    entities.forEach((cell) => {
       const existing = this.get(cell)
       if (existing) {
         if (localOptions.merge && !cell.isSameStore(existing)) {
@@ -75,7 +75,7 @@ export class Collection extends Basecoat<Collection.EventArgs> {
             } else if (typeof sortAttr === 'string') {
               sort = existing.hasChanged(sortAttr)
             } else {
-              sort = sortAttr.some(key => existing.hasChanged(key))
+              sort = sortAttr.some((key) => existing.hasChanged(key))
             }
           }
         }
@@ -170,7 +170,7 @@ export class Collection extends Basecoat<Collection.EventArgs> {
 
   reset(cells: Cell | Cell[], options: Collection.SetOptions = {}) {
     const previous = this.cells.slice()
-    previous.forEach(cell => this.unreference(cell))
+    previous.forEach((cell) => this.unreference(cell))
     this.clean()
     this.add(cells, { silent: true, ...options })
     if (!options.silent) {
@@ -184,15 +184,15 @@ export class Collection extends Basecoat<Collection.EventArgs> {
       const added: Cell[] = []
       const removed: Cell[] = []
 
-      current.forEach(a => {
-        const exist = previous.every(b => b.id === a.id)
+      current.forEach((a) => {
+        const exist = previous.every((b) => b.id === a.id)
         if (!exist) {
           added.push(a)
         }
       })
 
-      previous.forEach(a => {
-        const exist = current.some(b => b.id === a.id)
+      previous.forEach((a) => {
+        const exist = current.some((b) => b.id === a.id)
         if (!exist) {
           removed.push(a)
         }

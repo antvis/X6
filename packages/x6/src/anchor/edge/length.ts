@@ -4,7 +4,7 @@ export interface LengthAnchorOptions {
   length?: number
 }
 
-export const length: EdgeAnchor.Definition<LengthAnchorOptions> = function(
+export const length: EdgeAnchor.Definition<LengthAnchorOptions> = function (
   view,
   magnet,
   ref,

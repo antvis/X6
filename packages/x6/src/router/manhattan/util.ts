@@ -87,7 +87,7 @@ export function getDirectionChange(angle1: number, angle2: number) {
 export function getGridOffsets(grid: Grid, options: ResolvedOptions) {
   const step = options.step
 
-  options.directions.forEach(direction => {
+  options.directions.forEach((direction) => {
     direction.gridOffsetX = (direction.offsetX / step) * grid.x
     direction.gridOffsetY = (direction.offsetY / step) * grid.y
   })

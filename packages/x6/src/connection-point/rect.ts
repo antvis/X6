@@ -9,7 +9,7 @@ export interface RectangleIntersectionOptions
  * Places the connection point at the intersection between the
  * link path end segment and the element's unrotated bbox.
  */
-export const rect: ConnectionPoint.Definition<RectangleIntersectionOptions> = function(
+export const rect: ConnectionPoint.Definition<RectangleIntersectionOptions> = function (
   line,
   view,
   magnet,

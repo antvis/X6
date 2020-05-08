@@ -39,9 +39,7 @@ export class MiniMap extends View {
     this.$viewport = this.$('<div>').addClass('viewport')
 
     if (this.options.zoom) {
-      this.$('<div>')
-        .addClass('viewport-control')
-        .appendTo(this.$viewport)
+      this.$('<div>').addClass('viewport-control').appendTo(this.$viewport)
     }
 
     this.$container.append(this.$viewport).css({

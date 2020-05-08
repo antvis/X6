@@ -461,7 +461,7 @@ export class Rectangle extends Geometry implements Rectangle.RectangleLike {
     ]
     const points: Point[] = []
     const dedupeArr: string[] = []
-    rectLines.forEach(l => {
+    rectLines.forEach((l) => {
       const p = line.intersectionWithLine(l)
       if (p !== null && dedupeArr.indexOf(p.toString()) < 0) {
         points.push(p)

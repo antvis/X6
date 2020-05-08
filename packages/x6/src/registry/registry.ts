@@ -34,7 +34,7 @@ export class Registry<
     force: boolean = false,
   ) {
     if (typeof name === 'object') {
-      Object.keys(name).forEach(key => {
+      Object.keys(name).forEach((key) => {
         this.register(key, name[key], options)
       })
       return
@@ -109,7 +109,7 @@ export class Registry<
     return StringExt.getSpellingSuggestion(
       name,
       Object.keys(this.registry),
-      candidate => candidate,
+      (candidate) => candidate,
     )
   }
 }

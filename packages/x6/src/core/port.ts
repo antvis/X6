@@ -27,7 +27,7 @@ export class PortData {
 
   getPortsByGroup(groupName?: string): PortData.Port[] {
     return this.ports.filter(
-      p => p.group === groupName || (p.group == null && groupName == null),
+      (p) => p.group === groupName || (p.group == null && groupName == null),
     )
   }
 
@@ -50,7 +50,7 @@ export class PortData {
     }
 
     const portsArgs = ports.map(
-      port => (port && port.position && port.position.args) || {},
+      (port) => (port && port.position && port.position.args) || {},
     )
     const groupArgs = (groupPosition && groupPosition.args) || {}
     const layouts = layoutFn(portsArgs, elemBBox, groupArgs)
@@ -75,13 +75,13 @@ export class PortData {
     const { groups, items } = data
 
     if (groups != null) {
-      Object.keys(groups).forEach(key => {
+      Object.keys(groups).forEach((key) => {
         this.groups[key] = this.parseGroup(groups[key])
       })
     }
 
     if (Array.isArray(items)) {
-      items.forEach(item => {
+      items.forEach((item) => {
         this.ports.push(this.parsePort(item))
       })
     }

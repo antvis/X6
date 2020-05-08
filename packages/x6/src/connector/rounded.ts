@@ -5,7 +5,7 @@ export interface RoundedConnectorOptions extends Connector.BaseOptions {
   radius?: number
 }
 
-export const rounded: Connector.Definition<RoundedConnectorOptions> = function(
+export const rounded: Connector.Definition<RoundedConnectorOptions> = function (
   sourcePoint,
   targetPoint,
   routePoints,
@@ -32,14 +32,8 @@ export const rounded: Connector.Definition<RoundedConnectorOptions> = function(
     const startMove = -Math.min(radius, prevDistance)
     const endMove = -Math.min(radius, nextDistance)
 
-    const roundedStart = curr
-      .clone()
-      .move(prev, startMove)
-      .round()
-    const roundedEnd = curr
-      .clone()
-      .move(next, endMove)
-      .round()
+    const roundedStart = curr.clone().move(prev, startMove).round()
+    const roundedEnd = curr.clone().move(next, endMove).round()
 
     const control1 = new Point(
       f13 * roundedStart.x + f23 * curr.x,

@@ -8,7 +8,7 @@ export interface BBoxIntersectionOptions
  * Places the connection point at the intersection between the edge
  * path end segment and the target node bbox.
  */
-export const bbox: ConnectionPoint.Definition<BBoxIntersectionOptions> = function(
+export const bbox: ConnectionPoint.Definition<BBoxIntersectionOptions> = function (
   line,
   view,
   magnet,

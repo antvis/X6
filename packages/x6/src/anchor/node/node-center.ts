@@ -8,7 +8,7 @@ export interface NodeCenterAnchorOptions {
 /**
  * Places the anchor of the edge at center of the node bbox.
  */
-export const nodeCenter: NodeAnchor.Definition<NodeCenterAnchorOptions> = function(
+export const nodeCenter: NodeAnchor.Definition<NodeCenterAnchorOptions> = function (
   view,
   magnet,
   ref,

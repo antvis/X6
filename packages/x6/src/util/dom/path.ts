@@ -58,7 +58,7 @@ export function polylineToPathData(polyline: SVGPolylineElement) {
 }
 
 function svgPointsToPath(points: DOMPoint[]) {
-  const arr = points.map(p => `${p.x} ${p.y}`)
+  const arr = points.map((p) => `${p.x} ${p.y}`)
   return `M ${arr.join(' L')}`
 }
 

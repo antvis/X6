@@ -28,7 +28,7 @@ export namespace DataUrl {
         (xhr: XMLHttpRequest) => {
           if (xhr.status === 200) {
             const reader = new FileReader()
-            reader.onload = evt => {
+            reader.onload = (evt) => {
               const dataUri = evt.target!.result as string
               callback(null, dataUri)
             }

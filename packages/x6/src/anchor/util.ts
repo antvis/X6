@@ -7,7 +7,7 @@ export interface ResolveOptions {
 }
 
 export function resolve<S extends Function, T>(fn: S): T {
-  return (function(
+  return (function (
     this: EdgeView,
     view: EdgeView,
     magnet: SVGElement,

@@ -147,8 +147,8 @@ export class Edge<
 
   protected setup() {
     super.setup()
-    this.on('change:labels', args => this.onLabelsChanged(args))
-    this.on('change:vertices', args => this.onVertexsChanged(args))
+    this.on('change:labels', (args) => this.onLabelsChanged(args))
+    this.on('change:vertices', (args) => this.onVertexsChanged(args))
   }
 
   set model(model: Model | null) {
@@ -585,10 +585,10 @@ export class Edge<
   }: Cell.ChangeArgs<Edge.Label[]>) {
     const added =
       previous && current
-        ? current.filter(label1 => {
+        ? current.filter((label1) => {
             if (
               !previous.find(
-                label2 =>
+                (label2) =>
                   label1 === label2 || ObjectExt.isEqual(label1, label2),
               )
             ) {
@@ -601,10 +601,10 @@ export class Edge<
 
     const removed =
       previous && current
-        ? previous.filter(label1 => {
+        ? previous.filter((label1) => {
             if (
               !current.find(
-                label2 =>
+                (label2) =>
                   label1 === label2 || ObjectExt.isEqual(label1, label2),
               )
             ) {
@@ -670,7 +670,7 @@ export class Edge<
     const points = Array.isArray(vertices) ? vertices : [vertices]
     this.store.set(
       'vertices',
-      points.map(p => Point.toJSON(p)),
+      points.map((p) => Point.toJSON(p)),
       options,
     )
     return this
@@ -730,8 +730,8 @@ export class Edge<
   }: Cell.ChangeArgs<Point.PointLike[]>) {
     const added =
       previous && current
-        ? current.filter(p1 => {
-            if (!previous.find(p2 => Point.equals(p1, p2))) {
+        ? current.filter((p1) => {
+            if (!previous.find((p2) => Point.equals(p1, p2))) {
               return p1
             }
           })
@@ -741,8 +741,8 @@ export class Edge<
 
     const removed =
       previous && current
-        ? previous.filter(p1 => {
-            if (!current.find(p2 => Point.equals(p1, p2))) {
+        ? previous.filter((p1) => {
+            if (!current.find((p2) => Point.equals(p1, p2))) {
               return p1
             }
           })
@@ -860,7 +860,7 @@ export class Edge<
     options.ty = ty
 
     return this.applyToPoints(
-      p => ({
+      (p) => ({
         x: (p.x || 0) + tx,
         y: (p.y || 0) + ty,
       }),
@@ -877,10 +877,8 @@ export class Edge<
     origin?: Point | Point.PointLike,
     options: Edge.SetOptions = {},
   ) {
-    return this.applyToPoints(p => {
-      return Point.create(p)
-        .scale(sx, sy, origin)
-        .toJSON()
+    return this.applyToPoints((p) => {
+      return Point.create(p).scale(sx, sy, origin).toJSON()
     }, options)
   }
 
@@ -928,7 +926,7 @@ export class Edge<
   getPolyline() {
     const points = [this.getSourcePoint(), this.getTargetPoint()]
     const vertices = this.getVertices()
-    vertices.forEach(p => points.push(Point.create(p)))
+    vertices.forEach((p) => points.push(Point.create(p)))
     return new Polyline(points)
   }
 
@@ -996,7 +994,7 @@ export class Edge<
       this,
       this.getSourceNode(), // null if source is a point
       this.getTargetNode(), // null if target is a point
-    ].filter(item => item != null)
+    ].filter((item) => item != null)
     return this.getCommonAncestor(...cells)
   }
 

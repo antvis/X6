@@ -3,7 +3,7 @@ import NavLink from 'umi/navlink'
 import './index.less'
 
 const features = [{ link: '/basic', title: 'Basic' }]
-const BasicLayout: React.FC = props => {
+const BasicLayout: React.FC = (props) => {
   const pathname = (props as any).location.pathname as string
   if (pathname) {
     return props.children as React.ReactElement
@@ -14,7 +14,7 @@ const BasicLayout: React.FC = props => {
       <div className="nav">
         <h2>Features</h2>
         <ul>
-          {features.map(item => (
+          {features.map((item) => (
             <li key={item.link}>
               <NavLink to={item.link}>{item.title}</NavLink>
             </li>

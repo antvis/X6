@@ -53,7 +53,7 @@ export class Path extends Geometry {
         })
       } else {
         const arr = args as Segment[]
-        arr.forEach(s => {
+        arr.forEach((s) => {
           if (s.isSegment) {
             this.appendSegment(s)
           }
@@ -1004,7 +1004,7 @@ export class Path extends Geometry {
       if (segment.isVisible) {
         const divisions = segmentSubdivisions[i]
         if (divisions.length > 0) {
-          divisions.forEach(c => partialPoints.push(c.start))
+          divisions.forEach((c) => partialPoints.push(c.start))
         } else {
           partialPoints.push(segment.start)
         }
@@ -1029,7 +1029,7 @@ export class Path extends Geometry {
       return null
     }
 
-    return points.map(arr => new Polyline(arr))
+    return points.map((arr) => new Polyline(arr))
   }
 
   scale(
@@ -1037,7 +1037,7 @@ export class Path extends Geometry {
     sy: number,
     origin?: Point | Point.PointLike | Point.PointData,
   ) {
-    this.segments.forEach(s => s.scale(sx, sy, origin))
+    this.segments.forEach((s) => s.scale(sx, sy, origin))
     return this
   }
 
@@ -1048,16 +1048,16 @@ export class Path extends Geometry {
     ty?: number,
   ) {
     if (typeof tx === 'number') {
-      this.segments.forEach(s => s.translate(tx, ty as number))
+      this.segments.forEach((s) => s.translate(tx, ty as number))
     } else {
-      this.segments.forEach(s => s.translate(tx))
+      this.segments.forEach((s) => s.translate(tx))
     }
     return this
   }
 
   clone() {
     const path = new Path()
-    this.segments.forEach(s => path.appendSegment(s.clone()))
+    this.segments.forEach((s) => path.appendSegment(s.clone()))
     return path
   }
 
@@ -1086,7 +1086,7 @@ export class Path extends Geometry {
   }
 
   toJSON() {
-    return this.segments.map(s => s.toJSON())
+    return this.segments.map((s) => s.toJSON())
   }
 
   serialize() {
@@ -1094,7 +1094,7 @@ export class Path extends Geometry {
       throw new Error('Invalid path segments.')
     }
 
-    return this.segments.map(s => s.serialize()).join(' ')
+    return this.segments.map((s) => s.serialize()).join(' ')
   }
 }
 
@@ -1135,7 +1135,7 @@ export namespace Path {
         const args = command.match(argRe)
         if (args != null) {
           const type = args[0]
-          const coords = args.slice(1).map(a => +a)
+          const coords = args.slice(1).map((a) => +a)
           const segment = createSegment.call(null, type, ...coords)
           path.appendSegment(segment)
         }

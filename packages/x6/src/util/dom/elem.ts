@@ -160,7 +160,7 @@ export function append(
   elems: Element | DocumentFragment | (Element | DocumentFragment)[],
 ) {
   const arr = Array.isArray(elems) ? elems : [elems]
-  arr.forEach(child => {
+  arr.forEach((child) => {
     if (child != null) {
       elem.appendChild(child)
     }
@@ -182,7 +182,7 @@ export function before(
   const parent = elem.parentNode
   if (parent) {
     const arr = Array.isArray(elems) ? elems : [elems]
-    arr.forEach(child => {
+    arr.forEach((child) => {
       if (child != null) {
         parent.insertBefore(child, elem)
       }

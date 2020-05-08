@@ -1,7 +1,7 @@
 import { Polyline, Path } from '../geometry'
 import { Connector } from './index'
 
-export const normal: Connector.Definition = function(
+export const normal: Connector.Definition = function (
   sourcePoint,
   targetPoint,
   routePoints,

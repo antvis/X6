@@ -105,10 +105,10 @@ export class Animation {
     const paths = Array.isArray(path) ? path : path.split(delim)
 
     Object.keys(this.ids)
-      .filter(key =>
+      .filter((key) =>
         ObjectExt.isEqual(paths, key.split(delim).slice(0, paths.length)),
       )
-      .forEach(key => {
+      .forEach((key) => {
         Dom.cancelAnimationFrame(this.ids[key])
         delete this.ids[key]
         this.cell.notify('transition:end', { cell: this.cell, path: key })

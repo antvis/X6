@@ -16,7 +16,7 @@ export class Validator extends Basecoat<Validator.EventArgs> {
 
   protected onCommand({ cmds }: UndoManager.EventArgs['add']) {
     return Array.isArray(cmds)
-      ? cmds.every(cmd => this.validateCommand(cmd))
+      ? cmds.every((cmd) => this.validateCommand(cmd))
       : this.validateCommand(cmds)
   }
 
@@ -29,7 +29,7 @@ export class Validator extends Basecoat<Validator.EventArgs> {
 
     let handoverErr: Error | null = null
 
-    callbacks.forEach(routes => {
+    callbacks.forEach((routes) => {
       let i = 0
 
       const rollup = (err: Error | null) => {
@@ -65,13 +65,13 @@ export class Validator extends Basecoat<Validator.EventArgs> {
   validate(events: string | string[], ...callbacks: Validator.Callback[]) {
     const evts = Array.isArray(events) ? events : events.split(/\s+/)
 
-    callbacks.forEach(callback => {
+    callbacks.forEach((callback) => {
       if (typeof callback !== 'function') {
         throw new Error(`${evts.join(' ')} requires callback functions.`)
       }
     })
 
-    evts.forEach(event => {
+    evts.forEach((event) => {
       if (this.map[event] == null) {
         this.map[event] = []
       }

@@ -69,7 +69,7 @@ describe('Dom', () => {
 
         expect(Array.isArray(vels)).toBe(true)
         expect(vels.length).toEqual(9)
-        vels.forEach(vel => {
+        vels.forEach((vel) => {
           expect(isVector(vel)).toBe(true)
         })
       })

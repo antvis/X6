@@ -63,7 +63,7 @@ function createLines(
 
 function findLineIntersections(line: Line, crossCheckLines: Line[]) {
   const intersections: Point[] = []
-  crossCheckLines.forEach(crossCheckLine => {
+  crossCheckLines.forEach((crossCheckLine) => {
     const intersection = line.intersectionWithLine(crossCheckLine)
     if (intersection) {
       intersections.push(intersection)
@@ -247,14 +247,8 @@ function buildRoundedSegment(
   const startMove = -Math.min(offset, prevDistance)
   const endMove = -Math.min(offset, nextDistance)
 
-  const roundedStart = curr
-    .clone()
-    .move(prev, startMove)
-    .round()
-  const roundedEnd = curr
-    .clone()
-    .move(next, endMove)
-    .round()
+  const roundedStart = curr.clone().move(prev, startMove).round()
+  const roundedEnd = curr.clone().move(next, endMove).round()
 
   const control1 = new Point(
     F13 * roundedStart.x + F23 * curr.x,
@@ -285,7 +279,7 @@ export interface JumpoverConnectorOptions extends Connector.BaseOptions {
 let jumppedLines: Line[]
 let skippedPoints: Point[]
 
-export const jumpover: Connector.Definition<JumpoverConnectorOptions> = function(
+export const jumpover: Connector.Definition<JumpoverConnectorOptions> = function (
   sourcePoint,
   targetPoint,
   routePoints,
@@ -337,7 +331,7 @@ export const jumpover: Connector.Definition<JumpoverConnectorOptions> = function
   })
 
   // find views for all links
-  const linkViews = edges.map(edge => {
+  const linkViews = edges.map((edge) => {
     return graph.findViewByCell(edge) as EdgeView
   })
 
@@ -345,7 +339,7 @@ export const jumpover: Connector.Definition<JumpoverConnectorOptions> = function
   const thisLines = createLines(sourcePoint, targetPoint, routePoints)
 
   // create lines for all other links
-  const linkLines = linkViews.map(linkView => {
+  const linkLines = linkViews.map((linkView) => {
     if (linkView == null) {
       return []
     }
@@ -363,7 +357,7 @@ export const jumpover: Connector.Definition<JumpoverConnectorOptions> = function
   // points of intersection with other links
   const jumpingLines: Line[] = []
 
-  thisLines.forEach(line => {
+  thisLines.forEach((line) => {
     // iterate all links and grab the intersections with this line
     // these are then sorted by distance so the line can be split more easily
 

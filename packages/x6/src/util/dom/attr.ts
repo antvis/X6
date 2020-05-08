@@ -40,7 +40,7 @@ export function setAttributes(
   elem: Element,
   attrs: { [attr: string]: string | number | null | undefined },
 ) {
-  Object.keys(attrs).forEach(name => {
+  Object.keys(attrs).forEach((name) => {
     setAttribute(elem, name, attrs[name])
   })
 }
@@ -99,7 +99,7 @@ export function qualifyAttr(name: string) {
 export function styleToObject(styleString: string) {
   const ret: { [name: string]: string } = {}
   const styles = styleString.split(';')
-  styles.forEach(item => {
+  styles.forEach((item) => {
     const section = item.trim()
     if (section) {
       const pair = section.split('=')
@@ -115,7 +115,7 @@ export function mergeAttrs(
   target: { [attr: string]: any },
   source: { [attr: string]: any },
 ) {
-  Object.keys(source).forEach(attr => {
+  Object.keys(source).forEach((attr) => {
     if (attr === 'class') {
       target[attr] = target[attr]
         ? `${target[attr]} ${source[attr]}`

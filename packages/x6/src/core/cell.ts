@@ -38,7 +38,7 @@ export class Cell<
       } else if (typeof propHooks === 'function') {
         this.propHooks.push(propHooks)
       } else {
-        Object.keys(propHooks).forEach(name => {
+        Object.keys(propHooks).forEach((name) => {
           const hook = propHooks[name]
           if (typeof hook === 'function') {
             this.propHooks.push(hook)
@@ -130,7 +130,7 @@ export class Cell<
   }
 
   protected setup() {
-    this.store.on('change:*', metadata => {
+    this.store.on('change:*', (metadata) => {
       const { key, current, previous, options } = metadata
 
       this.notify('change:*', {
@@ -652,8 +652,8 @@ export class Cell<
       const childrenIds = this.store.get('children')
       if (childrenIds && childrenIds.length && this.model) {
         children = childrenIds
-          .map(id => this.model?.getCell(id))
-          .filter(cell => cell != null) as Cell[]
+          .map((id) => this.model?.getCell(id))
+          .filter((cell) => cell != null) as Cell[]
         this._children = children
       }
     }
@@ -730,7 +730,7 @@ export class Cell<
       // depth first
       {
         const cells = this.getChildren() || []
-        cells.forEach(cell => {
+        cells.forEach((cell) => {
           cells.push(...cell.getDescendants(options))
         })
         return cells
@@ -796,7 +796,7 @@ export class Cell<
     if (children != null) {
       this.store.set(
         'children',
-        children.map(child => child.id),
+        children.map((child) => child.id),
         options,
       )
     } else {
@@ -883,10 +883,10 @@ export class Cell<
 
       if (changed) {
         if (this.incomings) {
-          this.incomings.forEach(edge => edge.updateParent(options))
+          this.incomings.forEach((edge) => edge.updateParent(options))
         }
         if (this.outgoings) {
-          this.outgoings.forEach(edge => edge.updateParent(options))
+          this.outgoings.forEach((edge) => edge.updateParent(options))
         }
       }
 
@@ -930,7 +930,7 @@ export class Cell<
     } else {
       this.executeBatch('remove', () => {
         if (options.deep !== false) {
-          this.eachChild(child => child.remove(options))
+          this.eachChild((child) => child.remove(options))
         }
         if (this.model) {
           this.model.removeCell(this, options)
@@ -1026,11 +1026,11 @@ export class Cell<
     const defaultAttrs = defaults.attrs || {}
     const finalAttrs: Attr.CellAttrs = {}
 
-    Object.keys(attrs).forEach(key => {
+    Object.keys(attrs).forEach((key) => {
       const attr = attrs[key]
       const defaultAttr = defaultAttrs[key]
 
-      Object.keys(attr).forEach(name => {
+      Object.keys(attr).forEach((name) => {
         const value = attr[name] as KeyValue
         const defaultValue = defaultAttr ? defaultAttr[name] : null
 
@@ -1039,7 +1039,7 @@ export class Cell<
           typeof value === 'object' &&
           !Array.isArray(value)
         ) {
-          Object.keys(value).forEach(subName => {
+          Object.keys(value).forEach((subName) => {
             const subValue = value[subName]
             if (
               defaultAttr == null ||
@@ -1318,15 +1318,16 @@ export namespace Cell {
     ...cells: (Cell | null | undefined)[]
   ): Cell | null {
     const ancestors = cells
-      .filter(cell => cell != null)
-      .map(cell => cell!.getAncestors())
+      .filter((cell) => cell != null)
+      .map((cell) => cell!.getAncestors())
       .sort((a, b) => {
         return a.length - b.length
       })
 
     const first = ancestors.shift()!
     return (
-      first.find(cell => ancestors.every(item => item.includes(cell))) || null
+      first.find((cell) => ancestors.every((item) => item.includes(cell))) ||
+      null
     )
   }
 
@@ -1369,7 +1370,7 @@ export namespace Cell {
       return map
     }, {})
 
-    inputs.forEach(cell => {
+    inputs.forEach((cell) => {
       const clone = cloneMap[cell.id]
       if (clone.isEdge()) {
         const sourceId = clone.getSourceCellId()

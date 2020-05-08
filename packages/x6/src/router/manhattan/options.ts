@@ -229,7 +229,7 @@ export function resolveOptions(options: ManhattanRouterOptions) {
     }
   }
 
-  result.directions.forEach(direction => {
+  result.directions.forEach((direction) => {
     const point1 = new Point(0, 0)
     const point2 = new Point(direction.offsetX, direction.offsetY)
     direction.angle = Angle.normalize(point1.theta(point2))

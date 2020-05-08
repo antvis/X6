@@ -23,12 +23,12 @@ export class Clipboard {
 
     // sort asc by cell type
     this.cells = ArrayExt.sortBy(
-      Object.keys(cloned).map(key => cloned[key]),
-      cell => (cell.isEdge() ? 2 : 1),
+      Object.keys(cloned).map((key) => cloned[key]),
+      (cell) => (cell.isEdge() ? 2 : 1),
     )
 
     if (options.useLocalStorage !== false && window.localStorage) {
-      const data = this.cells.map(cell => cell.toJSON())
+      const data = this.cells.map((cell) => cell.toJSON())
       localStorage.setItem(this.LOCAL_STORAGE_KEY, JSON.stringify(data))
     }
   }
@@ -41,7 +41,7 @@ export class Clipboard {
     this.copy(cells, graph, options)
     const model = graph instanceof Graph ? graph.model : graph
     model.executeBatch('cut', () => {
-      cells.forEach(cell => cell.remove())
+      cells.forEach((cell) => cell.remove())
     })
   }
 
@@ -64,7 +64,7 @@ export class Clipboard {
       dy = typeof offset === 'number' ? offset : offset.dy
     }
 
-    this.cells.map(cell => {
+    this.cells.map((cell) => {
       cell.model = null
       cell.removeProp('zIndex')
       if (dx || dy) {

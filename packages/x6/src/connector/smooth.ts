@@ -1,7 +1,7 @@
 import { Curve, Path } from '../geometry'
 import { Connector } from './index'
 
-export const smooth: Connector.Definition = function(
+export const smooth: Connector.Definition = function (
   sourcePoint,
   targetPoint,
   routePoints,

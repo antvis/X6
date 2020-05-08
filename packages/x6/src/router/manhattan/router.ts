@@ -80,8 +80,8 @@ function findRoute(
   }
 
   // take into account only accessible rect points (those not under obstacles)
-  startPoints = startPoints.filter(p => map.isAccessible(p))
-  endPoints = endPoints.filter(p => map.isAccessible(p))
+  startPoints = startPoints.filter((p) => map.isAccessible(p))
+  endPoints = endPoints.filter((p) => map.isAccessible(p))
 
   // There is an accessible route point on both sides.
   if (startPoints.length > 0 && endPoints.length > 0) {
@@ -261,7 +261,7 @@ function findRoute(
   return null
 }
 
-export const router: Router.Definition<ManhattanRouterOptions> = function(
+export const router: Router.Definition<ManhattanRouterOptions> = function (
   vertices,
   optionsRaw,
   edgeView,
@@ -281,7 +281,7 @@ export const router: Router.Definition<ManhattanRouterOptions> = function(
     edgeView.cell,
   )
 
-  const oldVertices = vertices.map(p => Point.create(p))
+  const oldVertices = vertices.map((p) => Point.create(p))
   const newVertices: Point[] = []
 
   // The origin of first route's grid, does not need snapping

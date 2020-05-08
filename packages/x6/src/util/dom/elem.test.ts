@@ -66,7 +66,7 @@ describe('Dom', () => {
   describe('elem', () => {
     const childrenTagNames = (vel: Vectorizer) => {
       const tagNames: string[] = []
-      vel.node.childNodes.forEach(childNode => {
+      vel.node.childNodes.forEach((childNode) => {
         tagNames.push((childNode as HTMLElement).tagName.toLowerCase())
       })
       return tagNames
@@ -189,7 +189,7 @@ describe('Dom', () => {
         const found = container.find('circle')
         expect(found).toBeInstanceOf(Array)
         expect(found.length > 0).toBeTruthy()
-        expect(found.every(f => f instanceof Vectorizer)).toBe(true)
+        expect(found.every((f) => f instanceof Vectorizer)).toBe(true)
       })
     })
 
@@ -289,10 +289,7 @@ describe('Dom', () => {
       let group: Vectorizer
 
       beforeEach(() => {
-        group = createVector(svgGroup)
-          .clone()
-          .empty()
-          .appendTo(svgContainer)
+        group = createVector(svgGroup).clone().empty().appendTo(svgContainer)
       })
 
       afterAll(() => group.remove())
@@ -324,12 +321,8 @@ describe('Dom', () => {
       let rect: Vectorizer
 
       beforeEach(() => {
-        group = createVector(svgGroup)
-          .clone()
-          .empty()
-        rect = createVector(svgRectangle)
-          .clone()
-          .empty()
+        group = createVector(svgGroup).clone().empty()
+        rect = createVector(svgRectangle).clone().empty()
         group.append(rect)
       })
 
@@ -366,7 +359,7 @@ describe('Dom', () => {
       it('should return a array for vectorizers', () => {
         const children = createVector(svgGroup).children()
         expect(children).toBeInstanceOf(Array)
-        expect(children.every(c => c instanceof Vectorizer)).toEqual(true)
+        expect(children.every((c) => c instanceof Vectorizer)).toEqual(true)
       })
     })
   })

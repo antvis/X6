@@ -215,7 +215,7 @@ export class EdgeView<
     const cache = this.containers
     const children = Dom.createVectors(markup)
     // Cache children elements for quicker access.
-    children.forEach(child => {
+    children.forEach((child) => {
       const className = child.attr('class')
       if (className) {
         cache[StringExt.camelCase(className) as keyof EdgeView.ContainerCache] =
@@ -229,7 +229,7 @@ export class EdgeView<
 
     Dom.append(
       this.container,
-      children.map(child => child.node),
+      children.map((child) => child.node),
     )
   }
 
@@ -531,7 +531,7 @@ export class EdgeView<
     // Puts the route points into a polyline and try to simplify.
     const polyline = new Polyline(routePoints)
     polyline.simplify({ threshold: 0.01 })
-    const simplifiedPoints = polyline.points.map(point => point.toJSON())
+    const simplifiedPoints = polyline.points.map((point) => point.toJSON())
     const simplifiedCount = simplifiedPoints.length
 
     // If simplification did not remove any redundant vertices.
@@ -833,7 +833,7 @@ export class EdgeView<
     }
 
     return routePoints == null
-      ? vertices.map(p => Point.create(p))
+      ? vertices.map((p) => Point.create(p))
       : routePoints
   }
 
@@ -2139,13 +2139,10 @@ export class EdgeView<
     let minDistance = Number.MAX_SAFE_INTEGER
     const pos = new Point(x, y)
 
-    views.forEach(view => {
+    views.forEach((view) => {
       if (view.container.getAttribute('magnet') !== 'false') {
         // Find distance from the center of the cell to pointer coordinates
-        distance = view.cell
-          .getBBox()
-          .getCenter()
-          .distance(pos)
+        distance = view.cell.getBBox().getCenter().distance(pos)
         // the connection is looked up in a circle area by `distance < r`
         if (distance < radius && distance < minDistance) {
           if (
@@ -2308,7 +2305,7 @@ export class EdgeView<
       }
 
       const validate = graph.options.validateConnection
-      const availableMagnets = magnets.filter(magnet =>
+      const availableMagnets = magnets.filter((magnet) =>
         validate.apply(graph, data.getValidateConnectionArgs(view, magnet)),
       )
 
@@ -2327,12 +2324,12 @@ export class EdgeView<
 
   protected unmarkAvailableMagnets(data: EventData.ArrowheadDragging) {
     const marked = data.marked || {}
-    Object.keys(marked).forEach(id => {
+    Object.keys(marked).forEach((id) => {
       const view = this.graph.findViewByCell(id)
 
       if (view) {
         const magnets = marked[id]
-        magnets.forEach(magnet => {
+        magnets.forEach((magnet) => {
           view.unhighlight(magnet, { type: 'magnetAvailability' })
         })
 

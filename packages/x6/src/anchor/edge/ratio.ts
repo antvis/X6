@@ -4,7 +4,7 @@ export interface RatioAnchorOptions {
   ratio?: number
 }
 
-export const ratio: EdgeAnchor.Definition<RatioAnchorOptions> = function(
+export const ratio: EdgeAnchor.Definition<RatioAnchorOptions> = function (
   view,
   magnet,
   ref,

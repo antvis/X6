@@ -7,7 +7,7 @@ export interface OrthAnchorOptions extends ResolveOptions {
   fallbackAt?: number | string
 }
 
-const orthogonal: EdgeAnchor.ResolvedDefinition<OrthAnchorOptions> = function(
+const orthogonal: EdgeAnchor.ResolvedDefinition<OrthAnchorOptions> = function (
   view,
   magnet,
   refPoint,

@@ -6,7 +6,7 @@ export interface MiddleSideAnchorOptions extends ResolveOptions {
   padding?: number
 }
 
-const middleSide: NodeAnchor.ResolvedDefinition<MiddleSideAnchorOptions> = function(
+const middleSide: NodeAnchor.ResolvedDefinition<MiddleSideAnchorOptions> = function (
   view,
   magnet,
   refPoint,

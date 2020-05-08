@@ -125,7 +125,7 @@ export class Scroller extends View {
     }, {})
 
     this.onBackgroundEvent = this.onBackgroundEvent.bind(this)
-    Object.keys(this.delegatedHandlers).forEach(name => {
+    Object.keys(this.delegatedHandlers).forEach((name) => {
       this.delegateEvent(
         name,
         {
@@ -137,7 +137,7 @@ export class Scroller extends View {
   }
 
   protected undelegateBackgroundEvents() {
-    Object.keys(this.delegatedHandlers).forEach(name => {
+    Object.keys(this.delegatedHandlers).forEach((name) => {
       this.undelegateEvent(name, this.onBackgroundEvent)
     })
   }
@@ -622,10 +622,7 @@ export class Scroller extends View {
     )
 
     if (scale === targetScale) {
-      const translate = localPoint
-        .diff(targetPoint)
-        .scale(scale, scale)
-        .round()
+      const translate = localPoint.diff(targetPoint).scale(scale, scale).round()
       transform = `translate(${translate.x}px,${translate.y}px)`
     } else {
       const delta =
@@ -640,7 +637,7 @@ export class Scroller extends View {
     this.$container.addClass(this.transitionClassName)
     this.$background
       .off(this.transitionEventName)
-      .on(this.transitionEventName, e => {
+      .on(this.transitionEventName, (e) => {
         this.syncTransition(targetScale, { x: x as number, y: y as number })
         if (typeof onTransitionEnd === 'function') {
           onTransitionEnd.call(this, e)
