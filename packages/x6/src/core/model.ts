@@ -14,7 +14,7 @@ export class Model extends Basecoat<Model.EventArgs> {
   protected readonly batches: KeyValue<number> = {}
   protected readonly addings: WeakMap<Cell, boolean> = new WeakMap()
 
-  protected graph: Graph | null
+  public graph: Graph | null
   protected nodes: KeyValue<boolean> = {}
   protected edges: KeyValue<boolean> = {}
 

@@ -295,6 +295,7 @@ export class Graph extends View<Graph.EventArgs> {
 
   setModel(model: Model) {
     this.model = model == null ? this.createModel() : model
+    this.model.graph = this
   }
 
   init() {
