@@ -77,6 +77,7 @@
     "@types/webpack": "^4.41.7",
     "babel-jest": "^25.4.0",
     "babel-loader": "^8.0.6",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
     "coveralls": "^3.0.6",
     "eslint": "^6.1.0",
     "jest": "^24.8.0",
