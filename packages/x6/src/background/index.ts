@@ -1,7 +1,7 @@
 import { ValuesType } from 'utility-types'
 import * as CSS from 'csstype'
 import * as patterns from './main'
-import { KeyValue } from '../../types'
+import { KeyValue } from '../types'
 
 export namespace Background {
   export interface Options {

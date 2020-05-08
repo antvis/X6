@@ -1,4 +1,4 @@
-import { Background } from '../style'
+import { Background } from '../background'
 import { Registry } from './registry'
 
 export const BackgroundRegistry = Registry.create<

@@ -1,4 +1,4 @@
-import { Highlighter } from '../style'
+import { Highlighter } from '../highlighter'
 import { Registry } from './registry'
 
 export const HighlighterRegistry = Registry.create<

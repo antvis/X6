@@ -1,4 +1,4 @@
-import { Dom } from '../../util'
+import { Dom } from '../util'
 import { Grid } from './index'
 
 export interface MeshOptions extends Grid.Options {}

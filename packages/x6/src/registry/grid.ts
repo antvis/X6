@@ -1,4 +1,4 @@
-import { Grid } from '../style'
+import { Grid } from '../grid'
 import { Registry } from './registry'
 
 export const GridRegistry = Registry.create<
