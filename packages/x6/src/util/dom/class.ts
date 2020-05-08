@@ -103,7 +103,7 @@ export function toggleClass(
 
   if (typeof selector === 'string') {
     const metches = selector.match(rnotwhite) || []
-    metches.forEach(cls => {
+    metches.forEach((cls) => {
       hasClass(elem, cls) ? removeClass(elem, cls) : addClass(elem, cls)
     })
   }

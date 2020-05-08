@@ -86,7 +86,7 @@ export default class Example extends React.Component {
       height: 1400,
       gridSize: 10,
       perpendicularLinks: false,
-      interactive: function(cellView: CellView) {
+      interactive: function (cellView: CellView) {
         if (cellView.cell.getProp('customLinkInteractions')) {
           return { vertexAdd: false }
         }

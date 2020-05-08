@@ -59,7 +59,7 @@ export class CellView<
     }
 
     if (actions) {
-      Object.keys(actions).forEach(key => {
+      Object.keys(actions).forEach((key) => {
         const val = actions[key]
         const raw = ret.actions[key]
         if (val && raw) {
@@ -396,10 +396,7 @@ export class CellView<
       const bbox = cell.getBBox()
       const cx = bbox.width / 2
       const cy = bbox.height / 2
-      matrix = matrix
-        .translate(cx, cy)
-        .rotate(angle)
-        .translate(-cx, -cy)
+      matrix = matrix.translate(cx, cy).rotate(angle).translate(-cx, -cy)
     }
     return matrix
   }
@@ -889,13 +886,13 @@ export namespace CellView {
 // ----
 export namespace CellView {
   export function priority(value: number) {
-    return function(ctor: typeof CellView) {
+    return function (ctor: typeof CellView) {
       ctor.config({ priority: value })
     }
   }
 
   export function bootstrap(actions: CellViewFlag.Actions) {
-    return function(ctor: typeof CellView) {
+    return function (ctor: typeof CellView) {
       ctor.config({ bootstrap: actions })
     }
   }

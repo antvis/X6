@@ -4,7 +4,7 @@ import { EdgeAnchor } from './index'
 
 export interface ClosestAnchorOptions extends ResolveOptions {}
 
-export const getClosestPoint: EdgeAnchor.ResolvedDefinition<ClosestAnchorOptions> = function(
+export const getClosestPoint: EdgeAnchor.ResolvedDefinition<ClosestAnchorOptions> = function (
   view,
   magnet,
   refPoint,

@@ -53,7 +53,7 @@ export class ObstacleMap {
     if (source) {
       excludedAncestors = ArrayExt.union(
         excludedAncestors,
-        source.getAncestors().map(cell => cell.id),
+        source.getAncestors().map((cell) => cell.id),
       )
     }
 
@@ -61,7 +61,7 @@ export class ObstacleMap {
     if (target) {
       excludedAncestors = ArrayExt.union(
         excludedAncestors,
-        target.getAncestors().map(cell => cell.id),
+        target.getAncestors().map((cell) => cell.id),
       )
     }
 
@@ -75,7 +75,7 @@ export class ObstacleMap {
       const nodeType = node.type
       const excludeTypes = options.excludeTypes
       const excType = nodeType ? excludeTypes.includes(nodeType) : false
-      const excTerminal = excludedTerminals.some(cell => cell.id === node.id)
+      const excTerminal = excludedTerminals.some((cell) => cell.id === node.id)
       const excAncestor = excludedAncestors.includes(node.id)
       const excluded = excType || excTerminal || excAncestor
 
@@ -101,12 +101,9 @@ export class ObstacleMap {
   }
 
   isAccessible(point: Point) {
-    const key = point
-      .clone()
-      .snapToGrid(this.mapGridSize)
-      .toString()
+    const key = point.clone().snapToGrid(this.mapGridSize).toString()
 
     const rects = this.map[key]
-    return rects ? rects.every(rect => !rect.containsPoint(point)) : true
+    return rects ? rects.every((rect) => !rect.containsPoint(point)) : true
   }
 }

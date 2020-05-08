@@ -54,7 +54,7 @@ export const refRInscribed: Attr.Definition = {
   set: ((attrName): Attr.SetFunction => {
     const widthFn = setWrapper(attrName, 'width')
     const heightFn = setWrapper(attrName, 'height')
-    return function(value, options) {
+    return function (value, options) {
       const refBBox = options.refBBox
       const fn = refBBox.height > refBBox.width ? widthFn : heightFn
       return fn.call(this, value, options)
@@ -162,7 +162,7 @@ function setWrapper(
   attrName: string,
   dimension: 'width' | 'height',
 ): Attr.SetFunction {
-  return function(val, { refBBox }) {
+  return function (val, { refBBox }) {
     let value = parseFloat(val as string)
     const percentage = NumberExt.isPercentage(val)
     if (percentage) {
@@ -190,7 +190,7 @@ function shapeWrapper(
   const cacheName = 'x6-shape'
   const resetOffset = options && options.resetOffset
 
-  return function(value, { view, elem, refBBox }) {
+  return function (value, { view, elem, refBBox }) {
     const $elem = view.$(elem)
     let cache = $elem.data(cacheName)
     if (!cache || cache.value !== value) {
@@ -244,7 +244,7 @@ function dWrapper(options: { resetOffset: boolean }): Attr.SetFunction {
 
 // `points` attribute for SVGPolylines and SVGPolygons
 function pointsWrapper(options: { resetOffset: boolean }): Attr.SetFunction {
-  const shape = shapeWrapper(points => new Polyline(points as any), options)
+  const shape = shapeWrapper((points) => new Polyline(points as any), options)
   return (value, args) => {
     const polyline = shape<Polyline>(value, args)
     return {

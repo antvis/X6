@@ -6,7 +6,7 @@ export interface OrthAnchorOptions extends ResolveOptions {
   padding: number
 }
 
-const orthogonal: NodeAnchor.ResolvedDefinition<OrthAnchorOptions> = function(
+const orthogonal: NodeAnchor.ResolvedDefinition<OrthAnchorOptions> = function (
   view,
   magnet,
   refPoint,

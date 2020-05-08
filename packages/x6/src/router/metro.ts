@@ -72,7 +72,7 @@ const defaults: Partial<MetroRouterOptions> = {
   },
 }
 
-export const metro: Router.Definition<Partial<MetroRouterOptions>> = function(
+export const metro: Router.Definition<Partial<MetroRouterOptions>> = function (
   vertices,
   options,
   linkView,

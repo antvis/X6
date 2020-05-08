@@ -49,13 +49,13 @@ export class Model extends Basecoat<Model.EventArgs> {
     const collection = this.collection
 
     collection.on('sorted', () => this.notify('sorted', null))
-    collection.on('updated', args => this.notify('updated', args))
-    collection.on('reseted', args => {
+    collection.on('updated', (args) => this.notify('updated', args))
+    collection.on('reseted', (args) => {
       this.onReset(args.current)
       this.notify('reseted', args)
     })
 
-    collection.on('added', args => {
+    collection.on('added', (args) => {
       const cell = args.cell
       this.onCellAdded(cell)
       this.notify('cell:added', args)
@@ -66,7 +66,7 @@ export class Model extends Basecoat<Model.EventArgs> {
       }
     })
 
-    collection.on('removed', args => {
+    collection.on('removed', (args) => {
       const cell = args.cell
       this.onCellRemoved(cell, args.options)
       this.notify('cell:removed', args)
@@ -81,7 +81,7 @@ export class Model extends Basecoat<Model.EventArgs> {
   protected onReset(cells: Cell[]) {
     this.nodes = {}
     this.edges = {}
-    cells.forEach(cell => this.onCellAdded(cell))
+    cells.forEach((cell) => this.onCellAdded(cell))
   }
 
   protected sortOnChangeZ() {
@@ -137,7 +137,7 @@ export class Model extends Basecoat<Model.EventArgs> {
   }
 
   resetCells(cells: Cell[], options: Collection.SetOptions = {}) {
-    const items = cells.map(cell => this.prepareCell(cell, options))
+    const items = cells.map((cell) => this.prepareCell(cell, options))
     this.collection.reset(items, options)
     return this
   }
@@ -152,7 +152,7 @@ export class Model extends Basecoat<Model.EventArgs> {
       'clear',
       () => {
         // The nodes come after the edges.
-        const cells = raw.sort(cell => (cell.isEdge() ? 1 : 2))
+        const cells = raw.sort((cell) => (cell.isEdge() ? 1 : 2))
         while (cells.length > 0) {
           // Note that all the edges are removed first, so it's safe to
           // remove the nodes without removing the connected edges first.
@@ -196,7 +196,7 @@ export class Model extends Basecoat<Model.EventArgs> {
     if (!this.collection.has(cell) && !this.addings.has(cell)) {
       this.addings.set(cell, true)
       this.collection.add(this.prepareCell(cell, options), options)
-      cell.eachChild(child => this.addCell(child, options))
+      cell.eachChild((child) => this.addCell(child, options))
       this.addings.delete(cell)
     }
 
@@ -216,7 +216,7 @@ export class Model extends Basecoat<Model.EventArgs> {
     }
 
     this.startBatch('add', localOptions)
-    cells.forEach(cell => {
+    cells.forEach((cell) => {
       this.addCell(cell, localOptions)
       localOptions.position -= 1
     })
@@ -238,21 +238,21 @@ export class Model extends Basecoat<Model.EventArgs> {
   removeCells(cells: Cell[], options: Cell.RemoveOptions = {}) {
     if (cells.length) {
       this.executeBatch('remove', () => {
-        cells.forEach(cell => this.removeCell(cell, options))
+        cells.forEach((cell) => this.removeCell(cell, options))
       })
     }
     return this
   }
 
   removeEdges(cell: Cell | string, options: Cell.RemoveOptions = {}) {
-    this.getConnectedEdges(cell).forEach(edge => {
+    this.getConnectedEdges(cell).forEach((edge) => {
       edge.remove(options)
     })
   }
 
   disconnectEdges(cell: Cell | string, options: Edge.SetOptions) {
     const cellId = typeof cell === 'string' ? cell : cell.id
-    this.getConnectedEdges(cell).forEach(edge => {
+    this.getConnectedEdges(cell).forEach((edge) => {
       const sourceCell = edge.getSourceCell()
       const targetCell = edge.getTargetCell()
 
@@ -331,8 +331,8 @@ export class Model extends Basecoat<Model.EventArgs> {
   }) {
     return cache
       ? Object.keys(cache)
-          .map(id => this.getCell<T>(id))
-          .filter(cell => cell != null)
+          .map((id) => this.getCell<T>(id))
+          .filter((cell) => cell != null)
       : []
   }
 
@@ -393,7 +393,7 @@ export class Model extends Basecoat<Model.EventArgs> {
         : this.getIncomingEdges(cell)
 
       if (edges != null) {
-        edges.forEach(edge => {
+        edges.forEach((edge) => {
           if (cache[edge.id]) {
             return
           }
@@ -437,7 +437,7 @@ export class Model extends Basecoat<Model.EventArgs> {
     if (options.deep) {
       const descendants = node.getDescendants({ deep: true })
       const embedsCache: KeyValue<boolean> = {}
-      descendants.forEach(cell => {
+      descendants.forEach((cell) => {
         if (cell.isNode()) {
           embedsCache[cell.id] = true
         }
@@ -449,7 +449,7 @@ export class Model extends Basecoat<Model.EventArgs> {
           : this.getIncomingEdges(cell.id)
 
         if (edges != null) {
-          edges.forEach(edge => {
+          edges.forEach((edge) => {
             if (!cache[edge.id]) {
               const sourceCell = edge.getSourceCell()
               const targetCell = edge.getTargetCell()
@@ -471,7 +471,7 @@ export class Model extends Basecoat<Model.EventArgs> {
         }
       }
 
-      descendants.forEach(cell => {
+      descendants.forEach((cell) => {
         if (cell.isEdge()) {
           return
         }
@@ -497,7 +497,7 @@ export class Model extends Basecoat<Model.EventArgs> {
 
   protected getBoundaryNodes(isOrigin: boolean) {
     const result: Node[] = []
-    Object.keys(this.nodes).forEach(nodeId => {
+    Object.keys(this.nodes).forEach((nodeId) => {
       if (this.isBoundary(nodeId, isOrigin)) {
         const node = this.getCell<Node>(nodeId)
         if (node) {
@@ -603,7 +603,7 @@ export class Model extends Basecoat<Model.EventArgs> {
       }
     }
 
-    return Object.keys(map).map(id => map[id])
+    return Object.keys(map).map((id) => map[id])
   }
 
   /**
@@ -620,7 +620,7 @@ export class Model extends Basecoat<Model.EventArgs> {
       incoming = outgoing = true
     }
 
-    return this.getConnectedEdges(cell1, options).some(edge => {
+    return this.getConnectedEdges(cell1, options).some((edge) => {
       const sourceCell = edge.getSourceCell()
       const targetCell = edge.getTargetCell()
 
@@ -638,7 +638,7 @@ export class Model extends Basecoat<Model.EventArgs> {
     const descendants: Cell[] = []
     this.search(
       cell,
-      curr => {
+      (curr) => {
         if (curr !== cell) {
           descendants.push(curr)
         }
@@ -655,7 +655,7 @@ export class Model extends Basecoat<Model.EventArgs> {
     let result = false
     this.search(
       cell1,
-      curr => {
+      (curr) => {
         if (curr === cell2 && curr !== cell1) {
           result = true
           return false
@@ -670,7 +670,7 @@ export class Model extends Basecoat<Model.EventArgs> {
     const ancestors: Cell[] = []
     this.search(
       cell,
-      curr => {
+      (curr) => {
         if (curr !== cell) {
           ancestors.push(curr)
         }
@@ -687,7 +687,7 @@ export class Model extends Basecoat<Model.EventArgs> {
     let result = false
     this.search(
       cell1,
-      curr => {
+      (curr) => {
         if (curr === cell2 && curr !== cell1) {
           result = true
           return false
@@ -732,15 +732,15 @@ export class Model extends Basecoat<Model.EventArgs> {
       }
     }
 
-    cells.forEach(cell => {
+    cells.forEach((cell) => {
       collect(cell)
       if (options.deep) {
         const descendants = cell.getDescendants({ deep: true })
-        descendants.forEach(descendant => collect(descendant))
+        descendants.forEach((descendant) => collect(descendant))
       }
     })
 
-    edges.forEach(edge => {
+    edges.forEach((edge) => {
       // For edges, include their source & target
       const sourceCell = edge.getSourceCell()
       const targetCell = edge.getTargetCell()
@@ -760,11 +760,11 @@ export class Model extends Basecoat<Model.EventArgs> {
       }
     })
 
-    nodes.forEach(node => {
+    nodes.forEach((node) => {
       // For nodes, include their connected edges if their source/target
       // is in the subgraph.
       const edges = this.getConnectedEdges(node, options)
-      edges.forEach(edge => {
+      edges.forEach((edge) => {
         const sourceCell = edge.getSourceCell()
         const targetCell = edge.getTargetCell()
         if (
@@ -807,7 +807,7 @@ export class Model extends Basecoat<Model.EventArgs> {
   getNodesFromPoint(p: Point.PointLike): Cell[]
   getNodesFromPoint(x: number | Point.PointLike, y?: number) {
     const p = typeof x === 'number' ? { x, y: y || 0 } : x
-    return this.getNodes().filter(node => {
+    return this.getNodes().filter((node) => {
       return node.getBBox().containsPoint(p)
     })
   }
@@ -841,7 +841,7 @@ export class Model extends Basecoat<Model.EventArgs> {
     const opts =
       typeof x === 'number' ? options : (y as Model.GetCellsInAreaOptions)
     const strict = opts && opts.strict
-    return this.getNodes().filter(node => {
+    return this.getNodes().filter((node) => {
       const bbox = node.getBBox()
       return strict ? rect.containsRect(bbox) : rect.isIntersectWith(bbox)
     })
@@ -860,7 +860,7 @@ export class Model extends Basecoat<Model.EventArgs> {
         : this.getNodesFromPoint(bbox[options.by])
 
     return nodes.filter(
-      curr => node.id !== curr.id && !curr.isDescendantOf(node),
+      (curr) => node.id !== curr.id && !curr.isDescendantOf(node),
     )
   }
 
@@ -914,7 +914,7 @@ export class Model extends Basecoat<Model.EventArgs> {
         continue
       }
       const neighbors = this.getNeighbors(next, options)
-      neighbors.forEach(neighbor => {
+      neighbors.forEach((neighbor) => {
         distance[neighbor.id] = distance[next.id] + 1
         queue.push(neighbor)
       })
@@ -944,7 +944,7 @@ export class Model extends Basecoat<Model.EventArgs> {
       }
       const neighbors = this.getNeighbors(next, options)
       const lastIndex = queue.length
-      neighbors.forEach(neighbor => {
+      neighbors.forEach((neighbor) => {
         distance[neighbor.id] = distance[next.id] + 1
         queue.splice(lastIndex, 0, neighbor)
       })
@@ -998,7 +998,7 @@ export class Model extends Basecoat<Model.EventArgs> {
     options: Model.GetShortestPathOptions = {},
   ) {
     const adjacencyList: Dijkstra.AdjacencyList = {}
-    this.getEdges().forEach(edge => {
+    this.getEdges().forEach((edge) => {
       const sourceId = edge.getSourceCellId()
       const targetId = edge.getTargetCellId()
       if (sourceId && targetId) {
@@ -1040,8 +1040,8 @@ export class Model extends Basecoat<Model.EventArgs> {
    */
   translate(tx: number, ty: number, options: Cell.TranslateOptions) {
     this.getCells()
-      .filter(cell => !cell.hasParent())
-      .forEach(cell => cell.translate(tx, ty, options))
+      .filter((cell) => !cell.hasParent())
+      .forEach((cell) => cell.translate(tx, ty, options))
 
     return this
   }
@@ -1061,7 +1061,7 @@ export class Model extends Basecoat<Model.EventArgs> {
       const sx = Math.max(width / bbox.width, 0)
       const sy = Math.max(height / bbox.height, 0)
       const origin = bbox.getOrigin()
-      cells.forEach(cell => cell.scale(sx, sy, origin, options))
+      cells.forEach((cell) => cell.scale(sx, sy, origin, options))
     }
 
     return this
@@ -1102,7 +1102,7 @@ export class Model extends Basecoat<Model.EventArgs> {
 
   hasActiveBatch(name: string | string[] = Object.keys(this.batches)) {
     const names = Array.isArray(name) ? name : [name]
-    return names.some(batch => this.batches[batch] > 0)
+    return names.some((batch) => this.batches[batch] > 0)
   }
 
   // #endregion
@@ -1190,7 +1190,7 @@ export namespace Model {
 export namespace Model {
   export function toJSON(cells: Cell[]) {
     return {
-      cells: cells.map(cell => cell.toJSON()),
+      cells: cells.map((cell) => cell.toJSON()),
     }
   }
 
@@ -1211,7 +1211,7 @@ export namespace Model {
       }
 
       if (data.nodes) {
-        data.nodes.forEach(node => {
+        data.nodes.forEach((node) => {
           if (node.type == null) {
           }
           cells.push(node)
@@ -1219,7 +1219,7 @@ export namespace Model {
       }
 
       if (data.edges) {
-        data.edges.forEach(edge => {
+        data.edges.forEach((edge) => {
           if (edge.type == null) {
           }
           cells.push(edge)
@@ -1227,7 +1227,7 @@ export namespace Model {
       }
     }
 
-    return cells.map(cell => {
+    return cells.map((cell) => {
       const type = cell.type
       if (type) {
         if (NodeRegistry.exist(type)) {

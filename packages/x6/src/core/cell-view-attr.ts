@@ -29,7 +29,7 @@ export class CellViewAttr {
     const kebabCase = (s: string) => s.replace(/[A-Z]/g, '-$&').toLowerCase()
 
     // divide the attributes between normal and special
-    Object.keys(raw).forEach(name => {
+    Object.keys(raw).forEach((name) => {
       const val = raw[name]
       const definition = this.getAttrDefinition(name)
       const isValid = Attr.isValidDefinition.call(this.view, definition, val, {
@@ -138,7 +138,7 @@ export class CellViewAttr {
       }
     > = new Dictionary()
 
-    Object.keys(cellAttrs).forEach(selector => {
+    Object.keys(cellAttrs).forEach((selector) => {
       const attrs = cellAttrs[selector]
       if (!ObjectExt.isPlainObject(attrs)) {
         return
@@ -189,7 +189,7 @@ export class CellViewAttr {
       }
     })
 
-    merge.forEach(node => {
+    merge.forEach((node) => {
       const item = result.get(node)!
       const arr = item.attrs as Attr.ComplexAttrs[]
       item.attrs = arr.reduceRight(
@@ -232,7 +232,7 @@ export class CellViewAttr {
     })
 
     if (setAttrs != null) {
-      Object.keys(setAttrs).forEach(name => {
+      Object.keys(setAttrs).forEach((name) => {
         const val = setAttrs[name]
         const def = this.getAttrDefinition(name)
         if (def != null) {
@@ -286,7 +286,7 @@ export class CellViewAttr {
 
     let positioned = false
     if (positionAttrs != null) {
-      Object.keys(positionAttrs).forEach(name => {
+      Object.keys(positionAttrs).forEach((name) => {
         const val = positionAttrs[name]
         const def = this.getAttrDefinition(name)
         if (def != null) {
@@ -317,7 +317,7 @@ export class CellViewAttr {
           nodeMatrix,
         ).scale(1 / sx, 1 / sy)
 
-        Object.keys(offsetAttrs).forEach(name => {
+        Object.keys(offsetAttrs).forEach((name) => {
           const val = offsetAttrs[name]
           const def = this.getAttrDefinition(name)
           if (def != null) {
@@ -376,7 +376,7 @@ export class CellViewAttr {
       processedAttributes: CellViewAttr.ProcessedAttrs
     }[] = []
 
-    nodesAttrs.each(data => {
+    nodesAttrs.each((data) => {
       const node = data.elem
       const nodeAttrs = data.attrs
       const processed = this.processAttrs(node, nodeAttrs)
@@ -418,7 +418,7 @@ export class CellViewAttr {
 
         // If an element in the list is positioned relative to this one, then
         // we want to insert this one before it in the list.
-        const index = specialItems.findIndex(item => item.refNode === node)
+        const index = specialItems.findIndex((item) => item.refNode === node)
         if (index > -1) {
           specialItems.splice(index, 0, item)
         } else {
@@ -429,7 +429,7 @@ export class CellViewAttr {
 
     const bboxCache: Dictionary<Element, Rectangle> = new Dictionary()
     let rotatableMatrix: DOMMatrix
-    specialItems.forEach(item => {
+    specialItems.forEach((item) => {
       const node = item.node
       const refNode = item.refNode
 

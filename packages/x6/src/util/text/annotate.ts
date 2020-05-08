@@ -94,7 +94,7 @@ export function findAnnotationsAtIndex(
   index: number,
 ) {
   return annotations
-    ? annotations.filter(a => a.start < index && index <= a.end)
+    ? annotations.filter((a) => a.start < index && index <= a.end)
     : []
 }
 
@@ -105,7 +105,7 @@ export function findAnnotationsBetweenIndexes(
 ) {
   return annotations
     ? annotations.filter(
-        a =>
+        (a) =>
           (start >= a.start && start < a.end) ||
           (end > a.start && end <= a.end) ||
           (a.start >= start && a.end < end),
@@ -119,7 +119,7 @@ export function shiftAnnotations(
   offset: number,
 ) {
   if (annotations) {
-    annotations.forEach(a => {
+    annotations.forEach((a) => {
       if (a.start < index && a.end >= index) {
         a.end += offset
       } else if (a.start >= index) {

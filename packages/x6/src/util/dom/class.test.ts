@@ -77,7 +77,7 @@ describe('Dom', () => {
         vel.removeClass()
         vel.addClass('test')
         vel.addClass(' ')
-        addClass(vel.node, cls => `${cls} foo`)
+        addClass(vel.node, (cls) => `${cls} foo`)
         expect(vel.attr('class')).toEqual('test foo')
       })
     })
@@ -102,7 +102,7 @@ describe('Dom', () => {
       it('should call hook', () => {
         vel.removeClass()
         vel.addClass('foo bar')
-        removeClass(vel.node, cls => cls.split(' ')[1])
+        removeClass(vel.node, (cls) => cls.split(' ')[1])
         expect(vel.attr('class')).toEqual('foo')
       })
 

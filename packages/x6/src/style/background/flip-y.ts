@@ -1,6 +1,6 @@
 import { Background } from './index'
 
-export const flipY: Background.Definition = function(img) {
+export const flipY: Background.Definition = function (img) {
   // d d
   // q q
 

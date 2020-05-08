@@ -392,7 +392,7 @@ export class Node<
     } else {
       this.startBatch('translate', options)
       this.store.set('position', translatedPosition, options)
-      this.eachChild(child => child.translate(tx, ty, options))
+      this.eachChild((child) => child.translate(tx, ty, options))
       this.stopBatch('translate', options)
     }
 
@@ -493,7 +493,7 @@ export class Node<
    */
   fit(options: Node.FitEmbedsOptions = {}) {
     const children = this.getChildren() || []
-    const embeds = children.filter(cell => cell.isNode()) as Node[]
+    const embeds = children.filter((cell) => cell.isNode()) as Node[]
     if (embeds.length === 0) {
       return this
     }
@@ -501,7 +501,7 @@ export class Node<
     this.startBatch('fit-embeds', options)
 
     if (options.deep) {
-      embeds.forEach(cell => cell.fit(options))
+      embeds.forEach((cell) => cell.fit(options))
     }
 
     let { x, y, width, height } = Cell.getCellsBBox(embeds)!
@@ -610,12 +610,12 @@ export class Node<
   }
 
   getPortsByGroup(groupName: string) {
-    return this.getPorts().filter(port => port.group === groupName)
+    return this.getPorts().filter((port) => port.group === groupName)
   }
 
   getPort(portId: string) {
     return ObjectExt.cloneDeep(
-      this.ports.items.find(port => port.id && port.id === portId),
+      this.ports.items.find((port) => port.id && port.id === portId),
     )
   }
 
@@ -634,7 +634,7 @@ export class Node<
   getPortIndex(port: PortData.PortMetadata | string) {
     const portId = typeof port === 'string' ? port : port.id
     return portId != null
-      ? this.ports.items.findIndex(item => item.id === portId)
+      ? this.ports.items.findIndex((item) => item.id === portId)
       : -1
   }
 
@@ -819,8 +819,8 @@ export class Node<
         options.rewrite = true
         const currentPorts = [...this.ports.items]
         const remainingPorts = currentPorts.filter(
-          cp =>
-            !portsForRemoval.some(p => {
+          (cp) =>
+            !portsForRemoval.some((p) => {
               const id = typeof p === 'string' ? p : p.id
               return cp.id === id
             }),
@@ -860,7 +860,7 @@ export class Node<
     const current = this.ports
     const currentItemsMap: { [id: string]: boolean } = {}
 
-    current.items.forEach(item => {
+    current.items.forEach((item) => {
       if (item.id) {
         currentItemsMap[item.id] = true
       }
@@ -871,7 +871,7 @@ export class Node<
       items: [],
     }
 
-    previous.items.forEach(item => {
+    previous.items.forEach((item) => {
       if (item.id && !currentItemsMap[item.id]) {
         removed[item.id] = true
       }
@@ -880,14 +880,14 @@ export class Node<
     const model = this.model
     if (model && !ObjectExt.isEmpty(removed)) {
       const incomings = model.getConnectedEdges(this, { incoming: true })
-      incomings.forEach(edge => {
+      incomings.forEach((edge) => {
         const portId = edge.getTargetPortId()
         if (portId && removed[portId]) {
           edge.remove()
         }
       })
       const outgoings = model.getConnectedEdges(this, { outgoing: true })
-      outgoings.forEach(edge => {
+      outgoings.forEach((edge) => {
         const portId = edge.getSourcePortId()
         if (portId && removed[portId]) {
           edge.remove()
@@ -899,7 +899,7 @@ export class Node<
   protected validatePorts() {
     const ids: { [id: string]: boolean } = {}
     const errors: string[] = []
-    this.ports.items.forEach(p => {
+    this.ports.items.forEach((p) => {
       if (typeof p !== 'object') {
         errors.push(`Invalid port ${p}.`)
       }
@@ -938,16 +938,16 @@ export class Node<
     const curPorts = this.portData.getPorts()
 
     const added = prevPorts
-      ? curPorts.filter(item => {
-          if (!prevPorts.find(prevPort => prevPort.id === item.id)) {
+      ? curPorts.filter((item) => {
+          if (!prevPorts.find((prevPort) => prevPort.id === item.id)) {
             return item
           }
         })
       : [...curPorts]
 
     const removed = prevPorts
-      ? prevPorts.filter(item => {
-          if (!curPorts.find(curPort => curPort.id === item.id)) {
+      ? prevPorts.filter((item) => {
+          if (!curPorts.find((curPort) => curPort.id === item.id)) {
             return item
           }
         })

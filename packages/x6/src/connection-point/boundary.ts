@@ -21,7 +21,7 @@ export interface BoundaryCache {
  * Places the connection point at the intersection between the
  * edge path end segment and the actual shape of the target magnet.
  */
-export const boundary: ConnectionPoint.Definition<BoundaryIntersectionOptions> = function(
+export const boundary: ConnectionPoint.Definition<BoundaryIntersectionOptions> = function (
   line,
   view,
   magnet,

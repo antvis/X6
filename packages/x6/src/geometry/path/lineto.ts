@@ -163,7 +163,7 @@ export namespace LineTo {
       }
 
       // poly-line segment
-      return args.map(arg => new LineTo(arg as Point.PointLike))
+      return args.map((arg) => new LineTo(arg as Point.PointLike))
     }
 
     // coordinates provided

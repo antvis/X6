@@ -57,7 +57,7 @@ export namespace Disposable {
     ) => {
       const raw = descriptor.value
       const proto = target.__proto__ as IDisposable
-      descriptor.value = function(this: IDisposable) {
+      descriptor.value = function (this: IDisposable) {
         if (this.disposed) {
           return
         }
@@ -134,7 +134,7 @@ export class DisposableSet implements IDisposable {
     }
     this.isDisposed = true
 
-    this.items.forEach(item => {
+    this.items.forEach((item) => {
       item.dispose()
     })
     this.items.clear()
@@ -193,7 +193,7 @@ export namespace DisposableSet {
    */
   export function from(items: IDisposable[]): DisposableSet {
     const set = new DisposableSet()
-    items.forEach(item => {
+    items.forEach((item) => {
       set.add(item)
     })
     return set

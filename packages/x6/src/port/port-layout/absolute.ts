@@ -10,5 +10,7 @@ export const absolute: PortLayout.Definition<AbsoluteArgs> = (
   portsPositionArgs,
   elemBBox,
 ) => {
-  return portsPositionArgs.map(item => toResult(normalizePoint(elemBBox, item)))
+  return portsPositionArgs.map((item) =>
+    toResult(normalizePoint(elemBBox, item)),
+  )
 }

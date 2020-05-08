@@ -28,7 +28,7 @@ describe('Dom', () => {
         return pathData != null
           ? pathData
               .split(' ')
-              .map(command => {
+              .map((command) => {
                 const number = parseInt(command, 10)
                 if (isNaN(number)) return command
                 return number.toFixed(0)
@@ -164,88 +164,56 @@ describe('Dom', () => {
 
       it('shoule normalize path "d" attribute', () => {
         expect(
-          createVector(svgPath)
-            .normalizePath()
-            .node.hasAttribute('d'),
+          createVector(svgPath).normalizePath().node.hasAttribute('d'),
         ).toBe(true)
         expect(
-          createVector(svgPath2)
-            .normalizePath()
-            .node.hasAttribute('d'),
+          createVector(svgPath2).normalizePath().node.hasAttribute('d'),
         ).toBe(true)
         expect(
-          createVector(svgPath3)
-            .normalizePath()
-            .node.hasAttribute('d'),
+          createVector(svgPath3).normalizePath().node.hasAttribute('d'),
         ).toBe(true)
 
-        expect(
-          createVector(svgPath)
-            .normalizePath()
-            .attr('d'),
-        ).toEqual('M 10 10')
-        expect(
-          createVector(svgPath2)
-            .normalizePath()
-            .attr('d'),
-        ).toEqual('M 100 100 C 100 100 0 150 100 200 Z')
-        expect(
-          createVector(svgPath3)
-            .normalizePath()
-            .attr('d'),
-        ).toEqual('M 0 0')
+        expect(createVector(svgPath).normalizePath().attr('d')).toEqual(
+          'M 10 10',
+        )
+        expect(createVector(svgPath2).normalizePath().attr('d')).toEqual(
+          'M 100 100 C 100 100 0 150 100 200 Z',
+        )
+        expect(createVector(svgPath3).normalizePath().attr('d')).toEqual(
+          'M 0 0',
+        )
       })
 
       it('should only normalize SVGPathElement', () => {
         expect(
-          createVector(svgContainer)
-            .normalizePath()
-            .node.hasAttribute('d'),
+          createVector(svgContainer).normalizePath().node.hasAttribute('d'),
         ).toBe(false)
         expect(
-          createVector(svgGroup)
-            .normalizePath()
-            .node.hasAttribute('d'),
+          createVector(svgGroup).normalizePath().node.hasAttribute('d'),
         ).toBe(false)
         expect(
-          createVector(svgCircle)
-            .normalizePath()
-            .node.hasAttribute('d'),
+          createVector(svgCircle).normalizePath().node.hasAttribute('d'),
         ).toBe(false)
         expect(
-          createVector(svgEllipse)
-            .normalizePath()
-            .node.hasAttribute('d'),
+          createVector(svgEllipse).normalizePath().node.hasAttribute('d'),
         ).toBe(false)
         expect(
-          createVector(svgPolygon)
-            .normalizePath()
-            .node.hasAttribute('d'),
+          createVector(svgPolygon).normalizePath().node.hasAttribute('d'),
         ).toBe(false)
         expect(
-          createVector(svgText)
-            .normalizePath()
-            .node.hasAttribute('d'),
+          createVector(svgText).normalizePath().node.hasAttribute('d'),
         ).toBe(false)
         expect(
-          createVector(svgRectangle)
-            .normalizePath()
-            .node.hasAttribute('d'),
+          createVector(svgRectangle).normalizePath().node.hasAttribute('d'),
         ).toBe(false)
         expect(
-          createVector(svgGroup1)
-            .normalizePath()
-            .node.hasAttribute('d'),
+          createVector(svgGroup1).normalizePath().node.hasAttribute('d'),
         ).toBe(false)
         expect(
-          createVector(svgGroup2)
-            .normalizePath()
-            .node.hasAttribute('d'),
+          createVector(svgGroup2).normalizePath().node.hasAttribute('d'),
         ).toBe(false)
         expect(
-          createVector(svgGroup3)
-            .normalizePath()
-            .node.hasAttribute('d'),
+          createVector(svgGroup3).normalizePath().node.hasAttribute('d'),
         ).toBe(false)
       })
     })

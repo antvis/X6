@@ -6,10 +6,10 @@ export namespace Timing {
 }
 
 export namespace Timing {
-  export const linear: Definition = t => t
-  export const quad: Definition = t => t * t
-  export const cubic: Definition = t => t * t * t
-  export const inout: Definition = t => {
+  export const linear: Definition = (t) => t
+  export const quad: Definition = (t) => t * t
+  export const cubic: Definition = (t) => t * t * t
+  export const inout: Definition = (t) => {
     if (t <= 0) {
       return 0
     }
@@ -23,7 +23,7 @@ export namespace Timing {
     return 4 * (t < 0.5 ? t3 : 3 * (t - t2) + t3 - 0.75)
   }
 
-  export const exponential: Definition = t => {
+  export const exponential: Definition = (t) => {
     return Math.pow(2, 10 * (t - 1))
   }
 
@@ -40,22 +40,22 @@ export namespace Timing {
 export namespace Timing {
   export const decorators = {
     reverse(f: Definition): Definition {
-      return t => 1 - f(1 - t)
+      return (t) => 1 - f(1 - t)
     },
     reflect(f: Definition): Definition {
-      return t => 0.5 * (t < 0.5 ? f(2 * t) : 2 - f(2 - 2 * t))
+      return (t) => 0.5 * (t < 0.5 ? f(2 * t) : 2 - f(2 - 2 * t))
     },
     clamp(f: Definition, n: number = 0, x: number = 1): Definition {
-      return t => {
+      return (t) => {
         const r = f(t)
         return r < n ? n : r > x ? x : r
       }
     },
     back(s: number = 1.70158): Definition {
-      return t => t * t * ((s + 1) * t - s)
+      return (t) => t * t * ((s + 1) * t - s)
     },
     elastic(x: number = 1.5): Definition {
-      return t =>
+      return (t) =>
         Math.pow(2, 10 * (t - 1)) * Math.cos(((20 * Math.PI * x) / 3) * t)
     },
   }

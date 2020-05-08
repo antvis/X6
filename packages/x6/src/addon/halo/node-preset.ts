@@ -247,7 +247,7 @@ export class NodePreset {
       'bottom',
       'left',
       'right',
-    ].some(position => {
+    ].some((position) => {
       let point: Point | null = null
       let dx = 0
       let dy = 0
@@ -431,7 +431,7 @@ export class NodePreset {
     this.halo.setEventData(e, {
       center,
       nodes,
-      rotationStartAngles: nodes.map(node => node.getRotation()),
+      rotationStartAngles: nodes.map((node) => node.getRotation()),
       clientStartAngle: new Point(x, y).theta(center),
     })
   }

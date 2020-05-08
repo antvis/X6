@@ -426,7 +426,7 @@ export function breakText(
         for (let j = 0, jl = eolWords.length - 1; j < jl; j += 1) {
           eolWords.splice(2 * j + 1, 0, eol)
         }
-        words.splice(i, 1, ...eolWords.filter(word => word !== ''))
+        words.splice(i, 1, ...eolWords.filter((word) => word !== ''))
         i -= 1
         len = words.length
       } else {

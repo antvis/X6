@@ -19,13 +19,13 @@ export class CellViewFlag {
     const attrs: { [attr: string]: number } = {}
 
     let shift = 0
-    Object.keys(actions).forEach(attr => {
+    Object.keys(actions).forEach((attr) => {
       let labels = actions[attr]
       if (!Array.isArray(labels)) {
         labels = [labels]
       }
 
-      labels.forEach(label => {
+      labels.forEach((label) => {
         let flag = flags[label]
         if (!flag) {
           shift += 1
@@ -40,7 +40,7 @@ export class CellViewFlag {
       labels = [labels]
     }
 
-    labels.forEach(label => {
+    labels.forEach((label) => {
       if (!flags[label]) {
         shift += 1
         flags[label] = 1 << shift
@@ -90,7 +90,7 @@ export class CellViewFlag {
       return flag
     }
 
-    Object.keys(this.attrs).forEach(attr => {
+    Object.keys(this.attrs).forEach((attr) => {
       if (this.cell.hasChanged(attr)) {
         flag |= this.attrs[attr]
       }

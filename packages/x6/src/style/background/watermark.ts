@@ -5,7 +5,7 @@ export interface WatermarkOptions extends Background.CommonOptions {
   angle?: number
 }
 
-export const watermark: Background.Definition<WatermarkOptions> = function(
+export const watermark: Background.Definition<WatermarkOptions> = function (
   img,
   options,
 ) {

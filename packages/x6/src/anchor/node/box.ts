@@ -34,7 +34,7 @@ function createBBoxAnchor(
     | 'bottomLeft'
     | 'bottomRight',
 ): NodeAnchor.Definition<BBoxAnchorOptions> {
-  return function(view, magnet, ref, options: BBoxAnchorOptions = {}) {
+  return function (view, magnet, ref, options: BBoxAnchorOptions = {}) {
     const bbox = options.rotated
       ? view.getNodeUnrotatedBBox(magnet)
       : view.getNodeBBox(magnet)

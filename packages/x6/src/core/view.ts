@@ -181,7 +181,7 @@ export abstract class View<EventArgs = any> extends Basecoat<EventArgs> {
     this.undelegateEvents()
 
     const splitter = /^(\S+)\s*(.*)$/
-    Object.keys(events).forEach(key => {
+    Object.keys(events).forEach((key) => {
       const match = key.match(splitter)
       if (match == null) {
         return
@@ -256,7 +256,7 @@ export abstract class View<EventArgs = any> extends Basecoat<EventArgs> {
 
     const ns = this.getEventNamespace()
     const $elem = this.$(elem)
-    Object.keys(events).forEach(eventName => {
+    Object.keys(events).forEach((eventName) => {
       const method = this.getEventHandler(events[eventName])
       if (typeof method === 'function') {
         $elem.on(eventName + ns, data, method as any)
@@ -423,9 +423,7 @@ export namespace View {
     if (Globals.useCSSSelector) {
       return {
         isCSSSelector: true,
-        elems: $(rootElem)
-          .find(selector)
-          .toArray() as Element[],
+        elems: $(rootElem).find(selector).toArray() as Element[],
       }
     }
 

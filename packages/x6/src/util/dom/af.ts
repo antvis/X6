@@ -1,4 +1,4 @@
-export const requestAnimationFrame = (function() {
+export const requestAnimationFrame = (function () {
   let raf
 
   const win = window as any
@@ -34,7 +34,7 @@ export const requestAnimationFrame = (function() {
   return raf as (callback: FrameRequestCallback) => number
 })()
 
-export const cancelAnimationFrame = (function() {
+export const cancelAnimationFrame = (function () {
   let caf
 
   const win = window as any

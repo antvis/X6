@@ -129,10 +129,7 @@ export function transformStringToMatrix(transform?: string | null) {
           tx = parseFloat(args[1]) || 0
           ty = parseFloat(args[2]) || 0
           if (tx !== 0 || ty !== 0) {
-            ctm = ctm
-              .translate(tx, ty)
-              .rotate(angle)
-              .translate(-tx, -ty)
+            ctm = ctm.translate(tx, ty).rotate(angle).translate(-tx, -ty)
           } else {
             ctm = ctm.rotate(angle)
           }
@@ -367,7 +364,7 @@ export function transformPolyline(polyline: Polyline, matrix: DOMMatrix) {
     points = []
   }
 
-  return new Polyline(points.map(p => transformPoint(p, matrix)))
+  return new Polyline(points.map((p) => transformPoint(p, matrix)))
 }
 
 export function transformRectangle(

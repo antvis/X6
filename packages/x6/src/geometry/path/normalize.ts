@@ -166,10 +166,7 @@ function a2c(
   }
 
   {
-    res = [m2, m3, m4]
-      .concat(res)
-      .join()
-      .split(',')
+    res = [m2, m3, m4].concat(res).join().split(',')
 
     const newres = []
     const ii = res.length
@@ -493,8 +490,5 @@ function normalize(path: string) {
  * string cannot be normalized, 'M 0 0' is returned.
  */
 export function normalizePathData(pathData: string) {
-  return normalize(pathData)
-    .join(',')
-    .split(',')
-    .join(' ')
+  return normalize(pathData).join(',').split(',').join(' ')
 }

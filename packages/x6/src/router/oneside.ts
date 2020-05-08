@@ -8,7 +8,7 @@ export interface OneSideRouterOptions {
 /**
  * Routes the link always to/from a certain side
  */
-export const oneSide: Router.Definition<OneSideRouterOptions> = function(
+export const oneSide: Router.Definition<OneSideRouterOptions> = function (
   vertices,
   options,
   edgeView,

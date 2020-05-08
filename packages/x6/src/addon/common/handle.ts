@@ -13,11 +13,11 @@ export class Handle<EventArgs = any> {
   }
 
   getHandleIdx(name: string) {
-    return this.handles.findIndex(item => item.name === name)
+    return this.handles.findIndex((item) => item.name === name)
   }
 
   getHandle(name: string) {
-    return this.handles.find(item => item.name === name)
+    return this.handles.find((item) => item.name === name)
   }
 
   renderHandle(this: Handle & View, handle: Handle.Options) {
@@ -46,7 +46,7 @@ export class Handle<EventArgs = any> {
     this.$handleContainer.append(this.renderHandle(handle))
     const events = handle.events
     if (events) {
-      Object.keys(events).forEach(action => {
+      Object.keys(events).forEach((action) => {
         const callback = events[action]
         const name = `action:${handle.name}:${action}` as any
         if (typeof callback === 'string') {
@@ -61,7 +61,7 @@ export class Handle<EventArgs = any> {
   }
 
   addHandles(this: Handle & View, handles: Handle.Options[]) {
-    handles.forEach(handle => this.addHandle(handle))
+    handles.forEach((handle) => this.addHandle(handle))
     return this
   }
 
@@ -77,7 +77,7 @@ export class Handle<EventArgs = any> {
     const handle = this.handles[index]
     if (handle) {
       if (handle.events) {
-        Object.keys(handle.events).forEach(event => {
+        Object.keys(handle.events).forEach((event) => {
           this.off(`action:${name}:${event}` as any)
         })
       }
@@ -131,7 +131,7 @@ export class Handle<EventArgs = any> {
   }
 
   deselectAllHandles() {
-    this.handles.forEach(handle => this.deselectHandle(handle.name))
+    this.handles.forEach((handle) => this.deselectHandle(handle.name))
     return this
   }
 
@@ -154,11 +154,8 @@ export class Handle<EventArgs = any> {
   ) {
     if (attrs) {
       const $elem = View.$(elem)
-      Object.keys(attrs).forEach(selector => {
-        const $element = $elem
-          .find(selector)
-          .addBack()
-          .filter(selector)
+      Object.keys(attrs).forEach((selector) => {
+        const $element = $elem.find(selector).addBack().filter(selector)
         const { class: cls, ...attr } = attrs[selector]
         if (cls) {
           $element.addClass(cls)

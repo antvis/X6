@@ -244,7 +244,7 @@ export class UndoManager extends Disablable<UndoManager.EventArgs> {
         // Trying to find command first, which was performing same
         // action with the object as we are doing now with cell.
         const index = this.batchCommands.findIndex(
-          cmd =>
+          (cmd) =>
             ((isModelChange && cmd.modelChange) || cmd.data.id === cell.id) &&
             cmd.event === event,
         )
@@ -376,7 +376,7 @@ export class UndoManager extends Disablable<UndoManager.EventArgs> {
       if (null != evt && (null != id || cmd.modelChange)) {
         if (Private.isAddEvent(evt)) {
           const index = cmds.findIndex(
-            c => Private.isRemoveEvent(c.event) && c.data.id === id,
+            (c) => Private.isRemoveEvent(c.event) && c.data.id === id,
           )
 
           if (index >= 0) {
@@ -385,7 +385,7 @@ export class UndoManager extends Disablable<UndoManager.EventArgs> {
           }
         } else if (Private.isRemoveEvent(evt)) {
           const index = cmds.findIndex(
-            c => Private.isAddEvent(c.event) && c.data.id === id,
+            (c) => Private.isAddEvent(c.event) && c.data.id === id,
           )
           if (index >= 0) {
             cmds.splice(index, 1)
@@ -563,7 +563,7 @@ export namespace Private {
 
     const eventNames = options.eventNames
       ? options.eventNames.filter(
-          event =>
+          (event) =>
             !(
               Private.isChangeEvent(event) ||
               reservedNames.includes(event) ||

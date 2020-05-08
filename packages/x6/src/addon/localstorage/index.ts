@@ -20,7 +20,7 @@ export namespace LocalStorage {
     const docs: T[] = []
 
     if (query == null) {
-      index.keys.forEach(id => {
+      index.keys.forEach((id) => {
         const doc = getItem<T>(docKey(collection, id))
         if (!doc) {
           callback(
@@ -45,7 +45,7 @@ export namespace LocalStorage {
     const index = loadIndex(collection)
 
     if (query == null) {
-      index.keys.forEach(id => {
+      index.keys.forEach((id) => {
         localStorage.removeItem(docKey(collection, id))
       })
 

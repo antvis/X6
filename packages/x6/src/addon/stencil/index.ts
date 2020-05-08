@@ -108,7 +108,7 @@ export class Stencil extends View {
     const globalGraphOptions = options.graphOptions || {}
 
     if (options.groups && options.groups.length) {
-      options.groups.forEach(group => {
+      options.groups.forEach((group) => {
         const $group = this.renderGroup(group).appendTo(this.$content)
         const graphOptionsInGroup = group.graphOptions
         const graph = new Graph({
@@ -197,20 +197,10 @@ export class Stencil extends View {
       this.$('<div/>')
         .addClass('groups-toggle')
         .append(
-          this.$('<label/>')
-            .addClass('group-label')
-            .html(this.options.label),
+          this.$('<label/>').addClass('group-label').html(this.options.label),
         )
-        .append(
-          this.$('<button/>')
-            .text('+')
-            .addClass('btn btn-expand'),
-        )
-        .append(
-          this.$('<button/>')
-            .text('-')
-            .addClass('btn btn-collapse'),
-        ),
+        .append(this.$('<button/>').text('+').addClass('btn btn-expand'))
+        .append(this.$('<button/>').text('-').addClass('btn btn-collapse')),
     ]
   }
 
@@ -242,7 +232,7 @@ export class Stencil extends View {
       'focusout .search': 'onSearchFocusOut',
     })
 
-    Object.keys(this.graphs).forEach(groupName => {
+    Object.keys(this.graphs).forEach((groupName) => {
       const graph = this.graphs[groupName]
       graph.on('cell:mousedown', this.onDragStart, this)
     })
@@ -250,7 +240,7 @@ export class Stencil extends View {
 
   protected stopListening() {
     this.undelegateEvents()
-    Object.keys(this.graphs).forEach(groupName => {
+    Object.keys(this.graphs).forEach((groupName) => {
       const graph = this.graphs[groupName]
       graph.off('cell:mousedown', this.onDragStart, this)
     })
@@ -268,7 +258,7 @@ export class Stencil extends View {
       this.loadGroup(data, groupName)
     } else {
       if (this.options.groups) {
-        Object.keys(this.options.groups).forEach(groupName => {
+        Object.keys(this.options.groups).forEach((groupName) => {
           if (data[groupName]) {
             this.loadGroup(data[groupName], groupName)
           }
@@ -281,7 +271,7 @@ export class Stencil extends View {
   loadGroup(cells: (Node | Node.Metadata)[], groupName?: string) {
     const model = this.getModel(groupName)
     if (model) {
-      const nodes = cells.map(c => (c instanceof Node ? c : Node.create(c)))
+      const nodes = cells.map((c) => (c instanceof Node ? c : Node.create(c)))
       model.resetCells(nodes)
     }
 
@@ -313,9 +303,7 @@ export class Stencil extends View {
     const graphDrag = this.draggingGraph
     const modelDrag = graphDrag.model
 
-    this.$(graphDrag.container)
-      .addClass('dragging')
-      .appendTo(document.body)
+    this.$(graphDrag.container).addClass('dragging').appendTo(document.body)
 
     const nodeDrag = this.options.dragStartClone(view.cell as Node).pos(0, 0)
     let padding = 5
@@ -628,7 +616,7 @@ export class Stencil extends View {
     const found = Object.keys(this.graphs).reduce((memo, groupName) => {
       const graph = this.graphs[groupName]
       const name = groupName === this.DEFAULT_GROUP ? null : groupName
-      const items = graph.model.getCells().filter(cell => {
+      const items = graph.model.getCells().filter((cell) => {
         let matched = false
         matched =
           typeof filter === 'function'
@@ -683,11 +671,11 @@ export class Stencil extends View {
     ignoreCase: boolean,
   ) {
     if (keyworld && filters) {
-      return Object.keys(filters).some(type => {
+      return Object.keys(filters).some((type) => {
         const paths = filters[type]
         return (
           ('*' === type || cell.type === type) &&
-          paths.some(path => {
+          paths.some((path) => {
             let val = cell.getPropByPath<string>(path)
             if (val != null) {
               val = `${val}`
@@ -732,7 +720,7 @@ export class Stencil extends View {
   getGroup(groupName?: string) {
     const groups = this.options.groups
     if (groupName != null && groups && groups.length) {
-      return groups.find(group => group.name === groupName)
+      return groups.find((group) => group.name === groupName)
     }
     return null
   }
@@ -770,19 +758,21 @@ export class Stencil extends View {
   }
 
   collapseGroups() {
-    Object.keys(this.$groups).forEach(groupName =>
+    Object.keys(this.$groups).forEach((groupName) =>
       this.collapseGroup(groupName),
     )
     return this
   }
 
   expandGroups() {
-    Object.keys(this.$groups).forEach(groupName => this.expandGroup(groupName))
+    Object.keys(this.$groups).forEach((groupName) =>
+      this.expandGroup(groupName),
+    )
     return this
   }
 
   onRemove() {
-    Object.keys(this.graphs).forEach(groupName => {
+    Object.keys(this.graphs).forEach((groupName) => {
       const graph = this.graphs[groupName]
       graph.remove()
       delete this.graphs[groupName]
@@ -845,8 +835,8 @@ export namespace Stencil {
     label: 'Stencil',
     groupsToggleButtons: false,
     dropAnimation: false,
-    dragStartClone: cell => cell.clone(),
-    dragEndClone: cell => cell.clone(),
+    dragStartClone: (cell) => cell.clone(),
+    dragEndClone: (cell) => cell.clone(),
   }
 
   export const documentEvents = {

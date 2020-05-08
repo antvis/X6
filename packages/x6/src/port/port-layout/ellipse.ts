@@ -36,7 +36,7 @@ export const ellipseSpread: PortLayout.Definition<EllipseArgs> = (
   const startAngle = groupPositionArgs.start || 0
   const stepAngle = groupPositionArgs.step || 360 / portsPositionArgs.length
 
-  return ellipseLayout(portsPositionArgs, elemBBox, startAngle, index => {
+  return ellipseLayout(portsPositionArgs, elemBBox, startAngle, (index) => {
     return index * stepAngle
   })
 }
@@ -55,10 +55,7 @@ function ellipseLayout(
 
   return portsPositionArgs.map((item, index) => {
     const angle = startAngle + stepFn(index, count)
-    const p = start
-      .clone()
-      .rotate(-angle, center)
-      .scale(ratio, 1, center)
+    const p = start.clone().rotate(-angle, center).scale(ratio, 1, center)
 
     const theta = item.compensateRotation ? -ellipse.tangentTheta(p) : 0
     if (item.dx || item.dy) {

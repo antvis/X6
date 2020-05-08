@@ -72,7 +72,7 @@ export namespace Markup {
 
     const sanitized = StringExt.sanitizeMarkup(markup)
     const nodes = StringExt.sanitizeHTML(sanitized, { raw: true })
-    nodes.forEach(node => {
+    nodes.forEach((node) => {
       fragment.appendChild(node)
     })
 
@@ -105,7 +105,7 @@ export namespace Markup {
       const defines = item.markup
       const parentNode = item.parent
 
-      defines.forEach(define => {
+      defines.forEach((define) => {
         // tagName
         const tagName = define.tagName
         if (!tagName) {
@@ -169,7 +169,7 @@ export namespace Markup {
             nodeGroups = [nodeGroups]
           }
 
-          nodeGroups.forEach(name => {
+          nodeGroups.forEach((name) => {
             if (!groups[name]) {
               groups[name] = []
             }
@@ -187,7 +187,7 @@ export namespace Markup {
       })
     }
 
-    Object.keys(groups).forEach(groupName => {
+    Object.keys(groups).forEach((groupName) => {
       if (selectors[groupName]) {
         throw new Error('Ambiguous group selector')
       }
@@ -221,7 +221,7 @@ export namespace Markup {
 
       if (count > 1) {
         const elem = createContainer(nodes[0].node)
-        nodes.forEach(node => {
+        nodes.forEach((node) => {
           elem.appendChild(node.node)
         })
 

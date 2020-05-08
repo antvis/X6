@@ -351,12 +351,12 @@ export class Graph extends View<Graph.EventArgs> {
       this.trigger('model:sorted')
     })
 
-    model.on('reseted', args => {
+    model.on('reseted', (args) => {
       this.onModelReseted(args.options)
       this.trigger('model:reseted', args)
     })
 
-    model.on('updated', args => this.trigger('model:updated', args))
+    model.on('updated', (args) => this.trigger('model:updated', args))
 
     model.on('cell:added', ({ cell, options }) =>
       this.onCellAdded(cell, options),
@@ -494,7 +494,7 @@ export class Graph extends View<Graph.EventArgs> {
       return null
     }
 
-    this.model.getConnectedEdges(node).forEach(edge => {
+    this.model.getConnectedEdges(node).forEach((edge) => {
       const oppositeCell = getOppositeTerminal(edge, node)
       if (oppositeCell == null || oppositeCell.isVisible()) {
         visible ? edge.show() : edge.hide()
@@ -1006,11 +1006,11 @@ export class Graph extends View<Graph.EventArgs> {
   }
 
   getMountedViews() {
-    return Object.keys(this.updates.mounted).map(cid => CellView.views[cid])
+    return Object.keys(this.updates.mounted).map((cid) => CellView.views[cid])
   }
 
   getUnmountedViews() {
-    return Object.keys(this.updates.unmounted).map(cid => CellView.views[cid])
+    return Object.keys(this.updates.unmounted).map((cid) => CellView.views[cid])
   }
 
   protected checkMountedViews(
@@ -1299,7 +1299,7 @@ export class Graph extends View<Graph.EventArgs> {
   }
 
   protected removeViews() {
-    Object.keys(this.views).forEach(id => {
+    Object.keys(this.views).forEach((id) => {
       const view = this.views[id]
       if (view) {
         this.removeView(view.cell)
@@ -1358,7 +1358,7 @@ export class Graph extends View<Graph.EventArgs> {
     elems: Element[],
     comparator: (a: Element, b: Element) => number,
   ) {
-    const placements = elems.map(elem => {
+    const placements = elems.map((elem) => {
       const parentNode = elem.parentNode!
       // Since the element itself will change position, we have
       // to have some way of storing it's original position in
@@ -1431,7 +1431,7 @@ export class Graph extends View<Graph.EventArgs> {
   }
 
   protected removeZPivots() {
-    Object.keys(this.zPivots).forEach(z => {
+    Object.keys(this.zPivots).forEach((z) => {
       const elem = this.zPivots[z]
       if (elem && elem.parentNode) {
         elem.parentNode.removeChild(elem)
@@ -1809,8 +1809,8 @@ export class Graph extends View<Graph.EventArgs> {
     const ref = { x: p.x, y: p.y }
     return this.model
       .getCells()
-      .map(cell => this.findViewByCell(cell))
-      .filter(view => {
+      .map((cell) => this.findViewByCell(cell))
+      .filter((view) => {
         if (view != null) {
           return Dom.getBBox(view.container as SVGElement, {
             target: this.drawPane,
@@ -1826,8 +1826,8 @@ export class Graph extends View<Graph.EventArgs> {
     const area = Rectangle.create(rect)
     return this.model
       .getNodes()
-      .map(node => this.findViewByCell(node))
-      .filter(view => {
+      .map((node) => this.findViewByCell(node))
+      .filter((view) => {
         if (view) {
           const bbox = Dom.getBBox(view.container as SVGElement, {
             target: this.drawPane,
@@ -2123,7 +2123,7 @@ export class Graph extends View<Graph.EventArgs> {
       const items = GridRegistry.get(patterns)
       if (items) {
         return Array.isArray(items)
-          ? items.map(item => ({ ...item }))
+          ? items.map((item) => ({ ...item }))
           : [{ ...items }]
       }
 
@@ -2401,7 +2401,7 @@ export class Graph extends View<Graph.EventArgs> {
 
     if (!this.isDefined(id)) {
       const stops = gradient.stops
-      const arr = stops.map(stop => {
+      const arr = stops.map((stop) => {
         const opacity =
           stop.opacity != null && Number.isFinite(stop.opacity)
             ? stop.opacity
@@ -2488,7 +2488,7 @@ export class Graph extends View<Graph.EventArgs> {
         'connecting',
         'nodeAvailability',
         'magnetAvailability',
-      ].find(type => !!(options as any)[type])
+      ].find((type) => !!(options as any)[type])
 
       highlighterDef =
         (type && (graphOptions.highlighting as any)[type]) ||

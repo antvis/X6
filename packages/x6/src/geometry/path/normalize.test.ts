@@ -61,7 +61,7 @@ describe('v', () => {
     ]
 
     it('should normalize path data', () => {
-      paths.forEach(path => {
+      paths.forEach((path) => {
         if (path[1]) {
           expect(normalizePathData(path[0])).toEqual(path[1])
         } else {

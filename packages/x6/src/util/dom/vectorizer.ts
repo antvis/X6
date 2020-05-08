@@ -466,7 +466,7 @@ export namespace Vectorizer {
       | (Element | DocumentFragment | Vectorizer)[],
   ) {
     if (Array.isArray(elems)) {
-      return elems.map(elem => toHTMLElement(elem)!)
+      return elems.map((elem) => toHTMLElement(elem)!)
     }
 
     return [toHTMLElement(elems)!]

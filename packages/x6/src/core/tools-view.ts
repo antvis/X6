@@ -20,7 +20,7 @@ export class ToolsView extends View {
 
     this.tools = []
 
-    tools.forEach(tool => {
+    tools.forEach((tool) => {
       if (tool instanceof ToolView) {
         tool.configure(cellView, this)
         tool.render()
@@ -39,7 +39,7 @@ export class ToolsView extends View {
   update(options: ToolsView.UpdateOptions = {}) {
     const tools = this.tools
     if (tools) {
-      tools.forEach(tool => {
+      tools.forEach((tool) => {
         if (options.toolId !== tool.cid && tool.isVisible()) {
           tool.update()
         }
@@ -51,7 +51,7 @@ export class ToolsView extends View {
   focusTool(focusedTool: ToolView | null) {
     const tools = this.tools
     if (tools) {
-      tools.forEach(tool => {
+      tools.forEach((tool) => {
         if (focusedTool === tool) {
           tool.show()
         } else {
@@ -66,7 +66,7 @@ export class ToolsView extends View {
   blurTool(blurredTool: ToolView | null) {
     const tools = this.tools
     if (tools) {
-      tools.forEach(tool => {
+      tools.forEach((tool) => {
         if (tool !== blurredTool && !tool.isVisible()) {
           tool.show()
           tool.update()
@@ -88,7 +88,7 @@ export class ToolsView extends View {
   remove() {
     const tools = this.tools
     if (tools) {
-      tools.forEach(tool => tool.remove())
+      tools.forEach((tool) => tool.remove())
       this.tools = null
     }
 

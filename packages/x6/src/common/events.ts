@@ -97,7 +97,7 @@ export class Events<EventArgs extends Events.EventArgs = any> {
     const listeners = this.listeners
     const names = name ? [name] : Object.keys(listeners)
 
-    names.forEach(n => {
+    names.forEach((n) => {
       const cache = listeners[n]
       if (!cache) {
         return
@@ -245,18 +245,18 @@ namespace Private {
   }
 
   export function combindResult(results: any[]) {
-    const hasAsync = results.some(res => isAsync(res))
+    const hasAsync = results.some((res) => isAsync(res))
     if (hasAsync) {
-      const deferres = results.map(res =>
+      const deferres = results.map((res) =>
         isAsync(res) ? res : Promise.resolve(res !== false),
       )
 
-      return Promise.all(deferres).then(arr =>
+      return Promise.all(deferres).then((arr) =>
         arr.reduce<boolean>((memo, item) => item !== false && memo, true),
       )
     }
 
-    return results.every(res => res !== false)
+    return results.every((res) => res !== false)
   }
 
   export function call<Args>(list: any[], args?: Args) {

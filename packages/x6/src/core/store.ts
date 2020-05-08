@@ -38,7 +38,7 @@ export class Store<D> extends Basecoat<Store.EventArgs<D>> {
     const previous = this.previous
     const changed = this.changed
 
-    Object.keys(data).forEach(k => {
+    Object.keys(data).forEach((k) => {
       const key = k as K
       const newValue = data[key]
       if (!ObjectExt.isEqual(current[key], newValue)) {
@@ -61,7 +61,7 @@ export class Store<D> extends Basecoat<Store.EventArgs<D>> {
     if (!silent && changes.length > 0) {
       this.pending = true
       this.pendingOptions = options
-      changes.forEach(key => {
+      changes.forEach((key) => {
         this.emit('change:*', {
           key,
           options,
@@ -156,7 +156,7 @@ export class Store<D> extends Basecoat<Store.EventArgs<D>> {
       subset[key] = empty
       opts = options
     } else if (Array.isArray(key)) {
-      key.forEach(k => (subset[k] = empty))
+      key.forEach((k) => (subset[k] = empty))
       opts = options
     } else {
       for (const key in this.data) {

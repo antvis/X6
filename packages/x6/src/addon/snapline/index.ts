@@ -88,7 +88,7 @@ export class Snapline extends View {
     this.filterFunction = null
     const filter = this.options.filter
     if (Array.isArray(filter)) {
-      filter.forEach(item => {
+      filter.forEach((item) => {
         if (typeof item === 'string') {
           this.filterTypes[item] = true
         } else {
@@ -167,7 +167,7 @@ export class Snapline extends View {
           snapOrigin.horizontal = nodeTopLeft.y
         }
 
-        this.model.getNodes().some(cell => {
+        this.model.getNodes().some((cell) => {
           if (this.isIgnored(node, cell)) {
             return false
           }
@@ -185,16 +185,16 @@ export class Snapline extends View {
             horizontal: { position: number; distance: number }[]
           }
 
-          Object.keys(groups).forEach(k => {
+          Object.keys(groups).forEach((k) => {
             const key = k as 'vertical' | 'horizontal'
             const list = groups[key]
-              .map(value => ({
+              .map((value) => ({
                 position: value,
                 distance: Math.abs(value - snapOrigin[key]),
               }))
-              .filter(item => item.distance <= distance)
+              .filter((item) => item.distance <= distance)
 
-            distances[key] = ArrayExt.sortBy(list, item => item.distance)
+            distances[key] = ArrayExt.sortBy(list, (item) => item.distance)
           })
 
           if (verticalLeft == null && distances.vertical.length > 0) {
@@ -405,7 +405,7 @@ export class Snapline extends View {
     let verticalFix = 0
     let horizontalFix = 0
 
-    this.model.getNodes().some(targetNode => {
+    this.model.getNodes().some((targetNode) => {
       if (this.isIgnored(node, targetNode)) {
         return false
       }

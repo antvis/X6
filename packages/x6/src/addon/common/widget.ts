@@ -53,7 +53,7 @@ export class Widget<
     const dic = this.ensureCache()
     const cache = dic[graph.cid]
     if (cache) {
-      Object.keys(cache).forEach(cid => {
+      Object.keys(cache).forEach((cid) => {
         const instance = cache[cid]
         if (instance) {
           instance.remove()
