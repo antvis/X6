@@ -39,12 +39,10 @@
   },
   "lint-staged": {
     "src/**/*.{ts,tsx}": [
-      "tslint -c tslint.json -p ./tsconfig.json --fix",
-      "git add"
+      "tslint -c tslint.json -p ./tsconfig.json --fix"
     ],
     "*.{js,jsx}": [
-      "eslint --fix",
-      "git add"
+      "eslint --fix"
     ]
   },
   "engines": {

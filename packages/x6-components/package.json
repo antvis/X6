@@ -45,16 +45,13 @@
   ],
   "lint-staged": {
     "src/**/*.ts": [
-      "tslint -c tslint.json -p ./tsconfig.json --fix",
-      "git add"
+      "tslint -c tslint.json -p ./tsconfig.json --fix"
     ],
     "*.js": [
-      "eslint --fix",
-      "git add"
+      "eslint --fix"
     ],
     "src/**/*.less": [
-      "stylelint --syntax less --fix",
-      "git add"
+      "stylelint --syntax less --fix"
     ]
   },
   "dependencies": {
