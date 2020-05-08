@@ -3,13 +3,13 @@ import { ObjectExt, StringExt } from '../util'
 import { Point, Polyline } from '../geometry'
 import { EdgeAnchor, NodeAnchor } from '../anchor'
 import { ConnectionPoint } from '../connection-point'
+import { EdgeRegistry } from '../registry'
 import { Attr } from '../attr'
 import { Markup } from './markup'
 import { Store } from './store'
 import { Cell } from './cell'
 import { Node } from './node'
 import { Model } from './model'
-import { EdgeRegistry } from '../registry'
 
 export class Edge<
   Properties extends Edge.Properties = Edge.Properties
@@ -23,7 +23,7 @@ export class Edge<
     super(metadata)
   }
 
-  protected prepare(metadata: Edge.Metadata) {
+  protected preprocess(metadata: Edge.Metadata) {
     const {
       source,
       sourceCell,
@@ -38,12 +38,8 @@ export class Edge<
 
     const data = others as Edge.BaseOptions
 
-    let sourceCellFound: Cell | undefined
-    let targetCellFound: Cell | undefined
-
     if (source != null) {
       if (source instanceof Cell) {
-        sourceCellFound = source
         data.source = { cell: source.id }
       } else if (typeof source === 'string') {
         data.source = { cell: source }
@@ -54,7 +50,6 @@ export class Edge<
       } else {
         const cell = (source as Edge.TerminalCellLooseData).cell
         if (cell instanceof Cell) {
-          sourceCellFound = cell
           data.source = {
             ...source,
             cell: cell.id,
@@ -68,9 +63,6 @@ export class Edge<
     if (sourceCell != null || sourcePort != null) {
       let terminal = data.source as Edge.TerminalCellData
       if (sourceCell != null) {
-        if (typeof sourceCell !== 'string') {
-          sourceCellFound = sourceCell
-        }
         const id = typeof sourceCell === 'string' ? sourceCell : sourceCell.id
         if (terminal) {
           terminal.cell = id
@@ -88,7 +80,6 @@ export class Edge<
 
     if (target != null) {
       if (target instanceof Cell) {
-        targetCellFound = target
         data.target = { cell: target.id }
       } else if (typeof target === 'string') {
         data.target = { cell: target }
@@ -99,7 +90,6 @@ export class Edge<
       } else {
         const cell = (target as Edge.TerminalCellLooseData).cell
         if (cell instanceof Cell) {
-          targetCellFound = cell
           data.target = {
             ...target,
             cell: cell.id,
@@ -114,9 +104,6 @@ export class Edge<
       let terminal = data.target as Edge.TerminalCellData
 
       if (targetCell != null) {
-        if (typeof targetCell !== 'string') {
-          targetCellFound = targetCell
-        }
         const id = typeof targetCell === 'string' ? targetCell : targetCell.id
         if (terminal) {
           terminal.cell = id
@@ -132,7 +119,43 @@ export class Edge<
       data.target = Point.create(targetPoint).toJSON()
     }
 
-    const props = super.prepare(data)
+    return super.preprocess(data)
+  }
+
+  protected postprocess(metadata: Edge.Metadata) {
+    const { source, target, sourceCell, targetCell } = metadata
+
+    let sourceCellFound: Cell | undefined
+    let targetCellFound: Cell | undefined
+    if (source != null) {
+      if (source instanceof Cell) {
+        sourceCellFound = source
+      } else {
+        const cell = (source as Edge.TerminalCellLooseData).cell
+        if (cell instanceof Cell) {
+          sourceCellFound = cell
+        }
+      }
+    }
+
+    if (sourceCell != null && typeof sourceCell !== 'string') {
+      sourceCellFound = sourceCell
+    }
+
+    if (target != null) {
+      if (target instanceof Cell) {
+        targetCellFound = target
+      } else {
+        const cell = (target as Edge.TerminalCellLooseData).cell
+        if (cell instanceof Cell) {
+          targetCellFound = cell
+        }
+      }
+    }
+
+    if (targetCell != null && typeof targetCell !== 'string') {
+      targetCellFound = targetCell
+    }
 
     if (sourceCellFound) {
       this.reference('source', sourceCellFound)
@@ -141,8 +164,6 @@ export class Edge<
     if (targetCellFound) {
       this.reference('target', targetCellFound)
     }
-
-    return props
   }
 
   protected setup() {
@@ -151,10 +172,15 @@ export class Edge<
     this.on('change:vertices', (args) => this.onVertexsChanged(args))
   }
 
+  get model() {
+    return this._model
+  }
+
   set model(model: Model | null) {
     if (this._model !== model) {
       this._model = model
       if (model) {
+        // update reference
         this.getSourceCell()
         this.getTargetCell()
       }
