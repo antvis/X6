@@ -19,11 +19,11 @@ export class Edge<
   protected sourceCell: Cell | null
   protected targetCell: Cell | null
 
-  constructor(options: Edge.Options = {}) {
-    super(options)
+  constructor(metadata: Edge.Metadata = {}) {
+    super(metadata)
   }
 
-  protected prepare(options: Edge.Options) {
+  protected prepare(metadata: Edge.Metadata) {
     const {
       source,
       sourceCell,
@@ -34,7 +34,7 @@ export class Edge<
       targetPort,
       targetPoint,
       ...others
-    } = options
+    } = metadata
 
     const data = others as Edge.BaseOptions
 
@@ -321,6 +321,8 @@ export class Edge<
     const terminalCellKey = `${type}Cell` as 'sourceCell' | 'targetCell'
     const prev = this[terminalCellKey]
 
+    this[terminalCellKey] = terminalCell
+
     if (prev !== terminalCell) {
       const edgesKey = type === 'source' ? 'outgoings' : 'incomings'
 
@@ -344,8 +346,6 @@ export class Edge<
 
       this.updateParent()
     }
-
-    this[terminalCellKey] = terminalCell
   }
 
   getSourcePoint() {
@@ -1039,13 +1039,7 @@ export namespace Edge {
     targetCell?: Cell | string
     targetPort?: string
     targetPoint?: Point | Point.PointLike | Point.PointData
-  }
 
-  export interface BaseOptions extends Common, Cell.Options {}
-
-  export interface Options
-    extends Omit<BaseOptions, 'source' | 'target'>,
-      TerminalOptions {
     source?:
       | string
       | Cell
@@ -1064,9 +1058,18 @@ export namespace Edge {
       | TerminalCellLooseData
   }
 
+  export interface BaseOptions extends Common, Cell.Metadata {}
+
+  export interface Metadata
+    extends Omit<BaseOptions, TerminalType>,
+      TerminalOptions {}
+
   export interface Defaults extends Common, Cell.Defaults {}
   export interface Properties extends Cell.Properties, BaseOptions {}
-  export interface Metadata extends Options, KeyValue {}
+  export interface Config
+    extends Omit<Defaults, TerminalType>,
+      TerminalOptions,
+      Cell.Config<Metadata, Edge> {}
 }
 
 export namespace Edge {
@@ -1216,8 +1219,6 @@ export namespace Edge {
 export namespace Edge {
   export type Defintion = typeof Edge & (new (...args: any[]) => Edge)
 
-  export interface DefintionOptions extends Defaults, Cell.DefintionOptions {}
-
   let counter = 0
   function getClassName(name?: string) {
     if (name) {
@@ -1227,24 +1228,25 @@ export namespace Edge {
     return `CustomEdge${counter}`
   }
 
-  export function define(options: DefintionOptions) {
-    const { name, attrDefinitions, ...defaults } = options
-    const className = getClassName(name)
-    const base = this as Defintion
-    const shape = ObjectExt.createClass<Defintion>(className, base)
-    shape.config(defaults, attrDefinitions)
+  export function define(config: Config) {
+    const { name, ...others } = config
+    const shape = ObjectExt.createClass<Defintion>(
+      getClassName(name),
+      this as Defintion,
+    )
+    shape.config(others)
     return shape
   }
 
-  export function create(metadata: Edge.Metadata) {
-    const type = metadata.type
+  export function create(options: Metadata) {
+    const type = options.type
     if (type) {
       const define = EdgeRegistry.get(type)
       if (define) {
-        return new define(metadata)
+        return new define(options)
       }
       return EdgeRegistry.onNotFound(type)
     }
-    return new Edge(metadata)
+    return new Edge(options)
   }
 }

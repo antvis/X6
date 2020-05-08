@@ -5,7 +5,7 @@ import { NodeRegistry } from './node'
 export const EdgeRegistry = Registry.create<
   Edge.Defintion,
   never,
-  EdgeRegistry.DefintionOptions
+  EdgeRegistry.Config
 >({
   type: 'edge',
   process(name, options) {
@@ -37,7 +37,7 @@ export const EdgeRegistry = Registry.create<
 })
 
 export namespace EdgeRegistry {
-  export interface DefintionOptions extends Edge.DefintionOptions {
+  export interface Config extends Edge.Config {
     inherit?: string
   }
 }

@@ -1,5 +1,5 @@
-import { Globals } from './core/globals'
-import { version } from './version'
+import { Globals } from '../core/globals'
+import { version } from '../version'
 
 const SERVER_URL = 'https://kcart.alipay.com/web/bi.do'
 

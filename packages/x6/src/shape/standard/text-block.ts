@@ -61,7 +61,7 @@ export const TextBlock = NodeRegistry.register('text-block', {
       },
     },
   },
-  attrDefinitions: {
+  attrHooks: {
     text: {
       set(text: string, { refBBox, elem, attrs }) {
         if (elem instanceof HTMLElement) {

@@ -1,19 +1,21 @@
-import { NodeRegistry } from '../../registry'
-import { getMarkup, getName, rootAttr, shapeAttr, textAttr } from './util'
+import { ObjectExt } from '../../util'
+import { createShape } from './util'
 
-export const Path = NodeRegistry.register(getName('path'), {
-  markup: getMarkup('path'),
-  size: { width: 60, height: 60 },
+export const Path = createShape('path', {
+  width: 60,
+  height: 60,
   attrs: {
-    ...rootAttr,
-    path: {
-      ...shapeAttr,
-    },
     text: {
-      ...textAttr,
       ref: 'path',
       refX: 0.5,
       refDy: 16,
     },
+  },
+  propHooks(metadata) {
+    const { d, ...others } = metadata
+    if (d != null) {
+      ObjectExt.setByPath(others, 'attrs/path/d', d)
+    }
+    return others
   },
 })

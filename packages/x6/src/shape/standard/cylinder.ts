@@ -38,7 +38,7 @@ export const Cylinder = NodeRegistry.register('cylinder', {
       refY2: 15,
     },
   },
-  attrDefinitions: {
+  attrHooks: {
     lateralArea: {
       set(t: number | string, { refBBox }) {
         const isPercentage = NumberExt.isPercentage(t)

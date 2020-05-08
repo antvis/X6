@@ -423,7 +423,7 @@ export namespace View {
     if (Globals.useCSSSelector) {
       return {
         isCSSSelector: true,
-        elems: this.$(rootElem)
+        elems: $(rootElem)
           .find(selector)
           .toArray() as Element[],
       }
