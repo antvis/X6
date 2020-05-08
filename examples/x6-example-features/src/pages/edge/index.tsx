@@ -8,7 +8,7 @@ import {
   ViewRegistry,
   Dom,
 } from '@antv/x6'
-import './index.less'
+import '../index.less'
 
 class CustomEdgeView extends EdgeView {
   onDblClick(e: JQuery.DoubleClickEvent, x: number, y: number) {
@@ -497,13 +497,7 @@ export default class Example extends React.Component {
 
   render() {
     return (
-      <div
-        style={{
-          width: '100%',
-          height: '100%',
-          backgroundColor: '#ffffff',
-        }}
-      >
+      <div className="x6-graph-wrap">
         <div ref={this.refContainer} className="x6-graph" />
       </div>
     )
