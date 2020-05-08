@@ -1,7 +1,7 @@
-import { Attr } from '../../attr'
-import { ObjectExt, Dom } from '../../util'
-import { EdgeView } from '../../core/edge-view'
-import { addClassNamePrefix } from '../../core/globals'
+import { Attr } from '../attr'
+import { ObjectExt, Dom } from '../util'
+import { EdgeView } from '../core/edge-view'
+import { addClassNamePrefix } from '../core/globals'
 import { Highlighter } from './index'
 
 export interface StrokeHighlighterOptions {

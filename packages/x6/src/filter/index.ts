@@ -1,5 +1,5 @@
 import { NonUndefined } from 'utility-types'
-import { KeyValue } from '../../types'
+import { KeyValue } from '../types'
 import * as filters from './main'
 
 export namespace Filter {

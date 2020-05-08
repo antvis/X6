@@ -1,5 +1,5 @@
-import { Dom } from '../../util'
-import { addClassNamePrefix } from '../../core/globals'
+import { Dom } from '../util'
+import { addClassNamePrefix } from '../core/globals'
 import { Highlighter } from './index'
 
 export interface ClassHighlighterOptions {

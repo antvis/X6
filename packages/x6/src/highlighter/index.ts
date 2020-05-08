@@ -1,5 +1,5 @@
-import { KeyValue } from '../../types'
-import { CellView } from '../../core'
+import { KeyValue } from '../types'
+import { CellView } from '../core'
 import * as highlighters from './main'
 
 export namespace Highlighter {
