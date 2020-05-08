@@ -1,26 +1,13 @@
-import './track'
-import './registry'
-
-export * from './x6'
-export * from './version'
-export * from './enum'
-export * from './struct'
-export * from './types'
-export * from './entity'
-export * from './dom'
 export * from './util'
+export * from './common'
 
-export * from './canvas'
 export * from './core'
-export * from './graph'
-export * from './change'
-export * from './addon'
-export * from './geometry'
+export * from './shape'
+export * from './registry'
 
-export { globals } from './option'
-export { Shape } from './shape/shape'
-export { Route } from './route'
-export { Marker } from './marker'
-export { Perimeter } from './perimeter'
+export * from './version'
+export * from './x6'
 
-export * from './v1'
+// start trakc
+// -----------
+import './common/track'

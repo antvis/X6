@@ -1,46 +1,46 @@
-import { globals } from './option'
-import { Shape } from './shape/shape'
-import { Route } from './route'
-import { Marker } from './marker'
-import { Perimeter } from './perimeter'
+import { Globals } from './core/globals'
 import { version as v } from './version'
-import { Graph } from './graph/graph'
-import { Data } from './graph/creation-manager'
+import {
+  AttrRegistry,
+  NodeRegistry,
+  EdgeRegistry,
+  ViewRegistry,
+  RouterRegistry,
+  NodeAnchorRegistry,
+  EdgeAnchorRegistry,
+  ConnectorRegistry,
+  ConnectionPointRegistry,
+  GridRegistry,
+  FilterRegistry,
+  BackgroundRegistry,
+  HighlighterRegistry,
+  PortLayoutRegistry,
+  PortLabelLayoutRegistry,
+} from './registry'
 
-export namespace x6 {
+export namespace X6 {
   export const version = v
-  export const registerShape = Shape.register
-  export const registerRoute = Route.register
-  export const registerMarker = Marker.register
-  export const registerPerimeter = Perimeter.register
 }
 
-export namespace x6 {
-  interface Options extends Graph.Options {
-    container: HTMLElement
-  }
-
-  export function render(options: Options, data?: Data): Graph
-  export function render(container: HTMLElement, data?: Data): Graph
-  export function render(options: Options | HTMLElement, data?: Data): Graph {
-    let graph
-
-    if (options instanceof HTMLElement) {
-      graph = new Graph(options)
-    } else {
-      const { container, ...opts } = options
-      graph = new Graph(container, opts)
-    }
-
-    if (data != null) {
-      graph.render(data)
-    }
-
-    return graph
-  }
+export namespace X6 {
+  export const registerAttr = AttrRegistry.register
+  export const registerNode = NodeRegistry.register
+  export const registerEdge = EdgeRegistry.register
+  export const registerView = ViewRegistry.register
+  export const registerRouter = RouterRegistry.register
+  export const registerConnector = ConnectorRegistry.register
+  export const registerNodeAnchor = NodeAnchorRegistry.register
+  export const registerEdgeAnchor = EdgeAnchorRegistry.register
+  export const registerConnectionPoint = ConnectionPointRegistry.register
+  export const registerPortLayout = PortLayoutRegistry.register
+  export const registerPortLabelLayout = PortLabelLayoutRegistry.register
+  export const registerGrid = GridRegistry.register
+  export const registerFilter = FilterRegistry.register
+  export const registerBackground = BackgroundRegistry.register
+  export const registerHighlighter = HighlighterRegistry.register
 }
 
-export namespace x6 {
+export namespace X6 {
   /**
    * Turn on/off collect information of user client.
    *
@@ -53,6 +53,6 @@ export namespace x6 {
    * @param enabled Specifies if seed client information to AntV server.
    */
   export function track(enabled: boolean) {
-    globals.trackable = enabled
+    Globals.trackable = enabled
   }
 }

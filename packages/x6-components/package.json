@@ -67,8 +67,9 @@
     "ua-parser-js": "^0.7.20"
   },
   "devDependencies": {
-    "@babel/core": "^7.8.7",
-    "@babel/preset-env": "^7.8.7",
+    "@babel/core": "^7.9.6",
+    "@babel/preset-env": "^7.9.6",
+    "@babel/preset-react": "^7.9.4",
     "@types/antd": "^1.0.0",
     "@types/classnames": "^2.2.9",
     "@types/mini-css-extract-plugin": "^0.9.1",
@@ -80,7 +81,6 @@
     "@types/webpack": "^4.41.7",
     "antd": "^3.25.3",
     "babel-loader": "^8.0.6",
-    "cross-env": "^7.0.2",
     "eslint": "^6.1.0",
     "fs-extra": "^9.0.0",
     "less-loader": "^5.0.0",
