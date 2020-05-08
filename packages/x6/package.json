@@ -49,16 +49,13 @@
   },
   "lint-staged": {
     "src/**/*.less": [
-      "stylelint --syntax less --fix",
-      "git add"
+      "stylelint --syntax less --fix"
     ],
     "*.js": [
-      "eslint --fix",
-      "git add"
+      "eslint --fix"
     ],
     "src/**/*.ts": [
-      "tslint -c tslint.json -p ./tsconfig.json --fix",
-      "git add"
+      "tslint -c tslint.json -p ./tsconfig.json --fix"
     ]
   },
   "dependencies": {

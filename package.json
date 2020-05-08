@@ -35,8 +35,7 @@
   },
   "lint-staged": {
     "**/*.{js,jsx,tsx,ts,less,md,json}": [
-      "pretty-quick — staged",
-      "git add"
+      "pretty-quick — staged"
     ]
   },
   "commitlint": {
