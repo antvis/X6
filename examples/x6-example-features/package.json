@@ -13,7 +13,7 @@
     "@antv/x6": "^0.3.4",
     "@antv/x6-components": "^0.2.0",
     "@antv/x6-react-shape": "^0.2.2",
-    "antd": "^3.19.5",
+    "antd": "^4.2.0",
     "classnames": "^2.2.6",
     "react": "^16.12.0",
     "react-dom": "^16.8.6",
