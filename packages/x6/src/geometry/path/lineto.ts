@@ -137,3 +137,47 @@ export class LineTo extends Segment {
     return `${this.type} ${end.x} ${end.y}`
   }
 }
+
+export namespace LineTo {
+  export function create(line: Line): LineTo
+  export function create(point: Point.PointLike): LineTo
+  export function create(x: number, y: number): LineTo
+  export function create(
+    point: Point.PointLike,
+    ...points: Point.PointLike[]
+  ): LineTo[]
+  export function create(x: number, y: number, ...coords: number[]): LineTo[]
+  export function create(...args: any[]): LineTo | LineTo[] {
+    const len = args.length
+    const arg0 = args[0]
+
+    // line provided
+    if (arg0 instanceof Line) {
+      return new LineTo(arg0)
+    }
+
+    // points provided
+    if (Point.isPointLike(arg0)) {
+      if (len === 1) {
+        return new LineTo(arg0)
+      }
+
+      // poly-line segment
+      return args.map((arg) => new LineTo(arg as Point.PointLike))
+    }
+
+    // coordinates provided
+    if (len === 2) {
+      return new LineTo(+args[0], +args[1])
+    }
+
+    // poly-line segment
+    const segments: LineTo[] = []
+    for (let i = 0; i < len; i += 2) {
+      const x = +args[i]
+      const y = +args[i + 1]
+      segments.push(new LineTo(x, y))
+    }
+    return segments
+  }
+}

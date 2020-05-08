@@ -199,3 +199,78 @@ export class CurveTo extends Segment {
     return [this.type, c1.x, c1.y, c2.x, c2.y, end.x, end.y].join(' ')
   }
 }
+
+export namespace CurveTo {
+  export function create(
+    x0: number,
+    y0: number,
+    x1: number,
+    y1: number,
+    x2: number,
+    y2: number,
+  ): CurveTo
+  export function create(
+    x0: number,
+    y0: number,
+    x1: number,
+    y1: number,
+    x2: number,
+    y2: number,
+    ...coords: number[]
+  ): CurveTo[]
+  export function create(
+    p1: Point.PointLike,
+    p2: Point.PointLike,
+    p3: Point.PointLike,
+  ): CurveTo
+  export function create(
+    p1: Point.PointLike,
+    p2: Point.PointLike,
+    p3: Point.PointLike,
+    ...points: Point.PointLike[]
+  ): CurveTo[]
+  export function create(...args: any[]): CurveTo | CurveTo[] {
+    const len = args.length
+    const arg0 = args[0]
+
+    // curve provided
+    if (arg0 instanceof Curve) {
+      return new CurveTo(arg0)
+    }
+
+    // points provided
+    if (Point.isPointLike(arg0)) {
+      if (len === 3) {
+        return new CurveTo(args[0], args[1], args[2])
+      }
+
+      // this is a poly-bezier segment
+      const segments: CurveTo[] = []
+      for (let i = 0; i < len; i += 3) {
+        segments.push(new CurveTo(args[i], args[i + 1], args[i + 2]))
+      }
+      return segments
+    }
+
+    // coordinates provided
+    if (len === 6) {
+      return new CurveTo(args[0], args[1], args[2], args[3], args[4], args[5])
+    }
+
+    // this is a poly-bezier segment
+    const segments: CurveTo[] = []
+    for (let i = 0; i < len; i += 6) {
+      segments.push(
+        new CurveTo(
+          args[i],
+          args[i + 1],
+          args[i + 2],
+          args[i + 3],
+          args[i + 4],
+          args[i + 5],
+        ),
+      )
+    }
+    return segments
+  }
+}

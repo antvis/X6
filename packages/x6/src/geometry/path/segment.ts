@@ -1,5 +1,5 @@
-import { Point } from '../point'
 import { Line } from '../line'
+import { Point } from '../point'
 import { Rectangle } from '../rectangle'
 import { Geometry } from '../geometry'
 

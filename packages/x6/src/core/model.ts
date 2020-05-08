@@ -1,997 +1,1243 @@
-import { ArrayExt, NumberExt } from '../util'
-import { Point } from '../geometry'
-import { Events } from '../entity'
+import { KeyValue } from '../types'
+import { Basecoat } from '../common'
+import { Point, Rectangle } from '../geometry'
+import { Dijkstra } from '../addon'
 import { Cell } from './cell'
-import { Style } from '../types'
-import { Geometry } from './geometry'
-import {
-  IChange,
-  RootChange,
-  DataChange,
-  ChildChange,
-  StyleChange,
-  TerminalChange,
-  CollapseChange,
-  VisibleChange,
-  GeometryChange,
-  UndoableEdit,
-} from '../change'
+import { Edge } from './edge'
+import { Node } from './node'
+import { Graph } from './graph'
+import { Collection } from './collection'
+import { NodeRegistry, EdgeRegistry } from '../registry'
 
-export class Model extends Events<Model.EventArgs> {
-  private root: Cell
-  private cells: { [id: string]: Cell }
-  private currentEdit: UndoableEdit
-  private maintainEdgeParent = true
+export class Model extends Basecoat<Model.EventArgs> {
+  public readonly collection: Collection
+  protected readonly batches: KeyValue<number> = {}
+  protected readonly addings: WeakMap<Cell, boolean> = new WeakMap()
 
-  constructor(root?: Cell) {
+  protected graph: Graph | null
+  protected nodes: KeyValue<boolean> = {}
+  protected edges: KeyValue<boolean> = {}
+
+  constructor(cells: Cell[] = []) {
     super()
-    this.currentEdit = this.createUndoableEdit()
-    if (root != null) {
-      this.setRoot(root)
-    } else {
-      this.clear()
-    }
+    this.collection = new Collection(cells)
+    this.setup()
   }
 
-  // #region cell id
-
-  public cellIdPrefix = 'cell-'
-  public cellIdPostfix = ''
-  public autoCreateCellId = true
-  private nextCellId = 0
-
-  private createCellId(cell: Cell) {
-    const id = this.nextCellId
-    this.nextCellId += 1
-    return `${this.cellIdPrefix}${id}${this.cellIdPostfix}`
-  }
-
-  // #endregion
-
-  // #region root
-
-  clear() {
-    this.setRoot(this.createRoot())
-  }
-
-  createRoot() {
-    const root = new Cell()
-    root.insertChild(this.createLayer())
-    return root
-  }
-
-  isRoot(cell?: Cell | null) {
-    return cell != null && this.root === cell
-  }
-
-  getRoot(cell?: Cell | null) {
-    let root: Cell = this.root
-    let curr = cell
-
-    while (curr != null) {
-      root = curr
-      curr = this.getParent(curr) as any
-    }
-
-    return root
-  }
-
-  setRoot(root?: Cell | null) {
-    this.execute(new RootChange(this, root))
-  }
-
-  doRootChange(newRoot: Cell) {
-    const oldRoot = this.root
-    this.root = newRoot
-    this.cells = {}
-    this.nextCellId = 0
-    this.cellAdded(newRoot)
-    return oldRoot
-  }
-
-  // #endregion
-
-  // #region layer
-
-  createLayer(): Cell {
-    return new Cell()
-  }
-
-  isLayer(cell?: Cell | null): boolean {
-    const parent = this.getParent(cell)
-    return parent != null ? this.isRoot(parent) : false
-  }
-
-  getLayers(): Cell[] {
-    return this.getRoot().children || []
-  }
-
-  eachLayer(
-    iterator: (layer: Cell, index: number, layers: Cell[]) => void,
-    context?: any,
+  notify<Key extends keyof Model.EventArgs>(
+    name: Key,
+    args: Model.EventArgs[Key],
+  ): this
+  notify(name: Exclude<string, keyof Model.EventArgs>, args: any): this
+  notify<Key extends keyof Model.EventArgs>(
+    name: Key,
+    args: Model.EventArgs[Key],
   ) {
-    ArrayExt.forEach(this.getLayers(), iterator, context)
-  }
-
-  // #endregion
-
-  toJSON() {
-    const nodesData: any = []
-    const edgesData: any = []
-
-    for (const key in this.cells) {
-      if (this.cells.hasOwnProperty(key)) {
-        const cell: Cell = this.cells[key]
-        if (cell.isNode()) {
-          nodesData.push(cell.toJSON(cell))
-        } else if (cell.isEdge()) {
-          edgesData.push(cell.toJSON(cell))
-        }
+    this.trigger(name, args)
+    const graph = this.graph
+    if (graph) {
+      if (name === 'sorted' || name === 'reseted' || name === 'updated') {
+        graph.trigger(`model:${name}`, args)
+      } else {
+        graph.trigger(name, args)
       }
     }
-    return {
-      nodes: nodesData,
-      edges: edgesData,
-    }
+    return this
   }
 
-  getCell(id: string | number) {
-    return this.cells != null ? this.cells[id] : null
-  }
+  protected setup() {
+    const collection = this.collection
 
-  isNode(cell: Cell | null) {
-    return cell != null ? cell.isNode() : false
-  }
-
-  isEdge(cell: Cell | null) {
-    return cell != null ? cell.isEdge() : false
-  }
-
-  getDefaultParent() {
-    return this.getRoot().getChildAt(0)
-  }
-
-  isOrphan(cell?: Cell | null): boolean {
-    return cell != null ? cell.isOrphan() : true
-  }
-
-  isAncestor(ancestor: Cell, descendant?: Cell | null): boolean {
-    return ancestor.isAncestorOf(descendant)
-  }
-
-  contains(cell: Cell | null): boolean
-  contains(ancestor: Cell, descendant?: Cell | null): boolean {
-    if (descendant === undefined) {
-      descendant = ancestor // tslint:disable-line:no-parameter-reassignment
-      ancestor = this.root // tslint:disable-line:no-parameter-reassignment
-    }
-
-    return this.isAncestor(ancestor, descendant)
-  }
-
-  getAncestors(descendant?: Cell | null): Cell[] {
-    return descendant != null ? descendant.getAncestors() : []
-  }
-
-  getDescendants(ancestor: Cell | null): Cell[] {
-    return ancestor != null ? ancestor.getDescendants() : []
-  }
-
-  filterDescendants(
-    filter: (cell: Cell) => boolean,
-    parent: Cell = this.getRoot(),
-  ) {
-    const result: Cell[] = []
-
-    // Checks if the filter returns true for the cell
-    // and adds it to the result array
-    if (filter == null || filter(parent)) {
-      result.push(parent)
-    }
-
-    parent.eachChild(child => {
-      result.push(...this.filterDescendants(filter, child))
+    collection.on('sorted', () => this.notify('sorted', null))
+    collection.on('updated', (args) => this.notify('updated', args))
+    collection.on('reseted', (args) => {
+      this.onReset(args.current)
+      this.notify('reseted', args)
     })
 
-    return result
-  }
-
-  getParent(cell?: Cell | null) {
-    return cell != null ? cell.getParent() : null
-  }
-
-  getChildren(
-    parent: Cell | null,
-    includeNodes: boolean = false,
-    includeEdges: boolean = false,
-  ) {
-    const result: Cell[] = []
-    const children = parent != null ? parent.getChildren() : null
-    if (children && children.length) {
-      children.forEach(child => {
-        if (
-          (!includeEdges && !includeNodes) ||
-          (includeEdges && this.isEdge(child)) ||
-          (includeNodes && this.isNode(child))
-        ) {
-          result.push(child)
-        }
-      })
-    }
-
-    return result
-  }
-
-  getChildNodes(parent: Cell | null) {
-    return this.getChildren(parent, true, false)
-  }
-
-  getChildEdges(parent: Cell | null) {
-    return this.getChildren(parent, false, true)
-  }
-
-  getChildCount(cell: Cell | null) {
-    return cell != null ? cell.getChildCount() : 0
-  }
-
-  getChildAt(cell: Cell | null, index: number) {
-    return cell != null ? cell.getChildAt(index) : null
-  }
-
-  eachChild(
-    cell: Cell | null,
-    iterator: (child: Cell, index: number, children: Cell[]) => void,
-    thisArg?: any,
-  ) {
-    if (cell != null) {
-      cell.eachChild(iterator, thisArg)
-    }
-  }
-
-  filterCells(
-    cells: Cell[],
-    filter: (cell: Cell, index: number, arr: Cell[]) => boolean,
-    thisArg?: any,
-  ): Cell[] {
-    return ArrayExt.filter(cells, filter, thisArg)
-  }
-
-  getNearestCommonAncestor(cell1: Cell | null, cell2: Cell | null) {
-    return Cell.getNearestCommonAncestor(cell1, cell2)
-  }
-
-  add(parent: Cell | null, child: Cell | null, index?: number) {
-    if (child !== parent && parent != null && child != null) {
-      if (index == null) {
-        // tslint:disable-next-line
-        index = this.getChildCount(parent)
+    collection.on('added', (args) => {
+      const cell = args.cell
+      this.onCellAdded(cell)
+      this.notify('cell:added', args)
+      if (cell.isNode()) {
+        this.notify('node:added', { ...args, node: cell })
+      } else if (cell.isEdge()) {
+        this.notify('edge:added', { ...args, edge: cell })
       }
+    })
 
-      const changed = parent !== this.getParent(child)
-      this.execute(new ChildChange(this, parent, child, index))
-
-      // Maintains the edges parents by moving the edges
-      // into the nearest common ancestor of its terminals
-      if (this.maintainEdgeParent && changed) {
-        this.updateEdgeParents(child)
-      }
-    }
-
-    return child
-  }
-
-  cellAdded(cell: Cell | null) {
-    if (cell != null) {
-      if (cell.getId() == null && this.autoCreateCellId) {
-        cell.setId(this.createCellId(cell))
-      }
-
-      if (cell.getId() != null) {
-        let collision = this.getCell(cell.getId()!)
-        if (collision !== cell) {
-          // ensure unique id
-          while (collision != null) {
-            const id = this.createCellId(cell)
-            cell.setId(id)
-            collision = this.getCell(id)
-          }
-
-          if (this.cells == null) {
-            this.cells = {}
-          }
-
-          this.cells[cell.getId()!] = cell
-        }
-      }
-
-      const id = cell.getId()
-      if (id != null && NumberExt.isNumeric(id)) {
-        this.nextCellId = Math.max(this.nextCellId, +id)
-      }
-
-      cell.eachChild(child => this.cellAdded(child))
-    }
-  }
-
-  protected updateEdgeParents(cell: Cell, ancestor: Cell = this.getRoot(cell)) {
-    cell.eachChild(child => this.updateEdgeParents(child, ancestor))
-    cell.eachEdge(edge => {
-      // Updates edge parent if edge and child have
-      // a common ancestor node (does not need to be
-      // the model's root node)
-      if (this.isAncestor(ancestor, edge)) {
-        this.updateEdgeParent(edge, ancestor)
+    collection.on('removed', (args) => {
+      const cell = args.cell
+      this.onCellRemoved(cell, args.options)
+      this.notify('cell:removed', args)
+      if (cell.isNode()) {
+        this.notify('node:removed', { ...args, node: cell })
+      } else if (cell.isEdge()) {
+        this.notify('edge:removed', { ...args, edge: cell })
       }
     })
   }
 
-  protected getNonRelativeTerminal(edge: Cell, isSource: boolean) {
-    let ret = this.getTerminal(edge, isSource)
-    while (
-      ret != null &&
-      !this.isEdge(ret) &&
-      ret.geometry != null &&
-      ret.geometry.relative
-    ) {
-      ret = this.getParent(ret)
-    }
-    return ret
+  protected onReset(cells: Cell[]) {
+    this.nodes = {}
+    this.edges = {}
+    cells.forEach((cell) => this.onCellAdded(cell))
   }
 
-  protected updateEdgeParent(edge: Cell, ancestor: Cell) {
-    const source = this.getNonRelativeTerminal(edge, true)
-    const target = this.getNonRelativeTerminal(edge, false)
-    if (
-      this.isAncestor(ancestor, source) &&
-      this.isAncestor(ancestor, target)
-    ) {
-      const cell =
-        source === target
-          ? this.getParent(source)
-          : this.getNearestCommonAncestor(source, target)
-
-      if (
-        cell != null &&
-        (this.getParent(cell) !== this.root || this.isAncestor(cell, edge)) &&
-        this.getParent(edge) !== cell
-      ) {
-        let geo = this.getGeometry(edge)
-        if (geo != null) {
-          const origin1 = this.getOrigin(this.getParent(edge))
-          const origin2 = this.getOrigin(cell)
-
-          const dx = origin2.x - origin1.x
-          const dy = origin2.y - origin1.y
-
-          geo = geo.clone()
-          geo.translate(-dx, -dy)
-          this.setGeometry(edge, geo)
-        }
-
-        this.add(cell, edge, this.getChildCount(cell))
-      }
-    }
+  protected sortOnChangeZ() {
+    this.collection.sort()
   }
 
-  protected getOrigin(cell: Cell | null) {
-    let result: Point
-    if (cell != null) {
-      result = this.getOrigin(this.getParent(cell))
-      if (!this.isEdge(cell)) {
-        const geo = this.getGeometry(cell)
-        if (geo != null) {
-          result.x += geo.bounds.x
-          result.y += geo.bounds.y
-        }
-      }
+  protected onCellAdded(cell: Cell) {
+    const cellId = cell.id
+    if (cell.isEdge()) {
+      this.edges[cellId] = true
     } else {
-      result = new Point()
+      this.nodes[cellId] = true
     }
-
-    return result
   }
 
-  remove(cell: Cell | null) {
-    if (cell != null) {
-      if (cell === this.root) {
-        this.setRoot(null)
-      } else if (this.getParent(cell) != null) {
-        this.execute(new ChildChange(this, null, cell))
+  protected onCellRemoved(cell: Cell, options: Collection.RemoveOptions) {
+    const cellId = cell.id
+    if (cell.isEdge()) {
+      delete this.edges[cellId]
+    } else {
+      delete this.nodes[cellId]
+    }
+
+    this.afterCellRemoved(cell, options)
+  }
+
+  protected afterCellRemoved(cell: Cell, options: Collection.RemoveOptions) {
+    if (!options.clear) {
+      if (options.disconnectEdges) {
+        this.disconnectEdges(cell, options)
+      } else {
+        this.removeEdges(cell, options)
       }
+    }
+
+    if (cell.model === this) {
+      cell.model = null
+    }
+  }
+
+  protected prepareCell(cell: Cell, options: Collection.AddOptions) {
+    if (!cell.model && (!options || !options.dry)) {
+      // A cell can not be member of more than one graph.
+      // A cell stops being the member of the graph after it's removed.
+      cell.model = this
+    }
+
+    if (cell.zIndex == null) {
+      cell.zIndex = this.getMaxZIndex() + 1
     }
 
     return cell
   }
 
-  cellRemoved(cell: Cell | null) {
-    if (cell != null && this.cells != null) {
-      cell.eachChild(child => this.cellRemoved(child))
-      const id = cell.getId()
-      if (id != null) {
-        delete this.cells[id]
+  resetCells(cells: Cell[], options: Collection.SetOptions = {}) {
+    const items = cells.map((cell) => this.prepareCell(cell, options))
+    this.collection.reset(items, options)
+    return this
+  }
+
+  clear(options: Cell.SetOptions = {}) {
+    const raw = this.getCells()
+    if (raw.length === 0) {
+      return this
+    }
+    const localOptions = { ...options, clear: true }
+    this.executeBatch(
+      'clear',
+      () => {
+        // The nodes come after the edges.
+        const cells = raw.sort((cell) => (cell.isEdge() ? 1 : 2))
+        while (cells.length > 0) {
+          // Note that all the edges are removed first, so it's safe to
+          // remove the nodes without removing the connected edges first.
+          const cell = cells.shift()
+          if (cell) {
+            cell.remove(localOptions)
+          }
+        }
+      },
+      localOptions,
+    )
+
+    return this
+  }
+
+  addNode(metadata: Node | Node.Metadata, options: Model.AddOptions = {}) {
+    const node = metadata instanceof Node ? metadata : this.createNode(metadata)
+    this.addCell(node, options)
+    return node
+  }
+
+  createNode(metadata: Node.Metadata) {
+    return Node.create(metadata)
+  }
+
+  addEdge(metadata: Edge.Metadata | Edge, options: Model.AddOptions = {}) {
+    const edge = metadata instanceof Edge ? metadata : this.createEdge(metadata)
+    this.addCell(edge, options)
+    return edge
+  }
+
+  createEdge(metadata: Edge.Metadata) {
+    return Edge.create(metadata)
+  }
+
+  addCell(cell: Cell | Cell[], options: Model.AddOptions = {}) {
+    if (Array.isArray(cell)) {
+      return this.addCells(cell, options)
+    }
+
+    if (!this.collection.has(cell) && !this.addings.has(cell)) {
+      this.addings.set(cell, true)
+      this.collection.add(this.prepareCell(cell, options), options)
+      cell.eachChild((child) => this.addCell(child, options))
+      this.addings.delete(cell)
+    }
+
+    return this
+  }
+
+  addCells(cells: Cell[], options: Model.AddOptions = {}) {
+    const count = cells.length
+    if (count === 0) {
+      return this
+    }
+
+    const localOptions = {
+      ...options,
+      position: count - 1,
+      maxPosition: count - 1,
+    }
+
+    this.startBatch('add', localOptions)
+    cells.forEach((cell) => {
+      this.addCell(cell, localOptions)
+      localOptions.position -= 1
+    })
+    this.stopBatch('add', localOptions)
+
+    return this
+  }
+
+  removeCell(cellId: string, options?: Collection.RemoveOptions): this
+  removeCell(cell: Cell, options?: Collection.RemoveOptions): this
+  removeCell(obj: Cell | string, options: Collection.RemoveOptions = {}) {
+    const cell = typeof obj === 'string' ? this.getCell(obj) : obj
+    if (cell && this.has(cell)) {
+      this.collection.remove(cell, options)
+    }
+    return this
+  }
+
+  removeCells(cells: Cell[], options: Cell.RemoveOptions = {}) {
+    if (cells.length) {
+      this.executeBatch('remove', () => {
+        cells.forEach((cell) => this.removeCell(cell, options))
+      })
+    }
+    return this
+  }
+
+  removeEdges(cell: Cell | string, options: Cell.RemoveOptions = {}) {
+    this.getConnectedEdges(cell).forEach((edge) => {
+      edge.remove(options)
+    })
+  }
+
+  disconnectEdges(cell: Cell | string, options: Edge.SetOptions) {
+    const cellId = typeof cell === 'string' ? cell : cell.id
+    this.getConnectedEdges(cell).forEach((edge) => {
+      const sourceCell = edge.getSourceCell()
+      const targetCell = edge.getTargetCell()
+
+      if (sourceCell && sourceCell.id === cellId) {
+        edge.setSource({ x: 0, y: 0 }, options)
       }
-    }
-  }
 
-  doChildChange(cell: Cell, parent: Cell | null, index?: number) {
-    const previous = this.getParent(cell)
-    if (parent != null) {
-      if (parent !== previous || previous.getChildIndex(cell) !== index) {
-        parent.insertChild(cell, index)
-      }
-    } else if (previous != null) {
-      previous.removeChild(cell)
-    }
-
-    // Adds or removes the cell from the model
-    const par = this.contains(parent)
-    const pre = this.contains(previous)
-
-    if (par && !pre) {
-      this.cellAdded(cell)
-    } else if (pre && !par) {
-      this.cellRemoved(cell)
-    }
-
-    return previous
-  }
-
-  getTerminal(edge: Cell | null, isSource?: boolean) {
-    return edge != null ? edge.getTerminal(isSource) : null
-  }
-
-  setTerminal(edge: Cell, terminal: Cell | null, isSource: boolean = false) {
-    const changed = terminal !== this.getTerminal(edge, isSource)
-    this.execute(new TerminalChange(this, edge, terminal, isSource))
-    if (this.maintainEdgeParent && changed) {
-      this.updateEdgeParent(edge, this.getRoot())
-    }
-  }
-
-  doTerminalChange(edge: Cell, terminal: Cell | null, isSource: boolean) {
-    const previous = this.getTerminal(edge, isSource)
-    if (terminal != null) {
-      terminal.insertEdge(edge, isSource)
-    } else if (previous != null) {
-      previous.removeEdge(edge, isSource)
-    }
-
-    return previous
-  }
-
-  getTerminals(edge: Cell | null) {
-    return [this.getTerminal(edge, true), this.getTerminal(edge, false)]
-  }
-
-  setTerminals(edge: Cell, source: Cell | null, target: Cell | null) {
-    this.beginUpdate()
-    this.setTerminal(edge, source, true)
-    this.setTerminal(edge, target, false)
-    this.endUpdate()
-  }
-
-  getEdgeCount(node: Cell | null) {
-    return node != null ? node.getEdgeCount() : 0
-  }
-
-  /**
-   * Get the count of incoming or outgoing edges, ignoring the given edge.
-   *
-   * @param node The node whose edge count should be returned.
-   * @param outgoing Specifies if the number of outgoing or incoming
-   * edges should be returned.
-   * @param ignore The edge to be ignored.
-   */
-  getDirectedEdgeCount(
-    node: Cell | null,
-    outgoing: boolean,
-    ignore?: Cell | null,
-  ) {
-    let count = 0
-    this.eachEdge(node, edge => {
-      if (edge !== ignore && this.getTerminal(edge, outgoing) === node) {
-        count += 1
+      if (targetCell && targetCell.id === cellId) {
+        edge.setTarget({ x: 0, y: 0 }, options)
       }
     })
-
-    return count
   }
 
-  getEdgeAt(node: Cell | null, index: number) {
-    return node != null ? node.getEdgeAt(index) : null
+  has(id: string): boolean
+  has(cell: Cell): boolean
+  has(obj: string | Cell): boolean {
+    return this.collection.has(obj)
   }
 
-  /**
-   * Get all edges of the given cell without loops.
-   */
-  getConnections(node: Cell | null) {
-    return this.getEdges(node, true, true, false)
+  total() {
+    return this.collection.length
   }
 
-  /**
-   * Get the incoming edges of the given cell without loops.
-   */
-  getIncomingEdges(node: Cell | null) {
-    return this.getEdges(node, true, false, false)
+  indexOf(cell: Cell) {
+    return this.collection.indexOf(cell)
   }
 
   /**
-   * Get the outgoing edges of the given cell without loops.
+   * Returns a cell from the graph by its id.
    */
-  getOutgoingEdges(node: Cell | null) {
-    return this.getEdges(node, false, true, false)
+  getCell<T extends Cell = Cell>(id: string) {
+    return this.collection.get(id) as T
   }
 
-  getEdges(
-    node: Cell | null,
-    incoming: boolean = true,
-    outgoing: boolean = true,
-    includeLoops: boolean = true,
+  /**
+   * Returns all the nodes and edges in the graph.
+   */
+  getCells() {
+    return this.collection.toArray()
+  }
+
+  /**
+   * Returns the first cell (node or edge) in the graph. The first cell is
+   * defined as the cell with the lowest `zIndex`.
+   */
+  getFirstCell() {
+    return this.collection.first()
+  }
+
+  /**
+   * Returns the last cell (node or edge) in the graph. The last cell is
+   * defined as the cell with the highest `zIndex`.
+   */
+  getLastCell() {
+    return this.collection.last()
+  }
+
+  /**
+   * Returns the lowest `zIndex` value in the graph.
+   */
+  getMinZIndex() {
+    const first = this.collection.first()
+    return first ? first.getZIndex() || 0 : 0
+  }
+
+  /**
+   * Returns the highest `zIndex` value in the graph.
+   */
+  getMaxZIndex() {
+    const last = this.collection.last()
+    return last ? last.getZIndex() || 0 : 0
+  }
+
+  protected getCellsFromCache<T extends Cell = Cell>(cache: {
+    [key: string]: boolean
+  }) {
+    return cache
+      ? Object.keys(cache)
+          .map((id) => this.getCell<T>(id))
+          .filter((cell) => cell != null)
+      : []
+  }
+
+  /**
+   * Returns all the nodes in the graph.
+   */
+  getNodes() {
+    return this.getCellsFromCache<Node>(this.nodes)
+  }
+
+  /**
+   * Returns all the edges in the graph.
+   */
+  getEdges() {
+    return this.getCellsFromCache<Edge>(this.edges)
+  }
+
+  /**
+   * Returns all outgoing edges for the node.
+   */
+  getOutgoingEdges(cell: Cell | string) {
+    const node = typeof cell === 'string' ? this.getCell(cell) : cell
+    return node.getOutgoingEdges()
+  }
+
+  /**
+   * Returns all incoming edges for the node.
+   */
+  getIncomingEdges(cell: Cell | string) {
+    const node = typeof cell === 'string' ? this.getCell(cell) : cell
+    return node.getIncomingEdges()
+  }
+
+  /**
+   * Returns edges connected with cell.
+   */
+  getConnectedEdges(
+    cell: Cell | string,
+    options: Model.GetConnectedEdgesOptions = {},
   ) {
-    const result: Cell[] = []
-    this.eachEdge(node, edge => {
-      const source = this.getTerminal(edge, true)
-      const target = this.getTerminal(edge, false)
-      if (
-        (includeLoops && source === target) ||
-        (source !== target &&
-          ((incoming && target === node) || (outgoing && source === node)))
-      ) {
-        result.push(edge)
-      }
-    })
-    return result
-  }
-
-  eachEdge(
-    node: Cell | null,
-    iterator: (edge: Cell, index: number, edges: Cell[]) => void,
-    thisArg?: any,
-  ) {
-    if (node != null) {
-      node.eachEdge(iterator, thisArg)
+    const result: Edge[] = []
+    const node = typeof cell === 'string' ? this.getCell(cell) : cell
+    if (node == null) {
+      return result
     }
-  }
 
-  /**
-   * Get all edges between the given source and target node. If `directed`
-   * is `true`, then only edges from the source to the target are returned,
-   * otherwise, all edges between the two cells are returned.
-   *
-   * @param source The source node of the edge to be returned.
-   * @param target The target node of the edge to be returned.
-   * @param directed Optional boolean that specifies if the direction
-   * of the edge should be taken into account. Default is `false`.
-   */
-  getEdgesBetween(
-    source: Cell | null,
-    target: Cell | null,
-    directed: boolean = false,
-  ) {
-    const tmp1 = this.getEdgeCount(source)
-    const tmp2 = this.getEdgeCount(target)
-
-    // Assumes the source has less connected edges.
-    let terminal = source
-    let count = tmp1
-
-    // Uses the smaller array of connected edges for searching the edge.
-    if (tmp2 < tmp1) {
-      count = tmp2
-      terminal = target
+    const cache: { [id: string]: boolean } = {}
+    const indirect = options.indirect
+    let incoming = options.incoming
+    let outgoing = options.outgoing
+    if (incoming == null && outgoing == null) {
+      incoming = outgoing = true
     }
 
-    const result = []
+    const collect = (cell: Cell, isOutgoing: boolean) => {
+      const edges = isOutgoing
+        ? this.getOutgoingEdges(cell)
+        : this.getIncomingEdges(cell)
 
-    // Checks if the edge is connected to the correct cell
-    // and collects the first match.
-    for (let i = 0; i < count; i += 1) {
-      const edge = this.getEdgeAt(terminal, i)
-      if (edge != null) {
-        const [s, t] = this.getTerminals(edge)
-        const directedMatch = s === source && t === target
-        const oppositeMatch = t === source && s === target
-        if (directedMatch || (!directed && oppositeMatch)) {
+      if (edges != null) {
+        edges.forEach((edge) => {
+          if (cache[edge.id]) {
+            return
+          }
+
           result.push(edge)
+          cache[edge.id] = true
+
+          if (indirect) {
+            if (incoming) {
+              collect(edge, false)
+            }
+
+            if (outgoing) {
+              collect(edge, true)
+            }
+          }
+        })
+      }
+
+      if (indirect && cell.isEdge()) {
+        const terminal = isOutgoing
+          ? cell.getTargetCell()
+          : cell.getSourceCell()
+        if (terminal && terminal.isEdge()) {
+          if (!cache[terminal.id]) {
+            result.push(terminal)
+            collect(terminal, isOutgoing)
+          }
         }
       }
     }
 
-    return result
-  }
+    if (outgoing) {
+      collect(node, true)
+    }
 
-  getOpposites(
-    edges: Cell[],
-    terminal: Cell,
-    isSource: boolean = true,
-    isTarget: boolean = true,
-  ) {
-    const terminals: Cell[] = []
-    if (edges != null) {
-      edges.forEach(edge => {
-        const [source, target] = this.getTerminals(edge)
-        if (
-          // Checks if the terminal is the source of the edge
-          // and if the target should be stored in the result.
-          source === terminal &&
-          target != null &&
-          target !== terminal &&
-          isTarget
-        ) {
-          terminals.push(target)
-        } else if (
-          // Checks if the terminal is the taget of the edge
-          // and if the source should be stored in the result.
-          target === terminal &&
-          source != null &&
-          source !== terminal &&
-          isSource
-        ) {
-          terminals.push(source)
+    if (incoming) {
+      collect(node, false)
+    }
+
+    if (options.deep) {
+      const descendants = node.getDescendants({ deep: true })
+      const embedsCache: KeyValue<boolean> = {}
+      descendants.forEach((cell) => {
+        if (cell.isNode()) {
+          embedsCache[cell.id] = true
+        }
+      })
+
+      const collectSub = (cell: Cell, isOutgoing: boolean) => {
+        const edges = isOutgoing
+          ? this.getOutgoingEdges(cell.id)
+          : this.getIncomingEdges(cell.id)
+
+        if (edges != null) {
+          edges.forEach((edge) => {
+            if (!cache[edge.id]) {
+              const sourceCell = edge.getSourceCell()
+              const targetCell = edge.getTargetCell()
+
+              if (
+                !options.enclosed &&
+                sourceCell &&
+                embedsCache[sourceCell.id] &&
+                targetCell &&
+                embedsCache[targetCell.id]
+              ) {
+                return
+              }
+
+              result.push(edge)
+              cache[edge.id] = true
+            }
+          })
+        }
+      }
+
+      descendants.forEach((cell) => {
+        if (cell.isEdge()) {
+          return
+        }
+
+        if (outgoing) {
+          collectSub(cell, true)
+        }
+
+        if (incoming) {
+          collectSub(cell, false)
         }
       })
     }
 
-    return terminals
-  }
-
-  getTopmostCells(cells: Cell[]) {
-    const dict = new WeakMap<Cell, boolean>()
-    const rest: Cell[] = []
-
-    cells.forEach(cell => dict.set(cell, true))
-    cells.forEach(cell => {
-      let topmost = true
-      let parent = this.getParent(cell)
-
-      while (parent != null) {
-        if (dict.get(parent)) {
-          topmost = false
-          break
-        }
-
-        parent = this.getParent(parent)
-      }
-
-      if (topmost) {
-        rest.push(cell)
-      }
-    })
-
-    return rest
-  }
-
-  getData(cell: Cell | null) {
-    return cell != null ? cell.getData() : null
-  }
-
-  setData(cell: Cell, data: any) {
-    this.execute(new DataChange(this, cell, data))
-  }
-
-  doDataChange(cell: Cell, newValue: any) {
-    const previous = cell.getData()
-    cell.setData(newValue)
-    return previous
-  }
-
-  getGeometry(cell: Cell | null) {
-    return cell != null ? cell.getGeometry() : null
-  }
-
-  setGeometry(cell: Cell, geometry: Geometry) {
-    if (geometry !== this.getGeometry(cell)) {
-      this.execute(new GeometryChange(this, cell, geometry))
-    }
-  }
-
-  doGeometryChange(cell: Cell, geometry: Geometry) {
-    const previous = this.getGeometry(cell)!
-    cell.setGeometry(geometry)
-    return previous
-  }
-
-  getStyle(cell: Cell | null) {
-    return cell != null ? cell.getStyle() : null
-  }
-
-  setStyle(cell: Cell, style: Style) {
-    if (style !== this.getStyle(cell)) {
-      this.execute(new StyleChange(this, cell, style))
-    }
-  }
-
-  doStyleChange(cell: Cell, style: Style) {
-    const previous = this.getStyle(cell)!
-    cell.setStyle(style)
-    return previous
-  }
-
-  isCollapsed(node: Cell | null) {
-    return node != null ? node.isCollapsed() : false
-  }
-
-  collapse(node: Cell) {
-    this.setCollapsed(node, true)
-  }
-
-  expand(node: Cell) {
-    this.setCollapsed(node, false)
-  }
-
-  toggleCollapse(node: Cell) {
-    this.isCollapsed(node) ? this.expand(node) : this.collapse(node)
-  }
-
-  setCollapsed(node: Cell, collapsed: boolean) {
-    if (collapsed !== this.isCollapsed(node)) {
-      this.execute(new CollapseChange(this, node, collapsed))
-    }
-  }
-
-  doCollapseChange(node: Cell, collapsed: boolean) {
-    const previous = this.isCollapsed(node)
-    node.setCollapsed(collapsed)
-    return previous
-  }
-
-  isVisible(cell: Cell | null) {
-    return cell != null ? cell.isVisible() : false
-  }
-
-  show(cell: Cell) {
-    return this.setVisible(cell, true)
-  }
-
-  hide(cell: Cell) {
-    return this.setVisible(cell, false)
-  }
-
-  toggleVisible(cell: Cell) {
-    return this.isVisible(cell) ? this.hide(cell) : this.show(cell)
-  }
-
-  setVisible(cell: Cell, visible: boolean) {
-    if (visible !== this.isVisible(cell)) {
-      this.execute(new VisibleChange(this, cell, visible))
-    }
-  }
-
-  doVisibleChange(cell: Cell, visible: boolean) {
-    const previous = this.isVisible(cell)
-    cell.setVisible(visible)
-    return previous
-  }
-
-  // #region update
-
-  private updateLevel: number = 0
-  private endingUpdate: boolean = false
-
-  execute(change: IChange) {
-    this.trigger('execute', change)
-    change.execute()
-    this.trigger('executed', change)
-
-    this.beginUpdate()
-    this.currentEdit.add(change)
-    this.endUpdate()
-  }
-
-  protected beginUpdate() {
-    this.updateLevel += 1
-    this.trigger('beginUpdate')
-    if (this.updateLevel === 1) {
-      this.trigger('startEdit')
-    }
-  }
-
-  protected endUpdate() {
-    this.updateLevel -= 1
-    if (this.updateLevel === 0) {
-      this.trigger('endEdit')
-    }
-
-    if (!this.endingUpdate) {
-      this.endingUpdate = this.updateLevel === 0
-      const edit = this.currentEdit
-      this.trigger('endUpdate', edit)
-
-      try {
-        if (this.endingUpdate && !edit.isEmpty()) {
-          this.trigger('beforeUndo', edit)
-          this.currentEdit = this.createUndoableEdit()
-          edit.notify()
-          this.trigger('afterUndo', edit)
-        }
-      } finally {
-        this.endingUpdate = false
-      }
-    }
-  }
-
-  batchUpdate<T>(update: () => T) {
-    this.beginUpdate()
-    let result
-    try {
-      result = update()
-    } finally {
-      this.endUpdate()
-    }
     return result
   }
 
-  createUndoableEdit(significant: boolean = true) {
-    return new UndoableEdit(this, {
-      significant,
-      onChange: (edit: UndoableEdit) => {
-        this.trigger('change', edit.changes)
-      },
+  protected isBoundary(cell: Cell | string, isOrigin: boolean) {
+    const node = typeof cell === 'string' ? this.getCell(cell) : cell
+    const arr = isOrigin ? node.getIncomingEdges() : node.getOutgoingEdges()
+    return arr == null || arr.length === 0
+  }
+
+  protected getBoundaryNodes(isOrigin: boolean) {
+    const result: Node[] = []
+    Object.keys(this.nodes).forEach((nodeId) => {
+      if (this.isBoundary(nodeId, isOrigin)) {
+        const node = this.getCell<Node>(nodeId)
+        if (node) {
+          result.push(node)
+        }
+      }
     })
+    return result
+  }
+
+  /**
+   * Returns an array of all the roots of the graph.
+   */
+  getOrigins() {
+    return this.getBoundaryNodes(true)
+  }
+
+  /**
+   * Returns an array of all the leafs of the graph.
+   */
+  getLeafs() {
+    return this.getBoundaryNodes(false)
+  }
+
+  /**
+   * Returns `true` if the node is a root node, i.e. there is no edges
+   * coming to the node.
+   */
+  isOrigin(cell: Cell | string) {
+    return this.isBoundary(cell, true)
+  }
+
+  /**
+   * Returns `true` if the node is a leaf node, i.e. there is no edges
+   * going out from the node.
+   */
+  isLeaf(cell: Cell | string) {
+    return this.isBoundary(cell, false)
+  }
+
+  /**
+   * Returns all the neighbors of node in the graph. Neighbors are all
+   * the nodes connected to node via either incoming or outgoing edge.
+   */
+  getNeighbors(cell: Cell, options: Model.GetNeighborsOptions = {}) {
+    let incoming = options.incoming
+    let outgoing = options.outgoing
+    if (incoming == null && outgoing == null) {
+      incoming = outgoing = true
+    }
+
+    const edges = this.getConnectedEdges(cell, options)
+    const map = edges.reduce<KeyValue<Cell>>((memo, edge) => {
+      const hasLoop = edge.hasLoop(options)
+      const sourceCell = edge.getSourceCell()
+      const targetCell = edge.getTargetCell()
+
+      if (
+        incoming &&
+        sourceCell &&
+        sourceCell.isNode() &&
+        !memo[sourceCell.id]
+      ) {
+        if (
+          hasLoop ||
+          (sourceCell !== cell &&
+            (!options.deep || !sourceCell.isDescendantOf(cell)))
+        ) {
+          memo[sourceCell.id] = sourceCell
+        }
+      }
+
+      if (
+        outgoing &&
+        targetCell &&
+        targetCell.isNode() &&
+        !memo[targetCell.id]
+      ) {
+        if (
+          hasLoop ||
+          (targetCell !== cell &&
+            (!options.deep || !targetCell.isDescendantOf(cell)))
+        ) {
+          memo[targetCell.id] = targetCell
+        }
+      }
+
+      return memo
+    }, {})
+
+    if (cell.isEdge()) {
+      if (incoming) {
+        const sourceCell = cell.getSourceCell()
+        if (sourceCell && sourceCell.isNode() && !map[sourceCell.id]) {
+          map[sourceCell.id] = sourceCell
+        }
+      }
+      if (outgoing) {
+        const targetCell = cell.getTargetCell()
+        if (targetCell && targetCell.isNode() && !map[targetCell.id]) {
+          map[targetCell.id] = targetCell
+        }
+      }
+    }
+
+    return Object.keys(map).map((id) => map[id])
+  }
+
+  /**
+   * Returns `true` if `cell2` is a neighbor of `cell1`.
+   */
+  isNeighbor(
+    cell1: Cell,
+    cell2: Cell,
+    options: Model.GetNeighborsOptions = {},
+  ) {
+    let incoming = options.incoming
+    let outgoing = options.outgoing
+    if (incoming == null && outgoing == null) {
+      incoming = outgoing = true
+    }
+
+    return this.getConnectedEdges(cell1, options).some((edge) => {
+      const sourceCell = edge.getSourceCell()
+      const targetCell = edge.getTargetCell()
+
+      if (incoming && sourceCell && sourceCell.id === cell2.id) {
+        return true
+      }
+
+      if (outgoing && targetCell && targetCell.id === cell2.id) {
+        return true
+      }
+    })
+  }
+
+  getSuccessors(cell: Cell, options: Cell.GetDescendantsOptions) {
+    const descendants: Cell[] = []
+    this.search(
+      cell,
+      (curr) => {
+        if (curr !== cell) {
+          descendants.push(curr)
+        }
+      },
+      { ...options, outgoing: true },
+    )
+    return descendants
+  }
+
+  /**
+   * Returns `true` if `cell2` is a successor of `cell1`.
+   */
+  isSuccessor(cell1: Cell, cell2: Cell) {
+    let result = false
+    this.search(
+      cell1,
+      (curr) => {
+        if (curr === cell2 && curr !== cell1) {
+          result = true
+          return false
+        }
+      },
+      { outgoing: true },
+    )
+    return result
+  }
+
+  getPredecessors(cell: Cell, options: Cell.GetDescendantsOptions) {
+    const ancestors: Cell[] = []
+    this.search(
+      cell,
+      (curr) => {
+        if (curr !== cell) {
+          ancestors.push(curr)
+        }
+      },
+      { ...options, incoming: true },
+    )
+    return ancestors
+  }
+
+  /**
+   * Returns `true` if `cell2` is a predecessor of `cell1`.
+   */
+  isPredecessor(cell1: Cell, cell2: Cell) {
+    let result = false
+    this.search(
+      cell1,
+      (curr) => {
+        if (curr === cell2 && curr !== cell1) {
+          result = true
+          return false
+        }
+      },
+      { incoming: true },
+    )
+    return result
+  }
+
+  /**
+   * Returns the common ancestor of the passed cells.
+   */
+  getCommonAncestor(...cells: (Cell | null | undefined)[]) {
+    return Cell.getCommonAncestor(...cells)
+  }
+
+  /**
+   * Returns an array of cells that result from finding nodes/edges that
+   * are connected to any of the cells in the cells array. This function
+   * loops over cells and if the current cell is a edge, it collects its
+   * source/target nodes; if it is an node, it collects its incoming and
+   * outgoing edges if both the edge terminal (source/target) are in the
+   * cells array.
+   */
+  getSubGraph(cells: Cell[], options: Model.GetSubgraphOptions = {}) {
+    const subgraph: Cell[] = []
+    const cache: KeyValue<Cell> = {}
+    const nodes: Node[] = []
+    const edges: Edge[] = []
+    const collect = (cell: Cell) => {
+      if (!cache[cell.id]) {
+        subgraph.push(cell)
+        cache[cell.id] = cell
+        if (cell.isEdge()) {
+          edges.push(cell)
+        }
+
+        if (cell.isNode()) {
+          nodes.push(cell)
+        }
+      }
+    }
+
+    cells.forEach((cell) => {
+      collect(cell)
+      if (options.deep) {
+        const descendants = cell.getDescendants({ deep: true })
+        descendants.forEach((descendant) => collect(descendant))
+      }
+    })
+
+    edges.forEach((edge) => {
+      // For edges, include their source & target
+      const sourceCell = edge.getSourceCell()
+      const targetCell = edge.getTargetCell()
+      if (sourceCell && !cache[sourceCell.id]) {
+        subgraph.push(sourceCell)
+        cache[sourceCell.id] = sourceCell
+        if (sourceCell.isNode()) {
+          nodes.push(sourceCell)
+        }
+      }
+      if (targetCell && !cache[targetCell.id]) {
+        subgraph.push(targetCell)
+        cache[targetCell.id] = targetCell
+        if (targetCell.isNode()) {
+          nodes.push(targetCell)
+        }
+      }
+    })
+
+    nodes.forEach((node) => {
+      // For nodes, include their connected edges if their source/target
+      // is in the subgraph.
+      const edges = this.getConnectedEdges(node, options)
+      edges.forEach((edge) => {
+        const sourceCell = edge.getSourceCell()
+        const targetCell = edge.getTargetCell()
+        if (
+          !cache[edge.id] &&
+          sourceCell &&
+          cache[sourceCell.id] &&
+          targetCell &&
+          cache[targetCell.id]
+        ) {
+          subgraph.push(edge)
+          cache[edge.id] = edge
+        }
+      })
+    })
+
+    return subgraph
+  }
+
+  /**
+   * Clones the whole subgraph (including all the connected links whose
+   * source/target is in the subgraph). If `options.deep` is `true`, also
+   * take into account all the embedded cells of all the subgraph cells.
+   *
+   * Returns a map of the form: { [original cell ID]: [clone] }.
+   */
+  cloneSubGraph(cells: Cell[], options: Model.GetSubgraphOptions = {}) {
+    const subgraph = this.getSubGraph(cells, options)
+    return this.cloneCells(subgraph)
+  }
+
+  cloneCells(cells: Cell[]) {
+    return Cell.cloneCells(cells)
+  }
+
+  /**
+   * Returns an array of nodes whose bounding box contains point.
+   * Note that there can be more then one node as nodes might overlap.
+   */
+  getNodesFromPoint(x: number, y: number): Cell[]
+  getNodesFromPoint(p: Point.PointLike): Cell[]
+  getNodesFromPoint(x: number | Point.PointLike, y?: number) {
+    const p = typeof x === 'number' ? { x, y: y || 0 } : x
+    return this.getNodes().filter((node) => {
+      return node.getBBox().containsPoint(p)
+    })
+  }
+
+  /**
+   * Returns an array of nodes whose bounding box top/left coordinate
+   * falls into the rectangle.
+   */
+  getNodesInArea(
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    options?: Model.GetCellsInAreaOptions,
+  ): Cell[]
+  getNodesInArea(
+    rect: Rectangle.RectangleLike,
+    options?: Model.GetCellsInAreaOptions,
+  ): Cell[]
+  getNodesInArea(
+    x: number | Rectangle.RectangleLike,
+    y?: number | Model.GetCellsInAreaOptions,
+    w?: number,
+    h?: number,
+    options?: Model.GetCellsInAreaOptions,
+  ): Cell[] {
+    const rect =
+      typeof x === 'number'
+        ? new Rectangle(x, y as number, w as number, h as number)
+        : Rectangle.create(x)
+    const opts =
+      typeof x === 'number' ? options : (y as Model.GetCellsInAreaOptions)
+    const strict = opts && opts.strict
+    return this.getNodes().filter((node) => {
+      const bbox = node.getBBox()
+      return strict ? rect.containsRect(bbox) : rect.isIntersectWith(bbox)
+    })
+  }
+
+  getNodesUnderNode(
+    node: Node,
+    options: {
+      by?: 'bbox' | Rectangle.KeyPoint
+    } = {},
+  ) {
+    const bbox = node.getBBox()
+    const nodes =
+      options.by == null || options.by === 'bbox'
+        ? this.getNodesInArea(bbox)
+        : this.getNodesFromPoint(bbox[options.by])
+
+    return nodes.filter(
+      (curr) => node.id !== curr.id && !curr.isDescendantOf(node),
+    )
+  }
+
+  /**
+   * Returns the bounding box that surrounds all cells in the graph.
+   */
+  getBBox() {
+    return this.getCellsBBox(this.getCells())
+  }
+
+  /**
+   * Returns the bounding box that surrounds all the given cells.
+   */
+  getCellsBBox(cells: Cell[], options: Cell.GetCellsBBoxOptions = {}) {
+    return Cell.getCellsBBox(cells, options)
+  }
+
+  // #region search
+
+  search(
+    cell: Cell,
+    iterator: Model.SearchIterator,
+    options: Model.SearchOptions = {},
+  ) {
+    if (options.breadthFirst) {
+      this.breadthFirstSearch(cell, iterator, options)
+    } else {
+      this.depthFirstSearch(cell, iterator, options)
+    }
+  }
+
+  breadthFirstSearch(
+    cell: Cell,
+    iterator: Model.SearchIterator,
+    options: Model.GetNeighborsOptions = {},
+  ) {
+    const queue: Cell[] = []
+    const visited: KeyValue<boolean> = {}
+    const distance: KeyValue<number> = {}
+
+    queue.push(cell)
+    distance[cell.id] = 0
+
+    while (queue.length > 0) {
+      const next = queue.shift()
+      if (next == null || visited[next.id]) {
+        continue
+      }
+      visited[next.id] = true
+      if (iterator.call(this, next, distance[next.id]) === false) {
+        continue
+      }
+      const neighbors = this.getNeighbors(next, options)
+      neighbors.forEach((neighbor) => {
+        distance[neighbor.id] = distance[next.id] + 1
+        queue.push(neighbor)
+      })
+    }
+  }
+
+  depthFirstSearch(
+    cell: Cell,
+    iterator: Model.SearchIterator,
+    options: Model.GetNeighborsOptions = {},
+  ) {
+    const queue: Cell[] = []
+    const visited: KeyValue<boolean> = {}
+    const distance: KeyValue<number> = {}
+
+    queue.push(cell)
+    distance[cell.id] = 0
+
+    while (queue.length > 0) {
+      const next = queue.pop()
+      if (next == null || visited[next.id]) {
+        continue
+      }
+      visited[next.id] = true
+      if (iterator.call(this, next, distance[next.id]) === false) {
+        continue
+      }
+      const neighbors = this.getNeighbors(next, options)
+      const lastIndex = queue.length
+      neighbors.forEach((neighbor) => {
+        distance[neighbor.id] = distance[next.id] + 1
+        queue.splice(lastIndex, 0, neighbor)
+      })
+    }
   }
 
   // #endregion
 
-  mergeChildren(from: Cell, to: Cell, cloneAllEdges: boolean = true) {
-    this.batchUpdate(() => {
-      const mapping: { [path: string]: Cell } = {}
-      this.mergeChildrenImpl(from, to, cloneAllEdges, mapping)
+  // #region make tree
 
-      // Post-processes all edges in the mapping and reconnects the
-      // terminals to the corresponding cells in the target model.
-      for (const key in mapping) {
-        const cell = mapping[key]
-        let terminal = this.getTerminal(cell, true)
-        if (terminal != null) {
-          terminal = mapping[Cell.getCellPath(terminal)]
-          this.setTerminal(cell, terminal, true)
+  makeTree(
+    parent: Model.TreeItem,
+    options: Model.MakeTreeOptions,
+    parentNode: Node,
+    collector: Cell[] = [],
+  ) {
+    const children =
+      typeof options.children === 'function'
+        ? options.children(parent)
+        : parent[options.children || 'children']
+
+    if (!parentNode) {
+      // tslint:disable-next-line
+      parentNode = options.createNode(parent)
+      collector.push(parentNode)
+    }
+
+    if (Array.isArray(children)) {
+      children.forEach((child: Model.TreeItem) => {
+        const node = options.createNode(child)
+        const edge = options.createEdge(parentNode, node)
+        collector.push(node, edge)
+        this.makeTree(child, options, node, collector)
+      })
+    }
+
+    return collector
+  }
+
+  // #endregion
+
+  // #region shortest path
+
+  /***
+   * Returns an array of IDs of nodes on the shortest
+   * path between source and target.
+   */
+  getShortestPath(
+    source: Cell | string,
+    target: Cell | string,
+    options: Model.GetShortestPathOptions = {},
+  ) {
+    const adjacencyList: Dijkstra.AdjacencyList = {}
+    this.getEdges().forEach((edge) => {
+      const sourceId = edge.getSourceCellId()
+      const targetId = edge.getTargetCellId()
+      if (sourceId && targetId) {
+        if (!adjacencyList[sourceId]) {
+          adjacencyList[sourceId] = []
+        }
+        if (!adjacencyList[targetId]) {
+          adjacencyList[targetId] = []
         }
 
-        terminal = this.getTerminal(cell, false)
-        if (terminal != null) {
-          terminal = mapping[Cell.getCellPath(terminal)]
-          this.setTerminal(cell, terminal, false)
+        adjacencyList[sourceId].push(targetId)
+        if (!options.directed) {
+          adjacencyList[targetId].push(sourceId)
         }
       }
     })
-  }
 
-  private mergeChildrenImpl(
-    from: Cell,
-    to: Cell,
-    cloneAllEdges: boolean,
-    mapping: { [path: string]: Cell },
-  ) {
-    this.batchUpdate(() => {
-      from.eachChild(cell => {
-        const id = cell.getId()
-        let target =
-          id != null && (!this.isEdge(cell) || !cloneAllEdges)
-            ? this.getCell(id)
-            : null
+    const sourceId = typeof source === 'string' ? source : source.id
+    const previous = Dijkstra.run(adjacencyList, sourceId, options.weight)
 
-        // Clones and adds the child if no cell exists for the id
-        if (target == null) {
-          const cloned = cell.clone()
-          cloned.setId(id)
-
-          // Sets the terminals from the original cell to the clone
-          // because the lookup uses strings not cells in JS
-          cloned.setTerminal(cell.getTerminal(true), true)
-          cloned.setTerminal(cell.getTerminal(false), false)
-
-          target = to.insertChild(cloned)
-          this.cellAdded(target)
-        }
-
-        mapping[Cell.getCellPath(cell)] = target!
-
-        this.mergeChildrenImpl(cell, target, cloneAllEdges, mapping)
-      })
-    })
-  }
-
-  getParents(cells: Cell[]) {
-    const parents: Cell[] = []
-    if (cells != null) {
-      const dict = new WeakMap<Cell, boolean>()
-      cells.forEach(cell => {
-        const parent = this.getParent(cell)
-        if (parent != null && !dict.get(parent)) {
-          dict.set(parent, true)
-          parents.push(parent)
-        }
-      })
+    const path = []
+    let targetId = typeof target === 'string' ? target : target.id
+    if (previous[targetId]) {
+      path.push(targetId)
     }
 
-    return parents
-  }
-
-  cloneCell(cell: Cell) {
-    if (cell != null) {
-      return this.cloneCells([cell], true)[0]
+    while ((targetId = previous[targetId])) {
+      path.unshift(targetId)
     }
-
-    return null
+    return path
   }
 
-  cloneCells(
+  // #endregion
+
+  // #region transform
+
+  /**
+   * Translate all cells in the graph by `tx` and `ty` pixels.
+   */
+  translate(tx: number, ty: number, options: Cell.TranslateOptions) {
+    this.getCells()
+      .filter((cell) => !cell.hasParent())
+      .forEach((cell) => cell.translate(tx, ty, options))
+
+    return this
+  }
+
+  resize(width: number, height: number, options: Cell.SetOptions) {
+    return this.resizeCells(width, height, this.getCells(), options)
+  }
+
+  resizeCells(
+    width: number,
+    height: number,
     cells: Cell[],
-    includeChildren: boolean,
-    cache: WeakMap<Cell, Cell> = new WeakMap<Cell, Cell>(),
+    options: Cell.SetOptions = {},
   ) {
-    const clones = []
-    for (let i = 0; i < cells.length; i += 1) {
-      if (cells[i] != null) {
-        clones.push(this.cloneCellImpl(cells[i], includeChildren, cache))
-      } else {
-        clones.push(null)
-      }
+    const bbox = this.getCellsBBox(cells)
+    if (bbox) {
+      const sx = Math.max(width / bbox.width, 0)
+      const sy = Math.max(height / bbox.height, 0)
+      const origin = bbox.getOrigin()
+      cells.forEach((cell) => cell.scale(sx, sy, origin, options))
     }
 
-    for (let i = 0; i < clones.length; i += 1) {
-      if (clones[i] != null) {
-        this.restoreClone(clones[i]!, cells[i], cache)
-      }
-    }
-
-    return clones
+    return this
   }
 
-  private cloneCellImpl(
+  // #endregion
+
+  // #region serialize/deserialize
+
+  toJSON() {
+    return Model.toJSON(this.getCells())
+  }
+
+  fromJSON() {}
+
+  // #endregion
+
+  // #region batch
+
+  startBatch(name: string, data: KeyValue = {}) {
+    this.batches[name] = (this.batches[name] || 0) + 1
+    this.notify('batch:start', { name, data })
+    return this
+  }
+
+  stopBatch(name: string, data: KeyValue = {}) {
+    this.batches[name] = (this.batches[name] || 0) - 1
+    this.notify('batch:stop', { name, data })
+    return this
+  }
+
+  executeBatch<T>(name: string, execute: () => T, data: KeyValue = {}) {
+    this.startBatch(name, data)
+    const result = execute()
+    this.stopBatch(name, data)
+    return result
+  }
+
+  hasActiveBatch(name: string | string[] = Object.keys(this.batches)) {
+    const names = Array.isArray(name) ? name : [name]
+    return names.some((batch) => this.batches[batch] > 0)
+  }
+
+  // #endregion
+}
+
+export namespace Model {
+  export interface SetOptions extends Collection.SetOptions {}
+  export interface AddOptions extends Collection.AddOptions {}
+  export interface RemoveOptions extends Collection.RemoveOptions {}
+
+  export interface GetCellsInAreaOptions {
+    strict?: boolean
+  }
+
+  export interface SearchOptions extends GetNeighborsOptions {
+    breadthFirst?: boolean
+  }
+
+  export type SearchIterator = (
+    this: Model,
     cell: Cell,
-    includeChildren: boolean,
-    cache: WeakMap<Cell, Cell>,
-  ) {
-    let clone = cache.get(cell)
-    if (clone == null) {
-      clone = cell.clone()
-      cache.set(cell, clone)
+    distance: number,
+  ) => any
 
-      if (includeChildren) {
-        cell.eachChild(child => {
-          const cloneChild = this.cloneCellImpl(child, true, cache)
-          clone!.insertChild(cloneChild)
-        })
-      }
-    }
-
-    return clone
+  export interface GetNeighborsOptions {
+    deep?: boolean
+    incoming?: boolean
+    outgoing?: boolean
+    indirect?: boolean
   }
 
-  private restoreClone(clone: Cell, cell: Cell, cache: WeakMap<Cell, Cell>) {
-    const source = this.getTerminal(cell, true)
-    if (source != null) {
-      const tmp = cache.get(source)
-      if (tmp != null) {
-        tmp.insertEdge(clone, true)
-      }
-    }
+  export interface GetConnectedEdgesOptions extends GetNeighborsOptions {
+    enclosed?: boolean
+  }
 
-    const target = this.getTerminal(cell, false)
-    if (target != null) {
-      const tmp = cache.get(target)
-      if (tmp != null) {
-        tmp.insertEdge(clone, false)
-      }
-    }
+  export interface GetSubgraphOptions {
+    deep?: boolean
+  }
 
-    clone.eachChild((c, i) => {
-      this.restoreClone(c, this.getChildAt(cell, i)!, cache)
-    })
+  export interface TreeItem extends KeyValue {
+    name: string
+  }
+
+  export interface MakeTreeOptions {
+    children?: string | ((parent: TreeItem) => TreeItem[])
+    createNode: (metadata: TreeItem) => Node
+    createEdge: (parent: Node, child: Node) => Edge
+  }
+
+  export interface GetShortestPathOptions {
+    directed?: boolean
+    weight?: Dijkstra.Weight
   }
 }
 
 export namespace Model {
-  export interface EventArgs {
-    change: [IChange[]]
-    execute: IChange
-    executed: IChange
-    beginUpdate?: null
-    endUpdate: UndoableEdit
-    startEdit?: null
-    endEdit?: null
-    beforeUndo: UndoableEdit
-    afterUndo: UndoableEdit
+  export interface EventArgs
+    extends Collection.CellEventArgs,
+      Collection.NodeEventArgs,
+      Collection.EdgeEventArgs {
+    'batch:start': {
+      name: string
+      data: KeyValue
+    }
+    'batch:stop': {
+      name: string
+      data: KeyValue
+    }
+
+    sorted: null
+    reseted: {
+      current: Cell[]
+      previous: Cell[]
+      options: Collection.SetOptions
+    }
+    updated: {
+      added: Cell[]
+      merged: Cell[]
+      removed: Cell[]
+      options: Collection.SetOptions
+    }
+  }
+}
+
+export namespace Model {
+  export function toJSON(cells: Cell[]) {
+    return {
+      cells: cells.map((cell) => cell.toJSON()),
+    }
+  }
+
+  export function fromJSON(
+    data:
+      | (Node.Properties | Edge.Properties)[]
+      | (Partial<ReturnType<typeof toJSON>> & {
+          nodes?: Node.Properties[]
+          edges?: Edge.Properties[]
+        }),
+  ) {
+    const cells: Cell.Properties[] = []
+    if (Array.isArray(data)) {
+      cells.push(...data)
+    } else {
+      if (data.cells) {
+        cells.push(...data.cells)
+      }
+
+      if (data.nodes) {
+        data.nodes.forEach((node) => {
+          if (node.type == null) {
+          }
+          cells.push(node)
+        })
+      }
+
+      if (data.edges) {
+        data.edges.forEach((edge) => {
+          if (edge.type == null) {
+          }
+          cells.push(edge)
+        })
+      }
+    }
+
+    return cells.map((cell) => {
+      const type = cell.type
+      if (type) {
+        if (NodeRegistry.exist(type)) {
+          return Node.create(cell)
+        }
+        if (EdgeRegistry.exist(type)) {
+          return Edge.create(cell)
+        }
+      }
+      throw new Error('Node/Edge type is required for creating a node instance')
+    })
   }
 }
