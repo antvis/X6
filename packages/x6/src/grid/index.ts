@@ -1,5 +1,5 @@
-import { Dom } from '../../util'
-import { KeyValue } from '../../types'
+import { Dom } from '../util'
+import { KeyValue } from '../types'
 import * as patterns from './main'
 
 export class Grid {

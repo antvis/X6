@@ -8,7 +8,9 @@ import {
   BackgroundRegistry,
   HighlighterRegistry,
 } from '../registry'
-import { Grid, Background, Highlighter } from '../style'
+import { Grid } from '../grid'
+import { Highlighter } from '../highlighter'
+import { Background } from '../background'
 import { Attr } from '../attr'
 import { Globals } from './globals'
 import { Cell } from './cell'
