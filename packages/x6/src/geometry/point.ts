@@ -1,6 +1,5 @@
 import * as util from './util'
 import { Angle } from './angle'
-import { Line } from './line'
 import { Geometry } from './geometry'
 import { Rectangle } from './rectangle'
 
@@ -81,7 +80,7 @@ export class Point extends Geometry implements Point.PointLike {
    * If `points` is an empty array, `null` is returned.
    */
   closest(points: (Point | Point.PointLike | Point.PointData)[]) {
-    const pts = points.map(p => Point.clone(p))
+    const pts = points.map((p) => Point.create(p))
     if (pts.length === 1) {
       return pts[0]
     }
@@ -101,17 +100,18 @@ export class Point extends Geometry implements Point.PointLike {
   }
 
   distance(p: Point | Point.PointLike | Point.PointData) {
-    const ref = Point.clone(p)
-    return new Line(this, ref).length()
+    return Math.sqrt(this.squaredDistance(p))
   }
 
   squaredDistance(p: Point | Point.PointLike | Point.PointData) {
-    const ref = Point.clone(p)
-    return new Line(this, ref).squaredLength()
+    const ref = Point.create(p)
+    const dx = this.x - ref.x
+    const dy = this.y - ref.y
+    return dx * dx + dy * dy
   }
 
   manhattanDistance(p: Point | Point.PointLike | Point.PointData) {
-    const ref = Point.clone(p)
+    const ref = Point.create(p)
     return Math.abs(ref.x - this.x) + Math.abs(ref.y - this.y)
   }
 
@@ -128,7 +128,7 @@ export class Point extends Geometry implements Point.PointLike {
    * Returns the angle between vector from me to `p` and the x axis.
    */
   theta(p: Point | Point.PointLike | Point.PointData = new Point()): number {
-    const ref = Point.clone(p)
+    const ref = Point.create(p)
     const y = -(ref.y - this.y) // invert the y-axis.
     const x = ref.x - this.x
     let rad = Math.atan2(y, x)
@@ -194,11 +194,7 @@ export class Point extends Geometry implements Point.PointLike {
     ref: Point | Point.PointLike | Point.PointData,
   ) {
     // Revert the translation and measure the change in angle around x-axis.
-    return (
-      this.clone()
-        .translate(-dx, -dy)
-        .theta(ref) - this.theta(ref)
-    )
+    return this.clone().translate(-dx, -dy).theta(ref) - this.theta(ref)
   }
 
   adhereToRect(rect: Rectangle) {
@@ -216,8 +212,25 @@ export class Point extends Geometry implements Point.PointLike {
    * Returns the bearing between me and the given point.
    */
   bearing(p: Point | Point.PointLike | Point.PointData) {
-    const ref = Point.clone(p)
-    return new Line(this, ref).bearing()
+    const ref = Point.create(p)
+    const lat1 = Angle.toRad(this.y)
+    const lat2 = Angle.toRad(ref.y)
+    const lon1 = this.x
+    const lon2 = ref.x
+    const dLon = Angle.toRad(lon2 - lon1)
+    const y = Math.sin(dLon) * Math.cos(lat2)
+    const x =
+      Math.cos(lat1) * Math.sin(lat2) -
+      Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon)
+
+    const brng = Angle.toDeg(Math.atan2(y, x))
+    const bearings = ['NE', 'E', 'SE', 'S', 'SW', 'W', 'NW', 'N']
+
+    let index = brng - 22.5
+    if (index < 0) index += 360
+    index = index / 45
+
+    return bearings[index] as Point.Bearing
   }
 
   /**
@@ -231,8 +244,8 @@ export class Point extends Geometry implements Point.PointLike {
     p2: Point | Point.PointLike | Point.PointData,
   ) {
     if (p1 != null && p2 != null) {
-      const a = Point.clone(p1)
-      const b = Point.clone(p2)
+      const a = Point.create(p1)
+      const b = Point.create(p2)
       return (b.x - this.x) * (a.y - this.y) - (b.y - this.y) * (a.x - this.x)
     }
 
@@ -243,7 +256,7 @@ export class Point extends Geometry implements Point.PointLike {
    * Returns the dot product of this point with given other point.
    */
   dot(p: Point | Point.PointLike | Point.PointData) {
-    const ref = Point.clone(p)
+    const ref = Point.create(p)
     return this.x * ref.x + this.y * ref.y
   }
 
@@ -257,7 +270,7 @@ export class Point extends Geometry implements Point.PointLike {
       return new Point(this.x - dx, this.y - dy!)
     }
 
-    const p = Point.clone(dx)
+    const p = Point.create(dx)
     return new Point(this.x - p.x, this.y - p.y)
   }
 
@@ -268,7 +281,7 @@ export class Point extends Geometry implements Point.PointLike {
   lerp(p: Point | Point.PointLike | Point.PointData, t: number) {
     const x = this.x
     const y = this.y
-    const ref = Point.clone(p)
+    const ref = Point.create(p)
     return new Point((1 - t) * x + t * ref.x, (1 - t) * y + t * ref.y)
   }
 
@@ -278,13 +291,13 @@ export class Point extends Geometry implements Point.PointLike {
   }
 
   move(ref: Point | Point.PointLike | Point.PointData, distance: number) {
-    const p = Point.clone(ref)
+    const p = Point.create(ref)
     const rad = Angle.toRad(p.theta(this))
     return this.translate(Math.cos(rad) * distance, -Math.sin(rad) * distance)
   }
 
   reflection(ref: Point | Point.PointLike | Point.PointData) {
-    const p = Point.clone(ref)
+    const p = Point.create(ref)
     return p.move(this, this.distance(p))
   }
 
@@ -298,7 +311,7 @@ export class Point extends Geometry implements Point.PointLike {
   }
 
   equals(p: Point | Point.PointLike | Point.PointData) {
-    const ref = Point.clone(p)
+    const ref = Point.create(p)
     return ref != null && ref.x === this.x && ref.y === this.y
   }
 
@@ -322,6 +335,8 @@ export namespace Point {
   }
 
   export type PointData = [number, number]
+
+  export type Bearing = 'NE' | 'E' | 'SE' | 'S' | 'SW' | 'W' | 'NW' | 'N'
 
   export function isPointLike(o: any): o is PointLike {
     return (
