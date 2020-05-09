@@ -16,6 +16,24 @@ export class ViewportManager extends BaseManager {
     }
   }
 
+  cacheTime: number = 0
+  cacheContainer: { offsetWidth: number; offsetHeight: number }
+
+  getCacheContainer() {
+    const queryGap = Date.now() - (this.cacheTime || 0)
+    // console.log(queryGap)
+    if (queryGap > 2000) {
+      // 更新缓存
+      this.cacheTime = Date.now()
+      const { offsetWidth, offsetHeight } = this.container
+      this.cacheContainer = {
+        offsetWidth,
+        offsetHeight,
+      }
+    }
+    return this.cacheContainer
+  }
+
   getPagePadding() {
     const scale = this.view.scale
     const container = this.container
@@ -25,7 +43,6 @@ export class ViewportManager extends BaseManager {
         Math.max(0, Math.round((container.offsetHeight - 40) / scale)),
       ]
     }
-
     return [
       Math.max(0, Math.round(container.offsetWidth / 2 / scale)),
       Math.max(0, Math.round(container.offsetHeight / 2 / scale)),

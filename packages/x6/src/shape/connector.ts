@@ -11,7 +11,7 @@ export class Connector extends Polyline {
 
   updateBoundingBox() {
     this.useSvgBoundingBox = !!this.style.curved
-    super.updateBoundingBox()
+    // super.updateBoundingBox()
   }
 
   drawEdgeShape(c: SvgCanvas2D, points: Point[]) {

@@ -65,7 +65,6 @@ export class CreationManager extends BaseManager {
 
     this.graph.batchUpdate(() => {
       renderGroups(0)
-
       if (nodes != null) {
         nodes.forEach(item => {
           const { id, parent, ...dataItem } = item
@@ -129,6 +128,7 @@ export class CreationManager extends BaseManager {
           }
         })
       }
+      return result
     })
 
     return cells
@@ -149,7 +149,6 @@ export class CreationManager extends BaseManager {
         const pState = absolute ? this.view.getState(parent) : null
         const o1 = pState != null ? pState.origin : null
         const zero = new Point(0, 0)
-
         for (let i = 0, ii = cells.length; i < ii; i += 1) {
           if (cells[i] == null) {
             index -= 1 // tslint:disable-line
@@ -339,6 +338,7 @@ export class CreationManager extends BaseManager {
           }
         })
       }
+      return result
     })
 
     return removing

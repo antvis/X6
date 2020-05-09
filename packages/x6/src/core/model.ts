@@ -769,11 +769,10 @@ export class Model extends Events<Model.EventArgs> {
   private endingUpdate: boolean = false
 
   execute(change: IChange) {
+    this.beginUpdate()
     this.trigger('execute', change)
     change.execute()
     this.trigger('executed', change)
-
-    this.beginUpdate()
     this.currentEdit.add(change)
     this.endUpdate()
   }
@@ -816,7 +815,13 @@ export class Model extends Events<Model.EventArgs> {
     try {
       result = update()
     } finally {
-      this.endUpdate()
+      if (result && (result as any).then) {
+        (result as any).then(() => {
+          this.endUpdate()
+        })
+      } else {
+        this.endUpdate()
+      }
     }
     return result
   }

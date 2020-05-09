@@ -33,6 +33,7 @@ export class ConnectionManager extends BaseManager {
           }
         })
       }
+      return result
     })
 
     return edge

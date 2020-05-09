@@ -40,7 +40,7 @@ export function hasScrollbars(
   const now = Date.now()
   if (cache) {
     const { hasScrollbars, cacheTime = 0 } = container
-    const queryGap = Date.now() - cacheTime
+    const queryGap = now - cacheTime
     if ((hasScrollbars === false || hasScrollbars === true) && queryGap < 500) {
       return hasScrollbars
     }
