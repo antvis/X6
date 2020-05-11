@@ -75,7 +75,7 @@
     "@types/node": "^13.9.1",
     "@types/sinon": "^9.0.0",
     "@types/webpack": "^4.41.7",
-    "babel-jest": "^25.4.0",
+    "babel-jest": "^26.0.1",
     "babel-loader": "^8.0.6",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
     "coveralls": "^3.0.6",
