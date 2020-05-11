@@ -79,7 +79,7 @@
     "@types/react-resize-detector": "^4.2.0",
     "@types/ua-parser-js": "^0.7.33",
     "@types/webpack": "^4.41.7",
-    "antd": "^3.25.3",
+    "antd": "^4.2.2",
     "babel-loader": "^8.0.6",
     "eslint": "^6.1.0",
     "fs-extra": "^9.0.0",
