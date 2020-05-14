@@ -102,8 +102,8 @@ export default class Example extends React.Component {
           refX: 0.5,
           refY: 0.5,
           ref: 'rect',
-          yAlignment: 'middle',
-          xAlignment: 'middle',
+          yAlign: 'middle',
+          xAlign: 'middle',
           fill: 'black',
         },
         image: {

@@ -40,12 +40,12 @@ const Node = N.registry.register('performance_node', {
       // Please see the `ref-width` & `ref-height` comment.
       refX: '50%',
       refY: '50%',
-      // Do not use special attribute `x-alignment` when not necessary.
+      // Do not use special attribute `x-align` when not necessary.
       // It calls getBBox() on the SVGText element internally. Measuring text
       // in the browser is usually the slowest.
       // `text-anchor` attribute does the same job here (works for the text elements only).
       textAnchor: 'middle',
-      // Do not use special attribute `y-alignment` for text vertical positioning. See above.
+      // Do not use special attribute `y-align` for text vertical positioning. See above.
       textVerticalAnchor: 'middle',
     },
   },

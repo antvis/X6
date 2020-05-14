@@ -1,8 +1,13 @@
 import { StringExt, Dom } from '../util'
-import { Attr } from '../definition'
+import { Attr, Filter } from '../definition'
 import { Base } from './base'
+import { Markup } from '../view'
 
 export class Defs extends Base {
+  protected get cid() {
+    return this.graph.view.cid
+  }
+
   protected get svg() {
     return this.view.svg
   }
@@ -15,35 +20,36 @@ export class Defs extends Base {
     return this.svg.getElementById(id) != null
   }
 
-  filter(options: any) {
+  filter(options: Defs.FilterOptions) {
     let filterId = options.id
     const name = options.name
     if (!filterId) {
-      filterId =
-        name + this.svg.id + StringExt.hashcode(JSON.stringify(options))
+      filterId = `filter-${name}-${this.cid}-${StringExt.hashcode(
+        JSON.stringify(options),
+      )}`
     }
 
-    // if (!this.isDefined(filterId)) {
-    //   const namespace = _filter
-    //   const markup = namespace[name] && namespace[name](filter.args || {})
-    //   if (!markup) {
-    //     throw new Error('Non-existing filter ' + name)
-    //   }
+    if (!this.isDefined(filterId)) {
+      const fn = Filter.registry.get(name)
+      if (fn == null) {
+        return Filter.registry.onNotFound(name)
+      }
 
-    //   // Set the filter area to be 3x the bounding box of the cell
-    //   // and center the filter around the cell.
-    //   const filterAttrs = {
-    //     x: -1,
-    //     y: -1,
-    //     width: 3,
-    //     height: 3,
-    //     filterUnits: 'objectBoundingBox',
-    //     ...filter.attrs,
-    //     id: filterId,
-    //   }
+      const markup = fn(options.args || {})
 
-    //   Dom.create(markup, filterAttrs).appendTo(this.defsElem)
-    // }
+      // Set the filter area to be 3x the bounding box of the cell
+      // and center the filter around the cell.
+      const attrs = {
+        x: -1,
+        y: -1,
+        width: 3,
+        height: 3,
+        filterUnits: 'objectBoundingBox',
+        ...options.attrs,
+        id: filterId,
+      }
+      Dom.createVector(Markup.sanitize(markup), attrs).appendTo(this.elem)
+    }
 
     return filterId
   }
@@ -52,7 +58,9 @@ export class Defs extends Base {
     let id = options.id
     const type = options.type
     if (!id) {
-      id = type + this.svg.id + StringExt.hashcode(JSON.stringify(options))
+      id = `gradient-${type}-${this.cid}-${StringExt.hashcode(
+        JSON.stringify(options),
+      )}`
     }
 
     if (!this.isDefined(id)) {
@@ -77,7 +85,9 @@ export class Defs extends Base {
   marker(options: Defs.MarkerOptions) {
     let markerId = options.id
     if (!markerId) {
-      markerId = `m-${StringExt.hashcode(JSON.stringify(options))}`
+      markerId = `marker-${this.cid}-${StringExt.hashcode(
+        JSON.stringify(options),
+      )}`
     }
 
     if (!this.isDefined(markerId)) {
@@ -98,9 +108,6 @@ export class Defs extends Base {
 
     return markerId
   }
-
-  @Base.dispose()
-  dispose() {}
 }
 
 export namespace Defs {
@@ -123,8 +130,8 @@ export namespace Defs {
     attrs?: Attr.SimpleAttrs
   }
 
-  export interface FilterOptions {
+  export type FilterOptions = (Filter.NativeItem | Filter.ManaualItem) & {
     id?: string
-    name: string
+    attrs?: Attr.SimpleAttrs
   }
 }

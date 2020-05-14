@@ -1,12 +1,12 @@
 import { EdgeView } from '../../view'
 import { Attr } from './index'
 
-const isLinkView: Attr.QualifyFucntion = (val, { view }) => {
+const isEdgeView: Attr.QualifyFucntion = (val, { view }) => {
   return view.cell.isEdge()
 }
 
 export const connection: Attr.Definition = {
-  qualify: isLinkView,
+  qualify: isEdgeView,
   set(val, args) {
     const view = args.view as EdgeView
     const stubs = ((val as any).stubs || 0) as number
@@ -35,22 +35,22 @@ export const connection: Attr.Definition = {
 }
 
 export const atConnectionLengthKeepGradient: Attr.Definition = {
-  qualify: isLinkView,
+  qualify: isEdgeView,
   set: atConnectionWrapper('getTangentAtLength', { rotate: true }),
 }
 
 export const atConnectionLengthIgnoreGradient: Attr.Definition = {
-  qualify: isLinkView,
+  qualify: isEdgeView,
   set: atConnectionWrapper('getTangentAtLength', { rotate: false }),
 }
 
 export const atConnectionRatioKeepGradient: Attr.Definition = {
-  qualify: isLinkView,
+  qualify: isEdgeView,
   set: atConnectionWrapper('getTangentAtRatio', { rotate: true }),
 }
 
 export const atConnectionRatioIgnoreGradient: Attr.Definition = {
-  qualify: isLinkView,
+  qualify: isEdgeView,
   set: atConnectionWrapper('getTangentAtRatio', { rotate: false }),
 }
 

@@ -2,15 +2,15 @@ import { NumberExt } from '../../util'
 import { Point } from '../../geometry'
 import { Attr } from './index'
 
-// `x-alignment` when set to `middle` causes centering of the subelement around its new x coordinate.
-// `x-alignment` when set to `right` uses the x coordinate as referenced to the right of the bbox.
-export const xAlignment: Attr.Definition = {
+// `x-align` when set to `middle` causes centering of the subelement around its new x coordinate.
+// `x-align` when set to `right` uses the x coordinate as referenced to the right of the bbox.
+export const xAlign: Attr.Definition = {
   offset: offsetWrapper('x', 'width', 'right'),
 }
 
-// `y-alignment` when set to `middle` causes centering of the subelement around its new y coordinate.
-// `y-alignment` when set to `bottom` uses the y coordinate as referenced to the bottom of the bbox.
-export const yAlignment: Attr.Definition = {
+// `y-align` when set to `middle` causes centering of the subelement around its new y coordinate.
+// `y-align` when set to `bottom` uses the y coordinate as referenced to the bottom of the bbox.
+export const yAlign: Attr.Definition = {
   offset: offsetWrapper('y', 'height', 'bottom'),
 }
 

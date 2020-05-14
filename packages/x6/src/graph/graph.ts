@@ -351,7 +351,7 @@ export class Graph extends Basecoat<EventArgs> {
 
   // #region defs
 
-  defineFilter(options: any) {
+  defineFilter(options: Defs.FilterOptions) {
     return this.defs.filter(options)
   }
 
