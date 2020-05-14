@@ -63,26 +63,26 @@ export class Events<EventArgs extends Events.EventArgs = any> {
   off(): this
   off(name: null, handler: Events.Handler<any>): this
   off(name: null, handler: null, context: any): this
-  off<Name extends Events.EventNames<EventArgs>>(name: Name): this
-  off<Name extends Events.EventNames<EventArgs>>(
-    name: Name,
-    handler: Events.Handler<EventArgs[Name]>,
-  ): this
   off<Name extends Events.EventNames<EventArgs>>(
     name: Name,
     handler: Events.Handler<EventArgs[Name]>,
     context: any,
+  ): this
+  off<Name extends Events.EventNames<EventArgs>>(
+    name: Name,
+    handler: Events.Handler<EventArgs[Name]>,
+  ): this
+  off<Name extends Events.EventNames<EventArgs>>(name: Name): this
+  off<Name extends Events.UnknownNames<EventArgs>>(
+    name: Name,
+    handler: Events.Handler<any>,
+    context: any,
+  ): this
+  off<Name extends Events.UnknownNames<EventArgs>>(
+    name: Name,
+    handler: Events.Handler<any>,
   ): this
   off<Name extends Events.UnknownNames<EventArgs>>(name: Name): this
-  off<Name extends Events.UnknownNames<EventArgs>>(
-    name: Name,
-    handler: Events.Handler<any>,
-  ): this
-  off<Name extends Events.UnknownNames<EventArgs>>(
-    name: Name,
-    handler: Events.Handler<any>,
-    context: any,
-  ): this
   off(
     name?: string | null,
     handler?: Events.Handler<any> | null,
