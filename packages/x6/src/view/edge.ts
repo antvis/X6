@@ -973,7 +973,7 @@ export class EdgeView<
 
     let name: string | undefined
     let args: Connector.BaseOptions | undefined
-    let fn: Connector.Definition | null | undefined
+    let fn: Connector.Definition
 
     if (typeof def === 'function') {
       fn = def
@@ -985,10 +985,11 @@ export class EdgeView<
     }
 
     if (name) {
-      fn = Connector.registry.get(name)
-      if (typeof fn !== 'function') {
+      const method = Connector.registry.get(name)
+      if (typeof method !== 'function') {
         return Connector.registry.onNotFound(name)
       }
+      fn = method
     } else {
       fn = Connector.presets.normal
     }
