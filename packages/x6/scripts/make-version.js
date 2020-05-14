@@ -14,12 +14,12 @@ const version = '${version}'
 export { version }
 `
 
-const file = 'src/version.ts'
+const file = 'src/global/version.ts'
 const old = fs.readFileSync(file, { encoding: 'utf8' })
-const format = s => s.replace(/[\n\s]/g, '')
+const format = (s) => s.replace(/[\n\s]/g, '')
 
 if (format(code) !== format(old)) {
-  fs.writeFile(file, code, err => {
+  fs.writeFile(file, code, (err) => {
     if (err) {
       throw new Error(`Could not save version file ${version}: ${err}`)
     }
