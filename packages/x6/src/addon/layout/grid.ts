@@ -1,5 +1,4 @@
-import { Model } from '../../core/model'
-import { Node } from '../../core/node'
+import { Node, Model } from '../../model'
 
 export namespace GridLayout {
   export function layout(cells: Node[] | Model, options: Options = {}) {

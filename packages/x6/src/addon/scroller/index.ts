@@ -1,8 +1,11 @@
 import { Point, Rectangle } from '../../geometry'
 import { Platform, NumberExt, ObjectExt, Dom } from '../../util'
-import { Cell } from '../../core/cell'
-import { View } from '../../core/view'
-import { Graph } from '../../core/graph'
+import { Cell } from '../../model'
+import { View } from '../../view'
+import { Graph } from '../../graph'
+import { GraphView } from '../../graph/view'
+import { EventArgs } from '../../graph/events'
+import { Transform } from '../../graph/transform'
 
 export class Scroller extends View {
   public readonly options: Scroller.Options
@@ -45,7 +48,7 @@ export class Scroller extends View {
       this.options.baseHeight = graph.options.height
     }
 
-    const scale = this.graph.getScale()
+    const scale = this.graph.scale()
     this.sx = scale.sx
     this.sy = scale.sy
 
@@ -78,7 +81,7 @@ export class Scroller extends View {
     graph.on('afterexport', this.restoreScrollPosition, this)
 
     if (this.options.autoResizePaper) {
-      if (graph.isAsync()) {
+      if (graph.renderer.isAsync()) {
         graph.on('render:done', this.onPaperRenderDone, this)
       } else {
         model.on('reseted', this.adjustPaper, this)
@@ -111,7 +114,7 @@ export class Scroller extends View {
   }
 
   protected delegateBackgroundEvents(events?: View.Events) {
-    const evts = events || Graph.events
+    const evts = events || GraphView.events
 
     this.delegatedHandlers = Object.keys(evts).reduce<{
       [name: string]: Function
@@ -119,7 +122,9 @@ export class Scroller extends View {
       const handler = evts[name]
       if (name.indexOf(' ') === -1) {
         memo[name] =
-          typeof handler === 'function' ? handler : (this.graph as any)[handler]
+          typeof handler === 'function'
+            ? handler
+            : this.graph[handler as keyof Graph]
       }
       return memo
     }, {})
@@ -151,7 +156,7 @@ export class Scroller extends View {
     }
   }
 
-  protected onPaperRenderDone({ stats }: Graph.EventArgs['render:done']) {
+  protected onPaperRenderDone({ stats }: EventArgs['render:done']) {
     if (stats.priority < 2) {
       this.adjustPaper()
     }
@@ -163,7 +168,7 @@ export class Scroller extends View {
     }
   }
 
-  protected onScale({ sx, sy, ox, oy }: Graph.EventArgs['scale']) {
+  protected onScale({ sx, sy, ox, oy }: EventArgs['scale']) {
     this.adjustScale(sx, sy)
     this.sx = sx
     this.sy = sy
@@ -207,7 +212,7 @@ export class Scroller extends View {
     if (typeof contentOptions === 'function') {
       contentOptions = contentOptions.call(this, this)
     }
-    const options: Graph.FitToContentFullOptions = {
+    const options: Transform.FitToContentFullOptions = {
       gridWidth: this.options.baseWidth,
       gridHeight: this.options.baseHeight,
       allowNewOrigin: 'negative',
@@ -216,7 +221,9 @@ export class Scroller extends View {
     this.graph.fitToContent(this.transformContentOptions(options))
   }
 
-  protected transformContentOptions(options: Graph.FitToContentFullOptions) {
+  protected transformContentOptions(
+    options: Transform.FitToContentFullOptions,
+  ) {
     const sx = this.sx
     const sy = this.sy
 
@@ -243,7 +250,7 @@ export class Scroller extends View {
     const options = this.graph.options
     const dx = sx / this.sx
     const dy = sy / this.sy
-    this.graph.setOrigin(options.origin.x * dx, options.origin.y * dy)
+    this.graph.setOrigin(options.x * dx, options.y * dy)
     this.graph.resize(options.width * dx, options.height * dy)
   }
 
@@ -259,7 +266,7 @@ export class Scroller extends View {
     options?: Scroller.ScrollOptions,
   ) {
     const size = this.getClientSize()
-    const ctm = this.graph.getMatrix()
+    const ctm = this.graph.matrix()
     const prop: { [key: string]: number } = {}
 
     if (typeof x === 'number') {
@@ -337,7 +344,7 @@ export class Scroller extends View {
     y?: number | null,
     options?: Scroller.CenterOptions,
   ) {
-    const ctm = this.graph.getMatrix()
+    const ctm = this.graph.matrix()
     const sx = ctm.a
     const sy = ctm.d
     const tx = -ctm.e
@@ -554,11 +561,11 @@ export class Scroller extends View {
 
   zoomToRect(
     rect: Rectangle.RectangleLike,
-    options: Graph.ScaleContentToFitOptions = {},
+    options: Transform.ScaleContentToFitOptions = {},
   ) {
     const area = Rectangle.create(rect)
     const graph = this.graph
-    const origin = { ...graph.options.origin }
+    const origin = { x: graph.options.x, y: graph.options.y }
 
     options.contentArea = area
     if (options.fittingBBox == null) {
@@ -579,7 +586,8 @@ export class Scroller extends View {
   }
 
   zoomToFit(
-    options: Graph.GetContentAreaOptions & Graph.ScaleContentToFitOptions = {},
+    options: Transform.GetContentAreaOptions &
+      Transform.ScaleContentToFitOptions = {},
   ) {
     return this.zoomToRect(this.graph.getContentArea(options), options)
   }
@@ -750,7 +758,7 @@ export class Scroller extends View {
       y = y as number // tslint:disable-line
     }
 
-    const ctm = this.graph.getMatrix()
+    const ctm = this.graph.matrix()
     const xx = x + (this.container.scrollLeft - this.padding.left - ctm.e)
     const yy = y + (this.container.scrollTop - this.padding.top - ctm.f)
     return new Point(xx / ctm.a, yy / ctm.d)
@@ -760,7 +768,7 @@ export class Scroller extends View {
   localToBackgroundPoint(x: number, y: number): Point
   localToBackgroundPoint(x: number | Point.PointLike, y?: number) {
     const p = typeof x === 'object' ? Point.create(x) : new Point(x, y)
-    const ctm = this.graph.getMatrix()
+    const ctm = this.graph.matrix()
     const padding = this.padding
     return Dom.transformPoint(p, ctm).translate(padding.left, padding.top)
   }
@@ -813,7 +821,7 @@ export class Scroller extends View {
    * Returns the untransformed size and origin of the current viewport.
    */
   getVisibleArea() {
-    const ctm = this.graph.getMatrix()
+    const ctm = this.graph.matrix()
     const size = this.getClientSize()
     const box = {
       x: this.container.scrollLeft || 0,
@@ -877,8 +885,11 @@ export namespace Scroller {
     baseHeight?: number
     cursor?: string
     contentOptions?:
-      | Graph.FitToContentFullOptions
-      | ((this: Scroller, scroller: Scroller) => Graph.FitToContentFullOptions)
+      | Transform.FitToContentFullOptions
+      | ((
+          this: Scroller,
+          scroller: Scroller,
+        ) => Transform.FitToContentFullOptions)
     padding?:
       | NumberExt.SideOptions
       | ((this: Scroller) => NumberExt.SideOptions)
@@ -901,7 +912,7 @@ export namespace Scroller {
     max?: number
   }
 
-  export type PositionContentOptions = Graph.GetContentAreaOptions &
+  export type PositionContentOptions = Transform.GetContentAreaOptions &
     Scroller.CenterOptions
 
   export type Direction =

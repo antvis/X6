@@ -79,7 +79,7 @@ export default class Example extends React.Component<
       gridSize: 1,
       async: true,
       frozen: true,
-      sorting: 'sorting-approximate',
+      sorting: 'approx',
       defaultAnchor: { name: 'nodeCenter' },
       defaultConnectionPoint: { name: 'boundary' },
       viewport: (view: CellView, isInViewport: boolean) => {

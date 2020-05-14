@@ -1,5 +1,5 @@
 import { Disablable } from '../../common'
-import { Graph } from '../../core/graph'
+import { Graph } from '../../graph'
 
 export class AutoSave extends Disablable<AutoSave.EventArgs> {
   protected readonly options: AutoSave.Options

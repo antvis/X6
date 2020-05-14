@@ -1,7 +1,7 @@
-import { NodeRegistry } from '../../registry'
 import { labelAttr } from './util'
+import { Node } from '../../model'
 
-export const BorderedImage = NodeRegistry.register('image-bordered', {
+export const BorderedImage = Node.registry.register('image-bordered', {
   markup: [
     {
       tagName: 'rect',

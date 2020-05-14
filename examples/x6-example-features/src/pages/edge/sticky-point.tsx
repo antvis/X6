@@ -1,8 +1,8 @@
 import React from 'react'
-import { Graph, NodeRegistry } from '@antv/x6'
+import { Graph, Node } from '@antv/x6'
 import '../index.less'
 
-NodeRegistry.register('rectText', {
+Node.registry.register('rectText', {
   inherit: 'rect',
   attrs: { body: { stroke: 'none' } },
 })

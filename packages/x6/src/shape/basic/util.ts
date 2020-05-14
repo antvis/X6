@@ -1,6 +1,5 @@
-import { NodeRegistry } from '../../registry'
 import { ObjectExt } from '../../util'
-import { Node } from '../../core/node'
+import { Node } from '../../model'
 
 export function getMarkup(tagName: string, noText: boolean = false) {
   return `<g class="rotatable"><g class="scalable"><${tagName}/></g>${
@@ -58,7 +57,7 @@ export function createShape(
   const base = options.parent || Node
   const shape = base.define(ObjectExt.merge(defaults, config))
 
-  NodeRegistry.register(name, shape)
+  Node.registry.register(name, shape)
 
   return shape
 }

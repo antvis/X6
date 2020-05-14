@@ -119,7 +119,7 @@ export default class Example extends React.Component {
       height: 600,
       gridSize: 1,
       linkPinning: false,
-      snapLinks: true,
+      snapEdges: true,
       defaultConnector: { name: 'smooth' },
       defaultConnectionPoint: { name: 'boundary' },
       markAvailable: true,

@@ -1,4 +1,4 @@
-import { Markup } from '../../core/markup'
+import { Markup } from '../../view'
 
 export function getMarkup(tagName: string, selector: string = 'body'): Markup {
   return [

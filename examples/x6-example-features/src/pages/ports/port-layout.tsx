@@ -1,8 +1,9 @@
 import React from 'react'
-import { Graph, PortLayoutRegistry } from '@antv/x6'
+import { Graph } from '@antv/x6'
+import { PortLayout } from '@antv/x6/es/definition'
 import '../index.less'
 
-PortLayoutRegistry.register('sin', (portsPositionArgs, elemBBox) => {
+PortLayout.registry.register('sin', (portsPositionArgs, elemBBox) => {
   return portsPositionArgs.map((_, index) => {
     const step = -Math.PI / 8
     const y = Math.sin(index * step) * 50

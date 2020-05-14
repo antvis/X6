@@ -1,6 +1,5 @@
 import React from 'react'
-import { Graph, StandardShape, EdgeRegistry } from '@antv/x6'
-import { Timing } from '@antv/x6/es/animation/easing'
+import { Graph, StandardShape, Edge, Timing } from '@antv/x6'
 import '../index.less'
 
 export default class Example extends React.Component {
@@ -206,7 +205,7 @@ export default class Example extends React.Component {
       },
     })
 
-    EdgeRegistry.register('arrow', {
+    Edge.registry.register('arrow', {
       markup: [
         {
           tagName: 'path',

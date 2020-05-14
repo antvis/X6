@@ -1,13 +1,5 @@
 import React from 'react'
-import {
-  Graph,
-  Edge,
-  CellView,
-  EdgeView,
-  EdgeRegistry,
-  ViewRegistry,
-  Dom,
-} from '@antv/x6'
+import { Graph, Edge, CellView, EdgeView, Dom } from '@antv/x6'
 import '../index.less'
 
 class CustomEdgeView extends EdgeView {
@@ -28,7 +20,7 @@ class CustomEdgeView extends EdgeView {
 }
 
 CustomEdgeView.config<EdgeView.Options>({ doubleTools: true })
-ViewRegistry.register('customEdgeView', CustomEdgeView)
+EdgeView.registry.register('customEdgeView', CustomEdgeView)
 
 const CustomEdge = Edge.define({
   name: 'custom-edge',
@@ -74,7 +66,7 @@ const CustomEdge = Edge.define({
   },
 })
 
-EdgeRegistry.register('customEdge', CustomEdge)
+Edge.registry.register('customEdge', CustomEdge)
 
 export default class Example extends React.Component {
   private container: HTMLDivElement
@@ -84,8 +76,9 @@ export default class Example extends React.Component {
       container: this.container,
       width: 800,
       height: 1400,
-      gridSize: 10,
-      perpendicularLinks: false,
+      grid: {
+        size: 10,
+      },
       interactive: function (cellView: CellView) {
         if (cellView.cell.getProp('customLinkInteractions')) {
           return { vertexAdd: false }
@@ -443,7 +436,7 @@ export default class Example extends React.Component {
       '<marker id="diamond-marker" viewBox = "0 0 5 20" refX = "0" refY = "6" markerWidth = "30" markerHeight = "30" stroke = "none" stroke-width = "0" fill = "red" > <rect x="0" y="0" width = "10" height="10" transform="rotate(45)"  /> </marker>',
     )
 
-    const defs = graph.svgElem.querySelector('defs')!
+    const defs = graph.view.svg.querySelector('defs')!
     defs.appendChild(circleMarker.node)
     defs.appendChild(diamondMarker.node)
 

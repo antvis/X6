@@ -2,15 +2,16 @@ export * from './util'
 export * from './common'
 export * from './geometry'
 
-export * from './core'
-export * from './shape'
-export * from './registry'
-export * from './animation'
-export * from './addon'
+export * from './model'
+export * from './view'
+export * from './graph'
 
-export * from './version'
-export * from './x6'
+export * from './shape'
+export * from './addon'
+export * from './global'
+export * from './global/x6'
+export * from './global/version'
 
 // start trakc
 // -----------
-import './common/track'
+import './global/track'

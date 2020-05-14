@@ -1,7 +1,7 @@
-import { NodeRegistry } from '../../registry'
 import { bodyAttr, labelAttr } from './util'
+import { Node } from '../../model'
 
-export const HeaderedRect = NodeRegistry.register('rect-headered', {
+export const HeaderedRect = Node.registry.register('rect-headered', {
   markup: [
     {
       tagName: 'rect',

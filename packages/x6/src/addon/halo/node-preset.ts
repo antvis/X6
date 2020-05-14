@@ -1,11 +1,8 @@
-import { Point, Rectangle, Angle, snapToGrid } from '../../geometry'
+import { Util } from '../../global'
 import { StringExt } from '../../util'
-import { Cell } from '../../core/cell'
-import { Node } from '../../core/node'
-import { Edge } from '../../core/edge'
-import { EdgeView } from '../../core/edge-view'
-import { CellView } from '../../core/cell-view'
-import { NodeView } from '../../core/node-view'
+import { Point, Rectangle, Angle } from '../../geometry'
+import { CellView, NodeView, EdgeView } from '../../view'
+import { Cell, Node, Edge } from '../../model'
 import { Halo } from './index'
 
 export function getNodePreset(halo: Halo) {}
@@ -166,8 +163,8 @@ export class NodePreset {
       async: false,
     })
 
-    graph.undelegateEvents()
-    this.edgeView = graph.findViewByCell(edge) as EdgeView
+    graph.view.undelegateEvents()
+    this.edgeView = graph.renderer.findViewByCell(edge) as EdgeView
     this.edgeView.prepareArrowheadDragging('target', {
       fallbackAction: 'remove',
     })
@@ -176,7 +173,7 @@ export class NodePreset {
   createEdgeConnectedToSource() {
     const magnet = this.getMagnet(this.view, 'source')
     const terminal = this.getEdgeTerminal(this.view, magnet)
-    const edge = this.graph.getDefaultEdge(this.view, magnet)
+    const edge = this.graph.hook.getDefaultEdge(this.view, magnet)
     edge.setSource(terminal)
     return edge
   }
@@ -225,7 +222,7 @@ export class NodePreset {
       this.halo.trigger('action:edge:addde', { edge })
       this.edgeView = null
     }
-    this.graph.delegateEvents()
+    this.graph.view.delegateEvents()
   }
 
   makeLoopLink(edge: Edge) {
@@ -240,7 +237,7 @@ export class NodePreset {
       graphOptions.height,
     )
 
-    const bbox = this.graph.paperToLocalRect(this.view.getBBox())
+    const bbox = this.graph.graphToLocalRect(this.view.getBBox())
     const found = [
       this.options.loopLinkPreferredSide,
       'top',
@@ -330,7 +327,7 @@ export class NodePreset {
       halo: this.halo.cid,
       async: false,
     })
-    const cloneView = this.graph.findViewByCell(cloned) as NodeView
+    const cloneView = this.graph.renderer.findViewByCell(cloned) as NodeView
     cloneView.onMouseDown(e as JQuery.MouseDownEvent, x, y)
     this.halo.setEventData(e, { cloneView })
   }
@@ -379,7 +376,7 @@ export class NodePreset {
     })
 
     const edge = this.createEdgeConnectedToSource()
-    const cloneView = this.graph.findViewByCell(cloned) as CellView
+    const cloneView = this.graph.renderer.findViewByCell(cloned) as CellView
     const magnet = this.getMagnet(cloneView, 'target')
     const terminal = this.getEdgeTerminal(cloneView, magnet)
 
@@ -441,7 +438,7 @@ export class NodePreset {
     const delta = data.clientStartAngle - new Point(x, y).theta(data.center)
     data.nodes.forEach((node: Node, index: number) => {
       const startAngle = data.rotationStartAngles[index]
-      const targetAngle = snapToGrid(
+      const targetAngle = Util.snapToGrid(
         startAngle + delta,
         this.options.rotateAngleGrid!,
       )

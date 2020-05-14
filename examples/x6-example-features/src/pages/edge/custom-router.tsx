@@ -1,8 +1,9 @@
 import React from 'react'
-import { Graph, Point, RouterRegistry } from '@antv/x6'
+import { Graph, Point } from '@antv/x6'
+import { Router } from '@antv/x6/es/connection/router'
 import '../index.less'
 
-RouterRegistry.register('random', (vertices, args, view) => {
+Router.registry.register('random', (vertices, args, view) => {
   const BOUNCES = args.bounces || 20
   const points = vertices.map((p) => Point.create(p))
 

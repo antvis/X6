@@ -1,5 +1,5 @@
-import * as Dom from './core'
 import { Point, Path } from '../../geometry'
+import * as Dom from './core'
 
 export class Vectorizer {
   node: SVGElement

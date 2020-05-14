@@ -1,10 +1,9 @@
 import { Platform, StringExt, ObjectExt, Dom } from '../../util'
 import { Size } from '../../types'
-import { Attr } from '../../attr'
-import { Node } from '../../core/node'
-import { Store } from '../../core/store'
-import { NodeView } from '../../core/node-view'
-import { NodeRegistry, ViewRegistry } from '../../registry'
+import { Attr } from '../../definition'
+import { Node } from '../../model'
+import { Store } from '../../model/store'
+import { NodeView } from '../../view'
 import { getName } from './util'
 
 const contentAction = 'content' as any
@@ -115,7 +114,7 @@ export class TextBlockView extends NodeView<TextBlock> {
       // Break the text to fit the node size taking into
       // account the attributes set on the node.
       const text = Dom.breakText(node.getContent(), node.getSize(), textAttrs, {
-        svgDocument: this.graph.svgElem,
+        svgDocument: this.graph.view.svg,
       })
 
       const attrs = {
@@ -200,5 +199,5 @@ TextBlockView.config({
       },
 })
 
-NodeRegistry.register(registryName, TextBlock)
-ViewRegistry.register(registryName, TextBlockView)
+Node.registry.register(registryName, TextBlock)
+NodeView.registry.register(registryName, TextBlockView)

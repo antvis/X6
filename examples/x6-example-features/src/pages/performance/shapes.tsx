@@ -1,5 +1,5 @@
 import React from 'react'
-import { Graph, Cell, NodeRegistry, EdgeRegistry } from '@antv/x6'
+import { Graph, Cell, Node as N, Edge as E } from '@antv/x6'
 import '../index.less'
 
 // Overall goals
@@ -13,7 +13,7 @@ var COUNT = 500
 // true: does not block the UI
 var ASYNC = false
 
-const Node = NodeRegistry.register('performance_node', {
+const Node = N.registry.register('performance_node', {
   size: {
     width: 100,
     height: 50,
@@ -62,7 +62,7 @@ const Node = NodeRegistry.register('performance_node', {
   ],
 })
 
-const Edge = EdgeRegistry.register('performance_edge', {
+const Edge = E.registry.register('performance_edge', {
   zIndex: 1,
   attrs: {
     line: {

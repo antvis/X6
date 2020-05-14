@@ -1,7 +1,7 @@
-import { NodeRegistry } from '../../registry'
 import { getMarkup, bodyAttr, labelAttr } from './util'
+import { Node } from '../../model'
 
-export const Polyline = NodeRegistry.register('polyline', {
+export const Polyline = Node.registry.register('polyline', {
   markup: getMarkup('polyline'),
   attrs: {
     body: {

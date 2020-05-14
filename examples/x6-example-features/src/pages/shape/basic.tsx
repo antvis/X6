@@ -8,6 +8,9 @@ export default class Example extends React.Component {
   componentDidMount() {
     const graph = new Graph({
       container: this.container,
+      width: 800,
+      height: 600,
+      grid: true,
       background: {
         color: '#fff',
         image:
@@ -208,7 +211,7 @@ export default class Example extends React.Component {
       label: 'cylinder',
     })
 
-    const cylinderView = graph.findViewByCell(cylinder)
+    const cylinderView = graph.renderer.findViewByCell(cylinder)
     if (cylinderView) {
       const pathNode = cylinderView.findOne('path') as SVGPathElement
       const scalableNode = cylinderView.findOne('.scalable') as SVGGElement

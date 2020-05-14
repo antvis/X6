@@ -1,6 +1,6 @@
 import { ObjectExt, Dom } from '../../util'
 import { Point } from '../../geometry'
-import { View } from '../../core/view'
+import { View } from '../../view'
 
 // need: <meta http-equiv="x-ua-compatible" content="IE=Edge" />
 export class PathDrawer extends View {

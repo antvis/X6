@@ -1,7 +1,8 @@
+import { Util } from '../../global'
 import { KeyValue } from '../../types'
-import { Angle, Point, snapToGrid } from '../../geometry'
-import { Node } from '../../core/node'
-import { Widget } from '../common/widget'
+import { Angle, Point } from '../../geometry'
+import { Node } from '../../model'
+import { Widget } from '../common'
 
 export class Transform extends Widget<Transform.Options> {
   protected handle: Element | null
@@ -102,7 +103,7 @@ export class Transform extends Widget<Transform.Options> {
   }
 
   update() {
-    const ctm = this.graph.getMatrix()
+    const ctm = this.graph.matrix()
     const bbox = this.node.getBBox()
 
     bbox.x *= ctm.a
@@ -237,7 +238,7 @@ export class Transform extends Widget<Transform.Options> {
     if (data.action) {
       const e = this.normalizeEvent(evt)
       const pos = this.graph.snapToGrid(e.clientX, e.clientY)
-      const gridSize = this.graph.options.gridSize
+      const gridSize = this.graph.getGridSize()
       const node = this.node
       const options = this.options
 
@@ -259,8 +260,8 @@ export class Transform extends Widget<Transform.Options> {
         const rawWidth = width
         const rawHeight = height
 
-        width = snapToGrid(width, gridSize)
-        height = snapToGrid(height, gridSize)
+        width = Util.snapToGrid(width, gridSize)
+        height = Util.snapToGrid(height, gridSize)
         width = Math.max(width, options.minWidth || gridSize)
         height = Math.max(height, options.minHeight || gridSize)
         width = Math.min(width, options.maxWidth || Infinity)
@@ -362,7 +363,7 @@ export class Transform extends Widget<Transform.Options> {
         const theta = data.start - Point.create(pos).theta(data.center)
         let target = data.angle + theta
         if (options.rotateGrid) {
-          target = snapToGrid(target, options.rotateGrid)
+          target = Util.snapToGrid(target, options.rotateGrid)
         }
         node.rotate(target, true)
       }
@@ -412,14 +413,14 @@ export class Transform extends Widget<Transform.Options> {
   protected startOp(evt: JQuery.MouseDownEvent) {
     const elem = evt.target
     this.startHandle(elem)
-    this.graph.undelegateEvents()
+    this.graph.view.undelegateEvents()
     this.delegateDocumentEvents(Private.documentEvents, evt.data)
   }
 
   protected stopOp() {
     this.stopHandle()
     this.undelegateDocumentEvents()
-    this.graph.delegateEvents()
+    this.graph.view.delegateEvents()
   }
 }
 

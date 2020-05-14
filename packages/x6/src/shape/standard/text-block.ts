@@ -1,9 +1,9 @@
 import { Platform } from '../../util'
-import { NodeRegistry } from '../../registry'
+import { Attr } from '../../definition'
+import { Node } from '../../model'
 import { bodyAttr } from './util'
-import { Attr } from '../../attr'
 
-export const TextBlock = NodeRegistry.register('text-block', {
+export const TextBlock = Node.registry.register('text-block', {
   markup: [
     {
       tagName: 'rect',

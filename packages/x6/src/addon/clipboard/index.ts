@@ -1,13 +1,10 @@
 import { ArrayExt } from '../../util'
-import { Cell } from '../../core/cell'
-import { Edge } from '../../core/edge'
-import { Node } from '../../core/node'
-import { Model } from '../../core/model'
-import { Graph } from '../../core/graph'
-import { Globals } from '../../core/globals'
+import { Config } from '../../global'
+import { Graph } from '../../graph'
+import { Cell, Edge, Node, Model } from '../../model'
 
 export class Clipboard {
-  protected readonly LOCAL_STORAGE_KEY = `${Globals.prefixCls}.clipboard.cells`
+  protected readonly LOCAL_STORAGE_KEY = `${Config.prefixCls}.clipboard.cells`
   protected readonly useLocalStorage: boolean
   protected options: Clipboard.Options
   protected cells: Cell[]

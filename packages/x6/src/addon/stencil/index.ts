@@ -1,12 +1,10 @@
+import { Util } from '../../global'
 import { FunctionExt } from '../../util'
-import { Rectangle, Point, snapToGrid } from '../../geometry'
-import { Cell } from '../../core/cell'
-import { Node } from '../../core/node'
-import { View } from '../../core/view'
-import { Graph } from '../../core/graph'
-import { Model } from '../../core/model'
-import { CellView } from '../../core/cell-view'
-import { NodeView } from '../../core/node-view'
+import { Rectangle, Point } from '../../geometry'
+import { Cell, Node, Model } from '../../model'
+import { View, CellView, NodeView } from '../../view'
+import { Graph } from '../../graph'
+import { EventArgs } from '../../graph/events'
 import { Scroller } from '../scroller'
 import { Snapline } from '../snapline'
 
@@ -313,7 +311,7 @@ export class Stencil extends View {
     }
 
     if (snaplines || this.options.scaleClones) {
-      const scale = this.targetGraph.getScale()
+      const scale = this.targetGraph.scale()
       graphDrag.scale(scale.sx, scale.sy)
       padding *= Math.max(scale.sx, scale.sy)
     } else {
@@ -328,7 +326,7 @@ export class Stencil extends View {
 
     modelDrag.resetCells([nodeDrag.pos(0, 0)])
 
-    const viewDrag = graphDrag.findViewByCell(nodeDrag) as NodeView
+    const viewDrag = graphDrag.renderer.findViewByCell(nodeDrag) as NodeView
     viewDrag.undelegateEvents()
     graphDrag.fitToContent({
       padding,
@@ -376,7 +374,7 @@ export class Stencil extends View {
     return local
   }
 
-  protected onDragStart(args: Graph.EventArgs['node:mousedown']) {
+  protected onDragStart(args: EventArgs['node:mousedown']) {
     const { e, view } = args
 
     e.preventDefault()
@@ -432,7 +430,7 @@ export class Stencil extends View {
       const clientY = e.clientY
       this.setGraphDragOffset(clientX, clientY)
       const local = this.setCloneLocalPosition(clientX, clientY)
-      const embeddingMode = this.targetGraph.options.embeddingMode
+      const embeddingMode = this.targetGraph.options.embedding.enabled
       const snaplines = this.options.snaplines
       const embedding =
         (embeddingMode || snaplines) &&
@@ -458,7 +456,7 @@ export class Stencil extends View {
             view: cloneView!,
             x: local.x,
             y: local.y,
-          } as Graph.EventArgs['node:mousemove'])
+          } as EventArgs['node:mousemove'])
         } else {
           snaplines.hide()
         }
@@ -495,7 +493,7 @@ export class Stencil extends View {
         this.onDropInvalid(e, node)
       }
 
-      if (this.targetGraph.options.embeddingMode && cloneView) {
+      if (this.targetGraph.options.embedding.enabled && cloneView) {
         cloneView.setEventData(e, {
           model: node,
           graph: this.targetGraph,
@@ -598,9 +596,13 @@ export class Stencil extends View {
       const bbox = node.getBBox()
       local.x += bbox.x - bbox.width / 2
       local.y += bbox.y - bbox.height / 2
-      const gridSize = this.cloneSnapOffset ? 1 : targetGraph.options.gridSize
+      const gridSize = this.cloneSnapOffset ? 1 : targetGraph.getGridSize()
 
-      node.pos(snapToGrid(local.x, gridSize), snapToGrid(local.y, gridSize))
+      node.pos(
+        Util.snapToGrid(local.x, gridSize),
+        Util.snapToGrid(local.y, gridSize),
+      )
+
       node.removeZIndex()
       targetModel.addCell(node, { stencil: this.cid })
 
@@ -628,7 +630,7 @@ export class Stencil extends View {
                 keyworld.toLowerCase() !== keyworld,
               )
 
-        const view = graph.findViewByCell(cell)
+        const view = graph.renderer.findViewByCell(cell)
         if (view) {
           view.$(view.container).toggleClass('unmatched', !matched)
         }
@@ -774,12 +776,12 @@ export class Stencil extends View {
   onRemove() {
     Object.keys(this.graphs).forEach((groupName) => {
       const graph = this.graphs[groupName]
-      graph.remove()
+      graph.view.remove()
       delete this.graphs[groupName]
     })
 
     if (this.draggingGraph) {
-      this.draggingGraph.remove()
+      this.draggingGraph.view.remove()
     }
     this.stopListening()
     this.undelegateDocumentEvents()

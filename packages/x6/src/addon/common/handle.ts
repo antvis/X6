@@ -1,4 +1,4 @@
-import { View } from '../../core/view'
+import { View } from '../../view'
 
 export class Handle<EventArgs = any> {
   protected handles: Handle.Options[]

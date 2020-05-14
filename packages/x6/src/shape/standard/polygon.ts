@@ -1,7 +1,7 @@
-import { NodeRegistry } from '../../registry'
 import { getMarkup, bodyAttr, labelAttr } from './util'
+import { Node } from '../../model'
 
-export const Polygon = NodeRegistry.register('polygon', {
+export const Polygon = Node.registry.register('polygon', {
   markup: getMarkup('polygon'),
   attrs: {
     body: {

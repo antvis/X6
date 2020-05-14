@@ -1,10 +1,8 @@
 import { ObjectExt, Dom } from '../../util'
 import { Rectangle, Point, Angle } from '../../geometry'
-import { Cell } from '../../core/cell'
-import { Edge } from '../../core'
-import { View } from '../../core/view'
-import { CellView } from '../../core/cell-view'
-import { Widget } from '../common/widget'
+import { Cell, Edge } from '../../model'
+import { View, CellView } from '../../view'
+import { Widget } from '../common'
 import { NodePreset } from './node-preset'
 import { EdgePreset } from './edge-preset'
 
@@ -250,11 +248,9 @@ export class Halo extends Widget<Halo.Options> {
             .getComputedStyle(elem, ':before')
             .getPropertyValue('content')
           if (contect && 'none' !== contect) {
-            const $icons = $elem.find('.slice-text-icon')
+            const $icons = $elem.find<any>('.slice-text-icon')
             if ($icons.length) {
-              Dom.createVector($icons[0] as any).text(
-                contect.replace(/['"]/g, ''),
-              )
+              Dom.createVector($icons[0]).text(contect.replace(/['"]/g, ''))
             }
           }
 
@@ -263,9 +259,9 @@ export class Halo extends Widget<Halo.Options> {
             const matches = bgImg.match(/url\(['"]?([^'"]+)['"]?\)/)
             if (matches) {
               const href = matches[1]
-              const $imgs = $elem.find('.slice-img-icon')
+              const $imgs = $elem.find<any>('.slice-img-icon')
               if ($imgs.length > 0) {
-                Dom.createVector($imgs[0] as any).attr('xlink:href', href)
+                Dom.createVector($imgs[0]).attr('xlink:href', href)
               }
             }
           }
@@ -469,9 +465,8 @@ export class Halo extends Widget<Halo.Options> {
 
   toggleFork() {
     const cell = this.view.cell.clone()
-    const view = this.graph.createView(cell)!
-    const valid = this.graph.options.validateConnection.call(
-      this.graph,
+    const view = this.graph.renderer.createView(cell)!
+    const valid = this.graph.hook.validateConnection(
       this.view,
       null,
       view,
