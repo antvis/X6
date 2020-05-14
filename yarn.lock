@@ -2890,10 +2890,10 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react-helmet@^5.0.15":
-  version "5.0.15"
-  resolved "https://registry.npm.taobao.org/@types/react-helmet/download/@types/react-helmet-5.0.15.tgz?cache=0&sync_timestamp=1588205124546&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40types%2Freact-helmet%2Fdownload%2F%40types%2Freact-helmet-5.0.15.tgz#af0370617307e9f062c6aee0f1f5588224ce646e"
-  integrity sha1-rwNwYXMH6fBixq7g8fVYgiTOZG4=
+"@types/react-helmet@^6.0.0":
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/@types/react-helmet/-/react-helmet-6.0.0.tgz#5b74e44a12662ffb12d1c97ee702cf4e220958cf"
+  integrity sha512-NBMPAxgjpaMooXa51cU1BTgrX6T+hQbMiLm77JhBbfOzPQea3RB5rNpPOD5xGWHIVpGXHd59cltEzIq0qglGcQ==
   dependencies:
     "@types/react" "*"
 
