@@ -1,5 +1,10 @@
+export * from './events'
 export * from './basecoat'
 export * from './disposable'
 export * from './disablable'
 export * from './dictionary'
-export * from './events'
+
+export * from './algorithm'
+export * from './animation'
+export * from './registry'
+export * from './localstorage'

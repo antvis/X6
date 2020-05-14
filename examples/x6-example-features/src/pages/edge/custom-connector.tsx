@@ -1,8 +1,9 @@
 import React from 'react'
-import { Graph, ConnectorRegistry, Path, Point } from '@antv/x6'
+import { Graph, Path, Point } from '@antv/x6'
+import { Connector } from '@antv/x6/es/connection/connector'
 import '../index.less'
 
-ConnectorRegistry.register(
+Connector.registry.register(
   'wobble',
   (sourcePoint, targetPoint, vertices, args) => {
     const spread = args.spread || 20

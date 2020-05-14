@@ -1,7 +1,7 @@
-import { NodeRegistry } from '../../registry'
 import { bodyAttr, labelAttr } from './util'
+import { Node } from '../../model'
 
-export const EmbeddedImage = NodeRegistry.register('image-embedded', {
+export const EmbeddedImage = Node.registry.register('image-embedded', {
   markup: [
     {
       tagName: 'rect',

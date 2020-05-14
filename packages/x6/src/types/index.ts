@@ -1,8 +1,8 @@
+export type Nilable<T> = T | null | undefined
+
 export interface KeyValue<T extends any = any> {
   [key: string]: T
 }
-
-export type Nullable<T> = T | null | undefined | void
 
 export interface Padding {
   left: number

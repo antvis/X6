@@ -1,0 +1,410 @@
+import { Util } from '../global'
+import { Nilable } from '../types'
+import { ObjectExt } from '../util'
+import { Cell, Edge, Model } from '../model'
+import { CellView, NodeView, EdgeView } from '../view'
+import {
+  Router,
+  NodeConnectionAnchor,
+  EdgeConnectionAnchor,
+  Connector,
+  ConnectionPoint,
+  ConnectionStrategy,
+} from '../connection'
+import { Hook } from './hook'
+import { Grid } from './grid'
+import { Graph } from './graph'
+import { GraphView } from './view'
+import { Highlight } from './highlight'
+import { Background } from './background'
+
+export namespace Options {
+  export interface Connecting {
+    /**
+     * Snap edge to the closest node/port in the given radius on dragging.
+     */
+    snap: boolean | { radius: number }
+
+    /**
+     * When set to `true` (the default), edges can be pinned to the
+     * graph meaning a source/target of a edge can be a point.
+     */
+    dangling: boolean
+
+    /**
+     * When set to `false`, an node may not have more than
+     * one edge with the same source and target node.
+     */
+    multi: boolean
+
+    /**
+     * Highlights all the available magnets or nodes when a edge is
+     * dragging(reconnecting). This gives a hint to the user to what
+     * other nodes/ports this edge can be connected. What magnets/cells
+     * are available is determined by the `validateConnection` function.
+     */
+    highlight: boolean
+
+    anchor:
+      | string
+      | NodeConnectionAnchor.NativeItem
+      | NodeConnectionAnchor.ManaualItem
+    edgeAnchor:
+      | string
+      | EdgeConnectionAnchor.NativeItem
+      | EdgeConnectionAnchor.ManaualItem
+    router: string | Router.NativeItem | Router.ManaualItem
+    connector: string | Connector.NativeItem | Connector.ManaualItem
+    connectionPoint:
+      | string
+      | ConnectionPoint.NativeItem
+      | ConnectionPoint.ManaualItem
+    strategy?:
+      | string
+      | ConnectionStrategy.NativeItem
+      | ConnectionPoint.ManaualItem
+      | null
+
+    /**
+     * Check whether to add a new edge to the graph when user clicks
+     * on an a magnet.
+     */
+    validateMagnet?: (
+      this: Graph,
+      cellView: CellView,
+      magnet: Element,
+      e: JQuery.MouseDownEvent,
+    ) => boolean
+
+    createEdge?: (
+      this: Graph,
+      sourceView: CellView,
+      sourceMagnet: Element,
+    ) => Nilable<Edge> | void
+
+    /**
+     * Custom validation on stop draggin the edge arrowhead(source/target).
+     * If the function returns `false`, the edge is either removed(edges
+     * which are created during the interaction) or reverted to the state
+     * before the interaction.
+     */
+    validateEdge?: (this: Graph, edge: Edge) => boolean
+
+    /**
+     * Check whether to allow or disallow the edge connection while an
+     * arrowhead end (source/target) being changed.
+     */
+    validateConnection: (
+      this: Graph,
+      sourceView: CellView | null | undefined,
+      sourceMagnet: Element | null | undefined,
+      targetView: CellView | null | undefined,
+      targetMagnet: Element | null | undefined,
+      terminalType: Edge.TerminalType,
+      edgeView?: EdgeView,
+    ) => boolean
+  }
+
+  export interface Embedding {
+    enabled: boolean
+
+    /**
+     * Determines the way how a cell finds a suitable parent when it's dragged
+     * over the graph. The cell with the highest z-index (visually on the top)
+     * will be chosen.
+     */
+    findParent:
+      | 'bbox'
+      | 'center'
+      | 'topLeft'
+      | 'topRight'
+      | 'bottomLeft'
+      | 'bottomRight'
+      | ((this: Graph, view: NodeView) => Cell[])
+
+    /**
+     * If enabled only the node on the very front is taken into account for the
+     * embedding. If disabled the nodes under the dragged view are tested one by
+     * one (from front to back) until a valid parent found.
+     */
+    frontOnly: boolean
+
+    /**
+     * Check whether to allow or disallow the node embedding while it's being
+     * translated. By default, all nodes can be embedded into all other nodes.
+     */
+    validate: (
+      this: Graph,
+      childView: CellView,
+      parentView: CellView,
+    ) => boolean
+  }
+
+  /**
+   * Configure which highlighter to use (and with which options) for
+   * each type of interaction.
+   */
+  export interface Highlighting {
+    /**
+     * The default highlighter to use (and options) when none is specified
+     */
+    default: Highlight.Options
+    /**
+     * When a valid edge connection can be made to an node.
+     */
+    connecting?: Highlight.Options
+    /**
+     * When a cell is dragged over another cell in embedding mode.
+     */
+    embedding?: Highlight.Options
+    /**
+     * When showing all magnets to which a valid connection can be made.
+     */
+    magnetAvailable?: Highlight.Options
+    /**
+     * When showing all nodes to which a valid connection can be made.
+     */
+    nodeAvailable?: Highlight.Options
+  }
+}
+
+export namespace Options {
+  interface Common extends Partial<Hook.IHook> {
+    container: HTMLElement
+    model?: Model
+
+    x: number
+    y: number
+    width: number
+    height: number
+
+    background: false | Background.Options
+    highlighting: Highlighting
+    embedding: Embedding
+    connecting: Connecting
+
+    /**
+     * When defined as a number, it denotes the required mousemove events
+     * before a new edge is created from a magnet. When defined as keyword
+     * 'onleave', the edge is created when the pointer leaves the magnet
+     * DOM element.
+     */
+    magnetThreshold: number | 'onleave'
+
+    /**
+     * Number of required mousemove events before the first mousemove
+     * event will be triggered.
+     */
+    moveThreshold: number
+
+    /**
+     * Allowed number of mousemove events after which the click event
+     * will be still triggered.
+     */
+    clickThreshold: number
+
+    /**
+     * Guard the graph from handling a UI event. Returns `true` if you want
+     * to prevent the graph from handling the event evt, `false` otherwise.
+     * This is an advanced option that can be useful if you have your own
+     * logic for handling events.
+     */
+    guard: (e: JQuery.TriggeredEvent, view?: CellView | null) => boolean
+
+    /**
+     * The sorting type to use when rendering the views in this graph.
+     *
+     * - `exact` - render views according to their z-index. Views with
+     *   different z-index are rendered in order, and views with the
+     *   same z-index are rendered in the order in which they were added.
+     *   This is by far the slowest option, present mainly for backwards
+     *   compatibility.
+     *
+     * - `approx` - render views according to their z-index. Views with
+     *   different z-index are rendered in order, but the ordering of views
+     *   with the same z-index is indeterminate. Similar in functionality
+     *   to the `exact` option, but much faster.
+     *
+     * - `none` - render views in an indeterminate order. (Note that this
+     *   setting disables `toFront`/`toBack` methods.)
+     */
+    sorting: GraphView.SortType
+
+    /**
+     * Specify if the grapg uses asynchronous rendering to display cells.
+     * This is very useful for adding a large number of cells into the graph.
+     * The rendering performance boost is significant and it doesn't block
+     * the UI. However, asynchronous rendering brings about some caveats:
+     *
+     * - The views of freshly added cells may not have yet been added to
+     *   this graph's DOM.
+     * - Some views may have been removed from the DOM by
+     *   `graph.options.viewport` function.
+     * - Views already present in the DOM may not have been updated to
+     *   reflect changes made in this graph since the last render.
+     *
+     * For the methods that truly need a to refer to a CellView, one way to
+     * prevent inconsistencies is to rely on the 'render:done' graph event.
+     * This event signals that all scheduled updates are done and that the
+     * state of cell views is consistent with the state of the cell models.
+     *
+     * Alternatively, you may trigger a manual update immediately before a
+     * sensitive function call:
+     *
+     * - `graph.renderer.requireView()` - bring a single view into the DOM
+     *    and update it.
+     * - `graph.renderer.dumpViews()` - bring all views into the DOM and
+     *    update them.
+     * - `graph.renderer.updateViews()` - update all views.
+     */
+    async: boolean
+
+    frozen: boolean
+
+    /**
+     * A callback function that is used to determine whether a given view
+     * should be shown in an `async` graph. If the function returns `true`,
+     * the view is attached to the DOM; if it returns `false`, the view is
+     * detached from the DOM.
+     */
+    viewport?: Nilable<
+      (
+        this: Graph,
+        view: CellView,
+        isDetached: boolean,
+        graph: Graph,
+      ) => boolean
+    >
+
+    /**
+     * Prevent the default context menu from being displayed.
+     */
+    preventContextMenu: boolean
+
+    /**
+     * Prevents default action when an empty graph area is clicked.
+     * Setting the option to `false` will make the graph pannable
+     * inside a container on touch devices.
+     *
+     * It defaults to `true`.
+     */
+    preventDefaultBlankAction: boolean
+
+    /**
+     * Restrict the translation (movement) of nodes by a given bounding box.
+     * If set to `true`, the user will not be able to move nodes outside the
+     * boundary of the graph area. It's set to `false` by default.
+     */
+    restrictTranslate: boolean | ((this: Graph, cellView: CellView) => boolean)
+
+    interactive: CellView.Interactive
+  }
+
+  export interface Manual extends Common {
+    grid:
+      | boolean
+      | number
+      | (Partial<Grid.CommonOptions> & Grid.DrawGridOptions)
+  }
+
+  export interface Definition extends Common {
+    grid: Grid.Options
+  }
+}
+
+export namespace Options {
+  const defaults: Partial<Definition> = {
+    x: 0,
+    y: 0,
+    grid: {
+      size: 10,
+      visible: false,
+    },
+    background: false,
+    embedding: {
+      enabled: false,
+      findParent: 'bbox',
+      frontOnly: true,
+      validate: () => true,
+    },
+    highlighting: {
+      default: {
+        name: 'stroke',
+        args: {
+          padding: 3,
+        },
+      },
+      nodeAvailable: {
+        name: 'className',
+        args: {
+          className: Util.prefix('available-node'),
+        },
+      },
+      magnetAvailable: {
+        name: 'className',
+        args: {
+          className: Util.prefix('available-magnet'),
+        },
+      },
+    },
+    connecting: {
+      snap: false,
+      multi: true,
+      dangling: true,
+      highlight: false,
+
+      strategy: null,
+      router: 'normal',
+      connector: 'normal',
+      anchor: 'center',
+      edgeAnchor: 'connectionRatio',
+      connectionPoint: 'boundary',
+
+      validateConnection(
+        this: Graph,
+        sourceView: CellView,
+        sourceMagnet: Element,
+        targetView: CellView,
+        targetMagnet: Element,
+        terminalType: Edge.TerminalType,
+        edgeView?: EdgeView,
+      ) {
+        const view = terminalType === 'target' ? targetView : sourceView
+        return view instanceof NodeView
+      },
+    },
+
+    guard: () => false,
+
+    preventContextMenu: true,
+    preventDefaultBlankAction: true,
+    restrictTranslate: false,
+
+    interactive: {
+      labelMove: false,
+    },
+
+    clickThreshold: 0,
+    moveThreshold: 0,
+    magnetThreshold: 0,
+
+    async: false,
+    frozen: false,
+    sorting: 'exact',
+  }
+
+  export function merge(options: Partial<Manual>) {
+    const { grid, ...others } = options
+    const defaultGrid: Grid.CommonOptions = { size: 10, visible: false }
+    const result = ObjectExt.merge({}, defaults, others) as Definition
+    if (typeof grid === 'number') {
+      result.grid = { size: grid, visible: false }
+    } else if (typeof grid === 'boolean') {
+      result.grid = { ...defaultGrid, visible: grid }
+    } else {
+      result.grid = { ...defaultGrid, ...grid }
+    }
+
+    return result
+  }
+}

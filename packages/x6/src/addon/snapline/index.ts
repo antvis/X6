@@ -1,12 +1,9 @@
 import { ArrayExt } from '../../util'
 import { Point, Rectangle, Angle } from '../../geometry'
-import { View } from '../../core/view'
-import { Cell } from '../../core/cell'
-import { Node } from '../../core/node'
-import { Graph } from '../../core/graph'
-import { Model } from '../../core/model'
-import { CellView } from '../../core/cell-view'
-import { NodeView } from '../../core/node-view'
+import { Cell, Node, Model } from '../../model'
+import { View, CellView, NodeView } from '../../view'
+import { Graph } from '../../graph'
+import { EventArgs } from '../../graph/events'
 
 export class Snapline extends View {
   public readonly options: Snapline.Options
@@ -108,7 +105,7 @@ export class Snapline extends View {
     }
   }
 
-  captureCursorOffset({ view, x, y }: Graph.EventArgs['node:mousedown']) {
+  captureCursorOffset({ view, x, y }: EventArgs['node:mousedown']) {
     const targetView = view.getDelegatedView()
     if (targetView && this.canElementMove(targetView)) {
       const pos = view.cell.getPosition()
@@ -131,7 +128,7 @@ export class Snapline extends View {
       options.direction &&
       options.trueDirection
     ) {
-      const view = this.graph.findViewByCell(node) as NodeView
+      const view = this.graph.renderer.findViewByCell(node) as NodeView
       if (view && view.cell.isNode()) {
         const nodeBbox = node.getBBox()
         const nodeBBoxRotated = nodeBbox.bbox(node.getRotation())
@@ -298,7 +295,7 @@ export class Snapline extends View {
             dHeight = 0
         }
 
-        const gridSize = this.graph.options.gridSize
+        const gridSize = this.graph.getGridSize()
         let newWidth = Math.max(nodeBbox.width + dWidth, gridSize)
         let newHeight = Math.max(nodeBbox.height + dHeight, gridSize)
 
@@ -374,7 +371,7 @@ export class Snapline extends View {
     }
   }
 
-  snapWhileMoving({ view, e, x, y }: Graph.EventArgs['node:mousemove']) {
+  snapWhileMoving({ view, e, x, y }: EventArgs['node:mousemove']) {
     const targetView: NodeView = view.getEventData(e).delegatedView || view
     if (!this.canElementMove(targetView)) {
       return
@@ -527,7 +524,7 @@ export class Snapline extends View {
     horizontalLeft?: number
     horizontalWidth?: number
   }) {
-    const ctm = this.graph.getMatrix()
+    const ctm = this.graph.matrix()
     const sx = ctm.a
     const sy = ctm.d
     const tx = ctm.e

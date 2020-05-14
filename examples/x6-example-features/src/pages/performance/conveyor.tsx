@@ -1,14 +1,5 @@
 import React from 'react'
-import {
-  Graph,
-  Node,
-  NodeView,
-  NodeRegistry,
-  ViewRegistry,
-  Point,
-  Angle,
-  Dom,
-} from '@antv/x6'
+import { Graph, Node, NodeView, Point, Angle, Dom } from '@antv/x6'
 import '../index.less'
 
 class ConveyorNode extends Node {
@@ -121,8 +112,8 @@ ConveyorNodeView.config({
   },
 })
 
-NodeRegistry.register('performance_conveyor', ConveyorNode)
-ViewRegistry.register('performance_conveyor_view', ConveyorNodeView)
+Node.registry.register('performance_conveyor', ConveyorNode)
+NodeView.registry.register('performance_conveyor_view', ConveyorNodeView)
 
 ConveyorNode.config({ view: 'performance_conveyor_view' })
 
@@ -164,7 +155,7 @@ export default class Example extends React.Component {
       height: 1000,
       gridSize: 1,
       async: true,
-      sorting: 'sorting-approximate',
+      sorting: 'approx',
       background: {
         color: '#000000',
       },

@@ -1,16 +1,156 @@
-@prefix: x6;
+@import './style/index';
 
-.@{prefix}-page-background {
+.noScalingStroke() {
+  vector-effect: non-scaling-stroke;
 }
 
-.@{prefix}-cell {
+.@{x6-prefix}-graph {
+  position: relative;
 }
 
-.@{prefix}-node {
+.@{x6-prefix}-graph-background,
+.@{x6-prefix}-graph-grid,
+.@{x6-prefix}-graph-svg {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
 }
 
-.@{prefix}-edge {
+.@{x6-prefix}-graph-draw-pane {
+  user-select: none;
 }
 
-.@{prefix}-label {
+.@{x6-prefix}-node {
+  cursor: move;
+}
+
+.@{x6-prefix}-node {
+  * {
+    -webkit-user-drag: none;
+  }
+
+  .scalable * {
+    .noScalingStroke();
+  }
+
+  [magnet='true'] {
+    cursor: crosshair;
+    transition: opacity 0.3s;
+
+    &:hover {
+      opacity: 0.7;
+    }
+  }
+
+  /* stylelint-disable-next-line */
+  foreignobject {
+    overflow: hidden;
+
+    & > body {
+      position: static;
+      margin: 0;
+      padding: 0;
+      background-color: transparent;
+    }
+  }
+}
+
+.@{x6-prefix}-edge {
+  .source-marker,
+  .target-marker {
+    .noScalingStroke();
+  }
+
+  .connection {
+    stroke-linejoin: round;
+    fill: none;
+  }
+
+  .connection-wrap {
+    cursor: move;
+    opacity: 0;
+    fill: none;
+    stroke: #000;
+    stroke-width: 15;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+
+    &:hover {
+      opacity: 0.4;
+      stroke-opacity: 0.4;
+    }
+  }
+
+  .vertices {
+    cursor: move;
+    opacity: 0;
+
+    .vertex {
+      fill: #1abc9c;
+
+      :hover {
+        fill: #34495e;
+        stroke: none;
+      }
+    }
+
+    .vertex-remove {
+      cursor: pointer;
+      fill: #fff;
+    }
+
+    .vertex-remove-area {
+      cursor: pointer;
+      opacity: 0.1;
+    }
+
+    .vertex-group:hover .vertex-remove-area {
+      opacity: 1;
+    }
+  }
+
+  .arrowheads {
+    cursor: move;
+    opacity: 0;
+
+    .arrowhead {
+      fill: #1abc9c;
+
+      :hover {
+        fill: #f39c12;
+        stroke: none;
+      }
+    }
+  }
+
+  .tools {
+    cursor: pointer;
+    opacity: 0;
+
+    .tool-options {
+      display: none;
+    }
+
+    .tool-remove circle {
+      fill: #f00;
+    }
+
+    .tool-remove path {
+      fill: #fff;
+    }
+  }
+
+  &:hover {
+    .vertices,
+    .arrowheads,
+    .tools {
+      opacity: 1;
+    }
+  }
+}
+
+.@{x6-prefix}-highlight-opacity {
+  opacity: 0.3;
 }
