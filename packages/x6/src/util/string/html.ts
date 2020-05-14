@@ -19,7 +19,7 @@ export function sanitizeHTML(html: string, options: { raw?: boolean } = {}) {
   // If keepScripts (last parameter) is `false`, scripts are not executed.
   const nodes = $.parseHTML(html, null, false)
 
-  nodes.forEach(node => {
+  nodes.forEach((node) => {
     const elem = node as Element
     if (elem) {
       const attrs = elem.attributes
@@ -53,17 +53,5 @@ export function sanitizeHTML(html: string, options: { raw?: boolean } = {}) {
     return nodes
   }
 
-  return $('<div/>')
-    .append(nodes)
-    .html()
-}
-
-/**
- * Removes blank space in markup to prevent create empty text node.
- */
-export function sanitizeMarkup(markup: string) {
-  return `${markup}`
-    .trim()
-    .replace(/[\r|\n]/g, ' ')
-    .replace(/>\s+</g, '><')
+  return $('<div/>').append(nodes).html()
 }

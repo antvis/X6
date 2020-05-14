@@ -14,7 +14,7 @@ export default class Example extends React.Component {
       height: 800,
       async: true,
       frozen: true,
-      sorting: 'sorting-approximate',
+      sorting: 'approx',
       restrictTranslate: true,
       defaultConnectionPoint: {
         name: 'boundary',

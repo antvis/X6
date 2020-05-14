@@ -1,7 +1,7 @@
-import { NodeRegistry } from '../../registry'
 import { labelAttr } from './util'
+import { Node } from '../../model'
 
-export const InscribedImage = NodeRegistry.register('image-inscribed', {
+export const InscribedImage = Node.registry.register('image-inscribed', {
   markup: [
     {
       tagName: 'ellipse',

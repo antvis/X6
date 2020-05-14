@@ -1,9 +1,8 @@
 import { KeyValue } from '../../types'
 import { ObjectExt } from '../../util'
 import { Disablable } from '../../common'
-import { Cell } from '../../core/cell'
-import { Model } from '../../core/model'
-import { Graph } from '../../core/graph'
+import { Cell, Model } from '../../model'
+import { Graph } from '../../graph'
 
 export class UndoManager extends Disablable<UndoManager.EventArgs> {
   public readonly model: Model
@@ -111,7 +110,7 @@ export class UndoManager extends Disablable<UndoManager.EventArgs> {
   protected createCommand(options?: { batch: boolean }): UndoManager.Command {
     return {
       batch: options ? options.batch : false,
-      data: {} as any,
+      data: {} as UndoManager.CreationData,
     }
   }
 

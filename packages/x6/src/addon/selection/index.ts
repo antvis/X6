@@ -1,14 +1,11 @@
+import { Util } from '../../global'
 import { ObjectExt, StringExt } from '../../util'
-import { Rectangle, Angle, snapToGrid, Point } from '../../geometry'
-import { Cell } from '../../core/cell'
-import { Edge } from '../../core/edge'
-import { Node } from '../../core/node'
-import { View } from '../../core/view'
-import { Model } from '../../core/model'
-import { Graph } from '../../core/graph'
-import { CellView } from '../../core/cell-view'
-import { Collection } from '../../core/collection'
-import { Handle } from '../common/handle'
+import { Rectangle, Angle, Point } from '../../geometry'
+import { Cell, Node, Edge, Model, Collection } from '../../model'
+import { View, CellView } from '../../view'
+import { Graph } from '../../graph'
+import { Renderer } from '../../graph/renderer'
+import { Handle } from '../common'
 
 export class Selection extends View<Selection.EventArgs> {
   public readonly options: Selection.Options
@@ -203,7 +200,7 @@ export class Selection extends View<Selection.EventArgs> {
         let height = this.$container.height()!
         const offset = this.$container.offset()!
         const origin = graph.pageToLocalPoint(offset.left, offset.top)
-        const scale = graph.getScale()
+        const scale = graph.scale()
         width = width / scale.sx
         height = height / scale.sy
         const rect = new Rectangle(origin.x, origin.y, width, height)
@@ -323,7 +320,7 @@ export class Selection extends View<Selection.EventArgs> {
               this.updateSelectionBoxes()
             }
           } else {
-            const scale = this.graph.getScale()
+            const scale = this.graph.scale()
             this.selectionBoxes.add(this.$selectionContainer).css({
               left: `+=${dx * scale.sx}`,
               top: `+=${dy * scale.sy}`,
@@ -376,9 +373,9 @@ export class Selection extends View<Selection.EventArgs> {
     return this.options.useCellGeometry
       ? (graph.model
           .getNodesInArea(rect, options)
-          .map((node) => graph.findViewByCell(node))
+          .map((node) => graph.renderer.findViewByCell(node))
           .filter((view) => view != null) as CellView[])
-      : graph.findViewsInArea(rect, options)
+      : graph.renderer.findViewsInArea(rect, options)
   }
 
   protected notifyBoxEvent<
@@ -449,7 +446,7 @@ export class Selection extends View<Selection.EventArgs> {
     const corner = { x: 0, y: 0 }
 
     this.collection.toArray().forEach((cell) => {
-      const view = this.graph.findViewByCell(cell)
+      const view = this.graph.renderer.findViewByCell(cell)
       if (view) {
         const bbox = view.getBBox({
           fromCell: this.options.useCellGeometry,
@@ -490,7 +487,7 @@ export class Selection extends View<Selection.EventArgs> {
   }
 
   protected createSelectionBox(cell: Cell) {
-    const view = this.graph.findViewByCell(cell)
+    const view = this.graph.renderer.findViewByCell(cell)
     if (view) {
       const bbox = view.getBBox({
         fromCell: this.options.useCellGeometry,
@@ -510,10 +507,12 @@ export class Selection extends View<Selection.EventArgs> {
     }
   }
 
-  protected updateSelectionBoxes(options: Graph.RequestViewUpdateOptions = {}) {
+  protected updateSelectionBoxes(
+    options: Renderer.RequestViewUpdateOptions = {},
+  ) {
     if (this.collection.length > 0) {
       this.boxesUpdated = true
-      this.graph.requestViewUpdate(this as any, 1, 2, options)
+      this.graph.renderer.requestViewUpdate(this as any, 1, 2, options)
     }
   }
 
@@ -538,7 +537,7 @@ export class Selection extends View<Selection.EventArgs> {
     if (id) {
       const cell = this.collection.get(id)
       if (cell) {
-        return this.graph.findViewByCell(cell)
+        return this.graph.renderer.findViewByCell(cell)
       }
     }
     return null
@@ -688,7 +687,7 @@ export class Selection extends View<Selection.EventArgs> {
     const delta = data.start - client.theta(data.center)
     if (Math.abs(delta) > 0.001) {
       this.collection.toArray().forEach((node: Node) => {
-        const angle = snapToGrid(data.angles[node.id] + delta, grid)
+        const angle = Util.snapToGrid(data.angles[node.id] + delta, grid)
         node.rotate(angle, true, data.center, {
           selection: this.cid,
         })
@@ -700,7 +699,7 @@ export class Selection extends View<Selection.EventArgs> {
   protected stopRotate() {}
 
   protected startResizing({ e }: Handle.EventArgs) {
-    const gridSize = this.graph.options.gridSize
+    const gridSize = this.graph.getGridSize()
     const cells = this.collection.toArray()
     const bbox = Cell.getCellsBBox(cells)!
     const bboxes = cells.map((cell) => cell.getBBox())

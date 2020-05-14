@@ -1,6 +1,6 @@
-import { EdgeRegistry } from '../../registry'
+import { Edge } from '../../model'
 
-export const DoubleEdge = EdgeRegistry.register('double-edge', {
+export const DoubleEdge = Edge.registry.register('double-edge', {
   markup: [
     {
       tagName: 'path',

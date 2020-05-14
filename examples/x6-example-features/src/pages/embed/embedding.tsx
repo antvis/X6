@@ -1,5 +1,5 @@
 import React from 'react'
-import { Graph, Model, Node, NodeRegistry, StandardShape } from '@antv/x6'
+import { Graph, Model, Node, StandardShape } from '@antv/x6'
 import '../index.less'
 
 const Parent = StandardShape.Rect.define({
@@ -17,8 +17,8 @@ const Child = StandardShape.Rect.define({
   },
 })
 
-NodeRegistry.register('embedding.parent', Parent)
-NodeRegistry.register('embedding.child', Child)
+Node.registry.register('embedding.parent', Parent)
+Node.registry.register('embedding.child', Child)
 
 export default class Example extends React.Component {
   private container: HTMLDivElement
@@ -29,29 +29,33 @@ export default class Example extends React.Component {
       container: this.container,
       width: 880,
       height: 600,
-      gridSize: 20,
-      drawGrid: 'mesh',
-      embeddingMode: true,
-      findParentBy: function (this: Model, node: Node) {
-        var bbox = node.getBBox()
-        return this.getNodes().filter((node: Node) => {
-          var currentBBox = node.getBBox()
-          if (node.getProp('customEmebedding')) {
-            var children = node.getChildren() || []
-            if (children.length) {
-              var rect = this.getCellsBBox(children)
-              if (rect) {
-                currentBBox.height += rect.height
-                currentBBox.y -= rect.height
+      grid: {
+        size: 20,
+        type: 'mesh',
+      },
+      embedding: {
+        enabled: true,
+        findParent: function (this: Model, node: Node) {
+          var bbox = node.getBBox()
+          return this.getNodes().filter((node: Node) => {
+            var currentBBox = node.getBBox()
+            if (node.getProp('customEmebedding')) {
+              var children = node.getChildren() || []
+              if (children.length) {
+                var rect = this.getCellsBBox(children)
+                if (rect) {
+                  currentBBox.height += rect.height
+                  currentBBox.y -= rect.height
+                }
               }
+
+              currentBBox.y -= EMBEDDING_OFFSET
+              currentBBox.height += EMBEDDING_OFFSET
             }
 
-            currentBBox.y -= EMBEDDING_OFFSET
-            currentBBox.height += EMBEDDING_OFFSET
-          }
-
-          return bbox.intersect(currentBBox)
-        })
+            return bbox.intersect(currentBBox)
+          })
+        },
       },
     })
 

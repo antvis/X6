@@ -1,11 +1,7 @@
-import { View } from '../../core/view'
-import { Cell } from '../../core/cell'
-import { Node } from '../../core/node'
-import { Edge } from '../../core/edge'
-import { Model } from '../../core/model'
-import { Graph } from '../../core/graph'
-import { CellView } from '../../core/cell-view'
 import { KeyValue } from '../../types'
+import { View, CellView } from '../../view'
+import { Cell, Node, Edge, Model } from '../../model'
+import { Graph } from '../../graph'
 
 export class Widget<
   Options extends Widget.Options = Widget.Options,
@@ -31,9 +27,9 @@ export class Widget<
       graph = instance.graph
     }
     const dic = this.ensureCache()
-    let cache = dic[graph.cid]
+    let cache = dic[graph.view.cid]
     if (cache == null) {
-      cache = dic[graph.cid] = {}
+      cache = dic[graph.view.cid] = {}
     }
     cache[instance.cid] = instance
   }
@@ -44,14 +40,14 @@ export class Widget<
       graph = instance.graph
     }
     const dic = this.ensureCache()
-    if (dic[graph.cid]) {
-      delete dic[graph.cid][instance.cid]
+    if (dic[graph.view.cid]) {
+      delete dic[graph.view.cid][instance.cid]
     }
   }
 
   public static removeInstances(graph: Graph) {
     const dic = this.ensureCache()
-    const cache = dic[graph.cid]
+    const cache = dic[graph.view.cid]
     if (cache) {
       Object.keys(cache).forEach((cid) => {
         const instance = cache[cid]
@@ -64,7 +60,7 @@ export class Widget<
 
   public static getInstances(graph: Graph) {
     const dic = this.ensureCache()
-    return dic[graph.cid] || {}
+    return dic[graph.view.cid] || {}
   }
 
   // #endregion

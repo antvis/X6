@@ -61,10 +61,10 @@
     "prettier": "^2.0.5",
     "pretty-quick": "^2.0.1",
     "rimraf": "^3.0.0",
-    "stylelint-config-prettier": "^6.0.0",
+    "stylelint-config-prettier": "^8.0.1",
     "stylelint-config-rational-order": "^0.1.2",
-    "stylelint-config-standard": "^19.0.0",
-    "stylelint-declaration-block-no-ignored-properties": "^2.1.0",
+    "stylelint-config-standard": "^20.0.0",
+    "stylelint-declaration-block-no-ignored-properties": "^2.3.0",
     "tslint-config-airbnb": "^5.11.2",
     "tslint-config-prettier": "^1.18.0",
     "tslint-eslint-rules": "^5.4.0"

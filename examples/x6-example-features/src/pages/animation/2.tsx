@@ -1,15 +1,5 @@
 import React from 'react'
-import {
-  Graph,
-  Node,
-  Edge,
-  NodeView,
-  ViewRegistry,
-  NodeRegistry,
-  Point,
-  Angle,
-} from '@antv/x6'
-import { Interpolation } from '@antv/x6/es/animation'
+import { Graph, Node, Edge, NodeView, Point, Angle, Interp } from '@antv/x6'
 import '../index.less'
 
 class BallView extends NodeView {
@@ -141,7 +131,7 @@ class BallView extends NodeView {
         this.graph.options.width,
         this.graph.options.height,
       )
-      const interpolation = Interpolation.color('#ffffff', '#ff0000')
+      const interpolation = Interp.color('#ffffff', '#ff0000')
       edge.attr(
         'line/targetMarker/fill',
         interpolation(dist / maxDist / Math.sqrt(2)),
@@ -173,9 +163,9 @@ class BallView extends NodeView {
   }
 }
 
-ViewRegistry.register('ball', BallView as any)
+NodeView.registry.register('ball', BallView as any)
 
-NodeRegistry.register('ball', {
+Node.registry.register('ball', {
   view: 'ball',
   markup: [
     {

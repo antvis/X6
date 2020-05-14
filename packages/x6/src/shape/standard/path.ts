@@ -1,7 +1,7 @@
-import { NodeRegistry } from '../../registry'
 import { getMarkup, bodyAttr, labelAttr } from './util'
+import { Node } from '../../model'
 
-export const Path = NodeRegistry.register('path', {
+export const Path = Node.registry.register('path', {
   markup: getMarkup('path'),
   attrs: {
     body: {

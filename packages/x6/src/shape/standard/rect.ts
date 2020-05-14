@@ -1,7 +1,7 @@
-import { NodeRegistry } from '../../registry'
 import { getMarkup, bodyAttr, labelAttr } from './util'
+import { Node } from '../../model'
 
-export const Rect = NodeRegistry.register('rect', {
+export const Rect = Node.registry.register('rect', {
   markup: getMarkup('rect'),
   attrs: {
     body: {

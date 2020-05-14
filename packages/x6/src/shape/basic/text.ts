@@ -1,5 +1,4 @@
-import { NodeView } from '../../core/node-view'
-import { ViewRegistry } from '../../registry'
+import { NodeView } from '../../view'
 import { getName, createShape } from './util'
 
 const viewName = getName('text')
@@ -21,7 +20,7 @@ TextView.config({
   },
 })
 
-ViewRegistry.register(viewName, TextView)
+NodeView.registry.register(viewName, TextView)
 
 export const Text = createShape(
   'text',
