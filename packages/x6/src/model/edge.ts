@@ -1255,7 +1255,7 @@ export namespace Edge {
         fill: '#000000',
         fontSize: 14,
         textAnchor: 'middle',
-        yAlignment: 'middle',
+        yAlign: 'middle',
         pointerEvents: 'none',
       },
       rect: {
