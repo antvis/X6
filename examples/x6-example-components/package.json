@@ -11,12 +11,12 @@
   },
   "dependencies": {
     "@antv/x6-components": "^0.2.0",
-    "antd": "^3.19.5",
+    "antd": "^4.2.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6"
   },
   "devDependencies": {
-    "@types/jest": "^23.3.12",
+    "@types/jest": "^25.2.1",
     "@types/react": "^16.7.18",
     "@types/react-dom": "^16.0.11",
     "@types/react-test-renderer": "^16.0.3",
@@ -26,11 +26,11 @@
     "eslint-config-umi": "^1.4.0",
     "eslint-plugin-flowtype": "^4.7.0",
     "eslint-plugin-import": "^2.14.0",
-    "eslint-plugin-jsx-a11y": "^5.1.1",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-react": "^7.11.1",
     "lint-staged": "^10.2.2",
     "react-test-renderer": "^16.7.0",
-    "tslint": "^5.12.0",
+    "tslint": "^6.1.2",
     "tslint-eslint-rules": "^5.4.0",
     "tslint-react": "^3.6.0",
     "umi": "^2.9.0",

@@ -53,7 +53,7 @@
     "eslint-config-prettier": "^6.7.0",
     "eslint-plugin-import": "^2.18.2",
     "git-contributor": "^1.0.10",
-    "husky": "^3.1.0",
+    "husky": "^4.2.5",
     "lerna": "^3.19.0",
     "lerna-changelog": "^1.0.1",
     "lint-staged": "^10.2.2",
