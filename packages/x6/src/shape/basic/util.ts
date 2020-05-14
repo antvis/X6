@@ -33,7 +33,7 @@ export function createShape(
         fontSize: 14,
         fill: '#000000',
         textAnchor: 'middle',
-        yAlignment: 'middle',
+        yAlign: 'middle',
         fontFamily: 'Arial, helvetica, sans-serif',
       },
       [type]: {

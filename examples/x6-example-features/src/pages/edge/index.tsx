@@ -41,7 +41,7 @@ const CustomEdge = Edge.define({
         fill: '#ff0000', // default text color
         fontSize: 14,
         textAnchor: 'middle',
-        yAlignment: 'middle',
+        yAlign: 'middle',
         pointerEvents: 'none',
       },
       body: {

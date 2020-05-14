@@ -176,8 +176,8 @@ TextBlock.config({
     [contentSelector]: {
       refX: 0.5,
       refY: 0.5,
-      yAlignment: 'middle',
-      xAlignment: 'middle',
+      yAlign: 'middle',
+      xAlign: 'middle',
       style: {
         textAlign: 'center',
         verticalAlign: 'middle',
