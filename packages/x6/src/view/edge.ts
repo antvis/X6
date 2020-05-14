@@ -967,17 +967,13 @@ export class EdgeView<
     targetPoint: Point,
   ) {
     const def =
-      this.cell.getConnector() ||
-      this.graph.options.connecting.connector ||
-      Connector.presets.normal
+      this.cell.getConnector() || this.graph.options.connecting.connector
 
     let name: string | undefined
     let args: Connector.BaseOptions | undefined
     let fn: Connector.Definition
 
-    if (typeof def === 'function') {
-      fn = def
-    } else if (typeof def === 'string') {
+    if (typeof def === 'string') {
       name = def
     } else {
       name = def.name
