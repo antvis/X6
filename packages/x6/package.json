@@ -63,7 +63,6 @@
     "jquery": "^3.4.1",
     "lodash-es": "^4.17.15",
     "mousetrap": "^1.6.3",
-    "size-sensor": "^1.0.0",
     "utility-types": "^3.10.0"
   },
   "devDependencies": {
