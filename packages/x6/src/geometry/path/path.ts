@@ -125,6 +125,57 @@ export class Path extends Geometry {
     return segments[count - 1].end
   }
 
+  moveTo(x: number, y: number): this
+  moveTo(point: Point.PointLike): this
+  moveTo(line: Line): this
+  moveTo(curve: Curve): this
+  moveTo(point: Point.PointLike, ...points: Point.PointLike[]): this
+  moveTo(x: number, y: number, ...coords: number[]): this
+  moveTo(...args: any[]) {
+    return this.appendSegment(MoveTo.create.call(null, ...args))
+  }
+
+  lineTo(x: number, y: number): this
+  lineTo(point: Point.PointLike): this
+  lineTo(line: Line): this
+  lineTo(x: number, y: number, ...coords: number[]): this
+  lineTo(point: Point.PointLike, ...points: Point.PointLike[]): this
+  lineTo(...args: any[]) {
+    return this.appendSegment(LineTo.create.call(null, ...args))
+  }
+
+  curveTo(
+    x0: number,
+    y0: number,
+    x1: number,
+    y1: number,
+    x2: number,
+    y2: number,
+  ): this
+  curveTo(
+    x0: number,
+    y0: number,
+    x1: number,
+    y1: number,
+    x2: number,
+    y2: number,
+    ...coords: number[]
+  ): this
+  curveTo(p1: Point.PointLike, p2: Point.PointLike, p3: Point.PointLike): this
+  curveTo(
+    p1: Point.PointLike,
+    p2: Point.PointLike,
+    p3: Point.PointLike,
+    ...points: Point.PointLike[]
+  ): this
+  curveTo(...args: any[]) {
+    return this.appendSegment(CurveTo.create.call(null, ...args))
+  }
+
+  close() {
+    return this.appendSegment(Close.create())
+  }
+
   bbox() {
     const segments = this.segments
     const count = segments.length
@@ -175,6 +226,7 @@ export class Path extends Geometry {
         this.segments.push(currentSegment)
       }
     }
+    return this
   }
 
   insertSegment(index: number, seg: Segment | Segment[]) {
@@ -216,6 +268,7 @@ export class Path extends Geometry {
         previousSegment = currentSegment
       }
     }
+    return this
   }
 
   removeSegment(index: number) {
@@ -236,6 +289,7 @@ export class Path extends Geometry {
     if (removedSegment.isSubpathStart && nextSegment) {
       this.updateSubpathStartSegment(nextSegment)
     }
+    return removedSegment
   }
 
   replaceSegment(index: number, seg: Segment | Segment[]) {
@@ -1145,10 +1199,10 @@ export namespace Path {
     return path
   }
 
+  export function createSegment(type: 'M', x: number, y: number): MoveTo
+  export function createSegment(type: 'M', point: Point.PointLike): MoveTo
   export function createSegment(type: 'M', line: Line): MoveTo
   export function createSegment(type: 'M', curve: Curve): MoveTo
-  export function createSegment(type: 'M', point: Point.PointLike): MoveTo
-  export function createSegment(type: 'M', x: number, y: number): MoveTo
   export function createSegment(
     type: 'M',
     point: Point.PointLike,
@@ -1160,9 +1214,9 @@ export namespace Path {
     y: number,
     ...coords: number[]
   ): Segment[]
-  export function createSegment(type: 'L', line: Line): LineTo
-  export function createSegment(type: 'L', point: Point.PointLike): LineTo
   export function createSegment(type: 'L', x: number, y: number): LineTo
+  export function createSegment(type: 'L', point: Point.PointLike): LineTo
+  export function createSegment(type: 'L', line: Line): LineTo
   export function createSegment(
     type: 'L',
     point: Point.PointLike,
