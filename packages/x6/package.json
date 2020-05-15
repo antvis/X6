@@ -80,7 +80,7 @@
     "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
     "coveralls": "^3.0.6",
     "eslint": "^6.1.0",
-    "jest": "^24.8.0",
+    "jest": "^26.0.1",
     "jest-electron": "^0.1.11",
     "less": "^3.10.3",
     "lint-staged": "^10.2.2",
