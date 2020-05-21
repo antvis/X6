@@ -1,4 +1,4 @@
-import { Node, Model } from '../../model'
+import { Node, Model } from '../model'
 
 export namespace GridLayout {
   export function layout(cells: Node[] | Model, options: Options = {}) {
@@ -7,8 +7,8 @@ export namespace GridLayout {
       cells instanceof Model
         ? cells
         : new Model().resetCells(cells, {
-            dry: true,
             sort: false,
+            dryrun: true,
           })
 
     const nodes = graph.getNodes()

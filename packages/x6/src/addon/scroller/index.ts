@@ -1,72 +1,106 @@
 import { Point, Rectangle } from '../../geometry'
 import { Platform, NumberExt, ObjectExt, Dom } from '../../util'
-import { Cell } from '../../model'
-import { View } from '../../view'
+import { Cell } from '../../model/cell'
+import { View } from '../../view/view'
 import { Graph } from '../../graph'
 import { GraphView } from '../../graph/view'
 import { EventArgs } from '../../graph/events'
-import { Transform } from '../../graph/transform'
+import { TransformManager } from '../../graph/transform'
+import { BackgroundManager } from '../../graph/background'
 
 export class Scroller extends View {
   public readonly options: Scroller.Options
   public readonly container: HTMLDivElement
+  public readonly content: HTMLDivElement
+  public readonly background: HTMLDivElement
   public readonly $container: JQuery<HTMLElement>
-  public readonly $background: JQuery<HTMLElement>
+  public readonly backgroundManager: Scroller.Background
+  protected readonly $background: JQuery<HTMLElement>
+  protected readonly $content: JQuery<HTMLElement>
+  protected pageBreak: HTMLDivElement
 
-  protected clientX: number
-  protected clientY: number
-  protected sx: number
-  protected sy: number
-  protected padding = { left: 0, top: 0, right: 0, bottom: 0 }
-  protected centerPoint: Point.PointLike | null
-  protected scrollLeftBeforePrint: number | null
-  protected scrollTopBeforePrint: number | null
-  protected delegatedHandlers: { [name: string]: Function }
-
-  protected readonly containerClassName = 'graph-scroller'
-  protected readonly transitionClassName = 'transition-in-progress'
-  protected readonly transitionEventName: 'transitionend.paper-scroller-transition'
-
-  get graph() {
+  public get graph() {
     return this.options.graph
   }
 
-  get model() {
+  public get model() {
     return this.graph.model
   }
+
+  protected sx: number
+  protected sy: number
+  protected clientX: number
+  protected clientY: number
+  protected padding = { left: 0, top: 0, right: 0, bottom: 0 }
+  protected centerPoint: Point.PointLike | null
+  protected cachedScrollLeft: number | null
+  protected cachedScrollTop: number | null
+  protected delegatedHandlers: { [name: string]: Function }
 
   constructor(options: Scroller.Options) {
     super()
 
-    this.options = ObjectExt.merge({}, Scroller.defaultOptions, options)
-
-    const graph = this.graph
-    if (this.options.baseWidth == null) {
-      this.options.baseWidth = graph.options.width
-    }
-    if (this.options.baseHeight == null) {
-      this.options.baseHeight = graph.options.height
-    }
+    this.options = Util.getOptions(options)
 
     const scale = this.graph.scale()
     this.sx = scale.sx
     this.sy = scale.sy
 
+    const width = this.options.width || this.graph.options.width
+    const height = this.options.height || this.graph.options.height
     this.container = document.createElement('div')
-    this.$container = this.$(this.container).addClass(
-      this.prefixClassName(this.containerClassName),
-    )
-    this.$background = this.$('<div/>')
-      .addClass(this.prefixClassName(`${this.containerClassName}-background`))
+    this.$container = this.$(this.container)
+      .addClass(this.prefixClassName(Util.containerClass))
+      .css({ width, height })
+
+    if (this.options.pageVisible) {
+      this.$container.addClass(this.prefixClassName(Util.pagedClass))
+    }
+
+    if (this.options.className) {
+      this.$container.addClass(this.options.className)
+    }
+
+    const graph = this.graph
+    const graphContaoner = graph.container
+
+    if (graphContaoner.parentNode) {
+      this.$container.insertBefore(graphContaoner)
+    }
+
+    this.content = document.createElement('div')
+    this.$content = this.$(this.content)
+      .addClass(this.prefixClassName(Util.contentClass))
       .css({
         width: graph.options.width,
         height: graph.options.height,
       })
-      .append(graph.container)
-      .appendTo(this.container)
+
+    // custom background
+    if (this.options.background) {
+      this.background = document.createElement('div')
+      this.$background = this.$(this.background).addClass(
+        this.prefixClassName(Util.backgroundClass),
+      )
+      this.$content.append(this.background)
+    }
+
+    if (!this.options.pageVisible) {
+      this.$content.append(this.graph.view.background)
+      this.$content.append(this.graph.view.grid)
+    }
+    this.$content.append(graphContaoner)
+    this.$content.appendTo(this.container)
 
     this.startListening()
     this.setCursor(this.options.cursor)
+
+    if (!this.options.pageVisible) {
+      this.graph.grid.update()
+      this.graph.background.update()
+    }
+
+    this.backgroundManager = new Scroller.Background(this)
   }
 
   protected startListening() {
@@ -80,14 +114,14 @@ export class Scroller extends View {
     graph.on('afterprint', this.restoreScrollPosition, this)
     graph.on('afterexport', this.restoreScrollPosition, this)
 
-    if (this.options.autoResizePaper) {
+    if (this.options.autoResize) {
       if (graph.renderer.isAsync()) {
-        graph.on('render:done', this.onPaperRenderDone, this)
+        graph.on('render:done', this.onRenderDone, this)
       } else {
-        model.on('reseted', this.adjustPaper, this)
-        model.on('cell:added', this.adjustPaper, this)
-        model.on('cell:removed', this.adjustPaper, this)
-        model.on('cell:changed', this.adjustPaper, this)
+        model.on('reseted', this.update, this)
+        model.on('cell:added', this.update, this)
+        model.on('cell:removed', this.update, this)
+        model.on('cell:changed', this.update, this)
       }
     }
     this.delegateBackgroundEvents()
@@ -104,27 +138,31 @@ export class Scroller extends View {
     graph.off('afterprint', this.restoreScrollPosition, this)
     graph.off('afterexport', this.restoreScrollPosition, this)
 
-    graph.off('render:done', this.onPaperRenderDone, this)
+    graph.off('render:done', this.onRenderDone, this)
 
-    model.off('reseted', this.adjustPaper, this)
-    model.off('cell:added', this.adjustPaper, this)
-    model.off('cell:removed', this.adjustPaper, this)
-    model.off('cell:changed', this.adjustPaper, this)
+    model.off('reseted', this.update, this)
+    model.off('cell:added', this.update, this)
+    model.off('cell:removed', this.update, this)
+    model.off('cell:changed', this.update, this)
     this.undelegateBackgroundEvents()
   }
 
   protected delegateBackgroundEvents(events?: View.Events) {
     const evts = events || GraphView.events
-
     this.delegatedHandlers = Object.keys(evts).reduce<{
       [name: string]: Function
     }>((memo, name) => {
       const handler = evts[name]
       if (name.indexOf(' ') === -1) {
-        memo[name] =
-          typeof handler === 'function'
-            ? handler
-            : this.graph[handler as keyof Graph]
+        if (typeof handler === 'function') {
+          memo[name] = handler
+        } else {
+          let method = this.graph.view[handler as keyof GraphView]
+          if (typeof method === 'function') {
+            method = method.bind(this.graph.view)
+            memo[name] = method as Function
+          }
+        }
       }
       return memo
     }, {})
@@ -148,7 +186,10 @@ export class Scroller extends View {
   }
 
   protected onBackgroundEvent(e: JQuery.TriggeredEvent) {
-    if (this.$background.is(e.target)) {
+    const isBackgroundEvent = this.options.background
+      ? this.$background.is(e.target)
+      : this.$content.is(e.target)
+    if (isBackgroundEvent) {
       const handler = this.delegatedHandlers[e.type]
       if (typeof handler === 'function') {
         handler.apply(this.graph, arguments)
@@ -156,41 +197,43 @@ export class Scroller extends View {
     }
   }
 
-  protected onPaperRenderDone({ stats }: EventArgs['render:done']) {
+  protected onRenderDone({ stats }: EventArgs['render:done']) {
     if (stats.priority < 2) {
-      this.adjustPaper()
+      this.update()
     }
   }
 
   protected onResize() {
     if (this.centerPoint) {
       this.center(this.centerPoint.x, this.centerPoint.y)
+      this.updatePageBreak()
     }
   }
 
   protected onScale({ sx, sy, ox, oy }: EventArgs['scale']) {
-    this.adjustScale(sx, sy)
+    this.updateScale(sx, sy)
     this.sx = sx
     this.sy = sy
     if (ox || oy) {
       this.center(ox, oy)
+      this.updatePageBreak()
     }
 
-    if (typeof this.options.contentOptions === 'function') {
-      this.adjustPaper()
+    if (typeof this.options.fitTocontentOptions === 'function') {
+      this.update()
     }
   }
 
   protected storeScrollPosition() {
-    this.scrollLeftBeforePrint = this.container.scrollLeft
-    this.scrollTopBeforePrint = this.container.scrollTop
+    this.cachedScrollLeft = this.container.scrollLeft
+    this.cachedScrollTop = this.container.scrollTop
   }
 
   protected restoreScrollPosition() {
-    this.container.scrollLeft = this.scrollLeftBeforePrint!
-    this.container.scrollTop = this.scrollTopBeforePrint!
-    this.scrollLeftBeforePrint = null
-    this.scrollTopBeforePrint = null
+    this.container.scrollLeft = this.cachedScrollLeft!
+    this.container.scrollTop = this.cachedScrollTop!
+    this.cachedScrollLeft = null
+    this.cachedScrollTop = null
   }
 
   protected beforeManipulation() {
@@ -205,24 +248,66 @@ export class Scroller extends View {
     }
   }
 
-  protected adjustPaper() {
-    const size = this.getClientSize()
-    this.centerPoint = this.clientToLocalPoint(size.width / 2, size.height / 2)
-    let contentOptions = this.options.contentOptions
-    if (typeof contentOptions === 'function') {
-      contentOptions = contentOptions.call(this, this)
+  protected updatePageBreak() {
+    if (this.pageBreak && this.pageBreak.parentNode) {
+      this.pageBreak.parentNode.removeChild(this.pageBreak)
     }
-    const options: Transform.FitToContentFullOptions = {
-      gridWidth: this.options.baseWidth,
-      gridHeight: this.options.baseHeight,
-      allowNewOrigin: 'negative',
-      ...contentOptions,
+
+    const options = this.options
+    if (options.pageVisible && options.pageBreak) {
+      const graphWidth = this.graph.options.width
+      const graphHeight = this.graph.options.height
+      const pageWidth = options.pageWidth || graphWidth
+      const pageHeight = options.pageHeight || graphHeight
+      if (graphWidth > pageWidth || graphHeight > pageHeight) {
+        this.pageBreak = document.createElement('div')
+        Dom.addClass(this.pageBreak, this.prefixClassName('graph-pagebreak'))
+        this.$(this.graph.view.grid).after(this.pageBreak)
+
+        for (let i = 1, l = Math.floor(graphWidth / pageWidth); i < l; i += 1) {
+          this.$('<div/>')
+            .addClass(this.prefixClassName(`graph-pagebreak-vertical`))
+            .css({
+              left: i * pageWidth,
+            })
+            .appendTo(this.pageBreak)
+        }
+
+        for (
+          let i = 1, l = Math.floor(graphHeight / pageHeight);
+          i < l;
+          i += 1
+        ) {
+          this.$('<div/>')
+            .addClass(this.prefixClassName(`graph-pagebreak-horizontal`))
+            .css({
+              top: i * pageHeight,
+            })
+            .appendTo(this.pageBreak)
+        }
+      }
     }
-    this.graph.fitToContent(this.transformContentOptions(options))
   }
 
-  protected transformContentOptions(
-    options: Transform.FitToContentFullOptions,
+  protected update() {
+    const size = this.getClientSize()
+    this.centerPoint = this.clientToLocalPoint(size.width / 2, size.height / 2)
+    let fitTocontentOptions = this.options.fitTocontentOptions
+    if (typeof fitTocontentOptions === 'function') {
+      fitTocontentOptions = fitTocontentOptions.call(this, this)
+    }
+
+    const options: TransformManager.FitToContentFullOptions = {
+      gridWidth: this.options.pageWidth,
+      gridHeight: this.options.pageHeight,
+      allowNewOrigin: 'negative',
+      ...fitTocontentOptions,
+    }
+    this.graph.fitToContent(this.getFitToContentOptions(options))
+  }
+
+  protected getFitToContentOptions(
+    options: TransformManager.FitToContentFullOptions,
   ) {
     const sx = this.sx
     const sy = this.sy
@@ -246,7 +331,7 @@ export class Scroller extends View {
     return options
   }
 
-  protected adjustScale(sx: number, sy: number) {
+  protected updateScale(sx: number, sy: number) {
     const options = this.graph.options
     const dx = sx / this.sx
     const dy = sy / this.sy
@@ -302,16 +387,16 @@ export class Scroller extends View {
   }
 
   /**
-   * Try to scroll to ensure that the center of graph
-   * content is at the center of the viewport.
+   * Try to scroll to ensure that the center of graph content is at the
+   * center of the viewport.
    */
   scrollToContent(options?: Scroller.ScrollOptions) {
     return this.scrollToPoint(this.graph.getContentArea().getCenter())
   }
 
   /**
-   * Try to scroll to ensure that the center of cell
-   * is at the center of the viewport.
+   * Try to scroll to ensure that the center of cell is at the center of
+   * the viewport.
    */
   scrollToCell(cell: Cell, options?: Scroller.ScrollOptions) {
     return this.scrollToPoint(cell.getBBox().getCenter())
@@ -561,7 +646,7 @@ export class Scroller extends View {
 
   zoomToRect(
     rect: Rectangle.RectangleLike,
-    options: Transform.ScaleContentToFitOptions = {},
+    options: TransformManager.ScaleContentToFitOptions = {},
   ) {
     const area = Rectangle.create(rect)
     const graph = this.graph
@@ -586,8 +671,8 @@ export class Scroller extends View {
   }
 
   zoomToFit(
-    options: Transform.GetContentAreaOptions &
-      Transform.ScaleContentToFitOptions = {},
+    options: TransformManager.GetContentAreaOptions &
+      TransformManager.ScaleContentToFitOptions = {},
   ) {
     return this.zoomToRect(this.graph.getContentArea(options), options)
   }
@@ -642,10 +727,10 @@ export class Scroller extends View {
     }
 
     const onTransitionEnd = options.onTransitionEnd
-    this.$container.addClass(this.transitionClassName)
-    this.$background
-      .off(this.transitionEventName)
-      .on(this.transitionEventName, (e) => {
+    this.$container.addClass(Util.transitionClassName)
+    this.$content
+      .off(Util.transitionEventName)
+      .on(Util.transitionEventName, (e) => {
         this.syncTransition(targetScale, { x: x as number, y: y as number })
         if (typeof onTransitionEnd === 'function') {
           onTransitionEnd.call(this, e)
@@ -672,8 +757,8 @@ export class Scroller extends View {
   }
 
   removeTransition() {
-    this.$container.removeClass(this.transitionClassName)
-    this.$background.off(this.transitionEventName).css({
+    this.$container.removeClass(Util.transitionClassName)
+    this.$content.off(Util.transitionEventName).css({
       transform: '',
       transformOrigin: '',
       transition: '',
@@ -722,7 +807,7 @@ export class Scroller extends View {
     const e = this.normalizeEvent(evt)
     this.clientX = e.clientX!
     this.clientY = e.clientY!
-    this.$container.addClass('is-panning')
+    this.$container.addClass(this.prefixClassName(Util.panningClass))
     this.trigger('pan:start', { e })
     this.$(document.body).on({
       'mousemove.panning touchmove.panning': this.pan.bind(this),
@@ -744,7 +829,7 @@ export class Scroller extends View {
   stopPanning(e: JQuery.MouseUpEvent) {
     this.$(document.body).off('.panning')
     this.$(window).off('.panning')
-    this.$container.removeClass('is-panning')
+    this.$container.removeClass(this.prefixClassName(Util.panningClass))
     this.trigger('pan:stop', { e })
   }
 
@@ -796,7 +881,7 @@ export class Scroller extends View {
 
     padding = this.padding
 
-    this.$background.css({
+    this.$content.css({
       width: padding.left + this.graph.options.width + padding.right,
       height: padding.top + this.graph.options.height + padding.bottom,
     })
@@ -875,24 +960,32 @@ export class Scroller extends View {
 }
 
 export namespace Scroller {
-  export interface Options {
-    graph: Graph
-    width: number
-    height: number
-    minVisiblePaperSize?: number
-    autoResizePaper?: boolean
-    baseWidth?: number
-    baseHeight?: number
+  export interface CommonOptions {
     cursor?: string
-    contentOptions?:
-      | Transform.FitToContentFullOptions
-      | ((
-          this: Scroller,
-          scroller: Scroller,
-        ) => Transform.FitToContentFullOptions)
+    className?: string
+    width?: number
+    height?: number
+    pageWidth?: number
+    pageHeight?: number
+    pageVisible?: boolean
+    pageBreak?: boolean
+    minVisibleWidth?: number
+    minVisibleHeight?: number
+    background?: false | BackgroundManager.Options
+    autoResize?: boolean
     padding?:
       | NumberExt.SideOptions
       | ((this: Scroller) => NumberExt.SideOptions)
+    fitTocontentOptions?:
+      | TransformManager.FitToContentFullOptions
+      | ((
+          this: Scroller,
+          scroller: Scroller,
+        ) => TransformManager.FitToContentFullOptions)
+  }
+
+  export interface Options extends CommonOptions {
+    graph: Graph
   }
 
   export interface ScrollOptions {
@@ -912,7 +1005,7 @@ export namespace Scroller {
     max?: number
   }
 
-  export type PositionContentOptions = Transform.GetContentAreaOptions &
+  export type PositionContentOptions = TransformManager.GetContentAreaOptions &
     Scroller.CenterOptions
 
   export type Direction =
@@ -944,17 +1037,74 @@ export namespace Scroller {
     visibility?: number
     center?: Point.PointLike
   }
+}
 
-  export const defaultOptions: Partial<Options> = {
+export namespace Scroller {
+  export class Background extends BackgroundManager {
+    protected readonly scroller: Scroller
+
+    protected get elem() {
+      return this.scroller.background
+    }
+
+    protected get container() {
+      return this.scroller.content
+    }
+
+    constructor(scroller: Scroller) {
+      super(scroller.graph)
+
+      this.scroller = scroller
+      if (scroller.options.background) {
+        this.draw(scroller.options.background)
+      }
+    }
+
+    protected init() {
+      this.graph.on('scale', this.update, this)
+      this.graph.on('translate', this.update, this)
+    }
+  }
+}
+
+namespace Util {
+  export const containerClass = 'graph-scroller'
+  export const panningClass = `${containerClass}-panning`
+  export const pagedClass = `${containerClass}-paged`
+  export const contentClass = `${containerClass}-content`
+  export const backgroundClass = `${containerClass}-background`
+  export const transitionClassName = 'transition-in-progress'
+  export const transitionEventName = 'transitionend.graph-scroller-transition'
+
+  export const defaultOptions: Partial<Scroller.Options> = {
     padding() {
       const size = this.getClientSize()
-      const min = Math.max(this.options.minVisiblePaperSize || 0, 1) || 1
-      const left = Math.max(size.width - min, 0)
-      const top = Math.max(size.height - min, 0)
+      const minWidth = Math.max(this.options.minVisibleWidth || 0, 1) || 1
+      const minHeight = Math.max(this.options.minVisibleHeight || 0, 1) || 1
+      const left = Math.max(size.width - minWidth, 0)
+      const top = Math.max(size.height - minHeight, 0)
       return { left, top, right: left, bottom: top }
     },
-    minVisiblePaperSize: 50,
-    autoResizePaper: false,
-    cursor: 'default',
+    minVisibleWidth: 48,
+    minVisibleHeight: 48,
+    pageVisible: true,
+    pageBreak: true,
+    autoResize: true,
+    cursor: 'grab',
+  }
+
+  export function getOptions(options: Scroller.Options) {
+    const merged = ObjectExt.merge({}, defaultOptions, options)
+    const graph = options.graph
+
+    if (merged.pageWidth == null) {
+      merged.pageWidth = graph.options.width
+    }
+
+    if (merged.pageHeight == null) {
+      merged.pageHeight = graph.options.height
+    }
+
+    return merged
   }
 }

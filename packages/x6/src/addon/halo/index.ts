@@ -653,8 +653,8 @@ export namespace Halo {
     clearAll?: boolean
     clearOnBlankPointerdown?: boolean
     /**
-     * If set to true, the model position and dimensions will be used as a
-     * basis for the Halo tools position. By default, this is set to false
+     * If set to true, the cell position and dimensions will be used as a
+     * basis for the Halo tools position. By default, this is set to `false`
      * which causes the Halo tools position be based on the bounding box of
      * the element view. Sometimes though, your shapes can have certain SVG
      * sub elements that stick out of the view and you don't want these sub

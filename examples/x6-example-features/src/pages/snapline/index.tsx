@@ -1,10 +1,7 @@
 import React from 'react'
 import { Graph } from '@antv/x6'
-import { Snapline } from '@antv/x6/es/addon/snapline'
-import { Transform } from '@antv/x6/es/addon/transform'
 import '../index.less'
 import '../../../../../packages/x6/src/addon/snapline/index.less'
-import '../../../../../packages/x6/src/addon/transform/index.less'
 
 export default class Example extends React.Component {
   private container: HTMLDivElement
@@ -14,7 +11,8 @@ export default class Example extends React.Component {
       container: this.container,
       width: 800,
       height: 600,
-      gridSize: 1,
+      grid: 1,
+      snapline: true,
     })
 
     graph.addNode({
@@ -42,18 +40,6 @@ export default class Example extends React.Component {
       width: 80,
       height: 40,
       attrs: { label: { text: 'C' } },
-    })
-
-    new Snapline({
-      graph,
-    })
-
-    graph.on('node:mouseup', ({ node }) => {
-      new Transform({
-        graph,
-        node,
-        padding: 5,
-      })
     })
   }
 

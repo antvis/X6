@@ -4,8 +4,8 @@ import { CellView } from '../view'
 import { Highlighter } from '../definition'
 import { Base } from './base'
 
-export class Highlight extends Base {
-  protected readonly highlights: KeyValue<Highlight.Cache> = {}
+export class HighlightManager extends Base {
+  protected readonly highlights: KeyValue<HighlightManager.Cache> = {}
 
   protected init() {
     this.graph.on('cell:highlight', ({ view, magnet, options }) =>
@@ -111,7 +111,7 @@ export class Highlight extends Base {
   }
 }
 
-export namespace Highlight {
+export namespace HighlightManager {
   export interface Cache {
     highlighter: Highlighter.Definition<KeyValue>
     cellView: CellView

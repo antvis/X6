@@ -4,10 +4,8 @@ import { Graph } from '../../graph'
 import { Cell, Edge, Node, Model } from '../../model'
 
 export class Clipboard {
-  protected readonly LOCAL_STORAGE_KEY = `${Config.prefixCls}.clipboard.cells`
-  protected readonly useLocalStorage: boolean
   protected options: Clipboard.Options
-  protected cells: Cell[]
+  public cells: Cell[]
 
   copy(
     cells: Cell[],
@@ -24,9 +22,8 @@ export class Clipboard {
       (cell) => (cell.isEdge() ? 2 : 1),
     )
 
-    if (options.useLocalStorage !== false && window.localStorage) {
-      const data = this.cells.map((cell) => cell.toJSON())
-      localStorage.setItem(this.LOCAL_STORAGE_KEY, JSON.stringify(data))
+    if (options.useLocalStorage !== false) {
+      Storage.save(this.cells)
     }
   }
 
@@ -44,11 +41,10 @@ export class Clipboard {
 
   paste(graph: Graph | Model, options: Clipboard.PasteOptions = {}) {
     const localOptions = { ...options, ...this.options }
-    if (localOptions.useLocalStorage && window.localStorage) {
-      const raw = localStorage.getItem(this.LOCAL_STORAGE_KEY)
-      const cells = raw ? JSON.parse(raw) : []
+    if (localOptions.useLocalStorage) {
+      const cells = Storage.fetch()
       if (cells) {
-        this.cells = Model.fromJSON(cells)
+        this.cells = cells
       }
     }
 
@@ -90,9 +86,7 @@ export class Clipboard {
   clean() {
     this.options = {}
     this.cells = []
-    if (window.localStorage) {
-      localStorage.removeItem(this.LOCAL_STORAGE_KEY)
-    }
+    Storage.clean()
   }
 }
 
@@ -123,5 +117,32 @@ export namespace Clipboard {
      * and `dy` attributes. It defaults to `{ dx: 20, dy: 20 }`.
      */
     offset?: number | { dx: number; dy: number }
+  }
+}
+
+namespace Storage {
+  const LOCAL_STORAGE_KEY = `${Config.prefixCls}.clipboard.cells`
+
+  export function save(cells: Cell[]) {
+    if (window.localStorage) {
+      const data = cells.map((cell) => cell.toJSON())
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(data))
+    }
+  }
+
+  export function fetch() {
+    if (window.localStorage) {
+      const raw = localStorage.getItem(LOCAL_STORAGE_KEY)
+      const cells = raw ? JSON.parse(raw) : []
+      if (cells) {
+        return Model.fromJSON(cells)
+      }
+    }
+  }
+
+  export function clean() {
+    if (window.localStorage) {
+      localStorage.removeItem(LOCAL_STORAGE_KEY)
+    }
   }
 }

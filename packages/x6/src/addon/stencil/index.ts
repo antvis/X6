@@ -307,7 +307,7 @@ export class Stencil extends View {
     let padding = 5
     const snaplines = this.options.snaplines
     if (snaplines != null) {
-      padding += snaplines.options.distance || 0
+      padding += snaplines.options.tolerance || 0
     }
 
     if (snaplines || this.options.scaleClones) {
@@ -451,7 +451,7 @@ export class Stencil extends View {
 
       if (snaplines) {
         if (embedding) {
-          snaplines.snapWhileMoving({
+          snaplines.snapOnMoving({
             e,
             view: cloneView!,
             x: local.x,
@@ -559,7 +559,7 @@ export class Stencil extends View {
     const blank = this.getDropArea(this.container)
 
     if (targetScroller) {
-      if (targetScroller.options.autoResizePaper) {
+      if (targetScroller.options.autoResize) {
         area = this.getDropArea(targetScroller.container)
       } else {
         const outter = this.getDropArea(targetScroller.container)

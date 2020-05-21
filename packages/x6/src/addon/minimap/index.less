@@ -1,6 +1,8 @@
-@prefix: x6;
+@import '../../style/index';
 
-.@{prefix}-widget-minimap {
+@minimap-prefix-cls: ~'@{x6-prefix}-widget-minimap';
+
+.@{minimap-prefix-cls} {
   position: relative;
   display: table-cell;
   box-sizing: border-box;
@@ -10,9 +12,9 @@
   background-color: #fff;
   user-select: none;
 
-  .@{prefix}-graph {
+  .@{x6-prefix}-graph {
     display: inline-block;
-    box-shadow: 0 0 2px lightgray;
+    box-shadow: 0 0 4px 0 #eee;
     cursor: pointer;
 
     > svg {
@@ -20,16 +22,13 @@
       shape-rendering: optimizeSpeed;
     }
 
-    .@{prefix}-node * {
+    .@{x6-prefix}-node * {
+      /* stylelint-disable-next-line */
       vector-effect: initial;
     }
   }
 
-  .@{prefix}-graph {
-    box-shadow: 0 0 2px #d3d3d3;
-  }
-
-  .viewport {
+  &-viewport {
     position: absolute;
     box-sizing: content-box;
     margin: -2px 0 0 -2px;
@@ -37,7 +36,7 @@
     cursor: move;
   }
 
-  .viewport-control {
+  &-viewport-zoom {
     position: absolute;
     right: 0;
     bottom: 0;

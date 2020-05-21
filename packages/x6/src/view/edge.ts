@@ -1811,7 +1811,6 @@ export class EdgeView<
 
   onMouseMove(e: JQuery.MouseMoveEvent, x: number, y: number) {
     const data = this.getEventData(e)
-    e.preventDefault()
     switch (data.action) {
       case 'drag-vertex':
         this.dragVertex(e, x, y)
@@ -2020,7 +2019,7 @@ export class EdgeView<
     }
 
     const container = this.container as HTMLElement
-    container.style.pointerEvents = data.pointerEvents || null
+    container.style.pointerEvents = data.pointerEvents || ''
 
     if (this.graph.options.connecting.highlight) {
       this.unhighlightAvailableMagnets(data)

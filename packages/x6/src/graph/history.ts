@@ -1,31 +1,55 @@
-import { KeyValue } from '../../types'
-import { ObjectExt } from '../../util'
-import { Disablable } from '../../common'
-import { Cell, Model } from '../../model'
-import { Graph } from '../../graph'
+import { Basecoat, IDisablable } from '../common'
+import { KeyValue } from '../types'
+import { ObjectExt } from '../util'
+import { Cell } from '../model/cell'
+import { Model } from '../model/model'
+import { Graph } from './graph'
 
-export class UndoManager extends Disablable<UndoManager.EventArgs> {
+export class HistoryManager extends Basecoat<HistoryManager.EventArgs>
+  implements IDisablable {
   public readonly model: Model
-  public readonly options: UndoManager.BaseOptions
+  public readonly options: HistoryManager.CommonOptions
+  public readonly validator: HistoryManager.Validator
 
-  protected redoStack: UndoManager.Commands[]
-  protected undoStack: UndoManager.Commands[]
-  protected batchCommands: UndoManager.Command[] | null
+  protected redoStack: HistoryManager.Commands[]
+  protected undoStack: HistoryManager.Commands[]
+
+  protected batchCommands: HistoryManager.Command[] | null
   protected batchLevel: number
-  protected lastBatchCmdIndex: number
+  protected lastBatchIndex: number
+
   protected freezed: boolean = false
-  protected readonly handlers: (<T extends UndoManager.ModelEvents>(
+  protected readonly handlers: (<T extends HistoryManager.ModelEvents>(
     event: T,
     args: Model.EventArgs[T],
   ) => any)[] = []
 
-  constructor(options: UndoManager.Options) {
+  constructor(options: HistoryManager.Options) {
     super()
-    this.model =
-      options.model instanceof Model ? options.model : options.model.model
-    this.options = Private.getOptions(options)
+    this.model = options.graph.model
+    this.options = Util.getOptions(options)
+    this.validator = new HistoryManager.Validator({
+      history: this,
+      cancelInvalid: this.options.cancelInvalid,
+    })
     this.clean()
     this.startListening()
+  }
+
+  get disabled() {
+    return this.options.enabled !== true
+  }
+
+  enable() {
+    if (this.disabled) {
+      this.options.enabled = true
+    }
+  }
+
+  disable() {
+    if (!this.disabled) {
+      this.options.enabled = false
+    }
   }
 
   undo(options: KeyValue = {}) {
@@ -54,7 +78,7 @@ export class UndoManager extends Disablable<UndoManager.EventArgs> {
 
   /**
    * Same as `undo()` but does not store the undo-ed command to the
-   * redoStack. Canceled command therefore cannot be redo-ed.
+   * `redoStack`. Canceled command therefore cannot be redo-ed.
    */
   cancel(options: KeyValue = {}) {
     if (!this.disabled) {
@@ -83,8 +107,17 @@ export class UndoManager extends Disablable<UndoManager.EventArgs> {
     return !this.disabled && this.redoStack.length > 0
   }
 
-  @Disablable.dispose()
+  validate(
+    events: string | string[],
+    ...callbacks: HistoryManager.Validator.Callback[]
+  ) {
+    this.validator.validate(events, ...callbacks)
+    return this
+  }
+
+  @Basecoat.dispose()
   dispose() {
+    this.validator.dispose()
     this.clean()
     this.stopListening()
   }
@@ -92,38 +125,46 @@ export class UndoManager extends Disablable<UndoManager.EventArgs> {
   protected startListening() {
     this.model.on('batch:start', this.initBatchCommand, this)
     this.model.on('batch:stop', this.storeBatchCommand, this)
-    this.options.eventNames.forEach((name, index) => {
-      this.handlers[index] = this.addCommand.bind(this, name)
-      this.model.on(name, this.handlers[index])
-    })
+    if (this.options.eventNames) {
+      this.options.eventNames.forEach((name, index) => {
+        this.handlers[index] = this.addCommand.bind(this, name)
+        this.model.on(name, this.handlers[index])
+      })
+    }
+
+    this.validator.on('invalid', (args) => this.trigger('invalid', args))
   }
 
   protected stopListening() {
     this.model.off('batch:start', this.initBatchCommand, this)
     this.model.off('batch:stop', this.storeBatchCommand, this)
-    this.options.eventNames.forEach((name, index) => {
-      this.model.off(name, this.handlers[index])
-    })
-    this.handlers.length = 0
+    if (this.options.eventNames) {
+      this.options.eventNames.forEach((name, index) => {
+        this.model.off(name, this.handlers[index])
+      })
+      this.handlers.length = 0
+    }
+    this.validator.off('invalid')
   }
 
-  protected createCommand(options?: { batch: boolean }): UndoManager.Command {
+  protected createCommand(options?: {
+    batch: boolean
+  }): HistoryManager.Command {
     return {
       batch: options ? options.batch : false,
-      data: {} as UndoManager.CreationData,
+      data: {} as HistoryManager.CreationData,
     }
   }
 
-  protected revertCommand(cmd: UndoManager.Commands, options?: KeyValue) {
+  protected revertCommand(cmd: HistoryManager.Commands, options?: KeyValue) {
     this.freezed = true
 
-    const cmds = Array.isArray(cmd) ? Private.sortBatchCommands(cmd) : [cmd]
+    const cmds = Array.isArray(cmd) ? Util.sortBatchCommands(cmd) : [cmd]
     for (let i = cmds.length - 1; i >= 0; i -= 1) {
       const cmd = cmds[i]
       const localOptions = {
-        undoManager: this,
         ...options,
-        ...ObjectExt.pick(cmd.options, this.options.revertOptionsList),
+        ...ObjectExt.pick(cmd.options, this.options.revertOptionsList || []),
       }
       this.executeCommand(cmd, true, localOptions)
     }
@@ -131,16 +172,15 @@ export class UndoManager extends Disablable<UndoManager.EventArgs> {
     this.freezed = false
   }
 
-  protected applyCommand(cmd: UndoManager.Commands, options?: KeyValue) {
+  protected applyCommand(cmd: HistoryManager.Commands, options?: KeyValue) {
     this.freezed = true
 
-    const cmds = Array.isArray(cmd) ? Private.sortBatchCommands(cmd) : [cmd]
+    const cmds = Array.isArray(cmd) ? Util.sortBatchCommands(cmd) : [cmd]
     for (let i = 0; i < cmds.length; i += 1) {
       const cmd = cmds[i]
       const localOptions = {
-        undoManager: this,
         ...options,
-        ...ObjectExt.pick(cmd.options, this.options.applyOptionsList),
+        ...ObjectExt.pick(cmd.options, this.options.applyOptionsList || []),
       }
       this.executeCommand(cmd, false, localOptions)
     }
@@ -149,7 +189,7 @@ export class UndoManager extends Disablable<UndoManager.EventArgs> {
   }
 
   protected executeCommand(
-    cmd: UndoManager.Command,
+    cmd: HistoryManager.Command,
     revert: boolean,
     options: KeyValue,
   ) {
@@ -159,22 +199,22 @@ export class UndoManager extends Disablable<UndoManager.EventArgs> {
     const event = cmd.event
 
     if (
-      (Private.isAddEvent(event) && revert) ||
-      (Private.isRemoveEvent(event) && !revert)
+      (Util.isAddEvent(event) && revert) ||
+      (Util.isRemoveEvent(event) && !revert)
     ) {
       cell.remove(options)
     } else if (
-      (Private.isAddEvent(event) && !revert) ||
-      (Private.isRemoveEvent(event) && revert)
+      (Util.isAddEvent(event) && !revert) ||
+      (Util.isRemoveEvent(event) && revert)
     ) {
-      const data = cmd.data as UndoManager.CreationData
+      const data = cmd.data as HistoryManager.CreationData
       if (data.node) {
         model.addNode(data.props, options)
       } else if (data.edge) {
         model.addEdge(data.props, options)
       }
-    } else if (Private.isChangeEvent(event)) {
-      const data = cmd.data as UndoManager.ChangingData
+    } else if (Util.isChangeEvent(event)) {
+      const data = cmd.data as HistoryManager.ChangingData
       const key = data.key
       if (key) {
         const value = revert ? data.prev[key] : data.next[key]
@@ -182,7 +222,7 @@ export class UndoManager extends Disablable<UndoManager.EventArgs> {
       }
     } else {
       if (this.options.executeCommand) {
-        this.options.executeCommand.call(this, cmd, options, false)
+        this.options.executeCommand.call(this, cmd, revert, options)
       }
     }
   }
@@ -197,14 +237,14 @@ export class UndoManager extends Disablable<UndoManager.EventArgs> {
 
     const eventArgs = args as Model.EventArgs['cell:change:*']
     const options = eventArgs.options || {}
-    if (options.dry) {
+    if (options.dryrun) {
       return
     }
 
     if (
-      (Private.isAddEvent(event) && this.options.ignoreAdd) ||
-      (Private.isRemoveEvent(event) && this.options.ignoreRemove) ||
-      (Private.isChangeEvent(event) && this.options.ignoreChange)
+      (Util.isAddEvent(event) && this.options.ignoreAdd) ||
+      (Util.isRemoveEvent(event) && this.options.ignoreRemove) ||
+      (Util.isChangeEvent(event) && this.options.ignoreChange)
     ) {
       return
     }
@@ -223,12 +263,12 @@ export class UndoManager extends Disablable<UndoManager.EventArgs> {
 
     const cell = eventArgs.cell
     const isModelChange = cell instanceof Model
-    let cmd: UndoManager.Command
+    let cmd: HistoryManager.Command
 
     if (this.batchCommands) {
       // In most cases we are working with same object, doing
       // same action etc. translate an object piece by piece.
-      cmd = this.batchCommands[Math.max(this.lastBatchCmdIndex, 0)]
+      cmd = this.batchCommands[Math.max(this.lastBatchIndex, 0)]
 
       // Check if we are start working with new object or performing different
       // action with it. Note, that command is uninitialized when lastCmdIndex
@@ -239,7 +279,7 @@ export class UndoManager extends Disablable<UndoManager.EventArgs> {
         (isModelChange && !cmd.modelChange) || cmd.data.id !== cell.id
       const diffName = cmd.event !== event
 
-      if (this.lastBatchCmdIndex >= 0 && (diffId || diffName)) {
+      if (this.lastBatchIndex >= 0 && (diffId || diffName)) {
         // Trying to find command first, which was performing same
         // action with the object as we are doing now with cell.
         const index = this.batchCommands.findIndex(
@@ -248,31 +288,27 @@ export class UndoManager extends Disablable<UndoManager.EventArgs> {
             cmd.event === event,
         )
 
-        if (
-          index < 0 ||
-          Private.isAddEvent(event) ||
-          Private.isRemoveEvent(event)
-        ) {
+        if (index < 0 || Util.isAddEvent(event) || Util.isRemoveEvent(event)) {
           cmd = this.createCommand({ batch: true })
         } else {
           cmd = this.batchCommands[index]
           this.batchCommands.splice(index, 1)
         }
         this.batchCommands.push(cmd)
-        this.lastBatchCmdIndex = this.batchCommands.length - 1
+        this.lastBatchIndex = this.batchCommands.length - 1
       }
     } else {
       cmd = this.createCommand({ batch: false })
     }
 
     // add & remove
-    // -----------
-    if (Private.isAddEvent(event) || Private.isRemoveEvent(event)) {
-      const data = cmd.data as UndoManager.CreationData
+    // ------------
+    if (Util.isAddEvent(event) || Util.isRemoveEvent(event)) {
+      const data = cmd.data as HistoryManager.CreationData
       cmd.event = event
       cmd.options = options
       data.id = cell.id
-      data.props = ObjectExt.merge({}, cell.toJSON())
+      data.props = ObjectExt.cloneDeep(cell.toJSON())
       if (cell.isEdge()) {
         data.edge = true
       } else if (cell.isNode()) {
@@ -284,9 +320,9 @@ export class UndoManager extends Disablable<UndoManager.EventArgs> {
 
     // change:*
     // --------
-    if (Private.isChangeEvent(event)) {
+    if (Util.isChangeEvent(event)) {
       const key = (args as Model.EventArgs['cell:change:*']).key
-      const data = cmd.data as UndoManager.ChangingData
+      const data = cmd.data as HistoryManager.ChangingData
 
       if (!cmd.batch || !cmd.event) {
         // Do this only once. Set previous data and action (also
@@ -310,7 +346,6 @@ export class UndoManager extends Disablable<UndoManager.EventArgs> {
         data.next = {}
       }
       data.next[key] = ObjectExt.clone(cell.prop(key))
-
       return this.push(cmd, options)
     }
 
@@ -335,14 +370,14 @@ export class UndoManager extends Disablable<UndoManager.EventArgs> {
     } else {
       this.batchCommands = [this.createCommand({ batch: true })]
       this.batchLevel = 0
-      this.lastBatchCmdIndex = -1
+      this.lastBatchIndex = -1
     }
   }
 
   /**
-   * Calling function `storeBatchCommand()` tells the UndoManager to
-   * store all changes temporarily kept in the undoStack. In order to
-   * store changes you have to call this function as many times as
+   * Calling function `storeBatchCommand()` tells the CommandManager
+   * to store all changes temporarily kept in the undoStack. In order
+   * to store changes you have to call this function as many times as
    * `initBatchCommand()` had been called.
    */
   protected storeBatchCommand(options: KeyValue) {
@@ -354,7 +389,7 @@ export class UndoManager extends Disablable<UndoManager.EventArgs> {
         this.notify('add', cmds, options)
       }
       this.batchCommands = null
-      this.lastBatchCmdIndex = -1
+      this.lastBatchIndex = -1
       this.batchLevel = 0
     } else {
       if (this.batchCommands && this.batchLevel > 0) {
@@ -363,7 +398,7 @@ export class UndoManager extends Disablable<UndoManager.EventArgs> {
     }
   }
 
-  protected filterBatchCommand(batchCommands: UndoManager.Command[]) {
+  protected filterBatchCommand(batchCommands: HistoryManager.Command[]) {
     let cmds = batchCommands.slice()
     const result = []
 
@@ -373,25 +408,25 @@ export class UndoManager extends Disablable<UndoManager.EventArgs> {
       const id = cmd.data.id
 
       if (null != evt && (null != id || cmd.modelChange)) {
-        if (Private.isAddEvent(evt)) {
+        if (Util.isAddEvent(evt)) {
           const index = cmds.findIndex(
-            (c) => Private.isRemoveEvent(c.event) && c.data.id === id,
+            (c) => Util.isRemoveEvent(c.event) && c.data.id === id,
           )
 
           if (index >= 0) {
             cmds = cmds.filter((c, i) => index < i || c.data.id !== id)
             continue
           }
-        } else if (Private.isRemoveEvent(evt)) {
+        } else if (Util.isRemoveEvent(evt)) {
           const index = cmds.findIndex(
-            (c) => Private.isAddEvent(c.event) && c.data.id === id,
+            (c) => Util.isAddEvent(c.event) && c.data.id === id,
           )
           if (index >= 0) {
             cmds.splice(index, 1)
             continue
           }
-        } else if (Private.isChangeEvent(evt)) {
-          const data = cmd.data as UndoManager.ChangingData
+        } else if (Util.isChangeEvent(evt)) {
+          const data = cmd.data as HistoryManager.ChangingData
 
           if (ObjectExt.isEqual(data.prev, data.next)) {
             continue
@@ -407,8 +442,8 @@ export class UndoManager extends Disablable<UndoManager.EventArgs> {
   }
 
   protected notify(
-    event: keyof UndoManager.EventArgs,
-    cmd: UndoManager.Commands | null,
+    event: keyof HistoryManager.EventArgs,
+    cmd: HistoryManager.Commands | null,
     options: KeyValue,
   ) {
     const cmds = cmd == null ? null : Array.isArray(cmd) ? cmd : [cmd]
@@ -416,10 +451,10 @@ export class UndoManager extends Disablable<UndoManager.EventArgs> {
     this.emit('change', { cmds, options })
   }
 
-  protected push(cmd: UndoManager.Command, options: KeyValue) {
+  protected push(cmd: HistoryManager.Command, options: KeyValue) {
     this.redoStack = []
     if (cmd.batch) {
-      this.lastBatchCmdIndex = Math.max(this.lastBatchCmdIndex, 0)
+      this.lastBatchIndex = Math.max(this.lastBatchIndex, 0)
       this.emit('batch', { cmd, options })
     } else {
       this.undoStack.push(cmd)
@@ -428,31 +463,33 @@ export class UndoManager extends Disablable<UndoManager.EventArgs> {
   }
 }
 
-export namespace UndoManager {
+export namespace HistoryManager {
   export type ModelEvents = keyof Model.EventArgs
-  export interface BaseOptions {
+
+  export interface CommonOptions {
+    enabled?: boolean
     ignoreAdd?: boolean
     ignoreRemove?: boolean
     ignoreChange?: boolean
-    eventNames: (keyof Model.EventArgs)[]
+    eventNames?: (keyof Model.EventArgs)[]
     /**
      * A function evaluated before any command is added. If the function
      * returns `false`, the command does not get stored. This way you can
      * control which commands do not get registered for undo/redo.
      */
     beforeAddCommand?: <T extends ModelEvents>(
-      this: UndoManager,
+      this: HistoryManager,
       event: T,
       args: Model.EventArgs[T],
     ) => any
     addCommand?: <T extends ModelEvents>(
-      this: UndoManager,
+      this: HistoryManager,
       event: T,
       args: Model.EventArgs[T],
       cmd: Command,
     ) => any
     executeCommand?: (
-      this: UndoManager,
+      this: HistoryManager,
       cmd: Command,
       revert: boolean,
       options: KeyValue,
@@ -460,15 +497,19 @@ export namespace UndoManager {
     /**
      * An array of options property names that passed in undo actions.
      */
-    revertOptionsList: string[]
+    revertOptionsList?: string[]
     /**
      * An array of options property names that passed in redo actions.
      */
-    applyOptionsList: string[]
+    applyOptionsList?: string[]
+    /**
+     * Determine whether to cancel an invalid command or not.
+     */
+    cancelInvalid?: boolean
   }
 
-  export interface Options extends Partial<BaseOptions> {
-    model: Model | Graph
+  export interface Options extends Partial<CommonOptions> {
+    graph: Graph
   }
 
   interface Data {
@@ -495,15 +536,16 @@ export namespace UndoManager {
     options?: KeyValue
   }
 
-  export type Commands = UndoManager.Command[] | UndoManager.Command
+  export type Commands = HistoryManager.Command[] | HistoryManager.Command
 }
 
-export namespace UndoManager {
+export namespace HistoryManager {
   interface Args<T = never> {
     cmds: Command[] | T
     options: KeyValue
   }
-  export interface EventArgs {
+
+  export interface EventArgs extends Validator.EventArgs {
     /**
      * Triggered when a command was undone.
      */
@@ -535,36 +577,152 @@ export namespace UndoManager {
   }
 }
 
-export namespace Private {
-  export function isAddEvent(event?: UndoManager.ModelEvents) {
+export namespace HistoryManager {
+  /**
+   * Runs a set of callbacks to determine if a command is valid. This is
+   * useful for checking if a certain action in your application does
+   * lead to an invalid state of the graph.
+   */
+  export class Validator extends Basecoat<Validator.EventArgs> {
+    protected readonly command: HistoryManager
+    protected readonly cancelInvalid: boolean
+    protected readonly map: { [event: string]: Validator.Callback[][] }
+
+    constructor(options: Validator.Options) {
+      super()
+      this.map = {}
+      this.command = options.history
+      this.cancelInvalid = options.cancelInvalid !== false
+      this.command.on('add', this.onCommandAdded, this)
+    }
+
+    protected onCommandAdded({ cmds }: HistoryManager.EventArgs['add']) {
+      return Array.isArray(cmds)
+        ? cmds.every((cmd) => this.isValidCommand(cmd))
+        : this.isValidCommand(cmds)
+    }
+
+    protected isValidCommand(cmd: HistoryManager.Command) {
+      if (cmd.options && cmd.options.validation === false) {
+        return true
+      }
+
+      const callbacks = (cmd.event && this.map[cmd.event]) || []
+
+      let handoverErr: Error | null = null
+
+      callbacks.forEach((routes) => {
+        let i = 0
+
+        const rollup = (err: Error | null) => {
+          const fn = routes[i]
+          i += 1
+
+          try {
+            if (fn) {
+              fn(err, cmd, rollup)
+            } else {
+              handoverErr = err
+              return
+            }
+          } catch (err) {
+            rollup(err)
+          }
+        }
+
+        rollup(handoverErr)
+      })
+
+      if (handoverErr) {
+        if (this.cancelInvalid) {
+          this.command.cancel()
+        }
+        this.emit('invalid', { err: handoverErr })
+        return false
+      }
+
+      return true
+    }
+
+    validate(events: string | string[], ...callbacks: Validator.Callback[]) {
+      const evts = Array.isArray(events) ? events : events.split(/\s+/)
+
+      callbacks.forEach((callback) => {
+        if (typeof callback !== 'function') {
+          throw new Error(`${evts.join(' ')} requires callback functions.`)
+        }
+      })
+
+      evts.forEach((event) => {
+        if (this.map[event] == null) {
+          this.map[event] = []
+        }
+        this.map[event].push(callbacks)
+      })
+
+      return this
+    }
+
+    @Basecoat.dispose()
+    dispose() {
+      this.command.off('add', this.onCommandAdded, this)
+    }
+  }
+
+  export namespace Validator {
+    export interface Options {
+      history: HistoryManager
+      /**
+       * To cancel (= undo + delete from redo stack) a command if is not valid.
+       */
+      cancelInvalid?: boolean
+    }
+
+    export type Callback = (
+      err: Error | null,
+      cmd: HistoryManager.Command,
+      next: (err: Error | null) => any,
+    ) => any
+
+    export interface EventArgs {
+      invalid: { err: Error }
+    }
+  }
+}
+
+namespace Util {
+  export function isAddEvent(event?: HistoryManager.ModelEvents) {
     return event === 'cell:added'
   }
 
-  export function isRemoveEvent(event?: UndoManager.ModelEvents) {
+  export function isRemoveEvent(event?: HistoryManager.ModelEvents) {
     return event === 'cell:removed'
   }
 
-  export function isChangeEvent(event?: UndoManager.ModelEvents) {
+  export function isChangeEvent(event?: HistoryManager.ModelEvents) {
     return event != null && event.startsWith('cell:change:')
   }
 
   export function getOptions(
-    options: UndoManager.Options,
-  ): UndoManager.BaseOptions {
-    const { model, ...others } = options
-    const reservedNames: UndoManager.ModelEvents[] = [
+    options: HistoryManager.Options,
+  ): HistoryManager.CommonOptions {
+    const { graph, ...others } = options
+    const reservedNames: HistoryManager.ModelEvents[] = [
       'cell:added',
       'cell:removed',
       'cell:change:*',
     ]
 
-    const batchEvents: UndoManager.ModelEvents[] = ['batch:start', 'batch:stop']
+    const batchEvents: HistoryManager.ModelEvents[] = [
+      'batch:start',
+      'batch:stop',
+    ]
 
     const eventNames = options.eventNames
       ? options.eventNames.filter(
           (event) =>
             !(
-              Private.isChangeEvent(event) ||
+              Util.isChangeEvent(event) ||
               reservedNames.includes(event) ||
               batchEvents.includes(event)
             ),
@@ -579,13 +737,13 @@ export namespace Private {
     }
   }
 
-  export function sortBatchCommands(cmds: UndoManager.Command[]) {
-    const results: UndoManager.Command[] = []
+  export function sortBatchCommands(cmds: HistoryManager.Command[]) {
+    const results: HistoryManager.Command[] = []
     for (let i = 0, ii = cmds.length; i < ii; i += 1) {
       const cmd = cmds[i]
       let index: number | null = null
 
-      if (Private.isAddEvent(cmd.event)) {
+      if (Util.isAddEvent(cmd.event)) {
         const id = cmd.data.id
         for (let j = 0; j < i; j += 1) {
           if (cmds[j].data.id === id) {

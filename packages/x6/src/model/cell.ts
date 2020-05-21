@@ -935,7 +935,6 @@ export class Cell<
         if (options.deep !== false) {
           this.eachChild((child) => child.remove(options))
         }
-        console.log(this.model, this._model)
         if (this.model) {
           this.model.removeCell(this, options)
         }

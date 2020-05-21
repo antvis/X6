@@ -2,7 +2,7 @@ import { Grid as GridDefinition } from '../definition'
 import { Dom } from '../util'
 import { Base } from './base'
 
-export class Grid extends Base {
+export class GridManager extends Base {
   protected instance: GridDefinition | null
   protected patterns: GridDefinition.Definition[]
 
@@ -48,7 +48,7 @@ export class Grid extends Base {
     this.elem.style.backgroundImage = ''
   }
 
-  draw(options?: Grid.DrawGridOptions) {
+  draw(options?: GridManager.DrawGridOptions) {
     this.clear()
     this.instance = null
     this.patterns = this.resolveGrid(options)
@@ -135,7 +135,7 @@ export class Grid extends Base {
   }
 
   protected resolveGrid(
-    options?: Grid.DrawGridOptions,
+    options?: GridManager.DrawGridOptions,
   ): GridDefinition.Definition[] | never {
     if (!options) {
       return []
@@ -173,7 +173,7 @@ export class Grid extends Base {
   }
 }
 
-export namespace Grid {
+export namespace GridManager {
   export type DrawGridOptions =
     | GridDefinition.NativeItem
     | GridDefinition.ManaualItem
