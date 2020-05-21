@@ -1,8 +1,8 @@
+import { ModifierKey } from '../types'
 import { Selection } from '../addon/selection'
 import { Collection } from '../model/collection'
 import { Cell } from '../model/cell'
 import { Base } from './base'
-import { ModifierKey } from '../types'
 
 export class SelectionManager extends Base {
   public widget: Selection
@@ -131,7 +131,7 @@ export namespace SelectionManager {
   export interface Options extends Selection.CommonOptions {
     enabled?: boolean
     rubberband?: boolean
-    modifiers?: string | null
+    modifiers?: string | ModifierKey[] | null
     multiple?: boolean
   }
 }

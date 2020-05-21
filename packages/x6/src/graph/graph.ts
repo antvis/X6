@@ -14,6 +14,7 @@ import { DefsManager as Defs } from './defs'
 import { GridManager as Grid } from './grid'
 import { CoordManager as Coord } from './coord'
 import { Keyboard as Shortcut } from './keyboard'
+import { MouseWheel as Wheel } from './mousewheel'
 import { MiniMapManager as MiniMap } from './minimap'
 import { SnaplineManager as Snapline } from './snapline'
 import { ScrollerManager as Scroller } from './scroller'
@@ -42,6 +43,7 @@ export class Graph extends Basecoat<EventArgs> {
   public readonly scroller: Scroller
   public readonly minimap: MiniMap
   public readonly keyboard: Shortcut
+  public readonly mousewheel: Wheel
 
   public get container() {
     return this.view.container
@@ -70,6 +72,7 @@ export class Graph extends Basecoat<EventArgs> {
     this.scroller = this.hook.createScrollerManager()
     this.minimap = this.hook.createMiniMapManager()
     this.keyboard = this.hook.createKeyboard()
+    this.mousewheel = this.hook.createMouseWheel()
 
     this.setup()
   }
@@ -259,7 +262,7 @@ export class Graph extends Basecoat<EventArgs> {
     width?: number,
     height?: number,
   ) {
-    return this.coord.localToPaperRect(x, y, width, height)
+    return this.coord.localToGraphRect(x, y, width, height)
   }
 
   localToClientRect(rect: Rectangle.RectangleLike): Rectangle
@@ -450,6 +453,7 @@ export namespace Graph {
   export const View = GraphView
   export const Renderer = ViewRenderer
   export const Keyboard = Shortcut
+  export const MouseWheel = Wheel
   export const BaseManager = Base
   export const DefsManager = Defs
   export const GridManager = Grid

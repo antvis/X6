@@ -18,6 +18,9 @@ export default class Example extends React.Component {
         repeat: 'watermark',
         opacity: 0.1,
       },
+      mousewheel: {
+        enabled: true,
+      },
     })
 
     const rect = graph.addNode({
@@ -30,6 +33,8 @@ export default class Example extends React.Component {
     })
 
     console.log(rect)
+
+    // graph.scale(0.5, 0.5, 20, 20)
 
     graph.addNode({
       type: 'basic.circle',

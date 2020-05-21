@@ -1,6 +1,6 @@
+import { ModifierKey } from '../types'
 import { Scroller } from '../addon/scroller'
 import { Base } from './base'
-import { ModifierKey } from '../types'
 
 export class ScrollerManager extends Base {
   public widget: Scroller | null
@@ -55,6 +55,6 @@ export namespace ScrollerManager {
     /**
      * alt, ctrl, shift, meta
      */
-    modifiers?: string | null
+    modifiers?: string | ModifierKey[] | null
   }
 }
