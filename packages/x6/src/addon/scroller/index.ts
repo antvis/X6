@@ -626,18 +626,21 @@ export class Scroller extends View {
       sy = Math.max(options.min, sy)
     }
 
+    sx = this.graph.transform.clampScale(sx)
+    sy = this.graph.transform.clampScale(sy)
+
     if (options.ox == null || options.oy == null) {
       cx = center.x
       cy = center.y
     } else {
-      const zx = sx / this.sx
-      const zy = sy / this.sy
-      cx = options.ox - (options.ox - center.x) / zx
-      cy = options.oy - (options.oy - center.y) / zy
+      const fx = sx / this.sx
+      const fy = sy / this.sy
+      cx = options.ox - (options.ox - center.x) / fx
+      cy = options.oy - (options.oy - center.y) / fy
     }
 
     this.beforeManipulation()
-    this.graph.scale(sx, sy)
+    this.graph.transform.scale(sx, sy)
     this.center(cx, cy)
     this.afterManipulation()
 
@@ -835,18 +838,16 @@ export class Scroller extends View {
 
   clientToLocalPoint(p: Point.PointLike): Point
   clientToLocalPoint(x: number, y: number): Point
-  clientToLocalPoint(x: number | Point.PointLike, y?: number) {
-    if (typeof x === 'object') {
-      y = x.y // tslint:disable-line
-      x = x.x // tslint:disable-line
-    } else {
-      y = y as number // tslint:disable-line
-    }
+  clientToLocalPoint(a: number | Point.PointLike, b?: number) {
+    let x = typeof a === 'object' ? a.x : a
+    let y = typeof a === 'object' ? a.y : (b as number)
 
     const ctm = this.graph.matrix()
-    const xx = x + (this.container.scrollLeft - this.padding.left - ctm.e)
-    const yy = y + (this.container.scrollTop - this.padding.top - ctm.f)
-    return new Point(xx / ctm.a, yy / ctm.d)
+
+    x += this.container.scrollLeft - this.padding.left - ctm.e
+    y += this.container.scrollTop - this.padding.top - ctm.f
+
+    return new Point(x / ctm.a, y / ctm.d)
   }
 
   localToBackgroundPoint(p: Point.PointLike): Point
@@ -1085,8 +1086,8 @@ namespace Util {
       const top = Math.max(size.height - minHeight, 0)
       return { left, top, right: left, bottom: top }
     },
-    minVisibleWidth: 48,
-    minVisibleHeight: 48,
+    minVisibleWidth: 50,
+    minVisibleHeight: 50,
     pageVisible: true,
     pageBreak: true,
     autoResize: true,

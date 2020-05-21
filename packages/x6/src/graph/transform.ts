@@ -9,7 +9,6 @@ export class TransformManager extends Base {
   protected widgets: WeakMap<Node, Transform> = new WeakMap()
   protected viewportMatrix: DOMMatrix | null
   protected viewportTransformString: string | null
-  protected readonly MIN_SCALE: number = 1e-6
 
   protected get container() {
     return this.graph.view.container
@@ -129,16 +128,17 @@ export class TransformManager extends Base {
   }
 
   scale(sx: number, sy: number = sx, ox: number = 0, oy: number = 0) {
-    const translate = this.getTranslation()
+    sx = this.clampScale(sx) // tslint:disable-line
+    sy = this.clampScale(sy) // tslint:disable-line
 
-    if (ox || oy || translate.tx || translate.ty) {
-      const tx = translate.tx - ox * (sx - 1)
-      const ty = translate.ty - oy * (sy - 1)
-      this.translate(tx, ty)
+    if (ox || oy) {
+      const ts = this.getTranslation()
+      const tx = ts.tx - ox * (sx - 1)
+      const ty = ts.ty - oy * (sy - 1)
+      if (tx !== ts.tx || ty !== ts.ty) {
+        this.translate(tx, ty)
+      }
     }
-
-    sx = Math.max(sx || 0, this.MIN_SCALE) // tslint:disable-line
-    sy = Math.max(sy || 0, this.MIN_SCALE) // tslint:disable-line
 
     const matrix = this.getMatrix()
     matrix.a = sx
@@ -147,6 +147,11 @@ export class TransformManager extends Base {
     this.setMatrix(matrix)
     this.graph.trigger('scale', { sx, sy, ox, oy })
     return this
+  }
+
+  clampScale(scale: number) {
+    const range = this.graph.options.scaling
+    return NumberExt.clamp(scale, range.min || 0.01, range.max || 16)
   }
 
   getRotation() {

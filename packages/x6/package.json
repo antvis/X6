@@ -61,6 +61,7 @@
   "dependencies": {
     "csstype": "^2.6.9",
     "jquery": "^3.4.1",
+    "jquery-mousewheel": "^3.1.13",
     "lodash-es": "^4.17.15",
     "mousetrap": "^1.6.3",
     "utility-types": "^3.10.0"
@@ -70,6 +71,7 @@
     "@babel/preset-env": "^7.9.6",
     "@types/jest": "^25.2.1",
     "@types/jquery": "^3.3.31",
+    "@types/jquery-mousewheel": "^3.1.8",
     "@types/lodash-es": "^4.17.3",
     "@types/node": "^14.0.1",
     "@types/sinon": "^9.0.0",

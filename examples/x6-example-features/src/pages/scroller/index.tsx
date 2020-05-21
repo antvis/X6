@@ -34,9 +34,11 @@ export default class Example extends React.Component {
         height: 200,
         padding: 10,
       },
+      mousewheel: {
+        enabled: true,
+        modifiers: ['ctrl', 'meta'],
+      },
     })
-
-    console.log(graph)
 
     this.scroller = graph.scroller.widget
 
@@ -90,18 +92,15 @@ export default class Example extends React.Component {
   }
 
   onZoomOutClick = () => {
-    this.scroller.zoom(-0.2, { min: 0.2 })
+    this.scroller.zoom(-0.2)
   }
 
   onZoomInClick = () => {
-    this.scroller.zoom(0.2, { max: 2 })
+    this.scroller.zoom(0.2)
   }
 
   onZoomToFitClick = () => {
-    this.scroller.zoomToFit({
-      minScale: 0.2,
-      maxScale: 2,
-    })
+    this.scroller.zoomToFit()
   }
 
   render() {

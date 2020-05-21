@@ -357,34 +357,7 @@ export abstract class View<EventArgs = any> extends Basecoat<EventArgs> {
   }
 
   normalizeEvent<T extends JQuery.TriggeredEvent>(evt: T) {
-    let normalizedEvent = evt
-    const originalEvent = evt.originalEvent as TouchEvent
-    const touchEvt: any =
-      originalEvent &&
-      originalEvent.changedTouches &&
-      originalEvent.changedTouches[0]
-
-    if (touchEvt) {
-      for (const key in evt) {
-        // copy all the properties from the input event that are not
-        // defined on the touch event (functions included).
-        if (touchEvt[key] === undefined) {
-          touchEvt[key] = (evt as any)[key]
-        }
-      }
-      normalizedEvent = touchEvt
-    }
-
-    // IE: evt.target could be set to SVGElementInstance for SVGUseElement
-    const target = normalizedEvent.target
-    if (target) {
-      const useElement = target.correspondingUseElement
-      if (useElement) {
-        normalizedEvent.target = useElement
-      }
-    }
-
-    return normalizedEvent
+    return View.normalizeEvent(evt)
   }
 }
 
@@ -428,6 +401,37 @@ export namespace View {
     }
 
     return { elems: [] }
+  }
+
+  export function normalizeEvent<T extends JQuery.TriggeredEvent>(evt: T) {
+    let normalizedEvent = evt
+    const originalEvent = evt.originalEvent as TouchEvent
+    const touchEvt: any =
+      originalEvent &&
+      originalEvent.changedTouches &&
+      originalEvent.changedTouches[0]
+
+    if (touchEvt) {
+      for (const key in evt) {
+        // copy all the properties from the input event that are not
+        // defined on the touch event (functions included).
+        if (touchEvt[key] === undefined) {
+          touchEvt[key] = (evt as any)[key]
+        }
+      }
+      normalizedEvent = touchEvt
+    }
+
+    // IE: evt.target could be set to SVGElementInstance for SVGUseElement
+    const target = normalizedEvent.target
+    if (target) {
+      const useElement = target.correspondingUseElement
+      if (useElement) {
+        normalizedEvent.target = useElement
+      }
+    }
+
+    return normalizedEvent
   }
 }
 
