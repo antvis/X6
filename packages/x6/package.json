@@ -34,7 +34,7 @@
     "build:cjs": "tsc --module commonjs --target es5 --outDir ./lib",
     "build:umd": "rollup -c",
     "build:less": "node ./scripts/style",
-    "build:version": "node ./scripts/make-version.js",
+    "build:version": "node ./scripts/version.js",
     "build:dev": "run-p build:less build:cjs build:esm",
     "build:watch": "yarn build:esm --w",
     "build": "run-s build:version build:dev build:umd",
