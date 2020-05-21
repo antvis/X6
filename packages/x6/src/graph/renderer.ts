@@ -13,8 +13,8 @@ export class Renderer extends Base {
    */
   public getNativeValue: <T>() => T | null
 
-  protected views: KeyValue<CellView> = {}
-  protected zPivots: KeyValue<Comment> = {}
+  protected views: KeyValue<CellView>
+  protected zPivots: KeyValue<Comment>
   protected updates: Renderer.Updates
 
   protected init() {
@@ -191,7 +191,10 @@ export class Renderer extends Base {
     }
   }
 
-  requestConnectedEdgesUpdate(view: CellView, options: any = {}) {
+  requestConnectedEdgesUpdate(
+    view: CellView,
+    options: Renderer.RequestViewUpdateOptions = {},
+  ) {
     if (view instanceof CellView) {
       const cell = view.cell
       const edges = this.model.getConnectedEdges(cell)
@@ -261,7 +264,7 @@ export class Renderer extends Base {
     view: View,
     flag: number,
     priority: number,
-    options: any = {},
+    options: Renderer.RequestViewUpdateOptions = {},
   ) {
     const cid = view.cid
     const updates = this.updates
@@ -294,7 +297,7 @@ export class Renderer extends Base {
 
     cache[cid] |= flag
 
-    this.graph.hook.onViewUpdated(view as any, flag, options)
+    this.graph.hook.onViewUpdated(view as CellView, flag, options)
   }
 
   requestViewUpdate(
@@ -471,11 +474,10 @@ export class Renderer extends Base {
           // update has not finished
           cache[cid] = leftoverFlag
           if (
-            !this.graph.hook.onViewPostponed.call(
-              this.graph,
-              view,
+            !this.graph.hook.onViewPostponed(
+              view as CellView,
               leftoverFlag,
-              this.graph,
+              options,
             ) ||
             cache[cid]
           ) {
@@ -983,6 +985,10 @@ export class Renderer extends Base {
   }
 
   protected addZPivot(zIndex: number = 0) {
+    if (this.zPivots == null) {
+      this.zPivots = {}
+    }
+
     const pivots = this.zPivots
     let pivot = pivots[zIndex]
     if (pivot) {
@@ -1012,12 +1018,14 @@ export class Renderer extends Base {
   }
 
   protected removeZPivots() {
-    Object.keys(this.zPivots).forEach((z) => {
-      const elem = this.zPivots[z]
-      if (elem && elem.parentNode) {
-        elem.parentNode.removeChild(elem)
-      }
-    })
+    if (this.zPivots) {
+      Object.keys(this.zPivots).forEach((z) => {
+        const elem = this.zPivots[z]
+        if (elem && elem.parentNode) {
+          elem.parentNode.removeChild(elem)
+        }
+      })
+    }
     this.zPivots = {}
   }
 

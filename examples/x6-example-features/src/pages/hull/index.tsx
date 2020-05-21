@@ -15,12 +15,14 @@ export default class Example extends React.Component {
       container: this.container,
       width: 800,
       height: 600,
-      gridSize: 1,
-      restrictTranslate: {
-        x: 50,
-        y: 50,
-        width: 700,
-        height: 500,
+      grid: 1,
+      translating: {
+        restrict: {
+          x: 50,
+          y: 50,
+          width: 700,
+          height: 500,
+        },
       },
     })
 

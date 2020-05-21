@@ -133,7 +133,7 @@ export class GraphView extends View {
   }
 
   protected onContextMenu(e: JQuery.ContextMenuEvent) {
-    if (this.options.preventContextMenu) {
+    if (this.options.preventDefaultContextMenu) {
       e.preventDefault()
     }
 
@@ -439,7 +439,7 @@ export class GraphView extends View {
   }
 
   protected onMagnetContextMenu(e: JQuery.ContextMenuEvent) {
-    if (this.options.preventContextMenu) {
+    if (this.options.preventDefaultContextMenu) {
       e.preventDefault()
     }
     this.handleMagnetEvent(e, (view, e, magnet, x, y) => {

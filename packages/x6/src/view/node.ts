@@ -9,7 +9,7 @@ import { Graph } from '../graph'
 import { CellView } from './cell'
 import { EdgeView } from './edge'
 import { Markup } from './markup'
-import { CellViewAttr } from './attr'
+import { AttrManager } from './attr'
 
 export class NodeView<
   Entity extends Node = Node,
@@ -476,7 +476,7 @@ export class NodeView<
       const portLayout = metric.portLayout
       this.applyPortTransform(cached.portElement, portLayout)
       if (metric.portAttrs != null) {
-        const options: Partial<CellViewAttr.UpdateAttrsOptions> = {
+        const options: Partial<AttrManager.UpdateOptions> = {
           selectors: cached.portSelectors || {},
         }
 
@@ -496,7 +496,7 @@ export class NodeView<
         )
 
         if (labelLayout.attrs) {
-          const options: Partial<CellViewAttr.UpdateAttrsOptions> = {
+          const options: Partial<AttrManager.UpdateOptions> = {
             selectors: cached.portLabelSelectors || {},
           }
 

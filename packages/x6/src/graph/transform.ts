@@ -1,9 +1,12 @@
 import { Dom, NumberExt } from '../util'
-import { Rectangle, Point } from '../geometry'
+import { Rectangle } from '../geometry'
+import { Transform } from '../addon/transform'
+import { Node } from '../model/node'
 import { NodeView } from '../view'
 import { Base } from './base'
 
-export class Transform extends Base {
+export class TransformManager extends Base {
+  protected widgets: WeakMap<Node, Transform> = new WeakMap()
   protected viewportMatrix: DOMMatrix | null
   protected viewportTransformString: string | null
   protected readonly MIN_SCALE: number = 1e-6
@@ -16,8 +19,46 @@ export class Transform extends Base {
     return this.graph.view.viewport
   }
 
+  protected get isSelectionEnabled() {
+    return this.options.selecting.enabled === true
+  }
+
   protected init() {
+    this.setup()
     this.resize()
+  }
+
+  protected setup() {
+    this.graph.on('node:mouseup', ({ node }) => {
+      if (!this.isSelectionEnabled) {
+        const widget = this.graph.hook.createTransform(node, { clearAll: true })
+        if (widget) {
+          this.widgets.set(node, widget)
+        }
+      }
+    })
+
+    this.graph.on('node:selected', ({ node }) => {
+      console.log(node)
+      if (this.isSelectionEnabled) {
+        const widget = this.graph.hook.createTransform(node, {
+          clearAll: false,
+        })
+        if (widget) {
+          this.widgets.set(node, widget)
+        }
+      }
+    })
+
+    this.graph.on('node:unselected', ({ node }) => {
+      if (this.isSelectionEnabled) {
+        const widget = this.widgets.get(node)
+        if (widget) {
+          widget.dispose()
+        }
+        this.widgets.delete(node)
+      }
+    })
   }
 
   /**
@@ -138,11 +179,11 @@ export class Transform extends Base {
 
     this.setMatrix(matrix)
 
-    const ret = this.getTranslation()
+    const ts = this.getTranslation()
     const origin = this.options
-    origin.x = ret.tx
-    origin.y = ret.ty
-    this.graph.trigger('translate', { origin })
+    origin.x = ts.tx
+    origin.y = ts.ty
+    this.graph.trigger('translate', { origin: { x: ts.tx, y: ts.ty } })
     return this
   }
 
@@ -151,10 +192,10 @@ export class Transform extends Base {
   }
 
   fitToContent(
-    gridWidth?: number | Transform.FitToContentFullOptions,
+    gridWidth?: number | TransformManager.FitToContentFullOptions,
     gridHeight?: number,
     padding?: NumberExt.SideOptions,
-    options?: Transform.FitToContentOptions,
+    options?: TransformManager.FitToContentOptions,
   ) {
     if (typeof gridWidth === 'object') {
       const opts = gridWidth
@@ -242,16 +283,16 @@ export class Transform extends Base {
     return new Rectangle(-tx / sx, -ty / sy, width / sx, height / sy)
   }
 
-  scaleContentToFit(options: Transform.ScaleContentToFitOptions = {}) {
+  scaleContentToFit(options: TransformManager.ScaleContentToFitOptions = {}) {
     let contentBBox
-    let contentLocalOrigin
+    // let contentLocalOrigin
     if (options.contentArea) {
       const contentArea = options.contentArea
       contentBBox = this.graph.localToGraphRect(contentArea)
-      contentLocalOrigin = Point.create(contentArea)
+      // contentLocalOrigin = Point.create(contentArea)
     } else {
       contentBBox = this.getContentBBox(options)
-      contentLocalOrigin = this.graph.graphToLocalPoint(contentBBox)
+      // contentLocalOrigin = this.graph.graphToLocalPoint(contentBBox)
     }
 
     if (!contentBBox.width || !contentBBox.height) {
@@ -292,9 +333,8 @@ export class Transform extends Base {
     }
 
     // snap scale to a grid
-    if (options.gridSize) {
-      const gridSize = options.gridSize
-
+    const gridSize = options.gridSize
+    if (gridSize) {
       newSx = gridSize * Math.floor(newSx / gridSize)
       newSy = gridSize * Math.floor(newSy / gridSize)
     }
@@ -303,15 +343,15 @@ export class Transform extends Base {
     newSx = Math.min(maxScaleX, Math.max(minScaleX, newSx))
     newSy = Math.min(maxScaleY, Math.max(minScaleY, newSy))
 
-    const origin = this.options
-    const newOX = fittingBBox.x - contentLocalOrigin.x * newSx - origin.x
-    const newOY = fittingBBox.y - contentLocalOrigin.y * newSy - origin.y
+    // const origin = this.options
+    // const newOX = fittingBBox.x - contentLocalOrigin.x * newSx - origin.x
+    // const newOY = fittingBBox.y - contentLocalOrigin.y * newSy - origin.y
 
     this.scale(newSx, newSy)
-    this.translate(newOX, newOY)
+    // this.translate(newOX, newOY)
   }
 
-  getContentArea(options: Transform.GetContentAreaOptions = {}) {
+  getContentArea(options: TransformManager.GetContentAreaOptions = {}) {
     if (options.useModelGeometry) {
       return this.model.getBBox() || new Rectangle()
     }
@@ -319,7 +359,7 @@ export class Transform extends Base {
     return Dom.getBBox(this.graph.view.stage)
   }
 
-  getContentBBox(options: Transform.GetContentAreaOptions = {}) {
+  getContentBBox(options: TransformManager.GetContentAreaOptions = {}) {
     return this.graph.localToGraphRect(this.getContentArea(options))
   }
 
@@ -329,25 +369,22 @@ export class Transform extends Base {
   }
 
   getRestrictedArea(view?: NodeView) {
-    const restrictTranslate = this.options.restrictTranslate as any
-    let restrictedArea: Rectangle.RectangleLike | null
+    const restrict = this.options.translating.restrict
+    let area: Rectangle.RectangleLike | null
 
-    if (typeof restrictTranslate === 'function') {
-      // A method returning a bounding box
-      restrictedArea = restrictTranslate.apply(this, arguments)
-    } else if (restrictTranslate === true) {
-      // The paper area
-      restrictedArea = this.getArea()
+    if (typeof restrict === 'function') {
+      area = restrict.call(this.graph, view)
+    } else if (restrict === true) {
+      area = this.getArea()
     } else {
-      // Either false or a bounding box
-      restrictedArea = restrictTranslate || null
+      area = restrict || null
     }
 
-    return restrictedArea
+    return area
   }
 }
 
-export namespace Transform {
+export namespace TransformManager {
   export interface FitToContentOptions extends GetContentAreaOptions {
     minWidth?: number
     minHeight?: number

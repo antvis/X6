@@ -1,8 +1,6 @@
 import React from 'react'
 import { Button } from 'antd'
 import { Graph } from '@antv/x6'
-import { Scroller } from '@antv/x6/es/addon/scroller'
-import { MiniMap } from '@antv/x6/es/addon/minimap'
 import '../index.less'
 import './index.less'
 import '../../../../../packages/x6/src/addon/scroller/index.less'
@@ -11,33 +9,36 @@ import '../../../../../packages/x6/src/addon/minimap/index.less'
 export default class Example extends React.Component {
   private graphContainer: HTMLDivElement
   private minimapContainer: HTMLDivElement
-  private scroller: Scroller
+  private scroller: any
 
   componentDidMount() {
     const graph = new Graph({
       container: this.graphContainer,
       width: 800,
       height: 800,
-      gridSize: 1,
+      grid: {
+        visible: true,
+      },
+      scroller: {
+        enabled: true,
+        width: 600,
+        height: 400,
+        pageVisible: true,
+        pageBreak: false,
+        panning: true,
+      },
+      minimap: {
+        enabled: true,
+        container: this.minimapContainer,
+        width: 300,
+        height: 200,
+        padding: 10,
+      },
     })
 
-    const parentElem = this.graphContainer.parentElement!
+    console.log(graph)
 
-    const scroller = (this.scroller = new Scroller({
-      graph,
-      autoResizePaper: true,
-      padding: 50,
-      cursor: 'grab',
-    }))
-
-    graph.on('blank:mousedown', ({ e }) => scroller.startPanning(e))
-
-    scroller.$container.css({
-      width: 400,
-      height: 300,
-    })
-
-    parentElem.appendChild(scroller.container)
+    this.scroller = graph.scroller.widget
 
     const rect = graph.addNode({
       type: 'rect',
@@ -69,16 +70,7 @@ export default class Example extends React.Component {
       target: circle,
     })
 
-    scroller.center()
-
-    new MiniMap({
-      scroller,
-      container: this.minimapContainer,
-      width: 300,
-      height: 200,
-      padding: 10,
-      zoom: { max: 2, min: 0.2 },
-    })
+    this.scroller.center()
   }
 
   refContainer = (container: HTMLDivElement) => {
@@ -129,7 +121,7 @@ export default class Example extends React.Component {
             position: 'absolute',
             right: '50%',
             top: 40,
-            marginRight: -540,
+            marginRight: -720,
             width: 300,
             height: 200,
             boxShadow: '0 0 10px 1px #e9e9e9',

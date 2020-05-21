@@ -1,3 +1,4 @@
+export * from './marker'
 export * from './node-anchor'
 export * from './edge-anchor'
 export * from './connection-point'

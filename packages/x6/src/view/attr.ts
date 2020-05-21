@@ -6,21 +6,21 @@ import { View } from './view'
 import { Markup } from './markup'
 import { CellView } from './cell'
 
-export class CellViewAttr {
+export class AttrManager {
   constructor(protected view: CellView) {}
 
-  get cell() {
+  protected get cell() {
     return this.view.cell
   }
 
-  getAttrDefinition(attrName: string): Attr.Definition | null {
+  protected getDefinition(attrName: string): Attr.Definition | null {
     return this.cell.getAttrDefinition(attrName)
   }
 
-  processAttrs(
+  protected processAttrs(
     elem: Element,
     raw: Attr.ComplexAttrs,
-  ): CellViewAttr.ProcessedAttrs {
+  ): AttrManager.ProcessedAttrs {
     let normal: Attr.SimpleAttrs | undefined
     let set: Attr.ComplexAttrs | undefined
     let offset: Attr.ComplexAttrs | undefined
@@ -32,7 +32,7 @@ export class CellViewAttr {
     // divide the attributes between normal and special
     Object.keys(raw).forEach((name) => {
       const val = raw[name]
-      const definition = this.getAttrDefinition(name)
+      const definition = this.getDefinition(name)
       const isValid = Attr.isValidDefinition.call(this.view, definition, val, {
         elem,
         attrs: raw,
@@ -94,9 +94,9 @@ export class CellViewAttr {
     }
   }
 
-  mergeProcessedAttrs(
-    allProcessedAttrs: CellViewAttr.ProcessedAttrs,
-    roProcessedAttrs: CellViewAttr.ProcessedAttrs,
+  protected mergeProcessedAttrs(
+    allProcessedAttrs: AttrManager.ProcessedAttrs,
+    roProcessedAttrs: AttrManager.ProcessedAttrs,
   ) {
     allProcessedAttrs.set = {
       ...allProcessedAttrs.set,
@@ -122,7 +122,7 @@ export class CellViewAttr {
     allProcessedAttrs.normal = roProcessedAttrs.normal
   }
 
-  findAttrs(
+  protected findAttrs(
     cellAttrs: Attr.CellAttrs,
     rootNode: Element,
     selectorCache: { [selector: string]: Element[] },
@@ -209,11 +209,11 @@ export class CellViewAttr {
     >
   }
 
-  updateRelativeAttrs(
+  protected updateRelativeAttrs(
     elem: Element,
-    processedAttrs: CellViewAttr.ProcessedAttrs,
+    processedAttrs: AttrManager.ProcessedAttrs,
     refBBox: Rectangle,
-    options: CellViewAttr.UpdateAttrsOptions,
+    options: AttrManager.UpdateOptions,
   ) {
     const rawAttrs = processedAttrs.raw || {}
     let nodeAttrs = processedAttrs.normal || {}
@@ -231,7 +231,7 @@ export class CellViewAttr {
     if (setAttrs != null) {
       Object.keys(setAttrs).forEach((name) => {
         const val = setAttrs[name]
-        const def = this.getAttrDefinition(name)
+        const def = this.getDefinition(name)
         if (def != null) {
           const ret = (def as Attr.SetDefinition).set.call(
             this.view,
@@ -285,7 +285,7 @@ export class CellViewAttr {
     if (positionAttrs != null) {
       Object.keys(positionAttrs).forEach((name) => {
         const val = positionAttrs[name]
-        const def = this.getAttrDefinition(name)
+        const def = this.getDefinition(name)
         if (def != null) {
           const ts = (def as Attr.PositionDefinition).position(
             val,
@@ -316,7 +316,7 @@ export class CellViewAttr {
 
         Object.keys(offsetAttrs).forEach((name) => {
           const val = offsetAttrs[name]
-          const def = this.getAttrDefinition(name)
+          const def = this.getDefinition(name)
           if (def != null) {
             const ts = (def as Attr.OffsetDefinition).offset.call(
               this.view,
@@ -350,7 +350,7 @@ export class CellViewAttr {
   update(
     rootNode: Element,
     attrs: Attr.CellAttrs,
-    options: CellViewAttr.UpdateAttrsOptions,
+    options: AttrManager.UpdateOptions,
   ) {
     const selectorCache: { [selector: string]: Element[] } = {}
     const nodesAttrs = this.findAttrs(
@@ -370,7 +370,7 @@ export class CellViewAttr {
       node: Element
       refNode: Element | null
       attributes: Attr.ComplexAttrs | null
-      processedAttributes: CellViewAttr.ProcessedAttrs
+      processedAttributes: AttrManager.ProcessedAttrs
     }[] = []
 
     nodesAttrs.each((data) => {
@@ -490,8 +490,8 @@ export class CellViewAttr {
   }
 }
 
-export namespace CellViewAttr {
-  export interface UpdateAttrsOptions {
+export namespace AttrManager {
+  export interface UpdateOptions {
     rootBBox: Rectangle
     selectors: Markup.Selectors
     scalableNode?: Element | null

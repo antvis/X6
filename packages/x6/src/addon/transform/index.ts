@@ -95,7 +95,12 @@ export class Transform extends Widget<Transform.Options> {
         'no-orth-resize',
         this.options.preserveAspectRatio || !this.options.orthogonalResizing,
       )
+      .toggleClass('no-resize', !this.options.resizable)
       .toggleClass('no-rotation', !this.options.rotatable)
+
+    if (this.options.className) {
+      this.$container.addClass(this.options.className)
+    }
 
     this.graph.container.appendChild(this.container)
 
@@ -182,7 +187,7 @@ export class Transform extends Widget<Transform.Options> {
       'data-position',
     ) as Node.ResizeDirection
     this.prepareResizing(evt, relativeDirection)
-    this.startOp(evt)
+    this.startAction(evt)
   }
 
   protected prepareResizing(
@@ -230,7 +235,7 @@ export class Transform extends Widget<Transform.Options> {
       angle: Angle.normalize(this.node.getRotation()),
       start: Point.create(client).theta(center),
     })
-    this.startOp(evt)
+    this.startAction(evt)
   }
 
   protected onMouseMove(evt: JQuery.MouseMoveEvent) {
@@ -373,7 +378,7 @@ export class Transform extends Widget<Transform.Options> {
   protected onMouseUp(evt: JQuery.MouseUpEvent) {
     const data = this.getEventData<EventData.Resizing | EventData.Rotating>(evt)
     if (data.action) {
-      this.stopOp()
+      this.stopAction(evt)
       this.model.stopBatch(Private.BATCH_NAME, { cid: this.cid })
     }
   }
@@ -410,17 +415,31 @@ export class Transform extends Widget<Transform.Options> {
     }
   }
 
-  protected startOp(evt: JQuery.MouseDownEvent) {
+  protected startAction(evt: JQuery.MouseDownEvent) {
     const elem = evt.target
     this.startHandle(elem)
     this.graph.view.undelegateEvents()
     this.delegateDocumentEvents(Private.documentEvents, evt.data)
+
+    // const data = this.getEventData<EventData.Resizing | EventData.Rotating>(evt)
+    // if (data.action === 'resizing') {
+    //   this.node.notify('node:resize', { node: this.node })
+    // } else if (data.action === 'rotating') {
+    //   this.node.notify('node:rotate', { node: this.node })
+    // }
   }
 
-  protected stopOp() {
+  protected stopAction(evt: JQuery.MouseUpEvent) {
     this.stopHandle()
     this.undelegateDocumentEvents()
     this.graph.view.delegateEvents()
+
+    // const data = this.getEventData<EventData.Resizing | EventData.Rotating>(evt)
+    // if (data.action === 'resizing') {
+    //   this.node.notify('node:resized', { node: this.node })
+    // } else if (data.action === 'rotating') {
+    //   this.node.notify('node:rotated', { node: this.node })
+    // }
   }
 }
 
@@ -428,10 +447,13 @@ export namespace Transform {
   export type Direction = 'nw' | 'n' | 'ne' | 'e' | 'se' | 's' | 'sw' | 'w'
 
   export interface Options extends Widget.Options {
+    className?: string
+
     minWidth?: number
     maxWidth?: number
     minHeight?: number
     maxHeight?: number
+    resizable?: boolean
 
     rotatable?: boolean
     rotateGrid?: number

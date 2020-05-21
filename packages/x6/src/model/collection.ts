@@ -157,11 +157,16 @@ export class Collection extends Basecoat<Collection.EventArgs> {
       removed.push(cell)
       this.unreference(cell)
 
-      cell.remove()
+      if (!options.dryrun) {
+        cell.remove()
+      }
 
       if (!options.silent) {
         this.trigger('removed', { cell, index, options })
-        cell.notify('removed', { cell, index, options })
+
+        if (!options.dryrun) {
+          cell.notify('removed', { cell, index, options })
+        }
       }
     }
 
@@ -185,7 +190,7 @@ export class Collection extends Basecoat<Collection.EventArgs> {
       const removed: Cell[] = []
 
       current.forEach((a) => {
-        const exist = previous.every((b) => b.id === a.id)
+        const exist = previous.some((b) => b.id === a.id)
         if (!exist) {
           added.push(a)
         }
@@ -454,6 +459,16 @@ export namespace Collection {
       Cell.EventArgs['change:portContainerMarkup']
     'node:ports:added': NodeEventCommonArgs & Cell.EventArgs['ports:added']
     'node:ports:removed': NodeEventCommonArgs & Cell.EventArgs['ports:removed']
+
+    // 'node:translate': NodeEventCommonArgs
+    // 'node:translating': NodeEventCommonArgs
+    // 'node:translated': NodeEventCommonArgs
+    // 'node:resize': NodeEventCommonArgs
+    // 'node:resizing': NodeEventCommonArgs
+    // 'node:resized': NodeEventCommonArgs
+    // 'node:rotate': NodeEventCommonArgs
+    // 'node:rotating': NodeEventCommonArgs
+    // 'node:rotated': NodeEventCommonArgs
   }
 
   export interface EdgeEventArgs {

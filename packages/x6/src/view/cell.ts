@@ -10,7 +10,7 @@ import { Graph } from '../graph'
 import { View } from './view'
 import { Flag } from './flag'
 import { Cache } from './cache'
-import { CellViewAttr } from './attr'
+import { AttrManager } from './attr'
 import { Markup } from './markup'
 import { EdgeView } from './edge'
 import { NodeView } from './node'
@@ -87,7 +87,7 @@ export class CellView<
   protected selectors: Markup.Selectors
   protected readonly options: Options
   protected readonly flag: Flag
-  protected readonly attr: CellViewAttr
+  protected readonly attr: AttrManager
   protected readonly cache: Cache
 
   public scalableNode: Element | null
@@ -98,7 +98,7 @@ export class CellView<
 
     this.cell = cell
     this.options = this.ensureOptions(options)
-    this.attr = new CellViewAttr(this)
+    this.attr = new AttrManager(this)
     this.flag = new Flag(this, this.options.actions, this.options.bootstrap)
     this.cache = new Cache(this)
 
@@ -409,7 +409,7 @@ export class CellView<
   updateAttrs(
     rootNode: Element,
     attrs: Attr.CellAttrs,
-    options: Partial<CellViewAttr.UpdateAttrsOptions> = {},
+    options: Partial<AttrManager.UpdateOptions> = {},
   ) {
     if (options.rootBBox == null) {
       options.rootBBox = new Rectangle()
@@ -419,11 +419,7 @@ export class CellView<
       options.selectors = this.selectors
     }
 
-    this.attr.update(
-      rootNode,
-      attrs,
-      options as CellViewAttr.UpdateAttrsOptions,
-    )
+    this.attr.update(rootNode, attrs, options as AttrManager.UpdateOptions)
   }
 
   isEdgeElement(magnet?: Element | null) {

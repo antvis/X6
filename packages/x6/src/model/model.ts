@@ -121,7 +121,7 @@ export class Model extends Basecoat<Model.EventArgs> {
   }
 
   protected prepareCell(cell: Cell, options: Collection.AddOptions) {
-    if (!cell.model && (!options || !options.dry)) {
+    if (!cell.model && (!options || !options.dryrun)) {
       // A cell can not be member of more than one graph.
       // A cell stops being the member of the graph after it's removed.
       cell.model = this

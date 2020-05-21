@@ -1,6 +1,5 @@
 import React from 'react'
 import { Graph } from '@antv/x6'
-import { Selection } from '@antv/x6/es/addon/selection'
 import '../index.less'
 import '../../../../../packages/x6/src/addon/selection/index.less'
 
@@ -12,7 +11,17 @@ export default class Example extends React.Component {
       container: this.container,
       width: 800,
       height: 600,
-      gridSize: 1,
+      grid: 10,
+      resizing: {
+        enabled: true,
+      },
+      // rotating: {
+      //   enabled: true,
+      // },
+      selecting: {
+        enabled: true,
+        rubberband: true,
+      },
     })
 
     graph.addNode({
@@ -40,22 +49,6 @@ export default class Example extends React.Component {
       width: 100,
       height: 40,
       attrs: { label: { text: 'C' } },
-    })
-
-    const selection = new Selection({ graph })
-
-    graph.on('blank:mousedown', ({ e }) => selection.startSelecting(e))
-
-    graph.on('node:mouseup', ({ e, cell }) => {
-      if (e.ctrlKey || e.metaKey) {
-        selection.collection.add(cell)
-      }
-    })
-
-    selection.on('selection-box:mousedown', ({ view, e }) => {
-      if (e.ctrlKey || e.metaKey) {
-        selection.collection.remove(view.cell)
-      }
     })
   }
 

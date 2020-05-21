@@ -1,70 +1,93 @@
+import { KeyValue } from '../../types'
+import { CellView } from '../../view'
+import { Marker } from '../../connection'
 import { ObjectExt, JSONObject } from '../../util'
 import { Attr } from './index'
 
+function qualify(value: any) {
+  return typeof value === 'string' || ObjectExt.isPlainObject(value)
+}
+
 export const sourceMarker: Attr.Definition = {
-  qualify: ObjectExt.isPlainObject,
-  set(marker, { view, attrs }) {
-    const options = {
-      ...contextMarker(attrs),
-      ...(marker as JSONObject),
-    }
-    return {
-      'marker-start': `url(#${view.graph.defineMarker(options as any)})`,
-    }
+  qualify,
+  set(marker: string | JSONObject, { view, attrs }) {
+    return createMarker('marker-start', marker, view, attrs)
   },
 }
 
 export const targetMarker: Attr.Definition = {
-  qualify: ObjectExt.isPlainObject,
-  set(marker, { view, attrs }) {
-    const options = {
-      ...contextMarker(attrs),
+  qualify,
+  set(marker: string | JSONObject, { view, attrs }) {
+    return createMarker('marker-end', marker, view, attrs, {
       transform: 'rotate(180)',
-      ...(marker as JSONObject),
-    }
-
-    return { 'marker-end': `url(#${view.graph.defineMarker(options)})` }
+    })
   },
 }
 
 export const vertexMarker: Attr.Definition = {
-  qualify: ObjectExt.isPlainObject,
-  set(marker, { view, attrs }) {
-    const options = {
-      ...contextMarker(attrs),
-      ...(marker as JSONObject),
-    }
-    return {
-      'marker-mid': `url(#${view.graph.defineMarker(options as any)})`,
-    }
+  qualify,
+  set(marker: string | JSONObject, { view, attrs }) {
+    return createMarker('marker-mid', marker, view, attrs)
   },
 }
 
-function contextMarker(context: Attr.ComplexAttrs) {
-  const marker: Attr.SimpleAttrs = {}
+function createMarker(
+  key: 'marker-start' | 'marker-end' | 'marker-mid',
+  marker: string | JSONObject,
+  view: CellView,
+  attrs: Attr.ComplexAttrs,
+  manual: Attr.SimpleAttrs = {},
+) {
+  const def = typeof marker === 'string' ? { name: marker } : marker
+  const { name, args, ...others } = def
+  let preset = others
+
+  if (name && typeof name === 'string') {
+    const fn = Marker.registry.get(name)
+    if (fn) {
+      preset = fn((args as KeyValue) || {})
+    } else {
+      return Marker.registry.onNotFound(name)
+    }
+  }
+
+  const options: any = {
+    ...normalizeAttr(attrs),
+    ...manual,
+    ...others,
+    ...preset,
+  }
+
+  return {
+    [key]: `url(#${view.graph.defineMarker(options)})`,
+  }
+}
+
+function normalizeAttr(attr: Attr.ComplexAttrs) {
+  const result: Attr.SimpleAttrs = {}
 
   // The context 'fill' is disregared here. The usual case is to use the
   // marker with a connection(for which 'fill' attribute is set to 'none').
-  const stroke = context.stroke
+  const stroke = attr.stroke
   if (typeof stroke === 'string') {
-    marker['stroke'] = stroke
-    marker['fill'] = stroke
+    result['stroke'] = stroke
+    result['fill'] = stroke
   }
 
   // Again the context 'fill-opacity' is ignored.
-  let strokeOpacity = context.strokeOpacity
+  let strokeOpacity = attr.strokeOpacity
   if (strokeOpacity == null) {
-    strokeOpacity = context['stroke-opacity']
+    strokeOpacity = attr['stroke-opacity']
   }
 
   if (strokeOpacity == null) {
-    strokeOpacity = context.opacity
+    strokeOpacity = attr.opacity
   }
 
   if (strokeOpacity != null) {
-    marker['stroke-opacity'] = strokeOpacity as number
-    marker['fill-opacity'] = strokeOpacity as number
+    result['stroke-opacity'] = strokeOpacity as number
+    result['fill-opacity'] = strokeOpacity as number
   }
 
-  return marker
+  return result
 }

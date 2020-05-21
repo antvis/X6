@@ -6,20 +6,20 @@
 
 .@{x6-prefix}-graph {
   position: relative;
-}
 
-.@{x6-prefix}-graph-background,
-.@{x6-prefix}-graph-grid,
-.@{x6-prefix}-graph-svg {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-}
+  &-background,
+  &-grid,
+  &-svg {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
 
-.@{x6-prefix}-graph-draw-pane {
-  user-select: none;
+    &-stage {
+      user-select: none;
+    }
+  }
 }
 
 .@{x6-prefix}-node {
@@ -154,3 +154,10 @@
 .@{x6-prefix}-highlight-opacity {
   opacity: 0.3;
 }
+
+// widgets
+@import './addon/minimap/index';
+@import './addon/scroller/index';
+@import './addon/snapline/index';
+@import './addon/selection/index';
+@import './addon/transform/index';

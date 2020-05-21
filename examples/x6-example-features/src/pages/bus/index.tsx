@@ -15,17 +15,22 @@ export default class Example extends React.Component {
       async: true,
       frozen: true,
       sorting: 'approx',
-      restrictTranslate: true,
-      defaultConnectionPoint: {
-        name: 'boundary',
-        args: { selector: 'body' },
+      translating: {
+        restrict: true,
       },
-      defaultAnchor: {
-        name: 'orth',
+      connecting: {
+        connectionPoint: {
+          name: 'boundary',
+          args: { selector: 'body' },
+        },
+        anchor: {
+          name: 'orth',
+        },
+        edgeAnchor: {
+          name: 'orth',
+        },
       },
-      defaultLinkAnchor: {
-        name: 'orth',
-      },
+
       interactive: {
         linkMove: false,
         labelMove: false,

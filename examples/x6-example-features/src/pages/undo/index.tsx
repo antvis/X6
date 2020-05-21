@@ -1,7 +1,6 @@
 import React from 'react'
 import { Button } from 'antd'
 import { Graph } from '@antv/x6'
-import { UndoManager } from '@antv/x6/es/addon'
 import '../index.less'
 
 export default class Example extends React.Component<
@@ -9,7 +8,7 @@ export default class Example extends React.Component<
   Example.State
 > {
   private container: HTMLDivElement
-  private undoManager: UndoManager
+  private history: Graph.CommandManager
 
   state: Example.State = {
     canRedo: false,
@@ -21,7 +20,8 @@ export default class Example extends React.Component<
       container: this.container,
       width: 800,
       height: 600,
-      gridSize: 1,
+      grid: 1,
+      history: true,
     })
 
     graph.addNode({
@@ -42,21 +42,21 @@ export default class Example extends React.Component<
       },
     })
 
-    this.undoManager = new UndoManager({ model: graph })
-    this.undoManager.on('change', () => {
+    this.history = graph.history
+    this.history.on('change', () => {
       this.setState({
-        canRedo: this.undoManager.canRedo(),
-        canUndo: this.undoManager.canUndo(),
+        canRedo: this.history.canRedo(),
+        canUndo: this.history.canUndo(),
       })
     })
   }
 
   onUndo = () => {
-    this.undoManager.undo()
+    this.history.undo()
   }
 
   onRedo = () => {
-    this.undoManager.redo()
+    this.history.redo()
   }
 
   refContainer = (container: HTMLDivElement) => {

@@ -8,8 +8,8 @@ import { Renderer } from '../../graph/renderer'
 import { Handle } from '../common'
 
 export class Selection extends View<Selection.EventArgs> {
-  public readonly options: Selection.Options
-  public readonly collection: Collection
+  protected readonly options: Selection.Options
+  protected readonly collection: Collection
 
   protected $container: JQuery<HTMLElement>
   protected $selectionContainer: JQuery<HTMLElement>
@@ -108,43 +108,37 @@ export class Selection extends View<Selection.EventArgs> {
   }
 
   isEmpty() {
-    return this.getSelectedCellCount() <= 0
+    return this.length <= 0
   }
 
-  isCellSelected(cell: Cell | string) {
+  isSelected(cell: Cell | string) {
     return this.collection.has(cell)
   }
 
-  getSelectedCellCount() {
+  get length() {
     return this.collection.length
   }
 
-  getSelectedCells() {
+  get cells() {
     return this.collection.toArray()
   }
 
-  selectCell(cell: Cell, options: Collection.AddOptions) {
-    this.collection.add(cell, options)
-    return this
-  }
-
-  selectCells(cells: Cell | Cell[], options: Collection.AddOptions) {
+  select(cells: Cell | Cell[], options: Collection.AddOptions = {}) {
     this.collection.add(cells, options)
     return this
   }
 
-  unselectCell(cell: Cell, options: Collection.RemoveOptions) {
-    this.collection.remove(cell, options)
-    return this
-  }
-
-  unselectCells(cells: Cell | Cell[], options: Collection.RemoveOptions) {
+  unselect(cells: Cell | Cell[], options: Collection.RemoveOptions = {}) {
+    // dryrun to prevent cell be removed from graph
+    options.dryrun = true
     this.collection.remove(Array.isArray(cells) ? cells : [cells], options)
     return this
   }
 
-  clearSelection() {
-    this.collection.reset([], { ui: true })
+  clean() {
+    if (this.length) {
+      this.collection.reset([], { ui: true })
+    }
     return this
   }
 
@@ -152,7 +146,7 @@ export class Selection extends View<Selection.EventArgs> {
     // Flow: startSelecting => adjustSelection => stopSelecting
 
     evt = this.normalizeEvent(evt) // tslint:disable-line
-    this.clearSelection()
+    this.clean()
     let x
     let y
     const graphContainer = this.graph.container
@@ -214,7 +208,7 @@ export class Selection extends View<Selection.EventArgs> {
           )
         } else {
           if (typeof filter === 'function') {
-            views = views.filter((view) => !filter(view.cell as Node))
+            views = views.filter((view) => !filter.call(this.graph, view.cell))
           }
         }
         const cells = views.map((view) => view.cell)
@@ -225,13 +219,13 @@ export class Selection extends View<Selection.EventArgs> {
       case 'translating': {
         this.graph.model.stopBatch('selection-translate')
         const client = graph.snapToGrid(evt.clientX, evt.clientY)
-        this.notifyBoxEvent('selection-box:mouseup', evt, client.x, client.y)
+        this.notifyBoxEvent('box:mouseup', evt, client.x, client.y)
         break
       }
 
       default: {
         if (!action) {
-          this.clearSelection()
+          this.clean()
         }
       }
     }
@@ -248,7 +242,7 @@ export class Selection extends View<Selection.EventArgs> {
     const activeView = this.getCellViewFromElem(evt.target)!
     this.setEventData<EventData.SelectionBox>(evt, { activeView })
     const client = this.graph.snapToGrid(evt.clientX, evt.clientY)
-    this.notifyBoxEvent('selection-box:mousedown', evt, client.x, client.y)
+    this.notifyBoxEvent('box:mousedown', evt, client.x, client.y)
     this.delegateDocumentEvents(Private.documentEvents, evt.data)
   }
 
@@ -314,6 +308,7 @@ export class Selection extends View<Selection.EventArgs> {
             dy = maxDy
           }
         }
+
         if (dx || dy) {
           if ((this.translateSelectedNodes(dx, dy), this.boxesUpdated)) {
             if (this.collection.length > 1) {
@@ -330,7 +325,7 @@ export class Selection extends View<Selection.EventArgs> {
           data.clientY = client.y
         }
 
-        this.notifyBoxEvent('selection-box:mousemove', evt, client.x, client.y)
+        this.notifyBoxEvent('box:mousemove', evt, client.x, client.y)
         break
       }
 
@@ -384,7 +379,7 @@ export class Selection extends View<Selection.EventArgs> {
   >(name: K, e: T, x: number, y: number) {
     const data = this.getEventData<EventData.SelectionBox>(e)
     const view = data.activeView
-    this.trigger(name, { e, view, x, y })
+    this.trigger(name, { e, view, x, y, cell: view.cell })
   }
 
   protected destroySelectionBox(cell: Cell) {
@@ -647,7 +642,7 @@ export class Selection extends View<Selection.EventArgs> {
       added,
       removed,
       options,
-      selected: this.getSelectedCells(),
+      selected: this.cells,
     }
     this.trigger('selection:changed', args)
     this.graph.trigger('selection:changed', args)
@@ -655,7 +650,7 @@ export class Selection extends View<Selection.EventArgs> {
 
   protected removeSelectedCells() {
     const cells = this.collection.toArray()
-    this.clearSelection()
+    this.clean()
     this.graph.model.removeCells(cells, {
       selection: this.cid,
     })
@@ -682,12 +677,17 @@ export class Selection extends View<Selection.EventArgs> {
 
   protected doRotate({ e }: Handle.EventArgs) {
     const data = this.getEventData<EventData.Rotation>(e)
-    const grid = this.options.rotateGrid!
+    const grid = this.graph.options.rotating.grid
+    const gridSize = typeof grid === 'function' ? grid.call(this.graph) : grid
     const client = this.graph.snapToGrid(e.clientX!, e.clientY!)
     const delta = data.start - client.theta(data.center)
+
     if (Math.abs(delta) > 0.001) {
       this.collection.toArray().forEach((node: Node) => {
-        const angle = Util.snapToGrid(data.angles[node.id] + delta, grid)
+        const angle = Util.snapToGrid(
+          data.angles[node.id] + delta,
+          gridSize || 15,
+        )
         node.rotate(angle, true, data.center, {
           selection: this.cid,
         })
@@ -742,24 +742,27 @@ export class Selection extends View<Selection.EventArgs> {
 }
 
 export namespace Selection {
-  export interface Options {
-    graph: Graph
+  export interface CommonOptions {
     model?: Model
     collection?: Collection
     className?: string
     strict?: boolean
     movable?: boolean
     useCellGeometry?: boolean
-    rotateGrid?: number
     handles?: Handle.Options[] | null
     content?:
+      | null
       | false
       | string
       | ((this: Selection, contentElement: HTMLElement) => string)
-    filter?: (string | Cell)[] | filterFunction
+    filter?: null | (string | Cell)[] | FilterFunction
   }
 
-  export type filterFunction = (node: Node) => boolean
+  export interface Options extends CommonOptions {
+    graph: Graph
+  }
+
+  export type FilterFunction = (this: Graph, cell: Cell) => boolean
 }
 
 export namespace Selection {
@@ -772,9 +775,9 @@ export namespace Selection {
   }
 
   export interface BoxEventArgs {
-    'selection-box:mousedown': SelectionBoxEventArgs<JQuery.MouseDownEvent>
-    'selection-box:mousemove': SelectionBoxEventArgs<JQuery.MouseMoveEvent>
-    'selection-box:mouseup': SelectionBoxEventArgs<JQuery.MouseUpEvent>
+    'box:mousedown': SelectionBoxEventArgs<JQuery.MouseDownEvent>
+    'box:mousemove': SelectionBoxEventArgs<JQuery.MouseMoveEvent>
+    'box:mouseup': SelectionBoxEventArgs<JQuery.MouseUpEvent>
   }
 
   export interface SelectionEventArgs {
@@ -825,12 +828,11 @@ namespace Private {
     movable: true,
     strict: false,
     useCellGeometry: false,
-    rotateGrid: 15,
     content() {
       return StringExt.template(
         '<%= length %> node<%= length > 1 ? "s":"" %> selected.',
       )({
-        length: this.collection.length,
+        length: this.length,
       })
     },
     handles: [

@@ -1,10 +1,14 @@
 import { ObjectExt } from '../util'
 import { Rectangle } from '../geometry'
-import { Background as BackgroundDefinition } from '../definition'
+import { Background } from '../definition'
 import { Base } from './base'
 
-export class Background extends Base {
-  protected optionCache: Background.Options | null
+export class BackgroundManager extends Base {
+  protected optionCache: BackgroundManager.Options | null
+
+  protected get container() {
+    return this.view.container
+  }
 
   protected get elem() {
     return this.view.background
@@ -19,7 +23,7 @@ export class Background extends Base {
     }
   }
 
-  protected updateBackgroundImage(options: Background.Options = {}) {
+  protected updateBackgroundImage(options: BackgroundManager.Options = {}) {
     let backgroundSize = options.size || 'auto auto'
     let backgroundPosition = options.position || 'center'
 
@@ -50,7 +54,7 @@ export class Background extends Base {
 
   protected drawBackgroundImage(
     img?: HTMLImageElement | null,
-    options: Background.Options = {},
+    options: BackgroundManager.Options = {},
   ) {
     if (!(img instanceof HTMLImageElement)) {
       this.elem.style.backgroundImage = ''
@@ -62,9 +66,9 @@ export class Background extends Base {
     const backgroundSize = options.size
     let backgroundRepeat = options.repeat || 'no-repeat'
 
-    const pattern = BackgroundDefinition.registry.get(backgroundRepeat)
+    const pattern = Background.registry.get(backgroundRepeat)
     if (typeof pattern === 'function') {
-      const quality = (options as BackgroundDefinition.ManaualItem).quality || 1
+      const quality = (options as Background.ManaualItem).quality || 1
       img.width *= quality
       img.height *= quality
       const canvas = pattern(img, options)
@@ -114,7 +118,7 @@ export class Background extends Base {
   }
 
   protected updateBackgroundColor(color?: string | null) {
-    this.view.container.style.backgroundColor = color || ''
+    this.container.style.backgroundColor = color || ''
   }
 
   update() {
@@ -123,7 +127,7 @@ export class Background extends Base {
     }
   }
 
-  draw(options: Background.Options = {}) {
+  draw(options: BackgroundManager.Options = {}) {
     this.updateBackgroundColor(options.color)
 
     if (options.image) {
@@ -150,9 +154,9 @@ export class Background extends Base {
   }
 }
 
-export namespace Background {
+export namespace BackgroundManager {
   export type Options =
-    | BackgroundDefinition.Options
-    | BackgroundDefinition.NativeItem
-    | BackgroundDefinition.ManaualItem
+    | Background.Options
+    | Background.NativeItem
+    | Background.ManaualItem
 }

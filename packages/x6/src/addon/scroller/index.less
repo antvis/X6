@@ -1,6 +1,8 @@
-@prefix: x6;
+@import '../../style/index';
 
-.@{prefix}-graph-scroller {
+@scroller-prefix-cls: ~'@{x6-prefix}-graph-scroller';
+
+.@{scroller-prefix-cls} {
   position: relative;
   box-sizing: border-box;
   overflow: scroll;
@@ -8,7 +10,19 @@
   cursor: -moz-grabbing;
   cursor: -webkit-grabbing;
 
-  .@{prefix}-graph {
+  &-content {
+    position: relative;
+  }
+
+  &-background {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+  }
+
+  .@{x6-prefix}-graph {
     position: relative;
     display: inline-block;
     margin: 0;
@@ -16,5 +30,41 @@
     > svg {
       display: block;
     }
+  }
+
+  &-paged {
+    .@{x6-prefix}-graph {
+      box-shadow: 0 0 4px 0 #eee;
+    }
+  }
+
+  &-panning {
+    user-select: none;
+  }
+}
+
+.@{x6-prefix}-graph-pagebreak {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+
+  &-vertical {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    box-sizing: border-box;
+    width: 1px;
+    border-left: 1px dashed #bdbdbd;
+  }
+
+  &-horizontal {
+    position: absolute;
+    right: 0;
+    left: 0;
+    box-sizing: border-box;
+    height: 1px;
+    border-top: 1px dashed #bdbdbd;
   }
 }

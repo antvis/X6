@@ -1,26 +1,29 @@
 import { ArrayExt } from '../../util'
+import { IDisablable } from '../../common'
 import { Point, Rectangle, Angle } from '../../geometry'
-import { Cell, Node, Model } from '../../model'
-import { View, CellView, NodeView } from '../../view'
+import { Cell } from '../../model/cell'
+import { Node } from '../../model/node'
+import { Model } from '../../model/model'
+import { View } from '../../view/view'
+import { CellView } from '../../view/cell'
+import { NodeView } from '../../view/node'
 import { Graph } from '../../graph'
 import { EventArgs } from '../../graph/events'
 
-export class Snapline extends View {
+export class Snapline extends View implements IDisablable {
   public readonly options: Snapline.Options
+  protected readonly graph: Graph
   protected filterTypes: { [type: string]: boolean }
   protected filterCells: { [id: string]: boolean }
   protected filterFunction: Snapline.filterFunction | null
   protected offset: Point.PointLike
+  protected timer: number | null
 
   protected $container: JQuery<HTMLElement>
   protected $horizontal: JQuery<HTMLElement>
   protected $vertical: JQuery<HTMLElement>
 
-  get graph() {
-    return this.options.graph
-  }
-
-  get model() {
+  protected get model() {
     return this.graph.model
   }
 
@@ -36,12 +39,40 @@ export class Snapline extends View {
     return `${this.containerClassName}-horizontal`
   }
 
-  constructor(options: Snapline.Options) {
+  constructor(options: Snapline.Options & { graph: Graph }) {
     super()
-    this.options = { distance: 10, ...options }
+
+    const { graph, ...others } = options
+    this.graph = graph
+    this.options = { tolerance: 10, ...others }
     this.render()
-    this.startListening()
-    this.prepareFilters()
+    this.parseFilters()
+    if (!this.disabled) {
+      this.startListening()
+    }
+  }
+
+  public get disabled() {
+    return (
+      this.options.enabled !== true ||
+      this.graph.options.snapline.enabled !== true
+    )
+  }
+
+  enable() {
+    if (this.disabled) {
+      this.options.enabled = true
+      this.graph.options.snapline.enabled = true
+      this.startListening()
+    }
+  }
+
+  disable() {
+    if (!this.disabled) {
+      this.options.enabled = false
+      this.graph.options.snapline.enabled = false
+      this.stopListening()
+    }
   }
 
   protected render() {
@@ -58,13 +89,16 @@ export class Snapline extends View {
       .hide()
       .addClass(this.containerClassName)
       .append([this.$horizontal, this.$vertical])
-      .appendTo(this.graph.container)
+
+    if (this.options.className) {
+      this.$container.addClass(this.options.className)
+    }
   }
 
   protected startListening() {
     this.stopListening()
     this.graph.on('node:mousedown', this.captureCursorOffset, this)
-    this.graph.on('node:mousemove', this.snapWhileMoving, this)
+    this.graph.on('node:mousemove', this.snapOnMoving, this)
     this.model.on('batch:stop', this.onBatchStop, this)
     this.delegateDocumentEvents({
       mouseup: 'hide',
@@ -74,12 +108,12 @@ export class Snapline extends View {
 
   protected stopListening() {
     this.graph.off('node:mousedown', this.captureCursorOffset, this)
-    this.graph.off('node:mousemove', this.snapWhileMoving, this)
+    this.graph.off('node:mousemove', this.snapOnMoving, this)
     this.model.off('batch:stop', this.onBatchStop, this)
     this.undelegateDocumentEvents()
   }
 
-  protected prepareFilters() {
+  protected parseFilters() {
     this.filterTypes = {}
     this.filterCells = {}
     this.filterFunction = null
@@ -101,13 +135,13 @@ export class Snapline extends View {
 
   protected onBatchStop({ name, data }: Model.EventArgs['batch:stop']) {
     if ('resize' === name) {
-      this.snapWhileResizing(data.cell, data as Node.ResizeOptions)
+      this.snapOnResizing(data.cell, data as Node.ResizeOptions)
     }
   }
 
   captureCursorOffset({ view, x, y }: EventArgs['node:mousedown']) {
     const targetView = view.getDelegatedView()
-    if (targetView && this.canElementMove(targetView)) {
+    if (targetView && this.isNodeMovable(targetView)) {
       const pos = view.cell.getPosition()
       this.offset = {
         x: x - pos.x,
@@ -116,13 +150,13 @@ export class Snapline extends View {
     }
   }
 
-  protected canElementMove(view: CellView) {
+  protected isNodeMovable(view: CellView) {
     return view && view.cell.isNode() && view.can('elementMove')
   }
 
-  protected snapWhileResizing(node: Node, options: Node.ResizeOptions) {
+  protected snapOnResizing(node: Node, options: Node.ResizeOptions) {
     if (
-      this.options.snapOnResizing &&
+      this.options.resizing &&
       !options.snapped &&
       options.ui &&
       options.direction &&
@@ -135,7 +169,7 @@ export class Snapline extends View {
         const nodeTopLeft = nodeBBoxRotated.getTopLeft()
         const nodeBottomRight = nodeBBoxRotated.getBottomRight()
         const rotation = Angle.normalize(node.getRotation())
-        const distance = this.options.distance || 0
+        const tolerance = this.options.tolerance || 0
         let verticalLeft: number | undefined
         let verticalTop: number | undefined
         let verticalHeight: number | undefined
@@ -189,7 +223,7 @@ export class Snapline extends View {
                 position: value,
                 distance: Math.abs(value - snapOrigin[key]),
               }))
-              .filter((item) => item.distance <= distance)
+              .filter((item) => item.distance <= tolerance)
 
             distances[key] = ArrayExt.sortBy(list, (item) => item.distance)
           })
@@ -359,7 +393,7 @@ export class Snapline extends View {
           horizontalTop = undefined
         }
 
-        this.show({
+        this.update({
           verticalLeft,
           verticalTop,
           verticalHeight,
@@ -371,9 +405,9 @@ export class Snapline extends View {
     }
   }
 
-  snapWhileMoving({ view, e, x, y }: EventArgs['node:mousemove']) {
+  snapOnMoving({ view, e, x, y }: EventArgs['node:mousemove']) {
     const targetView: NodeView = view.getEventData(e).delegatedView || view
-    if (!this.canElementMove(targetView)) {
+    if (!this.isNodeMovable(targetView)) {
       return
     }
 
@@ -392,7 +426,7 @@ export class Snapline extends View {
     const nodeTopLeft = nodeBBoxRotated.getTopLeft()
     const nodeBottomRight = nodeBBoxRotated.getBottomRight()
 
-    const distance = this.options.distance || 0
+    const distance = this.options.tolerance || 0
     let verticalLeft: number | undefined
     let verticalTop: number | undefined
     let verticalHeight: number | undefined
@@ -495,7 +529,7 @@ export class Snapline extends View {
         }
       }
 
-      this.show({
+      this.update({
         verticalLeft,
         verticalTop,
         verticalHeight,
@@ -512,11 +546,11 @@ export class Snapline extends View {
       targetNode.isDescendantOf(snapNode) ||
       this.filterTypes[targetNode.type] ||
       this.filterCells[targetNode.id] ||
-      (this.filterFunction && this.filterFunction(targetNode))
+      (this.filterFunction && this.filterFunction.call(this.graph, targetNode))
     )
   }
 
-  protected show(metadata: {
+  protected update(metadata: {
     verticalLeft?: number
     verticalTop?: number
     verticalHeight?: number
@@ -530,13 +564,13 @@ export class Snapline extends View {
     const tx = ctm.e
     const ty = ctm.f
 
-    const truncated = this.options.truncated
+    const sharp = this.options.sharp
     if (metadata.horizontalTop) {
       this.$horizontal
         .css({
           top: metadata.horizontalTop * sy + ty,
-          left: truncated ? metadata.horizontalLeft! * sx + tx : 0,
-          width: truncated ? metadata.horizontalWidth! * sx : '100%',
+          left: sharp ? metadata.horizontalLeft! * sx + tx : 0,
+          width: sharp ? metadata.horizontalWidth! * sx : '100%',
         })
         .show()
     } else {
@@ -547,30 +581,71 @@ export class Snapline extends View {
       this.$vertical
         .css({
           left: metadata.verticalLeft * sx + tx,
-          top: truncated ? metadata.verticalTop! * sy + ty : 0,
-          height: truncated ? metadata.verticalHeight! * sy : '100%',
+          top: sharp ? metadata.verticalTop! * sy + ty : 0,
+          height: sharp ? metadata.verticalHeight! * sy : '100%',
         })
         .show()
     } else {
       this.$vertical.hide()
     }
 
+    this.show()
+  }
+
+  protected resetTimer() {
+    if (this.timer) {
+      clearTimeout(this.timer)
+      this.timer = null
+    }
+  }
+
+  show() {
     this.$container.show()
+    this.resetTimer()
+    if (this.container.parentNode == null) {
+      this.graph.container.appendChild(this.container)
+    }
+    return this
   }
 
   hide() {
     this.$container.hide()
+    this.resetTimer()
+    const clean = this.options.clean
+    const delay = typeof clean === 'number' ? clean : clean !== false ? 3000 : 0
+    if (delay > 0) {
+      this.timer = window.setTimeout(() => {
+        this.unmount()
+      }, delay)
+    }
+
+    return this
+  }
+
+  protected onRemove() {
+    this.stopListening()
+    this.hide()
+  }
+
+  @View.dispose()
+  dispose() {
+    this.remove()
   }
 }
 
 export namespace Snapline {
   export interface Options {
-    graph: Graph
-    truncated?: boolean
-    snapOnResizing?: boolean
-    distance?: number
+    enabled?: boolean
+    className?: string
+    tolerance?: number
+    sharp?: boolean
+    /**
+     * Specify if snap on node resizing or not.
+     */
+    resizing?: boolean
+    clean?: boolean | number
     filter?: (string | Cell)[] | filterFunction
   }
 
-  export type filterFunction = (node: Node) => boolean
+  export type filterFunction = (this: Graph, node: Node) => boolean
 }

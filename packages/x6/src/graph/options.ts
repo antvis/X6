@@ -1,172 +1,31 @@
 import { Util } from '../global'
-import { Nilable } from '../types'
 import { ObjectExt } from '../util'
-import { Cell, Edge, Model } from '../model'
+import { Rectangle } from '../geometry'
+import { Nilable, KeyValue } from '../types'
+import { Cell, Edge, Node, Model } from '../model'
 import { CellView, NodeView, EdgeView } from '../view'
 import {
   Router,
-  NodeConnectionAnchor,
-  EdgeConnectionAnchor,
   Connector,
   ConnectionPoint,
   ConnectionStrategy,
+  NodeConnectionAnchor,
+  EdgeConnectionAnchor,
 } from '../connection'
+import { Widget } from '../addon/common'
 import { Hook } from './hook'
-import { Grid } from './grid'
 import { Graph } from './graph'
 import { GraphView } from './view'
-import { Highlight } from './highlight'
-import { Background } from './background'
-
-export namespace Options {
-  export interface Connecting {
-    /**
-     * Snap edge to the closest node/port in the given radius on dragging.
-     */
-    snap: boolean | { radius: number }
-
-    /**
-     * When set to `true` (the default), edges can be pinned to the
-     * graph meaning a source/target of a edge can be a point.
-     */
-    dangling: boolean
-
-    /**
-     * When set to `false`, an node may not have more than
-     * one edge with the same source and target node.
-     */
-    multi: boolean
-
-    /**
-     * Highlights all the available magnets or nodes when a edge is
-     * dragging(reconnecting). This gives a hint to the user to what
-     * other nodes/ports this edge can be connected. What magnets/cells
-     * are available is determined by the `validateConnection` function.
-     */
-    highlight: boolean
-
-    anchor:
-      | string
-      | NodeConnectionAnchor.NativeItem
-      | NodeConnectionAnchor.ManaualItem
-    edgeAnchor:
-      | string
-      | EdgeConnectionAnchor.NativeItem
-      | EdgeConnectionAnchor.ManaualItem
-    router: string | Router.NativeItem | Router.ManaualItem
-    connector: string | Connector.NativeItem | Connector.ManaualItem
-    connectionPoint:
-      | string
-      | ConnectionPoint.NativeItem
-      | ConnectionPoint.ManaualItem
-    strategy?:
-      | string
-      | ConnectionStrategy.NativeItem
-      | ConnectionPoint.ManaualItem
-      | null
-
-    /**
-     * Check whether to add a new edge to the graph when user clicks
-     * on an a magnet.
-     */
-    validateMagnet?: (
-      this: Graph,
-      cellView: CellView,
-      magnet: Element,
-      e: JQuery.MouseDownEvent,
-    ) => boolean
-
-    createEdge?: (
-      this: Graph,
-      sourceView: CellView,
-      sourceMagnet: Element,
-    ) => Nilable<Edge> | void
-
-    /**
-     * Custom validation on stop draggin the edge arrowhead(source/target).
-     * If the function returns `false`, the edge is either removed(edges
-     * which are created during the interaction) or reverted to the state
-     * before the interaction.
-     */
-    validateEdge?: (this: Graph, edge: Edge) => boolean
-
-    /**
-     * Check whether to allow or disallow the edge connection while an
-     * arrowhead end (source/target) being changed.
-     */
-    validateConnection: (
-      this: Graph,
-      sourceView: CellView | null | undefined,
-      sourceMagnet: Element | null | undefined,
-      targetView: CellView | null | undefined,
-      targetMagnet: Element | null | undefined,
-      terminalType: Edge.TerminalType,
-      edgeView?: EdgeView,
-    ) => boolean
-  }
-
-  export interface Embedding {
-    enabled: boolean
-
-    /**
-     * Determines the way how a cell finds a suitable parent when it's dragged
-     * over the graph. The cell with the highest z-index (visually on the top)
-     * will be chosen.
-     */
-    findParent:
-      | 'bbox'
-      | 'center'
-      | 'topLeft'
-      | 'topRight'
-      | 'bottomLeft'
-      | 'bottomRight'
-      | ((this: Graph, view: NodeView) => Cell[])
-
-    /**
-     * If enabled only the node on the very front is taken into account for the
-     * embedding. If disabled the nodes under the dragged view are tested one by
-     * one (from front to back) until a valid parent found.
-     */
-    frontOnly: boolean
-
-    /**
-     * Check whether to allow or disallow the node embedding while it's being
-     * translated. By default, all nodes can be embedded into all other nodes.
-     */
-    validate: (
-      this: Graph,
-      childView: CellView,
-      parentView: CellView,
-    ) => boolean
-  }
-
-  /**
-   * Configure which highlighter to use (and with which options) for
-   * each type of interaction.
-   */
-  export interface Highlighting {
-    /**
-     * The default highlighter to use (and options) when none is specified
-     */
-    default: Highlight.Options
-    /**
-     * When a valid edge connection can be made to an node.
-     */
-    connecting?: Highlight.Options
-    /**
-     * When a cell is dragged over another cell in embedding mode.
-     */
-    embedding?: Highlight.Options
-    /**
-     * When showing all magnets to which a valid connection can be made.
-     */
-    magnetAvailable?: Highlight.Options
-    /**
-     * When showing all nodes to which a valid connection can be made.
-     */
-    nodeAvailable?: Highlight.Options
-  }
-}
+import { GridManager } from './grid'
+import { HistoryManager } from './history'
+import { SnaplineManager } from './snapline'
+import { ScrollerManager } from './scroller'
+import { SelectionManager } from './selection'
+import { ClipboardManager } from './clipboard'
+import { HighlightManager } from './highlight'
+import { BackgroundManager } from './background'
+import { MiniMapManager } from './minimap'
+import { Keyboard } from './keyboard'
 
 export namespace Options {
   interface Common extends Partial<Hook.IHook> {
@@ -178,10 +37,7 @@ export namespace Options {
     width: number
     height: number
 
-    background: false | Background.Options
-    highlighting: Highlighting
-    embedding: Embedding
-    connecting: Connecting
+    background: false | BackgroundManager.Options
 
     /**
      * When defined as a number, it denotes the required mousemove events
@@ -279,7 +135,7 @@ export namespace Options {
     /**
      * Prevent the default context menu from being displayed.
      */
-    preventContextMenu: boolean
+    preventDefaultContextMenu: boolean
 
     /**
      * Prevents default action when an empty graph area is clicked.
@@ -290,30 +146,312 @@ export namespace Options {
      */
     preventDefaultBlankAction: boolean
 
-    /**
-     * Restrict the translation (movement) of nodes by a given bounding box.
-     * If set to `true`, the user will not be able to move nodes outside the
-     * boundary of the graph area. It's set to `false` by default.
-     */
-    restrictTranslate: boolean | ((this: Graph, cellView: CellView) => boolean)
-
     interactive: CellView.Interactive
   }
 
-  export interface Manual extends Common {
-    grid:
+  export interface ManualBooleans {
+    rotating: boolean | Partial<Rotating>
+    resizing: boolean | Partial<Resizing>
+    embedding: boolean | Partial<Embedding>
+    selecting: boolean | Partial<SelectionManager.Options>
+    snapline: boolean | Partial<SnaplineManager.Options>
+    clipboard: boolean | Partial<ClipboardManager.Options>
+    history: boolean | Partial<HistoryManager.CommonOptions>
+    scroller: boolean | Partial<ScrollerManager.Options>
+    minimap: boolean | Partial<MiniMapManager.Options>
+    keyboard: boolean | Partial<Omit<Keyboard.Options, 'graph'>>
+  }
+
+  export interface Manual extends Partial<Common>, Partial<ManualBooleans> {
+    grid?:
       | boolean
       | number
-      | (Partial<Grid.CommonOptions> & Grid.DrawGridOptions)
+      | (Partial<GridManager.CommonOptions> & GridManager.DrawGridOptions)
+    connecting?: Partial<Connecting>
+    translating?: Partial<Translating>
+    transforming?: Partial<Transforming>
+    highlighting?: Partial<Highlighting>
   }
 
   export interface Definition extends Common {
-    grid: Grid.Options
+    grid: GridManager.Options
+    connecting: Connecting
+    rotating: Rotating
+    resizing: Resizing
+    translating: Translating
+    transforming: Transforming
+    highlighting: Highlighting
+    embedding: Embedding
+    selecting: SelectionManager.Options
+    snapline: SnaplineManager.Options
+    clipboard: ClipboardManager.Options
+    history: HistoryManager.CommonOptions
+    scroller: ScrollerManager.Options
+    minimap: MiniMapManager.Options
+    keyboard: Omit<Keyboard.Options, 'graph'>
   }
 }
 
 export namespace Options {
-  const defaults: Partial<Definition> = {
+  type OptionItem<T, S> = S | ((this: Graph, arg: T) => S)
+
+  export function parseOptionGroup<
+    K extends KeyValue,
+    S extends KeyValue = KeyValue,
+    T = any
+  >(graph: Graph, arg: T, options: S): K {
+    const result: any = {}
+    Object.keys(options || {}).forEach((key) => {
+      const val = options[key]
+      result[key] = typeof val === 'function' ? val.call(graph, arg) : val
+    })
+    return result
+  }
+
+  export interface Connecting {
+    /**
+     * Snap edge to the closest node/port in the given radius on dragging.
+     */
+    snap: boolean | { radius: number }
+
+    /**
+     * When set to `true` (the default), edges can be pinned to the
+     * graph meaning a source/target of a edge can be a point.
+     */
+    dangling: boolean
+
+    /**
+     * When set to `false`, an node may not have more than
+     * one edge with the same source and target node.
+     */
+    multi: boolean
+
+    /**
+     * Highlights all the available magnets or nodes when a edge is
+     * dragging(reconnecting). This gives a hint to the user to what
+     * other nodes/ports this edge can be connected. What magnets/cells
+     * are available is determined by the `validateConnection` function.
+     */
+    highlight: boolean
+
+    anchor:
+      | string
+      | NodeConnectionAnchor.NativeItem
+      | NodeConnectionAnchor.ManaualItem
+    edgeAnchor:
+      | string
+      | EdgeConnectionAnchor.NativeItem
+      | EdgeConnectionAnchor.ManaualItem
+    router: string | Router.NativeItem | Router.ManaualItem
+    connector: string | Connector.NativeItem | Connector.ManaualItem
+    connectionPoint:
+      | string
+      | ConnectionPoint.NativeItem
+      | ConnectionPoint.ManaualItem
+    strategy?:
+      | string
+      | ConnectionStrategy.NativeItem
+      | ConnectionPoint.ManaualItem
+      | null
+
+    /**
+     * Check whether to add a new edge to the graph when user clicks
+     * on an a magnet.
+     */
+    validateMagnet?: (
+      this: Graph,
+      cellView: CellView,
+      magnet: Element,
+      e: JQuery.MouseDownEvent,
+    ) => boolean
+
+    createEdge?: (
+      this: Graph,
+      sourceView: CellView,
+      sourceMagnet: Element,
+    ) => Nilable<Edge> | void
+
+    /**
+     * Custom validation on stop draggin the edge arrowhead(source/target).
+     * If the function returns `false`, the edge is either removed(edges
+     * which are created during the interaction) or reverted to the state
+     * before the interaction.
+     */
+    validateEdge?: (this: Graph, edge: Edge) => boolean
+
+    /**
+     * Check whether to allow or disallow the edge connection while an
+     * arrowhead end (source/target) being changed.
+     */
+    validateConnection: (
+      this: Graph,
+      sourceView: CellView | null | undefined,
+      sourceMagnet: Element | null | undefined,
+      targetView: CellView | null | undefined,
+      targetMagnet: Element | null | undefined,
+      terminalType: Edge.TerminalType,
+      edgeView?: EdgeView,
+    ) => boolean
+  }
+
+  export interface TransformingRaw extends Widget.Options {}
+
+  export type Transforming = {
+    [K in keyof TransformingRaw]?: OptionItem<Node, TransformingRaw[K]>
+  }
+
+  export interface Translating {
+    /**
+     * Restrict the translation (movement) of nodes by a given bounding box.
+     * If set to `true`, the user will not be able to move nodes outside the
+     * boundary of the graph area.
+     */
+    restrict: boolean | OptionItem<CellView, Rectangle.RectangleLike>
+  }
+
+  export interface RotatingRaw {
+    enabled?: boolean
+    grid?: number
+  }
+
+  export type Rotating = {
+    [K in keyof RotatingRaw]?: OptionItem<Node, RotatingRaw[K]>
+  }
+
+  export interface ResizingRaw {
+    enabled?: boolean
+    minWidth?: number
+    maxWidth?: number
+    minHeight?: number
+    maxHeight?: number
+    orthogonal?: boolean
+    preserveAspectRatio?: boolean
+  }
+
+  export type Resizing = {
+    [K in keyof ResizingRaw]?: OptionItem<Node, ResizingRaw[K]>
+  }
+
+  export interface Embedding {
+    enabled?: boolean
+
+    /**
+     * Determines the way how a cell finds a suitable parent when it's dragged
+     * over the graph. The cell with the highest z-index (visually on the top)
+     * will be chosen.
+     */
+    findParent?:
+      | 'bbox'
+      | 'center'
+      | 'topLeft'
+      | 'topRight'
+      | 'bottomLeft'
+      | 'bottomRight'
+      | ((this: Graph, view: NodeView) => Cell[])
+
+    /**
+     * If enabled only the node on the very front is taken into account for the
+     * embedding. If disabled the nodes under the dragged view are tested one by
+     * one (from front to back) until a valid parent found.
+     */
+    frontOnly?: boolean
+
+    /**
+     * Check whether to allow or disallow the node embedding while it's being
+     * translated. By default, all nodes can be embedded into all other nodes.
+     */
+    validate: (
+      this: Graph,
+      childView: CellView,
+      parentView: CellView,
+    ) => boolean
+  }
+
+  /**
+   * Configure which highlighter to use (and with which options) for
+   * each type of interaction.
+   */
+  export interface Highlighting {
+    /**
+     * The default highlighter to use (and options) when none is specified
+     */
+    default: HighlightManager.Options
+    /**
+     * When a valid edge connection can be made to an node.
+     */
+    connecting?: HighlightManager.Options
+    /**
+     * When a cell is dragged over another cell in embedding mode.
+     */
+    embedding?: HighlightManager.Options
+    /**
+     * When showing all magnets to which a valid connection can be made.
+     */
+    magnetAvailable?: HighlightManager.Options
+    /**
+     * When showing all nodes to which a valid connection can be made.
+     */
+    nodeAvailable?: HighlightManager.Options
+  }
+}
+
+export namespace Options {
+  export function merge(options: Partial<Manual>) {
+    const {
+      grid,
+      selecting,
+      embedding,
+      snapline,
+      resizing,
+      rotating,
+      clipboard,
+      history,
+      scroller,
+      minimap,
+      ...others
+    } = options
+
+    const booleas: (keyof Options.ManualBooleans)[] = [
+      'selecting',
+      'embedding',
+      'snapline',
+      'resizing',
+      'rotating',
+      'clipboard',
+      'history',
+      'scroller',
+      'minimap',
+    ]
+
+    const result = ObjectExt.merge({}, defaults, others) as Options.Definition
+
+    const defaultGrid: GridManager.CommonOptions = { size: 10, visible: false }
+    if (typeof grid === 'number') {
+      result.grid = { size: grid, visible: false }
+    } else if (typeof grid === 'boolean') {
+      result.grid = { ...defaultGrid, visible: grid }
+    } else {
+      result.grid = { ...defaultGrid, ...grid }
+    }
+
+    booleas.forEach((key) => {
+      const val = options[key]
+      if (typeof val === 'boolean') {
+        result[key].enabled = val
+      } else {
+        result[key] = {
+          ...result[key],
+          ...(val as any),
+        }
+      }
+    })
+
+    return result
+  }
+}
+
+export namespace Options {
+  export const defaults: Partial<Definition> = {
     x: 0,
     y: 0,
     grid: {
@@ -321,12 +459,6 @@ export namespace Options {
       visible: false,
     },
     background: false,
-    embedding: {
-      enabled: false,
-      findParent: 'bbox',
-      frontOnly: true,
-      validate: () => true,
-    },
     highlighting: {
       default: {
         name: 'stroke',
@@ -373,38 +505,72 @@ export namespace Options {
         return view instanceof NodeView
       },
     },
+    transforming: {
+      clearAll: true,
+      clearOnBlankMouseDown: true,
+    },
+    resizing: {
+      enabled: false,
+      minWidth: 0,
+      minHeight: 0,
+      maxWidth: Number.MAX_SAFE_INTEGER,
+      maxHeight: Number.MAX_SAFE_INTEGER,
+      orthogonal: true,
+      preserveAspectRatio: false,
+    },
+    rotating: {
+      enabled: false,
+      grid: 15,
+    },
+    translating: {
+      restrict: false,
+    },
+    embedding: {
+      enabled: false,
+      findParent: 'bbox',
+      frontOnly: true,
+      validate: () => true,
+    },
+    selecting: {
+      enabled: false,
+      rubberband: false,
+      multiple: true,
+      movable: true,
+      strict: false,
+      useCellGeometry: false,
+      content: null,
+      handles: null,
+    },
+    snapline: {
+      enabled: false,
+    },
+    clipboard: {
+      enabled: false,
+    },
+    history: {
+      enabled: false,
+    },
+    scroller: {
+      enabled: false,
+    },
+    keyboard: {
+      enabled: false,
+    },
 
     guard: () => false,
-
-    preventContextMenu: true,
-    preventDefaultBlankAction: true,
-    restrictTranslate: false,
 
     interactive: {
       labelMove: false,
     },
 
-    clickThreshold: 0,
-    moveThreshold: 0,
-    magnetThreshold: 0,
-
     async: false,
     frozen: false,
     sorting: 'exact',
-  }
 
-  export function merge(options: Partial<Manual>) {
-    const { grid, ...others } = options
-    const defaultGrid: Grid.CommonOptions = { size: 10, visible: false }
-    const result = ObjectExt.merge({}, defaults, others) as Definition
-    if (typeof grid === 'number') {
-      result.grid = { size: grid, visible: false }
-    } else if (typeof grid === 'boolean') {
-      result.grid = { ...defaultGrid, visible: grid }
-    } else {
-      result.grid = { ...defaultGrid, ...grid }
-    }
-
-    return result
+    moveThreshold: 0,
+    clickThreshold: 0,
+    magnetThreshold: 0,
+    preventDefaultContextMenu: true,
+    preventDefaultBlankAction: true,
   }
 }

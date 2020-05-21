@@ -2,7 +2,7 @@ import { Base } from './base'
 import { Dom } from '../util'
 import { Point, Rectangle } from '../geometry'
 
-export class Coord extends Base {
+export class CoordManager extends Base {
   getClientMatrix() {
     return Dom.createSVGMatrix(this.view.stage.getScreenCTM())
   }

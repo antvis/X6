@@ -503,17 +503,11 @@ export class EdgeView<
       })
     }
 
-    this.updateDefaultConnectionPath()
+    this.updateConnectionPath()
     this.updateLabelPositions()
     this.updateToolsPosition()
     this.updateArrowheadMarkers()
     this.updateTools(options)
-
-    // *Deprecated*
-    // Local perpendicular flag (as opposed to one defined on paper).
-    // Could be enabled inside a connector/router. It's valid only
-    // during the update execution.
-    this.options.perpendicular = false
 
     return this
   }
@@ -541,7 +535,7 @@ export class EdgeView<
     return rawCount - simplifiedCount
   }
 
-  updateDefaultConnectionPath() {
+  updateConnectionPath() {
     const containers = this.containers
     if (containers.connection) {
       const pathData = this.getConnectionPathData()
@@ -637,15 +631,15 @@ export class EdgeView<
     } else {
       const vertices = edge.getVertices()
 
-      // 1. find anchor points
+      // 1. Find anchor points
       const anchors = this.findAnchorPoints(vertices)
       this.sourceAnchor = anchors.source
       this.targetAnchor = anchors.target
 
-      // 2. find route points
+      // 2. Find route points
       this.routePoints = this.findRoutePoints(vertices)
 
-      // 3. find connection points
+      // 3. Find connection points
       const connectionPoints = this.findConnectionPoints(
         this.routePoints,
         this.sourceAnchor,
@@ -654,14 +648,14 @@ export class EdgeView<
       this.sourcePoint = connectionPoints.source
       this.targetPoint = connectionPoints.target
 
-      // 3b. Find Marker Connection Point - Backwards Compatibility
+      // 4. Find Marker Connection Point
       const markerPoints = this.findMarkerPoints(
         this.routePoints,
         this.sourcePoint,
         this.targetPoint,
       )
 
-      // 4. make path
+      // 5. Make path
       this.path = this.findPath(
         this.routePoints,
         markerPoints.source || this.sourcePoint,
@@ -907,6 +901,22 @@ export class EdgeView<
     return connectionPoint ? connectionPoint.round(this.POINT_ROUNDING) : anchor
   }
 
+  protected updateMarkerAttr(type: Edge.TerminalType) {
+    const attrs = this.cell.attrs
+    const key = `.${type}-marker`
+    const partial = attrs && attrs[key]
+    if (partial) {
+      this.updateAttrs(
+        this.container,
+        {},
+        {
+          attrs: { [key]: partial },
+          selectors: this.selectors,
+        },
+      )
+    }
+  }
+
   protected findMarkerPoints(
     routePoints: Point[],
     sourcePoint: Point,
@@ -914,44 +924,49 @@ export class EdgeView<
   ) {
     const firstRoutePoint = routePoints[0]
     const lastRoutePoint = routePoints[routePoints.length - 1]
-
+    const sourceMarkerElem = this.containers.sourceMarker as SVGElement
+    const targetMarkerElem = this.containers.targetMarker as SVGElement
     const cache = this.markerCache
-
-    const sourceMarkerContainer = this.containers.sourceMarker as SVGElement
-    const targetMarkerContainer = this.containers.targetMarker as SVGElement
     let sourceMarkerPoint
     let targetMarkerPoint
 
-    // Move the source point by the width of the marker taking into account
-    // its scale around x-axis. Note that scale is the only transform that
-    // makes sense to be set in `.marker-source` attributes object
-    // as all other transforms (translate/rotate) will be replaced
-    // by the `translateAndAutoOrient()` function.
-    if (sourceMarkerContainer) {
-      cache.sourceBBox = cache.sourceBBox || Dom.getBBox(sourceMarkerContainer)
-      const scale = Dom.scale(sourceMarkerContainer)
-      sourceMarkerPoint = sourcePoint
-        .clone()
-        .move(
-          firstRoutePoint || targetPoint,
-          cache.sourceBBox.width * scale.sx * -1,
-        )
-        .round()
+    // Move the source point by the width of the marker taking into
+    // account its scale around x-axis. Note that scale is the only
+    // transform that makes sense to be set in `.marker-source`
+    // attributes object as all other transforms (translate/rotate)
+    // will be replaced by the `translateAndAutoOrient()` function.
+    if (sourceMarkerElem) {
+      this.updateMarkerAttr('source')
+      // support marker connection point registry???
+      cache.sourceBBox = cache.sourceBBox || Dom.getBBox(sourceMarkerElem)
+      if (cache.sourceBBox.width > 0) {
+        const scale = Dom.scale(sourceMarkerElem)
+        sourceMarkerPoint = sourcePoint
+          .clone()
+          .move(
+            firstRoutePoint || targetPoint,
+            cache.sourceBBox.width * scale.sx * -1,
+          )
+          .round()
+      }
     }
 
-    if (targetMarkerContainer) {
-      cache.targetBBox = cache.targetBBox || Dom.getBBox(targetMarkerContainer)
-      const scale = Dom.scale(targetMarkerContainer)
-      targetMarkerPoint = targetPoint
-        .clone()
-        .move(
-          lastRoutePoint || sourcePoint,
-          cache.targetBBox.width * scale.sx * -1,
-        )
-        .round()
+    if (targetMarkerElem) {
+      this.updateMarkerAttr('target')
+      cache.targetBBox = cache.targetBBox || Dom.getBBox(targetMarkerElem)
+      if (cache.targetBBox.width > 0) {
+        const scale = Dom.scale(targetMarkerElem)
+        targetMarkerPoint = targetPoint
+          .clone()
+          .move(
+            lastRoutePoint || sourcePoint,
+            cache.targetBBox.width * scale.sx * -1,
+          )
+          .round()
+      }
     }
 
-    // if there was no markup for the marker, use the connection point.
+    // If there was no markup for the marker, use the connection point.
     cache.sourcePoint = sourceMarkerPoint || sourcePoint.clone()
     cache.targetPoint = targetMarkerPoint || targetPoint.clone()
 
@@ -1796,7 +1811,6 @@ export class EdgeView<
 
   onMouseMove(e: JQuery.MouseMoveEvent, x: number, y: number) {
     const data = this.getEventData(e)
-    e.preventDefault()
     switch (data.action) {
       case 'drag-vertex':
         this.dragVertex(e, x, y)
@@ -2005,7 +2019,7 @@ export class EdgeView<
     }
 
     const container = this.container as HTMLElement
-    container.style.pointerEvents = data.pointerEvents || null
+    container.style.pointerEvents = data.pointerEvents || ''
 
     if (this.graph.options.connecting.highlight) {
       this.unhighlightAvailableMagnets(data)
