@@ -2,6 +2,8 @@ import { Graph } from './graph'
 import { Disposable } from '../common'
 
 export class Base extends Disposable {
+  protected readonly graph: Graph
+
   protected get options() {
     return this.graph.options
   }
@@ -14,8 +16,9 @@ export class Base extends Disposable {
     return this.graph.view
   }
 
-  constructor(protected readonly graph: Graph) {
+  constructor(graph: Graph) {
     super()
+    this.graph = graph
     this.init()
   }
 

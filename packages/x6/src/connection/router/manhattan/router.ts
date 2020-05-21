@@ -267,10 +267,6 @@ export const router: Router.Definition<ManhattanRouterOptions> = function (
   edgeView,
 ) {
   const options = resolveOptions(optionsRaw)
-
-  // enable/disable linkView perpendicular option
-  // edgeView.options.perpendicular = options.perpendicular
-
   const sourceBBox = util.getSourceBBox(edgeView, options)
   const targetBBox = util.getTargetBBox(edgeView, options)
   const sourceAnchor = util.getSourceAnchor(edgeView, options)

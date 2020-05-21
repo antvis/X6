@@ -3,35 +3,45 @@ import { NumberExt, Dom } from '../util'
 import { Point, Rectangle } from '../geometry'
 import { Cell, Node, Edge, Model } from '../model'
 import { NodeView } from '../view'
-import { GraphView } from './view'
-import { Defs } from './defs'
+import { Base } from './base'
 import { Hook } from './hook'
-import { Grid } from './grid'
-import { Coord } from './coord'
-import { Options } from './options'
+import { GraphView } from './view'
 import { EventArgs } from './events'
-import { Renderer } from './renderer'
-import { Highlight } from './highlight'
-import { Transform } from './transform'
-import { Background } from './background'
+import { Options as GraphOptions } from './options'
+import { HistoryManager as History } from './history'
+import { Renderer as ViewRenderer } from './renderer'
+import { DefsManager as Defs } from './defs'
+import { GridManager as Grid } from './grid'
+import { CoordManager as Coord } from './coord'
+import { Keyboard as Shortcut } from './keyboard'
+import { MiniMapManager as MiniMap } from './minimap'
+import { SnaplineManager as Snapline } from './snapline'
+import { ScrollerManager as Scroller } from './scroller'
+import { SelectionManager as Selection } from './selection'
+import { HighlightManager as Highlight } from './highlight'
+import { TransformManager as Transform } from './transform'
+import { ClipboardManager as Clipboard } from './clipboard'
+import { BackgroundManager as Background } from './background'
 
 export class Graph extends Basecoat<EventArgs> {
-  public readonly options: Options.Definition
+  public readonly options: GraphOptions.Definition
   public readonly model: Model
   public readonly view: GraphView
   public readonly hook: Hook
   public readonly grid: Grid
   public readonly defs: Defs
   public readonly coord: Coord
-  public readonly renderer: Renderer
+  public readonly renderer: ViewRenderer
+  public readonly snapline: Snapline
   public readonly highlight: Highlight
   public readonly transform: Transform
+  public readonly clipboard: Clipboard
+  public readonly selection: Selection
   public readonly background: Background
-
-  /**
-   * Get the native value of hooked method.
-   */
-  public getNativeValue: <T>() => T | null
+  public readonly history: History
+  public readonly scroller: Scroller
+  public readonly minimap: MiniMap
+  public readonly keyboard: Shortcut
 
   public get container() {
     return this.view.container
@@ -39,26 +49,29 @@ export class Graph extends Basecoat<EventArgs> {
 
   tools: any
 
-  constructor(options: Partial<Options.Manual> & { container: HTMLElement }) {
+  constructor(options: Partial<GraphOptions.Manual>) {
     super()
-    this.options = Options.merge(options)
-    this.hook = new Hook(this)
-    this.view = new GraphView(this)
-    this.defs = new Defs(this)
-    this.coord = new Coord(this)
-    this.transform = new Transform(this)
-    this.highlight = new Highlight(this)
-    this.grid = new Grid(this)
-    this.background = new Background(this)
-    this.model = this.createModel()
-    this.renderer = new Renderer(this)
-    this.setup()
-  }
 
-  protected createModel() {
-    const model = new Model()
-    model.graph = this
-    return model
+    this.options = GraphOptions.merge(options)
+    this.hook = new Hook(this)
+    this.view = this.hook.createView()
+    this.defs = this.hook.createDefsManager()
+    this.coord = this.hook.createCoordManager()
+    this.transform = this.hook.createTransformManager()
+    this.highlight = this.hook.createHighlightManager()
+    this.grid = this.hook.createGridManager()
+    this.background = this.hook.createBackgroundManager()
+    this.model = this.hook.createModel()
+    this.renderer = this.hook.createRenderer()
+    this.clipboard = this.hook.createClipboardManager()
+    this.snapline = this.hook.createSnaplineManager()
+    this.selection = this.hook.createSelectionManager()
+    this.history = this.hook.createHistoryManager()
+    this.scroller = this.hook.createScrollerManager()
+    this.minimap = this.hook.createMiniMapManager()
+    this.keyboard = this.hook.createKeyboard()
+
+    this.setup()
   }
 
   protected setup() {
@@ -429,4 +442,25 @@ export class Graph extends Basecoat<EventArgs> {
   }
 
   // #endregion
+}
+
+export namespace Graph {
+  export interface Options extends GraphOptions.Manual {}
+
+  export const View = GraphView
+  export const Renderer = ViewRenderer
+  export const Keyboard = Shortcut
+  export const BaseManager = Base
+  export const DefsManager = Defs
+  export const GridManager = Grid
+  export const CoordManager = Coord
+  export const MiniMapManager = MiniMap
+  export const HistoryManager = History
+  export const SnaplineManager = Snapline
+  export const ScrollerManager = Scroller
+  export const ClipboardManager = Clipboard
+  export const TransformManager = Transform
+  export const HighlightManager = Highlight
+  export const BackgroundManager = Background
+  export const SelectionManager = Selection
 }

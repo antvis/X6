@@ -1,9 +1,10 @@
 import { StringExt, Dom } from '../util'
 import { Attr, Filter } from '../definition'
-import { Base } from './base'
 import { Markup } from '../view'
+import { Marker } from '../connection'
+import { Base } from './base'
 
-export class Defs extends Base {
+export class DefsManager extends Base {
   protected get cid() {
     return this.graph.view.cid
   }
@@ -20,7 +21,7 @@ export class Defs extends Base {
     return this.svg.getElementById(id) != null
   }
 
-  filter(options: Defs.FilterOptions) {
+  filter(options: DefsManager.FilterOptions) {
     let filterId = options.id
     const name = options.name
     if (!filterId) {
@@ -54,7 +55,7 @@ export class Defs extends Base {
     return filterId
   }
 
-  gradient(options: Defs.GradientOptions) {
+  gradient(options: DefsManager.GradientOptions) {
     let id = options.id
     const type = options.type
     if (!id) {
@@ -82,8 +83,9 @@ export class Defs extends Base {
     return id
   }
 
-  marker(options: Defs.MarkerOptions) {
-    let markerId = options.id
+  marker(options: DefsManager.MarkerOptions) {
+    const { id, type, markerUnits, children, ...attrs } = options
+    let markerId = id
     if (!markerId) {
       markerId = `marker-${this.cid}-${StringExt.hashcode(
         JSON.stringify(options),
@@ -91,7 +93,6 @@ export class Defs extends Base {
     }
 
     if (!this.isDefined(markerId)) {
-      const { id, type, markerUnits, ...attrs } = options
       const pathMarker = Dom.createVector(
         'marker',
         {
@@ -100,7 +101,14 @@ export class Defs extends Base {
           overflow: 'visible',
           markerUnits: markerUnits || 'userSpaceOnUse',
         },
-        [Dom.createVector(type || 'path', attrs as Dom.Attributes)],
+        children
+          ? children.map(({ type, ...other }) =>
+              Dom.createVector(`${type}` || 'path', {
+                ...attrs,
+                ...other,
+              } as Dom.Attributes),
+            )
+          : [Dom.createVector(type || 'path', attrs as Dom.Attributes)],
       )
 
       this.elem.appendChild(pathMarker.node)
@@ -110,14 +118,8 @@ export class Defs extends Base {
   }
 }
 
-export namespace Defs {
-  interface BaseMarkerOptions {
-    id?: string
-    type?: string
-    markerUnits?: string
-  }
-
-  export type MarkerOptions = BaseMarkerOptions & Attr.SimpleAttrs
+export namespace DefsManager {
+  export type MarkerOptions = Marker.Result
 
   export interface GradientOptions {
     id?: string

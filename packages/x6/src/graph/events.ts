@@ -1,6 +1,7 @@
 import { Point } from '../geometry'
 import { Model } from '../model'
 import { CellView } from '../view'
+import { Selection } from '../addon/selection'
 import { Renderer } from './renderer'
 
 interface CommonEventArgs<E> {
@@ -14,7 +15,8 @@ interface PositionEventArgs<E> extends CommonEventArgs<E> {
 
 export interface EventArgs
   extends Omit<Model.EventArgs, 'sorted' | 'updated' | 'reseted'>,
-    CellView.EventArgs {
+    CellView.EventArgs,
+    Selection.SelectionEventArgs {
   'model:sorted'?: Model.EventArgs['sorted']
   'model:updated': Model.EventArgs['updated']
   'model:reseted': Model.EventArgs['reseted']
