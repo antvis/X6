@@ -5,15 +5,22 @@ import { Graph } from '../../graph'
 import { EventArgs } from '../../graph/events'
 import { Scroller } from '../scroller'
 
+namespace ClassName {
+  export const root = 'widget-minimap'
+  export const viewport = `${root}-viewport`
+  export const zoom = `${viewport}-zoom`
+}
+
 export class MiniMap extends View {
   public readonly options: MiniMap.Options
   public readonly container: HTMLDivElement
   public readonly $container: JQuery<HTMLElement>
+  protected readonly zoomHandle: HTMLDivElement
   protected readonly $viewport: JQuery<HTMLElement>
   protected readonly sourceGraph: Graph
   protected readonly targetGraph: Graph
+  protected geometry: Util.ViewGeometry
   protected ratio: number
-  protected cssGeometry: MiniMap.ViewGeometry
 
   protected get scroller() {
     return this.options.scroller
@@ -23,7 +30,7 @@ export class MiniMap extends View {
     super()
 
     this.options = {
-      ...MiniMap.defaultOptions,
+      ...Util.defaultOptions,
       ...options,
     } as MiniMap.Options
 
@@ -34,13 +41,21 @@ export class MiniMap extends View {
 
     this.container = document.createElement('div')
     this.$container = this.$(this.container).addClass(
-      this.prefixClassName('widget-minimap'),
+      this.prefixClassName(ClassName.root),
     )
 
-    this.$viewport = this.$('<div>').addClass('viewport')
+    const graphContainer = document.createElement('div')
+    this.container.appendChild(graphContainer)
 
-    if (this.options.zoom) {
-      this.$('<div>').addClass('viewport-control').appendTo(this.$viewport)
+    this.$viewport = this.$('<div>').addClass(
+      this.prefixClassName(ClassName.viewport),
+    )
+
+    if (this.options.scalable) {
+      this.zoomHandle = this.$('<div>')
+        .addClass(this.prefixClassName(ClassName.zoom))
+        .appendTo(this.$viewport)
+        .get(0)
     }
 
     this.$container.append(this.$viewport).css({
@@ -49,21 +64,32 @@ export class MiniMap extends View {
       padding: this.options.padding,
     })
 
-    const graphContainer = document.createElement('div')
-    this.container.appendChild(graphContainer)
     if (this.options.container) {
       this.options.container.appendChild(this.container)
     }
 
     this.sourceGraph = this.scroller.graph
-    this.targetGraph = new this.options.graphConstructor({
+    const targetGraphOptions: Graph.Options = {
       ...this.options.graphOptions,
       container: graphContainer,
       model: this.sourceGraph.model,
-      interactive: false,
       frozen: true,
-      gridSize: 1,
-    })
+      interactive: false,
+      grid: false,
+      background: false,
+      rotating: false,
+      resizing: false,
+      embedding: false,
+      selecting: false,
+      snapline: false,
+      clipboard: false,
+      history: false,
+      scroller: false,
+    }
+
+    this.targetGraph = this.options.createGraph
+      ? this.options.createGraph(targetGraphOptions)
+      : new Graph(targetGraphOptions)
 
     this.targetGraph.renderer.unfreeze()
 
@@ -145,21 +171,19 @@ export class MiniMap extends View {
     const translation = this.targetGraph.translate()
     translation.ty = translation.ty || 0
 
-    this.cssGeometry = {
+    this.geometry = {
       top: position.top + origin.y * ratio + translation.ty,
       left: position.left + origin.x * ratio + translation.tx,
       width: (scroller.$container.innerWidth()! * ratio) / scale.sx,
       height: (scroller.$container.innerHeight()! * ratio) / scale.sy,
     }
-    this.$viewport.css(this.cssGeometry)
+    this.$viewport.css(this.geometry)
   }
 
-  protected startAction(e: JQuery.MouseDownEvent) {
-    e = this.normalizeEvent(e) // tslint:disable-line
-    const action = this.$(e.target).hasClass('current-view-control')
-      ? 'zooming'
-      : 'panning'
-    const eventData: MiniMap.EventData = {
+  protected startAction(evt: JQuery.MouseDownEvent) {
+    const e = this.normalizeEvent(evt)
+    const action = e.target === this.zoomHandle ? 'zooming' : 'panning'
+    const eventData: Util.EventData = {
       action,
       clientX: e.clientX,
       clientY: e.clientY,
@@ -167,17 +191,17 @@ export class MiniMap extends View {
       scrollTop: this.scroller.container.scrollTop,
       zoom: this.scroller.zoom(),
       scale: this.sourceGraph.scale(),
-      geometry: this.cssGeometry,
+      geometry: this.geometry,
     }
 
-    this.delegateDocumentEvents(MiniMap.documentEvents, eventData)
+    this.delegateDocumentEvents(Util.documentEvents, eventData)
   }
 
-  protected doAction(e: JQuery.MouseMoveEvent) {
-    e = this.normalizeEvent(e) // tslint:disable-line
+  protected doAction(evt: JQuery.MouseMoveEvent) {
+    const e = this.normalizeEvent(evt)
     const clientX = e.clientX
     const clientY = e.clientY
-    const data = e.data as MiniMap.EventData
+    const data = e.data as Util.EventData
     switch (data.action) {
       case 'panning': {
         const scale = this.sourceGraph.scale()
@@ -189,7 +213,6 @@ export class MiniMap extends View {
       }
 
       case 'zooming': {
-        const zoom = this.options.zoom
         const startScale = data.scale
         const startGeometry = data.geometry
         const delta =
@@ -202,7 +225,8 @@ export class MiniMap extends View {
         data.frameId = requestAnimationFrame(() => {
           this.scroller.zoom(delta * data.zoom, {
             absolute: true,
-            ...zoom,
+            min: this.options.minScale,
+            max: this.options.maxScale,
           })
         })
         break
@@ -214,8 +238,8 @@ export class MiniMap extends View {
     this.undelegateDocumentEvents()
   }
 
-  protected scrollTo(e: JQuery.MouseDownEvent) {
-    e = this.normalizeEvent(e) // tslint:disable-line
+  protected scrollTo(evt: JQuery.MouseDownEvent) {
+    const e = this.normalizeEvent(evt)
 
     let x
     let y
@@ -245,24 +269,24 @@ export namespace MiniMap {
     width: number
     height: number
     padding: number
-    zoom: {
-      min: number
-      max: number
-    }
-    graphConstructor: typeof Graph & (new (...args: any[]) => Graph)
-    graphOptions?: any
+    scalable?: boolean
+    minScale?: number
+    maxScale?: number
+    createGraph?: (options: Graph.Options) => Graph
+    graphOptions?: Graph.Options
   }
+}
 
-  export const defaultOptions: DeepPartial<Options> = {
-    graphConstructor: Graph,
-    graphOptions: {},
-    zoom: {
-      min: 0.5,
-      max: 2,
-    },
+namespace Util {
+  export const defaultOptions: DeepPartial<MiniMap.Options> = {
     width: 300,
     height: 200,
     padding: 10,
+    scalable: true,
+    minScale: 0.01,
+    maxScale: 16,
+    graphOptions: {},
+    createGraph: (options) => new Graph(options),
   }
 
   export const documentEvents = {

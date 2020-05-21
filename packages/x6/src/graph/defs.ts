@@ -4,7 +4,7 @@ import { Markup } from '../view'
 import { Marker } from '../connection'
 import { Base } from './base'
 
-export class Defs extends Base {
+export class DefsManager extends Base {
   protected get cid() {
     return this.graph.view.cid
   }
@@ -21,7 +21,7 @@ export class Defs extends Base {
     return this.svg.getElementById(id) != null
   }
 
-  filter(options: Defs.FilterOptions) {
+  filter(options: DefsManager.FilterOptions) {
     let filterId = options.id
     const name = options.name
     if (!filterId) {
@@ -55,7 +55,7 @@ export class Defs extends Base {
     return filterId
   }
 
-  gradient(options: Defs.GradientOptions) {
+  gradient(options: DefsManager.GradientOptions) {
     let id = options.id
     const type = options.type
     if (!id) {
@@ -83,7 +83,7 @@ export class Defs extends Base {
     return id
   }
 
-  marker(options: Defs.MarkerOptions) {
+  marker(options: DefsManager.MarkerOptions) {
     const { id, type, markerUnits, children, ...attrs } = options
     let markerId = id
     if (!markerId) {
@@ -118,7 +118,7 @@ export class Defs extends Base {
   }
 }
 
-export namespace Defs {
+export namespace DefsManager {
   export type MarkerOptions = Marker.Result
 
   export interface GradientOptions {

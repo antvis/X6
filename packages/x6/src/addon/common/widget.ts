@@ -82,7 +82,7 @@ export class Widget<
       this.model = this.graph.model
     } else if ((cell || edge || node) && graph) {
       this.cell = node || edge || cell
-      this.view = graph.findViewByCell(this.cell)!
+      this.view = (graph as Graph).renderer.findViewByCell(this.cell)!
       this.graph = graph
       this.model = this.graph.model
     }

@@ -94,7 +94,7 @@
     "tslint-config-prettier": "^1.18.0",
     "tslint-eslint-rules": "^5.4.0",
     "tslint-react": "^4.1.0",
-    "typescript": "^3.7.2",
+    "typescript": "3.8.3",
     "watch": "^1.0.2",
     "webpack": "^4.42.0",
     "webpack-cli": "^3.3.11"
