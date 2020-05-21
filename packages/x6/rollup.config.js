@@ -1,7 +1,6 @@
-/* eslint-disable */
-
 import { terser } from 'rollup-plugin-terser'
 import commonjs from '@rollup/plugin-commonjs'
+import filesize from 'rollup-plugin-filesize'
 import resolve from '@rollup/plugin-node-resolve'
 import typescript from '@rollup/plugin-typescript'
 
@@ -15,5 +14,11 @@ export default {
       sourcemap: true,
     },
   ],
-  plugins: [typescript({ outDir: './dist' }), resolve(), commonjs(), terser()],
+  plugins: [
+    typescript({ outDir: './dist' }),
+    resolve(),
+    commonjs(),
+    terser(),
+    filesize(),
+  ],
 }
