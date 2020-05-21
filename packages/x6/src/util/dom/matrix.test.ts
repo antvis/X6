@@ -35,12 +35,12 @@ describe('Dom', () => {
       it('should returns correct point when transformed with scale transformation', () => {
         group.scale(2, 3)
         const t = transformPoint(p, node.getCTM()!)
-        expect(t).toEqual({ x: 2, y: 6 })
+        expect(t.equals({ x: 2, y: 6 })).toBe(true)
       })
       it('should returns correct point when transformed with rotate transformation', () => {
         group.attr('transform', 'rotate(90)')
         const t = transformPoint(p, node.getCTM()!)
-        expect(t).toEqual({ x: -2, y: 1 })
+        expect(t.equals({ x: -2, y: 1 })).toBe(true)
       })
     })
 
@@ -158,7 +158,7 @@ describe('Dom', () => {
         'rotate(10,100,100) matrix(1 0 0 1 10 10) scale(2,2) translate(10,20)',
       ]
 
-      arr.forEach((transformString) => {
+      arr.forEach(transformString => {
         it(`should convert "${transformString}" to matrix`, () => {
           svgTestGroup.attr('transform', transformString)
           expect(transformStringToMatrix(transformString)).toEqual(
@@ -205,15 +205,26 @@ describe('Dom', () => {
         angle = matrixToRotation(createSVGMatrix().rotate(45))
         expect(roundObject(angle)).toEqual({ angle: 45 })
 
-        angle = matrixToRotation(createSVGMatrix().translate(50, 50).rotate(15))
+        angle = matrixToRotation(
+          createSVGMatrix()
+            .translate(50, 50)
+            .rotate(15),
+        )
         expect(roundObject(angle)).toEqual({ angle: 15 })
 
         angle = matrixToRotation(
-          createSVGMatrix().translate(50, 50).rotate(60).scale(2),
+          createSVGMatrix()
+            .translate(50, 50)
+            .rotate(60)
+            .scale(2),
         )
         expect(roundObject(angle)).toEqual({ angle: 60 })
 
-        angle = matrixToRotation(createSVGMatrix().rotate(60).rotate(60))
+        angle = matrixToRotation(
+          createSVGMatrix()
+            .rotate(60)
+            .rotate(60),
+        )
         expect(roundObject(angle)).toEqual({ angle: 120 })
       })
 
@@ -223,12 +234,17 @@ describe('Dom', () => {
         expect(roundObject(translate)).toEqual({ tx: 10, ty: 20 })
 
         translate = matrixToTranslation(
-          createSVGMatrix().translate(10, 20).rotate(10, 20).scale(2),
+          createSVGMatrix()
+            .translate(10, 20)
+            .rotate(10, 20)
+            .scale(2),
         )
         expect(roundObject(translate)).toEqual({ tx: 10, ty: 20 })
 
         translate = matrixToTranslation(
-          createSVGMatrix().translate(10, 20).translate(30, 40),
+          createSVGMatrix()
+            .translate(10, 20)
+            .translate(30, 40),
         )
         expect(roundObject(translate)).toEqual({ tx: 40, ty: 60 })
       })
@@ -246,7 +262,11 @@ describe('Dom', () => {
         )
         expect(roundObject(scale)).toEqual({ sx: 2, sy: 3 })
 
-        scale = matrixToScale(createSVGMatrix().scale(2, 2).scale(3, 3))
+        scale = matrixToScale(
+          createSVGMatrix()
+            .scale(2, 2)
+            .scale(3, 3),
+        )
         expect(roundObject(scale)).toEqual({ sx: 6, sy: 6 })
       })
     })
