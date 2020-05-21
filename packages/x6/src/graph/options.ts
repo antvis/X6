@@ -26,6 +26,7 @@ import { HighlightManager } from './highlight'
 import { BackgroundManager } from './background'
 import { MiniMapManager } from './minimap'
 import { Keyboard } from './keyboard'
+import { MouseWheel } from './mousewheel'
 
 export namespace Options {
   interface Common extends Partial<Hook.IHook> {
@@ -117,6 +118,11 @@ export namespace Options {
 
     frozen: boolean
 
+    scaling: {
+      min?: number
+      max?: number
+    }
+
     /**
      * A callback function that is used to determine whether a given view
      * should be shown in an `async` graph. If the function returns `true`,
@@ -160,6 +166,7 @@ export namespace Options {
     scroller: boolean | Partial<ScrollerManager.Options>
     minimap: boolean | Partial<MiniMapManager.Options>
     keyboard: boolean | Partial<Omit<Keyboard.Options, 'graph'>>
+    mousewheel: boolean | Partial<Omit<MouseWheel.Options, 'graph'>>
   }
 
   export interface Manual extends Partial<Common>, Partial<ManualBooleans> {
@@ -189,6 +196,7 @@ export namespace Options {
     scroller: ScrollerManager.Options
     minimap: MiniMapManager.Options
     keyboard: Omit<Keyboard.Options, 'graph'>
+    mousewheel: Omit<MouseWheel.Options, 'graph'>
   }
 }
 
@@ -408,6 +416,8 @@ export namespace Options {
       history,
       scroller,
       minimap,
+      keyboard,
+      mousewheel,
       ...others
     } = options
 
@@ -421,6 +431,8 @@ export namespace Options {
       'history',
       'scroller',
       'minimap',
+      'keyboard',
+      'mousewheel',
     ]
 
     const result = ObjectExt.merge({}, defaults, others) as Options.Definition
@@ -457,6 +469,10 @@ export namespace Options {
     grid: {
       size: 10,
       visible: false,
+    },
+    scaling: {
+      min: 0.01,
+      max: 16,
     },
     background: false,
     highlighting: {
@@ -555,6 +571,11 @@ export namespace Options {
     },
     keyboard: {
       enabled: false,
+    },
+    mousewheel: {
+      enabled: false,
+      factor: 1.2,
+      fixed: true,
     },
 
     guard: () => false,

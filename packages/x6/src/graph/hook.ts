@@ -28,6 +28,7 @@ import { BackgroundManager } from './background'
 import { HistoryManager } from './history'
 import { MiniMapManager } from './minimap'
 import { Keyboard } from './keyboard'
+import { MouseWheel } from './mousewheel'
 
 namespace Decorator {
   export function hook(nilable?: boolean, hookName?: string | null) {
@@ -269,6 +270,11 @@ export class Hook extends Base implements Hook.IHook {
     return new Keyboard({ graph: this.graph, ...this.options.keyboard })
   }
 
+  @Decorator.hook()
+  createMouseWheel() {
+    return new MouseWheel({ graph: this.graph, ...this.options.mousewheel })
+  }
+
   validateEdge(edge: Edge) {
     const options = this.options.connecting
 
@@ -448,5 +454,6 @@ export namespace Hook {
     createMiniMapManager: CreateManager<MiniMapManager>
 
     createKeyboard: CreateManager<Keyboard>
+    createMouseWheel: CreateManager<MouseWheel>
   }
 }

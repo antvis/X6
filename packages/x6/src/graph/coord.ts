@@ -50,7 +50,7 @@ export class CoordManager extends Base {
     return p.translate(this.getPageOffset())
   }
 
-  localToPaperRect(
+  localToGraphRect(
     x: number | Rectangle | Rectangle.RectangleLike,
     y?: number,
     width?: number,
@@ -79,14 +79,14 @@ export class CoordManager extends Base {
   ) {
     const rect =
       typeof x === 'number'
-        ? this.localToPaperRect(x, y!, width!, height!)
-        : this.localToPaperRect(x)
+        ? this.localToGraphRect(x, y!, width!, height!)
+        : this.localToGraphRect(x)
     return rect.translate(this.getPageOffset())
   }
 
   graphToLocalPoint(x: number | Point | Point.PointLike, y?: number) {
-    const paperPoint = Point.create(x, y)
-    return Dom.transformPoint(paperPoint, this.graph.matrix().inverse())
+    const graphPoint = Point.create(x, y)
+    return Dom.transformPoint(graphPoint, this.graph.matrix().inverse())
   }
 
   clientToLocalPoint(x: number | Point | Point.PointLike, y?: number) {
@@ -96,8 +96,8 @@ export class CoordManager extends Base {
 
   pageToLocalPoint(x: number | Point | Point.PointLike, y?: number) {
     const pagePoint = Point.create(x, y)
-    const paperPoint = pagePoint.diff(this.getPageOffset())
-    return this.graphToLocalPoint(paperPoint)
+    const graphPoint = pagePoint.diff(this.getPageOffset())
+    return this.graphToLocalPoint(graphPoint)
   }
 
   graphToLocalRect(
@@ -106,8 +106,8 @@ export class CoordManager extends Base {
     width?: number,
     height?: number,
   ) {
-    const paperRect = Rectangle.create(x, y, width, height)
-    return Dom.transformRectangle(paperRect, this.graph.matrix().inverse())
+    const graphRect = Rectangle.create(x, y, width, height)
+    return Dom.transformRectangle(graphRect, this.graph.matrix().inverse())
   }
 
   clientToLocalRect(
@@ -126,10 +126,10 @@ export class CoordManager extends Base {
     width?: number,
     height?: number,
   ) {
-    const paperRect = Rectangle.create(x, y, width, height)
+    const graphRect = Rectangle.create(x, y, width, height)
     const pageOffset = this.getPageOffset()
-    paperRect.x -= pageOffset.x
-    paperRect.y -= pageOffset.y
-    return this.graphToLocalRect(paperRect)
+    graphRect.x -= pageOffset.x
+    graphRect.y -= pageOffset.y
+    return this.graphToLocalRect(graphRect)
   }
 }
