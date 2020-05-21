@@ -5,14 +5,11 @@
 const fs = require('fs')
 const path = require('path')
 const fse = require('fs-extra')
-const { exec } = require('child_process')
+const cp = require('child_process')
 
 function compile(source, target) {
-  exec(`./node_modules/.bin/lessc ${source} ${target}`, (err) => {
-    if (err) {
-      console.log(err)
-    }
-  })
+  let cmd = './node_modules/.bin/lessc'
+  cp.execFileSync(cmd, [source, target])
 }
 
 const cwd = process.cwd()
