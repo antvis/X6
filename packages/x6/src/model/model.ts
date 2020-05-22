@@ -956,39 +956,6 @@ export class Model extends Basecoat<Model.EventArgs> {
 
   // #endregion
 
-  // #region make tree
-
-  makeTree(
-    parent: Model.TreeItem,
-    options: Model.MakeTreeOptions,
-    parentNode: Node,
-    collector: Cell[] = [],
-  ) {
-    const children =
-      typeof options.children === 'function'
-        ? options.children(parent)
-        : parent[options.children || 'children']
-
-    if (!parentNode) {
-      // tslint:disable-next-line
-      parentNode = options.createNode(parent)
-      collector.push(parentNode)
-    }
-
-    if (Array.isArray(children)) {
-      children.forEach((child: Model.TreeItem) => {
-        const node = options.createNode(child)
-        const edge = options.createEdge(parentNode, node)
-        collector.push(node, edge)
-        this.makeTree(child, options, node, collector)
-      })
-    }
-
-    return collector
-  }
-
-  // #endregion
-
   // #region shortest path
 
   /***
@@ -1147,16 +1114,6 @@ export namespace Model {
 
   export interface GetSubgraphOptions {
     deep?: boolean
-  }
-
-  export interface TreeItem extends KeyValue {
-    name: string
-  }
-
-  export interface MakeTreeOptions {
-    children?: string | ((parent: TreeItem) => TreeItem[])
-    createNode: (metadata: TreeItem) => Node
-    createEdge: (parent: Node, child: Node) => Edge
   }
 
   export interface GetShortestPathOptions {

@@ -382,15 +382,6 @@ export class Graph extends Basecoat<EventArgs> {
     return this.model.getShortestPath(source, target, options)
   }
 
-  makeTree(
-    parent: Model.TreeItem,
-    options: Model.MakeTreeOptions,
-    parentNode: Node,
-    collector: Cell[] = [],
-  ) {
-    return this.model.makeTree(parent, options, parentNode, collector)
-  }
-
   /**
    * Returns the bounding box that surrounds all cells in the graph.
    */
