@@ -34,7 +34,7 @@ export class Clipboard {
   ) {
     this.copy(cells, graph, options)
     const model = graph instanceof Graph ? graph.model : graph
-    model.executeBatch('cut', () => {
+    model.batchUpdate('cut', () => {
       cells.forEach((cell) => cell.remove())
     })
   }
@@ -74,7 +74,7 @@ export class Clipboard {
     })
 
     const model = graph instanceof Graph ? graph.model : graph
-    model.executeBatch('paste', () => {
+    model.batchUpdate('paste', () => {
       model.addCells(this.cells)
     })
   }
