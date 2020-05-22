@@ -86,7 +86,7 @@ export class GraphView extends View {
   }
 
   protected findView(elem: Element) {
-    return this.graph.renderer.findView(elem)
+    return this.graph.renderer.findViewByElem(elem)
   }
 
   protected onDblClick(e: JQuery.DoubleClickEvent) {
@@ -305,7 +305,9 @@ export class GraphView extends View {
       return
     }
 
-    const relatedView = this.graph.renderer.findView(e.relatedTarget as Element)
+    const relatedView = this.graph.renderer.findViewByElem(
+      e.relatedTarget as Element,
+    )
     if (view) {
       // mouse moved from tool over view?
       if (relatedView === view) {
@@ -326,7 +328,9 @@ export class GraphView extends View {
     if (this.guard(e, view)) {
       return
     }
-    const relatedView = this.graph.renderer.findView(e.relatedTarget as Element)
+    const relatedView = this.graph.renderer.findViewByElem(
+      e.relatedTarget as Element,
+    )
     if (view) {
       // mouse moved from view over tool?
       if (relatedView === view) {

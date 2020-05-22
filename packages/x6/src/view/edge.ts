@@ -2041,7 +2041,7 @@ export class EdgeView<
         })
       }
 
-      data.currentView = this.graph.renderer.findView(target)
+      data.currentView = this.graph.renderer.findViewByElem(target)
       if (data.currentView) {
         // If we found a view that is under the pointer, we need to find
         // the closest magnet based on the real target element of the event.

@@ -12,7 +12,7 @@ export class ClipboardManager extends Base implements IDisablable {
     return others
   }
 
-  get instanceOptions() {
+  protected get instanceOptions() {
     return this.options.clipboard
   }
 

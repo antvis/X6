@@ -111,7 +111,7 @@ export class Model extends Basecoat<Model.EventArgs> {
       if (options.disconnectEdges) {
         this.disconnectEdges(cell, options)
       } else {
-        this.removeEdges(cell, options)
+        this.removeConnectedEdges(cell, options)
       }
     }
 
@@ -223,29 +223,34 @@ export class Model extends Basecoat<Model.EventArgs> {
     return this
   }
 
-  removeCell(cellId: string, options?: Collection.RemoveOptions): this
-  removeCell(cell: Cell, options?: Collection.RemoveOptions): this
-  removeCell(obj: Cell | string, options: Collection.RemoveOptions = {}) {
+  removeCell(cellId: string, options?: Collection.RemoveOptions): Cell | null
+  removeCell(cell: Cell, options?: Collection.RemoveOptions): Cell | null
+  removeCell(
+    obj: Cell | string,
+    options: Collection.RemoveOptions = {},
+  ): Cell | null {
     const cell = typeof obj === 'string' ? this.getCell(obj) : obj
     if (cell && this.has(cell)) {
-      this.collection.remove(cell, options)
+      return this.collection.remove(cell, options)
     }
-    return this
+    return null
   }
 
-  removeCells(cells: Cell[], options: Cell.RemoveOptions = {}) {
+  removeCells(cells: (Cell | string)[], options: Cell.RemoveOptions = {}) {
     if (cells.length) {
-      this.batchUpdate('remove', () => {
-        cells.forEach((cell) => this.removeCell(cell, options))
+      return this.batchUpdate('remove', () => {
+        return cells.map((cell) => this.removeCell(cell as Cell, options))
       })
     }
-    return this
+    return []
   }
 
-  removeEdges(cell: Cell | string, options: Cell.RemoveOptions = {}) {
-    this.getConnectedEdges(cell).forEach((edge) => {
+  removeConnectedEdges(cell: Cell | string, options: Cell.RemoveOptions = {}) {
+    const edges = this.getConnectedEdges(cell)
+    edges.forEach((edge) => {
       edge.remove(options)
     })
+    return edges
   }
 
   disconnectEdges(cell: Cell | string, options: Edge.SetOptions) {
@@ -801,8 +806,8 @@ export class Model extends Basecoat<Model.EventArgs> {
    * Returns an array of nodes whose bounding box contains point.
    * Note that there can be more then one node as nodes might overlap.
    */
-  getNodesFromPoint(x: number, y: number): Cell[]
-  getNodesFromPoint(p: Point.PointLike): Cell[]
+  getNodesFromPoint(x: number, y: number): Node[]
+  getNodesFromPoint(p: Point.PointLike): Node[]
   getNodesFromPoint(x: number | Point.PointLike, y?: number) {
     const p = typeof x === 'number' ? { x, y: y || 0 } : x
     return this.getNodes().filter((node) => {
@@ -820,18 +825,18 @@ export class Model extends Basecoat<Model.EventArgs> {
     w: number,
     h: number,
     options?: Model.GetCellsInAreaOptions,
-  ): Cell[]
+  ): Node[]
   getNodesInArea(
     rect: Rectangle.RectangleLike,
     options?: Model.GetCellsInAreaOptions,
-  ): Cell[]
+  ): Node[]
   getNodesInArea(
     x: number | Rectangle.RectangleLike,
     y?: number | Model.GetCellsInAreaOptions,
     w?: number,
     h?: number,
     options?: Model.GetCellsInAreaOptions,
-  ): Cell[] {
+  ): Node[] {
     const rect =
       typeof x === 'number'
         ? new Rectangle(x, y as number, w as number, h as number)
@@ -865,7 +870,7 @@ export class Model extends Basecoat<Model.EventArgs> {
   /**
    * Returns the bounding box that surrounds all cells in the graph.
    */
-  getBBox() {
+  getAllCellsBBox() {
     return this.getCellsBBox(this.getCells())
   }
 
