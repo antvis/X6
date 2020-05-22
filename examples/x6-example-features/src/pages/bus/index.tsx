@@ -32,7 +32,7 @@ export default class Example extends React.Component {
       },
 
       interactive: {
-        linkMove: false,
+        edgeMove: false,
         labelMove: false,
       },
       highlighting: {
