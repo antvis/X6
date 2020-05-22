@@ -40,33 +40,10 @@ export namespace Options {
 
     background: false | BackgroundManager.Options
 
-    /**
-     * When defined as a number, it denotes the required mousemove events
-     * before a new edge is created from a magnet. When defined as keyword
-     * 'onleave', the edge is created when the pointer leaves the magnet
-     * DOM element.
-     */
-    magnetThreshold: number | 'onleave'
-
-    /**
-     * Number of required mousemove events before the first mousemove
-     * event will be triggered.
-     */
-    moveThreshold: number
-
-    /**
-     * Allowed number of mousemove events after which the click event
-     * will be still triggered.
-     */
-    clickThreshold: number
-
-    /**
-     * Guard the graph from handling a UI event. Returns `true` if you want
-     * to prevent the graph from handling the event evt, `false` otherwise.
-     * This is an advanced option that can be useful if you have your own
-     * logic for handling events.
-     */
-    guard: (e: JQuery.TriggeredEvent, view?: CellView | null) => boolean
+    scaling: {
+      min?: number
+      max?: number
+    }
 
     /**
      * The sorting type to use when rendering the views in this graph.
@@ -96,7 +73,7 @@ export namespace Options {
      * - The views of freshly added cells may not have yet been added to
      *   this graph's DOM.
      * - Some views may have been removed from the DOM by
-     *   `graph.options.viewport` function.
+     *   `graph.options.checkView` function.
      * - Views already present in the DOM may not have been updated to
      *   reflect changes made in this graph since the last render.
      *
@@ -118,25 +95,35 @@ export namespace Options {
 
     frozen: boolean
 
-    scaling: {
-      min?: number
-      max?: number
-    }
-
     /**
      * A callback function that is used to determine whether a given view
      * should be shown in an `async` graph. If the function returns `true`,
      * the view is attached to the DOM; if it returns `false`, the view is
      * detached from the DOM.
      */
-    viewport?: Nilable<
-      (
-        this: Graph,
-        view: CellView,
-        isDetached: boolean,
-        graph: Graph,
-      ) => boolean
+    checkView?: Nilable<
+      (this: Graph, view: CellView, isDetached: boolean) => boolean
     >
+
+    /**
+     * When defined as a number, it denotes the required mousemove events
+     * before a new edge is created from a magnet. When defined as keyword
+     * 'onleave', the edge is created when the pointer leaves the magnet
+     * DOM element.
+     */
+    magnetThreshold: number | 'onleave'
+
+    /**
+     * Number of required mousemove events before the first mousemove
+     * event will be triggered.
+     */
+    moveThreshold: number
+
+    /**
+     * Allowed number of mousemove events after which the click event
+     * will be still triggered.
+     */
+    clickThreshold: number
 
     /**
      * Prevent the default context menu from being displayed.
@@ -153,6 +140,14 @@ export namespace Options {
     preventDefaultBlankAction: boolean
 
     interactive: CellView.Interactive
+
+    /**
+     * Guard the graph from handling a UI event. Returns `true` if you want
+     * to prevent the graph from handling the event evt, `false` otherwise.
+     * This is an advanced option that can be useful if you have your own
+     * logic for handling events.
+     */
+    guard: (e: JQuery.TriggeredEvent, view?: CellView | null) => boolean
   }
 
   export interface ManualBooleans {
