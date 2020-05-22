@@ -146,7 +146,7 @@ export class NodePreset {
   }
 
   removeCell() {
-    this.model.removeEdges(this.cell)
+    this.model.removeConnectedEdges(this.cell)
     this.cell.remove()
   }
 
@@ -454,7 +454,7 @@ export class NodePreset {
 
   unlink() {
     this.halo.startBatch()
-    this.model.removeEdges(this.cell)
+    this.model.removeConnectedEdges(this.cell)
     this.halo.stopBatch()
   }
 
