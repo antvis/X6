@@ -48,11 +48,11 @@ function readdir(dir) {
       if (ext === '.less') {
         let source = path.join(es, path.relative(src, dir))
         let target = toCSSPath(source)
-        compile(source, target)
+        compile(dir, target)
 
         source = path.join(lib, path.relative(src, dir))
         target = toCSSPath(source)
-        compile(source, target)
+        compile(dir, target)
       }
     }
   }
