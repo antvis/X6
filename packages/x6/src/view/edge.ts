@@ -1888,7 +1888,7 @@ export class EdgeView<
     const tool = Dom.findParentByClass(e.target, 'edge-tool', this.container)
     if (tool) {
       e.stopPropagation() // no further action to be executed
-      if (this.can('useLinkTools')) {
+      if (this.can('useEdgeTools')) {
         if (name === 'edge:remove') {
           this.cell.remove({ ui: true })
           return
@@ -1916,7 +1916,7 @@ export class EdgeView<
   // #region drag edge
 
   protected startEdgeDragging(e: JQuery.MouseDownEvent, x: number, y: number) {
-    if (!this.can('linkMove')) {
+    if (!this.can('edgeMove')) {
       return
     }
 

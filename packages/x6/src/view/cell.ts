@@ -286,27 +286,26 @@ export class CellView<
     return result
   }
 
-  can(feature: string): boolean {
-    let interactive = (this.options as any).interactive
+  can(feature: CellView.InteractiveName): boolean {
+    let interactive = this.options.interactive
     interactive =
-      typeof interactive === 'function' ? interactive(this) : interactive
+      typeof interactive === 'function'
+        ? interactive.call(this.graph, this)
+        : interactive
 
-    const type = typeof interactive
-
-    if (type === 'object') {
-      return interactive[feature] !== false
+    if (typeof interactive === 'object') {
+      return interactive[feature as CellView.InteractiveName] !== false
     }
 
-    if (type === 'boolean') {
+    if (typeof interactive === 'boolean') {
       return interactive
     }
 
     return false
   }
 
-  setInteractivity(value: any) {
-    const options = this.options as any
-    options.interactive = value
+  setInteractivity(value: CellView.Interactive) {
+    this.options.interactive = value
   }
 
   cleanCache() {
@@ -820,18 +819,20 @@ export namespace CellView {
 
   interface InteractionMap {
     // edge
-    linkMove?: boolean
+    edgeMove?: boolean
     labelMove?: boolean
     arrowheadMove?: boolean
     vertexMove?: boolean
     vertexAdd?: boolean
     vertexRemove?: boolean
-    useLinkTools?: boolean
+    useEdgeTools?: boolean
     // node
-    elementMove?: boolean
-    addLinkFromMagnet?: boolean
+    nodeMove?: boolean
+    addEdgeFromMagnet?: boolean
     stopDelegation?: boolean
   }
+
+  export type InteractiveName = keyof InteractionMap
 
   export type Interactive =
     | boolean

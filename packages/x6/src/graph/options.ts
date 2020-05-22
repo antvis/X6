@@ -573,12 +573,6 @@ export namespace Options {
       fixed: true,
     },
 
-    guard: () => false,
-
-    interactive: {
-      labelMove: false,
-    },
-
     async: false,
     frozen: false,
     sorting: 'exact',
@@ -588,5 +582,9 @@ export namespace Options {
     magnetThreshold: 0,
     preventDefaultContextMenu: true,
     preventDefaultBlankAction: true,
+    interactive: {
+      labelMove: false,
+    },
+    guard: () => false,
   }
 }
