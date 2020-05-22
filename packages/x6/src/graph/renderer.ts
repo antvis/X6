@@ -422,9 +422,9 @@ export class Renderer extends Base {
     let updatedCount = 0
     let postponedCount = 0
 
-    let viewportFn = options.viewport || this.options.viewport
-    if (typeof viewportFn !== 'function') {
-      viewportFn = null
+    let checkView = options.checkView || this.options.checkView
+    if (typeof checkView !== 'function') {
+      checkView = null
     }
 
     main: for (let p = 0, n = priorities.length; p < n; p += 1) {
@@ -445,10 +445,7 @@ export class Renderer extends Base {
         // Do not check a view for viewport if we are about to remove the view.
         if ((currentFlag & Renderer.FLAG_REMOVE) === 0) {
           const isUnmounted = cid in updates.unmounted
-          if (
-            viewportFn &&
-            !viewportFn.call(this.graph, view, isUnmounted, this.graph)
-          ) {
+          if (checkView && !checkView.call(this.graph, view, isUnmounted)) {
             // Unmount view
             if (!isUnmounted) {
               this.registerUnmountedView(view)
@@ -529,7 +526,7 @@ export class Renderer extends Base {
 
       const stats = this.updateViewsBatch(options)
       const checkout = this.checkViewportImpl({
-        viewport: options.viewport,
+        checkView: options.checkView,
         mountedBatchSize: Renderer.MOUNT_BATCH_SIZE - stats.mountedCount,
         unmountedBatchSize: Renderer.MOUNT_BATCH_SIZE - stats.unmountedCount,
       })
@@ -628,7 +625,7 @@ export class Renderer extends Base {
   }
 
   protected checkMountedViews(
-    viewportFn?: Renderer.CheckViewportFn | null,
+    viewportFn?: Renderer.CheckViewFn | null,
     batchSize?: number,
   ) {
     let unmountCount = 0
@@ -674,7 +671,7 @@ export class Renderer extends Base {
   }
 
   protected checkUnmountedViews(
-    viewportFn?: Renderer.CheckViewportFn | null,
+    viewportFn?: Renderer.CheckViewFn | null,
     batchSize?: number,
   ) {
     let mountCount = 0
@@ -722,7 +719,7 @@ export class Renderer extends Base {
   }
 
   protected checkViewportImpl(
-    options: Renderer.CheckViewportOptions & {
+    options: Renderer.CheckViewOptions & {
       mountedBatchSize?: number
       unmountedBatchSize?: number
     } = {
@@ -730,7 +727,7 @@ export class Renderer extends Base {
       unmountedBatchSize: Number.MAX_SAFE_INTEGER,
     },
   ) {
-    const viewportFn = options.viewport || this.options.viewport
+    const viewportFn = options.checkView || this.options.checkView
     const unmountedCount = this.checkMountedViews(
       viewportFn,
       options.unmountedBatchSize,
@@ -754,7 +751,7 @@ export class Renderer extends Base {
   /**
    * Determine every view in the graph should be attached/detached.
    */
-  checkViewport(options: Renderer.CheckViewportOptions = {}) {
+  checkViewport(options: Renderer.CheckViewOptions = {}) {
     return this.checkViewportImpl(options)
   }
 
@@ -1134,22 +1131,21 @@ export namespace Renderer {
     freezeKey: string | null
   }
 
-  export type CheckViewportFn = (
+  export type CheckViewFn = (
     this: Graph,
     view: CellView,
     isDetached: boolean,
-    graph: Graph,
   ) => boolean
 
-  export interface CheckViewportOptions {
+  export interface CheckViewOptions {
     /**
      * Callback function to determine whether a given view
      * should be added to the DOM.
      */
-    viewport?: CheckViewportFn
+    checkView?: CheckViewFn
   }
 
-  export interface UpdateViewOptions extends CheckViewportOptions {
+  export interface UpdateViewOptions extends CheckViewOptions {
     /**
      * For async graph, how many views should there be per
      * one asynchronous process?

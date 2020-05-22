@@ -1204,6 +1204,7 @@ export namespace Model {
     | 'fit-embeds'
     | 'stencil-drag'
     | 'selection-translate'
+    | 'halo'
     | 'cut'
     | 'paste'
 }
