@@ -358,7 +358,7 @@ export class TransformManager extends Base {
 
   getContentArea(options: TransformManager.GetContentAreaOptions = {}) {
     if (options.useModelGeometry) {
-      return this.model.getBBox() || new Rectangle()
+      return this.model.getAllCellsBBox() || new Rectangle()
     }
 
     return Dom.getBBox(this.graph.view.stage)

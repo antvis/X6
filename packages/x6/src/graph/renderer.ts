@@ -8,11 +8,6 @@ import { Graph } from './graph'
 import { Base } from './base'
 
 export class Renderer extends Base {
-  /**
-   * Get the native value of hooked method.
-   */
-  public getNativeValue: <T>() => T | null
-
   protected views: KeyValue<CellView>
   protected zPivots: KeyValue<Comment>
   protected updates: Renderer.Updates
@@ -349,7 +344,7 @@ export class Renderer extends Base {
    * Adds all views into the DOM and update them.
    */
   dumpViews(options: Renderer.UpdateViewOptions = {}) {
-    this.checkViewport(options)
+    this.checkView(options)
     this.updateViews(options)
   }
 
@@ -525,7 +520,7 @@ export class Renderer extends Base {
       }
 
       const stats = this.updateViewsBatch(options)
-      const checkout = this.checkViewportImpl({
+      const checkout = this.checkViewImpl({
         checkView: options.checkView,
         mountedBatchSize: Renderer.MOUNT_BATCH_SIZE - stats.mountedCount,
         unmountedBatchSize: Renderer.MOUNT_BATCH_SIZE - stats.unmountedCount,
@@ -718,7 +713,7 @@ export class Renderer extends Base {
     return mountCount
   }
 
-  protected checkViewportImpl(
+  protected checkViewImpl(
     options: Renderer.CheckViewOptions & {
       mountedBatchSize?: number
       unmountedBatchSize?: number
@@ -751,8 +746,8 @@ export class Renderer extends Base {
   /**
    * Determine every view in the graph should be attached/detached.
    */
-  checkViewport(options: Renderer.CheckViewOptions = {}) {
-    return this.checkViewportImpl(options)
+  protected checkView(options: Renderer.CheckViewOptions = {}) {
+    return this.checkViewImpl(options)
   }
 
   isFrozen() {
@@ -821,7 +816,7 @@ export class Renderer extends Base {
     return !!this.options.async
   }
 
-  onRemove() {
+  protected onRemove() {
     this.freeze()
     this.removeViews()
   }
@@ -913,7 +908,7 @@ export class Renderer extends Base {
     return view
   }
 
-  isExactSorting() {
+  protected isExactSorting() {
     return this.options.sorting === 'exact'
   }
 
@@ -931,12 +926,13 @@ export class Renderer extends Base {
     this.sortViewsExact()
   }
 
-  // Highly inspired by the jquery.sortElements plugin by Padolsey.
-  // See http://james.padolsey.com/javascript/sorting-elements-with-jquery/.
   protected sortElements(
     elems: Element[],
     comparator: (a: Element, b: Element) => number,
   ) {
+    // Highly inspired by the jquery.sortElements plugin by Padolsey.
+    // See http://james.padolsey.com/javascript/sorting-elements-with-jquery/.
+
     const placements = elems.map((elem) => {
       const parentNode = elem.parentNode!
       // Since the element itself will change position, we have
@@ -1053,7 +1049,7 @@ export class Renderer extends Base {
     return this.views[id]
   }
 
-  findView($el: string | JQuery | Element | undefined | null) {
+  findViewByElem($el: string | JQuery | Element | undefined | null) {
     if ($el == null) {
       return null
     }
@@ -1086,12 +1082,12 @@ export class Renderer extends Base {
             target: this.view.stage,
           }).containsPoint(ref)
         }
-      })
+      }) as CellView[]
   }
 
   findViewsInArea(
     rect: Rectangle.RectangleLike,
-    options: { strict?: boolean } = {},
+    options: Renderer.FindViewsInAreaOptions = {},
   ) {
     const area = Rectangle.create(rect)
     return this.model
@@ -1180,6 +1176,10 @@ export namespace Renderer {
   export interface UnfreezeOptions
     extends FreezeOptions,
       UpdateViewsAsyncOptions {}
+
+  export interface FindViewsInAreaOptions {
+    strict?: boolean
+  }
 }
 
 export namespace Renderer {

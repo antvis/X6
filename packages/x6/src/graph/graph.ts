@@ -1,12 +1,16 @@
+import { KeyValue } from '../types'
 import { Basecoat } from '../common'
+import { CellView } from '../view/cell'
+import { NodeView } from '../view/node'
 import { NumberExt, Dom } from '../util'
 import { Point, Rectangle } from '../geometry'
-import { Cell, Node, Edge, Model } from '../model'
-import { NodeView } from '../view'
+import { Cell, Node, Edge, Model, Collection } from '../model'
+import { Scroller as ScrollerWidget } from '../addon/scroller'
 import { Base } from './base'
 import { Hook } from './hook'
 import { GraphView } from './view'
 import { EventArgs } from './events'
+import { Decorator } from './decorator'
 import { Options as GraphOptions } from './options'
 import { HistoryManager as History } from './history'
 import { Renderer as ViewRenderer } from './renderer'
@@ -23,7 +27,6 @@ import { HighlightManager as Highlight } from './highlight'
 import { TransformManager as Transform } from './transform'
 import { ClipboardManager as Clipboard } from './clipboard'
 import { BackgroundManager as Background } from './background'
-import { KeyValue } from '../types'
 
 export class Graph extends Basecoat<EventArgs> {
   public readonly options: GraphOptions.Definition
@@ -84,6 +87,24 @@ export class Graph extends Basecoat<EventArgs> {
     this.model.on('updated', (args) => this.trigger('model:updated', args))
   }
 
+  // #region model
+
+  resetModel(cells: Cell[], options: Collection.SetOptions = {}) {
+    this.model.resetCells(cells, options)
+    return this
+  }
+
+  clearModel(options: Cell.SetOptions = {}) {
+    this.model.clear()
+    return this
+  }
+
+  toJSON() {
+    return this.model.toJSON()
+  }
+
+  fromJSON() {}
+
   getCellById(id: string) {
     return this.model.getCell(id)
   }
@@ -113,7 +134,276 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
-  // #region batch
+  removeCell(cellId: string, options?: Collection.RemoveOptions): Cell | null
+  removeCell(cell: Cell, options?: Collection.RemoveOptions): Cell | null
+  removeCell(cell: Cell | string, options: Collection.RemoveOptions = {}) {
+    return this.model.removeCell(cell as Cell, options)
+  }
+
+  removeCells(cells: (Cell | string)[], options: Cell.RemoveOptions = {}) {
+    return this.model.removeCells(cells, options)
+  }
+
+  removeConnectedEdges(cell: Cell | string, options: Cell.RemoveOptions = {}) {
+    return this.model.removeConnectedEdges(cell, options)
+  }
+
+  disconnectEdges(cell: Cell | string, options: Edge.SetOptions) {
+    this.model.disconnectEdges(cell, options)
+    return this
+  }
+
+  hasCell(id: string): boolean
+  hasCell(cell: Cell): boolean
+  hasCell(cell: string | Cell): boolean {
+    return this.model.has(cell as Cell)
+  }
+
+  getCell<T extends Cell = Cell>(id: string) {
+    return this.model.getCell<T>(id)
+  }
+
+  getCells() {
+    return this.model.getCells()
+  }
+
+  getCellCount() {
+    return this.model.total()
+  }
+
+  /**
+   * Returns all the nodes in the graph.
+   */
+  getNodes() {
+    return this.model.getNodes()
+  }
+
+  /**
+   * Returns all the edges in the graph.
+   */
+  getEdges() {
+    return this.model.getEdges()
+  }
+
+  /**
+   * Returns all outgoing edges for the node.
+   */
+  getOutgoingEdges(cell: Cell | string) {
+    return this.model.getOutgoingEdges(cell)
+  }
+
+  /**
+   * Returns all incoming edges for the node.
+   */
+  getIncomingEdges(cell: Cell | string) {
+    return this.model.getIncomingEdges(cell)
+  }
+
+  /**
+   * Returns edges connected with cell.
+   */
+  getConnectedEdges(
+    cell: Cell | string,
+    options: Model.GetConnectedEdgesOptions = {},
+  ) {
+    return this.model.getConnectedEdges(cell, options)
+  }
+
+  /**
+   * Returns an array of all the roots of the graph.
+   */
+  getOriginCells() {
+    return this.model.getOrigins()
+  }
+
+  /**
+   * Returns an array of all the leafs of the graph.
+   */
+  getLeafCells() {
+    return this.model.getLeafs()
+  }
+
+  /**
+   * Returns `true` if the node is a root node, i.e.
+   * there is no  edges coming to the node.
+   */
+  isOriginCell(cell: Cell | string) {
+    return this.model.isOrigin(cell)
+  }
+
+  /**
+   * Returns `true` if the node is a leaf node, i.e.
+   * there is no edges going out from the node.
+   */
+  isLeafCell(cell: Cell | string) {
+    return this.model.isLeaf(cell)
+  }
+
+  /**
+   * Returns all the neighbors of node in the graph. Neighbors are all
+   * the nodes connected to node via either incoming or outgoing edge.
+   */
+  getNeighbors(cell: Cell, options: Model.GetNeighborsOptions = {}) {
+    return this.model.getNeighbors(cell, options)
+  }
+
+  /**
+   * Returns `true` if `cell2` is a neighbor of `cell1`.
+   */
+  isNeighbor(
+    cell1: Cell,
+    cell2: Cell,
+    options: Model.GetNeighborsOptions = {},
+  ) {
+    return this.model.isNeighbor(cell1, cell2, options)
+  }
+
+  getSuccessors(cell: Cell, options: Cell.GetDescendantsOptions) {
+    return this.model.getSuccessors(cell, options)
+  }
+
+  /**
+   * Returns `true` if `cell2` is a successor of `cell1`.
+   */
+  isSuccessor(cell1: Cell, cell2: Cell) {
+    return this.model.isSuccessor(cell1, cell2)
+  }
+
+  getPredecessors(cell: Cell, options: Cell.GetDescendantsOptions) {
+    return this.model.getPredecessors(cell, options)
+  }
+
+  /**
+   * Returns `true` if `cell2` is a predecessor of `cell1`.
+   */
+  isPredecessor(cell1: Cell, cell2: Cell) {
+    return this.model.isPredecessor(cell1, cell2)
+  }
+
+  getCommonAncestor(...cells: (Cell | null | undefined)[]) {
+    return this.model.getCommonAncestor(...cells)
+  }
+
+  /**
+   * Returns an array of cells that result from finding nodes/edges that
+   * are connected to any of the cells in the cells array. This function
+   * loops over cells and if the current cell is a edge, it collects its
+   * source/target nodes; if it is an node, it collects its incoming and
+   * outgoing edges if both the edge terminal (source/target) are in the
+   * cells array.
+   */
+  getSubGraph(cells: Cell[], options: Model.GetSubgraphOptions = {}) {
+    return this.model.getSubGraph(cells, options)
+  }
+
+  /**
+   * Clones the whole subgraph (including all the connected links whose
+   * source/target is in the subgraph). If `options.deep` is `true`, also
+   * take into account all the embedded cells of all the subgraph cells.
+   *
+   * Returns a map of the form: { [original cell ID]: [clone] }.
+   */
+  cloneSubGraph(cells: Cell[], options: Model.GetSubgraphOptions = {}) {
+    return this.model.cloneSubGraph(cells, options)
+  }
+
+  cloneCells(cells: Cell[]) {
+    return this.model.cloneCells(cells)
+  }
+
+  /**
+   * Returns an array of nodes whose bounding box contains point.
+   * Note that there can be more then one node as nodes might overlap.
+   */
+  getNodesFromPoint(x: number, y: number): Node[]
+  getNodesFromPoint(p: Point.PointLike): Node[]
+  getNodesFromPoint(x: number | Point.PointLike, y?: number) {
+    return this.getNodesFromPoint(x as number, y as number)
+  }
+
+  /**
+   * Returns an array of nodes whose bounding box top/left coordinate
+   * falls into the rectangle.
+   */
+  getNodesInArea(
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    options?: Model.GetCellsInAreaOptions,
+  ): Node[]
+  getNodesInArea(
+    rect: Rectangle.RectangleLike,
+    options?: Model.GetCellsInAreaOptions,
+  ): Node[]
+  getNodesInArea(
+    x: number | Rectangle.RectangleLike,
+    y?: number | Model.GetCellsInAreaOptions,
+    w?: number,
+    h?: number,
+    options?: Model.GetCellsInAreaOptions,
+  ): Node[] {
+    return this.model.getNodesInArea(
+      x as number,
+      y as number,
+      w as number,
+      h as number,
+      options,
+    )
+  }
+
+  getNodesUnderNode(
+    node: Node,
+    options: {
+      by?: 'bbox' | Rectangle.KeyPoint
+    } = {},
+  ) {
+    return this.model.getNodesUnderNode(node, options)
+  }
+
+  searchCell(
+    cell: Cell,
+    iterator: Model.SearchIterator,
+    options: Model.SearchOptions = {},
+  ) {
+    this.model.search(cell, iterator, options)
+    return this
+  }
+
+  /***
+   * Returns an array of IDs of nodes on the shortest
+   * path between source and target.
+   */
+  getShortestPath(
+    source: Cell | string,
+    target: Cell | string,
+    options: Model.GetShortestPathOptions = {},
+  ) {
+    return this.model.getShortestPath(source, target, options)
+  }
+
+  makeTree(
+    parent: Model.TreeItem,
+    options: Model.MakeTreeOptions,
+    parentNode: Node,
+    collector: Cell[] = [],
+  ) {
+    return this.model.makeTree(parent, options, parentNode, collector)
+  }
+
+  /**
+   * Returns the bounding box that surrounds all cells in the graph.
+   */
+  getAllCellsBBox() {
+    return this.model.getAllCellsBBox()
+  }
+
+  /**
+   * Returns the bounding box that surrounds all the given cells.
+   */
+  getCellsBBox(cells: Cell[], options: Cell.GetCellsBBoxOptions = {}) {
+    return this.model.getCellsBBox(cells, options)
+  }
 
   startBatch(name: string | Model.BatchName, data: KeyValue = {}) {
     this.model.startBatch(name as Model.BatchName, data)
@@ -135,6 +425,93 @@ export class Graph extends Basecoat<EventArgs> {
   }
 
   //#endregion
+
+  // #region view
+
+  isFrozen() {
+    return this.renderer.isFrozen()
+  }
+
+  freeze(options: ViewRenderer.FreezeOptions = {}) {
+    this.renderer.freeze(options)
+    return this
+  }
+
+  unfreeze(options: ViewRenderer.UnfreezeOptions = {}) {
+    this.renderer.unfreeze(options)
+    return this
+  }
+
+  isAsync() {
+    return this.renderer.isAsync()
+  }
+
+  findViewByCell(cellId: string | number): CellView | null
+  findViewByCell(cell: Cell | null): CellView | null
+  findViewByCell(
+    cell: Cell | string | number | null | undefined,
+  ): CellView | null {
+    return this.renderer.findViewByCell(cell as Cell)
+  }
+
+  findViewByElem(elem: string | JQuery | Element | undefined | null) {
+    return this.renderer.findViewByElem(elem)
+  }
+
+  findViewsFromPoint(x: number, y: number): CellView[]
+  findViewsFromPoint(p: Point.PointLike): CellView[]
+  findViewsFromPoint(x: number | Point.PointLike, y?: number) {
+    const p = typeof x === 'number' ? { x, y: y as number } : x
+    return this.renderer.findViewsFromPoint(p)
+  }
+
+  findViewsInArea(
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    options?: ViewRenderer.FindViewsInAreaOptions,
+  ): CellView[]
+  findViewsInArea(
+    rect: Rectangle.RectangleLike,
+    options?: ViewRenderer.FindViewsInAreaOptions,
+  ): CellView[]
+  findViewsInArea(
+    x: number | Rectangle.RectangleLike,
+    y?: number | ViewRenderer.FindViewsInAreaOptions,
+    width?: number,
+    height?: number,
+    options?: ViewRenderer.FindViewsInAreaOptions,
+  ) {
+    const rect =
+      typeof x === 'number'
+        ? {
+            x,
+            y: y as number,
+            width: width as number,
+            height: height as number,
+          }
+        : x
+    const localOptions =
+      typeof x === 'number'
+        ? options
+        : (y as ViewRenderer.FindViewsInAreaOptions)
+    return this.renderer.findViewsInArea(rect, localOptions)
+  }
+
+  isViewMounted(view: CellView) {
+    return this.renderer.isViewMounted(view)
+  }
+
+  getMountedViews() {
+    return this.renderer.getMountedViews()
+  }
+
+  getUnmountedViews() {
+    return this.renderer.getUnmountedViews()
+  }
+
+  // #endregion
 
   // #region transform
 
@@ -237,13 +614,27 @@ export class Graph extends Basecoat<EventArgs> {
     return this.transform.getRestrictedArea(view)
   }
 
-  getDefaultEdge() {
-    return new Edge()
-  }
-
   // #endregion
 
   // #region coord
+
+  getClientMatrix() {
+    return this.coord.getClientMatrix()
+  }
+
+  /**
+   * Returns coordinates of the graph viewport, relative to the window.
+   */
+  getClientOffset() {
+    return this.coord.getClientOffset()
+  }
+
+  /**
+   * Returns coordinates of the graph viewport, relative to the document.
+   */
+  getPageOffset() {
+    return this.coord.getPageOffset()
+  }
 
   snapToGrid(p: Point.PointLike): Point
   snapToGrid(x: number, y: number): Point
@@ -440,13 +831,470 @@ export class Graph extends Basecoat<EventArgs> {
 
   // #region background
 
-  drawBackground(options: Background.Options = {}) {
+  updateBackground() {
+    this.background.update()
+    return this
+  }
+
+  drawBackground(options?: Background.Options) {
     this.background.draw(options)
     return this
   }
 
   clearBackground() {
-    return this.drawBackground()
+    this.background.clear()
+    return this
+  }
+
+  // #endregion
+
+  // #region clipboard
+
+  isClipboardEmpty() {
+    return this.clipboard.isEmpty()
+  }
+
+  isClipboardDisabled() {
+    return this.clipboard.disabled
+  }
+
+  enableClipboard() {
+    this.clipboard.enable()
+    return this
+  }
+
+  disableClipboard() {
+    this.clipboard.disable()
+    return this
+  }
+
+  getCellsInClipboard() {
+    return this.clipboard.cells
+  }
+
+  cleanClipboard() {
+    this.clipboard.clean()
+    return this
+  }
+
+  copy(cells: Cell[], options: Clipboard.CopyOptions = {}) {
+    this.clipboard.copy(cells, options)
+    return this
+  }
+
+  cut(cells: Cell[], options: Clipboard.CopyOptions = {}) {
+    this.clipboard.cut(cells, options)
+    return this
+  }
+
+  paste(options: Clipboard.PasteOptions = {}, graph: Graph = this) {
+    this.clipboard.paste(options, graph)
+    return this
+  }
+
+  // #endregion
+
+  // #region redo/undo
+
+  isHistoryDisabled() {
+    return this.history.disabled
+  }
+
+  enableHistory() {
+    this.history.enable()
+    return this
+  }
+
+  disableHistory() {
+    this.history.disable()
+    return this
+  }
+
+  undo(options: KeyValue = {}) {
+    this.history.undo(options)
+    return this
+  }
+
+  undoAndCancel(options: KeyValue = {}) {
+    this.history.cancel(options)
+    return this
+  }
+
+  redo(options: KeyValue = {}) {
+    this.history.redo(options)
+    return this
+  }
+
+  canUndo() {
+    return this.history.canUndo()
+  }
+
+  canRedo() {
+    return this.history.canRedo()
+  }
+
+  cleanHistory(options: KeyValue = {}) {
+    this.history.clean(options)
+  }
+
+  // #endregion
+
+  // #region keyboard
+
+  isKeyboardDisabled() {
+    return this.keyboard.disabled
+  }
+
+  enableKeyboard() {
+    this.keyboard.enable()
+    return this
+  }
+
+  disableKeyboard() {
+    this.keyboard.disable()
+    return this
+  }
+
+  bindKey(
+    keys: string | string[],
+    callback: Shortcut.Handler,
+    action?: Shortcut.Action,
+  ) {
+    this.keyboard.on(keys, callback, action)
+    return this
+  }
+
+  unbindKey(keys: string | string[], action?: Shortcut.Action) {
+    this.keyboard.off(keys, action)
+    return this
+  }
+
+  // #endregion
+
+  // #region mouse wheel
+
+  isMouseWheelDisabled() {
+    return this.mousewheel.disabled
+  }
+
+  enableMouseWheel() {
+    this.mousewheel.enable()
+    return this
+  }
+
+  disableMouseWheel() {
+    this.mousewheel.disable()
+    return this
+  }
+
+  // #endregion
+
+  // #region scroller
+
+  /**
+   * Try to scroll to ensure that the position (x,y) on the graph (in local
+   * coordinates) is at the center of the viewport. If only one of the
+   * coordinates is specified, only scroll in the specified dimension and
+   * keep the other coordinate unchanged.
+   */
+  @Decorator.checkScroller()
+  scrollTo(
+    x: number | null | undefined,
+    y: number | null | undefined,
+    options?: ScrollerWidget.ScrollOptions,
+  ) {
+    const scroller = this.scroller.widget!
+    scroller.scrollTo(x, y, options)
+    return this
+  }
+
+  scrollToPoint(
+    p: Point.PointLike,
+    options?: ScrollerWidget.ScrollOptions,
+  ): this
+  scrollToPoint(
+    x: number,
+    y: number,
+    options?: ScrollerWidget.ScrollOptions,
+  ): this
+  @Decorator.checkScroller()
+  scrollToPoint(
+    x: number | Point.PointLike,
+    y?: number | ScrollerWidget.ScrollOptions,
+    options?: ScrollerWidget.ScrollOptions,
+  ) {
+    const scroller = this.scroller.widget!
+    scroller.scrollToPoint(x as number, y as number, options)
+    return this
+  }
+
+  /**
+   * Try to scroll to ensure that the center of graph content is at the
+   * center of the viewport.
+   */
+  @Decorator.checkScroller()
+  scrollToContent(options?: ScrollerWidget.ScrollOptions) {
+    const scroller = this.scroller.widget!
+    scroller.scrollToContent(options)
+    return this
+  }
+
+  /**
+   * Try to scroll to ensure that the center of cell is at the center of
+   * the viewport.
+   */
+  @Decorator.checkScroller()
+  scrollToCell(cell: Cell, options?: ScrollerWidget.ScrollOptions) {
+    const scroller = this.scroller.widget!
+    scroller.scrollToCell(cell, options)
+    return this
+  }
+
+  /**
+   * Position the point (x,y) on the graph (in local coordinates) to the
+   * center of the viewport. If only one of the coordinates is specified,
+   * only center along the specified dimension and keep the other coordinate
+   * unchanged.
+   */
+  center(
+    x: number,
+    y: null | number,
+    options?: ScrollerWidget.CenterOptions,
+  ): this
+  center(
+    x: null | number,
+    y: number,
+    options?: ScrollerWidget.CenterOptions,
+  ): this
+  /**
+   * Position the center of graph to the center of the viewport.
+   */
+  center(optons?: ScrollerWidget.CenterOptions): this
+  @Decorator.checkScroller()
+  center(
+    x?: number | null | ScrollerWidget.CenterOptions,
+    y?: number | null,
+    options?: ScrollerWidget.CenterOptions,
+  ) {
+    const scroller = this.scroller.widget!
+    scroller.center(x as number, y as number, options)
+    return this
+  }
+
+  @Decorator.checkScroller()
+  centerContent(options?: ScrollerWidget.PositionContentOptions) {
+    const scroller = this.scroller.widget!
+    scroller.centerContent(options)
+    return this
+  }
+
+  @Decorator.checkScroller()
+  centerCell(cell: Cell, options?: ScrollerWidget.CenterOptions) {
+    const scroller = this.scroller.widget!
+    scroller.centerCell(cell, options)
+    return this
+  }
+
+  @Decorator.checkScroller()
+  positionContent(
+    direction: ScrollerWidget.Direction,
+    options?: ScrollerWidget.PositionContentOptions,
+  ) {
+    const scroller = this.scroller.widget!
+    scroller.positionContent(direction, options)
+    return this
+  }
+
+  @Decorator.checkScroller()
+  positionCell(
+    cell: Cell,
+    direction: ScrollerWidget.Direction,
+    options?: ScrollerWidget.CenterOptions,
+  ) {
+    const scroller = this.scroller.widget!
+    scroller.positionCell(cell, direction, options)
+    return this
+  }
+
+  @Decorator.checkScroller()
+  positionRect(
+    bbox: Rectangle,
+    direction: ScrollerWidget.Direction,
+    options?: ScrollerWidget.CenterOptions,
+  ) {
+    const scroller = this.scroller.widget!
+    scroller.positionRect(bbox, direction, options)
+    return this
+  }
+
+  @Decorator.checkScroller()
+  positionPoint(
+    point: Point,
+    x: number | string,
+    y: number | string,
+    options: ScrollerWidget.CenterOptions = {},
+  ) {
+    const scroller = this.scroller.widget!
+    scroller.positionPoint(point, x, y, options)
+    return this
+  }
+
+  zoom(): number
+  zoom(scale: number, options?: ScrollerWidget.ZoomOptions): this
+  @Decorator.checkScroller()
+  zoom(scale?: number, options?: ScrollerWidget.ZoomOptions) {
+    const scroller = this.scroller.widget!
+    if (scale == null) {
+      return scroller.zoom()
+    }
+    scroller.zoom(scale, options)
+    return this
+  }
+
+  zoomToRect(
+    rect: Rectangle.RectangleLike,
+    options: Transform.ScaleContentToFitOptions = {},
+  ) {
+    const scroller = this.scroller.widget!
+    scroller.zoomToRect(rect, options)
+    return this
+  }
+
+  zoomToFit(
+    options: Transform.GetContentAreaOptions &
+      Transform.ScaleContentToFitOptions = {},
+  ) {
+    const scroller = this.scroller.widget!
+    scroller.zoomToFit(options)
+    return this
+  }
+
+  transitionToPoint(
+    p: Point.PointLike,
+    options?: ScrollerWidget.TransitionOptions,
+  ): this
+  transitionToPoint(
+    x: number,
+    y: number,
+    options?: ScrollerWidget.TransitionOptions,
+  ): this
+  transitionToPoint(
+    x: number | Point.PointLike,
+    y?: number | ScrollerWidget.TransitionOptions,
+    options?: ScrollerWidget.TransitionOptions,
+  ) {
+    const scroller = this.scroller.widget!
+    scroller.transitionToPoint(x as number, y as number, options)
+    return this
+  }
+
+  transitionToRect(
+    rect: Rectangle.RectangleLike,
+    options: ScrollerWidget.TransitionToRectOptions = {},
+  ) {
+    const scroller = this.scroller.widget!
+    scroller.transitionToRect(rect, options)
+    return this
+  }
+
+  isPanningDisabled() {
+    return !this.scroller.allowPanning
+  }
+
+  enablePanning() {
+    this.scroller.enablePanning()
+    return this
+  }
+
+  disablePanning() {
+    this.scroller.disablePanning()
+    return this
+  }
+
+  // #endregion
+
+  // #region selection
+
+  isRubberbandDsiabled() {
+    return this.selection.rubberbandDisabled
+  }
+
+  enableRubberband() {
+    this.selection.enableRubberband()
+    return this
+  }
+
+  disableRubberband() {
+    this.selection.disableRubberband()
+    return this
+  }
+
+  isSelectionDisabled() {
+    return this.selection.disabled
+  }
+
+  enableSelection() {
+    this.selection.enable()
+    return this
+  }
+
+  disableSelection() {
+    this.selection.disable()
+    return this
+  }
+
+  isSelectionEmpty() {
+    return this.selection.isEmpty()
+  }
+
+  cleanSelection() {
+    this.selection.clean()
+    return this
+  }
+
+  getSelectedCells() {
+    return this.selection.cells
+  }
+
+  getSelectedLength() {
+    return this.selection.length
+  }
+
+  isSelected(cell: Cell | string) {
+    return this.selection.isSelected(cell)
+  }
+
+  select(cells: Cell | Cell[], options: Collection.AddOptions = {}) {
+    this.selection.select(cells, options)
+    return this
+  }
+
+  unselect(cells: Cell | Cell[], options: Collection.RemoveOptions = {}) {
+    this.selection.unselect(cells, options)
+    return this
+  }
+
+  // #endregion
+
+  // #region snapline
+
+  isSnaplineDisabled() {
+    return this.snapline.widget.disabled
+  }
+
+  enableSnapline() {
+    this.snapline.widget.enable()
+    return this
+  }
+
+  disableSnapline() {
+    this.snapline.widget.disable()
+    return this
+  }
+
+  hideSnapline() {
+    this.snapline.widget.hide()
+    return this
   }
 
   // #endregion
@@ -473,7 +1321,9 @@ export class Graph extends Basecoat<EventArgs> {
 
 export namespace Graph {
   export interface Options extends GraphOptions.Manual {}
+}
 
+export namespace Graph {
   export const View = GraphView
   export const Renderer = ViewRenderer
   export const Keyboard = Shortcut

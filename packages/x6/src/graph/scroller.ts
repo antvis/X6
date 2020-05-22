@@ -9,7 +9,7 @@ export class ScrollerManager extends Base {
     return this.options.scroller
   }
 
-  protected get allowPanning() {
+  get allowPanning() {
     return this.widgetOptions && this.widgetOptions.panning === true
   }
 

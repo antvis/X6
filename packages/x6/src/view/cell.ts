@@ -787,7 +787,7 @@ export class CellView<
       graph.renderer.dumpView(this)
     }
     const target = this.getEventTarget(e, { fromPoint: true })
-    const view = graph.renderer.findView(target)
+    const view = graph.renderer.findViewByElem(target)
     if (view === this) {
       return
     }

@@ -345,7 +345,7 @@ export class Scroller extends View {
    * coordinates is specified, only scroll in the specified dimension and
    * keep the other coordinate unchanged.
    */
-  scroll(
+  scrollTo(
     x: number | null | undefined,
     y: number | null | undefined,
     options?: Scroller.ScrollOptions,
@@ -381,9 +381,9 @@ export class Scroller extends View {
     const sx = this.sx
     const sy = this.sy
     if (typeof x === 'number') {
-      return this.scroll(x * sx, (y as number) * sy, options)
+      return this.scrollTo(x * sx, (y as number) * sy, options)
     }
-    return this.scroll(x.x * sx, x.y * sy, y as Scroller.ScrollOptions)
+    return this.scrollTo(x.x * sx, x.y * sy, y as Scroller.ScrollOptions)
   }
 
   /**
@@ -391,7 +391,7 @@ export class Scroller extends View {
    * center of the viewport.
    */
   scrollToContent(options?: Scroller.ScrollOptions) {
-    return this.scrollToPoint(this.graph.getContentArea().getCenter())
+    return this.scrollToPoint(this.graph.getContentArea().getCenter(), options)
   }
 
   /**
@@ -399,7 +399,7 @@ export class Scroller extends View {
    * the viewport.
    */
   scrollToCell(cell: Cell, options?: Scroller.ScrollOptions) {
-    return this.scrollToPoint(cell.getBBox().getCenter())
+    return this.scrollToPoint(cell.getBBox().getCenter(), options)
   }
 
   /**
@@ -475,7 +475,7 @@ export class Scroller extends View {
       Math.max(bottom, 0),
     )
 
-    return this.scroll(x, y, localOptions || undefined)
+    return this.scrollTo(x, y, localOptions || undefined)
   }
 
   centerContent(options?: Scroller.PositionContentOptions) {
@@ -751,7 +751,7 @@ export class Scroller extends View {
     return this
   }
 
-  syncTransition(scale: number, p: Point.PointLike) {
+  protected syncTransition(scale: number, p: Point.PointLike) {
     this.beforeManipulation()
     this.graph.scale(scale)
     this.removeTransition().center(p.x, p.y)
@@ -759,7 +759,7 @@ export class Scroller extends View {
     return this
   }
 
-  removeTransition() {
+  protected removeTransition() {
     this.$container.removeClass(Util.transitionClassName)
     this.$content.off(Util.transitionEventName).css({
       transform: '',

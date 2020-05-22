@@ -11,7 +11,7 @@ export class SelectionManager extends Base {
     return this.options.selecting
   }
 
-  protected get rubberbandDisabled() {
+  get rubberbandDisabled() {
     return (
       this.widgetOptions.enabled !== true ||
       this.widgetOptions.rubberband !== true
