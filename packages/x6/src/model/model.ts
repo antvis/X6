@@ -146,7 +146,7 @@ export class Model extends Basecoat<Model.EventArgs> {
       return this
     }
     const localOptions = { ...options, clear: true }
-    this.executeBatch(
+    this.batchUpdate(
       'clear',
       () => {
         // The nodes come after the edges.
@@ -235,7 +235,7 @@ export class Model extends Basecoat<Model.EventArgs> {
 
   removeCells(cells: Cell[], options: Cell.RemoveOptions = {}) {
     if (cells.length) {
-      this.executeBatch('remove', () => {
+      this.batchUpdate('remove', () => {
         cells.forEach((cell) => this.removeCell(cell, options))
       })
     }
@@ -1079,26 +1079,30 @@ export class Model extends Basecoat<Model.EventArgs> {
 
   // #region batch
 
-  startBatch(name: string, data: KeyValue = {}) {
+  startBatch(name: Model.BatchName, data: KeyValue = {}) {
     this.batches[name] = (this.batches[name] || 0) + 1
     this.notify('batch:start', { name, data })
     return this
   }
 
-  stopBatch(name: string, data: KeyValue = {}) {
+  stopBatch(name: Model.BatchName, data: KeyValue = {}) {
     this.batches[name] = (this.batches[name] || 0) - 1
     this.notify('batch:stop', { name, data })
     return this
   }
 
-  executeBatch<T>(name: string, execute: () => T, data: KeyValue = {}) {
+  batchUpdate<T>(name: Model.BatchName, execute: () => T, data: KeyValue = {}) {
     this.startBatch(name, data)
     const result = execute()
     this.stopBatch(name, data)
     return result
   }
 
-  hasActiveBatch(name: string | string[] = Object.keys(this.batches)) {
+  hasActiveBatch(
+    name: Model.BatchName | Model.BatchName[] = Object.keys(
+      this.batches,
+    ) as Model.BatchName[],
+  ) {
     const names = Array.isArray(name) ? name : [name]
     return names.some((batch) => this.batches[batch] > 0)
   }
@@ -1162,11 +1166,11 @@ export namespace Model {
       Collection.NodeEventArgs,
       Collection.EdgeEventArgs {
     'batch:start': {
-      name: string
+      name: BatchName | string
       data: KeyValue
     }
     'batch:stop': {
-      name: string
+      name: BatchName | string
       data: KeyValue
     }
 
@@ -1183,6 +1187,25 @@ export namespace Model {
       options: Collection.SetOptions
     }
   }
+
+  export type BatchName =
+    | 'add'
+    | 'remove'
+    | 'clear'
+    | 'to-back'
+    | 'to-front'
+    | 'scale'
+    | 'resize'
+    | 'rotate'
+    | 'translate'
+    | 'mouse'
+    | 'layout'
+    | 'add-edge'
+    | 'fit-embeds'
+    | 'stencil-drag'
+    | 'selection-translate'
+    | 'cut'
+    | 'paste'
 }
 
 export namespace Model {

@@ -1,7 +1,7 @@
 import { Util } from '../../global'
 import { KeyValue } from '../../types'
 import { Angle, Point } from '../../geometry'
-import { Node } from '../../model'
+import { Node } from '../../model/node'
 import { Widget } from '../common'
 
 export class Transform extends Widget<Transform.Options> {
@@ -182,7 +182,7 @@ export class Transform extends Widget<Transform.Options> {
 
   protected startResizing(evt: JQuery.MouseDownEvent) {
     evt.stopPropagation()
-    this.model.startBatch(Private.BATCH_NAME, { cid: this.cid })
+    this.model.startBatch('resize', { cid: this.cid })
     const relativeDirection = this.$(evt.target).attr(
       'data-position',
     ) as Node.ResizeDirection
@@ -225,7 +225,7 @@ export class Transform extends Widget<Transform.Options> {
   protected startRotating(evt: JQuery.MouseDownEvent) {
     evt.stopPropagation()
 
-    this.model.startBatch(Private.BATCH_NAME, { cid: this.cid })
+    this.model.startBatch('rotate', { cid: this.cid })
 
     const center = this.node.getBBox().getCenter()
     const client = this.graph.snapToGrid(evt.clientX, evt.clientY)
@@ -379,7 +379,9 @@ export class Transform extends Widget<Transform.Options> {
     const data = this.getEventData<EventData.Resizing | EventData.Rotating>(evt)
     if (data.action) {
       this.stopAction(evt)
-      this.model.stopBatch(Private.BATCH_NAME, { cid: this.cid })
+      this.model.stopBatch(data.action === 'resizing' ? 'resize' : 'rotate', {
+        cid: this.cid,
+      })
     }
   }
 
@@ -467,7 +469,6 @@ export namespace Transform {
 }
 
 namespace Private {
-  export const BATCH_NAME = 'transform'
   export const DIRECTIONS = ['nw', 'n', 'ne', 'e', 'se', 's', 'sw', 'w']
   export const POSITIONS: Node.ResizeDirection[] = [
     'top-left',

@@ -23,6 +23,7 @@ import { HighlightManager as Highlight } from './highlight'
 import { TransformManager as Transform } from './transform'
 import { ClipboardManager as Clipboard } from './clipboard'
 import { BackgroundManager as Background } from './background'
+import { KeyValue } from '../types'
 
 export class Graph extends Basecoat<EventArgs> {
   public readonly options: GraphOptions.Definition
@@ -111,6 +112,29 @@ export class Graph extends Basecoat<EventArgs> {
     this.model.addCell(cell, options)
     return this
   }
+
+  // #region batch
+
+  startBatch(name: string | Model.BatchName, data: KeyValue = {}) {
+    this.model.startBatch(name as Model.BatchName, data)
+  }
+
+  stopBatch(name: string | Model.BatchName, data: KeyValue = {}) {
+    this.model.stopBatch(name as Model.BatchName, data)
+  }
+
+  batchUpdate<T>(
+    name: string | Model.BatchName,
+    execute: () => T,
+    data?: KeyValue,
+  ): T {
+    this.startBatch(name, data)
+    const result = execute()
+    this.stopBatch(name, data)
+    return result
+  }
+
+  //#endregion
 
   // #region transform
 

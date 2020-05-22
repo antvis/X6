@@ -162,7 +162,6 @@ export class Halo extends Widget<Halo.Options> {
     if (this.action && this.evt) {
       this.onMouseUp(this.evt as JQuery.MouseUpEvent)
     }
-    this.stopBatch()
     return super.remove()
   }
 
@@ -606,24 +605,6 @@ export class Halo extends Widget<Halo.Options> {
       this.undelegateDocumentEvents()
     }
   }
-
-  // #region batch
-
-  stopBatch() {
-    if (this.model.hasActiveBatch('halo')) {
-      this.model.stopBatch('halo', {
-        halo: this.cid,
-      })
-    }
-  }
-
-  startBatch() {
-    this.model.startBatch('halo', {
-      halo: this.cid,
-    })
-  }
-
-  // #endregion
 }
 
 export namespace Halo {

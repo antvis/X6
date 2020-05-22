@@ -392,7 +392,7 @@ export class Cell<
       }
 
       if (changed) {
-        this.executeBatch('to-front', () => {
+        this.batchUpdate('to-front', () => {
           z = z + cells.length
           cells.forEach((cell, index) => {
             cell.setZIndex(z + index, options)
@@ -423,7 +423,7 @@ export class Cell<
       }
 
       if (changed) {
-        this.executeBatch('to-back', () => {
+        this.batchUpdate('to-back', () => {
           z -= cells.length
           cells.forEach((cell, index) => {
             cell.setZIndex(z + index, options)
@@ -931,7 +931,7 @@ export class Cell<
     if (parent) {
       parent.removeChild(this, options)
     } else {
-      this.executeBatch('remove', () => {
+      this.batchUpdate('remove', () => {
         if (options.deep !== false) {
           this.eachChild((child) => child.remove(options))
         }
@@ -1105,20 +1105,20 @@ export class Cell<
 
   // #region batch
 
-  protected startBatch(name: string, data: KeyValue = {}) {
+  protected startBatch(name: Model.BatchName, data: KeyValue = {}) {
     if (this.model) {
       this.model.startBatch(name, { ...data, cell: this })
     }
   }
 
-  protected stopBatch(name: string, data: KeyValue = {}) {
+  protected stopBatch(name: Model.BatchName, data: KeyValue = {}) {
     if (this.model) {
       this.model.stopBatch(name, { ...data, cell: this })
     }
   }
 
-  protected executeBatch<T>(
-    name: string,
+  protected batchUpdate<T>(
+    name: Model.BatchName,
     execute: () => T,
     data?: KeyValue,
   ): T {

@@ -174,7 +174,7 @@ export class Renderer extends Base {
       // UPDATE_DELAYING_BATCHES: ['translate'],
       const updateDelayingBatches = Renderer.UPDATE_DELAYING_BATCHES
       if (
-        updateDelayingBatches.includes(name) &&
+        updateDelayingBatches.includes(name as Model.BatchName) &&
         !model.hasActiveBatch(updateDelayingBatches)
       ) {
         this.updateViews(data)
@@ -184,7 +184,7 @@ export class Renderer extends Base {
     // SORT_DELAYING_BATCHES: ['add', 'to-front', 'to-back'],
     const sortDelayingBatches = Renderer.SORT_DELAYING_BATCHES
     if (
-      sortDelayingBatches.includes(name) &&
+      sortDelayingBatches.includes(name as Model.BatchName) &&
       !model.hasActiveBatch(sortDelayingBatches)
     ) {
       this.sortViews()
@@ -1192,6 +1192,10 @@ export namespace Renderer {
   export const MOUNT_BATCH_SIZE = 1000
   export const UPDATE_BATCH_SIZE = Infinity
   export const MIN_PRIORITY = 2
-  export const SORT_DELAYING_BATCHES = ['add', 'to-front', 'to-back']
-  export const UPDATE_DELAYING_BATCHES = ['translate']
+  export const SORT_DELAYING_BATCHES: Model.BatchName[] = [
+    'add',
+    'to-front',
+    'to-back',
+  ]
+  export const UPDATE_DELAYING_BATCHES: Model.BatchName[] = ['translate']
 }
