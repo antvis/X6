@@ -514,7 +514,7 @@ export class Model extends Basecoat<Model.EventArgs> {
   /**
    * Returns an array of all the roots of the graph.
    */
-  getOrigins() {
+  getRoots() {
     return this.getBoundaryNodes(true)
   }
 
