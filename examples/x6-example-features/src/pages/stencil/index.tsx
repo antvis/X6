@@ -1,6 +1,6 @@
 import React from 'react'
 import { Graph } from '@antv/x6'
-import { Stencil } from '@antv/x6/es/addon'
+import { Stencil } from '@antv/x6/es/addon/stencil'
 import { Rect, Circle } from '@antv/x6/es/shape/basic'
 import '../index.less'
 import './index.less'
@@ -18,7 +18,7 @@ export default class Example extends React.Component<
       container: this.container,
       width: 800,
       height: 600,
-      gridSize: 1,
+      grid: 1,
     })
 
     graph.addNode({
