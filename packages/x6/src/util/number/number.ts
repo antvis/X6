@@ -24,6 +24,20 @@ export function mod(n: number, m: number) {
   return ((n % m) + m) % m
 }
 
+export function random(lower: number, upper: number) {
+  if (upper == null) {
+    upper = lower == null ? 1 : lower // tslint:disable-line
+    lower = 0 // tslint:disable-line
+  } else {
+    if (upper < lower) {
+      const tmp = lower
+      lower = upper // tslint:disable-line
+      upper = tmp // tslint:disable-line
+    }
+  }
+  return Math.floor(Math.random() * (upper - lower + 1) + lower)
+}
+
 export function isPercentage(val: any): val is string {
   return typeof val === 'string' && val.slice(-1) === '%'
 }

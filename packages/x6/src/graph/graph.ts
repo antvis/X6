@@ -212,8 +212,8 @@ export class Graph extends Basecoat<EventArgs> {
   /**
    * Returns an array of all the roots of the graph.
    */
-  getOriginCells() {
-    return this.model.getOrigins()
+  getRootCells() {
+    return this.model.getRoots()
   }
 
   /**

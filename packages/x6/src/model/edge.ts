@@ -234,7 +234,7 @@ export class Edge<
   }
 
   setSource(
-    edge: Node,
+    node: Node,
     args?: Edge.SetCellTerminalArgs,
     options?: Edge.SetOptions,
   ): this
