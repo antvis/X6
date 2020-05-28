@@ -1,2 +1,2 @@
 export * from './grid'
-export * from './tree'
+export * from './force-directed'
