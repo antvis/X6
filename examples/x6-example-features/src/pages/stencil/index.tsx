@@ -18,6 +18,7 @@ export default class Example extends React.Component<
       container: this.container,
       width: 800,
       height: 600,
+      snapline: true,
       grid: 1,
     })
 
@@ -40,10 +41,23 @@ export default class Example extends React.Component<
     })
 
     const stencil = new Stencil({
-      graph: graph,
+      target: graph,
       width: 200,
-      height: 300,
-      gridSize: 1,
+      height: 600,
+      search: true,
+      collapsable: true,
+      snapline: graph.snapline.widget,
+      grid: 1,
+      groups: [
+        {
+          name: 'group1',
+          height: 300,
+        },
+        {
+          name: 'group2',
+          height: 300,
+        },
+      ],
     })
 
     this.stencilContainer.appendChild(stencil.container)
@@ -102,7 +116,8 @@ export default class Example extends React.Component<
       },
     })
 
-    stencil.load([r, c, c2, r2, r3, c3])
+    stencil.load([r, c, c2, r2.clone()], 'group1')
+    stencil.load([c2.clone(), r2, r3, c3], 'group2')
   }
 
   refContainer = (container: HTMLDivElement) => {

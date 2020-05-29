@@ -1164,7 +1164,7 @@ export namespace Model {
     | 'layout'
     | 'add-edge'
     | 'fit-embeds'
-    | 'stencil-drag'
+    | 'dnd'
     | 'selection-translate'
     | 'halo'
     | 'cut'
