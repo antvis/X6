@@ -1,84 +1,39 @@
-import { Util } from '../../global'
 import { FunctionExt } from '../../util'
-import { Rectangle, Point } from '../../geometry'
 import { Cell } from '../../model/cell'
 import { Node } from '../../model/node'
 import { Model } from '../../model/model'
 import { View } from '../../view/view'
-import { CellView } from '../../view/cell'
-import { NodeView } from '../../view/node'
 import { Graph } from '../../graph/graph'
 import { EventArgs } from '../../graph/events'
+import { grid as gridLayout } from '../../layout/grid'
+import { Dnd } from '../dnd'
 import { Scroller } from '../scroller'
-import { Snapline } from '../snapline'
-
-// const inst = {
-//   options() {
-//     return {
-//       columnWidth: this.options.width / 2 - 10,
-//       columns: 2,
-//       rowHeight: 80,
-//       resizeToFit: true,
-//       dy: 10,
-//       dx: 10,
-//     }
-//   },
-//   layoutGroup(x, view) {
-//     var opts = this.options.layout
-//     if (((view = view || {}), !GridLayout)) {
-//       throw new Error(
-//         'joint.ui.Stencil: joint.layout.GridLayout is not available.',
-//       )
-//     }
-//     GridLayout.layout(x, extend({}, opts, view.layout))
-//   },
-// }
 
 export class Stencil extends View {
-  protected readonly options: Stencil.Options
+  public readonly options: Stencil.Options
+  public readonly dnd: Dnd
   protected readonly graphs: { [groupName: string]: Graph }
   protected readonly $groups: { [groupName: string]: JQuery<HTMLElement> }
   protected readonly $container: JQuery<HTMLDivElement>
   protected readonly $content: JQuery<HTMLDivElement>
-  protected readonly $graggingGraph: JQuery<HTMLDivElement>
-  protected readonly draggingGraph: Graph
-  protected draggingData: {
-    node: Node
-    view: NodeView
-    bbox: Rectangle
-    nodeBBox: Rectangle
-    nodeOffset: Point.PointLike
-    padding: number
-    pageOffset: Point.PointLike
-    snapOffset: Point.PointLike
-  }
-
-  protected cloneNode: Node | null
-  protected cloneView: NodeView | null
-  protected cloneBBox: Rectangle
-  protected cloneGeometryBBox: Rectangle
-  protected cloneViewDeltaOrigin: Point
-  protected graphDragPadding: number | null
-  protected paperDragInitialOffset: null | { left: number; top: number }
-  protected cloneSnapOffset: Point.PointLike | null
-
-  protected readonly DEFAULT_GROUP = '__default__'
 
   protected get targetScroller() {
-    const graph = this.options.graph
-    return graph instanceof Graph ? null : graph
+    const target = this.options.target
+    return target instanceof Graph ? null : target
   }
 
   protected get targetGraph() {
-    const graph = this.options.graph
-    return graph instanceof Graph ? graph : graph.graph
+    const target = this.options.target
+    return target instanceof Graph ? target : target.graph
   }
 
   protected get targetModel() {
     return this.targetGraph.model
   }
 
-  constructor(options: Partial<Stencil.Options> & { graph: Graph | Scroller }) {
+  constructor(
+    options: Partial<Stencil.Options> & { target: Graph | Scroller },
+  ) {
     super()
 
     this.graphs = {}
@@ -88,35 +43,47 @@ export class Stencil extends View {
       ...options,
     } as Stencil.Options
 
+    this.dnd = new Dnd(this.options)
     this.onSearch = FunctionExt.debounce(this.onSearch, 200)
-
-    this.container = View.createElement('div')
+    this.container = document.createElement('div')
     this.$container = this.$(this.container).addClass(
-      this.prefixClassName('widget-stencil'),
+      this.prefixClassName(ClassNames.base),
     )
 
-    this.$content = this.renderContent()
-    this.$graggingGraph = this.renderPaperDrag()
+    if (options.collapsable) {
+      this.$container.addClass('collapsable').append(this.renderToggleAll())
+    }
 
-    this.$container.empty().append(this.$graggingGraph, this.$content)
     if (options.search) {
-      this.$container.addClass('searchable').prepend(this.renderSearch())
+      this.$container.addClass('searchable').append(this.renderSearch())
     }
 
-    if (options.groupsToggleButtons) {
-      this.$container.addClass('collapsible').prepend(this.renderToggleAll())
-    }
+    this.$content = this.$('<div/>')
+      .addClass(this.prefixClassName(ClassNames.content))
+      .appendTo(this.$container)
 
-    const globalGraphOptions = options.graphOptions || {}
+    const globalGraphOptions = options.stencilGraphOptions || {}
 
     if (options.groups && options.groups.length) {
       options.groups.forEach((group) => {
-        const $group = this.renderGroup(group).appendTo(this.$content)
+        const $group = this.$('<div/>')
+          .addClass(this.prefixClassName(ClassNames.group))
+          .attr('data-name', group.name)
+          .toggleClass('closed', group.closed === true)
+
+        const $title = this.$('<h3/>')
+          .addClass(this.prefixClassName(ClassNames.groupTitle))
+          .html(group.label || group.name)
+
+        const $content = this.$('<div/>').addClass(
+          this.prefixClassName(ClassNames.groupContent),
+        )
+
         const graphOptionsInGroup = group.graphOptions
         const graph = new Graph({
           ...globalGraphOptions,
           ...graphOptionsInGroup,
-          container: $group.find('.elements')[0],
+          container: document.createElement('div'),
           model: globalGraphOptions.model || new Model(),
           width: group.width || options.width,
           height: group.height || options.height,
@@ -124,114 +91,67 @@ export class Stencil extends View {
           preventDefaultBlankAction: false,
         })
 
+        $content.append(graph.container)
+        $group.append($title, $content).appendTo(this.$content)
+
         this.$groups[group.name] = $group
         this.graphs[group.name] = graph
       })
     } else {
-      const $container = this.renderElementsContainer().appendTo(this.$content)
       const graph = new Graph({
         ...globalGraphOptions,
-        container: $container[0],
+        container: document.createElement('div'),
         model: globalGraphOptions.model || new Model(),
         width: options.width,
         height: options.height,
         interactive: false,
         preventDefaultBlankAction: false,
       })
-      this.graphs[this.DEFAULT_GROUP] = graph
+      this.$content.append(graph.container)
+      this.graphs[Private.defaultGroupName] = graph
     }
-
-    const draggingGraphOptions = options.draggingGraphOptions || {}
-    const draggingModel =
-      draggingGraphOptions.model || globalGraphOptions.model || new Model()
-    this.draggingGraph = new Graph({
-      ...draggingGraphOptions,
-      container: this.$graggingGraph[0],
-      width: 1,
-      height: 1,
-      model: draggingModel,
-    })
 
     this.startListening()
     return this
   }
 
-  init() {
-    this.initializeLayout()
-  }
-
-  initializeLayout() {
-    // const layout = this.options.layout
-    // if (layout) {
-    //   if (typeof layout === 'function') {
-    //     this.layoutGroup = layout
-    //   } else {
-    //     this.layoutGroup = inst.layoutGroup.bind(this)
-    //     this.options.layout = isObject(layout) ? layout : {}
-    //     merge(this.options.layout, inst.options.call(this))
-    //   }
-    // }
-  }
-
-  protected renderContent() {
-    return this.$('<div/>').addClass(
-      this.prefixClassName('widget-stencil-content'),
-    )
-  }
-
-  protected renderPaperDrag() {
-    return this.$('<div/>').addClass('stencil-paper-drag')
-  }
-
   protected renderSearch() {
     return this.$('<div/>')
-      .addClass('search-wrap')
+      .addClass(this.prefixClassName(ClassNames.search))
       .append(
-        $('<input/>', {
-          type: 'search',
-          placeholder: 'search',
-        }).addClass('search'),
+        this.$('<input/>')
+          .attr({
+            type: 'search',
+            placeholder: 'Search',
+          })
+          .addClass(this.prefixClassName(ClassNames.searchText)),
       )
   }
 
   protected renderToggleAll() {
     return [
       this.$('<div/>')
-        .addClass('groups-toggle')
-        .append(
-          this.$('<label/>').addClass('group-label').html(this.options.label),
-        )
+        .addClass(this.prefixClassName(ClassNames.title))
+        .append(this.$('<label/>').addClass('label').html(this.options.label))
         .append(this.$('<button/>').text('+').addClass('btn btn-expand'))
         .append(this.$('<button/>').text('-').addClass('btn btn-collapse')),
     ]
   }
 
-  protected renderElementsContainer() {
-    return this.$('<div/>').addClass('elements')
-  }
-
-  protected renderGroup(group: Stencil.Group) {
-    const $group = this.$('<div/>')
-      .addClass('group')
-      .attr('data-name', group.name)
-      .toggleClass('closed', group.closed === true)
-    const $title = this.$('<h3/>')
-      .addClass('group-label')
-      .html(group.label || group.name)
-    const $cells = this.renderElementsContainer()
-    return $group.append($title, $cells)
-  }
-
   protected startListening() {
+    const searchText = this.prefixClassName(ClassNames.searchText)
+    const title = this.prefixClassName(ClassNames.title)
+    const groupTitle = this.prefixClassName(ClassNames.groupTitle)
+
     this.delegateEvents({
       'click .btn-expand': 'expandGroups',
       'click .btn-collapse': 'collapseGroups',
-      'click .groups-toggle > .group-label': 'expandGroups',
-      'click .group > .group-label': 'onGroupLabelClick',
-      'touchstart .group > .group-label': 'onGroupLabelClick',
-      'input .search': 'onSearch',
-      'focusin .search': 'onSearchFocusIn',
-      'focusout .search': 'onSearchFocusOut',
+      [`click .${title} > .label`]: 'expandGroups',
+      [`click .${groupTitle}`]: 'onGroupTitleClick',
+      [`touchstart .${groupTitle}`]: 'onGroupTitleClick',
+      [`input .${searchText}`]: 'onSearch',
+      [`focusin .${searchText}`]: 'onSearchFocusIn',
+      [`focusout .${searchText}`]: 'onSearchFocusOut',
     })
 
     Object.keys(this.graphs).forEach((groupName) => {
@@ -270,10 +190,12 @@ export class Stencil extends View {
     return this
   }
 
-  loadGroup(cells: (Node | Node.Metadata)[], groupName?: string) {
+  protected loadGroup(cells: (Node | Node.Metadata)[], groupName?: string) {
     const model = this.getModel(groupName)
     if (model) {
-      const nodes = cells.map((c) => (c instanceof Node ? c : Node.create(c)))
+      const nodes = cells.map((cell) =>
+        cell instanceof Node ? cell : Node.create(cell),
+      )
       model.resetCells(nodes)
     }
 
@@ -283,345 +205,31 @@ export class Stencil extends View {
       height = group.height
     }
 
-    // this.isLayoutEnabled() && this.layoutGroup(model, group)
+    if (this.options.layout) {
+      this.options.layout.call(this, model, group)
+    }
 
     if (!height) {
       const graph = this.getGraph(groupName)
       graph.fitToContent({
         minWidth: graph.options.width,
         gridHeight: 1,
-        padding: this.options.paperPadding || 10,
+        padding: this.options.graphPadding || 10,
       })
     }
 
     return this
   }
 
-  protected isLayoutEnabled() {
-    return !!this.options.layout
-  }
-
-  protected prepareDragging(view: CellView, clientX: number, clientY: number) {
-    const graphDrag = this.draggingGraph
-    const modelDrag = graphDrag.model
-
-    this.$(graphDrag.container).addClass('dragging').appendTo(document.body)
-
-    const nodeDrag = this.options.dragStartClone(view.cell as Node).pos(0, 0)
-    let padding = 5
-    const snaplines = this.options.snaplines
-    if (snaplines != null) {
-      padding += snaplines.options.tolerance || 0
-    }
-
-    if (snaplines || this.options.scaleClones) {
-      const scale = this.targetGraph.scale()
-      graphDrag.scale(scale.sx, scale.sy)
-      padding *= Math.max(scale.sx, scale.sy)
-    } else {
-      graphDrag.scale(1, 1)
-    }
-
-    this.clearClone()
-
-    if (this.options.dropAnimation) {
-      this.$(this.draggingGraph.container).stop(true, true)
-    }
-
-    modelDrag.resetCells([nodeDrag.pos(0, 0)])
-
-    const viewDrag = graphDrag.renderer.findViewByCell(nodeDrag) as NodeView
-    viewDrag.undelegateEvents()
-    graphDrag.fitToContent({
-      padding,
-      allowNewOrigin: 'any',
-    })
-
-    const bbox = viewDrag.getBBox()
-    this.cloneGeometryBBox = viewDrag.getBBox({
-      fromCell: true,
-    })
-    this.cloneViewDeltaOrigin = this.cloneGeometryBBox
-      .getTopLeft()
-      .diff(bbox.getTopLeft())
-    this.cloneBBox = nodeDrag.getBBox()
-    this.cloneNode = nodeDrag
-    this.cloneView = viewDrag
-    this.graphDragPadding = padding
-    this.paperDragInitialOffset = this.setGraphDragOffset(clientX, clientY)
-  }
-
-  protected setGraphDragOffset(x: number, y: number) {
-    const scrollTop =
-      document.body.scrollTop || document.documentElement.scrollTop
-    const delta = this.cloneViewDeltaOrigin
-    const nodeBBox = this.cloneGeometryBBox
-    const padding = this.graphDragPadding || 5
-    const offset = {
-      left: x - delta.x - nodeBBox.width / 2 - padding,
-      top: y - delta.y - nodeBBox.height / 2 - padding + scrollTop,
-    }
-
-    if (this.draggingGraph) {
-      this.$(this.draggingGraph.container).offset(offset)
-    }
-
-    return offset
-  }
-
-  protected setCloneLocalPosition(x: number, y: number) {
-    const local = this.targetGraph.clientToLocalPoint({ x, y })
-    const cloneBBox = this.cloneBBox!
-    local.x -= cloneBBox.width / 2
-    local.y -= cloneBBox.height / 2
-    this.cloneNode!.pos(local.x, local.y)
-    return local
-  }
-
   protected onDragStart(args: EventArgs['node:mousedown']) {
-    const { e, view } = args
-
-    e.preventDefault()
-
-    this.targetModel.startBatch('stencil-drag')
-
-    this.$container.addClass('dragging')
-    this.prepareDragging(view, e.clientX, e.clientY)
-    const local = this.setCloneLocalPosition(e.clientX, e.clientY)
-    const snaplines = this.options.snaplines
-    if (snaplines) {
-      snaplines.captureCursorOffset({
-        ...args,
-        view: this.cloneView!,
-        x: local.x,
-        y: local.y,
-      })
-      this.cloneNode!.on('change:position', this.onCloneSnapped, this)
-    }
-    this.delegateDocumentEvents(Stencil.documentEvents, e.data)
+    const { e, node } = args
+    this.dnd.start(node, e)
   }
 
-  protected onCloneSnapped({
-    node,
-    current,
-    options,
-  }: Cell.EventArgs['change:position']) {
-    if (options.snapped) {
-      const bbox = this.cloneBBox
-      node.pos(bbox.x + options.tx, bbox.y + options.ty, {
-        silent: true,
-      })
-      this.cloneView!.translate()
-      node.pos(current!.x, current!.y, {
-        silent: true,
-      })
-
-      this.cloneSnapOffset = {
-        x: options.tx,
-        y: options.ty,
-      }
-    } else {
-      this.cloneSnapOffset = null
-    }
-  }
-
-  onDrag(evt: JQuery.MouseMoveEvent) {
-    const cloneView = this.cloneView
-    if (cloneView) {
-      evt.preventDefault()
-      const e = this.normalizeEvent(evt)
-      const clientX = e.clientX
-      const clientY = e.clientY
-      this.setGraphDragOffset(clientX, clientY)
-      const local = this.setCloneLocalPosition(clientX, clientY)
-      const embeddingMode = this.targetGraph.options.embedding.enabled
-      const snaplines = this.options.snaplines
-      const embedding =
-        (embeddingMode || snaplines) &&
-        this.isInsideValidArea({
-          x: clientX,
-          y: clientY,
-        })
-
-      if (embeddingMode) {
-        cloneView.setEventData(e, { graph: this.targetGraph })
-        const data = cloneView.getEventData<any>(e)
-        if (embedding) {
-          cloneView.processEmbedding(data)
-        } else {
-          cloneView.clearEmbedding(data)
-        }
-      }
-
-      if (snaplines) {
-        if (embedding) {
-          snaplines.snapOnMoving({
-            e,
-            view: cloneView!,
-            x: local.x,
-            y: local.y,
-          } as EventArgs['node:mousemove'])
-        } else {
-          snaplines.hide()
-        }
-      }
-    }
-  }
-
-  onDragEnd(evt: JQuery.MouseUpEvent) {
-    const cloneNode = this.cloneNode
-    if (cloneNode) {
-      const e = this.normalizeEvent(evt)
-      const cloneView = this.cloneView
-      const cloneBBox = this.cloneBBox
-      const cloneSnapOffset = this.cloneSnapOffset
-      let x = cloneBBox.x
-      let y = cloneBBox.y
-
-      if (cloneSnapOffset) {
-        x = x + cloneSnapOffset.x
-        y = y + cloneSnapOffset.y
-      }
-
-      cloneNode.pos(x, y, { silent: true })
-
-      const node = this.options.dragEndClone(cloneNode)
-      if (
-        this.drop(node, {
-          x: e.clientX,
-          y: e.clientY,
-        })
-      ) {
-        this.onDropEnd(cloneNode)
-      } else {
-        this.onDropInvalid(e, node)
-      }
-
-      if (this.targetGraph.options.embedding.enabled && cloneView) {
-        cloneView.setEventData(e, {
-          model: node,
-          graph: this.targetGraph,
-        })
-        cloneView.finalizeEmbedding(cloneView.getEventData<any>(e))
-      }
-
-      this.targetModel.stopBatch('stencil-drag')
-    }
-  }
-
-  protected clearClone() {
-    if (this.cloneNode) {
-      this.cloneNode.remove()
-      this.cloneNode = null
-      this.cloneView = null
-      this.cloneSnapOffset = null
-      this.paperDragInitialOffset = null
-      this.graphDragPadding = null
-    }
-  }
-
-  protected onDropEnd(node: Node) {
-    if (this.cloneNode === node) {
-      this.clearClone()
-      this.$container.append(this.draggingGraph.container)
-      this.$container.removeClass('dragging')
-      this.$(this.draggingGraph.container).removeClass('dragging')
-    }
-  }
-
-  protected onDropInvalid(evt: JQuery.MouseUpEvent, node?: Node) {
-    const cloneNode = this.cloneNode
-    if (cloneNode) {
-      this.trigger('drop:invalid', {
-        e: this.normalizeEvent(evt),
-        node: node || this.options.dragEndClone(cloneNode),
-      })
-
-      const anim = this.options.dropAnimation
-      if (anim) {
-        const duration = (typeof anim === 'object' && anim.duration) || 150
-        const easing = (typeof anim === 'object' && anim.easing) || 'swing'
-
-        this.cloneView = null
-
-        this.$(this.draggingGraph.container).animate(
-          this.paperDragInitialOffset!,
-          duration,
-          easing,
-          () => this.onDropEnd(cloneNode),
-        )
-      } else {
-        this.onDropEnd(cloneNode)
-      }
-    }
-  }
-
-  protected isInsideValidArea(p: Point.PointLike) {
-    let area: Rectangle
-    const targetGraph = this.targetGraph
-    const targetScroller = this.targetScroller
-    const blank = this.getDropArea(this.container)
-
-    if (targetScroller) {
-      if (targetScroller.options.autoResize) {
-        area = this.getDropArea(targetScroller.container)
-      } else {
-        const outter = this.getDropArea(targetScroller.container)
-        area = this.getDropArea(targetGraph.container).intersect(outter)!
-      }
-    } else {
-      area = this.getDropArea(targetGraph.container)
-    }
-
-    return area && area.containsPoint(p) && !blank.containsPoint(p)
-  }
-
-  protected getDropArea(elem: Element) {
-    const $elem = this.$(elem)
-    const offset = $elem.offset()!
-    const scrollTop =
-      document.body.scrollTop || document.documentElement.scrollTop
-    const scrollLeft =
-      document.body.scrollLeft || document.documentElement.scrollLeft
-    return Rectangle.create({
-      x:
-        offset.left + parseInt($elem.css('border-left-width'), 10) - scrollLeft,
-      y: offset.top + parseInt($elem.css('border-top-width'), 10) - scrollTop,
-      width: $elem.innerWidth()!,
-      height: $elem.innerHeight()!,
-    })
-  }
-
-  protected drop(node: Node, pos: Point.PointLike) {
-    const targetGraph = this.targetGraph
-    const targetModel = targetGraph.model
-    if (this.isInsideValidArea(pos)) {
-      const local = targetGraph.clientToLocalPoint(pos)
-      const bbox = node.getBBox()
-      local.x += bbox.x - bbox.width / 2
-      local.y += bbox.y - bbox.height / 2
-      const gridSize = this.cloneSnapOffset ? 1 : targetGraph.getGridSize()
-
-      node.pos(
-        Util.snapToGrid(local.x, gridSize),
-        Util.snapToGrid(local.y, gridSize),
-      )
-
-      node.removeZIndex()
-      targetModel.addCell(node, { stencil: this.cid })
-
-      return true
-    }
-    return false
-  }
-
-  protected filter(
-    keyworld: string,
-    filter?: Stencil.Filters | Stencil.FilterFn,
-  ) {
+  protected filter(keyworld: string, filter?: Stencil.Filter) {
     const found = Object.keys(this.graphs).reduce((memo, groupName) => {
       const graph = this.graphs[groupName]
-      const name = groupName === this.DEFAULT_GROUP ? null : groupName
+      const name = groupName === Private.defaultGroupName ? null : groupName
       const items = graph.model.getCells().filter((cell) => {
         let matched = false
         matched =
@@ -630,7 +238,7 @@ export class Stencil extends View {
             : this.isCellMatched(
                 cell,
                 keyworld,
-                filter,
+                typeof filter === 'boolean' ? {} : filter,
                 keyworld.toLowerCase() !== keyworld,
               )
 
@@ -643,16 +251,14 @@ export class Stencil extends View {
       })
 
       const found = items.length > 0
-      const opts = this.options
-      // const a = (
-      //   (assign(opts, 'paperOptions') || {}).model || new Error()
-      // ).resetCells(items)
+      const options = this.options
 
-      // this.trigger('filter', a, groupName, keyworld)
+      const model = new Model()
+      model.resetCells(items)
 
-      // if (this.isLayoutEnabled()) {
-      //   // this.layoutGroup(a, this.getGroup(groupName))
-      // }
+      if (options.layout) {
+        options.layout.call(this, model, this.getGroup(groupName))
+      }
 
       if (this.$groups[groupName]) {
         this.$groups[groupName].toggleClass('unmatched', !found)
@@ -661,7 +267,7 @@ export class Stencil extends View {
       graph.fitToContent({
         gridWidth: 1,
         gridHeight: 1,
-        padding: opts.paperPadding || 10,
+        padding: options.graphPadding || 10,
       })
 
       return memo || found
@@ -694,6 +300,7 @@ export class Stencil extends View {
         )
       })
     }
+
     return true
   }
 
@@ -709,21 +316,23 @@ export class Stencil extends View {
     this.$container.removeClass('is-focused')
   }
 
-  protected onGroupLabelClick(evt: JQuery.TriggeredEvent) {
-    const $group = this.$(evt.target).closest('.group')
+  protected onGroupTitleClick(evt: JQuery.TriggeredEvent) {
+    const $group = this.$(evt.target).closest(
+      `.${this.prefixClassName(ClassNames.group)}`,
+    )
     this.toggleGroup($group.attr('data-name') || '')
   }
 
-  getModel(groupName?: string) {
+  protected getModel(groupName?: string) {
     const graph = this.getGraph(groupName)
     return graph ? graph.model : null
   }
 
-  getGraph(groupName?: string) {
-    return this.graphs[groupName || this.DEFAULT_GROUP]
+  protected getGraph(groupName?: string) {
+    return this.graphs[groupName || Private.defaultGroupName]
   }
 
-  getGroup(groupName?: string) {
+  protected getGroup(groupName?: string) {
     const groups = this.options.groups
     if (groupName != null && groups && groups.length) {
       return groups.find((group) => group.name === groupName)
@@ -733,9 +342,9 @@ export class Stencil extends View {
 
   toggleGroup(groupName: string) {
     if (this.isGroupCollapsed(groupName)) {
-      this.collapseGroup(groupName)
-    } else {
       this.expandGroup(groupName)
+    } else {
+      this.collapseGroup(groupName)
     }
     return this
   }
@@ -783,40 +392,27 @@ export class Stencil extends View {
       graph.view.remove()
       delete this.graphs[groupName]
     })
-
-    if (this.draggingGraph) {
-      this.draggingGraph.view.remove()
-    }
+    this.dnd.remove()
     this.stopListening()
     this.undelegateDocumentEvents()
   }
 }
 
 export namespace Stencil {
-  export interface Options {
-    graph: Graph | Scroller
+  export interface Options extends Dnd.Options {
+    width: number
+    height: number
+    graphPadding?: number
+    stencilGraphOptions?: Graph.Options
+    layout?: (this: Stencil, model: Model, gourp?: Group) => any
+    layoutOptions?: any
+    search?: Filter
     label: string
-    width: string | number
-    height: string | number
-    paperPadding?: number
-    dropAnimation?:
-      | boolean
-      | {
-          duration?: number
-          easing?: string
-        }
-    layout?: any
-    search?: Filters | FilterFn
-    groupsToggleButtons?: any
-    graphOptions?: any
-    draggingGraphOptions?: any
-    scaleClones?: boolean
-    snaplines?: Snapline
     groups?: Group[]
-    dragStartClone: (cell: Node) => Node
-    dragEndClone: (cell: Node) => Node
+    collapsable?: boolean
   }
 
+  export type Filter = Filters | FilterFn | boolean
   export type Filters = { [type: string]: string[] }
   export type FilterFn = (
     this: Stencil,
@@ -830,26 +426,49 @@ export namespace Stencil {
     name: string
     label?: string
     closed?: boolean
-    width?: number | string
-    height?: number | string
-    graphOptions?: any
+    width?: number
+    height?: number
+    graphOptions?: Graph.Options
+    layoutOptions?: any
   }
 
   export const defaultOptions: Partial<Options> = {
     width: 200,
     height: 800,
     label: 'Stencil',
-    groupsToggleButtons: false,
-    dropAnimation: false,
-    dragStartClone: (cell) => cell.clone(),
-    dragEndClone: (cell) => cell.clone(),
-  }
+    collapsable: false,
 
-  export const documentEvents = {
-    mousemove: 'onDrag',
-    touchmove: 'onDrag',
-    mouseup: 'onDragEnd',
-    touchend: 'onDragEnd',
-    touchcancel: 'onDragEnd',
+    layout(model, group) {
+      const options = {
+        columnWidth: (this.options.width as number) / 2 - 10,
+        columns: 2,
+        rowHeight: 80,
+        resizeToFit: false,
+        dx: 10,
+        dy: 10,
+      }
+
+      gridLayout(model, {
+        ...options,
+        ...this.options.layoutOptions,
+        ...(group ? group.layoutOptions : {}),
+      })
+    },
+    ...Dnd.defaults,
   }
+}
+
+namespace ClassNames {
+  export const base = 'widget-stencil'
+  export const title = `${base}-title`
+  export const search = `${base}-search`
+  export const searchText = `${search}-text`
+  export const content = `${base}-content`
+  export const group = `${base}-group`
+  export const groupTitle = `${group}-title`
+  export const groupContent = `${group}-content`
+}
+
+namespace Private {
+  export const defaultGroupName = '__default__'
 }
