@@ -22,8 +22,10 @@ export class Keyboard extends Disposable implements IDisablable {
       this.target = document
     } else {
       this.target = this.container
-      // ensure the container focusable
-      this.target.setAttribute('tabindex', '-1')
+      if (!this.disabled) {
+        // ensure the container focusable
+        this.target.setAttribute('tabindex', '-1')
+      }
     }
 
     this.mousetrap = new Keyboard.Mousetrap(this.target as Element, this)
@@ -37,6 +39,9 @@ export class Keyboard extends Disposable implements IDisablable {
     if (this.disabled) {
       this.options.enabled = true
       this.graph.options.keyboard.enabled = true
+      if (this.target instanceof HTMLElement) {
+        this.target.setAttribute('tabindex', '-1')
+      }
     }
   }
 
@@ -44,6 +49,9 @@ export class Keyboard extends Disposable implements IDisablable {
     if (!this.disabled) {
       this.options.enabled = false
       this.graph.options.keyboard.enabled = false
+      if (this.target instanceof HTMLElement) {
+        this.target.removeAttribute('tabindex')
+      }
     }
   }
 

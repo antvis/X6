@@ -43,7 +43,7 @@ export default class Example extends React.Component<
     const stencil = new Stencil({
       target: graph,
       width: 200,
-      height: 600,
+      height: 300,
       search: true,
       collapsable: true,
       snapline: graph.snapline.widget,
@@ -51,11 +51,9 @@ export default class Example extends React.Component<
       groups: [
         {
           name: 'group1',
-          height: 300,
         },
         {
           name: 'group2',
-          height: 300,
         },
       ],
     })
