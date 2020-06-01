@@ -10,7 +10,7 @@ export default class Example extends React.Component {
       container: this.container,
       width: 650,
       height: 400,
-      gridSize: 1,
+      grid: 1,
     })
 
     const ball = graph.addNode({
@@ -50,7 +50,7 @@ export default class Example extends React.Component {
     ball.transition('attrs/body/fill', '#FFFF00', {
       delay: 3000,
       duration: 500,
-      interpolate: Interpolation.color,
+      interp: Interp.color,
     })
 
     ball.transition(
@@ -60,7 +60,7 @@ export default class Example extends React.Component {
         delay: 5000,
         duration: 2000,
         easing: 'easeInBounce',
-        interpolation: (
+        interp: (
           start: { text: String; fontSize: number },
           end: { text: String; fontSize: number },
         ) => {
@@ -95,7 +95,7 @@ export default class Example extends React.Component {
       cell.transition('position', 20, {
         delay: 0,
         duration: 5000,
-        interpolation: function (a: Point.PointLike, b: number) {
+        interp: function (a: Point.PointLike, b: number) {
           return function (t: number) {
             return {
               x: a.x + 10 * b * (Math.cos(t * 2 * Math.PI) - 1),

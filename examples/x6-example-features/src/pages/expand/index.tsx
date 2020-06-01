@@ -157,14 +157,16 @@ export default class Example extends React.Component {
       width: 800,
       height: 600,
       grid: 1,
-      defaultConnectionPoint: { name: 'boundary' },
+      connecting: {
+        connectionPoint: 'boundary',
+        validateMagnet: function (cellView: CellView, magnet: Element) {
+          var cell = (cellView.cell as any) as TogglableRect
+          var portId = magnet.getAttribute('port')
+          return portId ? !cell.isPortCollapsed(portId) : true
+        },
+      },
       magnetThreshold: 'onleave',
       clickThreshold: 5,
-      validateMagnet: function (cellView: CellView, magnet: Element) {
-        var cell = (cellView.cell as any) as TogglableRect
-        var portId = magnet.getAttribute('port')
-        return portId ? !cell.isPortCollapsed(portId) : true
-      },
     })
 
     graph.on('node:click', ({ view }) => {
