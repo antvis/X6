@@ -571,7 +571,7 @@ export class CellView<
     let selector = terminal.magnet
     let magnet
     if (portId != null && cell.isNode() && cell.hasPort(portId)) {
-      magnet = (this as any).findPortNode(portId, selector) || root
+      magnet = (this as any).findPortElem(portId, selector) || root
     } else {
       if (!selector) {
         selector = terminal.selector

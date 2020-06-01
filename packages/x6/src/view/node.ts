@@ -304,8 +304,8 @@ export class NodeView<
   // #region ports
 
   // fineElemInPort
-  findPortNode(portId: string, selector?: string) {
-    const cache = this.portsCache[portId]
+  findPortElem(portId?: string, selector?: string) {
+    const cache = portId ? this.portsCache[portId] : null
     if (!cache) {
       return null
     }

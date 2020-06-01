@@ -10,9 +10,11 @@ export default class Example extends React.Component {
       container: this.container,
       width: 800,
       height: 400,
-      gridSize: 1,
-      validateMagnet() {
-        return false
+      grid: 1,
+      connecting: {
+        validateMagnet() {
+          return false
+        },
       },
     })
 

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Graph, Edge, CellView, StandardShape } from '@antv/x6'
+import { Graph, Edge, NodeView, StandardShape } from '@antv/x6'
 import '../index.less'
 
 class Shape extends StandardShape.Rect {
@@ -100,7 +100,7 @@ Shape.config({
 
 const magnetAvailabilityHighlighter = {
   name: 'stroke',
-  options: {
+  args: {
     padding: 6,
     attrs: {
       strokeWidth: 3,
@@ -117,31 +117,48 @@ export default class Example extends React.Component {
       container: this.container,
       width: 800,
       height: 600,
-      gridSize: 1,
-      linkPinning: false,
-      snapEdges: true,
-      defaultConnector: { name: 'smooth' },
-      defaultConnectionPoint: { name: 'boundary' },
-      markAvailable: true,
-      validateConnection: function (vS, mS, vT, mT, end, lV) {
-        if (!mT) return false
-        if (vS === vT) return false
-        if (mT.getAttribute('port-group') !== 'in') return false
-        if (vT.model instanceof Shape) {
-          var portId = mT.getAttribute('port')
-          var usedInPorts = vT.model.getUsedInPorts()
-          if (
-            usedInPorts.find(function (port) {
-              return port.id === portId
-            })
-          )
+      grid: 1,
+      connecting: {
+        snap: true,
+        dangling: true,
+        connector: 'smooth',
+        connectionPoint: 'boundary',
+        highlight: true,
+        validateConnection(
+          sourceView,
+          sourceMagnet,
+          targetView,
+          targetMagnet,
+          terminalType,
+          edgeView,
+        ) {
+          if (!targetMagnet) {
             return false
-        }
-        return true
+          }
+          if (sourceView === targetView) {
+            return false
+          }
+          if (targetMagnet.getAttribute('port-group') !== 'in') {
+            return false
+          }
+
+          if (targetView) {
+            const node = targetView.cell
+            if (node instanceof Shape) {
+              var portId = targetMagnet.getAttribute('port')
+              var usedInPorts = node.getUsedInPorts()
+              if (usedInPorts.find((port) => port && port.id === portId)) {
+                return false
+              }
+            }
+          }
+
+          return true
+        },
       },
     })
 
-    graph.options.highlighting.magnetAvailability = magnetAvailabilityHighlighter
+    graph.options.highlighting.magnetAvailable = magnetAvailabilityHighlighter
 
     const shape1 = new Shape()
     shape1.resize(120, 100)
@@ -161,11 +178,11 @@ export default class Example extends React.Component {
     shape3.updateInPorts()
     graph.addNode(shape3)
 
-    function update(view: CellView) {
+    function update(view: NodeView) {
       var cell = view.cell
       if (cell instanceof Shape) {
         cell.getInPorts().forEach((port) => {
-          var portNode = view.findPortNode(port.id, 'portBody')
+          var portNode = view.findPortElem(port.id!, 'portBody')
           view.unhighlight(portNode, {
             highlighter: magnetAvailabilityHighlighter,
           })
