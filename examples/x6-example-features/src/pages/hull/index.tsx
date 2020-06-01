@@ -52,7 +52,7 @@ export default class Example extends React.Component {
         'stroke-width': 3,
       })
 
-      Dom.createVector(graph.drawPane).prepend(boundary)
+      Dom.createVector(graph.view.stage).prepend(boundary)
 
       return boundary
     }
