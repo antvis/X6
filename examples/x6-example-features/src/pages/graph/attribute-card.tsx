@@ -16,37 +16,38 @@ export class AttributeCard extends React.Component<
 
   onWidthChanged = (width: number) => {
     this.setState({ width }, () => {
-      this.props.onSizeChange(this.state.width, this.state.height)
+      console.log(width)
+      this.props.onSizeChange(width, this.state.height)
     })
   }
 
   onHeightChanged = (height: number) => {
     this.setState({ height }, () => {
-      this.props.onSizeChange(this.state.width, this.state.height)
+      this.props.onSizeChange(this.state.width, height)
     })
   }
 
   onOriginXChanged = (originX: number) => {
     this.setState({ originX }, () => {
-      this.props.onOriginChange(this.state.originX, this.state.originY)
+      this.props.onOriginChange(originX, this.state.originY)
     })
   }
 
   onOriginYChanged = (originY: number) => {
     this.setState({ originY }, () => {
-      this.props.onOriginChange(this.state.originX, this.state.originY)
+      this.props.onOriginChange(this.state.originX, originY)
     })
   }
 
   onScaleXChanged = (scaleX: number) => {
     this.setState({ scaleX }, () => {
-      this.props.onScaleChange(this.state.scaleX, this.state.scaleY)
+      this.props.onScaleChange(scaleX, this.state.scaleY)
     })
   }
 
   onScaleYChanged = (scaleY: number) => {
     this.setState({ scaleY }, () => {
-      this.props.onScaleChange(this.state.scaleX, this.state.scaleY)
+      this.props.onScaleChange(this.state.scaleX, scaleY)
     })
   }
 

@@ -37,8 +37,10 @@ export default class Example extends React.Component<
       container: this.container,
       width: 600,
       height: 400,
-      gridSize: 10,
-      defaultConnectionPoint: { name: 'anchor' },
+      grid: { visible: true },
+      connecting: {
+        connectionPoint: 'anchor',
+      },
     })
 
     render(this.graph)
@@ -51,8 +53,8 @@ export default class Example extends React.Component<
         ...prevState.attrs,
         width: options.width,
         height: options.height,
-        originX: options.origin.x,
-        originY: options.origin.y,
+        originX: options.x,
+        originY: options.y,
       },
     }))
 
@@ -106,14 +108,14 @@ export default class Example extends React.Component<
     this.container = container
   }
 
-  onBackgroundChanged = (res: Graph.BackgroundOptions) => {
-    this.graph.drawBackground(res)
+  onBackgroundChanged = (
+    options: Graph.BackgroundManager.BackgroundOptions,
+  ) => {
+    this.graph.drawBackground(options)
   }
 
-  onGridChanged = (options: Grid.NativeItem) => {
-    console.log(options)
-    this.graph.setGrid(options)
-    this.graph.drawGrid()
+  onGridChanged = (options: Graph.GridManager.NativeItem) => {
+    this.graph.drawGrid(options)
   }
 
   onGridSizeChanged = (size: number) => {
