@@ -12,7 +12,7 @@ export default class Example extends React.Component {
       container: this.container,
       width: 800,
       height: 400,
-      gridSize: 1,
+      grid: 1,
     })
 
     const rect = graph.addNode({
@@ -85,7 +85,6 @@ export default class Example extends React.Component {
       target: { cell: rect, port: ports[2].id },
     })
 
-    this.graph = graph
     this.rect = rect
   }
 

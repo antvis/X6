@@ -400,6 +400,7 @@ export class Stencil extends View {
 
 export namespace Stencil {
   export interface Options extends Dnd.Options {
+    label: string
     width: number
     height: number
     graphPadding?: number
@@ -407,7 +408,6 @@ export namespace Stencil {
     layout?: (this: Stencil, model: Model, gourp?: Group) => any
     layoutOptions?: any
     search?: Filter
-    label: string
     groups?: Group[]
     collapsable?: boolean
   }

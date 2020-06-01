@@ -76,13 +76,15 @@ export default class Example extends React.Component<
       container: this.container,
       width: 1000,
       height: 600,
-      gridSize: 1,
+      grid: 1,
       async: true,
       frozen: true,
       sorting: 'approx',
-      defaultAnchor: { name: 'nodeCenter' },
-      defaultConnectionPoint: { name: 'boundary' },
-      viewport: (view: CellView, isInViewport: boolean) => {
+      connecting: {
+        anchor: 'nodeCenter',
+        connectionPoint: 'boundary',
+      },
+      checkView: (view: CellView, isInViewport: boolean) => {
         if (this.state.keepDragged && view.cid === draggedCid) {
           return true
         }
