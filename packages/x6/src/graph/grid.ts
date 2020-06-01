@@ -141,8 +141,8 @@ export class GridManager extends Base {
       return []
     }
 
-    const type = (options as GridDefinition.NativeItem).type
-    if (type == null) {
+    const name = (options as GridDefinition.NativeItem).name
+    if (name == null) {
       return [
         {
           ...GridDefinition.presets.dot,
@@ -151,7 +151,7 @@ export class GridManager extends Base {
       ]
     }
 
-    const items = GridDefinition.registry.get(type)
+    const items = GridDefinition.registry.get(name)
     if (items) {
       let args = options.args || []
       if (!Array.isArray(args)) {
@@ -163,7 +163,7 @@ export class GridManager extends Base {
         : [{ ...items, ...args[0] }]
     }
 
-    return GridDefinition.registry.onNotFound(type)
+    return GridDefinition.registry.onNotFound(name)
   }
 
   @Base.dispose()

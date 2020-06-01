@@ -3,7 +3,7 @@ import { FitToContentCard } from './fit-card'
 import { ScaleContentToFitCard } from './scale-card'
 
 export function createEffect(graph: Graph) {
-  const vSvg = Dom.createVector(graph.svgElem)
+  const vSvg = Dom.createVector(graph.view.svg)
   const vVertical = Dom.createVector('path').attr('d', 'M -10000 -1 L 10000 -1')
   const vHorizontal = Dom.createVector('path').attr(
     'd',
