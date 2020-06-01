@@ -18,10 +18,15 @@ export default class Example extends React.Component {
       container: this.container,
       width: 1000,
       height: 800,
+      connecting: {
+        connectionPoint: {
+          name: 'boundary',
+          args: { extrapolate: true },
+        },
+        connector: 'rounded',
+        router: 'orth',
+      },
       sorting: 'approx',
-      defaultConnectionPoint: { name: 'boundary', args: { extrapolate: true } },
-      defaultConnector: { name: 'rounded' },
-      defaultRouter: { name: 'orth' },
       async: true,
       interactive: false,
       frozen: true,
