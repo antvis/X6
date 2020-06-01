@@ -10,7 +10,7 @@ export default class Example extends React.Component {
       container: this.container,
       width: 800,
       height: 600,
-      gridSize: 10,
+      grid: 10,
     })
 
     const r1 = graph.addNode({

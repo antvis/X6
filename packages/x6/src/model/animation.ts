@@ -35,12 +35,12 @@ export class Animation {
     }
 
     const current = this.cell.getPropByPath<T>(path)
-    const interpolation = localOptions.interpolation
+    const interp = localOptions.interp
 
     let interpolate: any
 
-    if (interpolation) {
-      interpolate = interpolation(current, target)
+    if (interp) {
+      interpolate = interp(current, target)
     } else if (typeof target === 'object') {
       interpolate = Interp.object(
         current as KeyValue<number>,
@@ -123,6 +123,6 @@ export namespace Animation {
     delay?: number
     duration?: number
     timing?: Timing.Names | Timing.Definition
-    interpolation?: <T>(from: T, to: T) => (time: number) => T
+    interp?: <T>(from: T, to: T) => (time: number) => T
   }
 }

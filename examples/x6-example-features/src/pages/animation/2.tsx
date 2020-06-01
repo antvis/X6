@@ -13,7 +13,7 @@ class BallView extends NodeView {
       delay: (1 + Math.random()) * 3000,
       duration: 3000,
       timing: 'inout',
-      interpolation: function (a: number, b: number) {
+      interp: function (a: number, b: number) {
         return function (t: number) {
           return a + b * (1 - Math.abs(1 - 2 * t))
         }
@@ -67,7 +67,7 @@ class BallView extends NodeView {
 
     this.cell.transition('position', options, {
       duration: 100 * flightTime,
-      interpolation(
+      interp(
         position: Point.PointLike,
         params: { speed: number; angle: number },
       ) {
@@ -131,11 +131,8 @@ class BallView extends NodeView {
         this.graph.options.width,
         this.graph.options.height,
       )
-      const interpolation = Interp.color('#ffffff', '#ff0000')
-      edge.attr(
-        'line/targetMarker/fill',
-        interpolation(dist / maxDist / Math.sqrt(2)),
-      )
+      const interp = Interp.color('#ffffff', '#ff0000')
+      edge.attr('line/targetMarker/fill', interp(dist / maxDist / Math.sqrt(2)))
     })
   }
 
