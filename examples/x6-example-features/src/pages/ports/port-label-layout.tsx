@@ -10,7 +10,7 @@ export default class Example extends React.Component {
       container: this.container,
       width: 800,
       height: 400,
-      gridSize: 1,
+      grid: 1,
     })
 
     const ellipse = graph.addNode({

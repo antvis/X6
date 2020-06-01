@@ -4,12 +4,8 @@ import { Stencil } from '@antv/x6/es/addon/stencil'
 import { Rect, Circle } from '@antv/x6/es/shape/basic'
 import '../index.less'
 import './index.less'
-import '../../../../../packages/x6/src/addon/stencil/index.less'
 
-export default class Example extends React.Component<
-  Example.Props,
-  Example.State
-> {
+export default class Example extends React.Component {
   private container: HTMLDivElement
   private stencilContainer: HTMLDivElement
 
@@ -144,10 +140,4 @@ export default class Example extends React.Component<
       </div>
     )
   }
-}
-
-export namespace Example {
-  export interface Props {}
-
-  export interface State {}
 }

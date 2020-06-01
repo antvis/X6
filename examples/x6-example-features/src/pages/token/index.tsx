@@ -51,7 +51,7 @@ export default class Example extends React.Component {
       target: c,
     })
 
-    function flash(cell: v1.Cell) {
+    function flash(cell: Cell) {
       const cellView = graph.findViewByCell(cell)
       if (cellView) {
         cellView.highlight()

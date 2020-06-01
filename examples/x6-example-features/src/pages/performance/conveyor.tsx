@@ -153,7 +153,7 @@ export default class Example extends React.Component {
       container: this.container,
       width: 1000,
       height: 1000,
-      gridSize: 1,
+      grid: 1,
       async: true,
       sorting: 'approx',
       background: {

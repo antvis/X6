@@ -99,7 +99,7 @@ export default class Example extends React.Component {
       container: this.container,
       width: (COUNT / 2) * 110,
       height: 500,
-      gridSize: 1,
+      grid: 1,
       async: ASYNC,
     })
 

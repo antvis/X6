@@ -1,7 +1,6 @@
 import React from 'react'
 import { Graph } from '@antv/x6'
 import '../index.less'
-import '../../../../../packages/x6/src/addon/transform/index.less'
 
 export default class Example extends React.Component {
   private container: HTMLDivElement
