@@ -43,7 +43,12 @@ export default class Example extends React.Component {
     })
 
     graph.on('node:mouseup', ({ view }) => {
-      new Halo({ view })
+      const halo = new Halo({
+        view,
+        type: 'toolbar',
+        pie: { sliceAngle: 360 / 7 },
+      })
+      console.log(halo)
     })
   }
 
