@@ -109,10 +109,10 @@ export class Scroller extends View {
 
     graph.on('scale', this.onScale, this)
     graph.on('resize', this.onResize, this)
-    graph.on('beforeprint', this.storeScrollPosition, this)
-    graph.on('beforeexport', this.storeScrollPosition, this)
-    graph.on('afterprint', this.restoreScrollPosition, this)
-    graph.on('afterexport', this.restoreScrollPosition, this)
+    graph.on('before:print', this.storeScrollPosition, this)
+    graph.on('before:export', this.storeScrollPosition, this)
+    graph.on('after:print', this.restoreScrollPosition, this)
+    graph.on('after:export', this.restoreScrollPosition, this)
 
     if (this.options.autoResize) {
       if (graph.renderer.isAsync()) {

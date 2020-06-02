@@ -1,0 +1,50 @@
+@import '../style/index';
+
+@print-prefix-cls: ~'@{x6-prefix}-graph-print';
+@printing-prefix-cls: ~'@{x6-prefix}-graph-printing';
+
+.@{print-prefix-cls} {
+  position: relative;
+
+  & &-ready {
+    display: none;
+  }
+
+  & &-preview {
+    overflow: hidden !important;
+    background: #fff !important;
+  }
+}
+
+@media print {
+  html,
+  html > body.@{printing-prefix-cls} {
+    position: relative !important;
+    width: 100% !important;
+    height: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  html > body.@{printing-prefix-cls} > * {
+    display: none !important;
+  }
+
+  html > body.@{printing-prefix-cls} > .@{print-prefix-cls} {
+    display: block !important;
+  }
+
+  .@{print-prefix-cls} {
+    top: 0 !important;
+    left: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    page-break-after: always;
+    background: #fff !important;
+
+    & &-ready {
+      display: none;
+    }
+  }
+}

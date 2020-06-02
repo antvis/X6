@@ -18,6 +18,8 @@ import { DefsManager as Defs } from './defs'
 import { GridManager as Grid } from './grid'
 import { CoordManager as Coord } from './coord'
 import { Keyboard as Shortcut } from './keyboard'
+import { PrintManager as Print } from './print'
+import { FormatManager as Format } from './format'
 import { MouseWheel as Wheel } from './mousewheel'
 import { MiniMapManager as MiniMap } from './minimap'
 import { SnaplineManager as Snapline } from './snapline'
@@ -48,6 +50,8 @@ export class Graph extends Basecoat<EventArgs> {
   public readonly minimap: MiniMap
   public readonly keyboard: Shortcut
   public readonly mousewheel: Wheel
+  public readonly print: Print
+  public readonly format: Format
 
   public get container() {
     return this.view.container
@@ -77,6 +81,8 @@ export class Graph extends Basecoat<EventArgs> {
     this.minimap = this.hook.createMiniMapManager()
     this.keyboard = this.hook.createKeyboard()
     this.mousewheel = this.hook.createMouseWheel()
+    this.print = this.hook.createPrintManager()
+    this.format = this.hook.createFormatManager()
 
     this.setup()
   }
@@ -1308,6 +1314,34 @@ export class Graph extends Basecoat<EventArgs> {
   }
 
   // #endregion
+
+  // #region format
+
+  toSVG(callback: Format.ToSVGCallback, options: Format.ToSVGOptions = {}) {
+    this.format.toSVG(callback, options)
+  }
+
+  toDataURL(callback: Format.ToSVGCallback, options: Format.ToDataURLOptions) {
+    this.format.toDataURL(callback, options)
+  }
+
+  toPNG(callback: Format.ToSVGCallback, options: Format.ToImageOptions = {}) {
+    this.format.toPNG(callback, options)
+  }
+
+  toJPEG(callback: Format.ToSVGCallback, options: Format.ToImageOptions = {}) {
+    this.format.toJPEG(callback, options)
+  }
+
+  // #endregion
+
+  // #region print
+
+  printPreview(options?: Partial<Print.Options>) {
+    this.print.show(options)
+  }
+
+  // #endregion
 }
 
 export namespace Graph {
@@ -1323,6 +1357,8 @@ export namespace Graph {
   export const DefsManager = Defs
   export const GridManager = Grid
   export const CoordManager = Coord
+  export const PrintManager = Print
+  export const FormatManager = Format
   export const MiniMapManager = MiniMap
   export const HistoryManager = History
   export const SnaplineManager = Snapline
