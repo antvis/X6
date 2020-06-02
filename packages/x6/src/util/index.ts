@@ -10,7 +10,8 @@ export * from './platform'
 export * from './text'
 export * from './json'
 export * from './color'
-export * from './dataurl'
+export * from './datauri'
 export * from './dom'
+export * from './unit'
 
 export { $ }

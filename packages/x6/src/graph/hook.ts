@@ -29,6 +29,8 @@ import { HistoryManager } from './history'
 import { MiniMapManager } from './minimap'
 import { Keyboard } from './keyboard'
 import { MouseWheel } from './mousewheel'
+import { PrintManager } from './print'
+import { FormatManager } from './format'
 
 namespace Decorator {
   export function hook(nilable?: boolean, hookName?: string | null) {
@@ -275,6 +277,16 @@ export class Hook extends Base implements Hook.IHook {
     return new MouseWheel({ graph: this.graph, ...this.options.mousewheel })
   }
 
+  @Decorator.hook()
+  createPrintManager() {
+    return new PrintManager(this.graph)
+  }
+
+  @Decorator.hook()
+  createFormatManager() {
+    return new FormatManager(this.graph)
+  }
+
   validateEdge(edge: Edge) {
     const options = this.options.connecting
 
@@ -455,5 +467,7 @@ export namespace Hook {
 
     createKeyboard: CreateManager<Keyboard>
     createMouseWheel: CreateManager<MouseWheel>
+    createPrintManager: CreateManager<PrintManager>
+    createFormatManager: CreateManager<FormatManager>
   }
 }
