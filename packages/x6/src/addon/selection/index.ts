@@ -1,14 +1,19 @@
 import { Util } from '../../global'
 import { ObjectExt, StringExt } from '../../util'
 import { Rectangle, Angle, Point } from '../../geometry'
-import { Cell, Node, Edge, Model, Collection } from '../../model'
-import { View, CellView } from '../../view'
-import { Graph } from '../../graph'
+import { Cell } from '../../model/cell'
+import { Node } from '../../model/node'
+import { Edge } from '../../model/edge'
+import { Model } from '../../model/model'
+import { Collection } from '../../model/collection'
+import { View } from '../../view/view'
+import { CellView } from '../../view/cell'
+import { Graph } from '../../graph/graph'
 import { Renderer } from '../../graph/renderer'
 import { Handle } from '../common'
 
 export class Selection extends View<Selection.EventArgs> {
-  protected readonly options: Selection.Options
+  public readonly options: Selection.Options
   protected readonly collection: Collection
 
   protected $container: JQuery<HTMLElement>
@@ -26,8 +31,12 @@ export class Selection extends View<Selection.EventArgs> {
     return this.prefixClassName(Private.classNames.box)
   }
 
-  protected get selectionBoxes() {
+  protected get $boxes() {
     return this.$container.children(`.${this.boxClassName}`)
+  }
+
+  protected get handleOptions() {
+    return this.options
   }
 
   constructor(options: Selection.Options) {
@@ -48,14 +57,9 @@ export class Selection extends View<Selection.EventArgs> {
     }
 
     this.boxCount = 0
-    this.handles = []
 
     this.createContainer()
-
-    if (this.options.handles) {
-      this.options.handles.forEach((handle) => this.addHandle(handle))
-    }
-
+    this.initHandles()
     this.startListening()
   }
 
@@ -63,15 +67,16 @@ export class Selection extends View<Selection.EventArgs> {
     const graph = this.graph
     const collection = this.collection
 
-    this.delegateEvents({
-      [`mousedown .${this.boxClassName}`]: 'onSelectionBoxMouseDown',
-      [`touchstart .${this.boxClassName}`]: 'onSelectionBoxMouseDown',
-      [`mousedown .${this.handleClassName}`]: 'onHandleMouseDown',
-      [`touchstart .${this.handleClassName}`]: 'onHandleMouseDown',
-    })
+    this.delegateEvents(
+      {
+        [`mousedown .${this.boxClassName}`]: 'onSelectionBoxMouseDown',
+        [`touchstart .${this.boxClassName}`]: 'onSelectionBoxMouseDown',
+      },
+      true,
+    )
 
-    graph.on('scale', this.onGraphTransformed, this)
-    graph.on('translate', this.onGraphTransformed, this)
+    graph.on('scale', this.onTransformed, this)
+    graph.on('translate', this.onTransformed, this)
 
     collection.on('added', this.onCellAdded, this)
     collection.on('removed', this.onCellRemoved, this)
@@ -86,8 +91,8 @@ export class Selection extends View<Selection.EventArgs> {
 
     this.undelegateEvents()
 
-    graph.off('scale', this.onGraphTransformed, this)
-    graph.off('translate', this.onGraphTransformed, this)
+    graph.off('scale', this.onTransformed, this)
+    graph.off('translate', this.onTransformed, this)
 
     collection.off('removed', this.onCellRemoved, this)
     collection.off('reseted', this.onReseted, this)
@@ -99,7 +104,7 @@ export class Selection extends View<Selection.EventArgs> {
     this.stopListening()
   }
 
-  protected onGraphTransformed() {
+  protected onTransformed() {
     this.updateSelectionBoxes({ async: false })
   }
 
@@ -231,19 +236,27 @@ export class Selection extends View<Selection.EventArgs> {
     }
   }
 
+  protected onMouseUp(evt: JQuery.MouseUpEvent) {
+    const action = this.getEventData<EventData.Common>(evt).action
+    if (action) {
+      this.stopSelecting(evt)
+      this.undelegateDocumentEvents()
+    }
+  }
+
   protected onSelectionBoxMouseDown(evt: JQuery.MouseDownEvent) {
     evt.stopPropagation()
-    evt = this.normalizeEvent(evt) // tslint:disable-line
+    const e = this.normalizeEvent(evt)
 
     if (this.options.movable) {
-      this.startTranslating(evt)
+      this.startTranslating(e)
     }
 
-    const activeView = this.getCellViewFromElem(evt.target)!
-    this.setEventData<EventData.SelectionBox>(evt, { activeView })
-    const client = this.graph.snapToGrid(evt.clientX, evt.clientY)
-    this.notifyBoxEvent('box:mousedown', evt, client.x, client.y)
-    this.delegateDocumentEvents(Private.documentEvents, evt.data)
+    const activeView = this.getCellViewFromElem(e.target)!
+    this.setEventData<EventData.SelectionBox>(e, { activeView })
+    const client = this.graph.snapToGrid(e.clientX, e.clientY)
+    this.notifyBoxEvent('box:mousedown', e, client.x, client.y)
+    this.delegateDocumentEvents(Private.documentEvents, e.data)
   }
 
   protected startTranslating(evt: JQuery.MouseDownEvent) {
@@ -257,14 +270,14 @@ export class Selection extends View<Selection.EventArgs> {
   }
 
   protected adjustSelection(evt: JQuery.MouseMoveEvent) {
-    evt = this.normalizeEvent(evt) // tslint:disable-line
-    const eventData = this.getEventData<EventData.Common>(evt)
+    const e = this.normalizeEvent(evt)
+    const eventData = this.getEventData<EventData.Common>(e)
     const action = eventData.action
     switch (action) {
       case 'selecting': {
         const data = eventData as EventData.Selecting
-        const dx = evt.clientX - data.clientX
-        const dy = evt.clientY - data.clientY
+        const dx = e.clientX - data.clientX
+        const dy = e.clientY - data.clientY
         const left = parseInt(this.$container.css('left'), 10)
         const top = parseInt(this.$container.css('top'), 10)
         this.$container.css({
@@ -278,7 +291,7 @@ export class Selection extends View<Selection.EventArgs> {
 
       case 'translating': {
         const data = eventData as EventData.Translating
-        const client = this.graph.snapToGrid(evt.clientX, evt.clientY)
+        const client = this.graph.snapToGrid(e.clientX, e.clientY)
         let dx = client.x - data.clientX
         let dy = client.y - data.clientY
         const restrictedArea = this.graph.getRestrictedArea()
@@ -316,7 +329,7 @@ export class Selection extends View<Selection.EventArgs> {
             }
           } else {
             const scale = this.graph.scale()
-            this.selectionBoxes.add(this.$selectionContainer).css({
+            this.$boxes.add(this.$selectionContainer).css({
               left: `+=${dx * scale.sx}`,
               top: `+=${dy * scale.sy}`,
             })
@@ -327,12 +340,6 @@ export class Selection extends View<Selection.EventArgs> {
 
         this.notifyBoxEvent('box:mousemove', evt, client.x, client.y)
         break
-      }
-
-      default: {
-        if (action) {
-          this.onMouseMove(evt)
-        }
       }
     }
     this.boxesUpdated = false
@@ -384,7 +391,7 @@ export class Selection extends View<Selection.EventArgs> {
 
   protected destroySelectionBox(cell: Cell) {
     this.$container.find(`[data-cell="${cell.id}"]`).remove()
-    if (this.selectionBoxes.length === 0) {
+    if (this.$boxes.length === 0) {
       this.hide()
     }
     this.boxCount = Math.max(0, this.boxCount - 1)
@@ -392,7 +399,7 @@ export class Selection extends View<Selection.EventArgs> {
 
   protected destroyAllSelectionBoxes() {
     this.hide()
-    this.selectionBoxes.remove()
+    this.$boxes.remove()
     this.boxCount = 0
   }
 
@@ -514,7 +521,7 @@ export class Selection extends View<Selection.EventArgs> {
   confirmUpdate() {
     if (this.boxCount) {
       this.hide()
-      this.selectionBoxes.each((_, elem) => {
+      this.$boxes.each((_, elem) => {
         const cellId = this.$(elem).remove().attr('data-cell')
         const cell = this.collection.get(cellId)
         if (cell) {
@@ -536,61 +543,6 @@ export class Selection extends View<Selection.EventArgs> {
       }
     }
     return null
-  }
-
-  protected onHandleMouseDown(e: JQuery.MouseDownEvent) {
-    const action = this.$(e.currentTarget).attr('data-action')
-    if (action) {
-      e.preventDefault()
-      e.stopPropagation()
-      e = this.normalizeEvent(e) // tslint:disable-line
-      this.triggerAction(action, 'mousedown', e)
-      this.setEventData(e, {
-        action,
-        clientX: e.clientX,
-        clientY: e.clientY,
-        startClientX: e.clientX,
-        startClientY: e.clientY,
-      })
-      this.delegateDocumentEvents(Private.documentEvents, e.data)
-    }
-  }
-
-  protected onMouseMove(evt: JQuery.MouseMoveEvent) {
-    const data = this.getEventData(evt)
-    const action = data.action
-    if (action) {
-      const client = this.graph.snapToGrid(evt.clientX, evt.clientY)
-      const origin = this.graph.snapToGrid(data.clientX, data.clientY)
-      const dx = client.x - origin.x
-      const dy = client.y - origin.y
-      this.triggerAction(action, 'mousemove', evt, {
-        dx,
-        dy,
-        offsetX: evt.clientX - data.startClientX,
-        offsetY: evt.clientY - data.startClientY,
-      })
-      data.clientX = evt.clientX
-      data.clientY = evt.clientY
-    }
-  }
-
-  protected onMouseUp(evt: JQuery.MouseUpEvent) {
-    const action = this.getEventData<EventData.Common>(evt).action
-    if (action) {
-      this.triggerAction(action, 'mouseup', evt)
-      this.stopSelecting(evt)
-      this.undelegateDocumentEvents()
-    }
-  }
-
-  protected triggerAction(
-    action: string,
-    eventName: string,
-    e: JQuery.TriggeredEvent,
-    args?: any,
-  ) {
-    this.trigger(`action:${action}:${eventName}`, { e, ...args })
   }
 
   protected onCellRemoved({ cell }: Collection.EventArgs['removed']) {
@@ -648,7 +600,9 @@ export class Selection extends View<Selection.EventArgs> {
     this.graph.trigger('selection:changed', args)
   }
 
-  protected removeSelectedCells() {
+  // #region handle
+
+  protected deleteSelectedCells() {
     const cells = this.collection.toArray()
     this.clean()
     this.graph.model.removeCells(cells, {
@@ -656,7 +610,7 @@ export class Selection extends View<Selection.EventArgs> {
     })
   }
 
-  protected startRotating({ e }: Handle.EventArgs) {
+  protected startRotate({ e }: Handle.EventArgs) {
     const cells = this.collection.toArray()
     const center = Cell.getCellsBBox(cells)!.getCenter()
     const client = this.graph.snapToGrid(e.clientX!, e.clientY!)
@@ -698,7 +652,7 @@ export class Selection extends View<Selection.EventArgs> {
 
   protected stopRotate() {}
 
-  protected startResizing({ e }: Handle.EventArgs) {
+  protected startResize({ e }: Handle.EventArgs) {
     const gridSize = this.graph.getGridSize()
     const cells = this.collection.toArray()
     const bbox = Cell.getCellsBBox(cells)!
@@ -739,17 +693,18 @@ export class Selection extends View<Selection.EventArgs> {
   }
 
   protected stopResize() {}
+
+  // #endregion
 }
 
 export namespace Selection {
-  export interface CommonOptions {
+  export interface CommonOptions extends Handle.Options {
     model?: Model
     collection?: Collection
     className?: string
     strict?: boolean
     movable?: boolean
     useCellGeometry?: boolean
-    handles?: Handle.Options[] | null
     content?:
       | null
       | false
@@ -805,15 +760,15 @@ ObjectExt.applyMixins(Selection, Handle)
 // private
 // -------
 namespace Private {
-  const baseClassName = 'widget-selection'
+  const base = 'widget-selection'
 
   export const classNames = {
-    root: baseClassName,
-    inner: `${baseClassName}-inner`,
-    box: `${baseClassName}-box`,
-    content: `${baseClassName}-content`,
-    lasso: `${baseClassName}-lasso`,
-    selected: `${baseClassName}-selected`,
+    root: base,
+    inner: `${base}-inner`,
+    box: `${base}-box`,
+    content: `${base}-content`,
+    lasso: `${base}-lasso`,
+    selected: `${base}-selected`,
   }
 
   export const documentEvents = {
@@ -831,23 +786,21 @@ namespace Private {
     content() {
       return StringExt.template(
         '<%= length %> node<%= length > 1 ? "s":"" %> selected.',
-      )({
-        length: this.length,
-      })
+      )({ length: this.length })
     },
     handles: [
       {
         name: 'remove',
         position: 'nw',
         events: {
-          mousedown: 'removeSelectedCells',
+          mousedown: 'deleteSelectedCells',
         },
       },
       {
         name: 'rotate',
         position: 'sw',
         events: {
-          mousedown: 'startRotating',
+          mousedown: 'startRotate',
           mousemove: 'doRotate',
           mouseup: 'stopRotate',
         },
@@ -856,7 +809,7 @@ namespace Private {
         name: 'resize',
         position: 'se',
         events: {
-          mousedown: 'startResizing',
+          mousedown: 'startResize',
           mousemove: 'doResize',
           mouseup: 'stopResize',
         },

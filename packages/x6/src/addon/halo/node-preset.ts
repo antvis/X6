@@ -1,8 +1,13 @@
 import { Util } from '../../global'
 import { StringExt } from '../../util'
 import { Point, Rectangle, Angle } from '../../geometry'
-import { CellView, NodeView, EdgeView } from '../../view'
-import { Cell, Node, Edge } from '../../model'
+import { Cell } from '../../model/cell'
+import { Node } from '../../model/node'
+import { Edge } from '../../model/edge'
+import { CellView } from '../../view/cell'
+import { NodeView } from '../../view/node'
+import { EdgeView } from '../../view/edge'
+import { Handle } from '../common'
 import { Halo } from './index'
 
 export function getNodePreset(halo: Halo) {}
@@ -53,7 +58,7 @@ export class NodePreset {
           name: 'resize',
           position: 'se',
           events: {
-            mousedown: this.startResizing.bind(this),
+            mousedown: this.startResize.bind(this),
             mousemove: this.doResize.bind(this),
             mouseup: this.halo.stopBatch.bind(this.halo),
           },
@@ -63,9 +68,9 @@ export class NodePreset {
           name: 'clone',
           position: 'n',
           events: {
-            mousedown: this.startCloning.bind(this),
+            mousedown: this.startClone.bind(this),
             mousemove: this.doClone.bind(this),
-            mouseup: this.stopCloning.bind(this),
+            mouseup: this.stopClone.bind(this),
           },
           icon: null,
         },
@@ -73,9 +78,9 @@ export class NodePreset {
           name: 'link',
           position: 'e',
           events: {
-            mousedown: this.startLinking.bind(this),
+            mousedown: this.startLink.bind(this),
             mousemove: this.doLink.bind(this),
-            mouseup: this.stopLinking.bind(this),
+            mouseup: this.stopLink.bind(this),
           },
           icon: null,
         },
@@ -83,9 +88,9 @@ export class NodePreset {
           name: 'fork',
           position: 'ne',
           events: {
-            mousedown: this.startForking.bind(this),
+            mousedown: this.startFork.bind(this),
             mousemove: this.doFork.bind(this),
-            mouseup: this.stopForking.bind(this),
+            mouseup: this.stopFork.bind(this),
           },
           icon: null,
         },
@@ -101,7 +106,7 @@ export class NodePreset {
           name: 'rotate',
           position: 'sw',
           events: {
-            mousedown: this.startRotating.bind(this),
+            mousedown: this.startRotate.bind(this),
             mousemove: this.doRotate.bind(this),
             mouseup: this.halo.stopBatch.bind(this.halo),
           },
@@ -109,15 +114,15 @@ export class NodePreset {
         },
       ],
 
-      bbox(view, halo) {
-        if (halo.options.useModelGeometry) {
+      bbox(view) {
+        if (this.options.useModelGeometry) {
           const node = view.cell as Node
           return node.getBBox()
         }
         return view.getBBox()
       },
 
-      boxContent(view) {
+      content(view) {
         const template = StringExt.template(
           'x: <%= x %>, y: <%= y %>, width: <%= width %>, height: <%= height %>, angle: <%= angle %>',
         )
@@ -136,12 +141,10 @@ export class NodePreset {
       },
       tinyThreshold: 40,
       smallThreshold: 80,
-      loopLinkPreferredSide: 'top',
-      loopLinkWidth: 40,
-      rotateAngleGrid: 15,
+      loopEdgePreferredSide: 'top',
+      loopEdgeWidth: 40,
+      rotateGrid: 15,
       rotateEmbeds: false,
-      // linkAttributes: {},
-      // smoothLinks: undefined,
     }
   }
 
@@ -152,7 +155,7 @@ export class NodePreset {
 
   // #region create edge
 
-  startLinking({ x, y }: Halo.HandleEventArgs) {
+  startLink({ x, y }: Handle.EventArgs) {
     this.halo.startBatch()
     const graph = this.graph
     const edge = this.createEdgeConnectedToSource()
@@ -204,19 +207,19 @@ export class NodePreset {
     return terminal
   }
 
-  doLink({ e, x, y }: Halo.HandleEventArgs) {
+  doLink({ e, x, y }: Handle.EventArgs) {
     if (this.edgeView) {
       this.edgeView.onMouseMove(e as JQuery.MouseMoveEvent, x, y)
     }
   }
 
-  stopLinking({ e, x, y }: Halo.HandleEventArgs) {
+  stopLink({ e, x, y }: Handle.EventArgs) {
     const edgeView = this.edgeView
     if (edgeView) {
       edgeView.onMouseUp(e as JQuery.MouseUpEvent, x, y)
       const edge = edgeView.cell
       if (edge.hasLoop()) {
-        this.makeLoopLink(edge)
+        this.makeLoopEdge(edge)
       }
       this.halo.stopBatch()
       this.halo.trigger('action:edge:addde', { edge })
@@ -225,10 +228,10 @@ export class NodePreset {
     this.graph.view.delegateEvents()
   }
 
-  makeLoopLink(edge: Edge) {
+  makeLoopEdge(edge: Edge) {
     let vertex1: Point | null = null
     let vertex2: Point | null = null
-    const loopLinkWidth = this.options.loopLinkWidth!
+    const loopEdgeWidth = this.options.loopEdgeWidth!
     const graphOptions = this.graph.options
     const graphRect = new Rectangle(
       0,
@@ -239,7 +242,7 @@ export class NodePreset {
 
     const bbox = this.graph.graphToLocalRect(this.view.getBBox())
     const found = [
-      this.options.loopLinkPreferredSide,
+      this.options.loopEdgePreferredSide,
       'top',
       'bottom',
       'left',
@@ -250,26 +253,26 @@ export class NodePreset {
       let dy = 0
       switch (position) {
         case 'top':
-          point = new Point(bbox.x + bbox.width / 2, bbox.y - loopLinkWidth)
-          dx = loopLinkWidth / 2
+          point = new Point(bbox.x + bbox.width / 2, bbox.y - loopEdgeWidth)
+          dx = loopEdgeWidth / 2
           break
         case 'bottom':
           point = new Point(
             bbox.x + bbox.width / 2,
-            bbox.y + bbox.height + loopLinkWidth,
+            bbox.y + bbox.height + loopEdgeWidth,
           )
-          dx = loopLinkWidth / 2
+          dx = loopEdgeWidth / 2
           break
         case 'left':
-          point = new Point(bbox.x - loopLinkWidth, bbox.y + bbox.height / 2)
-          dy = loopLinkWidth / 2
+          point = new Point(bbox.x - loopEdgeWidth, bbox.y + bbox.height / 2)
+          dy = loopEdgeWidth / 2
           break
         case 'right':
           point = new Point(
-            bbox.x + bbox.width + loopLinkWidth,
+            bbox.x + bbox.width + loopEdgeWidth,
             bbox.y + bbox.height / 2,
           )
-          dy = loopLinkWidth / 2
+          dy = loopEdgeWidth / 2
       }
 
       if (point) {
@@ -291,14 +294,14 @@ export class NodePreset {
 
   // #region resize
 
-  startResizing() {
+  startResize() {
     this.halo.startBatch()
     this.flip = [1, 0, 0, 1, 1, 0, 0, 1][
       Math.floor(Angle.normalize(this.node.getRotation()) / 45)
     ]
   }
 
-  doResize({ dx, dy }: Halo.HandleEventArgs) {
+  doResize({ dx, dy }: Handle.EventArgs) {
     const size = this.node.getSize()
     const width = Math.max(size.width + (this.flip ? dx : dy), 1)
     const height = Math.max(size.height + (this.flip ? dy : dx), 1)
@@ -311,7 +314,7 @@ export class NodePreset {
 
   // #region clone
 
-  startCloning({ e, x, y }: Halo.HandleEventArgs) {
+  startClone({ e, x, y }: Handle.EventArgs) {
     this.halo.startBatch()
     const options = this.options
     const cloned = options.clone!(this.cell, {
@@ -339,14 +342,14 @@ export class NodePreset {
     cell.translate(dx, dy)
   }
 
-  doClone({ e, x, y }: Halo.HandleEventArgs) {
+  doClone({ e, x, y }: Handle.EventArgs) {
     const view = this.halo.getEventData(e).cloneView as CellView
     if (view) {
       view.onMouseMove(e as JQuery.MouseMoveEvent, x, y)
     }
   }
 
-  stopCloning({ e, x, y }: Halo.HandleEventArgs) {
+  stopClone({ e, x, y }: Handle.EventArgs) {
     const nodeView = this.halo.getEventData(e).cloneView as NodeView
     if (nodeView) {
       nodeView.onMouseUp(e as JQuery.MouseUpEvent, x, y)
@@ -358,7 +361,7 @@ export class NodePreset {
 
   // #region fork
 
-  startForking({ e, x, y }: Halo.HandleEventArgs) {
+  startFork({ e, x, y }: Handle.EventArgs) {
     this.halo.startBatch()
 
     const cloned = this.options.clone!(this.cell, {
@@ -390,14 +393,14 @@ export class NodePreset {
     this.halo.setEventData(e, { cloneView })
   }
 
-  doFork({ e, x, y }: Halo.HandleEventArgs) {
+  doFork({ e, x, y }: Handle.EventArgs) {
     const view = this.halo.getEventData(e).cloneView as CellView
     if (view) {
       view.onMouseMove(e as JQuery.MouseMoveEvent, x, y)
     }
   }
 
-  stopForking({ e, x, y }: Halo.HandleEventArgs) {
+  stopFork({ e, x, y }: Handle.EventArgs) {
     const view = this.halo.getEventData(e).cloneView as CellView
     if (view) {
       view.onMouseUp(e as JQuery.MouseUpEvent, x, y)
@@ -409,7 +412,7 @@ export class NodePreset {
 
   // #region rotate
 
-  startRotating({ e, x, y }: Halo.HandleEventArgs) {
+  startRotate({ e, x, y }: Handle.EventArgs) {
     this.halo.startBatch()
     const center = this.node.getBBox().getCenter()
     const nodes = [this.node]
@@ -433,14 +436,14 @@ export class NodePreset {
     })
   }
 
-  doRotate({ e, x, y }: Halo.HandleEventArgs) {
+  doRotate({ e, x, y }: Handle.EventArgs) {
     const data = this.halo.getEventData(e)
     const delta = data.clientStartAngle - new Point(x, y).theta(data.center)
     data.nodes.forEach((node: Node, index: number) => {
       const startAngle = data.rotationStartAngles[index]
       const targetAngle = Util.snapToGrid(
         startAngle + delta,
-        this.options.rotateAngleGrid!,
+        this.options.rotateGrid!,
       )
       node.rotate(targetAngle, true, data.center, {
         halo: this.halo.cid,

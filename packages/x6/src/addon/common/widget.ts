@@ -98,7 +98,7 @@ export class Widget<
 
   protected init(options: Options) {}
 
-  render() {
+  protected render() {
     return this
   }
 

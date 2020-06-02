@@ -1,5 +1,5 @@
-import { Edge } from '../../model'
-import { EdgeView } from '../../view'
+import { Edge } from '../../model/edge'
+import { EdgeView } from '../../view/edge'
 import { Halo } from './index'
 
 export class EdgePreset {
@@ -50,7 +50,7 @@ export class EdgePreset {
           },
         },
       ],
-      boxContent: false,
+      content: false,
       bbox(view: EdgeView) {
         return view.graph.localToGraphPoint(view.getPointAtRatio(0.5)!)
       },
