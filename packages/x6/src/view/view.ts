@@ -173,12 +173,14 @@ export abstract class View<EventArgs = any> extends Basecoat<EventArgs> {
     return Util.prefix(className)
   }
 
-  delegateEvents(events: View.Events) {
+  delegateEvents(events: View.Events, append?: boolean) {
     if (events == null) {
       return this
     }
 
-    this.undelegateEvents()
+    if (!append) {
+      this.undelegateEvents()
+    }
 
     const splitter = /^(\S+)\s*(.*)$/
     Object.keys(events).forEach((key) => {

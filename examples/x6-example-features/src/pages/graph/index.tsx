@@ -1,6 +1,5 @@
 import React from 'react'
 import { Graph, Rectangle } from '@antv/x6'
-import { Grid } from '@antv/x6/es/style/grid'
 import '../index.less'
 import './index.less'
 import { render } from './render'
