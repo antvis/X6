@@ -1,4 +1,4 @@
-export namespace DataUrl {
+export namespace DataUri {
   export function isDataUrl(url: string) {
     const prefix = 'data:'
     return url.substr(0, prefix.length) === prefix
@@ -8,7 +8,7 @@ export namespace DataUrl {
    * Converts an image at `url` to base64-encoded data uri.
    * The mime type of the image is inferred from the `url` file extension.
    */
-  export function imageToDataUrl(
+  export function imageToDataUri(
     url: string,
     callback: (err: Error | null, dataUri?: string) => any,
   ) {
@@ -73,7 +73,7 @@ export namespace DataUrl {
     xhr.send()
   }
 
-  export function dataUrlToBlob(dataUrl: string) {
+  export function dataUriToBlob(dataUrl: string) {
     let uri = dataUrl.replace(/\s/g, '')
     uri = decodeURIComponent(uri)
 
@@ -128,8 +128,8 @@ export namespace DataUrl {
     }
   }
 
-  export function downloadDataUrl(dataUrl: string, fileName: string) {
-    const blob = dataUrlToBlob(dataUrl)
+  export function downloadDataUri(dataUrl: string, fileName: string) {
+    const blob = dataUriToBlob(dataUrl)
     downloadBlob(blob, fileName)
   }
 
