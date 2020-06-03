@@ -1,21 +1,21 @@
-import { ArrayExt, ObjectExt, Dom } from '../util'
-import { Rectangle, Point } from '../geometry'
 import { Nilable, KeyValue } from '../types'
+import { Rectangle, Point } from '../geometry'
+import { ArrayExt, ObjectExt, Dom } from '../util'
 import { Registry } from '../common'
 import { Attr } from '../definition'
 import { Cell } from '../model/cell'
 import { Edge } from '../model/edge'
 import { Model } from '../model/model'
-import { Graph } from '../graph'
+import { Graph } from '../graph/graph'
+import { ConnectionStrategy } from '../connection'
 import { View } from './view'
 import { Flag } from './flag'
 import { Cache } from './cache'
-import { AttrManager } from './attr'
 import { Markup } from './markup'
 import { EdgeView } from './edge'
 import { NodeView } from './node'
-import { ToolsView } from './tools'
-import { ConnectionStrategy } from '../connection'
+import { ToolView } from './tool'
+import { AttrManager } from './attr'
 
 export class CellView<
   Entity extends Cell = Cell,
@@ -586,79 +586,65 @@ export class CellView<
   }
 
   // #region tools
-  protected toolsView: ToolsView | null
-  protected readonly toolsEventHandler = ({ name }: { name: string }) => {
-    this.onToolEvent(name)
-  }
 
-  hasTools(name?: string) {
-    const toolsView = this.toolsView
-    if (toolsView == null) {
+  protected tool: ToolView | null
+
+  hasTool(name?: string) {
+    const tool = this.tool
+    if (tool == null) {
       return false
     }
+
     if (name == null) {
       return true
     }
-    return toolsView.getName() === name
+
+    return tool.getName() === name
   }
 
-  addTools(toolsView: ToolsView) {
-    this.removeTools()
-    if (toolsView) {
-      this.toolsView = toolsView
-      this.graph.on('tools:event', this.toolsEventHandler, this)
-      toolsView.configure({ cellView: this })
-      toolsView.mount()
+  addTool(tool: ToolView) {
+    this.removeTool()
+    if (tool) {
+      this.tool = tool
+      this.graph.on('tools:hide', this.hideTool, this)
+      this.graph.on('tools:show', this.showTool, this)
+      this.graph.on('tools:remove', this.removeTool, this)
+      tool.config({ cellView: this })
+      tool.mount()
     }
     return this
   }
 
-  updateTools(options: ToolsView.UpdateOptions = {}) {
-    const toolsView = this.toolsView
-    if (toolsView) {
-      toolsView.update(options)
+  updateTool(options: ToolView.UpdateOptions = {}) {
+    if (this.tool) {
+      this.tool.update(options)
     }
     return this
   }
 
-  removeTools() {
-    const toolsView = this.toolsView
-    if (toolsView) {
-      toolsView.remove()
-      this.graph.off('tools:event', this.toolsEventHandler, this)
-      this.toolsView = null
+  removeTool() {
+    if (this.tool) {
+      this.tool.remove()
+      this.graph.off('tools:hide', this.hideTool, this)
+      this.graph.off('tools:show', this.showTool, this)
+      this.graph.off('tools:remove', this.removeTool, this)
+      this.tool = null
     }
     return this
   }
 
-  hideTools() {
-    const toolsView = this.toolsView
-    if (toolsView) {
-      toolsView.hide()
+  hideTool() {
+    if (this.tool) {
+      this.tool.hide()
     }
     return this
   }
 
-  showTools() {
-    const toolsView = this.toolsView
-    if (toolsView) {
-      toolsView.show()
+  showTool() {
+    if (this.tool) {
+      this.tool.show()
     }
     return this
-  }
-
-  protected onToolEvent(event: string) {
-    switch (event) {
-      case 'remove':
-        this.removeTools()
-        break
-      case 'hide':
-        this.hideTools()
-        break
-      case 'show':
-        this.showTools()
-        break
-    }
   }
 
   // #endregion
@@ -780,7 +766,7 @@ export class CellView<
 
   onLabelMouseDown(e: JQuery.MouseDownEvent, x: number, y: number) {}
 
-  protected checkMouseleave(e: JQuery.TriggeredEvent) {
+  checkMouseleave(e: JQuery.TriggeredEvent) {
     const graph = this.graph
     if (graph.renderer.isAsync()) {
       // Do the updates of the current view synchronously now

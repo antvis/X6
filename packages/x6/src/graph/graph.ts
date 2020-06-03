@@ -57,8 +57,6 @@ export class Graph extends Basecoat<EventArgs> {
     return this.view.container
   }
 
-  tools: any
-
   constructor(options: Partial<GraphOptions.Manual>) {
     super()
 
@@ -1299,17 +1297,17 @@ export class Graph extends Basecoat<EventArgs> {
   // #region tools
 
   removeTools() {
-    this.trigger('tools:remove')
+    this.emit('tools:remove')
     return this
   }
 
   hideTools() {
-    this.trigger('tools:hide')
+    this.emit('tools:hide')
     return this
   }
 
   showTools() {
-    this.trigger('tools:show')
+    this.emit('tools:show')
     return this
   }
 

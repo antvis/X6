@@ -222,7 +222,7 @@ export class Selection extends View<Selection.EventArgs> {
       }
 
       case 'translating': {
-        this.graph.model.stopBatch('selection-translate')
+        this.graph.model.stopBatch('move-selection')
         const client = graph.snapToGrid(evt.clientX, evt.clientY)
         this.notifyBoxEvent('box:mouseup', evt, client.x, client.y)
         break
@@ -260,7 +260,7 @@ export class Selection extends View<Selection.EventArgs> {
   }
 
   protected startTranslating(evt: JQuery.MouseDownEvent) {
-    this.graph.model.startBatch('selection-translate')
+    this.graph.model.startBatch('move-selection')
     const client = this.graph.snapToGrid(evt.clientX, evt.clientY)
     this.setEventData<EventData.Translating>(evt, {
       action: 'translating',

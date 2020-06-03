@@ -1165,10 +1165,15 @@ export namespace Model {
     | 'add-edge'
     | 'fit-embeds'
     | 'dnd'
-    | 'selection-translate'
     | 'halo'
     | 'cut'
     | 'paste'
+    | 'add-vertex'
+    | 'move-anchor'
+    | 'move-vertex'
+    | 'move-segment'
+    | 'move-arrowhead'
+    | 'move-selection'
 }
 
 export namespace Model {
