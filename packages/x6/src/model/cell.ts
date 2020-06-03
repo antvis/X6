@@ -1105,23 +1105,19 @@ export class Cell<
 
   // #region batch
 
-  protected startBatch(name: Model.BatchName, data: KeyValue = {}) {
+  startBatch(name: Model.BatchName, data: KeyValue = {}) {
     if (this.model) {
       this.model.startBatch(name, { ...data, cell: this })
     }
   }
 
-  protected stopBatch(name: Model.BatchName, data: KeyValue = {}) {
+  stopBatch(name: Model.BatchName, data: KeyValue = {}) {
     if (this.model) {
       this.model.stopBatch(name, { ...data, cell: this })
     }
   }
 
-  protected batchUpdate<T>(
-    name: Model.BatchName,
-    execute: () => T,
-    data?: KeyValue,
-  ): T {
+  batchUpdate<T>(name: Model.BatchName, execute: () => T, data?: KeyValue): T {
     this.startBatch(name, data)
     const result = execute()
     this.stopBatch(name, data)

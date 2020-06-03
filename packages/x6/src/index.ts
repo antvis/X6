@@ -8,6 +8,7 @@ export * from './graph'
 
 export * from './shape'
 export * from './addon'
+export * from './definition/tool'
 
 export * from './global'
 export * from './global/x6'

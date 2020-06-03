@@ -5,9 +5,9 @@ import { Attr } from '../definition'
 import {
   Router,
   Connector,
+  ConnectionPoint,
   NodeConnectionAnchor,
   EdgeConnectionAnchor,
-  ConnectionPoint,
 } from '../connection'
 import { Edge } from '../model/edge'
 import { Markup } from './markup'
@@ -507,7 +507,7 @@ export class EdgeView<
     this.updateLabelPositions()
     this.updateToolsPosition()
     this.updateArrowheadMarkers()
-    this.updateTools(options)
+    this.updateTool(options)
 
     return this
   }
