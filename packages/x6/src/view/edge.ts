@@ -507,7 +507,7 @@ export class EdgeView<
     this.updateLabelPositions()
     this.updateToolsPosition()
     this.updateArrowheadMarkers()
-    this.updateTool(options)
+    this.updateTools(options)
 
     return this
   }

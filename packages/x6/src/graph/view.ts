@@ -89,11 +89,11 @@ export class GraphView extends View {
     return this.graph.renderer.findViewByElem(elem)
   }
 
-  protected onDblClick(e: JQuery.DoubleClickEvent) {
-    e.preventDefault()
-    e = this.normalizeEvent(e) // tslint:disable-line
-
+  protected onDblClick(evt: JQuery.DoubleClickEvent) {
+    evt.preventDefault()
+    const e = this.normalizeEvent(evt)
     const view = this.findView(e.target)
+
     if (this.guard(e, view)) {
       return
     }
@@ -111,9 +111,9 @@ export class GraphView extends View {
     }
   }
 
-  protected onClick(e: JQuery.ClickEvent) {
-    if (this.getMouseMovedCount(e) <= this.options.clickThreshold) {
-      e = this.normalizeEvent(e) // tslint:disable-line
+  protected onClick(evt: JQuery.ClickEvent) {
+    if (this.getMouseMovedCount(evt) <= this.options.clickThreshold) {
+      const e = this.normalizeEvent(evt)
       const view = this.findView(e.target)
       if (this.guard(e, view)) {
         return
@@ -132,12 +132,12 @@ export class GraphView extends View {
     }
   }
 
-  protected onContextMenu(e: JQuery.ContextMenuEvent) {
+  protected onContextMenu(evt: JQuery.ContextMenuEvent) {
     if (this.options.preventDefaultContextMenu) {
-      e.preventDefault()
+      evt.preventDefault()
     }
 
-    e = this.normalizeEvent(e) // tslint:disable-line
+    const e = this.normalizeEvent(evt)
     const view = this.findView(e.target)
     if (this.guard(e, view)) {
       return
@@ -174,8 +174,8 @@ export class GraphView extends View {
     return data.mouseMovedCount || 0
   }
 
-  protected onMouseDown(e: JQuery.MouseDownEvent) {
-    e = this.normalizeEvent(e) // tslint:disable-line
+  protected onMouseDown(evt: JQuery.MouseDownEvent) {
+    const e = this.normalizeEvent(evt)
     const view = this.findView(e.target)
     if (this.guard(e, view)) {
       return
@@ -201,8 +201,8 @@ export class GraphView extends View {
     this.delegateDragEvents(e, view)
   }
 
-  protected onMouseMove(e: JQuery.MouseMoveEvent) {
-    const data = this.getEventData<EventData.Moving>(e)
+  protected onMouseMove(evt: JQuery.MouseMoveEvent) {
+    const data = this.getEventData<EventData.Moving>(evt)
     if (data.mouseMovedCount == null) {
       data.mouseMovedCount = 0
     }
@@ -212,7 +212,7 @@ export class GraphView extends View {
       return
     }
 
-    e = this.normalizeEvent(e) // tslint:disable-line
+    const e = this.normalizeEvent(evt)
     const localPoint = this.graph.snapToGrid(e.clientX, e.clientY)
 
     const view = data.currentView
@@ -263,8 +263,8 @@ export class GraphView extends View {
     this.delegateEvents()
   }
 
-  protected onMouseOver(e: JQuery.MouseOverEvent) {
-    e = this.normalizeEvent(e) // tslint:disable-line
+  protected onMouseOver(evt: JQuery.MouseOverEvent) {
+    const e = this.normalizeEvent(evt)
     const view = this.findView(e.target)
     if (this.guard(e, view)) {
       return
@@ -281,9 +281,10 @@ export class GraphView extends View {
     }
   }
 
-  protected onMouseOut(e: JQuery.MouseOutEvent) {
-    e = this.normalizeEvent(e) // tslint:disable-line
+  protected onMouseOut(evt: JQuery.MouseOutEvent) {
+    const e = this.normalizeEvent(evt)
     const view = this.findView(e.target)
+
     if (this.guard(e, view)) {
       return
     }
@@ -298,8 +299,8 @@ export class GraphView extends View {
     }
   }
 
-  protected onMouseEnter(e: JQuery.MouseEnterEvent) {
-    e = this.normalizeEvent(e) // tslint:disable-line
+  protected onMouseEnter(evt: JQuery.MouseEnterEvent) {
+    const e = this.normalizeEvent(evt)
     const view = this.findView(e.target)
     if (this.guard(e, view)) {
       return
@@ -309,8 +310,8 @@ export class GraphView extends View {
       e.relatedTarget as Element,
     )
     if (view) {
-      // mouse moved from tool over view?
       if (relatedView === view) {
+        // mouse moved from tool to view
         return
       }
       view.onMouseEnter(e)
@@ -322,18 +323,20 @@ export class GraphView extends View {
     }
   }
 
-  protected onMouseLeave(e: JQuery.MouseLeaveEvent) {
-    e = this.normalizeEvent(e) // tslint:disable-line
+  protected onMouseLeave(evt: JQuery.MouseLeaveEvent) {
+    const e = this.normalizeEvent(evt)
     const view = this.findView(e.target)
     if (this.guard(e, view)) {
       return
     }
+
     const relatedView = this.graph.renderer.findViewByElem(
       e.relatedTarget as Element,
     )
+
     if (view) {
-      // mouse moved from view over tool?
       if (relatedView === view) {
+        // mouse moved from view to tool
         return
       }
       view.onMouseLeave(e)
@@ -345,8 +348,8 @@ export class GraphView extends View {
     }
   }
 
-  protected onMouseWheel(e: JQuery.TriggeredEvent) {
-    e = this.normalizeEvent(e) // tslint:disable-line
+  protected onMouseWheel(evt: JQuery.TriggeredEvent) {
+    const e = this.normalizeEvent(evt)
     const view = this.findView(e.target)
     if (this.guard(e, view)) {
       return
@@ -374,13 +377,13 @@ export class GraphView extends View {
     }
   }
 
-  protected onCustomEvent(e: JQuery.MouseDownEvent) {
-    const eventNode = e.currentTarget
+  protected onCustomEvent(evt: JQuery.MouseDownEvent) {
+    const eventNode = evt.currentTarget
     const eventName = eventNode.getAttribute('event')
     if (eventName) {
       const view = this.findView(eventNode)
       if (view) {
-        e = this.normalizeEvent(e) // tslint:disable-line
+        const e = this.normalizeEvent(evt)
         if (this.guard(e, view)) {
           return
         }
@@ -395,7 +398,7 @@ export class GraphView extends View {
   }
 
   protected handleMagnetEvent<T extends JQuery.TriggeredEvent>(
-    e: T,
+    evt: T,
     handler: (
       this: Graph,
       view: CellView,
@@ -405,12 +408,12 @@ export class GraphView extends View {
       y: number,
     ) => void,
   ) {
-    const magnetElem = e.currentTarget
+    const magnetElem = evt.currentTarget
     const magnetValue = magnetElem.getAttribute('magnet')
     if (magnetValue) {
       const view = this.findView(magnetElem)
       if (view) {
-        e = this.normalizeEvent(e) // tslint:disable-line
+        const e = this.normalizeEvent(evt)
         if (this.guard(e, view)) {
           return
         }
@@ -451,11 +454,11 @@ export class GraphView extends View {
     })
   }
 
-  protected onLabelMouseDown(e: JQuery.MouseDownEvent) {
-    const labelNode = e.currentTarget
+  protected onLabelMouseDown(evt: JQuery.MouseDownEvent) {
+    const labelNode = evt.currentTarget
     const view = this.findView(labelNode)
     if (view) {
-      e = this.normalizeEvent(e) // tslint:disable-line
+      const e = this.normalizeEvent(evt)
       if (this.guard(e, view)) {
         return
       }
@@ -553,10 +556,10 @@ export namespace GraphView {
     mouseleave: 'onMouseLeave',
     mousewheel: 'onMouseWheel',
     DOMMouseScroll: 'onMouseWheel',
-    [`mouseenter  .${prefixCls}-tools`]: 'onMouseEnter',
-    [`mouseleave  .${prefixCls}-tools`]: 'onMouseLeave',
     [`mouseenter  .${prefixCls}-cell`]: 'onMouseEnter',
     [`mouseleave  .${prefixCls}-cell`]: 'onMouseLeave',
+    [`mouseenter  .${prefixCls}-cell-tools`]: 'onMouseEnter',
+    [`mouseleave  .${prefixCls}-cell-tools`]: 'onMouseLeave',
     [`mousedown   .${prefixCls}-cell [event]`]: 'onCustomEvent',
     [`touchstart  .${prefixCls}-cell [event]`]: 'onCustomEvent',
     [`dblclick    .${prefixCls}-cell [magnet]`]: 'onMagnetDblClick',

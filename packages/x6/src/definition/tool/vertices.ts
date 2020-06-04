@@ -4,16 +4,18 @@ import { Point } from '../../geometry'
 import { Graph } from '../../graph'
 import { View } from '../../view/view'
 import { EdgeView } from '../../view/edge'
-import { ToolView } from '../../view/tool'
+import { ToolsView } from '../../view/tool'
 
-export class Vertex extends ToolView.Item<EdgeView, Vertex.Options> {
-  protected handles: Vertex.Handle[] = []
+export class Vertices extends ToolsView.ToolItem<EdgeView, Vertices.Options> {
+  protected handles: Vertices.Handle[] = []
 
   protected get vertices() {
     return this.cellView.cell.getVertices()
   }
 
   protected onRender() {
+    Dom.addClass(this.container, this.prefixClassName('edge-tool-vertices'))
+
     if (this.options.vertexAdding) {
       this.updatePath()
     }
@@ -84,7 +86,7 @@ export class Vertex extends ToolView.Item<EdgeView, Vertex.Options> {
     }
   }
 
-  protected startHandleListening(handle: Vertex.Handle) {
+  protected startHandleListening(handle: Vertices.Handle) {
     const edgeView = this.cellView
     if (edgeView.can('vertexMove')) {
       handle.on('change', this.onHandleChange, this)
@@ -97,7 +99,7 @@ export class Vertex extends ToolView.Item<EdgeView, Vertex.Options> {
     }
   }
 
-  protected stopHandleListening(handle: Vertex.Handle) {
+  protected stopHandleListening(handle: Vertices.Handle) {
     const edgeView = this.cellView
     if (edgeView.can('vertexMove')) {
       handle.off('change', this.onHandleChange, this)
@@ -128,10 +130,10 @@ export class Vertex extends ToolView.Item<EdgeView, Vertex.Options> {
     return { e, x, y }
   }
 
-  protected onHandleChange({ e }: Vertex.Handle.EventArgs['change']) {
+  protected onHandleChange({ e }: Vertices.Handle.EventArgs['change']) {
     this.focus()
     const edgeView = this.cellView
-    edgeView.cell.startBatch('move-vertex', { ui: true, tool: this.cid })
+    edgeView.cell.startBatch('move-vertex', { ui: true, toolId: this.cid })
     if (!this.options.stopPropagation) {
       const { e: evt, x, y } = this.getMouseEventArgs(e)
       edgeView.notifyMouseDown(evt, x, y)
@@ -141,20 +143,20 @@ export class Vertex extends ToolView.Item<EdgeView, Vertex.Options> {
   protected onHandleChanging({
     handle,
     e,
-  }: Vertex.Handle.EventArgs['changing']) {
+  }: Vertices.Handle.EventArgs['changing']) {
     const edgeView = this.cellView
     const index = handle.options.index
     const { e: evt, x, y } = this.getMouseEventArgs(e)
     const vertex = { x, y }
     this.snapVertex(vertex, index)
-    edgeView.cell.setVertexAt(index, vertex, { ui: true, tool: this.cid })
+    edgeView.cell.setVertexAt(index, vertex, { ui: true, toolId: this.cid })
     handle.updatePosition(vertex.x, vertex.y)
     if (!this.options.stopPropagation) {
       edgeView.notifyMouseMove(evt, x, y)
     }
   }
 
-  protected onHandleChanged({ e }: Vertex.Handle.EventArgs['changed']) {
+  protected onHandleChanged({ e }: Vertices.Handle.EventArgs['changed']) {
     const options = this.options
     const edgeView = this.cellView
 
@@ -167,7 +169,7 @@ export class Vertex extends ToolView.Item<EdgeView, Vertex.Options> {
 
     const verticesRemoved = edgeView.removeRedundantLinearVertices({
       ui: true,
-      tool: this.cid,
+      toolId: this.cid,
     })
 
     if (verticesRemoved) {
@@ -176,10 +178,10 @@ export class Vertex extends ToolView.Item<EdgeView, Vertex.Options> {
 
     this.blur()
 
-    edgeView.cell.stopBatch('move-vertex', { ui: true, tool: this.cid })
+    edgeView.cell.stopBatch('move-vertex', { ui: true, toolId: this.cid })
 
     if (this.eventData(e).vertexAdded) {
-      edgeView.cell.stopBatch('add-vertex', { ui: true, tool: this.cid })
+      edgeView.cell.stopBatch('add-vertex', { ui: true, toolId: this.cid })
     }
 
     const { e: evt, x, y } = this.getMouseEventArgs(e)
@@ -210,7 +212,7 @@ export class Vertex extends ToolView.Item<EdgeView, Vertex.Options> {
     }
   }
 
-  protected onHandleRemove({ handle, e }: Vertex.Handle.EventArgs['remove']) {
+  protected onHandleRemove({ handle, e }: Vertices.Handle.EventArgs['remove']) {
     const index = handle.options.index
     const edgeView = this.cellView
     edgeView.cell.removeVertexAt(index, { ui: true })
@@ -231,12 +233,12 @@ export class Vertex extends ToolView.Item<EdgeView, Vertex.Options> {
     const e = this.normalizeEvent(evt)
     const vertex = this.graph.snapToGrid(e.clientX, e.clientY).toJSON()
     const edgeView = this.cellView
-    edgeView.cell.startBatch('add-vertex', { ui: true, tool: this.cid })
+    edgeView.cell.startBatch('add-vertex', { ui: true, toolId: this.cid })
     const index = edgeView.getVertexIndex(vertex.x, vertex.y)
     this.snapVertex(vertex, index)
     edgeView.cell.setVertexAt(index, vertex, {
       ui: true,
-      tool: this.cid,
+      toolId: this.cid,
     })
     this.render()
     const handle = this.handles[index]
@@ -249,8 +251,8 @@ export class Vertex extends ToolView.Item<EdgeView, Vertex.Options> {
   }
 }
 
-export namespace Vertex {
-  export interface Options extends ToolView.Item.Options {
+export namespace Vertices {
+  export interface Options extends ToolsView.ToolItem.Options {
     snapRadius?: number
     vertexAdding?: boolean
     redundancyRemoval?: boolean
@@ -259,7 +261,7 @@ export namespace Vertex {
   }
 }
 
-export namespace Vertex {
+export namespace Vertices {
   export class Handle extends View<Handle.EventArgs> {
     protected get graph() {
       return this.options.graph
@@ -277,7 +279,7 @@ export namespace Vertex {
         'stroke-width': 2,
       })
 
-      Dom.addClass(this.container, this.prefixClassName('vertex-marker'))
+      Dom.addClass(this.container, this.prefixClassName('edge-tool-vertex'))
 
       this.delegateEvents({
         mousedown: 'onMouseDown',
@@ -344,15 +346,16 @@ export namespace Vertex {
   }
 }
 
-export namespace Vertex {
-  const pathClassName = Util.prefix('vertex-path')
+export namespace Vertices {
+  const pathClassName = Util.prefix('edge-tool-vertex-path')
 
-  Vertex.config<Vertex.Options>({
+  Vertices.config<Vertices.Options>({
+    name: 'vertices',
     snapRadius: 20,
     redundancyRemoval: true,
     vertexAdding: true,
     stopPropagation: true,
-    handleConstructor: Vertex.Handle,
+    handleConstructor: Vertices.Handle,
     markup: [
       {
         tagName: 'path',

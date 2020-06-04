@@ -3,11 +3,15 @@ import { Dom, NumberExt } from '../../util'
 import { CellView } from '../../view/cell'
 import { NodeView } from '../../view/node'
 import { EdgeView } from '../../view/edge'
-import { ToolView } from '../../view/tool'
+import { ToolsView } from '../../view/tool'
 import * as Util from './util'
 
-export class Button extends ToolView.Item<EdgeView | NodeView, Button.Options> {
+export class Button extends ToolsView.ToolItem<
+  EdgeView | NodeView,
+  Button.Options
+> {
   protected onRender() {
+    Dom.addClass(this.container, this.prefixClassName('cell-tool-button'))
     this.update()
   }
 
@@ -117,7 +121,7 @@ export class Button extends ToolView.Item<EdgeView | NodeView, Button.Options> {
 }
 
 export namespace Button {
-  export interface Options extends ToolView.Item.Options {
+  export interface Options extends ToolsView.ToolItem.Options {
     x?: number
     y?: number
     distance?: number
@@ -144,9 +148,8 @@ export namespace Button {
 }
 
 export namespace Button {
-  export class Remove extends Button {}
-
-  Remove.config<Button.Options>({
+  export const Remove = Button.define<Button.Options>({
+    name: 'button-remove',
     markup: [
       {
         tagName: 'circle',
@@ -172,7 +175,8 @@ export namespace Button {
     distance: 60,
     offset: 0,
     onClick(evt, view, btn) {
-      view.cell.remove({ ui: true, tool: btn.cid })
+      btn.parent.remove()
+      view.cell.remove({ ui: true, toolId: btn.cid })
     },
   })
 }

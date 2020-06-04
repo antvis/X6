@@ -965,12 +965,12 @@ export class Renderer extends Base {
     // elements according to their associated cell `zIndex` attribute.
     const elems = this.view
       .$(this.view.stage)
-      .children('[data-id]')
+      .children('[data-cell-id]')
       .toArray() as Element[]
     const model = this.model
     this.sortElements(elems, (a, b) => {
-      const cellA = model.getCell(a.getAttribute('data-id') || '')
-      const cellB = model.getCell(b.getAttribute('data-id') || '')
+      const cellA = model.getCell(a.getAttribute('data-cell-id') || '')
+      const cellB = model.getCell(b.getAttribute('data-cell-id') || '')
       const z1 = cellA.getZIndex() || 0
       const z2 = cellB.getZIndex() || 0
       return z1 === z2 ? 0 : z1 < z2 ? -1 : 1
@@ -1049,20 +1049,20 @@ export class Renderer extends Base {
     return this.views[id]
   }
 
-  findViewByElem($el: string | JQuery | Element | undefined | null) {
-    if ($el == null) {
+  findViewByElem(elem: string | JQuery | Element | undefined | null) {
+    if (elem == null) {
       return null
     }
 
-    const el =
-      typeof $el === 'string'
-        ? this.view.stage.querySelector($el)
-        : $el instanceof Element
-        ? $el
-        : $el[0]
+    const target =
+      typeof elem === 'string'
+        ? this.view.stage.querySelector(elem)
+        : elem instanceof Element
+        ? elem
+        : elem[0]
 
-    if (el) {
-      const id = this.view.findAttr('data-id', el)
+    if (target) {
+      const id = this.view.findAttr('data-cell-id', target)
       if (id) {
         return this.views[id]
       }

@@ -446,7 +446,7 @@ export namespace Point {
     return false
   }
 
-  export function equalPoints(p1: Point[], p2: Point[]) {
+  export function equalPoints(p1: Point.PointLike[], p2: Point.PointLike[]) {
     if (
       (p1 == null && p2 != null) ||
       (p1 != null && p2 == null) ||
@@ -457,7 +457,7 @@ export namespace Point {
 
     if (p1 != null && p2 != null) {
       for (let i = 0, ii = p1.length; i < ii; i += 1) {
-        if (p1[i] === p2[i] || (p1[i] != null && !p1[i].equals(p2[i]))) {
+        if (p1[i] === p2[i] || (p1[i] != null && !equals(p1[i], p2[i]))) {
           return false
         }
       }

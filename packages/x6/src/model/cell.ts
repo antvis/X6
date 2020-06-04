@@ -1421,7 +1421,7 @@ export namespace Cell {
 }
 
 export namespace Cell {
-  export type Defintion = typeof Cell
+  export type Definition = typeof Cell
 
   export type PropHook<M extends Metadata = Metadata, C extends Cell = Cell> = (
     this: C,

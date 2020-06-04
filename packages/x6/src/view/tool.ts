@@ -1,14 +1,18 @@
 import { KeyValue } from '../types'
-import { Dom, ObjectExt } from '../util'
+import { Dom, ObjectExt, StringExt } from '../util'
+import { NodeTool, EdgeTool } from '../definition'
 import { View } from './view'
 import { CellView } from './cell'
 import { Markup } from './markup'
 
-export class ToolView extends View {
-  public name?: string
-  public tools: ToolView.Item[] | null
-  public options: ToolView.Options
+export class ToolsView extends View {
+  public tools: ToolsView.ToolItem[] | null
+  public options: ToolsView.Options
   public cellView: CellView
+
+  public get name() {
+    return this.options.name
+  }
 
   public get graph() {
     return this.cellView.graph
@@ -18,9 +22,11 @@ export class ToolView extends View {
     return this.cellView.cell
   }
 
-  protected localMount?: boolean
+  protected get local() {
+    return this.options.local
+  }
 
-  constructor(options: ToolView.Options = {}) {
+  constructor(options: ToolsView.Options = {}) {
     super()
 
     this.container = View.createElement(
@@ -33,28 +39,73 @@ export class ToolView extends View {
     if (options.className) {
       Dom.addClass(this.container, options.className)
     }
+
+    this.config(options)
   }
 
-  config(options: ToolView.ConfigOptions) {
-    this.name = options.name
-    this.cellView = options.cellView
-    this.localMount = options.localMount
+  config(options: ToolsView.ConfigOptions) {
+    this.options = {
+      ...this.options,
+      ...options,
+    }
 
-    const cellView = options.cellView
-    if (!(cellView instanceof CellView)) {
+    if (
+      !(options.cellView instanceof CellView) ||
+      options.cellView === this.cellView
+    ) {
       return this
     }
 
-    const tools = options.tools
+    this.cellView = options.cellView
+
+    if (this.cell.isEdge()) {
+      Dom.addClass(this.container, this.prefixClassName('edge-tools'))
+    } else if (this.cell.isNode()) {
+      Dom.addClass(this.container, this.prefixClassName('node-tools'))
+    }
+
+    this.container.setAttribute('data-cell-id', this.cell.id)
+
+    if (this.name) {
+      this.container.setAttribute('data-tools-name', this.name)
+    }
+
+    const tools = this.options.tools
     if (!Array.isArray(tools)) {
       return this
     }
 
     this.tools = []
     for (let i = 0; i < tools.length; i += 1) {
-      const tool = tools[i]
-      if (tool instanceof ToolView.Item) {
-        tool.config(cellView, this)
+      const meta = tools[i]
+      let tool: ToolsView.ToolItem | undefined
+
+      if (meta instanceof ToolsView.ToolItem) {
+        tool = meta
+      } else {
+        const name = typeof meta === 'object' ? meta.name : meta
+        const args = typeof meta === 'object' ? meta.args || {} : {}
+        if (name) {
+          if (this.cell.isNode()) {
+            const ctor = NodeTool.registry.get(name)
+            if (ctor) {
+              tool = new ctor(args)
+            } else {
+              return NodeTool.registry.onNotFound(name)
+            }
+          } else if (this.cell.isEdge()) {
+            const ctor = EdgeTool.registry.get(name)
+            if (ctor) {
+              tool = new ctor(args)
+            } else {
+              return EdgeTool.registry.onNotFound(name)
+            }
+          }
+        }
+      }
+
+      if (tool) {
+        tool.config(this.cellView, this)
         tool.render()
         this.container.appendChild(tool.container)
         this.tools.push(tool)
@@ -64,11 +115,7 @@ export class ToolView extends View {
     return this
   }
 
-  getName() {
-    return this.name
-  }
-
-  update(options: ToolView.UpdateOptions = {}) {
+  update(options: ToolsView.UpdateOptions = {}) {
     const tools = this.tools
     if (tools) {
       tools.forEach((tool) => {
@@ -80,7 +127,7 @@ export class ToolView extends View {
     return this
   }
 
-  focusTool(focusedTool: ToolView.Item | null) {
+  focus(focusedTool: ToolsView.ToolItem | null) {
     const tools = this.tools
     if (tools) {
       tools.forEach((tool) => {
@@ -95,7 +142,7 @@ export class ToolView extends View {
     return this
   }
 
-  blurTool(blurredTool: ToolView.Item | null) {
+  blur(blurredTool: ToolsView.ToolItem | null) {
     const tools = this.tools
     if (tools) {
       tools.forEach((tool) => {
@@ -110,11 +157,11 @@ export class ToolView extends View {
   }
 
   hide() {
-    return this.focusTool(null)
+    return this.focus(null)
   }
 
   show() {
-    return this.blurTool(null)
+    return this.blur(null)
   }
 
   remove() {
@@ -130,7 +177,7 @@ export class ToolView extends View {
   mount() {
     const cellView = this.cellView
     if (cellView) {
-      const parent = this.localMount
+      const parent = this.local
         ? cellView.container
         : cellView.graph.view.decorator
       parent.appendChild(this.container)
@@ -139,18 +186,29 @@ export class ToolView extends View {
   }
 }
 
-export namespace ToolView {
-  export interface Options {
+export namespace ToolsView {
+  export interface Options extends ConfigOptions {
     tagName?: string
     isSVGElement?: boolean
     className?: string
   }
 
   export interface ConfigOptions {
-    cellView: CellView
+    cellView?: CellView
     name?: string
-    tools?: Item[]
-    localMount?: boolean
+    tools?:
+      | (
+          | ToolItem
+          | string
+          | NodeTool.NativeNames
+          | NodeTool.NativeItem
+          | NodeTool.ManaualItem
+          | EdgeTool.NativeNames
+          | EdgeTool.NativeItem
+          | EdgeTool.ManaualItem
+        )[]
+      | null
+    local?: boolean
   }
 
   export interface UpdateOptions {
@@ -158,14 +216,14 @@ export namespace ToolView {
   }
 }
 
-export namespace ToolView {
-  export class Item<
+export namespace ToolsView {
+  export class ToolItem<
     TargetView extends CellView = CellView,
-    Options extends Item.Options = Item.Options
+    Options extends ToolItem.Options = ToolItem.Options
   > extends View {
     // #region static
 
-    protected static defaults: Item.Options = {
+    protected static defaults: ToolItem.Options = {
       isSVGElement: true,
       tagName: 'g',
     }
@@ -174,11 +232,13 @@ export namespace ToolView {
       return this.defaults
     }
 
-    static config<T extends Item.Options = Item.Options>(options: Partial<T>) {
+    static config<T extends ToolItem.Options = ToolItem.Options>(
+      options: Partial<T>,
+    ) {
       this.defaults = this.getOptions(options)
     }
 
-    static getOptions<T extends Item.Options = Item.Options>(
+    static getOptions<T extends ToolItem.Options = ToolItem.Options>(
       options: Partial<T>,
     ): T {
       return ObjectExt.merge(
@@ -191,20 +251,20 @@ export namespace ToolView {
 
     public readonly options: Options
     public container: HTMLElement | SVGElement
-    protected parent: ToolView
+    public parent: ToolsView
     protected cellView: TargetView
     protected visible: boolean
     protected childNodes: KeyValue<Element>
 
-    get graph() {
+    public get graph() {
       return this.cellView.graph
     }
 
-    get cell() {
+    public get cell() {
       return this.cellView.cell
     }
 
-    get name() {
+    public get name() {
       return this.options.name
     }
 
@@ -213,30 +273,21 @@ export namespace ToolView {
 
       this.options = this.getOptions(options)
       this.container = View.createElement(
-        options.tagName || 'g',
-        options.isSVGElement !== false,
+        this.options.tagName || 'g',
+        this.options.isSVGElement !== false,
       )
 
       Dom.addClass(this.container, this.prefixClassName('cell-tool'))
 
-      if (typeof options.className === 'string') {
-        Dom.addClass(this.container, options.className)
-      }
-
-      const markup = this.options.markup
-      if (markup) {
-        const meta = Markup.isStringMarkup(markup)
-          ? Markup.parseStringMarkup(markup)
-          : Markup.parseJSONMarkup(markup)
-        this.container.appendChild(meta.fragment)
-        this.childNodes = meta.selectors as KeyValue<Element>
+      if (typeof this.options.className === 'string') {
+        Dom.addClass(this.container, this.options.className)
       }
 
       this.init()
     }
 
     protected getOptions(options: Partial<Options>): Options {
-      const ctor = (this.constructor as any) as Item
+      const ctor = (this.constructor as any) as ToolItem
       return ctor.getOptions(options) as Options
     }
 
@@ -249,16 +300,38 @@ export namespace ToolView {
       return this
     }
 
-    config(view: CellView, toolsView: ToolView) {
+    config(view: CellView, toolsView: ToolsView) {
       this.cellView = view as TargetView
       this.parent = toolsView
       this.stamp(this.container)
+
+      if (this.cell.isEdge()) {
+        Dom.addClass(this.container, this.prefixClassName('edge-tool'))
+      } else if (this.cell.isNode()) {
+        Dom.addClass(this.container, this.prefixClassName('node-tool'))
+      }
+
+      if (this.name) {
+        this.container.setAttribute('data-tool-name', this.name)
+      }
+
       this.delegateEvents()
+
       return this
     }
 
     render() {
       this.empty()
+
+      const markup = this.options.markup
+      if (markup) {
+        const meta = Markup.isStringMarkup(markup)
+          ? Markup.parseStringMarkup(markup)
+          : Markup.parseJSONMarkup(markup)
+        this.container.appendChild(meta.fragment)
+        this.childNodes = meta.selectors as KeyValue<Element>
+      }
+
       this.onRender()
       return this
     }
@@ -269,14 +342,10 @@ export namespace ToolView {
       return this
     }
 
-    protected stamp(elem: Element) {
+    protected stamp(elem: Element = this.container) {
       if (elem) {
         elem.setAttribute('data-cell-id', this.cellView.cell.id)
       }
-    }
-
-    getName() {
-      return this.name
     }
 
     show() {
@@ -300,13 +369,13 @@ export namespace ToolView {
       if (opacity != null && isFinite(opacity)) {
         this.container.style.opacity = `${opacity}`
       }
-      this.parent.focusTool(this)
+      this.parent.focus(this)
       return this
     }
 
     blur() {
       this.container.style.opacity = ''
-      this.parent.blurTool(this)
+      this.parent.blur(this)
       return this
     }
 
@@ -319,7 +388,7 @@ export namespace ToolView {
     }
   }
 
-  export namespace Item {
+  export namespace ToolItem {
     export interface Options {
       name?: string
       tagName?: string
@@ -329,6 +398,31 @@ export namespace ToolView {
       events?: View.Events | null
       documentEvents?: View.Events | null
       focusOpacity?: number
+    }
+  }
+
+  export namespace ToolItem {
+    export type Definition =
+      | typeof ToolItem
+      | (new (options: ToolItem.Options) => ToolItem)
+
+    let counter = 0
+    function getClassName(name?: string) {
+      if (name) {
+        return StringExt.pascalCase(name)
+      }
+      counter += 1
+      return `CustomTool${counter}`
+    }
+
+    export function define<T extends Options>(options: T) {
+      const tool = ObjectExt.createClass<Definition>(
+        getClassName(options.name),
+        this as Definition,
+      ) as typeof ToolItem
+
+      tool.config(options)
+      return tool
     }
   }
 }

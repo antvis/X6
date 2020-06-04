@@ -1036,7 +1036,7 @@ export namespace Node {
 }
 
 export namespace Node {
-  export type Defintion = typeof Node & (new (...args: any[]) => Node)
+  export type Definition = typeof Node & (new (...args: any[]) => Node)
 
   let counter = 0
   function getClassName(name?: string) {
@@ -1049,9 +1049,9 @@ export namespace Node {
 
   export function define(config: Config) {
     const { name, ...others } = config
-    const shape = ObjectExt.createClass<Defintion>(
+    const shape = ObjectExt.createClass<Definition>(
       getClassName(name),
-      this as Defintion,
+      this as Definition,
     )
     shape.config(others)
     return shape
@@ -1072,7 +1072,7 @@ export namespace Node {
 
 export namespace Node {
   export const registry = Registry.create<
-    Defintion,
+    Definition,
     never,
     Config & { inherit?: string }
   >({

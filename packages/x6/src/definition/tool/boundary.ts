@@ -2,14 +2,23 @@ import { Attr } from '../attr'
 import { NumberExt, Dom } from '../../util'
 import { NodeView } from '../../view/node'
 import { EdgeView } from '../../view/edge'
-import { ToolView } from '../../view/tool'
+import { ToolsView } from '../../view/tool'
 import * as Util from './util'
 
-export class Boundary extends ToolView.Item<
+export class Boundary extends ToolsView.ToolItem<
   EdgeView | NodeView,
   Boundary.Options
 > {
   protected onRender() {
+    Dom.addClass(this.container, this.prefixClassName('cell-tool-boundary'))
+
+    if (this.options.attrs) {
+      const { class: className, ...attrs } = this.options.attrs
+      Dom.attr(this.container, attrs)
+      if (className) {
+        Dom.addClass(this.container, className as string)
+      }
+    }
     this.update()
   }
 
@@ -47,7 +56,7 @@ export class Boundary extends ToolView.Item<
 }
 
 export namespace Boundary {
-  export interface Options extends ToolView.Item.Options {
+  export interface Options extends ToolsView.ToolItem.Options {
     padding?: NumberExt.SideOptions
     rotate?: boolean
     useCellGeometry?: boolean

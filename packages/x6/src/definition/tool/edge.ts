@@ -1,6 +1,0 @@
-export * from './anchor'
-export * from './arrowhead'
-export * from './boundary'
-export * from './button'
-export * from './vertex'
-export * from './segment'
