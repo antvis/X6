@@ -17,7 +17,7 @@ export function createShape(
   options: {
     noText?: boolean
     ignoreMarkup?: boolean
-    parent?: Node.Defintion
+    parent?: Node.Definition
   } = {},
 ) {
   const name = getName(type)
