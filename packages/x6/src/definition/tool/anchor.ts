@@ -5,15 +5,20 @@ import { Edge } from '../../model/edge'
 import { Node } from '../../model/node'
 import { EdgeView } from '../../view/edge'
 import { CellView } from '../../view/cell'
-import { ToolView } from '../../view/tool'
+import { ToolsView } from '../../view/tool'
 import * as Util from './util'
 
-class Anchor extends ToolView.Item<EdgeView, Anchor.Options> {
+class Anchor extends ToolsView.ToolItem<EdgeView, Anchor.Options> {
   protected get type() {
     return this.options.type!
   }
 
   protected onRender() {
+    Dom.addClass(
+      this.container,
+      this.prefixClassName(`edge-tool-${this.type}-anchor`),
+    )
+
     this.toggleArea(false)
     this.update()
   }
@@ -137,7 +142,7 @@ class Anchor extends ToolView.Item<EdgeView, Anchor.Options> {
     this.toggleArea(this.options.restrictArea)
     this.cell.startBatch('move-anchor', {
       ui: true,
-      tool: this.cid,
+      toolId: this.cid,
     })
   }
 
@@ -148,12 +153,12 @@ class Anchor extends ToolView.Item<EdgeView, Anchor.Options> {
       cell.prop([type, 'anchor'], anchor, {
         rewrite: true,
         ui: true,
-        tool: this.cid,
+        toolId: this.cid,
       })
     } else {
       cell.removeProp([type, 'anchor'], {
         ui: true,
-        tool: this.cid,
+        toolId: this.cid,
       })
     }
   }
@@ -233,9 +238,9 @@ class Anchor extends ToolView.Item<EdgeView, Anchor.Options> {
     this.toggleArea(false)
     const edgeView = this.cellView
     if (this.options.redundancyRemoval) {
-      edgeView.removeRedundantLinearVertices({ ui: true, tool: this.cid })
+      edgeView.removeRedundantLinearVertices({ ui: true, toolId: this.cid })
     }
-    this.cell.stopBatch('move-anchor', { ui: true, tool: this.cid })
+    this.cell.stopBatch('move-anchor', { ui: true, toolId: this.cid })
   }
 
   protected onDblClick() {
@@ -245,7 +250,7 @@ class Anchor extends ToolView.Item<EdgeView, Anchor.Options> {
 }
 
 namespace Anchor {
-  export interface Options extends ToolView.Item.Options {
+  export interface Options extends ToolsView.ToolItem.Options {
     type?: Edge.TerminalType
     snapRadius?: number
     areaPadding?: number
@@ -343,15 +348,12 @@ namespace Anchor {
   })
 }
 
-export class SourceAnchor extends Anchor {}
-export class TargetAnchor extends Anchor {}
-
-SourceAnchor.config<Anchor.Options>({
+export const SourceAnchor = Anchor.define<Anchor.Options>({
   name: 'source-anchor',
   type: 'source',
 })
 
-TargetAnchor.config<Anchor.Options>({
+export const TargetAnchor = Anchor.define<Anchor.Options>({
   name: 'target-anchor',
   type: 'target',
 })

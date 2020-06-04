@@ -14,7 +14,7 @@ import { Cache } from './cache'
 import { Markup } from './markup'
 import { EdgeView } from './edge'
 import { NodeView } from './node'
-import { ToolView } from './tool'
+import { ToolsView } from './tool'
 import { AttrManager } from './attr'
 
 export class CellView<
@@ -137,7 +137,7 @@ export class CellView<
 
   protected getContainerAttrs(): Nilable<Attr.SimpleAttrs> {
     return {
-      'data-id': this.cell.id,
+      'data-cell-id': this.cell.id,
     }
   }
 
@@ -587,11 +587,11 @@ export class CellView<
 
   // #region tools
 
-  protected tool: ToolView | null
+  protected tools: ToolsView | null
 
-  hasTool(name?: string) {
-    const tool = this.tool
-    if (tool == null) {
+  hasTools(name?: string) {
+    const tools = this.tools
+    if (tools == null) {
       return false
     }
 
@@ -599,50 +599,53 @@ export class CellView<
       return true
     }
 
-    return tool.getName() === name
+    return tools.name === name
   }
 
-  addTool(tool: ToolView) {
-    this.removeTool()
-    if (tool) {
-      this.tool = tool
-      this.graph.on('tools:hide', this.hideTool, this)
-      this.graph.on('tools:show', this.showTool, this)
-      this.graph.on('tools:remove', this.removeTool, this)
-      tool.config({ cellView: this })
-      tool.mount()
+  addTools(options: ToolsView.Options): this
+  addTools(tools: ToolsView): this
+  addTools(config: ToolsView | ToolsView.Options) {
+    this.removeTools()
+    if (config) {
+      const tools = config instanceof ToolsView ? config : new ToolsView(config)
+      this.tools = tools
+      this.graph.on('tools:hide', this.hideTools, this)
+      this.graph.on('tools:show', this.showTools, this)
+      this.graph.on('tools:remove', this.removeTools, this)
+      tools.config({ cellView: this })
+      tools.mount()
     }
     return this
   }
 
-  updateTool(options: ToolView.UpdateOptions = {}) {
-    if (this.tool) {
-      this.tool.update(options)
+  updateTools(options: ToolsView.UpdateOptions = {}) {
+    if (this.tools) {
+      this.tools.update(options)
     }
     return this
   }
 
-  removeTool() {
-    if (this.tool) {
-      this.tool.remove()
-      this.graph.off('tools:hide', this.hideTool, this)
-      this.graph.off('tools:show', this.showTool, this)
-      this.graph.off('tools:remove', this.removeTool, this)
-      this.tool = null
+  removeTools() {
+    if (this.tools) {
+      this.tools.remove()
+      this.graph.off('tools:hide', this.hideTools, this)
+      this.graph.off('tools:show', this.showTools, this)
+      this.graph.off('tools:remove', this.removeTools, this)
+      this.tools = null
     }
     return this
   }
 
-  hideTool() {
-    if (this.tool) {
-      this.tool.hide()
+  hideTools() {
+    if (this.tools) {
+      this.tools.hide()
     }
     return this
   }
 
-  showTool() {
-    if (this.tool) {
-      this.tool.show()
+  showTools() {
+    if (this.tools) {
+      this.tools.show()
     }
     return this
   }
