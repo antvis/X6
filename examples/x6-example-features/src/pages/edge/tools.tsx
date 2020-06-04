@@ -822,6 +822,7 @@ export default class Example extends React.Component {
           break
         }
 
+        case edge9:
         case edge8: {
           tools.push({
             name: 'vertices',
