@@ -3,9 +3,9 @@ import { Dom } from '../../util'
 import { Point } from '../../geometry'
 import { Edge } from '../../model/edge'
 import { EdgeView } from '../../view/edge'
-import { ToolView } from '../../view/tool'
+import { ToolsView } from '../../view/tool'
 
-class ArrowHead extends ToolView.Item<EdgeView, ArrowHead.Options> {
+class Arrowhead extends ToolsView.ToolItem<EdgeView, Arrowhead.Options> {
   protected get type() {
     return this.options.type!
   }
@@ -15,10 +15,20 @@ class ArrowHead extends ToolView.Item<EdgeView, ArrowHead.Options> {
   }
 
   protected init() {
-    this.setAttrs(this.options.attrs, this.container)
+    if (this.options.attrs) {
+      const { class: className, ...attrs } = this.options.attrs
+      this.setAttrs(attrs, this.container)
+      if (className) {
+        Dom.addClass(this.container, className as string)
+      }
+    }
   }
 
   protected onRender() {
+    Dom.addClass(
+      this.container,
+      this.prefixClassName(`edge-tool-${this.type}-arrowhead`),
+    )
     this.update()
   }
 
@@ -54,12 +64,13 @@ class ArrowHead extends ToolView.Item<EdgeView, ArrowHead.Options> {
     const edgeView = this.cellView as EdgeView
     edgeView.cell.startBatch('move-arrowhead', {
       ui: true,
-      tool: this.cid,
+      toolId: this.cid,
     })
 
     if (edgeView.can('arrowheadMove')) {
-      edgeView.prepareArrowheadDragging(this.type)
-      this.delegateDocumentEvents(this.options.documentEvents!)
+      const data = edgeView.prepareArrowheadDragging(this.type)
+      this.cellView.setEventData(evt, data)
+      this.delegateDocumentEvents(this.options.documentEvents!, evt.data)
       edgeView.graph.view.undelegateEvents()
     }
 
@@ -84,21 +95,21 @@ class ArrowHead extends ToolView.Item<EdgeView, ArrowHead.Options> {
     this.container.style.pointerEvents = ''
     edgeView.cell.stopBatch('move-arrowhead', {
       ui: true,
-      tool: this.cid,
+      toolId: this.cid,
     })
   }
 }
 
-namespace ArrowHead {
-  export interface Options extends ToolView.Item.Options {
+namespace Arrowhead {
+  export interface Options extends ToolsView.ToolItem.Options {
     attrs?: Attr.SimpleAttrs
     type?: Edge.TerminalType
     ratio?: number
   }
 }
 
-namespace ArrowHead {
-  ArrowHead.config({
+namespace Arrowhead {
+  Arrowhead.config({
     tagName: 'path',
     isSVGElement: true,
     events: {
@@ -115,34 +126,28 @@ namespace ArrowHead {
   })
 }
 
-export class SourceArrowhead extends ArrowHead {}
-
-export class TargetArrowhead extends ArrowHead {}
-
-SourceArrowhead.config<ArrowHead.Options>({
+export const SourceArrowhead = Arrowhead.define<Arrowhead.Options>({
+  name: 'source-arrowhead',
   type: 'source',
   ratio: 0,
-  name: 'target-arrowhead',
-  attrs: {
-    d: 'M -10 -8 10 0 -10 8 Z',
-    fill: '#33334F',
-    stroke: '#FFFFFF',
-    'stroke-width': 2,
-    cursor: 'move',
-    class: 'target-arrowhead',
-  },
-})
-
-TargetArrowhead.config<ArrowHead.Options>({
-  type: 'target',
-  ratio: 1,
-  name: 'source-arrowhead',
   attrs: {
     d: 'M 10 -8 -10 0 10 8 Z',
     fill: '#33334F',
     stroke: '#FFFFFF',
     'stroke-width': 2,
     cursor: 'move',
-    class: 'source-arrowhead',
+  },
+})
+
+export const TargetArrowhead = Arrowhead.define({
+  name: 'target-arrowhead',
+  type: 'target',
+  ratio: 1,
+  attrs: {
+    d: 'M -10 -8 10 0 -10 8 Z',
+    fill: '#33334F',
+    stroke: '#FFFFFF',
+    'stroke-width': 2,
+    cursor: 'move',
   },
 })

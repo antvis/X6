@@ -1276,7 +1276,7 @@ export namespace Edge {
 }
 
 export namespace Edge {
-  export type Defintion = typeof Edge & (new (...args: any[]) => Edge)
+  export type Definition = typeof Edge & (new (...args: any[]) => Edge)
 
   let counter = 0
   function getClassName(name?: string) {
@@ -1289,9 +1289,9 @@ export namespace Edge {
 
   export function define(config: Config) {
     const { name, ...others } = config
-    const shape = ObjectExt.createClass<Defintion>(
+    const shape = ObjectExt.createClass<Definition>(
       getClassName(name),
-      this as Defintion,
+      this as Definition,
     )
     shape.config(others)
     return shape
@@ -1312,7 +1312,7 @@ export namespace Edge {
 
 export namespace Edge {
   export const registry = Registry.create<
-    Defintion,
+    Definition,
     never,
     Config & { inherit?: string }
   >({
