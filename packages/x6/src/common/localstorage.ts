@@ -1,4 +1,4 @@
-import { Config } from '../global'
+import { Config } from '../global/config'
 import { StringExt, FunctionExt } from '../util'
 
 export namespace LocalStorage {

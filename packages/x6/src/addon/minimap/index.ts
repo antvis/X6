@@ -1,7 +1,7 @@
 import { DeepPartial } from 'utility-types'
 import { FunctionExt } from '../../util'
-import { View } from '../../view'
-import { Graph } from '../../graph'
+import { View } from '../../view/view'
+import { Graph } from '../../graph/graph'
 import { EventArgs } from '../../graph/events'
 import { Scroller } from '../scroller'
 
