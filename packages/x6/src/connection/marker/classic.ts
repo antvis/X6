@@ -1,5 +1,6 @@
 import { Path } from '../../geometry'
 import { NumberExt } from '../../util'
+import { normalizeMarker } from './util'
 import { Marker } from './index'
 
 interface Common {
@@ -59,7 +60,7 @@ function createClassicMarker(
   return {
     ...attrs,
     type: 'path',
-    d: Marker.normalize(path.serialize(), {
+    d: normalizeMarker(path.serialize(), {
       x: options.offset || (open ? -width / 2 : 0),
     }),
   }

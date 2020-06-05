@@ -1,7 +1,7 @@
-import { Point, Line, Angle, Rectangle } from '../../../geometry'
 import { KeyValue } from '../../../types'
-import { EdgeView } from '../../../view'
-import { Util } from '../../../global'
+import { Util } from '../../../global/util'
+import { Point, Line, Angle, Rectangle } from '../../../geometry'
+import { EdgeView } from '../../../view/edge'
 import { ResolvedOptions, Direction } from './options'
 
 export function getSourceBBox(view: EdgeView, options: ResolvedOptions) {
