@@ -147,15 +147,13 @@ export class NodeView<
 
     if (this.scalableNode) {
       // Double update is necessary for elements with the scalable group only
-      // Note the resize() triggers the other `update`.
+      // Note the `resize()` triggers the other `update`.
       this.update()
     }
 
     this.resize()
 
     if (this.rotatableNode) {
-      // Translate transformation is applied on `this.el` while the rotation
-      // transformation on `this.rotatableNode`
       this.rotate()
       this.translate()
     } else {
@@ -174,7 +172,7 @@ export class NodeView<
       return this.updateSize(opt)
     }
 
-    if (this.cell.rotation) {
+    if (this.cell.angle) {
       this.rotate()
     }
 
@@ -207,10 +205,10 @@ export class NodeView<
   }
 
   protected getRotationString() {
-    const rotation = this.cell.rotation
-    if (rotation) {
+    const angle = this.cell.angle
+    if (angle) {
       const size = this.cell.sizes
-      return `rotate(${rotation},${size.width / 2},${size.height / 2})`
+      return `rotate(${angle},${size.width / 2},${size.height / 2})`
     }
   }
 
@@ -241,7 +239,7 @@ export class NodeView<
   protected updateSize(opt: any = {}) {
     const cell = this.cell
     const size = cell.sizes
-    const angle = cell.rotation
+    const angle = cell.angle
     const scalableNode = this.scalableNode!
 
     // Getting scalable group's bbox.
@@ -492,7 +490,7 @@ export class NodeView<
         this.applyPortTransform(
           cached.portLabelElement,
           labelLayout,
-          -(portLayout.rotation || 0),
+          -(portLayout.angle || 0),
         )
 
         if (labelLayout.attrs) {
@@ -515,12 +513,12 @@ export class NodeView<
     layout: PortLayout.Result,
     initialAngle: number = 0,
   ) {
+    const angle = layout.angle
     const position = layout.position
-    const rotation = layout.rotation
     const matrix = Dom.createSVGMatrix()
       .rotate(initialAngle)
       .translate(position.x || 0, position.y || 0)
-      .rotate(rotation || 0)
+      .rotate(angle || 0)
 
     Dom.transform(element as SVGElement, matrix, { absolute: true })
   }
@@ -1101,7 +1099,7 @@ NodeView.config({
     markup: ['render'],
     attrs: ['update'],
     size: ['resize', 'ports', 'tools'],
-    rotation: ['rotate', 'tools'],
+    angle: ['rotate', 'tools'],
     position: ['translate', 'tools'],
     ports: ['ports'],
   },

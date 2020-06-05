@@ -36,7 +36,7 @@ export class Button extends ToolsView.ToolItem<
     const { offset, useCellGeometry, rotate } = options
 
     let bbox = Util.getViewBBox(view, useCellGeometry)
-    const angle = view.cell.getRotation()
+    const angle = view.cell.getAngle()
     if (!rotate) {
       bbox = bbox.bbox(angle)
     }

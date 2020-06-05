@@ -96,7 +96,7 @@ export class Transform extends Widget<Transform.Options> {
         this.options.preserveAspectRatio || !this.options.orthogonalResizing,
       )
       .toggleClass('no-resize', !this.options.resizable)
-      .toggleClass('no-rotation', !this.options.rotatable)
+      .toggleClass('no-rotate', !this.options.rotatable)
 
     if (this.options.className) {
       this.$container.addClass(this.options.className)
@@ -118,8 +118,8 @@ export class Transform extends Widget<Transform.Options> {
     bbox.width *= ctm.a
     bbox.height *= ctm.d
 
-    const rotation = Angle.normalize(this.node.getRotation())
-    const transform = rotation !== 0 ? `rotate(${rotation}deg)` : ''
+    const angle = Angle.normalize(this.node.getAngle())
+    const transform = angle !== 0 ? `rotate(${angle}deg)` : ''
     this.$container.css({
       transform,
       width: bbox.width,
@@ -138,7 +138,7 @@ export class Transform extends Widget<Transform.Options> {
     // The directions are represented by cardinal points (N,S,E,W). For example
     // the div originally pointed to north needs to be changed to point to south
     // if the node was rotated by 180 degrees.
-    const angle = Angle.normalize(this.node.getRotation())
+    const angle = Angle.normalize(this.node.getAngle())
     const shift = Math.floor(angle * (Private.DIRECTIONS.length / 360))
     if (shift !== this.prevShift) {
       // Create the current directions array based on the calculated shift.
@@ -160,7 +160,7 @@ export class Transform extends Widget<Transform.Options> {
   }
 
   protected getTrueDirection(dir: Node.ResizeDirection) {
-    const angle = Angle.normalize(this.node.getRotation())
+    const angle = Angle.normalize(this.node.getAngle())
     let index = Private.POSITIONS.indexOf(dir)
 
     index = index + Math.floor(angle * (Private.POSITIONS.length / 360))
@@ -217,7 +217,7 @@ export class Transform extends Widget<Transform.Options> {
       relativeDirection,
       resizeX: rx,
       resizeY: ry,
-      angle: Angle.normalize(this.node.getRotation()),
+      angle: Angle.normalize(this.node.getAngle()),
       action: 'resizing',
     })
   }
@@ -232,7 +232,7 @@ export class Transform extends Widget<Transform.Options> {
     this.setEventData<EventData.Rotating>(evt, {
       center,
       action: 'rotating',
-      angle: Angle.normalize(this.node.getRotation()),
+      angle: Angle.normalize(this.node.getAngle()),
       start: Point.create(client).theta(center),
     })
     this.startAction(evt)

@@ -273,12 +273,9 @@ export function getIntersection(
     const rectMatrixComponents = decomposeMatrix(rectMatrix)
     // Rotate the rectangle back so that we can use
     // `intersectionWithLineFromCenterToPoint()`.
-    const resetRotation = svg.createSVGTransform()
-    resetRotation.setRotate(-rectMatrixComponents.rotation, center.x, center.y)
-    const rect = transformRectangle(
-      gRect,
-      resetRotation.matrix.multiply(rectMatrix),
-    )
+    const reseted = svg.createSVGTransform()
+    reseted.setRotate(-rectMatrixComponents.rotation, center.x, center.y)
+    const rect = transformRectangle(gRect, reseted.matrix.multiply(rectMatrix))
 
     spot = Rectangle.create(rect).intersectionWithLineFromCenterToPoint(
       ref,

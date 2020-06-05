@@ -5,7 +5,7 @@ import { toResult } from './util'
 export interface EllipseArgs extends PortLayout.CommonArgs {
   start?: number
   step?: number
-  compensateRotation?: boolean
+  compensateRotate?: boolean
   /**
    * delta radius
    */
@@ -57,7 +57,7 @@ function ellipseLayout(
     const angle = startAngle + stepFn(index, count)
     const p = start.clone().rotate(-angle, center).scale(ratio, 1, center)
 
-    const theta = item.compensateRotation ? -ellipse.tangentTheta(p) : 0
+    const theta = item.compensateRotate ? -ellipse.tangentTheta(p) : 0
     if (item.dx || item.dy) {
       p.translate(item.dx || 0, item.dy || 0)
     }

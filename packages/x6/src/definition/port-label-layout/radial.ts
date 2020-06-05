@@ -50,7 +50,7 @@ function radialLayout(
 
   return toResult({
     position: pos.round().toJSON(),
-    rotation: autoOrient ? orientAngle : 0,
+    angle: autoOrient ? orientAngle : 0,
     attrs: {
       '.': {
         y,

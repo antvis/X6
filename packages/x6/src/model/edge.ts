@@ -1226,14 +1226,14 @@ export namespace Edge {
   }
 
   export interface LabelPositionObject {
-    distance: number
-    rotation?: number
+    angle?: number
     offset?:
       | number
       | {
           x?: number
           y?: number
         }
+    distance: number
     options?: LabelPositionOptions
   }
 

@@ -100,7 +100,7 @@ class Anchor extends ToolsView.ToolItem<EdgeView, Anchor.Options> {
         center = bbox.getCenter()
       } else {
         bbox = terminalView.getNodeUnrotatedBBox(magnet as SVGElement)
-        angle = terminalCell.getRotation()
+        angle = terminalCell.getAngle()
         center = bbox.getCenter()
         if (angle) {
           center.rotate(-angle, terminalCell.getBBox().getCenter())
@@ -202,7 +202,7 @@ class Anchor extends ToolsView.ToolItem<EdgeView, Anchor.Options> {
         const bbox = terminalView.getNodeUnrotatedBBox(
           terminalMagnet as SVGElement,
         )
-        const angle = (terminalCell as Node).getRotation()
+        const angle = (terminalCell as Node).getAngle()
         const origin = terminalCell.getBBox().getCenter()
         const rotatedCoords = coords.clone().rotate(angle, origin)
         if (!bbox.containsPoint(rotatedCoords)) {

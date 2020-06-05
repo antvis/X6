@@ -165,10 +165,10 @@ export class Snapline extends View implements IDisablable {
       const view = this.graph.renderer.findViewByCell(node) as NodeView
       if (view && view.cell.isNode()) {
         const nodeBbox = node.getBBox()
-        const nodeBBoxRotated = nodeBbox.bbox(node.getRotation())
+        const nodeBBoxRotated = nodeBbox.bbox(node.getAngle())
         const nodeTopLeft = nodeBBoxRotated.getTopLeft()
         const nodeBottomRight = nodeBBoxRotated.getBottomRight()
-        const rotation = Angle.normalize(node.getRotation())
+        const angle = Angle.normalize(node.getAngle())
         const tolerance = this.options.tolerance || 0
         let verticalLeft: number | undefined
         let verticalTop: number | undefined
@@ -203,7 +203,7 @@ export class Snapline extends View implements IDisablable {
             return false
           }
 
-          const snapBBox = cell.getBBox().bbox(cell.getRotation())
+          const snapBBox = cell.getBBox().bbox(cell.getAngle())
           const snapTopLeft = snapBBox.getTopLeft()
           const snapBottomRight = snapBBox.getBottomRight()
           const groups = {
@@ -267,8 +267,8 @@ export class Snapline extends View implements IDisablable {
 
         let dWidth = 0
         let dHeight = 0
-        if (rotation % 90 === 0) {
-          if (90 === rotation || 270 === rotation) {
+        if (angle % 90 === 0) {
+          if (90 === angle || 270 === angle) {
             dWidth = dy
             dHeight = dx
           } else {
@@ -277,11 +277,11 @@ export class Snapline extends View implements IDisablable {
           }
         } else {
           const quadrant =
-            0 <= rotation && rotation < 90
+            0 <= angle && angle < 90
               ? 1
-              : 90 <= rotation && rotation < 180
+              : 90 <= angle && angle < 180
               ? 4
-              : 180 <= rotation && rotation < 270
+              : 180 <= angle && angle < 270
               ? 3
               : 2
 
@@ -295,7 +295,7 @@ export class Snapline extends View implements IDisablable {
             }
           }
 
-          const rad = Angle.toRad(rotation % 90)
+          const rad = Angle.toRad(angle % 90)
           if (dx) {
             dWidth = quadrant === 3 ? dx / Math.cos(rad) : dx / Math.sin(rad)
           }
@@ -376,7 +376,7 @@ export class Snapline extends View implements IDisablable {
           }
         }
 
-        const newRotatedBBox = node.getBBox().bbox(rotation)
+        const newRotatedBBox = node.getBBox().bbox(angle)
         if (
           verticalLeft &&
           Math.abs(newRotatedBBox.x - verticalLeft) > 1 &&
@@ -420,9 +420,9 @@ export class Snapline extends View implements IDisablable {
       size.width,
       size.height,
     )
-    const rotation = node.getRotation()
+    const angle = node.getAngle()
     const nodeCenter = cellBBox.getCenter()
-    const nodeBBoxRotated = cellBBox.bbox(rotation)
+    const nodeBBoxRotated = cellBBox.bbox(angle)
     const nodeTopLeft = nodeBBoxRotated.getTopLeft()
     const nodeBottomRight = nodeBBoxRotated.getBottomRight()
 
@@ -441,7 +441,7 @@ export class Snapline extends View implements IDisablable {
         return false
       }
 
-      const snapBBox = targetNode.getBBox().bbox(targetNode.getRotation())
+      const snapBBox = targetNode.getBBox().bbox(targetNode.getAngle())
       const snapCenter = snapBBox.getCenter()
       const snapTopLeft = snapBBox.getTopLeft()
       const snapBottomRight = snapBBox.getBottomRight()
