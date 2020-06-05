@@ -1219,7 +1219,7 @@ export class EdgeView<
   protected getLabelPositionAngle(idx: number) {
     const label = this.cell.getLabelAt(idx)
     if (label && label.position && typeof label.position === 'object') {
-      return label.position.rotation || 0
+      return label.position.angle || 0
     }
     return 0
   }
@@ -1619,7 +1619,7 @@ export class EdgeView<
     }
 
     pos.offset = labelOffset
-    pos.rotation = angle
+    pos.angle = angle
 
     return pos
   }
@@ -1641,7 +1641,7 @@ export class EdgeView<
   protected getLabelTransformationMatrix(labelPosition: Edge.LabelPosition) {
     const pos = this.normalizeLabelPosition(labelPosition)
     const options = pos.options || {}
-    const labelAngle = pos.rotation || 0
+    const labelAngle = pos.angle || 0
     const labelDistance = pos.distance
     const isDistanceRelative = labelDistance > 0 && labelDistance <= 1
 

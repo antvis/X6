@@ -45,7 +45,7 @@ function createBBoxAnchor(
 
     const cell = view.cell
     return options.rotated
-      ? result.rotate(-cell.getRotation(), cell.getBBox().getCenter())
+      ? result.rotate(-cell.getAngle(), cell.getBBox().getCenter())
       : result
   }
 }

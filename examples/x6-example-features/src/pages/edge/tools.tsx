@@ -316,7 +316,7 @@ export default class Example extends React.Component {
           },
           position: {
             distance: 0.7,
-            rotation: 45,
+            angle: 45,
           },
         },
       ],

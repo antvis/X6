@@ -133,7 +133,7 @@ export class NodePreset {
           y: Math.floor(bbox.y),
           width: Math.floor(bbox.width),
           height: Math.floor(bbox.height),
-          angle: Math.floor(cell.getRotation()),
+          angle: Math.floor(cell.getAngle()),
         })
       },
       magnet(view) {
@@ -297,7 +297,7 @@ export class NodePreset {
   startResize() {
     this.halo.startBatch()
     this.flip = [1, 0, 0, 1, 1, 0, 0, 1][
-      Math.floor(Angle.normalize(this.node.getRotation()) / 45)
+      Math.floor(Angle.normalize(this.node.getAngle()) / 45)
     ]
   }
 
@@ -431,7 +431,7 @@ export class NodePreset {
     this.halo.setEventData(e, {
       center,
       nodes,
-      rotationStartAngles: nodes.map((node) => node.getRotation()),
+      rotateStartAngles: nodes.map((node) => node.getAngle()),
       clientStartAngle: new Point(x, y).theta(center),
     })
   }
@@ -440,7 +440,7 @@ export class NodePreset {
     const data = this.halo.getEventData(e)
     const delta = data.clientStartAngle - new Point(x, y).theta(data.center)
     data.nodes.forEach((node: Node, index: number) => {
-      const startAngle = data.rotationStartAngles[index]
+      const startAngle = data.rotateStartAngles[index]
       const targetAngle = Util.snapToGrid(
         startAngle + delta,
         this.options.rotateGrid!,

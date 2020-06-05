@@ -38,7 +38,7 @@ export default class Example extends React.Component {
                 dr: 0,
                 dx: 0,
                 dy: 0,
-                compensateRotation: true,
+                compensateRotate: true,
                 // step: 20,
                 start: 90,
               },
@@ -104,7 +104,7 @@ export default class Example extends React.Component {
       label: {
         position: {
           name: 'right',
-          args: { rotation: 30 },
+          args: { angle: 30 },
         },
         markup: [
           {
@@ -207,7 +207,7 @@ export default class Example extends React.Component {
         position: {
           name: 'left',
           args: {
-            rotation: 10,
+            angle: 10,
             position: {
               x: 15,
               y: -10,

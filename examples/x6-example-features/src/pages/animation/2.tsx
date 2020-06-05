@@ -86,7 +86,7 @@ class BallView extends NodeView {
       },
     })
 
-    this.cell.transition('rotation', -options.angle, {
+    this.cell.transition('angle', -options.angle, {
       duration: 100 * flightTime,
     })
 

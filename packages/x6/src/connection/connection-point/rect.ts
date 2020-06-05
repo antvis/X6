@@ -14,7 +14,7 @@ export const rect: ConnectionPoint.Definition<RectangleOptions> = function (
   magnet,
   options,
 ) {
-  const angle = view.cell.getRotation()
+  const angle = view.cell.getAngle()
   if (angle === 0) {
     return bbox(line, view, magnet, options)
   }

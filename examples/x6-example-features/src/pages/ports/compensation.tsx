@@ -26,7 +26,7 @@ export default class Example extends React.Component {
       height: 300,
       attrs: {
         label: {
-          text: 'compensateRotation: true',
+          text: 'compensateRotate: true',
           fill: '#6a6c8a',
         },
         body: {
@@ -39,7 +39,7 @@ export default class Example extends React.Component {
           a: {
             position: {
               name: 'ellipseSpread',
-              args: { start: 0, dr: 0, compensateRotation: true },
+              args: { start: 0, dr: 0, compensateRotate: true },
             },
             label: {
               position: 'radial',
@@ -89,9 +89,9 @@ export default class Example extends React.Component {
       if (!node.hasPorts()) {
         return
       }
-      const path = 'ports/groups/a/position/args/compensateRotation'
+      const path = 'ports/groups/a/position/args/compensateRotate'
       var current = node.prop<boolean>(path)
-      node.prop('attrs/label/text', 'compensateRotation: ' + !current)
+      node.prop('attrs/label/text', 'compensateRotate: ' + !current)
       node.prop(path, !current)
     })
   }

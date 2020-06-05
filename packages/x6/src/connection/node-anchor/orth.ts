@@ -12,7 +12,7 @@ const orthogonal: NodeConnectionAnchor.ResolvedDefinition<OrthAnchorOptions> = f
   refPoint,
   options,
 ) {
-  const angle = view.cell.getRotation()
+  const angle = view.cell.getAngle()
   const bbox = view.getNodeBBox(magnet)
   const result = bbox.getCenter()
   const topLeft = bbox.getTopLeft()

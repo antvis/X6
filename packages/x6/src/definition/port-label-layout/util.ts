@@ -3,7 +3,7 @@ import { PortLabelLayout } from './index'
 
 const defaults: PortLabelLayout.Result = {
   position: { x: 0, y: 0 },
-  rotation: 0,
+  angle: 0,
   attrs: {
     '.': {
       y: '0',
@@ -11,6 +11,7 @@ const defaults: PortLabelLayout.Result = {
     },
   },
 }
+
 export function toResult(
   preset: Partial<PortLabelLayout.Result>,
   args?: Partial<PortLabelLayout.Result>,

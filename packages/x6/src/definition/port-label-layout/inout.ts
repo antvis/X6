@@ -83,7 +83,7 @@ function outsideLayout(
       x: Math.round(tx),
       y: Math.round(ty),
     },
-    rotation: orientAngle,
+    angle: orientAngle,
     attrs: {
       '.': {
         y,
@@ -146,7 +146,7 @@ function insideLayout(
       x: Math.round(tx),
       y: Math.round(ty),
     },
-    rotation: orientAngle,
+    angle: orientAngle,
     attrs: {
       '.': {
         y,

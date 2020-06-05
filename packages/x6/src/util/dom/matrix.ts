@@ -234,6 +234,7 @@ export function parseTransformString(transform: string) {
           ? parseInt(translation[1] as string, 10)
           : 0,
     } as Translation,
+
     rotation: {
       angle: rotation && rotation[0] ? parseInt(rotation[0] as string, 10) : 0,
       cx:
@@ -245,6 +246,7 @@ export function parseTransformString(transform: string) {
           ? parseInt(rotation[2] as string, 10)
           : undefined,
     } as Rotation,
+
     scale: {
       sx,
       sy: scale && scale[1] ? parseFloat(scale[1] as string) : sx,

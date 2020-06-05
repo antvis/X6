@@ -14,7 +14,7 @@ export class Node<
   Properties extends Node.Properties = Node.Properties
 > extends Cell<Properties> {
   protected static defaults: Node.Defaults = {
-    rotation: 0,
+    angle: 0,
     position: { x: 0, y: 0 },
     size: { width: 1, height: 1 },
   }
@@ -136,10 +136,10 @@ export class Node<
       }
 
       let quadrant = map[direction]
-      const rotation = Angle.normalize(this.rotation || 0)
+      const angle = Angle.normalize(this.angle || 0)
       if (options.absolute) {
         // We are taking the node's rotation into account
-        quadrant += Math.floor((rotation + 45) / 90)
+        quadrant += Math.floor((angle + 45) / 90)
         quadrant %= 4
       }
 
@@ -163,7 +163,7 @@ export class Node<
       // where is the point actually located on the screen.
       const imageFixedPoint = fixedPoint
         .clone()
-        .rotate(-rotation, bbox.getCenter())
+        .rotate(-angle, bbox.getCenter())
 
       // Every point on the element rotates around a circle with the centre of
       // rotation in the middle of the element while the whole element is being
@@ -197,7 +197,7 @@ export class Node<
 
       // Lastly we have to deduct the original angle the element was rotated
       // by and that's it.
-      alpha -= Angle.toRad(rotation)
+      alpha -= Angle.toRad(angle)
 
       // With this angle and distance we can easily calculate the centre of
       // the un-rotated element.
@@ -402,18 +402,18 @@ export class Node<
 
   // #endregion
 
-  // #region rotation
+  // #region angle
 
-  get rotation() {
-    return this.getRotation()
+  get angle() {
+    return this.getAngle()
   }
 
-  set rotation(angle: number) {
+  set angle(angle: number) {
     this.rotate(angle, true)
   }
 
-  getRotation() {
-    return this.store.get('rotation', 0)
+  getAngle() {
+    return this.store.get('angle', 0)
   }
 
   rotate(
@@ -422,7 +422,7 @@ export class Node<
     origin?: Point | Point.PointLike,
     options: Node.RotateOptions = {},
   ) {
-    const currentAngle = this.getRotation()
+    const currentAngle = this.getAngle()
     if (origin) {
       const size = this.getSize()
       const position = this.getPosition()
@@ -436,7 +436,7 @@ export class Node<
       this.stopBatch('rotate')
     } else {
       this.store.set(
-        'rotation',
+        'angle',
         absolute ? angle : (currentAngle + angle) % 360,
         options,
       )
@@ -481,7 +481,7 @@ export class Node<
     const position = layouts[portId].position
     const portCenter = Point.create(position).translate(bbox.getOrigin())
 
-    const angle = this.getRotation()
+    const angle = this.getAngle()
     if (angle) {
       portCenter.rotate(-angle, center)
     }
@@ -649,13 +649,13 @@ export class Node<
     return layouts.reduce<
       KeyValue<{
         position: Point.PointLike
-        rotation: number
+        angle: number
       }>
     >((memo, item) => {
       const layout = item.portLayout
       memo[item.portId] = {
         position: { ...layout.position },
-        rotation: layout.rotation || 0,
+        angle: layout.angle || 0,
       }
       return memo
     }, {})
@@ -970,7 +970,7 @@ export namespace Node {
   interface Common extends Cell.Common {
     size?: { width: number; height: number }
     position?: { x: number; y: number }
-    rotation?: number
+    angle?: number
     ports?: Partial<PortData.Metadata> // group and items are both optional
     portContainerMarkup?: Markup
     portMarkup?: Markup

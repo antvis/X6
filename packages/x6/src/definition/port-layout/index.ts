@@ -15,7 +15,7 @@ export namespace PortLayout {
 export namespace PortLayout {
   export interface Result {
     position: Point.PointLike
-    rotation?: number
+    angle?: number
   }
 
   export interface CommonArgs {
