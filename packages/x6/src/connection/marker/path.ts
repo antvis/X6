@@ -1,3 +1,4 @@
+import { normalizeMarker } from './util'
 import { Marker } from './index'
 
 export interface PathMarkerOptions {
@@ -9,6 +10,6 @@ export interface PathMarkerOptions {
 export const path: Marker.Definition<PathMarkerOptions> = (options) => {
   return {
     type: 'path',
-    d: Marker.normalize(options.d, options.offsetX, options.offsetY),
+    d: normalizeMarker(options.d, options.offsetX, options.offsetY),
   }
 }

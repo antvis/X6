@@ -1,7 +1,10 @@
 import { ArrayExt } from '../../util'
-import { Config } from '../../global'
-import { Graph } from '../../graph'
-import { Cell, Edge, Node, Model } from '../../model'
+import { Config } from '../../global/config'
+import { Graph } from '../../graph/graph'
+import { Cell } from '../../model/cell'
+import { Edge } from '../../model/edge'
+import { Node } from '../../model/node'
+import { Model } from '../../model/model'
 
 export class Clipboard {
   protected options: Clipboard.Options
