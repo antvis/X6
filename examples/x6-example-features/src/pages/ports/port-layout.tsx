@@ -12,7 +12,7 @@ PortLayout.registry.register('sin', (portsPositionArgs, elemBBox) => {
         x: index * 12,
         y: y + elemBBox.height,
       },
-      rotation: 0,
+      angle: 0,
     }
   })
 })

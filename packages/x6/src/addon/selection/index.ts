@@ -616,7 +616,7 @@ export class Selection extends View<Selection.EventArgs> {
     const client = this.graph.snapToGrid(e.clientX!, e.clientY!)
     const angles = cells.reduce<{ [id: string]: number }>(
       (memo, cell: Node) => {
-        memo[cell.id] = Angle.normalize(cell.getRotation())
+        memo[cell.id] = Angle.normalize(cell.getAngle())
         return memo
       },
       {},

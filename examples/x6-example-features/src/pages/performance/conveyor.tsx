@@ -94,7 +94,7 @@ class ConveyorNodeView extends NodeView<ConveyorNode> {
 
   rotate() {
     var node = this.cell
-    var angle = node.getRotation()
+    var angle = node.getAngle()
     var size = node.getSize()
     Dom.rotate(this.container, angle, size.width / 2, size.height / 2, {
       absolute: true,
@@ -106,7 +106,7 @@ ConveyorNodeView.config({
   bootstrap: ['translate', 'resize', 'rotate', 'pallet', 'markup'],
   actions: {
     size: ['resize', 'rotate'],
-    rotation: ['rotate'],
+    angle: ['rotate'],
     position: ['translate'],
     hasPallet: ['pallet'],
   },
@@ -130,7 +130,7 @@ function createCircle(
     var conveyorElement = new ConveyorNode({
       position: { x: p.x, y: p.y },
       size: { width: rectSize, height: rectSize },
-      rotation: -angle,
+      angle: -angle,
     })
 
     if (nodes.length % 2 === 0) {

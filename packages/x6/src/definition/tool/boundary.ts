@@ -36,7 +36,7 @@ export class Boundary extends ToolsView.ToolItem<
 
     const cell = view.cell
     if (cell.isNode()) {
-      const angle = cell.getRotation()
+      const angle = cell.getAngle()
       if (angle) {
         if (rotate) {
           const origin = cell.getBBox().getCenter()

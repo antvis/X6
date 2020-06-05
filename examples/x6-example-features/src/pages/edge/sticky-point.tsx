@@ -49,7 +49,7 @@ export default class Example extends React.Component {
       y: 80,
       width: 60,
       height: 30,
-      rotation: 45,
+      angle: 45,
     })
     const o2 = graph.addNode({
       type: 'rect',
@@ -57,7 +57,7 @@ export default class Example extends React.Component {
       y: 100,
       width: 60,
       height: 30,
-      rotation: 45,
+      angle: 45,
     })
     graph.addEdge({
       type: 'edge',
@@ -308,7 +308,7 @@ export default class Example extends React.Component {
       y: 160,
       width: 60,
       height: 30,
-      rotation: 45,
+      angle: 45,
     })
     graph.addEdge({
       type: 'edge',

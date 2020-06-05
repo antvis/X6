@@ -1211,8 +1211,8 @@ export namespace Cell {
 
     // node
     'change:size': NodeChangeArgs<Size>
+    'change:angle': NodeChangeArgs<number>
     'change:position': NodeChangeArgs<Point.PointLike>
-    'change:rotation': NodeChangeArgs<number>
     'change:ports': NodeChangeArgs<PortData.Port[]>
     'change:portMarkup': NodeChangeArgs<Markup>
     'change:portLabelMarkup': NodeChangeArgs<Markup>
@@ -1345,7 +1345,7 @@ export namespace Cell {
       let rect = cell.getBBox(options)
       if (rect) {
         if (cell.isNode()) {
-          const angle = cell.rotation
+          const angle = cell.angle
           if (angle != null && angle !== 0) {
             rect = rect.bbox(angle)
           }

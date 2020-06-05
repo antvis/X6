@@ -397,8 +397,8 @@ export namespace Collection {
     'cell:change:view': Cell.EventArgs['change:view']
 
     'cell:change:size': Cell.EventArgs['change:size']
+    'cell:change:angle': Cell.EventArgs['change:angle']
     'cell:change:position': Cell.EventArgs['change:position']
-    'cell:change:rotation': Cell.EventArgs['change:rotation']
     'cell:change:ports': Cell.EventArgs['change:ports']
     'cell:change:portMarkup': Cell.EventArgs['change:portMarkup']
     'cell:change:portLabelMarkup': Cell.EventArgs['change:portLabelMarkup']
@@ -448,8 +448,7 @@ export namespace Collection {
     'node:change:size': NodeEventCommonArgs & Cell.EventArgs['change:size']
     'node:change:position': NodeEventCommonArgs &
       Cell.EventArgs['change:position']
-    'node:change:rotation': NodeEventCommonArgs &
-      Cell.EventArgs['change:rotation']
+    'node:change:angle': NodeEventCommonArgs & Cell.EventArgs['change:angle']
     'node:change:ports': NodeEventCommonArgs & Cell.EventArgs['change:ports']
     'node:change:portMarkup': NodeEventCommonArgs &
       Cell.EventArgs['change:portMarkup']

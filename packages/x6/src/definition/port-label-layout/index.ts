@@ -7,7 +7,7 @@ import * as layouts from './main'
 export namespace PortLabelLayout {
   export interface Result {
     position: Point.PointLike
-    rotation: number
+    angle: number
     attrs: Attr.CellAttrs
   }
 

@@ -30,7 +30,7 @@ export default class Example extends React.Component {
       },
     })
 
-    ball.transition('rotation', 360, {
+    ball.transition('angle', 360, {
       delay: 1000,
       duration: 1000,
     })

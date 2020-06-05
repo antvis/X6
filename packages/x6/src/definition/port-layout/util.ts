@@ -21,8 +21,8 @@ export function toResult<T>(
   rawArgs?: T,
 ): PortLayout.Result {
   return {
+    angle,
     position: point.toJSON(),
-    rotation: angle,
     ...rawArgs,
   }
 }

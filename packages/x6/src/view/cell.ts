@@ -370,7 +370,8 @@ export class CellView<
     let bbox
     if (options.fromCell) {
       const cell = this.cell
-      bbox = cell.getBBox().bbox((cell as any).rotation || 0)
+      const angle = (cell as any).angle || 0
+      bbox = cell.getBBox().bbox(angle)
     } else {
       bbox = this.getNodeBBox(this.container)
     }
@@ -386,7 +387,7 @@ export class CellView<
   getRootRotateMatrix() {
     let matrix = Dom.createSVGMatrix()
     const cell = this.cell
-    const angle = (cell as any).rotation
+    const angle = (cell as any).angle
     if (angle) {
       const bbox = cell.getBBox()
       const cx = bbox.width / 2
