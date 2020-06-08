@@ -548,6 +548,7 @@ export class CellView<
           type,
           args,
         )
+
         if (strategy) {
           return strategy
         }
