@@ -1,4 +1,3 @@
-import { Overwrite } from 'utility-types'
 import { NumberExt } from '../../../util'
 import { Point, Rectangle, Angle } from '../../../geometry'
 import { Edge } from '../../../model'
@@ -125,14 +124,9 @@ export interface ResolvedOptions {
   previousDirectionAngle?: number | null
 }
 
-export type ManhattanRouterOptions = Overwrite<
-  {
-    [Key in keyof ResolvedOptions]: Callable<ResolvedOptions[Key]>
-  },
-  {
-    padding?: Callable<NumberExt.SideOptions>
-  }
->
+export type ManhattanRouterOptions = {
+  [Key in keyof ResolvedOptions]: Callable<ResolvedOptions[Key]>
+}
 
 export const defaults: ManhattanRouterOptions = {
   step: 10,
@@ -141,7 +135,7 @@ export const defaults: ManhattanRouterOptions = {
   maxDirectionChange: 90,
   perpendicular: true,
   excludeTerminals: [],
-  excludeTypes: [], // ['basic.Text']
+  excludeTypes: [], // ['text']
   startDirections: ['top', 'right', 'bottom', 'left'],
   endDirections: ['top', 'right', 'bottom', 'left'],
   directionMap: {

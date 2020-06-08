@@ -15,21 +15,16 @@ $ yarn add @antv/x6-react-shape
 ## Usage
 
 ```ts
-import { Graph, Shape } from '@antv/x6'
-import { ReactShape } from '@antv/x6-react-shape'
- 
-// register shape with name "react"
-Shape.register('react', ReactShape, true) 
+import { Graph } from '@antv/x6'
+import '@antv/x6-react-shape'
 
 // render
 graph.addNode({
+  type: 'react-shape',
   x: 32,
   y: 48,
   width: 180,
   height: 40,
-  stroke: '#597ef7',
-  label: false,   // no label
-  shape: 'react', // registered shape name
   component: (    // react component
     <div
       style={{

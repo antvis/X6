@@ -49,9 +49,12 @@ export class ColorPicker extends React.Component<
     }
   }
 
-  handleChange = (value: ColorResult) => {
+  handleChange = (
+    value: ColorResult,
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     if (this.props.onChange) {
-      this.props.onChange(value)
+      this.props.onChange(value, event)
     }
 
     this.setState({
@@ -72,7 +75,7 @@ export class ColorPicker extends React.Component<
         this.removeDocClickEvent = addEventListener(
           document.documentElement,
           'click',
-          this.onDocumentClick
+          this.onDocumentClick,
         ).remove
       }
     }
