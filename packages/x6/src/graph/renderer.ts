@@ -3,7 +3,7 @@ import { KeyValue } from '../types'
 import { Point, Rectangle } from '../geometry'
 import { Cell, Edge, Model } from '../model'
 import { View, CellView, NodeView, EdgeView } from '../view'
-import { Flag } from '../view/flag'
+import { FlagManager } from '../view/flag'
 import { Graph } from './graph'
 import { Base } from './base'
 
@@ -200,7 +200,7 @@ export class Renderer extends Base {
           continue
         }
 
-        const flagLabels: Flag.Action[] = ['update']
+        const flagLabels: FlagManager.Action[] = ['update']
         if (edge.getTargetCell() === cell) {
           flagLabels.push('target')
         }

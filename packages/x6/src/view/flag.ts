@@ -1,10 +1,10 @@
 import { KeyValue } from '../types'
 import { CellView } from './cell'
 
-export class Flag {
+export class FlagManager {
   protected attrs: { [attr: string]: number }
   protected flags: { [name: string]: number }
-  protected bootstrap: Flag.Actions
+  protected bootstrap: FlagManager.Actions
 
   protected get cell() {
     return this.view.cell
@@ -12,8 +12,8 @@ export class Flag {
 
   constructor(
     protected view: CellView,
-    actions: KeyValue<Flag.Actions>,
-    bootstrap: Flag.Actions = [],
+    actions: KeyValue<FlagManager.Actions>,
+    bootstrap: FlagManager.Actions = [],
   ) {
     const flags: { [name: string]: number } = {}
     const attrs: { [attr: string]: number } = {}
@@ -58,7 +58,7 @@ export class Flag {
     this.bootstrap = bootstrap
   }
 
-  getFlag(label: Flag.Actions) {
+  getFlag(label: FlagManager.Actions) {
     const flags = this.flags
     if (flags == null) {
       return 0
@@ -71,11 +71,11 @@ export class Flag {
     return flags[label] | 0
   }
 
-  hasAction(flag: number, label: Flag.Actions) {
+  hasAction(flag: number, label: FlagManager.Actions) {
     return flag & this.getFlag(label)
   }
 
-  removeAction(flag: number, label: Flag.Actions) {
+  removeAction(flag: number, label: FlagManager.Actions) {
     return flag ^ (flag & this.getFlag(label))
   }
 
@@ -100,7 +100,7 @@ export class Flag {
   }
 }
 
-export namespace Flag {
+export namespace FlagManager {
   export type Action =
     | 'render'
     | 'update'

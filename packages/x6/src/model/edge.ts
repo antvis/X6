@@ -1276,7 +1276,7 @@ export namespace Edge {
 }
 
 export namespace Edge {
-  export type Definition = typeof Edge & (new (...args: any[]) => Edge)
+  export type Definition = typeof Edge
 
   let counter = 0
   function getClassName(name?: string) {

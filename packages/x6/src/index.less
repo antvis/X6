@@ -45,12 +45,17 @@
 
   /* stylelint-disable-next-line */
   foreignobject {
-    overflow: hidden;
+    display: block;
+    overflow: visible;
+    background-color: transparent;
 
     & > body {
       position: static;
+      width: 100%;
+      height: 100%;
       margin: 0;
       padding: 0;
+      overflow: visible;
       background-color: transparent;
     }
   }
