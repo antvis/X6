@@ -158,7 +158,7 @@ export abstract class View<EventArgs = any> extends Basecoat<EventArgs> {
 
     if (elem) {
       const nth = Dom.index(elem) + 1
-      selector = `${elem.tagName}:nth-child(${nth})`
+      selector = `${elem.tagName.toLowerCase()}:nth-child(${nth})`
       if (prevSelector) {
         selector += ` > ${prevSelector}`
       }

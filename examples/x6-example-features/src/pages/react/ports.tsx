@@ -2,6 +2,7 @@ import React from 'react'
 import { Graph, Color } from '@antv/x6'
 import '@antv/x6-react-shape'
 import '../index.less'
+import './ports.less'
 
 export default class Example extends React.Component {
   private container: HTMLDivElement
@@ -21,8 +22,14 @@ export default class Example extends React.Component {
       y: 80,
       width: 160,
       height: 60,
+      attrs: {
+        '.': {
+          magnet: false,
+        },
+      },
       component: (
         <div
+          className="react-shape-ports"
           style={{
             color: Color.invert(sourceColor, true),
             width: '100%',
@@ -32,7 +39,15 @@ export default class Example extends React.Component {
             background: sourceColor,
           }}
         >
-          Source
+          <div key="text">Source</div>
+          <div className="in-ports" key="in-ports">
+            <span key="port-1" magnet="true" />
+            <span key="port-2" magnet="true" />
+          </div>
+          <div className="out-ports" key="out-ports">
+            <span key="port-1" magnet="true" />
+            <span key="port-2" magnet="true" />
+          </div>
         </div>
       ),
     })
@@ -45,6 +60,7 @@ export default class Example extends React.Component {
       height: 60,
       component: (
         <div
+          className="react-shape-ports"
           style={{
             color: Color.invert(targetColor, true),
             width: '100%',
@@ -54,7 +70,15 @@ export default class Example extends React.Component {
             background: targetColor,
           }}
         >
-          Target
+          <div key="text">Target</div>
+          <div className="in-ports" key="in-ports">
+            <span key="port-1" magnet="true" />
+            <span key="port-2" magnet="true" />
+          </div>
+          <div className="out-ports" key="out-ports">
+            <span key="port-1" magnet="true" />
+            <span key="port-2" magnet="true" />
+          </div>
         </div>
       ),
     })
