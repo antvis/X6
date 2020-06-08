@@ -24,7 +24,6 @@
     "lint:style": "stylelint 'src/**/*.less' --syntax less --fix",
     "build:esm": "tsc --module esnext --target es2015 --outDir ./es",
     "build:cjs": "tsc --module commonjs --target es5 --outDir ./lib",
-    "build:umd": "webpack --config webpack.config.ts --mode production",
     "build:ts": "run-p build:cjs build:esm",
     "build:less": "node ./scripts/less.js",
     "build": "run-s build:ts build:less",
@@ -75,7 +74,6 @@
     "@types/react-color": "^3.0.1",
     "@types/react-resize-detector": "^4.2.0",
     "@types/ua-parser-js": "^0.7.33",
-    "@types/webpack": "^4.41.7",
     "antd": "^3.19.5",
     "babel-loader": "^8.0.6",
     "eslint": "^6.1.0",
@@ -95,9 +93,7 @@
     "tslint-eslint-rules": "^5.4.0",
     "tslint-react": "^4.1.0",
     "typescript": "3.8.3",
-    "watch": "^1.0.2",
-    "webpack": "^4.42.0",
-    "webpack-cli": "^3.3.11"
+    "watch": "^1.0.2"
   },
   "peerDependencies": {
     "antd": ">=3.19.5",

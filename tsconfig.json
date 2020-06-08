@@ -2,8 +2,7 @@
   "exclude": [
       "node_modules",
       "**/es",
-      "**/lib",
-      "**/webpack.*.ts"
+      "**/lib"
   ],
   "compilerOptions": {
     "module": "CommonJS",
