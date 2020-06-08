@@ -1,6 +1,6 @@
 import { Attr } from '../definition'
 import { KeyValue, Nilable } from '../types'
-import { ObjectExt, StringExt, Dom } from '../util'
+import { ObjectExt, StringExt, Dom, $ } from '../util'
 
 export type Markup = string | Markup.JSONMarkup | Markup.JSONMarkup[]
 

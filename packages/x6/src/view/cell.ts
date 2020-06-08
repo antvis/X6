@@ -2,20 +2,20 @@ import { Registry } from '../common'
 import { Nilable, KeyValue } from '../types'
 import { Rectangle, Point } from '../geometry'
 import { ArrayExt, ObjectExt, Dom } from '../util'
+import { ConnectionStrategy } from '../connection'
 import { Attr } from '../definition/attr'
 import { Cell } from '../model/cell'
 import { Edge } from '../model/edge'
 import { Model } from '../model/model'
 import { Graph } from '../graph/graph'
-import { ConnectionStrategy } from '../connection'
 import { View } from './view'
-import { Flag } from './flag'
 import { Cache } from './cache'
 import { Markup } from './markup'
 import { EdgeView } from './edge'
 import { NodeView } from './node'
 import { ToolsView } from './tool'
 import { AttrManager } from './attr'
+import { FlagManager } from './flag'
 
 export class CellView<
   Entity extends Cell = Cell,
@@ -29,17 +29,17 @@ export class CellView<
     actions: {},
   }
 
-  static getDefaults() {
+  public static getDefaults() {
     return this.defaults
   }
 
-  static config<T extends CellView.Options = CellView.Options>(
+  public static config<T extends CellView.Options = CellView.Options>(
     options: Partial<T>,
   ) {
     this.defaults = this.getOptions(options)
   }
 
-  static getOptions<T extends CellView.Options = CellView.Options>(
+  public static getOptions<T extends CellView.Options = CellView.Options>(
     options: Partial<T>,
   ): T {
     const mergeActions = <T>(arr1: T | T[], arr2?: T | T[]) => {
@@ -86,7 +86,7 @@ export class CellView<
   public cell: Entity
   protected selectors: Markup.Selectors
   protected readonly options: Options
-  protected readonly flag: Flag
+  protected readonly flag: FlagManager
   protected readonly attr: AttrManager
   protected readonly cache: Cache
 
@@ -99,7 +99,11 @@ export class CellView<
     this.cell = cell
     this.options = this.ensureOptions(options)
     this.attr = new AttrManager(this)
-    this.flag = new Flag(this, this.options.actions, this.options.bootstrap)
+    this.flag = new FlagManager(
+      this,
+      this.options.actions,
+      this.options.bootstrap,
+    )
     this.cache = new Cache(this)
 
     this.setContainer(this.ensureContainer())
@@ -192,18 +196,6 @@ export class CellView<
     return this
   }
 
-  protected renderChildren(children: Markup.JSONMarkup[]) {
-    if (children) {
-      const isSVG = this.container instanceof SVGElement
-      const ns = isSVG ? Dom.ns.svg : Dom.ns.xhtml
-      const ret = Markup.parseJSONMarkup(children, { ns })
-      Dom.empty(this.container)
-      Dom.append(this.container, ret.fragment)
-      // this.childNodes = doc.selectors
-    }
-    return this
-  }
-
   confirmUpdate(flag: number, options: any = {}) {
     return 0
   }
@@ -212,23 +204,23 @@ export class CellView<
     return this.flag.getBootstrapFlag()
   }
 
-  getFlag(actions: Flag.Actions) {
+  getFlag(actions: FlagManager.Actions) {
     return this.flag.getFlag(actions)
   }
 
-  hasAction(flag: number, actions: Flag.Actions) {
+  hasAction(flag: number, actions: FlagManager.Actions) {
     return this.flag.hasAction(flag, actions)
   }
 
-  removeAction(flag: number, actions: Flag.Actions) {
+  removeAction(flag: number, actions: FlagManager.Actions) {
     return this.flag.removeAction(flag, actions)
   }
 
   handleAction(
     flag: number,
-    action: Flag.Action,
+    action: FlagManager.Action,
     handle: () => void,
-    additionalRemovedActions?: Flag.Actions | null,
+    additionalRemovedActions?: FlagManager.Actions | null,
   ) {
     if (this.hasAction(flag, action)) {
       handle()
@@ -800,8 +792,8 @@ export namespace CellView {
     priority: number
     isSvgElement: boolean
     rootSelector: string
-    bootstrap: Flag.Actions
-    actions: KeyValue<Flag.Actions>
+    bootstrap: FlagManager.Actions
+    actions: KeyValue<FlagManager.Actions>
     events?: View.Events | null
     documentEvents?: View.Events | null
     interactive?: Interactive
@@ -847,8 +839,6 @@ export namespace CellView {
     partial?: boolean
   }
 }
-
-export namespace CellView {}
 
 export namespace CellView {
   export interface PositionEventArgs {
@@ -896,6 +886,11 @@ export namespace CellView {
   }
 }
 
+export namespace CellView {
+  export const Flag = FlagManager
+  export const Attr = AttrManager
+}
+
 // decorators
 // ----
 export namespace CellView {
@@ -905,7 +900,7 @@ export namespace CellView {
     }
   }
 
-  export function bootstrap(actions: Flag.Actions) {
+  export function bootstrap(actions: FlagManager.Actions) {
     return function (ctor: typeof CellView) {
       ctor.config({ bootstrap: actions })
     }
