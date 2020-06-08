@@ -15,7 +15,7 @@ export default {
     },
   ],
   plugins: [
-    typescript({ outDir: './dist' }),
+    typescript({ declaration: false }),
     resolve(),
     commonjs(),
     terser(),

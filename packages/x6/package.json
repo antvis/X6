@@ -71,7 +71,7 @@
     "@babel/preset-env": "^7.9.6",
     "@rollup/plugin-commonjs": "^12.0.0",
     "@rollup/plugin-node-resolve": "^8.0.0",
-    "@rollup/plugin-typescript": "^3.1.1",
+    "@rollup/plugin-typescript": "^4.1.2",
     "@types/jest": "^25.2.1",
     "@types/jquery": "^3.3.31",
     "@types/jquery-mousewheel": "^3.1.8",

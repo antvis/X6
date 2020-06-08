@@ -335,7 +335,6 @@ export class Handle {
     if (handle) {
       this.removeHandle(name)
       this.addHandle({
-        name,
         ...handle,
         ...newHandle,
       })
