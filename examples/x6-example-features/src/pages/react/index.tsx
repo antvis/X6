@@ -1,6 +1,7 @@
 import React from 'react'
 import { Graph, Color } from '@antv/x6'
 import '@antv/x6-react-shape'
+import '../index.less'
 
 export default class Example extends React.Component {
   private container: HTMLDivElement
@@ -38,8 +39,8 @@ export default class Example extends React.Component {
 
     const target = graph.addNode({
       type: 'react-shape',
-      x: 200,
-      y: 200,
+      x: 320,
+      y: 320,
       width: 160,
       height: 60,
       component: (
@@ -53,7 +54,7 @@ export default class Example extends React.Component {
             background: targetColor,
           }}
         >
-          Source
+          Target
         </div>
       ),
     })
