@@ -5,7 +5,7 @@
       "**/lib"
   ],
   "compilerOptions": {
-    "module": "CommonJS",
+    "module": "esnext",
     "moduleResolution": "node",
     "sourceMap": true,
     "declaration": true,
