@@ -32,8 +32,7 @@
   },
   "lint-staged": {
     "src/**/*.ts": [
-      "tslint -c tslint.json -p ./tsconfig.json --fix",
-      "git add"
+      "tslint -c tslint.json -p ./tsconfig.json --fix"
     ]
   },
   "peerDependencies": {
@@ -46,7 +45,7 @@
     "@babel/preset-env": "^7.8.7",
     "@rollup/plugin-commonjs": "^12.0.0",
     "@rollup/plugin-node-resolve": "^8.0.0",
-    "@rollup/plugin-typescript": "^3.1.1",
+    "@rollup/plugin-typescript": "^4.1.2",
     "@types/node": "^13.9.1",
     "@types/react": "^16.9.13",
     "babel-loader": "^8.0.6",
