@@ -1036,7 +1036,7 @@ export namespace Node {
 }
 
 export namespace Node {
-  export type Definition = typeof Node & (new (...args: any[]) => Node)
+  export type Definition = typeof Node
 
   let counter = 0
   function getClassName(name?: string) {
