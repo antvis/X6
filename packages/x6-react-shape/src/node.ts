@@ -25,12 +25,10 @@ export class ReactShape<
 }
 
 export namespace ReactShape {
-  export type Component = React.ReactElement
-
   export interface Properties extends Node.Properties {
     component?:
-      | ((this: Graph, node: Node) => Component | null | undefined)
-      | Component
+      | ((this: Graph, node: Node) => React.ReactElement | null | undefined)
+      | React.ReactElement
       | null
   }
 }
