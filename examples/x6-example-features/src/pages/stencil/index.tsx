@@ -13,10 +13,25 @@ export default class Example extends React.Component {
     const graph = new Graph({
       container: this.container,
       width: 800,
-      height: 600,
-      snapline: true,
-      grid: 1,
+      height: 800,
+      snapline: {
+        enabled: true,
+        sharp: true,
+      },
+      grid: {
+        visible: true,
+      },
+      scroller: {
+        enabled: true,
+        width: 600,
+        height: 400,
+        pageVisible: true,
+        pageBreak: false,
+        panning: true,
+      },
     })
+
+    graph.centerContent()
 
     graph.addNode({
       type: 'rect',
@@ -42,7 +57,6 @@ export default class Example extends React.Component {
       height: 300,
       search: true,
       collapsable: true,
-      snapline: graph.snapline.widget,
       grid: 1,
       groups: [
         {

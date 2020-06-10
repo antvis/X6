@@ -565,12 +565,22 @@ export class Snapline extends View implements IDisablable {
     const ty = ctm.f
 
     const sharp = this.options.sharp
+    const hasScroller = this.graph.scroller.widget != null
+
     if (metadata.horizontalTop) {
       this.$horizontal
         .css({
           top: metadata.horizontalTop * sy + ty,
-          left: sharp ? metadata.horizontalLeft! * sx + tx : 0,
-          width: sharp ? metadata.horizontalWidth! * sx : '100%',
+          left: sharp
+            ? metadata.horizontalLeft! * sx + tx
+            : hasScroller
+            ? '-300%'
+            : 0,
+          width: sharp
+            ? metadata.horizontalWidth! * sx
+            : hasScroller
+            ? '700%'
+            : '100%',
         })
         .show()
     } else {
@@ -581,8 +591,16 @@ export class Snapline extends View implements IDisablable {
       this.$vertical
         .css({
           left: metadata.verticalLeft * sx + tx,
-          top: sharp ? metadata.verticalTop! * sy + ty : 0,
-          height: sharp ? metadata.verticalHeight! * sy : '100%',
+          top: sharp
+            ? metadata.verticalTop! * sy + ty
+            : hasScroller
+            ? '-300%'
+            : 0,
+          height: sharp
+            ? metadata.verticalHeight! * sy
+            : hasScroller
+            ? '700%'
+            : '100%',
         })
         .show()
     } else {
