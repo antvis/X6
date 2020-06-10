@@ -126,7 +126,13 @@ export default class Example extends React.Component {
         snap: true,
         dangling: false,
         highlight: true,
-        connector: 'smooth',
+        // connector: 'smooth',
+        router: {
+          name: 'er',
+          args: {
+            side: 'top',
+          },
+        },
         connectionPoint: 'boundary',
         createEdge() {
           return new StandardShape.Edge()
