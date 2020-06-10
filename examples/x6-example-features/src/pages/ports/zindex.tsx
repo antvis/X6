@@ -22,8 +22,10 @@ export default class Example extends React.Component {
       type: 'basic.rect',
       markup:
         '<g class="rotatable"><g class="scalable"><rect class="main"/></g><rect class="inner"/></g>',
-      position: { x: 130, y: 30 },
-      size: { width: 80, height: 150 },
+      x: 130,
+      y: 30,
+      width: 80,
+      height: 150,
       attrs: {
         '.main': {
           width: 80,
@@ -58,7 +60,7 @@ export default class Example extends React.Component {
             stroke: '#31d0c6',
             strokeWidth: 2,
           },
-          text: { text: `z: ${z}    `, fill: '#6a6c8a' },
+          text: { text: `z-index: ${z}    `, fill: '#6a6c8a' },
         },
       })
     }

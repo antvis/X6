@@ -12,6 +12,7 @@ export class Registry<
   constructor(options: Registry.Options<Entity | OptionalType>) {
     this.options = { ...options }
     this.data = (this.options.data as KeyValue<Entity>) || {}
+    this.register = this.register.bind(this)
   }
 
   get names() {
