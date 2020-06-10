@@ -1,4 +1,3 @@
-import { NonUndefined } from 'utility-types'
 import { KeyValue } from '../types'
 import { Basecoat } from '../common'
 import { NumberExt, Dom } from '../util'

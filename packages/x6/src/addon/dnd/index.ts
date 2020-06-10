@@ -7,7 +7,6 @@ import { NodeView } from '../../view/node'
 import { Graph } from '../../graph/graph'
 import { EventArgs } from '../../graph/events'
 import { Scroller } from '../scroller'
-import { Snapline } from '../snapline'
 
 export class Dnd extends View {
   public readonly options: Dnd.Options
@@ -24,7 +23,7 @@ export class Dnd extends View {
 
   protected get targetScroller() {
     const target = this.options.target
-    return target instanceof Graph ? null : target
+    return target instanceof Graph ? target.scroller.widget : target
   }
 
   protected get targetGraph() {
@@ -34,6 +33,10 @@ export class Dnd extends View {
 
   protected get targetModel() {
     return this.targetGraph.model
+  }
+
+  protected get snapline() {
+    return this.targetGraph.snapline.widget
   }
 
   constructor(options: Partial<Dnd.Options> & { target: Graph | Scroller }) {
@@ -68,7 +71,7 @@ export class Dnd extends View {
     this.prepareDragging(node, e.clientX, e.clientY)
 
     const local = this.updateNodePosition(e.clientX, e.clientY)
-    const snapline = this.options.snapline
+    const snapline = this.snapline
     if (snapline) {
       snapline.captureCursorOffset({
         e,
@@ -90,7 +93,7 @@ export class Dnd extends View {
     const delegateNode = this.options.getDragNode(node).pos(0, 0)
 
     let padding = 5
-    const snapline = this.options.snapline
+    const snapline = this.snapline
     if (snapline) {
       padding += snapline.options.tolerance || 0
     }
@@ -111,9 +114,7 @@ export class Dnd extends View {
 
     delegateModel.resetCells([delegateNode])
 
-    const delegateView = delegateGraph.renderer.findViewByCell(
-      delegateNode,
-    ) as NodeView
+    const delegateView = delegateGraph.findViewByCell(delegateNode) as NodeView
     delegateView.undelegateEvents()
     delegateView.cell.off('changed')
     delegateGraph.fitToContent({
@@ -189,19 +190,21 @@ export class Dnd extends View {
 
       this.updateGraphPosition(clientX, clientY)
       const local = this.updateNodePosition(clientX, clientY)
-      const snapline = this.options.snapline
+      const snapline = this.snapline
       const embeddingMode = this.targetGraph.options.embedding.enabled
-      const isEmbedding =
+      const isValidArea =
         (embeddingMode || snapline) &&
         this.isInsideValidArea({
           x: clientX,
           y: clientY,
         })
 
+      console.log(isValidArea)
+
       if (embeddingMode) {
         draggingView.setEventData(e, { graph: this.targetGraph })
         const data = draggingView.getEventData<any>(e)
-        if (isEmbedding) {
+        if (isValidArea) {
           draggingView.processEmbedding(data)
         } else {
           draggingView.clearEmbedding(data)
@@ -209,7 +212,7 @@ export class Dnd extends View {
       }
 
       if (snapline) {
-        if (isEmbedding) {
+        if (isValidArea) {
           snapline.snapOnMoving({
             e,
             view: draggingView!,
@@ -371,7 +374,6 @@ export namespace Dnd {
      * Should scale the dragging node or not.
      */
     scaled?: boolean
-    snapline?: Snapline
     delegateGraphOptions?: Graph.Options
     animation?:
       | boolean

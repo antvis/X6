@@ -1,13 +1,12 @@
 import { FunctionExt } from '../../util'
+import { grid } from '../../layout/grid'
 import { Cell } from '../../model/cell'
 import { Node } from '../../model/node'
 import { Model } from '../../model/model'
 import { View } from '../../view/view'
 import { Graph } from '../../graph/graph'
 import { EventArgs } from '../../graph/events'
-import { grid as gridLayout } from '../../layout/grid'
 import { Dnd } from '../dnd'
-import { Scroller } from '../scroller'
 
 export class Stencil extends View {
   public readonly options: Stencil.Options
@@ -19,7 +18,7 @@ export class Stencil extends View {
 
   protected get targetScroller() {
     const target = this.options.target
-    return target instanceof Graph ? null : target
+    return target instanceof Graph ? target.scroller.widget : target
   }
 
   protected get targetGraph() {
@@ -31,9 +30,7 @@ export class Stencil extends View {
     return this.targetGraph.model
   }
 
-  constructor(
-    options: Partial<Stencil.Options> & { target: Graph | Scroller },
-  ) {
+  constructor(options: Partial<Stencil.Options>) {
     super()
 
     this.graphs = {}
@@ -42,6 +39,8 @@ export class Stencil extends View {
       ...Stencil.defaultOptions,
       ...options,
     } as Stencil.Options
+
+    console.log(this.options)
 
     this.dnd = new Dnd(this.options)
     this.onSearch = FunctionExt.debounce(this.onSearch, 200)
@@ -448,7 +447,7 @@ export namespace Stencil {
         dy: 10,
       }
 
-      gridLayout(model, {
+      grid(model, {
         ...options,
         ...this.options.layoutOptions,
         ...(group ? group.layoutOptions : {}),
