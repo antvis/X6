@@ -1,7 +1,7 @@
-import { labelAttr } from './util'
-import { Node } from '../../model'
+import { getImageUrlHook } from '../basic/util'
+import { createShape } from './util'
 
-export const BorderedImage = Node.registry.register('image-bordered', {
+export const BorderedImage = createShape('image-bordered', {
   markup: [
     {
       tagName: 'rect',
@@ -47,8 +47,6 @@ export const BorderedImage = Node.registry.register('image-bordered', {
       x: 0.5,
       y: 0.5,
     },
-    label: {
-      ...labelAttr,
-    },
   },
+  propHooks: getImageUrlHook(),
 })

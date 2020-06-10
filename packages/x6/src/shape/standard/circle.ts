@@ -1,17 +1,11 @@
-import { getMarkup, bodyAttr, labelAttr } from './util'
-import { Node } from '../../model'
+import { createShape } from './util'
 
-export const Circle = Node.registry.register('circle', {
-  markup: getMarkup('circle'),
+export const Circle = createShape('circle', {
   attrs: {
     body: {
-      ...bodyAttr,
       refCx: '50%',
       refCy: '50%',
       refR: '50%',
-    },
-    label: {
-      ...labelAttr,
     },
   },
 })

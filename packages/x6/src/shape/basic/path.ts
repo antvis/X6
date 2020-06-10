@@ -7,7 +7,7 @@ export const Path = createShape('path', {
   attrs: {
     text: {
       ref: 'path',
-      refX: 0.5,
+      refY: null,
       refDy: 16,
     },
   },

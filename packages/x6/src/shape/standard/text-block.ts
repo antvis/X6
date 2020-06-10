@@ -2,8 +2,10 @@ import { Platform } from '../../util'
 import { Attr } from '../../definition'
 import { Node } from '../../model'
 import { bodyAttr } from './util'
+import { Base } from '../base'
 
-export const TextBlock = Node.registry.register('text-block', {
+export const TextBlock = Base.define({
+  name: 'text-block',
   markup: [
     {
       tagName: 'rect',
@@ -93,3 +95,5 @@ export const TextBlock = Node.registry.register('text-block', {
     },
   },
 })
+
+Node.registry.register('text-block', TextBlock)

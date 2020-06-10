@@ -1,7 +1,7 @@
-import { bodyAttr, labelAttr } from './util'
-import { Node } from '../../model'
+import { getImageUrlHook } from '../basic/util'
+import { createShape } from './util'
 
-export const EmbeddedImage = Node.registry.register('image-embedded', {
+export const EmbeddedImage = createShape('image-embedded', {
   markup: [
     {
       tagName: 'rect',
@@ -18,9 +18,11 @@ export const EmbeddedImage = Node.registry.register('image-embedded', {
   ],
   attrs: {
     body: {
-      ...bodyAttr,
       refWidth: '100%',
       refHeight: '100%',
+      stroke: '#333333',
+      fill: '#FFFFFF',
+      strokeWidth: 2,
     },
     image: {
       // xlinkHref: '[URL]'
@@ -30,13 +32,6 @@ export const EmbeddedImage = Node.registry.register('image-embedded', {
       y: 10,
       preserveAspectRatio: 'xMidYMin',
     },
-    label: {
-      ...labelAttr,
-      textVerticalAnchor: 'top',
-      textAnchor: 'left',
-      refX: '30%',
-      refX2: 20, // 10 + 10
-      refY: 10,
-    },
   },
+  propHooks: getImageUrlHook(),
 })

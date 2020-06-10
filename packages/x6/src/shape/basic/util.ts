@@ -1,5 +1,7 @@
 import { ObjectExt } from '../../util'
-import { Node } from '../../model'
+import { Node } from '../../model/node'
+import { Cell } from '../../model/cell'
+import { Base } from '../base'
 
 export function getMarkup(tagName: string, noText: boolean = false) {
   return `<g class="rotatable"><g class="scalable"><${tagName}/></g>${
@@ -11,13 +13,52 @@ export function getName(name: string) {
   return `basic.${name}`
 }
 
+export function getImageUrlHook(attrName: string = 'xlink:href') {
+  const hook: Cell.PropHook = (metadata) => {
+    const { imageUrl, imageWidth, imageHeight, ...others } = metadata
+    if (imageUrl != null || imageWidth != null || imageHeight != null) {
+      const apply = () => {
+        if (others.attrs) {
+          const image = others.attrs.image
+          if (imageUrl != null) {
+            image[attrName] = imageUrl
+          }
+          if (imageWidth != null) {
+            image.width = imageWidth
+          }
+          if (imageHeight != null) {
+            image.height = imageHeight
+          }
+          others.attrs.image = image
+        }
+      }
+
+      if (others.attrs) {
+        if (others.attrs.image == null) {
+          others.attrs.image = {}
+        }
+        apply()
+      } else {
+        others.attrs = {
+          image: {},
+        }
+        apply()
+      }
+    }
+
+    return others
+  }
+
+  return hook
+}
+
 export function createShape(
   type: string,
   config: Node.Config,
   options: {
     noText?: boolean
     ignoreMarkup?: boolean
-    parent?: Node.Definition
+    parent?: Node.Definition | typeof Base
   } = {},
 ) {
   const name = getName(type)
@@ -28,25 +69,10 @@ export function createShape(
         fill: '#ffffff',
         stroke: 'none',
       },
-      text: {
-        text: '',
-        fontSize: 14,
-        fill: '#000000',
-        textAnchor: 'middle',
-        yAlign: 'middle',
-        fontFamily: 'Arial, helvetica, sans-serif',
-      },
       [type]: {
         fill: '#ffffff',
         stroke: '#000000',
       },
-    },
-    propHooks(metadata) {
-      const { label, ...others } = metadata
-      if (label) {
-        ObjectExt.setByPath(others, 'attrs/text/text', label)
-      }
-      return others
     },
   }
 
@@ -54,10 +80,10 @@ export function createShape(
     defaults.markup = getMarkup(type, options.noText === true)
   }
 
-  const base = options.parent || Node
+  const base = options.parent || Base
   const shape = base.define(ObjectExt.merge(defaults, config))
 
   Node.registry.register(name, shape)
 
-  return shape
+  return shape as typeof Base
 }

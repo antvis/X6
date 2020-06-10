@@ -1,4 +1,4 @@
-import { Edge } from '../../model'
+import { Edge } from '../../model/edge'
 
 export const ShadowEdge = Edge.registry.register('shadow-edge', {
   markup: [

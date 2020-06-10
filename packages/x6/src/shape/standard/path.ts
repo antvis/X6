@@ -1,15 +1,20 @@
-import { getMarkup, bodyAttr, labelAttr } from './util'
-import { Node } from '../../model'
+import { createShape } from './util'
+import { ObjectExt } from '../../util'
 
-export const Path = Node.registry.register('path', {
-  markup: getMarkup('path'),
+export const Path = createShape('path', {
   attrs: {
     body: {
-      ...bodyAttr,
       refD: 'M 0 0 L 10 0 10 10 0 10 Z',
     },
-    label: {
-      ...labelAttr,
-    },
+  },
+})
+
+Path.config({
+  propHooks(metadata) {
+    const { path, ...others } = metadata
+    if (path) {
+      ObjectExt.setByPath(others, 'attrs/body/refD', path)
+    }
+    return others
   },
 })

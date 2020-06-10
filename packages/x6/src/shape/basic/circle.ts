@@ -9,9 +9,5 @@ export const Circle = createShape('circle', {
       cx: 30,
       cy: 30,
     },
-    text: {
-      refX: 0.5,
-      refY: 0.5,
-    },
   },
 })

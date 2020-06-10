@@ -31,6 +31,8 @@ export const Text = createShape(
         fontSize: 18,
         fill: '#000000',
         stroke: null,
+        refX: 0.5,
+        refY: 0.5,
       },
     },
   },

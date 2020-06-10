@@ -1,19 +1,18 @@
-import { bodyAttr, labelAttr, getMarkup } from './util'
-import { Node } from '../../model'
+import { getImageUrlHook } from '../basic/util'
+import { createShape } from './util'
 
-export const Image = Node.registry.register('image', {
-  markup: getMarkup('image', 'image'),
-  attrs: {
-    image: {
-      ...bodyAttr,
-      refWidth: '100%',
-      refHeight: '100%',
-      // xlinkHref: '[URL]'
+export const Image = createShape(
+  'image',
+  {
+    attrs: {
+      body: {
+        refWidth: '100%',
+        refHeight: '100%',
+      },
     },
-    label: {
-      ...labelAttr,
-      refY2: 10,
-      textVerticalAnchor: 'top',
-    },
+    propHooks: getImageUrlHook(),
   },
-})
+  {
+    selector: 'image',
+  },
+)

@@ -9,7 +9,6 @@ export const Rhombus = createShape(
       text: {
         refY: 0.5,
         refDy: null,
-        yAlign: 'middle',
       },
     },
   },

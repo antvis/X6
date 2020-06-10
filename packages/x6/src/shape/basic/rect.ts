@@ -6,9 +6,5 @@ export const Rect = createShape('rect', {
       width: 100,
       height: 60,
     },
-    text: {
-      refX: 0.5,
-      refY: 0.5,
-    },
   },
 })

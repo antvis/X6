@@ -1,4 +1,4 @@
-import { Edge } from '../../model'
+import { Edge } from '../../model/edge'
 
 export const DoubleEdge = Edge.registry.register('double-edge', {
   markup: [

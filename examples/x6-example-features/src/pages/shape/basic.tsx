@@ -18,9 +18,9 @@ export default class Example extends React.Component {
         repeat: 'watermark',
         opacity: 0.1,
       },
-      mousewheel: {
-        enabled: true,
-      },
+      // mousewheel: {
+      //   enabled: true,
+      // },
     })
 
     const rect = graph.addNode({

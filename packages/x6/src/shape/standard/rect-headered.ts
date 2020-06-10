@@ -1,5 +1,5 @@
 import { bodyAttr, labelAttr } from './util'
-import { Node } from '../../model'
+import { Node } from '../../model/node'
 
 export const HeaderedRect = Node.registry.register('rect-headered', {
   markup: [

@@ -10,9 +10,5 @@ export const Ellipse = createShape('ellipse', {
       cx: 30,
       cy: 20,
     },
-    text: {
-      refX: 0.5,
-      refY: 0.5,
-    },
   },
 })

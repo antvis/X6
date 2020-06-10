@@ -1,4 +1,4 @@
-import { Edge as E } from '../../model'
+import { Edge as E } from '../../model/edge'
 
 export const Edge = E.registry.register('edge', {
   markup: [
