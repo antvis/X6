@@ -10,7 +10,6 @@ export default class Example extends React.Component {
       container: this.container,
       width: 800,
       height: 400,
-      grid: 1,
       connecting: {
         validateMagnet() {
           return false
@@ -25,18 +24,28 @@ export default class Example extends React.Component {
       width: 500,
       height: 300,
       attrs: {
-        label: {
-          text: 'compensateRotate: true',
-          fill: '#6a6c8a',
-        },
         body: {
           stroke: '#31d0c6',
           strokeWidth: 2,
+        },
+        label: {
+          text: 'compensateRotate: true',
+          fill: '#6a6c8a',
         },
       },
       ports: {
         groups: {
           a: {
+            markup: [
+              {
+                tagName: 'rect',
+                selector: 'rect',
+              },
+              {
+                tagName: 'circle',
+                selector: 'dot',
+              },
+            ],
             position: {
               name: 'ellipseSpread',
               args: { start: 0, dr: 0, compensateRotate: true },
@@ -62,16 +71,6 @@ export default class Example extends React.Component {
                 fill: '#6a6c8a',
               },
             },
-            markup: [
-              {
-                tagName: 'rect',
-                selector: 'rect',
-              },
-              {
-                tagName: 'circle',
-                selector: 'dot',
-              },
-            ],
           },
         },
       },

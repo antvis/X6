@@ -27,8 +27,7 @@ export class HighlightManager extends Base {
       return
     }
 
-    Dom.ensureId(magnet)
-    const key = resolved.name + magnet.id + JSON.stringify(resolved.args)
+    const key = this.getHighlighterId(magnet, resolved)
     if (!this.highlights[key]) {
       const highlighter = resolved.highlighter
       highlighter.highlight(cellView, magnet, { ...resolved.args })
@@ -52,8 +51,7 @@ export class HighlightManager extends Base {
       return
     }
 
-    Dom.ensureId(magnet)
-    const key = resolved.name + magnet.id + JSON.stringify(resolved.args)
+    const key = this.getHighlighterId(magnet, resolved)
     const highlight = this.highlights[key]
     if (highlight) {
       // Use the cellView and magnetEl that were used by the highlighter.highlight() method.
@@ -68,19 +66,14 @@ export class HighlightManager extends Base {
   }
 
   protected resolveHighlighter(options: CellView.HighlightOptions) {
-    let highlighterDef = options.highlighter
+    let highlighterDef: string | undefined | Highlighter.ManaualItem =
+      options.highlighter
     const graphOptions = this.options
     if (highlighterDef == null) {
       // check for built-in types
-      const type = [
-        'embedding',
-        'connecting',
-        'nodeAvailability',
-        'magnetAvailability',
-      ].find((type) => !!(options as any)[type])
-
+      const type = options.type
       highlighterDef =
-        (type && (graphOptions.highlighting as any)[type]) ||
+        (type && graphOptions.highlighting[type]) ||
         graphOptions.highlighting.default
     }
 
@@ -108,6 +101,16 @@ export class HighlightManager extends Base {
       highlighter,
       args: def.args || {},
     }
+  }
+
+  protected getHighlighterId(
+    magnet: Element,
+    options: NonNullable<
+      ReturnType<typeof HighlightManager.prototype.resolveHighlighter>
+    >,
+  ) {
+    Dom.ensureId(magnet)
+    return options.name + magnet.id + JSON.stringify(options.args)
   }
 }
 
