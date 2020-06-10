@@ -248,7 +248,7 @@ export namespace PortData {
   }
 
   interface Common {
-    markup: string
+    markup: Markup
     attrs: Attr.CellAttrs
     zIndex: number | 'auto'
     size?: Size

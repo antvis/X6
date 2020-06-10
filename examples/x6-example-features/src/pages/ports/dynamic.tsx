@@ -47,6 +47,8 @@ class Shape extends StandardShape.Rect {
         { rewrite: true },
       )
     }
+
+    return this
   }
 }
 
@@ -104,7 +106,7 @@ const magnetAvailabilityHighlighter = {
     padding: 6,
     attrs: {
       strokeWidth: 3,
-      stroke: 'red',
+      stroke: '#ff0000',
     },
   },
 }
@@ -117,13 +119,18 @@ export default class Example extends React.Component {
       container: this.container,
       width: 800,
       height: 600,
-      grid: 1,
+      highlighting: {
+        magnetAvailable: magnetAvailabilityHighlighter,
+      },
       connecting: {
         snap: true,
-        dangling: true,
+        dangling: false,
+        highlight: true,
         connector: 'smooth',
         connectionPoint: 'boundary',
-        highlight: true,
+        createEdge() {
+          return new StandardShape.Edge()
+        },
         validateConnection(
           sourceView,
           sourceMagnet,
@@ -158,25 +165,11 @@ export default class Example extends React.Component {
       },
     })
 
-    graph.options.highlighting.magnetAvailable = magnetAvailabilityHighlighter
+    graph.addNode(new Shape().resize(120, 100).pos(200, 100).updateInPorts())
 
-    const shape1 = new Shape()
-    shape1.resize(120, 100)
-    shape1.pos(200, 100)
-    shape1.updateInPorts()
-    graph.addNode(shape1)
+    graph.addNode(new Shape().resize(120, 100).pos(400, 100).updateInPorts())
 
-    var shape2 = new Shape()
-    shape2.resize(120, 100)
-    shape2.pos(400, 100)
-    shape2.updateInPorts()
-    graph.addNode(shape2)
-
-    var shape3 = new Shape()
-    shape3.resize(120, 100)
-    shape3.pos(300, 400)
-    shape3.updateInPorts()
-    graph.addNode(shape3)
+    graph.addNode(new Shape().resize(120, 100).pos(300, 400).updateInPorts())
 
     function update(view: NodeView) {
       var cell = view.cell
@@ -194,9 +187,9 @@ export default class Example extends React.Component {
     graph.on('edge:mouseenter', ({ view }) => {
       view.addTools({
         tools: [
-          'targetArrowhead',
+          'target-arrowhead',
           {
-            name: 'remove',
+            name: 'button-remove',
             args: {
               distance: -30,
             },
@@ -216,18 +209,6 @@ export default class Example extends React.Component {
     graph.on('edge:disconnected', ({ view }) => {
       update(view)
     })
-
-    graph.on('link:connect link:disconnect', function (
-      linkView,
-      evt,
-      elementView,
-    ) {})
-
-    // graph.on('edge:mouseenter', ({ view }) => {})
-
-    // graph.on('edge:mouseleave', function({ view }) {
-    //   view.removeTools()
-    // })
 
     graph.on('edge:removed', function ({ edge, options }) {
       if (!options.ui) {

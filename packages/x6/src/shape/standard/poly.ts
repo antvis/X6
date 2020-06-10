@@ -58,7 +58,7 @@ export namespace Poly {
     propHooks(metadata) {
       const { points, ...others } = metadata
       if (points) {
-        const data = points ? null : pointsToString(points)
+        const data = pointsToString(points)
         if (data) {
           ObjectExt.setByPath(others, 'attrs/body/refPoints', data)
         }
