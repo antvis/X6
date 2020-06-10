@@ -4,11 +4,11 @@ import { Size, KeyValue } from '../types'
 import { Point, Rectangle, Angle } from '../geometry'
 import { StringExt, ObjectExt, NumberExt } from '../util'
 import { Markup } from '../view/markup'
-import { Share } from './registry'
-import { PortData } from './port'
 import { Cell } from './cell'
 import { Edge } from './edge'
 import { Store } from './store'
+import { Share } from './registry'
+import { PortManager } from './port'
 
 export class Node<
   Properties extends Node.Properties = Node.Properties
@@ -20,7 +20,7 @@ export class Node<
   }
 
   protected readonly store: Store<Node.Properties>
-  protected portData: PortData
+  protected port: PortManager
 
   constructor(metadata: Node.Metadata = {}) {
     super(metadata)
@@ -603,7 +603,7 @@ export class Node<
     if (res.items == null) {
       res.items = []
     }
-    return res as PortData.Metadata
+    return res as PortManager.Metadata
   }
 
   getPorts() {
@@ -632,7 +632,7 @@ export class Node<
     return this.getPortIndex(portId) !== -1
   }
 
-  getPortIndex(port: PortData.PortMetadata | string) {
+  getPortIndex(port: PortManager.PortMetadata | string) {
     const portId = typeof port === 'string' ? port : port.id
     return portId != null
       ? this.ports.items.findIndex((item) => item.id === portId)
@@ -641,7 +641,7 @@ export class Node<
 
   getPortsPosition(groupName: string) {
     const size = this.sizes
-    const layouts = this.portData.getPortsLayoutByGroup(
+    const layouts = this.port.getPortsLayoutByGroup(
       groupName,
       new Rectangle(0, 0, size.width, size.height),
     )
@@ -661,7 +661,7 @@ export class Node<
     }, {})
   }
 
-  getPortProp(portId: string): PortData.PortMetadata
+  getPortProp(portId: string): PortManager.PortMetadata
   getPortProp<T>(portId: string, path: string | string[]): T
   getPortProp<T>(portId: string, path?: string | string[]) {
     return this.getPropByPath(this.prefixPortPath(portId, path))
@@ -675,12 +675,12 @@ export class Node<
   ): this
   setPortProp(
     portId: string,
-    value: DeepPartial<PortData.PortMetadata>,
+    value: DeepPartial<PortManager.PortMetadata>,
     options?: Node.SetOptions,
   ): this
   setPortProp(
     portId: string,
-    arg1: string | string[] | DeepPartial<PortData.PortMetadata>,
+    arg1: string | string[] | DeepPartial<PortManager.PortMetadata>,
     arg2: any | Node.SetOptions,
     arg3?: Node.SetOptions,
   ) {
@@ -691,7 +691,7 @@ export class Node<
     }
 
     const path = this.prefixPortPath(portId)
-    const value = arg1 as DeepPartial<PortData.PortMetadata>
+    const value = arg1 as DeepPartial<PortManager.PortMetadata>
     return this.setPropByPath(path, value, arg2 as Node.SetOptions)
   }
 
@@ -712,7 +712,7 @@ export class Node<
     return this.removePropByPath(this.prefixPortPath(portId), path)
   }
 
-  portProp(portId: string): PortData.PortMetadata
+  portProp(portId: string): PortManager.PortMetadata
   portProp<T>(portId: string, path: string | string[]): T
   portProp(
     portId: string,
@@ -722,12 +722,12 @@ export class Node<
   ): this
   portProp(
     portId: string,
-    value: DeepPartial<PortData.PortMetadata>,
+    value: DeepPartial<PortManager.PortMetadata>,
     options?: Node.SetOptions,
   ): this
   portProp(
     portId: string,
-    path?: string | string[] | DeepPartial<PortData.PortMetadata>,
+    path?: string | string[] | DeepPartial<PortManager.PortMetadata>,
     value?: any | Node.SetOptions,
     options?: Node.SetOptions,
   ) {
@@ -744,13 +744,13 @@ export class Node<
       return this.setPortProp(
         portId,
         path,
-        value as DeepPartial<PortData.PortMetadata>,
+        value as DeepPartial<PortManager.PortMetadata>,
         options,
       )
     }
     return this.setPortProp(
       portId,
-      path as DeepPartial<PortData.PortMetadata>,
+      path as DeepPartial<PortManager.PortMetadata>,
       value as Node.SetOptions,
     )
   }
@@ -772,20 +772,20 @@ export class Node<
     return `ports/items/${index}/${path}`
   }
 
-  addPort(port: PortData.PortMetadata, options?: Cell.SetByPathOptions) {
+  addPort(port: PortManager.PortMetadata, options?: Cell.SetByPathOptions) {
     const ports = [...this.ports.items]
     ports.push(port)
     this.setPropByPath('ports/items', ports, options)
     return this
   }
 
-  addPorts(ports: PortData.PortMetadata[], options?: Cell.SetByPathOptions) {
+  addPorts(ports: PortManager.PortMetadata[], options?: Cell.SetByPathOptions) {
     this.setPropByPath('ports/items', [...this.ports.items, ...ports], options)
     return this
   }
 
   removePort(
-    port: PortData.PortMetadata | string,
+    port: PortManager.PortMetadata | string,
     options: Cell.SetByPathOptions = {},
   ) {
     return this.removePortAt(this.getPortIndex(port), options)
@@ -803,12 +803,12 @@ export class Node<
 
   removePorts(options?: Cell.SetByPathOptions): this
   removePorts(
-    portsForRemoval: (PortData.PortMetadata | string)[],
+    portsForRemoval: (PortManager.PortMetadata | string)[],
     options?: Cell.SetByPathOptions,
   ): this
   removePorts(
     portsForRemoval?:
-      | (PortData.PortMetadata | string)[]
+      | (PortManager.PortMetadata | string)[]
       | Cell.SetByPathOptions,
     opt?: Cell.SetByPathOptions,
   ) {
@@ -838,15 +838,15 @@ export class Node<
   }
 
   getParsedPorts() {
-    return this.portData.getPorts()
+    return this.port.getPorts()
   }
 
   getParsedGroups() {
-    return this.portData.groups
+    return this.port.groups
   }
 
   getPortsLayoutByGroup(groupName: string | undefined, bbox: Rectangle) {
-    return this.portData.getPortsLayoutByGroup(groupName, bbox)
+    return this.port.getPortsLayoutByGroup(groupName, bbox)
   }
 
   protected initPorts() {
@@ -868,7 +868,7 @@ export class Node<
     })
 
     const removed: { [id: string]: boolean } = {}
-    const previous = this.store.getPrevious<PortData.Metadata>('ports') || {
+    const previous = this.store.getPrevious<PortManager.Metadata>('ports') || {
       items: [],
     }
 
@@ -929,26 +929,26 @@ export class Node<
     if (err.length > 0) {
       this.store.set(
         'ports',
-        this.store.getPrevious<PortData.Metadata>('ports'),
+        this.store.getPrevious<PortManager.Metadata>('ports'),
       )
       throw new Error(err.join(' '))
     }
 
-    const prevPorts = this.portData ? this.portData.getPorts() : null
-    this.portData = new PortData(this.ports)
-    const curPorts = this.portData.getPorts()
+    const prev = this.port ? this.port.getPorts() : null
+    this.port = new PortManager(this.ports)
+    const curr = this.port.getPorts()
 
-    const added = prevPorts
-      ? curPorts.filter((item) => {
-          if (!prevPorts.find((prevPort) => prevPort.id === item.id)) {
+    const added = prev
+      ? curr.filter((item) => {
+          if (!prev.find((prevPort) => prevPort.id === item.id)) {
             return item
           }
         })
-      : [...curPorts]
+      : [...curr]
 
-    const removed = prevPorts
-      ? prevPorts.filter((item) => {
-          if (!curPorts.find((curPort) => curPort.id === item.id)) {
+    const removed = prev
+      ? prev.filter((item) => {
+          if (!curr.find((curPort) => curPort.id === item.id)) {
             return item
           }
         })
@@ -971,7 +971,7 @@ export namespace Node {
     size?: { width: number; height: number }
     position?: { x: number; y: number }
     angle?: number
-    ports?: Partial<PortData.Metadata> // group and items are both optional
+    ports?: Partial<PortManager.Metadata> // group and items are both optional
     portContainerMarkup?: Markup
     portMarkup?: Markup
     portLabelMarkup?: Markup
