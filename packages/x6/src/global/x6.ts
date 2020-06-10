@@ -27,47 +27,26 @@ export namespace X6 {
 }
 
 export namespace X6 {
-  export const registerNode = Node.registry.register.bind(Node.registry)
-  export const registerEdge = Edge.registry.register.bind(Edge.registry)
-  export const registerView = CellView.registry.register.bind(CellView.registry)
-  export const registerAttr = Attr.registry.register.bind(Attr.registry)
-  export const registerGrid = Grid.registry.register.bind(Grid.registry)
-  export const registerFilter = Filter.registry.register.bind(Filter.registry)
-  export const registerNodeTool = NodeTool.registry.register.bind(
-    NodeTool.registry,
-  )
-  export const registerEdgeTool = EdgeTool.registry.register.bind(
-    EdgeTool.registry,
-  )
-  export const registerBackground = Background.registry.register.bind(
-    Background.registry,
-  )
-  export const registerHighlighter = Highlighter.registry.register.bind(
-    Highlighter.registry,
-  )
-  export const registerPortLayout = PortLayout.registry.register.bind(
-    PortLayout.registry,
-  )
-  export const registerPortLabelLayout = PortLabelLayout.registry.register.bind(
-    PortLabelLayout.registry,
-  )
-
-  export const registerRouter = Router.registry.register.bind(Router.registry)
-  export const registerConnector = Connector.registry.register.bind(
-    Connector.registry,
-  )
-  export const registerNodeConnectionAnchor = NodeConnectionAnchor.registry.register.bind(
-    NodeConnectionAnchor.registry,
-  )
-  export const registerEdgeConnectionAnchor = EdgeConnectionAnchor.registry.register.bind(
-    EdgeConnectionAnchor.registry,
-  )
-  export const registerConnectionPoint = ConnectionPoint.registry.register.bind(
-    ConnectionPoint.registry,
-  )
-  export const registerConnectionStrategy = ConnectionStrategy.registry.register.bind(
-    ConnectionStrategy.registry,
-  )
+  export const registerNode = Node.registry.register
+  export const registerEdge = Edge.registry.register
+  export const registerView = CellView.registry.register
+  export const registerAttr = Attr.registry.register
+  export const registerGrid = Grid.registry.register
+  export const registerFilter = Filter.registry.register
+  export const registerNodeTool = NodeTool.registry.register
+  export const registerEdgeTool = EdgeTool.registry.register
+  export const registerBackground = Background.registry.register
+  export const registerHighlighter = Highlighter.registry.register
+  export const registerPortLayout = PortLayout.registry.register
+  export const registerPortLabelLayout = PortLabelLayout.registry.register
+  export const registerRouter = Router.registry.register
+  export const registerConnector = Connector.registry.register
+  export const registerNodeConnectionAnchor =
+    NodeConnectionAnchor.registry.register
+  export const registerEdgeConnectionAnchor =
+    EdgeConnectionAnchor.registry.register
+  export const registerConnectionPoint = ConnectionPoint.registry.register
+  export const registerConnectionStrategy = ConnectionStrategy.registry.register
 }
 
 export namespace X6 {
