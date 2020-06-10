@@ -151,7 +151,7 @@ export class Events<EventArgs extends Events.EventArgs = any> {
 
     const list = this.listeners['*']
     if (list != null) {
-      return Private.combindResult([
+      return Private.combindTriggerResult([
         returned,
         Private.call(list, [name, ...args]),
       ])
@@ -225,6 +225,8 @@ export namespace Events {
   export type UnknownNames<M extends EventArgs> = Exclude<string, EventNames<M>>
 }
 
+export namespace Events {}
+
 namespace Private {
   function isAsync(obj: any) {
     return obj != null && (obj instanceof Promise || isAsyncLike(obj))
@@ -234,7 +236,17 @@ namespace Private {
     return typeof obj === 'object' && obj.then && typeof obj.then === 'function'
   }
 
-  export function combindResult(results: any[]) {
+  export function combindTriggerResult(...args: any[]): Events.TriggerResult {
+    const results: any[] = []
+
+    args.forEach((arg) => {
+      if (Array.isArray(arg)) {
+        results.push(...arg)
+      } else {
+        results.push(arg)
+      }
+    })
+
     const hasAsync = results.some((res) => isAsync(res))
     if (hasAsync) {
       const deferres = results.map((res) =>
@@ -259,6 +271,6 @@ namespace Private {
       results.push(ret)
     }
 
-    return combindResult(results)
+    return combindTriggerResult(results)
   }
 }
