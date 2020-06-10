@@ -24,10 +24,16 @@ export class ReactShapeView extends NodeView<ReactShape> {
     const root = this.unmountReactComponent()
     const node = this.cell as ReactShape
     if (root) {
-      ReactDOM.render(
-        React.createElement(Wrap, { node }, node.getComponent()),
-        root,
-      )
+      const component = node.getComponent()
+      let elem: any
+      if (React.isValidElement(component)) {
+        elem = component
+      } else if (component) {
+        elem = component.call(this.graph, node)
+      }
+
+      elem = React.isValidElement(elem) ? elem : null
+      ReactDOM.render(React.createElement(Wrap, { node }, elem), root)
     }
   }
 
