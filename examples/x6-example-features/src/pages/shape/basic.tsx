@@ -126,6 +126,7 @@ export default class Example extends React.Component {
       y: 140,
       width: 180,
       height: 80,
+
       attrs: {
         text: { text: 'Decorated with image' },
         image: { 'xlink:href': 'http://placehold.it/16x16' },
