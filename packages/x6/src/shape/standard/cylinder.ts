@@ -1,10 +1,12 @@
 import { NumberExt } from '../../util'
-import { bodyAttr, labelAttr } from './util'
-import { Node } from '../../model'
+import { bodyAttr } from './util'
+import { Node } from '../../model/node'
+import { Base } from '../base'
 
 const CYLINDER_TILT = 10
 
-export const Cylinder = Node.registry.register('cylinder', {
+export const Cylinder = Base.define({
+  name: 'cylinder',
   markup: [
     {
       tagName: 'path',
@@ -30,12 +32,6 @@ export const Cylinder = Node.registry.register('cylinder', {
       refRx: '50%',
       cy: CYLINDER_TILT,
       ry: CYLINDER_TILT,
-    },
-    label: {
-      ...labelAttr,
-      refX: '50%',
-      refY: '100%',
-      refY2: 15,
     },
   },
   attrHooks: {
@@ -117,3 +113,5 @@ export const Cylinder = Node.registry.register('cylinder', {
     },
   },
 })
+
+Node.registry.register('cylinder', Cylinder)

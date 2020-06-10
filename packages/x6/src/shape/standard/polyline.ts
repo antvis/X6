@@ -1,15 +1,11 @@
-import { getMarkup, bodyAttr, labelAttr } from './util'
-import { Node } from '../../model'
+import { Poly } from './poly'
+import { createShape } from './util'
 
-export const Polyline = Node.registry.register('polyline', {
-  markup: getMarkup('polyline'),
+export const Polyline = createShape('polyline', {
   attrs: {
     body: {
-      ...bodyAttr,
       refPoints: '0 0 10 0 10 10 0 10 0 0',
     },
-    label: {
-      ...labelAttr,
-    },
   },
+  parent: Poly,
 })

@@ -19,7 +19,6 @@ export const Cylinder = createShape(
         ].join(' '),
       },
       text: {
-        refX: 0.5,
         refY: 0.7,
         refDy: null,
         fill: '#435460',
