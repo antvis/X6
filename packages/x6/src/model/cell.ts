@@ -31,6 +31,7 @@ export class Cell<
     }
 
     if (propHooks) {
+      this.propHooks = this.propHooks.slice()
       if (Array.isArray(propHooks)) {
         this.propHooks.push(...propHooks)
       } else if (typeof propHooks === 'function') {

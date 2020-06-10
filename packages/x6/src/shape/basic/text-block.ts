@@ -80,6 +80,73 @@ export namespace TextBlock {
   }
 }
 
+export namespace TextBlock {
+  TextBlock.config({
+    view: registryName,
+
+    markup: [
+      '<g class="rotatable">',
+      '<g class="scalable"><rect/></g>',
+      Platform.SUPPORT_FOREIGNOBJECT
+        ? [
+            `<foreignObject>`,
+            `<body xmlns="http://www.w3.org/1999/xhtml">`,
+            `<div class="${contentSelector.substr(1)}" />`,
+            `</body>`,
+            `</foreignObject>`,
+          ].join('')
+        : `<text class="${contentSelector.substr(1)}"/>`,
+      '</g>',
+    ].join(''),
+
+    attrs: {
+      '.': {
+        fill: '#ffffff',
+        stroke: 'none',
+      },
+      rect: {
+        fill: '#ffffff',
+        stroke: '#000000',
+        width: 80,
+        height: 100,
+      },
+      text: {
+        fill: '#000000',
+        fontSize: 14,
+        fontFamily: 'Arial, helvetica, sans-serif',
+      },
+      body: {
+        style: {
+          background: 'transparent',
+          position: 'static',
+          margin: 0,
+          padding: 0,
+        },
+      },
+      foreignObject: {
+        style: {
+          overflow: 'hidden',
+        },
+      },
+      [contentSelector]: {
+        refX: 0.5,
+        refY: 0.5,
+        yAlign: 'middle',
+        xAlign: 'middle',
+        style: {
+          textAlign: 'center',
+          verticalAlign: 'middle',
+          display: 'table-cell',
+          padding: '0 5px',
+          margin: 0,
+        },
+      },
+    },
+  })
+
+  Node.registry.register(registryName, TextBlock)
+}
+
 export class TextBlockView extends NodeView<TextBlock> {
   confirmUpdate(flag: number, options: any = {}) {
     let ret = super.confirmUpdate(flag, options)
@@ -126,78 +193,16 @@ export class TextBlockView extends NodeView<TextBlock> {
   }
 }
 
-TextBlock.config({
-  view: registryName,
+export namespace TextBlockView {
+  TextBlockView.config({
+    bootstrap: ['render', contentAction],
+    actions: Platform.SUPPORT_FOREIGNOBJECT
+      ? {}
+      : {
+          size: contentAction,
+          content: contentAction,
+        },
+  })
 
-  markup: [
-    '<g class="rotatable">',
-    '<g class="scalable"><rect/></g>',
-    Platform.SUPPORT_FOREIGNOBJECT
-      ? [
-          `<foreignObject>`,
-          `<body xmlns="http://www.w3.org/1999/xhtml">`,
-          `<div class="${contentSelector.substr(1)}" />`,
-          `</body>`,
-          `</foreignObject>`,
-        ].join('')
-      : `<text class="${contentSelector.substr(1)}"/>`,
-    '</g>',
-  ].join(''),
-
-  attrs: {
-    '.': {
-      fill: '#ffffff',
-      stroke: 'none',
-    },
-    rect: {
-      fill: '#ffffff',
-      stroke: '#000000',
-      width: 80,
-      height: 100,
-    },
-    text: {
-      fill: '#000000',
-      fontSize: 14,
-      fontFamily: 'Arial, helvetica, sans-serif',
-    },
-    body: {
-      style: {
-        background: 'transparent',
-        position: 'static',
-        margin: 0,
-        padding: 0,
-      },
-    },
-    foreignObject: {
-      style: {
-        overflow: 'hidden',
-      },
-    },
-    [contentSelector]: {
-      refX: 0.5,
-      refY: 0.5,
-      yAlign: 'middle',
-      xAlign: 'middle',
-      style: {
-        textAlign: 'center',
-        verticalAlign: 'middle',
-        display: 'table-cell',
-        padding: '0 5px',
-        margin: 0,
-      },
-    },
-  },
-})
-
-TextBlockView.config({
-  bootstrap: ['render', contentAction],
-  actions: Platform.SUPPORT_FOREIGNOBJECT
-    ? {}
-    : {
-        size: contentAction,
-        content: contentAction,
-      },
-})
-
-Node.registry.register(registryName, TextBlock)
-NodeView.registry.register(registryName, TextBlockView)
+  NodeView.registry.register(registryName, TextBlockView)
+}

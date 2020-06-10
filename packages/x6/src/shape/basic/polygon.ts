@@ -5,7 +5,7 @@ export const Polygon = createShape('polygon', {
   height: 40,
   attrs: {
     text: {
-      refX: 0.5,
+      refY: null,
       refDy: 16,
     },
   },

@@ -5,7 +5,7 @@ export const Polyline = createShape('polyline', {
   height: 40,
   attrs: {
     text: {
-      refX: 0.5,
+      refY: null,
       refDy: 16,
     },
   },

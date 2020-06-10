@@ -1,7 +1,8 @@
-import { labelAttr } from './util'
-import { Node } from '../../model'
+import { getImageUrlHook } from '../basic/util'
+import { createShape } from './util'
 
-export const InscribedImage = Node.registry.register('image-inscribed', {
+export const InscribedImage = createShape('image-inscribed', {
+  propHooks: getImageUrlHook(),
   markup: [
     {
       tagName: 'ellipse',
@@ -49,13 +50,12 @@ export const InscribedImage = Node.registry.register('image-inscribed', {
       preserveAspectRatio: 'xMidYMid',
       // xlinkHref: '[URL]'
     },
-    label: {
-      ...labelAttr,
-      refX: '50%',
-      refY: '100%',
-      refY2: 10,
-      textAnchor: 'middle',
-      textVerticalAnchor: 'top',
-    },
+    // label: {
+    //   refX: '50%',
+    //   refY: '100%',
+    //   refY2: 10,
+    //   textAnchor: 'middle',
+    //   textVerticalAnchor: 'top',
+    // },
   },
 })
