@@ -1,10 +1,15 @@
+import { NonUndefined } from 'utility-types'
 import { KeyValue } from '../types'
 import { Basecoat } from '../common'
-import { CellView } from '../view/cell'
-import { NodeView } from '../view/node'
 import { NumberExt, Dom } from '../util'
 import { Point, Rectangle } from '../geometry'
-import { Cell, Node, Edge, Model, Collection } from '../model'
+import { Cell } from '../model/cell'
+import { Node } from '../model/node'
+import { Edge } from '../model/edge'
+import { Model } from '../model/model'
+import { Collection } from '../model/collection'
+import { CellView } from '../view/cell'
+import { NodeView } from '../view/node'
 import { Scroller as ScrollerWidget } from '../addon/scroller'
 import { Base } from './base'
 import { Hook } from './hook'
@@ -12,15 +17,15 @@ import { GraphView } from './view'
 import { EventArgs } from './events'
 import { Decorator } from './decorator'
 import { Options as GraphOptions } from './options'
-import { HistoryManager as History } from './history'
-import { Renderer as ViewRenderer } from './renderer'
 import { DefsManager as Defs } from './defs'
 import { GridManager as Grid } from './grid'
 import { CoordManager as Coord } from './coord'
 import { Keyboard as Shortcut } from './keyboard'
 import { PrintManager as Print } from './print'
-import { FormatManager as Format } from './format'
 import { MouseWheel as Wheel } from './mousewheel'
+import { FormatManager as Format } from './format'
+import { Renderer as ViewRenderer } from './renderer'
+import { HistoryManager as History } from './history'
 import { MiniMapManager as MiniMap } from './minimap'
 import { SnaplineManager as Snapline } from './snapline'
 import { ScrollerManager as Scroller } from './scroller'
@@ -99,7 +104,7 @@ export class Graph extends Basecoat<EventArgs> {
   }
 
   clearModel(options: Cell.SetOptions = {}) {
-    this.model.clear()
+    this.model.clear(options)
     return this
   }
 
@@ -420,6 +425,26 @@ export class Graph extends Basecoat<EventArgs> {
   }
 
   //#endregion
+
+  // #region cell
+
+  isNode(cell: Cell): cell is Node {
+    return cell.isNode()
+  }
+
+  isEdge(cell: Cell): cell is Edge {
+    return cell.isEdge()
+  }
+
+  // #endregion
+
+  // #region node
+
+  // #endregion
+
+  // #region edge
+
+  // #endregion
 
   // #region view
 
@@ -966,7 +991,7 @@ export class Graph extends Basecoat<EventArgs> {
 
   // #endregion
 
-  // #region mouse wheel
+  // #region mousewheel
 
   isMouseWheelDisabled() {
     return this.mousewheel.disabled

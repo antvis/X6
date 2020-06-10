@@ -4,7 +4,7 @@ import { Rectangle, Point } from '../geometry'
 import { Attr, PortLayout } from '../definition'
 import { Cell } from '../model/cell'
 import { Node } from '../model/node'
-import { PortData } from '../model/port'
+import { PortManager } from '../model/port'
 import { Graph } from '../graph'
 import { CellView } from './cell'
 import { EdgeView } from './edge'
@@ -369,7 +369,7 @@ export class NodeView<
   }
 
   protected appendPorts(
-    ports: PortData.Port[],
+    ports: PortManager.Port[],
     zIndex: number,
     refs: Element[],
   ) {
@@ -381,7 +381,7 @@ export class NodeView<
     }
   }
 
-  protected getPortElement(port: PortData.Port) {
+  protected getPortElement(port: PortManager.Port) {
     const cached = this.portsCache[port.id]
     if (cached) {
       return cached.portElement
@@ -389,7 +389,7 @@ export class NodeView<
     return this.createPortElement(port)
   }
 
-  protected createPortElement(port: PortData.Port) {
+  protected createPortElement(port: PortManager.Port) {
     let renderResult = Markup.renderMarkup(this.getPortContainerMarkup())
     const portElement = renderResult.elem
     if (portElement == null) {
@@ -527,11 +527,11 @@ export class NodeView<
     return this.cell.getPortContainerMarkup() || this.defaultPortContainerMarkup
   }
 
-  protected getPortMarkup(port: PortData.Port) {
+  protected getPortMarkup(port: PortManager.Port) {
     return port.markup || this.cell.portMarkup || this.defaultPortMarkup
   }
 
-  protected getPortLabelMarkup(label: PortData.Label) {
+  protected getPortLabelMarkup(label: PortManager.Label) {
     return (
       label.markup || this.cell.portLabelMarkup || this.defaultPortLabelMarkup
     )

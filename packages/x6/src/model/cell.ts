@@ -8,7 +8,7 @@ import { Markup, CellView } from '../view'
 import { Graph } from '../graph'
 import { Model } from './model'
 import { Animation } from './animation'
-import { PortData } from './port'
+import { PortManager } from './port'
 import { Store } from './store'
 import { Node } from './node'
 import { Edge } from './edge'
@@ -624,6 +624,41 @@ export class Cell<
 
   // #endregion
 
+  // #region data
+
+  get data() {
+    return this.getData()
+  }
+
+  set data(val: any) {
+    this.setData(val)
+  }
+
+  getData<T>() {
+    return this.store.get<T>('data')
+  }
+
+  setData(data: any, options: Cell.SetDataOptions = {}) {
+    if (data == null) {
+      this.removeData(options)
+    } else {
+      this.store.set(
+        'data',
+        options.merge ? ObjectExt.merge({}, this.getData(), data) : data,
+        options,
+      )
+    }
+
+    return this
+  }
+
+  removeData(options: Cell.SetOptions = {}) {
+    this.store.remove('data', options)
+    return this
+  }
+
+  // #endregion
+
   // #region parent children
 
   get parent() {
@@ -1146,6 +1181,7 @@ export namespace Cell {
     attrs?: Attr.CellAttrs
     zIndex?: number
     visible?: boolean
+    data?: any
   }
 
   export interface Defaults extends Common {}
@@ -1169,6 +1205,10 @@ export namespace Cell {
 
   export interface SetAttrOptions extends SetOptions {
     overwrite?: boolean
+  }
+
+  export interface SetDataOptions extends SetOptions {
+    merge?: boolean
   }
 
   export interface SetByPathOptions extends Store.SetByPathOptions {}
@@ -1214,19 +1254,19 @@ export namespace Cell {
     'change:size': NodeChangeArgs<Size>
     'change:angle': NodeChangeArgs<number>
     'change:position': NodeChangeArgs<Point.PointLike>
-    'change:ports': NodeChangeArgs<PortData.Port[]>
+    'change:ports': NodeChangeArgs<PortManager.Port[]>
     'change:portMarkup': NodeChangeArgs<Markup>
     'change:portLabelMarkup': NodeChangeArgs<Markup>
     'change:portContainerMarkup': NodeChangeArgs<Markup>
     'ports:removed': {
       cell: Cell
       node: Node
-      removed: PortData.Port[]
+      removed: PortManager.Port[]
     }
     'ports:added': {
       cell: Cell
       node: Node
-      added: PortData.Port[]
+      added: PortManager.Port[]
     }
 
     // edge

@@ -4,11 +4,11 @@ import { Point, Rectangle } from '../geometry'
 import { Size, KeyValue } from '../types'
 import { Markup } from '../view'
 
-export class PortData {
-  ports: PortData.Port[]
-  groups: { [name: string]: PortData.Group }
+export class PortManager {
+  ports: PortManager.Port[]
+  groups: { [name: string]: PortManager.Group }
 
-  constructor(data: PortData.Metadata) {
+  constructor(data: PortManager.Metadata) {
     this.ports = []
     this.groups = {}
     this.init(ObjectExt.cloneDeep(data))
@@ -22,7 +22,7 @@ export class PortData {
     return groupName != null ? this.groups[groupName] : null
   }
 
-  getPortsByGroup(groupName?: string): PortData.Port[] {
+  getPortsByGroup(groupName?: string): PortManager.Port[] {
     return this.ports.filter(
       (p) => p.group === groupName || (p.group == null && groupName == null),
     )
@@ -51,7 +51,7 @@ export class PortData {
     )
     const groupArgs = (groupPosition && groupPosition.args) || {}
     const layouts = layoutFn(portsArgs, elemBBox, groupArgs)
-    return layouts.map<PortData.LayoutResult>((portLayout, index) => {
+    return layouts.map<PortManager.LayoutResult>((portLayout, index) => {
       const port = ports[index]
       return {
         portLayout,
@@ -68,7 +68,7 @@ export class PortData {
     })
   }
 
-  protected init(data: PortData.Metadata) {
+  protected init(data: PortManager.Metadata) {
     const { groups, items } = data
 
     if (groups != null) {
@@ -84,17 +84,17 @@ export class PortData {
     }
   }
 
-  protected parseGroup(group: PortData.GroupMetadata) {
+  protected parseGroup(group: PortManager.GroupMetadata) {
     return {
       ...group,
       label: this.getLabel(group, true),
       position: this.getPortPosition(group.position, true),
-    } as PortData.Group
+    } as PortManager.Group
   }
 
-  protected parsePort(port: PortData.PortMetadata) {
-    const result = { ...port } as PortData.Port
-    const group = this.getGroup(port.group) || ({} as PortData.Group)
+  protected parsePort(port: PortManager.PortMetadata) {
+    const result = { ...port } as PortManager.Port
+    const group = this.getGroup(port.group) || ({} as PortManager.Group)
 
     result.markup = result.markup || group.markup
     result.attrs = ObjectExt.merge({}, group.attrs, result.attrs)
@@ -106,7 +106,10 @@ export class PortData {
     return result
   }
 
-  protected getZIndex(group: PortData.Group, port: PortData.PortMetadata) {
+  protected getZIndex(
+    group: PortManager.Group,
+    port: PortManager.PortMetadata,
+  ) {
     if (typeof port.zIndex === 'number') {
       return port.zIndex
     }
@@ -118,7 +121,10 @@ export class PortData {
     return 'auto'
   }
 
-  protected createPosition(group: PortData.Group, port: PortData.PortMetadata) {
+  protected createPosition(
+    group: PortManager.Group,
+    port: PortManager.PortMetadata,
+  ) {
     return ObjectExt.merge(
       {
         name: 'left',
@@ -126,13 +132,13 @@ export class PortData {
       },
       group.position,
       { args: port.args },
-    ) as PortData.PortPosition
+    ) as PortManager.PortPosition
   }
 
   protected getPortPosition(
-    position?: PortData.PortPositionMetadata,
+    position?: PortManager.PortPositionMetadata,
     setDefault: boolean = false,
-  ): PortData.PortPosition {
+  ): PortManager.PortPosition {
     if (position == null) {
       if (setDefault) {
         return { name: 'left', args: {} }
@@ -161,9 +167,9 @@ export class PortData {
   }
 
   protected getPortLabelPosition(
-    position?: PortData.PortLabelPositionMetadata,
+    position?: PortManager.PortLabelPositionMetadata,
     setDefault: boolean = false,
-  ): PortData.PortLabelPosition {
+  ): PortManager.PortLabelPosition {
     if (position == null) {
       if (setDefault) {
         return { name: 'left', args: {} }
@@ -185,16 +191,16 @@ export class PortData {
   }
 
   protected getLabel(
-    item: PortData.GroupMetadata,
+    item: PortManager.GroupMetadata,
     setDefaults: boolean = false,
   ) {
     const label = item.label || {}
     label.position = this.getPortLabelPosition(label.position, setDefaults)
-    return label as PortData.Label
+    return label as PortManager.Label
   }
 
   protected getPortLabelLayout(
-    port: PortData.Port,
+    port: PortManager.Port,
     portPosition: Point,
     elemBBox: Rectangle,
   ) {
@@ -210,7 +216,7 @@ export class PortData {
   }
 }
 
-export namespace PortData {
+export namespace PortManager {
   export interface Metadata {
     groups?: { [name: string]: GroupMetadata }
     items: PortMetadata[]
