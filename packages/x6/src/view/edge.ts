@@ -2089,7 +2089,6 @@ export class EdgeView<
     const type = data.terminalType
     const terminal = view.getEdgeTerminal(magnet, x, y, this.cell, type)
     this.cell.setTerminal(type, terminal, { ui: true })
-    // this.cell.prop(type, terminal, { ui: true })
   }
 
   protected snapArrowhead(
@@ -2185,7 +2184,7 @@ export class EdgeView<
       terminal = { x, y }
     }
 
-    this.cell.prop(type, terminal || { x, y }, { ui: true })
+    this.cell.setTerminal(type, terminal, { ui: true })
   }
 
   protected snapArrowheadEnd(data: EventData.ArrowheadDragging) {
@@ -2289,11 +2288,11 @@ export class EdgeView<
       if (availableMagnets.length > 0) {
         // highlight all available magnets
         for (let j = 0, jj = availableMagnets.length; j < jj; j += 1) {
-          view.highlight(availableMagnets[j], { type: 'magnetAvailability' })
+          view.highlight(availableMagnets[j], { type: 'magnetAvailable' })
         }
 
         // highlight the entire view
-        view.highlight(null, { type: 'nodeAvailability' })
+        view.highlight(null, { type: 'nodeAvailable' })
         data.marked[view.cell.id] = availableMagnets
       }
     }
@@ -2307,10 +2306,10 @@ export class EdgeView<
       if (view) {
         const magnets = marked[id]
         magnets.forEach((magnet) => {
-          view.unhighlight(magnet, { type: 'magnetAvailability' })
+          view.unhighlight(magnet, { type: 'magnetAvailable' })
         })
 
-        view.unhighlight(null, { type: 'nodeAvailability' })
+        view.unhighlight(null, { type: 'nodeAvailable' })
       }
     })
     data.marked = null
