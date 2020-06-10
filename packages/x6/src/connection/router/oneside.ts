@@ -1,12 +1,13 @@
+import { NumberExt } from '../../util'
+import { PaddingOptions } from './util'
 import { Router } from './index'
 
-export interface OneSideRouterOptions {
+export interface OneSideRouterOptions extends PaddingOptions {
   side?: 'left' | 'top' | 'right' | 'bottom'
-  padding?: number
 }
 
 /**
- * Routes the link always to/from a certain side
+ * Routes the edge always to/from a certain side
  */
 export const oneSide: Router.Definition<OneSideRouterOptions> = function (
   vertices,
@@ -14,52 +15,49 @@ export const oneSide: Router.Definition<OneSideRouterOptions> = function (
   edgeView,
 ) {
   const side = options.side || 'bottom'
-  const pd = options.padding || 40
-  const padding = { left: pd, top: pd, right: pd, bottom: pd }
+  const padding = NumberExt.normalizeSides(options.padding || 40)
   const sourceBBox = edgeView.sourceBBox
   const targetBBox = edgeView.targetBBox
   const sourcePoint = sourceBBox.getCenter()
   const targetPoint = targetBBox.getCenter()
 
-  let coordinate: 'x' | 'y'
-  let dimension: 'width' | 'height'
-  let direction
+  let coord: 'x' | 'y'
+  let dim: 'width' | 'height'
+  let factor
 
   switch (side) {
     case 'top':
-      direction = -1
-      coordinate = 'y'
-      dimension = 'height'
+      factor = -1
+      coord = 'y'
+      dim = 'height'
       break
     case 'left':
-      direction = -1
-      coordinate = 'x'
-      dimension = 'width'
+      factor = -1
+      coord = 'x'
+      dim = 'width'
       break
     case 'right':
-      direction = 1
-      coordinate = 'x'
-      dimension = 'width'
+      factor = 1
+      coord = 'x'
+      dim = 'width'
       break
     case 'bottom':
     default:
-      direction = 1
-      coordinate = 'y'
-      dimension = 'height'
+      factor = 1
+      coord = 'y'
+      dim = 'height'
       break
   }
 
-  // move the points from the center of the element to outside of it.
-  sourcePoint[coordinate] +=
-    direction * (sourceBBox[dimension] / 2 + padding[side])
-  targetPoint[coordinate] +=
-    direction * (targetBBox[dimension] / 2 + padding[side])
+  // Move the points from the center of the element to outside of it.
+  sourcePoint[coord] += factor * (sourceBBox[dim] / 2 + padding[side])
+  targetPoint[coord] += factor * (targetBBox[dim] / 2 + padding[side])
 
-  // make link orthogonal (at least the first and last vertex).
-  if (direction * (sourcePoint[coordinate] - targetPoint[coordinate]) > 0) {
-    targetPoint[coordinate] = sourcePoint[coordinate]
+  // Make edge orthogonal (at least the first and last vertex).
+  if (factor * (sourcePoint[coord] - targetPoint[coord]) > 0) {
+    targetPoint[coord] = sourcePoint[coord]
   } else {
-    sourcePoint[coordinate] = targetPoint[coordinate]
+    sourcePoint[coord] = targetPoint[coord]
   }
 
   return [sourcePoint.toJSON(), ...vertices, targetPoint.toJSON()]
