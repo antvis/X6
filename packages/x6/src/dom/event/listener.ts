@@ -15,7 +15,7 @@ function addToList(
   node[LIST_KEY].push({ name, handler })
 }
 
-export const addListener = window.addEventListener
+export const addListener = (window as any).addEventListener
   ? (
       elem: HTMLElement | SVGElement | Document | Window,
       name: string,
@@ -60,7 +60,7 @@ function removeFromList(
   }
 }
 
-export const removeListener = window.removeEventListener
+export const removeListener = (window as any).removeEventListener
   ? (
       elem: HTMLElement | SVGElement | Document | Window,
       name: string,
