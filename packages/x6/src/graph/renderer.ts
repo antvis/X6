@@ -2,7 +2,7 @@ import { Dom } from '../util'
 import { KeyValue } from '../types'
 import { Point, Rectangle } from '../geometry'
 import { Cell, Edge, Model } from '../model'
-import { View, CellView, NodeView, EdgeView } from '../view'
+import { View, CellView, EdgeView } from '../view'
 import { FlagManager } from '../view/flag'
 import { Graph } from './graph'
 import { Base } from './base'
@@ -832,29 +832,6 @@ export class Renderer extends Base {
     this.sortViews()
   }
 
-  createView(cell: Cell): CellView | null {
-    const view = cell.view
-    const options = { interactive: this.options.interactive }
-    if (view != null && typeof view === 'string') {
-      const def = CellView.registry.get(view)
-      if (def) {
-        return new def(cell, options)
-      }
-
-      return CellView.registry.onNotFound(view)
-    }
-
-    if (cell.isNode()) {
-      return new NodeView(cell, options)
-    }
-
-    if (cell.isEdge()) {
-      return new EdgeView(cell, options)
-    }
-
-    return null
-  }
-
   protected removeView(cell: Cell) {
     const view = this.views[cell.id]
     if (view) {
@@ -882,8 +859,6 @@ export class Renderer extends Base {
     this.views = {}
   }
 
-  protected checkCellVisible(ceil: Cell) {}
-
   protected renderView(cell: Cell, options: any = {}) {
     const id = cell.id
     const views = this.views
@@ -893,7 +868,7 @@ export class Renderer extends Base {
     if (view) {
       flag = Renderer.FLAG_INSERT
     } else {
-      const tmp = this.createView(cell)
+      const tmp = this.graph.hook.createCellView(cell)
       if (tmp) {
         view = views[cell.id] = tmp
         view.graph = this.graph
