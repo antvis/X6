@@ -10,6 +10,12 @@ describe('point', () => {
     })
   })
 
+  describe('#Point.random', () => {
+    const p = Point.random(1, 5, 2, 6)
+    expect(p.x >= 1 && p.x <= 5).toBe(true)
+    expect(p.y >= 2 && p.y <= 6).toBe(true)
+  })
+
   describe('#round', () => {
     it('should round x and y properties to the given precision', () => {
       const point = new Point(17.231, 4.01)
@@ -17,17 +23,6 @@ describe('point', () => {
       expect(point.serialize()).toEqual('17.23 4.01')
       point.round(0)
       expect(point.serialize()).toEqual('17 4')
-    })
-  })
-
-  describe('#update', () => {
-    it('should update the values of x and y', () => {
-      const source = new Point(4, 17)
-      const target = new Point(16, 24)
-      expect(source.clone().update(16, 24)).toEqual(target)
-      expect(source.clone().update([16, 24])).toEqual(target)
-      expect(source.clone().update({ x: 16, y: 24 })).toEqual(target)
-      expect(source.clone().update(target)).toEqual(target)
     })
   })
 
@@ -42,59 +37,14 @@ describe('point', () => {
     })
   })
 
-  describe('#distance', () => {
-    it('should return the distance between me and the given point', () => {
-      const source = new Point(1, 2)
-      const target = new Point(4, 6)
-
-      expect(source.distance(target)).toEqual(5)
-    })
-  })
-
-  describe('#squaredDistance', () => {
-    it('should return the squared distance between me and the given point', () => {
-      const source = new Point(1, 2)
-      const target = new Point(4, 6)
-
-      expect(source.squaredDistance(target)).toEqual(25)
-    })
-  })
-
-  describe('#manhattanDistance', () => {
-    it('should return the manhattan distance between me and the given point', () => {
-      const source = new Point(1, 2)
-      const target = new Point(4, 6)
-
-      expect(source.manhattanDistance(target)).toEqual(7)
-    })
-  })
-
-  describe('#closest', () => {
-    it('should return the closest point', () => {
-      const a = new Point(10, 10)
-      const b = { x: 20, y: 20 }
-      const c = { x: 30, y: 30 }
-
-      expect(a.closest([])).toBeNull()
-
-      expect(a.closest([b])).toBeInstanceOf(Point)
-      expect(a.closest([b]).toJSON()).toEqual(b)
-      expect(a.closest([b, c]).toJSON()).toEqual(b)
-      expect(a.closest([b, c]).toJSON()).toEqual(b)
-    })
-  })
-
-  describe('#diff', () => {
-    it('should return the diff as a point with the given point', () => {
-      expect(new Point(0, 10).diff(4, 8)).toEqual(new Point(-4, 2))
-      expect(new Point(5, 8).diff(5, 10)).toEqual(new Point(0, -2))
-    })
-  })
-
-  describe('#normalize', () => {
-    it('should scale x and y such that the distance between the point and the origin (0,0) is equal to the given length', () => {
-      expect(new Point(0, 10).normalize(20).serialize()).toEqual('0 20')
-      expect(new Point(2, 0).normalize(4).serialize()).toEqual('4 0')
+  describe('#update', () => {
+    it('should update the values of x and y', () => {
+      const source = new Point(4, 17)
+      const target = new Point(16, 24)
+      expect(source.clone().update(16, 24)).toEqual(target)
+      expect(source.clone().update([16, 24])).toEqual(target)
+      expect(source.clone().update({ x: 16, y: 24 })).toEqual(target)
+      expect(source.clone().update(target)).toEqual(target)
     })
   })
 
@@ -110,11 +60,7 @@ describe('point', () => {
 
   describe('#rotate', () => {
     const rotate = (p: Point, angle: number, center?: Point) =>
-      p
-        .clone()
-        .rotate(angle, center)
-        .round(3)
-        .serialize()
+      p.clone().rotate(angle, center).round(3).serialize()
 
     it('should return a rotated version of self', () => {
       const point = new Point(5, 5)
@@ -146,6 +92,48 @@ describe('point', () => {
       expect(new Point(20, 30).scale(2, 3, new Point(40, 45))).toEqual(
         new Point(0, 0),
       )
+    })
+  })
+
+  describe('#closest', () => {
+    it('should return the closest point', () => {
+      const a = new Point(10, 10)
+      const b = { x: 20, y: 20 }
+      const c = { x: 30, y: 30 }
+
+      expect(a.closest([])).toBeNull()
+
+      expect(a.closest([b])).toBeInstanceOf(Point)
+      expect(a.closest([b])!.toJSON()).toEqual(b)
+      expect(a.closest([b, c])!.toJSON()).toEqual(b)
+      expect(a.closest([b, c])!.toJSON()).toEqual(b)
+    })
+  })
+
+  describe('#distance', () => {
+    it('should return the distance between me and the given point', () => {
+      const source = new Point(1, 2)
+      const target = new Point(4, 6)
+
+      expect(source.distance(target)).toEqual(5)
+    })
+  })
+
+  describe('#squaredDistance', () => {
+    it('should return the squared distance between me and the given point', () => {
+      const source = new Point(1, 2)
+      const target = new Point(4, 6)
+
+      expect(source.squaredDistance(target)).toEqual(25)
+    })
+  })
+
+  describe('#manhattanDistance', () => {
+    it('should return the manhattan distance between me and the given point', () => {
+      const source = new Point(1, 2)
+      const target = new Point(4, 6)
+
+      expect(source.manhattanDistance(target)).toEqual(7)
     })
   })
 
@@ -199,12 +187,17 @@ describe('point', () => {
     })
   })
 
-  describe('#dot', () => {
-    it('should return the dot product of `p`', () => {
-      const p1 = new Point(4, 17)
-      const p2 = new Point(2, 10)
-      expect(p1.dot(p2)).toBe(178)
-      expect(p2.dot(p1)).toBe(178)
+  describe('#diff', () => {
+    it('should return the diff as a point with the given point', () => {
+      expect(new Point(0, 10).diff(4, 8)).toEqual(new Point(-4, 2))
+      expect(new Point(5, 8).diff(5, 10)).toEqual(new Point(0, -2))
+    })
+  })
+
+  describe('#normalize', () => {
+    it('should scale x and y such that the distance between the point and the origin (0,0) is equal to the given length', () => {
+      expect(new Point(0, 10).normalize(20).serialize()).toEqual('0 20')
+      expect(new Point(2, 0).normalize(4).serialize()).toEqual('4 0')
     })
   })
 
@@ -216,6 +209,59 @@ describe('point', () => {
 
       expect(p0.cross(p1, p2)).toBe(3)
       expect(p0.cross(p2, p1)).toBe(-3)
+    })
+  })
+
+  describe('#dot', () => {
+    it('should return the dot product of `p`', () => {
+      const p1 = new Point(4, 17)
+      const p2 = new Point(2, 10)
+      expect(p1.dot(p2)).toBe(178)
+      expect(p2.dot(p1)).toBe(178)
+    })
+  })
+
+  describe('#equals', () => {
+    it('should return the true when have same coord', () => {
+      const p1 = new Point(4, 17)
+      const p2 = p1.clone()
+      expect(p1.equals(p2)).toBe(true)
+    })
+  })
+
+  describe('#toJSON', () => {
+    it('should return json-object', () => {
+      const p1 = new Point(4, 17)
+      const p2 = p1.toJSON()
+      expect(p1.equals(p2)).toBe(true)
+    })
+  })
+
+  describe('#toPolar', () => {
+    it('should convert rectangular to polar coordinates.', () => {
+      const p = new Point(4, 3).toPolar()
+      expect(p.x).toBe(5)
+    })
+  })
+
+  describe('#fromPolar', () => {
+    it('should convert polar to rectangular coordinates.', () => {
+      const p1 = new Point(4, 3).toPolar()
+      const p2 = Point.fromPolar(p1.x, p1.y)
+      expect(Math.round(p2.x)).toBe(4)
+      expect(Math.round(p2.y)).toBe(3)
+    })
+  })
+
+  describe('#snapToGrid', () => {
+    it('should snap to grid', () => {
+      const p1 = new Point(4, 17)
+      const p2 = p1.clone().snapToGrid(10)
+      const p3 = p1.clone().snapToGrid(3, 5)
+      expect(p2.x).toBe(0)
+      expect(p2.y).toBe(20)
+      expect(p3.x).toBe(3)
+      expect(p3.y).toBe(15)
     })
   })
 })

@@ -26,9 +26,9 @@ export const rect: ConnectionPoint.Definition<RectangleOptions> = function (
   const center = bboxRaw.getCenter()
   const lineRaw = line.clone().rotate(angle, center)
   const intersections = lineRaw.setLength(1e6).intersect(bboxRaw)
-  const p = intersections
-    ? lineRaw.start.closest(intersections).rotate(-angle, center)
-    : line.end
-
+  const p =
+    intersections && intersections.length
+      ? lineRaw.start.closest(intersections)!.rotate(-angle, center)
+      : line.end
   return offset(p, line.start, options.offset)
 }
