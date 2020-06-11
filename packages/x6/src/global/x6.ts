@@ -2,6 +2,7 @@ import { Config } from './config'
 import { version as v } from './version'
 import { CellView } from '../view'
 import { Node, Edge } from '../model'
+import { HTML } from '../shape/standard/html'
 import {
   Attr,
   Background,
@@ -47,6 +48,7 @@ export namespace X6 {
     EdgeConnectionAnchor.registry.register
   export const registerConnectionPoint = ConnectionPoint.registry.register
   export const registerConnectionStrategy = ConnectionStrategy.registry.register
+  export const registerHTMLComponent = HTML.componentRegistry.register
 }
 
 export namespace X6 {

@@ -2,17 +2,17 @@ import { Graph } from './graph'
 import { Disposable } from '../common'
 
 export class Base extends Disposable {
-  protected readonly graph: Graph
+  public readonly graph: Graph
 
-  protected get options() {
+  public get options() {
     return this.graph.options
   }
 
-  protected get model() {
+  public get model() {
     return this.graph.model
   }
 
-  protected get view() {
+  public get view() {
     return this.graph.view
   }
 

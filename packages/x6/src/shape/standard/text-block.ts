@@ -1,4 +1,4 @@
-import { Platform } from '../../util'
+import { Platform, Dom } from '../../util'
 import { Attr } from '../../definition'
 import { Node } from '../../model'
 import { bodyAttr } from './util'
@@ -15,13 +15,10 @@ export const TextBlock = Base.define({
       ? {
           tagName: 'foreignObject',
           selector: 'foreignObject',
-          attrs: {
-            overflow: 'hidden',
-          },
           children: [
             {
               tagName: 'div',
-              ns: 'http://www.w3.org/1999/xhtml',
+              ns: Dom.ns.xhtml,
               selector: 'label',
               style: {
                 width: '100%',

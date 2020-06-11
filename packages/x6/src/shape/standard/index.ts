@@ -15,3 +15,5 @@ export * from './image-inscribed'
 export * from './edge'
 export * from './edge-shadow'
 export * from './edge-doubled'
+
+export * from './html'
