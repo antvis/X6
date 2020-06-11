@@ -182,7 +182,7 @@ export class Halo extends Widget<Halo.Options> implements Handle {
 
   protected toggleFork() {
     const cell = this.view.cell.clone()
-    const view = this.graph.renderer.createView(cell)!
+    const view = this.graph.hook.createCellView(cell)!
     const valid = this.graph.hook.validateConnection(
       this.view,
       null,

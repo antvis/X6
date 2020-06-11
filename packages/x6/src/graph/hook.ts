@@ -1,8 +1,11 @@
 import { FunctionExt } from '../util'
-import { CellView, EdgeView } from '../view'
+import { Cell } from '../model/cell'
 import { Node } from '../model/node'
 import { Edge } from '../model/edge'
 import { Model } from '../model/model'
+import { CellView } from '../view/cell'
+import { NodeView } from '../view/node'
+import { EdgeView } from '../view/edge'
 import { Widget } from '../addon/common'
 import { MiniMap } from '../addon/minimap'
 import { Snapline } from '../addon/snapline'
@@ -34,7 +37,7 @@ import { PrintManager } from './print'
 import { FormatManager } from './format'
 
 namespace Decorator {
-  export function hook(nilable?: boolean, hookName?: string | null) {
+  export function hook(nullable?: boolean, hookName?: string | null) {
     return (
       target: Hook,
       methodName: string,
@@ -49,7 +52,7 @@ namespace Decorator {
           this.getNativeValue = raw.bind(this, ...args)
           const ret = FunctionExt.call(hook, this.graph, ...args)
           delete this.getNativeValue
-          if (ret != null || nilable === true) {
+          if (ret != null || (nullable === true && ret === null)) {
             return ret
           }
         }
@@ -409,6 +412,43 @@ export class Hook extends Base implements Hook.IHook {
   }
 
   @Decorator.hook()
+  getCellView(
+    cell: Cell,
+  ): null | undefined | typeof CellView | (new (...args: any[]) => CellView) {
+    return null
+  }
+
+  @Decorator.hook(true)
+  createCellView(cell: Cell) {
+    const options = { interactive: this.options.interactive }
+
+    const ctor = this.getCellView(cell)
+    if (ctor) {
+      return new ctor(cell, options)
+    }
+
+    const view = cell.view
+    if (view != null && typeof view === 'string') {
+      const def = CellView.registry.get(view)
+      if (def) {
+        return new def(cell, options)
+      }
+
+      return CellView.registry.onNotFound(view)
+    }
+
+    if (cell.isNode()) {
+      return new NodeView(cell, options)
+    }
+
+    if (cell.isEdge()) {
+      return new EdgeView(cell, options)
+    }
+
+    return null
+  }
+
+  @Decorator.hook()
   getHTMLComponent(node: HTML): HTMLElement | string | null | undefined {
     let ret = node.getHTML()
     if (typeof ret === 'string') {
@@ -484,6 +524,13 @@ export namespace Hook {
     createMouseWheel: CreateManager<MouseWheel>
     createPrintManager: CreateManager<PrintManager>
     createFormatManager: CreateManager<FormatManager>
+
+    getCellView(
+      this: Graph,
+      cell: Cell,
+    ): null | undefined | typeof CellView | (new (...args: any[]) => CellView)
+
+    createCellView(this: Graph, cell: Cell): CellView | null | undefined
 
     getHTMLComponent(
       this: Graph,
