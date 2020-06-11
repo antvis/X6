@@ -1,7 +1,8 @@
-import { Graph, Node, Dom } from '@antv/x6'
+import { Node, Dom } from '@antv/x6'
+import { Definition } from './registry'
 
 export class ReactShape<
-  Properties extends Node.Properties = Node.Properties
+  Properties extends ReactShape.Properties = ReactShape.Properties
 > extends Node<Properties> {
   get component() {
     return this.getComponent()
@@ -19,17 +20,23 @@ export class ReactShape<
     component: ReactShape.Properties['component'],
     options: Node.SetOptions = {},
   ) {
-    this.store.set('component', component, options)
+    if (component == null) {
+      this.removeComponent(options)
+    } else {
+      this.store.set('component', component, options)
+    }
+    return this
+  }
+
+  removeComponent(options: Node.SetOptions = {}) {
+    this.store.remove('component', options)
     return this
   }
 }
 
 export namespace ReactShape {
   export interface Properties extends Node.Properties {
-    component?:
-      | ((this: Graph, node: Node) => React.ReactElement | null | undefined)
-      | React.ReactElement
-      | null
+    component?: Definition | string
   }
 }
 
