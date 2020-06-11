@@ -18,6 +18,9 @@ export const bbox: ConnectionPoint.Definition<BBoxOptions> = function (
     bbox.inflate(getStrokeWidth(magnet) / 2)
   }
   const intersections = line.intersect(bbox)
-  const p = intersections ? line.start.closest(intersections) : line.end
+  const p =
+    intersections && intersections.length
+      ? line.start.closest(intersections)!
+      : line.end
   return offset(p, line.start, options.offset)
 }
