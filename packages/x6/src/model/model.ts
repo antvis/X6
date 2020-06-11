@@ -6,7 +6,6 @@ import { Collection } from './collection'
 import { Cell } from './cell'
 import { Edge } from './edge'
 import { Node } from './node'
-import { type } from 'jquery'
 
 export class Model extends Basecoat<Model.EventArgs> {
   public readonly collection: Collection
