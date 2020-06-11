@@ -111,7 +111,14 @@ export class Graph extends Basecoat<EventArgs> {
     return this.model.toJSON()
   }
 
-  fromJSON() {}
+  parseJSON(data: Model.FromJSONData) {
+    return this.model.parseJSON(data)
+  }
+
+  fromJSON(data: Model.FromJSONData, options: Model.FromJSONOptions = {}) {
+    this.model.fromJSON(data, options)
+    return this
+  }
 
   getCellById(id: string) {
     return this.model.getCell(id)

@@ -92,7 +92,9 @@ export class Cell<
 
     const ctor = this.constructor as typeof Cell
     const defaults = ctor.getDefaults(true)
-    const meta = ObjectExt.merge({}, defaults, metadata)
+    const meta = ObjectExt.merge({}, defaults, metadata, {
+      type: defaults.type || metadata.type,
+    })
     const props = this.preprocess(meta)
 
     this.id = metadata.id || StringExt.uuid()
@@ -1064,6 +1066,32 @@ export class Cell<
     const defaults = ctor.getDefaults(true)
     const defaultAttrs = defaults.attrs || {}
     const finalAttrs: Attr.CellAttrs = {}
+    const toString = Object.prototype.toString
+    const cellType = this.isNode() ? 'node' : this.isEdge() ? 'edge' : 'cell'
+
+    if (!props.type) {
+      const ctor = this.constructor
+      throw new Error(
+        `Unable to serialize ${cellType} missing "type" prop, check the ${cellType} "${
+          ctor.name || toString.call(ctor)
+        }"`,
+      )
+    }
+
+    Object.keys(props).forEach((key) => {
+      const val = props[key]
+      if (
+        !Array.isArray(val) &&
+        typeof val === 'object' &&
+        !ObjectExt.isPlainObject(val)
+      ) {
+        throw new Error(
+          `Can only serialize ${cellType} with plain-object props, but got a "${toString.call(
+            val,
+          )}" type of key "${key}" on ${cellType} "${this.id}"`,
+        )
+      }
+    })
 
     Object.keys(attrs).forEach((key) => {
       const attr = attrs[key]

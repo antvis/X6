@@ -1,6 +1,7 @@
 import { Edge } from '../../model/edge'
 
-export const ShadowEdge = Edge.registry.register('shadow-edge', {
+export const ShadowEdge = Edge.define({
+  type: 'shadow-edge',
   markup: [
     {
       tagName: 'path',
