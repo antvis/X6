@@ -155,7 +155,7 @@ export class Events<NameArgsMap extends Events.NameArgsMap = any> {
     if (cache != null) {
       return Private.call(cache, args)
     }
-    return Promise.resolve(true)
+    return true
   }
 }
 
