@@ -5,8 +5,6 @@ import { ReactShape } from './node'
 import { Wrap } from './wrap'
 
 export class ReactShapeView extends NodeView<ReactShape> {
-  public reactContainer: HTMLElement
-
   render() {
     super.render()
     this.renderReactComponent()
@@ -22,18 +20,17 @@ export class ReactShapeView extends NodeView<ReactShape> {
 
   protected renderReactComponent() {
     const root = this.unmountReactComponent()
-    const node = this.cell as ReactShape
+    const node = this.cell
     if (root) {
-      const component = node.getComponent()
-      let elem: any
-      if (React.isValidElement(component)) {
-        elem = component
-      } else if (component) {
-        elem = component.call(this.graph, node)
-      }
-
-      elem = React.isValidElement(elem) ? elem : null
-      ReactDOM.render(React.createElement(Wrap, { node }, elem), root)
+      const component = this.graph.hook.getReactComponent(node)
+      ReactDOM.render(
+        React.createElement(
+          Wrap,
+          { node },
+          React.isValidElement(component) ? component : null,
+        ),
+        root,
+      )
     }
   }
 
