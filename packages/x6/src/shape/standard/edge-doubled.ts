@@ -1,6 +1,7 @@
 import { Edge } from '../../model/edge'
 
-export const DoubleEdge = Edge.registry.register('double-edge', {
+export const DoubleEdge = Edge.define({
+  type: 'double-edge',
   markup: [
     {
       tagName: 'path',

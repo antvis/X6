@@ -96,6 +96,7 @@ export default class Example extends React.Component {
     })
 
     const DecoratedRect = Node.define({
+      type: 'decorated-rect',
       markup:
         '<g class="rotatable"><g class="scalable"><rect/></g><image/><text/></g>',
       size: { width: 100, height: 60 },
@@ -126,12 +127,13 @@ export default class Example extends React.Component {
       y: 140,
       width: 180,
       height: 80,
-
       attrs: {
         text: { text: 'Decorated with image' },
         image: { 'xlink:href': 'http://placehold.it/16x16' },
       },
     })
+
+    console.log(decoratedRect)
 
     graph.addNode(decoratedRect)
 
@@ -145,7 +147,8 @@ export default class Example extends React.Component {
         'Lorem ipsum dolor sit amet,\n consectetur adipiscing elit. Nulla vel porttitor est.',
     })
 
-    const MyElementWithPorts = Node.define({
+    const NodeWithPorts = Node.define({
+      type: 'node-with-ports',
       markup: [
         '<g class="rotatable">',
         '<g class="scalable">',
@@ -189,7 +192,7 @@ export default class Example extends React.Component {
       },
     })
 
-    const nodeWithPort = new MyElementWithPorts({
+    const nodeWithPort = new NodeWithPorts({
       x: 90,
       y: 300,
       width: 80,
@@ -236,6 +239,8 @@ export default class Example extends React.Component {
         token.appendTo(scalableNode)
       }
     }
+
+    console.log(graph.toJSON())
   }
 
   refContainer = (container: HTMLDivElement) => {

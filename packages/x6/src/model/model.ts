@@ -6,6 +6,7 @@ import { Collection } from './collection'
 import { Cell } from './cell'
 import { Edge } from './edge'
 import { Node } from './node'
+import { type } from 'jquery'
 
 export class Model extends Basecoat<Model.EventArgs> {
   public readonly collection: Collection
@@ -1045,16 +1046,14 @@ export class Model extends Basecoat<Model.EventArgs> {
     return Model.toJSON(this.getCells())
   }
 
-  parseJSON(data: Parameters<typeof Model.fromJSON>[0]) {
+  parseJSON(data: Model.FromJSONData) {
     return Model.fromJSON(data)
   }
 
-  fromJSON(
-    data: Parameters<typeof Model.fromJSON>[0],
-    options: Model.FromJSONOptions = {},
-  ) {
+  fromJSON(data: Model.FromJSONData, options: Model.FromJSONOptions = {}) {
     const cells = this.parseJSON(data)
     this.resetCells(cells, options)
+    return this
   }
 
   // #endregion
@@ -1096,8 +1095,14 @@ export namespace Model {
   export interface SetOptions extends Collection.SetOptions {}
   export interface AddOptions extends Collection.AddOptions {}
   export interface RemoveOptions extends Collection.RemoveOptions {}
-
   export interface FromJSONOptions extends Collection.SetOptions {}
+
+  export type FromJSONData =
+    | (Node.Properties | Edge.Properties)[]
+    | (Partial<ReturnType<typeof toJSON>> & {
+        nodes?: Node.Properties[]
+        edges?: Edge.Properties[]
+      })
 
   export interface GetCellsInAreaOptions {
     strict?: boolean
@@ -1195,14 +1200,7 @@ export namespace Model {
     }
   }
 
-  export function fromJSON(
-    data:
-      | (Node.Properties | Edge.Properties)[]
-      | (Partial<ReturnType<typeof toJSON>> & {
-          nodes?: Node.Properties[]
-          edges?: Edge.Properties[]
-        }),
-  ) {
+  export function fromJSON(data: FromJSONData) {
     const cells: Cell.Properties[] = []
     if (Array.isArray(data)) {
       cells.push(...data)

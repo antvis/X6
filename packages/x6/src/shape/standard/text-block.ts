@@ -1,11 +1,10 @@
 import { Platform, Dom } from '../../util'
 import { Attr } from '../../definition'
-import { Node } from '../../model'
 import { bodyAttr } from './util'
 import { Base } from '../base'
 
 export const TextBlock = Base.define({
-  name: 'text-block',
+  type: 'text-block',
   markup: [
     {
       tagName: 'rect',
@@ -92,5 +91,3 @@ export const TextBlock = Base.define({
     },
   },
 })
-
-Node.registry.register('text-block', TextBlock)

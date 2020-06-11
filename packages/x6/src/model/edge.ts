@@ -1290,10 +1290,16 @@ export namespace Edge {
   export function define(config: Config) {
     const { name, ...others } = config
     const shape = ObjectExt.createClass<Definition>(
-      getClassName(name),
+      getClassName(name || others.type),
       this as Definition,
     )
+
     shape.config(others)
+
+    if (others.type) {
+      registry.register(others.type, shape)
+    }
+
     return shape
   }
 
@@ -1323,6 +1329,7 @@ export namespace Edge {
       }
 
       if (typeof options === 'function') {
+        options.config({ type: name })
         return options
       }
 
@@ -1341,9 +1348,17 @@ export namespace Edge {
         others.name = name
       }
 
-      return parent.define.call(parent, others)
+      const shape = parent.define.call(parent, others)
+      shape.config({ type: name })
+      return shape
     },
   })
 
   Share.setEdgeRegistry(registry)
+}
+
+export namespace Edge {
+  const type = 'basic.edge'
+  Edge.config({ type })
+  registry.register(type, Edge)
 }
