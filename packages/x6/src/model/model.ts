@@ -1045,7 +1045,17 @@ export class Model extends Basecoat<Model.EventArgs> {
     return Model.toJSON(this.getCells())
   }
 
-  fromJSON() {}
+  parseJSON(data: Parameters<typeof Model.fromJSON>[0]) {
+    return Model.fromJSON(data)
+  }
+
+  fromJSON(
+    data: Parameters<typeof Model.fromJSON>[0],
+    options: Model.FromJSONOptions = {},
+  ) {
+    const cells = this.parseJSON(data)
+    this.resetCells(cells, options)
+  }
 
   // #endregion
 
@@ -1086,6 +1096,8 @@ export namespace Model {
   export interface SetOptions extends Collection.SetOptions {}
   export interface AddOptions extends Collection.AddOptions {}
   export interface RemoveOptions extends Collection.RemoveOptions {}
+
+  export interface FromJSONOptions extends Collection.SetOptions {}
 
   export interface GetCellsInAreaOptions {
     strict?: boolean

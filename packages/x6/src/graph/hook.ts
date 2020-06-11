@@ -10,6 +10,7 @@ import { Scroller } from '../addon/scroller'
 import { Selection } from '../addon/selection'
 import { Clipboard } from '../addon/clipboard'
 import { Transform } from '../addon/transform'
+import { HTML } from '../shape/standard/html'
 import { Base } from './base'
 import { Graph } from './graph'
 import { Options } from './options'
@@ -406,6 +407,20 @@ export class Hook extends Base implements Hook.IHook {
   ) {
     return this.graph.renderer.forcePostponedViewUpdate(view, flag)
   }
+
+  @Decorator.hook()
+  getHTMLComponent(node: HTML): HTMLElement | string | null | undefined {
+    let ret = node.getHTML()
+    if (typeof ret === 'string') {
+      ret = HTML.componentRegistry.get(ret) || ret
+    }
+
+    if (typeof ret === 'function') {
+      return ret.call(this, node)
+    }
+
+    return ret
+  }
 }
 
 export namespace Hook {
@@ -469,5 +484,10 @@ export namespace Hook {
     createMouseWheel: CreateManager<MouseWheel>
     createPrintManager: CreateManager<PrintManager>
     createFormatManager: CreateManager<FormatManager>
+
+    getHTMLComponent(
+      this: Graph,
+      node: HTML,
+    ): HTMLElement | string | null | undefined
   }
 }

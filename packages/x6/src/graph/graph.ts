@@ -11,10 +11,10 @@ import { CellView } from '../view/cell'
 import { NodeView } from '../view/node'
 import { Scroller as ScrollerWidget } from '../addon/scroller'
 import { Base } from './base'
-import { Hook } from './hook'
 import { GraphView } from './view'
 import { EventArgs } from './events'
 import { Decorator } from './decorator'
+import { Hook as HookManager } from './hook'
 import { Options as GraphOptions } from './options'
 import { DefsManager as Defs } from './defs'
 import { GridManager as Grid } from './grid'
@@ -38,7 +38,7 @@ export class Graph extends Basecoat<EventArgs> {
   public readonly options: GraphOptions.Definition
   public readonly model: Model
   public readonly view: GraphView
-  public readonly hook: Hook
+  public readonly hook: HookManager
   public readonly grid: Grid
   public readonly defs: Defs
   public readonly coord: Coord
@@ -65,7 +65,7 @@ export class Graph extends Basecoat<EventArgs> {
     super()
 
     this.options = GraphOptions.merge(options)
-    this.hook = new Hook(this)
+    this.hook = new HookManager(this)
     this.view = this.hook.createView()
     this.defs = this.hook.createDefsManager()
     this.coord = this.hook.createCoordManager()
@@ -1372,6 +1372,7 @@ export namespace Graph {
 
 export namespace Graph {
   export const View = GraphView
+  export const Hook = HookManager
   export const Renderer = ViewRenderer
   export const Keyboard = Shortcut
   export const MouseWheel = Wheel
