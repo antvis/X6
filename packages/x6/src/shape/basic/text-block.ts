@@ -6,7 +6,6 @@ import { Store } from '../../model/store'
 import { NodeView } from '../../view'
 import { getName } from './util'
 
-const contentAction = 'content' as any
 const contentSelector = '.text-block-content'
 const registryName = getName('text-block')
 
@@ -147,62 +146,71 @@ export namespace TextBlock {
   Node.registry.register(registryName, TextBlock)
 }
 
-export class TextBlockView extends NodeView<TextBlock> {
-  confirmUpdate(flag: number, options: any = {}) {
-    let ret = super.confirmUpdate(flag, options)
-    if (this.hasAction(ret, contentAction)) {
-      this.updateContent()
-      ret = this.removeAction(ret, contentAction)
-    }
-    return ret
-  }
+export namespace TextBlock {
+  const contentAction = 'content' as any
 
-  update(partialAttrs?: Attr.CellAttrs) {
-    if (Platform.SUPPORT_FOREIGNOBJECT) {
-      super.update(partialAttrs)
-    } else {
-      const node = this.cell
-      const attrs = { ...(partialAttrs || node.getAttrs()) }
-      delete attrs[contentSelector]
-      super.update(attrs)
-      if (!partialAttrs || ObjectExt.has(partialAttrs, contentSelector)) {
-        this.updateContent(partialAttrs)
+  export class View extends NodeView<TextBlock> {
+    confirmUpdate(flag: number, options: any = {}) {
+      let ret = super.confirmUpdate(flag, options)
+      if (this.hasAction(ret, contentAction)) {
+        this.updateContent()
+        ret = this.removeAction(ret, contentAction)
+      }
+      return ret
+    }
+
+    update(partialAttrs?: Attr.CellAttrs) {
+      if (Platform.SUPPORT_FOREIGNOBJECT) {
+        super.update(partialAttrs)
+      } else {
+        const node = this.cell
+        const attrs = { ...(partialAttrs || node.getAttrs()) }
+        delete attrs[contentSelector]
+        super.update(attrs)
+        if (!partialAttrs || ObjectExt.has(partialAttrs, contentSelector)) {
+          this.updateContent(partialAttrs)
+        }
+      }
+    }
+
+    updateContent(partialAttrs?: Attr.CellAttrs) {
+      if (Platform.SUPPORT_FOREIGNOBJECT) {
+        super.update(partialAttrs)
+      } else {
+        const node = this.cell
+        const textAttrs = (partialAttrs || node.getAttrs())[contentSelector]
+
+        // Break the text to fit the node size taking into
+        // account the attributes set on the node.
+        const text = Dom.breakText(
+          node.getContent(),
+          node.getSize(),
+          textAttrs,
+          {
+            svgDocument: this.graph.view.svg,
+          },
+        )
+
+        const attrs = {
+          [contentSelector]: ObjectExt.merge({}, textAttrs, { text }),
+        }
+
+        super.update(attrs)
       }
     }
   }
 
-  updateContent(partialAttrs?: Attr.CellAttrs) {
-    if (Platform.SUPPORT_FOREIGNOBJECT) {
-      super.update(partialAttrs)
-    } else {
-      const node = this.cell
-      const textAttrs = (partialAttrs || node.getAttrs())[contentSelector]
+  export namespace View {
+    View.config({
+      bootstrap: ['render', contentAction],
+      actions: Platform.SUPPORT_FOREIGNOBJECT
+        ? {}
+        : {
+            size: contentAction,
+            content: contentAction,
+          },
+    })
 
-      // Break the text to fit the node size taking into
-      // account the attributes set on the node.
-      const text = Dom.breakText(node.getContent(), node.getSize(), textAttrs, {
-        svgDocument: this.graph.view.svg,
-      })
-
-      const attrs = {
-        [contentSelector]: ObjectExt.merge({}, textAttrs, { text }),
-      }
-
-      super.update(attrs)
-    }
+    NodeView.registry.register(registryName, View)
   }
-}
-
-export namespace TextBlockView {
-  TextBlockView.config({
-    bootstrap: ['render', contentAction],
-    actions: Platform.SUPPORT_FOREIGNOBJECT
-      ? {}
-      : {
-          size: contentAction,
-          content: contentAction,
-        },
-  })
-
-  NodeView.registry.register(registryName, TextBlockView)
 }
