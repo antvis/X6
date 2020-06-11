@@ -1,10 +1,35 @@
 import React from 'react'
 import { Button } from 'antd'
-import { Graph } from '@antv/x6'
+import { Graph, NodeView, Markup } from '@antv/x6'
 import '../index.less'
 import './index.less'
-import '../../../../../packages/x6/src/addon/scroller/index.less'
-import '../../../../../packages/x6/src/addon/minimap/index.less'
+
+class SimpleNodeView extends NodeView {
+  protected readonly markup: Markup.JSONMarkup = {
+    tagName: 'rect',
+    selector: 'body',
+    attrs: {
+      fill: '#31d0c6',
+    },
+  }
+
+  protected body: SVGRectElement
+
+  render() {
+    this.empty()
+    const doc = this.parseJSONMarkup(this.markup, this.container)
+    this.body = doc.selectors.body as SVGRectElement
+    this.container.append(doc.fragment)
+    this.updateNodeSize()
+    this.updateTransform()
+    return this
+  }
+
+  updateNodeSize() {
+    var size = this.cell.getSize()
+    this.setAttrs(size, this.body)
+  }
+}
 
 export default class Example extends React.Component {
   private graphContainer: HTMLDivElement
@@ -33,6 +58,19 @@ export default class Example extends React.Component {
         width: 300,
         height: 200,
         padding: 10,
+        graphOptions: {
+          async: true,
+          getCellView(cell) {
+            if (cell.isNode()) {
+              return SimpleNodeView
+            }
+          },
+          createCellView(cell) {
+            if (cell.isEdge()) {
+              return null
+            }
+          },
+        },
       },
       mousewheel: {
         enabled: true,
@@ -58,8 +96,8 @@ export default class Example extends React.Component {
       type: 'circle',
       x: 400,
       y: 400,
-      width: 90,
-      height: 60,
+      width: 40,
+      height: 40,
       attrs: {
         circle: { fill: '#FE854F', 'stroke-width': 2, stroke: '#4B4A67' },
         text: { text: 'circle', fill: 'white' },
