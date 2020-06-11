@@ -1,12 +1,11 @@
 import { NumberExt } from '../../util'
 import { bodyAttr } from './util'
-import { Node } from '../../model/node'
 import { Base } from '../base'
 
 const CYLINDER_TILT = 10
 
 export const Cylinder = Base.define({
-  name: 'cylinder',
+  type: 'cylinder',
   markup: [
     {
       tagName: 'path',
@@ -113,5 +112,3 @@ export const Cylinder = Base.define({
     },
   },
 })
-
-Node.registry.register('cylinder', Cylinder)

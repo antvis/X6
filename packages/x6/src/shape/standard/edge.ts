@@ -1,6 +1,7 @@
 import { Edge as E } from '../../model/edge'
 
-export const Edge = E.registry.register('edge', {
+export const Edge = E.define({
+  type: 'edge',
   markup: [
     {
       tagName: 'path',

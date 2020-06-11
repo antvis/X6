@@ -81,8 +81,8 @@ export namespace TextBlock {
 
 export namespace TextBlock {
   TextBlock.config({
+    type: registryName,
     view: registryName,
-
     markup: [
       '<g class="rotatable">',
       '<g class="scalable"><rect/></g>',
@@ -97,7 +97,6 @@ export namespace TextBlock {
         : `<text class="${contentSelector.substr(1)}"/>`,
       '</g>',
     ].join(''),
-
     attrs: {
       '.': {
         fill: '#ffffff',

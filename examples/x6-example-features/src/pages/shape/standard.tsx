@@ -205,6 +205,8 @@ export default class Example extends React.Component {
       target: { x: 450, y: 520 },
       vertices: [{ x: 500, y: 440 }],
     })
+
+    console.log(graph.toJSON())
   }
 
   refContainer = (container: HTMLDivElement) => {

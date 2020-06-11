@@ -52,7 +52,5 @@ export function createShape(
   }
 
   const base = options.parent || Base
-  const shape = base.define(ObjectExt.merge(defaults, config))
-  Node.registry.register(type, shape)
-  return shape as typeof Base
+  return base.define(ObjectExt.merge(defaults, config, { type })) as typeof Base
 }
