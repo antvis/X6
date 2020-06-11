@@ -69,6 +69,8 @@ export default class Example extends React.Component {
       source,
       target,
     })
+
+    console.log(graph.toJSON())
   }
 
   refContainer = (container: HTMLDivElement) => {
