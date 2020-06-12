@@ -1,8 +1,8 @@
 import { Size } from '../types'
 import * as util from './util'
 import { Angle } from './angle'
-import { Point } from './point'
 import { Line } from './line'
+import { Point } from './point'
 import { Ellipse } from './ellipse'
 import { Geometry } from './geometry'
 
@@ -181,9 +181,9 @@ export class Rectangle extends Geometry implements Rectangle.RectangleLike {
   }
 
   add(x: number, y: number, width: number, height: number): this
-  add(rect: Rectangle | Rectangle.RectangleLike | Rectangle.RectangleData): this
+  add(rect: Rectangle.RectangleLike | Rectangle.RectangleData): this
   add(
-    x: number | Rectangle | Rectangle.RectangleLike | Rectangle.RectangleData,
+    x: number | Rectangle.RectangleLike | Rectangle.RectangleData,
     y?: number,
     width?: number,
     height?: number,
@@ -203,11 +203,9 @@ export class Rectangle extends Geometry implements Rectangle.RectangleLike {
   }
 
   update(x: number, y: number, width: number, height: number): this
+  update(rect: Rectangle.RectangleLike | Rectangle.RectangleData): this
   update(
-    rect: Rectangle | Rectangle.RectangleLike | Rectangle.RectangleData,
-  ): this
-  update(
-    x: number | Rectangle | Rectangle.RectangleLike | Rectangle.RectangleData,
+    x: number | Rectangle.RectangleLike | Rectangle.RectangleData,
     y?: number,
     width?: number,
     height?: number,
@@ -247,11 +245,8 @@ export class Rectangle extends Geometry implements Rectangle.RectangleLike {
   }
 
   translate(tx: number, ty: number): this
-  translate(p: Point | Point.PointLike | Point.PointData): this
-  translate(
-    tx: number | Point | Point.PointLike | Point.PointData,
-    ty?: number,
-  ): this {
+  translate(p: Point.PointLike | Point.PointData): this
+  translate(tx: number | Point.PointLike | Point.PointData, ty?: number): this {
     const p = Point.create(tx, ty)
     this.x += p.x
     this.y += p.y
@@ -262,9 +257,7 @@ export class Rectangle extends Geometry implements Rectangle.RectangleLike {
    * Translates the rectangle by `rect.x` and `rect.y` and expand it
    * by `rect.width` and `rect.height`.
    */
-  moveAndExpand(
-    rect: Rectangle | Rectangle.RectangleLike | Rectangle.RectangleData,
-  ) {
+  moveAndExpand(rect: Rectangle.RectangleLike | Rectangle.RectangleData) {
     const ref = Rectangle.clone(rect)
     this.x += ref.x || 0
     this.y += ref.y || 0
@@ -276,7 +269,7 @@ export class Rectangle extends Geometry implements Rectangle.RectangleLike {
   scale(
     sx: number,
     sy: number,
-    origin: Point | Point.PointLike | Point.PointData = new Point(),
+    origin: Point.PointLike | Point.PointData = new Point(),
   ) {
     const pos = this.origin.scale(sx, sy, origin)
     this.x = pos.x
@@ -288,7 +281,7 @@ export class Rectangle extends Geometry implements Rectangle.RectangleLike {
 
   rotate(
     degree: number,
-    center: Point | Point.PointLike | Point.PointData = this.getCenter(),
+    center: Point.PointLike | Point.PointData = this.getCenter(),
   ) {
     if (degree !== 0) {
       const rad = Angle.toRad(degree)
@@ -409,19 +402,12 @@ export class Rectangle extends Geometry implements Rectangle.RectangleLike {
    * Returns `false` otherwise.
    */
   containsPoint(x: number, y: number): boolean
-  containsPoint(point: Point | Point.PointLike | Point.PointData): boolean
+  containsPoint(point: Point.PointLike | Point.PointData): boolean
   containsPoint(
-    x: number | Point | Point.PointLike | Point.PointData,
+    x: number | Point.PointLike | Point.PointData,
     y?: number,
   ): boolean {
-    const point = Point.create(x, y)
-    return (
-      point != null &&
-      point.x >= this.x &&
-      point.x <= this.x + this.width &&
-      point.y >= this.y &&
-      point.y <= this.y + this.height
-    )
+    return util.containsPoint(this, Point.create(x, y))
   }
 
   /**
@@ -429,11 +415,9 @@ export class Rectangle extends Geometry implements Rectangle.RectangleLike {
    * rectangle (inclusive). Returns `false` otherwise.
    */
   containsRect(x: number, y: number, w: number, h: number): boolean
+  containsRect(rect: Rectangle.RectangleLike | Rectangle.RectangleData): boolean
   containsRect(
-    rect: Rectangle | Rectangle.RectangleLike | Rectangle.RectangleData,
-  ): boolean
-  containsRect(
-    x: number | Rectangle | Rectangle.RectangleLike | Rectangle.RectangleData,
+    x: number | Rectangle.RectangleLike | Rectangle.RectangleData,
     y?: number,
     width?: number,
     height?: number,
@@ -481,7 +465,7 @@ export class Rectangle extends Geometry implements Rectangle.RectangleLike {
    * rotation of the rectangle by angle degrees around its center.
    */
   intersectionWithLineFromCenterToPoint(
-    p: Point | Point.PointLike | Point.PointData,
+    p: Point.PointLike | Point.PointData,
     angle?: number,
   ) {
     const ref = Point.clone(p)
@@ -544,10 +528,10 @@ export class Rectangle extends Geometry implements Rectangle.RectangleLike {
    */
   intersect(x: number, y: number, w: number, h: number): Rectangle | null
   intersect(
-    rect: Rectangle | Rectangle.RectangleLike | Rectangle.RectangleData,
+    rect: Rectangle.RectangleLike | Rectangle.RectangleData,
   ): Rectangle | null
   intersect(
-    x: number | Rectangle | Rectangle.RectangleLike | Rectangle.RectangleData,
+    x: number | Rectangle.RectangleLike | Rectangle.RectangleData,
     y?: number,
     width?: number,
     height?: number,
@@ -577,10 +561,10 @@ export class Rectangle extends Geometry implements Rectangle.RectangleLike {
 
   isIntersectWith(x: number, y: number, w: number, h: number): boolean
   isIntersectWith(
-    rect: Rectangle | Rectangle.RectangleLike | Rectangle.RectangleData,
+    rect: Rectangle.RectangleLike | Rectangle.RectangleData,
   ): boolean
   isIntersectWith(
-    x: number | Rectangle | Rectangle.RectangleLike | Rectangle.RectangleData,
+    x: number | Rectangle.RectangleLike | Rectangle.RectangleData,
     y?: number,
     width?: number,
     height?: number,
@@ -605,7 +589,7 @@ export class Rectangle extends Geometry implements Rectangle.RectangleLike {
   /**
    * Returns a rectangle that is a union of this rectangle and rectangle `rect`.
    */
-  union(rect: Rectangle | Rectangle.RectangleLike | Rectangle.RectangleData) {
+  union(rect: Rectangle.RectangleLike | Rectangle.RectangleData) {
     const ref = Rectangle.clone(rect)
     const myOrigin = this.origin
     const myCorner = this.corner
@@ -620,9 +604,7 @@ export class Rectangle extends Geometry implements Rectangle.RectangleLike {
     return new Rectangle(originX, originY, cornerX - originX, cornerY - originY)
   }
 
-  sideNearestToPoint(
-    p: Point | Point.PointLike | Point.PointData,
-  ): Rectangle.Side {
+  sideNearestToPoint(p: Point.PointLike | Point.PointData): Rectangle.Side {
     const ref = Point.clone(p)
     const distLeft = ref.x - this.x
     const distRight = this.x + this.width - ref.x
@@ -648,7 +630,7 @@ export class Rectangle extends Geometry implements Rectangle.RectangleLike {
     return side
   }
 
-  pointNearestToPoint(p: Point | Point.PointLike | Point.PointData) {
+  pointNearestToPoint(p: Point.PointLike | Point.PointData) {
     const ref = Point.clone(p)
     if (this.containsPoint(ref)) {
       const side = this.sideNearestToPoint(ref)
@@ -667,7 +649,7 @@ export class Rectangle extends Geometry implements Rectangle.RectangleLike {
     return ref.adhereToRect(this)
   }
 
-  equals(rect: Rectangle | Rectangle.RectangleLike) {
+  equals(rect: Rectangle.RectangleLike) {
     return (
       rect != null &&
       rect.x === this.x &&
@@ -746,10 +728,7 @@ export namespace Rectangle {
     return new Rectangle(0, 0, size.width, size.height)
   }
 
-  export function fromPositionAndSize(
-    pos: Point | Point.PointLike,
-    size: Size,
-  ) {
+  export function fromPositionAndSize(pos: Point.PointLike, size: Size) {
     return new Rectangle(pos.x, pos.y, size.width, size.height)
   }
 

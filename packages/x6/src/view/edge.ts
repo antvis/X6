@@ -1511,7 +1511,7 @@ export class EdgeView<
     })
   }
 
-  getClosestPoint(point: Point | Point.PointLike | Point.PointData) {
+  getClosestPoint(point: Point.PointLike) {
     if (this.path == null) {
       return null
     }
@@ -1521,7 +1521,7 @@ export class EdgeView<
     })
   }
 
-  getClosestPointLength(point: Point | Point.PointLike | Point.PointData) {
+  getClosestPointLength(point: Point.PointLike) {
     if (this.path == null) {
       return null
     }
@@ -1531,7 +1531,7 @@ export class EdgeView<
     })
   }
 
-  getClosestPointRatio(point: Point | Point.PointLike | Point.PointData) {
+  getClosestPointRatio(point: Point.PointLike) {
     if (this.path == null) {
       return null
     }

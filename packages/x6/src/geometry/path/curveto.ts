@@ -16,14 +16,14 @@ export class CurveTo extends Segment {
     y2: number,
   )
   constructor(
-    p1: Point | Point.PointLike | Point.PointData,
-    p2: Point | Point.PointLike | Point.PointData,
-    p3: Point | Point.PointLike | Point.PointData,
+    p1: Point.PointLike | Point.PointData,
+    p2: Point.PointLike | Point.PointData,
+    p3: Point.PointLike | Point.PointData,
   )
   constructor(
-    arg0: number | Curve | (Point | Point.PointLike | Point.PointData),
-    arg1?: number | (Point | Point.PointLike | Point.PointData),
-    arg2?: number | (Point | Point.PointLike | Point.PointData),
+    arg0: number | Curve | (Point.PointLike | Point.PointData),
+    arg1?: number | (Point.PointLike | Point.PointData),
+    arg2?: number | (Point.PointLike | Point.PointData),
     arg3?: number,
     arg4?: number,
     arg5?: number,
@@ -62,19 +62,19 @@ export class CurveTo extends Segment {
     return this.curve.bbox()
   }
 
-  closestPoint(p: Point | Point.PointLike | Point.PointData) {
+  closestPoint(p: Point.PointLike | Point.PointData) {
     return this.curve.closestPoint(p)
   }
 
-  closestPointLength(p: Point | Point.PointLike | Point.PointData) {
+  closestPointLength(p: Point.PointLike | Point.PointData) {
     return this.curve.closestPointLength(p)
   }
 
-  closestPointNormalizedLength(p: Point | Point.PointLike | Point.PointData) {
+  closestPointNormalizedLength(p: Point.PointLike | Point.PointData) {
     return this.curve.closestPointNormalizedLength(p)
   }
 
-  closestPointTangent(p: Point | Point.PointLike | Point.PointData) {
+  closestPointTangent(p: Point.PointLike | Point.PointData) {
     return this.curve.closestPointTangent(p)
   }
 
@@ -139,11 +139,7 @@ export class CurveTo extends Segment {
     )
   }
 
-  scale(
-    sx: number,
-    sy: number,
-    origin?: Point | Point.PointLike | Point.PointData,
-  ) {
+  scale(sx: number, sy: number, origin?: Point.PointLike | Point.PointData) {
     this.controlPoint1.scale(sx, sy, origin)
     this.controlPoint2.scale(sx, sy, origin)
     this.end.scale(sx, sy, origin)
@@ -151,11 +147,8 @@ export class CurveTo extends Segment {
   }
 
   translate(tx: number, ty: number): this
-  translate(p: Point | Point.PointLike | Point.PointData): this
-  translate(
-    tx: number | Point | Point.PointLike | Point.PointData,
-    ty?: number,
-  ): this {
+  translate(p: Point.PointLike | Point.PointData): this
+  translate(tx: number | Point.PointLike | Point.PointData, ty?: number): this {
     if (typeof tx === 'number') {
       this.controlPoint1.translate(tx, ty as number)
       this.controlPoint2.translate(tx, ty as number)

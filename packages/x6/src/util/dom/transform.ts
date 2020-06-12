@@ -123,8 +123,8 @@ export function scale(elem: Element, sx?: number, sy?: number) {
 
 export function translateAndAutoOrient(
   elem: SVGElement,
-  position: Point | Point.PointLike | Point.PointData,
-  reference: Point | Point.PointLike | Point.PointData,
+  position: Point.PointLike | Point.PointData,
+  reference: Point.PointLike | Point.PointData,
   target?: SVGElement,
 ) {
   const pos = Point.create(position)

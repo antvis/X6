@@ -1,5 +1,5 @@
 import { Path } from '../../geometry'
-import { normalizeMarker } from './util'
+import { normalize } from './util'
 import { Marker } from './index'
 
 export interface DiamondMarkerOptions {
@@ -24,6 +24,6 @@ export const diamond: Marker.Definition<DiamondMarkerOptions> = (options) => {
 
   return {
     type: 'path',
-    d: normalizeMarker(path.serialize(), options.offset),
+    d: normalize(path.serialize(), options.offset),
   }
 }

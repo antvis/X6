@@ -20,13 +20,13 @@ export class Polyline extends Geometry {
     return this.points[this.points.length - 1]
   }
 
-  constructor(points?: (Point | Point.PointLike | Point.PointData)[] | string) {
+  constructor(points?: (Point.PointLike | Point.PointData)[] | string) {
     super()
     if (points != null) {
       if (typeof points === 'string') {
         return Polyline.parse(points)
       }
-      this.points = points.map(p => Point.create(p))
+      this.points = points.map((p) => Point.create(p))
     } else {
       this.points = []
     }
@@ -35,20 +35,17 @@ export class Polyline extends Geometry {
   scale(
     sx: number,
     sy: number,
-    origin: Point | Point.PointLike | Point.PointData = new Point(),
+    origin: Point.PointLike | Point.PointData = new Point(),
   ) {
-    this.points.forEach(p => p.scale(sx, sy, origin))
+    this.points.forEach((p) => p.scale(sx, sy, origin))
     return this
   }
 
   translate(dx: number, dy: number): this
-  translate(p: Point | Point.PointLike | Point.PointData): this
-  translate(
-    dx: number | Point | Point.PointLike | Point.PointData,
-    dy?: number,
-  ): this {
+  translate(p: Point.PointLike | Point.PointData): this
+  translate(dx: number | Point.PointLike | Point.PointData, dy?: number): this {
     const t = Point.create(dx, dy)
-    this.points.forEach(p => p.translate(t.x, t.y))
+    this.points.forEach((p) => p.translate(t.x, t.y))
     return this
   }
 
@@ -77,12 +74,12 @@ export class Polyline extends Geometry {
     return new Rectangle(x1, y1, x2 - x1, y2 - y1)
   }
 
-  closestPoint(p: Point | Point.PointLike | Point.PointData) {
+  closestPoint(p: Point.PointLike | Point.PointData) {
     const cpLength = this.closestPointLength(p)
     return this.pointAtLength(cpLength)
   }
 
-  closestPointLength(p: Point | Point.PointLike | Point.PointData) {
+  closestPointLength(p: Point.PointLike | Point.PointData) {
     const points = this.points
     const count = points.length
     if (count === 0 || count === 1) {
@@ -110,7 +107,7 @@ export class Polyline extends Geometry {
     return cpLength
   }
 
-  closestPointNormalizedLength(p: Point | Point.PointLike | Point.PointData) {
+  closestPointNormalizedLength(p: Point.PointLike | Point.PointData) {
     const cpLength = this.closestPointLength(p)
     if (cpLength === 0) {
       return 0
@@ -124,12 +121,12 @@ export class Polyline extends Geometry {
     return cpLength / length
   }
 
-  closestPointTangent(p: Point | Point.PointLike | Point.PointData) {
+  closestPointTangent(p: Point.PointLike | Point.PointData) {
     const cpLength = this.closestPointLength(p)
     return this.tangentAtLength(cpLength)
   }
 
-  containsPoint(p: Point | Point.PointLike | Point.PointData) {
+  containsPoint(p: Point.PointLike | Point.PointData) {
     if (this.points.length === 0) {
       return false
     }
@@ -602,15 +599,15 @@ export class Polyline extends Geometry {
   }
 
   clone() {
-    return new Polyline(this.points.map(p => p.clone()))
+    return new Polyline(this.points.map((p) => p.clone()))
   }
 
   toJSON() {
-    return this.points.map(p => p.toJSON())
+    return this.points.map((p) => p.toJSON())
   }
 
   serialize() {
-    return this.points.map(p => `${p.x}, ${p.y}`).join(' ')
+    return this.points.map((p) => `${p.x}, ${p.y}`).join(' ')
   }
 }
 
