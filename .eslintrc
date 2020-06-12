@@ -5,6 +5,9 @@
     "node": true,
     "browser": true
   },
+  "parserOptions": {
+    "sourceType": "module"
+  },
   "rules": {
     "semi": "off",
     "no-console": "off",
