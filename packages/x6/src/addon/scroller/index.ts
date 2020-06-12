@@ -289,7 +289,7 @@ export class Scroller extends View {
     }
   }
 
-  protected update() {
+  update() {
     const size = this.getClientSize()
     this.centerPoint = this.clientToLocalPoint(size.width / 2, size.height / 2)
     let fitTocontentOptions = this.options.fitTocontentOptions
@@ -1088,8 +1088,8 @@ namespace Util {
     },
     minVisibleWidth: 50,
     minVisibleHeight: 50,
-    pageVisible: true,
-    pageBreak: true,
+    pageVisible: false,
+    pageBreak: false,
     autoResize: true,
     cursor: 'grab',
   }
