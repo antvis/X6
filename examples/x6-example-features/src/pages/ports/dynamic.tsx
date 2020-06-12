@@ -126,11 +126,11 @@ export default class Example extends React.Component {
         snap: true,
         dangling: false,
         highlight: true,
-        // connector: 'smooth',
+        connector: 'rounded',
         router: {
           name: 'er',
           args: {
-            side: 'top',
+            direction: 'V',
           },
         },
         connectionPoint: 'boundary',
