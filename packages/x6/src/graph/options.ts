@@ -4,6 +4,7 @@ import { Rectangle } from '../geometry'
 import { Nilable, KeyValue } from '../types'
 import { Cell, Edge, Node, Model } from '../model'
 import { CellView, NodeView, EdgeView } from '../view'
+import { Edge as StandardEdge } from '../shape/standard/edge'
 import {
   Router,
   Connector,
@@ -516,6 +517,10 @@ export namespace Options {
       ) {
         const view = terminalType === 'target' ? targetView : sourceView
         return view instanceof NodeView
+      },
+
+      createEdge() {
+        return new StandardEdge()
       },
     },
     transforming: {
