@@ -1,7 +1,5 @@
 #!/usr/bin/env node
 
-'use strict'
-
 const fs = require('fs')
 const path = require('path')
 const fse = require('fs-extra')
@@ -15,7 +13,7 @@ const src = path.join(cwd, 'src')
 console.log('Build "style/components.less"')
 let content = ''
 fs.readdir(src, (err, files) => {
-  files.forEach(file => {
+  files.forEach((file) => {
     const sub = path.join(file, 'style', 'index.less')
     if (fs.existsSync(path.join(src, sub))) {
       content += `@import "../${sub}";\n`
@@ -30,7 +28,7 @@ fs.readdir(src, (err, files) => {
 function readdir(dir) {
   if (fs.existsSync(dir)) {
     fs.readdir(dir, (err, files) => {
-      files.forEach(file => {
+      files.forEach((file) => {
         const sub = path.join(dir, file)
         const stat = fs.statSync(sub)
         if (stat && stat.isDirectory()) {
@@ -49,7 +47,7 @@ function readdir(dir) {
 
 console.log('Copy style files to output directory\n')
 fs.readdir(src, (err, files) => {
-  files.forEach(file => {
+  files.forEach((file) => {
     const dir =
       file === 'style' ? path.join(src, file) : path.join(src, file, 'style')
     readdir(dir)
