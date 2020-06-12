@@ -472,6 +472,24 @@ export class Graph extends Basecoat<EventArgs> {
     return this.renderer.isAsync()
   }
 
+  findView(
+    ref: Cell | JQuery | Element | Point.PointLike | Rectangle.RectangleLike,
+  ) {
+    if (ref instanceof Cell) {
+      return this.findViewByCell(ref)
+    }
+
+    if (Rectangle.isRectangleLike(ref)) {
+      return this.findViewsInArea(ref)
+    }
+
+    if (Point.isPointLike(ref)) {
+      return this.findViewsFromPoint(ref)
+    }
+
+    return this.findViewByElem(ref)
+  }
+
   findViewByCell(cellId: string | number): CellView | null
   findViewByCell(cell: Cell | null): CellView | null
   findViewByCell(

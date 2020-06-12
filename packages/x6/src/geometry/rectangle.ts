@@ -761,4 +761,15 @@ export namespace Rectangle {
       2 * ellipse.b,
     )
   }
+
+  export function isRectangleLike(o: any): o is RectangleLike {
+    return (
+      o != null &&
+      typeof o === 'object' &&
+      typeof o.x === 'number' &&
+      typeof o.y === 'number' &&
+      typeof o.width === 'number' &&
+      typeof o.height === 'number'
+    )
+  }
 }
