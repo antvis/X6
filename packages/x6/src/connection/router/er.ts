@@ -2,7 +2,7 @@ import { Router } from './index'
 
 export interface ErRouterOptions {
   offset?: number
-  direction?: 'auto' | 'vertical' | 'horizontal'
+  direction?: 'T' | 'B' | 'L' | 'R' | 'H' | 'V'
 }
 
 export const er: Router.Definition<ErRouterOptions> = function (
@@ -11,34 +11,38 @@ export const er: Router.Definition<ErRouterOptions> = function (
   edgeView,
 ) {
   const offset = options.offset || 32
-  let direction = options.direction || 'auto'
+  let direction = options.direction
 
   const sourceBBox = edgeView.sourceBBox
   const targetBBox = edgeView.targetBBox
   const sourcePoint = sourceBBox.getCenter()
   const targetPoint = targetBBox.getCenter()
 
-  if (direction === 'auto') {
+  if (direction == null) {
     const dx = sourcePoint.x - targetPoint.x
     const dy = sourcePoint.y - targetPoint.y
 
     if (Math.abs(dx) > Math.abs(dy)) {
-      direction = 'horizontal'
+      direction = dx > 0 ? 'R' : 'L'
     } else {
-      direction = 'vertical'
+      direction = dy > 0 ? 'B' : 'T'
     }
   }
 
   let coord: 'x' | 'y'
   let dim: 'width' | 'height'
   let factor
+  const horizontal = direction === 'L' || direction === 'R' || direction === 'H'
 
-  if (direction === 'horizontal') {
+  if (horizontal) {
     if (targetPoint.y === sourcePoint.y) {
       return [...vertices]
     }
 
-    factor = targetPoint.x > sourcePoint.x ? 1 : -1
+    factor =
+      direction === 'L' || (direction === 'H' && targetPoint.x > sourcePoint.x)
+        ? 1
+        : -1
     coord = 'x'
     dim = 'width'
   } else {
@@ -46,7 +50,10 @@ export const er: Router.Definition<ErRouterOptions> = function (
       return [...vertices]
     }
 
-    factor = targetPoint.y > sourcePoint.y ? 1 : -1
+    factor =
+      direction === 'T' || (direction === 'V' && targetPoint.y > sourcePoint.y)
+        ? 1
+        : -1
     coord = 'y'
     dim = 'height'
   }
@@ -58,7 +65,7 @@ export const er: Router.Definition<ErRouterOptions> = function (
   target[coord] -= factor * (targetBBox[dim] / 2 + offset)
 
   const min = 16
-  if (direction === 'horizontal') {
+  if (horizontal) {
     const sourceX = source.x
     const targetX = target.x
     const sourceDelta = sourceBBox.width / 2 + min
