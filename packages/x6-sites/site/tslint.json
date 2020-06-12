@@ -1,0 +1,7 @@
+{
+  "extends": ["tslint:latest", "tslint-react", "tslint-config-prettier"],
+  "linterOptions": {
+    "exclude": ["**/node_modules/**", "**/.git/**", "**/lib/**", "**/dist/**"]
+  },
+  "rules": {}
+}
