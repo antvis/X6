@@ -11,6 +11,8 @@ export default class Example extends React.Component {
       width: 800,
       height: 1400,
     })
+
+    console.log(graph)
   }
 
   refContainer = (container: HTMLDivElement) => {
