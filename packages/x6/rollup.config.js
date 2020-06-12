@@ -3,6 +3,7 @@ import commonjs from '@rollup/plugin-commonjs'
 import filesize from 'rollup-plugin-filesize'
 import resolve from '@rollup/plugin-node-resolve'
 import typescript from '@rollup/plugin-typescript'
+import progress from 'rollup-plugin-progress'
 
 export default {
   input: './src/index.ts',
@@ -18,6 +19,7 @@ export default {
     typescript({ declaration: false }),
     resolve(),
     commonjs(),
+    progress(),
     terser(),
     filesize(),
   ],
