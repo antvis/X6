@@ -1,6 +1,6 @@
 {
   "name": "@antv/x6",
-  "version": "1.0.0-alpha.0",
+  "version": "0.9.0",
   "description": "JavaScript diagramming library",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -91,6 +91,7 @@
     "rimraf": "^3.0.0",
     "rollup": "^2.10.5",
     "rollup-plugin-filesize": "^9.0.0",
+    "rollup-plugin-progress": "^1.1.2",
     "rollup-plugin-terser": "^5.3.0",
     "sinon": "^9.0.2",
     "stylelint": "^13.3.3",
