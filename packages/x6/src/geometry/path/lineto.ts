@@ -5,9 +5,9 @@ import { Segment } from './segment'
 export class LineTo extends Segment {
   constructor(line: Line)
   constructor(x: number, y: number)
-  constructor(p: Point | Point.PointLike | Point.PointData)
+  constructor(p: Point.PointLike | Point.PointData)
   constructor(
-    x: number | Line | (Point | Point.PointLike | Point.PointData),
+    x: number | Line | (Point.PointLike | Point.PointData),
     y?: number,
   ) {
     super()
@@ -31,19 +31,19 @@ export class LineTo extends Segment {
     return this.line.bbox()
   }
 
-  closestPoint(p: Point | Point.PointLike | Point.PointData) {
+  closestPoint(p: Point.PointLike | Point.PointData) {
     return this.line.closestPoint(p)
   }
 
-  closestPointLength(p: Point | Point.PointLike | Point.PointData) {
+  closestPointLength(p: Point.PointLike | Point.PointData) {
     return this.line.closestPointLength(p)
   }
 
-  closestPointNormalizedLength(p: Point | Point.PointLike | Point.PointData) {
+  closestPointNormalizedLength(p: Point.PointLike | Point.PointData) {
     return this.line.closestPointNormalizedLength(p)
   }
 
-  closestPointTangent(p: Point | Point.PointLike | Point.PointData) {
+  closestPointTangent(p: Point.PointLike | Point.PointData) {
     return this.line.closestPointTangent(p)
   }
 
@@ -93,21 +93,14 @@ export class LineTo extends Segment {
     return new LineTo(this.end)
   }
 
-  scale(
-    sx: number,
-    sy: number,
-    origin?: Point | Point.PointLike | Point.PointData,
-  ) {
+  scale(sx: number, sy: number, origin?: Point.PointLike | Point.PointData) {
     this.end.scale(sx, sy, origin)
     return this
   }
 
   translate(tx: number, ty: number): this
-  translate(p: Point | Point.PointLike | Point.PointData): this
-  translate(
-    tx: number | Point | Point.PointLike | Point.PointData,
-    ty?: number,
-  ): this {
+  translate(p: Point.PointLike | Point.PointData): this
+  translate(tx: number | Point.PointLike | Point.PointData, ty?: number): this {
     if (typeof tx === 'number') {
       this.end.translate(tx, ty as number)
     } else {

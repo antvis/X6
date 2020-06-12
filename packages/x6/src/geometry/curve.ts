@@ -12,10 +12,10 @@ export class Curve extends Geometry {
   PRECISION: number = 3
 
   constructor(
-    start: Point | Point.PointLike | Point.PointData,
-    controlPoint1: Point | Point.PointLike | Point.PointData,
-    controlPoint2: Point | Point.PointLike | Point.PointData,
-    end: Point | Point.PointLike | Point.PointData,
+    start: Point.PointLike | Point.PointData,
+    controlPoint1: Point.PointLike | Point.PointData,
+    controlPoint2: Point.PointLike | Point.PointData,
+    end: Point.PointLike | Point.PointData,
   ) {
     super()
     this.start = Point.create(start)
@@ -140,14 +140,14 @@ export class Curve extends Geometry {
   }
 
   closestPoint(
-    p: Point | Point.PointLike | Point.PointData,
+    p: Point.PointLike | Point.PointData,
     options: Curve.Options = {},
   ) {
     return this.pointAtT(this.closestPointT(p, options))
   }
 
   closestPointLength(
-    p: Point | Point.PointLike | Point.PointData,
+    p: Point.PointLike | Point.PointData,
     options: Curve.Options = {},
   ) {
     const opts = this.getOptions(options)
@@ -155,7 +155,7 @@ export class Curve extends Geometry {
   }
 
   closestPointNormalizedLength(
-    p: Point | Point.PointLike | Point.PointData,
+    p: Point.PointLike | Point.PointData,
     options: Curve.Options = {},
   ) {
     const opts = this.getOptions(options)
@@ -173,7 +173,7 @@ export class Curve extends Geometry {
   }
 
   closestPointT(
-    p: Point | Point.PointLike | Point.PointData,
+    p: Point.PointLike | Point.PointData,
     options: Curve.Options = {},
   ) {
     const precision = this.getPrecision(options)
@@ -274,14 +274,14 @@ export class Curve extends Geometry {
   }
 
   closestPointTangent(
-    p: Point | Point.PointLike | Point.PointData,
+    p: Point.PointLike | Point.PointData,
     options: Curve.Options = {},
   ) {
     return this.tangentAtT(this.closestPointT(p, options))
   }
 
   containsPoint(
-    p: Point | Point.PointLike | Point.PointData,
+    p: Point.PointLike | Point.PointData,
     options: Curve.Options = {},
   ) {
     const polyline = this.toPolyline(options)
@@ -412,7 +412,7 @@ export class Curve extends Geometry {
       iteration += 1
 
       const divisions: Curve[] = []
-      subdivisions.forEach(c => {
+      subdivisions.forEach((c) => {
         // dividing at t = 0.5 (not at middle length!)
         const divided = c.divide(0.5)
         divisions.push(divided[0], divided[1])
@@ -685,7 +685,7 @@ export class Curve extends Geometry {
   toPoints(options: Curve.Options = {}) {
     const subdivisions = this.getDivisions(options)
     const points = [subdivisions[0].start.clone()]
-    subdivisions.forEach(c => points.push(c.end.clone()))
+    subdivisions.forEach((c) => points.push(c.end.clone()))
     return points
   }
 
@@ -693,11 +693,7 @@ export class Curve extends Geometry {
     return new Polyline(this.toPoints(options))
   }
 
-  scale(
-    sx: number,
-    sy: number,
-    origin?: Point | Point.PointLike | Point.PointData,
-  ) {
+  scale(sx: number, sy: number, origin?: Point.PointLike | Point.PointData) {
     this.start.scale(sx, sy, origin)
     this.controlPoint1.scale(sx, sy, origin)
     this.controlPoint2.scale(sx, sy, origin)
@@ -706,11 +702,8 @@ export class Curve extends Geometry {
   }
 
   translate(tx: number, ty: number): this
-  translate(p: Point | Point.PointLike | Point.PointData): this
-  translate(
-    tx: number | Point | Point.PointLike | Point.PointData,
-    ty?: number,
-  ) {
+  translate(p: Point.PointLike | Point.PointData): this
+  translate(tx: number | Point.PointLike | Point.PointData, ty?: number) {
     if (typeof tx === 'number') {
       this.start.translate(tx, ty as number)
       this.controlPoint1.translate(tx, ty as number)
@@ -795,9 +788,9 @@ export namespace Curve {
   }
 
   function getCurveControlPoints(
-    points: (Point | Point.PointLike | Point.PointData)[],
+    points: (Point.PointLike | Point.PointData)[],
   ) {
-    const knots = points.map(p => Point.clone(p))
+    const knots = points.map((p) => Point.clone(p))
     const firstControlPoints = []
     const secondControlPoints = []
     const n = knots.length - 1
@@ -868,9 +861,7 @@ export namespace Curve {
     return [firstControlPoints, secondControlPoints]
   }
 
-  export function throughPoints(
-    points: (Point | Point.PointLike | Point.PointData)[],
-  ) {
+  export function throughPoints(points: (Point.PointLike | Point.PointData)[]) {
     if (points == null || (Array.isArray(points) && points.length < 2)) {
       throw new Error('At least 2 points are required')
     }

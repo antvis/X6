@@ -50,7 +50,7 @@ export class Ellipse extends Geometry implements Ellipse.EllipseLike {
    * Returns `true` if the point `p` is inside the ellipse (inclusive).
    * Returns `false` otherwise.
    */
-  containsPoint(p: Point | Point.PointLike | Point.PointData) {
+  containsPoint(p: Point.PointLike | Point.PointData) {
     return this.normalizedDistance(p) <= 1
   }
 
@@ -59,7 +59,7 @@ export class Ellipse extends Geometry implements Ellipse.EllipseLike {
    * Returns `n < 1` for points inside the ellipse, `n = 1` for points
    * lying on the ellipse boundary and `n > 1` for points outside the ellipse.
    */
-  normalizedDistance(p: Point | Point.PointLike | Point.PointData) {
+  normalizedDistance(p: Point.PointLike | Point.PointData) {
     const ref = Point.clone(p)
     const dx = ref.x - this.x
     const dy = ref.y - this.y
@@ -132,7 +132,7 @@ export class Ellipse extends Geometry implements Ellipse.EllipseLike {
    * the rotation of the ellipse by angle degrees around its center.
    */
   intersectionWithLineFromCenterToPoint(
-    p: Point | Point.PointLike | Point.PointData,
+    p: Point.PointLike | Point.PointData,
     angle: number = 0,
   ) {
     const ref = Point.clone(p)
@@ -168,7 +168,7 @@ export class Ellipse extends Geometry implements Ellipse.EllipseLike {
     return result
   }
 
-  tangentTheta(p: Point | Point.PointLike | Point.PointData) {
+  tangentTheta(p: Point.PointLike | Point.PointData) {
     const ref = Point.clone(p)
     const x0 = ref.x
     const y0 = ref.y
@@ -209,11 +209,8 @@ export class Ellipse extends Geometry implements Ellipse.EllipseLike {
   }
 
   translate(dx: number, dy: number): this
-  translate(p: Point | Point.PointLike | Point.PointData): this
-  translate(
-    dx: number | Point | Point.PointLike | Point.PointData,
-    dy?: number,
-  ): this {
+  translate(p: Point.PointLike | Point.PointData): this
+  translate(dx: number | Point.PointLike | Point.PointData, dy?: number): this {
     const p = Point.create(dx, dy)
     this.x += p.x
     this.y += p.y
