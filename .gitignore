@@ -8,5 +8,3 @@ coverage
 lib
 es
 dist
-public
-.cache
