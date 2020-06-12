@@ -1,6 +1,5 @@
-export function snapToGrid(value: number, gridSize: number) {
-  return gridSize * Math.round(value / gridSize)
-}
+import { Point } from './point'
+import { Rectangle } from './rectangle'
 
 export function round(num: number, precision: number) {
   const f = Math.pow(10, precision || 0)
@@ -51,4 +50,28 @@ export function clamp(value: number, min: number, max: number) {
     : value > min
     ? min
     : value
+}
+
+export function snapToGrid(value: number, gridSize: number) {
+  return gridSize * Math.round(value / gridSize)
+}
+
+export function containsPoint(
+  rect: Rectangle.RectangleLike,
+  point: Point.PointLike,
+) {
+  return (
+    point != null &&
+    rect != null &&
+    point.x >= rect.x &&
+    point.x <= rect.x + rect.width &&
+    point.y >= rect.y &&
+    point.y <= rect.y + rect.height
+  )
+}
+
+export function squaredLength(p1: Point.PointLike, p2: Point.PointLike) {
+  const dx = p1.x - p2.x
+  const dy = p1.y - p2.y
+  return dx * dx + dy * dy
 }

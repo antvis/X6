@@ -1,14 +1,14 @@
 import { KeyValue } from '../types'
 import { snapToGrid as snap } from '../geometry/util'
+import { normalize } from '../connection/marker/util'
 import { Cell } from '../model/cell'
 import { Node } from '../model/node'
 import { Edge } from '../model/edge'
-import { Marker } from '../connection'
 import { Config } from './config'
 
 export namespace Util {
   export const snapToGrid = snap
-  export const normalizeMarker = Marker.normalize
+  export const normalizeMarker = normalize
 
   export function prefix(suffix: string) {
     return `${Config.prefixCls}-${suffix}`

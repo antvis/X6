@@ -16,7 +16,7 @@ export class Clipboard {
     options: Clipboard.CopyOptions = {},
   ) {
     this.options = { ...options }
-    const model = graph instanceof Graph ? graph.model : graph
+    const model = graph instanceof Model ? graph : graph.model
     const cloned = model.cloneSubGraph(cells, options)
 
     // sort asc by cell type

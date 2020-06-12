@@ -28,15 +28,13 @@ export abstract class Segment extends Geometry {
 
   abstract get type(): string
   abstract bbox(): Rectangle | null
-  abstract closestPoint(p: Point | Point.PointLike | Point.PointData): Point
-  abstract closestPointLength(
-    p: Point | Point.PointLike | Point.PointData,
-  ): number
+  abstract closestPoint(p: Point.PointLike | Point.PointData): Point
+  abstract closestPointLength(p: Point.PointLike | Point.PointData): number
   abstract closestPointNormalizedLength(
-    p: Point | Point.PointLike | Point.PointData,
+    p: Point.PointLike | Point.PointData,
   ): number
   closestPointT(
-    p: Point | Point.PointLike | Point.PointData,
+    p: Point.PointLike | Point.PointData,
     options?: Segment.Options,
   ) {
     if (this.closestPointNormalizedLength) {
@@ -49,7 +47,7 @@ export abstract class Segment extends Geometry {
   }
 
   abstract closestPointTangent(
-    p: Point | Point.PointLike | Point.PointData,
+    p: Point.PointLike | Point.PointData,
   ): Line | null
 
   abstract length(options?: Segment.Options): number

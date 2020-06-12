@@ -5,10 +5,10 @@ export abstract class Geometry {
   abstract scale(
     sx: number,
     sy: number,
-    origin?: Point | Point.PointLike | Point.PointData,
+    origin?: Point.PointLike | Point.PointData,
   ): this
 
-  abstract translate(p: Point | Point.PointLike | Point.PointData): this
+  abstract translate(p: Point.PointLike | Point.PointData): this
   abstract translate(tx: number, ty: number): this
 
   abstract equals(g: any): boolean

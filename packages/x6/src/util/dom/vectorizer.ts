@@ -341,8 +341,8 @@ export class Vectorizer {
   }
 
   translateAndAutoOrient(
-    position: Point | Point.PointLike | Point.PointData,
-    reference: Point | Point.PointLike | Point.PointData,
+    position: Point.PointLike | Point.PointData,
+    reference: Point.PointLike | Point.PointData,
     target?: SVGElement,
   ) {
     Dom.translateAndAutoOrient(this.node, position, reference, target)

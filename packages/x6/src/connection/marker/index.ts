@@ -1,8 +1,8 @@
 import { KeyValue } from '../../types'
 import { Registry } from '../../common'
 import { Attr } from '../../definition'
-import { normalizeMarker } from './util'
 import * as markers from './main'
+import { normalize as normalizeMarker } from './util'
 
 export namespace Marker {
   export type Definition<T extends KeyValue = KeyValue> = (options: T) => Result

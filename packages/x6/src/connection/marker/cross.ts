@@ -1,5 +1,5 @@
 import { Path } from '../../geometry'
-import { normalizeMarker } from './util'
+import { normalize } from './util'
 import { Marker } from './index'
 
 export interface CrossMarkerOptions {
@@ -20,6 +20,6 @@ export const cross: Marker.Definition<CrossMarkerOptions> = (options) => {
   return {
     type: 'path',
     fill: 'none',
-    d: normalizeMarker(path.serialize(), options.offset || -width / 2),
+    d: normalize(path.serialize(), options.offset || -width / 2),
   }
 }

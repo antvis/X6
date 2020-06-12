@@ -1,5 +1,5 @@
 import { Path } from '../../geometry'
-import { normalizeMarker } from './util'
+import { normalize } from './util'
 import { Marker } from './index'
 
 export interface CircleMarkerOptions {
@@ -30,7 +30,7 @@ export const circlePlus: Marker.Definition<CircleMarkerOptions> = (options) => {
       },
       {
         type: 'path',
-        d: normalizeMarker(path.serialize()),
+        d: normalize(path.serialize()),
       },
     ] as any,
   }

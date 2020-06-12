@@ -4,16 +4,9 @@ import { Path } from '../../geometry'
  * Normalizes marker's path data by translate the center
  * of an arbitrary path at <0 + offset,0>.
  */
-export function normalizeMarker(
-  d: string,
-  offset: { x?: number; y?: number },
-): string
-export function normalizeMarker(
-  d: string,
-  offsetX?: number,
-  offsetY?: number,
-): string
-export function normalizeMarker(
+export function normalize(d: string, offset: { x?: number; y?: number }): string
+export function normalize(d: string, offsetX?: number, offsetY?: number): string
+export function normalize(
   d: string,
   offset1?: number | { x?: number; y?: number },
   offset2?: number,

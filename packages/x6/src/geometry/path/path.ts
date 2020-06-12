@@ -1,4 +1,4 @@
-import { clamp } from '../util'
+import { clamp, squaredLength } from '../util'
 import { Line } from '../line'
 import { Point } from '../point'
 import { Curve } from '../curve'
@@ -485,10 +485,7 @@ export class Path extends Geometry {
     return segment
   }
 
-  closestPoint(
-    p: Point | Point.PointLike | Point.PointData,
-    options: Path.Options = {},
-  ) {
+  closestPoint(p: Point.PointLike, options: Path.Options = {}) {
     const t = this.closestPointT(p, options)
     if (!t) {
       return null
@@ -497,10 +494,7 @@ export class Path extends Geometry {
     return this.pointAtT(t)
   }
 
-  closestPointLength(
-    p: Point | Point.PointLike | Point.PointData,
-    options: Path.Options = {},
-  ) {
+  closestPointLength(p: Point.PointLike, options: Path.Options = {}) {
     const opts = this.getOptions(options)
     const t = this.closestPointT(p, opts)
     if (!t) {
@@ -510,10 +504,7 @@ export class Path extends Geometry {
     return this.lengthAtT(t, opts)
   }
 
-  closestPointNormalizedLength(
-    p: Point | Point.PointLike | Point.PointData,
-    options: Path.Options = {},
-  ) {
+  closestPointNormalizedLength(p: Point.PointLike, options: Path.Options = {}) {
     const opts = this.getOptions(options)
     const cpLength = this.closestPointLength(p, opts)
     if (cpLength === 0) {
@@ -528,10 +519,7 @@ export class Path extends Geometry {
     return cpLength / length
   }
 
-  closestPointT(
-    p: Point | Point.PointLike | Point.PointData,
-    options: Path.Options = {},
-  ) {
+  closestPointT(p: Point.PointLike, options: Path.Options = {}) {
     if (this.segments.length === 0) {
       return null
     }
@@ -551,7 +539,7 @@ export class Path extends Geometry {
           subdivisions,
         })
         const segmentClosestPoint = segment.pointAtT(segmentClosestPointT)
-        const squaredDistance = new Line(segmentClosestPoint, p).squaredLength()
+        const squaredDistance = squaredLength(segmentClosestPoint, p)
 
         if (squaredDistance < minSquaredDistance) {
           closestPointT = { segmentIndex: i, value: segmentClosestPointT }
@@ -567,10 +555,7 @@ export class Path extends Geometry {
     return { segmentIndex: this.segments.length - 1, value: 1 }
   }
 
-  closestPointTangent(
-    p: Point | Point.PointLike | Point.PointData,
-    options: Path.Options = {},
-  ) {
+  closestPointTangent(p: Point.PointLike, options: Path.Options = {}) {
     if (this.segments.length === 0) {
       return null
     }
@@ -590,7 +575,7 @@ export class Path extends Geometry {
           subdivisions,
         })
         const segmentClosestPoint = segment.pointAtT(segmentClosestPointT)
-        const squaredDistance = new Line(segmentClosestPoint, p).squaredLength()
+        const squaredDistance = squaredLength(segmentClosestPoint, p)
 
         if (squaredDistance < minSquaredDistance) {
           closestPointTangent = segment.tangentAtT(segmentClosestPointT)
@@ -606,10 +591,7 @@ export class Path extends Geometry {
     return null
   }
 
-  containsPoint(
-    p: Point | Point.PointLike | Point.PointData,
-    options: Path.Options = {},
-  ) {
+  containsPoint(p: Point.PointLike, options: Path.Options = {}) {
     const polylines = this.toPolylines(options)
     if (!polylines) {
       return false
@@ -1086,21 +1068,14 @@ export class Path extends Geometry {
     return points.map((arr) => new Polyline(arr))
   }
 
-  scale(
-    sx: number,
-    sy: number,
-    origin?: Point | Point.PointLike | Point.PointData,
-  ) {
+  scale(sx: number, sy: number, origin?: Point.PointLike) {
     this.segments.forEach((s) => s.scale(sx, sy, origin))
     return this
   }
 
   translate(tx: number, ty: number): this
-  translate(p: Point | Point.PointLike | Point.PointData): this
-  translate(
-    tx: number | Point | Point.PointLike | Point.PointData,
-    ty?: number,
-  ) {
+  translate(p: Point.PointLike): this
+  translate(tx: number | Point.PointLike, ty?: number) {
     if (typeof tx === 'number') {
       this.segments.forEach((s) => s.translate(tx, ty as number))
     } else {

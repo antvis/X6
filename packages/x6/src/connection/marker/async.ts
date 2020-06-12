@@ -1,5 +1,5 @@
 import { Path } from '../../geometry'
-import { normalizeMarker } from './util'
+import { normalize } from './util'
 import { Marker } from './index'
 
 export interface AsyncMarkerOptions {
@@ -32,7 +32,7 @@ export const async: Marker.Definition<AsyncMarkerOptions> = (options) => {
     result.fill = 'none'
   }
 
-  result.d = normalizeMarker(path.serialize(), {
+  result.d = normalize(path.serialize(), {
     x: options.offset || -width / 2,
     y: flip ? -height / 2 : height / 2,
   })

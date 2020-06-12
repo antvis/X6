@@ -185,13 +185,10 @@ export class Point extends Geometry implements Point.PointLike {
   }
 
   adhereToRect(rect: Rectangle.RectangleLike) {
-    const area = Rectangle.create(rect)
-    if (area.containsPoint(this)) {
-      return this
+    if (!util.containsPoint(rect, this)) {
+      this.x = Math.min(Math.max(this.x, rect.x), rect.x + rect.width)
+      this.y = Math.min(Math.max(this.y, rect.y), rect.y + rect.height)
     }
-
-    this.x = Math.min(Math.max(this.x, area.x), area.x + area.width)
-    this.y = Math.min(Math.max(this.y, area.y), area.y + area.height)
 
     return this
   }

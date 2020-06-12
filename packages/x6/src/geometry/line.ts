@@ -18,12 +18,12 @@ export class Line extends Geometry {
 
   constructor(x1: number, y1: number, x2: number, y2: number)
   constructor(
-    p1: Point | Point.PointLike | Point.PointData,
-    p2: Point | Point.PointLike | Point.PointData,
+    p1: Point.PointLike | Point.PointData,
+    p2: Point.PointLike | Point.PointData,
   )
   constructor(
-    x1: number | Point | Point.PointLike | Point.PointData,
-    y1: number | Point | Point.PointLike | Point.PointData,
+    x1: number | Point.PointLike | Point.PointData,
+    y1: number | Point.PointLike | Point.PointData,
     x2?: number,
     y2?: number,
   ) {
@@ -48,11 +48,8 @@ export class Line extends Geometry {
   }
 
   translate(tx: number, ty: number): this
-  translate(p: Point | Point.PointLike | Point.PointData): this
-  translate(
-    tx: number | Point | Point.PointLike | Point.PointData,
-    ty?: number,
-  ) {
+  translate(p: Point.PointLike | Point.PointData): this
+  translate(tx: number | Point.PointLike | Point.PointData, ty?: number) {
     if (typeof tx === 'number') {
       this.start.translate(tx, ty as number)
       this.end.translate(tx, ty as number)
@@ -64,17 +61,13 @@ export class Line extends Geometry {
     return this
   }
 
-  rotate(angle: number, origin?: Point | Point.PointLike | Point.PointData) {
+  rotate(angle: number, origin?: Point.PointLike | Point.PointData) {
     this.start.rotate(angle, origin)
     this.end.rotate(angle, origin)
     return this
   }
 
-  scale(
-    sx: number,
-    sy: number,
-    origin?: Point | Point.PointLike | Point.PointData,
-  ) {
+  scale(sx: number, sy: number, origin?: Point.PointLike | Point.PointData) {
     this.start.scale(sx, sy, origin)
     this.end.scale(sx, sy, origin)
     return this
@@ -146,7 +139,7 @@ export class Line extends Geometry {
   /**
    * Returns the point on the line that lies closest to point.
    */
-  closestPoint(p: Point | Point.PointLike | Point.PointData) {
+  closestPoint(p: Point.PointLike | Point.PointData) {
     return this.pointAt(this.closestPointNormalizedLength(p))
   }
 
@@ -154,7 +147,7 @@ export class Line extends Geometry {
    * Returns the length of the line up to the point that lies
    * closest to point.
    */
-  closestPointLength(p: Point | Point.PointLike | Point.PointData) {
+  closestPointLength(p: Point.PointLike | Point.PointData) {
     return this.closestPointNormalizedLength(p) * this.length()
   }
 
@@ -162,7 +155,7 @@ export class Line extends Geometry {
    * Returns a line that is tangent to the line at the point that
    * lies closest to point.
    */
-  closestPointTangent(p: Point | Point.PointLike | Point.PointData) {
+  closestPointTangent(p: Point.PointLike | Point.PointData) {
     return this.tangentAt(this.closestPointNormalizedLength(p))
   }
 
@@ -171,7 +164,7 @@ export class Line extends Geometry {
    * line / total line length) of the line up to the point that lies
    * closest to point.
    */
-  closestPointNormalizedLength(p: Point | Point.PointLike | Point.PointData) {
+  closestPointNormalizedLength(p: Point.PointLike | Point.PointData) {
     const product = this.vector().dot(new Line(this.start, p).vector())
     const normalized = Math.min(1, Math.max(0, product / this.squaredLength()))
 
@@ -250,7 +243,7 @@ export class Line extends Geometry {
     ]
   }
 
-  containsPoint(p: Point | Point.PointLike | Point.PointData) {
+  containsPoint(p: Point.PointLike | Point.PointData) {
     const start = this.start
     const end = this.end
 
@@ -272,25 +265,15 @@ export class Line extends Geometry {
     return true
   }
 
-  intersect(geom: Line | Rectangle | Polyline | Ellipse): Point[] | null
-  intersect(geom: Path, options?: Path.Options): Point[] | null
+  intersect(shape: Line | Rectangle | Polyline | Ellipse): Point[] | null
+  intersect(shape: Path, options?: Path.Options): Point[] | null
   intersect(
-    geom: Line | Rectangle | Polyline | Ellipse | Path,
+    shape: Line | Rectangle | Polyline | Ellipse | Path,
     options?: Path.Options,
   ): Point[] | null {
-    if (geom instanceof Line) {
-      const p = geom.intersectionWithLine(this)
-      if (p != null) {
-        return [p]
-      }
-    } else if (geom instanceof Path) {
-      return geom.intersectionWithLine(this, options)
-    } else if (
-      geom instanceof Rectangle ||
-      geom instanceof Ellipse ||
-      geom instanceof Polyline
-    ) {
-      return geom.intersectionWithLine(this)
+    const ret = shape.intersectionWithLine(this, options)
+    if (ret) {
+      return Array.isArray(ret) ? ret : [ret]
     }
 
     return null
@@ -347,7 +330,7 @@ export class Line extends Geometry {
    * line, negative if the point lies to the left of the line, and
    * `0` if the point lies on the line.
    */
-  pointOffset(p: Point | Point.PointLike | Point.PointData) {
+  pointOffset(p: Point.PointLike | Point.PointData) {
     const ref = Point.clone(p)
     const start = this.start
     const end = this.end
@@ -362,9 +345,9 @@ export class Line extends Geometry {
    * Returns the squared distance between the line and the point.
    */
   pointSquaredDistance(x: number, y: number): number
-  pointSquaredDistance(p: Point | Point.PointLike | Point.PointData): number
+  pointSquaredDistance(p: Point.PointLike | Point.PointData): number
   pointSquaredDistance(
-    x: number | Point | Point.PointLike | Point.PointData,
+    x: number | Point.PointLike | Point.PointData,
     y?: number,
   ) {
     const p = Point.create(x, y)
@@ -375,11 +358,8 @@ export class Line extends Geometry {
    * Returns the distance between the line and the point.
    */
   pointDistance(x: number, y: number): number
-  pointDistance(p: Point | Point.PointLike | Point.PointData): number
-  pointDistance(
-    x: number | Point | Point.PointLike | Point.PointData,
-    y?: number,
-  ) {
+  pointDistance(p: Point.PointLike | Point.PointData): number
+  pointDistance(x: number | Point.PointLike | Point.PointData, y?: number) {
     const p = Point.create(x, y)
     return this.closestPoint(p).distance(p)
   }
@@ -432,11 +412,8 @@ export class Line extends Geometry {
    * @see https://softwareengineering.stackexchange.com/questions/165776/what-do-ptlinedist-and-relativeccw-do
    */
   relativeCcw(x: number, y: number): -1 | 0 | 1
-  relativeCcw(p: Point | Point.PointLike | Point.PointData): -1 | 0 | 1
-  relativeCcw(
-    x: number | Point | Point.PointLike | Point.PointData,
-    y?: number,
-  ) {
+  relativeCcw(p: Point.PointLike | Point.PointData): -1 | 0 | 1
+  relativeCcw(x: number | Point.PointLike | Point.PointData, y?: number) {
     const ref = Point.create(x, y)
 
     let dx1 = ref.x - this.start.x

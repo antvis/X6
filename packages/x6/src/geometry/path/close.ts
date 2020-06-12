@@ -28,19 +28,19 @@ export class Close extends Segment {
     return this.line.bbox()
   }
 
-  closestPoint(p: Point | Point.PointLike | Point.PointData) {
+  closestPoint(p: Point.PointLike | Point.PointData) {
     return this.line.closestPoint(p)
   }
 
-  closestPointLength(p: Point | Point.PointLike | Point.PointData) {
+  closestPointLength(p: Point.PointLike | Point.PointData) {
     return this.line.closestPointLength(p)
   }
 
-  closestPointNormalizedLength(p: Point | Point.PointLike | Point.PointData) {
+  closestPointNormalizedLength(p: Point.PointLike | Point.PointData) {
     return this.line.closestPointNormalizedLength(p)
   }
 
-  closestPointTangent(p: Point | Point.PointLike | Point.PointData) {
+  closestPointTangent(p: Point.PointLike | Point.PointData) {
     return this.line.closestPointTangent(p)
   }
 

@@ -73,10 +73,10 @@ export namespace NodeTool {
 export namespace EdgeTool {
   export const presets = {
     boundary: Boundary,
-    button: Button,
-    'button-remove': Button.Remove,
     vertices: Vertices,
     segments: Segments,
+    button: Button,
+    'button-remove': Button.Remove,
     'source-anchor': SourceAnchor,
     'target-anchor': TargetAnchor,
     'source-arrowhead': SourceArrowhead,

@@ -1112,15 +1112,14 @@ export namespace Edge {
   interface TerminalOptions {
     sourceCell?: Cell | string
     sourcePort?: string
-    sourcePoint?: Point | Point.PointLike | Point.PointData
+    sourcePoint?: Point.PointLike | Point.PointData
     targetCell?: Cell | string
     targetPort?: string
-    targetPoint?: Point | Point.PointLike | Point.PointData
+    targetPoint?: Point.PointLike | Point.PointData
 
     source?:
       | string
       | Cell
-      | Point
       | Point.PointLike
       | Point.PointData
       | TerminalPointData
@@ -1128,7 +1127,6 @@ export namespace Edge {
     target?:
       | string
       | Cell
-      | Point
       | Point.PointLike
       | Point.PointData
       | TerminalPointData

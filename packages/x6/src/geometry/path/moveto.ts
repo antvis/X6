@@ -8,9 +8,9 @@ export class MoveTo extends Segment {
   constructor(line: Line)
   constructor(curve: Curve)
   constructor(x: number, y: number)
-  constructor(p: Point | Point.PointLike | Point.PointData)
+  constructor(p: Point.PointLike | Point.PointData)
   constructor(
-    x: number | Curve | Line | (Point | Point.PointLike | Point.PointData),
+    x: number | Curve | Line | (Point.PointLike | Point.PointData),
     y?: number,
   ) {
     super()
@@ -106,21 +106,14 @@ export class MoveTo extends Segment {
     return false
   }
 
-  scale(
-    sx: number,
-    sy: number,
-    origin?: Point | Point.PointLike | Point.PointData,
-  ) {
+  scale(sx: number, sy: number, origin?: Point.PointLike | Point.PointData) {
     this.end.scale(sx, sy, origin)
     return this
   }
 
   translate(tx: number, ty: number): this
-  translate(p: Point | Point.PointLike | Point.PointData): this
-  translate(
-    tx: number | Point | Point.PointLike | Point.PointData,
-    ty?: number,
-  ) {
+  translate(p: Point.PointLike | Point.PointData): this
+  translate(tx: number | Point.PointLike | Point.PointData, ty?: number) {
     if (typeof tx === 'number') {
       this.end.translate(tx, ty as number)
     } else {
