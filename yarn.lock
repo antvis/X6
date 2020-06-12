@@ -18105,6 +18105,13 @@ rollup-plugin-filesize@^9.0.0:
     pacote "^11.1.6"
     terser "^4.6.12"
 
+rollup-plugin-progress@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.npm.taobao.org/rollup-plugin-progress/download/rollup-plugin-progress-1.1.2.tgz#5c1dfe7c50f654906bc34d167d5512ee1a4b72d5"
+  integrity sha1-XB3+fFD2VJBrw00WfVUS7hpLctU=
+  dependencies:
+    chalk "^2.4.2"
+
 rollup-plugin-terser@^5.3.0:
   version "5.3.0"
   resolved "https://registry.npm.taobao.org/rollup-plugin-terser/download/rollup-plugin-terser-5.3.0.tgz?cache=0&sync_timestamp=1591520810305&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Frollup-plugin-terser%2Fdownload%2Frollup-plugin-terser-5.3.0.tgz#9c0dd33d5771df9630cd027d6a2559187f65885e"
