@@ -472,13 +472,15 @@ export class Graph extends Basecoat<EventArgs> {
     return this.renderer.isAsync()
   }
 
-  findView(
-    ref: Cell | JQuery | Element | Point.PointLike | Rectangle.RectangleLike,
-  ) {
+  findView(ref: Cell | JQuery | Element) {
     if (ref instanceof Cell) {
       return this.findViewByCell(ref)
     }
 
+    return this.findViewByElem(ref)
+  }
+
+  findViews(ref: Point.PointLike | Rectangle.RectangleLike) {
     if (Rectangle.isRectangleLike(ref)) {
       return this.findViewsInArea(ref)
     }
@@ -487,7 +489,7 @@ export class Graph extends Basecoat<EventArgs> {
       return this.findViewsFromPoint(ref)
     }
 
-    return this.findViewByElem(ref)
+    return []
   }
 
   findViewByCell(cellId: string | number): CellView | null
@@ -1034,6 +1036,18 @@ export class Graph extends Basecoat<EventArgs> {
   // #endregion
 
   // #region scroller
+
+  lockScroller() {
+    this.scroller.widget?.lock()
+  }
+
+  unlockScroller() {
+    this.scroller.widget?.unlock()
+  }
+
+  updateScroller() {
+    this.scroller.widget?.update()
+  }
 
   /**
    * Try to scroll to ensure that the position (x,y) on the graph (in local
