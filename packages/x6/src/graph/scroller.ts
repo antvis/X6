@@ -46,6 +46,24 @@ export class ScrollerManager extends Base {
       this.widgetOptions.panning = false
     }
   }
+
+  lock() {
+    if (this.widget) {
+      this.widget.lock()
+    }
+  }
+
+  unlock() {
+    if (this.widget) {
+      this.widget.unlock()
+    }
+  }
+
+  update() {
+    if (this.widget) {
+      this.widget.update()
+    }
+  }
 }
 
 export namespace ScrollerManager {
