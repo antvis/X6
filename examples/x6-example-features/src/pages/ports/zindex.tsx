@@ -19,7 +19,7 @@ export default class Example extends React.Component {
     })
 
     const rect = graph.addNode({
-      type: 'basic.rect',
+      shape: 'basic.rect',
       markup:
         '<g class="rotatable"><g class="scalable"><rect class="main"/></g><rect class="inner"/></g>',
       x: 130,

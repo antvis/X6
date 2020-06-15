@@ -15,7 +15,7 @@ export default class Example extends React.Component {
     })
 
     const rect = graph.addNode({
-      type: 'basic.rect',
+      shape: 'basic.rect',
       x: 130,
       y: 30,
       width: 100,
@@ -59,7 +59,7 @@ export default class Example extends React.Component {
     })
 
     const circle = graph.addNode({
-      type: 'basic.circle',
+      shape: 'basic.circle',
       x: 20,
       y: 150,
       width: 50,

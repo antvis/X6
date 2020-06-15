@@ -73,7 +73,6 @@ export default class Example extends React.Component {
     })
 
     const edge1 = graph.addEdge({
-      type: 'edge',
       source: { x: 20, y: 20 },
       target: { x: 350, y: 20 },
       attrs: {
@@ -94,7 +93,6 @@ export default class Example extends React.Component {
     })
 
     const edge2 = graph.addEdge({
-      type: 'edge',
       source: { x: 20, y: 80 },
       target: { x: 350, y: 80 },
       attrs: {
@@ -115,7 +113,6 @@ export default class Example extends React.Component {
     })
 
     const edge3 = graph.addEdge({
-      type: 'edge',
       source: { x: 10, y: 140 },
       target: { x: 350, y: 140 },
       attrs: {
@@ -143,7 +140,6 @@ export default class Example extends React.Component {
     })
 
     const edge4 = graph.addEdge({
-      type: 'edge',
       source: { x: 400, y: 20 },
       target: { x: 740, y: 20 },
       vertices: [
@@ -180,7 +176,6 @@ export default class Example extends React.Component {
     })
 
     const edge5 = graph.addEdge({
-      type: 'edge',
       source: { x: 440, y: 100 },
       target: { x: 740, y: 100 },
       vertices: [
@@ -212,7 +207,7 @@ export default class Example extends React.Component {
     })
 
     const edge6 = graph.addEdge({
-      type: 'double-edge',
+      shape: 'double-edge',
       source: { x: 10, y: 200 },
       target: { x: 350, y: 200 },
       attrs: {
@@ -232,7 +227,6 @@ export default class Example extends React.Component {
     })
 
     const edge7 = graph.addEdge({
-      type: 'edge',
       source: { x: 400, y: 200 },
       target: { x: 740, y: 200 },
       connector: { name: 'smooth' },
@@ -323,7 +317,7 @@ export default class Example extends React.Component {
     })
 
     const edge8 = graph.addEdge({
-      type: 'shadow-edge',
+      shape: 'shadow-edge',
       source: { x: 10, y: 280 },
       target: { x: 440, y: 280 },
       vertices: [
@@ -372,7 +366,6 @@ export default class Example extends React.Component {
     })
 
     const edge9 = graph.addEdge({
-      type: 'edge',
       markup: [
         {
           tagName: 'path',
@@ -476,7 +469,7 @@ export default class Example extends React.Component {
     })
 
     const path = graph.addNode({
-      type: 'path',
+      shape: 'path',
       x: 500,
       y: 450,
       width: 100,
@@ -490,7 +483,6 @@ export default class Example extends React.Component {
     })
 
     const edge10 = graph.addEdge({
-      type: 'edge',
       source: { x: 300, y: 400 },
       targetCell: path,
       attrs: {
@@ -512,7 +504,6 @@ export default class Example extends React.Component {
     // stubs
 
     const edge11 = graph.addEdge({
-      type: 'edge',
       markup: [
         {
           tagName: 'path',
@@ -637,7 +628,6 @@ export default class Example extends React.Component {
 
     //
     const edge12 = graph.addEdge({
-      type: 'edge',
       markup: [
         {
           tagName: 'path',

@@ -18,7 +18,7 @@ export default class Example extends React.Component {
     })
 
     const ellipse = graph.addNode({
-      type: 'ellipse',
+      shape: 'ellipse',
       x: 150,
       y: 50,
       width: 500,

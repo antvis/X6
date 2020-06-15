@@ -2,7 +2,7 @@ import { bodyAttr, labelAttr } from './util'
 import { Node } from '../../model/node'
 
 export const HeaderedRect = Node.define({
-  type: 'rect-headered',
+  shape: 'rect-headered',
   markup: [
     {
       tagName: 'rect',

@@ -14,7 +14,6 @@ export default class Example extends React.Component {
     })
 
     const r1 = graph.addNode({
-      type: 'rect',
       size: { width: 600, height: 240 },
       position: { x: 100, y: 40 },
       attrs: {

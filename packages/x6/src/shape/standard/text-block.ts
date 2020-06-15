@@ -4,7 +4,7 @@ import { bodyAttr } from './util'
 import { Base } from '../base'
 
 export const TextBlock = Base.define({
-  type: 'text-block',
+  shape: 'text-block',
   markup: [
     {
       tagName: 'rect',

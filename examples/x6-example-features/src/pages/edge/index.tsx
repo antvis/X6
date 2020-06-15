@@ -93,7 +93,7 @@ export default class Example extends React.Component {
     // -----------------------------------
 
     const r1 = graph.addNode({
-      type: 'basic.rect',
+      shape: 'basic.rect',
       size: { width: 70, height: 30 },
       position: { x: 335, y: 50 },
       attrs: {
@@ -123,7 +123,7 @@ export default class Example extends React.Component {
     r4.translate(300)
 
     graph.addEdge({
-      type: 'customEdge',
+      shape: 'customEdge',
       view: 'customEdgeView',
       customLinkInteractions: true,
       source: r3,

@@ -105,7 +105,7 @@ class BallView extends NodeView {
       delete this.timerId
     }
     this.edge = this.graph.addEdge({
-      type: 'edge',
+      shape: 'edge',
       source: this.cell.getBBox().getCenter(),
       target: { x, y },
       zIndex: -1,
@@ -204,11 +204,11 @@ export default class Example extends React.Component {
       container: this.container,
       width: 650,
       height: 400,
-      gridSize: 1,
+      grid: 1,
     })
 
     graph.addNode({
-      type: 'ball',
+      shape: 'ball',
       x: 250,
       y: 370,
       width: 30,
@@ -223,7 +223,7 @@ export default class Example extends React.Component {
     })
 
     graph.addNode({
-      type: 'ball',
+      shape: 'ball',
       x: 400,
       y: 350,
       width: 50,
