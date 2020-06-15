@@ -1,6 +1,6 @@
 {
   "name": "@antv/x6",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "description": "JavaScript diagramming library",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -34,17 +34,18 @@
     "build:cjs": "tsc --module commonjs --target es5 --outDir ./lib",
     "build:umd": "rollup -c",
     "build:less": "node ./scripts/style",
+    "build:readme": "node ./scripts/readme.js",
     "build:version": "node ./scripts/version.js",
     "build:dev": "run-p build:less build:cjs build:esm",
     "build:watch": "yarn build:esm --w",
-    "build": "run-s build:version build:dev build:umd",
+    "build": "run-p build:readme build:version build:dev build:umd",
     "prebuild": "run-s lint clean",
     "test": "jest --coverage",
     "test:watch": "jest --watch --coverage",
     "test:debug": "DEBUG_MODE=1 jest",
     "coveralls": "cat ./test/coverage/lcov.info | coveralls",
     "pretest": "run-p clean:coverage",
-    "prepare": "run-s build:version test build",
+    "prepare": "run-s test build",
     "precommit": "lint-staged"
   },
   "lint-staged": {
