@@ -1302,15 +1302,12 @@ export namespace Edge {
   }
 
   export function create(options: Metadata) {
-    const type = options.type
-    if (type) {
-      const define = registry.get(type)
-      if (define) {
-        return new define(options)
-      }
-      return registry.onNotFound(type)
+    const type = options.type || 'edge'
+    const Ctor = registry.get(type)
+    if (Ctor) {
+      return new Ctor(options)
     }
-    return new Edge(options)
+    return registry.onNotFound(type)
   }
 }
 

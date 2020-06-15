@@ -137,6 +137,13 @@ export class Model extends Basecoat<Model.EventArgs> {
   resetCells(cells: Cell[], options: Collection.SetOptions = {}) {
     const items = cells.map((cell) => this.prepareCell(cell, options))
     this.collection.reset(items, options)
+    items.forEach((cell) => {
+      if (cell.isEdge()) {
+        // update reference
+        cell.getSourceCell()
+        cell.getTargetCell()
+      }
+    })
     return this
   }
 
@@ -1097,10 +1104,10 @@ export namespace Model {
   export interface FromJSONOptions extends Collection.SetOptions {}
 
   export type FromJSONData =
-    | (Node.Properties | Edge.Properties)[]
+    | (Node.Metadata | Edge.Metadata)[]
     | (Partial<ReturnType<typeof toJSON>> & {
-        nodes?: Node.Properties[]
-        edges?: Edge.Properties[]
+        nodes?: Node.Metadata[]
+        edges?: Edge.Metadata[]
       })
 
   export interface GetCellsInAreaOptions {
@@ -1211,6 +1218,7 @@ export namespace Model {
       if (data.nodes) {
         data.nodes.forEach((node) => {
           if (node.type == null) {
+            node.type = 'rect'
           }
           cells.push(node)
         })
@@ -1219,6 +1227,7 @@ export namespace Model {
       if (data.edges) {
         data.edges.forEach((edge) => {
           if (edge.type == null) {
+            edge.type = 'edge'
           }
           cells.push(edge)
         })
