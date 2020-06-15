@@ -1217,8 +1217,8 @@ export namespace Model {
 
       if (data.nodes) {
         data.nodes.forEach((node) => {
-          if (node.type == null) {
-            node.type = 'rect'
+          if (node.shape == null) {
+            node.shape = 'rect'
           }
           cells.push(node)
         })
@@ -1226,8 +1226,8 @@ export namespace Model {
 
       if (data.edges) {
         data.edges.forEach((edge) => {
-          if (edge.type == null) {
-            edge.type = 'edge'
+          if (edge.shape == null) {
+            edge.shape = 'edge'
           }
           cells.push(edge)
         })
@@ -1235,7 +1235,7 @@ export namespace Model {
     }
 
     return cells.map((cell) => {
-      const type = cell.type
+      const type = cell.shape
       if (type) {
         if (Node.registry.exist(type)) {
           return Node.create(cell)
@@ -1244,7 +1244,9 @@ export namespace Model {
           return Edge.create(cell)
         }
       }
-      throw new Error('Node/Edge type is required for creating a node instance')
+      throw new Error(
+        'The `shape` should be specipied when creating a node/edge instance',
+      )
     })
   }
 }

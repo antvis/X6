@@ -22,7 +22,6 @@ export default class Example extends React.Component {
     })
 
     graph.addNode({
-      type: 'rect',
       x: 50,
       y: 50,
       width: 100,
@@ -31,7 +30,6 @@ export default class Example extends React.Component {
     })
 
     graph.addNode({
-      type: 'rect',
       x: 250,
       y: 50,
       width: 100,
@@ -40,7 +38,6 @@ export default class Example extends React.Component {
     })
 
     graph.addNode({
-      type: 'rect',
       x: 350,
       y: 150,
       width: 100,

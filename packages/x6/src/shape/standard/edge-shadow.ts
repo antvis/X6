@@ -1,7 +1,7 @@
 import { Edge } from '../../model/edge'
 
 export const ShadowEdge = Edge.define({
-  type: 'shadow-edge',
+  shape: 'shadow-edge',
   markup: [
     {
       tagName: 'path',

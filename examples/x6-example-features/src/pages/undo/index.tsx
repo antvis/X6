@@ -8,7 +8,7 @@ export default class Example extends React.Component<
   Example.State
 > {
   private container: HTMLDivElement
-  private history: Graph.CommandManager
+  private history: Graph.HistoryManager
 
   state: Example.State = {
     canRedo: false,
@@ -25,7 +25,6 @@ export default class Example extends React.Component<
     })
 
     graph.addNode({
-      type: 'rect',
       x: 130,
       y: 30,
       width: 100,

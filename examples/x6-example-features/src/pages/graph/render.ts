@@ -22,7 +22,6 @@ export function render(graph: Graph) {
 
   terminals.forEach((item) => {
     graph.addEdge({
-      type: 'edge',
       zIndex: -1,
       source: nodes[item.source],
       target: nodes[item.target],
@@ -38,7 +37,7 @@ export function render(graph: Graph) {
 function createNodes(graph: Graph) {
   return [
     graph.createNode({
-      type: 'path',
+      shape: 'path',
       x: 75,
       y: 175,
       width: 100,
@@ -49,7 +48,7 @@ function createNodes(graph: Graph) {
       },
     }),
     graph.createNode({
-      type: 'path',
+      shape: 'path',
       x: 200,
       y: 275,
       width: 100,
@@ -60,7 +59,7 @@ function createNodes(graph: Graph) {
       },
     }),
     graph.createNode({
-      type: 'path',
+      shape: 'path',
       x: 200,
       y: 75,
       width: 100,
@@ -71,7 +70,7 @@ function createNodes(graph: Graph) {
       },
     }),
     graph.createNode({
-      type: 'path',
+      shape: 'path',
       x: 200,
       y: 175,
       width: 100,
@@ -82,7 +81,7 @@ function createNodes(graph: Graph) {
       },
     }),
     graph.createNode({
-      type: 'path',
+      shape: 'path',
       x: 325,
       y: 175,
       width: 100,
@@ -93,7 +92,7 @@ function createNodes(graph: Graph) {
       },
     }),
     graph.createNode({
-      type: 'path',
+      shape: 'path',
       position: { x: 450, y: 150 },
       size: { width: 100, height: 40 },
       attrs: {
@@ -102,7 +101,7 @@ function createNodes(graph: Graph) {
       },
     }),
     graph.createNode({
-      type: 'path',
+      shape: 'path',
       position: { x: 450, y: 200 },
       size: { width: 100, height: 40 },
       attrs: {
@@ -111,7 +110,7 @@ function createNodes(graph: Graph) {
       },
     }),
     graph.createNode({
-      type: 'path',
+      shape: 'path',
       position: { x: 325, y: 250 },
       size: { width: 100, height: 40 },
       attrs: {
@@ -120,7 +119,7 @@ function createNodes(graph: Graph) {
       },
     }),
     graph.createNode({
-      type: 'path',
+      shape: 'path',
       position: { x: 325, y: 300 },
       size: { width: 100, height: 40 },
       attrs: {
@@ -129,7 +128,7 @@ function createNodes(graph: Graph) {
       },
     }),
     graph.createNode({
-      type: 'path',
+      shape: 'path',
       position: { x: 325, y: 100 },
       size: { width: 100, height: 40 },
       attrs: {
@@ -138,7 +137,7 @@ function createNodes(graph: Graph) {
       },
     }),
     graph.createNode({
-      type: 'path',
+      shape: 'path',
       position: { x: 325, y: 50 },
       size: { width: 100, height: 40 },
       attrs: {

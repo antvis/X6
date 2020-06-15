@@ -93,7 +93,7 @@ export class Cell<
     const ctor = this.constructor as typeof Cell
     const defaults = ctor.getDefaults(true)
     const meta = ObjectExt.merge({}, defaults, metadata, {
-      type: defaults.type || metadata.type,
+      type: defaults.shape || metadata.shape,
     })
     const props = this.preprocess(meta)
 
@@ -1069,7 +1069,7 @@ export class Cell<
     const toString = Object.prototype.toString
     const cellType = this.isNode() ? 'node' : this.isEdge() ? 'edge' : 'cell'
 
-    if (!props.type) {
+    if (!props.shape) {
       const ctor = this.constructor
       throw new Error(
         `Unable to serialize ${cellType} missing "type" prop, check the ${cellType} "${
@@ -1204,7 +1204,7 @@ export class Cell<
 export namespace Cell {
   export interface Common {
     view?: string
-    type?: string
+    shape?: string
     markup?: Markup
     attrs?: Attr.CellAttrs
     zIndex?: number
@@ -1505,10 +1505,7 @@ export namespace Cell {
   export interface Config<M extends Metadata = Metadata, C extends Cell = Cell>
     extends Defaults,
       KeyValue {
-    /**
-     * The class name.
-     */
-    name?: string
+    constructorName?: string
     propHooks?: PropHooks<M, C>
     attrHooks?: Attr.Definitions
   }

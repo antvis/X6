@@ -1048,28 +1048,28 @@ export namespace Node {
   }
 
   export function define(config: Config) {
-    const { name, ...others } = config
+    const { constructorName, ...others } = config
     const shape = ObjectExt.createClass<Definition>(
-      getClassName(name || others.type),
+      getClassName(constructorName || others.shape),
       this as Definition,
     )
 
     shape.config(others)
 
-    if (others.type) {
-      registry.register(others.type, shape)
+    if (others.shape) {
+      registry.register(others.shape, shape)
     }
 
     return shape
   }
 
   export function create(options: Metadata) {
-    const type = options.type || 'rect'
-    const Ctor = registry.get(type)
+    const shape = options.shape || 'rect'
+    const Ctor = registry.get(shape)
     if (Ctor) {
       return new Ctor(options)
     }
-    return registry.onNotFound(type)
+    return registry.onNotFound(shape)
   }
 }
 
@@ -1080,13 +1080,15 @@ export namespace Node {
     Config & { inherit?: string }
   >({
     type: 'node',
-    process(name, options) {
-      if (Share.exist(name, true)) {
-        throw new Error(`Node with '${name}' was registered by anthor Edge`)
+    process(shape, options) {
+      if (Share.exist(shape, true)) {
+        throw new Error(
+          `Node with name '${shape}' was registered by anthor Edge`,
+        )
       }
 
       if (typeof options === 'function') {
-        options.config({ type: name })
+        options.config({ shape })
         return options
       }
 
@@ -1101,13 +1103,13 @@ export namespace Node {
         }
       }
 
-      if (others.name == null) {
-        others.name = name
+      if (others.constructorName == null) {
+        others.constructorName = shape
       }
 
-      const shape = parent.define.call(parent, others)
-      shape.config({ type: name })
-      return shape
+      const ret = parent.define.call(parent, others)
+      ret.config({ shape })
+      return ret
     },
   })
 

@@ -81,7 +81,7 @@ export default class Example extends React.Component {
     this.scroller = graph.scroller.widget
 
     const rect = graph.addNode({
-      type: 'rect',
+      shape: 'rect',
       x: 300,
       y: 300,
       width: 90,
@@ -93,7 +93,7 @@ export default class Example extends React.Component {
     })
 
     const circle = graph.addNode({
-      type: 'circle',
+      shape: 'circle',
       x: 400,
       y: 400,
       width: 40,
@@ -105,7 +105,6 @@ export default class Example extends React.Component {
     })
 
     graph.addEdge({
-      type: 'edge',
       source: rect,
       target: circle,
     })

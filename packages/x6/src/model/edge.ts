@@ -1286,28 +1286,28 @@ export namespace Edge {
   }
 
   export function define(config: Config) {
-    const { name, ...others } = config
-    const shape = ObjectExt.createClass<Definition>(
-      getClassName(name || others.type),
+    const { constructorName, ...others } = config
+    const ctor = ObjectExt.createClass<Definition>(
+      getClassName(constructorName || others.shape),
       this as Definition,
     )
 
-    shape.config(others)
+    ctor.config(others)
 
-    if (others.type) {
-      registry.register(others.type, shape)
+    if (others.shape) {
+      registry.register(others.shape, ctor)
     }
 
-    return shape
+    return ctor
   }
 
   export function create(options: Metadata) {
-    const type = options.type || 'edge'
-    const Ctor = registry.get(type)
+    const shape = options.shape || 'edge'
+    const Ctor = registry.get(shape)
     if (Ctor) {
       return new Ctor(options)
     }
-    return registry.onNotFound(type)
+    return registry.onNotFound(shape)
   }
 }
 
@@ -1318,13 +1318,15 @@ export namespace Edge {
     Config & { inherit?: string }
   >({
     type: 'edge',
-    process(name, options) {
-      if (Share.exist(name, false)) {
-        throw new Error(`Edge with '${name}' was registered by anthor Node`)
+    process(shape, options) {
+      if (Share.exist(shape, false)) {
+        throw new Error(
+          `Edge with name '${shape}' was registered by anthor Node`,
+        )
       }
 
       if (typeof options === 'function') {
-        options.config({ type: name })
+        options.config({ shape })
         return options
       }
 
@@ -1339,13 +1341,13 @@ export namespace Edge {
         }
       }
 
-      if (others.name == null) {
-        others.name = name
+      if (others.constructorName == null) {
+        others.constructorName = shape
       }
 
-      const shape = parent.define.call(parent, others)
-      shape.config({ type: name })
-      return shape
+      const ret = parent.define.call(parent, others)
+      ret.config({ shape })
+      return ret
     },
   })
 

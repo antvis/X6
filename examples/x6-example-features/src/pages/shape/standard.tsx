@@ -14,7 +14,7 @@ export default class Example extends React.Component {
     })
 
     const rect = graph.addNode({
-      type: 'rect',
+      shape: 'rect',
       x: 40,
       y: 40,
       width: 100,
@@ -34,7 +34,7 @@ export default class Example extends React.Component {
     console.log(rect)
 
     graph.addNode({
-      type: 'circle',
+      shape: 'circle',
       x: 180,
       y: 30,
       width: 60,
@@ -49,7 +49,7 @@ export default class Example extends React.Component {
     })
 
     graph.addNode({
-      type: 'ellipse',
+      shape: 'ellipse',
       x: 280,
       y: 30,
       width: 80,
@@ -64,7 +64,7 @@ export default class Example extends React.Component {
     })
 
     graph.addNode({
-      type: 'path',
+      shape: 'path',
       x: 40,
       y: 120,
       width: 100,
@@ -81,7 +81,7 @@ export default class Example extends React.Component {
     })
 
     graph.addNode({
-      type: 'polygon',
+      shape: 'polygon',
       x: 170,
       y: 120,
       width: 80,
@@ -98,7 +98,7 @@ export default class Example extends React.Component {
     })
 
     graph.addNode({
-      type: 'polyline',
+      shape: 'polyline',
       x: 280,
       y: 120,
       width: 80,
@@ -114,7 +114,7 @@ export default class Example extends React.Component {
     })
 
     graph.addNode({
-      type: 'cylinder',
+      shape: 'cylinder',
       x: 420,
       y: 30,
       width: 80,
@@ -133,7 +133,7 @@ export default class Example extends React.Component {
     })
 
     graph.addNode({
-      type: 'image',
+      shape: 'image',
       x: 40,
       y: 240,
       width: 120,
@@ -143,7 +143,7 @@ export default class Example extends React.Component {
     })
 
     graph.addNode({
-      type: 'image-bordered',
+      shape: 'image-bordered',
       x: 200,
       y: 240,
       width: 120,
@@ -153,7 +153,7 @@ export default class Example extends React.Component {
     })
 
     graph.addNode({
-      type: 'image-embedded',
+      shape: 'image-embedded',
       x: 360,
       y: 240,
       width: 120,
@@ -163,7 +163,7 @@ export default class Example extends React.Component {
     })
 
     graph.addNode({
-      type: 'image-inscribed',
+      shape: 'image-inscribed',
       x: 520,
       y: 240,
       width: 120,
@@ -173,7 +173,7 @@ export default class Example extends React.Component {
     })
 
     graph.addNode({
-      type: 'text-block',
+      shape: 'text-block',
       x: 40,
       y: 380,
       width: 120,
@@ -186,21 +186,21 @@ export default class Example extends React.Component {
     })
 
     graph.addEdge({
-      type: 'edge',
+      shape: 'edge',
       source: { x: 450, y: 360 },
       target: { x: 400, y: 520 },
       vertices: [{ x: 450, y: 440 }],
     })
 
     graph.addEdge({
-      type: 'shadow-edge',
+      shape: 'shadow-edge',
       source: { x: 550, y: 360 },
       target: { x: 500, y: 520 },
       vertices: [{ x: 550, y: 440 }],
     })
 
     graph.addEdge({
-      type: 'double-edge',
+      shape: 'double-edge',
       source: { x: 500, y: 360 },
       target: { x: 450, y: 520 },
       vertices: [{ x: 500, y: 440 }],

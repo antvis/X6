@@ -42,11 +42,11 @@ export default class Example extends React.Component {
       container: this.container,
       width: 1000,
       height: 600,
-      gridSize: 10,
+      grid: 10,
     })
 
     const source = graph.addNode({
-      type: 'rect',
+      shape: 'rect',
       x: 50,
       y: 50,
       width: 140,
@@ -65,7 +65,7 @@ export default class Example extends React.Component {
     graph.addEdge({
       source,
       target,
-      type: 'edge',
+      shape: 'edge',
       connector: {
         name: 'wobble',
         args: {

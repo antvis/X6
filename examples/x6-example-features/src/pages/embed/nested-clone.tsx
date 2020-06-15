@@ -23,7 +23,6 @@ export default class Example extends React.Component {
     ) => {
       return graph.addNode({
         id,
-        type: 'rect',
         name: id,
         x,
         y,
@@ -54,7 +53,6 @@ export default class Example extends React.Component {
         id,
         source,
         target,
-        type: 'edge',
         name: id,
         vertices: vertices,
         labels: [
