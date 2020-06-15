@@ -1064,15 +1064,12 @@ export namespace Node {
   }
 
   export function create(options: Metadata) {
-    const type = options.type
-    if (type) {
-      const Ctor = registry.get(type)
-      if (Ctor) {
-        return new Ctor(options)
-      }
-      return registry.onNotFound(type)
+    const type = options.type || 'rect'
+    const Ctor = registry.get(type)
+    if (Ctor) {
+      return new Ctor(options)
     }
-    throw new Error('Node type is required for creating a node instance')
+    return registry.onNotFound(type)
   }
 }
 
