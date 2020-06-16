@@ -171,11 +171,17 @@ export default class Example extends React.Component {
       },
     })
 
-    graph.addNode(new Shape().resize(120, 100).pos(200, 100).updateInPorts())
+    graph.addNode(
+      new Shape().resize(120, 100).position(200, 100).updateInPorts(),
+    )
 
-    graph.addNode(new Shape().resize(120, 100).pos(400, 100).updateInPorts())
+    graph.addNode(
+      new Shape().resize(120, 100).position(400, 100).updateInPorts(),
+    )
 
-    graph.addNode(new Shape().resize(120, 100).pos(300, 400).updateInPorts())
+    graph.addNode(
+      new Shape().resize(120, 100).position(300, 400).updateInPorts(),
+    )
 
     function update(view: NodeView) {
       var cell = view.cell

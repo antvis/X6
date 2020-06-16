@@ -53,7 +53,7 @@ export class ForceDirected extends Events {
       const posX = NumberExt.random(x, x + width)
       const posY = NumberExt.random(y, y + height)
 
-      node.pos(posX, posY, { forceDirected: true })
+      node.position(posX, posY, { forceDirected: true })
 
       this.nodeData[node.id] = {
         charge: node.prop('charge') || this.options.charge,

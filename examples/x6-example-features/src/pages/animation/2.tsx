@@ -40,7 +40,9 @@ class BallView extends NodeView {
           current.x > this.graph.options.width - node.getSize().width
         ) {
           this.angle -= 180
-          node.pos(node.previous('position')!.x, current.y, { silent: true })
+          node.position(node.previous('position')!.x, current.y, {
+            silent: true,
+          })
           cell.stopTransition('position')
         }
       }

@@ -16,7 +16,7 @@ export class GridCard extends React.Component<GridCard.Props, GridCard.State> {
   notifyChange() {
     if (this.state.type === 'doubleMesh') {
       this.props.onChange({
-        name: this.state.type,
+        type: this.state.type,
         args: [
           {
             color: this.state.color,
@@ -31,7 +31,7 @@ export class GridCard extends React.Component<GridCard.Props, GridCard.State> {
       })
     } else {
       this.props.onChange({
-        name: this.state.type,
+        type: this.state.type,
         args: [
           {
             color: this.state.color,
