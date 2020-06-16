@@ -90,7 +90,7 @@ export class Dnd extends View {
   protected prepareDragging(node: Node, clientX: number, clientY: number) {
     const delegateGraph = this.delegateGraph
     const delegateModel = delegateGraph.model
-    const delegateNode = this.options.getDragNode(node).pos(0, 0)
+    const delegateNode = this.options.getDragNode(node).position(0, 0)
 
     let padding = 5
     const snapline = this.snapline
@@ -155,7 +155,7 @@ export class Dnd extends View {
     const bbox = this.delegateBBox!
     local.x -= bbox.width / 2
     local.y -= bbox.height / 2
-    this.draggingNode!.pos(local.x, local.y)
+    this.draggingNode!.position(local.x, local.y)
     return local
   }
 
@@ -167,9 +167,9 @@ export class Dnd extends View {
     const node = cell as Node
     if (options.snapped) {
       const bbox = this.delegateBBox
-      node.pos(bbox.x + options.tx, bbox.y + options.ty, { silent: true })
+      node.position(bbox.x + options.tx, bbox.y + options.ty, { silent: true })
       this.draggingView!.translate()
-      node.pos(current!.x, current!.y, { silent: true })
+      node.position(current!.x, current!.y, { silent: true })
 
       this.snapOffset = {
         x: options.tx,
@@ -241,7 +241,7 @@ export class Dnd extends View {
         y = y + snapOffset.y
       }
 
-      draggingNode.pos(x, y, { silent: true })
+      draggingNode.position(x, y, { silent: true })
 
       const node = this.options.getDropNode(draggingNode)
       if (this.drop(node, { x: e.clientX, y: e.clientY })) {
@@ -347,7 +347,7 @@ export class Dnd extends View {
       local.y += bbox.y - bbox.height / 2
       const gridSize = this.snapOffset ? 1 : targetGraph.getGridSize()
 
-      node.pos(
+      node.position(
         Util.snapToGrid(local.x, gridSize),
         Util.snapToGrid(local.y, gridSize),
       )

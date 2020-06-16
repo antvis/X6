@@ -111,11 +111,11 @@ export default class Example extends React.Component {
     Array.from({ length: COUNT / 2 }).forEach((_, n) => {
       const a = node
         .clone()
-        .pos(n * 110, 100)
+        .position(n * 110, 100)
         .attr('label/text', n + 1)
       const b = node
         .clone()
-        .pos(n * 100, 300)
+        .position(n * 100, 300)
         .attr('label/text', n + 1 + COUNT / 2)
       const ab = edge.clone().setSource(a).setTarget(b)
       cells.push(a, b, ab)

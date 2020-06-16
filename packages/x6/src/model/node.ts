@@ -57,11 +57,11 @@ export class Node<
 
   // #region size
 
-  get sizes() {
+  get dimension() {
     return this.getSize()
   }
 
-  set sizes(size: Size) {
+  set dimension(size: Size) {
     this.setSize(size)
   }
 
@@ -110,7 +110,7 @@ export class Node<
     const direction = options.direction
 
     if (direction) {
-      const currentSize = this.sizes
+      const currentSize = this.getSize()
       switch (direction) {
         case 'left':
         case 'right':
@@ -238,17 +238,17 @@ export class Node<
 
   // #region position
 
-  get position() {
+  get coord() {
     return this.getPosition()
   }
 
-  set position(pos: Point | Point.PointLike) {
+  set coord(pos: Point | Point.PointLike) {
     this.setPosition(pos.x, pos.y)
   }
 
-  pos(x: number, y: number, options?: Node.SetPositionOptions): this
-  pos(options?: Node.GetPositionOptions): Point.PointLike
-  pos(
+  position(x: number, y: number, options?: Node.SetPositionOptions): this
+  position(options?: Node.GetPositionOptions): Point.PointLike
+  position(
     arg0?: number | Node.GetPositionOptions,
     arg1?: number,
     arg2?: Node.SetPositionOptions,
@@ -263,8 +263,8 @@ export class Node<
     if (options.relative) {
       const parent = this.getParent()
       if (parent != null && parent.isNode()) {
-        const currentPosition = this.position
-        const parentPosition = parent.position
+        const currentPosition = this.getPosition()
+        const parentPosition = parent.getPosition()
 
         return {
           x: currentPosition.x - parentPosition.x,
@@ -304,14 +304,14 @@ export class Node<
     if (options.relative) {
       const parent = this.getParent() as Node
       if (parent != null && parent.isNode()) {
-        const parentPosition = parent.position
+        const parentPosition = parent.getPosition()
         x += parentPosition.x
         y += parentPosition.y
       }
     }
 
     if (options.deep) {
-      const currentPosition = this.position
+      const currentPosition = this.getPosition()
       this.translate(x - currentPosition.x, y - currentPosition.y, options)
     } else {
       this.store.set('position', { x, y }, options)
@@ -332,7 +332,7 @@ export class Node<
     // Pass the initiator of the translation.
     options.translateBy = options.translateBy || this.id
 
-    const position = this.position
+    const position = this.getPosition()
 
     if (options.restrictedArea != null && options.translateBy === this.id) {
       // We are restricting the translation for the element itself only. We get
@@ -640,7 +640,7 @@ export class Node<
   }
 
   getPortsPosition(groupName: string) {
-    const size = this.sizes
+    const size = this.getSize()
     const layouts = this.port.getPortsLayoutByGroup(
       groupName,
       new Rectangle(0, 0, size.width, size.height),
