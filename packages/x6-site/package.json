@@ -15,7 +15,7 @@
     "sites"
   ],
   "dependencies": {
-    "@antv/gatsby-theme-antv": "^0.10.64",
+    "@antv/gatsby-theme-antv": "^0.10.65",
     "@antv/x6": "^0.4.8",
     "gatsby": "^2.23.3",
     "gh-pages": "^3.0.0",
@@ -36,7 +36,10 @@
   "bugs": {
     "url": "https://github.com/antvis/x6/issues"
   },
-  "repository": "https://github.com/antvis/x6/tree/master/packages/x6-sites",
+  "repository": {
+    "type": "git",
+    "url: "https://github.com/antvis/x6/tree/master/packages/x6-sites"
+  },
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org"
