@@ -1,7 +1,6 @@
 import { ArrayExt } from '../../util'
 import { IDisablable } from '../../common'
 import { Point, Rectangle, Angle } from '../../geometry'
-import { Cell } from '../../model/cell'
 import { Node } from '../../model/node'
 import { Model } from '../../model/model'
 import { View } from '../../view/view'
@@ -15,7 +14,7 @@ export class Snapline extends View implements IDisablable {
   protected readonly graph: Graph
   protected filterTypes: { [type: string]: boolean }
   protected filterCells: { [id: string]: boolean }
-  protected filterFunction: Snapline.filterFunction | null
+  protected filterFunction: Snapline.FilterFunction | null
   protected offset: Point.PointLike
   protected timer: number | null
 
@@ -46,7 +45,7 @@ export class Snapline extends View implements IDisablable {
     this.graph = graph
     this.options = { tolerance: 10, ...others }
     this.render()
-    this.parseFilters()
+    this.parseFilter()
     if (!this.disabled) {
       this.startListening()
     }
@@ -73,6 +72,11 @@ export class Snapline extends View implements IDisablable {
       this.graph.options.snapline.enabled = false
       this.stopListening()
     }
+  }
+
+  setFilter(filter?: Snapline.Filter) {
+    this.options.filter = filter
+    this.parseFilter()
   }
 
   protected render() {
@@ -113,7 +117,7 @@ export class Snapline extends View implements IDisablable {
     this.undelegateDocumentEvents()
   }
 
-  protected parseFilters() {
+  protected parseFilter() {
     this.filterTypes = {}
     this.filterCells = {}
     this.filterFunction = null
@@ -662,8 +666,10 @@ export namespace Snapline {
      */
     resizing?: boolean
     clean?: boolean | number
-    filter?: (string | Cell)[] | filterFunction
+    filter?: Filter
   }
 
-  export type filterFunction = (this: Graph, node: Node) => boolean
+  export type Filter = (string | { id: string })[] | FilterFunction
+
+  export type FilterFunction = (this: Graph, node: Node) => boolean
 }
