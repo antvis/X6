@@ -1355,6 +1355,48 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
+  setSnaplineFilter(filter?: Snapline.Filter) {
+    this.snapline.widget.setFilter(filter)
+    return this
+  }
+
+  isSnaplineOnResing() {
+    return this.snapline.widget.options.resizing === true
+  }
+
+  enableSnaplineOnResing() {
+    this.snapline.widget.options.resizing = true
+    return this
+  }
+
+  disableSnaplineOnResing() {
+    this.snapline.widget.options.resizing = false
+    return this
+  }
+
+  isSharpSnapline() {
+    return this.snapline.widget.options.sharp === true
+  }
+
+  enableSharpSnapline() {
+    this.snapline.widget.options.sharp === true
+    return this
+  }
+
+  disableSharpSnapline() {
+    this.snapline.widget.options.sharp === false
+    return this
+  }
+
+  getSnaplineTolerance() {
+    return this.snapline.widget.options.tolerance
+  }
+
+  setSnaplineTolerance(tolerance: number) {
+    this.snapline.widget.options.tolerance = tolerance
+    return this
+  }
+
   // #endregion
 
   // #region tools
