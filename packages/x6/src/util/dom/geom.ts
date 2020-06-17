@@ -1,13 +1,14 @@
 import { Point, Line, Rectangle, Polyline, Ellipse, Path } from '../../geometry'
 import { attr } from './attr'
 import { sample, toPath, getPointsFromSvgElement } from './path'
-import { ensureId, isSVGGraphicsElement, createSvgElement } from './elem'
+import { ensureId, isSVGGraphicsElement, createSvgElement, isHTMLElement } from './elem'
 import {
   createSVGPoint,
   createSVGMatrix,
   decomposeMatrix,
   transformRectangle,
 } from './matrix'
+import { getComputedStyle } from './style'
 
 /**
  * Returns the bounding box of the element after transformations are
@@ -66,11 +67,14 @@ export function getBBox(
   let outputBBox
   const ownerSVGElement = elem.ownerSVGElement
 
-  // If the element is not in the live DOM, it does not have a bounding box
-  // defined and so fall back to 'zero' dimension element.
-  // If the element is not an SVGGraphicsElement, we could not measure the
-  // bounding box either
+  // If the element is a HTMLElement, return the position relative to the body
+  // If the element is not an SVGGraphicsElement or HTMLElement, we could not measure the
+  // bounding box
   if (!ownerSVGElement || !isSVGGraphicsElement(elem)) {
+    if (isHTMLElement(elem)) {
+      const { left, top, width, height } = getBoundingOffsetRect(elem as any)
+      return new Rectangle(left, top, width, height)
+    }
     return new Rectangle(0, 0, 0, 0)
   }
 
@@ -373,4 +377,26 @@ export function animateAlongPath(
       }
     }
   }
+}
+
+export function getBoundingOffsetRect(elem: HTMLElement) {
+  let left = 0
+  let top = 0
+  let width = 0
+  let height = 0
+  if (elem) {
+    let current = elem as any
+    while (current) {
+      left += current.offsetLeft
+      top += current.offsetTop
+      current = current.offsetParent
+      if (current) {
+        left += parseInt(getComputedStyle(current, 'borderLeft'), 10)
+        top += parseInt(getComputedStyle(current, 'borderTop'), 10)
+      }
+    }
+    width = elem.offsetWidth
+    height = elem.offsetHeight
+  }
+  return { left, top, width, height }
 }
