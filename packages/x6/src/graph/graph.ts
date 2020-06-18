@@ -954,8 +954,7 @@ export class Graph extends Basecoat<EventArgs> {
   }
 
   paste(options: Clipboard.PasteOptions = {}, graph: Graph = this) {
-    this.clipboard.paste(options, graph)
-    return this
+    return this.clipboard.paste(options, graph)
   }
 
   // #endregion
@@ -1038,6 +1037,25 @@ export class Graph extends Basecoat<EventArgs> {
 
   disableKeyboard() {
     this.keyboard.disable()
+    return this
+  }
+
+  toggleKeyboard(enabled?: boolean) {
+    if (enabled != null) {
+      if (enabled !== this.isKeyboardEnabled()) {
+        if (enabled) {
+          this.enableKeyboard()
+        } else {
+          this.disableKeyboard()
+        }
+      }
+    } else {
+      if (this.isKeyboardEnabled()) {
+        this.disableKeyboard()
+      } else {
+        this.enableKeyboard()
+      }
+    }
     return this
   }
 
