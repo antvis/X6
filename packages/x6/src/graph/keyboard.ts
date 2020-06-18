@@ -26,6 +26,9 @@ export class Keyboard extends Disposable implements IDisablable {
         // ensure the container focusable
         this.target.setAttribute('tabindex', '-1')
       }
+
+      this.graph.on('cell:mousedown', this.focus, this)
+      this.graph.on('blank:mousedown', this.focus, this)
     }
 
     this.mousetrap = new Keyboard.Mousetrap(this.target as Element, this)
@@ -65,6 +68,11 @@ export class Keyboard extends Disposable implements IDisablable {
 
   off(keys: string | string[], action?: Keyboard.Action) {
     this.mousetrap.unbind(this.getKeys(keys), action)
+  }
+
+  private focus() {
+    const target = this.target as HTMLElement
+    target.focus()
   }
 
   private getKeys(keys: string | string[]) {
