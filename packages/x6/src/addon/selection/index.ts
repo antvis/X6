@@ -147,6 +147,14 @@ export class Selection extends View<Selection.EventArgs> {
     return this
   }
 
+  setFilter(filter?: Selection.Filter) {
+    this.options.filter = filter
+  }
+
+  setContent(content?: Selection.Content) {
+    this.options.content = content
+  }
+
   startSelecting(evt: JQuery.MouseDownEvent) {
     // Flow: startSelecting => adjustSelection => stopSelecting
 
@@ -472,7 +480,11 @@ export class Selection extends View<Selection.EventArgs> {
     const boxContent = this.options.content
     if (boxContent) {
       if (typeof boxContent === 'function') {
-        const content = boxContent.call(this, this.$selectionContent[0])
+        const content = boxContent.call(
+          this.graph,
+          this,
+          this.$selectionContent[0],
+        )
         if (content) {
           this.$selectionContent.html(content)
         }
@@ -705,19 +717,28 @@ export namespace Selection {
     strict?: boolean
     movable?: boolean
     useCellGeometry?: boolean
-    content?:
-      | null
-      | false
-      | string
-      | ((this: Selection, contentElement: HTMLElement) => string)
-    filter?: null | (string | Cell)[] | FilterFunction
+    content?: Content
+    filter?: Filter
   }
 
   export interface Options extends CommonOptions {
     graph: Graph
   }
 
-  export type FilterFunction = (this: Graph, cell: Cell) => boolean
+  export type Content =
+    | null
+    | false
+    | string
+    | ((
+        this: Graph,
+        selection: Selection,
+        contentElement: HTMLElement,
+      ) => string)
+
+  export type Filter =
+    | null
+    | (string | { id: string })[]
+    | ((this: Graph, cell: Cell) => boolean)
 }
 
 export namespace Selection {
@@ -783,10 +804,10 @@ namespace Private {
     movable: true,
     strict: false,
     useCellGeometry: false,
-    content() {
+    content(selection) {
       return StringExt.template(
         '<%= length %> node<%= length > 1 ? "s":"" %> selected.',
-      )({ length: this.length })
+      )({ length: selection.length })
     },
     handles: [
       {

@@ -896,12 +896,8 @@ export class Graph extends Basecoat<EventArgs> {
 
   // #region clipboard
 
-  isClipboardEmpty() {
-    return this.clipboard.isEmpty()
-  }
-
-  isClipboardDisabled() {
-    return this.clipboard.disabled
+  isClipboardEnabled() {
+    return !this.clipboard.disabled
   }
 
   enableClipboard() {
@@ -912,6 +908,30 @@ export class Graph extends Basecoat<EventArgs> {
   disableClipboard() {
     this.clipboard.disable()
     return this
+  }
+
+  toggleClipboard(enabled?: boolean) {
+    if (enabled != null) {
+      if (enabled !== this.isClipboardEnabled()) {
+        if (enabled) {
+          this.enableClipboard()
+        } else {
+          this.disableClipboard()
+        }
+      }
+    } else {
+      if (this.isClipboardEnabled()) {
+        this.disableClipboard()
+      } else {
+        this.enableClipboard()
+      }
+    }
+
+    return this
+  }
+
+  isClipboardEmpty() {
+    return this.clipboard.isEmpty()
   }
 
   getCellsInClipboard() {
@@ -942,8 +962,8 @@ export class Graph extends Basecoat<EventArgs> {
 
   // #region redo/undo
 
-  isHistoryDisabled() {
-    return this.history.disabled
+  isHistoryEnabled() {
+    return !this.history.disabled
   }
 
   enableHistory() {
@@ -953,6 +973,26 @@ export class Graph extends Basecoat<EventArgs> {
 
   disableHistory() {
     this.history.disable()
+    return this
+  }
+
+  toggleHistory(enabled?: boolean) {
+    if (enabled != null) {
+      if (enabled !== this.isHistoryEnabled()) {
+        if (enabled) {
+          this.enableHistory()
+        } else {
+          this.disableHistory()
+        }
+      }
+    } else {
+      if (this.isHistoryEnabled()) {
+        this.disableHistory()
+      } else {
+        this.enableHistory()
+      }
+    }
+
     return this
   }
 
@@ -987,8 +1027,8 @@ export class Graph extends Basecoat<EventArgs> {
 
   // #region keyboard
 
-  isKeyboardDisabled() {
-    return this.keyboard.disabled
+  isKeyboardEnabled() {
+    return !this.keyboard.disabled
   }
 
   enableKeyboard() {
@@ -1019,8 +1059,8 @@ export class Graph extends Basecoat<EventArgs> {
 
   // #region mousewheel
 
-  isMouseWheelDisabled() {
-    return this.mousewheel.disabled
+  isMouseWheelEnabled() {
+    return !this.mousewheel.disabled
   }
 
   enableMouseWheel() {
@@ -1255,8 +1295,8 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
-  isPanningDisabled() {
-    return !this.scroller.allowPanning
+  isPanningEnabled() {
+    return this.scroller.allowPanning
   }
 
   enablePanning() {
@@ -1273,8 +1313,110 @@ export class Graph extends Basecoat<EventArgs> {
 
   // #region selection
 
-  isRubberbandDsiabled() {
-    return this.selection.rubberbandDisabled
+  isSelectionEnabled() {
+    return !this.selection.disabled
+  }
+
+  enableSelection() {
+    this.selection.enable()
+    return this
+  }
+
+  disableSelection() {
+    this.selection.disable()
+    return this
+  }
+
+  toggleSelection(enabled?: boolean) {
+    if (enabled != null) {
+      if (enabled !== this.isSelectionEnabled()) {
+        if (enabled) {
+          this.enableSelection()
+        } else {
+          this.disableSelection()
+        }
+      }
+    } else {
+      if (this.isSelectionEnabled()) {
+        this.disableSelection()
+      } else {
+        this.enableSelection()
+      }
+    }
+
+    return this
+  }
+
+  isMultipleSelection() {
+    return this.selection.isMultiple()
+  }
+
+  enableMultipleSelection() {
+    this.selection.enableMultiple()
+    return this
+  }
+
+  disableMultipleSelection() {
+    this.selection.enableMultiple()
+    return this
+  }
+
+  toggleMultipleSelection(multiple?: boolean) {
+    if (multiple != null) {
+      if (multiple !== this.isMultipleSelection()) {
+        if (multiple) {
+          this.enableMultipleSelection()
+        } else {
+          this.disableMultipleSelection()
+        }
+      }
+    } else {
+      if (this.isMultipleSelection()) {
+        this.disableMultipleSelection()
+      } else {
+        this.enableMultipleSelection()
+      }
+    }
+
+    return this
+  }
+
+  isSelectionMovable() {
+    return this.selection.widget.options.movable !== false
+  }
+
+  enableSelectionMovable() {
+    this.selection.widget.options.movable = true
+    return this
+  }
+
+  disableSelectionMovable() {
+    this.selection.widget.options.movable = false
+    return this
+  }
+
+  toggleSelectionMovable(movable?: boolean) {
+    if (movable != null) {
+      if (movable !== this.isSelectionMovable()) {
+        if (movable) {
+          this.enableSelectionMovable()
+        } else {
+          this.disableSelectionMovable()
+        }
+      }
+    } else {
+      if (this.isSelectionMovable()) {
+        this.disableSelectionMovable()
+      } else {
+        this.enableSelectionMovable()
+      }
+    }
+
+    return this
+  }
+
+  isRubberbandEnabled() {
+    return !this.selection.rubberbandDisabled
   }
 
   enableRubberband() {
@@ -1287,17 +1429,67 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
-  isSelectionDisabled() {
-    return this.selection.disabled
-  }
+  toggleRubberband(enabled?: boolean) {
+    if (enabled != null) {
+      if (enabled !== this.isRubberbandEnabled()) {
+        if (enabled) {
+          this.enableRubberband()
+        } else {
+          this.disableRubberband()
+        }
+      }
+    } else {
+      if (this.isRubberbandEnabled()) {
+        this.disableRubberband()
+      } else {
+        this.enableRubberband()
+      }
+    }
 
-  enableSelection() {
-    this.selection.enable()
     return this
   }
 
-  disableSelection() {
-    this.selection.disable()
+  isStrictRubberband() {
+    return this.selection.widget.options.strict === true
+  }
+
+  enableStrictRubberband() {
+    this.selection.widget.options.strict = true
+    return this
+  }
+
+  disableStrictRubberband() {
+    this.selection.widget.options.strict = false
+    return this
+  }
+
+  toggleStrictRubberband(strict?: boolean) {
+    if (strict != null) {
+      if (strict !== this.isStrictRubberband()) {
+        if (strict) {
+          this.enableStrictRubberband()
+        } else {
+          this.disableStrictRubberband()
+        }
+      }
+    } else {
+      if (this.isStrictRubberband()) {
+        this.disableStrictRubberband()
+      } else {
+        this.enableStrictRubberband()
+      }
+    }
+
+    return this
+  }
+
+  setSelectionFilter(filter?: Selection.Filter) {
+    this.selection.setFilter(filter)
+    return this
+  }
+
+  setSelectionDisplayContent(content?: Selection.Content) {
+    this.selection.setContent(content)
     return this
   }
 
@@ -1314,7 +1506,7 @@ export class Graph extends Basecoat<EventArgs> {
     return this.selection.cells
   }
 
-  getSelectedLength() {
+  getSelectedCellCount() {
     return this.selection.length
   }
 
@@ -1336,8 +1528,8 @@ export class Graph extends Basecoat<EventArgs> {
 
   // #region snapline
 
-  isSnaplineDisabled() {
-    return this.snapline.widget.disabled
+  isSnaplineEnabled() {
+    return !this.snapline.widget.disabled
   }
 
   enableSnapline() {
@@ -1350,6 +1542,25 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
+  toggleSnapline(enabled?: boolean) {
+    if (enabled != null) {
+      if (enabled !== this.isSnaplineEnabled()) {
+        if (enabled) {
+          this.enableSnapline()
+        } else {
+          this.disableSnapline()
+        }
+      }
+    } else {
+      if (this.isSnaplineEnabled()) {
+        this.disableSnapline()
+      } else {
+        this.enableSnapline()
+      }
+      return this
+    }
+  }
+
   hideSnapline() {
     this.snapline.widget.hide()
     return this
@@ -1360,17 +1571,36 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
-  isSnaplineOnResing() {
+  isSnaplineOnResizingEnabled() {
     return this.snapline.widget.options.resizing === true
   }
 
-  enableSnaplineOnResing() {
+  enableSnaplineOnResizing() {
     this.snapline.widget.options.resizing = true
     return this
   }
 
-  disableSnaplineOnResing() {
+  disableSnaplineOnResizing() {
     this.snapline.widget.options.resizing = false
+    return this
+  }
+
+  toggleSnaplineOnResizing(enableOnResizing?: boolean) {
+    if (enableOnResizing != null) {
+      if (enableOnResizing !== this.isSnaplineOnResizingEnabled()) {
+        if (enableOnResizing) {
+          this.enableSnaplineOnResizing()
+        } else {
+          this.disableSnaplineOnResizing()
+        }
+      }
+    } else {
+      if (this.isSnaplineOnResizingEnabled()) {
+        this.disableSnaplineOnResizing()
+      } else {
+        this.enableSnaplineOnResizing()
+      }
+    }
     return this
   }
 
@@ -1379,12 +1609,31 @@ export class Graph extends Basecoat<EventArgs> {
   }
 
   enableSharpSnapline() {
-    this.snapline.widget.options.sharp === true
+    this.snapline.widget.options.sharp = true
     return this
   }
 
   disableSharpSnapline() {
-    this.snapline.widget.options.sharp === false
+    this.snapline.widget.options.sharp = false
+    return this
+  }
+
+  toggleSharpSnapline(sharp?: boolean) {
+    if (sharp != null) {
+      if (sharp !== this.isSharpSnapline()) {
+        if (sharp) {
+          this.enableSharpSnapline()
+        } else {
+          this.disableSharpSnapline()
+        }
+      }
+    } else {
+      if (this.isSharpSnapline()) {
+        this.disableSharpSnapline()
+      } else {
+        this.enableSharpSnapline()
+      }
+    }
     return this
   }
 
