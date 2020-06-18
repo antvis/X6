@@ -40,8 +40,6 @@ export class Stencil extends View {
       ...options,
     } as Stencil.Options
 
-    console.log(this.options)
-
     this.dnd = new Dnd(this.options)
     this.onSearch = FunctionExt.debounce(this.onSearch, 200)
     this.container = document.createElement('div')
