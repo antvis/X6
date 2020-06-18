@@ -953,6 +953,16 @@ export class Scroller extends View {
       this.options.cursor = value
     }
   }
+
+  protected onRemove() {
+    this.stopListening()
+  }
+
+  @View.dispose()
+  dispose() {
+    this.$(this.graph.container).insertBefore(this.$container)
+    this.remove()
+  }
 }
 
 export namespace Scroller {

@@ -477,9 +477,12 @@ export class GraphView extends View {
 
   @View.dispose()
   dispose() {
+    const scroller = this.graph.scroller.widget
+    if (scroller) {
+      scroller.dispose()
+    }
     this.undelegateEvents()
     this.undelegateDocumentEvents()
-    this.remove()
   }
 }
 
