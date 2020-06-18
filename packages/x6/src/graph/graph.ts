@@ -1,4 +1,4 @@
-import { KeyValue } from '../types'
+import { KeyValue, ModifierKey } from '../types'
 import { Basecoat } from '../common'
 import { NumberExt, Dom } from '../util'
 import { Point, Rectangle } from '../geometry'
@@ -1481,6 +1481,10 @@ export class Graph extends Basecoat<EventArgs> {
     }
 
     return this
+  }
+
+  setRubberbandModifiers(modifiers?: string | ModifierKey[] | null) {
+    this.selection.setModifiers(modifiers)
   }
 
   setSelectionFilter(filter?: Selection.Filter) {

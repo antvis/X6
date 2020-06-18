@@ -199,8 +199,6 @@ export class Dnd extends View {
           y: clientY,
         })
 
-      console.log(isValidArea)
-
       if (embeddingMode) {
         draggingView.setEventData(e, { graph: this.targetGraph })
         const data = draggingView.getEventData<any>(e)
