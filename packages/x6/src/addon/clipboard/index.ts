@@ -19,6 +19,8 @@ export class Clipboard {
     const model = graph instanceof Model ? graph : graph.model
     const cloned = model.cloneSubGraph(cells, options)
 
+    console.log(cells, cloned)
+
     // sort asc by cell type
     this.cells = ArrayExt.sortBy(
       Object.keys(cloned).map((key) => cloned[key]),
@@ -60,7 +62,9 @@ export class Clipboard {
       dy = typeof offset === 'number' ? offset : offset.dy
     }
 
-    this.cells.map((cell) => {
+    const cells = this.cells
+
+    cells.map((cell) => {
       cell.model = null
       cell.removeProp('zIndex')
       if (dx || dy) {
@@ -80,6 +84,10 @@ export class Clipboard {
     model.batchUpdate('paste', () => {
       model.addCells(this.cells)
     })
+
+    this.copy(cells, graph, options)
+
+    return cells
   }
 
   isEmpty() {
