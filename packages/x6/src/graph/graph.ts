@@ -1357,7 +1357,7 @@ export class Graph extends Basecoat<EventArgs> {
   }
 
   disableMultipleSelection() {
-    this.selection.enableMultiple()
+    this.selection.disableMultiple()
     return this
   }
 
