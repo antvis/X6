@@ -1327,6 +1327,26 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
+  togglePanning(enabled?: boolean) {
+    if (enabled == null) {
+      if (this.isPanningEnabled()) {
+        this.disablePanning()
+      } else {
+        this.enablePanning()
+      }
+    } else {
+      if (enabled !== this.isPanningEnabled()) {
+        if (enabled) {
+          this.enablePanning()
+        } else {
+          this.disablePanning()
+        }
+      }
+    }
+
+    return this
+  }
+
   // #endregion
 
   // #region selection
@@ -1716,6 +1736,12 @@ export class Graph extends Basecoat<EventArgs> {
   }
 
   // #endregion
+
+  @Basecoat.dispose()
+  dispose() {
+    this.view.dispose()
+    this.renderer.dispose()
+  }
 }
 
 export namespace Graph {

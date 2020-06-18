@@ -474,6 +474,13 @@ export class GraphView extends View {
     // user-drag: none didn't help.
     return false
   }
+
+  @View.dispose()
+  dispose() {
+    this.undelegateEvents()
+    this.undelegateDocumentEvents()
+    this.remove()
+  }
 }
 
 export namespace GraphView {

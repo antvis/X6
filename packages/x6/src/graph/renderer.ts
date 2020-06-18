@@ -1079,6 +1079,9 @@ export class Renderer extends Base {
         }
       }) as CellView[]
   }
+
+  @Base.dispose()
+  dispose() {}
 }
 
 export namespace Renderer {
