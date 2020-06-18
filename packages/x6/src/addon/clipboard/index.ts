@@ -19,8 +19,6 @@ export class Clipboard {
     const model = graph instanceof Model ? graph : graph.model
     const cloned = model.cloneSubGraph(cells, options)
 
-    console.log(cells, cloned)
-
     // sort asc by cell type
     this.cells = ArrayExt.sortBy(
       Object.keys(cloned).map((key) => cloned[key]),

@@ -7,9 +7,6 @@
   box-sizing: border-box;
   overflow: scroll;
   outline: none;
-  cursor: move;
-  cursor: -moz-grabbing;
-  cursor: -webkit-grabbing;
 
   &-content {
     position: relative;
@@ -24,16 +21,17 @@
   }
 
   .@{x6-prefix}-graph {
-    position: relative;
+    position: absolute;
     display: inline-block;
     margin: 0;
+    box-shadow: none;
 
     > svg {
       display: block;
     }
   }
 
-  &-paged {
+  &&-paged {
     .@{x6-prefix}-graph {
       box-shadow: 0 0 4px 0 #eee;
     }

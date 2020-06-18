@@ -947,16 +947,11 @@ export class Scroller extends View {
     return this
   }
 
-  setCursor(value?: string) {
-    switch (value) {
-      case 'grab':
-        this.$container.css('cursor', '')
-        break
-      default:
-        this.$container.css('cursor', value || '')
+  setCursor(value?: string, options: { silent?: boolean } = {}) {
+    this.$container.css('cursor', value || '')
+    if (options.silent !== true) {
+      this.options.cursor = value
     }
-    this.$container.attr('data-cursor', value || '')
-    this.options.cursor = value
   }
 }
 
@@ -1091,7 +1086,6 @@ namespace Util {
     pageVisible: false,
     pageBreak: false,
     autoResize: true,
-    cursor: 'grab',
   }
 
   export function getOptions(options: Scroller.Options) {
