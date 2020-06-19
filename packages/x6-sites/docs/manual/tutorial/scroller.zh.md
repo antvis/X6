@@ -149,13 +149,43 @@ if (graph.isPanningEnabled()) {
 
 ## API
 
-- `graph.lockScroller()` 禁止滚动
-- `graph.unlockScroller()` 启用滚动
-- `graph.updateScroller()`
+禁止/启用滚动
 
-- `graph.scroll()` 获取/设置滚动条位置
-- `graph.getScroll()` 获取滚动条位置
-- `graph.setScroll()` 设置滚动条位置
+```ts
+graph.lockScroller()   // 禁止滚动
+graph.unlockScroller() // 启用滚动
+```
+
+获取/设置滚动条位置
+```ts
+// 获取滚动条位置
+graph.getScroll()
+
+// 设置滚动条位置
+graph.setScroll(100) 
+graph.setScroll(null, 200) 
+graph.setScroll(100, 200) 
+
+// 使用动画
+graph.setScroll(100, 200, { animation: { duration: 400 }})
+graph.setScroll(100, null, { animation: { duration: 200, easing: 'linear' }})      
+graph.setScroll(null, 200, { animation: { duration: 600 }}) 
+
+// 获取滚动条位置
+graph.scroll() 
+
+// 设置滚动条位置
+graph.scroll(100) 
+graph.scroll(null, 200) 
+graph.scroll(100, 200) 
+
+// 使用动画
+graph.scroll(100, 200, { animation: { duration: 400 }})
+graph.scroll(100, null, { animation: { duration: 200, easing: 'linear' }})      
+graph.scroll(null, 200, { animation: { duration: 600 }}) 
+```
+
+下面几个方法尝试滚动画布，使指定的点位于视口中心，这几个方法将尽量（比如指定的点位于画布的角落）滚动画布，这意味着滚动后指定的点不一定就能出现在视口中心。
 
 - `graph.scrollTo(x?: number, y?: number, options?: ScrollOptions)`
   
@@ -165,9 +195,60 @@ if (graph.isPanningEnabled()) {
   graph.scrollTo(100, 200)  // 滚动到 [100, 200]
   graph.scrollTo(100)       // 滚动到 [100, null]
   graph.scrollTo(null, 200) // 滚动到 [null, 200]
+
+  // 支持动画
+  graph.scrollTo(100, 200, { animation: { duration: 400 }})
+  graph.scrollTo(100, null, { animation: { duration: 200, easing: 'linear' }})      
+  graph.scrollTo(null, 200, { animation: { duration: 600 }}) 
   ```
 
+- `graph.scrollToContent(options?: ScrollOptions)`
+  
+  滚动画布使画布的内容中心位于画布的视口中心。
 
+  ```ts
+  graph.scrollToContent()
+  graph.scrollToContent({ animation: { duration: 600 }})
+  ```
+
+- `graph.scrollToCell(cell: Cell, options?: ScrollOptions)`
+
+  滚动画布使节点/边的中心位于画布的视口中心。
+
+  ```ts
+  graph.scrollToCell(cell)
+  graph.scrollToCell(cell, { animation: { duration: 600 }})
+  ```
+
+下面几个方法强制将指定的点与视口中心对齐，如果指定的点不能通过滚动画布来位于视口中心（如位于画布角落的点），则通过给画布增加 padding 的方式来将该点强制与视口中心对齐。
+
+```ts
+// 将画布中心与视口中心对齐
+graph.center()
+graph.center({ padding: { left: 100 }})
+
+// 将指定的点与视口中心对齐
+graph.center(100, 200, { padding: { left: 100 }})
+graph.center(100, null, { padding: { left: 100 }})
+graph.center(null, 200, { padding: { left: 100 }})
+
+// 将画布内容中心与视口中心对齐
+graph.centerContent()
+graph.centerContent({ padding: { left: 100 }})
+
+// 将节点/边中心与视口中心对齐
+graph.centerCell(cell)
+graph.centerCell(cell, { padding: { left: 100 }})
+```
+
+缩放画布
+
+- `graph.zoom()` // 获取画布缩放
+- `graph.zoom(scale: number, options?: ZoomOptions)` // 设置画布缩放
+- `graph.zoomToRect(rect: Rectangle.RectangleLike, options?: ScaleContentToFitOptions)`
+- `graph.zoomToFit(options?: ScaleContentToFitOptions)`
+
+拖拽平移
 
 - `graph.isPanningEnabled()` 画布是否可被拖拽
 - `graph.enablePanning()` 启用画布拖拽
