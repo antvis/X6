@@ -133,3 +133,5 @@ export class CoordManager extends Base {
     return this.graphToLocalRect(graphRect)
   }
 }
+
+export namespace CoordManager {}

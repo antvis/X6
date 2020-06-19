@@ -115,7 +115,7 @@ export class NodePreset {
       ],
 
       bbox(view) {
-        if (this.options.useModelGeometry) {
+        if (this.options.useCellBBox) {
           const node = view.cell as Node
           return node.getBBox()
         }

@@ -474,6 +474,16 @@ export class GraphView extends View {
     // user-drag: none didn't help.
     return false
   }
+
+  @View.dispose()
+  dispose() {
+    const scroller = this.graph.scroller.widget
+    if (scroller) {
+      scroller.dispose()
+    }
+    this.undelegateEvents()
+    this.undelegateDocumentEvents()
+  }
 }
 
 export namespace GraphView {

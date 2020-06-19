@@ -1,4 +1,4 @@
-import { KeyValue } from '../types'
+import { KeyValue, ModifierKey } from '../types'
 import { Basecoat } from '../common'
 import { NumberExt, Dom } from '../util'
 import { Point, Rectangle } from '../geometry'
@@ -582,6 +582,10 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
+  getScale() {
+    return this.scale()
+  }
+
   scale(): Dom.Scale
   scale(sx: number, sy?: number, ox?: number, oy?: number): this
   scale(
@@ -896,12 +900,8 @@ export class Graph extends Basecoat<EventArgs> {
 
   // #region clipboard
 
-  isClipboardEmpty() {
-    return this.clipboard.isEmpty()
-  }
-
-  isClipboardDisabled() {
-    return this.clipboard.disabled
+  isClipboardEnabled() {
+    return !this.clipboard.disabled
   }
 
   enableClipboard() {
@@ -912,6 +912,30 @@ export class Graph extends Basecoat<EventArgs> {
   disableClipboard() {
     this.clipboard.disable()
     return this
+  }
+
+  toggleClipboard(enabled?: boolean) {
+    if (enabled != null) {
+      if (enabled !== this.isClipboardEnabled()) {
+        if (enabled) {
+          this.enableClipboard()
+        } else {
+          this.disableClipboard()
+        }
+      }
+    } else {
+      if (this.isClipboardEnabled()) {
+        this.disableClipboard()
+      } else {
+        this.enableClipboard()
+      }
+    }
+
+    return this
+  }
+
+  isClipboardEmpty() {
+    return this.clipboard.isEmpty()
   }
 
   getCellsInClipboard() {
@@ -934,16 +958,15 @@ export class Graph extends Basecoat<EventArgs> {
   }
 
   paste(options: Clipboard.PasteOptions = {}, graph: Graph = this) {
-    this.clipboard.paste(options, graph)
-    return this
+    return this.clipboard.paste(options, graph)
   }
 
   // #endregion
 
   // #region redo/undo
 
-  isHistoryDisabled() {
-    return this.history.disabled
+  isHistoryEnabled() {
+    return !this.history.disabled
   }
 
   enableHistory() {
@@ -953,6 +976,26 @@ export class Graph extends Basecoat<EventArgs> {
 
   disableHistory() {
     this.history.disable()
+    return this
+  }
+
+  toggleHistory(enabled?: boolean) {
+    if (enabled != null) {
+      if (enabled !== this.isHistoryEnabled()) {
+        if (enabled) {
+          this.enableHistory()
+        } else {
+          this.disableHistory()
+        }
+      }
+    } else {
+      if (this.isHistoryEnabled()) {
+        this.disableHistory()
+      } else {
+        this.enableHistory()
+      }
+    }
+
     return this
   }
 
@@ -987,8 +1030,8 @@ export class Graph extends Basecoat<EventArgs> {
 
   // #region keyboard
 
-  isKeyboardDisabled() {
-    return this.keyboard.disabled
+  isKeyboardEnabled() {
+    return !this.keyboard.disabled
   }
 
   enableKeyboard() {
@@ -998,6 +1041,25 @@ export class Graph extends Basecoat<EventArgs> {
 
   disableKeyboard() {
     this.keyboard.disable()
+    return this
+  }
+
+  toggleKeyboard(enabled?: boolean) {
+    if (enabled != null) {
+      if (enabled !== this.isKeyboardEnabled()) {
+        if (enabled) {
+          this.enableKeyboard()
+        } else {
+          this.disableKeyboard()
+        }
+      }
+    } else {
+      if (this.isKeyboardEnabled()) {
+        this.disableKeyboard()
+      } else {
+        this.enableKeyboard()
+      }
+    }
     return this
   }
 
@@ -1019,8 +1081,8 @@ export class Graph extends Basecoat<EventArgs> {
 
   // #region mousewheel
 
-  isMouseWheelDisabled() {
-    return this.mousewheel.disabled
+  isMouseWheelEnabled() {
+    return !this.mousewheel.disabled
   }
 
   enableMouseWheel() {
@@ -1037,16 +1099,51 @@ export class Graph extends Basecoat<EventArgs> {
 
   // #region scroller
 
+  @Decorator.checkScroller()
   lockScroller() {
     this.scroller.widget?.lock()
   }
 
+  @Decorator.checkScroller()
   unlockScroller() {
     this.scroller.widget?.unlock()
   }
 
+  @Decorator.checkScroller()
   updateScroller() {
     this.scroller.widget?.update()
+  }
+
+  @Decorator.checkScroller()
+  getScroll() {
+    return this.scroll()
+  }
+
+  @Decorator.checkScroller()
+  setScroll(
+    left?: number,
+    top?: number,
+    options?: ScrollerWidget.ScrollOptions,
+  ) {
+    return this.scroll(left, top, options)
+  }
+
+  scroll(): { left: number; top: number }
+  scroll(
+    left?: number,
+    top?: number,
+    options?: ScrollerWidget.ScrollOptions,
+  ): this
+  @Decorator.checkScroller()
+  scroll(left?: number, top?: number, options?: ScrollerWidget.ScrollOptions) {
+    const scroller = this.scroller.widget
+    if (scroller) {
+      if (left == null && top == null) {
+        return scroller.scroll()
+      }
+      scroller.scroll(left, top, options)
+    }
+    return this
   }
 
   /**
@@ -1255,8 +1352,8 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
-  isPanningDisabled() {
-    return !this.scroller.allowPanning
+  isPanningEnabled() {
+    return this.scroller.allowPanning
   }
 
   enablePanning() {
@@ -1269,12 +1366,134 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
+  togglePanning(enabled?: boolean) {
+    if (enabled == null) {
+      if (this.isPanningEnabled()) {
+        this.disablePanning()
+      } else {
+        this.enablePanning()
+      }
+    } else {
+      if (enabled !== this.isPanningEnabled()) {
+        if (enabled) {
+          this.enablePanning()
+        } else {
+          this.disablePanning()
+        }
+      }
+    }
+
+    return this
+  }
+
   // #endregion
 
   // #region selection
 
-  isRubberbandDsiabled() {
-    return this.selection.rubberbandDisabled
+  isSelectionEnabled() {
+    return !this.selection.disabled
+  }
+
+  enableSelection() {
+    this.selection.enable()
+    return this
+  }
+
+  disableSelection() {
+    this.selection.disable()
+    return this
+  }
+
+  toggleSelection(enabled?: boolean) {
+    if (enabled != null) {
+      if (enabled !== this.isSelectionEnabled()) {
+        if (enabled) {
+          this.enableSelection()
+        } else {
+          this.disableSelection()
+        }
+      }
+    } else {
+      if (this.isSelectionEnabled()) {
+        this.disableSelection()
+      } else {
+        this.enableSelection()
+      }
+    }
+
+    return this
+  }
+
+  isMultipleSelection() {
+    return this.selection.isMultiple()
+  }
+
+  enableMultipleSelection() {
+    this.selection.enableMultiple()
+    return this
+  }
+
+  disableMultipleSelection() {
+    this.selection.disableMultiple()
+    return this
+  }
+
+  toggleMultipleSelection(multiple?: boolean) {
+    if (multiple != null) {
+      if (multiple !== this.isMultipleSelection()) {
+        if (multiple) {
+          this.enableMultipleSelection()
+        } else {
+          this.disableMultipleSelection()
+        }
+      }
+    } else {
+      if (this.isMultipleSelection()) {
+        this.disableMultipleSelection()
+      } else {
+        this.enableMultipleSelection()
+      }
+    }
+
+    return this
+  }
+
+  isSelectionMovable() {
+    return this.selection.widget.options.movable !== false
+  }
+
+  enableSelectionMovable() {
+    this.selection.widget.options.movable = true
+    return this
+  }
+
+  disableSelectionMovable() {
+    this.selection.widget.options.movable = false
+    return this
+  }
+
+  toggleSelectionMovable(movable?: boolean) {
+    if (movable != null) {
+      if (movable !== this.isSelectionMovable()) {
+        if (movable) {
+          this.enableSelectionMovable()
+        } else {
+          this.disableSelectionMovable()
+        }
+      }
+    } else {
+      if (this.isSelectionMovable()) {
+        this.disableSelectionMovable()
+      } else {
+        this.enableSelectionMovable()
+      }
+    }
+
+    return this
+  }
+
+  isRubberbandEnabled() {
+    return !this.selection.rubberbandDisabled
   }
 
   enableRubberband() {
@@ -1287,17 +1506,71 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
-  isSelectionDisabled() {
-    return this.selection.disabled
-  }
+  toggleRubberband(enabled?: boolean) {
+    if (enabled != null) {
+      if (enabled !== this.isRubberbandEnabled()) {
+        if (enabled) {
+          this.enableRubberband()
+        } else {
+          this.disableRubberband()
+        }
+      }
+    } else {
+      if (this.isRubberbandEnabled()) {
+        this.disableRubberband()
+      } else {
+        this.enableRubberband()
+      }
+    }
 
-  enableSelection() {
-    this.selection.enable()
     return this
   }
 
-  disableSelection() {
-    this.selection.disable()
+  isStrictRubberband() {
+    return this.selection.widget.options.strict === true
+  }
+
+  enableStrictRubberband() {
+    this.selection.widget.options.strict = true
+    return this
+  }
+
+  disableStrictRubberband() {
+    this.selection.widget.options.strict = false
+    return this
+  }
+
+  toggleStrictRubberband(strict?: boolean) {
+    if (strict != null) {
+      if (strict !== this.isStrictRubberband()) {
+        if (strict) {
+          this.enableStrictRubberband()
+        } else {
+          this.disableStrictRubberband()
+        }
+      }
+    } else {
+      if (this.isStrictRubberband()) {
+        this.disableStrictRubberband()
+      } else {
+        this.enableStrictRubberband()
+      }
+    }
+
+    return this
+  }
+
+  setRubberbandModifiers(modifiers?: string | ModifierKey[] | null) {
+    this.selection.setModifiers(modifiers)
+  }
+
+  setSelectionFilter(filter?: Selection.Filter) {
+    this.selection.setFilter(filter)
+    return this
+  }
+
+  setSelectionDisplayContent(content?: Selection.Content) {
+    this.selection.setContent(content)
     return this
   }
 
@@ -1314,7 +1587,7 @@ export class Graph extends Basecoat<EventArgs> {
     return this.selection.cells
   }
 
-  getSelectedLength() {
+  getSelectedCellCount() {
     return this.selection.length
   }
 
@@ -1336,8 +1609,8 @@ export class Graph extends Basecoat<EventArgs> {
 
   // #region snapline
 
-  isSnaplineDisabled() {
-    return this.snapline.widget.disabled
+  isSnaplineEnabled() {
+    return !this.snapline.widget.disabled
   }
 
   enableSnapline() {
@@ -1350,8 +1623,107 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
+  toggleSnapline(enabled?: boolean) {
+    if (enabled != null) {
+      if (enabled !== this.isSnaplineEnabled()) {
+        if (enabled) {
+          this.enableSnapline()
+        } else {
+          this.disableSnapline()
+        }
+      }
+    } else {
+      if (this.isSnaplineEnabled()) {
+        this.disableSnapline()
+      } else {
+        this.enableSnapline()
+      }
+      return this
+    }
+  }
+
   hideSnapline() {
     this.snapline.widget.hide()
+    return this
+  }
+
+  setSnaplineFilter(filter?: Snapline.Filter) {
+    this.snapline.widget.setFilter(filter)
+    return this
+  }
+
+  isSnaplineOnResizingEnabled() {
+    return this.snapline.widget.options.resizing === true
+  }
+
+  enableSnaplineOnResizing() {
+    this.snapline.widget.options.resizing = true
+    return this
+  }
+
+  disableSnaplineOnResizing() {
+    this.snapline.widget.options.resizing = false
+    return this
+  }
+
+  toggleSnaplineOnResizing(enableOnResizing?: boolean) {
+    if (enableOnResizing != null) {
+      if (enableOnResizing !== this.isSnaplineOnResizingEnabled()) {
+        if (enableOnResizing) {
+          this.enableSnaplineOnResizing()
+        } else {
+          this.disableSnaplineOnResizing()
+        }
+      }
+    } else {
+      if (this.isSnaplineOnResizingEnabled()) {
+        this.disableSnaplineOnResizing()
+      } else {
+        this.enableSnaplineOnResizing()
+      }
+    }
+    return this
+  }
+
+  isSharpSnapline() {
+    return this.snapline.widget.options.sharp === true
+  }
+
+  enableSharpSnapline() {
+    this.snapline.widget.options.sharp = true
+    return this
+  }
+
+  disableSharpSnapline() {
+    this.snapline.widget.options.sharp = false
+    return this
+  }
+
+  toggleSharpSnapline(sharp?: boolean) {
+    if (sharp != null) {
+      if (sharp !== this.isSharpSnapline()) {
+        if (sharp) {
+          this.enableSharpSnapline()
+        } else {
+          this.disableSharpSnapline()
+        }
+      }
+    } else {
+      if (this.isSharpSnapline()) {
+        this.disableSharpSnapline()
+      } else {
+        this.enableSharpSnapline()
+      }
+    }
+    return this
+  }
+
+  getSnaplineTolerance() {
+    return this.snapline.widget.options.tolerance
+  }
+
+  setSnaplineTolerance(tolerance: number) {
+    this.snapline.widget.options.tolerance = tolerance
     return this
   }
 
@@ -1403,6 +1775,16 @@ export class Graph extends Basecoat<EventArgs> {
   }
 
   // #endregion
+
+  // #region dispose
+
+  @Basecoat.dispose()
+  dispose() {
+    this.view.dispose()
+    this.renderer.dispose()
+  }
+
+  // #endregion
 }
 
 export namespace Graph {
@@ -1410,24 +1792,24 @@ export namespace Graph {
 }
 
 export namespace Graph {
-  export const View = GraphView
-  export const Hook = HookManager
-  export const Renderer = ViewRenderer
-  export const Keyboard = Shortcut
-  export const MouseWheel = Wheel
-  export const BaseManager = Base
-  export const DefsManager = Defs
-  export const GridManager = Grid
-  export const CoordManager = Coord
-  export const PrintManager = Print
-  export const FormatManager = Format
-  export const MiniMapManager = MiniMap
-  export const HistoryManager = History
-  export const SnaplineManager = Snapline
-  export const ScrollerManager = Scroller
-  export const ClipboardManager = Clipboard
-  export const TransformManager = Transform
-  export const HighlightManager = Highlight
-  export const BackgroundManager = Background
-  export const SelectionManager = Selection
+  export import View = GraphView
+  export import Hook = HookManager
+  export import Renderer = ViewRenderer
+  export import Keyboard = Shortcut
+  export import MouseWheel = Wheel
+  export import BaseManager = Base
+  export import DefsManager = Defs
+  export import GridManager = Grid
+  export import CoordManager = Coord
+  export import PrintManager = Print
+  export import FormatManager = Format
+  export import MiniMapManager = MiniMap
+  export import HistoryManager = History
+  export import SnaplineManager = Snapline
+  export import ScrollerManager = Scroller
+  export import ClipboardManager = Clipboard
+  export import TransformManager = Transform
+  export import HighlightManager = Highlight
+  export import BackgroundManager = Background
+  export import SelectionManager = Selection
 }

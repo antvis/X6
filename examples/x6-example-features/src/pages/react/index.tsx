@@ -45,7 +45,7 @@ export default class Example extends React.Component {
     })
 
     const source = graph.addNode({
-      type: 'react-shape',
+      shape: 'react-shape',
       x: 80,
       y: 80,
       width: 160,
@@ -56,7 +56,7 @@ export default class Example extends React.Component {
     })
 
     const target = graph.addNode({
-      type: 'react-shape',
+      shape: 'react-shape',
       x: 320,
       y: 320,
       width: 160,
@@ -65,7 +65,6 @@ export default class Example extends React.Component {
     })
 
     graph.addEdge({
-      type: 'edge',
       source,
       target,
     })

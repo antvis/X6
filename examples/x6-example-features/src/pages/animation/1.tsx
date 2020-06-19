@@ -14,7 +14,7 @@ export default class Example extends React.Component {
     })
 
     const ball = graph.addNode({
-      type: 'circle',
+      shape: 'circle',
       x: -25,
       y: 50,
       width: 50,
@@ -75,7 +75,7 @@ export default class Example extends React.Component {
     )
 
     const ufo = graph.addNode({
-      type: 'ellipse',
+      shape: 'ellipse',
       x: 400,
       y: 50,
       width: 35,

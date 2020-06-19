@@ -23,7 +23,6 @@ export default class Example extends React.Component<
     })
 
     const parent = graph.addNode({
-      type: 'rect',
       size: { width: 100, height: 30 },
       position: { x: 100, y: 40 },
       attrs: {
@@ -34,7 +33,6 @@ export default class Example extends React.Component<
 
     const child1 = graph
       .addNode({
-        type: 'rect',
         x: 70,
         y: 130,
         width: 80,
@@ -50,12 +48,10 @@ export default class Example extends React.Component<
 
     this.parent = parent
     this.edge1 = graph.addEdge({
-      type: 'edge',
       source: parent,
       target: child1,
     })
     this.edge2 = graph.addEdge({
-      type: 'edge',
       source: parent,
       target: child2,
       vertices: [

@@ -6,5 +6,7 @@ export class SnaplineManager extends Base {
 }
 
 export namespace SnaplineManager {
+  export type Filter = Snapline.Filter
+
   export interface Options extends Snapline.Options {}
 }

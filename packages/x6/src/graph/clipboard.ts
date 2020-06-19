@@ -56,11 +56,12 @@ export class ClipboardManager extends Base implements IDisablable {
 
   paste(options: Clipboard.PasteOptions = {}, graph: Graph = this.graph) {
     if (!this.disabled) {
-      this.widget.paste(graph, {
+      return this.widget.paste(graph, {
         ...this.commonOptions,
         ...options,
       })
     }
+    return []
   }
 
   clean() {

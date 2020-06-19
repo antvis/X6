@@ -38,10 +38,12 @@ export class GridManager extends Base {
 
   show() {
     this.setVisible(true)
+    this.update()
   }
 
   hide() {
     this.setVisible(false)
+    this.update()
   }
 
   clear() {
@@ -141,8 +143,8 @@ export class GridManager extends Base {
       return []
     }
 
-    const name = (options as GridDefinition.NativeItem).name
-    if (name == null) {
+    const type = (options as GridDefinition.NativeItem).type
+    if (type == null) {
       return [
         {
           ...GridDefinition.presets.dot,
@@ -151,7 +153,7 @@ export class GridManager extends Base {
       ]
     }
 
-    const items = GridDefinition.registry.get(name)
+    const items = GridDefinition.registry.get(type)
     if (items) {
       let args = options.args || []
       if (!Array.isArray(args)) {
@@ -163,7 +165,7 @@ export class GridManager extends Base {
         : [{ ...items, ...args[0] }]
     }
 
-    return GridDefinition.registry.onNotFound(name)
+    return GridDefinition.registry.onNotFound(type)
   }
 
   @Base.dispose()

@@ -25,9 +25,9 @@ export class Boundary extends ToolsView.ToolItem<
   update() {
     const view = this.cellView
     const options = this.options
-    const { useCellGeometry, rotate } = options
+    const { useCellBBox, rotate } = options
     const padding = NumberExt.normalizeSides(options.padding)
-    let bbox = Util.getViewBBox(view, useCellGeometry).moveAndExpand({
+    let bbox = Util.getViewBBox(view, useCellBBox).moveAndExpand({
       x: -padding.left,
       y: -padding.top,
       width: padding.left + padding.right,
@@ -59,7 +59,7 @@ export namespace Boundary {
   export interface Options extends ToolsView.ToolItem.Options {
     padding?: NumberExt.SideOptions
     rotate?: boolean
-    useCellGeometry?: boolean
+    useCellBBox?: boolean
     attrs?: Attr.SimpleAttrs
   }
 }

@@ -339,6 +339,34 @@ export class Scroller extends View {
     this.graph.resize(options.width * dx, options.height * dy)
   }
 
+  scroll(): { left: number; top: number }
+  scroll(left?: number, top?: number, options?: Scroller.ScrollOptions): this
+  scroll(left?: number, top?: number, options?: Scroller.ScrollOptions) {
+    if (left == null && top == null) {
+      return {
+        left: this.container.scrollLeft,
+        top: this.container.scrollTop,
+      }
+    }
+
+    const prop: { [key: string]: number } = {}
+    if (typeof left === 'number') {
+      prop.scrollLeft = left
+    }
+
+    if (typeof top === 'number') {
+      prop.scrollTop = top
+    }
+
+    if (options && options.animation) {
+      this.$container.animate(prop, options.animation)
+    } else {
+      this.$container.prop(prop)
+    }
+
+    return this
+  }
+
   /**
    * Try to scroll to ensure that the position (x,y) on the graph (in local
    * coordinates) is at the center of the viewport. If only one of the
@@ -947,16 +975,21 @@ export class Scroller extends View {
     return this
   }
 
-  setCursor(value?: string) {
-    switch (value) {
-      case 'grab':
-        this.$container.css('cursor', '')
-        break
-      default:
-        this.$container.css('cursor', value || '')
+  setCursor(value?: string, options: { silent?: boolean } = {}) {
+    this.$container.css('cursor', value || '')
+    if (options.silent !== true) {
+      this.options.cursor = value
     }
-    this.$container.attr('data-cursor', value || '')
-    this.options.cursor = value
+  }
+
+  protected onRemove() {
+    this.stopListening()
+  }
+
+  @View.dispose()
+  dispose() {
+    this.$(this.graph.container).insertBefore(this.$container)
+    this.remove()
   }
 }
 
@@ -1091,7 +1124,6 @@ namespace Util {
     pageVisible: false,
     pageBreak: false,
     autoResize: true,
-    cursor: 'grab',
   }
 
   export function getOptions(options: Scroller.Options) {

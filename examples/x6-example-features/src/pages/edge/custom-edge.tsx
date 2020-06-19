@@ -179,7 +179,7 @@ export default class Example extends React.Component {
     })
 
     graph.addEdge({
-      type: 'shadow-edge',
+      shape: 'shadow-edge',
       source: { x: 100, y: 200 },
       target: { x: 500, y: 200 },
       vertices: [{ x: 300, y: 300 }],
@@ -258,7 +258,7 @@ export default class Example extends React.Component {
     })
 
     graph.addEdge({
-      type: 'arrow',
+      shape: 'arrow',
       source: { x: 100, y: 300 },
       target: { x: 300, y: 350 },
     })

@@ -30,41 +30,38 @@ $ yarn add @antv/x6
 ```
 
 ```ts
-import { x6 } from '@antv/x6'
+import { Graph } from '@antv/x6'
 
-const container = document.getElementById('container')
-const graph = x6.render(container, {
+const graph = new Graph({
+  container: document.getElementById('container'),
+}) 
+
+graph.fromJSON({
   nodes: [
     {
-      id: 'node-0',
+      id: 'node1',
       x: 60,
       y: 60,
       width: 80,
-      height: 30,
+      height: 40,
       label: 'Hello',
     },
     {
-      id: 'node-1',
+      id: 'node2',
       x: 240,
       y: 240,
       width: 80,
-      height: 30,
+      height: 40,
       label: 'World',
     },
   ],
   edges: [
     {
-      id: 'edge-0',
-      source: 'node-0',
-      target: 'node-1',
-      label: 'Edge Label',
+      source: 'node1',
+      target: 'node2',
     },
   ],
 })
-
-const graphData = graph.toJSON()
-const graphDataString = JSON.stringify(graphData)
-graph.render(JSON.parse(graphDataString))
 
 ```
 

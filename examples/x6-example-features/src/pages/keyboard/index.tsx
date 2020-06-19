@@ -11,18 +11,19 @@ export default class Example extends React.Component {
       width: 800,
       height: 600,
       grid: true,
+      selecting: {
+        enabled: true,
+      },
+      clipboard: {
+        enabled: true,
+      },
       keyboard: {
         enabled: true,
         global: false,
       },
     })
 
-    graph.keyboard.on('command+shift+k', () => {
-      console.log(123)
-    })
-
     graph.addNode({
-      type: 'rect',
       x: 50,
       y: 50,
       width: 100,
@@ -31,7 +32,6 @@ export default class Example extends React.Component {
     })
 
     graph.addNode({
-      type: 'rect',
       x: 250,
       y: 50,
       width: 100,
@@ -40,12 +40,28 @@ export default class Example extends React.Component {
     })
 
     graph.addNode({
-      type: 'rect',
       x: 350,
       y: 150,
       width: 100,
       height: 40,
       attrs: { label: { text: 'C' } },
+    })
+
+    graph.bindKey('meta+c', () => {
+      const cells = graph.getSelectedCells()
+      if (cells.length) {
+        graph.copy(cells)
+      }
+      return false
+    })
+
+    graph.bindKey('meta+v', () => {
+      if (!graph.isClipboardEmpty()) {
+        const cells = graph.paste({ offset: 32 })
+        graph.cleanSelection()
+        graph.select(cells)
+      }
+      return false
     })
   }
 

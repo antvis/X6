@@ -137,6 +137,13 @@ export class Model extends Basecoat<Model.EventArgs> {
   resetCells(cells: Cell[], options: Collection.SetOptions = {}) {
     const items = cells.map((cell) => this.prepareCell(cell, options))
     this.collection.reset(items, options)
+    items.forEach((cell) => {
+      if (cell.isEdge()) {
+        // update reference
+        cell.getSourceCell()
+        cell.getTargetCell()
+      }
+    })
     return this
   }
 
@@ -1097,10 +1104,10 @@ export namespace Model {
   export interface FromJSONOptions extends Collection.SetOptions {}
 
   export type FromJSONData =
-    | (Node.Properties | Edge.Properties)[]
+    | (Node.Metadata | Edge.Metadata)[]
     | (Partial<ReturnType<typeof toJSON>> & {
-        nodes?: Node.Properties[]
-        edges?: Edge.Properties[]
+        nodes?: Node.Metadata[]
+        edges?: Edge.Metadata[]
       })
 
   export interface GetCellsInAreaOptions {
@@ -1210,7 +1217,8 @@ export namespace Model {
 
       if (data.nodes) {
         data.nodes.forEach((node) => {
-          if (node.type == null) {
+          if (node.shape == null) {
+            node.shape = 'rect'
           }
           cells.push(node)
         })
@@ -1218,7 +1226,8 @@ export namespace Model {
 
       if (data.edges) {
         data.edges.forEach((edge) => {
-          if (edge.type == null) {
+          if (edge.shape == null) {
+            edge.shape = 'edge'
           }
           cells.push(edge)
         })
@@ -1226,7 +1235,7 @@ export namespace Model {
     }
 
     return cells.map((cell) => {
-      const type = cell.type
+      const type = cell.shape
       if (type) {
         if (Node.registry.exist(type)) {
           return Node.create(cell)
@@ -1235,7 +1244,9 @@ export namespace Model {
           return Edge.create(cell)
         }
       }
-      throw new Error('Node/Edge type is required for creating a node instance')
+      throw new Error(
+        'The `shape` should be specipied when creating a node/edge instance',
+      )
     })
   }
 }

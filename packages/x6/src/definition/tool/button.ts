@@ -33,9 +33,9 @@ export class Button extends ToolsView.ToolItem<
     const options = this.options
 
     let { x = 0, y = 0 } = options
-    const { offset, useCellGeometry, rotate } = options
+    const { offset, useCellBBox, rotate } = options
 
-    let bbox = Util.getViewBBox(view, useCellGeometry)
+    let bbox = Util.getViewBBox(view, useCellBBox)
     const angle = view.cell.getAngle()
     if (!rotate) {
       bbox = bbox.bbox(angle)
@@ -127,7 +127,7 @@ export namespace Button {
     distance?: number
     offset?: number | Point.PointLike
     rotate?: boolean
-    useCellGeometry?: boolean
+    useCellBBox?: boolean
     onClick?: (
       this: CellView,
       evt: JQuery.MouseDownEvent,

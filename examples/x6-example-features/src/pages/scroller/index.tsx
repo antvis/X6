@@ -40,14 +40,14 @@ export default class Example extends React.Component {
     const graph = new Graph({
       container: this.graphContainer,
       width: 800,
-      height: 800,
+      height: 500,
       grid: {
         visible: true,
       },
       scroller: {
         enabled: true,
-        width: 600,
-        height: 400,
+        // width: 600,
+        // height: 400,
         pageVisible: true,
         pageBreak: false,
         panning: true,
@@ -74,6 +74,7 @@ export default class Example extends React.Component {
       },
       mousewheel: {
         enabled: true,
+        // fixed: false,
         modifiers: ['ctrl', 'meta'],
       },
     })
@@ -81,7 +82,7 @@ export default class Example extends React.Component {
     this.scroller = graph.scroller.widget
 
     const rect = graph.addNode({
-      type: 'rect',
+      shape: 'rect',
       x: 300,
       y: 300,
       width: 90,
@@ -93,7 +94,7 @@ export default class Example extends React.Component {
     })
 
     const circle = graph.addNode({
-      type: 'circle',
+      shape: 'circle',
       x: 400,
       y: 400,
       width: 40,
@@ -105,12 +106,11 @@ export default class Example extends React.Component {
     })
 
     graph.addEdge({
-      type: 'edge',
       source: rect,
       target: circle,
     })
 
-    this.scroller.center()
+    graph.center()
   }
 
   refContainer = (container: HTMLDivElement) => {
