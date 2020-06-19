@@ -42,7 +42,6 @@ interface SelectionOptions {
   strict?: boolean
   modifiers?: string | ('alt' | 'ctrl' | 'meta' | 'shift')[] | null
   movable?: boolean
-  useCellGeometry?: boolean
   content?:
     | null
     | false

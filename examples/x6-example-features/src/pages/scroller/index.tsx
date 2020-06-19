@@ -74,6 +74,7 @@ export default class Example extends React.Component {
       },
       mousewheel: {
         enabled: true,
+        // fixed: false,
         modifiers: ['ctrl', 'meta'],
       },
     })
