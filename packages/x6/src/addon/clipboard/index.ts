@@ -8,7 +8,7 @@ import { Model } from '../../model/model'
 
 export class Clipboard {
   protected options: Clipboard.Options
-  public cells: Cell[]
+  public cells: Cell[] = []
 
   copy(
     cells: Cell[],
