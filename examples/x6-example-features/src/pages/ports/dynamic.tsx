@@ -130,7 +130,7 @@ export default class Example extends React.Component {
         router: {
           name: 'er',
           args: {
-            direction: 'V',
+            direction: 'W',
           },
         },
         connectionPoint: 'boundary',

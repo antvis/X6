@@ -40,14 +40,14 @@ export default class Example extends React.Component {
     const graph = new Graph({
       container: this.graphContainer,
       width: 800,
-      height: 800,
+      height: 500,
       grid: {
         visible: true,
       },
       scroller: {
         enabled: true,
-        width: 600,
-        height: 400,
+        // width: 600,
+        // height: 400,
         pageVisible: true,
         pageBreak: false,
         panning: true,
@@ -109,7 +109,7 @@ export default class Example extends React.Component {
       target: circle,
     })
 
-    this.scroller.center()
+    graph.center()
   }
 
   refContainer = (container: HTMLDivElement) => {
