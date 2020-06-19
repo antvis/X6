@@ -38,10 +38,12 @@ export class GridManager extends Base {
 
   show() {
     this.setVisible(true)
+    this.update()
   }
 
   hide() {
     this.setVisible(false)
+    this.update()
   }
 
   clear() {
