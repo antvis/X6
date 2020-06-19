@@ -339,6 +339,34 @@ export class Scroller extends View {
     this.graph.resize(options.width * dx, options.height * dy)
   }
 
+  scroll(): { left: number; top: number }
+  scroll(left?: number, top?: number, options?: Scroller.ScrollOptions): this
+  scroll(left?: number, top?: number, options?: Scroller.ScrollOptions) {
+    if (left == null && top == null) {
+      return {
+        left: this.container.scrollLeft,
+        top: this.container.scrollTop,
+      }
+    }
+
+    const prop: { [key: string]: number } = {}
+    if (typeof left === 'number') {
+      prop.scrollLeft = left
+    }
+
+    if (typeof top === 'number') {
+      prop.scrollTop = top
+    }
+
+    if (options && options.animation) {
+      this.$container.animate(prop, options.animation)
+    } else {
+      this.$container.prop(prop)
+    }
+
+    return this
+  }
+
   /**
    * Try to scroll to ensure that the position (x,y) on the graph (in local
    * coordinates) is at the center of the viewport. If only one of the
