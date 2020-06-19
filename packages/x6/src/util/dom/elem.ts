@@ -195,3 +195,20 @@ export function appendTo(elem: Element, target: Element) {
     target.appendChild(elem)
   }
 }
+
+// Determines whether a node is an HTML node
+export function isHTMLElement(
+  elem: any
+): elem is HTMLElement {
+  try {
+    // Using W3 DOM2 (works for FF, Opera and Chrome)
+    return elem instanceof HTMLElement
+  } catch(e) {
+    // Browsers not supporting W3 DOM2 don't have HTMLElement and
+    // an exception is thrown and we end up here. Testing some
+    // properties that all elements have (works on IE7)
+    return (typeof elem === "object") &&
+      (elem.nodeType === 1) && (typeof elem.style === "object") &&
+      (typeof elem.ownerDocument === "object")
+  }
+}
