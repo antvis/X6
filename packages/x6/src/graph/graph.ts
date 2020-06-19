@@ -582,6 +582,10 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
+  getScale() {
+    return this.scale()
+  }
+
   scale(): Dom.Scale
   scale(sx: number, sy?: number, ox?: number, oy?: number): this
   scale(
@@ -1105,6 +1109,18 @@ export class Graph extends Basecoat<EventArgs> {
 
   updateScroller() {
     this.scroller.widget?.update()
+  }
+
+  getScroll() {
+    return this.scroll()
+  }
+
+  setScroll(
+    left?: number,
+    top?: number,
+    options?: ScrollerWidget.ScrollOptions,
+  ) {
+    return this.scroll(left, top, options)
   }
 
   scroll(): { left: number; top: number }
