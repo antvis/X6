@@ -1,7 +1,8 @@
 import { Point, Line, Rectangle, Polyline, Ellipse, Path } from '../../geometry'
 import { attr } from './attr'
 import { sample, toPath, getPointsFromSvgElement } from './path'
-import { ensureId, isSVGGraphicsElement, createSvgElement } from './elem'
+import { ensureId, isSVGGraphicsElement, createSvgElement, isHTMLElement } from './elem'
+import { getComputedStyle } from './style'
 import {
   createSVGPoint,
   createSVGMatrix,
@@ -71,6 +72,11 @@ export function getBBox(
   // If the element is not an SVGGraphicsElement, we could not measure the
   // bounding box either
   if (!ownerSVGElement || !isSVGGraphicsElement(elem)) {
+    if (isHTMLElement(elem)) {
+      // If the element is a HTMLElement, return the position relative to the body
+      const { left, top, width, height } = getBoundingOffsetRect(elem as any)
+      return new Rectangle(left, top, width, height)
+    }
     return new Rectangle(0, 0, 0, 0)
   }
 
@@ -373,4 +379,26 @@ export function animateAlongPath(
       }
     }
   }
+}
+
+export function getBoundingOffsetRect(elem: HTMLElement) {
+  let left = 0
+  let top = 0
+  let width = 0
+  let height = 0
+  if (elem) {
+    let current = elem as any
+    while (current) {
+      left += current.offsetLeft
+      top += current.offsetTop
+      current = current.offsetParent
+      if (current) {
+        left += parseInt(getComputedStyle(current, 'borderLeft'), 10)
+        top += parseInt(getComputedStyle(current, 'borderTop'), 10)
+      }
+    }
+    width = elem.offsetWidth
+    height = elem.offsetHeight
+  }
+  return { left, top, width, height }
 }
