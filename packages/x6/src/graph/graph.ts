@@ -1107,6 +1107,23 @@ export class Graph extends Basecoat<EventArgs> {
     this.scroller.widget?.update()
   }
 
+  scroll(): { left: number; top: number }
+  scroll(
+    left?: number,
+    top?: number,
+    options?: ScrollerWidget.ScrollOptions,
+  ): this
+  scroll(left?: number, top?: number, options?: ScrollerWidget.ScrollOptions) {
+    const scroller = this.scroller.widget
+    if (scroller) {
+      if (left == null && top == null) {
+        return scroller.scroll()
+      }
+      scroller.scroll(left, top, options)
+    }
+    return this
+  }
+
   /**
    * Try to scroll to ensure that the position (x,y) on the graph (in local
    * coordinates) is at the center of the viewport. If only one of the
