@@ -38,9 +38,9 @@ import { Graph } from '@antv/x6';
 
 ### Step 2 准备数据
 
-引入 X6 的数据源为 JSON 格式的对象，该对象中需要有节点 `nodes` 和边 `edges` 字段，分别用数组表示：
+X6 的数据源为 JSON 格式的对象，该对象中需要有节点 `nodes` 和边 `edges` 字段，分别用数组表示：
 
-``` json
+```ts
 const data = {
   // 节点
   nodes: [

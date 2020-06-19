@@ -1,4 +1,4 @@
-const { homepage, version } = require('./package.json')
+const { repository, version } = require('./package.json')
 
 module.exports = {
   plugins: [
@@ -11,14 +11,14 @@ module.exports = {
     title: 'X6',
     description: 'JavaScript diagramming library',
     siteUrl: 'https://x6.antv.vision',
-    githubUrl: homepage,
+    githubUrl: repository,
     showLanguageSwitcher: false,
     versions: {
       [version]: 'https://x6.antv.vision',
     },
     navs: [
       {
-        slug: 'docs/manual',
+        slug: 'docs/manual/about',
         title: {
           zh: '文档',
           en: 'Tutorials',
@@ -33,20 +33,20 @@ module.exports = {
       //   },
       //   order: 1,
       // },
-      {
-        slug: 'examples',
-        title: {
-          zh: '图表示例',
-          en: 'Examples',
-        },
-        order: 2,
-      },
+      // {
+      //   slug: 'examples',
+      //   title: {
+      //     zh: '图表示例',
+      //     en: 'Examples',
+      //   },
+      //   order: 2,
+      // },
     ],
     docs: [
       {
         slug: 'manual/tutorial',
         title: {
-          zh: '入门教程',
+          zh: '基础教程',
           en: 'Tutorial',
         },
         order: 2,
