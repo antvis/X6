@@ -1099,22 +1099,27 @@ export class Graph extends Basecoat<EventArgs> {
 
   // #region scroller
 
+  @Decorator.checkScroller()
   lockScroller() {
     this.scroller.widget?.lock()
   }
 
+  @Decorator.checkScroller()
   unlockScroller() {
     this.scroller.widget?.unlock()
   }
 
+  @Decorator.checkScroller()
   updateScroller() {
     this.scroller.widget?.update()
   }
 
+  @Decorator.checkScroller()
   getScroll() {
     return this.scroll()
   }
 
+  @Decorator.checkScroller()
   setScroll(
     left?: number,
     top?: number,
@@ -1129,6 +1134,7 @@ export class Graph extends Basecoat<EventArgs> {
     top?: number,
     options?: ScrollerWidget.ScrollOptions,
   ): this
+  @Decorator.checkScroller()
   scroll(left?: number, top?: number, options?: ScrollerWidget.ScrollOptions) {
     const scroller = this.scroller.widget
     if (scroller) {
@@ -1770,11 +1776,15 @@ export class Graph extends Basecoat<EventArgs> {
 
   // #endregion
 
+  // #region dispose
+
   @Basecoat.dispose()
   dispose() {
     this.view.dispose()
     this.renderer.dispose()
   }
+
+  // #endregion
 }
 
 export namespace Graph {
@@ -1782,24 +1792,24 @@ export namespace Graph {
 }
 
 export namespace Graph {
-  export const View = GraphView
-  export const Hook = HookManager
-  export const Renderer = ViewRenderer
-  export const Keyboard = Shortcut
-  export const MouseWheel = Wheel
-  export const BaseManager = Base
-  export const DefsManager = Defs
-  export const GridManager = Grid
-  export const CoordManager = Coord
-  export const PrintManager = Print
-  export const FormatManager = Format
-  export const MiniMapManager = MiniMap
-  export const HistoryManager = History
-  export const SnaplineManager = Snapline
-  export const ScrollerManager = Scroller
-  export const ClipboardManager = Clipboard
-  export const TransformManager = Transform
-  export const HighlightManager = Highlight
-  export const BackgroundManager = Background
-  export const SelectionManager = Selection
+  export import View = GraphView
+  export import Hook = HookManager
+  export import Renderer = ViewRenderer
+  export import Keyboard = Shortcut
+  export import MouseWheel = Wheel
+  export import BaseManager = Base
+  export import DefsManager = Defs
+  export import GridManager = Grid
+  export import CoordManager = Coord
+  export import PrintManager = Print
+  export import FormatManager = Format
+  export import MiniMapManager = MiniMap
+  export import HistoryManager = History
+  export import SnaplineManager = Snapline
+  export import ScrollerManager = Scroller
+  export import ClipboardManager = Clipboard
+  export import TransformManager = Transform
+  export import HighlightManager = Highlight
+  export import BackgroundManager = Background
+  export import SelectionManager = Selection
 }
