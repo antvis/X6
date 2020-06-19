@@ -30,11 +30,10 @@ export default class Example extends React.Component {
       container: this.container,
       width: 1000,
       height: 600,
-      gridSize: 10,
+      grid: 10,
     })
 
     const source = graph.addNode({
-      type: 'rect',
       x: 50,
       y: 50,
       width: 120,
@@ -49,7 +48,6 @@ export default class Example extends React.Component {
     graph.addEdge({
       source,
       target,
-      type: 'edge',
       router: {
         name: 'random',
         args: {

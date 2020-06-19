@@ -15,13 +15,14 @@ export default class Example extends React.Component {
       container: this.container,
       width: 1000,
       height: 800,
-      gridSize: 10,
-      defaultAnchor: { name: 'center' },
-      defaultConnectionPoint: {
-        name: 'boundary',
-        args: {
-          sticky: true,
-          extrapolate: true,
+      connecting: {
+        anchor: 'center',
+        connectionPoint: {
+          name: 'boundary',
+          args: {
+            sticky: true,
+            extrapolate: true,
+          },
         },
       },
     })
@@ -30,7 +31,7 @@ export default class Example extends React.Component {
       graph.addNode({
         x,
         y,
-        type: 'rectText',
+        shape: 'rectText',
         attrs: {
           label: {
             text: label,
@@ -44,7 +45,6 @@ export default class Example extends React.Component {
 
     title(40, 40, 'Sticky points - default')
     const o1 = graph.addNode({
-      type: 'rect',
       x: 40,
       y: 80,
       width: 60,
@@ -52,7 +52,6 @@ export default class Example extends React.Component {
       angle: 45,
     })
     const o2 = graph.addNode({
-      type: 'rect',
       x: 240,
       y: 100,
       width: 60,
@@ -60,35 +59,33 @@ export default class Example extends React.Component {
       angle: 45,
     })
     graph.addEdge({
-      type: 'edge',
       source: { cell: o1.id, selector: 'body' },
       target: o2,
     })
 
     title(40, 190, 'Sticky points - orthogonal')
     const o3 = graph.addNode({
-      type: 'ellipse',
+      shape: 'ellipse',
       x: 40,
       y: 220,
       width: 60,
       height: 30,
     })
     const o4 = graph.addNode({
-      type: 'rect',
+      shape: 'rect',
       x: 240,
       y: 235,
       width: 60,
       height: 30,
     })
     graph.addEdge({
-      type: 'edge',
       source: { cell: o3.id, anchor: { name: 'orth' } },
       target: { cell: o4.id, anchor: { name: 'orth' } },
     })
 
     title(40, 320, 'Sticky points - intersecting')
     const o5 = graph.addNode({
-      type: 'circle',
+      shape: 'circle',
       x: 40,
       y: 400,
       width: 60,
@@ -96,20 +93,19 @@ export default class Example extends React.Component {
       attrs: { label: { text: 'circle' } },
     })
     const o6 = graph.addNode({
-      type: 'rect',
+      shape: 'rect',
       x: 240,
       y: 340,
       width: 60,
       height: 30,
     })
     graph.addEdge({
-      type: 'edge',
       source: { cell: o5.id, selector: 'body' },
       target: { cell: o6.id },
     })
 
     const o51 = graph.addNode({
-      type: 'ellipse',
+      shape: 'ellipse',
       x: 380,
       y: 420,
       width: 60,
@@ -117,20 +113,19 @@ export default class Example extends React.Component {
       attrs: { label: { text: 'ellipse' } },
     })
     const o61 = graph.addNode({
-      type: 'rect',
+      shape: 'rect',
       x: 500,
       y: 320,
       width: 60,
       height: 30,
     })
     graph.addEdge({
-      type: 'edge',
       source: { cell: o51.id, selector: 'body' },
       target: { cell: o61.id },
     })
 
     const o511 = graph.addNode({
-      type: 'polygon',
+      shape: 'polygon',
       x: 600,
       y: 340,
       width: 60,
@@ -141,20 +136,19 @@ export default class Example extends React.Component {
       },
     })
     const o611 = graph.addNode({
-      type: 'rect',
+      shape: 'rect',
       x: 700,
       y: 480,
       width: 60,
       height: 30,
     })
     graph.addEdge({
-      type: 'edge',
       source: { cell: o511.id, selector: 'body' },
       target: { cell: o611.id },
     })
 
     const o5111 = graph.addNode({
-      type: 'polyline',
+      shape: 'polyline',
       x: 680,
       y: 240,
       width: 50,
@@ -171,20 +165,19 @@ export default class Example extends React.Component {
       },
     })
     const o6111 = graph.addNode({
-      type: 'rect',
+      shape: 'rect',
       x: 800,
       y: 100,
       width: 60,
       height: 30,
     })
     graph.addEdge({
-      type: 'edge',
       source: { cell: o5111.id, selector: 'body' },
       target: { cell: o6111.id },
     })
 
     const o5112 = graph.addNode({
-      type: 'polyline',
+      shape: 'polyline',
       x: 840,
       y: 280,
       width: 50,
@@ -201,7 +194,7 @@ export default class Example extends React.Component {
       },
     })
     const o6112 = graph.addNode({
-      type: 'polygon',
+      shape: 'polygon',
       x: 820,
       y: 480,
       width: 50,
@@ -212,7 +205,6 @@ export default class Example extends React.Component {
       },
     })
     graph.addEdge({
-      type: 'edge',
       source: { cell: o5112.id, selector: 'body' },
       target: { cell: o6112.id },
     })
@@ -249,7 +241,7 @@ export default class Example extends React.Component {
     ]
 
     const o7 = graph.addNode({
-      type: 'path',
+      shape: 'path',
       x: 140,
       y: 660,
       width: 50,
@@ -269,14 +261,13 @@ export default class Example extends React.Component {
     })
 
     const o8 = graph.addNode({
-      type: 'rect',
+      shape: 'rect',
       x: 240,
       y: 520,
       width: 60,
       height: 30,
     })
     graph.addEdge({
-      type: 'edge',
       source: { cell: o7.id, selector: 'body' },
       target: { cell: o8.id },
     })
@@ -290,7 +281,7 @@ export default class Example extends React.Component {
     })
 
     const o9 = graph.addNode({
-      type: 'rectText',
+      shape: 'rectText',
       x: 400,
       y: 80,
       width: 60,
@@ -303,7 +294,7 @@ export default class Example extends React.Component {
       },
     })
     const o10 = graph.addNode({
-      type: 'rect',
+      shape: 'rect',
       x: 600,
       y: 160,
       width: 60,
@@ -311,7 +302,6 @@ export default class Example extends React.Component {
       angle: 45,
     })
     graph.addEdge({
-      type: 'edge',
       source: { cell: o9.id, selector: 'body' },
       target: { cell: o10.id },
     })

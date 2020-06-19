@@ -28,7 +28,7 @@ export default class Example extends React.Component {
 
     function createCircle(x: number, y: number, group: 'inner' | 'outer') {
       const node = graph.addNode({
-        type: 'circle',
+        shape: 'circle',
         size: { width: 20, height: 20 },
         position: { x: x, y: y },
         group: group,

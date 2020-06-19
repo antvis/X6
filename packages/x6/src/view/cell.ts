@@ -6,6 +6,7 @@ import { ConnectionStrategy } from '../connection'
 import { Attr } from '../definition/attr'
 import { Cell } from '../model/cell'
 import { Edge } from '../model/edge'
+import { Node } from '../model/node'
 import { Model } from '../model/model'
 import { Graph } from '../graph/graph'
 import { View } from './view'
@@ -358,11 +359,11 @@ export class CellView<
     return Dom.transformRectangle(rect, translateMatrix.multiply(matrix))
   }
 
-  getBBox(options: { fromCell?: boolean } = {}) {
+  getBBox(options: { useCellBBox?: boolean } = {}) {
     let bbox
-    if (options.fromCell) {
+    if (options.useCellBBox) {
       const cell = this.cell
-      const angle = (cell as any).angle || 0
+      const angle = ((cell as any) as Node).getAngle() || 0
       bbox = cell.getBBox().bbox(angle)
     } else {
       bbox = this.getNodeBBox(this.container)
@@ -372,14 +373,14 @@ export class CellView<
   }
 
   getRootTranslateMatrix() {
-    const pos = (this.cell as any).position
+    const pos = ((this.cell as any) as Node).getPosition()
     return Dom.createSVGMatrix().translate(pos.x, pos.y)
   }
 
   getRootRotateMatrix() {
     let matrix = Dom.createSVGMatrix()
     const cell = this.cell
-    const angle = (cell as any).angle
+    const angle = ((cell as any) as Node).getAngle()
     if (angle) {
       const bbox = cell.getBBox()
       const cx = bbox.width / 2

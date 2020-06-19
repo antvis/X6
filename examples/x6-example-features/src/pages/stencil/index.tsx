@@ -34,7 +34,6 @@ export default class Example extends React.Component {
     graph.centerContent()
 
     graph.addNode({
-      type: 'rect',
       x: 130,
       y: 30,
       width: 100,

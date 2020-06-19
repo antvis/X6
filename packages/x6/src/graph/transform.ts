@@ -38,7 +38,6 @@ export class TransformManager extends Base {
     })
 
     this.graph.on('node:selected', ({ node }) => {
-      console.log(node)
       if (this.isSelectionEnabled) {
         const widget = this.graph.hook.createTransform(node, {
           clearAll: false,
@@ -357,7 +356,7 @@ export class TransformManager extends Base {
   }
 
   getContentArea(options: TransformManager.GetContentAreaOptions = {}) {
-    if (options.useModelGeometry) {
+    if (options.useCellBBox) {
       return this.model.getAllCellsBBox() || new Rectangle()
     }
 
@@ -420,6 +419,6 @@ export namespace TransformManager {
   }
 
   export interface GetContentAreaOptions {
-    useModelGeometry?: boolean
+    useCellBBox?: boolean
   }
 }

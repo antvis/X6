@@ -92,12 +92,12 @@ export namespace Grid {
   export type NativeNames = keyof Presets
 
   export interface NativeItem<T extends NativeNames = NativeNames> {
-    name: T
+    type: T
     args?: OptionsMap[T]
   }
 
   export interface ManaualItem {
-    name: Exclude<string, NativeNames>
+    type: Exclude<string, NativeNames>
     args?: KeyValue
   }
 }

@@ -15,6 +15,7 @@ export class ScrollerManager extends Base {
 
   protected init() {
     this.widget = this.graph.hook.createScroller()
+    this.autoSetCursor()
     this.graph.on('blank:mousedown', ({ e }) => {
       if (
         this.widget &&
@@ -25,6 +26,18 @@ export class ScrollerManager extends Base {
         this.widget.startPanning(e)
       }
     })
+
+    if (this.widget) {
+      this.widget.center()
+    }
+  }
+
+  protected autoSetCursor() {
+    const options = this.widgetOptions
+    if (options.cursor == null) {
+      const cursor = options.panning ? 'grab' : ''
+      this.widget?.setCursor(cursor, { silent: true })
+    }
   }
 
   enablePanning() {
@@ -39,12 +52,14 @@ export class ScrollerManager extends Base {
         this.graph.selection.disableRubberband()
       }
     }
+    this.autoSetCursor()
   }
 
   disablePanning() {
     if (this.allowPanning) {
       this.widgetOptions.panning = false
     }
+    this.autoSetCursor()
   }
 
   lock() {
@@ -62,6 +77,12 @@ export class ScrollerManager extends Base {
   update() {
     if (this.widget) {
       this.widget.update()
+    }
+  }
+
+  setCursor(cursor?: string) {
+    if (this.widget) {
+      this.widget.setCursor(cursor)
     }
   }
 }

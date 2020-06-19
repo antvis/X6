@@ -92,7 +92,7 @@ export function grid(cells: Node[] | Model, options: GridLayout.Options = {}) {
       cy = (rowHeight - size.height) / 2
     }
 
-    node.pos(
+    node.position(
       columnLefts[rowIndex] + dx + cx,
       rowTops[columnIndex] + dy + cy,
       options,

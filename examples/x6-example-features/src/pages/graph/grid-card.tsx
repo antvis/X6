@@ -1,5 +1,5 @@
 import React from 'react'
-import { Grid } from '@antv/x6/es/v1/grid'
+import { Grid } from '@antv/x6/es/definition/grid'
 import { Input, Select, Slider, Card, Row, Col } from 'antd'
 
 export class GridCard extends React.Component<GridCard.Props, GridCard.State> {
@@ -16,7 +16,7 @@ export class GridCard extends React.Component<GridCard.Props, GridCard.State> {
   notifyChange() {
     if (this.state.type === 'doubleMesh') {
       this.props.onChange({
-        name: this.state.type,
+        type: this.state.type,
         args: [
           {
             color: this.state.color,
@@ -31,7 +31,7 @@ export class GridCard extends React.Component<GridCard.Props, GridCard.State> {
       })
     } else {
       this.props.onChange({
-        name: this.state.type,
+        type: this.state.type,
         args: [
           {
             color: this.state.color,

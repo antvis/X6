@@ -1,7 +1,7 @@
 import { Edge } from '../../model/edge'
 
 export const DoubleEdge = Edge.define({
-  type: 'double-edge',
+  shape: 'double-edge',
   markup: [
     {
       tagName: 'path',

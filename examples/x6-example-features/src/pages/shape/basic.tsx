@@ -24,7 +24,7 @@ export default class Example extends React.Component {
     })
 
     const rect = graph.addNode({
-      type: 'basic.rect',
+      shape: 'basic.rect',
       x: 40,
       y: 40,
       width: 100,
@@ -37,21 +37,21 @@ export default class Example extends React.Component {
     // graph.scale(0.5, 0.5, 20, 20)
 
     graph.addNode({
-      type: 'basic.circle',
+      shape: 'basic.circle',
       x: 160,
       y: 30,
       label: 'circle',
     })
 
     graph.addNode({
-      type: 'basic.ellipse',
+      shape: 'basic.ellipse',
       x: 240,
       y: 40,
       label: 'ellipse',
     })
 
     const rhombus = graph.addNode({
-      type: 'basic.rhombus',
+      shape: 'basic.rhombus',
       x: 320,
       y: 30,
       attrs: {
@@ -62,7 +62,7 @@ export default class Example extends React.Component {
     console.log(rhombus)
 
     graph.addNode({
-      type: 'basic.image',
+      shape: 'basic.image',
       x: 400,
       y: 30,
       width: 40,
@@ -74,7 +74,7 @@ export default class Example extends React.Component {
     })
 
     const path = graph.addNode({
-      type: 'basic.path',
+      shape: 'basic.path',
       x: 450,
       y: 20,
       width: 40,
@@ -87,7 +87,7 @@ export default class Example extends React.Component {
     console.log(path)
 
     graph.addNode({
-      type: 'basic.text',
+      shape: 'basic.text',
       x: 520,
       y: 40,
       width: 60,
@@ -96,7 +96,7 @@ export default class Example extends React.Component {
     })
 
     const DecoratedRect = Node.define({
-      type: 'decorated-rect',
+      shape: 'decorated-rect',
       markup:
         '<g class="rotatable"><g class="scalable"><rect/></g><image/><text/></g>',
       size: { width: 100, height: 60 },
@@ -138,7 +138,7 @@ export default class Example extends React.Component {
     graph.addNode(decoratedRect)
 
     graph.addNode({
-      type: 'basic.text-block',
+      shape: 'basic.text-block',
       x: 280,
       y: 140,
       width: 220,
@@ -148,7 +148,7 @@ export default class Example extends React.Component {
     })
 
     const NodeWithPorts = Node.define({
-      type: 'node-with-ports',
+      shape: 'node-with-ports',
       markup: [
         '<g class="rotatable">',
         '<g class="scalable">',
@@ -212,7 +212,7 @@ export default class Example extends React.Component {
     graph.addNode(nodeWithPort)
 
     const cylinder = graph.addNode({
-      type: 'basic.cylinder',
+      shape: 'basic.cylinder',
       x: 305,
       y: 220,
       width: 180,

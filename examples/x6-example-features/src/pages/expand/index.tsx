@@ -299,13 +299,11 @@ export default class Example extends React.Component {
     y.addTo(graph)
 
     graph.addEdge({
-      type: 'edge',
       source: { cell: a.id, port: 'out1' },
       target: { cell: aa.id, port: 'in1' },
     })
 
     graph.addEdge({
-      type: 'edge',
       sourceCell: aa,
       targetCell: aaa,
       sourcePort: 'out2',
@@ -313,7 +311,6 @@ export default class Example extends React.Component {
     })
 
     graph.addEdge({
-      type: 'edge',
       sourceCell: b.id,
       targetCell: bb.id,
       sourcePort: 'out1',
@@ -321,7 +318,6 @@ export default class Example extends React.Component {
     })
 
     graph.addEdge({
-      type: 'edge',
       sourceCell: b,
       targetCell: bbb,
       sourcePort: 'out2',
@@ -329,7 +325,6 @@ export default class Example extends React.Component {
     })
 
     graph.addEdge({
-      type: 'edge',
       sourceCell: b,
       targetCell: aaa,
       sourcePort: 'out1',
@@ -337,14 +332,12 @@ export default class Example extends React.Component {
     })
 
     graph.addEdge({
-      type: 'edge',
       sourceCell: aaa,
       sourcePort: 'out1',
       targetPoint: { x: 700, y: 100 },
     })
 
     graph.addEdge({
-      type: 'edge',
       sourceCell: bbb,
       targetCell: x,
       sourcePort: 'in1',
@@ -352,7 +345,6 @@ export default class Example extends React.Component {
     })
 
     graph.addEdge({
-      type: 'edge',
       sourceCell: b,
       targetCell: x,
       sourcePort: 'in2',
@@ -360,7 +352,6 @@ export default class Example extends React.Component {
     })
 
     graph.addEdge({
-      type: 'edge',
       sourceCell: b,
       targetCell: y,
       sourcePort: 'in1',
@@ -368,7 +359,6 @@ export default class Example extends React.Component {
     })
 
     graph.addEdge({
-      type: 'edge',
       sourceCell: a,
       targetCell: y,
       sourcePort: 'in1',

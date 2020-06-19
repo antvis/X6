@@ -86,24 +86,28 @@ export class SelectionManager extends Base {
 
   clean() {
     this.widget.clean()
+    return this
   }
 
   enable() {
     if (this.disabled) {
       this.widgetOptions.enabled = true
     }
+    return this
   }
 
   disable() {
     if (!this.disabled) {
       this.widgetOptions.enabled = false
     }
+    return this
   }
 
   startRubberband(e: JQuery.MouseDownEvent) {
     if (!this.rubberbandDisabled) {
       this.widget.startSelecting(e)
     }
+    return this
   }
 
   enableRubberband() {
@@ -118,12 +122,43 @@ export class SelectionManager extends Base {
         this.graph.scroller.disablePanning()
       }
     }
+    return this
   }
 
   disableRubberband() {
     if (!this.rubberbandDisabled) {
       this.widgetOptions.rubberband = false
     }
+    return this
+  }
+
+  isMultiple() {
+    return this.widgetOptions.multiple !== false
+  }
+
+  enableMultiple() {
+    this.widgetOptions.multiple = true
+    return this
+  }
+
+  disableMultiple() {
+    this.widgetOptions.multiple = false
+    return this
+  }
+
+  setModifiers(modifiers?: string | ModifierKey[] | null) {
+    this.widgetOptions.modifiers = modifiers
+    return this
+  }
+
+  setContent(content?: Selection.Content) {
+    this.widget.setContent(content)
+    return this
+  }
+
+  setFilter(filter?: Selection.Filter) {
+    this.widget.setFilter(filter)
+    return this
   }
 }
 
@@ -134,6 +169,7 @@ export namespace SelectionManager {
     modifiers?: string | ModifierKey[] | null
     multiple?: boolean
   }
-}
 
-export namespace SelectionManager {}
+  export type Filter = Selection.Filter
+  export type Content = Selection.Content
+}

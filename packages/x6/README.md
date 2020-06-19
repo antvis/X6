@@ -5,8 +5,8 @@
 [![MIT License](https://img.shields.io/badge/license-MIT_License-green.svg?style=flat-square)](https://github.com/antvis/x6/blob/master/LICENSE)
 [![Language](https://img.shields.io/badge/language-typescript-blue.svg?style=flat-square)](https://www.typescriptlang.org)
 
-[![build:?](https://img.shields.io/travis/antvis/x6.svg?style=flat-square)](https://travis-ci.org/antvis/x6)
-[![coverage:?](https://img.shields.io/coveralls/antvis/x6/master.svg?style=flat-square)](https://coveralls.io/github/antvis/x6)
+[![build](https://img.shields.io/travis/antvis/x6.svg?style=flat-square)](https://travis-ci.org/antvis/x6)
+[![coverage](https://img.shields.io/coveralls/antvis/x6/master.svg?style=flat-square)](https://coveralls.io/github/antvis/x6)
 [![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/antvis/x6.svg?logo=lgtm&style=flat-square)](https://lgtm.com/projects/g/antvis/x6/context:javascript)
 
 [![NPM Package](https://img.shields.io/npm/v/@antv/x6.svg?style=flat-square)](https://www.npmjs.com/package/@antv/x6)
@@ -30,47 +30,49 @@ $ yarn add @antv/x6
 ```
 
 ```ts
-import { x6 } from '@antv/x6'
+import { Graph } from '@antv/x6'
 
-const container = document.getElementById('container')
-const graph = x6.render(container, {
+const graph = new Graph({
+  container: document.getElementById('container'),
+}) 
+
+graph.fromJSON({
   nodes: [
     {
-      id: 'node-0',
+      id: 'node1',
       x: 60,
       y: 60,
       width: 80,
-      height: 30,
+      height: 40,
       label: 'Hello',
     },
     {
-      id: 'node-1',
+      id: 'node2',
       x: 240,
       y: 240,
       width: 80,
-      height: 30,
+      height: 40,
       label: 'World',
     },
   ],
   edges: [
     {
-      id: 'edge-0',
-      source: 'node-0',
-      target: 'node-1',
-      label: 'Edge Label',
+      source: 'node1',
+      target: 'node2',
     },
   ],
 })
+
 ```
 
 ## Development
 
 ```shell
-# install global yarn and lerna
+# install yarn and lerna
 $ npm install yarn -g
 $ npm install lerna -g
 
-# install dependencies
+# install deps and build
 $ yarn bootstrap
 
 # run tests
@@ -96,4 +98,4 @@ x6.track(false)
 
 Please let us know how can we help. Do check out [issues](https://github.com/antvis/x6/issues) for bug reports or suggestions first.
 
-To become a contributor, please follow our [contributing guide](https://github.com/antvis/x6/blob/master/CONTRIBUTING.md).
+To become a contributor, please follow our [contributing guide](https://github.com/antvis/x6/blob/master/CONTRIBUTING.md)

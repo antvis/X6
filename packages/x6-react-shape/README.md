@@ -20,12 +20,12 @@ import '@antv/x6-react-shape'
 
 // render
 graph.addNode({
-  type: 'react-shape',
+  shape: 'react-shape',
   x: 32,
   y: 48,
   width: 180,
   height: 40,
-  component: (    // react component
+  component: (
     <div
       style={{
         color: '#fff',

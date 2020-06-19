@@ -53,7 +53,7 @@ export function getImageUrlHook(attrName: string = 'xlink:href') {
 }
 
 export function createShape(
-  type: string,
+  shape: string,
   config: Node.Config,
   options: {
     noText?: boolean
@@ -61,15 +61,15 @@ export function createShape(
     parent?: Node.Definition | typeof Base
   } = {},
 ) {
-  const name = getName(type)
+  const name = getName(shape)
   const defaults: Node.Config = {
-    name,
+    constructorName: name,
     attrs: {
       '.': {
         fill: '#ffffff',
         stroke: 'none',
       },
-      [type]: {
+      [shape]: {
         fill: '#ffffff',
         stroke: '#000000',
       },
@@ -77,11 +77,11 @@ export function createShape(
   }
 
   if (!options.ignoreMarkup) {
-    defaults.markup = getMarkup(type, options.noText === true)
+    defaults.markup = getMarkup(shape, options.noText === true)
   }
 
   const base = options.parent || Base
   return base.define(
-    ObjectExt.merge(defaults, config, { type: name }),
+    ObjectExt.merge(defaults, config, { shape: name }),
   ) as typeof Base
 }

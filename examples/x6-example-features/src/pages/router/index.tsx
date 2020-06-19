@@ -23,7 +23,7 @@ export default class Example extends React.Component<
     })
 
     const source = graph.addNode({
-      type: 'rect',
+      shape: 'rect',
       position: { x: 50, y: 50 },
       size: { width: 140, height: 70 },
       attrs: {

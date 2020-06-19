@@ -57,11 +57,11 @@ export class Node<
 
   // #region size
 
-  get sizes() {
+  get dimension() {
     return this.getSize()
   }
 
-  set sizes(size: Size) {
+  set dimension(size: Size) {
     this.setSize(size)
   }
 
@@ -110,7 +110,7 @@ export class Node<
     const direction = options.direction
 
     if (direction) {
-      const currentSize = this.sizes
+      const currentSize = this.getSize()
       switch (direction) {
         case 'left':
         case 'right':
@@ -238,17 +238,17 @@ export class Node<
 
   // #region position
 
-  get position() {
+  get coord() {
     return this.getPosition()
   }
 
-  set position(pos: Point | Point.PointLike) {
+  set coord(pos: Point | Point.PointLike) {
     this.setPosition(pos.x, pos.y)
   }
 
-  pos(x: number, y: number, options?: Node.SetPositionOptions): this
-  pos(options?: Node.GetPositionOptions): Point.PointLike
-  pos(
+  position(x: number, y: number, options?: Node.SetPositionOptions): this
+  position(options?: Node.GetPositionOptions): Point.PointLike
+  position(
     arg0?: number | Node.GetPositionOptions,
     arg1?: number,
     arg2?: Node.SetPositionOptions,
@@ -263,8 +263,8 @@ export class Node<
     if (options.relative) {
       const parent = this.getParent()
       if (parent != null && parent.isNode()) {
-        const currentPosition = this.position
-        const parentPosition = parent.position
+        const currentPosition = this.getPosition()
+        const parentPosition = parent.getPosition()
 
         return {
           x: currentPosition.x - parentPosition.x,
@@ -304,14 +304,14 @@ export class Node<
     if (options.relative) {
       const parent = this.getParent() as Node
       if (parent != null && parent.isNode()) {
-        const parentPosition = parent.position
+        const parentPosition = parent.getPosition()
         x += parentPosition.x
         y += parentPosition.y
       }
     }
 
     if (options.deep) {
-      const currentPosition = this.position
+      const currentPosition = this.getPosition()
       this.translate(x - currentPosition.x, y - currentPosition.y, options)
     } else {
       this.store.set('position', { x, y }, options)
@@ -332,7 +332,7 @@ export class Node<
     // Pass the initiator of the translation.
     options.translateBy = options.translateBy || this.id
 
-    const position = this.position
+    const position = this.getPosition()
 
     if (options.restrictedArea != null && options.translateBy === this.id) {
       // We are restricting the translation for the element itself only. We get
@@ -640,7 +640,7 @@ export class Node<
   }
 
   getPortsPosition(groupName: string) {
-    const size = this.sizes
+    const size = this.getSize()
     const layouts = this.port.getPortsLayoutByGroup(
       groupName,
       new Rectangle(0, 0, size.width, size.height),
@@ -1048,31 +1048,28 @@ export namespace Node {
   }
 
   export function define(config: Config) {
-    const { name, ...others } = config
+    const { constructorName, ...others } = config
     const shape = ObjectExt.createClass<Definition>(
-      getClassName(name || others.type),
+      getClassName(constructorName || others.shape),
       this as Definition,
     )
 
     shape.config(others)
 
-    if (others.type) {
-      registry.register(others.type, shape)
+    if (others.shape) {
+      registry.register(others.shape, shape)
     }
 
     return shape
   }
 
   export function create(options: Metadata) {
-    const type = options.type
-    if (type) {
-      const Ctor = registry.get(type)
-      if (Ctor) {
-        return new Ctor(options)
-      }
-      return registry.onNotFound(type)
+    const shape = options.shape || 'rect'
+    const Ctor = registry.get(shape)
+    if (Ctor) {
+      return new Ctor(options)
     }
-    throw new Error('Node type is required for creating a node instance')
+    return registry.onNotFound(shape)
   }
 }
 
@@ -1083,13 +1080,15 @@ export namespace Node {
     Config & { inherit?: string }
   >({
     type: 'node',
-    process(name, options) {
-      if (Share.exist(name, true)) {
-        throw new Error(`Node with '${name}' was registered by anthor Edge`)
+    process(shape, options) {
+      if (Share.exist(shape, true)) {
+        throw new Error(
+          `Node with name '${shape}' was registered by anthor Edge`,
+        )
       }
 
       if (typeof options === 'function') {
-        options.config({ type: name })
+        options.config({ shape })
         return options
       }
 
@@ -1104,13 +1103,13 @@ export namespace Node {
         }
       }
 
-      if (others.name == null) {
-        others.name = name
+      if (others.constructorName == null) {
+        others.constructorName = shape
       }
 
-      const shape = parent.define.call(parent, others)
-      shape.config({ type: name })
-      return shape
+      const ret = parent.define.call(parent, others)
+      ret.config({ shape })
+      return ret
     },
   })
 

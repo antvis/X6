@@ -1,7 +1,11 @@
 import { Config } from './config'
 import { version as v } from './version'
+import { Node } from '../model/node'
+import { Edge } from '../model/edge'
+import { Model } from '../model/model'
 import { CellView } from '../view'
-import { Node, Edge } from '../model'
+import { Graph } from '../graph/graph'
+import { Options } from '../graph/options'
 import { HTML } from '../shape/standard/html'
 import {
   Attr,
@@ -25,6 +29,32 @@ import {
 
 export namespace X6 {
   export const version = v
+}
+
+export namespace X6 {
+  export function render(
+    options: Partial<Options.Manual>,
+    data?: Model.FromJSONData,
+  ): Graph
+  export function render(
+    container: HTMLElement,
+    data?: Model.FromJSONData,
+  ): Graph
+  export function render(
+    options: Partial<Options.Manual> | HTMLElement,
+    data?: Model.FromJSONData,
+  ): Graph {
+    const graph =
+      options instanceof HTMLElement
+        ? new Graph({ container: options })
+        : new Graph(options)
+
+    if (data != null) {
+      graph.fromJSON(data)
+    }
+
+    return graph
+  }
 }
 
 export namespace X6 {

@@ -32,7 +32,7 @@ export const labelAttr = {
 }
 
 export function createShape(
-  type: string,
+  shape: string,
   config: Node.Config,
   options: {
     selector?: string
@@ -40,10 +40,10 @@ export function createShape(
   } = {},
 ) {
   const defaults: Node.Config = {
-    name: type,
-    markup: getMarkup(type, options.selector),
+    constructorName: shape,
+    markup: getMarkup(shape, options.selector),
     attrs: {
-      [type]: {
+      [shape]: {
         fill: '#ffffff',
         stroke: '#333333',
         strokeWidth: 2,
@@ -52,5 +52,7 @@ export function createShape(
   }
 
   const base = options.parent || Base
-  return base.define(ObjectExt.merge(defaults, config, { type })) as typeof Base
+  return base.define(
+    ObjectExt.merge(defaults, config, { shape }),
+  ) as typeof Base
 }

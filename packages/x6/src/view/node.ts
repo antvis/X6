@@ -90,7 +90,7 @@ export class NodeView<
     }
 
     const node = this.cell
-    const size = node.sizes
+    const size = node.getSize()
     const attrs = node.attrs || {}
     this.updateAttrs(this.container, attrs, {
       attrs: partialAttrs === attrs ? null : partialAttrs,
@@ -200,14 +200,14 @@ export class NodeView<
   }
 
   protected getTranslationString() {
-    const position = this.cell.position
+    const position = this.cell.getPosition()
     return `translate(${position.x},${position.y})`
   }
 
   protected getRotationString() {
-    const angle = this.cell.angle
+    const angle = this.cell.getAngle()
     if (angle) {
-      const size = this.cell.sizes
+      const size = this.cell.getSize()
       return `rotate(${angle},${size.width / 2},${size.height / 2})`
     }
   }
@@ -238,8 +238,8 @@ export class NodeView<
 
   protected updateSize(opt: any = {}) {
     const cell = this.cell
-    const size = cell.sizes
-    const angle = cell.angle
+    const size = cell.getSize()
+    const angle = cell.getAngle()
     const scalableNode = this.scalableNode!
 
     // Getting scalable group's bbox.
@@ -464,7 +464,7 @@ export class NodeView<
   }
 
   protected updatePortGroup(groupName?: string) {
-    const bbox = Rectangle.fromSize(this.cell.sizes)
+    const bbox = Rectangle.fromSize(this.cell.getSize())
     const metrics = this.cell.getPortsLayoutByGroup(groupName, bbox)
 
     for (let i = 0, n = metrics.length; i < n; i += 1) {

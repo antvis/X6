@@ -5,7 +5,7 @@ import { Base } from '../base'
 const CYLINDER_TILT = 10
 
 export const Cylinder = Base.define({
-  type: 'cylinder',
+  shape: 'cylinder',
   markup: [
     {
       tagName: 'path',

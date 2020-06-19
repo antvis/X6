@@ -60,13 +60,13 @@ export default class Example extends React.Component {
     })
 
     graph.addNode({
-      type: 'embedding.parent',
+      shape: 'embedding.parent',
       size: { width: 160, height: 100 },
       position: { x: 240, y: 400 },
     })
 
     graph.addNode({
-      type: 'embedding.child',
+      shape: 'embedding.child',
       size: { width: 160, height: 100 },
       position: { x: 20, y: 120 },
       attrs: {
@@ -76,7 +76,7 @@ export default class Example extends React.Component {
     })
 
     graph.addNode({
-      type: 'embedding.child',
+      shape: 'embedding.child',
       size: { width: 160, height: 100 },
       position: { x: 20, y: 240 },
       attrs: {
@@ -86,7 +86,7 @@ export default class Example extends React.Component {
     })
 
     graph.addNode({
-      type: 'embedding.child',
+      shape: 'embedding.child',
       size: { width: 160, height: 100 },
       position: { x: 20, y: 360 },
       attrs: {

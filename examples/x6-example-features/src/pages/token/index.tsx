@@ -13,7 +13,6 @@ export default class Example extends React.Component {
     })
 
     const a = graph.addNode({
-      type: 'rect',
       x: 50,
       y: 50,
       width: 100,
@@ -22,7 +21,6 @@ export default class Example extends React.Component {
     })
 
     const b = graph.addNode({
-      type: 'rect',
       x: 250,
       y: 50,
       width: 100,
@@ -31,7 +29,6 @@ export default class Example extends React.Component {
     })
 
     const c = graph.addNode({
-      type: 'rect',
       x: 350,
       y: 150,
       width: 100,
@@ -40,13 +37,11 @@ export default class Example extends React.Component {
     })
 
     graph.addEdge({
-      type: 'edge',
       source: a,
       target: b,
     })
 
     graph.addEdge({
-      type: 'edge',
       source: b,
       target: c,
     })

@@ -26,7 +26,7 @@ export class Universe extends Model {
       for (var i = 0, n = stars.length; i < n; i++) {
         var star = stars[i]
         new Star({ id: name + '-' + i })
-          .pos(star.x, star.y)
+          .position(star.x, star.y)
           .prop('constellation', name)
           .addTo(this)
       }
@@ -44,7 +44,7 @@ export class Universe extends Model {
       var center = this.getConstellationBBox(name)!.getCenter()
       new Name()
         .attr('text/text', name.toUpperCase())
-        .pos(center.x, center.y)
+        .position(center.x, center.y)
         .prop('constellation', name)
         .addTo(this)
     }
@@ -56,7 +56,7 @@ export class Universe extends Model {
     for (var i = 0, n = subgraph.length; i < n; i++) {
       var cell = subgraph[i]
       if (cell.isEdge()) {
-        (cell as Connection).highlight()
+        ;(cell as Connection).highlight()
       }
     }
   }
@@ -67,7 +67,7 @@ export class Universe extends Model {
     for (var i = 0, n = subgraph.length; i < n; i++) {
       var cell = subgraph[i]
       if (cell.isEdge()) {
-        (cell as Connection).unhighlight()
+        ;(cell as Connection).unhighlight()
       }
     }
   }

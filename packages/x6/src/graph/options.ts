@@ -555,7 +555,7 @@ export namespace Options {
       multiple: true,
       movable: true,
       strict: false,
-      useCellGeometry: false,
+      useCellBBox: false,
       content: null,
       handles: null,
     },

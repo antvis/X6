@@ -117,6 +117,8 @@ export class MouseWheel extends Disposable implements IDisablable {
           currentScale * this.cumulatedFactor,
         )
 
+        console.log(this.options.fixed)
+
         if (targetScale !== currentScale) {
           if (scroller) {
             if (this.options.fixed) {
@@ -166,6 +168,6 @@ export namespace MouseWheel {
     factor?: number
     fixed?: boolean
     modifiers?: string | ModifierKey[] | null
-    guard?: (this: Graph, e: KeyboardEvent) => boolean
+    guard?: (this: Graph, e: MouseWheelEvent) => boolean
   }
 }

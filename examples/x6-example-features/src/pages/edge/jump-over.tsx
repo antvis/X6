@@ -14,7 +14,6 @@ export default class Example extends React.Component {
     })
 
     const rect = graph.createNode({
-      type: 'rect',
       x: 100,
       y: 50,
       width: 70,
@@ -35,7 +34,6 @@ export default class Example extends React.Component {
       const edge = graph.createEdge({
         source,
         target,
-        type: 'edge',
       })
 
       if (i % 2 === 0) {
@@ -49,14 +47,13 @@ export default class Example extends React.Component {
       graph.addEdge(edge)
     }
 
-    const crossRectA = rect.clone().pos(16, 100)
+    const crossRectA = rect.clone().position(16, 100)
     graph.addNode(crossRectA)
 
-    const crossRectB = rect.clone().pos(16, 200)
+    const crossRectB = rect.clone().position(16, 200)
     graph.addNode(crossRectB)
 
     graph.addEdge({
-      type: 'edge',
       source: crossRectA,
       target: crossRectB,
       connector: { name: 'jumpover' },
