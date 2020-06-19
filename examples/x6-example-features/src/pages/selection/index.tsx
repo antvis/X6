@@ -20,6 +20,8 @@ export default class Example extends React.Component {
       selecting: {
         enabled: true,
         rubberband: true,
+        multiple: false,
+        strict: true,
       },
     })
 
@@ -46,6 +48,9 @@ export default class Example extends React.Component {
       height: 40,
       attrs: { label: { text: 'C' } },
     })
+
+    graph.toggleMultipleSelection(false)
+    console.log(graph.isMultipleSelection())
   }
 
   refContainer = (container: HTMLDivElement) => {
