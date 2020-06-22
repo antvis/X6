@@ -5,7 +5,7 @@ import { Graph } from './graph'
 import { Base } from './base'
 
 export class ClipboardManager extends Base implements IDisablable {
-  public readonly widget: Clipboard = this.graph.hook.createClipboard()
+  public widget: Clipboard
 
   protected get commonOptions() {
     const { enabled, ...others } = this.instanceOptions
@@ -25,6 +25,7 @@ export class ClipboardManager extends Base implements IDisablable {
   }
 
   protected init() {
+    this.widget = this.graph.hook.createClipboard()
     this.widget.deserialize(this.instanceOptions)
   }
 
