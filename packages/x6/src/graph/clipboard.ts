@@ -24,6 +24,10 @@ export class ClipboardManager extends Base implements IDisablable {
     return this.instanceOptions.enabled !== true
   }
 
+  protected init() {
+    this.widget.deserialize(this.instanceOptions)
+  }
+
   enable() {
     if (this.disabled) {
       this.instanceOptions.enabled = true
