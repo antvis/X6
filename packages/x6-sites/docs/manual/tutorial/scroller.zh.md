@@ -7,7 +7,7 @@ redirect_from:
   - /zh/docs/manual/tutorial
 ---
 
-默认画布不具备滚动和平移能力，通过下面配置即可开启。
+创建画布时，通过下面配置即可开启画布滚动能力。
 
 ```ts
 const graph = new Graph({
@@ -68,7 +68,7 @@ Scroller 的高度，默认为画布容器高度。
 
 ### panning
 
-是否启用画布拖拽，默认为 `false`。
+是否启用画布平移能力（在空白位置按下鼠标后拖动平移画布），默认为 `false`。
 
 ```ts
 const graph = new Graph({
@@ -79,7 +79,7 @@ const graph = new Graph({
 })
 ```
 
-也可以调用 `graph.enablePanning()` 和 `graph.disablePanning()` 来启用和禁用画布拖拽。
+创建画布后，也可以调用 `graph.enablePanning()` 和 `graph.disablePanning()` 来启用和禁用画布平移。
 
 ```ts
 if (graph.isPanningEnabled()) {
@@ -103,7 +103,7 @@ if (graph.isPanningEnabled()) {
 
 画布鼠标样式，默认为空。
 
-当为空并开启拖拽时，将自动为画布设置 `grab` 鼠标样式。
+当 `cursor` 为空并开启拖拽时，将自动为画布设置 `grab` 鼠标样式。
 
 ### padding
 
@@ -138,6 +138,8 @@ if (graph.isPanningEnabled()) {
 是否自动扩充/缩小画布，默认为 `true`。开启后，移动节点/边时将自动计算需要的画布大小，当超出当前画布大小时，按照 `pageWidth` 和 `pageHeight` 自动扩充画布。反之，则自动缩小画布。
 
 ## Playground
+
+
 
 <iframe
      src="https://codesandbox.io/embed/x6-playground-scroller-ph3y4?fontsize=14&hidenavigation=1&theme=light&view=preview"
@@ -241,16 +243,16 @@ graph.centerCell(cell)
 graph.centerCell(cell, { padding: { left: 100 }})
 ```
 
-缩放画布
+画布缩放。
 
-- `graph.zoom()` // 获取画布缩放
-- `graph.zoom(scale: number, options?: ZoomOptions)` // 设置画布缩放
+- `graph.zoom()` 获取画布缩放。
+- `graph.zoom(scale: number, options?: ZoomOptions)` 设置画布缩放。
 - `graph.zoomToRect(rect: Rectangle.RectangleLike, options?: ScaleContentToFitOptions)`
 - `graph.zoomToFit(options?: ScaleContentToFitOptions)`
 
-拖拽平移
+画布平移。
 
-- `graph.isPanningEnabled()` 画布是否可被拖拽
-- `graph.enablePanning()` 启用画布拖拽
-- `graph.disablePanning()` 禁用画布拖拽
-- `graph.togglePanning()` 切换画布拖拽
+- `graph.isPanningEnabled()` 画布是否可被平移。
+- `graph.enablePanning()` 启用画布平移。
+- `graph.disablePanning()` 禁用画布平移。
+- `graph.togglePanning()` 切换画布平移。

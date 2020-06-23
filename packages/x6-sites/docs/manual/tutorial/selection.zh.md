@@ -7,7 +7,7 @@ redirect_from:
   - /zh/docs/manual/tutorial
 ---
 
-通过以下配置开启选择交互，开启后可以通过点击或者框选选中节点。
+创建画布时，通过以下配置开启选择交互，开启后可以通过点击或者套索框选节点。
 
 ```ts
 const graph = new Graph({
@@ -22,7 +22,7 @@ const graph = new Graph({
 })
 ```
 
-也可以调用 `graph.enableSelection()` 和 `graph.disableSelection()` 来启用和禁用选择交互。
+创建画布后，可以调用 `graph.enableSelection()` 和 `graph.disableSelection()` 来启用和禁用选择交互。
 
 ```ts
 if (graph.isSelectionEnabled()) {
@@ -61,7 +61,7 @@ interface SelectionOptions {
 
 ### className
 
-附加样式名，用于定制样式。默认为空。
+附加样式名，用于定制样式，默认为空。
 
 ```ts
 const graph = new Graph({
@@ -74,7 +74,7 @@ const graph = new Graph({
 
 ### multiple
 
-是否启用点击多选，默认为 `true`。启用后按住 `ctrl` 或 `command` 键点击节点实现多选。
+是否启用点击多选，默认为 `true`。启用多选后按住 `ctrl` 或 `command` 键点击节点实现多选。
 
 ### rubberband
 
@@ -89,7 +89,7 @@ const graph = new Graph({
 })
 ```
 
-也可以调用 `graph.enableRubberband()` 和 `graph.disableRubberband()` 来启用和禁用框选。
+创建画布后，可以调用 `graph.enableRubberband()` 和 `graph.disableRubberband()` 来启用和禁用框选。
 
 ```ts
 if (graph.isRubberbandEnabled()) {
@@ -101,7 +101,7 @@ if (graph.isRubberbandEnabled()) {
 
 ### strict
 
-开启并启用框选时，选框完全包围节点时才选中节点，否则只需要选框与节点的包围盒(BBox) 相交即可选中节点，默认为 `false`。
+启用框选时，选框完全包围节点时才选中节点，否则只需要选框与节点的包围盒(BBox)相交即可选中节点，默认为 `false`。
 
 ### modifiers
 
@@ -133,7 +133,7 @@ if (graph.isRubberbandEnabled()) {
 const graph = new Graph({
   selecting: {
     enabled: true,
-    filter: ['rect'],
+    filter: ['rect'], // 'rect' 类型节点不能被选中
   },
 })
 
@@ -161,9 +161,19 @@ const graph = new Graph({
 
 ## Playground
 
+- 点击选中节点；
+- 启用多选，按住 Ctrl/Command 点击节点多选；
+- 启用移动，拖动选框移动节点；
+- 启用框选，在画布空白位置按下鼠标左键，拖动选框来框选节点；
+- 启用严格框选模式(strict)，观察对框选的影响；
+- 选择与框选配合使用的修饰键，如 `alt` 键，按住 `alt` 键并画布空白位置按下鼠标左键，拖动选框来框选节点；
+- 应用自定义样式名(my-selection)，选中节点的选框颜色被自定义；
+- 应用自定义过滤器(排除 circle 节点)，圆形节点不能被选中；
+- 应用自定义附加内容(显示选中节点个数)，选择两个及以上的节点，触发显示自定义内容。
+
 <iframe
      src="https://codesandbox.io/embed/x6-playground-selection-1pvnm?fontsize=14&hidenavigation=1&theme=light&view=preview"
-     style="width:100%; height:500px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
+     style="width:100%; height:500px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden; margin-top: 16px;"
      title="x6-playground-selection"
      allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
      sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
@@ -173,13 +183,13 @@ const graph = new Graph({
 
 支持如下事件：
 
-- `cell:selected` 节点/边被选中时触发
-- `node:selected` 节点被选中时触发
-- `edge:selected` 边被选中时触发
-- `cell:unselected` 节点/边被取消选中时触发
-- `node:unselected` 节点被取消选中时触发
-- `edge:unselected` 边被取消选中时触发
-- `selection:changed` 选中的节点/边发生改变(增删)时触发
+- `cell:selected` 节点/边被选中时触发。
+- `node:selected` 节点被选中时触发。
+- `edge:selected` 边被选中时触发。
+- `cell:unselected` 节点/边被取消选中时触发。
+- `node:unselected` 节点被取消选中时触发。
+- `edge:unselected` 边被取消选中时触发。
+- `selection:changed` 选中的节点/边发生改变(增删)时触发。
 
 事件回调函数对应的参数如下：
 
@@ -207,7 +217,6 @@ graph.on('node:selected', ({cell, node, options}) => {
   // code here
 })
 ```
-
 
 ## API
 
