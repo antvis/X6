@@ -7,11 +7,7 @@ redirect_from:
   - /zh/docs/manual/tutorial
 ---
 
-剪切板用于复制/粘贴画布中的节点/边，支持跨画布的复制/粘贴。
-
-## 启用剪切板
-
-剪切板默认处于禁用状态，可以在创建画布时启用。
+剪切板用于节点和边的复制/粘贴，支持跨画布的复制/粘贴。剪切板默认处于禁用状态，可以在创建画布时启用。
 
 ```ts
 const graph = new Graph({
@@ -26,7 +22,7 @@ const graph = new Graph({
 })
 ```
 
-也可以调用 `graph.enableClipboard()` 和 `graph.disableClipboard()` 来启用和禁用剪贴板。
+创建画布后，可以调用 `graph.enableClipboard()` 和 `graph.disableClipboard()` 来启用和禁用剪贴板。
 
 ```ts
 if (graph.isClipboardEnabled()) {
@@ -36,9 +32,11 @@ if (graph.isClipboardEnabled()) {
 }
 ```
 
-## 启用 localStorage
+## 持久化
 
-开启 HTML5 localStorage 存储支持后，即使浏览器刷新或者关闭后重新打开，复制/粘贴也能正常工作，可以在创建画布时全局开启：
+开启 `useLocalStorage` 后，被复制的节点/边同时被保存到 [localStorage](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage) 中，浏览器刷新或者关闭后重新打开，复制/粘贴也能正常工作。
+
+可以在创建画布时全局开启。
 
 ```ts
 const graph = new Graph({
@@ -49,7 +47,7 @@ const graph = new Graph({
 })
 ```
 
-也可以在调用 `copy()`，`cut()` 或 `paste()` 方法时开启：
+也可以在调用 `copy()`、`cut()` 或 `paste()` 方法时开启。
 
 ```ts
 graph.copy(cells, {
@@ -57,8 +55,21 @@ graph.copy(cells, {
 })
 ```
 
-## API
+## Playground
 
+- 选中节点后复制按钮
+- 设置不同的 `offset` 粘贴节点
+- 启用 localStorage 后复制节点，刷新页面后直接点击粘贴按钮
+
+<iframe
+     src="https://codesandbox.io/embed/x6-playground-clipboard-ovl8v?fontsize=14&hidenavigation=1&theme=light&view=preview"
+     style="width: 100%; height: 500px; border: 1px solid #f0f0f0; border-radius: 4px; overflow: hidden; margin-top: 16px;"
+     title="x6-playground-clipboard"
+     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
+     sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
+   ></iframe>
+
+## API
 
 - `graph.copy(cells: Cell[], options: CopyOptions = {})` 复制节点/边。
   - `cells` 被复制的节点/边。
@@ -69,7 +80,7 @@ graph.copy(cells, {
           useLocalStorage?: boolean
       }
     ```
-      - `deep` 
+      - `deep` 是否递归复制子节点。
       - `useLocalStorage` 是否将本次复制结果存储在 localStorage 中，指定该选项后将覆盖全局 `useLocalStorage` 选项。
 
 - `graph.cut(cells: Cell[], options: CopyOptions = {})` 剪切（复制并从原始画布中删除被复制的节点/边）。
@@ -92,9 +103,9 @@ graph.copy(cells, {
       - `edgeProps` 边属性，应用到被粘贴的边上，用于覆盖被粘贴边的某些属性，如 `zIndex`。
       - `offset` 每次粘贴时节点/边的偏移量。这个选项对同一画布的连续多次粘贴非常有用，设置一个合适偏移量，多次粘贴的节点/边就不会重叠在一起。
 
-- `graph.cleanClipboard()` 清空剪贴板中的内容。
 - `graph.isClipboardEmpty()` 剪贴板是否为空，即没有复制任何节点/边。
 - `graph.getCellsInClipboard()` 获取剪贴板中的节点/边。
+- `graph.cleanClipboard()` 清空剪贴板中的内容。
 - `graph.isClipboardEnabled()` 剪贴板是否可用。
 - `graph.enableClipboard()` 启用剪贴板。
 - `graph.disableClipboard()` 禁用剪贴板。

@@ -7,7 +7,7 @@ redirect_from:
   - /zh/docs/manual/tutorial
 ---
 
-键盘事件可用于绑定快捷键，如 `Ctrl+C` 复制节点 `Ctrl+V` 粘贴节点，默认键盘事件处于禁用状态，通过如下方式启用。
+键盘事件可用于绑定快捷键，如 `Ctrl+C` 复制节点 `Ctrl+V` 粘贴节点，创建画布时通过以下配置启用。
 
 ```ts
 const graph = new Graph({
@@ -22,7 +22,7 @@ const graph = new Graph({
 })
 ```
 
-也可以调用 `graph.enableKeyboard()` 和 `graph.disableKeyboard()` 来启用和禁用键盘事件。
+创建画布后，也可以调用 `graph.enableKeyboard()` 和 `graph.disableKeyboard()` 来启用和禁用键盘事件。
 
 ```ts
 if (graph.isKeyboardEnabled()) {
@@ -36,7 +36,7 @@ if (graph.isKeyboardEnabled()) {
 
 ### global
 
-是否为全局键盘事件，设置为 `true` 时键盘事件绑定在 Document 上，否则绑定在画布容器上。当绑定在画布容器上时，需要容器获得焦点才能触发键盘事件。默认为 `false`。
+是否为全局键盘事件，设置为 `true` 时键盘事件绑定在 `Document` 上，否则绑定在画布容器上。当绑定在画布容器上时，需要容器获得焦点才能触发键盘事件。默认为 `false`。
 
 ### format
 
@@ -76,8 +76,9 @@ const graph = new Graph({
 })
 ```
 
-
 ## Playground
+
+> 由于 Playground 通过 iframe 嵌入，导致快捷键失效。可以点击 Playground 中的【在新窗口中预览】按钮去体验。
 
 <iframe
      src="https://codesandbox.io/embed/x6-playground-keyboard-dqoeq?fontsize=14&hidenavigation=1&theme=light&view=preview"
@@ -89,7 +90,7 @@ const graph = new Graph({
 
 ## API
 
-- `graph.bindKey`
+- `graph.bindKey` 绑定快捷键。
   ```ts
     bindKey(
       keys: string | string[], 
@@ -97,7 +98,7 @@ const graph = new Graph({
       action?: 'keypress' | 'keydown' | 'keyup',
     )
   ```
-- `graph.unbindKey`
+- `graph.unbindKey` 解绑快捷键。
   ```ts
     unbindKey(
       keys: string | string[], 
