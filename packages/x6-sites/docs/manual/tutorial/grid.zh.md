@@ -30,7 +30,7 @@ const graph = new Graph({
 
 ## 网格样式
 
-网格默认不可见。初始化画布时，通过下面配置来绘制网格。
+网格默认不可见，初始化画布时，通过下面配置来绘制网格。
 
 ```ts
 const graph = new Graph({
@@ -118,7 +118,7 @@ type DrawGridOptions =
   }
 ```
 
-例如，使用颜色 `#f0f0f0` 和线宽参数绘制 `mesh` 网格
+例如，使用网格颜色 `#f0f0f0` 和默认线宽绘制 `mesh` 网格。
 
 ```ts
 graph.drawGrid({
@@ -132,9 +132,13 @@ graph.drawGrid({
 
 ## Playground
 
+- 选择体验不同的网格样式。
+- 设置不同的网格大小，通过拖动节点来了解网格大小对节点位置的影响。
+- 设置网格颜色和网点/线框大小。
+
 <iframe
   src="https://codesandbox.io/embed/x6-playground-grid-bzoy0?fontsize=14&hidenavigation=1&theme=light&view=preview"
-  style="width:100%; height:500px; border: 1px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
+  style="width:100%; height:500px; border: 1px solid #f0f0f0; border-radius: 4px; overflow:hidden; margin-top: 16px;"
   title="x6-playground-grid"
   allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
   sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"

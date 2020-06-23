@@ -7,7 +7,7 @@ redirect_from:
   - /zh/docs/manual/tutorial
 ---
 
-对齐线是移动节点排版的辅助工具，默认禁用，通过如下配置启用。
+对齐线是移动节点排版的辅助工具，创建画布时，通过如下配置启用。
 
 ```ts
 const graph = new Graph({
@@ -22,7 +22,7 @@ const graph = new Graph({
 })
 ```
 
-也可以调用 `graph.enableSnapline()` 和 `graph.disableSnapline()` 来启用和禁用对齐线。
+创建画布后，可以调用 `graph.enableSnapline()` 和 `graph.disableSnapline()` 来启用和禁用对齐线。
 
 ```ts
 if (graph.isSnaplineEnabled()) {
@@ -31,7 +31,6 @@ if (graph.isSnaplineEnabled()) {
   graph.enableSnapline()
 }
 ```
-
 
 ## 选项
 
@@ -129,6 +128,8 @@ const graph = new Graph({
 - x6-widget-snapline-horizontal
 
 ## Playground
+
+
 
 <iframe
      src="https://codesandbox.io/embed/x6-playground-snapline-rgymq?fontsize=14&hidenavigation=1&theme=light&view=preview"
