@@ -351,8 +351,8 @@ export class HistoryManager extends Basecoat<HistoryManager.EventArgs>
 
     // others
     // ------
-    if (this.options.addCommand) {
-      this.options.addCommand.call(this, event, args, cmd)
+    if (this.options.afterAddCommand) {
+      this.options.afterAddCommand.call(this, event, args, cmd)
     }
     this.push(cmd, options)
   }
@@ -482,7 +482,7 @@ export namespace HistoryManager {
       event: T,
       args: Model.EventArgs[T],
     ) => any
-    addCommand?: <T extends ModelEvents>(
+    afterAddCommand?: <T extends ModelEvents>(
       this: HistoryManager,
       event: T,
       args: Model.EventArgs[T],
