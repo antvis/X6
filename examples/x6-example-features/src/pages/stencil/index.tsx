@@ -27,7 +27,7 @@ export default class Example extends React.Component {
         height: 400,
         pageVisible: true,
         pageBreak: false,
-        panning: true,
+        pannable: true,
       },
     })
 

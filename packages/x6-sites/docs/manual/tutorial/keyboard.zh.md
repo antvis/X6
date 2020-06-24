@@ -1,5 +1,5 @@
 ---
-title: 键盘事件 Keyboard
+title: 键盘快捷键 Keyboard
 order: 12
 redirect_from:
   - /zh/docs

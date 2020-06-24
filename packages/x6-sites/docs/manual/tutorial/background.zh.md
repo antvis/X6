@@ -15,11 +15,9 @@ const graph = new Graph({
 })
 ```
 
-创建画布后，通过调用 `graph.drawBackground(options?: BackgroundOptions)` 方法来重绘背景。
+创建画布后，可以调用 [graph.drawBackground(options?: BackgroundOptions)](#graphdrawbackgroundoptions-backgroundoptions) 方法来重绘背景。
 
 ## 选项 BackgroundOptions
-
-首先看看 `BackgroundOptions` 的全貌。
 
 ```ts
 interface BackgroundOptions {
@@ -100,6 +98,21 @@ interface BackgroundOptions {
 
 ## API
 
-- `graph.drawBackground(options?: BackgroundOptions)` 根据提供的配置重绘背景。
-- `graph.clearBackground()` 销毁背景。
-- `graph.updateBackground()` 刷新背景。
+### graph.drawBackground(options?: BackgroundOptions)
+
+根据提供的[选项](#选项-backgroundoptions)重绘背景。
+
+```ts
+graph.drawBackground({
+  color: '#f5f5f5',
+})
+```
+
+### graph.clearBackground()
+
+销毁背景。
+
+### graph.updateBackground()
+
+更新背景。
+

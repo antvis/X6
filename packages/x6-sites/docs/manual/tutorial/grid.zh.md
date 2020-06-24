@@ -7,7 +7,7 @@ redirect_from:
   - /zh/docs/manual/tutorial
 ---
 
-网格是渲染/移动节点的最小单位，网格默认大小为 `10px`，渲染节点时表示以 `10` 为最小单位对齐到网格，如位置为 `{ x: 24, y: 38 }`的节点渲染到画布后的实际位置为 `{ x: 20, y: 40 }`， 移动节点时表示每次移动最小距离为 `10px`。
+网格是渲染/移动节点的最小单位。网格默认大小为 `10px`，渲染节点时表示以 `10` 为最小单位对齐到网格，如位置为 `{ x: 24, y: 38 }`的节点渲染到画布后的实际位置为 `{ x: 20, y: 40 }`， 移动节点时表示每次移动最小距离为 `10px`。
 
 ## 网格大小
 
@@ -26,7 +26,7 @@ const graph = new Graph({
 })
 ```
 
-创建画布后，可以调用 `graph.setGridSize(20)` 方法来修改网格大小，并触发网格重绘（如果网格可见）。
+创建画布后，可以调用 [graph.setGridSize(gridSize: number)](#graphsetgridsizegridsize-number) 方法来修改网格大小，并触发网格重绘（如果网格可见）。
 
 ## 网格样式
 
@@ -46,11 +46,12 @@ const graph = new Graph({
 })
 ```
 
-同时，我们内置了以下四种网格样式，默认使用 `dot` 样式。
+同时，我们内置了以下四种网格类型，通过 `type` 选项来指定网格类型，默认值为 `dot`，并支持通过 `args` 选项来指定对应类型的样式。
 
 - dot (默认值)
 - fixedDot
 - mesh
+
   ```ts
   const graph = new Graph({
       grid: {
@@ -64,7 +65,9 @@ const graph = new Graph({
       },
   })
   ```
+
 - doubleMesh
+
   ```ts
   const graph = new Graph({
       grid: {
@@ -86,49 +89,7 @@ const graph = new Graph({
   })
   ```
 
-创建画布后可以调用 `graph.drawGrid(options?: DrawGridOptions)` 来重绘网格。
-
-```ts
-// 选项类型定义
-type DrawGridOptions = 
-| {
-    type: 'dot' | 'fixedDot' | 'mesh'
-    args?: {
-      color: string     // 网格线/点颜色
-      thickness: number // 网格线宽度/网格点大小
-    }
-  }
-| {
-    type: 'doubleMesh'
-    args?: [
-      {
-        color: string     // 主网格线颜色
-        thickness: number // 主网格线宽度
-      },
-      {
-        color: string     // 次网格线颜色
-        thickness: number // 次网格线宽度
-        factor: number    // 主次网格线间隔
-      },
-    ]
-  }  
-| {
-    type: string // 自定义网格类型
-    args?: any   // 自定义网格参数 
-  }
-```
-
-例如，使用网格颜色 `#f0f0f0` 和默认线宽绘制 `mesh` 网格。
-
-```ts
-graph.drawGrid({
-  type: 'mesh',
-  args: {
-    color: '#f0f0f0'
-  },
-})
-```
-
+创建画布后可以调用 [graph.drawGrid(options?: DrawGridOptions)](#graphdrawgridoptions-drawgridoptions) 来重绘网格。
 
 ## Playground
 
@@ -146,9 +107,74 @@ graph.drawGrid({
 
 ## API
 
-- `graph.drawGrid(options?: DrawGridOptions)` 绘制网格
-- `graph.getGridSize()` 获取网格大小
-- `graph.setGridSize(gridSize: number)` 设置网格大小
-- `graph.showGrid()` 显示网格
-- `graph.hideGrid()` 隐藏网格
-- `graph.clearGrid()` 隐藏并销毁网格
+### graph.drawGrid(options?: DrawGridOptions)
+
+绘制网格。
+
+```ts
+type DrawGridOptions = 
+  | {
+      type: 'dot' | 'fixedDot' | 'mesh'
+      args?: {
+        color: string     // 网格线/点颜色
+        thickness: number // 网格线宽度/网格点大小
+      }
+    }
+  | {
+      type: 'doubleMesh'
+      args?: [
+        {
+          color: string     // 主网格线颜色
+          thickness: number // 主网格线宽度
+        },
+        {
+          color: string     // 次网格线颜色
+          thickness: number // 次网格线宽度
+          factor: number    // 主次网格线间隔
+        },
+      ]
+    }  
+  | {
+      type: string // 自定义网格类型
+      args?: any   // 自定义网格参数 
+    }
+```
+
+例如，使用网格颜色 `#f0f0f0` 和默认线宽绘制 `mesh` 网格。
+
+```ts
+graph.drawGrid({
+  type: 'mesh',
+  args: {
+    color: '#f0f0f0'
+  },
+})
+```
+
+### graph.getGridSize()
+
+获取网格大小。
+
+```ts
+const gridSize = graph.getGridSize()
+```
+
+### graph.setGridSize(gridSize: number)
+
+设置网格大小。
+
+```ts
+graph.setGridSize(10)
+```
+
+### graph.showGrid()
+
+显示网格。
+
+### graph.hideGrid()
+
+隐藏网格。
+
+### graph.clearGrid()
+
+隐藏并销毁网格。

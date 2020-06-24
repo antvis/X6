@@ -7,7 +7,7 @@ redirect_from:
   - /zh/docs/manual/tutorial
 ---
 
-剪切板用于节点和边的复制/粘贴，支持跨画布的复制/粘贴。剪切板默认处于禁用状态，可以在创建画布时启用。
+剪切板用于复制/粘贴节点和边，并支持跨画布的复制/粘贴，创建画布时通过以下配置启用。
 
 ```ts
 const graph = new Graph({
@@ -22,7 +22,7 @@ const graph = new Graph({
 })
 ```
 
-创建画布后，可以调用 `graph.enableClipboard()` 和 `graph.disableClipboard()` 来启用和禁用剪贴板。
+创建画布后，可以调用 [graph.enableClipboard()](#graphenableclipboard) 和 [graph.disableClipboard()](#graphdisableclipboard) 来启用和禁用剪贴板。
 
 ```ts
 if (graph.isClipboardEnabled()) {
@@ -47,7 +47,13 @@ const graph = new Graph({
 })
 ```
 
-也可以在调用 `copy()`、`cut()` 或 `paste()` 方法时开启。
+也可以在调用以下三个方法时开启。
+
+- [graph.copy(cells: Cell[], options: CopyOptions = {})](#graphcopycells-cell-options-copyoptions--)
+- [graph.cut(cells: Cell[], options: CopyOptions = {})](#graphcutcells-cell-options-copyoptions--)
+- [graph.paste(options: PasteOptions = {}, targetGraph: Graph = this)](#graphpasteoptions-pasteoptions---targetgraph-graph--this)
+
+例如：
 
 ```ts
 graph.copy(cells, {
@@ -71,9 +77,12 @@ graph.copy(cells, {
 
 ## API
 
-- `graph.copy(cells: Cell[], options: CopyOptions = {})` 复制节点/边。
-  - `cells` 被复制的节点/边。
-  - `options` 复制选项。
+### graph.copy(cells: Cell[], options: CopyOptions = {})
+
+复制节点/边。
+
+  - `cells: Cell[]` 被复制的节点/边。
+  - `options?: CopyOptions` 复制选项。
     ```ts
       interface CopyOptions {
           deep?: boolean
@@ -83,13 +92,16 @@ graph.copy(cells, {
       - `deep` 是否递归复制子节点。
       - `useLocalStorage` 是否将本次复制结果存储在 localStorage 中，指定该选项后将覆盖全局 `useLocalStorage` 选项。
 
-- `graph.cut(cells: Cell[], options: CopyOptions = {})` 剪切（复制并从原始画布中删除被复制的节点/边）。
-  - `cells` 被剪切的节点/边。
-  - `options` 剪切选项（同复制选项）。
-  
-- `graph.paste(options: PasteOptions = {}, targetGraph: Graph = this)` 粘贴。
-  - `options` 粘贴选项。
-  - `targetGraph` 粘贴的目标画布，默认粘贴到当前画布。
+### graph.cut(cells: Cell[], options: CopyOptions = {})
+
+剪切（复制并从原始画布中删除被复制的节点/边）。
+  - `cells: Cell[]` 被剪切的节点/边。
+  - `options?: CopyOptions` 剪切选项（同复制选项）。
+
+### graph.paste(options: PasteOptions = {}, targetGraph: Graph = this)
+
+粘贴。
+  - `options?: PasteOptions` 粘贴选项。
     ```ts
       interface PasteOptions {
           useLocalStorage?: boolean
@@ -102,11 +114,49 @@ graph.copy(cells, {
       - `nodeProps` 节点属性，应用到被粘贴的节点上，用于覆盖被粘贴节点的某些属性，如 `zIndex`。
       - `edgeProps` 边属性，应用到被粘贴的边上，用于覆盖被粘贴边的某些属性，如 `zIndex`。
       - `offset` 每次粘贴时节点/边的偏移量。这个选项对同一画布的连续多次粘贴非常有用，设置一个合适偏移量，多次粘贴的节点/边就不会重叠在一起。
+  - `targetGraph?: Graph` 粘贴的目标画布，默认粘贴到当前画布。
 
-- `graph.isClipboardEmpty()` 剪贴板是否为空，即没有复制任何节点/边。
-- `graph.getCellsInClipboard()` 获取剪贴板中的节点/边。
-- `graph.cleanClipboard()` 清空剪贴板中的内容。
-- `graph.isClipboardEnabled()` 剪贴板是否可用。
-- `graph.enableClipboard()` 启用剪贴板。
-- `graph.disableClipboard()` 禁用剪贴板。
-- `graph.toggleClipboard(enabled?: boolean)` 切换剪贴板的启用状态。
+### graph.isClipboardEmpty()
+
+剪贴板是否为空，即没有复制任何节点/边。
+
+### graph.getCellsInClipboard() 
+
+获取剪贴板中的节点/边。
+
+### graph.cleanClipboard()
+
+清空剪贴板中的内容。
+
+### graph.isClipboardEnabled()
+
+剪贴板是否可用。
+
+### graph.enableClipboard()
+
+启用剪贴板。
+
+### graph.disableClipboard()
+
+禁用剪贴板。
+
+### graph.toggleClipboard(enabled?: boolean)
+
+切换或设置剪贴板的启用状态。
+
+- `enabled?: boolean` 是否启用剪切板。
+
+```ts
+// 切换剪切板的启用状态
+graph.toggleClipboard()
+
+// 启用剪切板
+graph.toggleClipboard(true)  
+// 或
+graph.enableClipboard()
+
+// 禁用剪切板
+graph.toggleClipboard(false) 
+// 或
+graph.disableClipboard()
+```
