@@ -1,6 +1,6 @@
 {
   "name": "@antv/x6-sites",
-  "version": "0.10.13",
+  "version": "0.10.14",
   "description": "X6 sites deployed on gh-pages",
   "scripts": {
     "clean": "gatsby clean",
@@ -15,7 +15,7 @@
   ],
   "dependencies": {
     "@antv/gatsby-theme-antv": "^0.10.65",
-    "@antv/x6": "^0.10.13",
+    "@antv/x6": "^0.10.14",
     "gatsby": "^2.23.3",
     "gh-pages": "^3.0.0",
     "react-i18next": "^11.5.0"
