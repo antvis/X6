@@ -1,5 +1,5 @@
 ---
-title: 鼠标滚轮 MouseWheel
+title: 滚轮缩放 MouseWheel
 order: 13
 redirect_from:
   - /zh/docs
@@ -13,9 +13,9 @@ redirect_from:
 const graph = new Graph({
   scroller: {
     enabled: true,
+    pannable: true,
     pageVisible: true,
     pageBreak: false,
-    panning: true,
   },
   mousewheel: {
     enabled: true,
@@ -31,7 +31,7 @@ interface MouseWheelOptions {
   enabled?: boolean
   global?: boolean
   factor?: number
-  fixed?: boolean
+  zoomAtMousePosition?: boolean
   modifiers?: string | ('alt' | 'ctrl' | 'meta' | 'shift')[] | null
   guard?: (this: Graph, e: MouseWheelEvent) => boolean
 }
@@ -45,7 +45,7 @@ interface MouseWheelOptions {
 
 滚动缩放因子。默认为 `1.2`。
 
-### fixed
+### zoomAtMousePosition
 
 是否将鼠标位置作为中心缩放，默认为 `true`。
 
@@ -55,7 +55,7 @@ interface MouseWheelOptions {
 
 ### modifiers
 
-修饰键(如 `'alt'`、`'ctrl'`、`'meta'`、`'shift'`)，设置修饰键后需要按下修饰键并滚动鼠标滚轮时才触发画布缩放。通过设置修饰键可以解决默认滚动行为与画布缩放冲突问题。
+修饰键(`'alt'`、`'ctrl'`、`'meta'`、`'shift'`)，设置修饰键后需要按下修饰键并滚动鼠标滚轮时才触发画布缩放。通过设置修饰键可以解决默认滚动行为与画布缩放冲突问题。
 
 支持配置单个（如 `'alt'`）或多个（如 `['alt', 'ctrl']`）修饰键，通过数组形式配置的多个修饰键是*或关系*，比如刚刚配置的修饰键表示按下 `'alt'` 或 `'ctrl'`，如果需要更加灵活的配置，可以使用如下这些形式：
 

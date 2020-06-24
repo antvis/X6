@@ -47,7 +47,7 @@ interface SnaplineOptions {
 
 ### className
 
-附加样式名，用于定制对齐线样式。默认为空。
+附加样式名，用于定制对齐线样式。默认为 `undefined`。
 
 ```ts
 const graph = new Graph({
