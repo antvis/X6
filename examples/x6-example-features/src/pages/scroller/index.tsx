@@ -32,6 +32,7 @@ class SimpleNodeView extends NodeView {
 }
 
 export default class Example extends React.Component {
+  private graph: Graph
   private graphContainer: HTMLDivElement
   private minimapContainer: HTMLDivElement
   private scroller: any
@@ -50,7 +51,7 @@ export default class Example extends React.Component {
         // height: 400,
         pageVisible: true,
         pageBreak: false,
-        panning: true,
+        pannable: true,
       },
       minimap: {
         enabled: true,
@@ -111,6 +112,7 @@ export default class Example extends React.Component {
     })
 
     graph.center()
+    this.graph = graph
   }
 
   refContainer = (container: HTMLDivElement) => {
@@ -122,11 +124,14 @@ export default class Example extends React.Component {
   }
 
   onCenterClick = () => {
-    this.scroller.center()
+    this.graph.center()
+    // this.graph.center({ padding: { left: 300 } })
+    // this.graph.centerPoint(0, 0)
+    // this.graph.positionPoint({ x: 0, y: 0 }, 100, 100)
   }
 
   onCenterContentClick = () => {
-    this.scroller.centerContent()
+    this.graph.centerContent()
   }
 
   onZoomOutClick = () => {
