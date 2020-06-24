@@ -337,7 +337,7 @@ export class TransformManager extends Base {
     }
 
     // snap scale to a grid
-    const gridSize = options.gridSize
+    const gridSize = options.scaleGrid
     if (gridSize) {
       newSx = gridSize * Math.floor(newSx / gridSize)
       newSy = gridSize * Math.floor(newSy / gridSize)
@@ -405,7 +405,6 @@ export namespace TransformManager {
   }
 
   export interface ScaleContentToFitOptions extends GetContentAreaOptions {
-    contentArea?: Rectangle | Rectangle.RectangleLike
     padding?: number
     minScale?: number
     maxScale?: number
@@ -413,9 +412,10 @@ export namespace TransformManager {
     minScaleY?: number
     maxScaleX?: number
     maxScaleY?: number
-    fittingBBox?: Rectangle | Rectangle.RectangleLike
+    scaleGrid?: number
+    contentArea?: Rectangle.RectangleLike
+    fittingBBox?: Rectangle.RectangleLike
     preserveAspectRatio?: boolean
-    gridSize?: number
   }
 
   export interface GetContentAreaOptions {

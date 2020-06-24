@@ -225,8 +225,8 @@ export class MiniMap extends View {
         data.frameId = requestAnimationFrame(() => {
           this.scroller.zoom(delta * data.zoom, {
             absolute: true,
-            min: this.options.minScale,
-            max: this.options.maxScale,
+            minScale: this.options.minScale,
+            maxScale: this.options.maxScale,
           })
         })
         break
@@ -258,7 +258,7 @@ export class MiniMap extends View {
 
     const cx = (x - ts.tx) / this.ratio
     const cy = (y - ts.ty) / this.ratio
-    this.scroller.center(cx, cy)
+    this.scroller.centerPoint(cx, cy)
   }
 }
 

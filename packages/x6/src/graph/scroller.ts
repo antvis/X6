@@ -9,8 +9,8 @@ export class ScrollerManager extends Base {
     return this.options.scroller
   }
 
-  get allowPanning() {
-    return this.widgetOptions && this.widgetOptions.panning === true
+  get pannable() {
+    return this.widgetOptions && this.widgetOptions.pannable === true
   }
 
   protected init() {
@@ -19,7 +19,7 @@ export class ScrollerManager extends Base {
     this.graph.on('blank:mousedown', ({ e }) => {
       if (
         this.widget &&
-        this.allowPanning &&
+        this.pannable &&
         ModifierKey.test(e, this.widgetOptions.modifiers) &&
         this.graph.hook.allowPanning(e)
       ) {
@@ -35,14 +35,14 @@ export class ScrollerManager extends Base {
   protected autoSetCursor() {
     const options = this.widgetOptions
     if (options.cursor == null) {
-      const cursor = options.panning ? 'grab' : ''
+      const cursor = options.pannable ? 'grab' : ''
       this.widget?.setCursor(cursor, { silent: true })
     }
   }
 
   enablePanning() {
-    if (!this.allowPanning) {
-      this.widgetOptions.panning = true
+    if (!this.pannable) {
+      this.widgetOptions.pannable = true
       if (
         ModifierKey.equals(
           this.graph.options.scroller.modifiers,
@@ -56,8 +56,8 @@ export class ScrollerManager extends Base {
   }
 
   disablePanning() {
-    if (this.allowPanning) {
-      this.widgetOptions.panning = false
+    if (this.pannable) {
+      this.widgetOptions.pannable = false
     }
     this.autoSetCursor()
   }
@@ -90,7 +90,7 @@ export class ScrollerManager extends Base {
 export namespace ScrollerManager {
   export interface Options extends Scroller.CommonOptions {
     enabled?: boolean
-    panning?: boolean
+    pannable?: boolean
     /**
      * alt, ctrl, shift, meta
      */
