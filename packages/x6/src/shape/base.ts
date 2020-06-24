@@ -9,16 +9,16 @@ export class Base<
   }
 
   set label(val: string | undefined | null) {
-    this.setPoints(val)
+    this.setLabel(val)
   }
 
   getLabel() {
     return this.getAttrByPath<string>('text/text')
   }
 
-  setPoints(label?: string | null, options?: Node.SetOptions) {
+  setLabel(label?: string | null, options?: Node.SetOptions) {
     if (label == null) {
-      this.removePoints()
+      this.removeLabel()
     } else {
       this.setAttrByPath('text/text', label, options)
     }
@@ -26,7 +26,7 @@ export class Base<
     return this
   }
 
-  removePoints() {
+  removeLabel() {
     this.removeAttrByPath('text/text')
     return this
   }

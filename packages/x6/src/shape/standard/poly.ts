@@ -5,14 +5,14 @@ import { ObjectExt } from '../../util'
 
 export class Poly extends Base {
   get points() {
-    return this.getLabel()
+    return this.getPoints()
   }
 
   set points(pts: string | undefined | null) {
     this.setPoints(pts)
   }
 
-  getLabel() {
+  getPoints() {
     return this.getAttrByPath<string>('body/refPoints')
   }
 
