@@ -117,31 +117,24 @@ export class MouseWheel extends Disposable implements IDisablable {
           currentScale * this.cumulatedFactor,
         )
 
-        console.log(this.options.fixed)
-
         if (targetScale !== currentScale) {
           if (scroller) {
-            if (this.options.fixed) {
+            if (this.options.zoomAtMousePosition) {
               const origin = this.graph.coord.clientToLocalPoint(this.startPos)
               scroller.zoom(targetScale, {
                 absolute: true,
-                ox: origin.x,
-                oy: origin.y,
+                center: origin.clone(),
               })
             } else {
               scroller.zoom(targetScale, { absolute: true })
             }
           } else {
-            const point = this.options.fixed
-              ? this.graph.coord.clientToLocalPoint(this.startPos)
-              : null
-
             this.graph.scale(targetScale, targetScale)
-
-            if (point != null) {
+            if (this.options.zoomAtMousePosition) {
+              const origin = this.graph.coord.clientToLocalPoint(this.startPos)
               this.graph.translate(
-                point.x * (1 - targetScale),
-                point.y * (1 - targetScale),
+                origin.x * (1 - targetScale),
+                origin.y * (1 - targetScale),
               )
             }
           }
@@ -166,8 +159,8 @@ export namespace MouseWheel {
     enabled?: boolean
     global?: boolean
     factor?: number
-    fixed?: boolean
     modifiers?: string | ModifierKey[] | null
     guard?: (this: Graph, e: MouseWheelEvent) => boolean
+    zoomAtMousePosition?: boolean
   }
 }

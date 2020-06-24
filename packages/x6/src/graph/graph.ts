@@ -1115,34 +1115,19 @@ export class Graph extends Basecoat<EventArgs> {
   }
 
   @Decorator.checkScroller()
-  getScroll() {
-    return this.scroll()
+  getScrollbarPosition() {
+    const scroller = this.scroller.widget!
+    return scroller.scrollbarPosition()
   }
 
   @Decorator.checkScroller()
-  setScroll(
+  setScrollbarPosition(
     left?: number,
     top?: number,
     options?: ScrollerWidget.ScrollOptions,
   ) {
-    return this.scroll(left, top, options)
-  }
-
-  scroll(): { left: number; top: number }
-  scroll(
-    left?: number,
-    top?: number,
-    options?: ScrollerWidget.ScrollOptions,
-  ): this
-  @Decorator.checkScroller()
-  scroll(left?: number, top?: number, options?: ScrollerWidget.ScrollOptions) {
-    const scroller = this.scroller.widget
-    if (scroller) {
-      if (left == null && top == null) {
-        return scroller.scroll()
-      }
-      scroller.scroll(left, top, options)
-    }
+    const scroller = this.scroller.widget!
+    scroller.scrollbarPosition(left, top, options)
     return this
   }
 
@@ -1153,33 +1138,13 @@ export class Graph extends Basecoat<EventArgs> {
    * keep the other coordinate unchanged.
    */
   @Decorator.checkScroller()
-  scrollTo(
+  scrollToPoint(
     x: number | null | undefined,
     y: number | null | undefined,
     options?: ScrollerWidget.ScrollOptions,
   ) {
     const scroller = this.scroller.widget!
-    scroller.scrollTo(x, y, options)
-    return this
-  }
-
-  scrollToPoint(
-    p: Point.PointLike,
-    options?: ScrollerWidget.ScrollOptions,
-  ): this
-  scrollToPoint(
-    x: number,
-    y: number,
-    options?: ScrollerWidget.ScrollOptions,
-  ): this
-  @Decorator.checkScroller()
-  scrollToPoint(
-    x: number | Point.PointLike,
-    y?: number | ScrollerWidget.ScrollOptions,
-    options?: ScrollerWidget.ScrollOptions,
-  ) {
-    const scroller = this.scroller.widget!
-    scroller.scrollToPoint(x as number, y as number, options)
+    scroller.scrollToPoint(x, y, options)
     return this
   }
 
@@ -1206,17 +1171,24 @@ export class Graph extends Basecoat<EventArgs> {
   }
 
   /**
+   * Position the center of graph to the center of the viewport.
+   */
+  center(optons?: ScrollerWidget.CenterOptions) {
+    return this.centerPoint(optons)
+  }
+
+  /**
    * Position the point (x,y) on the graph (in local coordinates) to the
    * center of the viewport. If only one of the coordinates is specified,
    * only center along the specified dimension and keep the other coordinate
    * unchanged.
    */
-  center(
+  centerPoint(
     x: number,
     y: null | number,
     options?: ScrollerWidget.CenterOptions,
   ): this
-  center(
+  centerPoint(
     x: null | number,
     y: number,
     options?: ScrollerWidget.CenterOptions,
@@ -1224,15 +1196,15 @@ export class Graph extends Basecoat<EventArgs> {
   /**
    * Position the center of graph to the center of the viewport.
    */
-  center(optons?: ScrollerWidget.CenterOptions): this
+  centerPoint(optons?: ScrollerWidget.CenterOptions): this
   @Decorator.checkScroller()
-  center(
+  centerPoint(
     x?: number | null | ScrollerWidget.CenterOptions,
     y?: number | null,
     options?: ScrollerWidget.CenterOptions,
   ) {
     const scroller = this.scroller.widget!
-    scroller.center(x as number, y as number, options)
+    scroller.centerPoint(x as number, y as number, options)
     return this
   }
 
@@ -1252,11 +1224,11 @@ export class Graph extends Basecoat<EventArgs> {
 
   @Decorator.checkScroller()
   positionContent(
-    direction: ScrollerWidget.Direction,
+    pos: ScrollerWidget.Direction,
     options?: ScrollerWidget.PositionContentOptions,
   ) {
     const scroller = this.scroller.widget!
-    scroller.positionContent(direction, options)
+    scroller.positionContent(pos, options)
     return this
   }
 
@@ -1273,18 +1245,18 @@ export class Graph extends Basecoat<EventArgs> {
 
   @Decorator.checkScroller()
   positionRect(
-    bbox: Rectangle,
+    rect: Rectangle.RectangleLike,
     direction: ScrollerWidget.Direction,
     options?: ScrollerWidget.CenterOptions,
   ) {
     const scroller = this.scroller.widget!
-    scroller.positionRect(bbox, direction, options)
+    scroller.positionRect(rect, direction, options)
     return this
   }
 
   @Decorator.checkScroller()
   positionPoint(
-    point: Point,
+    point: Point.PointLike,
     x: number | string,
     y: number | string,
     options: ScrollerWidget.CenterOptions = {},
@@ -1295,14 +1267,14 @@ export class Graph extends Basecoat<EventArgs> {
   }
 
   zoom(): number
-  zoom(scale: number, options?: ScrollerWidget.ZoomOptions): this
+  zoom(factor: number, options?: ScrollerWidget.ZoomOptions): this
   @Decorator.checkScroller()
-  zoom(scale?: number, options?: ScrollerWidget.ZoomOptions) {
+  zoom(factor?: number, options?: ScrollerWidget.ZoomOptions) {
     const scroller = this.scroller.widget!
-    if (scale == null) {
+    if (factor == null) {
       return scroller.zoom()
     }
-    scroller.zoom(scale, options)
+    scroller.zoom(factor, options)
     return this
   }
 
@@ -1352,8 +1324,8 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
-  isPanningEnabled() {
-    return this.scroller.allowPanning
+  isPannable() {
+    return this.scroller.pannable
   }
 
   enablePanning() {
@@ -1366,16 +1338,16 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
-  togglePanning(enabled?: boolean) {
-    if (enabled == null) {
-      if (this.isPanningEnabled()) {
+  togglePanning(pannable?: boolean) {
+    if (pannable == null) {
+      if (this.isPannable()) {
         this.disablePanning()
       } else {
         this.enablePanning()
       }
     } else {
-      if (enabled !== this.isPanningEnabled()) {
-        if (enabled) {
+      if (pannable !== this.isPannable()) {
+        if (pannable) {
           this.enablePanning()
         } else {
           this.disablePanning()

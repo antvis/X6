@@ -577,7 +577,7 @@ export namespace Options {
     mousewheel: {
       enabled: false,
       factor: 1.2,
-      fixed: true,
+      zoomAtMousePosition: true,
     },
 
     async: false,

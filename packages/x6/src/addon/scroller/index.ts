@@ -32,9 +32,9 @@ export class Scroller extends View {
   protected clientX: number
   protected clientY: number
   protected padding = { left: 0, top: 0, right: 0, bottom: 0 }
-  protected centerPoint: Point.PointLike | null
   protected cachedScrollLeft: number | null
   protected cachedScrollTop: number | null
+  protected cachedCenterPoint: Point.PointLike | null
   protected delegatedHandlers: { [name: string]: Function }
 
   constructor(options: Scroller.Options) {
@@ -204,8 +204,8 @@ export class Scroller extends View {
   }
 
   protected onResize() {
-    if (this.centerPoint) {
-      this.center(this.centerPoint.x, this.centerPoint.y)
+    if (this.cachedCenterPoint) {
+      this.centerPoint(this.cachedCenterPoint.x, this.cachedCenterPoint.y)
       this.updatePageBreak()
     }
   }
@@ -215,7 +215,7 @@ export class Scroller extends View {
     this.sx = sx
     this.sy = sy
     if (ox || oy) {
-      this.center(ox, oy)
+      this.centerPoint(ox, oy)
       this.updatePageBreak()
     }
 
@@ -291,7 +291,10 @@ export class Scroller extends View {
 
   update() {
     const size = this.getClientSize()
-    this.centerPoint = this.clientToLocalPoint(size.width / 2, size.height / 2)
+    this.cachedCenterPoint = this.clientToLocalPoint(
+      size.width / 2,
+      size.height / 2,
+    )
     let fitTocontentOptions = this.options.fitTocontentOptions
     if (typeof fitTocontentOptions === 'function') {
       fitTocontentOptions = fitTocontentOptions.call(this, this)
@@ -339,9 +342,17 @@ export class Scroller extends View {
     this.graph.resize(options.width * dx, options.height * dy)
   }
 
-  scroll(): { left: number; top: number }
-  scroll(left?: number, top?: number, options?: Scroller.ScrollOptions): this
-  scroll(left?: number, top?: number, options?: Scroller.ScrollOptions) {
+  scrollbarPosition(): { left: number; top: number }
+  scrollbarPosition(
+    left?: number,
+    top?: number,
+    options?: Scroller.ScrollOptions,
+  ): this
+  scrollbarPosition(
+    left?: number,
+    top?: number,
+    options?: Scroller.ScrollOptions,
+  ) {
     if (left == null && top == null) {
       return {
         left: this.container.scrollLeft,
@@ -373,7 +384,7 @@ export class Scroller extends View {
    * coordinates is specified, only scroll in the specified dimension and
    * keep the other coordinate unchanged.
    */
-  scrollTo(
+  scrollToPoint(
     x: number | null | undefined,
     y: number | null | undefined,
     options?: Scroller.ScrollOptions,
@@ -399,27 +410,15 @@ export class Scroller extends View {
     return this
   }
 
-  scrollToPoint(p: Point.PointLike, options?: Scroller.ScrollOptions): this
-  scrollToPoint(x: number, y: number, options?: Scroller.ScrollOptions): this
-  scrollToPoint(
-    x: number | Point.PointLike,
-    y?: number | Scroller.ScrollOptions,
-    options?: Scroller.ScrollOptions,
-  ) {
-    const sx = this.sx
-    const sy = this.sy
-    if (typeof x === 'number') {
-      return this.scrollTo(x * sx, (y as number) * sy, options)
-    }
-    return this.scrollTo(x.x * sx, x.y * sy, y as Scroller.ScrollOptions)
-  }
-
   /**
    * Try to scroll to ensure that the center of graph content is at the
    * center of the viewport.
    */
   scrollToContent(options?: Scroller.ScrollOptions) {
-    return this.scrollToPoint(this.graph.getContentArea().getCenter(), options)
+    const sx = this.sx
+    const sy = this.sy
+    const center = this.graph.getContentArea().getCenter()
+    return this.scrollToPoint(center.x * sx, center.y * sy, options)
   }
 
   /**
@@ -427,7 +426,10 @@ export class Scroller extends View {
    * the viewport.
    */
   scrollToCell(cell: Cell, options?: Scroller.ScrollOptions) {
-    return this.scrollToPoint(cell.getBBox().getCenter(), options)
+    const sx = this.sx
+    const sy = this.sy
+    const center = cell.getBBox().getCenter()
+    return this.scrollToPoint(center.x * sx, center.y * sy, options)
   }
 
   /**
@@ -441,18 +443,33 @@ export class Scroller extends View {
    */
 
   /**
+   * Position the center of graph to the center of the viewport.
+   */
+  center(optons?: Scroller.CenterOptions) {
+    return this.centerPoint(optons)
+  }
+
+  /**
    * Position the point (x,y) on the graph (in local coordinates) to the
    * center of the viewport. If only one of the coordinates is specified,
    * only center along the specified dimension and keep the other coordinate
    * unchanged.
    */
-  center(x: number, y: null | number, options?: Scroller.CenterOptions): this
-  center(x: null | number, y: number, options?: Scroller.CenterOptions): this
+  centerPoint(
+    x: number,
+    y: null | number,
+    options?: Scroller.CenterOptions,
+  ): this
+  centerPoint(
+    x: null | number,
+    y: number,
+    options?: Scroller.CenterOptions,
+  ): this
   /**
    * Position the center of graph to the center of the viewport.
    */
-  center(optons?: Scroller.CenterOptions): this
-  center(
+  centerPoint(optons?: Scroller.CenterOptions): this
+  centerPoint(
     x?: number | null | Scroller.CenterOptions,
     y?: number | null,
     options?: Scroller.CenterOptions,
@@ -487,6 +504,10 @@ export class Scroller extends View {
       y = (ty + tHeight) / 2 // tslint:disable-line
     }
 
+    if (localOptions && localOptions.padding) {
+      return this.positionPoint({ x, y }, '50%', '50%', localOptions)
+    }
+
     const padding = this.getPadding()
     const clientSize = this.getClientSize()
     const cx = clientSize.width / 2
@@ -503,7 +524,7 @@ export class Scroller extends View {
       Math.max(bottom, 0),
     )
 
-    return this.scrollTo(x, y, localOptions || undefined)
+    return this.scrollToPoint(x, y, localOptions || undefined)
   }
 
   centerContent(options?: Scroller.PositionContentOptions) {
@@ -524,28 +545,29 @@ export class Scroller extends View {
    *
    */
   positionContent(
-    direction: Scroller.Direction,
+    pos: Scroller.Direction,
     options?: Scroller.PositionContentOptions,
   ) {
     const rect = this.graph.getContentArea(options)
-    return this.positionRect(rect, direction, options)
+    return this.positionRect(rect, pos, options)
   }
 
   positionCell(
     cell: Cell,
-    direction: Scroller.Direction,
+    pos: Scroller.Direction,
     options?: Scroller.CenterOptions,
   ) {
     const bbox = cell.getBBox()
-    return this.positionRect(bbox, direction, options)
+    return this.positionRect(bbox, pos, options)
   }
 
   positionRect(
-    bbox: Rectangle,
-    direction: Scroller.Direction,
+    rect: Rectangle.RectangleLike,
+    pos: Scroller.Direction,
     options?: Scroller.CenterOptions,
   ) {
-    switch (direction) {
+    const bbox = Rectangle.create(rect)
+    switch (pos) {
       case 'center':
         return this.positionPoint(bbox.getCenter(), '50%', '50%', options)
       case 'top':
@@ -580,12 +602,13 @@ export class Scroller extends View {
   }
 
   positionPoint(
-    point: Point,
+    point: Point.PointLike,
     x: number | string,
     y: number | string,
     options: Scroller.CenterOptions = {},
   ) {
-    const padding = NumberExt.normalizeSides(options.padding)
+    const { padding: pad, ...localOptions } = options
+    const padding = NumberExt.normalizeSides(pad)
     const clientRect = Rectangle.fromSize(this.getClientSize())
     const targetRect = clientRect.clone().moveAndExpand({
       x: padding.left,
@@ -610,14 +633,14 @@ export class Scroller extends View {
     const diff = clientRect.getCenter().diff(origin)
     const scale = this.zoom()
     const rawDiff = diff.scale(1 / scale, 1 / scale)
-    const result = point.clone().translate(rawDiff)
-    return this.center(result.x, result.y, options)
+    const result = Point.create(point).translate(rawDiff)
+    return this.centerPoint(result.x, result.y, localOptions)
   }
 
   zoom(): number
-  zoom(scale: number, options?: Scroller.ZoomOptions): this
-  zoom(scale?: number, options?: Scroller.ZoomOptions) {
-    if (scale == null) {
+  zoom(factor: number, options?: Scroller.ZoomOptions): this
+  zoom(factor?: number, options?: Scroller.ZoomOptions) {
+    if (factor == null) {
       return this.sx
     }
 
@@ -631,45 +654,45 @@ export class Scroller extends View {
       clientSize.height / 2,
     )
 
-    let sx = scale
-    let sy = scale
+    let sx = factor
+    let sy = factor
 
     if (!options.absolute) {
       sx = sx + this.sx
       sy = sy + this.sy
     }
 
-    if (options.grid) {
-      sx = Math.round(sx / options.grid) * options.grid
-      sy = Math.round(sy / options.grid) * options.grid
+    if (options.scaleGrid) {
+      sx = Math.round(sx / options.scaleGrid) * options.scaleGrid
+      sy = Math.round(sy / options.scaleGrid) * options.scaleGrid
     }
 
-    if (options.max) {
-      sx = Math.min(options.max, sx)
-      sy = Math.min(options.max, sy)
+    if (options.maxScale) {
+      sx = Math.min(options.maxScale, sx)
+      sy = Math.min(options.maxScale, sy)
     }
 
-    if (options.min) {
-      sx = Math.max(options.min, sx)
-      sy = Math.max(options.min, sy)
+    if (options.minScale) {
+      sx = Math.max(options.minScale, sx)
+      sy = Math.max(options.minScale, sy)
     }
 
     sx = this.graph.transform.clampScale(sx)
     sy = this.graph.transform.clampScale(sy)
 
-    if (options.ox == null || options.oy == null) {
-      cx = center.x
-      cy = center.y
-    } else {
+    if (options.center) {
       const fx = sx / this.sx
       const fy = sy / this.sy
-      cx = options.ox - (options.ox - center.x) / fx
-      cy = options.oy - (options.oy - center.y) / fy
+      cx = options.center.x - (options.center.x - center.x) / fx
+      cy = options.center.y - (options.center.y - center.y) / fy
+    } else {
+      cx = center.x
+      cy = center.y
     }
 
     this.beforeManipulation()
     this.graph.transform.scale(sx, sy)
-    this.center(cx, cy)
+    this.centerPoint(cx, cy)
     this.afterManipulation()
 
     return this
@@ -695,7 +718,7 @@ export class Scroller extends View {
     this.beforeManipulation()
     graph.scaleContentToFit(options)
     const center = area.getCenter()
-    this.center(center.x, center.y)
+    this.centerPoint(center.x, center.y)
     this.afterManipulation()
 
     return this
@@ -782,7 +805,8 @@ export class Scroller extends View {
   protected syncTransition(scale: number, p: Point.PointLike) {
     this.beforeManipulation()
     this.graph.scale(scale)
-    this.removeTransition().center(p.x, p.y)
+    this.removeTransition()
+    this.centerPoint(p.x, p.y)
     this.afterManipulation()
     return this
   }
@@ -1032,11 +1056,10 @@ export namespace Scroller {
 
   export interface ZoomOptions {
     absolute?: boolean
-    grid?: number
-    ox?: number
-    oy?: number
-    min?: number
-    max?: number
+    minScale?: number
+    maxScale?: number
+    scaleGrid?: number
+    center?: Point.PointLike
   }
 
   export type PositionContentOptions = TransformManager.GetContentAreaOptions &
@@ -1065,8 +1088,8 @@ export namespace Scroller {
   }
 
   export interface TransitionToRectOptions extends TransitionOptions {
-    maxScale?: number
     minScale?: number
+    maxScale?: number
     scaleGrid?: number
     visibility?: number
     center?: Point.PointLike
@@ -1103,7 +1126,7 @@ export namespace Scroller {
 
 namespace Util {
   export const containerClass = 'graph-scroller'
-  export const panningClass = `${containerClass}-panning`
+  export const panningClass = `${containerClass}-pannable`
   export const pagedClass = `${containerClass}-paged`
   export const contentClass = `${containerClass}-content`
   export const backgroundClass = `${containerClass}-background`
