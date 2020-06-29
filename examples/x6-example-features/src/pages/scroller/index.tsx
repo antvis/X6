@@ -82,6 +82,14 @@ export default class Example extends React.Component {
 
     this.scroller = graph.scroller.widget
 
+    graph.on('node:added', ({ node }) => {
+      console.log('add', node)
+    })
+
+    graph.on('node:removed', ({ node }) => {
+      console.log('remove', node)
+    })
+
     const rect = graph.addNode({
       shape: 'rect',
       x: 300,
@@ -92,6 +100,10 @@ export default class Example extends React.Component {
         rect: { fill: '#31D0C6', stroke: '#4B4A67', 'stroke-width': 2 },
         text: { text: 'rect', fill: 'white' },
       },
+    })
+
+    rect.on('removed', () => {
+      console.log('rect was removed')
     })
 
     const circle = graph.addNode({
@@ -110,6 +122,8 @@ export default class Example extends React.Component {
       source: rect,
       target: circle,
     })
+
+    graph.removeCell(rect)
 
     graph.center()
     this.graph = graph
