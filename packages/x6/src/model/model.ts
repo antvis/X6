@@ -56,17 +56,13 @@ export class Model extends Basecoat<Model.EventArgs> {
     collection.on('added', (args) => {
       const cell = args.cell
       this.onCellAdded(cell)
-      this.notify('cell:added', args)
-      if (cell.isNode()) {
-        this.notify('node:added', { ...args, node: cell })
-      } else if (cell.isEdge()) {
-        this.notify('edge:added', { ...args, edge: cell })
-      }
     })
 
     collection.on('removed', (args) => {
       const cell = args.cell
       this.onCellRemoved(cell, args.options)
+
+      // Should trigger remove-event manually after cell was removed.
       this.notify('cell:removed', args)
       if (cell.isNode()) {
         this.notify('node:removed', { ...args, node: cell })
