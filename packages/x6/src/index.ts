@@ -10,8 +10,6 @@ export * from './shape'
 export * from './addon'
 
 export * from './global'
-export * from './global/x6'
-export * from './global/version'
 
 // start track
 // -----------

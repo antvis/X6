@@ -1,9 +1,9 @@
 import React from 'react'
-import { X6, Graph, Util, Timing } from '@antv/x6'
+import { Graph, Util, Timing } from '@antv/x6'
 import '../index.less'
 
 function registerEdgeTool(name: string, inherit: string, options: any) {
-  X6.registerEdgeTool(name, {
+  Graph.registerEdgeTool(name, {
     name,
     inherit,
     ...options,
