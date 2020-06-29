@@ -7,7 +7,7 @@ redirect_from:
   - /zh/docs/manual/tutorial
 ---
 
-启用 [`Scroller`](./scroller) 后可开启小地图，小地图是完整画布的预览，支持通过平移缩放小地图的视口来平移缩放画布。
+启用 [Scroller](./scroller) 后可开启小地图，小地图是完整画布的预览，支持通过平移缩放小地图的视口来平移缩放画布。
 
 ```ts
 const graph = new Graph({
@@ -20,6 +20,21 @@ const graph = new Graph({
   }
 })
 ```
+
+## 演示
+
+- 移动小地图视口来移动画布。
+- 缩放小地图视口来缩放画布。
+- 小地图中没有渲染边，减少边对小地图的干扰。
+- 小地图中用色块代表节点，隐藏了原始节点的细节。
+
+<iframe
+     src="https://codesandbox.io/embed/x6-playground-minimap-i18pq?fontsize=14&hidenavigation=1&theme=light&view=preview"
+     style="width:100%; height:500px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden; margin-top: 16px;"
+     title="x6-playground-minimap"
+     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
+     sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
+   ></iframe>
 
 ## 选项
 
@@ -106,19 +121,3 @@ const graph = new Graph({
 ### createGraph
 
 创建小地图 `Graph`，默认返回默认 `Graph` 的实例。
-
-
-## Playground
-
-- 移动小地图视口来移动画布；
-- 缩放小地图视口来缩放画布；
-- 小地图中没有渲染边，减少边对小地图的干扰；
-- 小地图中用色块代表节点，隐藏了原始节点的细节。
-
-<iframe
-     src="https://codesandbox.io/embed/x6-playground-minimap-i18pq?fontsize=14&hidenavigation=1&theme=light&view=preview"
-     style="width:100%; height:500px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden; margin-top: 16px;"
-     title="x6-playground-minimap"
-     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-     sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-   ></iframe>

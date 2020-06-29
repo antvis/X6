@@ -22,7 +22,7 @@ const graph = new Graph({
 })
 ```
 
-创建画布后，也可以调用 `graph.enableKeyboard()` 和 `graph.disableKeyboard()` 来启用和禁用键盘事件。
+创建画布后，也可以调用 [graph.enableKeyboard()](#graphenablekeyboard) 和 [graph.disableKeyboard()](#graphdisablekeyboard) 来启用和禁用键盘事件。
 
 ```ts
 if (graph.isKeyboardEnabled()) {
@@ -31,6 +31,18 @@ if (graph.isKeyboardEnabled()) {
   graph.enableKeyboard()
 }
 ```
+
+## 演示
+
+> 由于 Playground 通过 iframe 嵌入，导致快捷键失效。可以点击 Playground 中的【在新窗口中预览】按钮去体验。
+
+<iframe
+     src="https://codesandbox.io/embed/x6-playground-keyboard-dqoeq?fontsize=14&hidenavigation=1&theme=light&view=preview"
+     style="width:100%; height:500px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
+     title="x6-playground-keyboard"
+     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
+     sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
+   ></iframe>
 
 ## 选项
 
@@ -76,36 +88,43 @@ const graph = new Graph({
 })
 ```
 
-## Playground
-
-> 由于 Playground 通过 iframe 嵌入，导致快捷键失效。可以点击 Playground 中的【在新窗口中预览】按钮去体验。
-
-<iframe
-     src="https://codesandbox.io/embed/x6-playground-keyboard-dqoeq?fontsize=14&hidenavigation=1&theme=light&view=preview"
-     style="width:100%; height:500px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
-     title="x6-playground-keyboard"
-     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-     sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-   ></iframe>
-
 ## API
 
-- `graph.bindKey` 绑定快捷键。
-  ```ts
-    bindKey(
-      keys: string | string[], 
-      callback: (e: KeyboardEvent) => void, 
-      action?: 'keypress' | 'keydown' | 'keyup',
-    )
-  ```
-- `graph.unbindKey` 解绑快捷键。
-  ```ts
-    unbindKey(
-      keys: string | string[], 
-      action?: 'keypress' | 'keydown' | 'keyup',
-    )
-  ```
-- `graph.isKeyboardEnabled()` 是否启用键盘事件。
-- `graph.enableKeyboard()` 启用键盘事件。
-- `graph.disableKeyboard()` 禁用键盘事件。
-- `graph.toggleKeyboard(enabled?: boolean)` 切换键盘事件的启用状态。
+### graph.bindKey
+
+绑定快捷键。
+
+```ts
+graph.bindKey(
+  keys: string | string[], 
+  callback: (e: KeyboardEvent) => void, 
+  action?: 'keypress' | 'keydown' | 'keyup',
+)
+```
+
+### graph.unbindKey 
+
+解绑快捷键。
+
+```ts
+graph.unbindKey(
+  keys: string | string[], 
+  action?: 'keypress' | 'keydown' | 'keyup',
+)
+```
+
+### graph.isKeyboardEnabled()
+
+是否启用键盘事件。
+
+### graph.enableKeyboard()
+
+启用键盘事件。
+
+### graph.disableKeyboard()
+
+禁用键盘事件。
+
+### graph.toggleKeyboard(enabled?: boolean)
+
+切换键盘事件的启用状态。
