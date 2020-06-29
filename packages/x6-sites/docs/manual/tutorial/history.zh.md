@@ -32,6 +32,20 @@ if (graph.isHistoryEnabled()) {
 }
 ```
 
+## 演示
+
+- 随意移动节点后，Undo 按钮变得可用。
+- 点击 Undo 按钮，节点位置被还原，然后 Redo 按钮变得可用。
+- 点击 Redo 按钮，节点位置被更新。
+
+<iframe
+  src="https://codesandbox.io/embed/x6-playground-history-i5b6q?fontsize=14&hidenavigation=1&theme=light&view=preview"
+  style="width:100%; height:500px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden; margin-top: 16px;"
+  title="x6-playground-history"
+  allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
+  sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
+></iframe>
+
 ## 选项
 
 ```ts
@@ -151,21 +165,17 @@ graph.redo(); // -> calls node.set('name', 'value', { option2: 6 });
 
 ## 事件
 
-事件参数定义。
-
-```ts
-interface Args<T = never> {
-  cmds: Command[] | T
-  options: KeyValue
-}
-```
-
 ### undo
 
 当命令被撤销时触发。
 
 ```ts
-graph.history.on('undo', (args: Args) => { })
+graph.history.on('undo', (args: {
+  cmds: Command[]
+  options: KeyValue
+}) => { 
+  // code here
+})
 ```
 
 ### redo 
@@ -173,7 +183,12 @@ graph.history.on('undo', (args: Args) => { })
 当命令被重做时触发。
 
 ```ts
-graph.history.on('redo', (args: Args) => { })
+graph.history.on('redo', (args: {
+  cmds: Command[]
+  options: KeyValue
+}) => { 
+  // code here
+})
 ```
 
 ### cancel
@@ -181,7 +196,12 @@ graph.history.on('redo', (args: Args) => { })
 当命令被取消时触发。
 
 ```ts
-graph.history.on('cancel', (args: Args) => { })
+graph.history.on('cancel', (args: {
+  cmds: Command[]
+  options: KeyValue
+}) => { 
+  // code here
+})
 ```
 
 ### add
@@ -189,7 +209,12 @@ graph.history.on('cancel', (args: Args) => { })
 当命令被添加到队列时触发。
 
 ```ts
-graph.history.on('add', (args: Args) => { })
+graph.history.on('add', (args: {
+  cmds: Command[]
+  options: KeyValue
+}) => { 
+  // code here
+})
 ```
 
 ### clean
@@ -197,7 +222,12 @@ graph.history.on('add', (args: Args) => { })
 当历史队列被清空时触发。
 
 ```ts
-graph.history.on('clean', (args: Args<null>) => { })
+graph.history.on('clean', (args: {
+  cmds: Command[] | null
+  options: KeyValue
+}) => { 
+  // code here
+})
 ```
 
 ### change
@@ -205,7 +235,12 @@ graph.history.on('clean', (args: Args<null>) => { })
 当历史队列改变时触发。
 
 ```ts
-graph.history.on('change', (args: Args<numm>) => { })
+graph.history.on('change', (args: {
+  cmds: Command[] | null
+  options: KeyValue
+}) => { 
+  // code here
+})
 ```
 
 ### batch
@@ -213,22 +248,13 @@ graph.history.on('change', (args: Args<numm>) => { })
 当接收到 batch 命令时触发。
 
 ```ts
-graph.history.on('batch', (args: { cmd: Command; options: KeyValue }) => { })
+graph.history.on('batch', (args: { 
+  cmd: Command 
+  options: KeyValue 
+}) => { 
+  // code here
+})
 ```
-
-## Playground
-
-- 随意移动节点后，Undo 按钮变得可用；
-- 点击 Undo 按钮，节点位置被还原，然后 Redo 按钮变得可用；
-- 点击 Redo 按钮，节点位置被更新。
-
-<iframe
-     src="https://codesandbox.io/embed/x6-playground-history-i5b6q?fontsize=14&hidenavigation=1&theme=light&view=preview"
-     style="width:100%; height:500px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
-     title="x6-playground-history"
-     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-     sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-   ></iframe>
 
 ## API
  

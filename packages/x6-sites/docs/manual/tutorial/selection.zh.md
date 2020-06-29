@@ -22,7 +22,7 @@ const graph = new Graph({
 })
 ```
 
-创建画布后，可以调用 `graph.enableSelection()` 和 `graph.disableSelection()` 来启用和禁用选择交互。
+创建画布后，可以调用 [graph.enableSelection()](#graphenableselection) 和 [graph.disableSelection()](#graphdisableselection) 来启用和禁用选择交互。
 
 ```ts
 if (graph.isSelectionEnabled()) {
@@ -31,6 +31,26 @@ if (graph.isSelectionEnabled()) {
   graph.enableSelection()
 }
 ```
+
+## 演示
+
+- 点击选中节点。
+- 启用多选，按住 Ctrl/Command 后点击节点多选。
+- 启用移动，拖动选框移动节点。
+- 启用框选，在画布空白位置按下鼠标左键，拖动选框来框选节点。
+- 启用严格框选模式(strict)，观察对框选的影响。
+- 选择与框选配合使用的修饰键，如 `alt` 键，按住 `alt` 键并画布空白位置按下鼠标左键，拖动选框来框选节点。
+- 应用自定义样式名(my-selection)，选中节点的选框颜色被自定义。
+- 应用自定义过滤器(排除 circle 节点)，圆形节点不能被选中。
+- 应用自定义附加内容(显示选中节点个数)，选择两个及以上的节点，触发显示自定义内容。
+
+<iframe
+  src="https://codesandbox.io/embed/x6-playground-selection-1pvnm?fontsize=14&hidenavigation=1&theme=light&view=preview"
+  style="width:100%; height:500px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden; margin-top: 16px;"
+  title="x6-playground-selection"
+  allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
+  sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
+></iframe>
 
 ## 选项
 
@@ -89,7 +109,7 @@ const graph = new Graph({
 })
 ```
 
-创建画布后，可以调用 `graph.enableRubberband()` 和 `graph.disableRubberband()` 来启用和禁用框选。
+创建画布后，可以调用 [graph.enableRubberband()](#graphenablerubberband) 和 [graph.disableRubberband()](#graphdisablerubberband) 来启用和禁用框选。
 
 ```ts
 if (graph.isRubberbandEnabled()) {
@@ -150,108 +170,234 @@ const graph = new Graph({
 
 ## 样式定制
 
-上面介绍了通过 `className` 选项来定制样式，另外也可以通过覆盖以下几个 CSS 样式定义来定制，默认的样式定义[参考这里](https://github.com/antvis/X6/blob/master/packages/x6/src/addon/selection/index.less)。
+上面介绍了通过 [className](#classname) 选项来定制样式，另外也可以通过覆盖以下几个 CSS 样式定义来定制，默认的样式定义[参考这里](https://github.com/antvis/X6/blob/master/packages/x6/src/addon/selection/index.less)。
 
 - x6-widget-selection
-- x6-widget-selection-lasso
+- x6-widget-selection-rubberband
 - x6-widget-selection-selected
 - x6-widget-selection-box
 - x6-widget-selection-inner
 - x6-widget-selection-content
 
-## Playground
-
-- 点击选中节点；
-- 启用多选，按住 Ctrl/Command 点击节点多选；
-- 启用移动，拖动选框移动节点；
-- 启用框选，在画布空白位置按下鼠标左键，拖动选框来框选节点；
-- 启用严格框选模式(strict)，观察对框选的影响；
-- 选择与框选配合使用的修饰键，如 `alt` 键，按住 `alt` 键并画布空白位置按下鼠标左键，拖动选框来框选节点；
-- 应用自定义样式名(my-selection)，选中节点的选框颜色被自定义；
-- 应用自定义过滤器(排除 circle 节点)，圆形节点不能被选中；
-- 应用自定义附加内容(显示选中节点个数)，选择两个及以上的节点，触发显示自定义内容。
-
-<iframe
-     src="https://codesandbox.io/embed/x6-playground-selection-1pvnm?fontsize=14&hidenavigation=1&theme=light&view=preview"
-     style="width:100%; height:500px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden; margin-top: 16px;"
-     title="x6-playground-selection"
-     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-     sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-   ></iframe>
-
 ## 事件
 
-支持如下事件：
+### cell:selected
 
-- `cell:selected` 节点/边被选中时触发。
-- `node:selected` 节点被选中时触发。
-- `edge:selected` 边被选中时触发。
-- `cell:unselected` 节点/边被取消选中时触发。
-- `node:unselected` 节点被取消选中时触发。
-- `edge:unselected` 边被取消选中时触发。
-- `selection:changed` 选中的节点/边发生改变(增删)时触发。
-
-事件回调函数对应的参数如下：
+节点/边被选中时触发。
 
 ```ts
-interface SelectionEventArgs {
-  'cell:selected': { cell: Cell; options: Model.SetOptions }
-  'node:selected': { cell: Cell; node: Node; options: Model.SetOptions }
-  'edge:selected': { cell: Cell; edge: Edge; options: Model.SetOptions }
-  'cell:unselected': { cell: Cell; options: Model.SetOptions }
-  'node:unselected': { cell: Cell; node: Node; options: Model.SetOptions }
-  'edge:unselected': { cell: Cell; edge: Edge; options: Model.SetOptions }
-  'selection:changed': {
-    added: Cell[]
-    removed: Cell[]
-    selected: Cell[]
-    options: Model.SetOptions
-  }
-}
+graph.on('cell:selected', (args: { 
+  cell: Cell
+  options: Model.SetOptions 
+}) => { 
+  // code here
+})
 ```
 
-例如，监听节点被选中事件：
+### node:selected
+
+节点被选中时触发。
 
 ```ts
-graph.on('node:selected', ({cell, node, options}) => {
+graph.on('node:selected', (args: { 
+  cell: Cell
+  node: Node 
+  options: Model.SetOptions 
+}) => { 
+  // code here
+})
+```
+
+### edge:selected 
+
+边被选中时触发。
+
+```ts
+graph.on('edge:selected', (args: { 
+  cell: Cell
+  edge: Edge
+  options: Model.SetOptions 
+}) => { 
+  // code here
+})
+```
+
+### cell:unselected
+
+节点/边被取消选中时触发。
+
+```ts
+graph.on('cell:unselected', (args: { 
+  cell: Cell
+  options: Model.SetOptions 
+}) => { 
+  // code here
+})
+```
+
+### node:unselected
+
+节点被取消选中时触发。
+
+```ts
+graph.on('node:unselected', (args: { 
+  cell: Cell
+  node: Node 
+  options: Model.SetOptions 
+}) => { 
+  // code here
+})
+```
+
+### edge:unselected 
+
+边被选中时触发。
+
+```ts
+graph.on('edge:unselected', (args: { 
+  cell: Cell
+  edge: Edge
+  options: Model.SetOptions 
+}) => { 
+  // code here
+})
+```
+
+### selection:changed 
+
+选中的节点/边发生改变(增删)时触发。
+
+```ts
+graph.on('node:selected', (args: {
+  added: Cell[]
+  removed: Cell[]
+  selected: Cell[]
+  options: Model.SetOptions
+}) => {
   // code here
 })
 ```
 
 ## API
 
-- `graph.select(cells: Cell | Cell[])` 选中节点/边。
-- `graph.unselect(cells: Cell | Cell[])` 取消选中节点/边。
-- `graph.isSelected(cell: Cell | string)` 节点/边是否被选中。
-- `graph.getSelectedCells()` 获取选中的节点/边。
-- `graph.getSelectedCellCount()` 获取选中的节点/边的数量。
-- `graph.isSelectionEmpty()` 选区是否为空。
-- `graph.cleanSelection()` 清空选区。
-- `graph.setSelectionFilter(filter?: Selection.Filter)` 设置过滤器。
-- `graph.setSelectionDisplayContent(content?: Selection.Content)` 设置附加显示内容。
-- `graph.setRubberbandModifiers(modifiers?: string | ModifierKey[] | null)` 设置框选修饰键。
+### graph.select(cells: Cell | Cell[])
 
-- `graph.isSelectionEnabled()` 是否启用选中交互。
-- `graph.enableSelection()` 启用选中交互。
-- `graph.disableSelection()` 禁用选中交互。
-- `graph.toggleSelection(enabled?: boolean)` 切换是否启用选中交互。
+选中节点/边。
 
-- `graph.isMultipleSelection()`  是否支持点击多选。
-- `graph.enableMultipleSelection()` 开启点击多选，开启后按下 `ctrl` 或 `command` 键点击节点多选 。
-- `graph.disableMultipleSelection()` 禁用点击多选。
-- `graph.toggleMultipleSelection(multiple?: boolean)` 切换点击多选。
+### graph.unselect(cells: Cell | Cell[])
 
-- `graph.isRubberbandEnabled()` 是否启用框选。
-- `graph.enableRubberband()` 启用框选。
-- `graph.disableRubberband()` 禁用框选。
-- `graph.toggleRubberband(enabled?: boolean)` 切换是否启用框选。
+取消选中节点/边。
 
-- `graph.isStrictRubberband()` 是否启用严格框选，启用后节点完全位于选框中时才会被选中。
-- `graph.enableStrictRubberband()` 启用严格框选。
-- `graph.disableStrictRubberband()` 禁用严格框选。
-- `graph.toggleStrictRubberband(strict?: boolean)` 切换严格框选。
+### graph.isSelected(cell: Cell | string)
 
-- `graph.isSelectionMovable()` 选中的节点是否可以被移动。
-- `graph.enableSelectionMovable()` 开启选中的节点被移动。
-- `graph.disableSelectionMovable()` 禁止选中的节点被移动。
-- `graph.toggleSelectionMovable(movable?: boolean)` 切换选中节点是否可以被移动。
+节点/边是否被选中。
+
+### graph.getSelectedCells()
+
+获取选中的节点/边。
+
+### graph.getSelectedCellCount()
+
+获取选中的节点/边的数量。
+
+### graph.isSelectionEmpty()
+
+选区是否为空。
+
+### graph.cleanSelection()
+
+清空选区。
+
+### graph.setSelectionFilter(filter?: Selection.Filter)
+
+设置过滤器。
+
+### graph.setSelectionDisplayContent(content?: Selection.Content)
+
+设置附加显示内容。
+
+### graph.setRubberbandModifiers(modifiers?: string | ModifierKey[] | null)
+
+设置框选修饰键。
+
+
+### graph.isSelectionEnabled()
+
+是否启用选中交互。
+
+### graph.enableSelection()
+
+启用选中交互。
+
+### graph.disableSelection()
+
+禁用选中交互。
+
+### graph.toggleSelection(enabled?: boolean)
+
+切换是否启用选中交互。
+
+
+### graph.isMultipleSelection()
+
+ 是否支持点击多选。
+
+### graph.enableMultipleSelection()
+
+开启点击多选，开启后按下 `ctrl` 或 `command` 键点击节点多选 。
+
+### graph.disableMultipleSelection()
+
+禁用点击多选。
+
+### graph.toggleMultipleSelection(multiple?: boolean)
+
+切换点击多选。
+
+### graph.isRubberbandEnabled()
+
+是否启用框选。
+
+### graph.enableRubberband()
+
+启用框选。
+
+### graph.disableRubberband()
+
+禁用框选。
+
+### graph.toggleRubberband(enabled?: boolean)
+
+切换是否启用框选。
+
+### graph.isStrictRubberband()
+
+是否启用严格框选，启用后节点完全位于选框中时才会被选中。
+
+### graph.enableStrictRubberband()
+
+启用严格框选。
+
+### graph.disableStrictRubberband()
+
+禁用严格框选。
+
+### graph.toggleStrictRubberband(strict?: boolean)
+
+切换严格框选。
+
+### graph.isSelectionMovable()
+
+选中的节点是否可以被移动。
+
+### graph.enableSelectionMovable()
+
+开启选中的节点被移动。
+
+### graph.disableSelectionMovable()
+
+禁止选中的节点被移动。
+
+### graph.toggleSelectionMovable(movable?: boolean)
+
+切换选中节点是否可以被移动。

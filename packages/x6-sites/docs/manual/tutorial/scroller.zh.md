@@ -7,7 +7,7 @@ redirect_from:
   - /zh/docs/manual/tutorial
 ---
 
-创建画布时，通过下面配置即可开启画布滚动能力。
+Scroller 使画布具备滚动、平移、居中、缩放等能力，创建画布时，通过下面配置即可开启。
 
 ```ts
 const graph = new Graph({
@@ -21,6 +21,16 @@ const graph = new Graph({
   },
 })
 ```
+
+## 演示
+
+<iframe
+  src="https://codesandbox.io/embed/x6-playground-scroller-ph3y4?fontsize=14&hidenavigation=1&theme=light&view=preview"
+  style="width:100%; height:500px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
+  title="x6-playground-scroller"
+  allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
+  sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
+></iframe>
 
 ## 选项
 
@@ -79,7 +89,7 @@ const graph = new Graph({
 })
 ```
 
-创建画布后，也可以调用 `graph.enablePanning()` 和 `graph.disablePanning()` 来启用和禁用画布平移。
+创建画布后，也可以调用 [graph.enablePanning()](#graphenablepanning) 和 [graph.disablePanning()](#graphdisablepanning) 来启用和禁用画布平移。
 
 ```ts
 if (graph.isPannable()) {
@@ -136,16 +146,6 @@ if (graph.isPannable()) {
 ### autoResize
 
 是否自动扩充/缩小画布，默认为 `true`。开启后，移动节点/边时将自动计算需要的画布大小，当超出当前画布大小时，按照 `pageWidth` 和 `pageHeight` 自动扩充画布。反之，则自动缩小画布。
-
-## Playground
-
-<iframe
-     src="https://codesandbox.io/embed/x6-playground-scroller-ph3y4?fontsize=14&hidenavigation=1&theme=light&view=preview"
-     style="width:100%; height:500px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
-     title="x6-playground-scroller"
-     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-     sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-   ></iframe>
 
 ## API
 

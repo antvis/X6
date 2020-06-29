@@ -9,9 +9,23 @@ redirect_from:
 
 网格是渲染/移动节点的最小单位。网格默认大小为 `10px`，渲染节点时表示以 `10` 为最小单位对齐到网格，如位置为 `{ x: 24, y: 38 }`的节点渲染到画布后的实际位置为 `{ x: 20, y: 40 }`， 移动节点时表示每次移动最小距离为 `10px`。
 
+## 演示
+
+- 设置网格类型，观察不同网格类型的视觉表现。
+- 设置网格大小，通过拖动节点来了解网格大小对节点位置的影响。
+- 设置网格颜色和网点/线框大小。
+
+<iframe
+  src="https://codesandbox.io/embed/x6-playground-grid-bzoy0?fontsize=14&hidenavigation=1&theme=light&view=preview"
+  style="width:100%; height:500px; border: 1px solid #f0f0f0; border-radius: 4px; overflow:hidden; margin-top: 16px;"
+  title="x6-playground-grid"
+  allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
+  sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
+></iframe>
+
 ## 网格大小
 
-初始化画布时，通过下面配置来设置网格大小。
+创建画布时，通过下面配置来设置网格大小。
 
 ```ts
 const graph = new Graph({
@@ -28,9 +42,13 @@ const graph = new Graph({
 
 创建画布后，可以调用 [graph.setGridSize(gridSize: number)](#graphsetgridsizegridsize-number) 方法来修改网格大小，并触发网格重绘（如果网格可见）。
 
-## 网格样式
+```ts
+graph.setGridSize(10)
+```
 
-网格默认不可见，初始化画布时，通过下面配置来绘制网格。
+## 网格类型
+
+网格默认不可见，创建画布时，通过下面配置来启用网格绘制。
 
 ```ts
 const graph = new Graph({
@@ -41,12 +59,12 @@ const graph = new Graph({
 const graph = new Graph({
   grid: {
     size: 10,      // 网格大小 10px
-    visible: true, // 绘制网格
+    visible: true, // 绘制网格，默认绘制 dot 类型网格
   },
 })
 ```
 
-同时，我们内置了以下四种网格类型，通过 `type` 选项来指定网格类型，默认值为 `dot`，并支持通过 `args` 选项来指定对应类型的样式。
+同时，我们内置了以下四种网格类型，通过 `type` 选项来指定网格类型，默认值为 `'dot'`，并支持通过 `args` 选项来配置网格样式。
 
 - dot (默认值)
 - fixedDot
@@ -89,21 +107,18 @@ const graph = new Graph({
   })
   ```
 
-创建画布后可以调用 [graph.drawGrid(options?: DrawGridOptions)](#graphdrawgridoptions-drawgridoptions) 来重绘网格。
+创建画布后，可以调用 [graph.drawGrid(options?: DrawGridOptions)](#graphdrawgridoptions-drawgridoptions) 来重绘网格。
 
-## Playground
+例如，使用网格颜色 `#f0f0f0` 和默认线宽绘制 `mesh` 类型网格。
 
-- 选择体验不同的网格样式。
-- 设置不同的网格大小，通过拖动节点来了解网格大小对节点位置的影响。
-- 设置网格颜色和网点/线框大小。
-
-<iframe
-  src="https://codesandbox.io/embed/x6-playground-grid-bzoy0?fontsize=14&hidenavigation=1&theme=light&view=preview"
-  style="width:100%; height:500px; border: 1px solid #f0f0f0; border-radius: 4px; overflow:hidden; margin-top: 16px;"
-  title="x6-playground-grid"
-  allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-  sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-></iframe>
+```ts
+graph.drawGrid({
+  type: 'mesh',
+  args: {
+    color: '#f0f0f0'
+  },
+})
+```
 
 ## API
 
@@ -140,7 +155,7 @@ type DrawGridOptions =
     }
 ```
 
-例如，使用网格颜色 `#f0f0f0` 和默认线宽绘制 `mesh` 网格。
+例如，使用网格颜色 `#f0f0f0` 和默认线宽绘制 `mesh` 类型网格。
 
 ```ts
 graph.drawGrid({

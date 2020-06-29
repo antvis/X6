@@ -22,7 +22,7 @@ const graph = new Graph({
 })
 ```
 
-创建画布后，可以调用 `graph.enableSnapline()` 和 `graph.disableSnapline()` 来启用和禁用对齐线。
+创建画布后，可以调用 [graph.enableSnapline()](#graphenablesnapline) 和 [graph.disableSnapline()](#graphdisablesnapline) 来启用和禁用对齐线。
 
 ```ts
 if (graph.isSnaplineEnabled()) {
@@ -31,6 +31,16 @@ if (graph.isSnaplineEnabled()) {
   graph.enableSnapline()
 }
 ```
+
+## 演示
+
+<iframe
+  src="https://codesandbox.io/embed/x6-playground-snapline-rgymq?fontsize=14&hidenavigation=1&theme=light&view=preview"
+  style="width:100%; height:500px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
+  title="x6-playground-snapline"
+  allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
+  sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
+></iframe>
 
 ## 选项
 
@@ -127,36 +137,68 @@ const graph = new Graph({
 - x6-widget-snapline-vertical
 - x6-widget-snapline-horizontal
 
-## Playground
-
-
-
-<iframe
-     src="https://codesandbox.io/embed/x6-playground-snapline-rgymq?fontsize=14&hidenavigation=1&theme=light&view=preview"
-     style="width:100%; height:500px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
-     title="x6-playground-snapline"
-     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-     sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-   ></iframe>
-
 ## API
 
-- `graph.hideSnapline()` 隐藏对齐线。
-- `graph.getSnaplineTolerance()` 获取对齐精度。
-- `graph.setSnaplineTolerance(tolerance: number)` 设置对齐精度。 
-- `graph.setSnaplineFilter(filter?: Filter)` 设置对齐线过滤器。
+### graph.hideSnapline()
 
-- `graph.isSnaplineEnabled()` 对齐线是否启用。
-- `graph.enableSnapline()` 启用对齐线。
-- `graph.disableSnapline()` 禁用对齐线。
-- `graph.toggleSnapline(enabled?: boolean)` 切换对齐线的启用状态。
+隐藏对齐线。
 
-- `graph.isSnaplineOnResizingEnabled()` 修改节点大小交互时是否触发对齐线。
-- `graph.enableSnaplineOnResizing()` 修改节点大小交互时触发对齐线。 
-- `graph.disableSnaplineOnResizing()` 修改节点大小交互时不触发对齐线。 
-- `graph.toggleSnaplineOnResizing(enableOnResizing?: boolean)` 切换修改节点大小时是否触发对齐线。 
+### graph.getSnaplineTolerance()
 
-- `graph.isSharpSnapline()` 是否显示截断的对齐线。
-- `graph.enableSharpSnapline()` 显示截断的对齐线。
-- `graph.disableSharpSnapline()` 显示贯穿画布的对齐线。
-- `graph.toggleSharpSnapline(sharp?: boolean)` 切换是否显示贯穿画布的对齐线。
+获取对齐精度。
+
+### graph.setSnaplineTolerance(tolerance: number)
+
+设置对齐精度。 
+
+### graph.setSnaplineFilter(filter?: Filter)
+
+设置对齐线过滤器。
+
+### graph.isSnaplineEnabled()
+
+对齐线是否启用。
+
+### graph.enableSnapline()
+
+启用对齐线。
+
+### graph.disableSnapline()
+
+禁用对齐线。
+
+### graph.toggleSnapline(enabled?: boolean)
+
+切换对齐线的启用状态。
+
+### graph.isSnaplineOnResizingEnabled()
+
+修改节点大小交互时是否触发对齐线。
+
+### graph.enableSnaplineOnResizing()
+
+修改节点大小交互时触发对齐线。 
+
+### graph.disableSnaplineOnResizing()
+
+修改节点大小交互时不触发对齐线。 
+
+### graph.toggleSnaplineOnResizing(enableOnResizing?: boolean)
+
+切换修改节点大小时是否触发对齐线。 
+
+### graph.isSharpSnapline()
+
+是否显示截断的对齐线。
+
+### graph.enableSharpSnapline()
+
+显示截断的对齐线。
+
+### graph.disableSharpSnapline()
+
+显示贯穿画布的对齐线。
+
+### graph.toggleSharpSnapline(sharp?: boolean)
+
+切换是否显示贯穿画布的对齐线。

@@ -7,7 +7,7 @@ redirect_from:
   - /zh/docs/manual/tutorial
 ---
 
-鼠标滚轮的默认行为是滚动页面，启用 [`Scroller`](./scroller) 后用于滚动画布，但在某些场景下我们需要用滚轮来缩放画布，所为了避免交互冲突，通常配合修饰键来实现滚轮缩放画布，参考下面配置。
+鼠标滚轮的默认行为是滚动页面，启用 [Scroller](./scroller) 后用于滚动画布，但在某些场景下我们需要用滚轮来缩放画布，所为了避免交互冲突，通常配合修饰键来实现滚轮缩放画布，参考下面配置。
 
 ```ts
 const graph = new Graph({
@@ -23,6 +23,18 @@ const graph = new Graph({
   },
 })
 ```
+
+## 演示
+
+> 按住 `Command` 键通过滚轮缩放画布，建议点击 Playground 中【在新窗口中预览】按钮打开新窗口体验。
+
+<iframe
+  src="https://codesandbox.io/embed/x6-playground-mousewheel-zwj4v?fontsize=14&hidenavigation=1&theme=light&view=preview"
+  style="width:100%; height:500px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden; margin-top: 16px;"
+  title="x6-playground-mousewheel"
+  allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
+  sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
+></iframe>
 
 ## 选项
 
@@ -80,15 +92,3 @@ const graph = new Graph({
   },
 })
 ```
-
-## Playground
-
-> 按住 `Command` 键通过滚轮缩放画布，建议点击 Playground 中【在新窗口中预览】按钮打开新窗口体验。
-
-<iframe
-  src="https://codesandbox.io/embed/x6-playground-mousewheel-zwj4v?fontsize=14&hidenavigation=1&theme=light&view=preview"
-  style="width:100%; height:500px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden; margin-top: 16px;"
-  title="x6-playground-mousewheel"
-  allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-  sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-></iframe>

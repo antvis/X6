@@ -7,7 +7,9 @@ redirect_from:
   - /zh/docs/manual/tutorial
 ---
 
-背景在 DOM 层级上位于画布的最底层，创建画布时通过 `background` 选项来设置画布的背景颜色或背景图片，默认值为 `false` 表示没有（透明）背景。
+背景用于为画布指定背景颜色或背景图片，支持[水印背景](#repeat)和[自定义背景图片的重复方式]()，背景层在 DOM 层级上位于画布的最底层。
+
+创建画布时，通过 `background` 选项来设置画布的背景颜色或背景图片，默认值为 `false` 表示没有（透明）背景。
 
 ```ts
 const graph = new Graph({
@@ -17,7 +19,30 @@ const graph = new Graph({
 
 创建画布后，可以调用 [graph.drawBackground(options?: BackgroundOptions)](#graphdrawbackgroundoptions-backgroundoptions) 方法来重绘背景。
 
-## 选项 BackgroundOptions
+```ts
+graph.drawBackground({
+  color: '#f5f5f5',
+})
+```
+
+## 演示
+
+- 设置背景颜色。
+- 设置背景图片。
+- 设置背景重复方式，重点体验 `'flip-x'`、`'flip-y'`、`'flip-xy'` 和 `'watermark'`。
+- 设置背景位置。
+- 设置背景大小。
+- 设置背景透明度。
+
+<iframe
+  src="https://codesandbox.io/embed/x6-playground-background-xtneg?fontsize=14&hidenavigation=1&theme=light&view=preview"
+  style="width:100%; height:500px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden; margin-top:16px;"
+  title="x6-playground-background"
+  allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
+  sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
+></iframe>
+
+## 选项
 
 ```ts
 interface BackgroundOptions {
@@ -49,7 +74,7 @@ interface BackgroundOptions {
 
 ### image 
 
-背景图片的 URL 地址。
+背景图片的 URL 地址。默认值为 `undefined`，表示没有背景图片。
 
 ### position 
 
@@ -61,7 +86,9 @@ interface BackgroundOptions {
 
 ### repeat 
 
-背景重复方式，支持所有 [CSS background-repeat](https://developer.mozilla.org/en-US/docs/Web/CSS/background-repeat) 属性的取值，默认为 `'no-repeat'`。另外还可以使用以下几个预定义值：
+背景图片重复方式，支持所有 [CSS background-repeat](https://developer.mozilla.org/en-US/docs/Web/CSS/background-repeat) 属性的取值，默认为 `'no-repeat'`。
+
+另外，还支持以下几个预定义值：
   - `'flip-x'` 水平翻转背景图片。
   - `'flip-y'` 垂直翻转背景图片。
   - `'flip-xy'` 水平和垂直翻转背景图片。
@@ -69,32 +96,15 @@ interface BackgroundOptions {
 
 ### opacity 
 
-背景透明度，取值范围 `[0, 1]`，默认为 `1`。
+背景透明度，取值范围 `[0, 1]`，默认值为 `1`。
 
 ### quality 
 
-背景图片质量，取值范围 `[0, 1]`，默认为 `1`。
+背景图片质量，取值范围 `[0, 1]`，默认值为 `1`。
 
 ### angle
 
-水印旋转角度，仅当 `repeat` 为 `watermark` 时有效，默认为 `20`。
-
-## Playground
-
-- 设置不同的背景颜色。
-- 设置背景图片。
-- 设置背景图片的重复方式，重点体验 `'watermark'`。
-- 设置背景图片的位置。
-- 设置背景图片的大小。
-- 设置背景透明度。
-
-<iframe
-     src="https://codesandbox.io/embed/x6-playground-background-xtneg?fontsize=14&hidenavigation=1&theme=light&view=preview"
-     style="width:100%; height:500px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden; margin-top:16px;"
-     title="x6-playground-background"
-     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-     sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-   ></iframe>
+水印旋转角度，仅当 [repeat](#repeat) 为 `'watermark'` 时有效，默认值为 `20`。
 
 ## API
 

@@ -61,19 +61,19 @@ graph.copy(cells, {
 })
 ```
 
-## Playground
+## 演示
 
-- 选中节点后复制按钮
-- 设置不同的 `offset` 粘贴节点
-- 启用 localStorage 后复制节点，刷新页面后直接点击粘贴按钮
+- 选中节点后，点击复制按钮复制节点。
+- 设置不同的 `offset`，观察粘贴时对节点位置的影响。
+- 启用 `localStorage` 后复制节点，刷新页面或重新打开浏览器后，点击粘贴按钮。
 
 <iframe
-     src="https://codesandbox.io/embed/x6-playground-clipboard-ovl8v?fontsize=14&hidenavigation=1&theme=light&view=preview"
-     style="width: 100%; height: 500px; border: 1px solid #f0f0f0; border-radius: 4px; overflow: hidden; margin-top: 16px;"
-     title="x6-playground-clipboard"
-     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-     sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-   ></iframe>
+  src="https://codesandbox.io/embed/x6-playground-clipboard-ovl8v?fontsize=14&hidenavigation=1&theme=light&view=preview"
+  style="width: 100%; height: 500px; border: 1px solid #f0f0f0; border-radius: 4px; overflow: hidden; margin-top: 16px;"
+  title="x6-playground-clipboard"
+  allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
+  sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
+></iframe>
 
 ## API
 
@@ -113,7 +113,7 @@ graph.copy(cells, {
       - `useLocalStorage` 是否从 localStorage 中获取粘贴内容，指定该选项后将覆盖全局 `useLocalStorage` 选项。
       - `nodeProps` 节点属性，应用到被粘贴的节点上，用于覆盖被粘贴节点的某些属性，如 `zIndex`。
       - `edgeProps` 边属性，应用到被粘贴的边上，用于覆盖被粘贴边的某些属性，如 `zIndex`。
-      - `offset` 每次粘贴时节点/边的偏移量。这个选项对同一画布的连续多次粘贴非常有用，设置一个合适偏移量，多次粘贴的节点/边就不会重叠在一起。
+      - `offset` 节点位置偏移量。这个选项对同一画布的连续多次粘贴非常有用，设置一个合适偏移量，多次粘贴的节点就不会重叠在一起。
   - `targetGraph?: Graph` 粘贴的目标画布，默认粘贴到当前画布。
 
 ### graph.isClipboardEmpty()
