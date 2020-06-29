@@ -187,7 +187,7 @@ export class Selection extends View<Selection.EventArgs> {
       })
       .appendTo(this.graph.container)
 
-    this.showLasso()
+    this.showRubberband()
     this.setEventData<EventData.Selecting>(evt, {
       action: 'selecting',
       clientX: evt.clientX,
@@ -413,12 +413,14 @@ export class Selection extends View<Selection.EventArgs> {
 
   hide() {
     this.$container
-      .removeClass(this.prefixClassName(Private.classNames.lasso))
+      .removeClass(this.prefixClassName(Private.classNames.rubberband))
       .removeClass(this.prefixClassName(Private.classNames.selected))
   }
 
-  protected showLasso() {
-    this.$container.addClass(this.prefixClassName(Private.classNames.lasso))
+  protected showRubberband() {
+    this.$container.addClass(
+      this.prefixClassName(Private.classNames.rubberband),
+    )
   }
 
   protected showSelected() {
@@ -788,7 +790,7 @@ namespace Private {
     inner: `${base}-inner`,
     box: `${base}-box`,
     content: `${base}-content`,
-    lasso: `${base}-lasso`,
+    rubberband: `${base}-rubberband`,
     selected: `${base}-selected`,
   }
 
