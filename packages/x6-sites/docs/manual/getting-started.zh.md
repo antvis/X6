@@ -18,10 +18,11 @@ $ npm install @antv/x6 --save
 $ yarn add @antv/x6
 ```
 
-成功安装完成之后，即可使用 `import` 或 `require` 进行引用。
+安装完成之后，使用 `import` 或 `require` 进行引用。需要特别注意的是，引入 X6 时同时需要通过 `import '@antv/x6/es/index.css'` 或 `import '@antv/x6/lib/index.css'` 引入预定义的基础样式。
 
 ```ts
 import { Graph } from '@antv/x6';
+import '@antv/x6/es/index.css'; 
 ```
 
 ## 开始使用
@@ -30,7 +31,7 @@ import { Graph } from '@antv/x6';
 
 ### Step 1 创建容器
 
-在页面中创建一个用于容纳 X6 绘图的容器，通常为 `div` 标签。
+在页面中创建一个用于容纳 X6 绘图的容器，可以是一个 `div` 标签。
 
 ```html
 <div id="container"></div>
@@ -38,7 +39,7 @@ import { Graph } from '@antv/x6';
 
 ### Step 2 准备数据
 
-X6 的数据源为 JSON 格式的对象，该对象中需要有节点 `nodes` 和边 `edges` 字段，分别用数组表示：
+X6 支持 JSON 格式数据，该对象中需要有节点 `nodes` 和边 `edges` 字段，分别用数组表示：
 
 ```ts
 const data = {
@@ -50,6 +51,7 @@ const data = {
       y: 200,      // Number，必选，节点位置的 y 值
       width: 80,   // Number，可选，节点大小的 width 值
       height: 40,  // Number，可选，节点大小的 height 值
+      label: 'hello', // String，节点标签
     },
     {
       id: 'node2', // String，节点的唯一标识
@@ -57,6 +59,7 @@ const data = {
       y: 200,      // Number，必选，节点位置的 y 值
       width: 80,   // Number，可选，节点大小的 width 值
       height: 40,  // Number，可选，节点大小的 height 值
+      label: 'world', // String，节点标签
     },
   ],
   // 边
@@ -71,10 +74,11 @@ const data = {
 
 ### Step 3 渲染画布
 
-首先，我们需要创建一个 `Graph` 对象，并为其指定绘图容器，通常也会指定画布的大小。
+首先，我们需要创建一个 `Graph` 对象，并为其指定一个页面上的绘图容器，通常也会指定画布的大小。
 
 ```ts
 import { Graph } from '@antv/x6';
+import '@antv/x6/es/index.css';
 
 const graph = new Graph({
   container: document.getElementById('container'),
@@ -89,17 +93,99 @@ const graph = new Graph({
 graph.fromJSON(data)
 ```
 
-## 完整代码
-
-[![Edit x6-hello-world](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/condescending-driscoll-xkb6q?fontsize=14&hidenavigation=1&module=%2Fsrc%2Findex.ts&theme=light)
+到此，我们就得到一个最简单的 `Hello --> World` 示例，看下面的完整代码。
 
 <iframe
-     src="https://codesandbox.io/embed/condescending-driscoll-xkb6q?fontsize=14&hidenavigation=1&module=%2Fsrc%2Findex.ts&theme=light"
+  src="https://codesandbox.io/embed/condescending-driscoll-xkb6q?fontsize=14&hidenavigation=1&module=%2Fsrc%2Findex.ts&theme=light"
+  style="width:100%; height:500px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
+  title="x6-hello-world"
+  allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
+  sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
+></iframe>
+
+## 画布
+
+### 背景和网格
+
+接下来，我们来给画布设置一个背景颜色和网格，另外还支持背景图片、网格类型等配置，点击查看完整的[背景配置](./tutorial/background)和[网格配置](./tutorial/grid)。
+
+```ts
+import { Graph } from '@antv/x6';
+import '@antv/x6/es/index.css';
+
+const graph = new Graph({
+  container: document.getElementById('container'),
+  width: 800,
+  height: 600,
+  background: {
+    color: '#fffbe6', // 设置画布背景颜色
+  },
+  grid: {
+    size: 10,      // 网格大小 10px
+    visible: true, // 渲染网格背景
+  },
+});
+```
+
+<iframe
+  src="https://codesandbox.io/embed/x6-hello-world-background-grid-jswsf?fontsize=14&hidenavigation=1&theme=light"
+  style="width:100%; height:500px; border: 1px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
+  title="x6-hello-world-background-grid"
+  allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
+  sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
+></iframe>
+
+### 缩放和平移
+
+## 节点
+
+### 使用图形
+
+在上面示例中，我们使用了默认图形 `rect` 来渲染节点，除此之外，我们在 X6 中也内置了 `circle`，`ellipse`，`polygon` 等[基础图形]()，可以通过 `shape` 属性为节点指定渲染的图形，例如： 
+
+```ts
+const data = {
+  // 节点
+  nodes: [
+    {
+      id: 'node1',
+      shape: 'rect',
+      x: 100,
+      y: 200,
+      width: 80,
+      height: 40,
+      label: 'hello',
+    },
+    {
+      id: 'node2',
+      shape: 'ellipse',
+      x: 300,
+      y: 200,
+      width: 80,
+      height: 40,
+      label: 'world',
+    },
+  ],
+  // 边
+  edges: [
+    {
+      source: 'node1',
+      target: 'node2',
+    },
+  ],
+};
+```
+
+<iframe
+     src="https://codesandbox.io/embed/x6-hello-world-shape-ujvun?fontsize=14&hidenavigation=1&theme=light"
      style="width:100%; height:500px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
-     title="x6-hello-world"
+     title="x6-hello-world-shape"
      allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
      sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
    ></iframe>
+
+### 配置样式
+
 
 ## 在 React 中使用 X6
 

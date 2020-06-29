@@ -1,8 +1,8 @@
 import React from 'react'
-import { Graph, Model, Node, StandardShape } from '@antv/x6'
+import { Graph, Model, Node, Shape } from '@antv/x6'
 import '../index.less'
 
-const Parent = StandardShape.Rect.define({
+const Parent = Shape.Rect.define({
   customEmebedding: true,
   attrs: {
     body: { stroke: 'transparent', fill: 'black', rx: 5, ry: 5 },
@@ -10,7 +10,7 @@ const Parent = StandardShape.Rect.define({
   },
 })
 
-const Child = StandardShape.Rect.define({
+const Child = Shape.Rect.define({
   attrs: {
     body: { stroke: 'transparent', fill: 'green', rx: 5, ry: 5 },
     label: { fontSize: 14, text: 'child1', fill: 'white' },

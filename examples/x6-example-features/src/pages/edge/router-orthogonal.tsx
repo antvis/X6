@@ -1,5 +1,5 @@
 import React from 'react'
-import { Graph, StandardShape } from '@antv/x6'
+import { Graph, Shape } from '@antv/x6'
 import '../index.less'
 
 export default class Example extends React.Component {
@@ -10,10 +10,10 @@ export default class Example extends React.Component {
       container: this.container,
       width: 800,
       height: 600,
-      gridSize: 10,
+      grid: 10,
     })
 
-    const r1 = new StandardShape.Rect({
+    const r1 = new Shape.Rect({
       x: 100,
       y: 200,
       width: 80,
@@ -26,7 +26,7 @@ export default class Example extends React.Component {
 
     r1.attr('body/fill', 'yellow').resize(400, 300)
 
-    const l1 = new StandardShape.Edge({
+    const l1 = new Shape.Edge({
       sourceCell: r2,
       targetCell: r1,
       router: { name: 'orth' },

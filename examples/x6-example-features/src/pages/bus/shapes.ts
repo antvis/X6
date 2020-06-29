@@ -1,6 +1,6 @@
-import { Node, StandardShape } from '@antv/x6'
+import { Node, Shape } from '@antv/x6'
 
-export class Bus extends StandardShape.Edge {
+export class Bus extends Shape.Edge {
   static create(x: number, label: string, color: string) {
     return new Bus({
       source: { x: x, y: 700 },
@@ -53,7 +53,7 @@ Bus.config({
   },
 })
 
-export class Connector extends StandardShape.Edge {
+export class Connector extends Shape.Edge {
   static create(source: any | [any, number], target: any | [any, number]) {
     const connector = new Connector()
     if (Array.isArray(source)) {
@@ -109,7 +109,7 @@ Connector.config({
   },
 })
 
-export class Component extends StandardShape.Rect {
+export class Component extends Shape.Rect {
   static create(
     x: number,
     y: number,

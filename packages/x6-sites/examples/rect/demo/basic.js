@@ -1,7 +1,7 @@
-import { x6 } from '@antv/x6'
+import { Graph } from '@antv/x6'
 
 const container = document.getElementById('container')
-const graph = x6.render(container, {
+const graph = Graph.render(container, {
   nodes: [
     {
       id: 'node-0',

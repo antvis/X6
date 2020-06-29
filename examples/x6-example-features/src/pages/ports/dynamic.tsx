@@ -1,8 +1,8 @@
 import React from 'react'
-import { Graph, Edge, NodeView, StandardShape } from '@antv/x6'
+import { Graph, Edge, NodeView, Shape } from '@antv/x6'
 import '../index.less'
 
-class Shape extends StandardShape.Rect {
+class MyShape extends Shape.Rect {
   getInPorts() {
     return this.getPortsByGroup('in')
   }
@@ -52,7 +52,7 @@ class Shape extends StandardShape.Rect {
   }
 }
 
-Shape.config({
+MyShape.config({
   attrs: {
     root: {
       magnet: false,
@@ -135,7 +135,7 @@ export default class Example extends React.Component {
         },
         connectionPoint: 'boundary',
         createEdge() {
-          return new StandardShape.Edge()
+          return new Shape.Edge()
         },
         validateConnection(
           sourceView,
@@ -157,7 +157,7 @@ export default class Example extends React.Component {
 
           if (targetView) {
             const node = targetView.cell
-            if (node instanceof Shape) {
+            if (node instanceof MyShape) {
               var portId = targetMagnet.getAttribute('port')
               var usedInPorts = node.getUsedInPorts()
               if (usedInPorts.find((port) => port && port.id === portId)) {
@@ -172,20 +172,20 @@ export default class Example extends React.Component {
     })
 
     graph.addNode(
-      new Shape().resize(120, 100).position(200, 100).updateInPorts(),
+      new MyShape().resize(120, 100).position(200, 100).updateInPorts(),
     )
 
     graph.addNode(
-      new Shape().resize(120, 100).position(400, 100).updateInPorts(),
+      new MyShape().resize(120, 100).position(400, 100).updateInPorts(),
     )
 
     graph.addNode(
-      new Shape().resize(120, 100).position(300, 400).updateInPorts(),
+      new MyShape().resize(120, 100).position(300, 400).updateInPorts(),
     )
 
     function update(view: NodeView) {
       var cell = view.cell
-      if (cell instanceof Shape) {
+      if (cell instanceof MyShape) {
         cell.getInPorts().forEach((port) => {
           var portNode = view.findPortElem(port.id!, 'portBody')
           view.unhighlight(portNode, {
@@ -228,7 +228,7 @@ export default class Example extends React.Component {
       }
 
       var target = edge.getTargetCell()
-      if (target instanceof Shape) {
+      if (target instanceof MyShape) {
         target.updateInPorts()
       }
     })

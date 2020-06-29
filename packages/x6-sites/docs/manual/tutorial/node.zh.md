@@ -22,9 +22,9 @@ redirect_from:
 ### 方式三 数据
 
 ```ts
-import { StandardShape } from '@antv/x6'
+import { Shape } from '@antv/x6'
 
-const rect = new StandardShape.Rect()
+const rect = new Shape.Rect()
 
 rect.position(100, 200)
   .resize(80, 40)
@@ -40,7 +40,7 @@ rect.position(100, 200)
   .addTo(graph)
 
 
-const rect = new StandardShape.Rect({
+const rect = new Shape.Rect({
   size: { width: 80, height: 40 },
   position: { x: 100, y: 200 },
   attrs: { 
@@ -54,7 +54,7 @@ const rect = new StandardShape.Rect({
   },
 })
 
-const rect = new StandardShape.Rect({
+const rect = new Shape.Rect({
   x: 100, 
   y: 200,
   width: 80, 

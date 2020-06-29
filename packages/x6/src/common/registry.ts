@@ -13,6 +13,7 @@ export class Registry<
     this.options = { ...options }
     this.data = (this.options.data as KeyValue<Entity>) || {}
     this.register = this.register.bind(this)
+    this.unregister = this.unregister.bind(this)
   }
 
   get names() {

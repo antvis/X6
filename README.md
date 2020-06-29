@@ -1,4 +1,4 @@
-# x6
+# X6
 
 > JavaScript diagramming library
 
@@ -91,7 +91,9 @@ https://kcart.alipay.com/web/bi.do
 Except for URL and x6 version information, no other information will be collected. You can also turn it off with the following code:
 
 ```ts
-x6.track(false)
+import { Config } from '@antv/x6'
+
+Config.track(false)
 ```
 
 ## Contributing

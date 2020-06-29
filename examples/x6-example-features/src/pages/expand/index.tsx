@@ -1,5 +1,5 @@
 import React from 'react'
-import { Graph, Edge, CellView, StandardShape } from '@antv/x6'
+import { Graph, Edge, CellView, Shape } from '@antv/x6'
 import '../index.less'
 import './index.less'
 
@@ -7,7 +7,7 @@ const EXPANDED_COLOR = '#8CC152'
 const COLLAPSED_COLOR = '#FCBB42'
 const BASE_COLOR = '#434A54'
 
-class TogglableRect extends StandardShape.Rect {
+class TogglableRect extends Shape.Rect {
   onConnectedEdgeVisibleChange(
     edge: Edge,
     type: Edge.TerminalType,

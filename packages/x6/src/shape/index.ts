@@ -1,4 +1,4 @@
 import * as BasicShape from './basic'
-import * as StandardShape from './standard'
+import * as Shape from './standard'
 
-export { BasicShape, StandardShape }
+export { BasicShape, Shape }
