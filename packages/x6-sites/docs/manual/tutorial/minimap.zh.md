@@ -7,7 +7,7 @@ redirect_from:
   - /zh/docs/manual/tutorial
 ---
 
-小地图是画布的缩影，通过拖动平移和拖动缩放小地图中的矩形框来平移和缩放画布。小地图需要画布滚动能力同时开启才可用：
+启用 [Scroller](./scroller) 后可开启小地图，小地图是完整画布的预览，支持通过平移缩放小地图的视口来平移缩放画布。
 
 ```ts
 const graph = new Graph({
@@ -20,6 +20,21 @@ const graph = new Graph({
   }
 })
 ```
+
+## 演示
+
+- 移动小地图视口来移动画布。
+- 缩放小地图视口来缩放画布。
+- 小地图中没有渲染边，减少边对小地图的干扰。
+- 小地图中用色块代表节点，隐藏了原始节点的细节。
+
+<iframe
+     src="https://codesandbox.io/embed/x6-playground-minimap-i18pq?fontsize=14&hidenavigation=1&theme=light&view=preview"
+     style="width:100%; height:500px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden; margin-top: 16px;"
+     title="x6-playground-minimap"
+     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
+     sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
+   ></iframe>
 
 ## 选项
 
@@ -34,6 +49,7 @@ interface MiniMapOptions {
   minScale?: number
   maxScale?: number
   graphOptions?: Graph.Options
+  createGraph?: (options: Graph.Options) => Graph
 }
 ```
 
@@ -47,15 +63,15 @@ interface MiniMapOptions {
 
 ### width
 
-小地图的宽度，默认为 `300`。
+小地图的宽度，默认为 `300`。将通过 CSS 应用到小地图容器 [`container`](#container) 上。
 
 ### height
 
-小地图的高度，默认为 `200`。
+小地图的高度，默认为 `200`。将通过 CSS 应用到小地图容器 [`container`](#container) 上。
 
 ### padding
 
-小地图容器的 padding 边距，默认为 `10`。
+小地图容器的 padding 边距，默认为 `10`。将通过 CSS 应用到小地图容器 [`container`](#container) 上。
 
 ### scalable
 
@@ -72,6 +88,8 @@ interface MiniMapOptions {
 ### graphOptions
 
 创建小地图 Graph 的选项，默认为 `null`。
+
+通过该选项可以定制小地图画布的表现和行为，如下面配置（在小地图中只渲染节点，并且节点的 View 被替换为指定的 View）。
 
 ```ts
 const graph = new Graph({
@@ -100,12 +118,6 @@ const graph = new Graph({
 })
 ```
 
-## Playground
+### createGraph
 
-<iframe
-     src="https://codesandbox.io/embed/x6-playground-minimap-i18pq?fontsize=14&hidenavigation=1&theme=light&view=preview"
-     style="width:100%; height:500px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
-     title="x6-playground-minimap"
-     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-     sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-   ></iframe>
+创建小地图 `Graph`，默认返回默认 `Graph` 的实例。

@@ -8,7 +8,7 @@ import { Model } from '../../model/model'
 
 export class Clipboard {
   protected options: Clipboard.Options
-  public cells: Cell[]
+  public cells: Cell[] = []
 
   copy(
     cells: Cell[],
@@ -25,9 +25,7 @@ export class Clipboard {
       (cell) => (cell.isEdge() ? 2 : 1),
     )
 
-    if (options.useLocalStorage !== false) {
-      Storage.save(this.cells)
-    }
+    this.serialize(options)
   }
 
   cut(
@@ -44,13 +42,6 @@ export class Clipboard {
 
   paste(graph: Graph | Model, options: Clipboard.PasteOptions = {}) {
     const localOptions = { ...options, ...this.options }
-    if (localOptions.useLocalStorage) {
-      const cells = Storage.fetch()
-      if (cells) {
-        this.cells = cells
-      }
-    }
-
     const { offset, edgeProps, nodeProps } = localOptions
 
     let dx = 20
@@ -60,6 +51,7 @@ export class Clipboard {
       dy = typeof offset === 'number' ? offset : offset.dy
     }
 
+    this.deserialize(localOptions)
     const cells = this.cells
 
     cells.map((cell) => {
@@ -86,6 +78,21 @@ export class Clipboard {
     this.copy(cells, graph, options)
 
     return cells
+  }
+
+  serialize(options: Clipboard.PasteOptions) {
+    if (options.useLocalStorage !== false) {
+      Storage.save(this.cells)
+    }
+  }
+
+  deserialize(options: Clipboard.PasteOptions) {
+    if (options.useLocalStorage) {
+      const cells = Storage.fetch()
+      if (cells) {
+        this.cells = cells
+      }
+    }
   }
 
   isEmpty() {
