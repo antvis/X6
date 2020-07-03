@@ -45,7 +45,7 @@ function createMarker(
   if (name && typeof name === 'string') {
     const fn = Marker.registry.get(name)
     if (fn) {
-      preset = fn((args as KeyValue) || {})
+      preset = fn({ ...others, ...(args as KeyValue) })
     } else {
       return Marker.registry.onNotFound(name)
     }
