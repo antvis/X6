@@ -46,6 +46,7 @@ import {
   Highlighter as HighlightDefinition,
 } from '../definition'
 import {
+  Marker,
   Router,
   Connector,
   ConnectionPoint,
@@ -1845,6 +1846,7 @@ export namespace Graph {
   export const registerHighlighter = HighlightDefinition.registry.register
   export const registerPortLayout = PortLayout.registry.register
   export const registerPortLabelLayout = PortLabelLayout.registry.register
+  export const registerMarker = Marker.registry.register
   export const registerRouter = Router.registry.register
   export const registerConnector = Connector.registry.register
   export const registerNodeConnectionAnchor =
@@ -1869,6 +1871,7 @@ export namespace Graph {
   export const unregisterHighlighter = HighlightDefinition.registry.unregister
   export const unregisterPortLayout = PortLayout.registry.unregister
   export const unregisterPortLabelLayout = PortLabelLayout.registry.unregister
+  export const unregisterMarker = Marker.registry.unregister
   export const unregisterRouter = Router.registry.unregister
   export const unregisterConnector = Connector.registry.unregister
   export const unregisterNodeConnectionAnchor =
