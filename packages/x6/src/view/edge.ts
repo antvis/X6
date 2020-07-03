@@ -2613,7 +2613,7 @@ EdgeView.config<EdgeView.Options>({
     source: ['source', 'update'],
     target: ['target', 'update'],
     labels: ['labels'],
-    labelMarkup: ['labels'],
+    defaultLabel: ['labels'],
     vertices: ['vertices', 'update'],
     vertexMarkup: ['vertices'],
     toolMarkup: ['tools'],
