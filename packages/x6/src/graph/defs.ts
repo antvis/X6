@@ -93,6 +93,11 @@ export class DefsManager extends Base {
     }
 
     if (!this.isDefined(markerId)) {
+      if (tagName !== 'path') {
+        // remove unnecessary d attribute inherit from standard edge.
+        delete attrs.d
+      }
+
       const pathMarker = Dom.createVector(
         'marker',
         {
@@ -123,7 +128,12 @@ export class DefsManager extends Base {
   protected normalizeAttrs(attrs: Attr.SimpleAttrs) {
     const result: Dom.Attributes = {}
     Object.keys(attrs).forEach((key) => {
-      result[StringExt.kebabCase(key)] = attrs[key] as string
+      // xlink:href
+      if (key.indexOf(':') > 0) {
+        result[key] = attrs[key] as string
+      } else {
+        result[StringExt.kebabCase(key)] = attrs[key] as string
+      }
     })
     return result
   }
