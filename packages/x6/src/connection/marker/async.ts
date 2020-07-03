@@ -11,7 +11,7 @@ export interface AsyncMarkerOptions extends KeyValue {
   flip?: boolean
 }
 
-export const async: Marker.Definition<AsyncMarkerOptions> = ({
+export const async: Marker.Factory<AsyncMarkerOptions> = ({
   width,
   height,
   offset,

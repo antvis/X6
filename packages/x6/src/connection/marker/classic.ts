@@ -19,7 +19,7 @@ export interface ClassicMarkerOptions extends Common, KeyValue {
   factor?: number
 }
 
-export const block: Marker.Definition<BlockMarkerOptions> = ({
+export const block: Marker.Factory<BlockMarkerOptions> = ({
   size,
   width,
   height,
@@ -36,7 +36,7 @@ export const block: Marker.Definition<BlockMarkerOptions> = ({
   )
 }
 
-export const classic: Marker.Definition<ClassicMarkerOptions> = ({
+export const classic: Marker.Factory<ClassicMarkerOptions> = ({
   size,
   width,
   height,

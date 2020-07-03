@@ -10,7 +10,7 @@ export interface CrossMarkerOptions extends Attr.SimpleAttrs {
   offset?: number
 }
 
-export const cross: Marker.Definition<CrossMarkerOptions> = ({
+export const cross: Marker.Factory<CrossMarkerOptions> = ({
   size,
   width,
   height,

@@ -6,7 +6,7 @@ export interface EllipseMarkerOptions extends Attr.SimpleAttrs {
   ry?: number
 }
 
-export const ellipse: Marker.Definition<EllipseMarkerOptions> = ({
+export const ellipse: Marker.Factory<EllipseMarkerOptions> = ({
   rx,
   ry,
   ...attrs

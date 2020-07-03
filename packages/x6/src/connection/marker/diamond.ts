@@ -10,7 +10,7 @@ export interface DiamondMarkerOptions extends Attr.SimpleAttrs {
   offset?: number
 }
 
-export const diamond: Marker.Definition<DiamondMarkerOptions> = ({
+export const diamond: Marker.Factory<DiamondMarkerOptions> = ({
   size,
   width,
   height,
