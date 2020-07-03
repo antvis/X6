@@ -5,13 +5,16 @@ import * as markers from './main'
 import { normalize as normalizeMarker } from './util'
 
 export namespace Marker {
-  export type Definition<T extends KeyValue = KeyValue> = (options: T) => Result
+  export type Factory<T extends KeyValue = KeyValue> = (options: T) => Result
 
-  export type Result = Attr.SimpleAttrs & {
-    id?: string
+  export interface BaseResult extends Attr.SimpleAttrs {
     tagName?: string
+  }
+
+  export type Result = BaseResult & {
+    id?: string
     markerUnits?: string
-    children?: Attr.SimpleAttrs[]
+    children?: BaseResult[]
   }
 }
 
@@ -37,7 +40,7 @@ export namespace Marker {
 
 export namespace Marker {
   export const presets = markers
-  export const registry = Registry.create<Definition, Presets>({
+  export const registry = Registry.create<Factory, Presets>({
     type: 'marker',
   })
   registry.register(presets, true)

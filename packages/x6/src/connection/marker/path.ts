@@ -8,7 +8,7 @@ export interface PathMarkerOptions extends Attr.SimpleAttrs {
   offsetY?: number
 }
 
-export const path: Marker.Definition<PathMarkerOptions> = ({
+export const path: Marker.Factory<PathMarkerOptions> = ({
   d,
   offsetX,
   offsetY,

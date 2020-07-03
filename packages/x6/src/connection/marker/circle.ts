@@ -9,7 +9,7 @@ export interface CircleMarkerOptions extends Attr.SimpleAttrs {
 
 export interface CirclePlusMarkerOptions extends CircleMarkerOptions {}
 
-export const circle: Marker.Definition<CircleMarkerOptions> = ({
+export const circle: Marker.Factory<CircleMarkerOptions> = ({
   r,
   ...attrs
 }) => {
@@ -20,7 +20,7 @@ export const circle: Marker.Definition<CircleMarkerOptions> = ({
   }
 }
 
-export const circlePlus: Marker.Definition<CircleMarkerOptions> = ({
+export const circlePlus: Marker.Factory<CircleMarkerOptions> = ({
   r,
   ...attrs
 }) => {
