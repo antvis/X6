@@ -81,7 +81,7 @@ const IndexPage = () => {
     },
     {
       text: t('开始使用'),
-      link: `/${i18n.language}/docs/manual/introduce`,
+      link: `/${i18n.language}/docs/tutorial/introduce`,
     },
   ]
 
