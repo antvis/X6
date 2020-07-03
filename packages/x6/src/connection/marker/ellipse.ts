@@ -1,14 +1,20 @@
+import { Attr } from '../../definition'
 import { Marker } from './index'
 
-export interface EllipseMarkerOptions {
+export interface EllipseMarkerOptions extends Attr.SimpleAttrs {
   rx?: number
   ry?: number
 }
 
-export const ellipse: Marker.Definition<EllipseMarkerOptions> = (options) => {
+export const ellipse: Marker.Definition<EllipseMarkerOptions> = ({
+  rx,
+  ry,
+  ...attrs
+}) => {
   return {
+    ...attrs,
     type: 'ellipse',
-    rx: options.rx || 5,
-    ry: options.ry || 5,
+    rx: rx || 5,
+    ry: ry || 5,
   }
 }
