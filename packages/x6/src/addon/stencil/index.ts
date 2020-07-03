@@ -280,10 +280,10 @@ export class Stencil extends View {
     ignoreCase: boolean,
   ) {
     if (keyworld && filters) {
-      return Object.keys(filters).some((type) => {
-        const paths = filters[type]
+      return Object.keys(filters).some((shape) => {
+        const paths = filters[shape]
         return (
-          ('*' === type || cell.type === type) &&
+          ('*' === shape || cell.shape === shape) &&
           paths.some((path) => {
             let val = cell.getPropByPath<string>(path)
             if (val != null) {
