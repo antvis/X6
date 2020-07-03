@@ -9,7 +9,7 @@ export namespace Marker {
 
   export type Result = Attr.SimpleAttrs & {
     id?: string
-    type?: string
+    tagName?: string
     markerUnits?: string
     children?: Attr.SimpleAttrs[]
   }
