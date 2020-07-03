@@ -54,7 +54,6 @@ function createMarker(
   const options: any = {
     ...normalizeAttr(attrs),
     ...manual,
-    ...others,
     ...preset,
   }
 
