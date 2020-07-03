@@ -574,16 +574,13 @@ export class Edge<
 
   // #region labels
 
-  getDefaultLabel() {
+  getDefaultLabel(): Edge.Label {
     const ctor = this.constructor as typeof Edge
     const defaults = this.store.get('defaultLabel') || ctor.defaultLabel || {}
 
-    const label: Edge.Label = {}
-    label.markup = this.store.get('labelMarkup') || defaults.markup
-    label.position = defaults.position
-    label.attrs = defaults.attrs
-
-    return label
+    return {
+      ...defaults,
+    }
   }
 
   get labels() {
@@ -1095,7 +1092,6 @@ export namespace Edge {
     strategy?: StrategyData
     labels?: Label[]
     defaultLabel?: Label
-    labelMarkup?: Markup
     vertices?: Point.PointLike[]
     toolMarkup?: Markup
     doubleToolMarkup?: Markup
@@ -1224,14 +1220,14 @@ export namespace Edge {
   }
 
   export interface LabelPositionObject {
-    angle?: number
+    distance: number
     offset?:
       | number
       | {
           x?: number
           y?: number
         }
-    distance: number
+    angle?: number
     options?: LabelPositionOptions
   }
 
@@ -1253,7 +1249,7 @@ export namespace Edge {
         fill: '#000000',
         fontSize: 14,
         textAnchor: 'middle',
-        yAlign: 'middle',
+        textVerticalAnchor: 'middle',
         pointerEvents: 'none',
       },
       rect: {
