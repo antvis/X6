@@ -26,7 +26,7 @@ export const cross: Marker.Definition<CrossMarkerOptions> = ({
 
   return {
     ...attrs,
-    type: 'path',
+    tagName: 'path',
     fill: 'none',
     d: normalize(path.serialize(), offset || -w / 2),
   }

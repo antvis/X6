@@ -13,7 +13,7 @@ export const ellipse: Marker.Definition<EllipseMarkerOptions> = ({
 }) => {
   return {
     ...attrs,
-    type: 'ellipse',
+    tagName: 'ellipse',
     rx: rx || 5,
     ry: ry || 5,
   }
