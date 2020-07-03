@@ -84,7 +84,7 @@ export class Halo extends Widget<Halo.Options> implements Handle {
     this.container = document.createElement('div')
     this.$container = this.$(this.container)
       .addClass(cls)
-      .attr('data-type', this.view.cell.type)
+      .attr('data-shape', this.view.cell.shape)
 
     if (options.className) {
       this.$container.addClass(options.className)

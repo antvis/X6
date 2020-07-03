@@ -12,7 +12,7 @@ import { EventArgs } from '../../graph/events'
 export class Snapline extends View implements IDisablable {
   public readonly options: Snapline.Options
   protected readonly graph: Graph
-  protected filterTypes: { [type: string]: boolean }
+  protected filterShapes: { [type: string]: boolean }
   protected filterCells: { [id: string]: boolean }
   protected filterFunction: Snapline.FilterFunction | null
   protected offset: Point.PointLike
@@ -118,14 +118,14 @@ export class Snapline extends View implements IDisablable {
   }
 
   protected parseFilter() {
-    this.filterTypes = {}
+    this.filterShapes = {}
     this.filterCells = {}
     this.filterFunction = null
     const filter = this.options.filter
     if (Array.isArray(filter)) {
       filter.forEach((item) => {
         if (typeof item === 'string') {
-          this.filterTypes[item] = true
+          this.filterShapes[item] = true
         } else {
           this.filterCells[item.id] = true
         }
@@ -548,7 +548,7 @@ export class Snapline extends View implements IDisablable {
     return (
       targetNode.id === snapNode.id ||
       targetNode.isDescendantOf(snapNode) ||
-      this.filterTypes[targetNode.type] ||
+      this.filterShapes[targetNode.shape] ||
       this.filterCells[targetNode.id] ||
       (this.filterFunction && this.filterFunction.call(this.graph, targetNode))
     )
