@@ -6,7 +6,11 @@ const fse = require('fs-extra')
 const cp = require('child_process')
 
 function compile(source, target) {
-  let cmd = './node_modules/.bin/lessc'
+  let cmd = './node_modules/.bin/lessc.cmd'
+  if (os.type() === 'Windows_NT') {
+    const cwd = process.cwd()
+    cmd = path.join(cwd, './node_modules/.bin/lessc.cmd')
+  }
   cp.execFileSync(cmd, [source, target])
 }
 
