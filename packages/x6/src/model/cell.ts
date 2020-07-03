@@ -209,8 +209,8 @@ export class Cell<
     return this.store.get('view')
   }
 
-  get type() {
-    return this.store.get('type', '')
+  get shape() {
+    return this.store.get('shape', '')
   }
 
   // #region get/set
@@ -1308,7 +1308,6 @@ export namespace Cell {
     'change:vertices': EdgeChangeArgs<Point.PointLike[]>
     'change:labels': EdgeChangeArgs<Edge.Label[]>
     'change:defaultLabel': EdgeChangeArgs<Edge.Label>
-    'change:labelMarkup': EdgeChangeArgs<Markup>
     'change:toolMarkup': EdgeChangeArgs<Markup>
     'change:doubleToolMarkup': EdgeChangeArgs<Markup>
     'change:vertexMarkup': EdgeChangeArgs<Markup>
