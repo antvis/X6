@@ -18,21 +18,21 @@ module.exports = {
     },
     navs: [
       {
-        slug: 'docs/manual/about',
+        slug: 'docs/tutorial/about',
         title: {
           zh: '文档',
           en: 'Tutorials',
         },
         order: 0,
       },
-      // {
-      //   slug: 'docs/api',
-      //   title: {
-      //     zh: 'API',
-      //     en: 'API',
-      //   },
-      //   order: 1,
-      // },
+      {
+        slug: 'docs/api/graph',
+        title: {
+          zh: 'API',
+          en: 'API',
+        },
+        order: 1,
+      },
       // {
       //   slug: 'examples',
       //   title: {
@@ -44,23 +44,23 @@ module.exports = {
     ],
     docs: [
       {
-        slug: 'manual/tutorial',
+        slug: 'tutorial/basic',
         title: {
           zh: '基础教程',
-          en: 'Tutorial',
+          en: 'Basic',
         },
         order: 2,
       },
       {
-        slug: 'manual/concept',
+        slug: 'tutorial/intermediate',
         title: {
-          zh: '核心概念',
-          en: 'Concept',
+          zh: '进阶实践',
+          en: 'Intermediate',
         },
         order: 3,
       },
       {
-        slug: 'manual/advanced',
+        slug: 'tutorial/advanced',
         title: {
           zh: '高级指引',
           en: 'Advanced',
@@ -68,10 +68,27 @@ module.exports = {
         order: 4,
       },
       {
-        slug: 'manual/faq',
+        slug: 'tutorial/faq',
         title: {
           zh: '常见问题',
           en: 'FQA',
+        },
+        order: 5,
+      },
+
+      {
+        slug: 'api/model',
+        title: {
+          zh: 'Model',
+          en: 'Model',
+        },
+        order: 3,
+      },
+      {
+        slug: 'api/view',
+        title: {
+          zh: 'View',
+          en: 'View',
         },
         order: 5,
       },
