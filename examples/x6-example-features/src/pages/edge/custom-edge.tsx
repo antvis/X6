@@ -239,7 +239,7 @@ export default class Example extends React.Component {
           strokeWidth: 2,
           strokeLinejoin: 'round',
           targetMarker: {
-            type: 'path',
+            tagName: 'path',
             d: 'M 10 -5 0 0 10 5 z',
           },
         },

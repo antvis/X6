@@ -1,4 +1,4 @@
-# x6
+# X6
 
 > JavaScript diagramming library
 
