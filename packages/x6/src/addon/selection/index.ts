@@ -217,7 +217,7 @@ export class Selection extends View<Selection.EventArgs> {
         if (Array.isArray(filter)) {
           views = views.filter(
             (view) =>
-              !filter.includes(view.cell) && !filter.includes(view.cell.type),
+              !filter.includes(view.cell) && !filter.includes(view.cell.shape),
           )
         } else {
           if (typeof filter === 'function') {
