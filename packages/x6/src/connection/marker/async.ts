@@ -19,19 +19,19 @@ export const async: Marker.Definition<AsyncMarkerOptions> = ({
   flip,
   ...attrs
 }) => {
+  let h = height || 6
   const w = width || 10
-  const h = height || 6
   const opened = open === true
   const fliped = flip === true
   const result: Marker.Result = { ...attrs, type: 'path' }
 
+  if (fliped) {
+    h = -h
+  }
+
   const path = new Path()
 
-  if (fliped) {
-    path.moveTo(0, -h).lineTo(w, 0)
-  } else {
-    path.moveTo(0, h).lineTo(w, 0)
-  }
+  path.moveTo(0, h).lineTo(w, 0)
 
   if (!opened) {
     path.lineTo(w, h)
@@ -42,7 +42,7 @@ export const async: Marker.Definition<AsyncMarkerOptions> = ({
 
   result.d = normalize(path.serialize(), {
     x: offset || -w / 2,
-    y: fliped ? -h / 2 : h / 2,
+    y: h / 2,
   })
 
   return result
