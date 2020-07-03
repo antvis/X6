@@ -15,7 +15,7 @@ export const circle: Marker.Definition<CircleMarkerOptions> = ({
 }) => {
   return {
     ...attrs,
-    type: 'circle',
+    tagName: 'circle',
     r: r || 5,
   }
 }

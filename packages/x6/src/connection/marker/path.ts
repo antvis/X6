@@ -16,7 +16,7 @@ export const path: Marker.Definition<PathMarkerOptions> = ({
 }) => {
   return {
     ...attrs,
-    type: 'path',
+    tagName: 'path',
     d: normalize(d, offsetX, offsetY),
   }
 }

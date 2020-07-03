@@ -88,7 +88,7 @@ function createClassicMarker(
   return {
     ...localAttrs,
     ...attrs,
-    type: 'path',
+    tagName: 'path',
     d: normalize(path.serialize(), {
       x: options.offset || (open ? -width / 2 : 0),
     }),

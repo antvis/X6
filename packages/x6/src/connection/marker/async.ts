@@ -23,7 +23,7 @@ export const async: Marker.Definition<AsyncMarkerOptions> = ({
   const w = width || 10
   const opened = open === true
   const fliped = flip === true
-  const result: Marker.Result = { ...attrs, type: 'path' }
+  const result: Marker.Result = { ...attrs, tagName: 'path' }
 
   if (fliped) {
     h = -h

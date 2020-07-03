@@ -84,7 +84,7 @@ export class DefsManager extends Base {
   }
 
   marker(options: DefsManager.MarkerOptions) {
-    const { id, type, markerUnits, children, ...attrs } = options
+    const { id, tagName, markerUnits, children, ...attrs } = options
     let markerId = id
     if (!markerId) {
       markerId = `marker-${this.cid}-${StringExt.hashcode(
@@ -102,16 +102,16 @@ export class DefsManager extends Base {
           markerUnits: markerUnits || 'userSpaceOnUse',
         },
         children
-          ? children.map(({ type, ...other }) =>
+          ? children.map(({ tagName, ...other }) =>
               Dom.createVector(
-                `${type}` || 'path',
+                `${tagName}` || 'path',
                 this.normalizeAttrs({
                   ...attrs,
                   ...other,
                 }),
               ),
             )
-          : [Dom.createVector(type || 'path', this.normalizeAttrs(attrs))],
+          : [Dom.createVector(tagName || 'path', this.normalizeAttrs(attrs))],
       )
 
       this.elem.appendChild(pathMarker.node)
