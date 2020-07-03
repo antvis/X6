@@ -1,3 +1,4 @@
+import { KeyValue } from '../../types'
 import { Path } from '../../geometry'
 import { NumberExt } from '../../util'
 import { normalize } from './util'
@@ -10,40 +11,67 @@ interface Common {
   offset?: number
 }
 
-export interface BlockMarkerOptions extends Common {
+export interface BlockMarkerOptions extends Common, KeyValue {
   open?: boolean
 }
 
-export interface ClassicMarkerOptions extends Common {
+export interface ClassicMarkerOptions extends Common, KeyValue {
   factor?: number
 }
 
-export const block: Marker.Definition<BlockMarkerOptions> = (options) => {
-  return createClassicMarker(options, options.open === true, true)
+export const block: Marker.Definition<BlockMarkerOptions> = ({
+  size,
+  width,
+  height,
+  offset,
+  open,
+  ...attrs
+}) => {
+  return createClassicMarker(
+    { size, width, height, offset },
+    open === true,
+    true,
+    undefined,
+    attrs,
+  )
 }
 
-export const classic: Marker.Definition<ClassicMarkerOptions> = (options) => {
-  return createClassicMarker(options, false, false, options.factor)
+export const classic: Marker.Definition<ClassicMarkerOptions> = ({
+  size,
+  width,
+  height,
+  offset,
+  factor,
+  ...attrs
+}) => {
+  return createClassicMarker(
+    { size, width, height, offset },
+    false,
+    false,
+    factor,
+    attrs,
+  )
 }
 
 function createClassicMarker(
-  options: BlockMarkerOptions,
+  options: Common,
   open: boolean,
   full: boolean,
   factor: number = 3 / 4,
+  attrs: KeyValue = {},
 ) {
   const size = options.size || 10
   const width = options.width || size
   const height = options.height || size
   const path = new Path()
-  const attrs: { fill?: string } = {}
+  const localAttrs: { fill?: string } = {}
 
   if (open) {
     path
       .moveTo(width, 0)
       .lineTo(0, height / 2)
       .lineTo(width, height)
-    attrs.fill = 'none'
+    localAttrs.fill = 'none'
   } else {
     path.moveTo(0, height / 2)
     path.lineTo(width, 0)
@@ -58,6 +86,7 @@ function createClassicMarker(
   }
 
   return {
+    ...localAttrs,
     ...attrs,
     type: 'path',
     d: normalize(path.serialize(), {
