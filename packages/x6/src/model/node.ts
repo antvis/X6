@@ -1077,7 +1077,7 @@ export namespace Node {
   export const registry = Registry.create<
     Definition,
     never,
-    Config & { inherit?: string }
+    Config & { inherit?: string | Definition }
   >({
     type: 'node',
     process(shape, options) {
@@ -1095,11 +1095,15 @@ export namespace Node {
       let parent = Node
       const { inherit, ...others } = options
       if (inherit) {
-        const base = this.get(inherit)
-        if (base == null) {
-          this.onNotFound(inherit, 'inherited')
+        if (typeof inherit === 'string') {
+          const base = this.get(inherit)
+          if (base == null) {
+            this.onNotFound(inherit, 'inherited')
+          } else {
+            parent = base
+          }
         } else {
-          parent = base
+          parent = inherit
         }
       }
 
