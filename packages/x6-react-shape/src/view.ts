@@ -21,14 +21,12 @@ export class ReactShapeView extends NodeView<ReactShape> {
   protected renderReactComponent() {
     const root = this.unmountReactComponent()
     const node = this.cell
+    const graph = this.graph
+
     if (root) {
       const component = this.graph.hook.getReactComponent(node)
       ReactDOM.render(
-        React.createElement(
-          Wrap,
-          { node },
-          React.isValidElement(component) ? component : null,
-        ),
+        React.createElement(Wrap, { graph, node, component }),
         root,
       )
     }

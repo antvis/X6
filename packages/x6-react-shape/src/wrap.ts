@@ -1,5 +1,7 @@
 import React from 'react'
 import { ReactShape } from './node'
+import { Definition } from './registry'
+import { Graph } from '@antv/x6'
 
 export class Wrap extends React.PureComponent<Wrap.Props, Wrap.State> {
   state = { tick: 0 }
@@ -11,10 +13,20 @@ export class Wrap extends React.PureComponent<Wrap.Props, Wrap.State> {
   }
 
   render() {
-    const child = React.Children.only(this.props.children)
-    return React.isValidElement(child)
-      ? React.cloneElement(child, { node: this.props.node })
-      : child
+    const { graph, node, component } = this.props
+    if (React.isValidElement(component)) {
+      return React.cloneElement(component, { node })
+    }
+
+    if (typeof component === 'function') {
+      // Calling the component function on every change of the node.
+      const ret = component.call(graph, node)
+      if (React.isValidElement(ret)) {
+        return React.cloneElement(ret as React.ReactElement, { node })
+      }
+    }
+
+    return component
   }
 }
 
@@ -25,5 +37,7 @@ export namespace Wrap {
 
   export interface Props {
     node: ReactShape
+    graph: Graph
+    component: Definition
   }
 }
