@@ -1,5 +1,5 @@
 import { KeyValue } from '../types'
-import { StringExt, ObjectExt, NumberExt, Dom } from '../util'
+import { StringExt, ObjectExt, NumberExt, Dom, FunctionExt } from '../util'
 import { Rectangle, Polyline, Point, Angle, Path, Line } from '../geometry'
 import { Attr } from '../definition'
 import {
@@ -2229,9 +2229,9 @@ export class EdgeView<
     data: EventData.ArrowheadDragging,
     e: JQuery.MouseUpEvent,
   ) {
-    const type = data.terminalType
+    const terminalType = data.terminalType
     const initialTerminal = data.initialTerminal
-    const currentTerminal = this.cell[type]
+    const currentTerminal = this.cell[terminalType]
     const changed =
       currentTerminal && !Edge.equalTerminals(initialTerminal, currentTerminal)
 
@@ -2241,10 +2241,10 @@ export class EdgeView<
       if (prevCellId) {
         this.notify('edge:disconnected', {
           e,
-          edge: this.cell,
-          terminalType: type,
+          terminalType,
           terminalView: graph.renderer.findViewByCell(prevCellId) as CellView,
           terminalMagnet: data.initialMagnet,
+          edge: this.cell,
         })
       }
 
@@ -2252,10 +2252,10 @@ export class EdgeView<
       if (currCellId) {
         this.notify('edge:connected', {
           e,
-          edge: this.cell,
-          terminalType: type,
+          terminalType,
           terminalView: graph.renderer.findViewByCell(currCellId) as CellView,
           terminalMagnet: data.currentMagnet,
+          edge: this.cell,
         })
       }
     }
@@ -2355,15 +2355,19 @@ export class EdgeView<
       this.arrowheadDragged(data, x, y)
     }
 
-    // If the changed edge is not allowed, revert to its previous state.
-    if (!graph.hook.validateEdge(this.cell)) {
-      this.fallbackConnection(data)
-    } else {
-      this.finishEmbedding(data)
-      this.notifyConnectionEvent(data, e)
-    }
+    FunctionExt.toDeferredBoolean(graph.hook.validateEdge(this.cell)).then(
+      (valid) => {
+        if (valid) {
+          this.finishEmbedding(data)
+          this.notifyConnectionEvent(data, e)
+        } else {
+          // If the changed edge is not allowed, revert to its previous state.
+          this.fallbackConnection(data)
+        }
 
-    this.afterArrowheadDragging(data)
+        this.afterArrowheadDragging(data)
+      },
+    )
   }
 
   // #endregion
