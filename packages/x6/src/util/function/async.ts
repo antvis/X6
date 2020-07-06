@@ -32,3 +32,8 @@ export function toAsyncBoolean(...inputs: (any | any[])[]): AsyncBoolean {
 
   return results.every((res) => res !== false)
 }
+
+export function toDeferredBoolean(...inputs: (any | any[])[]) {
+  const ret = toAsyncBoolean(inputs)
+  return typeof ret === 'boolean' ? Promise.resolve(ret) : ret
+}
