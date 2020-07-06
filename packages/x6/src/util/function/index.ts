@@ -1,3 +1,3 @@
-import * as FunctionExt from './function'
+import * as FunctionExt from './main'
 
 export { FunctionExt }
