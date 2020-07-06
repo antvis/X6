@@ -7,11 +7,7 @@ redirect_from:
   - /zh/docs/tutorial/basic
 ---
 
-介绍[节点](./node)和[边](./edge)之前，有必要先了解一下两者的共同基类 `Cell`，我们在 `Cell` 中定义了节点和边共同属性和方法，如属性样式、可见性、业务数据等，并且在实例化、定制样式、配置默认选项等方面具有相同的行为。
-
-## 构造函数
-
-在[快速上手](../getting-started)案例中，我们通过 JSON 数据添加了两个矩形节点和一条边到画布中，除此之外，我们在 X6 的 `Shape` 命名空间中[内置]()了一些基础图形，如 `Rect`、`Edge`、`Circle` 等，这些图形最终都有共同的基类 `Cell`，看下面的继承关系。
+在[快速上手](../getting-started)案例中，我们通过 JSON 数据添加了两个矩形节点和一条边到画布中，除此之外，我们在 X6 的 `Shape` 命名空间中内置了一些基础图形，如 `Rect`、`Edge`、`Circle` 等，这些图形最终都有共同的基类 `Cell`，定义了节点和边共同属性和方法，如属性样式、可见性、业务数据等，并且在实例化、定制样式、配置默认选项等方面具有相同的行为。看下面的继承关系。
 
 ```
                                      ┌──────────────────┐
@@ -38,7 +34,7 @@ redirect_from:
                                      └──────────────────┘
 ```
 
-可以使用这些图形的构造函数来创建节点/边，然后通过 Graph 提供的 API 将其添加到画布。
+我们可以使用这些图形的构造函数来创建节点/边，然后调用 [graph.addNode]() 或 [graph.addEdge]() 方法将其添加到画布。
 
 ```ts
 import { Shape } from '@antv/x6'
@@ -75,13 +71,13 @@ graph.addNode(circle)
 graph.addEdge(edge)
 ```
 
-### 基础选项
-
 这些构造函数都有一些来自 `Cell` 的基础选项，如 `id`，`attrs`，`zIndex` 等，下面我们就逐个看看这些基础选项的含义。
+
+## 基础选项
 
 | 选项名   | 类型     | 默认值    | 描述                                                   |
 |----------|----------|-----------|------------------------------------------------------|
-| id       | String   | undefined | 节点/边 ID，默认自动生成一个 UUID。                      |
+| id       | String   | undefined | 节点/边的唯一标识，默认使用自动生成的 UUID。             |
 | markup   | Markup   | undefined | 节点/边的 SVG/HTML 片段。                               |
 | attrs    | Object   | { }       | 节点/边属性样式。                                       |
 | shape    | String   | undefined | 渲染节点/边的图形。                                     |
@@ -92,11 +88,11 @@ graph.addEdge(edge)
 | children | String[] | undefined | 子节点/边。                                             |
 | data     | any      | undefined | 节点/边关联的业务数据。                                 |
 
-#### id
+### id
 
-`id` 是节点/边的唯一标识，推荐使用具备业务意义的 ID，缺省时使用自动生成的 UUID。
+`id` 是节点/边的唯一标识，推荐使用具备业务意义的 ID，默认使用自动生成的 UUID。
 
-#### markup
+### markup
 
 `markup` 指定了渲染节点/边时使用的 SVG/HTML 片段，使用 `JSON` 格式描述。例如 `Shape.Rect` 节点的 `markup` 定义如下。
 
@@ -126,7 +122,7 @@ graph.addEdge(edge)
 </g>
 ```
 
-通过上面的介绍，我们大致了解了 `Markup` 的结构，下面我们再详细了解一下完整的 `Markup` 定义。
+通过上面的介绍，我们大致了解了 `Markup` 的结构，下面我们将详细介绍 `Markup` 定义。
 
 ```ts
 interface Markup {
@@ -142,15 +138,15 @@ interface Markup {
 }
 ```
 
-##### tagName
+#### tagName
 
 SVG/HTML 元素标签名。
 
-##### ns
+#### ns
  
 与 `tagName` 对应的元素命名空间，默认使用 SVG 元素命名空间 `"http://www.w3.org/2000/svg"`，当 `tagName` 指定的标签是 HTML 元素时，需要使用 HTML 元素的命名空间 `"http://www.w3.org/1999/xhtml"`。
 
-##### selector
+#### selector
 
 SVG/HTML 元素的唯一标识，通过该唯一标识为该元素指定[属性样式](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Tutorial/Fills_and_Strokes)。例如，为 `Shape.Rect` 节点指定 `<rect>` 和 `<text>` 元素的属性样式。
 
@@ -175,7 +171,7 @@ const rect = new Shape.Rect({
 })
 ```
 
-##### groupSelector
+#### groupSelector
 
 群组选择器，通过群组选择器可以为该群组对应的多个元素指定样式。例如，下面定义中两个 `<rect>` 具备相同的 `groupSelector` 值 `'group1'`。
 
@@ -200,7 +196,7 @@ const rect = new Shape.Rect({
 }
 ```
 
-创建节点时，我们可以这样来指定群组样式
+创建节点时，我们可以像下面这样来指定群组样式
 
 ```ts
 new SomeNode({
@@ -212,7 +208,7 @@ new SomeNode({
 })
 ```
 
-##### attrs
+#### attrs
 
 该 SVG/HTML 元素的默认属性键值对，通常用于为该元素指定通用的属性样式，这些默认样式可以在实例化节点时被覆盖。例如，我们为 `Shape.Rect` 节点的 `<rect>` 和 `<text>` 元素指定了如下默认样式。
 
@@ -241,23 +237,23 @@ new SomeNode({
 }
 ```
 
-##### style
+#### style
 
 该 SVG/HTML 元素的行内样式键值对。
 
-##### className
+#### className
 
 该 SVG/HTML 元素的 CSS 样式名。
 
-##### textContent
+#### textContent
 
 该 SVG/HTML 元素的文本内容。
 
-##### children
+#### children
 
 嵌套的子元素。
 
-#### attrs
+### attrs
 
 在[快速上手](../getting-started)中，我们简单介绍了如何使用 `attrs` 选项定制节点样式，`attrs` 选项是一个复杂对象，该对象的 Key 是节点中 SVG 元素的选择器(Selector)，对应的值是应用到该 SVG 元素的 [SVG 属性值](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute)(如 [fill](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/fill) 和 [stroke](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/stroke))，如果你对 SVG 属性还不熟悉，可以参考 MDN 提供的[填充和边框](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Tutorial/Fills_and_Strokes)入门教程。
 
@@ -353,7 +349,7 @@ rect.attr({
 rect.attr('label/text', null)
 ```
 
-#### shape
+### shape
 
 节点/边的图形，类似 MVC 模式中的 Model，决定了节点/边的数据逻辑，通常配合 `graph.addNode` 和 `graph.addEdge` 两个方法使用。之前的介绍中都是使用节点/边的构造函数来创建节点/边，其实 `graph` 上也提供了 `graph.addNode` 和 `graph.addEdge` 两个便捷的方法来创建节点/边并将其添加到画布。
 
@@ -386,7 +382,7 @@ const edge = graph.addEdge({
 
 这里的关键是使用 `shape` 来指定了节点/边的图形，`graph.addNode` 方法中 `shape` 的默认值为 `'rect'`，`graph.addEdge` 方法中 `shape` 的默认值为 `'edge'`，其他选项与使用构造函数创建节点/边一致。在 X6 内部实现中，我们通过 `shape` 指定的图形找到对应的构造函数来初始化节点/边，并将其添加到画布。
 
-##### 内置节点
+#### 内置节点
 
 内置节点构造函数与 `shape` 名称对应关系如下表。
 
@@ -406,7 +402,7 @@ const edge = graph.addEdge({
 | Shape.InscribedImage | image-inscribed | 内嵌入椭圆的图片。                               |
 | Shape.Cylinder       | cylinder        | 圆柱。                                           |
 
-##### 内置边
+#### 内置边
 
 内置边构造函数与 `shape` 名称对应关系如下表。
 
@@ -418,27 +414,27 @@ const edge = graph.addEdge({
 
 除了使用 X6 的内置节点/边，我们还可以注册自定义节点/边并使用他们，想了解更多请参考[自定义节点]()和[自定义边]()教程。
 
-#### view
+### view
 
 指定渲染节点/边所使用的视图，视图的概念与 MVC 模式中的 View 一致，我们将在[自定义节点]()和[自定义边]()教程中做详细介绍。
 
-#### zIndex
+### zIndex
 
 节点/边在画布中的层级，默认根据节点/边添加顺序自动确定。节点/边渲染到画布后可以通过 `cell.getZIndex()` 和 `cell.setZIndex(z: number)` 来获取或设置 `zIndex` 的值，也可以调用 `cell.toFront()` 和 `cell.toBack()` 来将其移到最顶层或对底层。
 
-#### visible
+### visible
 
 节点/边是否可见。
 
-#### parent
+### parent
 
 父节点 ID。
 
-#### children
+### children
 
 子节点/边的 ID 数组。
 
-#### data
+### data
 
 与节点/边关联的业务数据。例如，我们在实际使用时通常会将某些业务数据存在节点/边的 `data` 上。
 
@@ -456,7 +452,7 @@ const rect = new Shape.Rect({
 })
 ```
 
-### 选项默认值
+## 选项默认值
 
 Cell 类提供了一个静态方法 `Cell.config(options)` 来配置选项的默认值，选项默认值对自定义节点/边非常友好，可以为我们的自定义节点/边指定预设的默认值。例如，我们在定义矩形节点时，为其指定了默认 Markup、默认大小和默认样式。
 
@@ -529,7 +525,7 @@ Shape.Rect.config({
 })
 ```
 
-### 自定义选项
+## 自定义选项
 
 也许你已经注意到，在之前创建矩形的代码中，我们使用了 `label` 选项来设置矩形的标签文本。
 
