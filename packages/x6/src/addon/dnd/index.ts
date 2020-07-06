@@ -7,6 +7,7 @@ import { NodeView } from '../../view/node'
 import { Graph } from '../../graph/graph'
 import { EventArgs } from '../../graph/events'
 import { Scroller } from '../scroller'
+import { FunctionExt } from '../../util'
 
 export class Dnd extends View {
   public readonly options: Dnd.Options
@@ -242,21 +243,30 @@ export class Dnd extends View {
       draggingNode.position(x, y, { silent: true })
 
       const node = this.options.getDropNode(draggingNode)
-      if (this.drop(node, { x: e.clientX, y: e.clientY })) {
-        this.onDropped(draggingNode)
+      const ret = this.drop(node, { x: e.clientX, y: e.clientY })
+      const callback = (valid: boolean) => {
+        if (valid) {
+          this.onDropped(draggingNode)
+        } else {
+          this.onDropInvalid()
+        }
+
+        if (this.targetGraph.options.embedding.enabled && draggingView) {
+          draggingView.setEventData(e, {
+            cell: node,
+            graph: this.targetGraph,
+          })
+          draggingView.finalizeEmbedding(draggingView.getEventData<any>(e))
+        }
+
+        this.targetModel.stopBatch('dnd')
+      }
+
+      if (typeof ret === 'boolean') {
+        callback(ret)
       } else {
-        this.onDropInvalid()
+        ret.then(callback)
       }
-
-      if (this.targetGraph.options.embedding.enabled && draggingView) {
-        draggingView.setEventData(e, {
-          cell: node,
-          graph: this.targetGraph,
-        })
-        draggingView.finalizeEmbedding(draggingView.getEventData<any>(e))
-      }
-
-      this.targetModel.stopBatch('dnd')
     }
   }
 
@@ -351,8 +361,24 @@ export class Dnd extends View {
       )
 
       node.removeZIndex()
-      targetModel.addCell(node, { stencil: this.cid })
-      return true
+
+      const ret = this.options.validateNode
+        ? this.options.validateNode.call(targetGraph, node)
+        : true
+
+      if (typeof ret === 'boolean') {
+        if (ret) {
+          targetModel.addCell(node, { stencil: this.cid })
+        }
+        return ret
+      }
+
+      return FunctionExt.toDeferredBoolean(ret).then((valid) => {
+        if (valid) {
+          targetModel.addCell(node, { stencil: this.cid })
+        }
+        return valid
+      })
     }
 
     return false
@@ -381,6 +407,7 @@ export namespace Dnd {
         }
     getDragNode: (node: Node) => Node
     getDropNode: (node: Node) => Node
+    validateNode?: (this: Graph, node: Node) => any
   }
 
   export const defaults: Partial<Options> = {
