@@ -13,10 +13,12 @@ export const circle: Marker.Factory<CircleMarkerOptions> = ({
   r,
   ...attrs
 }) => {
+  const radius = r || 5
   return {
+    cx: radius,
     ...attrs,
     tagName: 'circle',
-    r: r || 5,
+    r: radius,
   }
 }
 
@@ -39,7 +41,7 @@ export const circlePlus: Marker.Factory<CircleMarkerOptions> = ({
       {
         ...attrs,
         type: 'path',
-        d: normalize(path.serialize()),
+        d: normalize(path.serialize(), -radius),
       },
     ] as any,
   }

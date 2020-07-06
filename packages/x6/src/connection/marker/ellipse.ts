@@ -11,10 +11,13 @@ export const ellipse: Marker.Factory<EllipseMarkerOptions> = ({
   ry,
   ...attrs
 }) => {
+  const radiusX = rx || 5
+  const radiusy = ry || 5
   return {
+    cx: radiusX,
     ...attrs,
     tagName: 'ellipse',
-    rx: rx || 5,
-    ry: ry || 5,
+    rx: radiusX,
+    ry: radiusy,
   }
 }

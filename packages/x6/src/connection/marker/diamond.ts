@@ -32,6 +32,6 @@ export const diamond: Marker.Factory<DiamondMarkerOptions> = ({
   return {
     ...attrs,
     tagName: 'path',
-    d: normalize(path.serialize(), offset),
+    d: normalize(path.serialize(), offset == null ? -w / 2 : offset),
   }
 }

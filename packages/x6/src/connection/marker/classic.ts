@@ -90,7 +90,7 @@ function createClassicMarker(
     ...attrs,
     tagName: 'path',
     d: normalize(path.serialize(), {
-      x: options.offset || (open ? -width / 2 : 0),
+      x: options.offset != null ? options.offset : -width / 2,
     }),
   }
 }
