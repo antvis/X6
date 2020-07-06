@@ -2241,9 +2241,10 @@ export class EdgeView<
       if (prevCellId) {
         this.notify('edge:disconnected', {
           e,
-          type,
-          view: graph.renderer.findViewByCell(prevCellId) as CellView,
-          magnet: data.initialMagnet,
+          edge: this.cell,
+          terminalType: type,
+          terminalView: graph.renderer.findViewByCell(prevCellId) as CellView,
+          terminalMagnet: data.initialMagnet,
         })
       }
 
@@ -2251,9 +2252,10 @@ export class EdgeView<
       if (currCellId) {
         this.notify('edge:connected', {
           e,
-          type,
-          view: graph.renderer.findViewByCell(currCellId) as CellView,
-          magnet: data.currentMagnet,
+          edge: this.cell,
+          terminalType: type,
+          terminalView: graph.renderer.findViewByCell(currCellId) as CellView,
+          terminalMagnet: data.currentMagnet,
         })
       }
     }
@@ -2520,9 +2522,10 @@ export namespace EdgeView {
 
     'edge:connected': {
       e: JQuery.MouseUpEvent
-      type: Edge.TerminalType
-      view: CellView
-      magnet?: Element | null
+      edge: Edge
+      terminalType: Edge.TerminalType
+      terminalView: CellView
+      terminalMagnet?: Element | null
     }
     'edge:disconnected': EventArgs['edge:connected']
 
