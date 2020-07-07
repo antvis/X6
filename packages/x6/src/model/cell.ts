@@ -97,7 +97,7 @@ export class Cell<
     })
     const props = this.preprocess(meta)
 
-    this.id = metadata.id || StringExt.uuid()
+    this.id = props.id || StringExt.uuid()
     this.store = new Store(props)
     this.animation = new Animation(this)
     this.setup()
