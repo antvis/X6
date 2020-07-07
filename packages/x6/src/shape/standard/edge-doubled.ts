@@ -25,7 +25,7 @@ export const DoubleEdge = Edge.define({
       strokeWidth: 4,
       strokeLinejoin: 'round',
       targetMarker: {
-        type: 'path',
+        tagName: 'path',
         stroke: '#000000',
         d: 'M 10 -3 10 -10 -2 0 10 10 10 3',
       },
