@@ -577,7 +577,6 @@ export class Edge<
   getDefaultLabel(): Edge.Label {
     const ctor = this.constructor as typeof Edge
     const defaults = this.store.get('defaultLabel') || ctor.defaultLabel || {}
-
     return {
       ...defaults,
     }
@@ -592,16 +591,21 @@ export class Edge<
   }
 
   getLabels() {
-    return [...this.store.get('labels', [])]
+    return [...this.store.get('labels', [])].map((item) =>
+      this.parseLabel(item),
+    )
   }
 
-  setLabels(labels: Edge.Label | Edge.Label[], options: Edge.SetOptions = {}) {
+  setLabels(
+    labels: Edge.Label | Edge.Label[] | string | string[],
+    options: Edge.SetOptions = {},
+  ) {
     this.store.set('labels', Array.isArray(labels) ? labels : [labels], options)
     return this
   }
 
   insertLabel(
-    label: Edge.Label,
+    label: Edge.Label | string,
     index?: number,
     options: Edge.SetOptions = {},
   ) {
@@ -612,26 +616,30 @@ export class Edge<
       idx = len + idx + 1
     }
 
-    labels.splice(idx, 0, label)
+    labels.splice(idx, 0, this.parseLabel(label))
     return this.setLabels(labels, options)
   }
 
-  appendLabel(label: Edge.Label, options: Edge.SetOptions = {}) {
+  appendLabel(label: Edge.Label | string, options: Edge.SetOptions = {}) {
     return this.insertLabel(label, -1, options)
   }
 
   getLabelAt(index: number) {
     const labels = this.getLabels()
     if (index != null && isFinite(index)) {
-      return labels[index]
+      return this.parseLabel(labels[index])
     }
     return null
   }
 
-  setLabelAt(index: number, label: Edge.Label, options: Edge.SetOptions = {}) {
+  setLabelAt(
+    index: number,
+    label: Edge.Label | string,
+    options: Edge.SetOptions = {},
+  ) {
     if (index != null && isFinite(index)) {
       const labels = this.getLabels()
-      labels[index] = label
+      labels[index] = this.parseLabel(label)
       this.setLabels(labels, options)
     }
     return this
@@ -644,6 +652,14 @@ export class Edge<
     const removed = labels.splice(idx, 1)
     this.setLabels(labels, options)
     return removed.length ? removed[0] : null
+  }
+
+  protected parseLabel(label: string | Edge.Label) {
+    if (typeof label === 'string') {
+      const ctor = this.constructor as typeof Edge
+      return ctor.parseStringLabel(label)
+    }
+    return label
   }
 
   protected onLabelsChanged({
@@ -1090,7 +1106,7 @@ export namespace Edge {
     router?: RouterData
     connector?: ConnectorData
     strategy?: StrategyData
-    labels?: Label[]
+    labels?: Label[] | string[]
     defaultLabel?: Label
     vertices?: Point.PointLike[]
     toolMarkup?: Markup
@@ -1212,10 +1228,25 @@ export namespace Edge {
   }
 
   export interface LabelPositionOptions {
+    /**
+     * Forces absolute coordinates for distance.
+     */
     absoluteDistance?: boolean
+    /**
+     * Forces reverse absolute coordinates (if absoluteDistance = true)
+     */
     reverseDistance?: boolean
+    /**
+     * Forces absolute coordinates for offset.
+     */
     absoluteOffset?: boolean
+    /**
+     * Auto-adjusts the angle of the label to match path gradient at position.
+     */
     keepGradient?: boolean
+    /**
+     * Whether rotates labels so they are never upside-down.
+     */
     ensureLegibility?: boolean
   }
 
@@ -1237,24 +1268,24 @@ export namespace Edge {
     markup: [
       {
         tagName: 'rect',
-        selector: 'rect',
+        selector: 'body',
       },
       {
         tagName: 'text',
-        selector: 'text',
+        selector: 'label',
       },
     ],
     attrs: {
       text: {
-        fill: '#000000',
+        fill: '#000',
         fontSize: 14,
         textAnchor: 'middle',
         textVerticalAnchor: 'middle',
         pointerEvents: 'none',
       },
       rect: {
-        ref: 'text',
-        fill: '#ffffff',
+        ref: 'label',
+        fill: '#fff',
         rx: 3,
         ry: 3,
         refWidth: 1,
@@ -1266,6 +1297,12 @@ export namespace Edge {
     position: {
       distance: 0.5,
     },
+  }
+
+  export function parseStringLabel(text: string): Label {
+    return {
+      attrs: { label: { text } },
+    }
   }
 }
 
@@ -1352,6 +1389,20 @@ export namespace Edge {
 
 export namespace Edge {
   const type = 'basic.edge'
-  Edge.config({ type })
+  Edge.config({
+    type,
+    propHooks(metadata: Properties) {
+      const { label, ...others } = metadata
+      if (label) {
+        if (others.labels == null) {
+          others.labels = []
+        }
+        const formated =
+          typeof label === 'string' ? parseStringLabel(label) : label
+        others.labels.push(formated)
+      }
+      return others
+    },
+  })
   registry.register(type, Edge)
 }

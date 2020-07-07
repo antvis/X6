@@ -1262,13 +1262,6 @@ export class EdgeView<
   }
 
   // Add default label at given position at end of `labels` array.
-  // Assigns relative coordinates by default:
-  // `opt.absoluteDistance` forces absolute coordinates.
-  // `opt.reverseDistance` forces reverse absolute coordinates (if absoluteDistance = true).
-  // `opt.absoluteOffset` forces absolute coordinates for offset.
-  // Additional args:
-  // `opt.keepGradient` auto-adjusts the angle of the label to match path gradient at position.
-  // `opt.ensureLegibility` rotates labels so they are never upside-down.
   addLabel(
     x: number,
     y: number,
@@ -1576,10 +1569,10 @@ export class EdgeView<
     }
 
     // identify distance/offset settings
+    const isOffsetAbsolute = options && options.absoluteOffset
     const isDistanceRelative = !(options && options.absoluteDistance)
     const isDistanceAbsoluteReverse =
       options && options.absoluteDistance && options.reverseDistance
-    const isOffsetAbsolute = options && options.absoluteOffset
 
     // find closest point t
     const path = this.path
@@ -1605,8 +1598,8 @@ export class EdgeView<
 
     // offset
     // use absolute offset if:
-    // - opt.absoluteOffset is true,
-    // - opt.absoluteOffset is not true but there is no tangent
+    // - options.absoluteOffset is true,
+    // - options.absoluteOffset is not true but there is no tangent
     let tangent
     if (!isOffsetAbsolute) tangent = path.tangentAtT(t)
     let labelOffset
