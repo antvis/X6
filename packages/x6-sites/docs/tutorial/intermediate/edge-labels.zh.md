@@ -11,15 +11,15 @@ redirect_from:
 
 开始之前，我们先简单了解一下 Edge 实例上操作标签的几个方法。
 
-| 方法签名                                                                          | 说明                     |
-|-----------------------------------------------------------------------------------|------------------------|
-| [edge.getLabels()]()                                                              | 获取所有标签。            |
-| [edge.setLabels(labels: Edge.Label \| Edge.Label[], options?: Edge.SetOptions)]() | 设置标签。                |
-| [edge.insertLabel(label: Edge.Label, index?: number, options: Edge.SetOptions)]() | 在 `index` 位置插入标签。 |
-| [edge.appendLabel(label: Edge.Label, options?: Edge.SetOptions)]()                | 在末尾追加标签。          |
-| [edge.setLabelAt(index: number, label: Edge.Label, options?: Edge.SetOptions)]()  | 设置 `index` 位置的标签。 |
-| [edge.getLabelAt(index: number)]()                                                | 获取 `index` 位置的标签。 |
-| [edge.removeLabelAt(index: number, options?: Edge.SetOptions)]()                  | 删除 `index` 位置的标签。 |
+| 方法签名                                                                                                | 说明                     |
+|---------------------------------------------------------------------------------------------------------|------------------------|
+| [edge.getLabels()]()                                                                                    | 获取所有标签。            |
+| [edge.setLabels(labels: Edge.Label \| Edge.Label[] \| string \| string[], options?: Edge.SetOptions)]() | 设置标签。                |
+| [edge.insertLabel(label: Edge.Label \| string, index?: number, options: Edge.SetOptions)]()             | 在 `index` 位置插入标签。 |
+| [edge.appendLabel(label: Edge.Label \| string, options?: Edge.SetOptions)]()                            | 在末尾追加标签。          |
+| [edge.setLabelAt(index: number, label: Edge.Label \| string, options?: Edge.SetOptions)]()              | 设置 `index` 位置的标签。 |
+| [edge.getLabelAt(index: number)]()                                                                      | 获取 `index` 位置的标签。 |
+| [edge.removeLabelAt(index: number, options?: Edge.SetOptions)]()                                        | 删除 `index` 位置的标签。 |
 
 ## 标签定义
 
@@ -63,24 +63,24 @@ interface Label {
   markup: [
     {
       tagName: 'rect',
-      selector: 'rect',
+      selector: 'body',
     },
     {
       tagName: 'text',
-      selector: 'text',
+      selector: 'label',
     },
   ],
   attrs: {
     text: {
-      fill: '#000000',
+      fill: '#000',
       fontSize: 14,
       textAnchor: 'middle',
       textVerticalAnchor: 'middle',
       pointerEvents: 'none',
     },
     rect: {
-      ref: 'text',
-      fill: '#ffffff',
+      ref: 'label',
+      fill: '#fff',
       rx: 3,
       ry: 3,
       refWidth: 1,
@@ -472,3 +472,106 @@ edge.appendLabel({
   allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
   sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
 ></iframe>
+
+## 字符串标签
+
+当通过 `defaultlabel` 选项设置[默认标签](#默认标签)后，标签的添加就显得非常简单，看下面代码。
+
+```ts
+// 创建节点时指定标签
+const edge = graph.addEdge({
+  source,
+  target,
+  labels: [
+    {
+      attrs: { label: { text: 'edge label' } },
+    },
+  ],
+})
+
+// 重设标签
+edge.setLabels([{
+  attrs: { label: { text: 'edge label' } },
+}])
+
+// 追加标签
+edge.appendLabel({
+  attrs: { label: { text: 'edge label' } },
+})
+```
+
+上面代码其实仅仅设置了标签的文本，但代码看起来并不简单，我们不得不提供一个嵌套很深的 Label 对象 `{ attrs: { label: { text: 'edge' } } }`，为了解决这个问题，我们在内部提供了一层语法糖封装，支持直接传入字符串标签，上面代码可以进一步简化为。
+
+```ts
+const edge = graph.addEdge({
+  source,
+  target,
+  labels: ['edge label'],
+})
+
+edge.setLabels(['edge label'])
+
+edge.appendLabel('edge label')
+```
+
+我们实际上是在 `Edge` 上定义了一个静态方法 `parseStringLabel`，该方法将字符串标签转换成了 Label 对象。默认的实现如下。
+
+```ts
+function parseStringLabel(label: string): Label {
+  return {
+    attrs: { label: { text: label } },
+  }
+}
+```
+
+这个方法仅仅适用于系统默认的标签，也就是说当你通过 `defaultlabel` 重新定义了默认标签的 `markup`，你还需要重写 `parseStringLabel` 方法来保证字符串标签的可用性。
+
+```ts
+Edge.config({
+  defaultlabel: {
+    markup: [
+      {
+        tagName: 'rect',
+        selector: 'body',
+      },
+      {
+        tagName: 'text',
+        selector: 'my-label', // 这里修改了默认的 selector。
+      }
+    ],
+  },
+})
+
+// 需要同时重新定义 parseStringLabel，来保证字符串标签的可用性。
+Edge.parseStringLabel = (label: string) => {
+  return {
+    attrs: { 'my-label': { text: label } },
+  }
+}
+```
+
+## 单标签
+
+大多数边都只拥有最多一个标签，所以我们为 `Edge` 定义了一个[自定义选项](../basic/cell#自定义选项) `label` 来支持传入单标签。
+
+```ts
+graph.addEdge({
+  source,
+  target,
+  label: [
+    {
+      attrs: { label: { text: 'edge label' } },
+    },
+  ],
+})
+```
+
+当只需要设置标签文本是，也可以使用单标签的字符串形式。
+
+```ts
+graph.addEdge({
+  source,
+  target,
+  label: 'edge label',
+})
+```
