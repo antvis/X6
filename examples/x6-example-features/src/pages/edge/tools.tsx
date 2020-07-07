@@ -105,7 +105,7 @@ export default class Example extends React.Component {
           },
           targetMarker: {
             // the marker can be an arbitrary SVGElement
-            type: 'circle',
+            tagName: 'circle',
             r: 5,
           },
         },
@@ -411,7 +411,7 @@ export default class Example extends React.Component {
           pointerEvents: 'none',
           strokeLinejoin: 'round',
           targetMarker: {
-            type: 'path',
+            tagName: 'path',
             fill: '#fe854f',
             stroke: 'black',
             'stroke-width': 1,
@@ -552,7 +552,7 @@ export default class Example extends React.Component {
           strokeWidth: 2,
           strokeLinejoin: 'round',
           sourceMarker: {
-            type: 'circle',
+            tagName: 'circle',
             r: 5,
             cx: 5,
             fill: 'white',
@@ -560,7 +560,7 @@ export default class Example extends React.Component {
             'stroke-width': 2,
           },
           targetMarker: {
-            type: 'circle',
+            tagName: 'circle',
             r: 5,
             cx: 5,
             fill: 'white',
@@ -648,7 +648,7 @@ export default class Example extends React.Component {
           strokeWidth: 2,
           strokeLinejoin: 'round',
           sourceMarker: {
-            type: 'circle',
+            tagName: 'circle',
             r: 5,
             cx: 5,
             fill: 'white',
@@ -656,7 +656,7 @@ export default class Example extends React.Component {
             'stroke-width': 2,
           },
           targetMarker: {
-            type: 'circle',
+            tagName: 'circle',
             r: 5,
             cx: 5,
             fill: 'white',
