@@ -128,8 +128,8 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
-  toJSON() {
-    return this.model.toJSON()
+  toJSON(options: Model.ToJSONOptions = {}) {
+    return this.model.toJSON(options)
   }
 
   parseJSON(data: Model.FromJSONData) {

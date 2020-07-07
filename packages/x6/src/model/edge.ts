@@ -30,7 +30,7 @@ export class Edge<
     super(metadata)
   }
 
-  protected preprocess(metadata: Edge.Metadata) {
+  protected preprocess(metadata: Edge.Metadata, ignoreIdCheck?: boolean) {
     const {
       source,
       sourceCell,
@@ -126,7 +126,7 @@ export class Edge<
       data.target = Point.create(targetPoint).toJSON()
     }
 
-    return super.preprocess(data)
+    return super.preprocess(data, ignoreIdCheck)
   }
 
   protected postprocess(metadata: Edge.Metadata) {
@@ -1388,9 +1388,9 @@ export namespace Edge {
 }
 
 export namespace Edge {
-  const type = 'basic.edge'
+  const shape = 'basic.edge'
   Edge.config({
-    type,
+    shape,
     propHooks(metadata: Properties) {
       const { label, ...others } = metadata
       if (label) {
@@ -1404,5 +1404,5 @@ export namespace Edge {
       return others
     },
   })
-  registry.register(type, Edge)
+  registry.register(shape, Edge)
 }

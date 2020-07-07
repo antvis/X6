@@ -1044,8 +1044,8 @@ export class Model extends Basecoat<Model.EventArgs> {
 
   // #region serialize/deserialize
 
-  toJSON() {
-    return Model.toJSON(this.getCells())
+  toJSON(options: Model.ToJSONOptions = {}) {
+    return Model.toJSON(this.getCells(), options)
   }
 
   parseJSON(data: Model.FromJSONData) {
@@ -1196,9 +1196,11 @@ export namespace Model {
 }
 
 export namespace Model {
-  export function toJSON(cells: Cell[]) {
+  export interface ToJSONOptions extends Cell.ToJSONOptions {}
+
+  export function toJSON(cells: Cell[], options: ToJSONOptions = {}) {
     return {
-      cells: cells.map((cell) => cell.toJSON()),
+      cells: cells.map((cell) => cell.toJSON(options)),
     }
   }
 
