@@ -55,12 +55,7 @@ export default class Example extends React.Component {
         target,
         name: id,
         vertices: vertices,
-        labels: [
-          {
-            position: 0.5,
-            attrs: { text: { text: id } },
-          },
-        ],
+        label: id,
       })
     }
 

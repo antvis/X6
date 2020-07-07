@@ -61,13 +61,23 @@ export default class Example extends React.Component {
       y: 320,
       width: 160,
       height: 60,
-      component: () => <Test text="target" />,
+      component: (node) => {
+        return <div>{node.attr('body/fill')}</div>
+      },
+      // component: () => <Test text="target" />,
     })
 
     graph.addEdge({
       source,
       target,
     })
+
+    const update = () => {
+      target.prop('attrs/body/fill', Color.random())
+      setTimeout(update, 1000)
+    }
+
+    update()
 
     console.log(graph.toJSON())
   }

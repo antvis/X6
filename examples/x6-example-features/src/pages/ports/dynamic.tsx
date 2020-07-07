@@ -214,12 +214,12 @@ export default class Example extends React.Component {
       view.removeTools()
     })
 
-    graph.on('edge:connected', ({ view }) => {
-      update(view)
+    graph.on('edge:connected', ({ terminalView }) => {
+      update(terminalView)
     })
 
-    graph.on('edge:disconnected', ({ view }) => {
-      update(view)
+    graph.on('edge:disconnected', ({ terminalView }) => {
+      update(terminalView)
     })
 
     graph.on('edge:removed', function ({ edge, options }) {
