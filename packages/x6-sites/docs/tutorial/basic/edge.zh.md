@@ -243,7 +243,9 @@ X6 默认提供了以下几种连接器，点击下面的链接查看每种连�
 
 ### labels
 
-标签。用于设置标签文本、位置、样式等。通过数组形式支持多标签，`labels` 指定的每一项都将于 [defaultLabel](#defaultlabel) 进行 [merge](https://www.lodashjs.com/docs/latest#_mergeobject-sources) 后使用。
+标签。
+
+用于设置标签文本、位置、样式等。通过数组形式支持多标签，`labels` 指定的每一项都将于 [defaultLabel](#defaultlabel) 进行 [merge](https://www.lodashjs.com/docs/latest#_mergeobject-sources) 后使用。
 
 ```ts
 const edge = graph.addEdge({
@@ -251,9 +253,21 @@ const edge = graph.addEdge({
   target: rect2,
   labels: [
     {
-      attrs: { text: { text: 'edge' } },
+      attrs: { label: { text: 'edge' } },
     },
   ],
+})
+// 或
+const edge = graph.addEdge({
+  source: rect1,
+  target: rect2,
+  labels: ['edge'], // 通过 labels 可以设置多个标签，当只设置标签文本是可以简化为此写法
+})
+// 或
+const edge = graph.addEdge({
+  source: rect1,
+  target: rect2,
+  label: 'edge', // 通过 label 设置单个标签，当只设置标签文本是可以简化为此写法
 })
 ```
 
@@ -262,13 +276,17 @@ const edge = graph.addEdge({
 ```ts
 // 设置标签
 edge.setLabels([{
-  attrs: { text: { text: 'edge' } },
+  attrs: { label: { text: 'edge' } },
 }])
+// 或
+edge.setLabels(['edge'])
 
 // 添加单个标签
 edge.appendLabel({
-  attrs: { text: { text: 'edge' } },
+  attrs: { label: { text: 'edge' } },
 })
+// 或
+edge.appendLabel('edge')
 ```
 
 <iframe
