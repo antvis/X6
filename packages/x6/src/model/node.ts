@@ -27,7 +27,10 @@ export class Node<
     this.initPorts()
   }
 
-  protected preprocess(metadata: Node.Metadata): Properties {
+  protected preprocess(
+    metadata: Node.Metadata,
+    ignoreIdCheck?: boolean,
+  ): Properties {
     const { x, y, width, height, ...others } = metadata
 
     if (x != null || y != null) {
@@ -48,7 +51,7 @@ export class Node<
       }
     }
 
-    return super.preprocess(others)
+    return super.preprocess(others, ignoreIdCheck)
   }
 
   isNode(): this is Node {
