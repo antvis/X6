@@ -131,15 +131,21 @@ export class Model extends Basecoat<Model.EventArgs> {
   }
 
   resetCells(cells: Cell[], options: Collection.SetOptions = {}) {
-    const items = cells.map((cell) => this.prepareCell(cell, options))
-    this.collection.reset(items, options)
-    items.forEach((cell) => {
-      if (cell.isEdge()) {
-        // update reference
-        cell.getSourceCell()
-        cell.getTargetCell()
-      }
-    })
+    // Do not update model at this time. Because if we just update the graph
+    // with the same json-data, the edge will reference to the old nodes.
+    cells.map((cell) => this.prepareCell(cell, { ...options, dryrun: true }))
+    this.collection.reset(cells, options)
+    // Update model and trigger edge update it's references
+    cells.map((cell) => this.prepareCell(cell, { options }))
+
+    // cells.forEach((cell) => {
+    //   if (cell.isEdge()) {
+    //     // update reference
+    //     cell.getSourceCell()
+    //     cell.getTargetCell()
+    //   }
+    // })
+
     return this
   }
 
