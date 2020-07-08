@@ -31,7 +31,7 @@ export interface ResolvedOptions {
   maxDirectionChange: number
 
   /**
-   * Should the router use perpendicular linkView option? Does not connect
+   * Should the router use perpendicular edgeView option? Does not connect
    * to the anchor of node but rather a point close-by that is orthogonal.
    */
   perpendicular: boolean
