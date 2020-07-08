@@ -601,6 +601,7 @@ export class Cell<
 
   setVisible(visible: boolean, options: Cell.SetOptions = {}) {
     this.store.set('visible', visible, options)
+    return this
   }
 
   isVisible() {
@@ -611,12 +612,14 @@ export class Cell<
     if (!this.isVisible()) {
       this.setVisible(true, options)
     }
+    return this
   }
 
   hide(options: Cell.SetOptions = {}) {
     if (this.isVisible()) {
       this.setVisible(false, options)
     }
+    return this
   }
 
   toggleVisible(options: Cell.SetOptions = {}) {
@@ -625,6 +628,7 @@ export class Cell<
     } else {
       this.show(options)
     }
+    return this
   }
 
   // #endregion
