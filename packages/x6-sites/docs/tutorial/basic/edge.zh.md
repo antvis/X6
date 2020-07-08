@@ -58,15 +58,15 @@ const rect = graph.addEdge({
 
 上面我们介绍了如何通过构造函数和 `graph.addEdge` 两种方式来创建边，并了解了 `source` 和 `target` 两个基础选项，除了[从 Cell 继承的基础选项](./cell#基础选项)外，还支持以下选项。
 
-| 属性名       | 类型              | 默认值                                           | 描述              |
-|--------------|-------------------|--------------------------------------------------|-----------------|
-| source       | TerminalData      | undefined                                        | 源节点或起始点。   |
-| target       | TerminalData      | undefined                                        | 目标节点或目标点。 |
-| vertices     | Point.PointLike[] | undefined                                        | 路径点。           |
-| router       | RouterData        | undefined                                        | 路由。             |
-| connector    | ConnectorData     | undefined                                        | 连线。             |
-| labels       | Label[]           | undefined                                        | 标签。             |
-| defaultLabel | Label             | [默认标签](../intermediate/edge-labels#默认标签) | 默认标签。         |
+| 属性名       | 类型              | 默认值                                              | 描述              |
+|--------------|-------------------|-----------------------------------------------------|-----------------|
+| source       | TerminalData      | undefined                                           | 源节点或起始点。   |
+| target       | TerminalData      | undefined                                           | 目标节点或目标点。 |
+| vertices     | Point.PointLike[] | undefined                                           | 路径点。           |
+| router       | RouterData        | undefined                                           | 路由。             |
+| connector    | ConnectorData     | undefined                                           | 连线。             |
+| labels       | Label[]           | undefined                                           | 标签。             |
+| defaultLabel | Label             | [默认标签](../../intermediate/edge-labels#默认标签) | 默认标签。         |
 
 下面分别看看这些选项如何使用。
 
@@ -131,7 +131,7 @@ graph.addEdge({
 
 ### router
 
-路由 `router` 将对 `vertices` 进一步处理，并在必要时添加额外的点，并返回处理后的点的数组。例如，经过 `orth` 路由处理后，边的每一条链接线段都是水平或垂直的。
+路由 `router` 将对 `vertices` 进一步处理，并在必要时添加额外的点，然后返回处理后的点。例如，经过 [orth 路由](../../intermediate/router#orth)处理后，边的每一条链接线段都是水平或垂直的。
 
 ```ts
 graph.addEdge({
@@ -156,7 +156,7 @@ graph.addEdge({
   sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
 ></iframe>
 
-路由都是通过注册的方式注册到 X6 中，使用时只需要提供路由名称 `name` 和 参数 `args` 即可，不需要参数 `args` 时可以使用省略写法。
+路由都是通过[注册的方式](../../intermediate/router#注册)注册到 X6 中，使用时只需要提供路由名称 `name` 和 参数 `args` 即可，不需要参数 `args` 时可以使用省略写法。
 
 ```ts
 graph.addEdge({
@@ -176,14 +176,14 @@ graph.addEdge({
 
 X6 默认提供了以下几种路由，点击下面的链接查看每种路由的使用方式。
 
-- [normal]() 
-- [oneSide]()
-- [orth]()
-- [metro]()
-- [manhattan]()
-- [er]()
+- [normal](../../intermediate/router#normal) 
+- [orth](../../intermediate/router#orth)
+- [oneSide](../../intermediate/router#oneside)
+- [manhattan](../../intermediate/router#manhattan)
+- [metro](../../intermediate/router#metro)
+- [er](../../intermediate/router#er)
 
-另外，我们也可以注册自定义路由，详情请参考[自定义路由]()教程。
+另外，我们也可以注册自定义路由，详情请参考[自定义路由](../../intermediate/router#自定义路由)教程。
 
 ### connector
 
@@ -297,11 +297,11 @@ edge.appendLabel('edge')
   sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
 ></iframe>
 
-完整的 Label 配置项稍微有点复杂，所以我们在[单独的教程](../intermediate/edge-labels)中介绍。
+完整的 Label 配置项稍微有点复杂，所以我们在[单独的教程](../../intermediate/edge-labels)中介绍。
 
 ### defaultLabel
 
-默认标签。通默认标签可以简化标签配置项，[labels](#labels) 指定的每一项都将于 `defaultLabel` 进行 [merge](https://www.lodashjs.com/docs/latest#_mergeobject-sources) 后使用。详情请[参考这里](../intermediate/edge-labels#默认标签)。
+默认标签。通默认标签可以简化标签配置项，[labels](#labels) 指定的每一项都将于 `defaultLabel` 进行 [merge](https://www.lodashjs.com/docs/latest#_mergeobject-sources) 后使用。详情请[参考这里](../../intermediate/edge-labels#默认标签)。
 
 ## 定制样式 Attrs
 
@@ -337,15 +337,15 @@ graph.addEdge({
 
 X6 提供了以下几种内置箭头，使用时只需要指定箭头名和参数（可省略）即可。
 
-- [block](../intermediate/marker#block)
-- [classic](../intermediate/marker#classic)
-- [diamond](../intermediate/marker#diamond)
-- [cross](../intermediate/marker#cross)
-- [async](../intermediate/marker#async)
-- [path](../intermediate/marker#path)
-- [circle](../intermediate/marker#circle)
-- [circlePlus](../intermediate/marker#circleplus)
-- [ellipse](../intermediate/marker#ellipse)
+- [block](../../intermediate/marker#block)
+- [classic](../../intermediate/marker#classic)
+- [diamond](../../intermediate/marker#diamond)
+- [cross](../../intermediate/marker#cross)
+- [async](../../intermediate/marker#async)
+- [path](../../intermediate/marker#path)
+- [circle](../../intermediate/marker#circle)
+- [circlePlus](../../intermediate/marker#circleplus)
+- [ellipse](../../intermediate/marker#ellipse)
 
 ```ts
 edge.attr({
@@ -399,4 +399,4 @@ edge.attr({
      sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
    ></iframe>
 
-更多箭头的案例和定制技巧请参考[这篇教程](../intermediate/marker)，我们也支持注册自定义的箭头，注册后就可以像使用内置箭头那样来使用箭头，详情请参考[注册箭头教程](../intermediate/marker#注册箭头)。
+更多箭头的案例和定制技巧请参考[这篇教程](../../intermediate/marker)，我们也支持注册自定义的箭头，注册后就可以像使用内置箭头那样来使用箭头，详情请参考[注册箭头教程](../../intermediate/marker#注册箭头)。
