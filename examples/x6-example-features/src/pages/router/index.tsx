@@ -52,7 +52,7 @@ export default class Example extends React.Component<
     const target = source
       .clone()
       .translate(750, 400)
-      .setAttrByPath('text/text', 'Target')
+      .setAttrByPath('label/text', 'Target')
 
     graph.addNode(target)
 
