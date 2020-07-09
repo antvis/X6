@@ -1,5 +1,5 @@
 import React from 'react'
-import { Graph, StandardShape, Edge, Timing } from '@antv/x6'
+import { Graph, Shape, Edge, Timing } from '@antv/x6'
 import '../index.less'
 
 export default class Example extends React.Component {
@@ -184,7 +184,7 @@ export default class Example extends React.Component {
       target: { x: 500, y: 200 },
       vertices: [{ x: 300, y: 300 }],
       connector: { name: 'smooth' },
-      markup: StandardShape.ShadowEdge.getMarkup().slice().reverse().concat({
+      markup: Shape.ShadowEdge.getMarkup().slice().reverse().concat({
         tagName: 'text',
         selector: 'label',
       }),
@@ -239,7 +239,7 @@ export default class Example extends React.Component {
           strokeWidth: 2,
           strokeLinejoin: 'round',
           targetMarker: {
-            type: 'path',
+            tagName: 'path',
             d: 'M 10 -5 0 0 10 5 z',
           },
         },

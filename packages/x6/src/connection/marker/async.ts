@@ -1,8 +1,9 @@
+import { KeyValue } from '../../types'
 import { Path } from '../../geometry'
 import { normalize } from './util'
 import { Marker } from './index'
 
-export interface AsyncMarkerOptions {
+export interface AsyncMarkerOptions extends KeyValue {
   width?: number
   height?: number
   offset?: number
@@ -10,31 +11,38 @@ export interface AsyncMarkerOptions {
   flip?: boolean
 }
 
-export const async: Marker.Definition<AsyncMarkerOptions> = (options) => {
-  const width = options.width || 10
-  const height = options.height || 6
-  const open = options.open === true
-  const flip = options.flip === true
-  const result: Marker.Result = { type: 'path' }
+export const async: Marker.Factory<AsyncMarkerOptions> = ({
+  width,
+  height,
+  offset,
+  open,
+  flip,
+  ...attrs
+}) => {
+  let h = height || 6
+  const w = width || 10
+  const opened = open === true
+  const fliped = flip === true
+  const result: Marker.Result = { ...attrs, tagName: 'path' }
+
+  if (fliped) {
+    h = -h
+  }
 
   const path = new Path()
 
-  if (flip) {
-    path.moveTo(0, -height).lineTo(width, 0)
-  } else {
-    path.moveTo(0, height).lineTo(width, 0)
-  }
+  path.moveTo(0, h).lineTo(w, 0)
 
-  if (!open) {
-    path.lineTo(width, height)
+  if (!opened) {
+    path.lineTo(w, h)
     path.close()
   } else {
     result.fill = 'none'
   }
 
   result.d = normalize(path.serialize(), {
-    x: options.offset || -width / 2,
-    y: flip ? -height / 2 : height / 2,
+    x: offset || -w / 2,
+    y: h / 2,
   })
 
   return result

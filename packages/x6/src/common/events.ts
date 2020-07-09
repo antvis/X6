@@ -116,32 +116,32 @@ export class Events<EventArgs extends Events.EventArgs = any> {
 
   trigger<Name extends Events.OptionalNormalNames<EventArgs>>(
     name: Name,
-  ): Events.TriggerResult
+  ): FunctionExt.AsyncBoolean
   trigger<Name extends Events.RequiredNormalNames<EventArgs>>(
     name: Name,
     args: EventArgs[Name],
-  ): Events.TriggerResult
+  ): FunctionExt.AsyncBoolean
   trigger<Name extends Events.NamesWithArrayArgs<EventArgs>>(
     name: Name,
     ...args: EventArgs[Name]
-  ): Events.TriggerResult
+  ): FunctionExt.AsyncBoolean
   trigger<Name extends Events.OtherNames<EventArgs>>(
     name: Name,
     args?: EventArgs[Name],
-  ): Events.TriggerResult
+  ): FunctionExt.AsyncBoolean
   trigger<Name extends Events.OtherNames<EventArgs>>(
     name: Name,
     ...args: EventArgs[Name]
-  ): Events.TriggerResult
+  ): FunctionExt.AsyncBoolean
   trigger<Name extends Events.UnknownNames<EventArgs>>(
     name: Name,
     ...args: any[]
-  ): Events.TriggerResult
+  ): FunctionExt.AsyncBoolean
   trigger<Name extends Events.EventNames<EventArgs>>(
     name: Name,
     ...args: any[]
   ) {
-    let returned: Events.TriggerResult = true
+    let returned: FunctionExt.AsyncBoolean = true
     if (name !== '*') {
       const list = this.listeners[name]
       if (list != null) {
@@ -151,7 +151,7 @@ export class Events<EventArgs extends Events.EventArgs = any> {
 
     const list = this.listeners['*']
     if (list != null) {
-      return Private.combindTriggerResult([
+      return FunctionExt.toAsyncBoolean([
         returned,
         Private.call(list, [name, ...args]),
       ])
@@ -166,23 +166,23 @@ export class Events<EventArgs extends Events.EventArgs = any> {
    */
   protected emit<Name extends Events.OptionalNormalNames<EventArgs>>(
     name: Name,
-  ): Events.TriggerResult
+  ): FunctionExt.AsyncBoolean
   protected emit<Name extends Events.RequiredNormalNames<EventArgs>>(
     name: Name,
     args: EventArgs[Name],
-  ): Events.TriggerResult
+  ): FunctionExt.AsyncBoolean
   protected emit<Name extends Events.NamesWithArrayArgs<EventArgs>>(
     name: Name,
     ...args: EventArgs[Name]
-  ): Events.TriggerResult
+  ): FunctionExt.AsyncBoolean
   protected emit<Name extends Events.OtherNames<EventArgs>>(
     name: Name,
     args?: EventArgs[Name],
-  ): Events.TriggerResult
+  ): FunctionExt.AsyncBoolean
   protected emit<Name extends Events.OtherNames<EventArgs>>(
     name: Name,
     ...args: EventArgs[Name]
-  ): Events.TriggerResult
+  ): FunctionExt.AsyncBoolean
   protected emit(name: any, ...args: any[]) {
     return this.trigger(name, ...args)
   }
@@ -194,8 +194,6 @@ export namespace Events {
     : Args extends any[]
     ? (...args: Args) => any
     : (args: Args) => any
-
-  export type TriggerResult = boolean | Promise<boolean>
 
   export type EventArgs = { [key: string]: any }
 
@@ -225,42 +223,7 @@ export namespace Events {
   export type UnknownNames<M extends EventArgs> = Exclude<string, EventNames<M>>
 }
 
-export namespace Events {}
-
 namespace Private {
-  function isAsync(obj: any) {
-    return obj != null && (obj instanceof Promise || isAsyncLike(obj))
-  }
-
-  function isAsyncLike(obj: any) {
-    return typeof obj === 'object' && obj.then && typeof obj.then === 'function'
-  }
-
-  export function combindTriggerResult(...args: any[]): Events.TriggerResult {
-    const results: any[] = []
-
-    args.forEach((arg) => {
-      if (Array.isArray(arg)) {
-        results.push(...arg)
-      } else {
-        results.push(arg)
-      }
-    })
-
-    const hasAsync = results.some((res) => isAsync(res))
-    if (hasAsync) {
-      const deferres = results.map((res) =>
-        isAsync(res) ? res : Promise.resolve(res !== false),
-      )
-
-      return Promise.all(deferres).then((arr) =>
-        arr.reduce<boolean>((memo, item) => item !== false && memo, true),
-      )
-    }
-
-    return results.every((res) => res !== false)
-  }
-
   export function call<Args>(list: any[], args?: Args) {
     const results: any[] = []
     for (let i = 0, l = list.length; i < l; i += 2) {
@@ -271,6 +234,6 @@ namespace Private {
       results.push(ret)
     }
 
-    return combindTriggerResult(results)
+    return FunctionExt.toAsyncBoolean(results)
   }
 }

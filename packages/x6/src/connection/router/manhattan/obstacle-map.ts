@@ -70,9 +70,9 @@ export class ObstacleMap {
     const mapGridSize = this.mapGridSize
 
     model.getNodes().reduce((map, node) => {
-      const nodeType = node.type
-      const excludeTypes = options.excludeTypes
-      const excType = nodeType ? excludeTypes.includes(nodeType) : false
+      const shape = node.shape
+      const excludeShapes = options.excludeShapes
+      const excType = shape ? excludeShapes.includes(shape) : false
       const excTerminal = excludedTerminals.some((cell) => cell.id === node.id)
       const excAncestor = excludedAncestors.includes(node.id)
       const excluded = excType || excTerminal || excAncestor

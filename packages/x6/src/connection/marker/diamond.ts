@@ -1,29 +1,37 @@
+import { Attr } from '../../definition'
 import { Path } from '../../geometry'
 import { normalize } from './util'
 import { Marker } from './index'
 
-export interface DiamondMarkerOptions {
+export interface DiamondMarkerOptions extends Attr.SimpleAttrs {
   size?: number
   width?: number
   height?: number
   offset?: number
 }
 
-export const diamond: Marker.Definition<DiamondMarkerOptions> = (options) => {
-  const size = options.size || 10
-  const width = options.width || size
-  const height = options.height || size
+export const diamond: Marker.Factory<DiamondMarkerOptions> = ({
+  size,
+  width,
+  height,
+  offset,
+  ...attrs
+}) => {
+  const s = size || 10
+  const w = width || s
+  const h = height || s
 
   const path = new Path()
   path
-    .moveTo(0, height / 2)
-    .lineTo(width / 2, 0)
-    .lineTo(width, height / 2)
-    .lineTo(width / 2, height)
+    .moveTo(0, h / 2)
+    .lineTo(w / 2, 0)
+    .lineTo(w, h / 2)
+    .lineTo(w / 2, h)
     .close()
 
   return {
-    type: 'path',
-    d: normalize(path.serialize(), options.offset),
+    ...attrs,
+    tagName: 'path',
+    d: normalize(path.serialize(), offset == null ? -w / 2 : offset),
   }
 }

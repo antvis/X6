@@ -1,36 +1,47 @@
 import { Path } from '../../geometry'
+import { Attr } from '../../definition'
 import { normalize } from './util'
 import { Marker } from './index'
 
-export interface CircleMarkerOptions {
+export interface CircleMarkerOptions extends Attr.SimpleAttrs {
   r?: number
 }
 
 export interface CirclePlusMarkerOptions extends CircleMarkerOptions {}
 
-export const circle: Marker.Definition<CircleMarkerOptions> = (options) => {
+export const circle: Marker.Factory<CircleMarkerOptions> = ({
+  r,
+  ...attrs
+}) => {
+  const radius = r || 5
   return {
-    type: 'circle',
-    r: options.r || 5,
+    cx: radius,
+    ...attrs,
+    tagName: 'circle',
+    r: radius,
   }
 }
 
-export const circlePlus: Marker.Definition<CircleMarkerOptions> = (options) => {
-  const r = options.r || 5
+export const circlePlus: Marker.Factory<CircleMarkerOptions> = ({
+  r,
+  ...attrs
+}) => {
+  const radius = r || 5
   const path = new Path()
 
-  path.moveTo(r, 0).lineTo(r, r * 2)
-  path.moveTo(0, r).lineTo(r * 2, r)
+  path.moveTo(radius, 0).lineTo(radius, radius * 2)
+  path.moveTo(0, radius).lineTo(radius * 2, radius)
 
   return {
     children: [
       {
-        ...circle(options),
+        ...circle({ r: radius }),
         fill: 'none',
       },
       {
+        ...attrs,
         type: 'path',
-        d: normalize(path.serialize()),
+        d: normalize(path.serialize(), -radius),
       },
     ] as any,
   }

@@ -84,7 +84,7 @@ export class DefsManager extends Base {
   }
 
   marker(options: DefsManager.MarkerOptions) {
-    const { id, type, markerUnits, children, ...attrs } = options
+    const { id, tagName, markerUnits, children, ...attrs } = options
     let markerId = id
     if (!markerId) {
       markerId = `marker-${this.cid}-${StringExt.hashcode(
@@ -93,6 +93,11 @@ export class DefsManager extends Base {
     }
 
     if (!this.isDefined(markerId)) {
+      if (tagName !== 'path') {
+        // remove unnecessary d attribute inherit from standard edge.
+        delete attrs.d
+      }
+
       const pathMarker = Dom.createVector(
         'marker',
         {
@@ -102,19 +107,35 @@ export class DefsManager extends Base {
           markerUnits: markerUnits || 'userSpaceOnUse',
         },
         children
-          ? children.map(({ type, ...other }) =>
-              Dom.createVector(`${type}` || 'path', {
-                ...attrs,
-                ...other,
-              } as Dom.Attributes),
+          ? children.map(({ tagName, ...other }) =>
+              Dom.createVector(
+                `${tagName}` || 'path',
+                this.normalizeAttrs({
+                  ...attrs,
+                  ...other,
+                }),
+              ),
             )
-          : [Dom.createVector(type || 'path', attrs as Dom.Attributes)],
+          : [Dom.createVector(tagName || 'path', this.normalizeAttrs(attrs))],
       )
 
       this.elem.appendChild(pathMarker.node)
     }
 
     return markerId
+  }
+
+  protected normalizeAttrs(attrs: Attr.SimpleAttrs) {
+    const result: Dom.Attributes = {}
+    Object.keys(attrs).forEach((key) => {
+      // xlink:href
+      if (key.indexOf(':') > 0) {
+        result[key] = attrs[key] as string
+      } else {
+        result[StringExt.kebabCase(key)] = attrs[key] as string
+      }
+    })
+    return result
   }
 }
 

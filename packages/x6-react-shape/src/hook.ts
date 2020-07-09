@@ -1,22 +1,16 @@
 import { Graph } from '@antv/x6'
-import { registry } from './registry'
+import { registry, Definition } from './registry'
 import { ReactShape } from './node'
 
 declare module '@antv/x6/lib/graph/hook' {
   namespace Hook {
     interface IHook {
-      getReactComponent(
-        this: Graph,
-        node: ReactShape,
-      ): React.Component | null | undefined
+      getReactComponent(this: Graph, node: ReactShape): Definition
     }
   }
 
   interface Hook {
-    getReactComponent(
-      this: Hook,
-      node: ReactShape,
-    ): React.Component | null | undefined
+    getReactComponent(this: Hook, node: ReactShape): Definition
   }
 }
 
@@ -36,10 +30,6 @@ Graph.Hook.prototype.getReactComponent = function (node: ReactShape) {
       return registry.onNotFound(ret)
     }
     ret = component
-  }
-
-  if (typeof ret === 'function') {
-    return ret.call(this.graph, node)
   }
 
   return ret

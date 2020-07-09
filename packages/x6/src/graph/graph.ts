@@ -1,7 +1,7 @@
-import { KeyValue, ModifierKey } from '../types'
 import { Basecoat } from '../common'
 import { NumberExt, Dom } from '../util'
 import { Point, Rectangle } from '../geometry'
+import { KeyValue, ModifierKey } from '../types'
 import { Cell } from '../model/cell'
 import { Node } from '../model/node'
 import { Edge } from '../model/edge'
@@ -9,6 +9,7 @@ import { Model } from '../model/model'
 import { Collection } from '../model/collection'
 import { CellView } from '../view/cell'
 import { NodeView } from '../view/node'
+import { HTML } from '../shape/standard/html'
 import { Scroller as ScrollerWidget } from '../addon/scroller'
 import { Base } from './base'
 import { GraphView } from './view'
@@ -33,6 +34,26 @@ import { HighlightManager as Highlight } from './highlight'
 import { TransformManager as Transform } from './transform'
 import { ClipboardManager as Clipboard } from './clipboard'
 import { BackgroundManager as Background } from './background'
+import {
+  NodeTool,
+  EdgeTool,
+  PortLayout,
+  PortLabelLayout,
+  Attr as AttrDefinition,
+  Grid as GridDefinition,
+  Filter as FilterDefinition,
+  Background as BackgroundDefinition,
+  Highlighter as HighlightDefinition,
+} from '../definition'
+import {
+  Marker,
+  Router,
+  Connector,
+  ConnectionPoint,
+  ConnectionStrategy,
+  NodeConnectionAnchor,
+  EdgeConnectionAnchor,
+} from '../connection'
 
 export class Graph extends Basecoat<EventArgs> {
   public readonly options: GraphOptions.Definition
@@ -107,8 +128,8 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
-  toJSON() {
-    return this.model.toJSON()
+  toJSON(options: Model.ToJSONOptions = {}) {
+    return this.model.toJSON(options)
   }
 
   parseJSON(data: Model.FromJSONData) {
@@ -1760,10 +1781,6 @@ export class Graph extends Basecoat<EventArgs> {
 }
 
 export namespace Graph {
-  export interface Options extends GraphOptions.Manual {}
-}
-
-export namespace Graph {
   export import View = GraphView
   export import Hook = HookManager
   export import Renderer = ViewRenderer
@@ -1784,4 +1801,85 @@ export namespace Graph {
   export import HighlightManager = Highlight
   export import BackgroundManager = Background
   export import SelectionManager = Selection
+}
+
+export namespace Graph {
+  export interface Options extends GraphOptions.Manual {}
+}
+
+export namespace Graph {
+  export function render(
+    options: Partial<Options>,
+    data?: Model.FromJSONData,
+  ): Graph
+  export function render(
+    container: HTMLElement,
+    data?: Model.FromJSONData,
+  ): Graph
+  export function render(
+    options: Partial<Options> | HTMLElement,
+    data?: Model.FromJSONData,
+  ): Graph {
+    const graph =
+      options instanceof HTMLElement
+        ? new Graph({ container: options })
+        : new Graph(options)
+
+    if (data != null) {
+      graph.fromJSON(data)
+    }
+
+    return graph
+  }
+}
+
+export namespace Graph {
+  export const registerNode = Node.registry.register
+  export const registerEdge = Edge.registry.register
+  export const registerView = CellView.registry.register
+  export const registerAttr = AttrDefinition.registry.register
+  export const registerGrid = GridDefinition.registry.register
+  export const registerFilter = FilterDefinition.registry.register
+  export const registerNodeTool = NodeTool.registry.register
+  export const registerEdgeTool = EdgeTool.registry.register
+  export const registerBackground = BackgroundDefinition.registry.register
+  export const registerHighlighter = HighlightDefinition.registry.register
+  export const registerPortLayout = PortLayout.registry.register
+  export const registerPortLabelLayout = PortLabelLayout.registry.register
+  export const registerMarker = Marker.registry.register
+  export const registerRouter = Router.registry.register
+  export const registerConnector = Connector.registry.register
+  export const registerNodeConnectionAnchor =
+    NodeConnectionAnchor.registry.register
+  export const registerEdgeConnectionAnchor =
+    EdgeConnectionAnchor.registry.register
+  export const registerConnectionPoint = ConnectionPoint.registry.register
+  export const registerConnectionStrategy = ConnectionStrategy.registry.register
+  export const registerHTMLComponent = HTML.componentRegistry.register
+}
+
+export namespace Graph {
+  export const unregisterNode = Node.registry.unregister
+  export const unregisterEdge = Edge.registry.unregister
+  export const unregisterView = CellView.registry.unregister
+  export const unregisterAttr = AttrDefinition.registry.unregister
+  export const unregisterGrid = GridDefinition.registry.unregister
+  export const unregisterFilter = FilterDefinition.registry.unregister
+  export const unregisterNodeTool = NodeTool.registry.unregister
+  export const unregisterEdgeTool = EdgeTool.registry.unregister
+  export const unregisterBackground = BackgroundDefinition.registry.unregister
+  export const unregisterHighlighter = HighlightDefinition.registry.unregister
+  export const unregisterPortLayout = PortLayout.registry.unregister
+  export const unregisterPortLabelLayout = PortLabelLayout.registry.unregister
+  export const unregisterMarker = Marker.registry.unregister
+  export const unregisterRouter = Router.registry.unregister
+  export const unregisterConnector = Connector.registry.unregister
+  export const unregisterNodeConnectionAnchor =
+    NodeConnectionAnchor.registry.unregister
+  export const unregisterEdgeConnectionAnchor =
+    EdgeConnectionAnchor.registry.unregister
+  export const unregisterConnectionPoint = ConnectionPoint.registry.unregister
+  export const unregisterConnectionStrategy =
+    ConnectionStrategy.registry.unregister
+  export const unregisterHTMLComponent = HTML.componentRegistry.unregister
 }

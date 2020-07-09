@@ -131,15 +131,21 @@ export class Model extends Basecoat<Model.EventArgs> {
   }
 
   resetCells(cells: Cell[], options: Collection.SetOptions = {}) {
-    const items = cells.map((cell) => this.prepareCell(cell, options))
-    this.collection.reset(items, options)
-    items.forEach((cell) => {
-      if (cell.isEdge()) {
-        // update reference
-        cell.getSourceCell()
-        cell.getTargetCell()
-      }
-    })
+    // Do not update model at this time. Because if we just update the graph
+    // with the same json-data, the edge will reference to the old nodes.
+    cells.map((cell) => this.prepareCell(cell, { ...options, dryrun: true }))
+    this.collection.reset(cells, options)
+    // Update model and trigger edge update it's references
+    cells.map((cell) => this.prepareCell(cell, { options }))
+
+    // cells.forEach((cell) => {
+    //   if (cell.isEdge()) {
+    //     // update reference
+    //     cell.getSourceCell()
+    //     cell.getTargetCell()
+    //   }
+    // })
+
     return this
   }
 
@@ -1044,8 +1050,8 @@ export class Model extends Basecoat<Model.EventArgs> {
 
   // #region serialize/deserialize
 
-  toJSON() {
-    return Model.toJSON(this.getCells())
+  toJSON(options: Model.ToJSONOptions = {}) {
+    return Model.toJSON(this.getCells(), options)
   }
 
   parseJSON(data: Model.FromJSONData) {
@@ -1196,9 +1202,11 @@ export namespace Model {
 }
 
 export namespace Model {
-  export function toJSON(cells: Cell[]) {
+  export interface ToJSONOptions extends Cell.ToJSONOptions {}
+
+  export function toJSON(cells: Cell[], options: ToJSONOptions = {}) {
     return {
-      cells: cells.map((cell) => cell.toJSON()),
+      cells: cells.map((cell) => cell.toJSON(options)),
     }
   }
 

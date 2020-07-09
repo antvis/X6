@@ -1,15 +1,22 @@
+import { Attr } from '../../definition'
 import { normalize } from './util'
 import { Marker } from './index'
 
-export interface PathMarkerOptions {
+export interface PathMarkerOptions extends Attr.SimpleAttrs {
   d: string
   offsetX?: number
   offsetY?: number
 }
 
-export const path: Marker.Definition<PathMarkerOptions> = (options) => {
+export const path: Marker.Factory<PathMarkerOptions> = ({
+  d,
+  offsetX,
+  offsetY,
+  ...attrs
+}) => {
   return {
-    type: 'path',
-    d: normalize(options.d, options.offsetX, options.offsetY),
+    ...attrs,
+    tagName: 'path',
+    d: normalize(d, offsetX, offsetY),
   }
 }

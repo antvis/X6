@@ -93,11 +93,11 @@ export class Cell<
     const ctor = this.constructor as typeof Cell
     const defaults = ctor.getDefaults(true)
     const meta = ObjectExt.merge({}, defaults, metadata, {
-      type: defaults.shape || metadata.shape,
+      shape: defaults.shape || metadata.shape,
     })
     const props = this.preprocess(meta)
 
-    this.id = metadata.id || StringExt.uuid()
+    this.id = props.id || StringExt.uuid()
     this.store = new Store(props)
     this.animation = new Animation(this)
     this.setup()
@@ -121,12 +121,15 @@ export class Cell<
 
   // #endregion
 
-  protected preprocess(metadata: Cell.Metadata): Properties {
+  protected preprocess(
+    metadata: Cell.Metadata,
+    ignoreIdCheck?: boolean,
+  ): Properties {
     const id = metadata.id
     const ctor = this.constructor as typeof Cell
     const props = ctor.applyPropHooks(this, metadata)
 
-    if (id == null) {
+    if (id == null && ignoreIdCheck !== true) {
       props.id = StringExt.uuid()
     }
 
@@ -209,8 +212,8 @@ export class Cell<
     return this.store.get('view')
   }
 
-  get type() {
-    return this.store.get('type', '')
+  get shape() {
+    return this.store.get('shape', '')
   }
 
   // #region get/set
@@ -1055,15 +1058,21 @@ export class Cell<
     return new Point()
   }
 
-  toJSON(): this extends Node
+  toJSON(
+    options: Cell.ToJSONOptions = {},
+  ): this extends Node
     ? Node.Properties
     : this extends Edge
     ? Edge.Properties
     : Properties {
     const ctor = this.constructor as typeof Cell
-    const props = this.store.get()
+    const full = options.full === true
+    const props = { ...this.store.get() }
     const attrs = props.attrs || {}
-    const defaults = ctor.getDefaults(true)
+    const presets = ctor.getDefaults(true) as Properties
+    // When `options.full` is not `true`, we should process the custom options,
+    // such as `width`, `height` etc. to ensure the comparing work correctly.
+    const defaults = full ? presets : this.preprocess(presets, true)
     const defaultAttrs = defaults.attrs || {}
     const finalAttrs: Attr.CellAttrs = {}
     const toString = Object.prototype.toString
@@ -1090,6 +1099,13 @@ export class Cell<
             val,
           )}" type of key "${key}" on ${cellType} "${this.id}"`,
         )
+      }
+
+      if (key !== 'attrs' && key !== 'shape' && !full) {
+        const preset = defaults[key]
+        if (ObjectExt.isEqual(val, preset)) {
+          delete props[key]
+        }
       }
     })
 
@@ -1138,10 +1154,16 @@ export class Cell<
       })
     })
 
-    return ObjectExt.cloneDeep({
+    const finalProps = {
       ...props,
-      attrs: finalAttrs,
-    }) as any
+      attrs: ObjectExt.isEmpty(finalAttrs) ? undefined : finalAttrs,
+    }
+
+    if (finalProps.attrs == null) {
+      delete finalProps.attrs
+    }
+
+    return ObjectExt.cloneDeep(finalProps) as any
   }
 
   clone(
@@ -1258,6 +1280,10 @@ export namespace Cell {
     breadthFirst?: boolean
   }
 
+  export interface ToJSONOptions {
+    full?: boolean
+  }
+
   export interface CloneOptions {
     deep?: boolean
   }
@@ -1308,7 +1334,6 @@ export namespace Cell {
     'change:vertices': EdgeChangeArgs<Point.PointLike[]>
     'change:labels': EdgeChangeArgs<Edge.Label[]>
     'change:defaultLabel': EdgeChangeArgs<Edge.Label>
-    'change:labelMarkup': EdgeChangeArgs<Markup>
     'change:toolMarkup': EdgeChangeArgs<Markup>
     'change:doubleToolMarkup': EdgeChangeArgs<Markup>
     'change:vertexMarkup': EdgeChangeArgs<Markup>

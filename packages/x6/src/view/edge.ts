@@ -1,5 +1,5 @@
 import { KeyValue } from '../types'
-import { StringExt, ObjectExt, NumberExt, Dom } from '../util'
+import { StringExt, ObjectExt, NumberExt, Dom, FunctionExt } from '../util'
 import { Rectangle, Polyline, Point, Angle, Path, Line } from '../geometry'
 import { Attr } from '../definition'
 import {
@@ -1262,13 +1262,6 @@ export class EdgeView<
   }
 
   // Add default label at given position at end of `labels` array.
-  // Assigns relative coordinates by default:
-  // `opt.absoluteDistance` forces absolute coordinates.
-  // `opt.reverseDistance` forces reverse absolute coordinates (if absoluteDistance = true).
-  // `opt.absoluteOffset` forces absolute coordinates for offset.
-  // Additional args:
-  // `opt.keepGradient` auto-adjusts the angle of the label to match path gradient at position.
-  // `opt.ensureLegibility` rotates labels so they are never upside-down.
   addLabel(
     x: number,
     y: number,
@@ -1576,10 +1569,10 @@ export class EdgeView<
     }
 
     // identify distance/offset settings
+    const isOffsetAbsolute = options && options.absoluteOffset
     const isDistanceRelative = !(options && options.absoluteDistance)
     const isDistanceAbsoluteReverse =
       options && options.absoluteDistance && options.reverseDistance
-    const isOffsetAbsolute = options && options.absoluteOffset
 
     // find closest point t
     const path = this.path
@@ -1605,8 +1598,8 @@ export class EdgeView<
 
     // offset
     // use absolute offset if:
-    // - opt.absoluteOffset is true,
-    // - opt.absoluteOffset is not true but there is no tangent
+    // - options.absoluteOffset is true,
+    // - options.absoluteOffset is not true but there is no tangent
     let tangent
     if (!isOffsetAbsolute) tangent = path.tangentAtT(t)
     let labelOffset
@@ -2229,9 +2222,9 @@ export class EdgeView<
     data: EventData.ArrowheadDragging,
     e: JQuery.MouseUpEvent,
   ) {
-    const type = data.terminalType
+    const terminalType = data.terminalType
     const initialTerminal = data.initialTerminal
-    const currentTerminal = this.cell[type]
+    const currentTerminal = this.cell[terminalType]
     const changed =
       currentTerminal && !Edge.equalTerminals(initialTerminal, currentTerminal)
 
@@ -2241,9 +2234,10 @@ export class EdgeView<
       if (prevCellId) {
         this.notify('edge:disconnected', {
           e,
-          type,
-          view: graph.renderer.findViewByCell(prevCellId) as CellView,
-          magnet: data.initialMagnet,
+          terminalType,
+          terminalView: graph.renderer.findViewByCell(prevCellId) as CellView,
+          terminalMagnet: data.initialMagnet,
+          edge: this.cell,
         })
       }
 
@@ -2251,9 +2245,10 @@ export class EdgeView<
       if (currCellId) {
         this.notify('edge:connected', {
           e,
-          type,
-          view: graph.renderer.findViewByCell(currCellId) as CellView,
-          magnet: data.currentMagnet,
+          terminalType,
+          terminalView: graph.renderer.findViewByCell(currCellId) as CellView,
+          terminalMagnet: data.currentMagnet,
+          edge: this.cell,
         })
       }
     }
@@ -2353,15 +2348,19 @@ export class EdgeView<
       this.arrowheadDragged(data, x, y)
     }
 
-    // If the changed edge is not allowed, revert to its previous state.
-    if (!graph.hook.validateEdge(this.cell)) {
-      this.fallbackConnection(data)
-    } else {
-      this.finishEmbedding(data)
-      this.notifyConnectionEvent(data, e)
-    }
+    FunctionExt.toDeferredBoolean(graph.hook.validateEdge(this.cell)).then(
+      (valid) => {
+        if (valid) {
+          this.finishEmbedding(data)
+          this.notifyConnectionEvent(data, e)
+        } else {
+          // If the changed edge is not allowed, revert to its previous state.
+          this.fallbackConnection(data)
+        }
 
-    this.afterArrowheadDragging(data)
+        this.afterArrowheadDragging(data)
+      },
+    )
   }
 
   // #endregion
@@ -2520,9 +2519,10 @@ export namespace EdgeView {
 
     'edge:connected': {
       e: JQuery.MouseUpEvent
-      type: Edge.TerminalType
-      view: CellView
-      magnet?: Element | null
+      edge: Edge
+      terminalType: Edge.TerminalType
+      terminalView: CellView
+      terminalMagnet?: Element | null
     }
     'edge:disconnected': EventArgs['edge:connected']
 
@@ -2613,7 +2613,7 @@ EdgeView.config<EdgeView.Options>({
     source: ['source', 'update'],
     target: ['target', 'update'],
     labels: ['labels'],
-    labelMarkup: ['labels'],
+    defaultLabel: ['labels'],
     vertices: ['vertices', 'update'],
     vertexMarkup: ['vertices'],
     toolMarkup: ['tools'],

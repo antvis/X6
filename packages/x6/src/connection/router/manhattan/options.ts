@@ -31,7 +31,7 @@ export interface ResolvedOptions {
   maxDirectionChange: number
 
   /**
-   * Should the router use perpendicular linkView option? Does not connect
+   * Should the router use perpendicular edgeView option? Does not connect
    * to the anchor of node but rather a point close-by that is orthogonal.
    */
   perpendicular: boolean
@@ -44,7 +44,7 @@ export interface ResolvedOptions {
   /**
    * Should certain types of nodes not be considered as obstacles?
    */
-  excludeTypes: string[]
+  excludeShapes: string[]
 
   /**
    * Possible starting directions from a node.
@@ -135,7 +135,7 @@ export const defaults: ManhattanRouterOptions = {
   maxDirectionChange: 90,
   perpendicular: true,
   excludeTerminals: [],
-  excludeTypes: [], // ['text']
+  excludeShapes: [], // ['text']
   startDirections: ['top', 'right', 'bottom', 'left'],
   endDirections: ['top', 'right', 'bottom', 'left'],
   directionMap: {
