@@ -186,10 +186,20 @@ export class Scroller extends View {
   }
 
   protected onBackgroundEvent(e: JQuery.TriggeredEvent) {
-    const isBackgroundEvent = this.options.background
-      ? this.$background.is(e.target)
-      : this.$content.is(e.target)
-    if (isBackgroundEvent) {
+    let shouldHnadleEvent = false
+
+    const target = e.target
+
+    if (!this.options.pageVisible) {
+      shouldHnadleEvent =
+        this.graph.view.background === target || this.graph.view.grid === target
+    } else if (this.options.background) {
+      shouldHnadleEvent = this.background === target
+    } else {
+      this.content === target
+    }
+
+    if (shouldHnadleEvent) {
       const handler = this.delegatedHandlers[e.type]
       if (typeof handler === 'function') {
         handler.apply(this.graph, arguments)
@@ -1126,7 +1136,7 @@ export namespace Scroller {
 
 namespace Util {
   export const containerClass = 'graph-scroller'
-  export const panningClass = `${containerClass}-pannable`
+  export const panningClass = `${containerClass}-panning`
   export const pagedClass = `${containerClass}-paged`
   export const contentClass = `${containerClass}-content`
   export const backgroundClass = `${containerClass}-background`
