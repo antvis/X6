@@ -23,7 +23,7 @@ const dist = path.join(cwd, 'dist')
 
 compile(path.join(src, 'index.less'), path.join(es, 'index.css'))
 compile(path.join(src, 'index.less'), path.join(lib, 'index.css'))
-compile(path.join(src, 'index.less'), path.join(dist, 'index.css'))
+compile(path.join(src, 'index.less'), path.join(dist, 'x6.css'))
 
 function toCSSPath(source) {
   const dir = path.dirname(source)
