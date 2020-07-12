@@ -1,5 +1,5 @@
 import { DeepPartial } from 'utility-types'
-import { Registry } from '../common'
+import { Registry } from '../registry'
 import { Size, KeyValue } from '../types'
 import { Point, Rectangle, Angle } from '../geometry'
 import { StringExt, ObjectExt, NumberExt } from '../util'
@@ -9,6 +9,8 @@ import { Edge } from './edge'
 import { Store } from './store'
 import { Share } from './registry'
 import { PortManager } from './port'
+import { Animation } from './animation'
+import { Interp } from '../common'
 
 export class Node<
   Properties extends Node.Properties = Node.Properties
@@ -383,16 +385,15 @@ export class Node<
     options.ty = ty
 
     if (options.transition) {
-      //   if (!isObject(options.transition)) options.transition = {}
-      //   this.transition(
-      //     'position',
-      //     translatedPosition,
-      //     assign({}, options.transition, {
-      //       valueFunction: interpolate.object,
-      //     }),
-      //   )
-      //   // Recursively call `translate()` on all the embeds cells.
-      //   this.eachChild(child => child.translate(tx, ty, options))
+      if (typeof options.transition !== 'object') {
+        options.transition = {}
+      }
+
+      this.transition('position', translatedPosition, {
+        ...options.transition,
+        interp: Interp.object,
+      })
+      this.eachChild((child) => child.translate(tx, ty, options))
     } else {
       this.startBatch('translate', options)
       this.store.set('position', translatedPosition, options)
@@ -1011,7 +1012,7 @@ export namespace Node {
   }
 
   export interface TranslateOptions extends Cell.TranslateOptions {
-    transition?: boolean
+    transition?: boolean | Animation.Options
     restrictedArea?: Rectangle.RectangleLike | null
   }
 

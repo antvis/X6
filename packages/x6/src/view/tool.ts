@@ -1,6 +1,6 @@
 import { KeyValue } from '../types'
 import { Dom, ObjectExt, StringExt } from '../util'
-import { NodeTool, EdgeTool } from '../definition/tool'
+import { NodeTool, EdgeTool } from '../registry/tool'
 import { View } from './view'
 import { CellView } from './cell'
 import { Markup } from './markup'

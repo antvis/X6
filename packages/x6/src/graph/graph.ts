@@ -44,8 +44,6 @@ import {
   Filter as FilterDefinition,
   Background as BackgroundDefinition,
   Highlighter as HighlightDefinition,
-} from '../definition'
-import {
   Marker,
   Router,
   Connector,
@@ -53,7 +51,7 @@ import {
   ConnectionStrategy,
   NodeConnectionAnchor,
   EdgeConnectionAnchor,
-} from '../connection'
+} from '../registry'
 
 export class Graph extends Basecoat<EventArgs> {
   public readonly options: GraphOptions.Definition

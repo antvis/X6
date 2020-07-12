@@ -1,7 +1,7 @@
 import { Dom } from '../util'
 import { KeyValue } from '../types'
 import { CellView } from '../view'
-import { Highlighter } from '../definition'
+import { Highlighter } from '../registry'
 import { Base } from './base'
 
 export class HighlightManager extends Base {
