@@ -1450,7 +1450,7 @@ export namespace Cell {
       let rect = cell.getBBox(options)
       if (rect) {
         if (cell.isNode()) {
-          const angle = cell.angle
+          const angle = cell.getAngle()
           if (angle != null && angle !== 0) {
             rect = rect.bbox(angle)
           }

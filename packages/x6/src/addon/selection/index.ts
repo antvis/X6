@@ -656,7 +656,9 @@ export class Selection extends View<Selection.EventArgs> {
           data.angles[node.id] + delta,
           gridSize || 15,
         )
-        node.rotate(angle, true, data.center, {
+        node.rotate(angle, {
+          absolute: true,
+          center: data.center,
           selection: this.cid,
         })
       })
