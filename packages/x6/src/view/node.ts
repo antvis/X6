@@ -172,7 +172,7 @@ export class NodeView<
       return this.updateSize(opt)
     }
 
-    if (this.cell.angle) {
+    if (this.cell.getAngle()) {
       this.rotate()
     }
 
