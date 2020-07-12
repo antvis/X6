@@ -1,4 +1,4 @@
-import { Attr, PortLayout, PortLabelLayout } from '../definition'
+import { Attr, PortLayout, PortLabelLayout } from '../registry'
 import { JSONObject, ObjectExt } from '../util'
 import { Point, Rectangle } from '../geometry'
 import { Size, KeyValue } from '../types'

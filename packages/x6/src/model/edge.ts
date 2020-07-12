@@ -1,17 +1,17 @@
-import { Registry } from '../common'
 import { Size, KeyValue } from '../types'
 import { ObjectExt, StringExt } from '../util'
 import { Point, Polyline } from '../geometry'
 import {
+  Registry,
+  Attr,
   Router,
   Connector,
   EdgeConnectionAnchor,
   NodeConnectionAnchor,
   ConnectionPoint,
   ConnectionStrategy,
-} from '../connection'
+} from '../registry'
 import { Markup } from '../view/markup'
-import { Attr } from '../definition'
 import { Share } from './registry'
 import { Store } from './store'
 import { Cell } from './cell'

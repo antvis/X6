@@ -1,7 +1,7 @@
 import { Util, Config } from '../global'
 import { ArrayExt, Dom } from '../util'
 import { Rectangle, Point } from '../geometry'
-import { Attr, PortLayout } from '../definition'
+import { Attr, PortLayout } from '../registry'
 import { Cell } from '../model/cell'
 import { Node } from '../model/node'
 import { PortManager } from '../model/port'

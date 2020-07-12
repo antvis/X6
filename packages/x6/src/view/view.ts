@@ -1,6 +1,6 @@
 import JQuery from 'jquery'
 import { Dom } from '../util'
-import { Attr } from '../definition'
+import { Attr } from '../registry'
 import { KeyValue } from '../types'
 import { Basecoat } from '../common'
 import { Util, Config } from '../global'

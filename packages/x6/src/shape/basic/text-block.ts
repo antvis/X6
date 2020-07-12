@@ -1,6 +1,6 @@
 import { Platform, StringExt, ObjectExt, Dom } from '../../util'
 import { Size } from '../../types'
-import { Attr } from '../../definition'
+import { Attr } from '../../registry'
 import { Node } from '../../model'
 import { Store } from '../../model/store'
 import { NodeView } from '../../view'

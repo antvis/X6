@@ -1,4 +1,4 @@
-import { Registry } from '../common'
+import { Registry } from '../registry'
 
 export namespace Share {
   let edgeRegistry: Registry<any>
