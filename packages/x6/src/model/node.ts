@@ -62,14 +62,6 @@ export class Node<
 
   // #region size
 
-  get dimension() {
-    return this.getSize()
-  }
-
-  set dimension(size: Size) {
-    this.setSize(size)
-  }
-
   size(): Size
   size(size: Size, options?: Node.ResizeOptions): this
   size(width: number, height: number, options?: Node.ResizeOptions): this
@@ -141,7 +133,7 @@ export class Node<
       }
 
       let quadrant = map[direction]
-      const angle = Angle.normalize(this.angle || 0)
+      const angle = Angle.normalize(this.getAngle() || 0)
       if (options.absolute) {
         // We are taking the node's rotation into account
         quadrant += Math.floor((angle + 45) / 90)
@@ -242,14 +234,6 @@ export class Node<
   // #endregion
 
   // #region position
-
-  get coord() {
-    return this.getPosition()
-  }
-
-  set coord(pos: Point | Point.PointLike) {
-    this.setPosition(pos.x, pos.y)
-  }
 
   position(x: number, y: number, options?: Node.SetPositionOptions): this
   position(options?: Node.GetPositionOptions): Point.PointLike
@@ -408,40 +392,27 @@ export class Node<
 
   // #region angle
 
-  get angle() {
-    return this.getAngle()
-  }
-
-  set angle(angle: number) {
-    this.rotate(angle, true)
-  }
-
   getAngle() {
     return this.store.get('angle', 0)
   }
 
-  rotate(
-    angle: number,
-    absolute: boolean,
-    origin?: Point | Point.PointLike,
-    options: Node.RotateOptions = {},
-  ) {
+  rotate(angle: number, options: Node.RotateOptions = {}) {
     const currentAngle = this.getAngle()
-    if (origin) {
+    if (options.center) {
       const size = this.getSize()
       const position = this.getPosition()
       const center = this.getBBox().getCenter()
-      center.rotate(currentAngle - angle, origin)
+      center.rotate(currentAngle - angle, options.center)
       const dx = center.x - size.width / 2 - position.x
       const dy = center.y - size.height / 2 - position.y
-      this.startBatch('rotate', { angle, absolute, origin })
+      this.startBatch('rotate', { angle, options })
       this.setPosition(position.x + dx, position.y + dy, options)
-      this.rotate(angle, absolute, undefined, options)
+      this.rotate(angle, { ...options, center: null })
       this.stopBatch('rotate')
     } else {
       this.store.set(
         'angle',
-        absolute ? angle : (currentAngle + angle) % 360,
+        options.absolute ? angle : (currentAngle + angle) % 360,
         options,
       )
     }
@@ -1016,7 +987,10 @@ export namespace Node {
     restrictedArea?: Rectangle.RectangleLike | null
   }
 
-  export interface RotateOptions extends SetOptions {}
+  export interface RotateOptions extends SetOptions {
+    absolute?: boolean
+    center?: Point.PointLike | null
+  }
 
   export type ResizeDirection =
     | 'left'

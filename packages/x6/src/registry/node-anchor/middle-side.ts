@@ -20,7 +20,7 @@ const middleSide: NodeConnectionAnchor.ResolvedDefinition<MiddleSideAnchorOption
   if (options.rotated) {
     bbox = view.getNodeUnrotatedBBox(magnet)
     center = node.getBBox().getCenter()
-    angle = node.angle
+    angle = node.getAngle()
   } else {
     bbox = view.getNodeBBox(magnet)
   }
