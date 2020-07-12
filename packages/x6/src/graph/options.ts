@@ -12,7 +12,7 @@ import {
   ConnectionStrategy,
   NodeConnectionAnchor,
   EdgeConnectionAnchor,
-} from '../connection'
+} from '../registry'
 import { Widget } from '../addon/common'
 import { Hook } from './hook'
 import { Graph } from './graph'

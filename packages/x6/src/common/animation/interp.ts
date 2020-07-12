@@ -1,17 +1,18 @@
 export namespace Interp {
-  export function number(a: number, b: number) {
+  export type Definition<T> = (from: T, to: T) => (time: number) => T
+}
+
+export namespace Interp {
+  export const number: Definition<number> = (a, b) => {
     const d = b - a
     return (t: number) => {
       return a + d * t
     }
   }
 
-  export function object(
-    a: { [key: string]: number },
-    b: { [key: string]: number },
-  ) {
+  export const object: Definition<{ [key: string]: number }> = (a, b) => {
     const keys = Object.keys(a)
-    return (t: number) => {
+    return (t) => {
       const ret: { [key: string]: number } = {}
       for (let i = keys.length - 1; i !== -1; i -= 1) {
         const key = keys[i]
@@ -21,7 +22,7 @@ export namespace Interp {
     }
   }
 
-  export function unit(a: string, b: string) {
+  export const unit: Definition<string> = (a, b) => {
     const reg = /(-?[0-9]*.[0-9]*)(px|em|cm|mm|in|pt|pc|%)/
     const ma = reg.exec(a)
     const mb = reg.exec(b)
@@ -36,12 +37,12 @@ export namespace Interp {
     const d = bb - aa
     const u = ma ? ma[2] : ''
 
-    return (t: number) => {
+    return (t) => {
       return (aa + d * t).toFixed(precision) + u
     }
   }
 
-  export function color(a: string, b: string) {
+  export const color: Definition<string> = (a, b) => {
     const ca = parseInt(a.slice(1), 16)
     const cb = parseInt(b.slice(1), 16)
     const ra = ca & 0x0000ff
@@ -51,7 +52,7 @@ export namespace Interp {
     const ba = ca & 0xff0000
     const bd = (cb & 0xff0000) - ba
 
-    return (t: number) => {
+    return (t) => {
       const r = (ra + rd * t) & 0x000000ff
       const g = (ga + gd * t) & 0x0000ff00
       const b = (ba + bd * t) & 0x00ff0000

@@ -1,6 +1,6 @@
 import { KeyValue } from '../types'
 import { snapToGrid as snap } from '../geometry/util'
-import { normalize } from '../connection/marker/util'
+import { normalize } from '../registry/marker/util'
 import { Cell } from '../model/cell'
 import { Node } from '../model/node'
 import { Edge } from '../model/edge'

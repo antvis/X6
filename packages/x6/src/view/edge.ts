@@ -1,14 +1,14 @@
 import { KeyValue } from '../types'
 import { StringExt, ObjectExt, NumberExt, Dom, FunctionExt } from '../util'
 import { Rectangle, Polyline, Point, Angle, Path, Line } from '../geometry'
-import { Attr } from '../definition'
 import {
+  Attr,
   Router,
   Connector,
   ConnectionPoint,
   NodeConnectionAnchor,
   EdgeConnectionAnchor,
-} from '../connection'
+} from '../registry'
 import { Edge } from '../model/edge'
 import { Markup } from './markup'
 import { CellView } from './cell'

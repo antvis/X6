@@ -3,7 +3,7 @@ import { ArrayExt, StringExt, ObjectExt } from '../util'
 import { Rectangle, Point } from '../geometry'
 import { KeyValue, Size } from '../types'
 import { Basecoat } from '../common'
-import { Attr } from '../definition'
+import { Attr } from '../registry'
 import { Markup, CellView } from '../view'
 import { Graph } from '../graph'
 import { Model } from './model'
@@ -240,7 +240,7 @@ export class Cell<
     options?: Cell.SetOptions,
   ): this
   setProp(key: string, value: any, options?: Cell.SetOptions): this
-  setProp(data: Partial<Properties>, options?: Cell.SetOptions): this
+  setProp(props: Partial<Properties>, options?: Cell.SetOptions): this
   setProp(
     key: string | Partial<Properties>,
     value?: any,
@@ -311,7 +311,7 @@ export class Cell<
   ): this
   prop(key: string, value: any, options?: Cell.SetOptions): this
   prop(path: string[], value: any, options?: Cell.SetOptions): this
-  prop(data: Partial<Properties>, options?: Cell.SetOptions): this
+  prop(props: Partial<Properties>, options?: Cell.SetOptions): this
   prop(
     key?: string | string[] | Partial<Properties>,
     value?: any,
@@ -837,6 +837,7 @@ export class Cell<
     } else {
       this.store.remove('parent', options)
     }
+    return this
   }
 
   setChildren(children: Cell[] | null, options: Cell.SetOptions = {}) {
@@ -850,6 +851,7 @@ export class Cell<
     } else {
       this.store.remove('children', options)
     }
+    return this
   }
 
   unembed(child: Cell, options: Cell.SetOptions = {}) {
@@ -869,7 +871,7 @@ export class Cell<
   }
 
   addTo(model: Model, options?: Cell.SetOptions): this
-  addTo(graph: Graph, options: Cell.SetOptions): this
+  addTo(graph: Graph, options?: Cell.SetOptions): this
   addTo(parent: Cell, options?: Cell.SetOptions): this
   addTo(target: Model | Graph | Cell, options: Cell.SetOptions = {}) {
     if (target instanceof Cell) {
@@ -882,6 +884,7 @@ export class Cell<
 
   insertTo(parent: Cell, index?: number, options: Cell.SetOptions = {}) {
     parent.insertChild(this, index, options)
+    return this
   }
 
   addChild(child: Cell | null, options: Cell.SetOptions = {}) {
@@ -952,6 +955,7 @@ export class Cell<
       const index = parent.getChildIndex(this)
       parent.removeChildAt(index, options)
     }
+    return this
   }
 
   removeChild(child: Cell, options: Cell.RemoveOptions = {}) {
@@ -985,6 +989,7 @@ export class Cell<
         }
       })
     }
+    return this
   }
 
   // #endregion
@@ -1199,12 +1204,14 @@ export class Cell<
     if (this.model) {
       this.model.startBatch(name, { ...data, cell: this })
     }
+    return this
   }
 
   stopBatch(name: Model.BatchName, data: KeyValue = {}) {
     if (this.model) {
       this.model.stopBatch(name, { ...data, cell: this })
     }
+    return this
   }
 
   batchUpdate<T>(name: Model.BatchName, execute: () => T, data?: KeyValue): T {

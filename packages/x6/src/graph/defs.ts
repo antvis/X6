@@ -1,7 +1,6 @@
 import { StringExt, Dom } from '../util'
-import { Attr, Filter } from '../definition'
+import { Attr, Filter, Marker } from '../registry'
 import { Markup } from '../view'
-import { Marker } from '../connection'
 import { Base } from './base'
 
 export class DefsManager extends Base {

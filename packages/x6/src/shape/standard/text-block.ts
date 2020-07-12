@@ -1,5 +1,5 @@
 import { Platform, Dom } from '../../util'
-import { Attr } from '../../definition'
+import { Attr } from '../../registry'
 import { bodyAttr } from './util'
 import { Base } from '../base'
 

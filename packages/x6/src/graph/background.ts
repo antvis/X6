@@ -1,6 +1,6 @@
 import { ObjectExt } from '../util'
 import { Rectangle } from '../geometry'
-import { Background } from '../definition'
+import { Background } from '../registry'
 import { Base } from './base'
 
 export class BackgroundManager extends Base {

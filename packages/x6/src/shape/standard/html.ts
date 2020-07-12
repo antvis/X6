@@ -1,5 +1,5 @@
 import { Dom } from '../../util'
-import { Registry } from '../../common'
+import { Registry } from '../../registry'
 import { Node } from '../../model/node'
 import { NodeView } from '../../view/node'
 import { Graph } from '../../graph/graph'

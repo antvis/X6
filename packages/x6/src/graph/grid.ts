@@ -1,4 +1,4 @@
-import { Grid as GridDefinition } from '../definition'
+import { Grid as GridDefinition } from '../registry'
 import { Dom } from '../util'
 import { Base } from './base'
 

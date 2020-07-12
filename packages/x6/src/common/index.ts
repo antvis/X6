@@ -6,5 +6,4 @@ export * from './dictionary'
 
 export * from './algorithm'
 export * from './animation'
-export * from './registry'
 export * from './localstorage'

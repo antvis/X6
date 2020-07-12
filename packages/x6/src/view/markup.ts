@@ -1,4 +1,4 @@
-import { Attr } from '../definition'
+import { Attr } from '../registry'
 import { KeyValue, Nilable } from '../types'
 import { ObjectExt, StringExt, Dom, $ } from '../util'
 
