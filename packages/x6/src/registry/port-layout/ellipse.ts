@@ -58,6 +58,7 @@ function ellipseLayout(
     const p = start.clone().rotate(-angle, center).scale(ratio, 1, center)
 
     const theta = item.compensateRotate ? -ellipse.tangentTheta(p) : 0
+
     if (item.dx || item.dy) {
       p.translate(item.dx || 0, item.dy || 0)
     }

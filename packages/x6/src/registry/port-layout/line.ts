@@ -5,8 +5,8 @@ import { PortLayout } from './index'
 export interface SideArgs extends PortLayout.CommonArgs {}
 
 export interface LineArgs extends SideArgs {
-  start?: Point | Point.PointLike
-  end?: Point | Point.PointLike
+  start?: Point.PointLike
+  end?: Point.PointLike
 }
 
 export const line: PortLayout.Definition<LineArgs> = (
