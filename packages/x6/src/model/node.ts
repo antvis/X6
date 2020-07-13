@@ -220,10 +220,15 @@ export class Node<
   scale(
     sx: number,
     sy: number,
-    origin?: Point | Point.PointLike,
+    origin?: Point.PointLike | null,
     options: Node.SetOptions = {},
   ) {
-    const scaledBBox = this.getBBox().scale(sx, sy, origin)
+    const scaledBBox = this.getBBox().scale(
+      sx,
+      sy,
+      origin == null ? undefined : origin,
+    )
+
     this.startBatch('scale', options)
     this.setPosition(scaledBBox.x, scaledBBox.y, options)
     this.resize(scaledBBox.width, scaledBBox.height, options)
@@ -747,26 +752,26 @@ export class Node<
     return `ports/items/${index}/${path}`
   }
 
-  addPort(port: PortManager.PortMetadata, options?: Cell.SetByPathOptions) {
+  addPort(port: PortManager.PortMetadata, options?: Node.SetOptions) {
     const ports = [...this.ports.items]
     ports.push(port)
     this.setPropByPath('ports/items', ports, options)
     return this
   }
 
-  addPorts(ports: PortManager.PortMetadata[], options?: Cell.SetByPathOptions) {
+  addPorts(ports: PortManager.PortMetadata[], options?: Node.SetOptions) {
     this.setPropByPath('ports/items', [...this.ports.items, ...ports], options)
     return this
   }
 
   removePort(
     port: PortManager.PortMetadata | string,
-    options: Cell.SetByPathOptions = {},
+    options: Node.SetOptions = {},
   ) {
     return this.removePortAt(this.getPortIndex(port), options)
   }
 
-  removePortAt(index: number, options: Cell.SetByPathOptions = {}) {
+  removePortAt(index: number, options: Node.SetOptions = {}) {
     if (index >= 0) {
       const ports = [...this.ports.items]
       ports.splice(index, 1)
@@ -776,16 +781,14 @@ export class Node<
     return this
   }
 
-  removePorts(options?: Cell.SetByPathOptions): this
+  removePorts(options?: Node.SetOptions): this
   removePorts(
     portsForRemoval: (PortManager.PortMetadata | string)[],
-    options?: Cell.SetByPathOptions,
+    options?: Node.SetOptions,
   ): this
   removePorts(
-    portsForRemoval?:
-      | (PortManager.PortMetadata | string)[]
-      | Cell.SetByPathOptions,
-    opt?: Cell.SetByPathOptions,
+    portsForRemoval?: (PortManager.PortMetadata | string)[] | Node.SetOptions,
+    opt?: Node.SetOptions,
   ) {
     let options
 
