@@ -19,6 +19,8 @@ export namespace PortLayout {
   }
 
   export interface CommonArgs {
+    x?: number
+    y?: number
     dx?: number
     dy?: number
   }
