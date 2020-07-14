@@ -1,6 +1,5 @@
 import React, { MouseEvent } from 'react'
 import classNames from 'classnames'
-import { Icon } from '../icon'
 import { MenuContext } from './context'
 
 export class MenuItemInner extends React.PureComponent<MenuItemInner.Props> {
@@ -65,7 +64,7 @@ export namespace MenuItemInner {
           [`${baseCls}-hidden`]: hidden,
           [`${baseCls}-disabled`]: disabled,
         },
-        className
+        className,
       ),
     }
   }
@@ -74,7 +73,7 @@ export namespace MenuItemInner {
     props: Props,
     onClick: any,
     innerExtra?: any,
-    outerExtra?: any
+    outerExtra?: any,
   ) {
     const { icon, text, hotkey, children } = props
     const { prefixCls } = props.context
@@ -82,14 +81,8 @@ export namespace MenuItemInner {
     return (
       <React.Fragment>
         <button className={`${baseCls}-button`} onClick={onClick}>
-          {icon && (
-            <span className={`${baseCls}-icon`}>
-              {React.isValidElement(icon) ? (
-                icon
-              ) : (
-                <Icon type={icon as string | Icon.IconData} />
-              )}
-            </span>
+          {icon && React.isValidElement(icon) && (
+            <span className={`${baseCls}-icon`}>{icon}</span>
           )}
           <span className={`${baseCls}-text`}>{text || children}</span>
           {hotkey && <span className={`${baseCls}-hotkey`}>{hotkey}</span>}
@@ -101,9 +94,9 @@ export namespace MenuItemInner {
   }
 }
 
-export const MenuItem: React.SFC<MenuItem.Props> = props => (
+export const MenuItem: React.SFC<MenuItem.Props> = (props) => (
   <MenuContext.Consumer>
-    {context => <MenuItemInner context={context} {...props} />}
+    {(context) => <MenuItemInner context={context} {...props} />}
   </MenuContext.Consumer>
 )
 
@@ -111,7 +104,7 @@ export namespace MenuItem {
   export interface Props {
     className?: string
     name?: string
-    icon?: string | React.ReactNode | Icon.IconData
+    icon?: React.ReactNode
     text?: string | React.ReactNode
     hotkey?: string
     active?: boolean

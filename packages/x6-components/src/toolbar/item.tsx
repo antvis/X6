@@ -3,7 +3,6 @@ import classNames from 'classnames'
 import { Tooltip } from 'antd'
 import { TooltipProps } from 'antd/lib/tooltip'
 import 'antd/lib/tooltip/style'
-import { Icon } from '../icon'
 import { Menu } from '../menu'
 import { Dropdown } from '../dropdown'
 import { ToolbarContext } from './context'
@@ -67,14 +66,8 @@ class ToolbarItemInner extends React.PureComponent<ToolbarItemInner.Props> {
 
     const button = (
       <button {...props}>
-        {icon && (
-          <span className={`${baseCls}-icon`}>
-            {React.isValidElement(icon) ? (
-              icon
-            ) : (
-              <Icon type={icon as string | Icon.IconData} />
-            )}
-          </span>
+        {icon && React.isValidElement(icon) && (
+          <span className={`${baseCls}-icon`}>{icon}</span>
         )}
         {(text || children) && (
           <span className={`${baseCls}-text`}>{text || children}</span>
@@ -137,9 +130,9 @@ namespace ToolbarItemInner {
   }
 }
 
-export const ToolbarItem: React.SFC<ToolbarItem.Props> = props => (
+export const ToolbarItem: React.SFC<ToolbarItem.Props> = (props) => (
   <ToolbarContext.Consumer>
-    {context => <ToolbarItemInner context={context} {...props} />}
+    {(context) => <ToolbarItemInner context={context} {...props} />}
   </ToolbarContext.Consumer>
 )
 
@@ -151,7 +144,7 @@ export namespace ToolbarItem {
   export interface Props {
     className?: string
     name?: string
-    icon?: string | React.ReactNode | Icon.IconData
+    icon?: React.ReactNode
     text?: string | React.ReactNode
     hidden?: boolean
     disabled?: boolean
