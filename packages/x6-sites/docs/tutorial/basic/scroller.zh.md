@@ -529,7 +529,7 @@ graph.positionPoint({ x: 30, y: 80 }, '25%', -40)
 
 // 将画布上的点 { x: 30, y: 80 } 与离视口右侧 25% 和离视口顶部 40px 的位置对齐
 graph.positionPoint({ x: 30, y: 80 }, '-25%', 40)
-``` 
+```
 
 ### graph.zoom()
 

@@ -1,6 +1,6 @@
 {
   "name": "@antv/x6-sites",
-  "version": "0.10.25",
+  "version": "0.10.27",
   "description": "X6 sites deployed on gh-pages",
   "scripts": {
     "clean": "gatsby clean",
@@ -15,8 +15,13 @@
   ],
   "dependencies": {
     "@antv/gatsby-theme-antv": "^0.10.65",
-    "@antv/x6": "^0.10.25",
-    "gatsby": "^2.23.3",
+    "@antv/x6": "^0.10.27",
+    "antd": "^4.4.2",
+    "express": "^4.17.1",
+    "gatsby": "^2.24.2",
+    "gatsby-plugin-static-folders": "^1.0.1",
+    "gatsby-remark-code-repls": "^3.2.10",
+    "gatsby-remark-custom-blocks": "^2.3.10",
     "gh-pages": "^3.0.0",
     "react-i18next": "^11.5.0"
   },
