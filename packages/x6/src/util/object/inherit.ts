@@ -1,10 +1,10 @@
 const extendStatics =
   Object.setPrototypeOf ||
   ({ __proto__: [] } instanceof Array &&
-    function(d, b) {
+    function (d, b) {
       d.__proto__ = b
     }) ||
-  function(d, b) {
+  function (d, b) {
     for (const p in b) {
       if (b.hasOwnProperty(p)) {
         d[p] = (b as any)[p]
@@ -27,7 +27,8 @@ export function inherit(cls: Function, base: Function) {
 }
 
 class A {}
-const isNativeClass = /^\s*class\s+/.test(`${A}`)
+const isNativeClass =
+  /^\s*class\s+/.test(`${A}`) || /^\s*class\s*\{/.test(`${class {}}`)
 
 /**
  * Extends class with specified class name.
