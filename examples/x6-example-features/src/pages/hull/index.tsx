@@ -1,6 +1,6 @@
 import React from 'react'
 import { Dom, Graph, Point, Line, Polyline } from '@antv/x6'
-import { Connector } from '@antv/x6/es/connection/connector'
+import { Connector } from '@antv/x6/es/registry/connector'
 import '../index.less'
 
 function random(max: number, min: number) {

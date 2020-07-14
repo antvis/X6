@@ -1,6 +1,6 @@
 import React from 'react'
 import { Graph, Point } from '@antv/x6'
-import { Router } from '@antv/x6/es/connection/router'
+import { Router } from '@antv/x6/es/registry/router'
 import '../index.less'
 
 Router.registry.register('random', (vertices, args, view) => {

@@ -62,7 +62,7 @@
     "ts-jest": "^24.0.2",
     "ts-node": "^8.6.2",
     "tslint": "^5.18.0",
-    "typescript": "^3.5.3",
+    "typescript": "^3.9.6",
     "watch": "^1.0.2"
   },
   "author": {
