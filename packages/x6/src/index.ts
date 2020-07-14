@@ -8,6 +8,7 @@ export * from './graph'
 
 export * from './shape'
 export * from './addon'
+export { Registry } from './registry'
 
 export * from './global'
 
