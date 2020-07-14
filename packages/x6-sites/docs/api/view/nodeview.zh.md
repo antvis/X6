@@ -1,9 +1,9 @@
 ---
-title: Edge 
+title: NodeView
 order: 2
 redirect_from:
   - /zh/docs/api
-  - /zh/docs/api/model
+  - /zh/docs/api/view
 ---
 
 ## constructor
