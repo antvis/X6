@@ -1,4 +1,3 @@
-
 import { ValuesType } from 'utility-types'
 import * as CSS from 'csstype'
 import * as patterns from './main'

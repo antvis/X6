@@ -1,6 +1,6 @@
 {
   "name": "@antv/x6",
-  "version": "0.10.25",
+  "version": "0.10.27",
   "description": "JavaScript diagramming library",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -100,7 +100,7 @@
     "ts-loader": "^7.0.4",
     "ts-node": "^8.6.2",
     "tslint": "^6.1.2",
-    "typescript": "3.8.3"
+    "typescript": "3.9.6"
   },
   "author": {
     "name": "bubkoo",
