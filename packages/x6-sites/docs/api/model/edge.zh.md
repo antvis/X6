@@ -1,5 +1,5 @@
 ---
-title: 边 Edge 
+title: Edge 
 order: 2
 redirect_from:
   - /zh/docs/api
