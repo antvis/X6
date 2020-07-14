@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@antv/x6-components": "^0.10.0",
-    "antd": "^3.19.5",
+    "antd": "^4.4.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6"
   },
