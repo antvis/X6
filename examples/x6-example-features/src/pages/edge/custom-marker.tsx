@@ -1,6 +1,6 @@
 import React from 'react'
 import { Graph } from '@antv/x6'
-import { Marker } from '@antv/x6/es/connection'
+import { Marker } from '@antv/x6/es/registry'
 import '../index.less'
 
 export default class Example extends React.Component {
