@@ -1,7 +1,7 @@
 import { PortLabelLayout } from './index'
 import { toResult } from './util'
 
-export type SideArgs = Partial<PortLabelLayout.Result>
+export interface SideArgs extends PortLabelLayout.CommonOptions {}
 
 export const manual: PortLabelLayout.Definition<SideArgs> = (
   portPosition,
