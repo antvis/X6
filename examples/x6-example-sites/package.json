@@ -1,7 +1,7 @@
 {
   "name": "x6-example-sites",
   "private": "true",
-  "version": "0.10.28",
+  "version": "0.10.29",
   "workspaces": [
     "packages/**/*"
   ],
@@ -12,7 +12,7 @@
     "reboot": "run-s clear bootstrap"
   },
   "dependencies": {
-    "@antv/x6": "^0.10.28",
+    "@antv/x6": "^0.10.29",
     "@antv/x6-components": "^0.10.1",
     "@antv/x6-react-shape": "^0.10.2",
     "antd": "^4.4.2",
