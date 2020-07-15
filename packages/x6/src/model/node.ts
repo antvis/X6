@@ -579,11 +579,11 @@ export class Node<
   }
 
   get ports() {
-    const res = this.store.get('ports', { items: [] })
+    const res = this.store.get<PortManager.Metadata>('ports', { items: [] })
     if (res.items == null) {
       res.items = []
     }
-    return res as PortManager.Metadata
+    return res
   }
 
   getPorts() {
@@ -949,7 +949,7 @@ export namespace Node {
     size?: { width: number; height: number }
     position?: { x: number; y: number }
     angle?: number
-    ports?: Partial<PortManager.Metadata> // group and items are both optional
+    ports?: Partial<PortManager.Metadata> | PortManager.PortMetadata[]
     portContainerMarkup?: Markup
     portMarkup?: Markup
     portLabelMarkup?: Markup
@@ -1099,4 +1099,15 @@ export namespace Node {
   })
 
   Share.setNodeRegistry(registry)
+}
+
+export namespace Node {
+  Node.config<Node.Config>({
+    propHooks: ({ ports, ...metadata }) => {
+      if (ports) {
+        metadata.ports = Array.isArray(ports) ? { items: ports } : ports
+      }
+      return metadata
+    },
+  })
 }
