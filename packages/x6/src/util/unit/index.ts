@@ -1,3 +1,5 @@
+import $ from 'jquery'
+
 let millimeterSize: number
 
 const supportedUnits = {

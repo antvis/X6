@@ -1,5 +1,6 @@
 import { Rectangle } from '../../geometry'
 import { createVector } from './vector'
+import { breakText } from './text'
 
 describe('Dom', () => {
   describe('#text', () => {
@@ -94,7 +95,7 @@ describe('Dom', () => {
       expect(t.attr('display')).toBeNull()
     })
 
-    it(' vertical anchor', () => {
+    it('vertical anchor', () => {
       const texts = ['one', 'one\ntwo', 'one\ntwo\nthree']
       const n = texts.length
       const fontSize = 30
@@ -119,6 +120,17 @@ describe('Dom', () => {
         bbox = t.getBBox()
         expect(bbox.getCenter().y < fontSize * 0.2).toBeTruthy()
       }
+    })
+
+    it('should break the words by size', () => {
+      expect(breakText('aaaaabbbbbccccceeeeefffffggggghhhhh', {
+        width: 200,
+        height: 400
+      }).split('\n').length).toBe(2)
+      expect(breakText('aaaaabbbbbccccceeeeefffffggggghhhhh', {
+        width: 200,
+        height: 20
+      }).split('\n').length).toBe(1)
     })
   })
 })

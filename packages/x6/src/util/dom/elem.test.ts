@@ -27,7 +27,12 @@ const svgContent =
   '  </g>' +
   '</g>' +
   '<path id="svg-path-3"/>' +
-  '<linearGradient id= "svg-linear-gradient"><stop/></linearGradient>'
+  '<linearGradient id= "svg-linear-gradient"><stop/></linearGradient>' +
+  '<foreignObject x="20" y="20" width="160" height="160">' +
+    '<body xmlns="http://www.w3.org/1999/xhtml">' +
+      '<div id="foreign-div"></div>' +
+    '</body>' +
+  '</foreignObject>'
 
 createVector(
   'svg',
@@ -55,6 +60,7 @@ export function setupTest() {
     svgPath2: byId<SVGPathElement>('svg-path-2'),
     svgPath3: byId<SVGPathElement>('svg-path-3'),
     svgLinearGradient: byId<SVGLinearGradientElement>('svg-linear-gradient'),
+    foreignDiv: byId<HTMLElement>('foreign-div')
   }
 }
 
