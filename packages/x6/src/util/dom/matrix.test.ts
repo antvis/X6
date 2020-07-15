@@ -7,9 +7,14 @@ import {
   parseTransformString,
   transformStringToMatrix,
   matrixToTransformString,
+  createSVGTransform,
+  transformLine,
+  transformPolyline,
 } from './matrix'
 import { createVector } from './vector'
 import { Vectorizer } from './vectorizer'
+import { createSvgElement } from './elem'
+import { Line, Point, Polyline } from '../../geometry'
 
 describe('Dom', () => {
   describe('matrix', () => {
@@ -20,6 +25,22 @@ describe('Dom', () => {
 
     afterAll(() => {
       fixture.parentNode?.removeChild(fixture)
+    })
+
+    describe('createSVGTransform', () => {
+      it('should return SVG transform object', () => {
+        const svgDocument = createSvgElement('svg') as SVGSVGElement
+        const matrix = svgDocument.createSVGMatrix()
+        expect(createSVGTransform(matrix)).toBeInstanceOf(SVGTransform)
+        expect(createSVGTransform({
+          a: 1,
+          b: 0,
+          c: 0,
+          d: 1,
+          e: 0,
+          f: 0
+        })).toBeInstanceOf(SVGTransform)
+      })
     })
 
     describe('#transformPoint', () => {
@@ -41,6 +62,29 @@ describe('Dom', () => {
         group.attr('transform', 'rotate(90)')
         const t = transformPoint(p, node.getCTM()!)
         expect(t.equals({ x: -2, y: 1 })).toBe(true)
+      })
+    })
+
+    describe('#transformLine', () => {
+      const matrix = createSVGMatrix().translate(50, 50)
+      const line = new Line(new Point(0, 0), new Point(10, 10))
+
+      it('should return the transformed line', () => {
+        const l = transformLine(line, matrix)
+        expect(l.start.x).toBe(50)
+        expect(l.start.y).toBe(50)
+      })
+    })
+
+    describe('#transformPolyline', () => {
+      const matrix = createSVGMatrix().translate(50, 50)
+      const points = [new Point(0, 0), new Point(10, 10)]
+      const polyline = new Polyline(points)
+
+      it('should return transformed polyline', () => {
+        const p = transformPolyline(polyline, matrix)
+        expect(p.pointAt(0)?.x).toBe(50)
+        expect(p.pointAt(0)?.y).toBe(50)
       })
     })
 
@@ -126,6 +170,20 @@ describe('Dom', () => {
           cy: undefined,
         })
         expect(parsed.translation).toEqual({ tx: 9, ty: 0 })
+      })
+
+      it('should parse martix', () => {
+        const parsed = parseTransformString(
+          'matrix(1,0,0,1,30,30)',
+        )
+
+        expect(parsed.scale).toEqual({ sx: 1, sy: 1 })
+        expect(parsed.rotation).toEqual({
+          angle: 0,
+          cx: undefined,
+          cy: undefined,
+        })
+        expect(parsed.translation).toEqual({ tx: 30, ty: 30 })
       })
     })
 
