@@ -45,7 +45,7 @@ export class SelectionManager extends Base {
       }
     })
 
-    this.graph.on('cell:mouseup', ({ e, cell }) => {
+    this.graph.on('node:mouseup', ({ e, cell }) => {
       if (!this.disabled) {
         if (
           this.widgetOptions.multiple === false ||
