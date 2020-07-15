@@ -207,8 +207,8 @@ export function isHTMLElement(
     // Browsers not supporting W3 DOM2 don't have HTMLElement and
     // an exception is thrown and we end up here. Testing some
     // properties that all elements have (works on IE7)
-    return (typeof elem === "object") &&
-      (elem.nodeType === 1) && (typeof elem.style === "object") &&
-      (typeof elem.ownerDocument === "object")
+    return (typeof elem === 'object') &&
+      (elem.nodeType === 1) && (typeof elem.style === 'object') &&
+      (typeof elem.ownerDocument === 'object')
   }
 }

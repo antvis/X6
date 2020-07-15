@@ -1,7 +1,7 @@
 import { setupTest, clearnTest } from './elem.test'
 import { createVector } from './vector'
 import { Vectorizer } from './vectorizer'
-import { toPathData } from './path'
+import { toPathData, createSlicePathData} from './path'
 
 describe('Dom', () => {
   describe('path', () => {
@@ -22,6 +22,13 @@ describe('Dom', () => {
     } = setupTest()
 
     afterAll(() => clearnTest())
+
+    describe('#toPath', () => {
+      it('should convert SVGPathElement', () => {
+        const path = createVector('path', { d: 'M 100 50 L 200 150' })
+        expect(path.convertToPath().getAttribute('d')).toBe('M 100 50 L 200 150')
+      })
+    })
 
     describe('#toPathData', () => {
       function roundPathData(pathData: string | null) {
@@ -215,6 +222,13 @@ describe('Dom', () => {
         expect(
           createVector(svgGroup3).normalizePath().node.hasAttribute('d'),
         ).toBe(false)
+      })
+    })
+
+    describe('#createSlicePathData', () => {
+      it('should return the path string of a part of sector', () => {
+        expect(createSlicePathData(5, 10, 0, Math.PI / 2))
+          .toBe('M10,0A10,10 0 0,1 6.123233995736766e-16,10L3.061616997868383e-16,5A5,5 0 0,0 5,0Z')
       })
     })
   })
