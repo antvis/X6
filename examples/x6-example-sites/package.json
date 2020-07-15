@@ -7,7 +7,7 @@
   ],
   "scripts": {
     "bootstrap": "lerna bootstrap && yarn build",
-    "deploy": "node ./scripts/rename && lerna run deploy",
+    "deploy": "lerna run deploy",
     "clear": "rimraf yarn.lock && lerna run clean && lerna clean -y",
     "reboot": "run-s clear bootstrap"
   },
@@ -21,6 +21,7 @@
     "react-scripts": "3.4.1"
   },
   "devDependencies": {
+    "@antv/x6-example-sites-helper": "^0.1.0",
     "fs-extra": "^9.0.1"
   }
 }
