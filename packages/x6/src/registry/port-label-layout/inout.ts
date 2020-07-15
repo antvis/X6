@@ -2,7 +2,7 @@ import { Point, Rectangle } from '../../geometry'
 import { PortLabelLayout } from './index'
 import { toResult } from './util'
 
-export interface InOutArgs {
+export interface InOutArgs extends PortLabelLayout.CommonOptions {
   offset?: number
 }
 
@@ -78,19 +78,22 @@ function outsideLayout(
     }
   }
 
-  return toResult({
-    position: {
-      x: Math.round(tx),
-      y: Math.round(ty),
-    },
-    angle: orientAngle,
-    attrs: {
-      '.': {
-        y,
-        'text-anchor': textAnchor,
+  return toResult(
+    {
+      position: {
+        x: Math.round(tx),
+        y: Math.round(ty),
+      },
+      angle: orientAngle,
+      attrs: {
+        '.': {
+          y,
+          'text-anchor': textAnchor,
+        },
       },
     },
-  })
+    args,
+  )
 }
 
 function insideLayout(
@@ -141,19 +144,22 @@ function insideLayout(
     }
   }
 
-  return toResult({
-    position: {
-      x: Math.round(tx),
-      y: Math.round(ty),
-    },
-    angle: orientAngle,
-    attrs: {
-      '.': {
-        y,
-        'text-anchor': textAnchor,
+  return toResult(
+    {
+      position: {
+        x: Math.round(tx),
+        y: Math.round(ty),
+      },
+      angle: orientAngle,
+      attrs: {
+        '.': {
+          y,
+          'text-anchor': textAnchor,
+        },
       },
     },
-  })
+    args,
+  )
 }
 
 function getBBoxAngles(elemBBox: Rectangle) {
