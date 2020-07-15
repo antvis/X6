@@ -433,6 +433,17 @@ export namespace Options {
       'mousewheel',
     ]
 
+    const container = options.container
+    if (container) {
+      if (others.width == null) {
+        others.width = container.clientWidth
+      }
+
+      if (others.height == null) {
+        others.height = container.clientHeight
+      }
+    }
+
     const result = ObjectExt.merge({}, defaults, others) as Options.Definition
 
     const defaultGrid: GridManager.CommonOptions = { size: 10, visible: false }
