@@ -46,11 +46,20 @@ constructor(metadata?: Node.Metadata)
 ```ts
 const node = new Node({
   ports: {
-    group: { ... },
-    items: [ ... ],
+    group: { ... }, // 链接桩组定义
+    items: [ ... ], // 链接桩
   }
 })
 ```
+
+或者
+
+```ts
+const node = new Node({
+  ports: [ ... ], // 链接桩
+})
+```
+
 
 通常我们将具有相同行为和外观的链接桩归为同一组，并通过 `group` 选项来设置分组，该选项是一个对象 `{ [groupName: string]: PortGroupMetadata }`，组名为键，值为每组链接桩的默认选项，支持的选项如下：
 
@@ -184,13 +193,9 @@ const node = new Node({
 更多详情请参考[配置链接桩](#链接桩-ports)文档。
 
 
-
-
-
-
 ### portMarkup
 
-链接桩的 DOM 结构。当 `ports.group` 和 `ports.items` 都没有为对应的链接桩指定 `markup` 时，则使用这个默认选项来渲染链接桩，其默认值为：
+链接桩的 DOM 结构。当 `ports.groups` 和 `ports.items` 都没有为对应的链接桩指定 `markup` 时，则使用这个默认选项来渲染链接桩，其默认值为：
 
 ```ts
 {
@@ -208,7 +213,7 @@ const node = new Node({
 
 ### portLabelMarkup
 
-链接桩标签的 DOM 结构。当 `ports.group` 和 `ports.items` 都没有为对应的链接桩标签指定 `markup` 时，则使用这个默认选项来渲染链接桩标签，其默认值为：
+链接桩标签的 DOM 结构。当 `ports.groups` 和 `ports.items` 都没有为对应的链接桩标签指定 `markup` 时，则使用这个默认选项来渲染链接桩标签，其默认值为：
 
 ```ts
 {

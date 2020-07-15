@@ -73,6 +73,40 @@ pre.language-sign {
   }
 }
 
+.custom-block {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0 16px;
+  color: rgba(0, 0, 0, 0.65);
+  font-variant: tabular-nums;
+  list-style: none;
+  font-feature-settings: 'tnum';
+  position: relative;
+  max-height: 1000vh;
+  word-wrap: break-word;
+  border-radius: 2px;
+}
+
+.custom-block.warning {
+  background-color: #fffbe6;
+  border: 1px solid #ffe58f;
+}
+
+.custom-block.success {
+  background-color: #f6ffed;
+  border: 1px solid #b7eb8f;
+}
+
+.custom-block.error {
+  background-color: #fff2f0;
+  border: 1px solid #ffccc7;
+}
+
+.custom-block.info {
+  background-color: #e6f7ff;
+  border: 1px solid #91d5ff;
+}
+
 @media (max-width: 900px) {
   .teaser-img {
     img {

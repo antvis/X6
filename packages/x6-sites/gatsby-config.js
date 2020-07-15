@@ -33,8 +33,14 @@ module.exports = {
             resolve: 'gatsby-remark-custom-blocks',
             options: {
               blocks: {
-                danger: {
-                  classes: 'danger',
+                success: {
+                  classes: 'success',
+                },
+                error: {
+                  classes: 'error',
+                },
+                warning: {
+                  classes: 'warning',
                 },
                 info: {
                   classes: 'info',
@@ -50,7 +56,10 @@ module.exports = {
           //     // Defaults to "REPL".
           //     // e.g. <a href="...">Click here</a>
           //     defaultText: 'Click here',
-          //     directory: `${__dirname}/site/pages`,
+          //     directory: path.resolve(
+          //       __dirname,
+          //       '../../examples/x6-example-sites',
+          //     ),
           //     target: '_blank',
           //     codesandbox: {
           //       // Optional HTML contents to inject into REPL.
