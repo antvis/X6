@@ -92,17 +92,18 @@ export class Cell<
 
     const ctor = this.constructor as typeof Cell
     const defaults = ctor.getDefaults(true)
-    const meta = ObjectExt.merge({}, defaults, metadata, {
-      shape: defaults.shape || metadata.shape,
-    })
-    const props = this.preprocess(meta)
+    const props = ObjectExt.merge(
+      {},
+      this.preprocess(defaults),
+      this.preprocess(metadata),
+    )
 
     this.id = props.id || StringExt.uuid()
     this.store = new Store(props)
     this.animation = new Animation(this)
     this.setup()
     this.init()
-    this.postprocess(meta)
+    this.postprocess(metadata)
   }
 
   init() {}
