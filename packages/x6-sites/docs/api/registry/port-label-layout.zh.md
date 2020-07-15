@@ -110,7 +110,7 @@ label: {
 
 <iframe
   src="/demos/api/registry/port-label-layout/side"
-  style="width:100%; height:220px; border:0px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
+  style="width:100%; height:240px; border:0px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
 ></iframe>
 
 ### *Inside/Outside*
@@ -156,7 +156,7 @@ label: {
 
 <iframe
   src="/demos/api/registry/port-label-layout/inside-outside"
-  style="width:100%; height:280px; border:0px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
+  style="width:100%; height:300px; border:0px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
 ></iframe>
 
 ### *Radial*
@@ -198,7 +198,7 @@ label: {
 
 <iframe
   src="/demos/api/registry/port-label-layout/radial"
-  style="width:100%; height:210px; border:0px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
+  style="width:100%; height:230px; border:0px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
 ></iframe>
 
 ## registry
