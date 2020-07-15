@@ -196,7 +196,7 @@ export class Scroller extends View {
     } else if (this.options.background) {
       shouldHnadleEvent = this.background === target
     } else {
-      this.content === target
+      shouldHnadleEvent = this.content === target
     }
 
     if (shouldHnadleEvent) {
