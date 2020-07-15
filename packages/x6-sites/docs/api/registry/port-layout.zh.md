@@ -6,6 +6,7 @@ redirect_from:
   - /zh/docs/api/registry
 ---
 
+
 链接桩布局算法是一个函数具有如下签名的函数，返回每个链接桩相对于节点的相对位置。例如，某节点在画布的位置是 `{ x: 30, y: 40 }`，如果返回的某个链接桩的位置是 `{ x: 2, y: 4 }`，那么该链接桩渲染到画布后的位置是 `{ x: 32, y: 44 }`。
 
 ```sign
@@ -27,19 +28,24 @@ interface Result {
 graph.addNode(
   ...,
   ports: {
+    // 链接桩分组
     groups: {
       group1: {
-        name: 'xxx', // 布局算法名称
-        args: { },   // 布局算法的默认参数
+        position: {
+          name: 'xxx', // 布局算法名称
+          args: { },   // 布局算法的默认参数
+        },
       },
     },
+
+    // 链接桩定义
     items: [
       {
         groups: 'group1',
         args: { }, // 覆盖 group1 中指定的默认参数
-      }
+      },
     ],
-  }
+  },
 )
 ```
 
@@ -97,19 +103,13 @@ graph.addNode({
 ```
 
 <iframe
-     src="https://codesandbox.io/embed/x6-port-layout-absolute-5xtd1?fontsize=14&hidenavigation=1&theme=light&view=preview"
-     style="width:100%; height:300px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
-     title="x6-port-layout-absolute"
-     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-     sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-   ></iframe>
+  src="/demos/api/registry/port-layout/absolute"
+  style="width:100%; height:250px; border:0px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
+></iframe>
 
-### left
-### right
-### top
-### bottom
+### left, right, top, bottom
 
-`left`、`right`、`top` 和 `bottom` 四个布局对矩形形状的节点非常友好，链接桩在指定的一侧均匀分布，可以通过 `args` 来设置偏移量和旋转角度。
+链接桩沿矩形指定边线均匀布局，`left`、`right`、`top` 和 `bottom` 四个布局对矩形形状的节点非常友好，可以通过 `args` 来设置偏移量和旋转角度。
 
 ```ts
 interface SideArgs {
@@ -123,13 +123,14 @@ interface SideArgs {
 
 <span class="tag-param">参数<span>
 
-| 名称  | 类型   | 必选 | 默认值 | 描述                                    |
-|-------|--------|:----:|--------|---------------------------------------|
-| dx    | number |      | `0`    | 沿 X 轴方向的偏移量。                    |
-| dy    | number |      | `0`    | 沿 X 轴方向的偏移量。                    |
-| angle | number |      | `0`    | 链接桩的旋转角度。                       |
-| x     | number |      | -      | 用指定的 X 坐标覆盖计算结果中的 X 坐标。 |
-| y     | number |      | -      | 用指定的 Y 坐标覆盖计算结果中的 Y 坐标。 |
+| 名称   | 类型    | 必选 | 默认值  | 描述                                    |
+|--------|---------|:----:|---------|---------------------------------------|
+| strict | boolean |      | `false` | 是否严格等分均匀分布。                   |
+| dx     | number  |      | `0`     | 沿 X 轴方向的偏移量。                    |
+| dy     | number  |      | `0`     | 沿 X 轴方向的偏移量。                    |
+| angle  | number  |      | `0`     | 链接桩的旋转角度。                       |
+| x      | number  |      | -       | 用指定的 X 坐标覆盖计算结果中的 X 坐标。 |
+| y      | number  |      | -       | 用指定的 Y 坐标覆盖计算结果中的 Y 坐标。 |
 
 <span class="tag-example">用法</span>
 
@@ -154,12 +155,9 @@ graph.addNode({
 ```
 
 <iframe
-     src="https://codesandbox.io/embed/x6-port-layout-sides-nhr7c?fontsize=14&hidenavigation=1&theme=light&view=preview"
-     style="width:100%; height:360px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
-     title="x6-port-layout-sides"
-     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-     sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-   ></iframe>
+  src="/demos/api/registry/port-layout/side"
+  style="width:100%; height:380px; border:0px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
+></iframe>
 
 ### line
 
@@ -179,15 +177,16 @@ interface LineArgs {
 
 <span class="tag-param">参数<span>
 
-| 名称  | 类型            | 必选 | 默认值 | 描述                                    |
-|-------|-----------------|:----:|--------|---------------------------------------|
-| start | Point.PointLike |      |        | 线段起点。                               |
-| end   | Point.PointLike |      |        | 线段终点。                               |
-| dx    | number          |      | `0`    | 沿 X 轴方向的偏移量。                    |
-| dy    | number          |      | `0`    | 沿 X 轴方向的偏移量。                    |
-| angle | number          |      | `0`    | 链接桩的旋转角度。                       |
-| x     | number          |      | -      | 用指定的 X 坐标覆盖计算结果中的 X 坐标。 |
-| y     | number          |      | -      | 用指定的 Y 坐标覆盖计算结果中的 Y 坐标。 |
+| 名称   | 类型            | 必选 | 默认值  | 描述                                    |
+|--------|-----------------|:----:|---------|---------------------------------------|
+| start  | Point.PointLike |      |         | 线段起点。                               |
+| end    | Point.PointLike |      |         | 线段终点。                               |
+| strict | boolean         |      | `false` | 是否严格等分均匀分布。                   |
+| dx     | number          |      | `0`     | 沿 X 轴方向的偏移量。                    |
+| dy     | number          |      | `0`     | 沿 X 轴方向的偏移量。                    |
+| angle  | number          |      | `0`     | 链接桩的旋转角度。                       |
+| x      | number          |      | -       | 用指定的 X 坐标覆盖计算结果中的 X 坐标。 |
+| y      | number          |      | -       | 用指定的 Y 坐标覆盖计算结果中的 Y 坐标。 |
 
 <span class="tag-example">用法</span>
 
@@ -217,12 +216,9 @@ graph.addNode({
 })
 ```
 <iframe
-     src="https://codesandbox.io/embed/x6-port-layout-line-h6quy?fontsize=14&hidenavigation=1&theme=light&view=preview"
-     style="width:100%; height:300px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
-     title="x6-port-layout-line"
-     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-     sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-   ></iframe>
+  src="/demos/api/registry/port-layout/line/"
+  style="width:100%; height:320px; border:0px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
+></iframe>
 
 ### ellipse
 
@@ -284,12 +280,9 @@ Array.from({ length: 10 }).forEach((_, index) => {
 ```
 
 <iframe
-     src="https://codesandbox.io/embed/x6-port-layout-ellipse-73zw5?fontsize=14&hidenavigation=1&theme=light&view=preview"
-     style="width:100%; height:500px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
-     title="x6-port-layout-ellipse"
-     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-     sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-   ></iframe>
+  src="/demos/api/registry/port-layout/ellipse"
+  style="width:100%; height:460px; border:0px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
+></iframe>
 
 ### ellipseSpread
 
@@ -350,12 +343,9 @@ Array.from({ length: 36 }).forEach(function (_, index) {
 ```
 
 <iframe
-     src="https://codesandbox.io/embed/x6-port-layout-ellipse-spread-dh1pb?fontsize=14&hidenavigation=1&theme=light&view=preview"
-     style="width:100%; height:450px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
-     title="x6-port-layout-ellipse-spread"
-     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-     sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-   ></iframe>
+  src="/demos/api/registry/port-layout/ellipse-spread"
+  style="width:100%; height:400px; border:0px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
+></iframe>
 
 ## registry
 
@@ -397,6 +387,9 @@ function sin(portsPositionArgs, elemBBox) {
 ### register
 
 ```sign
+/**
+ * 
+ */
 register(entities: { [name: string]: Definition }, force?: boolean): void
 register(name: string, entity: Definition, force?: boolean): Definition
 ```
@@ -412,10 +405,10 @@ unregister(name: string): Definition | null
 删除注册的自定义布局算法。
 
 
-我们将该命名空间的中 `register` 和 `unregister` 两个方法分别挂载为 Graph 的两个静态方法 `registerPortLayout` 和 `unregisterPortLayout`，所以我们定义的正弦布局可以像下面这样注册到系统：
+实际上，我们将该命名空间的中 `register` 和 `unregister` 两个方法分别挂载为 Graph 的两个静态方法 `registerPortLayout` 和 `unregisterPortLayout`，所以我们定义的正弦布局可以像下面这样注册到系统：
 
 ```ts
-Graph.registerPortLayout('sin', sin, true)
+Graph.registerPortLayout('sin', sin)
 ```
 
 或者：
@@ -433,7 +426,7 @@ Graph.registerPortLayout('sin', (portsPositionArgs, elemBBox) => {
       angle: 0,
     }
   })
-}, true)
+})
 ```
 
 注册以后，我们就可以像内置布局算法那样来使用：
@@ -474,9 +467,6 @@ Array.from({ length: 24 }).forEach(() => {
 ```
 
 <iframe
-     src="https://codesandbox.io/embed/x6-port-layout-sin-d22rj?fontsize=14&hidenavigation=1&theme=light&view=preview"
-     style="width:100%; height:320px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
-     title="x6-port-layout-sin"
-     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-     sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-   ></iframe>
+  src="/demos/api/registry/port-layout/sin"
+  style="width:100%; height:260px; border:0px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
+></iframe>
