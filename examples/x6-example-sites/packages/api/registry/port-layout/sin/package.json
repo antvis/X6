@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@antv/x6": "latest",
+    "@antv/x6-example-sites-helper": "^0.1.0",
     "antd": "^4.4.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
@@ -17,9 +18,10 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "deploy": "react-scripts build && node ../../../../../scripts/deploy",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "deploy": "yarn build && yarn rename && yarn static",
+    "prestart": "yarn rename"
   },
   "eslintConfig": {
     "extends": "react-app"
