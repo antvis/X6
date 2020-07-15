@@ -25,7 +25,7 @@ export default class Example extends React.Component {
       },
     })
 
-    graph.addNode({
+    const a = graph.addNode({
       x: 50,
       y: 50,
       width: 100,
@@ -33,7 +33,7 @@ export default class Example extends React.Component {
       attrs: { label: { text: 'A' } },
     })
 
-    graph.addNode({
+    const b = graph.addNode({
       x: 250,
       y: 50,
       width: 100,
@@ -41,13 +41,16 @@ export default class Example extends React.Component {
       attrs: { label: { text: 'B' } },
     })
 
-    graph.addNode({
+    const c = graph.addNode({
       x: 350,
       y: 150,
       width: 100,
       height: 40,
       attrs: { label: { text: 'C' } },
     })
+
+    graph.addEdge({ source: a, target: b })
+    graph.addEdge({ source: b, target: c })
 
     graph.toggleMultipleSelection(false)
     console.log(graph.isMultipleSelection())
