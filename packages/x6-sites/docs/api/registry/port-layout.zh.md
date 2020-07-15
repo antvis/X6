@@ -102,10 +102,7 @@ graph.addNode({
 })
 ```
 
-<iframe
-  src="/demos/api/registry/port-layout/absolute"
-  style="width:100%; height:250px; border:0px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
-></iframe>
+<iframe src="/demos/api/registry/port-layout/absolute"></iframe>
 
 ### left, right, top, bottom
 
@@ -154,10 +151,7 @@ graph.addNode({
 })
 ```
 
-<iframe
-  src="/demos/api/registry/port-layout/side"
-  style="width:100%; height:380px; border:0px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
-></iframe>
+<iframe src="/demos/api/registry/port-layout/side"></iframe>
 
 ### line
 
@@ -215,10 +209,7 @@ graph.addNode({
   },
 })
 ```
-<iframe
-  src="/demos/api/registry/port-layout/line/"
-  style="width:100%; height:320px; border:0px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
-></iframe>
+<iframe src="/demos/api/registry/port-layout/line/"></iframe>
 
 ### ellipse
 
@@ -279,10 +270,7 @@ Array.from({ length: 10 }).forEach((_, index) => {
 })
 ```
 
-<iframe
-  src="/demos/api/registry/port-layout/ellipse"
-  style="width:100%; height:460px; border:0px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
-></iframe>
+<iframe src="/demos/api/registry/port-layout/ellipse"></iframe>
 
 ### ellipseSpread
 
@@ -342,10 +330,7 @@ Array.from({ length: 36 }).forEach(function (_, index) {
 })
 ```
 
-<iframe
-  src="/demos/api/registry/port-layout/ellipse-spread"
-  style="width:100%; height:400px; border:0px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
-></iframe>
+<iframe src="/demos/api/registry/port-layout/ellipse-spread"></iframe>
 
 ## registry
 
@@ -387,9 +372,6 @@ function sin(portsPositionArgs, elemBBox) {
 ### register
 
 ```sign
-/**
- * 
- */
 register(entities: { [name: string]: Definition }, force?: boolean): void
 register(name: string, entity: Definition, force?: boolean): Definition
 ```
@@ -466,7 +448,4 @@ Array.from({ length: 24 }).forEach(() => {
 })
 ```
 
-<iframe
-  src="/demos/api/registry/port-layout/sin"
-  style="width:100%; height:260px; border:0px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
-></iframe>
+<iframe src="/demos/api/registry/port-layout/sin"></iframe>
