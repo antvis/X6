@@ -2,17 +2,17 @@ import { Point } from '../../geometry'
 import { PortLabelLayout } from './index'
 import { toResult } from './util'
 
-export interface RadialOptions {
+export interface RadialArgs extends PortLabelLayout.CommonOptions {
   offset?: number
 }
 
-export const radial: PortLabelLayout.Definition<RadialOptions> = (
+export const radial: PortLabelLayout.Definition<RadialArgs> = (
   portPosition,
   elemBBox,
   args,
 ) => radialLayout(portPosition.diff(elemBBox.getCenter()), false, args)
 
-export const radialOriented: PortLabelLayout.Definition<RadialOptions> = (
+export const radialOriented: PortLabelLayout.Definition<RadialArgs> = (
   portPosition,
   elemBBox,
   args,
@@ -21,7 +21,7 @@ export const radialOriented: PortLabelLayout.Definition<RadialOptions> = (
 function radialLayout(
   portCenterOffset: Point,
   autoOrient: boolean,
-  args: RadialOptions,
+  args: RadialArgs,
 ) {
   const offset = args.offset != null ? args.offset : 20
   const origin = new Point(0, 0)
@@ -48,14 +48,17 @@ function radialLayout(
     textAnchor = 'end'
   }
 
-  return toResult({
-    position: pos.round().toJSON(),
-    angle: autoOrient ? orientAngle : 0,
-    attrs: {
-      '.': {
-        y,
-        'text-anchor': textAnchor,
+  return toResult(
+    {
+      position: pos.round().toJSON(),
+      angle: autoOrient ? orientAngle : 0,
+      attrs: {
+        '.': {
+          y,
+          'text-anchor': textAnchor,
+        },
       },
     },
-  })
+    args,
+  )
 }

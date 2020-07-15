@@ -18,6 +18,13 @@ export namespace PortLabelLayout {
   ) => Result
 
   export type CommonDefinition = Definition<KeyValue>
+
+  export interface CommonOptions {
+    x?: number
+    y?: number
+    angle?: number
+    attrs?: Attr.CellAttrs
+  }
 }
 
 export namespace PortLabelLayout {

@@ -14,7 +14,13 @@ const defaults: PortLabelLayout.Result = {
 
 export function toResult(
   preset: Partial<PortLabelLayout.Result>,
-  args?: Partial<PortLabelLayout.Result>,
+  args?: Partial<PortLabelLayout.CommonOptions>,
 ): PortLabelLayout.Result {
-  return ObjectExt.defaultsDeep({}, args, preset, defaults)
+  const { x, y, angle, attrs } = args || {}
+  return ObjectExt.defaultsDeep(
+    {},
+    { angle, attrs, position: { x, y } },
+    preset,
+    defaults,
+  )
 }
