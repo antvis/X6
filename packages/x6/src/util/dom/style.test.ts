@@ -7,18 +7,18 @@ describe('Dom', () => {
       setPrefixedStyle(style, 'userDrag', 'true')
       expect(style).toEqual({
         userDrag: 'true',
-        WebkitUserDrag: 'true'
+        WebkitUserDrag: 'true',
       })
     })
 
     describe('#hasScrollbars', () => {
-      const container = document.createElement('div');
+      const container = document.createElement('div')
 
       beforeAll(() => {
         container.style.overflow = 'auto'
         document.body.appendChild(container)
       })
-  
+
       afterAll(() => {
         document.body.removeChild(container)
       })
