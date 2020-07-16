@@ -11,23 +11,23 @@ jobs:
       matrix:
         node-version: [12.x]
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - name: install global yarn and lerna
+    - name: Install yarn and lerna
       run: |
         npm install -g yarn
         npm install -g lerna
-    - name: yarn bootstrap
+    - name: Bootstrap
       run: |
         yarn bootstrap
-    - name: yarn build and test
+    - name: Build & Test
       run: |
         yarn build
         yarn test
-    - name: coveralls
+    - name: Coveralls
       uses: coverallsapp/github-action@master
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
