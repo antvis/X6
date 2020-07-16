@@ -7730,6 +7730,11 @@ command-exists@^1.2.4:
   resolved "https://registry.npm.taobao.org/command-exists/download/command-exists-1.2.9.tgz#c50725af3808c8ab0260fd60b01fbfa25b954f69"
   integrity sha1-xQclrzgIyKsCYP1gsB+/oluVT2k=
 
+commander@5.0.0:
+  version "5.0.0"
+  resolved "https://registry.npmjs.org/commander/-/commander-5.0.0.tgz#dbf1909b49e5044f8fdaf0adc809f0c0722bdfd0"
+  integrity sha512-JrDGPAKjMGSP1G0DUoaceEJ3DZgAfr/q6X7FVk4+U5KxUSKviYGM2k6zWkfyyBHy5rAtzgYJFa1ro2O9PtoxwQ==
+
 commander@^2.11.0, commander@^2.12.1, commander@^2.15.1, commander@^2.18.0, commander@^2.19.0, commander@^2.20.0, commander@^2.20.3, commander@^2.9.0:
   version "2.20.3"
   resolved "https://registry.npm.taobao.org/commander/download/commander-2.20.3.tgz#fd485e84c03eb4881c20722ba48035e8531aeb33"
@@ -9211,6 +9216,15 @@ devcert@^1.1.0:
     sudo-prompt "^8.2.0"
     tmp "^0.0.33"
     tslib "^1.10.0"
+
+devmoji@^2.1.9:
+  version "2.1.9"
+  resolved "https://registry.npmjs.org/devmoji/-/devmoji-2.1.9.tgz#ad45d6fe133bcddbb527aac5d4eafe292823b4c0"
+  integrity sha512-+HNa0/O79jMDN5OvyWWf2gR7yB79IjPN7hgesvQBDV6VJDwTBAEHsllziUfX0N1rcbsVoUIsFGSRYIyED4lq0A==
+  dependencies:
+    chalk "^4.0.0"
+    commander "5.0.0"
+    ts-interface-checker "0.1.10"
 
 dezalgo@^1.0.0:
   version "1.0.3"
@@ -26774,6 +26788,11 @@ ts-easing@^0.2.0:
   version "0.2.0"
   resolved "https://registry.npm.taobao.org/ts-easing/download/ts-easing-0.2.0.tgz#c8a8a35025105566588d87dbda05dd7fbfa5a4ec"
   integrity sha1-yKijUCUQVWZYjYfb2gXdf7+lpOw=
+
+ts-interface-checker@0.1.10:
+  version "0.1.10"
+  resolved "https://registry.npmjs.org/ts-interface-checker/-/ts-interface-checker-0.1.10.tgz#b68a49e37e90a05797e590f08494dd528bf383cf"
+  integrity sha512-UJYuKET7ez7ry0CnvfY6fPIUIZDw+UI3qvTUQeS2MyI4TgEeWAUBqy185LeaHcdJ9zG2dgFpPJU/AecXU0Afug==
 
 ts-jest@^24.0.2:
   version "24.3.0"

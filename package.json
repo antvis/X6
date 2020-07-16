@@ -19,7 +19,7 @@
     "clean": "lerna run clean",
     "build": "lerna run build",
     "build:dev": "sh ./scripts/build-dev",
-    "build:demos": " lerna run deploy --scope @antv/x6-example-sites --stream" ,
+    "build:demos": " lerna run deploy --scope @antv/x6-example-sites --stream",
     "build:sites": "lerna run build --scope @antv/x6-sites --stream",
     "lint": "lerna run lint",
     "test": "lerna run test --stream",
@@ -30,6 +30,7 @@
   },
   "husky": {
     "hooks": {
+      "prepare-commit-msg": "devmoji -e --lint",
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
       "pre-commit": "lint-staged && lerna run --concurrency 1 --stream precommit",
       "prepush": "./scripts/pre-push-check"
@@ -51,6 +52,7 @@
     "@babel/preset-react": "^7.9.4",
     "@commitlint/cli": "^8.2.0",
     "@commitlint/config-conventional": "^8.2.0",
+    "devmoji": "^2.1.9",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-config-prettier": "^6.7.0",
     "eslint-plugin-import": "^2.18.2",
