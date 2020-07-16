@@ -24,17 +24,17 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - name: Install global yarn and lerna
+    - name: Install yarn and lerna
       run: |
         npm install -g yarn
         npm install -g lerna
     - name: Bootstrap
       run: |
         yarn bootstrap
-    - name: Build demos
+    - name: Build Demos
       run: |
         yarn build:demos
-    - name: Build sites
+    - name: Build Sites
       run: |
         yarn build:sites
     - name: Deploy sites

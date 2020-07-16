@@ -1,6 +1,6 @@
 # https://github.com/marketplace/actions/issue-labeler
 
-name: "Set Issue Label"
+name: Set Issue Label
 on:
   issues:
     types: [opened]
