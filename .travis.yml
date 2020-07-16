@@ -1,6 +1,5 @@
 language: node_js
 node_js:
-  - 10
   - 12
 cache:
   yarn: true
@@ -10,8 +9,8 @@ install:
   - npm install -g yarn
   - npm install -g lerna
   - yarn bootstrap
-script:
-  - yarn build
+# script:
+#   - yarn build
 #   - yarn test
 # after_script:
 #   - yarn coveralls
