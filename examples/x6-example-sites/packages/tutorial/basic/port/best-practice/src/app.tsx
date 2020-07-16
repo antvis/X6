@@ -49,8 +49,7 @@ export default class Example extends React.Component {
   componentDidMount() {
     const graph = new Graph({
       container: this.container,
-      width: 400,
-      height: 206,
+      height: 200,
       grid: {
         visible: true,
       },
@@ -60,7 +59,7 @@ export default class Example extends React.Component {
       x: 60,
       y: 50,
       shape: 'my-rect',
-      label: 'In Ports & Out Ports',
+      label: 'In&Out Ports',
       ports: [
         {
           id: 'port1',

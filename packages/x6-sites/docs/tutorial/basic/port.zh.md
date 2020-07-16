@@ -47,13 +47,7 @@ graph.addNode({
 })
 ```
 
-<iframe
-     src="https://codesandbox.io/embed/x6-port-defaults-np6g8?fontsize=14&hidenavigation=1&theme=light&view=preview"
-     style="width:100%; height:250px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
-     title="x6-port-defaults"
-     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-     sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-   ></iframe>
+<iframe src="/demos/tutorial/basic/port/default-port"></iframe>
 
 左侧的三个圆就是我们添加的链接桩，这里使用了节点的 [`portMarkup`](../../api/model/node#portmarkup) 选项指定的默认的链接桩（如下）。
 
@@ -121,13 +115,7 @@ graph.addNode({
 })
 ```
 
-<iframe
-     src="https://codesandbox.io/embed/x6-port-defaults-style-i4knb?fontsize=14&hidenavigation=1&theme=light&view=preview"
-     style="width:100%; height:250px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
-     title="x6-port-defaults-style"
-     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-     sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-   ></iframe>
+<iframe src="/demos/tutorial/basic/port/default-port-style"></iframe>
 
 [[warning]]
 | 值得注意的是，我们给 `circle` 指定了 [`magnet: true`](../../api/registry/attr#magnet) 这个特殊属性，使链接桩在连线交互时可以被连接上。
@@ -247,13 +235,8 @@ graph.addNode({
 }
 ```
 
-<iframe
-     src="https://codesandbox.io/embed/x6-port-defaults-label-fyweh?fontsize=14&hidenavigation=1&theme=light&view=preview"
-     style="width:100%; height:250px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
-     title="x6-port-defaults-label"
-     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-     sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-   ></iframe>
+<iframe src="/demos/tutorial/basic/port/default-port-label"></iframe>
+
 
 ### 连接到链接桩
 
@@ -285,13 +268,8 @@ graph.addEdge({
 })
 ```
 
-<iframe
-     src="https://codesandbox.io/embed/x6-port-defaults-edge-d5gcl?fontsize=14&hidenavigation=1&theme=light&view=preview"
-     style="width:100%; height:250px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
-     title="x6-port-defaults-edge"
-     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-     sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-   ></iframe>
+<iframe src="/demos/tutorial/basic/port/connect-to-port"></iframe>
+
 
 
 上面我们快速了解了如何创建和使用链接桩，接下来我们将详细介绍一下 `ports` 选项中的 `items` 和 `groups` 两个配置项。 
@@ -520,13 +498,8 @@ graph.addNode({
 })
 ```
 
-<iframe
-     src="https://codesandbox.io/embed/x6-port-position-7fc0k?fontsize=14&hidenavigation=1&theme=light&view=preview"
-     style="width:100%; height:250px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
-     title="x6-port-position"
-     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-     sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-   ></iframe>
+<iframe src="/demos/tutorial/basic/port/port-layout"></iframe>
+
 
 ### 标签位置
 
@@ -628,13 +601,8 @@ graph.addNode({
 })
 ```
 
-<iframe
-     src="https://codesandbox.io/embed/x6-port-label-position-33s6r?fontsize=14&hidenavigation=1&theme=light&view=preview"
-     style="width:100%; height:250px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
-     title="x6-port-label-position"
-     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-     sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-   ></iframe>
+<iframe src="/demos/tutorial/basic/port/port-label-layout"></iframe>
+
 
 ## 最佳实践
 
