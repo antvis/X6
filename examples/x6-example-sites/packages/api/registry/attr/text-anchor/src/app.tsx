@@ -1,4 +1,4 @@
-import React from 'react'
+import * as React from 'react'
 import { Graph, Cell } from '@antv/x6'
 import '@antv/x6/es/index.css'
 import { Settings, State } from './settings'
@@ -11,18 +11,16 @@ export default class Example extends React.Component {
   componentDidMount() {
     const graph = new Graph({
       container: this.container,
-      width: 400,
-      height: 250,
       grid: {
         visible: true,
       },
     })
 
     this.node = graph.addNode({
-      x: 60,
-      y: 60,
-      width: 280,
-      height: 120,
+      x: 120,
+      y: 80,
+      width: 200,
+      height: 80,
       markup: [
         {
           tagName: 'rect',
@@ -38,15 +36,15 @@ export default class Example extends React.Component {
         },
         {
           tagName: 'rect',
-          selector: 'ref',
-        },
-        {
-          tagName: 'circle',
-          selector: 'dot',
+          selector: 'bg',
         },
         {
           tagName: 'text',
           selector: 'label',
+        },
+        {
+          tagName: 'circle',
+          selector: 'dot',
         },
       ],
       attrs: {
@@ -58,40 +56,43 @@ export default class Example extends React.Component {
           strokeWidth: 1,
         },
         dot: {
-          r: 3,
+          r: 2,
           fill: 'red',
           stroke: 'none',
           refX: 0.5,
           refY: 0.5,
         },
-        ref: {
-          width: 70,
-          height: 30,
-          refX: 0.5,
-          refY: 0.5,
-          // xAlign: 'middle',
-          // yAlign: 'middle',
+        bg: {
+          ref: 'label',
           fill: 'rgba(9, 113, 241, 0.8)',
           stroke: 'rgba(9, 113, 241, 0.8)',
+          rx: 2,
+          ry: 2,
+          refWidth: 1,
+          refHeight: 1,
+          refX: 0,
+          refY: 0,
         },
         label: {
           fontSize: 14,
-          // refX: 0.5,
-          // refY: 0.5,
-          // textAnchor: "middle",
-          // textVerticalAnchor: "middle",
-          fill: '#333333',
+          refX: 0.5,
+          refY: 0.5,
+          textAnchor: 'start',
+          textVerticalAnchor: 'top',
+          fill: '#fff',
+          stroke: '#fff',
           fontFamily: 'Arial, helvetica, sans-serif',
+          text: 'Hello World',
         },
         hLine: {
           refY: 0.5,
-          d: 'M -30 0 310 0',
+          d: 'M -40 0 240 0',
           stroke: 'green',
           strokeDasharray: '5 5',
         },
         vLine: {
           refX: 0.5,
-          d: 'M 0 -30 0 150',
+          d: 'M 0 -40 0 120',
           stroke: 'green',
           strokeDasharray: '5 5',
         },
@@ -99,9 +100,9 @@ export default class Example extends React.Component {
     })
   }
 
-  onAttrsChanged = (attrs: State) => {
+  onGridChanged = (attrs: State) => {
     this.node.attr({
-      ref: attrs,
+      label: attrs,
       hLine: { refY: attrs.refY },
       vLine: { refX: attrs.refX },
     } as any)
@@ -115,7 +116,7 @@ export default class Example extends React.Component {
     return (
       <div className="app">
         <div className="app-left">
-          <Settings onChange={this.onAttrsChanged} />
+          <Settings onChange={this.onGridChanged} />
         </div>
         <div ref={this.refContainer} className="app-content" />
       </div>
