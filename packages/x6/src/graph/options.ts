@@ -419,6 +419,34 @@ export namespace Options {
       ...others
     } = options
 
+    // size
+    // ----
+    const container = options.container
+    if (container) {
+      if (others.width == null) {
+        others.width = container.clientWidth
+      }
+
+      if (others.height == null) {
+        others.height = container.clientHeight
+      }
+    }
+
+    const result = ObjectExt.merge({}, defaults, others) as Options.Definition
+
+    // grid
+    // ----
+    const defaultGrid: GridManager.CommonOptions = { size: 10, visible: false }
+    if (typeof grid === 'number') {
+      result.grid = { size: grid, visible: false }
+    } else if (typeof grid === 'boolean') {
+      result.grid = { ...defaultGrid, visible: grid }
+    } else {
+      result.grid = { ...defaultGrid, ...grid }
+    }
+
+    // booleas
+    // -------
     const booleas: (keyof Options.ManualBooleans)[] = [
       'selecting',
       'embedding',
@@ -433,28 +461,6 @@ export namespace Options {
       'mousewheel',
     ]
 
-    const container = options.container
-    if (container) {
-      if (others.width == null) {
-        others.width = container.clientWidth
-      }
-
-      if (others.height == null) {
-        others.height = container.clientHeight
-      }
-    }
-
-    const result = ObjectExt.merge({}, defaults, others) as Options.Definition
-
-    const defaultGrid: GridManager.CommonOptions = { size: 10, visible: false }
-    if (typeof grid === 'number') {
-      result.grid = { size: grid, visible: false }
-    } else if (typeof grid === 'boolean') {
-      result.grid = { ...defaultGrid, visible: grid }
-    } else {
-      result.grid = { ...defaultGrid, ...grid }
-    }
-
     booleas.forEach((key) => {
       const val = options[key]
       if (typeof val === 'boolean') {
@@ -466,6 +472,17 @@ export namespace Options {
         }
       }
     })
+
+    // background
+    // ----------
+    if (
+      result.background &&
+      result.scroller.enabled &&
+      result.scroller.background == null
+    ) {
+      result.scroller.background = result.background
+      delete result.background
+    }
 
     return result
   }
