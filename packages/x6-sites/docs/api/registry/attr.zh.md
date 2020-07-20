@@ -336,14 +336,6 @@ console.log(view.findOne('polygon').getAttribute('points'))
 - `'middle'` 目标元素的中心与 `x` 对齐。
 - `'right'` 目标元素的右侧与 `x` 对齐。
 
-<iframe
-     src="https://codesandbox.io/embed/x6-attr-xy-align-6h5kc?fontsize=14&hidenavigation=1&theme=light&view=preview"
-     style="width:100%; height:340px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
-     title="x6-attr-xy-align"
-     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-     sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-   ></iframe>
-
 ### yAlign
 
 元素与 `y` 坐标在垂直方向的对齐方式。
@@ -352,6 +344,7 @@ console.log(view.findOne('polygon').getAttribute('points'))
 - `'middle'` 目标元素的中心与 `y` 对齐。
 - `'bottom'` 目标元素与的底部与 `y` 对齐。
 
+<iframe src="/demos/api/registry/attr/x-align"></iframe>
 
 ### fill
 
@@ -446,14 +439,7 @@ textWrap: {
 - `'middle'` 目标元素的中心与 `y` 对齐。
 - `'bottom'` 目标元素与的底部与 `y` 对齐。
 
-<iframe
-     src="https://codesandbox.io/embed/x6-attr-text-anchor-8osyo?fontsize=14&hidenavigation=1&theme=light&view=preview"
-     style="width:100%; height:410px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
-     title="x6-attr-text-anchor"
-     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-     sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-   ></iframe>
-
+<iframe src="/demos/api/registry/attr/text-anchor"></iframe>
 
 ### connection
 
