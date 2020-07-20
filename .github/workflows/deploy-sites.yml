@@ -2,6 +2,8 @@ name: Deploy Sites
 
 on:
   push:
+    branches:
+      - master
     paths:
       - packages/x6-sites/**
       - examples/x6-example-sites/**
