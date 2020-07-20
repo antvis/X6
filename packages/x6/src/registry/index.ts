@@ -1,5 +1,3 @@
-export * from './registry'
-
 export * from './attr'
 export * from './grid'
 export * from './filter'
@@ -17,3 +15,11 @@ export * from './connection-point'
 export * from './router'
 export * from './connector'
 export * from './strategy'
+
+//
+
+export * from './registry'
+
+import { Registry } from './registry'
+
+export const create = Registry.create
