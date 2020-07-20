@@ -1,5 +1,5 @@
 import { Base } from './base'
-import { MiniMap } from '../addon/main'
+import { MiniMap } from '../addon/minimap'
 
 export class MiniMapManager extends Base {
   public widget: MiniMap | null
