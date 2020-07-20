@@ -7,7 +7,7 @@
   ],
   "scripts": {
     "build": "yarn workspaces run build",
-    "deploy": "yarn workspaces foreach run deploy",
+    "deploy": "yarn workspaces run deploy",
     "clear": "rimraf node_modules yarn.lock && yarn workspaces run clean"
   },
   "dependencies": {
