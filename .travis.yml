@@ -13,7 +13,7 @@ install:
   - npm install -g lerna
   - yarn bootstrap
 script:
-  - yarn build
+  - yarn build:dev
 #   - yarn test
 # after_script:
 #   - yarn coveralls
