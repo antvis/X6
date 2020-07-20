@@ -114,10 +114,10 @@ export default class Example extends React.Component {
   render() {
     return (
       <div className="app">
-        <div className="left-side">
+        <div className="app-left">
           <Settings onChange={this.onAttrsChanged} />
         </div>
-        <div ref={this.refContainer} />
+        <div ref={this.refContainer} className="app-content" />
       </div>
     )
   }

@@ -6,10 +6,9 @@
     "packages/**/*"
   ],
   "scripts": {
-    "bootstrap": "lerna bootstrap && yarn build",
-    "deploy": "lerna run deploy",
-    "clear": "rimraf yarn.lock && lerna run clean && lerna clean -y",
-    "reboot": "run-s clear bootstrap"
+    "build": "yarn workspaces run build",
+    "deploy": "yarn workspaces foreach run deploy",
+    "clear": "rimraf node_modules yarn.lock && yarn workspaces run clean"
   },
   "dependencies": {
     "@antv/x6": "^0.10.30",

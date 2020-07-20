@@ -5,14 +5,16 @@
   padding: 16px 8px;
 }
 
-.left-side {
+.app-left {
   width: 336px;
   bottom: 0;
   padding: 0 8px;
 }
 
-.x6-graph {
+.app-content {
+  flex: 1;
   margin-left: 8px;
+  margin-right: 8px;
   box-shadow: 0 0 10px 1px #e9e9e9;
 }
 
