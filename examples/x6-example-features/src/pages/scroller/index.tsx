@@ -42,6 +42,9 @@ export default class Example extends React.Component {
       container: this.graphContainer,
       width: 800,
       height: 500,
+      background: {
+        color: '#f5f5f5',
+      },
       grid: {
         visible: true,
       },
@@ -49,7 +52,7 @@ export default class Example extends React.Component {
         enabled: true,
         // width: 600,
         // height: 400,
-        pageVisible: true,
+        pageVisible: false,
         pageBreak: false,
         pannable: true,
       },
