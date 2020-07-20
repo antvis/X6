@@ -2,8 +2,6 @@ import React from 'react'
 import { Graph } from '@antv/x6'
 import '../index.less'
 
-console.log(123)
-
 Graph.registerNode(
   'custom-rect',
   {
