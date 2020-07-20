@@ -25,7 +25,7 @@ jobs:
         yarn bootstrap
     - name: Build & Test
       run: |
-        yarn build
+        yarn build:dev
         yarn test
     - name: Coveralls
       uses: coverallsapp/github-action@master
