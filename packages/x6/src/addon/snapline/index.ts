@@ -155,7 +155,7 @@ export class Snapline extends View implements IDisablable {
   }
 
   protected isNodeMovable(view: CellView) {
-    return view && view.cell.isNode() && view.can('nodeMove')
+    return view && view.cell.isNode() && view.can('nodeMovable')
   }
 
   protected snapOnResizing(node: Node, options: Node.ResizeOptions) {

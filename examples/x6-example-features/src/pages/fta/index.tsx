@@ -28,7 +28,7 @@ export default class Example extends React.Component {
       },
       sorting: 'approx',
       async: true,
-      interactive: false,
+      interacting: false,
       frozen: true,
     })
 
