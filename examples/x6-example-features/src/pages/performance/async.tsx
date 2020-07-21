@@ -189,7 +189,7 @@ export default class Example extends React.Component<
     this.graph.freeze()
     const cells = [...nodes, ...edges, this.viewport] as Cell
     this.graph.model.resetCells(cells)
-    this.graph.fitToContent({ useCellBBox: true, padding: 10 })
+    this.graph.fitToContent({ useCellGeometry: true, padding: 10 })
 
     console.timeEnd('perf-reset')
 

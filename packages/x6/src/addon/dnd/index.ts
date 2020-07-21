@@ -124,7 +124,7 @@ export class Dnd extends View {
     })
 
     const bbox = delegateView.getBBox()
-    this.geometryBBox = delegateView.getBBox({ useCellBBox: true })
+    this.geometryBBox = delegateView.getBBox({ useCellGeometry: true })
     this.delta = this.geometryBBox.getTopLeft().diff(bbox.getTopLeft())
     this.draggingNode = delegateNode
     this.draggingView = delegateView
