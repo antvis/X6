@@ -129,6 +129,7 @@ export class Selection extends View<Selection.EventArgs> {
   }
 
   select(cells: Cell | Cell[], options: Collection.AddOptions = {}) {
+    options.dryrun = true
     this.collection.add(cells, options)
     return this
   }
