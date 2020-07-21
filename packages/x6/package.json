@@ -1,6 +1,6 @@
 {
   "name": "@antv/x6",
-  "version": "0.10.30",
+  "version": "0.10.31",
   "description": "JavaScript diagramming library",
   "main": "lib/index.js",
   "module": "es/index.js",
