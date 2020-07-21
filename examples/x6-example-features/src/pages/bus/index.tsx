@@ -33,7 +33,7 @@ export default class Example extends React.Component {
 
       interacting: {
         edgeMovable: false,
-        labelMovable: false,
+        edgeLabelMovable: false,
       },
       highlighting: {
         default: {

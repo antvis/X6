@@ -1292,6 +1292,16 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
+  @Decorator.checkScroller()
+  zoomTo(
+    factor: number,
+    options: Omit<ScrollerWidget.ZoomOptions, 'absolute'> = {},
+  ) {
+    const scroller = this.scroller.widget!
+    scroller.zoom(factor, { ...options, absolute: true })
+  }
+
+  @Decorator.checkScroller()
   zoomToRect(
     rect: Rectangle.RectangleLike,
     options: Transform.ScaleContentToFitOptions = {},
@@ -1301,6 +1311,7 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
+  @Decorator.checkScroller()
   zoomToFit(
     options: Transform.GetContentAreaOptions &
       Transform.ScaleContentToFitOptions = {},
