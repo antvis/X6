@@ -67,7 +67,7 @@ class Arrowhead extends ToolsView.ToolItem<EdgeView, Arrowhead.Options> {
       toolId: this.cid,
     })
 
-    if (edgeView.can('arrowheadMove')) {
+    if (edgeView.can('arrowheadMovable')) {
       const data = edgeView.prepareArrowheadDragging(this.type)
       this.cellView.setEventData(evt, data)
       this.delegateDocumentEvents(this.options.documentEvents!, evt.data)

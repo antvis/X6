@@ -84,7 +84,7 @@ export class Stencil extends View {
           model: globalGraphOptions.model || new Model(),
           width: group.width || options.width,
           height: group.height || options.height,
-          interactive: false,
+          interacting: false,
           preventDefaultBlankAction: false,
         })
 
@@ -101,7 +101,7 @@ export class Stencil extends View {
         model: globalGraphOptions.model || new Model(),
         width: options.width,
         height: options.height,
-        interactive: false,
+        interacting: false,
         preventDefaultBlankAction: false,
       })
       this.$content.append(graph.container)

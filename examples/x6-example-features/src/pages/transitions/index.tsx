@@ -12,7 +12,7 @@ export default class Example extends React.Component {
     const graph = new Graph({
       model,
       container: this.container,
-      interactive: false,
+      interacting: false,
       width: 800,
       height: 600,
       scroller: {

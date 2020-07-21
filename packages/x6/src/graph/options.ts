@@ -140,7 +140,7 @@ export namespace Options {
      */
     preventDefaultBlankAction: boolean
 
-    interactive: CellView.Interactive
+    interacting: CellView.Interacting
 
     /**
      * Guard the graph from handling a UI event. Returns `true` if you want
@@ -617,8 +617,8 @@ export namespace Options {
     magnetThreshold: 0,
     preventDefaultContextMenu: true,
     preventDefaultBlankAction: true,
-    interactive: {
-      labelMove: false,
+    interacting: {
+      edgeLabelMovable: false,
     },
     guard: () => false,
   }

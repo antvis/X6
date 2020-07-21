@@ -354,7 +354,7 @@ export class EdgeView<
 
     const edge = this.cell
     const labels = edge.labels
-    const canLabelMove = this.can('labelMove')
+    const canLabelMove = this.can('edgeLabelMovable')
     const defaultLabel = edge.getDefaultLabel()
 
     for (let i = 0, n = labels.length; i < n; i += 1) {
@@ -1909,7 +1909,7 @@ export class EdgeView<
   // #region drag edge
 
   protected startEdgeDragging(e: JQuery.MouseDownEvent, x: number, y: number) {
-    if (!this.can('edgeMove')) {
+    if (!this.can('edgeMovable')) {
       return
     }
 
@@ -2315,7 +2315,7 @@ export class EdgeView<
     x: number,
     y: number,
   ) {
-    if (!this.can('arrowheadMove')) {
+    if (!this.can('arrowheadMovable')) {
       return
     }
 
@@ -2368,7 +2368,7 @@ export class EdgeView<
   // #region drag lable
 
   startLabelDragging(e: JQuery.MouseDownEvent, x: number, y: number) {
-    if (this.can('labelMove')) {
+    if (this.can('edgeLabelMovable')) {
       const target = e.currentTarget
       const index = parseInt(target.getAttribute('data-index'), 10)
       const positionAngle = this.getLabelPositionAngle(index)
@@ -2414,7 +2414,7 @@ export class EdgeView<
   // #region drag vertex
 
   handleVertexAdding(e: JQuery.MouseDownEvent, x: number, y: number) {
-    if (!this.can('vertexAdd')) {
+    if (!this.can('vertexAddable')) {
       return
     }
 
@@ -2428,7 +2428,7 @@ export class EdgeView<
   }
 
   handleVertexRemoving(e: JQuery.MouseDownEvent, x: number, y: number) {
-    if (!this.can('vertexRemove')) {
+    if (!this.can('vertexDeletable')) {
       return
     }
 
@@ -2438,7 +2438,7 @@ export class EdgeView<
   }
 
   startVertexDragging(e: JQuery.MouseDownEvent, x: number, y: number) {
-    if (!this.can('vertexMove')) {
+    if (!this.can('vertexMovable')) {
       return
     }
 

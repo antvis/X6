@@ -851,7 +851,7 @@ export class NodeView<
     x: number,
     y: number,
   ) {
-    if (!this.can('addEdgeFromMagnet')) {
+    if (!this.can('magnetConnectable')) {
       return
     }
 
@@ -948,7 +948,7 @@ export class NodeView<
 
   protected startNodeDragging(e: JQuery.MouseDownEvent, x: number, y: number) {
     const targetView = this.getDelegatedView()
-    if (targetView == null || !targetView.can('nodeMove')) {
+    if (targetView == null || !targetView.can('nodeMovable')) {
       return
     }
 
