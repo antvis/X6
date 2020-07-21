@@ -279,26 +279,26 @@ export class CellView<
     return result
   }
 
-  can(feature: CellView.InteractiveName): boolean {
-    let interactive = this.options.interactive
-    interactive =
-      typeof interactive === 'function'
-        ? interactive.call(this.graph, this)
-        : interactive
+  can(feature: CellView.InteractionNames): boolean {
+    let interacting = this.options.interacting
+    interacting =
+      typeof interacting === 'function'
+        ? interacting.call(this.graph, this)
+        : interacting
 
-    if (typeof interactive === 'object') {
-      return interactive[feature as CellView.InteractiveName] !== false
+    if (typeof interacting === 'object') {
+      return interacting[feature as CellView.InteractionNames] !== false
     }
 
-    if (typeof interactive === 'boolean') {
-      return interactive
+    if (typeof interacting === 'boolean') {
+      return interacting
     }
 
     return false
   }
 
-  setInteractivity(value: CellView.Interactive) {
-    this.options.interactive = value
+  setInteractivity(value: CellView.Interacting) {
+    this.options.interacting = value
   }
 
   cleanCache() {
@@ -798,27 +798,28 @@ export namespace CellView {
     actions: KeyValue<FlagManager.Actions>
     events?: View.Events | null
     documentEvents?: View.Events | null
-    interactive?: Interactive
+    interacting?: Interacting
   }
 
   interface InteractionMap {
     // edge
-    edgeMove?: boolean
-    labelMove?: boolean
-    arrowheadMove?: boolean
-    vertexMove?: boolean
-    vertexAdd?: boolean
-    vertexRemove?: boolean
+    edgeMovable?: boolean
+    edgeLabelMovable?: boolean
+    arrowheadMovable?: boolean
+    vertexMovable?: boolean
+    vertexAddable?: boolean
+    vertexDeletable?: boolean
     useEdgeTools?: boolean
+
     // node
-    nodeMove?: boolean
-    addEdgeFromMagnet?: boolean
+    nodeMovable?: boolean
+    magnetConnectable?: boolean
     stopDelegation?: boolean
   }
 
-  export type InteractiveName = keyof InteractionMap
+  export type InteractionNames = keyof InteractionMap
 
-  export type Interactive =
+  export type Interacting =
     | boolean
     | InteractionMap
     | ((this: Graph, cellView: CellView) => InteractionMap | true)

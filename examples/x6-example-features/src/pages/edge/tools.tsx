@@ -57,7 +57,7 @@ export default class Example extends React.Component {
       width: 800,
       height: 600,
       grid: 10,
-      interactive: { edgeMove: false },
+      interacting: { edgeMovable: false },
       connecting: {
         connectionPoint: {
           name: 'boundary',

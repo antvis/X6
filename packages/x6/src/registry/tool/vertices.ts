@@ -88,26 +88,26 @@ export class Vertices extends ToolsView.ToolItem<EdgeView, Vertices.Options> {
 
   protected startHandleListening(handle: Vertices.Handle) {
     const edgeView = this.cellView
-    if (edgeView.can('vertexMove')) {
+    if (edgeView.can('vertexMovable')) {
       handle.on('change', this.onHandleChange, this)
       handle.on('changing', this.onHandleChanging, this)
       handle.on('changed', this.onHandleChanged, this)
     }
 
-    if (edgeView.can('vertexRemove')) {
+    if (edgeView.can('vertexDeletable')) {
       handle.on('remove', this.onHandleRemove, this)
     }
   }
 
   protected stopHandleListening(handle: Vertices.Handle) {
     const edgeView = this.cellView
-    if (edgeView.can('vertexMove')) {
+    if (edgeView.can('vertexMovable')) {
       handle.off('change', this.onHandleChange, this)
       handle.off('changing', this.onHandleChanging, this)
       handle.off('changed', this.onHandleChanged, this)
     }
 
-    if (edgeView.can('vertexRemove')) {
+    if (edgeView.can('vertexDeletable')) {
       handle.off('remove', this.onHandleRemove, this)
     }
   }
