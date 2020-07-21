@@ -340,7 +340,7 @@ graph.centerPoint(null, 200, { padding: { left: 100 }})
         right?: number
         bottom?: number
       }
-      useCellBBox?: boolean
+      useCellGeometry?: boolean
   }
   ```
 
@@ -414,7 +414,7 @@ graph.centerCell(cell, { padding: { left: 100 }})
         right?: number
         bottom?: number
       }
-      useCellBBox?: boolean
+      useCellGeometry?: boolean
   }
   ```
 

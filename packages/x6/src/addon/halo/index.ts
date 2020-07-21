@@ -240,9 +240,9 @@ export namespace Halo {
      * the element view. Sometimes though, your shapes can have certain SVG
      * sub elements that stick out of the view and you don't want these sub
      * elements to affect the Halo tools position. In this case, set the
-     * `useCellBBox` to true.
+     * `useCellGeometry` to true.
      */
-    useCellBBox?: boolean
+    useCellGeometry?: boolean
 
     /**
      * This function will be called when cloning or forking actions take
@@ -275,7 +275,7 @@ export namespace Halo {
     type: 'surround',
     clearAll: true,
     clearOnBlankMouseDown: true,
-    useCellBBox: false,
+    useCellGeometry: false,
     clone: (cell) => cell.clone().removeZIndex(),
   }
 }

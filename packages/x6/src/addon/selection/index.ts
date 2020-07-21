@@ -381,7 +381,7 @@ export class Selection extends View<Selection.EventArgs> {
       strict: this.options.strict,
     }
 
-    return this.options.useCellBBox
+    return this.options.useCellGeometry
       ? (graph.model
           .getNodesInArea(rect, options)
           .map((node) => graph.renderer.findViewByCell(node))
@@ -489,7 +489,7 @@ export class Selection extends View<Selection.EventArgs> {
       const view = this.graph.renderer.findViewByCell(cell)
       if (view) {
         const bbox = view.getBBox({
-          useCellBBox: this.options.useCellBBox,
+          useCellGeometry: this.options.useCellGeometry,
         })
         origin.x = Math.min(origin.x, bbox.x)
         origin.y = Math.min(origin.y, bbox.y)
@@ -544,7 +544,7 @@ export class Selection extends View<Selection.EventArgs> {
       const view = this.graph.renderer.findViewByCell(cell)
       if (view) {
         const bbox = view.getBBox({
-          useCellBBox: this.options.useCellBBox,
+          useCellGeometry: this.options.useCellGeometry,
         })
 
         const className = this.boxClassName
@@ -766,7 +766,7 @@ export namespace Selection {
     showEdgeSelectionBox?: boolean
     showNodeSelectionBox?: boolean
     movable?: boolean
-    useCellBBox?: boolean
+    useCellGeometry?: boolean
     content?: Content
   }
 
@@ -852,7 +852,7 @@ namespace Private {
   export const defaultOptions: Partial<Selection.Options> = {
     movable: true,
     strict: false,
-    useCellBBox: false,
+    useCellGeometry: false,
     content(selection) {
       return StringExt.template(
         '<%= length %> node<%= length > 1 ? "s":"" %> selected.',
