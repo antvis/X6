@@ -397,15 +397,39 @@ export class Selection extends View<Selection.EventArgs> {
     this.trigger(name, { e, view, x, y, cell: view.cell })
   }
 
-  protected destroySelectionBox(cell: Cell) {
-    this.$container.find(`[data-cell="${cell.id}"]`).remove()
-    if (this.$boxes.length === 0) {
-      this.hide()
-    }
-    this.boxCount = Math.max(0, this.boxCount - 1)
+  protected getSelectedClassName(cell: Cell) {
+    return this.prefixClassName(`${cell.isNode() ? 'node' : 'edge'}-selected`)
   }
 
-  protected destroyAllSelectionBoxes() {
+  protected addCellSelectedClassName(cell: Cell) {
+    const view = this.graph.renderer.findViewByCell(cell)
+    if (view) {
+      view.addClass(this.getSelectedClassName(cell))
+    }
+  }
+
+  protected removeCellUnSelectedClassName(cell: Cell) {
+    const view = this.graph.renderer.findViewByCell(cell)
+    if (view) {
+      view.removeClass(this.getSelectedClassName(cell))
+    }
+  }
+
+  protected destroySelectionBox(cell: Cell) {
+    this.removeCellUnSelectedClassName(cell)
+
+    if (this.canShowSelectionBox(cell)) {
+      this.$container.find(`[data-cell="${cell.id}"]`).remove()
+      if (this.$boxes.length === 0) {
+        this.hide()
+      }
+      this.boxCount = Math.max(0, this.boxCount - 1)
+    }
+  }
+
+  protected destroyAllSelectionBoxes(cells: Cell[]) {
+    cells.forEach((cell) => this.removeCellUnSelectedClassName(cell))
+
     this.hide()
     this.$boxes.remove()
     this.boxCount = 0
@@ -456,8 +480,11 @@ export class Selection extends View<Selection.EventArgs> {
   protected updateContainer() {
     const origin = { x: Infinity, y: Infinity }
     const corner = { x: 0, y: 0 }
+    const cells = this.collection
+      .toArray()
+      .filter((cell) => this.canShowSelectionBox(cell))
 
-    this.collection.toArray().forEach((cell) => {
+    cells.forEach((cell) => {
       const view = this.graph.renderer.findViewByCell(cell)
       if (view) {
         const bbox = view.getBBox({
@@ -502,24 +529,38 @@ export class Selection extends View<Selection.EventArgs> {
     }
   }
 
+  protected canShowSelectionBox(cell: Cell) {
+    return (
+      (cell.isNode() && this.options.showNodeSelectionBox === true) ||
+      (cell.isEdge() && this.options.showEdgeSelectionBox === true)
+    )
+  }
+
   protected createSelectionBox(cell: Cell) {
-    const view = this.graph.renderer.findViewByCell(cell)
-    if (view) {
-      const bbox = view.getBBox({
-        useCellBBox: this.options.useCellBBox,
-      })
-      this.$('<div/>')
-        .addClass(this.boxClassName)
-        .attr('data-cell', cell.id)
-        .css({
-          left: bbox.x,
-          top: bbox.y,
-          width: bbox.width,
-          height: bbox.height,
+    this.addCellSelectedClassName(cell)
+
+    if (this.canShowSelectionBox(cell)) {
+      const view = this.graph.renderer.findViewByCell(cell)
+      if (view) {
+        const bbox = view.getBBox({
+          useCellBBox: this.options.useCellBBox,
         })
-        .appendTo(this.container)
-      this.showSelected()
-      this.boxCount += 1
+
+        const className = this.boxClassName
+        this.$('<div/>')
+          .addClass(className)
+          .addClass(`${className}-${cell.isNode() ? 'node' : 'edge'}`)
+          .attr('data-cell', cell.id)
+          .css({
+            left: bbox.x,
+            top: bbox.y,
+            width: bbox.width,
+            height: bbox.height,
+          })
+          .appendTo(this.container)
+        this.showSelected()
+        this.boxCount += 1
+      }
     }
   }
 
@@ -564,8 +605,8 @@ export class Selection extends View<Selection.EventArgs> {
     this.updateContainer()
   }
 
-  protected onReseted({ current }: Collection.EventArgs['reseted']) {
-    this.destroyAllSelectionBoxes()
+  protected onReseted({ previous, current }: Collection.EventArgs['reseted']) {
+    this.destroyAllSelectionBoxes(previous)
     current.forEach((cell) => this.createSelectionBox(cell))
     this.updateContainer()
   }
@@ -719,10 +760,13 @@ export namespace Selection {
     collection?: Collection
     className?: string
     strict?: boolean
+    filter?: Filter
+
+    showEdgeSelectionBox?: boolean
+    showNodeSelectionBox?: boolean
     movable?: boolean
     useCellBBox?: boolean
     content?: Content
-    filter?: Filter
   }
 
   export interface Options extends CommonOptions {

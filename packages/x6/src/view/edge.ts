@@ -56,7 +56,7 @@ export class EdgeView<
     if (sourceView.isEdgeElement(sourceMagnet)) {
       return new Rectangle(this.sourceAnchor.x, this.sourceAnchor.y)
     }
-    return sourceView.getNodeBBox(sourceMagnet || sourceView.container)
+    return sourceView.getElemBBox(sourceMagnet || sourceView.container)
   }
 
   get targetBBox() {
@@ -69,7 +69,7 @@ export class EdgeView<
     if (targetView.isEdgeElement(targetMagnet)) {
       return new Rectangle(this.targetAnchor.x, this.targetAnchor.y)
     }
-    return targetView.getNodeBBox(targetMagnet || targetView.container)
+    return targetView.getElemBBox(targetMagnet || targetView.container)
   }
 
   isEdgeView(): this is EdgeView {
@@ -2130,7 +2130,7 @@ export class EdgeView<
 
       view.$('[magnet]').each((index, elem) => {
         const magnet = elem as Element
-        const bbox = view.getNodeBBox(magnet)
+        const bbox = view.getElemBBox(magnet)
         distance = pos.distance(bbox.getCenter())
         if (distance < radius && distance < minDistance) {
           if (
