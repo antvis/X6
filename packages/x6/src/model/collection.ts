@@ -105,7 +105,9 @@ export class Collection extends Basecoat<Collection.EventArgs> {
           options: localOptions,
         }
         this.trigger('added', args)
-        cell.notify('added', { ...args })
+        if (!localOptions.dryrun) {
+          cell.notify('added', { ...args })
+        }
       })
 
       if (sort) {
@@ -334,11 +336,14 @@ export namespace Collection {
      * when a cell is removed.
      */
     disconnectEdges?: boolean
+
+    dryrun?: boolean
   }
 
   export interface AddOptions extends SetOptions {
     sort?: boolean
     merge?: boolean
+    dryrun?: boolean
   }
 }
 

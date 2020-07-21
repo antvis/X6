@@ -143,6 +143,7 @@ export class CellView<
   protected getContainerAttrs(): Nilable<Attr.SimpleAttrs> {
     return {
       'data-cell-id': this.cell.id,
+      'data-shape': this.cell.shape,
     }
   }
 
