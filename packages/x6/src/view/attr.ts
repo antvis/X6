@@ -1,7 +1,7 @@
 import { ObjectExt, ArrayExt, Dom } from '../util'
 import { Rectangle, Point } from '../geometry'
 import { Dictionary } from '../common'
-import { Attr } from '../registry'
+import { Attr } from '../registry/attr'
 import { View } from './view'
 import { Markup } from './markup'
 import { CellView } from './cell'
