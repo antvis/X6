@@ -360,9 +360,9 @@ export class CellView<
     return Dom.transformRectangle(rect, translateMatrix.multiply(matrix))
   }
 
-  getBBox(options: { useCellBBox?: boolean } = {}) {
+  getBBox(options: { useCellGeometry?: boolean } = {}) {
     let bbox
-    if (options.useCellBBox) {
+    if (options.useCellGeometry) {
       const cell = this.cell
       const angle = ((cell as any) as Node).getAngle() || 0
       bbox = cell.getBBox().bbox(angle)
