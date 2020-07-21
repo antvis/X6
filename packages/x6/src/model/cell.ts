@@ -654,7 +654,7 @@ export class Cell<
     } else {
       this.store.set(
         'data',
-        options.merge ? ObjectExt.merge({}, this.getData(), data) : data,
+        options.overwrite ? data : ObjectExt.merge({}, this.getData(), data),
         options,
       )
     }
@@ -1270,7 +1270,7 @@ export namespace Cell {
   }
 
   export interface SetDataOptions extends SetOptions {
-    merge?: boolean
+    overwrite?: boolean
   }
 
   export interface SetByPathOptions extends Store.SetByPathOptions {}
