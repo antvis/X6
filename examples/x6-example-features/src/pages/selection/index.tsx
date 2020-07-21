@@ -22,6 +22,7 @@ export default class Example extends React.Component {
         rubberband: true,
         multiple: true,
         strict: true,
+        showNodeSelectionBox: true,
       },
     })
 
@@ -55,17 +56,21 @@ export default class Example extends React.Component {
     // graph.toggleMultipleSelection(false)
     // console.log(graph.isMultipleSelection())
 
-    graph.on('node:selected', ({ node }) => {
-      console.log(node)
-    })
+    // graph.on('node:selected', ({ node }) => {
+    //   console.log(node)
+    // })
 
-    graph.on('node:unselected', ({ node }) => {
-      console.log(node)
-    })
+    // graph.on('node:unselected', ({ node }) => {
+    //   console.log(node)
+    // })
 
-    graph.on('selection:changed', ({ selected, added, removed }) => {
-      console.log(selected, added, removed)
-    })
+    // graph.on('selection:changed', ({ selected, added, removed }) => {
+    //   console.log(selected, added, removed)
+    // })
+
+    // graph.on('edge:selected', ({ edge }) => {
+    //   console.log(edge)
+    // })
   }
 
   refContainer = (container: HTMLDivElement) => {

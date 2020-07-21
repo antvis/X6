@@ -341,7 +341,7 @@ export class CellView<
     return { sx, sy }
   }
 
-  getNodeBBox(elem: Element) {
+  getElemBBox(elem: Element) {
     const rect = this.getNodeBoundingRect(elem)
     const matrix = this.getNodeMatrix(elem)
     const rotateMatrix = this.getRootRotateMatrix()
@@ -366,21 +366,22 @@ export class CellView<
       const angle = ((cell as any) as Node).getAngle() || 0
       bbox = cell.getBBox().bbox(angle)
     } else {
-      bbox = this.getNodeBBox(this.container)
+      bbox = this.getElemBBox(this.container)
     }
 
     return this.graph.localToGraphRect(bbox)
   }
 
   getRootTranslateMatrix() {
-    const pos = ((this.cell as any) as Node).getPosition()
+    const cell = this.cell
+    const pos = cell.isNode() ? cell.getPosition() : { x: 0, y: 0 }
     return Dom.createSVGMatrix().translate(pos.x, pos.y)
   }
 
   getRootRotateMatrix() {
     let matrix = Dom.createSVGMatrix()
     const cell = this.cell
-    const angle = ((cell as any) as Node).getAngle()
+    const angle = cell.isNode() ? cell.getAngle() : 0
     if (angle) {
       const bbox = cell.getBBox()
       const cx = bbox.width / 2

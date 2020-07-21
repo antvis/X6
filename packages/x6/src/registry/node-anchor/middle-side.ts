@@ -22,7 +22,7 @@ const middleSide: NodeConnectionAnchor.ResolvedDefinition<MiddleSideAnchorOption
     center = node.getBBox().getCenter()
     angle = node.getAngle()
   } else {
-    bbox = view.getNodeBBox(magnet)
+    bbox = view.getElemBBox(magnet)
   }
 
   const padding = options.padding
