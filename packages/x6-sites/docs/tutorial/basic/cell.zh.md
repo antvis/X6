@@ -503,7 +503,7 @@ const rect = graph.addNode({
 })
 ```
 
-没次调用 `config(options)` 都是与当前预设值进行 [merge](https://www.lodashjs.com/docs/latest#_mergeobject-sources)，例如下面代码分别将矩形的边框默认颜色修改为红色和将默认文本颜色修改为蓝色，最终效果是两者的叠加。
+每次调用 `config(options)` 都是与当前预设值进行[深度 merge](https://www.lodashjs.com/docs/latest#_mergeobject-sources)，例如下面代码分别将矩形的边框默认颜色修改为红色和将默认文本颜色修改为蓝色，最终效果是两者的叠加。
 
 ```ts
 // 只修改边框的默认颜色

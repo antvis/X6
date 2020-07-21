@@ -13,11 +13,9 @@ redirect_from:
 
 开始之前，我们先简单了解一下 Edge 实例上操作路由的几个方法。
 
-| 方法签名                                                                                                                                                         | 说明     |
-|------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------|
-| `edge.getRouter(): Edge.RouterData`                                                                                                                              | 获取路由 |
-| `edge.setRouter(name: string, args?: KeyValue, options?: Edge.SetOptions): this` <br> `edge.setRouter(router: Edge.RouterData, options?: Edge.SetOptions): this` | 设置路由 |
-| `edge.removeRouter(options: Edge.SetOptions = {}): this`                                                                                                         | 删除路由 |
+- [`edge.getRouter`]() 获取路由。
+- [`edge.setRouter`]() 设置路由。
+- [`edge.removeRouter`]() 删除路由。
 
 同时，我们在 X6 中内置了以下几种路由。
 
@@ -30,13 +28,38 @@ redirect_from:
 | metro     | [智能地铁线路由](#metro)，由水平或垂直的正交线段和斜角线段组成，类似地铁轨道图，并自动避开路径上的其他节点（障碍）。 |
 | er        | [实体关系路由](#er)，由 `Z` 字形的斜角线段组成。                                                                 |
 
-在使用时，可以为某条边设置路由。
+在使用时，可以为某条边设置路由：
+
+```ts
+const edge = graph.addEdge({
+  source,
+  target,
+  router: {
+    name: 'orth',
+    args: {
+      padding: 10,
+    },
+  },
+})
+```
+
+当路由没有参数时，也可以简化为：
+
+```ts
+const edge = graph.addEdge({
+  source,
+  target,
+  router: 'orth',
+})
+```
+
+创建边之后可以调用 [`edge.setRouter`]() 方法来设置路由：
 
 ```ts
 edge.setRouter('orth', { padding: 10 })
 ```
 
-也可以在创建画布时通过 `connecting` 选项来设置全局默认路由（画布的默认路由是 `'normal'`）。
+也可以在创建画布时通过 `connecting` 选项来设置全局默认路由（画布的默认路由是 `'normal'`）:
 
 ```ts
 new Graph({
@@ -51,7 +74,7 @@ new Graph({
 })
 ```
 
-当没有参数时，也可以简化为。
+当路由没有参数时，也可以简化为：
 
 ```ts
 new Graph({

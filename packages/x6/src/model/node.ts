@@ -1,5 +1,5 @@
 import { DeepPartial } from 'utility-types'
-import { Registry } from '../common'
+import { Registry } from '../registry'
 import { Size, KeyValue } from '../types'
 import { Point, Rectangle, Angle } from '../geometry'
 import { StringExt, ObjectExt, NumberExt } from '../util'
@@ -9,6 +9,8 @@ import { Edge } from './edge'
 import { Store } from './store'
 import { Share } from './registry'
 import { PortManager } from './port'
+import { Animation } from './animation'
+import { Interp } from '../common'
 
 export class Node<
   Properties extends Node.Properties = Node.Properties
@@ -59,14 +61,6 @@ export class Node<
   }
 
   // #region size
-
-  get dimension() {
-    return this.getSize()
-  }
-
-  set dimension(size: Size) {
-    this.setSize(size)
-  }
 
   size(): Size
   size(size: Size, options?: Node.ResizeOptions): this
@@ -139,7 +133,7 @@ export class Node<
       }
 
       let quadrant = map[direction]
-      const angle = Angle.normalize(this.angle || 0)
+      const angle = Angle.normalize(this.getAngle() || 0)
       if (options.absolute) {
         // We are taking the node's rotation into account
         quadrant += Math.floor((angle + 45) / 90)
@@ -226,10 +220,15 @@ export class Node<
   scale(
     sx: number,
     sy: number,
-    origin?: Point | Point.PointLike,
+    origin?: Point.PointLike | null,
     options: Node.SetOptions = {},
   ) {
-    const scaledBBox = this.getBBox().scale(sx, sy, origin)
+    const scaledBBox = this.getBBox().scale(
+      sx,
+      sy,
+      origin == null ? undefined : origin,
+    )
+
     this.startBatch('scale', options)
     this.setPosition(scaledBBox.x, scaledBBox.y, options)
     this.resize(scaledBBox.width, scaledBBox.height, options)
@@ -240,14 +239,6 @@ export class Node<
   // #endregion
 
   // #region position
-
-  get coord() {
-    return this.getPosition()
-  }
-
-  set coord(pos: Point | Point.PointLike) {
-    this.setPosition(pos.x, pos.y)
-  }
 
   position(x: number, y: number, options?: Node.SetPositionOptions): this
   position(options?: Node.GetPositionOptions): Point.PointLike
@@ -383,16 +374,15 @@ export class Node<
     options.ty = ty
 
     if (options.transition) {
-      //   if (!isObject(options.transition)) options.transition = {}
-      //   this.transition(
-      //     'position',
-      //     translatedPosition,
-      //     assign({}, options.transition, {
-      //       valueFunction: interpolate.object,
-      //     }),
-      //   )
-      //   // Recursively call `translate()` on all the embeds cells.
-      //   this.eachChild(child => child.translate(tx, ty, options))
+      if (typeof options.transition !== 'object') {
+        options.transition = {}
+      }
+
+      this.transition('position', translatedPosition, {
+        ...options.transition,
+        interp: Interp.object,
+      })
+      this.eachChild((child) => child.translate(tx, ty, options))
     } else {
       this.startBatch('translate', options)
       this.store.set('position', translatedPosition, options)
@@ -407,40 +397,27 @@ export class Node<
 
   // #region angle
 
-  get angle() {
-    return this.getAngle()
-  }
-
-  set angle(angle: number) {
-    this.rotate(angle, true)
-  }
-
   getAngle() {
     return this.store.get('angle', 0)
   }
 
-  rotate(
-    angle: number,
-    absolute: boolean,
-    origin?: Point | Point.PointLike,
-    options: Node.RotateOptions = {},
-  ) {
+  rotate(angle: number, options: Node.RotateOptions = {}) {
     const currentAngle = this.getAngle()
-    if (origin) {
+    if (options.center) {
       const size = this.getSize()
       const position = this.getPosition()
       const center = this.getBBox().getCenter()
-      center.rotate(currentAngle - angle, origin)
+      center.rotate(currentAngle - angle, options.center)
       const dx = center.x - size.width / 2 - position.x
       const dy = center.y - size.height / 2 - position.y
-      this.startBatch('rotate', { angle, absolute, origin })
+      this.startBatch('rotate', { angle, options })
       this.setPosition(position.x + dx, position.y + dy, options)
-      this.rotate(angle, absolute, undefined, options)
+      this.rotate(angle, { ...options, center: null })
       this.stopBatch('rotate')
     } else {
       this.store.set(
         'angle',
-        absolute ? angle : (currentAngle + angle) % 360,
+        options.absolute ? angle : (currentAngle + angle) % 360,
         options,
       )
     }
@@ -602,11 +579,11 @@ export class Node<
   }
 
   get ports() {
-    const res = this.store.get('ports', { items: [] })
+    const res = this.store.get<PortManager.Metadata>('ports', { items: [] })
     if (res.items == null) {
       res.items = []
     }
-    return res as PortManager.Metadata
+    return res
   }
 
   getPorts() {
@@ -775,26 +752,26 @@ export class Node<
     return `ports/items/${index}/${path}`
   }
 
-  addPort(port: PortManager.PortMetadata, options?: Cell.SetByPathOptions) {
+  addPort(port: PortManager.PortMetadata, options?: Node.SetOptions) {
     const ports = [...this.ports.items]
     ports.push(port)
     this.setPropByPath('ports/items', ports, options)
     return this
   }
 
-  addPorts(ports: PortManager.PortMetadata[], options?: Cell.SetByPathOptions) {
+  addPorts(ports: PortManager.PortMetadata[], options?: Node.SetOptions) {
     this.setPropByPath('ports/items', [...this.ports.items, ...ports], options)
     return this
   }
 
   removePort(
     port: PortManager.PortMetadata | string,
-    options: Cell.SetByPathOptions = {},
+    options: Node.SetOptions = {},
   ) {
     return this.removePortAt(this.getPortIndex(port), options)
   }
 
-  removePortAt(index: number, options: Cell.SetByPathOptions = {}) {
+  removePortAt(index: number, options: Node.SetOptions = {}) {
     if (index >= 0) {
       const ports = [...this.ports.items]
       ports.splice(index, 1)
@@ -804,16 +781,14 @@ export class Node<
     return this
   }
 
-  removePorts(options?: Cell.SetByPathOptions): this
+  removePorts(options?: Node.SetOptions): this
   removePorts(
     portsForRemoval: (PortManager.PortMetadata | string)[],
-    options?: Cell.SetByPathOptions,
+    options?: Node.SetOptions,
   ): this
   removePorts(
-    portsForRemoval?:
-      | (PortManager.PortMetadata | string)[]
-      | Cell.SetByPathOptions,
-    opt?: Cell.SetByPathOptions,
+    portsForRemoval?: (PortManager.PortMetadata | string)[] | Node.SetOptions,
+    opt?: Node.SetOptions,
   ) {
     let options
 
@@ -974,7 +949,7 @@ export namespace Node {
     size?: { width: number; height: number }
     position?: { x: number; y: number }
     angle?: number
-    ports?: Partial<PortManager.Metadata> // group and items are both optional
+    ports?: Partial<PortManager.Metadata> | PortManager.PortMetadata[]
     portContainerMarkup?: Markup
     portMarkup?: Markup
     portLabelMarkup?: Markup
@@ -1011,11 +986,14 @@ export namespace Node {
   }
 
   export interface TranslateOptions extends Cell.TranslateOptions {
-    transition?: boolean
+    transition?: boolean | Animation.Options
     restrictedArea?: Rectangle.RectangleLike | null
   }
 
-  export interface RotateOptions extends SetOptions {}
+  export interface RotateOptions extends SetOptions {
+    absolute?: boolean
+    center?: Point.PointLike | null
+  }
 
   export type ResizeDirection =
     | 'left'
@@ -1121,4 +1099,15 @@ export namespace Node {
   })
 
   Share.setNodeRegistry(registry)
+}
+
+export namespace Node {
+  Node.config<Node.Config>({
+    propHooks: ({ ports, ...metadata }) => {
+      if (ports) {
+        metadata.ports = Array.isArray(ports) ? { items: ports } : ports
+      }
+      return metadata
+    },
+  })
 }

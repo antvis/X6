@@ -1,0 +1,45 @@
+name: Deploy Sites
+
+on:
+  push:
+    paths:
+      - packages/x6-sites/**
+      - examples/x6-example-sites/**
+      - examples/x6-example-sites-helper/**
+  pull_request:
+    paths:
+      - packages/x6-sites/**
+      - examples/x6-example-sites/**
+      - examples/x6-example-sites-helper/**
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [12.x]
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: Install yarn and lerna
+      run: |
+        npm install -g yarn
+        npm install -g lerna
+    - name: Bootstrap
+      run: |
+        yarn bootstrap
+    - name: Build Demos
+      run: |
+        yarn build:demos
+    - name: Build Sites
+      run: |
+        yarn build:sites
+    - name: Deploy sites
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./packages/x6-sites/public
+        publish_branch: gh-pages

@@ -445,7 +445,9 @@ export class NodePreset {
         startAngle + delta,
         this.options.rotateGrid!,
       )
-      node.rotate(targetAngle, true, data.center, {
+      node.rotate(targetAngle, {
+        absolute: true,
+        center: data.center,
         halo: this.halo.cid,
       })
     })

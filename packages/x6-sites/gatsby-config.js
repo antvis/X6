@@ -6,6 +6,76 @@ module.exports = {
       resolve: '@antv/gatsby-theme-antv',
       options: {},
     },
+    {
+      resolve: `gatsby-transformer-remark`,
+      options: {
+        plugins: [
+          {
+            resolve: `gatsby-remark-prismjs`,
+            options: {
+              languageExtensions: [
+                {
+                  language: 'sign',
+                  extend: 'typescript',
+                  definition: {
+                    superscript_types: /(SuperType)/,
+                  },
+                  insertBefore: {
+                    function: {
+                      superscript_keywords: /(superif|superelse)/,
+                    },
+                  },
+                },
+              ],
+            },
+          },
+          {
+            resolve: 'gatsby-remark-custom-blocks',
+            options: {
+              blocks: {
+                success: {
+                  classes: 'success',
+                },
+                error: {
+                  classes: 'error',
+                },
+                warning: {
+                  classes: 'warning',
+                },
+                info: {
+                  classes: 'info',
+                  title: 'optional',
+                },
+              },
+            },
+          },
+          // {
+          //   resolve: 'gatsby-remark-code-repls',
+          //   options: {
+          //     // Optional default link text.
+          //     // Defaults to "REPL".
+          //     // e.g. <a href="...">Click here</a>
+          //     defaultText: 'Click here',
+          //     directory: path.resolve(
+          //       __dirname,
+          //       '../../examples/x6-example-sites',
+          //     ),
+          //     target: '_blank',
+          //     codesandbox: {
+          //       // Optional HTML contents to inject into REPL.
+          //       // Defaults to `<div id="root"></div>`.
+          //       // e.g. '<div id="root"></div>'
+          //       html: '',
+
+          //       // Optional runtime dependencies to load from NPM.
+          //       // e.g. ['react', 'react-dom'] or ['react@15', 'react-dom@15']
+          //       dependencies: [],
+          //     },
+          //   },
+          // },
+        ],
+      },
+    },
   ],
   siteMetadata: {
     title: 'X6',
@@ -91,6 +161,14 @@ module.exports = {
           en: 'View',
         },
         order: 5,
+      },
+      {
+        slug: 'api/registry',
+        title: {
+          zh: 'Registry',
+          en: 'Registry',
+        },
+        order: 7,
       },
     ],
     docsearchOptions: {

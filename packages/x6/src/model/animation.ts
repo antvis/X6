@@ -123,6 +123,6 @@ export namespace Animation {
     delay?: number
     duration?: number
     timing?: Timing.Names | Timing.Definition
-    interp?: <T>(from: T, to: T) => (time: number) => T
+    interp?: Interp.Definition<any>
   }
 }

@@ -12,7 +12,7 @@ import {
   ConnectionStrategy,
   NodeConnectionAnchor,
   EdgeConnectionAnchor,
-} from '../connection'
+} from '../registry'
 import { Widget } from '../addon/common'
 import { Hook } from './hook'
 import { Graph } from './graph'
@@ -432,6 +432,17 @@ export namespace Options {
       'keyboard',
       'mousewheel',
     ]
+
+    const container = options.container
+    if (container) {
+      if (others.width == null) {
+        others.width = container.clientWidth
+      }
+
+      if (others.height == null) {
+        others.height = container.clientHeight
+      }
+    }
 
     const result = ObjectExt.merge({}, defaults, others) as Options.Definition
 

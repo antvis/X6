@@ -1,6 +1,6 @@
 {
   "name": "@antv/x6-components",
-  "version": "0.10.0",
+  "version": "0.10.1",
   "description": "React components for building x6 editors",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -74,7 +74,7 @@
     "@types/react-color": "^3.0.1",
     "@types/react-resize-detector": "^4.2.0",
     "@types/ua-parser-js": "^0.7.33",
-    "antd": "^3.19.5",
+    "antd": "^4.4.2",
     "babel-loader": "^8.0.6",
     "eslint": "^6.1.0",
     "fs-extra": "^9.0.0",
@@ -92,11 +92,11 @@
     "tslint-config-prettier": "^1.18.0",
     "tslint-eslint-rules": "^5.4.0",
     "tslint-react": "^4.1.0",
-    "typescript": "3.8.3",
+    "typescript": "3.9.6",
     "watch": "^1.0.2"
   },
   "peerDependencies": {
-    "antd": ">=3.19.5",
+    "antd": ">=4.4.2",
     "react": ">=16.8.6",
     "react-dom": ">=16.8.6"
   },
