@@ -20,7 +20,7 @@ export default class Example extends React.Component {
       selecting: {
         enabled: true,
         rubberband: true,
-        multiple: false,
+        multiple: true,
         strict: true,
       },
     })
@@ -52,8 +52,20 @@ export default class Example extends React.Component {
     graph.addEdge({ source: a, target: b })
     graph.addEdge({ source: b, target: c })
 
-    graph.toggleMultipleSelection(false)
-    console.log(graph.isMultipleSelection())
+    // graph.toggleMultipleSelection(false)
+    // console.log(graph.isMultipleSelection())
+
+    graph.on('node:selected', ({ node }) => {
+      console.log(node)
+    })
+
+    graph.on('node:unselected', ({ node }) => {
+      console.log(node)
+    })
+
+    graph.on('selection:changed', ({ selected, added, removed }) => {
+      console.log(selected, added, removed)
+    })
   }
 
   refContainer = (container: HTMLDivElement) => {
