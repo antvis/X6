@@ -1164,7 +1164,7 @@ export class EdgeView<
 
     const terminalCell = graph.getCellById(nodeId)
     if (!terminalCell) {
-      throw new Error(`Invalid ${type} cell.`)
+      throw new Error(`Edge's ${type} node with id "${nodeId}" not exists`)
     }
 
     const endView = terminalCell.findView(graph)
