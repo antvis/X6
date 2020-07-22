@@ -24,13 +24,8 @@ const graph = new Graph({
 
 ## 演示
 
-<iframe
-  src="https://codesandbox.io/embed/x6-playground-scroller-ph3y4?fontsize=14&hidenavigation=1&theme=light&view=preview"
-  style="width:100%; height:500px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
-  title="x6-playground-scroller"
-  allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-  sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-></iframe>
+<iframe src="/demos/tutorial/basic/scroller/playground"></iframe>
+
 
 ## 选项
 

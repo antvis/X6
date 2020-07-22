@@ -26,15 +26,9 @@ const graph = new Graph({
 
 ## 演示
 
-> 按住 `Command` 键通过滚轮缩放画布，建议点击 Playground 中【在新窗口中预览】按钮打开新窗口体验。
+> 按住 `Command` 键通过滚轮缩放画布。
 
-<iframe
-  src="https://codesandbox.io/embed/x6-playground-mousewheel-zwj4v?fontsize=14&hidenavigation=1&theme=light&view=preview"
-  style="width:100%; height:500px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden; margin-top: 16px;"
-  title="x6-playground-mousewheel"
-  allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-  sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-></iframe>
+<iframe src="/demos/tutorial/basic/mousewheel/playground"></iframe>
 
 ## 选项
 

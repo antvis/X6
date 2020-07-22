@@ -67,13 +67,8 @@ graph.copy(cells, {
 - 设置不同的 `offset`，观察粘贴时对节点位置的影响。
 - 启用 `localStorage` 后复制节点，刷新页面或重新打开浏览器后，点击粘贴按钮。
 
-<iframe
-  src="https://codesandbox.io/embed/x6-playground-clipboard-ovl8v?fontsize=14&hidenavigation=1&theme=light&view=preview"
-  style="width: 100%; height: 500px; border: 1px solid #f0f0f0; border-radius: 4px; overflow: hidden; margin-top: 16px;"
-  title="x6-playground-clipboard"
-  allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-  sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-></iframe>
+<iframe src="/demos/tutorial/basic/clipboard/playground"></iframe>
+
 
 ## API
 

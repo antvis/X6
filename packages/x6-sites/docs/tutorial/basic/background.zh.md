@@ -34,13 +34,7 @@ graph.drawBackground({
 - 设置背景大小。
 - 设置背景透明度。
 
-<iframe
-  src="https://codesandbox.io/embed/x6-playground-background-xtneg?fontsize=14&hidenavigation=1&theme=light&view=preview"
-  style="width:100%; height:500px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden; margin-top:16px;"
-  title="x6-playground-background"
-  allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-  sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-></iframe>
+<iframe src="/demos/tutorial/basic/background/playground"></iframe>
 
 ## 选项
 

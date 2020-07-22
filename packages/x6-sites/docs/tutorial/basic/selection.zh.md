@@ -44,13 +44,8 @@ if (graph.isSelectionEnabled()) {
 - 应用自定义过滤器(排除 circle 节点)，圆形节点不能被选中。
 - 应用自定义附加内容(显示选中节点个数)，选择两个及以上的节点，触发显示自定义内容。
 
-<iframe
-  src="https://codesandbox.io/embed/x6-playground-selection-1pvnm?fontsize=14&hidenavigation=1&theme=light&view=preview"
-  style="width:100%; height:500px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden; margin-top: 16px;"
-  title="x6-playground-selection"
-  allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-  sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-></iframe>
+<iframe src="/demos/tutorial/basic/selection/playground"></iframe>
+
 
 ## 选项
 
