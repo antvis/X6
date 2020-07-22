@@ -44,11 +44,13 @@ export class Edge<
     } = metadata
 
     const data = others as Edge.BaseOptions
+    const isValidId = (val: any): val is string =>
+      typeof val === 'string' || typeof val === 'number'
 
     if (source != null) {
       if (source instanceof Cell) {
         data.source = { cell: source.id }
-      } else if (typeof source === 'string') {
+      } else if (isValidId(source)) {
         data.source = { cell: source }
       } else if (source instanceof Point) {
         data.source = source.toJSON()
@@ -70,7 +72,7 @@ export class Edge<
     if (sourceCell != null || sourcePort != null) {
       let terminal = data.source as Edge.TerminalCellData
       if (sourceCell != null) {
-        const id = typeof sourceCell === 'string' ? sourceCell : sourceCell.id
+        const id = isValidId(sourceCell) ? sourceCell : sourceCell.id
         if (terminal) {
           terminal.cell = id
         } else {
@@ -88,7 +90,7 @@ export class Edge<
     if (target != null) {
       if (target instanceof Cell) {
         data.target = { cell: target.id }
-      } else if (typeof target === 'string') {
+      } else if (isValidId(target)) {
         data.target = { cell: target }
       } else if (target instanceof Point) {
         data.target = target.toJSON()
@@ -111,7 +113,7 @@ export class Edge<
       let terminal = data.target as Edge.TerminalCellData
 
       if (targetCell != null) {
-        const id = typeof targetCell === 'string' ? targetCell : targetCell.id
+        const id = isValidId(targetCell) ? targetCell : targetCell.id
         if (terminal) {
           terminal.cell = id
         } else {
