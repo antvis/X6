@@ -4,12 +4,20 @@ export function invoke<T>(
   func: ((...args: any[]) => T) | null | undefined,
   args: any[],
   ctx: any,
-): T{
+): T {
+  let ret
+
   if (func != null && typeof func === 'function') {
-    const fn = func as Function
-    return fn.apply(ctx, args)
+    const len = args.length
+
+    if (len <= 6) {
+      ret = func.call(ctx, ...args)
+    } else {
+      ret = func.apply(ctx, args)
+    }
   }
-  return undefined as any
+
+  return ret
 }
 
 export function apply<T>(
