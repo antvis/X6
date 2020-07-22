@@ -99,12 +99,12 @@ export class Graph extends Basecoat<EventArgs> {
 
   // #region model
 
-  resetModel(cells: Cell[], options: Collection.SetOptions = {}) {
+  resetCells(cells: Cell[], options: Collection.SetOptions = {}) {
     this.model.resetCells(cells, options)
     return this
   }
 
-  clearModel(options: Cell.SetOptions = {}) {
+  clearCells(options: Cell.SetOptions = {}) {
     this.model.clear(options)
     return this
   }
