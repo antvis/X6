@@ -1,12 +1,16 @@
 .demo-toolbar {
   display: block;
-  padding: 12px 16px;
+  padding: 12px 8px;
   opacity: 0.7;
   transition: opacity 0.3s;
   border-bottom: 1px dashed #f0f0f0;
 
   &:hover {
     opacity: 1;
+  }
+
+  & > * {
+    display: inline-block;
   }
 
   a {
@@ -32,7 +36,7 @@
   }
 
   .anticon {
-    margin-right: 16px;
+    margin: 0 8px;
     cursor: pointer;
     transition: all 0.3s;
   }
