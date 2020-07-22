@@ -38,13 +38,7 @@ if (graph.isHistoryEnabled()) {
 - 点击 Undo 按钮，节点位置被还原，然后 Redo 按钮变得可用。
 - 点击 Redo 按钮，节点位置被更新。
 
-<iframe
-  src="https://codesandbox.io/embed/x6-playground-history-i5b6q?fontsize=14&hidenavigation=1&theme=light&view=preview"
-  style="width:100%; height:500px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden; margin-top: 16px;"
-  title="x6-playground-history"
-  allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-  sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-></iframe>
+<iframe src="/demos/tutorial/basic/history/playground"></iframe>
 
 ## 选项
 
