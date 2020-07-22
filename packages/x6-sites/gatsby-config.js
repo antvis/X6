@@ -11,8 +11,13 @@ module.exports = {
       options: {
         plugins: [
           {
+            resolve: `gatsby-remark-autolink-headers`,
+            options: {},
+          },
+          {
             resolve: `gatsby-remark-prismjs`,
             options: {
+              inlineCodeMarker: '±',
               languageExtensions: [
                 {
                   language: 'sign',
@@ -49,30 +54,6 @@ module.exports = {
               },
             },
           },
-          // {
-          //   resolve: 'gatsby-remark-code-repls',
-          //   options: {
-          //     // Optional default link text.
-          //     // Defaults to "REPL".
-          //     // e.g. <a href="...">Click here</a>
-          //     defaultText: 'Click here',
-          //     directory: path.resolve(
-          //       __dirname,
-          //       '../../examples/x6-example-sites',
-          //     ),
-          //     target: '_blank',
-          //     codesandbox: {
-          //       // Optional HTML contents to inject into REPL.
-          //       // Defaults to `<div id="root"></div>`.
-          //       // e.g. '<div id="root"></div>'
-          //       html: '',
-
-          //       // Optional runtime dependencies to load from NPM.
-          //       // e.g. ['react', 'react-dom'] or ['react@15', 'react-dom@15']
-          //       dependencies: [],
-          //     },
-          //   },
-          // },
         ],
       },
     },
@@ -172,7 +153,7 @@ module.exports = {
       },
     ],
     docsearchOptions: {
-      apiKey: '',
+      apiKey: '9d1cd586972bb492b7b41b13a949ef30',
       indexName: 'antv_x6',
     },
   },
