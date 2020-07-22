@@ -1,31 +1,33 @@
-import { Node, Edge } from '@antv/x6'
+import { Node, Edge, Shape } from '@antv/x6'
 
 export class TreeNode extends Node {
-  isHidden() {
-    return !!this.get('hidden')
+  private collapsed: boolean = false
+
+  protected postprocess() {
+    this.toggleCollapse(false)
   }
 
   isCollapsed() {
-    return !!this.get('collapsed')
+    return this.collapsed === true
   }
 
   toggleButtonVisibility(visible: boolean) {
     this.attr('buttonGroup', { display: visible ? 'block' : 'none' })
   }
 
-  toggleButtonSign(plus: boolean) {
-    if (plus) {
+  toggleCollapse(collapsed: boolean) {
+    const target = collapsed == null ? !this.collapsed : collapsed
+    if (!target) {
       this.attr('buttonSign', { d: 'M 1 5 9 5 M 5 1 5 9', strokeWidth: 1.6 })
     } else {
       this.attr('buttonSign', { d: 'M 2 5 8 5', strokeWidth: 1.8 })
     }
+    this.collapsed = target
   }
 }
 
 TreeNode.config({
   zIndex: 2,
-  width: 100,
-  height: 28,
   markup: [
     {
       tagName: 'g',
@@ -58,9 +60,6 @@ TreeNode.config({
     },
   ],
   attrs: {
-    root: {
-      pointerEvents: 'none',
-    },
     body: {
       refWidth: '100%',
       refHeight: '100%',
@@ -77,7 +76,7 @@ TreeNode.config({
       textVerticalAnchor: 'middle',
       refX: '50%',
       refY: '50%',
-      fontSize: 14,
+      fontSize: 12,
     },
     buttonGroup: {
       refX: '100%',
@@ -93,7 +92,7 @@ TreeNode.config({
       rx: 10,
       ry: 10,
       cursor: 'pointer',
-      event: 'element:collapse',
+      event: 'node:collapse',
     },
     buttonSign: {
       refX: 5,
@@ -104,19 +103,16 @@ TreeNode.config({
   },
 })
 
-export class TreeEdge extends Edge {
+export class TreeEdge extends Shape.Edge {
   isHidden() {
     var node = this.getTargetNode() as TreeNode
-    return !node || node.isHidden()
+    return !node || !node.isVisible()
   }
 }
 
 TreeEdge.config({
   zIndex: 1,
   attrs: {
-    root: {
-      pointerEvents: 'none',
-    },
     line: {
       stroke: '#a0a0a0',
       strokeWidth: 1,
@@ -124,3 +120,6 @@ TreeEdge.config({
     },
   },
 })
+
+Node.registry.register('tree-node', TreeNode as typeof Node)
+Edge.registry.register('tree-edge', TreeEdge as typeof Edge)
