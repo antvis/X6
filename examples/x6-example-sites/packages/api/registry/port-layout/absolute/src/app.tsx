@@ -12,11 +12,7 @@ export default class Example extends React.Component {
   componentDidMount() {
     const graph = new Graph({
       container: this.container,
-      width: 600,
-      height: 222,
-      grid: {
-        visible: true,
-      },
+      grid: true,
     })
 
     this.node = graph.addNode({
@@ -119,10 +115,10 @@ export default class Example extends React.Component {
   render() {
     return (
       <div className="app">
-        <div className="left-side">
+        <div className="app-side">
           <Settings onChange={this.onAttrsChanged} />
         </div>
-        <div ref={this.refContainer} />
+        <div className="app-content" ref={this.refContainer} />
       </div>
     )
   }
