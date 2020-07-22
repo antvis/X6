@@ -1,5 +1,6 @@
 import React from 'react'
 import {
+  SelectOutlined,
   ReloadOutlined,
   GithubOutlined,
   CodeSandboxOutlined,
@@ -16,7 +17,12 @@ export class Toolbar extends React.Component {
   render() {
     return (
       <div className="demo-toolbar">
-        <Tooltip placement="leftBottom" title="重新加载" mouseEnterDelay={0.5}>
+        <Tooltip
+          placement="bottomLeft"
+          arrowPointAtCenter={true}
+          title="重新加载"
+          mouseEnterDelay={0.5}
+        >
           <ReloadOutlined
             onClick={() => {
               window.location.reload()
@@ -24,8 +30,26 @@ export class Toolbar extends React.Component {
           />
         </Tooltip>
 
+        {window.frameElement && (
+          <Tooltip
+            placement="bottomLeft"
+            arrowPointAtCenter={true}
+            title="在新窗口打开"
+            mouseEnterDelay={0.5}
+          >
+            <a
+              href={`${window.location.href}`}
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              <SelectOutlined />
+            </a>
+          </Tooltip>
+        )}
+
         <Tooltip
-          placement="leftBottom"
+          placement="bottomLeft"
+          arrowPointAtCenter={true}
           title="在 Github 中查看"
           mouseEnterDelay={0.5}
         >
@@ -35,7 +59,8 @@ export class Toolbar extends React.Component {
         </Tooltip>
 
         <Tooltip
-          placement="leftBottom"
+          arrowPointAtCenter={true}
+          placement="bottomLeft"
           title="在 CodeSandbox 中打开"
           mouseEnterDelay={0.5}
         >
@@ -56,7 +81,8 @@ export class Toolbar extends React.Component {
         </Tooltip>
 
         <Tooltip
-          placement="leftBottom"
+          placement="bottomLeft"
+          arrowPointAtCenter={true}
           title="在 StackBlitz 中打开"
           mouseEnterDelay={0.5}
         >
