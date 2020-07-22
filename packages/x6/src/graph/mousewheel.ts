@@ -1,6 +1,6 @@
 import JQuery from 'jquery'
 import 'jquery-mousewheel'
-import { Dom } from '../util'
+import { Dom, Platform } from '../util'
 import { ModifierKey } from '../types'
 import { Disposable, IDisablable } from '../common'
 import { Graph } from './graph'
@@ -40,21 +40,33 @@ export class MouseWheel extends Disposable implements IDisablable {
   enable(force?: boolean) {
     if (this.disabled || force) {
       this.options.enabled = true
-      this.graph.options.keyboard.enabled = true
-      JQuery(this.target).on('mousewheel', this.handler)
+      this.graph.options.mousewheel.enabled = true
+      if (Platform.SUPPORT_PASSIVE) {
+        this.target.addEventListener('mousewheel', this.handler, {
+          passive: false,
+        })
+      } else {
+        JQuery(this.target).on('mousewheel', this.handler)
+      }
     }
   }
 
   disable() {
     if (!this.disabled) {
       this.options.enabled = false
-      this.graph.options.keyboard.enabled = false
-      JQuery(this.target).off('mousewheel')
+      this.graph.options.mousewheel.enabled = false
+
+      if (Platform.SUPPORT_PASSIVE) {
+        this.target.removeEventListener('mousewheel', this.handler)
+      } else {
+        JQuery(this.target).off('mousewheel')
+      }
     }
   }
 
   protected onMouseWheel(evt: JQueryMousewheel.JQueryMousewheelEventObject) {
-    if (ModifierKey.test(evt as any, this.options.modifiers)) {
+    const e = (evt.originalEvent || evt) as MouseWheelEvent
+    if (ModifierKey.test(e as any, this.options.modifiers)) {
       evt.preventDefault()
       evt.stopPropagation()
 
@@ -63,7 +75,6 @@ export class MouseWheel extends Disposable implements IDisablable {
         this.frameId = null
       }
 
-      const deltaY = evt.deltaY * evt.deltaFactor
       const factor = this.options.factor || 1.2
 
       if (this.currentScale == null) {
@@ -73,7 +84,7 @@ export class MouseWheel extends Disposable implements IDisablable {
           : this.graph.scale().sx
       }
 
-      const delta = deltaY
+      const delta = evt.deltaY
 
       if (delta > 0) {
         // zoomin
