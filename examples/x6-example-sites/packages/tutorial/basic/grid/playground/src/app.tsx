@@ -17,15 +17,15 @@ export default class Example extends React.Component {
     })
 
     const source = this.graph.addNode({
-      x: 32,
-      y: 32,
+      x: 40,
+      y: 40,
       width: 100,
       height: 40,
       label: 'Hello',
     })
 
     const target = this.graph.addNode({
-      x: 160,
+      x: 200,
       y: 180,
       width: 100,
       height: 40,
