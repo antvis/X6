@@ -2348,19 +2348,23 @@ export class EdgeView<
       this.arrowheadDragged(data, x, y)
     }
 
-    FunctionExt.toDeferredBoolean(graph.hook.validateEdge(this.cell)).then(
-      (valid) => {
-        if (valid) {
-          this.finishEmbedding(data)
-          this.notifyConnectionEvent(data, e)
-        } else {
-          // If the changed edge is not allowed, revert to its previous state.
-          this.fallbackConnection(data)
-        }
+    FunctionExt.toDeferredBoolean(
+      graph.hook.validateEdge(
+        this.cell,
+        data.terminalType,
+        data.initialTerminal,
+      ),
+    ).then((valid) => {
+      if (valid) {
+        this.finishEmbedding(data)
+        this.notifyConnectionEvent(data, e)
+      } else {
+        // If the changed edge is not allowed, revert to its previous state.
+        this.fallbackConnection(data)
+      }
 
-        this.afterArrowheadDragging(data)
-      },
-    )
+      this.afterArrowheadDragging(data)
+    })
   }
 
   // #endregion

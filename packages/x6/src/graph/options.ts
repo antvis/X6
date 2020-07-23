@@ -222,13 +222,35 @@ export namespace Options {
      * When set to `true` (the default), edges can be pinned to the
      * graph meaning a source/target of a edge can be a point.
      */
-    dangling: boolean
+    dangling:
+      | boolean
+      | ((
+          this: Graph,
+          args: {
+            edge: Edge
+            sourceCell?: Cell
+            targetCell?: Cell
+            sourcePort?: string
+            targetPort?: string
+          },
+        ) => boolean)
 
     /**
      * When set to `false`, an node may not have more than
      * one edge with the same source and target node.
      */
-    multi: boolean
+    multi:
+      | boolean
+      | ((
+          this: Graph,
+          args: {
+            edge: Edge
+            sourceCell?: Cell
+            targetCell?: Cell
+            sourcePort?: string
+            targetPort?: string
+          },
+        ) => boolean)
 
     /**
      * Highlights all the available magnets or nodes when a edge is
@@ -281,7 +303,14 @@ export namespace Options {
      * which are created during the interaction) or reverted to the state
      * before the interaction.
      */
-    validateEdge?: (this: Graph, edge: Edge) => boolean
+    validateEdge?: (
+      this: Graph,
+      args: {
+        edge: Edge
+        type: Edge.TerminalType
+        previous: Edge.TerminalData
+      },
+    ) => boolean
 
     /**
      * Check whether to allow or disallow the edge connection while an

@@ -291,10 +291,44 @@ export class Hook extends Base implements Hook.IHook {
     return new FormatManager(this.graph)
   }
 
-  validateEdge(edge: Edge) {
-    const options = this.options.connecting
+  protected allowMultiEdges(edge: Edge) {
+    const multi = this.options.connecting.multi
 
-    if (!options.multi) {
+    if (typeof multi !== 'function') {
+      return !!multi
+    }
+
+    return multi.call(this.graph, {
+      edge,
+      sourceCell: edge.getSourceCell(),
+      targetCell: edge.getTargetCell(),
+      sourcePort: edge.getSourcePortId(),
+      targetPort: edge.getTargetPortId(),
+    })
+  }
+
+  protected allowDanglingEdge(edge: Edge) {
+    const dangling = this.options.connecting.dangling
+
+    if (typeof dangling !== 'function') {
+      return !!dangling
+    }
+
+    return dangling.call(this.graph, {
+      edge,
+      sourceCell: edge.getSourceCell(),
+      targetCell: edge.getTargetCell(),
+      sourcePort: edge.getSourcePortId(),
+      targetPort: edge.getTargetPortId(),
+    })
+  }
+
+  validateEdge(
+    edge: Edge,
+    type: Edge.TerminalType,
+    initialTerminal: Edge.TerminalData,
+  ) {
+    if (this.allowMultiEdges(edge) === false) {
       const source = edge.getSource() as Edge.TerminalCellData
       const target = edge.getTarget() as Edge.TerminalCellData
 
@@ -325,7 +359,7 @@ export class Hook extends Base implements Hook.IHook {
       }
     }
 
-    if (!options.dangling) {
+    if (this.allowDanglingEdge(edge) === false) {
       const sourceId = edge.getSourceCellId()
       const targetId = edge.getTargetCellId()
       if (!(sourceId && targetId)) {
@@ -335,7 +369,11 @@ export class Hook extends Base implements Hook.IHook {
 
     const validate = this.options.connecting.validateEdge
     if (validate) {
-      return validate.call(this.graph, edge)
+      return validate.call(this.graph, {
+        edge,
+        type,
+        previous: initialTerminal,
+      })
     }
 
     return true
@@ -472,20 +510,6 @@ export namespace Hook {
   ) => T
 
   export interface IHook {
-    onViewUpdated: (
-      this: Graph,
-      view: CellView,
-      flag: number,
-      options: Renderer.RequestViewUpdateOptions,
-    ) => void
-
-    onViewPostponed: (
-      this: Graph,
-      view: CellView,
-      flag: number,
-      options: Renderer.UpdateViewOptions,
-    ) => boolean
-
     createView: CreateManager<GraphView>
     createModel: CreateManager<Model>
     createRenderer: CreateManager<Renderer>
@@ -524,6 +548,20 @@ export namespace Hook {
     createMouseWheel: CreateManager<MouseWheel>
     createPrintManager: CreateManager<PrintManager>
     createFormatManager: CreateManager<FormatManager>
+
+    onViewUpdated: (
+      this: Graph,
+      view: CellView,
+      flag: number,
+      options: Renderer.RequestViewUpdateOptions,
+    ) => void
+
+    onViewPostponed: (
+      this: Graph,
+      view: CellView,
+      flag: number,
+      options: Renderer.UpdateViewOptions,
+    ) => boolean
 
     getCellView(
       this: Graph,
