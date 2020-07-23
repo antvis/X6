@@ -107,7 +107,7 @@ graph.fromJSON(data)
 
 ### 背景和网格
 
-接下来，我们来给画布设置一个背景颜色和网格，另外还支持背景图片、网格类型等配置，点击查看完整的[背景配置](./tutorial/background)和[网格配置](./tutorial/grid)。
+接下来，我们来给画布设置一个背景颜色和网格，另外还支持背景图片、网格类型等配置，点击查看完整的[背景配置](basic/background)和[网格配置](basic/grid)。
 
 ```ts
 import { Graph } from '@antv/x6';
@@ -156,7 +156,7 @@ graph.translate(80, 40)
 
 ### 使用图形
 
-在上面示例中，我们使用了默认图形 `rect` 来渲染节点，除此之外，我们在 X6 中也内置了 `circle`、`ellipse`、`polygon` 等[基础图形]()，可以通过 `shape` 属性为节点指定渲染的图形，例如： 
+在上面示例中，我们使用了默认图形 `rect` 来渲染节点，除此之外，我们在 X6 中也内置了 `circle`、`ellipse`、`polygon` 等[基础图形](basic/cell#内置节点)，可以通过 `shape` 属性为节点指定渲染的图形，例如： 
 
 ```ts
 const data = {
@@ -201,7 +201,7 @@ const data = {
 
 在创建节点或准备节点数据时，我们可以通过 `attrs` 对象来配置节点样式，该对象的 Key 是节点 SVG 元素的选择器(Selector)，对应的值是应用到该 SVG 元素的 [SVG 属性值](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute)(如 [fill](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/fill) 和 [stroke](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/stroke))，如果你对 SVG 属性还不熟悉，可以参考 MDN 提供的[填充和边框](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Tutorial/Fills_and_Strokes)入门教程。
 
-我们对 `'rect'` 图形中定义了 `'body'`(代表 `<rect>` 元素) 和 `'label'`(代表 `<text>` 元素) 两个选择器(Selector)，每种图形都有属于自己的选择器定义，X6 内置图形[参考这里]()。
+我们对 `'rect'` 图形中定义了 `'body'`(代表 `<rect>` 元素) 和 `'label'`(代表 `<text>` 元素) 两个选择器(Selector)，每种图形都有属于自己的选择器定义，X6 内置图形[参考这里](basic/cell#attrs-1)。
 
 ```ts
 const data = {
@@ -362,7 +362,7 @@ const data = {
 
 如果你想在 React 中使用 X6，可以参考[这个 Demo]()。更多关于如何在 React 中使用 X6，请参考 React 中使用 X6 的文档。
 
-有其他任何问题都可以通过页面底部的顶顶群和我们沟通，也非常欢迎给我们提 [issues](https://github.com/antvis/X6/issues/new/choose) 或 [PR](https://github.com/antvis/X6/pulls)。
+有其他任何问题都可以通过页面底部的钉钉群和我们沟通，也非常欢迎给我们提 [issues](https://github.com/antvis/X6/issues/new/choose) 或 [PR](https://github.com/antvis/X6/pulls)。
 
 ## 更多
 
@@ -372,6 +372,6 @@ const data = {
 - 设置节点/边的属性、样式
 
 
-想了解更高阶的功能，请参见 [X6 核心概念]() 和 [X6 高级指引]()。
+想了解更高阶的功能，请参见 [X6 进阶实战](intermediate/connector) 和 [X6 高级指引](advanced/react-shape)。
 
 

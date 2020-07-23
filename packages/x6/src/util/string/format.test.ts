@@ -10,7 +10,7 @@ import {
 describe('String', () => {
   describe('#format', () => {
     it('should return format string', () => {
-      const str: string = 'lives-Down_by the.River';
+      const str: string = 'lives-Down_by the.River'
       expect(pascalCase(str)).toBe('LivesDownByTheRiver')
       expect(constantCase(str)).toBe('LIVES_DOWN_BY_THE_RIVER')
       expect(dotCase(str)).toBe('lives.down.by.the.river')

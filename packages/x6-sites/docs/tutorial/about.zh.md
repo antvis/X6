@@ -30,9 +30,9 @@ X6 是 AntV 旗下的图编辑引擎，提供了一系列开箱即用的交互�
 
 ## 🍉 文档
 
-- [X6 入门教程](tutorial/node)
-- X6 核心概念
-- X6 高级指引
+- [X6 基础教程](basic/cell)
+- [X6 进阶实战](intermediate/connector)
+- [X6 高级指引](advanced/react-shape)
 
 ## ❤️ 交流群 
 
@@ -47,4 +47,4 @@ X6 是 AntV 旗下的图编辑引擎，提供了一系列开箱即用的交互�
 
 ## 🔑 License
 
-[MIT license](https://github.com/antvis/X6/blob/master/LICENSE)。
+[MIT License](https://github.com/antvis/X6/blob/master/LICENSE)。

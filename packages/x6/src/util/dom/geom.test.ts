@@ -103,7 +103,7 @@ describe('Dom', () => {
 
     describe('#animateAlongPath', () => {
       it('should not throw error', () => {
-        let result: boolean = true;
+        let result: boolean = true
         try {
           createVector(svgEllipse).animateAlongPath({}, svgPath)
         } catch(e) {

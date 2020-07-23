@@ -12,7 +12,7 @@ describe('Dom', () => {
     })
 
     describe('#hasScrollbars', () => {
-      const container = document.createElement('div');
+      const container = document.createElement('div')
 
       beforeAll(() => {
         container.style.overflow = 'auto'

@@ -30,12 +30,12 @@ describe('Ojbect', () => {
     applyMixins(SmartObject, Disposable, Activatable)
   
     it('should do the mixing', () => {
-      let smartObj = new SmartObject()
+      const smartObj = new SmartObject()
       expect(smartObj.isDisposed).toBeUndefined()
       expect(smartObj.isActive).toBeUndefined()
       smartObj.interact()
-      expect(smartObj.isDisposed === true).toBeTruthy()
-      expect(smartObj.isActive === true).toBeTruthy()
+      expect(smartObj.isDisposed).toBeTruthy()
+      expect(smartObj.isActive).toBeTruthy()
     })
   })
 })
