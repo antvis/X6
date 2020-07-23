@@ -1592,12 +1592,18 @@ export class Graph extends Basecoat<EventArgs> {
     return this.selection.isSelected(cell)
   }
 
-  select(cells: Cell | Cell[], options: Collection.AddOptions = {}) {
+  select(
+    cells: Cell | string | (Cell | string)[],
+    options: Collection.AddOptions = {},
+  ) {
     this.selection.select(cells, options)
     return this
   }
 
-  unselect(cells: Cell | Cell[], options: Collection.RemoveOptions = {}) {
+  unselect(
+    cells: Cell | string | (Cell | string)[],
+    options: Collection.RemoveOptions = {},
+  ) {
     this.selection.unselect(cells, options)
     return this
   }
