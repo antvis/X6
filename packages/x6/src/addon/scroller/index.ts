@@ -118,6 +118,7 @@ export class Scroller extends View {
       if (graph.renderer.isAsync()) {
         graph.on('render:done', this.onRenderDone, this)
       } else {
+        graph.on('unfreeze', this.update, this)
         model.on('reseted', this.update, this)
         model.on('cell:added', this.update, this)
         model.on('cell:removed', this.update, this)
@@ -140,6 +141,7 @@ export class Scroller extends View {
 
     graph.off('render:done', this.onRenderDone, this)
 
+    graph.off('unfreeze', this.update, this)
     model.off('reseted', this.update, this)
     model.off('cell:added', this.update, this)
     model.off('cell:removed', this.update, this)
