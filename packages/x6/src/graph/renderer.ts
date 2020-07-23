@@ -786,6 +786,7 @@ export class Renderer extends Base {
     if (this.isAsync() && animationId != null) {
       Dom.cancelAnimationFrame(animationId)
     }
+    this.graph.trigger('freeze', { key })
   }
 
   unfreeze(options: Renderer.UnfreezeOptions = {}) {
@@ -816,6 +817,8 @@ export class Renderer extends Base {
       this.sortViews()
       updates.sort = false
     }
+
+    this.graph.trigger('unfreeze', { key })
   }
 
   isAsync() {
