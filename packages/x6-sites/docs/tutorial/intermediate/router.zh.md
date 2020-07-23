@@ -168,13 +168,7 @@ Graph.registerRouter('random', (vertices, args, view) => {
 edge.setRouter('random', { bounces: 3 })
 ```
 
-<iframe
-     src="https://codesandbox.io/embed/x6-edge-custom-marker-2yup7?fontsize=14&hidenavigation=1&theme=light&view=preview"
-     style="width:100%; height:370px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
-     title="x6-random-router"
-     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-     sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-   ></iframe>
+<iframe src="/demos/tutorial/intermediate/router/random"></iframe>
 
 ## 内置路由
 
@@ -224,13 +218,7 @@ graph.addEdge({
 });
 ```
 
-<iframe
-  src="https://codesandbox.io/embed/x6-edge-orth-router-hnifl?fontsize=14&hidenavigation=1&theme=light&view=preview"
-  style="width:100%; height:370px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
-  title="x6-edge-orth-router"
-  allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-  sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-></iframe>
+<iframe src="/demos/tutorial/intermediate/router/orth"></iframe>
 
 ### oneSide
 
@@ -255,13 +243,7 @@ graph.addEdge({
 })
 ```
 
-<iframe
-     src="https://codesandbox.io/embed/x6-edge-oneside-router-d0cvk?fontsize=14&hidenavigation=1&theme=light&view=preview"
-     style="width:100%; height:370px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
-     title="x6-edge-oneSide-router"
-     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-     sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-   ></iframe>
+<iframe src="/demos/tutorial/intermediate/router/oneside"></iframe>
 
 ### manhattan
 
@@ -294,13 +276,7 @@ graph.addEdge({
 })
 ```
 
-<iframe
-     src="https://codesandbox.io/embed/x6-edge-manhattan-router-kwxmh?fontsize=14&hidenavigation=1&theme=light&view=preview"
-     style="width:100%; height:560px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
-     title="x6-edge-manhattan-router"
-     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-     sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-   ></iframe>
+<iframe src="/demos/tutorial/intermediate/router/manhattan"></iframe>
 
 ### metro
 
@@ -322,14 +298,7 @@ graph.addEdge({
 })
 ```
 
-<iframe
-    src="https://codesandbox.io/embed/x6-edge-metro-router-1fd1h?fontsize=14&hidenavigation=1&theme=light&view=preview"
-    style="width:100%; height:560px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
-    title="x6-edge-metro-router"
-    allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-    sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-  ></iframe>
-
+<iframe src="/demos/tutorial/intermediate/router/metro"></iframe>
 
 ### er
 
@@ -356,10 +325,4 @@ graph.addEdge({
 })
 ```
 
-<iframe
-     src="https://codesandbox.io/embed/x6-edge-er-router-87hfo?fontsize=14&hidenavigation=1&theme=light&view=preview"
-     style="width:100%; height:370px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
-     title="x6-edge-er-router"
-     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-     sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-   ></iframe>
+<iframe src="/demos/tutorial/intermediate/router/er"></iframe>

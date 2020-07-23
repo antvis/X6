@@ -263,10 +263,10 @@ graph.on('edge:unselected', (args: {
 选中的节点/边发生改变(增删)时触发。
 
 ```ts
-graph.on('node:selected', (args: {
-  added: Cell[]
-  removed: Cell[]
-  selected: Cell[]
+graph.on('selection:changed', (args: {
+  added: Cell[]     // 新增被选中的节点/边
+  removed: Cell[]   // 被取消选中的节点/边
+  selected: Cell[]  // 被选中的节点/边
   options: Model.SetOptions
 }) => {
   // code here
