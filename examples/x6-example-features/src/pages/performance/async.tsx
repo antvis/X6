@@ -84,11 +84,11 @@ export default class Example extends React.Component<
         anchor: 'nodeCenter',
         connectionPoint: 'boundary',
       },
-      checkView: (view: CellView, isInViewport: boolean) => {
+      checkView: ({ view, unmounted }) => {
         if (this.state.keepDragged && view.cid === draggedCid) {
           return true
         }
-        if (this.state.keepRendered && isInViewport) {
+        if (this.state.keepRendered && unmounted) {
           return true
         }
 

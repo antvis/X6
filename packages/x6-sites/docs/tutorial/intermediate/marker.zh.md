@@ -7,7 +7,7 @@ redirect_from:
   - /zh/docs/tutorial/intermediate
 ---
 
-在之前的[教程](../basic/edge#使用箭头-marker)中，我们简单介绍了如何使用 [sourceMarker]() 和 [targetMarker]() 两个特殊属性来为边指定起始箭头和终止箭头，并演示了如何使用内置箭头和自定义箭头，接下来我们将详细介绍如何使用各种 SVG 元素来自定义箭头，并详细列举了每个内置箭头的参数项，最后介绍如何将自定义箭头注册为内置箭头。
+在之前的[教程](../basic/edge#使用箭头-marker)中，我们简单介绍了如何使用 [`sourceMarker`](../../api/registry/attr#sourcemarker) 和 [`targetMarker`](../../api/registry/attr#targetmarker) 两个特殊属性来为边指定起始箭头和终止箭头，并演示了如何使用内置箭头和自定义箭头，接下来我们将详细介绍如何使用各种 SVG 元素来自定义箭头，并详细列举了每个内置箭头的参数项，最后介绍如何将自定义箭头注册为内置箭头。
 
 ## 自定义箭头
 
