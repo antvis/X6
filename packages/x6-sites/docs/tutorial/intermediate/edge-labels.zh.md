@@ -1,6 +1,6 @@
 ---
 title: 使用标签 Labels
-order: 2
+order: 12
 redirect_from:
   - /zh/docs
   - /zh/docs/tutorial

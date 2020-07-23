@@ -1,6 +1,6 @@
 ---
 title: 使用箭头 Marker
-order: 2
+order: 14
 redirect_from:
   - /zh/docs
   - /zh/docs/tutorial
