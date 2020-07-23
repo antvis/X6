@@ -68,9 +68,13 @@ export default class Example extends React.Component {
     //   console.log(selected, added, removed)
     // })
 
-    // graph.on('edge:selected', ({ edge }) => {
-    //   console.log(edge)
-    // })
+    graph.on('edge:selected', ({ edge }) => {
+      console.log('selected', edge)
+    })
+
+    graph.on('edge:unselected', ({ edge }) => {
+      console.log('unselected', edge)
+    })
   }
 
   refContainer = (container: HTMLDivElement) => {

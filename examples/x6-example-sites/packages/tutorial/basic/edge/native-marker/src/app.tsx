@@ -73,7 +73,7 @@ export default class Example extends React.Component {
     hourHand()
     minuteHand()
 
-    edge.on('transition:start', () => {
+    edge.on('transition:begin', () => {
       currentTransitions += 1
     })
 

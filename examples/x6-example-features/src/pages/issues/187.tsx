@@ -193,7 +193,6 @@ export default class Example extends React.Component {
   }
 
   onFallBack = () => {
-    console.log(this.data)
     this.graph.fromJSON(this.data)
   }
 

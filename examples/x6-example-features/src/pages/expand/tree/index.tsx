@@ -33,7 +33,7 @@ export default class Example extends React.Component {
           },
         },
       },
-      // checkView: (view) => {
+      // checkView: ({view}) => {
 
       // },
     })

@@ -137,20 +137,15 @@ export default class Example extends React.Component {
         createEdge() {
           return new Shape.Edge()
         },
-        validateConnection(
-          sourceView,
-          sourceMagnet,
-          targetView,
-          targetMagnet,
-          terminalType,
-          edgeView,
-        ) {
+        validateConnection({ sourceView, targetView, targetMagnet }) {
           if (!targetMagnet) {
             return false
           }
+
           if (sourceView === targetView) {
             return false
           }
+
           if (targetMagnet.getAttribute('port-group') !== 'in') {
             return false
           }
