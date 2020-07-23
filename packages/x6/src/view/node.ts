@@ -782,7 +782,14 @@ export class NodeView<
         break
       } else {
         const view = candidate.findView(graph) as NodeView
-        if (validateEmbeding.call(graph, this, view)) {
+        if (
+          validateEmbeding.call(graph, {
+            child: this.cell,
+            parent: view.cell,
+            childView: this,
+            parentView: view,
+          })
+        ) {
           // flip to the new candidate
           newCandidateView = view
           break

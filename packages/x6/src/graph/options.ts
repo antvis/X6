@@ -28,6 +28,7 @@ import { BackgroundManager } from './background'
 import { MiniMapManager } from './minimap'
 import { Keyboard } from './keyboard'
 import { MouseWheel } from './mousewheel'
+import { Renderer } from './renderer'
 
 export namespace Options {
   interface Common extends Partial<Hook.IHook> {
@@ -102,9 +103,7 @@ export namespace Options {
      * the view is attached to the DOM; if it returns `false`, the view is
      * detached from the DOM.
      */
-    checkView?: Nilable<
-      (this: Graph, view: CellView, isDetached: boolean) => boolean
-    >
+    checkView?: Nilable<Renderer.CheckViewFn>
 
     /**
      * When defined as a number, it denotes the required mousemove events
@@ -286,15 +285,21 @@ export namespace Options {
      */
     validateMagnet?: (
       this: Graph,
-      cellView: CellView,
-      magnet: Element,
-      e: JQuery.MouseDownEvent,
+      args: {
+        cell: Cell
+        view: CellView
+        magnet: Element
+        e: JQuery.MouseDownEvent
+      },
     ) => boolean
 
     createEdge?: (
       this: Graph,
-      sourceView: CellView,
-      sourceMagnet: Element,
+      args: {
+        sourceCell: Cell
+        sourceView: CellView
+        sourceMagnet: Element
+      },
     ) => Nilable<Edge> | void
 
     /**
@@ -318,12 +323,17 @@ export namespace Options {
      */
     validateConnection: (
       this: Graph,
-      sourceView: CellView | null | undefined,
-      sourceMagnet: Element | null | undefined,
-      targetView: CellView | null | undefined,
-      targetMagnet: Element | null | undefined,
-      terminalType: Edge.TerminalType,
-      edgeView?: EdgeView,
+      args: {
+        type: Edge.TerminalType
+        edge?: Edge | null
+        edgeView?: EdgeView
+        sourceCell?: Cell | null
+        sourceView?: CellView | null
+        sourceMagnet?: Element | null
+        targetCell?: Cell | null
+        targetView?: CellView | null
+        targetMagnet?: Element | null
+      },
     ) => boolean
   }
 
@@ -395,8 +405,12 @@ export namespace Options {
      */
     validate: (
       this: Graph,
-      childView: CellView,
-      parentView: CellView,
+      args: {
+        child: Node
+        parent: Node
+        childView: CellView
+        parentView: CellView
+      },
     ) => boolean
   }
 
@@ -563,16 +577,8 @@ export namespace Options {
       edgeAnchor: 'connectionRatio',
       connectionPoint: 'boundary',
 
-      validateConnection(
-        this: Graph,
-        sourceView: CellView,
-        sourceMagnet: Element,
-        targetView: CellView,
-        targetMagnet: Element,
-        terminalType: Edge.TerminalType,
-        edgeView?: EdgeView,
-      ) {
-        const view = terminalType === 'target' ? targetView : sourceView
+      validateConnection(this: Graph, { type, sourceView, targetView }) {
+        const view = type === 'target' ? targetView : sourceView
         return view instanceof NodeView
       },
 

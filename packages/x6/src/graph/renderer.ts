@@ -440,7 +440,10 @@ export class Renderer extends Base {
         // Do not check a view for viewport if we are about to remove the view.
         if ((currentFlag & Renderer.FLAG_REMOVE) === 0) {
           const isUnmounted = cid in updates.unmounted
-          if (checkView && !checkView.call(this.graph, view, isUnmounted)) {
+          if (
+            checkView &&
+            !checkView.call(this.graph, { view, unmounted: isUnmounted })
+          ) {
             // Unmount view
             if (!isUnmounted) {
               this.registerUnmountedView(view)
@@ -647,7 +650,7 @@ export class Renderer extends Base {
         continue
       }
 
-      if (viewportFn.call(this.graph, view, true, this.graph)) {
+      if (viewportFn.call(this.graph, { view, unmounted: true })) {
         // Push at the end of all mounted ids
         mountedCids.push(cid)
         continue
@@ -666,12 +669,12 @@ export class Renderer extends Base {
   }
 
   protected checkUnmountedViews(
-    viewportFn?: Renderer.CheckViewFn | null,
+    checkView?: Renderer.CheckViewFn | null,
     batchSize?: number,
   ) {
     let mountCount = 0
-    if (typeof viewportFn !== 'function') {
-      viewportFn = null // tslint:disable-line
+    if (typeof checkView !== 'function') {
+      checkView = null // tslint:disable-line
     }
 
     const updates = this.updates
@@ -693,7 +696,10 @@ export class Renderer extends Base {
         continue
       }
 
-      if (viewportFn && !viewportFn.call(this.graph, view, false, this.graph)) {
+      if (
+        checkView &&
+        !checkView.call(this.graph, { view, unmounted: false })
+      ) {
         unmountedCids.push(cid)
         continue
       }
@@ -722,14 +728,14 @@ export class Renderer extends Base {
       unmountedBatchSize: Number.MAX_SAFE_INTEGER,
     },
   ) {
-    const viewportFn = options.checkView || this.options.checkView
+    const checkView = options.checkView || this.options.checkView
     const unmountedCount = this.checkMountedViews(
-      viewportFn,
+      checkView,
       options.unmountedBatchSize,
     )
 
     const mountedCount = this.checkUnmountedViews(
-      viewportFn,
+      checkView,
       // Do not check views, that have been just unmounted
       // and pushed at the end of the cids array
       unmountedCount > 0
@@ -1107,8 +1113,10 @@ export namespace Renderer {
 
   export type CheckViewFn = (
     this: Graph,
-    view: CellView,
-    isDetached: boolean,
+    args: {
+      view: CellView
+      unmounted: boolean
+    },
   ) => boolean
 
   export interface CheckViewOptions {
