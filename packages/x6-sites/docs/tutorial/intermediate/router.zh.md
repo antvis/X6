@@ -1,6 +1,6 @@
 ---
 title: 路由 Router
-order: 2
+order: 16
 redirect_from:
   - /zh/docs
   - /zh/docs/tutorial
