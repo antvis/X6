@@ -33,13 +33,7 @@ edge.attr({
 
 看上面代码，值得注意的是，我们的起始箭头和终止箭头使用了相同的 `'d'` 属性值，这是因为我们会自动计算箭头方向，简单来说，我们只需要定义**向左指向坐标原点**的箭头即可。
 
-<iframe
-     src="https://codesandbox.io/embed/x6-edge-custom-marker-7gze4?fontsize=14&hidenavigation=1&theme=light&view=preview"
-     style="width:100%; height:370px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden; marginTop: 16px;"
-     title="x6-edge-custom-marker"
-     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-     sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-   ></iframe>
+<iframe src="/demos/tutorial/intermediate/marker/custom"></iframe>
 
 有时候，我们获取到的 path 元素的 `d` 的坐标可能并不标准，如果直接将其作为箭头来使用就可能出现位置偏离，所以我们在 `Util` 命名空间中提供了 `normalizeMarker` 这个工具方法来标准化 `d` 的坐标。
 
@@ -83,13 +77,7 @@ graph.addEdge({
 })
 ```
 
-<iframe
-     src="https://codesandbox.io/embed/x6-edge-marker-path-normalize-7jr10?fontsize=14&hidenavigation=1&theme=light&view=preview"
-     style="width:100%; height:140px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden; marginTop: 16px;"
-     title="x6-edge-marker-path-normalize"
-     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-     sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-   ></iframe>
+<iframe src="/demos/tutorial/intermediate/marker/normalize-path"></iframe>
 
 除了 `<path>` 我们还可以使用 `<circle>`、`<image>`、`<ellipse>`、`<rect>`、`<polyline>`、`<polygon>` 等元素来定义箭头，只需要通过 `tagName` 指定标签名，并设置元素其他必要属性。例如，使用图片来定制箭头也很简单，首先我们把 `tagName` 设置为 `image`，并通过 `xlink:href` 属性指定图片的 URL，并通过 `width` 和 `height` 属性指定图片的大小，然后调节 `y` 属性来使图片居中对齐。
 
@@ -114,13 +102,7 @@ edge.attr({
 })
 ```
 
-<iframe
-     src="https://codesandbox.io/embed/x6-edge-custom-marker-image-b41wk?fontsize=14&hidenavigation=1&theme=light&view=preview"
-     style="width:100%; height:370px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden; marginTop: 16px;"
-     title="x6-edge-custom-marker-image"
-     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-     sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-   ></iframe>
+<iframe src="/demos/tutorial/intermediate/marker/image"></iframe>
 
 需要注意的是，当使用 `<circle>` 和 `<ellipse>` 来定制箭头时，可以通过设置其 `cx` 属性为对应的轴半径，以避免箭头溢出边的边界；其他元素可以通过 `y` 属性来调节箭头的垂直位置，以便使其垂直居中。
 
@@ -144,14 +126,7 @@ edge.attr({
 })
 ```
 
-<iframe
-     src="https://codesandbox.io/embed/x6-edge-custom-marker-circle-4t80r?fontsize=14&hidenavigation=1&theme=light&view=preview"
-     style="width:100%; height:370px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden; marginTop: 16px;"
-     title="x6-edge-custom-marker-circle"
-     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-     sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-   ></iframe>
-
+<iframe src="/demos/tutorial/intermediate/marker/tagname"></iframe>
 
 ## 内置箭头
 
@@ -170,13 +145,7 @@ edge.attr({
 })
 ```
 
-<iframe
-     src="https://codesandbox.io/embed/x6-edge-native-marker-jb42r?fontsize=14&hidenavigation=1&theme=light&view=preview"
-     style="width:100%; height:640px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
-     title="x6-edge-native-marker"
-     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-     sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-   ></iframe>
+<iframe src="/demos/tutorial/intermediate/marker/native"></iframe>
 
 每种内置箭头都有对应的参数，下面将分别介绍。
 
@@ -283,14 +252,7 @@ graph.addEdge({
 })
 ```
 
-<iframe
-     src="https://codesandbox.io/embed/x6-edge-marker-path-93ymb?fontsize=14&hidenavigation=1&theme=light&view=preview"
-     style="width:100%; height:130px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
-     title="x6-edge-marker-path"
-     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-     sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-   ></iframe>
-
+<iframe src="/demos/tutorial/intermediate/marker/path"></iframe>
 
 ### circle
 

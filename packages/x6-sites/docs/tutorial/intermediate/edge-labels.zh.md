@@ -107,13 +107,7 @@ edge.appendLabel({
 })
 ```
 
-<iframe
-     src="https://codesandbox.io/embed/x6-edge-append-label-8nuhy?fontsize=14&hidenavigation=1&theme=light&view=preview"
-     style="width:100%; height:130px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
-     title="x6-edge-append-label"
-     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-     sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-   ></iframe>
+<iframe src="/demos/tutorial/intermediate/edge-labels/append-label"></iframe>
 
 ## 标签位置
 
@@ -160,13 +154,7 @@ edge.appendLabel({
 })
 ```
 
-<iframe
-     src="https://codesandbox.io/embed/x6-edge-label-position-742ob?fontsize=14&hidenavigation=1&theme=light&view=preview"
-     style="width:100%; height:290px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
-     title="x6-edge-label-position"
-     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-     sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-   ></iframe>
+<iframe src="/demos/tutorial/intermediate/edge-labels/label-position"></iframe>
 
 ### 偏移
 
@@ -217,13 +205,7 @@ edge.appendLabel({
 });
 ```
 
-<iframe
-     src="https://codesandbox.io/embed/x6-edge-label-offset-dpunh?fontsize=14&hidenavigation=1&theme=light&view=preview"
-     style="width:100%; height:290px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
-     title="x6-edge-label-offset"
-     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-     sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-   ></iframe>
+<iframe src="/demos/tutorial/intermediate/edge-labels/label-offset"></iframe>
 
 ### 旋转
 
@@ -322,13 +304,7 @@ edge.appendLabel({
 })
 ```
 
-<iframe
-     src="https://codesandbox.io/embed/x6-edge-label-rotate-579lq?fontsize=14&hidenavigation=1&theme=light&view=preview"
-     style="width:100%; height:370px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
-     title="x6-edge-label-rotate"
-     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-     sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-   ></iframe>
+<iframe src="/demos/tutorial/intermediate/edge-labels/label-rotate"></iframe>
 
 ## 标签样式
 
@@ -392,13 +368,8 @@ edge.appendLabel({
 })
 ```
 
-<iframe
-  src="https://codesandbox.io/embed/x6-edge-label-markup-xpn9j?fontsize=14&hidenavigation=1&theme=light&view=preview"
-  style="width:100%; height:130px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
-  title="x6-edge-label-markup"
-  allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-  sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-></iframe>
+<iframe src="/demos/tutorial/intermediate/edge-labels/label-markup"></iframe>
+
 
 **方式二：**创建单个标签时覆盖默认标签的定义，影响单个标签。
 
@@ -465,13 +436,8 @@ edge.appendLabel({
   }
 })
 ```
-<iframe
-  src="https://codesandbox.io/embed/x6-edge-label-attrs-xl5vs?fontsize=14&hidenavigation=1&theme=light&view=preview"
-  style="width:100%; height:130px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
-  title="x6-edge-label-attrs"
-  allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-  sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-></iframe>
+
+<iframe src="/demos/tutorial/intermediate/edge-labels/label-attrs"></iframe>
 
 ## 字符串标签
 
