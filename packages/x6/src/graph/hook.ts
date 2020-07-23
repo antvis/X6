@@ -14,6 +14,7 @@ import { Selection } from '../addon/selection'
 import { Clipboard } from '../addon/clipboard'
 import { Transform } from '../addon/transform'
 import { HTML } from '../shape/standard/html'
+import { Edge as StandardEdge } from '../shape/standard/edge'
 import { Base } from './base'
 import { Graph } from './graph'
 import { Options } from './options'
@@ -387,22 +388,34 @@ export class Hook extends Base implements Hook.IHook {
     if (magnet.getAttribute('magnet') !== 'passive') {
       const validate = this.options.connecting.validateMagnet
       if (validate) {
-        return validate.call(this.graph, cellView, magnet, e)
+        return validate.call(this.graph, {
+          e,
+          magnet,
+          view: cellView,
+          cell: cellView.cell,
+        })
       }
       return true
     }
     return false
   }
 
-  getDefaultEdge(cellView: CellView, magnet: Element) {
-    const create = this.options.connecting.createEdge
+  getDefaultEdge(sourceView: CellView, sourceMagnet: Element) {
     let edge: Edge | undefined
+
+    const create = this.options.connecting.createEdge
     if (create) {
-      edge = create.call(this.graph, cellView, magnet)
+      edge = create.call(this.graph, {
+        sourceMagnet,
+        sourceView,
+        sourceCell: sourceView.cell,
+      })
     }
+
     if (edge == null) {
-      edge = new Edge()
+      edge = new StandardEdge()
     }
+
     return edge!
   }
 
@@ -416,15 +429,17 @@ export class Hook extends Base implements Hook.IHook {
   ) {
     const validate = this.options.connecting.validateConnection
     return validate
-      ? validate.call(
-          this.graph,
+      ? validate.call(this.graph, {
+          edgeView,
           sourceView,
           sourceMagnet,
           targetView,
           targetMagnet,
-          terminalType,
-          edgeView,
-        )
+          sourceCell: sourceView ? sourceView.cell : null,
+          targetCell: targetView ? targetView.cell : null,
+          edge: edgeView ? edgeView.cell : null,
+          type: terminalType,
+        })
       : true
   }
 
