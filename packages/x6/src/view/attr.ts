@@ -287,7 +287,8 @@ export class AttrManager {
         const val = positionAttrs[name]
         const def = this.getDefinition(name)
         if (def != null) {
-          const ts = (def as Attr.PositionDefinition).position(
+          const ts = (def as Attr.PositionDefinition).position.call(
+            this,
             val,
             getOptions(),
           )

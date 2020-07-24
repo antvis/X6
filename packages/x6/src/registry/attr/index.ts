@@ -52,12 +52,13 @@ export namespace Attr {
     this: CellView,
     val: ComplexAttrValue,
     options: Options,
-  ) => Point | Point.PointLike
+  ) => Point.PointLike
 
   export type PositionFunction = (
+    this: CellView,
     val: ComplexAttrValue,
     options: Options,
-  ) => Point | Point.PointLike | undefined | null
+  ) => Point.PointLike | undefined | null
 
   export interface Qualify {
     qualify?: QualifyFucntion
