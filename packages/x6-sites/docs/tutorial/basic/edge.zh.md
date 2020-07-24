@@ -125,7 +125,7 @@ graph.addEdge({
 
 ### router
 
-路由 `router` 将对 `vertices` 进一步处理，并在必要时添加额外的点，然后返回处理后的点。例如，经过 [orth 路由](../../intermediate/router#orth)处理后，边的每一条链接线段都是水平或垂直的。
+路由 `router` 将对 `vertices` 进一步处理，并在必要时添加额外的点，然后返回处理后的点。例如，经过 [orth 路由](../../api/registry/router#orth)处理后，边的每一条链接线段都是水平或垂直的。
 
 ```ts
 graph.addEdge({
@@ -145,7 +145,7 @@ graph.addEdge({
 <iframe src="/demos/tutorial/basic/edge/router"></iframe>
 
 
-路由都是通过[注册的方式](../../intermediate/router#注册)注册到 X6 中，使用时只需要提供路由名称 `name` 和 参数 `args` 即可，不需要参数 `args` 时可以使用省略写法。
+路由都是通过[注册的方式](../../api/registry/router#register)注册到 X6 中，使用时只需要提供路由名称 `name` 和 参数 `args` 即可，不需要参数 `args` 时可以使用省略写法。
 
 ```ts
 graph.addEdge({
@@ -165,14 +165,14 @@ graph.addEdge({
 
 X6 默认提供了以下几种路由，点击下面的链接查看每种路由的使用方式。
 
-- [normal](../../intermediate/router#normal) 
-- [orth](../../intermediate/router#orth)
-- [oneSide](../../intermediate/router#oneside)
-- [manhattan](../../intermediate/router#manhattan)
-- [metro](../../intermediate/router#metro)
-- [er](../../intermediate/router#er)
+- [normal](../../api/registry/router#normal) 
+- [orth](../../api/registry/router#orth)
+- [oneSide](../../api/registry/router#oneside)
+- [manhattan](../../api/registry/router#manhattan)
+- [metro](../../api/registry/router#metro)
+- [er](../../api/registry/router#er)
 
-另外，我们也可以注册自定义路由，详情请参考[自定义路由](../../intermediate/router#自定义路由)教程。
+另外，我们也可以注册自定义路由，详情请参考[自定义路由](../../api/registry/router#registry)教程。
 
 ### connector
 

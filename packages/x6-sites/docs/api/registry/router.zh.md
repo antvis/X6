@@ -1,23 +1,15 @@
 ---
-title: 路由 Router
+title: Router
 order: 16
 redirect_from:
   - /zh/docs
-  - /zh/docs/tutorial
-  - /zh/docs/tutorial/intermediate
+  - /zh/docs/api
+  - /zh/docs/api/registry
 ---
 
-## 概览
+路由将边的路径点 [vertices](../../tutorial/basic/edge#vertices) 做进一步转换处理，并在必要时添加额外的点，然后返回处理后的点（不包含边的起点和终点）。例如，经过 [`orth`](#orth) 路由处理后，边的每一条线段都是水平或垂直的正交线段。
 
-在之前的[教程](../basic/edge#router)中我们了解到，路由将边的路径点 [vertices](../basic/edge#vertices) 做进一步的转换处理，并在必要时添加额外的点，然后返回处理后的点（不包含边的起点和终点）。例如，经过 `orth` 路由处理后，边的每一条线段都是水平或垂直的正交线段。
-
-开始之前，我们先简单了解一下 Edge 实例上操作路由的几个方法。
-
-- [`edge.getRouter`]() 获取路由。
-- [`edge.setRouter`]() 设置路由。
-- [`edge.removeRouter`]() 删除路由。
-
-同时，我们在 X6 中内置了以下几种路由。
+我们在 `Registry.Router.presets` 命名空间中提供了以下几种路由。
 
 | 路由名称  | 说明                                                                                                           |
 |-----------|--------------------------------------------------------------------------------------------------------------|
@@ -28,7 +20,7 @@ redirect_from:
 | metro     | [智能地铁线路由](#metro)，由水平或垂直的正交线段和斜角线段组成，类似地铁轨道图，并自动避开路径上的其他节点（障碍）。 |
 | er        | [实体关系路由](#er)，由 `Z` 字形的斜角线段组成。                                                                 |
 
-在使用时，可以为某条边设置路由：
+在使用时，可以为边设置路由：
 
 ```ts
 const edge = graph.addEdge({
@@ -53,13 +45,13 @@ const edge = graph.addEdge({
 })
 ```
 
-创建边之后可以调用 [`edge.setRouter`]() 方法来设置路由：
+也可以调用 [`edge.setRouter`]() 方法来设置路由：
 
 ```ts
 edge.setRouter('orth', { padding: 10 })
 ```
 
-也可以在创建画布时通过 `connecting` 选项来设置全局默认路由（画布的默认路由是 `'normal'`）:
+或者在创建画布时，通过 `connecting` 选项来设置全局默认路由（画布的默认路由是 `'normal'`）:
 
 ```ts
 new Graph({
@@ -84,93 +76,10 @@ new Graph({
 })
 ```
 
-## 自定义路由
+下面我们一起来看看如何使用内置路由，以及如何自定并注册自定义路由。
 
-### 定义
 
-路由实际上是一个具有如下签名的函数：
-
-```ts
-export type Definition<T> = (
-  this: EdgeView,
-  vertices: Point.PointLike[],
-  args: T,
-  edgeView: EdgeView,
-) => Point.PointLike[]
-```
-
-| 参数名   | 参数类型          | 参数说明      |
-|----------|-------------------|-----------|
-| this     | EdgeView          | 边的视图。     |
-| vertices | Point.PointLike[] | 边的路径点。   |
-| args     | T                 | 路由参数选项。 |
-| edgeView | EdgeView          | 边的视图。     |
-
-看下面随机路由的实现：
-
-```ts
-// 路由参数
-interface RandomRouterArgs {
-  bounces?: number
-}
-
-function randomRouter(vertices: Point.PointLike[], args: RandomRouterArgs, view: EdgeView) {
-  const bounces = args.bounces || 20
-  const points = vertices.map((p) => Point.create(p))
-
-  for (var i = 0; i < bounces; i++) {
-    const sourceCorner = view.sourceBBox.getCenter()
-    const targetCorner = view.targetBBox.getCenter()
-    const randomPoint = Point.random(
-      sourceCorner.x,
-      targetCorner.x,
-      sourceCorner.y,
-      targetCorner.y,
-    )
-    points.push(randomPoint)
-  }
-
-  return points
-}
-```
-
-### 注册
-
-定义好路由之后，我们就可以通过 `Graph` 提供的静态方法 `registerRouter` 来注册路由，该方法的签名如下：
-
-```ts
-Graph.registerRouter(name: string, router: Definition, overwrite?: boolean)
-```
-
-| 参数名    | 参数类型   | 默认值  | 说明                                              |
-|-----------|------------|---------|-------------------------------------------------|
-| name      | string     |         | 路由名称。                                         |
-| router    | Definition |         | 路由函数。                                         |
-| overwrite | boolean    | `false` | 遇到重名时是否覆盖，设置为 `true` 时覆盖，否则报错。 |
-
-注册名为`random` 的路由：
-
-```ts
-Graph.registerRouter('random', randomRouter)
-```
-
-或者直接一步到位：
-
-```ts
-Graph.registerRouter('random', (vertices, args, view) => {
-  // ...
-})
-```
-
-注册以后我们就可以通过路由名称来使用路由：
-
-```ts
-edge.setRouter('random', { bounces: 3 })
-```
-
-<iframe src="/demos/tutorial/intermediate/router/random"></iframe>
-
-## 内置路由
+## presets
 
 ### normal
 
@@ -218,7 +127,7 @@ graph.addEdge({
 });
 ```
 
-<iframe src="/demos/tutorial/intermediate/router/orth"></iframe>
+<iframe src="/demos/api/registry/router/orth"></iframe>
 
 ### oneSide
 
@@ -243,7 +152,7 @@ graph.addEdge({
 })
 ```
 
-<iframe src="/demos/tutorial/intermediate/router/oneside"></iframe>
+<iframe src="/demos/api/registry/router/oneside"></iframe>
 
 ### manhattan
 
@@ -276,7 +185,7 @@ graph.addEdge({
 })
 ```
 
-<iframe src="/demos/tutorial/intermediate/router/manhattan"></iframe>
+<iframe src="/demos/api/registry/router/manhattan"></iframe>
 
 ### metro
 
@@ -298,7 +207,7 @@ graph.addEdge({
 })
 ```
 
-<iframe src="/demos/tutorial/intermediate/router/metro"></iframe>
+<iframe src="/demos/api/registry/router/metro"></iframe>
 
 ### er
 
@@ -325,4 +234,97 @@ graph.addEdge({
 })
 ```
 
-<iframe src="/demos/tutorial/intermediate/router/er"></iframe>
+<iframe src="/demos/api/registry/router/er"></iframe>
+
+
+## registry
+
+路由实际上是一个具有如下签名的函数，返回加工后的点。
+
+```sign
+export type Definition<T> = (
+  this: EdgeView,
+  vertices: Point.PointLike[],
+  args: T,
+  edgeView: EdgeView,
+) => Point.PointLike[]
+```
+
+| 参数名   | 参数类型          | 参数说明    |
+|----------|-------------------|---------|
+| this     | EdgeView          | 边的视图。   |
+| vertices | Point.PointLike[] | 边的路径点。 |
+| args     | T                 | 路由参数。   |
+| edgeView | EdgeView          | 边的视图。   |
+
+并在 `registry` 对象上提供了 [`register`](#register) 和 [`unregister`](#unregister) 两个方法来注册和删除路由。
+
+### register
+
+```sign
+register(entities: { [name: string]: Definition }, force?: boolean): void
+register(name: string, entity: Definition, force?: boolean): Definition
+```
+
+注册自定义路由。
+
+### unregister
+
+```sign
+unregister(name: string): Definition | null
+```
+
+删除注册的路由。
+
+### 自定义路由案例
+
+我们可以按照上面规则来创建自定义路由，例如，实现随机走线的路由：
+
+```ts
+// 路由参数
+interface RandomRouterArgs {
+  bounces?: number
+}
+
+function randomRouter(vertices: Point.PointLike[], args: RandomRouterArgs, view: EdgeView) {
+  const bounces = args.bounces || 20
+  const points = vertices.map((p) => Point.create(p))
+
+  for (var i = 0; i < bounces; i++) {
+    const sourceCorner = view.sourceBBox.getCenter()
+    const targetCorner = view.targetBBox.getCenter()
+    const randomPoint = Point.random(
+      sourceCorner.x,
+      targetCorner.x,
+      sourceCorner.y,
+      targetCorner.y,
+    )
+    points.push(randomPoint)
+  }
+
+  return points
+}
+```
+
+实际上，我们将 `registry`  对象的 `register` 和 `unregister` 方法分别挂载为 `Graph` 的两个静态方法 `registerRouter` 和 `unregisterRouter`，所以我们可以像下面这样来注册刚刚定义的随机路由：
+
+
+```ts
+Graph.registerRouter('random', randomRouter)
+```
+
+或者直接一步到位：
+
+```ts
+Graph.registerRouter('random', (vertices, args, view) => {
+  // ...
+})
+```
+
+注册以后我们就可以通过路由名称来使用路由：
+
+```ts
+edge.setRouter('random', { bounces: 3 })
+```
+
+<iframe src="/demos/api/registry/router/random"></iframe>
