@@ -1,5 +1,5 @@
 {
-  "name": "tutorial.intermediate.router.er",
+  "name": "api.registry.router.er",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

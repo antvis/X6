@@ -1,6 +1,6 @@
 import React from 'react'
 import { Checkbox, InputNumber, Button } from 'antd'
-import { Graph, Cell, Node, CellView, View, Rectangle } from '@antv/x6'
+import { Graph, Cell, Node, View, Rectangle } from '@antv/x6'
 import { Rect, Edge } from '@antv/x6/es/shape/standard'
 import '../index.less'
 
