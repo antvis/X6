@@ -96,6 +96,34 @@ export default class Example extends React.Component<
     graph.addNode(obstacle)
     graph.addNode(obstacle.clone().translate(200, 100))
     graph.addNode(obstacle.clone().translate(-200, 150))
+
+    // graph.on('edge:mouseenter', ({ cell, view }) => {
+    //   if (cell) {
+    //     console.log(cell.toJSON())
+    //     view.addTools({
+    //       tools: [
+    //         {
+    //           name: 'vertices',
+    //           args: {
+    //             snapRadius: 0,
+    //             redundancyRemoval: false,
+    //           },
+    //         },
+    //         {
+    //           name: 'segments',
+    //           args: { stopPropagation: false },
+    //         },
+    //       ],
+    //       name: 'onhover',
+    //     })
+    //   }
+    // })
+
+    // graph.on('edge:mouseleave', ({ view }) => {
+    //   if (view.hasTools('onhover')) {
+    //     view.removeTools()
+    //   }
+    // })
   }
 
   refContainer = (container: HTMLDivElement) => {

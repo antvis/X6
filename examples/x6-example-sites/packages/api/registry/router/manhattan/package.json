@@ -1,5 +1,5 @@
 {
-  "name": "tutorial.intermediate.router.manhattan",
+  "name": "api.registry.router.manhattan",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

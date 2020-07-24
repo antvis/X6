@@ -1,5 +1,5 @@
 {
-  "name": "tutorial.intermediate.router.metro",
+  "name": "api.registry.router.metro",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
