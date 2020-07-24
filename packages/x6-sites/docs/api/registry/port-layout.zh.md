@@ -1,13 +1,13 @@
 ---
 title: PortLayout
-order: 0
+order: 4
 redirect_from:
+  - /zh/docs
   - /zh/docs/api
   - /zh/docs/api/registry
 ---
 
-
-链接桩布局算法是一个函数具有如下签名的函数，返回每个链接桩相对于节点的相对位置。例如，某节点在画布的位置是 `{ x: 30, y: 40 }`，如果返回的某个链接桩的位置是 `{ x: 2, y: 4 }`，那么该链接桩渲染到画布后的位置是 `{ x: 32, y: 44 }`。
+链接桩布局算法是一个函数具有如下签名的函数，返回链接桩相对于节点的相对位置。例如，某节点在画布的位置是 `{ x: 30, y: 40 }`，如果返回的某个链接桩的位置是 `{ x: 2, y: 4 }`，那么该链接桩渲染到画布后的位置是 `{ x: 32, y: 44 }`。
 
 ```sign
 type Definition<T> = (
@@ -52,6 +52,8 @@ graph.addNode(
 下面我们一起来看看如何使用内置的链接桩布局算法，以及如何自定并注册自定义布局算法。
 
 ## presets
+
+在 `Registry.PortLayout.presets` 命名空间下提供了以下几个内置的布局算法。
 
 ### absolute
 
@@ -387,7 +389,7 @@ unregister(name: string): Definition | null
 删除注册的自定义布局算法。
 
 
-实际上，我们将该命名空间的中 `register` 和 `unregister` 两个方法分别挂载为 Graph 的两个静态方法 `registerPortLayout` 和 `unregisterPortLayout`，所以我们定义的正弦布局可以像下面这样注册到系统：
+实际上，我们将 `registry` 的 `register` 和 `unregister` 方法分别挂载为 `Graph` 的两个静态方法 `registerPortLayout` 和 `unregisterPortLayout`，所以我们定义的正弦布局可以像下面这样注册到系统：
 
 ```ts
 Graph.registerPortLayout('sin', sin)

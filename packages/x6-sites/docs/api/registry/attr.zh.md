@@ -2,6 +2,7 @@
 title: Attr
 order: 0
 redirect_from:
+  - /zh/docs
   - /zh/docs/api
   - /zh/docs/api/registry
 ---
@@ -10,7 +11,7 @@ redirect_from:
 
 ## presets
 
-我们在 `presets` 命名空间下挂载了所有特殊属性的定义。
+我们在 `Registry.Attr.presets` 命名空间下挂载了所有特殊属性的定义。
 
 ### ref
 
@@ -590,7 +591,7 @@ node.attr({
     xlinkHref: 'trash.png',
     width: 20,
     height: 20,
-  }
+  },
 })
 
 // 绑定事件回调，触发时删除节点
@@ -600,4 +601,247 @@ graph.on('node:delete', ({ view, e }) => {
 })
 ```
 
+### xlinkHref
+
+属性 [`xlink:href`](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/xlink:href) 的别名，例如：
+
+```ts
+node.attr({
+  image: {
+    xlinkHref: 'xxx.png',
+  },
+})
+```
+
+### xlinkShow 
+
+属性 [`xlink:show`](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/xlink:show) 的别名。
+
+### xlinkType 
+
+属性 [`xlink:type`](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/xlink:type) 的别名。
+
+### xlinkTitle 
+
+属性 [`xlink:title`](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/xlink:title) 的别名。
+
+### xlinkArcrole 
+
+属性 [`xlink:arcrole`](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/xlink:arcrole) 的别名。
+
+### xmlSpace 
+
+属性 [`xml:space`](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/xml:space) 的别名。
+
+### xmlBase
+
+属性 [`xml:base`](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/xml:base) 的别名。
+
+### xmlLang
+
+属性 [`xml:lang`](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/xml:lang) 的别名。
+
 ## registry
+
+我们在 `registry` 对象上提供了 [`register`](#register) 和 [`unregister`](#unregister) 两个方法来注册和删除特殊属性。
+
+### register
+
+```sign
+register(entities: { [name: string]: Definition }, force?: boolean): void
+register(name: string, entity: Definition, force?: boolean): Definition
+```
+
+注册自定义属性。
+
+### unregister
+
+```sign
+unregister(name: string): Definition | null
+```
+
+删除注册的属性。
+
+
+同时，我们将 [`register`](#register) 和 [`unregister`](#unregister) 两个方法挂载为 `Graph` 的两个静态方法 `Graph.registerAttr` 和 `Graph.unregisterAttr`，推荐使用这两个静态方法来注册和删除特殊属性。
+
+### Definition
+
+在内部实现中，我们将特殊属性转换为浏览器可以识别的属性，所以理论上来讲特殊属性的值可以是任何类型，同时特殊属性的定义也支持多种形态。
+
+#### 字符串
+
+为原生属性定义别名，例如特殊属性 `xlinkHref` 的定义，实际上是为 [`xlink:href`](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/xlink:href) 属性定义了一个更易书写的别名。
+
+```ts
+// 定义
+Graph.registerAttr('xlinkHref', 'xlink:href')
+
+// 使用 
+node.attr({
+  image: {
+    xlinkHref: 'xxx.png',
+  },
+})
+```
+
+继续介绍属性定义前，我们先了解一下属性限定 `qualify` 函数，只有通过限定函数判定的属性值才会被特殊属性处理。例如，仅当 [`stroke`](#stroke) 属性值为 `Object` 类型时，才会被当做特殊属性处理（使用渐变色填充边框）。看下面限定函数的定义。
+
+```sign
+type QualifyFucntion = (
+  this: CellView,         // 节点/边的视图
+  val: ComplexAttrValue,  // 当前属性的属性值
+  options: {           
+    elem: Element         // 当前属性应用的元素
+    attrs: ComplexAttrs   // 应用到该元素的属性键值对
+    cell: Cell            // 节点/边
+    view: CellView        // 节点/边的视图
+  },
+) => boolean              // 返回 true 时表示通过限定函数的判定
+```
+
+例如 [`stroke`](#stroke) 属性的定义如下：
+
+```ts
+export const stroke: Attr.Definition = {
+  qualify(val) {
+    // 仅当属性值为对象时，才触发特殊属性加工逻辑。
+    return ObjectExt.isPlainObject(val)
+  }, 
+  set(stroke, { view }) {
+    return `url(#${view.graph.defineGradient(stroke as any)})`
+  },
+}
+```
+
+#### set
+
+设置属性定义，适用于大部分场景。
+
+```sign
+export interface SetDefinition {
+  qualify?: QualifyFucntion // 限定函数
+  set: (
+    this: CellView,         // 节点/边的视图
+    val: ComplexAttrValue,  // 当前属性的属性值
+    options: {           
+      refBBox: Rectangle    // 参照元素的包围盒，没有参照元素时使用节点的位置和大小指代的矩形
+      elem: Element         // 当前属性应用的元素
+      attrs: ComplexAttrs   // 应用到该元素的属性键值对
+      cell: Cell            // 节点/边
+      view: CellView        // 节点/边的视图
+    },
+  ) => SimpleAttrValue | SimpleAttrs | void
+}
+```
+
+当 `set` 方法返回 `string` 或 `number` 时，表示将返回值作为特殊属性的值，这种方式通常用于扩展原生属性的定义，如支持渐变色填充的 [`stroke`](#stroke) 和 [`fill`](#fill) 属性。
+
+```ts
+// stroke 属性定义
+export const stroke: Attr.SetDefinition = {
+  qualify: ObjectExt.isPlainObject, 
+  set(stroke, { view }) {
+    // 返回字符串，返回值作为 stroke 属性的属性值。
+    return `url(#${view.graph.defineGradient(stroke as any)})`
+  },
+}
+
+// 使用 stroke 属性
+node.attr({
+  rect: {
+    stroke: {...},
+  },
+})
+```
+
+当 `set` 方法返回一个简单对象时，则将该对象作为属性键值对应用到对应的元素上，如 [`sourceMarker`](#sourcemarker) 和 [`targetMarker`](#targetmarker) 属性。
+
+```ts
+export const sourceMarker: Attr.SetDefinition = {
+  qualify: ObjectExt.isPlainObject,
+  set(marker: string | JSONObject, { view, attrs }) {
+    // 返回一个简单对象，返回值作为属性键值对被应用到对应的元素上。
+    return {
+      'marker-start': createMarker(marker, view, attrs),
+    },
+  },
+}
+```
+
+当 `set` 方法没有返回值时，表示在在该方法内部完成了属性赋值，如 [`html`](#html) 属性。
+
+```ts
+export const html: Attr.Definition = {
+  set(html, { view, elem }) {
+    // 没有返回值，在方法内部完成属性赋值
+    view.$(elem).html(`${html}`)
+  },
+}
+```
+
+#### offset
+
+偏移量属性定义。
+
+```sign
+export interface OffsetDefinition {
+  qualify?: QualifyFucntion // 限定函数
+  offset: (
+    this: CellView,         // 节点/边的视图
+    val: ComplexAttrValue,  // 当前属性的属性值
+    options: {           
+      refBBox: Rectangle    // 参照元素的包围盒，没有参照元素时使用节点的位置和大小指代的矩形
+      elem: Element         // 当前属性应用的元素
+      attrs: ComplexAttrs   // 应用到该元素的属性键值对
+      cell: Cell            // 节点/边
+      view: CellView        // 节点/边的视图
+    },
+  ) => Point.PointLike  // 返回绝对偏移量
+}
+```
+
+返回代表 `x` 和 `y` 方向绝对偏移量的 `Point.PointLike` 对象，如 [`xAlign`](#xalign) 属性。
+
+```ts
+export const xAlign: Attr.OffsetDefinition = {
+  offset(alignment, { refBBox }) {
+    ...
+    // 返回 x 轴的绝对偏移量
+    return { x, y: 0 }
+  },
+}
+```
+
+#### position
+
+定位属性定义。
+
+```sign
+export interface PositionDefinition {
+  qualify?: QualifyFucntion // 限定函数
+  offset: (
+    this: CellView,         // 节点/边的视图
+    val: ComplexAttrValue,  // 当前属性的属性值
+    options: {           
+      refBBox: Rectangle    // 参照元素的包围盒，没有参照元素时使用节点的位置和大小指代的矩形
+      elem: Element         // 当前属性应用的元素
+      attrs: ComplexAttrs   // 应用到该元素的属性键值对
+      cell: Cell            // 节点/边
+      view: CellView        // 节点/边的视图
+    },
+  ) => Point.PointLike  // 返回绝对定位坐标
+}
+```
+
+返回相对于节点的绝对定位坐标，如 [`refX`](#refx) 和 [`refDx`](#refdx) 属性。 
+
+```ts
+export const refX: Attr.PositionDefinition = {
+  position(val, { refBBox }) {
+    ...
+    // 返回 x 轴的绝对定位
+    return { x, y: 0 }
+  },
+}
+```

@@ -1,12 +1,13 @@
 ---
 title: PortLabelLayout
-order: 0
+order: 6
 redirect_from:
+  - /zh/docs
   - /zh/docs/api
   - /zh/docs/api/registry
 ---
 
-链接桩标签定位是一个具有如下签名的函数，返回标签相对于链接桩的位置和旋转角度。
+链接桩标签布局算法是一个具有如下签名的函数，返回标签相对于链接桩的位置和旋转角度。
 
 ```sign
 type Definition<T> = (
@@ -60,6 +61,8 @@ graph.addNode(
 
 
 ## presets
+
+在 `Registry.PortLabelLayout.presets` 命令空间中提供了以下几个布局算法。
 
 ### *Side*
 
