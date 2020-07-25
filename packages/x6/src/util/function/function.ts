@@ -8,12 +8,25 @@ export function invoke<T>(
   let ret
 
   if (func != null && typeof func === 'function') {
+    const fn = func as Function
     const len = args.length
 
-    if (len <= 6) {
-      ret = func.call(ctx, ...args)
+    if (len === 0) {
+      ret = fn.call(ctx)
+    } else if (len === 1) {
+      ret = fn.call(ctx, args[0])
+    } else if (len === 2) {
+      ret = fn.call(ctx, args[0], args[1])
+    } else if (len === 3) {
+      ret = fn.call(ctx, args[0], args[1], args[2])
+    } else if (len === 4) {
+      ret = fn.call(ctx, args[0], args[1], args[2], args[3])
+    } else if (len === 5) {
+      ret = fn.call(ctx, args[0], args[1], args[2], args[3], args[4])
+    } else if (len === 6) {
+      ret = fn.call(ctx, args[0], args[1], args[2], args[3], args[4], args[5])
     } else {
-      ret = func.apply(ctx, args)
+      ret = fn.apply(ctx, args)
     }
   }
 
