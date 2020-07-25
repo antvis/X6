@@ -108,7 +108,7 @@ const rect = graph.addNode({
 })
 ```
 
-这里的关键是使用 `shape` 来指定节点图形，默认值为 `'rect'`，其他选项与使用节点构造函数创建节点的选项一致。在 X6 内部，我们通过 `shape` 指定的图形找到对应的构造函数来初始化节点，并将其添加到画布。内置节点构造函数与 `shape` 名称对应关系[参考此表](./cell#内置节点)。除了使用[内置节点](./cell#内置节点)，我们还可以使用注册的自定义节点，详情请参考[自定义节点]()教程。
+这里的关键是使用 `shape` 来指定节点图形，默认值为 `'rect'`，其他选项与使用节点构造函数创建节点的选项一致。在 X6 内部，我们通过 `shape` 指定的图形找到对应的构造函数来初始化节点，并将其添加到画布。内置节点构造函数与 `shape` 名称对应关系[参考此表](./cell#内置节点)。除了使用[内置节点](./cell#内置节点)，我们还可以使用注册的自定义节点，详情请参考[自定义节点](intermediate/custom-node)教程。
 
 ## 定制样式 Attrs
 
@@ -136,10 +136,4 @@ const rect = new Shape.Rect({
 })
 ```
 
-<iframe
-     src="https://codesandbox.io/embed/x6-edge-label-4f708?fontsize=14&hidenavigation=1&theme=light&view=preview"
-     style="width:100%; height:180px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
-     title="x6-edge-label"
-     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-     sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-   ></iframe>
+<iframe src="/demos/tutorial/basic/node/style"></iframe>

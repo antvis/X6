@@ -1,6 +1,6 @@
 import React from 'react'
 import { Checkbox, InputNumber, Button } from 'antd'
-import { Graph, Cell, Node, CellView, View, Rectangle } from '@antv/x6'
+import { Graph, Cell, Node, View, Rectangle } from '@antv/x6'
 import { Rect, Edge } from '@antv/x6/es/shape/standard'
 import '../index.less'
 
@@ -84,11 +84,11 @@ export default class Example extends React.Component<
         anchor: 'nodeCenter',
         connectionPoint: 'boundary',
       },
-      checkView: (view: CellView, isInViewport: boolean) => {
+      checkView: ({ view, unmounted }) => {
         if (this.state.keepDragged && view.cid === draggedCid) {
           return true
         }
-        if (this.state.keepRendered && isInViewport) {
+        if (this.state.keepRendered && unmounted) {
           return true
         }
 
@@ -189,7 +189,7 @@ export default class Example extends React.Component<
     this.graph.freeze()
     const cells = [...nodes, ...edges, this.viewport] as Cell
     this.graph.model.resetCells(cells)
-    this.graph.fitToContent({ useCellBBox: true, padding: 10 })
+    this.graph.fitToContent({ useCellGeometry: true, padding: 10 })
 
     console.timeEnd('perf-reset')
 

@@ -121,17 +121,11 @@ graph.addEdge({
 })
 ```
 
-<iframe
-     src="https://codesandbox.io/embed/x6-edge-vertices-sjzc3?fontsize=14&hidenavigation=1&theme=light&view=preview"
-     style="width:100%; height:370px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
-     title="x6-edge-vertices"
-     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-     sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-   ></iframe>
+<iframe src="/demos/tutorial/basic/edge/vertices"></iframe>
 
 ### router
 
-路由 `router` 将对 `vertices` 进一步处理，并在必要时添加额外的点，然后返回处理后的点。例如，经过 [orth 路由](../../intermediate/router#orth)处理后，边的每一条链接线段都是水平或垂直的。
+路由 `router` 将对 `vertices` 进一步处理，并在必要时添加额外的点，然后返回处理后的点。例如，经过 [orth 路由](../../api/registry/router#orth)处理后，边的每一条链接线段都是水平或垂直的。
 
 ```ts
 graph.addEdge({
@@ -148,15 +142,10 @@ graph.addEdge({
 })
 ```
 
-<iframe
-  src="https://codesandbox.io/embed/x6-edge-orth-router-hnifl?fontsize=14&hidenavigation=1&theme=light&view=preview"
-  style="width:100%; height:370px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
-  title="x6-edge-orth-router"
-  allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-  sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-></iframe>
+<iframe src="/demos/tutorial/basic/edge/router"></iframe>
 
-路由都是通过[注册的方式](../../intermediate/router#注册)注册到 X6 中，使用时只需要提供路由名称 `name` 和 参数 `args` 即可，不需要参数 `args` 时可以使用省略写法。
+
+路由都是通过[注册的方式](../../api/registry/router#register)注册到 X6 中，使用时只需要提供路由名称 `name` 和 参数 `args` 即可，不需要参数 `args` 时可以使用省略写法。
 
 ```ts
 graph.addEdge({
@@ -176,14 +165,14 @@ graph.addEdge({
 
 X6 默认提供了以下几种路由，点击下面的链接查看每种路由的使用方式。
 
-- [normal](../../intermediate/router#normal) 
-- [orth](../../intermediate/router#orth)
-- [oneSide](../../intermediate/router#oneside)
-- [manhattan](../../intermediate/router#manhattan)
-- [metro](../../intermediate/router#metro)
-- [er](../../intermediate/router#er)
+- [normal](../../api/registry/router#normal) 
+- [orth](../../api/registry/router#orth)
+- [oneSide](../../api/registry/router#oneside)
+- [manhattan](../../api/registry/router#manhattan)
+- [metro](../../api/registry/router#metro)
+- [er](../../api/registry/router#er)
 
-另外，我们也可以注册自定义路由，详情请参考[自定义路由](../../intermediate/router#自定义路由)教程。
+另外，我们也可以注册自定义路由，详情请参考[自定义路由](../../api/registry/router#registry)教程。
 
 ### connector
 
@@ -205,13 +194,8 @@ graph.addEdge({
 })
 ```
 
-<iframe
-     src="https://codesandbox.io/embed/x6-edge-rounded-connector-40bnc?fontsize=14&hidenavigation=1&theme=light&view=preview"
-     style="width:100%; height:370px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
-     title="x6-edge-rounded-connector"
-     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-     sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-   ></iframe>
+<iframe src="/demos/tutorial/basic/edge/connector"></iframe>
+
 
 连接器都通过注册的方式注册到 X6 中，使用时只需要提供连接器名称 name 和 参数 args 即可，不需要参数 `args` 时可以使用省略写法：
 
@@ -289,13 +273,7 @@ edge.appendLabel({
 edge.appendLabel('edge')
 ```
 
-<iframe
-  src="https://codesandbox.io/embed/x6-edge-label-2i56q?fontsize=14&hidenavigation=1&theme=light&view=preview"
-  style="width:100%; height:370px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden; marginTop: 16px;"
-  title="x6-edge-label"
-  allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-  sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-></iframe>
+<iframe src="/demos/tutorial/basic/edge/labels"></iframe>
 
 完整的 Label 配置项稍微有点复杂，所以我们在[单独的教程](../../intermediate/edge-labels)中介绍。
 
@@ -321,13 +299,8 @@ graph.addEdge({
 })
 ```
 
-<iframe
-  src="https://codesandbox.io/embed/x6-edge-style-wpxik?fontsize=14&hidenavigation=1&theme=light&view=preview"
-  style="width:100%; height:140px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden; marginTop: 16px;"
-  title="x6-edge-style"
-  allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-  sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-></iframe>
+<iframe src="/demos/tutorial/basic/edge/style"></iframe>
+
 
 ## 使用箭头 Marker
 
@@ -360,13 +333,7 @@ edge.attr({
 })
 ```
 
-<iframe
-     src="https://codesandbox.io/embed/x6-edge-native-marker-6p2d6?fontsize=14&hidenavigation=1&theme=light&view=preview"
-     style="width:100%; height:370px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden; marginTop: 16px;"
-     title="x6-edge-native-marker"
-     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-     sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-   ></iframe>
+<iframe src="/demos/tutorial/basic/edge/native-marker"></iframe>
 
 ### 自定义箭头
 
@@ -391,12 +358,7 @@ edge.attr({
 ```
 值得一提的是，我们的起始箭头和终止箭头使用了相同的 `'d'` 属性，这是因为我们会自动计算箭头方向，简单来说，我们在定义箭头时，只需要定义一个**向左指向坐标原点**的箭头即可。
 
-<iframe
-     src="https://codesandbox.io/embed/x6-edge-custom-marker-7gze4?fontsize=14&hidenavigation=1&theme=light&view=preview"
-     style="width:100%; height:370px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden; marginTop: 16px;"
-     title="x6-edge-custom-marker"
-     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-     sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-   ></iframe>
+
+<iframe src="/demos/tutorial/basic/edge/custom-marker"></iframe>
 
 更多箭头的案例和定制技巧请参考[这篇教程](../../intermediate/marker)，我们也支持注册自定义的箭头，注册后就可以像使用内置箭头那样来使用箭头，详情请参考[注册箭头教程](../../intermediate/marker#注册箭头)。

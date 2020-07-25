@@ -9,6 +9,7 @@ import { Model } from '../model/model'
 import { Collection } from '../model/collection'
 import { CellView } from '../view/cell'
 import { NodeView } from '../view/node'
+import * as Registry from '../registry'
 import { HTML } from '../shape/standard/html'
 import { Scroller as ScrollerWidget } from '../addon/scroller'
 import { Base } from './base'
@@ -34,24 +35,6 @@ import { HighlightManager as Highlight } from './highlight'
 import { TransformManager as Transform } from './transform'
 import { ClipboardManager as Clipboard } from './clipboard'
 import { BackgroundManager as Background } from './background'
-import {
-  NodeTool,
-  EdgeTool,
-  PortLayout,
-  PortLabelLayout,
-  Attr as AttrDefinition,
-  Grid as GridDefinition,
-  Filter as FilterDefinition,
-  Background as BackgroundDefinition,
-  Highlighter as HighlightDefinition,
-  Marker,
-  Router,
-  Connector,
-  ConnectionPoint,
-  ConnectionStrategy,
-  NodeConnectionAnchor,
-  EdgeConnectionAnchor,
-} from '../registry'
 
 export class Graph extends Basecoat<EventArgs> {
   public readonly options: GraphOptions.Definition
@@ -116,12 +99,12 @@ export class Graph extends Basecoat<EventArgs> {
 
   // #region model
 
-  resetModel(cells: Cell[], options: Collection.SetOptions = {}) {
+  resetCells(cells: Cell[], options: Collection.SetOptions = {}) {
     this.model.resetCells(cells, options)
     return this
   }
 
-  clearModel(options: Cell.SetOptions = {}) {
+  clearCells(options: Cell.SetOptions = {}) {
     this.model.clear(options)
     return this
   }
@@ -153,10 +136,22 @@ export class Graph extends Basecoat<EventArgs> {
     return this.model.createNode(metadata)
   }
 
+  removeNode(nodeId: string, options?: Collection.RemoveOptions): Node | null
+  removeNode(node: Node, options?: Collection.RemoveOptions): Node | null
+  removeNode(node: Node | string, options: Collection.RemoveOptions = {}) {
+    return this.model.removeCell(node as Node) as Node
+  }
+
   addEdge(metadata: Edge.Metadata, options?: Model.AddOptions): Edge
   addEdge(edge: Edge, options?: Model.AddOptions): Edge
   addEdge(edge: Edge | Edge.Metadata, options: Model.AddOptions = {}): Edge {
     return this.model.addEdge(edge, options)
+  }
+
+  removeEdge(edgeId: string, options?: Collection.RemoveOptions): Edge | null
+  removeEdge(edge: Edge, options?: Collection.RemoveOptions): Edge | null
+  removeEdge(edge: Edge | string, options: Collection.RemoveOptions = {}) {
+    return this.model.removeCell(edge as Edge) as Edge
   }
 
   createEdge(metadata: Edge.Metadata) {
@@ -1297,6 +1292,16 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
+  @Decorator.checkScroller()
+  zoomTo(
+    factor: number,
+    options: Omit<ScrollerWidget.ZoomOptions, 'absolute'> = {},
+  ) {
+    const scroller = this.scroller.widget!
+    scroller.zoom(factor, { ...options, absolute: true })
+  }
+
+  @Decorator.checkScroller()
   zoomToRect(
     rect: Rectangle.RectangleLike,
     options: Transform.ScaleContentToFitOptions = {},
@@ -1306,6 +1311,7 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
+  @Decorator.checkScroller()
   zoomToFit(
     options: Transform.GetContentAreaOptions &
       Transform.ScaleContentToFitOptions = {},
@@ -1586,12 +1592,18 @@ export class Graph extends Basecoat<EventArgs> {
     return this.selection.isSelected(cell)
   }
 
-  select(cells: Cell | Cell[], options: Collection.AddOptions = {}) {
+  select(
+    cells: Cell | string | (Cell | string)[],
+    options: Collection.AddOptions = {},
+  ) {
     this.selection.select(cells, options)
     return this
   }
 
-  unselect(cells: Cell | Cell[], options: Collection.RemoveOptions = {}) {
+  unselect(
+    cells: Cell | string | (Cell | string)[],
+    options: Collection.RemoveOptions = {},
+  ) {
     this.selection.unselect(cells, options)
     return this
   }
@@ -1835,24 +1847,27 @@ export namespace Graph {
   export const registerNode = Node.registry.register
   export const registerEdge = Edge.registry.register
   export const registerView = CellView.registry.register
-  export const registerAttr = AttrDefinition.registry.register
-  export const registerGrid = GridDefinition.registry.register
-  export const registerFilter = FilterDefinition.registry.register
-  export const registerNodeTool = NodeTool.registry.register
-  export const registerEdgeTool = EdgeTool.registry.register
-  export const registerBackground = BackgroundDefinition.registry.register
-  export const registerHighlighter = HighlightDefinition.registry.register
-  export const registerPortLayout = PortLayout.registry.register
-  export const registerPortLabelLayout = PortLabelLayout.registry.register
-  export const registerMarker = Marker.registry.register
-  export const registerRouter = Router.registry.register
-  export const registerConnector = Connector.registry.register
+  export const registerAttr = Registry.Attr.registry.register
+  export const registerGrid = Registry.Grid.registry.register
+  export const registerFilter = Registry.Filter.registry.register
+  export const registerNodeTool = Registry.NodeTool.registry.register
+  export const registerEdgeTool = Registry.EdgeTool.registry.register
+  export const registerBackground = Registry.Background.registry.register
+  export const registerHighlighter = Registry.Highlighter.registry.register
+  export const registerPortLayout = Registry.PortLayout.registry.register
+  export const registerPortLabelLayout =
+    Registry.PortLabelLayout.registry.register
+  export const registerMarker = Registry.Marker.registry.register
+  export const registerRouter = Registry.Router.registry.register
+  export const registerConnector = Registry.Connector.registry.register
   export const registerNodeConnectionAnchor =
-    NodeConnectionAnchor.registry.register
+    Registry.NodeConnectionAnchor.registry.register
   export const registerEdgeConnectionAnchor =
-    EdgeConnectionAnchor.registry.register
-  export const registerConnectionPoint = ConnectionPoint.registry.register
-  export const registerConnectionStrategy = ConnectionStrategy.registry.register
+    Registry.EdgeConnectionAnchor.registry.register
+  export const registerConnectionPoint =
+    Registry.ConnectionPoint.registry.register
+  export const registerConnectionStrategy =
+    Registry.ConnectionStrategy.registry.register
   export const registerHTMLComponent = HTML.componentRegistry.register
 }
 
@@ -1860,24 +1875,26 @@ export namespace Graph {
   export const unregisterNode = Node.registry.unregister
   export const unregisterEdge = Edge.registry.unregister
   export const unregisterView = CellView.registry.unregister
-  export const unregisterAttr = AttrDefinition.registry.unregister
-  export const unregisterGrid = GridDefinition.registry.unregister
-  export const unregisterFilter = FilterDefinition.registry.unregister
-  export const unregisterNodeTool = NodeTool.registry.unregister
-  export const unregisterEdgeTool = EdgeTool.registry.unregister
-  export const unregisterBackground = BackgroundDefinition.registry.unregister
-  export const unregisterHighlighter = HighlightDefinition.registry.unregister
-  export const unregisterPortLayout = PortLayout.registry.unregister
-  export const unregisterPortLabelLayout = PortLabelLayout.registry.unregister
-  export const unregisterMarker = Marker.registry.unregister
-  export const unregisterRouter = Router.registry.unregister
-  export const unregisterConnector = Connector.registry.unregister
+  export const unregisterAttr = Registry.Attr.registry.unregister
+  export const unregisterGrid = Registry.Grid.registry.unregister
+  export const unregisterFilter = Registry.Filter.registry.unregister
+  export const unregisterNodeTool = Registry.NodeTool.registry.unregister
+  export const unregisterEdgeTool = Registry.EdgeTool.registry.unregister
+  export const unregisterBackground = Registry.Background.registry.unregister
+  export const unregisterHighlighter = Registry.Highlighter.registry.unregister
+  export const unregisterPortLayout = Registry.PortLayout.registry.unregister
+  export const unregisterPortLabelLayout =
+    Registry.PortLabelLayout.registry.unregister
+  export const unregisterMarker = Registry.Marker.registry.unregister
+  export const unregisterRouter = Registry.Router.registry.unregister
+  export const unregisterConnector = Registry.Connector.registry.unregister
   export const unregisterNodeConnectionAnchor =
-    NodeConnectionAnchor.registry.unregister
+    Registry.NodeConnectionAnchor.registry.unregister
   export const unregisterEdgeConnectionAnchor =
-    EdgeConnectionAnchor.registry.unregister
-  export const unregisterConnectionPoint = ConnectionPoint.registry.unregister
+    Registry.EdgeConnectionAnchor.registry.unregister
+  export const unregisterConnectionPoint =
+    Registry.ConnectionPoint.registry.unregister
   export const unregisterConnectionStrategy =
-    ConnectionStrategy.registry.unregister
+    Registry.ConnectionStrategy.registry.unregister
   export const unregisterHTMLComponent = HTML.componentRegistry.unregister
 }

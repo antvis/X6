@@ -1,7 +1,7 @@
 import { ObjectExt, ArrayExt, Dom } from '../util'
 import { Rectangle, Point } from '../geometry'
 import { Dictionary } from '../common'
-import { Attr } from '../registry'
+import { Attr } from '../registry/attr'
 import { View } from './view'
 import { Markup } from './markup'
 import { CellView } from './cell'
@@ -287,7 +287,8 @@ export class AttrManager {
         const val = positionAttrs[name]
         const def = this.getDefinition(name)
         if (def != null) {
-          const ts = (def as Attr.PositionDefinition).position(
+          const ts = (def as Attr.PositionDefinition).position.call(
+            this,
             val,
             getOptions(),
           )

@@ -28,6 +28,7 @@ import { BackgroundManager } from './background'
 import { MiniMapManager } from './minimap'
 import { Keyboard } from './keyboard'
 import { MouseWheel } from './mousewheel'
+import { Renderer } from './renderer'
 
 export namespace Options {
   interface Common extends Partial<Hook.IHook> {
@@ -102,9 +103,7 @@ export namespace Options {
      * the view is attached to the DOM; if it returns `false`, the view is
      * detached from the DOM.
      */
-    checkView?: Nilable<
-      (this: Graph, view: CellView, isDetached: boolean) => boolean
-    >
+    checkView?: Nilable<Renderer.CheckViewFn>
 
     /**
      * When defined as a number, it denotes the required mousemove events
@@ -140,7 +139,7 @@ export namespace Options {
      */
     preventDefaultBlankAction: boolean
 
-    interactive: CellView.Interactive
+    interacting: CellView.Interacting
 
     /**
      * Guard the graph from handling a UI event. Returns `true` if you want
@@ -222,13 +221,35 @@ export namespace Options {
      * When set to `true` (the default), edges can be pinned to the
      * graph meaning a source/target of a edge can be a point.
      */
-    dangling: boolean
+    dangling:
+      | boolean
+      | ((
+          this: Graph,
+          args: {
+            edge: Edge
+            sourceCell?: Cell
+            targetCell?: Cell
+            sourcePort?: string
+            targetPort?: string
+          },
+        ) => boolean)
 
     /**
      * When set to `false`, an node may not have more than
      * one edge with the same source and target node.
      */
-    multi: boolean
+    multi:
+      | boolean
+      | ((
+          this: Graph,
+          args: {
+            edge: Edge
+            sourceCell?: Cell
+            targetCell?: Cell
+            sourcePort?: string
+            targetPort?: string
+          },
+        ) => boolean)
 
     /**
      * Highlights all the available magnets or nodes when a edge is
@@ -264,15 +285,21 @@ export namespace Options {
      */
     validateMagnet?: (
       this: Graph,
-      cellView: CellView,
-      magnet: Element,
-      e: JQuery.MouseDownEvent,
+      args: {
+        cell: Cell
+        view: CellView
+        magnet: Element
+        e: JQuery.MouseDownEvent
+      },
     ) => boolean
 
     createEdge?: (
       this: Graph,
-      sourceView: CellView,
-      sourceMagnet: Element,
+      args: {
+        sourceCell: Cell
+        sourceView: CellView
+        sourceMagnet: Element
+      },
     ) => Nilable<Edge> | void
 
     /**
@@ -281,7 +308,14 @@ export namespace Options {
      * which are created during the interaction) or reverted to the state
      * before the interaction.
      */
-    validateEdge?: (this: Graph, edge: Edge) => boolean
+    validateEdge?: (
+      this: Graph,
+      args: {
+        edge: Edge
+        type: Edge.TerminalType
+        previous: Edge.TerminalData
+      },
+    ) => boolean
 
     /**
      * Check whether to allow or disallow the edge connection while an
@@ -289,12 +323,17 @@ export namespace Options {
      */
     validateConnection: (
       this: Graph,
-      sourceView: CellView | null | undefined,
-      sourceMagnet: Element | null | undefined,
-      targetView: CellView | null | undefined,
-      targetMagnet: Element | null | undefined,
-      terminalType: Edge.TerminalType,
-      edgeView?: EdgeView,
+      args: {
+        type: Edge.TerminalType
+        edge?: Edge | null
+        edgeView?: EdgeView
+        sourceCell?: Cell | null
+        sourceView?: CellView | null
+        sourceMagnet?: Element | null
+        targetCell?: Cell | null
+        targetView?: CellView | null
+        targetMagnet?: Element | null
+      },
     ) => boolean
   }
 
@@ -366,8 +405,12 @@ export namespace Options {
      */
     validate: (
       this: Graph,
-      childView: CellView,
-      parentView: CellView,
+      args: {
+        child: Node
+        parent: Node
+        childView: CellView
+        parentView: CellView
+      },
     ) => boolean
   }
 
@@ -419,6 +462,34 @@ export namespace Options {
       ...others
     } = options
 
+    // size
+    // ----
+    const container = options.container
+    if (container) {
+      if (others.width == null) {
+        others.width = container.clientWidth
+      }
+
+      if (others.height == null) {
+        others.height = container.clientHeight
+      }
+    }
+
+    const result = ObjectExt.merge({}, defaults, others) as Options.Definition
+
+    // grid
+    // ----
+    const defaultGrid: GridManager.CommonOptions = { size: 10, visible: false }
+    if (typeof grid === 'number') {
+      result.grid = { size: grid, visible: false }
+    } else if (typeof grid === 'boolean') {
+      result.grid = { ...defaultGrid, visible: grid }
+    } else {
+      result.grid = { ...defaultGrid, ...grid }
+    }
+
+    // booleas
+    // -------
     const booleas: (keyof Options.ManualBooleans)[] = [
       'selecting',
       'embedding',
@@ -433,28 +504,6 @@ export namespace Options {
       'mousewheel',
     ]
 
-    const container = options.container
-    if (container) {
-      if (others.width == null) {
-        others.width = container.clientWidth
-      }
-
-      if (others.height == null) {
-        others.height = container.clientHeight
-      }
-    }
-
-    const result = ObjectExt.merge({}, defaults, others) as Options.Definition
-
-    const defaultGrid: GridManager.CommonOptions = { size: 10, visible: false }
-    if (typeof grid === 'number') {
-      result.grid = { size: grid, visible: false }
-    } else if (typeof grid === 'boolean') {
-      result.grid = { ...defaultGrid, visible: grid }
-    } else {
-      result.grid = { ...defaultGrid, ...grid }
-    }
-
     booleas.forEach((key) => {
       const val = options[key]
       if (typeof val === 'boolean') {
@@ -466,6 +515,17 @@ export namespace Options {
         }
       }
     })
+
+    // background
+    // ----------
+    if (
+      result.background &&
+      result.scroller.enabled &&
+      result.scroller.background == null
+    ) {
+      result.scroller.background = result.background
+      delete result.background
+    }
 
     return result
   }
@@ -517,16 +577,8 @@ export namespace Options {
       edgeAnchor: 'connectionRatio',
       connectionPoint: 'boundary',
 
-      validateConnection(
-        this: Graph,
-        sourceView: CellView,
-        sourceMagnet: Element,
-        targetView: CellView,
-        targetMagnet: Element,
-        terminalType: Edge.TerminalType,
-        edgeView?: EdgeView,
-      ) {
-        const view = terminalType === 'target' ? targetView : sourceView
+      validateConnection(this: Graph, { type, sourceView, targetView }) {
+        const view = type === 'target' ? targetView : sourceView
         return view instanceof NodeView
       },
 
@@ -566,7 +618,7 @@ export namespace Options {
       multiple: true,
       movable: true,
       strict: false,
-      useCellBBox: false,
+      useCellGeometry: false,
       content: null,
       handles: null,
     },
@@ -600,8 +652,8 @@ export namespace Options {
     magnetThreshold: 0,
     preventDefaultContextMenu: true,
     preventDefaultBlankAction: true,
-    interactive: {
-      labelMove: false,
+    interacting: {
+      edgeLabelMovable: false,
     },
     guard: () => false,
   }

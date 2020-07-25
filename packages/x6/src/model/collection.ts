@@ -105,7 +105,9 @@ export class Collection extends Basecoat<Collection.EventArgs> {
           options: localOptions,
         }
         this.trigger('added', args)
-        cell.notify('added', { ...args })
+        if (!localOptions.dryrun) {
+          cell.notify('added', { ...args })
+        }
       })
 
       if (sort) {
@@ -227,12 +229,13 @@ export class Collection extends Basecoat<Collection.EventArgs> {
     return this.remove(cell, options)
   }
 
-  get(cell?: string | Cell | null): Cell | null {
+  get(cell?: string | number | Cell | null): Cell | null {
     if (cell == null) {
       return null
     }
 
-    const id = typeof cell === 'string' ? cell : cell.id
+    const id =
+      typeof cell === 'string' || typeof cell === 'number' ? cell : cell.id
     return this.map[id] || null
   }
 
@@ -334,11 +337,14 @@ export namespace Collection {
      * when a cell is removed.
      */
     disconnectEdges?: boolean
+
+    dryrun?: boolean
   }
 
   export interface AddOptions extends SetOptions {
     sort?: boolean
     merge?: boolean
+    dryrun?: boolean
   }
 }
 

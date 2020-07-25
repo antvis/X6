@@ -6,9 +6,11 @@ export * from './model'
 export * from './view'
 export * from './graph'
 
-export * from './shape'
-export * from './addon'
-export { Registry } from './registry'
+import { Shape } from './shape'
+import * as Addon from './addon'
+import * as Registry from './registry'
+
+export { Shape, Addon, Registry }
 
 export * from './global'
 

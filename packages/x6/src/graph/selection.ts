@@ -45,7 +45,7 @@ export class SelectionManager extends Base {
       }
     })
 
-    this.graph.on('node:mouseup', ({ e, cell }) => {
+    this.graph.on('cell:mouseup', ({ e, cell }) => {
       if (!this.disabled) {
         if (
           this.widgetOptions.multiple === false ||
@@ -74,13 +74,27 @@ export class SelectionManager extends Base {
     return this.widget.isSelected(cell)
   }
 
-  select(cells: Cell | Cell[], options: Collection.AddOptions = {}) {
-    this.widget.select(cells, options)
+  protected getCells(cells: Cell | string | (Cell | string)[]) {
+    return (Array.isArray(cells) ? cells : [cells])
+      .map((cell) =>
+        typeof cell === 'string' ? this.graph.getCellById(cell) : cell,
+      )
+      .filter((cell) => cell != null)
+  }
+
+  select(
+    cells: Cell | string | (Cell | string)[],
+    options: Collection.AddOptions = {},
+  ) {
+    this.widget.select(this.getCells(cells), options)
     return this
   }
 
-  unselect(cells: Cell | Cell[], options: Collection.RemoveOptions = {}) {
-    this.widget.unselect(Array.isArray(cells) ? cells : [cells], options)
+  unselect(
+    cells: Cell | string | (Cell | string)[],
+    options: Collection.RemoveOptions = {},
+  ) {
+    this.widget.unselect(this.getCells(cells), options)
     return this
   }
 

@@ -1,8 +1,9 @@
 import { Nilable, KeyValue } from '../types'
 import { Rectangle, Point } from '../geometry'
 import { ArrayExt, ObjectExt, Dom } from '../util'
-import { Registry, ConnectionStrategy } from '../registry'
 import { Attr } from '../registry/attr'
+import { Registry } from '../registry/registry'
+import { ConnectionStrategy } from '../registry/strategy'
 import { Cell } from '../model/cell'
 import { Edge } from '../model/edge'
 import { Node } from '../model/node'
@@ -142,6 +143,7 @@ export class CellView<
   protected getContainerAttrs(): Nilable<Attr.SimpleAttrs> {
     return {
       'data-cell-id': this.cell.id,
+      'data-shape': this.cell.shape,
     }
   }
 
@@ -278,26 +280,26 @@ export class CellView<
     return result
   }
 
-  can(feature: CellView.InteractiveName): boolean {
-    let interactive = this.options.interactive
-    interactive =
-      typeof interactive === 'function'
-        ? interactive.call(this.graph, this)
-        : interactive
+  can(feature: CellView.InteractionNames): boolean {
+    let interacting = this.options.interacting
+    interacting =
+      typeof interacting === 'function'
+        ? interacting.call(this.graph, this)
+        : interacting
 
-    if (typeof interactive === 'object') {
-      return interactive[feature as CellView.InteractiveName] !== false
+    if (typeof interacting === 'object') {
+      return interacting[feature as CellView.InteractionNames] !== false
     }
 
-    if (typeof interactive === 'boolean') {
-      return interactive
+    if (typeof interacting === 'boolean') {
+      return interacting
     }
 
     return false
   }
 
-  setInteractivity(value: CellView.Interactive) {
-    this.options.interactive = value
+  setInteractivity(value: CellView.Interacting) {
+    this.options.interacting = value
   }
 
   cleanCache() {
@@ -340,7 +342,7 @@ export class CellView<
     return { sx, sy }
   }
 
-  getNodeBBox(elem: Element) {
+  getElemBBox(elem: Element) {
     const rect = this.getNodeBoundingRect(elem)
     const matrix = this.getNodeMatrix(elem)
     const rotateMatrix = this.getRootRotateMatrix()
@@ -358,28 +360,29 @@ export class CellView<
     return Dom.transformRectangle(rect, translateMatrix.multiply(matrix))
   }
 
-  getBBox(options: { useCellBBox?: boolean } = {}) {
+  getBBox(options: { useCellGeometry?: boolean } = {}) {
     let bbox
-    if (options.useCellBBox) {
+    if (options.useCellGeometry) {
       const cell = this.cell
       const angle = ((cell as any) as Node).getAngle() || 0
       bbox = cell.getBBox().bbox(angle)
     } else {
-      bbox = this.getNodeBBox(this.container)
+      bbox = this.getElemBBox(this.container)
     }
 
     return this.graph.localToGraphRect(bbox)
   }
 
   getRootTranslateMatrix() {
-    const pos = ((this.cell as any) as Node).getPosition()
+    const cell = this.cell
+    const pos = cell.isNode() ? cell.getPosition() : { x: 0, y: 0 }
     return Dom.createSVGMatrix().translate(pos.x, pos.y)
   }
 
   getRootRotateMatrix() {
     let matrix = Dom.createSVGMatrix()
     const cell = this.cell
-    const angle = ((cell as any) as Node).getAngle()
+    const angle = cell.isNode() ? cell.getAngle() : 0
     if (angle) {
       const bbox = cell.getBBox()
       const cx = bbox.width / 2
@@ -797,27 +800,28 @@ export namespace CellView {
     actions: KeyValue<FlagManager.Actions>
     events?: View.Events | null
     documentEvents?: View.Events | null
-    interactive?: Interactive
+    interacting?: Interacting
   }
 
   interface InteractionMap {
     // edge
-    edgeMove?: boolean
-    labelMove?: boolean
-    arrowheadMove?: boolean
-    vertexMove?: boolean
-    vertexAdd?: boolean
-    vertexRemove?: boolean
+    edgeMovable?: boolean
+    edgeLabelMovable?: boolean
+    arrowheadMovable?: boolean
+    vertexMovable?: boolean
+    vertexAddable?: boolean
+    vertexDeletable?: boolean
     useEdgeTools?: boolean
+
     // node
-    nodeMove?: boolean
-    addEdgeFromMagnet?: boolean
+    nodeMovable?: boolean
+    magnetConnectable?: boolean
     stopDelegation?: boolean
   }
 
-  export type InteractiveName = keyof InteractionMap
+  export type InteractionNames = keyof InteractionMap
 
-  export type Interactive =
+  export type Interacting =
     | boolean
     | InteractionMap
     | ((this: Graph, cellView: CellView) => InteractionMap | true)

@@ -782,7 +782,14 @@ export class NodeView<
         break
       } else {
         const view = candidate.findView(graph) as NodeView
-        if (validateEmbeding.call(graph, this, view)) {
+        if (
+          validateEmbeding.call(graph, {
+            child: this.cell,
+            parent: view.cell,
+            childView: this,
+            parentView: view,
+          })
+        ) {
           // flip to the new candidate
           newCandidateView = view
           break
@@ -851,7 +858,7 @@ export class NodeView<
     x: number,
     y: number,
   ) {
-    if (!this.can('addEdgeFromMagnet')) {
+    if (!this.can('magnetConnectable')) {
       return
     }
 
@@ -948,7 +955,7 @@ export class NodeView<
 
   protected startNodeDragging(e: JQuery.MouseDownEvent, x: number, y: number) {
     const targetView = this.getDelegatedView()
-    if (targetView == null || !targetView.can('nodeMove')) {
+    if (targetView == null || !targetView.can('nodeMovable')) {
       return
     }
 

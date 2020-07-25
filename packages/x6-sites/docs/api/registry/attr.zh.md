@@ -2,6 +2,7 @@
 title: Attr
 order: 0
 redirect_from:
+  - /zh/docs
   - /zh/docs/api
   - /zh/docs/api/registry
 ---
@@ -10,7 +11,7 @@ redirect_from:
 
 ## presets
 
-我们在 `presets` 命名空间下挂载了所有特殊属性的定义。
+我们在 `Registry.Attr.presets` 命名空间下挂载了所有特殊属性的定义。
 
 ### ref
 
@@ -77,7 +78,8 @@ redirect_from:
 - 当其值在 `[0, 1]` 之间或为百分比（如 `75%`）时，表示元素的宽度是参照宽度百分之多少。例如 `refWidth: 0.75` 表示元素的宽度是参照宽度的 `75%`。
 - 当其值 `<0` 或 `>1` 时，表示元素的宽度在参照宽度的基础上减少或增加多少。例如 `refWidth: 20` 表示元素比相对元素宽 `20px`。
 
-需要注意的是，该属性只适用于那些支持宽度 `width` 和高度 `height` 的元素，如 `<rect>` 元素。
+[[warning]]
+| 需要注意的是，该属性只适用于那些支持宽度 `width` 和高度 `height` 的元素，如 `<rect>` 元素。
 
 ### refWidth2
 
@@ -99,7 +101,8 @@ redirect_from:
 - 当其值在 `[0, 1]` 之间或为百分比（如 `75%`）时，表示元素的高度是参照高度百分之多少。例如 `refHeight: 0.75` 表示元素的高度是参照高度的 `75%`。
 - 当其值 `<0` 或 `>1` 时，表示元素的高度在参照高度的基础上减少或增加多少。例如 `refHeight: 20` 表示元素比相对元素高 `20px`。
   
-需要注意的是，该属性只适用于那些支持宽度 `width` 和高度 `height` 的元素，如 `<rect>` 元素。
+[[warning]]
+| 需要注意的是，该属性只适用于那些支持宽度 `width` 和高度 `height` 的元素，如 `<rect>` 元素。
 
 ### refHeight2
 
@@ -121,7 +124,8 @@ redirect_from:
 - 当其值在 `[0, 1]` 之间或为百分比（如 `75%`）时，表示元素的 `cx` 是参照宽度百分之多少。例如 `refCx: 0.75` 表示元素中心 `x` 坐标位于参照宽度的 `75%` 处。
 - 当其值 `<0` 或 `>1` 时，表示元素的 `cx` 是在参照宽度的基础上减少或增加多少。例如 `refCx: 20` 表示元素中心 `x` 坐标位于参照宽度加 `20px` 处。
 
-需要注意的是，该属性只适用于那些支持 `cx` 和 `cy` 属性的元素，如 `<ellipse>` 元素。
+[[warning]]
+| 需要注意的是，该属性只适用于那些支持 `cx` 和 `cy` 属性的元素，如 `<ellipse>` 元素。
 
 
 ### refCy
@@ -131,7 +135,8 @@ redirect_from:
 - 当其值在 `[0, 1]` 之间或为百分比（如 `75%`）时，表示元素的 `cy` 是参照高度百分之多少。例如 `refCy: 0.75` 表示元素中心 `y` 坐标位于参照高度的 `75%` 处。
 - 当其值 `<0` 或 `>1` 时，表示元素的 `cy` 是在参照宽度的基础上减少或增加多少。例如 `refCy: 20` 表示元素中心 `y` 坐标位于参照高度加 `20px` 处。
 
-需要注意的是，该属性只适用于那些支持 `cx` 和 `cy` 属性的元素，如 `<ellipse>` 元素。
+[[warning]]
+| 需要注意的是，该属性只适用于那些支持 `cx` 和 `cy` 属性的元素，如 `<ellipse>` 元素。
 
 ### refRx
 
@@ -140,7 +145,8 @@ redirect_from:
 - 当其值在 `[0, 1]` 之间或为百分比（如 `75%`）时，表示元素的 `rx` 是参照宽度百分之多少。例如 `refRx: 0.75` 表示元素的 `rx` 是参照宽度的 `75%`。
 - 当其值 `<0` 或 `>1` 时，表示元素的 `rx` 是在参照宽度的基础上减少或增加多少。例如 `refRx: 20` 表示元素的 `rx` 是参照宽度加 `20px`。
 
-需要注意的是，该属性只适用于那些支持 `rx` 和 `ry` 属性的元素，如 `<rect>` 元素。
+[[warning]]
+| 需要注意的是，该属性只适用于那些支持 `rx` 和 `ry` 属性的元素，如 `<rect>` 元素。
 
 ### refRy
 
@@ -149,7 +155,8 @@ redirect_from:
 - 当其值在 `[0, 1]` 之间或为百分比（如 `75%`）时，表示元素的 `ry` 是参照高度百分之多少。例如 `refRy: 0.75` 表示元素的 `ry` 是参照高度的 `75%`。
 - 当其值 `<0` 或 `>1` 时，表示元素的 `ry` 是在参照宽度的基础上减少或增加多少。例如 `refRy: 20` 表示元素的 `ry` 是参照高度加 `20px`。
 
-需要注意的是，该属性只适用于那些支持 `rx` 和 `ry` 属性的元素，如 `<rect>` 元素。
+[[warning]]
+| 需要注意的是，该属性只适用于那些支持 `rx` 和 `ry` 属性的元素，如 `<rect>` 元素。
 
 ### refRCircumscribed
 
@@ -158,7 +165,8 @@ redirect_from:
 - 当其值在 `[0, 1]` 之间或为百分比（如 `75%`）时，表示 `r` 是参照长度百分之多少。例如 `refRCircumscribed: 0.75` 表示 `r` 是参照长度的 `75%`。
 - 当其值 `<0` 或 `>1` 时，表示 `r` 是在参照长度的基础上减少或增加多少。例如 `refRCircumscribed: 20` 表示 `r` 是参照长度加 `20px`。
 
-需要注意的是，该属性只适用于那些支持 `r` 属性的元素，如 `<rect>` 元素。
+[[warning]]
+| 需要注意的是，该属性只适用于那些支持 `r` 属性的元素，如 `<rect>` 元素。
 
 ### refRInscribed
 
@@ -169,7 +177,8 @@ redirect_from:
 - 当其值在 `[0, 1]` 之间或为百分比（如 `75%`）时，表示 `r` 是参照长度百分之多少。例如 `refRInscribed: 0.75` 表示 `r` 是参照长度的 `75%`。
 - 当其值 `<0` 或 `>1` 时，表示 `r` 是在参照长度的基础上减少或增加多少。例如 `refRInscribed: 20` 表示 `r` 是参照长度加 `20px`。
 
-需要注意的是，该属性只适用于那些支持 `r` 属性的元素，如 `<rect>` 元素。
+[[warning]]
+| 需要注意的是，该属性只适用于那些支持 `r` 属性的元素，如 `<rect>` 元素。
 
 ### refDKeepOffset
 
@@ -336,14 +345,6 @@ console.log(view.findOne('polygon').getAttribute('points'))
 - `'middle'` 目标元素的中心与 `x` 对齐。
 - `'right'` 目标元素的右侧与 `x` 对齐。
 
-<iframe
-     src="https://codesandbox.io/embed/x6-attr-xy-align-6h5kc?fontsize=14&hidenavigation=1&theme=light&view=preview"
-     style="width:100%; height:340px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
-     title="x6-attr-xy-align"
-     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-     sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-   ></iframe>
-
 ### yAlign
 
 元素与 `y` 坐标在垂直方向的对齐方式。
@@ -352,6 +353,7 @@ console.log(view.findOne('polygon').getAttribute('points'))
 - `'middle'` 目标元素的中心与 `y` 对齐。
 - `'bottom'` 目标元素与的底部与 `y` 对齐。
 
+<iframe src="/demos/api/registry/attr/x-align"></iframe>
 
 ### fill
 
@@ -446,14 +448,7 @@ textWrap: {
 - `'middle'` 目标元素的中心与 `y` 对齐。
 - `'bottom'` 目标元素与的底部与 `y` 对齐。
 
-<iframe
-     src="https://codesandbox.io/embed/x6-attr-text-anchor-8osyo?fontsize=14&hidenavigation=1&theme=light&view=preview"
-     style="width:100%; height:410px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
-     title="x6-attr-text-anchor"
-     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-     sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-   ></iframe>
-
+<iframe src="/demos/api/registry/attr/text-anchor"></iframe>
 
 ### connection
 
@@ -482,7 +477,7 @@ edge.attr('pathSelector', {
 
 *简称*：**`atConnectionLength`**
 
-将边中的指定元素移动到指定偏移量的位置处，并自动旋转元素，使其方向与所在位置边的切线方向保持一致。
+将边中的指定元素移动到指定偏移量的位置处，并自动旋转元素，使其方向与所在位置边的斜率保持一致。
 
 - 为正数时，表示距离边起点的偏移量。
 - 为负数时，表示距离边终点的偏移量。
@@ -518,7 +513,7 @@ edge.attr('rectSelector', {
 
 *简称*：**`atConnectionRatio`**
 
-将边中的指定元素移动到指定比例 `[0, 1]` 位置处，并自动旋转元素，使其方向与所在位置边的切线方向保持一致。
+将边中的指定元素移动到指定比例 `[0, 1]` 位置处，并自动旋转元素，使其方向与所在位置边的斜率保持一致。
 
 ```ts
 edge.attr('rectSelector', { 
@@ -563,7 +558,8 @@ edge.attr('connection/sourceMarker', {
 
 适用于所有 `<path>` 元素，在路径的终点添加一个 SVG 元素（如终点箭头），并自动旋转该元素，使其与根据路径方向保持一致。了解更多详情请参考[这篇教程](../../tutorial/intermediate/marker)。
 
-需要注意的是，该元素初始时就被旋转了 `180` 度，在此基础上再自动调整旋转角度，并与路径的方向保持一致。例如，对于一个水平的直线，我们为其起点指定了一个向左的箭头，我们也可以为其重点指定相同的箭头，这个箭头会自动指向右侧（自动旋转了 `180` 度）。
+[[warning]]
+| 需要注意的是，该元素初始时就被旋转了 `180` 度，在此基础上再自动调整旋转角度，并与路径的方向保持一致。例如，对于一个水平的直线，我们为其起点指定了一个向左的箭头，我们也可以为其重点指定相同的箭头，这个箭头会自动指向右侧（自动旋转了 `180` 度）。
 
 
 ### vertexMarker
@@ -595,7 +591,7 @@ node.attr({
     xlinkHref: 'trash.png',
     width: 20,
     height: 20,
-  }
+  },
 })
 
 // 绑定事件回调，触发时删除节点
@@ -605,4 +601,247 @@ graph.on('node:delete', ({ view, e }) => {
 })
 ```
 
+### xlinkHref
+
+属性 [`xlink:href`](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/xlink:href) 的别名，例如：
+
+```ts
+node.attr({
+  image: {
+    xlinkHref: 'xxx.png',
+  },
+})
+```
+
+### xlinkShow 
+
+属性 [`xlink:show`](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/xlink:show) 的别名。
+
+### xlinkType 
+
+属性 [`xlink:type`](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/xlink:type) 的别名。
+
+### xlinkTitle 
+
+属性 [`xlink:title`](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/xlink:title) 的别名。
+
+### xlinkArcrole 
+
+属性 [`xlink:arcrole`](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/xlink:arcrole) 的别名。
+
+### xmlSpace 
+
+属性 [`xml:space`](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/xml:space) 的别名。
+
+### xmlBase
+
+属性 [`xml:base`](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/xml:base) 的别名。
+
+### xmlLang
+
+属性 [`xml:lang`](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/xml:lang) 的别名。
+
 ## registry
+
+我们在 `registry` 对象上提供了 [`register`](#register) 和 [`unregister`](#unregister) 两个方法来注册和删除特殊属性。
+
+### register
+
+```sign
+register(entities: { [name: string]: Definition }, force?: boolean): void
+register(name: string, entity: Definition, force?: boolean): Definition
+```
+
+注册自定义属性。
+
+### unregister
+
+```sign
+unregister(name: string): Definition | null
+```
+
+删除注册的属性。
+
+
+同时，我们将 [`register`](#register) 和 [`unregister`](#unregister) 两个方法挂载为 `Graph` 的两个静态方法 `Graph.registerAttr` 和 `Graph.unregisterAttr`，推荐使用这两个静态方法来注册和删除特殊属性。
+
+### Definition
+
+在内部实现中，我们将特殊属性转换为浏览器可以识别的属性，所以理论上来讲特殊属性的值可以是任何类型，同时特殊属性的定义也支持多种形态。
+
+#### 字符串
+
+为原生属性定义别名，例如特殊属性 `xlinkHref` 的定义，实际上是为 [`xlink:href`](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/xlink:href) 属性定义了一个更易书写的别名。
+
+```ts
+// 定义
+Graph.registerAttr('xlinkHref', 'xlink:href')
+
+// 使用 
+node.attr({
+  image: {
+    xlinkHref: 'xxx.png',
+  },
+})
+```
+
+继续介绍属性定义前，我们先了解一下属性限定 `qualify` 函数，只有通过限定函数判定的属性值才会被特殊属性处理。例如，仅当 [`stroke`](#stroke) 属性值为 `Object` 类型时，才会被当做特殊属性处理（使用渐变色填充边框）。看下面限定函数的定义。
+
+```sign
+type QualifyFucntion = (
+  this: CellView,         // 节点/边的视图
+  val: ComplexAttrValue,  // 当前属性的属性值
+  options: {           
+    elem: Element         // 当前属性应用的元素
+    attrs: ComplexAttrs   // 应用到该元素的属性键值对
+    cell: Cell            // 节点/边
+    view: CellView        // 节点/边的视图
+  },
+) => boolean              // 返回 true 时表示通过限定函数的判定
+```
+
+例如 [`stroke`](#stroke) 属性的定义如下：
+
+```ts
+export const stroke: Attr.Definition = {
+  qualify(val) {
+    // 仅当属性值为对象时，才触发特殊属性加工逻辑。
+    return ObjectExt.isPlainObject(val)
+  }, 
+  set(stroke, { view }) {
+    return `url(#${view.graph.defineGradient(stroke as any)})`
+  },
+}
+```
+
+#### set
+
+设置属性定义，适用于大部分场景。
+
+```sign
+export interface SetDefinition {
+  qualify?: QualifyFucntion // 限定函数
+  set: (
+    this: CellView,         // 节点/边的视图
+    val: ComplexAttrValue,  // 当前属性的属性值
+    options: {           
+      refBBox: Rectangle    // 参照元素的包围盒，没有参照元素时使用节点的位置和大小指代的矩形
+      elem: Element         // 当前属性应用的元素
+      attrs: ComplexAttrs   // 应用到该元素的属性键值对
+      cell: Cell            // 节点/边
+      view: CellView        // 节点/边的视图
+    },
+  ) => SimpleAttrValue | SimpleAttrs | void
+}
+```
+
+当 `set` 方法返回 `string` 或 `number` 时，表示将返回值作为特殊属性的值，这种方式通常用于扩展原生属性的定义，如支持渐变色填充的 [`stroke`](#stroke) 和 [`fill`](#fill) 属性。
+
+```ts
+// stroke 属性定义
+export const stroke: Attr.SetDefinition = {
+  qualify: ObjectExt.isPlainObject, 
+  set(stroke, { view }) {
+    // 返回字符串，返回值作为 stroke 属性的属性值。
+    return `url(#${view.graph.defineGradient(stroke as any)})`
+  },
+}
+
+// 使用 stroke 属性
+node.attr({
+  rect: {
+    stroke: {...},
+  },
+})
+```
+
+当 `set` 方法返回一个简单对象时，则将该对象作为属性键值对应用到对应的元素上，如 [`sourceMarker`](#sourcemarker) 和 [`targetMarker`](#targetmarker) 属性。
+
+```ts
+export const sourceMarker: Attr.SetDefinition = {
+  qualify: ObjectExt.isPlainObject,
+  set(marker: string | JSONObject, { view, attrs }) {
+    // 返回一个简单对象，返回值作为属性键值对被应用到对应的元素上。
+    return {
+      'marker-start': createMarker(marker, view, attrs),
+    },
+  },
+}
+```
+
+当 `set` 方法没有返回值时，表示在在该方法内部完成了属性赋值，如 [`html`](#html) 属性。
+
+```ts
+export const html: Attr.Definition = {
+  set(html, { view, elem }) {
+    // 没有返回值，在方法内部完成属性赋值
+    view.$(elem).html(`${html}`)
+  },
+}
+```
+
+#### offset
+
+偏移量属性定义。
+
+```sign
+export interface OffsetDefinition {
+  qualify?: QualifyFucntion // 限定函数
+  offset: (
+    this: CellView,         // 节点/边的视图
+    val: ComplexAttrValue,  // 当前属性的属性值
+    options: {           
+      refBBox: Rectangle    // 参照元素的包围盒，没有参照元素时使用节点的位置和大小指代的矩形
+      elem: Element         // 当前属性应用的元素
+      attrs: ComplexAttrs   // 应用到该元素的属性键值对
+      cell: Cell            // 节点/边
+      view: CellView        // 节点/边的视图
+    },
+  ) => Point.PointLike  // 返回绝对偏移量
+}
+```
+
+返回代表 `x` 和 `y` 方向绝对偏移量的 `Point.PointLike` 对象，如 [`xAlign`](#xalign) 属性。
+
+```ts
+export const xAlign: Attr.OffsetDefinition = {
+  offset(alignment, { refBBox }) {
+    ...
+    // 返回 x 轴的绝对偏移量
+    return { x, y: 0 }
+  },
+}
+```
+
+#### position
+
+定位属性定义。
+
+```sign
+export interface PositionDefinition {
+  qualify?: QualifyFucntion // 限定函数
+  offset: (
+    this: CellView,         // 节点/边的视图
+    val: ComplexAttrValue,  // 当前属性的属性值
+    options: {           
+      refBBox: Rectangle    // 参照元素的包围盒，没有参照元素时使用节点的位置和大小指代的矩形
+      elem: Element         // 当前属性应用的元素
+      attrs: ComplexAttrs   // 应用到该元素的属性键值对
+      cell: Cell            // 节点/边
+      view: CellView        // 节点/边的视图
+    },
+  ) => Point.PointLike  // 返回绝对定位坐标
+}
+```
+
+返回相对于节点的绝对定位坐标，如 [`refX`](#refx) 和 [`refDx`](#refdx) 属性。 
+
+```ts
+export const refX: Attr.PositionDefinition = {
+  position(val, { refBBox }) {
+    ...
+    // 返回 x 轴的绝对定位
+    return { x, y: 0 }
+  },
+}
+```

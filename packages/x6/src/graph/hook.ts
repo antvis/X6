@@ -14,6 +14,7 @@ import { Selection } from '../addon/selection'
 import { Clipboard } from '../addon/clipboard'
 import { Transform } from '../addon/transform'
 import { HTML } from '../shape/standard/html'
+import { Edge as StandardEdge } from '../shape/standard/edge'
 import { Base } from './base'
 import { Graph } from './graph'
 import { Options } from './options'
@@ -291,10 +292,44 @@ export class Hook extends Base implements Hook.IHook {
     return new FormatManager(this.graph)
   }
 
-  validateEdge(edge: Edge) {
-    const options = this.options.connecting
+  protected allowMultiEdges(edge: Edge) {
+    const multi = this.options.connecting.multi
 
-    if (!options.multi) {
+    if (typeof multi !== 'function') {
+      return !!multi
+    }
+
+    return multi.call(this.graph, {
+      edge,
+      sourceCell: edge.getSourceCell(),
+      targetCell: edge.getTargetCell(),
+      sourcePort: edge.getSourcePortId(),
+      targetPort: edge.getTargetPortId(),
+    })
+  }
+
+  protected allowDanglingEdge(edge: Edge) {
+    const dangling = this.options.connecting.dangling
+
+    if (typeof dangling !== 'function') {
+      return !!dangling
+    }
+
+    return dangling.call(this.graph, {
+      edge,
+      sourceCell: edge.getSourceCell(),
+      targetCell: edge.getTargetCell(),
+      sourcePort: edge.getSourcePortId(),
+      targetPort: edge.getTargetPortId(),
+    })
+  }
+
+  validateEdge(
+    edge: Edge,
+    type: Edge.TerminalType,
+    initialTerminal: Edge.TerminalData,
+  ) {
+    if (this.allowMultiEdges(edge) === false) {
       const source = edge.getSource() as Edge.TerminalCellData
       const target = edge.getTarget() as Edge.TerminalCellData
 
@@ -325,7 +360,7 @@ export class Hook extends Base implements Hook.IHook {
       }
     }
 
-    if (!options.dangling) {
+    if (this.allowDanglingEdge(edge) === false) {
       const sourceId = edge.getSourceCellId()
       const targetId = edge.getTargetCellId()
       if (!(sourceId && targetId)) {
@@ -335,7 +370,11 @@ export class Hook extends Base implements Hook.IHook {
 
     const validate = this.options.connecting.validateEdge
     if (validate) {
-      return validate.call(this.graph, edge)
+      return validate.call(this.graph, {
+        edge,
+        type,
+        previous: initialTerminal,
+      })
     }
 
     return true
@@ -349,22 +388,34 @@ export class Hook extends Base implements Hook.IHook {
     if (magnet.getAttribute('magnet') !== 'passive') {
       const validate = this.options.connecting.validateMagnet
       if (validate) {
-        return validate.call(this.graph, cellView, magnet, e)
+        return validate.call(this.graph, {
+          e,
+          magnet,
+          view: cellView,
+          cell: cellView.cell,
+        })
       }
       return true
     }
     return false
   }
 
-  getDefaultEdge(cellView: CellView, magnet: Element) {
-    const create = this.options.connecting.createEdge
+  getDefaultEdge(sourceView: CellView, sourceMagnet: Element) {
     let edge: Edge | undefined
+
+    const create = this.options.connecting.createEdge
     if (create) {
-      edge = create.call(this.graph, cellView, magnet)
+      edge = create.call(this.graph, {
+        sourceMagnet,
+        sourceView,
+        sourceCell: sourceView.cell,
+      })
     }
+
     if (edge == null) {
-      edge = new Edge()
+      edge = new StandardEdge()
     }
+
     return edge!
   }
 
@@ -378,15 +429,17 @@ export class Hook extends Base implements Hook.IHook {
   ) {
     const validate = this.options.connecting.validateConnection
     return validate
-      ? validate.call(
-          this.graph,
+      ? validate.call(this.graph, {
+          edgeView,
           sourceView,
           sourceMagnet,
           targetView,
           targetMagnet,
-          terminalType,
-          edgeView,
-        )
+          sourceCell: sourceView ? sourceView.cell : null,
+          targetCell: targetView ? targetView.cell : null,
+          edge: edgeView ? edgeView.cell : null,
+          type: terminalType,
+        })
       : true
   }
 
@@ -420,7 +473,7 @@ export class Hook extends Base implements Hook.IHook {
 
   @Decorator.hook(true)
   createCellView(cell: Cell) {
-    const options = { interactive: this.options.interactive }
+    const options = { interacting: this.options.interacting }
 
     const ctor = this.getCellView(cell)
     if (ctor) {
@@ -472,20 +525,6 @@ export namespace Hook {
   ) => T
 
   export interface IHook {
-    onViewUpdated: (
-      this: Graph,
-      view: CellView,
-      flag: number,
-      options: Renderer.RequestViewUpdateOptions,
-    ) => void
-
-    onViewPostponed: (
-      this: Graph,
-      view: CellView,
-      flag: number,
-      options: Renderer.UpdateViewOptions,
-    ) => boolean
-
     createView: CreateManager<GraphView>
     createModel: CreateManager<Model>
     createRenderer: CreateManager<Renderer>
@@ -524,6 +563,20 @@ export namespace Hook {
     createMouseWheel: CreateManager<MouseWheel>
     createPrintManager: CreateManager<PrintManager>
     createFormatManager: CreateManager<FormatManager>
+
+    onViewUpdated: (
+      this: Graph,
+      view: CellView,
+      flag: number,
+      options: Renderer.RequestViewUpdateOptions,
+    ) => void
+
+    onViewPostponed: (
+      this: Graph,
+      view: CellView,
+      flag: number,
+      options: Renderer.UpdateViewOptions,
+    ) => boolean
 
     getCellView(
       this: Graph,

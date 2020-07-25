@@ -31,9 +31,9 @@ export default class Example extends React.Component {
         },
       },
 
-      interactive: {
-        edgeMove: false,
-        labelMove: false,
+      interacting: {
+        edgeMovable: false,
+        edgeLabelMovable: false,
       },
       highlighting: {
         default: {

@@ -1,20 +1,19 @@
 {
   "name": "@antv/x6-example-sites",
   "private": "true",
-  "version": "0.10.30",
+  "version": "0.10.37",
   "workspaces": [
     "packages/**/*"
   ],
   "scripts": {
-    "bootstrap": "lerna bootstrap && yarn build",
-    "deploy": "lerna run deploy",
-    "clear": "rimraf yarn.lock && lerna run clean && lerna clean -y",
-    "reboot": "run-s clear bootstrap"
+    "build": "yarn workspaces run build",
+    "deploy": "yarn workspaces run deploy",
+    "clear": "rimraf node_modules yarn.lock && yarn workspaces run clean"
   },
   "dependencies": {
-    "@antv/x6": "^0.10.30",
-    "@antv/x6-example-sites-helper": "^0.1.0",
+    "@antv/x6": "^0.10.37",
     "@antv/x6-components": "^0.10.1",
+    "@antv/x6-example-sites-helper": "^0.1.1",
     "@antv/x6-react-shape": "^0.10.2",
     "antd": "^4.4.2",
     "react": "^16.13.1",
