@@ -20,7 +20,7 @@ export function resolve<S extends Function, T>(fn: S): T {
       if (refView) {
         if (refView.isEdgeElement(ref)) {
           const distance = options.fixedAt != null ? options.fixedAt : '50%'
-          refPoint = getPointAtLink(refView as EdgeView, distance)
+          refPoint = getPointAtEdge(refView as EdgeView, distance)
         } else {
           refPoint = refView.getElemBBox(ref).getCenter()
         }
@@ -33,7 +33,7 @@ export function resolve<S extends Function, T>(fn: S): T {
   } as any) as T
 }
 
-export function getPointAtLink(edgeView: EdgeView, value: string | number) {
+export function getPointAtEdge(edgeView: EdgeView, value: string | number) {
   const isPercentage = NumberExt.isPercentage(value)
   const num = typeof value === 'string' ? parseFloat(value) : value
   if (isPercentage) {

@@ -6,8 +6,8 @@ import {
   Attr,
   Router,
   Connector,
-  EdgeConnectionAnchor,
-  NodeConnectionAnchor,
+  EdgeEndpoint,
+  NodeEndpoint,
   ConnectionPoint,
   ConnectionStrategy,
 } from '../registry'
@@ -592,7 +592,7 @@ export class Edge<
     this.setLabels(labels)
   }
 
-  getLabels() {
+  getLabels(): Edge.Label[] {
     return [...this.store.get('labels', [])].map((item) =>
       this.parseLabel(item),
     )
@@ -738,9 +738,7 @@ export class Edge<
     return this.getVertices()
   }
 
-  set vertices(
-    vertices: Point | Point.PointLike | (Point | Point.PointLike)[],
-  ) {
+  set vertices(vertices: Point.PointLike | Point.PointLike[]) {
     this.setVertices(vertices)
   }
 
@@ -749,7 +747,7 @@ export class Edge<
   }
 
   setVertices(
-    vertices: Point | Point.PointLike | (Point | Point.PointLike)[],
+    vertices: Point.PointLike | Point.PointLike[],
     options: Edge.SetOptions = {},
   ) {
     const points = Array.isArray(vertices) ? vertices : [vertices]
@@ -762,7 +760,7 @@ export class Edge<
   }
 
   insertVertex(
-    vertex: Point | Point.PointLike,
+    vertice: Point.PointLike,
     index?: number,
     options: Edge.SetOptions = {},
   ) {
@@ -773,11 +771,11 @@ export class Edge<
       idx = len + idx + 1
     }
 
-    vertices.splice(idx, 0, Point.toJSON(vertex))
+    vertices.splice(idx, 0, Point.toJSON(vertice))
     return this.setVertices(vertices, options)
   }
 
-  appendVertex(vertex: Point | Point.PointLike, options: Edge.SetOptions = {}) {
+  appendVertex(vertex: Point.PointLike, options: Edge.SetOptions = {}) {
     return this.insertVertex(vertex, -1, options)
   }
 
@@ -791,7 +789,7 @@ export class Edge<
 
   setVertexAt(
     index: number,
-    vertice: Point | Point.PointLike,
+    vertice: Point.PointLike,
     options: Edge.SetOptions = {},
   ) {
     if (index != null && isFinite(index)) {
@@ -1057,7 +1055,7 @@ export class Edge<
 
     let loop = sourceId === targetId
 
-    // Note that there in the deep mode a link can have a loop,
+    // Note that there in the deep mode a edge can have a loop,
     // even if it connects only a parent and its embed.
     // A loop "target equals source" is valid in both shallow and deep mode.
     if (!loop && options.deep && this._model) {
@@ -1169,17 +1167,17 @@ export namespace Edge {
   export interface SetTerminalCommonArgs {
     selector?: string
     magnet?: string
-    priority?: number
     connectionPoint?: ConnectionPoint.NativeItem | ConnectionPoint.ManaualItem
   }
 
   export interface SetCellTerminalArgs extends SetTerminalCommonArgs {
     port?: string
-    anchor?: NodeConnectionAnchor.NativeItem | NodeConnectionAnchor.ManaualItem
+    priority?: boolean
+    endpoint?: NodeEndpoint.NativeItem | NodeEndpoint.ManaualItem
   }
 
   export interface SetEdgeTerminalArgs extends SetTerminalCommonArgs {
-    anchor?: EdgeConnectionAnchor.NativeItem | EdgeConnectionAnchor.ManaualItem
+    endpoint?: EdgeEndpoint.NativeItem | EdgeEndpoint.ManaualItem
   }
 
   export interface TerminalPointData

@@ -4,9 +4,9 @@ import { ConnectionPoint } from './index'
 export interface AnchorOptions extends ConnectionPoint.BaseOptions {}
 
 /**
- * Places the connection point at the edge end's anchor point.
+ * Places the connection point at the edge's endpoint.
  */
-export const anchor: ConnectionPoint.Definition<AnchorOptions> = function (
+export const endpoint: ConnectionPoint.Definition<AnchorOptions> = function (
   line,
   view,
   magnet,

@@ -23,35 +23,35 @@ function findRoute(
 ) {
   const precision = options.precision
 
-  let sourceAnchor
-  let targetAnchor
+  let sourceEndpoint
+  let targetEndpoint
 
   if (from instanceof Rectangle) {
-    sourceAnchor = util.round(
-      util.getSourceAnchor(edgeView, options).clone(),
+    sourceEndpoint = util.round(
+      util.getSourceEndpoint(edgeView, options).clone(),
       precision,
     )
   } else {
-    sourceAnchor = util.round(from.clone(), precision)
+    sourceEndpoint = util.round(from.clone(), precision)
   }
 
   if (to instanceof Rectangle) {
-    targetAnchor = util.round(
-      util.getTargetAnchor(edgeView, options).clone(),
+    targetEndpoint = util.round(
+      util.getTargetEndpoint(edgeView, options).clone(),
       precision,
     )
   } else {
-    targetAnchor = util.round(to.clone(), precision)
+    targetEndpoint = util.round(to.clone(), precision)
   }
 
   // Get grid for this route.
-  const grid = util.getGrid(options.step, sourceAnchor, targetAnchor)
+  const grid = util.getGrid(options.step, sourceEndpoint, targetEndpoint)
 
   // Get pathfinding points.
   // -----------------------
 
-  const startPoint = sourceAnchor
-  const endPoint = targetAnchor
+  const startPoint = sourceEndpoint
+  const endPoint = targetEndpoint
   let startPoints
   let endPoints
 
@@ -69,7 +69,7 @@ function findRoute(
 
   if (to instanceof Rectangle) {
     endPoints = util.getRectPoints(
-      targetAnchor,
+      targetEndpoint,
       to,
       options.endDirections,
       grid,
@@ -152,8 +152,6 @@ function findRoute(
           options,
         )
       } else {
-        // beginning of path, start rect point
-        // beginning of path, source anchor or `from` point
         previousDirectionAngle = null
       }
 
@@ -269,7 +267,7 @@ export const router: Router.Definition<ManhattanRouterOptions> = function (
   const options = resolveOptions(optionsRaw)
   const sourceBBox = util.getSourceBBox(edgeView, options)
   const targetBBox = util.getTargetBBox(edgeView, options)
-  const sourceAnchor = util.getSourceAnchor(edgeView, options)
+  const sourceEndpoint = util.getSourceEndpoint(edgeView, options)
 
   // pathfinding
   const map = new ObstacleMap(options).build(
@@ -281,7 +279,7 @@ export const router: Router.Definition<ManhattanRouterOptions> = function (
   const newVertices: Point[] = []
 
   // The origin of first route's grid, does not need snapping
-  let tailPoint = sourceAnchor
+  let tailPoint = sourceEndpoint
 
   let from
   let to
@@ -303,7 +301,7 @@ export const router: Router.Definition<ManhattanRouterOptions> = function (
         edge.getSourceCellId() == null || edge.getTargetCellId() == null
 
       if (isEndingAtPoint && typeof options.draggingRouter === 'function') {
-        const dragFrom = from === sourceBBox ? sourceAnchor : from
+        const dragFrom = from === sourceBBox ? sourceEndpoint : from
         const dragTo = to.getOrigin()
         partialRoute = options.draggingRouter.call(
           edgeView,

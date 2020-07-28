@@ -17,7 +17,7 @@ export namespace ConnectionPoint {
   export interface BaseOptions {
     /**
      * Offset the connection point from the anchor by the specified
-     * distance along the end link path segment.
+     * distance along the end edge path segment.
      *
      * Default is `0`.
      */

@@ -1,7 +1,7 @@
 import { NumberExt } from '../../util'
-import { NodeConnectionAnchor } from './index'
+import { NodeEndpoint } from './index'
 
-export interface BBoxAnchorOptions {
+export interface BBoxEndpointOptions {
   dx?: number | string
   dy?: number | string
   /**
@@ -33,8 +33,8 @@ function createBBoxAnchor(
     | 'topRight'
     | 'bottomLeft'
     | 'bottomRight',
-): NodeConnectionAnchor.Definition<BBoxAnchorOptions> {
-  return function (view, magnet, ref, options: BBoxAnchorOptions = {}) {
+): NodeEndpoint.Definition<BBoxEndpointOptions> {
+  return function (view, magnet, ref, options: BBoxEndpointOptions = {}) {
     const bbox = options.rotated
       ? view.getNodeUnrotatedBBox(magnet)
       : view.getElemBBox(magnet)

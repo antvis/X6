@@ -9,8 +9,8 @@ export * from './tool'
 
 // connection
 export * from './marker'
-export * from './node-anchor'
-export * from './edge-anchor'
+export * from './node-endpoint'
+export * from './edge-endpoint'
 export * from './connection-point'
 export * from './router'
 export * from './connector'
