@@ -8,10 +8,10 @@ import { Edge as StandardEdge } from '../shape/standard/edge'
 import {
   Router,
   Connector,
-  ConnectionPoint,
-  ConnectionStrategy,
   NodeEndpoint,
   EdgeEndpoint,
+  ConnectionPoint,
+  ConnectionStrategy,
 } from '../registry'
 import { Widget } from '../addon/common'
 import { Hook } from './hook'
@@ -564,12 +564,12 @@ export namespace Options {
       dangling: true,
       highlight: false,
 
-      strategy: null,
-      router: 'normal',
-      connector: 'normal',
       endpoint: 'center',
       edgeEndpoint: 'ratio',
       connectionPoint: 'boundary',
+      strategy: null,
+      router: 'normal',
+      connector: 'normal',
 
       validateConnection(this: Graph, { type, sourceView, targetView }) {
         const view = type === 'target' ? targetView : sourceView
