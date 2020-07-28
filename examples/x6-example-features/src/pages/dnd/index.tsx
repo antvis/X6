@@ -1,18 +1,21 @@
 import React from 'react'
+import { Button } from 'antd'
 import { Graph, $ } from '@antv/x6'
 import { Dnd } from '@antv/x6/es/addon/dnd'
 import { Rect, Circle } from '@antv/x6/es/shape/standard'
 import '../index.less'
 
 export default class Example extends React.Component {
+  private graph: Graph
   private container: HTMLDivElement
   private stencilContainer: HTMLDivElement
 
   componentDidMount() {
-    const graph = new Graph({
+    const graph = (this.graph = new Graph({
       container: this.container,
       width: 800,
       height: 800,
+      history: true,
       snapline: {
         enabled: true,
         sharp: true,
@@ -28,7 +31,7 @@ export default class Example extends React.Component {
         pageBreak: false,
         pannable: true,
       },
-    })
+    }))
 
     graph.addNode({
       x: 130,
@@ -88,6 +91,17 @@ export default class Example extends React.Component {
         dnd.start(node, e)
       })
     })
+
+    // const history = graph.history
+    // history.on('change', () => {})
+  }
+
+  onUndo = () => {
+    this.graph.undo()
+  }
+
+  onRedo = () => {
+    this.graph.redo()
   }
 
   refContainer = (container: HTMLDivElement) => {
@@ -147,6 +161,12 @@ export default class Example extends React.Component {
           >
             Circle
           </div>
+        </div>
+        <div className="x6-graph-tools">
+          <Button.Group>
+            <Button onClick={this.onUndo}>Undo</Button>
+            <Button onClick={this.onRedo}>Redo</Button>
+          </Button.Group>
         </div>
         <div ref={this.refContainer} className="x6-graph" />
       </div>

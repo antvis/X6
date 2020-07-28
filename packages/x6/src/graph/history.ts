@@ -14,9 +14,9 @@ export class HistoryManager extends Basecoat<HistoryManager.EventArgs>
   protected redoStack: HistoryManager.Commands[]
   protected undoStack: HistoryManager.Commands[]
 
-  protected batchCommands: HistoryManager.Command[] | null
-  protected batchLevel: number
-  protected lastBatchIndex: number
+  protected batchCommands: HistoryManager.Command[] | null = null
+  protected batchLevel: number = 0
+  protected lastBatchIndex: number = -1
 
   protected freezed: boolean = false
   protected readonly handlers: (<T extends HistoryManager.ModelEvents>(
@@ -358,13 +358,12 @@ export class HistoryManager extends Basecoat<HistoryManager.EventArgs>
   }
 
   /**
-   * Function `initBatchCommand()` gives you the ability to gather multiple
-   * changes into a single command. These commands could be revert with
-   * single `undo()` call. From the moment the function is called every
-   * change made on model is not stored into the undoStack. Changes are
-   * temporarily kept until `storeBatchCommand()` is called.
+   * Gather multiple changes into a single command. These commands could
+   * be reverted with single `undo()` call. From the moment the function
+   * is called every change made on model is not stored into the undoStack.
+   * Changes are temporarily kept until `storeBatchCommand()` is called.
    */
-  protected initBatchCommand() {
+  protected initBatchCommand(options: KeyValue) {
     if (this.batchCommands) {
       this.batchLevel += 1
     } else {
@@ -375,10 +374,8 @@ export class HistoryManager extends Basecoat<HistoryManager.EventArgs>
   }
 
   /**
-   * Calling function `storeBatchCommand()` tells the CommandManager
-   * to store all changes temporarily kept in the undoStack. In order
-   * to store changes you have to call this function as many times as
-   * `initBatchCommand()` had been called.
+   * Store changes temporarily kept in the undoStack. You have to call this
+   * function as many times as `initBatchCommand()` been called.
    */
   protected storeBatchCommand(options: KeyValue) {
     if (this.batchCommands && this.batchLevel <= 0) {
