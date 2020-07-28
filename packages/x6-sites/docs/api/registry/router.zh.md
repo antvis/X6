@@ -51,7 +51,7 @@ const edge = graph.addEdge({
 edge.setRouter('orth', { padding: 10 })
 ```
 
-或者在创建画布时，通过 `connecting` 选项来设置全局默认路由（画布的默认路由是 `'normal'`）:
+在创建画布时，可以通过 `connecting` 选项来设置全局默认路由（画布的默认路由是 `'normal'`）:
 
 ```ts
 new Graph({
@@ -87,11 +87,13 @@ new Graph({
 
 ### orth
 
-正交路由，该路由在路径上添加额外的一些点，使边的每一条线段都水平或垂直正交。支持的参数如下表：
+正交路由，该路由在路径上添加额外的一些点，使边的每一条线段都水平或垂直正交。
+
+支持的参数如下表：
 
 | 参数名  | 参数类型 | 是否必选 | 默认值 | 参数说明                                           |
-|---------|----------|---------|--------|------------------------------------------------|
-| padding | Padding  | 否       | `20`   | 路由的第一个/最后一个点与节点的距离，默认值为 `20`。 |
+|---------|----------|:-------:|--------|------------------------------------------------|
+| padding | Padding  |    否    | `20`   | 路由的第一个/最后一个点与节点的距离，默认值为 `20`。 |
 
 其中 `Padding` 的定义如下：
 
@@ -131,13 +133,14 @@ graph.addEdge({
 
 ### oneSide
 
-`'oneSide'` 路由是正交路由 `'orth'` 的受限版本，该路生成一个严格的三段路由：从起始节点的 `side` 侧开始，经过中间段，再从终止节点的 `side` 侧结束路由。需要特别注意的是，使用该路由时请不要同时指定 `vertices`，否则路由效果会非常差。支持一下两个参数：
+`'oneSide'` 路由是正交路由 `'orth'` 的受限版本，该路生成一个严格的三段路由：从起始节点的 `side` 侧开始，经过中间段，再从终止节点的 `side` 侧结束路由。需要特别注意的是，使用该路由时请不要同时指定 `vertices`，否则路由效果会非常差。
 
+支持的参数如下表：
 
 | 参数名  | 参数类型                                       | 是否必选 | 默认值     | 参数说明                                                                                   |
-|---------|------------------------------------------------|---------|------------|----------------------------------------------------------------------------------------|
-| side    | `'left'` \| `'right'` \| `'top'` \| `'bottom'` | 否       | `'bottom'` | 路由的起始/结束方向，默认值为 `'bottom'`。                                                   |
-| padding | Padding                                        | 否       | `40`       | 路由的第一个/最后一个点与节点的距离，默认值为 `40`。详细说明请参考 [orth](#orth) 路由的选项。 |
+|---------|------------------------------------------------|:-------:|------------|----------------------------------------------------------------------------------------|
+| side    | `'left'` \| `'right'` \| `'top'` \| `'bottom'` |    否    | `'bottom'` | 路由的起始/结束方向，默认值为 `'bottom'`。                                                   |
+| padding | Padding                                        |    否    | `40`       | 路由的第一个/最后一个点与节点的距离，默认值为 `40`。详细说明请参考 [orth](#orth) 路由的选项。 |
 
 例如：
 
@@ -156,18 +159,20 @@ graph.addEdge({
 
 ### manhattan
 
-曼哈顿路由 `'manhattan'` 路由是正交路由 `'orth'` 的智能版本，该路由由水平或垂直的正交线段组成，并自动避开路径上的其他节点（障碍）。 我们为该路由算法提供了丰富的选项：
+曼哈顿路由 `'manhattan'` 路由是正交路由 `'orth'` 的智能版本，该路由由水平或垂直的正交线段组成，并自动避开路径上的其他节点（障碍）。 
+
+我们为该路由算法提供了丰富的选项：
 
 | 参数名             | 参数类型                 | 是否必选 | 默认值                               | 参数说明                                                                                   |
-|--------------------|--------------------------|---------|--------------------------------------|----------------------------------------------------------------------------------------|
-| step               | number                   | 否       | `10`                                 | 路由算法步进步长，其值越小计算量越大。<br>推荐使用画布的网格大小（`graph.options.grid.size`）。 |
-| padding            | Padding                  | 否       | `20`                                 | 路由的第一个/最后一个点与节点的距离，详细说明请参考 [orth](#orth) 路由的选项。               |
-| maximumLoops       | number                   | 否       | `2000`                               | 最大迭代次数，到达最大迭代次数后将使用候补路由。                                             |
-| maxDirectionChange | number                   | 否       | `90`                                 | 最大旋转角度。                                                                              |
-| excludeTerminals   | ('source' \| 'target')[] | 否       | `[]`                                 | 忽略起始或终止节点，忽略后不参与障碍物计算。                                                 |
-| excludeShapes      | string[]                 | 否       | `[]`                                 | 忽略指定节点名的节点，忽略后不参与障碍物计算。                                               |
-| startDirections    | string[]                 | 否       | `['top', 'right', 'bottom', 'left']` | 支持从哪些方向开始路由。                                                                    |
-| endDirections      | string[]                 | 否       | `['top', 'right', 'bottom', 'left']` | 支持从哪些方向结束路由。                                                                    |
+|--------------------|--------------------------|:-------:|--------------------------------------|----------------------------------------------------------------------------------------|
+| step               | number                   |    否    | `10`                                 | 路由算法步进步长，其值越小计算量越大。<br>推荐使用画布的网格大小（`graph.options.grid.size`）。 |
+| padding            | Padding                  |    否    | `20`                                 | 路由的第一个/最后一个点与节点的距离，详细说明请参考 [orth](#orth) 路由的选项。               |
+| maximumLoops       | number                   |    否    | `2000`                               | 最大迭代次数，到达最大迭代次数后将使用候补路由。                                             |
+| maxDirectionChange | number                   |    否    | `90`                                 | 最大旋转角度。                                                                              |
+| excludeTerminals   | ('source' \| 'target')[] |    否    | `[]`                                 | 忽略起始或终止节点，忽略后不参与障碍物计算。                                                 |
+| excludeShapes      | string[]                 |    否    | `[]`                                 | 忽略指定节点名的节点，忽略后不参与障碍物计算。                                               |
+| startDirections    | string[]                 |    否    | `['top', 'right', 'bottom', 'left']` | 支持从哪些方向开始路由。                                                                    |
+| endDirections      | string[]                 |    否    | `['top', 'right', 'bottom', 'left']` | 支持从哪些方向结束路由。                                                                    |
 
 例如：
 
@@ -211,13 +216,15 @@ graph.addEdge({
 
 ### er
 
-实体关系路由 `'er'` 由 Z 字形的斜角线段组成，常用于表示 ER 图中的实体之间的连线。支持的选项如下：
+实体关系路由 `'er'` 由 Z 字形的斜角线段组成，常用于表示 ER 图中的实体之间的连线。
+
+支持的参数如下表：
 
 
 | 参数名    | 参数类型                            | 是否必选 | 默认值    | 参数说明                                    |
-|-----------|-------------------------------------|---------|-----------|-----------------------------------------|
-| offset    | number                              | 否       | `32`      | 路由的第一个点和最后一个点与节点之间的距离。 |
-| direction | `'T' | 'B' | 'L' | 'R' | 'H' | 'V'` | 否       | undefined | 路由方向，缺省时将自动选择最优方向。          |
+|-----------|-------------------------------------|:-------:|-----------|-----------------------------------------|
+| offset    | number                              |    否    | `32`      | 路由的第一个点和最后一个点与节点之间的距离。 |
+| direction | `'T' | 'B' | 'L' | 'R' | 'H' | 'V'` |    否    | undefined | 路由方向，缺省时将自动选择最优方向。          |
 
 例如：
 
@@ -257,7 +264,7 @@ export type Definition<T> = (
 | args     | T                 | 路由参数。   |
 | edgeView | EdgeView          | 边的视图。   |
 
-并在 `registry` 对象上提供了 [`register`](#register) 和 [`unregister`](#unregister) 两个方法来注册和删除路由。
+并在 `Registry.Router.registry` 对象上提供了 [`register`](#register) 和 [`unregister`](#unregister) 两个方法来注册和删除路由。
 
 ### register
 
@@ -266,7 +273,7 @@ register(entities: { [name: string]: Definition }, force?: boolean): void
 register(name: string, entity: Definition, force?: boolean): Definition
 ```
 
-注册自定义路由。
+注册路由。
 
 ### unregister
 
@@ -274,9 +281,9 @@ register(name: string, entity: Definition, force?: boolean): Definition
 unregister(name: string): Definition | null
 ```
 
-删除注册的路由。
+取消注册路由。
 
-### 自定义路由案例
+### 自定义路由
 
 我们可以按照上面规则来创建自定义路由，例如，实现随机走线的路由：
 
@@ -306,22 +313,13 @@ function randomRouter(vertices: Point.PointLike[], args: RandomRouterArgs, view:
 }
 ```
 
-实际上，我们将 `registry`  对象的 `register` 和 `unregister` 方法分别挂载为 `Graph` 的两个静态方法 `registerRouter` 和 `unregisterRouter`，所以我们可以像下面这样来注册刚刚定义的随机路由：
-
+实际上，我们将 `Registry.Router.registry`  对象的 `register` 和 `unregister` 方法分别挂载为 `Graph` 的两个静态方法 `Graph.registerRouter` 和 `Graph.unregisterRouter`，所以我们可以像下面这样来注册路由：
 
 ```ts
 Graph.registerRouter('random', randomRouter)
 ```
 
-或者直接一步到位：
-
-```ts
-Graph.registerRouter('random', (vertices, args, view) => {
-  // ...
-})
-```
-
-注册以后我们就可以通过路由名称来使用路由：
+注册以后我们就可以通过路由名称来使用：
 
 ```ts
 edge.setRouter('random', { bounces: 3 })

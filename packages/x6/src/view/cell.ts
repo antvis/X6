@@ -529,10 +529,10 @@ export class CellView<
     edge: Edge,
     type: Edge.TerminalType,
   ): T {
-    const stra = edge.getStrategy() || this.graph.options.connecting.strategy
-    if (stra) {
-      const name = typeof stra === 'string' ? stra : stra.name
-      const args = typeof stra === 'string' ? {} : stra.args || {}
+    const raw = edge.getStrategy() || this.graph.options.connecting.strategy
+    if (raw) {
+      const name = typeof raw === 'string' ? raw : raw.name
+      const args = typeof raw === 'string' ? {} : raw.args || {}
       const registry = ConnectionStrategy.registry
 
       if (name) {
@@ -541,7 +541,7 @@ export class CellView<
           return registry.onNotFound(name)
         }
 
-        const strategy = fn.call(
+        const result = fn.call(
           this.graph,
           terminal,
           this,
@@ -552,8 +552,8 @@ export class CellView<
           args,
         )
 
-        if (strategy) {
-          return strategy
+        if (result) {
+          return result
         }
       }
     }

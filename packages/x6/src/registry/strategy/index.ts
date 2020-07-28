@@ -38,7 +38,7 @@ export namespace ConnectionStrategy {
 export namespace ConnectionStrategy {
   export const presets = strategies
   export const registry = Registry.create<Definition, Presets>({
-    type: 'router',
+    type: 'connection strategy',
   })
 
   registry.register(presets, true)

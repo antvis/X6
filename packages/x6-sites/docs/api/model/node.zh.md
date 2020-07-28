@@ -1,6 +1,6 @@
 ---
 title: Node 
-order: 1
+order: 4
 redirect_from:
   - /zh/docs
   - /zh/docs/api
@@ -236,7 +236,7 @@ const node = new Node({
 isNode(): true
 ```
 
-判断是不是节点。该方法始终返回 `true`。
+判断是不是节点，该方法始终返回 `true`。
 
 #### getBBox(...)
 
@@ -246,7 +246,8 @@ getBBox(options: { deep?: boolean }): Rectangle
 
 获取节点的包围盒。
 
-需要注意的是，这个方法获取的包围盒是通过节点的大小和位置计算得到，并不是获取节点渲染到画布后的包围盒，涉及的计算只不过是一些算数运算，
+[[warning]]
+| 需要注意的是，该方法通过节点的大小和位置计算包围盒，并不是渲染到画布后的包围盒，涉及的计算只是一些算数运算。
 
 <span class="tag-param">参数<span>
 

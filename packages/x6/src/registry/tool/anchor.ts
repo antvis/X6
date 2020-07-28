@@ -146,7 +146,7 @@ class Anchor extends ToolsView.ToolItem<EdgeView, Anchor.Options> {
     })
   }
 
-  protected resetAnchor(anchor?: Edge.TerminalCellData['anchor']) {
+  protected resetAnchor(anchor?: Edge.TerminalCellData['endpoint']) {
     const type = this.type
     const cell = this.cell
     if (anchor) {
@@ -224,7 +224,7 @@ class Anchor extends ToolsView.ToolItem<EdgeView, Anchor.Options> {
         terminalType,
         edgeView,
         this,
-      ) as Edge.TerminalCellData['anchor']
+      ) as Edge.TerminalCellData['endpoint']
     }
 
     this.resetAnchor(anchor)
@@ -275,7 +275,7 @@ namespace Anchor {
       terminalType: Edge.TerminalType,
       edgeView: EdgeView,
       toolView: Anchor,
-    ) => Edge.TerminalCellData['anchor']
+    ) => Edge.TerminalCellData['endpoint']
   }
 }
 

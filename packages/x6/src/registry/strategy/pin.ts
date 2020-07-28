@@ -47,7 +47,7 @@ function pinNodeTerminal(
     dy = toPercentage(dy, bbox.height)
   }
 
-  data.anchor = {
+  data.endpoint = {
     name: 'topLeft',
     args: {
       dx,
@@ -74,15 +74,15 @@ function pinEdgeTerminal(
   const length = connection.closestPointLength(coords)
   if (relative) {
     const totalLength = connection.length()
-    end.anchor = {
-      name: 'connectionRatio',
+    end.endpoint = {
+      name: 'ratio',
       args: {
         ratio: length / totalLength,
       },
     }
   } else {
-    end.anchor = {
-      name: 'connectionLength',
+    end.endpoint = {
+      name: 'length',
       args: {
         length,
       },
