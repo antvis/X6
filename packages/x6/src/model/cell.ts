@@ -1201,24 +1201,35 @@ export class Cell<
 
   // #region batch
 
-  startBatch(name: Model.BatchName, data: KeyValue = {}) {
-    if (this.model) {
-      this.model.startBatch(name, { ...data, cell: this })
+  startBatch(
+    name: Model.BatchName,
+    data: KeyValue = {},
+    model: Model | null = this.model,
+  ) {
+    if (model) {
+      model.startBatch(name, { ...data, cell: this })
     }
     return this
   }
 
-  stopBatch(name: Model.BatchName, data: KeyValue = {}) {
-    if (this.model) {
-      this.model.stopBatch(name, { ...data, cell: this })
+  stopBatch(
+    name: Model.BatchName,
+    data: KeyValue = {},
+    model: Model | null = this.model,
+  ) {
+    if (model) {
+      model.stopBatch(name, { ...data, cell: this })
     }
     return this
   }
 
   batchUpdate<T>(name: Model.BatchName, execute: () => T, data?: KeyValue): T {
-    this.startBatch(name, data)
+    // The model is null after cell was removed(remove batch).
+    // So we should temp save model to trigger pairing batch event.
+    const model = this.model
+    this.startBatch(name, data, model)
     const result = execute()
-    this.stopBatch(name, data)
+    this.stopBatch(name, data, model)
     return result
   }
 
