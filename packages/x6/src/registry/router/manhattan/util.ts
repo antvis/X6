@@ -22,18 +22,18 @@ export function getTargetBBox(view: EdgeView, options: ResolvedOptions) {
   return bbox
 }
 
-export function getSourceAnchor(view: EdgeView, options: ResolvedOptions) {
-  if (view.sourceAnchor) {
-    return view.sourceAnchor
+export function getSourceEndpoint(view: EdgeView, options: ResolvedOptions) {
+  if (view.sourceEndpoint) {
+    return view.sourceEndpoint
   }
 
   const sourceBBox = getSourceBBox(view, options)
   return sourceBBox.getCenter()
 }
 
-export function getTargetAnchor(view: EdgeView, options: ResolvedOptions) {
-  if (view.targetAnchor) {
-    return view.targetAnchor
+export function getTargetEndpoint(view: EdgeView, options: ResolvedOptions) {
+  if (view.targetEndpoint) {
+    return view.targetEndpoint
   }
 
   const targetBBox = getTargetBBox(view, options)

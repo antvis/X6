@@ -1,12 +1,12 @@
 import { ResolveOptions, resolve } from './util'
-import { NodeConnectionAnchor } from './index'
+import { NodeEndpoint } from './index'
 
-export interface MiddleSideAnchorOptions extends ResolveOptions {
+export interface MiddleSideEndpointOptions extends ResolveOptions {
   rotated?: boolean
   padding?: number
 }
 
-const middleSide: NodeConnectionAnchor.ResolvedDefinition<MiddleSideAnchorOptions> = function (
+const middleSide: NodeEndpoint.ResolvedDefinition<MiddleSideEndpointOptions> = function (
   view,
   magnet,
   refPoint,
@@ -59,6 +59,6 @@ const middleSide: NodeConnectionAnchor.ResolvedDefinition<MiddleSideAnchorOption
  * closest to the other endpoint.
  */
 export const midSide = resolve<
-  NodeConnectionAnchor.ResolvedDefinition<ResolveOptions>,
-  NodeConnectionAnchor.Definition<ResolveOptions>
+  NodeEndpoint.ResolvedDefinition<ResolveOptions>,
+  NodeEndpoint.Definition<ResolveOptions>
 >(middleSide)
