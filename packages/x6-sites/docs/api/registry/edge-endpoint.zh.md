@@ -19,6 +19,8 @@ redirect_from:
   - [closest](#closest) 使用距离参照点最近的点作为端点。
   - [orth](#orth) 正交端点。
 
+<iframe src="/demos/api/registry/edge-endpoint/playground"></iframe>
+
 ## presets
 
 ### ratio
