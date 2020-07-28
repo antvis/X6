@@ -14,6 +14,10 @@ export default class Example extends React.Component {
       resizing: {
         enabled: true,
       },
+      keyboard: {
+        enabled: true,
+        global: true,
+      },
       // rotating: {
       //   enabled: true,
       // },
@@ -74,6 +78,10 @@ export default class Example extends React.Component {
 
     graph.on('edge:unselected', ({ edge }) => {
       console.log('unselected', edge)
+    })
+
+    graph.bindKey('backspace', () => {
+      graph.removeCells(graph.getSelectedCells())
     })
   }
 

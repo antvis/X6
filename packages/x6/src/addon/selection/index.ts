@@ -94,9 +94,10 @@ export class Selection extends View<Selection.EventArgs> {
     graph.off('scale', this.onTransformed, this)
     graph.off('translate', this.onTransformed, this)
 
+    collection.off('added', this.onCellAdded, this)
     collection.off('removed', this.onCellRemoved, this)
     collection.off('reseted', this.onReseted, this)
-    collection.off('added', this.onCellAdded, this)
+    collection.off('updated', this.onCollectionUpdated, this)
     collection.off('cell:change:*', this.onCellChanged, this)
   }
 
@@ -608,13 +609,25 @@ export class Selection extends View<Selection.EventArgs> {
 
   protected onReseted({ previous, current }: Collection.EventArgs['reseted']) {
     this.destroyAllSelectionBoxes(previous)
-    current.forEach((cell) => this.createSelectionBox(cell))
+    current.forEach((cell) => {
+      this.listenCellRemoveEvent(cell)
+      this.createSelectionBox(cell)
+    })
     this.updateContainer()
   }
 
   protected onCellAdded({ cell }: Collection.EventArgs['added']) {
+    // The collection do not known the cell was removed when cell was
+    // removed by interaction(such as, by "delete" shortcut), so we should
+    // manually listen to cell's remove evnet.
+    this.listenCellRemoveEvent(cell)
     this.createSelectionBox(cell)
     this.updateContainer()
+  }
+
+  protected listenCellRemoveEvent(cell: Cell) {
+    cell.off('removed', this.onCellRemoved, this)
+    cell.on('removed', this.onCellRemoved, this)
   }
 
   protected onCollectionUpdated({
