@@ -39,7 +39,7 @@ export default class Example extends React.Component {
       if (i % 2 === 0) {
         edge.prop('connector', {
           name: 'jumpover',
-          args: { jump: 'gap' },
+          args: { type: 'gap' },
         })
         edge.attr('line/stroke', 'red')
       }
