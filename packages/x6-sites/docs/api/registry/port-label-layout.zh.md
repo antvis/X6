@@ -251,7 +251,7 @@ unregister(name: string): Definition | null
 
 删除注册的自定义布局算法。
 
-实际上，我们将该命名空间的中 `register` 和 `unregister` 两个方法分别挂载为 Graph 的两个静态方法 `registerPortLabelLayout` 和 `unregisterPortLabelLayout`，所以我们可以像下面这样来注册刚刚定义的布局算法：
+实际上，我们将该命名空间的中 `register` 和 `unregister` 两个方法分别挂载为 Graph 的两个静态方法 `Graph.registerPortLabelLayout` 和 `Graph.unregisterPortLabelLayout`，所以我们可以像下面这样来注册刚刚定义的布局算法：
 
 
 ```ts

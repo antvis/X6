@@ -11,15 +11,15 @@ redirect_from:
 
 开始之前，我们先简单了解一下 Edge 实例上操作标签的几个方法。
 
-| 方法签名                                                                                                | 说明                     |
-|---------------------------------------------------------------------------------------------------------|------------------------|
-| [edge.getLabels()]()                                                                                    | 获取所有标签。            |
-| [edge.setLabels(labels: Edge.Label \| Edge.Label[] \| string \| string[], options?: Edge.SetOptions)]() | 设置标签。                |
-| [edge.insertLabel(label: Edge.Label \| string, index?: number, options: Edge.SetOptions)]()             | 在 `index` 位置插入标签。 |
-| [edge.appendLabel(label: Edge.Label \| string, options?: Edge.SetOptions)]()                            | 在末尾追加标签。          |
-| [edge.setLabelAt(index: number, label: Edge.Label \| string, options?: Edge.SetOptions)]()              | 设置 `index` 位置的标签。 |
-| [edge.getLabelAt(index: number)]()                                                                      | 获取 `index` 位置的标签。 |
-| [edge.removeLabelAt(index: number, options?: Edge.SetOptions)]()                                        | 删除 `index` 位置的标签。 |
+| 方法签名                                                      | 说明                |
+|---------------------------------------------------------------|-------------------|
+| [edge.getLabels()](../../api/model/edge#getlabels)            | 获取所有标签。       |
+| [edge.setLabels(...)](../../api/model/edge#setlabels)         | 设置标签。           |
+| [edge.insertLabel(...)](../../api/model/edge#insertlabel)     | 在指定位置插入标签。 |
+| [edge.appendLabel(...)](../../api/model/edge#appendlabel)     | 在末尾追加标签。     |
+| [edge.setLabelAt(...)](../../api/model/edge#setlabelat)       | 设置指定位置的标签。 |
+| [edge.getLabelAt(...)](../../api/model/edge#getlabelat)       | 获取指定位置的标签。 |
+| [edge.removeLabelAt(...)](../../api/model/edge#removelabelat) | 删除指定位置的标签。 |
 
 ## 标签定义
 

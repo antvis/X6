@@ -4,7 +4,6 @@ import '@antv/x6/es/index.css'
 import './app.css'
 
 export default class Example extends React.Component {
-  static noLayout = true
   private container: HTMLDivElement
 
   componentDidMount() {

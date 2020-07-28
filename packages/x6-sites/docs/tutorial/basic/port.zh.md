@@ -530,9 +530,9 @@ graph.addNode({
   ports: {
     groups: {
       in: {
-        position: 'top',    // 标签位置
+        position: 'top',    // 链接桩位置
         label: {
-          position: 'top',  // 链接桩位置
+          position: 'top',  // 标签位置
         },
         attrs: {
           circle: {
@@ -545,9 +545,9 @@ graph.addNode({
         },
       },
       out: {
-        position: 'bottom',   // 标签位置
+        position: 'bottom',   // 链接桩位置
         label: {
-          position: 'bottom', // 链接桩位置
+          position: 'bottom', // 标签位置
         },
         attrs: {
           circle: {

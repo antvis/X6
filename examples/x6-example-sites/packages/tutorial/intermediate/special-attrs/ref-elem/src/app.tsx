@@ -67,7 +67,6 @@ Graph.registerNode(
 )
 
 export default class Example extends React.Component {
-  static noLayout = true
   private container: HTMLDivElement
 
   componentDidMount() {

@@ -5,7 +5,6 @@ import { Settings, State } from './settings'
 import './app.css'
 
 export default class Example extends React.Component {
-  static noLayout = true
   private container: HTMLDivElement
   private node: Node
 

@@ -389,7 +389,7 @@ unregister(name: string): Definition | null
 删除注册的自定义布局算法。
 
 
-实际上，我们将 `registry` 的 `register` 和 `unregister` 方法分别挂载为 `Graph` 的两个静态方法 `registerPortLayout` 和 `unregisterPortLayout`，所以我们定义的正弦布局可以像下面这样注册到系统：
+实际上，我们将 `registry` 的 `register` 和 `unregister` 方法分别挂载为 `Graph` 的两个静态方法 `Graph.registerPortLayout` 和 `Graph.unregisterPortLayout`，所以我们定义的正弦布局可以像下面这样注册到系统：
 
 ```ts
 Graph.registerPortLayout('sin', sin)
