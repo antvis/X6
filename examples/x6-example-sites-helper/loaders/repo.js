@@ -19,6 +19,7 @@ module.exports = () => {
   const excludeDirs = ['node_modules']
   const excludeFiles = [
     '.env',
+    '.DS_Store',
     'package.json',
     'yarn-error.log',
     'src/react-app-env.d.ts',
