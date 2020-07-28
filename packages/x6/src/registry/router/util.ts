@@ -29,17 +29,23 @@ export function getTargetBBox(view: EdgeView, options: PaddingOptions = {}) {
   return view.targetBBox.clone().moveAndExpand(getPaddingBox(options))
 }
 
-export function getSourceAnchor(view: EdgeView, options: PaddingOptions = {}) {
-  if (view.sourceAnchor) {
-    return view.sourceAnchor
+export function getSourceEndpoint(
+  view: EdgeView,
+  options: PaddingOptions = {},
+) {
+  if (view.sourceEndpoint) {
+    return view.sourceEndpoint
   }
   const bbox = getSourceBBox(view, options)
   return bbox.getCenter()
 }
 
-export function getTargetAnchor(view: EdgeView, options: PaddingOptions = {}) {
-  if (view.targetAnchor) {
-    return view.targetAnchor
+export function getTargetEndpoint(
+  view: EdgeView,
+  options: PaddingOptions = {},
+) {
+  if (view.targetEndpoint) {
+    return view.targetEndpoint
   }
 
   const bbox = getTargetBBox(view, options)

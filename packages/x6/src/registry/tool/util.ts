@@ -17,7 +17,7 @@ export function getAnchor(
     pos,
     this.model,
   ) as Edge.TerminalCellData
-  return end.anchor
+  return end.endpoint
 }
 
 export function getViewBBox(view: CellView, quick?: boolean) {

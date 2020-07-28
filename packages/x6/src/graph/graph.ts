@@ -1860,10 +1860,8 @@ export namespace Graph {
   export const registerMarker = Registry.Marker.registry.register
   export const registerRouter = Registry.Router.registry.register
   export const registerConnector = Registry.Connector.registry.register
-  export const registerNodeConnectionAnchor =
-    Registry.NodeConnectionAnchor.registry.register
-  export const registerEdgeConnectionAnchor =
-    Registry.EdgeConnectionAnchor.registry.register
+  export const registerEndpoint = Registry.NodeEndpoint.registry.register
+  export const registerEdgeEndpoint = Registry.EdgeEndpoint.registry.register
   export const registerConnectionPoint =
     Registry.ConnectionPoint.registry.register
   export const registerConnectionStrategy =
@@ -1888,10 +1886,9 @@ export namespace Graph {
   export const unregisterMarker = Registry.Marker.registry.unregister
   export const unregisterRouter = Registry.Router.registry.unregister
   export const unregisterConnector = Registry.Connector.registry.unregister
-  export const unregisterNodeConnectionAnchor =
-    Registry.NodeConnectionAnchor.registry.unregister
-  export const unregisterEdgeConnectionAnchor =
-    Registry.EdgeConnectionAnchor.registry.unregister
+  export const unregisterEndpoint = Registry.NodeEndpoint.registry.unregister
+  export const unregisterEdgeEndpoint =
+    Registry.EdgeEndpoint.registry.unregister
   export const unregisterConnectionPoint =
     Registry.ConnectionPoint.registry.unregister
   export const unregisterConnectionStrategy =
