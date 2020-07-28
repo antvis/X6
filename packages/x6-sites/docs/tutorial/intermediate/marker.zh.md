@@ -301,13 +301,13 @@ graph.addEdge({
 
 继续之前，我们先看看箭头工厂方法的定义。
 
-```ts
-  type Factory<T extends KeyValue = KeyValue> = (args: T) => Result
+```sign
+type Factory<T extends KeyValue = KeyValue> = (args: T) => Result
 
-  type Result = Attr.SimpleAttrs & {
-    tagName?: string
-    children?: Result[]
-  }
+type Result = Attr.SimpleAttrs & {
+  tagName?: string
+  children?: Result[]
+}
 ```
 
 箭头工厂方法只有一个参数 `args`，在配置箭头时传入。例如：
@@ -349,7 +349,6 @@ Graph.registerMarker(name: string, factory: Factory, overwrite?: boolean)
 最后，我们来注册一个 image 箭头。
 
 ```ts
-
 /**
  * 参数定义
  */

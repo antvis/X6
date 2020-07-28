@@ -16,7 +16,6 @@ function getPathData(deg: number) {
 }
 
 export default class Example extends React.Component {
-  static noLayout = true
   private container: HTMLDivElement
   private node: Node
 
