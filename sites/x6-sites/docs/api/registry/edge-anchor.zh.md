@@ -21,6 +21,8 @@ redirect_from:
 
 <iframe src="/demos/api/registry/edge-anchor/playground"></iframe>
 
+<iframe src="/demos/api/registry/edge-endpoint/playground"></iframe>
+
 ## presets
 
 ### ratio
