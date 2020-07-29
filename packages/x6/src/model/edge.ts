@@ -12,7 +12,7 @@ import {
   ConnectionStrategy,
 } from '../registry'
 import { Markup } from '../view/markup'
-import { Share } from './registry'
+import { ShareRegistry } from './registry'
 import { Store } from './store'
 import { Cell } from './cell'
 import { Node } from './node'
@@ -1307,6 +1307,69 @@ export namespace Edge {
 }
 
 export namespace Edge {
+  export const registry = Registry.create<
+    Definition,
+    never,
+    Config & { inherit?: string }
+  >({
+    type: 'edge',
+    process(shape, options) {
+      if (ShareRegistry.exist(shape, false)) {
+        throw new Error(
+          `Edge with name '${shape}' was registered by anthor Node`,
+        )
+      }
+
+      if (typeof options === 'function') {
+        options.config({ shape })
+        return options
+      }
+
+      let parent = Edge
+      const { inherit, ...others } = options
+      if (inherit) {
+        const base = this.get(inherit)
+        if (base == null) {
+          this.onNotFound(inherit, 'inherited')
+        } else {
+          parent = base
+        }
+      }
+
+      if (others.constructorName == null) {
+        others.constructorName = shape
+      }
+
+      const ret = parent.define.call(parent, others)
+      ret.config({ shape })
+      return ret
+    },
+  })
+
+  ShareRegistry.setEdgeRegistry(registry)
+}
+
+export namespace Edge {
+  const shape = 'basic.edge'
+  Edge.config({
+    shape,
+    propHooks(metadata: Properties) {
+      const { label, ...others } = metadata
+      if (label) {
+        if (others.labels == null) {
+          others.labels = []
+        }
+        const formated =
+          typeof label === 'string' ? parseStringLabel(label) : label
+        others.labels.push(formated)
+      }
+      return others
+    },
+  })
+  registry.register(shape, Edge)
+}
+
+export namespace Edge {
   export type Definition = typeof Edge
 
   let counter = 0
@@ -1342,67 +1405,4 @@ export namespace Edge {
     }
     return registry.onNotFound(shape)
   }
-}
-
-export namespace Edge {
-  export const registry = Registry.create<
-    Definition,
-    never,
-    Config & { inherit?: string }
-  >({
-    type: 'edge',
-    process(shape, options) {
-      if (Share.exist(shape, false)) {
-        throw new Error(
-          `Edge with name '${shape}' was registered by anthor Node`,
-        )
-      }
-
-      if (typeof options === 'function') {
-        options.config({ shape })
-        return options
-      }
-
-      let parent = Edge
-      const { inherit, ...others } = options
-      if (inherit) {
-        const base = this.get(inherit)
-        if (base == null) {
-          this.onNotFound(inherit, 'inherited')
-        } else {
-          parent = base
-        }
-      }
-
-      if (others.constructorName == null) {
-        others.constructorName = shape
-      }
-
-      const ret = parent.define.call(parent, others)
-      ret.config({ shape })
-      return ret
-    },
-  })
-
-  Share.setEdgeRegistry(registry)
-}
-
-export namespace Edge {
-  const shape = 'basic.edge'
-  Edge.config({
-    shape,
-    propHooks(metadata: Properties) {
-      const { label, ...others } = metadata
-      if (label) {
-        if (others.labels == null) {
-          others.labels = []
-        }
-        const formated =
-          typeof label === 'string' ? parseStringLabel(label) : label
-        others.labels.push(formated)
-      }
-      return others
-    },
-  })
-  registry.register(shape, Edge)
 }

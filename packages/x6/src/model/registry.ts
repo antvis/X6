@@ -1,11 +1,13 @@
 import { Registry } from '../registry'
 
-export namespace Share {
+export namespace ShareRegistry {
   let edgeRegistry: Registry<any>
   let nodeRegistry: Registry<any>
 
   export function exist(name: string, isNode: boolean) {
-    return isNode ? edgeRegistry.exist(name) : nodeRegistry.exist(name)
+    return isNode
+      ? edgeRegistry != null && edgeRegistry.exist(name)
+      : nodeRegistry != null && nodeRegistry.exist(name)
   }
 
   export function setEdgeRegistry(registry: any) {
