@@ -439,7 +439,7 @@ export namespace Options {
 }
 
 export namespace Options {
-  export function merge(options: Partial<Manual>) {
+  export function get(options: Partial<Manual>) {
     const {
       grid,
       selecting,
@@ -459,7 +459,7 @@ export namespace Options {
     // size
     // ----
     const container = options.container
-    if (container) {
+    if (container != null) {
       if (others.width == null) {
         others.width = container.clientWidth
       }
@@ -467,6 +467,10 @@ export namespace Options {
       if (others.height == null) {
         others.height = container.clientHeight
       }
+    } else {
+      throw new Error(
+        `Ensure the container of the graph is specified and vliad`,
+      )
     }
 
     const result = ObjectExt.merge({}, defaults, others) as Options.Definition
