@@ -3,7 +3,7 @@
   "npmClient": "yarn",
   "useWorkspaces": true,
   "command": {
-    "publish": {
+    "version": {
       "ignoreChanges": ["*.md", "**/*.test.ts", "**/*.spec.ts"],
       "message": "chore(release): publish %s"
     },
