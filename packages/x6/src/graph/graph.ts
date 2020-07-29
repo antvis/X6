@@ -66,7 +66,7 @@ export class Graph extends Basecoat<EventArgs> {
   constructor(options: Partial<GraphOptions.Manual>) {
     super()
 
-    this.options = GraphOptions.merge(options)
+    this.options = GraphOptions.get(options)
     this.hook = new HookManager(this)
     this.view = this.hook.createView()
     this.defs = this.hook.createDefsManager()
