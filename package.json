@@ -9,7 +9,7 @@
     "bootstrap": "lerna bootstrap && yarn build:dev",
     "lk": "lerna link",
     "ls": "lerna list",
-    "lv": "lerna version",
+    "lv": "lerna version --ignore @antv/x6-example-*",
     "changed": "lerna changed",
     "updated": "lerna updated",
     "publish": "lerna exec --ignore @antv/x6-example-* --stream -- yarn publish",
