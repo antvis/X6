@@ -1,6 +1,6 @@
 {
+  "private": true,
   "name": "@antv/x6-example-sites",
-  "private": "true",
   "version": "0.10.42",
   "workspaces": [
     "packages/**/*"
