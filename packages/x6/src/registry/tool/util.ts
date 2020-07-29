@@ -27,5 +27,5 @@ export function getViewBBox(view: CellView, quick?: boolean) {
 
   return view.cell.isEdge()
     ? (view as EdgeView).getConnection()!.bbox()!
-    : view.getNodeUnrotatedBBox(view.container as SVGElement)
+    : view.getUnrotatedBBoxOfElement(view.container as SVGElement)
 }

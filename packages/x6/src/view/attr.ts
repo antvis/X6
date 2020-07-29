@@ -273,7 +273,7 @@ export class AttrManager {
     let sx = 1
     let sy = 1
     if (positionAttrs || offsetAttrs) {
-      const scale = this.view.getNodeScale(
+      const scale = this.view.getScaleOfElement(
         elem,
         options.scalableNode as SVGElement,
       )
@@ -308,7 +308,7 @@ export class AttrManager {
     let offseted = false
     if (offsetAttrs != null) {
       // Check if the node is visible
-      const nodeBoundingRect = this.view.getNodeBoundingRect(elem)
+      const nodeBoundingRect = this.view.getBoundingRectOfElement(elem)
       if (nodeBoundingRect.width > 0 && nodeBoundingRect.height > 0) {
         const nodeBBox = Dom.transformRectangle(
           nodeBoundingRect,

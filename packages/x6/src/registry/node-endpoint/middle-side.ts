@@ -18,11 +18,11 @@ const middleSide: NodeEndpoint.ResolvedDefinition<MiddleSideEndpointOptions> = f
 
   const node = view.cell
   if (options.rotated) {
-    bbox = view.getNodeUnrotatedBBox(magnet)
+    bbox = view.getUnrotatedBBoxOfElement(magnet)
     center = node.getBBox().getCenter()
     angle = node.getAngle()
   } else {
-    bbox = view.getElemBBox(magnet)
+    bbox = view.getBBoxOfElement(magnet)
   }
 
   const padding = options.padding
