@@ -7,7 +7,7 @@ import { Markup } from '../view/markup'
 import { Cell } from './cell'
 import { Edge } from './edge'
 import { Store } from './store'
-import { Share } from './registry'
+import { ShareRegistry } from './registry'
 import { PortManager } from './port'
 import { Animation } from './animation'
 import { Interp } from '../common'
@@ -1017,44 +1017,6 @@ export namespace Node {
 }
 
 export namespace Node {
-  export type Definition = typeof Node
-
-  let counter = 0
-  function getClassName(name?: string) {
-    if (name) {
-      return StringExt.pascalCase(name)
-    }
-    counter += 1
-    return `CustomNode${counter}`
-  }
-
-  export function define(config: Config) {
-    const { constructorName, ...others } = config
-    const shape = ObjectExt.createClass<Definition>(
-      getClassName(constructorName || others.shape),
-      this as Definition,
-    )
-
-    shape.config(others)
-
-    if (others.shape) {
-      registry.register(others.shape, shape)
-    }
-
-    return shape
-  }
-
-  export function create(options: Metadata) {
-    const shape = options.shape || 'rect'
-    const Ctor = registry.get(shape)
-    if (Ctor) {
-      return new Ctor(options)
-    }
-    return registry.onNotFound(shape)
-  }
-}
-
-export namespace Node {
   export const registry = Registry.create<
     Definition,
     never,
@@ -1062,7 +1024,7 @@ export namespace Node {
   >({
     type: 'node',
     process(shape, options) {
-      if (Share.exist(shape, true)) {
+      if (ShareRegistry.exist(shape, true)) {
         throw new Error(
           `Node with name '${shape}' was registered by anthor Edge`,
         )
@@ -1098,7 +1060,7 @@ export namespace Node {
     },
   })
 
-  Share.setNodeRegistry(registry)
+  ShareRegistry.setNodeRegistry(registry)
 }
 
 export namespace Node {
@@ -1110,4 +1072,42 @@ export namespace Node {
       return metadata
     },
   })
+}
+
+export namespace Node {
+  export type Definition = typeof Node
+
+  let counter = 0
+  function getClassName(name?: string) {
+    if (name) {
+      return StringExt.pascalCase(name)
+    }
+    counter += 1
+    return `CustomNode${counter}`
+  }
+
+  export function define(config: Config) {
+    const { constructorName, ...others } = config
+    const shape = ObjectExt.createClass<Definition>(
+      getClassName(constructorName || others.shape),
+      this as Definition,
+    )
+
+    shape.config(others)
+
+    if (others.shape) {
+      registry.register(others.shape, shape)
+    }
+
+    return shape
+  }
+
+  export function create(options: Metadata) {
+    const shape = options.shape || 'rect'
+    const Ctor = registry.get(shape)
+    if (Ctor) {
+      return new Ctor(options)
+    }
+    return registry.onNotFound(shape)
+  }
 }
