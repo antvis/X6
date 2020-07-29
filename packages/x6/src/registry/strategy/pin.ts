@@ -35,7 +35,7 @@ function pinNodeTerminal(
 ) {
   const node = view.cell as Node
   const angle = node.getAngle()
-  const bbox = view.getNodeUnrotatedBBox(magnet as SVGElement)
+  const bbox = view.getUnrotatedBBoxOfElement(magnet as SVGElement)
   const center = node.getBBox().getCenter()
   const pos = Point.create(coords).rotate(angle, center)
 

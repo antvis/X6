@@ -13,7 +13,7 @@ export const bbox: ConnectionPoint.Definition<BBoxOptions> = function (
   magnet,
   options,
 ) {
-  const bbox = view.getElemBBox(magnet)
+  const bbox = view.getBBoxOfElement(magnet)
   if (options.stroked) {
     bbox.inflate(getStrokeWidth(magnet) / 2)
   }

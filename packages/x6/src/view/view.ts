@@ -93,7 +93,7 @@ export abstract class View<EventArgs = any> extends Basecoat<EventArgs> {
    * node. If the recursion reaches CellView's root node and attribute
    * is not found even there, return `null`.
    */
-  findAttr(attrName: string, elem: Element) {
+  findAttr(attrName: string, elem: Element = this.container) {
     let current = elem
     while (current && current.nodeType === 1) {
       const value = current.getAttribute(attrName)
@@ -139,11 +139,11 @@ export abstract class View<EventArgs = any> extends Basecoat<EventArgs> {
     }
 
     // If the overall cell has set `magnet === false`, then returns
-    // `undefined` to announce there is no magnet found for this cell.
+    // `null` to announce there is no magnet found for this cell.
     // This is especially useful to set on cells that have 'ports'.
     // In this case, only the ports have set `magnet === true` and the
     // overall element has `magnet === false`.
-    return undefined
+    return null
   }
 
   getSelector(elem: Element, prevSelector?: string): string | undefined {
@@ -205,10 +205,12 @@ export abstract class View<EventArgs = any> extends Basecoat<EventArgs> {
 
   delegateDocumentEvents(events: View.Events, data?: KeyValue) {
     this.addEventListeners(document, events, data)
+    return this
   }
 
   undelegateDocumentEvents() {
     this.removeEventListeners(document)
+    return this
   }
 
   protected delegateEvent(

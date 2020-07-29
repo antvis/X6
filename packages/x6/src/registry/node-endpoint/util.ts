@@ -22,7 +22,7 @@ export function resolve<S extends Function, T>(fn: S): T {
           const distance = options.fixedAt != null ? options.fixedAt : '50%'
           refPoint = getPointAtEdge(refView as EdgeView, distance)
         } else {
-          refPoint = refView.getElemBBox(ref).getCenter()
+          refPoint = refView.getBBoxOfElement(ref).getCenter()
         }
       } else {
         refPoint = new Point()
