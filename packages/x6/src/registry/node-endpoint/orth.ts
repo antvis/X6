@@ -13,7 +13,7 @@ const orthogonal: NodeEndpoint.ResolvedDefinition<OrthEndpointOptions> = functio
   options,
 ) {
   const angle = view.cell.getAngle()
-  const bbox = view.getElemBBox(magnet)
+  const bbox = view.getBBoxOfElement(magnet)
   const result = bbox.getCenter()
   const topLeft = bbox.getTopLeft()
   const bottomRight = bbox.getBottomRight()

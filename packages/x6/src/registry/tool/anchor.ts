@@ -99,7 +99,7 @@ class Anchor extends ToolsView.ToolItem<EdgeView, Anchor.Options> {
         angle = 0
         center = bbox.getCenter()
       } else {
-        bbox = terminalView.getNodeUnrotatedBBox(magnet as SVGElement)
+        bbox = terminalView.getUnrotatedBBoxOfElement(magnet as SVGElement)
         angle = terminalCell.getAngle()
         center = bbox.getCenter()
         if (angle) {
@@ -199,7 +199,7 @@ class Anchor extends ToolsView.ToolItem<EdgeView, Anchor.Options> {
           coords = pointAtConnection
         }
       } else {
-        const bbox = terminalView.getNodeUnrotatedBBox(
+        const bbox = terminalView.getUnrotatedBBoxOfElement(
           terminalMagnet as SVGElement,
         )
         const angle = (terminalCell as Node).getAngle()

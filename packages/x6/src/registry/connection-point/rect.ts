@@ -19,7 +19,7 @@ export const rect: ConnectionPoint.Definition<RectangleOptions> = function (
     return bbox(line, view, magnet, options)
   }
 
-  const bboxRaw = view.getNodeUnrotatedBBox(magnet)
+  const bboxRaw = view.getUnrotatedBBoxOfElement(magnet)
   if (options.stroked) {
     bboxRaw.inflate(getStrokeWidth(magnet) / 2)
   }

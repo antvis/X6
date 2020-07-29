@@ -36,8 +36,8 @@ function createBBoxAnchor(
 ): NodeEndpoint.Definition<BBoxEndpointOptions> {
   return function (view, magnet, ref, options: BBoxEndpointOptions = {}) {
     const bbox = options.rotated
-      ? view.getNodeUnrotatedBBox(magnet)
-      : view.getElemBBox(magnet)
+      ? view.getUnrotatedBBoxOfElement(magnet)
+      : view.getBBoxOfElement(magnet)
     const result = bbox[method]
 
     result.x += NumberExt.normalizePercentage(options.dx, bbox.width)

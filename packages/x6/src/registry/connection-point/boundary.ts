@@ -46,17 +46,17 @@ export const boundary: ConnectionPoint.Definition<BoundaryOptions> = function (
     node = magnet
   }
 
-  const localShape = view.getNodeShape(node)
-  const magnetMatrix = view.getNodeMatrix(node)
-  const translateMatrix = view.getRootTranslateMatrix()
-  const rotateMatrix = view.getRootRotateMatrix()
+  const localShape = view.getShapeOfElement(node)
+  const magnetMatrix = view.getMatrixOfElement(node)
+  const translateMatrix = view.getRootTranslatedMatrix()
+  const rotateMatrix = view.getRootRotatedMatrix()
   const targetMatrix = translateMatrix
     .multiply(rotateMatrix)
     .multiply(magnetMatrix)
   const localMatrix = targetMatrix.inverse()
   const localLine = Dom.transformLine(line, localMatrix)
   const localRef = localLine.start.clone()
-  const data = view.getNodeData(node) as BoundaryCache
+  const data = view.getDataOfElement(node) as BoundaryCache
 
   if (options.insideout === false) {
     if (data.shapeBBox == null) {
