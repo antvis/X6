@@ -42,7 +42,7 @@ const edge = graph.addEdge({
 })
 ```
 
-创建之后可以调用 `edge.setSource` 和 `edge.setTarget` 方法来修改端点：
+创建之后可以调用 `edge.setSource` 和 `edge.setTarget` 方法来修改连接点：
 
 ```ts
 edge.setSource({
@@ -56,7 +56,7 @@ edge.setSource({
 })
 ```
 
-在创建画布时，可以通过 `connecting` 选项来设置全局默认的端点：
+在创建画布时，可以通过 `connecting` 选项来设置全局默认的连接点：
 
 ```ts
 new Graph({
@@ -83,9 +83,6 @@ new Graph({
 
 ## presets
 
-
-端点与参照点（）形成的直线与节点包围盒的交点。
-
 ### boundary
 
 自动识别链接图形的边框，并计算参照点与锚点（Anchor）形成的直线与边框的交点。如 `<ellipse>` 元素将被识别为椭圆，并求椭圆与直线的交点，求得的交点为边的连接点。不能识别的元素（`text`、`<path>` 等）使用图形的包围盒代替，这与使用 `'bbox'` 求得的连接点一样。
@@ -104,7 +101,7 @@ new Graph({
 
 ### anchor
 
-将端点作为连接点，支持如下参数：
+将锚点作为连接点，支持如下参数：
 
 | 参数名 | 参数类型 | 是否必选 | 默认值 | 参数说明                |
 |--------|----------|:-------:|--------|---------------------|
@@ -131,7 +128,7 @@ new Graph({
 ## registry
 
 
-端点定义是一个具有如下签名的函数，返回端点。
+连接点定义是一个具有如下签名的函数，返回连接点。
 
 ```sign
 export type Definition<T> = (
@@ -158,7 +155,7 @@ register(entities: { [name: string]: Definition }, force?: boolean): void
 register(name: string, entity: Definition, force?: boolean): Definition
 ```
 
-注册连端点定义。
+注册连连接点定义。
 
 ### unregister
 
@@ -166,4 +163,4 @@ register(name: string, entity: Definition, force?: boolean): Definition
 unregister(name: string): Definition | null
 ```
 
-取消注册端点定义。
+取消注册连接点定义。

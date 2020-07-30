@@ -12,12 +12,12 @@ redirect_from:
 - 起点：从第一个路径点或目标节点的中心（没有路径点时）画一条参考线到源节点的锚点，然后根据 [connectionPoint](../model/edge#source-和-target) 指定的交点计算方法，计算参考线与图形的交点，该交点就是边的起点。
 - 终点：从最后一个路径点或源节点的中心（没有路径点时）画一条参考线到目标节点的锚点，然后根据 [connectionPoint](../model/edge#source-和-target) 指定的交点计算方法，计算参考线与图形的交点，该交点就是边的终点。
 
-我们在 `Registry.EdgeAnchor.presets` 命名空间中提供了以下几种端点定义。
+我们在 `Registry.EdgeAnchor.presets` 命名空间中提供了以下几种锚点定义。
 
-  - [ratio](#ratio) 默认值，端点位于被连接的边的指定比例处。
-  - [length](#length) 端点位于被连接的边的指定长度处。
-  - [closest](#closest) 使用距离参照点最近的点作为端点。
-  - [orth](#orth) 正交端点。
+  - [ratio](#ratio) 默认值，锚点位于被连接的边的指定比例处。
+  - [length](#length) 锚点位于被连接的边的指定长度处。
+  - [closest](#closest) 使用距离参照点最近的点作为锚点。
+  - [orth](#orth) 正交锚点。
 
 <iframe src="/demos/api/registry/edge-anchor/playground"></iframe>
 
@@ -25,7 +25,7 @@ redirect_from:
 
 ### ratio
 
-端点位于被连接的边的指定比例处。支持如下参数：
+锚点位于被连接的边的指定比例处。支持如下参数：
 
 | 参数名 | 参数类型 | 是否必选 | 默认值 | 参数说明                                       |
 |--------|----------|:-------:|--------|--------------------------------------------|
@@ -33,7 +33,7 @@ redirect_from:
 
 ### length
 
-端点位于被连接的边的指定长度处。支持如下参数：
+锚点位于被连接的边的指定长度处。支持如下参数：
 
 | 参数名 | 参数类型 | 是否必选 | 默认值 | 参数说明                                               |
 |--------|----------|:-------:|--------|----------------------------------------------------|
@@ -41,19 +41,19 @@ redirect_from:
 
 ### closest
 
-距离参照点最近的点作为端点。
+距离参照点最近的点作为锚点。
 
 ### orth
 
-正交端点。支持如下参数：
+正交锚点。支持如下参数：
 
 | 参数名     | 参数类型         | 是否必选 | 默认值      | 参数说明                                                                                                                                                                                     |
 |------------|------------------|:-------:|-------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| fallbackAt | number \| string |    否    | `undefined` | 当没有正交点时，使用 `fallbackAt` 指定的点作为端点。<br>当 `fallbackAt` 为百分比字符串时，表示端点位于距离起点多少比例位置处。 <br> 当 `fallbackAt` 为数字时，表示端点位于距离起点多少长度位置处。 |
+| fallbackAt | number \| string |    否    | `undefined` | 当没有正交点时，使用 `fallbackAt` 指定的点作为锚点。<br>当 `fallbackAt` 为百分比字符串时，表示锚点位于距离起点多少比例位置处。 <br> 当 `fallbackAt` 为数字时，表示锚点位于距离起点多少长度位置处。 |
 
 ## registry
 
-端点定义是一个具有如下签名的函数，返回端点。
+锚点定义是一个具有如下签名的函数，返回锚点。
 
 ```sign
 export type Definition<T> = (
@@ -73,7 +73,7 @@ export type Definition<T> = (
 | ref    | Point.PointLike \| SVGElement | 参照点/元素。    |
 | args   | T                             | 参数。           |
 
-并在 `Registry.Connector.registry` 对象上提供了 [`register`](#register) 和 [`unregister`](#unregister) 两个方法来注册和取消注册端点定义，同时也将这两个方法分别挂载为 Graph 上的两个静态方法 `Graph.registerEdgeAnchor` 和 `Graph.unregisterEdgeAnchor`。
+并在 `Registry.Connector.registry` 对象上提供了 [`register`](#register) 和 [`unregister`](#unregister) 两个方法来注册和取消注册锚点定义，同时也将这两个方法分别挂载为 Graph 上的两个静态方法 `Graph.registerEdgeAnchor` 和 `Graph.unregisterEdgeAnchor`。
 
 ### register
 
@@ -82,7 +82,7 @@ register(entities: { [name: string]: Definition }, force?: boolean): void
 register(name: string, entity: Definition, force?: boolean): Definition
 ```
 
-注册连端点定义。
+注册连锚点定义。
 
 ### unregister
 
@@ -90,4 +90,4 @@ register(name: string, entity: Definition, force?: boolean): Definition
 unregister(name: string): Definition | null
 ```
 
-取消注册端点定义。
+取消注册锚点定义。

@@ -65,9 +65,9 @@ constructor(metadata?: Edge.Metadata)
 - 起点：从第一个路径点或目标节点的中心（没有路径点时）画一条参考线到源节点的锚点，然后根据 connectionPoint 指定的交点计算方法，计算参考线与图形的交点，该交点就是边的起点。
 - 终点：从最后一个路径点或源节点的中心（没有路径点时）画一条参考线到目标节点的锚点，然后根据 connectionPoint 指定的交点计算方法，计算参考线与图形的交点，该交点就是边的终点。
 
-创建边时可以分别为 `source` 和 `target` 指定端点和连接点。
+创建边时可以分别为 `source` 和 `target` 指定锚点和连接点。
 
-- **指定端点**
+- **指定锚点**
   ```ts
   const edge = new Shape.Edge({
       source: { 
