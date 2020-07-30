@@ -5,7 +5,7 @@ import { EdgeView, NodeView } from '../../view'
 import { Registry } from '../registry'
 import * as anchors from './main'
 
-export namespace NodeEndpoint {
+export namespace NodeAnchor {
   export type Definition<T> = (
     this: EdgeView,
     /**
@@ -41,8 +41,8 @@ export namespace NodeEndpoint {
   ) => Point
 }
 
-export namespace NodeEndpoint {
-  export type Presets = typeof NodeEndpoint['presets']
+export namespace NodeAnchor {
+  export type Presets = typeof NodeAnchor['presets']
 
   export type OptionsMap = {
     readonly [K in keyof Presets]-?: Parameters<Presets[K]>[3]
@@ -61,7 +61,7 @@ export namespace NodeEndpoint {
   }
 }
 
-export namespace NodeEndpoint {
+export namespace NodeAnchor {
   export const presets = anchors
   export const registry = Registry.create<CommonDefinition, Presets>({
     type: 'node endpoint',

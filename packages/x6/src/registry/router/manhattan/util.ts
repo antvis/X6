@@ -23,8 +23,8 @@ export function getTargetBBox(view: EdgeView, options: ResolvedOptions) {
 }
 
 export function getSourceEndpoint(view: EdgeView, options: ResolvedOptions) {
-  if (view.sourceEndpoint) {
-    return view.sourceEndpoint
+  if (view.sourceAnchor) {
+    return view.sourceAnchor
   }
 
   const sourceBBox = getSourceBBox(view, options)
@@ -32,8 +32,8 @@ export function getSourceEndpoint(view: EdgeView, options: ResolvedOptions) {
 }
 
 export function getTargetEndpoint(view: EdgeView, options: ResolvedOptions) {
-  if (view.targetEndpoint) {
-    return view.targetEndpoint
+  if (view.targetAnchor) {
+    return view.targetAnchor
   }
 
   const targetBBox = getTargetBBox(view, options)
@@ -159,11 +159,11 @@ export function normalizePoint(point: Point.PointLike) {
   )
 }
 
-export function getCost(from: Point, endPoints: Point[]) {
+export function getCost(from: Point, anchors: Point[]) {
   let min = Infinity
 
-  for (let i = 0, len = endPoints.length; i < len; i += 1) {
-    const dist = from.manhattanDistance(endPoints[i])
+  for (let i = 0, len = anchors.length; i < len; i += 1) {
+    const dist = from.manhattanDistance(anchors[i])
     if (dist < min) {
       min = dist
     }
@@ -195,11 +195,11 @@ export function getRectPoints(
 
         // Create a line that is guaranteed to intersect the bbox if bbox
         // is in the direction even if anchor lies outside of bbox.
-        const endpoint = new Point(
+        const ending = new Point(
           anchor.x + direction.x * (Math.abs(centerVector.x) + bbox.width),
           anchor.y + direction.y * (Math.abs(centerVector.y) + bbox.height),
         )
-        const intersectionLine = new Line(anchor, endpoint)
+        const intersectionLine = new Line(anchor, ending)
 
         // Get the farther intersection, in case there are two
         // (that happens if anchor lies next to bbox)

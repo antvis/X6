@@ -6,8 +6,8 @@ import {
   Attr,
   Router,
   Connector,
-  EdgeEndpoint,
-  NodeEndpoint,
+  EdgeAnchor,
+  NodeAnchor,
   ConnectionPoint,
   ConnectionStrategy,
 } from '../registry'
@@ -1176,11 +1176,11 @@ export namespace Edge {
   export interface SetCellTerminalArgs extends SetTerminalCommonArgs {
     port?: string
     priority?: boolean
-    endpoint?: string | NodeEndpoint.NativeItem | NodeEndpoint.ManaualItem
+    anchor?: string | NodeAnchor.NativeItem | NodeAnchor.ManaualItem
   }
 
   export interface SetEdgeTerminalArgs extends SetTerminalCommonArgs {
-    endpoint?: string | EdgeEndpoint.NativeItem | EdgeEndpoint.ManaualItem
+    anchor?: string | EdgeAnchor.NativeItem | EdgeAnchor.ManaualItem
   }
 
   export interface TerminalPointData

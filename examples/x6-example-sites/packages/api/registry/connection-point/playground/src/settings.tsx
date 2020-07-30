@@ -7,14 +7,14 @@ export interface Props {
 }
 
 export interface State {
-  endpoint: string
+  anchor: string
   connectionPoint: string
   angle: number
 }
 
 export class Settings extends React.Component<Props, State> {
   state: State = {
-    endpoint: 'center',
+    anchor: 'center',
     connectionPoint: 'boundary',
     angle: 45,
   }
@@ -29,8 +29,8 @@ export class Settings extends React.Component<Props, State> {
     })
   }
 
-  onEndpointChange = (e: any) => {
-    this.setState({ endpoint: e.target.value }, () => {
+  onAnchorChange = (e: any) => {
+    this.setState({ anchor: e.target.value }, () => {
       this.notifyChange()
     })
   }
@@ -50,13 +50,13 @@ export class Settings extends React.Component<Props, State> {
         style={{ width: 320 }}
       >
         <Row align="middle">
-          <Col span={5}>endpoint</Col>
+          <Col span={5}>anchor</Col>
         </Row>
         <Row align="middle">
           <Col span={22} offset={2}>
             <Radio.Group
-              onChange={this.onEndpointChange}
-              value={this.state.endpoint}
+              onChange={this.onAnchorChange}
+              value={this.state.anchor}
             >
               <Radio value="center">center</Radio>
               <Radio value="nodeCenter">nodeCenter</Radio>
@@ -83,7 +83,7 @@ export class Settings extends React.Component<Props, State> {
               value={this.state.connectionPoint}
             >
               <Radio value="boundary">boundary</Radio>
-              <Radio value="endpoint">endpoint</Radio>
+              <Radio value="anchor">anchor</Radio>
               <Radio value="bbox">bbox</Radio>
               <Radio value="rect">rect</Radio>
             </Radio.Group>

@@ -7,10 +7,10 @@ redirect_from:
   - /zh/docs/api/registry
 ---
 
-连接点 ConnectionPoint 与端点 [Endpoint](./endpoint) 共同确定了边的起点或终点。
+连接点 ConnectionPoint 与锚点 [Anchor](./anchor) 共同确定了边的起点或终点。
 
-- 起点：从第一个路径点或目标节点的中心（没有路径点时）画一条参考线到源节点的端点 [Endpoint](./endpoint)，然后根据 [connectionPoint](../model/edge#source-和-target) 指定的交点计算方法，计算参考线与图形的交点，该交点就是边的起点。
-- 终点：从最后一个路径点或源节点的中心（没有路径点时）画一条参考线到目标节点的端点 [Endpoint](./endpoint)，然后根据 [connectionPoint](../model/edge#source-和-target) 指定的交点计算方法，计算参考线与图形的交点，该交点就是边的终点。
+- 起点：从第一个路径点或目标节点的中心（没有路径点时）画一条参考线到源节点的锚点 [Anchor](./anchor)，然后根据 [connectionPoint](../model/edge#source-和-target) 指定的交点计算方法，计算参考线与图形的交点，该交点就是边的起点。
+- 终点：从最后一个路径点或源节点的中心（没有路径点时）画一条参考线到目标节点的锚点 [Anchor](./anchor)，然后根据 [connectionPoint](../model/edge#source-和-target) 指定的交点计算方法，计算参考线与图形的交点，该交点就是边的终点。
 
 
 我们在 `Registry.ConnectionPoint.presets` 命名空间中提供了以下几种连接点计算方法。
@@ -18,7 +18,7 @@ redirect_from:
 - [`'boundary'`](#boundary) 默认值，与链接图形的边框的交点。
 - [`'bbox'`](#bbox) 与链接元素的包围盒的交点。
 - [`'rect'`](#rect) 与链接元素的旋转后的矩形区域的交点。
-- [`'endpoint'`](#endpoint) 使用端点作为连接点。
+- [`'anchor'`](#anchor) 使用锚点作为连接点。
 
 <iframe src="/demos/api/registry/connection-point/playground"></iframe>
 
@@ -88,7 +88,7 @@ new Graph({
 
 ### boundary
 
-自动识别链接图形的边框，并计算参照点与端点（Endpoint）形成的直线与边框的交点。如 `<ellipse>` 元素将被识别为椭圆，并求椭圆与直线的交点，求得的交点为边的连接点。不能识别的元素（`text`、`<path>` 等）使用图形的包围盒代替，这与使用 `'bbox'` 求得的连接点一样。
+自动识别链接图形的边框，并计算参照点与锚点（Anchor）形成的直线与边框的交点。如 `<ellipse>` 元素将被识别为椭圆，并求椭圆与直线的交点，求得的交点为边的连接点。不能识别的元素（`text`、`<path>` 等）使用图形的包围盒代替，这与使用 `'bbox'` 求得的连接点一样。
 
 支持的参数如下表：
 
@@ -102,7 +102,7 @@ new Graph({
 | precision   | number   |    否    | `2`         | 交点计算的精度。                                                                                                        |
 | selector    | string   |    否    | `undefined` | 选择器，用于标识一个元素，使用该元素的边框来计算交点。默认使用节点中第一个不在 `<g>` 元素内的子元素。                      |
 
-### endpoint
+### anchor
 
 将端点作为连接点，支持如下参数：
 

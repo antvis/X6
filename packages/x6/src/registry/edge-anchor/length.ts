@@ -1,10 +1,10 @@
-import { EdgeEndpoint } from './index'
+import { EdgeAnchor } from './index'
 
 export interface LengthEndpointOptions {
   length?: number
 }
 
-export const length: EdgeEndpoint.Definition<LengthEndpointOptions> = function (
+export const length: EdgeAnchor.Definition<LengthEndpointOptions> = function (
   view,
   magnet,
   ref,

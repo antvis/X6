@@ -1,10 +1,10 @@
 import { Point } from '../../geometry'
-import { ResolveOptions, resolve } from '../node-endpoint/util'
-import { EdgeEndpoint } from './index'
+import { ResolveOptions, resolve } from '../node-anchor/util'
+import { EdgeAnchor } from './index'
 
 export interface ClosestEndpointOptions extends ResolveOptions {}
 
-export const getClosestPoint: EdgeEndpoint.ResolvedDefinition<ClosestEndpointOptions> = function (
+export const getClosestPoint: EdgeAnchor.ResolvedDefinition<ClosestEndpointOptions> = function (
   view,
   magnet,
   refPoint,
@@ -15,6 +15,6 @@ export const getClosestPoint: EdgeEndpoint.ResolvedDefinition<ClosestEndpointOpt
 }
 
 export const closest = resolve<
-  EdgeEndpoint.ResolvedDefinition<ResolveOptions>,
-  EdgeEndpoint.Definition<ClosestEndpointOptions>
+  EdgeAnchor.ResolvedDefinition<ResolveOptions>,
+  EdgeAnchor.Definition<ClosestEndpointOptions>
 >(getClosestPoint)

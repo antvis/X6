@@ -1,12 +1,12 @@
 import { Angle } from '../../geometry'
 import { ResolveOptions, resolve } from './util'
-import { NodeEndpoint } from './index'
+import { NodeAnchor } from './index'
 
 export interface OrthEndpointOptions extends ResolveOptions {
   padding: number
 }
 
-const orthogonal: NodeEndpoint.ResolvedDefinition<OrthEndpointOptions> = function (
+const orthogonal: NodeAnchor.ResolvedDefinition<OrthEndpointOptions> = function (
   view,
   magnet,
   refPoint,
@@ -53,6 +53,6 @@ const orthogonal: NodeEndpoint.ResolvedDefinition<OrthEndpointOptions> = functio
  * placed at the center of the view bbox instead.
  */
 export const orth = resolve<
-  NodeEndpoint.ResolvedDefinition<OrthEndpointOptions>,
-  NodeEndpoint.Definition<OrthEndpointOptions>
+  NodeAnchor.ResolvedDefinition<OrthEndpointOptions>,
+  NodeAnchor.Definition<OrthEndpointOptions>
 >(orthogonal)

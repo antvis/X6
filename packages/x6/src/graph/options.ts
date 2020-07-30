@@ -8,8 +8,8 @@ import { Edge as StandardEdge } from '../shape/standard/edge'
 import {
   Router,
   Connector,
-  NodeEndpoint,
-  EdgeEndpoint,
+  NodeAnchor,
+  EdgeAnchor,
   ConnectionPoint,
   ConnectionStrategy,
 } from '../registry'
@@ -259,8 +259,8 @@ export namespace Options {
      */
     highlight: boolean
 
-    endpoint: string | NodeEndpoint.NativeItem | NodeEndpoint.ManaualItem
-    edgeEndpoint: string | EdgeEndpoint.NativeItem | EdgeEndpoint.ManaualItem
+    anchor: string | NodeAnchor.NativeItem | NodeAnchor.ManaualItem
+    edgeAnchor: string | EdgeAnchor.NativeItem | EdgeAnchor.ManaualItem
     router: string | Router.NativeItem | Router.ManaualItem
     connector: string | Connector.NativeItem | Connector.ManaualItem
     connectionPoint:
@@ -568,8 +568,8 @@ export namespace Options {
       dangling: true,
       highlight: false,
 
-      endpoint: 'center',
-      edgeEndpoint: 'ratio',
+      anchor: 'center',
+      edgeAnchor: 'ratio',
       connectionPoint: 'boundary',
       strategy: null,
       router: 'normal',

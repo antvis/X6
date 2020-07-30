@@ -1,10 +1,10 @@
-import { EdgeEndpoint } from './index'
+import { EdgeAnchor } from './index'
 
 export interface RatioEndpointOptions {
   ratio?: number
 }
 
-export const ratio: EdgeEndpoint.Definition<RatioEndpointOptions> = function (
+export const ratio: EdgeAnchor.Definition<RatioEndpointOptions> = function (
   view,
   magnet,
   ref,

@@ -150,10 +150,10 @@ export default class Example extends React.Component {
 
   updateBBox() {}
 
-  onAttrsChanged = ({ endpoint, connectionPoint, angle }: State) => {
-    this.edge1.prop('target/endpoint', { name: endpoint })
+  onAttrsChanged = ({ anchor, connectionPoint, angle }: State) => {
+    this.edge1.prop('target/anchor', { name: anchor })
     this.edge1.prop('target/connectionPoint', { name: connectionPoint })
-    this.edge2.prop('target/endpoint', { name: endpoint })
+    this.edge2.prop('target/anchonr', { name: anchor })
     this.edge2.prop('target/connectionPoint', { name: connectionPoint })
     this.ellipse.rotate(angle, { absolute: true })
   }

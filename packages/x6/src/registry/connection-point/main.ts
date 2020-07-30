@@ -1,4 +1,4 @@
 export * from './bbox'
 export * from './rect'
 export * from './boundary'
-export * from './endpoint'
+export * from './anchor'

@@ -1,13 +1,13 @@
 import { Line } from '../../geometry'
-import { ResolveOptions, resolve, getPointAtEdge } from '../node-endpoint/util'
+import { ResolveOptions, resolve, getPointAtEdge } from '../node-anchor/util'
 import { getClosestPoint } from './closest'
-import { EdgeEndpoint } from './index'
+import { EdgeAnchor } from './index'
 
 export interface OrthEndpointOptions extends ResolveOptions {
   fallbackAt?: number | string
 }
 
-const orthogonal: EdgeEndpoint.ResolvedDefinition<OrthEndpointOptions> = function (
+const orthogonal: EdgeAnchor.ResolvedDefinition<OrthEndpointOptions> = function (
   view,
   magnet,
   refPoint,
@@ -53,6 +53,6 @@ const orthogonal: EdgeEndpoint.ResolvedDefinition<OrthEndpointOptions> = functio
 }
 
 export const orth = resolve<
-  EdgeEndpoint.ResolvedDefinition<OrthEndpointOptions>,
-  EdgeEndpoint.Definition<OrthEndpointOptions>
+  EdgeAnchor.ResolvedDefinition<OrthEndpointOptions>,
+  EdgeAnchor.Definition<OrthEndpointOptions>
 >(orthogonal)

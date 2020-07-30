@@ -15,16 +15,16 @@ export const orth: Router.Definition<OrthRouterOptions> = function (
 ) {
   let sourceBBox = Util.getSourceBBox(edgeView, options)
   let targetBBox = Util.getTargetBBox(edgeView, options)
-  const sourceEndpoint = Util.getSourceEndpoint(edgeView, options)
-  const targetEndpoint = Util.getTargetEndpoint(edgeView, options)
+  const sourceAnchor = Util.getSourceAnchor(edgeView, options)
+  const targetAnchor = Util.getTargetAnchor(edgeView, options)
 
-  // If endpoint lies outside of bbox, the bbox expands to include it
-  sourceBBox = sourceBBox.union(Util.getPointBBox(sourceEndpoint))
-  targetBBox = targetBBox.union(Util.getPointBBox(targetEndpoint))
+  // If anchor lies outside of bbox, the bbox expands to include it
+  sourceBBox = sourceBBox.union(Util.getPointBBox(sourceAnchor))
+  targetBBox = targetBBox.union(Util.getPointBBox(targetAnchor))
 
   const points = vertices.map((p) => Point.create(p))
-  points.unshift(sourceEndpoint)
-  points.push(targetEndpoint)
+  points.unshift(sourceAnchor)
+  points.push(targetAnchor)
 
   // bearing of previous route segment
   let bearing: Private.Bearings | null = null
