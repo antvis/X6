@@ -1,4 +1,4 @@
-import { NodeEndpoint } from './index'
+import { NodeAnchor } from './index'
 
 export interface NodeCenterEndpointOptions {
   dx?: number
@@ -8,7 +8,7 @@ export interface NodeCenterEndpointOptions {
 /**
  * Places the anchor of the edge at center of the node bbox.
  */
-export const nodeCenter: NodeEndpoint.Definition<NodeCenterEndpointOptions> = function (
+export const nodeCenter: NodeAnchor.Definition<NodeCenterEndpointOptions> = function (
   view,
   magnet,
   ref,

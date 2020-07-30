@@ -66,7 +66,7 @@ export default class Example extends React.Component {
   }
 
   onAttrsChanged = ({ type, value }: State) => {
-    const endpoint =
+    const anchor =
       type === 'ratio' || type === 'length'
         ? {
             name: type,
@@ -75,7 +75,7 @@ export default class Example extends React.Component {
             },
           }
         : { name: type }
-    this.edge.prop('target/endpoint', endpoint)
+    this.edge.prop('target/anchor', anchor)
   }
 
   refContainer = (container: HTMLDivElement) => {

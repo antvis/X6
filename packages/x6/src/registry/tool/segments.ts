@@ -84,7 +84,7 @@ export class Segments extends ToolsView.ToolItem<EdgeView, Segments.Options> {
 
   protected resetAnchor(
     type: Edge.TerminalType,
-    anchor: Edge.TerminalCellData['endpoint'],
+    anchor: Edge.TerminalCellData['anchor'],
   ) {
     const edge = this.cellView.cell
     if (anchor) {
@@ -153,7 +153,7 @@ export class Segments extends ToolsView.ToolItem<EdgeView, Segments.Options> {
     let deleteSourceAnchor = false
 
     if (!vertex) {
-      vertex = edgeView.sourceEndpoint.toJSON()
+      vertex = edgeView.sourceAnchor.toJSON()
       vertex[axis] = position[axis]
       if (sourceBBox.containsPoint(vertex)) {
         changeSourceAnchor = true
@@ -200,7 +200,7 @@ export class Segments extends ToolsView.ToolItem<EdgeView, Segments.Options> {
     let changeTargetAnchor = false
     let deleteTargetAnchor = false
     if (!nextVertex) {
-      nextVertex = edgeView.targetEndpoint.toJSON()
+      nextVertex = edgeView.targetAnchor.toJSON()
       nextVertex[axis] = position[axis]
       if (targetBBox.containsPoint(nextVertex)) {
         changeTargetAnchor = true
@@ -267,8 +267,8 @@ export class Segments extends ToolsView.ToolItem<EdgeView, Segments.Options> {
 
     this.focus()
     this.setEventData<Segments.EventData>(e, {
-      sourceAnchor: edgeView.sourceEndpoint.clone(),
-      targetAnchor: edgeView.targetEndpoint.clone(),
+      sourceAnchor: edgeView.sourceAnchor.clone(),
+      targetAnchor: edgeView.targetAnchor.clone(),
       sourceAnchorDef: ObjectExt.cloneDeep(
         this.cell.prop(['source', 'anchor']),
       ),
@@ -359,7 +359,7 @@ export namespace Segments {
       terminalType: Edge.TerminalType,
       edgeView: EdgeView,
       toolView: Segments,
-    ) => Edge.TerminalCellData['endpoint']
+    ) => Edge.TerminalCellData['anchor']
     snapRadius: number
     snapHandle: boolean
     stopPropagation: boolean
@@ -368,8 +368,8 @@ export namespace Segments {
   export interface EventData {
     sourceAnchor: Point
     targetAnchor: Point
-    sourceAnchorDef: Edge.TerminalCellData['endpoint']
-    targetAnchorDef: Edge.TerminalCellData['endpoint']
+    sourceAnchorDef: Edge.TerminalCellData['anchor']
+    targetAnchorDef: Edge.TerminalCellData['anchor']
   }
 }
 

@@ -6,8 +6,8 @@ import {
   Router,
   Connector,
   ConnectionPoint,
-  NodeEndpoint,
-  EdgeEndpoint,
+  NodeAnchor,
+  EdgeAnchor,
 } from '../registry'
 import { Edge } from '../model/edge'
 import { Markup } from './markup'
@@ -21,8 +21,8 @@ export class EdgeView<
 
   public path: Path
   public routePoints: Point[]
-  public sourceEndpoint: Point
-  public targetEndpoint: Point
+  public sourceAnchor: Point
+  public targetAnchor: Point
   public sourcePoint: Point
   public targetPoint: Point
   public sourceView: CellView | null
@@ -54,7 +54,7 @@ export class EdgeView<
     }
     const sourceMagnet = this.sourceMagnet
     if (sourceView.isEdgeElement(sourceMagnet)) {
-      return new Rectangle(this.sourceEndpoint.x, this.sourceEndpoint.y)
+      return new Rectangle(this.sourceAnchor.x, this.sourceAnchor.y)
     }
     return sourceView.getBBoxOfElement(sourceMagnet || sourceView.container)
   }
@@ -67,7 +67,7 @@ export class EdgeView<
     }
     const targetMagnet = this.targetMagnet
     if (targetView.isEdgeElement(targetMagnet)) {
-      return new Rectangle(this.targetEndpoint.x, this.targetEndpoint.y)
+      return new Rectangle(this.targetAnchor.x, this.targetAnchor.y)
     }
     return targetView.getBBoxOfElement(targetMagnet || targetView.container)
   }
@@ -515,7 +515,7 @@ export class EdgeView<
   removeRedundantLinearVertices(options: Edge.SetOptions = {}) {
     const edge = this.cell
     const vertices = edge.getVertices()
-    const routePoints = [this.sourceEndpoint, ...vertices, this.targetEndpoint]
+    const routePoints = [this.sourceAnchor, ...vertices, this.targetAnchor]
     const rawCount = routePoints.length
 
     // Puts the route points into a polyline and try to simplify.
@@ -569,9 +569,9 @@ export class EdgeView<
   getTerminalAnchor(type: Edge.TerminalType) {
     switch (type) {
       case 'source':
-        return Point.create(this.sourceEndpoint)
+        return Point.create(this.sourceAnchor)
       case 'target':
-        return Point.create(this.targetEndpoint)
+        return Point.create(this.targetAnchor)
       default:
         throw new Error(`Unknown terminal type '${type}'`)
     }
@@ -632,9 +632,9 @@ export class EdgeView<
       const vertices = edge.getVertices()
 
       // 1. Find anchor points
-      const endpoints = this.findEndpoints(vertices)
-      this.sourceEndpoint = endpoints.source
-      this.targetEndpoint = endpoints.target
+      const anchors = this.findAnchors(vertices)
+      this.sourceAnchor = anchors.source
+      this.targetAnchor = anchors.target
 
       // 2. Find route points
       this.routePoints = this.findRoutePoints(vertices)
@@ -642,8 +642,8 @@ export class EdgeView<
       // 3. Find connection points
       const connectionPoints = this.findConnectionPoints(
         this.routePoints,
-        this.sourceEndpoint,
-        this.targetEndpoint,
+        this.sourceAnchor,
+        this.targetAnchor,
       )
       this.sourcePoint = connectionPoints.source
       this.targetPoint = connectionPoints.target
@@ -666,7 +666,7 @@ export class EdgeView<
     this.cleanCache()
   }
 
-  protected findEndpoints(vertices: Point.PointLike[]) {
+  protected findAnchors(vertices: Point.PointLike[]) {
     const edge = this.cell
     const source = edge.source as Edge.TerminalCellData
     const target = edge.target as Edge.TerminalCellData
@@ -675,7 +675,7 @@ export class EdgeView<
 
     if (target.priority && !source.priority) {
       // Reversed order
-      return this.findEndpointsOrdered(
+      return this.findAnchorsOrdered(
         'target',
         lastVertex,
         'source',
@@ -684,22 +684,17 @@ export class EdgeView<
     }
 
     // Usual order
-    return this.findEndpointsOrdered(
-      'source',
-      firstVertex,
-      'target',
-      lastVertex,
-    )
+    return this.findAnchorsOrdered('source', firstVertex, 'target', lastVertex)
   }
 
-  protected findEndpointsOrdered(
+  protected findAnchorsOrdered(
     firstType: Edge.TerminalType,
     firstPoint: Point.PointLike,
     secondType: Edge.TerminalType,
     secondPoint: Point.PointLike,
   ) {
-    let firstEndpoint: Point
-    let secondEndpoint: Point
+    let firstAnchor: Point
+    let secondAnchor: Point
 
     const edge = this.cell
     const firstTerminal = edge[firstType]
@@ -719,40 +714,40 @@ export class EdgeView<
         firstRef = Point.create(secondTerminal as Edge.TerminalPointData)
       }
 
-      firstEndpoint = this.getEndpoint(
-        (firstTerminal as Edge.SetCellTerminalArgs).endpoint,
+      firstAnchor = this.getAnchor(
+        (firstTerminal as Edge.SetCellTerminalArgs).anchor,
         firstView,
         firstMagnet,
         firstRef,
         firstType,
       )
     } else {
-      firstEndpoint = Point.create(firstTerminal as Edge.TerminalPointData)
+      firstAnchor = Point.create(firstTerminal as Edge.TerminalPointData)
     }
 
     if (secondView) {
-      const secondRef = Point.create(secondPoint || firstEndpoint)
-      secondEndpoint = this.getEndpoint(
-        (secondTerminal as Edge.SetCellTerminalArgs).endpoint,
+      const secondRef = Point.create(secondPoint || firstAnchor)
+      secondAnchor = this.getAnchor(
+        (secondTerminal as Edge.SetCellTerminalArgs).anchor,
         secondView,
         secondMagnet,
         secondRef,
         secondType,
       )
     } else {
-      secondEndpoint = Point.isPointLike(secondTerminal)
+      secondAnchor = Point.isPointLike(secondTerminal)
         ? Point.create(secondTerminal)
         : new Point()
     }
 
     return {
-      [firstType]: firstEndpoint,
-      [secondType]: secondEndpoint,
+      [firstType]: firstAnchor,
+      [secondType]: secondAnchor,
     }
   }
 
-  protected getEndpoint(
-    def: NodeEndpoint.ManaualItem | string | undefined,
+  protected getAnchor(
+    def: NodeAnchor.ManaualItem | string | undefined,
     cellView: CellView,
     magnet: Element | null,
     ref: Point | Element | null,
@@ -762,22 +757,22 @@ export class EdgeView<
     const connecting = this.graph.options.connecting
     let config = typeof def === 'string' ? { name: def } : def
     if (!config) {
-      const defaults = isEdge ? connecting.edgeEndpoint : connecting.endpoint
+      const defaults = isEdge ? connecting.edgeAnchor : connecting.anchor
       config = typeof defaults === 'string' ? { name: defaults } : defaults
     }
 
     if (!config) {
-      throw new Error(`The endpoint of edge should be specified.`)
+      throw new Error(`Anchor should be specified.`)
     }
 
     const name = config.name
-    const registry = isEdge ? EdgeEndpoint.registry : NodeEndpoint.registry
+    const registry = isEdge ? EdgeAnchor.registry : NodeAnchor.registry
     const fn = registry.get(name)
     if (typeof fn !== 'function') {
       return registry.onNotFound(name)
     }
 
-    const endpoint = fn.call(
+    const anchor = fn.call(
       this,
       cellView,
       magnet,
@@ -787,7 +782,7 @@ export class EdgeView<
       this,
     )
 
-    return endpoint ? endpoint.round(this.POINT_ROUNDING) : new Point()
+    return anchor ? anchor.round(this.POINT_ROUNDING) : new Point()
   }
 
   protected findRoutePoints(vertices: Point.PointLike[] = []) {
@@ -1030,8 +1025,8 @@ export class EdgeView<
     }
     this.sourcePoint.translate(tx, ty)
     this.targetPoint.translate(tx, ty)
-    this.sourceEndpoint.translate(tx, ty)
-    this.targetEndpoint.translate(tx, ty)
+    this.sourceAnchor.translate(tx, ty)
+    this.targetAnchor.translate(tx, ty)
   }
 
   updateLabelPositions() {
