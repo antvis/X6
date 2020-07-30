@@ -752,7 +752,7 @@ export class EdgeView<
   }
 
   protected getEndpoint(
-    endpointDef: NodeEndpoint.ManaualItem | undefined,
+    def: NodeEndpoint.ManaualItem | string | undefined,
     cellView: CellView,
     magnet: Element | null,
     ref: Point | Element | null,
@@ -760,25 +760,21 @@ export class EdgeView<
   ) {
     const isEdge = cellView.isEdgeElement(magnet)
     const connecting = this.graph.options.connecting
-
-    let def = endpointDef
-    if (!def) {
+    let config = typeof def === 'string' ? { name: def } : def
+    if (!config) {
       const defaults = isEdge ? connecting.edgeEndpoint : connecting.endpoint
-      def = typeof defaults === 'string' ? { name: defaults } : defaults
+      config = typeof defaults === 'string' ? { name: defaults } : defaults
     }
 
-    if (!def) {
-      throw new Error('Anchor required.')
+    if (!config) {
+      throw new Error(`The endpoint of edge should be specified.`)
     }
 
-    const name = def.name
-    const fn = isEdge
-      ? EdgeEndpoint.registry.get(name)
-      : NodeEndpoint.registry.get(name)
+    const name = config.name
+    const registry = isEdge ? EdgeEndpoint.registry : NodeEndpoint.registry
+    const fn = registry.get(name)
     if (typeof fn !== 'function') {
-      return isEdge
-        ? EdgeEndpoint.registry.onNotFound(name)
-        : NodeEndpoint.registry.onNotFound(name)
+      return registry.onNotFound(name)
     }
 
     const endpoint = fn.call(
@@ -786,7 +782,7 @@ export class EdgeView<
       cellView,
       magnet,
       ref,
-      def.args || {},
+      config.args || {},
       terminalType,
       this,
     )
