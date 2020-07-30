@@ -12,7 +12,7 @@ redirect_from:
 - 起点：从第一个路径点或目标节点的中心（没有路径点时）画一条参考线到源节点的锚点，然后根据 [connectionPoint](../model/edge#source-和-target) 指定的交点计算方法，计算参考线与图形的交点，该交点就是边的起点。
 - 终点：从最后一个路径点或源节点的中心（没有路径点时）画一条参考线到目标节点的锚点，然后根据 [connectionPoint](../model/edge#source-和-target) 指定的交点计算方法，计算参考线与图形的交点，该交点就是边的终点。
 
-我们在 `Registry.NodeAnchor.presets` 命名空间中提供了以下几种端点定义。
+我们在 `Registry.NodeAnchor.presets` 命名空间中提供了以下几种锚点定义。
 
 - [`center`](#center) 边链接的元素的中心点（默认值）。
 - [`top`](#top) 边链接的元素的顶部中心点。
@@ -29,7 +29,7 @@ redirect_from:
 
 <iframe src="/demos/api/registry/node-anchor/playground"></iframe>
 
-可以在创建边时指定端点：
+可以在创建边时指定锚点：
 
 ```ts
 const edge = graph.addEdge({
@@ -49,7 +49,7 @@ const edge = graph.addEdge({
 })
 ```
 
-创建之后可以调用 `edge.setSource` 和 `edge.setTarget` 方法来修改端点：
+创建之后可以调用 `edge.setSource` 和 `edge.setTarget` 方法来修改锚点：
 
 ```ts
 edge.setSource({
@@ -63,7 +63,7 @@ edge.setSource({
 })
 ```
 
-在创建画布时，可以通过 `connecting` 选项来设置全局默认的端点：
+在创建画布时，可以通过 `connecting` 选项来设置全局默认的锚点：
 
 ```ts
 new Graph({
@@ -209,7 +209,7 @@ new Graph({
 
 ## registry
 
-端点定义是一个具有如下签名的函数，返回端点。
+锚点定义是一个具有如下签名的函数，返回锚点。
 
 ```sign
 export type Definition<T> = (
@@ -231,7 +231,7 @@ export type Definition<T> = (
 | args     | T                             | 参数。               |
 | type     | Edge.TerminalType             | 边的终端类型。       |
 
-并在 `Registry.NodeAnchor.registry` 对象上提供了 [`register`](#register) 和 [`unregister`](#unregister) 两个方法来注册和取消注册端点定义，同时也将这两个方法分别挂载为 Graph 上的两个静态方法 `Graph.registerAnchor` 和 `Graph.unregisterAnchor`。
+并在 `Registry.NodeAnchor.registry` 对象上提供了 [`register`](#register) 和 [`unregister`](#unregister) 两个方法来注册和取消注册锚点定义，同时也将这两个方法分别挂载为 Graph 上的两个静态方法 `Graph.registerAnchor` 和 `Graph.unregisterAnchor`。
 
 ### register
 
@@ -240,7 +240,7 @@ register(entities: { [name: string]: Definition }, force?: boolean): void
 register(name: string, entity: Definition, force?: boolean): Definition
 ```
 
-注册连端点定义。
+注册连锚点定义。
 
 ### unregister
 
@@ -248,5 +248,5 @@ register(name: string, entity: Definition, force?: boolean): Definition
 unregister(name: string): Definition | null
 ```
 
-取消注册端点定义。
+取消注册锚点定义。
 
