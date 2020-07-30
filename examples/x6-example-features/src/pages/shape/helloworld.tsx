@@ -12,36 +12,63 @@ export default class Example extends React.Component {
       height: 600,
     })
 
-    const data = {
-      // 节点
-      nodes: [
-        {
-          id: 'node1',
-          x: 100,
-          y: 100,
-          width: 80,
-          height: 40,
-          label: 'hello',
-        },
-        {
-          id: 'node2',
-          x: 240,
-          y: 300,
-          width: 80,
-          height: 40,
-          label: 'world',
-        },
-      ],
-      // 边
-      edges: [
-        {
-          source: 'node1',
-          target: 'node2',
-        },
-      ],
-    }
+    const cells = [
+      {
+        id: 'node1',
+        shape: 'rect',
+        x: 100,
+        y: 100,
+        width: 80,
+        height: 40,
+        label: 'hello',
+      },
+      {
+        id: 'node2',
+        shape: 'rect',
+        x: 240,
+        y: 300,
+        width: 80,
+        height: 40,
+        label: 'world',
+      },
+      {
+        shape: 'edge',
+        source: 'node1',
+        target: 'node2',
+      },
+    ]
 
-    graph.fromJSON(data)
+    // const data = {
+    //   // 节点
+    //   nodes: [
+    //     {
+    //       id: 'node1',
+    //       shape: 'rect',
+    //       x: 100,
+    //       y: 100,
+    //       width: 80,
+    //       height: 40,
+    //       label: 'hello',
+    //     },
+    //     {
+    //       id: 'node2',
+    //       x: 240,
+    //       y: 300,
+    //       width: 80,
+    //       height: 40,
+    //       label: 'world',
+    //     },
+    //   ],
+    //   // 边
+    //   edges: [
+    //     {
+    //       source: 'node1',
+    //       target: 'node2',
+    //     },
+    //   ],
+    // }
+
+    graph.fromJSON(cells)
     console.log(graph.toJSON())
   }
 
