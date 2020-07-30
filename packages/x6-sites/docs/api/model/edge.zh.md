@@ -60,10 +60,10 @@ constructor(metadata?: Edge.Metadata)
   })
   ```
 
-另外，边的[端点 Endpoint](../../api/registry/endpoint) 与[连接点 ConnectionPoint](../../api/registry/connection-point) 共同确定了边的起点和终点。
+另外，边的[锚点 anchor](../../api/registry/anchor) 和[连接点 ConnectionPoint](../../api/registry/connection-point) 选项共同确定了边的起点和终点。
 
-- 起点：从第一个路径点或目标节点的中心（没有路径点时）画一条参考线到源节点的端点 endpoint，然后根据 connectionPoint 指定的交点计算方法，计算参考线与图形的交点，该交点就是边的起点。
-- 终点：从最后一个路径点或源节点的中心（没有路径点时）画一条参考线到目标节点的端点 endpoint，然后根据 connectionPoint 指定的交点计算方法，计算参考线与图形的交点，该交点就是边的终点。
+- 起点：从第一个路径点或目标节点的中心（没有路径点时）画一条参考线到源节点的锚点 anchor，然后根据 connectionPoint 指定的交点计算方法，计算参考线与图形的交点，该交点就是边的起点。
+- 终点：从最后一个路径点或源节点的中心（没有路径点时）画一条参考线到目标节点的锚点 anchor，然后根据 connectionPoint 指定的交点计算方法，计算参考线与图形的交点，该交点就是边的终点。
 
 创建边时可以分别为 `source` 和 `target` 指定端点和连接点。
 
@@ -72,7 +72,7 @@ constructor(metadata?: Edge.Metadata)
   const edge = new Shape.Edge({
       source: { 
         cell: 'source-id', 
-        endpoint: { 
+        anchor: { 
           name: 'midSide', 
           args: {
             dx: 10,
@@ -81,7 +81,7 @@ constructor(metadata?: Edge.Metadata)
       },
       target: { 
         cell: 'target-id', 
-        endpoint: 'orth', // 没有参数时可以简化写法
+        anchor: 'orth', // 没有参数时可以简化写法
       },
   })
   ```

@@ -115,11 +115,9 @@ export class Vertices extends ToolsView.ToolItem<EdgeView, Vertices.Options> {
   protected getNeighborPoints(index: number) {
     const edgeView = this.cellView
     const vertices = this.vertices
-    const prev = index > 0 ? vertices[index - 1] : edgeView.sourceEndpoint
+    const prev = index > 0 ? vertices[index - 1] : edgeView.sourceAnchor
     const next =
-      index < vertices.length - 1
-        ? vertices[index + 1]
-        : edgeView.targetEndpoint
+      index < vertices.length - 1 ? vertices[index + 1] : edgeView.targetAnchor
     return {
       prev: Point.create(prev),
       next: Point.create(next),

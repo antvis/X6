@@ -2,7 +2,7 @@ import { Point } from '../../geometry'
 import { Edge } from '../../model/edge'
 import { CellView } from '../../view/cell'
 import { EdgeView } from '../../view/edge'
-import { ConnectionStrategy } from '../strategy'
+import { ConnectionStrategy } from '../connection-strategy'
 
 export function getAnchor(
   pos: Point.PointLike,
@@ -17,7 +17,7 @@ export function getAnchor(
     pos,
     this.model,
   ) as Edge.TerminalCellData
-  return end.endpoint
+  return end.anchor
 }
 
 export function getViewBBox(view: CellView, quick?: boolean) {
