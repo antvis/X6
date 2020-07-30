@@ -1167,17 +1167,20 @@ export namespace Edge {
   export interface SetTerminalCommonArgs {
     selector?: string
     magnet?: string
-    connectionPoint?: ConnectionPoint.NativeItem | ConnectionPoint.ManaualItem
+    connectionPoint?:
+      | string
+      | ConnectionPoint.NativeItem
+      | ConnectionPoint.ManaualItem
   }
 
   export interface SetCellTerminalArgs extends SetTerminalCommonArgs {
     port?: string
     priority?: boolean
-    endpoint?: NodeEndpoint.NativeItem | NodeEndpoint.ManaualItem
+    endpoint?: string | NodeEndpoint.NativeItem | NodeEndpoint.ManaualItem
   }
 
   export interface SetEdgeTerminalArgs extends SetTerminalCommonArgs {
-    endpoint?: EdgeEndpoint.NativeItem | EdgeEndpoint.ManaualItem
+    endpoint?: string | EdgeEndpoint.NativeItem | EdgeEndpoint.ManaualItem
   }
 
   export interface TerminalPointData
