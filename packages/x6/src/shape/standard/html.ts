@@ -61,15 +61,19 @@ export namespace HTML {
     }
 
     protected renderHTMLComponent() {
-      const $container = this.$(this.container)
-        .find('foreignObject > div')
-        .empty()
+      const wrap = this.selectors.wrap
+      const $wrap = wrap
+        ? this.$(wrap)
+        : this.$(this.container).find('foreignObject > body > div')
+
+      $wrap.empty()
+
       const component = this.graph.hook.getHTMLComponent(this.cell)
       if (component) {
         if (typeof component === 'string') {
-          $container.html(component)
+          $wrap.html(component)
         } else {
-          $container.append(component)
+          $wrap.append(component)
         }
       }
     }
@@ -99,22 +103,25 @@ export namespace HTML {
       },
       {
         tagName: 'foreignObject',
-        selector: 'foreignObject',
+        selector: 'fo',
         children: [
           {
-            tagName: 'div',
             ns: Dom.ns.xhtml,
-            selector: 'label',
-            style: {
-              width: '100%',
-              height: '100%',
-              position: 'static',
-              backgroundColor: 'transparent',
-              textAlign: 'center',
-              margin: 0,
-              padding: 0,
-              boxSizing: 'border-box',
+            tagName: 'body',
+            selector: 'foBody',
+            attrs: {
+              xmlns: Dom.ns.xhtml,
             },
+            children: [
+              {
+                tagName: 'div',
+                selector: 'wrap',
+                style: {
+                  width: '100%',
+                  height: '100%',
+                },
+              },
+            ],
           },
         ],
       },
@@ -125,10 +132,12 @@ export namespace HTML {
     ],
     attrs: {
       body: {
+        fill: 'none',
+        stroke: 'none',
         refWidth: '100%',
         refHeight: '100%',
       },
-      foreignObject: {
+      fo: {
         refWidth: '100%',
         refHeight: '100%',
       },
