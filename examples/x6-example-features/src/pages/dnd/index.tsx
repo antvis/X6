@@ -1,6 +1,6 @@
 import React from 'react'
 import { Button } from 'antd'
-import { Graph, $ } from '@antv/x6'
+import { Graph } from '@antv/x6'
 import { Dnd } from '@antv/x6/es/addon/dnd'
 import { Rect, Circle } from '@antv/x6/es/shape/standard'
 import '../index.less'

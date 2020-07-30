@@ -3,6 +3,7 @@ import { Cell } from '../model/cell'
 import { Node } from '../model/node'
 import { Edge } from '../model/edge'
 import { Model } from '../model/model'
+import { Markup } from '../view/markup'
 import { CellView } from '../view/cell'
 import { NodeView } from '../view/node'
 import { EdgeView } from '../view/edge'
@@ -514,6 +515,9 @@ export class Hook extends Base implements Hook.IHook {
 
     return ret
   }
+
+  @Decorator.hook()
+  onEdgeLabelRendered() {}
 }
 
 export namespace Hook {
@@ -564,6 +568,18 @@ export namespace Hook {
     createPrintManager: CreateManager<PrintManager>
     createFormatManager: CreateManager<FormatManager>
 
+    createCellView(this: Graph, cell: Cell): CellView | null | undefined
+
+    getCellView(
+      this: Graph,
+      cell: Cell,
+    ): null | undefined | typeof CellView | (new (...args: any[]) => CellView)
+
+    getHTMLComponent(
+      this: Graph,
+      node: HTML,
+    ): HTMLElement | string | null | undefined
+
     onViewUpdated: (
       this: Graph,
       view: CellView,
@@ -578,16 +594,14 @@ export namespace Hook {
       options: Renderer.UpdateViewOptions,
     ) => boolean
 
-    getCellView(
+    onEdgeLabelRendered(
       this: Graph,
-      cell: Cell,
-    ): null | undefined | typeof CellView | (new (...args: any[]) => CellView)
-
-    createCellView(this: Graph, cell: Cell): CellView | null | undefined
-
-    getHTMLComponent(
-      this: Graph,
-      node: HTML,
-    ): HTMLElement | string | null | undefined
+      args: {
+        edge: Edge
+        label: Edge.Label
+        container: Element
+        selectors: Markup.Selectors
+      },
+    ): void
   }
 }

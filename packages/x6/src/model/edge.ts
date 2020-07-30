@@ -579,9 +579,7 @@ export class Edge<
   getDefaultLabel(): Edge.Label {
     const ctor = this.constructor as typeof Edge
     const defaults = this.store.get('defaultLabel') || ctor.defaultLabel || {}
-    return {
-      ...defaults,
-    }
+    return ObjectExt.cloneDeep(defaults)
   }
 
   get labels() {
@@ -1210,7 +1208,7 @@ export namespace Edge {
 }
 
 export namespace Edge {
-  export interface Label {
+  export interface Label extends KeyValue {
     markup?: Markup
     attrs?: Attr.CellAttrs
     /**
