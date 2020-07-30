@@ -7,6 +7,7 @@ import '../index.less'
 
 export default class Example extends React.Component {
   private graph: Graph
+  private dnd: Dnd
   private container: HTMLDivElement
   private stencilContainer: HTMLDivElement
 
@@ -52,45 +53,45 @@ export default class Example extends React.Component {
 
     graph.centerContent()
 
-    const dnd = new Dnd({ target: graph })
+    this.dnd = new Dnd({ target: graph })
 
-    this.stencilContainer.childNodes.forEach((elem: HTMLElement) => {
-      const type = elem.getAttribute('data-type')
-      const node =
-        type === 'rect'
-          ? new Rect({
-              width: 100,
-              height: 40,
-              attrs: {
-                label: {
-                  text: 'Rect',
-                  fill: '#6a6c8a',
-                },
-                body: {
-                  stroke: '#31d0c6',
-                  strokeWidth: 2,
-                },
-              },
-            })
-          : new Circle({
-              width: 60,
-              height: 60,
-              attrs: {
-                label: {
-                  text: 'Circle',
-                  fill: '#6a6c8a',
-                },
-                body: {
-                  stroke: '#31d0c6',
-                  strokeWidth: 2,
-                },
-              },
-            })
+    // this.stencilContainer.childNodes.forEach((elem: HTMLElement) => {
+    //   const type = elem.getAttribute('data-type')
+    //   const node =
+    //     type === 'rect'
+    //       ? new Rect({
+    //           width: 100,
+    //           height: 40,
+    //           attrs: {
+    //             label: {
+    //               text: 'Rect',
+    //               fill: '#6a6c8a',
+    //             },
+    //             body: {
+    //               stroke: '#31d0c6',
+    //               strokeWidth: 2,
+    //             },
+    //           },
+    //         })
+    //       : new Circle({
+    //           width: 60,
+    //           height: 60,
+    //           attrs: {
+    //             label: {
+    //               text: 'Circle',
+    //               fill: '#6a6c8a',
+    //             },
+    //             body: {
+    //               stroke: '#31d0c6',
+    //               strokeWidth: 2,
+    //             },
+    //           },
+    //         })
 
-      $(elem).on('mousedown', (e) => {
-        dnd.start(node, e)
-      })
-    })
+    //   $(elem).on('mousedown', (e) => {
+    //     dnd.start(node, e)
+    //   })
+    // })
 
     // const history = graph.history
     // history.on('change', () => {})
@@ -110,6 +111,44 @@ export default class Example extends React.Component {
 
   refStencil = (container: HTMLDivElement) => {
     this.stencilContainer = container
+  }
+
+  startDrag = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    console.log(e.currentTarget)
+    const target = e.currentTarget
+    const type = target.getAttribute('data-type')
+    const node =
+      type === 'rect'
+        ? new Rect({
+            width: 100,
+            height: 40,
+            attrs: {
+              label: {
+                text: 'Rect',
+                fill: '#6a6c8a',
+              },
+              body: {
+                stroke: '#31d0c6',
+                strokeWidth: 2,
+              },
+            },
+          })
+        : new Circle({
+            width: 60,
+            height: 60,
+            attrs: {
+              label: {
+                text: 'Circle',
+                fill: '#6a6c8a',
+              },
+              body: {
+                stroke: '#31d0c6',
+                strokeWidth: 2,
+              },
+            },
+          })
+
+    this.dnd.start(node, e.nativeEvent as any)
   }
 
   render() {
@@ -134,6 +173,7 @@ export default class Example extends React.Component {
         >
           <div
             data-type="rect"
+            onMouseDown={this.startDrag}
             style={{
               width: 100,
               height: 40,
@@ -148,6 +188,7 @@ export default class Example extends React.Component {
           </div>
           <div
             data-type="circle"
+            onMouseDown={this.startDrag}
             style={{
               width: 60,
               height: 60,

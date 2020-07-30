@@ -63,7 +63,9 @@ export class Dnd extends View {
     this.$container.append(this.delegateGraph.container)
   }
 
-  start(node: Node, e: JQuery.MouseDownEvent) {
+  start(node: Node, evt: JQuery.MouseDownEvent | MouseEvent) {
+    const e = evt as JQuery.MouseDownEvent
+
     e.preventDefault()
 
     this.targetModel.startBatch('dnd')
