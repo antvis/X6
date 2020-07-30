@@ -441,7 +441,7 @@ edge.appendLabel({
 
 ## 字符串标签
 
-当通过 `defaultlabel` 选项设置[默认标签](#默认标签)后，标签的添加就显得非常简单，看下面代码。
+当通过 [`updateLabels`](#默认标签) 选项设置[默认标签](#默认标签)后，标签的添加就显得非常简单，看下面代码。
 
 ```ts
 // 创建节点时指定标签
@@ -466,7 +466,7 @@ edge.appendLabel({
 })
 ```
 
-上面代码其实仅仅设置了标签的文本，但代码看起来并不简单，我们不得不提供一个嵌套很深的 Label 对象 `{ attrs: { label: { text: 'edge' } } }`，为了解决这个问题，我们在内部提供了一层语法糖封装，支持直接传入字符串标签，上面代码可以进一步简化为。
+上面代码其实仅仅设置了标签的文本，但代码看起来并不简单，我们不得不提供一个嵌套很深的对象 `{ attrs: { label: { text: 'edge' } } }`，为了解决这个问题，我们提供了一个语法糖，支持直接传入字符串标签，上面代码可以进一步简化为。
 
 ```ts
 const edge = graph.addEdge({
@@ -480,7 +480,7 @@ edge.setLabels(['edge label'])
 edge.appendLabel('edge label')
 ```
 
-我们实际上是在 `Edge` 上定义了一个静态方法 `parseStringLabel`，该方法将字符串标签转换成了 Label 对象。默认的实现如下。
+该语法糖在 `Edge` 上定义了一个静态方法 `parseStringLabel`，该方法将字符串标签转换成了 Label 对象。默认的实现如下。
 
 ```ts
 function parseStringLabel(label: string): Label {
@@ -490,7 +490,7 @@ function parseStringLabel(label: string): Label {
 }
 ```
 
-这个方法仅仅适用于系统默认的标签，也就是说当你通过 `defaultlabel` 重新定义了默认标签的 `markup`，你还需要重写 `parseStringLabel` 方法来保证字符串标签的可用性。
+需要注意的是，这个语法糖仅适用于系统的默认标签，也就是说当你通过 `defaultLabel` 选项重新定义默认标签的 `markup` 后，还需要重写 `parseStringLabel` 方法来保证字符串标签的可用性。
 
 ```ts
 Edge.config({
@@ -524,11 +524,9 @@ Edge.parseStringLabel = (label: string) => {
 graph.addEdge({
   source,
   target,
-  label: [
-    {
-      attrs: { label: { text: 'edge label' } },
-    },
-  ],
+  label: {
+    attrs: { label: { text: 'edge label' } },
+  },
 })
 ```
 
