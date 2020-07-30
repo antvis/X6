@@ -117,8 +117,8 @@ export default class Example extends React.Component {
   }
 
   onAttrsChanged = ({ type }: State) => {
-    this.edge1.prop('target/endpoint', { name: type })
-    this.edge2.prop('target/endpoint', { name: type })
+    this.edge1.prop('target/anchor', { name: type })
+    this.edge2.prop('target/anchor', { name: type })
   }
 
   refContainer = (container: HTMLDivElement) => {
