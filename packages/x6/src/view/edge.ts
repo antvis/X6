@@ -5,9 +5,9 @@ import {
   Attr,
   Router,
   Connector,
-  ConnectionPoint,
   NodeAnchor,
   EdgeAnchor,
+  ConnectionPoint,
 } from '../registry'
 import { Edge } from '../model/edge'
 import { Markup } from './markup'
@@ -249,7 +249,7 @@ export class EdgeView<
       this.empty(container)
     } else {
       container = Dom.createSvgElement('g')
-      this.addClass('labels', container)
+      this.addClass(this.prefixClassName('edge-labels'), container)
       this.containers.labels = container
     }
 
@@ -291,6 +291,7 @@ export class EdgeView<
     }
 
     this.updateLabels()
+    this.customizeLabels()
 
     return this
   }
@@ -335,43 +336,42 @@ export class EdgeView<
     let vel
     const childNodes = fragment.childNodes
     if (childNodes.length > 1 || childNodes[0].nodeName.toUpperCase() !== 'G') {
-      // default markup fragment is not wrapped in <g />
-      // add a <g /> container
+      // default markup fragment is not wrapped in `<g/>`
+      // add a `<g/>` container
       vel = Dom.createVector('g').append(fragment)
     } else {
       vel = Dom.createVector(childNodes[0] as SVGElement)
     }
 
-    vel.addClass('label')
+    vel.addClass(this.prefixClassName('edge-label'))
 
-    return { node: vel.node, selectors: markup.selectors }
+    return {
+      node: vel.node,
+      selectors: markup.selectors,
+    }
   }
 
   protected updateLabels() {
-    if (this.containers.labels == null) {
-      return this
+    if (this.containers.labels) {
+      const edge = this.cell
+      const labels = edge.labels
+      const canLabelMove = this.can('edgeLabelMovable')
+      const defaultLabel = edge.getDefaultLabel()
+
+      for (let i = 0, n = labels.length; i < n; i += 1) {
+        const elem = this.labelCache[i]
+        const selectors = this.labelSelectors[i]
+
+        elem.setAttribute('cursor', canLabelMove ? 'move' : 'default')
+
+        const label = labels[i]
+        const attrs = ObjectExt.merge({}, defaultLabel.attrs, label.attrs)
+        this.updateAttrs(elem, attrs, {
+          selectors,
+          rootBBox: label.size ? Rectangle.fromSize(label.size) : undefined,
+        })
+      }
     }
-
-    const edge = this.cell
-    const labels = edge.labels
-    const canLabelMove = this.can('edgeLabelMovable')
-    const defaultLabel = edge.getDefaultLabel()
-
-    for (let i = 0, n = labels.length; i < n; i += 1) {
-      const elem = this.labelCache[i]
-      const selectors = this.labelSelectors[i]
-
-      elem.setAttribute('cursor', canLabelMove ? 'move' : 'default')
-
-      const label = labels[i]
-      const attrs = ObjectExt.merge({}, defaultLabel.attrs, label.attrs)
-      this.updateAttrs(elem, attrs, {
-        selectors,
-        rootBBox: label.size ? Rectangle.fromSize(label.size) : undefined,
-      })
-    }
-
-    return this
   }
 
   protected mergeLabelAttrs(
@@ -400,6 +400,25 @@ export class EdgeView<
 
     if (hasCustomMarkup) {
       return ObjectExt.merge({}, defaultLabelAttrs, labelAttrs)
+    }
+  }
+
+  protected customizeLabels() {
+    if (this.containers.labels) {
+      const edge = this.cell
+      const labels = edge.labels
+      const hook = this.graph.hook.onEdgeLabelRendered
+      for (let i = 0, n = labels.length; i < n; i += 1) {
+        const label = labels[i]
+        const container = this.labelCache[i]
+        const selectors = this.labelSelectors[i]
+        hook.call(this.graph, {
+          edge,
+          label,
+          container,
+          selectors,
+        })
+      }
     }
   }
 
