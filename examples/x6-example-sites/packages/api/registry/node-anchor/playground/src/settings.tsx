@@ -27,12 +27,7 @@ export class Settings extends React.Component<Props, State> {
 
   render() {
     return (
-      <Card
-        title="Endpoint"
-        size="small"
-        bordered={false}
-        style={{ width: 320 }}
-      >
+      <Card title="Anchor" size="small" bordered={false} style={{ width: 320 }}>
         <Row align="middle">
           <Col span={22} offset={2}>
             <Radio.Group onChange={this.onChange} value={this.state.type}>
