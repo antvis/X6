@@ -804,21 +804,37 @@ export class Renderer extends Base {
       return
     }
 
+    const callback = () => {
+      this.options.frozen = updates.frozen = false
+
+      if (updates.sort) {
+        this.sortViews()
+        updates.sort = false
+      }
+
+      this.graph.trigger('unfreeze', { key })
+    }
+
     if (this.isAsync()) {
       this.freeze()
-      this.updateViewsAsync(options)
+      const onProgress = options.progress
+      this.updateViewsAsync({
+        ...options,
+        progress: (done, process, total) => {
+          if (onProgress) {
+            onProgress.call(this.graph, done, process, total)
+          }
+
+          // sort views after async render
+          if (done) {
+            callback()
+          }
+        },
+      })
     } else {
       this.updateViews(options)
+      callback()
     }
-
-    this.options.frozen = updates.frozen = false
-
-    if (updates.sort) {
-      this.sortViews()
-      updates.sort = false
-    }
-
-    this.graph.trigger('unfreeze', { key })
   }
 
   isAsync() {
