@@ -6,7 +6,6 @@ import { Registry } from '../registry/registry'
 import { ConnectionStrategy } from '../registry/strategy'
 import { Cell } from '../model/cell'
 import { Edge } from '../model/edge'
-import { Node } from '../model/node'
 import { Model } from '../model/model'
 import { Graph } from '../graph/graph'
 import { View } from './view'
@@ -289,7 +288,7 @@ export class CellView<
         : interacting
 
     if (typeof interacting === 'object') {
-      return interacting[feature as CellView.InteractionNames] !== false
+      return interacting[feature] !== false
     }
 
     if (typeof interacting === 'boolean') {
@@ -301,6 +300,7 @@ export class CellView<
 
   setInteracting(interacting: CellView.Interacting) {
     this.options.interacting = interacting
+    return this
   }
 
   cleanCache() {
@@ -314,10 +314,6 @@ export class CellView<
 
   getDataOfElement(elem: Element) {
     return this.cache.getData(elem)
-  }
-
-  getBoundingRectOfElement(elem: Element) {
-    return this.cache.getBoundingRect(elem)
   }
 
   getMatrixOfElement(elem: Element) {
@@ -343,29 +339,30 @@ export class CellView<
     return { sx, sy }
   }
 
+  getBoundingRectOfElement(elem: Element) {
+    return this.cache.getBoundingRect(elem)
+  }
+
   getBBoxOfElement(elem: Element) {
     const rect = this.getBoundingRectOfElement(elem)
     const matrix = this.getMatrixOfElement(elem)
-    const rotateMatrix = this.getRootRotatedMatrix()
-    const translateMatrix = this.getRootTranslatedMatrix()
-    return Dom.transformRectangle(
-      rect,
-      translateMatrix.multiply(rotateMatrix).multiply(matrix),
-    )
+    const rm = this.getRootRotatedMatrix()
+    const tm = this.getRootTranslatedMatrix()
+    return Dom.transformRectangle(rect, tm.multiply(rm).multiply(matrix))
   }
 
   getUnrotatedBBoxOfElement(elem: SVGElement) {
     const rect = this.getBoundingRectOfElement(elem)
     const matrix = this.getMatrixOfElement(elem)
-    const translateMatrix = this.getRootTranslatedMatrix()
-    return Dom.transformRectangle(rect, translateMatrix.multiply(matrix))
+    const tm = this.getRootTranslatedMatrix()
+    return Dom.transformRectangle(rect, tm.multiply(matrix))
   }
 
   getBBox(options: { useCellGeometry?: boolean } = {}) {
     let bbox
     if (options.useCellGeometry) {
       const cell = this.cell
-      const angle = ((cell as any) as Node).getAngle() || 0
+      const angle = cell.isNode() ? cell.getAngle() : 0
       bbox = cell.getBBox().bbox(angle)
     } else {
       bbox = this.getBBoxOfElement(this.container)
