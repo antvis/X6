@@ -1,4 +1,4 @@
-import { Platform, Dom } from '../../util'
+import { Platform, Dom, FunctionExt } from '../../util'
 import { Attr } from '../../registry'
 import { bodyAttr } from './util'
 import { Base } from '../base'
@@ -61,7 +61,7 @@ export const TextBlock = Base.define({
   },
   attrHooks: {
     text: {
-      set(text: string, { refBBox, elem, attrs }) {
+      set(text: string, { cell, view, refBBox, elem, attrs }) {
         if (elem instanceof HTMLElement) {
           elem.textContent = text
         } else {
@@ -74,7 +74,9 @@ export const TextBlock = Base.define({
           )
 
           const textWrap = Attr.presets.textWrap as Attr.SetDefinition
-          textWrap.set.call(this, wrapValue, {
+          FunctionExt.call(textWrap.set, this, wrapValue, {
+            cell,
+            view,
             elem,
             refBBox,
             attrs: wrapAttrs,

@@ -1,6 +1,6 @@
-import { Basecoat, IDisablable } from '../common'
 import { KeyValue } from '../types'
-import { ObjectExt } from '../util'
+import { ObjectExt, FunctionExt } from '../util'
+import { Basecoat, IDisablable } from '../common'
 import { Cell } from '../model/cell'
 import { Model } from '../model/model'
 import { Graph } from './graph'
@@ -221,8 +221,9 @@ export class HistoryManager extends Basecoat<HistoryManager.EventArgs>
         cell.prop(key, value, options)
       }
     } else {
-      if (this.options.executeCommand) {
-        this.options.executeCommand.call(this, cmd, revert, options)
+      const executeCommand = this.options.executeCommand
+      if (executeCommand) {
+        FunctionExt.call(executeCommand, this, cmd, revert, options)
       }
     }
   }
@@ -252,7 +253,10 @@ export class HistoryManager extends Basecoat<HistoryManager.EventArgs>
     // before
     // ------
     const before = this.options.beforeAddCommand
-    if (before != null && before.call(this, event, args) === false) {
+    if (
+      before != null &&
+      FunctionExt.call(before, this, event, args) === false
+    ) {
       return
     }
 
@@ -351,8 +355,9 @@ export class HistoryManager extends Basecoat<HistoryManager.EventArgs>
 
     // others
     // ------
-    if (this.options.afterAddCommand) {
-      this.options.afterAddCommand.call(this, event, args, cmd)
+    const afterAddCommand = this.options.afterAddCommand
+    if (afterAddCommand) {
+      FunctionExt.call(afterAddCommand, this, event, args, cmd)
     }
     this.push(cmd, options)
   }

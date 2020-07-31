@@ -1,4 +1,4 @@
-import { Dom, ObjectExt } from '../../util'
+import { Dom, ObjectExt, FunctionExt } from '../../util'
 import { Point, Line } from '../../geometry'
 import { Graph } from '../../graph'
 import { Edge } from '../../model/edge'
@@ -179,13 +179,15 @@ export class Segments extends ToolsView.ToolItem<EdgeView, Segments.Options> {
       if (changeSourceAnchor) {
         const sourceAnchorPosition = data.sourceAnchor.clone()
         sourceAnchorPosition[axis] = position[axis]
-        const sourceAnchor = anchorFn.call(
+        const sourceAnchor = FunctionExt.call(
+          anchorFn,
           edgeView,
           sourceAnchorPosition,
           sourceView,
           edgeView.sourceMagnet || sourceView.container,
           'source',
           edgeView,
+          this,
         )
         this.resetAnchor('source', sourceAnchor)
       }
@@ -224,13 +226,15 @@ export class Segments extends ToolsView.ToolItem<EdgeView, Segments.Options> {
       if (changeTargetAnchor) {
         const targetAnchorPosition = data.targetAnchor.clone()
         targetAnchorPosition[axis] = position[axis]
-        const targetAnchor = anchorFn.call(
+        const targetAnchor = FunctionExt.call(
+          anchorFn,
           edgeView,
           targetAnchorPosition,
           targetView,
           edgeView.targetMagnet || targetView.container,
           'target',
           edgeView,
+          this,
         )
         this.resetAnchor('target', targetAnchor)
       }

@@ -1,3 +1,4 @@
+import { FunctionExt } from '../../util'
 import { Point } from '../../geometry'
 import { Edge } from '../../model/edge'
 import { CellView } from '../../view/cell'
@@ -5,18 +6,24 @@ import { EdgeView } from '../../view/edge'
 import { ConnectionStrategy } from '../connection-strategy'
 
 export function getAnchor(
+  this: EdgeView,
   pos: Point.PointLike,
   terminalView: CellView,
   terminalMagnet: Element,
+  type: Edge.TerminalType,
 ) {
-  const end = ConnectionStrategy.presets.pinRelative.call(
-    this.paper,
-    {},
+  const end = FunctionExt.call(
+    ConnectionStrategy.presets.pinRelative,
+    this.graph,
+    {} as Edge.TerminalCellData,
     terminalView,
     terminalMagnet,
     pos,
-    this.model,
-  ) as Edge.TerminalCellData
+    this.cell,
+    type,
+    {},
+  )
+
   return end.anchor
 }
 

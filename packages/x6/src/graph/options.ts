@@ -227,8 +227,8 @@ export namespace Options {
           this: Graph,
           args: {
             edge: Edge
-            sourceCell?: Cell
-            targetCell?: Cell
+            sourceCell?: Cell | null
+            targetCell?: Cell | null
             sourcePort?: string
             targetPort?: string
           },
@@ -244,8 +244,8 @@ export namespace Options {
           this: Graph,
           args: {
             edge: Edge
-            sourceCell?: Cell
-            targetCell?: Cell
+            sourceCell?: Cell | null
+            targetCell?: Cell | null
             sourcePort?: string
             targetPort?: string
           },

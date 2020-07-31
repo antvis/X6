@@ -1,5 +1,5 @@
 import { Util, Config } from '../global'
-import { ArrayExt, Dom } from '../util'
+import { ArrayExt, Dom, FunctionExt } from '../util'
 import { Rectangle, Point } from '../geometry'
 import { Attr, PortLayout } from '../registry'
 import { Cell } from '../model/cell'
@@ -751,13 +751,15 @@ export class NodeView<
 
     let candidates =
       typeof findParent === 'function'
-        ? (findParent.call(graph, this) as Cell[]).filter((cell) => {
-            return (
-              cell instanceof Cell &&
-              this.cell.id !== cell.id &&
-              !cell.isDescendantOf(this.cell)
-            )
-          })
+        ? (FunctionExt.call(findParent, graph, this) as Cell[]).filter(
+            (cell) => {
+              return (
+                cell instanceof Cell &&
+                this.cell.id !== cell.id &&
+                !cell.isDescendantOf(this.cell)
+              )
+            },
+          )
         : graph.model.getNodesUnderNode(cell, {
             by: options.findParent as Rectangle.KeyPoint,
           })
@@ -782,7 +784,7 @@ export class NodeView<
       } else {
         const view = candidate.findView(graph) as NodeView
         if (
-          validateEmbeding.call(graph, {
+          FunctionExt.call(validateEmbeding, graph, {
             child: this.cell,
             parent: view.cell,
             childView: this,

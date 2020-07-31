@@ -1,5 +1,5 @@
 import { KeyValue } from '../types'
-import { StringExt } from '../util'
+import { StringExt, FunctionExt } from '../util'
 
 export class Registry<
   Entity,
@@ -46,9 +46,11 @@ export class Registry<
       this.onDuplicated(name)
     }
 
-    const entity = this.options.process
-      ? this.options.process.call(this, name, options)
+    const process = this.options.process
+    const entity = process
+      ? FunctionExt.call(process, this as any, name, options)
       : options
+
     this.data[name] = entity
 
     return entity
@@ -78,7 +80,7 @@ export class Registry<
     try {
       // race
       if (this.options.onConflict) {
-        this.options.onConflict.call(this, name)
+        FunctionExt.call(this.options.onConflict, this as any, name)
       }
       throw new Error(
         `${StringExt.upperFirst(

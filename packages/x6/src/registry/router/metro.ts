@@ -1,3 +1,4 @@
+import { FunctionExt } from '../../util'
 import { Point, Line, Angle } from '../../geometry'
 import { ManhattanRouterOptions, resolve } from './manhattan/options'
 import { manhattan } from './manhattan/index'
@@ -77,5 +78,11 @@ export const metro: Router.Definition<Partial<MetroRouterOptions>> = function (
   options,
   linkView,
 ) {
-  return manhattan.call(this, vertices, { ...defaults, ...options }, linkView)
+  return FunctionExt.call(
+    manhattan,
+    this,
+    vertices,
+    { ...defaults, ...options },
+    linkView,
+  )
 }

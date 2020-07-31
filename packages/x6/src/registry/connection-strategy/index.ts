@@ -2,7 +2,7 @@ import { Point } from '../../geometry'
 import { KeyValue } from '../../types'
 import { Edge } from '../../model'
 import { Graph } from '../../graph'
-import { EdgeView, NodeView } from '../../view'
+import { CellView } from '../../view'
 import { Registry } from '../registry'
 import * as strategies from './main'
 
@@ -10,7 +10,7 @@ export namespace ConnectionStrategy {
   export type Definition = (
     this: Graph,
     terminal: Edge.TerminalCellData,
-    cellView: NodeView | EdgeView,
+    cellView: CellView,
     magnet: Element,
     coords: Point.PointLike,
     edge: Edge,
