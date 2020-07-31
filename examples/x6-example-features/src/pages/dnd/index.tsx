@@ -17,6 +17,7 @@ export default class Example extends React.Component {
       width: 800,
       height: 800,
       history: true,
+      interacting: false,
       snapline: {
         enabled: true,
         sharp: true,
@@ -34,14 +35,14 @@ export default class Example extends React.Component {
       },
     }))
 
-    graph.addNode({
+    const source = graph.addNode({
       x: 130,
       y: 30,
       width: 100,
       height: 40,
       attrs: {
         label: {
-          text: 'rect',
+          text: 'Hello',
           fill: '#6a6c8a',
         },
         body: {
@@ -50,6 +51,25 @@ export default class Example extends React.Component {
         },
       },
     })
+
+    const target = graph.addNode({
+      x: 320,
+      y: 240,
+      width: 100,
+      height: 40,
+      attrs: {
+        label: {
+          text: 'World',
+          fill: '#6a6c8a',
+        },
+        body: {
+          stroke: '#31d0c6',
+          strokeWidth: 2,
+        },
+      },
+    })
+
+    graph.addEdge({ source, target })
 
     graph.centerContent()
 

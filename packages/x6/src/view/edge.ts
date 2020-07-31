@@ -1777,6 +1777,21 @@ export class EdgeView<
     return { e, x, y, view, edge, cell } as EdgeView.PositionEventArgs<E>
   }
 
+  protected notifyUnhandledMouseDown(
+    e: JQuery.MouseDownEvent,
+    x: number,
+    y: number,
+  ) {
+    this.notify('edge:unhandled:mousedown', {
+      e,
+      x,
+      y,
+      view: this,
+      cell: this.cell,
+      edge: this.cell,
+    })
+  }
+
   notifyMouseDown(e: JQuery.MouseDownEvent, x: number, y: number) {
     super.onMouseDown(e, x, y)
     this.notify('edge:mousedown', this.getEventArgs(e, x, y))
@@ -1831,6 +1846,7 @@ export class EdgeView<
 
       case 'source-marker':
       case 'target-marker':
+        this.notifyUnhandledMouseDown(e, x, y)
         return
     }
 
@@ -1945,6 +1961,7 @@ export class EdgeView<
 
   protected startEdgeDragging(e: JQuery.MouseDownEvent, x: number, y: number) {
     if (!this.can('edgeMovable')) {
+      this.notifyUnhandledMouseDown(e, x, y)
       return
     }
 
@@ -2351,6 +2368,7 @@ export class EdgeView<
     y: number,
   ) {
     if (!this.can('arrowheadMovable')) {
+      this.notifyUnhandledMouseDown(e, x, y)
       return
     }
 
@@ -2454,6 +2472,7 @@ export class EdgeView<
 
   handleVertexAdding(e: JQuery.MouseDownEvent, x: number, y: number) {
     if (!this.can('vertexAddable')) {
+      this.notifyUnhandledMouseDown(e, x, y)
       return
     }
 
@@ -2468,6 +2487,7 @@ export class EdgeView<
 
   handleVertexRemoving(e: JQuery.MouseDownEvent, x: number, y: number) {
     if (!this.can('vertexDeletable')) {
+      this.notifyUnhandledMouseDown(e, x, y)
       return
     }
 
@@ -2478,6 +2498,7 @@ export class EdgeView<
 
   startVertexDragging(e: JQuery.MouseDownEvent, x: number, y: number) {
     if (!this.can('vertexMovable')) {
+      this.notifyUnhandledMouseDown(e, x, y)
       return
     }
 
@@ -2555,6 +2576,8 @@ export namespace EdgeView {
     'edge:customevent': EdgeView.PositionEventArgs<JQuery.MouseDownEvent> & {
       name: string
     }
+
+    'edge:unhandled:mousedown': PositionEventArgs<JQuery.MouseDownEvent>
 
     'edge:connected': {
       e: JQuery.MouseUpEvent

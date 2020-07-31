@@ -16,19 +16,24 @@ export class ScrollerManager extends Base {
   protected init() {
     this.widget = this.graph.hook.createScroller()
     this.autoSetCursor()
-    this.graph.on('blank:mousedown', ({ e }) => {
-      if (
-        this.widget &&
-        this.pannable &&
-        ModifierKey.test(e, this.widgetOptions.modifiers) &&
-        this.graph.hook.allowPanning(e)
-      ) {
-        this.widget.startPanning(e)
-      }
-    })
+
+    this.graph.on('blank:mousedown', this.preparePanning, this)
+    this.graph.on('node:unhandled:mousedown', this.preparePanning, this)
+    this.graph.on('edge:unhandled:mousedown', this.preparePanning, this)
 
     if (this.widget) {
       this.widget.center()
+    }
+  }
+
+  protected preparePanning({ e }: { e: JQuery.MouseDownEvent }) {
+    if (
+      this.widget &&
+      this.pannable &&
+      ModifierKey.test(e, this.widgetOptions.modifiers) &&
+      this.graph.hook.allowPanning(e)
+    ) {
+      this.widget.startPanning(e)
     }
   }
 
