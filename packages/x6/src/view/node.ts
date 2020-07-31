@@ -954,10 +954,25 @@ export class NodeView<
     }
   }
 
+  protected notifyUnhandledMouseDown(
+    e: JQuery.MouseDownEvent,
+    x: number,
+    y: number,
+  ) {
+    this.notify('node:unhandled:mousedown', {
+      e,
+      x,
+      y,
+      view: this,
+      cell: this.cell,
+      node: this.cell,
+    })
+  }
+
   protected startNodeDragging(e: JQuery.MouseDownEvent, x: number, y: number) {
     const targetView = this.getDelegatedView()
     if (targetView == null || !targetView.can('nodeMovable')) {
-      return
+      return this.notifyUnhandledMouseDown(e, x, y)
     }
 
     this.setEventData<EventData.Moving>(e, {
@@ -1053,9 +1068,13 @@ export namespace NodeView {
     'node:mouseleave': MouseEventArgs<JQuery.MouseLeaveEvent>
     'node:mousewheel': PositionEventArgs<JQuery.TriggeredEvent> &
       CellView.MouseDeltaEventArgs
+
     'node:customevent': PositionEventArgs<JQuery.MouseDownEvent> & {
       name: string
     }
+
+    'node:unhandled:mousedown': PositionEventArgs<JQuery.MouseDownEvent>
+
     'node:highlight': {
       magnet: Element
       view: NodeView
