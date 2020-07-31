@@ -1,5 +1,5 @@
 import JQuery from 'jquery'
-import { Dom } from '../util'
+import { Dom, FunctionExt } from '../util'
 import { Cell } from '../model'
 import { Config } from '../global'
 import { View, Markup, CellView } from '../view'
@@ -421,7 +421,8 @@ export class GraphView extends View {
           e.clientX as number,
           e.clientY as number,
         )
-        handler.call(
+        FunctionExt.call(
+          handler,
           this.graph,
           view,
           e,

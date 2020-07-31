@@ -230,7 +230,7 @@ namespace Private {
       const handler = list[i]
       const context = list[i + 1]
       const params = Array.isArray(args) ? args : [args]
-      const ret = FunctionExt.invoke<any>(handler, params, context)
+      const ret = FunctionExt.apply(handler, context, params)
       results.push(ret)
     }
 

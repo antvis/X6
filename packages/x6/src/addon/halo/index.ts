@@ -1,4 +1,4 @@
-import { ObjectExt } from '../../util'
+import { ObjectExt, FunctionExt } from '../../util'
 import { Rectangle } from '../../geometry'
 import { Cell } from '../../model/cell'
 import { Edge } from '../../model/edge'
@@ -150,7 +150,7 @@ export class Halo extends Widget<Halo.Options> implements Handle {
   protected updateContent() {
     const content = this.options.content
     if (typeof content === 'function') {
-      const ret = content.call(this, this.view, this.$content[0])
+      const ret = FunctionExt.call(content, this, this.view, this.$content[0])
       if (ret) {
         this.$content.html(ret)
       }
@@ -166,7 +166,9 @@ export class Halo extends Widget<Halo.Options> implements Handle {
   protected getBBox() {
     const view = this.view
     const bbox = this.options.bbox
-    const rect = typeof bbox === 'function' ? bbox.call(this, view) : bbox
+    const rect =
+      typeof bbox === 'function' ? FunctionExt.call(bbox, this, view) : bbox
+
     return Rectangle.create({
       x: 0,
       y: 0,

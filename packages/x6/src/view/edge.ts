@@ -12,6 +12,7 @@ import {
 import { Edge } from '../model/edge'
 import { Markup } from './markup'
 import { CellView } from './cell'
+import { NodeView } from './node'
 
 export class EdgeView<
   Entity extends Edge = Edge,
@@ -407,12 +408,11 @@ export class EdgeView<
     if (this.containers.labels) {
       const edge = this.cell
       const labels = edge.labels
-      const hook = this.graph.hook.onEdgeLabelRendered
       for (let i = 0, n = labels.length; i < n; i += 1) {
         const label = labels[i]
         const container = this.labelCache[i]
         const selectors = this.labelSelectors[i]
-        hook.call(this.graph, {
+        this.graph.hook.onEdgeLabelRendered({
           edge,
           label,
           container,
@@ -771,7 +771,7 @@ export class EdgeView<
     magnet: Element | null,
     ref: Point | Element | null,
     terminalType: Edge.TerminalType,
-  ) {
+  ): Point {
     const isEdge = cellView.isEdgeElement(magnet)
     const connecting = this.graph.options.connecting
     let config = typeof def === 'string' ? { name: def } : def
@@ -784,34 +784,51 @@ export class EdgeView<
       throw new Error(`Anchor should be specified.`)
     }
 
-    const name = config.name
-    const registry = isEdge ? EdgeAnchor.registry : NodeAnchor.registry
-    const fn = registry.get(name)
-    if (typeof fn !== 'function') {
-      return registry.onNotFound(name)
-    }
+    let anchor
 
-    const anchor = fn.call(
-      this,
-      cellView,
-      magnet,
-      ref,
-      config.args || {},
-      terminalType,
-      this,
-    )
+    const name = config.name
+    if (isEdge) {
+      const fn = EdgeAnchor.registry.get(name)
+      if (typeof fn !== 'function') {
+        return EdgeAnchor.registry.onNotFound(name)
+      }
+      anchor = FunctionExt.call(
+        fn,
+        this,
+        cellView as EdgeView,
+        magnet as SVGElement,
+        ref as Point.PointLike,
+        config.args || {},
+        terminalType,
+      )
+    } else {
+      const fn = NodeAnchor.registry.get(name)
+      if (typeof fn !== 'function') {
+        return NodeAnchor.registry.onNotFound(name)
+      }
+
+      anchor = FunctionExt.call(
+        fn,
+        this,
+        cellView as NodeView,
+        magnet as SVGElement,
+        ref as Point.PointLike,
+        config.args || {},
+        terminalType,
+      )
+    }
 
     return anchor ? anchor.round(this.POINT_ROUNDING) : new Point()
   }
 
-  protected findRoutePoints(vertices: Point.PointLike[] = []) {
+  protected findRoutePoints(vertices: Point.PointLike[] = []): Point[] {
     const defaultRouter =
       this.graph.options.connecting.router || Router.presets.normal
     const router = this.cell.getRouter() || defaultRouter
     let routePoints
 
     if (typeof router === 'function') {
-      routePoints = router.call(this, vertices, {}, this)
+      routePoints = FunctionExt.call(router, this, vertices, {}, this)
     } else {
       const name = typeof router === 'string' ? router : router.name
       const args = typeof router === 'string' ? {} : router.args || {}
@@ -820,12 +837,12 @@ export class EdgeView<
         return Router.registry.onNotFound(name!)
       }
 
-      routePoints = fn.call(this, vertices, args, this)
+      routePoints = FunctionExt.call(fn, this, vertices, args, this)
     }
 
     return routePoints == null
       ? vertices.map((p) => Point.create(p))
-      : routePoints
+      : routePoints.map((p) => Point.create(p))
   }
 
   protected findConnectionPoints(
@@ -905,14 +922,14 @@ export class EdgeView<
       return ConnectionPoint.registry.onNotFound(name)
     }
 
-    const connectionPoint = fn.call(
+    const connectionPoint = FunctionExt.call(
+      fn,
       this,
       line,
       view,
-      magnet,
+      magnet as SVGElement,
       args || {},
       endType,
-      this,
     )
 
     return connectionPoint ? connectionPoint.round(this.POINT_ROUNDING) : anchor
@@ -997,7 +1014,7 @@ export class EdgeView<
     routePoints: Point[],
     sourcePoint: Point,
     targetPoint: Point,
-  ) {
+  ): Path {
     const def =
       this.cell.getConnector() || this.graph.options.connecting.connector
 
@@ -1022,7 +1039,8 @@ export class EdgeView<
       fn = Connector.presets.normal
     }
 
-    const path = fn.call(
+    const path = FunctionExt.call(
+      fn,
       this,
       sourcePoint,
       targetPoint,

@@ -1,4 +1,4 @@
-import { ObjectExt, JSONObject, NumberExt, Dom } from '../../util'
+import { ObjectExt, JSONObject, NumberExt, Dom, FunctionExt } from '../../util'
 import { Attr } from './index'
 
 export const text: Attr.Definition = {
@@ -107,7 +107,13 @@ export const textWrap: Attr.Definition = {
       wrappedText = ''
     }
 
-    text.set.call(this, wrappedText, { view, elem, attrs, refBBox })
+    FunctionExt.call(text.set, this, wrappedText, {
+      view,
+      elem,
+      attrs,
+      refBBox,
+      cell: view.cell,
+    })
   },
 }
 

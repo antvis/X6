@@ -1,5 +1,6 @@
 import { KeyValue } from '../../types'
 import { Point } from '../../geometry'
+import { Edge } from '../../model/edge'
 import { EdgeView } from '../../view'
 import { Registry } from '../registry'
 import * as anchors from './main'
@@ -11,6 +12,7 @@ export namespace EdgeAnchor {
     magnet: SVGElement,
     ref: Point | Point.PointLike | SVGElement,
     options: T,
+    type: Edge.TerminalType,
   ) => Point
 
   export type CommonDefinition = Definition<KeyValue>

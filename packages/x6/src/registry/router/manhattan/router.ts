@@ -1,4 +1,5 @@
 import { KeyValue } from '../../../types'
+import { FunctionExt } from '../../../util'
 import { Point, Rectangle } from '../../../geometry'
 import { EdgeView } from '../../../view'
 import { Router } from '../index'
@@ -253,7 +254,13 @@ function findRoute(
   }
 
   if (options.fallbackRoute) {
-    return options.fallbackRoute.call(this, startPoint, endPoint, options)
+    return FunctionExt.call(
+      options.fallbackRoute,
+      this,
+      startPoint,
+      endPoint,
+      options,
+    )
   }
 
   return null
@@ -303,7 +310,8 @@ export const router: Router.Definition<ManhattanRouterOptions> = function (
       if (isEndingAtPoint && typeof options.draggingRouter === 'function') {
         const dragFrom = from === sourceBBox ? sourceEndpoint : from
         const dragTo = to.getOrigin()
-        partialRoute = options.draggingRouter.call(
+        partialRoute = FunctionExt.call(
+          options.draggingRouter,
           edgeView,
           dragFrom,
           dragTo,
@@ -319,7 +327,13 @@ export const router: Router.Definition<ManhattanRouterOptions> = function (
 
     // Cannot found the partial route.
     if (partialRoute === null) {
-      return options.fallbackRouter.call(this, vertices, options, edgeView)
+      return FunctionExt.call(
+        options.fallbackRouter,
+        this,
+        vertices,
+        options,
+        edgeView,
+      )
     }
 
     // Remove the first point if the previous partial route has
