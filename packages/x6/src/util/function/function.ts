@@ -1,52 +1,50 @@
 export { isFunction, once, noop, debounce, defer } from 'lodash-es'
 
-export function invoke<T>(
-  func: (...args: any[]) => T,
-  args: any[],
-  ctx: any,
-): T {
-  switch (args.length) {
-    case 0:
-      return func.call(ctx)
-    case 1:
-      return func.call(ctx, args[0])
-    case 2:
-      return func.call(ctx, args[0], args[1])
-    case 3:
-      return func.call(ctx, args[0], args[1], args[2])
-    case 4:
-      return func.call(ctx, args[0], args[1], args[2], args[3])
-    case 5:
-      return func.call(ctx, args[0], args[1], args[2], args[3], args[4])
-    case 6:
-      return func.call(
-        ctx,
-        args[0],
-        args[1],
-        args[2],
-        args[3],
-        args[4],
-        args[5],
-      )
-    default:
-      return func.apply(ctx, args)
+type Fn = (...args: any[]) => any
+
+export function apply<T extends Fn>(
+  fn: T,
+  ctx: ThisParameterType<T>,
+  args?: Parameters<T>,
+): ReturnType<T> {
+  if (args) {
+    switch (args.length) {
+      case 0:
+        return fn.call(ctx)
+      case 1:
+        return fn.call(ctx, args[0])
+      case 2:
+        return fn.call(ctx, args[0], args[1])
+      case 3:
+        return fn.call(ctx, args[0], args[1], args[2])
+      case 4:
+        return fn.call(ctx, args[0], args[1], args[2], args[3])
+      case 5:
+        return fn.call(ctx, args[0], args[1], args[2], args[3], args[4])
+      case 6:
+        return fn.call(
+          ctx,
+          args[0],
+          args[1],
+          args[2],
+          args[3],
+          args[4],
+          args[5],
+        )
+      default:
+        return fn.apply(ctx, args)
+    }
   }
+
+  return fn.call(ctx)
 }
 
-export function apply<T>(
-  func: (...args: any[]) => T,
-  ctx: any,
-  args: any[] = [],
-): T {
-  return invoke(func, args, ctx)
-}
-
-export function call<T>(
-  func: (...args: any[]) => T,
-  ctx: any,
-  ...args: any[]
-): T {
-  return invoke(func, args, ctx)
+export function call<T extends Fn>(
+  fn: T,
+  ctx: ThisParameterType<T>,
+  ...args: Parameters<T>
+): ReturnType<T> {
+  return apply(fn, ctx, args)
 }
 
 function repush<T>(array: T[], item: T) {
@@ -57,14 +55,14 @@ function repush<T>(array: T[], item: T) {
   }
 }
 
-export function cacher<T extends Function>(
+export function cacher<T extends Fn>(
   fn: T,
-  ctx?: any,
+  ctx?: ThisParameterType<T>,
   postProcessor?: (v: any, hasCache?: boolean) => any,
 ): T {
   const keys: string[] = []
   const cache: { [kry: string]: any } = {}
-  const f = (...args: any[]) => {
+  const f = (...args: Parameters<T>) => {
     let hasCache = false
     const key = args.join('\u2400')
     if (key in cache) {
@@ -75,11 +73,11 @@ export function cacher<T extends Function>(
         delete cache[keys.shift()!]
       }
       keys.push(key)
-      cache[key] = invoke(fn as any, args, ctx)
+      cache[key] = apply(fn, ctx || (null as ThisParameterType<T>), args)
     }
 
     return postProcessor ? postProcessor(cache[key], hasCache) : cache[key]
   }
 
-  return (f as any) as T
+  return f as T
 }
