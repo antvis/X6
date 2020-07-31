@@ -74,9 +74,8 @@ export class Dnd extends View {
     this.prepareDragging(node, e.clientX, e.clientY)
 
     const local = this.updateNodePosition(e.clientX, e.clientY)
-    const snapline = this.snapline
-    if (snapline) {
-      snapline.captureCursorOffset({
+    if (this.isSnaplineEnabled()) {
+      this.snapline.captureCursorOffset({
         e,
         node,
         cell: node,
@@ -90,18 +89,21 @@ export class Dnd extends View {
     this.delegateDocumentEvents(Dnd.documentEvents, e.data)
   }
 
+  protected isSnaplineEnabled() {
+    return this.snapline && !this.snapline.disabled
+  }
+
   protected prepareDragging(node: Node, clientX: number, clientY: number) {
     const delegateGraph = this.delegateGraph
     const delegateModel = delegateGraph.model
     const delegateNode = this.options.getDragNode(node).position(0, 0)
 
     let padding = 5
-    const snapline = this.snapline
-    if (snapline) {
-      padding += snapline.options.tolerance || 0
+    if (this.isSnaplineEnabled()) {
+      padding += this.snapline.options.tolerance || 0
     }
 
-    if (snapline || this.options.scaled) {
+    if (this.isSnaplineEnabled() || this.options.scaled) {
       const scale = this.targetGraph.scale()
       delegateGraph.scale(scale.sx, scale.sy)
       padding *= Math.max(scale.sx, scale.sy)
@@ -193,10 +195,9 @@ export class Dnd extends View {
 
       this.updateGraphPosition(clientX, clientY)
       const local = this.updateNodePosition(clientX, clientY)
-      const snapline = this.snapline
       const embeddingMode = this.targetGraph.options.embedding.enabled
       const isValidArea =
-        (embeddingMode || snapline) &&
+        (embeddingMode || this.isSnaplineEnabled()) &&
         this.isInsideValidArea({
           x: clientX,
           y: clientY,
@@ -212,16 +213,17 @@ export class Dnd extends View {
         }
       }
 
-      if (snapline) {
+      // update snapline
+      if (this.isSnaplineEnabled()) {
         if (isValidArea) {
-          snapline.snapOnMoving({
+          this.snapline.snapOnMoving({
             e,
             view: draggingView!,
             x: local.x,
             y: local.y,
           } as EventArgs['node:mousemove'])
         } else {
-          snapline.hide()
+          this.snapline.hide()
         }
       }
     }
