@@ -1,4 +1,4 @@
-import { $, Dom, DataUri, NumberExt } from '../util'
+import { $, Dom, DataUri, NumberExt, FunctionExt } from '../util'
 import { Size, KeyValue } from '../types'
 import { Rectangle } from '../geometry'
 import { Graph } from './graph'
@@ -13,7 +13,7 @@ export class FormatManager extends Base {
 
     const rawSVG = this.view.svg
     const vSVG = Dom.createVector(rawSVG).clone()
-    let clonedSVG = vSVG.node
+    let clonedSVG = vSVG.node as SVGSVGElement
     const vStage = vSVG.findOne(
       `.${this.view.prefixClassName('graph-svg-stage')}`,
     )!
@@ -145,8 +145,8 @@ export class FormatManager extends Base {
     const format = () => {
       const beforeSerialize = options.beforeSerialize
       if (typeof beforeSerialize === 'function') {
-        const ret = beforeSerialize.call(this.graph, clonedSVG)
-        if (ret instanceof SVGElement) {
+        const ret = FunctionExt.call(beforeSerialize, this.graph, clonedSVG)
+        if (ret instanceof SVGSVGElement) {
           clonedSVG = ret
         }
       }

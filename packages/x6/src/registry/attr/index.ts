@@ -1,5 +1,5 @@
 import { Rectangle, Point } from '../../geometry'
-import { JSONObject } from '../../util'
+import { JSONObject, FunctionExt } from '../../util'
 import { Cell } from '../../model'
 import { CellView } from '../../view'
 import { Registry } from '../registry'
@@ -105,7 +105,7 @@ export namespace Attr {
 
       if (
         typeof def.qualify !== 'function' ||
-        def.qualify.call(this, val, options)
+        FunctionExt.call(def.qualify, this, val, options)
       ) {
         return true
       }

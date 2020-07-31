@@ -1,5 +1,5 @@
 import { NonUndefined } from 'utility-types'
-import { ArrayExt, StringExt, ObjectExt } from '../util'
+import { ArrayExt, StringExt, ObjectExt, FunctionExt } from '../util'
 import { Rectangle, Point } from '../geometry'
 import { KeyValue, Size } from '../types'
 import { Basecoat } from '../common'
@@ -72,7 +72,7 @@ export class Cell<
     metadata: Cell.Metadata,
   ): Cell.Metadata {
     return this.propHooks.reduce((memo, hook) => {
-      return hook ? hook.call(cell, memo) : memo
+      return hook ? FunctionExt.call(hook, cell, memo) : memo
     }, metadata)
   }
 

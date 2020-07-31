@@ -1,5 +1,5 @@
+import { Dom, FunctionExt } from '../../util'
 import { Attr } from '../attr'
-import { Dom } from '../../util'
 import { Point } from '../../geometry'
 import { Edge } from '../../model/edge'
 import { Node } from '../../model/node'
@@ -178,7 +178,8 @@ class Anchor extends ToolsView.ToolItem<EdgeView, Anchor.Options> {
 
     const snapFn = this.options.snap
     if (typeof snapFn === 'function') {
-      coords = snapFn.call(
+      const tmp = FunctionExt.call(
+        snapFn,
         edgeView,
         coords,
         terminalView,
@@ -187,7 +188,7 @@ class Anchor extends ToolsView.ToolItem<EdgeView, Anchor.Options> {
         edgeView,
         this,
       )
-      coords = Point.create(coords)
+      coords = Point.create(tmp)
     }
 
     if (this.options.restrictArea) {
@@ -216,7 +217,8 @@ class Anchor extends ToolsView.ToolItem<EdgeView, Anchor.Options> {
     let anchor
     const anchorFn = this.options.anchor
     if (typeof anchorFn === 'function') {
-      anchor = anchorFn.call(
+      anchor = FunctionExt.call(
+        anchorFn,
         edgeView,
         coords,
         terminalView,

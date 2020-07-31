@@ -1,4 +1,4 @@
-import { Dom, NumberExt } from '../util'
+import { Dom, NumberExt, FunctionExt } from '../util'
 import { Rectangle } from '../geometry'
 import { Transform } from '../addon/transform'
 import { Node } from '../model/node'
@@ -377,7 +377,7 @@ export class TransformManager extends Base {
     let area: Rectangle.RectangleLike | null
 
     if (typeof restrict === 'function') {
-      area = restrict.call(this.graph, view)
+      area = FunctionExt.call(restrict, this.graph, view!)
     } else if (restrict === true) {
       area = this.getArea()
     } else {

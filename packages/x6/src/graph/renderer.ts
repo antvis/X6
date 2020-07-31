@@ -1,5 +1,5 @@
-import { Dom } from '../util'
 import { KeyValue } from '../types'
+import { Dom, FunctionExt } from '../util'
 import { Point, Rectangle } from '../geometry'
 import { Cell, Edge, Model } from '../model'
 import { View, CellView, EdgeView } from '../view'
@@ -442,7 +442,10 @@ export class Renderer extends Base {
           const isUnmounted = cid in updates.unmounted
           if (
             checkView &&
-            !checkView.call(this.graph, { view, unmounted: isUnmounted })
+            !FunctionExt.call(checkView, this.graph, {
+              view: view as CellView,
+              unmounted: isUnmounted,
+            })
           ) {
             // Unmount view
             if (!isUnmounted) {
@@ -518,7 +521,7 @@ export class Renderer extends Base {
       if (data.processed === 0) {
         const beforeFn = options.before
         if (typeof beforeFn === 'function') {
-          beforeFn.call(this.graph, this.graph)
+          FunctionExt.call(beforeFn, this.graph, this.graph)
         }
       }
 
@@ -553,13 +556,14 @@ export class Renderer extends Base {
       // Progress callback
       const progressFn = options.progress
       if (total && typeof progressFn === 'function') {
-        progressFn.call(
+        FunctionExt.call(
+          progressFn,
           this.graph,
           stats.empty,
           processed,
           total,
-          stats,
-          this.graph,
+          // stats,
+          // this.graph,
         )
       }
 
@@ -650,7 +654,12 @@ export class Renderer extends Base {
         continue
       }
 
-      if (viewportFn.call(this.graph, { view, unmounted: true })) {
+      const shouldMount = FunctionExt.call(viewportFn, this.graph, {
+        view: view as CellView,
+        unmounted: true,
+      })
+
+      if (shouldMount) {
         // Push at the end of all mounted ids
         mountedCids.push(cid)
         continue
@@ -691,14 +700,14 @@ export class Renderer extends Base {
         continue
       }
 
-      const view = CellView.views[cid]
+      const view = CellView.views[cid] as CellView
       if (view == null) {
         continue
       }
 
       if (
         checkView &&
-        !checkView.call(this.graph, { view, unmounted: false })
+        !FunctionExt.call(checkView, this.graph, { view, unmounted: false })
       ) {
         unmountedCids.push(cid)
         continue
@@ -822,7 +831,7 @@ export class Renderer extends Base {
         ...options,
         progress: (done, process, total) => {
           if (onProgress) {
-            onProgress.call(this.graph, done, process, total)
+            FunctionExt.call(onProgress, this.graph, done, process, total)
           }
 
           // sort views after async render

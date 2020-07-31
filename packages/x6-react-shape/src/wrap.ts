@@ -1,7 +1,7 @@
 import React from 'react'
 import { ReactShape } from './node'
 import { Definition } from './registry'
-import { Graph } from '@antv/x6'
+import { Graph, FunctionExt } from '@antv/x6'
 
 export class Wrap extends React.PureComponent<Wrap.Props, Wrap.State> {
   state = { tick: 0 }
@@ -20,7 +20,7 @@ export class Wrap extends React.PureComponent<Wrap.Props, Wrap.State> {
 
     if (typeof component === 'function') {
       // Calling the component function on every change of the node.
-      const ret = component.call(graph, node)
+      const ret = FunctionExt.call(component, graph, node)
       if (React.isValidElement(ret)) {
         return React.cloneElement(ret as React.ReactElement, { node })
       }

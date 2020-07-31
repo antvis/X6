@@ -1,5 +1,5 @@
 import { Point } from '../../geometry'
-import { Dom, NumberExt } from '../../util'
+import { Dom, NumberExt, FunctionExt } from '../../util'
 import { CellView } from '../../view/cell'
 import { NodeView } from '../../view/node'
 import { EdgeView } from '../../view/edge'
@@ -115,7 +115,7 @@ export class Button extends ToolsView.ToolItem<
 
     const onClick = this.options.onClick
     if (typeof onClick === 'function') {
-      onClick.call(this.cellView, evt, this.cellView, this)
+      FunctionExt.call(onClick, this.cellView, evt, this.cellView, this)
     }
   }
 }

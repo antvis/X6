@@ -1,4 +1,5 @@
 import { KeyValue } from '../types'
+import { FunctionExt } from '../util'
 import { Basecoat, Dijkstra } from '../common'
 import { Point, Rectangle } from '../geometry'
 import { Graph } from '../graph'
@@ -922,7 +923,7 @@ export class Model extends Basecoat<Model.EventArgs> {
         continue
       }
       visited[next.id] = true
-      if (iterator.call(this, next, distance[next.id]) === false) {
+      if (FunctionExt.call(iterator, this, next, distance[next.id]) === false) {
         continue
       }
       const neighbors = this.getNeighbors(next, options)
@@ -951,7 +952,7 @@ export class Model extends Basecoat<Model.EventArgs> {
         continue
       }
       visited[next.id] = true
-      if (iterator.call(this, next, distance[next.id]) === false) {
+      if (FunctionExt.call(iterator, this, next, distance[next.id]) === false) {
         continue
       }
       const neighbors = this.getNeighbors(next, options)

@@ -1,6 +1,6 @@
 import MousetrapNative from 'mousetrap'
 import { Disposable, IDisablable } from '../common'
-import { Dom } from '../util'
+import { Dom, FunctionExt } from '../util'
 import { Graph } from './index'
 
 export class Keyboard extends Disposable implements IDisablable {
@@ -88,8 +88,9 @@ export class Keyboard extends Disposable implements IDisablable {
       .replace('delete', 'del')
       .replace('cmd', 'command')
 
-    if (this.options.format) {
-      return this.options.format.call(this.graph, formated)
+    const formatFn = this.options.format
+    if (formatFn) {
+      return FunctionExt.call(formatFn, this.graph, formated)
     }
 
     return formated
@@ -112,7 +113,7 @@ export class Keyboard extends Disposable implements IDisablable {
     const allowed = !this.disabled && this.isGraphEvent(e)
     if (allowed) {
       if (this.options.guard) {
-        return this.options.guard.call(this.graph, e)
+        return FunctionExt.call(this.options.guard, this.graph, e)
       }
     }
     return allowed

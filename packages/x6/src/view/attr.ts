@@ -1,4 +1,4 @@
-import { ObjectExt, ArrayExt, Dom } from '../util'
+import { ObjectExt, ArrayExt, Dom, FunctionExt } from '../util'
 import { Rectangle, Point } from '../geometry'
 import { Dictionary } from '../common'
 import { Attr } from '../registry/attr'
@@ -33,12 +33,18 @@ export class AttrManager {
     Object.keys(raw).forEach((name) => {
       const val = raw[name]
       const definition = this.getDefinition(name)
-      const isValid = Attr.isValidDefinition.call(this.view, definition, val, {
-        elem,
-        attrs: raw,
-        cell: this.cell,
-        view: this.view,
-      })
+      const isValid = FunctionExt.call(
+        Attr.isValidDefinition,
+        this.view,
+        definition,
+        val,
+        {
+          elem,
+          attrs: raw,
+          cell: this.cell,
+          view: this.view,
+        },
+      )
 
       if (definition && isValid) {
         if (typeof definition === 'string') {
@@ -233,7 +239,8 @@ export class AttrManager {
         const val = setAttrs[name]
         const def = this.getDefinition(name)
         if (def != null) {
-          const ret = (def as Attr.SetDefinition).set.call(
+          const ret = FunctionExt.call(
+            (def as Attr.SetDefinition).set,
             this.view,
             val,
             getOptions(),
@@ -287,8 +294,9 @@ export class AttrManager {
         const val = positionAttrs[name]
         const def = this.getDefinition(name)
         if (def != null) {
-          const ts = (def as Attr.PositionDefinition).position.call(
-            this,
+          const ts = FunctionExt.call(
+            (def as Attr.PositionDefinition).position,
+            this.view,
             val,
             getOptions(),
           )
@@ -319,7 +327,8 @@ export class AttrManager {
           const val = offsetAttrs[name]
           const def = this.getDefinition(name)
           if (def != null) {
-            const ts = (def as Attr.OffsetDefinition).offset.call(
+            const ts = FunctionExt.call(
+              (def as Attr.OffsetDefinition).offset,
               this.view,
               val,
               {

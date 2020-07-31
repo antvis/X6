@@ -1,6 +1,6 @@
 import { Nilable, KeyValue } from '../types'
 import { Rectangle, Point } from '../geometry'
-import { ArrayExt, ObjectExt, Dom } from '../util'
+import { ArrayExt, ObjectExt, Dom, FunctionExt } from '../util'
 import { Attr } from '../registry/attr'
 import { Registry } from '../registry/registry'
 import { ConnectionStrategy } from '../registry/connection-strategy'
@@ -284,7 +284,7 @@ export class CellView<
 
     interacting =
       typeof interacting === 'function'
-        ? interacting.call(this.graph, this)
+        ? FunctionExt.call(interacting, this.graph, this)
         : interacting
 
     if (typeof interacting === 'object') {
@@ -519,14 +519,14 @@ export class CellView<
     return this.customizeEdgeTerminal(terminal, magnet, x, y, edge, type)
   }
 
-  protected customizeEdgeTerminal<T extends Edge.TerminalCellData>(
-    terminal: T,
+  protected customizeEdgeTerminal(
+    terminal: Edge.TerminalCellData,
     magnet: Element,
     x: number,
     y: number,
     edge: Edge,
     type: Edge.TerminalType,
-  ): T {
+  ): Edge.TerminalCellData {
     const raw = edge.getStrategy() || this.graph.options.connecting.strategy
     if (raw) {
       const name = typeof raw === 'string' ? raw : raw.name
@@ -539,7 +539,8 @@ export class CellView<
           return registry.onNotFound(name)
         }
 
-        const result = fn.call(
+        const result = FunctionExt.call(
+          fn,
           this.graph,
           terminal,
           this,

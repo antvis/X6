@@ -1,6 +1,7 @@
 import { bbox } from './bbox'
 import { offset, getStrokeWidth } from './util'
 import { ConnectionPoint } from './index'
+import { FunctionExt } from '../../util'
 
 export interface RectangleOptions extends ConnectionPoint.StrokedOptions {}
 
@@ -13,10 +14,12 @@ export const rect: ConnectionPoint.Definition<RectangleOptions> = function (
   view,
   magnet,
   options,
+  type,
 ) {
-  const angle = view.cell.getAngle()
+  const cell = view.cell
+  const angle = cell.isNode() ? cell.getAngle() : 0
   if (angle === 0) {
-    return bbox(line, view, magnet, options)
+    return FunctionExt.call(bbox, this, line, view, magnet, options, type)
   }
 
   const bboxRaw = view.getUnrotatedBBoxOfElement(magnet)

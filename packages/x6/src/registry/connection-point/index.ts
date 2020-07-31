@@ -1,15 +1,17 @@
 import { KeyValue } from '../../types'
 import { Point, Line } from '../../geometry'
-import { NodeView } from '../../view'
+import { Edge } from '../../model/edge'
+import { CellView } from '../../view/cell'
 import { Registry } from '../registry'
 import * as connectionPoints from './main'
 
 export namespace ConnectionPoint {
   export type Definition<T> = (
     line: Line,
-    view: NodeView,
+    view: CellView,
     magnet: SVGElement,
     options: T,
+    type: Edge.TerminalType,
   ) => Point
 
   export type CommonDefinition = Definition<KeyValue>

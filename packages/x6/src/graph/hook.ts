@@ -300,7 +300,7 @@ export class Hook extends Base implements Hook.IHook {
       return !!multi
     }
 
-    return multi.call(this.graph, {
+    return FunctionExt.call(multi, this.graph, {
       edge,
       sourceCell: edge.getSourceCell(),
       targetCell: edge.getTargetCell(),
@@ -316,7 +316,7 @@ export class Hook extends Base implements Hook.IHook {
       return !!dangling
     }
 
-    return dangling.call(this.graph, {
+    return FunctionExt.call(dangling, this.graph, {
       edge,
       sourceCell: edge.getSourceCell(),
       targetCell: edge.getTargetCell(),
@@ -330,7 +330,7 @@ export class Hook extends Base implements Hook.IHook {
     type: Edge.TerminalType,
     initialTerminal: Edge.TerminalData,
   ) {
-    if (this.allowMultiEdges(edge) === false) {
+    if (!this.allowMultiEdges(edge)) {
       const source = edge.getSource() as Edge.TerminalCellData
       const target = edge.getTarget() as Edge.TerminalCellData
 
@@ -361,7 +361,7 @@ export class Hook extends Base implements Hook.IHook {
       }
     }
 
-    if (this.allowDanglingEdge(edge) === false) {
+    if (!this.allowDanglingEdge(edge)) {
       const sourceId = edge.getSourceCellId()
       const targetId = edge.getTargetCellId()
       if (!(sourceId && targetId)) {
@@ -371,7 +371,7 @@ export class Hook extends Base implements Hook.IHook {
 
     const validate = this.options.connecting.validateEdge
     if (validate) {
-      return validate.call(this.graph, {
+      return FunctionExt.call(validate, this.graph, {
         edge,
         type,
         previous: initialTerminal,
@@ -389,7 +389,7 @@ export class Hook extends Base implements Hook.IHook {
     if (magnet.getAttribute('magnet') !== 'passive') {
       const validate = this.options.connecting.validateMagnet
       if (validate) {
-        return validate.call(this.graph, {
+        return FunctionExt.call(validate, this.graph, {
           e,
           magnet,
           view: cellView,
@@ -402,11 +402,11 @@ export class Hook extends Base implements Hook.IHook {
   }
 
   getDefaultEdge(sourceView: CellView, sourceMagnet: Element) {
-    let edge: Edge | undefined
+    let edge: Edge | undefined | null | void
 
     const create = this.options.connecting.createEdge
     if (create) {
-      edge = create.call(this.graph, {
+      edge = FunctionExt.call(create, this.graph, {
         sourceMagnet,
         sourceView,
         sourceCell: sourceView.cell,
@@ -430,7 +430,7 @@ export class Hook extends Base implements Hook.IHook {
   ) {
     const validate = this.options.connecting.validateConnection
     return validate
-      ? validate.call(this.graph, {
+      ? FunctionExt.call(validate, this.graph, {
           edgeView,
           sourceView,
           sourceMagnet,
@@ -510,14 +510,14 @@ export class Hook extends Base implements Hook.IHook {
     }
 
     if (typeof ret === 'function') {
-      return ret.call(this, node)
+      return FunctionExt.call(ret, this.graph, node)
     }
 
     return ret
   }
 
   @Decorator.hook()
-  onEdgeLabelRendered() {}
+  onEdgeLabelRendered(args: Hook.OnEdgeLabelRenderedArgs) {}
 }
 
 export namespace Hook {
@@ -527,6 +527,13 @@ export namespace Hook {
     this: Graph,
     options: Options,
   ) => T
+
+  export interface OnEdgeLabelRenderedArgs {
+    edge: Edge
+    label: Edge.Label
+    container: Element
+    selectors: Markup.Selectors
+  }
 
   export interface IHook {
     createView: CreateManager<GraphView>
@@ -594,14 +601,6 @@ export namespace Hook {
       options: Renderer.UpdateViewOptions,
     ) => boolean
 
-    onEdgeLabelRendered(
-      this: Graph,
-      args: {
-        edge: Edge
-        label: Edge.Label
-        container: Element
-        selectors: Markup.Selectors
-      },
-    ): void
+    onEdgeLabelRendered(this: Graph, args: OnEdgeLabelRenderedArgs): void
   }
 }

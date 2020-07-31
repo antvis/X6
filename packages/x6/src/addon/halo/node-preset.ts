@@ -1,5 +1,5 @@
 import { Util } from '../../global'
-import { StringExt } from '../../util'
+import { StringExt, FunctionExt } from '../../util'
 import { Point, Rectangle, Angle } from '../../geometry'
 import { Cell } from '../../model/cell'
 import { Node } from '../../model/node'
@@ -184,7 +184,7 @@ export class NodePreset {
   getMagnet(view: CellView, terminal: Edge.TerminalType) {
     const magnet = this.options.magnet
     if (typeof magnet === 'function') {
-      const val = magnet.call(this.halo, view, terminal)
+      const val = FunctionExt.call(magnet, this.halo, view, terminal)
       if (val instanceof SVGElement) {
         return val
       }

@@ -202,8 +202,8 @@ export class Stencil extends View {
       height = group.height
     }
 
-    if (this.options.layout) {
-      this.options.layout.call(this, model, group)
+    if (this.options.layout && model) {
+      FunctionExt.call(this.options.layout, this, model, group)
     }
 
     if (!height) {
@@ -227,11 +227,11 @@ export class Stencil extends View {
     const found = Object.keys(this.graphs).reduce((memo, groupName) => {
       const graph = this.graphs[groupName]
       const name = groupName === Private.defaultGroupName ? null : groupName
-      const items = graph.model.getCells().filter((cell) => {
+      const items = graph.model.getNodes().filter((cell) => {
         let matched = false
         matched =
           typeof filter === 'function'
-            ? filter.call(this, cell, keyworld, name, this)
+            ? FunctionExt.call(filter, this, cell, keyworld, name, this)
             : this.isCellMatched(
                 cell,
                 keyworld,
@@ -254,7 +254,7 @@ export class Stencil extends View {
       model.resetCells(items)
 
       if (options.layout) {
-        options.layout.call(this, model, this.getGroup(groupName))
+        FunctionExt.call(options.layout, this, model, this.getGroup(groupName))
       }
 
       if (this.$groups[groupName]) {
@@ -402,7 +402,7 @@ export namespace Stencil {
     height: number
     graphPadding?: number
     stencilGraphOptions?: Graph.Options
-    layout?: (this: Stencil, model: Model, gourp?: Group) => any
+    layout?: (this: Stencil, model: Model, gourp?: Group | null) => any
     layoutOptions?: any
     search?: Filter
     groups?: Group[]
@@ -415,7 +415,7 @@ export namespace Stencil {
     this: Stencil,
     cell: Node,
     keyworld: string,
-    groupName: string,
+    groupName: string | null,
     stencil: Stencil,
   ) => boolean
 

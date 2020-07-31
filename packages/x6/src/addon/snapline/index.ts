@@ -1,4 +1,4 @@
-import { ArrayExt } from '../../util'
+import { ArrayExt, FunctionExt } from '../../util'
 import { IDisablable } from '../../common'
 import { Point, Rectangle, Angle } from '../../geometry'
 import { Node } from '../../model/node'
@@ -550,7 +550,8 @@ export class Snapline extends View implements IDisablable {
       targetNode.isDescendantOf(snapNode) ||
       this.filterShapes[targetNode.shape] ||
       this.filterCells[targetNode.id] ||
-      (this.filterFunction && this.filterFunction.call(this.graph, targetNode))
+      (this.filterFunction &&
+        FunctionExt.call(this.filterFunction, this.graph, targetNode))
     )
   }
 

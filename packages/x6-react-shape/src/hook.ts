@@ -1,4 +1,4 @@
-import { Graph } from '@antv/x6'
+import { Graph, FunctionExt } from '@antv/x6'
 import { registry, Definition } from './registry'
 import { ReactShape } from './node'
 
@@ -17,7 +17,7 @@ declare module '@antv/x6/lib/graph/hook' {
 Graph.Hook.prototype.getReactComponent = function (node: ReactShape) {
   const getReactComponent = this.options.getReactComponent
   if (typeof getReactComponent === 'function') {
-    const ret = getReactComponent.call(this.graph, node)
+    const ret = FunctionExt.call(getReactComponent, this.graph, node)
     if (ret != null) {
       return ret
     }
@@ -32,5 +32,5 @@ Graph.Hook.prototype.getReactComponent = function (node: ReactShape) {
     ret = component
   }
 
-  return ret
+  return ret as Definition
 }

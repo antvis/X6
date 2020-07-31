@@ -1,5 +1,5 @@
 import { Util } from '../../global'
-import { ObjectExt, StringExt } from '../../util'
+import { ObjectExt, StringExt, FunctionExt } from '../../util'
 import { Rectangle, Angle, Point } from '../../geometry'
 import { Cell } from '../../model/cell'
 import { Node } from '../../model/node'
@@ -223,7 +223,9 @@ export class Selection extends View<Selection.EventArgs> {
           )
         } else {
           if (typeof filter === 'function') {
-            views = views.filter((view) => !filter.call(this.graph, view.cell))
+            views = views.filter(
+              (view) => !FunctionExt.call(filter, this.graph, view.cell),
+            )
           }
         }
         const cells = views.map((view) => view.cell)
@@ -511,7 +513,8 @@ export class Selection extends View<Selection.EventArgs> {
     const boxContent = this.options.content
     if (boxContent) {
       if (typeof boxContent === 'function') {
-        const content = boxContent.call(
+        const content = FunctionExt.call(
+          boxContent,
           this.graph,
           this,
           this.$selectionContent[0],
@@ -701,7 +704,10 @@ export class Selection extends View<Selection.EventArgs> {
   protected doRotate({ e }: Handle.EventArgs) {
     const data = this.getEventData<EventData.Rotation>(e)
     const grid = this.graph.options.rotating.grid
-    const gridSize = typeof grid === 'function' ? grid.call(this.graph) : grid
+    const gridSize =
+      typeof grid === 'function'
+        ? FunctionExt.call(grid, this.graph, null as any)
+        : grid
     const client = this.graph.snapToGrid(e.clientX!, e.clientY!)
     const delta = data.start - client.theta(data.center)
 

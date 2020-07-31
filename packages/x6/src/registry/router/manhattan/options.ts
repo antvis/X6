@@ -108,8 +108,8 @@ export interface ResolvedOptions {
   draggingRouter?:
     | ((
         this: EdgeView,
-        dragFrom: Point,
-        dragTo: Point,
+        dragFrom: Point.PointLike,
+        dragTo: Point.PointLike,
         options: ResolvedOptions,
       ) => Point[])
     | null

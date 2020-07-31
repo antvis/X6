@@ -1,5 +1,5 @@
 import { Point, Rectangle } from '../../geometry'
-import { Platform, NumberExt, ObjectExt, Dom } from '../../util'
+import { Platform, NumberExt, ObjectExt, Dom, FunctionExt } from '../../util'
 import { Cell } from '../../model/cell'
 import { View } from '../../view/view'
 import { Graph } from '../../graph'
@@ -309,7 +309,7 @@ export class Scroller extends View {
     )
     let fitTocontentOptions = this.options.fitTocontentOptions
     if (typeof fitTocontentOptions === 'function') {
-      fitTocontentOptions = fitTocontentOptions.call(this, this)
+      fitTocontentOptions = FunctionExt.call(fitTocontentOptions, this, this)
     }
 
     const options: TransformManager.FitToContentFullOptions = {
@@ -799,7 +799,11 @@ export class Scroller extends View {
       .on(Util.transitionEventName, (e) => {
         this.syncTransition(targetScale, { x: x as number, y: y as number })
         if (typeof onTransitionEnd === 'function') {
-          onTransitionEnd.call(this, e)
+          FunctionExt.call(
+            onTransitionEnd,
+            this,
+            e.originalEvent as TransitionEvent,
+          )
         }
       })
       .css({
@@ -961,7 +965,7 @@ export class Scroller extends View {
   protected getPadding() {
     const padding = this.options.padding
     if (typeof padding === 'function') {
-      return NumberExt.normalizeSides(padding.call(this))
+      return NumberExt.normalizeSides(FunctionExt.call(padding, this))
     }
 
     return NumberExt.normalizeSides(padding)

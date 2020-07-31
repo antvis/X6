@@ -1,5 +1,5 @@
 import { Point, Path, Polyline, Rectangle } from '../../geometry'
-import { NumberExt } from '../../util'
+import { NumberExt, FunctionExt } from '../../util'
 import { Attr } from './index'
 
 export const ref: Attr.Definition = {
@@ -57,7 +57,7 @@ export const refRInscribed: Attr.Definition = {
     return function (value, options) {
       const refBBox = options.refBBox
       const fn = refBBox.height > refBBox.width ? widthFn : heightFn
-      return fn.call(this, value, options)
+      return FunctionExt.call(fn, this, value, options)
     }
   })('r'),
 }

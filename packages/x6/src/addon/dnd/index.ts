@@ -1,5 +1,6 @@
-import { Rectangle, Point } from '../../geometry'
 import { Util } from '../../global'
+import { FunctionExt } from '../../util'
+import { Rectangle, Point } from '../../geometry'
 import { Cell } from '../../model/cell'
 import { Node } from '../../model/node'
 import { View } from '../../view/view'
@@ -7,7 +8,6 @@ import { NodeView } from '../../view/node'
 import { Graph } from '../../graph/graph'
 import { EventArgs } from '../../graph/events'
 import { Scroller } from '../scroller'
-import { FunctionExt } from '../../util'
 
 export class Dnd extends View {
   public readonly options: Dnd.Options
@@ -364,8 +364,9 @@ export class Dnd extends View {
 
       node.removeZIndex()
 
-      const ret = this.options.validateNode
-        ? this.options.validateNode.call(targetGraph, node)
+      const validateNode = this.options.validateNode
+      const ret = validateNode
+        ? FunctionExt.call(validateNode, targetGraph, node)
         : true
 
       if (typeof ret === 'boolean') {
