@@ -11,13 +11,13 @@ export default class Example extends React.Component {
       width: 800,
       height: 600,
       grid: 10,
-      resizing: {
-        enabled: true,
-      },
       keyboard: {
         enabled: true,
         global: true,
       },
+      // resizing: {
+      //   enabled: true,
+      // },
       // rotating: {
       //   enabled: true,
       // },
@@ -27,6 +27,7 @@ export default class Example extends React.Component {
         multiple: true,
         strict: true,
         showNodeSelectionBox: true,
+        content: '123',
       },
     })
 
@@ -78,6 +79,10 @@ export default class Example extends React.Component {
 
     graph.on('edge:unselected', ({ edge }) => {
       console.log('unselected', edge)
+    })
+
+    graph.on('node:change:position', ({ node }) => {
+      console.log(node)
     })
 
     graph.bindKey('backspace', () => {
