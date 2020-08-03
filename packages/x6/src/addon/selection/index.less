@@ -6,42 +6,24 @@
 .@{selection-prefix-cls} {
   position: absolute;
   display: none;
+  width: 0;
+  height: 0;
   touch-action: none;
 
   &-rubberband {
-    position: absolute;
     display: block;
     overflow: visible;
     opacity: 0.3;
   }
 
   &-selected {
-    position: static;
     display: block;
-    height: 0 !important;
-    background-color: transparent;
-    cursor: move;
-    opacity: 1;
   }
 
   &-box {
-    position: absolute;
-    box-sizing: content-box;
-    margin-top: -4px;
-    margin-left: -4px;
-    padding-right: 4px;
-    padding-bottom: 4px;
+    cursor: move;
   }
 
-  &-inner {
-    position: absolute;
-    box-sizing: content-box;
-    margin-top: -8px;
-    margin-left: -8px;
-    padding-right: 12px;
-    padding-bottom: 12px;
-    pointer-events: none;
-  }
   &-inner[data-selection-length='0'],
   &-inner[data-selection-length='1'] {
     display: none;
@@ -72,11 +54,21 @@
   }
 
   &-box {
+    box-sizing: content-box;
+    margin-top: -4px;
+    margin-left: -4px;
+    padding-right: 4px;
+    padding-bottom: 4px;
     border: 2px dashed #feb663;
     box-shadow: 2px 2px 5px #d3d3d3;
   }
 
   &-inner {
+    box-sizing: content-box;
+    margin-top: -8px;
+    margin-left: -8px;
+    padding-right: 12px;
+    padding-bottom: 12px;
     border: 2px solid #feb663;
     box-shadow: 2px 2px 5px #d3d3d3;
   }
