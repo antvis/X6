@@ -226,7 +226,7 @@ export namespace Events {
 namespace Private {
   export function call<Args>(list: any[], args?: Args) {
     const results: any[] = []
-    for (let i = 0, l = list.length; i < l; i += 2) {
+    for (let i = 0; i < list.length; i += 2) {
       const handler = list[i]
       const context = list[i + 1]
       const params = Array.isArray(args) ? args : [args]
