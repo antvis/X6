@@ -452,7 +452,9 @@ export class Selection extends View<Selection.EventArgs> {
   }
 
   protected showSelected() {
-    this.$container.addClass(this.prefixClassName(Private.classNames.selected))
+    this.$container
+      .removeAttr('style')
+      .addClass(this.prefixClassName(Private.classNames.selected))
   }
 
   protected createContainer() {
@@ -503,6 +505,8 @@ export class Selection extends View<Selection.EventArgs> {
 
     this.$selectionContainer
       .css({
+        position: 'absolute',
+        pointerEvents: 'none',
         left: origin.x,
         top: origin.y,
         width: corner.x - origin.x,
@@ -557,6 +561,7 @@ export class Selection extends View<Selection.EventArgs> {
           .addClass(`${className}-${cell.isNode() ? 'node' : 'edge'}`)
           .attr('data-cell', cell.id)
           .css({
+            position: 'absolute',
             left: bbox.x,
             top: bbox.y,
             width: bbox.width,
