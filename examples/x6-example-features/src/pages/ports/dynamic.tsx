@@ -194,6 +194,7 @@ export default class Example extends React.Component {
     graph.on('edge:mouseenter', ({ view }) => {
       view.addTools({
         tools: [
+          'source-arrowhead',
           'target-arrowhead',
           {
             name: 'button-remove',
