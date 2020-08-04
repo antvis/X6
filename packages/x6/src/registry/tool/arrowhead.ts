@@ -132,21 +132,21 @@ export const SourceArrowhead = Arrowhead.define<Arrowhead.Options>({
   ratio: 0,
   attrs: {
     d: 'M 10 -8 -10 0 10 8 Z',
-    fill: '#33334F',
-    stroke: '#FFFFFF',
+    fill: '#333',
+    stroke: '#fff',
     'stroke-width': 2,
     cursor: 'move',
   },
 })
 
-export const TargetArrowhead = Arrowhead.define({
+export const TargetArrowhead = Arrowhead.define<Arrowhead.Options>({
   name: 'target-arrowhead',
   type: 'target',
   ratio: 1,
   attrs: {
     d: 'M -10 -8 10 0 -10 8 Z',
-    fill: '#33334F',
-    stroke: '#FFFFFF',
+    fill: '#333',
+    stroke: '#fff',
     'stroke-width': 2,
     cursor: 'move',
   },
