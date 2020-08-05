@@ -3,6 +3,7 @@ import { Selection } from '../addon/selection'
 import { Collection } from '../model/collection'
 import { Cell } from '../model/cell'
 import { Base } from './base'
+import { Dictionary } from '../common'
 
 export class SelectionManager extends Base {
   public widget: Selection
@@ -45,16 +46,35 @@ export class SelectionManager extends Base {
       }
     })
 
+    const movedDic = new Dictionary<Cell, boolean>()
+
+    this.graph.on('cell:mousemove', ({ cell }) => {
+      movedDic.set(cell, true)
+    })
+
     this.graph.on('cell:mouseup', ({ e, cell }) => {
-      if (!this.disabled) {
-        if (
-          this.widgetOptions.multiple === false ||
-          (!e.ctrlKey && !e.metaKey)
-        ) {
+      const options = this.widgetOptions
+      let disabled = this.disabled
+      if (!disabled && movedDic.has(cell)) {
+        disabled = options.selectOnCellMoved === false
+
+        if (!disabled) {
+          disabled = options.selectOnNodeMoved === false && cell.isNode()
+        }
+
+        if (!disabled) {
+          disabled = options.selectOnEdgeMoved === false && cell.isEdge()
+        }
+      }
+
+      if (!disabled) {
+        if (options.multiple === false || (!e.ctrlKey && !e.metaKey)) {
           this.clean()
         }
         this.select(cell)
       }
+
+      movedDic.delete(cell)
     })
 
     this.widget.on('box:mousedown', ({ cell, e }) => {
@@ -182,6 +202,9 @@ export namespace SelectionManager {
     rubberband?: boolean
     modifiers?: string | ModifierKey[] | null
     multiple?: boolean
+    selectOnCellMoved?: boolean
+    selectOnNodeMoved?: boolean
+    selectOnEdgeMoved?: boolean
   }
 
   export type Filter = Selection.Filter
