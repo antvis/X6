@@ -27,6 +27,7 @@ export default class Example extends React.Component {
         multiple: true,
         strict: true,
         showNodeSelectionBox: true,
+        selectOnCellMoved: false,
         content: '123',
       },
     })
@@ -81,8 +82,8 @@ export default class Example extends React.Component {
       console.log('unselected', cell)
     })
 
-    graph.on('node:change:position', ({ node }) => {
-      console.log(node)
+    graph.on('node:change:position', ({ node, options }) => {
+      console.log(node, options)
     })
 
     graph.bindKey('backspace', () => {
