@@ -7,9 +7,9 @@ module.exports = {
   moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx'],
   // collectCoverage: true,
   collectCoverageFrom: [
-    './src/common/*.ts',
-    './src/geometry/*.ts',
-    './src/util/*.ts',
+    './src/common/**/*.ts',
+    './src/geometry/**/*.ts',
+    './src/util/**/*.ts',
   ],
   coverageReporters: ['lcov', 'text-summary'],
   coverageDirectory: './test/coverage',
