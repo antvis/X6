@@ -73,12 +73,12 @@ export default class Example extends React.Component {
     //   console.log(selected, added, removed)
     // })
 
-    graph.on('edge:selected', ({ edge }) => {
-      console.log('selected', edge)
+    graph.on('cell:selected', ({ cell }) => {
+      console.log('selected', cell)
     })
 
-    graph.on('edge:unselected', ({ edge }) => {
-      console.log('unselected', edge)
+    graph.on('cell:unselected', ({ cell }) => {
+      console.log('unselected', cell)
     })
 
     graph.on('node:change:position', ({ node }) => {
@@ -88,6 +88,8 @@ export default class Example extends React.Component {
     graph.bindKey('backspace', () => {
       graph.removeCells(graph.getSelectedCells())
     })
+
+    graph.select(a)
   }
 
   refContainer = (container: HTMLDivElement) => {
