@@ -761,16 +761,17 @@ setAttrs(attrs: Attr.CellAttrs, options?: Cell.SetAttrOptions): this
 
 <span class="tag-param">参数<span>
 
-| 名称              | 类型           | 必选 | 默认值  | 描述                                                                                                                |
-|-------------------|----------------|:----:|---------|---------------------------------------------------------------------------------------------------------------------|
-| attrs             | Attr.CellAttrs |  ✔️  |         |                                                                                                                     |
-| options.overwrite | boolean        |      | `false` | 为 `true` 时替换现有属性，默认与现有属性进行[深度 merge](https://www.lodashjs.com/docs/latest#_mergeobject-sources)。 |
-| options.silent    | boolean        |      | `false` | 为 `true` 时不触不触发 `'change:attrs'` 事件和画布重绘。                                                             |
-| options...others  | object         |      |         | 其他自定义键值对，可以在事件回调中使用。                                                                              |
+| 名称              | 类型                                | 必选 | 默认值  | 描述                                                                                   |
+|-------------------|-------------------------------------|:----:|---------|----------------------------------------------------------------------------------------|
+| attrs             | Attr.CellAttrs \| null \| undefined |  ✔️  |         |                                                                                        |
+| options.overwrite | boolean                             |      | `false` | 为 `true` 时替换现有属性，否则根据 `options.deep` 选项进行深度或浅度 merge。             |
+| options.deep      | boolean                             |      | `true`  | 当 `options.overwrite` 为 `false` 时有效， 为 `true` 时进行深度 merge，否则进行浅 merge。 |
+| options.silent    | boolean                             |      | `false` | 为 `true` 时不触不触发 `'change:attrs'` 事件和画布重绘。                                |
+| options...others  | object                              |      |         | 其他自定义键值对，可以在事件回调中使用。                                                 |
 
 <span class="tag-example">用法</span>
 
-输出当前节点的属性值：
+默认情况，指定的属性将与旧属性进行[深度 merge](https://www.lodashjs.com/docs/latest#_mergeobject-sources)：
 
 ```ts
 console.log(cell.getAttrs())
@@ -778,11 +779,7 @@ console.log(cell.getAttrs())
 //   body: { fill: '#ffffff' },
 //   label: { fill: '#333333' },
 // }
-```
 
-默认情况制定的属性将与旧属性进行[深度 merge](https://www.lodashjs.com/docs/latest#_mergeobject-sources)：
-
-```ts
 cell.setAttrs({
   body: { fill: '#f5f5f5' },
   label: { text: 'My Label' },
@@ -795,19 +792,43 @@ console.log(cell.getAttrs())
 // }
 ```
 
-当 `options.overwrite` 为 `true` 时，直接替换旧属性：
+当 `options.deep` 为 `false` 时，进行浅 merge：
 
 ```ts
-cell.setAttrs({
-  body: { fill: '#f5f5f5' },
-  label: { text: 'My Label' },
-}, {
-  overwrite: true, // 直接覆盖旧属性
-})
+console.log(cell.getAttrs())
+// {
+//   body: { fill: '#ffffff' },
+//   label: { fill: '#333333' },
+// }
+
+cell.setAttrs(
+  { label: { text: 'My Label' } }, 
+  { deep: false },
+)
 
 console.log(cell.getAttrs())
 // {
-//   body: { fill: '#f5f5f5' },
+//   body: { fill: '#ffffff' },
+//   label: { text: 'My Label' },
+// }
+```
+
+当 `options.overwrite` 为 `true` 时，直接替换旧属性：
+
+```ts
+console.log(cell.getAttrs())
+// {
+//   body: { fill: '#ffffff' },
+//   label: { fill: '#333333' },
+// }
+
+cell.setAttrs(
+  { label: { text: 'My Label' } }, 
+  { overwrite: true },
+)
+
+console.log(cell.getAttrs())
+// {
 //   label: { text: 'My Label' },
 // }
 ```
@@ -824,10 +845,42 @@ cell.setAttrs(myAttrs, { silent: true })
 cell.setAttrs(myAttrs, { otherKey: 'otherValue', ... })
 ```
 
+#### replaceAttrs(...)
+
+```sign
+replaceAttrs(attrs: Attr.CellAttrs, options: Cell.SetOptions = {}): this
+```
+
+用给定的属性替换原有属性，相当于调用 `setAttrs(attrs, { ...options, overwrite: true })`。
+
+<span class="tag-param">参数<span>
+
+| 名称             | 类型                                | 必选 | 默认值  | 描述                                                    |
+|------------------|-------------------------------------|:----:|---------|---------------------------------------------------------|
+| attrs            | Attr.CellAttrs \| null \| undefined |  ✔️  |         |                                                         |
+| options.silent   | boolean                             |      | `false` | 为 `true` 时不触不触发 `'change:attrs'` 事件和画布重绘。 |
+| options...others | object                              |      |         | 其他自定义键值对，可以在事件回调中使用。                  |
+
+#### updateAttrs(...)
+
+```sign
+updateAttrs(attrs: Attr.CellAttrs, options: Cell.SetOptions = {}): this
+```
+
+使用浅 merge 更新属性，相当于调用 `setAttrs(attrs, { ...options, deep: false })`。
+
+<span class="tag-param">参数<span>
+
+| 名称             | 类型                                | 必选 | 默认值  | 描述                                                    |
+|------------------|-------------------------------------|:----:|---------|---------------------------------------------------------|
+| attrs            | Attr.CellAttrs \| null \| undefined |  ✔️  |         |                                                         |
+| options.silent   | boolean                             |      | `false` | 为 `true` 时不触不触发 `'change:attrs'` 事件和画布重绘。 |
+| options...others | object                              |      |         | 其他自定义键值对，可以在事件回调中使用。                  |
+
 #### removeAttrs(...)
 
 ```sign
-removeAttrs(options?: Cell.SetOptions) 
+removeAttrs(options?: Cell.SetOptions): this
 ```
 
 删除属性。
@@ -1561,23 +1614,30 @@ setData(data: any, options?: Cell.SetDataOptions): this
 
 <span class="tag-param">参数<span>
 
-| 名称             | 类型    | 必选 | 默认值  | 描述                                                                                                        |
-|------------------|---------|:----:|---------|-------------------------------------------------------------------------------------------------------------|
-| data             | any     |  ✔️  |         |                                                                                                             |
-| options.merge    | boolean |      | `false` | 默认直接替换旧数据，为 `true` 时进行[深度 merge](https://www.lodashjs.com/docs/latest#_mergeobject-sources)。 |
-| options.silent   | boolean |      | `false` | 为 `true` 时不触不触发 `'change:data'` 事件和画布重绘。                                                      |
-| options...others | object  |      |         | 其他自定义键值对，可以在事件回调中使用。                                                                      |
+| 名称              | 类型    | 必选 | 默认值  | 描述                                                                                   |
+|-------------------|---------|:----:|---------|----------------------------------------------------------------------------------------|
+| data              | any     |  ✔️  |         |                                                                                        |
+| options.overwrite | boolean |      | `false` | 为 `true` 时替换现有值，否则根据 `options.deep` 选项进行深度或浅度 merge。               |
+| options.deep      | boolean |      | `true`  | 当 `options.overwrite` 为 `false` 时有效， 为 `true` 时进行深度 merge，否则进行浅 merge。 |
+| options.silent    | boolean |      | `false` | 为 `true` 时不触不触发 `'change:data'` 事件和画布重绘。                                 |
+| options...others  | object  |      |         | 其他自定义键值对，可以在事件回调中使用。                                                 |
 
-默认情况，设置 `data` 时，触发 `'change:data'` 事件和画布重绘：
+默认与原数据进行[深度 merge](https://www.lodashjs.com/docs/latest#_mergeobject-sources)，并触发 `'change:data'` 事件和画布重绘：
 
 ```ts
 cell.setData(data)
 ```
 
-当 `options.merge` 为 `true` 时，与旧数据进行[深度 merge](https://www.lodashjs.com/docs/latest#_mergeobject-sources)：
+当 `options.overwrite` 为 `true` 时，替换旧数据：
 
 ```ts
-cell.setMarkup(data, { merge: true })
+cell.setMarkup(data, { overwrite: true })
+```
+
+当 `options.deep` 为 `false` 时，与原数据进行浅 merge：
+
+```ts
+cell.setMarkup(data, { overwrite: true })
 ```
 
 当 `options.silent` 为 `true` 时，不触发 `'change:data'` 事件和画布重绘：
@@ -1592,13 +1652,45 @@ cell.setMarkup(data, { silent: true })
 cell.setMarkup(data, { otherKey: 'otherValue', ... })
 ```
 
+#### replaceData(...)
+
+```sign
+replaceData(data: any, options: Cell.SetOptions = {}): this
+```
+
+用指定的数据替换原数据，相当于调用 `setData(data, { ...options, overwrite: true })`。
+
+<span class="tag-param">参数<span>
+
+| 名称             | 类型    | 必选 | 默认值  | 描述                                                   |
+|------------------|---------|:----:|---------|--------------------------------------------------------|
+| data             | any     |  ✔️  |         |                                                        |
+| options.silent   | boolean |      | `false` | 为 `true` 时不触不触发 `'change:data'` 事件和画布重绘。 |
+| options...others | object  |      |         | 其他自定义键值对，可以在事件回调中使用。                 |
+
+通过浅 merge 来更新数据，相当于调用 `setData(data, { ...options, deep: false })`。
+
+#### updateData(...)
+
+```sign
+updateData(data: any, options: Cell.SetOptions = {}): this
+```
+
+<span class="tag-param">参数<span>
+
+| 名称             | 类型    | 必选 | 默认值  | 描述                                                   |
+|------------------|---------|:----:|---------|--------------------------------------------------------|
+| data             | any     |  ✔️  |         |                                                        |
+| options.silent   | boolean |      | `false` | 为 `true` 时不触不触发 `'change:data'` 事件和画布重绘。 |
+| options...others | object  |      |         | 其他自定义键值对，可以在事件回调中使用。                 |
+
 #### removeData(...)
 
 ```sign
 removeData(options: Cell.SetOptions): this
 ```
 
-删除关联的业务数据。
+删除数据。
 
 默认情况触发 `'change:data'` 事件和画布重绘，当 `options.silent` 为 `true` 时不触发 `'change:data'` 事件和画布重绘。
 

@@ -494,16 +494,41 @@ export class Cell<
   }
 
   getAttrs() {
-    const result = this.store.get('attrs') as Attr.CellAttrs
+    const result = this.store.get('attrs')
     return result ? { ...result } : {}
   }
 
-  setAttrs(attrs: Attr.CellAttrs, options: Cell.SetAttrOptions = {}) {
-    const attributes = options.overwrite
-      ? attrs
-      : ObjectExt.merge({}, this.getAttrs(), attrs)
-    this.store.set('attrs', attributes, options)
+  setAttrs(
+    attrs: Attr.CellAttrs | null | undefined,
+    options: Cell.SetAttrOptions = {},
+  ) {
+    if (attrs == null) {
+      this.removeAttrs(options)
+    } else {
+      const set = (attrs: Attr.CellAttrs) =>
+        this.store.set('attrs', attrs, options)
+
+      if (options.overwrite === true) {
+        set(attrs)
+      } else {
+        const prev = this.getAttrs()
+        if (options.deep === false) {
+          set({ ...prev, ...attrs })
+        } else {
+          set(ObjectExt.merge({}, prev, attrs))
+        }
+      }
+    }
+
     return this
+  }
+
+  replaceAttrs(attrs: Attr.CellAttrs, options: Cell.SetOptions = {}) {
+    return this.setAttrs(attrs, { ...options, overwrite: true })
+  }
+
+  updateAttrs(attrs: Attr.CellAttrs, options: Cell.SetOptions = {}) {
+    return this.setAttrs(attrs, { ...options, deep: false })
   }
 
   removeAttrs(options: Cell.SetOptions = {}) {
@@ -561,7 +586,7 @@ export class Cell<
     value: Attr.ComplexAttrValue | null,
     options?: Cell.SetOptions,
   ): this
-  attr(attrs: Attr.CellAttrs, options?: Cell.SetOptions): this
+  attr(attrs: Attr.CellAttrs, options?: Cell.SetAttrOptions): this
   attr(
     path?: string | string[] | Attr.CellAttrs,
     value?: Attr.ComplexAttrValue | Cell.SetOptions,
@@ -652,14 +677,29 @@ export class Cell<
     if (data == null) {
       this.removeData(options)
     } else {
-      this.store.set(
-        'data',
-        options.overwrite ? data : ObjectExt.merge({}, this.getData(), data),
-        options,
-      )
+      const set = (data: any) => this.store.set('data', data, options)
+
+      if (options.overwrite === true) {
+        set(data)
+      } else {
+        const prev = this.getData<Object>()
+        if (options.deep === false) {
+          set(typeof data === 'object' ? { ...prev, ...data } : data)
+        } else {
+          set(ObjectExt.merge({}, prev, data))
+        }
+      }
     }
 
     return this
+  }
+
+  replaceData(data: any, options: Cell.SetOptions = {}) {
+    return this.setData(data, { ...options, overwrite: true })
+  }
+
+  updateData(data: any, options: Cell.SetOptions = {}) {
+    return this.setData(data, { ...options, deep: false })
   }
 
   removeData(options: Cell.SetOptions = {}) {
@@ -1277,10 +1317,12 @@ export namespace Cell {
   }
 
   export interface SetAttrOptions extends SetOptions {
+    deep?: boolean
     overwrite?: boolean
   }
 
   export interface SetDataOptions extends SetOptions {
+    deep?: boolean
     overwrite?: boolean
   }
 
