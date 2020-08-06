@@ -27,7 +27,7 @@ export default class Example extends React.Component {
         multiple: true,
         strict: true,
         showNodeSelectionBox: true,
-        selectOnCellMoved: false,
+        selectCellOnMoved: false,
         content: '123',
       },
     })
