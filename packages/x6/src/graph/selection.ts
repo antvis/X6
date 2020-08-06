@@ -106,7 +106,14 @@ export class SelectionManager extends Base {
     cells: Cell | string | (Cell | string)[],
     options: Collection.AddOptions = {},
   ) {
-    this.widget.select(this.getCells(cells), options)
+    let selected = this.getCells(cells)
+    if (!this.isMultiple() && selected.length > 0) {
+      this.clean()
+      if (selected.length > 1) {
+        selected = selected.slice(0, 1)
+      }
+    }
+    this.widget.select(selected, options)
     return this
   }
 
