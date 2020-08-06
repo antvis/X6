@@ -56,14 +56,14 @@ export class SelectionManager extends Base {
       const options = this.widgetOptions
       let disabled = this.disabled
       if (!disabled && movedDic.has(cell)) {
-        disabled = options.selectOnCellMoved === false
+        disabled = options.selectCellOnMoved === false
 
         if (!disabled) {
-          disabled = options.selectOnNodeMoved === false && cell.isNode()
+          disabled = options.selectNodeOnMoved === false && cell.isNode()
         }
 
         if (!disabled) {
-          disabled = options.selectOnEdgeMoved === false && cell.isEdge()
+          disabled = options.selectEdgeOnMoved === false && cell.isEdge()
         }
       }
 
@@ -202,9 +202,9 @@ export namespace SelectionManager {
     rubberband?: boolean
     modifiers?: string | ModifierKey[] | null
     multiple?: boolean
-    selectOnCellMoved?: boolean
-    selectOnNodeMoved?: boolean
-    selectOnEdgeMoved?: boolean
+    selectCellOnMoved?: boolean
+    selectNodeOnMoved?: boolean
+    selectEdgeOnMoved?: boolean
   }
 
   export type Filter = Selection.Filter
