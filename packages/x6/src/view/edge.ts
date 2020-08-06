@@ -514,7 +514,7 @@ export class EdgeView<
     this.cleanCache()
     this.updateConnection(options)
 
-    const attrs = this.cell.attrs
+    const attrs = this.cell.getAttrs()
     if (attrs != null) {
       this.updateAttrs(this.container, attrs, {
         attrs: partialAttrs === attrs ? null : partialAttrs,
@@ -936,7 +936,7 @@ export class EdgeView<
   }
 
   protected updateMarkerAttr(type: Edge.TerminalType) {
-    const attrs = this.cell.attrs
+    const attrs = this.cell.getAttrs()
     const key = `.${type}-marker`
     const partial = attrs && attrs[key]
     if (partial) {
