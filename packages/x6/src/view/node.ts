@@ -91,7 +91,7 @@ export class NodeView<
 
     const node = this.cell
     const size = node.getSize()
-    const attrs = node.attrs || {}
+    const attrs = node.getAttrs()
     this.updateAttrs(this.container, attrs, {
       attrs: partialAttrs === attrs ? null : partialAttrs,
       rootBBox: new Rectangle(0, 0, size.width, size.height),
