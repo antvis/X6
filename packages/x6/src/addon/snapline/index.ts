@@ -368,7 +368,7 @@ export class Snapline extends View implements IDisablable {
             trueDirection,
             snapped: true,
             snaplines: this.cid,
-            restrictedArea: this.graph.getRestrictedArea(view),
+            restrict: this.graph.getRestrictArea(view),
           })
 
           if (verticalHeight) {
@@ -520,8 +520,8 @@ export class Snapline extends View implements IDisablable {
 
       if (dx !== 0 || dy !== 0) {
         node.translate(dx, dy, {
-          restrictedArea: this.graph.getRestrictedArea(targetView),
           snapped: true,
+          restrict: this.graph.getRestrictArea(targetView),
         })
 
         if (horizontalWidth) {
