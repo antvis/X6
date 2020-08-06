@@ -306,20 +306,16 @@ export class Selection extends View<Selection.EventArgs> {
         const client = this.graph.snapToGrid(e.clientX, e.clientY)
         let dx = client.x - data.clientX
         let dy = client.y - data.clientY
-        const restrictedArea = this.graph.getRestrictedArea()
-        if (restrictedArea) {
+        const restrict = this.graph.getRestrictArea()
+        if (restrict) {
           const cells = this.collection.toArray()
           const totalBBox = Cell.getCellsBBox(cells)!
-          const minDx = restrictedArea.x - totalBBox.x
-          const minDy = restrictedArea.y - totalBBox.y
+          const minDx = restrict.x - totalBBox.x
+          const minDy = restrict.y - totalBBox.y
           const maxDx =
-            restrictedArea.x +
-            restrictedArea.width -
-            (totalBBox.x + totalBBox.width)
+            restrict.x + restrict.width - (totalBBox.x + totalBBox.width)
           const maxDy =
-            restrictedArea.y +
-            restrictedArea.height -
-            (totalBBox.y + totalBBox.height)
+            restrict.y + restrict.height - (totalBBox.y + totalBBox.height)
           if (dx < minDx) {
             dx = minDx
           }

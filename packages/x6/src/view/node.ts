@@ -983,7 +983,7 @@ export class NodeView<
     const position = Point.create(targetView.cell.getPosition())
     targetView.setEventData<EventData.MovingTargetNode>(e, {
       offset: position.diff(x, y),
-      restrictedArea: this.graph.getRestrictedArea(targetView),
+      restrict: this.graph.getRestrictArea(targetView),
     })
   }
 
@@ -993,12 +993,16 @@ export class NodeView<
     const gridSize = graph.getGridSize()
     const data = this.getEventData<EventData.MovingTargetNode>(e)
     const offset = data.offset
-    const restrictedArea = data.restrictedArea
+    const restrict = data.restrict
     let embedding = data.embedding
 
     const nextX = Util.snapToGrid(x + offset.x, gridSize)
     const nextY = Util.snapToGrid(y + offset.y, gridSize)
-    node.setPosition(nextX, nextY, { restrictedArea, deep: true, ui: true })
+    node.setPosition(nextX, nextY, {
+      restrict,
+      deep: true,
+      ui: true,
+    })
 
     if (graph.options.embedding.enabled) {
       if (!embedding) {
@@ -1109,7 +1113,7 @@ namespace EventData {
 
   export interface MovingTargetNode {
     offset: Point.PointLike
-    restrictedArea?: Rectangle.RectangleLike | null
+    restrict?: Rectangle.RectangleLike | null
     embedding?: boolean
     candidateEmbedView?: NodeView | null
     cell?: Node
