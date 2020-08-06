@@ -483,14 +483,14 @@ translate(tx?: number, ty?: number, options?: Node.TranslateOptions): this
 
 <span class="tag-param">参数<span>
 
-| 名称                   | 类型                         | 必选 | 默认值      | 描述                                                       |
-|------------------------|------------------------------|:----:|-------------|----------------------------------------------------------|
-| tx                     | number                       |      | `0`         | 节点在 X 轴的偏移量。                                       |
-| ty                     | number                       |      | `0`         | 节点在 Y 轴的偏移量。                                       |
-| options.restrictedArea | Rectangle.RectangleLike      |      | `undefined` | 将节点的可移动范围限制在指定的矩形区域内。                  |
-| options.transition     | boolean \| Animation.Options |      | `false`     | 是否使用动画或指定一个[动画选项](../cell#transition)。      |
-| options.silent         | boolean                      |      | `false`     | 为 `true` 时不触不触发 `'change:position'` 事件和画布重绘。 |
-| options...others       | object                       |      |             | 其他自定义键值对，可以在事件回调中使用。                     |
+| 名称               | 类型                         | 必选 | 默认值      | 描述                                                       |
+|--------------------|------------------------------|:----:|-------------|----------------------------------------------------------|
+| tx                 | number                       |      | `0`         | 节点在 X 轴的偏移量。                                       |
+| ty                 | number                       |      | `0`         | 节点在 Y 轴的偏移量。                                       |
+| options.restrict   | Rectangle.RectangleLike      |      | `undefined` | 将节点的可移动范围限制在指定的矩形区域内。                  |
+| options.transition | boolean \| Animation.Options |      | `false`     | 是否使用动画或指定一个[动画选项](../cell#transition)。      |
+| options.silent     | boolean                      |      | `false`     | 为 `true` 时不触不触发 `'change:position'` 事件和画布重绘。 |
+| options...others   | object                       |      |             | 其他自定义键值对，可以在事件回调中使用。                     |
 
 <span class="tag-example">用法</span>
 
@@ -502,13 +502,13 @@ node.translate(30)            // 只在 X 轴移动
 node.translate(undefined, 30) // 只在 Y 轴移动
 ```
 
-我们可以通过 `options.restrictedArea` 选项来将节点的移动限制在指定的矩形 `{x: number; y: number; width: number; height: number}` 范围内。
+我们可以通过 `options.restrict` 选项来将节点的移动限制在指定的矩形 `{x: number; y: number; width: number; height: number}` 范围内。
 
 例如，我可以将字节的移动限制在父节点的包围盒中：
 
 ```ts
 child.translate(30, 30, { 
-  restrictedArea: child.getParent().getBBox(), 
+  restrict: child.getParent().getBBox(), 
 })
 ```
 

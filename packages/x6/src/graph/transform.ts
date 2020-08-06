@@ -372,7 +372,7 @@ export class TransformManager extends Base {
     return this.graph.graphToLocalRect(rect)
   }
 
-  getRestrictedArea(view?: NodeView) {
+  getRestrictArea(view?: NodeView) {
     const restrict = this.options.translating.restrict
     let area: Rectangle.RectangleLike | null
 

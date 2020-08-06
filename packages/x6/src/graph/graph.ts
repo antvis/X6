@@ -674,8 +674,8 @@ export class Graph extends Basecoat<EventArgs> {
     return this.transform.getArea()
   }
 
-  getRestrictedArea(view?: NodeView) {
-    return this.transform.getRestrictedArea(view)
+  getRestrictArea(view?: NodeView) {
+    return this.transform.getRestrictArea(view)
   }
 
   // #endregion

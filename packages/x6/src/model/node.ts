@@ -328,12 +328,12 @@ export class Node<
 
     const position = this.getPosition()
 
-    if (options.restrictedArea != null && options.translateBy === this.id) {
+    if (options.restrict != null && options.translateBy === this.id) {
       // We are restricting the translation for the element itself only. We get
       // the bounding box of the element including all its embeds.
       // All embeds have to be translated the exact same way as the element.
       const bbox = this.getBBox({ deep: true })
-      const ra = options.restrictedArea
+      const ra = options.restrict
       // - - - - - - - - - - - - -> ra.x + ra.width
       // - - - -> position.x      |
       // -> bbox.x
@@ -987,7 +987,7 @@ export namespace Node {
 
   export interface TranslateOptions extends Cell.TranslateOptions {
     transition?: boolean | Animation.Options
-    restrictedArea?: Rectangle.RectangleLike | null
+    restrict?: Rectangle.RectangleLike | null
   }
 
   export interface RotateOptions extends SetOptions {
