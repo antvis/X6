@@ -24,7 +24,7 @@ export default class Example extends React.Component {
       selecting: {
         enabled: true,
         rubberband: true,
-        multiple: true,
+        multiple: false,
         strict: true,
         showNodeSelectionBox: true,
         selectCellOnMoved: false,
@@ -91,6 +91,7 @@ export default class Example extends React.Component {
     })
 
     graph.select(a)
+    graph.select([b, c])
   }
 
   refContainer = (container: HTMLDivElement) => {
