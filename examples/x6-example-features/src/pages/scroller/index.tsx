@@ -52,8 +52,8 @@ export default class Example extends React.Component {
         enabled: true,
         // width: 600,
         // height: 400,
-        pageVisible: false,
-        pageBreak: false,
+        pageVisible: true,
+        pageBreak: true,
         pannable: true,
       },
       minimap: {
@@ -85,13 +85,13 @@ export default class Example extends React.Component {
 
     this.scroller = graph.scroller.widget
 
-    graph.on('node:added', ({ node }) => {
-      console.log('add', node)
-    })
+    // graph.on('node:added', ({ node }) => {
+    //   console.log('add', node)
+    // })
 
-    graph.on('node:removed', ({ node }) => {
-      console.log('remove', node)
-    })
+    // graph.on('node:removed', ({ node }) => {
+    //   console.log('remove', node)
+    // })
 
     const rect = graph.addNode({
       shape: 'rect',
@@ -126,9 +126,10 @@ export default class Example extends React.Component {
       target: circle,
     })
 
-    graph.removeCell(rect)
+    // graph.removeCell(rect)
 
     graph.center()
+    // graph.resize(300, 200)
     this.graph = graph
   }
 
