@@ -90,6 +90,12 @@ export class ScrollerManager extends Base {
       this.widget.setCursor(cursor)
     }
   }
+
+  resize(width?: number, height?: number) {
+    if (this.widget) {
+      this.widget.resize(width, height)
+    }
+  }
 }
 
 export namespace ScrollerManager {
