@@ -927,6 +927,23 @@ export class Scroller extends View {
     return Dom.transformPoint(p, ctm).translate(padding.left, padding.top)
   }
 
+  resize(width?: number, height?: number) {
+    let w = width != null ? width : this.container.clientWidth
+    let h = height != null ? height : this.container.clientHeight
+
+    if (typeof w === 'number') {
+      w = Math.round(w)
+    }
+    if (typeof h === 'number') {
+      h = Math.round(h)
+    }
+
+    this.options.width = w
+    this.options.height = h
+    this.$container.css({ width: w, height: h })
+    this.update()
+  }
+
   getClientSize() {
     return {
       width: this.container.clientWidth,

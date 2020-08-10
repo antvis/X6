@@ -592,7 +592,21 @@ export class Graph extends Basecoat<EventArgs> {
   }
 
   resize(width?: number, height?: number) {
+    if (this.scroller.widget) {
+      this.scroller.resize(width, height)
+    } else {
+      this.transform.resize(width, height)
+    }
+    return this
+  }
+
+  resizeGraph(width?: number, height?: number) {
     this.transform.resize(width, height)
+    return this
+  }
+
+  resizeScroller(width?: number, height?: number) {
+    this.scroller.resize(width, height)
     return this
   }
 
