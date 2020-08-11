@@ -155,7 +155,7 @@ export class MiniMap extends View {
 
     width = width * ratio // tslint:disable-line
     height = height * ratio // tslint:disable-line
-    this.targetGraph.resize(width, height)
+    this.targetGraph.resizeGraph(width, height)
     this.targetGraph.setOrigin(x, y)
     this.targetGraph.scale(ratio, ratio)
     this.updateViewport()

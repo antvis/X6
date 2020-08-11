@@ -351,7 +351,7 @@ export class Scroller extends View {
     const dx = sx / this.sx
     const dy = sy / this.sy
     this.graph.setOrigin(options.x * dx, options.y * dy)
-    this.graph.resize(options.width * dx, options.height * dy)
+    this.graph.resizeGraph(options.width * dx, options.height * dy)
   }
 
   scrollbarPosition(): { left: number; top: number }
