@@ -67,7 +67,7 @@ export default class Example extends React.Component {
       },
     })
 
-    graph.on('node:collapse', ({ e, node }) => {
+    graph.on('node:collapse', ({ node }) => {
       const treeNode = node as TreeNode
       treeNode.toggleCollapse()
       const collapsed = treeNode.isCollapsed()
