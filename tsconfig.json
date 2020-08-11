@@ -5,7 +5,7 @@
       "**/lib"
   ],
   "compilerOptions": {
-    "module": "esnext",
+    "module": "commonjs",
     "moduleResolution": "node",
     "sourceMap": true,
     "declaration": true,
@@ -19,6 +19,9 @@
     "experimentalDecorators": true,
     "jsx": "react",
     "target": "es5",
-    "lib": ["dom", "es2015"]
+    "lib": [
+      "dom",
+      "es2015"
+    ]
   }
 }
