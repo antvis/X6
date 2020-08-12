@@ -5,7 +5,7 @@ on:
       - master
   pull_request:
 jobs:
-  🚧　run:
+  run:
     runs-on: macOS-latest
     strategy:
       matrix:

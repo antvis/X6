@@ -1,12 +1,11 @@
 # https://github.com/marketplace/actions/issue-labeler
 
-name: Set Issue Label
+name: 🏷️　Set Issue Label
 on:
   issues:
     types: [opened]
-
 jobs:
-  test:
+  label:
     runs-on: ubuntu-latest
     steps:
       - uses: Naturalclar/issue-action@v1.0.0
