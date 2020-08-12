@@ -1,4 +1,4 @@
-name: CI
+name: 👷 CI
 on:
   push:
     branches:
@@ -12,22 +12,24 @@ jobs:
         node-version: [12.x]
     steps:
     - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
+    - name: 🎉 Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - name: Install yarn and lerna
+    - name: 🚧 Prepare Environment
       run: |
         npm install -g yarn
         npm install -g lerna
-    - name: Bootstrap
+    - name: 🚀 Bootstrap
       run: |
         yarn bootstrap
-    - name: Build & Test
+    - name: 📦 Build
       run: |
         yarn build:dev
+    - name: 🚨 Test
+      run: |
         yarn test
-    - name: Coveralls
+    - name: 💄 Coveralls
       uses: coverallsapp/github-action@master
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
