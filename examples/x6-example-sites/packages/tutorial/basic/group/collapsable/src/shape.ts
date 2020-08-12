@@ -9,7 +9,7 @@ export class Group extends Node {
   }
 
   isCollapsed() {
-    return this.collapsed === true
+    return this.collapsed
   }
 
   toggleCollapse(collapsed?: boolean) {
@@ -33,6 +33,10 @@ Group.config({
     {
       tagName: 'rect',
       selector: 'body',
+    },
+    {
+      tagName: 'text',
+      selector: 'label',
     },
     {
       tagName: 'g',
@@ -62,15 +66,15 @@ Group.config({
       refHeight: '100%',
       strokeWidth: 1,
       fill: '#ffffff',
-      stroke: '#a0a0a0',
+      stroke: 'none',
     },
     buttonGroup: {
       refX: 8,
       refY: 8,
     },
     button: {
-      height: 16,
-      width: 20,
+      height: 14,
+      width: 16,
       rx: 2,
       ry: 2,
       fill: '#f5f5f5',
@@ -79,9 +83,15 @@ Group.config({
       event: 'node:collapse',
     },
     buttonSign: {
-      refX: 5,
-      refY: 4,
+      refX: 3,
+      refY: 2,
       stroke: '#808080',
+    },
+    label: {
+      fontSzie: 12,
+      fill: '#fff',
+      refX: 32,
+      refY: 10,
     },
   },
 })
