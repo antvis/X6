@@ -1,4 +1,4 @@
-name: 🏷️ Label(Branch Name)
+name: 🏷️  Label(Branch Name)
 on:
   pull_request:
     types: [opened]
