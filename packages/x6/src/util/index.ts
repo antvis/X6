@@ -1,4 +1,5 @@
 import $ from 'jquery'
+import './polyfill'
 
 export * from './lang'
 export * from './array'

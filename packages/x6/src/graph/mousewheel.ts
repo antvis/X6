@@ -1,5 +1,4 @@
 import JQuery from 'jquery'
-import 'jquery-mousewheel'
 import { Dom, Platform } from '../util'
 import { ModifierKey } from '../types'
 import { Disposable, IDisablable } from '../common'
