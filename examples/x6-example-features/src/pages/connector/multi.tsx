@@ -13,6 +13,7 @@ export default class Example extends React.Component {
   componentDidMount() {
     const graph = new Graph({
       container: this.container,
+      mousewheel: true,
       grid: true,
       width: 1000,
       height: 600,
