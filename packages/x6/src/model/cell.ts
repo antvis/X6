@@ -250,7 +250,7 @@ export class Cell<
     if (typeof key === 'string') {
       this.store.set(key, value, options)
     } else {
-      this.store.set(ObjectExt.merge(this.getProp(), key), value)
+      this.store.set(ObjectExt.merge({}, this.getProp(), key), value)
     }
     return this
   }

@@ -343,7 +343,7 @@ export namespace Options {
      * If set to `true`, the user will not be able to move nodes outside the
      * boundary of the graph area.
      */
-    restrict: boolean | OptionItem<CellView, Rectangle.RectangleLike>
+    restrict: boolean | OptionItem<CellView, Rectangle.RectangleLike | null>
   }
 
   export interface RotatingRaw {

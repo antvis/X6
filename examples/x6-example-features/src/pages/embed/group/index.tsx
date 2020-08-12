@@ -1,5 +1,7 @@
 import React from 'react'
-import { Graph } from '@antv/x6'
+import { Graph, Node } from '@antv/x6'
+import '@antv/x6-react-shape'
+import { PlusSquareOutlined, MinusSquareOutlined } from '@ant-design/icons'
 import { Group } from './shape'
 import '../../index.less'
 
@@ -114,6 +116,51 @@ export default class Example extends React.Component {
           node.show()
         }
       })
+    })
+
+    graph.addNode({
+      shape: 'react-shape',
+      x: 320,
+      y: 420,
+      width: 160,
+      height: 60,
+      component: (node: Node) => {
+        const data = node.getData<any>() || {}
+        const collapsed = data.collapsed === true
+        return (
+          <div style={{ background: '#f5f5f5', width: '100%', height: '100%' }}>
+            {collapsed ? (
+              <PlusSquareOutlined
+                style={{ cursor: 'pointer' }}
+                event="react:collapse"
+              />
+            ) : (
+              <MinusSquareOutlined
+                style={{ cursor: 'pointer' }}
+                event="react:collapse"
+              />
+            )}
+
+            {node.attr('body/fill')}
+          </div>
+        )
+      },
+    })
+
+    graph.on('react:collapse', ({ node }: { node: Node }) => {
+      const data = node.getData<any>() || {}
+      const collapsed = !(data.collapsed === true)
+      node.updateData({ collapsed })
+      node.resize(collapsed ? 80 : 160, collapsed ? 30 : 60)
+      const cells = node.getDescendants()
+      cells.forEach((node) => {
+        if (collapsed) {
+          node.hide()
+        } else {
+          node.show()
+        }
+      })
+      console.log(node)
     })
   }
 

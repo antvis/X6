@@ -12,7 +12,7 @@ export class Group extends Node {
     return this.collapsed === true
   }
 
-  toggleCollapse(collapsed: boolean) {
+  toggleCollapse(collapsed?: boolean) {
     const target = collapsed == null ? !this.collapsed : collapsed
     if (target) {
       this.attr('buttonSign', { d: 'M 1 5 9 5 M 5 1 5 9' })
