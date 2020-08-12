@@ -1,4 +1,4 @@
-name: Deploy Sites
+name: 🚀 Deploy Sites
 
 on:
   push:
@@ -22,24 +22,24 @@ jobs:
         node-version: [12.x]
     steps:
     - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
+    - name: 🎉 Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - name: Install yarn and lerna
+    - name: 🚧 Prepare Environment
       run: |
         npm install -g yarn
         npm install -g lerna
-    - name: Bootstrap
+    - name: 🚀 Bootstrap
       run: |
         yarn bootstrap
-    - name: Build Demos
+    - name: 📦 Build Demos
       run: |
         yarn build:demos
-    - name: Build Sites
+    - name: 📦 Build Sites
       run: |
         yarn build:sites
-    - name: Deploy sites
+    - name: ✅ Deploy sites
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}

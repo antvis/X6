@@ -1,4 +1,4 @@
-name: Label(Patch Size)
+name: 🏷️ Label(Patch Size)
 on: pull_request
 jobs:
   label:
