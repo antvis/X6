@@ -1,14 +1,13 @@
-name: Rebase
+name: 🎉　Rebase
 on:
   issue_comment:
     types: [created]
 jobs:
   rebase:
-    name: Rebase
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
-    - name: Automatic Rebase
+    - name: Rebase
       uses: cirrus-actions/rebase@master
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

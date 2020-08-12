@@ -1,9 +1,9 @@
-name: Auto Close Issue
+name: 🚫　Auto Close Issue
 on:
   pull_request:
     types: [closed]
 jobs:
-  build:
+  run:
     name: Close
     runs-on: ubuntu-16.04
     steps:
