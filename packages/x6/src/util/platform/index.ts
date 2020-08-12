@@ -54,7 +54,9 @@ export namespace Platform {
       },
     })
     const div = document.createElement('div')
-    div.addEventListener('click', () => {}, options)
+    if (div.addEventListener) {
+      div.addEventListener('click', () => {}, options)
+    }
   } catch (err) {}
 
   /**
