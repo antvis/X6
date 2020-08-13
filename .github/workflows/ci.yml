@@ -26,10 +26,10 @@ jobs:
     - name: 📦　Build
       run: |
         yarn build:dev
-    - name: 🚨　Test
+    - name: ✅　Test
       run: |
         yarn test
-    - name: 💄　Coveralls
+    - name: 🚩　Coveralls
       uses: coverallsapp/github-action@master
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
