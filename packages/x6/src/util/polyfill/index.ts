@@ -12,14 +12,15 @@ if (Platform.SUPPORT_PASSIVE) {
   }
 
   const hook = JQuery.event.special.mousewheel as any
-  const setup = hook.setup
-
-  hook.setup = function (this: EventTarget) {
-    const addEventListener = this.addEventListener
-    this.addEventListener = (name: string, handler: any) => {
-      addEventListener.call(this, name, handler, { passive: true })
+  if (hook) {
+    const setup = hook.setup
+    hook.setup = function (this: EventTarget) {
+      const addEventListener = this.addEventListener
+      this.addEventListener = (name: string, handler: any) => {
+        addEventListener.call(this, name, handler, { passive: true })
+      }
+      setup.call(this)
+      this.addEventListener = addEventListener
     }
-    setup.call(this)
-    this.addEventListener = addEventListener
   }
 }
