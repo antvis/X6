@@ -5,11 +5,6 @@ import '../index.less'
 export default class Example extends React.Component {
   private container: HTMLDivElement
 
-  state = {
-    router: 'manhattan',
-    connector: 'rounded',
-  }
-
   componentDidMount() {
     const graph = new Graph({
       container: this.container,

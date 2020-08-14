@@ -79,7 +79,7 @@ export namespace Wrap {
       const size = { width: style.width, height: style.height }
       const data = getData()
       data[STORE_KEY] = size
-      localStorage.setItem(STORE_ROOT, JSON.parse(data))
+      localStorage.setItem(STORE_ROOT, JSON.stringify(data))
     }
   }
 
