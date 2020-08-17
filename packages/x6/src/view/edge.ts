@@ -1974,11 +1974,27 @@ export class EdgeView<
 
   protected dragEdge(e: JQuery.MouseMoveEvent, x: number, y: number) {
     const data = this.getEventData<EventData.EdgeDragging>(e)
+    if (!data.dragged) {
+      data.dragged = true
+    }
     this.cell.translate(x - data.x, y - data.y, { ui: true })
     this.setEventData<Partial<EventData.EdgeDragging>>(e, { x, y })
   }
 
-  protected stopEdgeDragging(e: JQuery.MouseUpEvent, x: number, y: number) {}
+  protected stopEdgeDragging(e: JQuery.MouseUpEvent, x: number, y: number) {
+    const data = this.getEventData<EventData.EdgeDragging>(e)
+    if (data.dragged) {
+      data.dragged = false
+      this.notify('edge:moved', {
+        e,
+        x,
+        y,
+        view: this,
+        cell: this.cell,
+        edge: this.cell,
+      })
+    }
+  }
 
   // #endregion
 
@@ -1987,12 +2003,14 @@ export class EdgeView<
   prepareArrowheadDragging(
     type: Edge.TerminalType,
     options: {
+      isNewEdge?: boolean
       fallbackAction?: EventData.ArrowheadDragging['fallbackAction']
     } = {},
   ) {
     const magnet = this.getTerminalMagnet(type)
     const data: EventData.ArrowheadDragging = {
       action: 'drag-arrowhead',
+      isNewEdge: options.isNewEdge === true,
       terminalType: type,
       initialMagnet: magnet,
       initialTerminal: ObjectExt.clone(this.cell[type]) as Edge.TerminalData,
@@ -2301,6 +2319,7 @@ export class EdgeView<
           terminalView: graph.renderer.findViewByCell(currCellId) as CellView,
           terminalMagnet: data.currentMagnet,
           edge: this.cell,
+          isNew: data.isNewEdge,
         })
       }
     }
@@ -2585,6 +2604,7 @@ export namespace EdgeView {
       terminalType: Edge.TerminalType
       terminalView: CellView
       terminalMagnet?: Element | null
+      isNew?: boolean
     }
     'edge:disconnected': EventArgs['edge:connected']
 
@@ -2596,6 +2616,7 @@ export namespace EdgeView {
       options: CellView.HighlightOptions
     }
     'edge:unhighlight': EventArgs['edge:highlight']
+    'edge:moved': PositionEventArgs<JQuery.MouseUpEvent>
   }
 }
 
@@ -2604,6 +2625,7 @@ namespace EventData {
 
   export interface EdgeDragging {
     action: 'drag-edge'
+    dragged?: boolean
     x: number
     y: number
   }
@@ -2619,6 +2641,7 @@ namespace EventData {
 
   export interface ArrowheadDragging {
     action: 'drag-arrowhead'
+    isNewEdge: boolean
     terminalType: Edge.TerminalType
     fallbackAction: 'remove' | 'revert'
     initialMagnet: Element | null

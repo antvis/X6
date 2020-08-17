@@ -8,6 +8,7 @@ import { CellView } from '../../view/cell'
 import { NodeView } from '../../view/node'
 import { EdgeView } from '../../view/edge'
 import { Handle } from '../common'
+import { notify } from '../transform/util'
 import { Halo } from './index'
 
 export function getNodePreset(halo: Halo) {}
@@ -15,6 +16,8 @@ export function getNodePreset(halo: Halo) {}
 export class NodePreset {
   private edgeView: EdgeView | null
   private flip: number
+  private resized: boolean
+  private rotated: boolean
 
   constructor(private halo: Halo) {}
 
@@ -60,7 +63,14 @@ export class NodePreset {
           events: {
             mousedown: this.startResize.bind(this),
             mousemove: this.doResize.bind(this),
-            mouseup: this.halo.stopBatch.bind(this.halo),
+            mouseup: ({ e }) => {
+              this.halo.stopBatch()
+              if (this.resized) {
+                this.resized = false
+                const view = this.view as NodeView
+                notify('node:resized', e as JQuery.MouseUpEvent, view)
+              }
+            },
           },
           icon: null,
         },
@@ -108,7 +118,20 @@ export class NodePreset {
           events: {
             mousedown: this.startRotate.bind(this),
             mousemove: this.doRotate.bind(this),
-            mouseup: this.halo.stopBatch.bind(this.halo),
+            mouseup: ({ e }) => {
+              this.halo.stopBatch()
+              if (this.rotated) {
+                this.rotated = false
+                const data = this.halo.getEventData(e)
+                data.nodes.forEach((node: Node) => {
+                  notify(
+                    'node:rotated',
+                    e as JQuery.MouseUpEvent,
+                    this.graph.findViewByCell(node) as NodeView,
+                  )
+                })
+              }
+            },
           },
           icon: null,
         },
@@ -305,6 +328,7 @@ export class NodePreset {
     const size = this.node.getSize()
     const width = Math.max(size.width + (this.flip ? dx : dy), 1)
     const height = Math.max(size.height + (this.flip ? dy : dx), 1)
+    this.resized = true
     this.node.resize(width, height, {
       absolute: true,
     })
@@ -439,6 +463,7 @@ export class NodePreset {
   doRotate({ e, x, y }: Handle.EventArgs) {
     const data = this.halo.getEventData(e)
     const delta = data.clientStartAngle - new Point(x, y).theta(data.center)
+    this.rotated = true
     data.nodes.forEach((node: Node, index: number) => {
       const startAngle = data.rotateStartAngles[index]
       const targetAngle = Util.snapToGrid(

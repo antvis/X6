@@ -42,6 +42,14 @@ export default class Example extends React.Component {
       height: 40,
       attrs: { label: { text: 'C' } },
     })
+
+    graph.on('node:resized', ({ node }) => {
+      console.log(node.size(), node.position())
+    })
+
+    graph.on('node:rotated', ({ node }) => {
+      console.log(node.angle())
+    })
   }
 
   refContainer = (container: HTMLDivElement) => {

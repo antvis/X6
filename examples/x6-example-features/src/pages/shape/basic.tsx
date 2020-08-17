@@ -240,7 +240,9 @@ export default class Example extends React.Component {
       }
     }
 
-    console.log(graph.toJSON())
+    graph.on('edge:connected', ({ isNew, ...args }) => {
+      console.log(isNew, args)
+    })
   }
 
   refContainer = (container: HTMLDivElement) => {
