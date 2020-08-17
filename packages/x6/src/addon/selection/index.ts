@@ -8,8 +8,10 @@ import { Model } from '../../model/model'
 import { Collection } from '../../model/collection'
 import { View } from '../../view/view'
 import { CellView } from '../../view/cell'
+import { NodeView } from '../../view/node'
 import { Graph } from '../../graph/graph'
 import { Renderer } from '../../graph/renderer'
+import { notify } from '../transform/util'
 import { Handle } from '../common'
 
 export class Selection extends View<Selection.EventArgs> {
@@ -712,6 +714,10 @@ export class Selection extends View<Selection.EventArgs> {
     const client = this.graph.snapToGrid(e.clientX!, e.clientY!)
     const delta = data.start - client.theta(data.center)
 
+    if (!data.rotated) {
+      data.rotated = true
+    }
+
     if (Math.abs(delta) > 0.001) {
       this.collection.toArray().forEach((node: Node) => {
         const angle = Util.snapToGrid(
@@ -728,7 +734,19 @@ export class Selection extends View<Selection.EventArgs> {
     }
   }
 
-  protected stopRotate() {}
+  protected stopRotate({ e }: Handle.EventArgs) {
+    const data = this.getEventData<EventData.Rotation>(e)
+    if (data.rotated) {
+      data.rotated = false
+      this.collection.toArray().forEach((node: Node) => {
+        notify(
+          'node:rotated',
+          e as JQuery.MouseUpEvent,
+          this.graph.findViewByCell(node) as NodeView,
+        )
+      })
+    }
+  }
 
   protected startResize({ e }: Handle.EventArgs) {
     const gridSize = this.graph.getGridSize()
@@ -757,6 +775,11 @@ export class Selection extends View<Selection.EventArgs> {
     const height = bbox.height
     const newWidth = Math.max(width + dx, data.minWidth)
     const newHeight = Math.max(height + dy, data.minHeight)
+
+    if (!data.resized) {
+      data.resized = true
+    }
+
     if (
       0.001 < Math.abs(width - newWidth) ||
       0.001 < Math.abs(height - newHeight)
@@ -770,7 +793,19 @@ export class Selection extends View<Selection.EventArgs> {
     }
   }
 
-  protected stopResize() {}
+  protected stopResize({ e }: Handle.EventArgs) {
+    const data = this.eventData<EventData.Resizing>(e)
+    if (data.resized) {
+      data.resized = false
+      this.collection.toArray().forEach((node: Node) => {
+        notify(
+          'node:resized',
+          e as JQuery.MouseUpEvent,
+          this.graph.findViewByCell(node) as NodeView,
+        )
+      })
+    }
+  }
 
   // #endregion
 }
@@ -936,12 +971,14 @@ namespace EventData {
   }
 
   export interface Rotation {
+    rotated?: boolean
     center: Point.PointLike
     start: number
     angles: { [id: string]: number }
   }
 
   export interface Resizing {
+    resized?: boolean
     bbox: Rectangle
     cells: Cell[]
     minWidth: number

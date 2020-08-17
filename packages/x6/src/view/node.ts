@@ -601,7 +601,8 @@ export class NodeView<
       this.dragMagnet(e, x, y)
     } else {
       if (action === 'move') {
-        const view = (data as EventData.Moving).targetView || this
+        const meta = data as EventData.Moving
+        const view = meta.targetView || this
         view.dragNode(e, x, y)
       }
       this.notifyMouseMove(e, x, y)
@@ -618,7 +619,8 @@ export class NodeView<
     } else {
       this.notifyMouseUp(e, x, y)
       if (action === 'move') {
-        const view = (data as EventData.Moving).targetView || this
+        const meta = data as EventData.Moving
+        const view = meta.targetView || this
         view.stopNodeDragging(e, x, y)
       }
     }
@@ -899,7 +901,10 @@ export class NodeView<
     edgeView.notifyMouseDown(e, x, y) // backwards compatibility events
     edgeView.setEventData(
       e,
-      edgeView.prepareArrowheadDragging('target', { fallbackAction: 'remove' }),
+      edgeView.prepareArrowheadDragging('target', {
+        isNewEdge: true,
+        fallbackAction: 'remove',
+      }),
     )
     this.setEventData<Partial<EventData.Magnet>>(e, { edgeView })
   }
@@ -996,9 +1001,14 @@ export class NodeView<
     const restrict = data.restrict
     let embedding = data.embedding
 
-    const nextX = Util.snapToGrid(x + offset.x, gridSize)
-    const nextY = Util.snapToGrid(y + offset.y, gridSize)
-    node.setPosition(nextX, nextY, {
+    const posX = Util.snapToGrid(x + offset.x, gridSize)
+    const posY = Util.snapToGrid(y + offset.y, gridSize)
+    const meta = this.getEventData<EventData.Moving>(e)
+    if (!meta.moved) {
+      meta.moved = true
+    }
+
+    node.setPosition(posX, posY, {
       restrict,
       deep: true,
       ui: true,
@@ -1021,6 +1031,18 @@ export class NodeView<
   }
 
   protected stopNodeDragging(e: JQuery.MouseUpEvent, x: number, y: number) {
+    const meta = this.getEventData<EventData.Moving>(e)
+    if (meta.moved) {
+      this.notify('node:moved', {
+        e,
+        x,
+        y,
+        view: this,
+        cell: this.cell,
+        node: this.cell,
+      })
+    }
+
     const data = this.getEventData<EventData.MovingTargetNode>(e)
     if (data.embedding) {
       this.finalizeEmbedding(data)
@@ -1094,6 +1116,10 @@ export namespace NodeView {
       MagnetEventArgs
     'node:magnet:contextmenu': PositionEventArgs<JQuery.ContextMenuEvent> &
       MagnetEventArgs
+
+    'node:moved': PositionEventArgs<JQuery.MouseUpEvent>
+    'node:resized': PositionEventArgs<JQuery.MouseUpEvent>
+    'node:rotated': PositionEventArgs<JQuery.MouseUpEvent>
   }
 }
 
@@ -1109,6 +1135,7 @@ namespace EventData {
   export interface Moving {
     action: 'move'
     targetView: NodeView
+    moved?: boolean
   }
 
   export interface MovingTargetNode {
