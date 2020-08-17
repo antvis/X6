@@ -13,7 +13,7 @@ export default class Example extends React.Component {
       grid: true,
     })
 
-    const rect = graph.addNode({
+    graph.addNode({
       shape: 'rect',
       x: 40,
       y: 40,
