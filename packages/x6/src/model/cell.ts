@@ -1368,6 +1368,7 @@ export namespace Cell {
     'change:parent': ChangeArgs<string>
     'change:children': ChangeArgs<string[]>
     'change:view': ChangeArgs<string>
+    'change:data': ChangeArgs<any>
 
     // node
     'change:size': NodeChangeArgs<Size>

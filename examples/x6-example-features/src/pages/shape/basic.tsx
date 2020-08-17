@@ -34,6 +34,12 @@ export default class Example extends React.Component {
 
     console.log(rect)
 
+    rect.on('change:custom', () => {
+      console.log(123)
+    })
+
+    rect.prop('custom', 123)
+
     // graph.scale(0.5, 0.5, 20, 20)
 
     graph.addNode({

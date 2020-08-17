@@ -9,6 +9,7 @@ import {
   EdgeAnchor,
   ConnectionPoint,
 } from '../registry'
+import { Cell } from '../model/cell'
 import { Edge } from '../model/edge'
 import { Markup } from './markup'
 import { CellView } from './cell'
@@ -2300,28 +2301,43 @@ export class EdgeView<
 
     if (changed) {
       const graph = this.graph
-      const prevCellId = (initialTerminal as Edge.TerminalCellData).cell
-      if (prevCellId) {
-        this.notify('edge:disconnected', {
-          e,
-          terminalType,
-          terminalView: graph.renderer.findViewByCell(prevCellId) as CellView,
-          terminalMagnet: data.initialMagnet,
-          edge: this.cell,
-        })
-      }
+      const previous = initialTerminal as Edge.TerminalCellData
+      const previousCell = previous.cell
+        ? graph.getCellById(previous.cell)
+        : null
+      const previousPort = previous.port
+      const previousView = previousCell
+        ? graph.findViewByCell(previousCell)
+        : null
+      const previousPoint = previousCell
+        ? null
+        : Point.create(initialTerminal as Edge.TerminalPointData).toJSON()
 
-      const currCellId = (currentTerminal as Edge.TerminalCellData).cell
-      if (currCellId) {
-        this.notify('edge:connected', {
-          e,
-          terminalType,
-          terminalView: graph.renderer.findViewByCell(currCellId) as CellView,
-          terminalMagnet: data.currentMagnet,
-          edge: this.cell,
-          isNew: data.isNewEdge,
-        })
-      }
+      const current = currentTerminal as Edge.TerminalCellData
+      const currentCell = current.cell ? graph.getCellById(current.cell) : null
+      const currentPort = previous.port
+      const currentView = currentCell ? graph.findViewByCell(currentCell) : null
+      const currentPoint = currentCell
+        ? null
+        : Point.create(currentTerminal as Edge.TerminalPointData).toJSON()
+
+      this.notify('edge:connected', {
+        e,
+        previousCell,
+        previousPort,
+        previousView,
+        previousPoint,
+        currentCell,
+        currentView,
+        currentPort,
+        currentPoint,
+        previousMagnet: data.initialMagnet,
+        currMagnet: data.currentMagnet,
+        edge: this.cell,
+        view: this,
+        type: terminalType,
+        isNew: data.isNewEdge,
+      })
     }
   }
 
@@ -2601,12 +2617,20 @@ export namespace EdgeView {
     'edge:connected': {
       e: JQuery.MouseUpEvent
       edge: Edge
-      terminalType: Edge.TerminalType
-      terminalView: CellView
-      terminalMagnet?: Element | null
-      isNew?: boolean
+      view: EdgeView
+      isNew: boolean
+      type: Edge.TerminalType
+      previousCell?: Cell | null
+      previousView?: CellView | null
+      previousPort?: string | null
+      previousPoint?: Point.PointLike | null
+      previousMagnet?: Element | null
+      currentCell?: Cell | null
+      currentView?: CellView | null
+      currentPort?: string | null
+      currentPoint?: Point.PointLike | null
+      currentMagnet?: Element | null
     }
-    'edge:disconnected': EventArgs['edge:connected']
 
     'edge:highlight': {
       magnet: Element

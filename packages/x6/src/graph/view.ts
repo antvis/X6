@@ -378,10 +378,10 @@ export class GraphView extends View {
   }
 
   protected onCustomEvent(evt: JQuery.MouseDownEvent) {
-    const eventNode = evt.currentTarget
-    const eventName = eventNode.getAttribute('event')
-    if (eventName) {
-      const view = this.findView(eventNode)
+    const elem = evt.currentTarget
+    const event = elem.getAttribute('event') || elem.getAttribute('data-event')
+    if (event) {
+      const view = this.findView(elem)
       if (view) {
         const e = this.normalizeEvent(evt)
         if (this.guard(e, view)) {
@@ -392,7 +392,7 @@ export class GraphView extends View {
           e.clientX as number,
           e.clientY as number,
         )
-        view.onCustomEvent(e, eventName, localPoint.x, localPoint.y)
+        view.onCustomEvent(e, event, localPoint.x, localPoint.y)
       }
     }
   }
@@ -573,10 +573,16 @@ export namespace GraphView {
     [`mouseleave  .${prefixCls}-cell-tools`]: 'onMouseLeave',
     [`mousedown   .${prefixCls}-cell [event]`]: 'onCustomEvent',
     [`touchstart  .${prefixCls}-cell [event]`]: 'onCustomEvent',
+    [`mousedown   .${prefixCls}-cell [data-event]`]: 'onCustomEvent',
+    [`touchstart  .${prefixCls}-cell [data-event]`]: 'onCustomEvent',
     [`dblclick    .${prefixCls}-cell [magnet]`]: 'onMagnetDblClick',
     [`contextmenu .${prefixCls}-cell [magnet]`]: 'onMagnetContextMenu',
     [`mousedown   .${prefixCls}-cell [magnet]`]: 'onMagnetMouseDown',
     [`touchstart  .${prefixCls}-cell [magnet]`]: 'onMagnetMouseDown',
+    [`dblclick    .${prefixCls}-cell [data-magnet]`]: 'onMagnetDblClick',
+    [`contextmenu .${prefixCls}-cell [data-magnet]`]: 'onMagnetContextMenu',
+    [`mousedown   .${prefixCls}-cell [data-magnet]`]: 'onMagnetMouseDown',
+    [`touchstart  .${prefixCls}-cell [data-magnet]`]: 'onMagnetMouseDown',
     [`dragstart   .${prefixCls}-cell image`]: 'onImageDragStart',
     [`mousedown   .${prefixCls}-edge .label`]: 'onLabelMouseDown',
     [`touchstart  .${prefixCls}-edge .label`]: 'onLabelMouseDown',
