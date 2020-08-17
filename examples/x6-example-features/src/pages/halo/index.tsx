@@ -42,12 +42,21 @@ export default class Example extends React.Component {
       attrs: { label: { text: 'C' } },
     })
 
+    graph.on('node:resized', ({ node }) => {
+      console.log(node.size(), node.position())
+    })
+
+    graph.on('node:rotated', ({ node }) => {
+      console.log(node.angle())
+    })
+
     graph.on('node:mouseup', ({ view }) => {
       const halo = new Halo({
         view,
-        type: 'toolbar',
-        pie: { sliceAngle: 360 / 7 },
+        // type: 'toolbar',
+        // pie: { sliceAngle: 360 / 7 },
       })
+
       console.log(halo)
     })
   }

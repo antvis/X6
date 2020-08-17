@@ -31,8 +31,6 @@ export default class Example extends React.Component {
       },
     })
 
-    console.log(rect)
-
     graph.addNode({
       shape: 'circle',
       x: 180,
@@ -206,7 +204,13 @@ export default class Example extends React.Component {
       vertices: [{ x: 500, y: 440 }],
     })
 
-    console.log(graph.toJSON())
+    graph.on('node:moved', ({ node }) => {
+      console.log(node.position())
+    })
+
+    graph.on('edge:moved', ({ edge }) => {
+      console.log(edge)
+    })
   }
 
   refContainer = (container: HTMLDivElement) => {

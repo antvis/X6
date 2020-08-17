@@ -397,6 +397,15 @@ export class Node<
 
   // #region angle
 
+  angle(): number
+  angle(val: number, options?: Node.RotateOptions): this
+  angle(val?: number, options?: Node.RotateOptions) {
+    if (val == null) {
+      return this.getAngle()
+    }
+    return this.rotate(val)
+  }
+
   getAngle() {
     return this.store.get('angle', 0)
   }

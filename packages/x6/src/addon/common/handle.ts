@@ -473,7 +473,7 @@ export namespace Handle {
     icon?: string | null
     iconSelected?: string | null
     content?: string | Element
-    events?: { [event: string]: string }
+    events?: { [event: string]: string | ((args: EventArgs) => void) }
     attrs?: { [selector: string]: JQuery.PlainObject }
   }
 

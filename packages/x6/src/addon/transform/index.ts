@@ -2,7 +2,9 @@ import { Util } from '../../global'
 import { KeyValue } from '../../types'
 import { Angle, Point } from '../../geometry'
 import { Node } from '../../model/node'
+import { NodeView } from '../../view/node'
 import { Widget } from '../common'
+import { notify } from './util'
 
 export class Transform extends Widget<Transform.Options> {
   protected handle: Element | null
@@ -249,6 +251,10 @@ export class Transform extends Widget<Transform.Options> {
 
       if (data.action === 'resizing') {
         data = data as EventData.Resizing
+        if (!data.resized) {
+          data.resized = true
+        }
+
         const currentBBox = node.getBBox()
         const requestedSize = Point.create(pos)
           .rotate(data.angle, currentBBox.getCenter())
@@ -365,6 +371,10 @@ export class Transform extends Widget<Transform.Options> {
         }
       } else if (data.action === 'rotating') {
         data = data as EventData.Rotating
+        if (!data.rotated) {
+          data.rotated = true
+        }
+
         const theta = data.start - Point.create(pos).theta(data.center)
         let target = data.angle + theta
         if (options.rotateGrid) {
@@ -376,12 +386,32 @@ export class Transform extends Widget<Transform.Options> {
   }
 
   protected onMouseUp(evt: JQuery.MouseUpEvent) {
-    const data = this.getEventData<EventData.Resizing | EventData.Rotating>(evt)
+    let data = this.getEventData<EventData.Resizing | EventData.Rotating>(evt)
     if (data.action) {
       this.stopAction(evt)
       this.model.stopBatch(data.action === 'resizing' ? 'resize' : 'rotate', {
         cid: this.cid,
       })
+
+      if (data.action === 'resizing') {
+        data = data as EventData.Resizing
+        if (data.resized) {
+          notify(
+            'node:resized',
+            evt,
+            this.graph.findViewByCell(this.cell) as NodeView,
+          )
+        }
+      } else {
+        data = data as EventData.Rotating
+        if (data.rotated) {
+          notify(
+            'node:rotated',
+            evt,
+            this.graph.findViewByCell(this.cell) as NodeView,
+          )
+        }
+      }
     }
   }
 
@@ -510,6 +540,7 @@ namespace EventData {
     resizeX: number
     resizeY: number
     angle: number
+    resized?: boolean
   }
 
   export interface Rotating {
@@ -517,5 +548,6 @@ namespace EventData {
     center: Point.PointLike
     angle: number
     start: number
+    rotated?: boolean
   }
 }
