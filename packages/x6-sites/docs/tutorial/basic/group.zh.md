@@ -7,7 +7,7 @@ redirect_from:
   - /zh/docs/tutorial/basic
 ---
 
-## 嵌套
+## 基础嵌套
 
 我们可以通过父子嵌套来实现群组，并提供了一系列获取和设置嵌套关系的[方法](../../api/model/cell#父子关系-parentchildren)。
 
@@ -64,6 +64,32 @@ graph.addEdge({
 ```
 
 <iframe src="/demos/tutorial/basic/group/embed-edge"></iframe>
+
+## 通过交互创建嵌套
+
+有时候我们需要将一个节点拖动到另一个节点中，使其成为另一节点的子节点，这时我们可以通过 `embedding` 选项来开启，在节点被移动时通过 `findParent` 指定的方法返回父节点。
+
+```ts
+new Graph({
+  embedding: {
+    enabled: true,
+    findParent(node) {
+      const bbox = node.getBBox()
+      return this.getNodes().filter((node) => {
+        // 只有 data.parent 为 true 的节点才是父节点
+        const data = node.getData<any>()
+        if (data && data.parent) {
+          const targetBBox = node.getBBox()
+          return bbox.intersect(targetBBox)
+        }
+        return false
+      })
+    }
+  }
+})
+```
+
+<iframe src="/demos/tutorial/basic/group/embedding"></iframe>
 
 ## 限制子节点的移动
 
