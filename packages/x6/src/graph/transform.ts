@@ -187,7 +187,7 @@ export class TransformManager extends Base {
     const origin = this.options
     origin.x = ts.tx
     origin.y = ts.ty
-    this.graph.trigger('translate', { origin: { x: ts.tx, y: ts.ty } })
+    this.graph.trigger('translate', { ...ts })
     return this
   }
 
