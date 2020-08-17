@@ -1,4 +1,3 @@
-import { Point } from '../geometry'
 import { Model } from '../model'
 import { CellView } from '../view'
 import { Selection } from '../addon/selection'
@@ -50,7 +49,7 @@ export interface EventArgs
 
   scale: { sx: number; sy: number; ox: number; oy: number }
   resize: { width: number; height: number }
-  translate: { origin: Point.PointLike }
+  translate: { tx: number; ty: number }
   freeze: { key?: string }
   unfreeze: { key?: string }
 }
