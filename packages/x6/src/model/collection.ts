@@ -303,10 +303,12 @@ export class Collection extends Basecoat<Collection.EventArgs> {
   ) {
     const cell = args.cell
     this.trigger(`cell:${name}`, args)
-    if (cell.isNode()) {
-      this.trigger(`node:${name}`, { ...args, node: this })
-    } else if (cell.isEdge()) {
-      this.trigger(`edge:${name}`, { ...args, edge: this })
+    if (cell) {
+      if (cell.isNode()) {
+        this.trigger(`node:${name}`, { ...args, node: this })
+      } else if (cell.isEdge()) {
+        this.trigger(`edge:${name}`, { ...args, edge: this })
+      }
     }
   }
 
