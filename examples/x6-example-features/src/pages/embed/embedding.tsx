@@ -35,7 +35,7 @@ export default class Example extends React.Component {
       },
       embedding: {
         enabled: true,
-        findParent: function (this: Model, node: Node) {
+        findParent: function (this: Graph, node: Node) {
           var bbox = node.getBBox()
           return this.getNodes().filter((node: Node) => {
             var currentBBox = node.getBBox()
