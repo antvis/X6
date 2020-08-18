@@ -69,6 +69,11 @@ export default class Example extends React.Component {
       height: 160,
       zIndex: 1,
       label: 'Parent',
+      attrs: {
+        body: {
+          fill: '#fffbe6',
+        },
+      },
       data: {
         parent: true,
       },

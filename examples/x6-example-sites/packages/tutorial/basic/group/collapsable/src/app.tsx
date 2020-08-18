@@ -79,7 +79,7 @@ export default class Example extends React.Component {
       })
     }
 
-    const a = createGroup('a', 100, 40, 480, 280, '#ccc')
+    const a = createGroup('a', 100, 40, 480, 280, '#91d5ff')
     const aa = createGroup('aa', 180, 100, 160, 140, '#47C769')
     const aaa = createGroup('aaa', 200, 160, 120, 40, '#3199FF')
     const c = createNode('c', 450, 200, 50, 50, 'orange')
