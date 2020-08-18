@@ -13,6 +13,7 @@ export default class Example extends React.Component {
       grid: true,
       selecting: {
         enabled: true,
+        showNodeSelectionBox: true,
       },
       clipboard: {
         enabled: true,
@@ -61,6 +62,7 @@ export default class Example extends React.Component {
         graph.cleanSelection()
         graph.select(cells)
       }
+      console.log(graph.toJSON())
       return false
     })
   }
