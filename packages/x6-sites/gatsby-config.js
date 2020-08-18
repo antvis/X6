@@ -84,14 +84,14 @@ module.exports = {
         },
         order: 1,
       },
-      // {
-      //   slug: 'examples',
-      //   title: {
-      //     zh: '图表示例',
-      //     en: 'Examples',
-      //   },
-      //   order: 2,
-      // },
+      {
+        slug: 'examples',
+        title: {
+          zh: '图表示例',
+          en: 'Examples',
+        },
+        order: 2,
+      },
     ],
     docs: [
       {
@@ -150,6 +150,32 @@ module.exports = {
           en: 'Registry',
         },
         order: 7,
+      },
+    ],
+    examples: [
+      {
+        slug: 'shape',
+        icon: 'shape',
+        title: {
+          zh: '元素',
+          en: 'Shape',
+        },
+      },
+      {
+        slug: 'interaction',
+        icon: 'interaction',
+        title: {
+          zh: '交互',
+          en: 'Interaction',
+        },
+      },
+      {
+        slug: 'animation',
+        icon: 'scatter',
+        title: {
+          zh: '动画',
+          en: 'Animation',
+        },
       },
     ],
     docsearchOptions: {
