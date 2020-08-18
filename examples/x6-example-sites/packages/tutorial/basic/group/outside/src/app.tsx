@@ -57,6 +57,9 @@ export default class Example extends React.Component {
       label: 'Parent\n(try to move me)',
       attrs: {
         label: { refY: 130 },
+        body: {
+          fill: '#fffbe6',
+        },
       },
     })
 
