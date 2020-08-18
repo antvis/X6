@@ -7,11 +7,6 @@ on:
       - packages/x6-sites/**
       - examples/x6-example-sites/**
       - examples/x6-example-sites-helper/**
-  pull_request:
-    paths:
-      - packages/x6-sites/**
-      - examples/x6-example-sites/**
-      - examples/x6-example-sites-helper/**
 jobs:
   deploy:
     runs-on: ubuntu-latest
