@@ -1,0 +1,51 @@
+{
+  "private": true,
+  "name": "@antv/x6-example-draw",
+  "version": "0.10.55",
+  "scripts": {
+    "start": "umi dev",
+    "build": "umi build",
+    "lint": "yarn lint:ts",
+    "lint:ts": "tslint -c tslint.json -p tsconfig.json --fix",
+    "precommit": "lint-staged"
+  },
+  "dependencies": {
+    "@antv/x6": "^0.10.55",
+    "antd": "^4.4.2",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6"
+  },
+  "devDependencies": {
+    "@types/jest": "^25.2.1",
+    "@types/react": "^16.7.18",
+    "@types/react-dom": "^16.0.11",
+    "@types/react-test-renderer": "^16.0.3",
+    "babel-eslint": "^10.1.0",
+    "babel-plugin-import": "^1.13.0",
+    "eslint": "^6.8.0",
+    "eslint-config-umi": "^1.4.0",
+    "eslint-plugin-flowtype": "^4.7.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-react": "^7.11.1",
+    "lint-staged": "^10.2.2",
+    "react-test-renderer": "^16.7.0",
+    "tslint": "^6.1.2",
+    "tslint-eslint-rules": "^5.4.0",
+    "tslint-react": "^5.0.0",
+    "umi": "^2.9.0",
+    "umi-plugin-react": "^1.8.0",
+    "umi-types": "^0.3.0"
+  },
+  "lint-staged": {
+    "src/**/*.{ts,tsx}": [
+      "tslint -c tslint.json -p ./tsconfig.json --fix"
+    ],
+    "*.{js,jsx}": [
+      "eslint --fix"
+    ]
+  },
+  "engines": {
+    "node": ">=8.0.0"
+  }
+}
