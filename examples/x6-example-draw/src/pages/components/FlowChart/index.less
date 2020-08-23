@@ -1,0 +1,25 @@
+.svg {
+  rect:hover {
+    fill: #e0e0e0;
+  }
+}
+.mask {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 10;
+  cursor: move;
+  .shadow {
+    position: absolute;
+    width: 160px;
+    height: 80px;
+    border: 1px dashed #000;
+    z-index: 9;
+  }
+}
+.active {
+  stroke: #ff0000;
+  stroke-dasharray: 3;
+}

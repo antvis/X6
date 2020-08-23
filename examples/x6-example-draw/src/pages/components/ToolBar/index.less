@@ -1,0 +1,23 @@
+.tools {
+  display: flex;
+  .item {
+    width: 40px;
+    height: 40px;
+    border: 1px solid #e6e6e6;
+    border-left: none;
+    box-sizing: border-box;
+    padding: 12px;
+    background-color: #fff;
+    cursor: pointer;
+    &:first-child {
+      border-left: 1px solid #e6e6e6;
+    }
+    &:hover {
+      background-color: #e6e6e6;
+    }
+    &.disabled {
+      opacity: .5;
+      cursor: not-allowed;
+    }
+  }
+}
