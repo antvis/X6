@@ -89,7 +89,6 @@ export class PathDrawer extends View {
     }
     this.startPointElement.remove()
     this.controlElement.remove()
-    delete this.pathElement
     this.undelegateDocumentEvents()
     this.action = 'awaiting-input'
     this.emit('clear')
