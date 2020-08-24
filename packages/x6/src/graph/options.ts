@@ -40,7 +40,7 @@ export namespace Options {
     width: number
     height: number
 
-    background: false | BackgroundManager.Options
+    background?: false | BackgroundManager.Options
 
     scaling: {
       min?: number

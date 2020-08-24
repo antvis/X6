@@ -54,7 +54,7 @@ namespace Decorator {
         if (hook != null) {
           this.getNativeValue = raw.bind(this, ...args)
           const ret = FunctionExt.call(hook, this.graph, ...args)
-          delete this.getNativeValue
+          this.getNativeValue = null
           if (ret != null || (nullable === true && ret === null)) {
             return ret
           }
@@ -90,7 +90,7 @@ export class Hook extends Base implements Hook.IHook {
   /**
    * Get the native value of hooked method.
    */
-  public getNativeValue: <T>() => T | null
+  public getNativeValue: (<T>() => T | null) | null
 
   @Decorator.hook()
   createModel() {
