@@ -30,7 +30,6 @@ export class Scrollbar extends React.PureComponent<Scrollbar.Props> {
 
   componentWillUnmount() {
     this.mouseMoveTracker.release()
-    delete this.mouseMoveTracker
   }
 
   isHorizontal() {
