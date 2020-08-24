@@ -836,9 +836,9 @@ export namespace CellView {
     type?:
       | 'snapping'
       | 'embedding'
-      | 'connecting'
       | 'nodeAvailable'
       | 'magnetAvailable'
+      | 'magnetAdsorbed'
 
     partial?: boolean
   }
