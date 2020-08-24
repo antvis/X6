@@ -2101,7 +2101,7 @@ export class EdgeView<
       // Unhighlight the previous view under pointer if there was one.
       if (data.currentMagnet && data.currentView) {
         data.currentView.unhighlight(data.currentMagnet, {
-          type: 'connecting',
+          type: 'magnetAdsorbed',
         })
       }
 
@@ -2121,7 +2121,7 @@ export class EdgeView<
           )
         ) {
           data.currentView.highlight(data.currentMagnet, {
-            type: 'connecting',
+            type: 'magnetAdsorbed',
           })
         } else {
           // This type of connection is not valid. Disregard this magnet.
@@ -2148,7 +2148,7 @@ export class EdgeView<
       return
     }
 
-    view.unhighlight(magnet, { type: 'connecting' })
+    view.unhighlight(magnet, { type: 'magnetAdsorbed' })
 
     const type = data.terminalType
     const terminal = view.getEdgeTerminal(magnet, x, y, this.cell, type)
@@ -2226,7 +2226,7 @@ export class EdgeView<
 
     if (prevView && changed) {
       prevView.unhighlight(prevMagnet, {
-        type: 'connecting',
+        type: 'magnetAdsorbed',
       })
     }
 
@@ -2235,7 +2235,7 @@ export class EdgeView<
         return
       }
       closestView.highlight(closestMagnet, {
-        type: 'connecting',
+        type: 'magnetAdsorbed',
       })
       terminal = closestView.getEdgeTerminal(
         closestMagnet,
@@ -2258,7 +2258,7 @@ export class EdgeView<
     const closestMagnet = data.closestMagnet
     if (closestView && closestMagnet) {
       closestView.unhighlight(closestMagnet, {
-        type: 'connecting',
+        type: 'magnetAdsorbed',
       })
       data.currentMagnet = closestView.findMagnet(closestMagnet)
     }
@@ -2332,7 +2332,7 @@ export class EdgeView<
         currentPort,
         currentPoint,
         previousMagnet: data.initialMagnet,
-        currMagnet: data.currentMagnet,
+        currentMagnet: data.currentMagnet,
         edge: this.cell,
         view: this,
         type: terminalType,
