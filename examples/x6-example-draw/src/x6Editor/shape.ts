@@ -8,8 +8,8 @@ export default function registerShape() {
     height: FLOW_CHART_RECT.height,
     attrs: {
       fo: {
-        width: FLOW_CHART_RECT.width,
-        height: FLOW_CHART_RECT.height,
+        refWidth: '100%',
+        refHeight: '100%',
       },
       content: {
         contenteditable: 'true',
