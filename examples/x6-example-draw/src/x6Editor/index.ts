@@ -50,6 +50,10 @@ export default class X6Editor extends Events{
           },
         ],
       },
+      connecting:{
+        anchor: 'center',
+        connectionPoint: 'anchor',
+      },
       snapline: true,
       resizing: true,
       history: true,
