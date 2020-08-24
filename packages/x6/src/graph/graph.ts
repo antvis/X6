@@ -1594,6 +1594,11 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
+  resetSelection(cells?: Cell | string | (Cell | string)[]) {
+    this.selection.reset(cells)
+    return this
+  }
+
   getSelectedCells() {
     return this.selection.cells
   }
