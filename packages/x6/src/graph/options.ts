@@ -211,6 +211,19 @@ export namespace Options {
     return result
   }
 
+  type NodeAnchorOptions =
+    | string
+    | NodeAnchor.NativeItem
+    | NodeAnchor.ManaualItem
+  type EdgeAnchorOptions =
+    | string
+    | EdgeAnchor.NativeItem
+    | EdgeAnchor.ManaualItem
+  type ConnectionPointOptions =
+    | string
+    | ConnectionPoint.NativeItem
+    | ConnectionPoint.ManaualItem
+
   export interface Connecting {
     /**
      * Snap edge to the closest node/port in the given radius on dragging.
@@ -259,14 +272,17 @@ export namespace Options {
      */
     highlight: boolean
 
-    anchor: string | NodeAnchor.NativeItem | NodeAnchor.ManaualItem
-    edgeAnchor: string | EdgeAnchor.NativeItem | EdgeAnchor.ManaualItem
+    anchor: NodeAnchorOptions
+    sourceAnchor?: NodeAnchorOptions
+    targetAnchor?: NodeAnchorOptions
+    edgeAnchor: EdgeAnchorOptions
+    sourceEdgeAnchor?: EdgeAnchorOptions
+    targetEdgeAnchor?: EdgeAnchorOptions
+    connectionPoint: ConnectionPointOptions
+    sourceConnectionPoint?: ConnectionPointOptions
+    targetConnectionPoint?: ConnectionPointOptions
     router: string | Router.NativeItem | Router.ManaualItem
     connector: string | Connector.NativeItem | Connector.ManaualItem
-    connectionPoint:
-      | string
-      | ConnectionPoint.NativeItem
-      | ConnectionPoint.ManaualItem
     strategy?:
       | string
       | ConnectionStrategy.NativeItem

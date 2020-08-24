@@ -777,7 +777,14 @@ export class EdgeView<
     const connecting = this.graph.options.connecting
     let config = typeof def === 'string' ? { name: def } : def
     if (!config) {
-      const defaults = isEdge ? connecting.edgeAnchor : connecting.anchor
+      const defaults = isEdge
+        ? (terminalType === 'source'
+            ? connecting.sourceEdgeAnchor
+            : connecting.targetEdgeAnchor) || connecting.edgeAnchor
+        : (terminalType === 'source'
+            ? connecting.sourceAnchor
+            : connecting.targetAnchor) || connecting.anchor
+
       config = typeof defaults === 'string' ? { name: defaults } : defaults
     }
 
@@ -867,7 +874,9 @@ export class EdgeView<
       const sourcePointRef = firstRoutePoint || targetAnchor
       const sourceLine = new Line(sourcePointRef, sourceAnchor)
       const connectionPointDef =
-        sourceTerminal.connectionPoint || connecting.connectionPoint
+        sourceTerminal.connectionPoint ||
+        connecting.sourceConnectionPoint ||
+        connecting.connectionPoint
       sourcePoint = this.getConnectionPoint(
         connectionPointDef,
         sourceView,
@@ -884,7 +893,9 @@ export class EdgeView<
     if (targetView && !targetView.isEdgeElement(this.targetMagnet)) {
       const targetMagnet = this.targetMagnet || targetView.container
       const targetConnectionPointDef =
-        targetTerminal.connectionPoint || connecting.connectionPoint
+        targetTerminal.connectionPoint ||
+        connecting.targetConnectionPoint ||
+        connecting.connectionPoint
       const targetPointRef = lastRoutePoint || sourceAnchor
       const targetLine = new Line(targetPointRef, targetAnchor)
       targetPoint = this.getConnectionPoint(
