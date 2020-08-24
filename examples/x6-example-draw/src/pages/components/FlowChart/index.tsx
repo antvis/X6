@@ -2,7 +2,7 @@ import React from 'react'
 import {
   FLOW_CHART_RECT
 } from '@/x6Editor/constant'
-import { useElementMove } from '@/lib/hooks'
+import { useElementMove } from '@/common/hooks'
 import styles from './index.less'
 
 export default function() {
