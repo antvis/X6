@@ -1,5 +1,4 @@
 import { Graph } from '@antv/x6'
-import '@antv/x6/es/index.css'
 
 const container = document.getElementById('container')!
 const graph = new Graph({

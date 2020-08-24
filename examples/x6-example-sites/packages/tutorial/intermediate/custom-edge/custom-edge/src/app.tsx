@@ -1,6 +1,5 @@
 import React from 'react'
 import { Graph } from '@antv/x6'
-import '@antv/x6/es/index.css'
 import './app.css'
 
 Graph.registerEdge(

@@ -1,6 +1,5 @@
 import { Graph } from '@antv/x6'
 import insertCss from 'insert-css'
-import '@antv/x6/es/index.css'
 
 const container = document.getElementById('container')!
 const graph = new Graph({

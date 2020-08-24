@@ -18,11 +18,10 @@ $ npm install @antv/x6 --save
 $ yarn add @antv/x6
 ```
 
-安装完成之后，使用 `import` 或 `require` 进行引用。需要特别注意的是，引入 X6 时同时需要通过 `import '@antv/x6/es/index.css'` 或 `import '@antv/x6/lib/index.css'` 引入预定义的基础样式。
+安装完成之后，使用 `import` 或 `require` 进行引用。
 
 ```ts
 import { Graph } from '@antv/x6';
-import '@antv/x6/es/index.css'; 
 ```
 
 ## 开始使用
@@ -78,7 +77,6 @@ const data = {
 
 ```ts
 import { Graph } from '@antv/x6';
-import '@antv/x6/es/index.css';
 
 const graph = new Graph({
   container: document.getElementById('container'),
@@ -111,7 +109,6 @@ graph.fromJSON(data)
 
 ```ts
 import { Graph } from '@antv/x6';
-import '@antv/x6/es/index.css';
 
 const graph = new Graph({
   container: document.getElementById('container'),
