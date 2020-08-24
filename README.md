@@ -36,33 +36,26 @@ const graph = new Graph({
   container: document.getElementById('container'),
 }) 
 
-graph.fromJSON({
-  nodes: [
-    {
-      id: 'node1',
-      x: 60,
-      y: 60,
-      width: 80,
-      height: 40,
-      label: 'Hello',
-    },
-    {
-      id: 'node2',
-      x: 240,
-      y: 240,
-      width: 80,
-      height: 40,
-      label: 'World',
-    },
-  ],
-  edges: [
-    {
-      source: 'node1',
-      target: 'node2',
-    },
-  ],
+const source = graph.addNode({
+  x: 60,
+  y: 60,
+  width: 80,
+  height: 40,
+  label: 'Hello',
 })
 
+const target = graph.addNode({
+  x: 240,
+  y: 240,
+  width: 80,
+  height: 40,
+  label: 'World',
+})
+
+graph.addEdge({
+  source,
+  target,
+})
 ```
 
 ## Development
@@ -100,4 +93,4 @@ Config.track(false)
 
 Please let us know how can we help. Do check out [issues](https://github.com/antvis/x6/issues) for bug reports or suggestions first.
 
-To become a contributor, please follow our [contributing guide](https://github.com/antvis/x6/blob/master/CONTRIBUTING.md)
+To become a contributor, please follow our [contributing guide](https://github.com/antvis/x6/blob/master/CONTRIBUTING.md).
