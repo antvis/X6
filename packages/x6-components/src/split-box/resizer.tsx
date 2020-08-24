@@ -13,7 +13,6 @@ export class Resizer extends React.PureComponent<Resizer.Props> {
 
   componentWillUnmount() {
     this.mouseMoveTracker.release()
-    delete this.mouseMoveTracker
   }
 
   onMouseDown = (e: React.MouseEvent) => {

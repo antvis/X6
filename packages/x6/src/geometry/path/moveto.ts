@@ -19,9 +19,9 @@ export class MoveTo extends Segment {
     this.isSubpathStart = true
 
     if (x instanceof Line || x instanceof Curve) {
-      this.end = x.end.clone()
+      this.endPoint = x.end.clone()
     } else {
-      this.end = Point.create(x, y)
+      this.endPoint = Point.create(x, y)
     }
   }
 

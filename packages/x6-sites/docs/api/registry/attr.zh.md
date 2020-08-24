@@ -188,7 +188,6 @@ redirect_from:
 
 ```ts
 import { Graph, Node } from '@antv/x6'
-import '@antv/x6/es/index.css'
 
 const Path = Node.define({
   markup: [{ tagName: 'path' }],
@@ -225,7 +224,6 @@ console.log(view.findOne('path').getAttribute('d'))
 
 ```ts
 import { Graph, Node } from '@antv/x6'
-import '@antv/x6/es/index.css'
 
 const Path = Node.define({
   markup: [{ tagName: 'path' }],
@@ -273,7 +271,6 @@ path.attr({
 
 ```ts
 import { Graph, Node } from '@antv/x6'
-import '@antv/x6/es/index.css'
 
 const Polygon = Node.define({
   markup: [{ tagName: 'polygon' }],
@@ -310,7 +307,6 @@ console.log(view.findOne('polygon').getAttribute('points'))
 
 ```ts
 import { Graph, Node } from '@antv/x6'
-import '@antv/x6/es/index.css'
 
 const Polygon = Node.define({
   markup: [{ tagName: 'polygon' }],

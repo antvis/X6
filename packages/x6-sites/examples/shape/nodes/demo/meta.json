@@ -1,0 +1,36 @@
+{
+  "demos": [
+    {
+      "filename": "rect.ts",
+      "title": {
+        "zh": "矩形",
+        "en": "Rectangle"
+      },
+      "screenshot": ""
+    },
+    {
+      "filename": "ellipse.ts",
+      "title": {
+        "zh": "椭圆",
+        "en": "Ellipse"
+      },
+      "screenshot": ""
+    },
+    {
+      "filename": "circle.ts",
+      "title": {
+        "zh": "圆形",
+        "en": "Circle"
+      },
+      "screenshot": ""
+    },
+    {
+      "filename": "image.ts",
+      "title": {
+        "zh": "图片",
+        "en": "Image"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_f8c6a0/afts/img/A*o-MuTpQaj7EAAAAAAAAAAABkARQnAQ"
+    }
+  ]
+}

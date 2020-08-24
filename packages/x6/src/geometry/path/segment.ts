@@ -11,8 +11,11 @@ export abstract class Segment extends Geometry {
   nextSegment: Segment | null
   previousSegment: Segment | null
   subpathStartSegment: Segment | null
+  protected endPoint: Point
 
-  end: Point
+  get end() {
+    return this.endPoint
+  }
 
   get start() {
     if (this.previousSegment == null) {

@@ -73,3 +73,17 @@ export namespace Platform {
 
   export const SUPPORT_FOREIGNOBJECT = !NO_FOREIGNOBJECT
 }
+
+export namespace Platform {
+  export function getHMRStatus() {
+    const mod = module as any
+    if (mod != null && mod.hot != null && mod.hot.status != null) {
+      return mod.hot.status()
+    }
+    return 'unkonwn'
+  }
+
+  export function isApplyingHMR() {
+    return getHMRStatus() === 'apply'
+  }
+}

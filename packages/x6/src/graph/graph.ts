@@ -16,6 +16,7 @@ import { Base } from './base'
 import { GraphView } from './view'
 import { EventArgs } from './events'
 import { Decorator } from './decorator'
+import { CSSManager } from './css'
 import { Hook as HookManager } from './hook'
 import { Options as GraphOptions } from './options'
 import { DefsManager as Defs } from './defs'
@@ -38,6 +39,7 @@ import { BackgroundManager as Background } from './background'
 
 export class Graph extends Basecoat<EventArgs> {
   public readonly options: GraphOptions.Definition
+  public readonly css: CSSManager
   public readonly model: Model
   public readonly view: GraphView
   public readonly hook: HookManager
@@ -67,6 +69,7 @@ export class Graph extends Basecoat<EventArgs> {
     super()
 
     this.options = GraphOptions.get(options)
+    this.css = new CSSManager(this)
     this.hook = new HookManager(this)
     this.view = this.hook.createView()
     this.defs = this.hook.createDefsManager()
@@ -1591,6 +1594,11 @@ export class Graph extends Basecoat<EventArgs> {
 
   cleanSelection() {
     this.selection.clean()
+    return this
+  }
+
+  resetSelection(cells?: Cell | string | (Cell | string)[]) {
+    this.selection.reset(cells)
     return this
   }
 

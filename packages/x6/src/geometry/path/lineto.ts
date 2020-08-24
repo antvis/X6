@@ -13,9 +13,9 @@ export class LineTo extends Segment {
     super()
 
     if (x instanceof Line) {
-      this.end = x.end.clone()
+      this.endPoint = x.end.clone()
     } else {
-      this.end = Point.create(x, y)
+      this.endPoint = Point.create(x, y)
     }
   }
 

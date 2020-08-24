@@ -1,0 +1,12 @@
+{
+  "demos": [
+    {
+      "filename": "edge.ts",
+      "title": {
+        "zh": "默认边",
+        "en": "Default Edge"
+      },
+      "screenshot": ""
+    }
+  ]
+}

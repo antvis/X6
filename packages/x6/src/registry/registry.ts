@@ -1,5 +1,5 @@
 import { KeyValue } from '../types'
-import { StringExt, FunctionExt } from '../util'
+import { StringExt, FunctionExt, Platform } from '../util'
 
 export class Registry<
   Entity,
@@ -42,7 +42,7 @@ export class Registry<
       return
     }
 
-    if (this.exist(name) && !force && !Private.isApplyingHMR()) {
+    if (this.exist(name) && !force && !Platform.isApplyingHMR()) {
       this.onDuplicated(name)
     }
 
@@ -141,19 +141,5 @@ export namespace Registry {
     OptionalType = never
   >(options: Options<Entity | OptionalType>) {
     return new Registry<Entity, Presets, OptionalType>(options)
-  }
-}
-
-namespace Private {
-  function getHMRStatus() {
-    const mod = module as any
-    if (mod != null && mod.hot != null && mod.hot.status != null) {
-      return mod.hot.status()
-    }
-    return 'unkonwn'
-  }
-
-  export function isApplyingHMR() {
-    return getHMRStatus() === 'apply'
   }
 }

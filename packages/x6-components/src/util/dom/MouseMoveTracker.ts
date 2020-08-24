@@ -15,7 +15,7 @@ export class MouseMoveTracker {
   private onMouseMoveCallback: (
     deltaX: number,
     deltaY: number,
-    pos?: MouseMoveTracker.ClientPosition
+    pos?: MouseMoveTracker.ClientPosition,
   ) => void
   private onMouseMoveEndCallback: (cancel: boolean) => void
 
@@ -31,12 +31,12 @@ export class MouseMoveTracker {
       this.removeMouseMoveEvent = addEventListener(
         this.elem,
         'mousemove',
-        this.onMouseMove
+        this.onMouseMove,
       ).remove
       this.removeMouseUpEvent = addEventListener(
         this.elem,
         'mouseup',
-        this.onMouseUp
+        this.onMouseUp,
       ).remove
     }
 
@@ -70,10 +70,10 @@ export class MouseMoveTracker {
 
     if (this.dragging) {
       this.dragging = false
-      delete this.clientX
-      delete this.clientY
-      delete this.deltaX
-      delete this.deltaY
+      this.clientX = 0
+      this.clientY = 0
+      this.deltaX = 0
+      this.deltaY = 0
     }
   }
 
@@ -90,7 +90,7 @@ export class MouseMoveTracker {
 
     if (this.animationFrameID == null) {
       this.animationFrameID = requestAnimationFrame(
-        this.triggerOnMouseMoveCallback
+        this.triggerOnMouseMoveCallback,
       )
     }
 

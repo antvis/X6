@@ -3,8 +3,8 @@ import { Alert } from 'antd'
 import { Content } from './content'
 import 'antd/es/alert/style/index.css'
 
-export const Wrap: React.FC = () => (
+export const Wrap: React.FC = ({ children }) => (
   <Alert.ErrorBoundary>
-    <Content />
+    <Content>{children}</Content>
   </Alert.ErrorBoundary>
 )

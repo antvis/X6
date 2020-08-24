@@ -125,6 +125,11 @@ export class SelectionManager extends Base {
     return this
   }
 
+  reset(cells?: Cell | string | (Cell | string)[]) {
+    this.widget.reset(cells ? this.getCells(cells) : [])
+    return this
+  }
+
   clean() {
     this.widget.clean()
     return this

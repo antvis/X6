@@ -1115,27 +1115,28 @@ export class Cell<
     : this extends Edge
     ? Edge.Properties
     : Properties {
-    const ctor = this.constructor as typeof Cell
-    const full = options.full === true
     const props = { ...this.store.get() }
-    const attrs = props.attrs || {}
-    const presets = ctor.getDefaults(true) as Properties
-    // When `options.full` is not `true`, we should process the custom options,
-    // such as `width`, `height` etc. to ensure the comparing work correctly.
-    const defaults = full ? presets : this.preprocess(presets, true)
-    const defaultAttrs = defaults.attrs || {}
-    const finalAttrs: Attr.CellAttrs = {}
     const toString = Object.prototype.toString
     const cellType = this.isNode() ? 'node' : this.isEdge() ? 'edge' : 'cell'
 
     if (!props.shape) {
       const ctor = this.constructor
       throw new Error(
-        `Unable to serialize ${cellType} missing "type" prop, check the ${cellType} "${
+        `Unable to serialize ${cellType} missing "shape" prop, check the ${cellType} "${
           ctor.name || toString.call(ctor)
         }"`,
       )
     }
+
+    const ctor = this.constructor as typeof Cell
+    const diff = options.diff === true
+    const attrs = props.attrs || {}
+    const presets = ctor.getDefaults(true) as Properties
+    // When `options.diff` is `true`, we should process the custom options,
+    // such as `width`, `height` etc. to ensure the comparing work correctly.
+    const defaults = diff ? this.preprocess(presets, true) : presets
+    const defaultAttrs = defaults.attrs || {}
+    const finalAttrs: Attr.CellAttrs = {}
 
     Object.keys(props).forEach((key) => {
       const val = props[key]
@@ -1151,7 +1152,7 @@ export class Cell<
         )
       }
 
-      if (key !== 'attrs' && key !== 'shape' && !full) {
+      if (key !== 'attrs' && key !== 'shape' && diff) {
         const preset = defaults[key]
         if (ObjectExt.isEqual(val, preset)) {
           delete props[key]
@@ -1213,14 +1214,19 @@ export class Cell<
       delete finalProps.attrs
     }
 
-    return ObjectExt.cloneDeep(finalProps) as any
+    const ret = finalProps as any
+    if (ret.angle === 0) {
+      delete ret.angle
+    }
+
+    return ObjectExt.cloneDeep(ret)
   }
 
   clone(
     options: Cell.CloneOptions = {},
   ): this extends Node ? Node : this extends Edge ? Edge : Cell {
     if (!options.deep) {
-      const data = this.store.get()
+      const data = { ...this.store.get() }
       delete data.id
       delete data.parent
       delete data.children
@@ -1346,7 +1352,7 @@ export namespace Cell {
   }
 
   export interface ToJSONOptions {
-    full?: boolean
+    diff?: boolean
   }
 
   export interface CloneOptions {

@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { Graph, Cell } from '@antv/x6'
-import '@antv/x6/es/index.css'
 import { Settings, State } from './settings'
 import './app.css'
 

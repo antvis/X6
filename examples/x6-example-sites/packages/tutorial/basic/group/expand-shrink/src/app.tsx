@@ -1,6 +1,5 @@
 import React from 'react'
 import { Graph } from '@antv/x6'
-import '@antv/x6/es/index.css'
 import './app.css'
 
 export default class Example extends React.Component {
@@ -55,6 +54,11 @@ export default class Example extends React.Component {
       height: 160,
       zIndex: 1,
       label: 'Parent',
+      attrs: {
+        body: {
+          fill: '#fffbe6',
+        },
+      },
     })
 
     parent.addChild(source)
