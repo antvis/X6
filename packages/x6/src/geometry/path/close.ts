@@ -4,6 +4,7 @@ import { LineTo } from './lineto'
 import { Segment } from './segment'
 
 export class Close extends Segment {
+  // @ts-ignore
   get end() {
     if (!this.subpathStartSegment) {
       throw new Error(
