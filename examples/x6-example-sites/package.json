@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@antv/x6-example-sites",
-  "version": "0.10.59",
+  "version": "0.10.60",
   "workspaces": [
     "packages/**/*"
   ],
@@ -11,10 +11,10 @@
     "clear": "rimraf node_modules yarn.lock && yarn workspaces run clean"
   },
   "dependencies": {
-    "@antv/x6": "^0.10.59",
-    "@antv/x6-components": "^0.10.2",
-    "@antv/x6-example-sites-helper": "^0.10.59",
-    "@antv/x6-react-shape": "^0.10.4",
+    "@antv/x6": "^0.10.60",
+    "@antv/x6-components": "^0.10.3",
+    "@antv/x6-example-sites-helper": "^0.10.60",
+    "@antv/x6-react-shape": "^0.10.5",
     "antd": "^4.4.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
