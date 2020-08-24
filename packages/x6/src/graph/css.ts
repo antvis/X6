@@ -24,12 +24,6 @@ export namespace CSSManager {
       if (head) {
         head.insertBefore(styleElement, head.firstChild)
       }
-
-      window.addEventListener('unload', () => {
-        if (styleElement && styleElement.parentNode) {
-          styleElement.parentNode.removeChild(styleElement)
-        }
-      })
     }
   }
 }
