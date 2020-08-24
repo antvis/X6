@@ -1,8 +1,9 @@
 export const Config = {
   prefixCls: 'x6',
+  autoInsertCSS: true,
+  useCSSSelector: true,
   trackable: true,
   trackInfo: {},
-  useCSSSelector: true,
 
   /**
    * Turn on/off collect information of user client.
