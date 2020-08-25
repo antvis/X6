@@ -66,9 +66,10 @@ export class HighlightManager extends Base {
   }
 
   protected resolveHighlighter(options: CellView.HighlightOptions) {
+    const graphOptions = this.options
     let highlighterDef: string | undefined | Highlighter.ManaualItem =
       options.highlighter
-    const graphOptions = this.options
+
     if (highlighterDef == null) {
       // check for built-in types
       const type = options.type

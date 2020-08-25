@@ -433,7 +433,6 @@ export namespace Options {
      * The default highlighter to use (and options) when none is specified
      */
     default: HighlightManager.Options
-    snapping?: HighlightManager.Options | null
     /**
      * When a cell is dragged over another cell in embedding mode.
      */
