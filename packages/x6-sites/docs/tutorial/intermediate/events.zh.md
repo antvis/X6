@@ -1,6 +1,6 @@
 ---
 title: 事件系统
-order: 2
+order: 6
 redirect_from:
   - /zh/docs
   - /zh/docs/tutorial
