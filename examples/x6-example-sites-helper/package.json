@@ -29,7 +29,9 @@
   "dependencies": {
     "@ant-design/icons": "^4.2.1",
     "@stackblitz/sdk": "^1.4.0",
-    "antd": "^4.4.2"
+    "antd": "^4.4.2",
+    "folder-hash": "^3.3.2",
+    "ora": "^5.0.0"
   },
   "peerDependencies": {
     "antd": ">=4.4.2",

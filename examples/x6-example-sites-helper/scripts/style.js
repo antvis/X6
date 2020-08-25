@@ -28,7 +28,7 @@ function toCSSPath(source) {
 
 // Copy less files
 function readdir(dir) {
-  const stat = fs.statSync(dir)
+  const stat = fs.statSync(dir)node
   if (stat) {
     if (stat.isDirectory()) {
       fs.readdir(dir, (err, files) => {
