@@ -47,6 +47,8 @@ X6 是 AntV 旗下的图编辑引擎，提供了一系列开箱即用的交互�
 
 如需提交代码，请遵从我们的[贡献指南](https://github.com/antvis/X6/blob/master/CONTRIBUTING.zh-CN.md)。
 
+<a href="https://github.com/antvis/x6/graphs/contributors"><img src="https://opencollective.com/x6/contributors.svg?width=890&button=false" /></a>
+
 ## 🔑 License
 
 [MIT License](https://github.com/antvis/X6/blob/master/LICENSE)。
