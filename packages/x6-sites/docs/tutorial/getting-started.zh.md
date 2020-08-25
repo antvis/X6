@@ -46,16 +46,16 @@ const data = {
   nodes: [
     {
       id: 'node1', // String，可选，节点的唯一标识
-      x: 100,      // Number，必选，节点位置的 x 值
-      y: 200,      // Number，必选，节点位置的 y 值
+      x: 40,       // Number，必选，节点位置的 x 值
+      y: 40,       // Number，必选，节点位置的 y 值
       width: 80,   // Number，可选，节点大小的 width 值
       height: 40,  // Number，可选，节点大小的 height 值
       label: 'hello', // String，节点标签
     },
     {
       id: 'node2', // String，节点的唯一标识
-      x: 300,      // Number，必选，节点位置的 x 值
-      y: 200,      // Number，必选，节点位置的 y 值
+      x: 160,      // Number，必选，节点位置的 x 值
+      y: 180,      // Number，必选，节点位置的 y 值
       width: 80,   // Number，可选，节点大小的 width 值
       height: 40,  // Number，可选，节点大小的 height 值
       label: 'world', // String，节点标签
@@ -93,13 +93,7 @@ graph.fromJSON(data)
 
 到此，我们就得到一个最简单的 `Hello --> World` 示例，看下面的完整代码。
 
-<iframe
-  src="https://codesandbox.io/embed/condescending-driscoll-xkb6q?fontsize=14&hidenavigation=1&module=%2Fsrc%2Findex.ts&theme=light"
-  style="width:100%; height:500px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
-  title="x6-hello-world"
-  allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-  sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-></iframe>
+<iframe src="/demos/tutorial/getting-started/helloworld"></iframe>
 
 ## 画布
 
@@ -124,13 +118,7 @@ const graph = new Graph({
 });
 ```
 
-<iframe
-  src="https://codesandbox.io/embed/x6-hello-world-background-grid-jswsf?fontsize=14&hidenavigation=1&theme=light"
-  style="width:100%; height:500px; border: 1px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
-  title="x6-hello-world-background-grid"
-  allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-  sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-></iframe>
+<iframe src="/demos/tutorial/getting-started/background"></iframe>
 
 ### 缩放和平移
 
@@ -141,13 +129,7 @@ graph.scale(0.5, 0.5)
 graph.translate(80, 40)
 ```
 
-<iframe
-     src="https://codesandbox.io/embed/x6-hello-world-transform-9fytu?autoresize=1&fontsize=14&hidenavigation=1&theme=light"
-     style="width:100%; height:500px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
-     title="x6-hello-world-transform"
-     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-     sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-   ></iframe>
+<iframe src="/demos/tutorial/getting-started/transform"></iframe>
 
 ## 节点
 
@@ -186,13 +168,7 @@ const data = {
 };
 ```
 
-<iframe
-     src="https://codesandbox.io/embed/x6-hello-world-shape-ujvun?fontsize=14&hidenavigation=1&theme=light"
-     style="width:100%; height:500px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
-     title="x6-hello-world-shape"
-     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-     sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-   ></iframe>
+<iframe src="/demos/tutorial/getting-started/node-shape"></iframe>
 
 ### 定制样式
 
@@ -254,13 +230,7 @@ const data = {
 };
 ```
 
-<iframe
-     src="https://codesandbox.io/embed/x6-hello-world-node-style-g43zm?fontsize=14&hidenavigation=1&theme=light"
-     style="width:100%; height:500px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
-     title="x6-hello-world-node-style"
-     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-     sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-   ></iframe>
+<iframe src="/demos/tutorial/getting-started/node-style"></iframe>
 
 ## 边
 
@@ -299,13 +269,8 @@ const data = {
   ],
 }
 ```
-<iframe
-     src="https://codesandbox.io/embed/x6-hello-world-edge-shape-ksydj?fontsize=14&hidenavigation=1&theme=light"
-     style="width:100%; height:500px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
-     title="x6-hello-world-edge-shape"
-     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-     sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-   ></iframe>
+
+<iframe src="/demos/tutorial/getting-started/edge-shape"></iframe>
 
 ### 定制样式
 
@@ -347,28 +312,29 @@ const data = {
 }
 ```
 
-<iframe
-     src="https://codesandbox.io/embed/x6-hello-world-edge-style-s9v4r?fontsize=14&hidenavigation=1&theme=light"
-     style="width:100%; height:500px; border:1px solid #f0f0f0; border-radius: 4px; overflow:hidden;"
-     title="x6-hello-world-edge-style"
-     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-     sandbox="allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-   ></iframe>
-
-## 在 React 中使用 X6
-
-如果你想在 React 中使用 X6，可以参考[这个 Demo]()。更多关于如何在 React 中使用 X6，请参考 React 中使用 X6 的文档。
-
-有其他任何问题都可以通过页面底部的钉钉群和我们沟通，也非常欢迎给我们提 [issues](https://github.com/antvis/X6/issues/new/choose) 或 [PR](https://github.com/antvis/X6/pulls)。
+<iframe src="/demos/tutorial/getting-started/edge-style"></iframe>
 
 ## 更多
 
-本章仅仅介绍了如何安装以及最简单的场景，在其他的章节中我们会教会你：
+本章仅仅介绍了如何安装以及最简单的使用场景，在后续的教程中你可以了解到更多内容。
 
-- 实例化 Graph 的常见配置
-- 设置节点/边的属性、样式
+- [画布 Graph](./basic/graph)
+- [基类 Cell](./basic/cell)
+- [节点 Node](./basic/node)
+- [边 Edge](./basic/edge)
+- [群组 Group](./basic/group)
+- [链接桩 Port](./basic/port)
+- [画布网格 Grid](./basic/grid)
+- [画布背景 Background](./basic/background)
+- [剪切板 Clipboard](./basic/clipboard)
+- [撤销/重做 Redo/Undo](./basic/history)
+- [点选/框选 Selection](./basic/selection)
+- [对齐线 Snapline](./basic/snapline)
+- [滚动 Scroller](./basic/scroller)
+- [小地图 Minimap](./basic/minimap)
+- [快捷键 Keyboard](./basic/keyboard)
+- [鼠标滚轮缩放 MouseWheel](./basic/mousewheel)
 
+更多教程，请参见 [进阶实战](intermediate/custom-node) 和 [高级指引](advanced/animation)。
 
-想了解更高阶的功能，请参见 [X6 进阶实战](intermediate/connector) 和 [X6 高级指引](advanced/react-shape)。
-
-
+有其他任何问题都可以通过页面底部的钉钉群和我们沟通，也非常欢迎给我们提 [issues](https://github.com/antvis/X6/issues/new/choose) 或 [PR](https://github.com/antvis/X6/pulls)。
