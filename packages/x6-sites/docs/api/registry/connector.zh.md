@@ -186,7 +186,7 @@ export type Definition<T> = (
 | args        | T                 | 连接器参数。   |
 | edgeView    | EdgeView          | 边的视图。     |
 
-并在 `Registry.Connector.registry` 对象上提供了 [`register`](#register) 和 [`unregister`](#unregister) 两个方法来注册和取消注册路由。
+并在 `Registry.Connector.registry` 对象上提供了 [`register`](#register) 和 [`unregister`](#unregister) 两个方法来注册和取消注册连接器。
 
 ### register
 

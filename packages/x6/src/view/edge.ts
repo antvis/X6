@@ -1394,11 +1394,6 @@ export class EdgeView<
     return index
   }
 
-  // Send a token (an SVG element, usually a circle) along the connection path.
-  // Example: `link.findView(paper).sendToken(V('circle', { r: 7, fill: 'green' }).node)`
-  // `opt.duration` is optional and is a time in milliseconds that the token travels from the source to the target of the link. Default is `1000`.
-  // `opt.directon` is optional and it determines whether the token goes from source to target or other way round (`reverse`)
-  // `opt.connection` is an optional selector to the connection path.
   sendToken(
     token: string | SVGElement,
     options?:

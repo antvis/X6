@@ -455,6 +455,7 @@ export class CellView<
         cell: this.cell,
       })
     }
+    return this
   }
 
   unhighlight(elem?: Element | null, options: CellView.HighlightOptions = {}) {
@@ -482,6 +483,7 @@ export class CellView<
         cell: this.cell,
       })
     }
+    return this
   }
 
   notifyUnhighlight(magnet: Element, options: CellView.HighlightOptions) {}
@@ -833,12 +835,7 @@ export namespace CellView {
           args: KeyValue
         }
 
-    type?:
-      | 'snapping'
-      | 'embedding'
-      | 'nodeAvailable'
-      | 'magnetAvailable'
-      | 'magnetAdsorbed'
+    type?: 'embedding' | 'nodeAvailable' | 'magnetAvailable' | 'magnetAdsorbed'
 
     partial?: boolean
   }
