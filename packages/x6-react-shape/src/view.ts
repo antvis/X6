@@ -33,7 +33,7 @@ export class ReactShapeView extends NodeView<ReactShape> {
   }
 
   protected unmountReactComponent() {
-    const root = this.container.querySelector('foreignObject > body > div')
+    const root = this.selectors.container as HTMLDivElement
     if (root) {
       ReactDOM.unmountComponentAtNode(root)
     }
