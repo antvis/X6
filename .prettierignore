@@ -14,6 +14,10 @@
 .stylelintrc.json
 .umi
 .umi-production
+yarn.lock
+yarn-error.log
+npm-debug.log
+lerna-debug.log
 package.json
 tsconfig.json
 tslint.json
@@ -24,7 +28,4 @@ lib/
 es/
 dist/
 coverage/
-yarn.lock
-yarn-error.log
-npm-debug.log
-lerna-debug.log
+packages/x6-sites/static/demos
