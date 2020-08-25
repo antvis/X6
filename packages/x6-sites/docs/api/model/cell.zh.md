@@ -2658,7 +2658,7 @@ transition(
 | options.interp   | \<T\>(from: T, to: T) => (time: number) => T |      |        | 插值函数。                    |
 | delim            | string                                       |      | `'/'`  | 字符串路径分隔符。            |
 
-我们在 `Timing` 命名空间中提供了一些定时函数。可以使用内置的定时函数名，或提供一个具有 `(t: number) => number` 函数签名的函数。内置的定时函数如下：
+我们在 `Timing` 命名空间中提供了一些定时函数。可以使用内置的定时函数名，或提供一个具有 `(t: number) => number` 签名的函数。内置的定时函数如下：
 
 - linear
 - quad
@@ -2701,7 +2701,7 @@ transition(
 我们在 `Interp` 命名空间上内置了一些插值函数，通常我们可以通过路径上的属性值来自动确定使用哪种插值函数。内置的插值函数如下：
 
 - number - 数字插值函数。
-- object - `{ [key: string]: number }` 类型的对象插值函数。
+- object - `{ [key: string]: number }` 对象插值函数。
 - unit - 数字+单位字符串插值函数，如 `10px`。支持的单位有：`px, em, cm, mm, in, pt, pc, %`。
 - color - 16 进制颜色插值函数。
 
@@ -2712,8 +2712,8 @@ transition(
 import { Timing, Interp } from '@antv/x6'
 
 rect.transition('attrs/label/font-size', '1em', { 
-    interp: Interp.unit,
-    timing: 'bounce', // Timing.bounce
+  interp: Interp.unit,
+  timing: 'bounce', // Timing.bounce
 });
 ```
 

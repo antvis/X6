@@ -8,6 +8,7 @@ redirect_from:
 
 [![MIT License](https://img.shields.io/badge/license-MIT_License-green.svg?style=flat-square)](https://github.com/antvis/x6/blob/master/LICENSE)
 [![Language](https://img.shields.io/badge/language-typescript-blue.svg?style=flat-square)](https://www.typescriptlang.org)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://github.com/antvis/x6/pulls)
 
 [![build](https://img.shields.io/travis/antvis/x6.svg?style=flat-square)](https://travis-ci.org/antvis/x6)
 [![coverage](https://img.shields.io/coveralls/antvis/x6/master.svg?style=flat-square)](https://coveralls.io/github/antvis/x6)
@@ -23,21 +24,22 @@ X6 是 AntV 旗下的图编辑引擎，提供了一系列开箱即用的交互�
 
 ## ✨ 特性
 
-- 极易定制：提供基于低学习成本的 SVG/HTML/CSS 的节点定制能力；
-- 开箱即用：内置 10+ 图编辑场景的配套扩展，如框选、对齐线、小地图等；
-- 数据驱动：基于 MVC 架构模式，用户更加专注于数据逻辑和业务逻辑；
+- 🌱　极易定制：提供基于低学习成本的 SVG/HTML/CSS 的节点定制能力；
+- 🚀　开箱即用：内置 10+ 图编辑场景的配套扩展，如框选、对齐线、小地图等；
+- 💯　数据驱动：基于 MVC 架构模式，用户更加专注于数据逻辑和业务逻辑；
 
 
 ## 🍉 文档
 
-- [X6 基础教程](basic/cell)
-- [X6 进阶实战](intermediate/connector)
-- [X6 高级指引](advanced/react-shape)
+- [基础教程](basic/cell)
+- [进阶实战](intermediate/connector)
+- [高级指引](advanced/react-shape)
 
 ## ❤️ 交流群 
 
 欢迎各界 X6 使用者、图可视化爱好者加入 X6 图可视化交流群（钉钉群，使用钉钉扫一扫加入）讨论与交流。
 
+<img src="https://cdn.nlark.com/yuque/0/2020/png/154788/1598326661054-6aa5d1c1-c659-4c01-b5fe-e949e8154549.png" alt="X6 图可视化交流群" style="width: 439px; border: 1px solid #e9e9e9; border-radius: 5px; box-shadow: 0 0 10px 1px #e9e9e9;">
 
 ## 🤝 如何贡献
 
