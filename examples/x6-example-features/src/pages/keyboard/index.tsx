@@ -61,7 +61,7 @@ export default class Example extends React.Component {
         const cells = graph.paste({ offset: 32 })
         graph.resetSelection(cells)
       }
-      // console.log(graph.toJSON())
+      console.log(graph.toJSON())
       return false
     })
 

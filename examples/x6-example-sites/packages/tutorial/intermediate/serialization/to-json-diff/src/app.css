@@ -1,0 +1,19 @@
+.app {
+  font-family: sans-serif;
+  padding: 0;
+  display: flex;
+  padding: 16px 8px;
+}
+
+.app-side {
+  width: 320px;
+  height: 280px;
+  overflow: auto;
+}
+
+.app-content {
+  flex: 1;
+  margin-left: 8px;
+  margin-right: 8px;
+  box-shadow: 0 0 10px 1px #e9e9e9;
+}

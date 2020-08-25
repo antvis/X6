@@ -2,12 +2,13 @@
 
 > JavaScript diagramming library
 
-[![MIT License](https://img.shields.io/badge/license-MIT_License-green.svg?style=flat-square)](https://github.com/antvis/x6/blob/master/LICENSE)
-[![Language](https://img.shields.io/badge/language-typescript-blue.svg?style=flat-square)](https://www.typescriptlang.org)
-
 [![build](https://img.shields.io/travis/antvis/x6.svg?style=flat-square)](https://travis-ci.org/antvis/x6)
 [![coverage](https://img.shields.io/coveralls/antvis/x6/master.svg?style=flat-square)](https://coveralls.io/github/antvis/x6)
 [![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/antvis/x6.svg?logo=lgtm&style=flat-square)](https://lgtm.com/projects/g/antvis/x6/context:javascript)
+
+[![MIT License](https://img.shields.io/badge/license-MIT_License-green.svg?style=flat-square)](https://github.com/antvis/x6/blob/master/LICENSE)
+[![Language](https://img.shields.io/badge/language-typescript-blue.svg?style=flat-square)](https://www.typescriptlang.org)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://github.com/antvis/x6/pulls)
 
 [![NPM Package](https://img.shields.io/npm/v/@antv/x6.svg?style=flat-square)](https://www.npmjs.com/package/@antv/x6)
 [![NPM Downloads](http://img.shields.io/npm/dm/@antv/x6.svg?style=flat-square)](https://www.npmjs.com/package/@antv/x6)
@@ -36,33 +37,26 @@ const graph = new Graph({
   container: document.getElementById('container'),
 }) 
 
-graph.fromJSON({
-  nodes: [
-    {
-      id: 'node1',
-      x: 60,
-      y: 60,
-      width: 80,
-      height: 40,
-      label: 'Hello',
-    },
-    {
-      id: 'node2',
-      x: 240,
-      y: 240,
-      width: 80,
-      height: 40,
-      label: 'World',
-    },
-  ],
-  edges: [
-    {
-      source: 'node1',
-      target: 'node2',
-    },
-  ],
+const source = graph.addNode({
+  x: 60,
+  y: 60,
+  width: 80,
+  height: 40,
+  label: 'Hello',
 })
 
+const target = graph.addNode({
+  x: 240,
+  y: 240,
+  width: 80,
+  height: 40,
+  label: 'World',
+})
+
+graph.addEdge({
+  source,
+  target,
+})
 ```
 
 ## Development
@@ -100,4 +94,4 @@ Config.track(false)
 
 Please let us know how can we help. Do check out [issues](https://github.com/antvis/x6/issues) for bug reports or suggestions first.
 
-To become a contributor, please follow our [contributing guide](https://github.com/antvis/x6/blob/master/CONTRIBUTING.md)
+To become a contributor, please follow our [contributing guide](https://github.com/antvis/x6/blob/master/CONTRIBUTING.md).

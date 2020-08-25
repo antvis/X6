@@ -1,6 +1,6 @@
 ---
 title: 自定义边
-order: 10
+order: 4
 redirect_from:
   - /zh/docs
   - /zh/docs/tutorial

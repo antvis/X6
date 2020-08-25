@@ -1,6 +1,6 @@
 ---
 title: 特殊属性
-order: 6
+order: 10
 redirect_from:
   - /zh/docs
   - /zh/docs/tutorial
