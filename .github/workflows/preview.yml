@@ -6,7 +6,7 @@ on:
       - examples/x6-example-sites/**
       - examples/x6-example-sites-helper/**
 jobs:
-  preview:
+  run:
     runs-on: ubuntu-latest
     strategy:
       matrix:
