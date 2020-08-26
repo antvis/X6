@@ -351,6 +351,7 @@ export class Vectorizer {
 
   animateAlongPath(attrs: { [name: string]: string }, path: SVGPathElement) {
     Dom.animateAlongPath(this.node, attrs, path)
+    return this
   }
 
   /**

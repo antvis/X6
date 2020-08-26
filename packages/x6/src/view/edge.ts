@@ -1455,6 +1455,8 @@ export class EdgeView<
         callback()
       }
     }, duration)
+
+    return this
   }
 
   // #endregion
