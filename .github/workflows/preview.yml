@@ -1,7 +1,9 @@
 name: 🔂　Surge PR Preview
-
-on: [push, pull_request]
-
+on:
+  push:
+    branches:
+      - master
+  pull_request:
 jobs:
   preview:
     runs-on: ubuntu-latest
