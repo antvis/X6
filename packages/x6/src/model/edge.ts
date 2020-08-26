@@ -720,7 +720,7 @@ export class Edge<
   }
 
   getDefaultVertexMarkup() {
-    return this.store.get('defaultVertexMarkup') || Markup.edgeVertexMarkup
+    return this.store.get('defaultVertexMarkup') || Markup.getEdgeVertexMarkup()
   }
 
   getVertexMarkup() {
@@ -845,7 +845,7 @@ export class Edge<
   // #region markup
 
   getDefaultMarkup() {
-    return this.store.get('defaultMarkup') || Markup.edgeMarkup
+    return this.store.get('defaultMarkup') || Markup.getEdgeMarkup()
   }
 
   getMarkup() {
@@ -865,7 +865,7 @@ export class Edge<
   }
 
   getDefaultToolMarkup() {
-    return this.store.get('defaultToolMarkup') || Markup.edgeToolMarkup
+    return this.store.get('defaultToolMarkup') || Markup.getEdgeToolMarkup()
   }
 
   getToolMarkup() {
@@ -914,7 +914,8 @@ export class Edge<
 
   getDefaultArrowheadMarkup() {
     return (
-      this.store.get('defaultArrowheadMarkup') || Markup.edgeArrowheadMarkup
+      this.store.get('defaultArrowheadMarkup') ||
+      Markup.getEdgeArrowheadMarkup()
     )
   }
 
