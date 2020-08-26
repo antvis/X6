@@ -1,5 +1,5 @@
 import React from 'react'
-import { Graph, StringExt } from '@antv/x6'
+import { Graph, StringExt, $ } from '@antv/x6'
 import { Settings, State } from './settings'
 import './app.css'
 

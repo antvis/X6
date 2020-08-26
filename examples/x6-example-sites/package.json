@@ -7,7 +7,7 @@
   ],
   "scripts": {
     "build": "yarn workspaces run build",
-    "deploy": "yarn workspaces run deploy",
+    "deploy": "yarn speedup && yarn workspaces run deploy",
     "static": "wsrun --no-prefix -c deploy",
     "clear": "rimraf node_modules yarn.lock && yarn workspaces run clean"
   },
@@ -20,7 +20,6 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-scripts": "^3.4.1",
-    "rimraf": "^3.0.2",
-    "wsrun": "^5.2.1"
+    "rimraf": "^3.0.2"
   }
 }
