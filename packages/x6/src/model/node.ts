@@ -529,7 +529,8 @@ export class Node<
 
   getDefaultPortContainerMarkup() {
     return (
-      this.store.get('defaultPortContainerMarkup') || Markup.portContainerMarkup
+      this.store.get('defaultPortContainerMarkup') ||
+      Markup.getPortContainerMarkup()
     )
   }
 
@@ -554,7 +555,7 @@ export class Node<
   }
 
   getDefaultPortMarkup() {
-    return this.store.get('defaultPortMarkup') || Markup.portMarkup
+    return this.store.get('defaultPortMarkup') || Markup.getPortMarkup()
   }
 
   getPortMarkup() {
@@ -575,7 +576,9 @@ export class Node<
   }
 
   getDefaultPortLabelMarkup() {
-    return this.store.get('defaultPortLabelMarkup') || Markup.portLabelMarkup
+    return (
+      this.store.get('defaultPortLabelMarkup') || Markup.getPortLabelMarkup()
+    )
   }
 
   getPortLabelMarkup() {
