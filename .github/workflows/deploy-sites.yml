@@ -20,6 +20,17 @@ jobs:
         node-version: [12.x]
     steps:
     - uses: actions/checkout@v2
+    - name: 🌱　Get yarn cache directory path
+      id: yarn-cache-dir-path
+      run: echo "::set-output name=dir::$(yarn cache dir)"
+    - name: 🚸　Setup Cache
+      uses: actions/cache@v2
+      id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
+      with:
+        path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+        key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-yarn-
     - name: 🎉　Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
       with:
