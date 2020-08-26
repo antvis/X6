@@ -6,7 +6,7 @@ on:
       - examples/x6-example-sites/**
       - examples/x6-example-sites-helper/**
 jobs:
-  run:
+  preview:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -38,7 +38,7 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - name: ✨　Preview
+      - name: ✨　Deploy Sites
         uses: afc163/surge-preview@v1
         with:
           surge_token: ${{ secrets.SURGE_TOKEN }}
