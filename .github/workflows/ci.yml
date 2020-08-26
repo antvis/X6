@@ -12,7 +12,6 @@ jobs:
         node-version: [12.x]
     steps:
     - uses: actions/checkout@v2
-
     - name: 🌱　Get yarn cache directory path
       id: yarn-cache-dir-path
       run: echo "::set-output name=dir::$(yarn cache dir)"
@@ -24,7 +23,6 @@ jobs:
         key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
           ${{ runner.os }}-yarn-
-
     - name: 🎉　Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
       with:
@@ -33,7 +31,7 @@ jobs:
       run: |
         npm install -g yarn
         npm install -g lerna
-    - name: 🚚　Bootstrap
+    - name: 🚀　Bootstrap
       run: |
         yarn bootstrap
     - name: 📦　Build
