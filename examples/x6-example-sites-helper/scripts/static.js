@@ -5,6 +5,7 @@ const path = require('path')
 const fse = require('fs-extra')
 const ora = require('ora')
 const cp = require('child_process')
+const chalk = require('chalk')
 const { hashElement } = require('folder-hash')
 
 const repo = fs.realpathSync(process.cwd())
@@ -31,6 +32,8 @@ hashElement(repo, {
     changed = previous !== hashcode
   }
 
+  const msg = `${chalk.green('✔')} Deployed "x6-sites/static/demos/${dir}"`
+
   if (changed) {
     const spinner = ora(`Deploying "x6-sites/static/demos/${dir}"`).start()
 
@@ -39,19 +42,17 @@ hashElement(repo, {
         fse.emptyDirSync(targetDir)
         fse.moveSync(sourceDir, targetDir, { overwrite: true })
 
-        const content = fs.readFileSync(indexFile, { encoding: 'utf8' })
-        const html = content.replace(
-          /<title>(.*)<\/title>/,
-          `<meta name="hash" content="${hashcode}"/><title>${dir}</title>`,
-        )
+        const raw = fs.readFileSync(indexFile, { encoding: 'utf8' })
+        const title = `<meta name="hash" content="${hashcode}"/><title>${dir}</title>`
+        const html = raw.replace(/<title>(.*)<\/title>/, title)
 
         fs.writeFileSync(indexFile, html, { encoding: 'utf8' })
 
         spinner.stop()
-        console.log(`✔ Deployed "x6-sites/static/demos/${dir}"`)
+        console.log(msg)
       }
     })
   } else {
-    console.log(`✔ Deployed "x6-sites/static/demos/${dir}"`)
+    console.log(msg)
   }
 })
