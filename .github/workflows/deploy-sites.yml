@@ -23,7 +23,7 @@ jobs:
     - name: 🌱　Get yarn cache directory path
       id: yarn-cache-dir-path
       run: echo "::set-output name=dir::$(yarn cache dir)"
-    - name: 🚸　Setup Cache
+    - name: 🚸　Setup yarn cacha
       uses: actions/cache@v2
       id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
       with:
@@ -31,6 +31,16 @@ jobs:
         key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
           ${{ runner.os }}-yarn-
+    - name: 💩　Setup sites cache
+      uses: actions/cache@v2
+      env:
+        cache-name: cache-demos
+      with:
+        path: ./packages/x6-sites/static/demos
+        key: ${{ runner.os }}-sites-${{ env.cache-name }}-${{ hashFiles('./packages/x6/package.json', './examples/x6-example-sites', './examples/x6-example-sites-helper') }}
+        restore-keys: |
+          ${{ runner.os }}-sites-${{ env.cache-name }}
+          ${{ runner.os }}-sites-
     - name: 🎉　Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
       with:
