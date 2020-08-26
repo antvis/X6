@@ -1,17 +1,23 @@
 name: 🔂　Surge PR Preview
 on:
-  push:
-    branches:
-      - master
   pull_request:
+    paths:
+      - packages/x6-sites/**
+      - examples/x6-example-sites/**
+      - examples/x6-example-sites-helper/**
 jobs:
   preview:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [12.x]
     steps:
       - uses: actions/checkout@v2
+      ##
       - name: 🌱　Get yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn cache dir)"
+      ##
       - name: 🚸　Setup yarn cacha
         uses: actions/cache@v2
         id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
@@ -20,6 +26,7 @@ jobs:
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
+      ##
       - name: 💩　Setup sites cache
         uses: actions/cache@v2
         env:
@@ -30,14 +37,24 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-sites-${{ env.cache-name }}
             ${{ runner.os }}-sites-
-      - name: 📦　Surge
+      ##
+      - name: 🎉　Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: 🚀　Bootstrap
+        run: |
+          yarn global add lerna
+          yarn bootstrap
+      - name: 📦　Build Demos
+        run: |
+          yarn build:demos
+      - name: 📦　Build Sites
+        run: |
+          yarn build:sites
+      - name: ✨　Surge
         uses: afc163/surge-preview@v1
         with:
           surge_token: ${{ secrets.SURGE_TOKEN }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          build: |
-            yarn global add lerna
-            yarn bootstrap
-            yarn build:demos
-            yarn build:sites
           dist: packages/x6-sites/public
