@@ -7,7 +7,8 @@
   ],
   "scripts": {
     "build": "yarn workspaces run build",
-    "deploy": "yarn workspaces run deploy",
+    "static": "yarn workspaces run deploy",
+    "deploy": "wsrun --no-prefix --changedSince='master' -c deploy",
     "clear": "rimraf node_modules yarn.lock && yarn workspaces run clean"
   },
   "dependencies": {
@@ -19,6 +20,7 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-scripts": "^3.4.1",
-    "rimraf": "^3.0.2"
+    "rimraf": "^3.0.2",
+    "wsrun": "^5.2.1"
   }
 }
