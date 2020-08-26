@@ -33,7 +33,7 @@ export class ReactShapeView extends NodeView<ReactShape> {
   }
 
   protected unmountReactComponent() {
-    const root = this.selectors.container as HTMLDivElement
+    const root = this.selectors.foContent as HTMLDivElement
     if (root) {
       ReactDOM.unmountComponentAtNode(root)
     }
@@ -56,5 +56,5 @@ export namespace ReactShapeView {
     },
   })
 
-  NodeView.registry.register('react-shape-view', ReactShapeView)
+  NodeView.registry.register('react-shape-view', ReactShapeView, true)
 }
