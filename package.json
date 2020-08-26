@@ -6,7 +6,7 @@
     "packages/*"
   ],
   "scripts": {
-    "bootstrap": "lerna bootstrap && yarn build:dev",
+    "bootstrap": "lerna bootstrap",
     "lk": "lerna link",
     "ls": "lerna list",
     "lv": "lerna version --no-push",
@@ -21,6 +21,7 @@
     "build:dev": "sh ./scripts/build-dev",
     "build:demos": " lerna run deploy --scope @antv/x6-example-sites --stream",
     "build:sites": "lerna run build --scope @antv/x6-sites --stream",
+    "setup": "lerna bootstrap && yarn build:dev",
     "lint": "lerna run lint",
     "test": "lerna run test --stream",
     "prettier": "prettier --write '**/*.{js,jsx,tsx,ts,less,md,json}'",
