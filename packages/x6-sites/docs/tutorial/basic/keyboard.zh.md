@@ -1,6 +1,6 @@
 ---
 title: 键盘快捷键 Keyboard
-order: 12
+order: 14
 redirect_from:
   - /zh/docs
   - /zh/docs/tutorial
