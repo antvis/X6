@@ -29,11 +29,10 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - name: 🚧　Prepare Environment
       run: |
-        npm install -g yarn
-        npm install -g lerna
+        yarn global add lerna
     - name: 🚀　Bootstrap
       run: |
-        yarn bootstrap
+        lerna bootstrap
     - name: 📦　Build
       run: |
         yarn build:dev
