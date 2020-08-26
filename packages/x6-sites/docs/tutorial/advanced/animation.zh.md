@@ -7,7 +7,7 @@ redirect_from:
   - /zh/docs/tutorial/advanced
 ---
 
-## 变换 Transition
+## Transition
 
 ### 开始
 
@@ -124,6 +124,14 @@ graph.on('edge:transition:end', ({ edge, path }) => {})
 
 我们在 `Dom` 命名空间中提供了一个工具方法 `Dom.animateAlongPath()` 来触发一个沿 SVGPathElement 路径元素运动的动画。
 
+```sign
+Dom.animateAlongPath(
+  elem: SVGElement,
+  options: { [name: string]: string },
+  path: SVGPathElement,
+): void
+```
+
 <span class="tag-param">参数<span>
 
 | 名称    | 类型                       | 必选 | 默认值 | 描述                                                                                                                                   |
@@ -133,6 +141,13 @@ graph.on('edge:transition:end', ({ edge, path }) => {})
 | path    | SVGPathElement             |  ✔️  |        | 路径元素。                                                                                                                              |
 
 也可以使用 `Dom.createVector(...)` 方法创建一个 Vectorizer 对象，然后调用该对象上的 `animateAlongPath` 方法来使该 Vectorizer 对象沿指定的路径运动。
+
+```sign
+Vectorizer.prototype.animateAlongPath(
+  options: { [name: string]: string }, 
+  path: SVGPathElement
+): this
+```
 
 ```ts
 const view = graph.findViewByCell(cylinder)
@@ -157,7 +172,21 @@ if (view) {
 
 ### 沿边运动的动画
 
-我们可以调用 EdgeView 上的 `sendToken(...)` 方法来触发一个沿边运动的动画。 
+我们可以调用 EdgeView 上的 [`sendToken(...)`](../../api/view/edgeview#sendtoken) 方法来触发一个沿边运动的动画。 
+
+```sign
+sendToken(
+  token: SVGElement | string,
+  options?:
+    | number
+    | {
+        duration?: number
+        reversed?: boolean
+        selector?: string
+      },
+  callback?: () => any,
+): this
+```
 
 <span class="tag-param">参数<span>
 
