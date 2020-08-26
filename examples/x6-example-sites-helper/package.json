@@ -30,6 +30,7 @@
     "@ant-design/icons": "^4.2.1",
     "@stackblitz/sdk": "^1.4.0",
     "antd": "^4.4.2",
+    "chalk": "^4.1.0",
     "folder-hash": "^3.3.2",
     "ora": "^5.0.0"
   },
