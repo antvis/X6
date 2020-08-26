@@ -12,18 +12,30 @@ const repo = fs.realpathSync(process.cwd())
 const parts = repo.split('/')
 const index = parts.indexOf('packages')
 const dir = parts.slice(index + 1).join('/')
+const name = parts.slice(index + 1).join('.')
 const root = parts.slice(0, index).join('/')
+const home = path.resolve(root, '../../')
 const staticDir = path.join(root, '../../packages/x6-sites/static/demos')
 const sourceDir = path.join(repo, 'build')
 const targetDir = path.join(staticDir, dir)
 const indexFile = path.join(targetDir, 'index.html')
 const regex = /<meta\s+name="hash"\s+content="(.*?)"\s*\/>/
 
-hashElement(repo, {
-  folders: { exclude: ['.*', 'node_modules', 'build'] },
-}).then((ret) => {
-  const hashcode = ret.hash
+function getHash() {
+  return Promise.all([
+    hashElement(repo, {
+      folders: { exclude: ['.*', 'node_modules', 'build'] },
+    }),
+    hashElement(path.join(home, 'examples/x6-example-sites-helper'), {
+      folders: { exclude: ['.*', 'node_modules', 'es', 'lib'] },
+    }),
+    hashElement(path.join(home, 'packages/x6/package.json')),
+  ])
+    .then((arr) => arr.map((item) => item.hash).join(' '))
+    .then((hash) => Buffer.from(hash).toString('base64'))
+}
 
+function exec(hashcode) {
   let changed = true
   if (fs.existsSync(targetDir)) {
     const content = fs.readFileSync(indexFile, { encoding: 'utf8' })
@@ -32,10 +44,10 @@ hashElement(repo, {
     changed = previous !== hashcode
   }
 
-  const msg = `${chalk.green('✔')} Deployed "x6-sites/static/demos/${dir}"`
+  const msg = `${chalk.green('✔')} Deployed "${name}"`
 
   if (changed) {
-    const spinner = ora(`Deploying "x6-sites/static/demos/${dir}"`).start()
+    const spinner = ora(`Deploying "${name}"`).start()
 
     cp.exec('yarn build', { cwd: repo }, (err) => {
       if (!err) {
@@ -55,4 +67,6 @@ hashElement(repo, {
   } else {
     console.log(msg)
   }
-})
+}
+
+getHash().then(exec)
