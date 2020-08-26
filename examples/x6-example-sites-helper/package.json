@@ -8,7 +8,8 @@
   "bin": {
     "config": "./scripts/config.js",
     "static": "./scripts/static.js",
-    "rename": "./scripts/rename.js"
+    "rename": "./scripts/rename.js",
+    "speedup": "./scripts/speedup.js"
   },
   "scripts": {
     "clean": "rimraf es lib",
