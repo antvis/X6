@@ -7,11 +7,6 @@ on:
       - packages/x6-sites/**
       - examples/x6-example-sites/**
       - examples/x6-example-sites-helper/**
-  pull_request:
-    paths:
-      - packages/x6-sites/**
-      - examples/x6-example-sites/**
-      - examples/x6-example-sites-helper/**
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -19,48 +14,49 @@ jobs:
       matrix:
         node-version: [12.x]
     steps:
-    - uses: actions/checkout@v2
-    - name: 🌱　Get yarn cache directory path
-      id: yarn-cache-dir-path
-      run: echo "::set-output name=dir::$(yarn cache dir)"
-    - name: 🚸　Setup yarn cacha
-      uses: actions/cache@v2
-      id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
-      with:
-        path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-        key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-yarn-
-    - name: 💩　Setup sites cache
-      uses: actions/cache@v2
-      env:
-        cache-name: cache-demos
-      with:
-        path: ./packages/x6-sites/static/demos
-        key: ${{ runner.os }}-sites-${{ env.cache-name }}-${{ hashFiles('./packages/x6/package.json', './examples/x6-example-sites', './examples/x6-example-sites-helper') }}
-        restore-keys: |
-          ${{ runner.os }}-sites-${{ env.cache-name }}
-          ${{ runner.os }}-sites-
-    - name: 🎉　Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-    - name: 🚧　Prepare Environment
-      run: |
-        npm install -g yarn
-        npm install -g lerna
-    - name: 🚀　Bootstrap
-      run: |
-        yarn bootstrap
-    - name: 📦　Build Demos
-      run: |
-        yarn build:demos
-    - name: 📦　Build Sites
-      run: |
-        yarn build:sites
-    - name: ✅　Deploy sites
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./packages/x6-sites/public
-        publish_branch: gh-pages
+      - uses: actions/checkout@v2
+      ##
+      - name: 🌱　Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+      ##
+      - name: 🚸　Setup yarn cacha
+        uses: actions/cache@v2
+        id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+      ##
+      - name: 💩　Setup sites cache
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-demos
+        with:
+          path: ./packages/x6-sites/static/demos
+          key: ${{ runner.os }}-sites-${{ env.cache-name }}-${{ hashFiles('./packages/x6/package.json', './examples/x6-example-sites', './examples/x6-example-sites-helper') }}
+          restore-keys: |
+            ${{ runner.os }}-sites-${{ env.cache-name }}
+            ${{ runner.os }}-sites-
+      ##
+      - name: 🎉　Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: 🚀　Bootstrap
+        run: |
+          yarn global add lerna
+          yarn bootstrap
+      - name: 📦　Build Demos
+        run: |
+          yarn build:demos
+      - name: 📦　Build Sites
+        run: |
+          yarn build:sites
+      - name: ✅　Deploy sites
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./packages/x6-sites/public
+          publish_branch: gh-pages

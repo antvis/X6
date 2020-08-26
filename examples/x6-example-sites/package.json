@@ -7,8 +7,8 @@
   ],
   "scripts": {
     "build": "yarn workspaces run build",
-    "static": "yarn workspaces run deploy",
-    "deploy": "wsrun --no-prefix -c deploy",
+    "deploy": "yarn workspaces run deploy",
+    "static": "wsrun --no-prefix -c deploy",
     "clear": "rimraf node_modules yarn.lock && yarn workspaces run clean"
   },
   "dependencies": {
