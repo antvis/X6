@@ -347,7 +347,7 @@ export namespace Markup {
 }
 
 export namespace Markup {
-  export function getForeignObjectMarkup(): Markup {
+  export function getForeignObjectMarkup(): Markup.JSONMarkup {
     return {
       tagName: 'foreignObject',
       selector: 'fo',

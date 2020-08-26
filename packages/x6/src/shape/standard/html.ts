@@ -1,5 +1,5 @@
-import { Dom } from '../../util'
 import { Registry } from '../../registry'
+import { Markup } from '../../view'
 import { Node } from '../../model/node'
 import { NodeView } from '../../view/node'
 import { Graph } from '../../graph/graph'
@@ -61,19 +61,16 @@ export namespace HTML {
     }
 
     protected renderHTMLComponent() {
-      const wrap = this.selectors.wrap
-      const $wrap = wrap
-        ? this.$(wrap)
-        : this.$(this.container).find('foreignObject > body > div')
-
-      $wrap.empty()
-
-      const component = this.graph.hook.getHTMLComponent(this.cell)
-      if (component) {
-        if (typeof component === 'string') {
-          $wrap.html(component)
-        } else {
-          $wrap.append(component)
+      const container = this.selectors.foContent
+      if (container) {
+        const $wrap = this.$(container).empty()
+        const component = this.graph.hook.getHTMLComponent(this.cell)
+        if (component) {
+          if (typeof component === 'string') {
+            $wrap.html(component)
+          } else {
+            $wrap.append(component)
+          }
         }
       }
     }
@@ -102,28 +99,7 @@ export namespace HTML {
         selector: 'body',
       },
       {
-        tagName: 'foreignObject',
-        selector: 'fo',
-        children: [
-          {
-            ns: Dom.ns.xhtml,
-            tagName: 'body',
-            selector: 'foBody',
-            attrs: {
-              xmlns: Dom.ns.xhtml,
-            },
-            children: [
-              {
-                tagName: 'div',
-                selector: 'wrap',
-                style: {
-                  width: '100%',
-                  height: '100%',
-                },
-              },
-            ],
-          },
-        ],
+        ...Markup.getForeignObjectMarkup(),
       },
       {
         tagName: 'text',

@@ -1,4 +1,4 @@
-import { Node, Dom } from '@antv/x6'
+import { Node, Markup } from '@antv/x6'
 import { Definition } from './registry'
 
 export class ReactShape<
@@ -49,28 +49,7 @@ export namespace ReactShape {
         selector: 'body',
       },
       {
-        tagName: 'foreignObject',
-        selector: 'fo',
-        children: [
-          {
-            ns: Dom.ns.xhtml,
-            tagName: 'body',
-            selector: 'foBody',
-            attrs: {
-              xmlns: Dom.ns.xhtml,
-            },
-            children: [
-              {
-                tagName: 'div',
-                selector: 'container',
-                style: {
-                  width: '100%',
-                  height: '100%',
-                },
-              },
-            ],
-          },
-        ],
+        ...Markup.getForeignObjectMarkup(),
       },
       {
         tagName: 'text',
@@ -99,5 +78,5 @@ export namespace ReactShape {
     },
   })
 
-  Node.registry.register('react-shape', ReactShape)
+  Node.registry.register('react-shape', ReactShape, true)
 }

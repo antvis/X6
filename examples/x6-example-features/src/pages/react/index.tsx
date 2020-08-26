@@ -3,7 +3,7 @@ import { Graph, Node, Color } from '@antv/x6'
 import '@antv/x6-react-shape'
 import '../index.less'
 
-class Test extends React.Component<{ node?: Node; text: string }> {
+class MyComponent extends React.Component<{ node?: Node; text: string }> {
   shouldComponentUpdate() {
     const node = this.props.node
     if (node) {
@@ -52,7 +52,7 @@ export default class Example extends React.Component {
       height: 60,
       data: {},
       xxx: {},
-      component: <Test text="Source" />,
+      component: <MyComponent text="Source" />,
     })
 
     const target = graph.addNode({
