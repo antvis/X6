@@ -19,9 +19,9 @@ export class NodeView<
   public rotatableNode: Element | null = null
   protected readonly scalableSelector: string = 'scalable'
   protected readonly rotatableSelector: string = 'rotatable'
-  protected readonly defaultPortMarkup = Markup.portMarkup
-  protected readonly defaultPortLabelMarkup = Markup.portLabelMarkup
-  protected readonly defaultPortContainerMarkup = Markup.portContainerMarkup
+  protected readonly defaultPortMarkup = Markup.getPortMarkup()
+  protected readonly defaultPortLabelMarkup = Markup.getPortLabelMarkup()
+  protected readonly defaultPortContainerMarkup = Markup.getPortContainerMarkup()
   protected portsCache: { [id: string]: NodeView.PortCache } = {}
 
   protected getContainerClassName() {
