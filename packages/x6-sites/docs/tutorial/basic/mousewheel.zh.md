@@ -1,6 +1,6 @@
 ---
 title: 滚轮缩放 MouseWheel
-order: 13
+order: 16
 redirect_from:
   - /zh/docs
   - /zh/docs/tutorial
