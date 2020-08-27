@@ -201,16 +201,13 @@ export class Selection extends View<Selection.EventArgs> {
       y = evt.clientY - offset.top + window.pageYOffset + scrollTop
     }
 
-    this.$container
-      .css({
-        width: 1,
-        height: 1,
-        left: x,
-        top: y,
-      })
-      .appendTo(this.graph.container)
+    this.$container.css({
+      top: y,
+      left: x,
+      width: 1,
+      height: 1,
+    })
 
-    this.showRubberband()
     this.setEventData<EventData.Selecting>(evt, {
       action: 'selecting',
       clientX: evt.clientX,
@@ -309,6 +306,11 @@ export class Selection extends View<Selection.EventArgs> {
     switch (action) {
       case 'selecting': {
         const data = eventData as EventData.Selecting
+        if (data.moving !== true) {
+          this.$container.appendTo(this.graph.container)
+          this.showRubberband()
+          data.moving = true
+        }
         const dx = e.clientX - data.clientX
         const dy = e.clientY - data.clientY
         const left = parseInt(this.$container.css('left'), 10)
@@ -973,6 +975,7 @@ namespace EventData {
 
   export interface Selecting extends Common {
     action: 'selecting'
+    moving?: boolean
     clientX: number
     clientY: number
     offsetX: number
