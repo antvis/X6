@@ -15,4 +15,4 @@ redirect_from:
 
 欢迎各界 X6 使用者、图可视化爱好者加入 X6 图可视化交流群（钉钉群，使用钉钉扫一扫加入）讨论与交流。
 
-<img src="https://cdn.nlark.com/yuque/0/2020/png/154788/1598326661054-6aa5d1c1-c659-4c01-b5fe-e949e8154549.png" alt="X6 图可视化交流群" style="width: 439px; border: 1px solid #e9e9e9; border-radius: 5px; box-shadow: 0 0 10px 1px #e9e9e9;">
+<img src="https://gw.alipayobjects.com/mdn/rms_5cf9ec/afts/img/A*CpU6QYrpEXwAAAAAAAAAAAAAARQnAQ" alt="X6 图可视化交流群" style="width: 439px; border: 1px solid #e9e9e9; border-radius: 5px; box-shadow: 0 0 10px 1px #e9e9e9;">
