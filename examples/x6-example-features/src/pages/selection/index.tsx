@@ -90,6 +90,14 @@ export default class Example extends React.Component {
       graph.removeCells(graph.getSelectedCells())
     })
 
+    graph.on('blank:mousedown', () => {
+      console.log('blank:mousedown')
+    })
+
+    graph.on('blank:click', () => {
+      console.log('blank:click')
+    })
+
     graph.select(a)
     graph.select([b, c])
   }
