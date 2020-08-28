@@ -44,14 +44,20 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
+      - name: 🚧　Prepare Environment
+        run: |
+          yarn global add lerna
+      - name: 🚀　Bootstrap
+        run: |
+          yarn bootstrap
+      - name: 📦　Build Demos
+        run: |
+          yarn build:demos
       - name: ✨　Deploy Sites
         uses: afc163/surge-preview@v1
         with:
           surge_token: ${{ secrets.SURGE_TOKEN }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           build: |
-            yarn global add lerna
-            yarn bootstrap
-            yarn build:demos
             yarn build:sites
           dist: packages/x6-sites/public
