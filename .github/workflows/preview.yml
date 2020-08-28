@@ -18,7 +18,6 @@ jobs:
         run: echo "::set-output name=dir::$(yarn cache dir)"
       - name: 🚸　Setup yarn cacha
         uses: actions/cache@v2
-        id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
         with:
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
@@ -28,7 +27,7 @@ jobs:
       - name: 💩　Setup webpack cache
         uses: actions/cache@v2
         with:
-          path: ~/.webpack
+          path: ./examples/x6-example-sites/packages/**/node_modules
           key: ${{ runner.os }}-webpack-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-webpack-

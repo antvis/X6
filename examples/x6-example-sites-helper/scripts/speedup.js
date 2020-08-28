@@ -24,23 +24,27 @@ if (content.indexOf('minimize: isEnvProduction') !== -1) {
       'new WorkboxWebpackPlugin.GenerateSW({',
       `false && new WorkboxWebpackPlugin.GenerateSW({`,
     )
+
+  if (!process.env.CI) {
     // 修改缓存文件位置，以便在持续集成环境中将缓存持久化
-    .replace(
-      'module.exports =',
-      `
+    content = content
+      .replace(
+        'module.exports =',
+        `
   const appName = paths.appPath.replace(/\\//g, '.');
   const webpackCacheDir = path.join(process.env['HOME'], '.webpack/cache', appName);
   module.exports =`,
-    )
-    .replace(
-      /cacheDirectory:\s*true,/g,
-      `cacheDirectory: path.join(webpackCacheDir, 'babel-loader'),`,
-    )
-    .replace(
-      'eslintPath: ',
-      `cache: path.join(webpackCacheDir, 'eslint-loader'),
+      )
+      .replace(
+        /cacheDirectory:\s*true,/g,
+        `cacheDirectory: path.join(webpackCacheDir, 'babel-loader'),`,
+      )
+      .replace(
+        'eslintPath: ',
+        `cache: path.join(webpackCacheDir, 'eslint-loader'),
                 eslintPath: `,
-    )
+      )
+  }
 
   fs.writeFileSync(configFile, content, { encoding: 'utf8' })
 }
