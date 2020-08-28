@@ -52,8 +52,8 @@ export default class Example extends React.Component {
 
     const stencil = new Stencil({
       target: graph,
-      width: 200,
-      height: 300,
+      stencilGraphWidth: 200,
+      stencilGraphHeight: 180,
       search: true,
       collapsable: true,
       grid: 1,

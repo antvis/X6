@@ -9,7 +9,6 @@ export default class Example extends React.Component {
   private graph: Graph
   private dnd: Dnd
   private container: HTMLDivElement
-  private stencilContainer: HTMLDivElement
 
   componentDidMount() {
     const graph = (this.graph = new Graph({
@@ -129,10 +128,6 @@ export default class Example extends React.Component {
     this.container = container
   }
 
-  refStencil = (container: HTMLDivElement) => {
-    this.stencilContainer = container
-  }
-
   startDrag = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     console.log(e.currentTarget)
     const target = e.currentTarget
@@ -176,7 +171,6 @@ export default class Example extends React.Component {
       <div className="x6-graph-wrap">
         <h1>Dnd</h1>
         <div
-          ref={this.refStencil}
           style={{
             position: 'absolute',
             left: 32,
@@ -223,6 +217,7 @@ export default class Example extends React.Component {
             Circle
           </div>
         </div>
+
         <div className="x6-graph-tools">
           <Button.Group>
             <Button onClick={this.onUndo}>Undo</Button>

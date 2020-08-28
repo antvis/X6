@@ -74,6 +74,7 @@ export class Dnd extends View {
     this.prepareDragging(node, e.clientX, e.clientY)
 
     const local = this.updateNodePosition(e.clientX, e.clientY)
+
     if (this.isSnaplineEnabled()) {
       this.snapline.captureCursorOffset({
         e,
