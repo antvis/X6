@@ -950,18 +950,18 @@ const content = `.x6-graph {
 }
 .x6-widget-stencil-title,
 .x6-widget-stencil-group > .x6-widget-stencil-group-title {
-  cursor: default;
   position: relative;
   left: 0;
   box-sizing: border-box;
   width: 100%;
   height: 32px;
+  padding: 0 5px 0 8px;
   color: #666;
   font-weight: 700;
   font-size: 12px;
   line-height: 32px;
+  cursor: default;
   transition: all 0.3;
-  padding: 0 5px 0 8px;
 }
 .x6-widget-stencil-title:hover,
 .x6-widget-stencil-group > .x6-widget-stencil-group-title:hover {
@@ -975,8 +975,8 @@ const content = `.x6-graph {
 }
 .x6-widget-stencil.collapsable > .x6-widget-stencil-title,
 .x6-widget-stencil-group.collapsable > .x6-widget-stencil-group-title {
-  cursor: pointer;
   padding-left: 32px;
+  cursor: pointer;
 }
 .x6-widget-stencil.collapsable > .x6-widget-stencil-title::before,
 .x6-widget-stencil-group.collapsable > .x6-widget-stencil-group-title::before {
