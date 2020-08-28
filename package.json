@@ -19,8 +19,8 @@
     "clean": "lerna run clean",
     "build": "lerna run build",
     "build:dev": "sh ./scripts/build-dev",
-    "build:demos": " lerna run deploy --scope @antv/x6-example-sites --stream",
-    "build:sites": "lerna run build --scope @antv/x6-sites --stream",
+    "build:demos": "sh ./scripts/build-demos",
+    "build:sites": "sh ./scripts/build-sites",
     "lint": "lerna run lint",
     "test": "lerna run test --stream",
     "prettier": "prettier --write '**/*.{js,jsx,tsx,ts,less,md,json}'",
@@ -46,7 +46,7 @@
       "@commitlint/config-conventional"
     ]
   },
-  "devDependencies": {
+  "dependencies": {
     "@babel/core": "^7.9.6",
     "@babel/preset-env": "^7.9.6",
     "@babel/preset-react": "^7.9.4",
