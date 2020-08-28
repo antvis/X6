@@ -28,16 +28,21 @@ jobs:
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
-      ##
+      ## cache webpack(babel-loader, eslint-loader)
+      - name: 💩　Setup webpack cache
+        uses: actions/cache@v2
+        with:
+          path: ~/.webpack
+          key: ${{ runner.os }}-webpack-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-webpack-
+      ## cache sites
       - name: 💩　Setup sites cache
         uses: actions/cache@v2
-        env:
-          cache-name: cache-demos
         with:
           path: ./packages/x6-sites/static/demos
-          key: ${{ runner.os }}-sites-${{ env.cache-name }}-${{ hashFiles('./packages/x6/package.json', './examples/x6-example-sites', './examples/x6-example-sites-helper') }}
+          key: ${{ runner.os }}-sites-${{ hashFiles('./packages/x6/package.json', './examples/x6-example-sites', './examples/x6-example-sites-helper') }}
           restore-keys: |
-            ${{ runner.os }}-sites-${{ env.cache-name }}
             ${{ runner.os }}-sites-
       ##
       - name: 🎉　Use Node.js ${{ matrix.node-version }}
