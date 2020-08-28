@@ -27,7 +27,9 @@ jobs:
       - name: 💩　Setup webpack cache
         uses: actions/cache@v2
         with:
-          path: ./examples/x6-example-sites/packages/**/node_modules
+          path: |
+            node_modules
+            examples/x6-example-sites/packages/**/node_modules
           key: ${{ runner.os }}-webpack-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-webpack-
@@ -35,7 +37,7 @@ jobs:
       - name: 💩　Setup sites cache
         uses: actions/cache@v2
         with:
-          path: ./packages/x6-sites/static/demos
+          path: packages/x6-sites/static/demos
           key: ${{ runner.os }}-sites-${{ hashFiles('./packages/x6/package.json', './examples/x6-example-sites/**/src') }}
           restore-keys: |
             ${{ runner.os }}-sites-
