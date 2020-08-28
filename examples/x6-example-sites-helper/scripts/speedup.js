@@ -25,10 +25,8 @@ if (content.indexOf('minimize: isEnvProduction') !== -1) {
       `false && new WorkboxWebpackPlugin.GenerateSW({`,
     )
 
-  console.log(JSON.stringify(process.env))
-
-  if (!process.env.CI) {
-    // 修改缓存文件位置，以便在持续集成环境中将缓存持久化
+  if (process.env.CI !== 'true') {
+    // 本地构建时，将缓存文件保存为全局缓存。
     content = content
       .replace(
         'module.exports =',
