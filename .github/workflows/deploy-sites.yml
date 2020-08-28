@@ -41,7 +41,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ./packages/x6-sites/static/demos
-          key: ${{ runner.os }}-sites-${{ hashFiles('./packages/x6/package.json', './examples/x6-example-sites', './examples/x6-example-sites-helper') }}
+          key: ${{ runner.os }}-sites-${{ hashFiles('./packages/x6/package.json', './examples/x6-example-sites/**/src') }}
           restore-keys: |
             ${{ runner.os }}-sites-
       ##
