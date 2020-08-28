@@ -47,9 +47,27 @@ export class Stencil extends View {
       this.prefixClassName(ClassNames.base),
     )
 
-    if (options.collapsable) {
-      this.$container.addClass('collapsable').append(this.renderToggleAll())
+    this.options.collapsable =
+      options.collapsable &&
+      options.groups &&
+      options.groups.some((group) => group.collapsable !== false)
+
+    if (this.options.collapsable) {
+      this.$container.addClass('collapsable')
+      const collapsed =
+        options.groups &&
+        options.groups.every(
+          (group) => group.collapsed || group.collapsable === false,
+        )
+      if (collapsed) {
+        this.$container.addClass('collapsed')
+      }
     }
+
+    this.$('<div/>')
+      .addClass(this.prefixClassName(ClassNames.title))
+      .html(this.options.title)
+      .appendTo(this.$container)
 
     if (options.search) {
       this.$container.addClass('searchable').append(this.renderSearch())
@@ -66,11 +84,19 @@ export class Stencil extends View {
         const $group = this.$('<div/>')
           .addClass(this.prefixClassName(ClassNames.group))
           .attr('data-name', group.name)
-          .toggleClass('closed', group.closed === true)
+
+        if (
+          (group.collapsable == null && options.collapsable) ||
+          group.collapsable !== false
+        ) {
+          $group.addClass('collapsable')
+        }
+
+        $group.toggleClass('collapsed', group.collapsed === true)
 
         const $title = this.$('<h3/>')
           .addClass(this.prefixClassName(ClassNames.groupTitle))
-          .html(group.label || group.name)
+          .html(group.title || group.name)
 
         const $content = this.$('<div/>').addClass(
           this.prefixClassName(ClassNames.groupContent),
@@ -82,8 +108,8 @@ export class Stencil extends View {
           ...graphOptionsInGroup,
           container: document.createElement('div'),
           model: globalGraphOptions.model || new Model(),
-          width: group.width || options.width,
-          height: group.height || options.height,
+          width: group.graphWidth || options.stencilGraphWidth,
+          height: group.graphHeight || options.stencilGraphHeight,
           interacting: false,
           preventDefaultBlankAction: false,
         })
@@ -99,8 +125,8 @@ export class Stencil extends View {
         ...globalGraphOptions,
         container: document.createElement('div'),
         model: globalGraphOptions.model || new Model(),
-        width: options.width,
-        height: options.height,
+        width: options.stencilGraphWidth,
+        height: options.stencilGraphHeight,
         interacting: false,
         preventDefaultBlankAction: false,
       })
@@ -125,25 +151,14 @@ export class Stencil extends View {
       )
   }
 
-  protected renderToggleAll() {
-    return [
-      this.$('<div/>')
-        .addClass(this.prefixClassName(ClassNames.title))
-        .append(this.$('<label/>').addClass('label').html(this.options.label))
-        .append(this.$('<button/>').text('+').addClass('btn btn-expand'))
-        .append(this.$('<button/>').text('-').addClass('btn btn-collapse')),
-    ]
-  }
-
   protected startListening() {
-    const searchText = this.prefixClassName(ClassNames.searchText)
     const title = this.prefixClassName(ClassNames.title)
+    const searchText = this.prefixClassName(ClassNames.searchText)
     const groupTitle = this.prefixClassName(ClassNames.groupTitle)
 
     this.delegateEvents({
-      'click .btn-expand': 'expandGroups',
-      'click .btn-collapse': 'collapseGroups',
-      [`click .${title} > .label`]: 'expandGroups',
+      [`click .${title}`]: 'onTitleClick',
+      [`touchstart .${title}`]: 'onTitleClick',
       [`click .${groupTitle}`]: 'onGroupTitleClick',
       [`touchstart .${groupTitle}`]: 'onGroupTitleClick',
       [`input .${searchText}`]: 'onSearch',
@@ -197,13 +212,14 @@ export class Stencil extends View {
     }
 
     const group = this.getGroup(groupName)
-    let height = this.options.height
-    if (group && group.height != null) {
-      height = group.height
+    let height = this.options.stencilGraphHeight
+    if (group && group.graphHeight != null) {
+      height = group.graphHeight
     }
 
-    if (this.options.layout && model) {
-      FunctionExt.call(this.options.layout, this, model, group)
+    const layout = (group && group.layout) || this.options.layout
+    if (layout && model) {
+      FunctionExt.call(layout, this, model, group)
     }
 
     if (!height) {
@@ -211,7 +227,10 @@ export class Stencil extends View {
       graph.fitToContent({
         minWidth: graph.options.width,
         gridHeight: 1,
-        padding: this.options.graphPadding || 10,
+        padding:
+          (group && group.graphPadding) ||
+          this.options.stencilGraphPadding ||
+          10,
       })
     }
 
@@ -264,7 +283,7 @@ export class Stencil extends View {
       graph.fitToContent({
         gridWidth: 1,
         gridHeight: 1,
-        padding: options.graphPadding || 10,
+        padding: options.stencilGraphPadding || 10,
       })
 
       return memo || found
@@ -313,11 +332,32 @@ export class Stencil extends View {
     this.$container.removeClass('is-focused')
   }
 
+  protected onTitleClick() {
+    if (this.options.collapsable) {
+      this.$container.toggleClass('collapsed')
+      if (this.$container.hasClass('collapsed')) {
+        this.collapseGroups()
+      } else {
+        this.expandGroups()
+      }
+    }
+  }
+
   protected onGroupTitleClick(evt: JQuery.TriggeredEvent) {
     const $group = this.$(evt.target).closest(
       `.${this.prefixClassName(ClassNames.group)}`,
     )
     this.toggleGroup($group.attr('data-name') || '')
+
+    const allCollapsed = Object.keys(this.$groups).every((name) => {
+      const group = this.getGroup(name)
+      const $group = this.$groups[name]
+      return (
+        (group && group.collapsable === false) || $group.hasClass('collapsed')
+      )
+    })
+
+    this.$container.toggleClass('collapsed', allCollapsed)
   }
 
   protected getModel(groupName?: string) {
@@ -347,21 +387,30 @@ export class Stencil extends View {
   }
 
   collapseGroup(groupName: string) {
-    const $group = this.$groups[groupName]
-    if ($group && !this.isGroupCollapsed(groupName)) {
-      this.trigger('group:collapse', { name: groupName })
-      $group.addClass('collapsed')
+    if (this.isGroupCollapsable(groupName)) {
+      const $group = this.$groups[groupName]
+      if ($group && !this.isGroupCollapsed(groupName)) {
+        this.trigger('group:collapse', { name: groupName })
+        $group.addClass('collapsed')
+      }
     }
     return this
   }
 
   expandGroup(groupName: string) {
-    const $group = this.$groups[groupName]
-    if ($group && this.isGroupCollapsed(groupName)) {
-      this.trigger('group:expand', { name: groupName })
-      $group.removeClass('collapsed')
+    if (this.isGroupCollapsable(groupName)) {
+      const $group = this.$groups[groupName]
+      if ($group && this.isGroupCollapsed(groupName)) {
+        this.trigger('group:expand', { name: groupName })
+        $group.removeClass('collapsed')
+      }
     }
     return this
+  }
+
+  isGroupCollapsable(groupName: string) {
+    const $group = this.$groups[groupName]
+    return $group.hasClass('collapsable')
   }
 
   isGroupCollapsed(groupName: string) {
@@ -397,16 +446,16 @@ export class Stencil extends View {
 
 export namespace Stencil {
   export interface Options extends Dnd.Options {
-    label: string
-    width: number
-    height: number
-    graphPadding?: number
-    stencilGraphOptions?: Graph.Options
-    layout?: (this: Stencil, model: Model, gourp?: Group | null) => any
-    layoutOptions?: any
-    search?: Filter
+    title: string
     groups?: Group[]
+    search?: Filter
     collapsable?: boolean
+    stencilGraphWidth: number
+    stencilGraphHeight: number
+    stencilGraphOptions?: Graph.Options
+    stencilGraphPadding?: number
+    layout?: (this: Stencil, model: Model, group?: Group | null) => any
+    layoutOptions?: any
   }
 
   export type Filter = Filters | FilterFn | boolean
@@ -421,23 +470,26 @@ export namespace Stencil {
 
   export interface Group {
     name: string
-    label?: string
-    closed?: boolean
-    width?: number
-    height?: number
+    title?: string
+    collapsed?: boolean
+    collapsable?: boolean
+    graphWidth?: number
+    graphHeight?: number
+    graphPadding?: number
     graphOptions?: Graph.Options
+    layout?: (this: Stencil, model: Model, group?: Group | null) => any
     layoutOptions?: any
   }
 
   export const defaultOptions: Partial<Options> = {
-    width: 200,
-    height: 800,
-    label: 'Stencil',
+    stencilGraphWidth: 200,
+    stencilGraphHeight: 800,
+    title: 'Stencil',
     collapsable: false,
 
     layout(model, group) {
       const options = {
-        columnWidth: (this.options.width as number) / 2 - 10,
+        columnWidth: (this.options.stencilGraphWidth as number) / 2 - 10,
         columns: 2,
         rowHeight: 80,
         resizeToFit: false,
