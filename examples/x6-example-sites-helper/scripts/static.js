@@ -27,7 +27,10 @@ function getHash() {
       folders: { exclude: ['.*', 'node_modules', 'build'] },
     }),
     hashElement(path.join(home, 'examples/x6-example-sites-helper'), {
-      folders: { exclude: ['.*', 'node_modules', 'es', 'lib'] },
+      folders: {
+        include: ['src', 'loaders'],
+        exclude: ['.*', 'node_modules', 'es', 'lib', 'scripts'],
+      },
     }),
     hashElement(path.join(home, 'packages/x6/package.json')),
   ])
