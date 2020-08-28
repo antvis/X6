@@ -25,6 +25,8 @@ if (content.indexOf('minimize: isEnvProduction') !== -1) {
       `false && new WorkboxWebpackPlugin.GenerateSW({`,
     )
 
+  console.log(JSON.stringify(process.env))
+
   if (!process.env.CI) {
     // 修改缓存文件位置，以便在持续集成环境中将缓存持久化
     content = content
