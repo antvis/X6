@@ -79,6 +79,7 @@ export class Selection extends View<Selection.EventArgs> {
 
     graph.on('scale', this.onTransformed, this)
     graph.on('translate', this.onTransformed, this)
+    graph.model.on('updated', this.onModelUpdated, this)
 
     collection.on('added', this.onCellAdded, this)
     collection.on('removed', this.onCellRemoved, this)
@@ -95,6 +96,7 @@ export class Selection extends View<Selection.EventArgs> {
 
     graph.off('scale', this.onTransformed, this)
     graph.off('translate', this.onTransformed, this)
+    graph.model.off('updated', this.onModelUpdated, this)
 
     collection.off('added', this.onCellAdded, this)
     collection.off('removed', this.onCellRemoved, this)
@@ -113,6 +115,12 @@ export class Selection extends View<Selection.EventArgs> {
 
   protected onCellChanged() {
     this.updateSelectionBoxes()
+  }
+
+  protected onModelUpdated({ removed }: Collection.EventArgs['updated']) {
+    if (removed && removed.length) {
+      this.unselect(removed)
+    }
   }
 
   isEmpty() {
@@ -144,9 +152,20 @@ export class Selection extends View<Selection.EventArgs> {
     return this
   }
 
-  clean() {
+  reset(cells?: Cell | Cell[], options: Collection.SetOptions = {}) {
+    if (cells) {
+      this.collection.reset(Array.isArray(cells) ? cells : [cells], {
+        ...options,
+        ui: true,
+      })
+      return this
+    }
+    return this.clean(options)
+  }
+
+  clean(options: Collection.SetOptions = {}) {
     if (this.length) {
-      this.collection.reset([], { ui: true })
+      this.collection.reset([], { ...options, ui: true })
     }
     return this
   }

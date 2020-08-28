@@ -13,7 +13,7 @@
   "devDependencies": {
     "@types/react": "^16.9.19",
     "@types/react-dom": "^16.9.5",
-    "typescript": "^3.9.6"
+    "typescript": "^4.0.2"
   },
   "scripts": {
     "clean": "",
@@ -21,7 +21,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "deploy": "yarn build && yarn rename && yarn static",
+    "deploy": "yarn rename && yarn static",
     "prestart": "yarn rename"
   },
   "eslintConfig": {

@@ -13,6 +13,7 @@ export default class Example extends React.Component {
       grid: true,
       selecting: {
         enabled: true,
+        showNodeSelectionBox: true,
       },
       clipboard: {
         enabled: true,
@@ -58,10 +59,18 @@ export default class Example extends React.Component {
     graph.bindKey('meta+v', () => {
       if (!graph.isClipboardEmpty()) {
         const cells = graph.paste({ offset: 32 })
-        graph.cleanSelection()
-        graph.select(cells)
+        graph.resetSelection(cells)
       }
+      console.log(graph.toJSON())
       return false
+    })
+
+    graph.bindKey('backspace', () => {
+      graph.removeCells(graph.getSelectedCells())
+    })
+
+    graph.on('selection:changed', ({ selected }) => {
+      console.log(selected)
     })
   }
 

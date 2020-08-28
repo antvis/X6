@@ -40,7 +40,7 @@ export namespace Options {
     width: number
     height: number
 
-    background: false | BackgroundManager.Options
+    background?: false | BackgroundManager.Options
 
     scaling: {
       min?: number
@@ -211,6 +211,19 @@ export namespace Options {
     return result
   }
 
+  type NodeAnchorOptions =
+    | string
+    | NodeAnchor.NativeItem
+    | NodeAnchor.ManaualItem
+  type EdgeAnchorOptions =
+    | string
+    | EdgeAnchor.NativeItem
+    | EdgeAnchor.ManaualItem
+  type ConnectionPointOptions =
+    | string
+    | ConnectionPoint.NativeItem
+    | ConnectionPoint.ManaualItem
+
   export interface Connecting {
     /**
      * Snap edge to the closest node/port in the given radius on dragging.
@@ -259,14 +272,17 @@ export namespace Options {
      */
     highlight: boolean
 
-    anchor: string | NodeAnchor.NativeItem | NodeAnchor.ManaualItem
-    edgeAnchor: string | EdgeAnchor.NativeItem | EdgeAnchor.ManaualItem
+    anchor: NodeAnchorOptions
+    sourceAnchor?: NodeAnchorOptions
+    targetAnchor?: NodeAnchorOptions
+    edgeAnchor: EdgeAnchorOptions
+    sourceEdgeAnchor?: EdgeAnchorOptions
+    targetEdgeAnchor?: EdgeAnchorOptions
+    connectionPoint: ConnectionPointOptions
+    sourceConnectionPoint?: ConnectionPointOptions
+    targetConnectionPoint?: ConnectionPointOptions
     router: string | Router.NativeItem | Router.ManaualItem
     connector: string | Connector.NativeItem | Connector.ManaualItem
-    connectionPoint:
-      | string
-      | ConnectionPoint.NativeItem
-      | ConnectionPoint.ManaualItem
     strategy?:
       | string
       | ConnectionStrategy.NativeItem
@@ -417,24 +433,22 @@ export namespace Options {
      * The default highlighter to use (and options) when none is specified
      */
     default: HighlightManager.Options
-
-    snapping?: HighlightManager.Options | null
-    /**
-     * When a valid edge connection can be made to an node.
-     */
-    connecting?: HighlightManager.Options | null
     /**
      * When a cell is dragged over another cell in embedding mode.
      */
     embedding?: HighlightManager.Options | null
     /**
+     * When showing all nodes to which a valid connection can be made.
+     */
+    nodeAvailable?: HighlightManager.Options | null
+    /**
      * When showing all magnets to which a valid connection can be made.
      */
     magnetAvailable?: HighlightManager.Options | null
     /**
-     * When showing all nodes to which a valid connection can be made.
+     * When a valid edge connection can be made to an node.
      */
-    nodeAvailable?: HighlightManager.Options | null
+    magnetAdsorbed?: HighlightManager.Options | null
   }
 }
 

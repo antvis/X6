@@ -32,13 +32,13 @@ function toCSSPath(source) {
 }
 
 // Copy less files
-function readdir(dir) {
+function processLessInDir(dir) {
   const stat = fs.statSync(dir)
   if (stat) {
     if (stat.isDirectory()) {
       fs.readdir(dir, (err, files) => {
         files.forEach((file) => {
-          readdir(path.join(dir, file))
+          processLessInDir(path.join(dir, file))
         })
       })
     } else {
@@ -61,5 +61,25 @@ function readdir(dir) {
   }
 }
 
-// console.log('Copy style files to output directory\n')
-readdir(src)
+function makeStyleModule() {
+  const source = path.join(dist, 'x6.css')
+  const target = path.join(src, 'style/raw.ts')
+  const content = fs.readFileSync(source, { encoding: 'utf8' })
+  const old = fs.readFileSync(target, { encoding: 'utf8' })
+  const curr = `/* tslint:disable */
+
+/**
+* Auto generated file, do not modify it!
+*/
+const content =
+\`${content}\`
+
+export { content }`
+
+  if (old !== curr) {
+    fs.writeFileSync(target, curr)
+  }
+}
+
+processLessInDir(src)
+makeStyleModule()

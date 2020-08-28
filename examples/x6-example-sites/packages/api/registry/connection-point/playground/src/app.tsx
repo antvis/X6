@@ -1,7 +1,6 @@
 import React from 'react'
 import { Graph, Edge, Node } from '@antv/x6'
 import { Settings, State } from './settings'
-import '@antv/x6/es/index.css'
 import './app.css'
 
 export default class Example extends React.Component {

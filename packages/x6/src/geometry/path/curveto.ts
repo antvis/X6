@@ -33,16 +33,20 @@ export class CurveTo extends Segment {
     if (arg0 instanceof Curve) {
       this.controlPoint1 = arg0.controlPoint1.clone()
       this.controlPoint2 = arg0.controlPoint2.clone()
-      this.end = arg0.end.clone()
+      this.endPoint = arg0.end.clone()
     } else if (typeof arg0 === 'number') {
       this.controlPoint1 = new Point(arg0, arg1 as number)
       this.controlPoint2 = new Point(arg2 as number, arg3)
-      this.end = new Point(arg4, arg5)
+      this.endPoint = new Point(arg4, arg5)
     } else {
       this.controlPoint1 = Point.create(arg0)
       this.controlPoint2 = Point.create(arg1)
-      this.end = Point.create(arg2)
+      this.endPoint = Point.create(arg2)
     }
+  }
+
+  get end() {
+    return this.endPoint
   }
 
   get type() {

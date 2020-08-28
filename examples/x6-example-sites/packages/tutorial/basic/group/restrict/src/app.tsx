@@ -1,6 +1,5 @@
 import React from 'react'
 import { Graph } from '@antv/x6'
-import '@antv/x6/es/index.css'
 import './app.css'
 
 export default class Example extends React.Component {
@@ -52,6 +51,9 @@ export default class Example extends React.Component {
       label: 'Parent\n(try to move me)',
       attrs: {
         label: { refY: 130 },
+        body: {
+          fill: '#fffbe6',
+        },
       },
     })
 

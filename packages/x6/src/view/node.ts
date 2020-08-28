@@ -19,9 +19,9 @@ export class NodeView<
   public rotatableNode: Element | null = null
   protected readonly scalableSelector: string = 'scalable'
   protected readonly rotatableSelector: string = 'rotatable'
-  protected readonly defaultPortMarkup = Markup.portMarkup
-  protected readonly defaultPortLabelMarkup = Markup.portLabelMarkup
-  protected readonly defaultPortContainerMarkup = Markup.portContainerMarkup
+  protected readonly defaultPortMarkup = Markup.getPortMarkup()
+  protected readonly defaultPortLabelMarkup = Markup.getPortLabelMarkup()
+  protected readonly defaultPortContainerMarkup = Markup.getPortContainerMarkup()
   protected portsCache: { [id: string]: NodeView.PortCache } = {}
 
   protected getContainerClassName() {
@@ -334,7 +334,6 @@ export class NodeView<
 
   protected renderPorts() {
     const container = this.getPortsContainer()
-
     // References to rendered elements without z-index
     const references: Element[] = []
     container.childNodes.forEach((child) => {
@@ -449,6 +448,17 @@ export class NodeView<
       portContentElement,
       portContentSelectors,
     }
+
+    this.graph.hook.onPortRendered({
+      port,
+      node: this.cell,
+      container: portElement,
+      selectors: portSelectors,
+      labelContainer: portLabelElement,
+      labelSelectors: portLabelSelectors,
+      contentContainer: portContentElement,
+      contentSelectors: portContentSelectors,
+    })
 
     return portElement
   }
@@ -914,8 +924,11 @@ export class NodeView<
     const model = graph.model
     const edge = graph.hook.getDefaultEdge(this, magnet)
 
-    edge.setSource(this.getEdgeTerminal(magnet, x, y, edge, 'source'))
-    edge.setTarget({ x, y })
+    edge.setSource({
+      ...edge.getSource(),
+      ...this.getEdgeTerminal(magnet, x, y, edge, 'source'),
+    })
+    edge.setTarget({ ...edge.getTarget(), x, y })
     edge.addTo(model, { async: false, ui: true })
 
     return edge.findView(graph) as EdgeView

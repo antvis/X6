@@ -6,7 +6,7 @@ class BallView extends NodeView {
   protected speed: number = 0
   protected angle: number = 0
   protected timerId: number = 0
-  protected edge: Edge
+  protected edge: Edge | null
 
   protected init() {
     this.timerId = this.cell.transition('attrs/label/opacity', 1, {
@@ -58,11 +58,10 @@ class BallView extends NodeView {
     const pos = this.cell.getPosition()
     const size = this.cell.getSize()
     const ga = 9.81
-    const h0 =
-      this.graph.options.height - pos.y - size.height
+    const h0 = this.graph.options.height - pos.y - size.height
     const v0 = options.speed
     const sin1 = Math.sin(Angle.toRad(options.angle))
-
+    
     const flightTime =
       (v0 * sin1 +
         Math.sqrt(Math.pow(v0, 2) * Math.pow(sin1, 2) + 2 * h0 * ga)) /
@@ -102,11 +101,13 @@ class BallView extends NodeView {
     if (this.cell.getTransitions().indexOf('position') > -1) {
       return
     }
+
     // Cancel displaying 'drag me!' if dragging already starts.
     if (this.timerId) {
       clearTimeout(this.timerId)
       delete this.timerId
     }
+
     this.edge = this.graph.addEdge({
       shape: 'edge',
       source: this.cell.getBBox().getCenter(),
@@ -123,7 +124,8 @@ class BallView extends NodeView {
           },
         },
       },
-    }) as any
+    })
+
     // Change the marker arrow color.
     this.edge.on('change:target', ({ cell }) => {
       const edge = (cell as any) as Edge
@@ -154,7 +156,7 @@ class BallView extends NodeView {
     const targetPoint = this.edge.getTargetPoint()!
 
     this.edge.remove()
-    delete this.edge
+    this.edge = null
 
     this.fly({
       angle: Math.abs(targetPoint.theta(sourcePoint) - 180),

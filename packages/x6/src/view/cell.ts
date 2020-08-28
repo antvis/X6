@@ -455,6 +455,7 @@ export class CellView<
         cell: this.cell,
       })
     }
+    return this
   }
 
   unhighlight(elem?: Element | null, options: CellView.HighlightOptions = {}) {
@@ -482,6 +483,7 @@ export class CellView<
         cell: this.cell,
       })
     }
+    return this
   }
 
   notifyUnhighlight(magnet: Element, options: CellView.HighlightOptions) {}
@@ -691,7 +693,7 @@ export class CellView<
     this.notify('cell:contextmenu', this.getEventArgs(e, x, y))
   }
 
-  protected cachedModelForMouseEvent: Model
+  protected cachedModelForMouseEvent: Model | null
   onMouseDown(e: JQuery.MouseDownEvent, x: number, y: number) {
     if (this.cell.model) {
       this.cachedModelForMouseEvent = this.cell.model
@@ -706,7 +708,7 @@ export class CellView<
 
     if (this.cachedModelForMouseEvent) {
       this.cachedModelForMouseEvent.stopBatch('mouse', { cell: this.cell })
-      delete this.cachedModelForMouseEvent
+      this.cachedModelForMouseEvent = null
     }
   }
 
@@ -833,12 +835,7 @@ export namespace CellView {
           args: KeyValue
         }
 
-    type?:
-      | 'snapping'
-      | 'embedding'
-      | 'connecting'
-      | 'nodeAvailable'
-      | 'magnetAvailable'
+    type?: 'embedding' | 'nodeAvailable' | 'magnetAvailable' | 'magnetAdsorbed'
 
     partial?: boolean
   }

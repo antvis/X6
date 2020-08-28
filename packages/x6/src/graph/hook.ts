@@ -37,6 +37,7 @@ import { Keyboard } from './keyboard'
 import { MouseWheel } from './mousewheel'
 import { PrintManager } from './print'
 import { FormatManager } from './format'
+import { PortManager } from '../model/port'
 
 namespace Decorator {
   export function hook(nullable?: boolean, hookName?: string | null) {
@@ -53,7 +54,7 @@ namespace Decorator {
         if (hook != null) {
           this.getNativeValue = raw.bind(this, ...args)
           const ret = FunctionExt.call(hook, this.graph, ...args)
-          delete this.getNativeValue
+          this.getNativeValue = null
           if (ret != null || (nullable === true && ret === null)) {
             return ret
           }
@@ -89,7 +90,7 @@ export class Hook extends Base implements Hook.IHook {
   /**
    * Get the native value of hooked method.
    */
-  public getNativeValue: <T>() => T | null
+  public getNativeValue: (<T>() => T | null) | null
 
   @Decorator.hook()
   createModel() {
@@ -518,6 +519,9 @@ export class Hook extends Base implements Hook.IHook {
 
   @Decorator.hook()
   onEdgeLabelRendered(args: Hook.OnEdgeLabelRenderedArgs) {}
+
+  @Decorator.hook()
+  onPortRendered(args: Hook.OnPortRenderedArgs) {}
 }
 
 export namespace Hook {
@@ -533,6 +537,17 @@ export namespace Hook {
     label: Edge.Label
     container: Element
     selectors: Markup.Selectors
+  }
+
+  export interface OnPortRenderedArgs {
+    node: Node
+    port: PortManager.Port
+    container: Element
+    selectors?: Markup.Selectors
+    labelContainer: Element
+    labelSelectors?: Markup.Selectors
+    contentContainer: Element
+    contentSelectors?: Markup.Selectors
   }
 
   export interface IHook {
@@ -602,5 +617,7 @@ export namespace Hook {
     ) => boolean
 
     onEdgeLabelRendered(this: Graph, args: OnEdgeLabelRenderedArgs): void
+
+    onPortRendered(this: Graph, args: OnPortRenderedArgs): void
   }
 }

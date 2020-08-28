@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { Graph } from '@antv/x6'
-import '@antv/x6/es/index.css'
 import './app.css'
 
 export default class Example extends React.Component {
