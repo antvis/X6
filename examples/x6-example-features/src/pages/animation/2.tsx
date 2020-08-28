@@ -21,7 +21,7 @@ class BallView extends NodeView {
     })
 
     this.cell.on('transition:end', ({ cell, path }) => {
-      if (path == 'position' && this.speed > 5) {
+      if (path === 'position' && this.speed > 5) {
         this.speed /= cell.prop<number>('bounciness') || 2
         this.fly({ angle: 180 - this.angle, speed: this.speed })
       }
@@ -55,14 +55,15 @@ class BallView extends NodeView {
       angle: 90,
       ...opts,
     }
+    const pos = this.cell.getPosition()
+    const size = this.cell.getSize()
+    const ga = 9.81
+    const h0 =
+      this.graph.options.height - pos.y - size.height
+    const v0 = options.speed
+    const sin1 = Math.sin(Angle.toRad(options.angle))
 
-    var ga = 9.81
-    var h0 =
-      this.graph.options.height - this.cell.position.y - this.cell.sizes.height
-    var v0 = options.speed
-    var sin1 = Math.sin(Angle.toRad(options.angle))
-
-    var flightTime =
+    const flightTime =
       (v0 * sin1 +
         Math.sqrt(Math.pow(v0, 2) * Math.pow(sin1, 2) + 2 * h0 * ga)) /
       ga
