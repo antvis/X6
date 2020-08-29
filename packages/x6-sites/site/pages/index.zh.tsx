@@ -76,12 +76,12 @@ const IndexPage = () => {
   const bannerButtons = [
     {
       text: t('图表示例'),
-      link: `/${i18n.language}/examples/rect`,
+      link: `/${i18n.language}/examples/gallery`,
       type: 'primary',
     },
     {
       text: t('开始使用'),
-      link: `/${i18n.language}/docs/tutorial/introduce`,
+      link: `/${i18n.language}/docs/tutorial/getting-started`,
     },
   ]
 
@@ -110,7 +110,7 @@ const IndexPage = () => {
 
   return (
     <>
-      <SEO title={t('X6 图编排引擎')} titleSuffix="AntV" lang={i18n.language} />
+      <SEO title={t('X6 图编辑引擎')} titleSuffix="AntV" lang={i18n.language} />
       <Banner
         coverImage={
           <img
@@ -120,7 +120,7 @@ const IndexPage = () => {
           />
         }
         title={t('X6')}
-        description={t('X6 是一个简单、易用、完备的图编排引擎。')}
+        description={t('X6 是一个简单、易用、完备的图编辑引擎。')}
         buttons={bannerButtons}
         notifications={notifications}
         className="banner"
