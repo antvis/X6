@@ -25,7 +25,7 @@
     "test": "lerna run test --stream",
     "prettier": "prettier --write '**/*.{js,jsx,tsx,ts,less,md,json}'",
     "pretty-quick": "pretty-quick",
-    "clear": "rimraf yarn.lock && lerna run clean && lerna clean -y",
+    "clear": "lerna run clean && lerna clean -y",
     "reboot": "run-s clear bootstrap"
   },
   "husky": {
