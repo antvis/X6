@@ -1,32 +1,25 @@
+import sinon from 'sinon'
 import { requestAnimationFrame, cancelAnimationFrame } from './af'
 
 describe('af', () => {
   describe('#requestAnimationFrame', () => {
-    it('should call the callback', async () => {
-      const callback = jest.fn()
+    it('should call the callback', (done) => {
       requestAnimationFrame(() => {
-        callback()
+        expect(1).toEqual(1)
+        done()
       })
-      await new Promise(resolve => {
-        setTimeout(() => {
-          resolve()
-        }, 50)
-      })
-      expect(callback).toBeCalled()
     })
   })
 
   describe('#cancelAnimationFrame', () => {
-    it('requestAnimationFrame can be cancel', async () => {
-      const callback = jest.fn()
-      const id = requestAnimationFrame(callback)
+    it('requestAnimationFrame can be cancel', (done) => {
+      const spy = sinon.spy()
+      const id = requestAnimationFrame(spy)
       cancelAnimationFrame(id)
-      await new Promise(resolve => {
-        setTimeout(() => {
-          resolve()
-        }, 50)
-      })
-      expect(callback).not.toBeCalled()
+      setTimeout(() => {
+        expect(spy.callCount).toEqual(0)
+        done()
+      }, 100)
     })
   })
 })
