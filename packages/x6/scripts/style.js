@@ -69,11 +69,10 @@ function makeStyleModule() {
   const curr = `/* tslint:disable */
 
 /**
-* Auto generated file, do not modify it!
-*/
+ * Auto generated file, do not modify it!
+ */
 
-export const content =
-\`${content}\`
+export const content = \`${content}\`
 `
 
   if (prev !== curr) {
