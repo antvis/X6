@@ -1,60 +1,52 @@
 import React from 'react'
-import {
-  FLOW_CHART_RECT
-} from '@/x6Editor/constant'
-import { useElementMove } from '@/common/hooks'
+import x6Editor from '@/x6Editor'
+import { Dnd } from '@antv/x6/es/addon/dnd'
+import { FlowChartRect } from '@/x6Editor/shape'
 import styles from './index.less'
 
+enum FLOW_CHART_TYPE {
+  RECT = 'rect',
+  ELLIPSE = 'ellipse',
+}
+
 export default function() {
-  const {
-    activeType,
-    clientRect,
-    shadow,
-    handleMouseDown,
-    handleMouseMove,
-    handleMouseUp,
-  } = useElementMove()
+  const dnd: Dnd = new Dnd({ 
+    target: x6Editor.getInstance().graph as any, 
+  })
+
+  const startDrag = (
+    e: React.MouseEvent<HTMLDivElement, MouseEvent>, 
+    type: FLOW_CHART_TYPE,
+  ) => {
+    let option
+    switch(type) {
+      case FLOW_CHART_TYPE.RECT:
+        break
+      case FLOW_CHART_TYPE.ELLIPSE:
+        option = {
+          width: 100,
+          height: 50,
+          attrs: {
+            body: {
+              rx: 20,
+              ry: 20,
+            },
+          },
+        }
+        break
+      default:
+        break
+    }
+    const node = new FlowChartRect(option)
+    dnd.start(node as any, e.nativeEvent as any)
+  }
 
   return (
-    <div>
-      <svg
-        className={styles.svg}
-        width="368"
-        height="250"
-        version="1.1"
-        xmlns="http://www.w3.org/2000/svg"
-        onMouseDown={handleMouseDown}
-      >
-        <rect
-          x="10"
-          y="10"
-          width={FLOW_CHART_RECT.iconWidth}
-          height={FLOW_CHART_RECT.iconHeight}
-          fill="transparent"
-          stroke="black"
-          strokeWidth="1"
-          cursor="pointer"
-          data-type={FLOW_CHART_RECT.type}
-          data-width={FLOW_CHART_RECT.width}
-          data-height={FLOW_CHART_RECT.height}
-          className={activeType === FLOW_CHART_RECT.type ? styles.active : ''}
-        />
-      </svg>
-      {activeType && (
-        <div
-          className={styles.mask}
-          onMouseMove={handleMouseMove}
-          onMouseUp={handleMouseUp}
-        >
-          <div 
-            className={styles.shadow}
-            ref={shadow}
-            draggable={false}
-            style={clientRect}
-          >
-          </div>
-        </div>
-      )}
+    <div className={styles.chart}>
+      <div
+        className={styles.ellipse}
+        onMouseDown={e => startDrag(e, FLOW_CHART_TYPE.ELLIPSE)}/>
+      <div onMouseDown={e => startDrag(e, FLOW_CHART_TYPE.RECT)}/>
     </div>
   )
 }

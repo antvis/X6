@@ -1,18 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import X6Editor from '@/x6Editor'
+import { DataUri } from '@antv/x6'
 import {
   ReloadOutlined,
   SaveOutlined,
   PrinterOutlined,
   UndoOutlined,
   RedoOutlined,
-} from '@ant-design/icons';
+} from '@ant-design/icons'
 import styles from './index.less'
 
-interface HistoryStatus {
-  canUndo: boolean,
-  canRedo: boolean
-}
 enum CMD {
   CLEAR = 'clear',
   SAVE = 'save',
@@ -25,12 +22,12 @@ export default function() {
   const [canUndo, setCanUndo] = useState(false)
   const [canRedo, setCanRedo] = useState(false)
   useEffect(() => {
-    const {canUndo, canRedo} = X6Editor.getInstance().getHistoryStatus()
-    setCanUndo(canUndo)
-    setCanRedo(canRedo)
-    X6Editor.getInstance().on('history:change', (payload: HistoryStatus) => {
-      setCanUndo(payload.canUndo)
-      setCanRedo(payload.canRedo)
+    const { history } = X6Editor.getInstance().graph
+    setCanUndo(history.canUndo())
+    setCanRedo(history.canRedo())
+    history.on('change', () => {
+      setCanUndo(history.canUndo())
+      setCanRedo(history.canRedo())
     })
   }, [])
 
@@ -67,21 +64,24 @@ export default function() {
     if (disabled) {
       return
     }
+    const { graph } = X6Editor.getInstance()
     switch(cmd) {
       case CMD.CLEAR:
-        X6Editor.getInstance().clear()
+        graph.model.resetCells([])
         break
       case CMD.SAVE:
-        X6Editor.getInstance().save()
+        graph.toPNG((datauri: string) => {
+          DataUri.downloadDataUri(datauri, 'chart.png')
+        })
         break
       case CMD.PRINT:
-        X6Editor.getInstance().print()
+        graph.printPreview()
         break
       case CMD.UNDO:
-        X6Editor.getInstance().undo()
+        graph.history.undo()
         break
       case CMD.REDO:
-        X6Editor.getInstance().redo()
+        graph.history.redo()
         break
       default:
         break

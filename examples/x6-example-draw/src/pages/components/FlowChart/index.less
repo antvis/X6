@@ -1,25 +1,18 @@
-.svg {
-  rect:hover {
-    fill: #e0e0e0;
+.chart {
+  display: flex;
+  padding-left: 16px;
+  > div {
+    width: 60px;
+    height: 30px;
+    border: 2px solid #31d0c6;
+    margin-right: 16px;
+    background-color: #f8b9a6;
+    cursor: pointer;
+    &:hover {
+      cursor: move;
+    }
   }
-}
-.mask {
-  position: fixed;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  z-index: 10;
-  cursor: move;
-  .shadow {
-    position: absolute;
-    width: 160px;
-    height: 80px;
-    border: 1px dashed #000;
-    z-index: 9;
+  .ellipse {
+    border-radius: 20px;
   }
-}
-.active {
-  stroke: #ff0000;
-  stroke-dasharray: 3;
 }
