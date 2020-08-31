@@ -3,7 +3,8 @@
 /**
  * Auto generated file, do not modify it!
  */
-const content = `.x6-graph {
+
+export const content = `.x6-graph {
   position: relative;
   outline: none;
 }
@@ -1204,5 +1205,3 @@ const content = `.x6-graph {
   }
 }
 `
-
-export { content }
