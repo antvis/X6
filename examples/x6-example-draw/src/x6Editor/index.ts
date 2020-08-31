@@ -1,39 +1,28 @@
-import { Graph, Events, DataUri } from '@antv/x6'
-import { debounce } from 'lodash'
-import registerShape from './shape'
-import { SHAPES } from './constant'
+import { Graph, FunctionExt } from '@antv/x6'
+import './shape'
 
-export interface ShapeOption {
-  type: string,
-  clientX: number,
-  clientY: number,
-}
-export enum CONFIG_TYPE {
-  GRID,
-  NODE,
-  EDGE,
-}
-
-export default class X6Editor extends Events{
-  private static instance: X6Editor | null = null
-  private graph: Graph
+export default class X6Editor{
+  private static instance: X6Editor
+  private _graph: Graph
   private container: HTMLElement
+
+  get graph() {
+    return this._graph
+  }
 
   public static getInstance() {
     if (!this.instance) {
       this.instance = new X6Editor()
     }
-    return this.instance;
+    return this.instance
   }
 
   constructor() {
-    super()
     this.container = document.getElementById('container')!
-    const { offsetWidth, offsetHeight } = this.container
-    this.graph = new Graph({
+    this._graph = new Graph({
       container: this.container,
-      width: offsetWidth,
-      height: offsetHeight - 2,
+      width: document.body.offsetWidth - 800,
+      height: document.body.offsetHeight - 132,
       grid: {
         size: 10,
         visible: true,
@@ -56,25 +45,35 @@ export default class X6Editor extends Events{
       },
       snapline: true,
       resizing: true,
+      rotating: true,
       history: true,
+      selecting: {
+        enabled: true,
+        multiple: true,
+      },
+      clipboard: {
+        enabled: true,
+      },
+      keyboard: {
+        enabled: true,
+      },
+      scroller: {
+        enabled: true,
+        // width: 600,
+        // height: 400,
+        pageVisible: true,
+        pageBreak: true,
+        pannable: true,
+      },
+      minimap: {
+        enabled: true,
+        container: document.getElementById('minmapContainer')!,
+        width: 350,
+        height: 200,
+        padding: 10,
+      },
     })
     this.initEvent()
-    registerShape();
-  }
-
-  addShape(option: ShapeOption) {
-    const { type, clientX, clientY } = option
-    const { width, height } = SHAPES.find(s => s.type === type)!
-    const { offsetLeft, offsetTop } = this.container
-    const x = clientX - offsetLeft - width / 2
-    const y = clientY - offsetTop - height / 2
-    this.graph.addNode({
-      shape: type,
-      x,
-      y,
-      width,
-      height,
-    })
   }
 
   showPorts(ports: NodeListOf<SVGAElement>, show: boolean) {
@@ -83,57 +82,11 @@ export default class X6Editor extends Events{
     }
   }
 
-  clear() {
-    const ids: string[] = []
-    const edges = this.graph.getEdges()
-    edges.forEach(edge => {
-      ids.push(edge.id)
-    })
-    const nodes = this.graph.getNodes()
-    nodes.forEach(node => {
-      ids.push(node.id)
-    })
-    this.graph.removeCells(ids)
-  }
-
-  save() {
-    this.graph.toPNG(datauri => {
-      DataUri.downloadDataUri(datauri, 'chart.png')
-    })
-  }
-
-  print() {
-    this.graph.printPreview()
-  }
-
-  getHistoryStatus() {
-    const { history } = this.graph
-    return {
-      canUndo: history.canUndo(),
-      canRedo: history.canRedo(),
-    }
-  }
-
-  undo() {
-    this.graph.history.undo()
-  }
-
-  redo() {
-    this.graph.history.redo()
-  }
-
-  drawGrid(option: Graph.GridManager.DrawGridOptions) {
-    this.graph.drawGrid(option)
-  }
-
-  setGridSize(size: number) {
-    this.graph.setGridSize(size)
-  }
-
   initEvent() {
     const { graph } = this
+
     // show or hide ports
-    graph.on('node:mouseenter', debounce(() => {
+    this.graph.on('node:mouseenter', FunctionExt.debounce(() => {
       const ports = this.container.querySelectorAll('.x6-port') as NodeListOf<SVGAElement>
       this.showPorts(ports, true)
     }), 500)
@@ -142,25 +95,35 @@ export default class X6Editor extends Events{
       this.showPorts(ports, false)
     })
 
-    // history
-    graph.history.on('change', () => {
-      this.trigger('history:change', {
-        canUndo: graph.history.canUndo(),
-        canRedo: graph.history.canRedo(),
-      })
+    // keyboard
+    graph.bindKey('meta+c', () => {
+      const cells = graph.getSelectedCells()
+      if (cells.length) {
+        graph.copy(cells)
+      }
+      return false
     })
-
-    // node/edges attrs
-    graph.on('node:click', ({e, x, y, node}) => {
-      this.trigger('config.type:change', CONFIG_TYPE.NODE)
+    graph.bindKey('meta+v', () => {
+      if (!graph.isClipboardEmpty()) {
+        const cells = graph.paste({ offset: 32 })
+        graph.cleanSelection()
+        graph.select(cells)
+      }
+      return false
     })
-    graph.on('edge:click', ({e, x, y, edge}) => {
-      this.trigger('config.type:change', CONFIG_TYPE.EDGE)
+    graph.bindKey('meta+x', () => {
+      const cells = graph.getSelectedCells()
+      if (cells.length) {
+        graph.cut(cells)
+      }
+      return false
     })
-
-    // grid attrs
-    graph.on('blank:click', () => {
-      this.trigger('config.type:change', CONFIG_TYPE.GRID)
+    graph.bindKey('backspace', () => {
+      const cells = graph.getSelectedCells()
+      if (cells.length) {
+        graph.removeCells(cells)
+      }
+      return false
     })
   }
 }

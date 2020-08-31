@@ -160,6 +160,9 @@ export default class Example extends React.Component {
       connecting: {
         connectionPoint: 'boundary',
         validateMagnet: function (cellView: CellView, magnet: Element) {
+          if (!magnet) {
+            return true
+          }
           var cell = (cellView.cell as any) as TogglableRect
           var portId = magnet.getAttribute('port')
           return portId ? !cell.isPortCollapsed(portId) : true

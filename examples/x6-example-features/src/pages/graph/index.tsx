@@ -77,12 +77,12 @@ export default class Example extends React.Component<
           }),
         })
       })
-      .on('translate', ({ tx, ty }) => {
+      .on('translate', ({origin: {x, y}}) => {
         this.effect.hideAll()
         this.setState({
           attrs: getAttrs({
-            originX: tx,
-            originY: ty,
+            originX: x,
+            originY: y,
           }),
         })
       })
@@ -127,10 +127,24 @@ export default class Example extends React.Component<
 
   onGraphOriginChanged = (ox: number, oy: number) => {
     this.graph.setOrigin(ox, oy)
+    this.setState((prevState) => ({
+      attrs: {
+        ...prevState.attrs,
+        originX: ox,
+        originY: oy,
+      },
+    }))
   }
 
   onGraphScaleChanged = (sx: number, sy: number) => {
     this.graph.scale(sx, sy)
+    this.setState((prevState) => ({
+      attrs: {
+        ...prevState.attrs,
+        scaleX: sx,
+        scaleY: sy,
+      },
+    }))
   }
 
   onFitOptionsChanged = (options: FitToContentCard.State) => {

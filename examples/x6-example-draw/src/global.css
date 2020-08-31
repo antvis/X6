@@ -8,3 +8,10 @@ body,
 body {
   margin: 0;
 }
+
+.x6-widget-transform {
+  border: 2px dashed #FF8000;
+}
+.x6-widget-transform > div{
+  border: 2px solid #FF8000;
+}
