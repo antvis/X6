@@ -13782,6 +13782,11 @@ highlight-words-core@1.2.2:
   resolved "https://registry.npm.taobao.org/highlight-words-core/download/highlight-words-core-1.2.2.tgz#1eff6d7d9f0a22f155042a00791237791b1eeaaa"
   integrity sha1-Hv9tfZ8KIvFVBCoAeRI3eRse6qo=
 
+highlight.js@^10.1.2:
+  version "10.1.2"
+  resolved "https://registry.npm.taobao.org/highlight.js/download/highlight.js-10.1.2.tgz#c20db951ba1c22c055010648dfffd7b2a968e00c"
+  integrity sha1-wg25UbocIsBVAQZI3//Xsqlo4Aw=
+
 highlight.js@^8.1.0:
   version "8.9.1"
   resolved "https://registry.npm.taobao.org/highlight.js/download/highlight.js-8.9.1.tgz#b8a9c5493212a9392f0222b649c9611497ebfb88"
