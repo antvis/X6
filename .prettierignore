@@ -29,3 +29,4 @@ es/
 dist/
 coverage/
 packages/x6-sites/static/demos
+csstype.ts
