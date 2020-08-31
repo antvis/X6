@@ -65,18 +65,18 @@ function makeStyleModule() {
   const source = path.join(dist, 'x6.css')
   const target = path.join(src, 'style/raw.ts')
   const content = fs.readFileSync(source, { encoding: 'utf8' })
-  const old = fs.readFileSync(target, { encoding: 'utf8' })
+  const prev = fs.readFileSync(target, { encoding: 'utf8' })
   const curr = `/* tslint:disable */
 
 /**
 * Auto generated file, do not modify it!
 */
-const content =
+
+export const content =
 \`${content}\`
+`
 
-export { content }`
-
-  if (old !== curr) {
+  if (prev !== curr) {
     fs.writeFileSync(target, curr)
   }
 }
