@@ -15,6 +15,7 @@ const next = `/* tslint:disable */
 
 /**
 * Auto generated file by copying from node_modules, do not modify it!
+* Fix karma error "Can't find csstype [undefined] (required by ..."
 */
 
 ${content}
