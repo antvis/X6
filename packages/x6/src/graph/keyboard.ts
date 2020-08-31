@@ -1,4 +1,4 @@
-import MousetrapNative from 'mousetrap'
+import Mousetrap from 'mousetrap'
 import { Disposable, IDisablable } from '../common'
 import { Dom, FunctionExt } from '../util'
 import { Graph } from './index'
@@ -6,7 +6,7 @@ import { Graph } from './index'
 export class Keyboard extends Disposable implements IDisablable {
   public readonly target: HTMLElement | Document
   public readonly container: HTMLElement
-  public readonly mousetrap: Keyboard.Mousetrap
+  public readonly mousetrap: MousetrapInstance
 
   protected get graph() {
     return this.options.graph
@@ -31,7 +31,7 @@ export class Keyboard extends Disposable implements IDisablable {
       this.graph.on('blank:mousedown', this.focus, this)
     }
 
-    this.mousetrap = new Keyboard.Mousetrap(this.target as Element, this)
+    this.mousetrap = Keyboard.createMousetrap(this)
   }
 
   get disabled() {
@@ -146,19 +146,22 @@ export namespace Keyboard {
 }
 
 export namespace Keyboard {
-  export class Mousetrap extends MousetrapNative {
-    keyboard: Keyboard
-
-    constructor(elem: Element, keyboard: Keyboard) {
-      super(elem)
-      this.keyboard = keyboard
-    }
-
-    stopCallback(e: KeyboardEvent, elem: HTMLElement, combo: string) {
-      if (this.keyboard.isEnabledForEvent(e)) {
-        return super.stopCallback(e, elem, combo)
+  export function createMousetrap(keyboard: Keyboard) {
+    const mousetrap = new Mousetrap(keyboard.target as Element)
+    const stopCallback = mousetrap.stopCallback
+    mousetrap.stopCallback = (
+      e: KeyboardEvent,
+      elem: HTMLElement,
+      combo: string,
+    ) => {
+      if (keyboard.isEnabledForEvent(e)) {
+        if (stopCallback) {
+          return stopCallback.call(mousetrap, e, elem, combo)
+        }
       }
       return false
     }
+
+    return mousetrap
   }
 }
