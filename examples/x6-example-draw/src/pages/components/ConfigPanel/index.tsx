@@ -12,7 +12,7 @@ export enum CONFIG_TYPE {
   EDGE,
 }
 
-export default function() {
+export default function () {
   const [type, setType] = useState<CONFIG_TYPE>(CONFIG_TYPE.GRID)
   const [id, setId] = useState('')
   const { gridAttrs, setGridAttr } = useGridAttr()
@@ -30,8 +30,10 @@ export default function() {
 
   return (
     <div className={styles.config}>
-      <div id="minmapContainer" style={{ marginTop: 16 }}></div>
-      {type === CONFIG_TYPE.GRID && <ConfigGrid attrs={gridAttrs} setAttr={setGridAttr} />}
+      <div id="minmapContainer" style={{ marginTop: 16 }} />
+      {type === CONFIG_TYPE.GRID && (
+        <ConfigGrid attrs={gridAttrs} setAttr={setGridAttr} />
+      )}
       {type === CONFIG_TYPE.NODE && <ConfigNode id={id} />}
       {type === CONFIG_TYPE.EDGE && <ConfigEdge />}
     </div>

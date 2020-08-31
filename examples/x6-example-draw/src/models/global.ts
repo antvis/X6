@@ -18,13 +18,13 @@ export function useGridAttr() {
     opacity: 1,
   })
   const setGridAttr = (key: string, value: any) => {
-    setGridAttrs(prev => ({
+    setGridAttrs((prev) => ({
       ...prev,
-      [key]: value
+      [key]: value,
     }))
   }
   return {
     gridAttrs,
-    setGridAttr
+    setGridAttr,
   }
 }

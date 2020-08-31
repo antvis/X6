@@ -7,7 +7,7 @@ import ConfigPanel from './components/ConfigPanel'
 import '../reset.less'
 import styles from './index.less'
 
-export default function() {
+export default function () {
   const getContainerSize = () => {
     return {
       width: document.body.offsetWidth - 800,
@@ -40,7 +40,7 @@ export default function() {
           <div className={styles.toolbar}>
             <ToolBar />
           </div>
-          <div id="container" className="x6-graph"/>
+          <div id="container" className="x6-graph" />
         </div>
         <div className={styles.config}>
           <ConfigPanel />
