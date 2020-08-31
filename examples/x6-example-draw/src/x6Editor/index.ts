@@ -1,12 +1,12 @@
 import { Graph, FunctionExt } from '@antv/x6'
 import './shape'
 
-export default class X6Editor{
+export default class X6Editor {
   private static instance: X6Editor
   private _graph: Graph
   private container: HTMLElement
 
-  get graph() {
+  public get graph() {
     return this._graph
   }
 
@@ -28,18 +28,18 @@ export default class X6Editor{
         visible: true,
         type: 'doubleMesh',
         args: [
-          { 
+          {
             color: '#e6e6e6',
             thickness: 1,
           },
-          { 
+          {
             color: '#d0d0d0',
             thickness: 1,
             factor: 5,
           },
         ],
       },
-      connecting:{
+      connecting: {
         anchor: 'center',
         connectionPoint: 'anchor',
       },
@@ -86,12 +86,20 @@ export default class X6Editor{
     const { graph } = this
 
     // show or hide ports
-    this.graph.on('node:mouseenter', FunctionExt.debounce(() => {
-      const ports = this.container.querySelectorAll('.x6-port') as NodeListOf<SVGAElement>
-      this.showPorts(ports, true)
-    }), 500)
+    this.graph.on(
+      'node:mouseenter',
+      FunctionExt.debounce(() => {
+        const ports = this.container.querySelectorAll('.x6-port') as NodeListOf<
+          SVGAElement
+        >
+        this.showPorts(ports, true)
+      }),
+      500,
+    )
     graph.on('node:mouseleave', () => {
-      const ports = this.container.querySelectorAll('.x6-port') as NodeListOf<SVGAElement>
+      const ports = this.container.querySelectorAll('.x6-port') as NodeListOf<
+        SVGAElement
+      >
       this.showPorts(ports, false)
     })
 

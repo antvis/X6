@@ -9,17 +9,17 @@ enum FLOW_CHART_TYPE {
   ELLIPSE = 'ellipse',
 }
 
-export default function() {
-  const dnd: Dnd = new Dnd({ 
-    target: x6Editor.getInstance().graph as any, 
+export default function () {
+  const dnd: Dnd = new Dnd({
+    target: x6Editor.getInstance().graph as any,
   })
 
   const startDrag = (
-    e: React.MouseEvent<HTMLDivElement, MouseEvent>, 
+    e: React.MouseEvent<HTMLDivElement, MouseEvent>,
     type: FLOW_CHART_TYPE,
   ) => {
     let option
-    switch(type) {
+    switch (type) {
       case FLOW_CHART_TYPE.RECT:
         break
       case FLOW_CHART_TYPE.ELLIPSE:
@@ -45,8 +45,9 @@ export default function() {
     <div className={styles.chart}>
       <div
         className={styles.ellipse}
-        onMouseDown={e => startDrag(e, FLOW_CHART_TYPE.ELLIPSE)}/>
-      <div onMouseDown={e => startDrag(e, FLOW_CHART_TYPE.RECT)}/>
+        onMouseDown={(e) => startDrag(e, FLOW_CHART_TYPE.ELLIPSE)}
+      />
+      <div onMouseDown={(e) => startDrag(e, FLOW_CHART_TYPE.RECT)} />
     </div>
   )
 }
