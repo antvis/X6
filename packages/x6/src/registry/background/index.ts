@@ -1,22 +1,26 @@
 import { ValuesType } from 'utility-types'
-import * as CSS from 'csstype'
-import * as patterns from './main'
+import {
+  BackgroundSizeProperty,
+  BackgroundRepeatProperty,
+  BackgroundPositionProperty,
+} from '../../types/csstype'
 import { KeyValue } from '../../types'
 import { Registry } from '../registry'
+import * as patterns from './main'
 
 export namespace Background {
   export interface Options {
     color?: string
     image?: string
-    position?: CSS.BackgroundPositionProperty<{
+    position?: BackgroundPositionProperty<{
       x: number
       y: number
     }>
-    size?: CSS.BackgroundSizeProperty<{
+    size?: BackgroundSizeProperty<{
       width: number
       height: number
     }>
-    repeat?: CSS.BackgroundRepeatProperty
+    repeat?: BackgroundRepeatProperty
     opacity?: number
   }
 
