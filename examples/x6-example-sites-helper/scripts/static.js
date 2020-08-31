@@ -40,7 +40,7 @@ function getHash() {
 
 function exec(hashcode) {
   let changed = true
-  if (fs.existsSync(targetDir)) {
+  if (fs.existsSync(indexFile)) {
     const content = fs.readFileSync(indexFile, { encoding: 'utf8' })
     const match = content.match(regex)
     const previous = match && match[1]
@@ -51,9 +51,11 @@ function exec(hashcode) {
 
   if (changed) {
     const spinner = ora(`Deploying "${name}"`).start()
-
-    cp.exec('yarn build', { cwd: repo }, (err) => {
-      if (!err) {
+    cp.exec('yarn build', { cwd: repo }, (err, stdout) => {
+      if (err) {
+        spinner.stop()
+        console.error(stdout)
+      } else {
         fse.emptyDirSync(targetDir)
         fse.moveSync(sourceDir, targetDir, { overwrite: true })
 
@@ -62,7 +64,6 @@ function exec(hashcode) {
         const html = raw.replace(/<title>(.*)<\/title>/, title)
 
         fs.writeFileSync(indexFile, html, { encoding: 'utf8' })
-
         spinner.stop()
         console.log(msg)
       }
