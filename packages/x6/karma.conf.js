@@ -31,7 +31,7 @@ module.exports = (config) => {
       },
       coverageOptions: {
         instrumentation: true,
-        exclude: /\.[test|d]\.ts$/,
+        exclude: /\.test\.ts$/,
       },
       reports: {
         html: 'test/coverage',
