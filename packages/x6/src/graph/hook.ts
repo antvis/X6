@@ -418,7 +418,7 @@ export class Hook extends Base implements Hook.IHook {
       edge = new StandardEdge()
     }
 
-    return edge!
+    return edge as Edge
   }
 
   validateConnection(

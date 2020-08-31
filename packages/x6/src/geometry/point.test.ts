@@ -11,9 +11,11 @@ describe('point', () => {
   })
 
   describe('#Point.random', () => {
-    const p = Point.random(1, 5, 2, 6)
-    expect(p.x >= 1 && p.x <= 5).toBe(true)
-    expect(p.y >= 2 && p.y <= 6).toBe(true)
+    it('should create random point', () => {
+      const p = Point.random(1, 5, 2, 6)
+      expect(p.x >= 1 && p.x <= 5).toBe(true)
+      expect(p.y >= 2 && p.y <= 6).toBe(true)
+    })
   })
 
   describe('#round', () => {

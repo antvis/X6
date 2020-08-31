@@ -1,4 +1,4 @@
-import { 
+import {
   getValue,
   getNumber,
   getBoolean,
@@ -13,15 +13,15 @@ describe('Object', () => {
     name: 'x6',
     age: 1,
     gender: null,
-    tall: true
+    tall: true,
   }
 
   describe('#getValue', () => {
     it('should return a value of a object', () => {
-      expect(getValue(obj, 'name')).toBe('x6')
-      expect(getValue(obj, 'age')).toBe(1)
-      expect(getValue(obj, 'gender')).toBe(null)
-      expect(getValue(obj, 'count')).toBe(undefined)
+      expect(getValue<string>(obj, 'name')).toBe('x6')
+      expect(getValue<number>(obj, 'age')).toBe(1)
+      expect(getValue<any>(obj, 'gender')).toBe(null)
+      expect(getValue<any>(obj, 'count')).toBe(undefined)
     })
 
     it('should return a defaultValue of a object', () => {
@@ -60,12 +60,12 @@ describe('Object', () => {
       version: ['0.1', '0.2', '0.3'],
       attr: {
         node: {
-          fontSize: 14
+          fontSize: 14,
         },
         edge: {
-          color: 'red'
-        }
-      }
+          color: 'red',
+        },
+      },
     }
     it('should set or get object value by path', () => {
       expect(getByPath(project, 'version/1')).toBe('0.2')
@@ -94,12 +94,12 @@ describe('Object', () => {
       version: ['0.1', '0.2', '0.3'],
       attr: {
         node: {
-          fontSize: 14
+          fontSize: 14,
         },
         edge: {
-          color: 'red'
-        }
-      }
+          color: 'red',
+        },
+      },
     }
     it('should return flatten object', () => {
       expect(flatten(project)).toEqual({
@@ -108,7 +108,7 @@ describe('Object', () => {
         'version/1': '0.2',
         'version/2': '0.3',
         'attr/node/fontSize': 14,
-        'attr/edge/color': 'red'
+        'attr/edge/color': 'red',
       })
     })
   })

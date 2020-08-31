@@ -1,4 +1,5 @@
 import { createVector } from './vector'
+import { Vectorizer } from './vectorizer'
 import { hasClass, addClass, removeClass, toggleClass } from './class'
 
 describe('Dom', () => {
@@ -20,36 +21,37 @@ describe('Dom', () => {
     })
 
     describe('#addClass', () => {
-      const div = createVector('div')
-      const vel = createVector('g')
+      let div: Vectorizer
+      let vel: Vectorizer
+      beforeEach(() => {
+        div = createVector('div')
+        vel = createVector('g')
+      })
 
       it('should add class to HTMLDivElement', () => {
         div.addClass('test').addClass(null as any)
+        const cls = div.node.getAttribute('class') as string
         expect(div.hasClass('test')).toBe(true)
-        expect(div.node.getAttribute('class')?.indexOf('test') !== -1).toBe(
-          true,
-        )
+        expect(cls.indexOf('test') !== -1).toBe(true)
         expect(div.attr('class')).toEqual('test')
       })
 
       it('should add class to SVGGElement', () => {
-        vel.removeClass()
         vel.addClass('test')
+        const cls = vel.node.getAttribute('class') as string
+
         expect(vel.hasClass('test')).toBe(true)
-        expect(vel.node.getAttribute('class')?.indexOf('test') !== -1).toBe(
-          true,
-        )
+        expect(cls.indexOf('test') !== -1).toBe(true)
         expect(vel.attr('class')).toEqual('test')
       })
 
       it('should append to class list', () => {
-        vel.removeClass()
         vel.attr('class', 'foo')
         vel.addClass('test')
+        const cls = vel.node.getAttribute('class') as string
+
         expect(vel.hasClass('test')).toBe(true)
-        expect(vel.node.getAttribute('class')?.indexOf('test') !== -1).toBe(
-          true,
-        )
+        expect(cls.indexOf('test') !== -1).toBe(true)
         expect(vel.attr('class')).toEqual('foo test')
 
         vel.addClass('foo bar baz')
@@ -57,24 +59,20 @@ describe('Dom', () => {
       })
 
       it('should not add the same class twice in same element', () => {
-        div.removeClass()
         div.addClass('foo').addClass('foo')
         expect(div.attr('class')).toEqual('foo')
 
-        vel.removeClass()
         vel.addClass('foo foo')
         expect(vel.attr('class')).toEqual('foo')
       })
 
       it('should not add empty string', () => {
-        vel.removeClass()
         vel.addClass('test')
         vel.addClass(' ')
         expect(vel.attr('class')).toEqual('test')
       })
 
       it('should call hook', () => {
-        vel.removeClass()
         vel.addClass('test')
         vel.addClass(' ')
         addClass(vel.node, (cls) => `${cls} foo`)
