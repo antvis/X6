@@ -5,22 +5,22 @@ import styles from './index.less'
 
 const { Panel } = Collapse
 
-export default function() {
+export default function () {
   return (
     <div>
       <Collapse
-        accordion={true} 
-        bordered={false} 
+        accordion={true}
+        bordered={false}
         expandIconPosition="right"
         className={styles.collapse}
       >
         <Panel header="流程图" key="1">
           <FlowChart />
         </Panel>
-        <Panel header="DAG图" key="2"/>
-        <Panel header="ER图" key="3"/>
-        <Panel header="类图" key="4"/>
-        <Panel header="时序图" key="5"/>
+        <Panel header="DAG图" key="2" />
+        <Panel header="ER图" key="3" />
+        <Panel header="类图" key="4" />
+        <Panel header="时序图" key="5" />
       </Collapse>
     </div>
   )

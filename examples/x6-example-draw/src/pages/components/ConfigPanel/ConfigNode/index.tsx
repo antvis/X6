@@ -6,14 +6,14 @@ import { Cell } from '@antv/x6'
 const { TabPane } = Tabs
 
 interface IProps {
-  id: string,
+  id: string
 }
 interface NodeAttrs {
   stroke: string
 }
 
-export default function(props: IProps) {
-  const { id }  = props;
+export default function (props: IProps) {
+  const { id } = props
   const [attrs, setAttrs] = useState<NodeAttrs>({
     stroke: '#31d0c6',
   })
@@ -25,15 +25,15 @@ export default function(props: IProps) {
       const cell = graph.getCellById(id)
       cellRef.current = cell
       setAttrs({
-        stroke: cell.prop('attrs/body/stroke')
+        stroke: cell.prop('attrs/body/stroke'),
       })
     }
   }, [id])
 
   const setAttr = (key: string, val: any) => {
-    setAttrs(prev => ({
+    setAttrs((prev) => ({
       ...prev,
-      [key]: val
+      [key]: val,
     }))
   }
 

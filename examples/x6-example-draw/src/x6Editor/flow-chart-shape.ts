@@ -1,7 +1,6 @@
 import { Graph, Dom } from '@antv/x6'
 
-export const FlowChartRect =  Graph.registerNode(
-  'flow-chart-rect', {
+export const FlowChartRect = Graph.registerNode('flow-chart-rect', {
   inherit: 'rect',
   width: 120,
   height: 60,
@@ -9,7 +8,7 @@ export const FlowChartRect =  Graph.registerNode(
     body: {
       stroke: '#31d0c6',
       strokeWidth: 2,
-      fill: '#f8b9a6'
+      fill: '#f8b9a6',
     },
     fo: {
       refWidth: '100%',
@@ -17,6 +16,13 @@ export const FlowChartRect =  Graph.registerNode(
     },
     content: {
       contenteditable: 'true',
+      style: {
+        width: '100%',
+        minHeight: '12px',
+        textAlign: 'center',
+        fontSize: '12px',
+        color: '#fff',
+      },
     },
   },
   markup: [
@@ -46,13 +52,6 @@ export const FlowChartRect =  Graph.registerNode(
             {
               tagName: 'div',
               selector: 'content',
-              style: {
-                width: '100%',
-                minHeight: '12px',
-                textAlign: 'center',
-                fontSize: '12px',
-                color: '#fff',
-              },
             },
           ],
         },
