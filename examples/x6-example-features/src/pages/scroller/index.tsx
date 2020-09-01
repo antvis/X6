@@ -1,33 +1,25 @@
 import React from 'react'
 import { Button } from 'antd'
-import { Graph, NodeView, Markup } from '@antv/x6'
+import { Graph, NodeView } from '@antv/x6'
 import '../index.less'
 import './index.less'
 
 class SimpleNodeView extends NodeView {
-  protected readonly markup: Markup.JSONMarkup = {
-    tagName: 'rect',
-    selector: 'body',
-    attrs: {
-      fill: '#31d0c6',
-    },
+  protected renderMarkup() {
+    return this.renderJSONMarkup({
+      tagName: 'rect',
+      selector: 'body',
+    })
   }
 
-  protected body: SVGRectElement
-
-  render() {
-    this.empty()
-    const doc = this.parseJSONMarkup(this.markup, this.container)
-    this.body = doc.selectors.body as SVGRectElement
-    this.container.append(doc.fragment)
-    this.updateNodeSize()
-    this.updateTransform()
-    return this
-  }
-
-  updateNodeSize() {
-    var size = this.cell.getSize()
-    this.setAttrs(size, this.body)
+  update() {
+    super.update({
+      body: {
+        refWidth: '100%',
+        refHeight: '100%',
+        fill: '#31d0c6',
+      },
+    })
   }
 }
 
@@ -42,6 +34,7 @@ export default class Example extends React.Component {
       container: this.graphContainer,
       width: 800,
       height: 500,
+      resizing: true,
       background: {
         color: '#f5f5f5',
       },
