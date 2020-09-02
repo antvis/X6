@@ -21,6 +21,13 @@ export class Content extends React.Component<Content.Props, Content.State> {
     } else {
       window.addEventListener('resize', () => this.updateIframeSize())
     }
+
+    setTimeout(() => {
+      const loading = document.getElementById('loading')
+      if (loading && loading.parentNode) {
+        loading.parentNode.removeChild(loading)
+      }
+    }, 1000)
   }
 
   updateIframeSize() {
