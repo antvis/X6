@@ -20,6 +20,10 @@ const sourceDir = path.join(repo, 'build')
 const targetDir = path.join(staticDir, dir)
 const indexFile = path.join(targetDir, 'index.html')
 const regex = /<meta\s+name="hash"\s+content="(.*?)"\s*\/>/
+const readfile = (file) => fs.readFileSync(file, { encoding: 'utf8' })
+const writefile = (file, content) =>
+  fs.writeFileSync(file, content, { encoding: 'utf8' })
+const loading = readfile(path.join(__dirname, './loading.html'))
 
 function getHash() {
   return Promise.all([
@@ -41,7 +45,7 @@ function getHash() {
 function exec(hashcode) {
   let changed = true
   if (fs.existsSync(indexFile)) {
-    const content = fs.readFileSync(indexFile, { encoding: 'utf8' })
+    const content = readfile(indexFile)
     const match = content.match(regex)
     const previous = match && match[1]
     changed = previous !== hashcode
@@ -59,11 +63,14 @@ function exec(hashcode) {
         fse.emptyDirSync(targetDir)
         fse.moveSync(sourceDir, targetDir, { overwrite: true })
 
-        const raw = fs.readFileSync(indexFile, { encoding: 'utf8' })
+        const raw = readfile(indexFile)
         const title = `<meta name="hash" content="${hashcode}"/><title>${dir}</title>`
-        const html = raw.replace(/<title>(.*)<\/title>/, title)
+        const wrap = '<div id="root"></div>'
+        const html = raw
+          .replace(/<title>(.*)<\/title>/, title)
+          .replace(wrap, `${wrap}\n${loading}`)
 
-        fs.writeFileSync(indexFile, html, { encoding: 'utf8' })
+        writefile(indexFile, html)
         spinner.stop()
         console.log(msg)
       }

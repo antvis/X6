@@ -12,6 +12,8 @@ class SimpleNodeView extends NodeView {
     })
   }
 
+  protected renderPorts() {}
+
   update() {
     super.update({
       body: {
@@ -78,14 +80,6 @@ export default class Example extends React.Component {
 
     this.scroller = graph.scroller.widget
 
-    // graph.on('node:added', ({ node }) => {
-    //   console.log('add', node)
-    // })
-
-    // graph.on('node:removed', ({ node }) => {
-    //   console.log('remove', node)
-    // })
-
     const rect = graph.addNode({
       shape: 'rect',
       x: 300,
@@ -96,6 +90,7 @@ export default class Example extends React.Component {
         rect: { fill: '#31D0C6', stroke: '#4B4A67', 'stroke-width': 2 },
         text: { text: 'rect', fill: 'white' },
       },
+      ports: [{}],
     })
 
     rect.on('removed', () => {
