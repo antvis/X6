@@ -85,7 +85,6 @@
       animation: dotTriangle var(--duration)
         cubic-bezier(0.785, 0.135, 0.15, 0.86) infinite;
     }
-
     @-webkit-keyframes pathTriangle {
       33% {
         stroke-dashoffset: 74;
@@ -97,7 +96,6 @@
         stroke-dashoffset: 221;
       }
     }
-
     @keyframes pathTriangle {
       33% {
         stroke-dashoffset: 74;
@@ -109,7 +107,6 @@
         stroke-dashoffset: 221;
       }
     }
-
     @-webkit-keyframes dotTriangle {
       33% {
         -webkit-transform: translate(0, 0);
@@ -124,7 +121,6 @@
         transform: translate(-10px, -18px);
       }
     }
-
     @keyframes dotTriangle {
       33% {
         -webkit-transform: translate(0, 0);
@@ -139,7 +135,6 @@
         transform: translate(-10px, -18px);
       }
     }
-
     @-webkit-keyframes pathRect {
       25% {
         stroke-dashoffset: 64;
@@ -154,7 +149,6 @@
         stroke-dashoffset: 256;
       }
     }
-
     @keyframes pathRect {
       25% {
         stroke-dashoffset: 64;
@@ -169,7 +163,6 @@
         stroke-dashoffset: 256;
       }
     }
-
     @-webkit-keyframes dotRect {
       25% {
         -webkit-transform: translate(0, 0);
@@ -188,7 +181,6 @@
         transform: translate(-18px, -18px);
       }
     }
-
     @keyframes dotRect {
       25% {
         -webkit-transform: translate(0, 0);
@@ -207,7 +199,6 @@
         transform: translate(-18px, -18px);
       }
     }
-
     @-webkit-keyframes pathCircle {
       25% {
         stroke-dashoffset: 125;
@@ -222,7 +213,6 @@
         stroke-dashoffset: 275;
       }
     }
-
     @keyframes pathCircle {
       25% {
         stroke-dashoffset: 125;
@@ -237,6 +227,14 @@
         stroke-dashoffset: 275;
       }
     }
+    .loading-text {
+      text-align: center;
+      height: 40px;
+      line-height: 40px;
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      color: #666;
+    }
   </style>
   <div
     style="
@@ -244,7 +242,7 @@
       position: absolute;
       left: 50%;
       top: 50%;
-      margin: -25px 0 0 -120px;
+      margin: -50px 0 0 -120px;
     "
   >
     <div class="loader">
@@ -273,17 +271,18 @@
         ></circle>
       </svg>
     </div>
-
     <div class="loader triangle">
       <svg viewBox="0 0 86 80">
         <polygon points="43 8 79 72 7 72" stroke="url(#gradient)"></polygon>
       </svg>
     </div>
-
     <div class="loader">
       <svg viewBox="0 0 80 80">
         <rect x="8" y="8" width="64" height="64" stroke="url(#gradient)"></rect>
       </svg>
+    </div>
+    <div class="loading-text">
+      <p>Loading...</p>
     </div>
   </div>
 </div>
