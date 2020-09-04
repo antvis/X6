@@ -43,7 +43,6 @@ export class NodeView<
 
     if (this.hasAction(ret, 'render')) {
       this.render()
-      // this.updateTools(opt)
       ret = this.removeAction(ret, [
         'render',
         'update',
@@ -51,6 +50,7 @@ export class NodeView<
         'translate',
         'rotate',
         'ports',
+        'tools',
       ])
     } else {
       ret = this.handleAction(
@@ -71,11 +71,7 @@ export class NodeView<
       ret = this.handleAction(ret, 'translate', () => this.translate())
       ret = this.handleAction(ret, 'rotate', () => this.rotate())
       ret = this.handleAction(ret, 'ports', () => this.renderPorts())
-    }
-
-    if (this.hasAction(ret, 'tools')) {
-      // this.updateTools(options)
-      ret = this.removeAction(ret, 'tools')
+      ret = this.handleAction(ret, 'tools', () => this.renderTools())
     }
 
     return ret
@@ -163,6 +159,8 @@ export class NodeView<
     if (!Config.useCSSSelector) {
       this.renderPorts()
     }
+
+    this.renderTools()
 
     return this
   }
@@ -856,7 +854,7 @@ export class NodeView<
       if (cell.isEdge()) {
         break
       }
-      if (!cell.hasParent() || view.can('stopDelegation')) {
+      if (!cell.hasParent() || view.can('stopDelegateOnDragging')) {
         return view
       }
       cell = cell.getParent() as Entity
@@ -1062,7 +1060,7 @@ export class NodeView<
     }
   }
 
-  // #ednregion
+  // #endregion
 }
 
 export namespace NodeView {
@@ -1169,10 +1167,11 @@ NodeView.config({
     view: ['render'],
     markup: ['render'],
     attrs: ['update'],
-    size: ['resize', 'ports', 'tools'],
-    angle: ['rotate', 'tools'],
-    position: ['translate', 'tools'],
+    size: ['resize', 'ports'],
+    angle: ['rotate'],
+    position: ['translate'],
     ports: ['ports'],
+    tools: ['tools'],
   },
 })
 

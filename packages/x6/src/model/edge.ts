@@ -471,7 +471,7 @@ export class Edge<
   }
 
   getRouter() {
-    return this.store.get('router')
+    return this.store.get<Edge.RouterData>('router')
   }
 
   setRouter(name: string, args?: KeyValue, options?: Edge.SetOptions): this
@@ -1127,7 +1127,6 @@ export namespace Edge {
     targetCell?: Cell | string
     targetPort?: string
     targetPoint?: Point.PointLike | Point.PointData
-
     source?:
       | string
       | Cell
@@ -1151,7 +1150,11 @@ export namespace Edge {
       TerminalOptions {}
 
   export interface Defaults extends Common, Cell.Defaults {}
-  export interface Properties extends Cell.Properties, BaseOptions {}
+
+  export interface Properties
+    extends Cell.Properties,
+      Omit<BaseOptions, 'tools'> {}
+
   export interface Config
     extends Omit<Defaults, TerminalType>,
       TerminalOptions,

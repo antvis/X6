@@ -14,6 +14,7 @@ import { Edge } from '../model/edge'
 import { Markup } from './markup'
 import { CellView } from './cell'
 import { NodeView } from './node'
+import { ToolsView } from './tool'
 
 export class EdgeView<
   Entity extends Edge = Edge,
@@ -115,6 +116,7 @@ export class EdgeView<
         'vertices',
         'labels',
         'tools',
+        'widget',
       ])
       return ref
     }
@@ -122,9 +124,11 @@ export class EdgeView<
     ref = this.handleAction(ref, 'vertices', () => this.renderVertexMarkers())
     ref = this.handleAction(ref, 'update', () => this.update(null, options))
     ref = this.handleAction(ref, 'labels', () => this.onLabelsChange(options))
-    ref = this.handleAction(ref, 'tools', () =>
-      this.renderTools().updateToolsPosition(),
-    )
+    ref = this.handleAction(ref, 'tools', () => {
+      this.renderTools()
+      this.updateToolsPosition()
+    })
+    ref = this.handleAction(ref, 'widget', () => this.renderExternalTools())
 
     return ref
   }
@@ -188,6 +192,7 @@ export class EdgeView<
     this.renderMarkup()
     this.renderLabels()
     this.update()
+    this.renderExternalTools()
 
     return this
   }
@@ -463,6 +468,12 @@ export class EdgeView<
       }
     }
 
+    return this
+  }
+
+  protected renderExternalTools() {
+    const tools = this.cell.getTools()
+    this.addTools(tools as ToolsView.Options)
     return this
   }
 
@@ -836,7 +847,13 @@ export class EdgeView<
     let routePoints
 
     if (typeof router === 'function') {
-      routePoints = FunctionExt.call(router, this, vertices, {}, this)
+      routePoints = FunctionExt.call(
+        router as Router.Definition<any>,
+        this,
+        vertices,
+        {},
+        this,
+      )
     } else {
       const name = typeof router === 'string' ? router : router.name
       const args = typeof router === 'string' ? {} : router.args || {}
@@ -2734,6 +2751,7 @@ EdgeView.config<EdgeView.Options>({
     vertices: ['vertices', 'update'],
     vertexMarkup: ['vertices'],
     toolMarkup: ['tools'],
+    tools: ['widget'],
   },
   shortLength: 105,
   longLength: 155,

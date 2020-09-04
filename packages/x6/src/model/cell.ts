@@ -1098,6 +1098,68 @@ export class Cell<
 
   // #endregion
 
+  // #region tools
+
+  addTools(
+    items: Cell.ToolItem | Cell.ToolItem[],
+    name?: string | null,
+    options: Cell.AddToolOptions = {},
+  ) {
+    const toolItems = Array.isArray(items) ? items : [items]
+    if (options.reset) {
+      this.setTools({ name, items: toolItems }, options)
+    } else {
+      let tools = this.getTools()
+      if (tools == null || name == null || tools.name === name) {
+        if (tools == null) {
+          tools = {} as Cell.Tools
+        }
+
+        if (!tools.items) {
+          tools.items = []
+        }
+
+        tools.name = name
+        tools.items = [...tools.items, ...toolItems]
+
+        return this.setTools({ ...tools }, options)
+      }
+    }
+  }
+
+  setTools(tools?: Cell.ToolsLoose | null, options: Cell.SetOptions = {}) {
+    if (tools == null) {
+      this.removeTools()
+    } else {
+      this.store.set('tools', Cell.normalizeTools(tools), options)
+    }
+    return this
+  }
+
+  getTools(): Cell.Tools | null {
+    return this.store.get<Cell.Tools>('tools')
+  }
+
+  removeTools(options: Cell.SetOptions = {}) {
+    this.store.remove('tools', options)
+    return this
+  }
+
+  hasTools(name?: string) {
+    const tools = this.getTools()
+    if (tools == null) {
+      return false
+    }
+
+    if (name == null) {
+      return true
+    }
+
+    return tools.name === name
+  }
+
+  // #endregion
+
   // #region common
 
   getBBox(options?: { deep?: boolean }) {
@@ -1304,12 +1366,51 @@ export namespace Cell {
   }
 
   export interface Defaults extends Common {}
+
   export interface Metadata extends Common, KeyValue {
     id?: string
+    tools?: ToolsLoose
   }
+
   export interface Properties extends Defaults, Metadata {
     parent?: string
     children?: string[]
+    tools?: Tools
+  }
+}
+
+export namespace Cell {
+  export type ToolItem =
+    | string
+    | {
+        name: string
+        args?: any
+      }
+
+  export interface Tools {
+    name?: string | null
+    local?: boolean
+    items: ToolItem[]
+  }
+
+  export type ToolsLoose = ToolItem | ToolItem[] | Tools
+
+  export function normalizeTools(raw: ToolsLoose): Tools {
+    if (typeof raw === 'string') {
+      return { items: [raw] }
+    }
+
+    if (Array.isArray(raw)) {
+      return { items: raw }
+    }
+
+    if ((raw as Tools).items) {
+      return raw as Tools
+    }
+
+    return {
+      items: [raw as ToolItem],
+    }
   }
 }
 
@@ -1346,6 +1447,10 @@ export namespace Cell {
     translateBy?: string | number
   }
 
+  export interface AddToolOptions extends SetOptions {
+    reset?: boolean
+  }
+
   export interface GetDescendantsOptions {
     deep?: boolean
     breadthFirst?: boolean
@@ -1373,6 +1478,7 @@ export namespace Cell {
     'change:visible': ChangeArgs<boolean>
     'change:parent': ChangeArgs<string>
     'change:children': ChangeArgs<string[]>
+    'change:tools': ChangeArgs<Tools>
     'change:view': ChangeArgs<string>
     'change:data': ChangeArgs<any>
 
@@ -1606,4 +1712,15 @@ export namespace Cell {
     propHooks?: PropHooks<M, C>
     attrHooks?: Attr.Definitions
   }
+}
+
+export namespace Cell {
+  Cell.config({
+    propHooks({ tools, ...metadata }) {
+      if (tools) {
+        metadata.tools = normalizeTools(tools)
+      }
+      return metadata
+    },
+  })
 }

@@ -600,9 +600,9 @@ export class CellView<
     return tools.name === name
   }
 
-  addTools(options: ToolsView.Options): this
-  addTools(tools: ToolsView): this
-  addTools(config: ToolsView | ToolsView.Options) {
+  addTools(options: ToolsView.Options | null): this
+  addTools(tools: ToolsView | null): this
+  addTools(config: ToolsView | ToolsView.Options | null) {
     this.removeTools()
     if (config) {
       const tools = config instanceof ToolsView ? config : new ToolsView(config)
@@ -610,7 +610,7 @@ export class CellView<
       this.graph.on('tools:hide', this.hideTools, this)
       this.graph.on('tools:show', this.showTools, this)
       this.graph.on('tools:remove', this.removeTools, this)
-      tools.config({ cellView: this })
+      tools.config({ view: this })
       tools.mount()
     }
     return this
@@ -645,6 +645,12 @@ export class CellView<
     if (this.tools) {
       this.tools.show()
     }
+    return this
+  }
+
+  protected renderTools() {
+    const tools = this.cell.getTools()
+    this.addTools(tools as ToolsView.Options)
     return this
   }
 
@@ -817,7 +823,7 @@ export namespace CellView {
     // node
     nodeMovable?: boolean
     magnetConnectable?: boolean
-    stopDelegation?: boolean
+    stopDelegateOnDragging?: boolean
   }
 
   export type InteractionNames = keyof InteractionMap
@@ -825,7 +831,7 @@ export namespace CellView {
   export type Interacting =
     | boolean
     | InteractionMap
-    | ((this: Graph, cellView: CellView) => InteractionMap | true)
+    | ((this: Graph, cellView: CellView) => InteractionMap | boolean)
 
   export interface HighlightOptions {
     highlighter?:

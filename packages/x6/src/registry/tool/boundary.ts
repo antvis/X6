@@ -71,7 +71,7 @@ export namespace Boundary {
     padding: 10,
     attrs: {
       fill: 'none',
-      stroke: '#33334F',
+      stroke: '#333',
       'stroke-width': 0.5,
       'stroke-dasharray': '5, 5',
       'pointer-events': 'none',
