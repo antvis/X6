@@ -28,14 +28,6 @@ export default class Example extends React.Component {
       },
       tools: {
         name: 'boundary',
-        args: {
-          snapRadius: 20,
-          attrs: {
-            handle: {
-              fill: '#444',
-            },
-          },
-        },
       },
     })
 

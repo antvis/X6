@@ -9,9 +9,24 @@ redirect_from:
 
 由于边通常是一个具有较小宽度的折线/曲线，就不太方便与边进行交互。为了解决这个问题，我们一方面在渲染边的同时还渲染了一个与边同形状的 `<path>` 路径，但宽度更宽且透明的边，来方便用户与边进行交互；另外，我们也可以为边添加一些小工具来增强边的交互能力，如路径点小工具使路径点可以被移动、线段小工具使边中的线段可以被移动等。我们在 `Registry.EdgeTool.presets` 命名空间中提供了一些边的小工具，可以在下面这些场景使用。
 
-场景一：为指定边添加小工具。
+场景一：添加指定的小工具。
 
 ```ts
+// 创建边时添加小工具
+graph.addEdge({
+  source,
+  target,
+  tools:[
+    { name: 'vertices' },
+    {
+      name: 'button-remove',
+      args: { distance: 20  },
+    },
+  ],
+})
+
+
+// 创建边后添加小工具
 edge.addTools([
   { name: 'vertices' },
   {
@@ -21,19 +36,19 @@ edge.addTools([
 ])
 ```
 
-场景二：鼠标 Hover 时添加小工具。
+场景二：鼠动态添加/删除小工具。
 
 ```ts
 graph.on('edge:mouseenter', ({ cell }) => {
-  cell.setTools({
-    name: 'onhover', // 工具集名称
-    items:[
+  cell.addTools(
+    [
       { name: 'vertices' },
       {
         name: 'button-remove',
         args: { distance: 20  },
       },
     ],
+    'onhover', // 工具集名称，可省略
   })
 })
 
@@ -44,11 +59,22 @@ graph.on('edge:mouseleave', ({ cell }) => {
 })
 ```
 
+在 X6 中默认提供了以下几个用于边的小工具：
+
+- [vertices](#vertices) 路径点工具，在路径点位置渲染一个小圆点，拖动小圆点修改路径点位置，双击小圆点删除路径点，在边上单击添加路径点。
+- [segments](#segments) 线段工具。在边的每条线段的中心渲染一个工具条，可以拖动工具条调整线段两端的路径点的位置。
+- [boundary](#boundary) 根据边的包围盒渲染一个包围边的矩形。注意，该工具仅仅渲染一个矩形，不带任何交互。
+- [button](#button) 在指定位置处渲染一个按钮，支持自定义按钮的点击交互。
+- [button-remove](#button-remove) 在指定的位置处，渲染一个删除按钮，点击时删除对应的边。
+- [source-arrowhead-和-target-arrowhead](#source-arrowhead-和-target-arrowhead) 在边的起点或终点渲染一个图形(默认是箭头)，拖动该图形来修改边的起点或终点。
+
+
+  
 ## presets
 
 ### vertices
 
-路径点工具。在路径点位置渲染一个可以拖动的小圆点，拖动小圆点时更新路径点的位置。
+路径点工具，在路径点位置渲染一个小圆点，拖动小圆点修改路径点位置，双击小圆点删除路径点，在边上单击添加路径点。
 
 <span class="tag-param">参数<span>
 
@@ -101,7 +127,7 @@ graph.on('edge:mouseleave', ({ cell }) => {
 
 ### segments
 
-线段工具。在边的每条线段的中心渲染一个工具条，通过拖动工具条来调整线段两端的路径点的位置。
+线段工具。在边的每条线段的中心渲染一个工具条，可以拖动工具条调整线段两端的路径点的位置。
 
 <span class="tag-param">参数<span>
 
@@ -184,7 +210,7 @@ graph.addEdge({
 
 ### button
 
-渲染一个按钮。
+在指定位置处渲染一个按钮，支持自定义按钮的点击交互。
 
 <span class="tag-param">参数<span>
 
@@ -290,7 +316,7 @@ graph.addEdge({
 
 ### button-remove
 
-渲染一个删除边的按钮，点击按钮时删除边。
+在指定的位置处，渲染一个删除按钮，点击时删除对应的边。
 
 <span class="tag-param">参数<span>
 
@@ -316,7 +342,7 @@ graph.addEdge({
 
 ### source-arrowhead 和 target-arrowhead
 
-在边的起点或终点渲染一个箭头，拖动该箭头来修改边的起点或终点。
+在边的起点或终点渲染一个图形(默认是箭头)，拖动该图形来修改边的起点或终点。
 
 <span class="tag-param">参数<span>
 
@@ -412,7 +438,7 @@ unregister(name: string): Definition | null
 
 ### 自定义工具
 
-场景一：继承 `ToolItem` 实现一个工具类，难度较高，要求对[视图基类](../view/view)和 `ToolItem` 类都有所了解，可以参考上述内置工具的实现源码，这里不展开叙述。
+场景一：继承 `ToolItem` 实现一个工具类，难度较高，要求对[视图基类](../view/view)和 `ToolItem` 类都有所了解，可以参考上述内置工具的源码，这里不展开叙述。
 
 ```ts
 Graph.registerEdgeTool('button', Button)
