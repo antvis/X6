@@ -647,68 +647,96 @@ export class Model extends Basecoat<Model.EventArgs> {
     })
   }
 
-  getSuccessors(cell: Cell, options: Cell.GetDescendantsOptions) {
-    const descendants: Cell[] = []
+  getSuccessors(cell: Cell, options: Model.GetPredecessorsOptions = {}) {
+    const successors: Cell[] = []
     this.search(
       cell,
-      (curr) => {
-        if (curr !== cell) {
-          descendants.push(curr)
+      (curr, distance) => {
+        if (curr !== cell && this.matchDistance(distance, options.distance)) {
+          successors.push(curr)
         }
       },
       { ...options, outgoing: true },
     )
-    return descendants
+    return successors
   }
 
   /**
    * Returns `true` if `cell2` is a successor of `cell1`.
    */
-  isSuccessor(cell1: Cell, cell2: Cell) {
+  isSuccessor(
+    cell1: Cell,
+    cell2: Cell,
+    options: Model.GetPredecessorsOptions = {},
+  ) {
     let result = false
     this.search(
       cell1,
-      (curr) => {
-        if (curr === cell2 && curr !== cell1) {
+      (curr, distance) => {
+        if (
+          curr === cell2 &&
+          curr !== cell1 &&
+          this.matchDistance(distance, options.distance)
+        ) {
           result = true
           return false
         }
       },
-      { outgoing: true },
+      { ...options, outgoing: true },
     )
     return result
   }
 
-  getPredecessors(cell: Cell, options: Cell.GetDescendantsOptions) {
-    const ancestors: Cell[] = []
+  getPredecessors(cell: Cell, options: Model.GetPredecessorsOptions = {}) {
+    const predecessors: Cell[] = []
     this.search(
       cell,
-      (curr) => {
-        if (curr !== cell) {
-          ancestors.push(curr)
+      (curr, distance) => {
+        if (curr !== cell && this.matchDistance(distance, options.distance)) {
+          predecessors.push(curr)
         }
       },
       { ...options, incoming: true },
     )
-    return ancestors
+    return predecessors
   }
 
   /**
    * Returns `true` if `cell2` is a predecessor of `cell1`.
    */
-  isPredecessor(cell1: Cell, cell2: Cell) {
+  isPredecessor(
+    cell1: Cell,
+    cell2: Cell,
+    options: Model.GetPredecessorsOptions = {},
+  ) {
     let result = false
     this.search(
       cell1,
-      (curr) => {
-        if (curr === cell2 && curr !== cell1) {
+      (curr, distance) => {
+        if (
+          curr === cell2 &&
+          curr !== cell1 &&
+          this.matchDistance(distance, options.distance)
+        ) {
           result = true
           return false
         }
       },
-      { incoming: true },
+      { ...options, incoming: true },
     )
     return result
+  }
+
+  protected matchDistance(distance: number, preset?: number | number[]) {
+    if (preset == null) {
+      return true
+    }
+
+    if (Array.isArray(preset) && preset.includes(distance)) {
+      return true
+    }
+
+    return distance === preset
   }
 
   /**
@@ -952,9 +980,11 @@ export class Model extends Basecoat<Model.EventArgs> {
         continue
       }
       visited[next.id] = true
+
       if (FunctionExt.call(iterator, this, next, distance[next.id]) === false) {
         continue
       }
+
       const neighbors = this.getNeighbors(next, options)
       const lastIndex = queue.length
       neighbors.forEach((neighbor) => {
@@ -1145,6 +1175,10 @@ export namespace Model {
   export interface GetShortestPathOptions {
     directed?: boolean
     weight?: Dijkstra.Weight
+  }
+
+  export interface GetPredecessorsOptions extends Cell.GetDescendantsOptions {
+    distance?: number | number[]
   }
 }
 
