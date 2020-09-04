@@ -727,9 +727,16 @@ export class Model extends Basecoat<Model.EventArgs> {
     return result
   }
 
-  protected matchDistance(distance: number, preset?: number | number[]) {
+  protected matchDistance(
+    distance: number,
+    preset?: number | number[] | ((d: number) => boolean),
+  ) {
     if (preset == null) {
       return true
+    }
+
+    if (typeof preset === 'function') {
+      return preset(distance)
     }
 
     if (Array.isArray(preset) && preset.includes(distance)) {
@@ -1178,7 +1185,7 @@ export namespace Model {
   }
 
   export interface GetPredecessorsOptions extends Cell.GetDescendantsOptions {
-    distance?: number | number[]
+    distance?: number | number[] | ((distance: number) => boolean)
   }
 }
 
