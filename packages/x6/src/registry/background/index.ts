@@ -54,7 +54,12 @@ export namespace Background {
 }
 
 export namespace Background {
-  export const presets = patterns
+  export const presets: { [name: string]: Definition } = { ...patterns }
+
+  presets['flip-x'] = patterns.flipX
+  presets['flip-y'] = patterns.flipY
+  presets['flip-xy'] = patterns.flipXY
+
   export const registry = Registry.create<Definition, Presets>({
     type: 'background pattern',
   })
