@@ -7,7 +7,7 @@ redirect_from:
   - /zh/docs/api/registry
 ---
 
-在 Attr 命名空间中提供了注册和管理特殊属性的方法，以及所有特殊属性的定义。
+我们在 `Attr` 命名空间中提供了注册和管理特殊属性的方法，以及所有特殊属性的定义。
 
 ## presets
 
