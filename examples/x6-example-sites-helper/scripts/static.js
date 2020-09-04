@@ -28,7 +28,10 @@ const loading = readfile(path.join(__dirname, './loading.html'))
 function getHash() {
   return Promise.all([
     hashElement(repo, {
-      folders: { exclude: ['.*', 'node_modules', 'build'] },
+      folders: {
+        include: ['src'],
+        exclude: ['.*', 'node_modules', 'build'],
+      },
     }),
     hashElement(path.join(home, 'examples/x6-example-sites-helper'), {
       folders: {
