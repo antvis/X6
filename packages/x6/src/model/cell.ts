@@ -265,7 +265,11 @@ export class Cell<
     key?: string | string[] | Cell.SetOptions,
     options?: Cell.SetOptions,
   ) {
-    this.store.remove(key as any, options)
+    if (typeof key === 'string' || Array.isArray(key)) {
+      this.store.removeByPath(key, options)
+    } else {
+      this.store.remove(options)
+    }
     return this
   }
 
