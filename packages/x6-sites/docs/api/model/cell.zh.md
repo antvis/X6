@@ -17,18 +17,19 @@ new Cell(metadata?: Cell.Metadata)
 
 其中 `Cell.Metadata` 包含节点和边的通用选项，详细配置如下表：
 
-| 选项     | 类型           | 默认值 | 必选 | 描述                                                                     |
-|----------|----------------|--------|:----:|------------------------------------------------------------------------|
-| id       | string         | -      |      | 节点/边的唯一标识，推荐使用具备业务意义的 ID，默认使用自动生成的 UUID。     |
-| markup   | Markup         | -      |      | 节点/边的 SVG/HTML 片段。                                                 |
-| attrs    | Attr.CellAttrs | -      |      | 节点/边属性样式。                                                         |
-| shape    | string         |        |      | 渲染节点/边的图形。节点对应的默认值为 `'rect'`，边对应的默认值为 `'edge'`。 |
-| view     | string         | -      |      | 渲染节点/边的视图。                                                       |
-| zIndex   | number         | -      |      | 节点/边在画布中的层级，默认根据节点/边添加顺序自动确定。                   |
-| visible  | boolean        | `true` |      | 节点/边是否可见。                                                         |
-| parent   | string         | -      |      | 父节点。                                                                  |
-| children | string[]       | -      |      | 子节点/边。                                                               |
-| data     | any            | -      |      | 节点/边关联的业务数据。                                                   |
+| 选项     | 类型                            | 默认值 | 必选 | 描述                                                                     |
+|----------|---------------------------------|--------|:----:|------------------------------------------------------------------------|
+| id       | string                          |        |      | 节点/边的唯一标识，推荐使用具备业务意义的 ID，默认使用自动生成的 UUID。     |
+| markup   | Markup                          |        |      | 节点/边的 SVG/HTML 片段。                                                 |
+| attrs    | Attr.CellAttrs                  |        |      | 节点/边属性样式。                                                         |
+| shape    | string                          |        |      | 渲染节点/边的图形。节点对应的默认值为 `'rect'`，边对应的默认值为 `'edge'`。 |
+| view     | string                          |        |      | 渲染节点/边的视图。                                                       |
+| zIndex   | number                          |        |      | 节点/边在画布中的层级，默认根据节点/边添加顺序自动确定。                   |
+| visible  | boolean                         | `true` |      | 节点/边是否可见。                                                         |
+| parent   | string                          |        |      | 父节点。                                                                  |
+| children | string[]                        |        |      | 子节点/边。                                                               |
+| tools    | ToolItem \| ToolItem[] \| Tools |        |      | 工具选项。                                                                |
+| data     | any                             |        |      | 节点/边关联的业务数据。                                                   |
 
 
 ### id
@@ -395,6 +396,95 @@ const edge = graph.addEdge({
 ### children
 
 子节点/边的 ID 数组。
+
+### tools
+
+节点/边的小工具。小工具可以增强节点/边的交互能力，我们分别为节点和边提供了以下内置工具：
+
+节点
+
+- [button](../registry/node-tool#button) 在指定位置处渲染一个按钮，支持自定义按钮的点击交互。
+- [button-remove](../registry/node-tool#button-remove) 在指定的位置处，渲染一个删除按钮，点击时删除对应的节点。
+- [boundary](../registry/node-tool#boundary) 根据节点的包围盒渲染一个包围节点的矩形。注意，该工具仅仅渲染一个矩形，不带任何交互。
+
+边
+
+- [vertices](../registry/edge-tool#vertices) 路径点工具，在路径点位置渲染一个小圆点，拖动小圆点修改路径点位置，双击小圆点删除路径点，在边上单击添加路径点。
+- [segments](../registry/edge-tool#segments) 线段工具。在边的每条线段的中心渲染一个工具条，可以拖动工具条调整线段两端的路径点的位置。
+- [boundary](../registry/edge-tool#boundary) 根据边的包围盒渲染一个包围边的矩形。注意，该工具仅仅渲染一个矩形，不带任何交互。
+- [button](../registry/edge-tool#button) 在指定位置处渲染一个按钮，支持自定义按钮的点击交互。
+- [button-remove](../registry/edge-tool#button-remove) 在指定的位置处，渲染一个删除按钮，点击时删除对应的边。
+- [source-arrowhead-和-target-arrowhead](../registry/edge-tool#source-arrowhead-和-target-arrowhead) 在边的起点或终点渲染一个图形(默认是箭头)，拖动该图形来修改边的起点或终点。
+
+可以指定单个工具：
+
+```ts
+graph.addNode({
+  x: 40,
+  y: 40,
+  width: 100,
+  height: 40,
+  tools: 'button-remove' // or { name: 'button-remove' }
+})
+```
+
+同时，可以像下面这样指定工具的参数选项：
+
+```ts
+graph.addNode({
+  x: 40,
+  y: 40,
+  width: 100,
+  height: 40,
+  tools: { 
+    name: 'button-remove',
+    args: {
+      x: 10, // 按钮的 x 坐标，相对于节点的左上角
+      y: 10, // 按钮的 y 坐标，相对于节点的左上角
+    },
+  },
+})
+```
+
+也可以同时指定多个小工具：
+
+```ts
+graph.addNode({
+  x: 40,
+  y: 40,
+  width: 100,
+  height: 40,
+  tools: [
+    'button-remove',
+    {
+      name: 'boundary',
+      args: {
+        padding: 5,
+      },
+    },
+  ],
+})
+```
+
+另外，还可以为工具集指定一个名称，后续可以通过 [`cell.hasTools(name)`](#hastools) 方法来判断节点/边中是否包含指定名称的工具集。
+
+```ts
+graph.addNode({
+  x: 40,
+  y: 40,
+  width: 100,
+  height: 40,
+  tools: {
+    name: 'onhover', // 工具集名称
+    items: [         // 通过 items 来指定包含哪些小工具
+      'button-remove',
+      {
+        name: 'boundary',
+      },
+    ],
+  },
+})
+```
 
 ### data
 
