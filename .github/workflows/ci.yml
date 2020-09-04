@@ -6,7 +6,7 @@ on:
   pull_request:
 jobs:
   run:
-    runs-on: macOS-latest
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         node-version: [12.x]
@@ -17,7 +17,6 @@ jobs:
       run: echo "::set-output name=dir::$(yarn cache dir)"
     - name: 🚸　Setup yarn cacha
       uses: actions/cache@v2
-      id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
       with:
         path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
         key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
