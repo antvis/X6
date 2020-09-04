@@ -192,7 +192,6 @@ export class EdgeView<
     this.renderMarkup()
     this.renderLabels()
     this.update()
-    this.renderExternalTools()
 
     return this
   }
@@ -540,6 +539,9 @@ export class EdgeView<
     this.updateArrowheadMarkers()
     this.updateTools(options)
 
+    if (options.toolId == null) {
+      this.renderExternalTools()
+    }
     return this
   }
 
@@ -2740,12 +2742,10 @@ EdgeView.config<EdgeView.Options>({
     view: ['render'],
     markup: ['render'],
     attrs: ['update'],
-    router: ['update'],
-    connector: ['update'],
-    smooth: ['update'],
-    manhattan: ['update'],
     source: ['source', 'update'],
     target: ['target', 'update'],
+    router: ['update'],
+    connector: ['update'],
     labels: ['labels'],
     defaultLabel: ['labels'],
     vertices: ['vertices', 'update'],
