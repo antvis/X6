@@ -1212,7 +1212,7 @@ export namespace Model {
   }
 
   export function fromJSON(data: FromJSONData) {
-    const cells: Cell.Properties[] = []
+    const cells: Cell.Metadata[] = []
     if (Array.isArray(data)) {
       cells.push(...data)
     } else {

@@ -239,7 +239,7 @@ class Anchor extends ToolsView.ToolItem<EdgeView, Anchor.Options> {
     this.blur()
     this.toggleArea(false)
     const edgeView = this.cellView
-    if (this.options.redundancyRemoval) {
+    if (this.options.removeRedundancies) {
       edgeView.removeRedundantLinearVertices({ ui: true, toolId: this.cid })
     }
     this.cell.stopBatch('move-anchor', { ui: true, toolId: this.cid })
@@ -257,7 +257,7 @@ namespace Anchor {
     snapRadius?: number
     areaPadding?: number
     restrictArea?: boolean
-    redundancyRemoval?: boolean
+    removeRedundancies?: boolean
     defaultAnchorAttrs?: Attr.SimpleAttrs
     customAnchorAttrs?: Attr.SimpleAttrs
     snap?: (
@@ -331,8 +331,8 @@ namespace Anchor {
     },
     areaPadding: 6,
     restrictArea: true,
-    redundancyRemoval: true,
     snapRadius: 10,
+    removeRedundancies: true,
     anchor: Util.getAnchor,
     snap(pos, terminalView, terminalMagnet, terminalType, edgeView, toolView) {
       const snapRadius = toolView.options.snapRadius || 0

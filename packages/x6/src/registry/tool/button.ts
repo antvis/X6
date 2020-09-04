@@ -96,7 +96,12 @@ export class Button extends ToolsView.ToolItem<
     let matrix = Dom.createSVGMatrix()
       .translate(position.x, position.y)
       .rotate(angle)
-      .translate(0, offset as number)
+
+    if (typeof offset === 'object') {
+      matrix = matrix.translate(offset.x || 0, offset.y || 0)
+    } else {
+      matrix = matrix.translate(0, offset)
+    }
 
     if (!rotate) {
       matrix = matrix.rotate(-angle)
@@ -105,17 +110,21 @@ export class Button extends ToolsView.ToolItem<
     return matrix
   }
 
-  protected onMouseDown(evt: JQuery.MouseDownEvent) {
-    if (this.guard(evt)) {
+  protected onMouseDown(e: JQuery.MouseDownEvent) {
+    if (this.guard(e)) {
       return
     }
 
-    evt.stopPropagation()
-    evt.preventDefault()
+    e.stopPropagation()
+    e.preventDefault()
 
     const onClick = this.options.onClick
     if (typeof onClick === 'function') {
-      FunctionExt.call(onClick, this.cellView, evt, this.cellView, this)
+      FunctionExt.call(onClick, this.cellView, {
+        e,
+        view: this.cellView,
+        btn: this,
+      })
     }
   }
 }
@@ -130,9 +139,11 @@ export namespace Button {
     useCellGeometry?: boolean
     onClick?: (
       this: CellView,
-      evt: JQuery.MouseDownEvent,
-      cellView: CellView,
-      btn: Button,
+      args: {
+        e: JQuery.MouseDownEvent
+        view: CellView
+        btn: Button
+      },
     ) => any
   }
 }
@@ -174,7 +185,7 @@ export namespace Button {
     ],
     distance: 60,
     offset: 0,
-    onClick(evt, view, btn) {
+    onClick({ view, btn }) {
       btn.parent.remove()
       view.cell.remove({ ui: true, toolId: btn.cid })
     },
