@@ -1,6 +1,6 @@
 ---
 title: 特殊属性
-order: 10
+order: 6
 redirect_from:
   - /zh/docs
   - /zh/docs/tutorial
@@ -56,7 +56,7 @@ graph.addNode({
 })
 ```
 
-<iframe src="/demos/tutorial/intermediate/special-attrs/ref-node"></iframe>
+<iframe src="/demos/tutorial/intermediate/attrs/ref-node"></iframe>
 
 ## 相对子元素
 
@@ -102,7 +102,7 @@ graph.addNode({
 })
 ```
 
-<iframe src="/demos/tutorial/intermediate/special-attrs/ref-elem"></iframe>
+<iframe src="/demos/tutorial/intermediate/attrs/ref-elem"></iframe>
 
 ## 沿边长度的相对位置
 
@@ -131,7 +131,7 @@ graph.addEdge({
 })
 ```
 
-<iframe src="/demos/tutorial/intermediate/special-attrs/edge-relative-position"></iframe>
+<iframe src="/demos/tutorial/intermediate/attrs/edge-relative-position"></iframe>
 
 ```ts
 graph.addEdge({
@@ -201,7 +201,7 @@ graph.addEdge({
 })
 ```
 
-<iframe src="/demos/tutorial/intermediate/special-attrs/edge-subelement-labels"></iframe>
+<iframe src="/demos/tutorial/intermediate/attrs/edge-subelement-labels"></iframe>
 
 ## 使用箭头
 

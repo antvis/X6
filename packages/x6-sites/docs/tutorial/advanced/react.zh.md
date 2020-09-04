@@ -1,6 +1,6 @@
 ---
 title: 使用 HTML/React 渲染
-order: 6
+order: 4
 redirect_from:
   - /zh/docs
   - /zh/docs/tutorial

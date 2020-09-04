@@ -30,7 +30,7 @@ startBatch(name: string, data?: KeyValue): this
 
 | 名称 | 类型     | 必选 | 默认值 | 描述                           |
 |------|----------|:----:|--------|------------------------------|
-| name | string   |  ✔️  |        | 事务名称。                      |
+| name | string   |  ✓   |        | 事务名称。                      |
 | data | KeyValue |      |        | 额外的数据，供事件回调函数使用。 |
 
 #### stopBatch(...)
@@ -45,7 +45,7 @@ stopBatch(name: string, data?: KeyValue): this
 
 | 名称 | 类型     | 必选 | 默认值 | 描述                           |
 |------|----------|:----:|--------|------------------------------|
-| name | string   |  ✔️  |        | 事务名称。                      |
+| name | string   |  ✓   |        | 事务名称。                      |
 | data | KeyValue |      |        | 额外的数据，供事件回调函数使用。 |
 
 <span class="tag-example">用法</span>
@@ -72,8 +72,8 @@ batchUpdate<T>(name: string, execute: () => T, data?: KeyValue): T
 
 | 名称    | 类型     | 必选 | 默认值 | 描述                           |
 |---------|----------|:----:|--------|------------------------------|
-| name    | string   |  ✔️  |        | 事务名称。                      |
-| execute | () => T  |  ✔️  |        | 事务执行的函数。                |
+| name    | string   |  ✓   |        | 事务名称。                      |
+| execute | () => T  |  ✓   |        | 事务执行的函数。                |
 | data    | KeyValue |      |        | 额外的数据，供事件回调函数使用。 |
 
 <span class="tag-example">用法</span>

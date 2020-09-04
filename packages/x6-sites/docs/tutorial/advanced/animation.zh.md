@@ -26,8 +26,8 @@ transition(
 
 | 名称             | 类型                                         | 必选 | 默认值 | 描述                         |
 |------------------|----------------------------------------------|:----:|--------|----------------------------|
-| path             | string \| string[]                           |  ✔️  |        | 路径。                        |
-| target           | any                                          |  ✔️  |        | 目标属性值。                  |
+| path             | string \| string[]                           |  ✓   |        | 路径。                        |
+| target           | any                                          |  ✓   |        | 目标属性值。                  |
 | options.delay    | number                                       |      | `10`   | 动画延迟多久后开始，单位毫秒。 |
 | options.duration | number                                       |      | `100`  | 动画时长，单位毫秒。           |
 | options.timing   | Timing.Names \| (t: number) => number        |      |        | 定时函数。                    |
@@ -93,7 +93,7 @@ transition(
 
 | 名称  | 类型               | 必选 | 默认值 | 描述              |
 |-------|--------------------|:----:|--------|-----------------|
-| path  | string \| string[] |  ✔️  |        | 路径。             |
+| path  | string \| string[] |  ✓   |        | 路径。             |
 | delim | string             |      | `'/'`  | 字符串路径分隔符。 |
 
 <iframe src="/demos/tutorial/advanced/animation/football"></iframe>
@@ -136,9 +136,9 @@ Dom.animateAlongPath(
 
 | 名称    | 类型                       | 必选 | 默认值 | 描述                                                                                                                                   |
 |---------|----------------------------|:----:|--------|--------------------------------------------------------------------------------------------------------------------------------------|
-| elem    | SVGElement                 |  ✔️  |        | 沿路径运动的元素。                                                                                                                      |
-| options | { [name: string]: string } |  ✔️  |        | 动画选项，请参考 [Animation Timing Attributes](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute#Animation_timing_attributes)。 |
-| path    | SVGPathElement             |  ✔️  |        | 路径元素。                                                                                                                              |
+| elem    | SVGElement                 |  ✓   |        | 沿路径运动的元素。                                                                                                                      |
+| options | { [name: string]: string } |  ✓   |        | 动画选项，请参考 [Animation Timing Attributes](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute#Animation_timing_attributes)。 |
+| path    | SVGPathElement             |  ✓   |        | 路径元素。                                                                                                                              |
 
 也可以使用 `Dom.createVector(...)` 方法创建一个 Vectorizer 对象，然后调用该对象上的 `animateAlongPath` 方法来使该 Vectorizer 对象沿指定的路径运动。
 
@@ -192,7 +192,7 @@ sendToken(
 
 | 名称             | 类型                 | 必选 | 默认值      | 描述                                                           |
 |------------------|----------------------|:----:|-------------|--------------------------------------------------------------|
-| token            | SVGElement \| string |  ✔️  |             | 沿边运动的元素或元素选择器。                                    |
+| token            | SVGElement \| string |  ✓   |             | 沿边运动的元素或元素选择器。                                    |
 | options.duration | number               |      | `1000`      | 动画持续的时间，单位毫秒。                                       |
 | options.reversed | boolean              |      | `false`     | 是否沿反方向运动，即从边的终点运动到起点。                       |
 | options.selector | string               |      | `undefined` | 动画参照的 SVGPathElement 元素，默认沿边的 SVGPathElement 运动。 |

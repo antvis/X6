@@ -353,8 +353,8 @@ scale(
 
 | 名称             | 类型                    | 必选 | 默认值  | 描述                                                                          |
 |------------------|-------------------------|:----:|---------|-----------------------------------------------------------------------------|
-| sx               | number                  |  ✔️  |         | X 轴方向的缩放比例。                                                           |
-| sy               | number                  |  ✔️  |         | Y 轴方向的缩放比例。                                                           |
+| sx               | number                  |  ✓   |         | X 轴方向的缩放比例。                                                           |
+| sy               | number                  |  ✓   |         | Y 轴方向的缩放比例。                                                           |
 | origin           | Point.PointLike \| null |      | -       | 缩放中心，默认为节点中心。                                                      |
 | options.silent   | boolean                 |      | `false` | 为 `true` 时不触不触发 `'change:size'` 和 `'change:position'` 事件和画布重绘。 |
 | options...others | object                  |      |         | 其他自定义键值对，可以在事件回调中使用。                                        |
@@ -436,8 +436,8 @@ console.log(relativePos.x, relativePos.y)
 
 | 名称             | 类型    | 必选 | 默认值  | 描述                                                                                                                             |
 |------------------|---------|:----:|---------|--------------------------------------------------------------------------------------------------------------------------------|
-| x                | number  |  ✔️  |         | 节点绝对或相对 X 轴坐标。                                                                                                         |
-| y                | number  |  ✔️  |         | 节点绝对或相对 Y 轴坐标。                                                                                                         |
+| x                | number  |  ✓   |         | 节点绝对或相对 X 轴坐标。                                                                                                         |
+| y                | number  |  ✓   |         | 节点绝对或相对 Y 轴坐标。                                                                                                         |
 | options.relative | boolean |      | `false` | 提供的坐标是否为相对坐标。为 `true` 时表示提供的坐标为相对于父节点位置的坐标，默认为 `false` 表示提供的坐标为相对于画布的绝对坐标。 |
 | options.deep     | boolean |      | `false` | 是否同时改变子节点/边的位置。                                                                                                     |
 | options.silent   | boolean |      | `false` | 为 `true` 时不触不触发 `'change:position'` 事件和画布重绘。                                                                       |
@@ -575,7 +575,7 @@ rotate(
 
 | 名称             | 类型            | 必选 | 默认值      | 描述                                                                                                            |
 |------------------|-----------------|:----:|-------------|---------------------------------------------------------------------------------------------------------------|
-| deg              | number          |  ✔️  |             | 旋转度数。                                                                                                       |
+| deg              | number          |  ✓   |             | 旋转度数。                                                                                                       |
 | options.absolute | boolean         |      | `false`     | 为 `true` 时表示给定的度数为节点旋转后的绝对度数，默认为 `false`，表示节点在当前旋转角度的基础上再旋转给定的度数。 |
 | options.center   | Point.PointLike |      | `undefined` | 默认沿节点中心旋转，当给定 `options.center` 后表示沿给定的中心旋转。                                              |
 | options.silent   | boolean         |      | `false`     | 为 `true` 时不触不触发 `'change:angle'` 事件和画布重绘。                                                         |
@@ -630,7 +630,7 @@ addPort(port: PortMetadata, options?: Node.SetOptions): this
 
 | 名称             | 类型                   | 必选 | 默认值  | 描述                                                |
 |------------------|------------------------|:----:|---------|---------------------------------------------------|
-| port             | [PortMetadata](#ports) |  ✔️  |         | 链接桩。                                             |
+| port             | [PortMetadata](#ports) |  ✓   |         | 链接桩。                                             |
 | options.silent   | boolean                |      | `false` | 为 `true` 时不触发 `'change:ports'` 事件和画布重绘。 |
 | options...others | object                 |      |         | 其他自定义键值对，可以在事件回调中使用。              |
 
@@ -647,7 +647,7 @@ addPorts(ports: PortMetadata[], options?: Node.SetOptions)
 
 | 名称             | 类型                     | 必选 | 默认值  | 描述                                                |
 |------------------|--------------------------|:----:|---------|---------------------------------------------------|
-| port             | [PortMetadata](#ports)[] |  ✔️  |         | 链接桩数组。                                         |
+| port             | [PortMetadata](#ports)[] |  ✓   |         | 链接桩数组。                                         |
 | options.silent   | boolean                  |      | `false` | 为 `true` 时不触发 `'change:ports'` 事件和画布重绘。 |
 | options...others | object                   |      |         | 其他自定义键值对，可以在事件回调中使用。              |
 
@@ -664,7 +664,7 @@ hasPort(portId: string): boolean
 
 | 名称   | 类型   | 必选 | 默认值 | 描述       |
 |--------|--------|:----:|--------|----------|
-| portId | string |  ✔️  |        | 链接桩 ID。 |
+| portId | string |  ✓   |        | 链接桩 ID。 |
 
 <span class="tag-example">用法</span>
 
@@ -702,7 +702,7 @@ getPort(portId: string): PortMetadata
 
 | 名称   | 类型   | 必选 | 默认值 | 描述       |
 |--------|--------|:----:|--------|----------|
-| portId | string |  ✔️  |        | 链接桩 ID。 |
+| portId | string |  ✓   |        | 链接桩 ID。 |
 
 
 #### getPortAt(...)
@@ -717,7 +717,7 @@ getPortAt(index: number): PortMetadata | null
 
 | 名称  | 类型   | 必选 | 默认值 | 描述        |
 |-------|--------|:----:|--------|-----------|
-| index | number |  ✔️  |        | 链接桩索引。 |
+| index | number |  ✓   |        | 链接桩索引。 |
 
 #### getPorts()
 
@@ -739,7 +739,7 @@ getPortsByGroup(groupName: string): PortMetadata[]
 
 | 名称      | 类型   | 必选 | 默认值 | 描述      |
 |-----------|--------|:----:|--------|---------|
-| groupName | string |  ✔️  |        | 群组名称。 |
+| groupName | string |  ✓   |        | 群组名称。 |
 
 #### removePort(...)
 
@@ -761,7 +761,7 @@ removePort(portId: string, options?: Node.SetOptions): this
 
 | 名称             | 类型         | 必选 | 默认值  | 描述                                                |
 |------------------|--------------|:----:|---------|---------------------------------------------------|
-| port             | PortMetadata |  ✔️  |         | 链接桩。                                             |
+| port             | PortMetadata |  ✓   |         | 链接桩。                                             |
 | options.silent   | boolean      |      | `false` | 为 `true` 时不触发 `'change:ports'` 事件和画布重绘。 |
 | options...others | object       |      |         | 其他自定义键值对，可以在事件回调中使用。              |
 
@@ -772,7 +772,7 @@ removePort(portId: string, options?: Node.SetOptions): this
 
 | 名称             | 类型    | 必选 | 默认值  | 描述                                                |
 |------------------|---------|:----:|---------|---------------------------------------------------|
-| portId           | string  |  ✔️  |         | 链接桩 ID。                                          |
+| portId           | string  |  ✓   |         | 链接桩 ID。                                          |
 | options.silent   | boolean |      | `false` | 为 `true` 时不触发 `'change:ports'` 事件和画布重绘。 |
 | options...others | object  |      |         | 其他自定义键值对，可以在事件回调中使用。              |
 
@@ -788,7 +788,7 @@ removePortAt(index: number, options?: Node.SetOptions): this
 
 | 名称             | 类型    | 必选 | 默认值  | 描述                                                |
 |------------------|---------|:----:|---------|---------------------------------------------------|
-| index            | number  |  ✔️  |         | 链接桩索引。                                         |
+| index            | number  |  ✓   |         | 链接桩索引。                                         |
 | options.silent   | boolean |      | `false` | 为 `true` 时不触发 `'change:ports'` 事件和画布重绘。 |
 | options...others | object  |      |         | 其他自定义键值对，可以在事件回调中使用。              |
 
@@ -836,7 +836,7 @@ getPortProp<T>(portId: string, path?: string | string[]): any
 
 | 名称   | 类型               | 必选 | 默认值 | 描述                                                                                                                                                  |
 |--------|--------------------|:----:|--------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
-| portId | string             |  ✔️  |        | 链接桩 ID。                                                                                                                                            |
+| portId | string             |  ✓   |        | 链接桩 ID。                                                                                                                                            |
 | path   | string \| string[] |      |        | 属性路径。 <br> 当 `path` 为 `string` 类型时，路径是以 `'\'` 分割的字符串。 <br> 当 `path` 为 `string[]` 类型时，路径是链接桩对象路径上的 Key 构成的数组。 |
 
 <span class="tag-example">用法</span>
@@ -864,9 +864,9 @@ setPortProp(
 
 | 名称             | 类型               | 必选 | 默认值  | 描述                                                                                                                                                  |
 |------------------|--------------------|:----:|---------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
-| portId           | string             |  ✔️  |         | 链接桩 ID。                                                                                                                                            |
-| path             | string \| string[] |  ✔️  |         | 属性路径。 <br> 当 `path` 为 `string` 类型时，路径是以 `'\'` 分割的字符串。 <br> 当 `path` 为 `string[]` 类型时，路径是链接桩对象路径上的 Key 构成的数组。 |
-| value            | any                |  ✔️  |         | 属性值。                                                                                                                                               |
+| portId           | string             |  ✓   |         | 链接桩 ID。                                                                                                                                            |
+| path             | string \| string[] |  ✓   |         | 属性路径。 <br> 当 `path` 为 `string` 类型时，路径是以 `'\'` 分割的字符串。 <br> 当 `path` 为 `string[]` 类型时，路径是链接桩对象路径上的 Key 构成的数组。 |
+| value            | any                |  ✓   |         | 属性值。                                                                                                                                               |
 | options.silent   | boolean            |      | `false` | 为 `true` 时不触发 `'change:ports'` 事件和画布重绘。                                                                                                   |
 | options...others | object             |      |         | 其他自定义键值对，可以在事件回调中使用。                                                                                                                |
 
@@ -891,8 +891,8 @@ setPortProp(
 
 | 名称             | 类型                        | 必选 | 默认值  | 描述                                                |
 |------------------|-----------------------------|:----:|---------|---------------------------------------------------|
-| portId           | string                      |  ✔️  |         | 链接桩 ID。                                          |
-| value            | DeepPartial\<PortMetadata\> |  ✔️  |         | 链接桩选项。                                         |
+| portId           | string                      |  ✓   |         | 链接桩 ID。                                          |
+| value            | DeepPartial\<PortMetadata\> |  ✓   |         | 链接桩选项。                                         |
 | options.silent   | boolean                     |      | `false` | 为 `true` 时不触发 `'change:ports'` 事件和画布重绘。 |
 | options...others | object                      |      |         | 其他自定义键值对，可以在事件回调中使用。              |
 
@@ -922,7 +922,7 @@ removePortProp(portId: string, options?: Node.SetOptions): this
 
 | 名称             | 类型    | 必选 | 默认值  | 描述                                                |
 |------------------|---------|:----:|---------|---------------------------------------------------|
-| portId           | string  |  ✔️  |         | 链接桩 ID。                                          |
+| portId           | string  |  ✓   |         | 链接桩 ID。                                          |
 | options.silent   | boolean |      | `false` | 为 `true` 时不触发 `'change:ports'` 事件和画布重绘。 |
 | options...others | object  |      |         | 其他自定义键值对，可以在事件回调中使用。              |
 
@@ -938,8 +938,8 @@ removePortProp(portId: string, path: string | string[], options?: Node.SetOption
 
 | 名称             | 类型               | 必选 | 默认值  | 描述                                                                                                                                                  |
 |------------------|--------------------|:----:|---------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
-| portId           | string             |  ✔️  |         | 链接桩 ID。                                                                                                                                            |
-| path             | string \| string[] |  ✔️  |         | 属性路径。 <br> 当 `path` 为 `string` 类型时，路径是以 `'\'` 分割的字符串。 <br> 当 `path` 为 `string[]` 类型时，路径是链接桩对象路径上的 Key 构成的数组。 |
+| portId           | string             |  ✓   |         | 链接桩 ID。                                                                                                                                            |
+| path             | string \| string[] |  ✓   |         | 属性路径。 <br> 当 `path` 为 `string` 类型时，路径是以 `'\'` 分割的字符串。 <br> 当 `path` 为 `string[]` 类型时，路径是链接桩对象路径上的 Key 构成的数组。 |
 | options.silent   | boolean            |      | `false` | 为 `true` 时不触发 `'change:ports'` 事件和画布重绘。                                                                                                   |
 | options...others | object             |      |         | 其他自定义键值对，可以在事件回调中使用。                                                                                                                |
 
