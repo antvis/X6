@@ -1,6 +1,6 @@
 ---
 title: Grid
-order: 4
+order: 30
 redirect_from:
   - /zh/docs
   - /zh/docs/api

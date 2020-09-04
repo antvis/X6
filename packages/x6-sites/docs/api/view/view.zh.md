@@ -38,7 +38,7 @@ $(elem: any): jQuery
 
 | 参数名 | 类型 | 默认值 | 必选 | 描述                                        |
 |--------|------|--------|:----:|-------------------------------------------|
-| elem   | any  |        |  ✔️  | 创建 jQuery 对象的参数，可以是选择器、元素等。 |
+| elem   | any  |        |  ✓   | 创建 jQuery 对象的参数，可以是选择器、元素等。 |
 
 ### empty(...)
 
@@ -126,7 +126,7 @@ addClass(className: string | string[], elem: Element = this.container): this
 
 | 参数名    | 类型               | 默认值           | 必选 | 描述                               |
 |-----------|--------------------|------------------|:----:|----------------------------------|
-| className | string \| string[] |                  |  ✔️  | 样式类名。                          |
+| className | string \| string[] |                  |  ✓   | 样式类名。                          |
 | elem      | Element            | `this.container` |      | 添加样式的元素，默认使用视图的容器。 |
 
 <span class="tag-example">用法</span>
@@ -154,7 +154,7 @@ removeClass(className: string | string[], elem: Element = this.container): this
 
 | 参数名    | 类型               | 默认值           | 必选 | 描述                               |
 |-----------|--------------------|------------------|:----:|----------------------------------|
-| className | string \| string[] |                  |  ✔️  | 样式类名。                          |
+| className | string \| string[] |                  |  ✓   | 样式类名。                          |
 | elem      | Element            | `this.container` |      | 移除样式的元素，默认使用视图的容器。 |
 
 <span class="tag-example">用法</span>
@@ -185,7 +185,7 @@ setStyle(
 
 | 参数名 | 类型                                   | 默认值           | 必选 | 描述                               |
 |--------|----------------------------------------|------------------|:----:|----------------------------------|
-| style  | JQuery.PlainObject\<string \| number\> |                  |  ✔️  | 行内样式键值对。                    |
+| style  | JQuery.PlainObject\<string \| number\> |                  |  ✓   | 行内样式键值对。                    |
 | elem   | Element                                | `this.container` |      | 添加样式的元素，默认使用视图的容器。 |
 
 <span class="tag-example">用法</span>
@@ -221,7 +221,7 @@ setAttrs(
 
 | 参数名 | 类型             | 默认值           | 必选 | 描述                                 |
 |--------|------------------|------------------|:----:|------------------------------------|
-| attrs  | Attr.SimpleAttrs |                  |  ✔️  | 属性键值对。                          |
+| attrs  | Attr.SimpleAttrs |                  |  ✓   | 属性键值对。                          |
 | elem   | Element          | `this.container` |      | 被设置属性的元素，默认使用视图的容器。 |
 
 <span class="tag-example">用法</span>
@@ -320,7 +320,7 @@ findAttr(attrName: string, elem: Element): string | null
 
 | 参数名   | 类型    | 默认值           | 必选 | 描述                                   |
 |----------|---------|------------------|:----:|--------------------------------------|
-| attrName | string  |                  |  ✔️  | 属性名。                                |
+| attrName | string  |                  |  ✓   | 属性名。                                |
 | elem     | Element | `this.container` |      | 开始查找的元素，默认使用视图的容器元素。 |
 
 <span class="tag-return">返回值<span>
@@ -351,7 +351,7 @@ findByAttr(
 
 | 参数名   | 类型    | 默认值           | 必选 | 描述                                   |
 |----------|---------|------------------|:----:|--------------------------------------|
-| attrName | string  |                  |  ✔️  | 属性名。                                |
+| attrName | string  |                  |  ✓   | 属性名。                                |
 | elem     | Element | `this.container` |      | 开始查找的元素，默认使用视图的容器元素。 |
 
 <span class="tag-return">返回值<span>
@@ -382,7 +382,7 @@ getSelector(elem: Element, prevSelector?: string): string | undefined
 
 | 参数名       | 类型    | 默认值 | 必选 | 描述                  |
 |--------------|---------|--------|:----:|---------------------|
-| elem         | Element |        |  ✔️  | 需要获取选择器的元素。 |
+| elem         | Element |        |  ✓   | 需要获取选择器的元素。 |
 | prevSelector | string  |        |      | 上一级选择器。         |
 
 <span class="tag-example">用法</span>
@@ -404,7 +404,7 @@ prefixClassName(className: string): string
 
 | 参数名    | 类型   | 默认值 | 必选 | 描述      |
 |-----------|--------|--------|:----:|---------|
-| className | string |        |  ✔️  | 样式类名。 |
+| className | string |        |  ✓   | 样式类名。 |
 
 <span class="tag-example">用法</span>
 
@@ -425,7 +425,7 @@ delegateEvents(events: View.Events, append?: boolean): this
 
 | 参数名 | 类型                                   | 默认值  | 必选 | 描述                                                        |
 |--------|----------------------------------------|---------|:----:|-----------------------------------------------------------|
-| events | { [event:string]: string \| Function } |         |  ✔️  | 事件名和事件回调键值对。                                     |
+| events | { [event:string]: string \| Function } |         |  ✓   | 事件名和事件回调键值对。                                     |
 | append | boolean                                | `false` |      | 是否是追加绑定，默认为 `false` 表示先解绑容器上的事件再绑定。 |
 
 其中 `events` 键值对的键分为两种情况：
@@ -477,7 +477,7 @@ delegateDocumentEvents(events: View.Events, data?: KeyValue): this
 
 | 参数名 | 类型                                   | 默认值  | 必选 | 描述                                       |
 |--------|----------------------------------------|---------|:----:|------------------------------------------|
-| events | { [event:string]: string \| Function } |         |  ✔️  | 事件名和事件回调键值对。                    |
+| events | { [event:string]: string \| Function } |         |  ✓   | 事件名和事件回调键值对。                    |
 | data   | KeyValue                               | `false` |      | 传递给事件的附加数据，可以在回调函数中使用。 |
 
 
@@ -523,7 +523,7 @@ getView(cid: string): View | null
 
 | 参数名 | 类型     | 默认值 | 必选 | 描述                |
 |--------|----------|--------|:----:|-------------------|
-| cid    | { string |        |  ✔️  | 视图的 [cid](#cid)。 |
+| cid    | { string |        |  ✓   | 视图的 [cid](#cid)。 |
 
 <span class="tag-return">返回值<span>
 
