@@ -480,7 +480,7 @@ setVertices(
 
 | 名称             | 类型                                 | 必选 | 默认值  | 描述                                                        |
 |------------------|--------------------------------------|:----:|---------|-----------------------------------------------------------|
-| vertices         | Point.PointLike \| Point.PointLike[] |  ✔️  |         | 路径点。                                                     |
+| vertices         | Point.PointLike \| Point.PointLike[] |  ✓   |         | 路径点。                                                     |
 | options.silent   | boolean                              |      | `false` | 为 `true` 时不触不触发 `'change:vertices'`  事件和画布重绘。 |
 | options...others | object                               |      |         | 其他自定义键值对，可以在事件回调中使用。                      |
 
@@ -500,7 +500,7 @@ insertVertex(
 
 | 名称             | 类型            | 必选 | 默认值  | 描述                                                        |
 |------------------|-----------------|:----:|---------|-----------------------------------------------------------|
-| vertice          | Point.PointLike |  ✔️  |         | 路径点。                                                     |
+| vertice          | Point.PointLike |  ✓   |         | 路径点。                                                     |
 | index            | number          |      |         | 插入位置，默认插入到路径点数组的末尾。                        |
 | options.silent   | boolean         |      | `false` | 为 `true` 时不触不触发 `'change:vertices'`  事件和画布重绘。 |
 | options...others | object          |      |         | 其他自定义键值对，可以在事件回调中使用。                      |
@@ -518,7 +518,7 @@ appendVertex(vertex: Point.PointLike, options?: Edge.SetOptions): this
 
 | 名称             | 类型            | 必选 | 默认值  | 描述                                                        |
 |------------------|-----------------|:----:|---------|-----------------------------------------------------------|
-| vertex           | Point.PointLike |  ✔️  |         | 路径点。                                                     |
+| vertex           | Point.PointLike |  ✓   |         | 路径点。                                                     |
 | options.silent   | boolean         |      | `false` | 为 `true` 时不触不触发 `'change:vertices'`  事件和画布重绘。 |
 | options...others | object          |      |         | 其他自定义键值对，可以在事件回调中使用。                      |
 
@@ -534,7 +534,7 @@ getVertexAt(index: number): Point.PointLike | null
 
 | 名称  | 类型   | 必选 | 默认值 | 描述      |
 |-------|--------|:----:|--------|---------|
-| index | number |  ✔️  |        | 索引位置。 |
+| index | number |  ✓   |        | 索引位置。 |
 
 #### setVertexAt(...)
 
@@ -552,8 +552,8 @@ setVertexAt(
 
 | 名称             | 类型            | 必选 | 默认值  | 描述                                                        |
 |------------------|-----------------|:----:|---------|-----------------------------------------------------------|
-| index            | number          |  ✔️  |         | 索引位置。                                                   |
-| vertice          | Point.PointLike |  ✔️  |         | 路径点。                                                     |
+| index            | number          |  ✓   |         | 索引位置。                                                   |
+| vertice          | Point.PointLike |  ✓   |         | 路径点。                                                     |
 | options.silent   | boolean         |      | `false` | 为 `true` 时不触不触发 `'change:vertices'`  事件和画布重绘。 |
 | options...others | object          |      |         | 其他自定义键值对，可以在事件回调中使用。                      |
 
@@ -569,7 +569,7 @@ removeVertexAt(index: number, options?: Edge.SetOptions): this
 
 | 名称             | 类型    | 必选 | 默认值  | 描述                                                        |
 |------------------|---------|:----:|---------|-----------------------------------------------------------|
-| index            | number  |  ✔️  |         | 索引位置。                                                   |
+| index            | number  |  ✓   |         | 索引位置。                                                   |
 | options.silent   | boolean |      | `false` | 为 `true` 时不触不触发 `'change:vertices'`  事件和画布重绘。 |
 | options...others | object  |      |         | 其他自定义键值对，可以在事件回调中使用。                      |
 
@@ -596,9 +596,9 @@ setRouter(router: Edge.RouterData, options?: Edge.SetOptions): this
 
 | 名称             | 类型            | 必选 | 默认值  | 描述                                                      |
 |------------------|-----------------|:----:|---------|---------------------------------------------------------|
-| name             | string          |  ✔️  |         | 路由名称。                                                 |
+| name             | string          |  ✓   |         | 路由名称。                                                 |
 | args             | KeyValue        |      |         | 路由参数。                                                 |
-| router           | Edge.RouterData |  ✔️  |         | 路由。                                                     |
+| router           | Edge.RouterData |  ✓   |         | 路由。                                                     |
 | options.silent   | boolean         |      | `false` | 为 `true` 时不触不触发 `'change:router'`  事件和画布重绘。 |
 | options...others | object          |      |         | 其他自定义键值对，可以在事件回调中使用。                    |
 
@@ -640,9 +640,9 @@ setConnector(connector: Edge.ConnectorData, options?: Edge.SetOptions): this
 
 | 名称             | 类型               | 必选 | 默认值  | 描述                                                         |
 |------------------|--------------------|:----:|---------|------------------------------------------------------------|
-| name             | string             |  ✔️  |         | 连接器名称。                                                  |
+| name             | string             |  ✓   |         | 连接器名称。                                                  |
 | args             | KeyValue           |      |         | 连接器参数。                                                  |
-| connector        | Edge.ConnectorData |  ✔️  |         | 连接器。                                                      |
+| connector        | Edge.ConnectorData |  ✓   |         | 连接器。                                                      |
 | options.silent   | boolean            |      | `false` | 为 `true` 时不触不触发 `'change:connector'`  事件和画布重绘。 |
 | options...others | object             |      |         | 其他自定义键值对，可以在事件回调中使用。                       |
 
@@ -694,7 +694,7 @@ setLabels(
 
 | 名称             | 类型                                             | 必选 | 默认值  | 描述                                                      |
 |------------------|--------------------------------------------------|:----:|---------|---------------------------------------------------------|
-| labels           | Edge.Label \| Edge.Label[] \| string \| string[] |  ✔️  |         | 标签或标签数组。                                           |
+| labels           | Edge.Label \| Edge.Label[] \| string \| string[] |  ✓   |         | 标签或标签数组。                                           |
 | options.silent   | boolean                                          |      | `false` | 为 `true` 时不触不触发 `'change:labels'`  事件和画布重绘。 |
 | options...others | object                                           |      |         | 其他自定义键值对，可以在事件回调中使用。                    |
 
@@ -714,7 +714,7 @@ insertLabel(
 
 | 名称             | 类型                 | 必选 | 默认值  | 描述                                                      |
 |------------------|----------------------|:----:|---------|---------------------------------------------------------|
-| label            | Edge.Label \| string |  ✔️  |         | 标签。                                                     |
+| label            | Edge.Label \| string |  ✓   |         | 标签。                                                     |
 | index            | number               |      |         | 插入的位置，缺省时插入到标签数组的末尾。                    |
 | options.silent   | boolean              |      | `false` | 为 `true` 时不触不触发 `'change:labels'`  事件和画布重绘。 |
 | options...others | object               |      |         | 其他自定义键值对，可以在事件回调中使用。                    |
@@ -731,7 +731,7 @@ appendLabel(label: Edge.Label | string, options?: Edge.SetOptions): this
 
 | 名称             | 类型                 | 必选 | 默认值  | 描述                                                      |
 |------------------|----------------------|:----:|---------|---------------------------------------------------------|
-| label            | Edge.Label \| string |  ✔️  |         | 标签。                                                     |
+| label            | Edge.Label \| string |  ✓   |         | 标签。                                                     |
 | options.silent   | boolean              |      | `false` | 为 `true` 时不触不触发 `'change:labels'`  事件和画布重绘。 |
 | options...others | object               |      |         | 其他自定义键值对，可以在事件回调中使用。                    |
 
@@ -747,7 +747,7 @@ getLabelAt(index: number): Edge.Label | null
 
 | 名称  | 类型   | 必选 | 默认值 | 描述      |
 |-------|--------|:----:|--------|---------|
-| index | number |  ✔️  |        | 索引位置。 |
+| index | number |  ✓   |        | 索引位置。 |
 
 #### setLabelAt(...)
 
@@ -765,8 +765,8 @@ setLabelAt(
 
 | 名称             | 类型                 | 必选 | 默认值  | 描述                                                      |
 |------------------|----------------------|:----:|---------|---------------------------------------------------------|
-| index            | number               |  ✔️  |         | 索引位置。                                                 |
-| label            | Edge.Label \| string |  ✔️  |         | 标签。                                                     |
+| index            | number               |  ✓   |         | 索引位置。                                                 |
+| label            | Edge.Label \| string |  ✓   |         | 标签。                                                     |
 | options.silent   | boolean              |      | `false` | 为 `true` 时不触不触发 `'change:labels'`  事件和画布重绘。 |
 | options...others | object               |      |         | 其他自定义键值对，可以在事件回调中使用。                    |
 
@@ -782,6 +782,6 @@ removeLabelAt(index: number, options?: Edge.SetOptions): this
 
 | 名称             | 类型    | 必选 | 默认值  | 描述                                                      |
 |------------------|---------|:----:|---------|---------------------------------------------------------|
-| index            | number  |  ✔️  |         | 索引位置。                                                 |
+| index            | number  |  ✓   |         | 索引位置。                                                 |
 | options.silent   | boolean |      | `false` | 为 `true` 时不触不触发 `'change:labels'`  事件和画布重绘。 |
 | options...others | object  |      |         | 其他自定义键值对，可以在事件回调中使用。                    |

@@ -1,6 +1,6 @@
 ---
 title: 序列化/反序列化
-order: 8
+order: 2
 redirect_from:
   - /zh/docs
   - /zh/docs/tutorial
