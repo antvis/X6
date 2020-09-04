@@ -290,26 +290,34 @@ export class Graph extends Basecoat<EventArgs> {
     return this.model.isNeighbor(cell1, cell2, options)
   }
 
-  getSuccessors(cell: Cell, options: Cell.GetDescendantsOptions) {
+  getSuccessors(cell: Cell, options: Model.GetPredecessorsOptions = {}) {
     return this.model.getSuccessors(cell, options)
   }
 
   /**
    * Returns `true` if `cell2` is a successor of `cell1`.
    */
-  isSuccessor(cell1: Cell, cell2: Cell) {
-    return this.model.isSuccessor(cell1, cell2)
+  isSuccessor(
+    cell1: Cell,
+    cell2: Cell,
+    options: Model.GetPredecessorsOptions = {},
+  ) {
+    return this.model.isSuccessor(cell1, cell2, options)
   }
 
-  getPredecessors(cell: Cell, options: Cell.GetDescendantsOptions) {
+  getPredecessors(cell: Cell, options: Model.GetPredecessorsOptions = {}) {
     return this.model.getPredecessors(cell, options)
   }
 
   /**
    * Returns `true` if `cell2` is a predecessor of `cell1`.
    */
-  isPredecessor(cell1: Cell, cell2: Cell) {
-    return this.model.isPredecessor(cell1, cell2)
+  isPredecessor(
+    cell1: Cell,
+    cell2: Cell,
+    options: Model.GetPredecessorsOptions = {},
+  ) {
+    return this.model.isPredecessor(cell1, cell2, options)
   }
 
   getCommonAncestor(...cells: (Cell | null | undefined)[]) {

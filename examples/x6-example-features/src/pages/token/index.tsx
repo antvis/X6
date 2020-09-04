@@ -80,6 +80,8 @@ export default class Example extends React.Component {
     })
 
     graph.trigger('signal', a)
+
+    console.log(graph.getPredecessors(c, { distance: 1 }))
   }
 
   refContainer = (container: HTMLDivElement) => {
