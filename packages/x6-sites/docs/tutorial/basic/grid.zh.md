@@ -88,11 +88,11 @@ const graph = new Graph({
         type: 'doubleMesh',
         args: [
           { 
-            color: '#a0a0a0', // 主网格线颜色
+            color: '#eee', // 主网格线颜色
             thickness: 1,     // 主网格线宽度
           },
           { 
-            color: '#a0a0a0', // 次网格线颜色
+            color: '#ddd', // 次网格线颜色
             thickness: 1,     // 次网格线宽度
             factor: 4,        // 主次网格线间隔
           },
