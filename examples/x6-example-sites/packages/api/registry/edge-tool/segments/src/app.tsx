@@ -13,7 +13,7 @@ export default class Example extends React.Component {
         const handle = tool as any
         const options = handle.options
         if (options && options.index % 2 === 1) {
-          tool.setAttrs({ fill: 'red' }, handle.handleElem)
+          tool.setAttrs({ fill: 'red' })
         }
       },
     })
@@ -38,9 +38,7 @@ export default class Example extends React.Component {
         args: {
           snapRadius: 20,
           attrs: {
-            handle: {
-              fill: '#444',
-            },
+            fill: '#444',
           },
         },
       },
@@ -67,9 +65,7 @@ export default class Example extends React.Component {
         args: {
           snapRadius: 20,
           attrs: {
-            handle: {
-              fill: '#444',
-            },
+            fill: '#444',
           },
         },
       },
