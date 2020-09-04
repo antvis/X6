@@ -3,7 +3,6 @@ import { Point, Line } from '../../geometry'
 import { Graph } from '../../graph'
 import { Edge } from '../../model/edge'
 import { View } from '../../view/view'
-import { Markup } from '../../view/markup'
 import { CellView } from '../../view/cell'
 import { EdgeView } from '../../view/edge'
 import { ToolsView } from '../../view/tool'
@@ -104,17 +103,15 @@ export class Segments extends ToolsView.ToolItem<EdgeView, Segments.Options> {
     anchor: Edge.TerminalCellData['anchor'],
   ) {
     const edge = this.cellView.cell
+    const options = {
+      ui: true,
+      toolId: this.cid,
+    }
+
     if (anchor) {
-      edge.prop([type, 'anchor'], anchor, {
-        rewrite: true,
-        ui: true,
-        toolId: this.cid,
-      })
+      edge.prop([type, 'anchor'], anchor, options)
     } else {
-      edge.removeProp([type, 'anchor'], {
-        ui: true,
-        toolId: this.cid,
-      })
+      edge.removeProp([type, 'anchor'], options)
     }
   }
 
@@ -152,11 +149,8 @@ export class Segments extends ToolsView.ToolItem<EdgeView, Segments.Options> {
     const index = handle.options.index! - 1
 
     const data = this.getEventData<Segments.EventData>(e)
-    const normalizedEvent = this.normalizeEvent(e)
-    const coords = graph.snapToGrid(
-      normalizedEvent.clientX,
-      normalizedEvent.clientY,
-    )
+    const evt = this.normalizeEvent(e)
+    const coords = graph.snapToGrid(evt.clientX, evt.clientY)
     const position = this.snapHandle(handle, coords.clone(), data)
     const vertices = ObjectExt.cloneDeep(this.vertices)
     let vertex = vertices[index]
@@ -207,6 +201,7 @@ export class Segments extends ToolsView.ToolItem<EdgeView, Segments.Options> {
         )
         this.resetAnchor('source', sourceAnchor)
       }
+
       if (deleteSourceAnchor) {
         this.resetAnchor('source', data.sourceAnchorDef)
       }
@@ -265,7 +260,7 @@ export class Segments extends ToolsView.ToolItem<EdgeView, Segments.Options> {
 
     this.updateHandle(handle, vertex, nextVertex, 0)
     if (!options.stopPropagation) {
-      edgeView.notifyMouseMove(normalizedEvent, coords.x, coords.y)
+      edgeView.notifyMouseMove(evt, coords.x, coords.y)
     }
   }
 
@@ -372,7 +367,7 @@ export namespace Segments {
     snapRadius: number
     stopPropagation: boolean
     removeRedundancies: boolean
-    attrs: Attr.CellAttrs | ((handle: Handle) => Attr.CellAttrs)
+    attrs: Attr.SimpleAttrs | ((handle: Handle) => Attr.SimpleAttrs)
     anchor?: (
       this: EdgeView,
       pos: Point,
@@ -396,84 +391,50 @@ export namespace Segments {
 
 export namespace Segments {
   export class Handle extends View<Handle.EventArgs> {
-    public readonly container: SVGElement
-    public readonly lineElem: SVGLineElement
-    public readonly handleElem: SVGRectElement
+    public container: SVGRectElement
 
     constructor(public options: Handle.Options) {
       super()
-
-      this.container = View.createElement('g', true) as SVGElement
-
-      Dom.addClass(this.container, this.prefixClassName('edge-tool-segment'))
-
+      this.render()
       this.delegateEvents({
         mousedown: 'onMouseDown',
         touchstart: 'onMouseDown',
       })
+    }
 
-      const meta = Markup.parseJSONMarkup([
-        {
-          tagName: 'line',
-          selector: 'line',
-          attrs: {
-            stroke: '#333',
-            'stroke-width': 2,
-            fill: 'none',
-            'pointer-events': 'none',
-          },
-        },
-        {
-          tagName: 'rect',
-          selector: 'handle',
-          attrs: {
-            width: 20,
-            height: 8,
-            x: -10,
-            y: -4,
-            rx: 4,
-            ry: 4,
-            fill: '#333',
-            stroke: '#fff',
-            'stroke-width': 2,
-          },
-        },
-      ])
-
+    render() {
+      this.container = View.createElement('rect', true) as SVGRectElement
       const attrs = this.options.attrs
-      const map = typeof attrs === 'function' ? attrs(this) : attrs
-      const selectors = meta.selectors
-      if (map) {
-        Object.keys(selectors).forEach((key) => {
-          if (map[key]) {
-            this.setAttrs(
-              map[key] as Attr.SimpleAttrs,
-              selectors[key] as SVGElement,
-            )
-          }
+      if (typeof attrs === 'function') {
+        const defaults = Segments.getDefaults<Segments.Options>()
+        this.setAttrs({
+          ...defaults.attrs,
+          ...attrs(this),
         })
+      } else {
+        this.setAttrs(attrs)
       }
-
-      this.lineElem = selectors.line as SVGLineElement
-      this.handleElem = selectors.handle as SVGRectElement
-      this.container.appendChild(meta.fragment)
+      this.addClass(this.prefixClassName('edge-tool-segment'))
     }
 
     updatePosition(x: number, y: number, angle: number, view: EdgeView) {
-      const matrix = Dom.createSVGMatrix().translate(x, y).rotate(angle)
-      const handle = this.handleElem
-      handle.setAttribute('transform', Dom.matrixToTransformString(matrix))
-      handle.setAttribute(
-        'cursor',
-        angle % 180 === 0 ? 'row-resize' : 'col-resize',
-      )
+      const p = view.getClosestPoint(new Point(x, y)) || new Point(x, y)
+      let matrix = Dom.createSVGMatrix().translate(p.x, p.y)
+      if (!p.equals({ x, y })) {
+        const line = new Line(x, y, p.x, p.y)
+        let deg = line.vector().vectorAngle(new Point(1, 0))
+        if (deg !== 0) {
+          deg += 90
+        }
+        matrix = matrix.rotate(deg)
+      } else {
+        matrix = matrix.rotate(angle)
+      }
 
-      const pt = view.getClosestPoint(new Point(x, y))!
-      const line = this.lineElem
-      line.setAttribute('x1', `${x}`)
-      line.setAttribute('y1', `${y}`)
-      line.setAttribute('x2', `${pt.x}`)
-      line.setAttribute('y2', `${pt.y}`)
+      this.setAttrs({
+        transform: Dom.matrixToTransformString(matrix),
+        cursor: angle % 180 === 0 ? 'row-resize' : 'col-resize',
+      })
     }
 
     protected onMouseDown(evt: JQuery.MouseDownEvent) {
@@ -521,7 +482,7 @@ export namespace Segments {
     export interface Options {
       graph: Graph
       guard: (evt: JQuery.TriggeredEvent) => boolean
-      attrs: Attr.CellAttrs | ((handle: Handle) => Attr.CellAttrs)
+      attrs: Attr.SimpleAttrs | ((handle: Handle) => Attr.SimpleAttrs)
       index?: number
       axis?: 'x' | 'y'
     }
@@ -542,6 +503,17 @@ export namespace Segments {
     snapRadius: 10,
     stopPropagation: true,
     removeRedundancies: true,
+    attrs: {
+      width: 20,
+      height: 8,
+      x: -10,
+      y: -4,
+      rx: 4,
+      ry: 4,
+      fill: '#333',
+      stroke: '#fff',
+      'stroke-width': 2,
+    },
     createHandle: (options) => new Handle(options),
     anchor: Util.getAnchor,
   })
