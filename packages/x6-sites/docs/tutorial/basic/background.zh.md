@@ -83,10 +83,11 @@ interface BackgroundOptions {
 背景图片重复方式，支持所有 [CSS background-repeat](https://developer.mozilla.org/en-US/docs/Web/CSS/background-repeat) 属性的取值，默认为 `'no-repeat'`。
 
 另外，还支持以下几个预定义值：
-  - `'flip-x'` 水平翻转背景图片。
-  - `'flip-y'` 垂直翻转背景图片。
-  - `'flip-xy'` 水平和垂直翻转背景图片。
-  - `'watermark'` 水印效果。
+
+- [`'watermark'`](../../api/registry/background#watermark) 水印效果。
+- [`'flip-x'`](../../api/registry/background#flip-x) 水平翻转背景图片。
+- [`'flip-y'`](../../api/registry/background#flip-y) 垂直翻转背景图片。
+- [`'flip-xy'`](../../api/registry/background#flip-xy) 水平和垂直翻转背景图片。
 
 ### opacity 
 
