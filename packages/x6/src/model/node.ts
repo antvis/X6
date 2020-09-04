@@ -1,6 +1,6 @@
-import { DeepPartial } from 'utility-types'
-import { Registry } from '../registry'
+import { DeepPartial, Omit } from 'utility-types'
 import { Size, KeyValue } from '../types'
+import { Registry } from '../registry'
 import { Point, Rectangle, Angle } from '../geometry'
 import { StringExt, ObjectExt, NumberExt } from '../util'
 import { Markup } from '../view/markup'
@@ -976,9 +976,16 @@ export namespace Node {
     width?: number
     height?: number
   }
+
   export interface Defaults extends Common, Cell.Defaults {}
-  export interface Properties extends Common, Cell.Metadata, Cell.Properties {}
+
   export interface Metadata extends Common, Cell.Metadata, Boundary {}
+
+  export interface Properties
+    extends Common,
+      Omit<Cell.Metadata, 'tools'>,
+      Cell.Properties {}
+
   export interface Config
     extends Defaults,
       Boundary,
@@ -1077,7 +1084,7 @@ export namespace Node {
 
 export namespace Node {
   Node.config<Node.Config>({
-    propHooks: ({ ports, ...metadata }) => {
+    propHooks({ ports, ...metadata }) {
       if (ports) {
         metadata.ports = Array.isArray(ports) ? { items: ports } : ports
       }

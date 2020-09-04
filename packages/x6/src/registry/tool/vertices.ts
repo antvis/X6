@@ -1,10 +1,10 @@
-import { Dom } from '../../util'
 import { Util } from '../../global/util'
 import { Point } from '../../geometry'
 import { Graph } from '../../graph'
 import { View } from '../../view/view'
 import { EdgeView } from '../../view/edge'
 import { ToolsView } from '../../view/tool'
+import { Attr } from '../attr'
 
 export class Vertices extends ToolsView.ToolItem<EdgeView, Vertices.Options> {
   protected handles: Vertices.Handle[] = []
@@ -14,9 +14,8 @@ export class Vertices extends ToolsView.ToolItem<EdgeView, Vertices.Options> {
   }
 
   protected onRender() {
-    Dom.addClass(this.container, this.prefixClassName('edge-tool-vertices'))
-
-    if (this.options.vertexAdding) {
+    this.addClass(this.prefixClassName('edge-tool-vertices'))
+    if (this.options.addable) {
       this.updatePath()
     }
     this.resetHandles()
@@ -33,7 +32,7 @@ export class Vertices extends ToolsView.ToolItem<EdgeView, Vertices.Options> {
       this.renderHandles()
     }
 
-    if (this.options.vertexAdding) {
+    if (this.options.addable) {
       this.updatePath()
     }
 
@@ -55,11 +54,26 @@ export class Vertices extends ToolsView.ToolItem<EdgeView, Vertices.Options> {
     const vertices = this.vertices
     for (let i = 0, l = vertices.length; i < l; i += 1) {
       const vertex = vertices[i]
-      const handle = new this.options.handleConstructor!({
+      const createHandle = this.options.createHandle!
+      const processHandle = this.options.processHandle
+      const handle = createHandle({
         index: i,
         graph: this.graph,
         guard: (evt: JQuery.TriggeredEvent) => this.guard(evt),
+        attrs: this.options.attrs || {},
       })
+
+      if (processHandle) {
+        processHandle(handle)
+      }
+
+      this.graph.hook.onToolItemCreated({
+        name: 'vertices',
+        cell: this.cell,
+        view: this.cellView,
+        tool: handle,
+      })
+
       handle.updatePosition(vertex.x, vertex.y)
       this.stamp(handle.container)
       this.container.appendChild(handle.container)
@@ -160,10 +174,11 @@ export class Vertices extends ToolsView.ToolItem<EdgeView, Vertices.Options> {
     const options = this.options
     const edgeView = this.cellView
 
-    if (options.vertexAdding) {
+    if (options.addable) {
       this.updatePath()
     }
-    if (!options.redundancyRemoval) {
+
+    if (!options.removeRedundancies) {
       return
     }
 
@@ -204,6 +219,7 @@ export class Vertices extends ToolsView.ToolItem<EdgeView, Vertices.Options> {
       } else if (Math.abs(vertex.x - next.x) < snapRadius) {
         vertex.x = next.x
       }
+
       if (Math.abs(vertex.y - prev.y) < snapRadius) {
         vertex.y = neighbors.prev.y
       } else if (Math.abs(vertex.y - next.y) < snapRadius) {
@@ -213,17 +229,20 @@ export class Vertices extends ToolsView.ToolItem<EdgeView, Vertices.Options> {
   }
 
   protected onHandleRemove({ handle, e }: Vertices.Handle.EventArgs['remove']) {
-    const index = handle.options.index
-    const edgeView = this.cellView
-    edgeView.cell.removeVertexAt(index, { ui: true })
-    if (this.options.vertexAdding) {
-      this.updatePath()
+    if (this.options.removable) {
+      const index = handle.options.index
+      const edgeView = this.cellView
+      edgeView.cell.removeVertexAt(index, { ui: true })
+      if (this.options.addable) {
+        this.updatePath()
+      }
+      edgeView.checkMouseleave(this.normalizeEvent(e))
     }
-    edgeView.checkMouseleave(this.normalizeEvent(e))
   }
 
   protected onPathMouseDown(evt: JQuery.MouseDownEvent) {
-    if (this.guard(evt)) {
+    console.log('onPathMouseDown')
+    if (this.guard(evt) || !this.options.addable) {
       return
     }
 
@@ -254,10 +273,13 @@ export class Vertices extends ToolsView.ToolItem<EdgeView, Vertices.Options> {
 export namespace Vertices {
   export interface Options extends ToolsView.ToolItem.Options {
     snapRadius?: number
-    vertexAdding?: boolean
-    redundancyRemoval?: boolean
+    addable?: boolean
+    removable?: boolean
+    removeRedundancies?: boolean
     stopPropagation?: boolean
-    handleConstructor?: typeof Handle
+    attrs?: Attr.SimpleAttrs | ((handle: Handle) => Attr.SimpleAttrs)
+    createHandle?: (options: Handle.Options) => Handle
+    processHandle?: (handle: Handle) => void
   }
 }
 
@@ -269,18 +291,7 @@ export namespace Vertices {
 
     constructor(public readonly options: Handle.Options) {
       super()
-      this.container = View.createElement('circle', true)
-
-      Dom.attr(this.container, {
-        r: 6,
-        fill: '#33334F',
-        stroke: '#FFFFFF',
-        cursor: 'move',
-        'stroke-width': 2,
-      })
-
-      Dom.addClass(this.container, this.prefixClassName('edge-tool-vertex'))
-
+      this.render()
       this.delegateEvents({
         mousedown: 'onMouseDown',
         touchstart: 'onMouseDown',
@@ -288,8 +299,24 @@ export namespace Vertices {
       })
     }
 
+    render() {
+      this.container = View.createElement('circle', true)
+      const attrs = this.options.attrs
+      if (typeof attrs === 'function') {
+        const defaults = Vertices.getDefaults<Vertices.Options>()
+        this.setAttrs({
+          ...defaults.attrs,
+          ...attrs(this),
+        })
+      } else {
+        this.setAttrs(attrs)
+      }
+
+      this.addClass(this.prefixClassName('edge-tool-vertex'))
+    }
+
     updatePosition(x: number, y: number) {
-      Dom.attr(this.container, { cx: x, cy: y })
+      this.setAttrs({ cx: x, cy: y })
     }
 
     onMouseDown(evt: JQuery.MouseDownEvent) {
@@ -315,17 +342,17 @@ export namespace Vertices {
       this.emit('change', { e: evt, handle: this })
     }
 
-    onMouseMove(evt: JQuery.MouseMoveEvent) {
+    protected onMouseMove(evt: JQuery.MouseMoveEvent) {
       this.emit('changing', { e: evt, handle: this })
     }
 
-    onMouseUp(evt: JQuery.MouseUpEvent) {
+    protected onMouseUp(evt: JQuery.MouseUpEvent) {
       this.emit('changed', { e: evt, handle: this })
       this.undelegateDocumentEvents()
       this.graph.view.delegateEvents()
     }
 
-    onDoubleClick(evt: JQuery.DoubleClickEvent) {
+    protected onDoubleClick(evt: JQuery.DoubleClickEvent) {
       this.emit('remove', { e: evt, handle: this })
     }
   }
@@ -335,6 +362,7 @@ export namespace Vertices {
       graph: Graph
       index: number
       guard: (evt: JQuery.TriggeredEvent) => boolean
+      attrs: Attr.SimpleAttrs | ((handle: Handle) => Attr.SimpleAttrs)
     }
 
     export interface EventArgs {
@@ -352,10 +380,18 @@ export namespace Vertices {
   Vertices.config<Vertices.Options>({
     name: 'vertices',
     snapRadius: 20,
-    redundancyRemoval: true,
-    vertexAdding: true,
+    addable: true,
+    removable: true,
+    removeRedundancies: true,
     stopPropagation: true,
-    handleConstructor: Vertices.Handle,
+    attrs: {
+      r: 6,
+      fill: '#333',
+      stroke: '#fff',
+      cursor: 'move',
+      'stroke-width': 2,
+    },
+    createHandle: (options) => new Handle(options),
     markup: [
       {
         tagName: 'path',

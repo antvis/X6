@@ -41,7 +41,7 @@ registerEdgeTool('custom-boundary', 'boundary', {
   attrs: {
     fill: '#7c68fc',
     'fill-opacity': 0.2,
-    stroke: '#33334F',
+    stroke: '#333',
     'stroke-width': 0.5,
     'stroke-dasharray': '5, 5',
     'pointer-events': 'none',
@@ -90,6 +90,10 @@ export default class Example extends React.Component {
           },
         },
       },
+    })
+
+    edge1.setTools({
+      items: ['segments'],
     })
 
     const edge2 = graph.addEdge({
@@ -498,7 +502,7 @@ export default class Example extends React.Component {
 
     graph.findViewByCell(edge10)!.addTools({
       name: 'permanent',
-      tools: ['target-anchor', 'rectangle-source-arrowhead'],
+      items: ['target-anchor', 'rectangle-source-arrowhead'],
     })
 
     // stubs
@@ -676,12 +680,12 @@ export default class Example extends React.Component {
 
     // tools
     graph.on('edge:mouseenter', ({ cell, view }) => {
-      const tools: any[] = []
+      const items: any[] = []
       switch (cell) {
-        case edge1:
+        // case edge1:
         case edge3:
         case edge4: {
-          tools.push(
+          items.push(
             {
               name: 'vertices',
               args: { stopPropagation: false },
@@ -695,7 +699,7 @@ export default class Example extends React.Component {
         }
 
         case edge2: {
-          tools.push(
+          items.push(
             {
               name: 'button',
               args: {
@@ -782,7 +786,7 @@ export default class Example extends React.Component {
         }
 
         case edge5: {
-          tools.push(
+          items.push(
             {
               name: 'vertices',
               args: {
@@ -797,7 +801,7 @@ export default class Example extends React.Component {
         }
 
         case edge6: {
-          tools.push('vertices', {
+          items.push('vertices', {
             name: 'custom-boundary',
             args: { padding: 25 },
           })
@@ -805,7 +809,7 @@ export default class Example extends React.Component {
         }
 
         case edge7: {
-          tools.push('source-arrowhead', 'target-arrowhead', {
+          items.push('source-arrowhead', 'target-arrowhead', {
             name: 'button-remove',
             args: { distance: 20 },
           })
@@ -814,7 +818,7 @@ export default class Example extends React.Component {
 
         case edge9:
         case edge8: {
-          tools.push({
+          items.push({
             name: 'vertices',
             args: {
               snapRadius: 0,
@@ -827,22 +831,22 @@ export default class Example extends React.Component {
 
         case edge11:
         case edge12: {
-          tools.push('source-arrowhead', 'target-arrowhead')
+          items.push('source-arrowhead', 'target-arrowhead')
           break
         }
       }
 
-      if (tools.length) {
-        view.addTools({
-          tools,
+      if (items.length) {
+        cell.setTools({
+          items,
           name: 'onhover',
         })
       }
     })
 
-    graph.on('edge:mouseleave', ({ view }) => {
-      if (view.hasTools('onhover')) {
-        view.removeTools()
+    graph.on('edge:mouseleave', ({ cell }) => {
+      if (cell.hasTools('onhover')) {
+        cell.removeTools()
       }
     })
   }

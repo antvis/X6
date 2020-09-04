@@ -3,6 +3,7 @@ import { Cell } from '../model/cell'
 import { Node } from '../model/node'
 import { Edge } from '../model/edge'
 import { Model } from '../model/model'
+import { View } from '../view/view'
 import { Markup } from '../view/markup'
 import { CellView } from '../view/cell'
 import { NodeView } from '../view/node'
@@ -522,6 +523,9 @@ export class Hook extends Base implements Hook.IHook {
 
   @Decorator.hook()
   onPortRendered(args: Hook.OnPortRenderedArgs) {}
+
+  @Decorator.hook()
+  onToolItemCreated(args: Hook.OnToolItemCreatedArgs) {}
 }
 
 export namespace Hook {
@@ -548,6 +552,13 @@ export namespace Hook {
     labelSelectors?: Markup.Selectors
     contentContainer: Element
     contentSelectors?: Markup.Selectors
+  }
+
+  export interface OnToolItemCreatedArgs {
+    name: string
+    cell: Cell
+    view: CellView
+    tool: View
   }
 
   export interface IHook {
@@ -619,5 +630,7 @@ export namespace Hook {
     onEdgeLabelRendered(this: Graph, args: OnEdgeLabelRenderedArgs): void
 
     onPortRendered(this: Graph, args: OnPortRenderedArgs): void
+
+    onToolItemCreated(this: Graph, args: OnToolItemCreatedArgs): void
   }
 }

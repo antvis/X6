@@ -49,14 +49,11 @@ export class ToolsView extends View {
       ...options,
     }
 
-    if (
-      !(options.cellView instanceof CellView) ||
-      options.cellView === this.cellView
-    ) {
+    if (!(options.view instanceof CellView) || options.view === this.cellView) {
       return this
     }
 
-    this.cellView = options.cellView
+    this.cellView = options.view
 
     if (this.cell.isEdge()) {
       Dom.addClass(this.container, this.prefixClassName('edge-tools'))
@@ -70,7 +67,7 @@ export class ToolsView extends View {
       this.container.setAttribute('data-tools-name', this.name)
     }
 
-    const tools = this.options.tools
+    const tools = this.options.items
     if (!Array.isArray(tools)) {
       return this
     }
@@ -194,9 +191,10 @@ export namespace ToolsView {
   }
 
   export interface ConfigOptions {
-    cellView?: CellView
+    view?: CellView
     name?: string
-    tools?:
+    local?: boolean
+    items?:
       | (
           | ToolItem
           | string
@@ -208,7 +206,6 @@ export namespace ToolsView {
           | EdgeTool.ManaualItem
         )[]
       | null
-    local?: boolean
   }
 
   export interface UpdateOptions {
@@ -228,8 +225,8 @@ export namespace ToolsView {
       tagName: 'g',
     }
 
-    static getDefaults() {
-      return this.defaults
+    static getDefaults<T extends ToolItem.Options>() {
+      return this.defaults as T
     }
 
     static config<T extends ToolItem.Options = ToolItem.Options>(
