@@ -37,11 +37,11 @@ const tryToJSON = (val: string) => {
 interface IProps {
   attrs: {
     [key: string]: any
-  },
+  }
   setAttr: (key: string, val: any) => void
 }
 
-export default function(props: IProps) {
+export default function (props: IProps) {
   const { attrs, setAttr } = props
 
   useEffect(() => {
@@ -74,7 +74,14 @@ export default function(props: IProps) {
     }
     const { graph } = X6Editor.getInstance()
     graph.drawGrid(options)
-  }, [attrs.type, attrs.color, attrs.thickness, attrs.thicknessSecond, attrs.colorSecond, attrs.factor])
+  }, [
+    attrs.type,
+    attrs.color,
+    attrs.thickness,
+    attrs.thicknessSecond,
+    attrs.colorSecond,
+    attrs.factor,
+  ])
 
   useEffect(() => {
     const { graph } = X6Editor.getInstance()
@@ -93,7 +100,15 @@ export default function(props: IProps) {
     }
     const { graph } = X6Editor.getInstance()
     graph.drawBackground(options)
-  }, [attrs.bgColor, attrs.showImage, attrs.repeat, attrs.angle, attrs.bgSize, attrs.position, attrs.opacity])
+  }, [
+    attrs.bgColor,
+    attrs.showImage,
+    attrs.repeat,
+    attrs.angle,
+    attrs.bgSize,
+    attrs.position,
+    attrs.opacity,
+  ])
 
   return (
     <Tabs defaultActiveKey="1">
@@ -104,18 +119,22 @@ export default function(props: IProps) {
             <Select
               style={{ width: '100%' }}
               value={attrs.type}
-              onChange={val => setAttr('type', val)}
+              onChange={(val) => setAttr('type', val)}
             >
               <Select.Option value={GRID_TYPE.DOT}>Dot</Select.Option>
-              <Select.Option value={GRID_TYPE.FIXED_DOT}>Fixed Dot</Select.Option>
+              <Select.Option value={GRID_TYPE.FIXED_DOT}>
+                Fixed Dot
+              </Select.Option>
               <Select.Option value={GRID_TYPE.MESH}>Mesh</Select.Option>
-              <Select.Option value={GRID_TYPE.DOUBLE_MESH}>Double Mesh</Select.Option>
+              <Select.Option value={GRID_TYPE.DOUBLE_MESH}>
+                Double Mesh
+              </Select.Option>
             </Select>
           </Col>
         </Row>
         <Row align="middle">
           <Col span={10}>Grid Size</Col>
-          <Col span={11}>
+          <Col span={10}>
             <Slider
               min={1}
               max={20}
@@ -124,7 +143,7 @@ export default function(props: IProps) {
               onChange={(val: number) => setAttr('size', val)}
             />
           </Col>
-          <Col span={1}>
+          <Col span={2}>
             <div className="result">{attrs.size}</div>
           </Col>
         </Row>
@@ -137,13 +156,13 @@ export default function(props: IProps) {
                   type="color"
                   value={attrs.color}
                   style={{ width: '100%' }}
-                  onChange={e => setAttr('color', e.target.value)}
+                  onChange={(e) => setAttr('color', e.target.value)}
                 />
               </Col>
             </Row>
             <Row align="middle">
               <Col span={10}>Primary Thickness</Col>
-              <Col span={11}>
+              <Col span={10}>
                 <Slider
                   min={0.5}
                   max={10}
@@ -152,10 +171,8 @@ export default function(props: IProps) {
                   onChange={(val: number) => setAttr('thickness', val)}
                 />
               </Col>
-              <Col span={1}>
-                <div className="result">
-                  {attrs.thickness.toFixed(1)}
-                </div>
+              <Col span={2}>
+                <div className="result">{attrs.thickness.toFixed(1)}</div>
               </Col>
             </Row>
             <Row align="middle">
@@ -165,13 +182,13 @@ export default function(props: IProps) {
                   type="color"
                   value={attrs.colorSecond}
                   style={{ width: '100%' }}
-                  onChange={e => setAttr('colorSecond', e.target.value)}
+                  onChange={(e) => setAttr('colorSecond', e.target.value)}
                 />
               </Col>
             </Row>
             <Row align="middle">
               <Col span={10}>Secondary Thickness</Col>
-              <Col span={11}>
+              <Col span={10}>
                 <Slider
                   min={0.5}
                   max={10}
@@ -180,15 +197,13 @@ export default function(props: IProps) {
                   onChange={(val: number) => setAttr('thicknessSecond', val)}
                 />
               </Col>
-              <Col span={1}>
-                <div className="result">
-                  {attrs.thicknessSecond.toFixed(1)}
-                </div>
+              <Col span={2}>
+                <div className="result">{attrs.thicknessSecond.toFixed(1)}</div>
               </Col>
             </Row>
             <Row align="middle">
               <Col span={10}>Scale Factor</Col>
-              <Col span={11}>
+              <Col span={10}>
                 <Slider
                   min={1}
                   max={10}
@@ -197,7 +212,7 @@ export default function(props: IProps) {
                   onChange={(val: number) => setAttr('factor', val)}
                 />
               </Col>
-              <Col span={1}>
+              <Col span={2}>
                 <div className="result">{attrs.factor}</div>
               </Col>
             </Row>
@@ -211,7 +226,7 @@ export default function(props: IProps) {
                   type="color"
                   value={attrs.color}
                   style={{ width: '100%' }}
-                  onChange={e => setAttr('color', e.target.value)}
+                  onChange={(e) => setAttr('color', e.target.value)}
                 />
               </Col>
             </Row>
@@ -227,9 +242,7 @@ export default function(props: IProps) {
                 />
               </Col>
               <Col span={1}>
-                <div className="result">
-                  {attrs.thickness.toFixed(1)}
-                </div>
+                <div className="result">{attrs.thickness.toFixed(1)}</div>
               </Col>
             </Row>
           </React.Fragment>
@@ -243,7 +256,7 @@ export default function(props: IProps) {
               type="color"
               value={attrs.bgColor}
               style={{ width: '100%' }}
-              onChange={e => setAttr('bgColor', e.target.value)}
+              onChange={(e) => setAttr('bgColor', e.target.value)}
             />
           </Col>
         </Row>
@@ -251,7 +264,7 @@ export default function(props: IProps) {
           <Col span={14} offset={6}>
             <Checkbox
               checked={attrs.showImage}
-              onChange={e => setAttr('showImage', e.target.checked)}
+              onChange={(e) => setAttr('showImage', e.target.checked)}
             >
               Show Background Image
             </Checkbox>
@@ -265,18 +278,34 @@ export default function(props: IProps) {
                 <Select
                   style={{ width: '100%' }}
                   value={attrs.repeat}
-                  onChange={val => setAttr('repeat', val)}
+                  onChange={(val) => setAttr('repeat', val)}
                 >
-                  <Select.Option value={REPEAT_TYPE.NO_REPEAT}>No Repeat</Select.Option>
-                  <Select.Option value={REPEAT_TYPE.REPEAT}>Repeat</Select.Option>
-                  <Select.Option value={REPEAT_TYPE.REPEAT_X}>Repeat X</Select.Option>
-                  <Select.Option value={REPEAT_TYPE.REPEAT_Y}>Repeat Y</Select.Option>
+                  <Select.Option value={REPEAT_TYPE.NO_REPEAT}>
+                    No Repeat
+                  </Select.Option>
+                  <Select.Option value={REPEAT_TYPE.REPEAT}>
+                    Repeat
+                  </Select.Option>
+                  <Select.Option value={REPEAT_TYPE.REPEAT_X}>
+                    Repeat X
+                  </Select.Option>
+                  <Select.Option value={REPEAT_TYPE.REPEAT_Y}>
+                    Repeat Y
+                  </Select.Option>
                   <Select.Option value={REPEAT_TYPE.ROUND}>Round</Select.Option>
                   <Select.Option value={REPEAT_TYPE.SPACE}>Space</Select.Option>
-                  <Select.Option value={REPEAT_TYPE.FLIPX}>Flip X</Select.Option>
-                  <Select.Option value={REPEAT_TYPE.FLIPY}>Flip Y</Select.Option>
-                  <Select.Option value={REPEAT_TYPE.FLIPXY}>Flip XY</Select.Option>
-                  <Select.Option value={REPEAT_TYPE.WATERMARK}>Watermark</Select.Option>
+                  <Select.Option value={REPEAT_TYPE.FLIPX}>
+                    Flip X
+                  </Select.Option>
+                  <Select.Option value={REPEAT_TYPE.FLIPY}>
+                    Flip Y
+                  </Select.Option>
+                  <Select.Option value={REPEAT_TYPE.FLIPXY}>
+                    Flip XY
+                  </Select.Option>
+                  <Select.Option value={REPEAT_TYPE.WATERMARK}>
+                    Watermark
+                  </Select.Option>
                 </Select>
               </Col>
             </Row>
@@ -305,7 +334,7 @@ export default function(props: IProps) {
                 <Select
                   style={{ width: '100%' }}
                   value={attrs.position}
-                  onChange={val => setAttr('position', val)}
+                  onChange={(val) => setAttr('position', val)}
                 >
                   <Select.Option value="center">center</Select.Option>
                   <Select.Option value="left">left</Select.Option>
@@ -325,7 +354,7 @@ export default function(props: IProps) {
                 <Select
                   style={{ width: '100%' }}
                   value={attrs.bgSize}
-                  onChange={val => setAttr('bgSize', val)}
+                  onChange={(val) => setAttr('bgSize', val)}
                 >
                   <Select.Option value="auto auto">auto auto</Select.Option>
                   <Select.Option value="cover">cover</Select.Option>
@@ -342,7 +371,7 @@ export default function(props: IProps) {
             </Row>
             <Row align="middle">
               <Col span={6}>Opacity</Col>
-              <Col span={14}>
+              <Col span={12}>
                 <Slider
                   min={0.05}
                   max={1}
@@ -351,10 +380,8 @@ export default function(props: IProps) {
                   onChange={(val: number) => setAttr('opacity', val)}
                 />
               </Col>
-              <Col span={2}>
-                <div className="result">
-                  {attrs.opacity.toFixed(2)}
-                </div>
+              <Col span={4}>
+                <div className="result">{attrs.opacity.toFixed(2)}</div>
               </Col>
             </Row>
           </React.Fragment>

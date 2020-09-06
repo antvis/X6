@@ -1,5 +1,4 @@
-import { Graph, FunctionExt } from '@antv/x6'
-import './shape'
+import { Graph, FunctionExt, Shape } from '@antv/x6'
 
 export default class X6Editor {
   private static instance: X6Editor
@@ -35,13 +34,48 @@ export default class X6Editor {
           {
             color: '#d0d0d0',
             thickness: 1,
-            factor: 5,
+            factor: 4,
           },
         ],
       },
       connecting: {
         anchor: 'center',
         connectionPoint: 'anchor',
+        dangling: false,
+        createEdge() {
+          return new Shape.Edge({
+            attrs: {
+              line: {
+                stroke: '#ea6b66',
+                strokeWidth: 1,
+                targetMarker: {
+                  name: 'circle',
+                  r: 1,
+                },
+              },
+            },
+            router: {
+              name: 'manhattan',
+            },
+          })
+        },
+        validateConnection({
+          sourceView,
+          targetView,
+          sourceMagnet,
+          targetMagnet,
+        }) {
+          if (sourceView === targetView) {
+            return false
+          }
+          if (!sourceMagnet) {
+            return false
+          }
+          if (!targetMagnet) {
+            return false
+          }
+          return true
+        },
       },
       snapline: true,
       resizing: true,
@@ -50,6 +84,9 @@ export default class X6Editor {
       selecting: {
         enabled: true,
         multiple: true,
+        rubberband: true,
+        movable: true,
+        showNodeSelectionBox: true,
       },
       clipboard: {
         enabled: true,
@@ -59,11 +96,7 @@ export default class X6Editor {
       },
       scroller: {
         enabled: true,
-        // width: 600,
-        // height: 400,
         pageVisible: true,
-        pageBreak: true,
-        pannable: true,
       },
       minimap: {
         enabled: true,
@@ -71,6 +104,11 @@ export default class X6Editor {
         width: 350,
         height: 200,
         padding: 10,
+      },
+      mousewheel: {
+        enabled: true,
+        global: true,
+        modifiers: ['ctrl', 'meta'],
       },
     })
     this.initEvent()
@@ -89,17 +127,17 @@ export default class X6Editor {
     this.graph.on(
       'node:mouseenter',
       FunctionExt.debounce(() => {
-        const ports = this.container.querySelectorAll('.x6-port') as NodeListOf<
-          SVGAElement
-        >
+        const ports = this.container.querySelectorAll(
+          '.x6-port-body',
+        ) as NodeListOf<SVGAElement>
         this.showPorts(ports, true)
       }),
       500,
     )
     graph.on('node:mouseleave', () => {
-      const ports = this.container.querySelectorAll('.x6-port') as NodeListOf<
-        SVGAElement
-      >
+      const ports = this.container.querySelectorAll(
+        '.x6-port-body',
+      ) as NodeListOf<SVGAElement>
       this.showPorts(ports, false)
     })
 
@@ -128,6 +166,10 @@ export default class X6Editor {
     })
     graph.bindKey('backspace', () => {
       const cells = graph.getSelectedCells()
+      const focusElem = document.activeElement
+      if (focusElem?.className === 'x6-edit-text') {
+        return true
+      }
       if (cells.length) {
         graph.removeCells(cells)
       }

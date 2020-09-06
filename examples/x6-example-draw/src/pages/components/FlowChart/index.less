@@ -4,9 +4,8 @@
   > div {
     width: 60px;
     height: 30px;
-    border: 2px solid #31d0c6;
     margin-right: 16px;
-    background-color: #f8b9a6;
+    background-color: #ffcc99;
     cursor: pointer;
     &:hover {
       cursor: move;
@@ -14,5 +13,25 @@
   }
   .ellipse {
     border-radius: 20px;
+  }
+  .parallelogram {
+    transform: skew(-30deg);
+    margin-left: 8px;
+  }
+  .diamond {
+    width: 0;
+    border: 40px solid transparent;
+    border-bottom: 20px solid #ffcc99;
+    position: relative;
+    top: -45px;
+    background-color: #fff;
+    &:after {
+      content: '';
+      position: absolute;
+      left: -40px;
+      top: 20px;
+      border: 40px solid transparent;
+      border-top: 20px solid #ffcc99;
+    }
   }
 }

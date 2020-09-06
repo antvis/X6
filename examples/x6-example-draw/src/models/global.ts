@@ -8,7 +8,7 @@ export function useGridAttr() {
     thickness: 1,
     colorSecond: '#d0d0d0',
     thicknessSecond: 1,
-    factor: 5,
+    factor: 4,
     bgColor: '#ffffff',
     showImage: false,
     repeat: 'no-repeat',
