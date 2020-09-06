@@ -17,8 +17,6 @@ export default function () {
         <Panel header="流程图" key="1">
           <FlowChart />
         </Panel>
-        <Panel header="DAG图" key="2" />
-        <Panel header="ER图" key="3" />
         <Panel header="类图" key="4" />
         <Panel header="时序图" key="5" />
       </Collapse>
