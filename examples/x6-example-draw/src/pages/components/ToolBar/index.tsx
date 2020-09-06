@@ -7,20 +7,26 @@ import {
   PrinterOutlined,
   UndoOutlined,
   RedoOutlined,
+  ZoomInOutlined,
+  ZoomOutOutlined,
 } from '@ant-design/icons'
 import styles from './index.less'
 
 enum CMD {
-  CLEAR = 'clear',
-  SAVE = 'save',
-  PRINT = 'print',
-  UNDO = 'undo',
-  REDO = 'redo',
+  CLEAR,
+  SAVE,
+  PRINT,
+  UNDO,
+  REDO,
+  ZOOMIN,
+  ZOOMOUT,
 }
 
-export default function() {
+export default function () {
   const [canUndo, setCanUndo] = useState(false)
   const [canRedo, setCanRedo] = useState(false)
+  const [zoom, setZoom] = useState(1)
+
   useEffect(() => {
     const { history } = X6Editor.getInstance().graph
     setCanUndo(history.canUndo())
@@ -37,26 +43,42 @@ export default function() {
       icon: <ReloadOutlined />,
       cmd: CMD.CLEAR,
       disabled: false,
-    }, {
+    },
+    {
       id: 1,
       icon: <SaveOutlined />,
       cmd: CMD.SAVE,
       disabled: false,
-    }, {
+    },
+    {
       id: 2,
       icon: <PrinterOutlined />,
       cmd: CMD.PRINT,
       disabled: false,
-    },{
+    },
+    {
       id: 3,
       icon: <UndoOutlined />,
       cmd: CMD.UNDO,
       disabled: !canUndo,
-    },{
+    },
+    {
       id: 4,
       icon: <RedoOutlined />,
       cmd: CMD.REDO,
       disabled: !canRedo,
+    },
+    {
+      id: 5,
+      icon: <ZoomOutOutlined />,
+      cmd: CMD.ZOOMOUT,
+      disabled: zoom <= 0.25,
+    },
+    {
+      id: 6,
+      icon: <ZoomInOutlined />,
+      cmd: CMD.ZOOMIN,
+      disabled: zoom >= 3,
     },
   ]
 
@@ -65,7 +87,7 @@ export default function() {
       return
     }
     const { graph } = X6Editor.getInstance()
-    switch(cmd) {
+    switch (cmd) {
       case CMD.CLEAR:
         graph.model.resetCells([])
         break
@@ -83,6 +105,14 @@ export default function() {
       case CMD.REDO:
         graph.history.redo()
         break
+      case CMD.ZOOMIN:
+        graph.zoomTo(graph.zoom() + 0.25)
+        setZoom(graph.zoom())
+        break
+      case CMD.ZOOMOUT:
+        graph.zoomTo(graph.zoom() - 0.25)
+        setZoom(graph.zoom())
+        break
       default:
         break
     }
@@ -90,7 +120,7 @@ export default function() {
 
   return (
     <div className={styles.tools}>
-      {toolList.map(tool => (
+      {toolList.map((tool) => (
         <div
           key={tool.id}
           className={`${styles.item} ${tool.disabled ? styles.disabled : ''}`}

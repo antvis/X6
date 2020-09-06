@@ -22,9 +22,13 @@ export default function () {
     graph.on('blank:click', () => {
       setType(CONFIG_TYPE.GRID)
     })
-    graph.on('cell:click', ({ cell }) => {
-      setId(cell.id)
+    graph.on('cell:click', ({ cell, view }) => {
       setType(cell.isNode() ? CONFIG_TYPE.NODE : CONFIG_TYPE.EDGE)
+      setId(cell.id)
+      const text = view.container.querySelector('.x6-edit-text') as HTMLElement
+      if (cell.isNode() && text) {
+        text.focus()
+      }
     })
   }, [])
 
@@ -35,7 +39,7 @@ export default function () {
         <ConfigGrid attrs={gridAttrs} setAttr={setGridAttr} />
       )}
       {type === CONFIG_TYPE.NODE && <ConfigNode id={id} />}
-      {type === CONFIG_TYPE.EDGE && <ConfigEdge />}
+      {type === CONFIG_TYPE.EDGE && <ConfigEdge id={id} />}
     </div>
   )
 }
