@@ -31,10 +31,7 @@ jobs:
         yarn global add lerna
     - name: 🚀　Bootstrap
       run: |
-        lerna bootstrap
-    - name: 📦　Build
-      run: |
-        yarn build:dev
+        yarn bootstrap
     - name: ✅　Test
       run: |
         yarn test
