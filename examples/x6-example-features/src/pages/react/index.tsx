@@ -16,7 +16,7 @@ class MyComponent extends React.Component<{ node?: Node; text: string }> {
   }
 
   render() {
-    const color = Color.random()
+    const color = Color.randomHex()
     return (
       <div
         style={{
@@ -73,7 +73,7 @@ export default class Example extends React.Component {
     })
 
     const update = () => {
-      target.prop('attrs/body/fill', Color.random())
+      target.prop('attrs/body/fill', Color.randomHex())
       setTimeout(update, 1000)
     }
 

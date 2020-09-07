@@ -51,7 +51,7 @@ export default class Example extends React.Component {
             offset: { x: -18, y: -18 },
             onClick({ view }: any) {
               const node = view.cell
-              const fill = Color.random()
+              const fill = Color.randomHex()
               node.attr({
                 body: {
                   fill,
@@ -116,7 +116,7 @@ export default class Example extends React.Component {
               const node = view.cell
               node.attr({
                 body: {
-                  stroke: Color.random(),
+                  stroke: Color.randomHex(),
                   strokeDasharray: '5, 1',
                   strokeDashoffset:
                     (node.attr('line/strokeDashoffset') | 0) + 20,
