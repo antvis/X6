@@ -18,7 +18,7 @@ export class MyComponent extends React.Component<{
   }
 
   render() {
-    const color = Color.random()
+    const color = Color.randomHex()
     return (
       <div
         style={{

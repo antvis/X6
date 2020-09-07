@@ -37,7 +37,7 @@ const MyButton = Button.define<Button.Options>({
   ],
   onClick({ view }: any) {
     const node = view.cell
-    const fill = Color.random()
+    const fill = Color.randomHex()
     node.attr({
       body: {
         fill,

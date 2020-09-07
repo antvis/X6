@@ -53,7 +53,7 @@ export default class Example extends React.Component {
     })
 
     const update = () => {
-      target.prop('attrs/body/fill', Color.random())
+      target.prop('attrs/body/fill', Color.randomHex())
       setTimeout(update, 1000)
     }
 

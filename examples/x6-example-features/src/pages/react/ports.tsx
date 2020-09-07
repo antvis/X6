@@ -14,8 +14,8 @@ export default class Example extends React.Component {
       height: 600,
     })
 
-    const sourceColor = Color.random()
-    const targetColor = Color.random()
+    const sourceColor = Color.randomHex()
+    const targetColor = Color.randomHex()
     const source = graph.addNode({
       shape: 'react-shape',
       x: 80,
