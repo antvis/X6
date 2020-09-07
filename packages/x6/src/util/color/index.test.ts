@@ -1,18 +1,9 @@
 import { Color } from './'
 
 describe('Color', () => {
-  describe('#isValid', () => {
-    it('shoud return validity of color value', () => {
-      expect(Color.isValid('#fff')).toBeTruthy()
-      expect(Color.isValid('red')).toBeTruthy()
-      expect(Color.isValid(null)).toBeFalsy()
-      expect(Color.isValid('none')).toBeFalsy()
-    })
-  })
-
-  describe('#random', () => {
+  describe('#randomHex', () => {
     it('shoud return valid random hex value', () => {
-      expect(Color.random()).toMatch(/^#[0-9A-F]{6}/)
+      expect(Color.randomHex()).toMatch(/^#[0-9A-F]{6}/)
     })
   })
 
