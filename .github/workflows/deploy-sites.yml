@@ -57,7 +57,10 @@ jobs:
       - name: 📦　Build Demos
         run: |
           yarn build:demos
-      - name: 📦　Build Sites
+      - name: 🧲　Build Apps
+        run: |
+          yarn build:apps
+      - name: ✨　Build Sites
         run: |
           yarn build:sites
       - name: ✅　Deploy sites
