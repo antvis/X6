@@ -1,6 +1,6 @@
 {
   "private": true,
-  "name": "@antv/x6-example-draw",
+  "name": "@antv/x6-app-draw",
   "version": "0.10.65",
   "scripts": {
     "start": "umi dev",
