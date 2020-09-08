@@ -54,11 +54,17 @@ jobs:
       - name: 📦　Build Demos
         run: |
           yarn build:demos
-      - name: ✨　Deploy Sites
+      - name: 🧲　Build Apps
+        run: |
+          yarn build:apps
+      - name: ✨　Build Sites
+        run: |
+          yarn build:sites
+      - name: ✅　Deploy Sites
         uses: afc163/surge-preview@v1
         with:
           surge_token: ${{ secrets.SURGE_TOKEN }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           build: |
-            yarn build:sites
+            echo Create sites preview
           dist: packages/x6-sites/public
