@@ -1,4 +1,5 @@
 node_modules
 .cache
 public
+static/apps
 static/demos
