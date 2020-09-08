@@ -1,0 +1,14 @@
+#!/bin/sh
+
+target=packages/x6-sites/static/apps
+er_dist=$target/er
+er_repo=examples/x6-app-er
+dag_dist=$target/dag
+dag_repo=examples/x6-app-dag
+
+
+(cd $dag_repo && yarn build)
+rm -rf $dag_dist && mkdir -p $dag_dist && cp -rv $dag_repo/dist/* $dag_dist
+
+(cd $er_repo && yarn build)
+rm -rf $er_dist && mkdir -p $er_dist && cp -rv $er_repo/dist/* $er_dist
