@@ -11,7 +11,7 @@ export default class Example extends React.Component {
       grid: true,
       embedding: {
         enabled: true,
-        findParent(node) {
+        findParent({ node }) {
           const bbox = node.getBBox()
           return this.getNodes().filter((node) => {
             const data = node.getData<any>()

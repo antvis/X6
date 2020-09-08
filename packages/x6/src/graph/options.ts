@@ -400,7 +400,7 @@ export namespace Options {
       | 'topRight'
       | 'bottomLeft'
       | 'bottomRight'
-      | ((this: Graph, view: NodeView) => Cell[])
+      | ((this: Graph, args: { node: Node; view: NodeView }) => Cell[])
 
     /**
      * If enabled only the node on the very front is taken into account for the

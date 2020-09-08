@@ -761,15 +761,16 @@ export class NodeView<
 
     let candidates =
       typeof findParent === 'function'
-        ? (FunctionExt.call(findParent, graph, this) as Cell[]).filter(
-            (cell) => {
-              return (
-                cell instanceof Cell &&
-                this.cell.id !== cell.id &&
-                !cell.isDescendantOf(this.cell)
-              )
-            },
-          )
+        ? (FunctionExt.call(findParent, graph, {
+            view: this,
+            node: this.cell,
+          }) as Cell[]).filter((cell) => {
+            return (
+              cell instanceof Cell &&
+              this.cell.id !== cell.id &&
+              !cell.isDescendantOf(this.cell)
+            )
+          })
         : graph.model.getNodesUnderNode(cell, {
             by: options.findParent as Rectangle.KeyPoint,
           })
