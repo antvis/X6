@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@antv/x6-sites",
-  "version": "0.10.64",
+  "version": "0.10.65",
   "description": "X6 sites deployed on gh-pages",
   "scripts": {
     "clean": "gatsby clean",
@@ -16,7 +16,7 @@
   ],
   "dependencies": {
     "@antv/gatsby-theme-antv": "^0.10.65",
-    "@antv/x6": "^0.10.64",
+    "@antv/x6": "^0.10.65",
     "antd": "^4.4.2",
     "express": "^4.17.1",
     "gatsby": "^2.24.2",
