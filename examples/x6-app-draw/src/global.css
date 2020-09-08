@@ -10,8 +10,8 @@ body {
 }
 
 .x6-widget-transform {
-  border: 2px dashed #FF8000;
+  border: 2px dashed #ff8000;
 }
-.x6-widget-transform > div{
-  border: 2px solid #FF8000;
+.x6-widget-transform > div {
+  border: 2px solid #ff8000;
 }
