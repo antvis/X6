@@ -12,7 +12,14 @@ module.exports = (config) => {
     customLaunchers: {
       ChromeHeadless: {
         base: 'Chrome',
-        flags: ['--headless', '--no-sandbox'],
+        flags: [
+          '--headless',
+          '--no-sandbox',
+          '--disable-gpu',
+          '--disable-translate',
+          '--disable-extensions',
+          '--remote-debugging-port=9222',
+        ],
       },
     },
     karmaTypescriptConfig: {
