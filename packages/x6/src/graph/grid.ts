@@ -53,6 +53,7 @@ export class GridManager extends Base {
   draw(options?: GridManager.DrawGridOptions) {
     this.clear()
     this.instance = null
+    Object.assign(this.grid, options)
     this.patterns = this.resolveGrid(options)
     this.update()
   }
