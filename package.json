@@ -19,6 +19,7 @@
     "clean": "lerna run clean",
     "build": "lerna run build",
     "build:dev": "sh ./scripts/build-dev",
+    "build:apps": "sh ./scripts/build-apps",
     "build:demos": "sh ./scripts/build-demos",
     "build:sites": "sh ./scripts/build-sites",
     "lint": "lerna run lint",
