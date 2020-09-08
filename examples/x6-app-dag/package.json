@@ -1,0 +1,42 @@
+{
+  "private": true,
+  "name": "@antv/x6-app-dag",
+  "version": "0.10.65",
+  "scripts": {
+    "start": "umi dev",
+    "build": "umi build",
+    "postinstall": "umi generate tmp",
+    "prettier": "prettier --write '**/*.{js,jsx,tsx,ts,less,md,json}'",
+    "test": "umi-test",
+    "test:coverage": "umi-test --coverage"
+  },
+  "gitHooks": {
+    "pre-commit": "lint-staged"
+  },
+  "lint-staged": {
+    "*.{js,jsx,less,md,json}": [
+      "prettier --write"
+    ],
+    "*.ts?(x)": [
+      "prettier --parser=typescript --write"
+    ]
+  },
+  "dependencies": {
+    "@antv/x6": "^0.10.65",
+    "@antv/x6-components": "^0.10.7",
+    "@antv/x6-react-shape": "^0.10.10",
+    "antd": "^4.4.2",
+    "classnames": "^2.2.6",
+    "react": "^16.12.0",
+    "react-dom": "^16.8.6"
+  },
+  "devDependencies": {
+    "@ant-design/pro-layout": "^5.0.12",
+    "@umijs/preset-react": "1.x",
+    "@umijs/test": "^3.2.19",
+    "lint-staged": "^10.0.7",
+    "prettier": "^1.19.1",
+    "umi": "^3.2.19",
+    "yorkie": "^2.0.0"
+  }
+}
