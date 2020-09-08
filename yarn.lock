@@ -10242,6 +10242,18 @@ es6-symbol@^3.1.1, es6-symbol@~3.1.3:
     d "^1.0.1"
     ext "^1.1.2"
 
+esbuild-webpack-plugin@^1.0.5:
+  version "1.0.5"
+  resolved "https://registry.npm.taobao.org/esbuild-webpack-plugin/download/esbuild-webpack-plugin-1.0.5.tgz#68a6a377a84c991da1a0fc302830f514c9d47472"
+  integrity sha1-aKajd6hMmR2hoPwwKDD1FMnUdHI=
+  dependencies:
+    esbuild "^0.6.8"
+
+esbuild@^0.6.8:
+  version "0.6.32"
+  resolved "https://registry.npm.taobao.org/esbuild/download/esbuild-0.6.32.tgz#f66d54f17cdb1b4699f9ecbd54ab73ef7b4febb3"
+  integrity sha1-9m1U8XzbG0aZ+ey9VKtz73tP67M=
+
 escalade@^3.0.2:
   version "3.0.2"
   resolved "https://registry.npm.taobao.org/escalade/download/escalade-3.0.2.tgz#6a580d70edb87880f22b4c91d0d56078df6962c4"
