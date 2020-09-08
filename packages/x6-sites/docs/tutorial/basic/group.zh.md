@@ -73,7 +73,7 @@ graph.addEdge({
 new Graph({
   embedding: {
     enabled: true,
-    findParent(node) {
+    findParent({ node }) {
       const bbox = node.getBBox()
       return this.getNodes().filter((node) => {
         // 只有 data.parent 为 true 的节点才是父节点
