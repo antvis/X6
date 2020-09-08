@@ -23,7 +23,7 @@
     "build:demos": "sh ./scripts/build-demos",
     "build:sites": "sh ./scripts/build-sites",
     "lint": "lerna run lint",
-    "test": "lerna run test --stream",
+    "test": "lerna run test --ignore @antv/x6-example-* --ignore @antv/x6-app-* --stream",
     "prettier": "prettier --write '**/*.{js,jsx,tsx,ts,less,md,json}'",
     "pretty-quick": "pretty-quick",
     "clear": "lerna run clean && lerna clean -y",
