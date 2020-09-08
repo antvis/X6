@@ -307,7 +307,7 @@ export namespace Color {
   function hex2rgb(hex: string): [number, number, number] {
     const color = hex.indexOf('#') === 0 ? hex : `#${hex}`
     let val = Number(`0x${color.substr(1)}`)
-    if (isNaN(val)) {
+    if (!(color.length === 4 || color.length === 7) || isNaN(val)) {
       throw new Error('Invalid hex color.')
     }
 

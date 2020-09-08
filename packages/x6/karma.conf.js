@@ -8,7 +8,13 @@ module.exports = (config) => {
       '**/*.ts': ['karma-typescript'],
     },
     reporters: ['spec', 'karma-typescript'],
-    browsers: ['Chrome'],
+    browsers: [process.env.CI ? 'ChromeHeadless' : 'Chrome'],
+    customLaunchers: {
+      ChromeHeadless: {
+        base: 'Chrome',
+        flags: ['--headless', '--no-sandbox'],
+      },
+    },
     karmaTypescriptConfig: {
       tsconfig: './tsconfig.json',
       include: ['./src/**/*.ts', '../../node_modules/csstype/**/*'],
