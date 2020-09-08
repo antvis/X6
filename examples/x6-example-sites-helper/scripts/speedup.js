@@ -11,19 +11,25 @@ const home = path.resolve(root, '../../')
 const configDir = 'node_modules/react-scripts/config'
 const configFile = path.join(home, configDir, 'webpack.config.js')
 let content = fs.readFileSync(configFile, { encoding: 'utf8' })
+const esbuild = `const ESBuildPlugin = require('esbuild-webpack-plugin').default;`
 
 // 修改 node_modules 下 react-scripts 的配置文件来提升 DEMO 的构建速度
-if (content.indexOf('minimize: isEnvProduction') !== -1) {
-  content = content
-    // 禁用压缩
-    .replace('minimize: isEnvProduction', 'minimize: false')
-    // 禁止生成 manifest
-    .replace('new ManifestPlugin({', 'false && new ManifestPlugin({')
-    // 禁止生成 worker
-    .replace(
-      'new WorkboxWebpackPlugin.GenerateSW({',
-      `false && new WorkboxWebpackPlugin.GenerateSW({`,
-    )
+if (content.indexOf(esbuild) === -1) {
+  content =
+    esbuild +
+    content
+      // optimization
+      .replace(
+        /(new\s+TerserPlugin[\s\S]*)(new\s+OptimizeCSSAssetsPlugin)/gm,
+        `new ESBuildPlugin(),\n        $2`,
+      )
+      // 禁止生成 manifest
+      .replace('new ManifestPlugin({', 'false && new ManifestPlugin({')
+      // 禁止生成 worker
+      .replace(
+        'new WorkboxWebpackPlugin.GenerateSW({',
+        `false && new WorkboxWebpackPlugin.GenerateSW({`,
+      )
 
   if (process.env.CI !== 'true') {
     // 本地构建时，将缓存文件保存为全局缓存。
