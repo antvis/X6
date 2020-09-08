@@ -2,13 +2,25 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { NodeView } from '@antv/x6'
 import { ReactShape } from './node'
+import { Portal } from './portal'
 import { Wrap } from './wrap'
 
 export class ReactShapeView extends NodeView<ReactShape> {
+  protected init() {
+    super.init()
+    this.cell.on('removed', () => {
+      Portal.disconnect(this.cell.id)
+    })
+  }
+
   render() {
     super.render()
     this.renderReactComponent()
     return this
+  }
+
+  getComponentContainer() {
+    return this.selectors.foContent as HTMLDivElement
   }
 
   confirmUpdate(flag: number) {
@@ -19,21 +31,24 @@ export class ReactShapeView extends NodeView<ReactShape> {
   }
 
   protected renderReactComponent() {
-    const root = this.unmountReactComponent()
+    this.unmountReactComponent()
+    const root = this.getComponentContainer()
     const node = this.cell
     const graph = this.graph
 
     if (root) {
       const component = this.graph.hook.getReactComponent(node)
-      ReactDOM.render(
-        React.createElement(Wrap, { graph, node, component }),
-        root,
-      )
+      const elem = React.createElement(Wrap, { graph, node, component })
+      if (Portal.isActive()) {
+        Portal.connect(this.cell.id, ReactDOM.createPortal(elem, root))
+      } else {
+        ReactDOM.render(elem, root)
+      }
     }
   }
 
   protected unmountReactComponent() {
-    const root = this.selectors.foContent as HTMLDivElement
+    const root = this.getComponentContainer()
     if (root) {
       ReactDOM.unmountComponentAtNode(root)
     }
@@ -42,6 +57,7 @@ export class ReactShapeView extends NodeView<ReactShape> {
 
   @NodeView.dispose()
   dispose() {
+    Portal.disconnect(this.cell.id)
     this.unmountReactComponent()
   }
 }
