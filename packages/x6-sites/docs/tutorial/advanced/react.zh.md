@@ -4,7 +4,7 @@ order: 4
 redirect_from:
   - /zh/docs
   - /zh/docs/tutorial
-  - /zh/docs/tutorial/tutorial
+  - /zh/docs/tutorial/advanced
 ---
 
 在 SVG 中有一个特殊的 `<foreignObject>` 元素，在该元素中可以内嵌任何 XHTML 元素，所以我们可以借助该元素来渲染 HTML 元素和 React 组件到需要位置。

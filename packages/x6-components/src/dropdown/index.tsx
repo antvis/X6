@@ -69,14 +69,12 @@ export namespace Dropdown {
   export interface Props {
     prefixCls?: string
     className?: string
+    overlay?: React.ReactNode
     overlayStyle?: React.CSSProperties
     overlayClassName?: string
-    openClassName?: string
     visible?: boolean
     disabled?: boolean
-    align?: Object
     trigger?: Trigger | Trigger[]
-    overlay?: React.ReactNode
     transitionName?: string
     placement?: Placement
     forceRender?: boolean
