@@ -151,6 +151,14 @@ module.exports = {
         },
         order: 7,
       },
+      {
+        slug: 'api/ui',
+        title: {
+          zh: 'UI Components',
+          en: 'UI Components',
+        },
+        order: 7,
+      },
     ],
     examples: [
       {

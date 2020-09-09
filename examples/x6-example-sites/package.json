@@ -13,6 +13,7 @@
     "clear": "rimraf node_modules yarn.lock && yarn workspaces run clean"
   },
   "dependencies": {
+    "@ant-design/icons": "^4.2.2",
     "@antv/x6": "^0.10.65",
     "@antv/x6-components": "^0.10.7",
     "@antv/x6-example-sites-helper": "^0.10.64",
