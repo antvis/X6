@@ -127,12 +127,14 @@
     transition: all 0.25s cubic-bezier(0.3, 1.2, 0.2, 1);
   }
 
-  &-submenu:hover
-    > .@{menu-prefix-cls}-item-button
-    > .@{menu-prefix-cls}-submenu-arrow {
-    opacity: 0.75;
+  &-submenu&-item-active,
+  &-submenu:hover {
+    > .@{menu-prefix-cls}-item-button > .@{menu-prefix-cls}-submenu-arrow {
+      opacity: 0.75;
+    }
   }
 
+  &-submenu&-item-active > &-submenu-menu,
   &-submenu:hover > &-submenu-menu {
     transform: translateX(0);
     visibility: visible;

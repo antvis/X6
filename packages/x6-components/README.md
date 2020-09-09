@@ -11,15 +11,15 @@
 
 ## Components
 
-- Icon
-- Dropdown
 - Menu
+- Dropdown
+- ContextMenu
 - Menubar
 - Toolbar
-- ContextMenu
-- ColorPicker
-- ScrollBox
 - SplitBox
+- ScrollBox
+- AutoScrollBox
+- ColorPicker
 
 ## Installation
 
@@ -37,7 +37,10 @@ Import component and style:
 
 ```ts
 import { Menu } from '@antv/x6-components/es/menu'
+// less
 import '@antv/x6-components/es/menu/style'
+// or css
+import '@antv/x6-components/es/menu/style/index.css'
 ```
 
 We strongly recommend using [babel-plugin-import](https://github.com/ant-design/babel-plugin-import), which can convert the following code to the '@antv/x6-components/es/xxx' way:
