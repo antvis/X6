@@ -1,25 +1,24 @@
 #!/usr/bin/env node
 
 const fs = require('fs')
+const os = require('os')
 const path = require('path')
 const fse = require('fs-extra')
 const cp = require('child_process')
-const os = require('os')
-
-function compile(source, target) {
-  let cmd = './node_modules/.bin/lessc'
-  if (os.type() === 'Windows_NT') {
-    const cwd = process.cwd()
-    cmd = path.join(cwd, './node_modules/.bin/lessc.cmd')
-  }
-  cp.execFileSync(cmd, [source, target])
-}
 
 const cwd = process.cwd()
 const es = path.join(cwd, 'es')
 const lib = path.join(cwd, 'lib')
 const src = path.join(cwd, 'src')
 const dist = path.join(cwd, 'dist')
+
+function compile(source, target) {
+  let cmd = './node_modules/.bin/lessc'
+  if (os.type() === 'Windows_NT') {
+    cmd = path.join(cwd, './node_modules/.bin/lessc.cmd')
+  }
+  cp.execFileSync(cmd, [source, target])
+}
 
 compile(path.join(src, 'index.less'), path.join(es, 'index.css'))
 compile(path.join(src, 'index.less'), path.join(lib, 'index.css'))
