@@ -670,7 +670,7 @@ export namespace Snapline {
     filter?: Filter
   }
 
-  export type Filter = (string | { id: string })[] | FilterFunction
+  export type Filter = null | (string | { id: string })[] | FilterFunction
 
   export type FilterFunction = (this: Graph, node: Node) => boolean
 }
