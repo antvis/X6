@@ -275,124 +275,294 @@ graph.on('selection:changed', (args: {
 
 ## API
 
-### graph.select(cells: Cell | Cell[])
+### graph.select(...)
 
-选中节点/边。
+```sign
+select(cells: Cell | string | (Cell | string)[]): this 
+```
 
-### graph.unselect(cells: Cell | Cell[])
+选中指定的节点/边。需要注意的是，该方法不会取消选中当前选中的节点/边，而是将指定的节点/边追加到选区中。如果同时需要取消选中当前选中的节点/边，请使用 [resetSelection(...)](#resetselection) 方法。
 
-取消选中节点/边。
+### graph.unselect(...)
 
-### graph.isSelected(cell: Cell | string)
+```sign
+unselect(cells: Cell | string | (Cell | string)[]): this 
+```
 
-节点/边是否被选中。
+取消选中指定的节点/边。
+
+### graph.isSelected(...)
+
+```sign
+isSelected(cell: Cell | string): boolean
+```
+
+返回指定的节点/边是否被选中。
+
+### graph.resetSelection(...)
+
+```sign
+resetSelection(cells?: Cell | string | (Cell | string)[]): this
+```
+
+先清空选区，然后选中提供的节点/边。
 
 ### graph.getSelectedCells()
 
+```sign
+getSelectedCells(): Cell[]
+```
+
 获取选中的节点/边。
-
-### graph.getSelectedCellCount()
-
-获取选中的节点/边的数量。
-
-### graph.isSelectionEmpty()
-
-选区是否为空。
 
 ### graph.cleanSelection()
 
+```sign
+cleanSelection(): this
+```
+
 清空选区。
 
-### graph.setSelectionFilter(filter?: Selection.Filter)
+### graph.isSelectionEmpty()
 
-设置过滤器。
+```sign
+cleanSelection(): boolean
+```
 
-### graph.setSelectionDisplayContent(content?: Selection.Content)
-
-设置附加显示内容。
-
-### graph.setRubberbandModifiers(modifiers?: string | ModifierKey[] | null)
-
-设置框选修饰键。
-
+返回选区是否为空。
 
 ### graph.isSelectionEnabled()
 
-是否启用选中交互。
+```sign
+isSelectionEnabled(): boolean
+```
+
+是否启用选择能力。
 
 ### graph.enableSelection()
 
-启用选中交互。
+```sign
+enableSelection(): this
+```
+
+启用选择能力。
 
 ### graph.disableSelection()
 
-禁用选中交互。
+```sign
+disableSelection(): this
+```
 
-### graph.toggleSelection(enabled?: boolean)
+禁用选择能力。
 
-切换是否启用选中交互。
+### graph.toggleSelection(...)
+
+```sign
+toggleSelection(enabled?: boolean): this
+```
+
+切换选择的启用状态。
+
+<span class="tag-param">参数<span>
+
+| 名称    | 类型    | 必选 | 默认值 | 描述                                       |
+|---------|---------|:----:|--------|------------------------------------------|
+| enabled | boolean |      | -      | 是否启用选择能力，缺省时切换选择的启用状态。 |
 
 
 ### graph.isMultipleSelection()
 
- 是否支持点击多选。
+```sign
+isMultipleSelection(): boolean
+```
+
+是否启用了多选。
 
 ### graph.enableMultipleSelection()
 
-开启点击多选，开启后按下 `ctrl` 或 `command` 键点击节点多选 。
+```sign
+enableMultipleSelection(): this
+```
+
+启用多选。
 
 ### graph.disableMultipleSelection()
 
-禁用点击多选。
+```sign
+disableMultipleSelection(): this
+```
 
-### graph.toggleMultipleSelection(multiple?: boolean)
+禁用多选。
 
-切换点击多选。
+### graph.toggleMultipleSelection(...)
+
+```sign
+toggleMultipleSelection(multiple?: boolean): this
+```
+
+切换多选的启用状态。
+
+<span class="tag-param">参数<span>
+
+| 名称     | 类型    | 必选 | 默认值 | 描述                                   |
+|----------|---------|:----:|--------|--------------------------------------|
+| multiple | boolean |      | -      | 是否启用多选，缺省时切换多选的启用状态。 |
+
+
+### graph.isSelectionMovable()
+
+```sign
+isSelectionMovable(): boolean
+```
+
+返回选中的节点/边是否可以被移动。
+
+### graph.enableSelectionMovable()
+
+```sign
+enableSelectionMovable(): this
+```
+
+启用选中的节点/边的移动。
+
+### graph.disableSelectionMovable()
+
+```sign
+disableSelectionMovable(): this
+```
+
+禁用选中节点/边的移动。
+
+### graph.toggleSelectionMovable(...)
+
+```sign
+toggleSelectionMovable(enabled?: boolean): this
+```
+
+切换选中节点/边是否可以被移动。
+
+<span class="tag-param">参数<span>
+
+| 名称    | 类型    | 必选 | 默认值 | 描述                                            |
+|---------|---------|:----:|--------|-----------------------------------------------|
+| enabled | boolean |      | -      | 是否启用选中的节点/边的移动，缺省时切换启用状态。 |
 
 ### graph.isRubberbandEnabled()
 
-是否启用框选。
+```sign
+isRubberbandEnabled(): boolean
+```
+
+返回是否启用了框选。
 
 ### graph.enableRubberband()
+
+```sign
+enableRubberband(): this
+```
 
 启用框选。
 
 ### graph.disableRubberband()
 
+```sign
+disableRubberband(): this
+```
+
 禁用框选。
 
-### graph.toggleRubberband(enabled?: boolean)
+### graph.toggleRubberband(...)
 
-切换是否启用框选。
+```sign
+toggleRubberband(enabled?: boolean): this
+```
+
+切换框选的启用状态。
+
+<span class="tag-param">参数<span>
+
+| 名称    | 类型    | 必选 | 默认值 | 描述                             |
+|---------|---------|:----:|--------|--------------------------------|
+| enabled | boolean |      | -      | 是否启用框选，缺省时切换启用状态。 |
+
 
 ### graph.isStrictRubberband()
 
-是否启用严格框选，启用后节点完全位于选框中时才会被选中。
+```sign
+isStrictRubberband(): boolean
+```
+
+返回是否启用了严格框选。启用严格框选后，只有节点/边被选框完全包围时才会选中节点/边。
 
 ### graph.enableStrictRubberband()
 
-启用严格框选。
+```sign
+enableStrictRubberband(): this
+```
+
+启用严格框选。启用严格框选后，只有节点/边被选框完全包围时才会选中节点/边。
 
 ### graph.disableStrictRubberband()
 
-禁用严格框选。
+```sign
+disableStrictRubberband(): this
+```
 
-### graph.toggleStrictRubberband(strict?: boolean)
+禁用严格框选。禁用严格框选后，只需要选框与节点/边的包围盒相交即可选中节点/边。
 
-切换严格框选。
+### graph.toggleStrictRubberband(...)
 
-### graph.isSelectionMovable()
+```sign
+toggleStrictRubberband(enabled?: boolean): this
+```
 
-选中的节点是否可以被移动。
+切换严格框选的启用状态。
 
-### graph.enableSelectionMovable()
+<span class="tag-param">参数<span>
 
-开启选中的节点被移动。
+| 名称    | 类型    | 必选 | 默认值 | 描述                                 |
+|---------|---------|:----:|--------|------------------------------------|
+| enabled | boolean |      | -      | 是否启用严格框选，缺省时切换启用状态。 |
 
-### graph.disableSelectionMovable()
+### graph.setSelectionFilter(...)
 
-禁止选中的节点被移动。
+```sign
+setSelectionFilter(
+  filter?: 
+   | null
+   | (string | { id: string })[]
+   | ((this: Graph, cell: Cell) => boolean)
+): this
+```
 
-### graph.toggleSelectionMovable(movable?: boolean)
+设置选择的过滤条件，满足过滤条件的节点/边将不能被选中。
 
-切换选中节点是否可以被移动。
+- 当 `filter` 为 `null`、`undefined` 时，不过滤节点/边。
+- 当 `filter` 为 `(string | { id: string })[]` 时，表示具有这些 ID 的节点/边不能被选中
+- 当 `filter` 为 `(this: Graph, cell: Cell) => boolean` 时，返回 `true` 时节点/边不能被选中。
+
+### graph.setRubberbandModifiers(...)
+
+```sign
+setRubberbandModifiers(modifiers?: string | ModifierKey[] | null): this
+```
+
+设置框选的修饰键，只有同时按下修饰键时才能触发框选。
+
+### graph.setSelectionDisplayContent(...)
+
+```sign
+setSelectionDisplayContent(
+  content?: 
+   | null
+   | false
+   | string
+   | ((this: Graph, selection: Selection, contentElement: HTMLElement) => string)
+): this
+```
+
+设置选中节点/边的附加显示内容。
+
+- 当 `content` 为 `null`、`undefined`、`false` 时，不显示附加内容
+- 当 `content` 为 `string` 时，显示一段文本。
+- 当 `content` 为 `(this: Graph, selection: Selection, contentElement: HTMLElement) => string` 时，动态返回显示的内容。

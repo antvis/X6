@@ -252,59 +252,89 @@ graph.history.on('batch', (args: {
 
 ## API
  
-### graph.undo(options?: KeyValue)
+### graph.undo(...)
 
-撤销。
+```sign
+undo(options?: KeyValue): this
+```
 
-### graph.undoAndCancel(options?: KeyValue) 
+撤销。`options` 将被传递到事件回调中。 
 
-撤销，并且不添加到重做队列中，所以这个被撤销的命令不能被重做。
+### graph.undoAndCancel(...)
 
-### graph.redo(options?: KeyValue)
+```sign
+undoAndCancel(options?: KeyValue): this
+```
 
-重做。
+撤销，并且不添加到重做队列中，所以这个被撤销的命令不能被重做。`options` 将被传递到事件回调中。 
 
-### graph.canUndo() 
+### graph.redo(...)
+
+```sign
+redo(options?: KeyValue): this
+```
+
+重做。`options` 将被传递到事件回调中。 
+
+### graph.canUndo()
+
+```sign
+canUndo(): boolean
+```
 
 是否可以撤销。
 
 ### graph.canRedo()
 
+```sign
+canRedo(): boolean
+```
+
 是否可以重做。
 
-### graph.cleanHistory()
+### graph.cleanHistory(...)
 
-清空历史状态。
+```sign
+cleanHistory(options?: KeyValue): this
+```
+
+清空历史状态。`options` 将被传递到事件回调中。 
 
 ### graph.isHistoryEnabled()
 
-是否启用历史状态。
+```sign
+isHistoryEnabled(): boolean
+```
 
-### graph.enableHistory() 
+是否启用了历史状态。
+
+### graph.enableHistory()
+
+```sign
+enableHistory(): this
+```
 
 启用历史状态。
 
 ### graph.disableHistory()
 
+```sign
+disableHistory(): this
+```
+
 禁用历史状态。
 
-### graph.toggleHistory(enabled?: boolean)
+### graph.toggleHistory(...)
 
-切换或设置历史的启用状态。
-
-- `enabled?: boolean` 是否启用历史状态。
-
-```ts
-// 切换历史的启用状态
-graph.toggleHistory()
-
-// 启用历史状态
-graph.enableHistory() 
-// 或
-graph.toggleHistory(true)
-
-// 禁用历史状态
-graph.disableHistory()
-// 或
-graph.toggleHistory(false)
+```sign
+toggleHistory(enabled?: boolean): this
 ```
+
+切换历史的启用状态。
+
+<span class="tag-param">参数<span>
+
+| 名称    | 类型    | 必选 | 默认值 | 描述                                       |
+|---------|---------|:----:|--------|------------------------------------------|
+| enabled | boolean |      | -      | 是否启用历史状态，缺省时切换历史的启用状态。 |
+
