@@ -102,6 +102,14 @@ export class Graph extends Basecoat<EventArgs> {
 
   // #region model
 
+  isNode(cell: Cell): cell is Node {
+    return cell.isNode()
+  }
+
+  isEdge(cell: Cell): cell is Edge {
+    return cell.isEdge()
+  }
+
   resetCells(cells: Cell[], options: Collection.SetOptions = {}) {
     this.model.resetCells(cells, options)
     return this
@@ -456,26 +464,6 @@ export class Graph extends Basecoat<EventArgs> {
   }
 
   //#endregion
-
-  // #region cell
-
-  isNode(cell: Cell): cell is Node {
-    return cell.isNode()
-  }
-
-  isEdge(cell: Cell): cell is Edge {
-    return cell.isEdge()
-  }
-
-  // #endregion
-
-  // #region node
-
-  // #endregion
-
-  // #region edge
-
-  // #endregion
 
   // #region view
 
@@ -1131,6 +1119,23 @@ export class Graph extends Basecoat<EventArgs> {
 
   disableMouseWheel() {
     this.mousewheel.disable()
+    return this
+  }
+
+  toggleMouseWheel(enabled?: boolean) {
+    if (enabled == null) {
+      if (this.isMouseWheelEnabled()) {
+        this.disableMouseWheel()
+      } else {
+        this.enableMouseWheel()
+      }
+    } else {
+      if (enabled) {
+        this.enableMouseWheel()
+      } else {
+        this.disableMouseWheel()
+      }
+    }
     return this
   }
 
