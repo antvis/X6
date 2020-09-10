@@ -116,7 +116,7 @@ export class ToolsView extends View {
     const tools = this.tools
     if (tools) {
       tools.forEach((tool) => {
-        if (options.toolId !== tool.cid && tool.isVisible()) {
+        if (options.toolId !== tool.cid || tool.isVisible()) {
           tool.update()
         }
       })

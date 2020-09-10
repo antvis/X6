@@ -19,7 +19,6 @@ export default class Example extends React.Component {
         <ContextMenu menu={menu}>
           <div
             style={{
-              width: 560,
               height: 240,
               display: 'flex',
               justifyContent: 'center',

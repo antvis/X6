@@ -1,6 +1,5 @@
 import React from 'react'
 import { Graph, Shape } from '@antv/x6'
-import './app.css'
 
 Shape.Rect.config({
   attrs: {
@@ -50,6 +49,8 @@ export default class Example extends React.Component {
 
     const graph = new Graph({
       container: this.container,
+      width: 800,
+      height: 600,
       grid: true,
       highlighting: {
         magnetAvailable: magnetAvailabilityHighlighter,
@@ -139,27 +140,30 @@ export default class Example extends React.Component {
     graph.addEdge({
       source: { cell: source.id, port: 'out-2' },
       target: { cell: target.id, port: 'in-1' },
-    })
-
-    graph.on('edge:mouseenter', ({ cell }) => {
-      cell.addTools([
+      tools: [
         {
           name: 'source-arrowhead',
         },
         {
           name: 'target-arrowhead',
-          args: {
-            attrs: {
-              fill: 'red',
-            },
-          },
         },
-      ])
+      ],
     })
 
-    graph.on('edge:mouseleave', ({ cell }) => {
-      cell.removeTools()
-    })
+    // graph.on('edge:mouseenter', ({ cell }) => {
+    //   cell.addTools([
+    //     {
+    //       name: 'source-arrowhead',
+    //     },
+    //     {
+    //       name: 'target-arrowhead',
+    //     },
+    //   ])
+    // })
+
+    // graph.on('edge:mouseleave', ({ cell }) => {
+    //   cell.removeTools()
+    // })
   }
 
   refContainer = (container: HTMLDivElement) => {
