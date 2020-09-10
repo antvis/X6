@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@antv/x6-example-sites-helper",
-  "version": "0.10.64",
+  "version": "0.10.66",
   "main": "lib/index.js",
   "module": "es/index.js",
   "types": "lib/index.d.ts",

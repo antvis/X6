@@ -1,6 +1,6 @@
 {
   "name": "@antv/x6-components",
-  "version": "0.10.7",
+  "version": "0.10.8",
   "description": "React components for building x6 editors",
   "main": "lib/index.js",
   "module": "es/index.js",
