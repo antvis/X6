@@ -134,66 +134,157 @@ const graph = new Graph({
 
 ## API
 
-### graph.hideSnapline()
-
-隐藏对齐线。
-
-### graph.getSnaplineTolerance()
-
-获取对齐精度。
-
-### graph.setSnaplineTolerance(tolerance: number)
-
-设置对齐精度。 
-
-### graph.setSnaplineFilter(filter?: Filter)
-
-设置对齐线过滤器。
-
 ### graph.isSnaplineEnabled()
 
-对齐线是否启用。
+```sign
+isSnaplineEnabled(): boolean
+```
+
+返回是否启用对齐线。
 
 ### graph.enableSnapline()
+
+```sign
+enableSnapline(): this
+```
 
 启用对齐线。
 
 ### graph.disableSnapline()
 
+```sign
+disableSnapline(): this
+```
+
 禁用对齐线。
 
-### graph.toggleSnapline(enabled?: boolean)
+### graph.toggleSnapline(...)
+
+```sign
+toggleSnapline(enabled?: boolean): this
+```
 
 切换对齐线的启用状态。
 
+<span class="tag-param">参数<span>
+
+| 名称    | 类型    | 必选 | 默认值 | 描述                                       |
+|---------|---------|:----:|--------|------------------------------------------|
+| enabled | boolean |      | -      | 是否启用对齐线，缺省时切换对齐线的启用状态。 |
+
+### graph.hideSnapline()
+
+```sign
+hideSnapline(): this
+```
+
+隐藏对齐线。
+
 ### graph.isSnaplineOnResizingEnabled()
 
-修改节点大小交互时是否触发对齐线。
+```sign
+isSnaplineOnResizingEnabled(): boolean
+```
+
+调整节点大小时，是否触发对齐线。
 
 ### graph.enableSnaplineOnResizing()
 
-修改节点大小交互时触发对齐线。 
+```sign
+enableSnaplineOnResizing(): this
+```
+
+启用调整节点大小过程中触发对齐线。
 
 ### graph.disableSnaplineOnResizing()
 
-修改节点大小交互时不触发对齐线。 
+```sign
+disableSnaplineOnResizing(): this
+```
 
-### graph.toggleSnaplineOnResizing(enableOnResizing?: boolean)
+禁用调整节点大小过程中触发对齐线。
 
-切换修改节点大小时是否触发对齐线。 
+### graph.toggleSnaplineOnResizing(...)
+
+```sign
+toggleSnaplineOnResizing(enabled?: boolean): this
+```
+
+切换调整节点大小过程中是否触发对齐线。
+
+<span class="tag-param">参数<span>
+
+| 名称    | 类型    | 必选 | 默认值 | 描述                                       |
+|---------|---------|:----:|--------|------------------------------------------|
+| enabled | boolean |      | -      | 是否启用对齐线，缺省时切换对齐线的启用状态。 |
 
 ### graph.isSharpSnapline()
 
-是否显示截断的对齐线。
+```sign
+isSharpSnapline(): boolean
+```
+
+是否使用短款对齐线。
 
 ### graph.enableSharpSnapline()
 
-显示截断的对齐线。
+```sign
+enableSharpSnapline(): this
+```
+
+启用短款对齐线，启用后对齐线只显示到相关节点位置处，否则显示贯穿画布的对齐线。
 
 ### graph.disableSharpSnapline()
 
-显示贯穿画布的对齐线。
+```sign
+disableSharpSnapline(): this
+```
 
-### graph.toggleSharpSnapline(sharp?: boolean)
+禁用短款对齐线，对齐线将贯穿整个画布。
 
-切换是否显示贯穿画布的对齐线。
+### graph.toggleSharpSnapline(...)
+
+```sign
+toggleSharpSnapline(enabled?: boolean): this
+```
+
+切换短款对齐线的启用状态。
+
+<span class="tag-param">参数<span>
+
+| 名称    | 类型    | 必选 | 默认值 | 描述                                               |
+|---------|---------|:----:|--------|--------------------------------------------------|
+| enabled | boolean |      | -      | 是否启用短款对齐线，缺省时切换短款对齐线的启用状态。 |
+
+### graph.getSnaplineTolerance()
+
+```sign
+getSnaplineTolerance(): number
+```
+
+获取对齐线精度。
+
+### graph.setSnaplineTolerance(...)
+
+```sign
+setSnaplineTolerance(tolerance: number): this
+```
+
+设置对齐线精度。
+
+### graph.setSnaplineFilter(...)
+
+```sign
+setSnaplineFilter(
+  filter?: 
+   | null
+   | (string | { id: string })[]
+   | ((this: Graph, cell: Cell) => boolean)
+): this
+```
+
+设置过滤条件，满足过滤条件的节点/边将不参与对齐线计算。
+
+- 当 `filter` 为 `null`、`undefined` 时，不过滤节点/边。
+- 当 `filter` 为 `(string | { id: string })[]` 时，表示具有这些 ID 的节点/边不参与对齐线计算。
+- 当 `filter` 为 `(this: Graph, cell: Cell) => boolean` 时，返回 `true` 时节点/边不参与对齐线计算。

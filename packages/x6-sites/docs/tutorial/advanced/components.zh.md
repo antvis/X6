@@ -1,6 +1,6 @@
 ---
 title: 使用 UI 组件
-order: 4
+order: 6
 redirect_from:
   - /zh/docs
   - /zh/docs/tutorial

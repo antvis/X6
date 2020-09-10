@@ -84,41 +84,59 @@ const graph = new Graph({
 
 ## API
 
-### graph.bindKey
+### graph.bindKey(...)
 
-绑定快捷键。
-
-```ts
-graph.bindKey(
+```sign
+bindKey(
   keys: string | string[], 
   callback: (e: KeyboardEvent) => void, 
   action?: 'keypress' | 'keydown' | 'keyup',
-)
+): this
 ```
 
-### graph.unbindKey 
+绑定快捷键。
+
+### graph.unbindKey(...)
+
+```sign
+unbindKey(
+  keys: string | string[], 
+  action?: 'keypress' | 'keydown' | 'keyup',
+): this
+```
 
 解绑快捷键。
 
-```ts
-graph.unbindKey(
-  keys: string | string[], 
-  action?: 'keypress' | 'keydown' | 'keyup',
-)
-```
-
 ### graph.isKeyboardEnabled()
 
-是否启用键盘事件。
+```sign
+isKeyboardEnabled(): boolean
+```
+
+获取是否启用了键盘事件。
 
 ### graph.enableKeyboard()
+
+```sign
+enableKeyboard(): this
+```
 
 启用键盘事件。
 
 ### graph.disableKeyboard()
+
+```sign
+disableKeyboard(): this
+```
 
 禁用键盘事件。
 
 ### graph.toggleKeyboard(enabled?: boolean)
 
 切换键盘事件的启用状态。
+
+<span class="tag-param">参数<span>
+
+| 名称    | 类型    | 必选 | 默认值 | 描述                                           |
+|---------|---------|:----:|--------|----------------------------------------------|
+| enabled | boolean |      | -      | 是否启用键盘事件，缺省时切换键盘事件的启用状态。 |

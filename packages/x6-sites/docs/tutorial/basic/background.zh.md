@@ -103,7 +103,11 @@ interface BackgroundOptions {
 
 ## API
 
-### graph.drawBackground(options?: BackgroundOptions)
+### graph.drawBackground(...)
+
+```sign
+drawBackground(options?: Options): this
+```
 
 根据提供的[选项](#选项-backgroundoptions)重绘背景。
 
@@ -115,9 +119,17 @@ graph.drawBackground({
 
 ### graph.clearBackground()
 
+```sign
+clearBackground(): this
+```
+
 销毁背景。
 
 ### graph.updateBackground()
+
+```sign
+updateBackground(): this
+```
 
 更新背景。
 

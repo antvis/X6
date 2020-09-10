@@ -86,3 +86,43 @@ const graph = new Graph({
   },
 })
 ```
+
+## API
+
+### graph.isMouseWheelEnabled()
+
+```sign
+isMouseWheelEnabled(): boolean
+```
+
+返回是否启用了鼠标滚轮来缩放画布。
+
+### graph.enableMouseWheel()
+
+```sign
+enableMouseWheel(): this
+```
+
+启用鼠标滚轮缩放画布。
+
+### graph.disableMouseWheel()
+
+```sign
+disableMouseWheel(): this
+```
+
+禁用鼠标滚轮缩放画布。
+
+### graph.toggleMouseWheel(...)
+
+```sign
+toggleMouseWheel(enabled?: boolean): this
+```
+
+切换鼠标滚轮缩放画布的启用状态。
+
+<span class="tag-param">参数<span>
+
+| 名称    | 类型    | 必选 | 默认值 | 描述                                                           |
+|---------|---------|:----:|--------|--------------------------------------------------------------|
+| enabled | boolean |      | -      | 是否启用鼠标滚轮缩放画布，缺省时切换鼠标滚轮缩放画布的启用状态。 |

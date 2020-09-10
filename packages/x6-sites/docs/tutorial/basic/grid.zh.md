@@ -116,7 +116,11 @@ graph.drawGrid({
 
 ## API
 
-### graph.drawGrid(options?: DrawGridOptions)
+### graph.drawGrid(...)
+
+```sign
+drawGrid(options?: DrawGridOptions): this
+```
 
 绘制网格。
 
@@ -162,28 +166,40 @@ graph.drawGrid({
 
 ### graph.getGridSize()
 
-获取网格大小。
-
-```ts
-const gridSize = graph.getGridSize()
+```sign
+getGridSize(): number
 ```
 
-### graph.setGridSize(gridSize: number)
+获取网格大小。
+
+### graph.setGridSize(...)
+
+```sign
+setGridSize(gridSize: number): this
+```
 
 设置网格大小。
 
-```ts
-graph.setGridSize(10)
-```
-
 ### graph.showGrid()
+
+```sign
+showGrid(): this
+```
 
 显示网格。
 
 ### graph.hideGrid()
 
+```sign
+hideGrid(): this
+```
+
 隐藏网格。
 
 ### graph.clearGrid()
+
+```sign
+clearGrid(): this
+```
 
 隐藏并销毁网格。
