@@ -254,7 +254,7 @@ export namespace Color {
     ]
   }
 
-  export function random(ignoreAlpha: boolean) {
+  export function random(ignoreAlpha?: boolean) {
     return new Color(
       Math.round(Math.random() * 256),
       Math.round(Math.random() * 256),
@@ -272,7 +272,7 @@ export namespace Color {
     return color
   }
 
-  export function randomRGBA(ignoreAlpha: boolean) {
+  export function randomRGBA(ignoreAlpha?: boolean) {
     return random(ignoreAlpha).toString()
   }
 
