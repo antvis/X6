@@ -62,20 +62,26 @@ class Arrowhead extends ToolsView.ToolItem<EdgeView, Arrowhead.Options> {
     evt.preventDefault()
 
     const edgeView = this.cellView as EdgeView
-    edgeView.cell.startBatch('move-arrowhead', {
-      ui: true,
-      toolId: this.cid,
-    })
 
     if (edgeView.can('arrowheadMovable')) {
-      const data = edgeView.prepareArrowheadDragging(this.type)
+      edgeView.cell.startBatch('move-arrowhead', {
+        ui: true,
+        toolId: this.cid,
+      })
+
+      const data = edgeView.prepareArrowheadDragging(this.type, {
+        options: {
+          toolId: this.cid,
+        },
+      })
       this.cellView.setEventData(evt, data)
       this.delegateDocumentEvents(this.options.documentEvents!, evt.data)
       edgeView.graph.view.undelegateEvents()
+
+      this.container.style.pointerEvents = 'none'
     }
 
     this.focus()
-    this.container.style.pointerEvents = 'none'
   }
 
   protected onMouseMove(evt: JQuery.MouseMoveEvent) {

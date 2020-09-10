@@ -537,11 +537,13 @@ export class EdgeView<
     this.updateLabelPositions()
     this.updateToolsPosition()
     this.updateArrowheadMarkers()
-    this.updateTools(options)
 
     if (options.toolId == null) {
       this.renderExternalTools()
+    } else {
+      this.updateTools(options)
     }
+
     return this
   }
 
@@ -2031,6 +2033,7 @@ export class EdgeView<
   prepareArrowheadDragging(
     type: Edge.TerminalType,
     options: {
+      options?: KeyValue
       isNewEdge?: boolean
       fallbackAction?: EventData.ArrowheadDragging['fallbackAction']
     } = {},
@@ -2044,6 +2047,7 @@ export class EdgeView<
       initialTerminal: ObjectExt.clone(this.cell[type]) as Edge.TerminalData,
       fallbackAction: options.fallbackAction || 'revert',
       getValidateConnectionArgs: this.createValidateConnectionArgs(type),
+      options: options.options,
     }
 
     this.beforeArrowheadDragging(data)
@@ -2161,7 +2165,7 @@ export class EdgeView<
     }
 
     data.currentTarget = target
-    this.cell.prop(data.terminalType, { x, y }, { ui: true })
+    this.cell.prop(data.terminalType, { x, y }, { ...data.options, ui: true })
   }
 
   protected arrowheadDragged(
@@ -2275,7 +2279,7 @@ export class EdgeView<
       terminal = { x, y }
     }
 
-    this.cell.setTerminal(type, terminal, { ui: true })
+    this.cell.setTerminal(type, terminal, {}, { ...data.options, ui: true })
   }
 
   protected snapArrowheadEnd(data: EventData.ArrowheadDragging) {
@@ -2718,6 +2722,7 @@ namespace EventData {
     closestView?: CellView | null
     closestMagnet?: Element | null
     marked?: KeyValue<Element[]> | null
+    options?: KeyValue
   }
 
   export interface LabelDragging {
