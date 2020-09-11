@@ -1,0 +1,30 @@
+# Github action for automatically adding label or setting assignee when a new
+# Issue or PR is opened. https://github.com/marketplace/actions/issue-labeler
+
+name: 🏷️　Set Issue Label and Assignee
+on:
+  issues:
+    types: [opened]
+  pull_requests:
+    typed: [opened]
+jobs:
+  label:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: Naturalclar/issue-action@v2.0.0
+        with:
+          title-or-body: "both"
+          parameters: >
+            [
+              {
+                "keywords": ["bug", "error"],
+                "labels": ["BUG"],
+                "assignees": ["bubkoo"]
+              },
+              {
+                "keywords": ["help", "guidance"],
+                "labels": ["help-wanted"],
+                "assignees": ["bubkoo"]
+              }
+            ]
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
