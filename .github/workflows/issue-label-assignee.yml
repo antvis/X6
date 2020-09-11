@@ -5,8 +5,8 @@ name: 🏷️　Set Issue Label and Assignee
 on:
   issues:
     types: [opened]
-  pull_requests:
-    typed: [opened]
+  pull_request:
+    types: [opened]
 jobs:
   label:
     runs-on: ubuntu-latest
