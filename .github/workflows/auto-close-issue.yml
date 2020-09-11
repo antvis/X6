@@ -1,3 +1,6 @@
+# This action will automatically close issues fixed in
+# pull requests that doesn't target the default branch.
+
 name: 🚫　Auto Close Issue
 on:
   pull_request:
@@ -5,7 +8,7 @@ on:
 jobs:
   run:
     name: Close
-    runs-on: ubuntu-16.04
+    runs-on: ubuntu-latest
     steps:
     - uses: Logerfo/close-action@0.0.1
       with:
