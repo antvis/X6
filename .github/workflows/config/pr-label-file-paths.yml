@@ -1,0 +1,9 @@
+# https://github.com/actions/labeler
+
+pkg:x6:
+  - packages/x6/**/*
+  - examples/x6-example-features/**/*
+pkg:x6-react-shape:
+  - packages/x6-react-shape/**/*
+pkg:x6-components:
+  - packages/x6-components/**/*
