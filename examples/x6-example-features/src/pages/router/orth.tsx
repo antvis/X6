@@ -1,6 +1,5 @@
 import React from 'react'
 import { Graph } from '@antv/x6'
-import './app.css'
 
 export default class Example extends React.Component {
   private container: HTMLDivElement
@@ -8,6 +7,8 @@ export default class Example extends React.Component {
   componentDidMount() {
     const graph = new Graph({
       container: this.container,
+      width: 800,
+      height: 600,
       grid: true,
     })
 
@@ -21,7 +22,7 @@ export default class Example extends React.Component {
 
     const rect2 = graph.addNode({
       x: 300,
-      y: 240,
+      y: 300,
       width: 100,
       height: 40,
       label: 'world',
