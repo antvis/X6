@@ -8,6 +8,6 @@ jobs:
     steps:
       - uses: TimonVS/pr-labeler-action@v3
         with:
-          configuration-path: .github/workflows-config/pr-label-branch-name.yml
+          configuration-path: .github/workflows/config/pr-label-branch-name.yml
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
