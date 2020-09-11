@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: Naturalclar/issue-action@v2.0.0
         with:
-          title-or-body: "both"
+          title-or-body: both
           parameters: >
             [
               {
@@ -27,4 +27,4 @@ jobs:
                 "assignees": ["bubkoo"]
               }
             ]
-          github-token: "${{ secrets.GITHUB_TOKEN }}"
+          github-token: ${{ secrets.GITHUB_TOKEN }}
