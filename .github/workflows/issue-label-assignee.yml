@@ -1,7 +1,7 @@
 # Github action for automatically adding label or setting assignee when a new
 # Issue or PR is opened. https://github.com/marketplace/actions/issue-labeler
 
-name: 🏷️　Set Issue Label and Assignee
+name: 🏷️　Label(Title and Body)
 on:
   issues:
     types: [opened]

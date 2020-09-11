@@ -1,7 +1,7 @@
 # This action will automatically close issues fixed in
 # pull requests that doesn't target the default branch.
 
-name: 🚫　Auto Close Issue
+name: 🚫　Close Issues Fixed in PRs
 on:
   pull_request:
     types: [closed]

@@ -1,12 +1,12 @@
-# https://github.com/marketplace/actions/pr-labeler
+# https://github.com/marketplace/actions/PR-labeler
 
-pr(fix): ['fix/*', 'bug/*']
-pr(chore): chore/*
-pr(test): ['testing/*', 'test/*']
-pr(feature): ['feature/*', 'feat/*']
-pr(breaking): ['breaking/*', 'break/*']
-pr(internal): ['internal/*', 'inter/*']
-pr(documentation): ['documentation/*', 'document/*', 'doc/*']
-pr(enhancement): ['enhancement/*', 'enhance/*']
-pr(dependency): ['dependency/*', 'dep/*']
-pr(refactor): ['refactoring/*', 'refactor/*']
+PR(fix): ['fix/*', 'bug/*']
+PR(chore): chore/*
+PR(test): ['testing/*', 'test/*']
+PR(feature): ['feature/*', 'feat/*']
+PR(breaking): ['breaking/*', 'break/*']
+PR(internal): ['internal/*', 'inter/*']
+PR(documentation): ['documentation/*', 'document/*', 'doc/*']
+PR(enhancement): ['enhancement/*', 'enhance/*']
+PR(dependency): ['dependency/*', 'dep/*']
+PR(refactor): ['refactoring/*', 'refactor/*']
