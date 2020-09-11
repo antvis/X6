@@ -18,13 +18,11 @@ jobs:
             [
               {
                 "keywords": ["bug", "error"],
-                "labels": ["BUG"],
-                "assignees": ["bubkoo"]
+                "labels": ["bug"]
               },
               {
                 "keywords": ["help", "guidance"],
-                "labels": ["help-wanted"],
-                "assignees": ["bubkoo"]
+                "labels": ["help-wanted"]
               }
             ]
           github-token: ${{ secrets.GITHUB_TOKEN }}
