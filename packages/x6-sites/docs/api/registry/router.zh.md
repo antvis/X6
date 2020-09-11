@@ -27,9 +27,9 @@ const edge = graph.addEdge({
   source,
   target,
   router: {
-    name: 'orth',
+    name: 'oneSide',
     args: {
-      padding: 10,
+      side: 'right',
     },
   },
 })
@@ -41,14 +41,14 @@ const edge = graph.addEdge({
 const edge = graph.addEdge({
   source,
   target,
-  router: 'orth',
+  router: 'oneSide',
 })
 ```
 
 也可以调用 [`edge.setRouter`]() 方法来设置路由：
 
 ```ts
-edge.setRouter('orth', { padding: 10 })
+edge.setRouter('oneSide', { side: 'right' })
 ```
 
 在创建画布时，可以通过 `connecting` 选项来设置全局默认路由（画布的默认路由是 `'normal'`）:
@@ -57,9 +57,9 @@ edge.setRouter('orth', { padding: 10 })
 new Graph({
   connecting: {
     router: { 
-      name: 'orth',
+      name: 'oneSide',
       args: {
-        padding: 10,
+        side: 'right',
       },
     },
   },
@@ -89,42 +89,16 @@ new Graph({
 
 正交路由，该路由在路径上添加额外的一些点，使边的每一条线段都水平或垂直正交。
 
-支持的参数如下表：
-
-| 参数名  | 参数类型 | 是否必选 | 默认值 | 参数说明                                           |
-|---------|----------|:-------:|--------|------------------------------------------------|
-| padding | Padding  |    否    | `20`   | 路由的第一个/最后一个点与节点的距离，默认值为 `20`。 |
-
-其中 `Padding` 的定义如下：
-
-```ts
-type Padding =
-// 四个方向具有相同的边距
-| number 
-// 分别指定四个方向的边距
-| {
-    top?: number
-    right?: number
-    bottom?: number
-    left?: number
-  }
-// 分别指定垂直或水平方向的边距
-| {
-    vertical?: number
-    horizontal?: number
-  } 
-```
-
-例如：
-
 ```ts
 graph.addEdge({
   source,
   target,
-  vertices: [{ x: 100, y: 200 }, { x: 300, y: 120 }],
+  vertices: [
+    { x: 100, y: 200 }, 
+    { x: 300, y: 120 },
+  ],
   router: {
     name: 'orth',
-    args: { padding: 50 },
   },
 });
 ```
@@ -137,10 +111,10 @@ graph.addEdge({
 
 支持的参数如下表：
 
-| 参数名  | 参数类型                                       | 是否必选 | 默认值     | 参数说明                                                                                   |
-|---------|------------------------------------------------|:-------:|------------|----------------------------------------------------------------------------------------|
-| side    | `'left'` \| `'right'` \| `'top'` \| `'bottom'` |    否    | `'bottom'` | 路由的起始/结束方向，默认值为 `'bottom'`。                                                   |
-| padding | Padding                                        |    否    | `40`       | 路由的第一个/最后一个点与节点的距离，默认值为 `40`。详细说明请参考 [orth](#orth) 路由的选项。 |
+| 参数名 | 参数类型                                       | 是否必选 | 默认值     | 参数说明                                 |
+|--------|------------------------------------------------|:-------:|------------|--------------------------------------|
+| side   | `'left'` \| `'right'` \| `'top'` \| `'bottom'` |    否    | `'bottom'` | 路由的起始/结束方向，默认值为 `'bottom'`。 |
+
 
 例如：
 
@@ -150,7 +124,7 @@ graph.addEdge({
   target,
   router: {
     name: 'oneSide',
-    args: { side: 'right', padding: 50 },
+    args: { side: 'right' },
   },
 })
 ```
@@ -166,7 +140,6 @@ graph.addEdge({
 | 参数名             | 参数类型                 | 是否必选 | 默认值                               | 参数说明                                                                                   |
 |--------------------|--------------------------|:-------:|--------------------------------------|----------------------------------------------------------------------------------------|
 | step               | number                   |    否    | `10`                                 | 路由算法步进步长，其值越小计算量越大。<br>推荐使用画布的网格大小（`graph.options.grid.size`）。 |
-| padding            | Padding                  |    否    | `20`                                 | 路由的第一个/最后一个点与节点的距离，详细说明请参考 [orth](#orth) 路由的选项。               |
 | maximumLoops       | number                   |    否    | `2000`                               | 最大迭代次数，到达最大迭代次数后将使用候补路由。                                             |
 | maxDirectionChange | number                   |    否    | `90`                                 | 最大旋转角度。                                                                              |
 | excludeTerminals   | ('source' \| 'target')[] |    否    | `[]`                                 | 忽略起始或终止节点，忽略后不参与障碍物计算。                                                 |

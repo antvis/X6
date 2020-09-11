@@ -41,37 +41,37 @@ export const orth: Router.Definition<OrthRouterOptions> = function (
       // source
 
       if (i + 1 === len) {
-        // route source -> target
+        // source -> target
 
         // Expand one of the nodes by 1px to detect situations when the two
         // nodes are positioned next to each other with no gap in between.
         if (sourceBBox.intersect(targetBBox.clone().inflate(1))) {
-          route = Private.insideElement(from, to, sourceBBox, targetBBox)
+          route = Private.insideNode(from, to, sourceBBox, targetBBox)
         } else if (!isOrthogonal) {
-          route = Private.elementElement(from, to, sourceBBox, targetBBox)
+          route = Private.nodeToNode(from, to, sourceBBox, targetBBox)
         }
       } else {
-        // route source -> vertex
+        // source -> vertex
         if (sourceBBox.containsPoint(to)) {
-          route = Private.insideElement(
+          route = Private.insideNode(
             from,
             to,
             sourceBBox,
             Util.getPointBBox(to).moveAndExpand(Util.getPaddingBox(options)),
           )
         } else if (!isOrthogonal) {
-          route = Private.elementVertex(from, to, sourceBBox)
+          route = Private.nodeToVertex(from, to, sourceBBox)
         }
       }
     } else if (i + 1 === len) {
-      // route vertex -> target
+      // vertex -> target
 
       // prevent overlaps with previous line segment
       const isOrthogonalLoop =
         isOrthogonal && Private.getBearing(to, from) === bearing
 
       if (targetBBox.containsPoint(from) || isOrthogonalLoop) {
-        route = Private.insideElement(
+        route = Private.insideNode(
           from,
           to,
           Util.getPointBBox(from).moveAndExpand(Util.getPaddingBox(options)),
@@ -79,11 +79,11 @@ export const orth: Router.Definition<OrthRouterOptions> = function (
           bearing,
         )
       } else if (!isOrthogonal) {
-        route = Private.vertexElement(from, to, targetBBox, bearing)
+        route = Private.vertexToNode(from, to, targetBBox, bearing)
       }
     } else if (!isOrthogonal) {
-      // route vertex -> vertex
-      route = Private.vertexVertex(from, to, bearing)
+      // vertex -> vertex
+      route = Private.vertexToVertex(from, to, bearing)
     }
 
     // set bearing for next iteration
@@ -164,7 +164,7 @@ namespace Private {
     return null
   }
 
-  export function vertexVertex(from: Point, to: Point, bearing: Bearings) {
+  export function vertexToVertex(from: Point, to: Point, bearing: Bearings) {
     const p1 = new Point(from.x, to.y)
     const p2 = new Point(to.x, from.y)
     const d1 = getBearing(from, p1)
@@ -179,13 +179,13 @@ namespace Private {
     return { points: [p], direction: getBearing(p, to) }
   }
 
-  export function elementVertex(from: Point, to: Point, fromBBox: Rectangle) {
+  export function nodeToVertex(from: Point, to: Point, fromBBox: Rectangle) {
     const p = freeJoin(from, to, fromBBox)
 
     return { points: [p], direction: getBearing(p, to) }
   }
 
-  export function vertexElement(
+  export function vertexToNode(
     from: Point,
     to: Point,
     toBBox: Rectangle,
@@ -229,17 +229,17 @@ namespace Private {
     }
   }
 
-  export function elementElement(
+  export function nodeToNode(
     from: Point,
     to: Point,
     fromBBox: Rectangle,
     toBBox: Rectangle,
   ) {
-    let route = elementVertex(to, from, toBBox)
+    let route = nodeToVertex(to, from, toBBox)
     const p1 = route.points[0]
 
     if (fromBBox.containsPoint(p1)) {
-      route = elementVertex(from, to, fromBBox)
+      route = nodeToVertex(from, to, fromBBox)
       const p2 = route.points[0]
 
       if (toBBox.containsPoint(p2)) {
@@ -253,8 +253,12 @@ namespace Private {
         )
 
         const mid = new Line(fromBorder, toBorder).getCenter()
-        const startRoute = elementVertex(from, mid, fromBBox)
-        const endRoute = vertexVertex(mid, to, startRoute.direction as Bearings)
+        const startRoute = nodeToVertex(from, mid, fromBBox)
+        const endRoute = vertexToVertex(
+          mid,
+          to,
+          startRoute.direction as Bearings,
+        )
 
         route.points = [startRoute.points[0], endRoute.points[0]]
         route.direction = endRoute.direction
@@ -267,7 +271,7 @@ namespace Private {
   // Finds route for situations where one node is inside the other.
   // Typically the route is directed outside the outer node first and
   // then back towards the inner node.
-  export function insideElement(
+  export function insideNode(
     from: Point,
     to: Point,
     fromBBox: Rectangle,

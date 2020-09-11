@@ -27,6 +27,24 @@ export default class Example extends React.Component {
       label: 'world',
     })
 
+    graph.addNode({
+      shape: 'circle',
+      x: 100 - 5,
+      y: 200 - 5,
+      width: 10,
+      height: 10,
+      attrs: { body: { fill: '#31d0c6', stroke: '#fe854f' } },
+    })
+
+    graph.addNode({
+      shape: 'circle',
+      x: 300 - 5,
+      y: 120 - 5,
+      width: 10,
+      height: 10,
+      attrs: { body: { fill: '#31d0c6', stroke: '#fe854f' } },
+    })
+
     graph.addEdge({
       source: rect1,
       target: rect2,
@@ -36,7 +54,6 @@ export default class Example extends React.Component {
       ],
       router: {
         name: 'orth',
-        args: { padding: 50 },
       },
     })
   }
