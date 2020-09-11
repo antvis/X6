@@ -1,6 +1,6 @@
 ---
 title: NodeTool
-order: 26
+order: 24
 redirect_from:
   - /zh/docs
   - /zh/docs/api
