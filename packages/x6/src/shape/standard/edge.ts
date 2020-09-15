@@ -33,10 +33,7 @@ export const Edge = E.define({
       stroke: '#333333',
       strokeWidth: 2,
       strokeLinejoin: 'round',
-      targetMarker: {
-        tagName: 'path',
-        d: 'M 10 -5 0 0 10 5 z',
-      },
+      targetMarker: 'classic',
     },
   },
 })
