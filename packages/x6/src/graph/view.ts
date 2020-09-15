@@ -409,8 +409,8 @@ export class GraphView extends View {
     ) => void,
   ) {
     const magnetElem = evt.currentTarget
-    const magnetValue = magnetElem.getAttribute('magnet')
-    if (magnetValue) {
+    const magnetValue = magnetElem.getAttribute('magnet') as string
+    if (magnetValue && magnetValue.toLowerCase() !== 'false') {
       const view = this.findView(magnetElem)
       if (view) {
         const e = this.normalizeEvent(evt)
