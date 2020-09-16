@@ -24,7 +24,7 @@ export default class Example extends React.Component {
       selecting: {
         enabled: true,
         rubberband: true,
-        multiple: false,
+        multiple: true,
         strict: true,
         showNodeSelectionBox: true,
         selectCellOnMoved: false,
@@ -82,21 +82,21 @@ export default class Example extends React.Component {
       console.log('unselected', cell)
     })
 
-    graph.on('node:change:position', ({ node, options }) => {
-      console.log(node, options)
-    })
+    // graph.on('node:change:position', ({ node, options }) => {
+    //   console.log(node, options)
+    // })
 
     graph.bindKey('backspace', () => {
       graph.removeCells(graph.getSelectedCells())
     })
 
-    graph.on('blank:mousedown', () => {
-      console.log('blank:mousedown')
-    })
+    // graph.on('blank:mousedown', () => {
+    //   console.log('blank:mousedown')
+    // })
 
-    graph.on('blank:click', () => {
-      console.log('blank:click')
-    })
+    // graph.on('blank:click', () => {
+    //   console.log('blank:click')
+    // })
 
     graph.select(a)
     graph.select([b, c])
