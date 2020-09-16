@@ -556,15 +556,11 @@ export class Renderer extends Base {
       // Progress callback
       const progressFn = options.progress
       if (total && typeof progressFn === 'function') {
-        FunctionExt.call(
-          progressFn,
-          this.graph,
-          stats.empty,
-          processed,
+        FunctionExt.call(progressFn, this.graph, {
           total,
-          // stats,
-          // this.graph,
-        )
+          done: stats.empty,
+          current: processed,
+        })
       }
 
       // The current frame could have been canceled in a callback
@@ -821,6 +817,11 @@ export class Renderer extends Base {
         updates.sort = false
       }
 
+      const afterFn = options.after
+      if (afterFn) {
+        FunctionExt.call(afterFn, this.graph, this.graph)
+      }
+
       this.graph.trigger('unfreeze', { key })
     }
 
@@ -829,9 +830,9 @@ export class Renderer extends Base {
       const onProgress = options.progress
       this.updateViewsAsync({
         ...options,
-        progress: (done, process, total) => {
+        progress: ({ done, current, total }) => {
           if (onProgress) {
-            FunctionExt.call(onProgress, this.graph, done, process, total)
+            FunctionExt.call(onProgress, this.graph, { done, current, total })
           }
 
           // sort views after async render
@@ -848,6 +849,10 @@ export class Renderer extends Base {
 
   isAsync() {
     return !!this.options.async
+  }
+
+  setAsync(async: boolean) {
+    this.options.async = async
   }
 
   protected onRemove() {
@@ -1171,15 +1176,14 @@ export namespace Renderer {
 
   export interface UpdateViewsAsyncOptions extends UpdateViewOptions {
     before?: (this: Graph, graph: Graph) => void
+    after?: (this: Graph, graph: Graph) => void
     /**
      * Callback function that is called whenever a batch is
      * finished processing.
      */
     progress?: (
       this: Graph,
-      done: boolean,
-      processed: number,
-      total: number,
+      args: { done: boolean; current: number; total: number },
     ) => void
   }
 
@@ -1200,7 +1204,7 @@ export namespace Renderer {
   export const FLAG_INSERT = 1 << 30
   export const FLAG_REMOVE = 1 << 29
   export const MOUNT_BATCH_SIZE = 1000
-  export const UPDATE_BATCH_SIZE = Infinity
+  export const UPDATE_BATCH_SIZE = 1000
   export const MIN_PRIORITY = 2
   export const SORT_DELAYING_BATCHES: Model.BatchName[] = [
     'add',

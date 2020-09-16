@@ -1,8 +1,7 @@
-import { Dom, NumberExt, FunctionExt } from '../util'
+import { Dom, NumberExt } from '../util'
 import { Rectangle } from '../geometry'
 import { Transform } from '../addon/transform'
 import { Node } from '../model/node'
-import { NodeView } from '../view'
 import { Base } from './base'
 
 export class TransformManager extends Base {
@@ -107,6 +106,7 @@ export class TransformManager extends Base {
 
     const size = this.getComputedSize()
     this.graph.trigger('resize', { ...size })
+    return this
   }
 
   getComputedSize() {
@@ -312,8 +312,8 @@ export class TransformManager extends Base {
     const maxScaleY = options.maxScaleY || maxScale
 
     let fittingBBox
-    if (options.fittingBBox) {
-      fittingBBox = options.fittingBBox
+    if (options.viewportArea) {
+      fittingBBox = options.viewportArea
     } else {
       const computedSize = this.getComputedSize()
       const currentTranslate = this.getTranslation()
@@ -371,21 +371,6 @@ export class TransformManager extends Base {
     const rect = Rectangle.fromSize(this.getComputedSize())
     return this.graph.graphToLocalRect(rect)
   }
-
-  getRestrictArea(view?: NodeView) {
-    const restrict = this.options.translating.restrict
-    let area: Rectangle.RectangleLike | null
-
-    if (typeof restrict === 'function') {
-      area = FunctionExt.call(restrict, this.graph, view!)
-    } else if (restrict === true) {
-      area = this.getArea()
-    } else {
-      area = restrict || null
-    }
-
-    return area
-  }
 }
 
 export namespace TransformManager {
@@ -414,7 +399,7 @@ export namespace TransformManager {
     maxScaleY?: number
     scaleGrid?: number
     contentArea?: Rectangle.RectangleLike
-    fittingBBox?: Rectangle.RectangleLike
+    viewportArea?: Rectangle.RectangleLike
     preserveAspectRatio?: boolean
   }
 
