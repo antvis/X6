@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@antv/x6-example-sites",
-  "version": "0.10.66",
+  "version": "0.10.67",
   "workspaces": [
     "packages/**/*"
   ],
@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@ant-design/icons": "^4.2.2",
-    "@antv/x6": "^0.10.66",
+    "@antv/x6": "^0.10.67",
     "@antv/x6-components": "^0.10.8",
     "@antv/x6-example-sites-helper": "^0.10.66",
     "@antv/x6-react-shape": "^0.10.11",
