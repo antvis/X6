@@ -174,7 +174,7 @@ class Anchor extends ToolsView.ToolItem<EdgeView, Anchor.Options> {
     const e = this.normalizeEvent(evt)
     const terminalCell = terminalView.cell
     const terminalMagnet = edgeView.getTerminalMagnet(terminalType)!
-    let coords = this.graph.clientToLocalPoint(e.clientX, e.clientY)
+    let coords = this.graph.clientToLocal(e.clientX, e.clientY)
 
     const snapFn = this.options.snap
     if (typeof snapFn === 'function') {

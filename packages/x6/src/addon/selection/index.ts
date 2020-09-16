@@ -249,7 +249,7 @@ export class Selection extends View<Selection.EventArgs> {
         let width = this.$container.width()!
         let height = this.$container.height()!
         const offset = this.$container.offset()!
-        const origin = graph.pageToLocalPoint(offset.left, offset.top)
+        const origin = graph.pageToLocal(offset.left, offset.top)
         const scale = graph.scale()
         width = width / scale.sx
         height = height / scale.sy

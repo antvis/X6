@@ -89,10 +89,10 @@ export default class Example extends React.Component {
         c.style.left = `${pageX + 10}px`
         c.style.top = `${pageY + 10}px`
 
-        const p1 = this.graph.pageToLocalPoint(pageX, pageY)
-        const p2 = this.graph.localToPagePoint(p1)
-        const p3 = this.graph.localToClientPoint(p1)
-        const p4 = this.graph.localToGraphPoint(p1)
+        const p1 = this.graph.pageToLocal(pageX, pageY)
+        const p2 = this.graph.localToPage(p1)
+        const p3 = this.graph.localToClient(p1)
+        const p4 = this.graph.localToGraph(p1)
 
         c.innerHTML = `
       <div>Mouse Page Position(e.pageX, e.pageY): ${pageX} x ${pageY}</div>

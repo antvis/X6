@@ -263,7 +263,7 @@ export class NodePreset {
       graphOptions.height,
     )
 
-    const bbox = this.graph.graphToLocalRect(this.view.getBBox())
+    const bbox = this.graph.graphToLocal(this.view.getBBox())
     const found = [
       this.options.loopEdgePreferredSide,
       'top',

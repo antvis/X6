@@ -292,7 +292,7 @@ export class TransformManager extends Base {
     // let contentLocalOrigin
     if (options.contentArea) {
       const contentArea = options.contentArea
-      contentBBox = this.graph.localToGraphRect(contentArea)
+      contentBBox = this.graph.localToGraph(contentArea)
       // contentLocalOrigin = Point.create(contentArea)
     } else {
       contentBBox = this.getContentBBox(options)
@@ -364,12 +364,12 @@ export class TransformManager extends Base {
   }
 
   getContentBBox(options: TransformManager.GetContentAreaOptions = {}) {
-    return this.graph.localToGraphRect(this.getContentArea(options))
+    return this.graph.localToGraph(this.getContentArea(options))
   }
 
-  getArea() {
+  getGraphArea() {
     const rect = Rectangle.fromSize(this.getComputedSize())
-    return this.graph.graphToLocalRect(rect)
+    return this.graph.graphToLocal(rect)
   }
 }
 

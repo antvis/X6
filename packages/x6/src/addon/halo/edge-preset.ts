@@ -52,7 +52,7 @@ export class EdgePreset {
       ],
       content: false,
       bbox(view: EdgeView) {
-        return view.graph.localToGraphPoint(view.getPointAtRatio(0.5)!)
+        return view.graph.localToGraph(view.getPointAtRatio(0.5)!)
       },
       tinyThreshold: -1,
       smallThreshold: -1,

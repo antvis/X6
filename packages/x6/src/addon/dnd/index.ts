@@ -157,7 +157,7 @@ export class Dnd extends View {
   }
 
   protected updateNodePosition(x: number, y: number) {
-    const local = this.targetGraph.clientToLocalPoint(x, y)
+    const local = this.targetGraph.clientToLocal(x, y)
     const bbox = this.delegateBBox!
     local.x -= bbox.width / 2
     local.y -= bbox.height / 2
@@ -354,7 +354,7 @@ export class Dnd extends View {
     const targetModel = targetGraph.model
 
     if (this.isInsideValidArea(pos)) {
-      const local = targetGraph.clientToLocalPoint(pos)
+      const local = targetGraph.clientToLocal(pos)
       const bbox = node.getBBox()
       local.x += bbox.x - bbox.width / 2
       local.y += bbox.y - bbox.height / 2

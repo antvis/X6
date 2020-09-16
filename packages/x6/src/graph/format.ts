@@ -19,8 +19,7 @@ export class FormatManager extends Base {
     )!
 
     const viewBox =
-      options.viewBox ||
-      this.graph.graphToLocalRect(this.graph.getContentBBox())
+      options.viewBox || this.graph.graphToLocal(this.graph.getContentBBox())
     const dimension = options.preserveDimensions
     if (dimension) {
       const size = typeof dimension === 'boolean' ? viewBox : dimension
@@ -183,8 +182,7 @@ export class FormatManager extends Base {
     options: FormatManager.ToDataURLOptions,
   ) {
     let viewBox =
-      options.viewBox ||
-      this.graph.graphToLocalRect(this.graph.getContentBBox())
+      options.viewBox || this.graph.graphToLocal(this.graph.getContentBBox())
 
     const padding = NumberExt.normalizeSides(options.padding)
     if (options.width && options.height) {
