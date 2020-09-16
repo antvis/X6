@@ -13,6 +13,7 @@ import { Graph } from '../../graph/graph'
 import { Renderer } from '../../graph/renderer'
 import { notify } from '../transform/util'
 import { Handle } from '../common'
+import { KeyValue } from '../../types'
 
 export class Selection extends View<Selection.EventArgs> {
   public readonly options: Selection.Options
@@ -85,6 +86,7 @@ export class Selection extends View<Selection.EventArgs> {
     collection.on('removed', this.onCellRemoved, this)
     collection.on('reseted', this.onReseted, this)
     collection.on('updated', this.onCollectionUpdated, this)
+    collection.on('node:change:position', this.onNodePositionChanged, this)
     collection.on('cell:change:*', this.onCellChanged, this)
   }
 
@@ -102,6 +104,7 @@ export class Selection extends View<Selection.EventArgs> {
     collection.off('removed', this.onCellRemoved, this)
     collection.off('reseted', this.onReseted, this)
     collection.off('updated', this.onCollectionUpdated, this)
+    collection.off('node:change:position', this.onNodePositionChanged, this)
     collection.off('cell:change:*', this.onCellChanged, this)
   }
 
@@ -115,6 +118,26 @@ export class Selection extends View<Selection.EventArgs> {
 
   protected onCellChanged() {
     this.updateSelectionBoxes()
+  }
+
+  protected translating: boolean
+
+  protected onNodePositionChanged({
+    node,
+    options,
+  }: Collection.EventArgs['node:change:position']) {
+    if (this.options.showNodeSelectionBox !== true && !this.translating) {
+      this.translating = true
+      const current = node.position()
+      const previous = node.previous('position')!
+      const dx = current.x - previous.x
+      const dy = current.y - previous.y
+
+      if (dx !== 0 || dy !== 0) {
+        this.translateSelectedNodes(dx, dy, node, options)
+      }
+      this.translating = false
+    }
   }
 
   protected onModelUpdated({ removed }: Collection.EventArgs['updated']) {
@@ -329,7 +352,7 @@ export class Selection extends View<Selection.EventArgs> {
         const client = this.graph.snapToGrid(e.clientX, e.clientY)
         let dx = client.x - data.clientX
         let dy = client.y - data.clientY
-        const restrict = this.graph.getRestrictArea()
+        const restrict = this.graph.hook.getRestrictArea()
         if (restrict) {
           const cells = this.collection.toArray()
           const totalBBox = Cell.getCellsBBox(cells)!
@@ -376,11 +399,17 @@ export class Selection extends View<Selection.EventArgs> {
     this.boxesUpdated = false
   }
 
-  protected translateSelectedNodes(dx: number, dy: number) {
+  protected translateSelectedNodes(
+    dx: number,
+    dy: number,
+    exclude?: Cell,
+    otherOptions?: KeyValue,
+  ) {
     const map: { [id: string]: boolean } = {}
     this.collection.toArray().forEach((cell) => {
-      if (!map[cell.id]) {
+      if (!map[cell.id] && cell !== exclude) {
         const options = {
+          ...otherOptions,
           selection: this.cid,
         }
         cell.translate(dx, dy, options)
