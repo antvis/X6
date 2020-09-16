@@ -769,15 +769,17 @@ export class Cell<
     iterator: (child: Cell, index: number, children: Cell[]) => void,
     context?: any,
   ) {
-    ArrayExt.forEach(this.children, iterator, context)
+    if (this.children) {
+      this.children.forEach(iterator, context)
+    }
     return this
   }
 
   filterChild(
     filter: (cell: Cell, index: number, arr: Cell[]) => boolean,
-    thisArg?: any,
+    context?: any,
   ): Cell[] {
-    return ArrayExt.filter(this.children, filter, thisArg)
+    return this.children ? this.children.filter(filter, context) : []
   }
 
   getChildCount() {
