@@ -2907,30 +2907,6 @@ translate(tx: number, ty: number): this
 | tx   | number |  ✓   |        | X 轴平移量。 |
 | ty   | number |  ✓   |        | Y 轴平移量。 |
 
-#### getContentArea(...)
-
-```sign
-getContentArea(options?: Transform.GetContentAreaOptions): Rectangle
-```
-
-获取画布内容的矩形区域。
-
-| 名称                    | 类型    | 必选 | 默认值  | 描述                                                                                                  |
-|-------------------------|---------|:----:|---------|-----------------------------------------------------------------------------------------------------|
-| options.useCellGeometry | boolean |      | `false` | 是否使用节点/边的几何信息(Model)来计算画布内容大小，默认使用浏览器 API 获取每个节点和边(View)的包围盒。 |
-
-#### getContentBBox(...)
-
-```sign
-getContentBBox(options?: Transform.GetContentAreaOptions): Rectangle
-```
-
-获取画布内容的矩形区域。
-
-| 名称                    | 类型    | 必选 | 默认值  | 描述                                                                                                  |
-|-------------------------|---------|:----:|---------|-----------------------------------------------------------------------------------------------------|
-| options.useCellGeometry | boolean |      | `false` | 是否使用节点/边的几何信息(Model)来计算画布内容大小，默认使用浏览器 API 获取每个节点和边(View)的包围盒。 |
-
 #### fitToContent(...)
 
 ```sign
@@ -2943,18 +2919,78 @@ fitToContent(
 fitToContent(options?: Transform.FitToContentFullOptions): Rectangle
 ```
 
-缩放画布使内容充满视口，返回缩放后画布的矩形区域。
+通过平移和重置画布大小，使其适应画布内容，返回画布的矩形区域。
 
 <span class="tag-param">参数<span>
+
+| 名称                    | 类型                                    | 必选 | 默认值  | 描述                                                                                          |
+|-------------------------|-----------------------------------------|:----:|---------|---------------------------------------------------------------------------------------------|
+| options.gridWidth       | number                                  |      | -       | 使宽度是 `gridWidth` 的整倍数。                                                                |
+| options.gridHeight      | number                                  |      | -       | 使高度是 `gridHeight` 的整倍数。                                                               |
+| options.minWidth        | number                                  |      | -       | 画布最小宽度。                                                                                 |
+| options.minHeight       | number                                  |      | -       | 画布最小高度。                                                                                 |
+| options.maxWidth        | number                                  |      | -       | 画布最大宽度。                                                                                 |
+| options.maxHeight       | number                                  |      | -       | 画布最大高度。                                                                                 |
+| options.padding         | number \| Padding                       |      | `0`     | 边距。                                                                                         |
+| options.contentArea     | Rectangle.RectangleLike                 |      | -       | 内容区域，默认获取画布内容区域。                                                                |
+| options.useCellGeometry | boolean                                 |      | `false` | 是否使用节点/边的几何信息(Model)计算包围盒，默认使用浏览器 API 获取每个节点和边(View)的包围盒。 |
+| options.allowNewOrigin  | `'negative'` \| `'positive'` \| `'any'` |      | -       | 画布左上角位置选项。                                                                           |
 
 #### scaleContentToFit(...)
 
 ```sign
-
+scaleContentToFit(options?: Transform.ScaleContentToFitOptions): this
 ```
+
+缩放画布，使内容充满画布视口。
 
 <span class="tag-param">参数<span>
 
+| 名称                        | 类型                    | 必选 | 默认值  | 描述                                                                                          |
+|-----------------------------|-------------------------|:----:|---------|---------------------------------------------------------------------------------------------|
+| options.padding             | number                  |      | -       | 边距。                                                                                         |
+| options.contentArea         | Rectangle.RectangleLike |      | -       | 内容区域，默认获取画布内容区域。                                                                |
+| options.viewportArea        | Rectangle.RectangleLike |      | -       | 视口区域，默认获取画布视口。                                                                    |
+| options.scaleGrid           | number                  |      | -       | 修正缩放比例为 `scaleGrid` 的整倍数。                                                          |
+| options.minScale            | number                  |      | -       | 最小缩放比例。                                                                                 |
+| options.maxScale            | number                  |      | -       | 最大缩放比例。                                                                                 |
+| options.minScaleX           | number                  |      | -       | X 轴方向的最小缩放比例。                                                                       |
+| options.maxScaleX           | number                  |      | -       | X 轴方向的最大缩放比例。                                                                       |
+| options.minScaleY           | number                  |      | -       | Y 轴方向的最小缩放比例。                                                                       |
+| options.maxScaleY           | number                  |      | -       | Y 轴方向的最大缩放比例。                                                                       |
+| options.preserveAspectRatio | boolean                 |      | `false` | 是否保持长宽比。                                                                               |
+| options.useCellGeometry     | boolean                 |      | `false` | 是否使用节点/边的几何信息(Model)计算包围盒，默认使用浏览器 API 获取每个节点和边(View)的包围盒。 |
+
+
+#### getContentArea(...)
+
+```sign
+getContentArea(options?: Transform.GetContentAreaOptions): Rectangle
+```
+
+获取画布内容的矩形区域，使用[画布本地坐标](#clienttolocal)表示。
+
+<span class="tag-param">参数<span>
+
+
+| 名称                    | 类型    | 必选 | 默认值  | 描述                                                                                                  |
+|-------------------------|---------|:----:|---------|-----------------------------------------------------------------------------------------------------|
+| options.useCellGeometry | boolean |      | `false` | 是否使用节点/边的几何信息(Model)来计算画布内容大小，默认使用浏览器 API 获取每个节点和边(View)的包围盒。 |
+
+#### getContentBBox(...)
+
+```sign
+getContentBBox(options?: Transform.GetContentAreaOptions): Rectangle
+```
+
+获取画布内容的矩形区域，使用[画布坐标](#localtograph)表示。
+
+<span class="tag-param">参数<span>
+
+
+| 名称                    | 类型    | 必选 | 默认值  | 描述                                                                                                  |
+|-------------------------|---------|:----:|---------|-----------------------------------------------------------------------------------------------------|
+| options.useCellGeometry | boolean |      | `false` | 是否使用节点/边的几何信息(Model)来计算画布内容大小，默认使用浏览器 API 获取每个节点和边(View)的包围盒。 |
 
 
 
@@ -2987,6 +3023,108 @@ fitToContent(options?: Transform.FitToContentFullOptions): Rectangle
 
 ### 坐标系 Coordinate
 
+#### pageToLocal(...)
+
+```sign
+pageToLocal(rect: Rectangle.RectangleLike): Rectangle
+pageToLocal(x: number, y: number, width: number, height: number): Rectangle
+pageToLocal(p: Point.PointLike): Point
+pageToLocal(x: number, y: number): Point
+```
+
+将页面坐标转换为画布本地坐标。
+
+画布本地坐标指相对于画布并考虑画布缩放、平移和旋转的坐标。节点和画布鼠标事件回调函数参数中的 `x` 和 `y` 就是画布本地坐标。
+
+页面坐标指鼠标事件的 [`pageX`](https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/pageX) 和 [`pageY`](https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/pageY) 属性。这两个属性基于文档边缘，考虑页面水平和垂直方向滚动，例如，如果页面向右滚动 `200px` 并出现了滚动条，这部分在窗口之外，然后鼠标点击距离窗口左边 `100px` 的位置，`pageX` 所返回的值将是 `300`。
+
+<iframe src="/demos/api/graph/coord"></iframe>
+
+#### localToPage(...)
+
+```sign
+localToPage(rect: Rectangle.RectangleLike): Rectangle
+localToPage(x: number, y: number, width: number, height: number): Rectangle
+localToPage(p: Point.PointLike): Point
+localToPage(x: number, y: number): Point
+```
+
+将画布本地坐标转换为页面坐标。
+
+画布本地坐标指相对于画布并考虑画布缩放、平移和旋转的坐标。节点和画布鼠标事件回调函数参数中的 `x` 和 `y` 就是画布本地坐标。
+
+页面坐标指鼠标事件的 [`pageX`](https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/pageX) 和 [`pageY`](https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/pageY) 属性。这两个属性基于文档边缘，考虑页面水平和垂直方向滚动，例如，如果页面向右滚动 `200px` 并出现了滚动条，这部分在窗口之外，然后鼠标点击距离窗口左边 `100px` 的位置，`pageX` 所返回的值将是 `300`。
+
+<iframe src="/demos/api/graph/coord"></iframe>
+
+#### clientToLocal(...)
+
+```sign
+clientToLocal(rect: Rectangle.RectangleLike): Rectangle
+clientToLocal(x: number, y: number, width: number, height: number): Rectangle
+clientToLocal(p: Point.PointLike): Point
+clientToLocal(x: number, y: number): Point
+```
+
+将页面的客户端坐标转换画布本地坐标。
+
+画布本地坐标指相对于画布并考虑画布缩放、平移和旋转的坐标。节点和画布鼠标事件回调函数参数中的 `x` 和 `y` 就是画布本地坐标。
+
+客户端坐标指鼠标事件的 [`clientX`](https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/clientX) 和 [`clientY`](https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/clientY) 属性。例如，不论页面是否有水平滚动，当你点击客户端区域的左上角时，鼠标事件的 `clientX` 值都将为 `0`。 
+
+<iframe src="/demos/api/graph/coord"></iframe>
+
+#### localToClient(...)
+
+```sign
+localToClient(rect: Rectangle.RectangleLike): Rectangle
+localToClient(x: number, y: number, width: number, height: number): Rectangle
+localToClient(p: Point.PointLike): Point
+localToClient(x: number, y: number): Point
+```
+
+将画布本地坐标转换为页面的客户端坐标。
+
+画布本地坐标指相对于画布并考虑画布缩放、平移和旋转的坐标。节点和画布鼠标事件回调函数参数中的 `x` 和 `y` 就是画布本地坐标。
+
+客户端坐标指鼠标事件的 [`clientX`](https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/clientX) 和 [`clientY`](https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/clientY) 属性。例如，不论页面是否有水平滚动，当你点击客户端区域的左上角时，鼠标事件的 `clientX` 值都将为 `0`。 
+
+<iframe src="/demos/api/graph/coord"></iframe>
+
+#### localToGraph(...)
+
+```sign
+localToGraph(rect: Rectangle.RectangleLike): Rectangle
+localToGraph(x: number, y: number, width: number, height: number): Rectangle
+localToGraphPoint(p: Point.PointLike): Point
+localToGraphPoint(x: number, y: number): Point
+```
+
+将画布本地坐标转换为画布坐标。
+
+画布本地坐标指相对于画布并考虑画布缩放、平移和旋转的坐标。节点和画布鼠标事件回调函数参数中的 `x` 和 `y` 就是画布本地坐标。
+
+画布坐标指相对于画布左上角的坐标，不考虑画布的缩放、平移和旋转。
+
+<iframe src="/demos/api/graph/coord"></iframe>
+
+#### graphToLocal(...)
+
+```sign
+graphToLocal(rect: Rectangle.RectangleLike): Rectangle
+graphToLocal(x: number, y: number, width: number, height: number): Rectangle
+graphToLocal(p: Point.PointLike): Point
+graphToLocal(x: number, y: number): Point
+```
+
+将画布坐标转换为画布本地坐标。
+
+画布本地坐标指相对于画布并考虑画布缩放、平移和旋转的坐标。节点和画布鼠标事件回调函数参数中的 `x` 和 `y` 就是画布本地坐标。
+
+画布坐标指相对于画布左上角的坐标，不考虑画布的缩放、平移和旋转。
+
+<iframe src="/demos/api/graph/coord"></iframe>
+
 #### snapToGrid(...)
 
 ```sign
@@ -2994,139 +3132,7 @@ snapToGrid(p: Point.PointLike): Point
 snapToGrid(x: number, y: number): Point
 ```
 
-<span class="tag-param">参数<span>
-
-
-
-#### getClientMatrix()
-
-```sign
-
-```
-
-<span class="tag-param">参数<span>
-
-#### getClientOffset()
-
-```sign
-
-```
-
-<span class="tag-param">参数<span>
-
-#### getPageOffset()
-
-```sign
-
-```
-
-<span class="tag-param">参数<span>
-
-#### pageToLocalPoint(...)
-
-```sign
-pageToLocalPoint(p: Point.PointLike): Point
-pageToLocalPoint(x: number, y: number): Point
-```
-
-将页面坐标转换为画布本地坐标。
-
-页面坐标指鼠标事件的 [`pageX`](https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/pageX) 和 [`pageY`](https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/pageY) 属性。这两个属性基于文档边缘，考虑页面水平和垂直方向滚动，例如，如果页面向右滚动 `200px` 并出现了滚动条，这部分在窗口之外，然后鼠标点击距离窗口左边 `100px` 的位置，`pageX` 所返回的值将是 `300`。
-
-#### localToPagePoint(...)
-
-```sign
-localToPagePoint(p: Point.PointLike): Point
-localToPagePoint(x: number, y: number): Point
-```
-
-将画布本地坐标转换为页面坐标。
-
-页面坐标指鼠标事件的 [`pageX`](https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/pageX) 和 [`pageY`](https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/pageY) 属性。这两个属性基于文档边缘，考虑页面水平和垂直方向滚动，例如，如果页面向右滚动 `200px` 并出现了滚动条，这部分在窗口之外，然后鼠标点击距离窗口左边 `100px` 的位置，`pageX` 所返回的值将是 `300`。
-
-#### clientToLocalPoint(...)
-
-```sign
-clientToLocalPoint(p: Point.PointLike): Point
-clientToLocalPoint(x: number, y: number): Point
-```
-
-将页面的客户端坐标转换画布本地坐标。
-
-客户端坐标指鼠标事件的 [`clientX`](https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/clientX) 和 [`clientY`](https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/clientY) 属性。例如，不论页面是否有水平滚动，当你点击客户端区域的左上角时，鼠标事件的 `clientX` 值都将为 `0`。 
-
-#### localToClientPoint(...)
-
-```sign
-localToClientPoint(p: Point.PointLike): Point
-localToClientPoint(x: number, y: number): Point
-```
-
-将画布本地坐标转换为页面的客户端坐标。
-
-客户端坐标指鼠标事件的 [`clientX`](https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/clientX) 和 [`clientY`](https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/clientY) 属性。例如，不论页面是否有水平滚动，当你点击客户端区域的左上角时，鼠标事件的 `clientX` 值都将为 `0`。 
-
-
-#### localToGraphPoint(...)
-
-```sign
-localToGraphPoint(p: Point.PointLike): Point
-localToGraphPoint(x: number, y: number): Point
-```
-
-将画布本地坐标转换为画布坐标。
-
-#### localToGraphRect(...)
-
-```sign
-localToGraphRect(rect: Rectangle.RectangleLike): Rectangle
-localToGraphRect(
-  x: number,
-  y: number,
-  width: number,
-  height: number,
-): Rectangle
-```
-
-<span class="tag-param">参数<span>
-
-#### localToClientRect(...)
-
-```sign
-localToClientRect(rect: Rectangle.RectangleLike): Rectangle
-localToClientRect(
-  x: number,
-  y: number,
-  width: number,
-  height: number,
-): Rectangle
-```
-
-<span class="tag-param">参数<span>
-
-#### localToPageRect(...)
-
-```sign
-localToPageRect(rect: Rectangle.RectangleLike): Rectangle
-localToPageRect(
-  x: number,
-  y: number,
-  width: number,
-  height: number,
-): Rectangle
-```
-
-<span class="tag-param">参数<span>
-
-
-#### graphToLocalPoint(...)
-
-```sign
-graphToLocalPoint(p: Point.PointLike): Point
-graphToLocalPoint(x: number, y: number): Point
-```
-
-<span class="tag-param">参数<span>
+将页面客户端坐标转换为画布[本地坐标](#clienttolocal)并对齐到画布网格。
 
 
 
@@ -3134,47 +3140,22 @@ graphToLocalPoint(x: number, y: number): Point
 
 
 
-#### graphToLocalRect(...)
 
-```sign
-graphToLocalRect(rect: Rectangle.RectangleLike): Rectangle
-graphToLocalRect(
-  x: number,
-  y: number,
-  width: number,
-  height: number,
-): Rectangle
-```
 
-<span class="tag-param">参数<span>
 
-#### clientToLocalRect(...)
 
-```sign
-clientToLocalRect(rect: Rectangle.RectangleLike): Rectangle
-clientToLocalRect(
-  x: number,
-  y: number,
-  width: number,
-  height: number,
-): Rectangle
-```
 
-<span class="tag-param">参数<span>
 
-#### pageToLocalRect(...)
 
-```sign
-pageToLocalRect(rect: Rectangle.RectangleLike): Rectangle
-pageToLocalRect(
-  x: number,
-  y: number,
-  width: number,
-  height: number,
-): Rectangle
-```
 
-<span class="tag-param">参数<span>
+
+
+
+
+
+
+
+
 
 
 ### 网格 Grid

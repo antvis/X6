@@ -651,7 +651,7 @@ export class Graph extends Basecoat<EventArgs> {
   }
 
   getArea() {
-    return this.transform.getArea()
+    return this.transform.getGraphArea()
   }
 
   getContentArea(options: Transform.GetContentAreaOptions = {}) {
@@ -711,140 +711,175 @@ export class Graph extends Basecoat<EventArgs> {
     return this.coord.snapToGrid(x, y)
   }
 
+  pageToLocal(rect: Rectangle.RectangleLike): Rectangle
+  pageToLocal(x: number, y: number, width: number, height: number): Rectangle
+  pageToLocal(p: Point.PointLike): Point
+  pageToLocal(x: number, y: number): Point
+  pageToLocal(
+    x: number | Point.PointLike | Rectangle.RectangleLike,
+    y?: number,
+    width?: number,
+    height?: number,
+  ) {
+    if (Rectangle.isRectangleLike(x)) {
+      return this.coord.pageToLocalRect(x)
+    }
+
+    if (
+      typeof x === 'number' &&
+      typeof y === 'number' &&
+      typeof width === 'number' &&
+      typeof height === 'number'
+    ) {
+      return this.coord.pageToLocalRect(x, y, width, height)
+    }
+
+    return this.coord.pageToLocalPoint(x, y)
+  }
+
+  localToPage(rect: Rectangle.RectangleLike): Rectangle
+  localToPage(x: number, y: number, width: number, height: number): Rectangle
+  localToPage(p: Point.PointLike): Point
+  localToPage(x: number, y: number): Point
+  localToPage(
+    x: number | Point.PointLike | Rectangle.RectangleLike,
+    y?: number,
+    width?: number,
+    height?: number,
+  ) {
+    if (Rectangle.isRectangleLike(x)) {
+      return this.coord.localToPageRect(x)
+    }
+
+    if (
+      typeof x === 'number' &&
+      typeof y === 'number' &&
+      typeof width === 'number' &&
+      typeof height === 'number'
+    ) {
+      return this.coord.localToPageRect(x, y, width, height)
+    }
+
+    return this.coord.localToPagePoint(x, y)
+  }
+
+  clientToLocal(rect: Rectangle.RectangleLike): Rectangle
+  clientToLocal(x: number, y: number, width: number, height: number): Rectangle
+  clientToLocal(p: Point.PointLike): Point
+  clientToLocal(x: number, y: number): Point
+  clientToLocal(
+    x: number | Point.PointLike | Rectangle.RectangleLike,
+    y?: number,
+    width?: number,
+    height?: number,
+  ) {
+    if (Rectangle.isRectangleLike(x)) {
+      return this.coord.clientToLocalRect(x)
+    }
+
+    if (
+      typeof x === 'number' &&
+      typeof y === 'number' &&
+      typeof width === 'number' &&
+      typeof height === 'number'
+    ) {
+      return this.coord.clientToLocalRect(x, y, width, height)
+    }
+
+    return this.coord.clientToLocalPoint(x, y)
+  }
+
+  localToClient(rect: Rectangle.RectangleLike): Rectangle
+  localToClient(x: number, y: number, width: number, height: number): Rectangle
+  localToClient(p: Point.PointLike): Point
+  localToClient(x: number, y: number): Point
+  localToClient(
+    x: number | Point.PointLike | Rectangle.RectangleLike,
+    y?: number,
+    width?: number,
+    height?: number,
+  ) {
+    if (Rectangle.isRectangleLike(x)) {
+      return this.coord.localToClientRect(x)
+    }
+
+    if (
+      typeof x === 'number' &&
+      typeof y === 'number' &&
+      typeof width === 'number' &&
+      typeof height === 'number'
+    ) {
+      return this.coord.localToClientRect(x, y, width, height)
+    }
+
+    return this.coord.localToClientPoint(x, y)
+  }
+
+  /**
+   * Transform the rectangle `rect` defined in the local coordinate system to
+   * the graph coordinate system.
+   */
+  localToGraph(rect: Rectangle.RectangleLike): Rectangle
+  /**
+   * Transform the rectangle `x`, `y`, `width`, `height` defined in the local
+   * coordinate system to the graph coordinate system.
+   */
+  localToGraph(x: number, y: number, width: number, height: number): Rectangle
   /**
    * Transform the point `p` defined in the local coordinate system to
    * the graph coordinate system.
    */
-  localToGraphPoint(p: Point.PointLike): Point
-  localToGraphPoint(x: number, y: number): Point
-  localToGraphPoint(x: number | Point.PointLike, y?: number) {
+  localToGraph(p: Point.PointLike): Point
+  /**
+   * Transform the point `x`, `y` defined in the local coordinate system to
+   * the graph coordinate system.
+   */
+  localToGraph(x: number, y: number): Point
+  localToGraph(
+    x: number | Point.PointLike | Rectangle.RectangleLike,
+    y?: number,
+    width?: number,
+    height?: number,
+  ) {
+    if (Rectangle.isRectangleLike(x)) {
+      return this.coord.localToGraphRect(x)
+    }
+
+    if (
+      typeof x === 'number' &&
+      typeof y === 'number' &&
+      typeof width === 'number' &&
+      typeof height === 'number'
+    ) {
+      return this.coord.localToGraphRect(x, y, width, height)
+    }
+
     return this.coord.localToGraphPoint(x, y)
   }
 
-  localToClientPoint(p: Point.PointLike): Point
-  localToClientPoint(x: number, y: number): Point
-  localToClientPoint(x: number | Point.PointLike, y?: number) {
-    return this.coord.localToClientPoint(x, y)
-  }
-
-  localToPagePoint(p: Point.PointLike): Point
-  localToPagePoint(x: number, y: number): Point
-  localToPagePoint(x: number | Point.PointLike, y?: number) {
-    return this.coord.localToPagePoint(x, y)
-  }
-
-  localToGraphRect(rect: Rectangle.RectangleLike): Rectangle
-  localToGraphRect(
-    x: number,
-    y: number,
-    width: number,
-    height: number,
-  ): Rectangle
-  localToGraphRect(
-    x: number | Rectangle.RectangleLike,
+  graphToLocal(rect: Rectangle.RectangleLike): Rectangle
+  graphToLocal(x: number, y: number, width: number, height: number): Rectangle
+  graphToLocal(p: Point.PointLike): Point
+  graphToLocal(x: number, y: number): Point
+  graphToLocal(
+    x: number | Point.PointLike | Rectangle.RectangleLike,
     y?: number,
     width?: number,
     height?: number,
   ) {
-    return this.coord.localToGraphRect(x, y, width, height)
-  }
+    if (Rectangle.isRectangleLike(x)) {
+      return this.coord.graphToLocalRect(x)
+    }
 
-  localToClientRect(rect: Rectangle.RectangleLike): Rectangle
-  localToClientRect(
-    x: number,
-    y: number,
-    width: number,
-    height: number,
-  ): Rectangle
-  localToClientRect(
-    x: number | Rectangle.RectangleLike,
-    y?: number,
-    width?: number,
-    height?: number,
-  ) {
-    return this.coord.localToClientRect(x, y, width, height)
-  }
-
-  localToPageRect(rect: Rectangle.RectangleLike): Rectangle
-  localToPageRect(
-    x: number,
-    y: number,
-    width: number,
-    height: number,
-  ): Rectangle
-  localToPageRect(
-    x: number | Rectangle.RectangleLike,
-    y?: number,
-    width?: number,
-    height?: number,
-  ) {
-    return this.coord.localToPageRect(x, y, width, height)
-  }
-
-  graphToLocalPoint(p: Point.PointLike): Point
-  graphToLocalPoint(x: number, y: number): Point
-  graphToLocalPoint(x: number | Point.PointLike, y?: number) {
+    if (
+      typeof x === 'number' &&
+      typeof y === 'number' &&
+      typeof width === 'number' &&
+      typeof height === 'number'
+    ) {
+      return this.coord.graphToLocalRect(x, y, width, height)
+    }
     return this.coord.graphToLocalPoint(x, y)
-  }
-
-  clientToLocalPoint(p: Point.PointLike): Point
-  clientToLocalPoint(x: number, y: number): Point
-  clientToLocalPoint(x: number | Point.PointLike, y?: number) {
-    return this.coord.clientToLocalPoint(x, y)
-  }
-
-  pageToLocalPoint(p: Point.PointLike): Point
-  pageToLocalPoint(x: number, y: number): Point
-  pageToLocalPoint(x: number | Point.PointLike, y?: number) {
-    return this.coord.pageToLocalPoint(x, y)
-  }
-
-  graphToLocalRect(rect: Rectangle.RectangleLike): Rectangle
-  graphToLocalRect(
-    x: number,
-    y: number,
-    width: number,
-    height: number,
-  ): Rectangle
-  graphToLocalRect(
-    x: number | Rectangle.RectangleLike,
-    y?: number,
-    width?: number,
-    height?: number,
-  ) {
-    return this.coord.graphToLocalRect(x, y, width, height)
-  }
-
-  clientToLocalRect(rect: Rectangle.RectangleLike): Rectangle
-  clientToLocalRect(
-    x: number,
-    y: number,
-    width: number,
-    height: number,
-  ): Rectangle
-  clientToLocalRect(
-    x: number | Rectangle.RectangleLike,
-    y?: number,
-    width?: number,
-    height?: number,
-  ) {
-    return this.coord.clientToLocalRect(x, y, width, height)
-  }
-
-  pageToLocalRect(rect: Rectangle.RectangleLike): Rectangle
-  pageToLocalRect(
-    x: number,
-    y: number,
-    width: number,
-    height: number,
-  ): Rectangle
-  pageToLocalRect(
-    x: number | Rectangle.RectangleLike,
-    y?: number,
-    width?: number,
-    height?: number,
-  ) {
-    return this.coord.pageToLocalRect(x, y, width, height)
   }
 
   // #endregion
