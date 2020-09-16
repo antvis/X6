@@ -284,7 +284,7 @@ graph.scrollToCell(cell, { animation: { duration: 600 }})
   }
   ```
 
-### centerPoint(x?: number | null, y?: number | null, options?: CenterOptions)
+### graph.centerPoint(x?: number | null, y?: number | null, options?: CenterOptions)
 
 将 `x` 和 `y` 指定的点（相对于画布）与视口中心对齐。如果不能通过滚动来对齐，则自动为 Scroller 的容器增加一定的 `padding` 边距来强制对齐。
 
@@ -315,7 +315,7 @@ graph.centerPoint(100, null, { padding: { left: 100 }})
 graph.centerPoint(null, 200, { padding: { left: 100 }})
 ```
 
-### centerContent(options?: PositionContentOptions)
+### graph.centerContent(options?: PositionContentOptions)
 
 将画布内容中心与视口中心对齐。如果不能通过滚动来对齐，则自动为 Scroller 的容器增加一定的 `padding` 边距来强制对齐。
 
@@ -582,14 +582,14 @@ graph.zoom(0.2, {
         scale?: number
         duration?: string
         delay?: string
-        timingFunction?: string
+        timing?: string
         onTransitionEnd?: (this: Scroller, e: TransitionEvent) => void
     }
   ```
   - `scale?: number` 目标缩放比例，设置后同时伴随着缩放动画。
   - `duration?: string` 动画持续的时长，如 `'500ms'` 或 `'2s'`。默认为 `'1s'`。
   - `delay?: string` 动画延迟多长时间后开始，默认为 `0`。
-  - `timingFunction?: string` 插值方法名，默认为 `'ease'`。支持的方法名[参考这里](https://github.com/antvis/X6/blob/master/packages/x6/src/common/animation/timing.ts)。
+  - `timing?: string` 插值方法名，默认为 `'ease'`。支持的方法名[参考这里](https://github.com/antvis/X6/blob/master/packages/x6/src/common/animation/timing.ts)。
   - `onTransitionEnd?: (this: Scroller, e: TransitionEvent) => void` 动画结束时的回调。
 
 例如：
@@ -617,7 +617,7 @@ graph.transitionToPoint(100, 80, { scale: 2 })
       center?: Point.PointLike
       duration?: string
       delay?: string
-      timingFunction?: string
+      timing?: string
       onTransitionEnd?: (this: Scroller, e: TransitionEvent) => void
   }
   ```
@@ -628,7 +628,7 @@ graph.transitionToPoint(100, 80, { scale: 2 })
   - `visibility?: number` 矩形区域覆盖视口的比例，取值范围 [0, 1]，默认为 `1`，表示完全覆盖。如，取值为 `0.8` 时表示矩形覆盖 80% 视口区域。
   - `duration?: string` 动画持续的时长，如 `'500ms'` 或 `'2s'`。默认为 `'1s'`。
   - `delay?: string` 动画延迟多长时间后开始，默认为 `0`。
-  - `timingFunction?: string` 插值方法名，默认为 `'ease'`。支持的方法名[参考这里](https://github.com/antvis/X6/blob/master/packages/x6/src/common/animation/timing.ts)。
+  - `timing?: string` 插值方法名，默认为 `'ease'`。支持的方法名[参考这里](https://github.com/antvis/X6/blob/master/packages/x6/src/common/animation/timing.ts)。
   - `onTransitionEnd?: (this: Scroller, e: TransitionEvent) => void` 动画结束时的回调。
 
 例如：
@@ -655,7 +655,7 @@ graph.transitionToRect(rect, {
 
 ### graph.isPannable()
 
-画布是否可被平移。
+返回画布是否可被平移。
 
 ### graph.enablePanning()
 

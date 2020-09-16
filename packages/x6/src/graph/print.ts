@@ -83,7 +83,7 @@ export class PrintManager extends Base {
     $wrap.append(vSVG.node)
 
     const sheetSize = this.getSheetSize(options)
-    const graphArea = this.graph.getArea()
+    const graphArea = this.graph.transform.getArea()
     const s = this.graph.scale()
     const ts = this.graph.translate()
     const matrix = Dom.createSVGMatrix().translate(ts.tx / s.sx, ts.ty / s.sy)

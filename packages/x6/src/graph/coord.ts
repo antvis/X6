@@ -67,8 +67,7 @@ export class CoordManager extends Base {
     height?: number,
   ) {
     const localRect = Rectangle.create(x, y, width, height)
-    const clientRect = Dom.transformRectangle(localRect, this.getClientMatrix())
-    return clientRect
+    return Dom.transformRectangle(localRect, this.getClientMatrix())
   }
 
   localToPageRect(

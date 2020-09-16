@@ -1,14 +1,13 @@
 import React from 'react'
 import { Checkbox, InputNumber, Button } from 'antd'
-import { Graph, Cell, Node, View, Rectangle } from '@antv/x6'
-import { Rect, Edge } from '@antv/x6/es/shape/standard'
+import { Graph, Cell, Node, Shape, View, Rectangle } from '@antv/x6'
 import '../index.less'
 
 function random(max: number, min: number) {
   return Math.floor(Math.random() * (max - min)) + min
 }
 
-const viewportTemplate = new Rect({
+const viewportTemplate = new Shape.Rect({
   zIndex: 3,
   size: { width: 200, height: 200 },
   position: { x: 100, y: 100 },
@@ -157,7 +156,7 @@ export default class Example extends React.Component<
     var nodes = Array.from({ length: count }, (_, index) => {
       var row = Math.floor(index / columnCount)
       var column = index % columnCount
-      return new Rect({
+      return new Shape.Rect({
         zIndex: 2,
         size: { width: 30, height: 20 },
         position: { x: column * 50, y: row * 50 },
@@ -173,7 +172,7 @@ export default class Example extends React.Component<
         return null
       }
       var source = nodes[index - 1]
-      return new Edge({
+      return new Shape.Edge({
         zIndex: 1,
         source: { cell: source.id },
         target: { cell: target.id },
@@ -187,9 +186,9 @@ export default class Example extends React.Component<
     console.time('perf-reset')
 
     this.graph.freeze()
-    const cells = [...nodes, ...edges, this.viewport] as Cell
+    const cells = [...nodes, ...edges, this.viewport] as Cell[]
     this.graph.model.resetCells(cells)
-    this.graph.fitToContent({ useCellGeometry: true, padding: 10 })
+    // this.graph.fitToContent({ useCellGeometry: true, padding: 10 })
 
     console.timeEnd('perf-reset')
 
@@ -197,14 +196,14 @@ export default class Example extends React.Component<
 
     this.graph.unfreeze({
       batchSize: this.state.batch,
-      progress: (done: boolean, current: number, total: number) => {
+      progress: ({ done, current, total }) => {
         var progress = current / total
         console.log(Math.round(progress * 100) + '%')
         if (done) {
           console.timeEnd('perf-dump')
           console.timeEnd('perf-all')
           this.graph.unfreeze()
-          this.loader.remove()
+          // this.loader.remove()
         } else {
           this.loader.progress(progress)
         }
