@@ -455,7 +455,7 @@ export class Hook extends Base implements Hook.IHook {
     }
 
     if (restrict === true) {
-      return this.graph.transform.getArea()
+      return this.graph.transform.getGraphArea()
     }
 
     return restrict || null

@@ -368,7 +368,7 @@ export class CellView<
       bbox = this.getBBoxOfElement(this.container)
     }
 
-    return this.graph.localToGraphRect(bbox)
+    return this.graph.localToGraph(bbox)
   }
 
   getRootTranslatedMatrix() {
