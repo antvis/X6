@@ -246,7 +246,7 @@ graph.on('node:unselected', (args: {
 
 ### edge:unselected 
 
-边被选中时触发。
+边被取消选中时触发。
 
 ```ts
 graph.on('edge:unselected', (args: { 

@@ -2,11 +2,6 @@ import React from 'react'
 import { Graph, Shape } from '@antv/x6'
 
 Shape.Rect.config({
-  attrs: {
-    body: {
-      magnet: false,
-    },
-  },
   ports: {
     groups: {
       in: {

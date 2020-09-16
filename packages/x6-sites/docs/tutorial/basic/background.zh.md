@@ -7,7 +7,7 @@ redirect_from:
   - /zh/docs/tutorial/basic
 ---
 
-背景用于为画布指定背景颜色或背景图片，支持[水印背景](#repeat)和[自定义背景图片的重复方式]()，背景层在 DOM 层级上位于画布的最底层。
+背景用于为画布指定背景颜色或背景图片，支持[水印背景](#repeat)和[自定义背景图片的重复方式](../../api/registry/background#registry)，背景层在 DOM 层级上位于画布的最底层。
 
 创建画布时，通过 `background` 选项来设置画布的背景颜色或背景图片，默认值为 `false` 表示没有（透明）背景。
 

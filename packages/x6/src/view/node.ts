@@ -1000,7 +1000,7 @@ export class NodeView<
     const position = Point.create(targetView.cell.getPosition())
     targetView.setEventData<EventData.MovingTargetNode>(e, {
       offset: position.diff(x, y),
-      restrict: this.graph.getRestrictArea(targetView),
+      restrict: this.graph.hook.getRestrictArea(targetView),
     })
   }
 

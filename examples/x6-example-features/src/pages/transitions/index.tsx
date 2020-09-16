@@ -32,7 +32,7 @@ export default class Example extends React.Component {
     function focusStars(stars: Node[] = model.getNodes()) {
       graph.transitionToRect(graph.getCellsBBox(stars)!, {
         visibility: 0.8,
-        timingFunction: 'ease-out',
+        timing: 'ease-out',
         delay: '10ms',
         scaleGrid: 0.05,
       })

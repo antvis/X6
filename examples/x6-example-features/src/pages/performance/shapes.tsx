@@ -67,13 +67,10 @@ const Edge = E.registry.register('performance_edge', {
   attrs: {
     line: {
       connection: true,
+      stroke: 'green',
+      strokeWidth: 2,
       // SVG Markers are pretty fast. Let's take advantage of this.
-      targetMarker: {
-        type: 'path',
-        fill: 'green',
-        stroke: 'none',
-        d: 'M 10 -10 0 0 10 10 z',
-      },
+      targetMarker: 'classic',
     },
   },
   markup: [
@@ -84,8 +81,6 @@ const Edge = E.registry.register('performance_edge', {
         // Here comes SVG attributes, for which values won't change during the application life time.
         // These are specs SVG attributes. Do not add special attributes (e.g. targetMarker, fill: { /* gradient */ })).
         // These attributes are set during render, and never touched again during updates.
-        stroke: 'green',
-        'stroke-width': 2,
       },
     },
   ],

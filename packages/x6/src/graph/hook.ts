@@ -39,6 +39,7 @@ import { MouseWheel } from './mousewheel'
 import { PrintManager } from './print'
 import { FormatManager } from './format'
 import { PortManager } from '../model/port'
+import { Rectangle } from '../geometry'
 
 namespace Decorator {
   export function hook(nullable?: boolean, hookName?: string | null) {
@@ -444,6 +445,20 @@ export class Hook extends Base implements Hook.IHook {
           type: terminalType,
         })
       : true
+  }
+
+  getRestrictArea(view?: NodeView): Rectangle.RectangleLike | null {
+    const restrict = this.options.translating.restrict
+
+    if (typeof restrict === 'function') {
+      return FunctionExt.call(restrict, this.graph, view!)
+    }
+
+    if (restrict === true) {
+      return this.graph.transform.getArea()
+    }
+
+    return restrict || null
   }
 
   @Decorator.after()

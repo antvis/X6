@@ -58,7 +58,7 @@ export default class Example extends React.Component {
     graph.resetCells([...nodes, ...edges])
 
     graph.unfreeze({
-      progress(done) {
+      progress({ done }) {
         if (done) {
           const time = new Date().getTime() - start
           console.log(time)

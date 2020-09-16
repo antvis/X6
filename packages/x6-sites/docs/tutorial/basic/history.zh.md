@@ -298,7 +298,7 @@ canRedo(): boolean
 cleanHistory(options?: KeyValue): this
 ```
 
-清空历史状态。`options` 将被传递到事件回调中。 
+清空历史队列。`options` 将被传递到事件回调中。 
 
 ### graph.isHistoryEnabled()
 

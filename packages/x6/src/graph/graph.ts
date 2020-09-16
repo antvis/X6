@@ -8,7 +8,6 @@ import { Edge } from '../model/edge'
 import { Model } from '../model/model'
 import { Collection } from '../model/collection'
 import { CellView } from '../view/cell'
-import { NodeView } from '../view/node'
 import * as Registry from '../registry'
 import { HTML } from '../shape/standard/html'
 import { Scroller as ScrollerWidget } from '../addon/scroller'
@@ -188,12 +187,12 @@ export class Graph extends Basecoat<EventArgs> {
     return this.model.removeConnectedEdges(cell, options)
   }
 
-  disconnectEdges(cell: Cell | string, options: Edge.SetOptions) {
+  disconnectEdges(cell: Cell | string, options: Edge.SetOptions = {}) {
     this.model.disconnectEdges(cell, options)
     return this
   }
 
-  hasCell(id: string): boolean
+  hasCell(cellId: string): boolean
   hasCell(cell: Cell): boolean
   hasCell(cell: string | Cell): boolean {
     return this.model.has(cell as Cell)
@@ -252,14 +251,14 @@ export class Graph extends Basecoat<EventArgs> {
   /**
    * Returns an array of all the roots of the graph.
    */
-  getRootCells() {
+  getRootNodes() {
     return this.model.getRoots()
   }
 
   /**
    * Returns an array of all the leafs of the graph.
    */
-  getLeafCells() {
+  getLeafNodes() {
     return this.model.getLeafs()
   }
 
@@ -267,15 +266,15 @@ export class Graph extends Basecoat<EventArgs> {
    * Returns `true` if the node is a root node, i.e.
    * there is no  edges coming to the node.
    */
-  isOriginCell(cell: Cell | string) {
-    return this.model.isOrigin(cell)
+  isRootNode(cell: Cell | string) {
+    return this.model.isRoot(cell)
   }
 
   /**
    * Returns `true` if the node is a leaf node, i.e.
    * there is no edges going out from the node.
    */
-  isLeafCell(cell: Cell | string) {
+  isLeafNode(cell: Cell | string) {
     return this.model.isLeaf(cell)
   }
 
@@ -366,7 +365,7 @@ export class Graph extends Basecoat<EventArgs> {
   getNodesFromPoint(x: number, y: number): Node[]
   getNodesFromPoint(p: Point.PointLike): Node[]
   getNodesFromPoint(x: number | Point.PointLike, y?: number) {
-    return this.getNodesFromPoint(x as number, y as number)
+    return this.model.getNodesFromPoint(x as number, y as number)
   }
 
   /**
@@ -483,6 +482,11 @@ export class Graph extends Basecoat<EventArgs> {
 
   isAsync() {
     return this.renderer.isAsync()
+  }
+
+  setAsync(async: boolean) {
+    this.renderer.setAsync(async)
+    return this
   }
 
   findView(ref: Cell | JQuery | Element) {
@@ -609,22 +613,18 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
-  getScale() {
-    return this.scale()
-  }
-
   scale(): Dom.Scale
-  scale(sx: number, sy?: number, ox?: number, oy?: number): this
+  scale(sx: number, sy?: number, cx?: number, cy?: number): this
   scale(
     sx?: number,
     sy: number = sx as number,
-    ox: number = 0,
-    oy: number = 0,
+    cx: number = 0,
+    cy: number = 0,
   ) {
     if (typeof sx === 'undefined') {
       return this.transform.getScale()
     }
-    this.transform.scale(sx, sy, ox, oy)
+    this.transform.scale(sx, sy, cx, cy)
     return this
   }
 
@@ -650,8 +650,16 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
-  setOrigin(ox?: number, oy?: number) {
-    return this.translate(ox || 0, oy || 0)
+  getArea() {
+    return this.transform.getArea()
+  }
+
+  getContentArea(options: Transform.GetContentAreaOptions = {}) {
+    return this.transform.getContentArea(options)
+  }
+
+  getContentBBox(options: Transform.GetContentAreaOptions = {}) {
+    return this.transform.getContentBBox(options)
   }
 
   fitToContent(
@@ -673,22 +681,6 @@ export class Graph extends Basecoat<EventArgs> {
   scaleContentToFit(options: Transform.ScaleContentToFitOptions = {}) {
     this.transform.scaleContentToFit(options)
     return this
-  }
-
-  getContentArea(options: Transform.GetContentAreaOptions = {}) {
-    return this.transform.getContentArea(options)
-  }
-
-  getContentBBox(options: Transform.GetContentAreaOptions = {}) {
-    return this.transform.getContentBBox(options)
-  }
-
-  getArea() {
-    return this.transform.getArea()
-  }
-
-  getRestrictArea(view?: NodeView) {
-    return this.transform.getRestrictArea(view)
   }
 
   // #endregion
@@ -1334,7 +1326,8 @@ export class Graph extends Basecoat<EventArgs> {
   @Decorator.checkScroller()
   zoomToRect(
     rect: Rectangle.RectangleLike,
-    options: Transform.ScaleContentToFitOptions = {},
+    options: Transform.ScaleContentToFitOptions &
+      Transform.ScaleContentToFitOptions = {},
   ) {
     const scroller = this.scroller.widget!
     scroller.zoomToRect(rect, options)

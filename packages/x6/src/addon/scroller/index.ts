@@ -350,7 +350,7 @@ export class Scroller extends View {
     const options = this.graph.options
     const dx = sx / this.sx
     const dy = sy / this.sy
-    this.graph.setOrigin(options.x * dx, options.y * dy)
+    this.graph.translate(options.x * dx, options.y * dy)
     this.graph.resizeGraph(options.width * dx, options.height * dy)
   }
 
@@ -719,8 +719,8 @@ export class Scroller extends View {
     const origin = { x: graph.options.x, y: graph.options.y }
 
     options.contentArea = area
-    if (options.fittingBBox == null) {
-      options.fittingBBox = {
+    if (options.viewportArea == null) {
+      options.viewportArea = {
         ...origin,
         width: this.$container.width()!,
         height: this.$container.height()!,
@@ -812,7 +812,7 @@ export class Scroller extends View {
         transition: 'transform',
         transitionDuration: options.duration || '1s',
         transitionDelay: options.delay,
-        transitionTimingFunction: options.timingFunction,
+        transitionTimingFunction: options.timing,
       } as JQuery.PlainObject<string>)
 
     return this
@@ -1116,7 +1116,7 @@ export namespace Scroller {
     scale?: number
     duration?: string
     delay?: string
-    timingFunction?: string
+    timing?: string
     onTransitionEnd?: (this: Scroller, e: TransitionEvent) => void
   }
 

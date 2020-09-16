@@ -263,7 +263,7 @@ export class Model extends Basecoat<Model.EventArgs> {
     return edges
   }
 
-  disconnectEdges(cell: Cell | string, options: Edge.SetOptions) {
+  disconnectEdges(cell: Cell | string, options: Edge.SetOptions = {}) {
     const cellId = typeof cell === 'string' ? cell : cell.id
     this.getConnectedEdges(cell).forEach((edge) => {
       const sourceCell = edge.getSourceCell()
@@ -539,7 +539,7 @@ export class Model extends Basecoat<Model.EventArgs> {
    * Returns `true` if the node is a root node, i.e. there is no edges
    * coming to the node.
    */
-  isOrigin(cell: Cell | string) {
+  isRoot(cell: Cell | string) {
     return this.isBoundary(cell, true)
   }
 
@@ -749,8 +749,18 @@ export class Model extends Basecoat<Model.EventArgs> {
   /**
    * Returns the common ancestor of the passed cells.
    */
-  getCommonAncestor(...cells: (Cell | null | undefined)[]) {
-    return Cell.getCommonAncestor(...cells)
+  getCommonAncestor(...cells: (Cell | Cell[] | null | undefined)[]) {
+    const arr: Cell[] = []
+    cells.forEach((item) => {
+      if (item) {
+        if (Array.isArray(item)) {
+          arr.push(...item)
+        } else {
+          arr.push(item)
+        }
+      }
+    })
+    return Cell.getCommonAncestor(...arr)
   }
 
   /**
