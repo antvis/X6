@@ -2230,20 +2230,21 @@ export class EdgeView<
         }
       }
 
-      view.$('[magnet]').each((index, elem) => {
-        const magnet = elem as Element
-        const bbox = view.getBBoxOfElement(magnet)
-        distance = pos.distance(bbox.getCenter())
-        if (distance < radius && distance < minDistance) {
-          if (
-            prevMagnet === magnet ||
-            graph.hook.validateConnection(
-              ...data.getValidateConnectionArgs(view, magnet),
-            )
-          ) {
-            minDistance = distance
-            data.closestView = view
-            data.closestMagnet = magnet
+      view.container.querySelectorAll('[magnet]').forEach((magnet) => {
+        if (magnet.getAttribute('magnet') !== 'false') {
+          const bbox = view.getBBoxOfElement(magnet)
+          distance = pos.distance(bbox.getCenter())
+          if (distance < radius && distance < minDistance) {
+            if (
+              prevMagnet === magnet ||
+              graph.hook.validateConnection(
+                ...data.getValidateConnectionArgs(view, magnet),
+              )
+            ) {
+              minDistance = distance
+              data.closestView = view
+              data.closestMagnet = magnet
+            }
           }
         }
       })
