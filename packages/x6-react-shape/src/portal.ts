@@ -29,7 +29,8 @@ export namespace Portal {
         const index = state.findIndex((item) => item.id === payload.id)
         if (index >= 0) {
           const result = [...state]
-          return result.splice(index, 1)
+          result.splice(index, 1)
+          return result
         }
       }
     }
