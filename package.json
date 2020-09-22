@@ -18,10 +18,10 @@
     "contributor": "git-contributor",
     "clean": "lerna run clean",
     "build": "lerna run build",
-    "build:dev": "sh ./scripts/build-dev",
-    "build:apps": "sh ./scripts/build-apps",
-    "build:demos": "sh ./scripts/build-demos",
-    "build:sites": "sh ./scripts/build-sites",
+    "build:dev": "sh ./scripts/bin/build-dev",
+    "build:apps": "sh ./scripts/bin/build-apps",
+    "build:demos": "sh ./scripts/bin/build-demos",
+    "build:sites": "sh ./scripts/bin/build-sites",
     "lint": "lerna run lint",
     "test": "lerna run test --ignore @antv/x6-example-* --ignore @antv/x6-app-* --stream",
     "prettier": "prettier --write '**/*.{js,jsx,tsx,ts,less,md,json}'",
@@ -34,7 +34,7 @@
       "prepare-commit-msg": "devmoji -e --lint",
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
       "pre-commit": "lint-staged && lerna run --concurrency 1 --stream precommit",
-      "prepush": "./scripts/pre-push-check"
+      "prepush": "./scripts/bin/pre-push-check"
     }
   },
   "lint-staged": {
