@@ -39,10 +39,10 @@ export namespace Config {
      * Label to be added to Issues and Pull Requests with insufficient information given.
      */
     labelToAdd?: string
-    badIssueTitleComment: string | string[]
-    badPullRequestTitleComment: string | string[]
-    badIssueBodyComment: string | string[]
-    badPullRequestBodyComment: string | string[]
+    badIssueTitleComment?: string | string[]
+    badPullRequestTitleComment?: string | string[]
+    badIssueBodyComment?: string | string[]
+    badPullRequestBodyComment?: string | string[]
     defaultComment: string | string[]
   }
 

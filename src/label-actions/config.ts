@@ -25,7 +25,7 @@ Hello \${ author }
 
 In order to communicate effectively, we have a certain format requirement for the issue, your issue is automatically closed because there is no recurring step or reproducible warehouse, and will be REOPEN after the offer.
 
-  `
+`
 
   export const defaults: { labelActions: Definition } = {
     labelActions: {
@@ -40,13 +40,6 @@ In order to communicate effectively, we have a certain format requirement for th
         '-heated': {
           unlock: true,
         },
-        'needs-more-info': {
-          comment: needsMoreInfoComment.trim(),
-          close: true,
-        },
-        '-needs-more-info': {
-          open: true,
-        },
       },
       issues: {
         feature: {
@@ -55,6 +48,13 @@ In order to communicate effectively, we have a certain format requirement for th
             ':wave: ${ author }, please use our idea board to request new features.',
         },
         '-wontfix': {
+          open: true,
+        },
+        'needs-more-info': {
+          comment: needsMoreInfoComment.trim(),
+          close: true,
+        },
+        '-needs-more-info': {
           open: true,
         },
       },

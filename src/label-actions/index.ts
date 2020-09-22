@@ -32,6 +32,7 @@ export namespace LabelActions {
         if (comment) {
           const body = Util.pickComment(comment, {
             author: targetPayload.user.login,
+            type: Util.isIssue(context) ? 'issue' : 'pr',
           })
           await Util.ensureUnlock(context, () =>
             github.issues.createComment(context.issue({ body })),
