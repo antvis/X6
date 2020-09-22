@@ -58,7 +58,7 @@ default_permissions:
 
   # Checks on code.
   # https://developer.github.com/v3/apps/permissions/#permission-on-checks
-  # checks: read
+  checks: write
 
   # Repository contents, commits, branches, downloads, releases, and merges.
   # https://developer.github.com/v3/apps/permissions/#permission-on-contents
@@ -66,7 +66,7 @@ default_permissions:
 
   # Deployments and deployment statuses.
   # https://developer.github.com/v3/apps/permissions/#permission-on-deployments
-  # deployments: read
+  deployments: write
 
   # Issues and related comments, assignees, labels, and milestones.
   # https://developer.github.com/v3/apps/permissions/#permission-on-issues
@@ -90,7 +90,7 @@ default_permissions:
 
   # Manage repository projects, columns, and cards.
   # https://developer.github.com/v3/apps/permissions/#permission-on-repository-projects
-  # repository_projects: read
+  repository_projects: write
 
   # Retrieve security vulnerability alerts.
   # https://developer.github.com/v4/object/repositoryvulnerabilityalert/
@@ -98,7 +98,7 @@ default_permissions:
 
   # Commit statuses.
   # https://developer.github.com/v3/apps/permissions/#permission-on-statuses
-  # statuses: read
+  statuses: write
 
   # Organization members and teams.
   # https://developer.github.com/v3/apps/permissions/#permission-on-members
