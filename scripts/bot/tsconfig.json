@@ -1,8 +1,0 @@
-{
-  "extends": "../../tsconfig.json",
-  "include": ["src/**/*.ts"],
-  "compilerOptions": {
-    "target": "ES5",
-    "outDir": "lib",
-  }
-}

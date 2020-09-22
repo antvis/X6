@@ -1,8 +1,0 @@
-node_modules
-npm-debug.log
-coverage
-lib
-*.pem
-!mock-cert.pem
-.env
-.vscode
