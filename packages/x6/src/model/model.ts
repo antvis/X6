@@ -3,10 +3,10 @@ import { FunctionExt } from '../util'
 import { Basecoat, Dijkstra } from '../common'
 import { Point, Rectangle } from '../geometry'
 import { Graph } from '../graph'
-import { Collection } from './collection'
 import { Cell } from './cell'
 import { Edge } from './edge'
 import { Node } from './node'
+import { Collection } from './collection'
 
 export class Model extends Basecoat<Model.EventArgs> {
   public readonly collection: Collection
@@ -16,6 +16,8 @@ export class Model extends Basecoat<Model.EventArgs> {
   public graph: Graph | null
   protected nodes: KeyValue<boolean> = {}
   protected edges: KeyValue<boolean> = {}
+  protected outgoings: KeyValue<string[]> = {}
+  protected incomings: KeyValue<string[]> = {}
 
   constructor(cells: Cell[] = []) {
     super()
@@ -49,13 +51,9 @@ export class Model extends Basecoat<Model.EventArgs> {
 
     collection.on('sorted', () => this.notify('sorted', null))
     collection.on('updated', (args) => this.notify('updated', args))
-    collection.on('reseted', (args) => {
-      this.onReset(args.current)
-      this.notify('reseted', args)
-    })
+    collection.on('cell:change:zIndex', () => this.sortOnChangeZ())
 
-    collection.on('added', (args) => {
-      const cell = args.cell
+    collection.on('added', ({ cell }) => {
       this.onCellAdded(cell)
     })
 
@@ -71,12 +69,19 @@ export class Model extends Basecoat<Model.EventArgs> {
         this.notify('edge:removed', { ...args, edge: cell })
       }
     })
-  }
 
-  protected onReset(cells: Cell[]) {
-    this.nodes = {}
-    this.edges = {}
-    cells.forEach((cell) => this.onCellAdded(cell))
+    collection.on('reseted', (args) => {
+      this.onReset(args.current)
+      this.notify('reseted', args)
+    })
+
+    collection.on('cell:change:source', ({ edge }) =>
+      this.onEdgeTerminalChanged(edge, 'source'),
+    )
+
+    collection.on('cell:change:target', ({ edge }) => {
+      this.onEdgeTerminalChanged(edge, 'target')
+    })
   }
 
   protected sortOnChangeZ() {
@@ -87,6 +92,8 @@ export class Model extends Basecoat<Model.EventArgs> {
     const cellId = cell.id
     if (cell.isEdge()) {
       this.edges[cellId] = true
+      this.onEdgeTerminalChanged(cell, 'source')
+      this.onEdgeTerminalChanged(cell, 'target')
     } else {
       this.nodes[cellId] = true
     }
@@ -96,17 +103,37 @@ export class Model extends Basecoat<Model.EventArgs> {
     const cellId = cell.id
     if (cell.isEdge()) {
       delete this.edges[cellId]
+
+      const source = cell.getSource() as Edge.TerminalCellData
+      const target = cell.getTarget() as Edge.TerminalCellData
+      if (source && source.cell) {
+        const cache = this.outgoings[source.cell]
+        const index = cache ? cache.indexOf(cellId) : -1
+        if (index >= 0) {
+          cache.splice(index, 1)
+          if (cache.length === 0) {
+            delete this.outgoings[source.cell]
+          }
+        }
+      }
+
+      if (target && target.cell) {
+        const cache = this.incomings[target.cell]
+        const index = cache ? cache.indexOf(cellId) : -1
+        if (index >= 0) {
+          cache.splice(index, 1)
+          if (cache.length === 0) {
+            delete this.incomings[target.cell]
+          }
+        }
+      }
     } else {
       delete this.nodes[cellId]
     }
 
-    this.afterCellRemoved(cell, options)
-  }
-
-  protected afterCellRemoved(cell: Cell, options: Collection.RemoveOptions) {
     if (!options.clear) {
       if (options.disconnectEdges) {
-        this.disconnectEdges(cell, options)
+        this.disconnectConnectedEdges(cell, options)
       } else {
         this.removeConnectedEdges(cell, options)
       }
@@ -117,10 +144,42 @@ export class Model extends Basecoat<Model.EventArgs> {
     }
   }
 
+  protected onReset(cells: Cell[]) {
+    this.nodes = {}
+    this.edges = {}
+    this.outgoings = {}
+    this.incomings = {}
+    cells.forEach((cell) => this.onCellAdded(cell))
+  }
+
+  protected onEdgeTerminalChanged(edge: Edge, type: Edge.TerminalType) {
+    const ref = type === 'source' ? this.outgoings : this.incomings
+    const prev = edge.previous<Edge.TerminalCellData>(type)
+
+    if (prev && prev.cell) {
+      const cache = ref[prev.cell]
+      const index = cache ? cache.indexOf(edge.id) : -1
+      if (index >= 0) {
+        cache.splice(index, 1)
+        if (cache.length === 0) {
+          delete ref[prev.cell]
+        }
+      }
+    }
+
+    const terminal = edge.getTerminal(type) as Edge.TerminalCellData
+    if (terminal && terminal.cell) {
+      const cache = ref[terminal.cell] || []
+      const index = cache.indexOf(edge.id)
+      if (index === -1) {
+        cache.push(edge.id)
+      }
+      ref[terminal.cell] = cache
+    }
+  }
+
   protected prepareCell(cell: Cell, options: Collection.AddOptions) {
     if (!cell.model && (!options || !options.dryrun)) {
-      // A cell can not be member of more than one graph.
-      // A cell stops being the member of the graph after it's removed.
       cell.model = this
     }
 
@@ -263,7 +322,7 @@ export class Model extends Basecoat<Model.EventArgs> {
     return edges
   }
 
-  disconnectEdges(cell: Cell | string, options: Edge.SetOptions = {}) {
+  disconnectConnectedEdges(cell: Cell | string, options: Edge.SetOptions = {}) {
     const cellId = typeof cell === 'string' ? cell : cell.id
     this.getConnectedEdges(cell).forEach((edge) => {
       const sourceCell = edge.getSourceCell()
@@ -367,16 +426,26 @@ export class Model extends Basecoat<Model.EventArgs> {
    * Returns all outgoing edges for the node.
    */
   getOutgoingEdges(cell: Cell | string) {
-    const node = typeof cell === 'string' ? this.getCell(cell) : cell
-    return node.getOutgoingEdges()
+    const cellId = typeof cell === 'string' ? cell : cell.id
+    const cellIds = this.outgoings[cellId]
+    return cellIds
+      ? cellIds
+          .map((id) => this.getCell(id) as Edge)
+          .filter((cell) => cell && cell.isEdge())
+      : null
   }
 
   /**
    * Returns all incoming edges for the node.
    */
   getIncomingEdges(cell: Cell | string) {
-    const node = typeof cell === 'string' ? this.getCell(cell) : cell
-    return node.getIncomingEdges()
+    const cellId = typeof cell === 'string' ? cell : cell.id
+    const cellIds = this.incomings[cellId]
+    return cellIds
+      ? cellIds
+          .map((id) => this.getCell(id) as Edge)
+          .filter((cell) => cell && cell.isEdge())
+      : null
   }
 
   /**
@@ -504,7 +573,9 @@ export class Model extends Basecoat<Model.EventArgs> {
 
   protected isBoundary(cell: Cell | string, isOrigin: boolean) {
     const node = typeof cell === 'string' ? this.getCell(cell) : cell
-    const arr = isOrigin ? node.getIncomingEdges() : node.getOutgoingEdges()
+    const arr = isOrigin
+      ? this.getIncomingEdges(node)
+      : this.getOutgoingEdges(node)
     return arr == null || arr.length === 0
   }
 

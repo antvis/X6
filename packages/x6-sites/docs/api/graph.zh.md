@@ -2055,10 +2055,10 @@ removeConnectedEdges(cell: Cell | string, options?: RemoveOptions): Edge[]
 | options.silent   | boolean        |      | `false` | 为 `true` 时不触发 `'cell:removed'` 和 `'edge:removed'`  事件和画布重绘。 |
 | options...others | object         |      |         | 其他自定义键值对，可以在事件回调中使用。                                   |
 
-#### disconnectEdges(...)
+#### disconnectConnectedEdges(...)
 
 ```sign
-disconnectEdges(cell: Cell | string, options?: Edge.SetOptions): this
+disconnectConnectedEdges(cell: Cell | string, options?: Edge.SetOptions): this
 ```
 
 将链接到节点/边的边的起点和终点设置为原点 `{x: 0, y: 0}`，即断开连接。
