@@ -1,5 +1,5 @@
 {
-  "name": "x6-react",
+  "name": "@antv/x6-react",
   "version": "0.1.3",
   "description": "Use X6 with react",
   "main": "lib/index.js",
