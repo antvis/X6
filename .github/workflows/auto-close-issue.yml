@@ -10,7 +10,14 @@ jobs:
     name: Close
     runs-on: ubuntu-latest
     steps:
-    - uses: Logerfo/close-action@0.0.1
+    - name: 🔑　Generate token
+      id: generate_token
+      uses: tibdex/github-app-token@v1
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+        app_id: ${{ secrets.APP_ID }}
+        private_key: ${{ secrets.PRIVATE_KEY }}
+    - name: Close Issue
+      uses: Logerfo/close-action@0.0.1
+      with:
+        github-token: ${{ steps.generate_token.outputs.token }}
         comment: true # If `true`, will comment on the closing issue(s).
