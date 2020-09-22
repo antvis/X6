@@ -2,7 +2,14 @@
 
 > A GitHub App for [X6](https://github.com/antvis/x6).
 
-## Setup
+## Dev
+
+- https://probot.github.io/
+- https://octokit.github.io/
+- https://smee.io/
+- https://heroku.com/
+- https://devcenter.heroku.com/articles/git
+- https://devcenter.heroku.com/categories/nodejs-support
 
 ```sh
 # Install dependencies
@@ -14,4 +21,3 @@ npm run build
 # Run
 npm run start
 ```
-
