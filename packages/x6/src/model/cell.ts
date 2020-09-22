@@ -84,8 +84,6 @@ export class Cell<
   protected _model: Model | null // tslint:disable-line
   protected _parent: Cell | null // tslint:disable-line
   protected _children: Cell[] | null // tslint:disable-line
-  protected incomings: Edge[] | null
-  protected outgoings: Edge[] | null
 
   constructor(metadata: Cell.Metadata = {}) {
     super()
@@ -979,12 +977,16 @@ export class Cell<
       child.setParent(this, options)
       this.setChildren(children, options)
 
-      if (changed) {
-        if (this.incomings) {
-          this.incomings.forEach((edge) => edge.updateParent(options))
+      if (changed && this.model) {
+        const incomings = this.model.getIncomingEdges(this)
+        const outgoings = this.model.getOutgoingEdges(this)
+
+        if (incomings) {
+          incomings.forEach((edge) => edge.updateParent(options))
         }
-        if (this.outgoings) {
-          this.outgoings.forEach((edge) => edge.updateParent(options))
+
+        if (outgoings) {
+          outgoings.forEach((edge) => edge.updateParent(options))
         }
       }
 
@@ -1037,18 +1039,6 @@ export class Cell<
       })
     }
     return this
-  }
-
-  // #endregion
-
-  // #region terminal
-
-  getOutgoingEdges() {
-    return this.outgoings
-  }
-
-  getIncomingEdges() {
-    return this.incomings
   }
 
   // #endregion

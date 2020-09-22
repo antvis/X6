@@ -187,8 +187,8 @@ export class Graph extends Basecoat<EventArgs> {
     return this.model.removeConnectedEdges(cell, options)
   }
 
-  disconnectEdges(cell: Cell | string, options: Edge.SetOptions = {}) {
-    this.model.disconnectEdges(cell, options)
+  disconnectConnectedEdges(cell: Cell | string, options: Edge.SetOptions = {}) {
+    this.model.disconnectConnectedEdges(cell, options)
     return this
   }
 
