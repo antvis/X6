@@ -3,8 +3,7 @@
   "private": true,
   "workspaces": [
     "examples/*",
-    "packages/*",
-    "scripts/bot"
+    "packages/*"
   ],
   "scripts": {
     "bootstrap": "lerna bootstrap && yarn build:dev",
