@@ -4,8 +4,14 @@ jobs:
   label:
     runs-on: ubuntu-latest
     steps:
-      - name: size-label
+      - name: 🔑　Generate token
+        id: generate_token
+        uses: tibdex/github-app-token@v1
+        with:
+          app_id: ${{ secrets.APP_ID }}
+          private_key: ${{ secrets.PRIVATE_KEY }}
+      - name: 🎗　Label
         uses: pascalgn/size-label-action@v0.1.1
         env:
-          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          GITHUB_TOKEN: "${{ steps.generate_token.outputs.token }}"
           IGNORED: "!.gitignore\nyarn.lock"

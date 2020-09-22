@@ -4,7 +4,14 @@ jobs:
   label:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/labeler@v2
-      with:
-        repo-token: "${{ secrets.GITHUB_TOKEN }}"
-        configuration-path: .github/workflows/config/pr-label-file-paths.yml
+      - name: 🔑　Generate token
+        id: generate_token
+        uses: tibdex/github-app-token@v1
+        with:
+          app_id: ${{ secrets.APP_ID }}
+          private_key: ${{ secrets.PRIVATE_KEY }}
+      - name: 🎗　Label
+        uses: actions/labeler@v2
+        with:
+          repo-token: "${{ steps.generate_token.outputs.token }}"
+          configuration-path: .github/workflows/config/pr-label-file-paths.yml
