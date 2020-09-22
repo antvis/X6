@@ -8,3 +8,6 @@ coverage
 lib
 es
 dist
+*.pem
+!mock-cert.pem
+.env
