@@ -1,9 +1,10 @@
 {
-  "private": true,
   "name": "x6",
+  "private": true,
   "workspaces": [
     "examples/*",
-    "packages/*"
+    "packages/*",
+    "scripts/bot"
   ],
   "scripts": {
     "bootstrap": "lerna bootstrap && yarn build:dev",
