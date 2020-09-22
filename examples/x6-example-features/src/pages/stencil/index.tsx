@@ -1,7 +1,5 @@
 import React from 'react'
-import { Graph } from '@antv/x6'
-import { Stencil } from '@antv/x6/es/addon/stencil'
-import { Rect, Circle } from '@antv/x6/es/shape/basic'
+import { Graph, Shape, Addon } from '@antv/x6'
 import '../index.less'
 import './index.less'
 
@@ -50,11 +48,11 @@ export default class Example extends React.Component {
       },
     })
 
-    const stencil = new Stencil({
+    const stencil = new Addon.Stencil({
       target: graph,
       stencilGraphWidth: 200,
       stencilGraphHeight: 180,
-      search: true,
+      search: { rect: true },
       collapsable: true,
       grid: 1,
       groups: [
@@ -69,7 +67,7 @@ export default class Example extends React.Component {
 
     this.stencilContainer.appendChild(stencil.container)
 
-    var r = new Rect({
+    var r = new Shape.Rect({
       position: { x: 10, y: 10 },
       size: { width: 70, height: 40 },
       attrs: {
@@ -78,7 +76,7 @@ export default class Example extends React.Component {
       },
     })
 
-    var c = new Circle({
+    var c = new Shape.Circle({
       position: { x: 100, y: 10 },
       size: { width: 70, height: 40 },
       attrs: {
@@ -87,7 +85,7 @@ export default class Example extends React.Component {
       },
     })
 
-    var c2 = new Circle({
+    var c2 = new Shape.Circle({
       position: { x: 10, y: 70 },
       size: { width: 70, height: 40 },
       attrs: {
@@ -96,7 +94,7 @@ export default class Example extends React.Component {
       },
     })
 
-    var r2 = new Rect({
+    var r2 = new Shape.Rect({
       position: { x: 100, y: 70 },
       size: { width: 70, height: 40 },
       attrs: {
@@ -105,7 +103,7 @@ export default class Example extends React.Component {
       },
     })
 
-    var r3 = new Rect({
+    var r3 = new Shape.Rect({
       position: { x: 10, y: 130 },
       size: { width: 70, height: 40 },
       attrs: {
@@ -114,7 +112,7 @@ export default class Example extends React.Component {
       },
     })
 
-    var c3 = new Circle({
+    var c3 = new Shape.Circle({
       position: { x: 100, y: 130 },
       size: { width: 70, height: 40 },
       attrs: {

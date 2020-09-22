@@ -248,15 +248,18 @@ export class Stencil extends View {
       const name = groupName === Private.defaultGroupName ? null : groupName
       const items = graph.model.getNodes().filter((cell) => {
         let matched = false
-        matched =
-          typeof filter === 'function'
-            ? FunctionExt.call(filter, this, cell, keyworld, name, this)
-            : this.isCellMatched(
-                cell,
-                keyworld,
-                typeof filter === 'boolean' ? {} : filter,
-                keyworld.toLowerCase() !== keyworld,
-              )
+        if (typeof filter === 'function') {
+          matched = FunctionExt.call(filter, this, cell, keyworld, name, this)
+        } else if (typeof filter === 'boolean') {
+          matched = filter
+        } else {
+          matched = this.isCellMatched(
+            cell,
+            keyworld,
+            filter,
+            keyworld.toLowerCase() !== keyworld,
+          )
+        }
 
         const view = graph.renderer.findViewByCell(cell)
         if (view) {
@@ -300,10 +303,14 @@ export class Stencil extends View {
   ) {
     if (keyworld && filters) {
       return Object.keys(filters).some((shape) => {
-        const paths = filters[shape]
-        return (
-          ('*' === shape || cell.shape === shape) &&
-          paths.some((path) => {
+        if ('*' === shape || cell.shape === shape) {
+          const filter = filters[shape]
+          if (typeof filter === 'boolean') {
+            return filter
+          }
+
+          const paths = Array.isArray(filter) ? filter : [filter]
+          return paths.some((path) => {
             let val = cell.getPropByPath<string>(path)
             if (val != null) {
               val = `${val}`
@@ -313,7 +320,9 @@ export class Stencil extends View {
               return val.indexOf(keyworld) >= 0
             }
           })
-        )
+        }
+
+        return false
       })
     }
 
@@ -321,6 +330,7 @@ export class Stencil extends View {
   }
 
   protected onSearch(evt: JQuery.TriggeredEvent) {
+    console.log(evt.target.value)
     this.filter(evt.target.value as string, this.options.search)
   }
 
@@ -459,7 +469,7 @@ export namespace Stencil {
   }
 
   export type Filter = Filters | FilterFn | boolean
-  export type Filters = { [type: string]: string[] }
+  export type Filters = { [shape: string]: string | string[] | boolean }
   export type FilterFn = (
     this: Stencil,
     cell: Node,
