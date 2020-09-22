@@ -16,15 +16,12 @@ import { ShareRegistry } from './registry'
 import { Store } from './store'
 import { Cell } from './cell'
 import { Node } from './node'
-import { Model } from './model'
 
 export class Edge<
   Properties extends Edge.Properties = Edge.Properties
 > extends Cell<Properties> {
   protected static defaults: Edge.Defaults = {}
   protected readonly store: Store<Edge.Properties>
-  protected sourceCell: Cell | null
-  protected targetCell: Cell | null
 
   constructor(metadata: Edge.Metadata = {}) {
     super(metadata)
@@ -131,69 +128,10 @@ export class Edge<
     return super.preprocess(data, ignoreIdCheck)
   }
 
-  protected postprocess(metadata: Edge.Metadata) {
-    const { source, target, sourceCell, targetCell } = metadata
-
-    let sourceCellFound: Cell | undefined
-    let targetCellFound: Cell | undefined
-    if (source != null) {
-      if (source instanceof Cell) {
-        sourceCellFound = source
-      } else {
-        const cell = (source as Edge.TerminalCellLooseData).cell
-        if (cell instanceof Cell) {
-          sourceCellFound = cell
-        }
-      }
-    }
-
-    if (sourceCell != null && typeof sourceCell !== 'string') {
-      sourceCellFound = sourceCell
-    }
-
-    if (target != null) {
-      if (target instanceof Cell) {
-        targetCellFound = target
-      } else {
-        const cell = (target as Edge.TerminalCellLooseData).cell
-        if (cell instanceof Cell) {
-          targetCellFound = cell
-        }
-      }
-    }
-
-    if (targetCell != null && typeof targetCell !== 'string') {
-      targetCellFound = targetCell
-    }
-
-    if (sourceCellFound) {
-      this.reference('source', sourceCellFound)
-    }
-
-    if (targetCellFound) {
-      this.reference('target', targetCellFound)
-    }
-  }
-
   protected setup() {
     super.setup()
     this.on('change:labels', (args) => this.onLabelsChanged(args))
     this.on('change:vertices', (args) => this.onVertexsChanged(args))
-  }
-
-  get model() {
-    return this._model
-  }
-
-  set model(model: Model | null) {
-    if (this._model !== model) {
-      this._model = model
-      if (model) {
-        // update reference
-        this.getSourceCell()
-        this.getTargetCell()
-      }
-    }
   }
 
   isEdge(): this is Edge {
@@ -210,8 +148,6 @@ export class Edge<
       },
       options,
     )
-    this.reference('source', null)
-    this.reference('target', null)
     return this
   }
 
@@ -315,7 +251,6 @@ export class Edge<
   ): this {
     // `terminal` is a cell
     if (terminal instanceof Cell) {
-      this.reference(type, terminal)
       this.store.set(
         type,
         ObjectExt.merge({}, args, { cell: terminal.id }),
@@ -327,7 +262,6 @@ export class Edge<
     // `terminal` is a point-like object
     const p = terminal as Point.PointLike
     if (terminal instanceof Point || (p.x != null && p.y != null)) {
-      this.reference(type, null)
       this.store.set(
         type,
         ObjectExt.merge({}, args, { x: p.x, y: p.y }),
@@ -337,50 +271,13 @@ export class Edge<
     }
 
     // `terminal` is an object
-    {
-      const cellId = (terminal as Edge.TerminalCellData).cell
-      const cell = cellId && this._model ? this._model.getCell(cellId) : null
-      this.reference(type, cell)
-
-      this.store.set(
-        type,
-        ObjectExt.cloneDeep(terminal as Edge.TerminalData),
-        options,
-      )
-    }
+    this.store.set(
+      type,
+      ObjectExt.cloneDeep(terminal as Edge.TerminalData),
+      options,
+    )
 
     return this
-  }
-
-  protected reference(type: Edge.TerminalType, terminalCell: Cell | null) {
-    const terminalCellKey = `${type}Cell` as 'sourceCell' | 'targetCell'
-    const prev = this[terminalCellKey]
-
-    this[terminalCellKey] = terminalCell
-
-    if (prev !== terminalCell) {
-      const edgesKey = type === 'source' ? 'outgoings' : 'incomings'
-
-      if (prev) {
-        const ref = prev[edgesKey]
-        if (ref) {
-          const index = ref.indexOf(this)
-          if (index >= 0) {
-            ref.splice(index, 1)
-          }
-        }
-      }
-
-      if (terminalCell) {
-        let ref = terminalCell[edgesKey]
-        if (ref == null) {
-          ref = terminalCell[edgesKey] = []
-        }
-        ref.push(this)
-      }
-
-      this.updateParent()
-    }
   }
 
   getSourcePoint() {
@@ -391,15 +288,17 @@ export class Edge<
     return this.getTerminalPoint('target')
   }
 
-  getTerminalPoint(type: Edge.TerminalType): Point {
+  protected getTerminalPoint(type: Edge.TerminalType): Point {
     const terminal = this[type]
     if (Point.isPointLike(terminal)) {
       return Point.create(terminal)
     }
+
     const cell = this.getTerminalCell(type)
     if (cell) {
       return cell.getConnectionPoint(this, type)
     }
+
     return new Point()
   }
 
@@ -411,24 +310,16 @@ export class Edge<
     return this.getTerminalCell('target')
   }
 
-  getTerminalCell(type: Edge.TerminalType) {
-    const key = `${type}Cell` as 'sourceCell' | 'targetCell'
-    let cell = this[key]
-    if (cell == null && this._model) {
+  protected getTerminalCell(type: Edge.TerminalType) {
+    if (this.model) {
       const cellId =
-        type === 'source'
-          ? this.getSourceCellId()
-          : type === 'target'
-          ? this.getTargetCellId()
-          : null
+        type === 'source' ? this.getSourceCellId() : this.getTargetCellId()
       if (cellId) {
-        cell = this._model.getCell(cellId)
-        if (cell) {
-          this.reference(type, cell)
-        }
+        return this.model.getCell(cellId)
       }
     }
-    return cell
+
+    return null
   }
 
   getSourceNode() {
@@ -439,7 +330,7 @@ export class Edge<
     return this.getTerminalNode('target')
   }
 
-  getTerminalNode(type: Edge.TerminalType): Cell | null {
+  protected getTerminalNode(type: Edge.TerminalType): Node | null {
     let cell: Cell | null = this // tslint:disable-line
     const visited: { [id: string]: boolean } = {}
 
@@ -451,7 +342,7 @@ export class Edge<
       cell = cell.getTerminalCell(type)
     }
 
-    return cell
+    return cell && cell.isNode() ? cell : null
   }
 
   // #endregion
