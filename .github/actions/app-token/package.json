@@ -3,9 +3,6 @@
   "version": "1.0.0",
   "private": true,
   "main": "lib/index.js",
-  "bin": {
-    "app-token": "lib/index.js"
-  },
   "scripts": {
     "clean:build": "rimraf lib",
     "build": "tsc"
