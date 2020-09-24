@@ -1,11 +1,8 @@
 {
   "name": "app-token",
   "version": "1.0.0",
-  "files": [
-    "action.yml"
-  ],
-  "main": "./index.js",
-  "devDependencies": {
+  "main": "index.js",
+  "dependencies": {
     "@actions/core": "^1.2.5",
     "@actions/github": "^4.0.0",
     "@octokit/app": "^4.2.1",
