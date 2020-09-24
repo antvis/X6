@@ -4,6 +4,7 @@ jobs:
   label:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - name: 🔑　Generate token
         id: generate_token
         uses: ./.github/actions/app-token
