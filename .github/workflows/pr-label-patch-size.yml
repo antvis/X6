@@ -6,7 +6,7 @@ jobs:
     steps:
       - name: 🔑　Generate token
         id: generate_token
-        uses: ../actions/app-token
+        uses: ./.github/actions/app-token
         with:
           app_id: ${{ secrets.APP_ID }}
           private_key: ${{ secrets.PRIVATE_KEY }}
