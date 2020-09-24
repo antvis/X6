@@ -4,8 +4,9 @@
   "private": true,
   "main": "lib/index.js",
   "scripts": {
-    "clean:build": "rimraf lib",
-    "build": "tsc"
+    "clean": "rimraf lib",
+    "build": "tsc",
+    "prebuild": "yarn clean"
   },
   "dependencies": {
     "@actions/core": "^1.2.5",
@@ -16,7 +17,6 @@
   "devDependencies": {
     "@types/is-base64": "^1.1.0",
     "@types/node": "^14.6.4",
-    "@vercel/ncc": "^0.24.0",
     "rimraf": "^3.0.2",
     "typescript": "^4.0.2"
   }
