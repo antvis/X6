@@ -1,39 +1,31 @@
-import {
-  info,
-  error as logError,
-  getInput,
-  setFailed,
-  setOutput,
-  setSecret,
-} from '@actions/core'
-import { context, getOctokit } from '@actions/github'
+import * as core from '@actions/core'
+import * as github from '@actions/github'
 import { App } from '@octokit/app'
 import isBase64 from 'is-base64'
 
 const run = async () => {
   try {
-    const id = Number(getInput('app_id', { required: true }))
-    const privateKeyInput = getInput('private_key', { required: true })
-    console.log(id, privateKeyInput)
+    const id = Number(core.getInput('app_id', { required: true }))
+    const privateKeyInput = core.getInput('private_key', { required: true })
     const privateKey = isBase64(privateKeyInput)
       ? Buffer.from(privateKeyInput, 'base64').toString('utf8')
       : privateKeyInput
     const app = new App({ id, privateKey })
     const jwt = app.getSignedJsonWebToken()
-    const octokit = getOctokit(jwt)
+    const octokit = github.getOctokit(jwt)
     const {
       data: { id: installationId },
-    } = await octokit.apps.getRepoInstallation(context.repo)
+    } = await octokit.apps.getRepoInstallation(github.context.repo)
     const token = await app.getInstallationAccessToken({
       installationId,
     })
-    setSecret(token)
-    setOutput('token', token)
-    console.log(token)
-    info('Token generated successfully!')
+
+    core.setSecret(token)
+    core.setOutput('token', token)
+    core.info('Token generated successfully!')
   } catch (error) {
-    logError(error)
-    setFailed(error.message)
+    core.error(error)
+    core.setFailed(error.message)
   }
 }
 

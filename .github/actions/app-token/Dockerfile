@@ -8,10 +8,8 @@ LABEL "com.github.actions.icon"="anchor"
 # And all of the available colors: https://developer.github.com/actions/creating-github-actions/creating-a-docker-container/#label
 LABEL "com.github.actions.color"="white"
 
-# Copy the rest of your action's code
-COPY . .
+COPY . /tmp/src/
 
-RUN yarn
-RUN yarn build
+RUN yarn global add "file:/tmp/src" && rm -rf /tmp/src
 
-ENTRYPOINT ["node", "/dist/index.js"]
+ENTRYPOINT [ "app-token" ]
