@@ -6,8 +6,7 @@ jobs:
   rebase:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
-    - name: Rebase
-      uses: cirrus-actions/rebase@master
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/checkout@master
+      - uses: cirrus-actions/rebase@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
