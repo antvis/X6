@@ -1,13 +1,19 @@
 {
   "compilerOptions": {
-    "allowSyntheticDefaultImports": true,
-    "forceConsistentCasingInFileNames": true,
-    "module": "esnext",
+    "module": "commonjs",
     "moduleResolution": "node",
+    "sourceMap": true,
+    "declaration": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "noImplicitAny": true,
     "noEmitOnError": true,
-    "strict": true,
-    "target": "esnext",
-    "types": ["node"]
+    "noUnusedLocals": true,
+    "strictNullChecks": true,
+    "resolveJsonModule": true,
+    "experimentalDecorators": true,
+    "outDir": "./lib",
+    "rootDir": "./src"
   },
-  "include": [".*.js", "*.js", "src"]
+  "include": ["src"]
 }
