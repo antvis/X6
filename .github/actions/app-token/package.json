@@ -8,9 +8,7 @@
     "dist"
   ],
   "scripts": {
-    "clean": "rimraf lib",
-    "build": "ncc build src/index.ts --minify --v8-cache",
-    "prebuild": "yarn clean"
+    "build": "ncc build src/index.ts --minify --v8-cache"
   },
   "dependencies": {
     "@actions/core": "^1.2.5",
@@ -22,7 +20,6 @@
     "@types/is-base64": "^1.1.0",
     "@types/node": "^14.6.4",
     "@vercel/ncc": "^0.24.0",
-    "rimraf": "^3.0.2",
     "typescript": "^4.0.2"
   }
 }
