@@ -8,6 +8,9 @@ jobs:
       - name: 🔑　Generate token
         id: generate_token
         uses: ./.github/actions/app-token
+        with:
+          app_id: ${{ secrets.APP_ID }}
+          private_key: ${{ secrets.PRIVATE_KEY }}
       - name: 🎗　Label
         uses: pascalgn/size-label-action@v0.1.1
         env:

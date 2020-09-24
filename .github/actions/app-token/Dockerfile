@@ -11,8 +11,8 @@ LABEL "com.github.actions.color"="white"
 # Copy the rest of your action's code
 COPY . .
 
-# Install dependencies
 RUN yarn
+RUN yarn build
 
 # Run `node /index.js`
-ENTRYPOINT ["node", "index.js"]
+ENTRYPOINT ["node", "lib/index.js"]
