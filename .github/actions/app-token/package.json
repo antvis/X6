@@ -5,8 +5,7 @@
   "main": "lib/index.js",
   "scripts": {
     "clean": "rimraf lib",
-    "build": "tsc",
-    "prebuild": "yarn clean"
+    "build": "tsc"
   },
   "dependencies": {
     "@actions/core": "^1.2.5",
