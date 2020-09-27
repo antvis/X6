@@ -75,11 +75,11 @@ export class Model extends Basecoat<Model.EventArgs> {
       this.notify('reseted', args)
     })
 
-    collection.on('cell:change:source', ({ edge }) =>
+    collection.on('edge:change:source', ({ edge }) =>
       this.onEdgeTerminalChanged(edge, 'source'),
     )
 
-    collection.on('cell:change:target', ({ edge }) => {
+    collection.on('edge:change:target', ({ edge }) => {
       this.onEdgeTerminalChanged(edge, 'target')
     })
   }
