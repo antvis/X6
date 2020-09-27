@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@antv/x6-app-dag",
-  "version": "0.10.69",
+  "version": "0.10.71",
   "scripts": {
     "start": "umi dev",
     "build": "umi build",
@@ -22,9 +22,9 @@
     ]
   },
   "dependencies": {
-    "@antv/x6": "^0.10.69",
-    "@antv/x6-components": "^0.10.10",
-    "@antv/x6-react-shape": "^0.10.13",
+    "@antv/x6": "^0.10.71",
+    "@antv/x6-components": "^0.10.11",
+    "@antv/x6-react-shape": "^0.10.14",
     "antd": "^4.4.2",
     "classnames": "^2.2.6",
     "react": "^16.12.0",
