@@ -11,8 +11,8 @@ class MyShape extends Shape.Rect {
     return this.getPortsByGroup('out')
   }
 
-  getUsedInPorts() {
-    const incomingEdges = this.getIncomingEdges() || []
+  getUsedInPorts(graph: Graph) {
+    const incomingEdges = graph.getIncomingEdges(this) || []
     return incomingEdges.map((edge: Edge) => {
       const portId = edge.getTargetPortId()
       return this.getPort(portId!)
@@ -25,10 +25,10 @@ class MyShape extends Shape.Rect {
     })
   }
 
-  updateInPorts() {
+  updateInPorts(graph: Graph) {
     var minNumberOfPorts = 2
     var ports = this.getInPorts()
-    var usedPorts = this.getUsedInPorts()
+    var usedPorts = this.getUsedInPorts(graph)
     var newPorts = this.getNewInPorts(
       Math.max(minNumberOfPorts - usedPorts.length, 1),
     )
@@ -154,7 +154,7 @@ export default class Example extends React.Component {
             const node = targetView.cell
             if (node instanceof MyShape) {
               var portId = targetMagnet.getAttribute('port')
-              var usedInPorts = node.getUsedInPorts()
+              var usedInPorts = node.getUsedInPorts(graph)
               if (usedInPorts.find((port) => port && port.id === portId)) {
                 return false
               }
@@ -167,15 +167,15 @@ export default class Example extends React.Component {
     })
 
     graph.addNode(
-      new MyShape().resize(120, 100).position(200, 100).updateInPorts(),
+      new MyShape().resize(120, 100).position(200, 100).updateInPorts(graph),
     )
 
     graph.addNode(
-      new MyShape().resize(120, 100).position(400, 100).updateInPorts(),
+      new MyShape().resize(120, 100).position(400, 100).updateInPorts(graph),
     )
 
     graph.addNode(
-      new MyShape().resize(120, 100).position(300, 400).updateInPorts(),
+      new MyShape().resize(120, 100).position(300, 400).updateInPorts(graph),
     )
 
     function update(view: NodeView) {
@@ -187,7 +187,7 @@ export default class Example extends React.Component {
             highlighter: magnetAvailabilityHighlighter,
           })
         })
-        cell.updateInPorts()
+        cell.updateInPorts(graph)
       }
     }
 
