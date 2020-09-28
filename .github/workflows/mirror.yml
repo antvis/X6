@@ -1,4 +1,4 @@
-name: 🤖　Sync to Gitee Mirror
+name: 🔁　Sync to Gitee Mirror
 on: [push]
 jobs:
   sync:
