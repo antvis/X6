@@ -63,9 +63,15 @@ jobs:
       - name: ✨　Build Sites
         run: |
           yarn build:sites
+      - name: 🔑　Generate token
+        uses: bubkoo/use-app-token@v1
+        id: generate_token
+        with:
+          app_id: ${{ secrets.APP_ID }}
+          private_key: ${{ secrets.PRIVATE_KEY }}
       - name: ✅　Deploy sites
         uses: peaceiris/actions-gh-pages@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ steps.generate_token.outputs.token }}
           publish_dir: ./packages/x6-sites/public
           publish_branch: gh-pages

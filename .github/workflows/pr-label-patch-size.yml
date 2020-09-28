@@ -6,8 +6,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: 🔑　Generate token
+        uses: bubkoo/use-app-token@v1
         id: generate_token
-        uses: ./.github/actions/app-token
         with:
           app_id: ${{ secrets.APP_ID }}
           private_key: ${{ secrets.PRIVATE_KEY }}
