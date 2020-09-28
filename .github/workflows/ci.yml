@@ -35,8 +35,14 @@ jobs:
     - name: ✅　Test
       run: |
         yarn test
+    - name: 🔑　Generate token
+      uses: bubkoo/use-app-token@v1
+      id: generate_token
+      with:
+        app_id: ${{ secrets.APP_ID }}
+        private_key: ${{ secrets.PRIVATE_KEY }}
     - name: 💡　Coveralls
       uses: coverallsapp/github-action@master
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+        github-token: ${{ steps.generate_token.outputs.token }}
         path-to-lcov: ./packages/x6/test/coverage/lcov.info

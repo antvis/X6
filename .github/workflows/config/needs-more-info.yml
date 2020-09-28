@@ -1,0 +1,15 @@
+issue:
+  badTitleComment: >
+    @${author}
+    Please provide us with more info about this issue title.
+
+  badBodyComment:
+
+pullRequest:
+  badTitleComment: >
+    @${author}
+    Please provide us with more info about this pr title.
+
+  badBodyComment: >
+    @${author}
+    Please provide us with more info about this pr.
