@@ -20,7 +20,7 @@ jobs:
       - name: 🎗　Label
         uses: Naturalclar/issue-action@v2.0.1
         with:
-          title-or-body: both
+          title-or-body: title
           parameters: >
             [
               {
