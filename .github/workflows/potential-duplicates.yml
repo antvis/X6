@@ -1,0 +1,27 @@
+name: 🆖　Potential Duplicates
+on:
+  issues:
+    types: [opened, edited]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: bubkoo/use-app-token@v1
+        id: generate_token
+        with:
+          app_id: ${{ secrets.APP_ID }}
+          private_key: ${{ secrets.PRIVATE_KEY }}
+      - uses: bubkoo/label-commands@v1
+        with:
+          GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
+          # Label to set, when potential duplicates are detected.
+          label: potential-duplicate
+          # Get issues with state to compare. Supported state: 'all', 'closed', 'open'.
+          state: all
+          # If similarity is higher than this threshold([0,1]), issue will be marked as duplicate.
+          threshold: 0.6
+          # Comment to post when potential duplicates are detected.
+          comment: >
+            Potential duplicates: {{#issues}}
+              - [#{{ number }}] {{ title }} ({{ accuracy }}%)
+            {{/issues}}
