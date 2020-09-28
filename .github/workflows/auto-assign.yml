@@ -5,7 +5,7 @@ on:
   pull_request:
     types: [opened]
 jobs:
-  test:
+  run:
     runs-on: ubuntu-latest
     steps:
       - name: Generate token
