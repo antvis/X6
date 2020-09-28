@@ -15,7 +15,7 @@ jobs:
           app_id: ${{ secrets.APP_ID }}
           private_key: ${{ secrets.PRIVATE_KEY }}
       - name: 👋　Welcome
-        uses: bubkoo/welcome@v1
+        uses: bubkoo/welcome-action@v1
         with:
           GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
           FIRST_ISSUE: >
