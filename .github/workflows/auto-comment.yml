@@ -1,20 +1,15 @@
-name: 🏷️　Label(Branch Name)
-on:
-  pull_request:
-    types: [opened]
+name: 💬　Auto Comment
+on: [issues, pull_request]
 jobs:
-  label:
+  test:
     runs-on: ubuntu-latest
     steps:
-      - name: 🔑　Generate token
+      - name: Generate token
         uses: bubkoo/use-app-token@v1
         id: generate_token
         with:
           app_id: ${{ secrets.APP_ID }}
           private_key: ${{ secrets.PRIVATE_KEY }}
-      - name: 🎗　Label
-        uses: TimonVS/pr-labeler-action@v3
+      - uses: bubkoo/auto-comment@v1
         with:
-          configuration-path: .github/workflows/config/pr-label-branch-name.yml
-        env:
           GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
