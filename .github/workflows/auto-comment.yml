@@ -1,7 +1,7 @@
 name: 💬　Auto Comment
 on: [issues, pull_request]
 jobs:
-  test:
+  run:
     runs-on: ubuntu-latest
     steps:
       - name: Generate token
