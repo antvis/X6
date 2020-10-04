@@ -1,7 +1,7 @@
 # This action will automatically close issues fixed in
 # pull requests that doesn't target the default branch.
 
-name: 🚫　Close Issues
+name: 🚫　Auto Close Fixed Issues
 on:
   pull_request:
     types: [closed]
@@ -16,7 +16,7 @@ jobs:
           app_id: ${{ secrets.APP_ID }}
           private_key: ${{ secrets.PRIVATE_KEY }}
       - name: 🚫　Close Issue
-        uses: Logerfo/close-action@0.0.1
+        uses: bubkoo/auto-close-fixed-issues@v1
         with:
           github-token: ${{ steps.generate_token.outputs.token }}
-          comment: true
+          comment: This issue was closed by #{{ pr }}.
