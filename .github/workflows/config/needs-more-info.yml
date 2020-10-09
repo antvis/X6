@@ -1,15 +1,15 @@
 issue:
   badTitleComment: >
-    @${author}
+    @{{ author }}
     Please provide us with more info about this issue title.
 
   badBodyComment:
 
 pullRequest:
   badTitleComment: >
-    @${author}
+    @{{ author }}
     Please provide us with more info about this pr title.
 
   badBodyComment: >
-    @${author}
+    @{{ author }}
     Please provide us with more info about this pr.
