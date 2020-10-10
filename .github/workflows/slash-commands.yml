@@ -12,7 +12,7 @@ jobs:
         with:
           app_id: ${{ secrets.APP_ID }}
           private_key: ${{ secrets.PRIVATE_KEY }}
-      - uses: bubkoo/custom-slash-commands@v1
+      - uses: bubkoo/slash-commands@v1
         with:
           GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
           CONFIG_FILE: .github/workflows/config/slash-commands.yml
