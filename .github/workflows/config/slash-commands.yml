@@ -1,0 +1,15 @@
+heated:
+  lock: true
+  lockReason: too heated
+  reactions: ['eyes', 'heart']
+  comment: The thread has been temporarily locked.
+
+unheated:
+  unlock: true
+
+issues:
+  pin:
+    pin: true
+
+  unpin:
+    unpin: true
