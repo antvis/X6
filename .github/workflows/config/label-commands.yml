@@ -1,14 +1,13 @@
-common:
-  heated:
-    lock: true
-    lockReason: too heated
-    comment: >
-      The thread has been temporarily locked.
+heated:
+  lock: true
+  lockReason: too heated
+  comment: >
+    The thread has been temporarily locked.
 
-      Please follow our community guidelines.
+    Please follow our community guidelines.
 
-  -heated:
-    unlock: true
+-heated:
+  unlock: true
 
 issues:
   feature:
