@@ -9,13 +9,13 @@ jobs:
   contributors:
     runs-on: ubuntu-latest
     steps:
-      - name: 🔑　Generate token
+      - name: 🔑　Generate Token
         uses: bubkoo/use-app-token@v1
         id: generate_token
         with:
           app_id: ${{ secrets.APP_ID }}
           private_key: ${{ secrets.PRIVATE_KEY }}
-      - name: 👷🏼　Update Contributors List
+      - name: 👷🏼　Generate Contributors
         uses: bubkoo/contributors-list@v1
         with:
           GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
