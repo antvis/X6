@@ -18,5 +18,5 @@ jobs:
       - name: 🚫　Close Issue
         uses: bubkoo/auto-close-fixed-issues@v1
         with:
-          github-token: ${{ steps.generate_token.outputs.token }}
+          GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
           comment: This issue was closed by #{{ pr }}.
