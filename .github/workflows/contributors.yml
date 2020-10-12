@@ -19,4 +19,4 @@ jobs:
         uses: bubkoo/contributors-list@v1
         with:
           GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
-          svgPath: contributors.svg
+          svgPath: CONTRIBUTORS.svg
