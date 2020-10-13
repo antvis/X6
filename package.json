@@ -27,7 +27,8 @@
     "prettier": "prettier --write '**/*.{js,jsx,tsx,ts,less,md,json}'",
     "pretty-quick": "pretty-quick",
     "clear": "lerna run clean && lerna clean -y",
-    "reboot": "run-s clear bootstrap"
+    "clean:modules": "rimraf node_modules",
+    "reboot": "run-s clear clean:modules bootstrap"
   },
   "husky": {
     "hooks": {
@@ -48,9 +49,6 @@
     ]
   },
   "dependencies": {
-    "@babel/core": "^7.9.6",
-    "@babel/preset-env": "^7.9.6",
-    "@babel/preset-react": "^7.9.4",
     "@commitlint/cli": "^11.0.0",
     "@commitlint/config-conventional": "^11.0.0",
     "devmoji": "^2.1.9",
@@ -60,6 +58,13 @@
     "eslint-plugin-import": "^2.18.2",
     "git-contributor": "^1.0.10",
     "husky": "^4.2.5",
+    "karma": "^5.1.1",
+    "karma-chrome-launcher": "^3.1.0",
+    "karma-cli": "^2.0.0",
+    "karma-jasmine": "^4.0.1",
+    "karma-spec-reporter": "^0.0.32",
+    "karma-typescript": "^5.2.0",
+    "karma-typescript-es6-transform": "^5.1.0",
     "lerna": "^3.19.0",
     "lerna-changelog": "^1.0.1",
     "lint-staged": "^10.2.2",
