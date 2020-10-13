@@ -1,9 +1,5 @@
+import { Property } from 'csstype'
 import { ValuesType } from 'utility-types'
-import {
-  BackgroundSizeProperty,
-  BackgroundRepeatProperty,
-  BackgroundPositionProperty,
-} from '../../types/csstype'
 import { KeyValue } from '../../types'
 import { Registry } from '../registry'
 import * as patterns from './main'
@@ -12,15 +8,15 @@ export namespace Background {
   export interface Options {
     color?: string
     image?: string
-    position?: BackgroundPositionProperty<{
+    position?: Property.BackgroundPosition<{
       x: number
       y: number
     }>
-    size?: BackgroundSizeProperty<{
+    size?: Property.BackgroundSize<{
       width: number
       height: number
     }>
-    repeat?: BackgroundRepeatProperty
+    repeat?: Property.BackgroundRepeat
     opacity?: number
   }
 

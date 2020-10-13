@@ -3,8 +3,8 @@
 > JavaScript diagramming library
 
 [![MIT License](https://img.shields.io/badge/license-MIT_License-green.svg?style=flat-square)](https://github.com/antvis/x6/blob/master/LICENSE)
-[![Language](https://img.shields.io/badge/language-typescript-blue.svg?style=flat-square)](https://www.typescriptlang.org)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://github.com/antvis/x6/pulls)
+[![Language](https://img.shields.io/badge/language-Typescript-blue.svg?style=flat-square)](https://www.typescriptlang.org)
+[![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen.svg?style=flat-square)](https://github.com/antvis/x6/pulls)
 
 [![build](https://img.shields.io/travis/antvis/x6.svg?style=flat-square)](https://travis-ci.org/antvis/x6)
 [![coverage](https://img.shields.io/coveralls/antvis/x6/master.svg?style=flat-square)](https://coveralls.io/github/antvis/x6)
@@ -12,7 +12,7 @@
 
 [![NPM Package](https://img.shields.io/npm/v/@antv/x6.svg?style=flat-square)](https://www.npmjs.com/package/@antv/x6)
 [![NPM Downloads](http://img.shields.io/npm/dm/@antv/x6.svg?style=flat-square)](https://www.npmjs.com/package/@antv/x6)
-[![NPM Dependencies](https://img.shields.io/david/antvis/x6?path=packages%2Fx6&style=flat-square)](https://david-dm.org/antvis/x6)
+[![NPM Dependencies](https://img.shields.io/david/antvis/x6?style=flat-square)](https://david-dm.org/antvis/x6)
 
 [![Dependency Status](https://david-dm.org/antvis/x6.svg?style=flat-square&path=packages/x6)](https://david-dm.org/antvis/x6?path=packages/x6)
 [![devDependencies Status](https://david-dm.org/antvis/x6/dev-status.svg?style=flat-square&path=packages/x6)](https://david-dm.org/antvis/x6?type=dev&path=packages/x6)
