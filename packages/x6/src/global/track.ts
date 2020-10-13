@@ -1,11 +1,11 @@
 import { Config } from './config'
 import { version } from './version'
 
-if (process.env.NODE_ENV !== 'development' && Config.trackable) {
-  setTimeout(() => {
+function track() {
+  if (Config.trackable) {
     const host = 'https://kcart.alipay.com/web/bi.do'
-    const image = new Image()
-    const meta = {
+    const img = new Image()
+    const metadata = {
       ...Config.trackInfo,
       version,
       pg: document.URL,
@@ -13,7 +13,11 @@ if (process.env.NODE_ENV !== 'development' && Config.trackable) {
       x6: true,
       page_type: 'syslog',
     }
-    const d = encodeURIComponent(JSON.stringify([meta]))
-    image.src = `${host}?BIProfile=merge&d=${d}`
-  }, 3000)
+    const data = encodeURIComponent(JSON.stringify([metadata]))
+    img.src = `${host}?BIProfile=merge&d=${data}`
+  }
+}
+
+if (process.env.NODE_ENV !== 'development' && Config.trackable) {
+  setTimeout(track, 3000)
 }
