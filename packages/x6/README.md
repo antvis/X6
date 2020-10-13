@@ -12,7 +12,7 @@
 
 [![NPM Package](https://img.shields.io/npm/v/@antv/x6.svg?style=flat-square)](https://www.npmjs.com/package/@antv/x6)
 [![NPM Downloads](http://img.shields.io/npm/dm/@antv/x6.svg?style=flat-square)](https://www.npmjs.com/package/@antv/x6)
-[![NPM Dependencies](https://img.shields.io/david/antvis/x6?path=packages%2Fx6&style=flat-square)](https://david-dm.org/antvis/x6)
+[![NPM Dependencies](https://img.shields.io/david/antvis/x6?style=flat-square)](https://david-dm.org/antvis/x6)
 
 [![Dependency Status](https://david-dm.org/antvis/x6.svg?style=flat-square&path=packages/x6)](https://david-dm.org/antvis/x6?path=packages/x6)
 [![devDependencies Status](https://david-dm.org/antvis/x6/dev-status.svg?style=flat-square&path=packages/x6)](https://david-dm.org/antvis/x6?type=dev&path=packages/x6)
