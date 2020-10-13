@@ -36,7 +36,8 @@
     "build:less": "node ./scripts/style",
     "build:readme": "node ./scripts/readme.js",
     "build:version": "node ./scripts/version.js",
-    "build:dev": "run-p build:less build:cjs build:esm",
+    "build:csstype": "node ./scripts/csstype.js",
+    "build:dev": "run-p build:csstype build:less build:cjs build:esm",
     "build:watch": "yarn build:esm --w",
     "build": "run-p build:readme build:version build:dev build:umd",
     "prebuild": "run-s lint clean",
@@ -66,8 +67,6 @@
     "utility-types": "^3.10.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.9.6",
-    "@babel/preset-env": "^7.9.6",
     "@rollup/plugin-commonjs": "^15.1.0",
     "@rollup/plugin-node-resolve": "^9.0.0",
     "@rollup/plugin-typescript": "^6.0.0",
@@ -86,7 +85,7 @@
     "karma-cli": "^2.0.0",
     "karma-jasmine": "^4.0.1",
     "karma-spec-reporter": "^0.0.32",
-    "karma-typescript": "^5.1.0",
+    "karma-typescript": "^5.2.0",
     "karma-typescript-es6-transform": "^5.1.0",
     "less": "^3.10.3",
     "lint-staged": "^10.2.2",
@@ -98,7 +97,6 @@
     "rollup-plugin-terser": "^7.0.2",
     "sinon": "^9.0.2",
     "stylelint": "^13.3.3",
-    "ts-loader": "^8.0.4",
     "ts-node": "^9.0.0",
     "tslint": "^6.1.3",
     "typescript": "^4.0.2"

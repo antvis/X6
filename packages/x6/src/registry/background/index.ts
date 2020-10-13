@@ -1,6 +1,6 @@
-import { Property } from 'csstype'
 import { ValuesType } from 'utility-types'
 import { KeyValue } from '../../types'
+import { Property } from '../../types/csstype'
 import { Registry } from '../registry'
 import * as patterns from './main'
 
