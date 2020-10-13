@@ -1,6 +1,6 @@
 {
   "name": "@antv/x6-react",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Use X6 with react",
   "main": "lib/index.js",
   "module": "es/index.js",

@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@antv/x6-example-sites",
-  "version": "0.10.71",
+  "version": "0.10.72",
   "workspaces": [
     "packages/**/*"
   ],
@@ -14,10 +14,10 @@
   },
   "dependencies": {
     "@ant-design/icons": "^4.2.2",
-    "@antv/x6": "^0.10.71",
-    "@antv/x6-components": "^0.10.11",
-    "@antv/x6-example-sites-helper": "^0.10.71",
-    "@antv/x6-react-shape": "^0.10.14",
+    "@antv/x6": "^0.10.72",
+    "@antv/x6-components": "^0.10.12",
+    "@antv/x6-example-sites-helper": "^0.10.72",
+    "@antv/x6-react-shape": "^0.10.15",
     "antd": "^4.4.2",
     "esbuild-webpack-plugin": "^1.0.5",
     "highlight.js": "^10.1.2",
