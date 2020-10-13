@@ -1,4 +1,3 @@
-import { DeepPartial } from 'utility-types'
 import { FunctionExt } from '../../util'
 import { View } from '../../view/view'
 import { Graph } from '../../graph/graph'
@@ -26,7 +25,7 @@ export class MiniMap extends View {
     return this.options.scroller
   }
 
-  constructor(options: DeepPartial<MiniMap.Options> & { scroller: Scroller }) {
+  constructor(options: Partial<MiniMap.Options> & { scroller: Scroller }) {
     super()
 
     this.options = {
@@ -278,7 +277,7 @@ export namespace MiniMap {
 }
 
 namespace Util {
-  export const defaultOptions: DeepPartial<MiniMap.Options> = {
+  export const defaultOptions: Partial<MiniMap.Options> = {
     width: 300,
     height: 200,
     padding: 10,

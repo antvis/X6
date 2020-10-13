@@ -24,8 +24,8 @@ export class BackgroundManager extends Base {
   }
 
   protected updateBackgroundImage(options: BackgroundManager.Options = {}) {
-    let backgroundSize = options.size || 'auto auto'
-    let backgroundPosition = options.position || 'center'
+    let backgroundSize: any = options.size || 'auto auto'
+    let backgroundPosition: any = options.position || 'center'
 
     const scale = this.graph.scale()
     const ts = this.graph.translate()
@@ -63,7 +63,7 @@ export class BackgroundManager extends Base {
 
     let uri
     const opacity = options.opacity || 1
-    const backgroundSize = options.size
+    const backgroundSize: any = options.size
     let backgroundRepeat = options.repeat || 'no-repeat'
 
     const pattern = Background.registry.get(backgroundRepeat)

@@ -76,7 +76,7 @@
     "@types/ua-parser-js": "^0.7.33",
     "antd": "^4.4.2",
     "babel-loader": "^8.0.6",
-    "eslint": "^6.1.0",
+    "eslint": "^7.11.0",
     "fs-extra": "^9.0.0",
     "less": "^3.10.3",
     "less-loader": "^6.1.0",

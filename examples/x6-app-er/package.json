@@ -35,7 +35,7 @@
     "@umijs/preset-react": "1.x",
     "@umijs/test": "^3.2.19",
     "lint-staged": "^10.0.7",
-    "prettier": "^1.19.1",
+    "prettier": "^2.1.2",
     "umi": "^3.2.19",
     "yorkie": "^2.0.0"
   }
