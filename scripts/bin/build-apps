@@ -1,12 +1,14 @@
 #!/bin/sh
 
-target=packages/x6-sites/static/apps
-er_dist=$target/er
+target=sites/x6-sites/static/apps
+
 er_repo=examples/x6-app-er
-dag_dist=$target/dag
 dag_repo=examples/x6-app-dag
-draw_dist=$target/draw
 draw_repo=examples/x6-app-draw
+
+er_dist=$target/er
+dag_dist=$target/dag
+draw_dist=$target/draw
 
 (cd $er_repo && yarn build)
 rm -rf $er_dist && mkdir -p $er_dist && cp -rv $er_repo/dist/* $er_dist
