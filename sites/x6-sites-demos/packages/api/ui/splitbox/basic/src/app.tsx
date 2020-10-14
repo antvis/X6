@@ -1,6 +1,6 @@
 import React from 'react'
-import { SplitBox } from '@antv/x6-components'
-import '@antv/x6-components/es/split-box/style/index.css'
+import { SplitBox } from '@antv/x6-react-components'
+import '@antv/x6-react-components/es/split-box/style/index.css'
 import './app.css'
 
 export default class Example extends React.Component {

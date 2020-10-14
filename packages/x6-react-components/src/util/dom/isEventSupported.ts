@@ -24,7 +24,7 @@ if (canUseDOM) {
  */
 export function isEventSupported(
   eventNameSuffix: string,
-  capture?: boolean
+  capture?: boolean,
 ): boolean {
   if ((!canUseDOM || capture) && !('addEventListener' in document)) {
     return false

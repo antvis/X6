@@ -1,6 +1,6 @@
 #!/bin/sh
 
-lerna run build --scope @antv/x6-components &
+lerna run build --scope @antv/x6-react-components &
 lerna run build --scope @antv/x6
 
 wait

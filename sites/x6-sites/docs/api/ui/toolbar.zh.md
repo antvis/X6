@@ -12,9 +12,9 @@ redirect_from:
 <iframe src="/demos/api/ui/toolbar/basic"></iframe>
 
 ```tsx
-import { Menu, Toolbar } from '@antv/x6-components'
-import '@antv/x6-components/es/menu/style/index.css'
-import '@antv/x6-components/es/toolbar/style/index.css'
+import { Menu, Toolbar } from '@antv/x6-react-components'
+import '@antv/x6-react-components/es/menu/style/index.css'
+import '@antv/x6-react-components/es/toolbar/style/index.css'
 
 const Item = Toolbar.Item 
 const Group = Toolbar.Group

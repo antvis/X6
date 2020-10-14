@@ -13,8 +13,8 @@ redirect_from:
 
 
 ```tsx
-import { ScrollBox } from '@antv/x6-components'
-import '@antv/x6-components/es/scroll-box/style/index.css'
+import { ScrollBox } from '@antv/x6-react-components'
+import '@antv/x6-react-components/es/scroll-box/style/index.css'
 
 <ScrollBox
   containerWidth={300}

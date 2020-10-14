@@ -12,9 +12,9 @@ redirect_from:
 <iframe src="/demos/api/ui/menubar/basic"></iframe>
 
 ```tsx
-import { Menu, Menubar } from '@antv/x6-components'
-import '@antv/x6-components/es/menu/style/index.css'
-import '@antv/x6-components/es/menubar/style/index.css'
+import { Menu, Menubar } from '@antv/x6-react-components'
+import '@antv/x6-react-components/es/menu/style/index.css'
+import '@antv/x6-react-components/es/menubar/style/index.css'
 
  <Menubar extra={<div>Extra Component</div>}>
   <Menubar.Item text="File">

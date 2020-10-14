@@ -14,7 +14,7 @@ export function translatePosition(
   style: CSSStyleDeclaration,
   x: number,
   y: number,
-  initialRender = false
+  initialRender = false,
 ) {
   if (initialRender) {
     style.left = `${x}px`
@@ -29,7 +29,7 @@ export function debounce(
   wait: number,
   context: any,
   setTimeoutFunc = window.setTimeout,
-  clearTimeoutFunc = window.clearTimeout
+  clearTimeoutFunc = window.clearTimeout,
 ) {
   let timeout: number
 

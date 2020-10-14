@@ -54,7 +54,7 @@ class MenubarItemInner extends React.PureComponent<
       const currentTarget = e.currentTarget as HTMLDivElement
       const childNodes = currentTarget.parentElement!.childNodes
 
-      childNodes.forEach(child => {
+      childNodes.forEach((child) => {
         if (child === currentTarget) {
           this.removeDeactive(child)
         } else {
@@ -120,7 +120,7 @@ class MenubarItemInner extends React.PureComponent<
       this.removeDocClickEvent = addEventListener(
         document.documentElement,
         'click',
-        this.onDocumentClick
+        this.onDocumentClick,
       ).remove
     }
   }
@@ -173,9 +173,9 @@ namespace MenubarItemInner {
   }
 }
 
-export const MenubarItem: React.SFC<MenubarItem.Props> = props => (
+export const MenubarItem: React.SFC<MenubarItem.Props> = (props) => (
   <MenubarContext.Consumer>
-    {context => <MenubarItemInner context={context} {...props} />}
+    {(context) => <MenubarItemInner context={context} {...props} />}
   </MenubarContext.Consumer>
 )
 

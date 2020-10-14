@@ -58,7 +58,7 @@ export class TouchHandler {
     }
     this.trackerId = window.setInterval(
       this.track,
-      TouchHandler.TRACKER_TIMEOUT
+      TouchHandler.TRACKER_TIMEOUT,
     )
 
     if (this.stopPropagation()) {

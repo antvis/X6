@@ -1,7 +1,7 @@
 import React from 'react'
 
 export const MenubarContext = React.createContext<MenubarContext.Contexts>(
-  {} as any
+  {} as any,
 )
 
 export namespace MenubarContext {

@@ -1,7 +1,7 @@
 import React from 'react'
 
 export const ToolbarContext = React.createContext<ToolbarContext.Contexts>(
-  {} as any
+  {} as any,
 )
 
 export namespace ToolbarContext {
