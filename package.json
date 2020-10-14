@@ -10,7 +10,6 @@
     "lk": "lerna link",
     "ls": "lerna list",
     "lv": "lerna version --no-private",
-    "publish": "lerna publish --no-private",
     "changed": "lerna changed",
     "updated": "lerna updated",
     "changelog": "lerna-changelog",
