@@ -31,7 +31,7 @@ export class Menubar extends React.PureComponent<Menubar.Props, Menubar.State> {
       this.removeDocClickEvent = addEventListener(
         document.documentElement,
         'click',
-        this.onDocumentClick
+        this.onDocumentClick,
       ).remove
     }
   }

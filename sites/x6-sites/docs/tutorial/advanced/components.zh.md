@@ -7,16 +7,16 @@ redirect_from:
   - /zh/docs/tutorial/advanced
 ---
 
-搭建一个复杂的图编辑应用还需要用到 Menubar、Toolbar、Dropdown、ContextMenu、Splitbox 等 UI 组件，我们在 [x6-components](https://www.npmjs.com/package/@antv/x6-components) 中提供了一些这样的 React 组件，可以搭配 [antd](https://ant.design/) 使用。
+搭建一个复杂的图编辑应用还需要用到 Menubar、Toolbar、Dropdown、ContextMenu、Splitbox 等 UI 组件，我们在 [x6-react-components](https://www.npmjs.com/package/@antv/x6-react-components) 中提供了一些这样的 React 组件，可以搭配 [antd](https://ant.design/) 使用。
 
 ## 安装
 
 ```shell
 # npm
-$ npm install @antv/x6-components --save
+$ npm install @antv/x6-react-components --save
 
 # yarn
-$ yarn add @antv/x6-components
+$ yarn add @antv/x6-react-components
 ```
 
 ## 使用
@@ -24,11 +24,11 @@ $ yarn add @antv/x6-components
 引入需要的组件和对应的样式：
 
 ```ts
-import { Menu } from '@antv/x6-components/es/menu'
+import { Menu } from '@antv/x6-react-components/es/menu'
 // less
-import '@antv/x6-components/es/menu/style'
+import '@antv/x6-react-components/es/menu/style'
 // or css
-import '@antv/x6-components/es/menu/style/index.css'
+import '@antv/x6-react-components/es/menu/style/index.css'
 ```
 
 我们强烈建议使用 [babel-plugin-import](https://github.com/ant-design/babel-plugin-import) 插件来自动引用组件样式，在 `.babelrc` 或 babel-loader 中添加如下配置：
@@ -39,7 +39,7 @@ import '@antv/x6-components/es/menu/style/index.css'
     [
       "import",
       {
-        "libraryName": "@antv/x6-components",
+        "libraryName": "@antv/x6-react-components",
         "libraryDirectory": "es", // es or lib
         "style": true,
         "transformToDefaultImport": true
@@ -52,7 +52,7 @@ import '@antv/x6-components/es/menu/style/index.css'
 这样我们引入组件时就会自动引入对应的样式：
 
 ```ts
-import { Menu } from '@antv/x6-components'
+import { Menu } from '@antv/x6-react-components'
 ```
 
 ## 组件

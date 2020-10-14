@@ -22,7 +22,7 @@ const config: IConfig = {
     [
       'import',
       {
-        libraryName: '@antv/x6-components',
+        libraryName: '@antv/x6-react-components',
         transformToDefaultImport: false,
         style: true,
       },

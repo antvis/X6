@@ -1,8 +1,8 @@
 import React from 'react'
 import { message } from 'antd'
-import { Menu, Menubar } from '@antv/x6-components'
-import '@antv/x6-components/es/menu/style/index.css'
-import '@antv/x6-components/es/menubar/style/index.css'
+import { Menu, Menubar } from '@antv/x6-react-components'
+import '@antv/x6-react-components/es/menu/style/index.css'
+import '@antv/x6-react-components/es/menubar/style/index.css'
 import 'antd/dist/antd.css'
 
 const MenuItem = Menu.Item // tslint:disable-line

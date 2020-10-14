@@ -46,7 +46,7 @@ export class Menu extends React.PureComponent<Menu.Props> {
           {
             [`${baseCls}-has-icon`]: hasIcon,
           },
-          className
+          className,
         )}
       >
         <ContextProvider value={contextValue}>{children}</ContextProvider>

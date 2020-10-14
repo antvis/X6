@@ -12,8 +12,8 @@ redirect_from:
 <iframe src="/demos/api/ui/menu/basic"></iframe>
 
 ```tsx
-import { Menu } from '@antv/x6-components'
-import '@antv/x6-components/es/menu/style/index.css'
+import { Menu } from '@antv/x6-react-components'
+import '@antv/x6-react-components/es/menu/style/index.css'
 
 const MenuItem = Menu.Item
 const SubMenu = Menu.SubMenu
