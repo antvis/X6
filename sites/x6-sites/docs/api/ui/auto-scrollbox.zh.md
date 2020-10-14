@@ -12,9 +12,9 @@ redirect_from:
 <iframe src="/demos/api/ui/auto-scrollbox/basic"></iframe>
 
 ```tsx
-import { AutoScrollBox } from '@antv/x6-components'
-import '@antv/x6-components/es/scroll-box/style/index.css'
-import '@antv/x6-components/es/auto-scroll-box/style/index.css'
+import { AutoScrollBox } from '@antv/x6-react-components'
+import '@antv/x6-react-components/es/scroll-box/style/index.css'
+import '@antv/x6-react-components/es/auto-scroll-box/style/index.css'
 
 <div style={{ width: 300, height: 200, border: '1px solid #f0f0f0' }}>
   <AutoScrollBox>

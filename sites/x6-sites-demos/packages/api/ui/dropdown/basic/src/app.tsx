@@ -1,7 +1,7 @@
 import React from 'react'
-import { Menu, Dropdown } from '@antv/x6-components'
-import '@antv/x6-components/es/menu/style/index.css'
-import '@antv/x6-components/es/dropdown/style/index.css'
+import { Menu, Dropdown } from '@antv/x6-react-components'
+import '@antv/x6-react-components/es/menu/style/index.css'
+import '@antv/x6-react-components/es/dropdown/style/index.css'
 
 const menu = (
   <Menu>

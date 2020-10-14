@@ -1,7 +1,7 @@
 import React from 'react'
-import { AutoScrollBox } from '@antv/x6-components'
-import '@antv/x6-components/es/scroll-box/style/index.css'
-import '@antv/x6-components/es/auto-scroll-box/style/index.css'
+import { AutoScrollBox } from '@antv/x6-react-components'
+import '@antv/x6-react-components/es/scroll-box/style/index.css'
+import '@antv/x6-react-components/es/auto-scroll-box/style/index.css'
 
 export default class Example extends React.PureComponent {
   render() {

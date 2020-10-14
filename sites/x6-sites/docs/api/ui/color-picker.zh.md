@@ -13,8 +13,8 @@ redirect_from:
 
 
 ```tsx
-import { ColorPicker } from '@antv/x6-components'
-import '@antv/x6-components/es/color-picker/style/index.css'
+import { ColorPicker } from '@antv/x6-react-components'
+import '@antv/x6-react-components/es/color-picker/style/index.css'
 
 <div style={{ width: 120 }}>
   <ColorPicker color="#333333" />

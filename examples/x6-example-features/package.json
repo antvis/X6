@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@antv/x6": "^0.10.72",
-    "@antv/x6-components": "^0.10.12",
+    "@antv/x6-react-components": "^0.10.12",
     "@antv/x6-react-shape": "^0.10.15",
     "antd": "^4.4.2",
     "classnames": "^2.2.6",
