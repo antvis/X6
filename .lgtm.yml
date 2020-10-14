@@ -2,4 +2,4 @@ extraction:
   javascript:
     index:
       filters:
-        - exclude: "packages/x6-sites/static"
+        - exclude: "sites/x6-sites/static"
