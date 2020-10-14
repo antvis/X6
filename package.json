@@ -9,7 +9,7 @@
     "bootstrap": "lerna bootstrap && yarn build:dev",
     "lk": "lerna link",
     "ls": "lerna list",
-    "lv": "lerna version --no-push",
+    "lv": "lerna version --no-private",
     "changed": "lerna changed",
     "updated": "lerna updated",
     "publish": "lerna exec --ignore @antv/x6-example-* --stream -- yarn publish",
@@ -40,7 +40,7 @@
   },
   "lint-staged": {
     "**/*.{js,jsx,tsx,ts,less,md,json}": [
-      "pretty-quick — staged"
+      "pretty-quick —-staged"
     ]
   },
   "commitlint": {
