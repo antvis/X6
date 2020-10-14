@@ -5,7 +5,7 @@
   "command": {
     "version": {
       "ignoreChanges": ["*.md", "**/*.test.ts", "**/*.spec.ts"],
-      "message": "chore(release): update version"
+      "message": "chore(release): publish"
     },
     "bootstrap": {
       "npmClientArgs": ["--no-package-lock", "--no-ci"]
