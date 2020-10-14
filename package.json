@@ -2,8 +2,9 @@
   "name": "x6",
   "private": true,
   "workspaces": [
+    "packages/*",
     "examples/*",
-    "packages/*"
+    "sites/*"
   ],
   "scripts": {
     "bootstrap": "lerna bootstrap && yarn build:dev",
@@ -15,7 +16,6 @@
     "publish": "lerna exec --ignore @antv/x6-example-* --stream -- yarn publish",
     "release": "run-s version publish",
     "changelog": "lerna-changelog",
-    "contributor": "git-contributor",
     "clean": "lerna run clean",
     "build": "lerna run build",
     "build:dev": "sh ./scripts/bin/build-dev",
@@ -56,7 +56,6 @@
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-config-prettier": "^6.7.0",
     "eslint-plugin-import": "^2.18.2",
-    "git-contributor": "^1.0.10",
     "husky": "^4.2.5",
     "karma": "^5.1.1",
     "karma-chrome-launcher": "^3.1.0",
