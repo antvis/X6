@@ -9,7 +9,7 @@
   "scripts": {
     "lk": "lerna link",
     "ls": "lerna list",
-    "lv": "lerna version --no-private",
+    "lv": "lerna version --no-private --conventional-commits --create-release github",
     "changed": "lerna changed",
     "updated": "lerna updated",
     "changelog": "lerna-changelog",
