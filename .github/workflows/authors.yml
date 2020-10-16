@@ -1,4 +1,4 @@
-name: Update Authors
+name: 🎗　Update Authors
 on:
   push:
     branches:
