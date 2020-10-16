@@ -13,10 +13,10 @@
     "changed": "lerna changed",
     "updated": "lerna updated",
     "changelog": "lerna-changelog",
-    "build:dev": "sh ./scripts/bin/build-dev",
-    "build:apps": "sh ./scripts/bin/build-apps",
-    "build:demos": "sh ./scripts/bin/build-demos",
-    "build:sites": "sh ./scripts/bin/build-sites",
+    "build:dev": "sh ./scripts/build-dev",
+    "build:apps": "sh ./scripts/build-apps",
+    "build:demos": "sh ./scripts/build-demos",
+    "build:sites": "sh ./scripts/build-sites",
     "build": "lerna run build",
     "lint": "lerna run lint",
     "test": "lerna run test --no-private",
@@ -33,7 +33,7 @@
       "prepare-commit-msg": "devmoji -e --lint",
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
       "pre-commit": "lint-staged && lerna run --concurrency 1 --stream precommit",
-      "prepush": "./scripts/bin/pre-push-check"
+      "prepush": "./scripts/pre-push-check"
     }
   },
   "lint-staged": {
