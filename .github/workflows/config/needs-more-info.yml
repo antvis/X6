@@ -35,7 +35,7 @@ pullRequest:
     - updates
     - test
   badTitleComment: >
-    @{{ author }} Please provide us with more info about this pr title.
+    @{{ author }} Please provide us with more info about this pull request title.
 
   badBodyComment: >
-    @{{ author }} Please provide us with more info about this pr.
+    @{{ author }} Please provide us with more info about this pull request.
