@@ -1,10 +1,7 @@
 heated:
   lock: true
   lockReason: too heated
-  comment: >
-    The thread has been temporarily locked.
-
-    Please follow our community guidelines.
+  comment: The thread has been temporarily locked.
 
 -heated:
   unlock: true
