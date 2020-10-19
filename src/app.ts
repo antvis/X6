@@ -1,5 +1,6 @@
 import { Application } from 'probot'
 import { PRTriage } from './pr-triage'
+import { AutoAddLabel } from './auto-add-label'
 // import { Welcome } from './welcome'
 // import { AutoAssign } from './auto-assign'
 // import { AutoComment } from './auto-comment'
@@ -12,6 +13,7 @@ export = (app: Application) => {
   })
 
   PRTriage.start(app)
+  AutoAddLabel.start(app)
 
   // Welcome.start(app)
   // AutoComment.start(app)
