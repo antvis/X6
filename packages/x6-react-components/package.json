@@ -71,7 +71,7 @@
     "@types/react-resize-detector": "^4.2.0",
     "@types/ua-parser-js": "^0.7.33",
     "antd": "^4.4.2",
-    "eslint": "^7.11.0",
+    "eslint": "^6.8.0",
     "fs-extra": "^9.0.0",
     "less": "^3.10.3",
     "lint-staged": "^10.2.2",
