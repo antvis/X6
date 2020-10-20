@@ -19,3 +19,4 @@ jobs:
       - uses: bubkoo/update-authors@v1
         with:
           GITHUB_TOKEN: ${{ steps.generate_token.outputs.token  }}
+          bots: false
