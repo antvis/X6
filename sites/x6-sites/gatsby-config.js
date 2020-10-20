@@ -157,7 +157,7 @@ module.exports = {
           zh: 'UI Components',
           en: 'UI Components',
         },
-        order: 7,
+        order: 8,
       },
     ],
     examples: [

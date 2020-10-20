@@ -31,9 +31,9 @@ X6 是 AntV 旗下的图编辑引擎，提供了一系列开箱即用的交互�
 
 ## 🍉 文档
 
-- [基础教程](basic/cell)
-- [进阶实战](intermediate/connector)
-- [高级指引](advanced/react-shape)
+- [基础教程](basic/graph)
+- [进阶实战](intermediate/serialization)
+- [高级指引](advanced/animation)
 
 ## ❤️ 交流群 
 
