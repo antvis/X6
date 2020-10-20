@@ -86,7 +86,7 @@ export default class Example extends React.Component {
   }
 
   setWindowBBox() {
-    this.windowBBox = this.graph.pageToLocalRect(
+    this.windowBBox = this.graph.pageToLocal(
       window.scrollX,
       window.scrollY,
       window.innerWidth,

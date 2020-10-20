@@ -1,11 +1,23 @@
 heated:
   lock: true
   lockReason: too heated
-  reactions: ['eyes', 'heart']
   comment: The thread has been temporarily locked.
 
-unheated:
+spam:
+  lock: true
+  lockReason: spam
+  comment: The thread has been temporarily locked.
+
+unlock:
   unlock: true
+
+handover:
+  assign:
+    - '-*'
+    - '{{ input }}'
+
+assign:
+  assign: '{{ input }}'
 
 issues:
   pin:
