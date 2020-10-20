@@ -23,8 +23,8 @@
 ## Features
 
 - 🌱　easy-to-customize: based on well known SVG/HTML/CSS or React to custom nodes and edges
-- 🚀　out-of-the-box: built-in 10+ plugins of diagram, such as selection, dnd, redo/undo, snapline, minimap, etc.
-- 🧲　data-driven: base on MVC architecture, you can focus more on data logic and business logic
+- 🚀　out-of-the-box: built-in 10+ plugins, such as selection, dnd, redo/undo, snapline, minimap, etc.
+- 🧲　data-driven: base on MVC architecture, you can focus on data logic and business logic
 - 💯　highly-event-driven: you can react on any event that happens inside the graph
 
 ## Installation
