@@ -11,38 +11,38 @@ jobs:
       matrix:
         node-version: [12.x]
     steps:
-    - uses: actions/checkout@v2
-    - name: 🌱　Get yarn cache directory path
-      id: yarn-cache-dir-path
-      run: echo "::set-output name=dir::$(yarn cache dir)"
-    - name: 🚸　Setup yarn cacha
-      uses: actions/cache@v2
-      with:
-        path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-        key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-yarn-
-    - name: 🎉　Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-    - name: 🚧　Prepare Environment
-      run: |
-        yarn global add lerna
-    - name: 🚀　Bootstrap
-      run: |
-        yarn bootstrap
-    - name: ✅　Test
-      run: |
-        yarn test
-    - name: 🔑　Generate token
-      uses: bubkoo/use-app-token@v1
-      id: generate_token
-      with:
-        app_id: ${{ secrets.APP_ID }}
-        private_key: ${{ secrets.PRIVATE_KEY }}
-    - name: 💡　Coveralls
-      uses: coverallsapp/github-action@master
-      with:
-        github-token: ${{ steps.generate_token.outputs.token }}
-        path-to-lcov: ./packages/x6/test/coverage/lcov.info
+      - uses: actions/checkout@v2
+      - name: 🌱　Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+      - name: 🚸　Setup yarn cacha
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+      - name: 🎉　Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: 🚧　Prepare Environment
+        run: |
+          yarn global add lerna
+      - name: 🚀　Bootstrap
+        run: |
+          yarn bootstrap
+      - name: ✅　Test
+        run: |
+          yarn test
+      - name: 🔑　Generate token
+        uses: bubkoo/use-app-token@v1
+        id: generate_token
+        with:
+          app_id: ${{ secrets.APP_ID }}
+          private_key: ${{ secrets.PRIVATE_KEY }}
+      - name: 💡　Coveralls
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ steps.generate_token.outputs.token }}
+          path-to-lcov: ./packages/x6/test/coverage/lcov.info
