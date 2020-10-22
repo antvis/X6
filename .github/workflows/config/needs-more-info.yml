@@ -9,7 +9,7 @@ miniTitleLength: 8
 labelToAdd: needs-more-info
 # reactions to add
 reactions:
-  - '-1',
+  - '-1'
   - confused
 
 
