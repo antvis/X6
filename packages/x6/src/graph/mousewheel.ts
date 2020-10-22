@@ -11,6 +11,7 @@ export class MouseWheel extends Disposable implements IDisablable {
   protected cumulatedFactor: number = 1
   protected currentScale: number | null
   protected startPos: { x: number; y: number }
+  protected wheelEvent: 'mousewheel' | 'wheel'
   protected readonly handler: (
     e: JQueryMousewheel.JQueryMousewheelEventObject,
   ) => any
@@ -25,8 +26,10 @@ export class MouseWheel extends Disposable implements IDisablable {
     const scroller = this.graph.scroller.widget
     this.container = scroller ? scroller.container : this.graph.container
     this.target = this.options.global ? document : this.container
+    this.wheelEvent = Platform.isEventSupported('wheel')
+      ? 'wheel'
+      : 'mousewheel'
     this.handler = this.onMouseWheel.bind(this)
-
     if (this.options.enabled) {
       this.enable(true)
     }
@@ -41,7 +44,7 @@ export class MouseWheel extends Disposable implements IDisablable {
       this.options.enabled = true
       this.graph.options.mousewheel.enabled = true
       if (Platform.SUPPORT_PASSIVE) {
-        this.target.addEventListener('mousewheel', this.handler, {
+        this.target.addEventListener(this.wheelEvent, this.handler, {
           passive: false,
         })
       } else {
@@ -54,9 +57,8 @@ export class MouseWheel extends Disposable implements IDisablable {
     if (!this.disabled) {
       this.options.enabled = false
       this.graph.options.mousewheel.enabled = false
-
       if (Platform.SUPPORT_PASSIVE) {
-        this.target.removeEventListener('mousewheel', this.handler)
+        this.target.removeEventListener(this.wheelEvent, this.handler)
       } else {
         JQuery(this.target).off('mousewheel')
       }
@@ -64,7 +66,7 @@ export class MouseWheel extends Disposable implements IDisablable {
   }
 
   protected onMouseWheel(evt: JQueryMousewheel.JQueryMousewheelEventObject) {
-    const e = (evt.originalEvent || evt) as MouseWheelEvent
+    const e = (evt.originalEvent || evt) as WheelEvent
     if (ModifierKey.test(e as any, this.options.modifiers)) {
       evt.preventDefault()
       evt.stopPropagation()
@@ -84,8 +86,7 @@ export class MouseWheel extends Disposable implements IDisablable {
       }
 
       const delta = evt.deltaY
-
-      if (delta > 0) {
+      if (delta < 0) {
         // zoomin
         // ------
         // Switches to 1% zoom steps below 15%
