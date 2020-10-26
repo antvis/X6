@@ -1,8 +1,7 @@
 name: 🔁　Sync to Gitee Mirror
 on: [push]
 jobs:
-  sync:
-    runs-on: ubuntu-latest
+  run:
     steps:
       - name: 🔁　Sync to Gitee
         uses: wearerequired/git-mirror-action@master

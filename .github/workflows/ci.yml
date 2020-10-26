@@ -6,7 +6,6 @@ on:
   pull_request:
 jobs:
   run:
-    runs-on: ubuntu-latest
     strategy:
       matrix:
         node-version: [12.x]
@@ -35,14 +34,8 @@ jobs:
       - name: ✅　Test
         run: |
           yarn test
-      - name: 🔑　Generate token
-        uses: bubkoo/use-app-token@v1
-        id: generate_token
-        with:
-          app_id: ${{ secrets.APP_ID }}
-          private_key: ${{ secrets.PRIVATE_KEY }}
       - name: 💡　Coveralls
         uses: coverallsapp/github-action@master
         with:
-          github-token: ${{ steps.generate_token.outputs.token }}
+          github-token: ${{ secrets.bot_token }}
           path-to-lcov: ./packages/x6/test/coverage/lcov.info

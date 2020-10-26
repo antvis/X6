@@ -6,8 +6,7 @@ on:
       - sites/x6-sites-demos/**
       - sites/x6-sites-demos-helper/**
 jobs:
-  preview:
-    runs-on: ubuntu-latest
+  run:
     strategy:
       matrix:
         node-version: [12.x]
@@ -60,17 +59,11 @@ jobs:
       - name: ✨　Build Sites
         run: |
           yarn build:sites
-      - name: 🔑　Generate token
-        uses: bubkoo/use-app-token@v1
-        id: generate_token
-        with:
-          app_id: ${{ secrets.APP_ID }}
-          private_key: ${{ secrets.PRIVATE_KEY }}
       - name: ✅　Deploy Sites
         uses: afc163/surge-preview@v1
         with:
           surge_token: ${{ secrets.SURGE_TOKEN }}
-          github_token: ${{ steps.generate_token.outputs.token }}
+          github_token: ${{ secrets.bot_token }}
           build: |
             echo Create sites preview
           dist: sites/x6-sites/public
