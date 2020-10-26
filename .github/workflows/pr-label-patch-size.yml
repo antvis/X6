@@ -2,6 +2,7 @@ name: 🏷️　Label(Patch Size)
 on: pull_request
 jobs:
   run:
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: pascalgn/size-label-action@v0.1.1

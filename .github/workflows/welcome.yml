@@ -6,6 +6,7 @@ on:
     types: [opened]
 jobs:
   run:
+    runs-on: ubuntu-latest
     steps:
       - uses: bubkoo/welcome-action@v1
         with:

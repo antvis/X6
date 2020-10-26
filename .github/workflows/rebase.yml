@@ -4,6 +4,7 @@ on:
     types: [created]
 jobs:
   run:
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
       - uses: cirrus-actions/rebase@master

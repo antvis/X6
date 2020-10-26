@@ -6,6 +6,7 @@ on:
     types: [labeled, unlabeled]
 jobs:
   run:
+    runs-on: ubuntu-latest
     steps:
       - uses: bubkoo/label-commands@v1
         with:

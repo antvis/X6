@@ -2,6 +2,7 @@ name: 🏷️　Label(File Paths)
 on: pull_request
 jobs:
   run:
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/labeler@v2
         with:

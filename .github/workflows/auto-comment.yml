@@ -2,6 +2,7 @@ name: 💬　Auto Comment
 on: [issues, pull_request]
 jobs:
   run:
+    runs-on: ubuntu-latest
     steps:
       - uses: bubkoo/auto-comment@v1
         with:
