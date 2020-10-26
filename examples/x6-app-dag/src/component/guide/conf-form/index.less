@@ -1,0 +1,191 @@
+@import (reference) '~antd/es/style/themes/default.less';
+
+@border-color: #e9e9e9;
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+
+  .origin {
+    border-top: 1px solid @border-color;
+    line-height: 35px;
+    text-align: center;
+    background-color: #fff;
+
+    &.hideOrigin {
+      display: none;
+    }
+  }
+  :global {
+    .@{ant-prefix}-form-item-label {
+      padding: 4px 0px 0px !important;
+    }
+    .@{ant-prefix}-row.@{ant-prefix}-form-item {
+      margin-bottom: 4px !important;
+    }
+    label[for='boolean_arg'] {
+      display: none;
+    }
+  }
+}
+
+.header {
+  height: 40px;
+  line-height: 40px;
+  text-align: center;
+  border-bottom: 1px solid @border-color;
+}
+
+.body {
+  flex-grow: 1;
+  overflow-x: hidden;
+  overflow-y: auto;
+  background: #fff;
+}
+
+.title {
+  padding: 0 16px;
+  margin: 0;
+  height: 48px;
+  line-height: 48px;
+  background: #fff;
+  border-bottom: 1px solid @border-color;
+}
+
+.form {
+  height: 100%;
+  position: relative;
+  background: #f7f9fb;
+
+  :global {
+    .action-step-form {
+      padding: 8px 16px;
+      height: 100%;
+      overflow-y: auto;
+      .@{ant-prefix}-col-24.@{ant-prefix}-form-item-label {
+        padding: 0;
+      }
+
+      pre {
+        margin: 0;
+      }
+    }
+
+    .@{ant-prefix}-row.@{ant-prefix}-form-item {
+      margin-bottom: 16px;
+    }
+  }
+
+  .actions {
+    position: absolute;
+    bottom: 0;
+    text-align: center;
+    width: 100%;
+    padding: 16px 0;
+    border-top: 1px solid #d9d9d9;
+  }
+}
+
+.empty {
+  padding: 16px 20px;
+}
+
+.configForm {
+  height: 100%;
+  padding-top: 32px;
+  display: flex;
+  flex-direction: column;
+
+  & > * {
+    flex-grow: 1;
+  }
+
+  .hasTabs {
+    box-shadow: 0 0 16px -5px rgba(0, 0, 0, 0.2);
+  }
+  .menu {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    display: flex;
+    line-height: 36px;
+    height: 36px;
+    border-bottom: none !important;
+    background: #fff;
+
+    :global {
+      .@{ant-prefix}-input-disabled {
+        background: #fefefe;
+      }
+      .@{ant-prefix}-menu-item {
+        padding: 0;
+        flex: 1 1 50px;
+        text-align: center;
+        border: 0 !important;
+        color: #8b8b8b !important;
+        background-color: #fff;
+        font-size: 12px;
+        .anticon {
+          margin-right: 8px;
+        }
+      }
+      .@{ant-prefix}-menu-item {
+        margin: 0 !important;
+        padding: 0 12px;
+      }
+      .@{ant-prefix}-menu-item-selected {
+        color: #1890ff !important;
+        background-color: #f7f9fb !important;
+        cursor: default !important;
+      }
+      .@{ant-prefix}-menu-horizontal {
+        border: 0;
+      }
+    }
+  }
+  :global {
+    .@{ant-prefix}-input-disabled {
+      background: #fefefe;
+    }
+    .pai-boolean-control + .pai-boolean-control {
+      .@{ant-prefix}-row.@{ant-prefix}-form-item {
+        margin-bottom: 8px !important;
+      }
+    }
+    .pai-boolean-control .@{ant-prefix}-row.@{ant-prefix}-form-item {
+      margin: 4px 0 !important;
+    }
+  }
+}
+
+.markdown {
+  :global {
+    img {
+      max-width: 50%;
+    }
+  }
+}
+
+.loading {
+  height: calc(~'100vh - 120px');
+}
+
+.errorTips {
+  font-size: 12px;
+  line-height: 22px;
+  padding: 8px 24px;
+}
+
+.errorWrap {
+  :global {
+    .@{ant-prefix}-empty {
+      margin-top: 48px;
+    }
+    p {
+      margin-bottom: 0px !important;
+    }
+  }
+}

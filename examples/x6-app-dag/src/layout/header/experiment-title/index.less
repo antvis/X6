@@ -1,0 +1,42 @@
+.menuWrap {
+  max-height: 316px;
+  overflow: auto;
+  position: relative;
+  top: -10px;
+  left: -1px;
+  box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.1);
+  :global {
+    .@{ant-prefix}-menu-item {
+      height: 28px;
+      line-height: 28px;
+      padding: 0px 8px;
+      margin: 0 !important;
+      color: rgba(0, 0, 0, 0.45);
+      font-size: 13px;
+      &:hover {
+        color: #1890ff;
+        background-color: @menu-item-active-bg;
+      }
+    }
+  }
+}
+
+.name {
+  padding-right: 2px;
+  color: rgba(0, 0, 0, 0.45);
+}
+
+.wrap {
+  height: 48px;
+  margin-left: 24px;
+  cursor: pointer;
+}
+
+.divider {
+  color: #ccc;
+}
+
+.dropdown {
+  color: rgba(0, 0, 0, 0.65);
+  font-size: 12px;
+}

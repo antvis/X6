@@ -1,0 +1,42 @@
+@import '~antd/es/style/themes/default.less';
+
+.graphContextMenu {
+  position: absolute;
+  z-index: 1;
+  background-color: #fff;
+}
+
+.loadExperimentModal {
+  :global {
+    .@{ant-prefix}-modal-title {
+      font-size: 14px;
+    }
+
+    .@{ant-prefix}-btn {
+      font-size: 12px;
+    }
+  }
+
+  .versionTable {
+    :global {
+      .@{ant-prefix}-table.@{ant-prefix}-table-small {
+        font-size: 12px;
+      }
+    }
+
+    .operations {
+      :global {
+        .@{ant-prefix}-btn {
+          &:first-of-type {
+            padding-left: 0;
+            border-left: 0;
+          }
+
+          &.@{ant-prefix}-btn-sm {
+            font-size: 12px;
+          }
+        }
+      }
+    }
+  }
+}
