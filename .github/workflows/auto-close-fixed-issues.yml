@@ -6,6 +6,7 @@ on:
     types: [closed]
 jobs:
   run:
+    runs-on: ubuntu-latest
     steps:
       - uses: bubkoo/auto-close-fixed-issues@v1
         with:

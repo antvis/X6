@@ -4,6 +4,7 @@ on:
     types: [opened, edited]
 jobs:
   run:
+    runs-on: ubuntu-latest
     steps:
       - uses: bubkoo/potential-duplicates@v1
         with:

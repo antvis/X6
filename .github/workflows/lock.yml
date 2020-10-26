@@ -4,6 +4,7 @@ on:
     - cron: 0 0 * * *
 jobs:
   run:
+    runs-on: ubuntu-latest
     steps:
       - uses: dessant/lock-threads@v2
         with:
