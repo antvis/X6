@@ -1,22 +1,13 @@
 # This action will automatically close issues fixed in
 # pull requests that doesn't target the default branch.
-
 name: 🚫　Auto Close Fixed Issues
 on:
   pull_request:
     types: [closed]
 jobs:
   run:
-    runs-on: ubuntu-latest
     steps:
-      - name: 🔑　Generate token
-        uses: bubkoo/use-app-token@v1
-        id: generate_token
+      - uses: bubkoo/auto-close-fixed-issues@v1
         with:
-          app_id: ${{ secrets.APP_ID }}
-          private_key: ${{ secrets.PRIVATE_KEY }}
-      - name: 🚫　Close Issue
-        uses: bubkoo/auto-close-fixed-issues@v1
-        with:
-          GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
+          GITHUB_TOKEN: ${{ secrets.bot_token }}
           comment: This issue was closed by #{{ pr }}.

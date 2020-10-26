@@ -6,18 +6,10 @@ on:
     types: [opened]
 jobs:
   run:
-    runs-on: ubuntu-latest
     steps:
-      - name: 🔑　Generate token
-        uses: bubkoo/use-app-token@v1
-        id: generate_token
+      - uses: bubkoo/welcome-action@v1
         with:
-          app_id: ${{ secrets.APP_ID }}
-          private_key: ${{ secrets.PRIVATE_KEY }}
-      - name: 👋　Welcome
-        uses: bubkoo/welcome-action@v1
-        with:
-          GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
+          GITHUB_TOKEN: ${{ secrets.bot_token }}
           FIRST_ISSUE: >
             👋 @{{ author }}
 

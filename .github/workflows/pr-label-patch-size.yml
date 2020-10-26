@@ -1,18 +1,10 @@
 name: 🏷️　Label(Patch Size)
 on: pull_request
 jobs:
-  label:
-    runs-on: ubuntu-latest
+  run:
     steps:
       - uses: actions/checkout@v2
-      - name: 🔑　Generate token
-        uses: bubkoo/use-app-token@v1
-        id: generate_token
-        with:
-          app_id: ${{ secrets.APP_ID }}
-          private_key: ${{ secrets.PRIVATE_KEY }}
-      - name: 🎗　Label
-        uses: pascalgn/size-label-action@v0.1.1
+      - uses: pascalgn/size-label-action@v0.1.1
         env:
-          GITHUB_TOKEN: "${{ steps.generate_token.outputs.token }}"
+          GITHUB_TOKEN: ${{ secrets.bot_token }}
           IGNORED: "!.gitignore\nyarn.lock"
