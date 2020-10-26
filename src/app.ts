@@ -1,21 +1,12 @@
 import { Application } from 'probot'
+import { AppToken } from './app-token'
 import { PRTriage } from './pr-triage'
-// import { Welcome } from './welcome'
-// import { AutoAssign } from './auto-assign'
-// import { AutoComment } from './auto-comment'
-// import { RequestInfo } from './request-info'
-// import { LabelActions } from './label-actions'
 
 export = (app: Application) => {
   app.on('*', async (context) => {
     context.log(`event: ${context.name}`)
   })
 
+  AppToken.start(app)
   PRTriage.start(app)
-
-  // Welcome.start(app)
-  // AutoComment.start(app)
-  // AutoAssign.start(app)
-  // RequestInfo.start(app)
-  // LabelActions.start(app)
 }

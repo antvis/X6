@@ -14,14 +14,19 @@
     "precommit": "lint-staged"
   },
   "dependencies": {
+    "@octokit/app": "^4.2.1",
+    "is-base64": "^1.1.0",
     "lodash": "^4.17.20",
-    "probot": "^10.2.0"
+    "moment": "^2.29.1",
+    "probot": "^10.2.0",
+    "tweetsodium": "^0.0.5"
   },
   "devDependencies": {
     "@commitlint/cli": "^11.0.0",
     "@commitlint/config-conventional": "^11.0.0",
     "@octokit/plugin-rest-endpoint-methods": "^4.2.0",
     "@octokit/types": "^5.5.0",
+    "@types/is-base64": "^1.1.0",
     "@types/jest": "^26.0.9",
     "@types/lodash": "^4.14.161",
     "@types/node": "^14.0.27",

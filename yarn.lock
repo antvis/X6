@@ -715,6 +715,15 @@
     "@nodelib/fs.scandir" "2.1.3"
     fastq "^1.6.0"
 
+"@octokit/app@^4.2.1":
+  version "4.2.1"
+  resolved "https://registry.npmjs.org/@octokit/app/-/app-4.2.1.tgz#888f0050f6f7107f1c12bb3e4f021052df2ecfec"
+  integrity sha512-lskD8DwYAVI+7ErkDSmSlmX2YYlqhCY4ImFjEjswBHJK8HXaWeOZl1dYxYxX/+ewT76ZvamboMx/36gPq6Fyew==
+  dependencies:
+    "@octokit/request" "^5.0.0"
+    jsonwebtoken "^8.3.0"
+    lru-cache "^6.0.0"
+
 "@octokit/auth-app@^2.4.14":
   version "2.6.0"
   resolved "https://registry.npmjs.org/@octokit/auth-app/-/auth-app-2.6.0.tgz#1bf64878fd46df9c4bc97ebfb314f0bf99307341"
@@ -830,7 +839,7 @@
     deprecation "^2.0.0"
     once "^1.4.0"
 
-"@octokit/request@^5.1.0", "@octokit/request@^5.3.0", "@octokit/request@^5.4.0":
+"@octokit/request@^5.0.0", "@octokit/request@^5.1.0", "@octokit/request@^5.3.0", "@octokit/request@^5.4.0":
   version "5.4.9"
   resolved "https://registry.npmjs.org/@octokit/request/-/request-5.4.9.tgz#0a46f11b82351b3416d3157261ad9b1558c43365"
   integrity sha512-CzwVvRyimIM1h2n9pLVYfTDmX9m+KHSgCpqPsY8F1NdEK8IaWqXhSBXsdjOBFZSpEcxNEeg4p0UO9cQ8EnOCLA==
@@ -1077,6 +1086,11 @@
   integrity sha512-kb5+thmQJ7HHyOAnCOeqRJlF2fyvadHghnLLLKZzCNyShStJeIQtNGGDjA30gWqj6UFSDAWBfGEMKrFDrGfvzQ==
   dependencies:
     "@types/node" "*"
+
+"@types/is-base64@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.npmjs.org/@types/is-base64/-/is-base64-1.1.0.tgz#8f0e0874ba0df223a413e46fa12e681708d19080"
+  integrity sha512-rigoMG77vfIXWjYUDBMPCY0qVzY1dGtEILSsjCcvDH/UgB2ENTZl0uKQknJq4W4nEUqVZqX0M9Uw/VRZ/vwzWQ==
 
 "@types/istanbul-lib-coverage@*", "@types/istanbul-lib-coverage@^2.0.0", "@types/istanbul-lib-coverage@^2.0.1":
   version "2.0.3"
@@ -1669,6 +1683,11 @@ binary-extensions@^2.0.0:
   version "2.1.0"
   resolved "https://registry.npmjs.org/binary-extensions/-/binary-extensions-2.1.0.tgz#30fa40c9e7fe07dbc895678cd287024dea241dd9"
   integrity sha512-1Yj8h9Q+QDF5FzhMs/c9+6UntbD5MkRfRwac8DoEm9ZfUBZ7tZ55YcGVAzEe4bXsdQHEk+s9S5wsOKVdZrw0tQ==
+
+blakejs@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.npmjs.org/blakejs/-/blakejs-1.1.0.tgz#69df92ef953aa88ca51a32df6ab1c54a155fc7a5"
+  integrity sha1-ad+S75U6qIylGjLfarHFShVfx6U=
 
 body-parser@1.19.0:
   version "1.19.0"
@@ -4355,7 +4374,7 @@ jsonparse@^1.2.0:
   resolved "https://registry.npmjs.org/jsonparse/-/jsonparse-1.3.1.tgz#3f4dae4a91fac315f71062f8521cc239f1366280"
   integrity sha1-P02uSpH6wxX3EGL4UhzCOfE2YoA=
 
-jsonwebtoken@^8.1.0, jsonwebtoken@^8.5.1:
+jsonwebtoken@^8.1.0, jsonwebtoken@^8.3.0, jsonwebtoken@^8.5.1:
   version "8.5.1"
   resolved "https://registry.npmjs.org/jsonwebtoken/-/jsonwebtoken-8.5.1.tgz#00e71e0b8df54c2121a1f26137df2280673bcc0d"
   integrity sha512-XjwVfRS6jTMsqYs0EsuJ4LGxXV14zQybNd4L2r0UvbVnSF9Af8x7p5MzbJ90Ioz/9TI41/hTCvznF/loiSzn8w==
@@ -4875,6 +4894,11 @@ mkdirp@^0.5.1, mkdirp@^0.5.3:
   integrity sha512-NKmAlESf6jMGym1++R0Ra7wvhV+wFW63FaSOFPwRahvea0gMUcGUhVeAg/0BC0wiv9ih5NYPB1Wn1UEI1/L+xQ==
   dependencies:
     minimist "^1.2.5"
+
+moment@^2.29.1:
+  version "2.29.1"
+  resolved "https://registry.npmjs.org/moment/-/moment-2.29.1.tgz#b2be769fa31940be9eeea6469c075e35006fa3d3"
+  integrity sha512-kHmoybcPV8Sqy59DwNDY3Jefr64lK/by/da0ViFcuA4DH0vQg5Q6Ze5VimxkfQNSC+Mls/Kx53s7TjP1RhFEDQ==
 
 morgan@^1.9.1:
   version "1.10.0"
@@ -6861,6 +6885,19 @@ tweetnacl@^0.14.3, tweetnacl@~0.14.0:
   version "0.14.5"
   resolved "https://registry.npmjs.org/tweetnacl/-/tweetnacl-0.14.5.tgz#5ae68177f192d4456269d108afa93ff8743f4f64"
   integrity sha1-WuaBd/GS1EViadEIr6k/+HQ/T2Q=
+
+tweetnacl@^1.0.1:
+  version "1.0.3"
+  resolved "https://registry.npmjs.org/tweetnacl/-/tweetnacl-1.0.3.tgz#ac0af71680458d8a6378d0d0d050ab1407d35596"
+  integrity sha512-6rt+RN7aOi1nGMyC4Xa5DdYiukl2UWCbcJft7YhxReBGQD7OAM8Pbxw6YMo4r2diNEA8FEmu32YOn9rhaiE5yw==
+
+tweetsodium@^0.0.5:
+  version "0.0.5"
+  resolved "https://registry.npmjs.org/tweetsodium/-/tweetsodium-0.0.5.tgz#f63ab4b1d26d6355d82d512a2bbf03cae96eb3e8"
+  integrity sha512-T3aXZtx7KqQbutTtBfn+P5By3HdBuB1eCoGviIrRJV2sXeToxv2X2cv5RvYqgG26PSnN5m3fYixds22Gkfd11w==
+  dependencies:
+    blakejs "^1.1.0"
+    tweetnacl "^1.0.1"
 
 type-check@^0.4.0, type-check@~0.4.0:
   version "0.4.0"
