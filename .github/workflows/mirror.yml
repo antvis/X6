@@ -1,7 +1,7 @@
 name: 🔁　Sync to Gitee Mirror
 on: [push]
 jobs:
-  sync:
+  run:
     runs-on: ubuntu-latest
     steps:
       - name: 🔁　Sync to Gitee

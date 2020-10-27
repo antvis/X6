@@ -4,12 +4,6 @@ jobs:
   run:
     runs-on: ubuntu-latest
     steps:
-      - name: Generate token
-        uses: bubkoo/use-app-token@v1
-        id: generate_token
-        with:
-          app_id: ${{ secrets.APP_ID }}
-          private_key: ${{ secrets.PRIVATE_KEY }}
       - uses: bubkoo/auto-comment@v1
         with:
-          GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
+          GITHUB_TOKEN: ${{ secrets.bot_token }}

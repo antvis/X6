@@ -2,32 +2,30 @@
   "name": "x6",
   "private": true,
   "workspaces": [
+    "packages/*",
     "examples/*",
-    "packages/*"
+    "sites/*"
   ],
   "scripts": {
-    "bootstrap": "lerna bootstrap && yarn build:dev",
     "lk": "lerna link",
     "ls": "lerna list",
     "lv": "lerna version --no-push",
     "changed": "lerna changed",
     "updated": "lerna updated",
-    "publish": "lerna exec --ignore @antv/x6-example-* --stream -- yarn publish",
-    "release": "run-s version publish",
     "changelog": "lerna-changelog",
-    "contributor": "git-contributor",
-    "clean": "lerna run clean",
+    "build:dev": "sh ./scripts/build-dev",
+    "build:apps": "sh ./scripts/build-apps",
+    "build:demos": "sh ./scripts/build-demos",
+    "build:sites": "sh ./scripts/build-sites",
     "build": "lerna run build",
-    "build:dev": "sh ./scripts/bin/build-dev",
-    "build:apps": "sh ./scripts/bin/build-apps",
-    "build:demos": "sh ./scripts/bin/build-demos",
-    "build:sites": "sh ./scripts/bin/build-sites",
     "lint": "lerna run lint",
-    "test": "lerna run test --ignore @antv/x6-example-* --ignore @antv/x6-app-* --stream",
+    "test": "lerna run test --no-private",
     "prettier": "prettier --write '**/*.{js,jsx,tsx,ts,less,md,json}'",
     "pretty-quick": "pretty-quick",
+    "clean": "lerna run clean",
     "clear": "lerna run clean && lerna clean -y",
     "clean:modules": "rimraf node_modules",
+    "bootstrap": "lerna bootstrap && yarn build:dev",
     "reboot": "run-s clear clean:modules bootstrap"
   },
   "husky": {
@@ -35,12 +33,12 @@
       "prepare-commit-msg": "devmoji -e --lint",
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
       "pre-commit": "lint-staged && lerna run --concurrency 1 --stream precommit",
-      "prepush": "./scripts/bin/pre-push-check"
+      "prepush": "./scripts/pre-push-check"
     }
   },
   "lint-staged": {
     "**/*.{js,jsx,tsx,ts,less,md,json}": [
-      "pretty-quick — staged"
+      "pretty-quick —-staged"
     ]
   },
   "commitlint": {
@@ -56,7 +54,6 @@
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-config-prettier": "^6.7.0",
     "eslint-plugin-import": "^2.18.2",
-    "git-contributor": "^1.0.10",
     "husky": "^4.2.5",
     "karma": "^5.1.1",
     "karma-chrome-launcher": "^3.1.0",

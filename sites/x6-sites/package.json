@@ -1,0 +1,44 @@
+{
+  "private": true,
+  "name": "@antv/x6-sites",
+  "version": "0.10.76",
+  "description": "X6 sites deployed on gh-pages",
+  "scripts": {
+    "clean": "gatsby clean",
+    "start": "gatsby develop -o -p 8080",
+    "build": "yarn clean && gatsby build --prefix-paths",
+    "deploy": "yarn build && gh-pages -d public"
+  },
+  "keywords": [
+    "x6",
+    "antv",
+    "sites"
+  ],
+  "dependencies": {
+    "@antv/gatsby-theme-antv": "^0.11.7",
+    "@antv/x6": "latest",
+    "antd": "^4.4.2",
+    "express": "^4.17.1",
+    "gatsby": "^2.24.2",
+    "gatsby-plugin-static-folders": "^1.0.1",
+    "gatsby-remark-code-repls": "^3.2.10",
+    "gatsby-remark-custom-blocks": "^2.3.10",
+    "gh-pages": "^3.0.0",
+    "react-i18next": "^11.5.0"
+  },
+  "peerDependencies": {
+    "react": ">=16.8.6",
+    "react-dom": ">=16.8.6"
+  },
+  "author": {
+    "name": "bubkoo",
+    "email": "bubkoo.wy@gmail.com"
+  },
+  "contributors": [],
+  "license": "MIT",
+  "homepage": "https://github.com/antvis/x6",
+  "bugs": {
+    "url": "https://github.com/antvis/x6/issues"
+  },
+  "repository": "https://github.com/antvis/x6/tree/master/sites/x6-sites"
+}

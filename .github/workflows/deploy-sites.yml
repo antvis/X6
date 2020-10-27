@@ -4,11 +4,11 @@ on:
     branches:
       - master
     paths:
-      - packages/x6-sites/**
-      - examples/x6-example-sites/**
-      - examples/x6-example-sites-helper/**
+      - sites/x6-sites/**
+      - sites/x6-sites-demos/**
+      - sites/x6-sites-demos-helper/**
 jobs:
-  deploy:
+  run:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -33,7 +33,7 @@ jobs:
         with:
           path: |
             node_modules
-            examples/x6-example-sites/packages/**/node_modules
+            sites/x6-sites-demos/packages/**/node_modules
           key: ${{ runner.os }}-webpack-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-webpack-
@@ -41,8 +41,8 @@ jobs:
       - name: 💩　Setup sites cache
         uses: actions/cache@v2
         with:
-          path: packages/x6-sites/static/demos
-          key: ${{ runner.os }}-sites-${{ hashFiles('./packages/x6/package.json', './examples/x6-example-sites/**/src') }}
+          path: sites/x6-sites/static/demos
+          key: ${{ runner.os }}-sites-${{ hashFiles('./packages/x6/package.json', './sites/x6-sites-demos/**/src') }}
           restore-keys: |
             ${{ runner.os }}-sites-
       ##
@@ -63,15 +63,9 @@ jobs:
       - name: ✨　Build Sites
         run: |
           yarn build:sites
-      - name: 🔑　Generate token
-        uses: bubkoo/use-app-token@v1
-        id: generate_token
-        with:
-          app_id: ${{ secrets.APP_ID }}
-          private_key: ${{ secrets.PRIVATE_KEY }}
       - name: ✅　Deploy sites
         uses: peaceiris/actions-gh-pages@v3
         with:
-          github_token: ${{ steps.generate_token.outputs.token }}
-          publish_dir: ./packages/x6-sites/public
+          github_token: ${{ secrets.bot_token }}
+          publish_dir: ./sites/x6-sites/public
           publish_branch: gh-pages

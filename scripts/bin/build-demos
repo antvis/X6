@@ -1,3 +1,0 @@
-#!/bin/sh
-
-(cd examples/x6-example-sites && yarn deploy)

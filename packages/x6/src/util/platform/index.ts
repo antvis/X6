@@ -86,4 +86,27 @@ export namespace Platform {
   export function isApplyingHMR() {
     return getHMRStatus() === 'apply'
   }
+
+  // This function checks if the specified event is supported by the browser.
+  // Source: http://perfectionkills.com/detecting-event-support-without-browser-sniffing/
+  const TAGNAMES: { [event: string]: string } = {
+    select: 'input',
+    change: 'input',
+    submit: 'form',
+    reset: 'form',
+    error: 'img',
+    load: 'img',
+    abort: 'img',
+  }
+
+  export function isEventSupported(event: string) {
+    const elem = document.createElement(TAGNAMES[event] || 'div')
+    const eventName = `on${event}`
+    let isSupported = eventName in elem
+    if (!isSupported) {
+      elem.setAttribute(eventName, 'return;')
+      isSupported = typeof (elem as any)[eventName] === 'function'
+    }
+    return isSupported
+  }
 }

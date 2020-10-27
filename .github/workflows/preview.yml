@@ -2,11 +2,11 @@ name: 🔂　Surge PR Preview
 on:
   pull_request:
     paths:
-      - packages/x6-sites/**
-      - examples/x6-example-sites/**
-      - examples/x6-example-sites-helper/**
+      - sites/x6-sites/**
+      - sites/x6-sites-demos/**
+      - sites/x6-sites-demos-helper/**
 jobs:
-  preview:
+  run:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -29,7 +29,7 @@ jobs:
         with:
           path: |
             node_modules
-            examples/x6-example-sites/packages/**/node_modules
+            sites/x6-sites-demos/packages/**/node_modules
           key: ${{ runner.os }}-webpack-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-webpack-
@@ -37,8 +37,8 @@ jobs:
       - name: 💩　Setup sites cache
         uses: actions/cache@v2
         with:
-          path: packages/x6-sites/static/demos
-          key: ${{ runner.os }}-sites-${{ hashFiles('./packages/x6/package.json', './examples/x6-example-sites/**/src') }}
+          path: sites/x6-sites/static/demos
+          key: ${{ runner.os }}-sites-${{ hashFiles('./packages/x6/package.json', './sites/x6-sites-demos/**/src') }}
           restore-keys: |
             ${{ runner.os }}-sites-
       - name: 🎉　Use Node.js ${{ matrix.node-version }}
@@ -60,17 +60,11 @@ jobs:
       - name: ✨　Build Sites
         run: |
           yarn build:sites
-      - name: 🔑　Generate token
-        uses: bubkoo/use-app-token@v1
-        id: generate_token
-        with:
-          app_id: ${{ secrets.APP_ID }}
-          private_key: ${{ secrets.PRIVATE_KEY }}
       - name: ✅　Deploy Sites
         uses: afc163/surge-preview@v1
         with:
           surge_token: ${{ secrets.SURGE_TOKEN }}
-          github_token: ${{ steps.generate_token.outputs.token }}
+          github_token: ${{ secrets.bot_token }}
           build: |
             echo Create sites preview
-          dist: packages/x6-sites/public
+          dist: sites/x6-sites/public

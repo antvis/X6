@@ -1,17 +1,10 @@
 name: 🏷️　Label(File Paths)
 on: pull_request
 jobs:
-  label:
+  run:
     runs-on: ubuntu-latest
     steps:
-      - name: 🔑　Generate token
-        uses: bubkoo/use-app-token@v1
-        id: generate_token
+      - uses: actions/labeler@v2
         with:
-          app_id: ${{ secrets.APP_ID }}
-          private_key: ${{ secrets.PRIVATE_KEY }}
-      - name: 🎗　Label
-        uses: actions/labeler@v2
-        with:
-          repo-token: "${{ steps.generate_token.outputs.token }}"
+          repo-token: ${{ secrets.bot_token }}
           configuration-path: .github/workflows/config/pr-label-file-paths.yml

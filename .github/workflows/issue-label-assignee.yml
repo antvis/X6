@@ -8,17 +8,10 @@ on:
   pull_request:
     types: [opened]
 jobs:
-  label:
+  run:
     runs-on: ubuntu-latest
     steps:
-      - name: 🔑　Generate token
-        uses: bubkoo/use-app-token@v1
-        id: generate_token
-        with:
-          app_id: ${{ secrets.APP_ID }}
-          private_key: ${{ secrets.PRIVATE_KEY }}
-      - name: 🎗　Label
-        uses: Naturalclar/issue-action@v2.0.1
+      - uses: Naturalclar/issue-action@v2.0.1
         with:
           title-or-body: title
           parameters: >
@@ -32,4 +25,4 @@ jobs:
                 "labels": ["help-wanted"]
               }
             ]
-          github-token: ${{ steps.generate_token.outputs.token }}
+          github-token: ${{ secrets.bot_token }}
