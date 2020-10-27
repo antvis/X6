@@ -1,7 +1,7 @@
 name: 🔑　Update Bot Token
 on:
   schedule:
-    - cron: '0 * * * *'
+    - cron: '0 */4 * * *'
 jobs:
   run:
     runs-on: ubuntu-latest
