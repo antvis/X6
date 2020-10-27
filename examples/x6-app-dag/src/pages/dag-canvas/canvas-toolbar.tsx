@@ -1,24 +1,24 @@
-import React, { useCallback, useState } from 'react';
-import { Toolbar } from '@antv/x6-components';
+import React, { useCallback, useState } from 'react'
+import { Toolbar } from '@antv/x6-components'
 import {
   GatewayOutlined,
   GroupOutlined,
   PlaySquareOutlined,
   RollbackOutlined,
   UngroupOutlined,
-} from '@ant-design/icons';
-import { useObservableState } from '@/common/hooks/useObservableState';
-import { RxInput } from '@/component/rx-component/rx-input';
-import { showModal } from '@/component/modal';
-import { addNodeGroup } from '@/mock/graph';
-import { BehaviorSubject } from 'rxjs';
-import { useExperimentGraph } from '@/pages/rx-models/experiment-graph';
-import { formatGroupInfoToNodeMeta } from '@/pages/rx-models/graph-util';
-import styles from './canvas-toolbar.less';
+} from '@ant-design/icons'
+import { useObservableState } from '@/common/hooks/useObservableState'
+import { RxInput } from '@/component/rx-component/rx-input'
+import { showModal } from '@/component/modal'
+import { addNodeGroup } from '@/mock/graph'
+import { BehaviorSubject } from 'rxjs'
+import { useExperimentGraph } from '@/pages/rx-models/experiment-graph'
+import { formatGroupInfoToNodeMeta } from '@/pages/rx-models/graph-util'
+import styles from './canvas-toolbar.less'
 
-const { Item, Group } = Toolbar;
+const { Item, Group } = Toolbar
 interface Props {
-  experimentId: string;
+  experimentId: string
 }
 
 enum Operations {
@@ -30,31 +30,31 @@ enum Operations {
 }
 
 export const CanvasToolbar: React.FC<Props> = (props) => {
-  const { experimentId } = props;
-  const [selectionEnabled, setSelectionEnabled] = useState<boolean>(false);
-  const expGraph = useExperimentGraph(experimentId);
-  console.log(expGraph);
+  const { experimentId } = props
+  const [selectionEnabled, setSelectionEnabled] = useState<boolean>(false)
+  const expGraph = useExperimentGraph(experimentId)
+  console.log(expGraph)
   const [activeNodeInstance] = useObservableState(
     () => expGraph.activeNodeInstance$,
-  );
-  const [selectedNodes] = useObservableState(() => expGraph.selectedNodes$);
-  const [selectedGroup] = useObservableState(() => expGraph.selectedGroup$);
+  )
+  const [selectedNodes] = useObservableState(() => expGraph.selectedNodes$)
+  const [selectedGroup] = useObservableState(() => expGraph.selectedGroup$)
 
   const onClickItem = useCallback(
     (itemName: string) => {
       switch (itemName) {
         case Operations.UNDO_DELETE:
-          expGraph.undoDeleteNode();
-          break;
+          expGraph.undoDeleteNode()
+          break
         case Operations.GROUP_SELECT:
-          expGraph.toggleSelectionEnabled();
-          setSelectionEnabled((enabled) => !enabled);
-          break;
+          expGraph.toggleSelectionEnabled()
+          setSelectionEnabled((enabled) => !enabled)
+          break
         case Operations.RUN_SELECTED:
-          expGraph.runGraph();
-          break;
+          expGraph.runGraph()
+          break
         case Operations.NEW_GROUP: {
-          const value$ = new BehaviorSubject('');
+          const value$ = new BehaviorSubject('')
           const modal = showModal({
             title: '新建分组',
             width: 450,
@@ -68,62 +68,62 @@ export const CanvasToolbar: React.FC<Props> = (props) => {
                 <RxInput
                   value={value$}
                   onChange={(e) => {
-                    value$.next(e.target.value);
+                    value$.next(e.target.value)
                   }}
                 />
               </div>
             ),
             onOk: () => {
-              modal.update({ okButtonProps: { loading: true } });
+              modal.update({ okButtonProps: { loading: true } })
               addNodeGroup(value$.getValue())
                 .then((res: any) => {
-                  modal.close();
+                  modal.close()
                   selectedNodes!.forEach((node) => {
-                    const nodeData = node.getData<any>();
-                    node.setData({ ...nodeData, groupId: res.data.group.id });
-                  });
+                    const nodeData = node.getData<any>()
+                    node.setData({ ...nodeData, groupId: res.data.group.id })
+                  })
                   const nodeMetas: any[] = selectedNodes!.map((node) =>
                     node.getData<any>(),
-                  );
+                  )
                   expGraph.addNode(
                     formatGroupInfoToNodeMeta(res.data.group, nodeMetas),
-                  );
-                  expGraph.unSelectNode();
+                  )
+                  expGraph.unSelectNode()
                 })
                 .finally(() => {
-                  modal.update({ okButtonProps: { loading: false } });
-                });
+                  modal.update({ okButtonProps: { loading: false } })
+                })
             },
-          });
-          break;
+          })
+          break
         }
         case Operations.UNGROUP: {
-          const descendantNodes = selectedGroup!.getDescendants();
-          const childNodes = descendantNodes.filter((node) => node.isNode());
+          const descendantNodes = selectedGroup!.getDescendants()
+          const childNodes = descendantNodes.filter((node) => node.isNode())
           childNodes.forEach((node) => {
-            const nodeData = node.getData<any>();
-            node.setData({ ...nodeData, groupId: 0 });
-          });
-          selectedGroup!.setChildren([]);
-          expGraph.deleteNodes(selectedGroup!);
-          expGraph.unSelectNode();
-          break;
+            const nodeData = node.getData<any>()
+            node.setData({ ...nodeData, groupId: 0 })
+          })
+          selectedGroup!.setChildren([])
+          expGraph.deleteNodes(selectedGroup!)
+          expGraph.unSelectNode()
+          break
         }
         default:
       }
     },
     [expGraph, activeNodeInstance, selectedNodes, experimentId, selectedGroup],
-  );
+  )
 
   const newGroupEnabled =
     !!selectedNodes &&
     !!selectedNodes.length &&
     selectedNodes.length > 1 &&
     selectedNodes.every((node) => {
-      return node.isNode() && !node.getData<any>().groupId;
-    });
+      return node.isNode() && !node.getData<any>().groupId
+    })
 
-  const unGroupEnabled = !selectedNodes?.length && !!selectedGroup;
+  const unGroupEnabled = !selectedNodes?.length && !!selectedGroup
 
   return (
     <div className={styles.canvasToolbar}>
@@ -165,5 +165,5 @@ export const CanvasToolbar: React.FC<Props> = (props) => {
         </Group>
       </Toolbar>
     </div>
-  );
-};
+  )
+}

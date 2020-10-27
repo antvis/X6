@@ -1,22 +1,22 @@
-import React from 'react';
-import { Layout } from 'antd';
-import { useObservableState } from '@/common/hooks/useObservableState';
-import { useExperimentGraph } from '@/pages/rx-models/experiment-graph';
-import { BulbOutlined } from '@ant-design/icons';
-import { SimpleLogo } from './logo';
-import { ExperimentTitle } from './experiment-title';
+import React from 'react'
+import { Layout } from 'antd'
+import { useObservableState } from '@/common/hooks/useObservableState'
+import { useExperimentGraph } from '@/pages/rx-models/experiment-graph'
+import { BulbOutlined } from '@ant-design/icons'
+import { SimpleLogo } from './logo'
+import { ExperimentTitle } from './experiment-title'
 
-import css from './index.less';
+import css from './index.less'
 
-const { Header } = Layout;
+const { Header } = Layout
 
 interface IProps {
-  experimentId: string;
+  experimentId: string
 }
 
 export const GuideHeader: React.FC<IProps> = (props) => {
-  const expGraph = useExperimentGraph(props.experimentId);
-  const [activeExperiment] = useObservableState(expGraph.experiment$);
+  const expGraph = useExperimentGraph(props.experimentId)
+  const [activeExperiment] = useObservableState(expGraph.experiment$)
 
   return (
     <>
@@ -33,5 +33,5 @@ export const GuideHeader: React.FC<IProps> = (props) => {
         </div>
       </Header>
     </>
-  );
-};
+  )
+}

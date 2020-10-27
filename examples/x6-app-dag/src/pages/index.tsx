@@ -1,24 +1,24 @@
-import React from 'react';
-import classNames from 'classnames';
-import { Layout } from 'antd';
-import { RouteComponentProps } from 'react-router';
-import { DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
-import { GuideHeader } from '@/layout/header';
-import { ComponentTreePanel } from './component-tree-panel';
-import { ComponentConfigPanel } from './component-config-panel';
-import { DAGCanvas } from './dag-canvas';
+import React from 'react'
+import classNames from 'classnames'
+import { Layout } from 'antd'
+import { RouteComponentProps } from 'react-router'
+import { DndProvider } from 'react-dnd'
+import { HTML5Backend } from 'react-dnd-html5-backend'
+import { GuideHeader } from '@/layout/header'
+import { ComponentTreePanel } from './component-tree-panel'
+import { ComponentConfigPanel } from './component-config-panel'
+import { DAGCanvas } from './dag-canvas'
 
-import styles from './index.less';
+import styles from './index.less'
 
 interface Props extends RouteComponentProps<{ experimentId: string }> {
-  experimentId: string;
+  experimentId: string
 }
 
-const { Content } = Layout;
+const { Content } = Layout
 
 const DagDemo: React.FC<Props> = (props) => {
-  const { experimentId = '1' } = props;
+  const { experimentId = '1' } = props
 
   return (
     <Layout className={styles.layout}>
@@ -46,7 +46,7 @@ const DagDemo: React.FC<Props> = (props) => {
         </div>
       </Content>
     </Layout>
-  );
-};
+  )
+}
 
-export default DagDemo;
+export default DagDemo

@@ -1,25 +1,25 @@
-import React from 'react';
-import { Tabs } from 'antd';
-import classNames from 'classnames';
-import { useObservableState } from '@/common/hooks/useObservableState';
-import { useExperimentGraph } from '@/pages/rx-models/experiment-graph';
-import { ExperimentForm } from './form/experiment-config';
-import { NodeFormDemo } from './form/node-config';
-import css from './index.less';
+import React from 'react'
+import { Tabs } from 'antd'
+import classNames from 'classnames'
+import { useObservableState } from '@/common/hooks/useObservableState'
+import { useExperimentGraph } from '@/pages/rx-models/experiment-graph'
+import { ExperimentForm } from './form/experiment-config'
+import { NodeFormDemo } from './form/node-config'
+import css from './index.less'
 
 interface Props {
-  experimentId: string;
-  className?: string;
+  experimentId: string
+  className?: string
 }
 
 export const ComponentConfigPanel: React.FC<Props> = (props) => {
-  const { experimentId, className } = props;
-  const expGraph = useExperimentGraph(experimentId);
+  const { experimentId, className } = props
+  const expGraph = useExperimentGraph(experimentId)
   const [activeNodeInstance] = useObservableState(
     () => expGraph.activeNodeInstance$,
-  );
+  )
 
-  const nodeId = activeNodeInstance && activeNodeInstance.id;
+  const nodeId = activeNodeInstance && activeNodeInstance.id
 
   return (
     <div className={classNames(className, css.confPanel)}>
@@ -52,5 +52,5 @@ export const ComponentConfigPanel: React.FC<Props> = (props) => {
       </div>
       <div className={css.footer} />
     </div>
-  );
-};
+  )
+}

@@ -1,51 +1,51 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useRef } from 'react'
 import {
   PlaySquareOutlined,
   EditOutlined,
   CopyOutlined,
   DeleteOutlined,
-} from '@ant-design/icons';
-import { useClickAway } from 'ahooks';
-import { useObservableState } from '@/common/hooks/useObservableState';
-import { Menu } from '@antv/x6-components';
-import { useExperimentGraph } from '@/pages/rx-models/experiment-graph';
-import { graphPointToOffsetPoint } from '@/pages/common//utils/graph';
-import styles from './index.less';
+} from '@ant-design/icons'
+import { useClickAway } from 'ahooks'
+import { useObservableState } from '@/common/hooks/useObservableState'
+import { Menu } from '@antv/x6-components'
+import { useExperimentGraph } from '@/pages/rx-models/experiment-graph'
+import { graphPointToOffsetPoint } from '@/pages/common//utils/graph'
+import styles from './index.less'
 
 interface Props {
-  experimentId: string;
-  data: any;
+  experimentId: string
+  data: any
 }
 
 export const NodeContextMenu: React.FC<Props> = (props) => {
-  const { experimentId, data } = props;
-  const containerRef = useRef<HTMLDivElement>(null as any);
-  const expGraph = useExperimentGraph(experimentId);
+  const { experimentId, data } = props
+  const containerRef = useRef<HTMLDivElement>(null as any)
+  const expGraph = useExperimentGraph(experimentId)
   const [activeNodeInstance] = useObservableState(
     () => expGraph.activeNodeInstance$,
-  );
+  )
 
   useClickAway(() => {
-    expGraph.clearContextMenuInfo();
-  }, containerRef);
+    expGraph.clearContextMenuInfo()
+  }, containerRef)
 
   const onNodeCopy = useCallback(async () => {
-    await expGraph.onCopyNode(data.node);
-  }, [expGraph, activeNodeInstance]);
+    await expGraph.onCopyNode(data.node)
+  }, [expGraph, activeNodeInstance])
 
   const onNodeDel = useCallback(async () => {
-    await expGraph.requestDeleteNodes([data.node.id]);
-  }, [expGraph, activeNodeInstance]);
+    await expGraph.requestDeleteNodes([data.node.id])
+  }, [expGraph, activeNodeInstance])
 
   const onGraphRun = useCallback(async () => {
-    await expGraph.runGraph();
-  }, [expGraph]);
+    await expGraph.runGraph()
+  }, [expGraph])
 
   const { x: left, y: top } = graphPointToOffsetPoint(
     expGraph.graph!,
     data,
     expGraph.wrapper!,
-  );
+  )
 
   return (
     <div
@@ -65,5 +65,5 @@ export const NodeContextMenu: React.FC<Props> = (props) => {
         />
       </Menu>
     </div>
-  );
-};
+  )
+}

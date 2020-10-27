@@ -1,25 +1,25 @@
-import React from 'react';
-import { Node } from '@antv/x6';
-import classNames from 'classnames';
-import { ConfigProvider } from 'antd';
-import { filter, map } from 'rxjs/operators';
-import { DatabaseFilled } from '@ant-design/icons';
-import { useObservableState } from '@/common/hooks/useObservableState';
-import { ANT_PREFIX } from '@/constants/global';
-import { NExecutionStatus } from '@/pages/rx-models/typing';
-import { useExperimentGraph } from '@/pages/rx-models/experiment-graph';
-import { NodeStatus } from '@/pages/common/graph-common/node-status';
-import { NodePopover } from '../../common/graph-common/node-popover';
-import styles from './node-element.less';
+import React from 'react'
+import { Node } from '@antv/x6'
+import classNames from 'classnames'
+import { ConfigProvider } from 'antd'
+import { filter, map } from 'rxjs/operators'
+import { DatabaseFilled } from '@ant-design/icons'
+import { useObservableState } from '@/common/hooks/useObservableState'
+import { ANT_PREFIX } from '@/constants/global'
+import { NExecutionStatus } from '@/pages/rx-models/typing'
+import { useExperimentGraph } from '@/pages/rx-models/experiment-graph'
+import { NodeStatus } from '@/pages/common/graph-common/node-status'
+import { NodePopover } from '../../common/graph-common/node-popover'
+import styles from './node-element.less'
 
 interface Props {
-  experimentId: string;
-  node?: Node;
+  experimentId: string
+  node?: Node
 }
 
 export const NodeElement: React.FC<Props> = (props) => {
-  const { experimentId, node } = props;
-  const experimentGraph = useExperimentGraph(experimentId);
+  const { experimentId, node } = props
+  const experimentGraph = useExperimentGraph(experimentId)
   const [instanceStatus] = useObservableState(
     () =>
       experimentGraph.executionStatus$.pipe(
@@ -27,10 +27,10 @@ export const NodeElement: React.FC<Props> = (props) => {
         map((x) => x.execInfo),
       ),
     {} as NExecutionStatus.ExecutionStatus['execInfo'],
-  );
-  const data: any = node?.getData() || {};
-  const { name, id, selected } = data;
-  const nodeStatus = instanceStatus[id] || {};
+  )
+  const data: any = node?.getData() || {}
+  const { name, id, selected } = data
+  const nodeStatus = instanceStatus[id] || {}
 
   return (
     <ConfigProvider prefixCls={ANT_PREFIX}>
@@ -55,5 +55,5 @@ export const NodeElement: React.FC<Props> = (props) => {
         </div>
       </NodePopover>
     </ConfigProvider>
-  );
-};
+  )
+}

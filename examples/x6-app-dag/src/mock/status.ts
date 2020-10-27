@@ -1,6 +1,6 @@
-import get from 'lodash/get';
-import set from 'lodash/set';
-import cloneDeep from 'lodash/cloneDeep';
+import get from 'lodash/get'
+import set from 'lodash/set'
+import cloneDeep from 'lodash/cloneDeep'
 
 let state = {
   idx: 0,
@@ -50,14 +50,14 @@ let state = {
     },
     Lang: 'zh_CN',
   } as any,
-};
+}
 
 export const runGraph = async (nodes: any[]) => {
-  const newState = getStatus();
-  newState.data.instStatus = {};
-  newState.data.execInfo = {};
+  const newState = getStatus()
+  newState.data.instStatus = {}
+  newState.data.execInfo = {}
   nodes.forEach((node) => {
-    newState.data.instStatus[node.id] = 'default';
+    newState.data.instStatus[node.id] = 'default'
     newState.data.execInfo[node.id] = {
       jobStatus: 'default',
       defName: node.name,
@@ -65,44 +65,44 @@ export const runGraph = async (nodes: any[]) => {
       endTime: '2020-10-19 13:32:02',
       name: node.name,
       id: 10571196,
-    };
-  });
-  state.running = true;
-  state.idx = 0;
-  state.statusRes = newState;
-  return { success: true };
-};
+    }
+  })
+  state.running = true
+  state.idx = 0
+  state.statusRes = newState
+  return { success: true }
+}
 
 export const stopGraphRun = () => {
-  state.running = false;
-  state.idx = 0;
-  return { success: true };
-};
+  state.running = false
+  state.idx = 0
+  return { success: true }
+}
 
-const getStatus = () => cloneDeep(state.statusRes);
+const getStatus = () => cloneDeep(state.statusRes)
 
 export const queryGraphStatus = async () => {
-  const newState = getStatus();
+  const newState = getStatus()
   // console.log('Call Api QueryGraphStatus', state)
   if (state.running) {
-    const { instStatus, execInfo } = newState.data;
-    const idList = Object.keys(instStatus);
+    const { instStatus, execInfo } = newState.data
+    const idList = Object.keys(instStatus)
     if (state.idx === idList.length) {
-      state.idx = 0;
-      state.running = false;
+      state.idx = 0
+      state.running = false
       idList.forEach((id) => {
-        set(instStatus, id, 'success');
-        set(execInfo, `${id}.jobStatus`, 'success');
-        set(newState, 'data.status', 'success');
-      });
-      return newState;
+        set(instStatus, id, 'success')
+        set(execInfo, `${id}.jobStatus`, 'success')
+        set(newState, 'data.status', 'success')
+      })
+      return newState
     }
-    const key = get(idList, state.idx);
-    set(instStatus, key, 'running');
-    set(execInfo, `${key}.jobStatus`, 'running');
-    set(newState, 'data.status', 'running');
-    state.idx += 1;
-    return newState;
+    const key = get(idList, state.idx)
+    set(instStatus, key, 'running')
+    set(execInfo, `${key}.jobStatus`, 'running')
+    set(newState, 'data.status', 'running')
+    state.idx += 1
+    return newState
   }
-  return newState;
-};
+  return newState
+}

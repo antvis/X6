@@ -1,13 +1,13 @@
-import React from 'react';
-import { Form, Input } from 'antd';
-import { useObservableState } from '@/common/hooks/useObservableState';
-import { useExperimentGraph } from '@/pages/rx-models/experiment-graph';
-import 'antd/lib/style/index.css';
+import React from 'react'
+import { Form, Input } from 'antd'
+import { useObservableState } from '@/common/hooks/useObservableState'
+import { useExperimentGraph } from '@/pages/rx-models/experiment-graph'
+import 'antd/lib/style/index.css'
 
 export interface Props {
-  name: string;
-  experimentId: string;
-  nodeId: string;
+  name: string
+  experimentId: string
+  nodeId: string
 }
 
 export const NodeFormDemo: React.FC<Props> = ({
@@ -15,16 +15,16 @@ export const NodeFormDemo: React.FC<Props> = ({
   nodeId,
   experimentId,
 }) => {
-  const [form] = Form.useForm();
+  const [form] = Form.useForm()
 
-  const expGraph = useExperimentGraph(experimentId);
-  const [node] = useObservableState(() => expGraph.activeNodeInstance$);
+  const expGraph = useExperimentGraph(experimentId)
+  const [node] = useObservableState(() => expGraph.activeNodeInstance$)
 
   const onValuesChange = async ({ name }: { name: string }) => {
     if (node.name !== name) {
-      await expGraph.renameNode(nodeId, name);
+      await expGraph.renameNode(nodeId, name)
     }
-  };
+  }
 
   return (
     <Form
@@ -47,5 +47,5 @@ export const NodeFormDemo: React.FC<Props> = ({
         <Input placeholder="input placeholder" />
       </Form.Item>
     </Form>
-  );
-};
+  )
+}

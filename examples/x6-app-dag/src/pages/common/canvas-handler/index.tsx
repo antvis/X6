@@ -1,24 +1,24 @@
-import React from 'react';
-import { Popover } from 'antd';
+import React from 'react'
+import { Popover } from 'antd'
 import {
   CompressOutlined,
   OneToOneOutlined,
   ZoomInOutlined,
   ZoomOutOutlined,
-} from '@ant-design/icons';
-import classNames from 'classnames';
-import styles from './index.less';
+} from '@ant-design/icons'
+import classNames from 'classnames'
+import styles from './index.less'
 
 interface Props {
-  className?: string;
-  onZoomIn: () => void;
-  onZoomOut: () => void;
-  onFitContent: () => void;
-  onRealContent: () => void;
+  className?: string
+  onZoomIn: () => void
+  onZoomOut: () => void
+  onFitContent: () => void
+  onRealContent: () => void
 }
 
 export const CanvasHandler: React.FC<Props> = (props) => {
-  const { className, onZoomIn, onZoomOut, onFitContent, onRealContent } = props;
+  const { className, onZoomIn, onZoomOut, onFitContent, onRealContent } = props
 
   return (
     <ul className={classNames(styles.handler, className)}>
@@ -59,5 +59,5 @@ export const CanvasHandler: React.FC<Props> = (props) => {
         </li>
       </Popover>
     </ul>
-  );
-};
+  )
+}

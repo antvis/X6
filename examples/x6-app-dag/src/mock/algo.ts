@@ -218,7 +218,7 @@ export const algoData = [
     codeName: 'evaluation',
     parentId: 'platformAlgo',
   },
-];
+]
 
 export const searchByKeyword = async (keyword: string) => {
   return Array(10)
@@ -263,6 +263,6 @@ export const searchByKeyword = async (keyword: string) => {
           description: '组件描述信息',
           id: idx,
         },
-      };
-    });
-};
+      }
+    })
+}

@@ -1,1 +1,1 @@
-export const ANT_PREFIX = 'ant';
+export const ANT_PREFIX = 'ant'

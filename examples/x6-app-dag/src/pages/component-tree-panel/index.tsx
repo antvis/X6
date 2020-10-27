@@ -1,18 +1,18 @@
-import React, { useState } from 'react';
-import classNames from 'classnames';
-import { ComponentSourceTree } from './component-source-tree';
-import styles from './index.less';
+import React, { useState } from 'react'
+import classNames from 'classnames'
+import { ComponentSourceTree } from './component-source-tree'
+import styles from './index.less'
 
 interface Props {
-  className?: string;
-  experimentId: string;
+  className?: string
+  experimentId: string
 }
 
-type TabOption = 'component' | 'model';
+type TabOption = 'component' | 'model'
 
 export const ComponentTreePanel: React.FC<Props> = (props) => {
-  const { className, experimentId } = props;
-  const [activeTab, setActiveTab] = useState<TabOption>('component');
+  const { className } = props
+  const [activeTab, setActiveTab] = useState<TabOption>('component')
 
   return (
     <div className={classNames(className, styles.nodeSourceTreeContainer)}>
@@ -22,7 +22,7 @@ export const ComponentTreePanel: React.FC<Props> = (props) => {
             [styles.active]: activeTab === 'component',
           })}
           onClick={() => {
-            setActiveTab('component');
+            setActiveTab('component')
           }}
         >
           组件库
@@ -34,5 +34,5 @@ export const ComponentTreePanel: React.FC<Props> = (props) => {
         />
       </div>
     </div>
-  );
-};
+  )
+}

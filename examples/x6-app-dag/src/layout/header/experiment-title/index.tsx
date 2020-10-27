@@ -1,8 +1,8 @@
-import React from 'react';
-import css from './index.less';
+import React from 'react'
+import css from './index.less'
 
 export interface IProps {
-  experimentName?: string;
+  experimentName?: string
 }
 
 export const ExperimentTitle: React.FC<IProps> = ({ experimentName }) => {
@@ -10,5 +10,5 @@ export const ExperimentTitle: React.FC<IProps> = ({ experimentName }) => {
     <div className={css.wrap}>
       <span className={css.name}> {experimentName} </span>
     </div>
-  );
-};
+  )
+}

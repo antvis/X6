@@ -1,27 +1,27 @@
-import React, { useCallback, useState, useRef } from 'react';
-import { toLower, unescape } from 'lodash-es';
-import { Popover, Tag } from 'antd';
-import { DragSource, ConnectDragPreview, ConnectDragSource } from 'react-dnd';
-import { DatabaseFilled, ReadOutlined } from '@ant-design/icons';
-import marked from 'marked';
-import { useSafeSetHTML } from '@/common/hooks/useSafeSetHTML';
-import { DRAGGABLE_ALGO_COMPONENT } from '@/constants/graph';
-import styles from './node-title.less';
+import React, { useCallback, useState, useRef } from 'react'
+import { toLower, unescape } from 'lodash-es'
+import { Popover, Tag } from 'antd'
+import { DragSource, ConnectDragPreview, ConnectDragSource } from 'react-dnd'
+import { DatabaseFilled, ReadOutlined } from '@ant-design/icons'
+import marked from 'marked'
+import { useSafeSetHTML } from '@/common/hooks/useSafeSetHTML'
+import { DRAGGABLE_ALGO_COMPONENT } from '@/constants/graph'
+import styles from './node-title.less'
 
 marked.setOptions({
   gfm: true,
   breaks: true,
-});
+})
 
 const Document = (props: { node: any }) => {
-  const { node } = props;
-  const descriptionNodeRef = useRef<HTMLDivElement>(null);
-  const { description, id, tag = '' } = node;
+  const { node } = props
+  const descriptionNodeRef = useRef<HTMLDivElement>(null)
+  const { description, id, tag = '' } = node
 
   const htmlStr = marked(
     unescape(description || '暂无文档').replace(/\\n/gi, ' \n '),
-  );
-  useSafeSetHTML(descriptionNodeRef, htmlStr);
+  )
+  useSafeSetHTML(descriptionNodeRef, htmlStr)
 
   return (
     <div className={styles.popover}>
@@ -42,15 +42,15 @@ const Document = (props: { node: any }) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
 interface Props {
-  node: any;
-  searchKey: string;
-  isDragging: boolean;
-  connectDragSource: ConnectDragSource;
-  connectDragPreview: ConnectDragPreview;
+  node: any
+  searchKey: string
+  isDragging: boolean
+  connectDragSource: ConnectDragSource
+  connectDragPreview: ConnectDragPreview
 }
 
 const InnerNodeTitle = (props: Props) => {
@@ -59,27 +59,27 @@ const InnerNodeTitle = (props: Props) => {
     searchKey = '',
     connectDragPreview,
     connectDragSource,
-  } = props;
-  const { name = '', isDir, parentCatId, description } = node;
-  const [visible, setVisible] = useState<boolean>(false);
+  } = props
+  const { name = '', isDir } = node
+  const [visible, setVisible] = useState<boolean>(false)
   const onMouseIn = useCallback(() => {
-    setVisible(true);
-  }, []);
+    setVisible(true)
+  }, [])
   const onMouseOut = useCallback(() => {
-    setVisible(false);
-  }, []);
+    setVisible(false)
+  }, [])
 
   // 文件夹
   if (isDir) {
-    return <div className={styles.folder}>{name}</div>;
+    return <div className={styles.folder}>{name}</div>
   }
 
-  const keywordIdx = searchKey ? toLower(name).indexOf(toLower(searchKey)) : -1;
+  const keywordIdx = searchKey ? toLower(name).indexOf(toLower(searchKey)) : -1
 
   // 搜索高亮
   if (keywordIdx > -1) {
-    const beforeStr = name.substr(0, keywordIdx);
-    const afterStr = name.substr(keywordIdx + searchKey.length);
+    const beforeStr = name.substr(0, keywordIdx)
+    const afterStr = name.substr(keywordIdx + searchKey.length)
 
     return connectDragPreview(
       connectDragSource(
@@ -92,7 +92,7 @@ const InnerNodeTitle = (props: Props) => {
           </span>
         </span>,
       ),
-    );
+    )
   }
 
   return (
@@ -123,8 +123,8 @@ const InnerNodeTitle = (props: Props) => {
         </Popover>
       )}
     </div>
-  );
-};
+  )
+}
 
 export const NodeTitle = DragSource(
   DRAGGABLE_ALGO_COMPONENT,
@@ -138,4 +138,4 @@ export const NodeTitle = DragSource(
     connectDragPreview: connect.dragPreview(),
     isDragging: monitor.isDragging(),
   }),
-)(InnerNodeTitle);
+)(InnerNodeTitle)

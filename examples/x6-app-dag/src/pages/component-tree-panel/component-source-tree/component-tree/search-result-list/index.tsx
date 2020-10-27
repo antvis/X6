@@ -1,13 +1,13 @@
-import React, { useCallback } from 'react';
-import { useModel } from 'umi';
-import { Spin } from 'antd';
-import { ProfileTwoTone } from '@ant-design/icons';
+import React, { useCallback } from 'react'
+import { useModel } from 'umi'
+import { Spin } from 'antd'
+import { ProfileTwoTone } from '@ant-design/icons'
 
-import { ComponentItem } from './component-item';
-import styles from './index.less';
+import { ComponentItem } from './component-item'
+import styles from './index.less'
 
 export const SearchResultList = () => {
-  const { keyword, searchList, loading } = useModel('guide-algo-component');
+  const { keyword, searchList, loading } = useModel('guide-algo-component')
 
   const renderList = useCallback((list: any[], keywd: string) => {
     return (
@@ -18,8 +18,8 @@ export const SearchResultList = () => {
           </li>
         ))}
       </ul>
-    );
-  }, []);
+    )
+  }, [])
 
   const renderEmptyResult = useCallback(() => {
     return (
@@ -29,8 +29,8 @@ export const SearchResultList = () => {
           {'没有搜索结果'}
         </p>
       </>
-    );
-  }, []);
+    )
+  }, [])
 
   return (
     <Spin spinning={loading}>
@@ -40,5 +40,5 @@ export const SearchResultList = () => {
           : renderEmptyResult()}
       </div>
     </Spin>
-  );
-};
+  )
+}

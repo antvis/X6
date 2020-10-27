@@ -1,10 +1,10 @@
-import { Shape } from '@antv/x6';
-import './edge.less';
+import { Shape } from '@antv/x6'
+import './edge.less'
 
 export class BaseEdge extends Shape.Edge {
   // eslint-disable-next-line class-methods-use-this
   isGroupEdge() {
-    return false;
+    return false
   }
 }
 
@@ -24,15 +24,15 @@ GuideEdge.config({
       },
     },
   },
-});
+})
 
 export class X6DemoGroupEdge extends GuideEdge {
   // eslint-disable-next-line class-methods-use-this
   isGroupEdge() {
-    return true;
+    return true
   }
 }
 
 X6DemoGroupEdge.config({
   shape: 'X6DemoGroupEdge',
-});
+})

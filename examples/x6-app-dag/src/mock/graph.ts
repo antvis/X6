@@ -1,13 +1,13 @@
-import random from 'lodash/random';
+import random from 'lodash/random'
 
 interface NodeParams {
-  name: string;
-  x: number;
-  y: number;
+  name: string
+  x: number
+  y: number
 }
 
 export const copyNode = ({ name, x, y }: NodeParams) => {
-  const id = `${Date.now()}`;
+  const id = `${Date.now()}`
   return {
     id,
     name,
@@ -47,10 +47,10 @@ export const copyNode = ({ name, x, y }: NodeParams) => {
     category: 'source',
     status: 3,
     groupId: 0,
-  };
-};
+  }
+}
 export const addNode = ({ name, x, y }: NodeParams) => {
-  const id = `${Date.now()}`;
+  const id = `${Date.now()}`
   return {
     id,
     name,
@@ -90,8 +90,8 @@ export const addNode = ({ name, x, y }: NodeParams) => {
     category: 'source',
     status: 3,
     groupId: 0,
-  };
-};
+  }
+}
 
 export const queryGraph = (id: string) => {
   return {
@@ -99,8 +99,8 @@ export const queryGraph = (id: string) => {
     success: true,
     data: initData,
     Lang: 'zh_CN',
-  };
-};
+  }
+}
 
 export const addNodeGroup = async (groupName: string) => {
   return {
@@ -111,8 +111,8 @@ export const addNodeGroup = async (groupName: string) => {
         id: Date.now(),
       },
     },
-  };
-};
+  }
+}
 
 const initData = {
   nodes: [
@@ -717,4 +717,4 @@ const initData = {
       inputPortId: '1603716868041_in_1',
     },
   ],
-};
+}

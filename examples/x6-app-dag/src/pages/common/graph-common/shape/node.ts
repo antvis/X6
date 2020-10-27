@@ -1,25 +1,25 @@
-import { Dom, Node } from '@antv/x6';
-import { ReactShape } from '@antv/x6-react-shape';
-import { NODE_WIDTH, NODE_HEIGHT } from '@/constants/graph';
+import { Dom, Node } from '@antv/x6'
+import { ReactShape } from '@antv/x6-react-shape'
+import { NODE_WIDTH, NODE_HEIGHT } from '@/constants/graph'
 
 export class BaseNode extends ReactShape {
   // eslint-disable-next-line class-methods-use-this
   isGroup() {
-    return false;
+    return false
   }
 }
 
 export class X6DemoNode extends BaseNode {
   getInPorts() {
-    return this.getPortsByGroup('in');
+    return this.getPortsByGroup('in')
   }
 
   getOutPorts() {
-    return this.getPortsByGroup('out');
+    return this.getPortsByGroup('out')
   }
 }
 
-Node.registry.register('ais-rect-port', X6DemoNode as any);
+Node.registry.register('ais-rect-port', X6DemoNode as any)
 
 X6DemoNode.config({
   width: NODE_WIDTH,
@@ -86,12 +86,12 @@ X6DemoNode.config({
       ],
     },
   ],
-});
+})
 
 export class X6DemoGroupNode extends BaseNode {
   // eslint-disable-next-line class-methods-use-this
   isGroup() {
-    return true;
+    return true
   }
 }
 
@@ -147,4 +147,4 @@ X6DemoGroupNode.config({
       ],
     },
   ],
-});
+})

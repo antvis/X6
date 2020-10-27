@@ -1,26 +1,25 @@
-import React, { useCallback } from 'react';
-import { useModel } from 'umi';
-import { Tree } from 'antd';
-import { FolderFilled, FolderOpenFilled } from '@ant-design/icons';
-import { delay } from 'lodash-es';
-import { NodeTitle } from './node-title';
-import styles from './index.less';
+import React, { useCallback } from 'react'
+import { useModel } from 'umi'
+import { Tree } from 'antd'
+import { FolderFilled, FolderOpenFilled } from '@ant-design/icons'
+import { NodeTitle } from './node-title'
+import styles from './index.less'
 
-const { DirectoryTree, TreeNode } = Tree;
+const { DirectoryTree, TreeNode } = Tree
 
 const FolderIcon = ({ expanded }: { expanded: boolean }) => {
-  return expanded ? <FolderOpenFilled /> : <FolderFilled />;
-};
+  return expanded ? <FolderOpenFilled /> : <FolderFilled />
+}
 
 export const CategoryTree = () => {
-  const { componentTreeNodes } = useModel('guide-algo-component');
+  const { componentTreeNodes } = useModel('guide-algo-component')
 
   const renderTree = useCallback(
     (treeList: any[] = [], searchKey: string = '') => {
       return treeList.map((item) => {
-        const { isDir, id, children, parentId } = item;
-        const key = id.toString();
-        const title = <NodeTitle node={item} searchKey={searchKey} />;
+        const { isDir, id, children } = item
+        const key = id.toString()
+        const title = <NodeTitle node={item} searchKey={searchKey} />
 
         if (isDir) {
           return (
@@ -32,7 +31,7 @@ export const CategoryTree = () => {
             >
               {renderTree(children, searchKey)}
             </TreeNode>
-          );
+          )
         }
 
         return (
@@ -43,13 +42,13 @@ export const CategoryTree = () => {
             title={title}
             className={styles.treeNode}
           />
-        );
-      });
+        )
+      })
     },
     [],
-  );
+  )
 
-  const treeList = componentTreeNodes.filter((node) => node.status !== 4);
+  const treeList = componentTreeNodes.filter((node) => node.status !== 4)
 
   return (
     <div className={styles.list}>
@@ -63,5 +62,5 @@ export const CategoryTree = () => {
         {renderTree(treeList)}
       </DirectoryTree>
     </div>
-  );
-};
+  )
+}
