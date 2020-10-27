@@ -1,4 +1,4 @@
-import { defineConfig } from 'umi';
+import { defineConfig } from 'umi'
 
 export default defineConfig({
   publicPath: './',
@@ -21,4 +21,4 @@ export default defineConfig({
       },
     ],
   ],
-});
+})
