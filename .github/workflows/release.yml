@@ -42,7 +42,7 @@ jobs:
           yarn bootstrap
       - name: Semantic Release
         run: |
-          yarn multi-semantic-release --debug
+          yarn multi-semantic-release --sequential-init
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           GITHUB_TOKEN: ${{ env.bot_token }}
