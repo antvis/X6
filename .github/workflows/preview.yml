@@ -13,6 +13,11 @@ jobs:
         node-version: [12.x]
     steps:
       - uses: actions/checkout@v2
+      - uses: bubkoo/use-app-token@v1
+        with:
+          app_id: ${{ secrets.APP_ID }}
+          private_key: ${{ secrets.PRIVATE_KEY }}
+          env_name: bot_token
       - name: 🌱　Get yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn cache dir)"
@@ -64,7 +69,7 @@ jobs:
         uses: afc163/surge-preview@v1
         with:
           surge_token: ${{ secrets.SURGE_TOKEN }}
-          github_token: ${{ secrets.bot_token }}
+          github_token: ${{ env.bot_token }}
           build: |
             echo Create sites preview
           dist: sites/x6-sites/public

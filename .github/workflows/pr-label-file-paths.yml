@@ -4,7 +4,12 @@ jobs:
   run:
     runs-on: ubuntu-latest
     steps:
+      - uses: bubkoo/use-app-token@v1
+        with:
+          app_id: ${{ secrets.APP_ID }}
+          private_key: ${{ secrets.PRIVATE_KEY }}
+          env_name: bot_token
       - uses: actions/labeler@v2
         with:
-          repo-token: ${{ secrets.bot_token }}
+          repo-token: ${{ env.bot_token }}
           configuration-path: .github/workflows/config/pr-label-file-paths.yml
