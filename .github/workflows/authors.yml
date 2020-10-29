@@ -10,7 +10,12 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
+      - uses: bubkoo/use-app-token@v1
+        with:
+          app_id: ${{ secrets.APP_ID }}
+          private_key: ${{ secrets.PRIVATE_KEY }}
+          env_name: bot_token
       - uses: bubkoo/update-authors@v1
         with:
-          GITHUB_TOKEN: ${{ secrets.bot_token  }}
+          GITHUB_TOKEN: ${{ env.bot_token  }}
           bots: false

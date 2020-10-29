@@ -47,7 +47,6 @@
     ]
   },
   "release": {
-    "debug": "true",
     "repositoryUrl": "https://github.com/antvis/x6",
     "plugins": [
       "@semantic-release/commit-analyzer",

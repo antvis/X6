@@ -11,6 +11,11 @@ jobs:
   run:
     runs-on: ubuntu-latest
     steps:
+      - uses: bubkoo/use-app-token@v1
+        with:
+          app_id: ${{ secrets.APP_ID }}
+          private_key: ${{ secrets.PRIVATE_KEY }}
+          env_name: bot_token
       - uses: Naturalclar/issue-action@v2.0.1
         with:
           title-or-body: title
@@ -25,4 +30,4 @@ jobs:
                 "labels": ["help-wanted"]
               }
             ]
-          github-token: ${{ secrets.bot_token }}
+          github-token: ${{ env.bot_token }}
