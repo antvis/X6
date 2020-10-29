@@ -9,7 +9,7 @@ jobs:
       - uses: actions/stale@v3
         with:
           repo-token: ${{ secrets.bot_token }}
-          stale-issue-message: >
+          stale-issue-message: |
             Hiya!
 
             This issue has gone quiet. Spooky quiet. 👻
@@ -20,7 +20,7 @@ jobs:
 
             Thanks for being a part of the Antv community! 💪💯
 
-          close-issue-message: >
+          close-issue-message: |
             Hey again!
 
             It’s been 60 days since anything happened on this issue, so our friendly neighborhood robot (that’s me!) is going to close it. Please keep in mind that I’m only a robot, so if I’ve closed this issue in error, I’m `HUMAN_EMOTION_SORRY`. Please feel free to comment on this issue or create a new one if you need anything else.
@@ -29,7 +29,7 @@ jobs:
 
             Thanks again for being part of the Antv community! 💪💯
 
-          stale-pr-message: >
+          stale-pr-message: |
             Hiya!
 
             This PR has gone quiet. Spooky quiet. 👻
@@ -38,7 +38,7 @@ jobs:
 
             Thanks for being a part of the Antv community! 💪💯
 
-          close-pr-message: >
+          close-pr-message: |
             Hey again!
 
             It’s been 60 days since anything happened on this PR, so our friendly neighborhood robot (that’s me!) is going to close it. Please keep in mind that I’m only a robot, so if I’ve closed this PR in error, I’m `HUMAN_EMOTION_SORRY`. Please feel free to comment on this PR or create a new one if you need anything else.

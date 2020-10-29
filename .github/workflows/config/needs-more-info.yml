@@ -34,8 +34,8 @@ pullRequest:
     - update
     - updates
     - test
-  badTitleComment: >
+  badTitleComment: |
     @{{ author }} Please provide us with more info about this pull request title.
 
-  badBodyComment: >
+  badBodyComment: |
     @{{ author }} Please provide us with more info about this pull request.
