@@ -1,0 +1,30 @@
+name: 🚀　Release
+on:
+  push:
+    branches:
+      - master
+      - next
+      - next-major
+      - alpha
+      - beta
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: |
+          yarn global add lerna
+          yarn bootstrap
+      - name: Generate token
+        uses: bubkoo/use-app-token@v1
+        with:
+          app_id: ${{ secrets.APP_ID }}
+          private_key: ${{ secrets.PRIVATE_KEY }}
+          variable_name: bot_token
+
+      - name: Semantic Release
+        run: |
+          yarn multi-semantic-release --debug
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          GITHUB_TOKEN: ${{ env.bot_token }}
