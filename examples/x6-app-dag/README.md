@@ -1,4 +1,4 @@
-# umi project
+# X6 DAG React demo project
 
 ## Getting Started
 

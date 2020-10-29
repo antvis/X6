@@ -1,0 +1,142 @@
+@import (reference) '~antd/es/style/themes/default.less';
+
+.bottomToolbar {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 199;
+  height: 40px;
+  font-size: 12px;
+  background-color: #fff;
+  box-shadow: 0 0 16px -5px rgba(0, 0, 0, 0.2);
+  user-select: none;
+
+  .itemList {
+    color: rgba(0, 0, 0, 0.65);
+    text-align: center;
+    list-style-type: none;
+
+    .item {
+      display: inline-flex;
+      align-items: center;
+      height: 40px;
+      margin: 0 10px;
+      padding: 0;
+      line-height: 40px;
+      cursor: pointer;
+
+      a {
+        display: inline-flex;
+        align-items: center;
+        color: rgba(0, 0, 0, 0.65);
+
+        &:hover {
+          text-decoration: none;
+        }
+
+        &:focus {
+          text-decoration: none;
+          outline: none;
+        }
+      }
+
+      &.disabled {
+        color: #ccc;
+        cursor: default;
+
+        a {
+          color: #ccc;
+          cursor: default;
+        }
+      }
+
+      &:hover {
+        color: #1890ff;
+
+        a {
+          color: #1890ff;
+        }
+      }
+
+      :global {
+        & .anticon {
+          margin-right: 4px;
+          font-size: 16px;
+        }
+      }
+    }
+  }
+}
+
+.menu {
+  padding: 4px 0;
+
+  :global {
+    .@{ant-prefix}-menu-item {
+      min-width: 110px;
+      height: 32px;
+      margin: 0 !important;
+      padding: 0 12px;
+      font-size: 12px;
+      line-height: 32px;
+
+      a::before {
+        display: none;
+      }
+
+      &-selected {
+        color: rgba(0, 0, 0, 0.65);
+        background-color: #fff !important;
+      }
+
+      &:hover {
+        color: rgba(0, 0, 0, 0.65);
+        background-color: #f5f5f5;
+      }
+
+      :local {
+        .label {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+
+          &:hover {
+            color: rgba(0, 0, 0, 0.65);
+          }
+
+          .icon {
+            margin: 0;
+            color: rgba(0, 0, 0, 0.65);
+
+            &:hover {
+              color: #1890ff;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.menuPopover {
+  :global {
+    .@{ant-prefix}-popover-inner {
+      background-color: transparent;
+      box-shadow: none;
+
+      &-content {
+        padding: 0 4px;
+      }
+    }
+  }
+}
+
+.popover {
+  :global {
+    .@{ant-prefix}-popover-inner-content {
+      padding: 5px 12px;
+      font-size: 12px;
+    }
+  }
+}

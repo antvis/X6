@@ -1,0 +1,70 @@
+@import (reference) '~antd/lib/style/themes/default.less';
+
+.dagContainer {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  padding-bottom: 40px;
+
+  .canvasContent {
+    flex-grow: 1;
+  }
+}
+
+:global {
+  .x6-edge {
+    stroke-width: 1px;
+    &.success {
+      path:nth-child(2) {
+        stroke: #888 !important;
+      }
+      path:nth-child(3) {
+        fill: #888 !important;
+        stroke: #888 !important;
+      }
+    }
+    &.error {
+      stroke-width: 2px;
+      path:nth-child(2) {
+        stroke: rgba(245, 34, 45, 0.45) !important;
+        stroke-width: 2px;
+      }
+    }
+    &.edgeProcessing {
+      path:nth-child(2) {
+        stroke: rgba(57, 202, 116, 0.8);
+        stroke-width: 2px;
+        stroke-dasharray: 8px, 2px;
+        &:local {
+          animation: processing-line 30s infinite linear;
+        }
+      }
+    }
+    @keyframes processing-line {
+      to {
+        stroke-dashoffset: -1000;
+      }
+    }
+  }
+  .x6-split-box-horizontal > .x6-split-box-resizer,
+  .x6-split-box-vertical > .x6-split-box-resizer {
+    background: #e9e9e9;
+  }
+
+  .@{ant-prefix}-spin-container {
+    width: 100%;
+    height: 100%;
+  }
+
+  .x6-widget-selection-inner {
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  .x6-widget-selection-box {
+    border: none !important;
+    box-shadow: none !important;
+  }
+}
