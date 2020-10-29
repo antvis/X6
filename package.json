@@ -49,9 +49,6 @@
   "release": {
     "dryRun": "true",
     "debug": "true",
-    "branches":[
-      "semantic-release"
-    ],
     "repositoryUrl": "https://github.com/antvis/x6",
     "extends": "@bubkoo/semantic-release-config"
   },
