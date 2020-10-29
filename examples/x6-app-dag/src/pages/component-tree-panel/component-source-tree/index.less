@@ -1,0 +1,52 @@
+@import (reference) '~antd/es/style/themes/default.less';
+
+.componentSourceTree {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  background-color: #f7f9fb;
+
+  .component {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    overflow-y: auto;
+  }
+
+  .links {
+    flex-grow: 0;
+    height: 41px;
+    min-height: 41px;
+    padding: 8px;
+    background-color: #fff;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 -2px 6px 0 rgba(0, 0, 0, 0.08);
+
+    .link:global(.@{ant-prefix}-btn) {
+      display: inline-flex;
+      align-items: center;
+      width: 50%;
+      height: 20px;
+      padding-bottom: 0;
+      color: rgba(0, 0, 0, 0.65);
+      font-size: 12px;
+      line-height: 20px;
+      border-right: 1px solid rgba(0, 0, 0, 0.08);
+
+      &:last-of-type {
+        border-right: none;
+      }
+
+      &:hover {
+        color: #1890ff;
+      }
+
+      :global {
+        .anticon {
+          font-size: 16px;
+        }
+      }
+    }
+  }
+}

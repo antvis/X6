@@ -1,0 +1,36 @@
+@import (reference) '~antd/es/style/themes/default.less';
+
+.handler {
+  position: absolute;
+  top: 61px;
+  right: 14px;
+  z-index: 99;
+  width: 32px;
+  margin: 0;
+  padding: 3px 0;
+  color: rgba(0, 0, 0, 0.45);
+  font-size: 16px;
+  list-style-type: none;
+  background-color: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  border-radius: 3px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.01);
+
+  .item {
+    text-align: center;
+    cursor: pointer;
+
+    &:hover {
+      color: #000;
+      background-color: #e0e0e0;
+    }
+  }
+}
+
+.popover {
+  :global {
+    .@{ant-prefix}-popover-inner-content {
+      padding: 3px 8px;
+    }
+  }
+}

@@ -1,0 +1,37 @@
+.searchList {
+  min-height: calc(~'100vh - 80px');
+  padding: 0;
+  list-style-type: none;
+  background-image: linear-gradient(#fff 50%, #f7f9fb 50%);
+  background-size: 100% 60px;
+
+  :global {
+    li {
+      padding: 0 4px 0 10px;
+      transition: all 0.2s ease-in-out;
+
+      &:hover {
+        background-color: #e3f4ff;
+      }
+    }
+
+    .flag {
+      padding-right: 4px;
+      color: #1890ff;
+      vertical-align: middle;
+    }
+  }
+}
+
+.resultTips {
+  height: 24px;
+  margin-top: 16px;
+  color: #a0a0a0;
+  line-height: 24px;
+  text-align: center;
+
+  .icon {
+    font-size: 24px;
+    vertical-align: top;
+  }
+}

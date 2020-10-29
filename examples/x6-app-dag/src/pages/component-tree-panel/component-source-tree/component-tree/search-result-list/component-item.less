@@ -1,0 +1,121 @@
+@itemHeight: 30px;
+
+.nodeItem {
+  position: relative;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.itemBlock {
+  position: relative;
+
+  .nodeItem {
+    max-width: 150px;
+    height: @itemHeight;
+    padding: 0 5px 0 2.2px;
+    line-height: @itemHeight;
+    cursor: move;
+
+    &:hover {
+      padding: 0;
+      background-color: #fff;
+      border-radius: 4px;
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.08);
+
+      .nodeIcon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: @itemHeight;
+        min-width: @itemHeight;
+        height: @itemHeight;
+        color: #1890ff;
+        background-color: rgba(229, 238, 255, 0.85);
+      }
+    }
+
+    .nodeIcon {
+      margin-right: 8px;
+      color: #bfbfbf;
+    }
+  }
+
+  .itemLable {
+    position: absolute;
+    top: -2px;
+    left: 158px;
+    font-size: 10px;
+    transform: scale(0.83);
+
+    &.gre {
+      color: #2ecc71;
+    }
+  }
+
+  .catLable {
+    position: absolute;
+    top: 5px;
+    left: 158px;
+    font-size: 10px;
+    white-space: nowrap;
+    transform: scale(0.83);
+  }
+
+  .description {
+    height: @itemHeight;
+    padding-left: 22px;
+    overflow: hidden;
+    line-height: @itemHeight;
+    text-overflow: ellipsis;
+  }
+  .link {
+    position: absolute;
+    top: 5px;
+    right: 0;
+    display: none;
+  }
+
+  &:hover {
+    .link {
+      display: block;
+    }
+  }
+}
+
+.componentDescription {
+  max-width: 360px;
+  max-height: 600px;
+  overflow: auto;
+  word-break: break-all;
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  a,
+  img,
+  p {
+    max-width: 100%;
+    margin: 0;
+    font-size: 12px !important;
+    line-height: 1.5em;
+    word-break: break-all !important;
+  }
+}
+
+.statusTips {
+  max-width: 320px;
+  margin: 0;
+}
+
+.tag {
+  margin: 8px 0 4px;
+  .label {
+    padding-right: 4px;
+  }
+}

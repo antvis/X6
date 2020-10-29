@@ -1,0 +1,59 @@
+@import '~antd/es/style/themes/default.less';
+
+@borderColor: #d9d9d9;
+
+.nodeGroup {
+  width: 100%;
+  height: 100%;
+  font-size: 12px;
+  background-color: #fff;
+  border: 1px dashed @borderColor;
+  border-radius: 4px;
+  cursor: default; // TODO: 暂时还不支持群组移动，先把鼠标变成不可拖动的类型
+
+  .row {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    justify-content: space-between;
+    height: 32px;
+    padding: 0 8px;
+
+    .name {
+      z-index: 11;
+    }
+
+    .collapseButton {
+      z-index: 11;
+      order: -1;
+      cursor: pointer;
+    }
+
+    .toolbar {
+      z-index: 11;
+      margin-top: 2px;
+      cursor: pointer;
+    }
+  }
+}
+
+:global {
+  .x6-node-selected {
+    :local {
+      .nodeGroup {
+        background-color: rgba(243, 249, 255, 0.92);
+        border: 1px solid #1890ff;
+        box-shadow: 0 0 3px 3px rgba(64, 169, 255, 0.2);
+      }
+    }
+  }
+}
+
+.namePopover {
+  :global {
+    .@{ant-prefix}-popover-inner-content {
+      padding: 8px 12px !important;
+      font-size: 12px;
+    }
+  }
+}

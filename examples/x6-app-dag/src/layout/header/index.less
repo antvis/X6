@@ -1,0 +1,38 @@
+.header {
+  z-index: 99;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 48px;
+  min-height: 48px;
+  overflow: hidden;
+  line-height: 48px;
+  background: #fff;
+  box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.1);
+  padding: 0 50px 0 0;
+  .headerLeft,
+  .headerRight {
+    display: flex;
+  }
+}
+
+.doc {
+  margin-right: 32px;
+  font-size: 12px;
+  a {
+    color: rgba(0, 0, 0, 0.65);
+  }
+
+  .text {
+    padding: 0 4px;
+    color: rgba(0, 0, 0, 0.65);
+  }
+
+  :global {
+    .anticon {
+      position: relative;
+      color: rgba(0, 0, 0, 0.45);
+      font-size: 14px;
+    }
+  }
+}

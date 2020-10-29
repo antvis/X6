@@ -1,0 +1,66 @@
+@import (reference) '~antd/es/style/themes/default.less';
+
+.list {
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  background: #fff;
+
+  .tree {
+    height: 100%;
+    background-image: linear-gradient(#fff 50%, #f7f9fb 50%);
+    background-size: 100% 60px;
+
+    .treeFolder:global(.@{ant-prefix}-tree-treenode) {
+      align-items: center;
+      height: 30px;
+      padding: 0;
+      font-size: 12px;
+      line-height: 30px;
+
+      &::before {
+        height: 30px;
+      }
+
+      :global {
+        .@{ant-prefix}-tree-iconEle.@{ant-prefix}-tree-icon__customize {
+          width: auto;
+          margin-right: 8px;
+          color: rgba(0, 0, 0, 0.45);
+        }
+
+        .@{ant-prefix}-tree-node-content-wrapper {
+          display: flex;
+          align-items: center;
+          padding-left: 0;
+
+          .@{ant-prefix}-tree-title {
+            flex-grow: 1;
+          }
+        }
+      }
+    }
+
+    .treeNode:global(.@{ant-prefix}-tree-treenode) {
+      height: 30px;
+      line-height: 30px;
+
+      &::before {
+        height: 30px;
+      }
+
+      :global {
+        .@{ant-prefix}-tree-node-content-wrapper {
+          padding: 0;
+        }
+
+        .@{ant-prefix}-tree-iconEle.@{ant-prefix}-tree-icon__customize {
+          display: none;
+        }
+        .@{ant-prefix}-tree-switcher {
+          display: none;
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,39 @@
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  min-width: 220px;
+  .item {
+    font-size: 12px;
+    padding: 0 0 0;
+    line-height: 16px;
+    word-break: break-all;
+    margin: 0;
+    width: 220px;
+    display: flex;
+  }
+
+  .label {
+    flex: 1 0 45px;
+    text-align: right;
+    padding-right: 4px;
+    position: relative;
+    word-break: break-all;
+    color: rgba(0, 0, 0, 0.85);
+    &after {
+      content: ':';
+    }
+  }
+  .text {
+    padding-left: 4px;
+    flex: 3 0 100px;
+    color: rgba(0, 0, 0, 0.45);
+    word-break: break-all;
+  }
+}
+
+.content {
+  :global(.aicontent-popover-inner-content) {
+    padding: 12px 8px 8px 8px;
+  }
+}
