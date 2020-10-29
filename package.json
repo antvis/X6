@@ -47,10 +47,25 @@
     ]
   },
   "release": {
-    "dryRun": "true",
     "debug": "true",
     "repositoryUrl": "https://github.com/antvis/x6",
-    "extends": "@bubkoo/semantic-release-config"
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/release-notes-generator",
+      "@semantic-release/changelog",
+      [
+        "@semantic-release/github",
+        {
+          "addReleases": "bottom"
+        }
+      ],
+      [
+        "@semantic-release/git",
+        {
+          "assets": ["package.json", "CHANGELOG.md"]
+        }
+      ]
+    ]
   },
   "dependencies": {
     "@bubkoo/semantic-release-config": "^1.2.0",
