@@ -17,6 +17,3 @@ jobs:
       - uses: bubkoo/contributors-list@v1
         with:
           GITHUB_TOKEN: ${{ env.bot_token }}
-          svgPath: CONTRIBUTORS.svg
-          commitMessage: |
-            chore: update CONTRIBUTORS [skip ci]
