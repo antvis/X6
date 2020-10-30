@@ -109,7 +109,10 @@ BREAKING CHANGE:
 
 ## 发布管理
 
-x6 基于 [semver](http://semver.org/lang/zh-CN/) 语义化版本号进行发布。
+- [Publishing maintenance releases](https://github.com/semantic-release/semantic-release/blob/master/docs/recipes/maintenance-releases.md)
+- [Publishing pre-releases](https://github.com/semantic-release/semantic-release/blob/master/docs/recipes/pre-releases.md)
+
+X6 基于 [semver](http://semver.org/lang/zh-CN/) 语义化版本号进行发布。
 
 `master` 分支为当前稳定发布的版本。
 
