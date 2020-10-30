@@ -1,3 +1,5 @@
+# @see: https://dev.to/antongolub/the-chronicles-of-semantic-release-and-monorepos-5cfc
+
 name: 🚀　Release
 on:
   push:
@@ -42,7 +44,7 @@ jobs:
           yarn bootstrap
       - name: Semantic Release
         run: |
-          yarn multi-semantic-release --sequential-init
+          yarn multi-semantic-release
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           GITHUB_TOKEN: ${{ env.bot_token }}
