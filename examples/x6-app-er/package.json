@@ -24,7 +24,7 @@
   "dependencies": {
     "@antv/x6": "0.10.77",
     "@antv/x6-react-components": "0.10.17",
-    "@antv/x6-react-shape": "0.10.77",
+    "@antv/x6-react-shape": "0.10.17",
     "antd": "^4.4.2",
     "classnames": "^2.2.6",
     "react": "^16.12.0",
