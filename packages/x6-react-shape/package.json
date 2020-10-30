@@ -36,7 +36,7 @@
     ]
   },
   "peerDependencies": {
-    "@antv/x6": "0.10.77",
+    "@antv/x6": "0.10.78-beta.1",
     "react": ">=16.8.6",
     "react-dom": ">=16.8.6"
   },
