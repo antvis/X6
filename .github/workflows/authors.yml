@@ -19,4 +19,5 @@ jobs:
         with:
           GITHUB_TOKEN: ${{ env.bot_token  }}
           bots: false
-          commit: chore: update AUTHORS [skip ci]
+          commit: |
+            chore: update AUTHORS [skip ci]
