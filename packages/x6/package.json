@@ -1,4 +1,5 @@
 {
+  "private": true,
   "name": "@antv/x6",
   "version": "0.10.77",
   "description": "JavaScript diagramming library that uses SVG and HTML for rendering.",
