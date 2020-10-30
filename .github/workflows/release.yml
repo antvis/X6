@@ -42,6 +42,9 @@ jobs:
       - name: 🚀　Bootstrap
         run: |
           yarn bootstrap
+      - name: ✅　Test
+        run: |
+          yarn test
       - name: Semantic Release
         run: |
           yarn multi-semantic-release
