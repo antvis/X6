@@ -10,9 +10,9 @@
     "precommit": "lint-staged"
   },
   "dependencies": {
-    "@antv/x6": "0.10.78-beta.1",
+    "@antv/x6": "0.10.78",
     "@antv/x6-react-components": "0.10.17",
-    "@antv/x6-react-shape": "0.10.18-beta.1",
+    "@antv/x6-react-shape": "0.10.18",
     "antd": "^4.4.2",
     "classnames": "^2.2.6",
     "dagre": "^0.8.5",
