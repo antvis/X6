@@ -1,3 +1,19 @@
+## @antv/x6-app-er [0.10.79-beta.2](https://github.com/antvis/x6/compare/@antv/x6-app-er@0.10.79-beta.1...@antv/x6-app-er@0.10.79-beta.2) (2020-10-30)
+
+
+### Bug Fixes
+
+* 🐛 version error ([fd57688](https://github.com/antvis/x6/commit/fd5768861fedda32d341c774f6e80da67646426f))
+* 🐛 version not found ([8166346](https://github.com/antvis/x6/commit/8166346771f11ef5997a6e1ed376987408e57cde))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6-react-shape:** upgraded to 0.10.18-beta.2
+
 ## @antv/x6-app-er [0.10.79-beta.1](https://github.com/antvis/x6/compare/@antv/x6-app-er@0.10.78...@antv/x6-app-er@0.10.79-beta.1) (2020-10-30)
 
 
