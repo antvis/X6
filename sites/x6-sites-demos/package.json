@@ -16,7 +16,7 @@
     "@ant-design/icons": "^4.2.2",
     "@antv/x6": "0.10.77",
     "@antv/x6-react-components": "0.10.17",
-    "@antv/x6-react-shape": "1.0.1",
+    "@antv/x6-react-shape": "0.10.77",
     "@antv/x6-sites-demos-helper": "0.10.77",
     "antd": "^4.4.2",
     "esbuild-webpack-plugin": "^1.0.5",

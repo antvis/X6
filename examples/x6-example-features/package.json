@@ -12,7 +12,7 @@
   "dependencies": {
     "@antv/x6": "0.10.77",
     "@antv/x6-react-components": "0.10.17",
-    "@antv/x6-react-shape": "1.0.1",
+    "@antv/x6-react-shape": "0.10.77",
     "antd": "^4.4.2",
     "classnames": "^2.2.6",
     "dagre": "^0.8.5",
