@@ -219,18 +219,6 @@
     typescript "^3.9.2"
     video-react "^0.14.1"
 
-"@antv/x6@latest":
-  version "0.10.72"
-  resolved "https://registry.npm.taobao.org/@antv/x6/download/@antv/x6-0.10.72.tgz#38ea8682b18e788992eccb598c0400943343ea45"
-  integrity sha1-OOqGgrGOeImS7MtZjAQAlDND6kU=
-  dependencies:
-    csstype "^3.0.3"
-    jquery "^3.4.1"
-    jquery-mousewheel "^3.1.13"
-    lodash-es "^4.17.15"
-    mousetrap "^1.6.3"
-    utility-types "^3.10.0"
-
 "@ardatan/aggregate-error@0.0.1":
   version "0.0.1"
   resolved "https://registry.npm.taobao.org/@ardatan/aggregate-error/download/@ardatan/aggregate-error-0.0.1.tgz#1403ac5de10d8ca689fc1f65844c27179ae1d44f"
