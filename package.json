@@ -9,7 +9,7 @@
   "scripts": {
     "lk": "lerna link",
     "ls": "lerna list",
-    "lv": "lerna version --no-push",
+    "lv": "lerna version",
     "changed": "lerna changed",
     "updated": "lerna updated",
     "changelog": "lerna-changelog",
