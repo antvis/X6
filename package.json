@@ -7,12 +7,6 @@
     "sites/*"
   ],
   "scripts": {
-    "lk": "lerna link",
-    "ls": "lerna list",
-    "lv": "lerna version",
-    "changed": "lerna changed",
-    "updated": "lerna updated",
-    "changelog": "lerna-changelog",
     "build:dev": "sh ./scripts/build-dev",
     "build:apps": "sh ./scripts/build-apps",
     "build:demos": "sh ./scripts/build-demos",
@@ -48,23 +42,7 @@
   },
   "release": {
     "repositoryUrl": "https://github.com/antvis/x6",
-    "plugins": [
-      "@semantic-release/commit-analyzer",
-      "@semantic-release/release-notes-generator",
-      "@semantic-release/changelog",
-      [
-        "@semantic-release/github",
-        {
-          "addReleases": "bottom"
-        }
-      ],
-      [
-        "@semantic-release/git",
-        {
-          "assets": ["package.json", "CHANGELOG.md"]
-        }
-      ]
-    ]
+    "extends": "@bubkoo/semantic-release-config"
   },
   "dependencies": {
     "@bubkoo/semantic-release-config": "^1.2.0",
@@ -86,7 +64,6 @@
     "karma-typescript": "^5.2.0",
     "karma-typescript-es6-transform": "^5.1.0",
     "lerna": "^3.19.0",
-    "lerna-changelog": "^1.0.1",
     "lint-staged": "^10.2.2",
     "multi-semantic-release": "^2.4.7",
     "npm-run-all": "^4.1.5",
