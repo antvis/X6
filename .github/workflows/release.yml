@@ -39,7 +39,7 @@ jobs:
           yarn global add lerna
       - name: 🚀　Bootstrap
         run: |
-          lerna bootstrap
+          yarn bootstrap
       - name: Semantic Release
         run: |
           yarn multi-semantic-release --sequential-init
