@@ -4,7 +4,9 @@ module.exports = {
   plugins: [
     {
       resolve: '@antv/gatsby-theme-antv',
-      options: {},
+      options: {
+        GATrackingId: `UA-148148901-10`,
+      },
     },
     {
       resolve: `gatsby-transformer-remark`,
