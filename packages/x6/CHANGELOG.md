@@ -1,3 +1,5 @@
+# @antv/x6 [1.0.0-beta.1](https://github.com/antvis/x6/compare/@antv/x6@0.10.78-beta.2...@antv/x6@1.0.0-beta.1) (2020-11-02)
+
 ## @antv/x6 [0.10.78-beta.2](https://github.com/antvis/x6/compare/@antv/x6@0.10.78-beta.1...@antv/x6@0.10.78-beta.2) (2020-10-30)
 
 
