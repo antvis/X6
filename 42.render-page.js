@@ -2,9 +2,9 @@ exports.ids = [42];
 exports.modules = {
 
 /***/ "../../node_modules/monaco-editor/esm/vs/basic-languages/postiats/postiats.js":
-/*!******************************************************************************************************!*\
-  !*** /home/runner/work/X6/X6/node_modules/monaco-editor/esm/vs/basic-languages/postiats/postiats.js ***!
-  \******************************************************************************************************/
+/*!**********************************************************************************************************!*\
+  !*** /Users/wenyu/vector/code/X6/node_modules/monaco-editor/esm/vs/basic-languages/postiats/postiats.js ***!
+  \**********************************************************************************************************/
 /*! exports provided: conf, language */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
