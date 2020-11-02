@@ -15,7 +15,7 @@
     "sites"
   ],
   "dependencies": {
-    "@antv/gatsby-theme-antv": "^0.11.7",
+    "@antv/gatsby-theme-antv": "^1.0.0-beta.11",
     "@antv/x6": "0.10.77",
     "antd": "^4.4.2",
     "express": "^4.17.1",
