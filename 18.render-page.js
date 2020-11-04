@@ -2,9 +2,9 @@ exports.ids = [18];
 exports.modules = {
 
 /***/ "../../node_modules/monaco-editor/esm/vs/basic-languages/dockerfile/dockerfile.js":
-/*!**************************************************************************************************************!*\
-  !*** /Users/wenyu/vector/code/X6/node_modules/monaco-editor/esm/vs/basic-languages/dockerfile/dockerfile.js ***!
-  \**************************************************************************************************************/
+/*!**********************************************************************************************************!*\
+  !*** /home/runner/work/X6/X6/node_modules/monaco-editor/esm/vs/basic-languages/dockerfile/dockerfile.js ***!
+  \**********************************************************************************************************/
 /*! exports provided: conf, language */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 

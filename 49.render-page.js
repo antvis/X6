@@ -2,9 +2,9 @@ exports.ids = [49];
 exports.modules = {
 
 /***/ "../../node_modules/monaco-editor/esm/vs/basic-languages/redis/redis.js":
-/*!****************************************************************************************************!*\
-  !*** /Users/wenyu/vector/code/X6/node_modules/monaco-editor/esm/vs/basic-languages/redis/redis.js ***!
-  \****************************************************************************************************/
+/*!************************************************************************************************!*\
+  !*** /home/runner/work/X6/X6/node_modules/monaco-editor/esm/vs/basic-languages/redis/redis.js ***!
+  \************************************************************************************************/
 /*! exports provided: conf, language */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 

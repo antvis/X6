@@ -2,9 +2,9 @@ exports.ids = [26];
 exports.modules = {
 
 /***/ "../../node_modules/monaco-editor/esm/vs/basic-languages/java/java.js":
-/*!**************************************************************************************************!*\
-  !*** /Users/wenyu/vector/code/X6/node_modules/monaco-editor/esm/vs/basic-languages/java/java.js ***!
-  \**************************************************************************************************/
+/*!**********************************************************************************************!*\
+  !*** /home/runner/work/X6/X6/node_modules/monaco-editor/esm/vs/basic-languages/java/java.js ***!
+  \**********************************************************************************************/
 /*! exports provided: conf, language */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
