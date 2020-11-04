@@ -53,7 +53,7 @@ export namespace Portal {
     return active
   }
 
-  export function getPovider() {
+  export function getProvider() {
     return () => {
       active = true
       const [items, mutate] = useReducer(reducer, [])
