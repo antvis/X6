@@ -2,7 +2,7 @@
 # pull requests that doesn't target the default branch.
 name: 🚫　Auto Close Fixed Issues
 on:
-  pull_request:
+  pull_request_target:
     types: [closed]
 jobs:
   run:
