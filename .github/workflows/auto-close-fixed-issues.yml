@@ -16,4 +16,5 @@ jobs:
       - uses: bubkoo/auto-close-fixed-issues@v1
         with:
           GITHUB_TOKEN: ${{ env.bot_token }}
-          comment: This issue was closed by #{{ pr }}.
+          comment: |
+            This issue was closed by #{{ pr }}.
