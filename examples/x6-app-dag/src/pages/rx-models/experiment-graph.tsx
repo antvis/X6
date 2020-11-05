@@ -146,7 +146,7 @@ class ExperimentGraph extends GraphCore<BaseNode, BaseEdge> {
             },
           })
         },
-        validateEdge: (args) => {
+        validateEdge: args => {
           const { edge } = args
           return !!(edge?.target as any)?.port
         },
@@ -276,7 +276,7 @@ class ExperimentGraph extends GraphCore<BaseNode, BaseEdge> {
         projectName: 'sre_mpi_algo_dev',
         gmtCreate: '2020-08-18 02:21:41',
         description: '用户流失数据建模demo',
-        name: '建模流程DEMO实验',
+        name: '建模流程DEMO',
         id: 353355,
       }
       this.experiment$.next(res)
@@ -317,11 +317,11 @@ class ExperimentGraph extends GraphCore<BaseNode, BaseEdge> {
     const newGraph = produce(oldGraph, (nextGraph: any) => {
       if (nodes.length) {
         nextGraph.nodes = oldGraph.nodes.filter(
-          (node) => !nodes.includes(node.id.toString()),
+          node => !nodes.includes(node.id.toString()),
         )
       } else {
-        nextGraph.links = oldGraph.links.filter((link) => {
-          return !links.find((delLink) => {
+        nextGraph.links = oldGraph.links.filter(link => {
+          return !links.find(delLink => {
             return (
               delLink.inputPortId.toString() === link.inputPortId.toString() &&
               delLink.outputPortId.toString() === link.outputPortId.toString()
@@ -338,7 +338,7 @@ class ExperimentGraph extends GraphCore<BaseNode, BaseEdge> {
     this.executionStatusQuerySub?.unsubscribe()
     // 每三秒查询一次执行状态
     this.executionStatusQuerySub = timer(0, 5000).subscribe(
-      async (resPromise) => {
+      async resPromise => {
         const execStatusRes = await queryGraphStatus()
         this.executionStatus$.next(execStatusRes.data as any)
         this.updateEdgeStatus()
@@ -363,10 +363,10 @@ class ExperimentGraph extends GraphCore<BaseNode, BaseEdge> {
   renderGraph = (wrapper: HTMLElement, container: HTMLElement) => {
     this.experimentGraphSub = this.experimentGraph$
       .pipe(
-        filter((x) => !!x), // 过滤出有效数据
+        filter(x => !!x), // 过滤出有效数据
         take(1), // 只做一次挂载渲染
       )
-      .subscribe((graphData) => {
+      .subscribe(graphData => {
         if (!this.graph) {
           const { nodes, edges } = formatGraphData(graphData)
           super.render({
@@ -380,10 +380,10 @@ class ExperimentGraph extends GraphCore<BaseNode, BaseEdge> {
 
     // 监听主动触发的重新渲染事件，避免从 IDE 返回后画布消失
     this.reRenderSub = fromEventPattern(
-      (handler) => {
+      handler => {
         window.addEventListener(RERENDER_EVENT, handler)
       },
-      (handler) => {
+      handler => {
         window.removeEventListener(RERENDER_EVENT, handler)
       },
     ).subscribe(this.handlerResize as any)
@@ -425,7 +425,7 @@ class ExperimentGraph extends GraphCore<BaseNode, BaseEdge> {
 
   afterLayout() {
     super.afterLayout()
-    this.pendingNodes.forEach((node) => {
+    this.pendingNodes.forEach(node => {
       node.hide()
     })
     this.pendingNodes = []
@@ -447,10 +447,10 @@ class ExperimentGraph extends GraphCore<BaseNode, BaseEdge> {
 
   onSelectNodes(nodes: BaseNode[]) {
     const selectedNodes: X6DemoNode[] = nodes.filter(
-      (cell) => cell.isNode() && !cell.isGroup(),
+      cell => cell.isNode() && !cell.isGroup(),
     ) as X6DemoNode[]
     const selectedGroups: X6DemoGroupNode[] = nodes.filter(
-      (cell) => cell.isNode() && cell.isGroup(),
+      cell => cell.isNode() && cell.isGroup(),
     )
     if (selectedNodes.length === 1) {
       // 当只选中了一个节点时，激活当前选中项
@@ -538,7 +538,7 @@ class ExperimentGraph extends GraphCore<BaseNode, BaseEdge> {
   }
 
   async onMoveNodes(movedNodes: any[]) {
-    const targetNodes = movedNodes.filter((arg) => {
+    const targetNodes = movedNodes.filter(arg => {
       const { node } = arg
       return !node.isGroup()
     })
@@ -558,7 +558,7 @@ class ExperimentGraph extends GraphCore<BaseNode, BaseEdge> {
       })
       const oldGraph = this.experimentGraph$.getValue()
       const newGraph = produce(oldGraph, (nextGraph: any) => {
-        newPos.forEach((position) => {
+        newPos.forEach(position => {
           const { nodeInstanceId, posX, posY } = position
           const matchNode = nextGraph.nodes.find(
             (item: any) => item.id.toString() === nodeInstanceId.toString(),
@@ -576,10 +576,10 @@ class ExperimentGraph extends GraphCore<BaseNode, BaseEdge> {
   onDeleteNodeOrEdge(args: { nodes: BaseNode[]; edges: GuideEdge[] }) {
     const { nodes, edges } = args
     const normalNodes: X6DemoNode[] = nodes.filter(
-      (node) => !node.isGroup(),
+      node => !node.isGroup(),
     ) as X6DemoNode[]
     if (normalNodes?.length) {
-      this.requestDeleteNodes(normalNodes.map((node) => node.id))
+      this.requestDeleteNodes(normalNodes.map(node => node.id))
     }
     if (edges?.length) {
       this.requestDeleteEdges(edges)
@@ -612,10 +612,10 @@ class ExperimentGraph extends GraphCore<BaseNode, BaseEdge> {
       const { instStatus } = executionStatus
       const nodeIds = Object.keys(instStatus)
       const runningNodeIds = nodeIds
-        .filter((id) => instStatus[id] === 'running')
-        .map((i) => i.toString())
-      this.updateEdges((edges) => {
-        edges.forEach((edge) => {
+        .filter(id => instStatus[id] === 'running')
+        .map(i => i.toString())
+      this.updateEdges(edges => {
+        edges.forEach(edge => {
           const {
             target: { cell: nodeId },
             id,
@@ -706,7 +706,7 @@ class ExperimentGraph extends GraphCore<BaseNode, BaseEdge> {
       if (
         activeNodeInstance &&
         nodeInstanceIds
-          .map((i) => i.toString())
+          .map(i => i.toString())
           .includes(activeNodeInstance.id.toString())
       ) {
         this.activeNodeInstance$.next(null as any)
@@ -722,7 +722,7 @@ class ExperimentGraph extends GraphCore<BaseNode, BaseEdge> {
     const targetEdges: BaseEdge[] = ([] as any[]).concat(edges)
     console.log(targetEdges)
     this.deleteEdges(targetEdges)
-    this.delExperimentGraphElement(targetEdges.map((cell) => cell.getData()))
+    this.delExperimentGraphElement(targetEdges.map(cell => cell.getData()))
     return { success: true }
   }
 
