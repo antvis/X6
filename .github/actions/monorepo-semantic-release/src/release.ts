@@ -37,7 +37,7 @@ export namespace Release {
     const logger = Logger.get({ stdout, stderr })
     logger.complete(`Started release! Loading ${paths.length} packages...`)
 
-    const globalOptions = await Config.get(cwd)
+    const globalOptions = Config.defaults
     const options = Object.assign({}, globalOptions, inputOptions)
     const context: Context = { options, cwd, env, stdout, stderr }
 
