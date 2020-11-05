@@ -7,7 +7,6 @@
     "sites/*"
   ],
   "scripts": {
-    "lk": "lerna link",
     "ls": "lerna list",
     "lv": "lerna version",
     "changed": "lerna changed",
