@@ -17,15 +17,13 @@ interface Props extends RouteComponentProps<{ experimentId: string }> {
 
 const { Content } = Layout
 
-const DagDemo: React.FC<Props> = (props) => {
+const DagDemo: React.FC<Props> = props => {
   const { experimentId = '1' } = props
 
   return (
     <Layout className={styles.layout}>
       <GuideHeader experimentId={experimentId} />
-
       <Content className={styles.content}>
-        {/* 实验画布 */}
         <div className={classNames(styles.experiment)}>
           <DndProvider backend={HTML5Backend}>
             <ComponentTreePanel
