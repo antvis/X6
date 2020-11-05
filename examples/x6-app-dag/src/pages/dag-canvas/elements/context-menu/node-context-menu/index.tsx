@@ -17,7 +17,7 @@ interface Props {
   data: any
 }
 
-export const NodeContextMenu: React.FC<Props> = (props) => {
+export const NodeContextMenu: React.FC<Props> = props => {
   const { experimentId, data } = props
   const containerRef = useRef<HTMLDivElement>(null as any)
   const expGraph = useExperimentGraph(experimentId)
