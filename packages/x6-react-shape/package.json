@@ -1,6 +1,6 @@
 {
   "name": "@antv/x6-react-shape",
-  "version": "0.10.19",
+  "version": "0.10.20",
   "description": "x6 shape for rendering react components",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -36,7 +36,7 @@
     ]
   },
   "peerDependencies": {
-    "@antv/x6": "^0.10.78",
+    "@antv/x6": "^0.10.79",
     "react": ">=16.8.6",
     "react-dom": ">=16.8.6"
   },
