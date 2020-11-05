@@ -3,13 +3,9 @@ on:
   push:
     branches:
       - master
-<<<<<<< HEAD
       - alpha
       - beta
   pull_request:
-=======
-  pull_request_target:
->>>>>>> master
 jobs:
   run:
     runs-on: ubuntu-latest
