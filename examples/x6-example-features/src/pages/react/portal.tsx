@@ -87,7 +87,7 @@ export default class Example extends React.Component {
   }
 
   render() {
-    const X6ReactPortalProvider = Portal.getPovider()
+    const X6ReactPortalProvider = Portal.getProvider()
     return (
       <div className="x6-graph-wrap">
         <X6ReactPortalProvider />

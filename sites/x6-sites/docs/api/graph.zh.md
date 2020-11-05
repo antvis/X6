@@ -240,22 +240,6 @@ interface BackgroundOptions {
 }
 ```
 
-创建画布时，通过 `background` 选项来设置画布的背景颜色或背景图片，默认值为 `false` 表示没有（透明）背景。
-
-```ts
-const graph = new Graph({
-  background: false | BackgroundOptions
-})
-```
-
-创建画布后，可以调用 [graph.drawBackground(options?: BackgroundOptions)](#drawbackground) 方法来重绘背景。
-
-```ts
-graph.drawBackground({
-  color: '#f5f5f5',
-})
-```
-
 #### color
 
 背景颜色，支持所有 [CSS background-color](https://developer.mozilla.org/en-US/docs/Web/CSS/background-color) 属性的取值，如：
@@ -1514,6 +1498,19 @@ const graph = new Graph({
 
 ### translating
 
+配置节点的可移动区域
+
+```ts
+const graph = new Graph({
+  translating: {
+    restrict: true,
+  }
+})
+```
+restrict支持以下两种类型：
+
+- `boolean`  设置为`true`，节点无法超过画布区域
+- `Rectangle.RectangleLike` 自定义限制区域
 
 ### transforming
 
@@ -1531,11 +1528,38 @@ const graph = new Graph({
 
 ### highlighting
 
-
+用于高亮指定的元素,详情见 [`highlighter`](./registry/highlighter)
 
 ### interacting
 
-定制节点和边的交互行为，
+定制节点和边的交互行为，支持以下三种类型：
+
+- `boolean`  节点或边是否可交互
+- `InteractionMap` 节点或边的交互细节，支持以下属性：
+  - `'nodeMovable'` 节点是否可以被移动。
+  - `'magnetConnectable'` 当在具有 `'magnet'` 属性的元素上按下鼠标开始拖动时，是否触发连线交互。
+  - `'edgeMovable'` 边是否可以被移动。
+  - `'edgeLabelMovable'` 边的标签是否可以被移动。
+  - `'arrowheadMovable'` 边的起始/终止箭头是否可以被移动。
+  - `'vertexMovable'` 边的路径点是否可以被移动。
+  - `'vertexAddable'` 是否可以添加边的路径点。
+  - `'vertexDeletable'` 边的路径点是否可以被删除。
+- `(this: Graph, cellView: CellView) => InteractionMap | boolean` 返回值为上面两种类型之一
+
+```ts
+const graph = new Graph({
+  container: this.container,
+  width: 800,
+  height: 1400,
+  grid: 10,
+  interacting: function (cellView: CellView) {
+    if (cellView.cell.getProp('customLinkInteractions')) {
+      return { vertexAdd: false }
+    }
+    return true
+  },
+})
+```
 
 ### sorting
 

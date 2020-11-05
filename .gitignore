@@ -1,5 +1,6 @@
 .DS_Store
 .vscode
+.idea
 npm-debug.log
 yarn-error.log
 lerna-debug.log
