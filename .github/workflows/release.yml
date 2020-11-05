@@ -1,0 +1,51 @@
+# @see: https://dev.to/antongolub/the-chronicles-of-semantic-release-and-monorepos-5cfc
+
+name: 🚀　Release
+on:
+  push:
+    branches:
+      - master
+      - next
+      - next-major
+      - alpha
+      - beta
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [12.x]
+    steps:
+      - name: ⤵️　Checkout
+        uses: actions/checkout@v2
+      - name: 🎉　Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: 🌱　Get Cache Directory
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+      - name: 🚸　Setup Cacha
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+      - name: 🚧　Prepare
+        run: yarn global add lerna
+      - name: 🚀　Bootstrap
+        run: yarn bootstrap
+      - name: ✅　Test
+        run: yarn test
+      - name: 🔑　Generate Token
+        uses: bubkoo/use-app-token@v1
+        with:
+          app_id: ${{ secrets.APP_ID }}
+          private_key: ${{ secrets.PRIVATE_KEY }}
+          env_name: bot_token
+      - name: 📦　Semantic Release
+        uses: ./.github/actions/monorepo-semantic-release
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          GITHUB_TOKEN: ${{ env.bot_token }}
