@@ -23,7 +23,7 @@
     ]
   },
   "dependencies": {
-    "@ant-design/icons": "^4.2.1",
+    "@ant-design/icons": "^4.2.2",
     "@antv/x6": "^0.10.78",
     "@antv/x6-react-components": "^0.10.17",
     "@antv/x6-react-shape": "^0.10.19",
