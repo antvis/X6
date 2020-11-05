@@ -46,26 +46,6 @@
       "@commitlint/config-conventional"
     ]
   },
-  "release": {
-    "repositoryUrl": "https://github.com/antvis/x6",
-    "plugins": [
-      "@semantic-release/commit-analyzer",
-      "@semantic-release/release-notes-generator",
-      "@semantic-release/changelog",
-      [
-        "@semantic-release/github",
-        {
-          "addReleases": "bottom"
-        }
-      ],
-      [
-        "@semantic-release/git",
-        {
-          "assets": ["package.json", "CHANGELOG.md"]
-        }
-      ]
-    ]
-  },
   "dependencies": {
     "@bubkoo/semantic-release-config": "^1.2.0",
     "@commitlint/cli": "^11.0.0",
