@@ -1,34 +1,23 @@
-import { IConfig } from 'umi-types'
+import { defineConfig } from 'umi'
 
-// ref: https://umijs.org/config/
-const config: IConfig = {
+export default defineConfig({
   publicPath: './',
-  treeShaking: true,
-  plugins: [
-    [
-      'umi-plugin-react',
-      {
-        antd: true,
-        dva: false,
-        dynamicImport: false,
-        title: 'Draw',
-        dll: false,
-        routes: {
-          exclude: [/components\//],
-        },
-      },
-    ],
+  nodeModulesTransform: {
+    type: 'none',
+  },
+  routes: [
+    { path: '/', component: '@/pages/index' },
+    { path: '/apps/draw', component: '@/pages/index' },
   ],
   extraBabelPlugins: [
     [
       'import',
       {
         libraryName: '@antv/x6-react-components',
+        libraryDirectory: 'es',
         transformToDefaultImport: false,
         style: true,
       },
     ],
   ],
-}
-
-export default config
+})
