@@ -7,7 +7,7 @@ import {
 } from '@ant-design/icons'
 import { useClickAway } from 'ahooks'
 import { useObservableState } from '@/common/hooks/useObservableState'
-import { Menu } from '@antv/x6-components'
+import { Menu } from '@antv/x6-react-components'
 import { useExperimentGraph } from '@/pages/rx-models/experiment-graph'
 import { graphPointToOffsetPoint } from '@/pages/common//utils/graph'
 import styles from './index.less'
