@@ -15,15 +15,14 @@ export default class Example extends React.Component {
         enabled: true,
         findParent({ node }) {
           const bbox = node.getBBox()
-          return this.getNodes().filter((parent) => {
+          return this.getNodes().filter(parent => {
             const data = parent.getData<any>()
             // 只有 data.parent 为 true 的节点才是父节点
             if (data && data.parent) {
               const children = parent.getChildren()
               console.log(children)
               const valid =
-                children != null &&
-                children.every((cell) => cell.id !== node.id)
+                children != null && children.every(cell => cell.id !== node.id)
               if (valid) {
                 const targetBBox = parent.getBBox()
                 return targetBBox.containsRect(bbox)
@@ -39,7 +38,7 @@ export default class Example extends React.Component {
           }
           const children = parent.getChildren()
           return (
-            children != null && children.every((cell) => cell.id !== child.id)
+            children != null && children.every(cell => cell.id !== child.id)
           )
         },
       },

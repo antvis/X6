@@ -16,7 +16,6 @@ export default class Example extends React.Component {
       width: 800,
       height: 800,
       history: true,
-      interacting: false,
       snapline: {
         enabled: true,
         sharp: true,
@@ -32,13 +31,23 @@ export default class Example extends React.Component {
         pageBreak: false,
         pannable: true,
       },
+      embedding: {
+        enabled: true,
+        findParent({ node }) {
+          const bbox = node.getBBox()
+          return this.getNodes().filter(parent => {
+            const targetBBox = parent.getBBox()
+            return targetBBox.containsRect(bbox)
+          })
+        },
+      },
     }))
 
     const source = graph.addNode({
       x: 130,
       y: 30,
-      width: 100,
-      height: 40,
+      width: 200,
+      height: 80,
       attrs: {
         label: {
           text: 'Hello',
@@ -70,50 +79,17 @@ export default class Example extends React.Component {
 
     graph.addEdge({ source, target })
 
+    graph.on('node:change:parent', args => {
+      console.log('node:change:parent', args)
+    })
+
+    graph.on('node:added', args => {
+      console.log('node:added', args)
+    })
+
     graph.centerContent()
 
     this.dnd = new Dnd({ target: graph })
-
-    // this.stencilContainer.childNodes.forEach((elem: HTMLElement) => {
-    //   const type = elem.getAttribute('data-type')
-    //   const node =
-    //     type === 'rect'
-    //       ? new Rect({
-    //           width: 100,
-    //           height: 40,
-    //           attrs: {
-    //             label: {
-    //               text: 'Rect',
-    //               fill: '#6a6c8a',
-    //             },
-    //             body: {
-    //               stroke: '#31d0c6',
-    //               strokeWidth: 2,
-    //             },
-    //           },
-    //         })
-    //       : new Circle({
-    //           width: 60,
-    //           height: 60,
-    //           attrs: {
-    //             label: {
-    //               text: 'Circle',
-    //               fill: '#6a6c8a',
-    //             },
-    //             body: {
-    //               stroke: '#31d0c6',
-    //               strokeWidth: 2,
-    //             },
-    //           },
-    //         })
-
-    //   $(elem).on('mousedown', (e) => {
-    //     dnd.start(node, e)
-    //   })
-    // })
-
-    // const history = graph.history
-    // history.on('change', () => {})
   }
 
   onUndo = () => {
@@ -129,7 +105,6 @@ export default class Example extends React.Component {
   }
 
   startDrag = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    console.log(e.currentTarget)
     const target = e.currentTarget
     const type = target.getAttribute('data-type')
     const node =

@@ -324,7 +324,7 @@ export class NodeView<
   }
 
   protected removePorts() {
-    Object.keys(this.portsCache).forEach((portId) => {
+    Object.keys(this.portsCache).forEach(portId => {
       const cached = this.portsCache[portId]
       Dom.remove(cached.portElement)
     })
@@ -334,7 +334,7 @@ export class NodeView<
     const container = this.getPortsContainer()
     // References to rendered elements without z-index
     const references: Element[] = []
-    container.childNodes.forEach((child) => {
+    container.childNodes.forEach(child => {
       references.push(child as Element)
     })
 
@@ -343,14 +343,14 @@ export class NodeView<
 
     // render non-z first
     if (portsGropsByZ[autoZIndexKey]) {
-      portsGropsByZ[autoZIndexKey].forEach((port) => {
+      portsGropsByZ[autoZIndexKey].forEach(port => {
         const portElement = this.getPortElement(port)
         container.append(portElement)
         references.push(portElement)
       })
     }
 
-    Object.keys(portsGropsByZ).forEach((key) => {
+    Object.keys(portsGropsByZ).forEach(key => {
       if (key !== autoZIndexKey) {
         const zIndex = parseInt(key, 10)
         this.appendPorts(portsGropsByZ[key], zIndex, references)
@@ -369,7 +369,7 @@ export class NodeView<
     zIndex: number,
     refs: Element[],
   ) {
-    const elems = ports.map((p) => this.getPortElement(p))
+    const elems = ports.map(p => this.getPortElement(p))
     if (refs[zIndex] || zIndex < 0) {
       Dom.before(refs[Math.max(zIndex, 0)], elems)
     } else {
@@ -467,7 +467,7 @@ export class NodeView<
 
     // Layout ports with explicit group
     const groups = this.cell.getParsedGroups()
-    Object.keys(groups).forEach((groupName) => this.updatePortGroup(groupName))
+    Object.keys(groups).forEach(groupName => this.updatePortGroup(groupName))
   }
 
   protected updatePortGroup(groupName?: string) {
@@ -737,7 +737,7 @@ export class NodeView<
       enclosed: true,
     })
 
-    connectedEdges.forEach((edge) => {
+    connectedEdges.forEach(edge => {
       const zIndex = edge.getZIndex() || 0
       if (zIndex <= maxZ) {
         edge.setZIndex(maxZ + 1, { ui: true })
@@ -764,7 +764,7 @@ export class NodeView<
         ? (FunctionExt.call(findParent, graph, {
             view: this,
             node: this.cell,
-          }) as Cell[]).filter((cell) => {
+          }) as Cell[]).filter(cell => {
             return (
               cell instanceof Cell &&
               this.cell.id !== cell.id &&
@@ -842,7 +842,7 @@ export class NodeView<
       data.candidateEmbedView = null
     }
 
-    graph.model.getConnectedEdges(cell, { deep: true }).forEach((edge) => {
+    graph.model.getConnectedEdges(cell, { deep: true }).forEach(edge => {
       edge.updateParent({ ui: true })
     })
   }
