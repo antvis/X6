@@ -17,6 +17,7 @@ export class Dnd extends View {
   protected draggingView: NodeView | null
   protected delegateBBox: Rectangle
   protected geometryBBox: Rectangle
+  protected candidateEmbedView: NodeView | null
   protected delta: Point | null
   protected padding: number | null
   protected snapOffset: Point.PointLike | null
@@ -205,13 +206,17 @@ export class Dnd extends View {
         })
 
       if (embeddingMode) {
-        draggingView.setEventData(e, { graph: this.targetGraph })
+        draggingView.setEventData(e, {
+          graph: this.targetGraph,
+          candidateEmbedView: this.candidateEmbedView,
+        })
         const data = draggingView.getEventData<any>(e)
         if (isValidArea) {
           draggingView.processEmbedding(data)
         } else {
           draggingView.clearEmbedding(data)
         }
+        this.candidateEmbedView = data.candidateEmbedView
       }
 
       // update snapline
@@ -260,10 +265,12 @@ export class Dnd extends View {
           draggingView.setEventData(e, {
             cell: node,
             graph: this.targetGraph,
+            candidateEmbedView: this.candidateEmbedView,
           })
           draggingView.finalizeEmbedding(draggingView.getEventData<any>(e))
         }
 
+        this.candidateEmbedView = null
         this.targetModel.stopBatch('dnd')
       }
 
@@ -379,7 +386,7 @@ export class Dnd extends View {
         return ret
       }
 
-      return FunctionExt.toDeferredBoolean(ret).then((valid) => {
+      return FunctionExt.toDeferredBoolean(ret).then(valid => {
         if (valid) {
           targetModel.addCell(node, { stencil: this.cid })
         }
@@ -418,8 +425,8 @@ export namespace Dnd {
 
   export const defaults: Partial<Options> = {
     animation: false,
-    getDragNode: (node) => node.clone(),
-    getDropNode: (node) => node.clone(),
+    getDragNode: node => node.clone(),
+    getDropNode: node => node.clone(),
   }
 
   export const documentEvents = {
