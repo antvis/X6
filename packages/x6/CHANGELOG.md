@@ -1,3 +1,10 @@
+## @antv/x6 [0.10.80](https://github.com/antvis/x6/compare/@antv/x6@0.10.79...@antv/x6@0.10.80) (2020-11-06)
+
+
+### Bug Fixes
+
+* 🐛 dnd events ([3e94b0b](https://github.com/antvis/x6/commit/3e94b0b1eafab8f43cff2601b088df24d1b062a4)), closes [#271](https://github.com/antvis/x6/issues/271)
+
 ## @antv/x6 [0.10.79](https://github.com/antvis/x6/compare/@antv/x6@0.10.78...@antv/x6@0.10.79) (2020-11-05)
 
 
