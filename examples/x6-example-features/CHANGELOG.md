@@ -1,3 +1,19 @@
+## @antv/x6-example-features [0.10.82](https://github.com/antvis/x6/compare/@antv/x6-example-features@0.10.81...@antv/x6-example-features@0.10.82) (2020-11-06)
+
+
+### Bug Fixes
+
+* 🐛 dnd events ([3e94b0b](https://github.com/antvis/x6/commit/3e94b0b1eafab8f43cff2601b088df24d1b062a4)), closes [#271](https://github.com/antvis/x6/issues/271)
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 0.10.80
+* **@antv/x6-react-shape:** upgraded to 0.10.21
+
 ## @antv/x6-example-features [0.10.81](https://github.com/antvis/x6/compare/@antv/x6-example-features@0.10.80...@antv/x6-example-features@0.10.81) (2020-11-05)
 
 
