@@ -1,6 +1,6 @@
 ---
 title: 画布 Graph
-order: 0
+order: -1
 redirect_from:
   - /zh/docs
   - /zh/docs/tutorial
