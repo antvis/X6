@@ -483,7 +483,7 @@ export namespace Options {
       }
     } else {
       throw new Error(
-        `Ensure the container of the graph is specified and vliad`,
+        `Ensure the container of the graph is specified and valid`,
       )
     }
 
