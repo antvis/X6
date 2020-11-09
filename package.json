@@ -47,11 +47,8 @@
     ]
   },
   "dependencies": {
-    "@bubkoo/semantic-release-config": "^1.2.0",
     "@commitlint/cli": "^11.0.0",
     "@commitlint/config-conventional": "^11.0.0",
-    "@semantic-release/changelog": "^5.0.1",
-    "@semantic-release/git": "^9.0.0",
     "devmoji": "^2.1.9",
     "eslint": "^7.11.0",
     "eslint-config-airbnb-base": "^14.0.0",
@@ -68,7 +65,6 @@
     "lerna": "^3.19.0",
     "lerna-changelog": "^1.0.1",
     "lint-staged": "^10.2.2",
-    "multi-semantic-release": "^2.4.7",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.1.2",
     "pretty-quick": "^3.0.2",
