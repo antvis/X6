@@ -612,6 +612,14 @@ export class NodeView<
         const meta = data as EventData.Moving
         const view = meta.targetView || this
         view.dragNode(e, x, y)
+        view.notify('node:moving', {
+          e,
+          x,
+          y,
+          view,
+          cell: view.cell,
+          node: view.cell,
+        })
       }
       this.notifyMouseMove(e, x, y)
     }
@@ -997,6 +1005,16 @@ export class NodeView<
       action: 'move',
     })
 
+    targetView.addClass('node-moving')
+    this.notify('node:move', {
+      e,
+      x,
+      y,
+      view: targetView,
+      cell: targetView.cell,
+      node: targetView.cell,
+    })
+
     const position = Point.create(targetView.cell.getPosition())
     targetView.setEventData<EventData.MovingTargetNode>(e, {
       offset: position.diff(x, y),
@@ -1015,11 +1033,6 @@ export class NodeView<
 
     const posX = Util.snapToGrid(x + offset.x, gridSize)
     const posY = Util.snapToGrid(y + offset.y, gridSize)
-    const meta = this.getEventData<EventData.Moving>(e)
-    if (!meta.moved) {
-      meta.moved = true
-    }
-
     node.setPosition(posX, posY, {
       restrict,
       deep: true,
@@ -1043,22 +1056,22 @@ export class NodeView<
   }
 
   protected stopNodeDragging(e: JQuery.MouseUpEvent, x: number, y: number) {
-    const meta = this.getEventData<EventData.Moving>(e)
-    if (meta.moved) {
-      this.notify('node:moved', {
-        e,
-        x,
-        y,
-        view: this,
-        cell: this.cell,
-        node: this.cell,
-      })
-    }
-
     const data = this.getEventData<EventData.MovingTargetNode>(e)
     if (data.embedding) {
       this.finalizeEmbedding(data)
     }
+
+    const meta = this.getEventData<EventData.Moving>(e)
+    const view = meta.targetView
+    view.removeClass('node-moving')
+    this.notify('node:moved', {
+      e,
+      x,
+      y,
+      view,
+      cell: view.cell,
+      node: view.cell,
+    })
   }
 
   // #endregion
@@ -1135,6 +1148,8 @@ export namespace NodeView {
     'node:magnet:contextmenu': PositionEventArgs<JQuery.ContextMenuEvent> &
       MagnetEventArgs
 
+    'node:move': TranslateEventArgs<JQuery.MouseDownEvent>
+    'node:moving': TranslateEventArgs<JQuery.MouseMoveEvent>
     'node:moved': TranslateEventArgs<JQuery.MouseUpEvent>
 
     'node:resize': ResizeEventArgs<JQuery.MouseDownEvent>
@@ -1159,7 +1174,6 @@ namespace EventData {
   export interface Moving {
     action: 'move'
     targetView: NodeView
-    moved?: boolean
   }
 
   export interface MovingTargetNode {
