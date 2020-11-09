@@ -79,7 +79,7 @@ export class Transform extends Widget<Transform.Options> {
     const $knob = this.$('<div/>').prop('draggable', false)
     const $rotate = $knob.clone().addClass(this.rotateClassName)
 
-    const $resizes = Private.POSITIONS.map(pos => {
+    const $resizes = Private.POSITIONS.map((pos) => {
       return $knob
         .clone()
         .addClass(this.resizeClassName)
@@ -159,7 +159,7 @@ export class Transform extends Widget<Transform.Options> {
 
       this.$container
         .find(`.${this.resizeClassName}`)
-        .removeClass(Private.DIRECTIONS.map(dir => className(dir)).join(' '))
+        .removeClass(Private.DIRECTIONS.map((dir) => className(dir)).join(' '))
         .each((index, elem) => {
           this.$(elem).addClass(className(directions[index]))
         })
@@ -205,7 +205,7 @@ export class Transform extends Widget<Transform.Options> {
     const trueDirection = this.getTrueDirection(relativeDirection)
     let rx = 0
     let ry = 0
-    relativeDirection.split('-').forEach(direction => {
+    relativeDirection.split('-').forEach((direction) => {
       rx = ({ left: -1, right: 1 } as KeyValue)[direction] || rx
       ry = ({ top: -1, bottom: 1 } as KeyValue)[direction] || ry
     })
