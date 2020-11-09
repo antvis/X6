@@ -91,6 +91,7 @@ export class Transform extends Widget<Transform.Options> {
 
   render() {
     this.renderHandles()
+    this.view.addClass(Private.NODE_CLS)
     this.$container
       .addClass(this.containerClassName)
       .toggleClass(
@@ -133,6 +134,11 @@ export class Transform extends Widget<Transform.Options> {
     this.updateResizerDirections()
 
     return this
+  }
+
+  remove() {
+    this.view.removeClass(Private.NODE_CLS)
+    return super.remove()
   }
 
   protected updateResizerDirections() {
@@ -492,6 +498,7 @@ export namespace Transform {
 }
 
 namespace Private {
+  export const NODE_CLS = 'has-widget-transform'
   export const DIRECTIONS = ['nw', 'n', 'ne', 'e', 'se', 's', 'sw', 'w']
   export const POSITIONS: Node.ResizeDirection[] = [
     'top-left',
