@@ -2,9 +2,9 @@ exports.ids = [6];
 exports.modules = {
 
 /***/ "../../node_modules/monaco-editor/esm/vs/basic-languages/javascript/javascript.js":
-/*!**********************************************************************************************************!*\
-  !*** /home/runner/work/X6/X6/node_modules/monaco-editor/esm/vs/basic-languages/javascript/javascript.js ***!
-  \**********************************************************************************************************/
+/*!*******************************************************************************************************************!*\
+  !*** /Users/wenyu/vector/code/AntV/X6/node_modules/monaco-editor/esm/vs/basic-languages/javascript/javascript.js ***!
+  \*******************************************************************************************************************/
 /*! exports provided: conf, language */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -88,9 +88,9 @@ var language = {
 /***/ }),
 
 /***/ "../../node_modules/monaco-editor/esm/vs/basic-languages/typescript/typescript.js":
-/*!**********************************************************************************************************!*\
-  !*** /home/runner/work/X6/X6/node_modules/monaco-editor/esm/vs/basic-languages/typescript/typescript.js ***!
-  \**********************************************************************************************************/
+/*!*******************************************************************************************************************!*\
+  !*** /Users/wenyu/vector/code/AntV/X6/node_modules/monaco-editor/esm/vs/basic-languages/typescript/typescript.js ***!
+  \*******************************************************************************************************************/
 /*! exports provided: conf, language */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 

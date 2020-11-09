@@ -2,9 +2,9 @@ exports.ids = [5];
 exports.modules = {
 
 /***/ "../../node_modules/monaco-editor/esm/vs/language/typescript/languageFeatures.js":
-/*!*********************************************************************************************************!*\
-  !*** /home/runner/work/X6/X6/node_modules/monaco-editor/esm/vs/language/typescript/languageFeatures.js ***!
-  \*********************************************************************************************************/
+/*!******************************************************************************************************************!*\
+  !*** /Users/wenyu/vector/code/AntV/X6/node_modules/monaco-editor/esm/vs/language/typescript/languageFeatures.js ***!
+  \******************************************************************************************************************/
 /*! exports provided: flattenDiagnosticMessageText, Adapter, LibFiles, DiagnosticsAdapter, SuggestAdapter, SignatureHelpAdapter, QuickInfoAdapter, OccurrencesAdapter, DefinitionAdapter, ReferenceAdapter, OutlineAdapter, Kind, FormatHelper, FormatAdapter, FormatOnTypeAdapter, CodeActionAdaptor, RenameAdapter */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -1172,9 +1172,9 @@ var RenameAdapter = /** @class */ (function (_super) {
 /***/ }),
 
 /***/ "../../node_modules/monaco-editor/esm/vs/language/typescript/lib/lib.index.js":
-/*!******************************************************************************************************!*\
-  !*** /home/runner/work/X6/X6/node_modules/monaco-editor/esm/vs/language/typescript/lib/lib.index.js ***!
-  \******************************************************************************************************/
+/*!***************************************************************************************************************!*\
+  !*** /Users/wenyu/vector/code/AntV/X6/node_modules/monaco-editor/esm/vs/language/typescript/lib/lib.index.js ***!
+  \***************************************************************************************************************/
 /*! exports provided: libFileSet */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -1248,9 +1248,9 @@ libFileSet['lib.webworker.importscripts.d.ts'] = true;
 /***/ }),
 
 /***/ "../../node_modules/monaco-editor/esm/vs/language/typescript/tsMode.js":
-/*!***********************************************************************************************!*\
-  !*** /home/runner/work/X6/X6/node_modules/monaco-editor/esm/vs/language/typescript/tsMode.js ***!
-  \***********************************************************************************************/
+/*!********************************************************************************************************!*\
+  !*** /Users/wenyu/vector/code/AntV/X6/node_modules/monaco-editor/esm/vs/language/typescript/tsMode.js ***!
+  \********************************************************************************************************/
 /*! exports provided: setupTypeScript, setupJavaScript, getJavaScriptWorker, getTypeScriptWorker */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -1324,9 +1324,9 @@ function setupMode(defaults, modeId) {
 /***/ }),
 
 /***/ "../../node_modules/monaco-editor/esm/vs/language/typescript/workerManager.js":
-/*!******************************************************************************************************!*\
-  !*** /home/runner/work/X6/X6/node_modules/monaco-editor/esm/vs/language/typescript/workerManager.js ***!
-  \******************************************************************************************************/
+/*!***************************************************************************************************************!*\
+  !*** /Users/wenyu/vector/code/AntV/X6/node_modules/monaco-editor/esm/vs/language/typescript/workerManager.js ***!
+  \***************************************************************************************************************/
 /*! exports provided: WorkerManager */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 

@@ -2,9 +2,9 @@ exports.ids = [48];
 exports.modules = {
 
 /***/ "../../node_modules/monaco-editor/esm/vs/basic-languages/razor/razor.js":
-/*!************************************************************************************************!*\
-  !*** /home/runner/work/X6/X6/node_modules/monaco-editor/esm/vs/basic-languages/razor/razor.js ***!
-  \************************************************************************************************/
+/*!*********************************************************************************************************!*\
+  !*** /Users/wenyu/vector/code/AntV/X6/node_modules/monaco-editor/esm/vs/basic-languages/razor/razor.js ***!
+  \*********************************************************************************************************/
 /*! exports provided: conf, language */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
