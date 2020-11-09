@@ -1093,6 +1093,12 @@ export namespace NodeView {
     extends MouseEventArgs<E>,
       CellView.PositionEventArgs {}
 
+  export interface TranslateEventArgs<E> extends PositionEventArgs<E> {}
+
+  export interface ResizeEventArgs<E> extends PositionEventArgs<E> {}
+
+  export interface RotateEventArgs<E> extends PositionEventArgs<E> {}
+
   export interface EventArgs {
     'node:click': PositionEventArgs<JQuery.ClickEvent>
     'node:dblclick': PositionEventArgs<JQuery.DoubleClickEvent>
@@ -1129,9 +1135,15 @@ export namespace NodeView {
     'node:magnet:contextmenu': PositionEventArgs<JQuery.ContextMenuEvent> &
       MagnetEventArgs
 
-    'node:moved': PositionEventArgs<JQuery.MouseUpEvent>
-    'node:resized': PositionEventArgs<JQuery.MouseUpEvent>
-    'node:rotated': PositionEventArgs<JQuery.MouseUpEvent>
+    'node:moved': TranslateEventArgs<JQuery.MouseUpEvent>
+
+    'node:resize': ResizeEventArgs<JQuery.MouseDownEvent>
+    'node:resizing': ResizeEventArgs<JQuery.MouseMoveEvent>
+    'node:resized': ResizeEventArgs<JQuery.MouseUpEvent>
+
+    'node:rotate': RotateEventArgs<JQuery.MouseDownEvent>
+    'node:rotating': RotateEventArgs<JQuery.MouseMoveEvent>
+    'node:rotated': RotateEventArgs<JQuery.MouseUpEvent>
   }
 }
 
