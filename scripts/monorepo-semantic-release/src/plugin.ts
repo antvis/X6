@@ -1,7 +1,6 @@
 import * as fse from 'fs-extra'
-import { homedir } from 'os'
-import { resolve } from 'path'
 import execa from 'execa'
+import tempy from 'tempy'
 import getDebugger from 'debug'
 import detectIndent from 'detect-indent'
 import detectNewline from 'detect-newline'
@@ -10,6 +9,8 @@ import { Commits } from './commits'
 import { Manifest } from './manifest'
 import { Synchronizer } from './synchronizer'
 import { Package, Context, PluginOptions, Options } from './types'
+
+const npmrc = tempy.file({ name: '.npmrc' })
 
 export namespace Plugin {
   const debug = getDebugger('msr:inline-plugin')
@@ -28,7 +29,7 @@ export namespace Plugin {
     }
 
     pkg.localDeps &&
-      pkg.localDeps.forEach((p) => {
+      pkg.localDeps.forEach(p => {
         // Get version of dependency.
         const release = p.nextRelease || p.lastRelease
         // Cannot establish version.
@@ -54,8 +55,8 @@ export namespace Plugin {
 
   function hasChangedDeep(packages: Package[], ignore: Package[] = []) {
     return packages
-      .filter((p) => ignore.indexOf(p) === -1)
-      .some((p) => {
+      .filter(p => ignore.indexOf(p) === -1)
+      .some(p => {
         // 1. Any local dep package itself has changed
         if (p.nextType) {
           return true
@@ -107,7 +108,7 @@ export namespace Plugin {
         pkg.ready = true
         emit(
           'readyForRelease',
-          todo().find((p) => !p.ready),
+          todo().find(p => !p.ready),
         )
 
         const res = await plugins.verifyConditions(context)
@@ -141,8 +142,8 @@ export namespace Plugin {
 
         // Make a list of local dependencies.
         pkg.localDeps = deps
-          .map((d) => packages.find((p) => d === p.name))
-          .filter((p) => p != null) as Package[]
+          .map(d => packages.find(p => d === p.name))
+          .filter(p => p != null) as Package[]
 
         // Set nextType for package from plugins.
         pkg.nextType = await plugins.analyzeCommits(context)
@@ -171,7 +172,7 @@ export namespace Plugin {
         pkg.nextRelease = context.nextRelease
 
         // Wait until all packages are ready to generate notes.
-        await waitForAll('nextRelease', (p) => p.nextType != null)
+        await waitForAll('nextRelease', p => p.nextType != null)
 
         // Wait until the current pkg is ready to generate notes
         getLucky('readyToGenerateNotes', pkg)
@@ -199,11 +200,11 @@ export namespace Plugin {
         }
 
         // If it has upgrades add an upgrades section.
-        const upgrades = pkg.localDeps!.filter((p) => p.nextRelease != null)
+        const upgrades = pkg.localDeps!.filter(p => p.nextRelease != null)
         if (upgrades.length) {
           notes.push(`### Dependencies`)
           const bullets = upgrades.map(
-            (p) => `* **${p.name}:** upgraded to ${p.nextRelease!.version}`,
+            p => `* **${p.name}:** upgraded to ${p.nextRelease!.version}`,
           )
           notes.push(bullets.join('\n'))
         }
@@ -218,20 +219,11 @@ export namespace Plugin {
         const org = getOrgName(pkg.name)
 
         if (!pkg.private && org) {
-          const globalNpmrc = resolve(homedir(), '.npmrc')
-          const localNpmrc = resolve(pkg.dir, '.npmrc')
           const token = context.env.GITHUB_TOKEN
-          await fse.ensureFile(globalNpmrc)
-          await fse.ensureFile(localNpmrc)
-
           await fse.writeFile(
-            globalNpmrc,
-            `//npm.pkg.github.com/:_authToken=${token}`,
-          )
-
-          await fse.writeFile(
-            localNpmrc,
-            `registry=https://npm.pkg.github.com/${org}`,
+            npmrc,
+            `//npm.pkg.github.com/:_authToken=${token}` +
+              `\nregistry=https://npm.pkg.github.com/${org}`,
           )
 
           const pub = execa('npm', ['publish'], {
@@ -253,10 +245,10 @@ export namespace Plugin {
         pkg.prepared = true
         emit(
           'readyToGenerateNotes',
-          todo().find((p) => p.nextType != null && !p.prepared),
+          todo().find(p => p.nextType != null && !p.prepared),
         )
 
-        await waitForAll('prepared', (p) => p.nextType != null)
+        await waitForAll('prepared', p => p.nextType != null)
 
         const ret = await plugins.publish(context)
         const releases: SemanticRelease.Release[] = Array.isArray(ret)
@@ -279,8 +271,8 @@ export namespace Plugin {
         debug('published: %s', pkg.name)
 
         releaseMap[pkg.name] = releases
-          .filter((r) => r.name != null)
-          .map((r) => ({
+          .filter(r => r.name != null)
+          .map(r => ({
             ...r,
             package: pkg.name,
             private: pkg.private,
@@ -294,9 +286,9 @@ export namespace Plugin {
         context: SemanticRelease.Context,
       ) => {
         pkg.published = true
-        await waitForAll('published', (p) => p.nextType != null)
+        await waitForAll('published', p => p.nextType != null)
 
-        const totalCount = todo().filter((p) => p.nextType != null).length
+        const totalCount = todo().filter(p => p.nextType != null).length
         const ctx = context as any
 
         if (successExeCount < totalCount) {
@@ -331,7 +323,7 @@ export namespace Plugin {
         success,
       }
 
-      Object.keys(plugin).forEach((type) =>
+      Object.keys(plugin).forEach(type =>
         Reflect.defineProperty(plugin[type], 'pluginName', {
           value: 'monorepo-semantic-release',
           writable: false,
