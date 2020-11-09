@@ -220,16 +220,20 @@ export namespace Plugin {
 
         if (!pkg.private && org) {
           const token = context.env.GITHUB_TOKEN
+          const registry = `https://npm.pkg.github.com/${org}`
           await fse.writeFile(
             npmrc,
-            `//npm.pkg.github.com/:_authToken=${token}` +
-              `\nregistry=https://npm.pkg.github.com/${org}`,
+            `//npm.pkg.github.com/:_authToken=${token}\nregistry=${registry}`,
           )
 
-          const pub = execa('npm', ['publish'], {
-            cwd: pkg.dir,
-            env: context.env,
-          }) as any
+          const pub = execa(
+            'npm',
+            ['publish', pkg.dir, '--userconfig', npmrc, '--registry', registry],
+            {
+              cwd: pkg.dir,
+              env: context.env,
+            },
+          ) as any
 
           const ctx = context as any
           pub.stdout.pipe(ctx.stdout, { end: false })
