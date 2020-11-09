@@ -1,3 +1,10 @@
+# @antv/x6 [0.12.0](https://github.com/antvis/x6/compare/@antv/x6@0.11.2...@antv/x6@0.12.0) (2020-11-09)
+
+
+### Features
+
+* ✨ add xxx classname to node when widget visible ([aa3dd12](https://github.com/antvis/x6/commit/aa3dd120a5457f189c0f09dad87d96c70b908abd)), closes [#279](https://github.com/antvis/x6/issues/279)
+
 ## @antv/x6 [0.11.2](https://github.com/antvis/x6/compare/@antv/x6@0.11.1...@antv/x6@0.11.2) (2020-11-09)
 
 ## @antv/x6 [0.11.1](https://github.com/antvis/x6/compare/@antv/x6@0.11.0...@antv/x6@0.11.1) (2020-11-09)
