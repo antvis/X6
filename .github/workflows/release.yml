@@ -50,3 +50,4 @@ jobs:
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           GITHUB_TOKEN: ${{ env.bot_token }}
+          ACTION_TOKEN: ${{ secrets.GITHUB_TOKEN }}
