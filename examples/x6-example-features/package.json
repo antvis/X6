@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@antv/x6-example-features",
-  "version": "0.11.1",
+  "version": "0.11.2",
   "scripts": {
     "start": "umi dev",
     "build": "umi build",
@@ -10,9 +10,9 @@
     "precommit": "lint-staged"
   },
   "dependencies": {
-    "@antv/x6": "^0.11.1",
-    "@antv/x6-react-components": "^0.10.17",
-    "@antv/x6-react-shape": "^0.10.24",
+    "@antv/x6": "^0.11.2",
+    "@antv/x6-react-components": "^0.10.18",
+    "@antv/x6-react-shape": "^0.10.25",
     "antd": "^4.4.2",
     "classnames": "^2.2.6",
     "dagre": "^0.8.5",
