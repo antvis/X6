@@ -24,10 +24,10 @@
     "lodash.clonedeep": "^4.5.0",
     "lodash.identity": "^3.0.0",
     "promise-events": "^0.2.0",
+    "read-pkg": "^5.2.0",
     "semantic-release": "^17.2.2",
     "signale": "^1.4.0",
-    "stream-buffers": "^3.0.2",
-    "tempy": "^1.0.0"
+    "stream-buffers": "^3.0.2"
   },
   "devDependencies": {
     "@types/bash-glob": "^2.0.0",

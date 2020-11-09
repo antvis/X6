@@ -1,6 +1,8 @@
 import * as fse from 'fs-extra'
+import { join } from 'path'
+import { homedir } from 'os'
 import execa from 'execa'
-import tempy from 'tempy'
+import readPkg from 'read-pkg'
 import getDebugger from 'debug'
 import detectIndent from 'detect-indent'
 import detectNewline from 'detect-newline'
@@ -9,8 +11,6 @@ import { Commits } from './commits'
 import { Manifest } from './manifest'
 import { Synchronizer } from './synchronizer'
 import { Package, Context, PluginOptions, Options } from './types'
-
-const npmrc = tempy.file({ name: '.npmrc' })
 
 export namespace Plugin {
   const debug = getDebugger('msr:inline-plugin')
@@ -217,28 +217,33 @@ export namespace Plugin {
 
       const publishGPR = async (context: SemanticRelease.Context) => {
         const org = getOrgName(pkg.name)
-
         if (!pkg.private && org) {
           const token = context.env.GITHUB_TOKEN
-          const registry = `https://npm.pkg.github.com/${org}`
-          await fse.writeFile(
-            npmrc,
-            `//npm.pkg.github.com/:_authToken=${token}\nregistry=${registry}`,
-          )
+          const host = 'npm.pkg.github.com'
+          const registry = `https://${host}`
+          const npmrc = join(homedir(), '.npmrc')
+          const pkgPath = join(pkg.dir, 'package.json')
+          const pkgRaw = await fse.readFile(pkgPath)
+          const pkgData = await readPkg({ cwd: pkg.dir })
 
-          const pub = execa(
-            'npm',
-            ['publish', pkg.dir, '--userconfig', npmrc, '--registry', registry],
-            {
-              cwd: pkg.dir,
-              env: context.env,
-            },
-          ) as any
+          pkgData.name = pkgData.name.replace('antv', 'antvis')
+          pkgData.publishConfig = { registry, access: 'public' }
+
+          await fse.writeFile(npmrc, `//${host}/:_authToken=${token}`)
+          await fse.writeFile(pkgPath, JSON.stringify(pkgData, null, 2))
+
+          const pub = execa('npm', ['publish'], {
+            cwd: pkg.dir,
+            env: context.env,
+          }) as any
 
           const ctx = context as any
           pub.stdout.pipe(ctx.stdout, { end: false })
           pub.stderr.pipe(ctx.stderr, { end: false })
-          return await pub
+          const ret = await pub
+          await fse.writeFile(pkgPath, pkgRaw)
+
+          return ret
         }
       }
 
