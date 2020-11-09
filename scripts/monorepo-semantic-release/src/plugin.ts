@@ -72,14 +72,6 @@ export namespace Plugin {
       })
   }
 
-  function getOrgName(name: string) {
-    if (name[0] !== '@') {
-      return null
-    }
-    const index = name.indexOf('/')
-    return index > 1 ? name.substr(1, index - 1) : null
-  }
-
   export function get(
     packages: Package[],
     multiContext: Context,
@@ -216,9 +208,9 @@ export namespace Plugin {
       }
 
       const publishGPR = async (context: SemanticRelease.Context) => {
-        const org = getOrgName(pkg.name)
-        if (!pkg.private && org) {
-          const token = context.env.GITHUB_TOKEN
+        if (!pkg.private) {
+          // Only Personal Access Token or GitHub Actions token can publish to GPR
+          const token = context.env.ACTION_TOKEN
           const host = 'npm.pkg.github.com'
           const registry = `https://${host}`
           const npmrc = join(homedir(), '.npmrc')
@@ -226,10 +218,14 @@ export namespace Plugin {
           const pkgRaw = await fse.readFile(pkgPath)
           const pkgData = await readPkg({ cwd: pkg.dir })
 
+          // fix package name and publish registry
           pkgData.name = pkgData.name.replace('antv', 'antvis')
           pkgData.publishConfig = { registry, access: 'public' }
 
-          await fse.writeFile(npmrc, `//${host}/:_authToken=${token}`)
+          await fse.writeFile(
+            npmrc,
+            `//${host}/:_authToken=${token}\nscripts-prepend-node-path=true`,
+          )
           await fse.writeFile(pkgPath, JSON.stringify(pkgData, null, 2))
 
           const pub = execa('npm', ['publish'], {
