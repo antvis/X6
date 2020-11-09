@@ -272,13 +272,13 @@ export namespace Halo {
     clearAll: true,
     clearOnBlankMouseDown: true,
     useCellGeometry: false,
-    clone: cell => cell.clone().removeZIndex(),
+    clone: (cell) => cell.clone().removeZIndex(),
   }
 }
 
 export interface Halo extends Handle {}
 
-Object.getOwnPropertyNames(Handle.prototype).forEach(name => {
+Object.getOwnPropertyNames(Handle.prototype).forEach((name) => {
   if (name !== 'constructor') {
     Object.defineProperty(
       Halo.prototype,
