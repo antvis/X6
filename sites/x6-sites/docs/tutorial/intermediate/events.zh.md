@@ -92,17 +92,22 @@ graph.on('resize', ({ width, height }) => { })
 graph.on('translate', ({ tx, ty }) => { })
 ```
 
-### 节点缩放/平移/旋转
+### 节点或边缩放/平移/旋转
 
-| 事件名          | 回调参数                                                                         | 说明                            |
-|-----------------|----------------------------------------------------------------------------------|-------------------------------|
-| `node:moved`    | `{ e: JQuery.MouseUpEvent; x: number; y: number; node: Node; view: NodeView }`   | 移动节点后触发。                 |
-| `node:resize`   | `{ e: JQuery.MouseDownEvent; x: number; y: number; node: Node; view: NodeView }` | 按下鼠标开始调整节点大小时触发。 |
-| `node:resizing` | `{ e: JQuery.MouseMoveEvent; x: number; y: number; node: Node; view: NodeView }` | 移动鼠标调整节点大小时触发。     |
-| `node:resized`  | `{ e: JQuery.MouseUpEvent; x: number; y: number; node: Node; view: NodeView }`   | 释放鼠标完成调整节点大小时触发。 |
-| `node:rotate`   | `{ e: JQuery.MouseDownEvent; x: number; y: number; node: Node; view: NodeView }` | 按下鼠标开始旋转节点时触发。     |
-| `node:rotating` | `{ e: JQuery.MouseMoveEvent; x: number; y: number; node: Node; view: NodeView }` | 移动鼠标旋转节点时触发。         |
-| `node:rotated`  | `{ e: JQuery.MouseUpEvent; x: number; y: number; node: Node; view: NodeView }`   | 释放鼠标完成旋转节点时触发。     |
+| 事件名          | 回调参数                                                                         | 说明                    |
+|-----------------|----------------------------------------------------------------------------------|-----------------------|
+| `node:move`     | `{ e: JQuery.MouseDownEvent; x: number; y: number; node: Node; view: NodeView }` | 开始移动节点时触发。     |
+| `node:moving`   | `{ e: JQuery.MouseMoveEvent; x: number; y: number; node: Node; view: NodeView }` | 移动节点时触发。         |
+| `node:moved`    | `{ e: JQuery.MouseUpEvent; x: number; y: number; node: Node; view: NodeView }`   | 移动节点后触发。         |
+| `edge:move`     | `{ e: JQuery.MouseDownEvent; x: number; y: number; node: Node; view: NodeView }` | 开始移动边时触发。       |
+| `edge:moving`   | `{ e: JQuery.MouseMoveEvent; x: number; y: number; node: Node; view: NodeView }` | 移动边时触发。           |
+| `edge:moved`    | `{ e: JQuery.MouseUpEvent; x: number; y: number; node: Node; view: NodeView }`   | 移动边后触发。           |
+| `node:resize`   | `{ e: JQuery.MouseDownEvent; x: number; y: number; node: Node; view: NodeView }` | 开始调整节点大小时触发。 |
+| `node:resizing` | `{ e: JQuery.MouseMoveEvent; x: number; y: number; node: Node; view: NodeView }` | 调整节点大小时触发。     |
+| `node:resized`  | `{ e: JQuery.MouseUpEvent; x: number; y: number; node: Node; view: NodeView }`   | 调整节点大小后触发。     |
+| `node:rotate`   | `{ e: JQuery.MouseDownEvent; x: number; y: number; node: Node; view: NodeView }` | 开始旋转节点时触发。     |
+| `node:rotating` | `{ e: JQuery.MouseMoveEvent; x: number; y: number; node: Node; view: NodeView }` | 旋转节点时触发。         |
+| `node:rotated`  | `{ e: JQuery.MouseUpEvent; x: number; y: number; node: Node; view: NodeView }`   | 旋转节点后触发。         |
 
 参数中的 `x` 和 `y` 是鼠标相对于画布的坐标。
 
