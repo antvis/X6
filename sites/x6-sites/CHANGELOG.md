@@ -1,3 +1,19 @@
+# @antv/x6-sites [0.11.0](https://github.com/antvis/x6/compare/@antv/x6-sites@0.10.84...@antv/x6-sites@0.11.0) (2020-11-09)
+
+
+### Features
+
+* ✨ add some ui events ([7781435](https://github.com/antvis/x6/commit/77814353097a96cc444d347f26309ce6ae8e7453)), closes [#275](https://github.com/antvis/x6/issues/275) [#273](https://github.com/antvis/x6/issues/273)
+* ✨ node/edge move events ([67efad9](https://github.com/antvis/x6/commit/67efad9f9dac1657c0f04de15ca80c8fd50d395e))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 0.11.0
+
 ## @antv/x6-sites [0.10.84](https://github.com/antvis/x6/compare/@antv/x6-sites@0.10.83...@antv/x6-sites@0.10.84) (2020-11-09)
 
 
