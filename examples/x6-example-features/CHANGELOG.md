@@ -1,3 +1,19 @@
+# @antv/x6-example-features [0.12.0](https://github.com/antvis/x6/compare/@antv/x6-example-features@0.11.4...@antv/x6-example-features@0.12.0) (2020-11-10)
+
+
+### Features
+
+* ✨ add minScale and maxScale options for mousewheel ([e474ac3](https://github.com/antvis/x6/commit/e474ac3c6a7c224ab5e9a9039c7b419f91554891)), closes [#283](https://github.com/antvis/x6/issues/283) [#283](https://github.com/antvis/x6/issues/283)
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 0.13.0
+* **@antv/x6-react-shape:** upgraded to 0.10.28
+
 ## @antv/x6-example-features [0.11.4](https://github.com/antvis/x6/compare/@antv/x6-example-features@0.11.3...@antv/x6-example-features@0.11.4) (2020-11-10)
 
 
