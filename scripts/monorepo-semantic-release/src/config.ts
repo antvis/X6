@@ -124,7 +124,7 @@ export namespace Config {
       [
         '@semantic-release/git',
         {
-          assets: ['package.json', 'version.ts', 'CHANGELOG.md'],
+          assets: ['package.json', '**/version.ts', 'CHANGELOG.md'],
         },
       ],
     ],
