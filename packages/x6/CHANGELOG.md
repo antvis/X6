@@ -1,3 +1,10 @@
+# @antv/x6 [0.13.0](https://github.com/antvis/x6/compare/@antv/x6@0.12.1...@antv/x6@0.13.0) (2020-11-10)
+
+
+### Features
+
+* ✨ add minScale and maxScale options for mousewheel ([e474ac3](https://github.com/antvis/x6/commit/e474ac3c6a7c224ab5e9a9039c7b419f91554891)), closes [#283](https://github.com/antvis/x6/issues/283) [#283](https://github.com/antvis/x6/issues/283)
+
 ## @antv/x6 [0.12.1](https://github.com/antvis/x6/compare/@antv/x6@0.12.0...@antv/x6@0.12.1) (2020-11-10)
 
 
