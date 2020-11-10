@@ -15,11 +15,6 @@ jobs:
         node-version: [12.x]
     steps:
       - uses: actions/checkout@v2
-      - uses: bubkoo/use-app-token@v1
-        with:
-          app_id: ${{ secrets.APP_ID }}
-          private_key: ${{ secrets.PRIVATE_KEY }}
-          env_name: bot_token
       ##
       - name: 🌱　Get yarn cache directory path
         id: yarn-cache-dir-path
@@ -68,7 +63,13 @@ jobs:
       - name: ✨　Build Sites
         run: |
           yarn build:sites
-      - name: ✅　Deploy sites
+      - name: 🔑　Generate Token
+        uses: bubkoo/use-app-token@v1
+        with:
+          app_id: ${{ secrets.APP_ID }}
+          private_key: ${{ secrets.PRIVATE_KEY }}
+          env_name: bot_token
+      - name: ✅　Deploy Sites
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ env.bot_token }}
