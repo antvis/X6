@@ -63,40 +63,40 @@ export namespace Config {
     // prettier-ignore
     return (
       ''
-      + ":tada: This <%= issue.pull_request ? 'PR is included' : 'issue has been resolved' %> in next release :tada:"
       + '<% if(typeof releases !== "undefined" && Array.isArray(releases) && releases.length > 0) { %>'
         + '<% var releaseInfos = releases.filter(function(release) { return !!release.name && !release.private }) %>'
         + '<% if(releaseInfos.length) { %>'
+
           + '<% var groups = {} %>'
           + '<% releaseInfos.forEach(function(release) { %>'
             + '<% if (groups[release.gitTag] == null) { groups[release.gitTag] = [] } %>'
             + '<% groups[release.gitTag].push(release) %>'
           + '<% }) %>'
 
-          + '\n\nThe release is available on :package::rocket:'
+          + '👋	@<%= issue.user.login %>'
+          + "\n\n🎉 This <%= issue.pull_request ? 'PR is included' : 'issue has been resolved' %> in the following release 🎉"
+
+          + '<% var renderItem = function (item) { %>'
+            + '<% if(item.url) { %>'
+              + '<% return "[" + item.name + "](" + item.url + ")" %>'
+            + '<% } else { %>'
+              + '<% return item.name %>'
+            + '<% } %>'
+          +' <% } %>'
 
           + '<% Object.keys(groups).forEach(function(tag) { %>'
             + `\n- <%= tag%>`
             + '<% var items = groups[tag] %>'
             + '<% if(items.length === 1) { %>'
-              + '<% if(items[0].url) { %>'
-                + ': [<%= items[0].name %>](<%= items[0].url %>)'
-              + '<% } else { %>'
-                + ': <%= items[0].name %>'
-              + '<% } %>'
+              + ': <%= renderItem(items[0]) %>'
             + '<% } else { %>'
               + '<% items.forEach(function(item) { %>'
-                + '\n  - '
-                + '<% if(item.url) { %>'
-                  + '[<%= item.name %>](<%= item.url %>)'
-                + '<% } else { %>'
-                  + '<%= item.name %>'
-                + '<% } %>'
+                + '\n  - <%= renderItem(item) %>'
               + '<% }) %>'
             + '<% } %>'
           + '<% }) %>'
 
-          + '\n'
+          + '\n\nThanks for being a part of the AntV community! 💪💯'
 
         + '<% } %>'
       + '<% } %>'
