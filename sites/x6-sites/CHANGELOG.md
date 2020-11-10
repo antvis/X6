@@ -1,3 +1,18 @@
+## @antv/x6-sites [0.11.4](https://github.com/antvis/x6/compare/@antv/x6-sites@0.11.3...@antv/x6-sites@0.11.4) (2020-11-10)
+
+
+### Bug Fixes
+
+* 🐛 guard option not available ([b8ffaaf](https://github.com/antvis/x6/commit/b8ffaaf376f1b7a69d96fccde48a8de82e951660)), closes [#281](https://github.com/antvis/x6/issues/281)
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 0.12.1
+
 ## @antv/x6-sites [0.11.3](https://github.com/antvis/x6/compare/@antv/x6-sites@0.11.2...@antv/x6-sites@0.11.3) (2020-11-09)
 
 
