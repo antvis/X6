@@ -1,3 +1,10 @@
+## @antv/x6 [0.12.1](https://github.com/antvis/x6/compare/@antv/x6@0.12.0...@antv/x6@0.12.1) (2020-11-10)
+
+
+### Bug Fixes
+
+* 🐛 guard option not available ([b8ffaaf](https://github.com/antvis/x6/commit/b8ffaaf376f1b7a69d96fccde48a8de82e951660)), closes [#281](https://github.com/antvis/x6/issues/281)
+
 # @antv/x6 [0.12.0](https://github.com/antvis/x6/compare/@antv/x6@0.11.2...@antv/x6@0.12.0) (2020-11-09)
 
 
