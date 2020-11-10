@@ -1254,7 +1254,7 @@ const graph = new Graph({
     enabled: true,
     guard(this: Graph, e: MouseWheelEvent) {
       if (e.altKey) { // 当按下 alt 键时，忽略所有滚动事件
-        return false 
+        return false
       }
       return true
     },
