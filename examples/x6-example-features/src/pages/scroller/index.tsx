@@ -75,6 +75,12 @@ export default class Example extends React.Component {
         enabled: true,
         // fixed: false,
         modifiers: ['ctrl', 'meta'],
+        minScale: 0.5,
+        maxScale: 2,
+        guard() {
+          console.log(this.zoom())
+          return true
+        },
       },
     })
 
