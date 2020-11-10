@@ -300,17 +300,16 @@ export namespace Plugin {
           successExeCount += 1
         }
 
-        let ret
+        ctx.releases = releaseMap[pkg.name]
+        const ret = await plugins2.success(ctx)
+
         if (successExeCount === totalCount) {
           ctx.releases = Object.keys(releaseMap)
             .sort()
             .reduce<SemanticRelease.Release[]>((memo, key) => {
               return [...memo, ...releaseMap[key]]
             }, [])
-          ret = await plugins.success(ctx)
-        } else {
-          ctx.releases = releaseMap[pkg.name]
-          ret = await plugins2.success(ctx)
+          await plugins.success(ctx)
         }
 
         console.log(pkg.name, successExeCount, ctx.releases)
