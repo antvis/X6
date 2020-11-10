@@ -1,7 +1,7 @@
 import JQuery from 'jquery'
 import { Graph } from './graph'
 import { ModifierKey } from '../types'
-import { Dom, Platform } from '../util'
+import { Dom, NumberExt, Platform } from '../util'
 import { Disposable, IDisablable } from '../common'
 
 export class MouseWheel extends Disposable implements IDisablable {
@@ -127,9 +127,12 @@ export class MouseWheel extends Disposable implements IDisablable {
       this.frameId = Dom.requestAnimationFrame(() => {
         const scroller = this.graph.scroller.widget
         const currentScale = this.currentScale!
-        const targetScale = this.graph.transform.clampScale(
+        let targetScale = this.graph.transform.clampScale(
           currentScale * this.cumulatedFactor,
         )
+        const minScale = this.options.minScale || Number.MIN_SAFE_INTEGER
+        const maxScale = this.options.maxScale || Number.MIN_SAFE_INTEGER
+        targetScale = NumberExt.clamp(targetScale, minScale, maxScale)
 
         if (targetScale !== currentScale) {
           if (scroller) {
@@ -173,6 +176,8 @@ export namespace MouseWheel {
     enabled?: boolean
     global?: boolean
     factor?: number
+    minScale?: number
+    maxScale?: number
     modifiers?: string | ModifierKey[] | null
     guard?: (this: Graph, e: WheelEvent) => boolean
     zoomAtMousePosition?: boolean
