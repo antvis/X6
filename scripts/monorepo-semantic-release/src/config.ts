@@ -73,8 +73,7 @@ export namespace Config {
             + '<% groups[release.gitTag].push(release) %>'
           + '<% }) %>'
 
-          + '👋	@<%= issue.user.login %>'
-          + "\n\n🎉 This <%= issue.pull_request ? 'PR is included' : 'issue has been resolved' %> in the following release 🎉"
+          + "🎉 This <%= issue.pull_request ? 'PR is included' : 'issue has been resolved' %> in the following release 🎉\n\n"
 
           + '<% var renderItem = function (item) { %>'
             + '<% if(item.url) { %>'
