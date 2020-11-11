@@ -1,9 +1,18 @@
 export namespace Angle {
+  /**
+   * Converts radian angle to degree angle.
+   * @param rad The radians to convert.
+   */
   export function toDeg(rad: number) {
     return ((180 * rad) / Math.PI) % 360
   }
 
-  export const toRad = function(deg: number, over360: boolean = false) {
+  /**
+   * Converts degree angle to radian angle.
+   * @param deg The degree angle to convert.
+   * @param over360
+   */
+  export const toRad = function (deg: number, over360: boolean = false) {
     const d = over360 ? deg : deg % 360
     return (d * Math.PI) / 180
   }
