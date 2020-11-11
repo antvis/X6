@@ -25,7 +25,6 @@ export class Point extends Geometry implements Point.PointLike {
     const p = Point.create(x, y)
     this.x += p.x
     this.y += p.y
-
     return this
   }
 
@@ -44,12 +43,11 @@ export class Point extends Geometry implements Point.PointLike {
     const t = Point.create(dx, dy)
     this.x += t.x
     this.y += t.y
-
     return this
   }
 
-  rotate(angle: number, center?: Point.PointLike | Point.PointData): this {
-    const p = Point.rotate(this, angle, center)
+  rotate(degree: number, center?: Point.PointLike | Point.PointData): this {
+    const p = Point.rotate(this, degree, center)
     this.x = p.x
     this.y = p.y
     return this
@@ -114,7 +112,7 @@ export class Point extends Geometry implements Point.PointLike {
   }
 
   /**
-   * Returns the angle between vector from this point to `p` and the x axis.
+   * Returns the angle between vector from this point to `p` and the x-axis.
    */
   theta(p: Point.PointLike | Point.PointData = new Point()): number {
     const ref = Point.create(p)
@@ -156,7 +154,7 @@ export class Point extends Geometry implements Point.PointLike {
    * Returns the angle between the vector from `0,0` to this point and the
    * vector from `0,0` to `p`. Returns `NaN` if `p` is at `0,0`.
    *
-   * @returns the angle in degrees. `NaN` if `p` is at `0,0`.
+   * @returns The angle in degrees. `NaN` if `p` is at `0,0`.
    */
   vectorAngle(p: Point.PointLike | Point.PointData) {
     const zero = new Point(0, 0)
@@ -172,13 +170,13 @@ export class Point extends Geometry implements Point.PointLike {
   }
 
   /**
-   * Returns the change in angle from my previous position `-dx,-dy`
+   * Returns the change in angle from my previous position `-dx, -dy`
    * to my new position relative to `ref` point.
    */
   changeInAngle(
     dx: number,
     dy: number,
-    ref: Point.PointLike | Point.PointData,
+    ref: Point.PointLike | Point.PointData = new Point(),
   ) {
     // Revert the translation and measure the change in angle around x-axis.
     return this.clone().translate(-dx, -dy).theta(ref) - this.theta(ref)
@@ -189,12 +187,13 @@ export class Point extends Geometry implements Point.PointLike {
       this.x = Math.min(Math.max(this.x, rect.x), rect.x + rect.width)
       this.y = Math.min(Math.max(this.y, rect.y), rect.y + rect.height)
     }
-
     return this
   }
 
   /**
-   * Returns the bearing between me and the given point.
+   * Returns the bearing(cardinal direction) between me and the given point.
+   *
+   * @see https://en.wikipedia.org/wiki/Cardinal_direction
    */
   bearing(p: Point.PointLike | Point.PointData) {
     const ref = Point.create(p)
@@ -212,15 +211,18 @@ export class Point extends Geometry implements Point.PointLike {
     const bearings = ['NE', 'E', 'SE', 'S', 'SW', 'W', 'NW', 'N']
 
     let index = brng - 22.5
-    if (index < 0) index += 360
-    index = index / 45
-
+    if (index < 0) {
+      index += 360
+    }
+    console.log(index)
+    index = parseInt((index / 45) as any, 10)
+    console.log(index)
     return bearings[index] as Point.Bearing
   }
 
   /**
-   * Returns the cross product of the vector from me to `p1`
-   * and the vector from me to `p2`.
+   * Returns the cross product of the vector from me to `p1` and the vector
+   * from me to `p2`.
    *
    * The left-hand rule is used because the coordinate system is left-handed.
    */
@@ -261,10 +263,8 @@ export class Point extends Geometry implements Point.PointLike {
    * parametert in the closed interval `[0, 1]`.
    */
   lerp(p: Point.PointLike | Point.PointData, t: number) {
-    const x = this.x
-    const y = this.y
     const ref = Point.create(p)
-    return new Point((1 - t) * x + t * ref.x, (1 - t) * y + t * ref.y)
+    return new Point((1 - t) * this.x + t * ref.x, (1 - t) * this.y + t * ref.y)
   }
 
   /**
@@ -279,8 +279,8 @@ export class Point extends Geometry implements Point.PointLike {
   }
 
   /**
-   * Moves the point on a line that leads to another point `ref`
-   * by a certain `distance`.
+   * Moves the point on a line that leads to another point `ref` by a
+   * certain `distance`.
    */
   move(ref: Point.PointLike | Point.PointData, distance: number) {
     const p = Point.create(ref)
@@ -289,8 +289,8 @@ export class Point extends Geometry implements Point.PointLike {
   }
 
   /**
-   * Returns a point that is a reflection of the point with the
-   * center of reflection at point `ref`.
+   * Returns a point that is a reflection of the point with the center of
+   * reflection at point `ref`.
    */
   reflection(ref: Point.PointLike | Point.PointData) {
     const p = Point.create(ref)
@@ -334,22 +334,22 @@ export namespace Point {
 
   export type Bearing = 'NE' | 'E' | 'SE' | 'S' | 'SW' | 'W' | 'NW' | 'N'
 
-  export function isPointLike(o: any): o is PointLike {
+  export function isPointLike(p: any): p is PointLike {
     return (
-      o != null &&
-      typeof o === 'object' &&
-      typeof o.x === 'number' &&
-      typeof o.y === 'number'
+      p != null &&
+      typeof p === 'object' &&
+      typeof p.x === 'number' &&
+      typeof p.y === 'number'
     )
   }
 
-  export function isPointData(o: any): o is PointData {
+  export function isPointData(p: any): p is PointData {
     return (
-      o != null &&
-      Array.isArray(o) &&
-      o.length === 2 &&
-      typeof o[0] === 'number' &&
-      typeof o[1] === 'number'
+      p != null &&
+      Array.isArray(p) &&
+      p.length === 2 &&
+      typeof p[0] === 'number' &&
+      typeof p[1] === 'number'
     )
   }
 }
