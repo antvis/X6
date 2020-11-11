@@ -259,8 +259,8 @@ export class Point extends Geometry implements Point.PointLike {
   }
 
   /**
-   * Returns an interpolation between me and point `p` for a
-   * parametert in the closed interval `[0, 1]`.
+   * Returns an interpolation between me and point `p` for a parametert in
+   * the closed interval `[0, 1]`.
    */
   lerp(p: Point.PointLike | Point.PointData, t: number) {
     const ref = Point.create(p)
@@ -279,8 +279,7 @@ export class Point extends Geometry implements Point.PointLike {
   }
 
   /**
-   * Moves the point on a line that leads to another point `ref` by a
-   * certain `distance`.
+   * Move point along the line starting `ref` to me by a certain `distance`.
    */
   move(ref: Point.PointLike | Point.PointData, distance: number) {
     const p = Point.create(ref)
@@ -289,12 +288,11 @@ export class Point extends Geometry implements Point.PointLike {
   }
 
   /**
-   * Returns a point that is a reflection of the point with the center of
-   * reflection at point `ref`.
+   * Returns a point that is the reflection of me with the center of inversion
+   * in `ref` point.
    */
   reflection(ref: Point.PointLike | Point.PointData) {
-    const p = Point.create(ref)
-    return p.move(this, this.distance(p))
+    return Point.create(ref).move(this, this.distance(ref))
   }
 
   snapToGrid(gridSize: number): this
@@ -453,7 +451,7 @@ export namespace Point {
 
     if (p1 != null && p2 != null) {
       for (let i = 0, ii = p1.length; i < ii; i += 1) {
-        if (p1[i] === p2[i] || (p1[i] != null && !equals(p1[i], p2[i]))) {
+        if (!equals(p1[i], p2[i])) {
           return false
         }
       }
