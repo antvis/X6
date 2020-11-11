@@ -1,3 +1,11 @@
+## @antv/x6 [0.13.1](https://github.com/antvis/x6/compare/@antv/x6@0.13.0...@antv/x6@0.13.1) (2020-11-11)
+
+
+### Bug Fixes
+
+* 🐛 equal points ([c415c1d](https://github.com/antvis/x6/commit/c415c1d6acc27678de6bdb1e1fbb2a92a810c220))
+* 🐛 get bearing between me and the given point ([07d0c1d](https://github.com/antvis/x6/commit/07d0c1d6ba1e9362d235a1f1a85696febc65839a))
+
 # @antv/x6 [0.13.0](https://github.com/antvis/x6/compare/@antv/x6@0.12.1...@antv/x6@0.13.0) (2020-11-10)
 
 
