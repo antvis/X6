@@ -21,13 +21,13 @@ describe('point', () => {
   })
 
   describe('#Point.isPointLike', () => {
-    it('should return true if the given object is a point-like object', () => {
+    it('should return true when the given object is a point-like object', () => {
       expect(Point.isPointLike({ x: 1, y: 2 })).toBeTrue()
       expect(Point.isPointLike({ x: 1, y: 2, z: 10 })).toBeTrue()
       expect(Point.isPointLike({ x: 1, y: 2, z: 10, s: 's' })).toBeTrue()
     })
 
-    it('should return false if the given object is a point-like object', () => {
+    it('should return false when the given object is a point-like object', () => {
       expect(Point.isPointLike({ x: 1 })).toBeFalse()
       expect(Point.isPointLike({ y: 2 })).toBeFalse()
       expect(Point.isPointLike({})).toBeFalse()
@@ -39,11 +39,11 @@ describe('point', () => {
   })
 
   describe('#Point.isPointData', () => {
-    it('should return true if the given object is a point-data array', () => {
+    it('should return true when the given object is a point-data array', () => {
       expect(Point.isPointData([1, 2])).toBeTrue()
     })
 
-    it('should return false if the given object is a point-data array', () => {
+    it('should return false when the given object is a point-data array', () => {
       expect(Point.isPointData({ x: 1, y: 2 })).toBeFalse()
       expect(Point.isPointData([1])).toBeFalse()
       expect(Point.isPointData([1, 2, 3])).toBeFalse()
@@ -63,13 +63,13 @@ describe('point', () => {
   })
 
   describe('#Point.equals', () => {
-    it('should return true if the given two points are equal', () => {
+    it('should return true when the given two points are equal', () => {
       const p1 = new Point(1, 2)
       expect(Point.equals(p1, p1)).toBeTrue()
       expect(Point.equals(p1, { x: 1, y: 2 })).toBeTrue()
     })
 
-    it('should return false if the given two points are not equal', () => {
+    it('should return false when the given two points are not equal', () => {
       const p1 = new Point(1, 2)
       const p2 = new Point(2, 2)
       expect(Point.equals(p1, p2)).toBeFalse()
@@ -79,13 +79,13 @@ describe('point', () => {
   })
 
   describe('#Point.equalPoints', () => {
-    it('should return true if the given points array are equal', () => {
+    it('should return true when the given points array are equal', () => {
       const p1 = new Point(1, 2)
       expect(Point.equalPoints([p1], [p1])).toBeTrue()
       expect(Point.equalPoints([p1], [{ x: 1, y: 2 }])).toBeTrue()
     })
 
-    it('should return false if the given points array are not equal', () => {
+    it('should return false when the given points array are not equal', () => {
       const p1 = new Point(1, 2)
       const p2 = new Point(2, 2)
       expect(Point.equalPoints([p1], [p2])).toBeFalse()
@@ -223,7 +223,7 @@ describe('point', () => {
       expect(new Point(3, 4).magnitude()).toEqual(5)
     })
 
-    it('should return `0.01` if the given point is `{0, 0}`', () => {
+    it('should return `0.01` when the given point is `{0, 0}`', () => {
       expect(new Point(0, 0).magnitude()).toEqual(0.01)
     })
   })
@@ -357,7 +357,7 @@ describe('point', () => {
       expect(p0.cross(p2, p1)).toBe(-3)
     })
 
-    it('shoule return `NAN` if any given point is null', () => {
+    it('shoule return `NAN` when any of the given point is null', () => {
       expect(new Point().cross(null as any, new Point(1, 2))).toBeNaN()
     })
   })
