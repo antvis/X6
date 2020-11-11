@@ -13,6 +13,9 @@ export class Point extends Geometry implements Point.PointLike {
     this.y = y == null ? 0 : y
   }
 
+  /**
+   * Rounds the point to the given precision.
+   */
   round(precision: number = 0) {
     this.x = util.round(this.x, precision)
     this.y = util.round(this.y, precision)
@@ -28,6 +31,10 @@ export class Point extends Geometry implements Point.PointLike {
     return this
   }
 
+  /**
+   * Update the point's `x` and `y` coordinates with new values and return the
+   * point itself. Useful for chaining.
+   */
   update(x: number, y: number): this
   update(p: Point.PointLike | Point.PointData): this
   update(x: number | Point.PointLike | Point.PointData, y?: number): this {
@@ -46,6 +53,9 @@ export class Point extends Geometry implements Point.PointLike {
     return this
   }
 
+  /**
+   * Rotate the point by `degree` around `center`.
+   */
   rotate(degree: number, center?: Point.PointLike | Point.PointData): this {
     const p = Point.rotate(this, degree, center)
     this.x = p.x
@@ -53,6 +63,10 @@ export class Point extends Geometry implements Point.PointLike {
     return this
   }
 
+  /**
+   * Scale point by `sx` and `sy` around the given `origin`. If origin is not
+   * specified, the point is scaled around `0,0`.
+   */
   scale(
     sx: number,
     sy: number,
@@ -65,8 +79,8 @@ export class Point extends Geometry implements Point.PointLike {
   }
 
   /**
-   * Chooses the point closest to this point from among `points`.
-   * If `points` is an empty array, `null` is returned.
+   * Chooses the point closest to this point from among `points`. If `points`
+   * is an empty array, `null` is returned.
    */
   closest(points: (Point.PointLike | Point.PointData)[]) {
     if (points.length === 1) {
@@ -86,10 +100,19 @@ export class Point extends Geometry implements Point.PointLike {
     return ret ? Point.create(ret) : null
   }
 
+  /**
+   * Returns the distance between the point and another point `p`.
+   */
   distance(p: Point.PointLike | Point.PointData) {
     return Math.sqrt(this.squaredDistance(p))
   }
 
+  /**
+   * Returns the squared distance between the point and another point `p`.
+   *
+   * Useful for distance comparisons in which real distance is not necessary
+   * (saves one `Math.sqrt()` operation).
+   */
   squaredDistance(p: Point.PointLike | Point.PointData) {
     const ref = Point.create(p)
     const dx = this.x - ref.x
@@ -112,7 +135,8 @@ export class Point extends Geometry implements Point.PointLike {
   }
 
   /**
-   * Returns the angle between vector from this point to `p` and the x-axis.
+   * Returns the angle(in degrees) between vector from this point to `p` and
+   * the x-axis.
    */
   theta(p: Point.PointLike | Point.PointData = new Point()): number {
     const ref = Point.create(p)
@@ -129,10 +153,16 @@ export class Point extends Geometry implements Point.PointLike {
   }
 
   /**
-   * Returns the angle between vector from this point to `p1` and the
-   * vector from this point to `p2`.
+   * Returns the angle(in degrees) between vector from this point to `p1` and
+   * the vector from this point to `p2`.
    *
-   * Ordering of points `p1` and `p2` is important!
+   * The ordering of points `p1` and `p2` is important.
+   *
+   * The function returns a value between `0` and `180` when the angle (in the
+   * direction from `p1` to `p2`) is clockwise, and a value between `180` and
+   * `360` when the angle is counterclockwise.
+   *
+   * Returns `NaN` if either of the points `p1` and `p2` is equal with this point.
    */
   angleBetween(
     p1: Point.PointLike | Point.PointData,
@@ -151,10 +181,13 @@ export class Point extends Geometry implements Point.PointLike {
   }
 
   /**
-   * Returns the angle between the vector from `0,0` to this point and the
-   * vector from `0,0` to `p`. Returns `NaN` if `p` is at `0,0`.
+   * Returns the angle(in degrees) between the line from `(0,0)` and this point
+   * and the line from `(0,0)` to `p`.
    *
-   * @returns The angle in degrees. `NaN` if `p` is at `0,0`.
+   * The function returns a value between `0` and `180` when the angle (in the
+   * direction from this point to `p`) is clockwise, and a value between `180`
+   * and `360` when the angle is counterclockwise. Returns `NaN` if called from
+   * point `(0,0)` or if `p` is `(0,0)`.
    */
   vectorAngle(p: Point.PointLike | Point.PointData) {
     const zero = new Point(0, 0)
@@ -170,8 +203,21 @@ export class Point extends Geometry implements Point.PointLike {
   }
 
   /**
-   * Returns the change in angle from my previous position `-dx, -dy`
-   * to my new position relative to `ref` point.
+   * Returns the change in angle(in degrees) that is the result of moving the
+   * point from its previous position to its current position.
+   *
+   * More specifically, this function computes the angle between the line from
+   * the ref point to the previous position of this point(i.e. current position
+   * `-dx`, `-dy`) and the line from the `ref` point to the current position of
+   * this point.
+   *
+   * The function returns a positive value between `0` and `180` when the angle
+   * (in the direction from previous position of this point to its current
+   * position) is clockwise, and a negative value between `0` and `-180` when
+   * the angle is counterclockwise.
+   *
+   * The function returns `0` if the previous and current positions of this
+   * point are the same (i.e. both `dx` and `dy` are `0`).
    */
   changeInAngle(
     dx: number,
@@ -182,6 +228,10 @@ export class Point extends Geometry implements Point.PointLike {
     return this.clone().translate(-dx, -dy).theta(ref) - this.theta(ref)
   }
 
+  /**
+   * If the point lies outside the rectangle `rect`, adjust the point so that
+   * it becomes the nearest point on the boundary of `rect`.
+   */
   adhereToRect(rect: Rectangle.RectangleLike) {
     if (!util.containsPoint(rect, this)) {
       this.x = Math.min(Math.max(this.x, rect.x), rect.x + rect.width)
@@ -214,9 +264,7 @@ export class Point extends Geometry implements Point.PointLike {
     if (index < 0) {
       index += 360
     }
-    console.log(index)
     index = parseInt((index / 45) as any, 10)
-    console.log(index)
     return bearings[index] as Point.Bearing
   }
 
@@ -247,6 +295,14 @@ export class Point extends Geometry implements Point.PointLike {
     return this.x * ref.x + this.y * ref.y
   }
 
+  /**
+   * Returns a point that has coordinates computed as a difference between the
+   * point and another point with coordinates `dx` and `dy`.
+   *
+   * If only `dx` is specified and is a number, `dy` is considered to be zero.
+   * If only `dx` is specified and is an object, it is considered to be another
+   * point or an object in the form `{ x: [number], y: [number] }`
+   */
   diff(dx: number, dy: number): Point
   diff(p: Point.PointLike | Point.PointData): Point
   diff(dx: number | Point.PointLike | Point.PointData, dy?: number): Point {
@@ -279,7 +335,8 @@ export class Point extends Geometry implements Point.PointLike {
   }
 
   /**
-   * Move point along the line starting `ref` to me by a certain `distance`.
+   * Moves this point along the line starting from `ref` to this point by a
+   * certain `distance`.
    */
   move(ref: Point.PointLike | Point.PointData, distance: number) {
     const p = Point.create(ref)
@@ -295,6 +352,10 @@ export class Point extends Geometry implements Point.PointLike {
     return Point.create(ref).move(this, this.distance(ref))
   }
 
+  /**
+   * Snaps the point(change its x and y coordinates) to a grid of size `gridSize`
+   * (or `gridSize` x `gridSizeY` for non-uniform grid).
+   */
   snapToGrid(gridSize: number): this
   snapToGrid(gx: number, gy: number): this
   snapToGrid(gx: number, gy?: number): this
@@ -313,6 +374,9 @@ export class Point extends Geometry implements Point.PointLike {
     return Point.clone(this)
   }
 
+  /**
+   * Returns the point as a simple JSON object. For example: `{ x: 0, y: 0 }`.
+   */
   toJSON() {
     return Point.toJSON(this)
   }
@@ -414,6 +478,9 @@ export namespace Point {
     return new Point(org.x + x, org.y + y)
   }
 
+  /**
+   * Converts rectangular to polar coordinates.
+   */
   export function toPolar(
     point: Point | PointLike | PointData,
     origin: Point | PointLike | PointData = new Point(),
@@ -461,8 +528,8 @@ export namespace Point {
   }
 
   /**
-   * Create a point with random coordinates that fall within
-   * the range `[x1, x2]` and `[y1, y2]`.
+   * Returns a point with random coordinates that fall within the range
+   * `[x1, x2]` and `[y1, y2]`.
    */
   export function random(x1: number, x2: number, y1: number, y2: number) {
     return new Point(util.random(x1, x2), util.random(y1, y2))
