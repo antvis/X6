@@ -13,6 +13,8 @@ jobs:
         node-version: [12.x]
     steps:
       - uses: actions/checkout@v2
+        with:
+          ref: refs/pull/${{ github.event.pull_request.number }}/merge
       - name: 🌱　Get yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn cache dir)"
