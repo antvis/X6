@@ -73,7 +73,7 @@ export class Ellipse extends Geometry implements Ellipse.EllipseLike {
    * Returns an array of the intersection points of the ellipse and the line.
    * Returns `null` if no intersection exists.
    */
-  intersectionWithLine(line: Line) {
+  intersectsWithLine(line: Line) {
     const intersections = []
     const rx = this.a
     const ry = this.b
@@ -131,12 +131,11 @@ export class Ellipse extends Geometry implements Ellipse.EllipseLike {
    * If angle is specified, the intersection will take into account
    * the rotation of the ellipse by angle degrees around its center.
    */
-  intersectionWithLineFromCenterToPoint(
+  intersectsWithLineFromCenterToPoint(
     p: Point.PointLike | Point.PointData,
     angle: number = 0,
   ) {
     const ref = Point.clone(p)
-
     if (angle) {
       ref.rotate(angle, this.getCenter())
     }
@@ -146,7 +145,7 @@ export class Ellipse extends Geometry implements Ellipse.EllipseLike {
     let result
 
     if (dx === 0) {
-      result = this.bbox().pointNearestToPoint(p)
+      result = this.bbox().getNearestPointToPoint(ref)
       if (angle) {
         return result.rotate(-angle, this.getCenter())
       }

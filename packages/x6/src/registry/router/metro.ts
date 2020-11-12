@@ -54,7 +54,7 @@ const defaults: Partial<MetroRouterOptions> = {
     const p2 = Point.fromPolar(l1.squaredLength(), Angle.toRad(alpha + 135), p1)
     const l2 = new Line(to, p2)
 
-    const intersectionPoint = l1.intersectionWithLine(l2)
+    const intersectionPoint = l1.intersectsWithLine(l2)
     const point = intersectionPoint ? intersectionPoint : to
 
     const directionFrom = intersectionPoint ? point : from
