@@ -89,15 +89,15 @@ export default class Example extends React.Component {
       if (parent && parent.isNode()) {
         let originSize = parent.prop('originSize')
         if (originSize == null) {
-          parent.prop('originSize', parent.getSize())
+          originSize = parent.getSize()
+          parent.prop('originSize', originSize)
         }
-        originSize = parent.prop('originSize')
 
         let originPosition = parent.prop('originPosition')
         if (originPosition == null) {
-          parent.prop('originPosition', parent.getPosition())
+          originPosition = parent.getPosition()
+          parent.prop('originPosition', originPosition)
         }
-        originPosition = parent.prop('originPosition')
 
         let x = originPosition.x
         let y = originPosition.y
