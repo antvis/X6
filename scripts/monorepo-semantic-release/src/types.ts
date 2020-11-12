@@ -21,7 +21,7 @@ export interface Package {
   private: boolean
   manifest: { [name: string]: any }
   deps: string[]
-  plugins: any
+  plugins1: any
   plugins2: any
   logger: Logger
   options: SemanticRelease.Options

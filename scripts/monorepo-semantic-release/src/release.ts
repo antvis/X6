@@ -105,12 +105,12 @@ export namespace Release {
           const pluginName = plugin[0]
           const pluginOptions = plugin[1]
           if (pluginName === githubPlugin) {
-            return [pluginName, { ...pluginOptions, addReleases: false }]
+            return [pluginName, { ...pluginOptions, successComment: false }]
           }
         }
 
         if (plugin === githubPlugin) {
-          return [plugin, { addReleases: false }]
+          return [plugin, { successComment: false }]
         }
 
         return plugin
@@ -123,12 +123,12 @@ export namespace Release {
           const pluginName = plugin[0]
           const pluginOptions = plugin[1]
           if (pluginName === githubPlugin) {
-            return [pluginName, { ...pluginOptions, successComment: false }]
+            return [pluginName, { ...pluginOptions, addReleases: false }]
           }
         }
 
         if (plugin === githubPlugin) {
-          return [plugin, { successComment: false }]
+          return [plugin, { addReleases: false }]
         }
 
         return plugin
@@ -154,7 +154,7 @@ export namespace Release {
       logger,
       private: manifest.private === true,
       options: instance1.options,
-      plugins: instance1.plugins,
+      plugins1: instance1.plugins,
       plugins2: instance2.plugins,
       localDeps: [],
     }
