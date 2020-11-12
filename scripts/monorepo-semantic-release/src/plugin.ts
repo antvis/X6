@@ -84,7 +84,7 @@ export namespace Plugin {
     let successExeCount = 0
 
     return function create(pkg: Package) {
-      const { deps, plugins, plugins2, dir, path, name } = pkg
+      const { deps, plugins1, plugins2, dir, path, name } = pkg
       let scopedCommits: Commits.Commit[]
 
       const verifyConditions = async (
@@ -103,7 +103,7 @@ export namespace Plugin {
           todo().find((p) => !p.ready),
         )
 
-        const res = await plugins.verifyConditions(context)
+        const res = await plugins1.verifyConditions(context)
         debug('verified conditions: %s', pkg.name)
         return res
       }
@@ -138,7 +138,7 @@ export namespace Plugin {
           .filter((p) => p != null) as Package[]
 
         // Set nextType for package from plugins.
-        pkg.nextType = await plugins.analyzeCommits(context)
+        pkg.nextType = await plugins1.analyzeCommits(context)
 
         // Wait until all todo packages have been analyzed.
         pkg.analyzed = true
@@ -183,7 +183,7 @@ export namespace Plugin {
 
         // Get subnotes and add to list.
         // Inject pkg name into title if it matches e.g. `# 1.0.0` or `## [1.0.1]` (as generate-release-notes does).
-        const subs = await plugins.generateNotes(context)
+        const subs = await plugins1.generateNotes(context)
         // istanbul ignore else (unnecessary to test)
         if (subs) {
           notes.push(
@@ -255,7 +255,7 @@ export namespace Plugin {
 
         await waitForAll('prepared', (p) => p.nextType != null)
 
-        const ret = await plugins.publish(context)
+        const ret = await plugins1.publish(context)
         const releases: SemanticRelease.Release[] = Array.isArray(ret)
           ? ret
           : ret != null
@@ -292,16 +292,20 @@ export namespace Plugin {
       ) => {
         pkg.published = true
         await waitForAll('published', (p) => p.nextType != null)
-
         const totalCount = todo().filter((p) => p.nextType != null).length
         const ctx = context as any
+
+        ctx.releases = releaseMap[pkg.name]
+        const ret = await plugins1.success(ctx)
+
+        console.log(
+          `Release: ${pkg.name}`,
+          `Progress: ${successExeCount}/${totalCount}`,
+        )
 
         if (successExeCount < totalCount) {
           successExeCount += 1
         }
-
-        ctx.releases = releaseMap[pkg.name]
-        const ret = await plugins2.success(ctx)
 
         if (successExeCount === totalCount) {
           ctx.releases = Object.keys(releaseMap)
@@ -309,10 +313,8 @@ export namespace Plugin {
             .reduce<SemanticRelease.Release[]>((memo, key) => {
               return [...memo, ...releaseMap[key]]
             }, [])
-          await plugins.success(ctx)
+          await plugins2.success(ctx)
         }
-
-        console.log(pkg.name, successExeCount, ctx.releases)
 
         debug('succeed: %s', pkg.name)
 
