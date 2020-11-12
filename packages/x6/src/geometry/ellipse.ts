@@ -35,7 +35,14 @@ export class Ellipse extends Geometry implements Ellipse.EllipseLike {
     return this.center
   }
 
+  /**
+   * Returns ellipse inflated in axis-x by `2 * amount` and in axis-y by
+   * `2 * amount`.
+   */
   inflate(amount: number): this
+  /**
+   * Returns ellipse inflated in axis-x by `2 * dx` and in axis-y by `2 * dy`.
+   */
   inflate(dx: number, dy: number): this
   inflate(dx: number, dy?: number): this {
     const w = dx
@@ -44,14 +51,6 @@ export class Ellipse extends Geometry implements Ellipse.EllipseLike {
     this.b += 2 * h
 
     return this
-  }
-
-  /**
-   * Returns `true` if the point `p` is inside the ellipse (inclusive).
-   * Returns `false` otherwise.
-   */
-  containsPoint(p: Point.PointLike | Point.PointData) {
-    return this.normalizedDistance(p) <= 1
   }
 
   /**
@@ -67,6 +66,14 @@ export class Ellipse extends Geometry implements Ellipse.EllipseLike {
     const b = this.b
 
     return (dx * dx) / (a * a) + (dy * dy) / (b * b)
+  }
+
+  /**
+   * Returns `true` if the point `p` is inside the ellipse (inclusive).
+   * Returns `false` otherwise.
+   */
+  containsPoint(p: Point.PointLike | Point.PointData) {
+    return this.normalizedDistance(p) <= 1
   }
 
   /**
