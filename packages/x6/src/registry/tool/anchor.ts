@@ -208,7 +208,7 @@ class Anchor extends ToolsView.ToolItem<EdgeView, Anchor.Options> {
         const rotatedCoords = coords.clone().rotate(angle, origin)
         if (!bbox.containsPoint(rotatedCoords)) {
           coords = bbox
-            .pointNearestToPoint(rotatedCoords)
+            .getNearestPointToPoint(rotatedCoords)
             .rotate(-angle, origin)
         }
       }

@@ -45,7 +45,7 @@ export const orth: Router.Definition<OrthRouterOptions> = function (
 
         // Expand one of the nodes by 1px to detect situations when the two
         // nodes are positioned next to each other with no gap in between.
-        if (sourceBBox.intersect(targetBBox.clone().inflate(1))) {
+        if (sourceBBox.intersectsWithRect(targetBBox.clone().inflate(1))) {
           route = Private.insideNode(from, to, sourceBBox, targetBBox)
         } else if (!isOrthogonal) {
           route = Private.nodeToNode(from, to, sourceBBox, targetBBox)
@@ -298,9 +298,9 @@ namespace Private {
         radians[bearing],
         start,
       )
-      p1 = boundary.pointNearestToPoint(p1).move(p1, -1)
+      p1 = boundary.getNearestPointToPoint(p1).move(p1, -1)
     } else {
-      p1 = boundary.pointNearestToPoint(start).move(start, 1)
+      p1 = boundary.getNearestPointToPoint(start).move(start, 1)
     }
 
     p2 = freeJoin(p1, end, boundary)
@@ -313,7 +313,7 @@ namespace Private {
         Angle.toRad(p1.theta(start)) + Math.PI / 2,
         end,
       )
-      p2 = boundary.pointNearestToPoint(p2).move(end, 1).round()
+      p2 = boundary.getNearestPointToPoint(p2).move(end, 1).round()
       p3 = freeJoin(p1, p2, boundary)
       points = reversed ? [p2, p3, p1] : [p1, p3, p2]
     } else {

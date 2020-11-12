@@ -34,7 +34,7 @@ const middleSide: NodeAnchor.ResolvedDefinition<MiddleSideEndpointOptions> = fun
     refPoint.rotate(angle, center)
   }
 
-  const side = bbox.sideNearestToPoint(refPoint)
+  const side = bbox.getNearestSideToPoint(refPoint)
   let result
   switch (side) {
     case 'left':

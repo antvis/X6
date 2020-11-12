@@ -212,7 +212,7 @@ function shapeWrapper(
     shapeBBox.x = refOrigin.x
     shapeBBox.y = refOrigin.y
 
-    const fitScale = refBBox.maxRectScaleToFit(shapeBBox, refOrigin)
+    const fitScale = refBBox.getMaxScaleToFit(shapeBBox, refOrigin)
     // `maxRectScaleToFit` can give Infinity if width or height is 0
     const sx = shapeBBox.width === 0 || refBBox.width === 0 ? 1 : fitScale.sx
     const sy = shapeBBox.height === 0 || refBBox.height === 0 ? 1 : fitScale.sy

@@ -64,7 +64,7 @@ function createLines(
 function findLineIntersections(line: Line, crossCheckLines: Line[]) {
   const intersections: Point[] = []
   crossCheckLines.forEach((crossCheckLine) => {
-    const intersection = line.intersectionWithLine(crossCheckLine)
+    const intersection = line.intersectsWithLine(crossCheckLine)
     if (intersection) {
       intersections.push(intersection)
     }
