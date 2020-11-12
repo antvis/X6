@@ -972,7 +972,7 @@ export class Model extends Basecoat<Model.EventArgs> {
     const strict = opts && opts.strict
     return this.getNodes().filter((node) => {
       const bbox = node.getBBox()
-      return strict ? rect.containsRect(bbox) : rect.isIntersectWith(bbox)
+      return strict ? rect.containsRect(bbox) : rect.isIntersectWithRect(bbox)
     })
   }
 

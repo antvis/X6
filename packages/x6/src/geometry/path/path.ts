@@ -830,7 +830,7 @@ export class Path extends Geometry {
     return [firstPath, secondPath]
   }
 
-  intersectionWithLine(line: Line, options: Path.Options = {}) {
+  intersectsWithLine(line: Line, options: Path.Options = {}) {
     const polylines = this.toPolylines(options)
     if (polylines == null) {
       return null

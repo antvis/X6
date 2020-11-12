@@ -330,7 +330,9 @@ export class Dnd extends View {
         targetRect = this.getDropArea(targetScroller.container)
       } else {
         const outter = this.getDropArea(targetScroller.container)
-        targetRect = this.getDropArea(targetGraph.container).intersect(outter)!
+        targetRect = this.getDropArea(targetGraph.container).intersectsWithRect(
+          outter,
+        )!
       }
     } else {
       targetRect = this.getDropArea(targetGraph.container)
@@ -386,7 +388,7 @@ export class Dnd extends View {
         return ret
       }
 
-      return FunctionExt.toDeferredBoolean(ret).then(valid => {
+      return FunctionExt.toDeferredBoolean(ret).then((valid) => {
         if (valid) {
           targetModel.addCell(node, { stencil: this.cid })
         }
@@ -425,8 +427,8 @@ export namespace Dnd {
 
   export const defaults: Partial<Options> = {
     animation: false,
-    getDragNode: node => node.clone(),
-    getDropNode: node => node.clone(),
+    getDragNode: (node) => node.clone(),
+    getDropNode: (node) => node.clone(),
   }
 
   export const documentEvents = {

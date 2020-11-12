@@ -98,9 +98,9 @@ export const boundary: ConnectionPoint.Definition<BoundaryOptions> = function (
   } else if (options.sticky === true) {
     // No intersection, find the closest point instead
     if (localShape instanceof Rectangle) {
-      intersection = localShape.pointNearestToPoint(localRef)
+      intersection = localShape.getNearestPointToPoint(localRef)
     } else if (localShape instanceof Ellipse) {
-      intersection = localShape.intersectionWithLineFromCenterToPoint(localRef)
+      intersection = localShape.intersectsWithLineFromCenterToPoint(localRef)
     } else {
       intersection = localShape.closestPoint(localRef, pathOptions)
     }
