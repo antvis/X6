@@ -5,7 +5,7 @@ import { Rectangle } from './rectangle'
 
 describe('rectangle', () => {
   describe('#constructor', () => {
-    it('should create a point instance', () => {
+    it('should create a rectangle instance', () => {
       expect(new Rectangle()).toBeInstanceOf(Rectangle)
       expect(new Rectangle(1)).toBeInstanceOf(Rectangle)
       expect(new Rectangle(1, 2)).toBeInstanceOf(Rectangle)
