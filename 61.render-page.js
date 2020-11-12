@@ -2,9 +2,9 @@ exports.ids = [61];
 exports.modules = {
 
 /***/ "../../node_modules/monaco-editor/esm/vs/basic-languages/sql/sql.js":
-/*!*****************************************************************************************************!*\
-  !*** /Users/wenyu/vector/code/AntV/X6/node_modules/monaco-editor/esm/vs/basic-languages/sql/sql.js ***!
-  \*****************************************************************************************************/
+/*!********************************************************************************************!*\
+  !*** /home/runner/work/X6/X6/node_modules/monaco-editor/esm/vs/basic-languages/sql/sql.js ***!
+  \********************************************************************************************/
 /*! exports provided: conf, language */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 

@@ -2,9 +2,9 @@ exports.ids = [33];
 exports.modules = {
 
 /***/ "../../node_modules/monaco-editor/esm/vs/basic-languages/mips/mips.js":
-/*!*******************************************************************************************************!*\
-  !*** /Users/wenyu/vector/code/AntV/X6/node_modules/monaco-editor/esm/vs/basic-languages/mips/mips.js ***!
-  \*******************************************************************************************************/
+/*!**********************************************************************************************!*\
+  !*** /home/runner/work/X6/X6/node_modules/monaco-editor/esm/vs/basic-languages/mips/mips.js ***!
+  \**********************************************************************************************/
 /*! exports provided: conf, language */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
