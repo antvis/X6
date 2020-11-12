@@ -271,7 +271,7 @@ export class Line extends Geometry {
     shape: Line | Rectangle | Polyline | Ellipse | Path,
     options?: Path.Options,
   ): Point[] | null {
-    const ret = shape.intersectionWithLine(this, options)
+    const ret = shape.intersectsWithLine(this, options)
     if (ret) {
       return Array.isArray(ret) ? ret : [ret]
     }
@@ -283,7 +283,7 @@ export class Line extends Geometry {
    * Returns the intersection point of the line with another line.
    * Returns `null` if no intersection exists.
    */
-  intersectionWithLine(line: Line) {
+  intersectsWithLine(line: Line) {
     const pt1Dir = new Point(
       this.end.x - this.start.x,
       this.end.y - this.start.y,
