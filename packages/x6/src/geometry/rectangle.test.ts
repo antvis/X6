@@ -458,38 +458,81 @@ describe('rectangle', () => {
   describe('#union', () => {})
 
   describe('#getNearestSideToPoint', () => {
-    it('should return the nearest side to point', () => {
-      const rect = new Rectangle(0, 0, 1, 1)
-      expect(rect.getNearestSideToPoint({ x: 2, y: 2 })).toEqual('right')
-      expect(rect.getNearestSideToPoint({ x: 2, y: 4 })).toEqual('bottom')
-      expect(rect.getNearestSideToPoint({ x: 2, y: 0 })).toEqual('right')
+    it('should return the nearest side to point when point is on the side', () => {
+      const rect = new Rectangle(0, 0, 4, 4)
       expect(rect.getNearestSideToPoint({ x: 0, y: 0 })).toEqual('left')
-      expect(rect.getNearestSideToPoint({ x: 1, y: 1 })).toEqual('right')
+      expect(rect.getNearestSideToPoint({ x: 4, y: 4 })).toEqual('right')
+      expect(rect.getNearestSideToPoint({ x: 0, y: 4 })).toEqual('left')
+      expect(rect.getNearestSideToPoint({ x: 4, y: 0 })).toEqual('right')
+      expect(rect.getNearestSideToPoint({ x: 2, y: 0 })).toEqual('top')
+      expect(rect.getNearestSideToPoint({ x: 0, y: 2 })).toEqual('left')
+      expect(rect.getNearestSideToPoint({ x: 4, y: 2 })).toEqual('right')
+      expect(rect.getNearestSideToPoint({ x: 2, y: 4 })).toEqual('bottom')
+    })
+
+    it('should return the nearest side to point when point is outside', () => {
+      const rect = new Rectangle(0, 0, 4, 4)
+      expect(rect.getNearestSideToPoint({ x: 5, y: 5 })).toEqual('right')
+      expect(rect.getNearestSideToPoint({ x: 5, y: 4 })).toEqual('right')
+      expect(rect.getNearestSideToPoint({ x: 5, y: 2 })).toEqual('right')
+      expect(rect.getNearestSideToPoint({ x: 5, y: 0 })).toEqual('right')
+      expect(rect.getNearestSideToPoint({ x: 5, y: -1 })).toEqual('right')
+      expect(rect.getNearestSideToPoint({ x: -1, y: 5 })).toEqual('left')
+      expect(rect.getNearestSideToPoint({ x: -1, y: 4 })).toEqual('left')
+      expect(rect.getNearestSideToPoint({ x: -1, y: 2 })).toEqual('left')
+      expect(rect.getNearestSideToPoint({ x: -1, y: 0 })).toEqual('left')
+      expect(rect.getNearestSideToPoint({ x: -1, y: -1 })).toEqual('left')
+      expect(rect.getNearestSideToPoint({ x: 0, y: 5 })).toEqual('bottom')
+      expect(rect.getNearestSideToPoint({ x: 2, y: 5 })).toEqual('bottom')
+      expect(rect.getNearestSideToPoint({ x: 4, y: 5 })).toEqual('bottom')
+      expect(rect.getNearestSideToPoint({ x: 0, y: -1 })).toEqual('top')
+      expect(rect.getNearestSideToPoint({ x: 2, y: -1 })).toEqual('top')
+      expect(rect.getNearestSideToPoint({ x: 4, y: -1 })).toEqual('top')
+    })
+
+    it('should return the nearest side to point when point is inside', () => {
+      const rect = new Rectangle(0, 0, 4, 4)
+      expect(rect.getNearestSideToPoint({ x: 2, y: 1 })).toEqual('top')
+      expect(rect.getNearestSideToPoint({ x: 3, y: 2 })).toEqual('right')
+      expect(rect.getNearestSideToPoint({ x: 2, y: 3 })).toEqual('bottom')
+      expect(rect.getNearestSideToPoint({ x: 1, y: 2 })).toEqual('left')
     })
   })
 
   describe('#getNearestPointToPoint', () => {
-    it('should return the nearest point to point', () => {
-      const rect = new Rectangle(0, 0, 1, 1)
-      expect(rect.getNearestPointToPoint({ x: 2, y: 2 }).toJSON()).toEqual({
-        x: 1,
-        y: 1,
+    it('should return the nearest point to point when point is inside the rect', () => {
+      const rect = new Rectangle(0, 0, 4, 4)
+      // left
+      expect(rect.getNearestPointToPoint({ x: 1, y: 2 }).toJSON()).toEqual({
+        x: 0,
+        y: 2,
       })
-      expect(rect.getNearestPointToPoint({ x: 2, y: 4 }).toJSON()).toEqual({
-        x: 1,
-        y: 1,
+      // right
+      expect(rect.getNearestPointToPoint({ x: 3, y: 2 }).toJSON()).toEqual({
+        x: 4,
+        y: 2,
       })
-      expect(rect.getNearestPointToPoint({ x: 2, y: 0 }).toJSON()).toEqual({
-        x: 1,
+      // top
+      expect(rect.getNearestPointToPoint({ x: 2, y: 1 }).toJSON()).toEqual({
+        x: 2,
         y: 0,
       })
-      expect(rect.getNearestPointToPoint({ x: 0, y: 0 }).toJSON()).toEqual({
+      // bottom
+      expect(rect.getNearestPointToPoint({ x: 2, y: 3 }).toJSON()).toEqual({
+        x: 2,
+        y: 4,
+      })
+    })
+
+    it('should return the nearest point to point when point is outside the rect', () => {
+      const rect = new Rectangle(0, 0, 4, 4)
+      expect(rect.getNearestPointToPoint({ x: 5, y: 5 }).toJSON()).toEqual({
+        x: 4,
+        y: 4,
+      })
+      expect(rect.getNearestPointToPoint({ x: -1, y: -1 }).toJSON()).toEqual({
         x: 0,
         y: 0,
-      })
-      expect(rect.getNearestPointToPoint({ x: 1, y: 1 }).toJSON()).toEqual({
-        x: 1,
-        y: 1,
       })
     })
   })
