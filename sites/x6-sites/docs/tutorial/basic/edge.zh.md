@@ -66,7 +66,7 @@ const rect = graph.addEdge({
 | router       | RouterData        | undefined                                           | 路由。             |
 | connector    | ConnectorData     | undefined                                           | 连线。             |
 | labels       | Label[]           | undefined                                           | 标签。             |
-| defaultLabel | Label             | [默认标签](../../intermediate/edge-labels#默认标签) | 默认标签。         |
+| defaultLabel | Label             | [默认标签](../intermediate/edge-labels#默认标签) | 默认标签。         |
 
 下面分别看看这些选项如何使用。
 
@@ -218,10 +218,10 @@ graph.addEdge({
 
 X6 默认提供了以下几种连接器，点击下面的链接查看每种连接器的使用方式。
 
-- [normal]()
-- [rounded]()
-- [smooth]()
-- [jumpover]()
+- [normal](../../api/registry/connector#normal)
+- [rounded](../../api/registry/connector#rounded)
+- [smooth](../../api/registry/connector#smooth)
+- [jumpover](../../api/registry/connector#jumpover)
 
 另外，我们也可以注册自定义连接器，详情请参考[自定义连接器]()。
 
@@ -275,11 +275,11 @@ edge.appendLabel('edge')
 
 <iframe src="/demos/tutorial/basic/edge/labels"></iframe>
 
-完整的 Label 配置项稍微有点复杂，所以我们在[单独的教程](../../intermediate/edge-labels)中介绍。
+完整的 Label 配置项稍微有点复杂，所以我们在[单独的教程](../intermediate/edge-labels)中介绍。
 
 ### defaultLabel
 
-默认标签。通默认标签可以简化标签配置项，[labels](#labels) 指定的每一项都将于 `defaultLabel` 进行 [merge](https://www.lodashjs.com/docs/latest#_mergeobject-sources) 后使用。详情请[参考这里](../../intermediate/edge-labels#默认标签)。
+默认标签。通默认标签可以简化标签配置项，[labels](#labels) 指定的每一项都将于 `defaultLabel` 进行 [merge](https://www.lodashjs.com/docs/latest#_mergeobject-sources) 后使用。详情请[参考这里](../intermediate/edge-labels#默认标签)。
 
 ## 定制样式 Attrs
 
@@ -304,21 +304,21 @@ graph.addEdge({
 
 ## 使用箭头 Marker
 
-我们定义了 [sourceMarker]() 和 [targetMarker]() 两个特殊属性来为边定制起始和终止箭头。例如，对 `Shape.Edge` 我们可以通过 `'line'` 选择器来指定起始和终止箭头。
+我们定义了 [sourceMarker](../../api/registry/attr#sourcemarker) 和 [targetMarker](../../api/registry/attr#targetmarker) 两个特殊属性来为边定制起始和终止箭头。例如，对 `Shape.Edge` 我们可以通过 `'line'` 选择器来指定起始和终止箭头。
 
 ### 内置箭头
 
 X6 提供了以下几种内置箭头，使用时只需要指定箭头名和参数（可省略）即可。
 
-- [block](../../intermediate/marker#block)
-- [classic](../../intermediate/marker#classic)
-- [diamond](../../intermediate/marker#diamond)
-- [cross](../../intermediate/marker#cross)
-- [async](../../intermediate/marker#async)
-- [path](../../intermediate/marker#path)
-- [circle](../../intermediate/marker#circle)
-- [circlePlus](../../intermediate/marker#circleplus)
-- [ellipse](../../intermediate/marker#ellipse)
+- [block](../intermediate/marker#block)
+- [classic](../intermediate/marker#classic)
+- [diamond](../intermediate/marker#diamond)
+- [cross](../intermediate/marker#cross)
+- [async](../intermediate/marker#async)
+- [path](../intermediate/marker#path)
+- [circle](../intermediate/marker#circle)
+- [circlePlus](../intermediate/marker#circleplus)
+- [ellipse](../intermediate/marker#ellipse)
 
 ```ts
 edge.attr({
@@ -361,4 +361,4 @@ edge.attr({
 
 <iframe src="/demos/tutorial/basic/edge/custom-marker"></iframe>
 
-更多箭头的案例和定制技巧请参考[这篇教程](../../intermediate/marker)，我们也支持注册自定义的箭头，注册后就可以像使用内置箭头那样来使用箭头，详情请参考[注册箭头教程](../../intermediate/marker#注册箭头)。
+更多箭头的案例和定制技巧请参考[这篇教程](../intermediate/marker)，我们也支持注册自定义的箭头，注册后就可以像使用内置箭头那样来使用箭头，详情请参考[注册箭头教程](../intermediate/marker#注册箭头)。

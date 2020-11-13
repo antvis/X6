@@ -1,4 +1,3 @@
-@import '~@antv/x6/es/index.css';
 html,
 body,
 #root {
@@ -9,9 +8,32 @@ body {
   margin: 0;
 }
 
-.x6-widget-transform {
-  border: 2px dashed #ff8000;
+.x6-widget-snapline-vertical {
+  border-right-color: #FF4E50 !important;
 }
-.x6-widget-transform > div {
-  border: 2px solid #ff8000;
+.x6-widget-snapline-horizontal {
+  border-bottom-color: #FF4E50 !important;
+}
+
+@keyframes stroke{
+  100% {
+    stroke-dashoffset: -400;
+  }
+}
+.animate-text1,.animate-text2,.animate-text3,.animate-text4 {
+  font-weight: bold;
+  fill: none;
+  stroke-width: 2px;
+  stroke-dasharray: 90 310;
+  animation: stroke 3s infinite linear;
+}
+.animate-text1 {
+  stroke: #873bf4;
+  text-shadow: 0 0 2px #873bf4;
+  animation-delay: -1.5s;
+}
+.animate-text2 {
+  stroke: #FF6E06;
+  text-shadow: 0 0 2px #FF6E06;
+  animation-delay: -3s;
 }
