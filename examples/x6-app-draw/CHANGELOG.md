@@ -1,3 +1,5 @@
+## @antv/x6-app-draw [0.10.93](https://github.com/antvis/x6/compare/@antv/x6-app-draw@0.10.92...@antv/x6-app-draw@0.10.93) (2020-11-13)
+
 ## @antv/x6-app-draw [0.10.92](https://github.com/antvis/x6/compare/@antv/x6-app-draw@0.10.91...@antv/x6-app-draw@0.10.92) (2020-11-12)
 
 
