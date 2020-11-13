@@ -324,7 +324,7 @@ export class NodeView<
   }
 
   protected removePorts() {
-    Object.keys(this.portsCache).forEach(portId => {
+    Object.keys(this.portsCache).forEach((portId) => {
       const cached = this.portsCache[portId]
       Dom.remove(cached.portElement)
     })
@@ -334,7 +334,7 @@ export class NodeView<
     const container = this.getPortsContainer()
     // References to rendered elements without z-index
     const references: Element[] = []
-    container.childNodes.forEach(child => {
+    container.childNodes.forEach((child) => {
       references.push(child as Element)
     })
 
@@ -343,14 +343,14 @@ export class NodeView<
 
     // render non-z first
     if (portsGropsByZ[autoZIndexKey]) {
-      portsGropsByZ[autoZIndexKey].forEach(port => {
+      portsGropsByZ[autoZIndexKey].forEach((port) => {
         const portElement = this.getPortElement(port)
         container.append(portElement)
         references.push(portElement)
       })
     }
 
-    Object.keys(portsGropsByZ).forEach(key => {
+    Object.keys(portsGropsByZ).forEach((key) => {
       if (key !== autoZIndexKey) {
         const zIndex = parseInt(key, 10)
         this.appendPorts(portsGropsByZ[key], zIndex, references)
@@ -369,7 +369,7 @@ export class NodeView<
     zIndex: number,
     refs: Element[],
   ) {
-    const elems = ports.map(p => this.getPortElement(p))
+    const elems = ports.map((p) => this.getPortElement(p))
     if (refs[zIndex] || zIndex < 0) {
       Dom.before(refs[Math.max(zIndex, 0)], elems)
     } else {
@@ -467,7 +467,7 @@ export class NodeView<
 
     // Layout ports with explicit group
     const groups = this.cell.getParsedGroups()
-    Object.keys(groups).forEach(groupName => this.updatePortGroup(groupName))
+    Object.keys(groups).forEach((groupName) => this.updatePortGroup(groupName))
   }
 
   protected updatePortGroup(groupName?: string) {
@@ -726,42 +726,57 @@ export class NodeView<
     super.onCustomEvent(e, name, x, y)
   }
 
-  protected prepareEmbedding(data: EventData.MovingTargetNode) {
-    const cell = data.cell || this.cell
-    const graph = data.graph || this.graph
-    const model = graph.model
+  protected prepareEmbedding(e: JQuery.MouseMoveEvent) {
+    // const cell = data.cell || this.cell
+    // const graph = data.graph || this.graph
+    // const model = graph.model
 
-    model.startBatch('to-front')
+    // model.startBatch('to-front')
 
-    // Bring the model to the front with all his embeds.
-    cell.toFront({ deep: true, ui: true })
+    // // Bring the model to the front with all his embeds.
+    // cell.toFront({ deep: true, ui: true })
 
-    const maxZ = model
-      .getNodes()
-      .reduce((max, cell) => Math.max(max, cell.getZIndex() || 0), 0)
+    // const maxZ = model
+    //   .getNodes()
+    //   .reduce((max, cell) => Math.max(max, cell.getZIndex() || 0), 0)
 
-    const connectedEdges = model.getConnectedEdges(cell, {
-      deep: true,
-      enclosed: true,
-    })
+    // const connectedEdges = model.getConnectedEdges(cell, {
+    //   deep: true,
+    //   enclosed: true,
+    // })
 
-    connectedEdges.forEach(edge => {
-      const zIndex = edge.getZIndex() || 0
-      if (zIndex <= maxZ) {
-        edge.setZIndex(maxZ + 1, { ui: true })
-      }
-    })
+    // connectedEdges.forEach((edge) => {
+    //   const zIndex = edge.getZIndex() || 0
+    //   if (zIndex <= maxZ) {
+    //     edge.setZIndex(maxZ + 1, { ui: true })
+    //   }
+    // })
 
-    model.stopBatch('to-front')
+    // model.stopBatch('to-front')
 
     // Before we start looking for suitable parent we remove the current one.
-    const parent = cell.getParent()
-    if (parent) {
-      parent.unembed(cell, { ui: true })
-    }
+    // const parent = cell.getParent()
+    // if (parent) {
+    //   parent.unembed(cell, { ui: true })
+    // }
+
+    const data = this.getEventData<EventData.MovingTargetNode>(e)
+    const node = data.cell || this.cell
+    const view = this.graph.findViewByCell(node)
+    const localPoint = this.graph.snapToGrid(e.clientX, e.clientY)
+
+    this.notify('node:embed', {
+      e,
+      node,
+      view,
+      cell: node,
+      x: localPoint.x,
+      y: localPoint.y,
+      currentParent: node.getParent(),
+    })
   }
 
-  processEmbedding(data: EventData.MovingTargetNode) {
+  processEmbedding(e: JQuery.MouseMoveEvent, data: EventData.MovingTargetNode) {
     const cell = data.cell || this.cell
     const graph = data.graph || this.graph
     const options = graph.options.embedding
@@ -772,7 +787,7 @@ export class NodeView<
         ? (FunctionExt.call(findParent, graph, {
             view: this,
             node: this.cell,
-          }) as Cell[]).filter(cell => {
+          }) as Cell[]).filter((cell) => {
             return (
               cell instanceof Cell &&
               this.cell.id !== cell.id &&
@@ -780,10 +795,10 @@ export class NodeView<
             )
           })
         : graph.model.getNodesUnderNode(cell, {
-            by: options.findParent as Rectangle.KeyPoint,
+            by: findParent as Rectangle.KeyPoint,
           })
 
-    // Picks the element with the highest `z` index
+    // Picks the node with the highest `z` index
     if (options.frontOnly) {
       candidates = candidates.slice(-1)
     }
@@ -791,8 +806,6 @@ export class NodeView<
     let newCandidateView = null
     const prevCandidateView = data.candidateEmbedView
     const validateEmbeding = options.validate
-
-    // iterate over all candidates starting from the last one (has the highest z-index).
     for (let i = candidates.length - 1; i >= 0; i -= 1) {
       const candidate = candidates[i]
 
@@ -817,41 +830,63 @@ export class NodeView<
       }
     }
 
-    // A new candidate view found. Highlight the new one.
-    if (newCandidateView && newCandidateView !== prevCandidateView) {
-      this.clearEmbedding(data)
+    this.clearEmbedding(data)
+    if (newCandidateView) {
       newCandidateView.highlight(null, { type: 'embedding' })
-      data.candidateEmbedView = newCandidateView
     }
+    data.candidateEmbedView = newCandidateView
 
-    // No candidate view found. Unhighlight the previous candidate.
-    if (!newCandidateView && prevCandidateView) {
-      this.clearEmbedding(data)
-    }
+    const localPoint = graph.snapToGrid(e.clientX, e.clientY)
+    this.notify('node:embedding', {
+      e,
+      cell,
+      node: cell,
+      view: graph.findViewByCell(cell),
+      x: localPoint.x,
+      y: localPoint.y,
+      currentParent: cell.getParent(),
+      candidateParent: newCandidateView ? newCandidateView.cell : null,
+    })
   }
 
   clearEmbedding(data: EventData.MovingTargetNode) {
     const candidateView = data.candidateEmbedView
     if (candidateView) {
-      // No candidate view found. Unhighlight the previous candidate.
       candidateView.unhighlight(null, { type: 'embedding' })
       data.candidateEmbedView = null
     }
   }
 
-  finalizeEmbedding(data: EventData.MovingTargetNode) {
+  finalizeEmbedding(e: JQuery.MouseUpEvent, data: EventData.MovingTargetNode) {
     const cell = data.cell || this.cell
     const graph = data.graph || this.graph
+    const parent = cell.getParent()
     const candidateView = data.candidateEmbedView
     if (candidateView) {
-      // We finished embedding. Candidate view is chosen to become the parent of the model.
-      candidateView.cell.insertChild(cell, undefined, { ui: true })
+      // Candidate view is chosen to become the parent of the node.
       candidateView.unhighlight(null, { type: 'embedding' })
       data.candidateEmbedView = null
+      if (parent == null || parent.id !== candidateView.cell.id) {
+        candidateView.cell.insertChild(cell, undefined, { ui: true })
+      }
+    } else if (parent) {
+      parent.unembed(cell, { ui: true })
     }
 
-    graph.model.getConnectedEdges(cell, { deep: true }).forEach(edge => {
+    graph.model.getConnectedEdges(cell, { deep: true }).forEach((edge) => {
       edge.updateParent({ ui: true })
+    })
+
+    const localPoint = graph.snapToGrid(e.clientX, e.clientY)
+    this.notify('node:embedded', {
+      e,
+      cell,
+      x: localPoint.x,
+      y: localPoint.y,
+      node: cell,
+      view: graph.findViewByCell(cell),
+      previousParent: parent,
+      currentParent: cell.getParent(),
     })
   }
 
@@ -1029,7 +1064,6 @@ export class NodeView<
     const data = this.getEventData<EventData.MovingTargetNode>(e)
     const offset = data.offset
     const restrict = data.restrict
-    let embedding = data.embedding
 
     const posX = Util.snapToGrid(x + offset.x, gridSize)
     const posY = Util.snapToGrid(y + offset.y, gridSize)
@@ -1040,25 +1074,18 @@ export class NodeView<
     })
 
     if (graph.options.embedding.enabled) {
-      if (!embedding) {
-        // Prepare the node for embedding only if the mouse moved.
-        // We don't want to do unnecessary action with the element
-        // if an user only clicks/dblclicks on it.
-        this.prepareEmbedding(data)
-        embedding = true
+      if (!data.embedding) {
+        this.prepareEmbedding(e)
+        data.embedding = true
       }
-      this.processEmbedding(data)
+      this.processEmbedding(e, data)
     }
-
-    this.setEventData<Partial<EventData.MovingTargetNode>>(e, {
-      embedding,
-    })
   }
 
   protected stopNodeDragging(e: JQuery.MouseUpEvent, x: number, y: number) {
     const data = this.getEventData<EventData.MovingTargetNode>(e)
     if (data.embedding) {
-      this.finalizeEmbedding(data)
+      this.finalizeEmbedding(e, data)
     }
 
     const meta = this.getEventData<EventData.Moving>(e)
@@ -1159,6 +1186,18 @@ export namespace NodeView {
     'node:rotate': RotateEventArgs<JQuery.MouseDownEvent>
     'node:rotating': RotateEventArgs<JQuery.MouseMoveEvent>
     'node:rotated': RotateEventArgs<JQuery.MouseUpEvent>
+
+    'node:embed': PositionEventArgs<JQuery.MouseMoveEvent> & {
+      currentParent: Node | null
+    }
+    'node:embedding': PositionEventArgs<JQuery.MouseMoveEvent> & {
+      currentParent: Node | null
+      candidateParent: Node | null
+    }
+    'node:embedded': PositionEventArgs<JQuery.MouseUpEvent> & {
+      currentParent: Node | null
+      previousParent: Node | null
+    }
   }
 }
 
