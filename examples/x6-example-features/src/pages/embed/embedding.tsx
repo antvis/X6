@@ -35,7 +35,7 @@ export default class Example extends React.Component {
       },
       embedding: {
         enabled: true,
-        findParent: function (this: Graph, node: Node) {
+        findParent({ node }) {
           var bbox = node.getBBox()
           return this.getNodes().filter((node: Node) => {
             var currentBBox = node.getBBox()
@@ -53,7 +53,7 @@ export default class Example extends React.Component {
               currentBBox.height += EMBEDDING_OFFSET
             }
 
-            return bbox.intersect(currentBBox)
+            return bbox.isIntersectWithRect(currentBBox)
           })
         },
       },
