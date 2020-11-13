@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Tabs, Row, Col, Select, Slider, Input, Checkbox } from 'antd'
-import X6Editor from '@/x6Editor'
+import FlowGraph from '@/pages/Graph'
 
 const { TabPane } = Tabs
 
@@ -34,15 +34,24 @@ const tryToJSON = (val: string) => {
   }
 }
 
-interface IProps {
-  attrs: {
-    [key: string]: any
-  }
-  setAttr: (key: string, val: any) => void
-}
-
-export default function (props: IProps) {
-  const { attrs, setAttr } = props
+export default function () {
+  const [attrs, setAttrs] = useState<any>({
+    type: 'doubleMesh',
+    size: 10,
+    color: '#cccccc',
+    thickness: 1,
+    colorSecond: '#5F95FF',
+    thicknessSecond: 1,
+    factor: 4,
+    bgColor: '#ffffff',
+    showImage: false,
+    repeat: 'no-repeat',
+    angle: 0,
+    position: 'center',
+    bgSize: 'auto auto',
+    opacity: 1,
+  })
+  const [showGrid, setShowGrid] = useState(false)
 
   useEffect(() => {
     let options
@@ -72,7 +81,7 @@ export default function (props: IProps) {
         ],
       }
     }
-    const { graph } = X6Editor.getInstance()
+    const { graph } = FlowGraph
     graph.drawGrid(options)
   }, [
     attrs.type,
@@ -84,7 +93,7 @@ export default function (props: IProps) {
   ])
 
   useEffect(() => {
-    const { graph } = X6Editor.getInstance()
+    const { graph } = FlowGraph
     graph.setGridSize(attrs.size)
   }, [attrs.size])
 
@@ -98,7 +107,7 @@ export default function (props: IProps) {
       position: tryToJSON(attrs.position),
       opacity: attrs.opacity,
     }
-    const { graph } = X6Editor.getInstance()
+    const { graph } = FlowGraph
     graph.drawBackground(options)
   }, [
     attrs.bgColor,
@@ -110,9 +119,34 @@ export default function (props: IProps) {
     attrs.opacity,
   ])
 
+  const setAttr = (key: string, value: any) => {
+    setAttrs((prev: any) => ({
+      ...prev,
+      [key]: value,
+    }))
+  }
+
+  const onShowGrid = (show: boolean) => {
+    const { graph } = FlowGraph
+    if (show) {
+      graph.showGrid()
+    } else {
+      graph.hideGrid()
+    }
+    setShowGrid(show)
+  }
+
   return (
     <Tabs defaultActiveKey="1">
       <TabPane tab="网格" key="1">
+        <Row align="middle">
+          <Checkbox
+            checked={showGrid}
+            onChange={(e) => onShowGrid(e.target.checked)}
+          >
+            Enable
+          </Checkbox>
+        </Row>
         <Row align="middle">
           <Col span={10}>Grid Type</Col>
           <Col span={12}>
@@ -266,7 +300,7 @@ export default function (props: IProps) {
               checked={attrs.showImage}
               onChange={(e) => setAttr('showImage', e.target.checked)}
             >
-              Show Background Image
+              Show Image
             </Checkbox>
           </Col>
         </Row>
