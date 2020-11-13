@@ -212,7 +212,7 @@ export class Dnd extends View {
         })
         const data = draggingView.getEventData<any>(e)
         if (isValidArea) {
-          draggingView.processEmbedding(data)
+          draggingView.processEmbedding(e, data)
         } else {
           draggingView.clearEmbedding(data)
         }
@@ -267,7 +267,7 @@ export class Dnd extends View {
             graph: this.targetGraph,
             candidateEmbedView: this.candidateEmbedView,
           })
-          draggingView.finalizeEmbedding(draggingView.getEventData<any>(e))
+          draggingView.finalizeEmbedding(e, draggingView.getEventData<any>(e))
         }
 
         this.candidateEmbedView = null
