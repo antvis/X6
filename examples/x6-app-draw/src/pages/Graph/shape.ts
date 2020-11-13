@@ -167,7 +167,7 @@ export const FlowChartImageRect = Graph.registerNode('flow-chart-image-rect', {
     title: {
       text: 'Node',
       refX: 40,
-      refY: 20,
+      refY: 14,
       fill: 'rgba(0,0,0,0.85)',
       fontSize: 12,
       'text-anchor': 'start',
@@ -305,7 +305,7 @@ export const FlowChartTitleRect = Graph.registerNode('flow-chart-title-rect', {
     title: {
       text: 'Node',
       refX: 30,
-      refY: 15,
+      refY: 9,
       fill: '#ffffff',
       fontSize: 12,
       'text-anchor': 'start',
