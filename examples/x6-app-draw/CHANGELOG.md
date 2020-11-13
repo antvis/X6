@@ -1,3 +1,10 @@
+## @antv/x6-app-draw [0.10.95](https://github.com/antvis/x6/compare/@antv/x6-app-draw@0.10.94...@antv/x6-app-draw@0.10.95) (2020-11-13)
+
+
+### Bug Fixes
+
+* 🐛 chagne shape attrs for draw demo ([cf30fb3](https://github.com/antvis/x6/commit/cf30fb37841a4f44b1352d31d5ce7e3700f0fe85))
+
 ## @antv/x6-app-draw [0.10.94](https://github.com/antvis/x6/compare/@antv/x6-app-draw@0.10.93...@antv/x6-app-draw@0.10.94) (2020-11-13)
 
 
