@@ -9,18 +9,21 @@ body {
 }
 
 .x6-widget-snapline-vertical {
-  border-right-color: #FF4E50 !important;
+  border-right-color: #ff4e50 !important;
 }
 .x6-widget-snapline-horizontal {
-  border-bottom-color: #FF4E50 !important;
+  border-bottom-color: #ff4e50 !important;
 }
 
-@keyframes stroke{
+@keyframes stroke {
   100% {
     stroke-dashoffset: -400;
   }
 }
-.animate-text1,.animate-text2,.animate-text3,.animate-text4 {
+.animate-text1,
+.animate-text2,
+.animate-text3,
+.animate-text4 {
   font-weight: bold;
   fill: none;
   stroke-width: 2px;
@@ -33,7 +36,7 @@ body {
   animation-delay: -1.5s;
 }
 .animate-text2 {
-  stroke: #FF6E06;
-  text-shadow: 0 0 2px #FF6E06;
+  stroke: #ff6e06;
+  text-shadow: 0 0 2px #ff6e06;
   animation-delay: -3s;
 }
