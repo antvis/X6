@@ -1114,7 +1114,7 @@ export class Renderer extends Base {
           })
           return options.strict
             ? area.containsRect(bbox)
-            : area.isIntersectWith(bbox)
+            : area.isIntersectWithRect(bbox)
         }
       }) as CellView[]
   }

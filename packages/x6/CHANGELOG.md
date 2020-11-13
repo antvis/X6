@@ -1,3 +1,7 @@
+## @antv/x6 [0.13.3](https://github.com/antvis/x6/compare/@antv/x6@0.13.2...@antv/x6@0.13.3) (2020-11-12)
+
+## @antv/x6 [0.13.2](https://github.com/antvis/x6/compare/@antv/x6@0.13.1...@antv/x6@0.13.2) (2020-11-12)
+
 ## @antv/x6 [0.13.1](https://github.com/antvis/x6/compare/@antv/x6@0.13.0...@antv/x6@0.13.1) (2020-11-11)
 
 
@@ -54,18 +58,3 @@
 ### Bug Fixes
 
 * 🐛 apps router ([8324eaa](https://github.com/antvis/x6/commit/8324eaa0a85cb14873f5095fe8d2695d80b5215a))
-
-## @antv/x6 [0.10.78](https://github.com/antvis/x6/compare/@antv/x6@0.10.77...@antv/x6@0.10.78) (2020-11-05)
-
-
-### Bug Fixes
-
-* 🐛 changelog ([21dffd7](https://github.com/antvis/x6/commit/21dffd79ab3296b26678292630a299e6423fb0c2))
-* 🐛 version error ([5c80d69](https://github.com/antvis/x6/commit/5c80d69f66217e131176fce89b95d30bd47e3c4c))
-
-## @antv/x6 [1.0.1](https://github.com/antvis/x6/compare/@antv/x6@1.0.0...@antv/x6@1.0.1) (2020-10-30)
-
-
-### Bug Fixes
-
-* 🐛 changelog ([21dffd7](https://github.com/antvis/x6/commit/21dffd79ab3296b26678292630a299e6423fb0c2))
