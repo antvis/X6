@@ -1,3 +1,10 @@
+## @antv/x6 [0.13.5](https://github.com/antvis/x6/compare/@antv/x6@0.13.4...@antv/x6@0.13.5) (2020-11-17)
+
+
+### Bug Fixes
+
+* 🐛 should not render cell when invisible ([c9535b5](https://github.com/antvis/x6/commit/c9535b5604cda94066d80df0d43c85921f0ab978)), closes [#300](https://github.com/antvis/x6/issues/300)
+
 ## @antv/x6 [0.13.4](https://github.com/antvis/x6/compare/@antv/x6@0.13.3...@antv/x6@0.13.4) (2020-11-13)
 
 ## @antv/x6 [0.13.3](https://github.com/antvis/x6/compare/@antv/x6@0.13.2...@antv/x6@0.13.3) (2020-11-12)
