@@ -13,7 +13,7 @@ export const mockProperties: EntityProperty[] = [
   },
   {
     propertyId: 'propertyId2',
-    name: '支付宝交易号',
+    name: '支付宝交易号1',
     propertyType: 'bigint',
     isFK: true,
   },
