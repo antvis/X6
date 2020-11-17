@@ -1,3 +1,13 @@
+## @antv/x6-react-shape [0.10.34](https://github.com/antvis/x6/compare/@antv/x6-react-shape@0.10.33...@antv/x6-react-shape@0.10.34) (2020-11-17)
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 0.13.6
+
 ## @antv/x6-react-shape [0.10.33](https://github.com/antvis/x6/compare/@antv/x6-react-shape@0.10.32...@antv/x6-react-shape@0.10.33) (2020-11-17)
 
 
