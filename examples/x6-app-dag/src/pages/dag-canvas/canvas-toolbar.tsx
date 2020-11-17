@@ -29,7 +29,7 @@ enum Operations {
   UNGROUP = 'UNGROUP',
 }
 
-export const CanvasToolbar: React.FC<Props> = props => {
+export const CanvasToolbar: React.FC<Props> = (props) => {
   const { experimentId } = props
   const [selectionEnabled, setSelectionEnabled] = useState<boolean>(false)
   const expGraph = useExperimentGraph(experimentId)
@@ -48,7 +48,7 @@ export const CanvasToolbar: React.FC<Props> = props => {
           break
         case Operations.GROUP_SELECT:
           expGraph.toggleSelectionEnabled()
-          setSelectionEnabled(enabled => !enabled)
+          setSelectionEnabled((enabled) => !enabled)
           break
         case Operations.RUN_SELECTED:
           expGraph.runGraph()
@@ -67,7 +67,7 @@ export const CanvasToolbar: React.FC<Props> = props => {
                 <div style={{ width: 50, marginBottom: 8 }}>组名：</div>
                 <RxInput
                   value={value$}
-                  onChange={e => {
+                  onChange={(e) => {
                     value$.next(e.target.value)
                   }}
                 />
@@ -78,11 +78,11 @@ export const CanvasToolbar: React.FC<Props> = props => {
               addNodeGroup(value$.getValue())
                 .then((res: any) => {
                   modal.close()
-                  selectedNodes!.forEach(node => {
+                  selectedNodes!.forEach((node) => {
                     const nodeData = node.getData<any>()
                     node.setData({ ...nodeData, groupId: res.data.group.id })
                   })
-                  const nodeMetas: any[] = selectedNodes!.map(node =>
+                  const nodeMetas: any[] = selectedNodes!.map((node) =>
                     node.getData<any>(),
                   )
                   expGraph.addNode(
@@ -99,8 +99,8 @@ export const CanvasToolbar: React.FC<Props> = props => {
         }
         case Operations.UNGROUP: {
           const descendantNodes = selectedGroup!.getDescendants()
-          const childNodes = descendantNodes.filter(node => node.isNode())
-          childNodes.forEach(node => {
+          const childNodes = descendantNodes.filter((node) => node.isNode())
+          childNodes.forEach((node) => {
             const nodeData = node.getData<any>()
             node.setData({ ...nodeData, groupId: 0 })
           })
@@ -119,7 +119,7 @@ export const CanvasToolbar: React.FC<Props> = props => {
     !!selectedNodes &&
     !!selectedNodes.length &&
     selectedNodes.length > 1 &&
-    selectedNodes.every(node => {
+    selectedNodes.every((node) => {
       return node.isNode() && !node.getData<any>().groupId
     })
 

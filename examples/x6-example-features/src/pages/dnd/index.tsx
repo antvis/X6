@@ -35,7 +35,7 @@ export default class Example extends React.Component {
         enabled: true,
         findParent({ node }) {
           const bbox = node.getBBox()
-          return this.getNodes().filter(parent => {
+          return this.getNodes().filter((parent) => {
             const targetBBox = parent.getBBox()
             return targetBBox.containsRect(bbox)
           })
@@ -79,11 +79,11 @@ export default class Example extends React.Component {
 
     graph.addEdge({ source, target })
 
-    graph.on('node:change:parent', args => {
+    graph.on('node:change:parent', (args) => {
       console.log('node:change:parent', args)
     })
 
-    graph.on('node:added', args => {
+    graph.on('node:added', (args) => {
       console.log('node:added', args)
     })
 

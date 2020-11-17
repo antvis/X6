@@ -248,7 +248,7 @@ export class NodePreset {
       'bottom',
       'left',
       'right',
-    ].some(position => {
+    ].some((position) => {
       let point: Point | null = null
       let dx = 0
       let dy = 0
@@ -442,11 +442,11 @@ export class NodePreset {
     this.halo.setEventData(e, {
       center,
       nodes,
-      rotateStartAngles: nodes.map(node => node.getAngle()),
+      rotateStartAngles: nodes.map((node) => node.getAngle()),
       clientStartAngle: new Point(x, y).theta(center),
     })
 
-    nodes.forEach(node => {
+    nodes.forEach((node) => {
       const view = this.graph.findViewByCell(node) as NodeView
       if (view) {
         view.addClass('node-rotating')

@@ -17,7 +17,7 @@ interface Props extends RouteComponentProps<{ experimentId: string }> {
 
 const { Content } = Layout
 
-const DagDemo: React.FC<Props> = props => {
+const DagDemo: React.FC<Props> = (props) => {
   const { experimentId = '1' } = props
 
   return (
