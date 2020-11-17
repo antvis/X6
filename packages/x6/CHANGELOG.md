@@ -1,3 +1,10 @@
+## @antv/x6 [0.13.6](https://github.com/antvis/x6/compare/@antv/x6@0.13.5...@antv/x6@0.13.6) (2020-11-17)
+
+
+### Bug Fixes
+
+* 🐛 do not render edge when any of it's terminal is not visible ([1b6c6a9](https://github.com/antvis/x6/commit/1b6c6a9b9d13a664abb7f843c5ee798eac6626b0)), closes [#300](https://github.com/antvis/x6/issues/300) [#300](https://github.com/antvis/x6/issues/300)
+
 ## @antv/x6 [0.13.5](https://github.com/antvis/x6/compare/@antv/x6@0.13.4...@antv/x6@0.13.5) (2020-11-17)
 
 
