@@ -1,3 +1,27 @@
+# @antv/x6-example-features [1.0.0-beta.5](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.0.0-beta.4...@antv/x6-example-features@1.0.0-beta.5) (2020-11-17)
+
+
+### Bug Fixes
+
+* 🐛 dnd events ([3e94b0b](https://github.com/antvis/x6/commit/3e94b0b1eafab8f43cff2601b088df24d1b062a4)), closes [#271](https://github.com/antvis/x6/issues/271)
+
+
+### Features
+
+* ✨ add minScale and maxScale options for mousewheel ([e474ac3](https://github.com/antvis/x6/commit/e474ac3c6a7c224ab5e9a9039c7b419f91554891)), closes [#283](https://github.com/antvis/x6/issues/283) [#283](https://github.com/antvis/x6/issues/283)
+* ✨ add some ui events ([7781435](https://github.com/antvis/x6/commit/77814353097a96cc444d347f26309ce6ae8e7453)), closes [#275](https://github.com/antvis/x6/issues/275) [#273](https://github.com/antvis/x6/issues/273)
+* ✨ node/edge move events ([67efad9](https://github.com/antvis/x6/commit/67efad9f9dac1657c0f04de15ca80c8fd50d395e))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.0.0-beta.5
+* **@antv/x6-react-components:** upgraded to 0.10.20-beta.1
+* **@antv/x6-react-shape:** upgraded to 1.0.0-beta.5
+
 # @antv/x6-example-features [1.0.0-beta.4](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.0.0-beta.3...@antv/x6-example-features@1.0.0-beta.4) (2020-11-05)
 ## @antv/x6-example-features [0.12.7](https://github.com/antvis/x6/compare/@antv/x6-example-features@0.12.6...@antv/x6-example-features@0.12.7) (2020-11-17)
 
