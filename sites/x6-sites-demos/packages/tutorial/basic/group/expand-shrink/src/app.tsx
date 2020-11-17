@@ -75,6 +75,10 @@ export default class Example extends React.Component {
       ctrlPressed = e.metaKey || e.ctrlKey
     })
 
+    graph.on('node:embedded', () => {
+      ctrlPressed = false
+    })
+
     graph.on('node:change:size', ({ node, options }) => {
       if (options.skipParentHandler) {
         return
