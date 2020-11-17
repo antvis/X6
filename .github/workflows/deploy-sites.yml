@@ -14,21 +14,27 @@ jobs:
       matrix:
         node-version: [12.x]
     steps:
-      - uses: actions/checkout@v2
-      ##
-      - name: 🌱　Get yarn cache directory path
+      - name: ⤵️　Checkout
+        uses: actions/checkout@v2
+      - name: 🎉　Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: 🌱　Get Yarn Cache Directory
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn cache dir)"
-      ##
-      - name: 🚸　Setup yarn cacha
+
+      - name: 🚸　Setup Yarn Cacha
         uses: actions/cache@v2
         with:
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
+
       ## cache webpack(babel-loader, eslint-loader)
-      - name: 💩　Setup webpack cache
+      - name: 💩　Setup Webpack Cache
         uses: actions/cache@v2
         with:
           path: |
@@ -37,39 +43,39 @@ jobs:
           key: ${{ runner.os }}-webpack-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-webpack-
+
       ## cache sites
-      - name: 💩　Setup sites cache
+      - name: 💩　Setup Sites Cache
         uses: actions/cache@v2
         with:
           path: sites/x6-sites/static/demos
           key: ${{ runner.os }}-sites-${{ hashFiles('./packages/x6/package.json', './sites/x6-sites-demos/**/src') }}
           restore-keys: |
             ${{ runner.os }}-sites-
-      ##
-      - name: 🎉　Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node-version }}
+
+      - name: 🚧　Prepare
+        run: yarn global add lerna
+
       - name: 🚀　Bootstrap
-        run: |
-          yarn global add lerna
-          yarn bootstrap
+        run: yarn bootstrap
+
       - name: 📦　Build Demos
-        run: |
-          yarn build:demos
+        run: yarn build:demos
+
       - name: 🧲　Build Apps
-        run: |
-          yarn build:apps
+        run: yarn build:apps
+
       - name: ✨　Build Sites
-        run: |
-          yarn build:sites
+        run: yarn build:sites
+
       - name: 🔑　Generate Token
         uses: bubkoo/use-app-token@v1
         with:
           app_id: ${{ secrets.APP_ID }}
           private_key: ${{ secrets.PRIVATE_KEY }}
           env_name: bot_token
-      - name: ✅　Deploy Sites
+
+      - name: ✅　Deploy sites
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ env.bot_token }}

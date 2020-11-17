@@ -11,7 +11,7 @@ interface Props {
   data: any
 }
 
-export const EdgeContextMenu: React.FC<Props> = props => {
+export const EdgeContextMenu: React.FC<Props> = (props) => {
   const { experimentId, data } = props
   const containerRef = useRef<HTMLDivElement>(null as any)
   const expGraph = useExperimentGraph(experimentId)
