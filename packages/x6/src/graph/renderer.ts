@@ -482,7 +482,7 @@ export class Renderer extends Base {
         if (leftoverFlag > 0) {
           const cell = cellView.cell
           if (cell && cell.isEdge()) {
-            // should remove edge view when source cell is invisible
+            // remove edge view when source cell is invisible
             if (
               cellView.hasAction(leftoverFlag, 'source') &&
               !this.isEdgeTerminalVisible(cell, 'source')
@@ -491,7 +491,7 @@ export class Renderer extends Base {
               leftoverFlag |= Renderer.FLAG_REMOVE
             }
 
-            // should remove edge view when target cell is invisible
+            // remove edge view when target cell is invisible
             if (
               cellView.hasAction(leftoverFlag, 'target') &&
               !this.isEdgeTerminalVisible(cell, 'target')
