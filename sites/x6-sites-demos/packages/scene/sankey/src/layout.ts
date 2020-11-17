@@ -40,7 +40,7 @@ const data: DataItem[] = [
   { name: '销售支持', count: 3, id: '21', dep: '2' },
 ]
 
-export function getNodes() {
+export function layout() {
   const nodes: any[] = []
   const links: any[] = []
   data.forEach((d) => {
@@ -51,7 +51,7 @@ export function getNodes() {
   })
 
   // @see https://github.com/d3/d3-sankey
-  const layout = sankey()
+  const execute = sankey()
     .nodeWidth(20)
     .nodePadding(12)
     .size([980, 760])
@@ -60,5 +60,6 @@ export function getNodes() {
       return 0
     })
     .iterations(32)
-  return layout({ nodes, links })
+
+  return execute({ nodes, links })
 }
