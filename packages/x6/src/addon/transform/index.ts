@@ -91,6 +91,7 @@ export class Transform extends Widget<Transform.Options> {
 
   render() {
     this.renderHandles()
+    this.view.addClass(Private.NODE_CLS)
     this.$container
       .addClass(this.containerClassName)
       .toggleClass(
@@ -133,6 +134,11 @@ export class Transform extends Widget<Transform.Options> {
     this.updateResizerDirections()
 
     return this
+  }
+
+  remove() {
+    this.view.removeClass(Private.NODE_CLS)
+    return super.remove()
   }
 
   protected updateResizerDirections() {
@@ -211,15 +217,16 @@ export class Transform extends Widget<Transform.Options> {
       'bottom-left': 'topRight',
       'bottom-right': 'topLeft',
     } as KeyValue)[direction]
+    const angle = Angle.normalize(this.node.getAngle())
 
     this.setEventData<EventData.Resizing>(evt, {
       selector,
       direction,
       trueDirection,
       relativeDirection,
+      angle,
       resizeX: rx,
       resizeY: ry,
-      angle: Angle.normalize(this.node.getAngle()),
       action: 'resizing',
     })
   }
@@ -241,6 +248,7 @@ export class Transform extends Widget<Transform.Options> {
   }
 
   protected onMouseMove(evt: JQuery.MouseMoveEvent) {
+    const view = this.graph.findViewByCell(this.node) as NodeView
     let data = this.getEventData<EventData.Resizing | EventData.Rotating>(evt)
     if (data.action) {
       const e = this.normalizeEvent(evt)
@@ -368,6 +376,7 @@ export class Transform extends Widget<Transform.Options> {
             preserveAspectRatio: options.preserveAspectRatio === true,
           }
           node.resize(width, height, resizeOptions)
+          notify('node:resizing', evt, view)
         }
       } else if (data.action === 'rotating') {
         data = data as EventData.Rotating
@@ -381,37 +390,18 @@ export class Transform extends Widget<Transform.Options> {
           target = Util.snapToGrid(target, options.rotateGrid)
         }
         node.rotate(target, { absolute: true })
+        notify('node:rotating', evt, view)
       }
     }
   }
 
   protected onMouseUp(evt: JQuery.MouseUpEvent) {
-    let data = this.getEventData<EventData.Resizing | EventData.Rotating>(evt)
+    const data = this.getEventData<EventData.Resizing | EventData.Rotating>(evt)
     if (data.action) {
       this.stopAction(evt)
       this.model.stopBatch(data.action === 'resizing' ? 'resize' : 'rotate', {
         cid: this.cid,
       })
-
-      if (data.action === 'resizing') {
-        data = data as EventData.Resizing
-        if (data.resized) {
-          notify(
-            'node:resized',
-            evt,
-            this.graph.findViewByCell(this.cell) as NodeView,
-          )
-        }
-      } else {
-        data = data as EventData.Rotating
-        if (data.rotated) {
-          notify(
-            'node:rotated',
-            evt,
-            this.graph.findViewByCell(this.cell) as NodeView,
-          )
-        }
-      }
     }
   }
 
@@ -448,17 +438,21 @@ export class Transform extends Widget<Transform.Options> {
   }
 
   protected startAction(evt: JQuery.MouseDownEvent) {
-    const elem = evt.target
-    this.startHandle(elem)
+    this.startHandle(evt.target)
     this.graph.view.undelegateEvents()
     this.delegateDocumentEvents(Private.documentEvents, evt.data)
 
-    // const data = this.getEventData<EventData.Resizing | EventData.Rotating>(evt)
-    // if (data.action === 'resizing') {
-    //   this.node.notify('node:resize', { node: this.node })
-    // } else if (data.action === 'rotating') {
-    //   this.node.notify('node:rotate', { node: this.node })
-    // }
+    const view = this.graph.findViewByCell(this.node) as NodeView
+    const data = this.getEventData<EventData.Resizing | EventData.Rotating>(evt)
+
+    if (view) {
+      view.addClass(`node-${data.action}`)
+      if (data.action === 'resizing') {
+        notify('node:resize', evt, view)
+      } else if (data.action === 'rotating') {
+        notify('node:rotate', evt, view)
+      }
+    }
   }
 
   protected stopAction(evt: JQuery.MouseUpEvent) {
@@ -466,12 +460,17 @@ export class Transform extends Widget<Transform.Options> {
     this.undelegateDocumentEvents()
     this.graph.view.delegateEvents()
 
-    // const data = this.getEventData<EventData.Resizing | EventData.Rotating>(evt)
-    // if (data.action === 'resizing') {
-    //   this.node.notify('node:resized', { node: this.node })
-    // } else if (data.action === 'rotating') {
-    //   this.node.notify('node:rotated', { node: this.node })
-    // }
+    const view = this.graph.findViewByCell(this.node) as NodeView
+    const data = this.getEventData<EventData.Resizing | EventData.Rotating>(evt)
+
+    if (view) {
+      view.removeClass(`node-${data.action}`)
+      if (data.action === 'resizing') {
+        notify('node:resized', evt, view)
+      } else if (data.action === 'rotating') {
+        notify('node:rotated', evt, view)
+      }
+    }
   }
 }
 
@@ -499,6 +498,7 @@ export namespace Transform {
 }
 
 namespace Private {
+  export const NODE_CLS = 'has-widget-transform'
   export const DIRECTIONS = ['nw', 'n', 'ne', 'e', 'se', 's', 'sw', 'w']
   export const POSITIONS: Node.ResizeDirection[] = [
     'top-left',

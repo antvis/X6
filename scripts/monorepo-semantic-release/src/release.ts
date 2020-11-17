@@ -94,10 +94,13 @@ export namespace Release {
     const pkgOptions = await Config.get(dir)
     const finalOptions = Object.assign({}, globalOptions, pkgOptions)
     const logger = { error() {}, log() {} }
-    const cloneOptions = cloneDeep(finalOptions)
-    if (cloneOptions.plugins) {
-      const githubPlugin = '@semantic-release/github'
-      cloneOptions.plugins = cloneOptions.plugins.map((plugin) => {
+
+    const options1 = cloneDeep(finalOptions)
+    const options2 = cloneDeep(finalOptions)
+    const githubPlugin = '@semantic-release/github'
+
+    if (options1.plugins) {
+      options1.plugins = options1.plugins.map((plugin) => {
         if (Array.isArray(plugin)) {
           const pluginName = plugin[0]
           const pluginOptions = plugin[1]
@@ -114,6 +117,24 @@ export namespace Release {
       })
     }
 
+    if (options2.plugins) {
+      options2.plugins = options2.plugins.map((plugin) => {
+        if (Array.isArray(plugin)) {
+          const pluginName = plugin[0]
+          const pluginOptions = plugin[1]
+          if (pluginName === githubPlugin) {
+            return [pluginName, { ...pluginOptions, addReleases: false }]
+          }
+        }
+
+        if (plugin === githubPlugin) {
+          return [plugin, { addReleases: false }]
+        }
+
+        return plugin
+      })
+    }
+
     const context = { env, stdout, stderr, logger: logger as any, cwd: dir }
 
     // Use semantic-release's internal config with the final options (now we
@@ -121,8 +142,8 @@ export namespace Release {
     // the options including defaults.
     // We need this so we can call e.g. plugins.analyzeCommit() to be able to
     // affect the input and output of the whole set of plugins.
-    const instance1 = await loadSemanticRelease(context, finalOptions)
-    const instance2 = await loadSemanticRelease(context, cloneOptions)
+    const instance1 = await loadSemanticRelease(context, options1)
+    const instance2 = await loadSemanticRelease(context, options2)
 
     return {
       path,
@@ -133,7 +154,7 @@ export namespace Release {
       logger,
       private: manifest.private === true,
       options: instance1.options,
-      plugins: instance1.plugins,
+      plugins1: instance1.plugins,
       plugins2: instance2.plugins,
       localDeps: [],
     }

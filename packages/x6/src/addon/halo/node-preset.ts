@@ -16,8 +16,6 @@ export function getNodePreset(halo: Halo) {}
 export class NodePreset {
   private edgeView: EdgeView | null
   private flip: number
-  private resized: boolean
-  private rotated: boolean
 
   constructor(private halo: Halo) {}
 
@@ -63,14 +61,7 @@ export class NodePreset {
           events: {
             mousedown: this.startResize.bind(this),
             mousemove: this.doResize.bind(this),
-            mouseup: ({ e }) => {
-              this.halo.stopBatch()
-              if (this.resized) {
-                this.resized = false
-                const view = this.view as NodeView
-                notify('node:resized', e as JQuery.MouseUpEvent, view)
-              }
-            },
+            mouseup: this.stopResize.bind(this),
           },
           icon: null,
         },
@@ -118,20 +109,7 @@ export class NodePreset {
           events: {
             mousedown: this.startRotate.bind(this),
             mousemove: this.doRotate.bind(this),
-            mouseup: ({ e }) => {
-              this.halo.stopBatch()
-              if (this.rotated) {
-                this.rotated = false
-                const data = this.halo.getEventData(e)
-                data.nodes.forEach((node: Node) => {
-                  notify(
-                    'node:rotated',
-                    e as JQuery.MouseUpEvent,
-                    this.graph.findViewByCell(node) as NodeView,
-                  )
-                })
-              }
-            },
+            mouseup: this.stopRotate.bind(this),
           },
           icon: null,
         },
@@ -317,21 +295,29 @@ export class NodePreset {
 
   // #region resize
 
-  startResize() {
+  startResize({ e }: Handle.EventArgs) {
     this.halo.startBatch()
     this.flip = [1, 0, 0, 1, 1, 0, 0, 1][
       Math.floor(Angle.normalize(this.node.getAngle()) / 45)
     ]
+    this.view.addClass('node-resizing')
+    notify('node:resize', e as JQuery.MouseDownEvent, this.view as NodeView)
   }
 
-  doResize({ dx, dy }: Handle.EventArgs) {
+  doResize({ e, dx, dy }: Handle.EventArgs) {
     const size = this.node.getSize()
     const width = Math.max(size.width + (this.flip ? dx : dy), 1)
     const height = Math.max(size.height + (this.flip ? dy : dx), 1)
-    this.resized = true
     this.node.resize(width, height, {
       absolute: true,
     })
+    notify('node:resizing', e as JQuery.MouseMoveEvent, this.view as NodeView)
+  }
+
+  stopResize({ e }: Handle.EventArgs) {
+    this.view.removeClass('node-resizing')
+    notify('node:resized', e as JQuery.MouseUpEvent, this.view as NodeView)
+    this.halo.stopBatch()
   }
 
   // #endregion
@@ -452,18 +438,26 @@ export class NodePreset {
           return memo
         }, nodes)
     }
+
     this.halo.setEventData(e, {
       center,
       nodes,
       rotateStartAngles: nodes.map((node) => node.getAngle()),
       clientStartAngle: new Point(x, y).theta(center),
     })
+
+    nodes.forEach((node) => {
+      const view = this.graph.findViewByCell(node) as NodeView
+      if (view) {
+        view.addClass('node-rotating')
+        notify('node:rotate', e as JQuery.MouseDownEvent, view)
+      }
+    })
   }
 
   doRotate({ e, x, y }: Handle.EventArgs) {
     const data = this.halo.getEventData(e)
     const delta = data.clientStartAngle - new Point(x, y).theta(data.center)
-    this.rotated = true
     data.nodes.forEach((node: Node, index: number) => {
       const startAngle = data.rotateStartAngles[index]
       const targetAngle = Util.snapToGrid(
@@ -475,7 +469,22 @@ export class NodePreset {
         center: data.center,
         halo: this.halo.cid,
       })
+      notify(
+        'node:rotating',
+        e as JQuery.MouseMoveEvent,
+        this.graph.findViewByCell(node) as NodeView,
+      )
     })
+  }
+
+  stopRotate({ e }: Handle.EventArgs) {
+    const data = this.halo.getEventData(e)
+    data.nodes.forEach((node: Node) => {
+      const view = this.graph.findViewByCell(node) as NodeView
+      view.removeClass('node-rotating')
+      notify('node:rotated', e as JQuery.MouseUpEvent, view)
+    })
+    this.halo.stopBatch()
   }
 
   // #endregion

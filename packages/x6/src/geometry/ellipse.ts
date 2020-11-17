@@ -4,10 +4,10 @@ import { Rectangle } from './rectangle'
 import { Geometry } from './geometry'
 
 export class Ellipse extends Geometry implements Ellipse.EllipseLike {
-  x: number
-  y: number
-  a: number
-  b: number
+  public x: number
+  public y: number
+  public a: number
+  public b: number
 
   get center() {
     return new Point(this.x, this.y)
@@ -35,7 +35,14 @@ export class Ellipse extends Geometry implements Ellipse.EllipseLike {
     return this.center
   }
 
+  /**
+   * Returns ellipse inflated in axis-x by `2 * amount` and in axis-y by
+   * `2 * amount`.
+   */
   inflate(amount: number): this
+  /**
+   * Returns ellipse inflated in axis-x by `2 * dx` and in axis-y by `2 * dy`.
+   */
   inflate(dx: number, dy: number): this
   inflate(dx: number, dy?: number): this {
     const w = dx
@@ -47,20 +54,17 @@ export class Ellipse extends Geometry implements Ellipse.EllipseLike {
   }
 
   /**
-   * Returns `true` if the point `p` is inside the ellipse (inclusive).
-   * Returns `false` otherwise.
-   */
-  containsPoint(p: Point.PointLike | Point.PointData) {
-    return this.normalizedDistance(p) <= 1
-  }
-
-  /**
    * Returns a normalized distance from the ellipse center to point `p`.
    * Returns `n < 1` for points inside the ellipse, `n = 1` for points
    * lying on the ellipse boundary and `n > 1` for points outside the ellipse.
    */
-  normalizedDistance(p: Point.PointLike | Point.PointData) {
-    const ref = Point.clone(p)
+  normalizedDistance(x: number, y: number): number
+  normalizedDistance(p: Point.PointLike | Point.PointData): number
+  normalizedDistance(
+    x: number | Point.PointLike | Point.PointData,
+    y?: number,
+  ) {
+    const ref = Point.create(x, y)
     const dx = ref.x - this.x
     const dy = ref.y - this.y
     const a = this.a
@@ -70,10 +74,20 @@ export class Ellipse extends Geometry implements Ellipse.EllipseLike {
   }
 
   /**
+   * Returns `true` if the point `p` is inside the ellipse (inclusive).
+   * Returns `false` otherwise.
+   */
+  containsPoint(x: number, y: number): boolean
+  containsPoint(p: Point.PointLike | Point.PointData): boolean
+  containsPoint(x: number | Point.PointLike | Point.PointData, y?: number) {
+    return this.normalizedDistance(x as number, y as number) <= 1
+  }
+
+  /**
    * Returns an array of the intersection points of the ellipse and the line.
    * Returns `null` if no intersection exists.
    */
-  intersectionWithLine(line: Line) {
+  intersectsWithLine(line: Line) {
     const intersections = []
     const rx = this.a
     const ry = this.b
@@ -131,12 +145,11 @@ export class Ellipse extends Geometry implements Ellipse.EllipseLike {
    * If angle is specified, the intersection will take into account
    * the rotation of the ellipse by angle degrees around its center.
    */
-  intersectionWithLineFromCenterToPoint(
+  intersectsWithLineFromCenterToPoint(
     p: Point.PointLike | Point.PointData,
     angle: number = 0,
   ) {
     const ref = Point.clone(p)
-
     if (angle) {
       ref.rotate(angle, this.getCenter())
     }
@@ -146,7 +159,7 @@ export class Ellipse extends Geometry implements Ellipse.EllipseLike {
     let result
 
     if (dx === 0) {
-      result = this.bbox().pointNearestToPoint(p)
+      result = this.bbox().getNearestPointToPoint(ref)
       if (angle) {
         return result.rotate(-angle, this.getCenter())
       }
@@ -164,10 +177,17 @@ export class Ellipse extends Geometry implements Ellipse.EllipseLike {
     const y = m * x
     result = new Point(this.x + x, this.y + y)
 
-    if (angle) return result.rotate(-angle, this.getCenter())
+    if (angle) {
+      return result.rotate(-angle, this.getCenter())
+    }
+
     return result
   }
 
+  /**
+   * Returns the angle between the x-axis and the tangent from a point. It is
+   * valid for points lying on the ellipse boundary only.
+   */
   tangentTheta(p: Point.PointLike | Point.PointData) {
     const ref = Point.clone(p)
     const x0 = ref.x

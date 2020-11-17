@@ -14,7 +14,7 @@ export function release(options: Options = {}) {
     console.log(`semantic-release version: ${semrelPkg.version}`)
     console.log(`flags: ${JSON.stringify(options, null, 2)}`)
 
-    const paths = Workspace.getPaths(cwd)
+    const paths = Workspace.get(cwd)
     console.log('packages: ', paths)
 
     Release.start(paths, {}, { cwd }, options).then(

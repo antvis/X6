@@ -1,14 +1,19 @@
 import React from 'react'
 import { Graph } from '@antv/x6'
+import { Settings, State } from './settings'
 import './app.css'
 
 export default class Example extends React.Component {
   private container: HTMLDivElement
+  private embedPadding: number = 20
 
   componentDidMount() {
     const graph = new Graph({
       container: this.container,
       grid: true,
+      embedding: {
+        enabled: true,
+      },
     })
 
     const source = graph.addNode({
@@ -64,6 +69,16 @@ export default class Example extends React.Component {
     parent.addChild(source)
     parent.addChild(target)
 
+    let ctrlPressed = false
+
+    graph.on('node:embedding', ({ e }: { e: JQuery.MouseMoveEvent }) => {
+      ctrlPressed = e.metaKey || e.ctrlKey
+    })
+
+    graph.on('node:embedded', () => {
+      ctrlPressed = false
+    })
+
     graph.on('node:change:size', ({ node, options }) => {
       if (options.skipParentHandler) {
         return
@@ -76,7 +91,7 @@ export default class Example extends React.Component {
     })
 
     graph.on('node:change:position', ({ node, options }) => {
-      if (options.skipParentHandler) {
+      if (options.skipParentHandler || ctrlPressed) {
         return
       }
 
@@ -89,15 +104,15 @@ export default class Example extends React.Component {
       if (parent && parent.isNode()) {
         let originSize = parent.prop('originSize')
         if (originSize == null) {
-          parent.prop('originSize', parent.getSize())
+          originSize = parent.getSize()
+          parent.prop('originSize', originSize)
         }
-        originSize = parent.prop('originSize')
 
         let originPosition = parent.prop('originPosition')
         if (originPosition == null) {
-          parent.prop('originPosition', parent.getPosition())
+          originPosition = parent.getPosition()
+          parent.prop('originPosition', originPosition)
         }
-        originPosition = parent.prop('originPosition')
 
         let x = originPosition.x
         let y = originPosition.y
@@ -108,7 +123,7 @@ export default class Example extends React.Component {
         const children = parent.getChildren()
         if (children) {
           children.forEach((child) => {
-            const bbox = child.getBBox()
+            const bbox = child.getBBox().inflate(this.embedPadding)
             const corner = bbox.getCorner()
 
             if (bbox.x < x) {
@@ -152,9 +167,16 @@ export default class Example extends React.Component {
     this.container = container
   }
 
+  onSettingsChanged = (state: State) => {
+    this.embedPadding = state.padding
+  }
+
   render() {
     return (
       <div className="app">
+        <div className="app-side">
+          <Settings onChange={this.onSettingsChanged} />
+        </div>
         <div className="app-content" ref={this.refContainer} />
       </div>
     )

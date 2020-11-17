@@ -6,6 +6,8 @@ describe('point', () => {
       expect(new Point()).toBeInstanceOf(Point)
       expect(new Point(1)).toBeInstanceOf(Point)
       expect(new Point(1, 2)).toBeInstanceOf(Point)
+      expect(new Point(1, 2).x).toEqual(1)
+      expect(new Point(1, 2).y).toEqual(2)
       expect(new Point().equals(new Point(0, 0)))
     })
   })
@@ -15,6 +17,83 @@ describe('point', () => {
       const p = Point.random(1, 5, 2, 6)
       expect(p.x >= 1 && p.x <= 5).toBe(true)
       expect(p.y >= 2 && p.y <= 6).toBe(true)
+    })
+  })
+
+  describe('#Point.isPointLike', () => {
+    it('should return true when the given object is a point-like object', () => {
+      expect(Point.isPointLike({ x: 1, y: 2 })).toBeTrue()
+      expect(Point.isPointLike({ x: 1, y: 2, z: 10 })).toBeTrue()
+      expect(Point.isPointLike({ x: 1, y: 2, z: 10, s: 's' })).toBeTrue()
+    })
+
+    it('should return false when the given object is a point-like object', () => {
+      expect(Point.isPointLike({ x: 1 })).toBeFalse()
+      expect(Point.isPointLike({ y: 2 })).toBeFalse()
+      expect(Point.isPointLike({})).toBeFalse()
+      expect(Point.isPointLike(null)).toBeFalse()
+      expect(Point.isPointLike(false)).toBeFalse()
+      expect(Point.isPointLike(1)).toBeFalse()
+      expect(Point.isPointLike('s')).toBeFalse()
+    })
+  })
+
+  describe('#Point.isPointData', () => {
+    it('should return true when the given object is a point-data array', () => {
+      expect(Point.isPointData([1, 2])).toBeTrue()
+    })
+
+    it('should return false when the given object is a point-data array', () => {
+      expect(Point.isPointData({ x: 1, y: 2 })).toBeFalse()
+      expect(Point.isPointData([1])).toBeFalse()
+      expect(Point.isPointData([1, 2, 3])).toBeFalse()
+      expect(Point.isPointData(null)).toBeFalse()
+      expect(Point.isPointData(false)).toBeFalse()
+      expect(Point.isPointData(1)).toBeFalse()
+      expect(Point.isPointData('s')).toBeFalse()
+    })
+  })
+
+  describe('#Point.toJSON', () => {
+    it('should conver the given point to json', () => {
+      expect(Point.toJSON([1, 2])).toEqual({ x: 1, y: 2 })
+      expect(Point.toJSON({ x: 1, y: 2 })).toEqual({ x: 1, y: 2 })
+      expect(Point.toJSON(new Point(1, 2))).toEqual({ x: 1, y: 2 })
+    })
+  })
+
+  describe('#Point.equals', () => {
+    it('should return true when the given two points are equal', () => {
+      const p1 = new Point(1, 2)
+      expect(Point.equals(p1, p1)).toBeTrue()
+      expect(Point.equals(p1, { x: 1, y: 2 })).toBeTrue()
+    })
+
+    it('should return false when the given two points are not equal', () => {
+      const p1 = new Point(1, 2)
+      const p2 = new Point(2, 2)
+      expect(Point.equals(p1, p2)).toBeFalse()
+      expect(Point.equals(p1, null as any)).toBeFalse()
+      expect(Point.equals(p1, { x: 2, y: 2 })).toBeFalse()
+    })
+  })
+
+  describe('#Point.equalPoints', () => {
+    it('should return true when the given points array are equal', () => {
+      const p1 = new Point(1, 2)
+      expect(Point.equalPoints([p1], [p1])).toBeTrue()
+      expect(Point.equalPoints([p1], [{ x: 1, y: 2 }])).toBeTrue()
+    })
+
+    it('should return false when the given points array are not equal', () => {
+      const p1 = new Point(1, 2)
+      const p2 = new Point(2, 2)
+      expect(Point.equalPoints([p1], [p2])).toBeFalse()
+      expect(Point.equalPoints(null as any, [p2])).toBeFalse()
+      expect(Point.equalPoints([p1], null as any)).toBeFalse()
+      expect(Point.equalPoints([p1, p2], [p2])).toBeFalse()
+      expect(Point.equalPoints([p1, p2], [p2, p1])).toBeFalse()
+      expect(Point.equalPoints([p1], [{ x: 2, y: 2 }])).toBeFalse()
     })
   })
 
@@ -139,6 +218,16 @@ describe('point', () => {
     })
   })
 
+  describe('#magnitude', () => {
+    it('should return the magnitude of the given point', () => {
+      expect(new Point(3, 4).magnitude()).toEqual(5)
+    })
+
+    it('should return `0.01` when the given point is `{0, 0}`', () => {
+      expect(new Point(0, 0).magnitude()).toEqual(0.01)
+    })
+  })
+
   describe('#theta', () => {
     it('should return the angle between me and p and the x-axis.', () => {
       const me = new Point(1, 1)
@@ -171,6 +260,39 @@ describe('point', () => {
     })
   })
 
+  describe('#changeInAngle', () => {
+    it('should return the change in angle from my previous position `-dx, -dy` to my new position relative to origin point', () => {
+      const p = new Point(1, 1)
+      expect(p.changeInAngle(1, 0)).toEqual(-45)
+    })
+
+    it('should return the change in angle from my previous position `-dx, -dy` to my new position relative to `ref` point', () => {
+      const p = new Point(2, 2)
+      expect(p.changeInAngle(1, 0, { x: 1, y: 1 })).toEqual(-45)
+    })
+  })
+
+  describe('#adhereToRect', () => {
+    it('should return `p` when `p` is contained in `rect`', () => {
+      const p = new Point(2, 2)
+      const rect = { x: 1, y: 1, width: 4, height: 4 }
+      expect(p.adhereToRect(rect).equals(p)).toBeTrue()
+    })
+
+    it('should adhere to target `rect` when `p` is outside of `rect`', () => {
+      const p = new Point(2, 8)
+      const rect = { x: 1, y: 1, width: 4, height: 4 }
+      expect(p.adhereToRect(rect).equals({ x: 2, y: 5 })).toBeTrue()
+    })
+  })
+
+  describe('#bearing', () => {
+    it('should return the bearing between me and the given point.', () => {
+      const p = new Point(2, 8)
+      expect(p.bearing(new Point())).toEqual('S')
+    })
+  })
+
   describe('#vectorAngle', () => {
     it('should return the angle between the vector from `0,0` to me and the vector from `0,0` to `p`', () => {
       const p0 = new Point(1, 2)
@@ -192,7 +314,13 @@ describe('point', () => {
   describe('#diff', () => {
     it('should return the diff as a point with the given point', () => {
       expect(new Point(0, 10).diff(4, 8)).toEqual(new Point(-4, 2))
-      expect(new Point(5, 8).diff(5, 10)).toEqual(new Point(0, -2))
+      expect(new Point(5, 8).diff({ x: 5, y: 10 })).toEqual(new Point(0, -2))
+    })
+  })
+
+  describe('#lerp', () => {
+    it('should return an interpolation between me and the given point `p`', () => {
+      expect(new Point(1, 1).lerp({ x: 3, y: 3 }, 0.5)).toEqual(new Point(2, 2))
     })
   })
 
@@ -200,6 +328,22 @@ describe('point', () => {
     it('should scale x and y such that the distance between the point and the origin (0,0) is equal to the given length', () => {
       expect(new Point(0, 10).normalize(20).serialize()).toEqual('0 20')
       expect(new Point(2, 0).normalize(4).serialize()).toEqual('4 0')
+    })
+  })
+
+  describe('#move', () => {
+    it('should move the point on a line that leads to another point `ref` by a certain `distance`.', () => {
+      expect(new Point(1, 1).move({ x: 1, y: 0 }, 5).round(0)).toEqual(
+        new Point(1, 6),
+      )
+    })
+  })
+
+  describe('#reflection', () => {
+    it('should return a point that is the reflection of me with the center of inversion in `ref` point.', () => {
+      expect(new Point(1, 0).reflection({ x: 1, y: 1 }).round(0)).toEqual(
+        new Point(1, 2),
+      )
     })
   })
 
@@ -211,6 +355,10 @@ describe('point', () => {
 
       expect(p0.cross(p1, p2)).toBe(3)
       expect(p0.cross(p2, p1)).toBe(-3)
+    })
+
+    it('shoule return `NAN` when any of the given point is null', () => {
+      expect(new Point().cross(null as any, new Point(1, 2))).toBeNaN()
     })
   })
 
@@ -252,6 +400,21 @@ describe('point', () => {
       const p2 = Point.fromPolar(p1.x, p1.y)
       expect(Math.round(p2.x)).toBe(4)
       expect(Math.round(p2.y)).toBe(3)
+
+      const p3 = new Point(-4, 3).toPolar()
+      const p4 = Point.fromPolar(p3.x, p3.y)
+      expect(Math.round(p4.x)).toBe(-4)
+      expect(Math.round(p4.y)).toBe(3)
+
+      const p5 = new Point(4, -3).toPolar()
+      const p6 = Point.fromPolar(p5.x, p5.y)
+      expect(Math.round(p6.x)).toBe(4)
+      expect(Math.round(p6.y)).toBe(-3)
+
+      const p7 = new Point(-4, -3).toPolar()
+      const p8 = Point.fromPolar(p7.x, p7.y)
+      expect(Math.round(p8.x)).toBe(-4)
+      expect(Math.round(p8.y)).toBe(-3)
     })
   })
 
