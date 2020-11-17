@@ -1,3 +1,11 @@
+## @antv/x6 [0.13.7](https://github.com/antvis/x6/compare/@antv/x6@0.13.6...@antv/x6@0.13.7) (2020-11-17)
+
+
+### Bug Fixes
+
+* 🐛 x6 version ([803cd3e](https://github.com/antvis/x6/commit/803cd3ee0bdc137ce4043e6ec8ab14b0c65fa40d))
+* 🐛 x6 version ([1eb5359](https://github.com/antvis/x6/commit/1eb535924ea0358ab7d8bb3b9dab009ec3c0c04c))
+
 # @antv/x6 [1.0.0-beta.5](https://github.com/antvis/x6/compare/@antv/x6@1.0.0-beta.4...@antv/x6@1.0.0-beta.5) (2020-11-17)
 
 
