@@ -1,5 +1,5 @@
 import React from 'react'
-import { ReactComponent as BrandImage } from '@/icons/logo.icon.svg'
+import { ApartmentOutlined } from '@ant-design/icons'
 import css from './index.less'
 
 interface Props {
@@ -9,7 +9,7 @@ interface Props {
 export const SimpleLogo: React.FC<Props> = ({ border }) => {
   return (
     <div className={`${css.root} `}>
-      <BrandImage className={css.logo} width="30px" height="30px" />
+      <ApartmentOutlined className={css.logo} />
     </div>
   )
 }

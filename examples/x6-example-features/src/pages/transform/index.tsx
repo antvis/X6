@@ -43,12 +43,28 @@ export default class Example extends React.Component {
       attrs: { label: { text: 'C' } },
     })
 
-    graph.on('node:resized', ({ node }) => {
-      console.log(node.size(), node.position())
+    graph.on('node:resize', (args) => {
+      console.log('node:resize', args)
     })
 
-    graph.on('node:rotated', ({ node }) => {
-      console.log(node.angle())
+    graph.on('node:resizing', (args) => {
+      console.log('node:resizing', args)
+    })
+
+    graph.on('node:resized', (args) => {
+      console.log('node:resized', args)
+    })
+
+    graph.on('node:rotate', (args) => {
+      console.log('node:rotate', args)
+    })
+
+    graph.on('node:rotating', (args) => {
+      console.log('node:rotating', args)
+    })
+
+    graph.on('node:rotated', (args) => {
+      console.log('node:rotated', args)
     })
   }
 

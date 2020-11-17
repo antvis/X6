@@ -219,6 +219,9 @@ export class Rectangle extends Geometry implements Rectangle.RectangleLike {
   }
 
   inflate(amount: number): this
+  /**
+   * Returns a rectangle inflated in axis-x by `2*dx` and in axis-y by `2*dy`.
+   */
   inflate(dx: number, dy: number): this
   inflate(dx: number, dy?: number): this {
     const w = dx
@@ -231,6 +234,10 @@ export class Rectangle extends Geometry implements Rectangle.RectangleLike {
     return this
   }
 
+  /**
+   * Adjust the position and dimensions of the rectangle such that its edges
+   * are on the nearest increment of `gx` on the x-axis and `gy` on the y-axis.
+   */
   snapToGrid(gridSize: number): this
   snapToGrid(gx: number, gy: number): this
   snapToGrid(gx: number, gy?: number): this
@@ -250,19 +257,6 @@ export class Rectangle extends Geometry implements Rectangle.RectangleLike {
     const p = Point.create(tx, ty)
     this.x += p.x
     this.y += p.y
-    return this
-  }
-
-  /**
-   * Translates the rectangle by `rect.x` and `rect.y` and expand it
-   * by `rect.width` and `rect.height`.
-   */
-  moveAndExpand(rect: Rectangle.RectangleLike | Rectangle.RectangleData) {
-    const ref = Rectangle.clone(rect)
-    this.x += ref.x || 0
-    this.y += ref.y || 0
-    this.width += ref.width || 0
-    this.height += ref.height || 0
     return this
   }
 
@@ -319,30 +313,43 @@ export class Rectangle extends Geometry implements Rectangle.RectangleLike {
     return this
   }
 
-  maxRectScaleToFit(
-    limitRectangle:
-      | Rectangle
-      | Rectangle.RectangleLike
-      | Rectangle.RectangleData,
+  /**
+   * Translates the rectangle by `rect.x` and `rect.y` and expand it by
+   * `rect.width` and `rect.height`.
+   */
+  moveAndExpand(rect: Rectangle.RectangleLike | Rectangle.RectangleData) {
+    const ref = Rectangle.clone(rect)
+    this.x += ref.x || 0
+    this.y += ref.y || 0
+    this.width += ref.width || 0
+    this.height += ref.height || 0
+    return this
+  }
+
+  /**
+   * Returns an object where `sx` and `sy` give the maximum scaling that can be
+   * applied to the rectangle so that it would still fit into `limit`. If
+   * `origin` is specified, the rectangle is scaled around it; otherwise, it is
+   * scaled around its center.
+   */
+  getMaxScaleToFit(
+    limit: Rectangle.RectangleLike | Rectangle.RectangleData,
     origin: Point = this.center,
   ) {
-    const rect = Rectangle.clone(limitRectangle)
+    const rect = Rectangle.clone(limit)
     const ox = origin.x
     const oy = origin.y
 
-    let sx1
-    let sx2
-    let sx3
-    let sx4
-    let sy1
-    let sy2
-    let sy3
-    let sy4
-
     // Find the maximal possible scale for all corners, so when the scale
     // is applied the point is still inside the rectangle.
-
-    sx1 = sx2 = sx3 = sx4 = sy1 = sy2 = sy3 = sy4 = Infinity
+    let sx1 = Infinity
+    let sx2 = Infinity
+    let sx3 = Infinity
+    let sx4 = Infinity
+    let sy1 = Infinity
+    let sy2 = Infinity
+    let sy3 = Infinity
+    let sy4 = Infinity
 
     // Top Left
     const p1 = rect.topLeft
@@ -386,14 +393,17 @@ export class Rectangle extends Geometry implements Rectangle.RectangleLike {
     }
   }
 
-  maxRectUniformScaleToFit(
-    limitRectangle:
-      | Rectangle
-      | Rectangle.RectangleLike
-      | Rectangle.RectangleData,
+  /**
+   * Returns a number that specifies the maximum scaling that can be applied to
+   * the rectangle along both axes so that it would still fit into `limit`. If
+   * `origin` is specified, the rectangle is scaled around it; otherwise, it is
+   * scaled around its center.
+   */
+  getMaxUniformScaleToFit(
+    limit: Rectangle.RectangleLike | Rectangle.RectangleData,
     origin: Point = this.center,
   ) {
-    const scale = this.maxRectScaleToFit(limitRectangle, origin)
+    const scale = this.getMaxScaleToFit(limit, origin)
     return Math.min(scale.sx, scale.sy)
   }
 
@@ -433,10 +443,19 @@ export class Rectangle extends Geometry implements Rectangle.RectangleLike {
     const w2 = b.width
     const h2 = b.height
 
+    // one of the dimensions is 0
+    if (w1 === 0 || h1 === 0 || w2 === 0 || h2 === 0) {
+      return false
+    }
+
     return x2 >= x1 && y2 >= y1 && x2 + w2 <= x1 + w1 && y2 + h2 <= y1 + h1
   }
 
-  intersectionWithLine(line: Line) {
+  /**
+   * Returns an array of the intersection points of the rectangle and the line.
+   * Return `null` if no intersection exists.
+   */
+  intersectsWithLine(line: Line) {
     const rectLines = [
       this.topLine,
       this.rightLine,
@@ -446,7 +465,7 @@ export class Rectangle extends Geometry implements Rectangle.RectangleLike {
     const points: Point[] = []
     const dedupeArr: string[] = []
     rectLines.forEach((l) => {
-      const p = line.intersectionWithLine(l)
+      const p = line.intersectsWithLine(l)
       if (p !== null && dedupeArr.indexOf(p.toString()) < 0) {
         points.push(p)
         dedupeArr.push(p.toString())
@@ -457,36 +476,36 @@ export class Rectangle extends Geometry implements Rectangle.RectangleLike {
   }
 
   /**
-   * Returns the point on the boundary of the rectangle that is the
-   * intersection of the rectangle with a line starting in the center
-   * of the rectangle ending in the point `p`.
+   * Returns the point on the boundary of the rectangle that is the intersection
+   * of the rectangle with a line starting in the center the rectangle ending in
+   * the point `p`.
    *
-   * If angle is specified, the intersection will take into account the
-   * rotation of the rectangle by angle degrees around its center.
+   * If `angle` is specified, the intersection will take into account the
+   * rotation of the rectangle by `angle` degrees around its center.
    */
-  intersectionWithLineFromCenterToPoint(
+  intersectsWithLineFromCenterToPoint(
     p: Point.PointLike | Point.PointData,
     angle?: number,
   ) {
     const ref = Point.clone(p)
     const center = this.center
-    let result
+    let result: Point | null = null
 
-    if (angle) {
+    if (angle != null && angle !== 0) {
       ref.rotate(angle, center)
     }
 
     const sides = [this.topLine, this.rightLine, this.bottomLine, this.leftLine]
-    const connector = new Line(center, p)
+    const connector = new Line(center, ref)
 
     for (let i = sides.length - 1; i >= 0; i -= 1) {
-      const intersection = sides[i].intersectionWithLine(connector)
+      const intersection = sides[i].intersectsWithLine(connector)
       if (intersection !== null) {
         result = intersection
         break
       }
     }
-    if (result && angle) {
+    if (result && angle != null && angle !== 0) {
       result.rotate(-angle, center)
     }
 
@@ -494,43 +513,19 @@ export class Rectangle extends Geometry implements Rectangle.RectangleLike {
   }
 
   /**
-   * Normalize the rectangle, i.e. make it so that it has non-negative
-   * width and height.
-   *
-   * If width is less than `0`, the function swaps left and right corners
-   * and if height is less than `0`, the top and bottom corners are swapped.
+   * Returns a rectangle that is a subtraction of the two rectangles if such an
+   * object exists (the two rectangles intersect). Returns `null` otherwise.
    */
-  normalize() {
-    let newx = this.x
-    let newy = this.y
-    let newwidth = this.width
-    let newheight = this.height
-    if (this.width < 0) {
-      newx = this.x + this.width
-      newwidth = -this.width
-    }
-    if (this.height < 0) {
-      newy = this.y + this.height
-      newheight = -this.height
-    }
-    this.x = newx
-    this.y = newy
-    this.width = newwidth
-    this.height = newheight
-    return this
-  }
-
-  /**
-   * Returns a rectangle that is a subtraction of the two rectangles
-   * if such an object exists (the two rectangles intersect).
-   *
-   * Returns `null` otherwise.
-   */
-  intersect(x: number, y: number, w: number, h: number): Rectangle | null
-  intersect(
+  intersectsWithRect(
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+  ): Rectangle | null
+  intersectsWithRect(
     rect: Rectangle.RectangleLike | Rectangle.RectangleData,
   ): Rectangle | null
-  intersect(
+  intersectsWithRect(
     x: number | Rectangle.RectangleLike | Rectangle.RectangleData,
     y?: number,
     width?: number,
@@ -539,7 +534,7 @@ export class Rectangle extends Geometry implements Rectangle.RectangleLike {
     const ref = Rectangle.create(x, y, width, height)
 
     // no intersection
-    if (!this.isIntersectWith(ref)) {
+    if (!this.isIntersectWithRect(ref)) {
       return null
     }
 
@@ -559,11 +554,11 @@ export class Rectangle extends Geometry implements Rectangle.RectangleLike {
     )
   }
 
-  isIntersectWith(x: number, y: number, w: number, h: number): boolean
-  isIntersectWith(
+  isIntersectWithRect(x: number, y: number, w: number, h: number): boolean
+  isIntersectWithRect(
     rect: Rectangle.RectangleLike | Rectangle.RectangleData,
   ): boolean
-  isIntersectWith(
+  isIntersectWithRect(
     x: number | Rectangle.RectangleLike | Rectangle.RectangleData,
     y?: number,
     width?: number,
@@ -587,6 +582,32 @@ export class Rectangle extends Geometry implements Rectangle.RectangleLike {
   }
 
   /**
+   * Normalize the rectangle, i.e. make it so that it has non-negative
+   * width and height. If width is less than `0`, the function swaps left and
+   * right corners and if height is less than `0`, the top and bottom corners
+   * are swapped.
+   */
+  normalize() {
+    let newx = this.x
+    let newy = this.y
+    let newwidth = this.width
+    let newheight = this.height
+    if (this.width < 0) {
+      newx = this.x + this.width
+      newwidth = -this.width
+    }
+    if (this.height < 0) {
+      newy = this.y + this.height
+      newheight = -this.height
+    }
+    this.x = newx
+    this.y = newy
+    this.width = newwidth
+    this.height = newheight
+    return this
+  }
+
+  /**
    * Returns a rectangle that is a union of this rectangle and rectangle `rect`.
    */
   union(rect: Rectangle.RectangleLike | Rectangle.RectangleData) {
@@ -604,7 +625,11 @@ export class Rectangle extends Geometry implements Rectangle.RectangleLike {
     return new Rectangle(originX, originY, cornerX - originX, cornerY - originY)
   }
 
-  sideNearestToPoint(p: Point.PointLike | Point.PointData): Rectangle.Side {
+  /**
+   * Returns a string ("top", "left", "right" or "bottom") denoting the side of
+   * the rectangle which is nearest to the point `p`.
+   */
+  getNearestSideToPoint(p: Point.PointLike | Point.PointData): Rectangle.Side {
     const ref = Point.clone(p)
     const distLeft = ref.x - this.x
     const distRight = this.x + this.width - ref.x
@@ -630,10 +655,13 @@ export class Rectangle extends Geometry implements Rectangle.RectangleLike {
     return side
   }
 
-  pointNearestToPoint(p: Point.PointLike | Point.PointData) {
+  /**
+   * Returns a point on the boundary of the rectangle nearest to the point `p`.
+   */
+  getNearestPointToPoint(p: Point.PointLike | Point.PointData) {
     const ref = Point.clone(p)
     if (this.containsPoint(ref)) {
-      const side = this.sideNearestToPoint(ref)
+      const side = this.getNearestSideToPoint(ref)
       switch (side) {
         case 'right':
           return new Point(this.x + this.width, ref.y)
@@ -673,6 +701,8 @@ export class Rectangle extends Geometry implements Rectangle.RectangleLike {
 }
 
 export namespace Rectangle {
+  export type RectangleData = [number, number, number, number]
+
   export interface RectangleLike extends Point.PointLike {
     x: number
     y: number
@@ -680,7 +710,16 @@ export namespace Rectangle {
     height: number
   }
 
-  export type RectangleData = [number, number, number, number]
+  export function isRectangleLike(o: any): o is RectangleLike {
+    return (
+      o != null &&
+      typeof o === 'object' &&
+      typeof o.x === 'number' &&
+      typeof o.y === 'number' &&
+      typeof o.width === 'number' &&
+      typeof o.height === 'number'
+    )
+  }
 
   export type Side = 'left' | 'right' | 'top' | 'bottom'
 
@@ -699,8 +738,21 @@ export namespace Rectangle {
 }
 
 export namespace Rectangle {
+  export function create(rect: RectangleLike | RectangleData): Rectangle
   export function create(
-    x?: number | Rectangle | RectangleLike | RectangleData,
+    x?: number,
+    y?: number,
+    width?: number,
+    height?: number,
+  ): Rectangle
+  export function create(
+    x?: number | RectangleLike | RectangleData,
+    y?: number,
+    width?: number,
+    height?: number,
+  ): Rectangle
+  export function create(
+    x?: number | RectangleLike | RectangleData,
     y?: number,
     width?: number,
     height?: number,
@@ -712,7 +764,7 @@ export namespace Rectangle {
     return clone(x)
   }
 
-  export function clone(rect: Rectangle | RectangleLike | RectangleData) {
+  export function clone(rect: RectangleLike | RectangleData) {
     if (rect instanceof Rectangle) {
       return rect.clone()
     }
@@ -732,23 +784,15 @@ export namespace Rectangle {
     return new Rectangle(pos.x, pos.y, size.width, size.height)
   }
 
+  /**
+   * Returns a new rectangle from the given ellipse.
+   */
   export function fromEllipse(ellipse: Ellipse) {
     return new Rectangle(
       ellipse.x - ellipse.a,
       ellipse.y - ellipse.b,
       2 * ellipse.a,
       2 * ellipse.b,
-    )
-  }
-
-  export function isRectangleLike(o: any): o is RectangleLike {
-    return (
-      o != null &&
-      typeof o === 'object' &&
-      typeof o.x === 'number' &&
-      typeof o.y === 'number' &&
-      typeof o.width === 'number' &&
-      typeof o.height === 'number'
     )
   }
 }

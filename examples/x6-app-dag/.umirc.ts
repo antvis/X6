@@ -5,7 +5,10 @@ export default defineConfig({
   nodeModulesTransform: {
     type: 'none',
   },
-  routes: [{ path: '/', component: '@/pages/index' }],
+  routes: [
+    { path: '/', component: '@/pages/index' },
+    { path: '/apps/dag', component: '@/pages/index' },
+  ],
   theme: {
     '@ant-prefix': 'ant',
     '@menu-item-active-bg': '#f0f5ff',
@@ -14,7 +17,7 @@ export default defineConfig({
     [
       'import',
       {
-        libraryName: '@antv/x6-components',
+        libraryName: '@antv/x6-react-components',
         libraryDirectory: 'es',
         transformToDefaultImport: false,
         style: true,

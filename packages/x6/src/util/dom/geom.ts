@@ -1,7 +1,12 @@
 import { Point, Line, Rectangle, Polyline, Ellipse, Path } from '../../geometry'
 import { attr } from './attr'
 import { sample, toPath, getPointsFromSvgElement } from './path'
-import { ensureId, isSVGGraphicsElement, createSvgElement, isHTMLElement } from './elem'
+import {
+  ensureId,
+  isSVGGraphicsElement,
+  createSvgElement,
+  isHTMLElement,
+} from './elem'
 import { getComputedStyle } from './style'
 import {
   createSVGPoint,
@@ -257,11 +262,11 @@ export function getIntersection(
   const bbox = getBBox(target)
   const center = bbox.getCenter()
 
-  if (!bbox.intersectionWithLineFromCenterToPoint(ref)) {
-    return undefined
+  if (!bbox.intersectsWithLineFromCenterToPoint(ref)) {
+    return null
   }
 
-  let spot: Point | undefined
+  let spot: Point | null = null
   const tagName = elem.tagName.toLowerCase()
 
   // Little speed up optimization for `<rect>` element. We do not do convert
@@ -278,12 +283,12 @@ export function getIntersection(
     const rectMatrix = getTransformToElement(elem, target)
     const rectMatrixComponents = decomposeMatrix(rectMatrix)
     // Rotate the rectangle back so that we can use
-    // `intersectionWithLineFromCenterToPoint()`.
+    // `intersectsWithLineFromCenterToPoint()`.
     const reseted = svg.createSVGTransform()
     reseted.setRotate(-rectMatrixComponents.rotation, center.x, center.y)
     const rect = transformRectangle(gRect, reseted.matrix.multiply(rectMatrix))
 
-    spot = Rectangle.create(rect).intersectionWithLineFromCenterToPoint(
+    spot = Rectangle.create(rect).intersectsWithLineFromCenterToPoint(
       ref,
       rectMatrixComponents.rotation,
     )

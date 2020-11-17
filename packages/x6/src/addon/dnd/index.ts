@@ -17,6 +17,7 @@ export class Dnd extends View {
   protected draggingView: NodeView | null
   protected delegateBBox: Rectangle
   protected geometryBBox: Rectangle
+  protected candidateEmbedView: NodeView | null
   protected delta: Point | null
   protected padding: number | null
   protected snapOffset: Point.PointLike | null
@@ -205,13 +206,17 @@ export class Dnd extends View {
         })
 
       if (embeddingMode) {
-        draggingView.setEventData(e, { graph: this.targetGraph })
+        draggingView.setEventData(e, {
+          graph: this.targetGraph,
+          candidateEmbedView: this.candidateEmbedView,
+        })
         const data = draggingView.getEventData<any>(e)
         if (isValidArea) {
-          draggingView.processEmbedding(data)
+          draggingView.processEmbedding(e, data)
         } else {
           draggingView.clearEmbedding(data)
         }
+        this.candidateEmbedView = data.candidateEmbedView
       }
 
       // update snapline
@@ -260,10 +265,12 @@ export class Dnd extends View {
           draggingView.setEventData(e, {
             cell: node,
             graph: this.targetGraph,
+            candidateEmbedView: this.candidateEmbedView,
           })
-          draggingView.finalizeEmbedding(draggingView.getEventData<any>(e))
+          draggingView.finalizeEmbedding(e, draggingView.getEventData<any>(e))
         }
 
+        this.candidateEmbedView = null
         this.targetModel.stopBatch('dnd')
       }
 
@@ -323,7 +330,9 @@ export class Dnd extends View {
         targetRect = this.getDropArea(targetScroller.container)
       } else {
         const outter = this.getDropArea(targetScroller.container)
-        targetRect = this.getDropArea(targetGraph.container).intersect(outter)!
+        targetRect = this.getDropArea(targetGraph.container).intersectsWithRect(
+          outter,
+        )!
       }
     } else {
       targetRect = this.getDropArea(targetGraph.container)

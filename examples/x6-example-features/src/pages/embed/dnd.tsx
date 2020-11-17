@@ -19,28 +19,18 @@ export default class Example extends React.Component {
             const data = parent.getData<any>()
             // 只有 data.parent 为 true 的节点才是父节点
             if (data && data.parent) {
-              const children = parent.getChildren()
-              console.log(children)
-              const valid =
-                children != null &&
-                children.every((cell) => cell.id !== node.id)
-              if (valid) {
-                const targetBBox = parent.getBBox()
-                return targetBBox.containsRect(bbox)
-              }
+              const targetBBox = parent.getBBox()
+              return targetBBox.containsRect(bbox)
             }
             return false
           })
         },
-        validate({ child, parent }) {
+        validate({ parent }) {
           const data = parent.getData<any>()
           if (data == null || data.parent == null) {
             return false
           }
-          const children = parent.getChildren()
-          return (
-            children != null && children.every((cell) => cell.id !== child.id)
-          )
+          return true
         },
       },
     })
@@ -85,6 +75,16 @@ export default class Example extends React.Component {
     createChild(0, parent2)
     createChild(1, parent2)
     createChild(2, parent2)
+
+    graph.on('node:embed', (args) => {
+      console.log('node:embed', args)
+    })
+    graph.on('node:embedding', (args) => {
+      console.log('node:embedding', args)
+    })
+    graph.on('node:embedded', (args) => {
+      console.log('node:embedded', args)
+    })
   }
 
   refContainer = (container: HTMLDivElement) => {
