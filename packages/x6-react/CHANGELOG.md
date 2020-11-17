@@ -1,3 +1,13 @@
+# @antv/x6-react [1.0.0-beta.5](https://github.com/antvis/x6/compare/@antv/x6-react@1.0.0-beta.4...@antv/x6-react@1.0.0-beta.5) (2020-11-17)
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.0.0-beta.5
+
 # @antv/x6-react [1.0.0-beta.4](https://github.com/antvis/x6/compare/@antv/x6-react@1.0.0-beta.3...@antv/x6-react@1.0.0-beta.4) (2020-11-05)
 ## @antv/x6-react [0.1.25](https://github.com/antvis/x6/compare/@antv/x6-react@0.1.24...@antv/x6-react@0.1.25) (2020-11-17)
 
