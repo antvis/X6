@@ -204,27 +204,27 @@ export default class Example extends React.Component {
       vertices: [{ x: 500, y: 440 }],
     })
 
-    graph.on('node:move', args => {
+    graph.on('node:move', (args) => {
       console.log('node:move', args)
     })
 
-    graph.on('node:moving', args => {
+    graph.on('node:moving', (args) => {
       console.log('node:moving', args)
     })
 
-    graph.on('node:moved', args => {
+    graph.on('node:moved', (args) => {
       console.log('node:moved', args)
     })
 
-    graph.on('edge:move', args => {
+    graph.on('edge:move', (args) => {
       console.log('edge:move', args)
     })
 
-    graph.on('edge:moving', args => {
+    graph.on('edge:moving', (args) => {
       console.log('edge:moving', args)
     })
 
-    graph.on('edge:moved', args => {
+    graph.on('edge:moved', (args) => {
       console.log('edge:moved', args)
     })
   }

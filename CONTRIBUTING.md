@@ -108,11 +108,14 @@ Look at [these files](https://docs.google.com/document/d/1QrDFcIiPjSLDn3EL15IJyg
 
 ## Release
 
-x6 uses semantic versioning in release process based on [semver](https://semver.org/).
+X6 uses semantic versioning in release process based on [semver](https://semver.org/).
+
+- [Publishing maintenance releases](https://github.com/semantic-release/semantic-release/blob/master/docs/recipes/maintenance-releases.md)
+- [Publishing pre-releases](https://github.com/semantic-release/semantic-release/blob/master/docs/recipes/pre-releases.md)
 
 ### Branch Strategy
 
-`master` branch is the latest stable version. 
+`master` branch is the latest stable version.
 
 - Just checkout develop branch from `master`
 - All new features will be added into `master` or `next` branch as well as all bug-fix except security issues. In such way, we can motivate developers to update to the latest stable version.
