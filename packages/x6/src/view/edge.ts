@@ -2000,30 +2000,41 @@ export class EdgeView<
       y,
       action: 'drag-edge',
     })
+    this.addClass('edge-moving')
+    this.notify('edge:move', {
+      e,
+      x,
+      y,
+      view: this,
+      cell: this.cell,
+      edge: this.cell,
+    })
   }
 
   protected dragEdge(e: JQuery.MouseMoveEvent, x: number, y: number) {
     const data = this.getEventData<EventData.EdgeDragging>(e)
-    if (!data.dragged) {
-      data.dragged = true
-    }
     this.cell.translate(x - data.x, y - data.y, { ui: true })
     this.setEventData<Partial<EventData.EdgeDragging>>(e, { x, y })
+    this.notify('edge:moving', {
+      e,
+      x,
+      y,
+      view: this,
+      cell: this.cell,
+      edge: this.cell,
+    })
   }
 
   protected stopEdgeDragging(e: JQuery.MouseUpEvent, x: number, y: number) {
-    const data = this.getEventData<EventData.EdgeDragging>(e)
-    if (data.dragged) {
-      data.dragged = false
-      this.notify('edge:moved', {
-        e,
-        x,
-        y,
-        view: this,
-        cell: this.cell,
-        edge: this.cell,
-      })
-    }
+    this.removeClass('edge-moving')
+    this.notify('edge:moved', {
+      e,
+      x,
+      y,
+      view: this,
+      cell: this.cell,
+      edge: this.cell,
+    })
   }
 
   // #endregion
@@ -2672,6 +2683,9 @@ export namespace EdgeView {
       options: CellView.HighlightOptions
     }
     'edge:unhighlight': EventArgs['edge:highlight']
+
+    'edge:move': PositionEventArgs<JQuery.MouseDownEvent>
+    'edge:moving': PositionEventArgs<JQuery.MouseMoveEvent>
     'edge:moved': PositionEventArgs<JQuery.MouseUpEvent>
   }
 }
@@ -2681,7 +2695,6 @@ namespace EventData {
 
   export interface EdgeDragging {
     action: 'drag-edge'
-    dragged?: boolean
     x: number
     y: number
   }

@@ -41,14 +41,6 @@ export class Halo extends Widget<Halo.Options> implements Handle {
     const graph = this.graph
     const cell = this.view.cell
 
-    // this.delegateEvents(
-    //   {
-    //     'mousedown .handle': 'onHandlePointerDown',
-    //     'touchstart .handle': 'onHandlePointerDown',
-    //   },
-    //   true,
-    // )
-
     cell.on('removed', this.remove, this)
     model.on('reseted', this.remove, this)
     graph.on('halo:destroy', this.remove, this)
@@ -81,6 +73,7 @@ export class Halo extends Widget<Halo.Options> implements Handle {
   protected render() {
     const options = this.options
     const cls = this.prefixClassName('widget-halo')
+    this.view.addClass(Private.NODE_CLS)
     this.container = document.createElement('div')
     this.$container = this.$(this.container)
       .addClass(cls)
@@ -105,6 +98,7 @@ export class Halo extends Widget<Halo.Options> implements Handle {
 
   remove() {
     this.stopBatch()
+    this.view.removeClass(Private.NODE_CLS)
     return super.remove()
   }
 
@@ -293,3 +287,7 @@ Object.getOwnPropertyNames(Handle.prototype).forEach((name) => {
     )
   }
 })
+
+namespace Private {
+  export const NODE_CLS = 'has-widget-halo'
+}

@@ -1,8 +1,8 @@
 import JQuery from 'jquery'
-import { Dom, Platform } from '../util'
-import { ModifierKey } from '../types'
-import { Disposable, IDisablable } from '../common'
 import { Graph } from './graph'
+import { ModifierKey } from '../types'
+import { Dom, NumberExt, Platform } from '../util'
+import { Disposable, IDisablable } from '../common'
 
 export class MouseWheel extends Disposable implements IDisablable {
   public readonly target: HTMLElement | Document
@@ -11,7 +11,7 @@ export class MouseWheel extends Disposable implements IDisablable {
   protected cumulatedFactor: number = 1
   protected currentScale: number | null
   protected startPos: { x: number; y: number }
-  protected wheelEvent: 'mousewheel' | 'wheel'
+  protected eventName: 'mousewheel' | 'wheel'
   protected readonly handler: (
     e: JQueryMousewheel.JQueryMousewheelEventObject,
   ) => any
@@ -26,9 +26,7 @@ export class MouseWheel extends Disposable implements IDisablable {
     const scroller = this.graph.scroller.widget
     this.container = scroller ? scroller.container : this.graph.container
     this.target = this.options.global ? document : this.container
-    this.wheelEvent = Platform.isEventSupported('wheel')
-      ? 'wheel'
-      : 'mousewheel'
+    this.eventName = Platform.isEventSupported('wheel') ? 'wheel' : 'mousewheel'
     this.handler = this.onMouseWheel.bind(this)
     if (this.options.enabled) {
       this.enable(true)
@@ -44,7 +42,7 @@ export class MouseWheel extends Disposable implements IDisablable {
       this.options.enabled = true
       this.graph.options.mousewheel.enabled = true
       if (Platform.SUPPORT_PASSIVE) {
-        this.target.addEventListener(this.wheelEvent, this.handler, {
+        this.target.addEventListener(this.eventName, this.handler, {
           passive: false,
         })
       } else {
@@ -58,7 +56,7 @@ export class MouseWheel extends Disposable implements IDisablable {
       this.options.enabled = false
       this.graph.options.mousewheel.enabled = false
       if (Platform.SUPPORT_PASSIVE) {
-        this.target.removeEventListener(this.wheelEvent, this.handler)
+        this.target.removeEventListener(this.eventName, this.handler)
       } else {
         JQuery(this.target).off('mousewheel')
       }
@@ -67,7 +65,12 @@ export class MouseWheel extends Disposable implements IDisablable {
 
   protected onMouseWheel(evt: JQueryMousewheel.JQueryMousewheelEventObject) {
     const e = (evt.originalEvent || evt) as WheelEvent
-    if (ModifierKey.test(e as any, this.options.modifiers)) {
+    const guard = this.options.guard
+
+    if (
+      (guard == null || guard.call(this.graph, e)) &&
+      ModifierKey.test(e as any, this.options.modifiers)
+    ) {
       evt.preventDefault()
       evt.stopPropagation()
 
@@ -124,9 +127,12 @@ export class MouseWheel extends Disposable implements IDisablable {
       this.frameId = Dom.requestAnimationFrame(() => {
         const scroller = this.graph.scroller.widget
         const currentScale = this.currentScale!
-        const targetScale = this.graph.transform.clampScale(
+        let targetScale = this.graph.transform.clampScale(
           currentScale * this.cumulatedFactor,
         )
+        const minScale = this.options.minScale || Number.MIN_SAFE_INTEGER
+        const maxScale = this.options.maxScale || Number.MIN_SAFE_INTEGER
+        targetScale = NumberExt.clamp(targetScale, minScale, maxScale)
 
         if (targetScale !== currentScale) {
           if (scroller) {
@@ -170,8 +176,10 @@ export namespace MouseWheel {
     enabled?: boolean
     global?: boolean
     factor?: number
+    minScale?: number
+    maxScale?: number
     modifiers?: string | ModifierKey[] | null
-    guard?: (this: Graph, e: MouseWheelEvent) => boolean
+    guard?: (this: Graph, e: WheelEvent) => boolean
     zoomAtMousePosition?: boolean
   }
 }

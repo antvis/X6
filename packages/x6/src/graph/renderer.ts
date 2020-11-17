@@ -159,6 +159,16 @@ export class Renderer extends Base {
     })
   }
 
+  protected isEdgeTerminalVisible(edge: Edge, terminal: Edge.TerminalType) {
+    const cellId =
+      terminal === 'source' ? edge.getSourceCellId() : edge.getTargetCellId()
+    const cell = cellId ? this.model.getCell(cellId) : null
+    if (cell && !cell.isVisible()) {
+      return false
+    }
+    return true
+  }
+
   protected onBatchStop(name: string, data: KeyValue) {
     if (this.isFrozen()) {
       return
@@ -467,16 +477,36 @@ export class Renderer extends Base {
           currentFlag |= this.registerMountedView(view)
         }
 
-        const leftoverFlag = this.updateView(view, currentFlag, options)
+        const cellView = view as CellView
+        let leftoverFlag = this.updateView(view, currentFlag, options)
+        if (leftoverFlag > 0) {
+          const cell = cellView.cell
+          if (cell && cell.isEdge()) {
+            // remove edge view when source cell is invisible
+            if (
+              cellView.hasAction(leftoverFlag, 'source') &&
+              !this.isEdgeTerminalVisible(cell, 'source')
+            ) {
+              leftoverFlag = cellView.removeAction(leftoverFlag, 'source')
+              leftoverFlag |= Renderer.FLAG_REMOVE
+            }
+
+            // remove edge view when target cell is invisible
+            if (
+              cellView.hasAction(leftoverFlag, 'target') &&
+              !this.isEdgeTerminalVisible(cell, 'target')
+            ) {
+              leftoverFlag = cellView.removeAction(leftoverFlag, 'target')
+              leftoverFlag |= Renderer.FLAG_REMOVE
+            }
+          }
+        }
+
         if (leftoverFlag > 0) {
           // update has not finished
           cache[cid] = leftoverFlag
           if (
-            !this.graph.hook.onViewPostponed(
-              view as CellView,
-              leftoverFlag,
-              options,
-            ) ||
+            !this.graph.hook.onViewPostponed(cellView, leftoverFlag, options) ||
             cache[cid]
           ) {
             postponedCount += 1
@@ -904,6 +934,19 @@ export class Renderer extends Base {
     let flag = 0
     let view = views[id]
 
+    if (!cell.isVisible()) {
+      return
+    }
+
+    if (cell.isEdge()) {
+      if (
+        !this.isEdgeTerminalVisible(cell, 'source') ||
+        !this.isEdgeTerminalVisible(cell, 'target')
+      ) {
+        return
+      }
+    }
+
     if (view) {
       flag = Renderer.FLAG_INSERT
     } else {
@@ -918,8 +961,6 @@ export class Renderer extends Base {
     if (view) {
       this.requestViewUpdate(view, flag, view.priority, options)
     }
-
-    return view
   }
 
   protected isExactSorting() {
@@ -1114,7 +1155,7 @@ export class Renderer extends Base {
           })
           return options.strict
             ? area.containsRect(bbox)
-            : area.isIntersectWith(bbox)
+            : area.isIntersectWithRect(bbox)
         }
       }) as CellView[]
   }

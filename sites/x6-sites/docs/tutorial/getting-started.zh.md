@@ -332,9 +332,10 @@ const data = {
 - [对齐线 Snapline](./basic/snapline)
 - [滚动 Scroller](./basic/scroller)
 - [小地图 Minimap](./basic/minimap)
+- [拖拽 Dnd](./basic/dnd)
 - [快捷键 Keyboard](./basic/keyboard)
 - [鼠标滚轮缩放 MouseWheel](./basic/mousewheel)
 
-更多教程，请参见 [进阶实战](intermediate/custom-node) 和 [高级指引](advanced/animation)。
+更多教程，请参见 [进阶实战](intermediate/serialization) 和 [高级指引](advanced/animation)。
 
 有其他任何问题都可以通过页面底部的钉钉群和我们沟通，也非常欢迎给我们提 [issues](https://github.com/antvis/X6/issues/new/choose) 或 [PR](https://github.com/antvis/X6/pulls)。

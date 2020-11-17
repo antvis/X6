@@ -1,7 +1,8 @@
 import * as fse from 'fs-extra'
+import { join } from 'path'
 import { homedir } from 'os'
-import { resolve } from 'path'
 import execa from 'execa'
+import readPkg from 'read-pkg'
 import getDebugger from 'debug'
 import detectIndent from 'detect-indent'
 import detectNewline from 'detect-newline'
@@ -71,14 +72,6 @@ export namespace Plugin {
       })
   }
 
-  function getOrgName(name: string) {
-    if (name[0] !== '@') {
-      return null
-    }
-    const index = name.indexOf('/')
-    return index > 1 ? name.substr(1, index - 1) : null
-  }
-
   export function get(
     packages: Package[],
     multiContext: Context,
@@ -91,7 +84,7 @@ export namespace Plugin {
     let successExeCount = 0
 
     return function create(pkg: Package) {
-      const { deps, plugins, plugins2, dir, path, name } = pkg
+      const { deps, plugins1, plugins2, dir, path, name } = pkg
       let scopedCommits: Commits.Commit[]
 
       const verifyConditions = async (
@@ -110,7 +103,7 @@ export namespace Plugin {
           todo().find((p) => !p.ready),
         )
 
-        const res = await plugins.verifyConditions(context)
+        const res = await plugins1.verifyConditions(context)
         debug('verified conditions: %s', pkg.name)
         return res
       }
@@ -145,7 +138,7 @@ export namespace Plugin {
           .filter((p) => p != null) as Package[]
 
         // Set nextType for package from plugins.
-        pkg.nextType = await plugins.analyzeCommits(context)
+        pkg.nextType = await plugins1.analyzeCommits(context)
 
         // Wait until all todo packages have been analyzed.
         pkg.analyzed = true
@@ -190,7 +183,7 @@ export namespace Plugin {
 
         // Get subnotes and add to list.
         // Inject pkg name into title if it matches e.g. `# 1.0.0` or `## [1.0.1]` (as generate-release-notes does).
-        const subs = await plugins.generateNotes(context)
+        const subs = await plugins1.generateNotes(context)
         // istanbul ignore else (unnecessary to test)
         if (subs) {
           notes.push(
@@ -215,24 +208,25 @@ export namespace Plugin {
       }
 
       const publishGPR = async (context: SemanticRelease.Context) => {
-        const org = getOrgName(pkg.name)
+        if (!pkg.private) {
+          // Only Personal Access Token or GitHub Actions token can publish to GPR
+          const token = context.env.ACTION_TOKEN
+          const host = 'npm.pkg.github.com'
+          const registry = `https://${host}`
+          const npmrc = join(homedir(), '.npmrc')
+          const pkgPath = join(pkg.dir, 'package.json')
+          const pkgRaw = await fse.readFile(pkgPath)
+          const pkgData = await readPkg({ cwd: pkg.dir })
 
-        if (!pkg.private && org) {
-          const globalNpmrc = resolve(homedir(), '.npmrc')
-          const localNpmrc = resolve(pkg.dir, '.npmrc')
-          const token = context.env.GITHUB_TOKEN
-          await fse.ensureFile(globalNpmrc)
-          await fse.ensureFile(localNpmrc)
+          // fix package name and publish registry
+          pkgData.name = pkgData.name.replace('antv', 'antvis')
+          pkgData.publishConfig = { registry, access: 'public' }
 
           await fse.writeFile(
-            globalNpmrc,
-            `//npm.pkg.github.com/:_authToken=${token}`,
+            npmrc,
+            `//${host}/:_authToken=${token}\nscripts-prepend-node-path=true`,
           )
-
-          await fse.writeFile(
-            localNpmrc,
-            `registry=https://npm.pkg.github.com/${org}`,
-          )
+          await fse.writeFile(pkgPath, JSON.stringify(pkgData, null, 2))
 
           const pub = execa('npm', ['publish'], {
             cwd: pkg.dir,
@@ -242,7 +236,10 @@ export namespace Plugin {
           const ctx = context as any
           pub.stdout.pipe(ctx.stdout, { end: false })
           pub.stderr.pipe(ctx.stderr, { end: false })
-          return await pub
+          const ret = await pub
+          await fse.writeFile(pkgPath, pkgRaw)
+
+          return ret
         }
       }
 
@@ -258,7 +255,7 @@ export namespace Plugin {
 
         await waitForAll('prepared', (p) => p.nextType != null)
 
-        const ret = await plugins.publish(context)
+        const ret = await plugins1.publish(context)
         const releases: SemanticRelease.Release[] = Array.isArray(ret)
           ? ret
           : ret != null
@@ -295,28 +292,29 @@ export namespace Plugin {
       ) => {
         pkg.published = true
         await waitForAll('published', (p) => p.nextType != null)
-
         const totalCount = todo().filter((p) => p.nextType != null).length
         const ctx = context as any
+
+        ctx.releases = releaseMap[pkg.name]
+        const ret = await plugins1.success(ctx)
+
+        console.log(
+          `Release: ${pkg.name}`,
+          `Progress: ${successExeCount}/${totalCount}`,
+        )
 
         if (successExeCount < totalCount) {
           successExeCount += 1
         }
 
-        let ret
         if (successExeCount === totalCount) {
-          ctx.releases = Object.keys(releaseMap).reduce<
-            SemanticRelease.Release[]
-          >((memo, key) => {
-            return [...memo, ...releaseMap[key]]
-          }, [])
-          ret = await plugins.success(ctx)
-        } else {
-          ctx.releases = releaseMap[pkg.name]
-          ret = await plugins2.success(ctx)
+          ctx.releases = Object.keys(releaseMap)
+            .sort()
+            .reduce<SemanticRelease.Release[]>((memo, key) => {
+              return [...memo, ...releaseMap[key]]
+            }, [])
+          await plugins2.success(ctx)
         }
-
-        console.log(pkg.name, successExeCount, ctx.releases)
 
         debug('succeed: %s', pkg.name)
 

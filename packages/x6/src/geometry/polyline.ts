@@ -165,7 +165,7 @@ export class Polyline extends Geometry {
           const rayEnd = new Point(x + xDifference, y) // right
           const ray = new Line(p, rayEnd)
 
-          if (segment.intersectionWithLine(ray)) {
+          if (segment.intersectsWithLine(ray)) {
             // an intersection was detected to the right of `p`
             intersectionCount += 1
           }
@@ -180,12 +180,12 @@ export class Polyline extends Geometry {
     return intersectionCount % 2 === 1
   }
 
-  intersectionWithLine(line: Line) {
+  intersectsWithLine(line: Line) {
     const intersections = []
     for (let i = 0, n = this.points.length - 1; i < n; i += 1) {
       const a = this.points[i]
       const b = this.points[i + 1]
-      const int = line.intersectionWithLine(new Line(a, b))
+      const int = line.intersectsWithLine(new Line(a, b))
       if (int) {
         intersections.push(int)
       }

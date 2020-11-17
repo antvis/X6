@@ -13,11 +13,8 @@ jobs:
         node-version: [12.x]
     steps:
       - uses: actions/checkout@v2
-      - uses: bubkoo/use-app-token@v1
         with:
-          app_id: ${{ secrets.APP_ID }}
-          private_key: ${{ secrets.PRIVATE_KEY }}
-          env_name: bot_token
+          ref: refs/pull/${{ github.event.pull_request.number }}/merge
       - name: 🌱　Get yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn cache dir)"
@@ -65,6 +62,12 @@ jobs:
       - name: ✨　Build Sites
         run: |
           yarn build:sites
+      - name: 🔑　Generate Token
+        uses: bubkoo/use-app-token@v1
+        with:
+          app_id: ${{ secrets.APP_ID }}
+          private_key: ${{ secrets.PRIVATE_KEY }}
+          env_name: bot_token
       - name: ✅　Deploy Sites
         uses: afc163/surge-preview@v1
         with:

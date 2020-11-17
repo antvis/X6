@@ -39,12 +39,10 @@ export namespace Manifest {
       throw new SyntaxError(`package.json could not be parsed: "${path}"`)
     }
 
-    // Must be an object.
     if (typeof manifest !== 'object') {
       throw new SyntaxError(`package.json was not an object: "${path}"`)
     }
 
-    // Must have a name.
     if (typeof manifest.name !== 'string' || !manifest.name.length) {
       throw new SyntaxError(`Package name must be non-empty string: "${path}"`)
     }
@@ -69,7 +67,6 @@ export namespace Manifest {
       value: contents,
     })
 
-    // Return contents.
     return manifest
   }
 }

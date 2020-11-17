@@ -860,7 +860,7 @@ export class Scroller extends View {
       center.y - h / 2,
       w,
       h,
-    ).maxRectUniformScaleToFit(rect, center)
+    ).getMaxUniformScaleToFit(rect, center)
 
     scale = Math.min(scale, maxScale)
     if (scaleGrid) {
@@ -1009,7 +1009,9 @@ export class Scroller extends View {
   isCellVisible(cell: Cell, options: { strict?: boolean } = {}) {
     const bbox = cell.getBBox()
     const area = this.getVisibleArea()
-    return options.strict ? area.containsRect(bbox) : area.isIntersectWith(bbox)
+    return options.strict
+      ? area.containsRect(bbox)
+      : area.isIntersectWithRect(bbox)
   }
 
   isPointVisible(point: Point.PointLike) {

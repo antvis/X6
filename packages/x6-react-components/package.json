@@ -1,6 +1,6 @@
 {
   "name": "@antv/x6-react-components",
-  "version": "0.10.17",
+  "version": "1.0.0-beta.4",
   "description": "React components for building x6 editors",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -104,10 +104,13 @@
   "bugs": {
     "url": "https://github.com/antvis/x6/issues"
   },
-  "repository": "https://github.com/antvis/x6/tree/master/packages/x6-react-components",
+  "repository": {
+    "type": "git",
+    "url": "ssh://git@github.com/antvis/x6.git",
+    "directory": "packages/x6-react-components"
+  },
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org"
-  },
-  "gitHead": "3284a526d9d97c99e7ef55c2157a46474c9a6a69"
+  }
 }
