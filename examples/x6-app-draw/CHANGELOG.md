@@ -1,3 +1,19 @@
+# @antv/x6-app-draw [1.0.0-beta.5](https://github.com/antvis/x6/compare/@antv/x6-app-draw@1.0.0-beta.4...@antv/x6-app-draw@1.0.0-beta.5) (2020-11-17)
+
+
+### Bug Fixes
+
+* 🐛 apps router ([8324eaa](https://github.com/antvis/x6/commit/8324eaa0a85cb14873f5095fe8d2695d80b5215a))
+* 🐛 chagne shape attrs for draw demo ([cf30fb3](https://github.com/antvis/x6/commit/cf30fb37841a4f44b1352d31d5ce7e3700f0fe85))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.0.0-beta.5
+
 # @antv/x6-app-draw [1.0.0-beta.4](https://github.com/antvis/x6/compare/@antv/x6-app-draw@1.0.0-beta.3...@antv/x6-app-draw@1.0.0-beta.4) (2020-11-05)
 ## @antv/x6-app-draw [0.10.97](https://github.com/antvis/x6/compare/@antv/x6-app-draw@0.10.96...@antv/x6-app-draw@0.10.97) (2020-11-17)
 
