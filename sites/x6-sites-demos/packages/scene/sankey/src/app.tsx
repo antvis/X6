@@ -1,6 +1,6 @@
 import React from 'react'
 import { Graph } from '@antv/x6'
-import { getNodes } from './data'
+import { layout } from './layout'
 import './curve'
 import './app.css'
 
@@ -21,7 +21,7 @@ export default class Example extends React.Component {
       },
     })
 
-    const { nodes } = getNodes()
+    const { nodes } = layout()
     const nodeMap: { [id: string]: any } = {}
     const colors = [
       'rgba(16, 142, 233, 0.6)',
