@@ -1,4 +1,4 @@
-name: 🏷️　Label(File Paths)
+name: Label(File Paths)
 on: pull_request_target
 jobs:
   run:
