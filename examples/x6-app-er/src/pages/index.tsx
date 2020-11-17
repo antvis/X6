@@ -1,10 +1,16 @@
-import React from 'react';
+import React, { useRef } from 'react';
+import { RouteComponentProps } from 'react-router';
 import styles from './index.less';
+import ERGraphDemo from './ERGraphDemo';
 
-export default () => {
+interface Props extends RouteComponentProps {}
+
+const ERGraphPage: React.FC<Props> = (props: Props) => {
   return (
-    <div>
-      <h1 className={styles.title}>Page index</h1>
+    <div className={styles.erGraphDemo}>
+      <ERGraphDemo />
     </div>
   );
 };
+
+export default ERGraphPage;
