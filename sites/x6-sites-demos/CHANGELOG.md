@@ -1,3 +1,10 @@
+## @antv/x6-sites-demos [0.10.95](https://github.com/antvis/x6/compare/@antv/x6-sites-demos@0.10.94...@antv/x6-sites-demos@0.10.95) (2020-11-17)
+
+
+### Bug Fixes
+
+* 🐛 remove node from group ([f6326a0](https://github.com/antvis/x6/commit/f6326a0918e0c5181b63be0d6f10d47723e3aad2))
+
 ## @antv/x6-sites-demos [0.10.94](https://github.com/antvis/x6/compare/@antv/x6-sites-demos@0.10.93...@antv/x6-sites-demos@0.10.94) (2020-11-13)
 
 

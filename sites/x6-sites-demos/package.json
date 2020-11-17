@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@antv/x6-sites-demos",
-  "version": "0.10.94",
+  "version": "0.10.95",
   "workspaces": [
     "packages/**/*"
   ],
