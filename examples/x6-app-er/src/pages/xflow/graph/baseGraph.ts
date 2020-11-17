@@ -66,10 +66,29 @@ export default class X6BaseGraph implements BaseGraph {
         ],
       },
       /** 全局连线配置 */
+      // connecting: {
+      //   anchor: 'midSide',
+      //   router: {
+      //     name: 'er',
+      //   },
+      //   // connector: {
+      //   //   name: 'smooth',
+      //   // },
+      // },
       connecting: {
         connector: {
-          name: 'smooth',
+          name: 'rounded',
         },
+        router: {
+          name: 'er',
+          args: {
+            direction: 'H',
+          },
+        },
+      },
+      /** 对齐线 */
+      snapline: {
+        enabled: true,
       },
       /** 滚轮缩放 */
       // mousewheel: {
