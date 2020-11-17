@@ -1,3 +1,24 @@
+## @antv/x6-example-features [0.12.8](https://github.com/antvis/x6/compare/@antv/x6-example-features@0.12.7...@antv/x6-example-features@0.12.8) (2020-11-17)
+
+
+### Bug Fixes
+
+* 🐛 version error ([fd57688](https://github.com/antvis/x6/commit/fd5768861fedda32d341c774f6e80da67646426f))
+* 🐛 version not found ([8166346](https://github.com/antvis/x6/commit/8166346771f11ef5997a6e1ed376987408e57cde))
+* 🐛 x6 version ([f2e01c4](https://github.com/antvis/x6/commit/f2e01c44a1f1acd9390c9de0b5ade913cfd8b03b))
+* 🐛 x6-react-shape version ([9426a89](https://github.com/antvis/x6/commit/9426a898003f041c22da55439f6b9715731f69f6))
+* 🐛 x6-react-shape version ([482ce10](https://github.com/antvis/x6/commit/482ce10f1daeee1a154757c6009295d03363df56))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 0.13.7
+* **@antv/x6-react-components:** upgraded to 0.10.20
+* **@antv/x6-react-shape:** upgraded to 0.10.35
+
 # @antv/x6-example-features [1.0.0-beta.5](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.0.0-beta.4...@antv/x6-example-features@1.0.0-beta.5) (2020-11-17)
 
 
