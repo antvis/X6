@@ -139,6 +139,12 @@ export default class CellController {
       // label: (edge: Edge) => {
       //   return render && render(edge && edge.data)
       // },
+      attrs: {
+        line: {
+          stroke: '#B4BDCF',
+          strokeWidth: 1,
+        },
+      },
       ...rest,
     });
     this.edges.push(newEdge);
