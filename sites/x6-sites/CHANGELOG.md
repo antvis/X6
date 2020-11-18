@@ -1,3 +1,18 @@
+## @antv/x6-sites [1.0.1](https://github.com/antvis/x6/compare/@antv/x6-sites@1.0.0...@antv/x6-sites@1.0.1) (2020-11-18)
+
+
+### Performance Improvements
+
+* ⚡️ restrict on resizing ([36107bf](https://github.com/antvis/x6/commit/36107bf81871b6ce083ae02bbd9ba72deb6aa9b8)), closes [#289](https://github.com/antvis/x6/issues/289)
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.0.1
+
 ## @antv/x6-sites [0.11.11](https://github.com/antvis/x6/compare/@antv/x6-sites@0.11.10...@antv/x6-sites@0.11.11) (2020-11-17)
 
 
