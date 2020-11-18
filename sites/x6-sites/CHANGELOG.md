@@ -1,3 +1,5 @@
+## @antv/x6-sites [1.0.3](https://github.com/antvis/x6/compare/@antv/x6-sites@1.0.2...@antv/x6-sites@1.0.3) (2020-11-18)
+
 ## @antv/x6-sites [1.0.2](https://github.com/antvis/x6/compare/@antv/x6-sites@1.0.1...@antv/x6-sites@1.0.2) (2020-11-18)
 
 
