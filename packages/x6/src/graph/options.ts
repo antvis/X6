@@ -378,6 +378,8 @@ export namespace Options {
     minHeight?: number
     maxHeight?: number
     orthogonal?: boolean
+    restricted?: boolean
+    autoScroll?: boolean
     preserveAspectRatio?: boolean
   }
 
@@ -609,6 +611,8 @@ export namespace Options {
       maxWidth: Number.MAX_SAFE_INTEGER,
       maxHeight: Number.MAX_SAFE_INTEGER,
       orthogonal: true,
+      restricted: false,
+      autoScroll: true,
       preserveAspectRatio: false,
     },
     rotating: {

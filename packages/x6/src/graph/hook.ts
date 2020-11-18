@@ -172,6 +172,8 @@ export class Hook extends Base implements Hook.IHook {
       minHeight: resizing.minHeight,
       maxHeight: resizing.maxHeight,
       orthogonalResizing: resizing.orthogonal,
+      restrictedResizing: resizing.restricted,
+      autoScrollOnResizing: resizing.autoScroll,
       preserveAspectRatio: resizing.preserveAspectRatio,
 
       rotatable: rotating.enabled,
