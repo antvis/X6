@@ -1,7 +1,7 @@
 import React from 'react';
 import './Entity.less';
 import { EntityCanvasModel, EntityProperty } from './interface';
-import { EntityType, entityTypeDisplay } from './constants';
+import { EntityType } from './constants';
 import { BarsOutlined, EllipsisOutlined } from '@ant-design/icons';
 
 interface Props {
