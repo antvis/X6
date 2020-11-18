@@ -1,0 +1,12 @@
+{
+  "demos": [
+    {
+      "filename": "connector.ts",
+      "title": {
+        "zh": "自定义连接器",
+        "en": "Custom Connector"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*aHBGSqLpuxEAAAAAAAAAAAAAARQnAQ"
+    }
+  ]
+}

@@ -6,7 +6,7 @@
         "zh": "矩形",
         "en": "Rectangle"
       },
-      "screenshot": ""
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*FemfTZ4c1MoAAAAAAAAAAAAAARQnAQ"
     },
     {
       "filename": "ellipse.ts",
@@ -14,7 +14,7 @@
         "zh": "椭圆",
         "en": "Ellipse"
       },
-      "screenshot": ""
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*_JLoQLqc-w8AAAAAAAAAAAAAARQnAQ"
     },
     {
       "filename": "circle.ts",
@@ -22,7 +22,7 @@
         "zh": "圆形",
         "en": "Circle"
       },
-      "screenshot": ""
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*NmA4T4g-mtoAAAAAAAAAAAAAARQnAQ"
     },
     {
       "filename": "image.ts",
@@ -30,7 +30,15 @@
         "zh": "图片",
         "en": "Image"
       },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_f8c6a0/afts/img/A*o-MuTpQaj7EAAAAAAAAAAABkARQnAQ"
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*YmP5Q5fww5cAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "html.ts",
+      "title": {
+        "zh": "HTML",
+        "en": "HTML"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*NCDiSr2QOjgAAAAAAAAAAAAAARQnAQ"
     }
   ]
 }
