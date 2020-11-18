@@ -43,10 +43,6 @@ export default class Example extends React.Component {
       grid: {
         visible: true,
       },
-      resizing: {
-        enabled: true,
-        restricted: false,
-      },
       scroller: {
         enabled: true,
         // width: 600,
