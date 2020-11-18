@@ -1,3 +1,17 @@
+# @antv/x6-app-er [1.1.0](https://github.com/antvis/x6/compare/@antv/x6-app-er@1.0.1...@antv/x6-app-er@1.1.0) (2020-11-18)
+
+
+### Bug Fixes
+
+* 🐛 change mock data ([1ed8d57](https://github.com/antvis/x6/commit/1ed8d57b8193e481985205ad6c92858e063bed95))
+
+
+### Features
+
+* ✨ ERGraphDemo 初步完成 ([ffbea86](https://github.com/antvis/x6/commit/ffbea86751f5c7ed008c4deaaffee908fc434622))
+* ✨ er图demo优化 ([fe9798b](https://github.com/antvis/x6/commit/fe9798bd50457b09595d299d586545e0e3d76b17))
+* ✨ 修复warning ([bc9f69a](https://github.com/antvis/x6/commit/bc9f69a9ce48e10af2aca3716fd71b063bc77126))
+
 ## @antv/x6-app-er [1.0.1](https://github.com/antvis/x6/compare/@antv/x6-app-er@1.0.0...@antv/x6-app-er@1.0.1) (2020-11-18)
 
 
