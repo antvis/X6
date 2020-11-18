@@ -14,6 +14,12 @@ body {
 .x6-widget-snapline-horizontal {
   border-bottom-color: #ff4e50 !important;
 }
+.x6-widget-selection-box {
+  border: 1px dashed #5F95FF;
+}
+.x6-widget-selection-inner {
+  border: 1px dashed #5F95FF;
+}
 
 @keyframes stroke {
   100% {

@@ -13,22 +13,22 @@ const IndexPage = () => {
     {
       icon:
         'https://gw.alipayobjects.com/mdn/rms_2274c3/afts/img/A*4x_KTKyqwJgAAAAAAAAAAABkARQnAQ',
-      title: t('千变万化，自由组合'),
-      description: t('任何图表，都可以基于图形语法灵活绘制，满足你无限的创意'),
+      title: t('快速上手，极易定制'),
+      description: t('提供基于低学习成本的 SVG/HTML/CSS 的节点定制能力'),
     },
     {
       icon:
         'https://gw.alipayobjects.com/mdn/rms_2274c3/afts/img/A*ELYbTIVCgPoAAAAAAAAAAABkARQnAQ',
-      title: t('专业完备'),
-      description: t(
-        '大量产品实践之上，提供绘图引擎、完备图形语法、专业设计规范',
-      ),
+      title: t('组件完备，开箱即用'),
+      description: t('内置 10+ 图编辑场景的配套扩展，如框选、对齐线、小地图等'),
     },
     {
       icon:
         'https://gw.alipayobjects.com/mdn/rms_2274c3/afts/img/A*_riSQZrgczgAAAAAAAAAAABkARQnAQ',
-      title: t('生动，可交互'),
-      description: t('强大的交互语法，助力可视分析，让图表栩栩如生'),
+      title: t('灵活，可扩展'),
+      description: t(
+        '画布、节点、边、属性、工具等均可以通过注册机制自由、灵活扩展',
+      ),
     },
   ]
   const companies = [
@@ -53,7 +53,7 @@ const IndexPage = () => {
         'https://gw.alipayobjects.com/mdn/rms_2274c3/afts/img/A*1l8-TqUr7UcAAAAAAAAAAABkARQnAQ',
     },
     {
-      name: '网上银行',
+      name: '网商银行',
       img:
         'https://gw.alipayobjects.com/mdn/rms_2274c3/afts/img/A*ZAKFQJ5Bz4MAAAAAAAAAAABkARQnAQ',
     },
@@ -102,9 +102,9 @@ const IndexPage = () => {
   const notifications = [
     {
       type: 'News',
-      title: 'G2 4.0 正式发布！',
-      date: '2020.03.02',
-      link: 'https://www.yuque.com/antv/blog/g2-4.0-released',
+      title: 'X6 1.0 正式发布！',
+      date: '2020.11.22',
+      link: 'https://yuque.antfin.com/antv/operation/pao14w/edit#cINuk',
     },
   ]
 
@@ -119,8 +119,10 @@ const IndexPage = () => {
             src="https://gw.alipayobjects.com/mdn/rms_2274c3/afts/img/A*wo_LToatmbwAAAAAAAAAAABkARQnAQ"
           />
         }
-        title={t('X6')}
-        description={t('X6 是一个简单、易用、完备的图编辑引擎。')}
+        title={t('X6 图编辑引擎')}
+        description={t(
+          'X6 是 AntV 旗下的图编辑引擎，提供了一系列开箱即用的交互组件和简单易用的节点定制能力，方便我们快速搭建 DAG 图、ER 图、流程图等应用。',
+        )}
         buttons={bannerButtons}
         notifications={notifications}
         className="banner"
