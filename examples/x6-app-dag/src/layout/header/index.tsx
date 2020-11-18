@@ -2,7 +2,7 @@ import React from 'react'
 import { Layout } from 'antd'
 import { useObservableState } from '@/common/hooks/useObservableState'
 import { useExperimentGraph } from '@/pages/rx-models/experiment-graph'
-import { BulbOutlined } from '@ant-design/icons'
+import { GithubOutlined } from '@ant-design/icons'
 import { SimpleLogo } from './logo'
 import { ExperimentTitle } from './experiment-title'
 
@@ -18,6 +18,13 @@ export const GuideHeader: React.FC<IProps> = (props) => {
   const expGraph = useExperimentGraph(props.experimentId)
   const [activeExperiment] = useObservableState(expGraph.experiment$)
 
+  const openGithub = () => {
+    window.open(
+      'https://github.com/antvis/X6/tree/master/examples/x6-app-dag',
+      '_blank',
+    )
+  }
+
   return (
     <>
       <Header className={css.header}>
@@ -27,8 +34,7 @@ export const GuideHeader: React.FC<IProps> = (props) => {
         </div>
         <div className={css.headerRight}>
           <div className={css.doc}>
-            <BulbOutlined />
-            <a className={css.text}>帮助中心</a>
+            <GithubOutlined onClick={openGithub} />
           </div>
         </div>
       </Header>
