@@ -1,3 +1,24 @@
+## @antv/x6-example-features [1.0.1](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.0.0...@antv/x6-example-features@1.0.1) (2020-11-18)
+
+
+### Bug Fixes
+
+* 🐛 remove default points attr of polygon and polyline ([ccab7a2](https://github.com/antvis/x6/commit/ccab7a2a1c30955239891149d1c1e9250160bbe5)), closes [#304](https://github.com/antvis/x6/issues/304) [#304](https://github.com/antvis/x6/issues/304)
+
+
+### Performance Improvements
+
+* ⚡️ restrict on resizing ([36107bf](https://github.com/antvis/x6/commit/36107bf81871b6ce083ae02bbd9ba72deb6aa9b8)), closes [#289](https://github.com/antvis/x6/issues/289)
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.0.1
+* **@antv/x6-react-shape:** upgraded to 1.0.1
+
 ## @antv/x6-example-features [0.12.8](https://github.com/antvis/x6/compare/@antv/x6-example-features@0.12.7...@antv/x6-example-features@0.12.8) (2020-11-17)
 
 
