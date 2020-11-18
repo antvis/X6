@@ -304,6 +304,9 @@ export class PrintManager extends Base {
       fitHorizontal: graphRatio < pageRatio,
     }
   }
+
+  @Base.dispose()
+  dispose() {}
 }
 
 export namespace PrintManager {

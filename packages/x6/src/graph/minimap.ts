@@ -11,6 +11,13 @@ export class MiniMapManager extends Base {
   protected init() {
     this.widget = this.graph.hook.createMiniMap()
   }
+
+  @Base.dispose()
+  dispose() {
+    if (this.widget) {
+      this.widget.dispose()
+    }
+  }
 }
 
 export namespace MiniMapManager {

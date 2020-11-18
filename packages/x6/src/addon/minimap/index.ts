@@ -259,6 +259,12 @@ export class MiniMap extends View {
     const cy = (y - ts.ty) / this.ratio
     this.scroller.centerPoint(cx, cy)
   }
+
+  @View.dispose()
+  dispose() {
+    this.targetGraph.dispose()
+    this.remove()
+  }
 }
 
 export namespace MiniMap {

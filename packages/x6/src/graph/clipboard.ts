@@ -69,8 +69,8 @@ export class ClipboardManager extends Base implements IDisablable {
     return []
   }
 
-  clean() {
-    if (!this.disabled) {
+  clean(force?: boolean) {
+    if (!this.disabled || force) {
       this.widget.clean()
     }
   }
@@ -81,7 +81,7 @@ export class ClipboardManager extends Base implements IDisablable {
 
   @Base.dispose()
   dispose() {
-    this.clean()
+    this.clean(true)
   }
 }
 
