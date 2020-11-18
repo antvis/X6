@@ -2,26 +2,31 @@ import { Dom } from '../util'
 import { KeyValue } from '../types'
 import { CellView } from '../view'
 import { Highlighter } from '../registry'
+import { EventArgs } from './events'
 import { Base } from './base'
 
 export class HighlightManager extends Base {
   protected readonly highlights: KeyValue<HighlightManager.Cache> = {}
 
   protected init() {
-    this.graph.on('cell:highlight', ({ view, magnet, options }) =>
-      this.onCellHighlight(view, magnet, options),
-    )
-
-    this.graph.on('cell:unhighlight', ({ view, magnet, options }) =>
-      this.onCellUnhighlight(view, magnet, options),
-    )
+    this.startListening()
   }
 
-  protected onCellHighlight(
-    cellView: CellView,
-    magnet: Element,
-    options: CellView.HighlightOptions = {},
-  ) {
+  protected startListening() {
+    this.graph.on('cell:highlight', this.onCellHighlight, this)
+    this.graph.on('cell:unhighlight', this.onCellUnhighlight, this)
+  }
+
+  protected stopListening() {
+    this.graph.off('cell:highlight', this.onCellHighlight, this)
+    this.graph.off('cell:unhighlight', this.onCellUnhighlight, this)
+  }
+
+  protected onCellHighlight({
+    view: cellView,
+    magnet,
+    options = {},
+  }: EventArgs['cell:highlight']) {
     const resolved = this.resolveHighlighter(options)
     if (!resolved) {
       return
@@ -41,28 +46,17 @@ export class HighlightManager extends Base {
     }
   }
 
-  protected onCellUnhighlight(
-    cellView: CellView,
-    magnet: Element,
-    options: CellView.HighlightOptions = {},
-  ) {
+  protected onCellUnhighlight({
+    magnet,
+    options = {},
+  }: EventArgs['cell:unhighlight']) {
     const resolved = this.resolveHighlighter(options)
     if (!resolved) {
       return
     }
 
-    const key = this.getHighlighterId(magnet, resolved)
-    const highlight = this.highlights[key]
-    if (highlight) {
-      // Use the cellView and magnetEl that were used by the highlighter.highlight() method.
-      highlight.highlighter.unhighlight(
-        highlight.cellView,
-        highlight.magnet,
-        highlight.args,
-      )
-
-      delete this.highlights[key]
-    }
+    const id = this.getHighlighterId(magnet, resolved)
+    this.unhighlight(id)
   }
 
   protected resolveHighlighter(options: CellView.HighlightOptions) {
@@ -112,6 +106,25 @@ export class HighlightManager extends Base {
   ) {
     Dom.ensureId(magnet)
     return options.name + magnet.id + JSON.stringify(options.args)
+  }
+
+  protected unhighlight(id: string) {
+    const highlight = this.highlights[id]
+    if (highlight) {
+      highlight.highlighter.unhighlight(
+        highlight.cellView,
+        highlight.magnet,
+        highlight.args,
+      )
+
+      delete this.highlights[id]
+    }
+  }
+
+  @HighlightManager.dispose()
+  dispose() {
+    Object.keys(this.highlights).forEach((id) => this.unhighlight(id))
+    this.stopListening()
   }
 }
 

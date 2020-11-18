@@ -16,14 +16,22 @@ export class ScrollerManager extends Base {
   protected init() {
     this.widget = this.graph.hook.createScroller()
     this.autoSetCursor()
-
-    this.graph.on('blank:mousedown', this.preparePanning, this)
-    this.graph.on('node:unhandled:mousedown', this.preparePanning, this)
-    this.graph.on('edge:unhandled:mousedown', this.preparePanning, this)
-
+    this.startListening()
     if (this.widget) {
       this.widget.center()
     }
+  }
+
+  protected startListening() {
+    this.graph.on('blank:mousedown', this.preparePanning, this)
+    this.graph.on('node:unhandled:mousedown', this.preparePanning, this)
+    this.graph.on('edge:unhandled:mousedown', this.preparePanning, this)
+  }
+
+  protected stopListening() {
+    this.graph.off('blank:mousedown', this.preparePanning, this)
+    this.graph.off('node:unhandled:mousedown', this.preparePanning, this)
+    this.graph.off('edge:unhandled:mousedown', this.preparePanning, this)
   }
 
   protected preparePanning({ e }: { e: JQuery.MouseDownEvent }) {
@@ -95,6 +103,14 @@ export class ScrollerManager extends Base {
     if (this.widget) {
       this.widget.resize(width, height)
     }
+  }
+
+  @Base.dispose()
+  dispose() {
+    if (this.widget) {
+      this.widget.dispose()
+    }
+    this.stopListening()
   }
 }
 

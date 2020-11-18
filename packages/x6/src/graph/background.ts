@@ -15,12 +15,20 @@ export class BackgroundManager extends Base {
   }
 
   protected init() {
-    this.graph.on('scale', this.update, this)
-    this.graph.on('translate', this.update, this)
-
+    this.startListening()
     if (this.options.background) {
       this.draw(this.options.background)
     }
+  }
+
+  protected startListening() {
+    this.graph.on('scale', this.update, this)
+    this.graph.on('translate', this.update, this)
+  }
+
+  protected stopListening() {
+    this.graph.off('scale', this.update, this)
+    this.graph.off('translate', this.update, this)
   }
 
   protected updateBackgroundImage(options: BackgroundManager.Options = {}) {
@@ -148,9 +156,8 @@ export class BackgroundManager extends Base {
 
   @Base.dispose()
   dispose() {
-    this.graph.off('scale', this.update, this)
-    this.graph.off('translate', this.update, this)
     this.clear()
+    this.stopListening()
   }
 }
 
