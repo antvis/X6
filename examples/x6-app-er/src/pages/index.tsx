@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { RouteComponentProps } from 'react-router';
 import styles from './index.less';
 import ERGraphDemo from './ERGraphDemo';
