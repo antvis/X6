@@ -1,4 +1,5 @@
-const { repository, version } = require('./package.json')
+const { version } = require('../../packages/x6/package.json')
+const { repository } = require('./package.json')
 
 module.exports = {
   plugins: [
