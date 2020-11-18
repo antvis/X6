@@ -32,6 +32,13 @@ export default class FlowGraph {
           },
         ],
       },
+      selecting: {
+        enabled: true,
+        multiple: true,
+        rubberband: true,
+        movable: true,
+        showNodeSelectionBox: true,
+      },
       connecting: {
         anchor: 'center',
         connectionPoint: 'anchor',
@@ -101,7 +108,7 @@ export default class FlowGraph {
             const data = node.getData<any>()
             if (data && data.parent) {
               const targetBBox = node.getBBox()
-              return bbox.intersect(targetBBox)
+              return bbox.isIntersectWithRect(targetBBox)
             }
             return false
           })
@@ -263,7 +270,7 @@ export default class FlowGraph {
     const { graph } = this
     const container = document.getElementById('container')!
 
-    graph.on('node:dblclick', ({ e, x, y, cell, view }) => {
+    graph.on('node:contextmenu', ({ e, x, y, cell, view }) => {
       cell.attr('text/style/display', 'none')
       const elem = view.container.querySelector('.x6-edit-text') as HTMLElement
       if (elem) {
@@ -298,6 +305,13 @@ export default class FlowGraph {
           node.show()
         }
       })
+    })
+
+    graph.bindKey('backspace', () => {
+      const cells = graph.getSelectedCells()
+      if (cells.length) {
+        graph.removeCells(cells)
+      }
     })
   }
 }

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { GithubOutlined } from '@ant-design/icons'
 import FlowGraph from './Graph'
 import ToolBar from './components/ToolBar'
 import ConfigPanel from './components/ConfigPanel'
@@ -32,9 +33,21 @@ export default function () {
     }
   }, [])
 
+  const openGithub = () => {
+    window.open(
+      'https://github.com/antvis/X6/tree/master/examples/x6-app-draw',
+      '_blank',
+    )
+  }
+
   return (
     <div className={styles.wrap}>
-      <div className={styles.header}>流程图 Demo</div>
+      <div className={styles.header}>
+        <span>流程图 Demo</span>
+        <span>
+          <GithubOutlined onClick={openGithub} />
+        </span>
+      </div>
       <div className={styles.content}>
         <div id="stencil" className={styles.sider} />
         <div className={styles.panel}>
