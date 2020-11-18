@@ -1065,6 +1065,11 @@ export class NodeView<
     const offset = data.offset
     const restrict = data.restrict
 
+    const scroller = this.graph.scroller.widget
+    if (scroller) {
+      scroller.autoScroll(e.clientX, e.clientY)
+    }
+
     const posX = Util.snapToGrid(x + offset.x, gridSize)
     const posY = Util.snapToGrid(y + offset.y, gridSize)
     node.setPosition(posX, posY, {
