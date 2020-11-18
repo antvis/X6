@@ -1525,6 +1525,8 @@ const graph = new Graph({
     maxWidth: Number.MAX_SAFE_INTEGER,
     maxHeight: Number.MAX_SAFE_INTEGER,
     orthogonal: true,
+    restricted: false,
+    autoScroll: true,
     preserveAspectRatio: false,
   },
 })
@@ -1540,13 +1542,15 @@ export interface ResizingRaw {
   minHeight?: number
   maxHeight?: number
   orthogonal?: boolean
+  restricted?: boolean
+  autoScroll?: boolean
   preserveAspectRatio?: boolean
 }
 ```
 
 #### enabled
 
-是否开启节点缩放，默认值是 `false`。
+是否开启节点缩放，默认为 `false`。
 
 #### minWidth
 
@@ -1566,11 +1570,19 @@ export interface ResizingRaw {
 
 #### orthogonal
 
-是否显示中间缩放点，默认值是 `true`。
+是否显示中间缩放点，默认为 `true`。
+
+#### restricted
+
+是否限制缩放大小为画布边缘，默认为 `false`。
+
+#### autoScroll
+
+是否自动滚动画布，仅当开启 Srcoller 并且 `restricted` 为 `false` 时有效，默认为 `true`。
 
 #### preserveAspectRatio
 
-缩放过程中是否保持节点的宽高比例，默认值是 `false`。
+缩放过程中是否保持节点的宽高比例，默认为 `false`。
 
 ### translating
 
@@ -1612,11 +1624,11 @@ export interface Options {
 
 #### clearAll
 
-创建新组件的时候是否清除页面上存在的其他组件，默认值是 `true`。
+创建新组件的时候是否清除页面上存在的其他组件，默认为 `true`。
 
 #### clearOnBlankMouseDown
 
-点击空白区域的时候是否清除组件，默认值是 `true`。
+点击空白区域的时候是否清除组件，默认为 `true`。
 
 ### embedding
 

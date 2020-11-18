@@ -951,6 +951,38 @@ export class Scroller extends View {
     }
   }
 
+  autoScroll(clientX: number, clientY: number) {
+    const buffer = 10
+    const container = this.container
+    const rect = container.getBoundingClientRect()
+
+    let dx = 0
+    let dy = 0
+    if (clientX <= rect.left + buffer) {
+      dx = -buffer
+    }
+
+    if (clientY <= rect.top + buffer) {
+      dy = -buffer
+    }
+
+    if (clientX >= rect.right - buffer) {
+      dx = buffer
+    }
+
+    if (clientY >= rect.bottom - buffer) {
+      dy = buffer
+    }
+
+    if (dx !== 0) {
+      container.scrollLeft += dx
+    }
+
+    if (dy !== 0) {
+      container.scrollTop += dy
+    }
+  }
+
   protected addPadding(
     left?: number,
     right?: number,

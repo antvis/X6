@@ -1,5 +1,6 @@
 import { Util } from '../../global'
 import { KeyValue } from '../../types'
+import { NumberExt } from '../../util'
 import { Angle, Point } from '../../geometry'
 import { Node } from '../../model/node'
 import { NodeView } from '../../view/node'
@@ -252,7 +253,21 @@ export class Transform extends Widget<Transform.Options> {
     let data = this.getEventData<EventData.Resizing | EventData.Rotating>(evt)
     if (data.action) {
       const e = this.normalizeEvent(evt)
-      const pos = this.graph.snapToGrid(e.clientX, e.clientY)
+      let clientX = e.clientX
+      let clientY = e.clientY
+
+      const scroller = this.graph.scroller.widget
+
+      if (this.options.restrictedResizing) {
+        const fix = scroller ? 8 : 0
+        const rect = this.graph.container.getBoundingClientRect()
+        clientX = NumberExt.clamp(clientX, rect.left + fix, rect.right - fix)
+        clientY = NumberExt.clamp(clientY, rect.top + fix, rect.bottom - fix)
+      } else if (this.options.autoScrollOnResizing && scroller) {
+        scroller.autoScroll(clientX, clientY)
+      }
+
+      const pos = this.graph.snapToGrid(clientX, clientY)
       const gridSize = this.graph.getGridSize()
       const node = this.node
       const options = this.options
@@ -489,6 +504,9 @@ export namespace Transform {
     rotatable?: boolean
     rotateGrid?: number
     orthogonalResizing?: boolean
+    restrictedResizing?: boolean
+    autoScrollOnResizing?: boolean
+
     /**
      * Set to `true` if you want the resizing to preserve the
      * aspect ratio of the node. Default is `false`.
@@ -527,6 +545,8 @@ namespace Private {
     rotatable: true,
     preserveAspectRatio: false,
     orthogonalResizing: true,
+    restrictedResizing: false,
+    autoScrollOnResizing: true,
   }
 }
 
