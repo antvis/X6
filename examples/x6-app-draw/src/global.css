@@ -15,10 +15,10 @@ body {
   border-bottom-color: #ff4e50 !important;
 }
 .x6-widget-selection-box {
-  border: 1px dashed #5F95FF;
+  border: 1px dashed #5f95ff;
 }
 .x6-widget-selection-inner {
-  border: 1px dashed #5F95FF;
+  border: 1px dashed #5f95ff;
 }
 
 @keyframes stroke {
