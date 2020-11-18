@@ -1,3 +1,10 @@
+## @antv/x6-sites [1.0.5](https://github.com/antvis/x6/compare/@antv/x6-sites@1.0.4...@antv/x6-sites@1.0.5) (2020-11-18)
+
+
+### Bug Fixes
+
+* 🐛 use the verion of x6 ([960c367](https://github.com/antvis/x6/commit/960c367a4feec40f125e77f6c608db47b2b5e2d8))
+
 ## @antv/x6-sites [1.0.4](https://github.com/antvis/x6/compare/@antv/x6-sites@1.0.3...@antv/x6-sites@1.0.4) (2020-11-18)
 
 ## @antv/x6-sites [1.0.3](https://github.com/antvis/x6/compare/@antv/x6-sites@1.0.2...@antv/x6-sites@1.0.3) (2020-11-18)
