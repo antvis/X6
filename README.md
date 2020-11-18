@@ -88,6 +88,26 @@ graph.addEdge({
 - [Advanced practice](https://x6.antv.vision/zh/docs/tutorial/intermediate/serialization)
 - [Senior guidance](https://x6.antv.vision/zh/docs/tutorial/advanced/animation)
 
+## Experience Improvement Program Description
+
+In order to serve the users better, x6 will send the URL and version information back to the AntV server:
+
+https://kcart.alipay.com/web/bi.do
+
+Except for URL and x6 version information, no other information will be collected. You can also turn it off with the following code:
+
+```ts
+import { Config } from '@antv/x6'
+
+Config.track(false)
+```
+
+## X6 Communication Group
+
+Welcome to join the **X6 Communication Group** (Scan the QR Code to Join the Group). We also welcome the github [issues](https://github.com/antvis/x6/issues).
+
+<img src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*qKOTRJCxnzMAAAAAAAAAAAAAARQnAQ" alt="X6 图可视化交流群" style="width: 439px; border: 1px solid #e9e9e9; border-radius: 5px; box-shadow: 0 0 10px 1px #e9e9e9;">
+
 ## Development
 
 ```shell
@@ -105,22 +125,16 @@ $ yarn test
 $ yarn build
 ```
 
-## Experience Improvement Program Description
-
-In order to serve the users better, x6 will send the URL and version information back to the AntV server:
-
-https://kcart.alipay.com/web/bi.do
-
-Except for URL and x6 version information, no other information will be collected. You can also turn it off with the following code:
-
-```ts
-import { Config } from '@antv/x6'
-
-Config.track(false)
-```
-
 ## Contributing
 
 Please let us know how can we help. Do check out [issues](https://github.com/antvis/x6/issues) for bug reports or suggestions first.
 
 To become a contributor, please follow our [contributing guide](https://github.com/antvis/x6/blob/master/CONTRIBUTING.md).
+
+## Contributors
+
+<img src="https://raw.githubusercontent.com/antvis/x6/master/CONTRIBUTORS.svg" alt="Contributors" style="width: 740px;">
+
+## License
+
+The scripts and documentation in this project are released under the [MIT License](LICENSE).

@@ -39,7 +39,7 @@ X6 是 AntV 旗下的图编辑引擎，提供了一系列开箱即用的交互�
 
 欢迎各界 X6 使用者、图可视化爱好者加入 X6 图可视化交流群（钉钉群，使用钉钉扫一扫加入）讨论与交流。
 
-<img src="https://gw.alipayobjects.com/mdn/rms_5cf9ec/afts/img/A*CpU6QYrpEXwAAAAAAAAAAAAAARQnAQ" alt="X6 图可视化交流群" style="width: 439px; border: 1px solid #e9e9e9; border-radius: 5px; box-shadow: 0 0 10px 1px #e9e9e9;">
+<img src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*dcGmSr2u7ewAAAAAAAAAAAAAARQnAQ" alt="X6 图可视化交流群" style="width: 439px; border: 1px solid #e9e9e9; border-radius: 5px; box-shadow: 0 0 10px 1px #e9e9e9;">
 
 ## 🤝 如何贡献
 
