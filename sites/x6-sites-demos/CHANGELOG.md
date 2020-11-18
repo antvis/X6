@@ -1,3 +1,10 @@
+## @antv/x6-sites-demos [1.0.2](https://github.com/antvis/x6/compare/@antv/x6-sites-demos@1.0.1...@antv/x6-sites-demos@1.0.2) (2020-11-18)
+
+
+### Bug Fixes
+
+* 🐛 update intersectswith to intersectsWithRect ([fb0f144](https://github.com/antvis/x6/commit/fb0f144dc257a7a74ef5342f48359924c23b04a4))
+
 ## @antv/x6-sites-demos [1.0.1](https://github.com/antvis/x6/compare/@antv/x6-sites-demos@1.0.0...@antv/x6-sites-demos@1.0.1) (2020-11-18)
 
 
