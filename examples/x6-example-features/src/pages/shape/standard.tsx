@@ -85,12 +85,12 @@ export default class Example extends React.Component {
       width: 80,
       height: 80,
       label: 'polygon',
-      points: '0,10 10,0 20,10 10,20',
+      // points: '0,10 10,0 20,10 10,20',
       attrs: {
         body: {
           fill: '#30d0c6',
           fillOpacity: 0.5,
-          // refPoints: '0,10 10,0 20,10 10,20',
+          refPoints: '0,10 10,0 20,10 10,20',
         },
       },
     })
