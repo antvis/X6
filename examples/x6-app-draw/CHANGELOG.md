@@ -1,3 +1,11 @@
+## @antv/x6-app-draw [1.0.2](https://github.com/antvis/x6/compare/@antv/x6-app-draw@1.0.1...@antv/x6-app-draw@1.0.2) (2020-11-18)
+
+
+### Bug Fixes
+
+* 🐛 add selecting for draw demo ([4f95511](https://github.com/antvis/x6/commit/4f95511639da853c0bf4f1f580bf6bdaea2fb28b))
+* 🐛 fix stylelint error ([55fd1eb](https://github.com/antvis/x6/commit/55fd1eb533e99f8dc52bb42dba139ef4375cc57b))
+
 ## @antv/x6-app-draw [1.0.1](https://github.com/antvis/x6/compare/@antv/x6-app-draw@1.0.0...@antv/x6-app-draw@1.0.1) (2020-11-18)
 
 
