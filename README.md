@@ -102,11 +102,15 @@ import { Config } from '@antv/x6'
 Config.track(false)
 ```
 
-## X6 Communication Group
+## Communication
 
-Welcome to join the **X6 Communication Group** (Scan the QR Code to Join the Group). We also welcome the github [issues](https://github.com/antvis/x6/issues).
+Welcome to join the **X6 Communication Group** (Scan the QR Code to Join us). We also welcome the github [issues](https://github.com/antvis/x6/issues).
 
-<img src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*qKOTRJCxnzMAAAAAAAAAAAAAARQnAQ" alt="X6 图可视化交流群" style="width: 439px; border: 1px solid #e9e9e9; border-radius: 5px; box-shadow: 0 0 10px 1px #e9e9e9;">
+<p align="center">
+  <a href="https://qr.dingtalk.com/action/joingroup?code=v1,k1,rOHuvgq5s0EHDktyyQJffDE3ZAmHnbB2e6iwn/w4BKs=&_dt_no_comment=1&origin=11">
+    <img src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*qKOTRJCxnzMAAAAAAAAAAAAAARQnAQ" alt="X6 图可视化交流群" width="375" />
+  </a>
+</p>
 
 ## Development
 
@@ -133,7 +137,9 @@ To become a contributor, please follow our [contributing guide](https://github.c
 
 ## Contributors
 
-<img src="https://raw.githubusercontent.com/antvis/x6/master/CONTRIBUTORS.svg" alt="Contributors" style="width: 740px;">
+<a href="https://github.com/antvis/x6/graphs/contributors">
+  <img src="https://raw.githubusercontent.com/antvis/x6/master/CONTRIBUTORS.svg" alt="Contributors" width="740" />
+</a>
 
 ## License
 
