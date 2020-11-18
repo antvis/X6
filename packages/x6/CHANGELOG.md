@@ -1,3 +1,17 @@
+## @antv/x6 [1.0.1](https://github.com/antvis/x6/compare/@antv/x6@1.0.0...@antv/x6@1.0.1) (2020-11-18)
+
+
+### Bug Fixes
+
+* 🐛 remove default points attr of polygon and polyline ([ccab7a2](https://github.com/antvis/x6/commit/ccab7a2a1c30955239891149d1c1e9250160bbe5)), closes [#304](https://github.com/antvis/x6/issues/304) [#304](https://github.com/antvis/x6/issues/304)
+
+
+### Performance Improvements
+
+* ⚡️ auto scroll graph on moving node ([b2fb417](https://github.com/antvis/x6/commit/b2fb4170a0939488500c349db9006c7f11d884f7))
+* ⚡️ clean everything and restore dom structure on graph disposed ([a834331](https://github.com/antvis/x6/commit/a834331779e76e57ccb409d2f39040406ef732ea)), closes [#291](https://github.com/antvis/x6/issues/291) [#292](https://github.com/antvis/x6/issues/292)
+* ⚡️ restrict on resizing ([36107bf](https://github.com/antvis/x6/commit/36107bf81871b6ce083ae02bbd9ba72deb6aa9b8)), closes [#289](https://github.com/antvis/x6/issues/289)
+
 ## @antv/x6 [0.13.7](https://github.com/antvis/x6/compare/@antv/x6@0.13.6...@antv/x6@0.13.7) (2020-11-17)
 
 
