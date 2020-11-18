@@ -13,6 +13,7 @@ export default class Example extends React.Component {
       grid: 1,
       resizing: {
         enabled: true,
+        restricted: true,
       },
       rotating: {
         enabled: true,
