@@ -16,6 +16,7 @@ export class GraphView extends View {
   public readonly stage: SVGGElement
   public readonly decorator: SVGGElement
   public readonly overlay: SVGGElement
+  private restore: () => void
 
   protected get model() {
     return this.graph.model
@@ -39,6 +40,16 @@ export class GraphView extends View {
     this.decorator = selectors.decorator as SVGGElement
     this.overlay = selectors.overlay as SVGGElement
     this.container = this.options.container
+
+    const cloned = this.options.container.cloneNode(true)
+    this.restore = () => {
+      const parentNode = this.container.parentNode
+      if (parentNode) {
+        parentNode.replaceChild(cloned, this.container)
+      }
+      this.restore = () => {}
+    }
+
     this.$(this.container)
       .addClass(this.prefixClassName('graph'))
       .append(fragment)
@@ -478,12 +489,9 @@ export class GraphView extends View {
 
   @View.dispose()
   dispose() {
-    const scroller = this.graph.scroller.widget
-    if (scroller) {
-      scroller.dispose()
-    }
     this.undelegateEvents()
     this.undelegateDocumentEvents()
+    this.restore()
   }
 }
 

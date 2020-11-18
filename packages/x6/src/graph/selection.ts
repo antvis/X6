@@ -2,11 +2,12 @@ import { ModifierKey } from '../types'
 import { Selection } from '../addon/selection'
 import { Collection } from '../model/collection'
 import { Cell } from '../model/cell'
+import { EventArgs } from './events'
 import { Base } from './base'
-import { Dictionary } from '../common'
 
 export class SelectionManager extends Base {
   public widget: Selection
+  private movedMap = new WeakMap<Cell, boolean>()
 
   protected get widgetOptions() {
     return this.options.selecting
@@ -33,57 +34,70 @@ export class SelectionManager extends Base {
 
   protected init() {
     this.widget = this.graph.hook.createSelection()
+    this.startListening()
+  }
 
-    this.graph.on('blank:mousedown', ({ e }) => {
-      if (
-        !this.rubberbandDisabled &&
-        ModifierKey.test(e, this.widgetOptions.modifiers) &&
-        this.graph.hook.allowRubberband(e)
-      ) {
-        this.startRubberband(e)
-      } else {
-        this.clean()
-      }
-    })
+  protected startListening() {
+    this.graph.on('blank:mousedown', this.onBlankMouseDown, this)
+    this.graph.on('cell:mousemove', this.onCellMouseMove, this)
+    this.graph.on('cell:mouseup', this.onCellMouseUp, this)
+    this.widget.on('box:mousedown', this.onBoxMouseDown, this)
+  }
 
-    const movedDic = new Dictionary<Cell, boolean>()
+  protected stopListening() {
+    this.graph.off('blank:mousedown', this.onBlankMouseDown, this)
+    this.graph.off('cell:mousemove', this.onCellMouseMove, this)
+    this.graph.off('cell:mouseup', this.onCellMouseUp, this)
+    this.widget.off('box:mousedown', this.onBoxMouseDown, this)
+  }
 
-    this.graph.on('cell:mousemove', ({ cell }) => {
-      movedDic.set(cell, true)
-    })
+  protected onBlankMouseDown({ e }: EventArgs['blank:mousedown']) {
+    if (
+      !this.rubberbandDisabled &&
+      ModifierKey.test(e, this.widgetOptions.modifiers) &&
+      this.graph.hook.allowRubberband(e)
+    ) {
+      this.startRubberband(e)
+    } else {
+      this.clean()
+    }
+  }
 
-    this.graph.on('cell:mouseup', ({ e, cell }) => {
-      const options = this.widgetOptions
-      let disabled = this.disabled
-      if (!disabled && movedDic.has(cell)) {
-        disabled = options.selectCellOnMoved === false
+  protected onCellMouseMove({ cell }: EventArgs['cell:mousemove']) {
+    this.movedMap.set(cell, true)
+  }
 
-        if (!disabled) {
-          disabled = options.selectNodeOnMoved === false && cell.isNode()
-        }
+  protected onCellMouseUp({ e, cell }: EventArgs['cell:mouseup']) {
+    const options = this.widgetOptions
+    let disabled = this.disabled
+    if (!disabled && this.movedMap.has(cell)) {
+      disabled = options.selectCellOnMoved === false
 
-        if (!disabled) {
-          disabled = options.selectEdgeOnMoved === false && cell.isEdge()
-        }
+      if (!disabled) {
+        disabled = options.selectNodeOnMoved === false && cell.isNode()
       }
 
       if (!disabled) {
-        if (options.multiple === false || (!e.ctrlKey && !e.metaKey)) {
-          this.clean()
-        }
-        this.select(cell)
+        disabled = options.selectEdgeOnMoved === false && cell.isEdge()
       }
+    }
 
-      movedDic.delete(cell)
-    })
-
-    this.widget.on('box:mousedown', ({ cell, e }) => {
-      if (!this.disabled) {
-        if (this.widgetOptions.multiple !== false && (e.ctrlKey || e.metaKey)) {
-          this.unselect(cell)
-        }
+    if (!disabled) {
+      if (options.multiple === false || (!e.ctrlKey && !e.metaKey)) {
+        this.clean()
       }
-    })
+      this.select(cell)
+    }
+
+    this.movedMap.delete(cell)
+  }
+
+  protected onBoxMouseDown({ e, cell }: Selection.EventArgs['box:mousedown']) {
+    if (!this.disabled) {
+      if (this.widgetOptions.multiple !== false && (e.ctrlKey || e.metaKey)) {
+        this.unselect(cell)
+      }
+    }
   }
 
   isEmpty() {
@@ -205,6 +219,12 @@ export class SelectionManager extends Base {
   setFilter(filter?: Selection.Filter) {
     this.widget.setFilter(filter)
     return this
+  }
+
+  @Base.dispose()
+  dispose() {
+    this.stopListening()
+    this.widget.dispose()
   }
 }
 
