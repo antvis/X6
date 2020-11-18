@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@antv/x6-sites-demos",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "workspaces": [
     "packages/**/*"
   ],
@@ -14,9 +14,9 @@
   },
   "dependencies": {
     "@ant-design/icons": "^4.2.2",
-    "@antv/x6": "^1.0.0",
+    "@antv/x6": "^1.0.1",
     "@antv/x6-react-components": "^1.0.0",
-    "@antv/x6-react-shape": "^1.0.0",
+    "@antv/x6-react-shape": "^1.0.1",
     "@antv/x6-sites-demos-helper": "^0.10.77",
     "antd": "^4.4.2",
     "esbuild-webpack-plugin": "^1.0.5",
