@@ -65,14 +65,18 @@ export default class Example extends React.Component {
 
     if (this.customViewport) {
       const viewportBBox = this.viewport.getBBox()
-      return viewportBBox.isIntersectWith(node.getBBox().inflate(this.padding))
+      return viewportBBox.intersectsWithRect(
+        node.getBBox().inflate(this.padding),
+      )
     }
 
     if (node === this.viewport) {
       return false
     }
 
-    return this.windowBBox.isIntersectWith(node.getBBox().inflate(this.padding))
+    return this.windowBBox.intersectsWithRect(
+      node.getBBox().inflate(this.padding),
+    )
   }
 
   shouldRenderEdge(edge: Edge) {
