@@ -1,13 +1,18 @@
 import { Config } from '../global/config'
 import { content } from '../style/raw'
-import { Base } from './base'
 import { Platform } from '../util'
+import { Base } from './base'
 
 export class CSSManager extends Base {
   protected init() {
     if (Config.autoInsertCSS) {
       CSSManager.ensure()
     }
+  }
+
+  @CSSManager.dispose()
+  dispose() {
+    CSSManager.clean()
   }
 }
 
@@ -24,6 +29,12 @@ export namespace CSSManager {
       if (head) {
         head.insertBefore(styleElement, head.firstChild)
       }
+    }
+  }
+
+  export function clean() {
+    if (styleElement && styleElement.parentNode) {
+      styleElement.parentNode.removeChild(styleElement)
     }
   }
 }

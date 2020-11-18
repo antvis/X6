@@ -858,6 +858,12 @@ export class Selection extends View<Selection.EventArgs> {
   }
 
   // #endregion
+
+  @View.dispose()
+  dispose() {
+    this.clean()
+    this.remove()
+  }
 }
 
 export namespace Selection {

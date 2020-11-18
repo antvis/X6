@@ -15,9 +15,18 @@ export class GridManager extends Base {
   }
 
   protected init() {
+    this.startListening()
+    this.draw(this.grid)
+  }
+
+  protected startListening() {
     this.graph.on('scale', this.update, this)
     this.graph.on('translate', this.update, this)
-    this.draw(this.grid)
+  }
+
+  protected stopListening() {
+    this.graph.off('scale', this.update, this)
+    this.graph.off('translate', this.update, this)
   }
 
   protected setVisible(visible: boolean) {
@@ -171,8 +180,8 @@ export class GridManager extends Base {
 
   @Base.dispose()
   dispose() {
-    this.graph.off('scale', this.update, this)
-    this.graph.off('translate', this.update, this)
+    this.stopListening()
+    this.clear()
   }
 }
 

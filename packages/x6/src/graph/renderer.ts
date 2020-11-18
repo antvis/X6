@@ -14,7 +14,7 @@ export class Renderer extends Base {
 
   protected init() {
     this.resetUpdates()
-    this.setup()
+    this.startListening()
 
     // Renders existing cells in the model.
     this.resetViews(this.model.getCells())
@@ -25,24 +25,24 @@ export class Renderer extends Base {
     }
   }
 
-  protected setup() {
-    const model = this.model
+  protected startListening() {
+    this.model.on('sorted', this.onSortModel, this)
+    this.model.on('reseted', this.onModelReseted, this)
+    this.model.on('batch:stop', this.onBatchStop, this)
+    this.model.on('cell:added', this.onCellAdded, this)
+    this.model.on('cell:removed', this.onCellRemoved, this)
+    this.model.on('cell:change:zIndex', this.onCellZIndexChanged, this)
+    this.model.on('cell:change:visible', this.onCellVisibleChanged, this)
+  }
 
-    model.on('sorted', () => this.onSortModel())
-    model.on('reseted', ({ options }) => this.onModelReseted(options))
-    model.on('batch:stop', ({ name, data }) => this.onBatchStop(name, data))
-    model.on('cell:added', ({ cell, options }) =>
-      this.onCellAdded(cell, options),
-    )
-    model.on('cell:removed', ({ cell, options }) =>
-      this.onCellRemoved(cell, options),
-    )
-    model.on('cell:change:zIndex', ({ cell, options }) =>
-      this.onCellZIndexChanged(cell, options),
-    )
-    model.on('cell:change:visible', ({ cell, current, options }) => {
-      this.onCellVisibleChanged(cell, current !== false, options)
-    })
+  protected stopListening() {
+    this.model.off('sorted', this.onSortModel, this)
+    this.model.off('reseted', this.onModelReseted, this)
+    this.model.off('batch:stop', this.onBatchStop, this)
+    this.model.off('cell:added', this.onCellAdded, this)
+    this.model.off('cell:removed', this.onCellRemoved, this)
+    this.model.off('cell:change:zIndex', this.onCellZIndexChanged, this)
+    this.model.off('cell:change:visible', this.onCellVisibleChanged, this)
   }
 
   protected resetUpdates() {
@@ -72,12 +72,39 @@ export class Renderer extends Base {
     this.sortViews()
   }
 
-  protected onModelReseted(options: Model.SetOptions) {
+  protected onModelReseted({ options }: Model.EventArgs['reseted']) {
     this.removeZPivots()
     this.resetViews(this.model.getCells(), options)
   }
 
-  protected onCellAdded(cell: Cell, options: Model.AddOptions) {
+  protected onBatchStop({ name, data }: Model.EventArgs['batch:stop']) {
+    if (this.isFrozen()) {
+      return
+    }
+
+    const model = this.model
+    if (!this.isAsync()) {
+      // UPDATE_DELAYING_BATCHES: ['translate'],
+      const updateDelayingBatches = Renderer.UPDATE_DELAYING_BATCHES
+      if (
+        updateDelayingBatches.includes(name as Model.BatchName) &&
+        !model.hasActiveBatch(updateDelayingBatches)
+      ) {
+        this.updateViews(data)
+      }
+    }
+
+    // SORT_DELAYING_BATCHES: ['add', 'to-front', 'to-back'],
+    const sortDelayingBatches = Renderer.SORT_DELAYING_BATCHES
+    if (
+      sortDelayingBatches.includes(name as Model.BatchName) &&
+      !model.hasActiveBatch(sortDelayingBatches)
+    ) {
+      this.sortViews()
+    }
+  }
+
+  protected onCellAdded({ cell, options }: Model.EventArgs['cell:added']) {
     const position = options.position
     if (this.isAsync() || typeof position !== 'number') {
       this.renderView(cell, options)
@@ -92,14 +119,17 @@ export class Renderer extends Base {
     }
   }
 
-  protected onCellRemoved(cell: Cell, options: Model.RemoveOptions) {
+  protected onCellRemoved({ cell, options }: Model.EventArgs['cell:removed']) {
     const view = this.findViewByCell(cell)
     if (view) {
       this.requestViewUpdate(view, Renderer.FLAG_REMOVE, view.priority, options)
     }
   }
 
-  protected onCellZIndexChanged(cell: Cell, options: Cell.MutateOptions) {
+  protected onCellZIndexChanged({
+    cell,
+    options,
+  }: Model.EventArgs['cell:change:zIndex']) {
     if (this.options.sorting === 'approx') {
       const view = this.findViewByCell(cell)
       if (view) {
@@ -113,11 +143,11 @@ export class Renderer extends Base {
     }
   }
 
-  protected onCellVisibleChanged(
-    cell: Cell,
-    visible: boolean,
-    options: Cell.MutateOptions,
-  ) {
+  protected onCellVisibleChanged({
+    cell,
+    current: visible,
+    options,
+  }: Model.EventArgs['cell:change:visible']) {
     // Hide connected edges before cell
     if (!visible) {
       this.processEdgeOnTerminalVisibleChanged(cell, false)
@@ -167,33 +197,6 @@ export class Renderer extends Base {
       return false
     }
     return true
-  }
-
-  protected onBatchStop(name: string, data: KeyValue) {
-    if (this.isFrozen()) {
-      return
-    }
-
-    const model = this.model
-    if (!this.isAsync()) {
-      // UPDATE_DELAYING_BATCHES: ['translate'],
-      const updateDelayingBatches = Renderer.UPDATE_DELAYING_BATCHES
-      if (
-        updateDelayingBatches.includes(name as Model.BatchName) &&
-        !model.hasActiveBatch(updateDelayingBatches)
-      ) {
-        this.updateViews(data)
-      }
-    }
-
-    // SORT_DELAYING_BATCHES: ['add', 'to-front', 'to-back'],
-    const sortDelayingBatches = Renderer.SORT_DELAYING_BATCHES
-    if (
-      sortDelayingBatches.includes(name as Model.BatchName) &&
-      !model.hasActiveBatch(sortDelayingBatches)
-    ) {
-      this.sortViews()
-    }
   }
 
   requestConnectedEdgesUpdate(
@@ -1161,7 +1164,10 @@ export class Renderer extends Base {
   }
 
   @Base.dispose()
-  dispose() {}
+  dispose() {
+    this.resetUpdates()
+    this.stopListening()
+  }
 }
 
 export namespace Renderer {

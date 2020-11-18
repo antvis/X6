@@ -3,6 +3,11 @@ import { Base } from './base'
 
 export class SnaplineManager extends Base {
   public readonly widget: Snapline = this.graph.hook.createSnapline()
+
+  @Base.dispose()
+  dispose() {
+    this.widget.dispose()
+  }
 }
 
 export namespace SnaplineManager {

@@ -1,7 +1,7 @@
 import Mousetrap from 'mousetrap'
-import { Disposable, IDisablable } from '../common'
 import { Dom, FunctionExt } from '../util'
-import { Graph } from './index'
+import { Disposable, IDisablable } from '../common'
+import { Graph } from './graph'
 
 export class Keyboard extends Disposable implements IDisablable {
   public readonly target: HTMLElement | Document

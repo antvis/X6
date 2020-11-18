@@ -2,10 +2,11 @@ import { Dom, NumberExt } from '../util'
 import { Rectangle } from '../geometry'
 import { Transform } from '../addon/transform'
 import { Node } from '../model/node'
+import { EventArgs } from './events'
 import { Base } from './base'
 
 export class TransformManager extends Base {
-  protected widgets: WeakMap<Node, Transform> = new WeakMap()
+  protected widgets: Map<Node, Transform> = new Map()
   protected viewportMatrix: DOMMatrix | null
   protected viewportTransformString: string | null
 
@@ -22,40 +23,50 @@ export class TransformManager extends Base {
   }
 
   protected init() {
-    this.setup()
+    this.startListening()
     this.resize()
   }
 
-  protected setup() {
-    this.graph.on('node:mouseup', ({ node }) => {
-      if (!this.isSelectionEnabled) {
-        const widget = this.graph.hook.createTransform(node, { clearAll: true })
-        if (widget) {
-          this.widgets.set(node, widget)
-        }
-      }
-    })
+  protected startListening() {
+    this.graph.on('node:mouseup', this.onNodeMouseUp, this)
+    this.graph.on('node:selected', this.onNodeSelected, this)
+    this.graph.on('node:unselected', this.onNodeUnSelected, this)
+  }
 
-    this.graph.on('node:selected', ({ node }) => {
-      if (this.isSelectionEnabled) {
-        const widget = this.graph.hook.createTransform(node, {
-          clearAll: false,
-        })
-        if (widget) {
-          this.widgets.set(node, widget)
-        }
-      }
-    })
+  protected stopListening() {
+    this.graph.off('node:mouseup', this.onNodeMouseUp, this)
+    this.graph.off('node:selected', this.onNodeSelected, this)
+    this.graph.off('node:unselected', this.onNodeUnSelected, this)
+  }
 
-    this.graph.on('node:unselected', ({ node }) => {
-      if (this.isSelectionEnabled) {
-        const widget = this.widgets.get(node)
-        if (widget) {
-          widget.dispose()
-        }
-        this.widgets.delete(node)
+  protected onNodeMouseUp({ node }: EventArgs['node:mouseup']) {
+    if (!this.isSelectionEnabled) {
+      const widget = this.graph.hook.createTransform(node, { clearAll: true })
+      if (widget) {
+        this.widgets.set(node, widget)
       }
-    })
+    }
+  }
+
+  protected onNodeSelected({ node }: EventArgs['node:selected']) {
+    if (this.isSelectionEnabled) {
+      const widget = this.graph.hook.createTransform(node, {
+        clearAll: false,
+      })
+      if (widget) {
+        this.widgets.set(node, widget)
+      }
+    }
+  }
+
+  protected onNodeUnSelected({ node }: EventArgs['node:unselected']) {
+    if (this.isSelectionEnabled) {
+      const widget = this.widgets.get(node)
+      if (widget) {
+        widget.dispose()
+      }
+      this.widgets.delete(node)
+    }
   }
 
   /**
@@ -370,6 +381,13 @@ export class TransformManager extends Base {
   getGraphArea() {
     const rect = Rectangle.fromSize(this.getComputedSize())
     return this.graph.graphToLocal(rect)
+  }
+
+  @TransformManager.dispose()
+  dispose() {
+    this.widgets.forEach((widget) => widget.dispose())
+    this.widgets.clear()
+    this.stopListening()
   }
 }
 
