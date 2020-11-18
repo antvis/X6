@@ -181,6 +181,22 @@ module.exports = {
         },
       },
       {
+        slug: 'net',
+        icon: 'net',
+        title: {
+          zh: '一般图',
+          en: 'General Graph',
+        },
+      },
+      {
+        slug: 'tree',
+        icon: 'tree',
+        title: {
+          zh: '树图',
+          en: 'Tree Graph',
+        },
+      },
+      {
         slug: 'animation',
         icon: 'scatter',
         title: {
