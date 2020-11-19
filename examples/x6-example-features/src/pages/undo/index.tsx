@@ -20,25 +20,8 @@ export default class Example extends React.Component<
       container: this.container,
       width: 800,
       height: 600,
-      grid: 1,
+      grid: true,
       history: true,
-    })
-
-    graph.addNode({
-      x: 130,
-      y: 30,
-      width: 100,
-      height: 40,
-      attrs: {
-        label: {
-          text: 'rect',
-          fill: '#6a6c8a',
-        },
-        body: {
-          stroke: '#31d0c6',
-          strokeWidth: 2,
-        },
-      },
     })
 
     this.history = graph.history
@@ -48,6 +31,38 @@ export default class Example extends React.Component<
         canUndo: this.history.canUndo(),
       })
     })
+
+    const source = graph.addNode({
+      x: 120,
+      y: 120,
+      width: 100,
+      height: 40,
+      attrs: {
+        label: {
+          text: 'Hello',
+        },
+        body: {
+          strokeWidth: 1,
+        },
+      },
+    })
+
+    const target = graph.addNode({
+      x: 300,
+      y: 320,
+      width: 100,
+      height: 40,
+      attrs: {
+        label: {
+          text: 'World',
+        },
+        body: {
+          strokeWidth: 1,
+        },
+      },
+    })
+
+    graph.addEdge({ source, target, arrts: { line: { strokeWidth: 1 } } })
   }
 
   onUndo = () => {

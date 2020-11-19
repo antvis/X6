@@ -10,65 +10,103 @@ export default class Example extends React.Component {
       container: this.container,
       width: 800,
       height: 600,
+      grid: {
+        visible: true,
+        type: 'doubleMesh',
+        args: [
+          {
+            color: '#eee', // 主网格线颜色
+            thickness: 1, // 主网格线宽度
+          },
+          {
+            color: '#ddd', // 次网格线颜色
+            thickness: 1, // 次网格线宽度
+            factor: 4, // 主次网格线间隔
+          },
+        ],
+      },
+      background: {
+        color: '#fcfcfc',
+        image:
+          'https://gw.alipayobjects.com/os/s/prod/antv/assets/image/logo-with-text-73b8a.svg',
+        opacity: 0.2,
+        repeat: 'watermark',
+        angle: 30,
+      },
     })
 
-    const cells = [
-      {
-        id: 'node1',
-        shape: 'rect',
-        x: 100,
-        y: 100,
-        width: 80,
-        height: 40,
-        label: 'hello',
-      },
-      {
-        id: 'node2',
-        shape: 'rect',
-        x: 240,
-        y: 300,
-        width: 80,
-        height: 40,
-        label: 'world',
-      },
-      {
-        shape: 'edge',
-        source: 'node1',
-        target: 'node2',
-      },
-    ]
+    // const data = [
+    //   {
+    //     id: 'node1',
+    //     shape: 'rect',
+    //     x: 100,
+    //     y: 100,
+    //     width: 80,
+    //     height: 40,
+    //     label: 'hello',
+    //   },
+    //   {
+    //     id: 'node2',
+    //     shape: 'rect',
+    //     x: 240,
+    //     y: 300,
+    //     width: 80,
+    //     height: 40,
+    //     label: 'world',
+    //   },
+    //   {
+    //     shape: 'edge',
+    //     source: 'node1',
+    //     target: 'node2',
+    //   },
+    // ]
 
-    // const data = {
-    //   // 节点
-    //   nodes: [
-    //     {
-    //       id: 'node1',
-    //       shape: 'rect',
-    //       x: 100,
-    //       y: 100,
-    //       width: 80,
-    //       height: 40,
-    //       label: 'hello',
-    //     },
-    //     {
-    //       id: 'node2',
-    //       x: 240,
-    //       y: 300,
-    //       width: 80,
-    //       height: 40,
-    //       label: 'world',
-    //     },
-    //   ],
-    //   // 边
-    //   edges: [
-    //     {
-    //       source: 'node1',
-    //       target: 'node2',
-    //     },
-    //   ],
-    // }
+    const data = {
+      // 节点
+      nodes: [
+        {
+          id: 'node1',
+          shape: 'rect',
+          x: 100,
+          y: 100,
+          width: 80,
+          height: 40,
+          label: 'Hello',
+          attrs: {
+            body: {
+              strokeWidth: 1,
+            },
+          },
+        },
+        {
+          id: 'node2',
+          x: 360,
+          y: 300,
+          width: 80,
+          height: 40,
+          label: 'World',
+          attrs: {
+            body: {
+              strokeWidth: 1,
+            },
+          },
+        },
+      ],
+      // 边
+      edges: [
+        {
+          source: 'node1',
+          target: 'node2',
+          attrs: {
+            line: {
+              strokeWidth: 1,
+            },
+          },
+        },
+      ],
+    }
 
-    graph.fromJSON(cells)
+    graph.fromJSON(data)
     console.log(graph.toJSON())
   }
 
