@@ -1,0 +1,12 @@
+{
+  "demos": [
+    {
+      "filename": "embed.ts",
+      "title": {
+        "zh": "节点嵌入",
+        "en": "Node Embending"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*SEp0Sb7NrMUAAAAAAAAAAAAAARQnAQ"
+    }
+  ]
+}

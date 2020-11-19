@@ -1,6 +1,6 @@
 import { Graph } from '@antv/x6'
 
-const container = document.getElementById('container')!
+const container = document.getElementById('container')
 const graph = new Graph({
   container: container,
   grid: true,

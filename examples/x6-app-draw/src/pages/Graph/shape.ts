@@ -158,7 +158,7 @@ export const FlowChartImageRect = Graph.registerNode('flow-chart-image-rect', {
     },
     image: {
       'xlink:href':
-        'https://gw.alipayobjects.com/zos/bmw-prod/491d534b-1414-46e4-ae45-838b473cc4af.svg',
+        'https://gw.alipayobjects.com/zos/antfincdn/FLrTNDvlna/antv.png',
       width: 16,
       height: 16,
       x: 12,
@@ -297,7 +297,7 @@ export const FlowChartTitleRect = Graph.registerNode('flow-chart-title-rect', {
     },
     image: {
       'xlink:href':
-        'https://gw.alipayobjects.com/zos/bmw-prod/812392f1-6db2-4d23-943d-745b9de8e253.svg',
+        'https://gw.alipayobjects.com/zos/antfincdn/FLrTNDvlna/antv.png',
       height: 16,
       x: 6,
       y: 6,
