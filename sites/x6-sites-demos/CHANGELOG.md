@@ -1,3 +1,18 @@
+## @antv/x6-sites-demos [1.0.4](https://github.com/antvis/x6/compare/@antv/x6-sites-demos@1.0.3...@antv/x6-sites-demos@1.0.4) (2020-11-19)
+
+
+### Bug Fixes
+
+* 🐛 checkView should return a boolean ([8c309a7](https://github.com/antvis/x6/commit/8c309a7b84276a722c25c319088e00822d1fc381))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6-sites-demos-helper:** upgraded to 0.10.78
+
 ## @antv/x6-sites-demos [1.0.3](https://github.com/antvis/x6/compare/@antv/x6-sites-demos@1.0.2...@antv/x6-sites-demos@1.0.3) (2020-11-18)
 
 ## @antv/x6-sites-demos [1.0.2](https://github.com/antvis/x6/compare/@antv/x6-sites-demos@1.0.1...@antv/x6-sites-demos@1.0.2) (2020-11-18)
