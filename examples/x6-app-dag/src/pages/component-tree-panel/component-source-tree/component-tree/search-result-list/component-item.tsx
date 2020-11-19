@@ -6,7 +6,7 @@ import marked from 'marked'
 import { ConnectDragPreview, ConnectDragSource, DragSource } from 'react-dnd'
 import { ItemName } from '@/component/item-name'
 import { unescape } from '@/common/utils'
-import { useSafeSetHTML } from '@/common/hooks/useSafeSetHTML'
+import { useSafeSetHTML } from '../../../../../common/hooks/useSafeSetHTML'
 import { DRAGGABLE_ALGO_COMPONENT } from '@/constants/graph'
 import styles from './component-item.less'
 
