@@ -33,7 +33,7 @@ if (!Registry.Connector.registry.exist('wobble')) {
   )
 }
 
-const container = document.getElementById('container')!
+const container = document.getElementById('container')
 const graph = new Graph({
   container: container,
   grid: 10,
@@ -47,6 +47,13 @@ const source = graph.addNode({
   height: 70,
   attrs: {
     label: { text: 'Source' },
+    body: {
+      fill: '#ff9c6e',
+      stroke: '#ff7a45',
+    },
+    text: {
+      fill: '#ffffff',
+    },
   },
 })
 
@@ -61,6 +68,11 @@ graph.addEdge({
     name: 'wobble',
     args: {
       spread: 10,
+    },
+  },
+  attrs: {
+    line: {
+      stroke: '#722ed1',
     },
   },
 })

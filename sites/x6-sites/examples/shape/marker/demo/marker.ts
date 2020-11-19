@@ -1,15 +1,15 @@
 import { Graph } from '@antv/x6'
 
-const container = document.getElementById('container')!
+const container = document.getElementById('container')
 const graph = new Graph({
   container: container,
 })
 
 graph.addNode({
   id: 'a',
-  label: 'a',
+  label: 'left',
   shape: 'rect',
-  width: 40,
+  width: 80,
   height: 300,
   x: 100,
   y: 100,
@@ -30,13 +30,22 @@ graph.addNode({
       { id: 'p8', group: 'right' },
     ],
   },
+  attrs: {
+    body: {
+      fill: '#b37feb',
+      stroke: '#9254de',
+    },
+    text: {
+      fill: '#ffffff',
+    },
+  },
 })
 
 graph.addNode({
   id: 'b',
-  label: 'b',
+  label: 'right',
   shape: 'rect',
-  width: 40,
+  width: 80,
   height: 300,
   x: 500,
   y: 100,
@@ -56,6 +65,15 @@ graph.addNode({
       { id: 'p15', group: 'left' },
       { id: 'p16', group: 'left' },
     ],
+  },
+  attrs: {
+    body: {
+      fill: '#ff85c0',
+      stroke: '#f759ab',
+    },
+    text: {
+      fill: '#ffffff',
+    },
   },
 })
 
@@ -82,6 +100,7 @@ types.forEach((type, index) => {
     attrs: {
       line: {
         targetMarker: type,
+        stroke: '#002766',
       },
     },
     label: type,

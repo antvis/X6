@@ -86,7 +86,7 @@ Group.config({
   },
 })
 
-const container = document.getElementById('container')!
+const container = document.getElementById('container')
 const graph = new Graph({
   container: container,
   grid: true,
@@ -158,16 +158,16 @@ const createEdge = (
   })
 }
 
-const a = createGroup('a', 100, 30, 480, 320, 'lightblue')
-const aa = createGroup('aa', 180, 80, 160, 140, 'green')
-const aaa = createGroup('aaa', 200, 120, 120, 40, 'gray')
-const c = createNode('c', 450, 200, 50, 50, 'orange')
+const a = createGroup('a', 100, 30, 480, 320, '#ffd8bf')
+const aa = createGroup('aa', 180, 80, 160, 140, '#ff9c6e')
+const aaa = createGroup('aaa', 200, 120, 120, 40, '#5cdbd3')
+const c = createNode('c', 450, 200, 50, 50, '#85a5ff')
 
 a.addChild(aa)
 aa.addChild(aaa)
 a.addChild(c)
 
-createNode('d', 680, 80, 50, 50, 'black')
+createNode('d', 680, 80, 50, 50, '#b37feb')
 
 createEdge('l1', 'aa', 'c')
 createEdge('l3', 'c', 'd')

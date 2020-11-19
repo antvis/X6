@@ -24,7 +24,7 @@ graph.addEdge({
   attrs: {
     line: {
       targetMarker: 'classic',
-      stroke: '#1890ff',
+      stroke: '#f5222d',
     },
   },
 })
@@ -36,7 +36,7 @@ graph.addEdge({
   connector: { name: 'smooth' },
   attrs: {
     line: {
-      stroke: '#F7BD2D',
+      stroke: '#faad14',
       targetMarker: 'classic',
     },
   },
@@ -49,7 +49,7 @@ graph.addEdge({
   connector: { name: 'smooth' },
   attrs: {
     line: {
-      stroke: '#1DA677',
+      stroke: '#1890ff',
       strokeDasharray: 5,
       targetMarker: 'classic',
       style: {
@@ -75,7 +75,7 @@ graph.addEdge({
   attrs: {
     line: {
       targetMarker: 'classic',
-      stroke: '#1890ff',
+      stroke: '#f5222d',
     },
   },
 })
@@ -88,7 +88,7 @@ graph.addEdge({
   connector: { name: 'rounded' },
   attrs: {
     line: {
-      stroke: '#F7BD2D',
+      stroke: '#faad14',
       targetMarker: 'classic',
     },
   },
@@ -101,7 +101,7 @@ graph.addEdge({
   router: { name: 'metro' },
   attrs: {
     line: {
-      stroke: '#1DA677',
+      stroke: '#1890ff',
       strokeDasharray: 5,
       targetMarker: 'classic',
     },
