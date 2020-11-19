@@ -276,7 +276,7 @@ class ExperimentGraph extends GraphCore<BaseNode, BaseEdge> {
         projectName: 'sre_mpi_algo_dev',
         gmtCreate: '2020-08-18 02:21:41',
         description: '用户流失数据建模demo',
-        name: '建模流程DEMO',
+        name: '建模流程 DEMO',
         id: 353355,
       }
       this.experiment$.next(res)
