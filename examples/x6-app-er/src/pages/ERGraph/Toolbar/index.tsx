@@ -18,7 +18,7 @@ interface Props {
   onRealContent: () => void;
 }
 
-const GraphToolbar: React.FC<Props> = props => {
+const GraphToolbar: React.FC<Props> = (props) => {
   const { className, onZoomIn, onZoomOut, onFitContent, onRealContent } = props;
 
   const onViewSource = () => {
