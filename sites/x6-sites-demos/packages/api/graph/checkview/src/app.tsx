@@ -65,7 +65,7 @@ export default class Example extends React.Component {
 
     if (this.customViewport) {
       const viewportBBox = this.viewport.getBBox()
-      return viewportBBox.intersectsWithRect(
+      return viewportBBox.isIntersectWithRect(
         node.getBBox().inflate(this.padding),
       )
     }
@@ -74,7 +74,7 @@ export default class Example extends React.Component {
       return false
     }
 
-    return this.windowBBox.intersectsWithRect(
+    return this.windowBBox.isIntersectWithRect(
       node.getBBox().inflate(this.padding),
     )
   }
