@@ -1,0 +1,20 @@
+{
+  "demos": [
+    {
+      "filename": "jumpover.ts",
+      "title": {
+        "zh": "跳线连接器",
+        "en": "JumpOver Connector"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*wT7jQbXyWMMAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "wobble.ts",
+      "title": {
+        "zh": "自定义连接器",
+        "en": "Custom Connector"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*aHBGSqLpuxEAAAAAAAAAAAAAARQnAQ"
+    }
+  ]
+}

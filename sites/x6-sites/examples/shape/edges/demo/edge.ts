@@ -1,7 +1,7 @@
 import { Graph } from '@antv/x6'
 import insertCss from 'insert-css'
 
-const container = document.getElementById('container')!
+const container = document.getElementById('container')
 const graph = new Graph({
   container,
   grid: true,
