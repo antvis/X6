@@ -1,3 +1,11 @@
+## @antv/x6-app-dag [1.0.5](https://github.com/antvis/x6/compare/@antv/x6-app-dag@1.0.4...@antv/x6-app-dag@1.0.5) (2020-11-19)
+
+
+### Bug Fixes
+
+* 🐛 alias ([ec67ddf](https://github.com/antvis/x6/commit/ec67ddff707f5bef8ed794bd4b5dd1c7aacb011b))
+* 🐛 alias ([e68cb5f](https://github.com/antvis/x6/commit/e68cb5fb2fb0fa23be05e4c99ab84503bde0af8e))
+
 ## @antv/x6-app-dag [1.0.4](https://github.com/antvis/x6/compare/@antv/x6-app-dag@1.0.3...@antv/x6-app-dag@1.0.4) (2020-11-18)
 
 ## @antv/x6-app-dag [1.0.3](https://github.com/antvis/x6/compare/@antv/x6-app-dag@1.0.2...@antv/x6-app-dag@1.0.3) (2020-11-18)
