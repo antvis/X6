@@ -12,14 +12,16 @@ export default class Example extends React.Component {
       container: this.container,
       width: 800,
       height: 400,
+      grid: true,
     })
 
     const rect = graph.addNode({
       shape: 'basic.rect',
-      x: 130,
-      y: 30,
+      x: 280,
+      y: 120,
       width: 100,
       height: 150,
+      label: 'Target',
       attrs: {
         rect: { stroke: '#31d0c6', strokeWidth: 2 },
       },
@@ -60,13 +62,13 @@ export default class Example extends React.Component {
 
     const circle = graph.addNode({
       shape: 'basic.circle',
-      x: 20,
-      y: 150,
-      width: 50,
-      height: 50,
+      x: 100,
+      y: 165,
+      width: 60,
+      height: 60,
       attrs: {
         circle: { cx: 8, cy: 8, r: 8 },
-        text: { text: 'test' },
+        text: { text: 'Source' },
       },
     })
 

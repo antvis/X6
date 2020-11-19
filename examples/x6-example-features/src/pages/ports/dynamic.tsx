@@ -58,7 +58,7 @@ MyShape.config({
       magnet: false,
     },
     body: {
-      fill: 'lightgray',
+      fill: '#f5f5f5',
     },
   },
   ports: {
@@ -69,10 +69,10 @@ MyShape.config({
         attrs: {
           portBody: {
             magnet: 'passive',
-            r: 12,
-            cy: -4,
-            fill: 'darkblue',
-            stroke: 'black',
+            r: 6,
+            cy: 0,
+            fill: '#fff',
+            stroke: '#31d0c6',
           },
         },
         z: 0,
@@ -82,10 +82,10 @@ MyShape.config({
         attrs: {
           portBody: {
             magnet: 'active',
-            r: 12,
-            cy: 4,
-            fill: 'lightblue',
-            stroke: 'black',
+            r: 6,
+            cy: 0,
+            fill: '#fff',
+            stroke: '#FFA500',
           },
         },
         z: 0,
@@ -103,10 +103,10 @@ MyShape.config({
 const magnetAvailabilityHighlighter = {
   name: 'stroke',
   args: {
-    padding: 6,
+    padding: 5,
     attrs: {
-      strokeWidth: 3,
-      stroke: '#ff0000',
+      strokeWidth: 10,
+      stroke: '#31d0c6',
     },
   },
 }
@@ -119,6 +119,7 @@ export default class Example extends React.Component {
       container: this.container,
       width: 800,
       height: 600,
+      grid: true,
       highlighting: {
         magnetAvailable: magnetAvailabilityHighlighter,
       },
@@ -167,15 +168,15 @@ export default class Example extends React.Component {
     })
 
     graph.addNode(
-      new MyShape().resize(120, 100).position(200, 100).updateInPorts(graph),
+      new MyShape().resize(120, 40).position(200, 100).updateInPorts(graph),
     )
 
     graph.addNode(
-      new MyShape().resize(120, 100).position(400, 100).updateInPorts(graph),
+      new MyShape().resize(120, 40).position(400, 100).updateInPorts(graph),
     )
 
     graph.addNode(
-      new MyShape().resize(120, 100).position(300, 400).updateInPorts(graph),
+      new MyShape().resize(120, 40).position(300, 280).updateInPorts(graph),
     )
 
     function update(view: NodeView) {
