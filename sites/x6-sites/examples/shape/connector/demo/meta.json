@@ -1,20 +1,44 @@
 {
   "demos": [
     {
+      "filename": "normal.ts",
+      "title": {
+        "zh": "正常连线",
+        "en": "Normal Connector"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*HwCJRawjuCAAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "smooth.ts",
+      "title": {
+        "zh": "平滑连线",
+        "en": "Smooth Connector"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*x4k3So2KAtwAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "rounded.ts",
+      "title": {
+        "zh": "圆角连线",
+        "en": "Rounded Connector"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*Xre2RYCzIiUAAAAAAAAAAAAAARQnAQ"
+    },
+    {
       "filename": "jumpover.ts",
       "title": {
-        "zh": "跳线连接器",
+        "zh": "跳线",
         "en": "JumpOver Connector"
       },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*wT7jQbXyWMMAAAAAAAAAAAAAARQnAQ"
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*Gbu3R5fVQC4AAAAAAAAAAAAAARQnAQ"
     },
     {
       "filename": "wobble.ts",
       "title": {
-        "zh": "自定义连接器",
+        "zh": "自定义连线",
         "en": "Custom Connector"
       },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*aHBGSqLpuxEAAAAAAAAAAAAAARQnAQ"
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*zrRTSbn-uD0AAAAAAAAAAAAAARQnAQ"
     }
   ]
 }

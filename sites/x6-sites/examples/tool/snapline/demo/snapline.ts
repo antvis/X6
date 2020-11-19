@@ -1,6 +1,6 @@
 import { Graph } from '@antv/x6'
 
-const container = document.getElementById('container')!
+const container = document.getElementById('container')
 const graph = new Graph({
   container: container,
   width: 800,
@@ -15,7 +15,13 @@ graph.addNode({
   y: 50,
   width: 100,
   height: 40,
-  attrs: { label: { text: 'A' } },
+  attrs: {
+    body: {
+      fill: '#ff9c6e',
+      stroke: '#ff7a45',
+    },
+    label: { text: 'A' },
+  },
 })
 
 graph.addNode({
@@ -24,7 +30,13 @@ graph.addNode({
   y: 80,
   width: 50,
   height: 50,
-  attrs: { label: { text: 'B' } },
+  attrs: {
+    body: {
+      fill: '#d3f261',
+      stroke: '#bae637',
+    },
+    label: { text: 'B' },
+  },
 })
 
 graph.addNode({
@@ -33,5 +45,11 @@ graph.addNode({
   y: 150,
   width: 80,
   height: 40,
-  attrs: { label: { text: 'C' } },
+  attrs: {
+    body: {
+      fill: '#5cdbd3',
+      stroke: '#36cfc9',
+    },
+    label: { text: 'C' },
+  },
 })

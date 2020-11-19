@@ -31,10 +31,12 @@ const rect = graph.addNode({
   width: 90,
   height: 60,
   attrs: {
-    rect: { fill: '#31D0C6', stroke: '#4B4A67', 'stroke-width': 2 },
-    text: { text: 'rect', fill: 'white' },
+    body: {
+      fill: '#ff9c6e',
+      stroke: '#ff7a45',
+    },
+    label: { text: 'A' },
   },
-  ports: [{}],
 })
 
 rect.on('removed', () => {
@@ -48,8 +50,11 @@ const circle = graph.addNode({
   width: 40,
   height: 40,
   attrs: {
-    circle: { fill: '#FE854F', 'stroke-width': 2, stroke: '#4B4A67' },
-    text: { text: 'circle', fill: 'white' },
+    body: {
+      fill: '#d3f261',
+      stroke: '#bae637',
+    },
+    label: { text: 'B' },
   },
 })
 

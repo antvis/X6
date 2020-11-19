@@ -21,7 +21,7 @@ if (!Registry.Router.registry.exist('random')) {
   })
 }
 
-const container = document.getElementById('container')!
+const container = document.getElementById('container')
 const graph = new Graph({
   container: container,
   grid: 10,
@@ -32,7 +32,13 @@ const source = graph.addNode({
   y: 50,
   width: 120,
   height: 80,
-  attrs: { label: { text: 'Source' } },
+  attrs: {
+    body: {
+      fill: '#ff7875',
+      stroke: '#ff4d4f',
+    },
+    label: { text: 'Source' },
+  },
 })
 
 const target = graph.addNode(
