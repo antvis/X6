@@ -32,7 +32,7 @@ if (content.indexOf(esbuild) === -1) {
       )
 
   if (process.env.CI !== 'true') {
-    // 本地构建时，将缓存文件保存为全局缓存。
+    // 本地构建时，将 node_modules/.cache 缓存文件保存为全局缓存。
     content = content
       .replace(
         'module.exports =',
