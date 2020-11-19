@@ -3,14 +3,14 @@ import { Graph, Shape, Node } from '@antv/x6'
 const Parent = Shape.Rect.define({
   customEmebedding: true,
   attrs: {
-    body: { stroke: 'transparent', fill: 'black', rx: 5, ry: 5 },
+    body: { stroke: 'transparent', fill: '#531dab', rx: 5, ry: 5 },
     label: { fontSize: 14, text: 'Parent', fill: 'white' },
   },
 })
 
 const Child = Shape.Rect.define({
   attrs: {
-    body: { stroke: 'transparent', fill: 'green', rx: 5, ry: 5 },
+    body: { stroke: 'transparent', fill: '#389e0d', rx: 5, ry: 5 },
     label: { fontSize: 14, text: 'child1', fill: 'white' },
   },
 })
@@ -67,7 +67,7 @@ graph.addNode({
   size: { width: 160, height: 100 },
   position: { x: 20, y: 120 },
   attrs: {
-    body: { fill: 'red' },
+    body: { fill: '#cf1322' },
     label: { text: 'Try to move me\n above the \n "Parent" element' },
   },
 })
@@ -77,7 +77,7 @@ graph.addNode({
   size: { width: 160, height: 100 },
   position: { x: 20, y: 240 },
   attrs: {
-    body: { fill: 'green' },
+    body: { fill: '#096dd9' },
     label: { text: 'Try to move me\n above the \n "Parent" element' },
   },
 })
@@ -87,14 +87,14 @@ graph.addNode({
   size: { width: 160, height: 100 },
   position: { x: 20, y: 360 },
   attrs: {
-    body: { fill: 'blue' },
+    body: { fill: '#08979c' },
     label: { text: 'Try to move me\n above the \n "Parent" element' },
   },
 })
 
 var r = new Child({
   attrs: {
-    body: { fill: 'red' },
+    body: { fill: '#d4380d' },
     label: { text: 'Embedded!' },
   },
 })
@@ -103,7 +103,7 @@ var r = new Child({
 
 var g = new Child({
   attrs: {
-    body: { fill: 'green' },
+    body: { fill: '#08979c' },
     label: { text: 'Embedded!' },
   },
 })
@@ -112,7 +112,7 @@ var g = new Child({
 
 var b = new Child({
   attrs: {
-    body: { fill: 'blue' },
+    body: { fill: '#08979c' },
     label: { text: 'Embedded!' },
   },
 })

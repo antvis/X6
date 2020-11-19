@@ -1,12 +1,60 @@
 {
   "demos": [
     {
+      "filename": "normal.ts",
+      "title": {
+        "zh": "默认路由",
+        "en": "Normal Router"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*KdkFTJ-sP6YAAAAAAAAAAAAAARQnAQ"
+    },
+    {
       "filename": "orth.ts",
       "title": {
         "zh": "正交路由",
         "en": "Orth Router"
       },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*YulsS6FVHtYAAAAAAAAAAAAAARQnAQ"
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*2fRdRaP2JBUAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "oneSide.ts",
+      "title": {
+        "zh": "OneSide",
+        "en": "OneSide Router"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*622fTp6J8twAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "manhattan.ts",
+      "title": {
+        "zh": "曼哈顿路由",
+        "en": "Manhattan Router"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*FXGRQ5RmLyMAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "metro.ts",
+      "title": {
+        "zh": "铁路路由",
+        "en": "Metro Router"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*ABPIT5s-yh4AAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "er.ts",
+      "title": {
+        "zh": "ER路由",
+        "en": "ER Router"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*iE8MS6-xgZMAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "customRouter.ts",
+      "title": {
+        "zh": "随机路由",
+        "en": "Random Router"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*L3C-TrM4lG0AAAAAAAAAAAAAARQnAQ"
     }
   ]
 }

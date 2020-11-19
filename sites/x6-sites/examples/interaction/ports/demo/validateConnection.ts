@@ -56,7 +56,8 @@ MyShape.config({
       magnet: false,
     },
     body: {
-      fill: 'lightgray',
+      fill: '#ff9c6e',
+      stroke: '#ff7a45',
     },
   },
   ports: {
@@ -69,8 +70,8 @@ MyShape.config({
             magnet: 'passive',
             r: 12,
             cy: -4,
-            fill: 'darkblue',
-            stroke: 'black',
+            fill: '#b37feb',
+            stroke: '#9254de',
           },
         },
         z: 0,
@@ -82,8 +83,8 @@ MyShape.config({
             magnet: 'active',
             r: 12,
             cy: 4,
-            fill: 'lightblue',
-            stroke: 'black',
+            fill: '#69c0ff',
+            stroke: '#40a9ff',
           },
         },
         z: 0,
@@ -109,7 +110,7 @@ const magnetAvailabilityHighlighter = {
   },
 }
 
-const container = document.getElementById('container')!
+const container = document.getElementById('container')
 const graph = new Graph({
   container: container,
   highlighting: {

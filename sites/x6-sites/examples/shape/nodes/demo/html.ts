@@ -16,11 +16,11 @@ const source = graph.addNode({
     const wrap = document.createElement('div')
     wrap.style.width = '100%'
     wrap.style.height = '100%'
-    wrap.style.background = '#f0f0f0'
+    wrap.style.background = '#722ed1'
     wrap.style.display = 'flex'
     wrap.style.justifyContent = 'center'
     wrap.style.alignItems = 'center'
-
+    wrap.style.color = '#fff'
     wrap.innerText = 'hello'
 
     return wrap
@@ -30,11 +30,11 @@ const source = graph.addNode({
 const wrap = document.createElement('div')
 wrap.style.width = '100%'
 wrap.style.height = '100%'
-wrap.style.background = '#f0f0f0'
+wrap.style.background = '#2f54eb'
 wrap.style.display = 'flex'
 wrap.style.justifyContent = 'center'
 wrap.style.alignItems = 'center'
-
+wrap.style.color = '#fff'
 wrap.innerText = 'world'
 
 const target = graph.addNode({
