@@ -1,3 +1,18 @@
+## @antv/x6-sites [1.0.8](https://github.com/antvis/x6/compare/@antv/x6-sites@1.0.7...@antv/x6-sites@1.0.8) (2020-11-19)
+
+
+### Bug Fixes
+
+* 🐛 filter not working when select cell by calling `select()` api or by click ([#314](https://github.com/antvis/x6/issues/314)) ([7a3e547](https://github.com/antvis/x6/commit/7a3e54731940f5dcc2a15b8d338aedf64fc63619)), closes [#305](https://github.com/antvis/x6/issues/305)
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.0.2
+
 ## @antv/x6-sites [1.0.7](https://github.com/antvis/x6/compare/@antv/x6-sites@1.0.6...@antv/x6-sites@1.0.7) (2020-11-19)
 
 ## @antv/x6-sites [1.0.6](https://github.com/antvis/x6/compare/@antv/x6-sites@1.0.5...@antv/x6-sites@1.0.6) (2020-11-19)
