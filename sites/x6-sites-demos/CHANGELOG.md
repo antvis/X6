@@ -1,3 +1,13 @@
+## @antv/x6-sites-demos [1.0.5](https://github.com/antvis/x6/compare/@antv/x6-sites-demos@1.0.4...@antv/x6-sites-demos@1.0.5) (2020-11-19)
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6-sites-demos-helper:** upgraded to 0.10.79
+
 ## @antv/x6-sites-demos [1.0.4](https://github.com/antvis/x6/compare/@antv/x6-sites-demos@1.0.3...@antv/x6-sites-demos@1.0.4) (2020-11-19)
 
 
