@@ -5,6 +5,7 @@ import {
   OneToOneOutlined,
   ZoomInOutlined,
   ZoomOutOutlined,
+  GithubOutlined,
 } from '@ant-design/icons';
 import classNames from 'classnames';
 import styles from './index.less';
@@ -19,6 +20,13 @@ interface Props {
 
 const GraphToolbar: React.FC<Props> = (props) => {
   const { className, onZoomIn, onZoomOut, onFitContent, onRealContent } = props;
+
+  const onViewSource = () => {
+    window.open(
+      'https://github.com/antvis/X6/tree/master/examples/x6-app-er',
+      '_blank',
+    );
+  };
 
   return (
     <ul className={classNames(styles.handler, className)}>
@@ -56,6 +64,15 @@ const GraphToolbar: React.FC<Props> = (props) => {
       >
         <li onClick={onFitContent} className={styles.item}>
           <CompressOutlined />
+        </li>
+      </Popover>
+      <Popover
+        overlayClassName={styles.popover}
+        content="查看源码"
+        placement="left"
+      >
+        <li onClick={onViewSource} className={styles.item}>
+          <GithubOutlined />
         </li>
       </Popover>
     </ul>
