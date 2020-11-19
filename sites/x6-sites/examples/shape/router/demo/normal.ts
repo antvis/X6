@@ -42,6 +42,6 @@ graph.addEdge({
     { x: 300, y: 120 },
   ],
   router: {
-    name: 'orth',
+    name: 'normal',
   },
 })

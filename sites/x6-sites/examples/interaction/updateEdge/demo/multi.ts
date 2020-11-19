@@ -1,6 +1,6 @@
 import { Graph, Edge, Line } from '@antv/x6'
 
-const container = document.getElementById('container')!
+const container = document.getElementById('container')
 const graph = new Graph({
   container: container,
   mousewheel: true,
@@ -13,6 +13,15 @@ const rect1 = graph.addNode({
   width: 100,
   height: 40,
   label: 'hello',
+  attrs: {
+    body: {
+      fill: '#ff7875',
+      stroke: '#ff4d4f',
+    },
+    text: {
+      fill: '#ffffff',
+    },
+  },
 })
 
 const rect2 = graph.addNode({
@@ -21,6 +30,15 @@ const rect2 = graph.addNode({
   width: 100,
   height: 40,
   label: 'world',
+  attrs: {
+    body: {
+      fill: '#ff9c6e',
+      stroke: '#ff7a45',
+    },
+    text: {
+      fill: '#ffffff',
+    },
+  },
 })
 
 const total = 15
@@ -33,6 +51,11 @@ for (let i = 0; i < total; i += 1) {
       target: rect2,
       connector: {
         name: 'smooth',
+      },
+      attrs: {
+        line: {
+          stroke: '#722ed1',
+        },
       },
     }),
   )

@@ -24,8 +24,8 @@ graph.addNode({
   label: 'rect',
   attrs: {
     body: {
-      stroke: '#6FC2FF',
-      fill: '#E9F8FF',
+      stroke: '#ff7875',
+      fill: '#ffa39e',
     },
   },
 })
@@ -38,8 +38,8 @@ graph.addNode({
   label: 'rect',
   attrs: {
     body: {
-      stroke: '#1DA677',
-      fill: '#94F5CA',
+      stroke: '#95de64',
+      fill: '#b7eb8f',
       rx: 10,
       ry: 10,
     },
@@ -54,8 +54,8 @@ graph.addNode({
   label: 'rect',
   attrs: {
     body: {
-      stroke: '#F7BD2D',
-      fill: '#FCE6A2',
+      stroke: '#85a5ff',
+      fill: '#adc6ff',
       rx: 10,
       ry: 10,
     },
@@ -89,8 +89,8 @@ graph.addNode({
   label: 'rect',
   attrs: {
     body: {
-      stroke: '#6FC2FF',
-      fill: '#E9F8FF',
+      stroke: '#ff7875',
+      fill: '#ffa39e',
     },
     label: {
       refX: 8,
@@ -109,8 +109,8 @@ graph.addNode({
   label: 'rect',
   attrs: {
     body: {
-      stroke: '#1DA677',
-      fill: '#94F5CA',
+      stroke: '#95de64',
+      fill: '#b7eb8f',
       rx: 10,
       ry: 10,
     },
@@ -132,8 +132,8 @@ graph.addNode({
   label: 'rect',
   attrs: {
     body: {
-      stroke: '#F7BD2D',
-      fill: '#FCE6A2',
+      stroke: '#85a5ff',
+      fill: '#adc6ff',
       rx: 10,
       ry: 10,
     },
@@ -173,8 +173,8 @@ graph.addNode({
   label: 'rect',
   attrs: {
     body: {
-      stroke: '#6FC2FF',
-      fill: '#E9F8FF',
+      stroke: '#ff7875',
+      fill: '#ffa39e',
     },
     label: {
       refX: 0.5,
@@ -193,8 +193,8 @@ graph.addNode({
   label: 'rect',
   attrs: {
     body: {
-      stroke: '#1DA677',
-      fill: '#94F5CA',
+      stroke: '#95de64',
+      fill: '#b7eb8f',
       rx: 10,
       ry: 10,
     },
@@ -216,8 +216,8 @@ graph.addNode({
   label: 'rect',
   attrs: {
     body: {
-      stroke: '#F7BD2D',
-      fill: '#FCE6A2',
+      stroke: '#85a5ff',
+      fill: '#adc6ff',
       rx: 10,
       ry: 10,
     },
@@ -259,8 +259,8 @@ graph.addNode({
   label: 'rect',
   attrs: {
     body: {
-      stroke: '#6FC2FF',
-      fill: '#E9F8FF',
+      stroke: '#ff7875',
+      fill: '#ffa39e',
     },
     label: {
       refX: '100%',
@@ -280,8 +280,8 @@ graph.addNode({
   label: 'rect',
   attrs: {
     body: {
-      stroke: '#1DA677',
-      fill: '#94F5CA',
+      stroke: '#95de64',
+      fill: '#b7eb8f',
       rx: 10,
       ry: 10,
     },
@@ -304,8 +304,8 @@ graph.addNode({
   label: 'rect',
   attrs: {
     body: {
-      stroke: '#F7BD2D',
-      fill: '#FCE6A2',
+      stroke: '#85a5ff',
+      fill: '#adc6ff',
       rx: 10,
       ry: 10,
     },

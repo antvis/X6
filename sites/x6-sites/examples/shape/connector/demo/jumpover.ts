@@ -1,6 +1,6 @@
 import { Graph } from '@antv/x6'
 
-const container = document.getElementById('container')!
+const container = document.getElementById('container')
 const graph = new Graph({
   container: container,
   grid: 10,
@@ -12,8 +12,15 @@ const rect = graph.createNode({
   width: 70,
   height: 30,
   attrs: {
-    body: { fill: 'lightgray' },
-    label: { text: 'rect', magnet: true },
+    body: {
+      fill: '#ff7875',
+      stroke: '#ff4d4f',
+    },
+    label: {
+      text: 'rect',
+      magnet: true,
+      fill: '#ffffff',
+    },
   },
 })
 
@@ -34,7 +41,7 @@ for (let i = 0; i < 6; i++) {
       name: 'jumpover',
       args: { type: 'gap' },
     })
-    edge.attr('line/stroke', 'red')
+    edge.attr('line/stroke', '#722ed1')
   }
 
   graph.addEdge(edge)
@@ -52,7 +59,7 @@ graph.addEdge({
   connector: { name: 'jumpover' },
   attrs: {
     line: {
-      stroke: 'red',
+      stroke: '#722ed1',
     },
   },
   vertices: [

@@ -1,5 +1,5 @@
 ---
-title: 连接器
+title: 连线
 order: 4
 redirect_from:
   - /zh/examples/shape
