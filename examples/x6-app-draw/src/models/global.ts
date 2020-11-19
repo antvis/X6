@@ -11,11 +11,11 @@ export function useGridAttr() {
     factor: 4,
     bgColor: '#ffffff',
     showImage: true,
-    repeat: 'no-repeat',
-    angle: 0,
+    repeat: 'watermark',
+    angle: 30,
     position: 'center',
-    bgSize: 'auto auto',
-    opacity: 1,
+    bgSize: JSON.stringify({ width: 150, height: 150 }),
+    opacity: 0.1,
   })
   const setGridAttr = (key: string, value: any) => {
     setGridAttrs((prev) => ({
