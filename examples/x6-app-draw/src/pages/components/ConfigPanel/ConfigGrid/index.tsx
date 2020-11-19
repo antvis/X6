@@ -362,9 +362,9 @@ export default function (props: IProps) {
                   <Select.Option value="30px 30px">30px 30px</Select.Option>
                   <Select.Option value="100% 100%">100% 100%</Select.Option>
                   <Select.Option
-                    value={JSON.stringify({ width: 50, height: 50 })}
+                    value={JSON.stringify({ width: 150, height: 150 })}
                   >
-                    {`{width: 50, height: 50 }`}
+                    {`{width: 150, height: 150 }`}
                   </Select.Option>
                 </Select>
               </Col>
