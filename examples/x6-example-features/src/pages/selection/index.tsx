@@ -10,7 +10,7 @@ export default class Example extends React.Component {
       container: this.container,
       width: 800,
       height: 600,
-      grid: 10,
+      grid: true,
       keyboard: {
         enabled: true,
         global: true,
@@ -28,7 +28,7 @@ export default class Example extends React.Component {
         strict: true,
         showNodeSelectionBox: true,
         selectCellOnMoved: false,
-        content: '123',
+        // content: '123',
       },
     })
 
