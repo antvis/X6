@@ -1,3 +1,10 @@
+# @antv/x6-app-er [1.2.0](https://github.com/antvis/x6/compare/@antv/x6-app-er@1.1.1...@antv/x6-app-er@1.2.0) (2020-11-19)
+
+
+### Features
+
+* ✨ add github source link ([83c4c08](https://github.com/antvis/x6/commit/83c4c080d0c2e22dc8deb960319f646bf4c80a64))
+
 ## @antv/x6-app-er [1.1.1](https://github.com/antvis/x6/compare/@antv/x6-app-er@1.1.0...@antv/x6-app-er@1.1.1) (2020-11-18)
 
 # @antv/x6-app-er [1.1.0](https://github.com/antvis/x6/compare/@antv/x6-app-er@1.0.1...@antv/x6-app-er@1.1.0) (2020-11-18)
