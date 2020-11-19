@@ -7,7 +7,7 @@ const mockProperties = [
   },
   {
     propertyId: 'propertyId2',
-    name: '支付宝交易号',
+    name: '交易号',
     propertyType: 'bigint',
     isFK: false,
   },
