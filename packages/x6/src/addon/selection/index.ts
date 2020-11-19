@@ -164,7 +164,8 @@ export class Selection extends View<Selection.EventArgs> {
 
   select(cells: Cell | Cell[], options: Collection.AddOptions = {}) {
     options.dryrun = true
-    this.collection.add(cells, options)
+    const items = this.filter(Array.isArray(cells) ? cells : [cells])
+    this.collection.add(items, options)
     return this
   }
 
@@ -177,10 +178,8 @@ export class Selection extends View<Selection.EventArgs> {
 
   reset(cells?: Cell | Cell[], options: Collection.SetOptions = {}) {
     if (cells) {
-      this.collection.reset(Array.isArray(cells) ? cells : [cells], {
-        ...options,
-        ui: true,
-      })
+      const items = this.filter(Array.isArray(cells) ? cells : [cells])
+      this.collection.reset(items, { ...options, ui: true })
       return this
     }
     return this.clean(options)
@@ -241,6 +240,21 @@ export class Selection extends View<Selection.EventArgs> {
     this.delegateDocumentEvents(Private.documentEvents, evt.data)
   }
 
+  filter(cells: Cell[]) {
+    const filter = this.options.filter
+    if (Array.isArray(filter)) {
+      return cells.filter(
+        cell => !filter.includes(cell) && !filter.includes(cell.shape),
+      )
+    }
+
+    if (typeof filter === 'function') {
+      return cells.filter(cell => FunctionExt.call(filter, this.graph, cell))
+    }
+
+    return cells
+  }
+
   protected stopSelecting(evt: JQuery.MouseUpEvent) {
     const graph = this.graph
     const action = this.getEventData<EventData.Common>(evt).action
@@ -254,23 +268,8 @@ export class Selection extends View<Selection.EventArgs> {
         width = width / scale.sx
         height = height / scale.sy
         const rect = new Rectangle(origin.x, origin.y, width, height)
-        let views = this.getNodesInArea(rect)
-        const filter = this.options.filter
-
-        if (Array.isArray(filter)) {
-          views = views.filter(
-            (view) =>
-              !filter.includes(view.cell) && !filter.includes(view.cell.shape),
-          )
-        } else {
-          if (typeof filter === 'function') {
-            views = views.filter(
-              (view) => !FunctionExt.call(filter, this.graph, view.cell),
-            )
-          }
-        }
-        const cells = views.map((view) => view.cell)
-        this.collection.reset(cells, { ui: true })
+        const cells = this.getNodesInArea(rect).map(view => view.cell)
+        this.reset(cells)
         break
       }
 
@@ -406,17 +405,17 @@ export class Selection extends View<Selection.EventArgs> {
     otherOptions?: KeyValue,
   ) {
     const map: { [id: string]: boolean } = {}
-    this.collection.toArray().forEach((cell) => {
+    this.collection.toArray().forEach(cell => {
       if (!map[cell.id] && cell !== exclude) {
         const options = {
           ...otherOptions,
           selection: this.cid,
         }
         cell.translate(dx, dy, options)
-        cell.getDescendants({ deep: true }).forEach((child) => {
+        cell.getDescendants({ deep: true }).forEach(child => {
           map[child.id] = true
         })
-        this.graph.model.getConnectedEdges(cell).forEach((edge) => {
+        this.graph.model.getConnectedEdges(cell).forEach(edge => {
           if (!map[edge.id]) {
             edge.translate(dx, dy, options)
             map[edge.id] = true
@@ -435,8 +434,8 @@ export class Selection extends View<Selection.EventArgs> {
     return this.options.useCellGeometry
       ? (graph.model
           .getNodesInArea(rect, options)
-          .map((node) => graph.renderer.findViewByCell(node))
-          .filter((view) => view != null) as CellView[])
+          .map(node => graph.renderer.findViewByCell(node))
+          .filter(view => view != null) as CellView[])
       : graph.renderer.findViewsInArea(rect, options)
   }
 
@@ -480,7 +479,7 @@ export class Selection extends View<Selection.EventArgs> {
   }
 
   protected destroyAllSelectionBoxes(cells: Cell[]) {
-    cells.forEach((cell) => this.removeCellUnSelectedClassName(cell))
+    cells.forEach(cell => this.removeCellUnSelectedClassName(cell))
 
     this.hide()
     this.$boxes.remove()
@@ -536,9 +535,9 @@ export class Selection extends View<Selection.EventArgs> {
     const corner = { x: 0, y: 0 }
     const cells = this.collection
       .toArray()
-      .filter((cell) => this.canShowSelectionBox(cell))
+      .filter(cell => this.canShowSelectionBox(cell))
 
-    cells.forEach((cell) => {
+    cells.forEach(cell => {
       const view = this.graph.renderer.findViewByCell(cell)
       if (view) {
         const bbox = view.getBBox({
@@ -635,7 +634,9 @@ export class Selection extends View<Selection.EventArgs> {
     if (this.boxCount) {
       this.hide()
       this.$boxes.each((_, elem) => {
-        const cellId = this.$(elem).remove().attr('data-cell')
+        const cellId = this.$(elem)
+          .remove()
+          .attr('data-cell')
         const cell = this.collection.get(cellId)
         if (cell) {
           this.createSelectionBox(cell)
@@ -665,7 +666,7 @@ export class Selection extends View<Selection.EventArgs> {
 
   protected onReseted({ previous, current }: Collection.EventArgs['reseted']) {
     this.destroyAllSelectionBoxes(previous)
-    current.forEach((cell) => {
+    current.forEach(cell => {
       this.listenCellRemoveEvent(cell)
       this.createSelectionBox(cell)
     })
@@ -691,7 +692,7 @@ export class Selection extends View<Selection.EventArgs> {
     removed,
     options,
   }: Collection.EventArgs['updated']) {
-    added.forEach((cell) => {
+    added.forEach(cell => {
       this.trigger('cell:selected', { cell, options })
       this.graph.trigger('cell:selected', { cell, options })
       if (cell.isNode()) {
@@ -703,7 +704,7 @@ export class Selection extends View<Selection.EventArgs> {
       }
     })
 
-    removed.forEach((cell) => {
+    removed.forEach(cell => {
       this.trigger('cell:unselected', { cell, options })
       this.graph.trigger('cell:unselected', { cell, options })
       if (cell.isNode()) {
@@ -802,7 +803,7 @@ export class Selection extends View<Selection.EventArgs> {
     const gridSize = this.graph.getGridSize()
     const cells = this.collection.toArray()
     const bbox = Cell.getCellsBBox(cells)!
-    const bboxes = cells.map((cell) => cell.getBBox())
+    const bboxes = cells.map(cell => cell.getBBox())
     const maxWidth = bboxes.reduce((maxWidth, bbox) => {
       return bbox.width < maxWidth ? bbox.width : maxWidth
     }, Infinity)
