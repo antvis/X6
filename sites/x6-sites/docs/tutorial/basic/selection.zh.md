@@ -66,10 +66,10 @@ interface SelectionOptions {
         selection: Selection,
         contentElement: HTMLElement,
       ) => string)
-  filter?: 
-    | null 
-    | (string 
-    | { id: string })[] 
+  filter?:
+    | null
+    | string[]
+    | ({ id: string })[]
     | ((this: Graph, cell: Cell) => boolean)
 }
 ```
@@ -528,7 +528,7 @@ toggleStrictRubberband(enabled?: boolean): this
 
 ```sign
 setSelectionFilter(
-  filter?: 
+  filter?:
    | null
    | (string | { id: string })[]
    | ((this: Graph, cell: Cell) => boolean)
@@ -539,7 +539,7 @@ setSelectionFilter(
 
 - 当 `filter` 为 `null`、`undefined` 时，不过滤节点/边。
 - 当 `filter` 为 `(string | { id: string })[]` 时，表示具有这些 ID 的节点/边不能被选中
-- 当 `filter` 为 `(this: Graph, cell: Cell) => boolean` 时，返回 `true` 时节点/边不能被选中。
+- 当 `filter` 为 `(this: Graph, cell: Cell) => boolean` 时，返回 `false` 时节点/边不能被选中。
 
 ### graph.setRubberbandModifiers(...)
 
