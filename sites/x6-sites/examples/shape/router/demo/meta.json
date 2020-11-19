@@ -1,0 +1,12 @@
+{
+  "demos": [
+    {
+      "filename": "orth.ts",
+      "title": {
+        "zh": "正交路由",
+        "en": "Orth Router"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*YulsS6FVHtYAAAAAAAAAAAAAARQnAQ"
+    }
+  ]
+}

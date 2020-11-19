@@ -1,6 +1,6 @@
 ---
-title: 内置边
-order: 2
+title: 内置箭头
+order: 3
 redirect_from:
   - /zh/examples/shape
 ---

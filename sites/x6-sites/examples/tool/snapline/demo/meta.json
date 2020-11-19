@@ -1,0 +1,12 @@
+{
+  "demos": [
+    {
+      "filename": "snapline.ts",
+      "title": {
+        "zh": "对齐线",
+        "en": "Snapline"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*AABsRIDATzEAAAAAAAAAAAAAARQnAQ"
+    }
+  ]
+}
