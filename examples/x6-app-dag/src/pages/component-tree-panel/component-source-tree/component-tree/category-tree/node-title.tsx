@@ -4,7 +4,7 @@ import { Popover, Tag } from 'antd'
 import { DragSource, ConnectDragPreview, ConnectDragSource } from 'react-dnd'
 import { DatabaseFilled, ReadOutlined } from '@ant-design/icons'
 import marked from 'marked'
-import { useSafeSetHTML } from '@/common/hooks/useSafeSetHTML'
+import { useSafeSetHTML } from '@/pages/common/hooks/useSafeSetHtml'
 import { DRAGGABLE_ALGO_COMPONENT } from '@/constants/graph'
 import styles from './node-title.less'
 
