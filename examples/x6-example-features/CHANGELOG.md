@@ -1,3 +1,19 @@
+## @antv/x6-example-features [1.0.5](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.0.4...@antv/x6-example-features@1.0.5) (2020-11-19)
+
+
+### Bug Fixes
+
+* 🐛 filter not working when select cell by calling `select()` api or by click ([#314](https://github.com/antvis/x6/issues/314)) ([7a3e547](https://github.com/antvis/x6/commit/7a3e54731940f5dcc2a15b8d338aedf64fc63619)), closes [#305](https://github.com/antvis/x6/issues/305)
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.0.2
+* **@antv/x6-react-shape:** upgraded to 1.0.2
+
 ## @antv/x6-example-features [1.0.4](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.0.3...@antv/x6-example-features@1.0.4) (2020-11-19)
 
 ## @antv/x6-example-features [1.0.3](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.0.2...@antv/x6-example-features@1.0.3) (2020-11-19)
