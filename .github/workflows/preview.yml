@@ -5,6 +5,7 @@ on:
       - sites/x6-sites/**
       - sites/x6-sites-demos/**
       - sites/x6-sites-demos-helper/**
+      - examples/x6-app-**
 jobs:
   run:
     runs-on: ubuntu-latest
@@ -15,9 +16,11 @@ jobs:
       - uses: actions/checkout@v2
         with:
           ref: refs/pull/${{ github.event.pull_request.number }}/merge
+
       - name: 🌱　Get yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn cache dir)"
+
       - name: 🚸　Setup yarn cacha
         uses: actions/cache@v2
         with:
@@ -25,6 +28,7 @@ jobs:
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
+
       ## cache webpack(babel-loader, eslint-loader)
       - name: 💩　Setup webpack cache
         uses: actions/cache@v2
@@ -35,6 +39,7 @@ jobs:
           key: ${{ runner.os }}-webpack-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-webpack-
+
       ## cache sites
       - name: 💩　Setup sites cache
         uses: actions/cache@v2
@@ -43,31 +48,35 @@ jobs:
           key: ${{ runner.os }}-sites-${{ hashFiles('./packages/x6/package.json', './sites/x6-sites-demos/**/src') }}
           restore-keys: |
             ${{ runner.os }}-sites-
+
       - name: 🎉　Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
+
       - name: 🚧　Prepare Environment
         run: |
           yarn global add lerna
+
       - name: 🚀　Bootstrap
-        run: |
-          yarn bootstrap
+        run: yarn bootstrap
+
       - name: 📦　Build Demos
-        run: |
-          yarn build:demos
+        run: yarn build:demos
+
       - name: 🧲　Build Apps
-        run: |
-          yarn build:apps
+        run: yarn build:apps
+
       - name: ✨　Build Sites
-        run: |
-          yarn build:sites
+        run: yarn build:sites
+
       - name: 🔑　Generate Token
         uses: bubkoo/use-app-token@v1
         with:
           app_id: ${{ secrets.APP_ID }}
           private_key: ${{ secrets.PRIVATE_KEY }}
           env_name: bot_token
+
       - name: ✅　Deploy Sites
         uses: afc163/surge-preview@v1
         with:
