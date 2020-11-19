@@ -15,7 +15,9 @@ marked.setOptions({
   breaks: true,
 })
 
-const Markdown2html: React.FC<{ description: string; tag: string }> = props => {
+const Markdown2html: React.FC<{ description: string; tag: string }> = (
+  props,
+) => {
   const { description, tag } = props
   const descriptionElementRef = useRef<HTMLDivElement>(null)
 
@@ -137,7 +139,7 @@ interface NodeTitleProps {
   connectDragPreview: ConnectDragPreview
 }
 
-const InnerNodeTitle: React.FC<NodeTitleProps> = props => {
+const InnerNodeTitle: React.FC<NodeTitleProps> = (props) => {
   const { data, connectDragPreview, connectDragSource } = props
   const { keyword, algoSourceType, name } = data
   return (
