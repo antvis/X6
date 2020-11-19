@@ -204,6 +204,14 @@ module.exports = {
           en: 'Animation',
         },
       },
+      {
+        slug: 'tool',
+        icon: 'tool',
+        title: {
+          zh: '组件',
+          en: 'Component',
+        },
+      },
     ],
     docsearchOptions: {
       apiKey: 'fe8bee8366e56a9463229c3c81200866',
