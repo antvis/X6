@@ -60,11 +60,11 @@ jobs:
       - name: 🚀　Bootstrap
         run: yarn bootstrap
 
-      - name: 📦　Build Demos
-        run: yarn build:demos
-
       - name: 🧲　Build Apps
         run: yarn build:apps
+
+      - name: 📦　Build Demos
+        run: yarn build:demos
 
       - name: ✨　Build Sites
         run: yarn build:sites
