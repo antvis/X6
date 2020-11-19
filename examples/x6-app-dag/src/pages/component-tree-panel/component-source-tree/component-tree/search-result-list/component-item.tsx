@@ -6,7 +6,7 @@ import marked from 'marked'
 import { ConnectDragPreview, ConnectDragSource, DragSource } from 'react-dnd'
 import { ItemName } from '@/component/item-name'
 import { unescape } from '@/common/utils'
-import { useSafeSetHTML } from '@/common/hooks/useSafeSetHTML'
+import { useSafeSetHTML } from '@/pages/common/hooks/useSafeSetHtml'
 import { DRAGGABLE_ALGO_COMPONENT } from '@/constants/graph'
 import styles from './component-item.less'
 
@@ -15,9 +15,7 @@ marked.setOptions({
   breaks: true,
 })
 
-const Markdown2html: React.FC<{ description: string; tag: string }> = (
-  props,
-) => {
+const Markdown2html: React.FC<{ description: string; tag: string }> = props => {
   const { description, tag } = props
   const descriptionElementRef = useRef<HTMLDivElement>(null)
 
@@ -139,7 +137,7 @@ interface NodeTitleProps {
   connectDragPreview: ConnectDragPreview
 }
 
-const InnerNodeTitle: React.FC<NodeTitleProps> = (props) => {
+const InnerNodeTitle: React.FC<NodeTitleProps> = props => {
   const { data, connectDragPreview, connectDragSource } = props
   const { keyword, algoSourceType, name } = data
   return (
