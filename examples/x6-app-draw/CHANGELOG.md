@@ -1,3 +1,10 @@
+## @antv/x6-app-draw [1.0.10](https://github.com/antvis/x6/compare/@antv/x6-app-draw@1.0.9...@antv/x6-app-draw@1.0.10) (2020-11-20)
+
+
+### Bug Fixes
+
+* 🐛 add design for demos ([6e849bc](https://github.com/antvis/x6/commit/6e849bc80fe1bc242a2efa7282a425c0835619fb))
+
 ## @antv/x6-app-draw [1.0.9](https://github.com/antvis/x6/compare/@antv/x6-app-draw@1.0.8...@antv/x6-app-draw@1.0.9) (2020-11-20)
 
 
