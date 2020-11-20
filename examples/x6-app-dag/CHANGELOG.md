@@ -1,3 +1,10 @@
+## @antv/x6-app-dag [1.0.8](https://github.com/antvis/x6/compare/@antv/x6-app-dag@1.0.7...@antv/x6-app-dag@1.0.8) (2020-11-20)
+
+
+### Bug Fixes
+
+* 🐛 fix lint error ([7240cfc](https://github.com/antvis/x6/commit/7240cfc8e0cc6b9a4eec7fd7a0f56666cc727cae))
+
 ## @antv/x6-app-dag [1.0.7](https://github.com/antvis/x6/compare/@antv/x6-app-dag@1.0.6...@antv/x6-app-dag@1.0.7) (2020-11-19)
 
 
