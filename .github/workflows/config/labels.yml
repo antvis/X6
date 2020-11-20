@@ -39,7 +39,7 @@
   description: Issue that may be closed soon due to the original author not responding any more.
 - name: style
   color: d4c5f9
-  description: Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc).
+  description: Changes that do not affect the meaning of the code.
 - name: Need Reproduce
   color: fbca04
   description: Need reproduce infomations.
