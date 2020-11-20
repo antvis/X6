@@ -55,9 +55,6 @@
 - name: weekly-digest
   color: 7057ff
   description:
-- name: wip
-  color: eeeeee
-  description: The PR is a WIP.
 - name: WIP
   color: eeeeee
   description: The PR is a WIP.
