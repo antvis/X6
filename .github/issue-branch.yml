@@ -1,0 +1,20 @@
+mode: chatops
+branchName: short
+branches:
+  - label: bug
+    prefix: fix/
+  - label:
+    - feature
+    - enhancement
+    prefix: feat/
+  - label:
+    - doc
+    - document
+    - documentation
+    prefix: doc/
+  - label: '*'
+    prefix: issue/
+  - label: question
+    skip: true
+experimental:
+  branchNameArgument: true
