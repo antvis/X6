@@ -42,7 +42,7 @@
   description: Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc).
 - name: Need Reproduce
   color: fbca04
-  description:
+  description: Need reproduce infomations.
 - name: needs-more-info
   color: fbca04
   description: PRs/Issues with either the default title or a blank body.
