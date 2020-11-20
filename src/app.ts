@@ -13,12 +13,14 @@ export = (app: Application) => {
     context.log(`repository_id: ${repo.id}`)
     context.log(`installation_id: ${app.id}`)
 
-    const ret = await context.github.apps.removeRepoFromInstallation({
-      repository_id: repo.id,
+    await context.github.apps.suspendInstallation({
       installation_id: app.id,
     })
 
-    console.log(ret)
+    await context.github.apps.removeRepoFromInstallation({
+      repository_id: repo.id,
+      installation_id: app.id,
+    })
   })
 
   PRTriage.start(app)
