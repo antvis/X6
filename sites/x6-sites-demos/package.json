@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@antv/x6-sites-demos",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "workspaces": [
     "packages/**/*"
   ],
@@ -17,7 +17,7 @@
     "@antv/x6": "^1.0.2",
     "@antv/x6-react-components": "^1.0.0",
     "@antv/x6-react-shape": "^1.0.2",
-    "@antv/x6-sites-demos-helper": "^0.10.79",
+    "@antv/x6-sites-demos-helper": "^0.10.80",
     "antd": "^4.4.2",
     "esbuild-webpack-plugin": "^1.0.5",
     "highlight.js": "^10.1.2",
