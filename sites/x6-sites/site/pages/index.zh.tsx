@@ -12,19 +12,19 @@ const IndexPage = () => {
   const features = [
     {
       icon:
-        'https://gw.alipayobjects.com/mdn/rms_2274c3/afts/img/A*4x_KTKyqwJgAAAAAAAAAAABkARQnAQ',
+        'https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*aiSwSLVyR14AAAAAAAAAAAAAARQnAQ',
       title: t('快速上手，极易定制'),
       description: t('提供基于低学习成本的 SVG/HTML/CSS 的节点定制能力'),
     },
     {
       icon:
-        'https://gw.alipayobjects.com/mdn/rms_2274c3/afts/img/A*ELYbTIVCgPoAAAAAAAAAAABkARQnAQ',
+        'https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*zNTESJL7HJgAAAAAAAAAAAAAARQnAQ',
       title: t('组件完备，开箱即用'),
       description: t('内置 10+ 图编辑场景的配套扩展，如框选、对齐线、小地图等'),
     },
     {
       icon:
-        'https://gw.alipayobjects.com/mdn/rms_2274c3/afts/img/A*_riSQZrgczgAAAAAAAAAAABkARQnAQ',
+        'https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*vQNVQoydZIIAAAAAAAAAAAAAARQnAQ',
       title: t('灵活，可扩展'),
       description: t(
         '画布、节点、边、属性、工具等均可以通过注册机制自由、灵活扩展',
@@ -116,7 +116,7 @@ const IndexPage = () => {
           <img
             width="100%"
             style={{ marginLeft: '100px', marginTop: '40px' }}
-            src="https://gw.alipayobjects.com/mdn/rms_2274c3/afts/img/A*wo_LToatmbwAAAAAAAAAAABkARQnAQ"
+            src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*gVNwQLC-Ek4AAAAAAAAAAAAAARQnAQ"
           />
         }
         title={t('X6 图编辑引擎')}
