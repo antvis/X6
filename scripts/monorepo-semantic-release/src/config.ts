@@ -13,17 +13,11 @@ export namespace Config {
     `${CONFIG_NAME}.config.js`,
   ]
 
-  /**
-   * Get the release configuration options for a given directory.
-   * Unfortunately we've had to copy this over from semantic-release, creating unnecessary duplication.
-   */
   export async function get(cwd: string): Promise<SemanticRelease.Options> {
     const config = await cosmiconfig(CONFIG_NAME, {
       searchPlaces: CONFIG_FILES,
     }).search(cwd)
 
-    // Return the found config or empty object.
-    // istanbul ignore next (not important).
     return config ? config.config : {}
   }
 
@@ -59,46 +53,38 @@ export namespace Config {
   ]
 
   function getSuccessComment() {
-    // tslint:disable-next-line
-    // prettier-ignore
     return (
-      ''
-      + '<% if(typeof releases !== "undefined" && Array.isArray(releases) && releases.length > 0) { %>'
-        + '<% var releaseInfos = releases.filter(function(release) { return !!release.name && !release.private }) %>'
-        + '<% if(releaseInfos.length) { %>'
-
-          + '<% var groups = {} %>'
-          + '<% releaseInfos.forEach(function(release) { %>'
-            + '<% if (groups[release.gitTag] == null) { groups[release.gitTag] = [] } %>'
-            + '<% groups[release.gitTag].push(release) %>'
-          + '<% }) %>'
-
-          + "🎉 This <%= issue.pull_request ? 'PR is included' : 'issue has been resolved' %> in the following release 🎉\n\n"
-
-          + '<% var renderItem = function (item) { %>'
-            + '<% if(item.url) { %>'
-              + '<% return "[" + item.name + "](" + item.url + ")" %>'
-            + '<% } else { %>'
-              + '<% return item.name %>'
-            + '<% } %>'
-          +' <% } %>'
-
-          + '<% Object.keys(groups).forEach(function(tag) { %>'
-            + `\n- <%= tag%>`
-            + '<% var items = groups[tag] %>'
-            + '<% if(items.length === 1) { %>'
-              + ': <%= renderItem(items[0]) %>'
-            + '<% } else { %>'
-              + '<% items.forEach(function(item) { %>'
-                + '\n  - <%= renderItem(item) %>'
-              + '<% }) %>'
-            + '<% } %>'
-          + '<% }) %>'
-
-          + '\n\nThanks for being a part of the AntV community! 💪💯'
-
-        + '<% } %>'
-      + '<% } %>'
+      '' +
+      '<% if(typeof releases !== "undefined" && Array.isArray(releases) && releases.length > 0) { %>' +
+      '<% var releaseInfos = releases.filter(function(release) { return !!release.name && !release.private }) %>' +
+      '<% if(releaseInfos.length) { %>' +
+      '<% var groups = {} %>' +
+      '<% releaseInfos.forEach(function(release) { %>' +
+      '<% if (groups[release.gitTag] == null) { groups[release.gitTag] = [] } %>' +
+      '<% groups[release.gitTag].push(release) %>' +
+      '<% }) %>' +
+      "🎉 This <%= issue.pull_request ? 'PR is included' : 'issue has been resolved' %> in the following release 🎉\n\n" +
+      '<% var renderItem = function (item) { %>' +
+      '<% if(item.url) { %>' +
+      '<% return "[" + item.name + "](" + item.url + ")" %>' +
+      '<% } else { %>' +
+      '<% return item.name %>' +
+      '<% } %>' +
+      ' <% } %>' +
+      '<% Object.keys(groups).forEach(function(tag) { %>' +
+      `\n- <%= tag %>` +
+      '<% var items = groups[tag] %>' +
+      '<% if(items.length === 1) { %>' +
+      ': <%= renderItem(items[0]) %>' +
+      '<% } else { %>' +
+      '<% items.forEach(function(item) { %>' +
+      '\n  - <%= renderItem(item) %>' +
+      '<% }) %>' +
+      '<% } %>' +
+      '<% }) %>' +
+      '\n\nThanks for being a part of the AntV community! 💪💯' +
+      '<% } %>' +
+      '<% } %>'
     )
   }
 
@@ -125,6 +111,8 @@ export namespace Config {
         '@semantic-release/git',
         {
           assets: ['package.json', '**/version.ts', 'CHANGELOG.md'],
+          message:
+            'chore(release): <%= nextRelease.gitTag %> [skip ci]\n\n<%= nextRelease.notes %>',
         },
       ],
     ],
