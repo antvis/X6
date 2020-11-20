@@ -1,3 +1,10 @@
+## @antv/x6-app-draw [1.0.8](https://github.com/antvis/x6/compare/@antv/x6-app-draw@1.0.7...@antv/x6-app-draw@1.0.8) (2020-11-20)
+
+
+### Bug Fixes
+
+* 🐛 change style of draw graph ([c69c3fe](https://github.com/antvis/x6/commit/c69c3fe21aa8ad573a78858818decfa0750bb456))
+
 ## @antv/x6-app-draw [1.0.7](https://github.com/antvis/x6/compare/@antv/x6-app-draw@1.0.6...@antv/x6-app-draw@1.0.7) (2020-11-19)
 
 
