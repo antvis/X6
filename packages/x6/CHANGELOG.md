@@ -1,3 +1,10 @@
+## @antv/x6 [1.0.3](https://github.com/antvis/x6/compare/@antv/x6@1.0.2...@antv/x6@1.0.3) (2020-11-20)
+
+
+### Bug Fixes
+
+* 🐛 fix lint error ([a73cf3f](https://github.com/antvis/x6/commit/a73cf3fb3559657189502dc434d3bef4d7174ef6))
+
 ## @antv/x6 [1.0.2](https://github.com/antvis/x6/compare/@antv/x6@1.0.1...@antv/x6@1.0.2) (2020-11-19)
 
 
