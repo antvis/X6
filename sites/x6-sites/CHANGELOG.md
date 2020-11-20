@@ -1,3 +1,11 @@
+## @antv/x6-sites [1.0.11](https://github.com/antvis/x6/compare/@antv/x6-sites@1.0.10...@antv/x6-sites@1.0.11) (2020-11-20)
+
+
+### Bug Fixes
+
+* 🐛 add design for demos ([6e849bc](https://github.com/antvis/x6/commit/6e849bc80fe1bc242a2efa7282a425c0835619fb))
+* 🐛 lock gatsby-theme-antv version ([b72ba79](https://github.com/antvis/x6/commit/b72ba7951e8208f002d90ec32b670a0c55c65d2c))
+
 ## @antv/x6-sites [1.0.10](https://github.com/antvis/x6/compare/@antv/x6-sites@1.0.9...@antv/x6-sites@1.0.10) (2020-11-20)
 
 
