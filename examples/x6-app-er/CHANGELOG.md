@@ -1,3 +1,10 @@
+## @antv/x6-app-er [1.2.3](https://github.com/antvis/x6/compare/@antv/x6-app-er@1.2.2...@antv/x6-app-er@1.2.3) (2020-11-20)
+
+
+### Bug Fixes
+
+* 🐛 fix lint error ([7240cfc](https://github.com/antvis/x6/commit/7240cfc8e0cc6b9a4eec7fd7a0f56666cc727cae))
+
 ## @antv/x6-app-er [1.2.2](https://github.com/antvis/x6/compare/@antv/x6-app-er@1.2.1...@antv/x6-app-er@1.2.2) (2020-11-19)
 
 
