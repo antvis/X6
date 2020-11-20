@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@octokit/app": "^4.2.1",
+    "@octokit/rest": "^18.0.9",
     "is-base64": "^1.1.0",
     "lodash": "^4.17.20",
     "moment": "^2.29.1",

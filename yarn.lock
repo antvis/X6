@@ -753,6 +753,18 @@
     "@octokit/types" "^5.0.0"
     prettier "^2.0.5"
 
+"@octokit/core@^3.0.0":
+  version "3.2.1"
+  resolved "https://registry.npmjs.org/@octokit/core/-/core-3.2.1.tgz#9e04df3f4e7f825ac0559327490ce34299140af5"
+  integrity sha512-XfFSDDwv6tclUenS0EmB6iA7u+4aOHBT1Lz4PtQNQQg3hBbNaR/+Uv5URU+egeIuuGAiMRiDyY92G4GBOWOqDA==
+  dependencies:
+    "@octokit/auth-token" "^2.4.0"
+    "@octokit/graphql" "^4.3.1"
+    "@octokit/request" "^5.4.0"
+    "@octokit/types" "^5.0.0"
+    before-after-hook "^2.1.0"
+    universal-user-agent "^6.0.0"
+
 "@octokit/core@^3.1.0":
   version "3.1.2"
   resolved "https://registry.npmjs.org/@octokit/core/-/core-3.1.2.tgz#c937d5f9621b764573068fcd2e5defcc872fd9cc"
@@ -791,12 +803,32 @@
     "@octokit/request-error" "^2.0.0"
     "@octokit/types" "^5.0.0"
 
+"@octokit/plugin-paginate-rest@^2.2.0":
+  version "2.6.0"
+  resolved "https://registry.npmjs.org/@octokit/plugin-paginate-rest/-/plugin-paginate-rest-2.6.0.tgz#03416396e7a227b268c5b827365238f620a9c5c1"
+  integrity sha512-o+O8c1PqsC5++BHXfMZabRRsBIVb34tXPWyQLyp2IXq5MmkxdipS7TXM4Y9ldL1PzY9CTrCsn/lzFFJGM3oRRA==
+  dependencies:
+    "@octokit/types" "^5.5.0"
+
 "@octokit/plugin-paginate-rest@^2.2.3":
   version "2.4.0"
   resolved "https://registry.npmjs.org/@octokit/plugin-paginate-rest/-/plugin-paginate-rest-2.4.0.tgz#92f951ddc8a1cd505353fa07650752ca25ed7e93"
   integrity sha512-YT6Klz3LLH6/nNgi0pheJnUmTFW4kVnxGft+v8Itc41IIcjl7y1C8TatmKQBbCSuTSNFXO5pCENnqg6sjwpJhg==
   dependencies:
     "@octokit/types" "^5.5.0"
+
+"@octokit/plugin-request-log@^1.0.0":
+  version "1.0.2"
+  resolved "https://registry.npmjs.org/@octokit/plugin-request-log/-/plugin-request-log-1.0.2.tgz#394d59ec734cd2f122431fbaf05099861ece3c44"
+  integrity sha512-oTJSNAmBqyDR41uSMunLQKMX0jmEXbwD1fpz8FG27lScV3RhtGfBa1/BBLym+PxcC16IBlF7KH9vP1BUYxA+Eg==
+
+"@octokit/plugin-rest-endpoint-methods@4.2.1":
+  version "4.2.1"
+  resolved "https://registry.npmjs.org/@octokit/plugin-rest-endpoint-methods/-/plugin-rest-endpoint-methods-4.2.1.tgz#8224833a45c3394836dc6e86f1e6c49269a2c350"
+  integrity sha512-QyFr4Bv807Pt1DXZOC5a7L5aFdrwz71UHTYoHVajYV5hsqffWm8FUl9+O7nxRu5PDMtB/IKrhFqTmdBTK5cx+A==
+  dependencies:
+    "@octokit/types" "^5.5.0"
+    deprecation "^2.3.1"
 
 "@octokit/plugin-rest-endpoint-methods@^3.17.0":
   version "3.17.0"
@@ -852,6 +884,16 @@
     node-fetch "^2.6.1"
     once "^1.4.0"
     universal-user-agent "^6.0.0"
+
+"@octokit/rest@^18.0.9":
+  version "18.0.9"
+  resolved "https://registry.npmjs.org/@octokit/rest/-/rest-18.0.9.tgz#964d707d914eb34b1787895fdcacff96de47844d"
+  integrity sha512-CC5+cIx974Ygx9lQNfUn7/oXDQ9kqGiKUC6j1A9bAVZZ7aoTF8K6yxu0pQhQrLBwSl92J6Z3iVDhGhGFgISCZg==
+  dependencies:
+    "@octokit/core" "^3.0.0"
+    "@octokit/plugin-paginate-rest" "^2.2.0"
+    "@octokit/plugin-request-log" "^1.0.0"
+    "@octokit/plugin-rest-endpoint-methods" "4.2.1"
 
 "@octokit/types@^4.1.6":
   version "4.1.10"
