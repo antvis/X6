@@ -232,7 +232,7 @@ export default function (props: IProps) {
             </Row>
             <Row align="middle">
               <Col span={10}>Thickness</Col>
-              <Col span={11}>
+              <Col span={10}>
                 <Slider
                   min={0.5}
                   max={10}
