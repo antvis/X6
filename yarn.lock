@@ -119,10 +119,10 @@
     lodash "^4.17.15"
     resize-observer-polyfill "^1.5.0"
 
-"@antv/gatsby-theme-antv@^1.0.0-beta.11":
-  version "1.0.0-beta.11"
-  resolved "https://registry.npmjs.org/@antv/gatsby-theme-antv/-/gatsby-theme-antv-1.0.0-beta.11.tgz#c67186de937101e8092e3010a0374c780f691186"
-  integrity sha512-btbHO9pIQOcii//2SPEYaC25XtnO686+UDZ0j0bqYK508Irx2LuZMTSs0vVim0ZC/2myKjc/AKqaKNnPTjYugg==
+"@antv/gatsby-theme-antv@1.0.0-beta.15":
+  version "1.0.0-beta.15"
+  resolved "https://registry.npmjs.org/@antv/gatsby-theme-antv/-/gatsby-theme-antv-1.0.0-beta.15.tgz#016ec25e2c5476b6a79fd176db27732deb904cea"
+  integrity sha512-vIeEgZqCLbQLsMPdQlBhjD1bBTxMhiVzu2sSqQ9mMDOSiTGwJjsDTVEnDdokMk/Q2w5UhF4cKLBDdRPdIVPUUA==
   dependencies:
     "@ant-design/icons" "^4.1.0"
     "@babel/plugin-transform-modules-umd" "^7.2.0"
@@ -185,6 +185,7 @@
     gatsby-source-github "^0.0.2"
     gatsby-transformer-remark "^2.8.8"
     git-url-parse "^11.1.2"
+    html-to-image "^1.3.20"
     i18next "^19.4.4"
     indent-string "^4.0.0"
     insert-css "^2.0.0"
@@ -197,6 +198,7 @@
     monaco-editor "^0.21.0"
     monaco-editor-webpack-plugin "^2.0.0"
     normalize.css "^8.0.1"
+    omit.js "^2.0.2"
     parse-github-url "^1.0.2"
     prism-themes "^1.2.0"
     prismjs "^1.17.1"
@@ -4625,6 +4627,13 @@
   resolved "https://registry.npm.taobao.org/@types/debug/download/@types/debug-0.0.30.tgz#dc1e40f7af3b9c815013a7860e6252f6352a84df"
   integrity sha1-3B5A9687nIFQE6eGDmJS9jUqhN8=
 
+"@types/dompurify@^2.0.4":
+  version "2.0.4"
+  resolved "https://registry.npmjs.org/@types/dompurify/-/dompurify-2.0.4.tgz#25fce15f1f4b1bc0df0ad957040cf226416ac2d7"
+  integrity sha512-y6K7NyXTQvjr8hJNsAFAD8yshCsIJ0d+OYEFzULuIqWyWOKL2hRru1I+rorI5U0K4SLAROTNuSUFXPDTu278YA==
+  dependencies:
+    "@types/trusted-types" "*"
+
 "@types/ejs@3.0.4":
   version "3.0.4"
   resolved "https://registry.npm.taobao.org/@types/ejs/download/@types/ejs-3.0.4.tgz?cache=0&sync_timestamp=1596838037994&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40types%2Fejs%2Fdownload%2F%40types%2Fejs-3.0.4.tgz#8851fcdedb96e410fbb24f83b8be6763ef9afa77"
@@ -5316,6 +5325,11 @@
   version "4.0.0"
   resolved "https://registry.npm.taobao.org/@types/tough-cookie/download/@types/tough-cookie-4.0.0.tgz?cache=0&sync_timestamp=1596840741023&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40types%2Ftough-cookie%2Fdownload%2F%40types%2Ftough-cookie-4.0.0.tgz#fef1904e4668b6e5ecee60c52cc6a078ffa6697d"
   integrity sha1-/vGQTkZotuXs7mDFLMageP+maX0=
+
+"@types/trusted-types@*":
+  version "1.0.6"
+  resolved "https://registry.npmjs.org/@types/trusted-types/-/trusted-types-1.0.6.tgz#569b8a08121d3203398290d602d84d73c8dcf5da"
+  integrity sha512-230RC8sFeHoT6sSUlRO6a8cAnclO06eeiq1QDfiv2FGCLWFvvERWgwIQD4FWqD9A69BN7Lzee4OXwoMVnnsWDw==
 
 "@types/ua-parser-js@^0.7.33":
   version "0.7.33"
@@ -15992,6 +16006,11 @@ html-tags@^3.0.0, html-tags@^3.1.0:
   version "3.1.0"
   resolved "https://registry.npm.taobao.org/html-tags/download/html-tags-3.1.0.tgz#7b5e6f7e665e9fb41f30007ed9e0d41e97fb2140"
   integrity sha1-e15vfmZen7QfMAB+2eDUHpf7IUA=
+
+html-to-image@^1.3.20:
+  version "1.3.20"
+  resolved "https://registry.npmjs.org/html-to-image/-/html-to-image-1.3.20.tgz#15d89bb82e50d16e45a72dce245d8d52a637edf2"
+  integrity sha512-Pkc4rzqml0/VDPi81Y+ljQH+eko87FzwZpNfoEmj2urWdAiu2u9LxSoOJpWI/++I9uaR3tPe1xLq/VZmwOqVSw==
 
 html-void-elements@^1.0.0, html-void-elements@^1.0.1:
   version "1.0.5"
