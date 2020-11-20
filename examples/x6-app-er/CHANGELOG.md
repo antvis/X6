@@ -1,3 +1,10 @@
+## @antv/x6-app-er [1.2.5](https://github.com/antvis/x6/compare/@antv/x6-app-er@1.2.4...@antv/x6-app-er@1.2.5) (2020-11-20)
+
+
+### Bug Fixes
+
+* 🐛 add design for demos ([6e849bc](https://github.com/antvis/x6/commit/6e849bc80fe1bc242a2efa7282a425c0835619fb))
+
 ## @antv/x6-app-er [1.2.4](https://github.com/antvis/x6/compare/@antv/x6-app-er@1.2.3...@antv/x6-app-er@1.2.4) (2020-11-20)
 
 
