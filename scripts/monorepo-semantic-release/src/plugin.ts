@@ -314,8 +314,10 @@ export namespace Plugin {
               return [...memo, ...releaseMap[key]]
             }, [])
 
+          console.log('Comment Issue: ', ctx.releases)
+
           const shouldComment = ctx.releases.some(
-            (release: any) => release.private !== false,
+            (release: any) => !release.private,
           )
           if (shouldComment) {
             await plugins2.success(ctx)
