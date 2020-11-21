@@ -119,10 +119,10 @@
     lodash "^4.17.15"
     resize-observer-polyfill "^1.5.0"
 
-"@antv/gatsby-theme-antv@1.0.0-beta.15":
-  version "1.0.0-beta.15"
-  resolved "https://registry.npmjs.org/@antv/gatsby-theme-antv/-/gatsby-theme-antv-1.0.0-beta.15.tgz#016ec25e2c5476b6a79fd176db27732deb904cea"
-  integrity sha512-vIeEgZqCLbQLsMPdQlBhjD1bBTxMhiVzu2sSqQ9mMDOSiTGwJjsDTVEnDdokMk/Q2w5UhF4cKLBDdRPdIVPUUA==
+"@antv/gatsby-theme-antv@^1.0.0-beta.18":
+  version "1.0.0-beta.18"
+  resolved "https://registry.npmjs.org/@antv/gatsby-theme-antv/-/gatsby-theme-antv-1.0.0-beta.18.tgz#a10bfda50e18c67f4c25990696fc0d0f4da7e2f8"
+  integrity sha512-rXasRRjtYwjpyUQ8Q45Tj8HllQBuJ6rXvqiAh5JPefEyr5kapUxEmpmxVrW55gugaMeyq+pBnLJziWm7JRWKkQ==
   dependencies:
     "@ant-design/icons" "^4.1.0"
     "@babel/plugin-transform-modules-umd" "^7.2.0"
