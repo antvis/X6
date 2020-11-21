@@ -53,12 +53,13 @@ import { Graph } from '@antv/x6'
 // Create an instance of Graph.
 const graph = new Graph({
   container: document.getElementById('container'),
+  grid: true
 })
 
 // Render source node.
 const source = graph.addNode({
-  x: 60,
-  y: 60,
+  x: 140,
+  y: 40,
   width: 80,
   height: 40,
   label: 'Hello',
@@ -66,8 +67,8 @@ const source = graph.addNode({
 
 // Render target node.
 const target = graph.addNode({
-  x: 240,
-  y: 240,
+  x: 260,
+  y: 180,
   width: 80,
   height: 40,
   label: 'World',
@@ -79,6 +80,9 @@ graph.addEdge({
   target,
 })
 ```
+
+<img src="https://raw.githubusercontent.com/antvis/x6/master/sites/x6-sites/static/assets/images/hello-world.png" alt="HelloWorld" width="541" />
+
 
 ## Documentation
 
