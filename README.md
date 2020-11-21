@@ -81,7 +81,7 @@ graph.addEdge({
 })
 ```
 
-<img src="https://raw.githubusercontent.com/antvis/x6/master/sites/x6-sites/static/assets/images/hello-world.png" alt="HelloWorld" width="541" />
+<img src="https://raw.githubusercontent.com/antvis/x6/master/sites/x6-sites/static/assets/images/hello-world.jpg" alt="HelloWorld" width="541" />
 
 
 ## Documentation
