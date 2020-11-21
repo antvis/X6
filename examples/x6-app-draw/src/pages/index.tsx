@@ -90,7 +90,8 @@ export default function () {
                 组织结构图是把企业组织分成若干部分,并且标明各部分之间可能存在的各种关系。例如上下级领导关系(组织机构图)，物流关系，资金流关系和资料传递关系等。
               </li>
               <li>
-                <Text strong={true}>BPMN：</Text>用于以业务流程模型详细说明各种业务流程
+                <Text strong={true}>BPMN：</Text>
+                用于以业务流程模型详细说明各种业务流程
               </li>
               <li>
                 <Text strong={true}>UML：</Text>UML
