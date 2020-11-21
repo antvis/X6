@@ -1,3 +1,10 @@
+## @antv/x6-app-draw [1.0.11](https://github.com/antvis/x6/compare/@antv/x6-app-draw@1.0.10...@antv/x6-app-draw@1.0.11) (2020-11-21)
+
+
+### Bug Fixes
+
+* 🐛 update yarn.lock ([14a1ee5](https://github.com/antvis/x6/commit/14a1ee5d7dd01d4235fbc34001219bba51b18c79))
+
 ## @antv/x6-app-draw [1.0.10](https://github.com/antvis/x6/compare/@antv/x6-app-draw@1.0.9...@antv/x6-app-draw@1.0.10) (2020-11-20)
 
 
