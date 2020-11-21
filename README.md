@@ -58,7 +58,7 @@ const graph = new Graph({
 
 // Render source node.
 const source = graph.addNode({
-  x: 140,
+  x: 300,
   y: 40,
   width: 80,
   height: 40,
@@ -67,7 +67,7 @@ const source = graph.addNode({
 
 // Render target node.
 const target = graph.addNode({
-  x: 260,
+  x: 420,
   y: 180,
   width: 80,
   height: 40,
@@ -81,8 +81,7 @@ graph.addEdge({
 })
 ```
 
-<img src="https://raw.githubusercontent.com/antvis/x6/master/sites/x6-sites/static/assets/images/hello-world.jpg" alt="HelloWorld" width="541" />
-
+<img src="https://raw.githubusercontent.com/antvis/x6/master/sites/x6-sites/static/assets/images/hello-world.jpg" alt="HelloWorld" />
 
 ## Documentation
 
