@@ -1,6 +1,12 @@
 name: 🥤　GitLeaks
 
-on: [push, pull_request_target]
+on:
+  push:
+    branches:
+      - master
+      - alpha
+      - beta
+  pull_request_target:
 
 jobs:
   gitleaks:
