@@ -84,9 +84,10 @@ export class SelectionManager extends Base {
 
     if (!disabled) {
       if (options.multiple === false || (!e.ctrlKey && !e.metaKey)) {
-        this.clean()
+        this.reset(cell)
+      } else {
+        this.select(cell)
       }
-      this.select(cell)
     }
 
     this.movedMap.delete(cell)
@@ -120,14 +121,14 @@ export class SelectionManager extends Base {
     cells: Cell | string | (Cell | string)[],
     options: Collection.AddOptions = {},
   ) {
-    let selected = this.getCells(cells)
-    if (!this.isMultiple() && selected.length > 0) {
-      this.clean()
-      if (selected.length > 1) {
-        selected = selected.slice(0, 1)
+    const selected = this.getCells(cells)
+    if (selected.length) {
+      if (this.isMultiple()) {
+        this.widget.select(selected, options)
+      } else {
+        this.reset(selected.slice(0, 1), options)
       }
     }
-    this.widget.select(selected, options)
     return this
   }
 
@@ -139,8 +140,11 @@ export class SelectionManager extends Base {
     return this
   }
 
-  reset(cells?: Cell | string | (Cell | string)[]) {
-    this.widget.reset(cells ? this.getCells(cells) : [])
+  reset(
+    cells?: Cell | string | (Cell | string)[],
+    options: Collection.SetOptions = {},
+  ) {
+    this.widget.reset(cells ? this.getCells(cells) : [], options)
     return this
   }
 
