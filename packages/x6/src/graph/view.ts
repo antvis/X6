@@ -366,7 +366,7 @@ export class GraphView extends View {
       return
     }
 
-    const originalEvent = e.originalEvent as MouseWheelEvent
+    const originalEvent = e.originalEvent as WheelEvent
     const localPoint = this.graph.snapToGrid(
       originalEvent.clientX,
       originalEvent.clientY,
