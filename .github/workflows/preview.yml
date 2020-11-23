@@ -7,7 +7,7 @@ on:
       - sites/x6-sites-demos-helper/**
       - examples/x6-app-**
 jobs:
-  run:
+  surge:
     runs-on: ubuntu-latest
     strategy:
       matrix:
