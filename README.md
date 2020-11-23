@@ -15,7 +15,7 @@
 <p align="center">
 <a href="https://www.npmjs.com/package/@antv/x6"><img alt="NPM Package" src="https://img.shields.io/npm/v/@antv/x6.svg?style=flat-square"></a>
 <a href="https://www.npmjs.com/package/@antv/x6"><img alt="NPM Downloads" src="http://img.shields.io/npm/dm/@antv/x6.svg?style=flat-square"></a>
-<a href="https://david-dm.org/antvis/x6"><img alt="NPM Dependencies" src="https://img.shields.io/david/antvis/x6?style=flat-square"></a>
+<a href="https://david-dm.org/antvis/x6"><img alt="NPM Dependencies" src="https://david-dm.org/antvis/x6.svg?style=flat-square"></a>
 <a href="https://david-dm.org/antvis/x6?path=packages/x6"><img alt="Dependency Status" src="https://david-dm.org/antvis/x6.svg?style=flat-square&path=packages/x6"></a>
 <a href="https://david-dm.org/antvis/x6?type=dev&path=packages/x6"><img alt="devDependencies Status" src="https://david-dm.org/antvis/x6/dev-status.svg?style=flat-square&path=packages/x6" ></a>
 </p>
