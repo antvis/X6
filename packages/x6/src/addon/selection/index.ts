@@ -297,7 +297,7 @@ export class Selection extends View<Selection.EventArgs> {
   }
 
   protected onSelectionBoxMouseDown(evt: JQuery.MouseDownEvent) {
-    evt.stopPropagation()
+    // evt.stopPropagation()
     const e = this.normalizeEvent(evt)
 
     if (this.options.movable) {
@@ -606,7 +606,7 @@ export class Selection extends View<Selection.EventArgs> {
         this.$('<div/>')
           .addClass(className)
           .addClass(`${className}-${cell.isNode() ? 'node' : 'edge'}`)
-          .attr('data-cell', cell.id)
+          .attr('data-cell-id', cell.id)
           .css({
             position: 'absolute',
             left: bbox.x,
@@ -634,7 +634,9 @@ export class Selection extends View<Selection.EventArgs> {
     if (this.boxCount) {
       this.hide()
       this.$boxes.each((_, elem) => {
-        const cellId = this.$(elem).remove().attr('data-cell')
+        const cellId = this.$(elem)
+          .remove()
+          .attr('data-cell-id')
         const cell = this.collection.get(cellId)
         if (cell) {
           this.createSelectionBox(cell)
@@ -647,7 +649,7 @@ export class Selection extends View<Selection.EventArgs> {
   }
 
   protected getCellViewFromElem(elem: Element) {
-    const id = elem.getAttribute('data-cell')
+    const id = elem.getAttribute('data-cell-id')
     if (id) {
       const cell = this.collection.get(id)
       if (cell) {
