@@ -101,6 +101,30 @@ export default class Example extends React.Component {
     //   console.log('blank:click')
     // })
 
+    graph.on('node:mousedown', args => {
+      console.log('node:mousedown', args)
+    })
+
+    graph.on('node:mousemove', args => {
+      console.log('node:mousemove', args)
+    })
+
+    graph.on('node:mouseup', args => {
+      console.log('node:mouseup', args)
+    })
+
+    graph.on('node:click', args => {
+      console.log('node:click', args)
+    })
+
+    graph.on('node:dblclick', args => {
+      console.log('node:dblclick', args)
+    })
+
+    graph.on('node:contextmenu', args => {
+      console.log('node:contextmenu', args)
+    })
+
     graph.select(a)
     graph.select([b, c])
   }
