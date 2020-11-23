@@ -15,6 +15,7 @@
     "no-debugger": true,
     "no-reference": true,
     "import-name": false,
-    "semicolon": [true, "never"]
+    "semicolon": [true, "never"],
+    "arrow-parens": true
   }
 }
