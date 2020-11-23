@@ -1,6 +1,7 @@
 import { Util } from '../../global'
-import { ObjectExt, StringExt, FunctionExt } from '../../util'
+import { KeyValue } from '../../types'
 import { Rectangle, Angle, Point } from '../../geometry'
+import { ObjectExt, StringExt, FunctionExt } from '../../util'
 import { Cell } from '../../model/cell'
 import { Node } from '../../model/node'
 import { Edge } from '../../model/edge'
@@ -13,7 +14,6 @@ import { Graph } from '../../graph/graph'
 import { Renderer } from '../../graph/renderer'
 import { notify } from '../transform/util'
 import { Handle } from '../common'
-import { KeyValue } from '../../types'
 
 export class Selection extends View<Selection.EventArgs> {
   public readonly options: Selection.Options
@@ -178,10 +178,36 @@ export class Selection extends View<Selection.EventArgs> {
 
   reset(cells?: Cell | Cell[], options: Collection.SetOptions = {}) {
     if (cells) {
-      const items = this.filter(Array.isArray(cells) ? cells : [cells])
-      this.collection.reset(items, { ...options, ui: true })
+      const prev = this.cells
+      const next = this.filter(Array.isArray(cells) ? cells : [cells])
+      const prevMap: KeyValue<Cell> = {}
+      const nextMap: KeyValue<Cell> = {}
+      prev.forEach((cell) => (prevMap[cell.id] = cell))
+      next.forEach((cell) => (nextMap[cell.id] = cell))
+      const added: Cell[] = []
+      const removed: Cell[] = []
+      next.forEach((cell) => {
+        if (!prevMap[cell.id]) {
+          added.push(cell)
+        }
+      })
+      prev.forEach((cell) => {
+        if (!nextMap[cell.id]) {
+          removed.push(cell)
+        }
+      })
+
+      if (removed.length) {
+        this.unselect(removed, { ...options, ui: true })
+      }
+
+      if (added.length) {
+        this.select(added, { ...options, ui: true })
+      }
+
       return this
     }
+
     return this.clean(options)
   }
 
@@ -470,7 +496,7 @@ export class Selection extends View<Selection.EventArgs> {
     this.removeCellUnSelectedClassName(cell)
 
     if (this.canShowSelectionBox(cell)) {
-      this.$container.find(`[data-cell="${cell.id}"]`).remove()
+      this.$container.find(`[data-cell-id="${cell.id}"]`).remove()
       if (this.$boxes.length === 0) {
         this.hide()
       }
