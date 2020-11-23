@@ -12,6 +12,6 @@ jobs:
           app_id: ${{ secrets.APP_ID }}
           private_key: ${{ secrets.PRIVATE_KEY }}
           env_name: bot_token
-      - uses: robvanderleek/create-issue-branch@v1
+      - uses: robvanderleek/create-issue-branch@master
         env:
           GITHUB_TOKEN: ${{ env.bot_token }}
