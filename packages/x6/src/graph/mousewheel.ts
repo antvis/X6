@@ -131,7 +131,7 @@ export class MouseWheel extends Disposable implements IDisablable {
           currentScale * this.cumulatedFactor,
         )
         const minScale = this.options.minScale || Number.MIN_SAFE_INTEGER
-        const maxScale = this.options.maxScale || Number.MIN_SAFE_INTEGER
+        const maxScale = this.options.maxScale || Number.MAX_SAFE_INTEGER
         targetScale = NumberExt.clamp(targetScale, minScale, maxScale)
 
         if (targetScale !== currentScale) {
@@ -146,7 +146,6 @@ export class MouseWheel extends Disposable implements IDisablable {
               scroller.zoom(targetScale, { absolute: true })
             }
           } else {
-            this.graph.scale(targetScale, targetScale)
             if (this.options.zoomAtMousePosition) {
               const origin = this.graph.coord.clientToLocalPoint(this.startPos)
               this.graph.translate(
@@ -154,6 +153,7 @@ export class MouseWheel extends Disposable implements IDisablable {
                 origin.y * (1 - targetScale),
               )
             }
+            this.graph.scale(targetScale, targetScale)
           }
         }
 
