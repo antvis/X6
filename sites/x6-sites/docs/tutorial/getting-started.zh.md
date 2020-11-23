@@ -24,6 +24,13 @@ $ yarn add @antv/x6
 import { Graph } from '@antv/x6';
 ```
 
+如果是直接通过 `script` 标签引入，可以使用 `CDN` 地址：
+
+```html
+<!-- 例如引入1.0.3版本的X6 -->
+<script src="https://unpkg.com/@antv/x6@1.0.3/dist/x6.js"></script>
+```
+
 ## 开始使用
 
 接下来我们就一起来创建一个最简单的 `Hello --> World` 应用。
