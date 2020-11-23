@@ -39,7 +39,7 @@ interface MouseWheelOptions {
   factor?: number
   zoomAtMousePosition?: boolean
   modifiers?: string | ('alt' | 'ctrl' | 'meta' | 'shift')[] | null
-  guard?: (this: Graph, e: MouseWheelEvent) => boolean
+  guard?: (this: Graph, e: WheelEvent) => boolean
 }
 ```
 
@@ -77,9 +77,9 @@ interface MouseWheelOptions {
 const graph = new Graph({
   mousewheel: {
     enabled: true,
-    guard(this: Graph, e: MouseWheelEvent) {
+    guard(this: Graph, e: WheelEvent) {
       if (e.altKey) { // 当按下 alt 键时，忽略所有滚动事件
-        return false 
+        return false
       }
       return true
     },
