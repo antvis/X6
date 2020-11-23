@@ -89,7 +89,7 @@ const IndexPage = () => {
       type: 'News',
       title: 'X6 1.0 正式发布！',
       date: '2020.11.22',
-      link: 'https://yuque.antfin.com/antv/operation/pao14w/edit#cINuk',
+      link: 'https://www.yuque.com/antv/blog/2020x6',
     },
   ]
 
