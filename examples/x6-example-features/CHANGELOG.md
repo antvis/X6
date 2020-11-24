@@ -1,3 +1,19 @@
+## @antv/x6-example-features [1.0.7](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.0.6...@antv/x6-example-features@1.0.7) (2020-11-24)
+
+
+### Bug Fixes
+
+* 🐛 node:xxx event was not triggered when interact with selection boxes ([34cd5a0](https://github.com/antvis/x6/commit/34cd5a0737b291357d398b8ef2f5c58b113a1fc3)), closes [#297](https://github.com/antvis/x6/issues/297)
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.0.4
+* **@antv/x6-react-shape:** upgraded to 1.0.4
+
 ## @antv/x6-example-features [1.0.6](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.0.5...@antv/x6-example-features@1.0.6) (2020-11-20)
 
 
