@@ -101,7 +101,7 @@ A [flowchart](https://en.wikipedia.org/wiki/Flowchart) is a type of diagram that
 - Source Code: [https://github.com/antvis/x6/tree/master/examples/x6-app-draw](https://github.com/antvis/x6/tree/master/examples/x6-app-draw)
 
 <a href="https://x6.antv.vision/apps/draw" target="_blank" rel="noopener noreferrer">
-  <img src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*BMfuQ6rwM_0AAAAAAAAAAAAAARQnAQ" alt="draw" />
+  <img src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*h-_2QaDAunsAAAAAAAAAAAAAARQnAQ" alt="draw" />
 </a>
 
 ### DAG
@@ -112,7 +112,7 @@ DAG is short for [Directed Acyclic Graph](https://en.wikipedia.org/wiki/Directed
 - Source Code: [https://github.com/antvis/x6/tree/master/examples/x6-app-dag](https://github.com/antvis/x6/tree/master/examples/x6-app-dag)
 
 <a href="https://x6.antv.vision/apps/dag" target="_blank" rel="noopener noreferrer">
-  <img src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*Q5JDR6LV_awAAAAAAAAAAAAAARQnAQ" alt="dag" />
+  <img src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*4hl3QLxW2g0AAAAAAAAAAAAAARQnAQ" alt="dag" />
 </a>
 
 ### ERD
@@ -123,7 +123,7 @@ An entity relationship diagram (ERD) shows the relationships of entity sets stor
 - Source Code: [https://github.com/antvis/x6/tree/master/examples/x6-app-er](https://github.com/antvis/x6/tree/master/examples/x6-app-er)
 
 <a href="https://x6.antv.vision/apps/er" target="_blank" rel="noopener noreferrer">
-  <img src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*xO5aSpVruXEAAAAAAAAAAAAAARQnAQ" alt="er" />
+  <img src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*WyUKRqys__4AAAAAAAAAAAAAARQnAQ" alt="er" />
 </a>
 
 
