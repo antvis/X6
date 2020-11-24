@@ -1,4 +1,5 @@
 import { terser } from 'rollup-plugin-terser'
+import replace from '@rollup/plugin-replace'
 import resolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
 import filesize from 'rollup-plugin-filesize'
@@ -24,6 +25,7 @@ export default {
     typescript({ declaration: false }),
     resolve(),
     commonjs(),
+    replace({ 'process.env.NODE_ENV': JSON.stringify('production') }),
     terser(),
     filesize(),
     autoExternal(),
