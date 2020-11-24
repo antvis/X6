@@ -1,3 +1,18 @@
+## @antv/x6-sites [1.0.16](https://github.com/antvis/x6/compare/@antv/x6-sites@1.0.15...@antv/x6-sites@1.0.16) (2020-11-24)
+
+
+### Bug Fixes
+
+* 🐛 update gatsby-theme-antv version ([73e2b41](https://github.com/antvis/x6/commit/73e2b41245443156f8df92fe6d748bf994dae1c6))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.0.4
+
 ## @antv/x6-sites [1.0.15](https://github.com/antvis/x6/compare/@antv/x6-sites@1.0.14...@antv/x6-sites@1.0.15) (2020-11-21)
 
 ## @antv/x6-sites [1.0.14](https://github.com/antvis/x6/compare/@antv/x6-sites@1.0.13...@antv/x6-sites@1.0.14) (2020-11-21)
