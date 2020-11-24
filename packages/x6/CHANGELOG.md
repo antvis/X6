@@ -1,3 +1,10 @@
+## @antv/x6 [1.0.5](https://github.com/antvis/x6/compare/@antv/x6@1.0.4...@antv/x6@1.0.5) (2020-11-24)
+
+
+### Bug Fixes
+
+* 🐛 chang the call order of scale and translate ([66e1ce6](https://github.com/antvis/x6/commit/66e1ce66b86dde2be75600ab5f73e08efd0fb1ae))
+
 ## @antv/x6 [1.0.4](https://github.com/antvis/x6/compare/@antv/x6@1.0.3...@antv/x6@1.0.4) (2020-11-24)
 
 
