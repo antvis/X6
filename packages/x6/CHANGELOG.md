@@ -1,3 +1,12 @@
+## @antv/x6 [1.0.4](https://github.com/antvis/x6/compare/@antv/x6@1.0.3...@antv/x6@1.0.4) (2020-11-24)
+
+
+### Bug Fixes
+
+* 🐛 global `process` should be replaced when build with rollup ([b459b61](https://github.com/antvis/x6/commit/b459b61a7aa966ff83bfb5992586aed2583b8a46)), closes [#324](https://github.com/antvis/x6/issues/324)
+* 🐛 node:xxx event was not triggered when interact with selection boxes ([34cd5a0](https://github.com/antvis/x6/commit/34cd5a0737b291357d398b8ef2f5c58b113a1fc3)), closes [#297](https://github.com/antvis/x6/issues/297)
+* 🐛 shake of selection events triggering ([541be16](https://github.com/antvis/x6/commit/541be16366785d28882a33d1d2b07ba8aa026072))
+
 ## @antv/x6 [1.0.3](https://github.com/antvis/x6/compare/@antv/x6@1.0.2...@antv/x6@1.0.3) (2020-11-20)
 
 
