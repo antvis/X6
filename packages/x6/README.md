@@ -15,7 +15,7 @@
 <p align="center">
 <a href="https://www.npmjs.com/package/@antv/x6"><img alt="NPM Package" src="https://img.shields.io/npm/v/@antv/x6.svg?style=flat-square"></a>
 <a href="https://www.npmjs.com/package/@antv/x6"><img alt="NPM Downloads" src="http://img.shields.io/npm/dm/@antv/x6.svg?style=flat-square"></a>
-<a href="https://david-dm.org/antvis/x6"><img alt="NPM Dependencies" src="https://img.shields.io/david/antvis/x6?style=flat-square"></a>
+<a href="https://david-dm.org/antvis/x6"><img alt="NPM Dependencies" src="https://david-dm.org/antvis/x6.svg?style=flat-square"></a>
 <a href="https://david-dm.org/antvis/x6?path=packages/x6"><img alt="Dependency Status" src="https://david-dm.org/antvis/x6.svg?style=flat-square&path=packages/x6"></a>
 <a href="https://david-dm.org/antvis/x6?type=dev&path=packages/x6"><img alt="devDependencies Status" src="https://david-dm.org/antvis/x6/dev-status.svg?style=flat-square&path=packages/x6" ></a>
 </p>
@@ -53,12 +53,13 @@ import { Graph } from '@antv/x6'
 // Create an instance of Graph.
 const graph = new Graph({
   container: document.getElementById('container'),
+  grid: true
 })
 
 // Render source node.
 const source = graph.addNode({
-  x: 60,
-  y: 60,
+  x: 300,
+  y: 40,
   width: 80,
   height: 40,
   label: 'Hello',
@@ -66,8 +67,8 @@ const source = graph.addNode({
 
 // Render target node.
 const target = graph.addNode({
-  x: 240,
-  y: 240,
+  x: 420,
+  y: 180,
   width: 80,
   height: 40,
   label: 'World',
@@ -80,6 +81,8 @@ graph.addEdge({
 })
 ```
 
+<img src="https://raw.githubusercontent.com/antvis/x6/master/sites/x6-sites/static/assets/images/helloworld.jpg" alt="HelloWorld" />
+
 ## Documentation
 
 - [About](https://x6.antv.vision/zh/docs/tutorial/about)
@@ -87,6 +90,28 @@ graph.addEdge({
 - [Basic usage](https://x6.antv.vision/zh/docs/tutorial/basic/graph)
 - [Advanced practice](https://x6.antv.vision/zh/docs/tutorial/intermediate/serialization)
 - [Senior guidance](https://x6.antv.vision/zh/docs/tutorial/advanced/animation)
+
+## Experience Improvement Program Description
+
+In order to serve the users better, x6 will send the URL and version information back to the AntV server:
+
+https://kcart.alipay.com/web/bi.do
+
+Except for URL and x6 version information, no other information will be collected. You can also turn it off with the following code:
+
+```ts
+import { Config } from '@antv/x6'
+
+Config.track(false)
+```
+
+## Communication
+
+Welcome to join the **X6 Communication Group** (Scan the QR Code to Join us). We also welcome the github [issues](https://github.com/antvis/x6/issues).
+
+<a href="https://qr.dingtalk.com/action/joingroup?code=v1,k1,rOHuvgq5s0EHDktyyQJffDE3ZAmHnbB2e6iwn/w4BKs=&_dt_no_comment=1&origin=11" target="_blank" rel="noopener noreferrer">
+  <img src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*qKOTRJCxnzMAAAAAAAAAAAAAARQnAQ" alt="X6 图可视化交流群" width="375" />
+</a>
 
 ## Development
 
@@ -105,22 +130,18 @@ $ yarn test
 $ yarn build
 ```
 
-## Experience Improvement Program Description
-
-In order to serve the users better, x6 will send the URL and version information back to the AntV server:
-
-https://kcart.alipay.com/web/bi.do
-
-Except for URL and x6 version information, no other information will be collected. You can also turn it off with the following code:
-
-```ts
-import { Config } from '@antv/x6'
-
-Config.track(false)
-```
-
 ## Contributing
 
 Please let us know how can we help. Do check out [issues](https://github.com/antvis/x6/issues) for bug reports or suggestions first.
 
 To become a contributor, please follow our [contributing guide](https://github.com/antvis/x6/blob/master/CONTRIBUTING.md).
+
+## Contributors
+
+<a href="https://github.com/antvis/x6/graphs/contributors">
+  <img src="https://raw.githubusercontent.com/antvis/x6/master/CONTRIBUTORS.svg" alt="Contributors" width="740" />
+</a>
+
+## License
+
+The scripts and documentation in this project are released under the [MIT License](LICENSE).
