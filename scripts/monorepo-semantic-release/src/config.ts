@@ -110,7 +110,12 @@ export namespace Config {
       [
         '@semantic-release/git',
         {
-          assets: ['package.json', '**/version.ts', 'CHANGELOG.md'],
+          assets: [
+            'package.json',
+            '**/version.ts',
+            '**/README.md',
+            'CHANGELOG.md',
+          ],
           message:
             'chore(release): <%= nextRelease.gitTag %> [skip ci]\n\n<%= nextRelease.notes %>',
         },
