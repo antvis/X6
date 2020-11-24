@@ -1,3 +1,18 @@
+## @antv/x6-react-shape [1.0.4](https://github.com/antvis/x6/compare/@antv/x6-react-shape@1.0.3...@antv/x6-react-shape@1.0.4) (2020-11-24)
+
+
+### Bug Fixes
+
+* 🐛 global `process` should be replaced when build with rollup ([b459b61](https://github.com/antvis/x6/commit/b459b61a7aa966ff83bfb5992586aed2583b8a46)), closes [#324](https://github.com/antvis/x6/issues/324)
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.0.4
+
 ## @antv/x6-react-shape [1.0.3](https://github.com/antvis/x6/compare/@antv/x6-react-shape@1.0.2...@antv/x6-react-shape@1.0.3) (2020-11-20)
 
 
