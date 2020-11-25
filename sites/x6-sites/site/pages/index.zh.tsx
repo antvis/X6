@@ -4,6 +4,7 @@ import SEO from '@antv/gatsby-theme-antv/site/components/Seo'
 import Banner from '@antv/gatsby-theme-antv/site/components/Banner'
 import Companies from '@antv/gatsby-theme-antv/site/components/Companies'
 import Features from '@antv/gatsby-theme-antv/site/components/Features'
+import { Carousel } from 'antd'
 import './index.less'
 
 const IndexPage = () => {
@@ -93,16 +94,44 @@ const IndexPage = () => {
     },
   ]
 
+  const cases = [
+    {
+      image:
+        'https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*Y4ytRZCRUrgAAAAAAAAAAAAAARQnAQ',
+      href: 'https://x6.antv.vision/apps/er/',
+    },
+    {
+      image:
+        'https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*4vWIQKaBk40AAAAAAAAAAAAAARQnAQ',
+      href: 'https://x6.antv.vision/apps/draw/',
+    },
+    {
+      image:
+        'https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*OCNgR5do4zsAAAAAAAAAAAAAARQnAQ',
+      href: 'https://x6.antv.vision/apps/dag/',
+    },
+  ]
+
+  const goWebSites = (url: string) => {
+    window.open(url, '_blank')
+  }
+
   return (
     <>
       <SEO title={t('X6 图编辑引擎')} titleSuffix="AntV" lang={i18n.language} />
       <Banner
         coverImage={
-          <img
-            width="100%"
-            style={{ marginLeft: '100px', marginTop: '40px' }}
-            src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*gVNwQLC-Ek4AAAAAAAAAAAAAARQnAQ"
-          />
+          <Carousel autoplay>
+            {cases.map((c) => (
+              <div>
+                <img
+                  src={c.image}
+                  style={{ width: 500, height: 500, cursor: 'pointer' }}
+                  onClick={() => goWebSites(c.href)}
+                />
+              </div>
+            ))}
+          </Carousel>
         }
         title={t('X6 图编辑引擎')}
         description={t(
@@ -113,7 +142,6 @@ const IndexPage = () => {
         className="banner"
       />
       <Features features={features} style={{ width: '100%' }} />
-      {/* <Cases cases={cases} /> */}
       <Companies title={t('感谢信赖')} companies={companies} />
     </>
   )

@@ -33,7 +33,7 @@ import { Graph } from '@antv/x6';
 对于生产环境，我们推荐使用一个明确的版本号，以避免新版本造成的不可预期的破坏：
 
 ```html
-<script src="https://unpkg.com/@antv/x6@1.3.0/dist/x6.js"></script>
+<script src="https://unpkg.com/@antv/x6@1.0.3/dist/x6.js"></script>
 ```
 
 ## 开始使用
