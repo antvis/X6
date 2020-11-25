@@ -1,3 +1,10 @@
+## @antv/x6 [1.0.7](https://github.com/antvis/x6/compare/@antv/x6@1.0.6...@antv/x6@1.0.7) (2020-11-25)
+
+
+### Bug Fixes
+
+* 🐛 used in unpkg "Uncaught ReferenceError: module is not defined" ([2863a29](https://github.com/antvis/x6/commit/2863a29da595a4a690e0b6c786669924dd8151aa)), closes [#329](https://github.com/antvis/x6/issues/329)
+
 ## @antv/x6 [1.0.6](https://github.com/antvis/x6/compare/@antv/x6@1.0.5...@antv/x6@1.0.6) (2020-11-24)
 
 ## @antv/x6 [1.0.5](https://github.com/antvis/x6/compare/@antv/x6@1.0.4...@antv/x6@1.0.5) (2020-11-24)
