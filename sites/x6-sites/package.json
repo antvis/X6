@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@antv/x6-sites",
-  "version": "1.0.20",
+  "version": "1.0.21",
   "description": "X6 sites deployed on gh-pages",
   "scripts": {
     "clean": "gatsby clean",
