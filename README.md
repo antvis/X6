@@ -49,7 +49,7 @@ For learning purposes, you can use the latest version with:
 For production, we recommend linking to a specific version number to avoid unexpected breakage from newer versions:
 
 ```html
-<script src="https://unpkg.com/@antv/x6@1.3.0/dist/x6.js"></script>
+<script src="https://unpkg.com/@antv/x6@1.0.3/dist/x6.js"></script>
 ```
 
 ## Usage
