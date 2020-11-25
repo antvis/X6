@@ -29,12 +29,27 @@
 
 ## Installation
 
+### npm 或 yarn
+
 ```shell
 # npm
 $ npm install @antv/x6 --save
 
 # yarn
 $ yarn add @antv/x6
+```
+
+### CDN
+
+如果学习，可以使用最新的版本：
+
+```html
+<script src="https://unpkg.com/@antv/x6@latest/dist/x6.js"></script>
+```
+对于生产环境，我们推荐使用一个明确的版本号，以避免新版本造成的不可预期的破坏：
+
+```html
+<script src="https://unpkg.com/@antv/x6@1.3.0/dist/x6.js"></script>
 ```
 
 ## Usage
@@ -91,13 +106,49 @@ graph.addEdge({
 - [Advanced practice](https://x6.antv.vision/zh/docs/tutorial/intermediate/serialization)
 - [Senior guidance](https://x6.antv.vision/zh/docs/tutorial/advanced/animation)
 
+## App Demos Build with X6
+
+### Flowchart
+
+A [flowchart](https://en.wikipedia.org/wiki/Flowchart) is a type of diagram that represents a workflow or process. A flowchart can also be defined as a diagrammatic representation of an algorithm, a step-by-step approach to solving a task.
+
+- Online Demo: [https://x6.antv.vision/apps/draw](https://x6.antv.vision/apps/draw)
+- Source Code: [https://github.com/antvis/x6/tree/master/examples/x6-app-draw](https://github.com/antvis/x6/tree/master/examples/x6-app-draw)
+
+<a href="https://x6.antv.vision/apps/draw" target="_blank" rel="noopener noreferrer">
+  <img src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*Loh6TYGFOkYAAAAAAAAAAAAAARQnAQ" alt="draw" />
+</a>
+
+### DAG
+
+DAG is short for [Directed Acyclic Graph](https://en.wikipedia.org/wiki/Directed_acyclic_graph), which is a [directed graph](https://en.wikipedia.org/wiki/Directed_graph) with no [directed cycles](https://en.wikipedia.org/wiki/Cycle_graph#Directed_cycle_graph). It was originally a common data structure in the computer field. Due to the excellent characteristics brought by the unique topology structure, it is often used to deal with dynamic programming, searching for the shortest path in navigation, data compression and other algorithms.
+
+- Online Demo: [https://x6.antv.vision/apps/dag](https://x6.antv.vision/apps/dag)
+- Source Code: [https://github.com/antvis/x6/tree/master/examples/x6-app-dag](https://github.com/antvis/x6/tree/master/examples/x6-app-dag)
+
+<a href="https://x6.antv.vision/apps/dag" target="_blank" rel="noopener noreferrer">
+  <img src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*ScoRT7yiBPMAAAAAAAAAAAAAARQnAQ" alt="dag" />
+</a>
+
+### ERD
+
+An entity relationship diagram (ERD) shows the relationships of entity sets stored in a database. An entity in this context is an object, a component of data. An entity set is a collection of similar entities. These entities can have attributes that define its properties. By defining the entities, their attributes, and showing the relationships between them, an ER diagram illustrates the logical structure of databases.
+
+- Online Demo: [https://x6.antv.vision/apps/er](https://x6.antv.vision/apps/er)
+- Source Code: [https://github.com/antvis/x6/tree/master/examples/x6-app-er](https://github.com/antvis/x6/tree/master/examples/x6-app-er)
+
+<a href="https://x6.antv.vision/apps/er" target="_blank" rel="noopener noreferrer">
+  <img src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*6F5JSq5BRI0AAAAAAAAAAAAAARQnAQ" alt="er" />
+</a>
+
+
 ## Experience Improvement Program Description
 
-In order to serve the users better, x6 will send the URL and version information back to the AntV server:
+In order to serve the users better, X6 will send the URL and version information back to the AntV server:
 
 https://kcart.alipay.com/web/bi.do
 
-Except for URL and x6 version information, no other information will be collected. You can also turn it off with the following code:
+Except for URL and X6 version information, no other information will be collected. You can also turn it off with the following code:
 
 ```ts
 import { Config } from '@antv/x6'
