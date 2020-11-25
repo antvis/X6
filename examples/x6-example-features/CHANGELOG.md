@@ -1,3 +1,19 @@
+## @antv/x6-example-features [1.0.10](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.0.9...@antv/x6-example-features@1.0.10) (2020-11-25)
+
+
+### Bug Fixes
+
+* 🐛 used in unpkg "Uncaught ReferenceError: module is not defined" ([2863a29](https://github.com/antvis/x6/commit/2863a29da595a4a690e0b6c786669924dd8151aa)), closes [#329](https://github.com/antvis/x6/issues/329)
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.0.7
+* **@antv/x6-react-shape:** upgraded to 1.0.7
+
 ## @antv/x6-example-features [1.0.9](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.0.8...@antv/x6-example-features@1.0.9) (2020-11-24)
 
 
