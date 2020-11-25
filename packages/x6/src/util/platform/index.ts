@@ -76,7 +76,7 @@ export namespace Platform {
 
 export namespace Platform {
   export function getHMRStatus() {
-    const mod = module as any
+    const mod = window.module as any
     if (mod != null && mod.hot != null && mod.hot.status != null) {
       return mod.hot.status()
     }
