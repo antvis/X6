@@ -1,3 +1,19 @@
+# @antv/x6-example-features [1.1.0](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.0.10...@antv/x6-example-features@1.1.0) (2020-11-25)
+
+
+### Features
+
+* ✨ add switch demo with animation ([84042ef](https://github.com/antvis/x6/commit/84042efb16168e44268e6993289df51fb2a4ef49))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.0.8
+* **@antv/x6-react-shape:** upgraded to 1.0.8
+
 ## @antv/x6-example-features [1.0.10](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.0.9...@antv/x6-example-features@1.0.10) (2020-11-25)
 
 
