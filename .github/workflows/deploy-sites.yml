@@ -8,6 +8,7 @@ on:
       - sites/x6-sites-demos/**
       - sites/x6-sites-demos-helper/**
       - examples/x6-app-**
+      - packages/**
 jobs:
   run:
     runs-on: ubuntu-latest
