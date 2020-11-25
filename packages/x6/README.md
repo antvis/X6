@@ -41,15 +41,15 @@ $ yarn add @antv/x6
 
 ### CDN
 
-如果学习，可以使用最新的版本：
+For learning purposes, you can use the latest version with:
 
 ```html
 <script src="https://unpkg.com/@antv/x6@latest/dist/x6.js"></script>
 ```
-对于生产环境，我们推荐使用一个明确的版本号，以避免新版本造成的不可预期的破坏：
+For production, we recommend linking to a specific version number to avoid unexpected breakage from newer versions:
 
 ```html
-<script src="https://unpkg.com/@antv/x6@1.3.0/dist/x6.js"></script>
+<script src="https://unpkg.com/@antv/x6@1.0.3/dist/x6.js"></script>
 ```
 
 ## Usage
