@@ -4,7 +4,6 @@ import SEO from '@antv/gatsby-theme-antv/site/components/Seo'
 import Banner from '@antv/gatsby-theme-antv/site/components/Banner'
 import Companies from '@antv/gatsby-theme-antv/site/components/Companies'
 import Features from '@antv/gatsby-theme-antv/site/components/Features'
-import { Carousel } from 'antd'
 import './index.less'
 
 const IndexPage = () => {
@@ -96,19 +95,22 @@ const IndexPage = () => {
 
   const cases = [
     {
+      name: 'dag',
       image:
-        'https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*Y4ytRZCRUrgAAAAAAAAAAAAAARQnAQ',
-      href: 'https://x6.antv.vision/apps/er/',
+        'https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*pJmUSoDLVWEAAAAAAAAAAAAAARQnAQ',
+      href: 'https://x6.antv.vision/apps/dag/',
     },
     {
+      name: 'draw',
       image:
-        'https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*4vWIQKaBk40AAAAAAAAAAAAAARQnAQ',
+        'https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*vFqjSZ-dXKkAAAAAAAAAAAAAARQnAQ',
       href: 'https://x6.antv.vision/apps/draw/',
     },
     {
+      name: 'er',
       image:
-        'https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*OCNgR5do4zsAAAAAAAAAAAAAARQnAQ',
-      href: 'https://x6.antv.vision/apps/dag/',
+        'https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*pwvaToTpiEwAAAAAAAAAAAAAARQnAQ',
+      href: 'https://x6.antv.vision/apps/er/',
     },
   ]
 
@@ -121,17 +123,13 @@ const IndexPage = () => {
       <SEO title={t('X6 图编辑引擎')} titleSuffix="AntV" lang={i18n.language} />
       <Banner
         coverImage={
-          <Carousel autoplay>
-            {cases.map((c) => (
-              <div>
-                <img
-                  src={c.image}
-                  style={{ width: 500, height: 500, cursor: 'pointer' }}
-                  onClick={() => goWebSites(c.href)}
-                />
+          <div className="gallery">
+            {cases.map((item) => (
+              <div className={item.name} onClick={() => goWebSites(item.href)}>
+                <img src={item.image} alt={item.name} title={item.name} />
               </div>
             ))}
-          </Carousel>
+          </div>
         }
         title={t('X6 图编辑引擎')}
         description={t(
