@@ -1,3 +1,10 @@
+## @antv/x6-sites [1.0.23](https://github.com/antvis/x6/compare/@antv/x6-sites@1.0.22...@antv/x6-sites@1.0.23) (2020-11-26)
+
+
+### Bug Fixes
+
+* 🐛 change banner of websites ([b40d297](https://github.com/antvis/x6/commit/b40d2971019b236432a736b972f7cae435bd1d9f))
+
 ## @antv/x6-sites [1.0.22](https://github.com/antvis/x6/compare/@antv/x6-sites@1.0.21...@antv/x6-sites@1.0.22) (2020-11-25)
 
 
