@@ -13,7 +13,8 @@
     "@antv/x6": "^1.0.8",
     "antd": "^4.4.2",
     "react": "^16.8.6",
-    "react-dom": "^16.8.6"
+    "react-dom": "^16.8.6",
+    "@antv/x6-react-components": "^1.0.0"
   },
   "devDependencies": {
     "@types/jest": "^25.2.1",
