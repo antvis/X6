@@ -1,3 +1,10 @@
+## @antv/x6-app-draw [1.0.18](https://github.com/antvis/x6/compare/@antv/x6-app-draw@1.0.17...@antv/x6-app-draw@1.0.18) (2020-11-27)
+
+
+### Bug Fixes
+
+* 🐛 add deps for x6-app-draw ([850192e](https://github.com/antvis/x6/commit/850192ef1424a0b26dd39f547896a8352046edad))
+
 ## @antv/x6-app-draw [1.0.17](https://github.com/antvis/x6/compare/@antv/x6-app-draw@1.0.16...@antv/x6-app-draw@1.0.17) (2020-11-27)
 
 
