@@ -1,3 +1,18 @@
+# @antv/x6-react-shape [1.1.0](https://github.com/antvis/x6/compare/@antv/x6-react-shape@1.0.9...@antv/x6-react-shape@1.1.0) (2020-11-27)
+
+
+### Features
+
+* Support jsdelivr and cdnjs CDN service [#335](https://github.com/antvis/x6/issues/335) ([#336](https://github.com/antvis/x6/issues/336)) ([f640235](https://github.com/antvis/x6/commit/f640235ce8f9fa0db74b35037e951d0410a7fb1f))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.1.0
+
 ## @antv/x6-react-shape [1.0.9](https://github.com/antvis/x6/compare/@antv/x6-react-shape@1.0.8...@antv/x6-react-shape@1.0.9) (2020-11-27)
 
 
