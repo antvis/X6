@@ -96,18 +96,21 @@ const IndexPage = () => {
   const cases = [
     {
       name: 'dag',
+      desc: 'DAG',
       image:
         'https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*pJmUSoDLVWEAAAAAAAAAAAAAARQnAQ',
       href: 'https://x6.antv.vision/apps/dag/',
     },
     {
       name: 'draw',
+      desc: '流程图',
       image:
         'https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*vFqjSZ-dXKkAAAAAAAAAAAAAARQnAQ',
       href: 'https://x6.antv.vision/apps/draw/',
     },
     {
       name: 'er',
+      desc: 'ER',
       image:
         'https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*pwvaToTpiEwAAAAAAAAAAAAAARQnAQ',
       href: 'https://x6.antv.vision/apps/er/',
@@ -125,8 +128,13 @@ const IndexPage = () => {
         coverImage={
           <div className="gallery">
             {cases.map((item) => (
-              <div className={item.name} onClick={() => goWebSites(item.href)}>
-                <img src={item.image} alt={item.name} title={item.name} />
+              <div
+                key={item.name}
+                className={item.name}
+                desc={item.desc}
+                onClick={goWebSites.bind(this, item.href)}
+              >
+                <img src={item.image} alt={item.desc} />
               </div>
             ))}
           </div>
