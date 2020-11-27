@@ -1,3 +1,18 @@
+# @antv/x6-sites [1.1.0](https://github.com/antvis/x6/compare/@antv/x6-sites@1.0.26...@antv/x6-sites@1.1.0) (2020-11-27)
+
+
+### Features
+
+* Support jsdelivr and cdnjs CDN service [#335](https://github.com/antvis/x6/issues/335) ([#336](https://github.com/antvis/x6/issues/336)) ([f640235](https://github.com/antvis/x6/commit/f640235ce8f9fa0db74b35037e951d0410a7fb1f))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.1.0
+
 ## @antv/x6-sites [1.0.26](https://github.com/antvis/x6/compare/@antv/x6-sites@1.0.25...@antv/x6-sites@1.0.26) (2020-11-27)
 
 
