@@ -5,6 +5,7 @@
   "main": "lib/index.js",
   "module": "es/index.js",
   "unpkg": "dist/x6.js",
+  "jsdelivr": "dist/x6.js",
   "types": "lib/index.d.ts",
   "files": [
     "dist",

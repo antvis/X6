@@ -24,16 +24,24 @@ $ yarn add @antv/x6
 import { Graph } from '@antv/x6';
 ```
 
-如果是直接通过 `script` 标签引入，可以使用 `CDN` 地址，如果学习，可以使用最新的版本：
+如果是直接通过 `script` 标签引入，可以使用下面三个 CDN 中的任何一个，默认返回 X6 的最新版：
+
+- https://unpkg.com/@antv/x6/dist/x6.js
+- https://cdn.jsdelivr.net/npm/@antv/x6/dist/x6.js
+- https://cdnjs.com/libraries/@antv/x6
 
 ```html
-<script src="https://unpkg.com/@antv/x6@latest/dist/x6.js"></script>
+<script src="https://unpkg.com/@antv/x6/dist/x6.js"></script>
 ```
 
 对于生产环境，我们推荐使用一个明确的版本号，以避免新版本造成的不可预期的破坏：
 
+- https://unpkg.com/@antv/x6@1.0.0/dist/x6.js
+- https://cdn.jsdelivr.net/npm/@antv/x6@1.0.0/dist/x6.js
+- https://cdnjs.com/libraries/@antv/x6@1.0.0
+
 ```html
-<script src="https://unpkg.com/@antv/x6@1.0.3/dist/x6.js"></script>
+<script src="https://unpkg.com/@antv/x6@1.0.0/dist/x6.js"></script>
 ```
 
 ## 开始使用
