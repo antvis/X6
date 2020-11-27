@@ -1,3 +1,10 @@
+## @antv/x6-sites [1.0.26](https://github.com/antvis/x6/compare/@antv/x6-sites@1.0.25...@antv/x6-sites@1.0.26) (2020-11-27)
+
+
+### Bug Fixes
+
+* 🐛 add newline after insertCss ([5155d80](https://github.com/antvis/x6/commit/5155d80af23339c5561e3f5c439feebafe3ae51e))
+
 ## @antv/x6-sites [1.0.25](https://github.com/antvis/x6/compare/@antv/x6-sites@1.0.24...@antv/x6-sites@1.0.25) (2020-11-27)
 
 
