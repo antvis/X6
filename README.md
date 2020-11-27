@@ -29,7 +29,7 @@
 
 ## Installation
 
-### npm 或 yarn
+### NPM/Yarn
 
 ```shell
 # npm
@@ -39,17 +39,26 @@ $ npm install @antv/x6 --save
 $ yarn add @antv/x6
 ```
 
-### CDN
+### CDNs
 
-For learning purposes, you can use the latest version with:
+For learning purposes, you can use the latest version with one of the CDN:
+
+- https://unpkg.com/@antv/x6/dist/x6.js
+- https://cdn.jsdelivr.net/npm/@antv/x6/dist/x6.js
+- https://cdnjs.com/libraries/@antv/x6
 
 ```html
-<script src="https://unpkg.com/@antv/x6@latest/dist/x6.js"></script>
+<script src="https://unpkg.com/@antv/x6/dist/x6.js"></script>
 ```
+
 For production, we recommend linking to a specific version number to avoid unexpected breakage from newer versions:
 
+- https://unpkg.com/@antv/x6@1.0.0/dist/x6.js
+- https://cdn.jsdelivr.net/npm/@antv/x6@1.0.0/dist/x6.js
+- https://cdnjs.com/libraries/@antv/x6@1.0.0
+
 ```html
-<script src="https://unpkg.com/@antv/x6@1.0.3/dist/x6.js"></script>
+<script src="https://unpkg.com/@antv/x6@1.0.0/dist/x6.js"></script>
 ```
 
 ## Usage

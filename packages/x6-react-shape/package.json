@@ -1,10 +1,11 @@
 {
   "name": "@antv/x6-react-shape",
   "version": "1.0.9",
-  "description": "x6 shape for rendering react components",
+  "description": "X6 shape for rendering react components.",
   "main": "lib/index.js",
   "module": "es/index.js",
   "unpkg": "dist/x6-react-shape.js",
+  "jsdelivr": "dist/x6-react-shape.js",
   "types": "lib/index.d.ts",
   "files": [
     "dist",
