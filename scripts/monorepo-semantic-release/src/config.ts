@@ -112,9 +112,9 @@ export namespace Config {
         {
           assets: [
             'package.json',
-            '**/version.ts',
-            '**/README.md',
             'CHANGELOG.md',
+            '**/x6/src/global/version.ts',
+            '**/x6/README.md',
           ],
           message:
             'chore(release): <%= nextRelease.gitTag %> [skip ci]\n\n<%= nextRelease.notes %>',
