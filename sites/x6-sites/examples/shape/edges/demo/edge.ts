@@ -108,6 +108,8 @@ graph.addEdge({
   },
 })
 
+// 我们用 insert-css 协助demo演示
+// 实际项目中只要将下面样式添加到样式文件中
 insertCss(`
   @keyframes ant-line {
     to {
