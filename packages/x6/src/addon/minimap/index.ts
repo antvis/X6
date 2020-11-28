@@ -262,7 +262,6 @@ export class MiniMap extends View {
 
   @View.dispose()
   dispose() {
-    this.targetGraph.dispose()
     this.remove()
   }
 }
