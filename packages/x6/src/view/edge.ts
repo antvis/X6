@@ -2352,13 +2352,14 @@ export class EdgeView<
       const previousView = previousCell
         ? graph.findViewByCell(previousCell)
         : null
-      const previousPoint = previousCell
-        ? null
-        : Point.create(initialTerminal as Edge.TerminalPointData).toJSON()
+      const previousPoint =
+        previousCell || data.isNewEdge
+          ? null
+          : Point.create(initialTerminal as Edge.TerminalPointData).toJSON()
 
       const current = currentTerminal as Edge.TerminalCellData
       const currentCell = current.cell ? graph.getCellById(current.cell) : null
-      const currentPort = previous.port
+      const currentPort = current.port
       const currentView = currentCell ? graph.findViewByCell(currentCell) : null
       const currentPoint = currentCell
         ? null

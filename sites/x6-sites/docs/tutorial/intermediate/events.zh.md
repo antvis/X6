@@ -119,7 +119,7 @@ graph.on('node:rotated', ({ e, x, y, node, view }) => { })
 
 ### 边连接/取消连接
 
-当拖动边的起始/终止箭头改变边的起点/终点后触发 `edge:connected`，回调函数的参数如下。
+当拖动边的起始/终止箭头将边连接到节点/边或者将边从节点/边上分离后触发 `edge:connected`，回调函数的参数如下。
 
 ```ts
 interface Args {
@@ -127,18 +127,18 @@ interface Args {
   edge: Edge              // 边
   view: EdgeView          // 边的视图
   isNew: boolean          // 是否是新创建的边
-  type: Edge.TerminalType // 终端类型（'source' | 'target'）
+  type: Edge.TerminalType // 操作的是起始箭头还是终止箭头（'source' | 'target'）
 
   previousCell?: Cell | null             // 交互前连接到的节点/边
   previousView?: CellView | null         // 交互前连接到的节点/边的视图
   previousPort?: string | null           // 交互前连接到的链接桩 ID
-  previousPoint?: Point.PointLike | null // 交互前连接到的点
+  previousPoint?: Point.PointLike | null // 交互前连接到的点（将边的终端从空白处拖动到节点/边上时记录起始终端的位置）
   previousMagnet?: Element | null        // 交互前连接到的元素
 
   currentCell?: Cell | null             // 交互后连接到的节点/边
   currentView?: CellView | null         // 交互后连接到的节点/边的视图
   currentPort?: string | null           // 交互后连接到的链接桩 ID
-  currentPoint?: Point.PointLike | null // 交互后连接到的点
+  currentPoint?: Point.PointLike | null // 交互后连接到的点（将边的终端从节点/边上拖动到空白处时记录拖动后终端的位置）
   currentMagnet?: Element | null        // 交互后连接到的元素
 }
 ```
@@ -149,6 +149,16 @@ interface Args {
 graph.on('edge:connected', ({ isNew, edge }) => {
   if (isNew) {
     // 对新创建的边进行插入数据库等持久化操作
+  }
+})
+```
+
+特别注意的是，参数中的 `previous...` 是记录操作终端在连接/取消连接之前的状态，所以在创建新的边的时候，它们都是 `null`。很多人在创建新边后获取 `sourceCell` 时误用了 `previousCell`，正确的使用方式是：
+
+```ts
+graph.on('edge:connected', ({ isNew, edge }) => {
+  if (isNew) {
+    const source = edge.getSourceCell()
   }
 })
 ```
