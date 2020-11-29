@@ -45,10 +45,18 @@ graph.addNode({
 graph.addEdge({
   source: 'a',
   target: 'b',
-  connector: { name: 'rounded' },
+  connector: {
+    name: 'rounded',
+  },
   vertices: [
-    { x: 300, y: 40 },
-    { x: 400, y: 40 },
+    {
+      x: 300,
+      y: 40,
+    },
+    {
+      x: 400,
+      y: 40,
+    },
   ],
   attrs: {
     line: {
