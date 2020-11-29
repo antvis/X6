@@ -24,7 +24,7 @@ const rect = graph.createNode({
   },
 })
 
-for (let i = 0; i < 6; i++) {
+for (let i = 0; i < 6; i += 1) {
   const source = rect.clone().translate(i * 100, i * 10)
   graph.addNode(source)
 
@@ -39,7 +39,9 @@ for (let i = 0; i < 6; i++) {
   if (i % 2 === 0) {
     edge.prop('connector', {
       name: 'jumpover',
-      args: { type: 'gap' },
+      args: {
+        type: 'gap',
+      },
     })
     edge.attr('line/stroke', '#722ed1')
   }
@@ -56,14 +58,22 @@ graph.addNode(crossRectB)
 graph.addEdge({
   source: crossRectA,
   target: crossRectB,
-  connector: { name: 'jumpover' },
+  connector: {
+    name: 'jumpover',
+  },
   attrs: {
     line: {
       stroke: '#722ed1',
     },
   },
   vertices: [
-    { x: 700, y: 190 },
-    { x: 700, y: 280 },
+    {
+      x: 700,
+      y: 190,
+    },
+    {
+      x: 700,
+      y: 280,
+    },
   ],
 })

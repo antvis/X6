@@ -38,8 +38,14 @@ graph.addEdge({
   source: rect1,
   target: rect2,
   vertices: [
-    { x: 100, y: 200 },
-    { x: 300, y: 120 },
+    {
+      x: 100,
+      y: 200,
+    },
+    {
+      x: 300,
+      y: 120,
+    },
   ],
   router: {
     name: 'orth',
