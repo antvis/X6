@@ -45,7 +45,9 @@ graph.addNode({
 graph.addEdge({
   source: 'a',
   target: 'b',
-  connector: { name: 'smooth' },
+  connector: {
+    name: 'smooth',
+  },
   attrs: {
     line: {
       stroke: '#722ed1',
