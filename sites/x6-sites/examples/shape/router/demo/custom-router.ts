@@ -37,7 +37,9 @@ const source = graph.addNode({
       fill: '#ff7875',
       stroke: '#ff4d4f',
     },
-    label: { text: 'Source' },
+    label: {
+      text: 'Source',
+    },
   },
 })
 
