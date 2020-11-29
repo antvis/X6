@@ -1,6 +1,6 @@
 import { Graph } from '@antv/x6'
 
-const container = document.getElementById('container')!
+const container = document.getElementById('container')
 const graph = new Graph({
   container: container,
   resizing: true,
@@ -35,7 +35,9 @@ const rect = graph.addNode({
       fill: '#ff9c6e',
       stroke: '#ff7a45',
     },
-    label: { text: 'A' },
+    label: {
+      text: 'A',
+    },
   },
 })
 
@@ -54,7 +56,9 @@ const circle = graph.addNode({
       fill: '#d3f261',
       stroke: '#bae637',
     },
-    label: { text: 'B' },
+    label: {
+      text: 'B',
+    },
   },
 })
 

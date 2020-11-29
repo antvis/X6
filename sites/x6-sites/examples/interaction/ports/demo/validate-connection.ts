@@ -18,9 +18,16 @@ class MyShape extends Shape.Rect {
   }
 
   getNewInPorts(length: number) {
-    return Array.from({ length }, () => {
-      return { group: 'in' }
-    })
+    return Array.from(
+      {
+        length,
+      },
+      () => {
+        return {
+          group: 'in',
+        }
+      },
+    )
   }
 
   updateInPorts(graph: Graph) {
@@ -42,7 +49,9 @@ class MyShape extends Shape.Rect {
       this.prop(
         ['ports', 'items'],
         this.getOutPorts().concat(usedPorts).concat(newPorts),
-        { rewrite: true },
+        {
+          rewrite: true,
+        },
       )
     }
 
@@ -61,10 +70,16 @@ MyShape.config({
     },
   },
   ports: {
-    items: [{ group: 'out' }],
+    items: [
+      {
+        group: 'out',
+      },
+    ],
     groups: {
       in: {
-        position: { name: 'top' },
+        position: {
+          name: 'top',
+        },
         attrs: {
           portBody: {
             magnet: 'passive',
@@ -77,7 +92,9 @@ MyShape.config({
         z: 0,
       },
       out: {
-        position: { name: 'bottom' },
+        position: {
+          name: 'bottom',
+        },
         attrs: {
           portBody: {
             magnet: 'active',

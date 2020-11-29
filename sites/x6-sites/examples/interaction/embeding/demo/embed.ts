@@ -3,15 +3,33 @@ import { Graph, Shape, Node } from '@antv/x6'
 const Parent = Shape.Rect.define({
   customEmebedding: true,
   attrs: {
-    body: { stroke: 'transparent', fill: '#531dab', rx: 5, ry: 5 },
-    label: { fontSize: 14, text: 'Parent', fill: 'white' },
+    body: {
+      stroke: 'transparent',
+      fill: '#531dab',
+      rx: 5,
+      ry: 5,
+    },
+    label: {
+      fontSize: 14,
+      text: 'Parent',
+      fill: 'white',
+    },
   },
 })
 
 const Child = Shape.Rect.define({
   attrs: {
-    body: { stroke: 'transparent', fill: '#389e0d', rx: 5, ry: 5 },
-    label: { fontSize: 14, text: 'child1', fill: 'white' },
+    body: {
+      stroke: 'transparent',
+      fill: '#389e0d',
+      rx: 5,
+      ry: 5,
+    },
+    label: {
+      fontSize: 14,
+      text: 'child1',
+      fill: 'white',
+    },
   },
 })
 
@@ -22,7 +40,7 @@ if (!Node.registry.exist('embedding.child')) {
   Node.registry.register('embedding.child', Child)
 }
 
-const container = document.getElementById('container')!
+const container = document.getElementById('container')
 const EMBEDDING_OFFSET = 59
 const graph = new Graph({
   container: container,
@@ -58,44 +76,84 @@ const graph = new Graph({
 
 graph.addNode({
   shape: 'embedding.parent',
-  size: { width: 160, height: 100 },
-  position: { x: 240, y: 400 },
-})
-
-graph.addNode({
-  shape: 'embedding.child',
-  size: { width: 160, height: 100 },
-  position: { x: 20, y: 120 },
-  attrs: {
-    body: { fill: '#cf1322' },
-    label: { text: 'Try to move me\n above the \n "Parent" element' },
+  size: {
+    width: 160,
+    height: 100,
+  },
+  position: {
+    x: 240,
+    y: 400,
   },
 })
 
 graph.addNode({
   shape: 'embedding.child',
-  size: { width: 160, height: 100 },
-  position: { x: 20, y: 240 },
+  size: {
+    width: 160,
+    height: 100,
+  },
+  position: {
+    x: 20,
+    y: 120,
+  },
   attrs: {
-    body: { fill: '#096dd9' },
-    label: { text: 'Try to move me\n above the \n "Parent" element' },
+    body: {
+      fill: '#cf1322',
+    },
+    label: {
+      text: 'Try to move me\n above the \n "Parent" element',
+    },
   },
 })
 
 graph.addNode({
   shape: 'embedding.child',
-  size: { width: 160, height: 100 },
-  position: { x: 20, y: 360 },
+  size: {
+    width: 160,
+    height: 100,
+  },
+  position: {
+    x: 20,
+    y: 240,
+  },
   attrs: {
-    body: { fill: '#08979c' },
-    label: { text: 'Try to move me\n above the \n "Parent" element' },
+    body: {
+      fill: '#096dd9',
+    },
+    label: {
+      text: 'Try to move me\n above the \n "Parent" element',
+    },
+  },
+})
+
+graph.addNode({
+  shape: 'embedding.child',
+  size: {
+    width: 160,
+    height: 100,
+  },
+  position: {
+    x: 20,
+    y: 360,
+  },
+  attrs: {
+    body: {
+      fill: '#08979c',
+    },
+    label: {
+      text: 'Try to move me\n above the \n "Parent" element',
+    },
   },
 })
 
 var r = new Child({
   attrs: {
-    body: { fill: '#d4380d' },
-    label: { text: 'Embedded!' },
+    body: {
+      fill: '#d4380d',
+    },
+    label: {
+      text: 'Embedded!',
+    },
   },
 })
   .setPosition(600, 120)
@@ -103,8 +161,12 @@ var r = new Child({
 
 var g = new Child({
   attrs: {
-    body: { fill: '#08979c' },
-    label: { text: 'Embedded!' },
+    body: {
+      fill: '#08979c',
+    },
+    label: {
+      text: 'Embedded!',
+    },
   },
 })
   .setPosition(660, 240)
@@ -112,8 +174,12 @@ var g = new Child({
 
 var b = new Child({
   attrs: {
-    body: { fill: '#08979c' },
-    label: { text: 'Embedded!' },
+    body: {
+      fill: '#08979c',
+    },
+    label: {
+      text: 'Embedded!',
+    },
   },
 })
   .setPosition(600, 360)
@@ -121,7 +187,9 @@ var b = new Child({
 
 new Parent({
   attrs: {
-    label: { text: 'Parent\n(try to move me)' },
+    label: {
+      text: 'Parent\n(try to move me)',
+    },
   },
 })
   .setPosition(640, 480)
