@@ -1,0 +1,28 @@
+{
+  "demos": [
+    {
+      "filename": "markup.ts",
+      "title": {
+        "zh": "使用 Markup",
+        "en": "Use Markup"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*yTfDSZxfEA0AAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "html.ts",
+      "title": {
+        "zh": "使用 HTML",
+        "en": "Use HTML"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*mFJbTIml9F4AAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "react.tsx",
+      "title": {
+        "zh": "使用 React",
+        "en": "Use React"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*9hd8QJiIiG0AAAAAAAAAAAAAARQnAQ"
+    }
+  ]
+}
