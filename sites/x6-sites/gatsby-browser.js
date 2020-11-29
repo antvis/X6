@@ -5,3 +5,4 @@
 window.react = require('react')
 window.x6 = require('@antv/x6')
 window.x6ReactShape = require('@antv/x6-react-shape')
+window.reactDom = require('react-dom')
