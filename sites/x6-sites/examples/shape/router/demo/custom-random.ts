@@ -38,6 +38,12 @@ const source = graph.addNode({
       fill: '#f5f5f5',
       stroke: '#d9d9d9',
     },
+<<<<<<< HEAD:sites/x6-sites/examples/shape/router/demo/custom-random.ts
+=======
+    label: {
+      text: 'Source',
+    },
+>>>>>>> docs: 📚️ Formatting demo code:sites/x6-sites/examples/shape/router/demo/custom-router.ts
   },
 })
 
