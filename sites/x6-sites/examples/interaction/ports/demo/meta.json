@@ -1,7 +1,7 @@
 {
   "demos": [
     {
-      "filename": "validateConnection.ts",
+      "filename": "validate-connection.ts",
       "title": {
         "zh": "验证连接",
         "en": "Validate Connection"

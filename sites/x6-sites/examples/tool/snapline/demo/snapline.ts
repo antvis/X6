@@ -20,7 +20,9 @@ graph.addNode({
       fill: '#ff9c6e',
       stroke: '#ff7a45',
     },
-    label: { text: 'A' },
+    label: {
+      text: 'A',
+    },
   },
 })
 
@@ -35,7 +37,9 @@ graph.addNode({
       fill: '#d3f261',
       stroke: '#bae637',
     },
-    label: { text: 'B' },
+    label: {
+      text: 'B',
+    },
   },
 })
 
@@ -50,6 +54,8 @@ graph.addNode({
       fill: '#5cdbd3',
       stroke: '#36cfc9',
     },
-    label: { text: 'C' },
+    label: {
+      text: 'C',
+    },
   },
 })

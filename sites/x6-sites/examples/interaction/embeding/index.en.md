@@ -1,6 +1,6 @@
 ---
 title: Embeding
-order: 2
+order: 4
 redirect_from:
   - /zh/examples/interaction
 ---
