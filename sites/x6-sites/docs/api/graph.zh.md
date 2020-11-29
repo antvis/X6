@@ -1519,7 +1519,7 @@ const graph = new Graph({
 // 等同于
 const graph = new Graph({
   resizing: {
-    enabled: false,
+    enabled: true,
     minWidth: 0,
     minHeight: 0,
     maxWidth: Number.MAX_SAFE_INTEGER,
@@ -1531,21 +1531,14 @@ const graph = new Graph({
   },
 })
 ```
+每一个配置都支持函数，比如 `enabled`:
 
-支持的选项如下：
-
-```sign
-export interface ResizingRaw {
-  enabled?: boolean
-  minWidth?: number
-  maxWidth?: number
-  minHeight?: number
-  maxHeight?: number
-  orthogonal?: boolean
-  restricted?: boolean
-  autoScroll?: boolean
-  preserveAspectRatio?: boolean
-}
+```ts
+ new graph({ 
+   resizing: { 
+     enabled:  (this: Graph, arg: Node<Node.Properties>) => boolean 
+    }
+  })
 ```
 
 #### enabled
