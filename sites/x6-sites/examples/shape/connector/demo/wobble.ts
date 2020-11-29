@@ -46,7 +46,9 @@ const source = graph.addNode({
   width: 140,
   height: 70,
   attrs: {
-    label: { text: 'Source' },
+    label: {
+      text: 'Source',
+    },
     body: {
       fill: '#ff9c6e',
       stroke: '#ff7a45',

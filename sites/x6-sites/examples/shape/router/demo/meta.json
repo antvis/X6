@@ -49,7 +49,7 @@
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*iE8MS6-xgZMAAAAAAAAAAAAAARQnAQ"
     },
     {
-      "filename": "customRouter.ts",
+      "filename": "custom-router.ts",
       "title": {
         "zh": "随机路由",
         "en": "Random Router"

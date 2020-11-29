@@ -39,6 +39,9 @@ graph.addEdge({
   target: rect2,
   router: {
     name: 'oneSide',
-    args: { side: 'right', padding: 50 },
+    args: {
+      side: 'right',
+      padding: 50,
+    },
   },
 })
