@@ -1,6 +1,6 @@
 ---
 title: Built-in Edge
-order: 2
+order: 51
 redirect_from:
   - /zh/examples/shape
 ---
