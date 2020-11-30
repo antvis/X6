@@ -3,42 +3,98 @@
     {
       "filename": "rect.ts",
       "title": {
-        "zh": "矩形",
+        "zh": "Rectangle",
         "en": "Rectangle"
       },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*3rFwR6gDxSMAAAAAAAAAAAAAARQnAQ"
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*vCTjSJ41rnIAAAAAAAAAAAAAARQnAQ"
     },
     {
       "filename": "ellipse.ts",
       "title": {
-        "zh": "椭圆",
+        "zh": "Ellipse",
         "en": "Ellipse"
       },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*xzAvR6eQe6sAAAAAAAAAAAAAARQnAQ"
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*4d5lT5DQzgkAAAAAAAAAAAAAARQnAQ"
     },
     {
       "filename": "circle.ts",
       "title": {
-        "zh": "圆形",
+        "zh": "Circle",
         "en": "Circle"
       },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*pffdSKADueQAAAAAAAAAAAAAARQnAQ"
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*tWKuQaqsaUgAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "path.ts",
+      "title": {
+        "zh": "Path",
+        "en": "Path"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*B5VvRrmfDosAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "polygon.ts",
+      "title": {
+        "zh": "Polygon",
+        "en": "Polygon"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*LZepTKoZtRkAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "polyline.ts",
+      "title": {
+        "zh": "Polyline",
+        "en": "Polyline"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*vpEcQJFgMPAAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "cylinder.ts",
+      "title": {
+        "zh": "Cylinder",
+        "en": "Cylinder"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*MZ4vRry8Zx0AAAAAAAAAAAAAARQnAQ"
     },
     {
       "filename": "image.ts",
       "title": {
-        "zh": "图片",
+        "zh": "Image",
         "en": "Image"
       },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*YmP5Q5fww5cAAAAAAAAAAAAAARQnAQ"
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*tIReSJNChdkAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "text-block.ts",
+      "title": {
+        "zh": "文本",
+        "en": "Text Block"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*3_yQTKv_lEsAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "custom-markup.ts",
+      "title": {
+        "zh": "使用 markup 自定义节点",
+        "en": "Custom Node with Markup"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*jX20T6ewn_sAAAAAAAAAAAAAARQnAQ"
     },
     {
       "filename": "html.ts",
       "title": {
-        "zh": "HTML",
-        "en": "HTML"
+        "zh": "使用 HTML 渲染节点",
+        "en": "Render HTML Node"
       },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*9RRESpvzfMIAAAAAAAAAAAAAARQnAQ"
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*TwKWSaMuB0wAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "react.tsx",
+      "title": {
+        "zh": "使用 React 渲染节点",
+        "en": "Render React Node"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*4IM4R7Cx5S0AAAAAAAAAAAAAARQnAQ"
     }
   ]
 }
