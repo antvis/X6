@@ -1,3 +1,10 @@
+## @antv/x6 [1.1.1](https://github.com/antvis/x6/compare/@antv/x6@1.1.0...@antv/x6@1.1.1) (2020-11-30)
+
+
+### Bug Fixes
+
+* 🐛 not dispose graph in minmap ([0b849cc](https://github.com/antvis/x6/commit/0b849ccdbee22a3a74e0036041c44b09f5cc0d96))
+
 # @antv/x6 [1.1.0](https://github.com/antvis/x6/compare/@antv/x6@1.0.9...@antv/x6@1.1.0) (2020-11-27)
 
 
