@@ -1,5 +1,5 @@
 import { Dom, NumberExt } from '../util'
-import { Rectangle } from '../geometry'
+import { Point, Rectangle } from '../geometry'
 import { Transform } from '../addon/transform'
 import { Node } from '../model/node'
 import { EventArgs } from './events'
@@ -191,13 +191,10 @@ export class TransformManager extends Base {
     const matrix = this.getMatrix()
     matrix.e = tx || 0
     matrix.f = ty || 0
-
     this.setMatrix(matrix)
-
     const ts = this.getTranslation()
-    const origin = this.options
-    origin.x = ts.tx
-    origin.y = ts.ty
+    this.options.x = ts.tx
+    this.options.y = ts.ty
     this.graph.trigger('translate', { ...ts })
     return this
   }
@@ -299,15 +296,22 @@ export class TransformManager extends Base {
   }
 
   scaleContentToFit(options: TransformManager.ScaleContentToFitOptions = {}) {
+    this.scaleContentToFitImpl(options)
+  }
+
+  scaleContentToFitImpl(
+    options: TransformManager.ScaleContentToFitOptions = {},
+    translate: boolean = true,
+  ) {
     let contentBBox
-    // let contentLocalOrigin
+    let contentLocalOrigin
     if (options.contentArea) {
       const contentArea = options.contentArea
       contentBBox = this.graph.localToGraph(contentArea)
-      // contentLocalOrigin = Point.create(contentArea)
+      contentLocalOrigin = Point.create(contentArea)
     } else {
       contentBBox = this.getContentBBox(options)
-      // contentLocalOrigin = this.graph.graphToLocalPoint(contentBBox)
+      contentLocalOrigin = this.graph.graphToLocal(contentBBox)
     }
 
     if (!contentBBox.width || !contentBBox.height) {
@@ -322,13 +326,13 @@ export class TransformManager extends Base {
     const minScaleY = options.minScaleY || minScale
     const maxScaleY = options.maxScaleY || maxScale
 
-    let fittingBBox
+    let fittingBox
     if (options.viewportArea) {
-      fittingBBox = options.viewportArea
+      fittingBox = options.viewportArea
     } else {
       const computedSize = this.getComputedSize()
       const currentTranslate = this.getTranslation()
-      fittingBBox = {
+      fittingBox = {
         x: currentTranslate.tx,
         y: currentTranslate.ty,
         width: computedSize.width,
@@ -336,34 +340,36 @@ export class TransformManager extends Base {
       }
     }
 
-    fittingBBox = Rectangle.create(fittingBBox).inflate(-padding)
+    fittingBox = Rectangle.create(fittingBox).inflate(-padding)
 
     const currentScale = this.getScale()
 
-    let newSx = (fittingBBox.width / contentBBox.width) * currentScale.sx
-    let newSy = (fittingBBox.height / contentBBox.height) * currentScale.sy
+    let newSX = (fittingBox.width / contentBBox.width) * currentScale.sx
+    let newSY = (fittingBox.height / contentBBox.height) * currentScale.sy
 
     if (options.preserveAspectRatio !== false) {
-      newSx = newSy = Math.min(newSx, newSy)
+      newSX = newSY = Math.min(newSX, newSY)
     }
 
     // snap scale to a grid
     const gridSize = options.scaleGrid
     if (gridSize) {
-      newSx = gridSize * Math.floor(newSx / gridSize)
-      newSy = gridSize * Math.floor(newSy / gridSize)
+      newSX = gridSize * Math.floor(newSX / gridSize)
+      newSY = gridSize * Math.floor(newSY / gridSize)
     }
 
     // scale min/max boundaries
-    newSx = Math.min(maxScaleX, Math.max(minScaleX, newSx))
-    newSy = Math.min(maxScaleY, Math.max(minScaleY, newSy))
+    newSX = NumberExt.clamp(newSX, minScaleX, maxScaleX)
+    newSY = NumberExt.clamp(newSY, minScaleY, maxScaleY)
 
-    // const origin = this.options
-    // const newOX = fittingBBox.x - contentLocalOrigin.x * newSx - origin.x
-    // const newOY = fittingBBox.y - contentLocalOrigin.y * newSy - origin.y
+    this.scale(newSX, newSY)
 
-    this.scale(newSx, newSy)
-    // this.translate(newOX, newOY)
+    if (translate) {
+      const origin = this.options
+      const newOX = fittingBox.x - contentLocalOrigin.x * newSX - origin.x
+      const newOY = fittingBox.y - contentLocalOrigin.y * newSY - origin.y
+      this.translate(newOX, newOY)
+    }
   }
 
   getContentArea(options: TransformManager.GetContentAreaOptions = {}) {

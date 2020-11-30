@@ -61,7 +61,7 @@ class BallView extends NodeView {
     const h0 = this.graph.options.height - pos.y - size.height
     const v0 = options.speed
     const sin1 = Math.sin(Angle.toRad(options.angle))
-    
+
     const flightTime =
       (v0 * sin1 +
         Math.sqrt(Math.pow(v0, 2) * Math.pow(sin1, 2) + 2 * h0 * ga)) /
@@ -165,41 +165,45 @@ class BallView extends NodeView {
   }
 }
 
-NodeView.registry.register('ball', BallView as any)
+NodeView.registry.register('ball', BallView as any, true)
 
-Node.registry.register('ball', {
-  view: 'ball',
-  markup: [
-    {
-      tagName: 'text',
-      selector: 'label',
-    },
-    {
-      tagName: 'image',
-      selector: 'ball',
-    },
-  ],
-  attrs: {
-    label: {
-      text: 'Drag me!',
-      fontSize: 40,
-      fontWeight: 900,
-      refX: 0.5,
-      refY: -20,
-      textVerticalAnchor: 'middle',
-      textAnchor: 'middle',
-      fill: 'white',
-      strokeWidth: 2,
-      stroke: 'black',
-      opacity: 0,
-      pointerEvents: 'none',
-    },
-    ball: {
-      refWidth: 1,
-      refHeight: 1,
+Node.registry.register(
+  'ball',
+  {
+    view: 'ball',
+    markup: [
+      {
+        tagName: 'text',
+        selector: 'label',
+      },
+      {
+        tagName: 'image',
+        selector: 'ball',
+      },
+    ],
+    attrs: {
+      label: {
+        text: 'Drag me!',
+        fontSize: 40,
+        fontWeight: 900,
+        refX: 0.5,
+        refY: -20,
+        textVerticalAnchor: 'middle',
+        textAnchor: 'middle',
+        fill: 'white',
+        strokeWidth: 2,
+        stroke: 'black',
+        opacity: 0,
+        pointerEvents: 'none',
+      },
+      ball: {
+        refWidth: 1,
+        refHeight: 1,
+      },
     },
   },
-})
+  true,
+)
 
 export default class Example extends React.Component {
   private container: HTMLDivElement
