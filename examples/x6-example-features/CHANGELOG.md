@@ -1,3 +1,19 @@
+## @antv/x6-example-features [1.1.3](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.1.2...@antv/x6-example-features@1.1.3) (2020-11-30)
+
+
+### Bug Fixes
+
+* 🐛 optimize params for edge:connected event ([20aca93](https://github.com/antvis/x6/commit/20aca935635c3acaadd7beef28fea65e14e1bf9b))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.1.1
+* **@antv/x6-react-shape:** upgraded to 1.1.1
+
 ## @antv/x6-example-features [1.1.2](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.1.1...@antv/x6-example-features@1.1.2) (2020-11-27)
 
 
