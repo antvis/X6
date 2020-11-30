@@ -1,4 +1,4 @@
-import { Platform, Dom, FunctionExt } from '../../util'
+import { Platform, Dom, FunctionExt, ObjectExt } from '../../util'
 import { Attr } from '../../registry'
 import { bodyAttr } from './util'
 import { Base } from '../base'
@@ -59,9 +59,17 @@ export const TextBlock = Base.define({
       },
     },
   },
+  propHooks(metadata) {
+    const { text, ...others } = metadata
+    if (text) {
+      ObjectExt.setByPath(others, 'attrs/label/text', text)
+    }
+    return others
+  },
   attrHooks: {
     text: {
       set(text: string, { cell, view, refBBox, elem, attrs }) {
+        console.log(text)
         if (elem instanceof HTMLElement) {
           elem.textContent = text
         } else {
