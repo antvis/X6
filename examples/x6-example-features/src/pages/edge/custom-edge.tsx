@@ -147,10 +147,6 @@ export default class Example extends React.Component {
           tagName: 'path',
           selector: 'fill',
         },
-        {
-          tagName: 'g',
-          selector: 'group',
-        },
       ],
       source: { x: 200, y: 200 },
       target: { x: 500, y: 150 },
@@ -191,6 +187,7 @@ export default class Example extends React.Component {
       attrs: {
         line: {
           stroke: '#5654a0',
+          strokeWith: 3,
         },
         label: {
           textPath: { selector: 'line', startOffset: '50%' },
@@ -198,9 +195,6 @@ export default class Example extends React.Component {
           textVerticalAnchor: 'middle',
           text: 'Label Along Path',
           fill: 'yellow',
-          fontSize: 14,
-          fontWeight: 'bold',
-          fontFamily: 'fantasy',
         },
       },
     })

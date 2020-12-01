@@ -51,8 +51,8 @@
     {
       "filename": "customRouter.ts",
       "title": {
-        "zh": "随机路由",
-        "en": "Random Router"
+        "zh": "自定义路由",
+        "en": "Custom Random Router"
       },
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*L3C-TrM4lG0AAAAAAAAAAAAAARQnAQ"
     }
