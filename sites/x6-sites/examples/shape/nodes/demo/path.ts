@@ -44,7 +44,7 @@ graph.addNode({
 graph.addNode({
   shape: 'path',
   x: 360,
-  y: 40,
+  y: 70,
   width: 100,
   height: 80,
   label: 'path',

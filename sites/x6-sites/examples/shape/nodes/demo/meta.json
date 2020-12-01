@@ -30,7 +30,7 @@
         "zh": "Path",
         "en": "Path"
       },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*B5VvRrmfDosAAAAAAAAAAAAAARQnAQ"
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*RebUQ5ze_PkAAAAAAAAAAAAAARQnAQ"
     },
     {
       "filename": "polygon.ts",
@@ -46,7 +46,7 @@
         "zh": "Polyline",
         "en": "Polyline"
       },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*vpEcQJFgMPAAAAAAAAAAAAAAARQnAQ"
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*t6wZQarashoAAAAAAAAAAAAAARQnAQ"
     },
     {
       "filename": "cylinder.ts",
@@ -54,7 +54,7 @@
         "zh": "Cylinder",
         "en": "Cylinder"
       },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*MZ4vRry8Zx0AAAAAAAAAAAAAARQnAQ"
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*MkDMTaYuFAUAAAAAAAAAAAAAARQnAQ"
     },
     {
       "filename": "image.ts",
@@ -86,7 +86,7 @@
         "zh": "使用 HTML 渲染节点",
         "en": "Render HTML Node"
       },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*TwKWSaMuB0wAAAAAAAAAAAAAARQnAQ"
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*I4YSRaxXsV4AAAAAAAAAAAAAARQnAQ"
     },
     {
       "filename": "react.tsx",
@@ -94,7 +94,15 @@
         "zh": "使用 React 渲染节点",
         "en": "Render React Node"
       },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*4IM4R7Cx5S0AAAAAAAAAAAAAARQnAQ"
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*_aX6Qb5gYz4AAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "switch.ts",
+      "title": {
+        "zh": "自定义开关",
+        "en": "Custom Switch Node"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*hC_CTIqqE5gAAAAAAAAAAAAAARQnAQ"
     }
   ]
 }

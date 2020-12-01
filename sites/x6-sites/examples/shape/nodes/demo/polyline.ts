@@ -88,7 +88,7 @@ graph.addNode({
 graph.addNode({
   shape: 'polyline',
   x: 180,
-  y: 180,
+  y: 210,
   width: 80,
   height: 80,
   label: 'polyline',
