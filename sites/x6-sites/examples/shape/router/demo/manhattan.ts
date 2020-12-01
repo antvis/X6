@@ -1,52 +1,46 @@
-import { Graph, Edge, EdgeView } from '@antv/x6'
+import { Graph, Node, Edge, EdgeView } from '@antv/x6'
 
-const container = document.getElementById('container')
 const graph = new Graph({
-  container: container,
+  container: document.getElementById('container'),
   grid: true,
 })
 
 const source = graph.addNode({
-  x: 80,
+  x: 120,
   y: 40,
-  width: 120,
-  height: 50,
+  width: 100,
+  height: 40,
   attrs: {
     body: {
-      fill: '#fe8550',
-      stroke: '#ed8661',
-      strokeWidth: 2,
-    },
-    label: {
-      text: 'Source',
-      fill: '#f0f0f0',
-      fontSize: 18,
-      fontWeight: 'lighter',
-      fontVariant: 'small-caps',
+      fill: '#f5f5f5',
+      stroke: '#d9d9d9',
     },
   },
 })
 
-const target = graph.addNode(
-  source.clone().translate(480, 350).setAttrByPath('label/text', 'Target'),
-)
+const target = graph.addNode({
+  x: 400,
+  y: 260,
+  width: 100,
+  height: 40,
+  attrs: {
+    body: {
+      fill: '#f5f5f5',
+      stroke: '#d9d9d9',
+    },
+  },
+})
 
 const obstacles: Node[] = []
 const obstacle = graph.addNode({
-  x: 340,
-  y: 140,
-  width: 120,
-  height: 50,
-  label: 'Obstacle',
+  x: 240,
+  y: 120,
+  width: 80,
+  height: 30,
   attrs: {
-    label: {
-      text: 'Obstacle',
-      fill: '#eee',
-    },
     body: {
-      fill: '#9687fe',
-      stroke: '#8e89e5',
-      strokeWidth: 2,
+      fill: '#ffd591',
+      stroke: '#ffa940',
     },
   },
 })
@@ -59,8 +53,8 @@ const update = () => {
 }
 
 obstacles.push(obstacle)
-obstacles.push(graph.addNode(obstacle.clone().translate(200, 100)))
-obstacles.push(graph.addNode(obstacle.clone().translate(-200, 150)))
+obstacles.push(graph.addNode(obstacle.clone().translate(100, 80)))
+obstacles.push(graph.addNode(obstacle.clone().translate(-100, 140)))
 obstacles.forEach((obstacle) => obstacle.on('change:position', update))
 
 edge = graph.addEdge({
@@ -69,8 +63,17 @@ edge = graph.addEdge({
   router: {
     name: 'manhattan',
     args: {
-      startDirections: ['top'],
-      endDirections: ['bottom'],
+      startDirections: ['bottom'],
+      endDirections: ['top'],
+    },
+  },
+  attrs: {
+    line: {
+      stroke: '#722ed1',
     },
   },
 })
+
+update()
+
+graph.translate(50, 0)
