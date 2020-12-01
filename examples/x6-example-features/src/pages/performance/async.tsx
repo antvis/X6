@@ -93,14 +93,14 @@ export default class Example extends React.Component<
 
         if (this.state.customViewport) {
           var viewportBBox = this.viewport.getBBox()
-          return viewportBBox.intersect(
+          return viewportBBox.isIntersectWithRect(
             view.cell.getBBox().inflate(this.state.padding),
           )
         } else {
           if (view.cell === this.viewport) {
             return false
           }
-          return this.windowBBox.intersect(
+          return this.windowBBox.isIntersectWithRect(
             view.cell.getBBox().inflate(this.state.padding),
           )
         }
@@ -212,7 +212,7 @@ export default class Example extends React.Component<
   }
 
   setWindowBBox() {
-    this.windowBBox = this.graph.pageToLocalRect(
+    this.windowBBox = this.graph.pageToLocal(
       window.scrollX,
       window.scrollY,
       window.innerWidth,
