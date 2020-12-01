@@ -9,10 +9,10 @@ const graph = new Graph({
 
 const source = graph.addNode({
   shape: 'html',
-  x: 80,
-  y: 80,
-  width: 160,
-  height: 60,
+  x: 120,
+  y: 50,
+  width: 120,
+  height: 50,
   html: () => {
     const wrap = document.createElement('div')
     wrap.style.width = '100%'
@@ -42,9 +42,9 @@ wrap.innerText = 'World'
 const target = graph.addNode({
   shape: 'html',
   x: 320,
-  y: 320,
-  width: 160,
-  height: 60,
+  y: 260,
+  width: 120,
+  height: 50,
   html: wrap,
 })
 
