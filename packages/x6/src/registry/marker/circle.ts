@@ -40,7 +40,7 @@ export const circlePlus: Marker.Factory<CircleMarkerOptions> = ({
       },
       {
         ...attrs,
-        type: 'path',
+        tagName: 'path',
         d: normalize(path.serialize(), -radius),
       },
     ] as any,
