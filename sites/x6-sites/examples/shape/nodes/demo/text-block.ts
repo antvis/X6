@@ -6,7 +6,7 @@ const graph = new Graph({
 })
 
 graph.addNode({
-  x: 80,
+  x: 160,
   y: 120,
   width: 360,
   height: 120,
