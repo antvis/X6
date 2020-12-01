@@ -3,18 +3,10 @@
     {
       "filename": "normal.ts",
       "title": {
-        "zh": "正常连线",
+        "zh": "默认连线",
         "en": "Normal Connector"
       },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*HwCJRawjuCAAAAAAAAAAAAAAARQnAQ"
-    },
-    {
-      "filename": "smooth.ts",
-      "title": {
-        "zh": "平滑连线",
-        "en": "Smooth Connector"
-      },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*x4k3So2KAtwAAAAAAAAAAAAAARQnAQ"
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*ItzNQb0v8QMAAAAAAAAAAAAAARQnAQ"
     },
     {
       "filename": "rounded.ts",
@@ -22,23 +14,39 @@
         "zh": "圆角连线",
         "en": "Rounded Connector"
       },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*Xre2RYCzIiUAAAAAAAAAAAAAARQnAQ"
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*XeN0Q4kyuBMAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "smooth.ts",
+      "title": {
+        "zh": "平滑连线（三次贝塞尔曲线）",
+        "en": "Smooth Connector"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*b7ETSqUNr00AAAAAAAAAAAAAARQnAQ"
     },
     {
       "filename": "jumpover.ts",
       "title": {
         "zh": "跳线",
-        "en": "JumpOver Connector"
+        "en": "Jumpover Connector"
       },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*Gbu3R5fVQC4AAAAAAAAAAAAAARQnAQ"
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*YfAITIxsiFIAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "curve.ts",
+      "title": {
+        "zh": "自定义二次贝塞尔曲线",
+        "en": "Quadratic Bessel Curve"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*WJj5ToqfFz8AAAAAAAAAAAAAARQnAQ"
     },
     {
       "filename": "wobble.ts",
       "title": {
-        "zh": "自定义连线",
-        "en": "Custom Connector"
+        "zh": "自定义随机摇摆线",
+        "en": "Custom Wobble Connector"
       },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*zrRTSbn-uD0AAAAAAAAAAAAAARQnAQ"
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*A19zSqro4asAAAAAAAAAAAAAARQnAQ"
     }
   ]
 }

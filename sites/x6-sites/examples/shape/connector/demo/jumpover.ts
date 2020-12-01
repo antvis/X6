@@ -1,69 +1,71 @@
 import { Graph } from '@antv/x6'
 
-const container = document.getElementById('container')
 const graph = new Graph({
-  container: container,
-  grid: 10,
+  container: document.getElementById('container'),
+  grid: true,
 })
 
 const rect = graph.createNode({
-  x: 100,
-  y: 50,
+  x: 140,
+  y: 40,
   width: 70,
   height: 30,
   attrs: {
     body: {
-      fill: '#ff7875',
-      stroke: '#ff4d4f',
-    },
-    label: {
-      text: 'rect',
-      magnet: true,
-      fill: '#ffffff',
+      fill: '#f5f5f5',
+      stroke: '#d9d9d9',
     },
   },
 })
 
-for (let i = 0; i < 6; i++) {
-  const source = rect.clone().translate(i * 100, i * 10)
-  graph.addNode(source)
+const source = graph.addNode(rect.clone().position(30, 90))
+const target = graph.addNode(rect.clone().position(30, 170))
 
-  const target = source.clone().translate(0, 200)
-  graph.addNode(target)
-
-  const edge = graph.createEdge({
-    source,
-    target,
-  })
-
-  if (i % 2 === 0) {
-    edge.prop('connector', {
-      name: 'jumpover',
-      args: { type: 'gap' },
-    })
-    edge.attr('line/stroke', '#722ed1')
-  }
-
-  graph.addEdge(edge)
-}
-
-const crossRectA = rect.clone().position(16, 100)
-graph.addNode(crossRectA)
-
-const crossRectB = rect.clone().position(16, 200)
-graph.addNode(crossRectB)
-
-graph.addEdge({
-  source: crossRectA,
-  target: crossRectB,
-  connector: { name: 'jumpover' },
+const edge = graph.addEdge({
+  source,
+  target,
+  vertices: [
+    { x: 640, y: 160 },
+    { x: 640, y: 240 },
+  ],
   attrs: {
     line: {
       stroke: '#722ed1',
     },
   },
-  vertices: [
-    { x: 700, y: 190 },
-    { x: 700, y: 280 },
-  ],
 })
+
+for (let i = 0; i < 5; i += 1) {
+  const source = graph.addNode(rect.clone().translate(i * 100, i * 10))
+  const target = graph.addNode(source.clone().translate(0, 200))
+
+  if (i % 2 === 0) {
+    graph.addEdge({
+      source,
+      target,
+      connector: {
+        name: 'jumpover',
+        args: {
+          type: 'gap',
+        },
+      },
+      attrs: {
+        line: {
+          stroke: '#faad14',
+        },
+      },
+    })
+  } else {
+    graph.addEdge({
+      source,
+      target,
+      attrs: {
+        line: {
+          stroke: '#d9d9d9',
+        },
+      },
+    })
+  }
+}
+
+edge.setConnector('jumpover')
