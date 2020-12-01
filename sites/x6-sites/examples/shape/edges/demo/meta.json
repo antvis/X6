@@ -6,7 +6,55 @@
         "zh": "默认边",
         "en": "Default Edge"
       },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*Z-LXQKuFXxwAAAAAAAAAAAAAARQnAQ"
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*6UGgRb4EkuMAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "shadow-edge.ts",
+      "title": {
+        "zh": "阴影边",
+        "en": "Shadow Edge"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*wlLJRbSOfnkAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "double-edge.ts",
+      "title": {
+        "zh": "双线边",
+        "en": "Double Edge"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*oeAZSa0C8ZMAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "gradient.ts",
+      "title": {
+        "zh": "渐变背景色",
+        "en": "Gradient Edge"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*ZwHVS56I4-oAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "label-along-path.ts",
+      "title": {
+        "zh": "沿路径分布的文本",
+        "en": "Label Along Path"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*OHSrQop8Z30AAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "shape-on-edge.ts",
+      "title": {
+        "zh": "沿边长度方向上的图形",
+        "en": "Custom Shape On the Edge"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*uGyjRIA731YAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "custom-click-event.ts",
+      "title": {
+        "zh": "自定义点击事件",
+        "en": "Custom Click Event"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*ZmhTRaPgOQgAAAAAAAAAAAAAARQnAQ"
     }
   ]
 }
