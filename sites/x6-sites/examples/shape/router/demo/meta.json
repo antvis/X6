@@ -25,6 +25,14 @@
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*H42jSbTYRyoAAAAAAAAAAAAAARQnAQ"
     },
     {
+      "filename": "er.ts",
+      "title": {
+        "zh": "ER 路由",
+        "en": "ER Router"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*VoYhRZROYwMAAAAAAAAAAAAAARQnAQ"
+    },
+    {
       "filename": "manhattan.ts",
       "title": {
         "zh": "智能路由",
@@ -39,14 +47,6 @@
         "en": "Metro Router"
       },
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*guRmSZlF-oEAAAAAAAAAAAAAARQnAQ"
-    },
-    {
-      "filename": "er.ts",
-      "title": {
-        "zh": "ER 路由",
-        "en": "ER Router"
-      },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*VoYhRZROYwMAAAAAAAAAAAAAARQnAQ"
     },
     {
       "filename": "custom-random-router.ts",
