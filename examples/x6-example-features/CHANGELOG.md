@@ -1,3 +1,52 @@
+## @antv/x6-example-features [1.2.1](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.2.0...@antv/x6-example-features@1.2.1) (2020-12-02)
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.1.3
+* **@antv/x6-react-shape:** upgraded to 1.1.3
+
+# @antv/x6-example-features [1.2.0](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.1.3...@antv/x6-example-features@1.2.0) (2020-12-02)
+
+
+### Bug Fixes
+
+* 🐛 optimize params for edge:connected event ([55a72d0](https://github.com/antvis/x6/commit/55a72d0a0dd20d328576db9b81f7be5385ede29e))
+
+
+### Features
+
+* ✨ add connector demos ([929b691](https://github.com/antvis/x6/commit/929b6913dfd2637844ed4c133c8cb30efc2d4177))
+* ✨ react table demo ([3c2d10a](https://github.com/antvis/x6/commit/3c2d10acc0c8f2bf403def7aa1b44ef3769dc248))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.1.2
+* **@antv/x6-react-shape:** upgraded to 1.1.2
+
+## @antv/x6-example-features [1.1.3](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.1.2...@antv/x6-example-features@1.1.3) (2020-11-30)
+
+
+### Bug Fixes
+
+* 🐛 optimize params for edge:connected event ([20aca93](https://github.com/antvis/x6/commit/20aca935635c3acaadd7beef28fea65e14e1bf9b))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.1.1
+* **@antv/x6-react-shape:** upgraded to 1.1.1
+
 ## @antv/x6-example-features [1.1.2](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.1.1...@antv/x6-example-features@1.1.2) (2020-11-27)
 
 

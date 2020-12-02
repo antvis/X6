@@ -1,3 +1,23 @@
+## @antv/x6 [1.1.3](https://github.com/antvis/x6/compare/@antv/x6@1.1.2...@antv/x6@1.1.3) (2020-12-02)
+
+## @antv/x6 [1.1.2](https://github.com/antvis/x6/compare/@antv/x6@1.1.1...@antv/x6@1.1.2) (2020-12-02)
+
+
+### Bug Fixes
+
+* 🐛 inherit from poly ([97dc51f](https://github.com/antvis/x6/commit/97dc51f30a86b12a52d8b4d3cde7901616ccb490))
+* 🐛 not dispose graph in minmap ([67c1428](https://github.com/antvis/x6/commit/67c142852ac9f37b7bf2e8dd3bdc295122fee4b1))
+* 🐛 remove default pathData ([97950c3](https://github.com/antvis/x6/commit/97950c307680b4e22e732603aa5d037cbd56965c))
+* 🐛 render of circlePlus ([252a326](https://github.com/antvis/x6/commit/252a326aff4447736cb73d888e71ff6f55b3b602))
+* 🐛 text prop ([ec24e89](https://github.com/antvis/x6/commit/ec24e899902c26285f846ea39c5f9ba429c4ee7f))
+
+## @antv/x6 [1.1.1](https://github.com/antvis/x6/compare/@antv/x6@1.1.0...@antv/x6@1.1.1) (2020-11-30)
+
+
+### Bug Fixes
+
+* 🐛 not dispose graph in minmap ([0b849cc](https://github.com/antvis/x6/commit/0b849ccdbee22a3a74e0036041c44b09f5cc0d96))
+
 # @antv/x6 [1.1.0](https://github.com/antvis/x6/compare/@antv/x6@1.0.9...@antv/x6@1.1.0) (2020-11-27)
 
 

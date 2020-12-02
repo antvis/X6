@@ -1,44 +1,50 @@
 import { Graph } from '@antv/x6'
 
-const container = document.getElementById('container')
 const graph = new Graph({
-  container: container,
+  container: document.getElementById('container'),
   grid: true,
 })
 
-const rect1 = graph.addNode({
-  x: 30,
-  y: 30,
+const source = graph.addNode({
+  x: 120,
+  y: 40,
   width: 100,
   height: 40,
-  label: 'hello',
   attrs: {
     body: {
-      fill: '#ff7875',
-      stroke: '#ff4d4f',
+      fill: '#f5f5f5',
+      stroke: '#d9d9d9',
     },
   },
 })
 
-const rect2 = graph.addNode({
-  x: 300,
-  y: 240,
+const target = graph.addNode({
+  x: 400,
+  y: 260,
   width: 100,
   height: 40,
-  label: 'world',
   attrs: {
     body: {
-      fill: '#ff7875',
-      stroke: '#ff4d4f',
+      fill: '#f5f5f5',
+      stroke: '#d9d9d9',
     },
   },
 })
 
 graph.addEdge({
-  source: rect1,
-  target: rect2,
+  source,
+  target,
+  // https://x6.antv.vision/zh/docs/api/registry/router#oneside
   router: {
     name: 'oneSide',
-    args: { side: 'right', padding: 50 },
+    args: {
+      side: 'right',
+      padding: 50,
+    },
+  },
+  attrs: {
+    line: {
+      stroke: '#722ed1',
+    },
   },
 })
