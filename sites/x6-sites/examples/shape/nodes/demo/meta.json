@@ -75,24 +75,24 @@
     {
       "filename": "custom-markup.ts",
       "title": {
-        "zh": "使用 markup 自定义节点",
-        "en": "Custom Node with Markup"
+        "zh": "使用 SVG 自定义节点",
+        "en": "Custom Node with SVG"
       },
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*jX20T6ewn_sAAAAAAAAAAAAAARQnAQ"
     },
     {
       "filename": "html.ts",
       "title": {
-        "zh": "使用 HTML 渲染节点",
-        "en": "Render HTML Node"
+        "zh": "使用 HTML 自定义节点",
+        "en": "Custom Node with HTML"
       },
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*I4YSRaxXsV4AAAAAAAAAAAAAARQnAQ"
     },
     {
       "filename": "react.tsx",
       "title": {
-        "zh": "使用 React 渲染节点",
-        "en": "Render React Node"
+        "zh": "使用 React 自定节点",
+        "en": "Custom Node with React"
       },
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*_aX6Qb5gYz4AAAAAAAAAAAAAARQnAQ"
     },
