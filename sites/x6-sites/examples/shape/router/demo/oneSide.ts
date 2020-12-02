@@ -37,10 +37,7 @@ graph.addEdge({
   // https://x6.antv.vision/zh/docs/api/registry/router#oneside
   router: {
     name: 'oneSide',
-    args: {
-      side: 'right',
-      padding: 50,
-    },
+    args: { side: 'right', padding: 50 },
   },
   attrs: {
     line: {
