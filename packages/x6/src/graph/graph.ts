@@ -27,6 +27,7 @@ import { MouseWheel as Wheel } from './mousewheel'
 import { FormatManager as Format } from './format'
 import { Renderer as ViewRenderer } from './renderer'
 import { HistoryManager as History } from './history'
+import { PanningManager as Panning } from './panning'
 import { MiniMapManager as MiniMap } from './minimap'
 import { SnaplineManager as Snapline } from './snapline'
 import { ScrollerManager as Scroller } from './scroller'
@@ -57,6 +58,7 @@ export class Graph extends Basecoat<EventArgs> {
   public readonly minimap: MiniMap
   public readonly keyboard: Shortcut
   public readonly mousewheel: Wheel
+  public readonly panning: Panning
   public readonly print: Print
   public readonly format: Format
 
@@ -89,6 +91,7 @@ export class Graph extends Basecoat<EventArgs> {
     this.mousewheel = this.hook.createMouseWheel()
     this.print = this.hook.createPrintManager()
     this.format = this.hook.createFormatManager()
+    this.panning = this.hook.createPanningManager()
 
     this.setup()
   }
@@ -650,7 +653,24 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
+  translateBy(dx: number, dy: number): this {
+    const ts = this.translate()
+    const tx = ts.tx + dx
+    const ty = ts.ty + dy
+    return this.translate(tx, ty)
+  }
+
+  /**
+   * **Deprecation Notice:** `getArea` is deprecated and will be moved in next
+   * major release. Use `getGraphArea()` instead.
+   *
+   * @deprecated
+   */
   getArea() {
+    return this.transform.getGraphArea()
+  }
+
+  getGraphArea() {
     return this.transform.getGraphArea()
   }
 
@@ -1863,6 +1883,7 @@ export class Graph extends Basecoat<EventArgs> {
     this.print.dispose()
     this.format.dispose()
     this.minimap.dispose()
+    this.panning.dispose()
     this.scroller.dispose()
     this.view.dispose()
     this.renderer.dispose()

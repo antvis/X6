@@ -402,8 +402,9 @@ export namespace Collection {
     'cell:change:visible': Cell.EventArgs['change:visible']
     'cell:change:parent': Cell.EventArgs['change:parent']
     'cell:change:children': Cell.EventArgs['change:children']
-    'cell:change:view': Cell.EventArgs['change:view']
     'cell:change:tools': Cell.EventArgs['change:tools']
+    'cell:change:view': Cell.EventArgs['change:view']
+    'cell:change:data': Cell.EventArgs['change:data']
 
     'cell:change:size': Cell.EventArgs['change:size']
     'cell:change:angle': Cell.EventArgs['change:angle']
@@ -451,8 +452,9 @@ export namespace Collection {
     'node:change:parent': NodeEventCommonArgs & Cell.EventArgs['change:parent']
     'node:change:children': NodeEventCommonArgs &
       Cell.EventArgs['change:children']
-    'node:change:view': NodeEventCommonArgs & Cell.EventArgs['change:view']
     'node:change:tools': NodeEventCommonArgs & Cell.EventArgs['change:tools']
+    'node:change:view': NodeEventCommonArgs & Cell.EventArgs['change:view']
+    'node:change:data': NodeEventCommonArgs & Cell.EventArgs['change:data']
 
     'node:change:size': NodeEventCommonArgs & Cell.EventArgs['change:size']
     'node:change:position': NodeEventCommonArgs &
@@ -498,8 +500,8 @@ export namespace Collection {
     'edge:change:parent': EdgeEventCommonArgs & Cell.EventArgs['change:parent']
     'edge:change:children': EdgeEventCommonArgs &
       Cell.EventArgs['change:children']
-    'edge:change:view': EdgeEventCommonArgs & Cell.EventArgs['change:view']
     'edge:change:tools': EdgeEventCommonArgs & Cell.EventArgs['change:tools']
+    'edge:change:data': EdgeEventCommonArgs & Cell.EventArgs['change:data']
 
     'edge:change:source': EdgeEventCommonArgs & Cell.EventArgs['change:source']
     'edge:change:target': EdgeEventCommonArgs & Cell.EventArgs['change:target']

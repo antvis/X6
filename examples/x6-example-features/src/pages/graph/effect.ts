@@ -47,7 +47,7 @@ export function createEffect(graph: Graph) {
       const gridHeight = options.gridHeight
       const allowNewOrigin = options.allowNewOrigin
       const bbox = graph.getContentBBox()
-      const origin = graph.options.origin
+      const origin = { x: graph.options.x, y: graph.options.y }
 
       const translatedX =
         allowNewOrigin === 'any' ||

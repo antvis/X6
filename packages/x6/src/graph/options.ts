@@ -19,6 +19,7 @@ import { Graph } from './graph'
 import { GraphView } from './view'
 import { GridManager } from './grid'
 import { HistoryManager } from './history'
+import { PanningManager } from './panning'
 import { SnaplineManager } from './snapline'
 import { ScrollerManager } from './scroller'
 import { SelectionManager } from './selection'
@@ -156,6 +157,7 @@ export namespace Options {
     embedding: boolean | Partial<Embedding>
     selecting: boolean | Partial<SelectionManager.Options>
     snapline: boolean | Partial<SnaplineManager.Options>
+    panning: boolean | Partial<PanningManager.Options>
     clipboard: boolean | Partial<ClipboardManager.Options>
     history: boolean | Partial<HistoryManager.CommonOptions>
     scroller: boolean | Partial<ScrollerManager.Options>
@@ -184,6 +186,7 @@ export namespace Options {
     transforming: Transforming
     highlighting: Highlighting
     embedding: Embedding
+    panning: PanningManager.Options
     selecting: SelectionManager.Options
     snapline: SnaplineManager.Options
     clipboard: ClipboardManager.Options
@@ -458,6 +461,7 @@ export namespace Options {
   export function get(options: Partial<Manual>) {
     const {
       grid,
+      panning,
       selecting,
       embedding,
       snapline,
@@ -505,6 +509,7 @@ export namespace Options {
     // booleas
     // -------
     const booleas: (keyof Options.ManualBooleans)[] = [
+      'panning',
       'selecting',
       'embedding',
       'snapline',
@@ -640,6 +645,9 @@ export namespace Options {
       selectEdgeOnMoved: false,
       content: null,
       handles: null,
+    },
+    panning: {
+      enabled: false,
     },
     snapline: {
       enabled: false,

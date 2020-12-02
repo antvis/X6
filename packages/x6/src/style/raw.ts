@@ -22,6 +22,17 @@ export const content = `.x6-graph {
 .x6-graph-svg-stage {
   user-select: none;
 }
+.x6-graph.x6-graph-pannable {
+  cursor: grab;
+  cursor: -moz-grab;
+  cursor: -webkit-grab;
+}
+.x6-graph.x6-graph-panning {
+  user-select: none;
+  cursor: grabbing;
+  cursor: -moz-grabbing;
+  cursor: -webkit-grabbing;
+}
 .x6-node {
   cursor: move;
   /* stylelint-disable-next-line */
@@ -717,8 +728,16 @@ export const content = `.x6-graph {
 .x6-graph-scroller.x6-graph-scroller-paged .x6-graph {
   box-shadow: 0 0 4px 0 #eee;
 }
-.x6-graph-scroller-panning {
+.x6-graph-scroller.x6-graph-scroller-pannable {
+  cursor: grab;
+  cursor: -moz-grab;
+  cursor: -webkit-grab;
+}
+.x6-graph-scroller.x6-graph-scroller-panning {
   user-select: none;
+  cursor: grabbing;
+  cursor: -moz-grabbing;
+  cursor: -webkit-grabbing;
 }
 .x6-graph-pagebreak {
   position: absolute;
