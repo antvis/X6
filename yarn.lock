@@ -119,10 +119,10 @@
     lodash "^4.17.15"
     resize-observer-polyfill "^1.5.0"
 
-"@antv/gatsby-theme-antv@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.npmjs.org/@antv/gatsby-theme-antv/-/gatsby-theme-antv-1.0.1.tgz#72c1e4858dce077de936aa26c283e8c47a191daf"
-  integrity sha512-nbkVxes+Pd6z3kP71rkLanUfFJjTYeYJbL1kgXkgshR2j/nx89vsSNyx7+N07FtTaN4IwEkuvRu6lsCbcjZjdg==
+"@antv/gatsby-theme-antv@^1.0.3":
+  version "1.0.3"
+  resolved "https://registry.npm.taobao.org/@antv/gatsby-theme-antv/download/@antv/gatsby-theme-antv-1.0.3.tgz?cache=0&sync_timestamp=1606890123985&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40antv%2Fgatsby-theme-antv%2Fdownload%2F%40antv%2Fgatsby-theme-antv-1.0.3.tgz#e9dad2c73b5b076588e0207861348df3113811ef"
+  integrity sha1-6drSxztbB2WI4CB4YTSN8xE4Ee8=
   dependencies:
     "@ant-design/icons" "^4.1.0"
     "@babel/plugin-transform-modules-umd" "^7.2.0"
@@ -137,7 +137,7 @@
     "@stackblitz/sdk" "^1.3.0"
     "@types/classnames" "^2.2.9"
     "@types/git-url-parse" "^9.0.0"
-    "@types/google.analytics" "^0.0.40"
+    "@types/gtag.js" "^0.0.3"
     "@types/jest" "^26.0.0"
     "@types/loadable__component" "^5.13.0"
     "@types/lodash-es" "^4.17.3"
@@ -160,7 +160,7 @@
     gatsby-plugin-catch-links "^2.3.1"
     gatsby-plugin-cname "^1.0.0"
     gatsby-plugin-copy-files "^1.0.3"
-    gatsby-plugin-google-analytics "^2.3.1"
+    gatsby-plugin-google-gtag "^2.3.0"
     gatsby-plugin-i18n "^1.0.1"
     gatsby-plugin-layout "^1.3.1"
     gatsby-plugin-less "^4.0.0"
@@ -1940,6 +1940,13 @@
   version "7.11.2"
   resolved "https://registry.npm.taobao.org/@babel/runtime/download/@babel/runtime-7.11.2.tgz?cache=0&sync_timestamp=1596637824771&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40babel%2Fruntime%2Fdownload%2F%40babel%2Fruntime-7.11.2.tgz#f549c13c754cc40b87644b9fa9f09a6a95fe0736"
   integrity sha1-9UnBPHVMxAuHZEufqfCaapX+BzY=
+  dependencies:
+    regenerator-runtime "^0.13.4"
+
+"@babel/runtime@^7.12.5":
+  version "7.12.5"
+  resolved "https://registry.npm.taobao.org/@babel/runtime/download/@babel/runtime-7.12.5.tgz?cache=0&sync_timestamp=1604443606981&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40babel%2Fruntime%2Fdownload%2F%40babel%2Fruntime-7.12.5.tgz#410e7e487441e1b360c29be715d870d9b985882e"
+  integrity sha1-QQ5+SHRB4bNgwpvnFdhw2bmFiC4=
   dependencies:
     regenerator-runtime "^0.13.4"
 
@@ -4723,11 +4730,6 @@
     "@types/minimatch" "*"
     "@types/node" "*"
 
-"@types/google.analytics@^0.0.40":
-  version "0.0.40"
-  resolved "https://registry.npmjs.org/@types/google.analytics/-/google.analytics-0.0.40.tgz#35526e9d78333423c430ade1c821ce54d0f0f850"
-  integrity sha512-R3HpnLkqmKxhUAf8kIVvDVGJqPtaaZlW4yowNwjOZUTmYUQEgHh8Nh5wkSXKMroNAuQM8gbXJHmNbbgA8tdb7Q==
-
 "@types/got@9.6.11":
   version "9.6.11"
   resolved "https://registry.npm.taobao.org/@types/got/download/@types/got-9.6.11.tgz?cache=0&sync_timestamp=1596838462657&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40types%2Fgot%2Fdownload%2F%40types%2Fgot-9.6.11.tgz#482b402cc5ee459481aeeadb08142ebb1a9afb26"
@@ -4743,6 +4745,11 @@
   integrity sha1-A5rzX+Jr7DUAPo2G0u6cWGNUNI8=
   dependencies:
     "@types/node" "*"
+
+"@types/gtag.js@^0.0.3":
+  version "0.0.3"
+  resolved "https://registry.npm.taobao.org/@types/gtag.js/download/@types/gtag.js-0.0.3.tgz#bbc414030b2143fc7874260ab825aac82c42928e"
+  integrity sha1-u8QUAwshQ/x4dCYKuCWqyCxCko4=
 
 "@types/hapi__joi@16.0.12":
   version "16.0.12"
@@ -14120,13 +14127,13 @@ gatsby-plugin-copy-files@^1.0.3:
   dependencies:
     fs-extra "^4.0.0"
 
-gatsby-plugin-google-analytics@^2.3.1:
-  version "2.3.13"
-  resolved "https://registry.npm.taobao.org/gatsby-plugin-google-analytics/download/gatsby-plugin-google-analytics-2.3.13.tgz?cache=0&sync_timestamp=1595346324184&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fgatsby-plugin-google-analytics%2Fdownload%2Fgatsby-plugin-google-analytics-2.3.13.tgz#46f78f4df11cc773d44e5909ea491c8f8c0e6774"
-  integrity sha1-RvePTfEcx3PUTlkJ6kkcj4wOZ3Q=
+gatsby-plugin-google-gtag@^2.3.0:
+  version "2.4.0"
+  resolved "https://registry.npm.taobao.org/gatsby-plugin-google-gtag/download/gatsby-plugin-google-gtag-2.4.0.tgz#b805e9c625765549a7d878cbb8a34100f2689eed"
+  integrity sha1-uAXpxiV2VUmn2HjLuKNBAPJonu0=
   dependencies:
-    "@babel/runtime" "^7.10.3"
-    minimatch "3.0.4"
+    "@babel/runtime" "^7.12.5"
+    minimatch "^3.0.4"
 
 gatsby-plugin-i18n@^1.0.1:
   version "1.0.1"

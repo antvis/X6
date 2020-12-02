@@ -1,14 +1,9 @@
 import { Graph } from '@antv/x6'
 
 Graph.registerEdge(
-  'custom-edge',
+  'custom-edge-label',
   {
     inherit: 'edge',
-    attrs: {
-      line: {
-        stroke: '#5755a1',
-      },
-    },
     defaultLabel: {
       markup: [
         {
@@ -22,7 +17,7 @@ Graph.registerEdge(
       ],
       attrs: {
         label: {
-          fill: 'black',
+          fill: '#000',
           fontSize: 14,
           textAnchor: 'middle',
           textVerticalAnchor: 'middle',
@@ -30,8 +25,8 @@ Graph.registerEdge(
         },
         body: {
           ref: 'label',
-          fill: 'white',
-          stroke: '#5755a1',
+          fill: '#ffd591',
+          stroke: '#ffa940',
           strokeWidth: 2,
           rx: 4,
           ry: 4,
@@ -53,23 +48,30 @@ Graph.registerEdge(
   true,
 )
 
-const container = document.getElementById('container')
 const graph = new Graph({
-  container,
+  container: document.getElementById('container'),
   grid: true,
 })
 
 graph.addEdge({
-  shape: 'custom-edge',
+  source: [170, 160],
+  target: [550, 160],
+  shape: 'custom-edge-label',
+  attrs: {
+    line: {
+      stroke: '#ccc',
+    },
+  },
   labels: [
     {
       attrs: {
+        line: {
+          stroke: '#73d13d',
+        },
         text: {
-          text: 'Custom Edge',
+          text: 'Custom Label',
         },
       },
     },
   ],
-  source: [140, 240],
-  target: [520, 240],
 })
