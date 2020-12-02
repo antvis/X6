@@ -1,7 +1,6 @@
 ---
-title: 内置节点
-order: 51
+title: 节点
+order: 1
 redirect_from:
   - /zh/examples/shape
 ---
-

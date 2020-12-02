@@ -1,11 +1,12 @@
-import { Graph, Point, Registry } from '@antv/x6'
+import { Graph, Point } from '@antv/x6'
 
-if (!Registry.Router.registry.exist('random')) {
-  Graph.registerRouter('random', (vertices, args, view) => {
+Graph.registerRouter(
+  'random',
+  (vertices, args, view) => {
     const BOUNCES = args.bounces || 20
     const points = vertices.map((p) => Point.create(p))
 
-    for (var i = 0; i < BOUNCES; i++) {
+    for (let i = 0; i < BOUNCES; i += 1) {
       const sourceCorner = view.sourceBBox.getCenter()
       const targetCorner = view.targetBBox.getCenter()
       const randomPoint = Point.random(
@@ -18,34 +19,40 @@ if (!Registry.Router.registry.exist('random')) {
     }
 
     return points
-  })
-}
+  },
+  true,
+)
 
-const container = document.getElementById('container')
 const graph = new Graph({
-  container: container,
-  grid: 10,
+  container: document.getElementById('container'),
+  grid: true,
 })
 
 const source = graph.addNode({
-  x: 50,
-  y: 50,
-  width: 120,
-  height: 80,
+  x: 120,
+  y: 40,
+  width: 100,
+  height: 40,
   attrs: {
     body: {
-      fill: '#ff7875',
-      stroke: '#ff4d4f',
-    },
-    label: {
-      text: 'Source',
+      fill: '#f5f5f5',
+      stroke: '#d9d9d9',
     },
   },
 })
 
-const target = graph.addNode(
-  source.clone().translate(600, 400).attr('label/text', 'Target'),
-)
+const target = graph.addNode({
+  x: 400,
+  y: 260,
+  width: 100,
+  height: 40,
+  attrs: {
+    body: {
+      fill: '#f5f5f5',
+      stroke: '#d9d9d9',
+    },
+  },
+})
 
 graph.addEdge({
   source,
@@ -53,7 +60,12 @@ graph.addEdge({
   router: {
     name: 'random',
     args: {
-      bounces: 10,
+      bounces: 3,
+    },
+  },
+  attrs: {
+    line: {
+      stroke: '#722ed1',
     },
   },
 })
