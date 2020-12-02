@@ -1,3 +1,23 @@
+# @antv/x6-sites [1.2.0](https://github.com/antvis/x6/compare/@antv/x6-sites@1.1.1...@antv/x6-sites@1.2.0) (2020-12-02)
+
+
+### Features
+
+* ✨ add connector demos ([929b691](https://github.com/antvis/x6/commit/929b6913dfd2637844ed4c133c8cb30efc2d4177))
+* ✨ add edge demos ([987b538](https://github.com/antvis/x6/commit/987b5380a340070fe83a2d15cb4a64b1e5cf68d7))
+* ✨ add marker demos ([a8d4d83](https://github.com/antvis/x6/commit/a8d4d8363a64c06ab8803ac9b2ea2834be724381))
+* ✨ router demos ([cdd1ff8](https://github.com/antvis/x6/commit/cdd1ff83b3cc2fd515921c0ecdf12ba8a97d3e66))
+* ✨ update demo style and add switch demo ([ed5606d](https://github.com/antvis/x6/commit/ed5606df510a462807f99d01985c589b3764c9df))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.1.2
+* **@antv/x6-react-shape:** upgraded to 1.1.2
+
 ## @antv/x6-sites [1.1.1](https://github.com/antvis/x6/compare/@antv/x6-sites@1.1.0...@antv/x6-sites@1.1.1) (2020-11-30)
 
 
