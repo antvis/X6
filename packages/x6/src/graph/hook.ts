@@ -40,6 +40,7 @@ import { PrintManager } from './print'
 import { FormatManager } from './format'
 import { PortManager } from '../model/port'
 import { Rectangle } from '../geometry'
+import { PanningManager } from './panning'
 
 namespace Decorator {
   export function hook(nullable?: boolean, hookName?: string | null) {
@@ -296,6 +297,11 @@ export class Hook extends Base implements Hook.IHook {
   @Decorator.hook()
   createFormatManager() {
     return new FormatManager(this.graph)
+  }
+
+  @Decorator.hook()
+  createPanningManager() {
+    return new PanningManager(this.graph)
   }
 
   protected allowMultiEdges(edge: Edge) {
