@@ -35,7 +35,7 @@
     {
       "filename": "curve.ts",
       "title": {
-        "zh": "自定义二次贝塞尔曲线",
+        "zh": "二次贝塞尔曲线",
         "en": "Quadratic Bessel Curve"
       },
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*WJj5ToqfFz8AAAAAAAAAAAAAARQnAQ"
@@ -43,10 +43,18 @@
     {
       "filename": "wobble.ts",
       "title": {
-        "zh": "自定义随机摇摆线",
+        "zh": "随机摇摆线",
         "en": "Custom Wobble Connector"
       },
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*A19zSqro4asAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "multi-smooth-edges.ts",
+      "title": {
+        "zh": "多条光滑曲线",
+        "en": "Multiple Smooth Edges"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*9b-SRYGRGToAAAAAAAAAAAAAARQnAQ"
     }
   ]
 }

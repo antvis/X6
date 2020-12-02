@@ -33,14 +33,6 @@
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*ZwHVS56I4-oAAAAAAAAAAAAAARQnAQ"
     },
     {
-      "filename": "label-along-path.ts",
-      "title": {
-        "zh": "沿路径分布的文本",
-        "en": "Label Along Path"
-      },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*OHSrQop8Z30AAAAAAAAAAAAAARQnAQ"
-    },
-    {
       "filename": "shape-on-edge.ts",
       "title": {
         "zh": "沿边长度方向上的图形",
@@ -55,6 +47,46 @@
         "en": "Custom Click Event"
       },
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*ZmhTRaPgOQgAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "label-along-path.ts",
+      "title": {
+        "zh": "沿路径分布的 Label",
+        "en": "Label Along Path"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*OHSrQop8Z30AAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "label-svg.ts",
+      "title": {
+        "zh": "使用 SVG 渲染 Label",
+        "en": "Use SVG to Render Label"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*g1_HTZNyfC0AAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "label-html.ts",
+      "title": {
+        "zh": "使用 HTML 渲染 Label",
+        "en": "Use HTML to Render Label"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*EN48Tbp7jcAAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "label-react.tsx",
+      "title": {
+        "zh": "使用 React 渲染 Label",
+        "en": "Use React to Render Label"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*8Er1Tb89MaoAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "label-multi.ts",
+      "title": {
+        "zh": "渲染多个 Label",
+        "en": "Render Multiple Labels"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*hHq7R4vqWjIAAAAAAAAAAAAAARQnAQ"
     }
   ]
 }
