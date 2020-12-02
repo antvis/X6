@@ -1,14 +1,14 @@
 import { Graph } from '@antv/x6'
 
-const container = document.getElementById('container')
 const graph = new Graph({
-  container,
+  container: document.getElementById('container'),
   grid: true,
 })
+
 graph.addNode({
   shape: 'image',
   x: 320,
-  y: 240,
+  y: 120,
   width: 94,
   height: 28,
   imageUrl:

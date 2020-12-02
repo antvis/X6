@@ -1,71 +1,76 @@
-import { Graph, Path, Point, Registry } from '@antv/x6'
+import { Graph, Path, Point } from '@antv/x6'
 
-if (!Registry.Connector.registry.exist('wobble')) {
-  Graph.registerConnector(
-    'wobble',
-    (sourcePoint, targetPoint, vertices, args) => {
-      const spread = args.spread || 20
-      const points = [...vertices, targetPoint].map((p) => Point.create(p))
-      let prev = Point.create(sourcePoint)
-      const path = new Path(Path.createSegment('M', prev))
+// 帮助文档：https://x6.antv.vision/zh/docs/api/registry/connector#registry
+Graph.registerConnector(
+  'wobble',
+  (sourcePoint, targetPoint, vertices, args) => {
+    const spread = args.spread || 20
+    const points = [...vertices, targetPoint].map((p) => Point.create(p))
+    let prev = Point.create(sourcePoint)
+    const path = new Path(Path.createSegment('M', prev))
 
-      for (var i = 0, n = points.length; i < n; i += 1) {
-        const next = points[i]
-        const distance = prev.distance(next)
-        let d = spread
+    for (let i = 0, n = points.length; i < n; i += 1) {
+      const next = points[i]
+      const distance = prev.distance(next)
+      let d = spread
 
-        while (d < distance) {
-          var current = prev.clone().move(next, -d)
-          current.translate(
-            Math.floor(7 * Math.random()) - 3,
-            Math.floor(7 * Math.random()) - 3,
-          )
-          path.appendSegment(Path.createSegment('L', current))
-          d += spread
-        }
-
-        path.appendSegment(Path.createSegment('L', next))
-        prev = next
+      while (d < distance) {
+        const current = prev.clone().move(next, -d)
+        current.translate(
+          Math.floor(7 * Math.random()) - 3,
+          Math.floor(7 * Math.random()) - 3,
+        )
+        path.appendSegment(Path.createSegment('L', current))
+        d += spread
       }
 
-      return path
-    },
-  )
-}
+      path.appendSegment(Path.createSegment('L', next))
+      prev = next
+    }
 
-const container = document.getElementById('container')
+    return path
+  },
+  true,
+)
+
 const graph = new Graph({
-  container: container,
-  grid: 10,
+  container: document.getElementById('container'),
+  grid: true,
 })
 
 const source = graph.addNode({
-  shape: 'rect',
-  x: 50,
-  y: 50,
-  width: 140,
-  height: 70,
+  x: 120,
+  y: 40,
+  width: 100,
+  height: 40,
   attrs: {
-    label: {
-      text: 'Source',
-    },
     body: {
-      fill: '#ff9c6e',
-      stroke: '#ff7a45',
-    },
-    text: {
-      fill: '#ffffff',
+      fill: '#f5f5f5',
+      stroke: '#d9d9d9',
     },
   },
 })
 
-const target = source.clone().translate(700, 400).attr('label/text', 'Target')
-graph.addNode(target)
+const target = graph.addNode({
+  x: 400,
+  y: 260,
+  width: 100,
+  height: 40,
+  attrs: {
+    body: {
+      fill: '#f5f5f5',
+      stroke: '#d9d9d9',
+    },
+  },
+})
 
 graph.addEdge({
   source,
   target,
-  shape: 'edge',
+  vertices: [
+    { x: 200, y: 200 },
+    { x: 380, y: 120 },
+  ],
   connector: {
     name: 'wobble',
     args: {
