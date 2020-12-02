@@ -77,10 +77,6 @@ export default class Example extends React.Component {
         modifiers: ['ctrl', 'meta'],
         minScale: 0.5,
         maxScale: 2,
-        guard() {
-          console.log(this.zoom())
-          return true
-        },
       },
     })
 
@@ -122,8 +118,9 @@ export default class Example extends React.Component {
 
     // graph.removeCell(rect)
 
-    graph.center()
+    // graph.centerContent()
     // graph.resize(300, 200)
+    // graph.zoomToFit()
     this.graph = graph
   }
 

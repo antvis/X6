@@ -25,14 +25,15 @@ export default class Example extends React.Component {
           },
         ],
       },
-      background: {
-        color: '#fcfcfc',
-        image:
-          'https://gw.alipayobjects.com/os/s/prod/antv/assets/image/logo-with-text-73b8a.svg',
-        opacity: 0.2,
-        repeat: 'watermark',
-        angle: 30,
-      },
+      // background: {
+      //   color: '#fcfcfc',
+      //   image:
+      //     'https://gw.alipayobjects.com/os/s/prod/antv/assets/image/logo-with-text-73b8a.svg',
+      //   opacity: 0.2,
+      //   repeat: 'watermark',
+      //   angle: 30,
+      // },
+      panning: true,
     })
 
     // const data = [
@@ -107,7 +108,8 @@ export default class Example extends React.Component {
     }
 
     graph.fromJSON(data)
-    console.log(graph.toJSON())
+    // console.log(graph.toJSON())
+    // graph.scaleContentToFit()
   }
 
   refContainer = (container: HTMLDivElement) => {

@@ -3350,7 +3350,7 @@ scaleContentToFit(options?: Transform.ScaleContentToFitOptions): this
 | options.maxScaleX           | number                  |      | -       | X 轴方向的最大缩放比例。                                                                       |
 | options.minScaleY           | number                  |      | -       | Y 轴方向的最小缩放比例。                                                                       |
 | options.maxScaleY           | number                  |      | -       | Y 轴方向的最大缩放比例。                                                                       |
-| options.preserveAspectRatio | boolean                 |      | `false` | 是否保持长宽比。                                                                               |
+| options.preserveAspectRatio | boolean                 |      | `true` | 是否保持长宽比。                                                                               |
 | options.useCellGeometry     | boolean                 |      | `false` | 是否使用节点/边的几何信息(Model)计算包围盒，默认使用浏览器 API 获取每个节点和边(View)的包围盒。 |
 
 

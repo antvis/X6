@@ -1,3 +1,4 @@
+import { Dom } from '../util'
 import { ModifierKey } from '../types'
 import { Scroller } from '../addon/scroller'
 import { Base } from './base'
@@ -15,8 +16,8 @@ export class ScrollerManager extends Base {
 
   protected init() {
     this.widget = this.graph.hook.createScroller()
-    this.autoSetCursor()
     this.startListening()
+    this.updateClassName()
     if (this.widget) {
       this.widget.center()
     }
@@ -41,15 +42,30 @@ export class ScrollerManager extends Base {
       ModifierKey.test(e, this.widgetOptions.modifiers) &&
       this.graph.hook.allowPanning(e)
     ) {
+      this.updateClassName(true)
       this.widget.startPanning(e)
+      this.widget.once('pan:stop', () => this.updateClassName(false))
     }
   }
 
-  protected autoSetCursor() {
-    const options = this.widgetOptions
-    if (options.cursor == null) {
-      const cursor = options.pannable ? 'grab' : ''
-      this.widget?.setCursor(cursor, { silent: true })
+  protected updateClassName(isPanning?: boolean) {
+    if (this.widget == null) {
+      return
+    }
+    const container = this.widget.container!
+    const panning = this.view.prefixClassName('graph-scroller-panning')
+    const pannable = this.view.prefixClassName('graph-scroller-pannable')
+    if (this.pannable) {
+      if (isPanning) {
+        Dom.addClass(container, panning)
+        Dom.removeClass(container, pannable)
+      } else {
+        Dom.removeClass(container, panning)
+        Dom.addClass(container, pannable)
+      }
+    } else {
+      Dom.removeClass(container, panning)
+      Dom.removeClass(container, pannable)
     }
   }
 
@@ -64,15 +80,15 @@ export class ScrollerManager extends Base {
       ) {
         this.graph.selection.disableRubberband()
       }
+      this.updateClassName()
     }
-    this.autoSetCursor()
   }
 
   disablePanning() {
     if (this.pannable) {
       this.widgetOptions.pannable = false
+      this.updateClassName()
     }
-    this.autoSetCursor()
   }
 
   lock() {
@@ -90,12 +106,6 @@ export class ScrollerManager extends Base {
   update() {
     if (this.widget) {
       this.widget.update()
-    }
-  }
-
-  setCursor(cursor?: string) {
-    if (this.widget) {
-      this.widget.setCursor(cursor)
     }
   }
 
