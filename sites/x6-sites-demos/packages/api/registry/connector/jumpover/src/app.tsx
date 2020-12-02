@@ -18,7 +18,6 @@ export default class Example extends React.Component {
       y: 70,
       width: 100,
       height: 40,
-      label: 'Hello',
     })
 
     const target = graph.addNode({
@@ -26,7 +25,6 @@ export default class Example extends React.Component {
       y: 160,
       width: 100,
       height: 40,
-      label: 'world',
     })
 
     this.edge = graph.addEdge({
@@ -48,7 +46,6 @@ export default class Example extends React.Component {
       y: 24,
       width: 70,
       height: 30,
-      label: 'rect',
     })
 
     for (let i = 0; i < 6; i += 1) {

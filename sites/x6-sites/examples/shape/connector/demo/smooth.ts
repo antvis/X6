@@ -1,53 +1,45 @@
 import { Graph } from '@antv/x6'
 
-const container = document.getElementById('container')
 const graph = new Graph({
-  container,
+  container: document.getElementById('container'),
   grid: true,
 })
 
-graph.addNode({
-  id: 'a',
-  shape: 'rect',
-  width: 160,
-  height: 80,
-  x: 100,
-  y: 100,
+const source = graph.addNode({
+  x: 120,
+  y: 40,
+  width: 100,
+  height: 40,
   attrs: {
     body: {
-      fill: '#ff7875',
-      stroke: '#ff4d4f',
-    },
-    text: {
-      fill: '#ffffff',
+      fill: '#f5f5f5',
+      stroke: '#d9d9d9',
     },
   },
 })
 
-graph.addNode({
-  id: 'b',
-  shape: 'rect',
-  width: 160,
-  height: 80,
-  x: 500,
-  y: 300,
+const target = graph.addNode({
+  x: 400,
+  y: 260,
+  width: 100,
+  height: 40,
   attrs: {
     body: {
-      fill: '#ff9c6e',
-      stroke: '#ff7a45',
-    },
-    text: {
-      fill: '#ffffff',
+      fill: '#f5f5f5',
+      stroke: '#d9d9d9',
     },
   },
 })
 
 graph.addEdge({
-  source: 'a',
-  target: 'b',
-  connector: {
-    name: 'smooth',
-  },
+  source,
+  target,
+  vertices: [
+    { x: 200, y: 200 },
+    { x: 380, y: 120 },
+  ],
+  // https://x6.antv.vision/zh/docs/api/registry/connector#smooth
+  connector: { name: 'smooth' },
   attrs: {
     line: {
       stroke: '#722ed1',
