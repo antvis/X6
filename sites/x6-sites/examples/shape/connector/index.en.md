@@ -1,6 +1,6 @@
 ---
 title: Connector
-order: 55
+order: 4
 redirect_from:
   - /zh/examples/shape
 ---
