@@ -2,19 +2,24 @@ import React from 'react'
 import { Graph, Markup } from '@antv/x6'
 import ReactDOM from 'react-dom'
 
-class MyComponent extends React.Component {
+class Label extends React.Component {
+  onClick = () => {
+    alert('clicked')
+  }
+
   render() {
     return (
       <button
         style={{
-          color: '#fff',
-          width: '200px',
-          height: '40px',
+          width: '100%',
+          height: '100%',
           textAlign: 'center',
-          lineHeight: '40px',
-          background: '#000',
-          border: 'none',
+          color: '#000',
+          background: '#ffd591',
+          border: '2px solid #ffa940',
+          borderRadius: 4,
         }}
+        onClick={this.onClick}
       >
         React Button
       </button>
@@ -22,31 +27,21 @@ class MyComponent extends React.Component {
   }
 }
 
-const container = document.getElementById('container')
 const graph = new Graph({
-  container,
+  container: document.getElementById('container'),
   grid: true,
   onEdgeLabelRendered: (args) => {
     const { selectors } = args
     const content = selectors.foContent as HTMLDivElement
     if (content) {
-      content.style.display = 'flex'
-      content.style.alignItems = 'center'
-      content.style.justifyContent = 'center'
-      ReactDOM.render(<MyComponent />, content)
+      ReactDOM.render(<Label />, content)
     }
   },
 })
 
 graph.addEdge({
-  source: {
-    x: 40,
-    y: 200,
-  },
-  target: {
-    x: 480,
-    y: 200,
-  },
+  source: [170, 160],
+  target: [550, 160],
   defaultLabel: {
     markup: Markup.getForeignObjectMarkup(),
     attrs: {
@@ -60,5 +55,10 @@ graph.addEdge({
   },
   label: {
     position: 0.25,
+  },
+  attrs: {
+    line: {
+      stroke: '#ccc',
+    },
   },
 })
