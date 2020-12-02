@@ -1,3 +1,10 @@
+# @antv/x6 [1.2.0](https://github.com/antvis/x6/compare/@antv/x6@1.1.3...@antv/x6@1.2.0) (2020-12-02)
+
+
+### Features
+
+* support panning on normal graph ([#352](https://github.com/antvis/x6/issues/352)) ([7a50f7a](https://github.com/antvis/x6/commit/7a50f7aace64f0a657943195e5ef6b3fd7a46fbf)), closes [#339](https://github.com/antvis/x6/issues/339)
+
 ## @antv/x6 [1.1.3](https://github.com/antvis/x6/compare/@antv/x6@1.1.2...@antv/x6@1.1.3) (2020-12-02)
 
 ## @antv/x6 [1.1.2](https://github.com/antvis/x6/compare/@antv/x6@1.1.1...@antv/x6@1.1.2) (2020-12-02)
