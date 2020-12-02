@@ -93,7 +93,6 @@ export class Scroller extends View {
     this.$content.appendTo(this.container)
 
     this.startListening()
-    this.setCursor(this.options.cursor)
 
     if (!this.options.pageVisible) {
       this.graph.grid.update()
@@ -224,8 +223,7 @@ export class Scroller extends View {
 
   protected onScale({ sx, sy, ox, oy }: EventArgs['scale']) {
     this.updateScale(sx, sy)
-    this.sx = sx
-    this.sy = sy
+
     if (ox || oy) {
       this.centerPoint(ox, oy)
       this.updatePageBreak()
@@ -267,8 +265,8 @@ export class Scroller extends View {
 
     const options = this.options
     if (options.pageVisible && options.pageBreak) {
-      const graphWidth = this.graph.options.width
-      const graphHeight = this.graph.options.height
+      const graphWidth = Math.round(this.graph.options.width / this.sx)
+      const graphHeight = Math.round(this.graph.options.height / this.sy)
       const pageWidth = options.pageWidth || graphWidth
       const pageHeight = options.pageHeight || graphHeight
       if (graphWidth > pageWidth || graphHeight > pageHeight) {
@@ -348,8 +346,13 @@ export class Scroller extends View {
 
   protected updateScale(sx: number, sy: number) {
     const options = this.graph.options
+
     const dx = sx / this.sx
     const dy = sy / this.sy
+
+    this.sx = sx
+    this.sy = sy
+
     this.graph.translate(options.x * dx, options.y * dy)
     this.graph.resizeGraph(options.width * dx, options.height * dy)
   }
@@ -716,19 +719,19 @@ export class Scroller extends View {
   ) {
     const area = Rectangle.create(rect)
     const graph = this.graph
-    const origin = { x: graph.options.x, y: graph.options.y }
 
     options.contentArea = area
     if (options.viewportArea == null) {
       options.viewportArea = {
-        ...origin,
+        x: graph.options.x,
+        y: graph.options.y,
         width: this.$container.width()!,
         height: this.$container.height()!,
       }
     }
 
     this.beforeManipulation()
-    graph.scaleContentToFit(options)
+    graph.transform.scaleContentToFitImpl(options, false)
     const center = area.getCenter()
     this.centerPoint(center.x, center.y)
     this.afterManipulation()
@@ -876,9 +879,8 @@ export class Scroller extends View {
 
   startPanning(evt: JQuery.MouseDownEvent) {
     const e = this.normalizeEvent(evt)
-    this.clientX = e.clientX!
-    this.clientY = e.clientY!
-    this.$container.addClass(this.prefixClassName(Util.panningClass))
+    this.clientX = e.clientX
+    this.clientY = e.clientY
     this.trigger('pan:start', { e })
     this.$(document.body).on({
       'mousemove.panning touchmove.panning': this.pan.bind(this),
@@ -889,18 +891,17 @@ export class Scroller extends View {
 
   pan(evt: JQuery.MouseMoveEvent) {
     const e = this.normalizeEvent(evt)
-    const dx = e.clientX! - this.clientX
-    const dy = e.clientY! - this.clientY
+    const dx = e.clientX - this.clientX
+    const dy = e.clientY - this.clientY
     this.container.scrollTop -= dy
     this.container.scrollLeft -= dx
-    this.clientX = e.clientX!
-    this.clientY = e.clientY!
+    this.clientX = e.clientX
+    this.clientY = e.clientY
   }
 
   stopPanning(e: JQuery.MouseUpEvent) {
     this.$(document.body).off('.panning')
     this.$(window).off('.panning')
-    this.$container.removeClass(this.prefixClassName(Util.panningClass))
     this.trigger('pan:stop', { e })
   }
 
@@ -1066,13 +1067,6 @@ export class Scroller extends View {
     return this
   }
 
-  setCursor(value?: string, options: { silent?: boolean } = {}) {
-    this.$container.css('cursor', value || '')
-    if (options.silent !== true) {
-      this.options.cursor = value
-    }
-  }
-
   protected onRemove() {
     this.stopListening()
   }
@@ -1086,7 +1080,6 @@ export class Scroller extends View {
 
 export namespace Scroller {
   export interface CommonOptions {
-    cursor?: string
     className?: string
     width?: number
     height?: number
@@ -1194,6 +1187,7 @@ export namespace Scroller {
 namespace Util {
   export const containerClass = 'graph-scroller'
   export const panningClass = `${containerClass}-panning`
+  export const pannableClass = `${containerClass}-pannable`
   export const pagedClass = `${containerClass}-paged`
   export const contentClass = `${containerClass}-content`
   export const backgroundClass = `${containerClass}-background`
