@@ -1,18 +1,14 @@
 import { Graph } from '@antv/x6'
 import insertCss from 'insert-css'
 
-const container = document.getElementById('container')
 const graph = new Graph({
-  container,
+  container: document.getElementById('container'),
   grid: true,
-  background: {
-    color: 'rgba(0,0,0,.5)',
-  },
 })
 
 graph.addNode({
   x: 280,
-  y: 140,
+  y: 120,
   width: 120,
   height: 45,
   shape: 'html',
@@ -38,9 +34,9 @@ insertCss(`
     text-decoration: none;
     text-transform: uppercase;
     overflow: hidden;
-    transition: .5s;
+    transition: .3s;
     margin-top: 40px;
-    letter-spacing: 4px
+    letter-spacing: 3px
   }
 
   .my-btn:hover {

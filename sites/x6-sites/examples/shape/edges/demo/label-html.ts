@@ -1,20 +1,22 @@
 import { Graph, Markup } from '@antv/x6'
 
-const container = document.getElementById('container')
 const graph = new Graph({
-  container,
+  container: document.getElementById('container'),
   grid: true,
   onEdgeLabelRendered: (args) => {
     const { selectors } = args
     const content = selectors.foContent as HTMLDivElement
     if (content) {
-      content.style.display = 'flex'
-      content.style.alignItems = 'center'
-      content.style.justifyContent = 'center'
       const btn = document.createElement('button')
       btn.appendChild(document.createTextNode('HTML Button'))
-      btn.style.height = '30px'
+      btn.style.width = '100%'
+      btn.style.height = '100%'
       btn.style.lineHeight = '1'
+      btn.style.borderRadius = '4px'
+      btn.style.textAlign = 'center'
+      btn.style.color = '#000'
+      btn.style.background = '#ffd591'
+      btn.style.border = '2px solid #ffa940'
       btn.addEventListener('click', () => {
         alert('clicked')
       })
@@ -24,14 +26,8 @@ const graph = new Graph({
 })
 
 graph.addEdge({
-  source: {
-    x: 40,
-    y: 200,
-  },
-  target: {
-    x: 480,
-    y: 200,
-  },
+  source: [170, 160],
+  target: [550, 160],
   defaultLabel: {
     markup: Markup.getForeignObjectMarkup(),
     attrs: {
@@ -45,5 +41,10 @@ graph.addEdge({
   },
   label: {
     position: 0.25,
+  },
+  attrs: {
+    line: {
+      stroke: '#ccc',
+    },
   },
 })
