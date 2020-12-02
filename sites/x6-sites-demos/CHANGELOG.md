@@ -1,3 +1,19 @@
+# @antv/x6-sites-demos [1.1.0](https://github.com/antvis/x6/compare/@antv/x6-sites-demos@1.0.16...@antv/x6-sites-demos@1.1.0) (2020-12-02)
+
+
+### Features
+
+* ✨ add connector demos ([929b691](https://github.com/antvis/x6/commit/929b6913dfd2637844ed4c133c8cb30efc2d4177))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.1.2
+* **@antv/x6-react-shape:** upgraded to 1.1.2
+
 ## @antv/x6-sites-demos [1.0.16](https://github.com/antvis/x6/compare/@antv/x6-sites-demos@1.0.15...@antv/x6-sites-demos@1.0.16) (2020-11-30)
 
 
