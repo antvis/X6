@@ -1,26 +1,23 @@
-import { Dom } from '../util'
 import { ModifierKey } from '../types'
-import { Scroller } from '../addon/scroller'
+import { Dom } from '../util'
 import { Base } from './base'
 
-export class ScrollerManager extends Base {
-  public widget: Scroller | null
+export class PanningManager extends Base {
+  private panning: boolean
+  private clientX: number
+  private clientY: number
 
   protected get widgetOptions() {
-    return this.options.scroller
+    return this.options.panning
   }
 
   get pannable() {
-    return this.widgetOptions && this.widgetOptions.pannable === true
+    return this.widgetOptions && this.widgetOptions.enabled === true
   }
 
   protected init() {
-    this.widget = this.graph.hook.createScroller()
     this.startListening()
     this.updateClassName()
-    if (this.widget) {
-      this.widget.center()
-    }
   }
 
   protected startListening() {
@@ -37,26 +34,49 @@ export class ScrollerManager extends Base {
 
   protected preparePanning({ e }: { e: JQuery.MouseDownEvent }) {
     if (
-      this.widget &&
       this.pannable &&
       ModifierKey.test(e, this.widgetOptions.modifiers) &&
       this.graph.hook.allowPanning(e)
     ) {
-      this.updateClassName(true)
-      this.widget.startPanning(e)
-      this.widget.once('pan:stop', () => this.updateClassName(false))
+      this.startPanning(e)
     }
   }
 
-  protected updateClassName(isPanning?: boolean) {
-    if (this.widget == null) {
-      return
-    }
-    const container = this.widget.container!
-    const panning = this.view.prefixClassName('graph-scroller-panning')
-    const pannable = this.view.prefixClassName('graph-scroller-pannable')
+  protected startPanning(evt: JQuery.MouseDownEvent) {
+    const e = this.view.normalizeEvent(evt)
+    this.clientX = e.clientX
+    this.clientY = e.clientY
+    this.panning = true
+    this.updateClassName()
+    this.view.$(document.body).on({
+      'mousemove.panning touchmove.panning': this.pan.bind(this),
+      'mouseup.panning touchend.panning': this.stopPanning.bind(this),
+    })
+    this.view.$(window).on('mouseup.panning', this.stopPanning.bind(this))
+  }
+
+  protected pan(evt: JQuery.MouseMoveEvent) {
+    const e = this.view.normalizeEvent(evt)
+    const dx = e.clientX - this.clientX
+    const dy = e.clientY - this.clientY
+    this.clientX = e.clientX
+    this.clientY = e.clientY
+    this.graph.translateBy(dx, dy)
+  }
+
+  protected stopPanning(e: JQuery.MouseUpEvent) {
+    this.panning = false
+    this.updateClassName()
+    this.view.$(document.body).off('.panning')
+    this.view.$(window).off('.panning')
+  }
+
+  protected updateClassName() {
+    const container = this.view.container
+    const panning = this.view.prefixClassName('graph-panning')
+    const pannable = this.view.prefixClassName('graph-pannable')
     if (this.pannable) {
-      if (isPanning) {
+      if (this.panning) {
         Dom.addClass(container, panning)
         Dom.removeClass(container, pannable)
       } else {
@@ -71,66 +91,35 @@ export class ScrollerManager extends Base {
 
   enablePanning() {
     if (!this.pannable) {
-      this.widgetOptions.pannable = true
+      this.widgetOptions.enabled = true
+      this.updateClassName()
       if (
         ModifierKey.equals(
-          this.graph.options.scroller.modifiers,
+          this.graph.options.panning.modifiers,
           this.graph.options.selecting.modifiers,
         )
       ) {
         this.graph.selection.disableRubberband()
       }
-      this.updateClassName()
     }
   }
 
   disablePanning() {
     if (this.pannable) {
-      this.widgetOptions.pannable = false
+      this.widgetOptions.enabled = false
       this.updateClassName()
-    }
-  }
-
-  lock() {
-    if (this.widget) {
-      this.widget.lock()
-    }
-  }
-
-  unlock() {
-    if (this.widget) {
-      this.widget.unlock()
-    }
-  }
-
-  update() {
-    if (this.widget) {
-      this.widget.update()
-    }
-  }
-
-  resize(width?: number, height?: number) {
-    if (this.widget) {
-      this.widget.resize(width, height)
     }
   }
 
   @Base.dispose()
   dispose() {
-    if (this.widget) {
-      this.widget.dispose()
-    }
     this.stopListening()
   }
 }
 
-export namespace ScrollerManager {
-  export interface Options extends Scroller.CommonOptions {
+export namespace PanningManager {
+  export interface Options {
     enabled?: boolean
-    pannable?: boolean
-    /**
-     * alt, ctrl, shift, meta
-     */
     modifiers?: string | ModifierKey[] | null
   }
 }
