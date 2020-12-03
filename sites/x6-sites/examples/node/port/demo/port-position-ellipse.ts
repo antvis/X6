@@ -105,5 +105,3 @@ node.portProp('0', {
     dot: { fill: '#31d0c6' },
   },
 })
-
-graph.translate(70, 0)
