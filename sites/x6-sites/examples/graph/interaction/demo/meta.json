@@ -1,0 +1,12 @@
+{
+  "demos": [
+    {
+      "filename": "zoom-background-image.ts",
+      "title": {
+        "zh": "背景缩放",
+        "en": "Zoom Background"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*HBvTQIEza_MAAAAAAAAAAAAAARQnAQ"
+    }
+  ]
+}
