@@ -84,5 +84,3 @@ insertCss(`
     background: #fff;
   }
 `)
-
-graph.translate(130, 0)
