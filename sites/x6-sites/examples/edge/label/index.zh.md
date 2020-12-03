@@ -2,5 +2,5 @@
 title: 标签
 order: 30
 redirect_from:
-  - /zh/examples/basic
+  - /zh/examples/edge
 ---
