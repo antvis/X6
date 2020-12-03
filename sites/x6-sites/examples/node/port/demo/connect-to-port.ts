@@ -73,5 +73,3 @@ graph.addEdge({
     line: { stroke: '#d9d9d9' },
   },
 })
-
-graph.translate(80, 20)

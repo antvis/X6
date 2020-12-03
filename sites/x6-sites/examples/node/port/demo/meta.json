@@ -89,6 +89,14 @@
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*roBwQYYlJjMAAAAAAAAAAAAAARQnAQ"
     },
     {
+      "filename": "port-position-ellipse-compensation.ts",
+      "title": {
+        "zh": "沿圆弧自动旋转的链接桩",
+        "en": "Auto Rotate Ports Along the Arc"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*HKxoQ6kpw4oAAAAAAAAAAAAAARQnAQ"
+    },
+    {
       "filename": "port-position-custom.ts",
       "title": {
         "zh": "自定义链接桩位置",

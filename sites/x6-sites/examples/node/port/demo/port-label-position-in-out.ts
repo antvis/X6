@@ -79,5 +79,3 @@ function toggle() {
 }
 
 toggle()
-
-graph.translate(70, 0)

@@ -1,4 +1,4 @@
-import { Graph, Point } from '@antv/x6'
+import { Graph } from '@antv/x6'
 
 const graph = new Graph({
   container: document.getElementById('container'),
@@ -81,5 +81,3 @@ node.portProp('0', {
     dot: { fill: '#31d0c6' },
   },
 })
-
-graph.translate(70, 0)

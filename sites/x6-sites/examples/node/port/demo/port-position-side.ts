@@ -93,5 +93,3 @@ function run() {
 }
 
 run()
-
-graph.translate(130, 0)
