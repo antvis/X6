@@ -50,5 +50,3 @@ rect.addPort({
     },
   },
 })
-
-graph.translate(80, 20)

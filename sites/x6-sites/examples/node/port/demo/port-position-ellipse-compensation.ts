@@ -17,10 +17,15 @@ const node = graph.addNode({
       stroke: '#d9d9d9',
       strokeWidth: 1,
     },
+    label: {
+      text: 'outside',
+      fill: '#888',
+      fontSize: 12,
+    },
   },
   ports: {
     groups: {
-      group1: {
+      a: {
         markup: [
           {
             tagName: 'rect',
@@ -31,35 +36,29 @@ const node = graph.addNode({
             selector: 'dot',
           },
         ],
+        position: {
+          name: 'ellipseSpread',
+          args: { start: 0, dr: 0, compensateRotate: true },
+        },
+        label: {
+          position: 'radial',
+        },
         attrs: {
           rect: {
-            magnet: true,
             stroke: '#31d0c6',
-            fill: 'rgba(255,255,255,0.8)',
+            fill: '#ffffff',
             strokeWidth: 2,
-            width: 16,
-            height: 16,
-            x: -8,
-            y: -8,
+            width: 20,
+            height: 20,
+            x: -10,
+            y: -10,
           },
           dot: {
             fill: '#fe854f',
             r: 2,
           },
           text: {
-            fontSize: 12,
             fill: '#6a6c8a',
-          },
-        },
-        // https://x6.antv.vision/zh/docs/api/registry/port-label-layout#radial
-        label: {
-          position: 'radial',
-        },
-        // https://x6.antv.vision/zh/docs/api/registry/port-layout#ellipsespread
-        position: {
-          name: 'ellipseSpread',
-          args: {
-            start: 45,
           },
         },
       },
@@ -67,17 +66,21 @@ const node = graph.addNode({
   },
 })
 
-Array.from({ length: 10 }).forEach((_, index) => {
+Array.from({ length: 24 }).forEach((_, index) => {
   node.addPort({
+    group: 'a',
     id: `${index}`,
-    group: 'group1',
     attrs: { text: { text: index } },
   })
 })
 
-node.portProp('0', {
-  attrs: {
-    rect: { stroke: 'red' },
-    dot: { fill: '#31d0c6' },
-  },
-})
+function toggle() {
+  const path = 'ports/groups/a/position/args/compensateRotate'
+  const current = node.prop<boolean>(path)
+  node.prop('attrs/label/text', `compensateRotate: ${!current}`)
+  node.prop(path, !current)
+
+  setTimeout(toggle, 1000)
+}
+
+toggle()

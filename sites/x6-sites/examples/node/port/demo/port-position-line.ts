@@ -82,5 +82,3 @@ graph.addNode({
     ],
   },
 })
-
-graph.translate(130, 0)
