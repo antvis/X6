@@ -101,5 +101,3 @@ graph.addNode({
     ],
   },
 })
-
-graph.translate(110, 50)

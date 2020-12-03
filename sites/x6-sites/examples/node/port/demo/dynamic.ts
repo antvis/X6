@@ -75,5 +75,3 @@ const run = () => {
 }
 
 run()
-
-graph.translate(80, 20)

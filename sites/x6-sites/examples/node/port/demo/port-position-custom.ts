@@ -56,5 +56,3 @@ const rect = graph.addNode({
 Array.from({ length: 24 }).forEach(() => {
   rect.addPort({ group: 'sin' })
 })
-
-graph.translate(130, 0)
