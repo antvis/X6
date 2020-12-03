@@ -1,0 +1,60 @@
+{
+  "demos": [
+    {
+      "filename": "normal.ts",
+      "title": {
+        "zh": "默认连线",
+        "en": "Normal Connector"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*ItzNQb0v8QMAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "rounded.ts",
+      "title": {
+        "zh": "圆角连线",
+        "en": "Rounded Connector"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*XeN0Q4kyuBMAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "smooth.ts",
+      "title": {
+        "zh": "平滑连线（三次贝塞尔曲线）",
+        "en": "Smooth Connector"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*b7ETSqUNr00AAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "jumpover.ts",
+      "title": {
+        "zh": "跳线",
+        "en": "Jumpover Connector"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*YfAITIxsiFIAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "curve.ts",
+      "title": {
+        "zh": "二次贝塞尔曲线",
+        "en": "Quadratic Bessel Curve"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*WJj5ToqfFz8AAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "wobble.ts",
+      "title": {
+        "zh": "随机摇摆线",
+        "en": "Custom Wobble Connector"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*A19zSqro4asAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "multiple-smooth-edges.ts",
+      "title": {
+        "zh": "多条光滑曲线",
+        "en": "Multiple Smooth Edges"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*9b-SRYGRGToAAAAAAAAAAAAAARQnAQ"
+    }
+  ]
+}

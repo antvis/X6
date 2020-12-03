@@ -1,0 +1,76 @@
+{
+  "demos": [
+    {
+      "filename": "rect.ts",
+      "title": {
+        "zh": "Rectangle",
+        "en": "Rectangle"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*vCTjSJ41rnIAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "ellipse.ts",
+      "title": {
+        "zh": "Ellipse",
+        "en": "Ellipse"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*4d5lT5DQzgkAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "circle.ts",
+      "title": {
+        "zh": "Circle",
+        "en": "Circle"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*tWKuQaqsaUgAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "path.ts",
+      "title": {
+        "zh": "Path",
+        "en": "Path"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*RebUQ5ze_PkAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "polygon.ts",
+      "title": {
+        "zh": "Polygon",
+        "en": "Polygon"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*LZepTKoZtRkAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "polyline.ts",
+      "title": {
+        "zh": "Polyline",
+        "en": "Polyline"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*t6wZQarashoAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "cylinder.ts",
+      "title": {
+        "zh": "Cylinder",
+        "en": "Cylinder"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*MkDMTaYuFAUAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "image.ts",
+      "title": {
+        "zh": "Image",
+        "en": "Image"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*tIReSJNChdkAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "text-block.ts",
+      "title": {
+        "zh": "文本",
+        "en": "Text Block"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*3_yQTKv_lEsAAAAAAAAAAAAAARQnAQ"
+    }
+  ]
+}
