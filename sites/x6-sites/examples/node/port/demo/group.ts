@@ -41,5 +41,3 @@ const rect = graph.addNode({
 })
 
 rect.addPort({ id: 'port3', group: 'group1' })
-
-graph.translate(80, 20)
