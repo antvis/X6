@@ -165,35 +165,43 @@ module.exports = {
     ],
     examples: [
       {
-        slug: 'shape',
+        slug: 'showcase',
+        icon: 'case',
+        title: {
+          zh: '场景案例',
+          en: 'Component',
+        },
+      },
+      {
+        slug: 'node',
         icon: 'shape',
         title: {
-          zh: '元素',
-          en: 'Shape',
+          zh: '节点',
+          en: 'Node',
+        },
+      },
+      {
+        slug: 'edge',
+        icon: 'link',
+        title: {
+          zh: '边',
+          en: 'Edge',
+        },
+      },
+      {
+        slug: 'graph',
+        icon: 'tree',
+        title: {
+          zh: '画布',
+          en: 'Graph',
         },
       },
       {
         slug: 'interaction',
-        icon: 'interaction',
+        icon: 'tool',
         title: {
-          zh: '交互',
+          zh: '交互定制',
           en: 'Interaction',
-        },
-      },
-      {
-        slug: 'net',
-        icon: 'net',
-        title: {
-          zh: '一般图',
-          en: 'General Graph',
-        },
-      },
-      {
-        slug: 'tree',
-        icon: 'tree',
-        title: {
-          zh: '树图',
-          en: 'Tree Graph',
         },
       },
       {
@@ -202,14 +210,6 @@ module.exports = {
         title: {
           zh: '动画',
           en: 'Animation',
-        },
-      },
-      {
-        slug: 'tool',
-        icon: 'tool',
-        title: {
-          zh: '组件',
-          en: 'Component',
         },
       },
     ],
