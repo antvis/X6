@@ -28,10 +28,10 @@ export const content = `.x6-graph {
   cursor: -webkit-grab;
 }
 .x6-graph.x6-graph-panning {
-  user-select: none;
   cursor: grabbing;
   cursor: -moz-grabbing;
   cursor: -webkit-grabbing;
+  user-select: none;
 }
 .x6-node {
   cursor: move;
@@ -734,10 +734,10 @@ export const content = `.x6-graph {
   cursor: -webkit-grab;
 }
 .x6-graph-scroller.x6-graph-scroller-panning {
-  user-select: none;
   cursor: grabbing;
   cursor: -moz-grabbing;
   cursor: -webkit-grabbing;
+  user-select: none;
 }
 .x6-graph-pagebreak {
   position: absolute;
