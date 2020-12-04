@@ -1,4 +1,40 @@
-import { Dom, Markup } from '@antv/x6'
+import { Graph, Point, Markup, Dom } from '@antv/x6'
+import { PortLayout } from '@antv/x6/es/registry/port-layout'
+
+export interface PortArgs extends PortLayout.CommonArgs {
+  offset?: number
+}
+
+function layout(portsArgs: PortArgs[], p1: Point, groupArgs: PortArgs) {
+  return portsArgs.map(({ offset, ...others }) => {
+    const p = p1.clone().translate(0, offset || groupArgs.offset || 0)
+    if (others.dx || others.dy) {
+      p.translate(others.dx || 0, others.dy || 0)
+    }
+
+    return {
+      angle: 0,
+      position: p.toJSON(),
+      ...others,
+    }
+  })
+}
+
+Graph.registerPortLayout(
+  'table-in',
+  (portsArgs, elemBBox, groupArgs) => {
+    return layout(portsArgs, elemBBox.getTopLeft(), groupArgs)
+  },
+  true,
+)
+
+Graph.registerPortLayout(
+  'table-out',
+  (portsArgs, elemBBox, groupArgs) => {
+    return layout(portsArgs, elemBBox.getTopRight(), groupArgs)
+  },
+  true,
+)
 
 function getPortMarkup(isLeft: boolean): Markup {
   return [
@@ -52,11 +88,11 @@ export function getPortsDefinition() {
   return {
     groups: {
       in: {
-        position: 'left',
+        position: 'table-in',
         markup: getPortMarkup(true),
       },
       out: {
-        position: 'right',
+        position: 'table-out',
         markup: getPortMarkup(false),
       },
     },
