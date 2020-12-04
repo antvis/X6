@@ -1,5 +1,6 @@
 import { Graph, Edge, Shape, NodeView } from '@antv/x6'
 
+// 定义节点
 class MyShape extends Shape.Rect {
   getInPorts() {
     return this.getPortsByGroup('in')
@@ -31,10 +32,10 @@ class MyShape extends Shape.Rect {
   }
 
   updateInPorts(graph: Graph) {
-    var minNumberOfPorts = 2
-    var ports = this.getInPorts()
-    var usedPorts = this.getUsedInPorts(graph)
-    var newPorts = this.getNewInPorts(
+    const minNumberOfPorts = 2
+    const ports = this.getInPorts()
+    const usedPorts = this.getUsedInPorts(graph)
+    const newPorts = this.getNewInPorts(
       Math.max(minNumberOfPorts - usedPorts.length, 1),
     )
 
@@ -65,8 +66,9 @@ MyShape.config({
       magnet: false,
     },
     body: {
-      fill: '#ff9c6e',
-      stroke: '#ff7a45',
+      fill: '#f5f5f5',
+      stroke: '#d9d9d9',
+      strokeWidth: 1,
     },
   },
   ports: {
@@ -83,13 +85,12 @@ MyShape.config({
         attrs: {
           portBody: {
             magnet: 'passive',
-            r: 12,
-            cy: -4,
-            fill: '#b37feb',
-            stroke: '#9254de',
+            r: 6,
+            stroke: '#ffa940',
+            fill: '#fff',
+            strokeWidth: 2,
           },
         },
-        z: 0,
       },
       out: {
         position: {
@@ -97,14 +98,13 @@ MyShape.config({
         },
         attrs: {
           portBody: {
-            magnet: 'active',
-            r: 12,
-            cy: 4,
-            fill: '#69c0ff',
-            stroke: '#40a9ff',
+            magnet: true,
+            r: 6,
+            fill: '#fff',
+            stroke: '#3199FF',
+            strokeWidth: 2,
           },
         },
-        z: 0,
       },
     },
   },
@@ -116,37 +116,58 @@ MyShape.config({
   ],
 })
 
+// 高亮
 const magnetAvailabilityHighlighter = {
   name: 'stroke',
   args: {
-    padding: 6,
     attrs: {
-      strokeWidth: 3,
-      stroke: '#ff0000',
+      fill: '#fff',
+      stroke: '#47C769',
     },
   },
 }
 
-const container = document.getElementById('container')
+// 画布
 const graph = new Graph({
-  container: container,
+  grid: true,
+  container: document.getElementById('container')!,
   highlighting: {
     magnetAvailable: magnetAvailabilityHighlighter,
+    magnetAdsorbed: {
+      name: 'stroke',
+      args: {
+        attrs: {
+          fill: '#fff',
+          stroke: '#31d0c6',
+        },
+      },
+    },
   },
   connecting: {
     snap: true,
     dangling: false,
     highlight: true,
     connector: 'rounded',
+    connectionPoint: 'boundary',
     router: {
       name: 'er',
       args: {
-        // direction: 'W',
+        direction: 'V',
       },
     },
-    connectionPoint: 'boundary',
     createEdge() {
-      return new Shape.Edge()
+      return new Shape.Edge({
+        attrs: {
+          line: {
+            stroke: '#a0a0a0',
+            strokeWidth: 1,
+            targetMarker: {
+              name: 'classic',
+              size: 7,
+            },
+          },
+        },
+      })
     },
     validateConnection({ sourceView, targetView, targetMagnet }) {
       if (!targetMagnet) {
@@ -164,8 +185,8 @@ const graph = new Graph({
       if (targetView) {
         const node = targetView.cell
         if (node instanceof MyShape) {
-          var portId = targetMagnet.getAttribute('port')
-          var usedInPorts = node.getUsedInPorts(graph)
+          const portId = targetMagnet.getAttribute('port')
+          const usedInPorts = node.getUsedInPorts(graph)
           if (usedInPorts.find((port) => port && port.id === portId)) {
             return false
           }
@@ -178,22 +199,22 @@ const graph = new Graph({
 })
 
 graph.addNode(
-  new MyShape().resize(120, 100).position(200, 100).updateInPorts(graph),
+  new MyShape().resize(120, 40).position(200, 50).updateInPorts(graph),
 )
 
 graph.addNode(
-  new MyShape().resize(120, 100).position(400, 100).updateInPorts(graph),
+  new MyShape().resize(120, 40).position(400, 50).updateInPorts(graph),
 )
 
 graph.addNode(
-  new MyShape().resize(120, 100).position(300, 400).updateInPorts(graph),
+  new MyShape().resize(120, 40).position(300, 250).updateInPorts(graph),
 )
 
 function update(view: NodeView) {
-  var cell = view.cell
+  const cell = view.cell
   if (cell instanceof MyShape) {
     cell.getInPorts().forEach((port) => {
-      var portNode = view.findPortElem(port.id!, 'portBody')
+      const portNode = view.findPortElem(port.id!, 'portBody')
       view.unhighlight(portNode, {
         highlighter: magnetAvailabilityHighlighter,
       })
@@ -202,41 +223,39 @@ function update(view: NodeView) {
   }
 }
 
-graph.on('edge:mouseenter', ({ view }) => {
-  view.addTools({
-    tools: [
-      'source-arrowhead',
-      'target-arrowhead',
-      {
-        name: 'button-remove',
-        args: {
-          distance: -30,
-        },
-      },
-    ],
-  })
-})
-
-graph.on('edge:mouseleave', ({ view }) => {
-  view.removeTools()
-})
-
 graph.on('edge:connected', ({ previousView, currentView }) => {
   if (previousView) {
-    update(previousView)
+    update(previousView as NodeView)
   }
   if (currentView) {
-    update(currentView)
+    update(currentView as NodeView)
   }
 })
 
-graph.on('edge:removed', function ({ edge, options }) {
+graph.on('edge:removed', ({ edge, options }) => {
   if (!options.ui) {
     return
   }
 
-  var target = edge.getTargetCell()
+  const target = edge.getTargetCell()
   if (target instanceof MyShape) {
-    target.updateInPorts()
+    target.updateInPorts(graph)
   }
+})
+
+graph.on('edge:mouseenter', ({ edge }) => {
+  edge.addTools([
+    'source-arrowhead',
+    'target-arrowhead',
+    {
+      name: 'button-remove',
+      args: {
+        distance: -30,
+      },
+    },
+  ])
+})
+
+graph.on('edge:mouseleave', ({ edge }) => {
+  edge.removeTools()
 })
