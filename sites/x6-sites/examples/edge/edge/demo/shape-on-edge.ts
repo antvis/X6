@@ -23,10 +23,18 @@ Graph.registerEdge(
       },
       {
         tagName: 'path',
-        selector: 'arrow',
-        attrs: {
-          'pointer-events': 'none',
-        },
+        groupSelector: 'arrow',
+        selector: 'arrow1',
+      },
+      {
+        tagName: 'path',
+        groupSelector: 'arrow',
+        selector: 'arrow2',
+      },
+      {
+        tagName: 'path',
+        groupSelector: 'arrow',
+        selector: 'arrow3',
       },
     ],
     attrs: {
@@ -43,12 +51,21 @@ Graph.registerEdge(
         targetMarker: 'classic',
       },
       arrow: {
-        // atConnectionRatio: 将边中的指定元素移动到指定比例 [0, 1] 位置处，并自动旋转元素，
-        // 使其方向与所在位置边的斜率保持一致。教程 https://x6.antv.vision/zh/docs/api/registry/attr#atconnectionratiokeepgradient
-        atConnectionRatio: 0.75,
         d: 'M 0 -10 10 0 0 10 z',
         fill: '#ffffff',
         stroke: '#333333',
+        pointerEvents: 'none',
+      },
+      arrow1: {
+        // atConnectionRatio: 将边中的指定元素移动到指定比例 [0, 1] 位置处，并自动旋转元素，
+        // 使其方向与所在位置边的斜率保持一致。教程 https://x6.antv.vision/zh/docs/api/registry/attr#atconnectionratiokeepgradient
+        atConnectionRatio: 0.25,
+      },
+      arrow2: {
+        atConnectionRatio: 0.5,
+      },
+      arrow3: {
+        atConnectionRatio: 0.75,
       },
     },
   },
