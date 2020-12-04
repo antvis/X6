@@ -650,11 +650,23 @@ export class Cell<
     return this
   }
 
-  toggleVisible(options: Cell.SetOptions = {}) {
-    if (this.isVisible()) {
-      this.hide(options)
+  toggleVisible(visible: boolean, options?: Cell.SetOptions): this
+  toggleVisible(options?: Cell.SetOptions): this
+  toggleVisible(
+    isVisible?: boolean | Cell.SetOptions,
+    options: Cell.SetOptions = {},
+  ) {
+    const visible =
+      typeof isVisible === 'boolean'
+        ? isVisible
+        : this.isVisible()
+        ? false
+        : true
+    const localOptions = typeof isVisible === 'boolean' ? options : isVisible
+    if (visible) {
+      this.show(localOptions)
     } else {
-      this.show(options)
+      this.hide(localOptions)
     }
     return this
   }
