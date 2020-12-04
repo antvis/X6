@@ -1,3 +1,19 @@
+# @antv/x6-example-features [1.4.0](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.3.1...@antv/x6-example-features@1.4.0) (2020-12-04)
+
+
+### Features
+
+* ✨ connect to scollable ports ([cf76c31](https://github.com/antvis/x6/commit/cf76c3183407399838ddca4a48d5a62a265b06b4))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.2.2
+* **@antv/x6-react-shape:** upgraded to 1.1.6
+
 ## @antv/x6-example-features [1.3.1](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.3.0...@antv/x6-example-features@1.3.1) (2020-12-04)
 
 
