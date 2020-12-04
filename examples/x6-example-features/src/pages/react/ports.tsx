@@ -41,12 +41,12 @@ export default class Example extends React.Component {
         >
           <div key="text">Source</div>
           <div className="in-ports" key="in-ports">
-            <span key="port-1" magnet="true" />
-            <span key="port-2" magnet="true" />
+            <span id="1-in-port-1" key="in-port-1" magnet="true" />
+            <span id="1-in-port-2" key="in-port-2" magnet="true" />
           </div>
           <div className="out-ports" key="out-ports">
-            <span key="port-1" magnet="true" />
-            <span key="port-2" magnet="true" />
+            <span id="1-out-port-1" key="out-port-1" magnet="true" />
+            <span id="1-out-port-2" key="out-port-2" magnet="true" />
           </div>
         </div>
       ),
@@ -72,20 +72,20 @@ export default class Example extends React.Component {
         >
           <div key="text">Target</div>
           <div className="in-ports" key="in-ports">
-            <span key="port-1" magnet="true" />
-            <span key="port-2" magnet="true" />
+            <span id="2-in-port-1" key="in-port-1" magnet="true" />
+            <span id="2-in-port-2" key="in-port-2" magnet="true" />
           </div>
           <div className="out-ports" key="out-ports">
-            <span key="port-1" magnet="true" />
-            <span key="port-2" magnet="true" />
+            <span id="2-out-port-1" key="out-port-1" magnet="true" />
+            <span id="2-out-port-2" key="out-port-2" magnet="true" />
           </div>
         </div>
       ),
     })
 
     graph.addEdge({
-      source,
-      target,
+      source: { cell: source, selector: '[id="out-port-2"]' },
+      target: { cell: target },
     })
   }
 
