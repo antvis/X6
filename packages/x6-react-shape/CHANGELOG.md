@@ -1,3 +1,18 @@
+## @antv/x6-react-shape [1.1.6](https://github.com/antvis/x6/compare/@antv/x6-react-shape@1.1.5...@antv/x6-react-shape@1.1.6) (2020-12-04)
+
+
+### Bug Fixes
+
+* 🐛 component was rendered twice on init ([f63ee13](https://github.com/antvis/x6/commit/f63ee13ba739236c1fc22a8337d81b3b204ec8b3))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.2.2
+
 ## @antv/x6-react-shape [1.1.5](https://github.com/antvis/x6/compare/@antv/x6-react-shape@1.1.4...@antv/x6-react-shape@1.1.5) (2020-12-04)
 
 
