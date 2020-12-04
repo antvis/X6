@@ -28,7 +28,7 @@ import { Graph } from '@antv/x6';
 
 - https://unpkg.com/@antv/x6/dist/x6.js
 - https://cdn.jsdelivr.net/npm/@antv/x6/dist/x6.js
-- https://cdnjs.com/libraries/@antv/x6
+- https://cdnjs.com/libraries/antv-x6
 
 ```html
 <script src="https://unpkg.com/@antv/x6/dist/x6.js"></script>
@@ -38,7 +38,7 @@ import { Graph } from '@antv/x6';
 
 - https://unpkg.com/@antv/x6@1.0.0/dist/x6.js
 - https://cdn.jsdelivr.net/npm/@antv/x6@1.0.0/dist/x6.js
-- https://cdnjs.com/libraries/@antv/x6@1.0.0
+- https://cdnjs.com/libraries/antv-x6
 
 ```html
 <script src="https://unpkg.com/@antv/x6@1.0.0/dist/x6.js"></script>
