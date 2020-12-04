@@ -1,6 +1,6 @@
 ---
 title: Tree
-order: 1
+order: 20
 redirect_from:
   - /zh/examples/tree
 ---
