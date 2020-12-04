@@ -1,10 +1,12 @@
 import React from 'react'
-import { Graph } from '@antv/x6'
+import { Graph, Color } from '@antv/x6'
 import ReactDOM from 'react-dom'
 import '@antv/x6-react-shape'
-import '../../index.less'
+import { generateData, parsePorts } from './data'
+import { getPortsDefinition } from './port'
 import { Component } from './component'
-import { getPortsDefinition } from './registry'
+import './view'
+import '../../index.less'
 
 export default class Example extends React.Component {
   private container: HTMLDivElement
@@ -14,9 +16,17 @@ export default class Example extends React.Component {
       container: this.container,
       width: 800,
       height: 600,
+      connecting: {
+        router: {
+          name: 'er',
+          args: {
+            direction: 'H',
+          },
+        },
+        connector: 'rounded',
+        connectionPoint: 'anchor',
+      },
       onPortRendered(args) {
-        // console.log(args)
-        // const port = args.port
         const contentSelectors = args.contentSelectors
         const container = contentSelectors && contentSelectors.content
         if (container) {
@@ -25,54 +35,57 @@ export default class Example extends React.Component {
       },
     })
 
-    const source = graph.addNode({
-      x: 40,
-      y: 40,
+    const data = generateData(50)
+    const ports = parsePorts(data)
+
+    const node = graph.addNode({
+      x: 240,
+      y: 60,
       width: 320,
       height: 480,
-      data: {},
-      xxx: {},
       shape: 'react-shape',
+      view: 'table-node-view',
+      data: data,
       component: <Component text="Source" />,
       ports: {
         ...getPortsDefinition(),
-        items: [
-          {
-            id: 'port1',
-            group: 'in',
-          },
-          {
-            id: 'port2',
-            group: 'in',
-          },
-          {
-            id: 'port3',
-            group: 'in',
-          },
-          {
-            id: 'port4',
-            group: 'out',
-          },
-          {
-            id: 'port5',
-            group: 'out',
-          },
-        ],
       },
     })
 
-    const target = graph.addNode({
-      x: 480,
-      y: 100,
-      width: 240,
-      height: 320,
-      shape: 'react-shape',
-      component: <Component text="Target" />,
-    })
-
-    graph.addEdge({
-      source,
-      target,
+    ports.forEach((port) => {
+      if (port.group === 'in') {
+        graph.addEdge({
+          source: [40, 300],
+          target: {
+            cell: node,
+            port: port.id,
+            anchor: 'left',
+          },
+          attrs: {
+            line: {
+              strokeWidth: 1,
+              targetMarker: null,
+              stroke: Color.randomHex(),
+            },
+          },
+        })
+      } else {
+        graph.addEdge({
+          source: {
+            cell: node,
+            port: port.id,
+            anchor: 'right',
+          },
+          target: [760, 300],
+          attrs: {
+            line: {
+              strokeWidth: 1,
+              targetMarker: null,
+              stroke: Color.randomHex(),
+            },
+          },
+        })
+      }
     })
   }
 
