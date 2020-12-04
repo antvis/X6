@@ -1,3 +1,24 @@
+# @antv/x6-sites [1.4.0](https://github.com/antvis/x6/compare/@antv/x6-sites@1.3.0...@antv/x6-sites@1.4.0) (2020-12-04)
+
+
+### Bug Fixes
+
+* 🐛 edge label path ([9915c9b](https://github.com/antvis/x6/commit/9915c9b40413d651f0162c4b544a705f80b040c9))
+
+
+### Features
+
+* ✨ port demos ([fe7248a](https://github.com/antvis/x6/commit/fe7248a2715f547b88f937b6369baf76d686753a))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.2.1
+* **@antv/x6-react-shape:** upgraded to 1.1.5
+
 # @antv/x6-sites [1.3.0](https://github.com/antvis/x6/compare/@antv/x6-sites@1.2.1...@antv/x6-sites@1.3.0) (2020-12-02)
 
 
