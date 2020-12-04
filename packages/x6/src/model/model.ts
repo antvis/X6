@@ -91,6 +91,8 @@ export class Model extends Basecoat<Model.EventArgs> {
   protected onCellAdded(cell: Cell) {
     const cellId = cell.id
     if (cell.isEdge()) {
+      // Auto update edge's parent
+      cell.updateParent()
       this.edges[cellId] = true
       this.onEdgeTerminalChanged(cell, 'source')
       this.onEdgeTerminalChanged(cell, 'target')
@@ -197,15 +199,6 @@ export class Model extends Basecoat<Model.EventArgs> {
     this.collection.reset(cells, options)
     // Update model and trigger edge update it's references
     cells.map((cell) => this.prepareCell(cell, { options }))
-
-    // cells.forEach((cell) => {
-    //   if (cell.isEdge()) {
-    //     // update reference
-    //     cell.getSourceCell()
-    //     cell.getTargetCell()
-    //   }
-    // })
-
     return this
   }
 
