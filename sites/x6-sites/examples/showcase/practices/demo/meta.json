@@ -1,0 +1,12 @@
+{
+  "demos": [
+    {
+      "filename": "algo-flow.tsx",
+      "title": {
+        "zh": "人工智能建模流程",
+        "en": "Flow for AI Model"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*3A0IR44lo60AAAAAAAAAAAAAARQnAQ"
+    }
+  ]
+}
