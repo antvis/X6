@@ -1,3 +1,12 @@
+## @antv/x6 [1.2.1](https://github.com/antvis/x6/compare/@antv/x6@1.2.0...@antv/x6@1.2.1) (2020-12-04)
+
+
+### Bug Fixes
+
+* 🐛 lint errors ([1757172](https://github.com/antvis/x6/commit/1757172237b31b1db4765251c9d3e85de5b37ec7))
+* 🐛 lint errors ([9b399a3](https://github.com/antvis/x6/commit/9b399a3d68d29679144054212a003b244bebbfa0))
+* 🐛 should auto update edge's parent when edge was added ([57fc8c8](https://github.com/antvis/x6/commit/57fc8c856657f0c58355e5a7fa88f71d1c76877d))
+
 # @antv/x6 [1.2.0](https://github.com/antvis/x6/compare/@antv/x6@1.1.3...@antv/x6@1.2.0) (2020-12-02)
 
 
