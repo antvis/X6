@@ -1,3 +1,19 @@
+## @antv/x6-sites [1.4.3](https://github.com/antvis/x6/compare/@antv/x6-sites@1.4.2...@antv/x6-sites@1.4.3) (2020-12-04)
+
+
+### Bug Fixes
+
+* 🐛 collapse tree ([84566ea](https://github.com/antvis/x6/commit/84566ea5cf0175941b2ab113b3c2077b55c53356))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.2.3
+* **@antv/x6-react-shape:** upgraded to 1.1.7
+
 ## @antv/x6-sites [1.4.2](https://github.com/antvis/x6/compare/@antv/x6-sites@1.4.1...@antv/x6-sites@1.4.2) (2020-12-04)
 
 ## @antv/x6-sites [1.4.1](https://github.com/antvis/x6/compare/@antv/x6-sites@1.4.0...@antv/x6-sites@1.4.1) (2020-12-04)
