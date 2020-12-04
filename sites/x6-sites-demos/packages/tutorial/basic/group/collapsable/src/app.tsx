@@ -101,14 +101,26 @@ export default class Example extends React.Component {
     graph.on('node:collapse', ({ node }: { node: Group }) => {
       node.toggleCollapse()
       const collapsed = node.isCollapsed()
-      const cells = node.getDescendants()
-      cells.forEach((node) => {
-        if (collapsed) {
-          node.hide()
-        } else {
-          node.show()
+      const collapse = (parent: Group) => {
+        const cells = parent.getChildren()
+        if (cells) {
+          cells.forEach((cell) => {
+            if (collapsed) {
+              cell.hide()
+            } else {
+              cell.show()
+            }
+
+            if (cell instanceof Group) {
+              if (!cell.isCollapsed()) {
+                collapse(cell)
+              }
+            }
+          })
         }
-      })
+      }
+
+      collapse(node)
     })
   }
 
