@@ -1,5 +1,6 @@
 import { Graph, Node, Edge, Shape } from '@antv/x6'
 
+// 定义节点
 class TreeNode extends Node {
   private collapsed: boolean = false
 
@@ -8,7 +9,7 @@ class TreeNode extends Node {
   }
 
   isCollapsed() {
-    return this.collapsed === true
+    return this.collapsed
   }
 
   toggleButtonVisibility(visible: boolean) {
@@ -17,7 +18,7 @@ class TreeNode extends Node {
     })
   }
 
-  toggleCollapse(collapsed: boolean) {
+  toggleCollapse(collapsed?: boolean) {
     const target = collapsed == null ? !this.collapsed : collapsed
     if (!target) {
       this.attr('buttonSign', {
@@ -111,9 +112,10 @@ TreeNode.config({
   },
 })
 
+// 定义边
 class TreeEdge extends Shape.Edge {
   isHidden() {
-    var node = this.getTargetNode() as TreeNode
+    const node = this.getTargetNode() as TreeNode
     return !node || !node.isVisible()
   }
 }
@@ -129,44 +131,56 @@ TreeEdge.config({
   },
 })
 
-if (Node.registry.exist('tree-node')) {
-  Node.registry.register('tree-node', TreeNode as typeof Node)
-}
-if (Edge.registry.exist('tree-edge')) {
-  Edge.registry.register('tree-edge', TreeEdge as typeof Edge)
-}
+// 注册
+Node.registry.register('tree-node', TreeNode as typeof Node, true)
+Edge.registry.register('tree-edge', TreeEdge as typeof Edge, true)
 
-const container = document.getElementById('container')
+// 初始化画布
 const graph = new Graph({
-  container: container,
-  frozen: true,
-  async: true,
-  interacting: false,
+  container: document.getElementById('container')!,
   grid: 1,
-  sorting: 'approx',
+  async: true,
+  frozen: true,
+  scroller: true,
+  interacting: false,
   background: {
-    color: '#F3F7F6',
-  },
-  scroller: {
-    enabled: true,
+    color: '#f5f5f5',
   },
   connecting: {
     anchor: 'orth',
+    connector: 'rounded',
     connectionPoint: 'boundary',
     router: {
       name: 'er',
       args: {
+        offset: 24,
         direction: 'H',
       },
     },
   },
 })
-graph.zoomTo(0.8)
+
+graph.on('node:collapse', ({ node }: { node: TreeNode }) => {
+  node.toggleCollapse()
+  const collapsed = node.isCollapsed()
+  const run = (pre: TreeNode) => {
+    const succ = graph.getSuccessors(pre, { distance: 1 })
+    if (succ) {
+      succ.forEach((node: TreeNode) => {
+        node.toggleVisible(!collapsed)
+        if (!node.isCollapsed()) {
+          run(node)
+        }
+      })
+    }
+  }
+  run(node)
+})
 
 fetch('../data/mindmap.json')
   .then((response) => response.json())
   .then((data) => {
-    var start = new Date().getTime()
+    const start = new Date().getTime()
     const nodes = data.nodes.map(({ leaf, ...metadata }: any) => {
       const node = new TreeNode(metadata)
       if (leaf) {
@@ -181,6 +195,7 @@ fetch('../data/mindmap.json')
           target: edge.target,
         }),
     )
+
     graph.resetCells([...nodes, ...edges])
 
     graph.unfreeze({
@@ -191,16 +206,8 @@ fetch('../data/mindmap.json')
           graph.unfreeze({
             batchSize: 50,
           })
+          graph.zoomToFit({ padding: 24 })
         }
       },
-    })
-    graph.on('node:collapse', ({ node }) => {
-      const treeNode = node as TreeNode
-      treeNode.toggleCollapse()
-      const collapsed = treeNode.isCollapsed()
-      const nodes = graph.getSuccessors(node) as TreeNode[]
-      nodes.forEach((node) => {
-        node.toggleVisible(collapsed)
-      })
     })
   })
