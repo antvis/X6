@@ -1,3 +1,10 @@
+## @antv/x6 [1.2.3](https://github.com/antvis/x6/compare/@antv/x6@1.2.2...@antv/x6@1.2.3) (2020-12-04)
+
+
+### Bug Fixes
+
+* 🐛 toggle visible ([13629d5](https://github.com/antvis/x6/commit/13629d50d894fcb7c567cc093d39b73f17c50f9d))
+
 ## @antv/x6 [1.2.2](https://github.com/antvis/x6/compare/@antv/x6@1.2.1...@antv/x6@1.2.2) (2020-12-04)
 
 
