@@ -13,12 +13,6 @@ export class ReactShapeView extends NodeView<ReactShape> {
     })
   }
 
-  render() {
-    super.render()
-    this.renderReactComponent()
-    return this
-  }
-
   getComponentContainer() {
     return this.selectors.foContent as HTMLDivElement
   }
