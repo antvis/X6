@@ -192,23 +192,21 @@ export default class Example extends React.Component {
       }
     }
 
-    graph.on('edge:mouseenter', ({ view }) => {
-      view.addTools({
-        tools: [
-          'source-arrowhead',
-          'target-arrowhead',
-          {
-            name: 'button-remove',
-            args: {
-              distance: -30,
-            },
+    graph.on('edge:mouseenter', ({ edge }) => {
+      edge.addTools([
+        'source-arrowhead',
+        'target-arrowhead',
+        {
+          name: 'button-remove',
+          args: {
+            distance: -30,
           },
-        ],
-      })
+        },
+      ])
     })
 
-    graph.on('edge:mouseleave', ({ view }) => {
-      view.removeTools()
+    graph.on('edge:mouseleave', ({ edge }) => {
+      edge.removeTools()
     })
 
     graph.on('edge:connected', ({ previousView, currentView }) => {
