@@ -382,9 +382,9 @@ export namespace View {
   }
 
   export function find(
-    selector?: string,
-    rootElem: Element = this.container,
-    selectors: Markup.Selectors = this.selectors,
+    selector: string | null | undefined,
+    rootElem: Element,
+    selectors: Markup.Selectors,
   ): { isCSSSelector?: boolean; elems: Element[] } {
     if (!selector || selector === '.') {
       return { elems: [rootElem] }
