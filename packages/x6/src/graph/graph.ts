@@ -616,6 +616,12 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
+  /**
+   * **Deprecation Notice:** `scale` is deprecated and will be moved in next
+   * major release. Use `zoom()` instead.
+   *
+   * @deprecated
+   */
   scale(): Dom.Scale
   scale(sx: number, sy?: number, cx?: number, cy?: number): this
   scale(
@@ -628,6 +634,25 @@ export class Graph extends Basecoat<EventArgs> {
       return this.transform.getScale()
     }
     this.transform.scale(sx, sy, cx, cy)
+    return this
+  }
+
+  zoom(): number
+  zoom(factor: number, options?: Transform.ZoomOptions): this
+  zoom(factor?: number, options?: Transform.ZoomOptions) {
+    const scroller = this.scroller.widget
+    if (scroller) {
+      if (typeof factor === 'undefined') {
+        return scroller.zoom()
+      }
+      scroller.zoom(factor, options)
+    } else {
+      if (typeof factor === 'undefined') {
+        return this.transform.getZoom()
+      }
+      this.transform.zoom(factor, options)
+    }
+    
     return this
   }
 
@@ -1357,22 +1382,10 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
-  zoom(): number
-  zoom(factor: number, options?: ScrollerWidget.ZoomOptions): this
-  @Decorator.checkScroller()
-  zoom(factor?: number, options?: ScrollerWidget.ZoomOptions) {
-    const scroller = this.scroller.widget!
-    if (factor == null) {
-      return scroller.zoom()
-    }
-    scroller.zoom(factor, options)
-    return this
-  }
-
   @Decorator.checkScroller()
   zoomTo(
     factor: number,
-    options: Omit<ScrollerWidget.ZoomOptions, 'absolute'> = {},
+    options: Omit<Transform.ZoomOptions, 'absolute'> = {},
   ) {
     const scroller = this.scroller.widget!
     scroller.zoom(factor, { ...options, absolute: true })
