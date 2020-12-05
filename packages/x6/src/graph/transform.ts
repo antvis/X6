@@ -173,9 +173,10 @@ export class TransformManager extends Base {
 
     let sx = factor
     let sy = factor
-    let cx = this.options.width / 2
-    let cy = this.options.height / 2
     const scale = this.getScale()
+    const clientSize = this.getComputedSize()
+    let cx = clientSize.width / 2
+    let cy = clientSize.height / 2
 
     if (!options.absolute) {
       sx = sx + scale.sx
@@ -207,15 +208,39 @@ export class TransformManager extends Base {
 
     if (cx || cy) {
       const ts = this.getTranslation()
-      const tx = ts.tx - cx * (sx - scale.sx)
-      const ty = ts.ty - cy * (sy - scale.sy)
+      const tx = cx - (cx - ts.tx) * (sx / scale.sx)
+      const ty = cy - (cy - ts.ty) * (sy / scale.sy)
       if (tx !== ts.tx || ty !== ts.ty) {
         this.translate(tx, ty)
       }
     }
 
     this.scale(sx, sy)
-    
+
+    return this
+  }
+
+  zoomToRect(
+    rect: Rectangle.RectangleLike,
+    options: TransformManager.ScaleContentToFitOptions = {},
+  ) {
+    const area = Rectangle.create(rect)
+    const graph = this.graph
+
+    options.contentArea = area
+    if (options.viewportArea == null) {
+      options.viewportArea = {
+        x: graph.options.x,
+        y: graph.options.y,
+        width: this.options.width,
+        height: this.options.height,
+      }
+    }
+
+    this.scaleContentToFitImpl(options, false)
+    const center = this.graph.localToGraph(area.getCenter())
+    this.centerPoint(center.x, center.y)
+
     return this
   }
 
@@ -442,6 +467,18 @@ export class TransformManager extends Base {
   getGraphArea() {
     const rect = Rectangle.fromSize(this.getComputedSize())
     return this.graph.graphToLocal(rect)
+  }
+
+  centerPoint(x: number, y: number) {
+    const clientSize = this.getComputedSize()
+    const cx = clientSize.width / 2
+    const cy = clientSize.height / 2
+    const ts = this.getTranslation()
+    const tx = cx - x
+    const ty = cy - y
+    if (tx !== ts.tx || ty !== ts.ty) {
+      this.translate(ts.tx + tx, ts.ty + ty)
+    }
   }
 
   @TransformManager.dispose()

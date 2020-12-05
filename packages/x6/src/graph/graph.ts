@@ -656,6 +656,33 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
+  zoomTo(
+    factor: number,
+    options: Omit<Transform.ZoomOptions, 'absolute'> = {},
+  ) {
+    const scroller = this.scroller.widget
+    if (scroller) {
+      scroller.zoom(factor, { ...options, absolute: true })
+    } else {
+      this.transform.zoom(factor, { ...options, absolute: true })
+    } 
+  }
+
+  zoomToRect(
+    rect: Rectangle.RectangleLike,
+    options: Transform.ScaleContentToFitOptions &
+      Transform.ScaleContentToFitOptions = {},
+  ) {
+    const scroller = this.scroller.widget
+    if (scroller) {
+      scroller.zoomToRect(rect, options)
+    } else {
+      this.transform.zoomToRect(rect, options)
+    }
+    
+    return this
+  }
+
   rotate(): Dom.Rotation
   rotate(angle: number, cx?: number, cy?: number): this
   rotate(angle?: number, cx?: number, cy?: number) {
@@ -725,6 +752,45 @@ export class Graph extends Basecoat<EventArgs> {
 
   scaleContentToFit(options: Transform.ScaleContentToFitOptions = {}) {
     this.transform.scaleContentToFit(options)
+    return this
+  }
+
+  /**
+   * Position the center of graph to the center of the viewport.
+   */
+  center(optons?: ScrollerWidget.CenterOptions) {
+    return this.centerPoint(optons)
+  }
+
+  /**
+   * Position the point (x,y) on the graph (in local coordinates) to the
+   * center of the viewport. If only one of the coordinates is specified,
+   * only center along the specified dimension and keep the other coordinate
+   * unchanged.
+   */
+  centerPoint(
+    x: number,
+    y: null | number,
+    options?: ScrollerWidget.CenterOptions,
+  ): this
+  centerPoint(
+    x: null | number,
+    y: number,
+    options?: ScrollerWidget.CenterOptions,
+  ): this
+  centerPoint(optons?: ScrollerWidget.CenterOptions): this
+  centerPoint(
+    x?: number | null | ScrollerWidget.CenterOptions,
+    y?: number | null,
+    options?: ScrollerWidget.CenterOptions,
+  ) {
+    const scroller = this.scroller.widget
+    if (scroller) {
+      scroller.centerPoint(x as number, y as number, options)
+    } else {
+      this.transform.centerPoint(x as number, y as number)
+    }
+    
     return this
   }
 
@@ -1286,44 +1352,6 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
-  /**
-   * Position the center of graph to the center of the viewport.
-   */
-  center(optons?: ScrollerWidget.CenterOptions) {
-    return this.centerPoint(optons)
-  }
-
-  /**
-   * Position the point (x,y) on the graph (in local coordinates) to the
-   * center of the viewport. If only one of the coordinates is specified,
-   * only center along the specified dimension and keep the other coordinate
-   * unchanged.
-   */
-  centerPoint(
-    x: number,
-    y: null | number,
-    options?: ScrollerWidget.CenterOptions,
-  ): this
-  centerPoint(
-    x: null | number,
-    y: number,
-    options?: ScrollerWidget.CenterOptions,
-  ): this
-  /**
-   * Position the center of graph to the center of the viewport.
-   */
-  centerPoint(optons?: ScrollerWidget.CenterOptions): this
-  @Decorator.checkScroller()
-  centerPoint(
-    x?: number | null | ScrollerWidget.CenterOptions,
-    y?: number | null,
-    options?: ScrollerWidget.CenterOptions,
-  ) {
-    const scroller = this.scroller.widget!
-    scroller.centerPoint(x as number, y as number, options)
-    return this
-  }
-
   @Decorator.checkScroller()
   centerContent(options?: ScrollerWidget.PositionContentOptions) {
     const scroller = this.scroller.widget!
@@ -1379,26 +1407,6 @@ export class Graph extends Basecoat<EventArgs> {
   ) {
     const scroller = this.scroller.widget!
     scroller.positionPoint(point, x, y, options)
-    return this
-  }
-
-  @Decorator.checkScroller()
-  zoomTo(
-    factor: number,
-    options: Omit<Transform.ZoomOptions, 'absolute'> = {},
-  ) {
-    const scroller = this.scroller.widget!
-    scroller.zoom(factor, { ...options, absolute: true })
-  }
-
-  @Decorator.checkScroller()
-  zoomToRect(
-    rect: Rectangle.RectangleLike,
-    options: Transform.ScaleContentToFitOptions &
-      Transform.ScaleContentToFitOptions = {},
-  ) {
-    const scroller = this.scroller.widget!
-    scroller.zoomToRect(rect, options)
     return this
   }
 
