@@ -653,8 +653,8 @@ export class Scroller extends View {
   }
 
   zoom(): number
-  zoom(factor: number, options?: Scroller.ZoomOptions): this
-  zoom(factor?: number, options?: Scroller.ZoomOptions) {
+  zoom(factor: number, options?: TransformManager.ZoomOptions): this
+  zoom(factor?: number, options?: TransformManager.ZoomOptions) {
     if (factor == null) {
       return this.sx
     }
@@ -1112,14 +1112,6 @@ export namespace Scroller {
 
   export interface CenterOptions extends ScrollOptions {
     padding?: NumberExt.SideOptions
-  }
-
-  export interface ZoomOptions {
-    absolute?: boolean
-    minScale?: number
-    maxScale?: number
-    scaleGrid?: number
-    center?: Point.PointLike
   }
 
   export type PositionContentOptions = TransformManager.GetContentAreaOptions &
