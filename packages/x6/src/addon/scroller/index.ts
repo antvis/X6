@@ -480,9 +480,6 @@ export class Scroller extends View {
     y: number,
     options?: Scroller.CenterOptions,
   ): this
-  /**
-   * Position the center of graph to the center of the viewport.
-   */
   centerPoint(optons?: Scroller.CenterOptions): this
   centerPoint(
     x?: number | null | Scroller.CenterOptions,
