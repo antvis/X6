@@ -164,6 +164,61 @@ export class TransformManager extends Base {
     return NumberExt.clamp(scale, range.min || 0.01, range.max || 16)
   }
 
+  getZoom() {
+    return this.getScale().sx
+  }
+
+  zoom(factor: number, options?: TransformManager.ZoomOptions) {
+    options = options || {} // tslint:disable-line
+
+    let sx = factor
+    let sy = factor
+    let cx = this.options.width / 2
+    let cy = this.options.height / 2
+    const scale = this.getScale()
+
+    if (!options.absolute) {
+      sx = sx + scale.sx
+      sy = sy + scale.sy
+    }
+
+    if (options.scaleGrid) {
+      sx = Math.round(sx / options.scaleGrid) * options.scaleGrid
+      sy = Math.round(sy / options.scaleGrid) * options.scaleGrid
+    }
+
+    if (options.maxScale) {
+      sx = Math.min(options.maxScale, sx)
+      sy = Math.min(options.maxScale, sy)
+    }
+
+    if (options.minScale) {
+      sx = Math.max(options.minScale, sx)
+      sy = Math.max(options.minScale, sy)
+    }
+
+    if (options.center) {
+      cx = options.center.x
+      cy = options.center.y
+    }
+
+    sx = this.clampScale(sx)
+    sy = this.clampScale(sy)
+
+    if (cx || cy) {
+      const ts = this.getTranslation()
+      const tx = ts.tx - cx * (sx - scale.sx)
+      const ty = ts.ty - cy * (sy - scale.sy)
+      if (tx !== ts.tx || ty !== ts.ty) {
+        this.translate(tx, ty)
+      }
+    }
+
+    this.scale(sx, sy)
+    
+    return this
+  }
+
   getRotation() {
     return Dom.matrixToRotation(this.getMatrix())
   }
@@ -429,5 +484,13 @@ export namespace TransformManager {
 
   export interface GetContentAreaOptions {
     useCellGeometry?: boolean
+  }
+
+  export interface ZoomOptions {
+    absolute?: boolean
+    minScale?: number
+    maxScale?: number
+    scaleGrid?: number
+    center?: Point.PointLike
   }
 }
