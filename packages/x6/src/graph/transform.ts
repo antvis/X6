@@ -2,6 +2,7 @@ import { Dom, NumberExt } from '../util'
 import { Point, Rectangle } from '../geometry'
 import { Transform } from '../addon/transform'
 import { Node } from '../model/node'
+import { Cell } from '../model/cell'
 import { EventArgs } from './events'
 import { Base } from './base'
 
@@ -445,21 +446,6 @@ export class TransformManager extends Base {
     return this.graph.graphToLocal(rect)
   }
 
-  centerPoint(x: number, y: number) {
-    const clientSize = this.getComputedSize()
-    const scale = this.getScale()
-    const cx = clientSize.width / 2
-    const cy = clientSize.height / 2
-    const ts = this.getTranslation()
-    
-    x = cx - x * scale.sx
-    y = cy - y * scale.sy
-
-    if (ts.tx !== x || ts.ty !== y) {
-      this.translate(x, y)
-    }
-  }
-
   zoomToRect(
     rect: Rectangle.RectangleLike,
     options: TransformManager.ScaleContentToFitOptions = {},
@@ -491,10 +477,108 @@ export class TransformManager extends Base {
     return this.zoomToRect(this.getContentArea(options), options)
   }
 
+  centerPoint(x: number, y: number) {
+    const clientSize = this.getComputedSize()
+    const scale = this.getScale()
+    const cx = clientSize.width / 2
+    const cy = clientSize.height / 2
+    const ts = this.getTranslation()
+    
+    x = cx - x * scale.sx
+    y = cy - y * scale.sy
+
+    if (ts.tx !== x || ts.ty !== y) {
+      this.translate(x, y)
+    }
+  }
+
   centerContent(options?: TransformManager.GetContentAreaOptions) {
     const rect = this.graph.getContentArea(options)
     const center = rect.getCenter()
     this.centerPoint(center.x, center.y)
+  }
+
+  centerCell(cell: Cell) {
+    return this.positionCell(cell, 'center')
+  }
+
+  positionPoint(
+    point: Point.PointLike,
+    x: number | string,
+    y: number | string,
+  ) {
+    const clientSize = this.getComputedSize()
+
+    x = NumberExt.normalizePercentage(x, Math.max(0, clientSize.width))
+    if (x < 0) {
+      x = clientSize.width + x
+    }
+    y = NumberExt.normalizePercentage(y, Math.max(0, clientSize.height))
+    if (y < 0) {
+      y = clientSize.height + y
+    }
+
+    const ts = this.getTranslation()
+    const scale = this.getScale()
+    const dx = x - point.x * scale.sx
+    const dy = y - point.y * scale.sy
+
+    if (ts.tx !== dx || ts.ty !== dy) {
+      this.translate(dx, dy)
+    }
+  }
+
+  positionRect(
+    rect: Rectangle.RectangleLike,
+    pos: TransformManager.Direction,
+  ) {
+    const bbox = Rectangle.create(rect)
+    switch (pos) {
+      case 'center':
+        return this.positionPoint(bbox.getCenter(), '50%', '50%')
+      case 'top':
+        return this.positionPoint(bbox.getTopCenter(), '50%', 0)
+      case 'top-right':
+        return this.positionPoint(bbox.getTopRight(), '100%', 0)
+      case 'right':
+        return this.positionPoint(bbox.getRightMiddle(), '100%', '50%')
+      case 'bottom-right':
+        return this.positionPoint(
+          bbox.getBottomRight(),
+          '100%',
+          '100%',
+        )
+      case 'bottom':
+        return this.positionPoint(
+          bbox.getBottomCenter(),
+          '50%',
+          '100%',
+        )
+      case 'bottom-left':
+        return this.positionPoint(bbox.getBottomLeft(), 0, '100%')
+      case 'left':
+        return this.positionPoint(bbox.getLeftMiddle(), 0, '50%')
+      case 'top-left':
+        return this.positionPoint(bbox.getTopLeft(), 0, 0)
+      default:
+        return this
+    }
+  }
+
+  positionCell(
+    cell: Cell,
+    pos: TransformManager.Direction,
+  ) {
+    const bbox = cell.getBBox()
+    return this.positionRect(bbox, pos)
+  }
+
+  positionContent(
+    pos: TransformManager.Direction,
+    options?: TransformManager.GetContentAreaOptions,
+  ) {
+    const rect = this.graph.getContentArea(options)
+    return this.positionRect(rect, pos)
   }
 
   @TransformManager.dispose()
@@ -546,4 +630,15 @@ export namespace TransformManager {
     scaleGrid?: number
     center?: Point.PointLike
   }
+
+  export type Direction =
+    | 'center'
+    | 'top'
+    | 'top-right'
+    | 'top-left'
+    | 'right'
+    | 'bottom-right'
+    | 'bottom'
+    | 'bottom-left'
+    | 'left'
 }
