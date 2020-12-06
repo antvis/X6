@@ -813,8 +813,79 @@ export class Graph extends Basecoat<EventArgs> {
     if (scroller) {
       scroller.centerContent(options)
     } else {
-      this.transform.centerContent(options as Transform.GetContentAreaOptions)
+      this.transform.centerContent(options)
     }
+    return this
+  }
+
+  centerCell(cell: Cell, options?: ScrollerWidget.CenterOptions) {
+    const scroller = this.scroller.widget
+    if (scroller) {
+      scroller.centerCell(cell, options)
+    } else {
+      this.transform.centerCell(cell)
+    }
+    
+    return this
+  }
+
+  positionPoint(
+    point: Point.PointLike,
+    x: number | string,
+    y: number | string,
+    options: ScrollerWidget.CenterOptions = {},
+  ) {
+    const scroller = this.scroller.widget
+    if (scroller) {
+      scroller.positionPoint(point, x, y, options)
+    } else {
+      this.transform.positionPoint(point, x, y)
+    }
+    
+    return this
+  }
+
+  positionRect(
+    rect: Rectangle.RectangleLike,
+    direction: ScrollerWidget.Direction,
+    options?: ScrollerWidget.CenterOptions,
+  ) {
+    const scroller = this.scroller.widget
+    if (scroller) {
+      scroller.positionRect(rect, direction, options)
+    } else {
+      this.transform.positionRect(rect, direction)
+    }
+    
+    return this
+  }
+
+  positionCell(
+    cell: Cell,
+    direction: ScrollerWidget.Direction,
+    options?: ScrollerWidget.CenterOptions,
+  ) {
+    const scroller = this.scroller.widget
+    if (scroller) {
+      scroller.positionCell(cell, direction, options)
+    } else {
+      this.transform.positionCell(cell, direction)
+    }
+    
+    return this
+  }
+
+  positionContent(
+    pos: ScrollerWidget.Direction,
+    options?: ScrollerWidget.PositionContentOptions,
+  ) {
+    const scroller = this.scroller.widget
+    if (scroller) {
+      scroller.positionContent(pos, options)
+    } else {
+      this.transform.positionContent(pos, options)
+    }
+    
     return this
   }
 
@@ -1373,57 +1444,6 @@ export class Graph extends Basecoat<EventArgs> {
   scrollToCell(cell: Cell, options?: ScrollerWidget.ScrollOptions) {
     const scroller = this.scroller.widget!
     scroller.scrollToCell(cell, options)
-    return this
-  }
-
-  @Decorator.checkScroller()
-  centerCell(cell: Cell, options?: ScrollerWidget.CenterOptions) {
-    const scroller = this.scroller.widget!
-    scroller.centerCell(cell, options)
-    return this
-  }
-
-  @Decorator.checkScroller()
-  positionContent(
-    pos: ScrollerWidget.Direction,
-    options?: ScrollerWidget.PositionContentOptions,
-  ) {
-    const scroller = this.scroller.widget!
-    scroller.positionContent(pos, options)
-    return this
-  }
-
-  @Decorator.checkScroller()
-  positionCell(
-    cell: Cell,
-    direction: ScrollerWidget.Direction,
-    options?: ScrollerWidget.CenterOptions,
-  ) {
-    const scroller = this.scroller.widget!
-    scroller.positionCell(cell, direction, options)
-    return this
-  }
-
-  @Decorator.checkScroller()
-  positionRect(
-    rect: Rectangle.RectangleLike,
-    direction: ScrollerWidget.Direction,
-    options?: ScrollerWidget.CenterOptions,
-  ) {
-    const scroller = this.scroller.widget!
-    scroller.positionRect(rect, direction, options)
-    return this
-  }
-
-  @Decorator.checkScroller()
-  positionPoint(
-    point: Point.PointLike,
-    x: number | string,
-    y: number | string,
-    options: ScrollerWidget.CenterOptions = {},
-  ) {
-    const scroller = this.scroller.widget!
-    scroller.positionPoint(point, x, y, options)
     return this
   }
 
