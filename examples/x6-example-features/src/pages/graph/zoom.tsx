@@ -167,6 +167,11 @@ export default class Example extends React.Component {
     this.graph2.centerPoint(100, 50)
   }
 
+  onCenter = () => {
+    this.graph1.center()
+    this.graph2.center()
+  }
+
   onCenterContent = () => {
     this.graph1.centerContent()
     this.graph2.centerContent()
@@ -229,6 +234,7 @@ export default class Example extends React.Component {
           <Button onClick={() => this.onZoomToRect()}>ZoomToRect</Button>
           <Button onClick={() => this.onZoomToFit()}>ZoomToFit</Button>
           <Button onClick={() => this.onCenterPoint()}>CenterPoint</Button>
+          <Button onClick={() => this.onCenter()}>Center</Button>
           <Button onClick={() => this.onCenterContent()}>CenterContent</Button>
           <Button onClick={() => this.onCenterCell()}>CenterCell</Button>
           <Button onClick={() => this.onPositionPoint()}>PositionPoint</Button>

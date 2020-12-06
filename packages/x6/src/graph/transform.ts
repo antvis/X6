@@ -477,12 +477,15 @@ export class TransformManager extends Base {
     return this.zoomToRect(this.getContentArea(options), options)
   }
 
-  centerPoint(x: number, y: number) {
+  centerPoint(x?: number, y?: number) {
     const clientSize = this.getComputedSize()
     const scale = this.getScale()
+    const ts = this.getTranslation()
     const cx = clientSize.width / 2
     const cy = clientSize.height / 2
-    const ts = this.getTranslation()
+    
+    x = typeof x === 'number' ? x : cx
+    y = typeof y === 'number' ? y : cy
     
     x = cx - x * scale.sx
     y = cy - y * scale.sy
