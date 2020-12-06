@@ -683,6 +683,20 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
+  zoomToFit(
+    options: Transform.GetContentAreaOptions &
+      Transform.ScaleContentToFitOptions = {},
+  ) {
+    const scroller = this.scroller.widget
+    if (scroller) {
+      scroller.zoomToFit(options)
+    } else {
+      this.transform.zoomToFit(options)
+    }
+    
+    return this
+  }
+
   rotate(): Dom.Rotation
   rotate(angle: number, cx?: number, cy?: number): this
   rotate(angle?: number, cx?: number, cy?: number) {
@@ -791,6 +805,16 @@ export class Graph extends Basecoat<EventArgs> {
       this.transform.centerPoint(x as number, y as number)
     }
     
+    return this
+  }
+
+  centerContent(options?: ScrollerWidget.PositionContentOptions) {
+    const scroller = this.scroller.widget
+    if (scroller) {
+      scroller.centerContent(options)
+    } else {
+      this.transform.centerContent(options as Transform.GetContentAreaOptions)
+    }
     return this
   }
 
@@ -1353,13 +1377,6 @@ export class Graph extends Basecoat<EventArgs> {
   }
 
   @Decorator.checkScroller()
-  centerContent(options?: ScrollerWidget.PositionContentOptions) {
-    const scroller = this.scroller.widget!
-    scroller.centerContent(options)
-    return this
-  }
-
-  @Decorator.checkScroller()
   centerCell(cell: Cell, options?: ScrollerWidget.CenterOptions) {
     const scroller = this.scroller.widget!
     scroller.centerCell(cell, options)
@@ -1407,16 +1424,6 @@ export class Graph extends Basecoat<EventArgs> {
   ) {
     const scroller = this.scroller.widget!
     scroller.positionPoint(point, x, y, options)
-    return this
-  }
-
-  @Decorator.checkScroller()
-  zoomToFit(
-    options: Transform.GetContentAreaOptions &
-      Transform.ScaleContentToFitOptions = {},
-  ) {
-    const scroller = this.scroller.widget!
-    scroller.zoomToFit(options)
     return this
   }
 

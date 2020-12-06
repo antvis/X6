@@ -220,30 +220,6 @@ export class TransformManager extends Base {
     return this
   }
 
-  zoomToRect(
-    rect: Rectangle.RectangleLike,
-    options: TransformManager.ScaleContentToFitOptions = {},
-  ) {
-    const area = Rectangle.create(rect)
-    const graph = this.graph
-
-    options.contentArea = area
-    if (options.viewportArea == null) {
-      options.viewportArea = {
-        x: graph.options.x,
-        y: graph.options.y,
-        width: this.options.width,
-        height: this.options.height,
-      }
-    }
-
-    this.scaleContentToFitImpl(options, false)
-    const center = this.graph.localToGraph(area.getCenter())
-    this.centerPoint(center.x, center.y)
-
-    return this
-  }
-
   getRotation() {
     return Dom.matrixToRotation(this.getMatrix())
   }
@@ -471,14 +447,54 @@ export class TransformManager extends Base {
 
   centerPoint(x: number, y: number) {
     const clientSize = this.getComputedSize()
+    const scale = this.getScale()
     const cx = clientSize.width / 2
     const cy = clientSize.height / 2
     const ts = this.getTranslation()
-    const tx = cx - x
-    const ty = cy - y
-    if (tx !== ts.tx || ty !== ts.ty) {
-      this.translate(ts.tx + tx, ts.ty + ty)
+    
+    x = cx - x * scale.sx
+    y = cy - y * scale.sy
+
+    if (ts.tx !== x || ts.ty !== y) {
+      this.translate(x, y)
     }
+  }
+
+  zoomToRect(
+    rect: Rectangle.RectangleLike,
+    options: TransformManager.ScaleContentToFitOptions = {},
+  ) {
+    const area = Rectangle.create(rect)
+    const graph = this.graph
+
+    options.contentArea = area
+    if (options.viewportArea == null) {
+      options.viewportArea = {
+        x: graph.options.x,
+        y: graph.options.y,
+        width: this.options.width,
+        height: this.options.height,
+      }
+    }
+
+    this.scaleContentToFitImpl(options, false)
+    const center = area.getCenter()
+    this.centerPoint(center.x, center.y)
+
+    return this
+  }
+
+  zoomToFit(
+    options: TransformManager.GetContentAreaOptions &
+      TransformManager.ScaleContentToFitOptions = {},
+  ) {
+    return this.zoomToRect(this.getContentArea(options), options)
+  }
+
+  centerContent(options?: TransformManager.GetContentAreaOptions) {
+    const rect = this.graph.getContentArea(options)
+    const center = rect.getCenter()
+    this.centerPoint(center.x, center.y)
   }
 
   @TransformManager.dispose()
