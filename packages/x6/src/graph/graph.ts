@@ -1456,6 +1456,7 @@ export class Graph extends Basecoat<EventArgs> {
     y: number,
     options?: ScrollerWidget.TransitionOptions,
   ): this
+  @Decorator.checkScroller()
   transitionToPoint(
     x: number | Point.PointLike,
     y?: number | ScrollerWidget.TransitionOptions,
@@ -1466,6 +1467,7 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
+  @Decorator.checkScroller()
   transitionToRect(
     rect: Rectangle.RectangleLike,
     options: ScrollerWidget.TransitionToRectOptions = {},
