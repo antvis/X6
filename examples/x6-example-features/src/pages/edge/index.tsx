@@ -20,7 +20,7 @@ class CustomEdgeView extends EdgeView {
 }
 
 CustomEdgeView.config<EdgeView.Options>({ doubleTools: true })
-EdgeView.registry.register('customEdgeView', CustomEdgeView)
+EdgeView.registry.register('customEdgeView', CustomEdgeView, true)
 
 const CustomEdge = Edge.define({
   name: 'custom-edge',
