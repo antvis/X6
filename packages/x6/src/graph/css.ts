@@ -17,7 +17,7 @@ export class CSSManager extends Base {
 }
 
 export namespace CSSManager {
-  let styleElement: HTMLStyleElement
+  let styleElement: HTMLStyleElement | null
 
   export function ensure() {
     if (styleElement == null && !Platform.isApplyingHMR()) {
@@ -36,5 +36,6 @@ export namespace CSSManager {
     if (styleElement && styleElement.parentNode) {
       styleElement.parentNode.removeChild(styleElement)
     }
+    styleElement = null
   }
 }
