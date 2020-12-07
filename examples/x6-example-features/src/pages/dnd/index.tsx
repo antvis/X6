@@ -89,7 +89,17 @@ export default class Example extends React.Component {
 
     graph.centerContent()
 
-    this.dnd = new Dnd({ target: graph })
+    this.dnd = new Dnd({
+      target: graph,
+      getDragNode(node) {
+        console.log('getDragNode')
+        return node.clone()
+      },
+      getDropNode(node) {
+        console.log('getDropNode')
+        return node.clone()
+      },
+    })
   }
 
   onUndo = () => {
