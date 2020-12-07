@@ -252,32 +252,30 @@ export class Dnd extends View {
 
       draggingNode.position(x, y, { silent: true })
 
-      const node = this.options.getDropNode(draggingNode)
-      const ret = this.drop(node, { x: e.clientX, y: e.clientY })
-      const callback = (valid: boolean) => {
-        if (valid) {
+      const ret = this.drop(draggingNode, { x: e.clientX, y: e.clientY })
+      const callback = (node: null | Node) => {
+        if (node) {
           this.onDropped(draggingNode)
+          if (this.targetGraph.options.embedding.enabled && draggingView) {
+            draggingView.setEventData(e, {
+              cell: node,
+              graph: this.targetGraph,
+              candidateEmbedView: this.candidateEmbedView,
+            })
+            draggingView.finalizeEmbedding(e, draggingView.getEventData<any>(e))
+          }
         } else {
           this.onDropInvalid()
-        }
-
-        if (this.targetGraph.options.embedding.enabled && draggingView) {
-          draggingView.setEventData(e, {
-            cell: node,
-            graph: this.targetGraph,
-            candidateEmbedView: this.candidateEmbedView,
-          })
-          draggingView.finalizeEmbedding(e, draggingView.getEventData<any>(e))
         }
 
         this.candidateEmbedView = null
         this.targetModel.stopBatch('dnd')
       }
 
-      if (typeof ret === 'boolean') {
-        callback(ret)
-      } else {
+      if (FunctionExt.isAsync(ret)) {
         ret.then(callback)
+      } else {
+        callback(ret)
       }
     }
   }
@@ -358,12 +356,12 @@ export class Dnd extends View {
     })
   }
 
-  protected drop(node: Node, pos: Point.PointLike) {
-    const targetGraph = this.targetGraph
-    const targetModel = targetGraph.model
-
+  protected drop(draggingNode: Node, pos: Point.PointLike) {
     if (this.isInsideValidArea(pos)) {
+      const targetGraph = this.targetGraph
+      const targetModel = targetGraph.model
       const local = targetGraph.clientToLocal(pos)
+      const node = this.options.getDropNode(draggingNode)
       const bbox = node.getBBox()
       local.x += bbox.x - bbox.width / 2
       local.y += bbox.y - bbox.height / 2
@@ -384,19 +382,21 @@ export class Dnd extends View {
       if (typeof ret === 'boolean') {
         if (ret) {
           targetModel.addCell(node, { stencil: this.cid })
+          return node
         }
-        return ret
+        return null
       }
 
       return FunctionExt.toDeferredBoolean(ret).then((valid) => {
         if (valid) {
           targetModel.addCell(node, { stencil: this.cid })
+          return node
         }
-        return valid
+        return null
       })
     }
 
-    return false
+    return null
   }
 
   protected onRemove() {
