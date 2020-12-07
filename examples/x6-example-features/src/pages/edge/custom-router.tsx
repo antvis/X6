@@ -3,24 +3,28 @@ import { Graph, Point } from '@antv/x6'
 import { Router } from '@antv/x6/es/registry/router'
 import '../index.less'
 
-Router.registry.register('random', (vertices, args, view) => {
-  const BOUNCES = args.bounces || 20
-  const points = vertices.map((p) => Point.create(p))
+Router.registry.register(
+  'random',
+  (vertices, args, view) => {
+    const BOUNCES = args.bounces || 20
+    const points = vertices.map((p) => Point.create(p))
 
-  for (var i = 0; i < BOUNCES; i++) {
-    const sourceCorner = view.sourceBBox.getCenter()
-    const targetCorner = view.targetBBox.getCenter()
-    const randomPoint = Point.random(
-      sourceCorner.x,
-      targetCorner.x,
-      sourceCorner.y,
-      targetCorner.y,
-    )
-    points.push(randomPoint)
-  }
+    for (var i = 0; i < BOUNCES; i++) {
+      const sourceCorner = view.sourceBBox.getCenter()
+      const targetCorner = view.targetBBox.getCenter()
+      const randomPoint = Point.random(
+        sourceCorner.x,
+        targetCorner.x,
+        sourceCorner.y,
+        targetCorner.y,
+      )
+      points.push(randomPoint)
+    }
 
-  return points
-})
+    return points
+  },
+  true,
+)
 
 export default class Example extends React.Component {
   private container: HTMLDivElement

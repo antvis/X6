@@ -32,6 +32,7 @@ Connector.registry.register(
 
     return path
   },
+  true,
 )
 
 export default class Example extends React.Component {
