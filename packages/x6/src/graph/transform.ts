@@ -483,12 +483,12 @@ export class TransformManager extends Base {
     const ts = this.getTranslation()
     const cx = clientSize.width / 2
     const cy = clientSize.height / 2
-    
-    x = typeof x === 'number' ? x : cx
-    y = typeof y === 'number' ? y : cy
-    
-    x = cx - x * scale.sx
-    y = cy - y * scale.sy
+
+    x = typeof x === 'number' ? x : cx // tslint:disable-line
+    y = typeof y === 'number' ? y : cy // tslint:disable-line
+
+    x = cx - x * scale.sx // tslint:disable-line
+    y = cy - y * scale.sy // tslint:disable-line
 
     if (ts.tx !== x || ts.ty !== y) {
       this.translate(x, y)
@@ -512,13 +512,16 @@ export class TransformManager extends Base {
   ) {
     const clientSize = this.getComputedSize()
 
+    // tslint:disable-next-line
     x = NumberExt.normalizePercentage(x, Math.max(0, clientSize.width))
     if (x < 0) {
-      x = clientSize.width + x
+      x = clientSize.width + x // tslint:disable-line
     }
+
+    // tslint:disable-next-line
     y = NumberExt.normalizePercentage(y, Math.max(0, clientSize.height))
     if (y < 0) {
-      y = clientSize.height + y
+      y = clientSize.height + y // tslint:disable-line
     }
 
     const ts = this.getTranslation()
@@ -531,10 +534,7 @@ export class TransformManager extends Base {
     }
   }
 
-  positionRect(
-    rect: Rectangle.RectangleLike,
-    pos: TransformManager.Direction,
-  ) {
+  positionRect(rect: Rectangle.RectangleLike, pos: TransformManager.Direction) {
     const bbox = Rectangle.create(rect)
     switch (pos) {
       case 'center':
@@ -546,17 +546,9 @@ export class TransformManager extends Base {
       case 'right':
         return this.positionPoint(bbox.getRightMiddle(), '100%', '50%')
       case 'bottom-right':
-        return this.positionPoint(
-          bbox.getBottomRight(),
-          '100%',
-          '100%',
-        )
+        return this.positionPoint(bbox.getBottomRight(), '100%', '100%')
       case 'bottom':
-        return this.positionPoint(
-          bbox.getBottomCenter(),
-          '50%',
-          '100%',
-        )
+        return this.positionPoint(bbox.getBottomCenter(), '50%', '100%')
       case 'bottom-left':
         return this.positionPoint(bbox.getBottomLeft(), 0, '100%')
       case 'left':
@@ -568,10 +560,7 @@ export class TransformManager extends Base {
     }
   }
 
-  positionCell(
-    cell: Cell,
-    pos: TransformManager.Direction,
-  ) {
+  positionCell(cell: Cell, pos: TransformManager.Direction) {
     const bbox = cell.getBBox()
     return this.positionRect(bbox, pos)
   }
