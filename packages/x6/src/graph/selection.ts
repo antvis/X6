@@ -8,6 +8,7 @@ import { Base } from './base'
 export class SelectionManager extends Base {
   public widget: Selection
   private movedMap = new WeakMap<Cell, boolean>()
+  private unselectMap = new WeakMap<Cell, boolean>()
 
   protected get widgetOptions() {
     return this.options.selecting
@@ -86,7 +87,11 @@ export class SelectionManager extends Base {
       if (options.multiple === false || (!e.ctrlKey && !e.metaKey)) {
         this.reset(cell)
       } else {
-        this.select(cell)
+        if (this.unselectMap.has(cell)) {
+          this.unselectMap.delete(cell)
+        } else {
+          this.select(cell)
+        }
       }
     }
 
@@ -97,6 +102,7 @@ export class SelectionManager extends Base {
     if (!this.disabled) {
       if (this.widgetOptions.multiple !== false && (e.ctrlKey || e.metaKey)) {
         this.unselect(cell)
+        this.unselectMap.set(cell, true)
       }
     }
   }
