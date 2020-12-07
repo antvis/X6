@@ -163,6 +163,14 @@ const graph = new Graph({
 })
 ```
 
+### showNodeSelectionBox
+
+是否显示节点的选择框，默认为 `false`，建议使用下面的样式定制方法去定制自己的选择框样式。
+
+### showEdgeSelectionBox
+
+是否显示边的选择框，默认为 `false`，建议使用下面的样式定制方法去定制自己的选择框样式。
+
 ## 样式定制
 
 上面介绍了通过 [className](#classname) 选项来定制样式，另外也可以通过覆盖以下几个 CSS 样式定义来定制，默认的样式定义[参考这里](https://github.com/antvis/X6/blob/master/packages/x6/src/addon/selection/index.less)。
