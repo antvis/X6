@@ -1,3 +1,10 @@
+## @antv/x6 [1.3.6](https://github.com/antvis/x6/compare/@antv/x6@1.3.5...@antv/x6@1.3.6) (2020-12-07)
+
+
+### Bug Fixes
+
+* 🐛 should undelegate document events on dropped ([8696b45](https://github.com/antvis/x6/commit/8696b45d8ad0022af7c649ef2882cffb8dd5cc4d)), closes [#360](https://github.com/antvis/x6/issues/360)
+
 ## @antv/x6 [1.3.5](https://github.com/antvis/x6/compare/@antv/x6@1.3.4...@antv/x6@1.3.5) (2020-12-07)
 
 
