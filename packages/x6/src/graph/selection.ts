@@ -90,7 +90,11 @@ export class SelectionManager extends Base {
         if (this.unselectMap.has(cell)) {
           this.unselectMap.delete(cell)
         } else {
-          this.select(cell)
+          if (this.isSelected(cell)) {
+            this.unselect(cell)
+          } else {
+            this.select(cell)
+          }
         }
       }
     }
