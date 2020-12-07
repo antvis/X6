@@ -197,18 +197,43 @@ export function appendTo(elem: Element, target: Element) {
 }
 
 // Determines whether a node is an HTML node
-export function isHTMLElement(
-  elem: any
-): elem is HTMLElement {
+export function isHTMLElement(elem: any): elem is HTMLElement {
   try {
     // Using W3 DOM2 (works for FF, Opera and Chrome)
     return elem instanceof HTMLElement
-  } catch(e) {
+  } catch (e) {
     // Browsers not supporting W3 DOM2 don't have HTMLElement and
     // an exception is thrown and we end up here. Testing some
     // properties that all elements have (works on IE7)
-    return (typeof elem === 'object') &&
-      (elem.nodeType === 1) && (typeof elem.style === 'object') &&
-      (typeof elem.ownerDocument === 'object')
+    return (
+      typeof elem === 'object' &&
+      elem.nodeType === 1 &&
+      typeof elem.style === 'object' &&
+      typeof elem.ownerDocument === 'object'
+    )
+  }
+}
+
+export function snapshoot(elem: Element) {
+  const cloned = elem.cloneNode() as Element
+  elem.childNodes.forEach((child) => cloned.appendChild(child))
+
+  return () => {
+    // remove all children
+    empty(elem)
+
+    // remove all attributes
+    while (elem.attributes.length > 0) {
+      elem.removeAttribute(elem.attributes[0].name)
+    }
+
+    // restore attributes
+    for (let i = 0, l = cloned.attributes.length; i < l; i += 1) {
+      const attr = cloned.attributes[i]
+      elem.setAttribute(attr.name, attr.value)
+    }
+
+    // restore children
+    cloned.childNodes.forEach((child) => elem.appendChild(child))
   }
 }
