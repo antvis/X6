@@ -1,3 +1,10 @@
+## @antv/x6 [1.3.4](https://github.com/antvis/x6/compare/@antv/x6@1.3.3...@antv/x6@1.3.4) (2020-12-07)
+
+
+### Bug Fixes
+
+* 🐛 type define ([47e6a1c](https://github.com/antvis/x6/commit/47e6a1c4d7775b38b608e8f5fd1759b932744ee4))
+
 ## @antv/x6 [1.3.3](https://github.com/antvis/x6/compare/@antv/x6@1.3.2...@antv/x6@1.3.3) (2020-12-07)
 
 
