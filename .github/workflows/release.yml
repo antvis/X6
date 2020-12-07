@@ -38,12 +38,14 @@ jobs:
         run: yarn bootstrap
       - name: ✅　Test
         run: yarn test
+
       - name: 🔑　Generate Token
         uses: bubkoo/use-app-token@v1
         with:
           app_id: ${{ secrets.APP_ID }}
           private_key: ${{ secrets.PRIVATE_KEY }}
           env_name: bot_token
+
       - name: 📦　Semantic Release
         run: |
           sh ./scripts/release
@@ -55,3 +57,10 @@ jobs:
           GIT_AUTHOR_EMAIL: x6-bot@users.noreply.github.com
           GIT_COMMITTER_NAME: x6-bot
           GIT_COMMITTER_EMAIL: x6-bot@users.noreply.github.com
+
+      - name: Repository Dispatch
+        if: github.ref == 'refs/heads/master'
+        uses: peter-evans/repository-dispatch@v1
+        with:
+          token: ${{ env.bot_token }}
+          event-type: released
