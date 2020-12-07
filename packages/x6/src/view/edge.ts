@@ -1998,21 +1998,26 @@ export class EdgeView<
     this.setEventData<EventData.EdgeDragging>(e, {
       x,
       y,
+      moving: false,
       action: 'drag-edge',
-    })
-    this.addClass('edge-moving')
-    this.notify('edge:move', {
-      e,
-      x,
-      y,
-      view: this,
-      cell: this.cell,
-      edge: this.cell,
     })
   }
 
   protected dragEdge(e: JQuery.MouseMoveEvent, x: number, y: number) {
     const data = this.getEventData<EventData.EdgeDragging>(e)
+    if (!data.moving) {
+      data.moving = true
+      this.addClass('edge-moving')
+      this.notify('edge:move', {
+        e,
+        x,
+        y,
+        view: this,
+        cell: this.cell,
+        edge: this.cell,
+      })
+    }
+
     this.cell.translate(x - data.x, y - data.y, { ui: true })
     this.setEventData<Partial<EventData.EdgeDragging>>(e, { x, y })
     this.notify('edge:moving', {
@@ -2026,15 +2031,19 @@ export class EdgeView<
   }
 
   protected stopEdgeDragging(e: JQuery.MouseUpEvent, x: number, y: number) {
-    this.removeClass('edge-moving')
-    this.notify('edge:moved', {
-      e,
-      x,
-      y,
-      view: this,
-      cell: this.cell,
-      edge: this.cell,
-    })
+    const data = this.getEventData<EventData.EdgeDragging>(e)
+    if (data.moving) {
+      this.removeClass('edge-moving')
+      this.notify('edge:moved', {
+        e,
+        x,
+        y,
+        view: this,
+        cell: this.cell,
+        edge: this.cell,
+      })
+    }
+    data.moving = false
   }
 
   // #endregion
@@ -2685,7 +2694,7 @@ export namespace EdgeView {
     }
     'edge:unhighlight': EventArgs['edge:highlight']
 
-    'edge:move': PositionEventArgs<JQuery.MouseDownEvent>
+    'edge:move': PositionEventArgs<JQuery.MouseMoveEvent>
     'edge:moving': PositionEventArgs<JQuery.MouseMoveEvent>
     'edge:moved': PositionEventArgs<JQuery.MouseUpEvent>
   }
@@ -2696,6 +2705,7 @@ namespace EventData {
 
   export interface EdgeDragging {
     action: 'drag-edge'
+    moving: boolean
     x: number
     y: number
   }

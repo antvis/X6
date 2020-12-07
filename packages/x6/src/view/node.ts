@@ -1040,18 +1040,9 @@ export class NodeView<
       action: 'move',
     })
 
-    targetView.addClass('node-moving')
-    this.notify('node:move', {
-      e,
-      x,
-      y,
-      view: targetView,
-      cell: targetView.cell,
-      node: targetView.cell,
-    })
-
     const position = Point.create(targetView.cell.getPosition())
     targetView.setEventData<EventData.MovingTargetNode>(e, {
+      moving: false,
       offset: position.diff(x, y),
       restrict: this.graph.hook.getRestrictArea(targetView),
     })
@@ -1064,6 +1055,21 @@ export class NodeView<
     const data = this.getEventData<EventData.MovingTargetNode>(e)
     const offset = data.offset
     const restrict = data.restrict
+
+    if (!data.moving) {
+      data.moving = true
+      const moving = this.getEventData<EventData.Moving>(e)
+      const view = moving.targetView
+      view.addClass('node-moving')
+      this.notify('node:move', {
+        e,
+        x,
+        y,
+        view,
+        cell: view.cell,
+        node: view.cell,
+      })
+    }
 
     const scroller = this.graph.scroller.widget
     if (scroller) {
@@ -1093,17 +1099,22 @@ export class NodeView<
       this.finalizeEmbedding(e, data)
     }
 
-    const meta = this.getEventData<EventData.Moving>(e)
-    const view = meta.targetView
-    view.removeClass('node-moving')
-    this.notify('node:moved', {
-      e,
-      x,
-      y,
-      view,
-      cell: view.cell,
-      node: view.cell,
-    })
+    if (data.moving) {
+      const meta = this.getEventData<EventData.Moving>(e)
+      const view = meta.targetView
+      view.removeClass('node-moving')
+      this.notify('node:moved', {
+        e,
+        x,
+        y,
+        view,
+        cell: view.cell,
+        node: view.cell,
+      })
+    }
+
+    data.moving = false
+    data.embedding = false
   }
 
   // #endregion
@@ -1180,7 +1191,7 @@ export namespace NodeView {
     'node:magnet:contextmenu': PositionEventArgs<JQuery.ContextMenuEvent> &
       MagnetEventArgs
 
-    'node:move': TranslateEventArgs<JQuery.MouseDownEvent>
+    'node:move': TranslateEventArgs<JQuery.MouseMoveEvent>
     'node:moving': TranslateEventArgs<JQuery.MouseMoveEvent>
     'node:moved': TranslateEventArgs<JQuery.MouseUpEvent>
 
@@ -1221,6 +1232,7 @@ namespace EventData {
   }
 
   export interface MovingTargetNode {
+    moving: boolean
     offset: Point.PointLike
     restrict?: Rectangle.RectangleLike | null
     embedding?: boolean
