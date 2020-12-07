@@ -1,3 +1,14 @@
+## @antv/x6-sites [1.4.4](https://github.com/antvis/x6/compare/@antv/x6-sites@1.4.3...@antv/x6-sites@1.4.4) (2020-12-07)
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.3.0
+* **@antv/x6-react-shape:** upgraded to 1.1.8
+
 ## @antv/x6-sites [1.4.3](https://github.com/antvis/x6/compare/@antv/x6-sites@1.4.2...@antv/x6-sites@1.4.3) (2020-12-04)
 
 
