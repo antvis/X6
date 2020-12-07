@@ -1,3 +1,21 @@
+## @antv/x6-example-features [1.5.5](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.5.4...@antv/x6-example-features@1.5.5) (2020-12-07)
+
+
+### Bug Fixes
+
+* 🐛 registry ([26fbbc3](https://github.com/antvis/x6/commit/26fbbc3b868650a7f908d0e097c33bb2c9f2370f))
+* 🐛 registry ([e30583a](https://github.com/antvis/x6/commit/e30583a65102fc297db882e393b4f96e9ff924cf))
+* 🐛 unselect cell by clicking cell and holding on the meta key ([41624d6](https://github.com/antvis/x6/commit/41624d6591e57274cad49a0c77032c5ce7380cb9))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.3.5
+* **@antv/x6-react-shape:** upgraded to 1.1.13
+
 ## @antv/x6-example-features [1.5.4](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.5.3...@antv/x6-example-features@1.5.4) (2020-12-07)
 
 
