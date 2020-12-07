@@ -1,3 +1,20 @@
+## @antv/x6-example-features [1.5.6](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.5.5...@antv/x6-example-features@1.5.6) (2020-12-07)
+
+
+### Bug Fixes
+
+* 🐛 registry ([0464e5e](https://github.com/antvis/x6/commit/0464e5ea7c7feb8a340dd8e48104696343afbdc0))
+* 🐛 registry ([7487cd4](https://github.com/antvis/x6/commit/7487cd478482748fb5fea05806474c9a622f9a2f))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.3.6
+* **@antv/x6-react-shape:** upgraded to 1.1.14
+
 ## @antv/x6-example-features [1.5.5](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.5.4...@antv/x6-example-features@1.5.5) (2020-12-07)
 
 
