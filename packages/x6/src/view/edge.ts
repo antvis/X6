@@ -1463,7 +1463,7 @@ export class EdgeView<
     }
 
     if (rorate) {
-      props.rotate = 'auto'
+      props.rotate = rorate
     }
 
     if (reversed) {
