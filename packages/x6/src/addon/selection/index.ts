@@ -290,7 +290,7 @@ export class Selection extends View<Selection.EventArgs> {
         let height = this.$container.height()!
         const offset = this.$container.offset()!
         const origin = graph.pageToLocal(offset.left, offset.top)
-        const scale = graph.scale()
+        const scale = graph.transform.getScale()
         width = width / scale.sx
         height = height / scale.sy
         const rect = new Rectangle(origin.x, origin.y, width, height)
@@ -323,7 +323,6 @@ export class Selection extends View<Selection.EventArgs> {
   }
 
   protected onSelectionBoxMouseDown(evt: JQuery.MouseDownEvent) {
-    // evt.stopPropagation()
     const e = this.normalizeEvent(evt)
 
     if (this.options.movable) {
@@ -660,9 +659,7 @@ export class Selection extends View<Selection.EventArgs> {
     if (this.boxCount) {
       this.hide()
       this.$boxes.each((_, elem) => {
-        const cellId = this.$(elem)
-          .remove()
-          .attr('data-cell-id')
+        const cellId = this.$(elem).remove().attr('data-cell-id')
         const cell = this.collection.get(cellId)
         if (cell) {
           this.createSelectionBox(cell)
