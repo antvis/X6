@@ -286,12 +286,6 @@ graph.addEdge({
 })
 
 // 引入样式
-// 我们用 insert-css 演示引入自定义样式
-// 推荐将样式添加到自己的样式文件中
-// 若拷贝官方代码，别忘了 npm install insert-css
-// 我们用 insert-css 演示引入自定义样式
-// 推荐将样式添加到自己的样式文件中
-// 若拷贝官方代码，别忘了 npm install insert-css
 insertCss(`
 .x6-node [magnet="true"] {
   cursor: crosshair;
