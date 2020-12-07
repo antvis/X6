@@ -34,8 +34,8 @@
     "@ant-design/pro-layout": "^5.0.12",
     "@umijs/preset-react": "1.x",
     "@umijs/test": "^3.2.19",
-    "lint-staged": "^10.0.7",
-    "prettier": "^2.1.2",
+    "lint-staged": "^10.5.3",
+    "prettier": "^2.2.1",
     "umi": "^3.2.19",
     "yorkie": "^2.0.0"
   }
