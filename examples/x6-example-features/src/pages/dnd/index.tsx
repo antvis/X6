@@ -91,6 +91,10 @@ export default class Example extends React.Component {
 
     this.dnd = new Dnd({
       target: graph,
+      animation: true,
+      // validateNode: () => {
+      //   return false
+      // },
       getDragNode(node) {
         console.log('getDragNode')
         return node.clone()
