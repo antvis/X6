@@ -40,15 +40,7 @@ export class GraphView extends View {
     this.decorator = selectors.decorator as SVGGElement
     this.overlay = selectors.overlay as SVGGElement
     this.container = this.options.container
-
-    const cloned = this.options.container.cloneNode(true)
-    this.restore = () => {
-      const parentNode = this.container.parentNode
-      if (parentNode) {
-        parentNode.replaceChild(cloned, this.container)
-      }
-      this.restore = () => {}
-    }
+    this.restore = Dom.snapshoot(this.container)
 
     this.$(this.container)
       .addClass(this.prefixClassName('graph'))
@@ -492,6 +484,7 @@ export class GraphView extends View {
     this.undelegateEvents()
     this.undelegateDocumentEvents()
     this.restore()
+    this.restore = () => {}
   }
 }
 
