@@ -1,6 +1,7 @@
 import React from 'react'
 import { Graph, Node, Color } from '@antv/x6'
 import '../index.less'
+import './dnd.less'
 
 export default class Example extends React.Component {
   private container: HTMLDivElement
@@ -11,6 +12,10 @@ export default class Example extends React.Component {
       width: 880,
       height: 600,
       grid: true,
+      selecting: {
+        enabled: true,
+        // showNodeSelectionBox: true,
+      },
       embedding: {
         enabled: true,
         findParent({ node }) {
