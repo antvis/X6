@@ -46,7 +46,8 @@
     "coveralls": "cat ./test/coverage/lcov.info | coveralls",
     "pretest": "run-p clean:coverage",
     "prepare": "run-s build:version test build",
-    "precommit": "lint-staged"
+    "precommit": "lint-staged",
+    "postpublish": "run-s build:version"
   },
   "lint-staged": {
     "src/**/*.less": [
