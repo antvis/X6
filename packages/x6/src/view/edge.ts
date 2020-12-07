@@ -1419,20 +1419,34 @@ export class EdgeView<
     token: string | SVGElement,
     options?:
       | number
-      | {
+      | ({
           duration?: number
           reversed?: boolean
           selector?: string
-        },
+          rotate?: boolean | string
+          // https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/calcMode
+          timing?: 'linear' | 'discrete' | 'paced' | 'spline'
+        } & KeyValue<string>),
     callback?: () => any,
   ) {
     let duration
     let reversed
     let selector
+    let rorate = 'auto'
+    let timing = 'linear'
+
     if (typeof options === 'object') {
       duration = options.duration
       reversed = options.reversed === true
       selector = options.selector
+      if (options.rotate === false) {
+        rorate = ''
+      } else if (options.rotate) {
+        rorate = options.rotate === true ? 'auto' : options.rotate
+      }
+      if (options.timing) {
+        timing = options.timing
+      }
     } else {
       duration = options
       reversed = false
@@ -1444,13 +1458,29 @@ export class EdgeView<
     const props: { [key: string]: string } = {
       dur: `${duration}ms`,
       repeatCount: '1',
-      calcMode: 'linear',
+      calcMode: timing,
       fill: 'freeze',
+    }
+
+    if (rorate) {
+      props.rotate = 'auto'
     }
 
     if (reversed) {
       props.keyPoints = '1;0'
       props.keyTimes = '0;1'
+    }
+
+    if (typeof options === 'object') {
+      const {
+        duration,
+        reversed,
+        selector,
+        rotate,
+        timing,
+        ...others
+      } = options
+      Object.keys(others).forEach((key) => (props[key] = others[key]))
     }
 
     let path
