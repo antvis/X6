@@ -17,8 +17,8 @@ const Child = Shape.Rect.define({
   },
 })
 
-Node.registry.register('embedding.parent', Parent)
-Node.registry.register('embedding.child', Child)
+Node.registry.register('embedding.parent', Parent, true)
+Node.registry.register('embedding.child', Child, true)
 
 export default class Example extends React.Component {
   private container: HTMLDivElement
