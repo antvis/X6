@@ -1,3 +1,11 @@
+## @antv/x6 [1.3.1](https://github.com/antvis/x6/compare/@antv/x6@1.3.0...@antv/x6@1.3.1) (2020-12-07)
+
+
+### Bug Fixes
+
+* 🐛 auto rotate token by default when animate along path ([75d4b23](https://github.com/antvis/x6/commit/75d4b239e394629744e5a694ac9e6a18c7cee697))
+* 🐛 typos ([d6eb46a](https://github.com/antvis/x6/commit/d6eb46a97c40daa3725d85f7a9ea1a7317d0afda))
+
 # @antv/x6 [1.3.0](https://github.com/antvis/x6/compare/@antv/x6@1.2.3...@antv/x6@1.3.0) (2020-12-07)
 
 
