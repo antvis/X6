@@ -1,3 +1,19 @@
+## @antv/x6-example-features [1.5.3](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.5.2...@antv/x6-example-features@1.5.3) (2020-12-07)
+
+
+### Bug Fixes
+
+* 🐛 do not trigger getDropNode when drop at invalid area ([503fe7c](https://github.com/antvis/x6/commit/503fe7c3cfb3a069dc1a112f75251bd03220f407))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.3.3
+* **@antv/x6-react-shape:** upgraded to 1.1.11
+
 ## @antv/x6-example-features [1.5.2](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.5.1...@antv/x6-example-features@1.5.2) (2020-12-07)
 
 
