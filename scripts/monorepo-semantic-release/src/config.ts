@@ -114,7 +114,8 @@ export namespace Config {
             'package.json',
             'CHANGELOG.md',
             'README.md',
-            'src/global/version.ts',
+            '**/src/global/version.ts',
+            '!node_modules/**/*.*',
           ],
           message:
             'chore(release): <%= nextRelease.gitTag %> [skip ci]\n\n<%= nextRelease.notes %>',
