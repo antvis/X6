@@ -1,3 +1,20 @@
+## @antv/x6-sites [1.4.8](https://github.com/antvis/x6/compare/@antv/x6-sites@1.4.7...@antv/x6-sites@1.4.8) (2020-12-07)
+
+
+### Bug Fixes
+
+* 🐛 remove comment ([2f81e5c](https://github.com/antvis/x6/commit/2f81e5cbd06c5ab8b7064b596446149f4e3a4c21))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.3.4
+* **@antv/x6-react-components:** upgraded to 1.0.1
+* **@antv/x6-react-shape:** upgraded to 1.1.12
+
 ## @antv/x6-sites [1.4.7](https://github.com/antvis/x6/compare/@antv/x6-sites@1.4.6...@antv/x6-sites@1.4.7) (2020-12-07)
 
 
