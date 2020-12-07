@@ -2,19 +2,23 @@ import React from 'react'
 import { Graph } from '@antv/x6'
 import '../index.less'
 
-Graph.registerPortLayout('sin', (portsPositionArgs, elemBBox) => {
-  return portsPositionArgs.map((_, index) => {
-    const step = -Math.PI / 8
-    const y = Math.sin(index * step) * 50
-    return {
-      position: {
-        x: index * 12,
-        y: y + elemBBox.height,
-      },
-      angle: 0,
-    }
-  })
-})
+Graph.registerPortLayout(
+  'sin',
+  (portsPositionArgs, elemBBox) => {
+    return portsPositionArgs.map((_, index) => {
+      const step = -Math.PI / 8
+      const y = Math.sin(index * step) * 50
+      return {
+        position: {
+          x: index * 12,
+          y: y + elemBBox.height,
+        },
+        angle: 0,
+      }
+    })
+  },
+  true,
+)
 
 export default class Example extends React.Component {
   private container: HTMLDivElement
