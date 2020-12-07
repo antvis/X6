@@ -289,6 +289,7 @@ export class Dnd extends View {
       this.padding = null
       this.snapOffset = null
       this.originOffset = null
+      this.undelegateDocumentEvents()
     }
   }
 
