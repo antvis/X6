@@ -1,8 +1,8 @@
-export function isAsyncLike(obj: any) {
+export function isAsyncLike<T>(obj: any): obj is Promise<T> {
   return typeof obj === 'object' && obj.then && typeof obj.then === 'function'
 }
 
-export function isAsync(obj: any) {
+export function isAsync<T>(obj: any): obj is Promise<T> {
   return obj != null && (obj instanceof Promise || isAsyncLike(obj))
 }
 
