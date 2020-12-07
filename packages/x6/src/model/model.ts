@@ -186,7 +186,7 @@ export class Model extends Basecoat<Model.EventArgs> {
     }
 
     if (cell.zIndex == null) {
-      cell.zIndex = this.getMaxZIndex() + 1
+      cell.setZIndex(this.getMaxZIndex() + 1, { silent: true })
     }
 
     return cell
