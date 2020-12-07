@@ -1,3 +1,10 @@
+## @antv/x6 [1.3.2](https://github.com/antvis/x6/compare/@antv/x6@1.3.1...@antv/x6@1.3.2) (2020-12-07)
+
+
+### Bug Fixes
+
+* 🐛 do not trigger change:zIndex when auto set zIndex at adding ([e7bd44f](https://github.com/antvis/x6/commit/e7bd44f0018b4e2d72457e56fd0947566658380c))
+
 ## @antv/x6 [1.3.1](https://github.com/antvis/x6/compare/@antv/x6@1.3.0...@antv/x6@1.3.1) (2020-12-07)
 
 
