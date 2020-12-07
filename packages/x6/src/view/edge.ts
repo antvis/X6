@@ -1423,7 +1423,8 @@ export class EdgeView<
           duration?: number
           reversed?: boolean
           selector?: string
-          rotate?: boolean | string
+          // https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/rotate
+          rotate?: boolean | number | 'auto' | 'auto-reverse'
           // https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/calcMode
           timing?: 'linear' | 'discrete' | 'paced' | 'spline'
         } & KeyValue<string>),
@@ -1441,9 +1442,12 @@ export class EdgeView<
       selector = options.selector
       if (options.rotate === false) {
         rorate = ''
-      } else if (options.rotate) {
-        rorate = options.rotate === true ? 'auto' : options.rotate
+      } else if (options.rotate === true) {
+        rorate = 'auto'
+      } else if (options.rotate != null) {
+        rorate = `${options.rotate}`
       }
+
       if (options.timing) {
         timing = options.timing
       }
