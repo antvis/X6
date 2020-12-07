@@ -1,3 +1,23 @@
+# @antv/x6 [1.3.0](https://github.com/antvis/x6/compare/@antv/x6@1.2.3...@antv/x6@1.3.0) (2020-12-07)
+
+
+### Bug Fixes
+
+* 🐛 auto rotate token ([cc08ee0](https://github.com/antvis/x6/commit/cc08ee0e897e561d744a4ba3f160164f7433b7d9))
+* 🐛 do not trigger cell:move event when not moved ([db58d33](https://github.com/antvis/x6/commit/db58d335ade5a976fb99178d2997be7bad206f57)), closes [#355](https://github.com/antvis/x6/issues/355)
+* 🐛 lint errors ([3a1ef7f](https://github.com/antvis/x6/commit/3a1ef7f213ccc3343a1eea5479cce5e7e2be0957))
+* 🐛 ref should be null after clean ([b655075](https://github.com/antvis/x6/commit/b65507550d37889bc23c0c7ab4eb8bd538a3aeda))
+* 🐛 restore dom after disposed ([d8e22f1](https://github.com/antvis/x6/commit/d8e22f1ce31299ad22255c48d62bccc5cf642d44))
+
+
+### Features
+
+* ✨ add dom snapshoot method ([ad21955](https://github.com/antvis/x6/commit/ad2195522b70f3b01a6672739f3a989c35db63d0))
+* add demo for tranform method ([a599300](https://github.com/antvis/x6/commit/a599300536751c3f4a360bdae36258e5014cf137))
+* compatible with zoom in graph and scroller ([9e9365f](https://github.com/antvis/x6/commit/9e9365fa7090942940481a354086ae18b4b59c68))
+* compatible with zoomFit centerContent ([979d207](https://github.com/antvis/x6/commit/979d207a7fd0c80af769566d09e27a6438f59491))
+* compatible with zoomRect zoomTo centerPoint ([71e5cc4](https://github.com/antvis/x6/commit/71e5cc47bf677922933e944c1da808ca40f48c63))
+
 ## @antv/x6 [1.2.3](https://github.com/antvis/x6/compare/@antv/x6@1.2.2...@antv/x6@1.2.3) (2020-12-04)
 
 
