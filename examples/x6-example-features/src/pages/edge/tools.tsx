@@ -3,11 +3,15 @@ import { Graph, Util, Timing } from '@antv/x6'
 import '../index.less'
 
 function registerEdgeTool(name: string, inherit: string, options: any) {
-  Graph.registerEdgeTool(name, {
+  Graph.registerEdgeTool(
     name,
-    inherit,
-    ...options,
-  })
+    {
+      name,
+      inherit,
+      ...options,
+    },
+    true,
+  )
 }
 
 registerEdgeTool('rectangle-source-arrowhead', 'source-arrowhead', {

@@ -66,7 +66,7 @@ const CustomEdge = Edge.define({
   },
 })
 
-Edge.registry.register('customEdge', CustomEdge)
+Edge.registry.register('customEdge', CustomEdge, true)
 
 export default class Example extends React.Component {
   private container: HTMLDivElement

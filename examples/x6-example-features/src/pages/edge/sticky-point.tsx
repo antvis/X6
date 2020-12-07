@@ -2,10 +2,14 @@ import React from 'react'
 import { Graph, Node } from '@antv/x6'
 import '../index.less'
 
-Node.registry.register('rectText', {
-  inherit: 'rect',
-  attrs: { body: { stroke: 'none' } },
-})
+Node.registry.register(
+  'rectText',
+  {
+    inherit: 'rect',
+    attrs: { body: { stroke: 'none' } },
+  },
+  true,
+)
 
 export default class Example extends React.Component {
   private container: HTMLDivElement
