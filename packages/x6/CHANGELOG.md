@@ -1,3 +1,11 @@
+## @antv/x6 [1.3.5](https://github.com/antvis/x6/compare/@antv/x6@1.3.4...@antv/x6@1.3.5) (2020-12-07)
+
+
+### Bug Fixes
+
+* 🐛 unselect cell by clicking cell and holding on the meta key ([41624d6](https://github.com/antvis/x6/commit/41624d6591e57274cad49a0c77032c5ce7380cb9))
+* 🐛 unselect cell by clicking the selection box and hold on the meta key ([acc9c98](https://github.com/antvis/x6/commit/acc9c98aa0da9d5dd7108d2af2a955e2236e2385)), closes [#364](https://github.com/antvis/x6/issues/364)
+
 ## @antv/x6 [1.3.4](https://github.com/antvis/x6/compare/@antv/x6@1.3.3...@antv/x6@1.3.4) (2020-12-07)
 
 
