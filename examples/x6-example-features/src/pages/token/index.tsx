@@ -62,13 +62,22 @@ export default class Example extends React.Component {
       if (cell.isEdge()) {
         const edgeView = graph.findViewByCell(cell) as EdgeView
         if (edgeView) {
-          const token = Dom.createVector('circle', { r: 7, fill: 'green' })
-          const targetCell = cell.getTargetCell()
-          edgeView.sendToken(token.node, 1000, function () {
-            if (targetCell) {
-              graph.trigger('signal', targetCell)
-            }
+          const token = Dom.createVector('path', {
+            d: 'M 0 -6 10 0 0 6 Z',
+            fill: 'green',
           })
+          const targetCell = cell.getTargetCell()
+          edgeView.sendToken(
+            token.node,
+            {
+              duration: 1000,
+            },
+            function () {
+              if (targetCell) {
+                graph.trigger('signal', targetCell)
+              }
+            },
+          )
         }
       } else {
         flash(cell)
