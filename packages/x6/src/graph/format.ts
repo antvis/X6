@@ -160,7 +160,7 @@ export class FormatManager extends Base {
 
     if (options.serializeImages) {
       const deferrals = vSVG.find('image').map((vImage) => {
-        return new Promise((resolve) => {
+        return new Promise<void>((resolve) => {
           const url = vImage.attr('xlink:href') || vImage.attr('href')
           DataUri.imageToDataUri(url, (err, dataUri) => {
             if (!err && dataUri) {
