@@ -1,3 +1,24 @@
+# @antv/x6-example-features [1.5.0](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.4.1...@antv/x6-example-features@1.5.0) (2020-12-07)
+
+
+### Bug Fixes
+
+* 🐛 auto rotate token ([cc08ee0](https://github.com/antvis/x6/commit/cc08ee0e897e561d744a4ba3f160164f7433b7d9))
+
+
+### Features
+
+* add demo for tranform method ([a599300](https://github.com/antvis/x6/commit/a599300536751c3f4a360bdae36258e5014cf137))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.3.0
+* **@antv/x6-react-shape:** upgraded to 1.1.8
+
 ## @antv/x6-example-features [1.4.1](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.4.0...@antv/x6-example-features@1.4.1) (2020-12-04)
 
 
