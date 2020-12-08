@@ -1046,10 +1046,6 @@ export class Cell<
           this.eachChild((child) => child.remove(options))
         }
 
-        if (this.hasTools()) {
-          this.removeTools()
-        }
-
         if (this.model) {
           this.model.removeCell(this, options)
         }

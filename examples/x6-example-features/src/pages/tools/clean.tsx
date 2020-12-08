@@ -44,7 +44,7 @@ export default class Example extends React.Component {
     })
 
     console.log(edge)
-    // graph.clearCells()
+    graph.clearCells()
     // edge.removeTools()
   }
 
