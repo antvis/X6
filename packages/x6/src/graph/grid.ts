@@ -1,5 +1,5 @@
 import * as Registry from '../registry'
-import { Dom } from '../util'
+import { Dom, Vector } from '../util'
 import { Base } from './base'
 
 export class GridManager extends Base {
@@ -101,10 +101,10 @@ export class GridManager extends Base {
       if (!grid.has(id)) {
         grid.add(
           id,
-          Dom.createVector(
+          Vector.create(
             'pattern',
             { id, patternUnits: 'userSpaceOnUse' },
-            Dom.createVectors(markup),
+            Vector.createVectors(markup),
           ).node,
         )
       }

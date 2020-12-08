@@ -2,20 +2,18 @@ import { Size } from '../../types'
 import { NumberExt } from '../number'
 import { Text } from '../text'
 import { attr } from './attr'
-import { Vectorizer } from './vectorizer'
+import { Vector } from '../vector'
 import { createSvgElement, empty, append } from './elem'
 
 function createTextPathNode(
   attrs: { d?: string; 'xlink:href'?: string },
   elem: SVGElement,
 ) {
-  const vel = Vectorizer.createVector(elem)
-  const textPath = Vectorizer.createVector('textPath')
+  const vel = Vector.create(elem)
+  const textPath = Vector.create('textPath')
   const d = attrs.d
   if (d && attrs['xlink:href'] === undefined) {
-    const path = Vectorizer.createVector('path')
-      .attr('d', d)
-      .appendTo(vel.defs())
+    const path = Vector.create('path').attr('d', d).appendTo(vel.defs())
     textPath.attr('xlink:href', `#${path.id}`)
   }
 
@@ -50,7 +48,7 @@ function annotateTextLine(
     let fontSize = null
     if (typeof annotation === 'object') {
       const annotationAttrs = annotation.attrs
-      const vTSpan = Vectorizer.createVector('tspan', annotationAttrs)
+      const vTSpan = Vector.create('tspan', annotationAttrs)
       tspanNode = vTSpan.node
 
       let t = annotation.t

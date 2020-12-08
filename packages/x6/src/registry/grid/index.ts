@@ -1,4 +1,4 @@
-import { Dom } from '../../util'
+import { Dom, Vector } from '../../util'
 import { KeyValue } from '../../types'
 import { Registry } from '../registry'
 import * as patterns from './main'
@@ -9,7 +9,7 @@ export class Grid {
 
   constructor() {
     this.patterns = {}
-    this.root = Dom.createVector(
+    this.root = Vector.create(
       Dom.createSvgDocument(),
       {
         width: '100%',
@@ -27,7 +27,7 @@ export class Grid {
 
     this.patterns[id] = elem
 
-    Dom.createVector('rect', {
+    Vector.create('rect', {
       width: '100%',
       height: '100%',
       fill: `url(#${id})`,

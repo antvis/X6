@@ -1,6 +1,6 @@
 import { Size, KeyValue } from '../types'
 import { Rectangle } from '../geometry'
-import { NumberExt, $, Dom, Unit } from '../util'
+import { NumberExt, $, Dom, Unit, Vector } from '../util'
 import { Base } from './base'
 
 export class PrintManager extends Base {
@@ -75,7 +75,7 @@ export class PrintManager extends Base {
       $page.addClass(`${this.className}-size-${options.size}`)
     }
 
-    const vSVG = Dom.createVector(this.view.svg).clone()
+    const vSVG = Vector.create(this.view.svg).clone()
     const vStage = vSVG.findOne(
       `.${this.view.prefixClassName('graph-svg-stage')}`,
     )!
@@ -84,7 +84,7 @@ export class PrintManager extends Base {
 
     const sheetSize = this.getSheetSize(options)
     const graphArea = this.graph.transform.getGraphArea()
-    const s = this.graph.scale()
+    const s = this.graph.transform.getScale()
     const ts = this.graph.translate()
     const matrix = Dom.createSVGMatrix().translate(ts.tx / s.sx, ts.ty / s.sy)
     const info = this.getPageInfo(graphArea, pageArea, sheetSize)

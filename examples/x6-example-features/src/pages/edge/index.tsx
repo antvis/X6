@@ -1,5 +1,5 @@
 import React from 'react'
-import { Graph, Edge, CellView, EdgeView, Dom } from '@antv/x6'
+import { Graph, Edge, CellView, EdgeView, Dom, Vector } from '@antv/x6'
 import '../index.less'
 
 class CustomEdgeView extends EdgeView {
@@ -427,10 +427,10 @@ export default class Example extends React.Component {
     graph.addNode(r20)
     r20.translate(200, 0)
 
-    var circleMarker = Dom.createVector(
+    var circleMarker = Vector.create(
       '<marker id="circle-marker" markerUnits="userSpaceOnUse" viewBox = "0 0 12 12" refX = "6" refY = "6" markerWidth = "15" markerHeight = "15" stroke = "none" stroke-width = "0" fill = "red" orient = "auto"> <circle r = "5" cx="6" cy="6" fill="blue"/> </marker>',
     )
-    var diamondMarker = Dom.createVector(
+    var diamondMarker = Vector.create(
       '<marker id="diamond-marker" viewBox = "0 0 5 20" refX = "0" refY = "6" markerWidth = "30" markerHeight = "30" stroke = "none" stroke-width = "0" fill = "red" > <rect x="0" y="0" width = "10" height="10" transform="rotate(45)"  /> </marker>',
     )
 

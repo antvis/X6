@@ -1,6 +1,7 @@
+import JQuery from 'jquery'
 import { Attr } from '../registry'
 import { KeyValue, Nilable } from '../types'
-import { ObjectExt, StringExt, Dom, $ } from '../util'
+import { ObjectExt, StringExt, Dom, Vector } from '../util'
 
 export type Markup = string | Markup.JSONMarkup | Markup.JSONMarkup[]
 
@@ -138,14 +139,14 @@ export namespace Markup {
           if (svg) {
             Dom.attr(node, attrs)
           } else {
-            $(node).attr(attrs)
+            JQuery(node).attr(attrs)
           }
         }
 
         // style
         const style = define.style
         if (style) {
-          $(node).css(style)
+          JQuery(node).css(style)
         }
 
         // classname
@@ -220,7 +221,7 @@ export namespace Markup {
     selectors?: Selectors
   } {
     if (isStringMarkup(markup)) {
-      const nodes = Dom.createVectors(markup)
+      const nodes = Vector.createVectors(markup)
       const count = nodes.length
 
       if (count === 1) {
@@ -255,7 +256,7 @@ export namespace Markup {
   }
 
   export function parseLabelStringMarkup(markup: string) {
-    const children = Dom.createVectors(markup)
+    const children = Vector.createVectors(markup)
     const fragment = document.createDocumentFragment()
     for (let i = 0, n = children.length; i < n; i += 1) {
       const currentChild = children[i].node

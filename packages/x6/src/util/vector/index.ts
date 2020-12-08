@@ -1,7 +1,7 @@
 import { Point, Path } from '../../geometry'
-import * as Dom from './core'
+import * as Dom from '../dom/core'
 
-export class Vectorizer {
+export class Vector {
   node: SVGElement
 
   get id() {
@@ -13,16 +13,16 @@ export class Vectorizer {
   }
 
   constructor(
-    elem: Vectorizer | SVGElement | string,
+    elem: Vector | SVGElement | string,
     attrs?: Dom.Attributes,
-    children?: Element | Vectorizer | (Element | Vectorizer)[],
+    children?: Element | Vector | (Element | Vector)[],
   ) {
     if (!elem) {
       throw new TypeError('Invalid element to create vectorizer')
     }
 
     let node: SVGElement
-    if (Vectorizer.isVector(elem)) {
+    if (Vector.isVector(elem)) {
       node = elem.node
     } else if (typeof elem === 'string') {
       if (elem.toLowerCase() === 'svg') {
@@ -53,17 +53,17 @@ export class Vectorizer {
    * Returns an SVGMatrix that specifies the transformation necessary
    * to convert this coordinate system into `target` coordinate system.
    */
-  getTransformToElement(target: SVGElement | Vectorizer) {
-    const ref = Vectorizer.toHTMLElement(target) as SVGGraphicsElement
+  getTransformToElement(target: SVGElement | Vector) {
+    const ref = Vector.toHTMLElement(target) as SVGGraphicsElement
     return Dom.getTransformToElement(this.node, ref)
   }
 
   /**
-   * Returns the current transformation matrix of the Vectorizer element.
+   * Returns the current transformation matrix of the Vector element.
    */
   transform(): DOMMatrix
   /**
-   * Applies the provided transformation matrix to the Vectorizer element.
+   * Applies the provided transformation matrix to the Vector element.
    */
   transform(matrix: DOMMatrix, options?: Dom.TransformOptions): this
   transform(matrix?: DOMMatrix, options?: Dom.TransformOptions) {
@@ -77,7 +77,7 @@ export class Vectorizer {
   }
 
   /**
-   * Returns the current translate metadata of the Vectorizer element.
+   * Returns the current translate metadata of the Vector element.
    */
   translate(): Dom.Translation
   /**
@@ -96,7 +96,7 @@ export class Vectorizer {
   }
 
   /**
-   * Returns the current rotate metadata of the Vectorizer element.
+   * Returns the current rotate metadata of the Vector element.
    */
   rotate(): Dom.Rotation
   /**
@@ -124,7 +124,7 @@ export class Vectorizer {
   }
 
   /**
-   * Returns the current scale metadata of the Vectorizer element.
+   * Returns the current scale metadata of the Vector element.
    */
   scale(): Dom.Scale
   /**
@@ -187,17 +187,17 @@ export class Vectorizer {
   svg() {
     return this.node instanceof SVGSVGElement
       ? this
-      : Vectorizer.createVector(this.node.ownerSVGElement as SVGElement)
+      : Vector.create(this.node.ownerSVGElement as SVGElement)
   }
 
   defs() {
     const context = this.svg() || this
     const defsNode = context.node.getElementsByTagName('defs')[0]
     if (defsNode) {
-      return Vectorizer.createVector(defsNode)
+      return Vector.create(defsNode)
     }
 
-    return Vectorizer.createVector('defs').appendTo(context)
+    return Vector.create('defs').appendTo(context)
   }
 
   text(content: string, options: Dom.TextOptions = {}) {
@@ -210,7 +210,7 @@ export class Vectorizer {
   }
 
   clone() {
-    return Vectorizer.createVector(this.node.cloneNode(true) as SVGElement)
+    return Vector.create(this.node.cloneNode(true) as SVGElement)
   }
 
   remove() {
@@ -227,10 +227,10 @@ export class Vectorizer {
     elems:
       | Element
       | DocumentFragment
-      | Vectorizer
-      | (Element | DocumentFragment | Vectorizer)[],
+      | Vector
+      | (Element | DocumentFragment | Vector)[],
   ) {
-    Dom.append(this.node, Vectorizer.toHTMLElements(elems))
+    Dom.append(this.node, Vector.toHTMLElements(elems))
     return this
   }
 
@@ -238,10 +238,10 @@ export class Vectorizer {
     elems:
       | Element
       | DocumentFragment
-      | Vectorizer
-      | (Element | DocumentFragment | Vectorizer)[],
+      | Vector
+      | (Element | DocumentFragment | Vector)[],
   ) {
-    Dom.prepend(this.node, Vectorizer.toHTMLElements(elems))
+    Dom.prepend(this.node, Vector.toHTMLElements(elems))
     return this
   }
 
@@ -249,29 +249,29 @@ export class Vectorizer {
     elems:
       | Element
       | DocumentFragment
-      | Vectorizer
-      | (Element | DocumentFragment | Vectorizer)[],
+      | Vector
+      | (Element | DocumentFragment | Vector)[],
   ) {
-    Dom.before(this.node, Vectorizer.toHTMLElements(elems))
+    Dom.before(this.node, Vector.toHTMLElements(elems))
     return this
   }
 
-  appendTo(target: Element | Vectorizer) {
-    Dom.appendTo(this.node, Vectorizer.toHTMLElement(target)!)
+  appendTo(target: Element | Vector) {
+    Dom.appendTo(this.node, Vector.toHTMLElement(target)!)
     return this
   }
 
   findOne(selector: string) {
     const found = Dom.findOne(this.node, selector)
-    return found ? Vectorizer.createVector(found as SVGElement) : undefined
+    return found ? Vector.create(found as SVGElement) : undefined
   }
 
   find(selector: string) {
-    const vels: Vectorizer[] = []
+    const vels: Vector[] = []
     const nodes = Dom.find(this.node, selector)
     if (nodes) {
       for (let i = 0, ii = nodes.length; i < ii; i += 1) {
-        vels.push(Vectorizer.createVector(nodes[i] as SVGElement))
+        vels.push(Vector.create(nodes[i] as SVGElement))
       }
     }
 
@@ -280,23 +280,20 @@ export class Vectorizer {
 
   findParentByClass(className: string, terminator?: SVGElement) {
     const node = Dom.findParentByClass(this.node, className, terminator)
-    return node ? Vectorizer.createVector(node as SVGElement) : null
+    return node ? Vector.create(node as SVGElement) : null
   }
 
-  contains(child: Element | Vectorizer) {
-    return Dom.contains(
-      this.node,
-      child instanceof Vectorizer ? child.node : child,
-    )
+  contains(child: Element | Vector) {
+    return Dom.contains(this.node, child instanceof Vector ? child.node : child)
   }
 
   children() {
     const children = this.node.childNodes
-    const vels: Vectorizer[] = []
+    const vels: Vector[] = []
     for (let i = 0; i < children.length; i += 1) {
       const currentChild = children[i]
       if (currentChild.nodeType === 1) {
-        vels.push(Vectorizer.createVector(children[i] as SVGElement))
+        vels.push(Vector.create(children[i] as SVGElement))
       }
     }
     return vels
@@ -379,13 +376,13 @@ export class Vectorizer {
 
   getBBox(
     options: {
-      target?: SVGElement | Vectorizer | null
+      target?: SVGElement | Vector | null
       recursive?: boolean
     } = {},
   ) {
     return Dom.getBBox(this.node, {
       recursive: options.recursive,
-      target: Vectorizer.toHTMLElement(options.target),
+      target: Vector.toHTMLElement(options.target),
     })
   }
 
@@ -411,7 +408,7 @@ export class Vectorizer {
   }
 
   convertToPath() {
-    return Vectorizer.createVector(Dom.toPath(this.node as any))
+    return Vector.create(Dom.toPath(this.node as any))
   }
 
   convertToPathData() {
@@ -419,34 +416,32 @@ export class Vectorizer {
   }
 }
 
-export namespace Vectorizer {
-  export function isVector(o: any): o is Vectorizer {
-    return o instanceof Vectorizer
+export namespace Vector {
+  export function isVector(o: any): o is Vector {
+    return o instanceof Vector
   }
 
-  export function createVector(
-    elem: Vectorizer | SVGElement | string,
+  export function create(
+    elem: Vector | SVGElement | string,
     attrs?: Dom.Attributes,
-    children?: Element | Vectorizer | (Element | Vectorizer)[],
+    children?: Element | Vector | (Element | Vector)[],
   ) {
-    return new Vectorizer(elem, attrs, children)
+    return new Vector(elem, attrs, children)
   }
 
   export function createVectors(markup: string) {
     if (markup[0] === '<') {
       const svgDoc = Dom.createSvgDocument(markup)
-      const vels: Vectorizer[] = []
+      const vels: Vector[] = []
       for (let i = 0, ii = svgDoc.childNodes.length; i < ii; i += 1) {
         const childNode = svgDoc.childNodes[i]!
-        vels.push(
-          createVector(document.importNode(childNode, true) as SVGElement),
-        )
+        vels.push(create(document.importNode(childNode, true) as SVGElement))
       }
 
       return vels
     }
 
-    return [createVector(markup)]
+    return [create(markup)]
   }
 
   export function toHTMLElement(elem: any) {
@@ -463,8 +458,8 @@ export namespace Vectorizer {
     elems:
       | Element
       | DocumentFragment
-      | Vectorizer
-      | (Element | DocumentFragment | Vectorizer)[],
+      | Vector
+      | (Element | DocumentFragment | Vector)[],
   ) {
     if (Array.isArray(elems)) {
       return elems.map((elem) => toHTMLElement(elem)!)

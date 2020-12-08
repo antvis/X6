@@ -12,7 +12,8 @@ export * from './text'
 export * from './json'
 export * from './color'
 export * from './datauri'
-export * from './dom'
 export * from './unit'
+export * from './dom'
+export * from './vector'
 
 export { $ }

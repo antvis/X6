@@ -1,5 +1,5 @@
 import React from 'react'
-import { Graph, Cell, EdgeView, Dom } from '@antv/x6'
+import { Graph, Cell, EdgeView, Vector } from '@antv/x6'
 import './app.css'
 
 export default class Example extends React.Component {
@@ -76,7 +76,7 @@ export default class Example extends React.Component {
       if (cell.isEdge()) {
         const view = graph.findViewByCell(cell) as EdgeView
         if (view) {
-          const token = Dom.createVector('circle', { r: 6, fill: '#feb662' })
+          const token = Vector.create('circle', { r: 6, fill: '#feb662' })
           const target = cell.getTargetCell()
           setTimeout(() => {
             view.sendToken(token.node, 1000, () => {
