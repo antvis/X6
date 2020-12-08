@@ -4,6 +4,10 @@ import * as Dom from '../dom/core'
 export class Vector {
   node: SVGElement
 
+  get type() {
+    return this.node.nodeName
+  }
+
   get id() {
     return this.node.id
   }
@@ -47,15 +51,6 @@ export class Vector {
     if (children) {
       this.append(children)
     }
-  }
-
-  /**
-   * Returns an SVGMatrix that specifies the transformation necessary
-   * to convert this coordinate system into `target` coordinate system.
-   */
-  getTransformToElement(target: SVGElement | Vector) {
-    const ref = Vector.toHTMLElement(target) as SVGGraphicsElement
-    return Dom.getTransformToElement(this.node, ref)
   }
 
   /**
@@ -138,6 +133,15 @@ export class Vector {
     }
     Dom.scale(this.node, sx, sy)
     return this
+  }
+
+  /**
+   * Returns an SVGMatrix that specifies the transformation necessary
+   * to convert this coordinate system into `target` coordinate system.
+   */
+  getTransformToElement(target: SVGElement | Vector) {
+    const ref = Vector.toNode(target) as SVGGraphicsElement
+    return Dom.getTransformToElement(this.node, ref)
   }
 
   removeAttribute(name: string) {
@@ -230,7 +234,12 @@ export class Vector {
       | Vector
       | (SVGElement | DocumentFragment | Vector)[],
   ) {
-    Dom.append(this.node, Vector.toHTMLElements(elems))
+    Dom.append(this.node, Vector.toNodes(elems))
+    return this
+  }
+
+  appendTo(target: Element | Vector) {
+    Dom.appendTo(this.node, Vector.isVector(target) ? target.node : target)
     return this
   }
 
@@ -241,7 +250,7 @@ export class Vector {
       | Vector
       | (SVGElement | DocumentFragment | Vector)[],
   ) {
-    Dom.prepend(this.node, Vector.toHTMLElements(elems))
+    Dom.prepend(this.node, Vector.toNodes(elems))
     return this
   }
 
@@ -252,18 +261,39 @@ export class Vector {
       | Vector
       | (SVGElement | DocumentFragment | Vector)[],
   ) {
-    Dom.before(this.node, Vector.toHTMLElements(elems))
+    Dom.before(this.node, Vector.toNodes(elems))
     return this
   }
 
-  appendTo(target: Element | Vector) {
-    Dom.appendTo(this.node, Vector.toHTMLElement(target)!)
-    return this
+  replace(elem: SVGElement | Vector) {
+    if (this.node.parentNode) {
+      this.node.parentNode.replaceChild(Vector.toNode(elem), this.node)
+    }
+    return Vector.create(elem)
   }
 
-  findOne(selector: string) {
-    const found = Dom.findOne(this.node, selector)
-    return found ? Vector.create(found as SVGElement) : undefined
+  first() {
+    return this.node.firstChild
+      ? Vector.create(this.node.firstChild as SVGElement)
+      : null
+  }
+
+  last() {
+    return this.node.lastChild
+      ? Vector.create(this.node.lastChild as SVGElement)
+      : null
+  }
+
+  get(index: number) {
+    const child = this.node.childNodes[index] as SVGElement
+    return child ? Vector.create(child) : null
+  }
+
+  indexOf(elem: SVGElement | Vector) {
+    const children: SVGElement[] = Array.prototype.slice.call(
+      this.node.childNodes,
+    )
+    return children.indexOf(Vector.toNode(elem))
   }
 
   find(selector: string) {
@@ -278,13 +308,68 @@ export class Vector {
     return vels
   }
 
+  findOne(selector: string) {
+    const found = Dom.findOne(this.node, selector)
+    return found ? Vector.create(found as SVGElement) : null
+  }
+
   findParentByClass(className: string, terminator?: SVGElement) {
     const node = Dom.findParentByClass(this.node, className, terminator)
     return node ? Vector.create(node as SVGElement) : null
   }
 
+  matches(selector: string): boolean {
+    const node = this.node as any
+    const matches = this.node.matches
+    const matcher: typeof matches =
+      node.matches ||
+      node.matchesSelector ||
+      node.msMatchesSelector ||
+      node.mozMatchesSelector ||
+      node.webkitMatchesSelector ||
+      node.oMatchesSelector ||
+      null
+    return matcher && matcher.call(node, selector)
+  }
+
   contains(child: SVGElement | Vector) {
     return Dom.contains(this.node, child instanceof Vector ? child.node : child)
+  }
+
+  wrap(node: SVGElement | Vector) {
+    const vel = Vector.create(node)
+    const parentNode = this.node.parentNode as SVGElement
+    if (parentNode != null) {
+      parentNode.insertBefore(vel.node, this.node)
+    }
+    return vel.append(this)
+  }
+
+  parent(type?: string) {
+    let parent: Vector = this // tslint:disable-line
+
+    // check for parent
+    if (parent.node.parentNode == null) {
+      return null
+    }
+
+    // get parent element
+    parent = Vector.create(parent.node.parentNode as SVGElement)
+
+    if (type == null) {
+      return parent
+    }
+
+    // loop trough ancestors if type is given
+    do {
+      if (
+        typeof type === 'string' ? parent.matches(type) : parent instanceof type
+      ) {
+        return parent
+      }
+    } while ((parent = Vector.create(parent.node.parentNode as SVGElement)))
+
+    return parent
   }
 
   children() {
@@ -297,6 +382,26 @@ export class Vector {
       }
     }
     return vels
+  }
+
+  eachChild(
+    fn: (
+      this: Vector,
+      currentValue: Vector,
+      index: number,
+      children: Vector[],
+    ) => void,
+    deep?: boolean,
+  ) {
+    const children = this.children()
+    for (let i = 0, l = children.length; i < l; i += 1) {
+      fn.call(children[i], children[i], i, children)
+      if (deep) {
+        children[i].eachChild(fn, deep)
+      }
+    }
+
+    return this
   }
 
   index() {
@@ -382,7 +487,7 @@ export class Vector {
   ) {
     return Dom.getBBox(this.node, {
       recursive: options.recursive,
-      target: Vector.toHTMLElement(options.target),
+      target: options.target ? Vector.toNode(options.target) : null,
     })
   }
 
@@ -444,27 +549,26 @@ export namespace Vector {
     return [create(markup)]
   }
 
-  export function toHTMLElement(elem: any) {
-    if (elem != null) {
-      if (isVector(elem)) {
-        return elem.node
-      }
-      return ((elem.nodeName && elem) || elem[0]) as SVGElement
+  export function toNode<T extends SVGElement = SVGElement>(
+    elem: SVGElement | DocumentFragment | Vector,
+  ): T {
+    if (isVector(elem)) {
+      return elem.node as T
     }
-    return null
+    return elem as T
   }
 
-  export function toHTMLElements(
+  export function toNodes(
     elems:
-      | Element
+      | SVGElement
       | DocumentFragment
       | Vector
-      | (Element | DocumentFragment | Vector)[],
+      | (SVGElement | DocumentFragment | Vector)[],
   ) {
     if (Array.isArray(elems)) {
-      return elems.map((elem) => toHTMLElement(elem)!)
+      return elems.map((elem) => toNode(elem))
     }
 
-    return [toHTMLElement(elems)!]
+    return [toNode(elems)]
   }
 }
