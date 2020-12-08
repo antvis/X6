@@ -1045,6 +1045,11 @@ export class Cell<
         if (options.deep !== false) {
           this.eachChild((child) => child.remove(options))
         }
+
+        if (this.hasTools()) {
+          this.removeTools()
+        }
+
         if (this.model) {
           this.model.removeCell(this, options)
         }

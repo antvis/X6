@@ -121,5 +121,5 @@ TreeEdge.config({
   },
 })
 
-Node.registry.register('tree-node', TreeNode as typeof Node)
-Edge.registry.register('tree-edge', TreeEdge as typeof Edge)
+Node.registry.register('tree-node', TreeNode as typeof Node, true)
+Edge.registry.register('tree-edge', TreeEdge as typeof Edge, true)
