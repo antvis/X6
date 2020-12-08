@@ -1,5 +1,5 @@
 import React from 'react'
-import { Graph, Node, NodeView, Point, Angle, Dom } from '@antv/x6'
+import { Graph, Node, NodeView, Point, Angle, Dom, Vector } from '@antv/x6'
 import '../index.less'
 
 class ConveyorNode extends Node {
@@ -49,8 +49,8 @@ class ConveyorNode extends Node {
   }
 }
 
-const innerRect = Dom.createVector('rect').addClass('rect-inner').node
-const outerRect = Dom.createVector('rect').addClass('rect-outer').node
+const innerRect = Vector.create('rect').addClass('rect-inner').node
+const outerRect = Vector.create('rect').addClass('rect-outer').node
 
 class ConveyorNodeView extends NodeView<ConveyorNode> {
   svgOuterRect: SVGRectElement
@@ -112,8 +112,8 @@ ConveyorNodeView.config({
   },
 })
 
-Node.registry.register('performance_conveyor', ConveyorNode)
-NodeView.registry.register('performance_conveyor_view', ConveyorNodeView)
+Node.registry.register('performance_conveyor', ConveyorNode, true)
+NodeView.registry.register('performance_conveyor_view', ConveyorNodeView, true)
 
 ConveyorNode.config({ view: 'performance_conveyor_view' })
 

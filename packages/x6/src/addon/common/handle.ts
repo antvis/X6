@@ -1,4 +1,4 @@
-import { Dom } from '../../util'
+import { Dom, Vector } from '../../util'
 import { View } from '../../view/view'
 import { Graph } from '../../graph/graph'
 import { Point, Angle } from '../../geometry'
@@ -177,7 +177,7 @@ export class Handle {
           if (contect && 'none' !== contect) {
             const $icons = $elem.find<any>(`.${className}-txt`)
             if ($icons.length) {
-              Dom.createVector($icons[0]).text(contect.replace(/['"]/g, ''))
+              Vector.create($icons[0]).text(contect.replace(/['"]/g, ''))
             }
           }
 
@@ -188,7 +188,7 @@ export class Handle {
               const href = matches[1]
               const $imgs = $elem.find<any>(`.${className}-img`)
               if ($imgs.length > 0) {
-                Dom.createVector($imgs[0]).attr('xlink:href', href)
+                Vector.create($imgs[0]).attr('xlink:href', href)
               }
             }
           }
@@ -232,20 +232,18 @@ export class Handle {
         nextRad,
       )
 
-      const vSvg = Dom.createVector('svg').addClass(
-        `${ClassNames.pieSlice}-svg`,
-      )
-      const vPath = Dom.createVector('path')
+      const vSvg = Vector.create('svg').addClass(`${ClassNames.pieSlice}-svg`)
+      const vPath = Vector.create('path')
         .addClass(ClassNames.pieSlice)
         .attr('d', pathData)
         .translate(outerRadius, outerRadius)
       const pos = Point.fromPolar(offset, -curRad - delta / 2, ratio).toJSON()
       const iconSize = pie.iconSize
-      const vImg = Dom.createVector('image')
+      const vImg = Vector.create('image')
         .attr(pos)
         .addClass(`${ClassNames.pieSlice}-img`)
       pos.y = pos.y + iconSize - 2
-      const vText = Dom.createVector('text', { 'font-size': iconSize })
+      const vText = Vector.create('text', { 'font-size': iconSize })
         .attr(pos)
         .addClass(`${ClassNames.pieSlice}-txt`)
 

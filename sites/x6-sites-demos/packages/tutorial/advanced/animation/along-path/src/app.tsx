@@ -1,5 +1,5 @@
 import React from 'react'
-import { Graph, Dom } from '@antv/x6'
+import { Graph, Vector } from '@antv/x6'
 import './app.css'
 
 export default class Example extends React.Component {
@@ -24,7 +24,7 @@ export default class Example extends React.Component {
     if (view) {
       const path = view.findOne('path') as SVGPathElement
       if (path) {
-        const token = Dom.createVector('circle', { r: 8, fill: 'red' })
+        const token = Vector.create('circle', { r: 8, fill: 'red' })
         token.animateAlongPath(
           {
             dur: '4s',
