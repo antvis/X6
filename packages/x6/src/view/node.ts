@@ -125,10 +125,7 @@ export class NodeView<
   }
 
   protected renderStringMarkup(markup: string) {
-    Dom.append(
-      this.container,
-      Vector.toHTMLElements(Vector.createVectors(markup)),
-    )
+    Dom.append(this.container, Vector.toNodes(Vector.createVectors(markup)))
     this.rotatableNode = Dom.findOne(
       this.container,
       `.${this.rotatableSelector}`,
