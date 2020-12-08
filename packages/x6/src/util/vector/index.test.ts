@@ -2,27 +2,27 @@ import { Vector } from './index'
 
 describe('Vector', () => {
   describe('#create', () => {
-    it('should create a vectorizer instance with tagName', () => {
+    it('should create a vector instance with tagName', () => {
       const vel = Vector.create('rect')
       expect(Vector.isVector(vel)).toBe(true)
       expect(vel.node).toBeInstanceOf(SVGRectElement)
     })
 
-    it('should create a vectorizer instance with SVGElement', () => {
+    it('should create a vector instance with SVGElement', () => {
       const old = Vector.create('rect')
       const vel = Vector.create(old.node)
       expect(Vector.isVector(vel)).toBe(true)
       expect(vel.node).toBeInstanceOf(SVGRectElement)
     })
 
-    it('should create a vectorizer instance with another vectorizer', () => {
+    it('should create a vector instance with another vector', () => {
       const old = Vector.create('rect')
       const vel = Vector.create(old)
       expect(Vector.isVector(vel)).toBe(true)
       expect(vel.node).toBeInstanceOf(SVGRectElement)
     })
 
-    it('should create a vectorizer instance with markup', () => {
+    it('should create a vector instance with markup', () => {
       const vel = Vector.create(
         '<rect width="100%" height="100%" fill="red" />',
       )
@@ -44,7 +44,7 @@ describe('Vector', () => {
   })
 
   describe('#createVectors', () => {
-    it('should return an array of vectorizers', () => {
+    it('should return an array of vectors', () => {
       const vels = Vector.createVectors(
         '<path id="svg-path" d="M10 10"/>' +
           '<!-- comment -->' +
@@ -73,7 +73,7 @@ describe('Vector', () => {
       })
     })
 
-    it('should fall back to create a vectorizer', () => {
+    it('should fall back to create a vector', () => {
       expect(Vector.createVectors('rect').length).toEqual(1)
     })
   })

@@ -189,7 +189,7 @@ describe('Dom', () => {
     })
 
     describe('#find', () => {
-      it('should return an array of vectorizers', () => {
+      it('should return an array of vectors', () => {
         const container = Vector.create(svgContainer)
         const found = container.find('circle')
         expect(found).toBeInstanceOf(Array)
@@ -199,7 +199,7 @@ describe('Dom', () => {
     })
 
     describe('#findOne', () => {
-      it('should return the first found vectorizer', () => {
+      it('should return the first found vector', () => {
         const container = Vector.create(svgContainer)
         const found = container.findOne('circle')
         expect(found).toBeInstanceOf(Vector)
@@ -208,7 +208,7 @@ describe('Dom', () => {
     })
 
     describe('#findParentByClass', () => {
-      it('should return parent vectorizer if exists', () => {
+      it('should return parent vector if exists', () => {
         const found = Vector.create(svgGroup3).findParentByClass('group-1')
         expect(found != null && found.node === svgGroup1).toBe(true)
       })
@@ -361,7 +361,7 @@ describe('Dom', () => {
     })
 
     describe('#children', () => {
-      it('should return a array for vectorizers', () => {
+      it('should return a array for vectors', () => {
         const children = Vector.create(svgGroup).children()
         expect(children).toBeInstanceOf(Array)
         expect(children.every((c) => c instanceof Vector)).toEqual(true)
