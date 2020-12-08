@@ -115,6 +115,10 @@ export class CellView<
 
   protected init() {}
 
+  protected onRemove() {
+    this.removeTools()
+  }
+
   public get priority() {
     return this.options.priority
   }
