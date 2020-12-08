@@ -213,27 +213,3 @@ export function isHTMLElement(elem: any): elem is HTMLElement {
     )
   }
 }
-
-export function snapshoot(elem: Element) {
-  const cloned = elem.cloneNode() as Element
-  elem.childNodes.forEach((child) => cloned.appendChild(child))
-
-  return () => {
-    // remove all children
-    empty(elem)
-
-    // remove all attributes
-    while (elem.attributes.length > 0) {
-      elem.removeAttribute(elem.attributes[0].name)
-    }
-
-    // restore attributes
-    for (let i = 0, l = cloned.attributes.length; i < l; i += 1) {
-      const attr = cloned.attributes[i]
-      elem.setAttribute(attr.name, attr.value)
-    }
-
-    // restore children
-    cloned.childNodes.forEach((child) => elem.appendChild(child))
-  }
-}
