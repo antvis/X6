@@ -1,4 +1,4 @@
-import { StringExt, Dom } from '../util'
+import { StringExt, Dom, Vector } from '../util'
 import { Attr, Filter, Marker } from '../registry'
 import { Markup } from '../view'
 import { Base } from './base'
@@ -48,7 +48,7 @@ export class DefsManager extends Base {
         ...options.attrs,
         id: filterId,
       }
-      Dom.createVector(Markup.sanitize(markup), attrs).appendTo(this.elem)
+      Vector.create(Markup.sanitize(markup), attrs).appendTo(this.elem)
     }
 
     return filterId
@@ -76,7 +76,7 @@ export class DefsManager extends Base {
 
       const markup = `<${type}>${arr.join('')}</${type}>`
       const attrs = { id, ...options.attrs }
-      Dom.createVector(markup, attrs).appendTo(this.elem)
+      Vector.create(markup, attrs).appendTo(this.elem)
     }
 
     return id
@@ -97,7 +97,7 @@ export class DefsManager extends Base {
         delete attrs.d
       }
 
-      const pathMarker = Dom.createVector(
+      const pathMarker = Vector.create(
         'marker',
         {
           id: markerId,
@@ -107,7 +107,7 @@ export class DefsManager extends Base {
         },
         children
           ? children.map(({ tagName, ...other }) =>
-              Dom.createVector(
+              Vector.create(
                 `${tagName}` || 'path',
                 this.normalizeAttrs({
                   ...attrs,
@@ -115,7 +115,7 @@ export class DefsManager extends Base {
                 }),
               ),
             )
-          : [Dom.createVector(tagName || 'path', this.normalizeAttrs(attrs))],
+          : [Vector.create(tagName || 'path', this.normalizeAttrs(attrs))],
       )
 
       this.elem.appendChild(pathMarker.node)

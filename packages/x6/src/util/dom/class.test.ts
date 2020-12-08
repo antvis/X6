@@ -1,5 +1,4 @@
-import { createVector } from './vector'
-import { Vectorizer } from './vectorizer'
+import { Vector } from '../vector'
 import { hasClass, addClass, removeClass, toggleClass } from './class'
 
 describe('Dom', () => {
@@ -14,18 +13,18 @@ describe('Dom', () => {
         addClass(text, 'test')
         expect(hasClass(text, 'test')).toBe(false)
 
-        const vc = createVector(document.createComment('') as any)
+        const vc = Vector.create(document.createComment('') as any)
         vc.addClass('test')
         expect(vc.hasClass('test')).toBe(false)
       })
     })
 
     describe('#addClass', () => {
-      let div: Vectorizer
-      let vel: Vectorizer
+      let div: Vector
+      let vel: Vector
       beforeEach(() => {
-        div = createVector('div')
-        vel = createVector('g')
+        div = Vector.create('div')
+        vel = Vector.create('g')
       })
 
       it('should add class to HTMLDivElement', () => {
@@ -81,7 +80,7 @@ describe('Dom', () => {
     })
 
     describe('#removeClass', () => {
-      const vel = createVector('g')
+      const vel = Vector.create('g')
 
       it('should remove one', () => {
         vel.removeClass()
@@ -111,7 +110,7 @@ describe('Dom', () => {
     })
 
     describe('#toggleClass', () => {
-      const vel = createVector('g')
+      const vel = Vector.create('g')
 
       it('should do nothing for invalid element or selector', () => {
         toggleClass(null, 'foo')

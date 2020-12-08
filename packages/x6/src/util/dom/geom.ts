@@ -338,7 +338,7 @@ export function getIntersection(
 }
 
 /**
- * Animate the element along the path SVG element (or Vectorizer object).
+ * Animate the element along the path SVG element (or Vector object).
  * `attrs` contain Animation Timing attributes describing the animation.
  */
 export function animateAlongPath(

@@ -65,7 +65,7 @@ sendToken(
 
 ```ts
 const view = graph.findViewByCell(edge) as EdgeView
-const token = Dom.createVector('circle', { r: 6, fill: 'green' })
+const token = Vector.create('circle', { r: 6, fill: 'green' })
 view.sendToken(token.node, 1000)
 ```
 

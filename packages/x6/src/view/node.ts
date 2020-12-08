@@ -1,5 +1,5 @@
 import { Util, Config } from '../global'
-import { ArrayExt, Dom, FunctionExt } from '../util'
+import { ArrayExt, FunctionExt, Dom, Vector } from '../util'
 import { Rectangle, Point } from '../geometry'
 import { Attr, PortLayout } from '../registry'
 import { Cell } from '../model/cell'
@@ -125,7 +125,10 @@ export class NodeView<
   }
 
   protected renderStringMarkup(markup: string) {
-    Dom.append(this.container, Dom.toHTMLElements(Dom.createVectors(markup)))
+    Dom.append(
+      this.container,
+      Vector.toHTMLElements(Vector.createVectors(markup)),
+    )
     this.rotatableNode = Dom.findOne(
       this.container,
       `.${this.rotatableSelector}`,

@@ -1,4 +1,4 @@
-import { createVector } from './vector'
+import { Vector } from '../vector'
 import { styleToObject, mergeAttrs } from './attr'
 
 describe('Dom', () => {
@@ -71,7 +71,7 @@ describe('Dom', () => {
 
     describe('#setAttribute', () => {
       it('should set attribute with string/number value', () => {
-        const vel = createVector('g')
+        const vel = Vector.create('g')
         vel.setAttribute('foo', 'test')
         vel.setAttribute('bar', 100)
 
@@ -80,7 +80,7 @@ describe('Dom', () => {
       })
 
       it('should remove attribute when value is null/undefined', () => {
-        const vel = createVector('g')
+        const vel = Vector.create('g')
         vel.setAttribute('foo', 'test')
         vel.setAttribute('bar', 100)
 
@@ -94,7 +94,7 @@ describe('Dom', () => {
       })
 
       it('shoud set/remove qualified attribute', () => {
-        const vel = createVector('g')
+        const vel = Vector.create('g')
         vel.setAttribute('xlink:href', 'test')
         expect(vel.getAttribute('xlink:href')).toEqual('test')
 
@@ -105,7 +105,7 @@ describe('Dom', () => {
 
     describe('#attr', () => {
       it('should get all attributes', () => {
-        const vel = createVector('g')
+        const vel = Vector.create('g')
         vel.setAttribute('foo', 'test')
         vel.setAttribute('bar', '100')
 
@@ -114,13 +114,13 @@ describe('Dom', () => {
       })
 
       it('should set/get single attribute', () => {
-        const vel = createVector('g')
+        const vel = Vector.create('g')
         vel.attr('foo', 'test')
         expect(vel.attr('foo')).toEqual('test')
       })
 
       it('should set attributes', () => {
-        const vel = createVector('g')
+        const vel = Vector.create('g')
         vel.attr({ foo: 'test', bar: 100 })
         const { id, ...attrs } = vel.attr()
         expect(attrs).toEqual({ foo: 'test', bar: '100' })

@@ -1,5 +1,5 @@
 import { Attr } from '../attr'
-import { ObjectExt, Dom } from '../../util'
+import { ObjectExt, Dom, Vector } from '../../util'
 import { Util } from '../../global'
 import { EdgeView } from '../../view'
 import { Highlighter } from './index'
@@ -31,7 +31,7 @@ export const stroke: Highlighter.Definition<StrokeHighlighterOptions> = {
     // tslint:disable-next-line
     options = ObjectExt.defaultsDeep({}, options, defaultOptions)
 
-    const magnetVel = Dom.createVector(magnet as SVGElement)
+    const magnetVel = Vector.create(magnet as SVGElement)
     let pathData
     let magnetBBox
 
