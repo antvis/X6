@@ -1,3 +1,11 @@
+## @antv/x6 [1.3.8](https://github.com/antvis/x6/compare/@antv/x6@1.3.7...@antv/x6@1.3.8) (2020-12-08)
+
+
+### Bug Fixes
+
+* 🐛 fix return types ([66c6a7d](https://github.com/antvis/x6/commit/66c6a7d8dd89eedcecbf4079ac5b6e5e8f1bc2b5))
+* 🐛 should auto remove tools when removing cells ([064a059](https://github.com/antvis/x6/commit/064a059daf009b5e37a80c2a7277d620ff2a70d1))
+
 ## @antv/x6 [1.3.7](https://github.com/antvis/x6/compare/@antv/x6@1.3.6...@antv/x6@1.3.7) (2020-12-08)
 
 ## @antv/x6 [1.3.6](https://github.com/antvis/x6/compare/@antv/x6@1.3.5...@antv/x6@1.3.6) (2020-12-07)
