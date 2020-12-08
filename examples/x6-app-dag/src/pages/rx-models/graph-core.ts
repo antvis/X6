@@ -53,9 +53,9 @@ export class GraphCore<
   graph?: Graph
 
   // 当前画布右键点击信息
-  contextMenuInfo$: BehaviorSubject<ContextMenuInfo> = new BehaviorSubject<
-    ContextMenuInfo
-  >(null as any)
+  contextMenuInfo$: BehaviorSubject<ContextMenuInfo> = new BehaviorSubject<ContextMenuInfo>(
+    null as any,
+  )
 
   // 选中的节点
   selectedNodes$: BehaviorSubject<N[]> = new BehaviorSubject<N[]>([])
@@ -568,10 +568,10 @@ export class GraphCore<
         typeof enabled === 'undefined' ? !graph.isRubberbandEnabled() : enabled
       if (needEnableRubberBand) {
         graph.enableRubberband()
-        graph.scroller.widget?.setCursor('crosshair', { silent: true })
+        // graph.scroller.widget?.setCursor('crosshair', { silent: true })
       } else {
         graph.disableRubberband()
-        graph.scroller.widget?.setCursor('grab', { silent: true })
+        // graph.scroller.widget?.setCursor('grab', { silent: true })
       }
     }
   }
