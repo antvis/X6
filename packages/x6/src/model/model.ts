@@ -212,7 +212,12 @@ export class Model extends Basecoat<Model.EventArgs> {
       'clear',
       () => {
         // The nodes come after the edges.
-        const cells = raw.sort((cell) => (cell.isEdge() ? 1 : 2))
+        const cells = raw.sort((a, b) => {
+          const v1 = a.isEdge() ? 1 : 2
+          const v2 = b.isEdge() ? 1 : 2
+          return v1 - v2
+        })
+
         while (cells.length > 0) {
           // Note that all the edges are removed first, so it's safe to
           // remove the nodes without removing the connected edges first.
