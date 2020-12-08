@@ -1,3 +1,19 @@
+## @antv/x6-app-dag [1.0.32](https://github.com/antvis/x6/compare/@antv/x6-app-dag@1.0.31...@antv/x6-app-dag@1.0.32) (2020-12-08)
+
+
+### Bug Fixes
+
+* 🐛 panning/selecting cursor style ([a16159f](https://github.com/antvis/x6/commit/a16159f0c8a61dca69a05b91d2cb9397aa819e34)), closes [#379](https://github.com/antvis/x6/issues/379)
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.3.7
+* **@antv/x6-react-shape:** upgraded to 1.1.15
+
 ## @antv/x6-app-dag [1.0.31](https://github.com/antvis/x6/compare/@antv/x6-app-dag@1.0.30...@antv/x6-app-dag@1.0.31) (2020-12-07)
 
 
