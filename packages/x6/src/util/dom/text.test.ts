@@ -1,5 +1,5 @@
 import { Rectangle } from '../../geometry'
-import { createVector } from './vector'
+import { Vector } from '../vector'
 import { breakText } from './text'
 
 describe('Dom', () => {
@@ -20,7 +20,7 @@ describe('Dom', () => {
     // afterEach(clearnTest)
 
     it('should create single line text', () => {
-      const t = createVector('text', { x: 250, dy: 100, fill: 'black' })
+      const t = Vector.create('text', { x: 250, dy: 100, fill: 'black' })
       t.text('abc')
 
       expect(t.node.childNodes.length).toEqual(1)
@@ -29,7 +29,7 @@ describe('Dom', () => {
     })
 
     it('should create multi-line text', () => {
-      const t = createVector('text', { x: 250, dy: 100, fill: 'black' })
+      const t = Vector.create('text', { x: 250, dy: 100, fill: 'black' })
       t.text('abc\ndef')
       expect(t.node.childNodes.length).toEqual(2)
 
@@ -59,7 +59,7 @@ describe('Dom', () => {
     })
 
     it('should append custom EOL', () => {
-      const t = createVector('text', { x: 250, dy: 100, fill: 'black' })
+      const t = Vector.create('text', { x: 250, dy: 100, fill: 'black' })
       t.text('abc\ndef', { eol: 'X' })
       expect(t.node.childNodes[0].textContent).toEqual('abcX')
       expect(t.node.childNodes[1].textContent).toEqual('def')
@@ -70,7 +70,7 @@ describe('Dom', () => {
     })
 
     it('should add annotations to tspan', () => {
-      const t = createVector('text', { x: 250, dy: 100, fill: 'black' })
+      const t = Vector.create('text', { x: 250, dy: 100, fill: 'black' })
 
       t.text('abcdefgh', {
         includeAnnotationIndices: true,
@@ -87,7 +87,7 @@ describe('Dom', () => {
     })
 
     it('visibility', () => {
-      const t = createVector('text', { x: 250, dy: 100, fill: 'black' })
+      const t = Vector.create('text', { x: 250, dy: 100, fill: 'black' })
 
       t.text('')
       expect(t.attr('display')).toEqual('none')
@@ -100,7 +100,7 @@ describe('Dom', () => {
       const n = texts.length
       const fontSize = 30
 
-      const t = createVector('text', { 'font-size': fontSize })
+      const t = Vector.create('text', { 'font-size': fontSize })
 
       for (let i = 0; i < n; i += 1) {
         const text = texts[i]
@@ -123,14 +123,18 @@ describe('Dom', () => {
     })
 
     it('should break the words by size', () => {
-      expect(breakText('aaaaabbbbbccccceeeeefffffggggghhhhh', {
-        width: 200,
-        height: 400
-      }).split('\n').length).toBe(2)
-      expect(breakText('aaaaabbbbbccccceeeeefffffggggghhhhh', {
-        width: 200,
-        height: 20
-      }).split('\n').length).toBe(1)
+      expect(
+        breakText('aaaaabbbbbccccceeeeefffffggggghhhhh', {
+          width: 200,
+          height: 400,
+        }).split('\n').length,
+      ).toBe(2)
+      expect(
+        breakText('aaaaabbbbbccccceeeeefffffggggghhhhh', {
+          width: 200,
+          height: 20,
+        }).split('\n').length,
+      ).toBe(1)
     })
   })
 })

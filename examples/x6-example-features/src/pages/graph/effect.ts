@@ -1,15 +1,12 @@
-import { Graph, Dom, FunctionExt, Vectorizer, Rectangle } from '@antv/x6'
+import { Graph, FunctionExt, Vector, Rectangle } from '@antv/x6'
 import { FitToContentCard } from './fit-card'
 import { ScaleContentToFitCard } from './scale-card'
 
 export function createEffect(graph: Graph) {
-  const vSvg = Dom.createVector(graph.view.svg)
-  const vVertical = Dom.createVector('path').attr('d', 'M -10000 -1 L 10000 -1')
-  const vHorizontal = Dom.createVector('path').attr(
-    'd',
-    'M -1 -10000 L -1 10000',
-  )
-  const vRect = Dom.createVector('rect')
+  const vSvg = Vector.create(graph.view.svg)
+  const vVertical = Vector.create('path').attr('d', 'M -10000 -1 L 10000 -1')
+  const vHorizontal = Vector.create('path').attr('d', 'M -1 -10000 L -1 10000')
+  const vRect = Vector.create('rect')
   const vAxisX = vVertical.clone().addClass('axis')
   const vAxisY = vHorizontal.clone().addClass('axis')
   const vBBox = vRect.clone().addClass('bbox')
@@ -17,7 +14,7 @@ export function createEffect(graph: Graph) {
     vBBox.removeClass('active')
   }, 500)
 
-  const vElements: Vectorizer[] = []
+  const vElements: Vector[] = []
 
   vSvg.append([vAxisX, vAxisY, vBBox])
 

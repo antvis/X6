@@ -1,4 +1,4 @@
-import { ObjectExt, Dom } from '../../util'
+import { ObjectExt, Dom, Vector } from '../../util'
 import { Point } from '../../geometry'
 import { View } from '../../view'
 
@@ -14,7 +14,7 @@ export class PathDrawer extends View {
   protected readonly MOVEMENT_DETECTION_THRESHOLD = 150
 
   protected get vel() {
-    return Dom.createVector(this.container as SVGGElement)
+    return Vector.create(this.container as SVGGElement)
   }
 
   constructor(
@@ -40,14 +40,14 @@ export class PathDrawer extends View {
     this.pathTemplate = Dom.createSvgElement<SVGPathElement>('path')
     Dom.attr(this.pathTemplate, options.pathAttributes)
 
-    this.startPointElement = Dom.createVector(
-      options.startPointMarkup,
-    ).addClass('start-point').node as SVGElement
+    this.startPointElement = Vector.create(options.startPointMarkup).addClass(
+      'start-point',
+    ).node as SVGElement
 
     this.controlElement = Dom.createSvgElement<SVGPathElement>('path')
     Dom.addClass(this.controlElement, 'control-path')
 
-    Dom.createVector('rect', {
+    Vector.create('rect', {
       x: 0,
       y: 0,
       width: '100%',

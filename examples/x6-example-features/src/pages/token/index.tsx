@@ -1,5 +1,5 @@
 import React from 'react'
-import { Graph, Cell, EdgeView, Dom } from '@antv/x6'
+import { Graph, Cell, EdgeView, Vector } from '@antv/x6'
 import '../index.less'
 
 export default class Example extends React.Component {
@@ -62,7 +62,7 @@ export default class Example extends React.Component {
       if (cell.isEdge()) {
         const edgeView = graph.findViewByCell(cell) as EdgeView
         if (edgeView) {
-          const token = Dom.createVector('path', {
+          const token = Vector.create('path', {
             d: 'M 0 -6 10 0 0 6 Z',
             fill: 'green',
           })

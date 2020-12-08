@@ -1,7 +1,6 @@
 import { setupTest, clearnTest } from './elem.test'
-import { createVector } from './vector'
-import { Vectorizer } from './vectorizer'
-import { toPathData, createSlicePathData} from './path'
+import { Vector } from '../vector'
+import { toPathData, createSlicePathData } from './path'
 
 describe('Dom', () => {
   describe('path', () => {
@@ -25,8 +24,10 @@ describe('Dom', () => {
 
     describe('#toPath', () => {
       it('should convert SVGPathElement', () => {
-        const path = createVector('path', { d: 'M 100 50 L 200 150' })
-        expect(path.convertToPath().getAttribute('d')).toBe('M 100 50 L 200 150')
+        const path = Vector.create('path', { d: 'M 100 50 L 200 150' })
+        expect(path.convertToPath().getAttribute('d')).toBe(
+          'M 100 50 L 200 150',
+        )
       })
     })
 
@@ -46,18 +47,18 @@ describe('Dom', () => {
 
       it('should throw an exception on convert an invalid SvgElement', () => {
         expect(() => {
-          const group = createVector('<group/>')
+          const group = Vector.create('<group/>')
           toPathData(group.node as any)
         }).toThrowError()
       })
 
       it('should convert SVGPathElement', () => {
-        const path = createVector('path', { d: 'M 100 50 L 200 150' })
+        const path = Vector.create('path', { d: 'M 100 50 L 200 150' })
         expect(path.convertToPathData()).toEqual('M 100 50 L 200 150')
       })
 
       it('should convert SVGLineElement', () => {
-        const line = createVector('line', {
+        const line = Vector.create('line', {
           x1: 100,
           y1: 50,
           x2: 200,
@@ -67,7 +68,7 @@ describe('Dom', () => {
       })
 
       it('should convert SVGRectElement', () => {
-        const rect = createVector('rect', {
+        const rect = Vector.create('rect', {
           x: 100,
           y: 50,
           width: 200,
@@ -79,7 +80,7 @@ describe('Dom', () => {
       })
 
       it('should convert SVGRectElement with `rx` and `ry` attributes', () => {
-        const rect = createVector('<rect/>', {
+        const rect = Vector.create('<rect/>', {
           x: 100,
           y: 50,
           width: 200,
@@ -93,14 +94,14 @@ describe('Dom', () => {
       })
 
       it('should convert SVGCircleElement', () => {
-        const circle = createVector('circle', { cx: 100, cy: 50, r: 50 })
+        const circle = Vector.create('circle', { cx: 100, cy: 50, r: 50 })
         expect(roundPathData(circle.convertToPathData())).toEqual(
           'M 100 0 C 127 0 150 22 150 50 C 150 77 127 100 100 100 C 72 100 50 77 50 50 C 50 22 72 0 100 0 Z',
         )
       })
 
       it('should convert SVGEllipseElement', () => {
-        const ellipse = createVector('ellipse', {
+        const ellipse = Vector.create('ellipse', {
           cx: 100,
           cy: 50,
           rx: 100,
@@ -112,7 +113,7 @@ describe('Dom', () => {
       })
 
       it('should convert SVGPolygonElement', () => {
-        const polygon = createVector('polygon', {
+        const polygon = Vector.create('polygon', {
           points: '200,10 250,190 160,210',
         })
         expect(polygon.convertToPathData()).toEqual(
@@ -121,7 +122,7 @@ describe('Dom', () => {
       })
 
       it('should convert SVGPolylineElement', () => {
-        const polyline = createVector('polyline', {
+        const polyline = Vector.create('polyline', {
           points: '100,10 200,10 150,110',
         })
         expect(polyline.convertToPathData()).toEqual(
@@ -132,103 +133,86 @@ describe('Dom', () => {
 
     describe('#normalizePath', () => {
       it('should return this for any SVGElement', () => {
-        expect(createVector(svgPath).normalizePath()).toBeInstanceOf(Vectorizer)
-        expect(createVector(svgPath2).normalizePath()).toBeInstanceOf(
-          Vectorizer,
+        expect(Vector.create(svgPath).normalizePath()).toBeInstanceOf(Vector)
+        expect(Vector.create(svgPath2).normalizePath()).toBeInstanceOf(Vector)
+        expect(Vector.create(svgPath3).normalizePath()).toBeInstanceOf(Vector)
+        expect(Vector.create(svgContainer).normalizePath()).toBeInstanceOf(
+          Vector,
         )
-        expect(createVector(svgPath3).normalizePath()).toBeInstanceOf(
-          Vectorizer,
+        expect(Vector.create(svgGroup).normalizePath()).toBeInstanceOf(Vector)
+        expect(Vector.create(svgCircle).normalizePath()).toBeInstanceOf(Vector)
+        expect(Vector.create(svgEllipse).normalizePath()).toBeInstanceOf(Vector)
+        expect(Vector.create(svgPolygon).normalizePath()).toBeInstanceOf(Vector)
+        expect(Vector.create(svgText).normalizePath()).toBeInstanceOf(Vector)
+        expect(Vector.create(svgRectangle).normalizePath()).toBeInstanceOf(
+          Vector,
         )
-        expect(createVector(svgContainer).normalizePath()).toBeInstanceOf(
-          Vectorizer,
-        )
-        expect(createVector(svgGroup).normalizePath()).toBeInstanceOf(
-          Vectorizer,
-        )
-        expect(createVector(svgCircle).normalizePath()).toBeInstanceOf(
-          Vectorizer,
-        )
-        expect(createVector(svgEllipse).normalizePath()).toBeInstanceOf(
-          Vectorizer,
-        )
-        expect(createVector(svgPolygon).normalizePath()).toBeInstanceOf(
-          Vectorizer,
-        )
-        expect(createVector(svgText).normalizePath()).toBeInstanceOf(Vectorizer)
-        expect(createVector(svgRectangle).normalizePath()).toBeInstanceOf(
-          Vectorizer,
-        )
-        expect(createVector(svgGroup1).normalizePath()).toBeInstanceOf(
-          Vectorizer,
-        )
-        expect(createVector(svgGroup2).normalizePath()).toBeInstanceOf(
-          Vectorizer,
-        )
-        expect(createVector(svgGroup3).normalizePath()).toBeInstanceOf(
-          Vectorizer,
-        )
+        expect(Vector.create(svgGroup1).normalizePath()).toBeInstanceOf(Vector)
+        expect(Vector.create(svgGroup2).normalizePath()).toBeInstanceOf(Vector)
+        expect(Vector.create(svgGroup3).normalizePath()).toBeInstanceOf(Vector)
       })
 
       it('shoule normalize path "d" attribute', () => {
         expect(
-          createVector(svgPath).normalizePath().node.hasAttribute('d'),
+          Vector.create(svgPath).normalizePath().node.hasAttribute('d'),
         ).toBe(true)
         expect(
-          createVector(svgPath2).normalizePath().node.hasAttribute('d'),
+          Vector.create(svgPath2).normalizePath().node.hasAttribute('d'),
         ).toBe(true)
         expect(
-          createVector(svgPath3).normalizePath().node.hasAttribute('d'),
+          Vector.create(svgPath3).normalizePath().node.hasAttribute('d'),
         ).toBe(true)
 
-        expect(createVector(svgPath).normalizePath().attr('d')).toEqual(
+        expect(Vector.create(svgPath).normalizePath().attr('d')).toEqual(
           'M 10 10',
         )
-        expect(createVector(svgPath2).normalizePath().attr('d')).toEqual(
+        expect(Vector.create(svgPath2).normalizePath().attr('d')).toEqual(
           'M 100 100 C 100 100 0 150 100 200 Z',
         )
-        expect(createVector(svgPath3).normalizePath().attr('d')).toEqual(
+        expect(Vector.create(svgPath3).normalizePath().attr('d')).toEqual(
           'M 0 0',
         )
       })
 
       it('should only normalize SVGPathElement', () => {
         expect(
-          createVector(svgContainer).normalizePath().node.hasAttribute('d'),
+          Vector.create(svgContainer).normalizePath().node.hasAttribute('d'),
         ).toBe(false)
         expect(
-          createVector(svgGroup).normalizePath().node.hasAttribute('d'),
+          Vector.create(svgGroup).normalizePath().node.hasAttribute('d'),
         ).toBe(false)
         expect(
-          createVector(svgCircle).normalizePath().node.hasAttribute('d'),
+          Vector.create(svgCircle).normalizePath().node.hasAttribute('d'),
         ).toBe(false)
         expect(
-          createVector(svgEllipse).normalizePath().node.hasAttribute('d'),
+          Vector.create(svgEllipse).normalizePath().node.hasAttribute('d'),
         ).toBe(false)
         expect(
-          createVector(svgPolygon).normalizePath().node.hasAttribute('d'),
+          Vector.create(svgPolygon).normalizePath().node.hasAttribute('d'),
         ).toBe(false)
         expect(
-          createVector(svgText).normalizePath().node.hasAttribute('d'),
+          Vector.create(svgText).normalizePath().node.hasAttribute('d'),
         ).toBe(false)
         expect(
-          createVector(svgRectangle).normalizePath().node.hasAttribute('d'),
+          Vector.create(svgRectangle).normalizePath().node.hasAttribute('d'),
         ).toBe(false)
         expect(
-          createVector(svgGroup1).normalizePath().node.hasAttribute('d'),
+          Vector.create(svgGroup1).normalizePath().node.hasAttribute('d'),
         ).toBe(false)
         expect(
-          createVector(svgGroup2).normalizePath().node.hasAttribute('d'),
+          Vector.create(svgGroup2).normalizePath().node.hasAttribute('d'),
         ).toBe(false)
         expect(
-          createVector(svgGroup3).normalizePath().node.hasAttribute('d'),
+          Vector.create(svgGroup3).normalizePath().node.hasAttribute('d'),
         ).toBe(false)
       })
     })
 
     describe('#createSlicePathData', () => {
       it('should return the path string of a part of sector', () => {
-        expect(createSlicePathData(5, 10, 0, Math.PI / 2))
-          .toBe('M10,0A10,10 0 0,1 6.123233995736766e-16,10L3.061616997868383e-16,5A5,5 0 0,0 5,0Z')
+        expect(createSlicePathData(5, 10, 0, Math.PI / 2)).toBe(
+          'M10,0A10,10 0 0,1 6.123233995736766e-16,10L3.061616997868383e-16,5A5,5 0 0,0 5,0Z',
+        )
       })
     })
   })

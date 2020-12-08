@@ -1,6 +1,13 @@
 import { KeyValue } from '../types'
-import { StringExt, ObjectExt, NumberExt, Dom, FunctionExt } from '../util'
 import { Rectangle, Polyline, Point, Angle, Path, Line } from '../geometry'
+import {
+  StringExt,
+  ObjectExt,
+  NumberExt,
+  FunctionExt,
+  Dom,
+  Vector,
+} from '../util'
 import {
   Attr,
   Router,
@@ -215,7 +222,7 @@ export class EdgeView<
 
   protected renderStringMarkup(markup: string) {
     const cache = this.containers
-    const children = Dom.createVectors(markup)
+    const children = Vector.createVectors(markup)
     // Cache children elements for quicker access.
     children.forEach((child) => {
       const className = child.attr('class')
@@ -314,7 +321,7 @@ export class EdgeView<
   }
 
   protected parseLabelStringMarkup(labelMarkup: string) {
-    const children = Dom.createVectors(labelMarkup)
+    const children = Vector.createVectors(labelMarkup)
     const fragment = document.createDocumentFragment()
     for (let i = 0, n = children.length; i < n; i += 1) {
       const currentChild = children[i].node
@@ -344,9 +351,9 @@ export class EdgeView<
     if (childNodes.length > 1 || childNodes[0].nodeName.toUpperCase() !== 'G') {
       // default markup fragment is not wrapped in `<g/>`
       // add a `<g/>` container
-      vel = Dom.createVector('g').append(fragment)
+      vel = Vector.create('g').append(fragment)
     } else {
-      vel = Dom.createVector(childNodes[0] as SVGElement)
+      vel = Vector.create(childNodes[0] as SVGElement)
     }
 
     vel.addClass(this.prefixClassName('edge-label'))
@@ -444,7 +451,7 @@ export class EdgeView<
 
     if (Markup.isStringMarkup(markup)) {
       let template = StringExt.template(markup)
-      const tool = Dom.createVector(template())
+      const tool = Vector.create(template())
 
       $container.append(tool.node)
       this.toolCache = tool.node
@@ -457,7 +464,7 @@ export class EdgeView<
         const doubleToolMarkup = this.cell.doubleToolMarkup
         if (Markup.isStringMarkup(doubleToolMarkup)) {
           template = StringExt.template(doubleToolMarkup)
-          tool2 = Dom.createVector(template())
+          tool2 = Vector.create(template())
         } else {
           tool2 = tool.clone()
         }
@@ -487,7 +494,7 @@ export class EdgeView<
     if (Markup.isStringMarkup(markup)) {
       const template = StringExt.template(markup)
       this.cell.getVertices().forEach((vertex, index) => {
-        $container.append(Dom.createVector(template({ index, ...vertex })).node)
+        $container.append(Vector.create(template({ index, ...vertex })).node)
       })
     }
 
@@ -505,8 +512,8 @@ export class EdgeView<
 
     if (Markup.isStringMarkup(markup)) {
       const template = StringExt.template(markup)
-      const sourceArrowhead = Dom.createVector(template({ end: 'source' })).node
-      const targetArrowhead = Dom.createVector(template({ end: 'target' })).node
+      const sourceArrowhead = Vector.create(template({ end: 'source' })).node
+      const targetArrowhead = Vector.create(template({ end: 'target' })).node
 
       this.containers.sourceArrowhead = sourceArrowhead
       this.containers.targetArrowhead = targetArrowhead
@@ -1501,7 +1508,7 @@ export class EdgeView<
       throw new Error('Token animation requires a valid connection path.')
     }
 
-    const vToken = Dom.createVector(token)
+    const vToken = Vector.create(token)
     vToken.appendTo(this.graph.view.stage).animateAlongPath(props, path)
 
     setTimeout(() => {
