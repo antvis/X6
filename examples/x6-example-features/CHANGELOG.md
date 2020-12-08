@@ -1,3 +1,19 @@
+## @antv/x6-example-features [1.5.9](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.5.8...@antv/x6-example-features@1.5.9) (2020-12-08)
+
+
+### Bug Fixes
+
+* 🐛 should auto remove tools on cell was removed ([5f455f0](https://github.com/antvis/x6/commit/5f455f0cc1ff51b555ab00066ac694221537ed40)), closes [#383](https://github.com/antvis/x6/issues/383)
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.3.9
+* **@antv/x6-react-shape:** upgraded to 1.1.17
+
 ## @antv/x6-example-features [1.5.8](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.5.7...@antv/x6-example-features@1.5.8) (2020-12-08)
 
 
