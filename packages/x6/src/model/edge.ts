@@ -962,12 +962,10 @@ export class Edge<
     return loop
   }
 
-  getFragmentAncestor() {
-    const cells = [
-      this,
-      this.getSourceNode(), // null if source is a point
-      this.getTargetNode(), // null if target is a point
-    ].filter((item) => item != null)
+  getFragmentAncestor(): Cell | null {
+    const cells = [this, this.getSourceNode(), this.getTargetNode()].filter(
+      (item) => item != null,
+    )
     return this.getCommonAncestor(...cells)
   }
 
