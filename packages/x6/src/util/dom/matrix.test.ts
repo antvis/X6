@@ -11,15 +11,14 @@ import {
   transformLine,
   transformPolyline,
 } from './matrix'
-import { createVector } from './vector'
-import { Vectorizer } from './vectorizer'
 import { createSvgElement } from './elem'
+import { Vector } from '../vector'
 import { Line, Point, Polyline } from '../../geometry'
 
 describe('Dom', () => {
   describe('matrix', () => {
     const fixture = document.createElement('div')
-    const svgContainer = createVector('svg').node
+    const svgContainer = Vector.create('svg').node
     fixture.appendChild(svgContainer)
     document.body.appendChild(fixture)
 
@@ -32,20 +31,22 @@ describe('Dom', () => {
         const svgDocument = createSvgElement('svg') as SVGSVGElement
         const matrix = svgDocument.createSVGMatrix()
         expect(createSVGTransform(matrix)).toBeInstanceOf(SVGTransform)
-        expect(createSVGTransform({
-          a: 1,
-          b: 0,
-          c: 0,
-          d: 1,
-          e: 0,
-          f: 0
-        })).toBeInstanceOf(SVGTransform)
+        expect(
+          createSVGTransform({
+            a: 1,
+            b: 0,
+            c: 0,
+            d: 1,
+            e: 0,
+            f: 0,
+          }),
+        ).toBeInstanceOf(SVGTransform)
       })
     })
 
     describe('#transformPoint', () => {
       const p = { x: 1, y: 2 }
-      const group = createVector('g')
+      const group = Vector.create('g')
       const node = group.node as SVGGraphicsElement
       svgContainer.appendChild(group.node)
 
@@ -95,9 +96,9 @@ describe('Dom', () => {
           return temp > 0 ? Math.floor(temp) : Math.ceil(temp)
         }
 
-        const container = createVector(svgContainer)
-        const group = createVector('g')
-        const rect = createVector('rect')
+        const container = Vector.create(svgContainer)
+        const group = Vector.create('g')
+        const rect = Vector.create('rect')
 
         container.append(group)
         container.append(rect)
@@ -126,9 +127,9 @@ describe('Dom', () => {
       })
 
       it('translate', () => {
-        const container = createVector(svgContainer)
-        const group = createVector('g')
-        const rect = createVector('rect')
+        const container = Vector.create(svgContainer)
+        const group = Vector.create('g')
+        const rect = Vector.create('rect')
 
         container.append(group)
         container.append(rect)
@@ -173,9 +174,7 @@ describe('Dom', () => {
       })
 
       it('should parse martix', () => {
-        const parsed = parseTransformString(
-          'matrix(1,0,0,1,30,30)',
-        )
+        const parsed = parseTransformString('matrix(1,0,0,1,30,30)')
 
         expect(parsed.scale).toEqual({ sx: 1, sy: 1 })
         expect(parsed.rotation).toEqual({
@@ -188,10 +187,10 @@ describe('Dom', () => {
     })
 
     describe('#transformStringToMatrix', () => {
-      let svgTestGroup: Vectorizer
+      let svgTestGroup: Vector
 
       beforeEach(() => {
-        svgTestGroup = createVector('g')
+        svgTestGroup = Vector.create('g')
         svgContainer.appendChild(svgTestGroup.node)
       })
 

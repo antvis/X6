@@ -1,5 +1,5 @@
 import React from 'react'
-import { Graph, Node, Dom } from '@antv/x6'
+import { Graph, Node, Vector } from '@antv/x6'
 import '../index.less'
 
 export default class Example extends React.Component {
@@ -232,7 +232,7 @@ export default class Example extends React.Component {
       const scalableNode = cylinderView.findOne('.scalable') as SVGGElement
       if (pathNode && scalableNode) {
         const ctm = scalableNode.getCTM()!.inverse()
-        const token = Dom.createVector('circle', { r: 8, fill: 'red' })
+        const token = Vector.create('circle', { r: 8, fill: 'red' })
         token.animateAlongPath(
           {
             dur: '4s',

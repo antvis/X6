@@ -140,10 +140,10 @@ Dom.animateAlongPath(
 | options | { [name: string]: string } |  ✓   |        | 动画选项，请参考 [Animation Timing Attributes](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute#Animation_timing_attributes)。 |
 | path    | SVGPathElement             |  ✓   |        | 路径元素。                                                                                                                              |
 
-也可以使用 `Dom.createVector(...)` 方法创建一个 Vectorizer 对象，然后调用该对象上的 `animateAlongPath` 方法来使该 Vectorizer 对象沿指定的路径运动。
+也可以使用 `Vector.create(...)` 方法创建一个 Vector 对象，然后调用该对象上的 `animateAlongPath` 方法来使该 Vector 对象沿指定的路径运动。
 
 ```sign
-Vectorizer.prototype.animateAlongPath(
+Vector.prototype.animateAlongPath(
   options: { [name: string]: string }, 
   path: SVGPathElement
 ): this
@@ -154,7 +154,7 @@ const view = graph.findViewByCell(cylinder)
 if (view) {
   const path = view.findOne('path') as SVGPathElement
   if (path) {
-    const token = Dom.createVector('circle', { r: 8, fill: 'red' })
+    const token = Vector.create('circle', { r: 8, fill: 'red' })
     token.animateAlongPath(
       {
         dur: '4s',
@@ -200,7 +200,7 @@ sendToken(
 
 ```ts
 const view = graph.findViewByCell(edge) as EdgeView
-const token = Dom.createVector('circle', { r: 6, fill: 'green' })
+const token = Vector.create('circle', { r: 6, fill: 'green' })
 view.sendToken(token.node, 1000)
 ```
 

@@ -1,4 +1,5 @@
-import { $, Dom, DataUri, NumberExt, FunctionExt } from '../util'
+import JQuery from 'jquery'
+import { DataUri, NumberExt, FunctionExt, Vector } from '../util'
 import { Size, KeyValue } from '../types'
 import { Rectangle } from '../geometry'
 import { Graph } from './graph'
@@ -12,7 +13,7 @@ export class FormatManager extends Base {
     this.graph.trigger('before:export', options)
 
     const rawSVG = this.view.svg
-    const vSVG = Dom.createVector(rawSVG).clone()
+    const vSVG = Vector.create(rawSVG).clone()
     let clonedSVG = vSVG.node as SVGSVGElement
     const vStage = vSVG.findOne(
       `.${this.view.prefixClassName('graph-svg-stage')}`,
@@ -120,7 +121,7 @@ export class FormatManager extends Base {
       })
 
       clones.forEach((elem, index) => {
-        $(elem).css(customStyles[index])
+        JQuery(elem).css(customStyles[index])
       })
     }
 
@@ -131,7 +132,7 @@ export class FormatManager extends Base {
         .createCDATASection(stylesheet)
 
       vSVG.prepend(
-        Dom.createVector(
+        Vector.create(
           'style',
           {
             type: 'text/css',

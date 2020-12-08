@@ -1,5 +1,5 @@
 import React from 'react'
-import { Dom, Graph, Point, Line, Polyline } from '@antv/x6'
+import { Node, Vector, Graph, Point, Line, Polyline } from '@antv/x6'
 import { Connector } from '@antv/x6/es/registry/connector'
 import '../index.less'
 
@@ -45,14 +45,14 @@ export default class Example extends React.Component {
     }
 
     function createBoundary(color: string) {
-      var boundary = Dom.createVector('path').attr({
+      var boundary = Vector.create('path').attr({
         fill: color,
         'fill-opacity': 0.2,
         stroke: color,
         'stroke-width': 3,
       })
 
-      Dom.createVector(graph.view.stage).prepend(boundary)
+      Vector.create(graph.view.stage).prepend(boundary)
 
       return boundary
     }
@@ -83,7 +83,7 @@ export default class Example extends React.Component {
       }, [])
     }
 
-    function getNodeCornerPoints(node: v1.Node, padding: number = 0) {
+    function getNodeCornerPoints(node: Node, padding: number = 0) {
       var bbox = node.getBBox().inflate(padding)
       return [bbox.origin, bbox.bottomLeft, bbox.corner, bbox.topRight]
     }
