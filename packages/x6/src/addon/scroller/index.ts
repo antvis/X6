@@ -1,8 +1,10 @@
 import { Point, Rectangle } from '../../geometry'
 import { Platform, NumberExt, ObjectExt, Dom, FunctionExt } from '../../util'
+import { Model } from '../../model/model'
 import { Cell } from '../../model/cell'
 import { View } from '../../view/view'
 import { Graph } from '../../graph'
+import { Renderer } from '../../graph/renderer'
 import { GraphView } from '../../graph/view'
 import { EventArgs } from '../../graph/events'
 import { TransformManager } from '../../graph/transform'
@@ -122,6 +124,7 @@ export class Scroller extends View {
         model.on('cell:added', this.update, this)
         model.on('cell:removed', this.update, this)
         model.on('cell:changed', this.update, this)
+        model.on('batch:stop', this.onBatchStop, this)
       }
     }
     this.delegateBackgroundEvents()
@@ -145,6 +148,7 @@ export class Scroller extends View {
     model.off('cell:added', this.update, this)
     model.off('cell:removed', this.update, this)
     model.off('cell:changed', this.update, this)
+    model.off('batch:stop', this.onBatchStop, this)
     this.undelegateBackgroundEvents()
   }
 
@@ -296,6 +300,12 @@ export class Scroller extends View {
             .appendTo(this.pageBreak)
         }
       }
+    }
+  }
+
+  onBatchStop(args: { name: Model.BatchName }) {
+    if (Renderer.UPDATE_DELAYING_BATCHES.includes(args.name)) {
+      this.update()
     }
   }
 
