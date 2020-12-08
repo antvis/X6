@@ -434,13 +434,7 @@ export class EdgeView<
     }
   }
 
-  /**
-   * Tools are a group of clickable elements that manipulate the whole edge.
-   * A good example of this is the remove tool that removes the whole edge.
-   * Tools appear after hovering the edge close to the `source` element/point
-   * of the edge but are offset a bit so that they don't cover the `marker-arrowhead`.
-   */
-  renderTools() {
+  protected renderTools() {
     const container = this.containers.tools
     if (container == null) {
       return this
