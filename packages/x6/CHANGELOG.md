@@ -1,3 +1,10 @@
+## @antv/x6 [1.3.10](https://github.com/antvis/x6/compare/@antv/x6@1.3.9...@antv/x6@1.3.10) (2020-12-08)
+
+
+### Bug Fixes
+
+* add trigger point for update in scroller ([03b4e6a](https://github.com/antvis/x6/commit/03b4e6a76b8c4a5bb251a8707fe7b7907237fae9))
+
 ## @antv/x6 [1.3.9](https://github.com/antvis/x6/compare/@antv/x6@1.3.8...@antv/x6@1.3.9) (2020-12-08)
 
 
