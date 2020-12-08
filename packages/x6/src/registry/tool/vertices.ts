@@ -241,7 +241,6 @@ export class Vertices extends ToolsView.ToolItem<EdgeView, Vertices.Options> {
   }
 
   protected onPathMouseDown(evt: JQuery.MouseDownEvent) {
-    console.log('onPathMouseDown')
     if (this.guard(evt) || !this.options.addable) {
       return
     }
