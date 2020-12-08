@@ -1,4 +1,4 @@
-#!/bin/sh
+ #!/bin/sh
 
 name=jquery
 version=3.5.1
