@@ -15,10 +15,10 @@ export class Vector {
   constructor(
     elem: Vector | SVGElement | string,
     attrs?: Dom.Attributes,
-    children?: Element | Vector | (Element | Vector)[],
+    children?: SVGElement | Vector | (SVGElement | Vector)[],
   ) {
     if (!elem) {
-      throw new TypeError('Invalid element to create vectorizer')
+      throw new TypeError('Invalid element to create vector')
     }
 
     let node: SVGElement
@@ -28,9 +28,9 @@ export class Vector {
       if (elem.toLowerCase() === 'svg') {
         node = Dom.createSvgDocument()
       } else if (elem[0] === '<') {
-        const svgDoc = Dom.createSvgDocument(elem)
+        const doc = Dom.createSvgDocument(elem)
         // only import the first child
-        node = document.importNode(svgDoc.firstChild!, true) as SVGElement
+        node = document.importNode(doc.firstChild!, true) as SVGElement
       } else {
         node = document.createElementNS(Dom.ns.svg, elem) as SVGElement
       }
@@ -187,7 +187,7 @@ export class Vector {
   svg() {
     return this.node instanceof SVGSVGElement
       ? this
-      : Vector.create(this.node.ownerSVGElement as SVGElement)
+      : Vector.create(this.node.ownerSVGElement as SVGSVGElement)
   }
 
   defs() {
@@ -225,10 +225,10 @@ export class Vector {
 
   append(
     elems:
-      | Element
+      | SVGElement
       | DocumentFragment
       | Vector
-      | (Element | DocumentFragment | Vector)[],
+      | (SVGElement | DocumentFragment | Vector)[],
   ) {
     Dom.append(this.node, Vector.toHTMLElements(elems))
     return this
@@ -236,10 +236,10 @@ export class Vector {
 
   prepend(
     elems:
-      | Element
+      | SVGElement
       | DocumentFragment
       | Vector
-      | (Element | DocumentFragment | Vector)[],
+      | (SVGElement | DocumentFragment | Vector)[],
   ) {
     Dom.prepend(this.node, Vector.toHTMLElements(elems))
     return this
@@ -247,10 +247,10 @@ export class Vector {
 
   before(
     elems:
-      | Element
+      | SVGElement
       | DocumentFragment
       | Vector
-      | (Element | DocumentFragment | Vector)[],
+      | (SVGElement | DocumentFragment | Vector)[],
   ) {
     Dom.before(this.node, Vector.toHTMLElements(elems))
     return this
@@ -283,7 +283,7 @@ export class Vector {
     return node ? Vector.create(node as SVGElement) : null
   }
 
-  contains(child: Element | Vector) {
+  contains(child: SVGElement | Vector) {
     return Dom.contains(this.node, child instanceof Vector ? child.node : child)
   }
 
@@ -330,7 +330,7 @@ export class Vector {
     return Dom.toGeometryShape(this.node)
   }
 
-  translateCenterToPoint(p: Point | Point.PointLike) {
+  translateCenterToPoint(p: Point.PointLike) {
     const bbox = this.getBBox({ target: this.svg() })
     const center = bbox.getCenter()
     this.translate(p.x - center.x, p.y - center.y)
@@ -424,7 +424,7 @@ export namespace Vector {
   export function create(
     elem: Vector | SVGElement | string,
     attrs?: Dom.Attributes,
-    children?: Element | Vector | (Element | Vector)[],
+    children?: SVGElement | Vector | (SVGElement | Vector)[],
   ) {
     return new Vector(elem, attrs, children)
   }

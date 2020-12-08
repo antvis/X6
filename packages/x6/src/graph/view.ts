@@ -40,7 +40,7 @@ export class GraphView extends View {
     this.decorator = selectors.decorator as SVGGElement
     this.overlay = selectors.overlay as SVGGElement
     this.container = this.options.container
-    this.restore = Dom.snapshoot(this.container)
+    this.restore = GraphView.snapshoot(this.container)
 
     this.$(this.container)
       .addClass(this.prefixClassName('graph'))
@@ -553,10 +553,35 @@ export namespace GraphView {
       ],
     },
   ]
+
+  export function snapshoot(elem: Element) {
+    const cloned = elem.cloneNode() as Element
+    elem.childNodes.forEach((child) => cloned.appendChild(child))
+
+    return () => {
+      // remove all children
+      Dom.empty(elem)
+
+      // remove all attributes
+      while (elem.attributes.length > 0) {
+        elem.removeAttribute(elem.attributes[0].name)
+      }
+
+      // restore attributes
+      for (let i = 0, l = cloned.attributes.length; i < l; i += 1) {
+        const attr = cloned.attributes[i]
+        elem.setAttribute(attr.name, attr.value)
+      }
+
+      // restore children
+      cloned.childNodes.forEach((child) => elem.appendChild(child))
+    }
+  }
 }
 
 export namespace GraphView {
   const prefixCls = Config.prefixCls
+
   export const events = {
     dblclick: 'onDblClick',
     contextmenu: 'onContextMenu',
