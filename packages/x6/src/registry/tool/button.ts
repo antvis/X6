@@ -5,6 +5,7 @@ import { NodeView } from '../../view/node'
 import { EdgeView } from '../../view/edge'
 import { ToolsView } from '../../view/tool'
 import * as Util from './util'
+import { Cell } from '../../model'
 
 export class Button extends ToolsView.ToolItem<
   EdgeView | NodeView,
@@ -123,6 +124,7 @@ export class Button extends ToolsView.ToolItem<
       FunctionExt.call(onClick, this.cellView, {
         e,
         view: this.cellView,
+        cell: this.cellView.cell,
         btn: this,
       })
     }
@@ -141,6 +143,7 @@ export namespace Button {
       this: CellView,
       args: {
         e: JQuery.MouseDownEvent
+        cell: Cell
         view: CellView
         btn: Button
       },
