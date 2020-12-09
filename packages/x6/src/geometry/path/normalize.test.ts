@@ -1,7 +1,7 @@
 import { Path } from './path'
 import { normalizePathData } from './normalize'
 
-describe('v', () => {
+describe('Path', () => {
   describe('#normalizePathData', () => {
     const paths = [
       ['M 10 10 H 20', 'M 10 10 L 20 10'],
