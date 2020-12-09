@@ -1,6 +1,6 @@
 import { ns } from './elem'
 
-export type Attributes = { [key: string]: string | number }
+export type Attributes = { [key: string]: string | number | null | undefined }
 
 export function getAttribute(elem: Element, name: string) {
   return elem.getAttribute(name)
@@ -20,7 +20,7 @@ export function removeAttribute(elem: Element, name: string) {
 export function setAttribute(
   elem: Element,
   name: string,
-  value?: string | number | null,
+  value?: string | number | null | undefined,
 ) {
   if (value == null) {
     return removeAttribute(elem, name)
@@ -94,6 +94,15 @@ export function qualifyAttr(name: string) {
     ns: null,
     local: name,
   }
+}
+
+export function kebablizeAttrs(attrs: Attributes) {
+  const result: Attributes = {}
+  Object.keys(attrs).forEach((key) => {
+    const name = key.replace(/[A-Z]/g, '-$&').toLowerCase()
+    result[name] = attrs[key]
+  })
+  return result
 }
 
 export function styleToObject(styleString: string) {

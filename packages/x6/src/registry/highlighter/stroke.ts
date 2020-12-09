@@ -50,7 +50,7 @@ export const stroke: Highlighter.Definition<StrokeHighlighterOptions> = {
       'pointer-events': 'none',
       'vector-effect': 'non-scaling-stroke',
       fill: 'none',
-      ...options.attrs,
+      ...(options.attrs ? Dom.kebablizeAttrs(options.attrs) : null),
     })
 
     // const highlightVel = v.create('path').attr()
