@@ -76,5 +76,3 @@ graph.on('node:mouseleave', ({ node }) => {
     node.removeTools()
   }
 })
-
-graph.translate(60, 0)

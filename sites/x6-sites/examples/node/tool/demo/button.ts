@@ -147,5 +147,3 @@ graph.on('node:mouseleave', ({ cell }) => {
     cell.removeTools()
   }
 })
-
-graph.translate(60, 0)
