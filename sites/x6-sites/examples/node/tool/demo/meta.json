@@ -1,0 +1,28 @@
+{
+  "demos": [
+    {
+      "filename": "button.ts",
+      "title": {
+        "zh": "自定义按钮",
+        "en": "Custom Button"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*CrBoSbn-b84AAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "button-remove.ts",
+      "title": {
+        "zh": "删除按钮",
+        "en": "Delete Button"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*EkLwQKIR81MAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "boundary.ts",
+      "title": {
+        "zh": "边框包围盒",
+        "en": "Boundary Box"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*9jEGTak16UEAAAAAAAAAAAAAARQnAQ"
+    }
+  ]
+}
