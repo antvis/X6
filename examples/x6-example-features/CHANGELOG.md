@@ -1,3 +1,19 @@
+## @antv/x6-example-features [1.5.12](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.5.11...@antv/x6-example-features@1.5.12) (2020-12-09)
+
+
+### Bug Fixes
+
+* 🐛 modifer key of panning and selecting ([2b7b871](https://github.com/antvis/x6/commit/2b7b87196693f6eb50851a4327f3d9bdc944beff))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.3.12
+* **@antv/x6-react-shape:** upgraded to 1.1.20
+
 ## @antv/x6-example-features [1.5.11](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.5.10...@antv/x6-example-features@1.5.11) (2020-12-09)
 
 
