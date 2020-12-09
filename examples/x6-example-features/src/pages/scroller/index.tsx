@@ -46,7 +46,7 @@ export default class Example extends React.Component {
       selecting: {
         enabled: true,
         rubberband: true,
-        // modifiers: 'shift',
+        modifiers: 'shift',
       },
       scroller: {
         enabled: true,
@@ -55,7 +55,7 @@ export default class Example extends React.Component {
         pageVisible: true,
         pageBreak: true,
         pannable: true,
-        modifiers: 'shift',
+        // modifiers: 'shift',
       },
       minimap: {
         enabled: true,
