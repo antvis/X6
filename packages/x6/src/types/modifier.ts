@@ -49,13 +49,20 @@ export namespace ModifierKey {
     return false
   }
 
-  export function test(
-    e: JQuery.TriggeredEvent,
+  export function isMatch(
+    e: JQuery.TriggeredEvent | WheelEvent,
     modifiers?: string | ModifierKey[] | null,
+    strict?: boolean,
   ) {
     if (modifiers == null) {
-      return true
+      return strict
+        ? e.altKey !== true &&
+            e.ctrlKey !== true &&
+            e.metaKey !== true &&
+            e.shiftKey !== true
+        : true
     }
+
     const { or, and } = parse(modifiers)
     const match = (key: ModifierKey) => {
       const name = `${key.toLowerCase()}Key` as 'altKey'
