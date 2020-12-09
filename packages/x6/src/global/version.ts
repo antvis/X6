@@ -1,7 +1,7 @@
 /* tslint:disable */
 
 /**
-* Auto generated version file, do not modify it!
-*/
-const version = '1.3.11'
+ * Auto generated version file, do not modify it!
+ */
+const version = '1.3.12'
 export { version }
