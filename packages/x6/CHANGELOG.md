@@ -1,3 +1,11 @@
+## @antv/x6 [1.3.14](https://github.com/antvis/x6/compare/@antv/x6@1.3.13...@antv/x6@1.3.14) (2020-12-09)
+
+
+### Bug Fixes
+
+* 🐛 modifier keys of panning and selecting ([dc97368](https://github.com/antvis/x6/commit/dc97368b52b8810f095e2bf1f771736841e8feed))
+* 🐛 remove space ([a7258cd](https://github.com/antvis/x6/commit/a7258cd2db48ab63b6925101b8f98b38caa04929))
+
 ## @antv/x6 [1.3.13](https://github.com/antvis/x6/compare/@antv/x6@1.3.12...@antv/x6@1.3.13) (2020-12-09)
 
 
