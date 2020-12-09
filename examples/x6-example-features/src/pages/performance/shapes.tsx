@@ -13,78 +13,86 @@ var COUNT = 500
 // true: does not block the UI
 var ASYNC = false
 
-const Node = N.registry.register('performance_node', {
-  size: {
-    width: 100,
-    height: 50,
-  },
-  zIndex: 2,
-  attrs: {
-    body: {
-      // Using of special 'ref-like` attributes it's not generally the most
-      // performer. In this particular case it's different though.
-      // If the `ref` attribute is not defined all the metrics (width, height, x, y)
-      // are taken from the model. There is no need to ask the browser for
-      // an element bounding box.
-      // All calculation are done just in Javascript === very fast.
-      refWidth: '100%',
-      refHeight: '100%',
-      stroke: 'red',
-      strokeWidth: 2,
-      fill: 'lightgray',
-      rx: 5,
-      ry: 5,
+const Node = N.registry.register(
+  'performance_node',
+  {
+    size: {
+      width: 100,
+      height: 50,
     },
-    label: {
-      fill: 'black',
-      // Please see the `ref-width` & `ref-height` comment.
-      refX: '50%',
-      refY: '50%',
-      // Do not use special attribute `x-align` when not necessary.
-      // It calls getBBox() on the SVGText element internally. Measuring text
-      // in the browser is usually the slowest.
-      // `text-anchor` attribute does the same job here (works for the text elements only).
-      textAnchor: 'middle',
-      // Do not use special attribute `y-align` for text vertical positioning. See above.
-      textVerticalAnchor: 'middle',
-    },
-  },
-  // if markup does not change during the application life time, define it on the prototype (i.e. not in the defaults above)
-  markup: [
-    {
-      tagName: 'rect',
-      selector: 'body',
-    },
-    {
-      tagName: 'text',
-      selector: 'label',
-    },
-  ],
-})
-
-const Edge = E.registry.register('performance_edge', {
-  zIndex: 1,
-  attrs: {
-    line: {
-      connection: true,
-      stroke: 'green',
-      strokeWidth: 2,
-      // SVG Markers are pretty fast. Let's take advantage of this.
-      targetMarker: 'classic',
-    },
-  },
-  markup: [
-    {
-      tagName: 'path',
-      selector: 'line',
-      attrs: {
-        // Here comes SVG attributes, for which values won't change during the application life time.
-        // These are specs SVG attributes. Do not add special attributes (e.g. targetMarker, fill: { /* gradient */ })).
-        // These attributes are set during render, and never touched again during updates.
+    zIndex: 2,
+    attrs: {
+      body: {
+        // Using of special 'ref-like` attributes it's not generally the most
+        // performer. In this particular case it's different though.
+        // If the `ref` attribute is not defined all the metrics (width, height, x, y)
+        // are taken from the model. There is no need to ask the browser for
+        // an element bounding box.
+        // All calculation are done just in Javascript === very fast.
+        refWidth: '100%',
+        refHeight: '100%',
+        stroke: 'red',
+        strokeWidth: 2,
+        fill: 'lightgray',
+        rx: 5,
+        ry: 5,
+      },
+      label: {
+        fill: 'black',
+        // Please see the `ref-width` & `ref-height` comment.
+        refX: '50%',
+        refY: '50%',
+        // Do not use special attribute `x-align` when not necessary.
+        // It calls getBBox() on the SVGText element internally. Measuring text
+        // in the browser is usually the slowest.
+        // `text-anchor` attribute does the same job here (works for the text elements only).
+        textAnchor: 'middle',
+        // Do not use special attribute `y-align` for text vertical positioning. See above.
+        textVerticalAnchor: 'middle',
       },
     },
-  ],
-})
+    // if markup does not change during the application life time, define it on the prototype (i.e. not in the defaults above)
+    markup: [
+      {
+        tagName: 'rect',
+        selector: 'body',
+      },
+      {
+        tagName: 'text',
+        selector: 'label',
+      },
+    ],
+  },
+  true,
+)
+
+const Edge = E.registry.register(
+  'performance_edge',
+  {
+    zIndex: 1,
+    attrs: {
+      line: {
+        connection: true,
+        stroke: 'green',
+        strokeWidth: 2,
+        // SVG Markers are pretty fast. Let's take advantage of this.
+        targetMarker: 'classic',
+      },
+    },
+    markup: [
+      {
+        tagName: 'path',
+        selector: 'line',
+        attrs: {
+          // Here comes SVG attributes, for which values won't change during the application life time.
+          // These are specs SVG attributes. Do not add special attributes (e.g. targetMarker, fill: { /* gradient */ })).
+          // These attributes are set during render, and never touched again during updates.
+        },
+      },
+    ],
+  },
+  true,
+)
 
 export default class Example extends React.Component {
   private container: HTMLDivElement
