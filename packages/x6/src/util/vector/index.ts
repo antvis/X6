@@ -158,17 +158,17 @@ export class Vector {
     return this
   }
 
-  setAttributes(attrs: { [attr: string]: string | number | null }) {
+  setAttributes(attrs: { [attr: string]: string | number | null | undefined }) {
     Dom.setAttributes(this.node, attrs)
     return this
   }
 
   attr(): { [attr: string]: string }
   attr(name: string): string
-  attr(attrs: { [attr: string]: string | number | null }): this
+  attr(attrs: { [attr: string]: string | number | null | undefined }): this
   attr(name: string, value: string | number): this
   attr(
-    name?: string | { [attr: string]: string | number | null },
+    name?: string | { [attr: string]: string | number | null | undefined },
     value?: string | number | null,
   ) {
     if (name == null) {

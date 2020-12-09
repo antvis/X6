@@ -137,7 +137,7 @@ export namespace Markup {
         const attrs = define.attrs
         if (attrs) {
           if (svg) {
-            Dom.attr(node, attrs)
+            Dom.attr(node, Dom.kebablizeAttrs(attrs))
           } else {
             JQuery(node).attr(attrs)
           }

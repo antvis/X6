@@ -109,32 +109,19 @@ export class DefsManager extends Base {
           ? children.map(({ tagName, ...other }) =>
               Vector.create(
                 `${tagName}` || 'path',
-                this.normalizeAttrs({
+                Dom.kebablizeAttrs({
                   ...attrs,
                   ...other,
                 }),
               ),
             )
-          : [Vector.create(tagName || 'path', this.normalizeAttrs(attrs))],
+          : [Vector.create(tagName || 'path', Dom.kebablizeAttrs(attrs))],
       )
 
       this.elem.appendChild(pathMarker.node)
     }
 
     return markerId
-  }
-
-  protected normalizeAttrs(attrs: Attr.SimpleAttrs) {
-    const result: Dom.Attributes = {}
-    Object.keys(attrs).forEach((key) => {
-      // xlink:href
-      if (key.indexOf(':') > 0) {
-        result[key] = attrs[key] as string
-      } else {
-        result[StringExt.kebabCase(key)] = attrs[key] as string
-      }
-    })
-    return result
   }
 }
 
