@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@antv/x6-app-draw",
-  "version": "1.0.39",
+  "version": "1.0.40",
   "scripts": {
     "start": "umi dev",
     "build": "umi build",
@@ -10,7 +10,7 @@
     "precommit": "lint-staged"
   },
   "dependencies": {
-    "@antv/x6": "^1.3.12",
+    "@antv/x6": "^1.3.13",
     "antd": "^4.4.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
