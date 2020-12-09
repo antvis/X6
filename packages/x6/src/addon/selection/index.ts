@@ -205,6 +205,10 @@ export class Selection extends View<Selection.EventArgs> {
         this.select(added, { ...options, ui: true })
       }
 
+      if (removed.length === 0 && added.length === 0) {
+        this.updateContainer()
+      }
+
       return this
     }
 
@@ -263,6 +267,7 @@ export class Selection extends View<Selection.EventArgs> {
       offsetX: x,
       offsetY: y,
     })
+
     this.delegateDocumentEvents(Private.documentEvents, evt.data)
   }
 
@@ -296,6 +301,7 @@ export class Selection extends View<Selection.EventArgs> {
         const rect = new Rectangle(origin.x, origin.y, width, height)
         const cells = this.getNodesInArea(rect).map((view) => view.cell)
         this.reset(cells)
+        this.hideRubberband()
         break
       }
 
@@ -307,9 +313,8 @@ export class Selection extends View<Selection.EventArgs> {
       }
 
       default: {
-        if (!action) {
-          this.clean()
-        }
+        this.clean()
+        break
       }
     }
   }
@@ -406,7 +411,7 @@ export class Selection extends View<Selection.EventArgs> {
               this.updateSelectionBoxes()
             }
           } else {
-            const scale = this.graph.scale()
+            const scale = this.graph.transform.getScale()
             this.$boxes.add(this.$selectionContainer).css({
               left: `+=${dx * scale.sx}`,
               top: `+=${dy * scale.sy}`,
@@ -519,6 +524,12 @@ export class Selection extends View<Selection.EventArgs> {
 
   protected showRubberband() {
     this.$container.addClass(
+      this.prefixClassName(Private.classNames.rubberband),
+    )
+  }
+
+  protected hideRubberband() {
+    this.$container.removeClass(
       this.prefixClassName(Private.classNames.rubberband),
     )
   }
@@ -754,9 +765,7 @@ export class Selection extends View<Selection.EventArgs> {
   protected deleteSelectedCells() {
     const cells = this.collection.toArray()
     this.clean()
-    this.graph.model.removeCells(cells, {
-      selection: this.cid,
-    })
+    this.graph.model.removeCells(cells, { selection: this.cid })
   }
 
   protected startRotate({ e }: Handle.EventArgs) {
