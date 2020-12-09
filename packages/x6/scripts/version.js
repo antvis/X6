@@ -19,10 +19,12 @@ const format = (s) => s.replace(/[\n\s]/g, '')
 if (format(code) !== format(old)) {
   fs.writeFile(file, code, (err) => {
     if (err) {
-      throw new Error(`Could not save version file ${version}: ${err}`)
+      throw new Error(
+        `An error occurred while saving version file ${version}: ${err}`,
+      )
     }
-    console.log(`Version file for version ${version} saved.`)
+    console.log(`Current Version ${version}, version file generated.`)
   })
 } else {
-  console.log('Version not updated, ignore.')
+  console.log(`Current Version ${version}, not updated.`)
 }
