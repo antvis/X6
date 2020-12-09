@@ -1,3 +1,12 @@
+## @antv/x6 [1.3.11](https://github.com/antvis/x6/compare/@antv/x6@1.3.10...@antv/x6@1.3.11) (2020-12-09)
+
+
+### Bug Fixes
+
+* 🐛 animateAlongPath: do not rotate by default ([ac77d51](https://github.com/antvis/x6/commit/ac77d51460f3d44254b7a0cba3b465f87879ea25))
+* 🐛 segments tool not work ([86767ae](https://github.com/antvis/x6/commit/86767aebae8c653247ca47cbb54f9061d79d34d4))
+* 🐛 selection box donot disappeared when select nothing ([b1c7314](https://github.com/antvis/x6/commit/b1c7314242530d962d23058a61e526b74df9cfb1))
+
 ## @antv/x6 [1.3.10](https://github.com/antvis/x6/compare/@antv/x6@1.3.9...@antv/x6@1.3.10) (2020-12-08)
 
 
