@@ -1,4 +1,4 @@
-import { Color } from './'
+import { Color } from './color'
 
 describe('Color', () => {
   describe('#constructor', () => {

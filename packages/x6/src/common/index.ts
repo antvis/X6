@@ -1,3 +1,4 @@
+export * from './color'
 export * from './events'
 export * from './basecoat'
 export * from './disposable'

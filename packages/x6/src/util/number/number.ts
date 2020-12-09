@@ -1,7 +1,7 @@
 export {
+  isNaN,
   isNumber,
   isFinite,
-  isNaN,
   isInteger,
   isSafeInteger,
   clamp,
@@ -12,7 +12,6 @@ export {
   toSafeInteger,
   parseInt,
 } from 'lodash-es'
-
 export { isNumeric } from '../lang/lang'
 
 /**

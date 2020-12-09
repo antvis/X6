@@ -1,7 +1,6 @@
 export {
   isArray,
   isArrayLike,
-  toArray,
   uniq,
   union,
   sortedIndex,
@@ -9,5 +8,4 @@ export {
   sortBy,
   groupBy,
   difference,
-  without,
 } from 'lodash-es'
