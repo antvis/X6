@@ -43,6 +43,11 @@ export default class Example extends React.Component {
       grid: {
         visible: true,
       },
+      selecting: {
+        enabled: true,
+        rubberband: true,
+        // modifiers: 'shift',
+      },
       scroller: {
         enabled: true,
         // width: 600,
@@ -50,6 +55,7 @@ export default class Example extends React.Component {
         pageVisible: true,
         pageBreak: true,
         pannable: true,
+        modifiers: 'shift',
       },
       minimap: {
         enabled: true,

@@ -53,15 +53,19 @@ export class SelectionManager extends Base {
   }
 
   protected onBlankMouseDown({ e }: EventArgs['blank:mousedown']) {
-    if (
-      !this.rubberbandDisabled &&
-      ModifierKey.test(e, this.widgetOptions.modifiers) &&
-      this.graph.hook.allowRubberband(e)
-    ) {
+    if (this.allowRubberband(e)) {
       this.startRubberband(e)
     } else {
       this.clean()
     }
+  }
+
+  allowRubberband(e: JQuery.MouseDownEvent) {
+    return (
+      !this.rubberbandDisabled &&
+      ModifierKey.test(e, this.widgetOptions.modifiers) &&
+      this.graph.hook.allowRubberband(e)
+    )
   }
 
   protected onCellMouseMove({ cell }: EventArgs['cell:mousemove']) {
@@ -187,14 +191,14 @@ export class SelectionManager extends Base {
   enableRubberband() {
     if (this.rubberbandDisabled) {
       this.widgetOptions.rubberband = true
-      if (
-        ModifierKey.equals(
-          this.graph.options.scroller.modifiers,
-          this.graph.options.selecting.modifiers,
-        )
-      ) {
-        this.graph.scroller.disablePanning()
-      }
+      // if (
+      //   ModifierKey.equals(
+      //     this.graph.options.scroller.modifiers,
+      //     this.graph.options.selecting.modifiers,
+      //   )
+      // ) {
+      //   this.graph.scroller.disablePanning()
+      // }
     }
     return this
   }

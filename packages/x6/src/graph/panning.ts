@@ -33,13 +33,21 @@ export class PanningManager extends Base {
   }
 
   protected preparePanning({ e }: { e: JQuery.MouseDownEvent }) {
-    if (
+    if (this.allowPanning(e)) {
+      if (this.graph.selection.allowRubberband(e)) {
+        // log warning?
+      } else {
+        this.startPanning(e)
+      }
+    }
+  }
+
+  allowPanning(e: JQuery.MouseDownEvent) {
+    return (
       this.pannable &&
       ModifierKey.test(e, this.widgetOptions.modifiers) &&
       this.graph.hook.allowPanning(e)
-    ) {
-      this.startPanning(e)
-    }
+    )
   }
 
   protected startPanning(evt: JQuery.MouseDownEvent) {
@@ -93,14 +101,14 @@ export class PanningManager extends Base {
     if (!this.pannable) {
       this.widgetOptions.enabled = true
       this.updateClassName()
-      if (
-        ModifierKey.equals(
-          this.graph.options.panning.modifiers,
-          this.graph.options.selecting.modifiers,
-        )
-      ) {
-        this.graph.selection.disableRubberband()
-      }
+      // if (
+      //   ModifierKey.equals(
+      //     this.graph.options.panning.modifiers,
+      //     this.graph.options.selecting.modifiers,
+      //   )
+      // ) {
+      //   this.graph.selection.disableRubberband()
+      // }
     }
   }
 
