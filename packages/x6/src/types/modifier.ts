@@ -1,4 +1,4 @@
-export type ModifierKey = 'alt' | 'ctrl' | 'meta' | 'shift' | 'space'
+export type ModifierKey = 'alt' | 'ctrl' | 'meta' | 'shift'
 
 export namespace ModifierKey {
   export function parse(modifiers: string | ModifierKey[]) {
@@ -58,10 +58,8 @@ export namespace ModifierKey {
     }
     const { or, and } = parse(modifiers)
     const match = (key: ModifierKey) => {
-      if (key === 'space') {
-        return e.which === 32
-      }
-      return e[`${key.toLowerCase()}Key` as 'altKey'] === true
+      const name = `${key.toLowerCase()}Key` as 'altKey'
+      return e[name] === true
     }
 
     return or.some((key) => match(key)) && and.every((key) => match(key))
