@@ -1,3 +1,14 @@
+## @antv/x6-sites-demos [1.1.21](https://github.com/antvis/x6/compare/@antv/x6-sites-demos@1.1.20...@antv/x6-sites-demos@1.1.21) (2020-12-09)
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.3.15
+* **@antv/x6-react-shape:** upgraded to 1.1.23
+
 ## @antv/x6-sites-demos [1.1.20](https://github.com/antvis/x6/compare/@antv/x6-sites-demos@1.1.19...@antv/x6-sites-demos@1.1.20) (2020-12-09)
 
 
