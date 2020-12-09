@@ -36,10 +36,11 @@ export class ScrollerManager extends Base {
   }
 
   protected preparePanning({ e }: { e: JQuery.MouseDownEvent }) {
-    if (this.widget != null && this.allowPanning(e)) {
-      if (this.graph.selection.allowRubberband(e)) {
-        // log warning?
-      } else {
+    if (this.widget) {
+      if (
+        this.allowPanning(e, true) ||
+        (this.allowPanning(e) && !this.graph.selection.allowRubberband(e, true))
+      ) {
         this.updateClassName(true)
         this.widget.startPanning(e)
         this.widget.once('pan:stop', () => this.updateClassName(false))
@@ -47,11 +48,11 @@ export class ScrollerManager extends Base {
     }
   }
 
-  allowPanning(e: JQuery.MouseDownEvent) {
+  allowPanning(e: JQuery.MouseDownEvent, strict?: boolean) {
     return (
       this.widget &&
       this.pannable &&
-      ModifierKey.test(e, this.widgetOptions.modifiers) &&
+      ModifierKey.isMatch(e, this.widgetOptions.modifiers, strict) &&
       this.graph.hook.allowPanning(e)
     )
   }

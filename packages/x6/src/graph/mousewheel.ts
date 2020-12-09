@@ -69,7 +69,7 @@ export class MouseWheel extends Disposable implements IDisablable {
 
     if (
       (guard == null || guard.call(this.graph, e)) &&
-      ModifierKey.test(e as any, this.options.modifiers)
+      ModifierKey.isMatch(e, this.options.modifiers)
     ) {
       evt.preventDefault()
       evt.stopPropagation()
@@ -85,7 +85,7 @@ export class MouseWheel extends Disposable implements IDisablable {
         this.startPos = { x: evt.clientX, y: evt.clientY }
         this.currentScale = this.graph.scroller.widget
           ? this.graph.scroller.widget.zoom()
-          : this.graph.scale().sx
+          : this.graph.transform.getScale().sx
       }
 
       const delta = evt.deltaY

@@ -53,17 +53,22 @@ export class SelectionManager extends Base {
   }
 
   protected onBlankMouseDown({ e }: EventArgs['blank:mousedown']) {
-    if (this.allowRubberband(e)) {
+    if (
+      this.allowRubberband(e, true) ||
+      (this.allowRubberband(e) &&
+        !this.graph.scroller.allowPanning(e, true) &&
+        !this.graph.panning.allowPanning(e, true))
+    ) {
       this.startRubberband(e)
     } else {
       this.clean()
     }
   }
 
-  allowRubberband(e: JQuery.MouseDownEvent) {
+  allowRubberband(e: JQuery.MouseDownEvent, strict?: boolean) {
     return (
       !this.rubberbandDisabled &&
-      ModifierKey.test(e, this.widgetOptions.modifiers) &&
+      ModifierKey.isMatch(e, this.widgetOptions.modifiers, strict) &&
       this.graph.hook.allowRubberband(e)
     )
   }
