@@ -350,7 +350,7 @@ export function animateAlongPath(
   const animate = createSvgElement<SVGAnimationElement>('animateMotion')
   const mpath = createSvgElement('mpath')
 
-  attr(animate, { rotate: 'auto', ...attrs })
+  attr(animate, attrs)
   attr(mpath, { 'xlink:href': `#${id}` })
 
   animate.appendChild(mpath)
