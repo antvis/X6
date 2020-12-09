@@ -1434,7 +1434,7 @@ export class EdgeView<
     let duration
     let reversed
     let selector
-    let rorate = 'auto'
+    let rorate
     let timing = 'linear'
 
     if (typeof options === 'object') {
@@ -1460,7 +1460,7 @@ export class EdgeView<
 
     duration = duration || 1000
 
-    const props: { [key: string]: string } = {
+    const attrs: { [key: string]: string } = {
       dur: `${duration}ms`,
       repeatCount: '1',
       calcMode: timing,
@@ -1468,12 +1468,12 @@ export class EdgeView<
     }
 
     if (rorate) {
-      props.rotate = rorate
+      attrs.rotate = rorate
     }
 
     if (reversed) {
-      props.keyPoints = '1;0'
-      props.keyTimes = '0;1'
+      attrs.keyPoints = '1;0'
+      attrs.keyTimes = '0;1'
     }
 
     if (typeof options === 'object') {
@@ -1485,7 +1485,7 @@ export class EdgeView<
         timing,
         ...others
       } = options
-      Object.keys(others).forEach((key) => (props[key] = others[key]))
+      Object.keys(others).forEach((key) => (attrs[key] = others[key]))
     }
 
     let path
@@ -1503,7 +1503,7 @@ export class EdgeView<
     }
 
     const vToken = Vector.create(token)
-    vToken.appendTo(this.graph.view.stage).animateAlongPath(props, path)
+    vToken.appendTo(this.graph.view.stage).animateAlongPath(attrs, path)
 
     setTimeout(() => {
       vToken.remove()
