@@ -1,3 +1,14 @@
+## @antv/x6-app-dag [1.0.39](https://github.com/antvis/x6/compare/@antv/x6-app-dag@1.0.38...@antv/x6-app-dag@1.0.39) (2020-12-09)
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.3.14
+* **@antv/x6-react-shape:** upgraded to 1.1.22
+
 ## @antv/x6-app-dag [1.0.38](https://github.com/antvis/x6/compare/@antv/x6-app-dag@1.0.37...@antv/x6-app-dag@1.0.38) (2020-12-09)
 
 
