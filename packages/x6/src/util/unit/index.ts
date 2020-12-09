@@ -1,4 +1,4 @@
-import $ from 'jquery'
+import jQuery from 'jquery'
 
 let millimeterSize: number
 
@@ -27,7 +27,7 @@ export type Unit = keyof typeof supportedUnits
 
 export namespace Unit {
   export function measure(cssWidth: string, cssHeight: string, unit?: Unit) {
-    const $test = $('<div/>')
+    const div = jQuery('<div/>')
       .css({
         display: 'inline-block',
         position: 'absolute',
@@ -39,11 +39,11 @@ export namespace Unit {
       .appendTo(document.body)
 
     const size = {
-      width: $test.width() || 0,
-      height: $test.height() || 0,
+      width: div.width() || 0,
+      height: div.height() || 0,
     }
 
-    $test.remove()
+    div.remove()
 
     return size
   }
