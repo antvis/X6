@@ -1221,13 +1221,12 @@ export namespace Edge {
 
       let parent = Edge
       const { inherit, ...others } = options
-      if (inherit) {
-        const base = this.get(inherit)
-        if (base == null) {
-          this.onNotFound(inherit, 'inherited')
-        } else {
-          parent = base
-        }
+      // default inherit from 'dege'
+      const base = this.get(inherit || 'edge')
+      if (base == null && inherit) {
+        this.onNotFound(inherit, 'inherited')
+      } else {
+        parent = base
       }
 
       if (others.constructorName == null) {
