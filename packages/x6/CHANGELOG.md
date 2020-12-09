@@ -1,3 +1,10 @@
+## @antv/x6 [1.3.13](https://github.com/antvis/x6/compare/@antv/x6@1.3.12...@antv/x6@1.3.13) (2020-12-09)
+
+
+### Bug Fixes
+
+* 🐛 typos ([74d03b4](https://github.com/antvis/x6/commit/74d03b401e015018661b2bb4a8689e49d829f7d8))
+
 ## @antv/x6 [1.3.12](https://github.com/antvis/x6/compare/@antv/x6@1.3.11...@antv/x6@1.3.12) (2020-12-09)
 
 
