@@ -1,3 +1,19 @@
+# @antv/x6-sites [1.5.0](https://github.com/antvis/x6/compare/@antv/x6-sites@1.4.15...@antv/x6-sites@1.5.0) (2020-12-09)
+
+
+### Features
+
+* ✨ add org demo ([a4f80f3](https://github.com/antvis/x6/commit/a4f80f38e105f812960d1cd2a84bc9f86ac2d5be))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.3.12
+* **@antv/x6-react-shape:** upgraded to 1.1.20
+
 ## @antv/x6-sites [1.4.15](https://github.com/antvis/x6/compare/@antv/x6-sites@1.4.14...@antv/x6-sites@1.4.15) (2020-12-09)
 
 
