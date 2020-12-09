@@ -1,3 +1,16 @@
+## @antv/x6 [1.3.12](https://github.com/antvis/x6/compare/@antv/x6@1.3.11...@antv/x6@1.3.12) (2020-12-09)
+
+
+### Bug Fixes
+
+* 🐛 inherit from 'edge' by default ([7797340](https://github.com/antvis/x6/commit/7797340406605b7e7ddfc97e0b47b1a726550660))
+* 🐛 modifer key of panning and selecting ([2b7b871](https://github.com/antvis/x6/commit/2b7b87196693f6eb50851a4327f3d9bdc944beff))
+
+
+### Performance Improvements
+
+* ⚡️ support space modifier key ([25e93cb](https://github.com/antvis/x6/commit/25e93cbf5d116cef25454434832362019b81d76b))
+
 ## @antv/x6 [1.3.11](https://github.com/antvis/x6/compare/@antv/x6@1.3.10...@antv/x6@1.3.11) (2020-12-09)
 
 
