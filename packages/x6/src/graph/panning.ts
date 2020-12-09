@@ -33,19 +33,18 @@ export class PanningManager extends Base {
   }
 
   protected preparePanning({ e }: { e: JQuery.MouseDownEvent }) {
-    if (this.allowPanning(e)) {
-      if (this.graph.selection.allowRubberband(e)) {
-        // log warning?
-      } else {
-        this.startPanning(e)
-      }
+    if (
+      this.allowPanning(e, true) ||
+      (this.allowPanning(e) && !this.graph.selection.allowRubberband(e, true))
+    ) {
+      this.startPanning(e)
     }
   }
 
-  allowPanning(e: JQuery.MouseDownEvent) {
+  allowPanning(e: JQuery.MouseDownEvent, strict?: boolean) {
     return (
       this.pannable &&
-      ModifierKey.test(e, this.widgetOptions.modifiers) &&
+      ModifierKey.isMatch(e, this.widgetOptions.modifiers, strict) &&
       this.graph.hook.allowPanning(e)
     )
   }
