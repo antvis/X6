@@ -58,7 +58,7 @@ jobs:
           GIT_COMMITTER_NAME: x6-bot
           GIT_COMMITTER_EMAIL: x6-bot@users.noreply.github.com
 
-      - name: Repository Dispatch
+      - name: 🔀　Repository Dispatch
         if: github.ref == 'refs/heads/master'
         uses: peter-evans/repository-dispatch@v1
         with:
