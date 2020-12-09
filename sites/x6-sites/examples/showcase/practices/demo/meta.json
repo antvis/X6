@@ -11,7 +11,7 @@
     {
       "filename": "validate-connection.ts",
       "title": {
-        "zh": "链接桩验证/高亮/自定吸附",
+        "zh": "链接桩验证/高亮/自动吸附",
         "en": "Validattion/Highlight/Absorb of Port"
       },
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*chF2SIucKCUAAAAAAAAAAAAAARQnAQ"
@@ -23,6 +23,14 @@
         "en": "Expand/Collapse the Tree"
       },
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*dJiNTJ2h3GAAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "org.ts",
+      "title": {
+        "zh": "组织架构图",
+        "en": "Organizational Charts"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*mxDSTpxbMYYAAAAAAAAAAAAAARQnAQ"
     }
   ]
 }
