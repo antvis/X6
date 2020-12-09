@@ -1,4 +1,4 @@
-import { NumberExt } from '../number'
+import { NumberExt } from '../util/number'
 
 export class Color {
   public r: number
