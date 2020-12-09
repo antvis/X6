@@ -36,16 +36,24 @@ export class ScrollerManager extends Base {
   }
 
   protected preparePanning({ e }: { e: JQuery.MouseDownEvent }) {
-    if (
+    if (this.widget != null && this.allowPanning(e)) {
+      if (this.graph.selection.allowRubberband(e)) {
+        // log warning?
+      } else {
+        this.updateClassName(true)
+        this.widget.startPanning(e)
+        this.widget.once('pan:stop', () => this.updateClassName(false))
+      }
+    }
+  }
+
+  allowPanning(e: JQuery.MouseDownEvent) {
+    return (
       this.widget &&
       this.pannable &&
       ModifierKey.test(e, this.widgetOptions.modifiers) &&
       this.graph.hook.allowPanning(e)
-    ) {
-      this.updateClassName(true)
-      this.widget.startPanning(e)
-      this.widget.once('pan:stop', () => this.updateClassName(false))
-    }
+    )
   }
 
   protected updateClassName(isPanning?: boolean) {
@@ -72,15 +80,16 @@ export class ScrollerManager extends Base {
   enablePanning() {
     if (!this.pannable) {
       this.widgetOptions.pannable = true
-      if (
-        ModifierKey.equals(
-          this.graph.options.scroller.modifiers,
-          this.graph.options.selecting.modifiers,
-        )
-      ) {
-        this.graph.selection.disableRubberband()
-      }
       this.updateClassName()
+
+      // if (
+      //   ModifierKey.equals(
+      //     this.graph.options.scroller.modifiers,
+      //     this.graph.options.selecting.modifiers,
+      //   )
+      // ) {
+      //   this.graph.selection.disableRubberband()
+      // }
     }
   }
 
