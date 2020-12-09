@@ -14,7 +14,7 @@ export class Boundary extends ToolsView.ToolItem<
 
     if (this.options.attrs) {
       const { class: className, ...attrs } = this.options.attrs
-      Dom.attr(this.container, attrs)
+      Dom.attr(this.container, Dom.kebablizeAttrs(attrs))
       if (className) {
         Dom.addClass(this.container, className as string)
       }
