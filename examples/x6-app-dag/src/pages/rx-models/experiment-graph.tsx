@@ -109,6 +109,7 @@ class ExperimentGraph extends GraphCore<BaseNode, BaseEdge> {
 
   constructor(expId: string) {
     super({
+      history: true,
       frozen: true,
       selecting: {
         enabled: true,

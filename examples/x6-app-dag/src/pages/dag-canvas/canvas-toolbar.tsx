@@ -33,7 +33,6 @@ export const CanvasToolbar: React.FC<Props> = (props) => {
   const { experimentId } = props
   const [selectionEnabled, setSelectionEnabled] = useState<boolean>(false)
   const expGraph = useExperimentGraph(experimentId)
-  console.log(expGraph)
   const [activeNodeInstance] = useObservableState(
     () => expGraph.activeNodeInstance$,
   )
