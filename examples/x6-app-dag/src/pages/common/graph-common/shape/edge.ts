@@ -1,4 +1,4 @@
-import { Shape } from '@antv/x6'
+import { Shape, Edge } from '@antv/x6'
 import './edge.less'
 
 export class BaseEdge extends Shape.Edge {
@@ -35,4 +35,9 @@ export class X6DemoGroupEdge extends GuideEdge {
 
 X6DemoGroupEdge.config({
   shape: 'X6DemoGroupEdge',
+})
+
+Edge.registry.register({
+  GuideEdge: GuideEdge as any,
+  X6DemoGroupEdge: X6DemoGroupEdge as any,
 })
