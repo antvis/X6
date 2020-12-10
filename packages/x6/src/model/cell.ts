@@ -336,9 +336,7 @@ export class Cell<
           ? this.removePropByPath(key)
           : this.removeAttrByPath(key, options || {})
       }
-      return Array.isArray(key)
-        ? this.setPropByPath(key, value, options || {})
-        : this.setPropByPath(key, value, options || {})
+      return this.setPropByPath(key, value, options || {})
     }
 
     return this.setProp(key, value || {})
