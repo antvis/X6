@@ -1,3 +1,19 @@
+# @antv/x6-sites [1.6.0](https://github.com/antvis/x6/compare/@antv/x6-sites@1.5.4...@antv/x6-sites@1.6.0) (2020-12-10)
+
+
+### Features
+
+* ✨ cross filled edge ([717839b](https://github.com/antvis/x6/commit/717839be089a8aeee1db5d3f80460200811a0499))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.3.17
+* **@antv/x6-react-shape:** upgraded to 1.1.25
+
 ## @antv/x6-sites [1.5.4](https://github.com/antvis/x6/compare/@antv/x6-sites@1.5.3...@antv/x6-sites@1.5.4) (2020-12-10)
 
 
