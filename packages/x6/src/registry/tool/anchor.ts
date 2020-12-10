@@ -246,7 +246,10 @@ class Anchor extends ToolsView.ToolItem<EdgeView, Anchor.Options> {
   }
 
   protected onDblClick() {
-    this.resetAnchor()
+    const anchor = this.options.resetAnchor
+    if (anchor) {
+      this.resetAnchor(anchor === true ? undefined : anchor)
+    }
     this.update()
   }
 }
@@ -257,6 +260,7 @@ namespace Anchor {
     snapRadius?: number
     areaPadding?: number
     restrictArea?: boolean
+    resetAnchor?: boolean | Edge.TerminalCellData['anchor']
     removeRedundancies?: boolean
     defaultAnchorAttrs?: Attr.SimpleAttrs
     customAnchorAttrs?: Attr.SimpleAttrs
@@ -330,8 +334,9 @@ namespace Anchor {
       r: 6,
     },
     areaPadding: 6,
-    restrictArea: true,
     snapRadius: 10,
+    resetAnchor: true,
+    restrictArea: true,
     removeRedundancies: true,
     anchor: Util.getAnchor,
     snap(pos, terminalView, terminalMagnet, terminalType, edgeView, toolView) {
