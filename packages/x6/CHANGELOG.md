@@ -1,3 +1,14 @@
+## @antv/x6 [1.3.17](https://github.com/antvis/x6/compare/@antv/x6@1.3.16...@antv/x6@1.3.17) (2020-12-10)
+
+
+### Bug Fixes
+
+* 🐛 do not reset anchor when `resetAnchor` option is `false` ([223cccc](https://github.com/antvis/x6/commit/223cccc66889abcb49284792d471bd22cf0ad61e))
+* 🐛 path error when rewrite prop ([ff61eb4](https://github.com/antvis/x6/commit/ff61eb4e16752a9186ab00f96429e5dabc4bb557))
+* 🐛 should deep merge attrs ([f869725](https://github.com/antvis/x6/commit/f8697256b2810ce94204a5b376891bcf5a3f4171))
+* 🐛 tool changes should be sync render ([47de4cb](https://github.com/antvis/x6/commit/47de4cb5de7838b8dd9b005a974476998c9974ef))
+* 🐛 tool changes should be sync render ([c3080b4](https://github.com/antvis/x6/commit/c3080b45a08050e937e872123c80b375b77ac3d6))
+
 ## @antv/x6 [1.3.16](https://github.com/antvis/x6/compare/@antv/x6@1.3.15...@antv/x6@1.3.16) (2020-12-10)
 
 ## @antv/x6 [1.3.15](https://github.com/antvis/x6/compare/@antv/x6@1.3.14...@antv/x6@1.3.15) (2020-12-09)
