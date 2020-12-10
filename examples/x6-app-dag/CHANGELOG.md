@@ -1,3 +1,10 @@
+## @antv/x6-app-dag [1.0.42](https://github.com/antvis/x6/compare/@antv/x6-app-dag@1.0.41...@antv/x6-app-dag@1.0.42) (2020-12-10)
+
+
+### Bug Fixes
+
+* **hisotry:** fix history undo error ([65df766](https://github.com/antvis/x6/commit/65df766411010ca9c894f21deb286031abd24cbc)), closes [#353](https://github.com/antvis/x6/issues/353)
+
 ## @antv/x6-app-dag [1.0.41](https://github.com/antvis/x6/compare/@antv/x6-app-dag@1.0.40...@antv/x6-app-dag@1.0.41) (2020-12-10)
 
 
