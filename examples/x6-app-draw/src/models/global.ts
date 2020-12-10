@@ -9,7 +9,7 @@ export function useGridAttr() {
     colorSecond: '#d0d0d0',
     thicknessSecond: 1,
     factor: 4,
-    bgColor: '#ffffff',
+    bgColor: 'transparent',
     showImage: true,
     repeat: 'watermark',
     angle: 30,
