@@ -15,8 +15,8 @@ export default class FlowGraph {
   public static init() {
     this.graph = new Graph({
       container: document.getElementById('container')!,
-      width: 0,
-      height: 0,
+      width: 1000,
+      height: 800,
       grid: {
         size: 10,
         visible: true,
@@ -280,12 +280,21 @@ export default class FlowGraph {
     const { graph } = this
     const container = document.getElementById('container')!
 
-    graph.on('node:contextmenu', ({ e, x, y, cell, view }) => {
+    graph.on('node:contextmenu', ({ cell, view }) => {
+      const oldText = cell.attr('text/text') as string
       cell.attr('text/style/display', 'none')
       const elem = view.container.querySelector('.x6-edit-text') as HTMLElement
       if (elem) {
+        elem.innerText = oldText
         elem.focus()
       }
+      const onBlur = () => {
+        cell.attr('text/text', elem.innerText)
+      }
+      elem.addEventListener('blur', () => {
+        onBlur()
+        elem.removeEventListener('blur', onBlur)
+      })
     })
     graph.on(
       'node:mouseenter',
