@@ -1,3 +1,19 @@
+# @antv/x6-example-features [1.6.0](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.5.16...@antv/x6-example-features@1.6.0) (2020-12-10)
+
+
+### Features
+
+* ✨ angle measurement ([c777712](https://github.com/antvis/x6/commit/c7777120b0b332c618972b3683804ad108464a69))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.3.17
+* **@antv/x6-react-shape:** upgraded to 1.1.25
+
 ## @antv/x6-example-features [1.5.16](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.5.15...@antv/x6-example-features@1.5.16) (2020-12-10)
 
 
