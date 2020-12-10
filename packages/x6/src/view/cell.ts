@@ -256,9 +256,8 @@ export class CellView<
       flag |= this.getFlag('render')
     }
 
-    // TODO: tool changes does not need to be sync
-    // Fix Segments tools
-    if (options.tool) {
+    // tool changes does not need to be sync
+    if (options.toolId) {
       options.async = false
     }
 
@@ -629,7 +628,9 @@ export class CellView<
 
   removeTools() {
     if (this.tools) {
+      console.log('removeTools')
       this.tools.remove()
+      this.cell.removeTools()
       this.graph.off('tools:hide', this.hideTools, this)
       this.graph.off('tools:show', this.showTools, this)
       this.graph.off('tools:remove', this.removeTools, this)
