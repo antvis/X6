@@ -1,3 +1,3 @@
 import { release } from './runner'
 
-release()
+release({ debug: true })
