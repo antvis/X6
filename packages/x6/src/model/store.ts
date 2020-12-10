@@ -179,7 +179,7 @@ export class Store<D> extends Basecoat<Store.EventArgs<D>> {
     options: Store.SetByPathOptions = {},
   ) {
     const delim = '/'
-    const pathArray = Array.isArray(path) ? path : path.split(delim)
+    const pathArray = Array.isArray(path) ? [...path] : path.split(delim)
     const pathString = Array.isArray(path) ? path.join(delim) : path
 
     const property = pathArray[0] as K
