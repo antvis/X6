@@ -256,7 +256,7 @@ export class CellView<
       flag |= this.getFlag('render')
     }
 
-    // tool changes does not need to be sync
+    // tool changes should be sync render
     if (options.toolId) {
       options.async = false
     }
