@@ -281,8 +281,8 @@ const rect = new Shape.Rect({
 
 ```css
 .x6-node rect {
-  fill: '#2ECC71';
-  stroke: '#000';
+  fill: #2ECC71;
+  stroke: #000;
 }
 ```
 
