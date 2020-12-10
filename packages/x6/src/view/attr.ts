@@ -196,10 +196,7 @@ export class AttrManager {
       const item = result.get(node)!
       const arr = item.attrs as Attr.ComplexAttrs[]
       item.attrs = arr.reduceRight(
-        (memo, attrs) => ({
-          ...memo,
-          ...attrs,
-        }),
+        (memo, attrs) => ObjectExt.merge(memo, attrs),
         {},
       )
     })
