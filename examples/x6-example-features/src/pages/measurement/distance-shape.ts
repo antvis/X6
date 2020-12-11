@@ -182,8 +182,6 @@ export const DistanceEdgeBase = Graph.registerEdge(
             transform = `translate(${start.x},${start.y}) rotate(${fixed})`
           }
 
-          console.log(transform, y)
-
           return { transform, y }
         },
       },

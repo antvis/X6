@@ -628,7 +628,6 @@ export class CellView<
 
   removeTools() {
     if (this.tools) {
-      console.log('removeTools')
       this.tools.remove()
       this.cell.removeTools()
       this.graph.off('tools:hide', this.hideTools, this)
