@@ -123,9 +123,9 @@ export class Selection extends View<Selection.EventArgs> {
   protected translating: boolean
 
   protected onNodePositionChanged({
-                                    node,
-                                    options,
-                                  }: Collection.EventArgs['node:change:position']) {
+    node,
+    options,
+  }: Collection.EventArgs['node:change:position']) {
     if (this.options.showNodeSelectionBox !== true && !this.translating) {
       this.translating = true
       const current = node.position()
@@ -463,16 +463,16 @@ export class Selection extends View<Selection.EventArgs> {
 
     return this.options.useCellGeometry
       ? (graph.model
-        .getNodesInArea(rect, options)
-        .map((node) => graph.renderer.findViewByCell(node))
-        .filter((view) => view != null) as CellView[])
+          .getNodesInArea(rect, options)
+          .map((node) => graph.renderer.findViewByCell(node))
+          .filter((view) => view != null) as CellView[])
       : graph.renderer.findViewsInArea(rect, options)
   }
 
   protected notifyBoxEvent<
     K extends keyof Selection.BoxEventArgs,
     T extends JQuery.TriggeredEvent
-    >(name: K, e: T, x: number, y: number) {
+  >(name: K, e: T, x: number, y: number) {
     const data = this.getEventData<EventData.SelectionBox>(e)
     const view = data.activeView
     this.trigger(name, { e, view, x, y, cell: view.cell })
@@ -722,10 +722,10 @@ export class Selection extends View<Selection.EventArgs> {
   }
 
   protected onCollectionUpdated({
-                                  added,
-                                  removed,
-                                  options,
-                                }: Collection.EventArgs['updated']) {
+    added,
+    removed,
+    options,
+  }: Collection.EventArgs['updated']) {
     added.forEach((cell) => {
       this.trigger('cell:selected', { cell, options })
       this.graph.trigger('cell:selected', { cell, options })
@@ -923,10 +923,10 @@ export namespace Selection {
     | false
     | string
     | ((
-    this: Graph,
-    selection: Selection,
-    contentElement: HTMLElement,
-  ) => string)
+        this: Graph,
+        selection: Selection,
+        contentElement: HTMLElement,
+      ) => string)
 
   export type Filter =
     | null
