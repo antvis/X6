@@ -23,7 +23,7 @@ export namespace ConnectionPoint {
      *
      * Default is `0`.
      */
-    offset?: number
+    offset?: number | Point.PointLike
   }
 
   export interface StrokedOptions extends BaseOptions {

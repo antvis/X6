@@ -1,15 +1,32 @@
-import { Point } from '../../geometry'
+import { Point, Line } from '../../geometry'
 
-export function offset(p1: Point, p2: Point, offset?: number) {
-  if (offset == null) {
+export function offset(
+  p1: Point,
+  p2: Point,
+  offset?: number | Point.PointLike,
+) {
+  let tx: number | undefined
+  if (typeof offset === 'object') {
+    if (isFinite(offset.y)) {
+      const line = new Line(p2, p1)
+      const { start, end } = line.parallel(offset.y)
+      p2 = start // tslint:disable-line
+      p1 = end // tslint:disable-line
+    }
+    tx = offset.x
+  } else {
+    tx = offset
+  }
+
+  if (tx == null || isFinite(tx)) {
     return p1
   }
 
   const length = p1.distance(p2)
-  if (offset === 0 && length > 0) {
+  if (tx === 0 && length > 0) {
     return p1
   }
-  return p1.move(p2, -Math.min(offset, length - 1))
+  return p1.move(p2, -Math.min(tx, length - 1))
 }
 
 export function getStrokeWidth(magnet: SVGElement) {
