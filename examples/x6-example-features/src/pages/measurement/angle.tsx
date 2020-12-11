@@ -1,8 +1,7 @@
 import React from 'react'
-import { CellView, Graph, Cell, Edge } from '@antv/x6'
-import './angle-edge'
+import { Graph, Cell, Edge, Angle } from '@antv/x6'
+import './angle-shape'
 import '../index.less'
-import { Angle } from '@antv/x6/es'
 
 export default class Example extends React.Component {
   private container: HTMLDivElement
@@ -22,9 +21,9 @@ export default class Example extends React.Component {
       },
     })
 
-    var rect1 = graph.addNode({ shape: 'angle-node', x: 420, y: 40 })
-    var rect2 = graph.addNode({ shape: 'angle-node', x: 420, y: 460 })
-    var rect3 = graph.addNode({ shape: 'angle-node', x: 80, y: 240 })
+    const rect1 = graph.addNode({ shape: 'angle-node', x: 420, y: 40 })
+    const rect2 = graph.addNode({ shape: 'angle-node', x: 420, y: 460 })
+    const rect3 = graph.addNode({ shape: 'angle-node', x: 80, y: 240 })
 
     const edge1 = graph.addEdge({
       shape: 'angle-edge',
@@ -147,92 +146,6 @@ export default class Example extends React.Component {
     })
 
     graph.unfreeze()
-
-    function openTools(view: CellView) {
-      var cell = view.cell
-      removeTools()
-      if (cell.isEdge()) {
-        var tools = [createBoundary()]
-        switch (cell) {
-          case edge1:
-            tools.push(
-              createAnchor('source', true),
-              createAnchor('target', true),
-            )
-            break
-          case edge2:
-            tools.push(
-              createButton(
-                {
-                  d:
-                    'M -4 -0.8 L -7.2 2.4 L -4 5.6 L -4 3.2 L 1.6 3.2 L 1.6 1.6 L -4 1.6 L -4 -0.8 Z M 7.2 -2.4 L 4 -5.6 L 4 -3.2 L -1.6 -3.2 L -1.6 -1.6 L 4 -1.6 L 4 0.8 L 7.2 -2.4 Z',
-                  cursor: 'pointer',
-                  fill: '#FFFFFF',
-                  stroke: 'none',
-                },
-                -40,
-                function () {
-                  var link = this.model
-                  var directions = ['clockwise', 'anticlockwise']
-                  var direction = link.attr(['targetAngle', 'angleDirection'])
-                  var newDirection =
-                    directions[
-                      (directions.indexOf(direction) + 1) % directions.length
-                    ]
-                  link.attr(['targetAngle', 'angleDirection'], newDirection)
-                },
-              ),
-              createButton(
-                {
-                  d:
-                    'M -4 -0.8 L -7.2 2.4 L -4 5.6 L -4 3.2 L 1.6 3.2 L 1.6 1.6 L -4 1.6 L -4 -0.8 Z M 7.2 -2.4 L 4 -5.6 L 4 -3.2 L -1.6 -3.2 L -1.6 -1.6 L 4 -1.6 L 4 0.8 L 7.2 -2.4 Z',
-                  cursor: 'pointer',
-                  fill: '#FFFFFF',
-                  stroke: 'none',
-                },
-                40,
-                function () {
-                  var link = this.model
-                  var directions = ['small', 'large']
-                  var direction = link.attr(['sourceAngle', 'angleDirection'])
-                  var newDirection =
-                    directions[
-                      (directions.indexOf(direction) + 1) % directions.length
-                    ]
-                  link.attr(['sourceAngle', 'angleDirection'], newDirection)
-                },
-              ),
-              createAnchor('source'),
-              createAnchor('target'),
-            )
-            break
-        }
-      }
-
-      function createAnchor(end, snap) {
-        var anchorTool =
-          end === 'source' ? linkTools.SourceAnchor : linkTools.TargetAnchor
-        if (snap) {
-          return new anchorTool({
-            restrictArea: false,
-            resetAnchor: false,
-            snap: function (coords) {
-              var element = this.getEndView(end).model
-              var bbox = element.getBBox()
-              var center = bbox.center()
-              var angle = element.angle()
-              return bbox
-                .pointNearestToPoint(coords.rotate(center, angle))
-                .rotate(center, -angle)
-            },
-          })
-        } else {
-          return new anchorTool({
-            resetAnchor: false,
-          })
-        }
-      }
-    }
 
     graph.on('edge:mouseup', ({ view, edge }) => {
       console.log('edge:mouseup')
