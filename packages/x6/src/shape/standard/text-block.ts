@@ -69,7 +69,6 @@ export const TextBlock = Base.define({
   attrHooks: {
     text: {
       set(text: string, { cell, view, refBBox, elem, attrs }) {
-        console.log(text)
         if (elem instanceof HTMLElement) {
           elem.textContent = text
         } else {
