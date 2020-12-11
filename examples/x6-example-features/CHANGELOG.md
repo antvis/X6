@@ -1,3 +1,19 @@
+# @antv/x6-example-features [1.7.0](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.6.0...@antv/x6-example-features@1.7.0) (2020-12-11)
+
+
+### Features
+
+* ✨ distance measurement ([ede8f75](https://github.com/antvis/x6/commit/ede8f755ef40c37f6b0b851fcb32a135dd59fb20))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.3.18
+* **@antv/x6-react-shape:** upgraded to 1.1.26
+
 # @antv/x6-example-features [1.6.0](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.5.16...@antv/x6-example-features@1.6.0) (2020-12-10)
 
 
