@@ -9,7 +9,7 @@ export interface BBoxEndpointOptions {
    *
    * Default is `false`, meaning that the unrotated bbox is used.
    */
-  rotated?: boolean
+  rotate?: boolean
 }
 
 export const center = createBBoxAnchor('center')
@@ -35,7 +35,7 @@ function createBBoxAnchor(
     | 'bottomRight',
 ): NodeAnchor.Definition<BBoxEndpointOptions> {
   return function (view, magnet, ref, options: BBoxEndpointOptions = {}) {
-    const bbox = options.rotated
+    const bbox = options.rotate
       ? view.getUnrotatedBBoxOfElement(magnet)
       : view.getBBoxOfElement(magnet)
     const result = bbox[method]
@@ -44,7 +44,7 @@ function createBBoxAnchor(
     result.y += NumberExt.normalizePercentage(options.dy, bbox.height)
 
     const cell = view.cell
-    return options.rotated
+    return options.rotate
       ? result.rotate(-cell.getAngle(), cell.getBBox().getCenter())
       : result
   }
