@@ -2,7 +2,7 @@ import { ResolveOptions, resolve } from './util'
 import { NodeAnchor } from './index'
 
 export interface MiddleSideEndpointOptions extends ResolveOptions {
-  rotated?: boolean
+  rotate?: boolean
   padding?: number
 }
 
@@ -17,7 +17,7 @@ const middleSide: NodeAnchor.ResolvedDefinition<MiddleSideEndpointOptions> = fun
   let center
 
   const node = view.cell
-  if (options.rotated) {
+  if (options.rotate) {
     bbox = view.getUnrotatedBBoxOfElement(magnet)
     center = node.getBBox().getCenter()
     angle = node.getAngle()
@@ -30,7 +30,7 @@ const middleSide: NodeAnchor.ResolvedDefinition<MiddleSideEndpointOptions> = fun
     bbox.inflate(padding)
   }
 
-  if (options.rotated) {
+  if (options.rotate) {
     refPoint.rotate(angle, center)
   }
 
@@ -51,7 +51,7 @@ const middleSide: NodeAnchor.ResolvedDefinition<MiddleSideEndpointOptions> = fun
       break
   }
 
-  return options.rotated ? result.rotate(-angle, center) : result
+  return options.rotate ? result.rotate(-angle, center) : result
 }
 
 /**
