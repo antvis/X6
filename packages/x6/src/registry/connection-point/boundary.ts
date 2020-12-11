@@ -111,7 +111,15 @@ export const boundary: ConnectionPoint.Definition<BoundaryOptions> = function (
     : anchor
   let cpOffset = options.offset || 0
   if (options.stroked) {
-    cpOffset += getStrokeWidth(node) / 2
+    if (typeof cpOffset === 'object') {
+      cpOffset = { ...cpOffset }
+      if (cpOffset.x == null) {
+        cpOffset.x = 0
+      }
+      cpOffset.x += getStrokeWidth(node) / 2
+    } else {
+      cpOffset += getStrokeWidth(node) / 2
+    }
   }
 
   return offset(cp, line.start, cpOffset)
