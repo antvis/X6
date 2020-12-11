@@ -114,6 +114,20 @@ export class Line extends Geometry {
     return this.scale(scale, scale, this.start)
   }
 
+  parallel(distance: number) {
+    const line = this.clone()
+    if (!line.isDifferentiable()) {
+      return line
+    }
+
+    const { start, end } = line
+    const eRef = start.clone().rotate(270, end)
+    const sRef = end.clone().rotate(90, start)
+    start.move(sRef, distance)
+    end.move(eRef, distance)
+    return line
+  }
+
   /**
    * Returns the vector of the line with length equal to length of the line.
    */
