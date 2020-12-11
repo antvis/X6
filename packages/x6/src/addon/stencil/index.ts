@@ -330,7 +330,6 @@ export class Stencil extends View {
   }
 
   protected onSearch(evt: JQuery.TriggeredEvent) {
-    console.log(evt.target.value)
     this.filter(evt.target.value as string, this.options.search)
   }
 
