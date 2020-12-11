@@ -114,7 +114,7 @@ export namespace Config {
           // 1. npm:  update "version" field of package.json
           // 2. exec: build version file of packages/x6/src/global/version.ts
           // 3. git:  collect changed files
-          prepareCmd: 'npm run build:version',
+          prepareCmd: 'npm run build:version --if-present',
         },
       ],
       [
