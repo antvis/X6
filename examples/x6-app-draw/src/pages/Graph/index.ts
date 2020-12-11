@@ -299,17 +299,17 @@ export default class FlowGraph {
     graph.on(
       'node:mouseenter',
       FunctionExt.debounce(() => {
-        const ports = container.querySelectorAll(
-          '.x6-port-body',
-        ) as NodeListOf<SVGAElement>
+        const ports = container.querySelectorAll('.x6-port-body') as NodeListOf<
+          SVGAElement
+        >
         this.showPorts(ports, true)
       }),
       500,
     )
     graph.on('node:mouseleave', () => {
-      const ports = container.querySelectorAll(
-        '.x6-port-body',
-      ) as NodeListOf<SVGAElement>
+      const ports = container.querySelectorAll('.x6-port-body') as NodeListOf<
+        SVGAElement
+      >
       this.showPorts(ports, false)
     })
 
