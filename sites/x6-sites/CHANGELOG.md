@@ -1,3 +1,19 @@
+## @antv/x6-sites [1.6.2](https://github.com/antvis/x6/compare/@antv/x6-sites@1.6.1...@antv/x6-sites@1.6.2) (2020-12-11)
+
+
+### Bug Fixes
+
+* 🐛 offset connection point ([3563838](https://github.com/antvis/x6/commit/3563838e2547976365afea1d495a2288d93512c8))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.3.18
+* **@antv/x6-react-shape:** upgraded to 1.1.26
+
 ## @antv/x6-sites [1.6.1](https://github.com/antvis/x6/compare/@antv/x6-sites@1.6.0...@antv/x6-sites@1.6.1) (2020-12-11)
 
 # @antv/x6-sites [1.6.0](https://github.com/antvis/x6/compare/@antv/x6-sites@1.5.4...@antv/x6-sites@1.6.0) (2020-12-10)
