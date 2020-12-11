@@ -172,21 +172,21 @@ graph.on('edge:connected', ({ isNew, edge }) => {
 - `added`
 - `cell:added`
 - `node:added`（仅当 cell 是节点时才触发）
-- `edge:added`（仅当 cell 是节点时才触发）
+- `edge:added`（仅当 cell 是边时才触发）
 
 当节点/边被移除时，触发以下事件：
 
 - `removed`
 - `cell:removed`
 - `node:removed`（仅当 cell 是节点时才触发）
-- `edge:removed`（仅当 cell 是节点时才触发）
+- `edge:removed`（仅当 cell 是边时才触发）
 
 当节点/边发生任何改变时，触发以下事件：
 
 - `changed`
 - `cell:changed`
 - `node:changed`（仅当 cell 是节点时才触发）
-- `edge:changed`（仅当 cell 是节点时才触发）
+- `edge:changed`（仅当 cell 是边时才触发）
 
 可以在节点/边上监听：
 
