@@ -1,3 +1,17 @@
+## @antv/x6 [1.3.18](https://github.com/antvis/x6/compare/@antv/x6@1.3.17...@antv/x6@1.3.18) (2020-12-11)
+
+
+### Bug Fixes
+
+* 🐛 offset connection point ([3563838](https://github.com/antvis/x6/commit/3563838e2547976365afea1d495a2288d93512c8))
+* 🐛 rotate anchor ([f314602](https://github.com/antvis/x6/commit/f31460212f03091be6273aa6103246186150b7b1))
+
+
+### Performance Improvements
+
+* ⚡️ align anchor ([b0a6b34](https://github.com/antvis/x6/commit/b0a6b340a20cdf989aa7d406eb938fd318c3d10a))
+* ⚡️ parallel line ([b8d5431](https://github.com/antvis/x6/commit/b8d543117f06e723eadca1ecd89de915815fcbaf))
+
 ## @antv/x6 [1.3.17](https://github.com/antvis/x6/compare/@antv/x6@1.3.16...@antv/x6@1.3.17) (2020-12-10)
 
 
