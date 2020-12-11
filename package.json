@@ -11,6 +11,7 @@
     "build:apps": "sh ./scripts/build-apps",
     "build:demos": "sh ./scripts/build-demos",
     "build:sites": "sh ./scripts/build-sites",
+    "build:version": "lerna run build:version",
     "build": "lerna run build",
     "lint": "lerna run lint",
     "test": "lerna run test --no-private",
