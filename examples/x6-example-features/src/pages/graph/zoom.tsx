@@ -24,7 +24,7 @@ export default class Example extends React.Component {
       grid: true,
       scroller: {
         enabled: true,
-      }
+      },
     })
 
     const data = [
@@ -40,8 +40,8 @@ export default class Example extends React.Component {
           body: {
             fill: '#efdbff',
             stroke: '#9254de',
-          }
-        }
+          },
+        },
       }, 
       {
         id: '2',
@@ -55,8 +55,8 @@ export default class Example extends React.Component {
           body: {
             fill: '#efdbff',
             stroke: '#9254de',
-          }
-        }
+          },
+        },
       }, 
       {
         id: '3',
@@ -70,8 +70,8 @@ export default class Example extends React.Component {
           body: {
             fill: '#efdbff',
             stroke: '#9254de',
-          }
-        }
+          },
+        },
       }, 
       {
         id: '4',
@@ -85,8 +85,8 @@ export default class Example extends React.Component {
           body: {
             fill: '#efdbff',
             stroke: '#9254de',
-          }
-        }
+          },
+        },
       }, 
       {
         id: '5',
@@ -100,9 +100,9 @@ export default class Example extends React.Component {
           body: {
             stroke: '#ffa940',
             fill: '#ffd591',
-          }
+          },
         },
-        zIndex: 2
+        zIndex: 2,
       },
       {
         id: '6',
@@ -116,9 +116,9 @@ export default class Example extends React.Component {
           body: {
             stroke: '#ffa940',
             fill: '#ffd591',
-          }
-        }
-      }
+          },
+        },
+      },
     ]
 
     this.graph1.fromJSON(data)
@@ -223,7 +223,7 @@ export default class Example extends React.Component {
           display: 'flex',
           flexFlow: 'wrap',
           flexShrink: 0,
-          padding: '24px 48px'
+          padding: '24px 48px',
         }}>
           <Button onClick={() => this.onZoom(0.1)}>ZoomIn</Button>
           <Button onClick={() => this.onZoom(-0.1)}>ZoomOut</Button>
