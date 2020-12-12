@@ -69,24 +69,24 @@ class ExperimentGraph extends GraphCore<BaseNode, BaseEdge> {
   running$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false)
 
   // 实验数据
-  experiment$: BehaviorSubject<NExperiment.Experiment> = new BehaviorSubject<
-    NExperiment.Experiment
-  >(null as any)
+  experiment$: BehaviorSubject<NExperiment.Experiment> = new BehaviorSubject<NExperiment.Experiment>(
+    null as any,
+  )
 
   // 实验图数据
-  experimentGraph$: BehaviorSubject<
-    NExperimentGraph.ExperimentGraph
-  > = new BehaviorSubject<NExperimentGraph.ExperimentGraph>(null as any)
+  experimentGraph$: BehaviorSubject<NExperimentGraph.ExperimentGraph> = new BehaviorSubject<NExperimentGraph.ExperimentGraph>(
+    null as any,
+  )
 
   // 当前选中节点
-  activeNodeInstance$: BehaviorSubject<
-    NExecutionStatus.ActiveNode
-  > = new BehaviorSubject<NExecutionStatus.ActiveNode>(null as any)
+  activeNodeInstance$: BehaviorSubject<NExecutionStatus.ActiveNode> = new BehaviorSubject<NExecutionStatus.ActiveNode>(
+    null as any,
+  )
 
   // 当前执行状态
-  executionStatus$: BehaviorSubject<
-    NExecutionStatus.ExecutionStatus
-  > = new BehaviorSubject<NExecutionStatus.ExecutionStatus>(null as any)
+  executionStatus$: BehaviorSubject<NExecutionStatus.ExecutionStatus> = new BehaviorSubject<NExecutionStatus.ExecutionStatus>(
+    null as any,
+  )
 
   // 当前弹窗
   activeModal$: BehaviorSubject<
