@@ -5,7 +5,7 @@ export const Image = createShape(
   'image',
   {
     attrs: {
-      body: {
+      image: {
         refWidth: '100%',
         refHeight: '100%',
       },
