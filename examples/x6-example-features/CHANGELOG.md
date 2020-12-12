@@ -1,3 +1,19 @@
+## @antv/x6-example-features [1.7.2](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.7.1...@antv/x6-example-features@1.7.2) (2020-12-12)
+
+
+### Bug Fixes
+
+* fix size invalid on image node ([#397](https://github.com/antvis/x6/issues/397)) ([15fd567](https://github.com/antvis/x6/commit/15fd5673e13825a94bd05ffb4f892645ee20e887))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.3.20
+* **@antv/x6-react-shape:** upgraded to 1.1.28
+
 ## @antv/x6-example-features [1.7.1](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.7.0...@antv/x6-example-features@1.7.1) (2020-12-11)
 
 
