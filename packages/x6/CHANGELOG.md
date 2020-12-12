@@ -1,3 +1,10 @@
+## @antv/x6 [1.3.20](https://github.com/antvis/x6/compare/@antv/x6@1.3.19...@antv/x6@1.3.20) (2020-12-12)
+
+
+### Bug Fixes
+
+* fix size invalid on image node ([#397](https://github.com/antvis/x6/issues/397)) ([15fd567](https://github.com/antvis/x6/commit/15fd5673e13825a94bd05ffb4f892645ee20e887))
+
 ## @antv/x6 [1.3.19](https://github.com/antvis/x6/compare/@antv/x6@1.3.18...@antv/x6@1.3.19) (2020-12-11)
 
 ## @antv/x6 [1.3.18](https://github.com/antvis/x6/compare/@antv/x6@1.3.17...@antv/x6@1.3.18) (2020-12-11)
