@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@antv/x6-app-dag",
-  "version": "1.0.46",
+  "version": "1.0.47",
   "scripts": {
     "start": "umi dev",
     "build": "umi build",
@@ -25,7 +25,7 @@
   "dependencies": {
     "@ant-design/icons": "^4.2.1",
     "@antv/x6": "^1.3.20",
-    "@antv/x6-react-components": "^1.0.1",
+    "@antv/x6-react-components": "^1.0.2",
     "@antv/x6-react-shape": "^1.1.28",
     "@types/dompurify": "^2.0.4",
     "ahooks": "^2.7.0",
