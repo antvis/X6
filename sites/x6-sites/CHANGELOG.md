@@ -1,3 +1,13 @@
+## @antv/x6-sites [1.6.5](https://github.com/antvis/x6/compare/@antv/x6-sites@1.6.4...@antv/x6-sites@1.6.5) (2020-12-13)
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6-react-components:** upgraded to 1.0.2
+
 ## @antv/x6-sites [1.6.4](https://github.com/antvis/x6/compare/@antv/x6-sites@1.6.3...@antv/x6-sites@1.6.4) (2020-12-12)
 
 
