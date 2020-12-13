@@ -129,14 +129,21 @@ module.exports = {
         },
         order: 5,
       },
-
+      {
+        slug: 'api/graph',
+        title: {
+          zh: 'Graph',
+          en: 'Graph',
+        },
+        order: 1,
+      },
       {
         slug: 'api/model',
         title: {
           zh: 'Model',
           en: 'Model',
         },
-        order: 3,
+        order: 2,
       },
       {
         slug: 'api/view',
@@ -144,7 +151,7 @@ module.exports = {
           zh: 'View',
           en: 'View',
         },
-        order: 5,
+        order: 3,
       },
       {
         slug: 'api/registry',
@@ -152,7 +159,7 @@ module.exports = {
           zh: 'Registry',
           en: 'Registry',
         },
-        order: 7,
+        order: 4,
       },
       {
         slug: 'api/ui',
@@ -160,7 +167,7 @@ module.exports = {
           zh: 'UI Components',
           en: 'UI Components',
         },
-        order: 8,
+        order: 5,
       },
     ],
     examples: [
