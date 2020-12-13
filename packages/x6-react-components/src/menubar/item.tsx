@@ -3,6 +3,7 @@ import classnames from 'classnames'
 import addEventListener from 'rc-util/lib/Dom/addEventListener'
 import { MenubarContext } from './context'
 
+const cacheDeactiveMap = new WeakMap()
 class MenubarItemInner extends React.PureComponent<
   MenubarItemInner.Props,
   MenubarItemInner.State
@@ -70,11 +71,7 @@ class MenubarItemInner extends React.PureComponent<
     const relatedTarget = e.relatedTarget
     const currentTarget = e.currentTarget as HTMLDivElement
 
-    if (
-      this.props.context.menubarActived &&
-      this.state.active &&
-      !this.isPrevMenuHiddening(e)
-    ) {
+    if (this.props.context.menubarActived && this.state.active) {
       const childNodes = currentTarget.parentElement!.childNodes
       let shoudDeactive = false
       if (relatedTarget !== window) {
@@ -100,18 +97,18 @@ class MenubarItemInner extends React.PureComponent<
   }
 
   cacheDeactive(elem: any) {
-    elem.DEACTIVE = this.deactive
+    cacheDeactiveMap.set(elem, this.deactive)
   }
 
   callDeactive(elem: any) {
-    if (elem.DEACTIVE) {
-      elem.DEACTIVE()
-      delete elem.DEACTIVE
+    if (cacheDeactiveMap.has(elem)) {
+      cacheDeactiveMap.get(elem)()
+      cacheDeactiveMap.delete(elem)
     }
   }
 
   removeDeactive(elem: any) {
-    delete elem.DEACTIVE
+    cacheDeactiveMap.delete(elem)
   }
 
   active = () => {
