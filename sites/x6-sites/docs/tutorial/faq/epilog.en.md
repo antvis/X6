@@ -16,6 +16,8 @@ redirect_from:
 3.  边相关
     1. [怎么区分 edgeremoved 事件触发原因](#怎么区分-edgeremoved-事件触发原因)
     2. [在 edge:removed 事件中怎么获取目标节点](#在-edgeremoved-事件中怎么获取目标节点)
+4.  连接桩相关
+    1. [怎么监听连接桩的点击事件](#怎么监听连接桩的点击事件)
 
 
 ### X6 与 G6 的区别
@@ -44,11 +46,11 @@ const graph = new Graph({
 ### 怎么支持特定节点的放大缩小
 
 ```ts
- new graph({ 
-   resizing: { 
-     enabled:  (this: Graph, arg: Node<Node.Properties>) => boolean 
-    }
-  })
+new graph({ 
+  resizing: { 
+    enabled:  (this: Graph, arg: Node<Node.Properties>) => boolean 
+  }
+})
 ```
 
 ### 怎么判断节点处于可缩放状态
@@ -79,3 +81,27 @@ graph.on("edge:removed", ({ edge, options }) => {
 });
 ```
 
+### 怎么监听连接桩的点击事件
+
+```ts
+graph.addNode({
+  x: 60,
+  y: 50,
+  width: 180,
+  height: 100,
+  ports: [
+    {
+      id: "port1",
+      attrs: {
+        circle: {
+          event: "port:click", // 添加自定义属性 event 来监听该元素的点击事件
+        }
+      }
+    }
+  ]
+});
+
+graph.on("ndoe:click", () => {
+  // handle
+});
+```
