@@ -347,7 +347,7 @@ const edge = graph.addEdge({
 - `graph.addNode` 方法中 `shape` 的默认值为 `'rect'`
 - `graph.addEdge` 方法中 `shape` 的默认值为 `'edge'`
 
-同时，我们在 X6 中[内置](./shape)了一系列节点和边。
+同时，我们在 X6 中[内置](../../tutorial/basic/cell#内置节点)了一系列节点和边。
 
 内置节点构造函数与 `shape` 名称对应关系如下表。
 
@@ -375,7 +375,7 @@ const edge = graph.addEdge({
 | Shape.DoubleEdge | double-edge | 双线边。 |
 | Shape.ShadowEdge | shadow-edge | 阴影边。 |
 
-除了使用 X6 的内置节点/边，我们还可以注册自定义节点/边并使用他们，想了解更多请参考[自定义节点](../../../tutorial/intermediate/custom-node)和[自定义边](../../../tutorial/intermediate/custom-edge)教程。
+除了使用 X6 的内置节点/边，我们还可以注册自定义节点/边并使用他们，想了解更多请参考[自定义节点](../../tutorial/intermediate/custom-node)和[自定义边](../../tutorial/intermediate/custom-edge)教程。
 
 ### view
 
@@ -510,7 +510,7 @@ const rect = new Shape.Rect({
 
 #### get model
 
-获取节点/边所属的 [Model](./model)，当节点/边被添加到画布时将自动确定。
+获取节点/边所属的 [Model](../graph/model)，当节点/边被添加到画布时将自动确定。
 
 ```ts
 const rect = new Shape.Rect({
@@ -2737,7 +2737,7 @@ addTools(
 
 | 名称             | 类型                             | 必选 | 默认值  | 描述                                                                                                                   |
 |------------------|----------------------------------|:----:|---------|----------------------------------------------------------------------------------------------------------------------|
-| items            | Cell.ToolItem \| Cell.ToolItem[] |      |         | [NodeTool]((../registry/node-tool#presets)) 或 [EdgeTool](../registry/edge-tool#presets) 中定义的小工具。               |
+| items            | Cell.ToolItem \| Cell.ToolItem[] |      |         | [NodeTool](../registry/node-tool#presets) 或 [EdgeTool](../registry/edge-tool#presets) 中定义的小工具。               |
 | name             | string                           |      |         | 工具集名称。当指定了工具集名称，且 `options.reset` 为 `false` 时，指定的名称与现有工具集名称相同时才会向工具集中添加工具。 |
 | options.reset    | boolean                          |      | `false` | 是否清空工具集，默认向工具集追加小工具。                                                                                 |
 | options.silent   | boolean                          |      | `false` | 为 `true` 时不触不触发 `'change:tools'` 事件和小工具重绘。                                                              |
@@ -2768,7 +2768,7 @@ setTools(
 |-------------|-----------------|:----:|-------------|------------------------------------------------------------------------------------------------------------|
 | tools.name  | string          |      | `undefined` | 工具集名称。                                                                                                  |
 | tools.local | boolean         |      | `false`     | 是否渲染到节点/边的容器中，默认为 `false` 表示渲染到画布容器中。                                               |
-| tools.items | Cell.ToolItem[] |      | `undefined` | [NodeTool]((../registry/node-tool#presets)) 或 [EdgeTool](../registry/edge-tool#presets) 中定义的小工具集合。 |
+| tools.items | Cell.ToolItem[] |      | `undefined` | [NodeTool](../registry/node-tool#presets) 或 [EdgeTool](../registry/edge-tool#presets) 中定义的小工具集合。 |
 
 #### getTools()
 
