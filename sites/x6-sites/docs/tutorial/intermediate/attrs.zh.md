@@ -205,4 +205,4 @@ graph.addEdge({
 
 ## 使用箭头
 
-我们可以使用 [`sourceMarker`](../../api/registry/attr#sourcemarker) 和 [`targetMarker`](../../api/registry/attr#targetmarker) 两个特殊属性来为边指定起始箭头和终止箭头，详情请参考[这篇教程](../marker)。
+我们可以使用 [`sourceMarker`](../../api/registry/attr#sourcemarker) 和 [`targetMarker`](../../api/registry/attr#targetmarker) 两个特殊属性来为边指定起始箭头和终止箭头，详情请参考[这篇教程](./marker)。

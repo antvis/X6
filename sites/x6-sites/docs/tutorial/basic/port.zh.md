@@ -505,7 +505,7 @@ graph.addNode({
 
 在 `groups` 的 `label.position` 选项和节点的 `label.position` 选项中都可以指定标签的位置。
 
-我们默认提供了下面几种标签位置，也支持[自定义标签位置并注册使用](/api/registry/port-label-layout#registry)，点击下面的链接了解每种标签位置的使用方法。
+我们默认提供了下面几种标签位置，也支持[自定义标签位置并注册使用](../../api/registry/port-label-layout#registry)，点击下面的链接了解每种标签位置的使用方法。
 
 - [`left`](../../api/registry/port-label-layout#side) 标签位于链接桩左侧。
 - [`right`](../../api/registry/port-label-layout#side) 标签位于链接桩右侧。

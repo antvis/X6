@@ -79,7 +79,7 @@ Rect.config({
 })
 ```
 
-上面代码中，我们通过 `width` 和 `height` 指定了节点的默认大小，然后通过 `markup` 定义了节点由 `<rect>` 和 `<text>` 两个 SVG 元素构成，并分别指定了 `body` 和 `label` 两个选择器，接着就可以在 `attrs` 中通过这两个选择器来指定节点的默认样式。最后通过 `propHooks` 定义了一个[自定义选项](../../basic/cell#自定义选项) `label`，这样我们就可以通过 label 设置标签文本。
+上面代码中，我们通过 `width` 和 `height` 指定了节点的默认大小，然后通过 `markup` 定义了节点由 `<rect>` 和 `<text>` 两个 SVG 元素构成，并分别指定了 `body` 和 `label` 两个选择器，接着就可以在 `attrs` 中通过这两个选择器来指定节点的默认样式。最后通过 `propHooks` 定义了一个[自定义选项](../basic/cell#自定义选项) `label`，这样我们就可以通过 label 设置标签文本。
 
 #### 第三步：注册
 
