@@ -1,17 +1,10 @@
 <template>
-    <div>
-        222
-    </div>
+  <div>222</div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import {
-    Component,
-    Inject,
-    Prop,
-    Provide,
-} from 'vue-property-decorator'
+import { Component, Inject, Prop, Provide } from 'vue-property-decorator'
 
 @Component({ name: 'MenuBar' })
 export default class MenuBar extends Vue {
@@ -23,7 +16,7 @@ export default class MenuBar extends Vue {
   @Prop({ default: false })
   readonly isArrayItem!: boolean
 
-  @Provide('path') get groupPath (): string {
+  @Provide('path') get groupPath(): string {
     if (this.isArrayItem) {
       return `${this.path}[${this.name}]`
     }

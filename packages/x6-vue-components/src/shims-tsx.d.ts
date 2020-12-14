@@ -5,7 +5,7 @@ declare global {
     interface Element extends VNode {}
     interface ElementClass extends Vue {}
     interface IntrinsicElements {
-      [elem: string]: any;
+      [elem: string]: any
     }
   }
 }
