@@ -4,28 +4,23 @@
   "description": "Vue components for building x6 editors",
   "main": "lib/index.js",
   "module": "es/index.js",
-  "unpkg": "dist/x6-vue-components.min.js",
   "types": "lib/index.d.ts",
   "files": [
-    "dist",
     "es",
     "lib"
   ],
   "sideEffects": [
     "es/**/style/*",
-    "lib/**/style/*",
-    "*.less"
+    "lib/**/style/*"
   ],
   "scripts": {
     "clean": "rimraf dist es lib",
-    "lint": "run-s lint:ts lint:es lint:style",
-    "lint:es": "eslint --ext .js scripts --fix",
+    "lint": "run-s lint:ts lint:vue",
+    "lint:vue": "echo \"hi\"",
     "lint:ts": "tslint -c tslint.json -p tsconfig.json --fix",
-    "lint:style": "stylelint 'src/**/*.less' --syntax less --fix",
-    "build:esm": "rollup --config rollup.config.js --format es",
-    "build:cjs": "tsc --module commonjs --target es5 --outDir ./lib",
-    "build:ts": "run-p build:cjs build:esm",
-    "build": "run-s build:ts",
+    "build:esm": "rollup --config rollup.config.js --format es --file es/index.js",
+    "build:cjs": "rollup --config rollup.config.js --format cjs --file lib/index.js",
+    "build": "run-p build:cjs build:esm",
     "prebuild": "run-s lint clean",
     "watch": "watch 'yarn build' ./src",
     "prepare": "yarn build",
@@ -33,8 +28,7 @@
   },
   "keywords": [
     "component",
-    "components",
-    "react-components",
+    "vue",
     "x6",
     "x6-editor",
     "editor",
@@ -57,15 +51,17 @@
     "vue-property-decorator": "^8.4.2"
   },
   "devDependencies": {
-    "eslint": "^7.15.0",
+    "@vue/compiler-sfc": "^3.0.4",
     "lint-staged": "^10.5.3",
+    "rollup": "^2.34.2",
+    "rollup-plugin-css-only": "^3.0.0",
+    "rollup-plugin-typescript": "^1.0.1",
+    "rollup-plugin-vue": "^6.0.0",
     "tslint": "^6.1.3",
     "tslint-config-prettier": "^1.18.0",
     "tslint-eslint-rules": "^5.4.0",
     "typescript": "^4.1.2",
-    "vue": "^2.6.11",
-    "rollup": "^2.34.2",
-    "@rollup/plugin-babel": "^5.2.2"
+    "vue": "^2.6.11"
   },
   "author": {
     "name": "bubkoo",
@@ -80,7 +76,7 @@
   "repository": {
     "type": "git",
     "url": "ssh://git@github.com/antvis/x6.git",
-    "directory": "packages/x6-react-components"
+    "directory": "packages/x6-vue-components"
   },
   "publishConfig": {
     "access": "public",
