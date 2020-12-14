@@ -18,7 +18,7 @@ export function offset(
     tx = offset
   }
 
-  if (tx == null || isFinite(tx)) {
+  if (tx == null || !isFinite(tx)) {
     return p1
   }
 
