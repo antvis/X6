@@ -1,6 +1,6 @@
 <template>
     <div>
-        <slot />
+        222
     </div>
 </template>
 
@@ -13,8 +13,8 @@ import {
     Provide,
 } from 'vue-property-decorator'
 
-@Component({ name: 'FormularioGrouping' })
-export default class FormularioGrouping extends Vue {
+@Component({ name: 'MenuBar' })
+export default class MenuBar extends Vue {
   @Inject({ default: '' }) path!: string
 
   @Prop({ required: true })
@@ -36,3 +36,9 @@ export default class FormularioGrouping extends Vue {
   }
 }
 </script>
+
+<style scoped>
+div {
+  width: 100px;
+}
+</style>

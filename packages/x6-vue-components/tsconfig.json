@@ -6,6 +6,7 @@
     "src/**/*.vue"
   ],
   "compilerOptions": {
+    "module": "es2015",
     "jsx": "preserve",
   }
 }
