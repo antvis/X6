@@ -229,7 +229,7 @@ function shapeWrapper(
 // `d` attribute for SVGPaths
 function dWrapper(options: { resetOffset: boolean }): Attr.SetFunction {
   function pathConstructor(value: string) {
-    return Path.parse(Path.normalize(value))
+    return Path.parse(value)
   }
 
   const shape = shapeWrapper(pathConstructor, options)
