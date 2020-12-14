@@ -1,50 +1,54 @@
 import { Graph } from '@antv/x6'
 
-Graph.registerNode('my-rect', {
-  inherit: 'rect',
-  width: 120,
-  height: 50,
-  ports: {
-    groups: {
-      in: {
-        position: 'top',
-        label: {
+Graph.registerNode(
+  'my-rect',
+  {
+    inherit: 'rect',
+    width: 120,
+    height: 50,
+    ports: {
+      groups: {
+        in: {
           position: 'top',
-        },
-        attrs: {
-          circle: {
-            r: 6,
-            magnet: true,
-            stroke: '#31d0c6',
-            strokeWidth: 2,
-            fill: '#fff',
-            style: {
-              visibility: 'hidden',
+          label: {
+            position: 'top',
+          },
+          attrs: {
+            circle: {
+              r: 6,
+              magnet: true,
+              stroke: '#31d0c6',
+              strokeWidth: 2,
+              fill: '#fff',
+              style: {
+                visibility: 'hidden',
+              },
             },
           },
         },
-      },
-      out: {
-        position: 'bottom',
-        label: {
+        out: {
           position: 'bottom',
-        },
-        attrs: {
-          circle: {
-            r: 6,
-            magnet: true,
-            stroke: '#31d0c6',
-            strokeWidth: 2,
-            fill: '#fff',
-            style: {
-              visibility: 'hidden',
+          label: {
+            position: 'bottom',
+          },
+          attrs: {
+            circle: {
+              r: 6,
+              magnet: true,
+              stroke: '#31d0c6',
+              strokeWidth: 2,
+              fill: '#fff',
+              style: {
+                visibility: 'hidden',
+              },
             },
           },
         },
       },
     },
   },
-}, true)
+  true,
+)
 
 const container = document.getElementById('container')!
 const graph = new Graph({
@@ -68,12 +72,12 @@ graph.addNode({
     {
       id: 'port1',
       group: 'in',
-    }, 
+    },
     {
       id: 'port2',
       group: 'out',
-    }
-  ]
+    },
+  ],
 })
 
 graph.addNode({
@@ -92,20 +96,22 @@ graph.addNode({
     {
       id: 'port1',
       group: 'in',
-    }, 
+    },
     {
       id: 'port2',
       group: 'out',
-    }
-  ]
+    },
+  ],
 })
 
 const changePortsVisible = (visible: boolean) => {
-  const ports = container.querySelectorAll('.x6-port-body') as NodeListOf<SVGAElement>
+  const ports = container.querySelectorAll(
+    '.x6-port-body',
+  ) as NodeListOf<SVGAElement>
   for (let i = 0, len = ports.length; i < len; i = i + 1) {
     ports[i].style.visibility = visible ? 'visible' : 'hidden'
   }
-} 
+}
 
 graph.on('node:mouseenter', () => {
   changePortsVisible(true)
