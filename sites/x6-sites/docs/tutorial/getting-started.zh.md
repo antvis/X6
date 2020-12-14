@@ -105,6 +105,19 @@ const graph = new Graph({
 });
 ```
 
+如果是通过 `script` 标签引入方式，我们的 `Graph` 对象是挂载在 `X6` 这个全局变量下面：
+
+```html
+<script src="https://unpkg.com/@antv/x6/dist/x6.js"></script>
+<script>
+  const graph = new X6.Graph({
+    container: document.getElementById('container'),
+    width: 800,
+    height: 600,
+  });
+</script>
+```
+
 然后，我们就可以使用刚刚创建的 `graph` 来渲染我们的节点和边。
 
 ```ts
