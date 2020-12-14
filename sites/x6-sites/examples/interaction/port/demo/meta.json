@@ -1,0 +1,12 @@
+{
+  "demos": [
+    {
+      "filename": "visible.ts",
+      "title": {
+        "zh": "连接桩的显示/隐藏",
+        "en": "Show/Hide Port"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*kInJT758YB4AAAAAAAAAAAAAARQnAQ"
+    }
+  ]
+}
