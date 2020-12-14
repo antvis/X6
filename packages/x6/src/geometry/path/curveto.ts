@@ -8,12 +8,12 @@ export class CurveTo extends Segment {
 
   constructor(curve: Curve)
   constructor(
-    x0: number,
-    y0: number,
     x1: number,
     y1: number,
     x2: number,
     y2: number,
+    x: number,
+    y: number,
   )
   constructor(
     p1: Point.PointLike | Point.PointData,
@@ -31,22 +31,18 @@ export class CurveTo extends Segment {
     super()
 
     if (arg0 instanceof Curve) {
-      this.controlPoint1 = arg0.controlPoint1.clone()
-      this.controlPoint2 = arg0.controlPoint2.clone()
-      this.endPoint = arg0.end.clone()
+      this.controlPoint1 = arg0.controlPoint1.clone().round(2)
+      this.controlPoint2 = arg0.controlPoint2.clone().round(2)
+      this.endPoint = arg0.end.clone().round(2)
     } else if (typeof arg0 === 'number') {
-      this.controlPoint1 = new Point(arg0, arg1 as number)
-      this.controlPoint2 = new Point(arg2 as number, arg3)
-      this.endPoint = new Point(arg4, arg5)
+      this.controlPoint1 = new Point(arg0, arg1 as number).round(2)
+      this.controlPoint2 = new Point(arg2 as number, arg3).round(2)
+      this.endPoint = new Point(arg4, arg5).round(2)
     } else {
-      this.controlPoint1 = Point.create(arg0)
-      this.controlPoint2 = Point.create(arg1)
-      this.endPoint = Point.create(arg2)
+      this.controlPoint1 = Point.create(arg0).round(2)
+      this.controlPoint2 = Point.create(arg1).round(2)
+      this.endPoint = Point.create(arg2).round(2)
     }
-  }
-
-  get end() {
-    return this.endPoint
   }
 
   get type() {
@@ -170,8 +166,8 @@ export class CurveTo extends Segment {
     return (
       this.start.equals(s.start) &&
       this.end.equals(s.end) &&
-      this.controlPoint1.equals((s as any).controlPoint1) &&
-      this.controlPoint2.equals((s as any).controlPoint2)
+      this.controlPoint1.equals((s as CurveTo).controlPoint1) &&
+      this.controlPoint2.equals((s as CurveTo).controlPoint2)
     )
   }
 
@@ -199,31 +195,31 @@ export class CurveTo extends Segment {
 
 export namespace CurveTo {
   export function create(
-    x0: number,
-    y0: number,
     x1: number,
     y1: number,
     x2: number,
     y2: number,
+    x: number,
+    y: number,
   ): CurveTo
   export function create(
-    x0: number,
-    y0: number,
     x1: number,
     y1: number,
     x2: number,
     y2: number,
+    x: number,
+    y: number,
     ...coords: number[]
   ): CurveTo[]
   export function create(
-    p1: Point.PointLike,
-    p2: Point.PointLike,
-    p3: Point.PointLike,
+    c1: Point.PointLike,
+    c2: Point.PointLike,
+    p: Point.PointLike,
   ): CurveTo
   export function create(
-    p1: Point.PointLike,
-    p2: Point.PointLike,
-    p3: Point.PointLike,
+    c1: Point.PointLike,
+    c2: Point.PointLike,
+    p: Point.PointLike,
     ...points: Point.PointLike[]
   ): CurveTo[]
   export function create(...args: any[]): CurveTo | CurveTo[] {
