@@ -3,10 +3,10 @@
     {
       "filename": "meta.ts",
       "title": {
-        "zh": "按下Meta键后拖动边",
-        "en": "Drag Edge After Press Meta"
+        "zh": "按下 Meta 键后开始连线",
+        "en": "Start Connect After Press Meta"
       },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*uXTqS4_08AcAAAAAAAAAAAAAARQnAQ"
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*FgY8TJWw1TQAAAAAAAAAAAAAARQnAQ"
     }
   ]
 }
