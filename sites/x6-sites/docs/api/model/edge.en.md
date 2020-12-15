@@ -15,7 +15,7 @@ Edge 是边的基类，继承自 [Cell](./cell)，并定义了边的通用属性
 constructor(metadata?: Edge.Metadata)
 ```
 
-其中 `Edge.Metadata` 是创建节点的选项，除了从 Cell [继承](../cell#constructor)的 [`markup`](../cell#markup)、[`attrs`](../cell#attrs-1)、[`zIndex`](../cell#zindex) 等选项外，还支持以下选项。
+其中 `Edge.Metadata` 是创建节点的选项，除了从 Cell [继承](./cell#constructor)的 [`markup`](./cell#markup)、[`attrs`](./cell#attrs-1)、[`zIndex`](./cell#zindex) 等选项外，还支持以下选项。
 
 | 选项         | 类型                | 默认值 | 必选 | 描述                       |
 |--------------|---------------------|--------|:----:|--------------------------|
