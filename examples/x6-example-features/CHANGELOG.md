@@ -1,3 +1,24 @@
+# @antv/x6-example-features [1.8.0](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.7.3...@antv/x6-example-features@1.8.0) (2020-12-16)
+
+
+### Bug Fixes
+
+* 🐛 should auto normalize path data when parse path from string ([7441c38](https://github.com/antvis/x6/commit/7441c383336ecb148311f318075517806619941e))
+
+
+### Features
+
+* ✨ add loop line ([bfa3c67](https://github.com/antvis/x6/commit/bfa3c6743b42c22d64edfbf79f82913129a5a285)), closes [#392](https://github.com/antvis/x6/issues/392)
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.4.0
+* **@antv/x6-react-shape:** upgraded to 1.1.29
+
 ## @antv/x6-example-features [1.7.3](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.7.2...@antv/x6-example-features@1.7.3) (2020-12-13)
 
 
