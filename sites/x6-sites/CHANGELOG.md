@@ -1,3 +1,19 @@
+## @antv/x6-sites [1.6.8](https://github.com/antvis/x6/compare/@antv/x6-sites@1.6.7...@antv/x6-sites@1.6.8) (2020-12-16)
+
+
+### Bug Fixes
+
+* 🐛 should auto normalize path data when parse path from string ([7441c38](https://github.com/antvis/x6/commit/7441c383336ecb148311f318075517806619941e))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.4.0
+* **@antv/x6-react-shape:** upgraded to 1.1.29
+
 ## @antv/x6-sites [1.6.7](https://github.com/antvis/x6/compare/@antv/x6-sites@1.6.6...@antv/x6-sites@1.6.7) (2020-12-15)
 
 ## @antv/x6-sites [1.6.6](https://github.com/antvis/x6/compare/@antv/x6-sites@1.6.5...@antv/x6-sites@1.6.6) (2020-12-14)
