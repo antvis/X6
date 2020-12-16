@@ -1,9 +1,8 @@
 import { Point } from './point'
 import { Rectangle } from './rectangle'
 
-export function round(num: number, precision: number) {
-  const f = Math.pow(10, precision || 0)
-  return Math.round(num * f) / f
+export function round(num: number, precision: number = 0) {
+  return Number.isInteger(num) ? num : +num.toFixed(precision)
 }
 
 export function random(): number
