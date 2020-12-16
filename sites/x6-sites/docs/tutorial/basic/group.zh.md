@@ -80,7 +80,7 @@ new Graph({
         const data = node.getData<any>()
         if (data && data.parent) {
           const targetBBox = node.getBBox()
-          return bbox.intersect(targetBBox)
+          return bbox.isIntersectWithRect(targetBBox)
         }
         return false
       })
