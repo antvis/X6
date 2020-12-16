@@ -1,27 +1,12 @@
-const spaces =
-  '\x09\x0a\x0b\x0c\x0d\x20\xa0\u1680\u180e\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u202f\u205f\u3000\u2028\u2029'
+import { round } from '../util'
 
-const pathCommand = new RegExp(
-  '([a-z])[' +
-    spaces +
-    ',]*((-?\\d*\\.?\\d*(?:e[\\-+]?\\d+)?[' +
-    spaces +
-    ']*,?[' +
-    spaces +
-    ']*)+)', // tslint:disable-line
-  'ig',
-)
-
-const pathValues = new RegExp(
-  // tslint:disable-next-line
-  '(-?\\d*\\.?\\d*(?:e[\\-+]?\\d+)?)[' + spaces + ']*,?[' + spaces + ']*',
-  'ig',
-)
+type Segment = [string, ...number[]]
 
 function rotate(x: number, y: number, rad: number) {
-  const X = x * Math.cos(rad) - y * Math.sin(rad)
-  const Y = x * Math.sin(rad) + y * Math.cos(rad)
-  return { x: X, y: Y }
+  return {
+    x: x * Math.cos(rad) - y * Math.sin(rad),
+    y: x * Math.sin(rad) + y * Math.cos(rad),
+  }
 }
 
 function q2c(
@@ -32,13 +17,13 @@ function q2c(
   x2: number,
   y2: number,
 ) {
-  const _13 = 1 / 3
-  const _23 = 2 / 3
+  const v13 = 1 / 3
+  const v23 = 2 / 3
   return [
-    _13 * x1 + _23 * ax,
-    _13 * y1 + _23 * ay,
-    _13 * x2 + _23 * ax,
-    _13 * y2 + _23 * ay,
+    v13 * x1 + v23 * ax,
+    v13 * y1 + v23 * ay,
+    v13 * x2 + v23 * ax,
+    v13 * y2 + v23 * ay,
     x2,
     y2,
   ]
@@ -58,7 +43,7 @@ function a2c(
 ): any[] {
   // for more information of where this math came from visit:
   // http://www.w3.org/TR/SVG11/implnote.html#ArcImplementationNotes
-  const _120 = (Math.PI * 120) / 180
+  const v120 = (Math.PI * 120) / 180
   const rad = (Math.PI / 180) * (+angle || 0)
   let res = []
   let xy
@@ -100,8 +85,8 @@ function a2c(
     cx = (k * rx * y) / ry + (x1 + x2) / 2
     cy = (k * -ry * x) / rx + (y1 + y2) / 2
 
-    f1 = Math.asin(+((y1 - cy) / ry).toFixed(9))
-    f2 = Math.asin(+((y2 - cy) / ry).toFixed(9))
+    f1 = Math.asin((y1 - cy) / ry)
+    f2 = Math.asin((y2 - cy) / ry)
 
     f1 = x1 < cx ? Math.PI - f1 : f1
     f2 = x2 < cx ? Math.PI - f2 : f2
@@ -129,11 +114,11 @@ function a2c(
   }
 
   let df = f2 - f1
-  if (Math.abs(df) > _120) {
+  if (Math.abs(df) > v120) {
     const f2old = f2
     const x2old = x2
     const y2old = y2
-    f2 = f1 + _120 * (sweepFlag && f2 > f1 ? 1 : -1)
+    f2 = f1 + v120 * (sweepFlag && f2 > f1 ? 1 : -1)
     x2 = cx + rx * Math.cos(f2) // tslint:disable-line
     y2 = cy + ry * Math.sin(f2) // tslint:disable-line
     res = a2c(x2, y2, rx, ry, angle, 0, sweepFlag, x2old, y2old, [
@@ -180,12 +165,34 @@ function a2c(
   }
 }
 
-function parsePathString(pathString: string) {
-  if (!pathString) {
+function parse(pathData: string) {
+  if (!pathData) {
     return null
   }
 
-  const paramCounts = {
+  const spaces =
+    '\x09\x0a\x0b\x0c\x0d\x20\xa0\u1680\u180e\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u202f\u205f\u3000\u2028\u2029'
+
+  // https://regexper.com/#%28%5Ba-z%5D%29%5B%5Cs%2C%5D*%28%28-%3F%5Cd*%5C.%3F%5C%5Cd*%28%3F%3Ae%5B%5C-%2B%5D%3F%5Cd%2B%29%3F%5B%5Cs%5D*%2C%3F%5B%5Cs%5D*%29%2B%29
+  const segmentReg = new RegExp(
+    '([a-z])[' +
+      spaces +
+      ',]*((-?\\d*\\.?\\d*(?:e[\\-+]?\\d+)?[' +
+      spaces +
+      ']*,?[' +
+      spaces +
+      ']*)+)', // tslint:disable-line
+    'ig',
+  )
+
+  // https://regexper.com/#%28-%3F%5Cd*%5C.%3F%5Cd*%28%3F%3Ae%5B%5C-%2B%5D%3F%5Cd%2B%29%3F%29%5B%5Cs%5D*%2C%3F%5B%5Cs%5D*
+  const commandParamReg = new RegExp(
+    // tslint:disable-next-line
+    '(-?\\d*\\.?\\d*(?:e[\\-+]?\\d+)?)[' + spaces + ']*,?[' + spaces + ']*',
+    'ig',
+  )
+
+  const paramsCount = {
     a: 7,
     c: 6,
     h: 1,
@@ -198,103 +205,100 @@ function parsePathString(pathString: string) {
     z: 0,
   }
 
-  const data: any = []
+  const segmetns: Segment[] = []
 
-  pathString.replace(pathCommand, (a: string, b: string, c: string) => {
+  pathData.replace(segmentReg, (input: string, cmd: string, args: string) => {
     const params: number[] = []
-    let name = b.toLowerCase()
+    let command = cmd.toLowerCase()
 
-    c.replace(pathValues, (a: string, b: string) => {
+    args.replace(commandParamReg, (a: string, b: string) => {
       if (b) {
         params.push(+b)
       }
       return a
     })
 
-    if (name === 'm' && params.length > 2) {
-      data.push([b, ...params.splice(0, 2)])
-      name = 'l'
-      b = b === 'm' ? 'l' : 'L' // tslint:disable-line
+    if (command === 'm' && params.length > 2) {
+      segmetns.push([cmd, ...params.splice(0, 2)])
+      command = 'l'
+      cmd = cmd === 'm' ? 'l' : 'L' // tslint:disable-line
     }
 
-    const count = (paramCounts as any)[name]
+    const count = paramsCount[command as keyof typeof paramsCount]
     while (params.length >= count) {
-      data.push([b, ...params.splice(0, count)])
+      segmetns.push([cmd, ...params.splice(0, count)])
       if (!count) {
         break
       }
     }
 
-    return a
+    return input
   })
 
-  return data
+  return segmetns
 }
 
-function toAbsolute(pathString: string) {
-  const pathArray = parsePathString(pathString)
+function abs(pathString: string) {
+  const pathArray = parse(pathString)
 
   // if invalid string, return 'M 0 0'
   if (!pathArray || !pathArray.length) {
     return [['M', 0, 0]]
   }
 
-  const res = []
   let x = 0
   let y = 0
   let mx = 0
   let my = 0
+  const segments = []
 
   for (let i = 0, ii = pathArray.length; i < ii; i += 1) {
     const r: any = []
 
-    res.push(r)
+    segments.push(r)
 
-    const pa = pathArray[i]
-    const action = pa[0]
-    if (action !== action.toUpperCase()) {
-      r[0] = action.toUpperCase()
-
-      let jj
-      let j
+    const segment = pathArray[i]
+    const command = segment[0]
+    if (command !== command.toUpperCase()) {
+      r[0] = command.toUpperCase()
 
       switch (r[0]) {
         case 'A':
-          r[1] = pa[1]
-          r[2] = pa[2]
-          r[3] = pa[3]
-          r[4] = pa[4]
-          r[5] = pa[5]
-          r[6] = +pa[6] + x
-          r[7] = +pa[7] + y
+          r[1] = segment[1]
+          r[2] = segment[2]
+          r[3] = segment[3]
+          r[4] = segment[4]
+          r[5] = segment[5]
+          r[6] = +segment[6] + x
+          r[7] = +segment[7] + y
           break
 
         case 'V':
-          r[1] = +pa[1] + y
+          r[1] = +segment[1] + y
           break
 
         case 'H':
-          r[1] = +pa[1] + x
+          r[1] = +segment[1] + x
           break
 
         case 'M':
-          mx = +pa[1] + x
-          my = +pa[2] + y
+          mx = +segment[1] + x
+          my = +segment[2] + y
 
-          for (j = 1, jj = pa.length; j < jj; j += 1) {
-            r[j] = +pa[j] + (j % 2 ? x : y)
+          for (let j = 1, jj = segment.length; j < jj; j += 1) {
+            r[j] = +segment[j] + (j % 2 ? x : y)
           }
           break
 
         default:
-          for (j = 1, jj = pa.length; j < jj; j += 1) {
-            r[j] = +pa[j] + (j % 2 ? x : y)
+          for (let j = 1, jj = segment.length; j < jj; j += 1) {
+            r[j] = +segment[j] + (j % 2 ? x : y)
           }
           break
       }
     } else {
-      for (let j = 0, jj = pa.length; j < jj; j += 1) {
-        r[j] = pa[j]
+      for (let j = 0, jj = segment.length; j < jj; j += 1) {
+        r[j] = segment[j]
       }
     }
 
@@ -326,11 +330,11 @@ function toAbsolute(pathString: string) {
     }
   }
 
-  return res
+  return segments
 }
 
 function normalize(path: string) {
-  const pathArray = toAbsolute(path)
+  const pathArray = abs(path)
   const attrs = { x: 0, y: 0, bx: 0, by: 0, X: 0, Y: 0, qx: null, qy: null }
 
   function processPath(path: any[], d: any, pcom: string) {
@@ -490,5 +494,11 @@ function normalize(path: string) {
  * string cannot be normalized, 'M 0 0' is returned.
  */
 export function normalizePathData(pathData: string) {
-  return normalize(pathData).join(',').split(',').join(' ')
+  return normalize(pathData)
+    .map((segment: Segment) =>
+      segment.map((item) => (typeof item === 'string' ? item : round(item, 2))),
+    )
+    .join(',')
+    .split(',')
+    .join(' ')
 }
