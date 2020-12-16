@@ -48,7 +48,7 @@ export default class Example extends React.Component {
 
     graph.fromJSON(data)
 
-    graph.scale(0.5, 0.5)
+    graph.zoom(-0.5) // 缩小 50%
     graph.translate(80, 40)
   }
 
