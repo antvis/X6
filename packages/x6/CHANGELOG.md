@@ -1,3 +1,10 @@
+## @antv/x6 [1.4.1](https://github.com/antvis/x6/compare/@antv/x6@1.4.0...@antv/x6@1.4.1) (2020-12-16)
+
+
+### Bug Fixes
+
+* optimize the ModifierKey isMatch method ([10c191d](https://github.com/antvis/x6/commit/10c191de7099c3305268aa36baaf5216d1684acb))
+
 # @antv/x6 [1.4.0](https://github.com/antvis/x6/compare/@antv/x6@1.3.20...@antv/x6@1.4.0) (2020-12-16)
 
 
