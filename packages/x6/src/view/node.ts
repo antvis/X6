@@ -1029,6 +1029,31 @@ export class NodeView<
     })
   }
 
+  protected notifyNodeMove<Key extends keyof NodeView.EventArgs>(
+    name: Key, 
+    e: JQuery.MouseMoveEvent | JQuery.MouseUpEvent, 
+    x: number, 
+    y: number,
+    cell: Cell,
+  ) {
+    const cells = [cell]
+    const selection = this.graph.selection.widget
+    if (selection) {
+      const selectedCells = this.graph.getSelectedCells()
+      cells.push(...selectedCells.filter((c: Cell) => c.id !== cell.id))
+    }
+    cells.forEach((c: Cell) => {
+      this.notify(name, {
+        e,
+        x,
+        y,
+        cell: c,
+        node: c,
+        view: c.findView(this.graph),
+      })
+    })
+  }
+
   protected startNodeDragging(e: JQuery.MouseDownEvent, x: number, y: number) {
     const targetView = this.getDelegatedView()
     if (targetView == null || !targetView.can('nodeMovable')) {
@@ -1061,14 +1086,7 @@ export class NodeView<
       const moving = this.getEventData<EventData.Moving>(e)
       const view = moving.targetView
       view.addClass('node-moving')
-      this.notify('node:move', {
-        e,
-        x,
-        y,
-        view,
-        cell: view.cell,
-        node: view.cell,
-      })
+      this.notifyNodeMove('node:move', e, x, y, view.cell)
     }
 
     const scroller = this.graph.scroller.widget
@@ -1103,14 +1121,7 @@ export class NodeView<
       const meta = this.getEventData<EventData.Moving>(e)
       const view = meta.targetView
       view.removeClass('node-moving')
-      this.notify('node:moved', {
-        e,
-        x,
-        y,
-        view,
-        cell: view.cell,
-        node: view.cell,
-      })
+      this.notifyNodeMove('node:moved', e, x, y, view.cell)
     }
 
     data.moving = false
