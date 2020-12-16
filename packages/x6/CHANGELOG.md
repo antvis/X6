@@ -1,3 +1,17 @@
+# @antv/x6 [1.4.0](https://github.com/antvis/x6/compare/@antv/x6@1.3.20...@antv/x6@1.4.0) (2020-12-16)
+
+
+### Bug Fixes
+
+* 🐛 offset connection point ([3abfb53](https://github.com/antvis/x6/commit/3abfb53a040db0cfc4964d71ea64ce5f008a63b2))
+* 🐛 round path segment points ([4244439](https://github.com/antvis/x6/commit/4244439057fb20976edab3c334840fb1446ae218))
+* 🐛 should auto normalize path data when parse path from string ([7441c38](https://github.com/antvis/x6/commit/7441c383336ecb148311f318075517806619941e))
+
+
+### Features
+
+* ✨ add loop line ([bfa3c67](https://github.com/antvis/x6/commit/bfa3c6743b42c22d64edfbf79f82913129a5a285)), closes [#392](https://github.com/antvis/x6/issues/392)
+
 ## @antv/x6 [1.3.20](https://github.com/antvis/x6/compare/@antv/x6@1.3.19...@antv/x6@1.3.20) (2020-12-12)
 
 
