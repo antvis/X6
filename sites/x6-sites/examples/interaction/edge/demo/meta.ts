@@ -4,9 +4,7 @@ const container = document.getElementById('container')
 const graph = new Graph({
   container,
   grid: true,
-  keyboard: {
-    enabled: true,
-  },
+  keyboard: true,
   connecting: {
     dangling: false,
   },
@@ -15,16 +13,15 @@ const graph = new Graph({
 const source = graph.addNode({
   shape: 'rect',
   width: 120,
-  height: 60,
-  x: 100,
-  y: 100,
+  height: 50,
+  x: 120,
+  y: 50,
+  label: 'Hello',
   attrs: {
     body: {
-      fill: '#ff7875',
-      stroke: '#ff4d4f',
-    },
-    text: {
-      fill: '#ffffff',
+      fill: '#efdbff',
+      stroke: '#9254de',
+      strokeWidth: 2,
     },
   },
 })
@@ -32,16 +29,15 @@ const source = graph.addNode({
 graph.addNode({
   shape: 'rect',
   width: 120,
-  height: 60,
+  height: 50,
   x: 500,
-  y: 200,
+  y: 250,
+  label: 'World',
   attrs: {
     body: {
-      fill: '#ff9c6e',
-      stroke: '#ff7a45',
-    },
-    text: {
-      fill: '#ffffff',
+      fill: '#ffd591',
+      stroke: '#ffa940',
+      strokeWidth: 2,
     },
   },
 })

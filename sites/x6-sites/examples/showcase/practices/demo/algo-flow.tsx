@@ -70,13 +70,11 @@ Graph.registerConnector(
     const v1 = { x: source.x, y: source.y + offset + control }
     const v2 = { x: target.x, y: target.y - offset - control }
 
-    return Path.normalize(
-      `M ${source.x} ${source.y}
+    return `M ${source.x} ${source.y}
        L ${source.x} ${source.y + offset}
        C ${v1.x} ${v1.y} ${v2.x} ${v2.y} ${target.x} ${target.y - offset}
        L ${target.x} ${target.y}
-      `,
-    )
+      `
   },
   true,
 )

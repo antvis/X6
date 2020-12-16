@@ -21,7 +21,7 @@ export function normalize(
     offsetY = offset2
   }
 
-  const path = Path.parse(Path.normalize(d))
+  const path = Path.parse(d)
   const bbox = path.bbox()
   if (bbox) {
     let ty = -bbox.height / 2 - bbox.y
