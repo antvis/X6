@@ -28,7 +28,7 @@ import { Graph } from '@antv/x6';
 
 - https://unpkg.com/@antv/x6/dist/x6.js
 - https://cdn.jsdelivr.net/npm/@antv/x6/dist/x6.js
-- https://cdnjs.com/libraries/antv-x6
+- https://cdnjs.cloudflare.com/ajax/libs/antv-x6/1.3.20/x6.js (不支持获取最新版)
 
 ```html
 <script src="https://unpkg.com/@antv/x6/dist/x6.js"></script>
@@ -36,12 +36,12 @@ import { Graph } from '@antv/x6';
 
 对于生产环境，我们推荐使用一个明确的版本号，以避免新版本造成的不可预期的破坏：
 
-- https://unpkg.com/@antv/x6@1.0.0/dist/x6.js
-- https://cdn.jsdelivr.net/npm/@antv/x6@1.0.0/dist/x6.js
-- https://cdnjs.com/libraries/antv-x6
+- https://unpkg.com/@antv/x6@1.1.1/dist/x6.js
+- https://cdn.jsdelivr.net/npm/@antv/x6@1.1.1/dist/x6.js
+- https://cdnjs.cloudflare.com/ajax/libs/antv-x6/1.1.1/x6.js
 
 ```html
-<script src="https://unpkg.com/@antv/x6@1.0.0/dist/x6.js"></script>
+<script src="https://unpkg.com/@antv/x6@1.1.1/dist/x6.js"></script>
 ```
 
 ## 开始使用
