@@ -45,7 +45,7 @@ For learning purposes, you can use the latest version with one of the CDN:
 
 - https://unpkg.com/@antv/x6/dist/x6.js
 - https://cdn.jsdelivr.net/npm/@antv/x6/dist/x6.js
-- https://cdnjs.com/libraries/antv-x6
+- https://cdnjs.cloudflare.com/ajax/libs/antv-x6/1.3.20/x6.js (the latest version is not supported)
 
 ```html
 <script src="https://unpkg.com/@antv/x6/dist/x6.js"></script>
@@ -53,12 +53,12 @@ For learning purposes, you can use the latest version with one of the CDN:
 
 For production, we recommend linking to a specific version number to avoid unexpected breakage from newer versions:
 
-- https://unpkg.com/@antv/x6@1.0.0/dist/x6.js
-- https://cdn.jsdelivr.net/npm/@antv/x6@1.0.0/dist/x6.js
-- https://cdnjs.com/libraries/antv-x6
+- https://unpkg.com/@antv/x6@1.1.1/dist/x6.js
+- https://cdn.jsdelivr.net/npm/@antv/x6@1.1.1/dist/x6.js
+- https://cdnjs.cloudflare.com/ajax/libs/antv-x6/1.1.1/x6.js
 
 ```html
-<script src="https://unpkg.com/@antv/x6@1.0.0/dist/x6.js"></script>
+<script src="https://unpkg.com/@antv/x6@1.1.1/dist/x6.js"></script>
 ```
 
 ## Usage
