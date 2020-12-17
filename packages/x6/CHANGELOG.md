@@ -1,3 +1,20 @@
+# @antv/x6 [1.5.0](https://github.com/antvis/x6/compare/@antv/x6@1.4.2...@antv/x6@1.5.0) (2020-12-17)
+
+
+### Bug Fixes
+
+* 🐛 should return `stop` method when calling `sendToken` ([21276b2](https://github.com/antvis/x6/commit/21276b2a0f396b8e8343f133fed9383142468f5d))
+
+
+### Features
+
+* ✨ add `animate` and `animateTransform` ([b2ebf69](https://github.com/antvis/x6/commit/b2ebf69f2c311b1b8056179005d8fafd0a7eb8e9))
+
+
+### Performance Improvements
+
+* ⚡️ add transition callbacks and events for animation lifecycle ([462abd0](https://github.com/antvis/x6/commit/462abd0aa06e28bbbabf96ffd0493af4a9af6e1a)), closes [#419](https://github.com/antvis/x6/issues/419) [#420](https://github.com/antvis/x6/issues/420)
+
 ## @antv/x6 [1.4.2](https://github.com/antvis/x6/compare/@antv/x6@1.4.1...@antv/x6@1.4.2) (2020-12-16)
 
 ## @antv/x6 [1.4.1](https://github.com/antvis/x6/compare/@antv/x6@1.4.0...@antv/x6@1.4.1) (2020-12-16)
