@@ -2,9 +2,9 @@
 title: EdgeView
 order: 3
 redirect_from:
-  - /en/docs
-  - /en/docs/api
-  - /en/docs/api/view
+  - /zh/docs
+  - /zh/docs/api
+  - /zh/docs/api/view
 ---
 
 边视图，继承自 [CellView](./cellview)。
@@ -45,11 +45,11 @@ sendToken(
         reversed?: boolean
         selector?: string
       },
-  callback?: () => any,
-): this
+  callback?: () => void,
+): () => void
 ```
 
-开始一个沿边路径运动的动画。
+开始一个沿边路径运动的动画，返回一个停止该动画的方法。
 
 <span class="tag-param">参数<span>
 
@@ -67,6 +67,9 @@ sendToken(
 const view = graph.findViewByCell(edge) as EdgeView
 const token = Vector.create('circle', { r: 6, fill: 'green' })
 view.sendToken(token.node, 1000)
+
+// 5s 后停止该动画
+setTimeout(stop, 5000)
 ```
 
 <iframe src="/demos/tutorial/advanced/animation/signal"></iframe>
