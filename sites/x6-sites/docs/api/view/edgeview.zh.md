@@ -59,7 +59,13 @@ sendToken(
 | options.duration | number               |      | `1000`      | 动画持续的时间，单位毫秒。                                       |
 | options.reversed | boolean              |      | `false`     | 是否沿反方向运动，即从边的终点运动到起点。                       |
 | options.selector | string               |      | `undefined` | 动画参照的 SVGPathElement 元素，默认沿边的 SVGPathElement 运动。 |
-| callback         | () => any            |      |             | 动画执行完成后的回调函数。                                      |
+| options.start    | (e) => void          |      |             | 动画开始时的回调。                                              |
+| options.complete | (e) => void          |      |             | 动画结束时的回调。                                              |
+| options.repeat   | (e) => void          |      |             | 动画重复执行时的回调。                                          |
+| options....      |                      |      |             | 其他键值对，表示动画选项。                                       |
+| callback         | () => void           |      |             | 动画执行完成后的回调函数。                                      |
+
+其中，动画选项可以参考 [AnimateMotionElement](https://www.w3.org/TR/SVG11/animate.html#AnimateMotionElement) 元素的属性。
 
 <span class="tag-example">使用<span>
 
