@@ -2,7 +2,6 @@ import React from 'react'
 import { Button } from 'antd'
 import { Graph } from '@antv/x6'
 import { Dnd } from '@antv/x6/es/addon/dnd'
-import { Rect, Circle } from '@antv/x6/es/shape/standard'
 import '../index.less'
 
 export default class Example extends React.Component {
@@ -96,14 +95,15 @@ export default class Example extends React.Component {
       //   return false
       // },
       getDragNode(node) {
-        console.log('getDragNode')
+        console.log('getDragNode', node.clone())
         return node.clone()
       },
       getDropNode(node) {
-        console.log('getDropNode')
+        console.log('getDropNode', node.clone())
         return node.clone()
       },
     })
+    this.graph = graph
   }
 
   onUndo = () => {
@@ -123,7 +123,7 @@ export default class Example extends React.Component {
     const type = target.getAttribute('data-type')
     const node =
       type === 'rect'
-        ? new Rect({
+        ? this.graph.createNode({
             width: 100,
             height: 40,
             attrs: {
@@ -137,18 +137,22 @@ export default class Example extends React.Component {
               },
             },
           })
-        : new Circle({
+        : this.graph.createNode({
             width: 60,
             height: 60,
-            attrs: {
-              label: {
-                text: 'Circle',
-                fill: '#6a6c8a',
-              },
-              body: {
-                stroke: '#31d0c6',
-                strokeWidth: 2,
-              },
+            shape: 'html',
+            html: () => {
+              const wrap = document.createElement('div')
+              wrap.style.width = '100%'
+              wrap.style.height = '100%'
+              wrap.style.display = 'flex'
+              wrap.style.alignItems = 'center'
+              wrap.style.justifyContent = 'center'
+              wrap.style.border = '2px solid #9254de'
+              wrap.style.background = '#3a3a3a'
+              wrap.style.borderRadius = '4px'
+              wrap.innerText = 'Hello Circle '
+              return wrap
             },
           })
 
