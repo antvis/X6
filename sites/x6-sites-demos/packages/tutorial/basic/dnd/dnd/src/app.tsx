@@ -1,5 +1,5 @@
 import React from 'react'
-import { Graph, Addon } from '@antv/x6'
+import { Graph, Dom, Addon } from '@antv/x6'
 import './app.css'
 
 const { Dnd } = Addon
@@ -66,7 +66,25 @@ export default class Example extends React.Component {
 
     graph.addEdge({ source, target })
     graph.centerContent()
-    this.dnd = new Dnd({ target: graph, scaled: false, animation: true })
+    this.dnd = new Dnd({
+      target: graph,
+      scaled: false,
+      animation: true,
+      validateNode(droppingNode, options) {
+        return droppingNode.shape === 'html'
+          ? new Promise<boolean>((resolve) => {
+              const { draggingNode, draggingGraph } = options
+              const view = draggingGraph.findView(draggingNode)!
+              const contentElem = view.findOne('foreignObject > body > div')
+              Dom.addClass(contentElem, 'validating')
+              setTimeout(() => {
+                Dom.removeClass(contentElem, 'validating')
+                resolve(true)
+              }, 3000)
+            })
+          : true
+      },
+    })
     this.graph = graph
   }
 

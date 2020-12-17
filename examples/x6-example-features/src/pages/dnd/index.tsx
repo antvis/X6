@@ -1,8 +1,9 @@
 import React from 'react'
 import { Button } from 'antd'
-import { Graph } from '@antv/x6'
+import { Graph, Dom } from '@antv/x6'
 import { Dnd } from '@antv/x6/es/addon/dnd'
 import '../index.less'
+import './index.less'
 
 export default class Example extends React.Component {
   private graph: Graph
@@ -91,22 +92,29 @@ export default class Example extends React.Component {
     this.dnd = new Dnd({
       target: graph,
       animation: true,
-      // validateNode: () => {
-      //   return false
-      // },
-      getDragNode(node) {
-        console.log('getDragNode', node.clone())
-        return node.clone()
+      getDragNode(sourceNode, options) {
+        console.log('getDragNode', sourceNode, options)
+        return sourceNode.clone()
       },
-      getDropNode(node) {
-        console.log('getDropNode', node.clone())
-        return node.clone()
+      getDropNode(draggingNode, options) {
+        console.log('getDropNode', draggingNode, options)
+        return draggingNode.clone()
       },
-      validateNode(node) {
-        console.log('validateNode', node)
-        return new Promise<boolean>((resolve) => {
-          setTimeout(() => resolve(true), 2000)
-        })
+      validateNode(droppingNode, options) {
+        console.log('validateNode', droppingNode, options)
+
+        return droppingNode.shape === 'html'
+          ? new Promise<boolean>((resolve) => {
+              const { draggingNode, draggingGraph } = options
+              const view = draggingGraph.findView(draggingNode)
+              const contentElem = view.findOne('foreignObject > body > div')
+              Dom.addClass(contentElem, 'validating')
+              setTimeout(() => {
+                Dom.removeClass(contentElem, 'validating')
+                resolve(true)
+              }, 3000)
+            })
+          : true
       },
     })
     this.graph = graph
