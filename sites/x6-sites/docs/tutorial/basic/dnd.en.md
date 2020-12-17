@@ -2,9 +2,9 @@
 title: 拖拽 Dnd
 order: 12
 redirect_from:
-  - /en/docs
-  - /en/docs/tutorial
-  - /en/docs/tutorial/basic
+  - /zh/docs
+  - /zh/docs/tutorial
+  - /zh/docs/tutorial/basic
 ---
 
 我们经常需要通过拖拽交互往画布中添加节点，如流程图编辑场景，从流程图组件库中拖拽组件到画布中。
@@ -23,15 +23,15 @@ import { Addon } from '@antv/x6'
 const dnd = new Addon.Dnd(options)
 ```
 
-| 选项                         | 类型                                                       | 必选 | 默认值  | 说明                                                                                                                                                                                                                                              |
-|------------------------------|------------------------------------------------------------|:----:|---------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| options.target               | Graph                                                      |  ✓️  |         | 目标画布。                                                                                                                                                                                                                                         |
-| options.scaled               | boolean                                                    |      | `false` | 是否根据目标画布的缩放比例缩放拖拽的节点。                                                                                                                                                                                                         |
-| options.delegateGraphOptions | Graph.Options                                              |      |         | 拖拽开始时，创建代理画布的选项。                                                                                                                                                                                                                    |
-| options.getDragNode          | (node: Node) => Node                                       |      |         | 拖拽开始时，获取代理节点（实际被拖拽的节点），默认克隆传入的节点。                                                                                                                                                                                     |
-| options.getDropNode          | (node: Node) => Node                                       |      |         | 拖拽结束时，获取放置到目标画布的节点，默认克隆代理节点。                                                                                                                                                                                             |
-| options.validateNode         | (this: Graph, node: Node) => boolean \| Promins\<boolean\> |      |         | 拖拽结束时，验证节点是否可以放置到目标画布中。                                                                                                                                                                                                      |
-| options.animation            | boolean \| { duration?: number; easing?: string }          |      | `false` | 拖拽结束时，而且目标节点不能添加到目标画布时，是否使用动画将代理画布移动到开始拖动的位置。选项 `duration` 和 `easing` 对应 JQuery 的 [.animate( properties [, duration ] [, easing ] [, complete ] )](https://api.jquery.com/animate/) 方法中的参数。 |
+| 选项                         | 类型                                                                                | 必选 | 默认值  | 说明                                                                                                                                                                                                                                              |
+|------------------------------|-------------------------------------------------------------------------------------|:----:|---------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| options.target               | Graph                                                                               |  ✓️  |         | 目标画布。                                                                                                                                                                                                                                         |
+| options.scaled               | boolean                                                                             |      | `false` | 是否根据目标画布的缩放比例缩放拖拽的节点。                                                                                                                                                                                                         |
+| options.delegateGraphOptions | Graph.Options                                                                       |      |         | 拖拽开始时，创建代理画布的选项。                                                                                                                                                                                                                    |
+| options.getDragNode          | (sourceNode: Node, options: GetDragNodeOptions) => Node                             |      |         | 拖拽开始时，获取代理节点（实际被拖拽的节点），默认克隆传入的节点。                                                                                                                                                                                     |
+| options.getDropNode          | (draggingNode: Node, options: GetDropNodeOptions) => Node                           |      |         | 拖拽结束时，获取放置到目标画布的节点，默认克隆代理节点。                                                                                                                                                                                             |
+| options.validateNode         | (droppingNode: Node, options: ValidateNodeOptions) => boolean \| Promins\<boolean\> |      |         | 拖拽结束时，验证节点是否可以放置到目标画布中。                                                                                                                                                                                                      |
+| options.animation            | boolean \| { duration?: number; easing?: string }                                   |      | `false` | 拖拽结束时，而且目标节点不能添加到目标画布时，是否使用动画将代理画布移动到开始拖动的位置。选项 `duration` 和 `easing` 对应 JQuery 的 [.animate( properties [, duration ] [, easing ] [, complete ] )](https://api.jquery.com/animate/) 方法中的参数。 |
 
 ### Step 2 开始拖拽
 
