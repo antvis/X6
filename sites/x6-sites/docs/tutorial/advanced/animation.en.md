@@ -128,25 +128,25 @@ stopTransition(
 cell.on('transition:start', (args: Animation.CallbackArgs) => {})
 cell.on('transition:progress', (args: Animation.ProgressArgs) => {})
 cell.on('transition:complete', (args: Animation.CallbackArgs) => {})
-cell.on('transition:stop', (args: Animation.CallbackArgs) => {})
+cell.on('transition:stop', (args: Animation.StopArgs) => {})
 cell.on('transition:finish', (args: Animation.CallbackArgs) => {})
 
 graph.on('cell:transition:start', (args: Animation.CallbackArgs) => {})
 graph.on('cell:transition:progress', (args: Animation.ProgressArgs) => {})
 graph.on('cell:transition:complete', (args: Animation.CallbackArgs) => {})
-graph.on('cell:transition:stop', (args: Animation.CallbackArgs) => {})
+graph.on('cell:transition:stop', (args: Animation.StopArgs) => {})
 graph.on('cell:transition:finish', (args: Animation.CallbackArgs) => {})
 
 graph.on('node:transition:start', (args: Animation.CallbackArgs) => {})
 graph.on('node:transition:progress', (args: Animation.ProgressArgs) => {})
 graph.on('node:transition:complete', (args: Animation.CallbackArgs) => {})
-graph.on('node:transition:stop', (args: Animation.CallbackArgs) => {})
+graph.on('node:transition:stop', (args: Animation.StopArgs) => {})
 graph.on('node:transition:finish', (args: Animation.CallbackArgs) => {})
 
 graph.on('edge:transition:start', (args: Animation.CallbackArgs) => {})
 graph.on('edge:transition:progress', (args: Animation.ProgressArgs) => {})
 graph.on('edge:transition:complete', (args: Animation.CallbackArgs) => {})
-graph.on('edge:transition:stop', (args: Animation.CallbackArgs) => {})
+graph.on('edge:transition:stop', (args: Animation.StopArgs) => {})
 graph.on('edge:transition:finish', (args: Animation.CallbackArgs) => {})
 ```
 
