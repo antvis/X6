@@ -2737,7 +2737,7 @@ addTools(
 
 | 名称             | 类型                             | 必选 | 默认值  | 描述                                                                                                                   |
 |------------------|----------------------------------|:----:|---------|----------------------------------------------------------------------------------------------------------------------|
-| items            | Cell.ToolItem \| Cell.ToolItem[] |      |         | [NodeTool](../registry/node-tool#presets) 或 [EdgeTool](../registry/edge-tool#presets) 中定义的小工具。               |
+| items            | Cell.ToolItem \| Cell.ToolItem[] |      |         | [NodeTool](../registry/node-tool#presets) 或 [EdgeTool](../registry/edge-tool#presets) 中定义的小工具。                 |
 | name             | string                           |      |         | 工具集名称。当指定了工具集名称，且 `options.reset` 为 `false` 时，指定的名称与现有工具集名称相同时才会向工具集中添加工具。 |
 | options.reset    | boolean                          |      | `false` | 是否清空工具集，默认向工具集追加小工具。                                                                                 |
 | options.silent   | boolean                          |      | `false` | 为 `true` 时不触不触发 `'change:tools'` 事件和小工具重绘。                                                              |
@@ -2764,10 +2764,10 @@ setTools(
 
 当 `tools` 是 `Cell.Tools` 类型时，可以支持以下配置项
 
-| 名称        | 类型            | 必选 | 默认值      | 描述                                                                                                         |
-|-------------|-----------------|:----:|-------------|------------------------------------------------------------------------------------------------------------|
-| tools.name  | string          |      | `undefined` | 工具集名称。                                                                                                  |
-| tools.local | boolean         |      | `false`     | 是否渲染到节点/边的容器中，默认为 `false` 表示渲染到画布容器中。                                               |
+| 名称        | 类型            | 必选 | 默认值      | 描述                                                                                                       |
+|-------------|-----------------|:----:|-------------|----------------------------------------------------------------------------------------------------------|
+| tools.name  | string          |      | `undefined` | 工具集名称。                                                                                                |
+| tools.local | boolean         |      | `false`     | 是否渲染到节点/边的容器中，默认为 `false` 表示渲染到画布容器中。                                             |
 | tools.items | Cell.ToolItem[] |      | `undefined` | [NodeTool](../registry/node-tool#presets) 或 [EdgeTool](../registry/edge-tool#presets) 中定义的小工具集合。 |
 
 #### getTools()
@@ -2815,25 +2815,31 @@ removeTools(options?: Cell.SetOptions): this
 ```sign
 transition(
   path: string | string[],
-  target: any,
-  options: Animation.Options = {},
+  target: Animation.TargetValue,
+  options: Animation.StartOptions = {},
   delim: string = '/',
-): number
+): () => void
 ```
 
-将指定路径 `path` 上对应的属性值通过平滑动画的形式过渡到 `target` 指定的目标值。
+将指定路径 `path` 上对应的属性值通过平滑动画的形式过渡到 `target` 指定的目标值，并返回 `stop` 方法，调用该方法时立即停止该动画。
 
 <span class="tag-param">参数<span>
 
-| 名称             | 类型                                         | 必选 | 默认值 | 描述                         |
-|------------------|----------------------------------------------|:----:|--------|----------------------------|
-| path             | string \| string[]                           |  ✓   |        | 路径。                        |
-| target           | any                                          |  ✓   |        | 目标属性值。                  |
-| options.delay    | number                                       |      | `10`   | 动画延迟多久后开始，单位毫秒。 |
-| options.duration | number                                       |      | `100`  | 动画时长，单位毫秒。           |
-| options.timing   | Timing.Names \| (t: number) => number        |      |        | 定时函数。                    |
-| options.interp   | \<T\>(from: T, to: T) => (time: number) => T |      |        | 插值函数。                    |
-| delim            | string                                       |      | `'/'`  | 字符串路径分隔符。            |
+| 名称                | 类型                                         | 必选 | 默认值  | 描述                               |
+|---------------------|----------------------------------------------|:----:|---------|----------------------------------|
+| path                | string \| string[]                           |  ✓   |         | 路径。                              |
+| target              | any                                          |  ✓   |         | 目标属性值。                        |
+| options.delay       | number                                       |      | `10`    | 动画延迟多久后开始，单位毫秒。       |
+| options.duration    | number                                       |      | `100`   | 动画时长，单位毫秒。                 |
+| options.timing      | Timing.Names \| (t: number) => number        |      |         | 定时函数。                          |
+| options.interp      | \<T\>(from: T, to: T) => (time: number) => T |      |         | 插值函数。                          |
+| options.start       | (args: Animation.CallbackArgs) => void       |      |         | 动画开始执行时的回调函数。          |
+| options.progress    | (args: Animation.ProgressArgs) => void       |      |         | 动画执行过程中的回调函数。          |
+| options.complete    | (args: Animation.CallbackArgs) => void       |      |         | 动画执行完成时的回调函数。          |
+| options.stop        | (args: Animation.CallbackArgs) => void       |      |         | 动画被停止时的回调函数。            |
+| options.finish      | (args: Animation.CallbackArgs) => void       |      |         | 动画执行完成或被停止时的回调函数。  |
+| options.jumpedToEnd | boolean                                      |      | `false` | 手动停止动画时，是否立即将动画完成。 |
+| delim               | string                                       |      | `'/'`   | 字符串路径分隔符。                  |
 
 我们在 `Timing` 命名空间中提供了一些定时函数。可以使用内置的定时函数名，或提供一个具有 `(t: number) => number` 签名的函数。内置的定时函数如下：
 
@@ -2897,17 +2903,25 @@ rect.transition('attrs/label/font-size', '1em', {
 #### stopTransition(...)
 
 ```sign
-stopTransition(path: string | string[], delim: string = '/'): this
+stopTransition(
+  path: string | string[],
+  options?: Animation.StopOptions<T>,
+  delim: string = '/',
+): this
 ```
 
 停止与指定路径 `path` 对应的动画。
 
 <span class="tag-param">参数<span>
 
-| 名称  | 类型               | 必选 | 默认值 | 描述              |
-|-------|--------------------|:----:|--------|-----------------|
-| path  | string \| string[] |  ✓   |        | 路径。             |
-| delim | string             |      | `'/'`  | 字符串路径分隔符。 |
+| 名称                | 类型                                   | 必选 | 默认值  | 描述                               |
+|---------------------|----------------------------------------|:----:|---------|----------------------------------|
+| path                | string \| string[]                     |  ✓   |         | 路径。                              |
+| options.jumpedToEnd | boolean                                |      | `false` | 手动停止动画时，是否立即将动画完成。 |
+| options.complete    | (args: Animation.CallbackArgs) => void |      |         | 动画执行完成时的回调函数。          |
+| options.stop        | (args: Animation.CallbackArgs) => void |      |         | 动画被停止时的回调函数。            |
+| options.finish      | (args: Animation.CallbackArgs) => void |      |         | 动画执行完成或被停止时的回调函数。  |
+| delim               | string                                 |      | `'/'`   | 字符串路径分隔符。                  |
 
 <span class="tag-example">用法</span>
 

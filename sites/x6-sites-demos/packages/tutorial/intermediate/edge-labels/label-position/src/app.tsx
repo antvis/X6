@@ -129,11 +129,11 @@ export default class Example extends React.Component {
       oscillateToggle = false
     }
 
-    edge.on('transition:begin', () => {
+    edge.on('transition:start', () => {
       currentTransitions += 1
     })
 
-    edge.on('transition:end', () => {
+    edge.on('transition:complete', () => {
       currentTransitions -= 1
 
       if (currentTransitions === 0) {

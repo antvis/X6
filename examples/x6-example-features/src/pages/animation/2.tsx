@@ -20,7 +20,7 @@ class BallView extends NodeView {
       },
     })
 
-    this.cell.on('transition:end', ({ cell, path }) => {
+    this.cell.on('transition:complete', ({ cell, path }) => {
       if (path === 'position' && this.speed > 5) {
         this.speed /= cell.prop<number>('bounciness') || 2
         this.fly({ angle: 180 - this.angle, speed: this.speed })

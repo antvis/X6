@@ -1059,26 +1059,30 @@ export class Cell<
   transition<K extends keyof Properties>(
     path: K,
     target: Properties[K],
-    options?: Animation.Options,
+    options?: Animation.StartOptions<Properties[K]>,
     delim?: string,
-  ): number
-  transition<T extends string | number | KeyValue>(
+  ): () => void
+  transition<T extends Animation.TargetValue>(
     path: string | string[],
     target: T,
-    options?: Animation.Options,
+    options?: Animation.StartOptions<T>,
     delim?: string,
-  ): number
-  transition<T extends string | number | KeyValue>(
+  ): () => void
+  transition<T extends Animation.TargetValue>(
     path: string | string[],
     target: T,
-    options: Animation.Options = {},
+    options: Animation.StartOptions<T> = {},
     delim: string = '/',
   ) {
     return this.animation.start(path, target, options, delim)
   }
 
-  stopTransition(path: string | string[], delim: string = '/') {
-    this.animation.stop(path, delim)
+  stopTransition<T extends Animation.TargetValue>(
+    path: string | string[],
+    options?: Animation.StopOptions<T>,
+    delim: string = '/',
+  ) {
+    this.animation.stop(path, options, delim)
     return this
   }
 
@@ -1474,8 +1478,11 @@ export namespace Cell {
 
 export namespace Cell {
   export interface EventArgs {
-    'transition:begin': TransitionArgs
-    'transition:end': TransitionArgs
+    'transition:start': Animation.CallbackArgs<Animation.TargetValue>
+    'transition:progress': Animation.ProgressArgs<Animation.TargetValue>
+    'transition:complete': Animation.CallbackArgs<Animation.TargetValue>
+    'transition:stop': Animation.StopArgs<Animation.TargetValue>
+    'transition:finish': Animation.CallbackArgs<Animation.TargetValue>
 
     // common
     'change:*': ChangeAnyKeyArgs
@@ -1583,11 +1590,6 @@ export namespace Cell {
 
   interface EdgeChangeArgs<T> extends ChangeArgs<T> {
     edge: Edge
-  }
-
-  export interface TransitionArgs {
-    cell: Cell
-    path: string
   }
 }
 
