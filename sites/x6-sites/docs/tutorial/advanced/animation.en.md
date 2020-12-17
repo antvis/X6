@@ -2,37 +2,43 @@
 title: 使用动画
 order: 2
 redirect_from:
-  - /en/docs
-  - /en/docs/tutorial
-  - /en/docs/tutorial/advanced
+  - /zh/docs
+  - /zh/docs/tutorial
+  - /zh/docs/tutorial/advanced
 ---
 
 ## Transition
 
 ### 开始
 
-我们可以调用 [`cell.transition(...)`](../../api/model/cell#transition) 方法，来将指定路径 `path` 上对应的属性值通过平滑动画的形式过渡到 `target` 指定的目标值。
+我们可以调用 [`cell.transition(...)`](../../api/model/cell#transition) 方法，来将指定路径 `path` 上对应的属性值通过平滑动画的形式过渡到 `target` 指定的目标值，并返回 `stop` 方法，调用该方法时立即停止该动画。
 
 ```sign
 transition(
   path: string | string[],
-  target: any,
-  options: Animation.Options = {},
+  target: Animation.TargetValue,
+  options: Animation.StartOptions = {},
   delim: string = '/',
-): number
+): () => void
 ```
 
 <span class="tag-param">参数<span>
 
-| 名称             | 类型                                         | 必选 | 默认值 | 描述                         |
-|------------------|----------------------------------------------|:----:|--------|----------------------------|
-| path             | string \| string[]                           |  ✓   |        | 路径。                        |
-| target           | any                                          |  ✓   |        | 目标属性值。                  |
-| options.delay    | number                                       |      | `10`   | 动画延迟多久后开始，单位毫秒。 |
-| options.duration | number                                       |      | `100`  | 动画时长，单位毫秒。           |
-| options.timing   | Timing.Names \| (t: number) => number        |      |        | 定时函数。                    |
-| options.interp   | \<T\>(from: T, to: T) => (time: number) => T |      |        | 插值函数。                    |
-| delim            | string                                       |      | `'/'`  | 字符串路径分隔符。            |
+| 名称                | 类型                                         | 必选 | 默认值  | 描述                               |
+|---------------------|----------------------------------------------|:----:|---------|----------------------------------|
+| path                | string \| string[]                           |  ✓   |         | 路径。                              |
+| target              | any                                          |  ✓   |         | 目标属性值。                        |
+| options.delay       | number                                       |      | `10`    | 动画延迟多久后开始，单位毫秒。       |
+| options.duration    | number                                       |      | `100`   | 动画时长，单位毫秒。                 |
+| options.timing      | Timing.Names \| (t: number) => number        |      |         | 定时函数。                          |
+| options.interp      | \<T\>(from: T, to: T) => (time: number) => T |      |         | 插值函数。                          |
+| options.start       | (args: Animation.CallbackArgs) => void       |      |         | 动画开始执行时的回调函数。          |
+| options.progress    | (args: Animation.ProgressArgs) => void       |      |         | 动画执行过程中的回调函数。          |
+| options.complete    | (args: Animation.CallbackArgs) => void       |      |         | 动画执行完成时的回调函数。          |
+| options.stop        | (args: Animation.CallbackArgs) => void       |      |         | 动画被停止时的回调函数。            |
+| options.finish      | (args: Animation.CallbackArgs) => void       |      |         | 动画执行完成或被停止时的回调函数。  |
+| options.jumpedToEnd | boolean                                      |      | `false` | 手动停止动画时，是否立即将动画完成。 |
+| delim               | string                                       |      | `'/'`   | 字符串路径分隔符。                  |
 
 我们在 `Timing` 命名空间中提供了一些定时函数。可以使用内置的定时函数名，或提供一个具有 `(t: number) => number` 签名的函数。内置的定时函数如下：
 
@@ -89,31 +95,59 @@ transition(
 
 动画开始后可以调用 [`cell.stopTransition(...)`](../../api/model/cell#stoptransition) 方法来停止指定路径上的动画。
 
+```sign
+stopTransition(
+  path: string | string[],
+  options?: Animation.StopOptions<T>,
+  delim: string = '/',
+): this
+```
+
 <span class="tag-param">参数<span>
 
-| 名称  | 类型               | 必选 | 默认值 | 描述              |
-|-------|--------------------|:----:|--------|-----------------|
-| path  | string \| string[] |  ✓   |        | 路径。             |
-| delim | string             |      | `'/'`  | 字符串路径分隔符。 |
+| 名称                | 类型                                   | 必选 | 默认值  | 描述                               |
+|---------------------|----------------------------------------|:----:|---------|----------------------------------|
+| path                | string \| string[]                     |  ✓   |         | 路径。                              |
+| options.jumpedToEnd | boolean                                |      | `false` | 手动停止动画时，是否立即将动画完成。 |
+| options.complete    | (args: Animation.CallbackArgs) => void |      |         | 动画执行完成时的回调函数。          |
+| options.stop        | (args: Animation.CallbackArgs) => void |      |         | 动画被停止时的回调函数。            |
+| options.finish      | (args: Animation.CallbackArgs) => void |      |         | 动画执行完成或被停止时的回调函数。  |
+| delim               | string                                 |      | `'/'`   | 字符串路径分隔符。                  |
 
 <iframe src="/demos/tutorial/advanced/animation/football"></iframe>
 
 ### 事件
 
-动画开始和结束时分别触发 `'transition:begin'` 和 `'transition:end'` 事件。
+- `'transition:start'` 动画开始时触发
+- `'transition:progress'` 动画过程中触发
+- `'transition:complete'` 动画完成时触发
+- `'transition:stop'` 动画被停止时触发
+- `'transition:finish'` 动画完成或被停止时触发
 
 ```ts
-cell.on('transition:begin', ({ cell, path }) => {})
-cell.on('transition:end', ({ cell, path }) => {})
+cell.on('transition:start', (args: Animation.CallbackArgs) => {})
+cell.on('transition:progress', (args: Animation.ProgressArgs) => {})
+cell.on('transition:complete', (args: Animation.CallbackArgs) => {})
+cell.on('transition:stop', (args: Animation.CallbackArgs) => {})
+cell.on('transition:finish', (args: Animation.CallbackArgs) => {})
 
-graph.on('cell:transition:begin', ({ cell, path }) => {})
-graph.on('cell:transition:end', ({ cell, path }) => {})
+graph.on('cell:transition:start', (args: Animation.CallbackArgs) => {})
+graph.on('cell:transition:progress', (args: Animation.ProgressArgs) => {})
+graph.on('cell:transition:complete', (args: Animation.CallbackArgs) => {})
+graph.on('cell:transition:stop', (args: Animation.CallbackArgs) => {})
+graph.on('cell:transition:finish', (args: Animation.CallbackArgs) => {})
 
-graph.on('node:transition:begin', ({ node, path }) => {})
-graph.on('node:transition:end', ({ node, path }) => {})
+graph.on('node:transition:start', (args: Animation.CallbackArgs) => {})
+graph.on('node:transition:progress', (args: Animation.ProgressArgs) => {})
+graph.on('node:transition:complete', (args: Animation.CallbackArgs) => {})
+graph.on('node:transition:stop', (args: Animation.CallbackArgs) => {})
+graph.on('node:transition:finish', (args: Animation.CallbackArgs) => {})
 
-graph.on('edge:transition:begin', ({ edge, path }) => {})
-graph.on('edge:transition:end', ({ edge, path }) => {})
+graph.on('edge:transition:start', (args: Animation.CallbackArgs) => {})
+graph.on('edge:transition:progress', (args: Animation.ProgressArgs) => {})
+graph.on('edge:transition:complete', (args: Animation.CallbackArgs) => {})
+graph.on('edge:transition:stop', (args: Animation.CallbackArgs) => {})
+graph.on('edge:transition:finish', (args: Animation.CallbackArgs) => {})
 ```
 
 <iframe src="/demos/tutorial/advanced/animation/ufo"></iframe>
