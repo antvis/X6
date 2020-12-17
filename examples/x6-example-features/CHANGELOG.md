@@ -1,3 +1,19 @@
+## @antv/x6-example-features [1.8.5](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.8.4...@antv/x6-example-features@1.8.5) (2020-12-17)
+
+
+### Bug Fixes
+
+* 🐛 should stop dragging when validate node async ([d418e07](https://github.com/antvis/x6/commit/d418e07ef404881400faf03943c8c9ff067e4598)), closes [#429](https://github.com/antvis/x6/issues/429)
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.5.1
+* **@antv/x6-react-shape:** upgraded to 1.1.33
+
 ## @antv/x6-example-features [1.8.4](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.8.3...@antv/x6-example-features@1.8.4) (2020-12-17)
 
 
