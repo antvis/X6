@@ -59,7 +59,7 @@ export default class Example extends React.Component {
 
     animate()
 
-    edge.on('transition:end', animate)
+    edge.on('transition:complete', animate)
 
     this.edge = edge
   }
