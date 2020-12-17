@@ -152,6 +152,101 @@ graph.on('edge:transition:finish', (args: Animation.CallbackArgs) => {})
 
 <iframe src="/demos/tutorial/advanced/animation/ufo"></iframe>
 
+## 元素动画
+
+可以通过 `CellView` 上的 `animate()` 方法指定元素的某个属性动画变化过程，我们需要制定动画的持续时间，以及属性值的初始值和变化后的值。返回停止该动画的方法。
+
+```sign
+view.animate(
+  elem: SVGElement | string,
+  options: Dom.AnimationOptions,
+): () => void
+```
+
+<span class="tag-param">参数<span>
+
+| 名称             | 类型                 | 必选 | 默认值 | 描述                        |
+|------------------|----------------------|:----:|--------|---------------------------|
+| elem             | SVGElement \| string |  ✓   |        | 沿边运动的元素或元素选择器。 |
+| options.start    | (e) => void          |      |        | 动画开始时的回调。           |
+| options.complete | (e) => void          |      |        | 动画结束时的回调。           |
+| options.repeat   | (e) => void          |      |        | 动画重复执行时的回调。       |
+| options....      |                      |      |        | 其他键值对，表示动画选项。    |
+
+其中，动画选项可以参考 [AnimateElement](https://www.w3.org/TR/SVG11/animate.html#AnimateElement) 元素的属性。
+
+<span class="tag-example">使用<span>
+
+```ts
+const rect = graph.addNode({
+  x: 40,
+  y: 40,
+  width: 100,
+  height: 40,
+})
+
+const view = graph.findView(rect)
+if (view) {
+  view.animate('rect', {
+    attributeType: 'XML',
+    attributeName: 'x',
+    from: 40,
+    to: 120,
+    dur: '1s',
+    repeatCount: 'indefinite',
+  })
+}
+```
+
+<iframe src="/demos/tutorial/advanced/animation/animate"></iframe>
+
+通过 `CellView` 上的 `animateTransform()` 方法对元素的运动和变换有更多的控制，它可以指定图形的变换、缩放、旋转和扭曲等。返回停止该动画的方法。
+
+```sign
+view.animateTransform(
+  elem: SVGElement | string,
+  options: Dom.AnimationOptions,
+): () => void
+```
+
+<span class="tag-param">参数<span>
+
+| 名称             | 类型                 | 必选 | 默认值 | 描述                        |
+|------------------|----------------------|:----:|--------|---------------------------|
+| elem             | SVGElement \| string |  ✓   |        | 沿边运动的元素或元素选择器。 |
+| options.start    | (e) => void          |      |        | 动画开始时的回调。           |
+| options.complete | (e) => void          |      |        | 动画结束时的回调。           |
+| options.repeat   | (e) => void          |      |        | 动画重复执行时的回调。       |
+| options....      |                      |      |        | 其他键值对，表示动画选项。    |
+
+其中，动画选项可以参考 [AnimateTransformElement](https://www.w3.org/TR/SVG11/animate.html#AnimateTransformElement) 元素的属性。
+
+<span class="tag-example">使用<span>
+
+```ts
+const rect = graph.addNode({
+  x: 60,
+  y: 60,
+  width: 30,
+  height: 30,
+})
+
+const view = graph.findView(rect)
+if (view) {
+  view.animateTransform('rect', {
+    attributeType: 'XML',
+    attributeName: 'transform',
+    type: 'rotate',
+    from: '0 0 0',
+    to: '360 0 0',
+    dur: '3s',
+    repeatCount: 'indefinite',
+  })
+}
+```
+
+<iframe src="/demos/tutorial/advanced/animation/animate-transform"></iframe>
+
 ## 路径动画
 
 ### 沿路径运动的动画
@@ -180,7 +275,7 @@ Dom.animateAlongPath(
 Vector.prototype.animateAlongPath(
   options: { [name: string]: string }, 
   path: SVGPathElement
-): this
+): () => void
 ```
 
 ```ts
@@ -230,7 +325,15 @@ sendToken(
 | options.duration | number               |      | `1000`      | 动画持续的时间，单位毫秒。                                       |
 | options.reversed | boolean              |      | `false`     | 是否沿反方向运动，即从边的终点运动到起点。                       |
 | options.selector | string               |      | `undefined` | 动画参照的 SVGPathElement 元素，默认沿边的 SVGPathElement 运动。 |
+| options.start    | (e) => void          |      |             | 动画开始时的回调。                                              |
+| options.complete | (e) => void          |      |             | 动画结束时的回调。                                              |
+| options.repeat   | (e) => void          |      |             | 动画重复执行时的回调。                                          |
+| options....      |                      |      |             | 其他键值对，表示动画选项。                                       |
 | callback         | () => void           |      |             | 动画执行完成后的回调函数。                                      |
+
+其中，动画选项可以参考 [AnimateMotionElement](https://www.w3.org/TR/SVG11/animate.html#AnimateMotionElement) 元素的属性。
+
+<span class="tag-example">使用<span>
 
 ```ts
 const view = graph.findViewByCell(edge) as EdgeView
