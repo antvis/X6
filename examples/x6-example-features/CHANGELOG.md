@@ -1,3 +1,11 @@
+## @antv/x6-example-features [1.8.3](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.8.2...@antv/x6-example-features@1.8.3) (2020-12-17)
+
+
+### Bug Fixes
+
+* 🐛 dnd node style ([17ae1f9](https://github.com/antvis/x6/commit/17ae1f9492c1f77e93ffa0a4cc1fb10614350547))
+* 🐛 use `graph.createNode` to create node ([9e38fdf](https://github.com/antvis/x6/commit/9e38fdf1b1f04bedf1d029037ed1a43a33fcfa15))
+
 ## @antv/x6-example-features [1.8.2](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.8.1...@antv/x6-example-features@1.8.2) (2020-12-16)
 
 
