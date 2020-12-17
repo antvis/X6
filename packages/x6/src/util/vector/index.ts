@@ -451,8 +451,16 @@ export class Vector {
     return this
   }
 
-  animateAlongPath(attrs: { [name: string]: string }, path: SVGPathElement) {
-    return Dom.animateAlongPath(this.node, attrs, path)
+  animate(options: Dom.AnimationOptions) {
+    return Dom.animate(this.node, options)
+  }
+
+  animateTransform(options: Dom.AnimationOptions) {
+    return Dom.animateTransform(this.node, options)
+  }
+
+  animateAlongPath(options: Dom.AnimationOptions, path: SVGPathElement) {
+    return Dom.animateAlongPath(this.node, options, path)
   }
 
   /**
