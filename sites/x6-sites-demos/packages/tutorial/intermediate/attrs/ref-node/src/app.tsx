@@ -149,11 +149,11 @@ export default class Example extends React.Component {
 
     stretch()
 
-    node.on('transition:begin', () => {
+    node.on('transition:start', () => {
       currentTransitions += 1
     })
 
-    node.on('transition:end', () => {
+    node.on('transition:complete', () => {
       currentTransitions -= 1
 
       if (currentTransitions === 0) {

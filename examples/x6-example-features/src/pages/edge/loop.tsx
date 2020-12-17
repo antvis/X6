@@ -446,24 +446,36 @@ export default class Example extends React.Component {
     const pathMerge = 'router/args/merge'
     const animateAngle = () => {
       edge.prop(pathAngle, 0)
-      edge.transition(pathAngle, 360, { duration: 5000 })
+      edge.transition(pathAngle, 360, {
+        duration: 5000,
+        start(options) {
+          console.log('rotate:start', options)
+        },
+        progress(options) {
+          console.log('rotate:progress', options)
+        },
+        complete(options) {
+          console.log('rotate:complete', options)
+          animateAngle()
+        },
+        always(options) {
+          console.log('rotate:finish', options)
+        },
+      })
     }
 
     const animateMerge = () => {
       edge.prop(pathMerge, 0)
-      edge.transition(pathMerge, 20, { duration: 1000 })
+      edge.transition(pathMerge, 20, {
+        duration: 1000,
+        complete() {
+          animateMerge()
+        },
+      })
     }
 
     animateAngle()
     animateMerge()
-
-    edge.on('transition:end', ({ path }) => {
-      if (path === pathAngle) {
-        animateAngle()
-      } else if (path === pathMerge) {
-        animateMerge()
-      }
-    })
   }
 
   refContainer = (container: HTMLDivElement) => {
