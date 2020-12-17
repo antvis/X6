@@ -345,9 +345,9 @@ export function animateAlongPath(
   elem: SVGElement,
   attrs: { [name: string]: string },
   path: SVGPathElement,
-) {
+): () => void {
   const id = ensureId(path)
-  const animate = createSvgElement<SVGAnimationElement>('animateMotion')
+  const animate = createSvgElement<SVGAnimateMotionElement>('animateMotion')
   const mpath = createSvgElement('mpath')
 
   attr(animate, attrs)
@@ -359,31 +359,32 @@ export function animateAlongPath(
   try {
     const ani = animate as any
     ani.beginElement()
+    return () => ani.endElement()
   } catch (e) {
     // Fallback for IE 9.
-    // Run the animation programmatically
     if (document.documentElement.getAttribute('smiling') === 'fake') {
-      /* global getTargets:true, Animator:true, animators:true id2anim:true */
       // Register the animation. (See `https://answers.launchpad.net/smil/+question/203333`)
-      const animation = animate as any
-      animation.animators = []
+      const ani = animate as any
+      ani.animators = []
 
       const win = window as any
-      const animationID = animation.getAttribute('id')
+      const animationID = ani.getAttribute('id')
       if (animationID) {
-        win.id2anim[animationID] = animation
+        win.id2anim[animationID] = ani
       }
 
-      const targets = win.getTargets(animation)
+      const targets = win.getTargets(ani)
       for (let i = 0, ii = targets.length; i < ii; i += 1) {
         const target = targets[i]
-        const animator = new win.Animator(animation, target, i)
+        const animator = new win.Animator(ani, target, i)
         win.animators.push(animator)
-        animation.animators[i] = animator
+        ani.animators[i] = animator
         animator.register()
       }
     }
   }
+
+  return () => {}
 }
 
 export function getBoundingOffsetRect(elem: HTMLElement) {

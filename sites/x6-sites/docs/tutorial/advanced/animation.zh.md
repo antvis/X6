@@ -206,7 +206,7 @@ if (view) {
 
 ### 沿边运动的动画
 
-我们可以调用 EdgeView 上的 [`sendToken(...)`](../../api/view/edgeview#sendtoken) 方法来触发一个沿边运动的动画。 
+我们可以调用 EdgeView 上的 [`sendToken(...)`](../../api/view/edgeview#sendtoken) 方法来触发一个沿边运动的动画，同时返回一个停止该动画的方法。
 
 ```sign
 sendToken(
@@ -218,8 +218,8 @@ sendToken(
         reversed?: boolean
         selector?: string
       },
-  callback?: () => any,
-): this
+  callback?: () => void,
+): () => void
 ```
 
 <span class="tag-param">参数<span>
@@ -230,12 +230,15 @@ sendToken(
 | options.duration | number               |      | `1000`      | 动画持续的时间，单位毫秒。                                       |
 | options.reversed | boolean              |      | `false`     | 是否沿反方向运动，即从边的终点运动到起点。                       |
 | options.selector | string               |      | `undefined` | 动画参照的 SVGPathElement 元素，默认沿边的 SVGPathElement 运动。 |
-| callback         | () => any            |      |             | 动画执行完成后的回调函数。                                      |
+| callback         | () => void           |      |             | 动画执行完成后的回调函数。                                      |
 
 ```ts
 const view = graph.findViewByCell(edge) as EdgeView
 const token = Vector.create('circle', { r: 6, fill: 'green' })
-view.sendToken(token.node, 1000)
+const stop = view.sendToken(token.node, 1000)
+
+// 5s 后停止该动画
+setTimeout(stop, 5000)
 ```
 
 <iframe src="/demos/tutorial/advanced/animation/signal"></iframe>
