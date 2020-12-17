@@ -1,11 +1,11 @@
 import React from 'react'
-import { Graph, Addon, Shape } from '@antv/x6'
+import { Graph, Addon } from '@antv/x6'
 import './app.css'
 
 const { Dnd } = Addon
-const { Rect, Circle } = Shape
 
 export default class Example extends React.Component {
+  private graph: Graph
   private container: HTMLDivElement
   private dnd: any
 
@@ -23,6 +23,10 @@ export default class Example extends React.Component {
         pageVisible: false,
         pageBreak: false,
         pannable: true,
+      },
+      mousewheel: {
+        enabled: true,
+        modifiers: ['ctrl', 'meta'],
       },
     })
 
@@ -61,10 +65,9 @@ export default class Example extends React.Component {
     })
 
     graph.addEdge({ source, target })
-
     graph.centerContent()
-
-    this.dnd = new Dnd({ target: graph, animation: true })
+    this.dnd = new Dnd({ target: graph, scaled: false, animation: true })
+    this.graph = graph
   }
 
   startDrag = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -72,7 +75,7 @@ export default class Example extends React.Component {
     const type = target.getAttribute('data-type')
     const node =
       type === 'rect'
-        ? new Rect({
+        ? this.graph.createNode({
             width: 100,
             height: 40,
             attrs: {
@@ -86,18 +89,22 @@ export default class Example extends React.Component {
               },
             },
           })
-        : new Circle({
+        : this.graph.createNode({
             width: 60,
             height: 60,
-            attrs: {
-              label: {
-                text: 'Circle',
-                fill: '#6a6c8a',
-              },
-              body: {
-                stroke: '#31d0c6',
-                strokeWidth: 2,
-              },
+            shape: 'html',
+            html: () => {
+              const wrap = document.createElement('div')
+              wrap.style.width = '100%'
+              wrap.style.height = '100%'
+              wrap.style.display = 'flex'
+              wrap.style.alignItems = 'center'
+              wrap.style.justifyContent = 'center'
+              wrap.style.border = '2px solid #9254de'
+              wrap.style.background = '#3a3a3a'
+              wrap.style.borderRadius = '4px'
+              wrap.innerText = 'Hello Circle '
+              return wrap
             },
           })
 
