@@ -1429,7 +1429,7 @@ export class EdgeView<
           // https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/calcMode
           timing?: 'linear' | 'discrete' | 'paced' | 'spline'
         } & KeyValue<string>),
-    callback?: () => any,
+    callback?: () => void,
   ) {
     let duration
     let reversed
@@ -1502,17 +1502,41 @@ export class EdgeView<
       throw new Error('Token animation requires a valid connection path.')
     }
 
-    const vToken = Vector.create(token)
-    vToken.appendTo(this.graph.view.stage).animateAlongPath(attrs, path)
+    const elem = typeof token === 'string' ? this.findOne(token) : token
+    if (elem == null) {
+      throw new Error('Token animation requires a valid token element.')
+    }
+
+    const parent = elem.parentNode
+    const nextSibling = elem.nextSibling
+    const revert = () => {
+      if (parent) {
+        if (nextSibling) {
+          parent.insertBefore(elem, nextSibling)
+        } else {
+          parent.appendChild(elem)
+        }
+      } else {
+        Dom.remove(elem)
+      }
+    }
+
+    const vToken = Vector.create(elem as SVGElement)
+    const stop = vToken
+      .appendTo(this.graph.view.stage)
+      .animateAlongPath(attrs, path)
 
     setTimeout(() => {
-      vToken.remove()
+      revert()
       if (typeof callback === 'function') {
         callback()
       }
     }, duration)
 
-    return this
+    return () => {
+      revert()
+      stop()
+    }
   }
 
   // #endregion

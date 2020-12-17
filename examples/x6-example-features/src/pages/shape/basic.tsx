@@ -233,7 +233,7 @@ export default class Example extends React.Component {
       if (pathNode && scalableNode) {
         const ctm = scalableNode.getCTM()!.inverse()
         const token = Vector.create('circle', { r: 8, fill: 'red' })
-        token.animateAlongPath(
+        const stop = token.animateAlongPath(
           {
             dur: '4s',
             repeatCount: 'indefinite',
@@ -243,6 +243,11 @@ export default class Example extends React.Component {
 
         token.scale(ctm.a, ctm.d)
         token.appendTo(scalableNode)
+
+        setTimeout(() => {
+          console.log('stop animation')
+          stop()
+        }, 10000)
       }
     }
 
