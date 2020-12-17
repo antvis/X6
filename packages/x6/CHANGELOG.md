@@ -1,3 +1,10 @@
+## @antv/x6 [1.5.1](https://github.com/antvis/x6/compare/@antv/x6@1.5.0...@antv/x6@1.5.1) (2020-12-17)
+
+
+### Bug Fixes
+
+* 🐛 should stop dragging when validate node async ([d418e07](https://github.com/antvis/x6/commit/d418e07ef404881400faf03943c8c9ff067e4598)), closes [#429](https://github.com/antvis/x6/issues/429)
+
 # @antv/x6 [1.5.0](https://github.com/antvis/x6/compare/@antv/x6@1.4.2...@antv/x6@1.5.0) (2020-12-17)
 
 
