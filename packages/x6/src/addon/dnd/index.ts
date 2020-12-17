@@ -11,11 +11,12 @@ import { Scroller } from '../scroller'
 
 export class Dnd extends View {
   public readonly options: Dnd.Options
-  public readonly delegateGraph: Graph
+  public readonly draggingGraph: Graph
   protected readonly $container: JQuery<HTMLDivElement>
+  protected sourceNode: Node | null
   protected draggingNode: Node | null
   protected draggingView: NodeView | null
-  protected delegateBBox: Rectangle
+  protected draggingBBox: Rectangle
   protected geometryBBox: Rectangle
   protected candidateEmbedView: NodeView | null
   protected delta: Point | null
@@ -54,14 +55,14 @@ export class Dnd extends View {
       this.prefixClassName('widget-dnd'),
     )
 
-    this.delegateGraph = new Graph({
+    this.draggingGraph = new Graph({
       ...this.options.delegateGraphOptions,
       container: document.createElement('div'),
       width: 1,
       height: 1,
     })
 
-    this.$container.append(this.delegateGraph.container)
+    this.$container.append(this.draggingGraph.container)
   }
 
   start(node: Node, evt: JQuery.MouseDownEvent | MouseEvent) {
@@ -72,6 +73,7 @@ export class Dnd extends View {
     this.targetModel.startBatch('dnd')
     this.$container.addClass('dragging').appendTo(document.body)
 
+    this.sourceNode = node
     this.prepareDragging(node, e.clientX, e.clientY)
 
     const local = this.updateNodePosition(e.clientX, e.clientY)
@@ -95,10 +97,20 @@ export class Dnd extends View {
     return this.snapline && !this.snapline.disabled
   }
 
-  protected prepareDragging(node: Node, clientX: number, clientY: number) {
-    const delegateGraph = this.delegateGraph
-    const delegateModel = delegateGraph.model
-    const delegateNode = this.options.getDragNode(node).position(0, 0)
+  protected prepareDragging(
+    sourceNode: Node,
+    clientX: number,
+    clientY: number,
+  ) {
+    const draggingGraph = this.draggingGraph
+    const draggingModel = draggingGraph.model
+    const draggingNode = this.options.getDragNode(sourceNode, {
+      sourceNode,
+      draggingGraph,
+      targetGraph: this.targetGraph,
+    })
+
+    draggingNode.position(0, 0)
 
     let padding = 5
     if (this.isSnaplineEnabled()) {
@@ -107,10 +119,10 @@ export class Dnd extends View {
 
     if (this.isSnaplineEnabled() || this.options.scaled) {
       const scale = this.targetGraph.transform.getScale()
-      delegateGraph.scale(scale.sx, scale.sy)
+      draggingGraph.scale(scale.sx, scale.sy)
       padding *= Math.max(scale.sx, scale.sy)
     } else {
-      delegateGraph.scale(1, 1)
+      draggingGraph.scale(1, 1)
     }
 
     this.clearDragging()
@@ -119,12 +131,12 @@ export class Dnd extends View {
       this.$container.stop(true, true)
     }
 
-    delegateModel.resetCells([delegateNode])
+    draggingModel.resetCells([draggingNode])
 
-    const delegateView = delegateGraph.findViewByCell(delegateNode) as NodeView
+    const delegateView = draggingGraph.findViewByCell(draggingNode) as NodeView
     delegateView.undelegateEvents()
     delegateView.cell.off('changed')
-    delegateGraph.fitToContent({
+    draggingGraph.fitToContent({
       padding,
       allowNewOrigin: 'any',
     })
@@ -132,9 +144,9 @@ export class Dnd extends View {
     const bbox = delegateView.getBBox()
     this.geometryBBox = delegateView.getBBox({ useCellGeometry: true })
     this.delta = this.geometryBBox.getTopLeft().diff(bbox.getTopLeft())
-    this.draggingNode = delegateNode
+    this.draggingNode = draggingNode
     this.draggingView = delegateView
-    this.delegateBBox = delegateNode.getBBox()
+    this.draggingBBox = draggingNode.getBBox()
     this.padding = padding
     this.originOffset = this.updateGraphPosition(clientX, clientY)
   }
@@ -150,7 +162,7 @@ export class Dnd extends View {
       top: clientY - delta.y - nodeBBox.height / 2 - padding + scrollTop,
     }
 
-    if (this.delegateGraph) {
+    if (this.draggingGraph) {
       this.$container.offset(offset)
     }
 
@@ -159,7 +171,7 @@ export class Dnd extends View {
 
   protected updateNodePosition(x: number, y: number) {
     const local = this.targetGraph.clientToLocal(x, y)
-    const bbox = this.delegateBBox!
+    const bbox = this.draggingBBox!
     local.x -= bbox.width / 2
     local.y -= bbox.height / 2
     this.draggingNode!.position(local.x, local.y)
@@ -173,7 +185,7 @@ export class Dnd extends View {
   }: Cell.EventArgs['change:position']) {
     const node = cell as Node
     if (options.snapped) {
-      const bbox = this.delegateBBox
+      const bbox = this.draggingBBox
       node.position(bbox.x + options.tx, bbox.y + options.ty, { silent: true })
       this.draggingView!.translate()
       node.position(current!.x, current!.y, { silent: true })
@@ -240,7 +252,7 @@ export class Dnd extends View {
     if (draggingNode) {
       const e = this.normalizeEvent(evt)
       const draggingView = this.draggingView
-      const draggingBBox = this.delegateBBox
+      const draggingBBox = this.draggingBBox
       const snapOffset = this.snapOffset
       let x = draggingBBox.x
       let y = draggingBBox.y
@@ -284,6 +296,7 @@ export class Dnd extends View {
 
   protected clearDragging() {
     if (this.draggingNode) {
+      this.sourceNode = null
       this.draggingNode.remove()
       this.draggingNode = null
       this.draggingView = null
@@ -364,36 +377,48 @@ export class Dnd extends View {
       const targetGraph = this.targetGraph
       const targetModel = targetGraph.model
       const local = targetGraph.clientToLocal(pos)
-      const node = this.options.getDropNode(draggingNode)
-      const bbox = node.getBBox()
+      const sourceNode = this.sourceNode!
+      const droppingNode = this.options.getDropNode(draggingNode, {
+        sourceNode,
+        draggingNode,
+        targetGraph: this.targetGraph,
+        draggingGraph: this.draggingGraph,
+      })
+      const bbox = droppingNode.getBBox()
       local.x += bbox.x - bbox.width / 2
       local.y += bbox.y - bbox.height / 2
       const gridSize = this.snapOffset ? 1 : targetGraph.getGridSize()
 
-      node.position(
+      droppingNode.position(
         Util.snapToGrid(local.x, gridSize),
         Util.snapToGrid(local.y, gridSize),
       )
 
-      node.removeZIndex()
+      droppingNode.removeZIndex()
 
       const validateNode = this.options.validateNode
       const ret = validateNode
-        ? FunctionExt.call(validateNode, targetGraph, node)
+        ? validateNode(droppingNode, {
+            sourceNode,
+            draggingNode,
+            droppingNode,
+            targetGraph,
+            draggingGraph: this.draggingGraph,
+          })
         : true
 
       if (typeof ret === 'boolean') {
         if (ret) {
-          targetModel.addCell(node, { stencil: this.cid })
-          return node
+          targetModel.addCell(droppingNode, { stencil: this.cid })
+          return droppingNode
         }
         return null
       }
 
       return FunctionExt.toDeferredBoolean(ret).then((valid) => {
         if (valid) {
-          targetModel.addCell(node, { stencil: this.cid })
-          return node
+          targetModel.addCell(droppingNode, { stencil: this.cid })
+          return droppingNode
         }
         return null
       })
@@ -403,8 +428,8 @@ export class Dnd extends View {
   }
 
   protected onRemove() {
-    if (this.delegateGraph) {
-      this.delegateGraph.view.remove()
+    if (this.draggingGraph) {
+      this.draggingGraph.view.remove()
     }
   }
 }
@@ -423,15 +448,32 @@ export namespace Dnd {
           duration?: number
           easing?: string
         }
-    getDragNode: (node: Node) => Node
-    getDropNode: (node: Node) => Node
-    validateNode?: (this: Graph, node: Node) => any
+    getDragNode: (sourceNode: Node, options: GetDragNodeOptions) => Node
+    getDropNode: (draggingNode: Node, options: GetDropNodeOptions) => Node
+    validateNode?: (
+      droppingNode: Node,
+      options: ValidateNodeOptions,
+    ) => boolean | Promise<boolean>
+  }
+
+  export interface GetDragNodeOptions {
+    sourceNode: Node
+    targetGraph: Graph
+    draggingGraph: Graph
+  }
+
+  export interface GetDropNodeOptions extends GetDragNodeOptions {
+    draggingNode: Node
+  }
+
+  export interface ValidateNodeOptions extends GetDropNodeOptions {
+    droppingNode: Node
   }
 
   export const defaults: Partial<Options> = {
     animation: false,
-    getDragNode: (node) => node.clone(),
-    getDropNode: (node) => node.clone(),
+    getDragNode: (sourceNode) => sourceNode.clone(),
+    getDropNode: (draggingNode) => draggingNode.clone(),
   }
 
   export const documentEvents = {
