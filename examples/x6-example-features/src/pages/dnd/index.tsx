@@ -102,6 +102,12 @@ export default class Example extends React.Component {
         console.log('getDropNode', node.clone())
         return node.clone()
       },
+      validateNode(node) {
+        console.log('validateNode', node)
+        return new Promise<boolean>((resolve) => {
+          setTimeout(() => resolve(true), 3000)
+        })
+      },
     })
     this.graph = graph
   }
@@ -148,10 +154,10 @@ export default class Example extends React.Component {
               wrap.style.display = 'flex'
               wrap.style.alignItems = 'center'
               wrap.style.justifyContent = 'center'
-              wrap.style.border = '2px solid #9254de'
-              wrap.style.background = '#3a3a3a'
-              wrap.style.borderRadius = '4px'
-              wrap.innerText = 'Hello Circle '
+              wrap.style.border = '2px solid rgb(49, 208, 198)'
+              wrap.style.background = '#fff'
+              wrap.style.borderRadius = '100%'
+              wrap.innerText = 'Circle'
               return wrap
             },
           })
