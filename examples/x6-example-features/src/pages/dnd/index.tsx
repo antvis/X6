@@ -105,7 +105,7 @@ export default class Example extends React.Component {
       validateNode(node) {
         console.log('validateNode', node)
         return new Promise<boolean>((resolve) => {
-          setTimeout(() => resolve(true), 3000)
+          setTimeout(() => resolve(true), 2000)
         })
       },
     })
