@@ -388,8 +388,11 @@ export namespace Collection {
   }
 
   export interface CellEventArgs {
-    'cell:transition:begin': Cell.EventArgs['transition:begin']
-    'cell:transition:end': Cell.EventArgs['transition:end']
+    'cell:transition:start': Cell.EventArgs['transition:start']
+    'cell:transition:progress': Cell.EventArgs['transition:progress']
+    'cell:transition:complete': Cell.EventArgs['transition:complete']
+    'cell:transition:stop': Cell.EventArgs['transition:stop']
+    'cell:transition:finish': Cell.EventArgs['transition:finish']
 
     'cell:changed': Cell.EventArgs['changed']
     'cell:added': Cell.EventArgs['added']
@@ -434,10 +437,16 @@ export namespace Collection {
   }
 
   export interface NodeEventArgs {
-    'node:transition:begin': NodeEventCommonArgs &
-      Cell.EventArgs['transition:begin']
-    'node:transition:end': NodeEventCommonArgs &
-      Cell.EventArgs['transition:end']
+    'node:transition:start': NodeEventCommonArgs &
+      Cell.EventArgs['transition:start']
+    'node:transition:progress': NodeEventCommonArgs &
+      Cell.EventArgs['transition:progress']
+    'node:transition:complete': NodeEventCommonArgs &
+      Cell.EventArgs['transition:complete']
+    'node:transition:stop': NodeEventCommonArgs &
+      Cell.EventArgs['transition:stop']
+    'node:transition:finish': NodeEventCommonArgs &
+      Cell.EventArgs['transition:finish']
 
     'node:changed': NodeEventCommonArgs & CellEventArgs['cell:changed']
     'node:added': NodeEventCommonArgs & CellEventArgs['cell:added']
@@ -482,10 +491,16 @@ export namespace Collection {
   }
 
   export interface EdgeEventArgs {
-    'edge:transition:begin': EdgeEventCommonArgs &
-      Cell.EventArgs['transition:begin']
-    'edge:transition:end': EdgeEventCommonArgs &
-      Cell.EventArgs['transition:end']
+    'edge:transition:start': EdgeEventCommonArgs &
+      Cell.EventArgs['transition:start']
+    'edge:transition:progress': EdgeEventCommonArgs &
+      Cell.EventArgs['transition:progress']
+    'edge:transition:complete': EdgeEventCommonArgs &
+      Cell.EventArgs['transition:complete']
+    'edge:transition:stop': EdgeEventCommonArgs &
+      Cell.EventArgs['transition:stop']
+    'edge:transition:finish': EdgeEventCommonArgs &
+      Cell.EventArgs['transition:finish']
 
     'edge:changed': EdgeEventCommonArgs & CellEventArgs['cell:changed']
     'edge:added': EdgeEventCommonArgs & CellEventArgs['cell:added']

@@ -1005,7 +1005,7 @@ export namespace Node {
   }
 
   export interface TranslateOptions extends Cell.TranslateOptions {
-    transition?: boolean | Animation.Options
+    transition?: boolean | Animation.StartOptions<Point.PointLike>
     restrict?: Rectangle.RectangleLike | null
   }
 

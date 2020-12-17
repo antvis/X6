@@ -5,6 +5,13 @@ import { Cell } from './cell'
 
 export class Animation {
   protected readonly ids: { [path: string]: number } = {}
+  protected readonly cache: {
+    [path: string]: {
+      startValue: any
+      targetValue: any
+      options: Animation.StartOptions<any>
+    }
+  } = {}
 
   constructor(protected readonly cell: Cell) {}
 
@@ -12,117 +19,220 @@ export class Animation {
     return Object.keys(this.ids)
   }
 
-  start<T extends string | number | KeyValue<number>>(
+  start<T extends Animation.TargetValue>(
     path: string | string[],
-    target: T,
-    options: Animation.Options = {},
+    targetValue: T,
+    options: Animation.StartOptions<T> = {},
     delim: string = '/',
-  ) {
-    const localOptions: Animation.Options = {
-      delay: 10,
-      duration: 100,
-      timing: 'linear',
-      ...options,
-    }
-
-    let timing = Timing.linear
-    if (localOptions.timing != null) {
-      if (typeof localOptions.timing === 'string') {
-        timing = Timing[localOptions.timing]
-      } else {
-        timing = localOptions.timing
-      }
-    }
-
-    const current = this.cell.getPropByPath<T>(path)
-    const interp = localOptions.interp
-
-    let interpolate: any
-
-    if (interp) {
-      interpolate = interp(current, target)
-    } else if (typeof target === 'object') {
-      interpolate = Interp.object(
-        current as KeyValue<number>,
-        target as KeyValue<number>,
-      )
-    } else if (typeof target === 'number') {
-      interpolate = Interp.number(current as number, target)
-    } else if (typeof target === 'string') {
-      if (target[0] === '#') {
-        interpolate = Interp.color(current as string, target)
-      } else {
-        interpolate = Interp.unit(current as string, target)
-      }
-    }
+  ): () => void {
+    const startValue = this.cell.getPropByPath<T>(path)
+    const localOptions = ObjectExt.defaults(options, Animation.defaultOptions)
+    const timing = this.getTiming(localOptions.timing)
+    const interpolate = this.getInterp<T>(
+      localOptions.interp,
+      startValue,
+      targetValue,
+    )
 
     let startTime = 0
-
-    const pathStr = Array.isArray(path) ? path.join(delim) : path
-    const setter = () => {
-      let id
-      let val
-
+    const key = Array.isArray(path) ? path.join(delim) : path
+    const paths = Array.isArray(path) ? path : path.split(delim)
+    const iterate = () => {
       const now = new Date().getTime()
       if (startTime === 0) {
         startTime = now
       }
 
       const elaspe = now - startTime
-      let progress = elaspe / localOptions.duration!
+      let progress = elaspe / localOptions.duration
       if (progress < 1) {
-        this.ids[pathStr] = id = Dom.requestAnimationFrame(setter)
+        this.ids[key] = Dom.requestAnimationFrame(iterate)
       } else {
         progress = 1
-        delete this.ids[pathStr]
       }
 
-      val = interpolate(timing(progress))
-      options.transitionId = id
+      const currentValue = interpolate(timing(progress)) as T
+      this.cell.setPropByPath(paths, currentValue)
 
-      this.cell.setPropByPath(
-        Array.isArray(path) ? path : path.split(delim),
-        val,
-      )
+      if (options.progress) {
+        options.progress({ progress, currentValue, ...this.getArgs<T>(key) })
+      }
 
-      if (id == null) {
-        this.cell.notify('transition:end', { cell: this.cell, path: pathStr })
+      if (progress === 1) {
+        // TODO: remove in the next major version
+        this.cell.notify('transition:end', this.getArgs<T>(key))
+        this.cell.notify('transition:complete', this.getArgs<T>(key))
+        options.complete && options.complete(this.getArgs<T>(key))
+
+        this.cell.notify('transition:finish', this.getArgs<T>(key))
+        options.finish && options.finish(this.getArgs<T>(key))
+        this.clean(key)
       }
     }
 
-    const initiator = (transition: FrameRequestCallback) => {
-      this.stop(path, delim)
-      this.ids[pathStr] = Dom.requestAnimationFrame(transition)
-      this.cell.notify('transition:begin', { cell: this.cell, path: pathStr })
-    }
+    setTimeout(() => {
+      this.stop(path, undefined, delim)
+      this.cache[key] = { startValue, targetValue, options: localOptions }
+      this.ids[key] = Dom.requestAnimationFrame(iterate)
 
-    return setTimeout(() => {
-      initiator(setter)
+      // TODO: remove in the next major version
+      this.cell.notify('transition:begin', this.getArgs<T>(key))
+      this.cell.notify('transition:start', this.getArgs<T>(key))
+      options.start && options.start(this.getArgs<T>(key))
     }, options.delay)
+
+    return this.stop.bind(this, path, delim, options)
   }
 
-  stop(path: string | string[], delim: string = '/') {
+  stop<T extends Animation.TargetValue>(
+    path: string | string[],
+    options: Animation.StopOptions<T> = {},
+    delim: string = '/',
+  ) {
     const paths = Array.isArray(path) ? path : path.split(delim)
-
     Object.keys(this.ids)
       .filter((key) =>
         ObjectExt.isEqual(paths, key.split(delim).slice(0, paths.length)),
       )
       .forEach((key) => {
         Dom.cancelAnimationFrame(this.ids[key])
-        delete this.ids[key]
-        this.cell.notify('transition:end', { cell: this.cell, path: key })
+        const data = this.cache[key]
+        const commonArgs = this.getArgs<T>(key)
+        const localOptions = { ...data.options, ...options }
+        const jumpedToEnd = localOptions.jumpedToEnd
+        if (jumpedToEnd && data.targetValue != null) {
+          this.cell.setPropByPath(key, data.targetValue)
+
+          this.cell.notify('transition:end', { ...commonArgs })
+          this.cell.notify('transition:complete', { ...commonArgs })
+          localOptions.complete && localOptions.complete({ ...commonArgs })
+        }
+
+        const stopArgs = { jumpedToEnd, ...commonArgs }
+        this.cell.notify('transition:stop', { ...stopArgs })
+        localOptions.stop && localOptions.stop({ ...stopArgs })
+
+        this.cell.notify('transition:finish', { ...commonArgs })
+        localOptions.finish && localOptions.finish({ ...commonArgs })
+
+        this.clean(key)
       })
 
     return this
   }
+
+  private clean(key: string) {
+    delete this.ids[key]
+    delete this.cache[key]
+  }
+
+  private getTiming(timing: Timing.Names | Timing.Definition) {
+    return typeof timing === 'string' ? Timing[timing] : timing
+  }
+
+  private getInterp<T extends Animation.TargetValue>(
+    interp: Interp.Definition<any> | undefined,
+    startValue: T,
+    targetValue: T,
+  ) {
+    if (interp) {
+      return interp(startValue, targetValue)
+    }
+
+    if (typeof targetValue === 'number') {
+      return Interp.number(startValue as number, targetValue)
+    }
+
+    if (typeof targetValue === 'string') {
+      if (targetValue[0] === '#') {
+        return Interp.color(startValue as string, targetValue)
+      }
+
+      return Interp.unit(startValue as string, targetValue)
+    }
+
+    return Interp.object(
+      startValue as KeyValue<number>,
+      targetValue as KeyValue<number>,
+    )
+  }
+
+  private getArgs<T extends Animation.TargetValue>(
+    key: string,
+  ): Animation.CallbackArgs<T> {
+    const data = this.cache[key]
+    return {
+      path: key,
+      startValue: data.startValue,
+      targetValue: data.targetValue,
+      cell: this.cell,
+    }
+  }
 }
 
 export namespace Animation {
-  export interface Options extends KeyValue {
-    delay?: number
-    duration?: number
-    timing?: Timing.Names | Timing.Definition
+  export interface BaseOptions {
+    delay: number
+    duration: number
+    timing: Timing.Names | Timing.Definition
+  }
+
+  export type TargetValue = string | number | KeyValue<number>
+
+  export interface CallbackArgs<T> {
+    cell: Cell
+    path: string
+    startValue: T
+    targetValue: T
+  }
+
+  export interface ProgressArgs<T> extends CallbackArgs<T> {
+    progress: number
+    currentValue: T
+  }
+
+  export interface StopArgs<T> extends CallbackArgs<T> {
+    jumpedToEnd?: boolean
+  }
+
+  export interface StartOptions<T>
+    extends Partial<BaseOptions>,
+      StopOptions<T> {
     interp?: Interp.Definition<any>
+    /**
+     * A function to call when the animation begins.
+     */
+    start?: (options: CallbackArgs<T>) => void
+    /**
+     * A function to be called after each step of the animation, only once per
+     * animated element regardless of the number of animated properties.
+     */
+    progress?: (options: ProgressArgs<T>) => void
+  }
+
+  export interface StopOptions<T> {
+    /**
+     * A Boolean indicating whether to complete the animation immediately.
+     * Defaults to `false`.
+     */
+    jumpedToEnd?: boolean
+    /**
+     * A function that is called once the animation completes.
+     */
+    complete?: (options: CallbackArgs<T>) => void
+    /**
+     * A function to be called when the animation stops.
+     */
+    stop?: (options: StopArgs<T>) => void
+    /**
+     * A function to be called when the animation completes or stops.
+     */
+    finish?: (options: CallbackArgs<T>) => void
+  }
+
+  export const defaultOptions: BaseOptions = {
+    delay: 10,
+    duration: 100,
+    timing: 'linear',
   }
 }

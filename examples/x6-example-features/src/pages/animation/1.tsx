@@ -108,7 +108,7 @@ export default class Example extends React.Component {
 
     fly(ufo)
 
-    ufo.on('transition:end', ({ cell }) => fly(cell))
+    ufo.on('transition:complete', ({ cell }) => fly(cell))
   }
 
   refContainer = (container: HTMLDivElement) => {

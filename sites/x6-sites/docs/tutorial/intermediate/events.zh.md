@@ -369,19 +369,34 @@ cell.on('change:custom', ({ cell, current, previous, options}) => {
 
 ### 动画
 
-动画开始和结束时分别触发 `transition:begin` 和 `transition:end` 事件。
+- `'transition:start'` 动画开始时触发
+- `'transition:progress'` 动画过程中触发
+- `'transition:complete'` 动画完成时触发
+- `'transition:stop'` 动画被停止时触发
+- `'transition:finish'` 动画完成或被停止时触发
 
 ```ts
-cell.on('transition:begin', ({ cell, path }) => {})
-cell.on('transition:end', ({ cell, path }) => {})
+cell.on('transition:start', (args: Animation.CallbackArgs) => {})
+cell.on('transition:progress', (args: Animation.ProgressArgs) => {})
+cell.on('transition:complete', (args: Animation.CallbackArgs) => {})
+cell.on('transition:stop', (args: Animation.CallbackArgs) => {})
+cell.on('transition:finish', (args: Animation.CallbackArgs) => {})
 
-graph.on('cell:transition:begin', ({ cell, path }) => {})
-graph.on('cell:transition:end', ({ cell, path }) => {})
+graph.on('cell:transition:start', (args: Animation.CallbackArgs) => {})
+graph.on('cell:transition:progress', (args: Animation.ProgressArgs) => {})
+graph.on('cell:transition:complete', (args: Animation.CallbackArgs) => {})
+graph.on('cell:transition:stop', (args: Animation.CallbackArgs) => {})
+graph.on('cell:transition:finish', (args: Animation.CallbackArgs) => {})
 
-graph.on('node:transition:begin', ({ node, path }) => {})
-graph.on('node:transition:end', ({ node, path }) => {})
+graph.on('node:transition:start', (args: Animation.CallbackArgs) => {})
+graph.on('node:transition:progress', (args: Animation.ProgressArgs) => {})
+graph.on('node:transition:complete', (args: Animation.CallbackArgs) => {})
+graph.on('node:transition:stop', (args: Animation.CallbackArgs) => {})
+graph.on('node:transition:finish', (args: Animation.CallbackArgs) => {})
 
-graph.on('edge:transition:begin', ({ edge, path }) => {})
-graph.on('edge:transition:end', ({ edge, path }) => {})
+graph.on('edge:transition:start', (args: Animation.CallbackArgs) => {})
+graph.on('edge:transition:progress', (args: Animation.ProgressArgs) => {})
+graph.on('edge:transition:complete', (args: Animation.CallbackArgs) => {})
+graph.on('edge:transition:stop', (args: Animation.CallbackArgs) => {})
+graph.on('edge:transition:finish', (args: Animation.CallbackArgs) => {})
 ```
-
