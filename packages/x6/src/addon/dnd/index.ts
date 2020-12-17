@@ -106,7 +106,7 @@ export class Dnd extends View {
     }
 
     if (this.isSnaplineEnabled() || this.options.scaled) {
-      const scale = this.targetGraph.scale()
+      const scale = this.targetGraph.transform.getScale()
       delegateGraph.scale(scale.sx, scale.sy)
       padding *= Math.max(scale.sx, scale.sy)
     } else {
@@ -273,6 +273,8 @@ export class Dnd extends View {
       }
 
       if (FunctionExt.isAsync(ret)) {
+        // stop dragging
+        this.undelegateDocumentEvents()
         ret.then(callback)
       } else {
         callback(ret)
