@@ -1428,7 +1428,8 @@ export class EdgeView<
           rotate?: boolean | number | 'auto' | 'auto-reverse'
           // https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/calcMode
           timing?: 'linear' | 'discrete' | 'paced' | 'spline'
-        } & KeyValue<string>),
+        } & Dom.AnimateCallbacks &
+          KeyValue<string | number | undefined>),
     callback?: () => void,
   ) {
     let duration
@@ -1460,7 +1461,7 @@ export class EdgeView<
 
     duration = duration || 1000
 
-    const attrs: { [key: string]: string } = {
+    const attrs: Dom.AnimationOptions = {
       dur: `${duration}ms`,
       repeatCount: '1',
       calcMode: timing,
@@ -1502,37 +1503,37 @@ export class EdgeView<
       throw new Error('Token animation requires a valid connection path.')
     }
 
-    const elem = typeof token === 'string' ? this.findOne(token) : token
-    if (elem == null) {
+    const target = typeof token === 'string' ? this.findOne(token) : token
+    if (target == null) {
       throw new Error('Token animation requires a valid token element.')
     }
 
-    const parent = elem.parentNode
-    const nextSibling = elem.nextSibling
+    const parent = target.parentNode
     const revert = () => {
-      if (parent) {
-        if (nextSibling) {
-          parent.insertBefore(elem, nextSibling)
-        } else {
-          parent.appendChild(elem)
-        }
-      } else {
-        Dom.remove(elem)
+      if (!parent) {
+        Dom.remove(target)
       }
     }
 
-    const vToken = Vector.create(elem as SVGElement)
-    const stop = vToken
-      .appendTo(this.graph.view.stage)
-      .animateAlongPath(attrs, path)
+    const vToken = Vector.create(target as SVGElement)
+    if (!parent) {
+      vToken.appendTo(this.graph.view.stage)
+    }
 
-    setTimeout(() => {
+    const onComplete = attrs.complete
+    attrs.complete = (e: Event) => {
       revert()
-      if (typeof callback === 'function') {
+
+      if (callback) {
         callback()
       }
-    }, duration)
 
+      if (onComplete) {
+        onComplete(e)
+      }
+    }
+
+    const stop = vToken.animateAlongPath(attrs, path)
     return () => {
       revert()
       stop()

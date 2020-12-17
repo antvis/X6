@@ -337,29 +337,80 @@ export function getIntersection(
   return spot
 }
 
+export interface AnimateCallbacks {
+  start?: (e: Event) => void
+  repeat?: (e: Event) => void
+  complete?: (e: Event) => void
+}
+
+export type AnimationOptions = AnimateCallbacks & {
+  [name: string]: string | number | undefined
+}
+
+export function animate(elem: SVGElement, options: AnimationOptions) {
+  return createAnimation(elem, options, 'animate')
+}
+
+export function animateTransform(elem: SVGElement, options: AnimationOptions) {
+  return createAnimation(elem, options, 'animateTransform')
+}
+
+function createAnimation(
+  elem: SVGElement,
+  options: AnimationOptions,
+  type: 'animate' | 'animateTransform',
+) {
+  // @see
+  // https://www.w3.org/TR/SVG11/animate.html#AnimateElement
+  // https://developer.mozilla.org/en-US/docs/Web/API/SVGAnimateElement
+  // https://developer.mozilla.org/en-US/docs/Web/API/SVGAnimateTransformElement
+
+  const animate = createSvgElement<SVGAnimationElement>(type)
+  elem.appendChild(animate)
+  try {
+    return setupAnimation(animate, options)
+  } catch (error) {}
+
+  return () => {}
+}
+
+function setupAnimation(
+  animate: SVGAnimationElement,
+  options: AnimationOptions,
+) {
+  const { start, complete, repeat, ...attrs } = options
+
+  attr(animate, attrs)
+
+  start && animate.addEventListener('beginEvent', start)
+  complete && animate.addEventListener('endEvent', complete)
+  repeat && animate.addEventListener('repeatEvent', repeat)
+
+  const ani = animate as any
+  ani.beginElement()
+  return () => ani.endElement()
+}
+
 /**
  * Animate the element along the path SVG element (or Vector object).
  * `attrs` contain Animation Timing attributes describing the animation.
  */
 export function animateAlongPath(
   elem: SVGElement,
-  attrs: { [name: string]: string },
+  options: AnimationOptions,
   path: SVGPathElement,
 ): () => void {
   const id = ensureId(path)
+  // https://developer.mozilla.org/en-US/docs/Web/API/SVGAnimationElement
   const animate = createSvgElement<SVGAnimateMotionElement>('animateMotion')
   const mpath = createSvgElement('mpath')
-
-  attr(animate, attrs)
   attr(mpath, { 'xlink:href': `#${id}` })
 
   animate.appendChild(mpath)
   elem.appendChild(animate)
 
   try {
-    const ani = animate as any
-    ani.beginElement()
-    return () => ani.endElement()
+    return setupAnimation(animate, options)
   } catch (e) {
     // Fallback for IE 9.
     if (document.documentElement.getAttribute('smiling') === 'fake') {

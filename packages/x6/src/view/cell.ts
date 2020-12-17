@@ -1,6 +1,6 @@
 import { Nilable, KeyValue } from '../types'
 import { Rectangle, Point } from '../geometry'
-import { ArrayExt, ObjectExt, Dom, FunctionExt } from '../util'
+import { ArrayExt, ObjectExt, Dom, FunctionExt, Vector } from '../util'
 import { Attr } from '../registry/attr'
 import { Registry } from '../registry/registry'
 import { ConnectionStrategy } from '../registry/connection-strategy'
@@ -585,6 +585,70 @@ export class CellView<
 
     return magnet
   }
+
+  // #region animate
+
+  animate(elem: SVGElement | string, options: Dom.AnimationOptions) {
+    const target = typeof elem === 'string' ? this.findOne(elem) : elem
+    if (target == null) {
+      throw new Error('Invalid animation element.')
+    }
+
+    const parent = target.parentNode
+    const revert = () => {
+      if (!parent) {
+        Dom.remove(target)
+      }
+    }
+
+    const vTarget = Vector.create(target as SVGElement)
+    if (!parent) {
+      vTarget.appendTo(this.graph.view.stage)
+    }
+
+    const onComplete = options.complete
+    options.complete = (e: Event) => {
+      revert()
+
+      if (onComplete) {
+        onComplete(e)
+      }
+    }
+
+    return vTarget.animate(options)
+  }
+
+  animateTransform(elem: SVGElement | string, options: Dom.AnimationOptions) {
+    const target = typeof elem === 'string' ? this.findOne(elem) : elem
+    if (target == null) {
+      throw new Error('Invalid animation element.')
+    }
+
+    const parent = target.parentNode
+    const revert = () => {
+      if (!parent) {
+        Dom.remove(target)
+      }
+    }
+
+    const vTarget = Vector.create(target as SVGElement)
+    if (!parent) {
+      vTarget.appendTo(this.graph.view.stage)
+    }
+
+    const onComplete = options.complete
+    options.complete = (e: Event) => {
+      revert()
+
+      if (onComplete) {
+        onComplete(e)
+      }
+    }
+
+    return vTarget.animateTransform(options)
+  }
+
+  // #endregion
 
   // #region tools
 
