@@ -6,6 +6,7 @@ export const Edge = E.define({
     {
       tagName: 'path',
       selector: 'wrap',
+      groupSelector: 'lines',
       attrs: {
         fill: 'none',
         cursor: 'pointer',
@@ -16,6 +17,7 @@ export const Edge = E.define({
     {
       tagName: 'path',
       selector: 'line',
+      groupSelector: 'lines',
       attrs: {
         fill: 'none',
         pointerEvents: 'none',
@@ -23,16 +25,19 @@ export const Edge = E.define({
     },
   ],
   attrs: {
-    wrap: {
+    lines: {
       connection: true,
-      strokeWidth: 10,
+      // https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-linejoin
       strokeLinejoin: 'round',
+      // https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/stroke-linecap
+      strokeLinecap: 'square',
+    },
+    wrap: {
+      strokeWidth: 10,
     },
     line: {
-      connection: true,
-      stroke: '#333333',
+      stroke: '#333',
       strokeWidth: 2,
-      strokeLinejoin: 'round',
       targetMarker: 'classic',
     },
   },
