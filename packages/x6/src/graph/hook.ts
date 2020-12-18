@@ -439,20 +439,51 @@ export class Hook extends Base implements Hook.IHook {
     terminalType: Edge.TerminalType,
     edgeView?: EdgeView,
   ) {
-    const validate = this.options.connecting.validateConnection
-    return validate
-      ? FunctionExt.call(validate, this.graph, {
-          edgeView,
-          sourceView,
-          sourceMagnet,
-          targetView,
-          targetMagnet,
-          sourceCell: sourceView ? sourceView.cell : null,
-          targetCell: targetView ? targetView.cell : null,
-          edge: edgeView ? edgeView.cell : null,
-          type: terminalType,
-        })
-      : true
+    const options = this.options.connecting
+    const loop = options.loop
+    const loose = options.loose
+    const args: Options.ValidateConnectionArgs = {
+      edgeView,
+      sourceView,
+      sourceMagnet,
+      targetView,
+      targetMagnet,
+      sourceCell: sourceView ? sourceView.cell : null,
+      targetCell: targetView ? targetView.cell : null,
+      edge: edgeView ? edgeView.cell : null,
+      type: terminalType,
+    }
+
+    let valid = true
+
+    if (loop != null) {
+      if (typeof loop === 'boolean') {
+        if (!loop && sourceView === targetView) {
+          return false
+        }
+      } else {
+        valid = valid && FunctionExt.call(loop, this.graph, { ...args })
+      }
+    }
+
+    if (loose != null) {
+      if (typeof loose === 'boolean') {
+        if (!loose && targetMagnet == null) {
+          return false
+        }
+      } else {
+        valid = valid && FunctionExt.call(loose, this.graph, { ...args })
+      }
+    }
+
+    if (valid) {
+      const validate = options.validateConnection
+      if (validate != null) {
+        valid = FunctionExt.call(validate, this.graph, { ...args })
+      }
+    }
+
+    return valid
   }
 
   getRestrictArea(view?: NodeView): Rectangle.RectangleLike | null {
