@@ -83,7 +83,14 @@ export class DefsManager extends Base {
   }
 
   marker(options: DefsManager.MarkerOptions) {
-    const { id, tagName, markerUnits, children, ...attrs } = options
+    const {
+      id,
+      tagName,
+      markerUnits,
+      markerOrient,
+      children,
+      ...attrs
+    } = options
     let markerId = id
     if (!markerId) {
       markerId = `marker-${this.cid}-${StringExt.hashcode(
@@ -101,8 +108,8 @@ export class DefsManager extends Base {
         'marker',
         {
           id: markerId,
-          orient: 'auto',
           overflow: 'visible',
+          orient: markerOrient != null ? markerOrient : 'auto',
           markerUnits: markerUnits || 'userSpaceOnUse',
         },
         children
