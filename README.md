@@ -1,4 +1,4 @@
-<h1 align="center">X6</h1>
+<p align="center"><img src="/flow.svg"></p>
 
 <p align="center"><strong>JavaScript diagramming library that uses SVG and HTML for rendering.</strong></p>
 
