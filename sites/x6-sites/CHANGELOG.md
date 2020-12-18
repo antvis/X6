@@ -1,3 +1,19 @@
+## @antv/x6-sites [1.7.2](https://github.com/antvis/x6/compare/@antv/x6-sites@1.7.1...@antv/x6-sites@1.7.2) (2020-12-18)
+
+
+### Bug Fixes
+
+* 🐛 take the stroke-width into account when calc connection point ([b21cac6](https://github.com/antvis/x6/commit/b21cac6968a548cad17c185a4219f24d135eaa8a))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.5.2
+* **@antv/x6-react-shape:** upgraded to 1.1.34
+
 ## @antv/x6-sites [1.7.1](https://github.com/antvis/x6/compare/@antv/x6-sites@1.7.0...@antv/x6-sites@1.7.1) (2020-12-17)
 
 
