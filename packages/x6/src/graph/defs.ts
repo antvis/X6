@@ -12,7 +12,7 @@ export class DefsManager extends Base {
     return this.view.svg
   }
 
-  protected get elem() {
+  protected get defs() {
     return this.view.defs
   }
 
@@ -48,7 +48,7 @@ export class DefsManager extends Base {
         ...options.attrs,
         id: filterId,
       }
-      Vector.create(Markup.sanitize(markup), attrs).appendTo(this.elem)
+      Vector.create(Markup.sanitize(markup), attrs).appendTo(this.defs)
     }
 
     return filterId
@@ -76,7 +76,7 @@ export class DefsManager extends Base {
 
       const markup = `<${type}>${arr.join('')}</${type}>`
       const attrs = { id, ...options.attrs }
-      Vector.create(markup, attrs).appendTo(this.elem)
+      Vector.create(markup, attrs).appendTo(this.defs)
     }
 
     return id
@@ -118,7 +118,7 @@ export class DefsManager extends Base {
           : [Vector.create(tagName || 'path', Dom.kebablizeAttrs(attrs))],
       )
 
-      this.elem.appendChild(pathMarker.node)
+      this.defs.appendChild(pathMarker.node)
     }
 
     return markerId
