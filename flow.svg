@@ -1,0 +1,46 @@
+<svg width="274" height="195" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <g fill="none" fill-rule="evenodd">
+    <path id="path1" stroke="#000" stroke-width="3" stroke-linecap="square" d="M 137.5 50.5 L 137.5 131.5 L 60.5 131.5 L 60.5 213.5">
+      <set attributeName="stroke-dasharray" to="3 6" begin="0;a1.end+5s" dur="3s" />
+      <animate
+        id="a1"
+        attributeType="XML"
+        attributeName="stroke-dashoffset"
+        from="0"
+        to="-200"
+        dur="3s"
+        begin="0;a1.end+5s"/>
+    </path>
+    <path id="path2" stroke="#000" stroke-width="3" stroke-linecap="square" d="M 137.5 50.5 L 137.5 131.5 L 214.5 131.5 L 214.5 213.5">
+      <set attributeName="stroke-dasharray" to="3 6" begin="0;a1.end+5s" dur="3s" />
+      <animate
+        attributeType="XML"
+        attributeName="stroke-dashoffset"
+        from="0"
+        to="-200"
+        dur="3s"
+        begin="0;a1.end+5s"/>
+    </path>
+    <circle id="token1" fill="#9F62F6" r="5.5" opacity="0">
+      <set attributeName="opacity" to="1" begin="a1.end+1s" dur="3s" />
+      <animateMotion dur="3s" begin="a1.end+1s" rotate="auto">
+        <mpath xlink:href="#path1"/>
+      </animateMotion>
+    </circle>
+    <circle id="token2" fill="#9F62F6" r="5.5" opacity="0">
+      <set attributeName="opacity" to="1" begin="a1.end+1s" dur="3s" />
+      <animateMotion dur="3s" begin="a1.end+1s" rotate="auto">
+        <mpath xlink:href="#path2"/>
+      </animateMotion>
+    </circle>
+    <g transform="translate(77)">
+      <rect stroke="#000" stroke-width="3" fill="#9F62F6" x="1.5" y="1.5" width="118" height="46" rx="8"/>
+      <text font-family="Avenir-Heavy, Avenir" font-size="24" font-weight="600" fill="#FFF">
+        <tspan x="45" y="32">X6</tspan>
+      </text>
+    </g>
+    <rect stroke="#000" stroke-width="3" fill="#FF8B38" x="78.5" y="66.5" width="118" height="46" rx="8"/>
+    <rect stroke="#000" stroke-width="3" fill="#FFB451" x="1.5" y="147.5" width="118" height="46" rx="8"/>
+    <rect stroke="#000" stroke-width="3" fill="#FFB451" x="154.5" y="147.5" width="118" height="46" rx="8"/>
+  </g>
+</svg>
