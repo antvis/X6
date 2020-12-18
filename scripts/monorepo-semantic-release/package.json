@@ -16,6 +16,7 @@
     "bash-glob": "^2.0.0",
     "bash-path": "^2.0.1",
     "blork": "^9.2.2",
+    "cnpm": "^6.1.1",
     "debug": "^4.2.0",
     "detect-indent": "^6.0.0",
     "detect-newline": "^3.1.0",
