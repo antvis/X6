@@ -239,6 +239,14 @@ export namespace Plugin {
           const ret = await pub
           await fse.writeFile(pkgPath, pkgRaw)
 
+          const sync = execa('cnpm', ['sync', pkg.name], {
+            cwd: pkg.dir,
+            env: context.env,
+          }) as any
+          sync.stdout.pipe(ctx.stdout, { end: false })
+          sync.stderr.pipe(ctx.stderr, { end: false })
+          await sync
+
           return ret
         }
       }
