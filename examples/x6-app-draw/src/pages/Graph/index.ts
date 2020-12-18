@@ -39,10 +39,6 @@ export default class FlowGraph {
         rubberband: true,
         movable: true,
         showNodeSelectionBox: true,
-        filter: (node) => {
-          const data = node.getData() as any
-          return !(data && data.parent)
-        },
       },
       connecting: {
         anchor: 'center',
@@ -313,15 +309,16 @@ export default class FlowGraph {
       this.showPorts(ports, false)
     })
 
-    graph.on('node:collapse', ({ node }: { node }) => {
+    graph.on('node:collapse', ({ node, e }) => {
+      e.stopPropagation()
       node.toggleCollapse()
       const collapsed = node.isCollapsed()
       const cells = node.getDescendants()
-      cells.forEach((node) => {
+      cells.forEach((n) => {
         if (collapsed) {
-          node.hide()
+          n.hide()
         } else {
-          node.show()
+          n.show()
         }
       })
     })
