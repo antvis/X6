@@ -68,7 +68,7 @@ export default class Example extends React.Component {
         {
           id: 'node1',
           shape: 'rect',
-          x: 100,
+          x: 120,
           y: 100,
           width: 80,
           height: 40,
@@ -81,8 +81,8 @@ export default class Example extends React.Component {
         },
         {
           id: 'node2',
-          x: 360,
-          y: 300,
+          x: 120,
+          y: 240,
           width: 80,
           height: 40,
           label: 'World',
@@ -110,6 +110,12 @@ export default class Example extends React.Component {
     graph.fromJSON(data)
     // console.log(graph.toJSON())
     // graph.scaleContentToFit()
+
+    const node = graph.getCellById('node2')
+    node.transition('attrs/body/strokeWidth', 10, {
+      duration: 3000,
+      complete() {},
+    })
   }
 
   refContainer = (container: HTMLDivElement) => {
