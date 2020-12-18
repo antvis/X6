@@ -652,7 +652,7 @@ export class Graph extends Basecoat<EventArgs> {
       }
       this.transform.zoom(factor, options)
     }
-    
+
     return this
   }
 
@@ -665,7 +665,7 @@ export class Graph extends Basecoat<EventArgs> {
       scroller.zoom(factor, { ...options, absolute: true })
     } else {
       this.transform.zoom(factor, { ...options, absolute: true })
-    } 
+    }
   }
 
   zoomToRect(
@@ -679,7 +679,7 @@ export class Graph extends Basecoat<EventArgs> {
     } else {
       this.transform.zoomToRect(rect, options)
     }
-    
+
     return this
   }
 
@@ -693,7 +693,7 @@ export class Graph extends Basecoat<EventArgs> {
     } else {
       this.transform.zoomToFit(options)
     }
-    
+
     return this
   }
 
@@ -804,7 +804,7 @@ export class Graph extends Basecoat<EventArgs> {
     } else {
       this.transform.centerPoint(x as number, y as number)
     }
-    
+
     return this
   }
 
@@ -825,7 +825,7 @@ export class Graph extends Basecoat<EventArgs> {
     } else {
       this.transform.centerCell(cell)
     }
-    
+
     return this
   }
 
@@ -841,7 +841,7 @@ export class Graph extends Basecoat<EventArgs> {
     } else {
       this.transform.positionPoint(point, x, y)
     }
-    
+
     return this
   }
 
@@ -856,7 +856,7 @@ export class Graph extends Basecoat<EventArgs> {
     } else {
       this.transform.positionRect(rect, direction)
     }
-    
+
     return this
   }
 
@@ -871,7 +871,7 @@ export class Graph extends Basecoat<EventArgs> {
     } else {
       this.transform.positionCell(cell, direction)
     }
-    
+
     return this
   }
 
@@ -885,7 +885,7 @@ export class Graph extends Basecoat<EventArgs> {
     } else {
       this.transform.positionContent(pos, options)
     }
-    
+
     return this
   }
 
