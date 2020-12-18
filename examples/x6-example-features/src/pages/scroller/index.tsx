@@ -128,6 +128,7 @@ export default class Example extends React.Component {
     // graph.resize(300, 200)
     // graph.zoomToFit()
     this.graph = graph
+    graph.positionCell(rect, 'left', { padding: { left: 100 } })
   }
 
   refContainer = (container: HTMLDivElement) => {

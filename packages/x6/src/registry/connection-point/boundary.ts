@@ -110,15 +110,15 @@ export const boundary: ConnectionPoint.Definition<BoundaryOptions> = function (
     ? Dom.transformPoint(intersection, targetMatrix)
     : anchor
   let cpOffset = options.offset || 0
-  if (options.stroked) {
+  if (options.stroked !== false) {
     if (typeof cpOffset === 'object') {
       cpOffset = { ...cpOffset }
       if (cpOffset.x == null) {
         cpOffset.x = 0
       }
-      cpOffset.x += getStrokeWidth(node) / 2
+      cpOffset.x += Math.round(getStrokeWidth(node) / 2)
     } else {
-      cpOffset += getStrokeWidth(node) / 2
+      cpOffset += Math.round(getStrokeWidth(node) / 2)
     }
   }
 
