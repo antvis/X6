@@ -1,3 +1,10 @@
+## @antv/x6 [1.5.2](https://github.com/antvis/x6/compare/@antv/x6@1.5.1...@antv/x6@1.5.2) (2020-12-18)
+
+
+### Bug Fixes
+
+* 🐛 take the stroke-width into account when calc connection point ([b21cac6](https://github.com/antvis/x6/commit/b21cac6968a548cad17c185a4219f24d135eaa8a))
+
 ## @antv/x6 [1.5.1](https://github.com/antvis/x6/compare/@antv/x6@1.5.0...@antv/x6@1.5.1) (2020-12-17)
 
 
