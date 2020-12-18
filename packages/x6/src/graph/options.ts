@@ -234,8 +234,8 @@ export namespace Options {
     snap: boolean | { radius: number }
 
     /**
-     * When set to `true` (the default), edges can be pinned to the
-     * graph meaning a source/target of a edge can be a point.
+     * When set to `false`, edges can not be pinned to the graph meaning a
+     * source/target of a edge can be a point on the graph.
      */
     dangling:
       | boolean
@@ -251,8 +251,8 @@ export namespace Options {
         ) => boolean)
 
     /**
-     * When set to `false`, an node may not have more than
-     * one edge with the same source and target node.
+     * When set to `false`, an node may not have more than one edge with the
+     * same source and target node.
      */
     multi:
       | boolean
@@ -268,6 +268,17 @@ export namespace Options {
         ) => boolean)
 
     /**
+     * When set to `false`, edges can not be connected to the same node,
+     * meaning the source and target of the edge can not be the same node.
+     */
+    loop: boolean | ((this: Graph, args: ValidateConnectionArgs) => boolean)
+
+    /**
+     * When set to `false`, edges can only be connected to the port.
+     */
+    loose: boolean | ((this: Graph, args: ValidateConnectionArgs) => boolean)
+
+    /**
      * Highlights all the available magnets or nodes when a edge is
      * dragging(reconnecting). This gives a hint to the user to what
      * other nodes/ports this edge can be connected. What magnets/cells
@@ -281,9 +292,11 @@ export namespace Options {
     edgeAnchor: EdgeAnchorOptions
     sourceEdgeAnchor?: EdgeAnchorOptions
     targetEdgeAnchor?: EdgeAnchorOptions
+
     connectionPoint: ConnectionPointOptions
     sourceConnectionPoint?: ConnectionPointOptions
     targetConnectionPoint?: ConnectionPointOptions
+
     router: string | Router.NativeItem | Router.ManaualItem
     connector: string | Connector.NativeItem | Connector.ManaualItem
     strategy?:
@@ -334,20 +347,19 @@ export namespace Options {
      * Check whether to allow or disallow the edge connection while an
      * arrowhead end (source/target) being changed.
      */
-    validateConnection: (
-      this: Graph,
-      args: {
-        type: Edge.TerminalType
-        edge?: Edge | null
-        edgeView?: EdgeView
-        sourceCell?: Cell | null
-        sourceView?: CellView | null
-        sourceMagnet?: Element | null
-        targetCell?: Cell | null
-        targetView?: CellView | null
-        targetMagnet?: Element | null
-      },
-    ) => boolean
+    validateConnection: (this: Graph, args: ValidateConnectionArgs) => boolean
+  }
+
+  export interface ValidateConnectionArgs {
+    type: Edge.TerminalType
+    edge?: Edge | null
+    edgeView?: EdgeView
+    sourceCell?: Cell | null
+    sourceView?: CellView | null
+    sourceMagnet?: Element | null
+    targetCell?: Cell | null
+    targetView?: CellView | null
+    targetMagnet?: Element | null
   }
 
   export interface TransformingRaw extends Widget.Options {}
@@ -585,10 +597,11 @@ export namespace Options {
     },
     connecting: {
       snap: false,
+      loop: true,
+      loose: true,
       multi: true,
       dangling: true,
       highlight: false,
-
       anchor: 'center',
       edgeAnchor: 'ratio',
       connectionPoint: 'boundary',
