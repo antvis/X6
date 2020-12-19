@@ -492,7 +492,7 @@ export class Hook extends Base implements Hook.IHook {
           return false
         }
       } else {
-        valid = valid && FunctionExt.call(allowLoop, this.graph, { ...args })
+        valid = FunctionExt.call(allowLoop, this.graph, { ...args })
       }
     }
 
