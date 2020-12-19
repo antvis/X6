@@ -1,3 +1,10 @@
+## @antv/x6-app-draw [1.0.56](https://github.com/antvis/x6/compare/@antv/x6-app-draw@1.0.55...@antv/x6-app-draw@1.0.56) (2020-12-19)
+
+
+### Bug Fixes
+
+* fix group could not be deleted ([b9e1020](https://github.com/antvis/x6/commit/b9e10200c48478a589439bb142f15b9a418e7dad))
+
 ## @antv/x6-app-draw [1.0.55](https://github.com/antvis/x6/compare/@antv/x6-app-draw@1.0.54...@antv/x6-app-draw@1.0.55) (2020-12-18)
 
 
