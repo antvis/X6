@@ -47,10 +47,11 @@ export namespace HTML {
 
 export namespace HTML {
   export class View extends NodeView<HTML> {
-    render() {
-      super.render()
-      this.renderHTMLComponent()
-      return this
+    protected init() {
+      super.init()
+      this.cell.on('change:data', () => {
+        this.renderHTMLComponent()
+      })
     }
 
     confirmUpdate(flag: number) {

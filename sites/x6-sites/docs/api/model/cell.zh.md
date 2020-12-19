@@ -1721,25 +1721,25 @@ cell.setData(data)
 当 `options.overwrite` 为 `true` 时，替换旧数据：
 
 ```ts
-cell.setMarkup(data, { overwrite: true })
+cell.setData(data, { overwrite: true })
 ```
 
 当 `options.deep` 为 `false` 时，与原数据进行浅 merge：
 
 ```ts
-cell.setMarkup(data, { overwrite: true })
+cell.setData(data, { overwrite: true })
 ```
 
 当 `options.silent` 为 `true` 时，不触发 `'change:data'` 事件和画布重绘：
 
 ```ts
-cell.setMarkup(data, { silent: true })
+cell.setData(data, { silent: true })
 ```
 
 在选项中支持其他自定义键值对，可以在事件回调用使用：
 
 ```ts
-cell.setMarkup(data, { otherKey: 'otherValue', ... })
+cell.setData(data, { otherKey: 'otherValue', ... })
 ```
 
 #### replaceData(...)
@@ -1758,13 +1758,13 @@ replaceData(data: any, options: Cell.SetOptions = {}): this
 | options.silent   | boolean |      | `false` | 为 `true` 时不触不触发 `'change:data'` 事件和画布重绘。 |
 | options...others | object  |      |         | 其他自定义键值对，可以在事件回调中使用。                 |
 
-通过浅 merge 来更新数据，相当于调用 `setData(data, { ...options, deep: false })`。
-
 #### updateData(...)
 
 ```sign
 updateData(data: any, options: Cell.SetOptions = {}): this
 ```
+
+通过浅 merge 来更新数据，相当于调用 `setData(data, { ...options, deep: false })`。
 
 <span class="tag-param">参数<span>
 
