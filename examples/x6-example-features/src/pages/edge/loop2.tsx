@@ -13,8 +13,8 @@ export default class Example extends React.Component {
       grid: true,
       connecting: {
         dangling: false,
-        loop: false,
-        loose: false,
+        allowLoop: false,
+        allowNode: false,
       },
     })
 
@@ -130,6 +130,11 @@ export default class Example extends React.Component {
           },
         ],
       },
+    })
+
+    graph.addEdge({
+      source: [360, 80],
+      target: [560, 200],
     })
   }
 
