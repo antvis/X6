@@ -305,34 +305,59 @@ export class Hook extends Base implements Hook.IHook {
   }
 
   protected allowMultiEdges(edge: Edge) {
-    const multi = this.options.connecting.multi
+    const options = this.options.connecting
+    const allowMulti =
+      options.allowMulti != null ? options.allowMulti : options.multi
 
-    if (typeof multi !== 'function') {
-      return !!multi
+    if (typeof allowMulti !== 'function') {
+      return !!allowMulti
     }
 
-    return FunctionExt.call(multi, this.graph, {
+    const edgeView = this.graph.findViewByCell(edge) as EdgeView
+    const sourceCell = edge.getSourceCell()
+    const targetCell = edge.getTargetCell()
+    const sourceView = this.graph.findViewByCell(sourceCell)
+    const targetView = this.graph.findViewByCell(targetCell)
+    return FunctionExt.call(allowMulti, this.graph, {
       edge,
-      sourceCell: edge.getSourceCell(),
-      targetCell: edge.getTargetCell(),
+      edgeView,
+      sourceCell,
+      targetCell,
+      sourceView,
+      targetView,
       sourcePort: edge.getSourcePortId(),
       targetPort: edge.getTargetPortId(),
+      sourceMagnet: edgeView.sourceMagnet,
+      targetMagnet: edgeView.targetMagnet,
     })
   }
 
-  protected allowDanglingEdge(edge: Edge) {
-    const dangling = this.options.connecting.dangling
+  protected allowConnectToBlank(edge: Edge) {
+    console.log(23)
+    const options = this.options.connecting
+    const allowBlank =
+      options.allowBlank != null ? options.allowBlank : options.dangling
 
-    if (typeof dangling !== 'function') {
-      return !!dangling
+    if (typeof allowBlank !== 'function') {
+      return !!allowBlank
     }
 
-    return FunctionExt.call(dangling, this.graph, {
+    const edgeView = this.graph.findViewByCell(edge) as EdgeView
+    const sourceCell = edge.getSourceCell()
+    const targetCell = edge.getTargetCell()
+    const sourceView = this.graph.findViewByCell(sourceCell)
+    const targetView = this.graph.findViewByCell(targetCell)
+    return FunctionExt.call(allowBlank, this.graph, {
       edge,
-      sourceCell: edge.getSourceCell(),
-      targetCell: edge.getTargetCell(),
+      edgeView,
+      sourceCell,
+      targetCell,
+      sourceView,
+      targetView,
       sourcePort: edge.getSourcePortId(),
       targetPort: edge.getTargetPortId(),
+      sourceMagnet: edgeView.sourceMagnet,
+      targetMagnet: edgeView.targetMagnet,
     })
   }
 
@@ -372,7 +397,7 @@ export class Hook extends Base implements Hook.IHook {
       }
     }
 
-    if (!this.allowDanglingEdge(edge)) {
+    if (!this.allowConnectToBlank(edge)) {
       const sourceId = edge.getSourceCellId()
       const targetId = edge.getTargetCellId()
       if (!(sourceId && targetId)) {
@@ -440,39 +465,54 @@ export class Hook extends Base implements Hook.IHook {
     edgeView?: EdgeView,
   ) {
     const options = this.options.connecting
-    const loop = options.loop
-    const loose = options.loose
+    const allowLoop = options.allowLoop
+    const allowNode = options.allowNode
+    // const allowEdge = options.allowEdge
+    const allowPort = options.allowPort
+    const edge = edgeView ? edgeView.cell : null
     const args: Options.ValidateConnectionArgs = {
+      edge,
       edgeView,
       sourceView,
-      sourceMagnet,
       targetView,
+      sourceMagnet,
       targetMagnet,
       sourceCell: sourceView ? sourceView.cell : null,
       targetCell: targetView ? targetView.cell : null,
-      edge: edgeView ? edgeView.cell : null,
+      sourcePort: edge ? edge.getSourcePortId() : null,
+      targetPort: edge ? edge.getTargetPortId() : null,
       type: terminalType,
     }
 
     let valid = true
 
-    if (loop != null) {
-      if (typeof loop === 'boolean') {
-        if (!loop && sourceView === targetView) {
+    if (allowLoop != null) {
+      if (typeof allowLoop === 'boolean') {
+        if (!allowLoop && sourceView === targetView) {
           return false
         }
       } else {
-        valid = valid && FunctionExt.call(loop, this.graph, { ...args })
+        valid = valid && FunctionExt.call(allowLoop, this.graph, { ...args })
       }
     }
 
-    if (loose != null) {
-      if (typeof loose === 'boolean') {
-        if (!loose && targetMagnet == null) {
+    if (allowNode != null) {
+      if (typeof allowNode === 'boolean') {
+        if (!allowNode && targetMagnet == null) {
           return false
         }
       } else {
-        valid = valid && FunctionExt.call(loose, this.graph, { ...args })
+        valid = valid && FunctionExt.call(allowNode, this.graph, { ...args })
+      }
+    }
+
+    if (allowPort != null) {
+      if (typeof allowPort === 'boolean') {
+        if (!allowPort && targetMagnet) {
+          return false
+        }
+      } else {
+        valid = valid && FunctionExt.call(allowPort, this.graph, { ...args })
       }
     }
 

@@ -15,30 +15,12 @@ redirect_from:
 ```sign
 export interface Connecting {
   snap: boolean | { radius: number }
-  dangling:
-    | boolean
-    | ((
-        this: Graph,
-        args: {
-          edge: Edge
-          sourceCell?: Cell | null
-          targetCell?: Cell | null
-          sourcePort?: string
-          targetPort?: string
-        },
-      ) => boolean)
-  multi:
-    | boolean
-    | ((
-        this: Graph,
-        args: {
-          edge: Edge
-          sourceCell?: Cell | null
-          targetCell?: Cell | null
-          sourcePort?: string
-          targetPort?: string
-        },
-      ) => boolean)
+  allowBlank: boolean | ((this: Graph, args: ValidateConnectionArgs) => boolean)
+  allowMulti: boolean | ((this: Graph, args: ValidateConnectionArgs) => boolean)
+  allowLoop: boolean | ((this: Graph, args: ValidateConnectionArgs) => boolean)
+  allowNode: boolean | ((this: Graph, args: ValidateConnectionArgs) => boolean)
+  allowEdge: boolean | ((this: Graph, args: ValidateConnectionArgs) => boolean)
+  allowPort: boolean | ((this: Graph, args: ValidateConnectionArgs) => boolean)
   highlight: boolean
   anchor: NodeAnchorOptions
   sourceAnchor?: NodeAnchorOptions
@@ -81,20 +63,7 @@ export interface Connecting {
       previous: Edge.TerminalData
     },
   ) => boolean
-  validateConnection: (
-    this: Graph,
-    args: {
-      type: Edge.TerminalType
-      edge?: Edge | null
-      edgeView?: EdgeView
-      sourceCell?: Cell | null
-      sourceView?: CellView | null
-      sourceMagnet?: Element | null
-      targetCell?: Cell | null
-      targetView?: CellView | null
-      targetMagnet?: Element | null
-    },
-  ) => boolean
+  validateConnection: (this: Graph, args: ValidateConnectionArgs) => boolean
 }
 ```
 
@@ -118,11 +87,29 @@ const graph = new Graph({
 })
 ```
 
-#### dangling
+#### allowBlank
 
-画布上的任意一点是否作为边的起点和终点。默认值值为 `true`，如果设置为 `false`， 边的起点或者终点只能是节点或者连接桩。
+画布上的任意一点是否作为边的起点和终点。默认为 `true`，如果设置为 `false`， 边的起点或者终点只能是节点或者连接桩。
 
-#### multi
+#### allowMulti
+
+是否允许相同的起始节点和终止之间存在多条边。默认为 `true`。
+
+#### allowLoop
+
+是否允许边的其实节点和终止节点是相同的节点。默认为 `true`。
+
+#### allowNode
+
+是否允许边链接到节点（非节点上的链接桩）。默认为 `true`。
+
+#### allowEdge
+
+是否允许边链接到另一个边。默认为 `true`。
+
+#### allowPort
+
+是否允许边链接到链接桩。默认为 `true`。
 
 #### highlight
 
