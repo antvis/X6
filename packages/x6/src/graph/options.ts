@@ -234,6 +234,7 @@ export namespace Options {
     snap: boolean | { radius: number }
 
     /**
+     * @deprecated
      * When set to `false`, edges can not be pinned to the graph meaning a
      * source/target of a edge can be a point on the graph.
      */
@@ -251,6 +252,7 @@ export namespace Options {
         ) => boolean)
 
     /**
+     * @deprecated
      * When set to `false`, an node may not have more than one edge with the
      * same source and target node.
      */
@@ -268,15 +270,48 @@ export namespace Options {
         ) => boolean)
 
     /**
+     * Specify whether connect to point on the graph is allowed.
+     */
+    allowBlank?:
+      | boolean
+      | ((this: Graph, args: ValidateConnectionArgs) => boolean)
+
+    /**
      * When set to `false`, edges can not be connected to the same node,
      * meaning the source and target of the edge can not be the same node.
      */
-    loop: boolean | ((this: Graph, args: ValidateConnectionArgs) => boolean)
+    allowLoop:
+      | boolean
+      | ((this: Graph, args: ValidateConnectionArgs) => boolean)
 
     /**
-     * When set to `false`, edges can only be connected to the port.
+     * Specify whether connect to node(not the port on the node) is allowed.
      */
-    loose: boolean | ((this: Graph, args: ValidateConnectionArgs) => boolean)
+    allowNode:
+      | boolean
+      | ((this: Graph, args: ValidateConnectionArgs) => boolean)
+
+    /**
+     * Specify whether connect to edge is allowed.
+     */
+    allowEdge:
+      | boolean
+      | ((this: Graph, args: ValidateConnectionArgs) => boolean)
+
+    /**
+     * Specify whether connect to port is allowed.
+     */
+    allowPort:
+      | boolean
+      | ((this: Graph, args: ValidateConnectionArgs) => boolean)
+
+    /**
+     * Specify whether more than one edge connected to the same source and
+     * target node is allowed.
+     */
+    allowMulti?:
+      | boolean
+      | ((this: Graph, args: ValidateConnectionArgs) => boolean)
 
     /**
      * Highlights all the available magnets or nodes when a edge is
@@ -351,14 +386,16 @@ export namespace Options {
   }
 
   export interface ValidateConnectionArgs {
-    type: Edge.TerminalType
+    type?: Edge.TerminalType | null
     edge?: Edge | null
     edgeView?: EdgeView
     sourceCell?: Cell | null
     sourceView?: CellView | null
+    sourcePort?: string | null
     sourceMagnet?: Element | null
     targetCell?: Cell | null
     targetView?: CellView | null
+    targetPort?: string | null
     targetMagnet?: Element | null
   }
 
@@ -596,12 +633,19 @@ export namespace Options {
       },
     },
     connecting: {
-      snap: false,
-      loop: true,
-      loose: true,
+      snap: true,
       multi: true,
+      // TODO: Unannotation the next line when the `multi` option was removed in the next major version.
+      // allowMulti: true,
       dangling: true,
+      // TODO: Unannotation the next line when the `dangling` option was removed in the next major version.
+      // allowBlank: true,
+      allowLoop: true,
+      allowNode: true,
+      allowEdge: false,
+      allowPort: true,
       highlight: false,
+
       anchor: 'center',
       edgeAnchor: 'ratio',
       connectionPoint: 'boundary',
