@@ -58,14 +58,14 @@ const rect = graph.addEdge({
 
 上面我们介绍了如何通过构造函数和 `graph.addEdge` 两种方式来创建边，并了解了 `source` 和 `target` 两个基础选项，除了[从 Cell 继承的基础选项](./cell#基础选项)外，还支持以下选项。
 
-| 属性名       | 类型              | 默认值                                              | 描述              |
-|--------------|-------------------|-----------------------------------------------------|-----------------|
-| source       | TerminalData      | undefined                                           | 源节点或起始点。   |
-| target       | TerminalData      | undefined                                           | 目标节点或目标点。 |
-| vertices     | Point.PointLike[] | undefined                                           | 路径点。           |
-| router       | RouterData        | undefined                                           | 路由。             |
-| connector    | ConnectorData     | undefined                                           | 连线。             |
-| labels       | Label[]           | undefined                                           | 标签。             |
+| 属性名       | 类型              | 默认值                                           | 描述              |
+|--------------|-------------------|--------------------------------------------------|-----------------|
+| source       | TerminalData      | undefined                                        | 源节点或起始点。   |
+| target       | TerminalData      | undefined                                        | 目标节点或目标点。 |
+| vertices     | Point.PointLike[] | undefined                                        | 路径点。           |
+| router       | RouterData        | undefined                                        | 路由。             |
+| connector    | ConnectorData     | undefined                                        | 连线。             |
+| labels       | Label[]           | undefined                                        | 标签。             |
 | defaultLabel | Label             | [默认标签](../intermediate/edge-labels#默认标签) | 默认标签。         |
 
 下面分别看看这些选项如何使用。
@@ -96,12 +96,12 @@ graph.addEdge({
 })
 ```
 
-需要注意的是，当源/目标是画布上的点时，需要开启 `dangling` 选项（默认已经开启）才能生效。
+需要注意的是，当源/目标是画布上的点时，需要开启 `allowBlank` 选项（默认已经开启）才能生效。
 
 ```ts
 const graph = new Graph({
   connecting: {
-    dangling: true,
+    allowBlank: true,
   },
 })
 ```
