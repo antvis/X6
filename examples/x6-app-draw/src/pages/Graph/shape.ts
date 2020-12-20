@@ -566,3 +566,5 @@ NodeGroup.config({
     },
   },
 })
+
+Graph.registerNode('groupNode', NodeGroup)
