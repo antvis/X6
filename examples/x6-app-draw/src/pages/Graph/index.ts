@@ -1,11 +1,5 @@
 import { Graph, Addon, FunctionExt, Shape } from '@antv/x6'
-import {
-  FlowChartRect,
-  FlowChartImageRect,
-  FlowChartTitleRect,
-  FlowChartAnimateText,
-  NodeGroup,
-} from './shape'
+import './shape'
 import graphData from './data'
 
 export default class FlowGraph {
@@ -161,7 +155,9 @@ export default class FlowGraph {
   }
 
   private static initShape() {
-    const r1 = new FlowChartRect({
+    const { graph } = this
+    const r1 = graph.createNode({
+      shape: 'flow-chart-rect',
       attrs: {
         body: {
           rx: 24,
@@ -172,14 +168,16 @@ export default class FlowGraph {
         },
       },
     })
-    const r2 = new FlowChartRect({
+    const r2 = graph.createNode({
+      shape: 'flow-chart-rect',
       attrs: {
         text: {
           text: '流程节点',
         },
       },
     })
-    const r3 = new FlowChartRect({
+    const r3 = graph.createNode({
+      shape: 'flow-chart-rect',
       width: 52,
       height: 52,
       angle: 45,
@@ -231,7 +229,8 @@ export default class FlowGraph {
         },
       },
     })
-    const r4 = new FlowChartRect({
+    const r4 = graph.createNode({
+      shape: 'flow-chart-rect',
       width: 70,
       height: 70,
       attrs: {
@@ -244,10 +243,19 @@ export default class FlowGraph {
         },
       },
     })
-    const c1 = new FlowChartImageRect()
-    const c2 = new FlowChartTitleRect()
-    const c3 = new FlowChartAnimateText()
-    const g1 = new NodeGroup({
+    
+    const c1 = graph.createNode({
+      shape: 'flow-chart-image-rect'
+    })
+    const c2 = graph.createNode({
+      shape: 'flow-chart-title-rect'
+    })
+    const c3 = graph.createNode({
+      shape: 'flow-chart-animate-text'
+    })
+
+    const g1 = graph.createNode({
+      shape: 'groupNode',
       attrs: {
         text: {
           text: 'Group Name',
