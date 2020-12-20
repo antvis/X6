@@ -89,6 +89,29 @@ new Graph({
 
 正交路由，该路由在路径上添加额外的一些点，使边的每一条线段都水平或垂直正交。
 
+支持的参数如下表：
+
+| 参数名 | 参数类型                                       | 是否必选 | 默认值     | 参数说明                                 |
+|--------|------------------------------------------------|:-------:|------------|--------------------------------------|
+| padding   | SideOptions |    否    | 20 | 设置锚点距离转角的最小距离。 |
+
+`SideOptions` 定义如下：
+
+```ts
+export type SideOptions =
+  | number
+  | {
+      vertical?: number
+      horizontal?: number
+      left?: number
+      top?: number
+      right?: number
+      bottom?: number
+    }
+```
+
+例如：
+
 ```ts
 graph.addEdge({
   source,
@@ -99,6 +122,11 @@ graph.addEdge({
   ],
   router: {
     name: 'orth',
+    args: {
+      padding: {
+        left: 50,
+      }
+    }
   },
 });
 ```
@@ -114,6 +142,7 @@ graph.addEdge({
 | 参数名 | 参数类型                                       | 是否必选 | 默认值     | 参数说明                                 |
 |--------|------------------------------------------------|:-------:|------------|--------------------------------------|
 | side   | `'left'` \| `'right'` \| `'top'` \| `'bottom'` |    否    | `'bottom'` | 路由的起始/结束方向，默认值为 `'bottom'`。 |
+| padding   | SideOptions |    否    | 20 | 设置锚点距离转角的最小距离。 |
 
 
 例如：
