@@ -16,6 +16,8 @@ body {
 }
 .x6-widget-selection-box {
   border: 1px dashed #5f95ff;
+  margin-top: -3px;
+  margin-left: -3px;
 }
 .x6-widget-selection-inner {
   border: 1px dashed #5f95ff;
