@@ -120,6 +120,7 @@ const graph = new Graph({
   connecting: {
     snap: true,
     allowBlank: false,
+    allowLoop: false,
     highlight: true,
     sourceAnchor: 'bottom',
     targetAnchor: 'center',
@@ -146,11 +147,6 @@ const graph = new Graph({
       return magnet.getAttribute('port-group') !== 'in'
     },
     validateConnection({ sourceView, targetView, sourceMagnet, targetMagnet }) {
-      // 不允许连接到自己
-      if (sourceView === targetView) {
-        return false
-      }
-
       // 只能从输出链接桩创建连接
       if (!sourceMagnet || sourceMagnet.getAttribute('port-group') === 'in') {
         return false

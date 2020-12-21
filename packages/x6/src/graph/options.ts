@@ -311,6 +311,7 @@ export namespace Options {
      */
     allowMulti?:
       | boolean
+      | 'withPort'
       | ((this: Graph, args: ValidateConnectionArgs) => boolean)
 
     /**
@@ -388,14 +389,14 @@ export namespace Options {
   export interface ValidateConnectionArgs {
     type?: Edge.TerminalType | null
     edge?: Edge | null
-    edgeView?: EdgeView
+    edgeView?: EdgeView | null
     sourceCell?: Cell | null
-    sourceView?: CellView | null
-    sourcePort?: string | null
-    sourceMagnet?: Element | null
     targetCell?: Cell | null
+    sourceView?: CellView | null
     targetView?: CellView | null
+    sourcePort?: string | null
     targetPort?: string | null
+    sourceMagnet?: Element | null
     targetMagnet?: Element | null
   }
 

@@ -2113,14 +2113,18 @@ export class EdgeView<
   prepareArrowheadDragging(
     type: Edge.TerminalType,
     options: {
+      x: number
+      y: number
       options?: KeyValue
       isNewEdge?: boolean
       fallbackAction?: EventData.ArrowheadDragging['fallbackAction']
-    } = {},
+    },
   ) {
     const magnet = this.getTerminalMagnet(type)
     const data: EventData.ArrowheadDragging = {
       action: 'drag-arrowhead',
+      x: options.x,
+      y: options.y,
       isNewEdge: options.isNewEdge === true,
       terminalType: type,
       initialMagnet: magnet,
@@ -2207,6 +2211,9 @@ export class EdgeView<
     y: number,
     data: EventData.ArrowheadDragging,
   ) {
+    data.x = x
+    data.y = y
+
     // Checking views right under the pointer
     if (data.currentTarget !== target) {
       // Unhighlight the previous view under pointer if there was one.
@@ -2228,6 +2235,13 @@ export class EdgeView<
             ...data.getValidateConnectionArgs(
               data.currentView,
               data.currentMagnet,
+            ),
+            data.currentView.getEdgeTerminal(
+              data.currentMagnet,
+              x,
+              y,
+              this.cell,
+              data.terminalType,
             ),
           )
         ) {
@@ -2301,6 +2315,13 @@ export class EdgeView<
             prevMagnet === view.container ||
             graph.hook.validateConnection(
               ...data.getValidateConnectionArgs(view, null),
+              view.getEdgeTerminal(
+                view.container,
+                x,
+                y,
+                this.cell,
+                data.terminalType,
+              ),
             )
           ) {
             minDistance = distance
@@ -2319,6 +2340,13 @@ export class EdgeView<
               prevMagnet === magnet ||
               graph.hook.validateConnection(
                 ...data.getValidateConnectionArgs(view, magnet),
+                view.getEdgeTerminal(
+                  magnet,
+                  x,
+                  y,
+                  this.cell,
+                  data.terminalType,
+                ),
               )
             ) {
               minDistance = distance
@@ -2477,6 +2505,13 @@ export class EdgeView<
       const availableMagnets = magnets.filter((magnet) =>
         graph.hook.validateConnection(
           ...data.getValidateConnectionArgs(view, magnet),
+          view.getEdgeTerminal(
+            magnet,
+            data.x,
+            data.y,
+            this.cell,
+            data.terminalType,
+          ),
         ),
       )
 
@@ -2522,7 +2557,7 @@ export class EdgeView<
 
     const elem = e.target
     const type = elem.getAttribute('data-terminal') as Edge.TerminalType
-    const data = this.prepareArrowheadDragging(type)
+    const data = this.prepareArrowheadDragging(type, { x, y })
     this.setEventData<EventData.ArrowheadDragging>(e, data)
   }
 
@@ -2542,7 +2577,6 @@ export class EdgeView<
   ) {
     const graph = this.graph
     const data = this.getEventData<EventData.ArrowheadDragging>(e)
-
     if (graph.options.connecting.snap) {
       this.snapArrowheadEnd(data)
     } else {
@@ -2781,6 +2815,8 @@ namespace EventData {
 
   export interface ArrowheadDragging {
     action: 'drag-arrowhead'
+    x: number
+    y: number
     isNewEdge: boolean
     terminalType: Edge.TerminalType
     fallbackAction: 'remove' | 'revert'
