@@ -333,7 +333,6 @@ export class Hook extends Base implements Hook.IHook {
   }
 
   protected allowConnectToBlank(edge: Edge) {
-    console.log(23)
     const options = this.options.connecting
     const allowBlank =
       options.allowBlank != null ? options.allowBlank : options.dangling
@@ -467,60 +466,76 @@ export class Hook extends Base implements Hook.IHook {
     const options = this.options.connecting
     const allowLoop = options.allowLoop
     const allowNode = options.allowNode
-    // const allowEdge = options.allowEdge
+    const allowEdge = options.allowEdge
     const allowPort = options.allowPort
+    const validate = options.validateConnection
+
     const edge = edgeView ? edgeView.cell : null
-    const args: Options.ValidateConnectionArgs = {
-      edge,
-      edgeView,
-      sourceView,
-      targetView,
-      sourceMagnet,
-      targetMagnet,
-      sourceCell: sourceView ? sourceView.cell : null,
-      targetCell: targetView ? targetView.cell : null,
-      sourcePort: edge ? edge.getSourcePortId() : null,
-      targetPort: edge ? edge.getTargetPortId() : null,
-      type: terminalType,
-    }
+    const terminalView = terminalType === 'target' ? targetView : sourceView
 
     let valid = true
+    const doValidate = (
+      validate: (this: Graph, args: Options.ValidateConnectionArgs) => boolean,
+    ) => {
+      return FunctionExt.call(validate, this.graph, {
+        edge,
+        edgeView,
+        sourceView,
+        targetView,
+        sourceMagnet,
+        targetMagnet,
+        sourceCell: sourceView ? sourceView.cell : null,
+        targetCell: targetView ? targetView.cell : null,
+        sourcePort: edge ? edge.getSourcePortId() : null,
+        targetPort: edge ? edge.getTargetPortId() : null,
+        type: terminalType,
+      })
+    }
 
     if (allowLoop != null) {
       if (typeof allowLoop === 'boolean') {
         if (!allowLoop && sourceView === targetView) {
-          return false
+          valid = false
         }
       } else {
-        valid = FunctionExt.call(allowLoop, this.graph, { ...args })
+        valid = doValidate(allowLoop)
       }
     }
 
-    if (allowNode != null) {
-      if (typeof allowNode === 'boolean') {
-        if (!allowNode && targetMagnet == null) {
-          return false
-        }
-      } else {
-        valid = valid && FunctionExt.call(allowNode, this.graph, { ...args })
-      }
-    }
-
-    if (allowPort != null) {
+    if (valid && allowPort != null) {
       if (typeof allowPort === 'boolean') {
         if (!allowPort && targetMagnet) {
-          return false
+          valid = false
         }
       } else {
-        valid = valid && FunctionExt.call(allowPort, this.graph, { ...args })
+        valid = doValidate(allowPort)
       }
     }
 
-    if (valid) {
-      const validate = options.validateConnection
-      if (validate != null) {
-        valid = FunctionExt.call(validate, this.graph, { ...args })
+    if (valid && allowEdge != null) {
+      if (typeof allowEdge === 'boolean') {
+        if (!allowEdge && terminalView instanceof EdgeView) {
+          valid = false
+        }
+      } else {
+        valid = doValidate(allowEdge)
       }
+    }
+
+    if (valid && allowNode != null) {
+      if (typeof allowNode === 'boolean') {
+        if (!allowNode && terminalView != null) {
+          if (terminalView instanceof NodeView && targetMagnet == null) {
+            valid = false
+          }
+        }
+      } else {
+        valid = doValidate(allowNode)
+      }
+    }
+
+    if (valid && validate != null) {
+      valid = doValidate(validate)
     }
 
     return valid
