@@ -6,7 +6,7 @@ const graph = new Graph({
   grid: true,
   keyboard: true,
   connecting: {
-    dangling: false,
+    allowBlank: false,
   },
 })
 

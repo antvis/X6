@@ -122,7 +122,7 @@ export default class Example extends React.Component {
       },
       connecting: {
         snap: true,
-        dangling: false,
+        allowBlank: false,
         highlight: true,
         sourceAnchor: 'bottom',
         targetAnchor: 'center',

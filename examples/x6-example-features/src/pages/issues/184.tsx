@@ -13,12 +13,12 @@ export default class Example extends React.Component {
       grid: true,
       connecting: {
         snap: true,
-        dangling: false,
+        allowBlank: false,
+        allowMulti: true,
         highlight: true,
         router: { name: 'manhattan' },
         connector: { name: 'normal' },
         connectionPoint: 'boundary',
-        multi: true,
       },
     })
 
