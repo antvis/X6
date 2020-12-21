@@ -244,7 +244,7 @@ export namespace Plugin {
             env: context.env,
           }) as any
           sync.stdout.pipe(ctx.stdout, { end: false })
-          sync.stderr.pipe(ctx.stderr, { end: false })
+          // sync.stderr.pipe(ctx.stderr, { end: false })
           await sync
 
           return ret
