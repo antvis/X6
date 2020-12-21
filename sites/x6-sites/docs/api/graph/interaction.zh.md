@@ -16,7 +16,7 @@ redirect_from:
 export interface Connecting {
   snap: boolean | { radius: number }
   allowBlank: boolean | ((this: Graph, args: ValidateConnectionArgs) => boolean)
-  allowMulti: boolean | ((this: Graph, args: ValidateConnectionArgs) => boolean)
+  allowMulti: boolean | 'withPort' | ((this: Graph, args: ValidateConnectionArgs) => boolean)
   allowLoop: boolean | ((this: Graph, args: ValidateConnectionArgs) => boolean)
   allowNode: boolean | ((this: Graph, args: ValidateConnectionArgs) => boolean)
   allowEdge: boolean | ((this: Graph, args: ValidateConnectionArgs) => boolean)
@@ -93,7 +93,7 @@ const graph = new Graph({
 
 #### allowMulti
 
-是否允许在相同的起始节点和终止之间创建多条边，默认为 `true`。
+是否允许在相同的起始节点和终止之间创建多条边，默认为 `true`。当设置为 `false` 时，在起始和终止节点之间只允许创建一条边，当设置为 `'withPort'` 时，在起始和终止节点的相同链接桩之间只允许创建一条边（即，起始和终止节点之间可以创建多条边，但必须要要链接在不同的链接桩上）。
 
 #### allowLoop
 

@@ -146,6 +146,7 @@ const graph = new Graph({
   connecting: {
     snap: true,
     allowBlank: false,
+    allowLoop: false,
     highlight: true,
     connector: 'rounded',
     connectionPoint: 'boundary',
@@ -171,10 +172,6 @@ const graph = new Graph({
     },
     validateConnection({ sourceView, targetView, targetMagnet }) {
       if (!targetMagnet) {
-        return false
-      }
-
-      if (sourceView === targetView) {
         return false
       }
 
