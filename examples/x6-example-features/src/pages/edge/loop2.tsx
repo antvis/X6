@@ -12,9 +12,11 @@ export default class Example extends React.Component {
       height: 400,
       grid: true,
       connecting: {
-        dangling: false,
-        allowLoop: false,
         allowNode: false,
+        allowEdge: true,
+        allowLoop: false,
+        allowBlank: false,
+        allowMulti: false,
       },
     })
 

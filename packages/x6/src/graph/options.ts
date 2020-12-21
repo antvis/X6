@@ -633,7 +633,7 @@ export namespace Options {
       },
     },
     connecting: {
-      snap: true,
+      snap: false,
       multi: true,
       // TODO: Unannotation the next line when the `multi` option was removed in the next major version.
       // allowMulti: true,
@@ -655,7 +655,7 @@ export namespace Options {
 
       validateConnection(this: Graph, { type, sourceView, targetView }) {
         const view = type === 'target' ? targetView : sourceView
-        return view instanceof NodeView
+        return view != null
       },
 
       createEdge() {
