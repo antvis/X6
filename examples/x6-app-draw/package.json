@@ -23,7 +23,7 @@
     "@types/react-test-renderer": "^16.0.3",
     "@umijs/preset-react": "1.x",
     "@umijs/test": "^3.2.19",
-    "eslint": "^7.15.0",
+    "eslint": "^7.16.0",
     "eslint-config-umi": "^1.4.0",
     "eslint-plugin-flowtype": "^4.7.0",
     "eslint-plugin-import": "^2.22.1",

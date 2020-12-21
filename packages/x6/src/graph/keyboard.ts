@@ -6,7 +6,7 @@ import { Graph } from './graph'
 export class Keyboard extends Disposable implements IDisablable {
   public readonly target: HTMLElement | Document
   public readonly container: HTMLElement
-  public readonly mousetrap: MousetrapInstance
+  public readonly mousetrap: Mousetrap.MousetrapInstance
 
   protected get graph() {
     return this.options.graph
