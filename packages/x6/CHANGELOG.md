@@ -1,3 +1,16 @@
+# @antv/x6 [1.6.0](https://github.com/antvis/x6/compare/@antv/x6@1.5.2...@antv/x6@1.6.0) (2020-12-21)
+
+
+### Bug Fixes
+
+* 🐛 fix alerts on lgtm.com ([e9f23f0](https://github.com/antvis/x6/commit/e9f23f025944d2c1660827c495794b6afa6f9412))
+
+
+### Features
+
+* ✨ add 'loop' and 'loose' option for connecting ([bbc41d4](https://github.com/antvis/x6/commit/bbc41d48294398053e77da161f2d0e7f0602f905)), closes [#390](https://github.com/antvis/x6/issues/390)
+* ✨ add some connecting option ([68f7965](https://github.com/antvis/x6/commit/68f7965699b36d6a46f25e6aba5d144fb086c9a0))
+
 ## @antv/x6 [1.5.2](https://github.com/antvis/x6/compare/@antv/x6@1.5.1...@antv/x6@1.5.2) (2020-12-18)
 
 
