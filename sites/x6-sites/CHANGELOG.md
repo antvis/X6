@@ -1,3 +1,19 @@
+# @antv/x6-sites [1.8.0](https://github.com/antvis/x6/compare/@antv/x6-sites@1.7.4...@antv/x6-sites@1.8.0) (2020-12-21)
+
+
+### Features
+
+* ✨ add some connecting option ([68f7965](https://github.com/antvis/x6/commit/68f7965699b36d6a46f25e6aba5d144fb086c9a0))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.6.0
+* **@antv/x6-react-shape:** upgraded to 1.1.35
+
 ## @antv/x6-sites [1.7.4](https://github.com/antvis/x6/compare/@antv/x6-sites@1.7.3...@antv/x6-sites@1.7.4) (2020-12-21)
 
 ## @antv/x6-sites [1.7.3](https://github.com/antvis/x6/compare/@antv/x6-sites@1.7.2...@antv/x6-sites@1.7.3) (2020-12-19)
