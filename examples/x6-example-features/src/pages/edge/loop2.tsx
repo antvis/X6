@@ -16,7 +16,7 @@ export default class Example extends React.Component {
         allowEdge: true,
         allowLoop: false,
         allowBlank: false,
-        allowMulti: false,
+        allowMulti: 'withPort',
       },
     })
 

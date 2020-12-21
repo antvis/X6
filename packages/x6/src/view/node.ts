@@ -954,6 +954,8 @@ export class NodeView<
     edgeView.setEventData(
       e,
       edgeView.prepareArrowheadDragging('target', {
+        x,
+        y,
         isNewEdge: true,
         fallbackAction: 'remove',
       }),
@@ -1030,9 +1032,9 @@ export class NodeView<
   }
 
   protected notifyNodeMove<Key extends keyof NodeView.EventArgs>(
-    name: Key, 
-    e: JQuery.MouseMoveEvent | JQuery.MouseUpEvent, 
-    x: number, 
+    name: Key,
+    e: JQuery.MouseMoveEvent | JQuery.MouseUpEvent,
+    x: number,
     y: number,
     cell: Cell,
   ) {
