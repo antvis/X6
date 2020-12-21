@@ -693,7 +693,6 @@ export class CellView<
   removeTools() {
     if (this.tools) {
       this.tools.remove()
-      this.cell.removeTools()
       this.graph.off('tools:hide', this.hideTools, this)
       this.graph.off('tools:show', this.showTools, this)
       this.graph.off('tools:remove', this.removeTools, this)
