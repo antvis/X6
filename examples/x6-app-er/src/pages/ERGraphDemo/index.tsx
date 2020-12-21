@@ -7,7 +7,7 @@ import Entity from './Entity';
 // import Relation from './Relation';
 
 export default class EREditorDemo extends React.PureComponent<{}, {}> {
-  calReanderData = () => {
+  calRenderData = () => {
     const nodes: NodeConfig[] = mockEntityData.map(
       (entity: EntityCanvasModel) => {
         const { entityId, x, y, width, height } = entity;
@@ -47,7 +47,7 @@ export default class EREditorDemo extends React.PureComponent<{}, {}> {
   };
 
   render() {
-    const { nodes, edges } = this.calReanderData();
+    const { nodes, edges } = this.calRenderData();
     return (
       <div style={{ width: '100%', height: '100%' }}>
         <ERGraph
