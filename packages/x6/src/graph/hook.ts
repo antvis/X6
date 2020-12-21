@@ -304,34 +304,6 @@ export class Hook extends Base implements Hook.IHook {
     return new PanningManager(this.graph)
   }
 
-  protected allowMultiEdges(edge: Edge) {
-    const options = this.options.connecting
-    const allowMulti =
-      options.allowMulti != null ? options.allowMulti : options.multi
-
-    if (typeof allowMulti !== 'function') {
-      return !!allowMulti
-    }
-
-    const edgeView = this.graph.findViewByCell(edge) as EdgeView
-    const sourceCell = edge.getSourceCell()
-    const targetCell = edge.getTargetCell()
-    const sourceView = this.graph.findViewByCell(sourceCell)
-    const targetView = this.graph.findViewByCell(targetCell)
-    return FunctionExt.call(allowMulti, this.graph, {
-      edge,
-      edgeView,
-      sourceCell,
-      targetCell,
-      sourceView,
-      targetView,
-      sourcePort: edge.getSourcePortId(),
-      targetPort: edge.getTargetPortId(),
-      sourceMagnet: edgeView.sourceMagnet,
-      targetMagnet: edgeView.targetMagnet,
-    })
-  }
-
   protected allowConnectToBlank(edge: Edge) {
     const options = this.options.connecting
     const allowBlank =
@@ -365,37 +337,6 @@ export class Hook extends Base implements Hook.IHook {
     type: Edge.TerminalType,
     initialTerminal: Edge.TerminalData,
   ) {
-    if (!this.allowMultiEdges(edge)) {
-      const source = edge.getSource() as Edge.TerminalCellData
-      const target = edge.getTarget() as Edge.TerminalCellData
-
-      if (source.cell && target.cell) {
-        const sourceCell = edge.getSourceCell()
-        if (sourceCell) {
-          const connectedEdges = this.model.getConnectedEdges(sourceCell, {
-            outgoing: true,
-          })
-
-          const sameEdges = connectedEdges.filter((link) => {
-            const s = link.getSource() as Edge.TerminalCellData
-            const t = link.getTarget() as Edge.TerminalCellData
-            return (
-              s &&
-              s.cell === source.cell &&
-              (!s.port || s.port === source.port) &&
-              t &&
-              t.cell === target.cell &&
-              (!t.port || t.port === target.port)
-            )
-          })
-
-          if (sameEdges.length > 1) {
-            return false
-          }
-        }
-      }
-    }
-
     if (!this.allowConnectToBlank(edge)) {
       const sourceId = edge.getSourceCellId()
       const targetId = edge.getTargetCellId()
@@ -461,13 +402,16 @@ export class Hook extends Base implements Hook.IHook {
     targetView: CellView | null | undefined,
     targetMagnet: Element | null | undefined,
     terminalType: Edge.TerminalType,
-    edgeView?: EdgeView,
+    edgeView?: EdgeView | null | undefined,
+    candidateTerminal?: Edge.TerminalCellData | null | undefined,
   ) {
     const options = this.options.connecting
     const allowLoop = options.allowLoop
     const allowNode = options.allowNode
     const allowEdge = options.allowEdge
     const allowPort = options.allowPort
+    const allowMulti =
+      options.allowMulti != null ? options.allowMulti : options.multi
     const validate = options.validateConnection
 
     const edge = edgeView ? edgeView.cell : null
@@ -477,17 +421,33 @@ export class Hook extends Base implements Hook.IHook {
     const doValidate = (
       validate: (this: Graph, args: Options.ValidateConnectionArgs) => boolean,
     ) => {
+      const sourcePort =
+        terminalType === 'source'
+          ? candidateTerminal
+            ? candidateTerminal.port
+            : null
+          : edge
+          ? edge.getSourcePortId()
+          : null
+      const targetPort =
+        terminalType === 'target'
+          ? candidateTerminal
+            ? candidateTerminal.port
+            : null
+          : edge
+          ? edge.getTargetPortId()
+          : null
       return FunctionExt.call(validate, this.graph, {
         edge,
         edgeView,
         sourceView,
         targetView,
+        sourcePort,
+        targetPort,
         sourceMagnet,
         targetMagnet,
         sourceCell: sourceView ? sourceView.cell : null,
         targetCell: targetView ? targetView.cell : null,
-        sourcePort: edge ? edge.getSourcePortId() : null,
-        targetPort: edge ? edge.getTargetPortId() : null,
         type: terminalType,
       })
     }
@@ -531,6 +491,64 @@ export class Hook extends Base implements Hook.IHook {
         }
       } else {
         valid = doValidate(allowNode)
+      }
+    }
+
+    if (valid && allowMulti != null && edgeView) {
+      const edge = edgeView.cell
+      const source =
+        terminalType === 'source'
+          ? candidateTerminal
+          : (edge.getSource() as Edge.TerminalCellData)
+      const target =
+        terminalType === 'target'
+          ? candidateTerminal
+          : (edge.getTarget() as Edge.TerminalCellData)
+      const terminalCell = candidateTerminal
+        ? this.graph.getCellById(candidateTerminal.cell)
+        : null
+
+      if (source && target && source.cell && target.cell && terminalCell) {
+        if (typeof allowMulti === 'function') {
+          valid = doValidate(allowMulti)
+        } else {
+          const connectedEdges = this.model.getConnectedEdges(terminalCell, {
+            outgoing: terminalType === 'source',
+            incoming: terminalType === 'target',
+          })
+          if (connectedEdges.length) {
+            if (allowMulti === 'withPort') {
+              const exist = connectedEdges.some((link) => {
+                const s = link.getSource() as Edge.TerminalCellData
+                const t = link.getTarget() as Edge.TerminalCellData
+                return (
+                  s &&
+                  t &&
+                  s.cell === source.cell &&
+                  t.cell === target.cell &&
+                  s.port != null &&
+                  s.port === source.port &&
+                  t.port != null &&
+                  t.port === target.port
+                )
+              })
+              if (exist) {
+                valid = false
+              }
+            } else if (!allowMulti) {
+              const exist = connectedEdges.some((link) => {
+                const s = link.getSource() as Edge.TerminalCellData
+                const t = link.getTarget() as Edge.TerminalCellData
+                return (
+                  s && t && s.cell === source.cell && t.cell === target.cell
+                )
+              })
+              if (exist) {
+                valid = false
+              }
+            }
+          }
+        }
       }
     }
 
