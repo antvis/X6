@@ -124,7 +124,7 @@ class ExperimentGraph extends GraphCore<BaseNode, BaseEdge> {
       },
       connecting: {
         snap: { radius: 10 },
-        dangling: false,
+        allowBlank: false,
         highlight: true,
         connector: 'pai',
         sourceAnchor: 'bottom',

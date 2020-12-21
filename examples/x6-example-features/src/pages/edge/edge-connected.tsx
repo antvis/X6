@@ -11,7 +11,7 @@ export default class Example extends React.Component {
       height: 600,
       grid: true,
       connecting: {
-        dangling: true,
+        allowBlank: true,
         createEdge() {
           return new Edge()
         },

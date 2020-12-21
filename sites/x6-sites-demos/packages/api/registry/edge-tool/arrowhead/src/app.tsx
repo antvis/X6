@@ -55,7 +55,7 @@ export default class Example extends React.Component {
         magnetAvailable: magnetAvailabilityHighlighter,
       },
       connecting: {
-        dangling: false,
+        allowBlank: false,
         snap: true,
         highlight: true,
         validateMagnet({ magnet }) {

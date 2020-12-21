@@ -119,7 +119,7 @@ const graph = new Graph({
   },
   connecting: {
     snap: true,
-    dangling: false,
+    allowBlank: false,
     highlight: true,
     sourceAnchor: 'bottom',
     targetAnchor: 'center',
