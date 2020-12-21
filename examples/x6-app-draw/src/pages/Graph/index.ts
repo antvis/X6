@@ -37,7 +37,7 @@ export default class FlowGraph {
       connecting: {
         anchor: 'center',
         connectionPoint: 'anchor',
-        dangling: false,
+        allowBlank: false,
         highlight: true,
         snap: true,
         createEdge() {
@@ -303,17 +303,17 @@ export default class FlowGraph {
     graph.on(
       'node:mouseenter',
       FunctionExt.debounce(() => {
-        const ports = container.querySelectorAll('.x6-port-body') as NodeListOf<
-          SVGAElement
-        >
+        const ports = container.querySelectorAll(
+          '.x6-port-body',
+        ) as NodeListOf<SVGAElement>
         this.showPorts(ports, true)
       }),
       500,
     )
     graph.on('node:mouseleave', () => {
-      const ports = container.querySelectorAll('.x6-port-body') as NodeListOf<
-        SVGAElement
-      >
+      const ports = container.querySelectorAll(
+        '.x6-port-body',
+      ) as NodeListOf<SVGAElement>
       this.showPorts(ports, false)
     })
 
