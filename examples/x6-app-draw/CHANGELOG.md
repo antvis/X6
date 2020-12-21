@@ -1,3 +1,11 @@
+## @antv/x6-app-draw [1.0.57](https://github.com/antvis/x6/compare/@antv/x6-app-draw@1.0.56...@antv/x6-app-draw@1.0.57) (2020-12-21)
+
+
+### Bug Fixes
+
+* fix redo exception on group in demo ([1c893b0](https://github.com/antvis/x6/commit/1c893b0493f80e798173d98b461fa38458f9e07a))
+* fix selection box style ([9090868](https://github.com/antvis/x6/commit/9090868fcbf9414b82e6b01faa70a4b98d160605))
+
 ## @antv/x6-app-draw [1.0.56](https://github.com/antvis/x6/compare/@antv/x6-app-draw@1.0.55...@antv/x6-app-draw@1.0.56) (2020-12-19)
 
 
