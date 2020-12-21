@@ -1,3 +1,20 @@
+# @antv/x6-example-features [1.9.0](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.8.6...@antv/x6-example-features@1.9.0) (2020-12-21)
+
+
+### Features
+
+* ✨ add 'loop' and 'loose' option for connecting ([bbc41d4](https://github.com/antvis/x6/commit/bbc41d48294398053e77da161f2d0e7f0602f905)), closes [#390](https://github.com/antvis/x6/issues/390)
+* ✨ add some connecting option ([68f7965](https://github.com/antvis/x6/commit/68f7965699b36d6a46f25e6aba5d144fb086c9a0))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.6.0
+* **@antv/x6-react-shape:** upgraded to 1.1.35
+
 ## @antv/x6-example-features [1.8.6](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.8.5...@antv/x6-example-features@1.8.6) (2020-12-18)
 
 
