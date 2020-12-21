@@ -69,7 +69,10 @@ class Arrowhead extends ToolsView.ToolItem<EdgeView, Arrowhead.Options> {
         toolId: this.cid,
       })
 
+      const coords = this.graph.snapToGrid(evt.clientX, evt.clientY)
       const data = edgeView.prepareArrowheadDragging(this.type, {
+        x: coords.x,
+        y: coords.y,
         options: {
           toolId: this.cid,
         },

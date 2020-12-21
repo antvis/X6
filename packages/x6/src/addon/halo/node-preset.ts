@@ -170,6 +170,8 @@ export class NodePreset {
     graph.view.undelegateEvents()
     this.edgeView = graph.renderer.findViewByCell(edge) as EdgeView
     this.edgeView.prepareArrowheadDragging('target', {
+      x,
+      y,
       fallbackAction: 'remove',
     })
   }
