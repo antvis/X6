@@ -91,6 +91,7 @@ class Arrowhead extends ToolsView.ToolItem<EdgeView, Arrowhead.Options> {
     const e = this.normalizeEvent(evt)
     const coords = this.graph.snapToGrid(e.clientX, e.clientY)
     this.cellView.onMouseMove(e, coords.x, coords.y)
+    this.update()
   }
 
   protected onMouseUp(evt: JQuery.MouseUpEvent) {
