@@ -1,3 +1,11 @@
+## @antv/x6 [1.6.3](https://github.com/antvis/x6/compare/@antv/x6@1.6.2...@antv/x6@1.6.3) (2020-12-22)
+
+
+### Bug Fixes
+
+* 🐛 default transparent background for ForeignObject ([a386f94](https://github.com/antvis/x6/commit/a386f940eb18e718998b150d432242d8cfea5f8b))
+* 🐛 only append SVG tool to ToolsView, HTML tools should handle manually ([5c7b7d6](https://github.com/antvis/x6/commit/5c7b7d646c90e20a28f273d268d83a16246bb9f2))
+
 ## @antv/x6 [1.6.2](https://github.com/antvis/x6/compare/@antv/x6@1.6.1...@antv/x6@1.6.2) (2020-12-22)
 
 
