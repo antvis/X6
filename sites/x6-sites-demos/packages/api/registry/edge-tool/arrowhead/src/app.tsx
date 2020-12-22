@@ -55,24 +55,16 @@ export default class Example extends React.Component {
         magnetAvailable: magnetAvailabilityHighlighter,
       },
       connecting: {
-        allowBlank: false,
         snap: true,
+        allowBlank: false,
+        allowLoop: false,
+        allowNode: false,
         highlight: true,
         validateMagnet({ magnet }) {
           return magnet.getAttribute('port-group') !== 'in'
         },
 
-        validateConnection({
-          sourceView,
-          sourceMagnet,
-          targetView,
-          targetMagnet,
-        }) {
-          // 不允许连接到自己
-          if (sourceView === targetView) {
-            return false
-          }
-
+        validateConnection({ sourceMagnet, targetMagnet }) {
           // 只能从输出链接桩创建连接
           if (
             !sourceMagnet ||

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Graph, Util } from '@antv/x6'
+import { Graph } from '@antv/x6'
 import './app.css'
 
 export default class Example extends React.Component {
@@ -12,20 +12,18 @@ export default class Example extends React.Component {
     })
 
     graph.addEdge({
-      source: { x: 40, y: 50 },
-      target: { x: 320, y: 50 },
+      source: { x: 40, y: 40 },
+      target: { x: 380, y: 40 },
+      vertices: [
+        { x: 40, y: 80 },
+        { x: 200, y: 80 },
+        { x: 200, y: 40 },
+      ],
       attrs: {
         line: {
-          stroke: '#fe854f',
-          strokeWidth: 4,
-          sourceMarker: {
-            name: 'path',
-            d: Util.normalizeMarker('M 0 -5 L -10 0 L 0 5 Z'),
-          },
-          targetMarker: {
-            tagName: 'circle',
-            r: 5,
-          },
+          stroke: '#3c4260',
+          strokeWidth: 2,
+          targetMarker: 'classic',
         },
       },
       tools: [
@@ -39,7 +37,7 @@ export default class Example extends React.Component {
                 attrs: {
                   r: 18,
                   stroke: '#fe854f',
-                  'stroke-width': 2,
+                  strokeWidth: 2,
                   fill: 'white',
                   cursor: 'pointer',
                 },
@@ -50,9 +48,9 @@ export default class Example extends React.Component {
                 selector: 'icon',
                 attrs: {
                   fill: '#fe854f',
-                  'font-size': 10,
-                  'text-anchor': 'middle',
-                  'pointer-events': 'none',
+                  fontSize: 10,
+                  textAnchor: 'middle',
+                  pointerEvents: 'none',
                   y: '0.3em',
                 },
               },
@@ -67,49 +65,66 @@ export default class Example extends React.Component {
             },
           },
         },
-        {
-          name: 'button',
-          args: {
-            markup: [
-              {
-                tagName: 'circle',
-                selector: 'button',
-                attrs: {
-                  r: 18,
-                  stroke: '#fe854f',
-                  'stroke-width': 2,
-                  fill: 'white',
-                  cursor: 'pointer',
-                },
+      ],
+    })
+
+    graph.addEdge({
+      source: { x: 40, y: 160 },
+      target: { x: 380, y: 160 },
+      vertices: [
+        { x: 40, y: 200 },
+        { x: 200, y: 200 },
+        { x: 200, y: 160 },
+      ],
+      attrs: {
+        line: {
+          stroke: '#3c4260',
+          strokeWidth: 2,
+          targetMarker: 'classic',
+        },
+      },
+      connector: 'smooth',
+      tools: {
+        name: 'button',
+        args: {
+          markup: [
+            {
+              tagName: 'circle',
+              selector: 'button',
+              attrs: {
+                r: 18,
+                stroke: '#fe854f',
+                strokeWidth: 2,
+                fill: 'white',
+                cursor: 'pointer',
               },
-              {
-                tagName: 'text',
-                textContent: 'Btn A',
-                selector: 'icon',
-                attrs: {
-                  fill: '#fe854f',
-                  'font-size': 10,
-                  'text-anchor': 'middle',
-                  'pointer-events': 'none',
-                  y: '0.3em',
-                },
-              },
-            ],
-            distance: -100,
-            offset: { x: 0, y: 20 },
-            onClick({ view }: any) {
-              const edge = view.cell
-              edge.attr({
-                line: {
-                  strokeDasharray: '5, 1',
-                  strokeDashoffset:
-                    (edge.attr('line/strokeDashoffset') | 0) + 20,
-                },
-              })
             },
+            {
+              tagName: 'text',
+              textContent: 'Btn A',
+              selector: 'icon',
+              attrs: {
+                fill: '#fe854f',
+                fontSize: 10,
+                textAnchor: 'middle',
+                pointerEvents: 'none',
+                y: '0.3em',
+              },
+            },
+          ],
+          distance: -100,
+          offset: { x: 0, y: 0 },
+          onClick({ view }: any) {
+            const edge = view.cell
+            edge.attr({
+              line: {
+                strokeDasharray: '5, 10',
+                strokeDashoffset: (edge.attr('line/strokeDashoffset') | 0) + 20,
+              },
+            })
           },
         },
-      ],
+      },
     })
   }
 

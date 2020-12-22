@@ -1,6 +1,6 @@
 ---
-title: 小工具
+title: 辅助工具
 order: 100
 redirect_from:
-  - /zh/examples/basic
+  - /zh/examples/edge
 ---

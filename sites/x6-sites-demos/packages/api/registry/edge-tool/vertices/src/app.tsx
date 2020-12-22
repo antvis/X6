@@ -44,17 +44,17 @@ export default class Example extends React.Component {
     })
 
     edge2 = graph.addEdge({
-      source: { x: 60, y: 140 },
-      target: { x: 380, y: 140 },
+      source: { x: 40, y: 160 },
+      target: { x: 380, y: 160 },
       vertices: [
-        { x: 40, y: 180 },
-        { x: 200, y: 140 },
-        { x: 240, y: 180 },
+        { x: 40, y: 200 },
+        { x: 200, y: 200 },
+        { x: 200, y: 160 },
       ],
       connector: 'smooth',
       attrs: {
         line: {
-          stroke: '#7c68fc',
+          stroke: '#3c4260',
           strokeWidth: 2,
           targetMarker: 'classic',
         },
