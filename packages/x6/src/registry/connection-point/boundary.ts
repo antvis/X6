@@ -116,9 +116,9 @@ export const boundary: ConnectionPoint.Definition<BoundaryOptions> = function (
       if (cpOffset.x == null) {
         cpOffset.x = 0
       }
-      cpOffset.x += Math.round(getStrokeWidth(node) / 2)
+      cpOffset.x += getStrokeWidth(node) / 2
     } else {
-      cpOffset += Math.round(getStrokeWidth(node) / 2)
+      cpOffset += getStrokeWidth(node) / 2
     }
   }
 

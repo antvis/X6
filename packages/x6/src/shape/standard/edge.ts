@@ -27,10 +27,7 @@ export const Edge = E.define({
   attrs: {
     lines: {
       connection: true,
-      // https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-linejoin
       strokeLinejoin: 'round',
-      // https://developer.mozilla.org/zh-CN/docs/Web/SVG/Attribute/stroke-linecap
-      strokeLinecap: 'square',
     },
     wrap: {
       strokeWidth: 10,

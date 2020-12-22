@@ -13,6 +13,8 @@ export namespace Marker {
 
   export type Result = BaseResult & {
     id?: string
+    refX?: number
+    refY?: number
     // @see https://developer.mozilla.org/en-US/docs/Web/SVG/Element/marker
     markerUnits?: string
     markerOrient?: 'auto' | 'auto-start-reverse' | number
