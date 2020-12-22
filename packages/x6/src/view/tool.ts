@@ -104,7 +104,9 @@ export class ToolsView extends View {
       if (tool) {
         tool.config(this.cellView, this)
         tool.render()
-        this.container.appendChild(tool.container)
+        if (tool.options.isSVGElement !== false) {
+          this.container.appendChild(tool.container)
+        }
         this.tools.push(tool)
       }
     }
