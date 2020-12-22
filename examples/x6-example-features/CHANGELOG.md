@@ -1,3 +1,19 @@
+## @antv/x6-example-features [1.9.2](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.9.1...@antv/x6-example-features@1.9.2) (2020-12-22)
+
+
+### Bug Fixes
+
+* 🐛 fix sourceMarker and targetMaker position ([d637cf6](https://github.com/antvis/x6/commit/d637cf649e0b149acdf9dee12e6561e3b4f76b17))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.6.2
+* **@antv/x6-react-shape:** upgraded to 1.1.37
+
 ## @antv/x6-example-features [1.9.1](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.9.0...@antv/x6-example-features@1.9.1) (2020-12-21)
 
 
