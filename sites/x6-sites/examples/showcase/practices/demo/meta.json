@@ -31,6 +31,14 @@
         "en": "Organizational Charts"
       },
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*mxDSTpxbMYYAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "../../../edge/tool/demo/tooltip.tsx",
+      "title": {
+        "zh": "在边上使用 AntD 的 Tooltip 组件",
+        "en": "Use AntD Tooltip with Edge"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*-W2ORbBVQgMAAAAAAAAAAAAAARQnAQ"
     }
   ]
 }
