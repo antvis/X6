@@ -990,6 +990,23 @@ export class EdgeView<
     sourcePoint: Point,
     targetPoint: Point,
   ) {
+    const getLineWidth = (type: Edge.TerminalType) => {
+      const attrs = this.cell.getAttrs()
+      const keys = Object.keys(attrs)
+      for (let i = 0, l = keys.length; i < l; i += 1) {
+        const attr = attrs[keys[i]]
+        if (attr[`${type}Marker`] || attr[`${type}-marker`]) {
+          const strokeWidth =
+            (attr['strokeWidth'] as string) || (attr['stroke-width'] as string)
+          if (strokeWidth) {
+            return parseFloat(strokeWidth)
+          }
+          break
+        }
+      }
+      return null
+    }
+
     const firstRoutePoint = routePoints[0]
     const lastRoutePoint = routePoints[routePoints.length - 1]
     const sourceMarkerElem = this.containers.sourceMarker as SVGElement
@@ -1015,7 +1032,13 @@ export class EdgeView<
             firstRoutePoint || targetPoint,
             cache.sourceBBox.width * scale.sx * -1,
           )
-          .round()
+      }
+    } else {
+      const strokeWidth = getLineWidth('source')
+      if (strokeWidth) {
+        sourceMarkerPoint = sourcePoint
+          .clone()
+          .move(firstRoutePoint || targetPoint, -strokeWidth)
       }
     }
 
@@ -1030,7 +1053,13 @@ export class EdgeView<
             lastRoutePoint || sourcePoint,
             cache.targetBBox.width * scale.sx * -1,
           )
-          .round()
+      }
+    } else {
+      const strokeWidth = getLineWidth('target')
+      if (strokeWidth) {
+        targetMarkerPoint = targetPoint
+          .clone()
+          .move(lastRoutePoint || sourcePoint, -strokeWidth)
       }
     }
 
