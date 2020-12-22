@@ -1,3 +1,12 @@
+## @antv/x6 [1.6.2](https://github.com/antvis/x6/compare/@antv/x6@1.6.1...@antv/x6@1.6.2) (2020-12-22)
+
+
+### Bug Fixes
+
+* 🐛 fix sourceMarker and targetMaker position ([d637cf6](https://github.com/antvis/x6/commit/d637cf649e0b149acdf9dee12e6561e3b4f76b17))
+* 🐛 fix tools ware removed when update cell ([fac7e7a](https://github.com/antvis/x6/commit/fac7e7a4c853d75ea0ae37fcd7089bf20e56654b))
+* 🐛 update arrowhead on dragging ([c9e7b5f](https://github.com/antvis/x6/commit/c9e7b5ffeb52e2fd609283d5f72b0d43ad368561))
+
 ## @antv/x6 [1.6.1](https://github.com/antvis/x6/compare/@antv/x6@1.6.0...@antv/x6@1.6.1) (2020-12-21)
 
 # @antv/x6 [1.6.0](https://github.com/antvis/x6/compare/@antv/x6@1.5.2...@antv/x6@1.6.0) (2020-12-21)
