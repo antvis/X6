@@ -1,11 +1,13 @@
 import React from 'react'
 import { Graph, Shape } from '@antv/x6'
-import './app.css'
+import '../../index.less'
 
 Shape.Rect.config({
   attrs: {
     body: {
-      magnet: false,
+      fill: '#f5f5f5',
+      stroke: '#d9d9d9',
+      strokeWidth: 1,
     },
   },
   ports: {
@@ -23,34 +25,36 @@ Shape.Rect.config({
       tagName: 'circle',
       selector: 'portBody',
       attrs: {
-        magnet: 'true',
-        r: 6,
+        r: 5,
+        magnet: true,
+        stroke: '#31d0c6',
         fill: '#fff',
-        stroke: '#000',
-        'stroke-width': 2,
+        strokeWidth: 2,
       },
     },
   ],
 })
 
+const magnetAvailabilityHighlighter = {
+  name: 'stroke',
+  args: {
+    padding: 3,
+    attrs: {
+      strokeWidth: 3,
+      stroke: '#52c41a',
+    },
+  },
+}
+
 export default class Example extends React.Component {
   private container: HTMLDivElement
 
   componentDidMount() {
-    const magnetAvailabilityHighlighter = {
-      name: 'stroke',
-      args: {
-        padding: 3,
-        attrs: {
-          strokeWidth: 3,
-          stroke: '#52c41a',
-        },
-      },
-    }
-
     const graph = new Graph({
       container: this.container,
-      grid: true,
+      width: 800,
+      height: 400,
+      // grid: true,
       highlighting: {
         magnetAvailable: magnetAvailabilityHighlighter,
       },
@@ -91,7 +95,6 @@ export default class Example extends React.Component {
       y: 40,
       width: 100,
       height: 40,
-      label: 'Source',
       ports: [
         { id: 'in-1', group: 'in' },
         { id: 'in-2', group: 'in' },
@@ -105,7 +108,6 @@ export default class Example extends React.Component {
       y: 240,
       width: 100,
       height: 40,
-      label: 'Target',
       ports: [
         { id: 'in-1', group: 'in' },
         { id: 'in-2', group: 'in' },
@@ -119,7 +121,6 @@ export default class Example extends React.Component {
       y: 120,
       width: 100,
       height: 40,
-      label: 'Hello',
       ports: [
         { id: 'in-1', group: 'in' },
         { id: 'in-2', group: 'in' },
@@ -131,6 +132,11 @@ export default class Example extends React.Component {
     graph.addEdge({
       source: { cell: source.id, port: 'out-2' },
       target: { cell: target.id, port: 'in-1' },
+    })
+
+    graph.addEdge({
+      source: [560, 120],
+      target: [480, 240],
     })
 
     graph.on('edge:mouseenter', ({ cell }) => {
@@ -160,8 +166,8 @@ export default class Example extends React.Component {
 
   render() {
     return (
-      <div className="app">
-        <div className="app-content" ref={this.refContainer} />
+      <div className="x6-graph-wrap">
+        <div ref={this.refContainer} className="x6-graph" />
       </div>
     )
   }

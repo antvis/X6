@@ -1,6 +1,6 @@
 import React from 'react'
 import { Graph } from '@antv/x6'
-import './app.css'
+import '../../index.less'
 
 export default class Example extends React.Component {
   private container: HTMLDivElement
@@ -8,6 +8,8 @@ export default class Example extends React.Component {
   componentDidMount() {
     const graph = new Graph({
       container: this.container,
+      width: 800,
+      height: 400,
       grid: true,
     })
 
@@ -134,8 +136,8 @@ export default class Example extends React.Component {
 
   render() {
     return (
-      <div className="app">
-        <div className="app-content" ref={this.refContainer} />
+      <div className="x6-graph-wrap">
+        <div ref={this.refContainer} className="x6-graph" />
       </div>
     )
   }

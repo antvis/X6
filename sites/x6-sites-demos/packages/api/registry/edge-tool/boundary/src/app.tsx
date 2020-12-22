@@ -32,12 +32,12 @@ export default class Example extends React.Component {
     })
 
     graph.addEdge({
-      source: { x: 60, y: 160 },
-      target: { x: 420, y: 160 },
+      source: { x: 40, y: 160 },
+      target: { x: 380, y: 160 },
       vertices: [
-        { x: 60, y: 200 },
-        { x: 240, y: 200 },
-        { x: 240, y: 160 },
+        { x: 40, y: 200 },
+        { x: 200, y: 200 },
+        { x: 200, y: 160 },
       ],
       attrs: {
         line: {
@@ -54,8 +54,8 @@ export default class Example extends React.Component {
           attrs: {
             fill: '#7c68fc',
             stroke: '#333',
-            'stroke-width': 0.5,
-            'fill-opacity': 0.2,
+            strokeWidth: 0.5,
+            fillOpacity: 0.2,
           },
         },
       },
