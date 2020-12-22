@@ -85,9 +85,11 @@ export class DefsManager extends Base {
   marker(options: DefsManager.MarkerOptions) {
     const {
       id,
-      tagName,
+      refX,
+      refY,
       markerUnits,
       markerOrient,
+      tagName,
       children,
       ...attrs
     } = options
@@ -107,6 +109,8 @@ export class DefsManager extends Base {
       const pathMarker = Vector.create(
         'marker',
         {
+          refX,
+          refY,
           id: markerId,
           overflow: 'visible',
           orient: markerOrient != null ? markerOrient : 'auto',

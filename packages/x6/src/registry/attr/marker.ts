@@ -32,12 +32,13 @@ export const vertexMarker: Attr.Definition = {
 }
 
 function createMarker(
-  key: 'marker-start' | 'marker-end' | 'marker-mid',
+  type: 'marker-start' | 'marker-end' | 'marker-mid',
   marker: string | JSONObject,
   view: CellView,
   attrs: Attr.ComplexAttrs,
   manual: Attr.SimpleAttrs = {},
 ) {
+  console.log(marker, attrs)
   const def = typeof marker === 'string' ? { name: marker } : marker
   const { name, args, ...others } = def
   let preset = others
@@ -52,17 +53,20 @@ function createMarker(
   }
 
   const options: any = {
-    ...normalizeAttr(attrs),
+    ...normalizeAttr(attrs, type),
     ...manual,
     ...preset,
   }
 
   return {
-    [key]: `url(#${view.graph.defineMarker(options)})`,
+    [type]: `url(#${view.graph.defineMarker(options)})`,
   }
 }
 
-function normalizeAttr(attr: Attr.ComplexAttrs) {
+function normalizeAttr(
+  attr: Attr.ComplexAttrs,
+  type: 'marker-start' | 'marker-end' | 'marker-mid',
+) {
   const result: Attr.SimpleAttrs = {}
 
   // The context 'fill' is disregared here. The usual case is to use the
@@ -86,6 +90,16 @@ function normalizeAttr(attr: Attr.ComplexAttrs) {
   if (strokeOpacity != null) {
     result['stroke-opacity'] = strokeOpacity as number
     result['fill-opacity'] = strokeOpacity as number
+  }
+
+  if (type !== 'marker-mid') {
+    const strokeWidth = parseFloat(
+      (attr['strokeWidth'] || attr['stroke-width']) as string,
+    )
+    if (isFinite(strokeWidth) && strokeWidth > 1) {
+      const offset = Math.ceil(strokeWidth / 2)
+      result['refX'] = type === 'marker-start' ? offset : -offset
+    }
   }
 
   return result

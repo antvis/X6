@@ -100,7 +100,9 @@ export default class Example extends React.Component {
           target: 'node2',
           attrs: {
             line: {
-              strokeWidth: 1,
+              sourceMarker: 'classic',
+              targetMarker: 'classic',
+              strokeWidth: 2,
             },
           },
         },
