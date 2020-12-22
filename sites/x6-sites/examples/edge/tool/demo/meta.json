@@ -47,6 +47,14 @@
         "en": "Boundary"
       },
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*dKabQoQ0lIMAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "tooltip.tsx",
+      "title": {
+        "zh": "使用 AntD 的 Tooltip 组件",
+        "en": "Use AntD Tooltip with Edge"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*-W2ORbBVQgMAAAAAAAAAAAAAARQnAQ"
     }
   ]
 }
