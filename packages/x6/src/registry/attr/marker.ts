@@ -38,7 +38,6 @@ function createMarker(
   attrs: Attr.ComplexAttrs,
   manual: Attr.SimpleAttrs = {},
 ) {
-  console.log(marker, attrs)
   const def = typeof marker === 'string' ? { name: marker } : marker
   const { name, args, ...others } = def
   let preset = others
