@@ -1,3 +1,13 @@
+## @antv/x6-vue-shape [1.0.5](https://github.com/antvis/x6/compare/@antv/x6-vue-shape@1.0.4...@antv/x6-vue-shape@1.0.5) (2020-12-23)
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.6.4
+
 ## @antv/x6-vue-shape [1.0.4](https://github.com/antvis/x6/compare/@antv/x6-vue-shape@1.0.3...@antv/x6-vue-shape@1.0.4) (2020-12-22)
 
 
