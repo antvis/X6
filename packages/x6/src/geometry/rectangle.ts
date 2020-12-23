@@ -12,6 +12,22 @@ export class Rectangle extends Geometry implements Rectangle.RectangleLike {
   width: number
   height: number
 
+  get left() {
+    return this.x
+  }
+
+  get top() {
+    return this.y
+  }
+
+  get right() {
+    return this.x + this.width
+  }
+
+  get botom() {
+    return this.y + this.height
+  }
+
   get origin() {
     return new Point(this.x, this.y)
   }
