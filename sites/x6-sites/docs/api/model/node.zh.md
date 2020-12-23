@@ -325,13 +325,13 @@ console.log(size.width, size.height)
 <span class="tag-example">用法</span>
 
 ```ts
-node.resie(100, 40)
+node.resize(100, 40)
 
 // 右下角固定，向左上角改变大小
-node.resie(100, 40, { direction: 'top-left' })
+node.resize(100, 40, { direction: 'top-left' })
 
 // 不触发事件和重绘
-node.resie(100, 40, { silent: true })
+node.resize(100, 40, { silent: true })
 ```
 
 #### scale(...)
