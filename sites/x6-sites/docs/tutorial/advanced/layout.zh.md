@@ -130,3 +130,33 @@ const circularLayout = new Layout({
 | divisions         | number           |  `false` |    1           | 节点在环上的分段数（几个段将均匀分布），在 `endRadius - startRadius != 0` 时生效 |
 | ordering          | string           |  `false` |    `null`      | 节点在环上排序的依据。默认 `null` 代表直接使用数据中的顺序。`topology` 按照拓扑排序。`degree` 按照度数大小排序 |
 | angleRatio        | number           |  `false` |    1           | 从第一个节点到最后节点之间相隔多少个 `2*PI` |
+
+### Dagre
+
+Dagre 是一种层次布局。
+
+<iframe src="/demos/tutorial/advanced/layout/dagre"></iframe>
+
+```ts
+const dagreLayout = new Layout({
+  type: 'dagre',
+  rankdir: 'LR',
+  align: 'UL',
+  ranksep: 30,
+  nodesep: 15,
+  controlPoints: true,
+})
+```
+
+支持以下配置：
+
+| 名称              | 类型      | 必选 | 默认值           | 描述                                                                          |
+|-------------------|-----------|:----:|------------------|-----------------------------------------------------------------------------|
+| type              | string                          |  `true`  |   `dagre`  | 布局类型 |
+| rankdir           | 'TB' \| 'BT' \| 'LR' \| 'RL'    |  `false` |   `TB`     | 布局的方向。T：top（上）；B：bottom（下）；L：left（左）；R：right（右）|
+| align             | 'UL' \| 'UR' \| 'DL' \| 'DR'    |  `false` |   `UL`     | 节点对齐方式。U：upper（上）；D：down（下）；L：left（左）；R：right（右） |
+| nodesep           | number                          |  `false` |    50      | 节点间距（px）。在 `rankdir` 为 `TB` 或 `BT` 时是节点的水平间距；在 `rankdir` 为 `LR` 或 `RL` 时代表节点的竖直方向间距 |
+| ranksep           | number                          |  `false` |    50      | 层间距（px）。在 `rankdir` 为 `TB` 或 `BT` 时是竖直方向相邻层间距；在 `rankdir` 为 `LR` 或 `RL` 时代表水平方向相邻层间距 |
+| nodesepFunc       | function                        |  `false` |    -       | 节点间距（px）的回调函数，通过该参数可以对不同节点设置不同的节点间距。 |
+| ranksepFunc       | function                        |  `false` |    -       | 层间距（px）的回调函数，通过该参数可以对不同节点设置不同的层间距。 |
+| controlPoints     | boolean                         |  `false` |   `true`   | 是否保留布局连线的控制点 |
