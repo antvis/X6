@@ -2,9 +2,9 @@
 title: 使用布局
 order: 8
 redirect_from:
-  - /zh/docs
-  - /zh/docs/tutorial
-  - /zh/docs/tutorial/advanced
+  - /en/docs
+  - /en/docs/tutorial
+  - /en/docs/tutorial/advanced
 ---
 
 想让画布中图形按照一定的规则进行排列，少不了布局算法。 我们在 [Layout](https://github.com/antvis/layout) 中提供了很多布局算法，下面介绍一下 `X6` 和 `Layout` 的搭配使用。
