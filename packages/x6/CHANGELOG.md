@@ -1,3 +1,10 @@
+## @antv/x6 [1.6.4](https://github.com/antvis/x6/compare/@antv/x6@1.6.3...@antv/x6@1.6.4) (2020-12-23)
+
+
+### Performance Improvements
+
+* ⚡️ add bounds proprtyies for rectangle ([c4480af](https://github.com/antvis/x6/commit/c4480af4e45b9a90746f3aefa14a4d7332b08d6a))
+
 ## @antv/x6 [1.6.3](https://github.com/antvis/x6/compare/@antv/x6@1.6.2...@antv/x6@1.6.3) (2020-12-22)
 
 
