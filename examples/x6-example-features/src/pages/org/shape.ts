@@ -123,7 +123,7 @@ Graph.registerNode(
       },
       '.btn.add > text': {
         fontSize: 20,
-        fontWeight: 800,
+        fontWeight: 600,
         stroke: '#000',
         x: -5.5,
         y: 7,
@@ -132,7 +132,7 @@ Graph.registerNode(
       },
       '.btn.del > text': {
         fontSize: 28,
-        fontWeight: 500,
+        fontWeight: 600,
         stroke: '#000',
         x: -4.5,
         y: 6,
