@@ -1,3 +1,11 @@
+## @antv/x6 [1.7.1](https://github.com/antvis/x6/compare/@antv/x6@1.7.0...@antv/x6@1.7.1) (2020-12-24)
+
+
+### Bug Fixes
+
+* 🐛 box-sizing style was overwrited ([95c1329](https://github.com/antvis/x6/commit/95c132900b8881e12b73b9c7d5ab742c0154d472))
+* 🐛 fix marker of shadow edge ([7acd9f2](https://github.com/antvis/x6/commit/7acd9f2897747a45dd442975bc326e71740eb09e))
+
 # @antv/x6 [1.7.0](https://github.com/antvis/x6/compare/@antv/x6@1.6.4...@antv/x6@1.7.0) (2020-12-24)
 
 
