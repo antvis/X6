@@ -1,3 +1,13 @@
+## @antv/x6 [1.7.4](https://github.com/antvis/x6/compare/@antv/x6@1.7.3...@antv/x6@1.7.4) (2020-12-24)
+
+
+### Bug Fixes
+
+* 🐛 change component -> render ([b90c519](https://github.com/antvis/x6/commit/b90c519c98a5adf81f111fb3ea1d8781ce7996bc))
+* 🐛 change rerender -> shouldComponentUpdate ([79672e9](https://github.com/antvis/x6/commit/79672e9e097b99d4339ddb5f6fba0dafa2c648f3))
+* 🐛 fix html rerender ([3412c0c](https://github.com/antvis/x6/commit/3412c0ce454b1481bdc037579819ab866bf01c14))
+* fix html node not update when setData ([0020c78](https://github.com/antvis/x6/commit/0020c781c3bb4b4747220fe327ade7e926d52014))
+
 ## @antv/x6 [1.7.3](https://github.com/antvis/x6/compare/@antv/x6@1.7.2...@antv/x6@1.7.3) (2020-12-24)
 
 ## @antv/x6 [1.7.2](https://github.com/antvis/x6/compare/@antv/x6@1.7.1...@antv/x6@1.7.2) (2020-12-24)
