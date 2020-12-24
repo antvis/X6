@@ -1,5 +1,6 @@
 @import '../../style/index';
 @import '../common/handle.less';
+
 @selection-prefix-cls: ~'@{x6-prefix}-widget-selection';
 
 .@{selection-prefix-cls} {
@@ -7,7 +8,6 @@
   display: none;
   width: 0;
   height: 0;
-
   touch-action: none;
 
   &-rubberband {
@@ -34,9 +34,9 @@
     top: 100%;
     right: -20px;
     left: -20px;
-    line-height: 14px;
     margin-top: 30px;
     padding: 6px;
+    line-height: 14px;
     text-align: center;
     border-radius: 6px;
 
@@ -49,8 +49,8 @@
 // theme
 .@{selection-prefix-cls} {
   &-rubberband {
-    border: 2px solid #2980b9;
     background-color: #3498db;
+    border: 2px solid #2980b9;
   }
 
   &-box {
@@ -74,8 +74,8 @@
   }
 
   &-content {
+    color: #fff;
     font-size: 10px;
-    color: #ffffff;
     background-color: #6a6b8a;
   }
 }
