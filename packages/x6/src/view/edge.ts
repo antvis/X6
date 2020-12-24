@@ -1993,6 +1993,7 @@ export class EdgeView<
     }
 
     this.notifyMouseMove(e, x, y)
+    return data
   }
 
   onMouseUp(e: JQuery.MouseUpEvent, x: number, y: number) {
@@ -2016,6 +2017,7 @@ export class EdgeView<
 
     this.notifyMouseUp(e, x, y)
     this.checkMouseleave(e)
+    return data
   }
 
   onMouseOver(e: JQuery.MouseOverEvent) {
