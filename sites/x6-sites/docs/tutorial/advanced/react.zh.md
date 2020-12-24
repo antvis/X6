@@ -1,5 +1,5 @@
 ---
-title: 使用 HTML/React 渲染
+title: 使用 HTML/React/Vue 渲染
 order: 4
 redirect_from:
   - /zh/docs
@@ -235,6 +235,92 @@ const graph = new Graph({
     return (<MyComponent text="Hello" />)
   }
 })
+```
+
+### 渲染 Vue 节点
+
+我们提供了一个独立的包 `@antv/x6-vue-shape` 来使用 Vue 渲染节点。
+
+```shell
+# npm
+npm install @antv/x6-vue-shape
+
+# yarn
+yarn add @antv/x6-vue-shape
+```
+
+安装并应用该包后，指定节点的 `shape` 为 `vue-shape`，并通过 `component` 属性来指定渲染节点的 Vue 组件。
+
+```ts
+import '@antv/x6-vue-shape'
+```
+
+```tsx
+import Count from 'Count.vue'
+
+const data = { num: 0 }
+const graph = new Graph({
+  container: document.getElementById('app'),
+  width: 600,
+  height: 600,
+  grid: true,
+});
+
+graph.addNode({
+  shape: 'vue-shape',
+  width: 200,
+  height: 200,
+  x: 100,
+  y: 100,
+  attrs: {
+    body: {
+      width: 200,
+      height: 200,
+      stroke: 'red',
+    }
+  },
+  component: {
+    template: `<count :num="num" @add="add()"></count>`,
+    data() {
+      return data
+    },
+    methods: {
+      add: () => {
+        data.num += 1
+      }
+    },
+    components: {
+      Count,
+    }
+  }
+});
+```
+
+在 Vue 组件中，我们可以通过 `inject` 配置来获取 `node` 和 `graph`，在组件内就可以对画布或者节点做操作。
+ 
+```vue
+<template>
+  <div>
+    <div>{{ num }}</div>
+    <button @click="click()">add</button>
+  </div>
+</template>
+
+<script>
+export default ({
+  name: 'Count',
+  props: {
+    num: Number
+  },
+  inject: ['getGraph', 'getNode'],
+  methods: {
+    click() {
+      this.$emit('add')
+      this.getNode().attr('body/strokeWidth', this.num + 1)
+    }
+  }
+});
+</script>
 ```
 
 ## 渲染标签

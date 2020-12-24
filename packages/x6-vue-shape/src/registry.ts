@@ -2,8 +2,10 @@ import { Graph, Node, Registry } from '@antv/x6'
 
 export type VueComponent = {
   template: string
-  data?: {[key: string]: any}
-  components?: {[key: string]: any}
+  data?: { [key: string]: any }
+  components?: { [key: string]: any }
+  computed?: { [key: string]: any }
+  methods?: { [key: string]: any }
 }
 
 export type Definition =
