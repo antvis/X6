@@ -636,7 +636,7 @@ export class Hook extends Base implements Hook.IHook {
     let ret = node.getHTML()
 
     if (ret && typeof ret === 'object') {
-      ret = (ret as HTML.UpdatableComponent).component
+      ret = (ret as HTML.UpdatableComponent).render
     }
 
     if (typeof ret === 'string') {
