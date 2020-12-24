@@ -33,21 +33,20 @@ export class VueShapeView extends NodeView<VueShape> {
         div.innerHTML = component
         instance = new Vue({ el: div })
       } else {
-        const { template, data, components } = component as VueComponent
+        const { template, ...other } = component as VueComponent
         div.innerHTML = template
         instance = new Vue({
-          data,
-          components,
           el: div,
-          provide () {
+          provide() {
             return {
               getGraph: () => graph,
               getNode: () => node,
             }
-          }
+          },
+          ...other,
         })
       }
-      
+
       root.appendChild(instance.$el)
     }
   }
