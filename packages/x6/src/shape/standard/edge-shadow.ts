@@ -25,14 +25,16 @@ export const ShadowEdge = Edge.define({
       strokeWidth: 20,
       strokeLinejoin: 'round',
       targetMarker: {
-        tagName: 'path',
+        name: 'path',
         stroke: 'none',
         d: 'M 0 -10 -10 0 0 10 z',
+        offsetX: -5,
       },
       sourceMarker: {
-        tagName: 'path',
+        name: 'path',
         stroke: 'none',
         d: 'M -10 -10 0 0 -10 10 0 10 0 -10 z',
+        offsetX: -5,
       },
     },
     shadow: {
@@ -44,14 +46,16 @@ export const ShadowEdge = Edge.define({
       strokeWidth: 20,
       strokeLinejoin: 'round',
       targetMarker: {
-        tagName: 'path',
+        name: 'path',
         d: 'M 0 -10 -10 0 0 10 z',
         stroke: 'none',
+        offsetX: -5,
       },
       sourceMarker: {
-        tagName: 'path',
+        name: 'path',
         stroke: 'none',
         d: 'M -10 -10 0 0 -10 10 0 10 0 -10 z',
+        offsetX: -5,
       },
     },
   },
