@@ -1,4 +1,11 @@
-import { ObjectExt, JSONObject, NumberExt, Dom, FunctionExt } from '../../util'
+import {
+  ObjectExt,
+  JSONObject,
+  NumberExt,
+  Dom,
+  FunctionExt,
+  Text,
+} from '../../util'
 import { Attr } from './index'
 
 export const text: Attr.Definition = {
@@ -9,22 +16,29 @@ export const text: Attr.Definition = {
     const cacheName = 'x6-text'
     const $elem = view.$(elem)
     const cache = $elem.data(cacheName)
-    const textAttrs = ObjectExt.pick(
-      attrs,
-      'lineHeight',
-      'annotations',
-      'textPath',
-      'x',
-      'textVerticalAnchor',
-      'eol',
-      'displayEmpty',
-      'fontSize',
-    )
+    const json = <T>(str: any) => {
+      try {
+        return JSON.parse(str) as T
+      } catch (error) {
+        return str
+      }
+    }
+    const options: Dom.TextOptions = {
+      x: attrs['x'] as string | number,
+      eol: attrs['eol'] as string,
+      annotations: json(attrs['annotations']) as
+        | Text.Annotation
+        | Text.Annotation[],
+      textPath: json(attrs['text-path'] || attrs['textPath']),
+      textVerticalAnchor: (attrs['text-vertical-anchor'] ||
+        attrs['textVerticalAnchor']) as 'middle' | 'bottom' | 'top' | number,
+      displayEmpty:
+        (attrs['display-empty'] || attrs['displayEmpty']) === 'true',
+      lineHeight: (attrs['line-height'] || attrs['lineHeight']) as string,
+    }
 
-    textAttrs.fontSize = attrs['font-size'] || attrs['fontSize']
-
-    const fontSize = textAttrs.fontSize as string
-    const textHash = JSON.stringify([text, textAttrs])
+    const fontSize = (attrs['font-size'] || attrs['fontSize']) as string
+    const textHash = JSON.stringify([text, options])
 
     // Updates the text only if there was a change in the string
     // or any of its attributes.
@@ -34,14 +48,14 @@ export const text: Attr.Definition = {
       }
 
       // Text Along Path Selector
-      const textPath = textAttrs.textPath
+      const textPath = options.textPath as any
       if (textPath != null && typeof textPath === 'object') {
         const selector = textPath.selector
         if (typeof selector === 'string') {
           const pathNode = view.find(selector)[0]
           if (pathNode instanceof SVGPathElement) {
             Dom.ensureId(pathNode)
-            textAttrs.textPath = {
+            options.textPath = {
               'xlink:href': `#${pathNode.id}`,
               ...textPath,
             }
@@ -49,7 +63,7 @@ export const text: Attr.Definition = {
         }
       }
 
-      Dom.text(elem as SVGElement, `${text}`, textAttrs as any)
+      Dom.text(elem as SVGElement, `${text}`, options)
       $elem.data(cacheName, textHash)
     }
   },
