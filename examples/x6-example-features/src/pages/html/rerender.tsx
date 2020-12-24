@@ -29,7 +29,7 @@ export default class Example extends React.Component {
               <span>${data.time}</span>
             </div>`
         },
-        rerender(node: Cell) {
+        shouldComponentUpdate(node: Cell) {
           return node.hasChanged('data')
         },
       },
