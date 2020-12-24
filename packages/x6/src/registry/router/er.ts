@@ -1,7 +1,8 @@
 import { Router } from './index'
 
 export interface ErRouterOptions {
-  offset?: number
+  min?: number
+  offset?: number | 'center'
   direction?: 'T' | 'B' | 'L' | 'R' | 'H' | 'V'
 }
 
@@ -10,7 +11,10 @@ export const er: Router.Definition<ErRouterOptions> = function (
   options,
   edgeView,
 ) {
-  const offset = options.offset || 32
+  const offsetRaw = options.offset || 32
+  const min = options.min == null ? 16 : options.min
+
+  let offset: number = 0
   let direction = options.direction
 
   const sourceBBox = edgeView.sourceBBox
@@ -18,14 +22,30 @@ export const er: Router.Definition<ErRouterOptions> = function (
   const sourcePoint = sourceBBox.getCenter()
   const targetPoint = targetBBox.getCenter()
 
+  if (typeof offsetRaw === 'number') {
+    offset = offsetRaw
+  }
+
   if (direction == null) {
     const dx = sourcePoint.x - targetPoint.x
     const dy = sourcePoint.y - targetPoint.y
 
     if (Math.abs(dx) > Math.abs(dy)) {
       direction = dx > 0 ? 'R' : 'L'
+      if (offsetRaw === 'center') {
+        offset =
+          (direction === 'R'
+            ? sourceBBox.left - targetBBox.right
+            : targetBBox.left - sourceBBox.right) / 2
+      }
     } else {
       direction = dy > 0 ? 'B' : 'T'
+      if (offsetRaw === 'center') {
+        offset =
+          (direction === 'B'
+            ? sourceBBox.top - targetBBox.botom
+            : targetBBox.top - sourceBBox.botom) / 2
+      }
     }
   }
 
@@ -64,7 +84,6 @@ export const er: Router.Definition<ErRouterOptions> = function (
   source[coord] += factor * (sourceBBox[dim] / 2 + offset)
   target[coord] -= factor * (targetBBox[dim] / 2 + offset)
 
-  const min = 16
   if (horizontal) {
     const sourceX = source.x
     const targetX = target.x
