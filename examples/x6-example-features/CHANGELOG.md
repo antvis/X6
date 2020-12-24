@@ -1,3 +1,19 @@
+# @antv/x6-example-features [1.10.0](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.9.4...@antv/x6-example-features@1.10.0) (2020-12-24)
+
+
+### Features
+
+* ✨ parse markup from xml string ([f16e7eb](https://github.com/antvis/x6/commit/f16e7eb38ca1f0dec71f51cd41b74341fc1a0f3d))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.7.0
+* **@antv/x6-react-shape:** upgraded to 1.1.40
+
 ## @antv/x6-example-features [1.9.4](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.9.3...@antv/x6-example-features@1.9.4) (2020-12-23)
 
 
