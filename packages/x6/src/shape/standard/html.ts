@@ -12,16 +12,18 @@ export class HTML<
     return this.getHTML()
   }
 
-  set html(val: HTML.Component | null | undefined) {
+  set html(val: HTML.Component | HTML.ReRenderComponent | null | undefined) {
     this.setHTML(val)
   }
 
   getHTML() {
-    return this.store.get<HTML.Component | null | undefined>('html')
+    return this.store.get<
+      HTML.Component | HTML.ReRenderComponent | null | undefined
+    >('html')
   }
 
   setHTML(
-    html: HTML.Component | null | undefined,
+    html: HTML.Component | HTML.ReRenderComponent | null | undefined,
     options: Node.SetOptions = {},
   ) {
     if (html == null) {
@@ -40,8 +42,14 @@ export class HTML<
 
 export namespace HTML {
   export type Elem = string | HTMLElement | null | undefined
+  export type UnionElem = Elem | ((this: Graph, node: Node) => Elem)
   export interface Properties extends Node.Properties {
-    html?: ((this: Graph, node: Node) => Elem) | Elem
+    html?:
+      | UnionElem
+      | {
+          component: UnionElem
+          rerender?: boolean | ((this: Graph, node: Node) => boolean)
+        }
   }
 }
 
@@ -49,8 +57,11 @@ export namespace HTML {
   export class View extends NodeView<HTML> {
     protected init() {
       super.init()
-      this.cell.on('change:data', () => {
-        this.renderHTMLComponent()
+      this.cell.on('change:*', () => {
+        const rerender = this.graph.hook.rerenderHTMLComponent(this.cell)
+        if (rerender) {
+          this.renderHTMLComponent()
+        }
       })
     }
 
@@ -129,6 +140,11 @@ export namespace HTML {
     | HTMLElement
     | string
     | ((this: Graph, node: HTML) => HTMLElement | string)
+
+  export type ReRenderComponent = {
+    component: Component
+    rerender: boolean | ((this: Graph, node: HTML) => boolean)
+  }
 
   export const componentRegistry = Registry.create<Component>({
     type: 'html componnet',
