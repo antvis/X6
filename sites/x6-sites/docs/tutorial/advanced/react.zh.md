@@ -64,6 +64,31 @@ const target = graph.addNode({
   shape: 'html',
   html: wrap,
 })
+
+const node = graph.addNode({
+  x: 80,
+  y: 80,
+  width: 160,
+  height: 60,
+  shape: 'html',
+  data: {
+    time: new Date().toString(),
+  },
+  html: {
+    component(node: Cell) {
+      const data = node.getData() as any
+      return(
+        `<div>
+          <span>${data.time}</span>
+        </div>`
+      )
+    },
+    rerender(node: Cell) {
+      // 控制节点重新渲染
+      return node.hasChanged('data')
+    },
+  },
+})
 ```
 
 <iframe src="/demos/tutorial/advanced/react/html-shape"></iframe>
