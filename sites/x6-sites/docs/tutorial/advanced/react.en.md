@@ -75,7 +75,7 @@ const node = graph.addNode({
     time: new Date().toString(),
   },
   html: {
-    component(node: Cell) {
+    render(node: Cell) {
       const data = node.getData() as any
       return(
         `<div>
@@ -83,7 +83,7 @@ const node = graph.addNode({
         </div>`
       )
     },
-    rerender(node: Cell) {
+    shouldComponentUpdate(node: Cell) {
       // 控制节点重新渲染
       return node.hasChanged('data')
     },

@@ -26,6 +26,8 @@
     "react-scripts": "^3.4.1",
     "rimraf": "^3.0.2",
     "ultra-runner": "^3.5.0",
-    "wsrun": "^5.2.1"
+    "wsrun": "^5.2.1",
+    "@antv/layout": "0.0.13",
+    "d3-sankey": "^0.12.3"
   }
 }
