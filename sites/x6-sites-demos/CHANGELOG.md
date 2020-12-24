@@ -1,3 +1,19 @@
+## @antv/x6-sites-demos [1.2.13](https://github.com/antvis/x6/compare/@antv/x6-sites-demos@1.2.12...@antv/x6-sites-demos@1.2.13) (2020-12-24)
+
+
+### Bug Fixes
+
+* 🐛 change component -> render ([b90c519](https://github.com/antvis/x6/commit/b90c519c98a5adf81f111fb3ea1d8781ce7996bc))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.7.4
+* **@antv/x6-react-shape:** upgraded to 1.1.44
+
 ## @antv/x6-sites-demos [1.2.12](https://github.com/antvis/x6/compare/@antv/x6-sites-demos@1.2.11...@antv/x6-sites-demos@1.2.12) (2020-12-24)
 
 
