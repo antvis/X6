@@ -32,8 +32,6 @@ const { markup, attrs } = Markup.xml2json(`
   </g>
 `)
 
-console.log(markup, attrs)
-
 const male =
   'https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*kUy8SrEDp6YAAAAAAAAAAAAAARQnAQ'
 const female =
@@ -50,6 +48,8 @@ export default class Example extends React.Component {
       grid: true,
       panning: true,
     })
+
+    console.log(markup, attrs)
 
     graph.addNode({
       x: 100,
