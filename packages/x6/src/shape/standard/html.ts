@@ -12,18 +12,18 @@ export class HTML<
     return this.getHTML()
   }
 
-  set html(val: HTML.Component | HTML.ReRenderComponent | null | undefined) {
+  set html(val: HTML.Component | HTML.UpdatableComponent | null | undefined) {
     this.setHTML(val)
   }
 
   getHTML() {
     return this.store.get<
-      HTML.Component | HTML.ReRenderComponent | null | undefined
+      HTML.Component | HTML.UpdatableComponent | null | undefined
     >('html')
   }
 
   setHTML(
-    html: HTML.Component | HTML.ReRenderComponent | null | undefined,
+    html: HTML.Component | HTML.UpdatableComponent | null | undefined,
     options: Node.SetOptions = {},
   ) {
     if (html == null) {
@@ -48,7 +48,9 @@ export namespace HTML {
       | UnionElem
       | {
           component: UnionElem
-          rerender?: boolean | ((this: Graph, node: Node) => boolean)
+          shouldComponentUpdate?:
+            | boolean
+            | ((this: Graph, node: Node) => boolean)
         }
   }
 }
@@ -58,8 +60,10 @@ export namespace HTML {
     protected init() {
       super.init()
       this.cell.on('change:*', () => {
-        const rerender = this.graph.hook.rerenderHTMLComponent(this.cell)
-        if (rerender) {
+        const shouldUpdate = this.graph.hook.shouldUpdateHTMLComponent(
+          this.cell,
+        )
+        if (shouldUpdate) {
           this.renderHTMLComponent()
         }
       })
@@ -141,9 +145,9 @@ export namespace HTML {
     | string
     | ((this: Graph, node: HTML) => HTMLElement | string)
 
-  export type ReRenderComponent = {
+  export type UpdatableComponent = {
     component: Component
-    rerender: boolean | ((this: Graph, node: HTML) => boolean)
+    shouldComponentUpdate: boolean | ((this: Graph, node: HTML) => boolean)
   }
 
   export const componentRegistry = Registry.create<Component>({
