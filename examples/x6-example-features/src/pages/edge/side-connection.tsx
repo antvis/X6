@@ -101,6 +101,7 @@ export default class Example extends React.Component {
       view.setEventData(evt, data)
       view.onMouseUp(evt, pos.x, pos.y)
       data = null
+      dragging = false
 
       this.setupEdge(edge)
       this.graph.view.delegateEvents()
