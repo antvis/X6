@@ -72,16 +72,27 @@ export function createSvgDocument(content?: string) {
   return svg as SVGSVGElement
 }
 
-export function parseXML(data: string, options: { async?: boolean } = {}) {
+export function parseXML(
+  data: string,
+  options: {
+    async?: boolean
+    mimeType?:
+      | 'text/html'
+      | 'text/xml'
+      | 'application/xml'
+      | 'application/xhtml+xml'
+      | 'image/svg+xml'
+  } = {},
+) {
   let xml
 
   try {
     const parser = new DOMParser()
     if (options.async != null) {
-      const tmp = parser as any
-      tmp.async = options.async
+      const instance = parser as any
+      instance.async = options.async
     }
-    xml = parser.parseFromString(data, 'text/xml')
+    xml = parser.parseFromString(data, options.mimeType || 'text/xml')
   } catch (error) {
     xml = undefined
   }
