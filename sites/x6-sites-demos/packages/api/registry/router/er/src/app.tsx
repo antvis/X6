@@ -1,9 +1,11 @@
 import React from 'react'
-import { Graph } from '@antv/x6'
+import { Edge, Graph } from '@antv/x6'
+import { Settings, State, defaults } from './settings'
 import './app.css'
 
 export default class Example extends React.Component {
   private container: HTMLDivElement
+  private edge: Edge
 
   componentDidMount() {
     const graph = new Graph({
@@ -13,7 +15,7 @@ export default class Example extends React.Component {
 
     const rect1 = graph.addNode({
       x: 40,
-      y: 40,
+      y: 30,
       width: 100,
       height: 40,
       label: 'hello',
@@ -21,20 +23,32 @@ export default class Example extends React.Component {
 
     const rect2 = graph.addNode({
       x: 240,
-      y: 160,
+      y: 150,
       width: 100,
       height: 40,
       label: 'world',
     })
 
-    graph.addEdge({
+    this.edge = graph.addEdge({
       source: rect1,
       target: rect2,
       router: {
         name: 'er',
-        args: { offset: 24 },
+        args: this.getERArgs(defaults),
       },
     })
+  }
+
+  getERArgs(state: State) {
+    const { center, offset, min } = state
+    return {
+      min,
+      offset: center ? 'center' : offset,
+    }
+  }
+
+  updateConnection = (state: State) => {
+    this.edge.prop('router/args', this.getERArgs(state))
   }
 
   refContainer = (container: HTMLDivElement) => {
@@ -44,7 +58,10 @@ export default class Example extends React.Component {
   render() {
     return (
       <div className="app">
-        <div className="app-content" ref={this.refContainer} />
+        <div className="app-left">
+          <Settings onChange={this.updateConnection} />
+        </div>
+        <div ref={this.refContainer} className="app-content" />
       </div>
     )
   }
