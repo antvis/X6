@@ -1,3 +1,20 @@
+## @antv/x6-sites [1.8.10](https://github.com/antvis/x6/compare/@antv/x6-sites@1.8.9...@antv/x6-sites@1.8.10) (2020-12-24)
+
+
+### Bug Fixes
+
+* 🐛 change component -> render ([b90c519](https://github.com/antvis/x6/commit/b90c519c98a5adf81f111fb3ea1d8781ce7996bc))
+* fix html node not update when setData ([0020c78](https://github.com/antvis/x6/commit/0020c781c3bb4b4747220fe327ade7e926d52014))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.7.4
+* **@antv/x6-react-shape:** upgraded to 1.1.44
+
 ## @antv/x6-sites [1.8.9](https://github.com/antvis/x6/compare/@antv/x6-sites@1.8.8...@antv/x6-sites@1.8.9) (2020-12-24)
 
 
