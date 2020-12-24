@@ -13,7 +13,7 @@ export namespace Markup {
      * The namespace URI of the element. It defaults to SVG namespace
      * `"http://www.w3.org/2000/svg"`.
      */
-    ns?: string
+    ns?: string | null
 
     /**
      * The type of element to be created.
@@ -24,14 +24,14 @@ export namespace Markup {
      * A unique selector for targeting the element within the `attr`
      * cell attribute.
      */
-    selector?: string
+    selector?: string | null
 
     /**
      * A selector for targeting multiple elements within the `attr`
      * cell attribute. The group selector name must not be the same
      * as an existing selector name.
      */
-    groupSelector?: string | string[]
+    groupSelector?: string | string[] | null
 
     attrs?: Attr.SimpleAttrs
 
@@ -264,6 +264,196 @@ export namespace Markup {
     }
 
     return { fragment, selectors: {} }
+  }
+}
+
+export namespace Markup {
+  export function getSelector(
+    elem: Element,
+    stop: Element,
+    prev?: string,
+  ): string | undefined {
+    if (elem != null) {
+      let selector
+      const tagName = elem.tagName.toLowerCase()
+
+      if (elem === stop) {
+        if (typeof prev === 'string') {
+          selector = `> ${tagName} > ${prev}`
+        } else {
+          selector = `> ${tagName}`
+        }
+        return selector
+      }
+
+      const parent = elem.parentNode
+      if (parent && parent.childNodes.length > 1) {
+        const nth = Dom.index(elem) + 1
+        selector = `${tagName}:nth-child(${nth})`
+      } else {
+        selector = tagName
+      }
+
+      if (prev) {
+        selector += ` > ${prev}`
+      }
+
+      return getSelector(elem.parentNode as Element, stop, selector)
+    }
+
+    return prev
+  }
+
+  function parseNode(node: Element, root: Element, ns?: string | null) {
+    if (node.nodeName === '#text') {
+      return null
+    }
+
+    let selector: string | undefined | null = null
+    let groupSelector: string | undefined | null = null
+    // let classNames: string | null = null
+    let attrs: Attr.SimpleAttrs | null = null
+    let isCSSSelector = false
+
+    const markup: JSONMarkup = {
+      tagName: node.tagName,
+    }
+
+    if (node.attributes) {
+      attrs = {}
+      for (let i = 0, l = node.attributes.length; i < l; i += 1) {
+        const attr = node.attributes[i]
+        const name = attr.nodeName
+        const value = attr.nodeValue
+
+        if (name === 'selector') {
+          selector = value
+        } else if (name === 'groupSelector') {
+          groupSelector = value
+        } else if (name === 'class') {
+          markup.attrs = { class: value }
+        } else {
+          attrs[name] = value
+        }
+      }
+    }
+
+    if (selector == null) {
+      isCSSSelector = true
+      selector = getSelector(node, root)
+    }
+
+    if (node.namespaceURI) {
+      markup.ns = node.namespaceURI
+    }
+
+    if (markup.ns == null) {
+      if (
+        [
+          'body',
+          'div',
+          'section',
+          'main',
+          'nav',
+          'footer',
+          'span',
+          'p',
+          'h1',
+          'h2',
+          'h3',
+          'h4',
+          'h5',
+          'h6',
+          'ul',
+          'ol',
+          'dl',
+          'center',
+          'strong',
+          'pre',
+          'form',
+          'select',
+          'textarea',
+          'fieldset',
+          'marquee',
+          'bgsound',
+          'iframe',
+          'frameset',
+        ].includes(node.tagName)
+      ) {
+        markup.ns = Dom.ns.xhtml
+      } else if (ns) {
+        markup.ns = ns
+      }
+    }
+
+    if (selector) {
+      markup.selector = selector
+    }
+
+    if (groupSelector != null) {
+      markup.groupSelector = groupSelector
+    }
+
+    return {
+      markup,
+      attrs,
+      isCSSSelector,
+    }
+  }
+
+  export function xml2json(xml: string) {
+    const sanitized = sanitize(xml)
+    const doc = Dom.parseXML(sanitized, { mimeType: 'image/svg+xml' })
+    const nodes = Array.prototype.slice.call(doc.childNodes) as Element[]
+    const attrMap: Attr.ComplexAttrs = {}
+    const markupMap = new WeakMap<Element, JSONMarkup>()
+
+    const parse = (node: Element, root: Element, ns?: string | null) => {
+      const data = parseNode(node, root, ns)
+      if (data == null) {
+        const parent = markupMap.get(node.parentNode as Element)
+        if (parent && node.textContent) {
+          parent.textContent = node.textContent
+        }
+      } else {
+        const { markup, attrs, isCSSSelector } = data
+
+        markupMap.set(node, markup)
+
+        if (markup.selector && attrs != null) {
+          if (Object.keys(attrs).length) {
+            attrMap[markup.selector] = attrs
+          }
+
+          if (isCSSSelector) {
+            delete markup.selector
+          }
+        }
+
+        if (node.childNodes && node.childNodes.length > 0) {
+          for (let i = 0, l = node.childNodes.length; i < l; i += 1) {
+            const child = node.childNodes[i] as Element
+            const childMarkup = parse(child, root, markup.ns)
+            if (childMarkup) {
+              if (markup.children == null) {
+                markup.children = []
+              }
+              markup.children.push(childMarkup)
+            }
+          }
+        }
+        return markup
+      }
+    }
+
+    const markup = nodes
+      .map((node) => parse(node, node))
+      .filter((markup) => markup != null) as JSONMarkup[]
+
+    return {
+      markup,
+      attrs: attrMap,
+    }
   }
 }
 
