@@ -1,27 +1,27 @@
 @import '../../style/index';
-
 @transform-prefix-cls: ~'@{x6-prefix}-widget-transform';
 @transform-box-padding: 4px;
 
 .@{transform-prefix-cls} {
   position: absolute;
-  box-sizing: content-box;
+  box-sizing: content-box !important;
   margin: -@transform-box-padding - 1px 0 0 -@transform-box-padding - 1px;
   padding: @transform-box-padding;
-  border: 1px dashed #000;
-  border-radius: 5px;
   user-select: none;
   pointer-events: none;
+  border: 1px dashed #000000;
+  border-radius: 5px;
 
   & > div {
     position: absolute;
     box-sizing: border-box;
-    background-color: #fff;
-    border: 1px solid #000;
     transition: background-color 0.2s;
     pointer-events: auto;
+    border: 1px solid #000000;
+    background-color: #ffffff;
+
     -webkit-user-drag: none;
-    user-drag: none; /* stylelint-disable-line */
+            user-drag: none; /* stylelint-disable-line */
 
     &:hover {
       background-color: #d3d3d3;
@@ -135,8 +135,8 @@
     left: -20px;
     width: 12px;
     height: 12px;
-    border-radius: 6px;
     cursor: crosshair;
+    border-radius: 6px;
   }
 
   &.no-rotate &-rotate {
