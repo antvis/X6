@@ -1,3 +1,15 @@
+# @antv/x6 [1.7.0](https://github.com/antvis/x6/compare/@antv/x6@1.6.4...@antv/x6@1.7.0) (2020-12-24)
+
+
+### Bug Fixes
+
+* 🐛 process special attributes of text ([e1f9abf](https://github.com/antvis/x6/commit/e1f9abfffcdd723815311ebc58ef17761ad2a063))
+
+
+### Features
+
+* ✨ parse markup from xml string ([f16e7eb](https://github.com/antvis/x6/commit/f16e7eb38ca1f0dec71f51cd41b74341fc1a0f3d))
+
 ## @antv/x6 [1.6.4](https://github.com/antvis/x6/compare/@antv/x6@1.6.3...@antv/x6@1.6.4) (2020-12-23)
 
 
