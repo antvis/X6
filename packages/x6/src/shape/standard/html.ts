@@ -47,7 +47,7 @@ export namespace HTML {
     html?:
       | UnionElem
       | {
-          component: UnionElem
+          render: UnionElem
           shouldComponentUpdate?:
             | boolean
             | ((this: Graph, node: Node) => boolean)
@@ -146,7 +146,7 @@ export namespace HTML {
     | ((this: Graph, node: HTML) => HTMLElement | string)
 
   export type UpdatableComponent = {
-    component: Component
+    render: Component
     shouldComponentUpdate: boolean | ((this: Graph, node: HTML) => boolean)
   }
 
