@@ -636,7 +636,7 @@ export class Hook extends Base implements Hook.IHook {
     let ret = node.getHTML()
 
     if (ret && typeof ret === 'object') {
-      ret = (ret as HTML.ReRenderComponent).component
+      ret = (ret as HTML.UpdatableComponent).component
     }
 
     if (typeof ret === 'string') {
@@ -651,17 +651,18 @@ export class Hook extends Base implements Hook.IHook {
   }
 
   @Decorator.hook()
-  rerenderHTMLComponent(node: HTML): boolean {
+  shouldUpdateHTMLComponent(node: HTML): boolean {
     const html = node.getHTML()
 
     if (html && typeof html === 'object') {
-      const rerender = (html as HTML.ReRenderComponent).rerender
+      const shouldUpdate = (html as HTML.UpdatableComponent)
+        .shouldComponentUpdate
 
-      if (typeof rerender === 'function') {
-        return FunctionExt.call(rerender, this.graph, node)
+      if (typeof shouldUpdate === 'function') {
+        return FunctionExt.call(shouldUpdate, this.graph, node)
       }
 
-      return !!rerender
+      return !!shouldUpdate
     }
 
     return false
@@ -762,7 +763,7 @@ export namespace Hook {
       node: HTML,
     ): HTMLElement | string | null | undefined
 
-    rerenderHTMLComponent(this: Graph, node: HTML): boolean
+    shouldUpdateHTMLComponent(this: Graph, node: HTML): boolean
 
     onViewUpdated: (
       this: Graph,
