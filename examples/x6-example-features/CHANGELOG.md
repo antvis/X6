@@ -1,3 +1,19 @@
+## @antv/x6-example-features [1.10.2](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.10.1...@antv/x6-example-features@1.10.2) (2020-12-24)
+
+
+### Bug Fixes
+
+* 🐛 reset dragging status ([e1d9fe5](https://github.com/antvis/x6/commit/e1d9fe5e0a9503be4e62c759ef5364d5b4b29856))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.7.2
+* **@antv/x6-react-shape:** upgraded to 1.1.42
+
 ## @antv/x6-example-features [1.10.1](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.10.0...@antv/x6-example-features@1.10.1) (2020-12-24)
 
 
