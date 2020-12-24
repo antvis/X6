@@ -23,7 +23,7 @@ export default class Example extends React.Component {
         time: new Date().toString(),
       },
       html: {
-        component(node: Cell) {
+        render(node: Cell) {
           const data = node.getData() as any
           return `<div>
               <span>${data.time}</span>
