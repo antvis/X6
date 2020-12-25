@@ -1,3 +1,11 @@
+## @antv/x6 [1.7.6](https://github.com/antvis/x6/compare/@antv/x6@1.7.5...@antv/x6@1.7.6) (2020-12-25)
+
+
+### Bug Fixes
+
+* 🐛 fix draw background ([521f99a](https://github.com/antvis/x6/commit/521f99a2942ec42284fefaf63fba3ddf77a7da3a)), closes [#466](https://github.com/antvis/x6/issues/466)
+* 🐛 recover the lost minimap style ([6de2ac8](https://github.com/antvis/x6/commit/6de2ac895475eda529f72a8ae774ce42a1226655))
+
 ## @antv/x6 [1.7.5](https://github.com/antvis/x6/compare/@antv/x6@1.7.4...@antv/x6@1.7.5) (2020-12-25)
 
 ## @antv/x6 [1.7.4](https://github.com/antvis/x6/compare/@antv/x6@1.7.3...@antv/x6@1.7.4) (2020-12-24)
