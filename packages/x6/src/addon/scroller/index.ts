@@ -44,7 +44,7 @@ export class Scroller extends View {
 
     this.options = Util.getOptions(options)
 
-    const scale = this.graph.scale()
+    const scale = this.graph.transform.getScale()
     this.sx = scale.sx
     this.sy = scale.sy
 
@@ -64,10 +64,10 @@ export class Scroller extends View {
     }
 
     const graph = this.graph
-    const graphContaoner = graph.container
+    const graphContainer = graph.container
 
-    if (graphContaoner.parentNode) {
-      this.$container.insertBefore(graphContaoner)
+    if (graphContainer.parentNode) {
+      this.$container.insertBefore(graphContainer)
     }
 
     this.content = document.createElement('div')
@@ -79,26 +79,22 @@ export class Scroller extends View {
       })
 
     // custom background
-    if (this.options.background) {
-      this.background = document.createElement('div')
-      this.$background = this.$(this.background).addClass(
-        this.prefixClassName(Util.backgroundClass),
-      )
-      this.$content.append(this.background)
-    }
+    this.background = document.createElement('div')
+    this.$background = this.$(this.background).addClass(
+      this.prefixClassName(Util.backgroundClass),
+    )
+    this.$content.append(this.background)
 
     if (!this.options.pageVisible) {
-      this.$content.append(this.graph.view.background)
       this.$content.append(this.graph.view.grid)
     }
-    this.$content.append(graphContaoner)
+    this.$content.append(graphContainer)
     this.$content.appendTo(this.container)
 
     this.startListening()
 
     if (!this.options.pageVisible) {
       this.graph.grid.update()
-      this.graph.background.update()
     }
 
     this.backgroundManager = new Scroller.Background(this)
@@ -1163,10 +1159,6 @@ export namespace Scroller {
       return this.scroller.background
     }
 
-    protected get container() {
-      return this.scroller.content
-    }
-
     constructor(scroller: Scroller) {
       super(scroller.graph)
 
@@ -1179,6 +1171,10 @@ export namespace Scroller {
     protected init() {
       this.graph.on('scale', this.update, this)
       this.graph.on('translate', this.update, this)
+    }
+
+    protected updateBackgroundOptions(options?: BackgroundManager.Options) {
+      this.scroller.options.background = options
     }
   }
 }

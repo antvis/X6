@@ -6,10 +6,6 @@ import { Base } from './base'
 export class BackgroundManager extends Base {
   protected optionCache: BackgroundManager.Options | null
 
-  protected get container() {
-    return this.view.container
-  }
-
   protected get elem() {
     return this.view.background
   }
@@ -35,7 +31,7 @@ export class BackgroundManager extends Base {
     let backgroundSize: any = options.size || 'auto auto'
     let backgroundPosition: any = options.position || 'center'
 
-    const scale = this.graph.scale()
+    const scale = this.graph.transform.getScale()
     const ts = this.graph.translate()
 
     // backgroundPosition
@@ -54,10 +50,8 @@ export class BackgroundManager extends Base {
       backgroundSize = `${backgroundSize.width}px ${backgroundSize.height}px`
     }
 
-    this.view.$(this.elem).css({
-      backgroundSize,
-      backgroundPosition,
-    })
+    this.elem.style.backgroundSize = backgroundSize
+    this.elem.style.backgroundPosition = backgroundPosition
   }
 
   protected drawBackgroundImage(
@@ -70,7 +64,7 @@ export class BackgroundManager extends Base {
     }
 
     let uri
-    const opacity = options.opacity || 1
+    const opacity = options.opacity
     const backgroundSize: any = options.size
     let backgroundRepeat = options.repeat || 'no-repeat'
 
@@ -116,17 +110,20 @@ export class BackgroundManager extends Base {
       }
     }
 
-    this.view.$(this.elem).css({
-      opacity,
-      backgroundRepeat,
-      backgroundImage: `url(${uri})`,
-    })
+    const style = this.elem.style
+    style.backgroundRepeat = backgroundRepeat
+    style.backgroundImage = `url(${uri})`
+    style.opacity = opacity == null || opacity >= 1 ? '' : `${opacity}`
 
     this.updateBackgroundImage(options)
   }
 
   protected updateBackgroundColor(color?: string | null) {
-    this.container.style.backgroundColor = color || ''
+    this.elem.style.backgroundColor = color || ''
+  }
+
+  protected updateBackgroundOptions(options?: BackgroundManager.Options) {
+    this.graph.options.background = options
   }
 
   update() {
@@ -135,15 +132,17 @@ export class BackgroundManager extends Base {
     }
   }
 
-  draw(options: BackgroundManager.Options = {}) {
-    this.updateBackgroundColor(options.color)
+  draw(options?: BackgroundManager.Options) {
+    this.updateBackgroundOptions(options)
+    const localOptions = options || {}
+    this.updateBackgroundColor(localOptions.color)
 
-    if (options.image) {
+    if (localOptions.image) {
       const img = document.createElement('img')
       img.onload = () => this.drawBackgroundImage(img, options)
       img.setAttribute('crossorigin', 'anonymous')
-      img.src = options.image
-      this.optionCache = ObjectExt.clone(options)
+      img.src = localOptions.image
+      this.optionCache = ObjectExt.clone(localOptions)
     } else {
       this.drawBackgroundImage(null)
       this.optionCache = null
