@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@antv/x6-sites-demos",
-  "version": "1.2.13",
+  "version": "1.2.14",
   "workspaces": [
     "packages/**/*"
   ],
@@ -15,10 +15,10 @@
   "dependencies": {
     "@ant-design/icons": "^4.2.1",
     "@antv/layout": "0.0.13",
-    "@antv/x6": "^1.7.4",
+    "@antv/x6": "^1.7.5",
     "@antv/x6-react-components": "^1.0.3",
-    "@antv/x6-react-shape": "^1.1.44",
-    "@antv/x6-sites-demos-helper": "^0.10.82",
+    "@antv/x6-react-shape": "^1.1.45",
+    "@antv/x6-sites-demos-helper": "^0.11.0",
     "@types/d3-sankey": "^0.11.1",
     "@types/highlight.js": "^9.12.4",
     "@types/react": "^16.9.19",
