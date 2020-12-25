@@ -1146,13 +1146,23 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
-  drawBackground(options?: Background.Options) {
-    this.background.draw(options)
+  drawBackground(options?: Background.Options, onGraph?: boolean) {
+    const scroller = this.scroller.widget
+    if (scroller != null && (this.options.background == null || !onGraph)) {
+      scroller.backgroundManager.draw(options)
+    } else {
+      this.background.draw(options)
+    }
     return this
   }
 
-  clearBackground() {
-    this.background.clear()
+  clearBackground(onGraph?: boolean) {
+    const scroller = this.scroller.widget
+    if (scroller != null && (this.options.background == null || !onGraph)) {
+      scroller.backgroundManager.clear()
+    } else {
+      this.background.clear()
+    }
     return this
   }
 
