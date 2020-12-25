@@ -242,22 +242,22 @@ export class Stencil extends View {
     this.dnd.start(node, e)
   }
 
-  protected filter(keyworld: string, filter?: Stencil.Filter) {
+  protected filter(keyword: string, filter?: Stencil.Filter) {
     const found = Object.keys(this.graphs).reduce((memo, groupName) => {
       const graph = this.graphs[groupName]
       const name = groupName === Private.defaultGroupName ? null : groupName
       const items = graph.model.getNodes().filter((cell) => {
         let matched = false
         if (typeof filter === 'function') {
-          matched = FunctionExt.call(filter, this, cell, keyworld, name, this)
+          matched = FunctionExt.call(filter, this, cell, keyword, name, this)
         } else if (typeof filter === 'boolean') {
           matched = filter
         } else {
           matched = this.isCellMatched(
             cell,
-            keyworld,
+            keyword,
             filter,
-            keyworld.toLowerCase() !== keyworld,
+            keyword.toLowerCase() !== keyword,
           )
         }
 
@@ -297,11 +297,11 @@ export class Stencil extends View {
 
   protected isCellMatched(
     cell: Cell,
-    keyworld: string,
+    keyword: string,
     filters: Stencil.Filters | undefined,
     ignoreCase: boolean,
   ) {
-    if (keyworld && filters) {
+    if (keyword && filters) {
       return Object.keys(filters).some((shape) => {
         if ('*' === shape || cell.shape === shape) {
           const filter = filters[shape]
@@ -317,7 +317,7 @@ export class Stencil extends View {
               if (ignoreCase) {
                 val = val.toLowerCase()
               }
-              return val.indexOf(keyworld) >= 0
+              return val.indexOf(keyword) >= 0
             }
           })
         }
@@ -472,7 +472,7 @@ export namespace Stencil {
   export type FilterFn = (
     this: Stencil,
     cell: Node,
-    keyworld: string,
+    keyword: string,
     groupName: string | null,
     stencil: Stencil,
   ) => boolean
