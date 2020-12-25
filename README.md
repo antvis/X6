@@ -3,7 +3,7 @@
 <p align="center"><strong>JavaScript diagramming library that uses SVG and HTML for rendering.</strong></p>
 
 <p align="center">
-<a href="https://github.com/antvis/x6/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT_License-green.svg?style=flat-square" alt="MIT License"></a>
+<a href="/LICENSE"><img src="https://img.shields.io/badge/license-MIT_License-green.svg?style=flat-square" alt="MIT License"></a>
 <a href="https://www.typescriptlang.org"><img alt="Language" src="https://img.shields.io/badge/language-TypeScript-blue.svg?style=flat-square"></a>
 <a href="https://github.com/antvis/x6/pulls"><img alt="PRs Welcome" src="https://img.shields.io/badge/PRs-Welcome-brightgreen.svg?style=flat-square"></a>
 <a href="https://x6.antv.vision"><img alt="website" src="https://img.shields.io/static/v1?label=&labelColor=505050&message=website&color=0076D6&style=flat-square&logo=google-chrome&logoColor=0076D6"></a>
@@ -194,14 +194,14 @@ $ yarn build
 
 Please let us know how can we help. Do check out [issues](https://github.com/antvis/x6/issues) for bug reports or suggestions first.
 
-To become a contributor, please follow our [contributing guide](https://github.com/antvis/x6/blob/master/CONTRIBUTING.md).
+To become a contributor, please follow our [contributing guide](/CONTRIBUTING.md).
 
 ## Contributors
 
 <a href="https://github.com/antvis/x6/graphs/contributors">
-  <img src="https://raw.githubusercontent.com/antvis/x6/master/CONTRIBUTORS.svg" alt="Contributors" width="740" />
+  <img src="/CONTRIBUTORS.svg" alt="Contributors" width="740" />
 </a>
 
 ## License
 
-The scripts and documentation in this project are released under the [MIT License](LICENSE).
+The scripts and documentation in this project are released under the [MIT License](/LICENSE).
