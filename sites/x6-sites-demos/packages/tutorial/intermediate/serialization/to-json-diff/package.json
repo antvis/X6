@@ -1,5 +1,5 @@
 {
-  "name": "tutorial.intermediate.serialization.to-json-diff",
+  "name": "@antv/x6-sites-demos-tutorial.intermediate.serialization.to-json-diff",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -22,8 +22,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "deploy": "yarn -s rename && yarn -s static",
-    "prestart": "yarn rename"
+    "deploy": "yarn -s prepare && yarn -s static",
+    "prestart": "yarn prepare"
   },
   "eslintConfig": {
     "extends": "react-app"
