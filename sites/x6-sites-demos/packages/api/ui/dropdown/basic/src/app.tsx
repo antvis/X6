@@ -17,7 +17,7 @@ export default class Example extends React.Component {
       <div style={{ padding: '24px 0 120px 24px' }}>
         <div>
           <Dropdown overlay={menu}>
-            <a href="#">Hover me</a>
+            <a href="#anchor">Hover me</a>
           </Dropdown>
         </div>
         <div style={{ marginTop: 24 }}>

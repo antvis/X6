@@ -1,5 +1,5 @@
 {
-  "name": "tutorial.basic.port.connect-to-port",
+  "name": "@antv/x6-sites-demos-tutorial.basic.port.connect-to-port",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -7,7 +7,6 @@
     "@antv/x6": "latest",
     "@antv/x6-sites-demos-helper": "latest",
     "antd": "^4.4.2",
-    "codesandbox": "^2.1.16",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-scripts": "^3.4.1"
@@ -22,8 +21,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "deploy": "yarn -s rename && yarn -s static",
-    "prestart": "yarn rename"
+    "deploy": "yarn -s prepare && yarn -s static",
+    "prestart": "yarn prepare"
   },
   "eslintConfig": {
     "extends": "react-app"
