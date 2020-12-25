@@ -1,3 +1,10 @@
+## @antv/x6-sites [1.8.12](https://github.com/antvis/x6/compare/@antv/x6-sites@1.8.11...@antv/x6-sites@1.8.12) (2020-12-25)
+
+
+### Bug Fixes
+
+* typos enable => enabled ([#463](https://github.com/antvis/x6/issues/463)) ([73ba1a5](https://github.com/antvis/x6/commit/73ba1a5bb5d5637628cd40405555edb35ff0b705))
+
 ## @antv/x6-sites [1.8.11](https://github.com/antvis/x6/compare/@antv/x6-sites@1.8.10...@antv/x6-sites@1.8.11) (2020-12-25)
 
 
