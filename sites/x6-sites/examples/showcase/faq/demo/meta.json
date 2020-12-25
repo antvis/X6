@@ -1,0 +1,12 @@
+{
+  "demos": [
+    {
+      "filename": "flex-image.ts",
+      "title": {
+        "zh": "根据图片大小缩放节点",
+        "en": "Resize Node According to the Image Size"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*AhNyQ5453mEAAAAAAAAAAAAAARQnAQ"
+    }
+  ]
+}
