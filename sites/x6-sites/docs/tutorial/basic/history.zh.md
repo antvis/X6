@@ -17,7 +17,7 @@ const graph = new Graph({
 // 等同于
 const graph = new Graph({
   history: {
-    enable: true,
+    enabled: true,
   },
 })
 ```
