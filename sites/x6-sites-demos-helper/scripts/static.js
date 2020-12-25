@@ -54,10 +54,11 @@ function exec(hashcode) {
     changed = previous !== hashcode
   }
 
-  const msg = `${chalk.green('✔')} Deployed "${name}"`
+  const pkg = `@antv/x6-sites-demos-${name}`
+  const msg = `${chalk.green('✔')} Deployed "${pkg}"`
 
   if (changed) {
-    const spinner = ora(`Deploying "${name}"`).start()
+    const spinner = ora(`Deploying "${pkg}"`).start()
     cp.exec('yarn build', { cwd: repo }, (err, stdout) => {
       if (err) {
         spinner.stop()
