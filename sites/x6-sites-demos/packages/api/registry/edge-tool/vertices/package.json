@@ -1,5 +1,5 @@
 {
-  "name": "api.registry.edge-tool.vertices",
+  "name": "@antv/x6-sites-demos-api.registry.edge-tool.vertices",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -20,8 +20,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "deploy": "yarn -s rename && yarn -s static",
-    "prestart": "yarn rename"
+    "deploy": "yarn -s prepare && yarn -s static",
+    "prestart": "yarn prepare"
   },
   "eslintConfig": {
     "extends": "react-app"
