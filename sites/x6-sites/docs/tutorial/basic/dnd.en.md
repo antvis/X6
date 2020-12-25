@@ -2,9 +2,9 @@
 title: 拖拽 Dnd
 order: 12
 redirect_from:
-  - /zh/docs
-  - /zh/docs/tutorial
-  - /zh/docs/tutorial/basic
+  - /en/docs
+  - /en/docs/tutorial
+  - /en/docs/tutorial/basic
 ---
 
 我们经常需要通过拖拽交互往画布中添加节点，如流程图编辑场景，从流程图组件库中拖拽组件到画布中。
@@ -102,6 +102,53 @@ export interface Group {
 ```
 
 初始化时，按照 `options.groups` 提供的分组，在每个分组中根据 `options.stencilGraphXxx` 系列选项渲染一个模板画布。
+
+Stencil 还提供了强大的搜索能力。
+
+第一种方式是自定义搜索函数：
+
+```ts
+// 只搜索 rect 节点
+const stencil = new Addon.Stencil({
+  search: (cell, keyword, groupName, stencil) => {
+    if (keyword) {
+      return cell.shape === 'rect'
+    }
+    return true
+  }
+})
+```
+
+还有一种更快捷的方式，提供 `shape` 和搜索条件的键值对，其中 `shape` 可以使用通配符 `*`，代表所有类型节点：
+
+```ts
+// 只搜索 rect 节点
+const stencil = new Addon.Stencil({
+  search: {
+    rect: true,
+  }
+})
+```
+
+它还支持按照节点属性值来进行搜索，下面做一个对比：
+
+```ts
+// 搜索 text 包含关键字的 rect 节点
+const stencil = new Addon.Stencil({
+  search: (cell, keyword, groupName, stencil) => {
+    if (keyword) {
+      return cell.shape === 'rect' && cell.attr('text/text').includes(keyword)
+    }
+    return true
+  }
+})
+
+const stencil = new Addon.Stencil({
+  search: {
+    rect: 'attrs/text/text', // 属性路径还支持数组格式，只要一项满足条件即可被搜索到
+  }
+})
+```
 
 ### Step 2 挂载到页面
 
