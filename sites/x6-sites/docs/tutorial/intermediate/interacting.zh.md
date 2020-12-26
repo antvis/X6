@@ -89,6 +89,35 @@ const graph = new Graph({
 
 ## 调整节点旋转角度
 
+可以在全局配置 `rotating` 来启用调整节点角度的功能。
+
+```ts
+const graph = new Graph({
+  rotating: {
+    enabled: true,
+  },
+})
+```
+### 演示
+
+<iframe src="/demos/tutorial/intermediate/interacting/rotating"></iframe>
+
+### 选项
+
+#### enabled
+
+是否支持调整节点角度，默认为 `false`。支持以下两种方式：
+
+- `boolean`
+- `(this: Graph, node: Node) => boolean`
+
+#### grid
+
+每次旋转的角度，默认值为 `15`。支持以下两种方式：
+
+- `number`
+- `(this: Graph, node: Node) => number`
+
 ## 限制节点移动
 
 ## 连线规则
