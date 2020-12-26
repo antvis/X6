@@ -1,4 +1,4 @@
-import { FunctionExt } from '../util'
+import { FunctionExt, ObjectExt } from '../util'
 import { Cell } from '../model/cell'
 import { Node } from '../model/node'
 import { Edge } from '../model/edge'
@@ -635,7 +635,7 @@ export class Hook extends Base implements Hook.IHook {
   getHTMLComponent(node: HTML): HTMLElement | string | null | undefined {
     let ret = node.getHTML()
 
-    if (ret && typeof ret === 'object') {
+    if (ObjectExt.isPlainObject(ret)) {
       ret = (ret as HTML.UpdatableComponent).render
     }
 
@@ -647,7 +647,7 @@ export class Hook extends Base implements Hook.IHook {
       return FunctionExt.call(ret, this.graph, node)
     }
 
-    return ret
+    return ret as HTML.Elem
   }
 
   @Decorator.hook()
