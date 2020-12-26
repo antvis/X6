@@ -19,6 +19,19 @@ $ npm install @antv/x6-react-components --save
 $ yarn add @antv/x6-react-components
 ```
 
+如果是直接通过 `script` 标签引入，可以使用下面三个 CDN 中的任何一个，默认返回 x6-react-components 的最新版：
+
+- https://unpkg.com/@antv/x6-react-components/dist/x6-react-components.js
+- https://cdn.jsdelivr.net/npm/@antv/x6-react-components/dist/x6-react-components.js
+- https://cdnjs.cloudflare.com/ajax/libs/antv-x6-react-components/1.8.15/x6-react-components.js (不支持获取最新版)
+
+对于生产环境，我们推荐使用一个明确的版本号，以避免新版本造成的不可预期的破坏：
+
+- https://unpkg.com/@antv/x6-react-components@1.8.15/dist/x6-react-components.js
+- https://cdn.jsdelivr.net/npm/@antv/x6-react-components@1.8.15/dist/x6-react-components.js
+- https://cdnjs.cloudflare.com/ajax/libs/antv-x6-react-components/1.8.15/x6-react-components.js
+
+
 ## 使用
 
 引入需要的组件和对应的样式：
@@ -53,6 +66,36 @@ import '@antv/x6-react-components/es/menu/style/index.css'
 
 ```ts
 import { Menu } from '@antv/x6-react-components'
+```
+
+如果是使用 `script` 标签引入，使用方式如下：
+
+```html
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>X6-React-Components</title>
+  <link rel="stylesheet" href="https://unpkg.com/@antv/x6-react-components/dist/index.css">
+</head>
+<body>
+  <div id="container"></div>
+  <script src="babel.js"></script>
+  <script src="react.js"></script>
+  <script src="react-dom.js"></script>
+  <script src="https://unpkg.com/@antv/x6-react-components/dist/x6-react-components.js"></script>
+  <script type="text/babel">
+    const Menu = X6ReactComponents.Menu
+    const MenuItem = Menu.Item
+    ReactDOM.render((
+      <Menu >
+        <MenuItem name="undo"  hotkey="Cmd+Z" text="Undo" />
+        <MenuItem name="redo"  hotkey="Cmd+Shift+Z" text="Redo" />
+      </Menu>
+    ), document.getElementById('container'))
+  </script>
+</body>
+</html>
 ```
 
 ## 组件
