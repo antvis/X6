@@ -1,3 +1,11 @@
+## @antv/x6 [1.7.7](https://github.com/antvis/x6/compare/@antv/x6@1.7.6...@antv/x6@1.7.7) (2020-12-26)
+
+
+### Bug Fixes
+
+* 🐛 fix the judgment error of dom object ([afb4f0b](https://github.com/antvis/x6/commit/afb4f0b12bc28e353e5f2e4c41822cb0b77c6f8d))
+* 🐛 support function on interacting items ([2222ab6](https://github.com/antvis/x6/commit/2222ab683abea60e7208832e8ef856ce132c8cf0))
+
 ## @antv/x6 [1.7.6](https://github.com/antvis/x6/compare/@antv/x6@1.7.5...@antv/x6@1.7.6) (2020-12-25)
 
 
