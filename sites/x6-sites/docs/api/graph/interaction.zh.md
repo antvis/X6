@@ -224,7 +224,32 @@ export interface Embedding {
 
 ### interacting
 
-定制节点和边的交互行为，支持以下三种类型：
+定制节点和边的交互行为，interacting 的类型定义如下：
+
+```ts
+type Interactable = boolean | ((this: Graph, cellView: CellView) => boolean)
+
+interface InteractionMap {
+  // edge
+  edgeMovable?: Interactable
+  edgeLabelMovable?: Interactable
+  arrowheadMovable?: Interactable
+  vertexMovable?: Interactable
+  vertexAddable?: Interactable
+  vertexDeletable?: Interactable
+  useEdgeTools?: Interactable
+
+  // node
+  nodeMovable?: Interactable
+  magnetConnectable?: Interactable
+  stopDelegateOnDragging?: Interactable
+}
+
+export type Interacting =
+  | boolean
+  | InteractionMap
+  | ((this: Graph, cellView: CellView) => InteractionMap | boolean)
+```
 
 - `boolean`  节点或边是否可交互
 - `InteractionMap` 节点或边的交互细节，支持以下属性：
