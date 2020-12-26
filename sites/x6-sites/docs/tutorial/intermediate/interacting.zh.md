@@ -289,3 +289,35 @@ const graph = new Graph({
 
 ## 定制交互行为
 
+可以在全局配置 `interacting` 定制节点和边的交互行为，`interacting` 的类型定义如下：
+
+```ts
+const graph = new Graph({
+  container: this.container,
+  width: 800,
+  height: 1400,
+  grid: 10,
+  interacting: function (cellView: CellView) {
+    if (cellView.cell.getData().disableMove) {
+      return { nodeMovable: false }
+    }
+    return true
+  },
+})
+```
+
+`interacting` 的配置支持下面三种方式：
+
+- `boolean`  节点或边是否可交互
+- `InteractionMap` 节点或边的交互细节，支持以下属性，每个属性支持`boolean` 和 `(this: Graph, cellView: CellView) => boolean` 两种定义：
+  - `'nodeMovable'` 节点是否可以被移动。
+  - `'magnetConnectable'` 当在具有 `'magnet'` 属性的元素上按下鼠标开始拖动时，是否触发连线交互。
+  - `'edgeMovable'` 边是否可以被移动。
+  - `'edgeLabelMovable'` 边的标签是否可以被移动。
+  - `'arrowheadMovable'` 边的起始/终止箭头是否可以被移动。
+  - `'vertexMovable'` 边的路径点是否可以被移动。
+  - `'vertexAddable'` 是否可以添加边的路径点。
+  - `'vertexDeletable'` 边的路径点是否可以被删除。
+- `(this: Graph, cellView: CellView) => InteractionMap | boolean`
+
+
