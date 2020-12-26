@@ -38,7 +38,7 @@ export class Settings extends React.Component<Props, State> {
   render() {
     return (
       <Card
-        title="Resizing Settings"
+        title="Rotating Settings"
         size="small"
         bordered={false}
         style={{ width: 320 }}
