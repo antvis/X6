@@ -2,9 +2,9 @@
 title: 节点和边的交互
 order: 17
 redirect_from:
-  - /zh/docs
-  - /zh/docs/tutorial
-  - /zh/docs/tutorial/advanced
+  - /en/docs
+  - /en/docs/tutorial
+  - /en/docs/tutorial/advanced
 ---
 
 ## 调整节点大小
