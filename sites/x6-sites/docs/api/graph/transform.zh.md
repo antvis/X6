@@ -159,6 +159,8 @@ export interface RotatingRaw {
 
 每次旋转的角度，默认值为 `15`。
 
+### translating
+
 配置节点的可移动区域，默认值为 `false`。
 
 ```ts
