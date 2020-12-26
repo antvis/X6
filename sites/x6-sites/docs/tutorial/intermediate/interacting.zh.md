@@ -120,7 +120,172 @@ const graph = new Graph({
 
 ## 限制节点移动
 
+可以在全局配置 `translating` 来限制节点的移动返回
+
+```ts
+const graph = new Graph({
+  translating: {
+    restrict: true,
+  },
+})
+```
+
+### 选项
+
+#### restrict
+
+节点的可移动返回。支持以下两种方式：
+
+- `boolean` 如果设置为 `true`, 节点不能移动超出画布区域
+- `Rectangle.RectangleLike | (arg: CellView) => Rectangle.RectangleLike` 指定一个节点的移动返回
+
+```ts
+const graph = new Graph({
+  translating: {
+    restrict: {
+      x: 0,
+      y: 0,
+      width: 100,
+      height: 100,
+    }
+  }
+})
+```
+
 ## 连线规则
+
+我们可以在全局配置 `connecting` 来对连线过程进行控制。连线的规则很多，先看一个例子：
+
+<iframe src="/demos/tutorial/intermediate/interacting/connecting"></iframe>
+
+### 选项
+
+#### snap
+
+当 `snap` 设置为 `true` 时连线的过程中距离节点或者连接桩 `50px` 时会触发自动吸附，可以通过配置 `radius` 属性自定义触发吸附的距离。当 `snap` 设置为 `false` 时不会触发自动吸附。默认值为 `false`。
+
+```ts
+const graph = new Graph({
+  connecting: {
+    snap: true,
+  }
+})
+// 等价于
+const graph = new Graph({
+  connecting: {
+    snap: {
+      radius: 50,
+    },
+  }
+})
+```
+
+#### allowBlank
+
+是否允许连接到画布空白位置的点，默认为 `true`。支持以下两种形式：
+
+- `boolean`
+- `((this: Graph, args: ValidateConnectionArgs) => boolean)`
+
+#### allowMulti
+
+是否允许在相同的起始节点和终止之间创建多条边，默认为 `true`。当设置为 `false` 时，在起始和终止节点之间只允许创建一条边，当设置为 `'withPort'` 时，在起始和终止节点的相同链接桩之间只允许创建一条边（即，起始和终止节点之间可以创建多条边，但必须要要链接在不同的链接桩上）。支持以下三种形式：
+
+- `boolean`
+- `withPort`
+- `((this: Graph, args: ValidateConnectionArgs) => boolean)`
+
+#### allowLoop
+
+是否允许创建循环连线，即边的起始节点和终止节点为同一节点，默认为 `true`。支持以下两种形式：
+
+- `boolean`
+- `((this: Graph, args: ValidateConnectionArgs) => boolean)`
+
+#### allowNode
+
+是否允许边链接到节点（非节点上的链接桩），默认为 `true`。支持以下两种形式：
+
+- `boolean`
+- `((this: Graph, args: ValidateConnectionArgs) => boolean)`
+
+#### allowEdge
+
+是否允许边链接到另一个边，默认为 `true`。支持以下两种形式：
+
+- `boolean`
+- `((this: Graph, args: ValidateConnectionArgs) => boolean)`
+
+#### allowPort
+
+是否允许边链接到链接桩，默认为 `true`。支持以下两种形式：
+
+- `boolean`
+- `((this: Graph, args: ValidateConnectionArgs) => boolean)`
+
+#### highlight
+
+拖动边时，是否高亮显示所有可用的连接桩或节点，默认值为 `false`。
+
+#### anchor
+
+当连接到节点时，通过 [`anchor`](../../api/registry/node-anchor) 来指定被连接的节点的锚点，默认值为 `center`。
+
+#### sourceAnchor
+
+当连接到节点时，通过 `sourceAnchor` 来指定源节点的锚点。
+
+#### targetAnchor
+
+当连接到节点时，通过 `targetAnchor` 来指定目标节点的锚点。
+
+#### edgeAnchor
+
+当连接到边时，通过 [`edgeAnchor`](../../api/registry/edge-anchor) 来指定被连接的边的锚点，默认值为 `ratio`。
+
+#### sourceEdgeAnchor
+
+当连接到边时，通过 `sourceEdgeAnchor` 来指定源边的锚点。
+
+#### targetEdgeAnchor
+
+当连接到边时，通过 `targetEdgeAnchor` 来指定目标边的锚点。
+
+#### connectionPoint
+
+指定[连接点](../../api/registry/connector)，默认值为 `boundary`。
+
+#### sourceConnectionPoint
+
+连接源的连接点。
+
+#### targetConnectionPoint
+
+连接目标的连接点。
+
+#### router
+
+[路由](../../api/registry/router)将边的路径点 `vertices` 做进一步转换处理，并在必要时添加额外的点，然后返回处理后的点，默认值为 `normal`。
+
+#### connector
+
+[连接器](../../api/registry/connector)将起点、路由返回的点、终点加工为 <path> 元素的 d 属性，决定了边渲染到画布后的样式，默认值为 `normal`。
+
+#### validateMagnet
+
+点击 `magnet` 时 根据 `validateMagnet` 返回值来判断是否新增边
+
+#### createEdge
+
+连接的过程中创建新的边
+
+#### validateEdge
+
+当停止拖动边的时候根据 `validateEdge` 返回值来判断边是否生效，如果返回 `false`, 该边会被清除。
+
+#### validateConnection
+
+判断连接是否有效，如果返回 `false` ，连接无效。
 
 ## 定制交互行为
 
