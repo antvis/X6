@@ -285,13 +285,16 @@ export class CellView<
   can(feature: CellView.InteractionNames): boolean {
     let interacting = this.options.interacting
 
-    interacting =
-      typeof interacting === 'function'
-        ? FunctionExt.call(interacting, this.graph, this)
-        : interacting
+    if (typeof interacting === 'function') {
+      interacting = FunctionExt.call(interacting, this.graph, this)
+    }
 
     if (typeof interacting === 'object') {
-      return interacting[feature] !== false
+      interacting = interacting[feature]
+      if (typeof interacting === 'function') {
+        interacting = FunctionExt.call(interacting, this.graph, this)
+      }
+      return interacting !== false
     }
 
     if (typeof interacting === 'boolean') {
@@ -877,20 +880,22 @@ export namespace CellView {
     interacting?: Interacting
   }
 
+  type Interactable = boolean | ((this: Graph, cellView: CellView) => boolean)
+
   interface InteractionMap {
     // edge
-    edgeMovable?: boolean
-    edgeLabelMovable?: boolean
-    arrowheadMovable?: boolean
-    vertexMovable?: boolean
-    vertexAddable?: boolean
-    vertexDeletable?: boolean
-    useEdgeTools?: boolean
+    edgeMovable?: Interactable
+    edgeLabelMovable?: Interactable
+    arrowheadMovable?: Interactable
+    vertexMovable?: Interactable
+    vertexAddable?: Interactable
+    vertexDeletable?: Interactable
+    useEdgeTools?: Interactable
 
     // node
-    nodeMovable?: boolean
-    magnetConnectable?: boolean
-    stopDelegateOnDragging?: boolean
+    nodeMovable?: Interactable
+    magnetConnectable?: Interactable
+    stopDelegateOnDragging?: Interactable
   }
 
   export type InteractionNames = keyof InteractionMap
