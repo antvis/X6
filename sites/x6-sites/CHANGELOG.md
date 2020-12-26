@@ -1,3 +1,19 @@
+## @antv/x6-sites [1.8.14](https://github.com/antvis/x6/compare/@antv/x6-sites@1.8.13...@antv/x6-sites@1.8.14) (2020-12-26)
+
+
+### Bug Fixes
+
+* 🐛 support function on interacting items ([2222ab6](https://github.com/antvis/x6/commit/2222ab683abea60e7208832e8ef856ce132c8cf0))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.7.7
+* **@antv/x6-react-shape:** upgraded to 1.1.47
+
 ## @antv/x6-sites [1.8.13](https://github.com/antvis/x6/compare/@antv/x6-sites@1.8.12...@antv/x6-sites@1.8.13) (2020-12-25)
 
 
