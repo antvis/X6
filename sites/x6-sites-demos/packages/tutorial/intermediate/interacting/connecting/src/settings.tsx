@@ -32,15 +32,10 @@ export class Settings extends React.Component<Props, State> {
   }
 
   onAllowTypeChanged = (type: string, flag: boolean) => {
-    this.setState(
-      {
-        ...this.state,
-        [type]: flag,
-      },
-      () => {
-        this.notifyChange()
-      },
-    )
+    const s = { [type]: flag } as any
+    this.setState(s, () => {
+      this.notifyChange()
+    })
   }
 
   render() {
