@@ -14,4 +14,6 @@ export const opacity: Highlighter.Definition<OpacityHighlighterOptions> = {
   unhighlight(cellView, magnetEl) {
     Dom.removeClass(magnetEl, className)
   },
+
+  updatePosition(cellView, magnet, opt) {},
 }

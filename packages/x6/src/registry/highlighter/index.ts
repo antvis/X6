@@ -7,6 +7,7 @@ export namespace Highlighter {
   export interface Definition<T> {
     highlight: (cellView: CellView, magnet: Element, options: T) => void
     unhighlight: (cellView: CellView, magnet: Element, options: T) => void
+    updatePosition: (cellView: CellView, magnet: Element, options: T) => void
   }
 
   export type CommonDefinition = Highlighter.Definition<KeyValue>

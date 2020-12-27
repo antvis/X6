@@ -111,6 +111,16 @@ export const stroke: Highlighter.Definition<StrokeHighlighterOptions> = {
   unhighlight(cellView, magnet, opt) {
     Private.removeHighlighter(Private.getHighlighterId(magnet, opt))
   },
+
+  updatePosition(cellView, magnet, opt) {
+    if (cellView.isEdgeElement(magnet)) {
+      const id = Private.getHighlighterId(magnet, opt)
+      if (Private.hasCache(id)) {
+        const path = Private.getCache(id)
+        Dom.attr(path, 'd', (cellView as EdgeView).getConnectionPathData())
+      }
+    }
+  },
 }
 
 namespace Private {
@@ -130,6 +140,10 @@ namespace Private {
 
   export function hasCache(id: string) {
     return cache[id] != null
+  }
+
+  export function getCache(id: string) {
+    return cache[id]
   }
 
   export function removeHighlighter(id: string) {

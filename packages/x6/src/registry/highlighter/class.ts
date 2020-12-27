@@ -17,4 +17,5 @@ export const className: Highlighter.Definition<ClassHighlighterOptions> = {
     const cls = (options && options.className) || defaultClassName
     Dom.removeClass(magnet, cls)
   },
+  updatePosition(cellView, magnet, opt) {},
 }

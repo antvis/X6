@@ -1,5 +1,6 @@
 import { Dom } from '../util'
 import { KeyValue } from '../types'
+import { Cell } from '../model'
 import { CellView } from '../view'
 import { Highlighter } from '../registry'
 import { EventArgs } from './events'
@@ -15,11 +16,15 @@ export class HighlightManager extends Base {
   protected startListening() {
     this.graph.on('cell:highlight', this.onCellHighlight, this)
     this.graph.on('cell:unhighlight', this.onCellUnhighlight, this)
+    this.graph.on('node:moving', this.onCellPositionChange, this)
+    this.graph.on('edge:moving', this.onCellPositionChange, this)
   }
 
   protected stopListening() {
     this.graph.off('cell:highlight', this.onCellHighlight, this)
     this.graph.off('cell:unhighlight', this.onCellUnhighlight, this)
+    this.graph.off('node:moving', this.onCellPositionChange, this)
+    this.graph.off('edge:moving', this.onCellPositionChange, this)
   }
 
   protected onCellHighlight({
@@ -57,6 +62,34 @@ export class HighlightManager extends Base {
 
     const id = this.getHighlighterId(magnet, resolved)
     this.unhighlight(id)
+  }
+
+  protected onCellPositionChange({ cell }: { cell: Cell }) {
+    const changed = Object.keys(this.highlights).filter((id) => {
+      const highlight = this.highlights[id]
+      if (highlight) {
+        const highlightCell = highlight.cellView.cell
+        if (cell.isEdge()) {
+          return highlightCell === cell
+        }  if (cell.isNode()) {
+          const edges = this.graph.getConnectedEdges(cell)
+          return edges.some((edge) => edge === highlightCell)
+        }
+      }
+    })
+
+    if (changed.length) {
+      changed.forEach((id) => {
+        const highlight = this.highlights[id]
+        if (highlight) {
+          highlight.highlighter.updatePosition(
+            highlight.cellView,
+            highlight.magnet,
+            highlight.args,
+          )
+        }
+      })
+    }
   }
 
   protected resolveHighlighter(options: CellView.HighlightOptions) {
