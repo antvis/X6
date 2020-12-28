@@ -1,3 +1,10 @@
+## @antv/x6 [1.7.8](https://github.com/antvis/x6/compare/@antv/x6@1.7.7...@antv/x6@1.7.8) (2020-12-28)
+
+
+### Bug Fixes
+
+* 🐛 remove code tracing ([bdb0db2](https://github.com/antvis/x6/commit/bdb0db2da8708d626ebd09b46da7d431102b79bf))
+
 ## @antv/x6 [1.7.7](https://github.com/antvis/x6/compare/@antv/x6@1.7.6...@antv/x6@1.7.7) (2020-12-26)
 
 
