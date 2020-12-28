@@ -155,10 +155,10 @@ const graph = new Graph({
 
 ### 缩放和平移
 
-创建画布后，可以调用 `graph.scale(scaleX: number, scaleY: number)` 和 `graph.translate(tx: number, ty: number)` 来缩放和平移画布。
+创建画布后，可以调用 `graph.zoom(factor: number)` 和 `graph.translate(tx: number, ty: number)` 来缩放和平移画布。
 
 ```ts
-graph.scale(0.5, 0.5)
+graph.zoom(-0.5)
 graph.translate(80, 40)
 ```
 
