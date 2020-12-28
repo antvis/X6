@@ -7,7 +7,7 @@ export interface Props {
 }
 
 export interface State {
-  panning: boolean
+  pannable: boolean
   pageVisible: boolean
   pageBreak: boolean
   autoResize: boolean
@@ -17,7 +17,7 @@ export interface State {
 
 export class Settings extends React.Component<Props, State> {
   state: State = {
-    panning: true,
+    pannable: true,
     pageVisible: true,
     pageBreak: true,
     autoResize: true,
@@ -32,7 +32,7 @@ export class Settings extends React.Component<Props, State> {
   }
 
   onPanningChanged = (e: any) => {
-    this.setState({ panning: e.target.checked }, () => {
+    this.setState({ pannable: e.target.checked }, () => {
       this.notifyChange()
     })
   }
@@ -78,7 +78,7 @@ export class Settings extends React.Component<Props, State> {
         <Row align="middle">
           <Col span={24}>
             <Checkbox
-              checked={this.state.panning}
+              checked={this.state.pannable}
               onChange={this.onPanningChanged}
             >
               Enable Panning
