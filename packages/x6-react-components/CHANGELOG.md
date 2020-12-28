@@ -1,3 +1,10 @@
+## @antv/x6-react-components [1.0.4](https://github.com/antvis/x6/compare/@antv/x6-react-components@1.0.3...@antv/x6-react-components@1.0.4) (2020-12-28)
+
+
+### Bug Fixes
+
+* 🐛 add x6-react-components umd build ([89421c8](https://github.com/antvis/x6/commit/89421c88afa141fe753cfca65a3c9132007057ce))
+
 ## @antv/x6-react-components [1.0.3](https://github.com/antvis/x6/compare/@antv/x6-react-components@1.0.2...@antv/x6-react-components@1.0.3) (2020-12-21)
 
 ## @antv/x6-react-components [1.0.2](https://github.com/antvis/x6/compare/@antv/x6-react-components@1.0.1...@antv/x6-react-components@1.0.2) (2020-12-13)
