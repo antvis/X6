@@ -165,6 +165,8 @@ import { Config } from '@antv/x6'
 Config.track(false)
 ```
 
+**Starting with version 1.7.8, we turned off code tracing，no unexpected remote request will be sent while you are using X6**
+
 ## Communication
 
 Welcome to join the **X6 Communication Group** (Scan the QR Code to Join us). We also welcome the github [issues](https://github.com/antvis/x6/issues).
