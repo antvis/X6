@@ -1,3 +1,18 @@
+## @antv/x6-sites [1.8.15](https://github.com/antvis/x6/compare/@antv/x6-sites@1.8.14...@antv/x6-sites@1.8.15) (2020-12-28)
+
+
+### Bug Fixes
+
+* 🐛 add x6-react-components umd build ([89421c8](https://github.com/antvis/x6/commit/89421c88afa141fe753cfca65a3c9132007057ce))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6-react-components:** upgraded to 1.0.4
+
 ## @antv/x6-sites [1.8.14](https://github.com/antvis/x6/compare/@antv/x6-sites@1.8.13...@antv/x6-sites@1.8.14) (2020-12-26)
 
 
