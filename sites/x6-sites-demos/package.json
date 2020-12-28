@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@antv/x6-sites-demos",
-  "version": "1.2.16",
+  "version": "1.2.17",
   "workspaces": [
     "packages/**/*"
   ],
@@ -16,7 +16,7 @@
     "@ant-design/icons": "^4.2.1",
     "@antv/layout": "0.0.13",
     "@antv/x6": "^1.7.7",
-    "@antv/x6-react-components": "^1.0.3",
+    "@antv/x6-react-components": "^1.0.4",
     "@antv/x6-react-shape": "^1.1.47",
     "@antv/x6-sites-demos-helper": "^0.11.0",
     "@types/d3-sankey": "^0.11.1",
