@@ -1,3 +1,10 @@
+## @antv/x6-sites-demos [1.2.18](https://github.com/antvis/x6/compare/@antv/x6-sites-demos@1.2.17...@antv/x6-sites-demos@1.2.18) (2020-12-28)
+
+
+### Bug Fixes
+
+* 🐛 fix layout demo error in codesanbox ([63184b3](https://github.com/antvis/x6/commit/63184b3f21be82d9daa46f8921c62d778b85a9fe))
+
 ## @antv/x6-sites-demos [1.2.17](https://github.com/antvis/x6/compare/@antv/x6-sites-demos@1.2.16...@antv/x6-sites-demos@1.2.17) (2020-12-28)
 
 
