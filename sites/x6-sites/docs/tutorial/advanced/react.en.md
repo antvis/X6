@@ -348,6 +348,9 @@ export default ({
 </script>
 ```
 
+[[warning]]
+| 需要注意的是，在渲染 `vue` 组件的过程中用到了运行时编译，所以需要在 `vue.config.js` 中启用 `runtimeCompiler: true` 配置。
+
 ## 渲染标签
 
 在创建 Graph 时，我们可以定义一个 `onEdgeLabelRendered` 钩子来自定义边 Label 的渲染行为。
