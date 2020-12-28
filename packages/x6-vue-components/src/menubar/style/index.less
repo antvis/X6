@@ -1,0 +1,112 @@
+@import '../../style/themes/index';
+@import '../../menu/style/index';
+
+@menubar-prefix-cls: ~'@{x6-prefix}-menubar';
+
+@menubar-menu-item-color: #616161;
+@menubar-menu-item-hover-color: #212121;
+@menubar-menu-item-hover-bg: rgba(255, 255, 255, 0);
+@menubar-menu-item-active-color: #212121;
+@menubar-menu-item-active-bg: #ffffff;
+@menubar-item-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+
+.@{menubar-prefix-cls} {
+  display: flex;
+  flex: 1;
+  flex-direction: row;
+  margin: 0;
+  padding: 0;
+
+  &-content {
+    display: flex;
+    flex: 1 1;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  &-content-inner,
+  &-content-extras,
+  &-item,
+  &-item-text {
+    position: relative;
+    display: inline-flex;
+    flex-direction: row;
+  }
+
+  &-content-extras {
+    align-content: center;
+    align-items: center;
+  }
+
+  &-item {
+    position: relative;
+  }
+
+  &-item-hidden {
+    display: none;
+  }
+
+  &-item-text {
+    position: relative;
+    align-content: center;
+    align-items: center;
+    padding: 0 10px;
+    color: @menubar-menu-item-color;
+    font-size: 13px;
+    cursor: pointer;
+    user-select: none;
+
+    &:hover {
+      color: @menubar-menu-item-hover-color;
+      background: @menubar-menu-item-hover-bg;
+    }
+  }
+
+  &-item-text-active,
+  &-item-text-active:hover {
+    color: @menubar-menu-item-active-color;
+    background: @menubar-menu-item-active-bg;
+    box-shadow: @menubar-item-shadow;
+
+    &::after {
+      position: absolute;
+      bottom: 2px;
+      left: 0;
+      z-index: 10000;
+      width: 100%;
+      height: 6px;
+      background: @menubar-menu-item-active-bg;
+      content: ' ';
+    }
+  }
+
+  &-item-dropdown {
+    position: absolute;
+    top: 28px;
+    left: 0;
+    z-index: 9999;
+    min-height: 34px;
+    transform: translateY(-10px);
+    visibility: hidden;
+    opacity: 0;
+    transition: all 0.25s cubic-bezier(0.3, 1.2, 0.2, 1);
+
+    .@{menu-prefix-cls} {
+      min-width: 240px;
+    }
+
+    & > .@{menu-prefix-cls} {
+      border-radius: 0 4px 4px 4px;
+    }
+
+    .@{menu-prefix-cls}-submenu-menu {
+      border-radius: 4px;
+    }
+  }
+
+  &-item-active > &-item-dropdown {
+    transform: translateY(0);
+    visibility: visible;
+    opacity: 1;
+  }
+}
