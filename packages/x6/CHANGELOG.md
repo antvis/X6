@@ -1,3 +1,10 @@
+## @antv/x6 [1.7.9](https://github.com/antvis/x6/compare/@antv/x6@1.7.8...@antv/x6@1.7.9) (2020-12-29)
+
+
+### Bug Fixes
+
+* 🐛 fix type definition of node and edge registry ([d2742a4](https://github.com/antvis/x6/commit/d2742a4a8a473e60bc47fe099fd49c27e0c2d9ae)), closes [#478](https://github.com/antvis/x6/issues/478)
+
 ## @antv/x6 [1.7.8](https://github.com/antvis/x6/compare/@antv/x6@1.7.7...@antv/x6@1.7.8) (2020-12-28)
 
 
