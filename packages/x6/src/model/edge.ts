@@ -468,7 +468,7 @@ export class Edge<
   // #region labels
 
   getDefaultLabel(): Edge.Label {
-    const ctor = this.constructor as typeof Edge
+    const ctor = this.constructor as Edge.Definition
     const defaults = this.store.get('defaultLabel') || ctor.defaultLabel || {}
     return ObjectExt.cloneDeep(defaults)
   }
@@ -547,7 +547,7 @@ export class Edge<
 
   protected parseLabel(label: string | Edge.Label) {
     if (typeof label === 'string') {
-      const ctor = this.constructor as typeof Edge
+      const ctor = this.constructor as Edge.Definition
       return ctor.parseStringLabel(label)
     }
     return label
@@ -1204,7 +1204,7 @@ export namespace Edge {
   export const registry = Registry.create<
     Definition,
     never,
-    Config & { inherit?: string }
+    Config & { inherit?: string | Definition }
   >({
     type: 'edge',
     process(shape, options) {
@@ -1220,22 +1220,27 @@ export namespace Edge {
       }
 
       let parent = Edge
-      const { inherit, ...others } = options
+
       // default inherit from 'dege'
-      const base = this.get(inherit || 'edge')
-      if (base == null && inherit) {
-        this.onNotFound(inherit, 'inherited')
+      const { inherit = 'edge', ...others } = options
+      if (typeof inherit === 'string') {
+        const base = this.get(inherit || 'edge')
+        if (base == null && inherit) {
+          this.onNotFound(inherit, 'inherited')
+        } else {
+          parent = base
+        }
       } else {
-        parent = base
+        parent = inherit
       }
 
       if (others.constructorName == null) {
         others.constructorName = shape
       }
 
-      const ret = parent.define.call(parent, others)
-      ret.config({ shape })
-      return ret
+      const ctor = parent.define.call(parent, others)
+      ctor.config({ shape })
+      return ctor
     },
   })
 
@@ -1243,27 +1248,11 @@ export namespace Edge {
 }
 
 export namespace Edge {
-  const shape = 'basic.edge'
-  Edge.config({
-    shape,
-    propHooks(metadata: Properties) {
-      const { label, ...others } = metadata
-      if (label) {
-        if (others.labels == null) {
-          others.labels = []
-        }
-        const formated =
-          typeof label === 'string' ? parseStringLabel(label) : label
-        others.labels.push(formated)
-      }
-      return others
-    },
-  })
-  registry.register(shape, Edge)
-}
+  type EdgeClass = typeof Edge
 
-export namespace Edge {
-  export type Definition = typeof Edge
+  export interface Definition extends EdgeClass {
+    new <T extends Properties = Properties>(metadata: T): Edge
+  }
 
   let counter = 0
   function getClassName(name?: string) {
@@ -1298,4 +1287,24 @@ export namespace Edge {
     }
     return registry.onNotFound(shape)
   }
+}
+
+export namespace Edge {
+  const shape = 'basic.edge'
+  Edge.config({
+    shape,
+    propHooks(metadata: Properties) {
+      const { label, ...others } = metadata
+      if (label) {
+        if (others.labels == null) {
+          others.labels = []
+        }
+        const formated =
+          typeof label === 'string' ? parseStringLabel(label) : label
+        others.labels.push(formated)
+      }
+      return others
+    },
+  })
+  registry.register(shape, Edge)
 }

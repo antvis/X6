@@ -132,8 +132,8 @@ TreeEdge.config({
 })
 
 // 注册
-Node.registry.register('tree-node', TreeNode as typeof Node, true)
-Edge.registry.register('tree-edge', TreeEdge as typeof Edge, true)
+Node.registry.register('tree-node', TreeNode, true)
+Edge.registry.register('tree-edge', TreeEdge, true)
 
 // 初始化画布
 const graph = new Graph({
