@@ -27,7 +27,7 @@ function findRoute(
   let sourceEndpoint
   let targetEndpoint
 
-  if (from instanceof Rectangle) {
+  if (Rectangle.isRectangle(from)) {
     sourceEndpoint = util.round(
       util.getSourceEndpoint(edgeView, options).clone(),
       precision,
@@ -36,7 +36,7 @@ function findRoute(
     sourceEndpoint = util.round(from.clone(), precision)
   }
 
-  if (to instanceof Rectangle) {
+  if (Rectangle.isRectangle(to)) {
     targetEndpoint = util.round(
       util.getTargetEndpoint(edgeView, options).clone(),
       precision,
@@ -56,7 +56,7 @@ function findRoute(
   let startPoints
   let endPoints
 
-  if (from instanceof Rectangle) {
+  if (Rectangle.isRectangle(from)) {
     startPoints = util.getRectPoints(
       startPoint,
       from,
@@ -68,7 +68,7 @@ function findRoute(
     startPoints = [startPoint]
   }
 
-  if (to instanceof Rectangle) {
+  if (Rectangle.isRectangle(to)) {
     endPoints = util.getRectPoints(
       targetEndpoint,
       to,

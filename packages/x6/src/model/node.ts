@@ -24,6 +24,10 @@ export class Node<
   protected readonly store: Store<Node.Properties>
   protected port: PortManager
 
+  protected get [Symbol.toStringTag]() {
+    return Node.toStringTag
+  }
+
   constructor(metadata: Node.Metadata = {}) {
     super(metadata)
     this.initPorts()
@@ -1032,6 +1036,37 @@ export namespace Node {
   export interface FitEmbedsOptions extends SetOptions {
     deep?: boolean
     padding?: NumberExt.SideOptions
+  }
+}
+
+export namespace Node {
+  export const toStringTag = `X6.${Node.name}`
+
+  export function isNode(instance: any): instance is Node {
+    if (instance == null) {
+      return false
+    }
+
+    if (instance instanceof Node) {
+      return true
+    }
+
+    const tag = instance[Symbol.toStringTag]
+    const node = instance as Node
+
+    if (
+      (tag == null || tag === toStringTag) &&
+      typeof node.isNode === 'function' &&
+      typeof node.isEdge === 'function' &&
+      typeof node.prop === 'function' &&
+      typeof node.attr === 'function' &&
+      typeof node.size === 'function' &&
+      typeof node.position === 'function'
+    ) {
+      return true
+    }
+
+    return false
   }
 }
 

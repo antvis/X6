@@ -23,6 +23,10 @@ export class Edge<
   protected static defaults: Edge.Defaults = {}
   protected readonly store: Store<Edge.Properties>
 
+  protected get [Symbol.toStringTag]() {
+    return Edge.toStringTag
+  }
+
   constructor(metadata: Edge.Metadata = {}) {
     super(metadata)
   }
@@ -45,17 +49,17 @@ export class Edge<
       typeof val === 'string' || typeof val === 'number'
 
     if (source != null) {
-      if (source instanceof Cell) {
+      if (Cell.isCell(source)) {
         data.source = { cell: source.id }
       } else if (isValidId(source)) {
         data.source = { cell: source }
-      } else if (source instanceof Point) {
+      } else if (Point.isPoint(source)) {
         data.source = source.toJSON()
       } else if (Array.isArray(source)) {
         data.source = { x: source[0], y: source[1] }
       } else {
         const cell = (source as Edge.TerminalCellLooseData).cell
-        if (cell instanceof Cell) {
+        if (Cell.isCell(cell)) {
           data.source = {
             ...source,
             cell: cell.id,
@@ -85,17 +89,17 @@ export class Edge<
     }
 
     if (target != null) {
-      if (target instanceof Cell) {
+      if (Cell.isCell(target)) {
         data.target = { cell: target.id }
       } else if (isValidId(target)) {
         data.target = { cell: target }
-      } else if (target instanceof Point) {
+      } else if (Point.isPoint(target)) {
         data.target = target.toJSON()
       } else if (Array.isArray(target)) {
         data.target = { x: target[0], y: target[1] }
       } else {
         const cell = (target as Edge.TerminalCellLooseData).cell
-        if (cell instanceof Cell) {
+        if (Cell.isCell(cell)) {
           data.target = {
             ...target,
             cell: cell.id,
@@ -250,7 +254,7 @@ export class Edge<
     options: Edge.SetOptions = {},
   ): this {
     // `terminal` is a cell
-    if (terminal instanceof Cell) {
+    if (Cell.isCell(terminal)) {
       this.store.set(
         type,
         ObjectExt.merge({}, args, { cell: terminal.id }),
@@ -261,7 +265,7 @@ export class Edge<
 
     // `terminal` is a point-like object
     const p = terminal as Point.PointLike
-    if (terminal instanceof Point || (p.x != null && p.y != null)) {
+    if (Point.isPoint(terminal) || (p.x != null && p.y != null)) {
       this.store.set(
         type,
         ObjectExt.merge({}, args, { x: p.x, y: p.y }),
@@ -1197,6 +1201,38 @@ export namespace Edge {
     return {
       attrs: { label: { text } },
     }
+  }
+}
+
+export namespace Edge {
+  export const toStringTag = `X6.${Edge.name}`
+
+  export function isEdge(instance: any): instance is Edge {
+    if (instance == null) {
+      return false
+    }
+
+    if (instance instanceof Edge) {
+      return true
+    }
+
+    const tag = instance[Symbol.toStringTag]
+    const edge = instance as Edge
+
+    if (
+      (tag == null || tag === toStringTag) &&
+      typeof edge.isNode === 'function' &&
+      typeof edge.isEdge === 'function' &&
+      typeof edge.prop === 'function' &&
+      typeof edge.attr === 'function' &&
+      typeof edge.disconnect === 'function' &&
+      typeof edge.getSource === 'function' &&
+      typeof edge.getTarget === 'function'
+    ) {
+      return true
+    }
+
+    return false
   }
 }
 

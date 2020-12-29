@@ -333,7 +333,7 @@ export class NodePreset {
       clone: true,
     })
 
-    if (!(cloned instanceof Cell)) {
+    if (!Cell.isCell(cloned)) {
       throw new Error("option 'clone()' has to return a cell")
     }
 
@@ -380,7 +380,7 @@ export class NodePreset {
       fork: true,
     })
 
-    if (!(cloned instanceof Cell)) {
+    if (!Cell.isCell(cloned)) {
       throw new Error("option 'clone()' has to return a cell")
     }
 

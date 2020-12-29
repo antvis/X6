@@ -78,6 +78,10 @@ export class Cell<
 
   // #endregion
 
+  protected get [Symbol.toStringTag]() {
+    return Cell.toStringTag
+  }
+
   public readonly id: string
   protected readonly store: Store<Cell.Properties>
   protected readonly animation: Animation
@@ -929,7 +933,7 @@ export class Cell<
   addTo(graph: Graph, options?: Cell.SetOptions): this
   addTo(parent: Cell, options?: Cell.SetOptions): this
   addTo(target: Model | Graph | Cell, options: Cell.SetOptions = {}) {
-    if (target instanceof Cell) {
+    if (Cell.isCell(target)) {
       target.addChild(this, options)
     } else {
       target.addCell(this, options)
@@ -1590,6 +1594,35 @@ export namespace Cell {
 
   interface EdgeChangeArgs<T> extends ChangeArgs<T> {
     edge: Edge
+  }
+}
+
+export namespace Cell {
+  export const toStringTag = `X6.${Cell.name}`
+
+  export function isCell(instance: any): instance is Cell {
+    if (instance == null) {
+      return false
+    }
+
+    if (instance instanceof Cell) {
+      return true
+    }
+
+    const tag = instance[Symbol.toStringTag]
+    const cell = instance as Cell
+
+    if (
+      (tag == null || tag === toStringTag) &&
+      typeof cell.isNode === 'function' &&
+      typeof cell.isEdge === 'function' &&
+      typeof cell.prop === 'function' &&
+      typeof cell.attr === 'function'
+    ) {
+      return true
+    }
+
+    return false
   }
 }
 

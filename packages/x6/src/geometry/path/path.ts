@@ -16,6 +16,10 @@ export class Path extends Geometry {
   protected readonly PRECISION: number = 3
   public segments: Segment[]
 
+  protected get [Symbol.toStringTag]() {
+    return Path.toStringTag
+  }
+
   constructor()
   constructor(line: Line)
   constructor(curve: Curve)
@@ -30,7 +34,7 @@ export class Path extends Geometry {
     super()
     this.segments = []
     if (Array.isArray(args)) {
-      if (args[0] instanceof Line || args[0] instanceof Curve) {
+      if (Line.isLine(args[0]) || Curve.isCurve(args[0])) {
         let previousObj: Line | Curve | null = null
         const arr = args as Line[] | Curve[]
         arr.forEach((o: Line | Curve, i: number) => {
@@ -41,9 +45,9 @@ export class Path extends Geometry {
             this.appendSegment(Path.createSegment('M', o.start))
           }
 
-          if (o instanceof Line) {
+          if (Line.isLine(o)) {
             this.appendSegment(Path.createSegment('L', o.end))
-          } else if (o instanceof Curve) {
+          } else if (Curve.isCurve(o)) {
             this.appendSegment(
               Path.createSegment('C', o.controlPoint1, o.controlPoint2, o.end),
             )
@@ -60,10 +64,10 @@ export class Path extends Geometry {
         })
       }
     } else if (args != null) {
-      if (args instanceof Line) {
+      if (Line.isLine(args)) {
         this.appendSegment(Path.createSegment('M', args.start))
         this.appendSegment(Path.createSegment('L', args.end))
-      } else if (args instanceof Curve) {
+      } else if (Curve.isCurve(args)) {
         this.appendSegment(Path.createSegment('M', args.start))
         this.appendSegment(
           Path.createSegment(
@@ -73,7 +77,7 @@ export class Path extends Geometry {
             args.end,
           ),
         )
-      } else if (args instanceof Polyline) {
+      } else if (Polyline.isPolyline(args)) {
         if (args.points && args.points.length) {
           args.points.forEach((point, index) => {
             const segment =
@@ -1124,6 +1128,35 @@ export class Path extends Geometry {
     }
 
     return this.segments.map((s) => s.serialize()).join(' ')
+  }
+}
+
+export namespace Path {
+  export const toStringTag = `X6.Geometry.${Path.name}`
+
+  export function isPath(instance: any): instance is Path {
+    if (instance == null) {
+      return false
+    }
+
+    if (instance instanceof Path) {
+      return true
+    }
+
+    const tag = instance[Symbol.toStringTag]
+    const path = instance as Path
+
+    if (
+      (tag == null || tag === toStringTag) &&
+      Array.isArray(path.segments) &&
+      typeof path.moveTo === 'function' &&
+      typeof path.lineTo === 'function' &&
+      typeof path.curveTo === 'function'
+    ) {
+      return true
+    }
+
+    return false
   }
 }
 

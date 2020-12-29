@@ -73,7 +73,7 @@ export class GraphView extends View {
       return e.data.guarded
     }
 
-    if (view && view.cell && view.cell instanceof Cell) {
+    if (view && view.cell && Cell.isCell(view.cell)) {
       return false
     }
 

@@ -26,6 +26,10 @@ export class ToolsView extends View {
     return this.options.local
   }
 
+  protected get [Symbol.toStringTag]() {
+    return ToolsView.toStringTag
+  }
+
   constructor(options: ToolsView.Options = {}) {
     super()
 
@@ -49,7 +53,7 @@ export class ToolsView extends View {
       ...options,
     }
 
-    if (!(options.view instanceof CellView) || options.view === this.cellView) {
+    if (!CellView.isCellView(options.view) || options.view === this.cellView) {
       return this
     }
 
@@ -77,7 +81,7 @@ export class ToolsView extends View {
       const meta = tools[i]
       let tool: ToolsView.ToolItem | undefined
 
-      if (meta instanceof ToolsView.ToolItem) {
+      if (ToolsView.ToolItem.isToolItem(meta)) {
         tool = meta
       } else {
         const name = typeof meta === 'object' ? meta.name : meta
@@ -216,6 +220,39 @@ export namespace ToolsView {
 }
 
 export namespace ToolsView {
+  export const toStringTag = `X6.${ToolsView.name}`
+
+  export function isToolsView(instance: any): instance is ToolsView {
+    if (instance == null) {
+      return false
+    }
+
+    if (instance instanceof ToolsView) {
+      return true
+    }
+
+    const tag = instance[Symbol.toStringTag]
+    const view = instance as ToolsView
+
+    if (
+      (tag == null || tag === toStringTag) &&
+      typeof view.graph != null &&
+      typeof view.cell != null &&
+      typeof view.config === 'function' &&
+      typeof view.update === 'function' &&
+      typeof view.focus === 'function' &&
+      typeof view.blur === 'function' &&
+      typeof view.show === 'function' &&
+      typeof view.hide === 'function'
+    ) {
+      return true
+    }
+
+    return false
+  }
+}
+
+export namespace ToolsView {
   export class ToolItem<
     TargetView extends CellView = CellView,
     Options extends ToolItem.Options = ToolItem.Options
@@ -227,17 +264,17 @@ export namespace ToolsView {
       tagName: 'g',
     }
 
-    static getDefaults<T extends ToolItem.Options>() {
+    public static getDefaults<T extends ToolItem.Options>() {
       return this.defaults as T
     }
 
-    static config<T extends ToolItem.Options = ToolItem.Options>(
+    public static config<T extends ToolItem.Options = ToolItem.Options>(
       options: Partial<T>,
     ) {
       this.defaults = this.getOptions(options)
     }
 
-    static getOptions<T extends ToolItem.Options = ToolItem.Options>(
+    public static getOptions<T extends ToolItem.Options = ToolItem.Options>(
       options: Partial<T>,
     ): T {
       return ObjectExt.merge(
@@ -265,6 +302,10 @@ export namespace ToolsView {
 
     public get name() {
       return this.options.name
+    }
+
+    protected get [Symbol.toStringTag]() {
+      return ToolItem.toStringTag
     }
 
     constructor(options: Partial<Options> = {}) {
@@ -422,6 +463,40 @@ export namespace ToolsView {
 
       tool.config(options)
       return tool
+    }
+  }
+
+  export namespace ToolItem {
+    export const toStringTag = `X6.${ToolItem.name}`
+
+    export function isToolItem(instance: any): instance is ToolItem {
+      if (instance == null) {
+        return false
+      }
+
+      if (instance instanceof ToolItem) {
+        return true
+      }
+
+      const tag = instance[Symbol.toStringTag]
+      const view = instance as ToolItem
+
+      if (
+        (tag == null || tag === toStringTag) &&
+        typeof view.graph != null &&
+        typeof view.cell != null &&
+        typeof view.config === 'function' &&
+        typeof view.update === 'function' &&
+        typeof view.focus === 'function' &&
+        typeof view.blur === 'function' &&
+        typeof view.show === 'function' &&
+        typeof view.hide === 'function' &&
+        typeof view.isVisible === 'function'
+      ) {
+        return true
+      }
+
+      return false
     }
   }
 }

@@ -203,7 +203,7 @@ export class Renderer extends Base {
     view: CellView,
     options: Renderer.RequestViewUpdateOptions = {},
   ) {
-    if (view instanceof CellView) {
+    if (CellView.isCellView(view)) {
       const cell = view.cell
       const edges = this.model.getConnectedEdges(cell)
       for (let j = 0, n = edges.length; j < n; j += 1) {
@@ -232,7 +232,7 @@ export class Renderer extends Base {
   }
 
   forcePostponedViewUpdate(view: CellView, flag: number) {
-    if (!view || !(view instanceof CellView)) {
+    if (!view || !CellView.isCellView(view)) {
       return false
     }
 
@@ -379,7 +379,7 @@ export class Renderer extends Base {
       return 0
     }
 
-    if (view instanceof CellView) {
+    if (CellView.isCellView(view)) {
       if (flag & Renderer.FLAG_REMOVE) {
         this.removeView(view.cell as any)
         return 0
@@ -1103,7 +1103,7 @@ export class Renderer extends Base {
     if (cell == null) {
       return null
     }
-    const id = cell instanceof Cell ? cell.id : cell
+    const id = Cell.isCell(cell) ? cell.id : cell
     return this.views[id]
   }
 

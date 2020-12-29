@@ -5,7 +5,8 @@ import { Cell } from '../model/cell'
 import { Model } from '../model/model'
 import { Graph } from './graph'
 
-export class HistoryManager extends Basecoat<HistoryManager.EventArgs>
+export class HistoryManager
+  extends Basecoat<HistoryManager.EventArgs>
   implements IDisablable {
   public readonly model: Model
   public readonly options: HistoryManager.CommonOptions
@@ -266,7 +267,7 @@ export class HistoryManager extends Basecoat<HistoryManager.EventArgs>
     }
 
     const cell = eventArgs.cell
-    const isModelChange = cell instanceof Model
+    const isModelChange = Model.isModel(cell)
     let cmd: HistoryManager.Command
 
     if (this.batchCommands) {

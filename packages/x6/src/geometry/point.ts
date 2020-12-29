@@ -7,6 +7,10 @@ export class Point extends Geometry implements Point.PointLike {
   public x: number
   public y: number
 
+  protected get [Symbol.toStringTag]() {
+    return Point.toStringTag
+  }
+
   constructor(x?: number, y?: number) {
     super()
     this.x = x == null ? 0 : x
@@ -387,6 +391,33 @@ export class Point extends Geometry implements Point.PointLike {
 }
 
 export namespace Point {
+  export const toStringTag = `X6.Geometry.${Point.name}`
+
+  export function isPoint(instance: any): instance is Point {
+    if (instance == null) {
+      return false
+    }
+    if (instance instanceof Point) {
+      return true
+    }
+
+    const tag = instance[Symbol.toStringTag]
+    const point = instance as Point
+
+    if (
+      (tag == null || tag === toStringTag) &&
+      typeof point.x === 'number' &&
+      typeof point.y === 'number' &&
+      typeof point.toPolar === 'function'
+    ) {
+      return true
+    }
+
+    return false
+  }
+}
+
+export namespace Point {
   export interface PointLike {
     x: number
     y: number
@@ -429,7 +460,7 @@ export namespace Point {
   }
 
   export function clone(p: Point | PointLike | PointData) {
-    if (p instanceof Point) {
+    if (Point.isPoint(p)) {
       return new Point(p.x, p.y)
     }
 
@@ -441,7 +472,7 @@ export namespace Point {
   }
 
   export function toJSON(p: Point | PointLike | PointData) {
-    if (p instanceof Point) {
+    if (Point.isPoint(p)) {
       return { x: p.x, y: p.y }
     }
 
