@@ -13,7 +13,7 @@ redirect_from:
 
 ```shell
 # npm
-$ npm install @antv/layout--save
+$ npm install @antv/layout --save
 
 # yarn
 $ yarn add @antv/layout
