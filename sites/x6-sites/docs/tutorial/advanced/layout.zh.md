@@ -60,7 +60,7 @@ const gridLayout = new Layout({
 
 const newModel = gridLayout.layout(model)
 
-gridLayout.fromJSON(newModel)
+graph.fromJSON(newModel)
 
 ```
 
