@@ -2,17 +2,21 @@ import { Point, Path } from '../../geometry'
 import * as Dom from '../dom/core'
 
 export class Vector {
-  node: SVGElement
+  public node: SVGElement
 
-  get type() {
+  protected get [Symbol.toStringTag]() {
+    return Vector.toStringTag
+  }
+
+  public get type() {
     return this.node.nodeName
   }
 
-  get id() {
+  public get id() {
     return this.node.id
   }
 
-  set id(id: string) {
+  public set id(id: string) {
     this.node.id = id
   }
 
@@ -333,7 +337,7 @@ export class Vector {
   }
 
   contains(child: SVGElement | Vector) {
-    return Dom.contains(this.node, child instanceof Vector ? child.node : child)
+    return Dom.contains(this.node, Vector.isVector(child) ? child.node : child)
   }
 
   wrap(node: SVGElement | Vector) {
@@ -519,18 +523,42 @@ export class Vector {
     return []
   }
 
-  convertToPath() {
+  toPath() {
     return Vector.create(Dom.toPath(this.node as any))
   }
 
-  convertToPathData() {
+  toPathData() {
     return Dom.toPathData(this.node as any)
   }
 }
 
 export namespace Vector {
-  export function isVector(o: any): o is Vector {
-    return o instanceof Vector
+  export const toStringTag = `X6.${Vector.name}`
+
+  export function isVector(instance: any): instance is Vector {
+    if (instance == null) {
+      return false
+    }
+
+    if (instance instanceof Vector) {
+      return true
+    }
+
+    const tag = instance[Symbol.toStringTag]
+    const vector = instance as Vector
+
+    if (
+      (tag == null || tag === toStringTag) &&
+      vector.node instanceof SVGElement &&
+      typeof vector.animate === 'function' &&
+      typeof vector.sample === 'function' &&
+      typeof vector.normalizePath === 'function' &&
+      typeof vector.toPath === 'function'
+    ) {
+      return true
+    }
+
+    return false
   }
 
   export function create(

@@ -36,7 +36,7 @@ export const stroke: Highlighter.Definition<StrokeHighlighterOptions> = {
     let magnetBBox
 
     try {
-      pathData = magnetVel.convertToPathData()
+      pathData = magnetVel.toPathData()
     } catch (error) {
       // Failed to get path data from magnet element.
       // Draw a rectangle around the entire cell view instead.

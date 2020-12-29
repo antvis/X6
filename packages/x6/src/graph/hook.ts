@@ -474,7 +474,7 @@ export class Hook extends Base implements Hook.IHook {
 
     if (valid && allowEdge != null) {
       if (typeof allowEdge === 'boolean') {
-        if (!allowEdge && terminalView instanceof EdgeView) {
+        if (!allowEdge && EdgeView.isEdgeView(terminalView)) {
           valid = false
         }
       } else {
@@ -485,7 +485,7 @@ export class Hook extends Base implements Hook.IHook {
     if (valid && allowNode != null) {
       if (typeof allowNode === 'boolean') {
         if (!allowNode && terminalView != null) {
-          if (terminalView instanceof NodeView && targetMagnet == null) {
+          if (NodeView.isNodeView(terminalView) && targetMagnet == null) {
             valid = false
           }
         }

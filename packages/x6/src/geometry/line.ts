@@ -9,6 +9,10 @@ export class Line extends Geometry {
   public start: Point
   public end: Point
 
+  protected get [Symbol.toStringTag]() {
+    return Line.toStringTag
+  }
+
   get center() {
     return new Point(
       (this.start.x + this.end.x) / 2,
@@ -511,5 +515,36 @@ export class Line extends Geometry {
 
   serialize() {
     return [this.start.serialize(), this.end.serialize()].join(' ')
+  }
+}
+
+export namespace Line {
+  export const toStringTag = `X6.Geometry.${Line.name}`
+
+  export function isLine(instance: any): instance is Line {
+    if (instance == null) {
+      return false
+    }
+
+    if (instance instanceof Line) {
+      return true
+    }
+
+    const tag = instance[Symbol.toStringTag]
+    const line = instance as Line
+
+    if (
+      (tag == null || tag === toStringTag) &&
+      Point.isPoint(line.start) &&
+      Point.isPoint(line.end) &&
+      typeof line.vector === 'function' &&
+      typeof line.bearing === 'function' &&
+      typeof line.parallel === 'function' &&
+      typeof line.intersect === 'function'
+    ) {
+      return true
+    }
+
+    return false
   }
 }
