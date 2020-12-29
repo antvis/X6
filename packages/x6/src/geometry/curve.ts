@@ -11,6 +11,10 @@ export class Curve extends Geometry {
   controlPoint2: Point
   PRECISION: number = 3
 
+  protected get [Symbol.toStringTag]() {
+    return Curve.toStringTag
+  }
+
   constructor(
     start: Point.PointLike | Point.PointData,
     controlPoint1: Point.PointLike | Point.PointData,
@@ -754,6 +758,37 @@ export class Curve extends Geometry {
       this.controlPoint2.serialize(),
       this.end.serialize(),
     ].join(' ')
+  }
+}
+
+export namespace Curve {
+  export const toStringTag = `X6.Geometry.${Curve.name}`
+
+  export function isCurve(instance: any): instance is Curve {
+    if (instance == null) {
+      return false
+    }
+
+    if (instance instanceof Curve) {
+      return true
+    }
+
+    const tag = instance[Symbol.toStringTag]
+    const curve = instance as Curve
+
+    if (
+      (tag == null || tag === toStringTag) &&
+      Point.isPoint(curve.start) &&
+      Point.isPoint(curve.controlPoint1) &&
+      Point.isPoint(curve.controlPoint2) &&
+      Point.isPoint(curve.end) &&
+      typeof curve.toPoints === 'function' &&
+      typeof curve.toPolyline === 'function'
+    ) {
+      return true
+    }
+
+    return false
   }
 }
 

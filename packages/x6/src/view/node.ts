@@ -24,6 +24,10 @@ export class NodeView<
   protected readonly defaultPortContainerMarkup = Markup.getPortContainerMarkup()
   protected portsCache: { [id: string]: NodeView.PortCache } = {}
 
+  protected get [Symbol.toStringTag]() {
+    return NodeView.toStringTag
+  }
+
   protected getContainerClassName() {
     return [super.getContainerClassName(), this.prefixClassName('node')].join(
       ' ',
@@ -789,7 +793,7 @@ export class NodeView<
             node: this.cell,
           }) as Cell[]).filter((cell) => {
             return (
-              cell instanceof Cell &&
+              Cell.isCell(cell) &&
               this.cell.id !== cell.id &&
               !cell.isDescendantOf(this.cell)
             )
@@ -1227,6 +1231,39 @@ export namespace NodeView {
       currentParent: Node | null
       previousParent: Node | null
     }
+  }
+}
+
+export namespace NodeView {
+  export const toStringTag = `X6.${NodeView.name}`
+
+  export function isNodeView(instance: any): instance is NodeView {
+    if (instance == null) {
+      return false
+    }
+
+    if (instance instanceof NodeView) {
+      return true
+    }
+
+    const tag = instance[Symbol.toStringTag]
+    const view = instance as NodeView
+
+    if (
+      (tag == null || tag === toStringTag) &&
+      typeof view.isNodeView === 'function' &&
+      typeof view.isEdgeView === 'function' &&
+      typeof view.confirmUpdate === 'function' &&
+      typeof view.update === 'function' &&
+      typeof view.findPortElem === 'function' &&
+      typeof view.resize === 'function' &&
+      typeof view.rotate === 'function' &&
+      typeof view.translate === 'function'
+    ) {
+      return true
+    }
+
+    return false
   }
 }
 

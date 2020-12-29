@@ -50,6 +50,10 @@ export class EdgeView<
     targetBBox?: Rectangle
   } = {}
 
+  protected get [Symbol.toStringTag]() {
+    return EdgeView.toStringTag
+  }
+
   protected getContainerClassName() {
     return [super.getContainerClassName(), this.prefixClassName('edge')].join(
       ' ',
@@ -2822,6 +2826,36 @@ export namespace EdgeView {
     'edge:move': PositionEventArgs<JQuery.MouseMoveEvent>
     'edge:moving': PositionEventArgs<JQuery.MouseMoveEvent>
     'edge:moved': PositionEventArgs<JQuery.MouseUpEvent>
+  }
+}
+
+export namespace EdgeView {
+  export const toStringTag = `X6.${EdgeView.name}`
+
+  export function isEdgeView(instance: any): instance is EdgeView {
+    if (instance == null) {
+      return false
+    }
+
+    if (instance instanceof EdgeView) {
+      return true
+    }
+
+    const tag = instance[Symbol.toStringTag]
+    const view = instance as EdgeView
+
+    if (
+      (tag == null || tag === toStringTag) &&
+      typeof view.isNodeView === 'function' &&
+      typeof view.isEdgeView === 'function' &&
+      typeof view.confirmUpdate === 'function' &&
+      typeof view.update === 'function' &&
+      typeof view.getConnection === 'function'
+    ) {
+      return true
+    }
+
+    return false
   }
 }
 

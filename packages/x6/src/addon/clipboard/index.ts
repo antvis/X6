@@ -16,7 +16,7 @@ export class Clipboard {
     options: Clipboard.CopyOptions = {},
   ) {
     this.options = { ...options }
-    const model = graph instanceof Model ? graph : graph.model
+    const model = Model.isModel(graph) ? graph : graph.model
     const cloned = model.cloneSubGraph(cells, options)
 
     // sort asc by cell type
@@ -34,7 +34,7 @@ export class Clipboard {
     options: Clipboard.CopyOptions = {},
   ) {
     this.copy(cells, graph, options)
-    const model = graph instanceof Graph ? graph.model : graph
+    const model = Graph.isGraph(graph) ? graph.model : graph
     model.batchUpdate('cut', () => {
       cells.forEach((cell) => cell.remove())
     })
@@ -70,7 +70,7 @@ export class Clipboard {
       }
     })
 
-    const model = graph instanceof Graph ? graph.model : graph
+    const model = Graph.isGraph(graph) ? graph.model : graph
     model.batchUpdate('paste', () => {
       model.addCells(this.cells)
     })

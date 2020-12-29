@@ -1,5 +1,6 @@
 import React from 'react'
 import { Graph } from '@antv/x6'
+import { Graph as GraphES } from '@antv/x6/lib'
 import '../index.less'
 
 export default class Example extends React.Component {
@@ -35,6 +36,10 @@ export default class Example extends React.Component {
       // },
       panning: true,
     })
+
+    console.log(graph)
+    console.log(Object.prototype.toString.call(graph))
+    console.log(GraphES.isGraph(graph))
 
     // const data = [
     //   {

@@ -2,13 +2,12 @@ import { Node } from '../model/node'
 import { Model } from '../model/model'
 
 export function grid(cells: Node[] | Model, options: GridLayout.Options = {}) {
-  const model =
-    cells instanceof Model
-      ? cells
-      : new Model().resetCells(cells, {
-          sort: false,
-          dryrun: true,
-        })
+  const model = Model.isModel(cells)
+    ? cells
+    : new Model().resetCells(cells, {
+        sort: false,
+        dryrun: true,
+      })
 
   const nodes = model.getNodes()
   const columns = options.columns || 1

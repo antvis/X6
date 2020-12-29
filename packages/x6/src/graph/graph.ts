@@ -66,6 +66,10 @@ export class Graph extends Basecoat<EventArgs> {
     return this.view.container
   }
 
+  protected get [Symbol.toStringTag]() {
+    return Graph.toStringTag
+  }
+
   constructor(options: Partial<GraphOptions.Manual>) {
     super()
 
@@ -493,7 +497,7 @@ export class Graph extends Basecoat<EventArgs> {
   }
 
   findView(ref: Cell | JQuery | Element) {
-    if (ref instanceof Cell) {
+    if (Cell.isCell(ref)) {
       return this.findViewByCell(ref)
     }
 
@@ -1977,6 +1981,34 @@ export namespace Graph {
 
 export namespace Graph {
   export interface Options extends GraphOptions.Manual {}
+}
+
+export namespace Graph {
+  export const toStringTag = `X6.${Graph.name}`
+
+  export function isGraph(instance: any): instance is Graph {
+    if (instance == null) {
+      return false
+    }
+
+    if (instance instanceof Graph) {
+      return true
+    }
+
+    const tag = instance[Symbol.toStringTag]
+    const graph = instance as Graph
+
+    if (
+      (tag == null || tag === toStringTag) &&
+      graph.hook != null &&
+      graph.view != null &&
+      graph.model != null
+    ) {
+      return true
+    }
+
+    return false
+  }
 }
 
 export namespace Graph {

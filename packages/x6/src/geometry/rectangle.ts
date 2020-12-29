@@ -12,6 +12,10 @@ export class Rectangle extends Geometry implements Rectangle.RectangleLike {
   width: number
   height: number
 
+  protected get [Symbol.toStringTag]() {
+    return Rectangle.toStringTag
+  }
+
   get left() {
     return this.x
   }
@@ -717,6 +721,37 @@ export class Rectangle extends Geometry implements Rectangle.RectangleLike {
 }
 
 export namespace Rectangle {
+  export const toStringTag = `X6.Geometry.${Rectangle.name}`
+
+  export function isRectangle(instance: any): instance is Rectangle {
+    if (instance == null) {
+      return false
+    }
+
+    if (instance instanceof Rectangle) {
+      return true
+    }
+
+    const tag = instance[Symbol.toStringTag]
+    const rect = instance as Rectangle
+
+    if (
+      (tag == null || tag === toStringTag) &&
+      typeof rect.x === 'number' &&
+      typeof rect.y === 'number' &&
+      typeof rect.width === 'number' &&
+      typeof rect.height === 'number' &&
+      typeof rect.inflate === 'function' &&
+      typeof rect.moveAndExpand === 'function'
+    ) {
+      return true
+    }
+
+    return false
+  }
+}
+
+export namespace Rectangle {
   export type RectangleData = [number, number, number, number]
 
   export interface RectangleLike extends Point.PointLike {
@@ -781,7 +816,7 @@ export namespace Rectangle {
   }
 
   export function clone(rect: RectangleLike | RectangleData) {
-    if (rect instanceof Rectangle) {
+    if (Rectangle.isRectangle(rect)) {
       return rect.clone()
     }
 

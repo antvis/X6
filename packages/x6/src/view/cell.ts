@@ -93,6 +93,10 @@ export class CellView<
   public scalableNode: Element | null
   public rotatableNode: Element | null
 
+  protected get [Symbol.toStringTag]() {
+    return CellView.toStringTag
+  }
+
   constructor(cell: Entity, options: Partial<Options> = {}) {
     super()
 
@@ -675,7 +679,9 @@ export class CellView<
   addTools(config: ToolsView | ToolsView.Options | null) {
     this.removeTools()
     if (config) {
-      const tools = config instanceof ToolsView ? config : new ToolsView(config)
+      const tools = ToolsView.isToolsView(config)
+        ? config
+        : new ToolsView(config)
       this.tools = tools
       this.graph.on('tools:hide', this.hideTools, this)
       this.graph.on('tools:show', this.showTools, this)
@@ -968,6 +974,34 @@ export namespace CellView {
 export namespace CellView {
   export const Flag = FlagManager
   export const Attr = AttrManager
+}
+
+export namespace CellView {
+  export const toStringTag = `X6.${CellView.name}`
+
+  export function isCellView(instance: any): instance is CellView {
+    if (instance == null) {
+      return false
+    }
+
+    if (instance instanceof CellView) {
+      return true
+    }
+
+    const tag = instance[Symbol.toStringTag]
+    const view = instance as CellView
+
+    if (
+      (tag == null || tag === toStringTag) &&
+      typeof view.isNodeView === 'function' &&
+      typeof view.isEdgeView === 'function' &&
+      typeof view.confirmUpdate === 'function'
+    ) {
+      return true
+    }
+
+    return false
+  }
 }
 
 // decorators
