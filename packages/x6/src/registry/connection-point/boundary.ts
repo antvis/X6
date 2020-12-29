@@ -74,7 +74,7 @@ export const boundary: ConnectionPoint.Definition<BoundaryOptions> = function (
 
   // Caching segment subdivisions for paths
   let pathOptions
-  if (localShape instanceof Path) {
+  if (Path.isPath(localShape)) {
     const precision = options.precision || 2
     if (data.segmentSubdivisions == null) {
       data.segmentSubdivisions = localShape.getSegmentSubdivisions({
@@ -97,9 +97,9 @@ export const boundary: ConnectionPoint.Definition<BoundaryOptions> = function (
     }
   } else if (options.sticky === true) {
     // No intersection, find the closest point instead
-    if (localShape instanceof Rectangle) {
+    if (Rectangle.isRectangle(localShape)) {
       intersection = localShape.getNearestPointToPoint(localRef)
-    } else if (localShape instanceof Ellipse) {
+    } else if (Ellipse.isEllipse(localShape)) {
       intersection = localShape.intersectsWithLineFromCenterToPoint(localRef)
     } else {
       intersection = localShape.closestPoint(localRef, pathOptions)

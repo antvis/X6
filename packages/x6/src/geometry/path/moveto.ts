@@ -18,7 +18,7 @@ export class MoveTo extends Segment {
     this.isVisible = false
     this.isSubpathStart = true
 
-    if (x instanceof Line || x instanceof Curve) {
+    if (Line.isLine(x) || Curve.isCurve(x)) {
       this.endPoint = x.end.clone().round(2)
     } else {
       this.endPoint = Point.create(x, y).round(2)
@@ -158,12 +158,12 @@ export namespace MoveTo {
     const arg0 = args[0]
 
     // line provided
-    if (arg0 instanceof Line) {
+    if (Line.isLine(arg0)) {
       return new MoveTo(arg0)
     }
 
     // curve provided
-    if (arg0 instanceof Curve) {
+    if (Curve.isCurve(arg0)) {
       return new MoveTo(arg0)
     }
 

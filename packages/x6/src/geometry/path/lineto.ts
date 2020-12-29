@@ -12,7 +12,7 @@ export class LineTo extends Segment {
   ) {
     super()
 
-    if (x instanceof Line) {
+    if (Line.isLine(x)) {
       this.endPoint = x.end.clone().round(2)
     } else {
       this.endPoint = Point.create(x, y).round(2)
@@ -145,7 +145,7 @@ export namespace LineTo {
     const arg0 = args[0]
 
     // line provided
-    if (arg0 instanceof Line) {
+    if (Line.isLine(arg0)) {
       return new LineTo(arg0)
     }
 

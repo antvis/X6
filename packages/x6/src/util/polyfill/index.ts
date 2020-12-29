@@ -45,14 +45,16 @@ if (window.NodeList && !NodeList.prototype.forEach) {
       value: function append() {
         const argArr = Array.prototype.slice.call(arguments)
         const docFrag = document.createDocumentFragment()
-        
+
         argArr.forEach((argItem: any) => {
           const isNode = argItem instanceof Node
-          docFrag.appendChild(isNode ? argItem : document.createTextNode(String(argItem)))
+          docFrag.appendChild(
+            isNode ? argItem : document.createTextNode(String(argItem)),
+          )
         })
-        
+
         this.appendChild(docFrag)
-      }
+      },
     })
   })
 })([Element.prototype, Document.prototype, DocumentFragment.prototype])
