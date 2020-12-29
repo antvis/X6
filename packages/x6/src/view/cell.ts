@@ -127,7 +127,7 @@ export class CellView<
     return this.options.rootSelector
   }
 
-  protected getConstructor<T extends typeof CellView>() {
+  protected getConstructor<T extends CellView.Definition>() {
     return (this.constructor as any) as T
   }
 
@@ -974,20 +974,32 @@ export namespace CellView {
 // ----
 export namespace CellView {
   export function priority(value: number) {
-    return function (ctor: typeof CellView) {
+    return function (ctor: Definition) {
       ctor.config({ priority: value })
     }
   }
 
   export function bootstrap(actions: FlagManager.Actions) {
-    return function (ctor: typeof CellView) {
+    return function (ctor: Definition) {
       ctor.config({ bootstrap: actions })
     }
   }
 }
 
 export namespace CellView {
-  export const registry = Registry.create<new (...args: any[]) => CellView>({
+  type CellViewClass = typeof CellView
+
+  export interface Definition extends CellViewClass {
+    new <
+      Entity extends Cell = Cell,
+      Options extends CellView.Options = CellView.Options
+    >(
+      cell: Entity,
+      options: Partial<Options>,
+    ): CellView
+  }
+
+  export const registry = Registry.create<Definition>({
     type: 'view',
   })
 }

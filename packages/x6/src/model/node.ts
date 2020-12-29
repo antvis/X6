@@ -1036,6 +1036,17 @@ export namespace Node {
 }
 
 export namespace Node {
+  Node.config<Node.Config>({
+    propHooks({ ports, ...metadata }) {
+      if (ports) {
+        metadata.ports = Array.isArray(ports) ? { items: ports } : ports
+      }
+      return metadata
+    },
+  })
+}
+
+export namespace Node {
   export const registry = Registry.create<
     Definition,
     never,
@@ -1055,7 +1066,7 @@ export namespace Node {
       }
 
       let parent = Node
-      const { inherit, ...others } = options
+      const { inherit, ...config } = options
       if (inherit) {
         if (typeof inherit === 'string') {
           const base = this.get(inherit)
@@ -1069,13 +1080,13 @@ export namespace Node {
         }
       }
 
-      if (others.constructorName == null) {
-        others.constructorName = shape
+      if (config.constructorName == null) {
+        config.constructorName = shape
       }
 
-      const ret = parent.define.call(parent, others)
-      ret.config({ shape })
-      return ret
+      const ctor = parent.define.call(parent, config)
+      ctor.config({ shape })
+      return ctor
     },
   })
 
@@ -1083,18 +1094,11 @@ export namespace Node {
 }
 
 export namespace Node {
-  Node.config<Node.Config>({
-    propHooks({ ports, ...metadata }) {
-      if (ports) {
-        metadata.ports = Array.isArray(ports) ? { items: ports } : ports
-      }
-      return metadata
-    },
-  })
-}
+  type NodeClass = typeof Node
 
-export namespace Node {
-  export type Definition = typeof Node
+  export interface Definition extends NodeClass {
+    new <T extends Properties = Properties>(metadata: T): Node
+  }
 
   let counter = 0
   function getClassName(name?: string) {
@@ -1107,18 +1111,18 @@ export namespace Node {
 
   export function define(config: Config) {
     const { constructorName, ...others } = config
-    const shape = ObjectExt.createClass<Definition>(
+    const ctor = ObjectExt.createClass<NodeClass>(
       getClassName(constructorName || others.shape),
-      this as Definition,
+      this as NodeClass,
     )
 
-    shape.config(others)
+    ctor.config(others)
 
     if (others.shape) {
-      registry.register(others.shape, shape)
+      registry.register(others.shape, ctor)
     }
 
-    return shape
+    return ctor
   }
 
   export function create(options: Metadata) {
@@ -1130,3 +1134,6 @@ export namespace Node {
     return registry.onNotFound(shape)
   }
 }
+
+class CustomNode extends Node {}
+Node.registry.register('test', CustomNode)

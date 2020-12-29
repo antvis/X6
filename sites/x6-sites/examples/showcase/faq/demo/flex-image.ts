@@ -29,7 +29,7 @@ class FlexImage extends Shape.Image {
   }
 }
 
-Graph.registerNode('flex-image', FlexImage as typeof Node, true)
+Graph.registerNode('flex-image', FlexImage, true)
 
 const graph = new Graph({
   container: document.getElementById('container')!,
