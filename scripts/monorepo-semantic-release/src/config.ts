@@ -56,7 +56,7 @@ export namespace Config {
     return (
       '' +
       '<% if(typeof releases !== "undefined" && Array.isArray(releases) && releases.length > 0) { %>' +
-      '<% var releaseInfos = releases.filter(function(release) { return !!release.name && !release.private }) %>' +
+      '<% var releaseInfos = releases.filter(function(release) { return !!release.name && !release.private && release.hasCommit }) %>' +
       '<% if(releaseInfos.length) { %>' +
       '<% var groups = {} %>' +
       '<% releaseInfos.forEach(function(release) { %>' +

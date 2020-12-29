@@ -129,6 +129,7 @@ export namespace Plugin {
         // Set context.commits so analyzeCommits does correct analysis.
         ctx.commits = scopedCommits
 
+        pkg.hasCommit = scopedCommits.length > 0
         // Set lastRelease for package from context.
         pkg.lastRelease = context.lastRelease
 
@@ -142,6 +143,7 @@ export namespace Plugin {
 
         // Wait until all todo packages have been analyzed.
         pkg.analyzed = true
+
         await waitForAll('analyzed')
 
         // Make sure type is "patch" if the package has any deps that have changed.
@@ -289,6 +291,7 @@ export namespace Plugin {
             ...r,
             package: pkg.name,
             private: pkg.private,
+            hasCommit: pkg.hasCommit,
           }))
 
         return releases[0]
@@ -325,7 +328,7 @@ export namespace Plugin {
           console.log('Comment Issue: ', ctx.releases)
 
           const shouldComment = ctx.releases.some(
-            (release: any) => !release.private,
+            (release: any) => !release.private && release.hasCommit,
           )
           if (shouldComment) {
             await plugins2.success(ctx)
