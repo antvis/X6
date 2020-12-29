@@ -19,6 +19,7 @@ export interface Package {
   dir: string
   name: string
   private: boolean
+  hasCommit?: boolean
   manifest: { [name: string]: any }
   deps: string[]
   plugins1: any
