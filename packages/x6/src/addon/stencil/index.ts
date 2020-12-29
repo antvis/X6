@@ -18,12 +18,12 @@ export class Stencil extends View {
 
   protected get targetScroller() {
     const target = this.options.target
-    return target instanceof Graph ? target.scroller.widget : target
+    return Graph.isGraph(target) ? target.scroller.widget : target
   }
 
   protected get targetGraph() {
     const target = this.options.target
-    return target instanceof Graph ? target : target.graph
+    return Graph.isGraph(target) ? target : target.graph
   }
 
   protected get targetModel() {
@@ -206,7 +206,7 @@ export class Stencil extends View {
     const model = this.getModel(groupName)
     if (model) {
       const nodes = cells.map((cell) =>
-        cell instanceof Node ? cell : Node.create(cell),
+        Node.isNode(cell) ? cell : Node.create(cell),
       )
       model.resetCells(nodes)
     }

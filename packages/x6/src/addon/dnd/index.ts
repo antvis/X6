@@ -26,12 +26,12 @@ export class Dnd extends View {
 
   protected get targetScroller() {
     const target = this.options.target
-    return target instanceof Graph ? target.scroller.widget : target
+    return Graph.isGraph(target) ? target.scroller.widget : target
   }
 
   protected get targetGraph() {
     const target = this.options.target
-    return target instanceof Graph ? target : target.graph
+    return Graph.isGraph(target) ? target : target.graph
   }
 
   protected get targetModel() {

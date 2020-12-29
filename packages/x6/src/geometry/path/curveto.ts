@@ -30,7 +30,7 @@ export class CurveTo extends Segment {
   ) {
     super()
 
-    if (arg0 instanceof Curve) {
+    if (Curve.isCurve(arg0)) {
       this.controlPoint1 = arg0.controlPoint1.clone().round(2)
       this.controlPoint2 = arg0.controlPoint2.clone().round(2)
       this.endPoint = arg0.end.clone().round(2)
@@ -227,7 +227,7 @@ export namespace CurveTo {
     const arg0 = args[0]
 
     // curve provided
-    if (arg0 instanceof Curve) {
+    if (Curve.isCurve(arg0)) {
       return new CurveTo(arg0)
     }
 

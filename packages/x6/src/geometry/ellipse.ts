@@ -9,6 +9,10 @@ export class Ellipse extends Geometry implements Ellipse.EllipseLike {
   public a: number
   public b: number
 
+  protected get [Symbol.toStringTag]() {
+    return Ellipse.toStringTag
+  }
+
   get center() {
     return new Point(this.x, this.y)
   }
@@ -261,6 +265,37 @@ export class Ellipse extends Geometry implements Ellipse.EllipseLike {
 }
 
 export namespace Ellipse {
+  export const toStringTag = `X6.Geometry.${Ellipse.name}`
+
+  export function isEllipse(instance: any): instance is Ellipse {
+    if (instance == null) {
+      return false
+    }
+
+    if (instance instanceof Ellipse) {
+      return true
+    }
+
+    const tag = instance[Symbol.toStringTag]
+    const ellipse = instance as Ellipse
+
+    if (
+      (tag == null || tag === toStringTag) &&
+      typeof ellipse.x === 'number' &&
+      typeof ellipse.y === 'number' &&
+      typeof ellipse.a === 'number' &&
+      typeof ellipse.b === 'number' &&
+      typeof ellipse.inflate === 'function' &&
+      typeof ellipse.normalizedDistance === 'function'
+    ) {
+      return true
+    }
+
+    return false
+  }
+}
+
+export namespace Ellipse {
   export interface EllipseLike extends Point.PointLike {
     x: number
     y: number
@@ -286,7 +321,7 @@ export namespace Ellipse {
   }
 
   export function parse(e: Ellipse | EllipseLike | EllipseData) {
-    if (e instanceof Ellipse) {
+    if (Ellipse.isEllipse(e)) {
       return e.clone()
     }
 

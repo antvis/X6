@@ -19,6 +19,10 @@ export class Model extends Basecoat<Model.EventArgs> {
   protected outgoings: KeyValue<string[]> = {}
   protected incomings: KeyValue<string[]> = {}
 
+  protected get [Symbol.toStringTag]() {
+    return Model.toStringTag
+  }
+
   constructor(cells: Cell[] = []) {
     super()
     this.collection = new Collection(cells)
@@ -234,7 +238,7 @@ export class Model extends Basecoat<Model.EventArgs> {
   }
 
   addNode(metadata: Node | Node.Metadata, options: Model.AddOptions = {}) {
-    const node = metadata instanceof Node ? metadata : this.createNode(metadata)
+    const node = Node.isNode(metadata) ? metadata : this.createNode(metadata)
     this.addCell(node, options)
     return node
   }
@@ -244,7 +248,7 @@ export class Model extends Basecoat<Model.EventArgs> {
   }
 
   addEdge(metadata: Edge.Metadata | Edge, options: Model.AddOptions = {}) {
-    const edge = metadata instanceof Edge ? metadata : this.createEdge(metadata)
+    const edge = Edge.isEdge(metadata) ? metadata : this.createEdge(metadata)
     this.addCell(edge, options)
     return edge
   }
@@ -1216,6 +1220,33 @@ export class Model extends Basecoat<Model.EventArgs> {
   // #endregion
 }
 
+export namespace Model {
+  export const toStringTag = `X6.${Model.name}`
+
+  export function isModel(instance: any): instance is Model {
+    if (instance == null) {
+      return false
+    }
+
+    if (instance instanceof Model) {
+      return true
+    }
+
+    const tag = instance[Symbol.toStringTag]
+    const model = instance as Model
+
+    if (
+      (tag == null || tag === toStringTag) &&
+      typeof model.addNode === 'function' &&
+      typeof model.addEdge === 'function' &&
+      model.collection != null
+    ) {
+      return true
+    }
+
+    return false
+  }
+}
 export namespace Model {
   export interface SetOptions extends Collection.SetOptions {}
   export interface AddOptions extends Collection.AddOptions {}
