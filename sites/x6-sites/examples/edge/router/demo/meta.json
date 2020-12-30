@@ -9,20 +9,28 @@
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*rpQdR4VOZQMAAAAAAAAAAAAAARQnAQ"
     },
     {
-      "filename": "orth.ts",
+      "filename": "orth-normal.ts",
       "title": {
-        "zh": "正交路由",
+        "zh": "拐线",
         "en": "Orth Router"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*61fPRbYQnwEAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "orth-vertices.ts",
+      "title": {
+        "zh": "正交线",
+        "en": "Orth Router With Vertices"
       },
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*xdwhR5Z3PfAAAAAAAAAAAAAAARQnAQ"
     },
     {
-      "filename": "er.ts",
+      "filename": "er-normal.ts",
       "title": {
         "zh": "关系路由",
         "en": "ER Router"
       },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*VoYhRZROYwMAAAAAAAAAAAAAARQnAQ"
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*9FmqSaP7LoYAAAAAAAAAAAAAARQnAQ"
     },
     {
       "filename": "er-center.ts",
@@ -30,7 +38,7 @@
         "zh": "关系路由",
         "en": "ER Center Router"
       },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*qXEcSrrmvh8AAAAAAAAAAAAAARQnAQ"
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*NTVWSbc9Cz0AAAAAAAAAAAAAARQnAQ"
     },
     {
       "filename": "manhattan.ts",
