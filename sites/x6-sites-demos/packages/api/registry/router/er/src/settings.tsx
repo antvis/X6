@@ -1,5 +1,5 @@
 import React from 'react'
-import { Switch, Slider, Card, Row, Col } from 'antd'
+import { Switch, Radio, Slider, Card, Row, Col } from 'antd'
 import 'antd/dist/antd.css'
 
 export interface Props {
@@ -10,13 +10,14 @@ export interface State {
   offset: number
   min: number
   center: boolean
-  textAnchor?: string
+  direction: '' | 'T' | 'B' | 'L' | 'R' | 'H' | 'V'
 }
 
 export const defaults: State = {
   offset: 32,
   min: 16,
   center: false,
+  direction: '',
 }
 
 export class Settings extends React.Component<Props, State> {
@@ -44,22 +45,34 @@ export class Settings extends React.Component<Props, State> {
     })
   }
 
+  onDirectionChanged = (e: any) => {
+    const direction = e.target.value
+    this.setState({ direction }, () => {
+      this.notifyChange()
+    })
+  }
+
   render() {
     return (
-      <Card title="Attrs" size="small" bordered={false} style={{ width: 320 }}>
+      <Card
+        title="Options"
+        size="small"
+        bordered={false}
+        style={{ width: 320 }}
+      >
         <Row align="middle">
-          <Col span={5}>offset</Col>
+          <Col span={6}>offset</Col>
           <Col span={14}>
             <Switch
               checkedChildren="center"
-              unCheckedChildren="center"
+              unCheckedChildren="number"
               checked={this.state.center}
               onChange={this.onCenterChanged}
             />
           </Col>
         </Row>
         <Row align="middle">
-          <Col span={5}></Col>
+          <Col span={6}></Col>
           <Col span={14}>
             <Slider
               min={8}
@@ -75,7 +88,7 @@ export class Settings extends React.Component<Props, State> {
           </Col>
         </Row>
         <Row align="middle">
-          <Col span={5}>min</Col>
+          <Col span={6}>min</Col>
           <Col span={14}>
             <Slider
               min={8}
@@ -87,6 +100,28 @@ export class Settings extends React.Component<Props, State> {
           </Col>
           <Col span={1} offset={1}>
             <div className="slider-value">{this.state.min}</div>
+          </Col>
+        </Row>
+        <Row align="top">
+          <Col span={6}>direction</Col>
+          <Col span={14}>
+            <Radio.Group
+              name="direction"
+              value={this.state.direction}
+              onChange={this.onDirectionChanged}
+            >
+              <Radio value="" style={{ display: 'block', marginBottom: 8 }}>
+                NONE
+              </Radio>
+              <Radio value="L" style={{ marginBottom: 8 }}>
+                L
+              </Radio>
+              <Radio value="R">R</Radio>
+              <Radio value="H">H</Radio>
+              <Radio value="T">T</Radio>
+              <Radio value="B">B</Radio>
+              <Radio value="V">V</Radio>
+            </Radio.Group>
           </Col>
         </Row>
       </Card>
