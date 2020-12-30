@@ -1,3 +1,19 @@
+## @antv/x6-sites-demos [1.2.22](https://github.com/antvis/x6/compare/@antv/x6-sites-demos@1.2.21...@antv/x6-sites-demos@1.2.22) (2020-12-30)
+
+
+### Bug Fixes
+
+* 🐛 auto calc er router's direction ([9b9a727](https://github.com/antvis/x6/commit/9b9a727c9b168af80623be448d5ae389a21a72b0))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.7.11
+* **@antv/x6-react-shape:** upgraded to 1.1.51
+
 ## @antv/x6-sites-demos [1.2.21](https://github.com/antvis/x6/compare/@antv/x6-sites-demos@1.2.20...@antv/x6-sites-demos@1.2.21) (2020-12-29)
 
 
