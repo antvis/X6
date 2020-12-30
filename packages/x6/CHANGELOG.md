@@ -1,3 +1,10 @@
+## @antv/x6 [1.7.11](https://github.com/antvis/x6/compare/@antv/x6@1.7.10...@antv/x6@1.7.11) (2020-12-30)
+
+
+### Bug Fixes
+
+* 🐛 auto calc er router's direction ([9b9a727](https://github.com/antvis/x6/commit/9b9a727c9b168af80623be448d5ae389a21a72b0))
+
 ## @antv/x6 [1.7.10](https://github.com/antvis/x6/compare/@antv/x6@1.7.9...@antv/x6@1.7.10) (2020-12-29)
 
 ## @antv/x6 [1.7.9](https://github.com/antvis/x6/compare/@antv/x6@1.7.8...@antv/x6@1.7.9) (2020-12-29)
