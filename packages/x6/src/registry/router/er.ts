@@ -27,42 +27,69 @@ export const er: Router.Definition<ErRouterOptions> = function (
   }
 
   if (direction == null) {
-    const dx = sourcePoint.x - targetPoint.x
-    const dy = sourcePoint.y - targetPoint.y
+    let dx = targetBBox.left - sourceBBox.right
+    let dy = targetBBox.top - sourceBBox.botom
 
-    if (Math.abs(dx) > Math.abs(dy)) {
-      direction = dx > 0 ? 'R' : 'L'
-      if (offsetRaw === 'center') {
-        offset =
-          (direction === 'R'
-            ? sourceBBox.left - targetBBox.right
-            : targetBBox.left - sourceBBox.right) / 2
+    if (dx >= 0 && dy >= 0) {
+      direction = dx >= dy ? 'L' : 'T'
+    } else if (dx <= 0 && dy >= 0) {
+      dx = sourceBBox.left - targetBBox.right
+      if (dx >= 0) {
+        direction = dx >= dy ? 'R' : 'T'
+      } else {
+        direction = 'T'
+      }
+    } else if (dx >= 0 && dy <= 0) {
+      dy = sourceBBox.top - targetBBox.botom
+      if (dy >= 0) {
+        direction = dx >= dy ? 'L' : 'B'
+      } else {
+        direction = 'L'
       }
     } else {
-      direction = dy > 0 ? 'B' : 'T'
-      if (offsetRaw === 'center') {
-        offset =
-          (direction === 'B'
-            ? sourceBBox.top - targetBBox.botom
-            : targetBBox.top - sourceBBox.botom) / 2
+      dx = sourceBBox.left - targetBBox.right
+      dy = sourceBBox.top - targetBBox.botom
+      if (dx >= 0 && dy >= 0) {
+        direction = dx >= dy ? 'R' : 'B'
+      } else if (dx <= 0 && dy >= 0) {
+        direction = 'B'
+      } else if (dx >= 0 && dy <= 0) {
+        direction = 'R'
+      } else {
+        direction = Math.abs(dx) > Math.abs(dy) ? 'R' : 'B'
       }
+    }
+  }
+
+  if (direction === 'H') {
+    direction = targetPoint.x - sourcePoint.x >= 0 ? 'L' : 'R'
+  } else if (direction === 'V') {
+    direction = targetPoint.y - sourcePoint.y >= 0 ? 'T' : 'B'
+  }
+
+  if (offsetRaw === 'center') {
+    if (direction === 'L') {
+      offset = (targetBBox.left - sourceBBox.right) / 2
+    } else if (direction === 'R') {
+      offset = (sourceBBox.left - targetBBox.right) / 2
+    } else if (direction === 'T') {
+      offset = (targetBBox.top - sourceBBox.botom) / 2
+    } else if (direction === 'B') {
+      offset = (sourceBBox.top - targetBBox.botom) / 2
     }
   }
 
   let coord: 'x' | 'y'
   let dim: 'width' | 'height'
   let factor
-  const horizontal = direction === 'L' || direction === 'R' || direction === 'H'
+  const horizontal = direction === 'L' || direction === 'R'
 
   if (horizontal) {
     if (targetPoint.y === sourcePoint.y) {
       return [...vertices]
     }
 
-    factor =
-      direction === 'L' || (direction === 'H' && targetPoint.x > sourcePoint.x)
-        ? 1
-        : -1
+    factor = direction === 'L' ? 1 : -1
     coord = 'x'
     dim = 'width'
   } else {
@@ -70,10 +97,7 @@ export const er: Router.Definition<ErRouterOptions> = function (
       return [...vertices]
     }
 
-    factor =
-      direction === 'T' || (direction === 'V' && targetPoint.y > sourcePoint.y)
-        ? 1
-        : -1
+    factor = direction === 'T' ? 1 : -1
     coord = 'y'
     dim = 'height'
   }
