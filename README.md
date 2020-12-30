@@ -150,23 +150,6 @@ An entity relationship diagram (ERD) shows the relationships of entity sets stor
   <img src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*pwvaToTpiEwAAAAAAAAAAAAAARQnAQ" alt="er" />
 </a>
 
-
-## Experience Improvement Program Description
-
-In order to serve the users better, X6 will send the URL and version information back to the AntV server:
-
-https://kcart.alipay.com/web/bi.do
-
-Except for URL and X6 version information, no other information will be collected. You can also turn it off with the following code:
-
-```ts
-import { Config } from '@antv/x6'
-
-Config.track(false)
-```
-
-**Starting with version 1.7.8, we turned off code tracing，no unexpected remote request will be sent while you are using X6**
-
 ## Communication
 
 Welcome to join the **X6 Communication Group** (Scan the QR Code to Join us). We also welcome the github [issues](https://github.com/antvis/x6/issues).
