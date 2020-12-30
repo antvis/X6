@@ -40,14 +40,16 @@ export default class Example extends React.Component {
   }
 
   getERArgs(state: State) {
-    const { center, offset, min } = state
+    const { center, offset, min, direction } = state
     return {
       min,
+      direction: direction ? direction : undefined,
       offset: center ? 'center' : offset,
     }
   }
 
   updateConnection = (state: State) => {
+    console.log(this.getERArgs(state))
     this.edge.prop('router/args', this.getERArgs(state))
   }
 
