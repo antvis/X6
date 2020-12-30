@@ -20,6 +20,7 @@
     "lint:ts": "tslint -c tslint.json -p tsconfig.json --fix",
     "build:esm": "rollup --config rollup.config.js --format es --file es/index.js",
     "build:cjs": "rollup --config rollup.config.js --format cjs --file lib/index.js",
+    "build:less": "node ./scripts/less.js",
     "build": "run-p build:cjs build:esm",
     "prebuild": "run-s lint clean",
     "watch": "watch 'yarn build' ./src",
@@ -46,22 +47,20 @@
       "stylelint --syntax less --fix"
     ]
   },
-  "dependencies": {
-    "vue-class-component": "^7.2.3",
-    "vue-property-decorator": "^8.4.2"
-  },
   "devDependencies": {
+    "vue": "^3.0.3",
     "@vue/compiler-sfc": "^3.0.4",
-    "lint-staged": "^10.5.3",
+    "@rollup/plugin-node-resolve": "^9.0.0",
     "rollup": "^2.34.2",
-    "rollup-plugin-css-only": "^3.0.0",
-    "rollup-plugin-typescript": "^1.0.1",
-    "rollup-plugin-vue": "^6.0.0",
+    "rollup-plugin-terser": "^7.0.2",
+    "rollup-plugin-typescript2": "^0.27.3",
+    "rollup-plugin-vue": "^6.0.0-beta.11",
+    "typescript": "^4.1.2",
+    "lint-staged": "^10.5.3",
     "tslint": "^6.1.3",
     "tslint-config-prettier": "^1.18.0",
     "tslint-eslint-rules": "^5.4.0",
-    "typescript": "^4.1.2",
-    "vue": "^2.6.11"
+    "less": "^3.10.3"
   },
   "author": {
     "name": "bubkoo",
