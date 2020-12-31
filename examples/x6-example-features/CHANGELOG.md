@@ -1,3 +1,19 @@
+## @antv/x6-example-features [1.10.13](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.10.12...@antv/x6-example-features@1.10.13) (2020-12-31)
+
+
+### Bug Fixes
+
+* 🐛 get completed picture when execue toPNG ([6dc50e9](https://github.com/antvis/x6/commit/6dc50e91d94fae0da2bc35a056e6410cb94d07be))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.7.12
+* **@antv/x6-react-shape:** upgraded to 1.1.52
+
 ## @antv/x6-example-features [1.10.12](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.10.11...@antv/x6-example-features@1.10.12) (2020-12-30)
 
 
