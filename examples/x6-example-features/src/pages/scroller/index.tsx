@@ -1,6 +1,6 @@
 import React from 'react'
 import { Button } from 'antd'
-import { Graph, NodeView } from '@antv/x6'
+import { Graph, NodeView, DataUri } from '@antv/x6'
 import '../index.less'
 import './index.less'
 
@@ -162,6 +162,12 @@ export default class Example extends React.Component {
     this.scroller.zoomToFit()
   }
 
+  onDownload = () => {
+    this.graph.toPNG((datauri: string) => {
+      DataUri.downloadDataUri(datauri, 'chart.png')
+    })
+  }
+
   render() {
     return (
       <div className="x6-graph-wrap">
@@ -172,6 +178,7 @@ export default class Example extends React.Component {
           <Button onClick={this.onZoomOutClick}>Zoom Out</Button>
           <Button onClick={this.onZoomInClick}>Zoom In</Button>
           <Button onClick={this.onZoomToFitClick}>Zoom To Fit</Button>
+          <Button onClick={this.onDownload}>Download</Button>
         </div>
         <div
           ref={this.refMinimap}
