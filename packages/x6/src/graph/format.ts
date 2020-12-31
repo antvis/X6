@@ -182,8 +182,7 @@ export class FormatManager extends Base {
     callback: FormatManager.ToSVGCallback,
     options: FormatManager.ToDataURLOptions,
   ) {
-    let viewBox =
-      options.viewBox || this.graph.graphToLocal(this.graph.getContentBBox())
+    let viewBox = options.viewBox || this.graph.getContentBBox()
 
     const padding = NumberExt.normalizeSides(options.padding)
     if (options.width && options.height) {
