@@ -128,10 +128,10 @@ const node = new Node({
 })
 ```
 
-另一个选项 `items` 是一个数组 `PortmMetadata[]`，数组的每一项表示一个链接桩，链接桩支持的选项如下：
+另一个选项 `items` 是一个数组 `PortMetadata[]`，数组的每一项表示一个链接桩，链接桩支持的选项如下：
 
 ```ts
-interface PortmMetadata {
+interface PortMetadata {
   /**
    *  链接桩唯一 ID，默认自动生成。
    */ 
