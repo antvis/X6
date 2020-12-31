@@ -1,3 +1,14 @@
+## @antv/x6-sites [1.8.22](https://github.com/antvis/x6/compare/@antv/x6-sites@1.8.21...@antv/x6-sites@1.8.22) (2020-12-31)
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.7.12
+* **@antv/x6-react-shape:** upgraded to 1.1.52
+
 ## @antv/x6-sites [1.8.21](https://github.com/antvis/x6/compare/@antv/x6-sites@1.8.20...@antv/x6-sites@1.8.21) (2020-12-30)
 
 
