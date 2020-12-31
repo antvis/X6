@@ -243,15 +243,15 @@ export default class FlowGraph {
         },
       },
     })
-    
+
     const c1 = graph.createNode({
-      shape: 'flow-chart-image-rect'
+      shape: 'flow-chart-image-rect',
     })
     const c2 = graph.createNode({
-      shape: 'flow-chart-title-rect'
+      shape: 'flow-chart-title-rect',
     })
     const c3 = graph.createNode({
-      shape: 'flow-chart-animate-text'
+      shape: 'flow-chart-animate-text',
     })
 
     const g1 = graph.createNode({
