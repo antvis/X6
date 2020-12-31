@@ -28,6 +28,8 @@ export class VueShapeView extends NodeView<VueShape> {
     if (root) {
       const component = this.graph.hook.getVueComponent(node)
       const div = document.createElement('div')
+      div.style.width = '100%'
+      div.style.height = '100%'
       let instance = null
       if (typeof component === 'string') {
         div.innerHTML = component

@@ -19,7 +19,9 @@ export const registry = Registry.create<Definition>({
 declare module '@antv/x6/lib/graph/graph' {
   namespace Graph {
     let registerVueComponent: typeof registry.register
+    let unregisterVueComponent: typeof registry.unregister
   }
 }
 
 Graph.registerVueComponent = registry.register
+Graph.unregisterVueComponent = registry.unregister
