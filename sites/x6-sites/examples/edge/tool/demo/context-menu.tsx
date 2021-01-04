@@ -129,13 +129,14 @@ graph.addEdge({
 })
 
 graph.on('cell:contextmenu', ({ cell, e }) => {
+  const p = graph.clientToGraph(e.clientX, e.clientY)
   cell.addTools([
     {
       name: 'contextmenu',
       args: {
         menu,
-        x: e.clientX,
-        y: e.clientY,
+        x: p.x,
+        y: p.y,
       },
     },
   ])
