@@ -1,0 +1,39 @@
+@import '../../style/index';
+
+@knob-prefix-cls: ~'@{x6-prefix}-widget-knob';
+
+.@{knob-prefix-cls} {
+  position: absolute;
+  box-sizing: border-box;
+  width: 16px;
+  height: 16px;
+  margin-top: -8px;
+  margin-left: -8px;
+  cursor: pointer;
+  user-select: none;
+
+  &::before,
+  &::after {
+    position: absolute;
+    transform: rotate(45deg);
+    content: '';
+  }
+
+  &::before {
+    top: 4px;
+    left: 4px;
+    box-sizing: border-box;
+    width: 8px;
+    height: 8px;
+    background-color: #fff;
+  }
+
+  &::after {
+    top: 5px;
+    left: 5px;
+    box-sizing: border-box;
+    width: 6px;
+    height: 6px;
+    background-color: #fca000;
+  }
+}

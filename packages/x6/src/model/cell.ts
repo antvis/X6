@@ -2,6 +2,7 @@ import { NonUndefined } from 'utility-types'
 import { ArrayExt, StringExt, ObjectExt, FunctionExt } from '../util'
 import { Rectangle, Point } from '../geometry'
 import { KeyValue, Size } from '../types'
+import { Knob } from '../addon/knob'
 import { Basecoat } from '../common'
 import { Attr } from '../registry'
 import { Markup, CellView } from '../view'
@@ -1378,6 +1379,7 @@ export namespace Cell {
     zIndex?: number
     visible?: boolean
     data?: any
+    knob?: Knob.Metadata
   }
 
   export interface Defaults extends Common {}

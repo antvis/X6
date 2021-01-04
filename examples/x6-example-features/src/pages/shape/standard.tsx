@@ -11,6 +11,12 @@ export default class Example extends React.Component {
       width: 800,
       height: 600,
       grid: true,
+      // selecting: {
+      //   enabled: true,
+      // },
+      resizing: true,
+      knob: true,
+      panning: true,
     })
 
     graph.addNode({
@@ -223,6 +229,8 @@ export default class Example extends React.Component {
     graph.on('edge:moved', (args) => {
       console.log('edge:moved', args)
     })
+
+    graph.zoomTo(0.5)
   }
 
   refContainer = (container: HTMLDivElement) => {

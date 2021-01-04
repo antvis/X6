@@ -1176,6 +1176,7 @@ export const content = `.x6-graph {
   display: none;
 }
 .x6-widget-transform-active {
+  border-color: transparent;
   pointer-events: all;
 }
 .x6-widget-transform-active > div {
@@ -1184,6 +1185,38 @@ export const content = `.x6-graph {
 .x6-widget-transform-active > .x6-widget-transform-active-handle {
   display: block;
   background-color: #808080;
+}
+.x6-widget-knob {
+  position: absolute;
+  box-sizing: border-box;
+  width: 16px;
+  height: 16px;
+  margin-top: -8px;
+  margin-left: -8px;
+  cursor: pointer;
+  user-select: none;
+}
+.x6-widget-knob::before,
+.x6-widget-knob::after {
+  position: absolute;
+  transform: rotate(45deg);
+  content: '';
+}
+.x6-widget-knob::before {
+  top: 4px;
+  left: 4px;
+  box-sizing: border-box;
+  width: 8px;
+  height: 8px;
+  background-color: #fff;
+}
+.x6-widget-knob::after {
+  top: 5px;
+  left: 5px;
+  box-sizing: border-box;
+  width: 6px;
+  height: 6px;
+  background-color: #fca000;
 }
 .x6-graph-print {
   position: relative;
