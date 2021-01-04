@@ -164,6 +164,7 @@ export namespace Options {
     minimap: boolean | Partial<MiniMapManager.Options>
     keyboard: boolean | Partial<Omit<Keyboard.Options, 'graph'>>
     mousewheel: boolean | Partial<Omit<MouseWheel.Options, 'graph'>>
+    knob: boolean | Partial<Knob>
   }
 
   export interface Manual extends Partial<Common>, Partial<ManualBooleans> {
@@ -195,6 +196,7 @@ export namespace Options {
     minimap: MiniMapManager.Options
     keyboard: Omit<Keyboard.Options, 'graph'>
     mousewheel: Omit<MouseWheel.Options, 'graph'>
+    knob: Knob
   }
 }
 
@@ -406,6 +408,14 @@ export namespace Options {
     [K in keyof TransformingRaw]?: OptionItem<Node, TransformingRaw[K]>
   }
 
+  export interface KnobRaw extends Widget.Options {
+    enabled?: boolean
+  }
+
+  export type Knob = {
+    [K in keyof KnobRaw]?: OptionItem<Node, KnobRaw[K]>
+  }
+
   export interface Translating {
     /**
      * Restrict the translation (movement) of nodes by a given bounding box.
@@ -517,6 +527,7 @@ export namespace Options {
       snapline,
       resizing,
       rotating,
+      knob,
       clipboard,
       history,
       scroller,
@@ -565,6 +576,7 @@ export namespace Options {
       'snapline',
       'resizing',
       'rotating',
+      'knob',
       'clipboard',
       'history',
       'scroller',
@@ -726,6 +738,9 @@ export namespace Options {
       enabled: false,
       factor: 1.2,
       zoomAtMousePosition: true,
+    },
+    knob: {
+      enabled: false,
     },
 
     async: false,
