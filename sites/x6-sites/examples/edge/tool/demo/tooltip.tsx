@@ -37,9 +37,12 @@ class TooltipTool extends ToolsView.ToolItem<EdgeView, TooltipToolOptions> {
   private updatePosition(e?: MouseEvent) {
     const style = this.knob.style
     if (e) {
-      style.left = `${e.clientX}px`
-      style.top = `${e.clientY}px`
+      const p = this.graph.clientToGraph(e.clientX, e.clientY)
+      style.display = 'block'
+      style.left = `${p.x}px`
+      style.top = `${p.y}px`
     } else {
+      style.display = 'none'
       style.left = '-1000px'
       style.top = '-1000px'
     }
