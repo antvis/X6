@@ -1345,6 +1345,7 @@ export namespace Model {
     | 'halo'
     | 'cut'
     | 'paste'
+    | 'knob'
     | 'add-vertex'
     | 'move-anchor'
     | 'move-vertex'

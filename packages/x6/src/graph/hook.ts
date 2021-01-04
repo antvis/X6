@@ -9,6 +9,7 @@ import { CellView } from '../view/cell'
 import { NodeView } from '../view/node'
 import { EdgeView } from '../view/edge'
 import { Widget } from '../addon/common'
+import { Knob } from '../addon/knob'
 import { MiniMap } from '../addon/minimap'
 import { Snapline } from '../addon/snapline'
 import { Scroller } from '../addon/scroller'
@@ -40,6 +41,7 @@ import { PrintManager } from './print'
 import { FormatManager } from './format'
 import { PortManager } from '../model/port'
 import { Rectangle } from '../geometry'
+import { KnobManager } from './knob'
 import { PanningManager } from './panning'
 
 namespace Decorator {
@@ -131,10 +133,48 @@ export class Hook extends Base implements Hook.IHook {
   }
 
   @Decorator.hook()
+  createKnobManager() {
+    return new KnobManager(this.graph)
+  }
+
+  @Decorator.hook()
   createTransform(node: Node, widgetOptions?: Widget.Options) {
     const options = this.getTransformOptions(node)
     if (options.resizable || options.rotatable) {
       return new Transform({
+        node,
+        graph: this.graph,
+        ...options,
+        ...widgetOptions,
+      })
+    }
+
+    return null
+  }
+
+  @Decorator.hook()
+  createKnob(node: Node, widgetOptions?: Widget.Options) {
+    const options = Options.parseOptionGroup<Options.KnobRaw>(
+      this.graph,
+      node,
+      this.options.knob,
+    )
+    const knob = node.prop('knob') as Knob.Metadata
+    if (knob) {
+      if (knob.enabled === false) {
+        return null
+      }
+
+      if (
+        typeof knob.enabled === 'function' &&
+        knob.enabled.call(this.graph, node) === false
+      ) {
+        return null
+      }
+    }
+
+    if (options.enabled) {
+      return new Knob({
         node,
         graph: this.graph,
         ...options,

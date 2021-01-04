@@ -22,6 +22,7 @@ import { DefsManager as Defs } from './defs'
 import { GridManager as Grid } from './grid'
 import { CoordManager as Coord } from './coord'
 import { Keyboard as Shortcut } from './keyboard'
+import { KnobManager as Knob } from './knob'
 import { PrintManager as Print } from './print'
 import { MouseWheel as Wheel } from './mousewheel'
 import { FormatManager as Format } from './format'
@@ -45,6 +46,7 @@ export class Graph extends Basecoat<EventArgs> {
   public readonly hook: HookManager
   public readonly grid: Grid
   public readonly defs: Defs
+  public readonly knob: Knob
   public readonly coord: Coord
   public readonly renderer: ViewRenderer
   public readonly snapline: Snapline
@@ -80,6 +82,7 @@ export class Graph extends Basecoat<EventArgs> {
     this.defs = this.hook.createDefsManager()
     this.coord = this.hook.createCoordManager()
     this.transform = this.hook.createTransformManager()
+    this.knob = this.hook.createKnobManager()
     this.highlight = this.hook.createHighlightManager()
     this.grid = this.hook.createGridManager()
     this.background = this.hook.createBackgroundManager()
@@ -1960,6 +1963,7 @@ export class Graph extends Basecoat<EventArgs> {
     this.grid.dispose()
     this.coord.dispose()
     this.transform.dispose()
+    this.knob.dispose()
     this.highlight.dispose()
     this.background.dispose()
     this.clipboard.dispose()
