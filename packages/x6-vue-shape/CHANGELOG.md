@@ -1,3 +1,10 @@
+## @antv/x6-vue-shape [1.0.20](https://github.com/antvis/x6/compare/@antv/x6-vue-shape@1.0.19...@antv/x6-vue-shape@1.0.20) (2021-01-04)
+
+
+### Bug Fixes
+
+* 🐛 add unregister for react/vue shape ([5937a01](https://github.com/antvis/x6/commit/5937a01ee7ebb85b1dd313510d5b9fa88c8c5f32))
+
 ## @antv/x6-vue-shape [1.0.19](https://github.com/antvis/x6/compare/@antv/x6-vue-shape@1.0.18...@antv/x6-vue-shape@1.0.19) (2020-12-31)
 
 
