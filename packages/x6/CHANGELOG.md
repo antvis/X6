@@ -1,3 +1,10 @@
+# @antv/x6 [1.8.0](https://github.com/antvis/x6/compare/@antv/x6@1.7.12...@antv/x6@1.8.0) (2021-01-04)
+
+
+### Features
+
+* ✨ support html tool ([97624f4](https://github.com/antvis/x6/commit/97624f4a9dfaacc551acd89c5557a2b301fe2d5e))
+
 ## @antv/x6 [1.7.12](https://github.com/antvis/x6/compare/@antv/x6@1.7.11...@antv/x6@1.7.12) (2020-12-31)
 
 
