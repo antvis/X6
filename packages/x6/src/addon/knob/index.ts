@@ -32,15 +32,16 @@ export class Knob extends Widget<Knob.Options> {
     })
 
     this.model.on('*', this.update, this)
+    this.graph.on('scale', this.update, this)
+    this.graph.on('translate', this.update, this)
+
     this.model.on('reseted', this.remove, this)
     this.node.on('removed', this.remove, this)
+
     this.view.on('node:resize', this.onTransform, this)
     this.view.on('node:rotate', this.onTransform, this)
     this.view.on('node:resized', this.onTransformed, this)
     this.view.on('node:rotated', this.onTransformed, this)
-
-    this.graph.on('scale', this.update, this)
-    this.graph.on('translate', this.update, this)
 
     super.startListening()
   }
@@ -49,15 +50,16 @@ export class Knob extends Widget<Knob.Options> {
     this.undelegateEvents()
 
     this.model.off('*', this.update, this)
+    this.graph.off('scale', this.update, this)
+    this.graph.off('translate', this.update, this)
+
     this.model.off('reseted', this.remove, this)
     this.node.off('removed', this.remove, this)
+
     this.view.off('node:resize', this.onTransform, this)
     this.view.off('node:rotate', this.onTransform, this)
     this.view.off('node:resized', this.onTransformed, this)
     this.view.off('node:rotated', this.onTransformed, this)
-
-    this.graph.off('scale', this.update, this)
-    this.graph.off('translate', this.update, this)
 
     super.stopListening()
   }
