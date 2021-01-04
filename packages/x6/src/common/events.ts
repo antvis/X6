@@ -145,7 +145,7 @@ export class Events<EventArgs extends Events.EventArgs = any> {
     if (name !== '*') {
       const list = this.listeners[name]
       if (list != null) {
-        returned = Private.call(list, args)
+        returned = Private.call([...list], args)
       }
     }
 
@@ -153,7 +153,7 @@ export class Events<EventArgs extends Events.EventArgs = any> {
     if (list != null) {
       return FunctionExt.toAsyncBoolean([
         returned,
-        Private.call(list, [name, ...args]),
+        Private.call([...list], [name, ...args]),
       ])
     }
 
