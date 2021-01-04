@@ -124,10 +124,6 @@ graph.addEdge({
     line: {
       stroke: '#a0a0a0',
       strokeWidth: 1,
-      targetMarker: {
-        name: 'classic',
-        size: 7,
-      },
     },
   },
 })
