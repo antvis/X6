@@ -1,6 +1,7 @@
 import { NumberExt } from '../../util'
 import { bodyAttr } from './util'
 import { Base } from '../base'
+import { Angle } from '../../geometry'
 
 const CYLINDER_TILT = 10
 
@@ -23,7 +24,7 @@ export const Cylinder = Base.define({
   attrs: {
     body: {
       ...bodyAttr,
-      lateralArea: CYLINDER_TILT,
+      lateral: CYLINDER_TILT,
     },
     top: {
       ...bodyAttr,
@@ -34,7 +35,7 @@ export const Cylinder = Base.define({
     },
   },
   attrHooks: {
-    lateralArea: {
+    lateral: {
       set(t: number | string, { refBBox }) {
         const isPercentage = NumberExt.isPercentage(t)
         if (isPercentage) {
@@ -109,6 +110,50 @@ export const Cylinder = Base.define({
 
         return { d: data.join(' ') }
       },
+    },
+  },
+  knob: {
+    enabled: true,
+    update({ node, knob }) {
+      const ctm = this.matrix()
+      const bbox = node.getBBox()
+      const lateral = node.attr<number>('body/lateral')
+      const left = bbox.x * ctm.a + ctm.e
+      const top = (bbox.y + lateral) * ctm.d + ctm.f
+      const angle = Angle.normalize(node.getAngle())
+      const transform = angle !== 0 ? `rotate(${angle}deg)` : ''
+      const style = knob.container.style
+      style.transform = transform
+      style.left = `${left}px`
+      style.top = `${top}px`
+    },
+    onMouseMove({ e, node, data }) {
+      const y = e.clientY
+      if (data.lastY == null) {
+        data.lastY = y
+        return
+      }
+
+      const dy = y - data.lastY
+      if (dy !== 0) {
+        const ctm = this.matrix()
+        const bbox = node.getBBox()
+        const previous = node.attr<number>('body/lateral')
+        const delta = dy / ctm.d
+        const min = 0
+        const max = bbox.height / 2
+        const current = NumberExt.clamp(previous + delta, min, max)
+        if (current !== previous) {
+          node.attr({
+            body: { lateral: current },
+            top: {
+              cy: current,
+              ry: current,
+            },
+          })
+          data.lastY = y
+        }
+      }
     },
   },
 })

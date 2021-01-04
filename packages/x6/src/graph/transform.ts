@@ -51,9 +51,7 @@ export class TransformManager extends Base {
 
   protected onNodeSelected({ node }: EventArgs['node:selected']) {
     if (this.isSelectionEnabled) {
-      const widget = this.graph.hook.createTransform(node, {
-        clearAll: false,
-      })
+      const widget = this.graph.hook.createTransform(node, { clearAll: false })
       if (widget) {
         this.widgets.set(node, widget)
       }

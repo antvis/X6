@@ -49,6 +49,8 @@ export class Transform extends Widget<Transform.Options> {
     this.model.on('*', this.update, this)
     this.model.on('reseted', this.remove, this)
     this.node.on('removed', this.remove, this)
+    this.view.on('cell:knob', this.onKnob, this)
+    this.view.on('cell:knobbed', this.onKnobbed, this)
 
     this.graph.on('scale', this.update, this)
     this.graph.on('translate', this.update, this)
@@ -62,15 +64,13 @@ export class Transform extends Widget<Transform.Options> {
     this.model.off('*', this.update, this)
     this.model.off('reseted', this.remove, this)
     this.node.off('removed', this.remove, this)
+    this.view.off('cell:knob', this.onKnob, this)
+    this.view.off('cell:knobbed', this.onKnobbed, this)
 
     this.graph.off('scale', this.update, this)
     this.graph.off('translate', this.update, this)
 
     super.stopListening()
-  }
-
-  protected onRemove() {
-    this.stopListening()
   }
 
   protected renderHandles() {
@@ -140,6 +140,14 @@ export class Transform extends Widget<Transform.Options> {
   remove() {
     this.view.removeClass(Private.NODE_CLS)
     return super.remove()
+  }
+
+  protected onKnob() {
+    this.startHandle()
+  }
+
+  protected onKnobbed() {
+    this.stopHandle()
   }
 
   protected updateResizerDirections() {
@@ -420,25 +428,27 @@ export class Transform extends Widget<Transform.Options> {
     }
   }
 
-  protected startHandle(handle: Element) {
-    this.handle = handle
-
-    this.$(handle).addClass(`${this.containerClassName}-active-handle`)
+  protected startHandle(handle?: Element | null) {
+    this.handle = handle || null
     this.$container.addClass(`${this.containerClassName}-active`)
+    if (handle) {
+      this.$(handle).addClass(`${this.containerClassName}-active-handle`)
 
-    const pos = handle.getAttribute('data-position') as Node.ResizeDirection
-    if (pos) {
-      const dir = Private.DIRECTIONS[Private.POSITIONS.indexOf(pos)]
-      this.$container.addClass(`${this.containerClassName}-cursor-${dir}`)
+      const pos = handle.getAttribute('data-position') as Node.ResizeDirection
+      if (pos) {
+        const dir = Private.DIRECTIONS[Private.POSITIONS.indexOf(pos)]
+        this.$container.addClass(`${this.containerClassName}-cursor-${dir}`)
+      }
     }
   }
 
   protected stopHandle() {
+    this.$container.removeClass(`${this.containerClassName}-active`)
+
     if (this.handle) {
       this.$(this.handle).removeClass(
         `${this.containerClassName}-active-handle`,
       )
-      this.$container.removeClass(`${this.containerClassName}-active`)
 
       const pos = this.handle.getAttribute(
         'data-position',
