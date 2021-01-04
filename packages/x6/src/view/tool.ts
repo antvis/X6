@@ -198,7 +198,7 @@ export class ToolsView extends View {
       }
 
       if (hasHTML) {
-        document.body.appendChild(this.htmlContainer)
+        this.graph.container.appendChild(this.htmlContainer)
       }
     }
     return this
