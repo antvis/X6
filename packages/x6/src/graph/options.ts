@@ -697,6 +697,11 @@ export namespace Options {
     translating: {
       restrict: false,
     },
+    knob: {
+      enabled: false,
+      clearAll: true,
+      clearOnBlankMouseDown: true,
+    },
     embedding: {
       enabled: false,
       findParent: 'bbox',
@@ -738,9 +743,6 @@ export namespace Options {
       enabled: false,
       factor: 1.2,
       zoomAtMousePosition: true,
-    },
-    knob: {
-      enabled: false,
     },
 
     async: false,
