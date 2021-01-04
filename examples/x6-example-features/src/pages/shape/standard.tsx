@@ -229,8 +229,6 @@ export default class Example extends React.Component {
     graph.on('edge:moved', (args) => {
       console.log('edge:moved', args)
     })
-
-    graph.zoomTo(0.5)
   }
 
   refContainer = (container: HTMLDivElement) => {
