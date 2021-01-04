@@ -275,6 +275,10 @@ export class Transform extends Widget<Transform.Options> {
       if (data.action === 'resizing') {
         data = data as EventData.Resizing
         if (!data.resized) {
+          if (view) {
+            view.addClass('node-resizing')
+            notify('node:resize', evt, view)
+          }
           data.resized = true
         }
 
@@ -396,16 +400,24 @@ export class Transform extends Widget<Transform.Options> {
       } else if (data.action === 'rotating') {
         data = data as EventData.Rotating
         if (!data.rotated) {
+          if (view) {
+            view.addClass('node-rotating')
+            notify('node:rotate', evt, view)
+          }
           data.rotated = true
         }
 
+        const currentAngle = node.getAngle() 
         const theta = data.start - Point.create(pos).theta(data.center)
         let target = data.angle + theta
         if (options.rotateGrid) {
           target = Util.snapToGrid(target, options.rotateGrid)
         }
-        node.rotate(target, { absolute: true })
-        notify('node:rotating', evt, view)
+
+        if (currentAngle !== target) {
+          node.rotate(target, { absolute: true })
+          notify('node:rotating', evt, view)
+        }
       }
     }
   }
@@ -456,18 +468,6 @@ export class Transform extends Widget<Transform.Options> {
     this.startHandle(evt.target)
     this.graph.view.undelegateEvents()
     this.delegateDocumentEvents(Private.documentEvents, evt.data)
-
-    const view = this.graph.findViewByCell(this.node) as NodeView
-    const data = this.getEventData<EventData.Resizing | EventData.Rotating>(evt)
-
-    if (view) {
-      view.addClass(`node-${data.action}`)
-      if (data.action === 'resizing') {
-        notify('node:resize', evt, view)
-      } else if (data.action === 'rotating') {
-        notify('node:rotate', evt, view)
-      }
-    }
   }
 
   protected stopAction(evt: JQuery.MouseUpEvent) {
@@ -480,9 +480,9 @@ export class Transform extends Widget<Transform.Options> {
 
     if (view) {
       view.removeClass(`node-${data.action}`)
-      if (data.action === 'resizing') {
+      if (data.action === 'resizing' && data.resized) {
         notify('node:resized', evt, view)
-      } else if (data.action === 'rotating') {
+      } else if (data.action === 'rotating' && data.rotated) {
         notify('node:rotated', evt, view)
       }
     }
