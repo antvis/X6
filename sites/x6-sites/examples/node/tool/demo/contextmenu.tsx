@@ -16,33 +16,29 @@ class Example extends React.Component {
     })
 
     const source = graph.addNode({
-      shape: 'rect',
-      width: 120,
-      height: 50,
-      x: 120,
-      y: 50,
-      label: 'Hello',
+      x: 180,
+      y: 60,
+      width: 100,
+      height: 40,
       attrs: {
         body: {
-          fill: '#efdbff',
-          stroke: '#9254de',
-          strokeWidth: 2,
+          fill: '#f5f5f5',
+          stroke: '#d9d9d9',
+          strokeWidth: 1,
         },
       },
     })
 
     const target = graph.addNode({
-      shape: 'rect',
-      width: 120,
-      height: 50,
-      x: 500,
+      x: 320,
       y: 250,
-      label: 'World',
+      width: 100,
+      height: 40,
       attrs: {
         body: {
-          fill: '#ffd591',
-          stroke: '#ffa940',
-          strokeWidth: 2,
+          fill: '#f5f5f5',
+          stroke: '#d9d9d9',
+          strokeWidth: 1,
         },
       },
     })
@@ -50,6 +46,12 @@ class Example extends React.Component {
     graph.addEdge({
       source,
       target,
+      attrs: {
+        line: {
+          stroke: '#a0a0a0',
+          strokeWidth: 1,
+        },
+      },
     })
 
     graph.on('cell:contextmenu', ({ e }) => {
