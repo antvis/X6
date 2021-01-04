@@ -1,3 +1,16 @@
+# @antv/x6 [1.9.0](https://github.com/antvis/x6/compare/@antv/x6@1.8.0...@antv/x6@1.9.0) (2021-01-04)
+
+
+### Bug Fixes
+
+* 🐛 should render html tool in the graph container ([ebb43a9](https://github.com/antvis/x6/commit/ebb43a9501be68196266db2ffab2cbde54b7bdb4))
+
+
+### Features
+
+* ✨ convert client/rectangle point to graph point/rectangle ([1d55c62](https://github.com/antvis/x6/commit/1d55c62507d112d4a1f52e3ea6c4768017956fa0))
+* ✨ 支持调节手柄,如圆柱,通过调节手柄修改圆柱椭圆面的大小 ([6ae70b8](https://github.com/antvis/x6/commit/6ae70b809e85db4d537e9104830eef1328c16f7a))
+
 # @antv/x6 [1.8.0](https://github.com/antvis/x6/compare/@antv/x6@1.7.12...@antv/x6@1.8.0) (2021-01-04)
 
 
