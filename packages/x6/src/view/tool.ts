@@ -9,6 +9,8 @@ export class ToolsView extends View {
   public tools: ToolsView.ToolItem[] | null
   public options: ToolsView.Options
   public cellView: CellView
+  public svgContainer: SVGGElement
+  public htmlContainer: HTMLDivElement
 
   public get name() {
     return this.options.name
@@ -22,29 +24,26 @@ export class ToolsView extends View {
     return this.cellView.cell
   }
 
-  protected get local() {
-    return this.options.local
-  }
-
   protected get [Symbol.toStringTag]() {
     return ToolsView.toStringTag
   }
 
   constructor(options: ToolsView.Options = {}) {
     super()
-
-    this.container = View.createElement(
-      options.tagName || 'g',
-      options.isSVGElement !== false,
-    )
-
-    Dom.addClass(this.container, this.prefixClassName('cell-tools'))
-
-    if (options.className) {
-      Dom.addClass(this.container, options.className)
-    }
-
+    this.svgContainer = this.createContainer(true, options) as SVGGElement
+    this.htmlContainer = this.createContainer(false, options) as HTMLDivElement
     this.config(options)
+  }
+
+  protected createContainer(svg: boolean, options: ToolsView.Options) {
+    const container = svg
+      ? View.createElement('g', true)
+      : View.createElement('div', false)
+    Dom.addClass(container, this.prefixClassName('cell-tools'))
+    if (options.className) {
+      Dom.addClass(container, options.className)
+    }
+    return container
   }
 
   config(options: ToolsView.ConfigOptions) {
@@ -60,15 +59,19 @@ export class ToolsView extends View {
     this.cellView = options.view
 
     if (this.cell.isEdge()) {
-      Dom.addClass(this.container, this.prefixClassName('edge-tools'))
+      Dom.addClass(this.svgContainer, this.prefixClassName('edge-tools'))
+      Dom.addClass(this.htmlContainer, this.prefixClassName('edge-tools'))
     } else if (this.cell.isNode()) {
-      Dom.addClass(this.container, this.prefixClassName('node-tools'))
+      Dom.addClass(this.svgContainer, this.prefixClassName('node-tools'))
+      Dom.addClass(this.htmlContainer, this.prefixClassName('node-tools'))
     }
 
-    this.container.setAttribute('data-cell-id', this.cell.id)
+    this.svgContainer.setAttribute('data-cell-id', this.cell.id)
+    this.htmlContainer.setAttribute('data-cell-id', this.cell.id)
 
     if (this.name) {
-      this.container.setAttribute('data-tools-name', this.name)
+      this.svgContainer.setAttribute('data-tools-name', this.name)
+      this.htmlContainer.setAttribute('data-tools-name', this.name)
     }
 
     const tools = this.options.items
@@ -108,9 +111,11 @@ export class ToolsView extends View {
       if (tool) {
         tool.config(this.cellView, this)
         tool.render()
-        if (tool.options.isSVGElement !== false) {
-          this.container.appendChild(tool.container)
-        }
+        const container =
+          tool.options.isSVGElement !== false
+            ? this.svgContainer
+            : this.htmlContainer
+        container.appendChild(tool.container)
         this.tools.push(tool)
       }
     }
@@ -174,16 +179,27 @@ export class ToolsView extends View {
       this.tools = null
     }
 
+    Dom.remove(this.svgContainer)
+    Dom.remove(this.htmlContainer)
     return super.remove()
   }
 
   mount() {
+    const tools = this.tools
     const cellView = this.cellView
-    if (cellView) {
-      const parent = this.local
-        ? cellView.container
-        : cellView.graph.view.decorator
-      parent.appendChild(this.container)
+    if (cellView && tools) {
+      const hasSVG = tools.some((tool) => tool.options.isSVGElement !== false)
+      const hasHTML = tools.some((tool) => tool.options.isSVGElement === false)
+      if (hasSVG) {
+        const parent = this.options.local
+          ? cellView.container
+          : cellView.graph.view.decorator
+        parent.appendChild(this.svgContainer)
+      }
+
+      if (hasHTML) {
+        document.body.appendChild(this.htmlContainer)
+      }
     }
     return this
   }
@@ -191,8 +207,6 @@ export class ToolsView extends View {
 
 export namespace ToolsView {
   export interface Options extends ConfigOptions {
-    tagName?: string
-    isSVGElement?: boolean
     className?: string
   }
 
@@ -326,12 +340,12 @@ export namespace ToolsView {
       this.init()
     }
 
+    protected init() {}
+
     protected getOptions(options: Partial<Options>): Options {
       const ctor = (this.constructor as any) as ToolItem
       return ctor.getOptions(options) as Options
     }
-
-    protected init() {}
 
     delegateEvents() {
       if (this.options.events) {
