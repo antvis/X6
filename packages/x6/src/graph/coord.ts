@@ -93,6 +93,14 @@ export class CoordManager extends Base {
     return Dom.transformPoint(clientPoint, this.getClientMatrix().inverse())
   }
 
+  clientToGraphPoint(x: number | Point | Point.PointLike, y?: number) {
+    const clientPoint = Point.create(x, y)
+    return Dom.transformPoint(
+      clientPoint,
+      this.graph.matrix().multiply(this.getClientMatrix().inverse()),
+    )
+  }
+
   pageToLocalPoint(x: number | Point | Point.PointLike, y?: number) {
     const pagePoint = Point.create(x, y)
     const graphPoint = pagePoint.diff(this.getPageOffset())
@@ -117,6 +125,19 @@ export class CoordManager extends Base {
   ) {
     const clientRect = Rectangle.create(x, y, width, height)
     return Dom.transformRectangle(clientRect, this.getClientMatrix().inverse())
+  }
+
+  clientToGraphRect(
+    x: number | Rectangle | Rectangle.RectangleLike,
+    y?: number,
+    width?: number,
+    height?: number,
+  ) {
+    const clientRect = Rectangle.create(x, y, width, height)
+    return Dom.transformRectangle(
+      clientRect,
+      this.graph.matrix().multiply(this.getClientMatrix().inverse()),
+    )
   }
 
   pageToLocalRect(
