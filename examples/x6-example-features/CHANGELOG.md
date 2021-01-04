@@ -1,3 +1,19 @@
+# @antv/x6-example-features [1.11.0](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.10.15...@antv/x6-example-features@1.11.0) (2021-01-04)
+
+
+### Features
+
+* ✨ 支持调节手柄,如圆柱,通过调节手柄修改圆柱椭圆面的大小 ([6ae70b8](https://github.com/antvis/x6/commit/6ae70b809e85db4d537e9104830eef1328c16f7a))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.9.0
+* **@antv/x6-react-shape:** upgraded to 1.1.55
+
 ## @antv/x6-example-features [1.10.15](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.10.14...@antv/x6-example-features@1.10.15) (2021-01-04)
 
 
