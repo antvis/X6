@@ -74,14 +74,16 @@ Graph.registerNodeTool('contextmenu', ContextMenuTool, true)
 
 const menu = (
   <Menu>
-    <Menu.Item>1st menu item</Menu.Item>
-    <Menu.Item>2nd menu item</Menu.Item>
-    <Menu.Item>
+    <Menu.Item key="1">1st menu item</Menu.Item>
+    <Menu.Item key="2">2nd menu item</Menu.Item>
+    <Menu.Item key="3">
       <a target="_blank" rel="noopener noreferrer" href="http://www.tmall.com/">
         3rd menu item
       </a>
     </Menu.Item>
-    <Menu.Item danger={true}>a danger item</Menu.Item>
+    <Menu.Item key="4" danger="true">
+      a danger item
+    </Menu.Item>
   </Menu>
 )
 
@@ -97,6 +99,8 @@ export default class Example extends React.Component {
         visible: true,
       },
       panning: true,
+      mousewheel: true,
+      resizing: true,
     })
 
     const source = graph.addNode({
@@ -139,13 +143,14 @@ export default class Example extends React.Component {
     })
 
     graph.on('cell:contextmenu', ({ cell, e }) => {
+      const p = graph.clientToGraph(e.clientX, e.clientY)
       cell.addTools([
         {
           name: 'contextmenu',
           args: {
             menu,
-            x: e.clientX,
-            y: e.clientY,
+            x: p.x,
+            y: p.y,
           },
         },
       ])
@@ -157,6 +162,8 @@ export default class Example extends React.Component {
 
       document.addEventListener('mousedown', onMouseDown)
     })
+
+    graph.zoomTo(0.8)
   }
 
   refContainer = (container: HTMLDivElement) => {
