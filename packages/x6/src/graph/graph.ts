@@ -1092,6 +1092,30 @@ export class Graph extends Basecoat<EventArgs> {
     return this.coord.graphToLocalPoint(x, y)
   }
 
+  clientToGraph(rect: Rectangle.RectangleLike): Rectangle
+  clientToGraph(x: number, y: number, width: number, height: number): Rectangle
+  clientToGraph(p: Point.PointLike): Point
+  clientToGraph(x: number, y: number): Point
+  clientToGraph(
+    x: number | Point.PointLike | Rectangle.RectangleLike,
+    y?: number,
+    width?: number,
+    height?: number,
+  ) {
+    if (Rectangle.isRectangleLike(x)) {
+      return this.coord.clientToGraphRect(x)
+    }
+    if (
+      typeof x === 'number' &&
+      typeof y === 'number' &&
+      typeof width === 'number' &&
+      typeof height === 'number'
+    ) {
+      return this.coord.clientToGraphRect(x, y, width, height)
+    }
+    return this.coord.clientToGraphPoint(x, y)
+  }
+
   // #endregion
 
   // #region defs
