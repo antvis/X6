@@ -1,74 +1,61 @@
 import React from 'react'
 import ReactDom from 'react-dom'
 import { Tooltip } from 'antd'
-import { Graph, Markup, ToolsView, EdgeView } from '@antv/x6'
+import { Graph, ToolsView, EdgeView } from '@antv/x6'
 
 class TooltipTool extends ToolsView.ToolItem<EdgeView, TooltipToolOptions> {
   private delay = 100
-  private moveTimer: number
-  private enterTimer: number
-  private leaveTimer: number
+  private timer: number
+  private knob: HTMLDivElement
   private tooltipVisible: boolean
 
-  protected onRender() {
+  render() {
+    super.render()
+    this.knob = ToolsView.createElement('div', false) as HTMLDivElement
+    this.knob.style.position = 'absolute'
+    this.container.appendChild(this.knob)
     this.updatePosition()
+    document.addEventListener('mousemove', this.onMouseMove)
+
+    return this
   }
 
   private toggleTooltip(visible: boolean) {
-    ReactDom.unmountComponentAtNode(this.childNodes.foContent)
+    ReactDom.unmountComponentAtNode(this.knob)
 
     if (visible) {
       ReactDom.render(
         <Tooltip title={this.options.tooltip} visible={true}>
           <div />
         </Tooltip>,
-        this.childNodes.foContent,
+        this.knob,
       )
     }
     this.tooltipVisible = visible
   }
 
   private updatePosition(e?: MouseEvent) {
-    const fo = this.childNodes.fo as SVGForeignObjectElement
+    const style = this.knob.style
     if (e) {
-      const pos = this.graph.clientToLocal(e.clientX, e.clientY)
-      fo.setAttribute('x', `${pos.x}`)
-      fo.setAttribute('y', `${pos.y}`)
+      style.left = `${e.clientX}px`
+      style.top = `${e.clientY}px`
     } else {
-      fo.setAttribute('x', `-10000`)
-      fo.setAttribute('y', `-10000`)
-    }
-  }
-
-  private onMouseEnter({ e }: EdgeView.EventArgs['edge:mouseenter']) {
-    this.updatePosition(e.originalEvent)
-    window.clearTimeout(this.leaveTimer)
-    this.enterTimer = window.setTimeout(
-      () => this.toggleTooltip(true),
-      this.delay,
-    )
-    if (this.options.follow != false) {
-      document.addEventListener('mousemove', this.onMouseMove)
+      style.left = '-1000px'
+      style.top = '-1000px'
     }
   }
 
   private onMouseLeave() {
     this.updatePosition()
-    window.clearTimeout(this.enterTimer)
-    this.leaveTimer = window.setTimeout(
-      () => this.toggleTooltip(false),
-      this.delay,
-    )
-    if (this.options.follow != false) {
-      document.removeEventListener('mousemove', this.onMouseMove)
-    }
+    window.clearTimeout(this.timer)
+    window.setTimeout(() => this.toggleTooltip(false), this.delay)
+    document.removeEventListener('mousemove', this.onMouseMove)
   }
 
   private onMouseMove = (e: MouseEvent) => {
-    window.clearTimeout(this.moveTimer)
-    window.clearTimeout(this.enterTimer)
+    window.clearTimeout(this.timer)
     this.updatePosition(e)
-    this.moveTimer = window.setTimeout(() => {
+    this.timer = window.setTimeout(() => {
       if (this.tooltipVisible) {
         this.toggleTooltip(false)
       }
@@ -77,26 +64,25 @@ class TooltipTool extends ToolsView.ToolItem<EdgeView, TooltipToolOptions> {
   }
 
   delegateEvents() {
-    this.cellView.on('edge:mouseenter', this.onMouseEnter, this)
-    this.cellView.on('edge:mouseleave', this.onMouseLeave, this)
+    this.cellView.on('cell:mouseleave', this.onMouseLeave, this)
     return super.delegateEvents()
   }
 
   protected onRemove() {
-    this.cellView.off('edge:mouseenter', this.onMouseEnter, this)
-    this.cellView.off('edge:mouseleave', this.onMouseLeave, this)
+    this.cellView.off('cell:mouseleave', this.onMouseLeave, this)
   }
 }
 
 TooltipTool.config({
-  markup: Markup.getForeignObjectMarkup(),
+  tagName: 'div',
+  isSVGElement: false,
 })
 
 export interface TooltipToolOptions extends ToolsView.ToolItem.Options {
-  follow?: boolean
   tooltip?: string
 }
 
+Graph.registerNodeTool('tooltip', TooltipTool, true)
 Graph.registerEdgeTool('tooltip', TooltipTool, true)
 
 const graph = new Graph({
@@ -104,7 +90,7 @@ const graph = new Graph({
   grid: true,
 })
 
-graph.addEdge({
+const edge1 = graph.addEdge({
   source: { x: 40, y: 40 },
   target: { x: 380, y: 40 },
   vertices: [
@@ -119,12 +105,6 @@ graph.addEdge({
       targetMarker: 'classic',
     },
   },
-  tools: [
-    {
-      name: 'tooltip',
-      args: { follow: false, tooltip: 'tooltip test 1' },
-    },
-  ],
 })
 
 graph.addEdge({
@@ -143,8 +123,19 @@ graph.addEdge({
     },
   },
   connector: 'smooth',
-  tools: {
-    name: 'tooltip',
-    args: { follow: true, tooltip: 'tooltip test 2' },
-  },
+})
+
+graph.on('cell:mouseenter', ({ cell }) => {
+  cell.addTools([
+    {
+      name: 'tooltip',
+      args: {
+        tooltip: cell === edge1 ? 'edge 1 tooltip' : 'edge 2 tooltip ',
+      },
+    },
+  ])
+})
+
+graph.on('cell:mouseleave', ({ cell }) => {
+  cell.removeTools()
 })
