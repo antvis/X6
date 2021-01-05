@@ -147,6 +147,8 @@ export class Hook extends Base implements Hook.IHook {
         ...options,
         ...widgetOptions,
       })
+    }  if (options.clearAll) {
+      Transform.removeInstances(this.graph)
     }
 
     return null
@@ -159,6 +161,16 @@ export class Hook extends Base implements Hook.IHook {
       node,
       this.options.knob,
     )
+
+    const localOptions = {
+      ...options,
+      ...widgetOptions,
+    }
+
+    if (localOptions.clearAll) {
+      Knob.removeInstances(this.graph)
+    }
+
     const knob = node.prop('knob') as Knob.Metadata
     if (knob) {
       if (knob.enabled === false) {
@@ -171,14 +183,15 @@ export class Hook extends Base implements Hook.IHook {
       ) {
         return null
       }
+    } else {
+      return null
     }
 
     if (options.enabled) {
       return new Knob({
         node,
         graph: this.graph,
-        ...options,
-        ...widgetOptions,
+        ...localOptions,
       })
     }
 
