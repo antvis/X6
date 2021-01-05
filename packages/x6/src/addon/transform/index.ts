@@ -47,13 +47,14 @@ export class Transform extends Widget<Transform.Options> {
     })
 
     this.model.on('*', this.update, this)
-    this.model.on('reseted', this.remove, this)
-    this.node.on('removed', this.remove, this)
-    this.view.on('cell:knob', this.onKnob, this)
-    this.view.on('cell:knobbed', this.onKnobbed, this)
-
     this.graph.on('scale', this.update, this)
     this.graph.on('translate', this.update, this)
+
+    this.node.on('removed', this.remove, this)
+    this.model.on('reseted', this.remove, this)
+
+    this.view.on('cell:knob:mousedown', this.onKnobMouseDown, this)
+    this.view.on('cell:knob:mouseup', this.onKnobMouseUp, this)
 
     super.startListening()
   }
@@ -62,13 +63,14 @@ export class Transform extends Widget<Transform.Options> {
     this.undelegateEvents()
 
     this.model.off('*', this.update, this)
-    this.model.off('reseted', this.remove, this)
-    this.node.off('removed', this.remove, this)
-    this.view.off('cell:knob', this.onKnob, this)
-    this.view.off('cell:knobbed', this.onKnobbed, this)
-
     this.graph.off('scale', this.update, this)
     this.graph.off('translate', this.update, this)
+
+    this.node.off('removed', this.remove, this)
+    this.model.off('reseted', this.remove, this)
+
+    this.view.off('cell:knob:mousedown', this.onKnobMouseDown, this)
+    this.view.off('cell:knob:mouseup', this.onKnobMouseUp, this)
 
     super.stopListening()
   }
@@ -142,11 +144,11 @@ export class Transform extends Widget<Transform.Options> {
     return super.remove()
   }
 
-  protected onKnob() {
+  protected onKnobMouseDown() {
     this.startHandle()
   }
 
-  protected onKnobbed() {
+  protected onKnobMouseUp() {
     this.stopHandle()
   }
 
@@ -200,11 +202,11 @@ export class Transform extends Widget<Transform.Options> {
   protected startResizing(evt: JQuery.MouseDownEvent) {
     evt.stopPropagation()
     this.model.startBatch('resize', { cid: this.cid })
-    const relativeDirection = this.$(evt.target).attr(
-      'data-position',
-    ) as Node.ResizeDirection
-    this.prepareResizing(evt, relativeDirection)
+    const dir = this.$(evt.target).attr('data-position') as Node.ResizeDirection
+    const view = this.graph.findViewByCell(this.node) as NodeView
+    this.prepareResizing(evt, dir)
     this.startAction(evt)
+    notify('node:resize:mousedown', evt, view)
   }
 
   protected prepareResizing(
@@ -245,6 +247,7 @@ export class Transform extends Widget<Transform.Options> {
 
     this.model.startBatch('rotate', { cid: this.cid })
 
+    const view = this.graph.findViewByCell(this.node) as NodeView
     const center = this.node.getBBox().getCenter()
     const client = this.graph.snapToGrid(evt.clientX, evt.clientY)
     this.setEventData<EventData.Rotating>(evt, {
@@ -254,6 +257,7 @@ export class Transform extends Widget<Transform.Options> {
       start: Point.create(client).theta(center),
     })
     this.startAction(evt)
+    notify('node:rotate:mousedown', evt, view)
   }
 
   protected onMouseMove(evt: JQuery.MouseMoveEvent) {
@@ -405,6 +409,7 @@ export class Transform extends Widget<Transform.Options> {
           node.resize(width, height, resizeOptions)
           notify('node:resizing', evt, view)
         }
+        notify('node:resize:mousemove', evt, view)
       } else if (data.action === 'rotating') {
         data = data as EventData.Rotating
         if (!data.rotated) {
@@ -415,7 +420,7 @@ export class Transform extends Widget<Transform.Options> {
           data.rotated = true
         }
 
-        const currentAngle = node.getAngle() 
+        const currentAngle = node.getAngle()
         const theta = data.start - Point.create(pos).theta(data.center)
         let target = data.angle + theta
         if (options.rotateGrid) {
@@ -426,17 +431,25 @@ export class Transform extends Widget<Transform.Options> {
           node.rotate(target, { absolute: true })
           notify('node:rotating', evt, view)
         }
+        notify('node:rotate:mousemove', evt, view)
       }
     }
   }
 
   protected onMouseUp(evt: JQuery.MouseUpEvent) {
+    const view = this.graph.findViewByCell(this.node) as NodeView
     const data = this.getEventData<EventData.Resizing | EventData.Rotating>(evt)
     if (data.action) {
       this.stopAction(evt)
       this.model.stopBatch(data.action === 'resizing' ? 'resize' : 'rotate', {
         cid: this.cid,
       })
+
+      if (data.action === 'resizing') {
+        notify('node:resize:mouseup', evt, view)
+      } else if (data.action === 'rotating') {
+        notify('node:rotate:mouseup', evt, view)
+      }
     }
   }
 

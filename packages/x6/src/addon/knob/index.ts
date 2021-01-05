@@ -38,10 +38,10 @@ export class Knob extends Widget<Knob.Options> {
     this.model.on('reseted', this.remove, this)
     this.node.on('removed', this.remove, this)
 
-    this.view.on('node:resize', this.onTransform, this)
-    this.view.on('node:rotate', this.onTransform, this)
-    this.view.on('node:resized', this.onTransformed, this)
-    this.view.on('node:rotated', this.onTransformed, this)
+    this.view.on('node:resize:mousedown', this.onTransform, this)
+    this.view.on('node:rotate:mousedown', this.onTransform, this)
+    this.view.on('node:resize:mouseup', this.onTransformed, this)
+    this.view.on('node:rotate:mouseup', this.onTransformed, this)
 
     super.startListening()
   }
@@ -56,10 +56,10 @@ export class Knob extends Widget<Knob.Options> {
     this.model.off('reseted', this.remove, this)
     this.node.off('removed', this.remove, this)
 
-    this.view.off('node:resize', this.onTransform, this)
-    this.view.off('node:rotate', this.onTransform, this)
-    this.view.off('node:resized', this.onTransformed, this)
-    this.view.off('node:rotated', this.onTransformed, this)
+    this.view.off('node:resize:mousedown', this.onTransform, this)
+    this.view.off('node:rotate:mousedown', this.onTransform, this)
+    this.view.off('node:resize:mouseup', this.onTransformed, this)
+    this.view.off('node:rotate:mouseup', this.onTransformed, this)
 
     super.stopListening()
   }
@@ -154,7 +154,7 @@ export class Knob extends Widget<Knob.Options> {
         node: this.node,
       })
     }
-    this.notify('knob', e)
+    this.notify('knob:mousedown', e)
   }
 
   protected onMouseMove(e: JQuery.MouseMoveEvent) {
@@ -165,6 +165,7 @@ export class Knob extends Widget<Knob.Options> {
       data.knobbing = true
       if (view) {
         view.addClass(Private.KNOBBING)
+        this.notify('knob', e)
       }
       this.model.startBatch('knob', { cid: this.cid })
     }
@@ -178,7 +179,9 @@ export class Knob extends Widget<Knob.Options> {
         node: this.node,
       })
     }
+
     this.notify('knobbing', e)
+    this.notify('knob:mousemove', e)
   }
 
   protected onMouseUp(e: JQuery.MouseUpEvent) {
@@ -204,6 +207,7 @@ export class Knob extends Widget<Knob.Options> {
       this.model.stopBatch('knob', { cid: this.cid })
       this.notify('knobbed', e)
     }
+    this.notify('knob:mouseup', e)
   }
 }
 
