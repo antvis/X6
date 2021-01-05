@@ -1300,7 +1300,7 @@ export namespace Edge {
   }
 
   export function define(config: Config) {
-    const { constructorName, ...others } = config
+    const { constructorName, overwrite, ...others } = config
     const ctor = ObjectExt.createClass<Definition>(
       getClassName(constructorName || others.shape),
       this as Definition,
@@ -1309,7 +1309,7 @@ export namespace Edge {
     ctor.config(others)
 
     if (others.shape) {
-      registry.register(others.shape, ctor)
+      registry.register(others.shape, ctor, overwrite)
     }
 
     return ctor
