@@ -1,3 +1,10 @@
+## @antv/x6 [1.9.2](https://github.com/antvis/x6/compare/@antv/x6@1.9.1...@antv/x6@1.9.2) (2021-01-05)
+
+
+### Bug Fixes
+
+* change node:resize and node:rotate event trigger times ([#505](https://github.com/antvis/x6/issues/505)) ([4156e57](https://github.com/antvis/x6/commit/4156e5712ec1940041e7b22863361a6e6ee820aa))
+
 ## @antv/x6 [1.9.1](https://github.com/antvis/x6/compare/@antv/x6@1.9.0...@antv/x6@1.9.1) (2021-01-05)
 
 
