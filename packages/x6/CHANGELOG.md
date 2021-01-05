@@ -1,3 +1,11 @@
+## @antv/x6 [1.9.3](https://github.com/antvis/x6/compare/@antv/x6@1.9.2...@antv/x6@1.9.3) (2021-01-05)
+
+
+### Bug Fixes
+
+* 🐛 konb 和 transform 的控制旋钮,在交互时只显示正在交互的旋钮 ([73bb1e1](https://github.com/antvis/x6/commit/73bb1e16e329853ae5a47c0a3725000a65efd6a3))
+* 🐛 should clear knob on forcused node changed ([bf83cd8](https://github.com/antvis/x6/commit/bf83cd8760e89358846e216bc2a41c305f8a17fb))
+
 ## @antv/x6 [1.9.2](https://github.com/antvis/x6/compare/@antv/x6@1.9.1...@antv/x6@1.9.2) (2021-01-05)
 
 
