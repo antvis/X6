@@ -1,3 +1,10 @@
+## @antv/x6 [1.9.1](https://github.com/antvis/x6/compare/@antv/x6@1.9.0...@antv/x6@1.9.1) (2021-01-05)
+
+
+### Bug Fixes
+
+* 🐛 事件队列在事件回调用被修改,应该先缓存起来 ([d29ea43](https://github.com/antvis/x6/commit/d29ea43ea6e2b24a0caa2e861849bc01f6b4ce79))
+
 # @antv/x6 [1.9.0](https://github.com/antvis/x6/compare/@antv/x6@1.8.0...@antv/x6@1.9.0) (2021-01-04)
 
 
