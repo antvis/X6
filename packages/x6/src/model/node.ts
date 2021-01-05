@@ -1145,7 +1145,7 @@ export namespace Node {
   }
 
   export function define(config: Config) {
-    const { constructorName, ...others } = config
+    const { constructorName, overwrite, ...others } = config
     const ctor = ObjectExt.createClass<NodeClass>(
       getClassName(constructorName || others.shape),
       this as NodeClass,
@@ -1154,7 +1154,7 @@ export namespace Node {
     ctor.config(others)
 
     if (others.shape) {
-      registry.register(others.shape, ctor)
+      registry.register(others.shape, ctor, overwrite)
     }
 
     return ctor
