@@ -1,3 +1,14 @@
+## @antv/x6-app-er [1.2.70](https://github.com/antvis/x6/compare/@antv/x6-app-er@1.2.69...@antv/x6-app-er@1.2.70) (2021-01-05)
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.9.1
+* **@antv/x6-react-shape:** upgraded to 1.1.56
+
 ## @antv/x6-app-er [1.2.69](https://github.com/antvis/x6/compare/@antv/x6-app-er@1.2.68...@antv/x6-app-er@1.2.69) (2021-01-04)
 
 
