@@ -1753,6 +1753,7 @@ export namespace Cell {
     extends Defaults,
       KeyValue {
     constructorName?: string
+    overwrite?: boolean
     propHooks?: PropHooks<M, C>
     attrHooks?: Attr.Definitions
   }
