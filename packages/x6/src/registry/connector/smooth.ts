@@ -1,13 +1,18 @@
 import { Curve, Path } from '../../geometry'
 import { Connector } from './index'
 
-export const smooth: Connector.Definition = function (
+export interface SmoothConnectorOptions extends Connector.BaseOptions {
+  direction?: 'H' | 'V'
+}
+
+export const smooth: Connector.Definition<SmoothConnectorOptions> = function (
   sourcePoint,
   targetPoint,
   routePoints,
   options = {},
 ) {
   let path
+  let direction = options.direction
 
   if (routePoints && routePoints.length !== 0) {
     const points = [sourcePoint, ...routePoints, targetPoint]
@@ -20,11 +25,12 @@ export const smooth: Connector.Definition = function (
 
     path = new Path()
     path.appendSegment(Path.createSegment('M', sourcePoint))
+    
+    if (!direction) {
+      direction = Math.abs(sourcePoint.x - targetPoint.x) >= Math.abs(sourcePoint.y - targetPoint.y) ? 'H' : 'V'
+    }
 
-    if (
-      Math.abs(sourcePoint.x - targetPoint.x) >=
-      Math.abs(sourcePoint.y - targetPoint.y)
-    ) {
+    if (direction === 'H') {
       const controlPointX = (sourcePoint.x + targetPoint.x) / 2
       path.appendSegment(
         Path.createSegment(
