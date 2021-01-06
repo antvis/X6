@@ -1169,6 +1169,3 @@ export namespace Node {
     return registry.onNotFound(shape)
   }
 }
-
-class CustomNode extends Node {}
-Node.registry.register('test', CustomNode)
