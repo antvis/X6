@@ -1379,7 +1379,7 @@ export namespace Cell {
     zIndex?: number
     visible?: boolean
     data?: any
-    knob?: Knob.Metadata
+    knob?: Knob.Metadata | Knob.Metadata[]
   }
 
   export interface Defaults extends Common {}

@@ -4,7 +4,7 @@ import { Base } from './base'
 import { EventArgs } from './events'
 
 export class KnobManager extends Base {
-  protected widgets: Map<Node, Knob> = new Map()
+  protected widgets: Map<Node, Knob[]> = new Map()
 
   protected get isSelectionEnabled() {
     return this.options.selecting.enabled === true
@@ -28,27 +28,27 @@ export class KnobManager extends Base {
 
   protected onNodeMouseUp({ node }: EventArgs['node:mouseup']) {
     if (!this.isSelectionEnabled) {
-      const widget = this.graph.hook.createKnob(node, { clearAll: true })
-      if (widget) {
-        this.widgets.set(node, widget)
+      const widgets = this.graph.hook.createKnob(node, { clearAll: true })
+      if (widgets) {
+        this.widgets.set(node, widgets)
       }
     }
   }
 
   protected onNodeSelected({ node }: EventArgs['node:selected']) {
     if (this.isSelectionEnabled) {
-      const widget = this.graph.hook.createKnob(node, { clearAll: false })
-      if (widget) {
-        this.widgets.set(node, widget)
+      const widgets = this.graph.hook.createKnob(node, { clearAll: false })
+      if (widgets) {
+        this.widgets.set(node, widgets)
       }
     }
   }
 
   protected onNodeUnSelected({ node }: EventArgs['node:unselected']) {
     if (this.isSelectionEnabled) {
-      const widget = this.widgets.get(node)
-      if (widget) {
-        widget.dispose()
+      const widgets = this.widgets.get(node)
+      if (widgets) {
+        widgets.forEach((widget) => widget.dispose())
       }
       this.widgets.delete(node)
     }
