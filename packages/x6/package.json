@@ -40,6 +40,8 @@
     "build:csstype": "node ./scripts/csstype.js",
     "build:dev": "run-p build:csstype build:less build:cjs build:esm",
     "build:watch": "yarn build:esm --w",
+    "build:watch:esm": "yarn build:esm --w",
+    "build:watch:cjs": "yarn build:cjs --w",
     "build": "run-p build:readme build:version build:dev build:umd",
     "prebuild": "run-s lint clean",
     "test": "karma start",
