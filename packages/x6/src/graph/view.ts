@@ -166,6 +166,10 @@ export class GraphView extends View {
     this.setEventData<EventData.Moving>(e, {
       currentView: view || null,
       mouseMovedCount: 0,
+      startPosition: {
+        x: e.clientX,
+        y: e.clientY,
+      }
     })
     const ctor = this.constructor as typeof GraphView
     this.delegateDocumentEvents(ctor.documentEvents, e.data)
@@ -206,6 +210,16 @@ export class GraphView extends View {
 
   protected onMouseMove(evt: JQuery.MouseMoveEvent) {
     const data = this.getEventData<EventData.Moving>(evt)
+    
+    const startPosition = data.startPosition
+    if (
+      startPosition &&
+      startPosition.x === evt.clientX &&
+      startPosition.y === evt.clientY
+    ) {
+      return
+    }
+
     if (data.mouseMovedCount == null) {
       data.mouseMovedCount = 0
     }
@@ -626,6 +640,7 @@ export namespace GraphView {
 namespace EventData {
   export interface Moving {
     mouseMovedCount?: number
+    startPosition?: { x: number, y: number }
     currentView?: CellView | null
   }
 }
