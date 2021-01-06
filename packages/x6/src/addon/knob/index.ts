@@ -16,7 +16,14 @@ export class Knob extends Widget<Knob.Options> {
   }
 
   protected get metadata() {
-    return this.cell.prop('knob') as Knob.Metadata
+    const meta = this.cell.prop('knob')
+    if (Array.isArray(meta)) {
+      if (this.options.index != null) {
+        return meta[this.options.index]
+      }
+      return null
+    }
+    return meta as Knob.Metadata
   }
 
   protected init(options: Knob.Options) {
@@ -42,6 +49,8 @@ export class Knob extends Widget<Knob.Options> {
     this.view.on('node:rotate:mousedown', this.onTransform, this)
     this.view.on('node:resize:mouseup', this.onTransformed, this)
     this.view.on('node:rotate:mouseup', this.onTransformed, this)
+    this.view.on('cell:knob:mousedown', this.onKnobMouseDown, this)
+    this.view.on('cell:knob:mouseup', this.onKnobMouseUp, this)
 
     super.startListening()
   }
@@ -60,6 +69,8 @@ export class Knob extends Widget<Knob.Options> {
     this.view.off('node:rotate:mousedown', this.onTransform, this)
     this.view.off('node:resize:mouseup', this.onTransformed, this)
     this.view.off('node:rotate:mouseup', this.onTransformed, this)
+    this.view.off('cell:knob:mousedown', this.onKnobMouseDown, this)
+    this.view.off('cell:knob:mouseup', this.onKnobMouseUp, this)
 
     super.stopListening()
   }
@@ -93,12 +104,30 @@ export class Knob extends Widget<Knob.Options> {
     }
   }
 
-  protected onTransform() {
+  protected hide() {
     this.container.style.display = 'none'
   }
 
-  protected onTransformed() {
+  protected show() {
     this.container.style.display = ''
+  }
+
+  protected onTransform() {
+    this.hide()
+  }
+
+  protected onTransformed() {
+    this.show()
+  }
+
+  protected onKnobMouseDown({ knob }: { knob: Knob }) {
+    if (this.cid !== knob.cid) {
+      this.hide()
+    }
+  }
+
+  protected onKnobMouseUp() {
+    this.show()
   }
 
   protected notify(name: string, evt: JQuery.TriggeredEvent) {
@@ -112,6 +141,7 @@ export class Knob extends Widget<Knob.Options> {
         cell: this.cell,
         x: localPoint.x,
         y: localPoint.y,
+        knob: this,
       })
 
       if (this.cell.isNode()) {
@@ -122,6 +152,7 @@ export class Knob extends Widget<Knob.Options> {
           cell: this.cell,
           x: localPoint.x,
           y: localPoint.y,
+          knob: this,
         })
       } else if (this.cell.isEdge()) {
         this.view.notify(`edge:${name}`, {
@@ -131,6 +162,7 @@ export class Knob extends Widget<Knob.Options> {
           cell: this.cell,
           x: localPoint.x,
           y: localPoint.y,
+          knob: this,
         })
       }
     }
@@ -214,6 +246,7 @@ export class Knob extends Widget<Knob.Options> {
 export namespace Knob {
   export interface Options extends Widget.Options {
     className?: string
+    index?: number
   }
 
   interface UpdateArgs {
