@@ -147,7 +147,8 @@ export class Hook extends Base implements Hook.IHook {
         ...options,
         ...widgetOptions,
       })
-    }  if (options.clearAll) {
+    }
+    if (options.clearAll) {
       Transform.removeInstances(this.graph)
     }
 
@@ -171,31 +172,41 @@ export class Hook extends Base implements Hook.IHook {
       Knob.removeInstances(this.graph)
     }
 
-    const knob = node.prop('knob') as Knob.Metadata
-    if (knob) {
-      if (knob.enabled === false) {
-        return null
+    localOptions.clearAll = false
+
+    const knob = node.prop('knob') as Knob.Metadata | Knob.Metadata[]
+    const widgets: Knob[] = []
+    const meta = Array.isArray(knob) ? knob : [knob]
+
+    meta.forEach((knob, index) => {
+      if (knob) {
+        if (knob.enabled === false) {
+          return
+        }
+
+        if (
+          typeof knob.enabled === 'function' &&
+          knob.enabled.call(this.graph, node) === false
+        ) {
+          return
+        }
+      } else {
+        return
       }
 
-      if (
-        typeof knob.enabled === 'function' &&
-        knob.enabled.call(this.graph, node) === false
-      ) {
-        return null
+      if (options.enabled) {
+        widgets.push(
+          new Knob({
+            node,
+            index,
+            graph: this.graph,
+            ...localOptions,
+          }),
+        )
       }
-    } else {
-      return null
-    }
+    })
 
-    if (options.enabled) {
-      return new Knob({
-        node,
-        graph: this.graph,
-        ...localOptions,
-      })
-    }
-
-    return null
+    return widgets
   }
 
   protected getTransformOptions(node: Node) {
