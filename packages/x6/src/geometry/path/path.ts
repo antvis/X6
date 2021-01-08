@@ -11,6 +11,7 @@ import { MoveTo } from './moveto'
 import { CurveTo } from './curveto'
 import { Segment } from './segment'
 import { normalizePathData } from './normalize'
+import * as Util from './util'
 
 export class Path extends Geometry {
   protected readonly PRECISION: number = 3
@@ -176,8 +177,112 @@ export class Path extends Geometry {
     return this.appendSegment(CurveTo.create.call(null, ...args))
   }
 
+  arcTo(
+    rx: number,
+    ry: number,
+    xAxisRotation: number,
+    largeArcFlag: 0 | 1,
+    sweepFlag: 0 | 1,
+    endX: number,
+    endY: number,
+  ): this
+  arcTo(
+    rx: number,
+    ry: number,
+    xAxisRotation: number,
+    largeArcFlag: 0 | 1,
+    sweepFlag: 0 | 1,
+    endPoint: Point.PointLike,
+  ): this
+  arcTo(
+    rx: number,
+    ry: number,
+    xAxisRotation: number,
+    largeArcFlag: 0 | 1,
+    sweepFlag: 0 | 1,
+    endX: number | Point.PointLike,
+    endY?: number,
+  ) {
+    const start = this.end || new Point()
+    const points =
+      typeof endX === 'number'
+        ? Util.arcToCurves(
+            start.x,
+            start.y,
+            rx,
+            ry,
+            xAxisRotation,
+            largeArcFlag,
+            sweepFlag,
+            endX,
+            endY as number,
+          )
+        : Util.arcToCurves(
+            start.x,
+            start.y,
+            rx,
+            ry,
+            xAxisRotation,
+            largeArcFlag,
+            sweepFlag,
+            endX.x,
+            endX.y,
+          )
+
+    if (points != null) {
+      for (let i = 0, ii = points.length; i < ii; i += 6) {
+        this.curveTo(
+          points[i],
+          points[i + 1],
+          points[i + 2],
+          points[i + 3],
+          points[i + 4],
+          points[i + 5],
+        )
+      }
+    }
+    return this
+  }
+
+  quadTo(controlPoint: Point.PointLike, endPoint: Point.PointLike): this
+  quadTo(
+    controlPointX: number,
+    controlPointY: number,
+    endPointX: number,
+    endPointY: number,
+  ): this
+  quadTo(
+    x1: number | Point.PointLike,
+    y1: number | Point.PointLike,
+    x?: number,
+    y?: number,
+  ) {
+    const start = this.end || new Point()
+    const data = ['M', start.x, start.y]
+    if (typeof x1 === 'number') {
+      data.push('Q', x1, y1 as number, x as number, y as number)
+    } else {
+      const p = y1 as Point.PointLike
+      data.push(`Q`, x1.x, x1.y, p.x, p.y)
+    }
+    const path = Path.parse(data.join(' '))
+    this.appendSegment(path.segments.slice(1))
+    return this
+  }
+
   close() {
     return this.appendSegment(Close.create())
+  }
+
+  drawPoints(
+    points: (Point.PointLike | Point.PointData)[],
+    options: Util.DrawPointsOptions = {},
+  ) {
+    const raw = Util.drawPoints(points, options)
+    const sub = Path.parse(raw)
+    if (sub && sub.segments) {
+      this.appendSegment(sub.segments)
+    }
   }
 
   bbox() {
@@ -1077,6 +1182,11 @@ export class Path extends Geometry {
     return this
   }
 
+  rotate(angle: number, origin?: Point.PointLike | Point.PointData) {
+    this.segments.forEach((segment) => segment.rotate(angle, origin))
+    return this
+  }
+
   translate(tx: number, ty: number): this
   translate(p: Point.PointLike): this
   translate(tx: number | Point.PointLike, ty?: number) {
@@ -1129,6 +1239,10 @@ export class Path extends Geometry {
 
     return this.segments.map((s) => s.serialize()).join(' ')
   }
+
+  toString() {
+    return this.serialize()
+  }
 }
 
 export namespace Path {
@@ -1168,18 +1282,6 @@ export namespace Path {
 }
 
 export namespace Path {
-  const regexSupportedData = new RegExp(`^[\\s\\dLMCZz,.]*$`)
-
-  export function isSupported(data: any) {
-    if (typeof data !== 'string') {
-      return false
-    }
-
-    return regexSupportedData.test(data)
-  }
-
-  export const normalize = normalizePathData
-
   export function parse(pathData: string) {
     if (!pathData) {
       return new Path()
@@ -1300,4 +1402,12 @@ export namespace Path {
 
     throw new Error(`Invalid path segment type "${type}"`)
   }
+}
+
+export namespace Path {
+  export const normalize = normalizePathData
+  export const isValid = Util.isValid
+  export const drawArc = Util.drawArc
+  export const drawPoints = Util.drawPoints
+  export const arcToCurves = Util.arcToCurves
 }
