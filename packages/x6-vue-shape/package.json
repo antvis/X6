@@ -37,8 +37,8 @@
     ]
   },
   "peerDependencies": {
-    "@antv/x6": "^1.10.1",
-    "vue": "^2.6.11"
+    "@antv/x6": ">=1.0.0",
+    "vue": ">=2.6.11"
   },
   "devDependencies": {
     "@rollup/plugin-replace": "^2.3.4",
