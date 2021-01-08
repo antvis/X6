@@ -1,3 +1,15 @@
+# @antv/x6 [1.11.0](https://github.com/antvis/x6/compare/@antv/x6@1.10.2...@antv/x6@1.11.0) (2021-01-08)
+
+
+### Bug Fixes
+
+* fix mousemove event fires on first mousedown ([2cb270e](https://github.com/antvis/x6/commit/2cb270e189361670b2479b4a9c9694b953bdb8ab))
+
+
+### Features
+
+* add direction for smooth connector ([deec3bc](https://github.com/antvis/x6/commit/deec3bc805c5af1d2d0fc81a25c0819a6072f99e))
+
 ## @antv/x6 [1.10.2](https://github.com/antvis/x6/compare/@antv/x6@1.10.1...@antv/x6@1.10.2) (2021-01-08)
 
 
