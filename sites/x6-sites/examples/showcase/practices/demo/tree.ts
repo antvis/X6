@@ -143,6 +143,7 @@ const graph = new Graph({
   frozen: true,
   scroller: true,
   interacting: false,
+  sorting: 'approx',
   background: {
     color: '#f5f5f5',
   },
