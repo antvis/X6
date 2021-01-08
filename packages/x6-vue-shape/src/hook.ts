@@ -1,5 +1,5 @@
 import { Graph, FunctionExt } from '@antv/x6'
-import { Definition } from './registry'
+import { registry, Definition } from './registry'
 import { VueShape } from './node'
 
 declare module '@antv/x6/lib/graph/hook' {
@@ -23,9 +23,13 @@ Graph.Hook.prototype.getVueComponent = function (node: VueShape) {
     }
   }
 
-  const ret = node.getComponent()
-  if (typeof ret === 'function') {
-    return FunctionExt.call(ret, this.graph, node)
+  let ret = node.getComponent()
+  if (typeof ret === 'string') {
+    const component = registry.get(ret)
+    if (component == null) {
+      return registry.onNotFound(ret)
+    }
+    ret = component
   }
 
   return ret as Definition
