@@ -1,3 +1,14 @@
+## @antv/x6-example-features [1.12.3](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.12.2...@antv/x6-example-features@1.12.3) (2021-01-08)
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.11.0
+* **@antv/x6-react-shape:** upgraded to 1.2.1
+
 ## @antv/x6-example-features [1.12.2](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.12.1...@antv/x6-example-features@1.12.2) (2021-01-08)
 
 
