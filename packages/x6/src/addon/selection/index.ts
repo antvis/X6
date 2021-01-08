@@ -78,8 +78,8 @@ export class Selection extends View<Selection.EventArgs> {
       true,
     )
 
-    graph.on('scale', this.onTransformed, this)
-    graph.on('translate', this.onTransformed, this)
+    graph.on('scale', this.onGraphTransformed, this)
+    graph.on('translate', this.onGraphTransformed, this)
     graph.model.on('updated', this.onModelUpdated, this)
 
     collection.on('added', this.onCellAdded, this)
@@ -96,8 +96,8 @@ export class Selection extends View<Selection.EventArgs> {
 
     this.undelegateEvents()
 
-    graph.off('scale', this.onTransformed, this)
-    graph.off('translate', this.onTransformed, this)
+    graph.off('scale', this.onGraphTransformed, this)
+    graph.off('translate', this.onGraphTransformed, this)
     graph.model.off('updated', this.onModelUpdated, this)
 
     collection.off('added', this.onCellAdded, this)
@@ -112,7 +112,7 @@ export class Selection extends View<Selection.EventArgs> {
     this.stopListening()
   }
 
-  protected onTransformed() {
+  protected onGraphTransformed() {
     this.updateSelectionBoxes({ async: false })
   }
 
