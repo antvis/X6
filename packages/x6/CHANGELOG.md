@@ -1,3 +1,10 @@
+## @antv/x6 [1.10.1](https://github.com/antvis/x6/compare/@antv/x6@1.10.0...@antv/x6@1.10.1) (2021-01-08)
+
+
+### Bug Fixes
+
+* update selection box when cell:changed ([#517](https://github.com/antvis/x6/issues/517)) ([c8234d5](https://github.com/antvis/x6/commit/c8234d5df1c7cb7910a93d5d7314c01c7b4023b0))
+
 # @antv/x6 [1.10.0](https://github.com/antvis/x6/compare/@antv/x6@1.9.3...@antv/x6@1.10.0) (2021-01-08)
 
 
