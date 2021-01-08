@@ -1,3 +1,18 @@
+# @antv/x6-vue-shape [1.1.0](https://github.com/antvis/x6/compare/@antv/x6-vue-shape@1.0.27...@antv/x6-vue-shape@1.1.0) (2021-01-08)
+
+
+### Features
+
+* ✨ dot not update peerDependencies with x6 publish ([232fbab](https://github.com/antvis/x6/commit/232fbabf901705874c59178d9f014b1aedc96637))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.10.2
+
 ## @antv/x6-vue-shape [1.0.27](https://github.com/antvis/x6/compare/@antv/x6-vue-shape@1.0.26...@antv/x6-vue-shape@1.0.27) (2021-01-08)
 
 
