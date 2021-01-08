@@ -1,3 +1,19 @@
+# @antv/x6-example-features [1.12.0](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.11.3...@antv/x6-example-features@1.12.0) (2021-01-08)
+
+
+### Features
+
+* ✨ add flowchart shapes ([92430a2](https://github.com/antvis/x6/commit/92430a2efd41076af65da527f6e9c5093003154e))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.10.0
+* **@antv/x6-react-shape:** upgraded to 1.1.59
+
 ## @antv/x6-example-features [1.11.3](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.11.2...@antv/x6-example-features@1.11.3) (2021-01-05)
 
 
