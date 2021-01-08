@@ -84,7 +84,6 @@ export class Renderer extends Base {
 
     const model = this.model
     if (!this.isAsync()) {
-      // UPDATE_DELAYING_BATCHES: ['translate'],
       const updateDelayingBatches = Renderer.UPDATE_DELAYING_BATCHES
       if (
         updateDelayingBatches.includes(name as Model.BatchName) &&
@@ -94,7 +93,6 @@ export class Renderer extends Base {
       }
     }
 
-    // SORT_DELAYING_BATCHES: ['add', 'to-front', 'to-back'],
     const sortDelayingBatches = Renderer.SORT_DELAYING_BATCHES
     if (
       sortDelayingBatches.includes(name as Model.BatchName) &&
@@ -320,7 +318,6 @@ export class Renderer extends Base {
     if (
       this.isFrozen() ||
       (isAsync && options.async !== false) ||
-      // UPDATE_DELAYING_BATCHES = ['translate']
       this.model.hasActiveBatch(Renderer.UPDATE_DELAYING_BATCHES)
     ) {
       return

@@ -1330,9 +1330,12 @@ export class Cell<
     data: KeyValue = {},
     model: Model | null = this.model,
   ) {
+    this.notify('batch:start', { name, data, cell: this })
+
     if (model) {
       model.startBatch(name, { ...data, cell: this })
     }
+
     return this
   }
 
@@ -1344,6 +1347,8 @@ export class Cell<
     if (model) {
       model.stopBatch(name, { ...data, cell: this })
     }
+
+    this.notify('batch:stop', { name, data, cell: this })
     return this
   }
 
@@ -1555,6 +1560,18 @@ export namespace Cell {
       cell: Cell
       edge: Edge
       removed: Edge.Label[]
+    }
+
+    'batch:start': {
+      name: Model.BatchName
+      data: KeyValue
+      cell: Cell
+    }
+
+    'batch:stop': {
+      name: Model.BatchName
+      data: KeyValue
+      cell: Cell
     }
 
     changed: {
