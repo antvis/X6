@@ -1,3 +1,11 @@
+## @antv/x6 [1.10.2](https://github.com/antvis/x6/compare/@antv/x6@1.10.1...@antv/x6@1.10.2) (2021-01-08)
+
+
+### Bug Fixes
+
+* 🐛 should trigger batch event on cell ([429f4e8](https://github.com/antvis/x6/commit/429f4e8b6a394dd10412fce4775af22af583cadc))
+* 🐛 update selection boxs on after cell view updated ([7e5f759](https://github.com/antvis/x6/commit/7e5f75925d98aabcc4a96baef4670beb76d6996a))
+
 ## @antv/x6 [1.10.1](https://github.com/antvis/x6/compare/@antv/x6@1.10.0...@antv/x6@1.10.1) (2021-01-08)
 
 
