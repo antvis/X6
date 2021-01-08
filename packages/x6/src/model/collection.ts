@@ -434,6 +434,9 @@ export namespace Collection {
     'cell:vertexs:removed': Cell.EventArgs['vertexs:removed']
     'cell:labels:added': Cell.EventArgs['labels:added']
     'cell:labels:removed': Cell.EventArgs['labels:removed']
+
+    'cell:batch:start': Cell.EventArgs['batch:start']
+    'cell:batch:stop': Cell.EventArgs['batch:stop']
   }
 
   export interface NodeEventArgs {
@@ -478,6 +481,9 @@ export namespace Collection {
       Cell.EventArgs['change:portContainerMarkup']
     'node:ports:added': NodeEventCommonArgs & Cell.EventArgs['ports:added']
     'node:ports:removed': NodeEventCommonArgs & Cell.EventArgs['ports:removed']
+
+    'node:batch:start': NodeEventCommonArgs & Cell.EventArgs['batch:start']
+    'node:batch:stop': NodeEventCommonArgs & Cell.EventArgs['batch:stop']
 
     // 'node:translate': NodeEventCommonArgs
     // 'node:translating': NodeEventCommonArgs
@@ -542,5 +548,8 @@ export namespace Collection {
     'edge:labels:added': EdgeEventCommonArgs & Cell.EventArgs['labels:added']
     'edge:labels:removed': EdgeEventCommonArgs &
       Cell.EventArgs['labels:removed']
+
+    'edge:batch:start': EdgeEventCommonArgs & Cell.EventArgs['batch:start']
+    'edge:batch:stop': EdgeEventCommonArgs & Cell.EventArgs['batch:stop']
   }
 }
