@@ -42,8 +42,8 @@ export namespace Plugin {
         // Update version of dependency in manifest.
         updateDependency('dependencies', p.name, release.version)
         updateDependency('devDependencies', p.name, release.version)
-        updateDependency('peerDependencies', p.name, release.version)
-        updateDependency('optionalDependencies', p.name, release.version)
+        // updateDependency('peerDependencies', p.name, release.version)
+        // updateDependency('optionalDependencies', p.name, release.version)
       })
 
     // Write package.json back out.
