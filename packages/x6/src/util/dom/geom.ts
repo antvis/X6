@@ -238,7 +238,7 @@ export function toGeometryShape(elem: SVGElement) {
 
     case 'path': {
       let d = elem.getAttribute('d') as string
-      if (!Path.isSupported(d)) {
+      if (!Path.isValid(d)) {
         d = Path.normalize(d)
       }
       return Path.parse(d)
