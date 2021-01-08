@@ -1,3 +1,19 @@
+# @antv/x6-sites [1.9.0](https://github.com/antvis/x6/compare/@antv/x6-sites@1.8.31...@antv/x6-sites@1.9.0) (2021-01-08)
+
+
+### Features
+
+* add direction for smooth connector ([deec3bc](https://github.com/antvis/x6/commit/deec3bc805c5af1d2d0fc81a25c0819a6072f99e))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.11.0
+* **@antv/x6-react-shape:** upgraded to 1.2.1
+
 ## @antv/x6-sites [1.8.31](https://github.com/antvis/x6/compare/@antv/x6-sites@1.8.30...@antv/x6-sites@1.8.31) (2021-01-08)
 
 
