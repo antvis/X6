@@ -87,7 +87,7 @@ export class Selection extends View<Selection.EventArgs> {
     collection.on('reseted', this.onReseted, this)
     collection.on('updated', this.onCollectionUpdated, this)
     collection.on('node:change:position', this.onNodePositionChanged, this)
-    collection.on('cell:change:*', this.onCellChanged, this)
+    collection.on('cell:changed', this.onCellChanged, this)
   }
 
   protected stopListening() {
@@ -105,7 +105,7 @@ export class Selection extends View<Selection.EventArgs> {
     collection.off('reseted', this.onReseted, this)
     collection.off('updated', this.onCollectionUpdated, this)
     collection.off('node:change:position', this.onNodePositionChanged, this)
-    collection.off('cell:change:*', this.onCellChanged, this)
+    collection.off('cell:changed', this.onCellChanged, this)
   }
 
   protected onRemove() {
