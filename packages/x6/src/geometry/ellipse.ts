@@ -232,6 +232,17 @@ export class Ellipse extends Geometry implements Ellipse.EllipseLike {
     return this
   }
 
+  rotate(angle: number, origin?: Point.PointLike | Point.PointData) {
+    const rect = Rectangle.fromEllipse(this)
+    rect.rotate(angle, origin)
+    const ellipse = Ellipse.fromRect(rect)
+    this.a = ellipse.a
+    this.b = ellipse.b
+    this.x = ellipse.x
+    this.y = ellipse.y
+    return this
+  }
+
   translate(dx: number, dy: number): this
   translate(p: Point.PointLike | Point.PointData): this
   translate(dx: number | Point.PointLike | Point.PointData, dy?: number): this {

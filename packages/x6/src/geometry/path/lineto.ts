@@ -98,6 +98,11 @@ export class LineTo extends Segment {
     return this
   }
 
+  rotate(angle: number, origin?: Point.PointLike | Point.PointData) {
+    this.end.rotate(angle, origin)
+    return this
+  }
+
   translate(tx: number, ty: number): this
   translate(p: Point.PointLike | Point.PointData): this
   translate(tx: number | Point.PointLike | Point.PointData, ty?: number): this {
