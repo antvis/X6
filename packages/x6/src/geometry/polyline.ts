@@ -45,6 +45,11 @@ export class Polyline extends Geometry {
     return this
   }
 
+  rotate(angle: number, origin?: Point.PointLike | Point.PointData) {
+    this.points.forEach((p) => p.rotate(angle, origin))
+    return this
+  }
+
   translate(dx: number, dy: number): this
   translate(p: Point.PointLike | Point.PointData): this
   translate(dx: number | Point.PointLike | Point.PointData, dy?: number): this {

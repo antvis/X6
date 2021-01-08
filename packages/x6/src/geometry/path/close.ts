@@ -97,6 +97,10 @@ export class Close extends Segment {
     return this
   }
 
+  rotate() {
+    return this
+  }
+
   translate() {
     return this
   }
