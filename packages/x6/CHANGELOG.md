@@ -1,3 +1,18 @@
+# @antv/x6 [1.10.0](https://github.com/antvis/x6/compare/@antv/x6@1.9.3...@antv/x6@1.10.0) (2021-01-08)
+
+
+### Bug Fixes
+
+* 🐛 can overwirte shape when define new shape with `Node.define(...)` ([f47fe4c](https://github.com/antvis/x6/commit/f47fe4cdef2da7ac6bb188c3ae131dffc2192cdb))
+* 🐛 should support multi knobs ([9fe76b9](https://github.com/antvis/x6/commit/9fe76b9c82c7e6040a4dcca00c417183a6fcb130))
+
+
+### Features
+
+* ✨ add `arcTo`, `quadTo`, `drawPoints` methods for path ([00e8fd0](https://github.com/antvis/x6/commit/00e8fd0ec06e442833dd3f6c7ce7c05aabc5b556))
+* ✨ add `position` hook for knobs ([3e2f315](https://github.com/antvis/x6/commit/3e2f3154a7635f1b94176d05e6780d4b79761037))
+* ✨ add `rotate` method for geoemtrys ([90a5603](https://github.com/antvis/x6/commit/90a56037b16adff6fc3fbf50660eb95d3bd6bd2d))
+
 ## @antv/x6 [1.9.3](https://github.com/antvis/x6/compare/@antv/x6@1.9.2...@antv/x6@1.9.3) (2021-01-05)
 
 
