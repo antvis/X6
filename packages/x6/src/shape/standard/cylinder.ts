@@ -1,12 +1,12 @@
 import { NumberExt } from '../../util'
 import { bodyAttr } from './util'
 import { Base } from '../base'
-import { Angle } from '../../geometry'
 
 const CYLINDER_TILT = 10
 
 export const Cylinder = Base.define({
   shape: 'cylinder',
+  overwrite: true,
   markup: [
     {
       tagName: 'path',
@@ -114,36 +114,23 @@ export const Cylinder = Base.define({
   },
   knob: {
     enabled: true,
-    update({ node, knob }) {
-      const ctm = this.matrix()
-      const bbox = node.getBBox()
+    position({ node }) {
       const lateral = node.attr<number>('body/lateral')
-      const left = bbox.x * ctm.a + ctm.e
-      const top = (bbox.y + lateral) * ctm.d + ctm.f
-      const angle = Angle.normalize(node.getAngle())
-      const transform = angle !== 0 ? `rotate(${angle}deg)` : ''
-      const style = knob.container.style
-      style.transform = transform
-      style.left = `${left}px`
-      style.top = `${top}px`
+      return { x: 0, y: lateral }
     },
-    onMouseMove({ e, node, data }) {
-      const y = e.clientY
-      if (data.lastY == null) {
-        data.lastY = y
-        return
-      }
-
-      const dy = y - data.lastY
-      if (dy !== 0) {
-        const ctm = this.matrix()
+    onMouseMove({ node, data, deltaY }) {
+      if (deltaY !== 0) {
         const bbox = node.getBBox()
         const previous = node.attr<number>('body/lateral')
-        const delta = dy / ctm.d
+
+        if (data.round == null) {
+          data.round = previous
+        }
         const min = 0
         const max = bbox.height / 2
-        const current = NumberExt.clamp(previous + delta, min, max)
+        const current = NumberExt.clamp(data.round + deltaY, min, max)
         if (current !== previous) {
+          console.log(current)
           node.attr({
             body: { lateral: current },
             top: {
@@ -151,7 +138,6 @@ export const Cylinder = Base.define({
               ry: current,
             },
           })
-          data.lastY = y
         }
       }
     },
