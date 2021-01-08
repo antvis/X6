@@ -146,6 +146,13 @@ export class CurveTo extends Segment {
     return this
   }
 
+  rotate(angle: number, origin?: Point.PointLike | Point.PointData) {
+    this.controlPoint1.rotate(angle, origin)
+    this.controlPoint2.rotate(angle, origin)
+    this.end.rotate(angle, origin)
+    return this
+  }
+
   translate(tx: number, ty: number): this
   translate(p: Point.PointLike | Point.PointData): this
   translate(tx: number | Point.PointLike | Point.PointData, ty?: number): this {
