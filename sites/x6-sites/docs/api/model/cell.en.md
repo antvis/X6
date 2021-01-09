@@ -3084,7 +3084,7 @@ const rect = graph.addNode({
 
 ### 自定义属性
 
-自定义属性是指那些非标准的 SVG/HTML 属性，如系统内置的 `refWidth`、`refHeight`、`sourceMarker`、`targetMarker` 等属性。这些属性都是全局共享的，我们可以通过 `attrHooks` 钩子来为节点/边定义**独享**的自定义属性。更多关于如何定义和使用自定义属性请参考[自定义属性教程]()。 
+自定义属性是指那些非标准的 SVG/HTML 属性，如系统内置的 `refWidth`、`refHeight`、`sourceMarker`、`targetMarker` 等属性。这些属性都是全局共享的，我们可以通过 `attrHooks` 钩子来为节点/边定义**独享**的自定义属性。 
 
 例如：
 
@@ -3092,20 +3092,22 @@ const rect = graph.addNode({
 import { Shape, Color } from '@antv/x6'
 
 Shape.Rect.config({
-  fill: {
-    set(val) {
-      return Color.invert(val) // 自动反转填充色
+  attrHooks: {
+    fill: {
+      set(val) {
+        return Color.invert(val) // 自动反转填充色
+      },
     },
-  },
-  theme: {
-    set(val) {
-      // 同时设置填充色和边框色
-      return {
-        fill: val,
-        stroke: Color.invert(val),
-      }
+    theme: {
+      set(val) {
+        // 同时设置填充色和边框色
+        return {
+          fill: val,
+          stroke: Color.invert(val),
+        }
+      },
     },
-  },
+  }
 })
 ```
 
