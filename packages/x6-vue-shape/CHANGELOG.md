@@ -1,3 +1,10 @@
+## @antv/x6-vue-shape [1.1.2](https://github.com/antvis/x6/compare/@antv/x6-vue-shape@1.1.1...@antv/x6-vue-shape@1.1.2) (2021-01-09)
+
+
+### Bug Fixes
+
+* fix error in vue shape when formJSON ([d9bf39f](https://github.com/antvis/x6/commit/d9bf39f708d8a6e73443984e02361ad2fb6594a7))
+
 ## @antv/x6-vue-shape [1.1.1](https://github.com/antvis/x6/compare/@antv/x6-vue-shape@1.1.0...@antv/x6-vue-shape@1.1.1) (2021-01-08)
 
 
