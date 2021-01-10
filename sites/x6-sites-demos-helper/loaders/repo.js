@@ -9,8 +9,8 @@ module.exports = () => {
 
   const repo = fs.realpathSync(process.cwd())
   const parts = repo.split('/')
-  const index = parts.indexOf('x6')
-  const dirname = parts.slice(index + 1).join('/')
+  const index = parts.indexOf('sites')
+  const dirname = parts.slice(index).join('/')
   const host = `https://github.com/antvis/X6/tree/master/${dirname}`
 
   const pkg = fse.readJsonSync(path.join(repo, 'package.json'))
