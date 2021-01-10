@@ -15,6 +15,7 @@ export const ShadowEdge = Edge.define({
       selector: 'line',
       attrs: {
         fill: 'none',
+        cursor: 'pointer',
       },
     },
   ],

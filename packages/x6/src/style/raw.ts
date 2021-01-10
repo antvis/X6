@@ -37,6 +37,9 @@ export const content = `.x6-graph {
   cursor: move;
   /* stylelint-disable-next-line */
 }
+.x6-node-immovable {
+  cursor: default;
+}
 .x6-node * {
   -webkit-user-drag: none;
 }
