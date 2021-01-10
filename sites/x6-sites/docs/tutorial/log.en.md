@@ -6,6 +6,58 @@ redirect_from:
   - /en/docs/tutorial
 ---
 
+## 1.11.0
+
+* ✨ 平滑路由增加方向配置 ([deec3bc](https://github.com/antvis/x6/commit/deec3bc805c5af1d2d0fc81a25c0819a6072f99e))
+* 🐛 解决 `windows` 下页面第一次未聚焦情况下点击事件失效问题 ([2cb270e](https://github.com/antvis/x6/commit/2cb270e189361670b2479b4a9c9694b953bdb8ab))
+
+## 1.10.2
+
+* 🐛`model.startBatch` 方法之前触发 `batch:start` 事件 ([429f4e8](https://github.com/antvis/x6/commit/429f4e8b6a394dd10412fce4775af22af583cadc))
+
+## 1.10.1
+
+* 🐛 在 `cell:changed` 之后修改选择框大小，解决 `size` 方法执行后选择框大小不变问题 ([#517](https://github.com/antvis/x6/issues/517)) ([c8234d5](https://github.com/antvis/x6/commit/c8234d5df1c7cb7910a93d5d7314c01c7b4023b0))
+
+## 1.10.0
+
+* 🐛 `Node.define(...)` 支持 `overwrite` 配置 ([f47fe4c](https://github.com/antvis/x6/commit/f47fe4cdef2da7ac6bb188c3ae131dffc2192cdb))
+* 🐛 支持多个 `knobs` ([9fe76b9](https://github.com/antvis/x6/commit/9fe76b9c82c7e6040a4dcca00c417183a6fcb130))
+* ✨ 添加 `arcTo`, `quadTo`, `drawPoints` 方法 ([00e8fd0](https://github.com/antvis/x6/commit/00e8fd0ec06e442833dd3f6c7ce7c05aabc5b556))
+* ✨ 为 `knobs` 添加 `position` 钩子 ([3e2f315](https://github.com/antvis/x6/commit/3e2f3154a7635f1b94176d05e6780d4b79761037))
+* ✨ 为 `geometry` 增加 `rotate` 方法 ([90a5603](https://github.com/antvis/x6/commit/90a56037b16adff6fc3fbf50660eb95d3bd6bd2d))
+
+## 1.9.3
+
+* 🐛 `konb` 和 `transform` 的控制旋钮,在交互时只显示正在交互的旋钮 ([73bb1e1](https://github.com/antvis/x6/commit/73bb1e16e329853ae5a47c0a3725000a65efd6a3))
+* 🐛 `node` 改变时需要清除 `knob` ([bf83cd8](https://github.com/antvis/x6/commit/bf83cd8760e89358846e216bc2a41c305f8a17fb))
+
+## 1.9.2
+
+* 🐛 `mousemove` 之后再触发 `node:resize` 和 `node:rotate` 事件 ([#505](https://github.com/antvis/x6/issues/505)) ([4156e57](https://github.com/antvis/x6/commit/4156e5712ec1940041e7b22863361a6e6ee820aa))
+
+## 1.9.1
+
+* 🐛 事件队列在事件回调用被修改,应该先缓存起来 ([d29ea43](https://github.com/antvis/x6/commit/d29ea43ea6e2b24a0caa2e861849bc01f6b4ce79))
+
+## 1.9.0
+
+* 🐛 需要在在画布容器中渲染 `html` 工具 ([ebb43a9](https://github.com/antvis/x6/commit/ebb43a9501be68196266db2ffab2cbde54b7bdb4))
+* ✨ 增加 `clientToGraph` 方法 ([1d55c62](https://github.com/antvis/x6/commit/1d55c62507d112d4a1f52e3ea6c4768017956fa0))
+* ✨ 支持调节手柄,如圆柱,通过调节手柄修改圆柱椭圆面的大小 ([6ae70b8](https://github.com/antvis/x6/commit/6ae70b809e85db4d537e9104830eef1328c16f7a))
+
+## 1.8.0
+
+* ✨ 支持 `html` 工具 ([97624f4](https://github.com/antvis/x6/commit/97624f4a9dfaacc551acd89c5557a2b301fe2d5e))
+
+## 1.7.12
+
+* 🐛 解决 `toPNG` 下载图片不完整问题 ([6dc50e9](https://github.com/antvis/x6/commit/6dc50e91d94fae0da2bc35a056e6410cb94d07be))
+
+## 1.7.11
+
+* 🐛 自动计算 `ER` 路由的方向 ([9b9a727](https://github.com/antvis/x6/commit/9b9a727c9b168af80623be448d5ae389a21a72b0))
+
 ## 1.7.9
 
 * 🐛 修正节点和边的类型定义([d2742a4](https://github.com/antvis/x6/commit/d2742a4a8a473e60bc47fe099fd49c27e0c2d9ae)), closes [#478](https://github.com/antvis/x6/issues/478)

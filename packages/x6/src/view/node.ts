@@ -29,9 +29,11 @@ export class NodeView<
   }
 
   protected getContainerClassName() {
-    return [super.getContainerClassName(), this.prefixClassName('node')].join(
-      ' ',
-    )
+    const classList = [super.getContainerClassName(), this.prefixClassName('node')]
+    if (!this.can('nodeMovable')) {
+      classList.push(this.prefixClassName('node-immovable'))
+    }
+    return classList.join(' ')
   }
 
   isNodeView(): this is NodeView {
