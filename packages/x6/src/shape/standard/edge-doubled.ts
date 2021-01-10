@@ -15,6 +15,7 @@ export const DoubleEdge = Edge.define({
       selector: 'line',
       attrs: {
         fill: 'none',
+        cursor: 'pointer',
       },
     },
   ],
