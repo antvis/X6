@@ -1,3 +1,13 @@
+## @antv/x6-sites [1.9.4](https://github.com/antvis/x6/compare/@antv/x6-sites@1.9.3...@antv/x6-sites@1.9.4) (2021-01-11)
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.11.2
+
 ## @antv/x6-sites [1.9.3](https://github.com/antvis/x6/compare/@antv/x6-sites@1.9.2...@antv/x6-sites@1.9.3) (2021-01-11)
 
 
