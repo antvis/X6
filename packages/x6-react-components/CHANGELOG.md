@@ -1,3 +1,11 @@
+## @antv/x6-react-components [1.0.1](https://github.com/antvis/x6/compare/@antv/x6-react-components@1.0.0...@antv/x6-react-components@1.0.1) (2021-01-11)
+
+
+### Bug Fixes
+
+* 🐛 add x6-react-components umd build ([89421c8](https://github.com/antvis/x6/commit/89421c88afa141fe753cfca65a3c9132007057ce))
+* 🐛 fast switch menubar-item lead to multiple popup ([#398](https://github.com/antvis/x6/issues/398)) ([8d4644f](https://github.com/antvis/x6/commit/8d4644f27c1f837a422703bcb1ef049c9c2794b8))
+
 ## @antv/x6-react-components [1.0.4](https://github.com/antvis/x6/compare/@antv/x6-react-components@1.0.3...@antv/x6-react-components@1.0.4) (2020-12-28)
 
 
