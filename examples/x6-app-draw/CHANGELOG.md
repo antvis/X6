@@ -1,3 +1,28 @@
+## @antv/x6-app-draw [1.0.1](https://github.com/antvis/x6/compare/@antv/x6-app-draw@1.0.0...@antv/x6-app-draw@1.0.1) (2021-01-11)
+
+
+### Bug Fixes
+
+* 🐛 add deps for x6-app-draw ([850192e](https://github.com/antvis/x6/commit/850192ef1424a0b26dd39f547896a8352046edad))
+* 🐛 add design for demos ([6e849bc](https://github.com/antvis/x6/commit/6e849bc80fe1bc242a2efa7282a425c0835619fb))
+* 🐛 add selecting for draw demo ([4f95511](https://github.com/antvis/x6/commit/4f95511639da853c0bf4f1f580bf6bdaea2fb28b))
+* 🐛 add unregister for react/vue shape ([5937a01](https://github.com/antvis/x6/commit/5937a01ee7ebb85b1dd313510d5b9fa88c8c5f32))
+* 🐛 change style of draw graph ([c69c3fe](https://github.com/antvis/x6/commit/c69c3fe21aa8ad573a78858818decfa0750bb456))
+* 🐛 fix stylelint error ([55fd1eb](https://github.com/antvis/x6/commit/55fd1eb533e99f8dc52bb42dba139ef4375cc57b))
+* 🐛 update yarn.lock ([14a1ee5](https://github.com/antvis/x6/commit/14a1ee5d7dd01d4235fbc34001219bba51b18c79))
+* fix group could not be deleted ([b9e1020](https://github.com/antvis/x6/commit/b9e10200c48478a589439bb142f15b9a418e7dad))
+* fix redo exception on group in demo ([1c893b0](https://github.com/antvis/x6/commit/1c893b0493f80e798173d98b461fa38458f9e07a))
+* fix selection box style ([9090868](https://github.com/antvis/x6/commit/9090868fcbf9414b82e6b01faa70a4b98d160605))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.8.0
+* **@antv/x6-react-components:** upgraded to 1.0.1
+
 ## @antv/x6-app-draw [1.0.88](https://github.com/antvis/x6/compare/@antv/x6-app-draw@1.0.87...@antv/x6-app-draw@1.0.88) (2021-01-11)
 
 
