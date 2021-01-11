@@ -1219,6 +1219,7 @@ export class Cell<
     Object.keys(props).forEach((key) => {
       const val = props[key]
       if (
+        val != null &&
         !Array.isArray(val) &&
         typeof val === 'object' &&
         !ObjectExt.isPlainObject(val)
