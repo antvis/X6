@@ -1,3 +1,10 @@
+## @antv/x6 [1.11.2](https://github.com/antvis/x6/compare/@antv/x6@1.11.1...@antv/x6@1.11.2) (2021-01-11)
+
+
+### Bug Fixes
+
+* 🐛 ignore null keys on toJSON ([4462a56](https://github.com/antvis/x6/commit/4462a5698f1ccea33dad4f65e7eef3a88c7fff7c))
+
 ## @antv/x6 [1.11.1](https://github.com/antvis/x6/compare/@antv/x6@1.11.0...@antv/x6@1.11.1) (2021-01-11)
 
 
