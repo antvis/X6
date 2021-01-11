@@ -1,3 +1,13 @@
+## @antv/x6-sites-demos [1.2.35](https://github.com/antvis/x6/compare/@antv/x6-sites-demos@1.2.34...@antv/x6-sites-demos@1.2.35) (2021-01-11)
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.11.2
+
 ## @antv/x6-sites-demos [1.2.34](https://github.com/antvis/x6/compare/@antv/x6-sites-demos@1.2.33...@antv/x6-sites-demos@1.2.34) (2021-01-11)
 
 
