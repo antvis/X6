@@ -1,7 +1,7 @@
-name: Delete Stale Releases
+name: 🚫　Delete Stale Releases
 on: push
 jobs:
-  test:
+  run:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -16,9 +16,9 @@ jobs:
           delete_tags: true
           keep_latest_count: 3
           group: '(?!^)@.*$'
-          exclude:
-            - '@antv/x6@**'
-            - '@antv/x6-react@**'
-            - '@antv/x6-vue-shape@**'
-            - '@antv/x6-react-shape@**'
-            - '@antv/x6-react-components@**'
+          exclude: |
+            '@antv/x6@**'
+            '@antv/x6-react@**'
+            '@antv/x6-vue-shape@**'
+            '@antv/x6-react-shape@**'
+            '@antv/x6-react-components@**'
