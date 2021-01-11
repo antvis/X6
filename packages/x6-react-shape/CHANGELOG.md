@@ -1,3 +1,23 @@
+# @antv/x6-react-shape [1.2.0](https://github.com/antvis/x6/compare/@antv/x6-react-shape@1.1.35...@antv/x6-react-shape@1.2.0) (2021-01-11)
+
+
+### Bug Fixes
+
+* 🐛 add unregister for react/vue shape ([5937a01](https://github.com/antvis/x6/commit/5937a01ee7ebb85b1dd313510d5b9fa88c8c5f32))
+
+
+### Features
+
+* ✨ dot not update peerDependencies with x6 publish ([232fbab](https://github.com/antvis/x6/commit/232fbabf901705874c59178d9f014b1aedc96637))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.8.0
+
 ## @antv/x6-react-shape [1.2.2](https://github.com/antvis/x6/compare/@antv/x6-react-shape@1.2.1...@antv/x6-react-shape@1.2.2) (2021-01-11)
 
 
