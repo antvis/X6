@@ -147,7 +147,13 @@ export namespace Plugin {
         await waitForAll('analyzed')
 
         // Make sure type is "patch" if the package has any deps that have changed.
-        if (pkg.nextType == null && hasChangedDeep(pkg.localDeps)) {
+        // Ignore peerDependencies and optionalDependencies
+        const names = [
+          ...pkg.manifest.peerDependencies,
+          ...pkg.manifest.optionalDependencies,
+        ]
+        const ignore = pkg.localDeps.filter((item) => names.includes(item.name))
+        if (pkg.nextType == null && hasChangedDeep(pkg.localDeps, ignore)) {
           pkg.nextType = 'patch'
         }
 
