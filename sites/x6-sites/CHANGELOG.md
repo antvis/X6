@@ -1,3 +1,68 @@
+# @antv/x6-sites [1.1.0](https://github.com/antvis/x6/compare/@antv/x6-sites@1.0.0...@antv/x6-sites@1.1.0) (2021-01-11)
+
+
+### Bug Fixes
+
+* 🐛 add design for demos ([6e849bc](https://github.com/antvis/x6/commit/6e849bc80fe1bc242a2efa7282a425c0835619fb))
+* 🐛 add newline after insertCss ([5155d80](https://github.com/antvis/x6/commit/5155d80af23339c5561e3f5c439feebafe3ae51e))
+* 🐛 add selecting for draw demo ([4f95511](https://github.com/antvis/x6/commit/4f95511639da853c0bf4f1f580bf6bdaea2fb28b))
+* 🐛 add x6-react-components umd build ([89421c8](https://github.com/antvis/x6/commit/89421c88afa141fe753cfca65a3c9132007057ce))
+* 🐛 auto calc er router's direction ([9b9a727](https://github.com/antvis/x6/commit/9b9a727c9b168af80623be448d5ae389a21a72b0))
+* 🐛 change banner of websites ([b40d297](https://github.com/antvis/x6/commit/b40d2971019b236432a736b972f7cae435bd1d9f))
+* 🐛 change component -> render ([b90c519](https://github.com/antvis/x6/commit/b90c519c98a5adf81f111fb3ea1d8781ce7996bc))
+* 🐛 change x6 version in docs ([a7dd22f](https://github.com/antvis/x6/commit/a7dd22fc5de96a92adcddd38dc4b735786a791b8))
+* 🐛 collapse tree ([84566ea](https://github.com/antvis/x6/commit/84566ea5cf0175941b2ab113b3c2077b55c53356))
+* 🐛 edge label path ([9915c9b](https://github.com/antvis/x6/commit/9915c9b40413d651f0162c4b544a705f80b040c9))
+* 🐛 filter not working when select cell by calling `select()` api or by click ([#314](https://github.com/antvis/x6/issues/314)) ([7a3e547](https://github.com/antvis/x6/commit/7a3e54731940f5dcc2a15b8d338aedf64fc63619)), closes [#305](https://github.com/antvis/x6/issues/305)
+* 🐛 fix broken image ([da2abd4](https://github.com/antvis/x6/commit/da2abd44e531b6ea0cff6c0f0bc3acfe94ff609d))
+* 🐛 fix type definition of node and edge registry ([d2742a4](https://github.com/antvis/x6/commit/d2742a4a8a473e60bc47fe099fd49c27e0c2d9ae)), closes [#478](https://github.com/antvis/x6/issues/478)
+* 🐛 lock gatsby-theme-antv version ([b72ba79](https://github.com/antvis/x6/commit/b72ba7951e8208f002d90ec32b670a0c55c65d2c))
+* 🐛 offset connection point ([3563838](https://github.com/antvis/x6/commit/3563838e2547976365afea1d495a2288d93512c8))
+* 🐛 remove comment ([2f81e5c](https://github.com/antvis/x6/commit/2f81e5cbd06c5ab8b7064b596446149f4e3a4c21))
+* 🐛 should auto normalize path data when parse path from string ([7441c38](https://github.com/antvis/x6/commit/7441c383336ecb148311f318075517806619941e))
+* 🐛 should return `stop` method when calling `sendToken` ([21276b2](https://github.com/antvis/x6/commit/21276b2a0f396b8e8343f133fed9383142468f5d))
+* 🐛 support function on interacting items ([2222ab6](https://github.com/antvis/x6/commit/2222ab683abea60e7208832e8ef856ce132c8cf0))
+* 🐛 take the stroke-width into account when calc connection point ([b21cac6](https://github.com/antvis/x6/commit/b21cac6968a548cad17c185a4219f24d135eaa8a))
+* 🐛 update gatsby-theme-antv version ([73e2b41](https://github.com/antvis/x6/commit/73e2b41245443156f8df92fe6d748bf994dae1c6))
+* 🐛 update gatsby-theme-antv version ([8a53759](https://github.com/antvis/x6/commit/8a5375906d637e838ab3beb3acbd2added6a12f4))
+* 🐛 use the verion of x6 ([960c367](https://github.com/antvis/x6/commit/960c367a4feec40f125e77f6c608db47b2b5e2d8))
+* fix cursor error ([b7d61b7](https://github.com/antvis/x6/commit/b7d61b75fbc24b36cfc384fdd9c6ed3baf2cf12a))
+* fix html node not update when setData ([0020c78](https://github.com/antvis/x6/commit/0020c781c3bb4b4747220fe327ade7e926d52014))
+* typos enable => enabled ([#463](https://github.com/antvis/x6/issues/463)) ([73ba1a5](https://github.com/antvis/x6/commit/73ba1a5bb5d5637628cd40405555edb35ff0b705))
+
+
+### Features
+
+* ✨ add `animate` and `animateTransform` ([b2ebf69](https://github.com/antvis/x6/commit/b2ebf69f2c311b1b8056179005d8fafd0a7eb8e9))
+* ✨ add connector demos ([929b691](https://github.com/antvis/x6/commit/929b6913dfd2637844ed4c133c8cb30efc2d4177))
+* ✨ add edge demos ([987b538](https://github.com/antvis/x6/commit/987b5380a340070fe83a2d15cb4a64b1e5cf68d7))
+* ✨ add marker demos ([a8d4d83](https://github.com/antvis/x6/commit/a8d4d8363a64c06ab8803ac9b2ea2834be724381))
+* ✨ add org demo ([a4f80f3](https://github.com/antvis/x6/commit/a4f80f38e105f812960d1cd2a84bc9f86ac2d5be))
+* ✨ add some connecting option ([68f7965](https://github.com/antvis/x6/commit/68f7965699b36d6a46f25e6aba5d144fb086c9a0))
+* ✨ cross filled edge ([717839b](https://github.com/antvis/x6/commit/717839be089a8aeee1db5d3f80460200811a0499))
+* ✨ port demos ([fe7248a](https://github.com/antvis/x6/commit/fe7248a2715f547b88f937b6369baf76d686753a))
+* ✨ router demos ([cdd1ff8](https://github.com/antvis/x6/commit/cdd1ff83b3cc2fd515921c0ecdf12ba8a97d3e66))
+* ✨ update demo style and add switch demo ([ed5606d](https://github.com/antvis/x6/commit/ed5606df510a462807f99d01985c589b3764c9df))
+* add direction for smooth connector ([deec3bc](https://github.com/antvis/x6/commit/deec3bc805c5af1d2d0fc81a25c0819a6072f99e))
+* Support jsdelivr and cdnjs CDN service [#335](https://github.com/antvis/x6/issues/335) ([#336](https://github.com/antvis/x6/issues/336)) ([f640235](https://github.com/antvis/x6/commit/f640235ce8f9fa0db74b35037e951d0410a7fb1f))
+* support panning on normal graph ([#352](https://github.com/antvis/x6/issues/352)) ([7a50f7a](https://github.com/antvis/x6/commit/7a50f7aace64f0a657943195e5ef6b3fd7a46fbf)), closes [#339](https://github.com/antvis/x6/issues/339)
+
+
+### Performance Improvements
+
+* ⚡️ add transition callbacks and events for animation lifecycle ([462abd0](https://github.com/antvis/x6/commit/462abd0aa06e28bbbabf96ffd0493af4a9af6e1a)), closes [#419](https://github.com/antvis/x6/issues/419) [#420](https://github.com/antvis/x6/issues/420)
+* ⚡️ restrict on resizing ([36107bf](https://github.com/antvis/x6/commit/36107bf81871b6ce083ae02bbd9ba72deb6aa9b8)), closes [#289](https://github.com/antvis/x6/issues/289)
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.8.0
+* **@antv/x6-react-components:** upgraded to 1.0.1
+* **@antv/x6-react-shape:** upgraded to 1.2.0
+
 ## @antv/x6-sites [1.9.4](https://github.com/antvis/x6/compare/@antv/x6-sites@1.9.3...@antv/x6-sites@1.9.4) (2021-01-11)
 
 
