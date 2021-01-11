@@ -1,3 +1,10 @@
+## @antv/x6 [1.11.1](https://github.com/antvis/x6/compare/@antv/x6@1.11.0...@antv/x6@1.11.1) (2021-01-11)
+
+
+### Bug Fixes
+
+* fix cursor error ([b7d61b7](https://github.com/antvis/x6/commit/b7d61b75fbc24b36cfc384fdd9c6ed3baf2cf12a))
+
 # @antv/x6 [1.11.0](https://github.com/antvis/x6/compare/@antv/x6@1.10.2...@antv/x6@1.11.0) (2021-01-08)
 
 
