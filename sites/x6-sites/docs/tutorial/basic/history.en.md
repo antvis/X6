@@ -17,7 +17,7 @@ const graph = new Graph({
 // 等同于
 const graph = new Graph({
   history: {
-    enable: true,
+    enabled: true,
   },
 })
 ```
@@ -82,7 +82,7 @@ interface HistoryOptions {
 ```ts
 const graph = new Graph({
   history: {
-    enable: true,
+    enabled: true,
     ignoreAdd: true,
     ignoreRemove: true,
     ignoreChange: false,
@@ -97,7 +97,7 @@ const graph = new Graph({
 ```ts
 const graph = new Graph({
   history: {
-    enable: true,
+    enabled: true,
     beforeAddCommand(event, args) {
       if (args.options) {
         return args.options.ignore !== false
@@ -131,7 +131,7 @@ executeCommand?: (
 ```ts
 const graph = new Graph({
   history: {
-    enable: true,
+    enabled: true,
     revertOptionsList: [ 'option1' ],
   },
 })
@@ -147,7 +147,7 @@ graph.undo(); // -> calls node.prop('name', 'prevValue', { option1: 5 });
 ```ts
 const graph = new Graph({
   history: {
-    enable: true,
+    enabled: true,
     applyOptionsList: [ 'option2' ],
   },
 })
