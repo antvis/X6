@@ -1,0 +1,24 @@
+name: Delete Stale Releases
+on: push
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: bubkoo/use-app-token@v1
+        with:
+          app_id: ${{ secrets.APP_ID }}
+          private_key: ${{ secrets.PRIVATE_KEY }}
+          env_name: bot_token
+      - uses: bubkoo/delete-stale-releases@v1
+        with:
+          GITHUB_TOKEN: ${{ env.bot_token }}
+          delete_tags: true
+          keep_latest_count: 3
+          group: '(?!^)@.*$'
+          exclude:
+            - '@antv/x6@**'
+            - '@antv/x6-react@**'
+            - '@antv/x6-vue-shape@**'
+            - '@antv/x6-react-shape@**'
+            - '@antv/x6-react-components@**'
