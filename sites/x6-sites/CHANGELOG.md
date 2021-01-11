@@ -1,3 +1,19 @@
+## @antv/x6-sites [1.9.3](https://github.com/antvis/x6/compare/@antv/x6-sites@1.9.2...@antv/x6-sites@1.9.3) (2021-01-11)
+
+
+### Bug Fixes
+
+* fix cursor error ([b7d61b7](https://github.com/antvis/x6/commit/b7d61b75fbc24b36cfc384fdd9c6ed3baf2cf12a))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.11.1
+* **@antv/x6-react-shape:** upgraded to 1.2.2
+
 ## @antv/x6-sites [1.9.2](https://github.com/antvis/x6/compare/@antv/x6-sites@1.9.1...@antv/x6-sites@1.9.2) (2021-01-10)
 
 ## @antv/x6-sites [1.9.1](https://github.com/antvis/x6/compare/@antv/x6-sites@1.9.0...@antv/x6-sites@1.9.1) (2021-01-08)
