@@ -1,3 +1,30 @@
+# @antv/x6-app-er [1.1.0](https://github.com/antvis/x6/compare/@antv/x6-app-er@1.0.0...@antv/x6-app-er@1.1.0) (2021-01-11)
+
+
+### Bug Fixes
+
+* 🐛 add design for demos ([6e849bc](https://github.com/antvis/x6/commit/6e849bc80fe1bc242a2efa7282a425c0835619fb))
+* 🐛 change mock data ([1ed8d57](https://github.com/antvis/x6/commit/1ed8d57b8193e481985205ad6c92858e063bed95))
+* 🐛 fix lint error ([7240cfc](https://github.com/antvis/x6/commit/7240cfc8e0cc6b9a4eec7fd7a0f56666cc727cae))
+
+
+### Features
+
+* ✨ add github source link ([83c4c08](https://github.com/antvis/x6/commit/83c4c080d0c2e22dc8deb960319f646bf4c80a64))
+* ✨ ERGraphDemo 初步完成 ([ffbea86](https://github.com/antvis/x6/commit/ffbea86751f5c7ed008c4deaaffee908fc434622))
+* ✨ er图demo优化 ([fe9798b](https://github.com/antvis/x6/commit/fe9798bd50457b09595d299d586545e0e3d76b17))
+* ✨ 修复warning ([bc9f69a](https://github.com/antvis/x6/commit/bc9f69a9ce48e10af2aca3716fd71b063bc77126))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.8.0
+* **@antv/x6-react-components:** upgraded to 1.0.1
+* **@antv/x6-react-shape:** upgraded to 1.2.0
+
 ## @antv/x6-app-er [1.2.78](https://github.com/antvis/x6/compare/@antv/x6-app-er@1.2.77...@antv/x6-app-er@1.2.78) (2021-01-11)
 
 
