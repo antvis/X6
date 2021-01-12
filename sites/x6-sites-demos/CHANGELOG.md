@@ -1,3 +1,38 @@
+# @antv/x6-sites-demos [1.1.0](https://github.com/antvis/x6/compare/@antv/x6-sites-demos@1.0.0...@antv/x6-sites-demos@1.1.0) (2021-01-12)
+
+
+### Bug Fixes
+
+* 🐛 auto calc er router's direction ([9b9a727](https://github.com/antvis/x6/commit/9b9a727c9b168af80623be448d5ae389a21a72b0))
+* 🐛 change component -> render ([b90c519](https://github.com/antvis/x6/commit/b90c519c98a5adf81f111fb3ea1d8781ce7996bc))
+* 🐛 checkView should return a boolean ([8c309a7](https://github.com/antvis/x6/commit/8c309a7b84276a722c25c319088e00822d1fc381))
+* 🐛 dnd node style ([17ae1f9](https://github.com/antvis/x6/commit/17ae1f9492c1f77e93ffa0a4cc1fb10614350547))
+* 🐛 fix layout demo error in codesanbox ([63184b3](https://github.com/antvis/x6/commit/63184b3f21be82d9daa46f8921c62d778b85a9fe))
+* 🐛 update intersectswith to intersectsWithRect ([fb0f144](https://github.com/antvis/x6/commit/fb0f144dc257a7a74ef5342f48359924c23b04a4))
+* 🐛 use `graph.createNode` to create node ([9e38fdf](https://github.com/antvis/x6/commit/9e38fdf1b1f04bedf1d029037ed1a43a33fcfa15))
+
+
+### Features
+
+* ✨ add `animate` and `animateTransform` ([b2ebf69](https://github.com/antvis/x6/commit/b2ebf69f2c311b1b8056179005d8fafd0a7eb8e9))
+* ✨ add connector demos ([929b691](https://github.com/antvis/x6/commit/929b6913dfd2637844ed4c133c8cb30efc2d4177))
+
+
+### Performance Improvements
+
+* ⚡️ add transition callbacks and events for animation lifecycle ([462abd0](https://github.com/antvis/x6/commit/462abd0aa06e28bbbabf96ffd0493af4a9af6e1a)), closes [#419](https://github.com/antvis/x6/issues/419) [#420](https://github.com/antvis/x6/issues/420)
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.8.2
+* **@antv/x6-react-components:** upgraded to 1.0.2
+* **@antv/x6-react-shape:** upgraded to 1.2.1
+* **@antv/x6-sites-demos-helper:** upgraded to 0.11.0
+
 ## @antv/x6-sites-demos [1.1.1](https://github.com/antvis/x6/compare/@antv/x6-sites-demos@1.1.0...@antv/x6-sites-demos@1.1.1) (2021-01-12)
 
 
