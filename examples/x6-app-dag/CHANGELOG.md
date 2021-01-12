@@ -1,3 +1,28 @@
+## @antv/x6-app-dag [1.0.1](https://github.com/antvis/x6/compare/@antv/x6-app-dag@1.0.0...@antv/x6-app-dag@1.0.1) (2021-01-12)
+
+
+### Bug Fixes
+
+* 🐛 should auto normalize path data when parse path from string ([7441c38](https://github.com/antvis/x6/commit/7441c383336ecb148311f318075517806619941e))
+* fix size invalid on image node ([#397](https://github.com/antvis/x6/issues/397)) ([15fd567](https://github.com/antvis/x6/commit/15fd5673e13825a94bd05ffb4f892645ee20e887))
+* **hisotry:** fix history undo error ([65df766](https://github.com/antvis/x6/commit/65df766411010ca9c894f21deb286031abd24cbc)), closes [#353](https://github.com/antvis/x6/issues/353)
+* 🐛 add design for demos ([6e849bc](https://github.com/antvis/x6/commit/6e849bc80fe1bc242a2efa7282a425c0835619fb))
+* 🐛 add selecting for draw demo ([4f95511](https://github.com/antvis/x6/commit/4f95511639da853c0bf4f1f580bf6bdaea2fb28b))
+* 🐛 alias ([ec67ddf](https://github.com/antvis/x6/commit/ec67ddff707f5bef8ed794bd4b5dd1c7aacb011b))
+* 🐛 alias ([e68cb5f](https://github.com/antvis/x6/commit/e68cb5fb2fb0fa23be05e4c99ab84503bde0af8e))
+* 🐛 fix lint error ([7240cfc](https://github.com/antvis/x6/commit/7240cfc8e0cc6b9a4eec7fd7a0f56666cc727cae))
+* 🐛 panning/selecting cursor style ([a16159f](https://github.com/antvis/x6/commit/a16159f0c8a61dca69a05b91d2cb9397aa819e34)), closes [#379](https://github.com/antvis/x6/issues/379)
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.8.2
+* **@antv/x6-react-components:** upgraded to 1.0.2
+* **@antv/x6-react-shape:** upgraded to 1.2.1
+
 ## @antv/x6-app-dag [1.0.2](https://github.com/antvis/x6/compare/@antv/x6-app-dag@1.0.1...@antv/x6-app-dag@1.0.2) (2021-01-12)
 
 
