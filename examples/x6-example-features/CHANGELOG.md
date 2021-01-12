@@ -1,3 +1,72 @@
+# @antv/x6-example-features [1.1.0](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.0.0...@antv/x6-example-features@1.1.0) (2021-01-12)
+
+
+### Bug Fixes
+
+* 🐛 auto rotate token ([cc08ee0](https://github.com/antvis/x6/commit/cc08ee0e897e561d744a4ba3f160164f7433b7d9))
+* 🐛 change component -> render ([b90c519](https://github.com/antvis/x6/commit/b90c519c98a5adf81f111fb3ea1d8781ce7996bc))
+* 🐛 change rerender -> shouldComponentUpdate ([79672e9](https://github.com/antvis/x6/commit/79672e9e097b99d4339ddb5f6fba0dafa2c648f3))
+* 🐛 dnd node style ([17ae1f9](https://github.com/antvis/x6/commit/17ae1f9492c1f77e93ffa0a4cc1fb10614350547))
+* 🐛 do not trigger getDropNode when drop at invalid area ([503fe7c](https://github.com/antvis/x6/commit/503fe7c3cfb3a069dc1a112f75251bd03220f407))
+* 🐛 filter not working when select cell by calling `select()` api or by click ([#314](https://github.com/antvis/x6/issues/314)) ([7a3e547](https://github.com/antvis/x6/commit/7a3e54731940f5dcc2a15b8d338aedf64fc63619)), closes [#305](https://github.com/antvis/x6/issues/305)
+* 🐛 fix sourceMarker and targetMaker position ([d637cf6](https://github.com/antvis/x6/commit/d637cf649e0b149acdf9dee12e6561e3b4f76b17))
+* 🐛 fix type definition of node and edge registry ([d2742a4](https://github.com/antvis/x6/commit/d2742a4a8a473e60bc47fe099fd49c27e0c2d9ae)), closes [#478](https://github.com/antvis/x6/issues/478)
+* 🐛 get completed picture when execue toPNG ([6dc50e9](https://github.com/antvis/x6/commit/6dc50e91d94fae0da2bc35a056e6410cb94d07be))
+* 🐛 modifer key of panning and selecting ([2b7b871](https://github.com/antvis/x6/commit/2b7b87196693f6eb50851a4327f3d9bdc944beff))
+* 🐛 modifier keys of panning and selecting ([dc97368](https://github.com/antvis/x6/commit/dc97368b52b8810f095e2bf1f771736841e8feed))
+* 🐛 node:xxx event was not triggered when interact with selection boxes ([34cd5a0](https://github.com/antvis/x6/commit/34cd5a0737b291357d398b8ef2f5c58b113a1fc3)), closes [#297](https://github.com/antvis/x6/issues/297)
+* 🐛 optimize params for edge:connected event ([55a72d0](https://github.com/antvis/x6/commit/55a72d0a0dd20d328576db9b81f7be5385ede29e))
+* 🐛 registry ([0464e5e](https://github.com/antvis/x6/commit/0464e5ea7c7feb8a340dd8e48104696343afbdc0))
+* 🐛 registry ([7487cd4](https://github.com/antvis/x6/commit/7487cd478482748fb5fea05806474c9a622f9a2f))
+* 🐛 registry ([26fbbc3](https://github.com/antvis/x6/commit/26fbbc3b868650a7f908d0e097c33bb2c9f2370f))
+* 🐛 registry ([e30583a](https://github.com/antvis/x6/commit/e30583a65102fc297db882e393b4f96e9ff924cf))
+* 🐛 remove default points attr of polygon and polyline ([ccab7a2](https://github.com/antvis/x6/commit/ccab7a2a1c30955239891149d1c1e9250160bbe5)), closes [#304](https://github.com/antvis/x6/issues/304) [#304](https://github.com/antvis/x6/issues/304)
+* 🐛 reset dragging status ([e1d9fe5](https://github.com/antvis/x6/commit/e1d9fe5e0a9503be4e62c759ef5364d5b4b29856))
+* 🐛 should auto normalize path data when parse path from string ([7441c38](https://github.com/antvis/x6/commit/7441c383336ecb148311f318075517806619941e))
+* 🐛 should auto remove tools on cell was removed ([5f455f0](https://github.com/antvis/x6/commit/5f455f0cc1ff51b555ab00066ac694221537ed40)), closes [#383](https://github.com/antvis/x6/issues/383)
+* 🐛 should auto remove tools when removing cells ([064a059](https://github.com/antvis/x6/commit/064a059daf009b5e37a80c2a7277d620ff2a70d1))
+* 🐛 should return `stop` method when calling `sendToken` ([21276b2](https://github.com/antvis/x6/commit/21276b2a0f396b8e8343f133fed9383142468f5d))
+* 🐛 should stop dragging when validate node async ([d418e07](https://github.com/antvis/x6/commit/d418e07ef404881400faf03943c8c9ff067e4598)), closes [#429](https://github.com/antvis/x6/issues/429)
+* 🐛 take the stroke-width into account when calc connection point ([b21cac6](https://github.com/antvis/x6/commit/b21cac6968a548cad17c185a4219f24d135eaa8a))
+* 🐛 unselect cell by clicking cell and holding on the meta key ([41624d6](https://github.com/antvis/x6/commit/41624d6591e57274cad49a0c77032c5ce7380cb9))
+* 🐛 use `graph.createNode` to create node ([9e38fdf](https://github.com/antvis/x6/commit/9e38fdf1b1f04bedf1d029037ed1a43a33fcfa15))
+* 🐛 used in unpkg "Uncaught ReferenceError: module is not defined" ([2863a29](https://github.com/antvis/x6/commit/2863a29da595a4a690e0b6c786669924dd8151aa)), closes [#329](https://github.com/antvis/x6/issues/329)
+* fix size invalid on image node ([#397](https://github.com/antvis/x6/issues/397)) ([15fd567](https://github.com/antvis/x6/commit/15fd5673e13825a94bd05ffb4f892645ee20e887))
+
+
+### Features
+
+* ✨ add 'loop' and 'loose' option for connecting ([bbc41d4](https://github.com/antvis/x6/commit/bbc41d48294398053e77da161f2d0e7f0602f905)), closes [#390](https://github.com/antvis/x6/issues/390)
+* ✨ add connector demos ([929b691](https://github.com/antvis/x6/commit/929b6913dfd2637844ed4c133c8cb30efc2d4177))
+* ✨ add flowchart shapes ([92430a2](https://github.com/antvis/x6/commit/92430a2efd41076af65da527f6e9c5093003154e))
+* ✨ add loop line ([bfa3c67](https://github.com/antvis/x6/commit/bfa3c6743b42c22d64edfbf79f82913129a5a285)), closes [#392](https://github.com/antvis/x6/issues/392)
+* ✨ add some connecting option ([68f7965](https://github.com/antvis/x6/commit/68f7965699b36d6a46f25e6aba5d144fb086c9a0))
+* ✨ add switch demo with animation ([84042ef](https://github.com/antvis/x6/commit/84042efb16168e44268e6993289df51fb2a4ef49))
+* ✨ angle measurement ([c777712](https://github.com/antvis/x6/commit/c7777120b0b332c618972b3683804ad108464a69))
+* ✨ connect to scollable ports ([cf76c31](https://github.com/antvis/x6/commit/cf76c3183407399838ddca4a48d5a62a265b06b4))
+* ✨ distance measurement ([ede8f75](https://github.com/antvis/x6/commit/ede8f755ef40c37f6b0b851fcb32a135dd59fb20))
+* ✨ parse markup from xml string ([f16e7eb](https://github.com/antvis/x6/commit/f16e7eb38ca1f0dec71f51cd41b74341fc1a0f3d))
+* ✨ react table demo ([3c2d10a](https://github.com/antvis/x6/commit/3c2d10acc0c8f2bf403def7aa1b44ef3769dc248))
+* ✨ 支持调节手柄,如圆柱,通过调节手柄修改圆柱椭圆面的大小 ([6ae70b8](https://github.com/antvis/x6/commit/6ae70b809e85db4d537e9104830eef1328c16f7a))
+* add demo for tranform method ([a599300](https://github.com/antvis/x6/commit/a599300536751c3f4a360bdae36258e5014cf137))
+* support panning on normal graph ([#352](https://github.com/antvis/x6/issues/352)) ([7a50f7a](https://github.com/antvis/x6/commit/7a50f7aace64f0a657943195e5ef6b3fd7a46fbf)), closes [#339](https://github.com/antvis/x6/issues/339)
+
+
+### Performance Improvements
+
+* ⚡️ add transition callbacks and events for animation lifecycle ([462abd0](https://github.com/antvis/x6/commit/462abd0aa06e28bbbabf96ffd0493af4a9af6e1a)), closes [#419](https://github.com/antvis/x6/issues/419) [#420](https://github.com/antvis/x6/issues/420)
+* ⚡️ restrict on resizing ([36107bf](https://github.com/antvis/x6/commit/36107bf81871b6ce083ae02bbd9ba72deb6aa9b8)), closes [#289](https://github.com/antvis/x6/issues/289)
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.8.2
+* **@antv/x6-react-components:** upgraded to 1.0.2
+* **@antv/x6-react-shape:** upgraded to 1.2.1
+
 ## @antv/x6-example-features [1.1.1](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.1.0...@antv/x6-example-features@1.1.1) (2021-01-12)
 
 
