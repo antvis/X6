@@ -1,3 +1,10 @@
+# @antv/x6-sites-demos-helper [0.11.0](https://github.com/antvis/x6/compare/@antv/x6-sites-demos-helper@0.10.80...@antv/x6-sites-demos-helper@0.11.0) (2021-01-12)
+
+
+### Features
+
+* ✨ auto update dependencies in workspace ([c255b41](https://github.com/antvis/x6/commit/c255b410099c607f535fa359d66f61b4ddaf59d9))
+
 # @antv/x6-sites-demos-helper [0.11.0](https://github.com/antvis/x6/compare/@antv/x6-sites-demos-helper@0.10.80...@antv/x6-sites-demos-helper@0.11.0) (2021-01-11)
 
 
