@@ -1,3 +1,10 @@
+## @antv/x6 [1.8.1](https://github.com/antvis/x6/compare/@antv/x6@1.8.0...@antv/x6@1.8.1) (2021-01-12)
+
+
+### Bug Fixes
+
+* 🐛 fix node immovable cursor style ([a91c71f](https://github.com/antvis/x6/commit/a91c71f6bc073e509530d78db904300436d80f00))
+
 # @antv/x6 [1.8.0](https://github.com/antvis/x6/compare/@antv/x6@1.7.0...@antv/x6@1.8.0) (2021-01-11)
 
 
