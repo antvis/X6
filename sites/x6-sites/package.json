@@ -16,9 +16,9 @@
   ],
   "dependencies": {
     "@antv/gatsby-theme-antv": "^1.0.3",
-    "@antv/x6": "^1.8.1",
-    "@antv/x6-react-components": "^1.0.1",
-    "@antv/x6-react-shape": "^1.2.0",
+    "@antv/x6": "^1.11.3",
+    "@antv/x6-react-components": "^1.1.0",
+    "@antv/x6-react-shape": "^1.2.3",
     "antd": "^4.4.2",
     "dagre": "^0.8.5",
     "express": "^4.17.1",
