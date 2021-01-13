@@ -53,7 +53,7 @@ export default class Example extends React.Component {
       target,
     })
 
-    this.graph.bindKey('meta+c', () => {
+    this.graph.bindKey('ctrl+c', () => {
       const cells = this.graph.getSelectedCells()
       if (cells.length) {
         this.graph.copy(cells)
@@ -61,7 +61,7 @@ export default class Example extends React.Component {
       return false
     })
 
-    this.graph.bindKey('meta+v', () => {
+    this.graph.bindKey('ctrl+v', () => {
       if (!this.graph.isClipboardEmpty()) {
         const cells = this.graph.paste({ offset: 32 })
         this.graph.cleanSelection()
