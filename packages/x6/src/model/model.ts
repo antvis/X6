@@ -1328,6 +1328,7 @@ export namespace Model {
   }
 
   export type BatchName =
+    | 'update'
     | 'add'
     | 'remove'
     | 'clear'
