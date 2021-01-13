@@ -1,3 +1,16 @@
+# @antv/x6 [1.12.0](https://github.com/antvis/x6/compare/@antv/x6@1.11.6...@antv/x6@1.12.0) (2021-01-13)
+
+
+### Bug Fixes
+
+* 🐛 should copy inline style to scroller container ([ac47a27](https://github.com/antvis/x6/commit/ac47a27f4853d84627f4394f766c34f7fa57b27c))
+
+
+### Features
+
+* ✨ add util to detect element size change ([116571c](https://github.com/antvis/x6/commit/116571c6304a66e84a85aac9c6d8cf3ac91224e3))
+* ✨ auto resize graph when container resized ([ff6e2b6](https://github.com/antvis/x6/commit/ff6e2b63bce78992cdb1892c84d7bf2ce6c2bbc3)), closes [#531](https://github.com/antvis/x6/issues/531)
+
 ## @antv/x6 [1.11.6](https://github.com/antvis/x6/compare/@antv/x6@1.11.5...@antv/x6@1.11.6) (2021-01-13)
 
 ## @antv/x6 [1.8.3](https://github.com/antvis/x6/compare/@antv/x6@1.8.2...@antv/x6@1.8.3) (2021-01-13)
