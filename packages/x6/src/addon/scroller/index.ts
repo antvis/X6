@@ -70,6 +70,13 @@ export class Scroller extends View {
       this.$container.insertBefore(graphContainer)
     }
 
+    // copy style
+    const style = graphContainer.getAttribute('style')
+    if (style) {
+      graphContainer.removeAttribute('style')
+      this.container.setAttribute('style', style)
+    }
+
     this.content = document.createElement('div')
     this.$content = this.$(this.content)
       .addClass(this.prefixClassName(Util.contentClass))
