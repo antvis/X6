@@ -43,6 +43,7 @@ import { PortManager } from '../model/port'
 import { Rectangle } from '../geometry'
 import { KnobManager } from './knob'
 import { PanningManager } from './panning'
+import { SizeManager } from './size'
 
 namespace Decorator {
   export function hook(nullable?: boolean, hookName?: string | null) {
@@ -366,6 +367,11 @@ export class Hook extends Base implements Hook.IHook {
   @Decorator.hook()
   createPanningManager() {
     return new PanningManager(this.graph)
+  }
+
+  @Decorator.hook()
+  createSizeManager() {
+    return new SizeManager(this.graph)
   }
 
   protected allowConnectToBlank(edge: Edge) {
@@ -784,6 +790,7 @@ export namespace Hook {
     createCoordManager: CreateManager<CoordManager>
     createHighlightManager: CreateManager<HighlightManager>
     createBackgroundManager: CreateManager<BackgroundManager>
+    createSizeManager: CreateManager<SizeManager>
 
     createTransform: CreateManagerWidthNode<Transform | null>
     createTransformManager: CreateManager<TransformManager>
@@ -814,6 +821,7 @@ export namespace Hook {
     createMouseWheel: CreateManager<MouseWheel>
     createPrintManager: CreateManager<PrintManager>
     createFormatManager: CreateManager<FormatManager>
+    createPanningManager: CreateManager<PanningManager>
 
     createCellView(this: Graph, cell: Cell): CellView | null | undefined
 
