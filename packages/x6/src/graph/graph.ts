@@ -16,6 +16,7 @@ import { GraphView } from './view'
 import { EventArgs } from './events'
 import { Decorator } from './decorator'
 import { CSSManager } from './css'
+import { SizeManager } from './size'
 import { Hook as HookManager } from './hook'
 import { Options as GraphOptions } from './options'
 import { DefsManager as Defs } from './defs'
@@ -63,6 +64,7 @@ export class Graph extends Basecoat<EventArgs> {
   public readonly panning: Panning
   public readonly print: Print
   public readonly format: Format
+  public readonly size: SizeManager
 
   public get container() {
     return this.view.container
@@ -99,6 +101,7 @@ export class Graph extends Basecoat<EventArgs> {
     this.print = this.hook.createPrintManager()
     this.format = this.hook.createFormatManager()
     this.panning = this.hook.createPanningManager()
+    this.size = this.hook.createSizeManager()
 
     this.setup()
   }
@@ -614,21 +617,17 @@ export class Graph extends Basecoat<EventArgs> {
   }
 
   resize(width?: number, height?: number) {
-    if (this.scroller.widget) {
-      this.scroller.resize(width, height)
-    } else {
-      this.transform.resize(width, height)
-    }
+    this.size.resize(width, height)
     return this
   }
 
   resizeGraph(width?: number, height?: number) {
-    this.transform.resize(width, height)
+    this.size.resizeGraph(width, height)
     return this
   }
 
   resizeScroller(width?: number, height?: number) {
-    this.scroller.resize(width, height)
+    this.size.resizeScroller(width, height)
     return this
   }
 
@@ -1988,6 +1987,7 @@ export class Graph extends Basecoat<EventArgs> {
     this.scroller.dispose()
     this.view.dispose()
     this.renderer.dispose()
+    this.size.dispose()
   }
 
   // #endregion

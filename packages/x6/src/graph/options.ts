@@ -40,6 +40,7 @@ export namespace Options {
     y: number
     width: number
     height: number
+    autoResize?: boolean
 
     background?: false | BackgroundManager.Options
 
