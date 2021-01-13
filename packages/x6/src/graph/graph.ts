@@ -461,11 +461,20 @@ export class Graph extends Basecoat<EventArgs> {
     this.model.stopBatch(name as Model.BatchName, data)
   }
 
+  batchUpdate<T>(execute: () => T, data?: KeyValue): T
   batchUpdate<T>(
     name: string | Model.BatchName,
     execute: () => T,
     data?: KeyValue,
+  ): T
+  batchUpdate<T>(
+    arg1: string | Model.BatchName | (() => T),
+    arg2?: (() => T) | KeyValue,
+    arg3?: KeyValue,
   ): T {
+    const name = typeof arg1 === 'string' ? arg1 : 'update'
+    const execute = typeof arg1 === 'string' ? (arg2 as () => T) : arg1
+    const data = typeof arg2 === 'function' ? arg3 : arg2
     this.startBatch(name, data)
     const result = execute()
     this.stopBatch(name, data)
