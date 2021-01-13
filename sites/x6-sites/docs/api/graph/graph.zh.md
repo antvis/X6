@@ -18,6 +18,7 @@ new Graph(options: Options)
 | [container](#container)                                 | HTMLElement                   |  ✓   |                               | 画布的容器。
 | [width](#width)                                         | number                        |      | `undefined`                   | 画布宽度，默认使用容器宽度。                                                               |
 | [height](#height)                                       | number                        |      | `undefined`                   | 画布高度，默认使用容器高度。                                                       |                                                              |
+| [autoResize](#autoresize)                                         | boolean                        |      | `false`                   | 是否监听容器大小改变事件，并自动更新画布大小。                                                               |
 | [grid](./grid)                                           | boolean \| number \| object   |      | `false`                       | 网格，默认使用 `10px` 的网格，但不绘制网格背景。                                            |
 | [background](./background)                               | false \| object               |      | `false`                       | 背景，默认不绘制背景。                                                                     |
 | [snapline](./snapline)                                   | boolean \| object             |      | `false`                       | 对齐线，默认禁用。                                                                         |
@@ -53,19 +54,23 @@ new Graph(options: Options)
 | [getHTMLComponent](./view#getHTMLComponent)                   | function                      |      | `undefined`                   | 获取 HTML 节点的 HTML 元素，默认根据节点的 `html` 选项返回对应的 HTML 元素。               |
 | [onPortRendered](./view#onPortRendered)                       | function                      |      | `undefined`                   | 当某个链接桩渲染完成时触发的回调。                                                        |
 | [onEdgeLabelRendered](./view#onEdgeLabelRendered)             | function                      |      | `undefined`                   | 当边的文本标签渲染完成时触发的回调。                                                      |
-| [onToolItemCreated](./view#onToolItemCreated)                 | function                      |      | `undefined`                   | 当工具项渲染完成时触发的回调。 
-| [model](./model)                                         | Model                         |      | `undefined`                   | 画布对应的模型，默认创建一个新模型。 
+| [onToolItemCreated](./view#onToolItemCreated)                 | function                      |      | `undefined`                   | 当工具项渲染完成时触发的回调。
+| [model](./model)                                         | Model                         |      | `undefined`                   | 画布对应的模型，默认创建一个新模型。
 ### container
 
 画布容器。
 
 ### width
 
-画布宽度，默认使用容器宽度。创建画布后可以使用 [`resize(w, h)`](#resize) 方法来设置画布大小。 
+画布宽度，默认使用容器宽度。创建画布后可以使用 [`resize(w, h)`](#resize) 方法来设置画布大小。
 
 ### height
 
 画布高度，默认使用容器高度。 创建画布后可以使用 [`resize(w, h)`](#resize) 方法来设置画布大小。
+
+### autoResize
+
+是否监听容器大小改变事件，并自动更新画布大小，默认为 `false`。
 
 ## 方法
 
