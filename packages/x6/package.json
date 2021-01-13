@@ -80,6 +80,7 @@
     "@types/lodash-es": "^4.17.4",
     "@types/mousetrap": "^1.6.5",
     "@types/node": "^14.14.14",
+    "@types/resize-observer-browser": "^0.1.5",
     "@types/sinon": "^9.0.0",
     "coveralls": "^3.1.0",
     "eslint": "^7.16.0",
