@@ -23,7 +23,7 @@ class ContextMenuTool extends ToolsView.ToolItem<
 
   private toggleTooltip(visible: boolean) {
     ReactDom.unmountComponentAtNode(this.knob)
-    document.removeEventListener('mousedown', this.onMouseDown)
+    document.removeEventListener('click', this.onClick)
 
     if (visible) {
       ReactDom.render(
@@ -36,7 +36,7 @@ class ContextMenuTool extends ToolsView.ToolItem<
         </Dropdown>,
         this.knob,
       )
-      document.addEventListener('mousedown', this.onMouseDown)
+      document.addEventListener('click', this.onClick)
     }
   }
 
@@ -51,7 +51,7 @@ class ContextMenuTool extends ToolsView.ToolItem<
     }
   }
 
-  private onMouseDown = (e: MouseEvent) => {
+  private onClick = (e: MouseEvent) => {
     this.updatePosition()
     this.toggleTooltip(false)
   }
