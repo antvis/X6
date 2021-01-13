@@ -1,3 +1,5 @@
+## @antv/x6-sites-demos-helper [0.11.1](https://github.com/antvis/x6/compare/@antv/x6-sites-demos-helper@0.11.0...@antv/x6-sites-demos-helper@0.11.1) (2021-01-13)
+
 # @antv/x6-sites-demos-helper [0.11.0](https://github.com/antvis/x6/compare/@antv/x6-sites-demos-helper@0.10.80...@antv/x6-sites-demos-helper@0.11.0) (2021-01-12)
 
 
