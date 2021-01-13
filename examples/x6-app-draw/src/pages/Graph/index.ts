@@ -55,6 +55,7 @@ export default class FlowGraph {
             router: {
               name: 'manhattan',
             },
+            zIndex: 0,
           })
         },
         validateConnection({
