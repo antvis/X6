@@ -136,3 +136,26 @@ graph.batchUpdate('rename', () => {
   rect.attr('label/fill', '#ff0000')  
 })
 ```
+
+```sign
+batchUpdate<T>(execute: () => T, data?: KeyValue): T
+```
+
+执行一个成对的事务。事务名为 `'update'`。
+
+<span class="tag-param">参数<span>
+
+| 名称    | 类型     | 必选 | 默认值 | 描述                           |
+|---------|----------|:----:|--------|------------------------------|
+| execute | () => T  |  ✓   |        | 事务执行的函数。                |
+| data    | KeyValue |      |        | 额外的数据，供事件回调函数使用。 |
+
+<span class="tag-example">用法</span>
+
+```ts
+graph.batchUpdate(() => {
+  rect.prop('zIndex', 10)
+  rect.attr('label/text', 'hello')
+  rect.attr('label/fill', '#ff0000')  
+})
+```
