@@ -1,3 +1,10 @@
+## @antv/x6 [1.12.1](https://github.com/antvis/x6/compare/@antv/x6@1.12.0...@antv/x6@1.12.1) (2021-01-14)
+
+
+### Bug Fixes
+
+* comment the copy style code first ([bdb01a4](https://github.com/antvis/x6/commit/bdb01a4ebac1896b4788c5c56d5fcff55bbbb663))
+
 # @antv/x6 [1.12.0](https://github.com/antvis/x6/compare/@antv/x6@1.11.6...@antv/x6@1.12.0) (2021-01-13)
 
 
