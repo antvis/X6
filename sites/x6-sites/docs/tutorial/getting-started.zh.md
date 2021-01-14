@@ -97,6 +97,8 @@ const data = {
 
 ```ts
 import { Graph } from '@antv/x6';
+// 使用 CDN 引入时暴露了 X6 全局变量
+// const { Graph } = X6
 
 const graph = new Graph({
   container: document.getElementById('container'),
