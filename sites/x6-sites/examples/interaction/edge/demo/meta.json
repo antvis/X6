@@ -7,6 +7,14 @@
         "en": "Start Connect After Press Meta"
       },
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*FgY8TJWw1TQAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "create.ts",
+      "title": {
+        "zh": "手动创建连线",
+        "en": "Create Edge Manually"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*3krPSYB33VsAAAAAAAAAAAAAARQnAQ"
     }
   ]
 }
