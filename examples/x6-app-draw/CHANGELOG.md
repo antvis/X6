@@ -1,3 +1,18 @@
+## @antv/x6-app-draw [1.1.3](https://github.com/antvis/x6/compare/@antv/x6-app-draw@1.1.2...@antv/x6-app-draw@1.1.3) (2021-01-14)
+
+
+### Bug Fixes
+
+* port can connect multiple lines ([908bff2](https://github.com/antvis/x6/commit/908bff246c2b518a89dc7d4cc6d53fea3e447ac9))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.12.1
+
 ## @antv/x6-app-draw [1.1.3](https://github.com/antvis/x6/compare/@antv/x6-app-draw@1.1.2...@antv/x6-app-draw@1.1.3) (2021-01-13)
 
 
