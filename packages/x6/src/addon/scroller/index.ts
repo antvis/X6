@@ -71,11 +71,11 @@ export class Scroller extends View {
     }
 
     // copy style
-    const style = graphContainer.getAttribute('style')
-    if (style) {
-      graphContainer.removeAttribute('style')
-      this.container.setAttribute('style', style)
-    }
+    // const style = graphContainer.getAttribute('style')
+    // if (style) {
+    //   graphContainer.removeAttribute('style')
+    //   this.container.setAttribute('style', style)
+    // }
 
     this.content = document.createElement('div')
     this.$content = this.$(this.content)
