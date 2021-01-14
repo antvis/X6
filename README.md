@@ -72,7 +72,10 @@ For production, we recommend linking to a specific version number to avoid unexp
 **Step 2**: render nodes and edges.
 
 ```ts
+// import from node_modules
 import { Graph } from '@antv/x6'
+// or use the global variable `X6` exported from CDN links
+// const { Graph } = X6
 
 // Create an instance of Graph.
 const graph = new Graph({
