@@ -287,8 +287,9 @@ export default class FlowGraph {
 
     graph.on('node:contextmenu', ({ cell, view }) => {
       const oldText = cell.attr('text/text') as string
-      cell.attr('text/style/display', 'none')
       const elem = view.container.querySelector('.x6-edit-text') as HTMLElement
+      if (elem == null) { return }
+      cell.attr('text/style/display', 'none')
       if (elem) {
         elem.innerText = oldText
         elem.focus()
