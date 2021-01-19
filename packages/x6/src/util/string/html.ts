@@ -1,4 +1,4 @@
-import $ from 'jquery'
+import JQuery from 'jquery'
 
 /**
  * Sanitizes HTML with jQuery prevent Application from XSS attacks.
@@ -17,7 +17,7 @@ export function sanitizeHTML(html: string, options: { raw?: boolean } = {}) {
   // GET requests for images.
 
   // If keepScripts (last parameter) is `false`, scripts are not executed.
-  const nodes = $.parseHTML(html, null, false)
+  const nodes = JQuery.parseHTML(html, null, false)
 
   nodes.forEach((node) => {
     const elem = node as Element
@@ -53,5 +53,5 @@ export function sanitizeHTML(html: string, options: { raw?: boolean } = {}) {
     return nodes
   }
 
-  return $('<div/>').append(nodes).html()
+  return JQuery('<div/>').append(nodes).html()
 }

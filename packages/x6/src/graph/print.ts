@@ -1,6 +1,6 @@
 import { Size, KeyValue } from '../types'
 import { Rectangle } from '../geometry'
-import { NumberExt, $, Dom, Unit, Vector } from '../util'
+import { NumberExt, JQuery, Dom, Unit, Vector } from '../util'
 import { Base } from './base'
 
 export class PrintManager extends Base {
@@ -29,8 +29,8 @@ export class PrintManager extends Base {
     options: PrintManager.Options,
   ) {
     if ($pages) {
-      const $body = $(document.body)
-      const $container = $(this.view.container)
+      const $body = JQuery(document.body)
+      const $container = JQuery(this.view.container)
       const bodyClassName = this.view.prefixClassName('graph-printing')
       $body.addClass(bodyClassName)
       const $detached = $container.children().detach()
@@ -48,13 +48,13 @@ export class PrintManager extends Base {
           $body.removeClass(bodyClassName)
           $pages.forEach(($page) => $page.remove())
           $container.append($detached)
-          $(`#${this.styleSheetId}`).remove()
+          JQuery(`#${this.styleSheetId}`).remove()
           this.graph.trigger('after:print', options)
-          $(window).off('afterprint', cb)
+          JQuery(window).off('afterprint', cb)
         }
       }
 
-      $(window).one('afterprint', cb)
+      JQuery(window).one('afterprint', cb)
       setTimeout(cb, 200)
       window.print()
     }
@@ -66,8 +66,8 @@ export class PrintManager extends Base {
   ) {
     this.graph.trigger('before:print', options)
 
-    const $page = $('<div/>').addClass(this.className)
-    const $wrap = $('<div/>')
+    const $page = JQuery('<div/>').addClass(this.className)
+    const $wrap = JQuery('<div/>')
       .addClass(this.view.prefixClassName('graph-print-inner'))
       .css('position', 'relative')
 
@@ -182,11 +182,11 @@ export class PrintManager extends Base {
       }`
 
     const id = this.styleSheetId
-    const $style = $(`#${id}`)
+    const $style = JQuery(`#${id}`)
     if ($style.length) {
       $style.html(css)
     } else {
-      $('head').append(`'<style type="text/css" id="${id}">${css}</style>'`)
+      JQuery('head').append(`'<style type="text/css" id="${id}">${css}</style>'`)
     }
   }
 
