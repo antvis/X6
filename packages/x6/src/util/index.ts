@@ -1,4 +1,4 @@
-import $ from 'jquery'
+import JQuery from 'jquery'
 import './polyfill'
 
 export * from './lang'
@@ -16,4 +16,4 @@ export * from './dom'
 export * from './vector'
 export * from './size-sensor'
 
-export { $ }
+export { JQuery }
