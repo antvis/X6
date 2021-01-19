@@ -684,3 +684,11 @@ graph.addNode({
 ```
 
 <iframe src="/demos/tutorial/basic/port/best-practice"></iframe>
+
+## 使用 React 渲染连接桩
+
+除了上面的方式，还可以用 React 组件来渲染连接桩，先看效果：
+
+<iframe src="/demos/tutorial/advanced/react/react-port"></iframe>
+
+详细使用见[渲染链接桩](../advanced/react#渲染链接桩)

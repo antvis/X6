@@ -101,7 +101,7 @@ graph.addNode({
   ]
 });
 
-graph.on("ndoe:click", () => {
+graph.on("port:click", () => {
   // handle
 });
 ```
