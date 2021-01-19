@@ -13,11 +13,15 @@ redirect_from:
 
 ```shell
 # npm
-$ npm install @antv/layout--save
+$ npm install @antv/layout --save
 
 # yarn
 $ yarn add @antv/layout
 ```
+如果是直接通过 `script` 标签引入，可以使用下面两个 CDN 中的任何一个，由于项目依赖原因，只有 0.1.2 版本支持 umd 模式：
+
+- https://unpkg.com/@antv/layout@0.1.2/dist/layout.js
+- https://cdn.jsdelivr.net/npm/@antv/layout@0.1.2/dist/layout.js
 
 ## 使用
 
@@ -25,7 +29,7 @@ $ yarn add @antv/layout
 
 ```ts
 import { Graph } from '@antv/x6'
-import { Layout } from '@antv/layout'
+import { Layout } from '@antv/layout' // umd模式下， const { Layout } = window.AntVLayout
 
 const graph = new Graph({
   container: document.getElementById('container'),
@@ -60,7 +64,7 @@ const gridLayout = new Layout({
 
 const newModel = gridLayout.layout(model)
 
-gridLayout.fromJSON(newModel)
+graph.fromJSON(newModel)
 
 ```
 
