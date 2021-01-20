@@ -2781,7 +2781,7 @@ getTools(): Cell.Tools | null
 #### hasTools(...)
 
 ```sign
-hasTools(name?: string): boolean 
+hasTools(name?: string): boolean
 ```
 
 是否包含小工具或包含指定名称的工具集。
@@ -2808,7 +2808,32 @@ removeTools(options?: Cell.SetOptions): this
 | options...others | object  |      |         | 其他自定义键值对，可以在事件回调中使用。                    |
 
 
-### 动画 Transition 
+#### hasTool(name: string): boolean
+
+```sign
+hasTool(name: string): boolean
+```
+
+是否包含指定名称的工具。
+
+#### removeTool(...)
+
+```sign
+removeTool(name: string, options?: Cell.SetOptions): this
+removeTool(index: number, options?: Cell.SetOptions): this
+```
+
+删除指定名称的工具。
+
+<span class="tag-param">参数<span>
+
+| 名称             | 类型             | 必选 | 默认值  | 描述                                                      |
+|------------------|------------------|:----:|---------|---------------------------------------------------------|
+| nameOrIndex      | string \| number |  ✓   |         | 工具名称或索引。                                           |
+| options.silent   | boolean          |      | `false` | 为 `true` 时不触不触发 `'change:tools'` 事件和小工具重绘。 |
+| options...others | object           |      |         | 其他自定义键值对，可以在事件回调中使用。                    |
+
+### 动画 Transition
 
 #### transition(...)
 
