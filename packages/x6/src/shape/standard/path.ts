@@ -34,9 +34,12 @@ export const Path = Node.define({
     label: labelAttr,
   },
   propHooks(metadata) {
-    const { path, ...others } = metadata
+    const { path, label, ...others } = metadata
     if (path) {
       ObjectExt.setByPath(others, 'attrs/body/refD', path)
+    }
+    if (label) {
+      ObjectExt.setByPath(others, 'attrs/text/text', label)
     }
     return others
   },
