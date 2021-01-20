@@ -1174,6 +1174,51 @@ export class Cell<
     return tools.name === name
   }
 
+  hasTool(name: string) {
+    const tools = this.getTools()
+    if (tools == null) {
+      return false
+    }
+    return tools.items.some((item) =>
+      typeof item === 'string' ? item === name : item.name === name,
+    )
+  }
+
+  removeTool(name: string, options?: Cell.SetOptions): this
+  removeTool(index: number, options?: Cell.SetOptions): this
+  removeTool(nameOrIndex: string | number, options: Cell.SetOptions = {}) {
+    const tools = this.getTools()
+    if (tools) {
+      let updated = false
+      const items = tools.items.slice()
+      const remove = (index: number) => {
+        items.splice(index, 1)
+        updated = true
+      }
+
+      if (typeof nameOrIndex === 'number') {
+        remove(nameOrIndex)
+      } else {
+        for (let i = items.length - 1; i >= 0; i -= 1) {
+          const item = items[i]
+          const exist =
+            typeof item === 'string'
+              ? item === nameOrIndex
+              : item.name === nameOrIndex
+          if (exist) {
+            remove(i)
+          }
+        }
+      }
+
+      if (updated) {
+        tools.items = items
+        this.setTools(tools, options)
+      }
+    }
+    return this
+  }
+
   // #endregion
 
   // #region common
