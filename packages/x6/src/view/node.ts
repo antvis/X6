@@ -29,11 +29,23 @@ export class NodeView<
   }
 
   protected getContainerClassName() {
-    const classList = [super.getContainerClassName(), this.prefixClassName('node')]
+    const classList = [
+      super.getContainerClassName(),
+      this.prefixClassName('node'),
+    ]
     if (!this.can('nodeMovable')) {
       classList.push(this.prefixClassName('node-immovable'))
     }
     return classList.join(' ')
+  }
+
+  protected updateClassName() {
+    const className = this.prefixClassName('node-immovable')
+    if (this.can('nodeMovable')) {
+      this.removeClass(className)
+    } else {
+      this.addClass(className)
+    }
   }
 
   isNodeView(): this is NodeView {
@@ -666,6 +678,7 @@ export class NodeView<
   }
 
   onMouseEnter(e: JQuery.MouseEnterEvent) {
+    this.updateClassName()
     super.onMouseEnter(e)
     this.notify('node:mouseenter', this.getEventArgs(e))
   }
