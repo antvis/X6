@@ -1,3 +1,10 @@
+## @antv/x6 [1.12.2](https://github.com/antvis/x6/compare/@antv/x6@1.12.1...@antv/x6@1.12.2) (2021-01-20)
+
+
+### Bug Fixes
+
+* change $ to JQuery ([3c4d229](https://github.com/antvis/x6/commit/3c4d22952b33d592791cdead017d860833f51608))
+
 ## @antv/x6 [1.12.1](https://github.com/antvis/x6/compare/@antv/x6@1.12.0...@antv/x6@1.12.1) (2021-01-14)
 
 
