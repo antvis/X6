@@ -1,3 +1,10 @@
+## @antv/x6 [1.12.4](https://github.com/antvis/x6/compare/@antv/x6@1.12.3...@antv/x6@1.12.4) (2021-01-20)
+
+
+### Bug Fixes
+
+* 🐛 auto fix node's css className on mouseenter ([#566](https://github.com/antvis/x6/issues/566)) ([6a33149](https://github.com/antvis/x6/commit/6a3314959206c1299eb916c1dc10130d49ee7de8)), closes [#558](https://github.com/antvis/x6/issues/558)
+
 ## @antv/x6 [1.12.3](https://github.com/antvis/x6/compare/@antv/x6@1.12.2...@antv/x6@1.12.3) (2021-01-20)
 
 
