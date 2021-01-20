@@ -1,3 +1,10 @@
+## @antv/x6 [1.12.3](https://github.com/antvis/x6/compare/@antv/x6@1.12.2...@antv/x6@1.12.3) (2021-01-20)
+
+
+### Bug Fixes
+
+* 🐛 remove single tool by name or index ([#565](https://github.com/antvis/x6/issues/565)) ([f87dc43](https://github.com/antvis/x6/commit/f87dc43e439bfd13b7afe193db096bacd456bdcd)), closes [#552](https://github.com/antvis/x6/issues/552)
+
 ## @antv/x6 [1.12.2](https://github.com/antvis/x6/compare/@antv/x6@1.12.1...@antv/x6@1.12.2) (2021-01-20)
 
 
