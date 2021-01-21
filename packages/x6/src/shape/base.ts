@@ -33,18 +33,24 @@ export class Base<
 }
 
 export namespace Base {
+  export const bodyAttr = {
+    fill: '#ffffff',
+    stroke: '#333333',
+    strokeWidth: 2,
+  }
+
+  export const labelAttr = {
+    fontSize: 14,
+    fill: '#000000',
+    refX: 0.5,
+    refY: 0.5,
+    textAnchor: 'middle',
+    textVerticalAnchor: 'middle',
+    fontFamily: 'Arial, helvetica, sans-serif',
+  }
+
   Base.config({
-    attrs: {
-      text: {
-        fontSize: 14,
-        fill: '#000000',
-        refX: 0.5,
-        refY: 0.5,
-        textAnchor: 'middle',
-        textVerticalAnchor: 'middle',
-        fontFamily: 'Arial, helvetica, sans-serif',
-      },
-    },
+    attrs: { text: { ...labelAttr } },
     propHooks(metadata) {
       const { label, ...others } = metadata
       if (label) {

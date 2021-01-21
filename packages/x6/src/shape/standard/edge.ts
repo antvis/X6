@@ -1,6 +1,6 @@
-import { Edge as E } from '../../model/edge'
+import { Edge as EdgeBase } from '../../model/edge'
 
-export const Edge = E.define({
+export const Edge = EdgeBase.define({
   shape: 'edge',
   markup: [
     {
