@@ -1,6 +1,6 @@
 <p align="center"><img src="/flow.svg"></p>
 
-<p align="center"><strong>JavaScript diagramming library that uses SVG and HTML for rendering.</strong></p>
+<p align="center"><strong>基于 SVG 和 HTML 渲染的 JavaScript 图表库</strong></p>
 
 <p align="center">
 <a href="/LICENSE"><img src="https://img.shields.io/badge/license-MIT_License-green.svg?style=flat-square" alt="MIT License"></a>
@@ -20,14 +20,16 @@
 <a href="https://david-dm.org/antvis/x6?type=dev&path=packages/x6"><img alt="devDependencies Status" src="https://david-dm.org/antvis/x6/dev-status.svg?style=flat-square&path=packages/x6" ></a>
 </p>
 
-## Features
+简体中文 | [English](./README.en-us.md)
 
-- 🌱　easy-to-customize: based on well known SVG/HTML/CSS or React to custom nodes and edges
-- 🚀　out-of-the-box: built-in 10+ plugins, such as selection, dnd, redo/undo, snapline, minimap, etc.
-- 🧲　data-driven: base on MVC architecture, you can focus on data logic and business logic
-- 💯　highly-event-driven: you can react on any event that happens inside the graph
+## 特性
 
-## Installation
+- 🌱　极易定制：提供基于低学习成本的 SVG/HTML/React/Vue 的节点定制能力；
+- 🚀　开箱即用：内置 10+ 图编辑场景的配套扩展，如框选、对齐线、小地图等；
+- 🧲　数据驱动：基于 MVC 架构模式，用户更加专注于数据逻辑和业务逻辑；
+- 💯　事件驱动：您可以监听图表内发生的任何事件；
+
+## 安装
 
 ### NPM/Yarn
 
@@ -41,17 +43,17 @@ $ yarn add @antv/x6
 
 ### CDNs
 
-For learning purposes, you can use the latest version with one of the CDN:
+为了学习的目的，您可以使用下面任意一个最新版本的 CDN:
 
 - https://unpkg.com/@antv/x6/dist/x6.js
 - https://cdn.jsdelivr.net/npm/@antv/x6/dist/x6.js
-- https://cdnjs.cloudflare.com/ajax/libs/antv-x6/1.3.20/x6.js (the latest version is not supported)
+- https://cdnjs.cloudflare.com/ajax/libs/antv-x6/1.3.20/x6.js
 
 ```html
 <script src="https://unpkg.com/@antv/x6/dist/x6.js"></script>
 ```
 
-For production, we recommend linking to a specific version number to avoid unexpected breakage from newer versions:
+在生产环境中，我们建议使用特定版本号的链接，以避免版本更新带来的意外破坏：
 
 - https://unpkg.com/@antv/x6@1.1.1/dist/x6.js
 - https://cdn.jsdelivr.net/npm/@antv/x6@1.1.1/dist/x6.js
@@ -61,15 +63,15 @@ For production, we recommend linking to a specific version number to avoid unexp
 <script src="https://unpkg.com/@antv/x6@1.1.1/dist/x6.js"></script>
 ```
 
-## Usage
+## 用法
 
-**Step 1**: specify a container the render the diagram.
+**Step 1**: 指定渲染图表的容器。
 
 ```html
 <div id="container" style="width: 600px; height: 400px"></div>
 ```
 
-**Step 2**: render nodes and edges.
+**Step 2**: 渲染节点和边。
 
 ```ts
 // import from node_modules
@@ -110,58 +112,58 @@ graph.addEdge({
 
 <img src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*o4W3RLZicagAAAAAAAAAAAAAARQnAQ" alt="HelloWorld" />
 
-## Documentation
+## 文档
 
-- [About](https://x6.antv.vision/zh/docs/tutorial/about)
-- [Getting started](https://x6.antv.vision/zh/docs/tutorial/getting-started)
-- [Basic usage](https://x6.antv.vision/zh/docs/tutorial/basic/graph)
-- [Advanced practice](https://x6.antv.vision/zh/docs/tutorial/intermediate/serialization)
-- [Senior guidance](https://x6.antv.vision/zh/docs/tutorial/advanced/animation)
+- [简介](https://x6.antv.vision/zh/docs/tutorial/about)
+- [快速上手](https://x6.antv.vision/zh/docs/tutorial/getting-started)
+- [基础教程](https://x6.antv.vision/zh/docs/tutorial/basic/graph)
+- [进阶实践](https://x6.antv.vision/zh/docs/tutorial/intermediate/serialization)
+- [高级指引](https://x6.antv.vision/zh/docs/tutorial/advanced/animation)
 
-## App Demos Build with X6
+## 基于 X6 的应用
 
-### Flowchart
+### 流程图
 
-A [flowchart](https://en.wikipedia.org/wiki/Flowchart) is a type of diagram that represents a workflow or process. A flowchart can also be defined as a diagrammatic representation of an algorithm, a step-by-step approach to solving a task.
+[流程图](https://en.wikipedia.org/wiki/Flowchart)是表示算法、工作流或流程的一种框图表示。
 
-- Online Demo: [https://x6.antv.vision/apps/draw](https://x6.antv.vision/apps/draw)
-- Source Code: [https://github.com/antvis/x6/tree/master/examples/x6-app-draw](https://github.com/antvis/x6/tree/master/examples/x6-app-draw)
+- 在线示例: [https://x6.antv.vision/apps/draw](https://x6.antv.vision/apps/draw)
+- 源码: [https://github.com/antvis/x6/tree/master/examples/x6-app-draw](https://github.com/antvis/x6/tree/master/examples/x6-app-draw)
 
 <a href="https://x6.antv.vision/apps/draw" target="_blank" rel="noopener noreferrer">
   <img src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*vFqjSZ-dXKkAAAAAAAAAAAAAARQnAQ" alt="draw" />
 </a>
 
-### DAG
+### DAG 图
 
-DAG is short for [Directed Acyclic Graph](https://en.wikipedia.org/wiki/Directed_acyclic_graph), which is a [directed graph](https://en.wikipedia.org/wiki/Directed_graph) with no [directed cycles](https://en.wikipedia.org/wiki/Cycle_graph#Directed_cycle_graph). It was originally a common data structure in the computer field. Due to the excellent characteristics brought by the unique topology structure, it is often used to deal with dynamic programming, searching for the shortest path in navigation, data compression and other algorithms.
+DAG是[有向无环图](https://en.wikipedia.org/wiki/Directed_acyclic_graph)的缩写，它是一个[有向](https://en.wikipedia.org/wiki/Directed_graph)，没有[环](https://en.wikipedia.org/wiki/Cycle_graph#Directed_cycle_graph)的图形。它最初是计算机领域中一种常见的数据结构。由于其独特的拓扑结构所带来的优良特性，常被用于处理动态规划、导航中寻找最短路径、数据压缩等算法。
 
-- Online Demo: [https://x6.antv.vision/apps/dag](https://x6.antv.vision/apps/dag)
-- Source Code: [https://github.com/antvis/x6/tree/master/examples/x6-app-dag](https://github.com/antvis/x6/tree/master/examples/x6-app-dag)
+- 在线示例: [https://x6.antv.vision/apps/dag](https://x6.antv.vision/apps/dag)
+- 源码: [https://github.com/antvis/x6/tree/master/examples/x6-app-dag](https://github.com/antvis/x6/tree/master/examples/x6-app-dag)
 
 <a href="https://x6.antv.vision/apps/dag" target="_blank" rel="noopener noreferrer">
   <img src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*pJmUSoDLVWEAAAAAAAAAAAAAARQnAQ" alt="dag" />
 </a>
 
-### ERD
+### ERD 图
 
-An entity relationship diagram (ERD) shows the relationships of entity sets stored in a database. An entity in this context is an object, a component of data. An entity set is a collection of similar entities. These entities can have attributes that define its properties. By defining the entities, their attributes, and showing the relationships between them, an ER diagram illustrates the logical structure of databases.
+实体关系图 (ERD) 显示了存储在数据库中的实体集之间的关系。实体集是类似实体的集合，这些实体可以定义其属性，通过定义实体、它们的属性并显示它们之间的关系。ER 图经常用来说明了数据库的逻辑结构。
 
-- Online Demo: [https://x6.antv.vision/apps/er](https://x6.antv.vision/apps/er)
-- Source Code: [https://github.com/antvis/x6/tree/master/examples/x6-app-er](https://github.com/antvis/x6/tree/master/examples/x6-app-er)
+- 在线示例: [https://x6.antv.vision/apps/er](https://x6.antv.vision/apps/er)
+- 源码: [https://github.com/antvis/x6/tree/master/examples/x6-app-er](https://github.com/antvis/x6/tree/master/examples/x6-app-er)
 
 <a href="https://x6.antv.vision/apps/er" target="_blank" rel="noopener noreferrer">
   <img src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*pwvaToTpiEwAAAAAAAAAAAAAARQnAQ" alt="er" />
 </a>
 
-## Communication
+## 社区
 
-Welcome to join the **X6 Communication Group** (Scan the QR Code to Join us). We also welcome the github [issues](https://github.com/antvis/x6/issues).
+欢迎加入**X6交流小组**(扫描二维码加入)，欢迎给我们提 github [issues](https://github.com/antvis/x6/issues)。
 
 <a href="https://qr.dingtalk.com/action/joingroup?code=v1,k1,rOHuvgq5s0EHDktyyQJffDE3ZAmHnbB2e6iwn/w4BKs=&_dt_no_comment=1&origin=11" target="_blank" rel="noopener noreferrer">
   <img src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*tFvBSaPCiHsAAAAAAAAAAAAAARQnAQ" alt="X6 图可视化交流群" width="375" />
 </a>
 
-## Development
+## 开发
 
 ```shell
 # install yarn and lerna
@@ -178,18 +180,16 @@ $ yarn test
 $ yarn build
 ```
 
-## Contributing
+## 贡献
 
-Please let us know how can we help. Do check out [issues](https://github.com/antvis/x6/issues) for bug reports or suggestions first.
+在获得帮助之前，务必首先查看相关 [issues](https://github.com/antvis/x6/issues)。
 
-To become a contributor, please follow our [contributing guide](/CONTRIBUTING.md).
-
-## Contributors
+要成为贡献者，请遵循我们的[贡献指南](/CONTRIBUTING.md)。
 
 <a href="https://github.com/antvis/x6/graphs/contributors">
   <img src="/CONTRIBUTORS.svg" alt="Contributors" width="740" />
 </a>
 
-## License
+## 开源协议
 
-The scripts and documentation in this project are released under the [MIT License](/LICENSE).
+该项目下的代码和文档是在 [MIT License](/LICENSE) 下发布。
