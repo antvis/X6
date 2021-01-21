@@ -124,3 +124,6 @@ this.graph.toSVG((dataUri: string) => {
 
 可以在导出 `svg` 字符串之前调用 `beforeSerialize` 来修改它。
 
+## 销毁画布
+
+我们可以调用 `graph.dispose()` 方法进行画布的销毁以及资源的回收。
