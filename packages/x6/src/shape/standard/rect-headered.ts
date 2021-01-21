@@ -1,5 +1,5 @@
-import { bodyAttr, labelAttr } from './util'
 import { Node } from '../../model/node'
+import { Base } from '../base'
 
 export const HeaderedRect = Node.define({
   shape: 'rect-headered',
@@ -23,24 +23,24 @@ export const HeaderedRect = Node.define({
   ],
   attrs: {
     body: {
-      ...bodyAttr,
+      ...Base.bodyAttr,
       refWidth: '100%',
       refHeight: '100%',
     },
     header: {
-      ...bodyAttr,
+      ...Base.bodyAttr,
       refWidth: '100%',
       height: 30,
       stroke: '#000000',
     },
     headerText: {
-      ...labelAttr,
+      ...Base.labelAttr,
       refX: '50%',
       refY: 15,
       fontSize: 16,
     },
     bodyText: {
-      ...labelAttr,
+      ...Base.labelAttr,
       refY2: 15,
     },
   },
