@@ -85,7 +85,7 @@
     "coveralls": "^3.1.0",
     "eslint": "^7.16.0",
     "jasmine-core": "^3.6.0",
-    "karma": "^5.2.3",
+    "karma": "^6.0.0",
     "karma-chrome-launcher": "^3.1.0",
     "karma-cli": "^2.0.0",
     "karma-jasmine": "^4.0.1",
