@@ -1,6 +1,7 @@
 <p align="center"><img src="/flow.svg"></p>
 
-<p align="center"><strong>X6 是 AntV 旗下的图编辑引擎，提供了一系列开箱即用的交互组件和简单易用的节点定制能力，方便我们快速搭建流程图、DAG 图、ER 图等图应用。</strong></p>
+<p align="center"><strong>X6 是 AntV 旗下的图编辑引擎</strong></p>
+<p align="center"><strong>提供了一系列开箱即用的交互组件和简单易用的节点定制能力，方便我们快速搭建流程图、DAG 图、ER 图等图应用。</strong></p>
 
 <p align="center">
 <a href="/LICENSE"><img src="https://img.shields.io/badge/license-MIT_License-green.svg?style=flat-square" alt="MIT License"></a>
