@@ -1,6 +1,5 @@
 import { Platform, Dom, FunctionExt, ObjectExt } from '../../util'
 import { Attr } from '../../registry'
-import { bodyAttr } from './util'
 import { Base } from '../base'
 
 export const TextBlock = Base.define({
@@ -45,7 +44,7 @@ export const TextBlock = Base.define({
   ],
   attrs: {
     body: {
-      ...bodyAttr,
+      ...Base.bodyAttr,
       refWidth: '100%',
       refHeight: '100%',
     },

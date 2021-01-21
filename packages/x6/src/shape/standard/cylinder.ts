@@ -1,5 +1,4 @@
 import { NumberExt } from '../../util'
-import { bodyAttr } from './util'
 import { Base } from '../base'
 
 const CYLINDER_TILT = 10
@@ -23,11 +22,11 @@ export const Cylinder = Base.define({
   ],
   attrs: {
     body: {
-      ...bodyAttr,
+      ...Base.bodyAttr,
       lateral: CYLINDER_TILT,
     },
     top: {
-      ...bodyAttr,
+      ...Base.bodyAttr,
       refCx: '50%',
       refRx: '50%',
       cy: CYLINDER_TILT,
