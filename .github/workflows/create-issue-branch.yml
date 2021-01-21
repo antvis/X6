@@ -15,8 +15,3 @@ jobs:
       - uses: robvanderleek/create-issue-branch@master
         env:
           GITHUB_TOKEN: ${{ env.bot_token }}
-          commentMessage: |
-            @${issue.user.login}
-
-            Branch ${branchName} was created for this issue. We will investigate into the matter and get back to you as soon as possible.
-
