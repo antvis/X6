@@ -1,6 +1,7 @@
 <p align="center"><img src="/flow.svg"></p>
 
-<p align="center"><strong>X6 是 AntV 旗下的图编辑引擎，提供了一系列开箱即用的交互组件和简单易用的节点定制能力，方便我们快速搭建流程图、DAG 图、ER 图等图应用。</strong></p>
+<p align="center"><strong>X6 是 AntV 旗下的图编辑引擎</strong></p>
+<p align="center"><strong>提供了开箱即用的交互组件和简单易用的节点定制能力，方便我们快速搭建流程图、DAG 图、ER 图等图应用。</strong></p>
 
 <p align="center">
 <a href="/LICENSE"><img src="https://img.shields.io/badge/license-MIT_License-green.svg?style=flat-square" alt="MIT License"></a>
@@ -160,9 +161,9 @@ DAG是[有向无环图](https://en.wikipedia.org/wiki/Directed_acyclic_graph)的
 
 ## 如何交流
 
-如果您在使用的过程中碰到问题，可以先通过 [issues](https://github.com/antvis/x6/issues) 看看有没有类似的 bug 或者建议。欢迎提 [issues](https://github.com/antvis/x6/issues/new) 交流，也可以扫描下面二维码加入**X6 交流群**。
+如果您在使用的过程中碰到问题，可以先通过 [issues](https://github.com/antvis/x6/issues) 看看有没有类似的 bug 或者建议。欢迎提 [issues](https://github.com/antvis/x6/issues/new) 交流，也可以使用[钉钉](https://m.dingtalk.com/)扫描下面二维码加入**X6 交流群**。
 
-问题请配上 [CodeSandbox](https://codesandbox.io/s/pensive-sound-f4nhc) 的复现代码，方便快速定位和解决。
+需要注意的是，提问题时请配上 [CodeSandbox](https://codesandbox.io/s/pensive-sound-f4nhc) 的复现代码，方便快速定位和解决问题。
 
 <a href="https://qr.dingtalk.com/action/joingroup?code=v1,k1,rOHuvgq5s0EHDktyyQJffDE3ZAmHnbB2e6iwn/w4BKs=&_dt_no_comment=1&origin=11" target="_blank" rel="noopener noreferrer">
   <img src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*tFvBSaPCiHsAAAAAAAAAAAAAARQnAQ" alt="X6 图可视化交流群" width="375" />
@@ -228,7 +229,7 @@ yarn build:watch:cjs
 
 如果您在使用的过程中碰到问题，可以先通过 [issues](https://github.com/antvis/x6/issues) 看看有没有类似的 bug 或者建议。
 
-如需提交代码，请遵从我们的[贡献指南](/CONTRIBUTING.zh-CN.md)。
+如需提交代码，请遵从我们的[贡献指南](/CONTRIBUTING.zh-CN.md)。我们会收集贡献者的 Github 头像到下面贡献者清单中。
 
 <a href="https://github.com/antvis/x6/graphs/contributors">
   <img src="/CONTRIBUTORS.svg" alt="Contributors" width="740" />
