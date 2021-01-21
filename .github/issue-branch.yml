@@ -18,3 +18,7 @@ branches:
     skip: true
 experimental:
   branchNameArgument: true
+commentMessage: |
+  @${issue.user.login}
+
+  Branch ${branchName} was created for this issue. We will investigate into the matter and get back to you as soon as possible.
