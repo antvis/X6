@@ -631,6 +631,11 @@ export class Graph extends Basecoat<EventArgs> {
     return this
   }
 
+  resizePage(width?: number, height?: number) {
+    this.size.resizePage(width, height)
+    return this
+  }
+
   /**
    * **Deprecation Notice:** `scale` is deprecated and will be moved in next
    * major release. Use `zoom()` instead.
