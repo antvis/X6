@@ -1,3 +1,10 @@
+## @antv/x6 [1.12.8](https://github.com/antvis/x6/compare/@antv/x6@1.12.7...@antv/x6@1.12.8) (2021-01-21)
+
+
+### Bug Fixes
+
+* 🐛 update page size as needed when graph size changed ([#571](https://github.com/antvis/x6/issues/571)) ([0fbab4b](https://github.com/antvis/x6/commit/0fbab4b2e932017ec60111c87a27d11cb85b2934)), closes [#564](https://github.com/antvis/x6/issues/564)
+
 ## @antv/x6 [1.12.7](https://github.com/antvis/x6/compare/@antv/x6@1.12.6...@antv/x6@1.12.7) (2021-01-21)
 
 ## @antv/x6 [1.12.6](https://github.com/antvis/x6/compare/@antv/x6@1.12.5...@antv/x6@1.12.6) (2021-01-21)
