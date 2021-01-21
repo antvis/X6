@@ -16,6 +16,7 @@ redirect_from:
 3.  边相关
     1. [怎么区分 edgeremoved 事件触发原因](#怎么区分-edgeremoved-事件触发原因)
     2. [在 edge:removed 事件中怎么获取目标节点](#在-edgeremoved-事件中怎么获取目标节点)
+    3. [在历史记录中忽略某个属性的修改]()
 4.  连接桩相关
     1. [怎么监听连接桩的点击事件](#怎么监听连接桩的点击事件)
 
@@ -26,7 +27,7 @@ X6 是图编辑引擎，特点是节点、边、等元素的定制能力非常�
 
 ### X6 支持 Vue 吗
 
-X6 的核心能力和框架无关，在 X6 的基础上我们有 [x6-react-shape](https://github.com/antvis/X6/tree/master/packages/x6-react-shape) 和 [x6-react-components](https://github.com/antvis/X6/tree/master/packages/x6-react-components) 两个项目，用来支持 `React` 渲染以及提供一系列图编辑场景的常用 UI 组件。我们后续也会支持 `vue` 框架，如果大家有兴趣可以联系我们，一起将 X6 做得更加完美。
+X6 的核心能力和框架无关，在 X6 的基础上我们有 [x6-react-shape](https://github.com/antvis/X6/tree/master/packages/x6-react-shape) 和 [x6-react-components](https://github.com/antvis/X6/tree/master/packages/x6-react-components) 两个项目，用来支持 `React` 渲染以及提供一系列图编辑场景的常用 UI 组件。我们同样提供 [x6-vue-shape](https://github.com/antvis/X6/tree/master/packages/x6-vue-shape) 来支持 `Vue` 节点的渲染。
 
 ### 怎么禁止节点移动
 
@@ -79,6 +80,41 @@ graph.on("edge:removed", ({ edge, options }) => {
   const cellId = edge.getTargetCellId()
   const target = graph.getCellById(cellId)
 });
+```
+
+### 在历史记录中忽略某个属性的修改
+
+已连线为例，拖动过程中是虚线，连接结束变为实线，此时如果执行 `undo` 操作，怎样直接恢复到未连线的状态呢？
+
+```ts
+new Graph({
+  history: {
+    enabled: true,
+    beforeAddCommand(event, args: any) {
+      // 忽略历史变更
+      if (args.options.ignoreHistory) {
+        return false
+      }
+    },
+  },
+  connecting: {
+    createEdge() {
+      // 指定新创建的边为虚线样式
+      return Edge.create({
+        attrs: {
+          line: {
+            strokeDasharray: '5 5',
+          },
+        },
+      })
+    },
+  },
+})
+
+graph.on('edge:connected', ({ edge }) => {
+   // 传入自定义的 ignoreHistory 选项来忽略历史变更
+   edge.attr('line/strokeDasharray', null, { ignoreHistory: true })
+})
 ```
 
 ### 怎么监听连接桩的点击事件
