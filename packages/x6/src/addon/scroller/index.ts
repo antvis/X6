@@ -38,15 +38,27 @@ export class Scroller extends View {
   protected cachedScrollTop: number | null
   protected cachedCenterPoint: Point.PointLike | null
   protected delegatedHandlers: { [name: string]: Function }
+  protected shouldUpdatePageWidth: boolean = false
+  protected shouldUpdatePageHeight: boolean = false
 
   constructor(options: Scroller.Options) {
     super()
 
-    this.options = Util.getOptions(options)
-
-    const scale = this.graph.transform.getScale()
+    const graph = this.graph
+    const scale = graph.transform.getScale()
     this.sx = scale.sx
     this.sy = scale.sy
+    this.options = Util.getOptions(options)
+
+    if (this.options.pageWidth == null) {
+      this.options.pageWidth = graph.options.width
+      this.shouldUpdatePageWidth = true
+    }
+
+    if (this.options.pageHeight == null) {
+      this.options.pageHeight = graph.options.height
+      this.shouldUpdatePageHeight = true
+    }
 
     const width = this.options.width || this.graph.options.width
     const height = this.options.height || this.graph.options.height
@@ -63,19 +75,11 @@ export class Scroller extends View {
       this.$container.addClass(this.options.className)
     }
 
-    const graph = this.graph
     const graphContainer = graph.container
 
     if (graphContainer.parentNode) {
       this.$container.insertBefore(graphContainer)
     }
-
-    // copy style
-    // const style = graphContainer.getAttribute('style')
-    // if (style) {
-    //   graphContainer.removeAttribute('style')
-    //   this.container.setAttribute('style', style)
-    // }
 
     this.content = document.createElement('div')
     this.$content = this.$(this.content)
@@ -262,6 +266,16 @@ export class Scroller extends View {
   protected afterManipulation() {
     if (Platform.IS_IE || Platform.IS_EDGE) {
       this.$container.css('visibility', 'visible')
+    }
+  }
+
+  public updatePageSize(width?: number, height?: number, force?: boolean) {
+    if (width != null && (this.shouldUpdatePageWidth || force)) {
+      this.options.pageWidth = width
+    }
+
+    if (height != null && (this.shouldUpdatePageHeight || force)) {
+      this.options.pageHeight = height
     }
   }
 
@@ -1213,17 +1227,6 @@ namespace Util {
   }
 
   export function getOptions(options: Scroller.Options) {
-    const merged = ObjectExt.merge({}, defaultOptions, options)
-    const graph = options.graph
-
-    if (merged.pageWidth == null) {
-      merged.pageWidth = graph.options.width
-    }
-
-    if (merged.pageHeight == null) {
-      merged.pageHeight = graph.options.height
-    }
-
-    return merged
+    return ObjectExt.merge({}, defaultOptions, options)
   }
 }
