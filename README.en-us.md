@@ -20,7 +20,7 @@
 <a href="https://david-dm.org/antvis/x6?type=dev&path=packages/x6"><img alt="devDependencies Status" src="https://david-dm.org/antvis/x6/dev-status.svg?style=flat-square&path=packages/x6" ></a>
 </p>
 
-[简体中文](./README.md) | English
+[简体中文](/README.md) | English
 
 ## Features
 
@@ -114,11 +114,12 @@ graph.addEdge({
 
 ## Documentation
 
-- [About](https://x6.antv.vision/zh/docs/tutorial/about)
-- [Getting started](https://x6.antv.vision/zh/docs/tutorial/getting-started)
-- [Basic usage](https://x6.antv.vision/zh/docs/tutorial/basic/graph)
-- [Advanced practice](https://x6.antv.vision/zh/docs/tutorial/intermediate/serialization)
-- [Senior guidance](https://x6.antv.vision/zh/docs/tutorial/advanced/animation)
+- [About](https://x6.antv.vision/en/docs/tutorial/about)
+- [Getting Started](https://x6.antv.vision/en/docs/tutorial/getting-started)
+- [Basic Usage](https://x6.antv.vision/en/docs/tutorial/basic/graph)
+- [Advanced Practice](https://x6.antv.vision/en/docs/tutorial/intermediate/serialization)
+- [Senior Guidance](https://x6.antv.vision/en/docs/tutorial/advanced/animation)
+- [ChangeLog](https://x6.antv.vision/en/docs/tutorial/log)
 
 ## App Demos Build with X6
 
@@ -165,6 +166,29 @@ Welcome to join the **X6 Communication Group** (Scan the QR Code to Join us). We
 
 ## Development
 
+This repo is base on [lerna](https://github.com/lerna/lerna) with the following structor:
+
+```
+.
+├── examples
+│   ├── x6-app-dag            # example of dag graph
+│   ├── x6-app-draw           # example of flowchart
+│   ├── x6-app-er             # example of ER chart
+│   └── x6-example-features   # example of basic features
+├── packages
+│   ├── x6                    # X6
+│   ├── x6-react              # wrap X6 with react(reserved)
+│   ├── x6-react-components   # react componets to build graph apps
+│   ├── x6-react-shape        # support render node with react
+│   └── x6-vue-shape          # support render node with vue
+└── sites
+    ├── x6-sites              # sites and documents
+    ├── x6-sites-demos        # demos in documents
+    └── x6-sites-demos-helper # tools to build demos
+```
+
+We need to install some necessary global tools before getting started.
+
 ```shell
 # install yarn and lerna
 $ npm install yarn -g
@@ -172,12 +196,28 @@ $ npm install lerna -g
 
 # install deps and build
 $ yarn bootstrap
+```
 
-# run tests
-$ yarn test
+Then we can `cd` to dirs to development and debugging.
 
-# build
-$ yarn build
+Such as, we can start `examples/x6-example-features` locally:
+
+```shell
+cd examples/x6-example-features
+
+yarn start
+```
+
+When need to fix some bugs of X6, we can start with **watch** mode:
+
+```shell
+cd packages/x6
+
+// build esm to "em" dir
+yarn build:watch:esm
+
+// build commonjs to "lib" dir
+yarn build:watch:cjs
 ```
 
 ## Contributing

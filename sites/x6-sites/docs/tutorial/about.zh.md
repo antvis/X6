@@ -6,6 +6,10 @@ redirect_from:
   - /zh/docs/tutorial
 ---
 
+X6 是 AntV 旗下的图编辑引擎，提供了一系列开箱即用的交互组件和简单易用的节点定制能力，方便我们快速搭建流程图、DAG 图、ER 图等图应用。
+
+如果你还没有使用过 X6， 建议通过 [快速上手](getting-started) 抢先体验 X6 的魅力。
+
 [![MIT License](https://img.shields.io/badge/license-MIT_License-green.svg?style=flat-square)](https://github.com/antvis/x6/blob/master/LICENSE)
 [![Language](https://img.shields.io/badge/language-typescript-blue.svg?style=flat-square)](https://www.typescriptlang.org)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://github.com/antvis/x6/pulls)
@@ -18,24 +22,22 @@ redirect_from:
 [![NPM Downloads](https://img.shields.io/npm/dm/@antv/x6.svg?style=flat-square)](https://www.npmjs.com/package/@antv/x6)
 [![NPM Dependencies](https://img.shields.io/david/antvis/x6?path=packages%2Fx6&style=flat-square)](https://www.npmjs.com/package/@antv/x6)
 
-X6 是 AntV 旗下的图编辑引擎，提供了一系列开箱即用的交互组件和简单易用的节点定制能力，方便我们快速搭建 DAG 图、ER 图、流程图等应用。
-
-如果你还没有使用过 X6， 建议通过 [快速上手](getting-started) 抢先体验 X6 的魅力。
-
 ## ✨ 特性
 
-- 🌱　极易定制：提供基于低学习成本的 SVG/HTML/CSS 的节点定制能力；
-- 🚀　开箱即用：内置 10+ 图编辑场景的配套扩展，如框选、对齐线、小地图等；
-- 💯　数据驱动：基于 MVC 架构模式，用户更加专注于数据逻辑和业务逻辑；
+- 🌱　极易定制：支持使用 SVG/HTML/React/Vue 定制节点样式和交互；
+- 🚀　开箱即用：内置 10+ 图编辑配套扩展，如框选、对齐线、小地图等；
+- 🧲　数据驱动：基于 MVC 架构，用户更加专注于数据逻辑和业务逻辑；
+- 💯　事件驱动：可以监听图表内发生的任何事件。
 
+## 🍉 使用文档
 
-## 🍉 文档
-
+- [快速上手](getting-started)
 - [基础教程](basic/graph)
 - [进阶实战](intermediate/serialization)
 - [高级指引](advanced/animation)
+- [更新日志](log)
 
-## ❤️ 交流群
+## ❤️ 如何流群
 
 欢迎各界 X6 使用者、图可视化爱好者加入 X6 图可视化交流群（钉钉群，使用钉钉扫一扫加入）讨论与交流。
 
@@ -53,6 +55,6 @@ X6 是 AntV 旗下的图编辑引擎，提供了一系列开箱即用的交互�
   <img src="https://opencollective.com/x6/contributors.svg?width=890&button=false" />
 </a>
 
-## 🔑 License
+## 🔑 开源协议
 
-[MIT License](https://github.com/antvis/X6/blob/master/LICENSE)。
+该项目的代码和文档基于 [MIT License](tps://github.com/antvis/X6/blob/master/LICENSE) 开源协议。
