@@ -538,7 +538,9 @@ export namespace Markup {
 }
 
 export namespace Markup {
-  export function getForeignObjectMarkup(): Markup.JSONMarkup {
+  export function getForeignObjectMarkup(
+    bare: boolean = false,
+  ): Markup.JSONMarkup {
     return {
       tagName: 'foreignObject',
       selector: 'fo',
@@ -555,16 +557,18 @@ export namespace Markup {
             height: '100%',
             background: 'transparent',
           },
-          children: [
-            {
-              tagName: 'div',
-              selector: 'foContent',
-              style: {
-                width: '100%',
-                height: '100%',
-              },
-            },
-          ],
+          children: bare
+            ? []
+            : [
+                {
+                  tagName: 'div',
+                  selector: 'foContent',
+                  style: {
+                    width: '100%',
+                    height: '100%',
+                  },
+                },
+              ],
         },
       ],
     }
