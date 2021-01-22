@@ -132,6 +132,10 @@ export namespace Options {
      */
     preventDefaultContextMenu: boolean
 
+    preventDefaultDblClick: boolean
+
+    preventDefaultMouseDown: boolean
+
     /**
      * Prevents default action when an empty graph area is clicked.
      * Setting the option to `false` will make the graph pannable
@@ -753,6 +757,8 @@ export namespace Options {
     moveThreshold: 0,
     clickThreshold: 0,
     magnetThreshold: 0,
+    preventDefaultDblClick: true,
+    preventDefaultMouseDown: false,
     preventDefaultContextMenu: true,
     preventDefaultBlankAction: true,
     interacting: {
