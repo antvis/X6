@@ -1,3 +1,23 @@
+# @antv/x6-sites [1.2.0](https://github.com/antvis/x6/compare/@antv/x6-sites@1.1.2...@antv/x6-sites@1.2.0) (2021-01-22)
+
+
+### Bug Fixes
+
+* 🐛 remove single tool by name or index ([#565](https://github.com/antvis/x6/issues/565)) ([f87dc43](https://github.com/antvis/x6/commit/f87dc43e439bfd13b7afe193db096bacd456bdcd)), closes [#552](https://github.com/antvis/x6/issues/552)
+
+
+### Features
+
+* ✨ auto resize graph when container resized ([ff6e2b6](https://github.com/antvis/x6/commit/ff6e2b63bce78992cdb1892c84d7bf2ce6c2bbc3)), closes [#531](https://github.com/antvis/x6/issues/531)
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.12.9
+
 # @antv/x6-sites [1.2.0](https://github.com/antvis/x6/compare/@antv/x6-sites@1.1.2...@antv/x6-sites@1.2.0) (2021-01-21)
 
 
