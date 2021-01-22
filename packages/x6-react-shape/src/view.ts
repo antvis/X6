@@ -49,6 +49,30 @@ export class ReactShapeView extends NodeView<ReactShape> {
     return root
   }
 
+  onMouseDown(e: JQuery.MouseDownEvent, x: number, y: number) {
+    const target = e.target as Element
+    const tagName = target.tagName.toLowerCase()
+    if (tagName === 'input') {
+      const type = target.getAttribute('type')
+      if (
+        type == null ||
+        [
+          'text',
+          'password',
+          'number',
+          'email',
+          'search',
+          'tel',
+          'url',
+        ].includes(type)
+      ) {
+        return
+      }
+    }
+
+    super.onMouseDown(e, x, y)
+  }
+
   @NodeView.dispose()
   dispose() {
     Portal.disconnect(this.cell.id)
