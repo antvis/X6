@@ -1,3 +1,10 @@
+## @antv/x6 [1.12.11](https://github.com/antvis/x6/compare/@antv/x6@1.12.10...@antv/x6@1.12.11) (2021-01-22)
+
+
+### Bug Fixes
+
+* 🐛 prevent handle 'delete' and 'backsapce' key triggered from input ([429ef9a](https://github.com/antvis/x6/commit/429ef9ad45a11a49072d169a0c89146640f7e21a))
+
 ## @antv/x6 [1.12.10](https://github.com/antvis/x6/compare/@antv/x6@1.12.9...@antv/x6@1.12.10) (2021-01-22)
 
 
