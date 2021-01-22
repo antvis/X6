@@ -64,7 +64,11 @@ export default class Example extends React.Component {
     const stencil = new Stencil({
       title: 'Components',
       target: graph,
-      search: true,
+      search(cell, keyword) {
+        return cell.shape.indexOf(keyword) !== -1
+      },
+      placeholder: 'Search by shape name',
+      notFoundText: 'Not Found',
       collapsable: true,
       stencilGraphWidth: 200,
       stencilGraphHeight: 180,

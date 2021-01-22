@@ -927,7 +927,7 @@ export const content = `.x6-graph {
 }
 .x6-widget-stencil.not-found::after {
   opacity: 1;
-  content: 'No matches found';
+  content: attr(data-not-found-text);
 }
 .x6-widget-stencil.not-found.searchable::after {
   top: 30px;
