@@ -28,6 +28,7 @@ export default class Example extends React.Component {
         strict: true,
         showNodeSelectionBox: true,
         selectCellOnMoved: false,
+        useCellGeometry: true,
         filter(cell) {
           return cell !== a
         },
@@ -49,6 +50,7 @@ export default class Example extends React.Component {
       width: 100,
       height: 40,
       attrs: { label: { text: 'B' } },
+      ports: [{ id: 'port' }],
     })
 
     const c = graph.addNode({
