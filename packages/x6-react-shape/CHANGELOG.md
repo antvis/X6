@@ -1,3 +1,19 @@
+## @antv/x6-react-shape [1.2.5](https://github.com/antvis/x6/compare/@antv/x6-react-shape@1.2.4...@antv/x6-react-shape@1.2.5) (2021-01-22)
+
+
+### Bug Fixes
+
+* 🐛 do not pass `node` prop to inline component ([7d68cb9](https://github.com/antvis/x6/commit/7d68cb92299ace7097150c028a64e9fae4041f4d))
+* 🐛 interact with input rendered in react component ([6eaec74](https://github.com/antvis/x6/commit/6eaec7412dd9826b331fc4bfb822e874ace939e1))
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.12.11
+
 ## @antv/x6-react-shape [1.2.2](https://github.com/antvis/x6/compare/@antv/x6-react-shape@1.2.1...@antv/x6-react-shape@1.2.2) (2021-01-13)
 
 
