@@ -93,7 +93,10 @@ export class GraphView extends View {
   }
 
   protected onDblClick(evt: JQuery.DoubleClickEvent) {
-    evt.preventDefault()
+    if (this.options.preventDefaultDblClick) {
+      evt.preventDefault()
+    }
+
     const e = this.normalizeEvent(evt)
     const view = this.findView(e.target)
 
@@ -188,10 +191,13 @@ export class GraphView extends View {
       return
     }
 
+    if (this.options.preventDefaultMouseDown) {
+      e.preventDefault()
+    }
+
     const localPoint = this.graph.snapToGrid(e.clientX, e.clientY)
 
     if (view) {
-      e.preventDefault()
       view.onMouseDown(e, localPoint.x, localPoint.y)
     } else {
       if (this.options.preventDefaultBlankAction) {
