@@ -43,9 +43,12 @@ export class Stencil extends View {
     this.dnd = new Dnd(this.options)
     this.onSearch = FunctionExt.debounce(this.onSearch, 200)
     this.container = document.createElement('div')
-    this.$container = this.$(this.container).addClass(
-      this.prefixClassName(ClassNames.base),
-    )
+    this.$container = this.$(this.container)
+      .addClass(this.prefixClassName(ClassNames.base))
+      .attr(
+        'data-not-found-text',
+        this.options.notFoundText || 'No matches found',
+      )
 
     this.options.collapsable =
       options.collapsable &&
@@ -145,7 +148,7 @@ export class Stencil extends View {
         this.$('<input/>')
           .attr({
             type: 'search',
-            placeholder: 'Search',
+            placeholder: this.options.placeholder || 'Search',
           })
           .addClass(this.prefixClassName(ClassNames.searchText)),
       )
@@ -458,6 +461,8 @@ export namespace Stencil {
     title: string
     groups?: Group[]
     search?: Filter
+    placeholder?: string
+    notFoundText?: string
     collapsable?: boolean
     stencilGraphWidth: number
     stencilGraphHeight: number
@@ -495,6 +500,8 @@ export namespace Stencil {
     stencilGraphHeight: 800,
     title: 'Stencil',
     collapsable: false,
+    placeholder: 'Search',
+    notFoundText: 'No matches found',
 
     layout(model, group) {
       const options = {
