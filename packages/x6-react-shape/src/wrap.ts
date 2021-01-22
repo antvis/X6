@@ -12,17 +12,24 @@ export class Wrap extends React.PureComponent<Wrap.Props, Wrap.State> {
     })
   }
 
+  clone(elem: React.ReactElement) {
+    const { node } = this.props
+    return typeof elem.type === 'string'
+      ? React.cloneElement(elem)
+      : React.cloneElement(elem, { node })
+  }
+
   render() {
     const { graph, node, component } = this.props
     if (React.isValidElement(component)) {
-      return React.cloneElement(component, { node })
+      return this.clone(component)
     }
 
     if (typeof component === 'function') {
       // Calling the component function on every change of the node.
       const ret = FunctionExt.call(component, graph, node)
       if (React.isValidElement(ret)) {
-        return React.cloneElement(ret as React.ReactElement, { node })
+        return this.clone(ret as React.ReactElement)
       }
     }
 
