@@ -44,11 +44,12 @@ export class Scroller extends View {
   constructor(options: Scroller.Options) {
     super()
 
+    this.options = Util.getOptions(options)
+    
     const graph = this.graph
     const scale = graph.transform.getScale()
     this.sx = scale.sx
     this.sy = scale.sy
-    this.options = Util.getOptions(options)
 
     if (this.options.pageWidth == null) {
       this.options.pageWidth = graph.options.width
