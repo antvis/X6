@@ -9,7 +9,7 @@
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*FgY8TJWw1TQAAAAAAAAAAAAAARQnAQ"
     },
     {
-      "filename": "create.ts",
+      "filename": "create.tsx",
       "title": {
         "zh": "手动创建连线",
         "en": "Create Edge Manually"
