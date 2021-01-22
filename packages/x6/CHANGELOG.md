@@ -1,3 +1,10 @@
+## @antv/x6 [1.12.9](https://github.com/antvis/x6/compare/@antv/x6@1.12.8...@antv/x6@1.12.9) (2021-01-22)
+
+
+### Bug Fixes
+
+* fix canot get graph ([#573](https://github.com/antvis/x6/issues/573)) ([5aadc87](https://github.com/antvis/x6/commit/5aadc87467e61dbd33d385e94a94bee72e744f84))
+
 ## @antv/x6 [1.12.8](https://github.com/antvis/x6/compare/@antv/x6@1.12.7...@antv/x6@1.12.8) (2021-01-21)
 
 
