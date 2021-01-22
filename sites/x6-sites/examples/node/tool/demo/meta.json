@@ -25,12 +25,12 @@
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*9jEGTak16UEAAAAAAAAAAAAAARQnAQ"
     },
     {
-      "filename": "contextmenu.tsx",
+      "filename": "editable.ts",
       "title": {
-        "zh": "右键菜单",
-        "en": "Context Menu"
+        "zh": "文本编辑",
+        "en": "Text Editor"
       },
-      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*cBHESINBs3MAAAAAAAAAAAAAARQnAQ"
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*XYwVTYkKcpwAAAAAAAAAAAAAARQnAQ"
     }
   ]
 }
