@@ -112,6 +112,12 @@ export class Keyboard extends Disposable implements IDisablable {
   isEnabledForEvent(e: KeyboardEvent) {
     const allowed = !this.disabled && this.isGraphEvent(e)
     if (allowed) {
+      const target = e.target as Element
+      const tagName = target && target.tagName.toLowerCase()
+      const code = e.keyCode || e.which
+      if (tagName === 'input' && (code === 8 || code === 46)) {
+        return false
+      }
       if (this.options.guard) {
         return FunctionExt.call(this.options.guard, this.graph, e)
       }
@@ -158,8 +164,9 @@ export namespace Keyboard {
         if (stopCallback) {
           return stopCallback.call(mousetrap, e, elem, combo)
         }
+        return false
       }
-      return false
+      return true
     }
 
     return mousetrap
