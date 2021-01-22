@@ -71,18 +71,20 @@ const stencil = new Addon.Stencil(options)
 创建 Stencil 的选项继承自[创建 Dnd 的选项](#step-1-初始化)，另外还支持以下选项。
 
 
-| 选项                        | 类型                                                        | 必选 | 默认值      | 说明                       |
-|-----------------------------|-------------------------------------------------------------|:----:|-------------|--------------------------|
-| options.title               | string                                                      |      | `'Stencil'` | 标题。                      |
-| options.groups              | Group[]                                                     |  ✓️  |             | 分组信息。                  |
-| options.search              | Filter                                                      |      | `false`     | 搜索选项。                  |
-| options.collapsable         | boolean                                                     |      | `false`     | 是否显示全局折叠/展开按钮。 |
-| options.layout              | (this: Stencil, model: Model, group?: Group \| null) => any |      | 网格布局    | 模板画布中节点的布局方法。  |
-| options.layoutOptions       | any                                                         |      |             | 布局选项。                  |
-| options.stencilGraphWidth   | number                                                      |      | `200`       | 模板画布宽度。              |
-| options.stencilGraphHeight  | number                                                      |      | `800`       | 模板画布高度。              |
-| options.stencilGraphPadding | number                                                      |      | `10`        | 模板画布边距。              |
-| options.stencilGraphOptions | Graph.Options                                               |      |             | 模板画布选项。              |
+| 选项                        | 类型                                                        | 必选 | 默认值               | 说明                           |
+|-----------------------------|-------------------------------------------------------------|:----:|----------------------|------------------------------|
+| options.title               | string                                                      |      | `'Stencil'`          | 标题。                          |
+| options.groups              | Group[]                                                     |  ✓️  |                      | 分组信息。                      |
+| options.search              | Filter                                                      |      | `false`              | 搜索选项。                      |
+| options.placeholder         | string                                                      |      | `'Search'`           | 搜索文本框的 placeholder 文本。 |
+| options.notFoundText        | string                                                      |      | `'No matches found'` | 未匹配到搜索结果时的提示文本。  |
+| options.collapsable         | boolean                                                     |      | `false`              | 是否显示全局折叠/展开按钮。     |
+| options.layout              | (this: Stencil, model: Model, group?: Group \| null) => any |      | 网格布局             | 模板画布中节点的布局方法。      |
+| options.layoutOptions       | any                                                         |      |                      | 布局选项。                      |
+| options.stencilGraphWidth   | number                                                      |      | `200`                | 模板画布宽度。                  |
+| options.stencilGraphHeight  | number                                                      |      | `800`                | 模板画布高度。                  |
+| options.stencilGraphPadding | number                                                      |      | `10`                 | 模板画布边距。                  |
+| options.stencilGraphOptions | Graph.Options                                               |      |                      | 模板画布选项。                  |
 
 其中分组的定义为，分组中提供的选项的优先级高于 `options` 中的相同选项。
 
