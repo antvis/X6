@@ -2670,14 +2670,15 @@ export class EdgeView<
 
   dragLabel(e: JQuery.MouseMoveEvent, x: number, y: number) {
     const data = this.getEventData<EventData.LabelDragging>(e)
-    const label = {
+    const originLabel = this.cell.getLabelAt(data.index)
+    const label = ObjectExt.merge({}, originLabel, {
       position: this.getLabelPosition(
         x,
         y,
         data.positionAngle,
         data.positionArgs,
       ),
-    }
+    })
     this.cell.setLabelAt(data.index, label)
   }
 
