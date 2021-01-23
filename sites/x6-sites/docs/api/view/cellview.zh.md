@@ -111,33 +111,6 @@ can(feature: InteractionNames): boolean
 - `'vertexAddable'` 是否可以添加边的路径点。默认为 `true`。
 - `'vertexDeletable'` 边的路径点是否可以被删除。默认为 `true`。
 
-
-#### setInteracting(...)
-
-```sign
-setInteracting(interacting: boolean): this
-setInteracting(interacting: InteractionMap): this
-setInteracting(interacting: (this: Graph, cellView: CellView) => InteractionMap | boolean): this
-```
-
-设置视图的交互行为。其中 `InteractionMap` 的定义为：
-
-```ts
-interface InteractionMap {
-  // node
-  nodeMovable?: boolean
-  magnetConnectable?: boolean
-
-  // edge
-  edgeMovable?: boolean
-  edgeLabelMovable?: boolean
-  arrowheadMovable?: boolean
-  vertexMovable?: boolean
-  vertexAddable?: boolean
-  vertexDeletable?: boolean
-}
-```
-
 ### 动画
 
 #### animate(...)
