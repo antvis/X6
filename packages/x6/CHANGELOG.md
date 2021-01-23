@@ -1,3 +1,10 @@
+## @antv/x6 [1.12.13](https://github.com/antvis/x6/compare/@antv/x6@1.12.12...@antv/x6@1.12.13) (2021-01-23)
+
+
+### Bug Fixes
+
+* get registry first in html component ([c810821](https://github.com/antvis/x6/commit/c81082169763f4ca5432b44c94996674cd3599b1))
+
 ## @antv/x6 [1.12.12](https://github.com/antvis/x6/compare/@antv/x6@1.12.11...@antv/x6@1.12.12) (2021-01-23)
 
 ## @antv/x6 [1.12.11](https://github.com/antvis/x6/compare/@antv/x6@1.12.10...@antv/x6@1.12.11) (2021-01-22)
