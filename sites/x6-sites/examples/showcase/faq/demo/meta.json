@@ -7,6 +7,14 @@
         "en": "Resize Node According to the Image Size"
       },
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*AhNyQ5453mEAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "change-mode.tsx",
+      "title": {
+        "zh": "切换交互模式",
+        "en": "Switch Interacting"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*YmthRqMeb7AAAAAAAAAAAAAAARQnAQ"
     }
   ]
 }
