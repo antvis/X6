@@ -705,12 +705,12 @@ export class Hook extends Base implements Hook.IHook {
   getHTMLComponent(node: HTML): HTMLElement | string | null | undefined {
     let ret = node.getHTML()
 
-    if (ObjectExt.isPlainObject(ret)) {
-      ret = (ret as HTML.UpdatableComponent).render
-    }
-
     if (typeof ret === 'string') {
       ret = HTML.componentRegistry.get(ret) || ret
+    }
+
+    if (ObjectExt.isPlainObject(ret)) {
+      ret = (ret as HTML.UpdatableComponent).render
     }
 
     if (typeof ret === 'function') {
