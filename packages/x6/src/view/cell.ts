@@ -21,7 +21,7 @@ export class CellView<
   Entity extends Cell = Cell,
   Options extends CellView.Options = CellView.Options
 > extends View<CellView.EventArgs> {
-  protected static defaults: CellView.Options = {
+  protected static defaults: Partial<CellView.Options> = {
     isSvgElement: true,
     rootSelector: 'root',
     priority: 0,
@@ -52,7 +52,7 @@ export class CellView<
       return Array.isArray(arr1) ? [...arr1] : [arr1]
     }
 
-    const ret = ObjectExt.cloneDeep(this.getDefaults())
+    const ret = ObjectExt.cloneDeep(this.getDefaults()) as T
     const { bootstrap, actions, events, documentEvents, ...others } = options
 
     if (bootstrap) {
@@ -102,6 +102,7 @@ export class CellView<
 
     this.cell = cell
     this.options = this.ensureOptions(options)
+    this.graph = this.options.graph
     this.attr = new AttrManager(this)
     this.flag = new FlagManager(
       this,
@@ -287,18 +288,18 @@ export class CellView<
   }
 
   can(feature: CellView.InteractionNames): boolean {
-    let interacting = this.options.interacting
+    let interacting = this.graph.options.interacting
 
     if (typeof interacting === 'function') {
       interacting = FunctionExt.call(interacting, this.graph, this)
     }
 
     if (typeof interacting === 'object') {
-      interacting = interacting[feature]
-      if (typeof interacting === 'function') {
-        interacting = FunctionExt.call(interacting, this.graph, this)
+      let val = interacting[feature]
+      if (typeof val === 'function') {
+        val = FunctionExt.call(val, this.graph, this)
       }
-      return interacting !== false
+      return val !== false
     }
 
     if (typeof interacting === 'boolean') {
@@ -306,11 +307,6 @@ export class CellView<
     }
 
     return false
-  }
-
-  setInteracting(interacting: CellView.Interacting) {
-    this.options.interacting = interacting
-    return this
   }
 
   cleanCache() {
@@ -876,6 +872,7 @@ export class CellView<
 
 export namespace CellView {
   export interface Options {
+    graph: Graph
     priority: number
     isSvgElement: boolean
     rootSelector: string
@@ -883,7 +880,6 @@ export namespace CellView {
     actions: KeyValue<FlagManager.Actions>
     events?: View.Events | null
     documentEvents?: View.Events | null
-    interacting?: Interacting
   }
 
   type Interactable = boolean | ((this: Graph, cellView: CellView) => boolean)

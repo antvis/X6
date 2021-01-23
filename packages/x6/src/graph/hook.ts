@@ -673,7 +673,7 @@ export class Hook extends Base implements Hook.IHook {
 
   @Decorator.hook(true)
   createCellView(cell: Cell) {
-    const options = { interacting: this.options.interacting }
+    const options = { graph: this.graph }
 
     const ctor = this.getCellView(cell)
     if (ctor) {
