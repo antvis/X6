@@ -241,7 +241,9 @@ export class Vertices extends ToolsView.ToolItem<EdgeView, Vertices.Options> {
   }
 
   protected onPathMouseDown(evt: JQuery.MouseDownEvent) {
-    if (this.guard(evt) || !this.options.addable) {
+    const edgeView = this.cellView
+
+    if (this.guard(evt) || !this.options.addable || !edgeView.can('vertexAddable')) {
       return
     }
 
@@ -250,7 +252,6 @@ export class Vertices extends ToolsView.ToolItem<EdgeView, Vertices.Options> {
 
     const e = this.normalizeEvent(evt)
     const vertex = this.graph.snapToGrid(e.clientX, e.clientY).toJSON()
-    const edgeView = this.cellView
     edgeView.cell.startBatch('add-vertex', { ui: true, toolId: this.cid })
     const index = edgeView.getVertexIndex(vertex.x, vertex.y)
     this.snapVertex(vertex, index)
