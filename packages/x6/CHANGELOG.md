@@ -1,3 +1,10 @@
+## @antv/x6 [1.12.16](https://github.com/antvis/x6/compare/@antv/x6@1.12.15...@antv/x6@1.12.16) (2021-01-25)
+
+
+### Bug Fixes
+
+* 🐛 support register html render object ([e0c9e97](https://github.com/antvis/x6/commit/e0c9e970723b8c7bd6a63127edf46be79a72d7c3))
+
 ## @antv/x6 [1.12.15](https://github.com/antvis/x6/compare/@antv/x6@1.12.14...@antv/x6@1.12.15) (2021-01-25)
 
 
