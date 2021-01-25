@@ -722,9 +722,13 @@ export class Hook extends Base implements Hook.IHook {
 
   @Decorator.hook()
   shouldUpdateHTMLComponent(node: HTML): boolean {
-    const html = node.getHTML()
+    let html = node.getHTML()
 
-    if (html && typeof html === 'object') {
+    if (typeof html === 'string') {
+      html = HTML.componentRegistry.get(html) || html
+    }
+
+    if (ObjectExt.isPlainObject(html)) {
       const shouldUpdate = (html as HTML.UpdatableComponent)
         .shouldComponentUpdate
 
