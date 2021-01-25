@@ -35,16 +35,11 @@ const isNativeClass =
  */
 export function createClass<T>(className: string, base: Function): T {
   // tslint:disable-next-line
-  const cls = new Function(
-    'base',
-    `
-      return ${isNativeClass}
-        ? class ${className} extends base { }
-        : function ${className}() { return base.apply(this, arguments) }
-    `,
-  )(base)
-
-  if (!isNativeClass) {
+  let cls
+  if (isNativeClass) {
+    cls = new Function('base',`return class ${className} extends base { }`)(base)
+  } else {
+    cls = new Function('base',`return function ${className}() { return base.apply(this, arguments) }`)(base)
     inherit(cls, base)
   }
 
