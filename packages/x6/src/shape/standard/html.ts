@@ -150,7 +150,9 @@ export namespace HTML {
     shouldComponentUpdate: boolean | ((this: Graph, node: HTML) => boolean)
   }
 
-  export const componentRegistry = Registry.create<Component>({
+  export const componentRegistry = Registry.create<
+    Component | UpdatableComponent
+  >({
     type: 'html componnet',
   })
 }

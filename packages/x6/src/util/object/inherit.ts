@@ -34,12 +34,18 @@ const isNativeClass =
  * Extends class with specified class name.
  */
 export function createClass<T>(className: string, base: Function): T {
-  // tslint:disable-next-line
   let cls
   if (isNativeClass) {
-    cls = new Function('base',`return class ${className} extends base { }`)(base)
+    // tslint:disable-next-line
+    cls = new Function('base', `return class ${className} extends base { }`)(
+      base,
+    )
   } else {
-    cls = new Function('base',`return function ${className}() { return base.apply(this, arguments) }`)(base)
+    // tslint:disable-next-line
+    cls = new Function(
+      'base',
+      `return function ${className}() { return base.apply(this, arguments) }`,
+    )(base)
     inherit(cls, base)
   }
 
