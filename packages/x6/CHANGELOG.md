@@ -1,3 +1,10 @@
+## @antv/x6 [1.12.15](https://github.com/antvis/x6/compare/@antv/x6@1.12.14...@antv/x6@1.12.15) (2021-01-25)
+
+
+### Bug Fixes
+
+* x6 support ie 11 ([#585](https://github.com/antvis/x6/issues/585)) ([8cb2f48](https://github.com/antvis/x6/commit/8cb2f489d2f913dd9fa80dab5c50e1fffe7f6939))
+
 ## @antv/x6 [1.12.14](https://github.com/antvis/x6/compare/@antv/x6@1.12.13...@antv/x6@1.12.14) (2021-01-24)
 
 ## @antv/x6 [1.12.13](https://github.com/antvis/x6/compare/@antv/x6@1.12.12...@antv/x6@1.12.13) (2021-01-23)
