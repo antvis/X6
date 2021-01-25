@@ -6,6 +6,38 @@ redirect_from:
   - /zh/docs/tutorial
 ---
 
+## 1.12.13
+
+* 🐛 解决 `registerHtmlComponent` 不支持注册 `render` 对象问题 ([c810821](https://github.com/antvis/x6/commit/c81082169763f4ca5432b44c94996674cd3599b1))
+
+## 1.12.11
+
+* 🐛 在节点内部的 `input` 上键入 `delete` 或者 `backspace` 时，不会触发键盘事件 ([429ef9a](https://github.com/antvis/x6/commit/429ef9ad45a11a49072d169a0c89146640f7e21a))
+
+## 1.12.10 
+
+* 🐛 `stencil` 增加 `placeholder` 和 `notFoundText` 两个选项 ([#574](https://github.com/antvis/x6/issues/574)) ([c9100ab](https://github.com/antvis/x6/commit/c9100abb8576eaf55c5a9b0c5496f63c1796af5a)), closes [#555]
+
+## 1.12.9
+
+* 🐛 解决 `get graph of undefined` 报错问题 ([#573](https://github.com/antvis/x6/issues/573)) ([5aadc87](https://github.com/antvis/x6/commit/5aadc87467e61dbd33d385e94a94bee72e744f84))
+
+## 1.12.4
+
+* 🐛 根据可交互能力修改节点鼠标悬浮样式 ([#566](https://github.com/antvis/x6/issues/566)) ([6a33149](https://github.com/antvis/x6/commit/6a3314959206c1299eb916c1dc10130d49ee7de8)), closes [#558](https://github.com/antvis/x6/issues/558)
+
+## 1.12.3
+
+* 🐛 增加 `hasTool` 和 `removeTool` 方法 ([#565](https://github.com/antvis/x6/issues/565)) ([f87dc43](https://github.com/antvis/x6/commit/f87dc43e439bfd13b7afe193db096bacd456bdcd)), closes [#552](https://github.com/antvis/x6/issues/552)
+
+## 1.12.0
+
+* ✨ 增加 `autoResize` 选项，是否自动根据容器大小自动更新画布大小 ([ff6e2b6](https://github.com/antvis/x6/commit/ff6e2b63bce78992cdb1892c84d7bf2ce6c2bbc3)), closes [#531](https://github.com/antvis/x6/issues/531)
+
+## 1.11.1
+
+* 🐛 修改 `double-edge` 和 `shadow-edge` 模式鼠标悬浮样式为手型 ([b7d61b7](https://github.com/antvis/x6/commit/b7d61b75fbc24b36cfc384fdd9c6ed3baf2cf12a))
+
 ## 1.11.0
 
 * ✨ 平滑路由增加方向配置 ([deec3bc](https://github.com/antvis/x6/commit/deec3bc805c5af1d2d0fc81a25c0819a6072f99e))
