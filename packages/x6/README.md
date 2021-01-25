@@ -161,7 +161,7 @@ DAG是[有向无环图](https://en.wikipedia.org/wiki/Directed_acyclic_graph)的
 
 ## 如何交流
 
-如果您在使用的过程中碰到问题，可以先通过 [issues](https://github.com/antvis/x6/issues) 看看有没有类似的 bug 或者建议。欢迎提 [issues](https://github.com/antvis/x6/issues/new) 交流，也可以使用[钉钉](https://m.dingtalk.com/)扫描下面二维码加入**X6 交流群**。
+如果你在使用的过程中碰到问题，可以先通过 [issues](https://github.com/antvis/x6/issues) 看看有没有类似的 bug 或者建议。欢迎提 [issues](https://github.com/antvis/x6/issues/new) 交流，也可以使用[钉钉](https://m.dingtalk.com/)扫描下面二维码加入**X6 交流群**。
 
 需要注意的是，提问题时请配上 [CodeSandbox](https://codesandbox.io/s/pensive-sound-f4nhc) 的复现代码，方便快速定位和解决问题。
 
@@ -227,7 +227,7 @@ yarn build:watch:cjs
 
 ## 如何贡献
 
-如果您在使用的过程中碰到问题，可以先通过 [issues](https://github.com/antvis/x6/issues) 看看有没有类似的 bug 或者建议。
+如果你在使用的过程中碰到问题，可以先通过 [issues](https://github.com/antvis/x6/issues) 看看有没有类似的 bug 或者建议。
 
 如需提交代码，请遵从我们的[贡献指南](/CONTRIBUTING.zh-CN.md)。我们会收集贡献者的 Github 头像到下面贡献者清单中。
 
