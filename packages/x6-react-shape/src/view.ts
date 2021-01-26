@@ -14,7 +14,9 @@ export class ReactShapeView extends NodeView<ReactShape> {
   }
 
   getComponentContainer() {
-    return this.selectors.foContent as HTMLDivElement
+    return this.cell.prop('useForeignObject') === false
+      ? (this.selectors.content as SVGElement)
+      : (this.selectors.foContent as HTMLDivElement)
   }
 
   confirmUpdate(flag: number) {
