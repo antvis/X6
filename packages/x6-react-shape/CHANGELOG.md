@@ -1,3 +1,10 @@
+# @antv/x6-react-shape [1.3.0](https://github.com/antvis/x6/compare/@antv/x6-react-shape@1.2.5...@antv/x6-react-shape@1.3.0) (2021-01-26)
+
+
+### Features
+
+* ✨ add `primer` and `useForeignObject` option for react-shape ([eca8186](https://github.com/antvis/x6/commit/eca818687662a5f84a6300944819220853bc1964))
+
 ## @antv/x6-react-shape [1.2.5](https://github.com/antvis/x6/compare/@antv/x6-react-shape@1.2.4...@antv/x6-react-shape@1.2.5) (2021-01-22)
 
 
