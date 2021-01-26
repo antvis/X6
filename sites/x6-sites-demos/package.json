@@ -17,7 +17,7 @@
     "@antv/layout": "0.0.13",
     "@antv/x6": "^1.12.17",
     "@antv/x6-react-components": "^1.1.1",
-    "@antv/x6-react-shape": "^1.2.5",
+    "@antv/x6-react-shape": "^1.3.0",
     "@antv/x6-sites-demos-helper": "^1.1.2",
     "@types/d3-sankey": "^0.11.1",
     "@types/highlight.js": "^9.12.4",
