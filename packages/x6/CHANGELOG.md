@@ -1,3 +1,10 @@
+## @antv/x6 [1.12.17](https://github.com/antvis/x6/compare/@antv/x6@1.12.16...@antv/x6@1.12.17) (2021-01-26)
+
+
+### Bug Fixes
+
+* 🐛 should apply prop hooks when update props by `prop()` method ([0dfc09f](https://github.com/antvis/x6/commit/0dfc09f97ff4281aacb465ad74f1958930d30c8c))
+
 ## @antv/x6 [1.12.16](https://github.com/antvis/x6/compare/@antv/x6@1.12.15...@antv/x6@1.12.16) (2021-01-25)
 
 
