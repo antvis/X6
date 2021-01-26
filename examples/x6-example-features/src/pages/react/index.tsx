@@ -25,6 +25,7 @@ class MyComponent extends React.Component<{ node?: Node; text: string }> {
           height: '100%',
           textAlign: 'center',
           lineHeight: '60px',
+          borderRadius: 30,
           background: color,
         }}
       >
@@ -46,9 +47,10 @@ export default class Example extends React.Component {
 
     const source = graph.addNode({
       shape: 'react-shape',
+      primer: 'circle',
       x: 80,
       y: 80,
-      width: 160,
+      width: 60,
       height: 60,
       data: {},
       xxx: {},
@@ -59,12 +61,29 @@ export default class Example extends React.Component {
       shape: 'react-shape',
       x: 320,
       y: 320,
-      width: 160,
-      height: 60,
+      width: 120,
+      height: 48,
       component: (node) => {
-        return <div>{node.attr('body/fill')}</div>
+        return (
+          <div style={{ lineHeight: '48px', textAlign: 'center' }}>
+            {node.attr('body/fill')}
+          </div>
+        )
       },
       // component: () => <Test text="target" />,
+    })
+
+    graph.addNode({
+      shape: 'react-shape',
+      primer: 'circle',
+      x: 80,
+      y: 320,
+      width: 60,
+      height: 60,
+      useForeignObject: false,
+      component: () => {
+        return  <circle stroke="red" cx="30" cy="30" r="30"/>
+      },
     })
 
     graph.addEdge({
