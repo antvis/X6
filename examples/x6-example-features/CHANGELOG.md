@@ -9,6 +9,28 @@
 
 ### Features
 
+* ✨ add `primer` and `useForeignObject` option for react-shape ([eca8186](https://github.com/antvis/x6/commit/eca818687662a5f84a6300944819220853bc1964))
+* ✨ auto resize graph when container resized ([ff6e2b6](https://github.com/antvis/x6/commit/ff6e2b63bce78992cdb1892c84d7bf2ce6c2bbc3)), closes [#531](https://github.com/antvis/x6/issues/531)
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6-react-shape:** upgraded to 1.3.0
+
+# @antv/x6-example-features [1.2.0](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.1.2...@antv/x6-example-features@1.2.0) (2021-01-26)
+
+
+### Bug Fixes
+
+* 🐛 interact with input rendered in react component ([6eaec74](https://github.com/antvis/x6/commit/6eaec7412dd9826b331fc4bfb822e874ace939e1))
+* **wip:** 🐛 click event of contextmenu was not triggered ([fc3ff9e](https://github.com/antvis/x6/commit/fc3ff9e38de9b051bfed9043f70920d870b3b9f9))
+
+
+### Features
+
 * ✨ auto resize graph when container resized ([ff6e2b6](https://github.com/antvis/x6/commit/ff6e2b63bce78992cdb1892c84d7bf2ce6c2bbc3)), closes [#531](https://github.com/antvis/x6/issues/531)
 
 
