@@ -9,6 +9,56 @@ redirect_from:
 
 在 X6 中，Graph 是图的载体，它包含了图上的所有元素（节点、边等），同时挂载了图的相关操作（如交互监听、元素操作、渲染等）。
 
+## 平移、缩放、居中
+
+### 画布平移
+
+普通画布(未开启 [scroller](./scroller) 模式)通过开启 `panning` 选项来支持拖拽平移。
+
+```ts
+const graph = new Graph({
+  panning: true,
+})
+
+// 等同于
+const graph = new Graph({
+  panning: {
+    enabled: true,
+  },
+})
+```
+
+拖拽可能和其他操作冲突，此时可以设置 `modifiers` 参数，设置修饰键后需要按下修饰键并点击鼠标才能触发画布拖拽。
+
+```ts
+const graph = new Graph({
+  panning: {
+    enabled: true,
+    modifiers: 'shift',
+  },
+})
+```
+
+### 画布缩放
+
+普通画布(未开启 [scroller](./scroller) 模式)通过开启 [mousewheel](./mousewheel) 选项来支持画布缩放。这里说明怎么通过代码来进行画布缩放：
+
+```ts
+graph.zoom() // 获取缩放级别
+graph.zoom(0.2) // 在原来缩放级别上增加 0.2
+graph.zoom(-0.2) // 在原来缩放级别上减少 0.2
+```
+
+### 内容居中
+
+常用的就是将画布内容中心与视口中心对齐，使用方式：
+
+```ts
+garah.centerContent()
+```
+
+更多的居中方法可以查看 [Transform](../../api/graph/transform)
+
 ## 导出
 
 ### 导出 PNG/JPEG
