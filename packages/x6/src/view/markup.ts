@@ -405,7 +405,7 @@ export namespace Markup {
     const sanitized = sanitize(xml)
     const doc = Dom.parseXML(sanitized, { mimeType: 'image/svg+xml' })
     const nodes = Array.prototype.slice.call(doc.childNodes) as Element[]
-    const attrMap: Attr.ComplexAttrs = {}
+    const attrMap: Attr.CellAttrs = {}
     const markupMap = new WeakMap<Element, JSONMarkup>()
 
     const parse = (node: Element, root: Element, ns?: string | null) => {
