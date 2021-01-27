@@ -1061,7 +1061,9 @@ export class NodeView<
     const selection = this.graph.selection.widget
     if (selection) {
       const selectedCells = this.graph.getSelectedCells()
-      cells.push(...selectedCells.filter((c: Cell) => c.id !== cell.id))
+      cells.push(
+        ...selectedCells.filter((c: Cell) => c.isNode() && c.id !== cell.id),
+      )
     }
     cells.forEach((c: Cell) => {
       this.notify(name, {
