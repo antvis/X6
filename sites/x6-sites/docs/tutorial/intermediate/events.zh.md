@@ -25,6 +25,9 @@ redirect_from:
 | 鼠标进入 | `cell:mouseenter`  | `node:mouseenter`  | `edge:mouseenter`  | `blank:mouseenter`  |
 | 鼠标离开 | `cell:mouseleave`  | `node:mouseleave`  | `edge:mouseleave`  | `blank:mouseleave`  |
 
+[[warning]]
+| 需要注意的是，这里的 `mousemove` 事件和通常的鼠标移动事件有所区别，它需要在鼠标按下后移动鼠标才能触发。
+
 除了 `mouseenter` 和 `mouseleave` 外，事件回调函数的参数都包含鼠标相对于画布的位置 `x`、`y` 和鼠标事件对象 `e` 等参数。
 
 ```ts
