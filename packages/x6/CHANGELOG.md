@@ -1,3 +1,10 @@
+## @antv/x6 [1.12.18](https://github.com/antvis/x6/compare/@antv/x6@1.12.17...@antv/x6@1.12.18) (2021-01-27)
+
+
+### Bug Fixes
+
+* 🐛 exclude edge on node:move event ([#593](https://github.com/antvis/x6/issues/593)) ([dac555e](https://github.com/antvis/x6/commit/dac555e5cf15fba6a5450ecdb335a2cd9145d339))
+
 ## @antv/x6 [1.12.17](https://github.com/antvis/x6/compare/@antv/x6@1.12.16...@antv/x6@1.12.17) (2021-01-26)
 
 
