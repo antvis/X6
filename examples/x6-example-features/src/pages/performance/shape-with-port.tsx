@@ -8,10 +8,10 @@ import '../index.less'
 // 2. avoid asking the browser for element bounding boxes as much as possible
 
 // Number of elements 0 - ?
-var COUNT = 500
+var COUNT = 1000
 // Async rendering true/false
 // true: does not block the UI
-var ASYNC = true
+var ASYNC = false
 
 const Node = N.registry.register(
   'performance_node',
@@ -62,6 +62,43 @@ const Node = N.registry.register(
         selector: 'label',
       },
     ],
+
+    ports: {
+      groups: {
+        top: {
+          attrs: {
+            circle: {
+              r: 6,
+              magnet: true,
+              stroke: '#31d0c6',
+              strokeWidth: 2,
+              fill: '#fff',
+            },
+          },
+          position: {
+            name: 'top',
+          },
+        },
+        bottom: {
+          attrs: {
+            circle: {
+              r: 6,
+              magnet: true,
+              stroke: '#31d0c6',
+              strokeWidth: 2,
+              fill: '#fff',
+            },
+          },
+          position: {
+            name: 'bottom',
+          },
+        },
+      },
+      items: [
+        { id: 'in', group: 'top' },
+        { id: 'out', group: 'bottom' },
+      ],
+    },
   },
   true,
 )
@@ -74,6 +111,7 @@ const Edge = E.registry.register(
       line: {
         connection: true,
         stroke: 'green',
+        fill: 'none',
         strokeWidth: 2,
         // SVG Markers are pretty fast. Let's take advantage of this.
         targetMarker: 'classic',
@@ -94,6 +132,23 @@ const Edge = E.registry.register(
   true,
 )
 
+Graph.registerConnector(
+  'algo-edge',
+  (source, target) => {
+    const offset = 4
+    const control = 80
+    const v1 = { x: source.x, y: source.y + offset + control }
+    const v2 = { x: target.x, y: target.y - offset - control }
+
+    return `M ${source.x} ${source.y}
+       L ${source.x} ${source.y + offset}
+       C ${v1.x} ${v1.y} ${v2.x} ${v2.y} ${target.x} ${target.y - offset}
+       L ${target.x} ${target.y}
+      `
+  },
+  true,
+)
+
 export default class Example extends React.Component {
   private container: HTMLDivElement
 
@@ -104,6 +159,9 @@ export default class Example extends React.Component {
       height: 500,
       grid: 1,
       async: ASYNC,
+      connecting: {
+        connector: 'algo-edge',
+      },
     })
 
     var node = new Node()
@@ -120,7 +178,10 @@ export default class Example extends React.Component {
         .clone()
         .position(n * 100, 300)
         .attr('label/text', n + 1 + COUNT / 2)
-      const ab = edge.clone().setSource(a).setTarget(b)
+      const ab = edge
+        .clone()
+        .setSource({ cell: a.id, port: 'out' })
+        .setTarget({ cell: b.id, port: 'in' })
       cells.push(a, b, ab)
     })
 
