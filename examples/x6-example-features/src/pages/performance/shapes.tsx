@@ -11,7 +11,7 @@ import '../index.less'
 var COUNT = 500
 // Async rendering true/false
 // true: does not block the UI
-var ASYNC = false
+var ASYNC = true
 
 const Node = N.registry.register(
   'performance_node',
