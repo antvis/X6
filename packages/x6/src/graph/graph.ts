@@ -1970,6 +1970,9 @@ export class Graph extends Basecoat<EventArgs> {
 
   @Basecoat.dispose()
   dispose() {
+    this.clearCells()
+    this.off()
+
     this.css.dispose()
     this.hook.dispose()
     this.defs.dispose()
