@@ -3,7 +3,7 @@ import { NumberExt } from '../number'
 import { Text } from '../text'
 import { attr } from './attr'
 import { Vector } from '../vector'
-import { createSvgElement, empty, append } from './elem'
+import { createSvgElement, empty, remove } from './elem'
 
 function createTextPathNode(
   attrs: { d?: string; 'xlink:href'?: string },
@@ -377,7 +377,7 @@ export function breakText(
   const textElement = createSvgElement('text') as SVGTextElement
 
   attr(textElement, styles)
-  append(textElement, textSpan)
+  textElement.appendChild(textSpan)
 
   const textNode = document.createTextNode('')
 
@@ -395,22 +395,23 @@ export function breakText(
   textSpan.appendChild(textNode)
   svgDocument.appendChild(textElement)
 
-  if (!options.svgDocument) {
+  const shouldAppend = svgDocument.parentNode == null
+  if (shouldAppend) {
     document.body.appendChild(svgDocument)
   }
 
   const eol = options.eol || '\n'
   const separator = options.separator || ' '
   const hyphen = options.hyphen ? new RegExp(options.hyphen) : /[^\w\d]/
-
   const words = text.split(separator)
+
   const full = []
   let lines = []
   let p
   let h
   let lineHeight
 
-  for (let i = 0, l = 0, len = words.length; i < len; i += 1) {
+  for (let i = 0, lineIndex = 0, len = words.length; i < len; i += 1) {
     const word = words[i]
     if (!word) {
       continue
@@ -429,29 +430,29 @@ export function breakText(
         len = words.length
       } else {
         // creates a new line
-        l += 1
-        lines[l] = ''
+        lineIndex += 1
+        lines[lineIndex] = ''
       }
       continue
     }
 
-    textNode.data = lines[l] ? `${lines[l]} ${word}` : word
+    textNode.data = lines[lineIndex] ? `${lines[lineIndex]} ${word}` : word
 
     if (textSpan.getComputedTextLength() <= width) {
       // the current line fits
-      lines[l] = textNode.data
+      lines[lineIndex] = textNode.data
 
       if (p || h) {
         // We were partitioning. Put rest of the word onto next line
-        full[l] = true
-        l += 1
+        full[lineIndex] = true
+        lineIndex += 1
 
         // cancel partitioning and splitting by hyphens
         p = 0
         h = 0
       }
     } else {
-      if (!lines[l] || p) {
+      if (!lines[lineIndex] || p) {
         const partition = !!p
 
         p = word.length - 1
@@ -459,7 +460,7 @@ export function breakText(
         if (partition || !p) {
           // word has only one character.
           if (!p) {
-            if (!lines[l]) {
+            if (!lines[lineIndex]) {
               // we won't fit this text within our rect
               lines = []
 
@@ -475,8 +476,8 @@ export function breakText(
             // adjust word length
             len -= 1
 
-            full[l] = true
-            l += 1
+            full[lineIndex] = true
+            lineIndex += 1
             i -= 1
 
             continue
@@ -513,10 +514,10 @@ export function breakText(
             len += 1
           }
 
-          if (l && !full[l - 1]) {
+          if (lineIndex && !full[lineIndex - 1]) {
             // if the previous line is not full, try to fit max part of
             // the current word there
-            l -= 1
+            lineIndex -= 1
           }
         }
 
@@ -525,7 +526,7 @@ export function breakText(
         continue
       }
 
-      l += 1
+      lineIndex += 1
       i -= 1
     }
 
@@ -560,11 +561,19 @@ export function breakText(
 
         // add ellipsis
         let ellipsis = options.ellipsis
-        if (!ellipsis || lastL < 0) break
-        if (typeof ellipsis !== 'string') ellipsis = '\u2026'
+        if (!ellipsis || lastL < 0) {
+          break
+        }
+
+        if (typeof ellipsis !== 'string') {
+          ellipsis = '\u2026'
+        }
 
         const lastLine = lines[lastL]
-        if (!lastLine) break
+        if (!lastLine) {
+          break
+        }
+
         let k = lastLine.length
         let lastLineWithOmission
         let lastChar
@@ -586,17 +595,16 @@ export function breakText(
           }
           k -= 1
         } while (k >= 0)
+
         break
       }
     }
   }
 
-  if (options.svgDocument) {
-    // svg document was provided, remove the text element only
-    svgDocument.removeChild(textElement)
+  if (shouldAppend) {
+    remove(svgDocument)
   } else {
-    // clean svg document
-    document.body.removeChild(svgDocument)
+    remove(textElement)
   }
 
   return lines.join(eol)
