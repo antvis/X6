@@ -59,7 +59,8 @@ export class AttrManager {
         if (normal == null) {
           normal = {}
         }
-        normal[kebabCase(name)] = val as Attr.SimpleAttrValue
+        const normalName = AttrManager.CASE_SENSITIVE_ATTR.includes(name) ? name : kebabCase(name)
+        normal[normalName] = val as Attr.SimpleAttrValue
       }
     })
 
@@ -516,4 +517,6 @@ export namespace AttrManager {
     offset?: Attr.ComplexAttrs | undefined
     position?: Attr.ComplexAttrs | undefined
   }
+
+  export const CASE_SENSITIVE_ATTR = ['viewBox']
 }

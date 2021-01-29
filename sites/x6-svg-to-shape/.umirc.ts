@@ -8,6 +8,6 @@ export default defineConfig({
 
   routes: [
     { path: '/', component: '@/pages/index' },
-    { path: '/apps/svg2shape', component: '@/pages/index' },
+    { path: '/apps/svg-to-shape', component: '@/pages/index' },
   ],
 })
