@@ -1,3 +1,11 @@
+## @antv/x6 [1.12.20](https://github.com/antvis/x6/compare/@antv/x6@1.12.19...@antv/x6@1.12.20) (2021-01-29)
+
+
+### Bug Fixes
+
+* 🐛 should clean cells on destroy graph ([e211c1a](https://github.com/antvis/x6/commit/e211c1a0a1f79588b084a4de326fdd493e839def)), closes [#600](https://github.com/antvis/x6/issues/600)
+* change x6-svg-to-shape router ([3c5d11f](https://github.com/antvis/x6/commit/3c5d11f4b46d4843150ac3f294dc4ed0cf611c43))
+
 ## @antv/x6 [1.12.19](https://github.com/antvis/x6/compare/@antv/x6@1.12.18...@antv/x6@1.12.19) (2021-01-28)
 
 
