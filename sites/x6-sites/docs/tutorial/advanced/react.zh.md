@@ -348,10 +348,23 @@ export default ({
 </script>
 ```
 
-[详细 demo](https://codesandbox.io/s/aged-frog-8ciig)
+[详细 demo](https://codesandbox.io/s/vue-shape-8ciig)
 
 [[warning]]
 | 需要注意的是，在渲染 `vue` 组件的过程中用到了运行时编译，所以需要在 `vue.config.js` 中启用 `runtimeCompiler: true` 配置。同样当 `component` 为 Vue 组件或函数时，将不能通过 `graph.toJSON()` 方法导出画布数据。我们同样提供了 `Graph.registerVueComponent(...)` 来解决这个问题。
+
+```ts
+Graph.registerVueComponent(
+  "count-component",
+  {
+    template: `<count></count>`,
+    components: {
+      Count,
+    },
+  },
+  true
+);
+```
 
 ## 渲染标签
 
