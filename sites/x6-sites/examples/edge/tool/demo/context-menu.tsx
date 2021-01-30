@@ -23,7 +23,7 @@ class ContextMenuTool extends ToolsView.ToolItem<
 
   private toggleTooltip(visible: boolean) {
     ReactDom.unmountComponentAtNode(this.knob)
-    document.removeEventListener('click', this.onClick)
+    document.removeEventListener('mousedown', this.onMouseDown)
 
     if (visible) {
       ReactDom.render(
@@ -36,7 +36,7 @@ class ContextMenuTool extends ToolsView.ToolItem<
         </Dropdown>,
         this.knob,
       )
-      document.addEventListener('click', this.onClick)
+      document.addEventListener('mousedown', this.onMouseDown)
     }
   }
 
@@ -51,9 +51,14 @@ class ContextMenuTool extends ToolsView.ToolItem<
     }
   }
 
-  private onClick = (e: MouseEvent) => {
-    this.updatePosition()
-    this.toggleTooltip(false)
+  private onMouseDown = (e: MouseEvent) => {
+    setTimeout(() => {
+      this.updatePosition()
+      this.toggleTooltip(false)
+      if (this.options.onHide) {
+        this.options.onHide.call(this)
+      }
+    }, 100)
   }
 }
 
@@ -66,13 +71,18 @@ export interface ContextMenuToolOptions extends ToolsView.ToolItem.Options {
   x: number
   y: number
   menu?: Menu | (() => Menu)
+  onHide?: (this: ContextMenuTool) => void
 }
 
 Graph.registerEdgeTool('contextmenu', ContextMenuTool, true)
 Graph.registerNodeTool('contextmenu', ContextMenuTool, true)
 
+const onMenuClick = (e: any) => {
+  console.log('menu click ', e)
+}
+
 const menu = (
-  <Menu>
+  <Menu onClick={onMenuClick}>
     <Menu.Item>1st menu item</Menu.Item>
     <Menu.Item>2nd menu item</Menu.Item>
     <Menu.Item>
@@ -137,14 +147,10 @@ graph.on('cell:contextmenu', ({ cell, e }) => {
         menu,
         x: p.x,
         y: p.y,
+        onHide() {
+          this.cell.removeTools()
+        },
       },
     },
   ])
-
-  const onMouseDown = () => {
-    cell.removeTools()
-    document.removeEventListener('mousedown', onMouseDown)
-  }
-
-  document.addEventListener('mousedown', onMouseDown)
 })
