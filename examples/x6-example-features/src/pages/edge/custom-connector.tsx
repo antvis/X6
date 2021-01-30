@@ -1,15 +1,15 @@
 import React from 'react'
 import { Graph, Path, Point } from '@antv/x6'
-import { Connector } from '@antv/x6/es/registry/connector'
 import '../index.less'
 
-Connector.registry.register(
+Graph.registerConnector(
   'wobble',
   (sourcePoint, targetPoint, vertices, args) => {
     const spread = args.spread || 20
     const points = [...vertices, targetPoint].map((p) => Point.create(p))
     let prev = Point.create(sourcePoint)
-    const path = new Path(Path.createSegment('M', prev))
+    const path = new Path()
+    path.appendSegment(Path.createSegment('M', prev))
 
     for (var i = 0, n = points.length; i < n; i += 1) {
       const next = points[i]
