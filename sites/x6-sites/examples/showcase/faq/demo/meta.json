@@ -15,6 +15,14 @@
         "en": "Switch Interacting"
       },
       "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*YmthRqMeb7AAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "validate-connection.ts",
+      "title": {
+        "zh": "限制连接边的数量",
+        "en": "Limit Connected Edges"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*f_ztRpTun3AAAAAAAAAAAAAAARQnAQ"
     }
   ]
 }
