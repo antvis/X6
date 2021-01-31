@@ -1,3 +1,10 @@
+## @antv/x6 [1.12.21](https://github.com/antvis/x6/compare/@antv/x6@1.12.20...@antv/x6@1.12.21) (2021-01-31)
+
+
+### Bug Fixes
+
+* fix trigger multiple moved event when close movable config ([f651181](https://github.com/antvis/x6/commit/f65118150178df82ee795f4fc292f5ce91c78b6b))
+
 ## @antv/x6 [1.12.20](https://github.com/antvis/x6/compare/@antv/x6@1.12.19...@antv/x6@1.12.20) (2021-01-29)
 
 
