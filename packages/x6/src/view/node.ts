@@ -1059,7 +1059,7 @@ export class NodeView<
   ) {
     const cells = [cell]
     const selection = this.graph.selection.widget
-    if (selection) {
+    if (selection && selection.options.movable) {
       const selectedCells = this.graph.getSelectedCells()
       cells.push(
         ...selectedCells.filter((c: Cell) => c.isNode() && c.id !== cell.id),
