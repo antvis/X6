@@ -130,7 +130,9 @@ if (graph.isRubberbandEnabled()) {
 
 ### movable
 
-选中的节点是否可以被移动，设置为 `true` 时，拖动选框触发节点移动，默认为 `true`。
+在多选情况下，选中的节点是否一起移动，设置为 `true` 时，拖动选框框选的节点一起移动，默认为 `true`。
+
+<img src="https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*MD11S4oxIJIAAAAAAAAAAAAAARQnAQ" width="600px" height="300px" alt="movable"/>
 
 ### content
 
