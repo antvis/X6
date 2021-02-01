@@ -1,3 +1,18 @@
+## @antv/x6-example-features [1.2.1](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.2.0...@antv/x6-example-features@1.2.1) (2021-02-01)
+
+
+### Bug Fixes
+
+* 🐛 break text with chinese characters(double byte character) ([7f37319](https://github.com/antvis/x6/commit/7f373194d9a3722aab403319aa2a843a00a18825)), closes [#596](https://github.com/antvis/x6/issues/596)
+
+
+
+
+
+### Dependencies
+
+* **@antv/x6:** upgraded to 1.12.23
+
 # @antv/x6-example-features [1.2.0](https://github.com/antvis/x6/compare/@antv/x6-example-features@1.1.2...@antv/x6-example-features@1.2.0) (2021-02-01)
 
 
