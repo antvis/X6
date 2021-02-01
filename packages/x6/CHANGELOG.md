@@ -1,3 +1,10 @@
+## @antv/x6 [1.12.23](https://github.com/antvis/x6/compare/@antv/x6@1.12.22...@antv/x6@1.12.23) (2021-02-01)
+
+
+### Bug Fixes
+
+* 🐛 break text with chinese characters(double byte character) ([7f37319](https://github.com/antvis/x6/commit/7f373194d9a3722aab403319aa2a843a00a18825)), closes [#596](https://github.com/antvis/x6/issues/596)
+
 ## @antv/x6 [1.12.22](https://github.com/antvis/x6/compare/@antv/x6@1.12.21...@antv/x6@1.12.22) (2021-02-01)
 
 
