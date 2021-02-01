@@ -272,6 +272,13 @@
     typescript "^4.0.2"
     video-react "^0.14.1"
 
+"@antv/hierarchy@^0.6.6":
+  version "0.6.6"
+  resolved "https://registry.npm.taobao.org/@antv/hierarchy/download/@antv/hierarchy-0.6.6.tgz#58459b08ef19bb34d8df0a96d52954580783aebe"
+  integrity sha1-WEWbCO8ZuzTY3wqW1SlUWAeDrr4=
+  dependencies:
+    "@antv/util" "^2.0.7"
+
 "@antv/layout@0.0.13":
   version "0.0.13"
   resolved "https://registry.npm.taobao.org/@antv/layout/download/@antv/layout-0.0.13.tgz#34539e320a3082283fa0fd06cb7c90eb090a12e8"
@@ -281,6 +288,23 @@
     d3-force "^2.0.1"
     dagre "^0.8.5"
     ml-matrix "^6.5.0"
+
+"@antv/layout@^0.1.3":
+  version "0.1.3"
+  resolved "https://registry.npm.taobao.org/@antv/layout/download/@antv/layout-0.1.3.tgz#0d6629164f2918b68bed6882d03d9b6cba7cb2fc"
+  integrity sha1-DWYpFk8pGLaL7WiC0D2bbLp8svw=
+  dependencies:
+    "@antv/g-webgpu" "^0.5.1"
+    d3-force "^2.0.1"
+    dagre "^0.8.5"
+    ml-matrix "^6.5.0"
+
+"@antv/util@^2.0.7":
+  version "2.0.10"
+  resolved "https://registry.npm.taobao.org/@antv/util/download/@antv/util-2.0.10.tgz#e8f35d4e9c7fc3205d8d8149ceb1f7c941191f29"
+  integrity sha1-6PNdTpx/wyBdjYFJzrH3yUEZHyk=
+  dependencies:
+    tslib "^2.0.3"
 
 "@apidevtools/json-schema-ref-parser@9.0.7":
   version "9.0.7"
@@ -32632,6 +32656,11 @@ tslib@^2.0.0, tslib@~2.0.1:
   version "2.0.1"
   resolved "https://registry.npm.taobao.org/tslib/download/tslib-2.0.1.tgz?cache=0&sync_timestamp=1596751917452&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Ftslib%2Fdownload%2Ftslib-2.0.1.tgz#410eb0d113e5b6356490eec749603725b021b43e"
   integrity sha1-QQ6w0RPltjVkkO7HSWA3JbAhtD4=
+
+tslib@^2.0.3:
+  version "2.1.0"
+  resolved "https://registry.npm.taobao.org/tslib/download/tslib-2.1.0.tgz?cache=0&sync_timestamp=1609887438976&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Ftslib%2Fdownload%2Ftslib-2.1.0.tgz#da60860f1c2ecaa5703ab7d39bc05b6bf988b97a"
+  integrity sha1-2mCGDxwuyqVwOrfTm8Bba/mIuXo=
 
 tslint-config-airbnb@^5.11.2:
   version "5.11.2"
