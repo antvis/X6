@@ -1,3 +1,10 @@
+## @antv/x6 [1.12.22](https://github.com/antvis/x6/compare/@antv/x6@1.12.21...@antv/x6@1.12.22) (2021-02-01)
+
+
+### Bug Fixes
+
+* 🐛 auto resize graph with flexbox ([73c1e1d](https://github.com/antvis/x6/commit/73c1e1d869b098bd341ad1c6e969222980067053))
+
 ## @antv/x6 [1.12.21](https://github.com/antvis/x6/compare/@antv/x6@1.12.20...@antv/x6@1.12.21) (2021-01-31)
 
 
