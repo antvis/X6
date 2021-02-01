@@ -155,6 +155,13 @@ export class Graph extends Basecoat<EventArgs> {
     return this.model.addNode(node, options)
   }
 
+  addNodes(nodes: (Node | Node.Metadata)[], options: Model.AddOptions = {}) {
+    return this.addCell(
+      nodes.map((node) => (Node.isNode(node) ? node : this.createNode(node))),
+      options,
+    )
+  }
+
   createNode(metadata: Node.Metadata) {
     return this.model.createNode(metadata)
   }
@@ -169,6 +176,13 @@ export class Graph extends Basecoat<EventArgs> {
   addEdge(edge: Edge, options?: Model.AddOptions): Edge
   addEdge(edge: Edge | Edge.Metadata, options: Model.AddOptions = {}): Edge {
     return this.model.addEdge(edge, options)
+  }
+
+  addEdges(edges: (Edge | Edge.Metadata)[], options: Model.AddOptions = {}) {
+    return this.addCell(
+      edges.map((edge) => (Edge.isEdge(edge) ? edge : this.createEdge(edge))),
+      options,
+    )
   }
 
   removeEdge(edgeId: string, options?: Collection.RemoveOptions): Edge | null
