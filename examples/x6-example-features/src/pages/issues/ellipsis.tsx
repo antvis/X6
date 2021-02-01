@@ -11,9 +11,9 @@ Graph.registerNode(
     attrs: {
       label: {
         textAnchor: 'left',
-        refX: 20,
+        refX: 0,
         textWrap: {
-          width: 120,
+          width: 160,
           height: 16,
           ellipsis: true,
         },
@@ -32,7 +32,7 @@ const data = {
       y: 40,
       attrs: {
         label: {
-          text: 'hello 测试 test 测试 ffg123ASDFGHJ',
+          text: 'hell o测试tes t测试f fg123ASDFGHJ',
         },
       },
     },
