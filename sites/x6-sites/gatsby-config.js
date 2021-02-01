@@ -212,6 +212,14 @@ module.exports = {
         },
       },
       {
+        slug: 'layout',
+        icon: 'tree',
+        title: {
+          zh: '布局',
+          en: 'Layout',
+        },
+      },
+      {
         slug: 'animation',
         icon: 'scatter',
         title: {
