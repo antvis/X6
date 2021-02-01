@@ -18,7 +18,7 @@ new Graph(options: Options)
 | [container](#container)                                 | HTMLElement                   |  ✓   |                               | 画布的容器。
 | [width](#width)                                         | number                        |      | `undefined`                   | 画布宽度，默认使用容器宽度。                                                               |
 | [height](#height)                                       | number                        |      | `undefined`                   | 画布高度，默认使用容器高度。                                                       |                                                              |
-| [autoResize](#autoresize)                                         | boolean                        |      | `false`                   | 是否监听容器大小改变事件，并自动更新画布大小。                                                               |
+| [autoResize](#autoresize)                                         | boolean \| Element \| Document                       |      | `false`                   | 是否监听容器大小改变，并自动更新画布大小。默认监听画布容器，也可以指定监听的元素，如 `Docuemnt`。                                                               |
 | [grid](./grid)                                           | boolean \| number \| object   |      | `false`                       | 网格，默认使用 `10px` 的网格，但不绘制网格背景。                                            |
 | [background](./background)                               | false \| object               |      | `false`                       | 背景，默认不绘制背景。                                                                     |
 | [snapline](./snapline)                                   | boolean \| object             |      | `false`                       | 对齐线，默认禁用。                                                                         |
@@ -56,6 +56,7 @@ new Graph(options: Options)
 | [onEdgeLabelRendered](./view#onEdgeLabelRendered)             | function                      |      | `undefined`                   | 当边的文本标签渲染完成时触发的回调。                                                      |
 | [onToolItemCreated](./view#onToolItemCreated)                 | function                      |      | `undefined`                   | 当工具项渲染完成时触发的回调。
 | [model](./model)                                         | Model                         |      | `undefined`                   | 画布对应的模型，默认创建一个新模型。
+
 ### container
 
 画布容器。
@@ -70,7 +71,30 @@ new Graph(options: Options)
 
 ### autoResize
 
-是否监听容器大小改变事件，并自动更新画布大小，默认为 `false`。
+是否监听容器大小改变，并自动更新画布大小，默认为 `false`。默认监听画布容器，也可以指定监听的元素，如 `Docuemnt`。
+
+需要注意的是，目前仅支持 flex 布局，例如像下面这样指定画布容器及其父节点的样式：
+
+```html
+<div style="display: flex">
+  <div id="container" style="flex: 1"></div>
+</div>
+```
+
+使用上面 `"container"` 容器和 `autoResize` 选项初始化画布：
+
+```ts
+const graph = new Graph({
+  container: document.getElementById('container'),
+  autoResize: true,
+})
+```
+
+拖动下面 DEMO 中的分隔条体验自动调整画布大小。
+
+<iframe src="/demos/api/graph/auto-resize"></iframe>
+
+
 
 ## 方法
 
