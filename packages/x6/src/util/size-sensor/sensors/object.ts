@@ -26,7 +26,6 @@ export function createSensor(element: Element): Sensor {
     obj.style.pointerEvents = 'none'
     obj.style.zIndex = '-1'
     obj.style.opacity = '0'
-    obj.setAttribute('class', 'size-sensor-object')
     obj.setAttribute('tabindex', '-1')
     obj.type = 'text/html'
 
