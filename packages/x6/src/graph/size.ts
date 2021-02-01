@@ -2,10 +2,6 @@ import { Base } from './base'
 import { SizeSensor } from '../util'
 
 export class SizeManager extends Base {
-  protected isAutoResize() {
-    return this.options.autoResize === true
-  }
-
   protected hasScroller() {
     return this.graph.scroller.widget != null
   }
@@ -17,11 +13,17 @@ export class SizeManager extends Base {
   }
 
   protected init() {
-    const container = this.getContainer()
-    if (this.isAutoResize()) {
-      SizeSensor.bind(container, (elem) => {
-        const width = elem.clientWidth
-        const height = elem.clientHeight
+    const autoResize = this.options.autoResize
+    if (autoResize) {
+      const target =
+        typeof autoResize === 'boolean'
+          ? this.getContainer()
+          : (autoResize as Element)
+
+      SizeSensor.bind(target, () => {
+        const container = this.getContainer()
+        const width = container.clientWidth
+        const height = container.clientHeight
         this.resize(width, height)
       })
     }
