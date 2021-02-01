@@ -8,3 +8,6 @@ window.antd = require('antd')
 window.dagre = require('dagre')
 window.x6 = require('@antv/x6')
 window.x6ReactShape = require('@antv/x6-react-shape')
+window.layout = require('@antv/layout')
+window.hierarchy = require('@antv/hierarchy')
+
