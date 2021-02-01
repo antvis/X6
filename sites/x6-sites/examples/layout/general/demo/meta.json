@@ -1,0 +1,36 @@
+{
+  "demos": [
+    {
+      "filename": "grid.ts",
+      "title": {
+        "zh": "网格布局",
+        "en": "Grid"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*z0iOR7n6Wn0AAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "circle.ts",
+      "title": {
+        "zh": "环形布局",
+        "en": "Circular"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*25RuSq-VelIAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "dagre.ts",
+      "title": {
+        "zh": "Dagre",
+        "en": "Dagre"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*m03UQYWtLjwAAAAAAAAAAAAAARQnAQ"
+    },
+    {
+      "filename": "ellipse.ts",
+      "title": {
+        "zh": "椭圆布局",
+        "en": "Ellipse"
+      },
+      "screenshot": "https://gw.alipayobjects.com/mdn/rms_43231b/afts/img/A*oP93S7a2H-sAAAAAAAAAAAAAARQnAQ"
+    }
+  ]
+}
