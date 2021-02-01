@@ -1,5 +1,5 @@
-import { Point, Rectangle } from '../../geometry'
 import { Platform, NumberExt, ObjectExt, Dom, FunctionExt } from '../../util'
+import { Point, Rectangle } from '../../geometry'
 import { Model } from '../../model/model'
 import { Cell } from '../../model/cell'
 import { View } from '../../view/view'
@@ -45,7 +45,7 @@ export class Scroller extends View {
     super()
 
     this.options = Util.getOptions(options)
-    
+
     const graph = this.graph
     const scale = graph.transform.getScale()
     this.sx = scale.sx
@@ -80,6 +80,32 @@ export class Scroller extends View {
 
     if (graphContainer.parentNode) {
       this.$container.insertBefore(graphContainer)
+    }
+
+    // copy style
+    const style = graphContainer.getAttribute('style')
+    if (style) {
+      const obj: { [name: string]: string } = {}
+      const styles = style.split(';')
+      styles.forEach((item) => {
+        const section = item.trim()
+        if (section) {
+          const pair = section.split(':')
+          if (pair.length) {
+            obj[pair[0].trim()] = pair[1] ? pair[1].trim() : ''
+          }
+        }
+      })
+
+      Object.keys(obj).forEach((key: any) => {
+        if (key === 'width' || key === 'height') {
+          return
+        }
+
+        graphContainer.style[key] = ''
+        this.container.style[key] = obj[key]
+      })
+      console.log(obj)
     }
 
     this.content = document.createElement('div')
