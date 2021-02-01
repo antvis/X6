@@ -5,8 +5,8 @@ const graph = new Graph({
   container: document.getElementById('container')!,
   grid: true,
   connecting: {
-    connector: 'smooth'
-  }
+    connector: 'smooth',
+  },
 })
 
 fetch('../data/algorithm-category.json')
@@ -29,8 +29,8 @@ fetch('../data/algorithm-category.json')
       getSide: () => {
         return 'right'
       },
-    });
-    
+    })
+
     const model: Model.FromJSONData = { nodes: [], edges: [] }
     const traverse = (data: HierarchyResult) => {
       if (data) {
@@ -58,9 +58,9 @@ fetch('../data/algorithm-category.json')
               line: {
                 stroke: '#ccc',
                 strokeWidth: 1,
-                targetMarker: null
-              }
-            }
+                targetMarker: null,
+              },
+            },
           })
           traverse(item)
         })
@@ -71,9 +71,9 @@ fetch('../data/algorithm-category.json')
     graph.fromJSON(model)
   })
 
-  interface HierarchyResult {
-    id: number,
-    x: number,
-    y: number,
-    children: HierarchyResult[]
-  }
+interface HierarchyResult {
+  id: number
+  x: number
+  y: number
+  children: HierarchyResult[]
+}
