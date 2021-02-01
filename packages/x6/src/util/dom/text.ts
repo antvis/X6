@@ -357,43 +357,82 @@ export function text(
   elem.appendChild(containerNode)
 }
 
+function splitText(text: string, separator?: string) {
+  if (separator != null) {
+    const words = text.split(separator)
+    const seps = words.map((w) => separator)
+    seps.pop()
+    return { words, seps }
+  }
+
+  const words: string[] = []
+  const seps: string[] = []
+  let word = ''
+  for (let i = 0, l = text.length; i < l; i += 1) {
+    const char = text[i]
+
+    if (char === ' ') {
+      words.push(word)
+      seps.push(' ')
+      word = ''
+    } else if (char.match(/[^\x00-\xff]/)) {
+      if (word.length) {
+        words.push(word)
+        seps.push('')
+      }
+
+      words.push(char)
+      seps.push('')
+
+      word = ''
+    } else {
+      word += char
+    }
+  }
+
+  if (word.length) {
+    words.push(word)
+  }
+
+  return { words, seps }
+}
+
 export function breakText(
   text: string,
   size: Size,
   styles: any = {},
   options: {
-    svgDocument?: SVGSVGElement
+    ellipsis?: string
     separator?: string
     eol?: string
     hyphen?: string
-    ellipsis?: string
+    svgDocument?: SVGSVGElement
   } = {},
 ) {
   const width = size.width
   const height = size.height
 
   const svgDocument = options.svgDocument || createSvgElement('svg')
-  const textSpan = createSvgElement('tspan') as SVGTSpanElement
-  const textElement = createSvgElement('text') as SVGTextElement
+  const telem = createSvgElement('text') as SVGTextElement
+  const tspan = createSvgElement('tspan') as SVGTSpanElement
+  const tnode = document.createTextNode('')
 
-  attr(textElement, styles)
-  textElement.appendChild(textSpan)
-
-  const textNode = document.createTextNode('')
+  attr(telem, styles)
+  telem.appendChild(tspan)
 
   // Prevent flickering
-  textElement.style.opacity = '0'
+  telem.style.opacity = '0'
   // Prevent FF from throwing an uncaught exception when `getBBox()`
   // called on element that is not in the render tree (is not measurable).
   // <tspan>.getComputedTextLength() returns always 0 in this case.
   // Note that the `textElement` resp. `textSpan` can become hidden
   // when it's appended to the DOM and a `display: none` CSS stylesheet
   // rule gets applied.
-  textElement.style.display = 'block'
-  textSpan.style.display = 'block'
+  telem.style.display = 'block'
+  tspan.style.display = 'block'
 
-  textSpan.appendChild(textNode)
-  svgDocument.appendChild(textElement)
+  tspan.appendChild(tnode)
+  svgDocument.appendChild(telem)
 
   const shouldAppend = svgDocument.parentNode == null
   if (shouldAppend) {
@@ -403,31 +442,36 @@ export function breakText(
   const eol = options.eol || '\n'
   const separator = options.separator || ' '
   const hyphen = options.hyphen ? new RegExp(options.hyphen) : /[^\w\d]/
-  const words = text.split(separator)
 
   const full = []
   let lines = []
-  let p
-  let h
+  let partIndex
+  let hyphenIndex
   let lineHeight
 
-  for (let i = 0, lineIndex = 0, len = words.length; i < len; i += 1) {
-    const word = words[i]
+  const { words, seps } = splitText(text, options.separator)
+
+  for (
+    let wordIndex = 0, lineIndex = 0, wordCount = words.length;
+    wordIndex < wordCount;
+    wordIndex += 1
+  ) {
+    const word = words[wordIndex]
     if (!word) {
       continue
     }
 
+    // word contains end-of-line character
     if (eol && word.indexOf(eol) >= 0) {
-      // word contains end-of-line character
       if (word.length > 1) {
         // separate word and continue cycle
-        const eolWords = word.split(eol)
-        for (let j = 0, jl = eolWords.length - 1; j < jl; j += 1) {
-          eolWords.splice(2 * j + 1, 0, eol)
+        const parts = word.split(eol)
+        for (let j = 0, m = parts.length - 1; j < m; j += 1) {
+          parts.splice(2 * j + 1, 0, eol)
         }
-        words.splice(i, 1, ...eolWords.filter((word) => word !== ''))
-        i -= 1
-        len = words.length
+        words.splice(wordIndex, 1, ...parts.filter((word) => word !== ''))
+        wordIndex -= 1
+        wordCount = words.length
       } else {
         // creates a new line
         lineIndex += 1
@@ -436,34 +480,36 @@ export function breakText(
       continue
     }
 
-    textNode.data = lines[lineIndex] ? `${lines[lineIndex]} ${word}` : word
+    if (lines[lineIndex] != null) {
+      tnode.data = `${lines[lineIndex]}${seps.pop() || ''}${word}`
+    } else {
+      tnode.data = word
+    }
 
-    if (textSpan.getComputedTextLength() <= width) {
-      // the current line fits
-      lines[lineIndex] = textNode.data
+    if (tspan.getComputedTextLength() <= width) {
+      lines[lineIndex] = tnode.data
 
-      if (p || h) {
-        // We were partitioning. Put rest of the word onto next line
+      // We were partitioning. Put rest of the word onto next line
+      if (partIndex || hyphenIndex) {
         full[lineIndex] = true
         lineIndex += 1
 
         // cancel partitioning and splitting by hyphens
-        p = 0
-        h = 0
+        partIndex = 0
+        hyphenIndex = 0
       }
     } else {
-      if (!lines[lineIndex] || p) {
-        const partition = !!p
+      if (!lines[lineIndex] || partIndex) {
+        const partition = !!partIndex
 
-        p = word.length - 1
+        partIndex = word.length - 1
 
-        if (partition || !p) {
+        if (partition || !partIndex) {
           // word has only one character.
-          if (!p) {
+          if (!partIndex) {
             if (!lines[lineIndex]) {
               // we won't fit this text within our rect
               lines = []
-
               break
             }
 
@@ -471,63 +517,58 @@ export function breakText(
             // try again, but this time start with a new line
 
             // cancel partitions created
-            words.splice(i, 2, word + words[i + 1])
+            words.splice(wordIndex, 2, word + words[wordIndex + 1])
 
             // adjust word length
-            len -= 1
+            wordCount -= 1
 
             full[lineIndex] = true
             lineIndex += 1
-            i -= 1
+            wordIndex -= 1
 
             continue
           }
 
           // move last letter to the beginning of the next word
-          words[i] = word.substring(0, p)
-          words[i + 1] = word.substring(p) + words[i + 1]
+          words[wordIndex] = word.substring(0, partIndex)
+          words[wordIndex + 1] =
+            word.substring(partIndex) + words[wordIndex + 1]
         } else {
-          if (h) {
+          if (hyphenIndex) {
             // cancel splitting and put the words together again
-            words.splice(i, 2, words[i] + words[i + 1])
-            h = 0
+            words.splice(wordIndex, 2, words[wordIndex] + words[wordIndex + 1])
+            hyphenIndex = 0
           } else {
-            const hyphenIndex = word.search(hyphen)
-            if (
-              hyphenIndex > -1 &&
-              hyphenIndex !== word.length - 1 &&
-              hyphenIndex !== 0
-            ) {
-              h = hyphenIndex + 1
-              p = 0
+            const hyphenIdx = word.search(hyphen)
+            if (hyphenIdx > 0 && hyphenIdx < word.length - 1) {
+              hyphenIndex = hyphenIdx + 1
+              partIndex = 0
             }
 
-            // We initiate partitioning or splitting
-            // split the long word into two words
+            // partitioning or splitting the long word into two words
             words.splice(
-              i,
+              wordIndex,
               1,
-              word.substring(0, h || p),
-              word.substring(h || p),
+              word.substring(0, hyphenIndex || partIndex),
+              word.substring(hyphenIndex || partIndex),
             )
             // adjust words length
-            len += 1
+            wordCount += 1
           }
 
+          // if the previous line is not full, try to fit max part of
+          // the current word there
           if (lineIndex && !full[lineIndex - 1]) {
-            // if the previous line is not full, try to fit max part of
-            // the current word there
             lineIndex -= 1
           }
         }
 
-        i -= 1
-
+        wordIndex -= 1
         continue
       }
 
       lineIndex += 1
-      i -= 1
+      wordIndex -= 1
     }
 
     // if size.height is defined we have to check whether the height of the entire
@@ -550,7 +591,7 @@ export function breakText(
 
         lineHeight = heightValue.value
         if (heightValue.unit === 'em') {
-          lineHeight *= textElement.getBBox().height
+          lineHeight *= telem.getBBox().height
         }
       }
 
@@ -574,13 +615,13 @@ export function breakText(
           break
         }
 
-        let k = lastLine.length
+        let lastIndex = lastLine.length
         let lastLineWithOmission
         let lastChar
         let separatorChar
         do {
-          lastChar = lastLine[k]
-          lastLineWithOmission = lastLine.substring(0, k)
+          lastChar = lastLine[lastIndex]
+          lastLineWithOmission = lastLine.substring(0, lastIndex)
           if (!lastChar) {
             separatorChar = typeof separator === 'string' ? separator : ' '
             lastLineWithOmission += separatorChar
@@ -588,13 +629,13 @@ export function breakText(
             lastLineWithOmission += lastChar
           }
           lastLineWithOmission += ellipsis
-          textNode.data = lastLineWithOmission
-          if (textSpan.getComputedTextLength() <= width) {
+          tnode.data = lastLineWithOmission
+          if (tspan.getComputedTextLength() <= width) {
             lines[lastL] = lastLineWithOmission
             break
           }
-          k -= 1
-        } while (k >= 0)
+          lastIndex -= 1
+        } while (lastIndex >= 0)
 
         break
       }
@@ -604,7 +645,7 @@ export function breakText(
   if (shouldAppend) {
     remove(svgDocument)
   } else {
-    remove(textElement)
+    remove(telem)
   }
 
   return lines.join(eol)
