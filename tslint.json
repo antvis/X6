@@ -16,6 +16,7 @@
     "no-reference": true,
     "import-name": false,
     "semicolon": [true, "never"],
-    "arrow-parens": true
+    "arrow-parens": true,
+    "no-console": [true, "log"]
   }
 }
