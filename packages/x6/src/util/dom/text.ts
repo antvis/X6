@@ -493,8 +493,6 @@ export function breakText(
   const hyphen = options.hyphen ? new RegExp(options.hyphen) : /[^\w\d]/
   const breakWord = options.breakWord !== false
 
-  console.log(breakWord, options)
-
   const full = []
   const lineSeprators: { [index: number]: string } = {}
   let lines = []
